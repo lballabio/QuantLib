@@ -42,13 +42,21 @@ namespace QuantLib {
                                                                   result_type;
         CubicSplineInterpolation(const RandomAccessIterator1& xBegin,
                                  const RandomAccessIterator1& xEnd,
-                                 const RandomAccessIterator2& yBegin);
+                                 const RandomAccessIterator2& yBegin,
+                                 result_type y1a,
+                                 result_type y2a,
+                                 result_type y1b,
+                                 result_type y2b,
+                                 bool monotonicityConstraint);
         result_type operator()(const argument_type& x,
                                bool allowExtrapolation = false) const;
         result_type derivative(const argument_type& x,
                                bool allowExtrapolation = false) const;
         result_type secondDerivative(const argument_type& x,
                                      bool allowExtrapolation = false) const;
+        const std::vector<result_type>& aCoefficients() const { return a_; };
+        const std::vector<result_type>& bCoefficients() const { return b_; };
+        const std::vector<result_type>& cCoefficients() const { return c_; };
       private:
         // P[i](x) = y[i] +
         //           a[i]*(x-x[i]) +
@@ -65,10 +73,12 @@ namespace QuantLib {
 
     template <class I1, class I2>
     CubicSplineInterpolation<I1,I2>::CubicSplineInterpolation(
-                           const I1& xBegin, const I1& xEnd, const I2& yBegin)
+        const I1& xBegin, const I1& xEnd, const I2& yBegin,
+        result_type y1a, result_type y2a, result_type y1b, result_type y2b,
+        bool monotonicityConstraint)
     : Interpolation<I1,I2>(xBegin,xEnd,yBegin), a_(xEnd-xBegin-1),
       b_(xEnd-xBegin-1), c_(xEnd-xBegin-1), d2y_(xEnd-xBegin),
-      isNRapproach_(true) {
+      isNRapproach_(false) {
 
         if (isNRapproach_) {
             // calculate cubic spline coefficients
@@ -90,51 +100,99 @@ namespace QuantLib {
             for (i=n_-2; i>=0; i--)
                 d2y_[i] = d2y_[i]*d2y_[i+1] + u[i];
         } else {
-            QL_REQUIRE(n_ >= 4,
-                       "CubicSplineInterpolation : "
-                       "not enough points for cubic spline interpolation");
             TridiagonalOperator L(n_);
             Array tmp(n_);
+            std::vector<double> dx(n_-1), S(n_-1);
 
-            argument_type dx01  = xBegin_[1] - xBegin_[0],
-                dx12  = xBegin_[2] - xBegin_[1],
-                dx02  = xBegin_[2] - xBegin_[0];
-            result_type   dy01  = yBegin_[1] - yBegin_[0],
-                dy12  = yBegin_[2] - yBegin_[1];
-
-            L.setFirstRow(dx01,dx02);
-            tmp[0] = ((dx01+2.0*dx02)*dx12*dy01/dx01 +
-                      dx01*dx01*dy12/dx12)/dx02;
-
-            Size i;
+            Size i=0;
+            dx[i]= xBegin_[i+1] - xBegin_[i];
+            S[i] =(yBegin_[i+1] - yBegin_[i])/dx[i];
             for (i=1; i<n_-1; i++) {
-                argument_type dxp = xBegin_[i+1] - xBegin_[i],
-                    dxm = xBegin_[i]   - xBegin_[i-1];
-                result_type   dyp = yBegin_[i+1] - yBegin_[i],
-                    dym = yBegin_[i]   - yBegin_[i-1];
-                L.setMidRow(i, dxp, 2.0*(dxp+dxm), dxm);
-                tmp[i] = 3.0*(dxp*dym/dxm + dxm*dyp/dxp);
+                dx[i]= xBegin_[i+1] - xBegin_[i];
+                S[i] =(yBegin_[i+1] - yBegin_[i])/dx[i];
+
+                L.setMidRow(i, dx[i], 2.0*(dx[i]+dx[i-1]), dx[i-1]);
+                tmp[i] = 3.0*(dx[i]*S[i-1] + dx[i-1]*S[i]);
             }
 
-            argument_type dxN32 = xBegin_[n_-2] - xBegin_[n_-3],
-                dxN21 = xBegin_[n_-1] - xBegin_[n_-2],
-                dxN31 = xBegin_[n_-1] - xBegin_[n_-3];
-            result_type   dyN32 = yBegin_[n_-2] - yBegin_[n_-3],
-                dyN21 = yBegin_[n_-1] - yBegin_[n_-2];
+            /**** BOUNDARY CONDITIONS ****/
 
-            L.setLastRow(dxN31,dxN21);
-            tmp[n_-1] = ((dxN21+2.0*dxN31)*dxN32*dyN21/dxN21 +
-                         dxN21*dxN21*dyN32/dxN32)/dxN31;
+            // left condition
+            if (y1a!=Null<double>()) {
+                // first derivative value
+                L.setFirstRow(1.0, 0.0);
+                tmp[0] = y1a;
+            } else if (y2a!=Null<double>()) {
+                // 2nd derivative value
+                L.setFirstRow(2.0, 1.0);
+                tmp[0] = 3.0*S[0] - y2a*dx[0]/2.0;
+            } else {
+                // not-a-knot
+                L.setFirstRow(dx[1]*(dx[1]+dx[0]), (dx[0]+dx[1])*(dx[0]+dx[1]));
+                tmp[0] = S[0]*dx[1]*(2.0*dx[1]+3.0*dx[0]) + S[1]*dx[0]*dx[0];
+            }
 
+
+            // right condition
+            if (y1b!=Null<double>()) {
+                // first derivative value
+                L.setLastRow(0.0, 1.0);
+                tmp[n_-1] = y1b;
+            } else if (y2b!=Null<double>()) {
+                // 2nd derivative value
+                L.setLastRow(1.0, 2.0);
+                tmp[n_-1] = 3.0*S[n_-2] - y2b*dx[n_-2]/2.0;
+            } else {
+                // not-a-knot
+                L.setLastRow(
+                    dx[n_-2]*dx[n_-2]-dx[n_-3]*dx[n_-3]
+                        - 2.0*dx[n_-2]-2.0*dx[n_-3],
+                    -dx[n_-3]*dx[n_-3]-dx[n_-3]);
+                tmp[n_-1] = S[n_-3]*dx[n_-2]*(2.0*dx[n_-2]-3.0) -
+                    S[n_-2]*dx[n_-3]*(3.0+2.0*dx[n_-3]);
+            }
+
+
+            // solve the system
             tmp = L.solveFor(tmp);
 
-            for (i=0; i<n_-1; i++) {
-                argument_type dx  = xBegin_[i+1]-xBegin_[i];
-                result_type   dy  = yBegin_[i+1]-yBegin_[i];
+            if (monotonicityConstraint) {
+                double constraint;
+                for (i=0; i<n_; i++) {
+                    if (i==0) {
+                        // locally monotone constrain
+                        constraint = 3.0 * S[0];
+                        if (constraint>=0.0) {
+                            tmp[i] = QL_MIN(QL_MAX(0.0, tmp[i]), constraint);
+                        } else {
+                            tmp[i] = QL_MAX(QL_MIN(0.0, tmp[i]), constraint);
+                        }
+                    } else if (i==n_-1) {
+                        // locally monotone constrain
+                        constraint = 3.0 * S[n_-2];
+                        if (constraint>=0.0) {
+                            tmp[i] = QL_MIN(QL_MAX(0.0, tmp[i]), constraint);
+                        } else {
+                            tmp[i] = QL_MAX(QL_MIN(0.0, tmp[i]), constraint);
+                        }
+                    } else {
+                        // locally non-monotone (generalized) constrain
+                        constraint = 3.0 * QL_MIN(QL_FABS(S[i-1]),
+                                                  QL_FABS(S[i]));
+                        if (tmp[i]>=0.0) {
+                            tmp[i] = QL_MIN(QL_MAX(0.0, tmp[i]), constraint);
+                        } else {
+                            tmp[i] = QL_MAX(QL_MIN(0.0, tmp[i]),-constraint);
+                        }
+                    }
 
+                }
+            }
+
+            for (i=0; i<n_-1; i++) {
                 a_[i] = tmp[i];
-                c_[i] = (tmp[i] + tmp[i+1] - 2.0*dy/dx)/(dx*dx);
-                b_[i] = (dy/dx - tmp[i])/dx - c_[i]*dx;
+                b_[i] = (3.0*S[i] - tmp[i+1] - 2.0*tmp[i])/dx[i];
+                c_[i] = (tmp[i+1] + tmp[i] - 2.0*S[i])/(dx[i]*dx[i]);
             }
         }
     }
@@ -197,7 +255,7 @@ namespace QuantLib {
         } else {
             Size j = position_-xBegin_;
             argument_type dx = x-xBegin_[j];
-            return a_[j] + 2.0*dx*(b_[j] + 1.5*dx*c_[j]);
+            return a_[j] + (2.0*b_[j] + 3.0*c_[j]*dx)*dx;
         }
     }
 
@@ -227,7 +285,7 @@ namespace QuantLib {
         } else {
             Size j = position_-xBegin_;
             argument_type dx = x-xBegin_[j];
-            return 2.0*b_[j] + 6.0*dx*c_[j];
+            return 2.0*b_[j] + 6.0*c_[j]*dx;
         }
     }
 
