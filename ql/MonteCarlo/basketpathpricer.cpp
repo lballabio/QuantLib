@@ -40,14 +40,17 @@ namespace QuantLib {
     namespace MonteCarlo {
 
         BasketPathPricer::BasketPathPricer(const Array &underlying,
-            double discount) : underlying_(underlying), discount_(discount) {
+            double discount, bool antitheticVariance)
+        : underlying_(underlying), discount_(discount),
+          antitheticVariance_(antitheticVariance) {
             QL_REQUIRE(discount_ > 0.0,
                 "BasketPathPricer: discount must be positive");
             isInitialized_ = true;
         }
 
-        double BasketPathPricer::operator()(const MultiPath & path) const {
-            unsigned int numAssets = path.assetNumber(), numSteps = path.pathSize();
+        double BasketPathPricer::operator()(const MultiPath & multiPath) const {
+            unsigned int numAssets = multiPath.assetNumber();
+            unsigned int numSteps = multiPath.pathSize();
             QL_REQUIRE(isInitialized_,
                 "BasketPathPricer: pricer not initialized");
             QL_REQUIRE(underlying_.size() == numAssets,
@@ -55,15 +58,22 @@ namespace QuantLib {
                 + IntegerFormatter::toString(underlying_.size()) +" assets");
 
             double maxPrice = -QL_MAX_DOUBLE;
-            double growth;
-//            double log_drift = 0.0, log_random = 0.0;
+            double log_drift, log_diffusion;
             for(unsigned int j = 0; j < numAssets; j++){
-                growth = 0.0;
-                for(unsigned int i = 0; i < numSteps; i++)
-                    growth += path[j][i];
-                maxPrice = QL_MAX(maxPrice, underlying_[j]*QL_EXP(growth));
+                log_drift = log_diffusion = 0.0;
+                for(unsigned int i = 0; i < numSteps; i++) {
+                    log_drift += multiPath[j].drift()[i];
+                    log_diffusion += multiPath[j].diffusion()[i];
+                }
+                if (antitheticVariance_) {
+                    maxPrice = QL_MAX(maxPrice,
+                        (0.5*(underlying_[j]*QL_EXP(log_drift+log_diffusion)+
+                        underlying_[j]*QL_EXP(log_drift-log_diffusion))));
+                } else
+                    maxPrice = QL_MAX(maxPrice,
+                        underlying_[j]*QL_EXP(log_drift+log_diffusion));
             }
-            return discount_*maxPrice;  //This is the GOOD one!!
+            return discount_*maxPrice;
         }
 
     }
