@@ -110,7 +110,7 @@ namespace QuantLib {
                 end   = floatingLeg.end();
                 Date today = termStructure_->minDate();
                 DayCounter counter = termStructure_->dayCounter();
-                unsigned int i=0;
+                size_t i=0;
                 for (; begin != end; ++begin) {
                     Handle<FloatingRateCoupon> coupon = *begin;
                     QL_ENSURE(!coupon.isNull(), 

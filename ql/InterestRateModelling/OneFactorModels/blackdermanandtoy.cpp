@@ -57,7 +57,7 @@ namespace QuantLib {
 
         BlackDermanAndToy::BlackDermanAndToy(
             const RelinkableHandle<TermStructure>& termStructure, 
-            unsigned int timeSteps) 
+            size_t timeSteps) 
         : OneFactorModel(1, termStructure), timeSteps_(timeSteps) {
             process_ = Handle<StochasticProcess>(new Process(this));
 
@@ -158,7 +158,7 @@ namespace QuantLib {
             const std::vector<double>& statePrices_;
             double discountBondPrice_;
             std::vector<double> helper_;
-            unsigned int nit_;
+            size_t nit_;
         };      
             
         inline BlackDermanAndToy::PrivateFunction::PrivateFunction( 
@@ -194,14 +194,14 @@ namespace QuantLib {
             iMax_ = 0;
         }
 
-        void BlackDermanAndToy::calculateTree(unsigned int newMax) {
+        void BlackDermanAndToy::calculateTree(size_t newMax) {
             QL_REQUIRE(newMax>iMax_, "Tree already built");
 
-            for (unsigned int i=iMax_+1; i<=newMax; i++) {
+            for (size_t i=iMax_+1; i<=newMax; i++) {
                 //Compute state prices for t_i
                 statePrices_[i][i]= 0.5*statePrices_[i-1][i-1]*
                     discountFactors_[i-1][i-1];
-                for (unsigned int k=(i-1); k>=1; k--) {
+                for (size_t k=(i-1); k>=1; k--) {
                     statePrices_[i][k] = 0.5*
                         (statePrices_[i-1][k]*discountFactors_[i-1][k] +
                         statePrices_[i-1][k-1]*discountFactors_[i-1][k-1]);
@@ -224,7 +224,7 @@ namespace QuantLib {
                     maxStrike);
 
                 //Compute discount factors for t_i
-                unsigned int index = 0;
+                size_t index = 0;
                 for (int j=-int(i); j<=int(i); j+=2) {
                     discountFactors_[i][index] = 1.0/(1.0 + u_[i]*
                       QL_EXP(sigma_*j*QL_SQRT(dt_))*dt_);
@@ -237,7 +237,7 @@ namespace QuantLib {
                 theta_[iMax_] = 0.5*(u_[iMax_+1] - u_[iMax_-1])/dt_;
             else
                 theta_[0] = (u_[1]  - u_[0])/dt_;
-            for (unsigned int k=iMax_+1; k<newMax; k++)
+            for (size_t k=iMax_+1; k<newMax; k++)
                 theta_[k] = 0.5*(u_[k+1] - u_[k-1])/dt_;
             theta_[newMax] = (u_[newMax] - u_[newMax-1])/dt_;
 
@@ -245,7 +245,7 @@ namespace QuantLib {
         }
 
         double BlackDermanAndToy::theta(Time t) {
-            unsigned int low = (unsigned int)(t/dt_);
+            size_t low = (unsigned int)(t/dt_);
             if ((low+1)>iMax_)
                 calculateTree(low+1);
             double weight = t/dt_ - low*1.0;

@@ -68,7 +68,7 @@ namespace QuantLib {
             signed jMin_, jMax_;
             const vector<double>& statePrices_;
             double discountBondPrice_;
-            unsigned int nit_;
+            size_t nit_;
         };      
             
         inline BlackKarasinski::PrivateFunction::PrivateFunction( 
@@ -87,7 +87,7 @@ namespace QuantLib {
 
         BlackKarasinski::BlackKarasinski(
             const RelinkableHandle<TermStructure>& termStructure, 
-            unsigned int timeSteps) 
+            size_t timeSteps) 
         : OneFactorModel(2, termStructure), timeSteps_(timeSteps), 
           theta_(timeSteps), u_(timeSteps) {
 
@@ -117,7 +117,7 @@ namespace QuantLib {
 
             signed jMin = 0, jMax = 0;
 
-            unsigned int i;
+            size_t i;
             for (i=0; i<timeSteps_; i++) {
                 unsigned width = jMax - jMin + 1;
 

@@ -74,7 +74,7 @@ namespace QuantLib {
           private:
             class CalibrationProblem;
             friend class CalibrationProblem;
-            unsigned int nParams_;
+            size_t nParams_;
             const RelinkableHandle<TermStructure>& termStructure_;
         };
 

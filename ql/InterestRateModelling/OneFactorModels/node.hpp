@@ -23,28 +23,28 @@ namespace QuantLib {
             unsigned i() const { return i_; }
             signed j() const { return j_; }
 
-            double probability(unsigned int branch) const {
+            double probability(size_t branch) const {
                 return probabilities_[branch];
             }
-            void setProbability(double prob, unsigned int branch) {
+            void setProbability(double prob, size_t branch) {
                 probabilities_[branch] = prob;
             }
             void setProbabilities(const std::vector<double>& probabilities) {
                 probabilities_ = probabilities;
             }
-            Node& ascendant(unsigned int index) {
+            Node& ascendant(size_t index) {
                 return *ascendants_[index];
             }
-            Node& descendant(unsigned int branch) { 
+            Node& descendant(size_t branch) { 
                 return *descendants_[branch]; 
             }
-            unsigned int ascendantBranch(unsigned int index) const {
+            size_t ascendantBranch(size_t index) const {
                 return ascendantBranches_[index];
             }
-            unsigned int nbAscendants() const {
+            size_t nbAscendants() const {
                 return nbAscendants_;
             }
-            void setDescendant(Node& node, unsigned int branch) {
+            void setDescendant(Node& node, size_t branch) {
                 descendants_[branch] = &node; 
                 node.addAscendant(*this, branch);
             }
@@ -53,17 +53,17 @@ namespace QuantLib {
             double statePrice() const { return statePrice_; }
 
           private:
-            void addAscendant(Node& node, unsigned int branch) {
+            void addAscendant(Node& node, size_t branch) {
                 ascendants_[nbAscendants_] = &node;
                 ascendantBranches_[nbAscendants_] = branch;
                 nbAscendants_++;
             }
 
-            unsigned int nbDescendants_;
-            unsigned int nbAscendants_;
+            size_t nbDescendants_;
+            size_t nbAscendants_;
             std::vector<Node*> descendants_;
             std::vector<Node*> ascendants_;
-            std::vector<unsigned int> ascendantBranches_;
+            std::vector<size_t> ascendantBranches_;
             std::vector<double> probabilities_;
             double statePrice_;
             unsigned i_;

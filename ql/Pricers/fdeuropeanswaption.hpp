@@ -52,7 +52,7 @@ namespace QuantLib {
               Time maturity,
               const Handle<InterestRateModelling::Model>& model);
             double value(Rate rate,
-              unsigned int timeSteps, unsigned int gridPoints);
+              size_t timeSteps, unsigned int gridPoints);
           private:
             void fixInitialCondition(Array& prices);
 

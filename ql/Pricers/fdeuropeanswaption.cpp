@@ -53,7 +53,7 @@ namespace QuantLib {
         : swap_(swap), maturity_(maturity), model_(model) {}
 
         double FDEuropeanSwaption::value(Rate rate,
-          unsigned int timeSteps, unsigned int gridPoints) {
+          size_t timeSteps, unsigned int gridPoints) {
 
             Handle<OneFactorModel> model = model_;
             QL_REQUIRE(!model.isNull(),
@@ -63,7 +63,7 @@ namespace QuantLib {
             Grid grid(gridPoints, initialCenter, initialCenter,
                 maturity_, dt, model);
 
-            unsigned int size = grid.size();
+            size_t size = grid.size();
             std::vector<double> rateGrid(size);
             for (unsigned i = 0; i < size; i++)
                 rateGrid[i] = model->getRateFrom(grid[i]);

@@ -165,7 +165,7 @@ namespace QuantLib {
             //! required accuracy of the solver
             double accuracy_, bestAccuracy_;
             //! maximum and real number of iterations
-            unsigned int maxIterations_, nbIterations_;
+            size_t maxIterations_, nbIterations_;
             //! Optimization method
             Handle<OptimizationMethod> om_;
           public:

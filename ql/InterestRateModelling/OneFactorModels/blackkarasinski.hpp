@@ -45,7 +45,7 @@ namespace QuantLib {
           public:
             BlackKarasinski(
                 const RelinkableHandle<TermStructure>& termStructure,
-                unsigned int timeSteps = 1000);
+                size_t timeSteps = 1000);
             virtual ~BlackKarasinski() {}
 
             virtual void setParameters(const Array& params) {
@@ -87,7 +87,7 @@ namespace QuantLib {
             class PrivateFunction;
             friend class PrivateFunction;
 
-            unsigned int timeSteps_;
+            size_t timeSteps_;
             std::vector<double> theta_, u_;
             TrinomialTree tree_;
             double alpha_;

@@ -60,7 +60,7 @@ namespace QuantLib {
                 RelinkableHandle<TermStructure> termStructure_;
                 Handle<Instruments::SimpleSwap> swap_;
                 Handle<Instruments::EuropeanSwaption> swaption_;
-                unsigned int nbOfPeriods_;
+                size_t nbOfPeriods_;
                 std::vector<Time> startTimes_;
                 std::vector<Time> endTimes_;
             };

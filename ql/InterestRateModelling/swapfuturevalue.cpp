@@ -45,7 +45,7 @@ namespace QuantLib {
             double fixedLegValue = 0.0;
             std::vector<Handle<CashFlow> > fixedLeg = swap->fixedLeg();
 
-            unsigned int i;
+            size_t i;
             for (i=0; i<fixedLeg.size(); i++) {
                 Date cashFlowDate = fixedLeg[i]->date();
                 Time t = model->termStructure()->dayCounter().

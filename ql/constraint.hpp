@@ -16,7 +16,7 @@ namespace QuantLib {
         virtual ~Constraint() {}
 
         virtual bool operator()(const std::vector<double>& params) const {
-            unsigned int size(params.size());
+            size_t size(params.size());
             QL_REQUIRE(size == minParams_.size(),
               "parameter vector is not of appropriate size");
             for (unsigned i=0; i<size; i++) {

@@ -44,7 +44,7 @@ namespace QuantLib {
           public:
             BlackDermanAndToy(
                 const RelinkableHandle<TermStructure>& termStructure, 
-                unsigned int timeSteps);
+                size_t timeSteps);
             virtual ~BlackDermanAndToy() {}
 
             virtual void setParameters(const Array& params) {
@@ -68,7 +68,7 @@ namespace QuantLib {
 
           private:
             void initializeTree();
-            void calculateTree(unsigned int iMax);
+            void calculateTree(size_t iMax);
 
             double theta(Time t);
             double sigma(Time t) const { return sigma_; }
@@ -82,10 +82,10 @@ namespace QuantLib {
 
             std::vector<double> theta_, u_;
             std::vector<std::vector<double> > statePrices_, discountFactors_;
-            unsigned int iMax_;
+            size_t iMax_;
             double sigma_;
             double dt_;
-            unsigned int timeSteps_;
+            size_t timeSteps_;
         };
     }
 }
