@@ -68,7 +68,8 @@ include_HEADERS = \
 	solver1d.hpp \
 	swaptionvolstructure.hpp \
 	termstructure.hpp \
-	types.hpp
+	types.hpp \
+	voltermstructure.hpp
 
 
 install-data-hook:

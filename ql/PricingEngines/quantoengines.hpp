@@ -15,10 +15,10 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 /*! \file quantoengines.hpp
-    \brief Quanto (no discrete dividends, no barriers) option engines
+    \brief Quanto option engines
 
     \fullpath
-    ql/Instruments/%quantoengines.hpp
+    ql/PricingEngines/%quantoengines.hpp
 */
 
 // $Id$
@@ -27,42 +27,83 @@
 #define quantlib_quanto_engines_h
 
 #include <ql/PricingEngines/genericengine.hpp>
-
+#include <ql/PricingEngines/vanillaengines.hpp>
 
 namespace QuantLib {
 
     namespace PricingEngines {
 
+        //! parameters for quanto option calculation
+        template<class ArgumentsType>
+        class QuantoOptionParameters : public ArgumentsType {
+          public:
+            QuantoOptionParameters() : foreignRiskFreeRate(Null<double>()),
+                                       exchangeRateVolatility(Null<double>()),
+                                       correlation(Null<double>()) {}
+            void validate() const;
+            Rate foreignRiskFreeRate;
+            double exchangeRateVolatility;
+            double correlation;
+        };
+
+        template<class ArgumentsType>
+        void QuantoOptionParameters<ArgumentsType>::validate() const {
+            ArgumentsType::validate();
+            QL_REQUIRE(foreignRiskFreeRate != Null<double>(),
+                       "null risk free rate given");
+            QL_REQUIRE(exchangeRateVolatility != Null<double>(),
+                       "null exchange rate volatility given");
+            QL_REQUIRE(exchangeRateVolatility >= 0.0,
+                       "negative exchange rate volatility given");
+            QL_REQUIRE(correlation != Null<double>(),
+                       "null correlation given");
+        }
+
+        //! %results from quanto option calculation
+        template<class ResultsType>
+        class QuantoOptionResults : public ResultsType {
+          public:
+            QuantoOptionResults() : qvega(Null<double>()),
+                                    qrho(Null<double>()),
+                                    qlambda(Null<double>()) {}
+            double qvega;
+            double qrho;
+            double qlambda;
+        };
+
         //! Quanto engine base class
-        class QuantoEngine : public GenericEngine<QuantoOptionParameters,
-                                                  QuantoOptionResults> {};
-
-        //! Quanto European engine base class
-        class QuantoEuropeanEngine : public QuantoEngine {};
-
-        //! Pricing engine for Quanto European options using analytical formulas
-        class QuantoEuropeanAnalyticalEngine : public QuantoEuropeanEngine {
+        template<class ArgumentsType, class ResultsType>
+        class QuantoEngine : public
+            GenericEngine<QuantoOptionParameters<ArgumentsType>,
+                          QuantoOptionResults<ResultsType> > {
         public:
+            QuantoEngine(const Handle<GenericEngine<ArgumentsType,
+                ResultsType> >&);
             void calculate() const;
+        protected:
+            Handle<GenericEngine<ArgumentsType, ResultsType> > originalEngine_;
+            ArgumentsType* originalArgs_;
+            const ResultsType* originalResults_;
         };
 
-        //! Pricing engine for Quanto European options using Finite Differences
-        class QuantoEuropeanFDEngine : public QuantoEuropeanEngine {
-        public:
-            void calculate() const;
+        template<class ArgumentsType, class ResultsType>
+        QuantoEngine<ArgumentsType, ResultsType>::QuantoEngine(
+            const Handle<GenericEngine<ArgumentsType, ResultsType> >& originalEngine)
+        : originalEngine_(originalEngine) {
+            QL_REQUIRE(!originalEngine_.isNull(), "null engine or wrong engine type");
+            originalResults_ = dynamic_cast<const ResultsType*>(originalEngine_->results());
+            originalArgs_ = dynamic_cast<ArgumentsType*>(originalEngine_->arguments());
+        }
+
+
+        //! Quanto vanilla engine base class
+        class QuantoVanillaEngine : public
+            QuantoEngine<VanillaOptionParameters,
+                         VanillaOptionResults> {
         };
 
-        //! Pricing engine for Quanto European options using Monte Carlo simulation
-        class QuantoEuropeanMCEngine : public QuantoEuropeanEngine {
-        public:
-            void calculate() const;
-        };
-
-        //! Quanto American engine base class
-        class QuantoAmericanEngine : public QuantoEngine {};
-
-        //! Pricing engine for Quanto American options using Finite Differences
-        class QuantoAmericanFDEngine : public QuantoAmericanEngine {
+        //! Quanto vanilla engine base class
+        class QuantoVanillaAnalyticEngine : public QuantoVanillaEngine {
         public:
             void calculate() const;
         };

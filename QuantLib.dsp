@@ -452,11 +452,19 @@ SOURCE=.\ql\Instruments\capfloor.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\ql\Instruments\quantooption.cpp
+SOURCE=.\ql\Instruments\forwardvanillaoption.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\ql\Instruments\quantooption.hpp
+SOURCE=.\ql\Instruments\forwardvanillaoption.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\Instruments\quantovanillaoption.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\Instruments\quantovanillaoption.hpp
 # End Source File
 # Begin Source File
 
@@ -1516,6 +1524,10 @@ SOURCE=.\ql\PricingEngines\europeanbinomialengine.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=.\ql\PricingEngines\forwardengines.hpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\ql\PricingEngines\genericengine.hpp
 # End Source File
 # Begin Source File
@@ -1524,11 +1536,19 @@ SOURCE=.\ql\PricingEngines\quantoengines.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\ql\PricingEngines\quantoeuropeananalyticalengine.cpp
+SOURCE=.\ql\PricingEngines\quantovanillaanalyticengine.cpp
 # End Source File
 # Begin Source File
 
 SOURCE=.\ql\PricingEngines\vanillaengines.hpp
+# End Source File
+# End Group
+# Begin Group "VolTermStructure"
+
+# PROP Default_Filter ""
+# Begin Source File
+
+SOURCE=.\ql\Volatilities\interpolatedblackvol.hpp
 # End Source File
 # End Group
 # Begin Source File
@@ -1710,6 +1730,10 @@ SOURCE=.\ql\termstructure.hpp
 # Begin Source File
 
 SOURCE=.\ql\types.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\voltermstructure.hpp
 # End Source File
 # End Target
 # End Project

@@ -150,6 +150,8 @@ CLEAN :
 	-@erase "$(INTDIR)\fdstepconditionoption.sbr"
 	-@erase "$(INTDIR)\floatingratecoupon.obj"
 	-@erase "$(INTDIR)\floatingratecoupon.sbr"
+	-@erase "$(INTDIR)\forwardvanillaoption.obj"
+	-@erase "$(INTDIR)\forwardvanillaoption.sbr"
 	-@erase "$(INTDIR)\frankfurt.obj"
 	-@erase "$(INTDIR)\frankfurt.sbr"
 	-@erase "$(INTDIR)\g2.obj"
@@ -236,10 +238,10 @@ CLEAN :
 	-@erase "$(INTDIR)\performanceoptionpathpricer.sbr"
 	-@erase "$(INTDIR)\piecewiseflatforward.obj"
 	-@erase "$(INTDIR)\piecewiseflatforward.sbr"
-	-@erase "$(INTDIR)\quantoeuropeananalyticalengine.obj"
-	-@erase "$(INTDIR)\quantoeuropeananalyticalengine.sbr"
-	-@erase "$(INTDIR)\quantooption.obj"
-	-@erase "$(INTDIR)\quantooption.sbr"
+	-@erase "$(INTDIR)\quantovanillaanalyticengine.obj"
+	-@erase "$(INTDIR)\quantovanillaanalyticengine.sbr"
+	-@erase "$(INTDIR)\quantovanillaoption.obj"
+	-@erase "$(INTDIR)\quantovanillaoption.sbr"
 	-@erase "$(INTDIR)\ratehelpers.obj"
 	-@erase "$(INTDIR)\ratehelpers.sbr"
 	-@erase "$(INTDIR)\ridder.obj"
@@ -343,7 +345,8 @@ BSC32_SBRS= \
 	"$(INTDIR)\xibor.sbr" \
 	"$(INTDIR)\xibormanager.sbr" \
 	"$(INTDIR)\capfloor.sbr" \
-	"$(INTDIR)\quantooption.sbr" \
+	"$(INTDIR)\forwardvanillaoption.sbr" \
+	"$(INTDIR)\quantovanillaoption.sbr" \
 	"$(INTDIR)\simpleswap.sbr" \
 	"$(INTDIR)\stock.sbr" \
 	"$(INTDIR)\swap.sbr" \
@@ -444,7 +447,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\discretizedvanillaoption.sbr" \
 	"$(INTDIR)\europeananalyticalengine.sbr" \
 	"$(INTDIR)\europeanbinomialengine.sbr" \
-	"$(INTDIR)\quantoeuropeananalyticalengine.sbr" \
+	"$(INTDIR)\quantovanillaanalyticengine.sbr" \
 	"$(INTDIR)\calendar.sbr" \
 	"$(INTDIR)\dataformatters.sbr" \
 	"$(INTDIR)\dataparsers.sbr" \
@@ -485,7 +488,8 @@ LIB32_OBJS= \
 	"$(INTDIR)\xibor.obj" \
 	"$(INTDIR)\xibormanager.obj" \
 	"$(INTDIR)\capfloor.obj" \
-	"$(INTDIR)\quantooption.obj" \
+	"$(INTDIR)\forwardvanillaoption.obj" \
+	"$(INTDIR)\quantovanillaoption.obj" \
 	"$(INTDIR)\simpleswap.obj" \
 	"$(INTDIR)\stock.obj" \
 	"$(INTDIR)\swap.obj" \
@@ -586,7 +590,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\discretizedvanillaoption.obj" \
 	"$(INTDIR)\europeananalyticalengine.obj" \
 	"$(INTDIR)\europeanbinomialengine.obj" \
-	"$(INTDIR)\quantoeuropeananalyticalengine.obj" \
+	"$(INTDIR)\quantovanillaanalyticengine.obj" \
 	"$(INTDIR)\calendar.obj" \
 	"$(INTDIR)\dataformatters.obj" \
 	"$(INTDIR)\dataparsers.obj" \
@@ -720,6 +724,8 @@ CLEAN :
 	-@erase "$(INTDIR)\fdstepconditionoption.sbr"
 	-@erase "$(INTDIR)\floatingratecoupon.obj"
 	-@erase "$(INTDIR)\floatingratecoupon.sbr"
+	-@erase "$(INTDIR)\forwardvanillaoption.obj"
+	-@erase "$(INTDIR)\forwardvanillaoption.sbr"
 	-@erase "$(INTDIR)\frankfurt.obj"
 	-@erase "$(INTDIR)\frankfurt.sbr"
 	-@erase "$(INTDIR)\g2.obj"
@@ -806,10 +812,10 @@ CLEAN :
 	-@erase "$(INTDIR)\performanceoptionpathpricer.sbr"
 	-@erase "$(INTDIR)\piecewiseflatforward.obj"
 	-@erase "$(INTDIR)\piecewiseflatforward.sbr"
-	-@erase "$(INTDIR)\quantoeuropeananalyticalengine.obj"
-	-@erase "$(INTDIR)\quantoeuropeananalyticalengine.sbr"
-	-@erase "$(INTDIR)\quantooption.obj"
-	-@erase "$(INTDIR)\quantooption.sbr"
+	-@erase "$(INTDIR)\quantovanillaanalyticengine.obj"
+	-@erase "$(INTDIR)\quantovanillaanalyticengine.sbr"
+	-@erase "$(INTDIR)\quantovanillaoption.obj"
+	-@erase "$(INTDIR)\quantovanillaoption.sbr"
 	-@erase "$(INTDIR)\ratehelpers.obj"
 	-@erase "$(INTDIR)\ratehelpers.sbr"
 	-@erase "$(INTDIR)\ridder.obj"
@@ -914,7 +920,8 @@ BSC32_SBRS= \
 	"$(INTDIR)\xibor.sbr" \
 	"$(INTDIR)\xibormanager.sbr" \
 	"$(INTDIR)\capfloor.sbr" \
-	"$(INTDIR)\quantooption.sbr" \
+	"$(INTDIR)\forwardvanillaoption.sbr" \
+	"$(INTDIR)\quantovanillaoption.sbr" \
 	"$(INTDIR)\simpleswap.sbr" \
 	"$(INTDIR)\stock.sbr" \
 	"$(INTDIR)\swap.sbr" \
@@ -1015,7 +1022,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\discretizedvanillaoption.sbr" \
 	"$(INTDIR)\europeananalyticalengine.sbr" \
 	"$(INTDIR)\europeanbinomialengine.sbr" \
-	"$(INTDIR)\quantoeuropeananalyticalengine.sbr" \
+	"$(INTDIR)\quantovanillaanalyticengine.sbr" \
 	"$(INTDIR)\calendar.sbr" \
 	"$(INTDIR)\dataformatters.sbr" \
 	"$(INTDIR)\dataparsers.sbr" \
@@ -1056,7 +1063,8 @@ LIB32_OBJS= \
 	"$(INTDIR)\xibor.obj" \
 	"$(INTDIR)\xibormanager.obj" \
 	"$(INTDIR)\capfloor.obj" \
-	"$(INTDIR)\quantooption.obj" \
+	"$(INTDIR)\forwardvanillaoption.obj" \
+	"$(INTDIR)\quantovanillaoption.obj" \
 	"$(INTDIR)\simpleswap.obj" \
 	"$(INTDIR)\stock.obj" \
 	"$(INTDIR)\swap.obj" \
@@ -1157,7 +1165,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\discretizedvanillaoption.obj" \
 	"$(INTDIR)\europeananalyticalengine.obj" \
 	"$(INTDIR)\europeanbinomialengine.obj" \
-	"$(INTDIR)\quantoeuropeananalyticalengine.obj" \
+	"$(INTDIR)\quantovanillaanalyticengine.obj" \
 	"$(INTDIR)\calendar.obj" \
 	"$(INTDIR)\dataformatters.obj" \
 	"$(INTDIR)\dataparsers.obj" \
@@ -1291,6 +1299,8 @@ CLEAN :
 	-@erase "$(INTDIR)\fdstepconditionoption.sbr"
 	-@erase "$(INTDIR)\floatingratecoupon.obj"
 	-@erase "$(INTDIR)\floatingratecoupon.sbr"
+	-@erase "$(INTDIR)\forwardvanillaoption.obj"
+	-@erase "$(INTDIR)\forwardvanillaoption.sbr"
 	-@erase "$(INTDIR)\frankfurt.obj"
 	-@erase "$(INTDIR)\frankfurt.sbr"
 	-@erase "$(INTDIR)\g2.obj"
@@ -1377,10 +1387,10 @@ CLEAN :
 	-@erase "$(INTDIR)\performanceoptionpathpricer.sbr"
 	-@erase "$(INTDIR)\piecewiseflatforward.obj"
 	-@erase "$(INTDIR)\piecewiseflatforward.sbr"
-	-@erase "$(INTDIR)\quantoeuropeananalyticalengine.obj"
-	-@erase "$(INTDIR)\quantoeuropeananalyticalengine.sbr"
-	-@erase "$(INTDIR)\quantooption.obj"
-	-@erase "$(INTDIR)\quantooption.sbr"
+	-@erase "$(INTDIR)\quantovanillaanalyticengine.obj"
+	-@erase "$(INTDIR)\quantovanillaanalyticengine.sbr"
+	-@erase "$(INTDIR)\quantovanillaoption.obj"
+	-@erase "$(INTDIR)\quantovanillaoption.sbr"
 	-@erase "$(INTDIR)\ratehelpers.obj"
 	-@erase "$(INTDIR)\ratehelpers.sbr"
 	-@erase "$(INTDIR)\ridder.obj"
@@ -1484,7 +1494,8 @@ BSC32_SBRS= \
 	"$(INTDIR)\xibor.sbr" \
 	"$(INTDIR)\xibormanager.sbr" \
 	"$(INTDIR)\capfloor.sbr" \
-	"$(INTDIR)\quantooption.sbr" \
+	"$(INTDIR)\forwardvanillaoption.sbr" \
+	"$(INTDIR)\quantovanillaoption.sbr" \
 	"$(INTDIR)\simpleswap.sbr" \
 	"$(INTDIR)\stock.sbr" \
 	"$(INTDIR)\swap.sbr" \
@@ -1585,7 +1596,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\discretizedvanillaoption.sbr" \
 	"$(INTDIR)\europeananalyticalengine.sbr" \
 	"$(INTDIR)\europeanbinomialengine.sbr" \
-	"$(INTDIR)\quantoeuropeananalyticalengine.sbr" \
+	"$(INTDIR)\quantovanillaanalyticengine.sbr" \
 	"$(INTDIR)\calendar.sbr" \
 	"$(INTDIR)\dataformatters.sbr" \
 	"$(INTDIR)\dataparsers.sbr" \
@@ -1626,7 +1637,8 @@ LIB32_OBJS= \
 	"$(INTDIR)\xibor.obj" \
 	"$(INTDIR)\xibormanager.obj" \
 	"$(INTDIR)\capfloor.obj" \
-	"$(INTDIR)\quantooption.obj" \
+	"$(INTDIR)\forwardvanillaoption.obj" \
+	"$(INTDIR)\quantovanillaoption.obj" \
 	"$(INTDIR)\simpleswap.obj" \
 	"$(INTDIR)\stock.obj" \
 	"$(INTDIR)\swap.obj" \
@@ -1727,7 +1739,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\discretizedvanillaoption.obj" \
 	"$(INTDIR)\europeananalyticalengine.obj" \
 	"$(INTDIR)\europeanbinomialengine.obj" \
-	"$(INTDIR)\quantoeuropeananalyticalengine.obj" \
+	"$(INTDIR)\quantovanillaanalyticengine.obj" \
 	"$(INTDIR)\calendar.obj" \
 	"$(INTDIR)\dataformatters.obj" \
 	"$(INTDIR)\dataparsers.obj" \
@@ -1804,6 +1816,7 @@ CLEAN :
 	-@erase "$(INTDIR)\fdmultiperiodoption.obj"
 	-@erase "$(INTDIR)\fdstepconditionoption.obj"
 	-@erase "$(INTDIR)\floatingratecoupon.obj"
+	-@erase "$(INTDIR)\forwardvanillaoption.obj"
 	-@erase "$(INTDIR)\frankfurt.obj"
 	-@erase "$(INTDIR)\g2.obj"
 	-@erase "$(INTDIR)\gammadistribution.obj"
@@ -1847,8 +1860,8 @@ CLEAN :
 	-@erase "$(INTDIR)\performanceoption.obj"
 	-@erase "$(INTDIR)\performanceoptionpathpricer.obj"
 	-@erase "$(INTDIR)\piecewiseflatforward.obj"
-	-@erase "$(INTDIR)\quantoeuropeananalyticalengine.obj"
-	-@erase "$(INTDIR)\quantooption.obj"
+	-@erase "$(INTDIR)\quantovanillaanalyticengine.obj"
+	-@erase "$(INTDIR)\quantovanillaoption.obj"
 	-@erase "$(INTDIR)\ratehelpers.obj"
 	-@erase "$(INTDIR)\ridder.obj"
 	-@erase "$(INTDIR)\scheduler.obj"
@@ -1922,7 +1935,8 @@ LIB32_OBJS= \
 	"$(INTDIR)\xibor.obj" \
 	"$(INTDIR)\xibormanager.obj" \
 	"$(INTDIR)\capfloor.obj" \
-	"$(INTDIR)\quantooption.obj" \
+	"$(INTDIR)\forwardvanillaoption.obj" \
+	"$(INTDIR)\quantovanillaoption.obj" \
 	"$(INTDIR)\simpleswap.obj" \
 	"$(INTDIR)\stock.obj" \
 	"$(INTDIR)\swap.obj" \
@@ -2023,7 +2037,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\discretizedvanillaoption.obj" \
 	"$(INTDIR)\europeananalyticalengine.obj" \
 	"$(INTDIR)\europeanbinomialengine.obj" \
-	"$(INTDIR)\quantoeuropeananalyticalengine.obj" \
+	"$(INTDIR)\quantovanillaanalyticengine.obj" \
 	"$(INTDIR)\calendar.obj" \
 	"$(INTDIR)\dataformatters.obj" \
 	"$(INTDIR)\dataparsers.obj" \
@@ -2848,33 +2862,65 @@ SOURCE=.\ql\Instruments\capfloor.cpp
 
 !ENDIF 
 
-SOURCE=.\ql\Instruments\quantooption.cpp
+SOURCE=.\ql\Instruments\forwardvanillaoption.cpp
 
 !IF  "$(CFG)" == "QuantLib - Win32 Release"
 
 
-"$(INTDIR)\quantooption.obj"	"$(INTDIR)\quantooption.sbr" : $(SOURCE) "$(INTDIR)"
+"$(INTDIR)\forwardvanillaoption.obj"	"$(INTDIR)\forwardvanillaoption.sbr" : $(SOURCE) "$(INTDIR)"
 	$(CPP) $(CPP_PROJ) $(SOURCE)
 
 
 !ELSEIF  "$(CFG)" == "QuantLib - Win32 Debug"
 
 
-"$(INTDIR)\quantooption.obj"	"$(INTDIR)\quantooption.sbr" : $(SOURCE) "$(INTDIR)"
+"$(INTDIR)\forwardvanillaoption.obj"	"$(INTDIR)\forwardvanillaoption.sbr" : $(SOURCE) "$(INTDIR)"
 	$(CPP) $(CPP_PROJ) $(SOURCE)
 
 
 !ELSEIF  "$(CFG)" == "QuantLib - Win32 OnTheEdgeRelease"
 
 
-"$(INTDIR)\quantooption.obj"	"$(INTDIR)\quantooption.sbr" : $(SOURCE) "$(INTDIR)"
+"$(INTDIR)\forwardvanillaoption.obj"	"$(INTDIR)\forwardvanillaoption.sbr" : $(SOURCE) "$(INTDIR)"
 	$(CPP) $(CPP_PROJ) $(SOURCE)
 
 
 !ELSEIF  "$(CFG)" == "QuantLib - Win32 OnTheEdgeDebug"
 
 
-"$(INTDIR)\quantooption.obj" : $(SOURCE) "$(INTDIR)"
+"$(INTDIR)\forwardvanillaoption.obj" : $(SOURCE) "$(INTDIR)"
+	$(CPP) $(CPP_PROJ) $(SOURCE)
+
+
+!ENDIF 
+
+SOURCE=.\ql\Instruments\quantovanillaoption.cpp
+
+!IF  "$(CFG)" == "QuantLib - Win32 Release"
+
+
+"$(INTDIR)\quantovanillaoption.obj"	"$(INTDIR)\quantovanillaoption.sbr" : $(SOURCE) "$(INTDIR)"
+	$(CPP) $(CPP_PROJ) $(SOURCE)
+
+
+!ELSEIF  "$(CFG)" == "QuantLib - Win32 Debug"
+
+
+"$(INTDIR)\quantovanillaoption.obj"	"$(INTDIR)\quantovanillaoption.sbr" : $(SOURCE) "$(INTDIR)"
+	$(CPP) $(CPP_PROJ) $(SOURCE)
+
+
+!ELSEIF  "$(CFG)" == "QuantLib - Win32 OnTheEdgeRelease"
+
+
+"$(INTDIR)\quantovanillaoption.obj"	"$(INTDIR)\quantovanillaoption.sbr" : $(SOURCE) "$(INTDIR)"
+	$(CPP) $(CPP_PROJ) $(SOURCE)
+
+
+!ELSEIF  "$(CFG)" == "QuantLib - Win32 OnTheEdgeDebug"
+
+
+"$(INTDIR)\quantovanillaoption.obj" : $(SOURCE) "$(INTDIR)"
 	$(CPP) $(CPP_PROJ) $(SOURCE)
 
 
@@ -6080,33 +6126,33 @@ SOURCE=.\ql\PricingEngines\europeanbinomialengine.cpp
 
 !ENDIF 
 
-SOURCE=.\ql\PricingEngines\quantoeuropeananalyticalengine.cpp
+SOURCE=.\ql\PricingEngines\quantovanillaanalyticengine.cpp
 
 !IF  "$(CFG)" == "QuantLib - Win32 Release"
 
 
-"$(INTDIR)\quantoeuropeananalyticalengine.obj"	"$(INTDIR)\quantoeuropeananalyticalengine.sbr" : $(SOURCE) "$(INTDIR)"
+"$(INTDIR)\quantovanillaanalyticengine.obj"	"$(INTDIR)\quantovanillaanalyticengine.sbr" : $(SOURCE) "$(INTDIR)"
 	$(CPP) $(CPP_PROJ) $(SOURCE)
 
 
 !ELSEIF  "$(CFG)" == "QuantLib - Win32 Debug"
 
 
-"$(INTDIR)\quantoeuropeananalyticalengine.obj"	"$(INTDIR)\quantoeuropeananalyticalengine.sbr" : $(SOURCE) "$(INTDIR)"
+"$(INTDIR)\quantovanillaanalyticengine.obj"	"$(INTDIR)\quantovanillaanalyticengine.sbr" : $(SOURCE) "$(INTDIR)"
 	$(CPP) $(CPP_PROJ) $(SOURCE)
 
 
 !ELSEIF  "$(CFG)" == "QuantLib - Win32 OnTheEdgeRelease"
 
 
-"$(INTDIR)\quantoeuropeananalyticalengine.obj"	"$(INTDIR)\quantoeuropeananalyticalengine.sbr" : $(SOURCE) "$(INTDIR)"
+"$(INTDIR)\quantovanillaanalyticengine.obj"	"$(INTDIR)\quantovanillaanalyticengine.sbr" : $(SOURCE) "$(INTDIR)"
 	$(CPP) $(CPP_PROJ) $(SOURCE)
 
 
 !ELSEIF  "$(CFG)" == "QuantLib - Win32 OnTheEdgeDebug"
 
 
-"$(INTDIR)\quantoeuropeananalyticalengine.obj" : $(SOURCE) "$(INTDIR)"
+"$(INTDIR)\quantovanillaanalyticengine.obj" : $(SOURCE) "$(INTDIR)"
 	$(CPP) $(CPP_PROJ) $(SOURCE)
 
 

@@ -18,7 +18,7 @@ OBJS = \
        discretizedvanillaoption.obj$(_D) \
        europeananalyticalengine.obj$(_D) \
        europeanbinomialengine.obj$(_D) \
-       quantoeuropeananalyticalengine.obj$(_D)
+       quantovanillaanalyticengine.obj$(_D)
 
 
 # Tools to be used

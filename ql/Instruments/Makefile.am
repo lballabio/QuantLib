@@ -6,7 +6,8 @@ includedir = $(prefix)/include/ql/Instruments
 
 include_HEADERS = \
     capfloor.hpp \
-    quantooption.hpp \
+    forwardvanillaoption.hpp \
+    quantovanillaoption.hpp \
     simpleswap.hpp \
     stock.hpp \
     swap.hpp \
@@ -17,7 +18,8 @@ EXTRA_DIST=makefile.mak
 
 libInstruments_la_SOURCES = \
     capfloor.cpp \
-    quantooption.cpp \
+    forwardvanillaoption.cpp \
+    quantovanillaoption.cpp \
     simpleswap.cpp \
     stock.cpp \
     swap.cpp \

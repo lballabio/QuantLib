@@ -266,7 +266,11 @@ int main(int argc, char* argv[])
              << DoubleFormatter::toString(discrepancy, 6) << "\t"
              << DoubleFormatter::toString(relativeDiscrepancy, 6)
              << std::endl;
+        
 
+        PricingEngines::EuropeanAnalyticalEngine baseEngine();
+//        PricingEngines::QuantoVanillaAnalyticEngine quantoEngine(baseEngine);
+            
         return 0;
     } catch (std::exception& e) {
         std::cout << e.what() << std::endl;

@@ -18,7 +18,8 @@ BCC_INCLUDE    = $(MAKEDIR)\..\include
 # Object files
 OBJS = \
     capfloor.obj$(_D) \
-    quantooption.obj$(_D) \
+    forwardvanillaoption.obj$(_D) \
+    quantovanillaoption.obj$(_D) \
     simpleswap.obj$(_D) \
     stock.obj$(_D) \
     swap.obj$(_D) \

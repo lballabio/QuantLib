@@ -74,16 +74,17 @@ namespace QuantLib {
           protected:
             void setupEngine() const;
             void performCalculations() const;
+            Date exerciseDate_;
+            RelinkableHandle<TermStructure> riskFreeRate_;
+            // results
+            mutable double delta_, gamma_, theta_, vega_, rho_, dividendRho_;
           private:
             // parameters
             Option::Type type_;
             RelinkableHandle<MarketElement> underlying_;
             double strike_;
-            RelinkableHandle<TermStructure> dividendYield_, riskFreeRate_;
-            Date exerciseDate_;
+            RelinkableHandle<TermStructure> dividendYield_;
             RelinkableHandle<MarketElement> volatility_;
-            // results
-            mutable double delta_, gamma_, theta_, vega_, rho_, dividendRho_;
             // helper class for implied volatility calculation
             class ImpliedVolHelper : public ObjectiveFunction {
               public:

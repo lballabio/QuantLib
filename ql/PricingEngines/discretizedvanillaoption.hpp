@@ -28,7 +28,7 @@
 #include <ql/numericalmethod.hpp>
 #include <ql/Lattices/bsmlattice.hpp>
 #include <ql/Pricers/singleassetoption.hpp>
-#include <ql/PricingEngines/genericengine.hpp>
+#include <ql/PricingEngines/vanillaengines.hpp>
 
 namespace QuantLib {
 
