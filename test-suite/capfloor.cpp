@@ -23,6 +23,10 @@
 #include <ql/TermStructures/flatforward.hpp>
 #include <ql/Indexes/euribor.hpp>
 #include <ql/PricingEngines/CapFloor/blackcapfloorengine.hpp>
+#ifdef QL_USE_INDEXED_COUPON
+#include <ql/CashFlows/indexcashflowvectors.hpp>
+#include <ql/CashFlows/upfrontindexedcoupon.hpp>
+#endif
 
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
@@ -46,8 +50,18 @@ namespace {
                                                       Integer length) {
         Date endDate = calendar_.advance(startDate,length,Years,convention_);
         Schedule schedule(calendar_,startDate,endDate,frequency_,convention_);
+#ifndef QL_USE_INDEXED_COUPON
         return FloatingRateCouponVector(schedule, convention_, nominals_,
                                         index_, fixingDays_);
+#else
+		const UpFrontIndexedCoupon* msvc6_bug = 0;
+		double spread = 0.0;
+        return IndexedCouponVector<UpFrontIndexedCoupon>(schedule, convention_, nominals_,
+														index_, fixingDays_,
+														std::vector<Spread>(1,spread),
+														index_->dayCounter(),
+														msvc6_bug);
+#endif
     }
 
     boost::shared_ptr<PricingEngine> makeEngine(Volatility volatility) {
@@ -403,8 +417,13 @@ void CapFloorTest::testCachedValue() {
                                                      0.07,0.20);
     boost::shared_ptr<Instrument> floor = makeCapFloor(CapFloor::Floor,leg,
                                                        0.03,0.20);
+#ifndef QL_USE_INDEXED_COUPON
     Real cachedCapNPV   = 6.960233718984,
          cachedFloorNPV = 2.701296290808;
+#else
+    Real cachedCapNPV   = 6.960840451560,
+         cachedFloorNPV = 2.701133385568;
+#endif
 
     if (QL_FABS(cap->NPV()-cachedCapNPV) > 1.0e-11)
         BOOST_FAIL(

@@ -16,9 +16,13 @@
 */
 
 #include <ql/Instruments/simpleswap.hpp>
-#include <ql/CashFlows/cashflowvectors.hpp>
 #include <ql/CashFlows/fixedratecoupon.hpp>
 #include <ql/CashFlows/floatingratecoupon.hpp>
+#include <ql/CashFlows/cashflowvectors.hpp>
+#ifdef QL_USE_INDEXED_COUPON
+#include <ql/CashFlows/indexcashflowvectors.hpp>
+#include <ql/CashFlows/upfrontindexedcoupon.hpp>
+#endif
 
 namespace QuantLib {
 
@@ -46,12 +50,24 @@ namespace QuantLib {
                                   std::vector<Real>(1,nominal),
                                   std::vector<Rate>(1,fixedRate),
                                   fixedDayCount);
+#ifndef QL_USE_INDEXED_COUPON
         std::vector<boost::shared_ptr<CashFlow> > floatingLeg =
             FloatingRateCouponVector(floatSchedule,
                                      convention,
                                      std::vector<Real>(1,nominal),
                                      index, indexFixingDays,
                                      std::vector<Spread>(1,spread));
+#else
+		const UpFrontIndexedCoupon* msvc6_bug = 0;
+        std::vector<boost::shared_ptr<CashFlow> > floatingLeg =
+			IndexedCouponVector<UpFrontIndexedCoupon>(floatSchedule,
+													  convention,
+													  std::vector<Real>(1,nominal),
+													  index, indexFixingDays,
+													  std::vector<Spread>(1,spread),
+													  index->dayCounter(),
+													  msvc6_bug);
+#endif
         std::vector<boost::shared_ptr<CashFlow> >::const_iterator i;
         for (i = floatingLeg.begin(); i < floatingLeg.end(); ++i)
             registerWith(*i);

@@ -322,7 +322,11 @@ void SwaptionTest::testCachedValue() {
     boost::shared_ptr<SimpleSwap> swap = makeSwap(startDate,10,0.06,0.0,true);
     boost::shared_ptr<Swaption> swaption =
         makeSwaption(swap,exerciseDate,0.20);
+#ifndef QL_USE_INDEXED_COUPON
     Real cachedNPV = 3.639365179345;
+#else
+	Real cachedNPV = 3.639692232647;
+#endif
 
     if (QL_FABS(swaption->NPV()-cachedNPV) > 1.0e-11)
         BOOST_FAIL(
