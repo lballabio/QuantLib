@@ -71,7 +71,7 @@ namespace QuantLib {
                         Size maxSamples = Null<Size>(),
                         BigNatural seed = 0);
 
-        void calculate() const;
+//        void calculate() const;
       protected:
 
         // McSimulation implementation
@@ -192,6 +192,7 @@ namespace QuantLib {
             t * this->maxTimeStepsPerYear_, 1.0)));
     }
 
+/*
     template<class RNG, class S>
     void MCDigitalEngine<RNG,S>::calculate() const {
 
@@ -235,6 +236,7 @@ namespace QuantLib {
             this->results_.errorEstimate =
                 this->mcModel_->sampleAccumulator().errorEstimate();
     }
+*/
 
 }
 
