@@ -117,7 +117,7 @@ test_suite* init_unit_test_suite(int, char* []) {
     test->add(SwapTest::suite());
     test->add(SwaptionTest::suite());
     test->add(TermStructureTest::suite());
-    // to be deprecated
+    // tests for deprecated (or generally old-style) classes
     test->add(OldPricerTest::suite());
     return test;
 }

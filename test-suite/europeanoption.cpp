@@ -775,11 +775,10 @@ void EuropeanOptionTest::testImpliedVol() {
           // option to check
           Date exDate = today.plusDays(lengths[k]);
           boost::shared_ptr<Exercise> exercise(new EuropeanExercise(exDate));
-          boost::shared_ptr<StrikedTypePayoff> payoff(new
-              PlainVanillaPayoff(types[i], strikes[j]));
+          boost::shared_ptr<StrikedTypePayoff> payoff(
+                                new PlainVanillaPayoff(types[i], strikes[j]));
           boost::shared_ptr<VanillaOption> option =
-              makeOption(payoff, exercise, spot,
-                                 qTS, rTS, volTS);
+              makeOption(payoff, exercise, spot, qTS, rTS, volTS);
 
           for (Size l=0; l<LENGTH(underlyings); l++) {
             for (Size m=0; m<LENGTH(qRates); m++) {
@@ -825,7 +824,8 @@ void EuropeanOptionTest::testImpliedVol() {
                           // the difference might not matter
                           vol->setValue(implVol);
                           double value2 = option->NPV();
-                          if (relativeError(value,value2,u) > tolerance) {
+                          double error = relativeError(value,value2,u);
+                          if (error > tolerance) {
                               BOOST_FAIL(
                                   OptionTypeFormatter::toString(types[i])
                                   + " option :\n"
@@ -846,7 +846,9 @@ void EuropeanOptionTest::testImpliedVol() {
                                   "    implied volatility:  "
                                   + DoubleFormatter::toString(implVol) + "\n"
                                   "    corresponding price: "
-                                  + DoubleFormatter::toString(value2));
+                                  + DoubleFormatter::toString(value2) + "\n"
+                                  "    error:               "
+                                  + DoubleFormatter::toExponential(error));
                           }
                       }
                   }
@@ -858,6 +860,71 @@ void EuropeanOptionTest::testImpliedVol() {
       }
     }
 }
+
+
+void EuropeanOptionTest::testImpliedVolContainment() {
+
+    BOOST_MESSAGE("Testing self-containment of "
+                  "implied volatility calculation...");
+
+    Size maxEvaluations = 100;
+    double tolerance = 1.0e-6;
+
+    // test options
+
+    DayCounter dc = Actual360();
+
+    boost::shared_ptr<SimpleQuote> spot(new SimpleQuote(100.0));
+    RelinkableHandle<Quote> underlying(spot);
+    boost::shared_ptr<SimpleQuote> qRate(new SimpleQuote(0.05));
+    RelinkableHandle<TermStructure> qTS(makeFlatCurve(qRate, dc));
+    boost::shared_ptr<SimpleQuote> rRate(new SimpleQuote(0.03));
+    RelinkableHandle<TermStructure> rTS(makeFlatCurve(rRate, dc));
+    boost::shared_ptr<SimpleQuote> vol(new SimpleQuote(0.20));
+    RelinkableHandle<BlackVolTermStructure> volTS(makeFlatVolatility(vol,dc));
+
+    Date today = Date::todaysDate();
+    Date exerciseDate = today.plusYears(1);
+    boost::shared_ptr<Exercise> exercise(new EuropeanExercise(exerciseDate));
+    boost::shared_ptr<StrikedTypePayoff> payoff(
+                                 new PlainVanillaPayoff(Option::Call, 100.0));
+
+    boost::shared_ptr<BlackScholesStochasticProcess> process(
+             new BlackScholesStochasticProcess(underlying, qTS, rTS, volTS));
+
+    // link to the same stochastic process, which shouldn't be changed
+    // by calling methods of either option
+
+    Handle<VanillaOption> option1(
+                               new EuropeanOption(process, payoff, exercise));
+    Handle<VanillaOption> option2(
+                               new EuropeanOption(process, payoff, exercise));
+
+    // test
+
+    double refValue = option2->NPV();
+
+    Flag f;
+    f.registerWith(option2);
+
+    double impliedVol = option1->impliedVolatility(refValue*1.5,
+                                                   tolerance,
+                                                   maxEvaluations);
+
+    if (f.isUp())
+        BOOST_FAIL("implied volatility calculation triggered a change "
+                   "in another instrument");
+
+    option2->recalculate();
+    if (QL_FABS(option2->NPV() - refValue) >= 1.0e-8)
+        BOOST_FAIL("implied volatility calculation changed the value "
+                   "of another instrument: \n"
+                   "previous value: " +
+                   DoubleFormatter::toString(refValue,8) + "\n"
+                   "current value:  " +
+                   DoubleFormatter::toString(option2->NPV(),8)); 
+}
+
 
 // different engines
 
@@ -987,6 +1054,8 @@ test_suite* EuropeanOptionTest::suite() {
     suite->add(BOOST_TEST_CASE(&EuropeanOptionTest::testGreeks));
     // floating point exception with Borland
     suite->add(BOOST_TEST_CASE(&EuropeanOptionTest::testImpliedVol));
+    suite->add(BOOST_TEST_CASE(
+                           &EuropeanOptionTest::testImpliedVolContainment));
     suite->add(BOOST_TEST_CASE(&EuropeanOptionTest::testBinomialEngines));
     suite->add(BOOST_TEST_CASE(&EuropeanOptionTest::testMcEngines));
     return suite;

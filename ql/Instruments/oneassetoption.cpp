@@ -27,16 +27,14 @@ namespace QuantLib {
         const boost::shared_ptr<Payoff>& payoff,
         const boost::shared_ptr<Exercise>& exercise,
         const boost::shared_ptr<PricingEngine>& engine)
-    : Option(payoff, exercise, engine),
+    : Option(payoff, exercise, engine), 
       blackScholesProcess_(stochProc) {
-        registerWith(blackScholesProcess_->stateVariable);
-        registerWith(blackScholesProcess_->dividendTS);
-        registerWith(blackScholesProcess_->riskFreeTS);
-        registerWith(blackScholesProcess_->volTS);
+        registerWith(blackScholesProcess_);
     }
 
     bool OneAssetOption::isExpired() const {
-        return exercise_->lastDate() < blackScholesProcess_->riskFreeTS->referenceDate();
+        return exercise_->lastDate() < 
+            blackScholesProcess_->riskFreeTS->referenceDate();
     }
 
     double OneAssetOption::delta() const {
@@ -154,12 +152,12 @@ namespace QuantLib {
         // it should be moved elsewhere
         arguments->stoppingTimes.clear();
         for (Size i=0; i<exercise_->dates().size(); i++) {
-            Time time = blackScholesProcess_->riskFreeTS->dayCounter().yearFraction(
-                blackScholesProcess_->riskFreeTS->referenceDate(), exercise_->date(i));
+            Time time = 
+                blackScholesProcess_->riskFreeTS->dayCounter().yearFraction(
+                           blackScholesProcess_->riskFreeTS->referenceDate(), 
+                           exercise_->date(i));
             arguments->stoppingTimes.push_back(time);
         }
-
-
     }
 
     void OneAssetOption::performCalculations() const {
@@ -232,13 +230,29 @@ namespace QuantLib {
             dynamic_cast<OneAssetOption::arguments*>(engine_->arguments());
         QL_REQUIRE(arguments_ != 0,
                    "pricing engine does not supply needed arguments");
+        // make a new stochastic process in order not to modify the given one.
+        // stateVariable, dividendTS and riskFreeTS can be copied since
+        // they won't be modified.
+        // Here is where we hard-code that it is a Black-Scholes process.
+        // Making it work for a generic process would need some reflection
+        // technique (which is possible, but requires some thought, hence
+        // its postponement.)
+        boost::shared_ptr<BlackScholesStochasticProcess> process(
+                        new BlackScholesStochasticProcess(
+                               arguments_->blackScholesProcess->stateVariable,
+                               arguments_->blackScholesProcess->dividendTS,
+                               arguments_->blackScholesProcess->riskFreeTS,
+                               RelinkableHandle<BlackVolTermStructure>()));
+
         vol_ = boost::shared_ptr<SimpleQuote>(new SimpleQuote(0.0));
-        arguments_->blackScholesProcess->volTS = 
-            RelinkableHandle<BlackVolTermStructure>(
+        process->volTS = RelinkableHandle<BlackVolTermStructure>(
                 boost::shared_ptr<BlackVolTermStructure>(
                     new BlackConstantVol(arguments_->blackScholesProcess
                                          ->volTS->referenceDate(),
-                                         RelinkableHandle<Quote>(vol_))));
+                                         RelinkableHandle<Quote>(vol_),
+                                         arguments_->blackScholesProcess
+                                         ->volTS->dayCounter())));
+        arguments_->blackScholesProcess = process;
         results_ = dynamic_cast<const Value*>(engine_->results());
         QL_REQUIRE(results_ != 0,
                    "pricing engine does not supply needed results");

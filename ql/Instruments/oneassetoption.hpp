@@ -55,14 +55,18 @@ namespace QuantLib {
         double dividendRho() const;
         double itmCashProbability() const;
         //@}
-        /*! \warning Options with a gamma that changes sign have
+        /*! \warning currently, this method returns the Black-Scholes 
+                     implied volatility. It will give unconsistent 
+                     results if the pricing was performed with any other
+                     methods (such as jump-diffusion models.)
+            \warning options with a gamma that changes sign have
                      values that are <b>not</b> monotonic in the
                      volatility, e.g binary options. In these cases
-                     impliedVolatility can fail and in any case it is
-                     almost meaningless.  Another possible source of
-                     failure is to have a targetValue that is not
-                     attainable with any volatility, e.g.  a
-                     targetValue lower than the intrinsic value in the
+                     the calculation can fail and the result (if any) 
+                     is almost meaningless.  Another possible source of
+                     failure is to have a target value that is not
+                     attainable with any volatility, e.g., a
+                     target value lower than the intrinsic value in the
                      case of American options.
 
             \bug run-time crashes are possible with the Borland compiler

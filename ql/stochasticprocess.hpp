@@ -31,16 +31,19 @@ namespace QuantLib {
     /*! Just an arguments placeholder for the time being.
         To be merged/refactored with DiffusionProcess
     */
-    class StochasticProcess {
+    class StochasticProcess : public Observer, public Observable {
       public:
         virtual ~StochasticProcess() {}
+        void update() { notifyObservers(); }
     };
 
     class OneFactorStochasticProcess : public StochasticProcess {
       public:
         OneFactorStochasticProcess(
                                  const RelinkableHandle<Quote>& stateVariable)
-        : stateVariable(stateVariable) {}
+        : stateVariable(stateVariable) {
+            registerWith(stateVariable);
+        }
 
         RelinkableHandle<Quote> stateVariable;
     };
@@ -53,7 +56,11 @@ namespace QuantLib {
                          const RelinkableHandle<TermStructure>& riskFreeTS,
                          const RelinkableHandle<BlackVolTermStructure>& volTS)
         : OneFactorStochasticProcess(stateVariable), dividendTS(dividendTS),
-          riskFreeTS(riskFreeTS), volTS(volTS) {}
+          riskFreeTS(riskFreeTS), volTS(volTS) {
+            registerWith(dividendTS);
+            registerWith(riskFreeTS);
+            registerWith(volTS);
+        }
 
         RelinkableHandle<TermStructure> dividendTS, riskFreeTS;
         RelinkableHandle<BlackVolTermStructure> volTS;
@@ -69,12 +76,17 @@ namespace QuantLib {
                          const RelinkableHandle<Quote>& jumpInt,
                          const RelinkableHandle<Quote>& logJMean,
                          const RelinkableHandle<Quote>& logJVol)
-        : BlackScholesStochasticProcess(stateVariable, dividendTS, riskFreeTS,
-                                        volTS),
+        : BlackScholesStochasticProcess(stateVariable, dividendTS, 
+                                        riskFreeTS, volTS),
           jumpIntensity(jumpInt), logJumpMean(logJMean),
-          logJumpVolatility(logJVol) {}
+          logJumpVolatility(logJVol) {
+            registerWith(jumpIntensity);
+            registerWith(logJumpMean);
+            registerWith(logJumpVolatility);
+        }
 
-          RelinkableHandle<Quote> jumpIntensity, logJumpMean, logJumpVolatility;
+        RelinkableHandle<Quote> jumpIntensity, logJumpMean, 
+                                logJumpVolatility;
     };
 
 }
