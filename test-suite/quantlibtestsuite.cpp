@@ -49,13 +49,13 @@ int main() {
     QLTestListener qlListener;
     runner.eventManager().addListener(&qlListener);
 
+    runner.addTest(CovarianceTest::suite());
     runner.addTest(new RiskStatisticsTest);
     runner.addTest(new StatisticsTest);
     runner.addTest(LDSTest::suite());
 
     runner.addTest(new CalendarTest);
     runner.addTest(CapFloorTest::suite());
-    runner.addTest(new CovarianceTest);
     runner.addTest(new DateTest);
     runner.addTest(new DayCounterTest);
     runner.addTest(new DistributionTest);
@@ -71,6 +71,7 @@ int main() {
     runner.addTest(SimpleSwapTest::suite());
     runner.addTest(SwaptionTest::suite());
     runner.addTest(TermStructureTest::suite());
+
     // to be deprecated
     runner.addTest(OldPricerTest::suite());
 

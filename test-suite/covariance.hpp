@@ -21,12 +21,13 @@
 
 #include <ql/quantlib.hpp>
 #include <cppunit/TestCase.h>
+#include <cppunit/TestFixture.h>
 
-class CovarianceTest : public CppUnit::TestCase {
+class CovarianceTest : public CppUnit::TestFixture {
   public:
-    CovarianceTest() : CppUnit::TestCase("Testing covariance calculation") {}
-    void runTest();
+    void testCovariance();
+    void testSalvagingCorrelation();
+    static CppUnit::Test* suite();
 };
-
 
 #endif

@@ -234,17 +234,17 @@ namespace QuantLib {
                         "sampleWeight=0, unsufficient");
 
             double sampleNumber = samples();
-            QL_REQUIRE(sampleNumber > 1,
+            QL_REQUIRE(sampleNumber > 1.0,
                         "SequenceStatistics::covariance() : "
                         "sample number <=1, unsufficient");
 
             std::vector<double> m = mean();
             double inv = 1.0/sampleWeight;
 
-            Matrix result = outerProduct(m.begin(), m.end(),
-                                         m.begin(), m.end());
-            result *= (inv*inv);
-            result -= inv*quadraticSum_;
+            Matrix result = inv*quadraticSum_;
+            result -= outerProduct(m.begin(), m.end(),
+                                   m.begin(), m.end());
+
             result *= (sampleNumber/(sampleNumber-1.0));
             return result;
         }
