@@ -26,6 +26,9 @@
     $Source$
     $Name$
     $Log$
+    Revision 1.2  2001/02/05 13:52:47  lballabio
+    Makefiles fixed
+
     Revision 1.1  2001/02/02 10:20:18  marmar
     The class RandomArrayGenerator is a generalization
     of the template class PathGenerator
@@ -39,10 +42,12 @@
 #include "qlerrors.h"
 #include "array.h"
 #include "matrix.h"
+#include "dataformatters.h"
 
 namespace QuantLib {
 
     namespace MonteCarlo {
+
     /*!    
     RandomArrayGenerator<RP> is a template class which returns a random array 
     from a random number generator class RP.

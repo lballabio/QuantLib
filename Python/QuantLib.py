@@ -759,6 +759,26 @@ class TridiagonalOperator:
     def __del__(self,QuantLibc=QuantLibc):
         if self.thisown == 1 :
             QuantLibc.delete_TridiagonalOperator(self)
+    def __add__(*args, **kwargs):
+        val = apply(QuantLibc.TridiagonalOperator___add__,args, kwargs)
+        if val: val = TridiagonalOperatorPtr(val) ; val.thisown = 1
+        return val
+    def __sub__(*args, **kwargs):
+        val = apply(QuantLibc.TridiagonalOperator___sub__,args, kwargs)
+        if val: val = TridiagonalOperatorPtr(val) ; val.thisown = 1
+        return val
+    def __mul__(*args, **kwargs):
+        val = apply(QuantLibc.TridiagonalOperator___mul__,args, kwargs)
+        if val: val = TridiagonalOperatorPtr(val) ; val.thisown = 1
+        return val
+    def __rmul__(*args, **kwargs):
+        val = apply(QuantLibc.TridiagonalOperator___rmul__,args, kwargs)
+        if val: val = TridiagonalOperatorPtr(val) ; val.thisown = 1
+        return val
+    def __div__(*args, **kwargs):
+        val = apply(QuantLibc.TridiagonalOperator___div__,args, kwargs)
+        if val: val = TridiagonalOperatorPtr(val) ; val.thisown = 1
+        return val
     def __repr__(self):
         return "<C TridiagonalOperator instance at %s>" % (self.this,)
 class TridiagonalOperatorPtr(TridiagonalOperator):
@@ -1285,6 +1305,11 @@ def Zurich(*args, **kwargs):
     if val: val = CalendarPtr(val); val.thisown = 1
     return val
 
+def makeCalendar(*args, **kwargs):
+    val = apply(QuantLibc.makeCalendar,args,kwargs)
+    if val: val = CalendarPtr(val); val.thisown = 1
+    return val
+
 def EUR(*args, **kwargs):
     val = apply(QuantLibc.EUR,args,kwargs)
     if val: val = CurrencyPtr(val); val.thisown = 1
@@ -1340,6 +1365,11 @@ def SEK(*args, **kwargs):
     if val: val = CurrencyPtr(val); val.thisown = 1
     return val
 
+def makeCurrency(*args, **kwargs):
+    val = apply(QuantLibc.makeCurrency,args,kwargs)
+    if val: val = CurrencyPtr(val); val.thisown = 1
+    return val
+
 def Actual360(*args, **kwargs):
     val = apply(QuantLibc.Actual360,args,kwargs)
     if val: val = DayCounterPtr(val); val.thisown = 1
@@ -1362,6 +1392,11 @@ def Thirty360European(*args, **kwargs):
 
 def Thirty360Italian(*args, **kwargs):
     val = apply(QuantLibc.Thirty360Italian,args,kwargs)
+    if val: val = DayCounterPtr(val); val.thisown = 1
+    return val
+
+def makeDayCounter(*args, **kwargs):
+    val = apply(QuantLibc.makeDayCounter,args,kwargs)
     if val: val = DayCounterPtr(val); val.thisown = 1
     return val
 
@@ -1423,6 +1458,11 @@ def matrixProduct(*args, **kwargs):
 def matrixSqrt(*args, **kwargs):
     val = apply(QuantLibc.matrixSqrt,args,kwargs)
     if val: val = MatrixPtr(val); val.thisown = 1
+    return val
+
+def Identity(*args, **kwargs):
+    val = apply(QuantLibc.Identity,args,kwargs)
+    if val: val = TridiagonalOperatorPtr(val); val.thisown = 1
     return val
 
 Date_isLeap = QuantLibc.Date_isLeap

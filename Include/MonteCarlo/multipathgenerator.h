@@ -26,6 +26,9 @@
     $Source$
     $Name$
     $Log$
+    Revision 1.3  2001/02/05 13:52:47  lballabio
+    Makefiles fixed
+
     Revision 1.2  2001/02/02 10:38:14  marmar
     Template class for a multi-path generator
 
@@ -74,7 +77,7 @@ namespace QuantLib {
 
         template <class RAG>
         inline MultiPathGenerator<RAG >::MultiPathGenerator():
-                numAssets(0), timeDimension_(0), weight_(0) {}
+                numAssets_(0), timeDimension_(0), weight_(0) {}
 
         template <class RAG>
         inline MultiPathGenerator<RAG >::MultiPathGenerator(
