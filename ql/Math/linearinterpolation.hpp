@@ -37,7 +37,7 @@ namespace QuantLib {
             : Interpolation::templateImpl<I1,I2>(xBegin,xEnd,yBegin) {}
             double value(double x) const {
                 Size i = locate(x);
-                I2 j = yBegin_+i;
+                // I2 j = yBegin_+i;
                 return yBegin_[i] + (x-xBegin_[i])*(yBegin_[i+1]-yBegin_[i])/
                                                    (xBegin_[i+1]-xBegin_[i]);
             }
