@@ -26,6 +26,9 @@
     $Id$
     $Source$
     $Log$
+    Revision 1.18  2001/04/23 12:29:29  lballabio
+    Fixed linking in setup.py (and some tweakings in SWIG interfaces)
+
     Revision 1.17  2001/04/09 12:24:58  nando
     updated copyright notice header and improved CVS tags
 
@@ -61,30 +64,35 @@ class TridiagonalOperator {
 };
 
 %addmethods TridiagonalOperator {
-    #if defined(SWIGPYTHON)
+    #if defined(SWIGRUBY)
+    void crash() {}
+    #endif
+    #if defined(SWIGPYTHON) || defined(SWIGRUBY)
     TridiagonalOperator __add__(const TridiagonalOperator& O) {
-        return *self+O;
-    }
-    TridiagonalOperator __iadd__(const TridiagonalOperator& O) {
         return *self+O;
     }
     TridiagonalOperator __sub__(const TridiagonalOperator& O) {
         return *self-O;
     }
-    TridiagonalOperator __isub__(const TridiagonalOperator& O) {
-        return *self-O;
-    }
     TridiagonalOperator __mul__(double a) {
         return *self*a;
+    }
+    TridiagonalOperator __div__(double a) {
+        return *self/a;
+    }
+    #endif
+    #if defined(SWIGPYTHON)
+    TridiagonalOperator __iadd__(const TridiagonalOperator& O) {
+        return *self+O;
+    }
+    TridiagonalOperator __isub__(const TridiagonalOperator& O) {
+        return *self-O;
     }
     TridiagonalOperator __imul__(double a) {
         return *self*a;
     }
     TridiagonalOperator __rmul__(double a) {
         return *self*a;
-    }
-    TridiagonalOperator __div__(double a) {
-        return *self/a;
     }
     TridiagonalOperator __idiv__(double a) {
         return *self/a;
@@ -93,22 +101,35 @@ class TridiagonalOperator {
 };
 
 %{
-TridiagonalOperator TridiagonalIdentity(int gridPoints) {
-    TridiagonalOperator I(gridPoints);
-    I.setFirstRow(1.0,0.0);
-    I.setMidRows(0.0,1.0,0.0);
-    I.setLastRow(0.0,1.0);
-    return I;
-}
-
+typedef TridiagonalOperator TridiagonalIdentity;
 using QuantLib::FiniteDifferences::DPlus;
 using QuantLib::FiniteDifferences::DMinus;
 using QuantLib::FiniteDifferences::DZero;
 using QuantLib::FiniteDifferences::DPlusDMinus;
 %}
 
-%name(Identity) TridiagonalOperator TridiagonalIdentity(int gridPoints);
+// they are the same class, but fake inheritance to redefine the constructor
+%name(Identity) class TridiagonalIdentity : public TridiagonalOperator {
+  public:
+    // constructor redefined below
+    ~TridiagonalIdentity();
+};
 
+%addmethods TridiagonalIdentity {
+    #if defined(SWIGRUBY)
+    void crash() {}
+    #endif
+    #if defined(SWIGPYTHON) || defined(SWIGRUBY)
+    TridiagonalIdentity(int gridPoints) {
+        TridiagonalOperator* I = new TridiagonalOperator(gridPoints);
+        I->setFirstRow(1.0,0.0);
+        I->setMidRows(0.0,1.0,0.0);
+        I->setLastRow(0.0,1.0);
+        return I;
+    }
+    #endif
+}
+   
 class DPlus : public TridiagonalOperator {
   public:
     DPlus(int gridPoints, double h);
@@ -146,6 +167,7 @@ double firstDerivativeAtCenter(const Array& a, const Array& g);
 
 double secondDerivativeAtCenter(const Array& a, const Array& g);
 
+#if defined(SWIGPYTHON)
 %{
 using QuantLib::Math::SymmetricEigenvalues;
 using QuantLib::Math::SymmetricEigenvectors;
@@ -154,6 +176,7 @@ using QuantLib::Math::SymmetricEigenvectors;
 Array SymmetricEigenvalues(Matrix &s);
 
 Matrix SymmetricEigenvectors(Matrix &s);
-
 #endif
 
+
+#endif

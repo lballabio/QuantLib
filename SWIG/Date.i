@@ -26,6 +26,9 @@
     $Id$
     $Source$
     $Log$
+    Revision 1.31  2001/04/23 12:29:29  lballabio
+    Fixed linking in setup.py (and some tweakings in SWIG interfaces)
+
     Revision 1.30  2001/04/10 07:54:33  lballabio
     Ruby histories (the Ruby way)
 
@@ -71,24 +74,24 @@ using QuantLib::StringFormatter;
 using QuantLib::DateFormatter;
 %}
 
-%typemap(python,in) Weekday, const Weekday & {
+%typemap(python,in) Weekday (Weekday temp), const Weekday & (Weekday temp) {
     if (PyString_Check($source)) {
         std::string s(PyString_AsString($source));
         s = StringFormatter::toLowercase(s);
         if (s == "sun" || s == "sunday")
-            $target = new Weekday(Sunday);
+            temp = Sunday;
         else if (s == "mon" || s == "monday")
-            $target = new Weekday(Monday);
+            temp = Monday;
         else if (s == "tue" || s == "tuesday")
-            $target = new Weekday(Tuesday);
+            temp = Tuesday;
         else if (s == "wed" || s == "wednesday")
-            $target = new Weekday(Wednesday);
+            temp = Wednesday;
         else if (s == "thu" || s == "thursday")
-            $target = new Weekday(Thursday);
+            temp = Thursday;
         else if (s == "fri" || s == "friday")
-            $target = new Weekday(Friday);
+            temp = Friday;
         else if (s == "sat" || s == "saturday")
-            $target = new Weekday(Saturday);
+            temp = Saturday;
         else {
             PyErr_SetString(PyExc_TypeError,"not a weekday");
             return NULL;
@@ -97,10 +100,7 @@ using QuantLib::DateFormatter;
         PyErr_SetString(PyExc_TypeError,"not a weekday");
         return NULL;
     }
-};
-
-%typemap(python,freearg) Weekday, const Weekday & {
-    delete $source;
+    $target = &temp;
 };
 
 %typemap(python,out) Weekday, const Weekday & {
@@ -120,33 +120,30 @@ using QuantLib::DateFormatter;
 }
 
 
-%typemap(ruby,in) Weekday, const Weekday & {
+%typemap(ruby,in) Weekday (Weekday temp), const Weekday & (Weekday temp) {
     if (TYPE($source) == T_STRING) {
         std::string s(STR2CSTR($source));
         s = StringFormatter::toLowercase(s);
         if (s == "sun" || s == "sunday")
-            $target = new Weekday(Sunday);
+            temp = Sunday;
         else if (s == "mon" || s == "monday")
-            $target = new Weekday(Monday);
+            temp = Monday;
         else if (s == "tue" || s == "tuesday")
-            $target = new Weekday(Tuesday);
+            temp = Tuesday;
         else if (s == "wed" || s == "wednesday")
-            $target = new Weekday(Wednesday);
+            temp = Wednesday;
         else if (s == "thu" || s == "thursday")
-            $target = new Weekday(Thursday);
+            temp = Thursday;
         else if (s == "fri" || s == "friday")
-            $target = new Weekday(Friday);
+            temp = Friday;
         else if (s == "sat" || s == "saturday")
-            $target = new Weekday(Saturday);
+            temp = Saturday;
         else
             rb_raise(rb_eTypeError,"not a weekday");
     } else {
         rb_raise(rb_eTypeError,"not a weekday");
     }
-};
-
-%typemap(ruby,freearg) Weekday, const Weekday & {
-    delete $source;
+    $target = &temp;
 };
 
 %typemap(ruby,out) Weekday, const Weekday & {
@@ -185,34 +182,34 @@ using QuantLib::November;
 using QuantLib::December;
 %}
 
-%typemap(python,in) Month, const Month & {
+%typemap(python,in) Month (Month temp), const Month & (Month temp) {
     if (PyString_Check($source)) {
         std::string s(PyString_AsString($source));
         s = StringFormatter::toLowercase(s);
         if (s == "jan" || s == "january")
-            $target = new Month(January);
+            temp = January;
         else if (s == "feb" || s == "february")
-            $target = new Month(February);
+            temp = February;
         else if (s == "mar" || s == "march")
-            $target = new Month(March);
+            temp = March;
         else if (s == "apr" || s == "april")
-            $target = new Month(April);
+            temp = April;
         else if (s == "may")
-            $target = new Month(May);
+            temp = May;
         else if (s == "jun" || s == "june")
-            $target = new Month(June);
+            temp = June;
         else if (s == "jul" || s == "july")
-            $target = new Month(July);
+            temp = July;
         else if (s == "aug" || s == "august")
-            $target = new Month(August);
+            temp = August;
         else if (s == "sep" || s == "september")
-            $target = new Month(September);
+            temp = September;
         else if (s == "oct" || s == "october")
-            $target = new Month(October);
+            temp = October;
         else if (s == "nov" || s == "november")
-            $target = new Month(November);
+            temp = November;
         else if (s == "dec" || s == "december")
-            $target = new Month(December);
+            temp = December;
         else {
             PyErr_SetString(PyExc_TypeError,"not a month");
             return NULL;
@@ -220,7 +217,7 @@ using QuantLib::December;
     } else if (PyInt_Check($source)) {
         int i = int(PyInt_AsLong($source));
         if (i>=1 && i<=12)
-            $target = new Month(Month(i));
+            temp = Month(i);
         else {
             PyErr_SetString(PyExc_TypeError,"not a month");
             return NULL;
@@ -229,10 +226,7 @@ using QuantLib::December;
         PyErr_SetString(PyExc_TypeError,"not a weekday");
         return NULL;
     }
-};
-
-%typemap(python,freearg) Month, const Month & {
-    delete $source;
+    $target = &temp;
 };
 
 %typemap(python,out) Month, const Month & {
@@ -257,49 +251,46 @@ using QuantLib::December;
 }
 
 
-%typemap(ruby,in) Month, const Month & {
+%typemap(ruby,in) Month (Month temp), const Month & (Month temp) {
     if (TYPE($source) == T_STRING) {
         std::string s(STR2CSTR($source));
         s = StringFormatter::toLowercase(s);
         if (s == "jan" || s == "january")
-            $target = new Month(January);
+            temp = January;
         else if (s == "feb" || s == "february")
-            $target = new Month(February);
+            temp = February;
         else if (s == "mar" || s == "march")
-            $target = new Month(March);
+            temp = March;
         else if (s == "apr" || s == "april")
-            $target = new Month(April);
+            temp = April;
 	else if (s == "may")
-            $target = new Month(May);
+            temp = May;
         else if (s == "jun" || s == "june")
-            $target = new Month(June);
+            temp = June;
         else if (s == "jul" || s == "july")
-            $target = new Month(July);
+            temp = July;
         else if (s == "aug" || s == "august")
-            $target = new Month(August);
+            temp = August;
         else if (s == "sep" || s == "september")
-            $target = new Month(September);
+            temp = September;
         else if (s == "oct" || s == "october")
-            $target = new Month(October);
+            temp = October;
         else if (s == "nov" || s == "november")
-            $target = new Month(November);
+            temp = November;
         else if (s == "dec" || s == "december")
-            $target = new Month(December);
+            temp = December;
         else
             rb_raise(rb_eTypeError,"not a month");
     } else if (TYPE($source) == T_FIXNUM) {
         int i = NUM2INT($source);
         if (i>=1 && i<=12)
-            $target = new Month(Month(i));
+            temp = Month(i);
         else
             rb_raise(rb_eTypeError,"not a month");
     } else {
         rb_raise(rb_eTypeError,"not a month");
     }
-};
-
-%typemap(ruby,freearg) Month, const Month & {
-    delete $source;
+    $target = &temp;
 };
 
 %typemap(ruby,out) Month, const Month & {
@@ -333,18 +324,18 @@ using QuantLib::Months;
 using QuantLib::Years;
 %}
 
-%typemap(python,in) TimeUnit, const TimeUnit & {
+%typemap(python,in) TimeUnit (TimeUnit temp), const TimeUnit& (TimeUnit temp) {
     if (PyString_Check($source)) {
         std::string s(PyString_AsString($source));
         s = StringFormatter::toLowercase(s);
         if (s == "d" || s == "day" || s == "days")
-            $target = new TimeUnit(Days);
+            temp = Days;
         else if (s == "w" || s == "week" || s == "weeks")
-            $target = new TimeUnit(Weeks);
+            temp = Weeks;
         else if (s == "m" || s == "month" || s == "months")
-            $target = new TimeUnit(Months);
+            temp = Months;
         else if (s == "y" || s == "year" || s == "years")
-            $target = new TimeUnit(Years);
+            temp = Years;
         else {
             PyErr_SetString(PyExc_TypeError,"not a time unit");
             return NULL;
@@ -353,10 +344,7 @@ using QuantLib::Years;
         PyErr_SetString(PyExc_TypeError,"not a time unit");
         return NULL;
     }
-};
-
-%typemap(python,freearg) TimeUnit, const TimeUnit & {
-    delete $source;
+    $target = &temp;
 };
 
 %typemap(python,out) TimeUnit, const TimeUnit & {
@@ -373,27 +361,24 @@ using QuantLib::Years;
 }
 
 
-%typemap(ruby,in) TimeUnit, const TimeUnit & {
+%typemap(ruby,in) TimeUnit (TimeUnit temp), const TimeUnit & (TimeUnit temp) {
     if (TYPE($source) == T_STRING) {
         std::string s(STR2CSTR($source));
         s = StringFormatter::toLowercase(s);
         if (s == "d" || s == "day" || s == "days")
-            $target = new TimeUnit(Days);
+            temp = Days;
         else if (s == "w" || s == "week" || s == "weeks")
-            $target = new TimeUnit(Weeks);
+            temp = Weeks;
         else if (s == "m" || s == "month" || s == "months")
-            $target = new TimeUnit(Months);
+            temp = Months;
         else if (s == "y" || s == "year" || s == "years")
-            $target = new TimeUnit(Years);
+            temp = Years;
         else
             rb_raise(rb_eTypeError,"not a time unit");
     } else {
         rb_raise(rb_eTypeError,"not a time unit");
     }
-};
-
-%typemap(ruby,freearg) TimeUnit, const TimeUnit & {
-    delete $source;
+    $target = &temp;
 };
 
 %typemap(ruby,out) TimeUnit, const TimeUnit & {

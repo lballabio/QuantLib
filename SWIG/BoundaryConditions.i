@@ -26,6 +26,9 @@
     $Id$
     $Source$
     $Log$
+    Revision 1.13  2001/04/23 12:29:29  lballabio
+    Fixed linking in setup.py (and some tweakings in SWIG interfaces)
+
     Revision 1.12  2001/04/09 12:24:58  nando
     updated copyright notice header and improved CVS tags
 
@@ -42,46 +45,82 @@ using QuantLib::StringFormatter;
 
 // typemap boundary condition type to the corresponding strings
 
-%typemap(python,in) BoundaryConditionType, const BoundaryConditionType & {
-	if (PyString_Check($source)) {
-		std::string s(PyString_AsString($source));
-		s = StringFormatter::toLowercase(s);
-		if (s == "" || s == "none")
-		    $target = new BoundaryConditionType(BoundaryCondition::None);
-		else if (s == "neumann")
-		    $target = new BoundaryConditionType(BoundaryCondition::Neumann);
-		else if (s == "dirichlet")
-		    $target = new BoundaryConditionType(BoundaryCondition::Dirichlet);
-		else {
-			PyErr_SetString(PyExc_TypeError,"not a boundary condition type");
-			return NULL;
-		}
-	} else {
-		PyErr_SetString(PyExc_TypeError,"not a boundary condition type");
-		return NULL;
-	}
-};
-
-%typemap(python,freearg) BoundaryConditionType, const BoundaryConditionType & {
-	delete $source;
+%typemap(python,in) BoundaryConditionType (BoundaryConditionType temp), 
+  const BoundaryConditionType & (BoundaryConditionType temp) {
+    if (PyString_Check($source)) {
+        std::string s(PyString_AsString($source));
+        s = StringFormatter::toLowercase(s);
+        if (s == "" || s == "none")
+            temp = BoundaryCondition::None;
+        else if (s == "neumann")
+            temp = BoundaryCondition::Neumann;
+        else if (s == "dirichlet")
+            temp = BoundaryCondition::Dirichlet;
+        else {
+            PyErr_SetString(PyExc_TypeError,"not a boundary condition type");
+            return NULL;
+        }
+    } else {
+        PyErr_SetString(PyExc_TypeError,"not a boundary condition type");
+        return NULL;
+    }
+    $target = &temp;
 };
 
 %typemap(python,out) BoundaryConditionType, const BoundaryConditionType & {
-	switch (*$source) {
-	  case BoundaryCondition::None:
-	    $target = PyString_FromString("None");
-	    break;
-	  case BoundaryCondition::Neumann:
-	    $target = PyString_FromString("Neumann");
-	    break;
-	  case BoundaryCondition::Dirichlet:
-	    $target = PyString_FromString("Dirichlet");
-	    break;
-	}
+    switch (*$source) {
+      case BoundaryCondition::None:
+        $target = PyString_FromString("None");
+        break;
+      case BoundaryCondition::Neumann:
+        $target = PyString_FromString("Neumann");
+        break;
+      case BoundaryCondition::Dirichlet:
+        $target = PyString_FromString("Dirichlet");
+        break;
+    }
 };
 
 %typemap(python,ret) BoundaryConditionType {
-	delete $source;
+    delete $source;
+};
+
+%typemap(ruby,in) BoundaryConditionType (BoundaryConditionType temp), 
+  const BoundaryConditionType & (BoundaryConditionType temp) {
+    if (TYPE($source) == T_STRING) {
+        std::string s(STR2CSTR($source));
+        s = StringFormatter::toLowercase(s);
+        if (s == "" || s == "none")
+            temp = BoundaryCondition::None;
+        else if (s == "neumann")
+            temp = BoundaryCondition::Neumann;
+        else if (s == "dirichlet")
+            temp = BoundaryCondition::Dirichlet;
+        else {
+            rb_raise(rb_eTypeError,"not a boundary condition type");
+        }
+    } else {
+        rb_raise(rb_eTypeError,"not a boundary condition type");
+    }
+    $target = &temp;
+};
+
+%typemap(ruby,out) BoundaryConditionType, const BoundaryConditionType & {
+    switch (*$source) {
+      case BoundaryCondition::None:
+        $target = rb_str_new2("None");
+        break;
+      case BoundaryCondition::Neumann:
+        $target = rb_str_new2("Neumann");
+        break;
+      case BoundaryCondition::Dirichlet:
+        $target = rb_str_new2("Dirichlet");
+        break;
+    }
+};
+
+%typemap(ruby,ret) BoundaryConditionType {
+    delete $source;
 };
 
 // Boundary condition
@@ -98,3 +137,4 @@ class BoundaryCondition {
 
 
 #endif
+

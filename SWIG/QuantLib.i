@@ -26,6 +26,9 @@
     $Id$
     $Source$
     $Log$
+    Revision 1.43  2001/04/23 12:29:29  lballabio
+    Fixed linking in setup.py (and some tweakings in SWIG interfaces)
+
     Revision 1.42  2001/04/18 13:38:53  nando
     QuantLib.nsi was missing from distribution
 
@@ -93,6 +96,7 @@ using QuantLib::IndexError;
 }
 
 #if defined(SWIGPYTHON) || defined(SWIGRUBY)
+%include BoundaryConditions.i
 %include Calendars.i
 %include Currencies.i
 %include Date.i
@@ -101,6 +105,7 @@ using QuantLib::IndexError;
 %include Financial.i
 %include History.i
 %include Interpolation.i
+%include Operators.i
 %include QLArray.i
 %include RandomGenerators.i
 %include RiskStatistics.i
@@ -112,12 +117,10 @@ using QuantLib::IndexError;
 
 #if defined(SWIGPYTHON)
 %include Barrier.i
-%include BoundaryConditions.i
 %include Instruments.i
 %include Matrix.i
 %include MontecarloPricers.i
 %include MontecarloTools.i
-%include Operators.i
 %include Options.i
 %include Pricers.i
 %include TermStructures.i
