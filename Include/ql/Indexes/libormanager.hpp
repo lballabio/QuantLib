@@ -23,13 +23,16 @@
 */
 
 /*! \file libormanager.hpp
-    \brief global repository for libor term structures and histories
+    \brief global repository for %Libor histories
 
     $Id$
 */
 
 // $Source$
 // $Log$
+// Revision 1.9  2001/06/05 09:35:13  lballabio
+// Updated docs to use Doxygen 1.2.8
+//
 // Revision 1.8  2001/05/29 09:24:06  lballabio
 // Using relinkable handle to term structure
 //

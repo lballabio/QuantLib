@@ -36,7 +36,6 @@ namespace QuantLib {
     using CashFlows::FixedRateCoupon;
     using CashFlows::FixedRateCouponVector;
     using CashFlows::ParCouponVector;
-    using Indexes::Xibor;
     
     namespace Instruments {
 
@@ -50,7 +49,7 @@ namespace QuantLib {
           bool fixedIsAdjusted, 
           const Handle<DayCounter>& fixedDayCount, 
           int floatingFrequency, 
-          const Xibor& index, 
+          const Indexes::Xibor& index, 
           const std::vector<Spread>& spreads, 
           const Handle<DayCounter>& floatingDayCount, 
           const RelinkableHandle<TermStructure>& termStructure, 

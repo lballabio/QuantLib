@@ -2,6 +2,9 @@
 # $Id$
 # $Source$
 # $Log$
+# Revision 1.9  2001/06/05 09:35:13  lballabio
+# Updated docs to use Doxygen 1.2.8
+#
 # Revision 1.8  2001/05/24 12:52:01  nando
 # smoothing #include xx.hpp
 #
@@ -26,7 +29,7 @@ TEX_OPTS     = --quiet --pool-size=1000000
 # Primary target:
 # all docs
 all::
-    $(DOXYGEN) quantlib.doxy
+    $(DOXYGEN) quantlib.win32.doxy
     cd latex
     $(PDFLATEX) $(TEX_OPTS) refman
     $(MAKEINDEX) refman.idx
@@ -39,11 +42,11 @@ all::
 
 # HTML documentation only
 html::
-    $(DOXYGEN) quantlib.doxy
+    $(DOXYGEN) quantlib.win32.doxy
 
 # PDF documentation
 pdf::
-    $(DOXYGEN) quantlib.doxy
+    $(DOXYGEN) quantlib.win32.doxy
     cd latex
     $(PDFLATEX) $(TEX_OPTS) refman
     $(MAKEINDEX) refman.idx
@@ -52,7 +55,7 @@ pdf::
 
 # PostScript documentation
 ps::
-    $(DOXYGEN) quantlib.doxy
+    $(DOXYGEN) quantlib.win32.doxy
     cd latex
     $(LATEX) $(TEX_OPTS) refman
     $(MAKEINDEX) refman.idx
@@ -63,5 +66,4 @@ ps::
 # Clean up
 clean::
     if exist .\html     rd /s /q .\html
-    if exist .\man      rd /s /q .\man
     if exist .\latex    rd /s /q .\latex

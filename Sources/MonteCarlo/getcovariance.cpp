@@ -23,12 +23,16 @@
 */
 
 /*! \file getcovariance.cpp
+    \brief Covariance matrix calculation
 
     $Id$
 */
 
 // $Source$
 // $Log$
+// Revision 1.8  2001/06/05 09:35:14  lballabio
+// Updated docs to use Doxygen 1.2.8
+//
 // Revision 1.7  2001/05/24 15:40:10  nando
 // smoothing #include xx.hpp and cutting old Log messages
 //

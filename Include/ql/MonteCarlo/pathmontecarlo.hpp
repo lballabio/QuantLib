@@ -29,6 +29,9 @@
 
 // $Source$
 // $Log$
+// Revision 1.7  2001/06/05 09:35:13  lballabio
+// Updated docs to use Doxygen 1.2.8
+//
 // Revision 1.6  2001/05/25 09:29:40  nando
 // smoothing #include xx.hpp and cutting old Log messages
 //
@@ -46,39 +49,41 @@ namespace QuantLib {
 
     namespace MonteCarlo {
 
-    //! \brief General purpose Monte Carlo for path samples
-    /*! Any Monte Carlo which uses a path samples has three main components,
-            S, a sample accumulator,
-            PG, a path generator, and
-            PP, a path pricer.
-        PathMonteCarlo<S, PG, PP> puts together these three elements.
-        The constructor accepts two safe references, i.e. two smart
-        pointers, one to a path generator and the other to a path pricer.
-        The GeneralMonteCarlo is used to fill the statistic accumulator.
-
-        The minimal interfaces for the classes S, PG, and PP are:
-
-        class S{
-            void add(VALUE_TYPE sample, double weight) const;
-        };
-
-        class PG{
-            PATH_TYPE next() const;
-            double weight() const;
-        };
-
-        class PP{
-            VALUE_TYPE value(PATH_TYPE &) const;
-        };
-
-    */
+        //! General purpose Monte Carlo for path samples
+        /*! Any Monte Carlo which uses a path samples has three main components,
+            namely, 
+                - S, a sample accumulator,
+                - PG, a path generator, 
+                - PP, a path pricer.
+            PathMonteCarlo<S, PG, PP> puts together these three elements.
+            The constructor accepts two safe references, i.e. two smart
+            pointers, one to a path generator and the other to a path pricer.
+            The GeneralMonteCarlo is used to fill the statistic accumulator.
+    
+            The minimal interfaces for the classes S, PG, and PP are:
+    
+            \code
+            class S{
+                void add(VALUE_TYPE sample, double weight) const;
+            };
+    
+            class PG{
+                PATH_TYPE next() const;
+                double weight() const;
+            };
+    
+            class PP{
+                VALUE_TYPE value(PATH_TYPE &) const;
+            };
+            \endcode
+        */
         template<class S, class PG, class PP>
         class PathMonteCarlo {
-        public:
-            PathMonteCarlo():isInitialized_(false){}
+          public:
+            PathMonteCarlo() : isInitialized_(false) {}
             PathMonteCarlo(Handle<PG> pathGenerator, Handle<PP> pathPricer);
             S sampleAccumulator(long samples = 0) const;
-        private:
+          private:
             mutable bool isInitialized_;
             S sampleAccumulator_;
             OptionSample<PG,PP> optionSample_;

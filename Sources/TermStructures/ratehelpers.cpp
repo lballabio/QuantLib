@@ -30,6 +30,9 @@
 
 // $Source$
 // $Log$
+// Revision 1.12  2001/06/05 09:35:14  lballabio
+// Updated docs to use Doxygen 1.2.8
+//
 // Revision 1.11  2001/06/04 09:31:39  lballabio
 // Using extrapolation in guesses
 //
@@ -57,7 +60,6 @@
 namespace QuantLib {
 
     using Instruments::SimpleSwap;
-    using Indexes::Xibor;
     
     namespace TermStructures {
 
@@ -108,7 +110,7 @@ namespace QuantLib {
             bool fixedIsAdjusted, 
             const Handle<DayCounter>& fixedDayCount, 
             int floatingFrequency, 
-            const Xibor& index, 
+            const Indexes::Xibor& index, 
             const Handle<DayCounter>& floatingDayCount)
         : rate_(rate) {
             // we don't need to link the index to our own 

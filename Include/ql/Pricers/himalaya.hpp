@@ -28,6 +28,9 @@
 
 // $Source$
 // $Log$
+// Revision 1.5  2001/06/05 09:35:13  lballabio
+// Updated docs to use Doxygen 1.2.8
+//
 // Revision 1.4  2001/05/24 15:38:08  nando
 // smoothing #include xx.hpp and cutting old Log messages
 //
@@ -43,9 +46,8 @@ namespace QuantLib {
 
     namespace Pricers {
 
-        //! \brief  The himalayan-type option pricer.
-        /*!
-        The payoff of an himalaya option is computed in the following way:
+        //! Himalayan-type option pricer.
+        /*! The payoff of a Himalaya option is computed in the following way:
             Given a basket of N assets, and N time periods, at end of
             each period the option who performed the best is added to the
             average and then discarded from the basket. At the end of the

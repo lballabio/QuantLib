@@ -22,13 +22,16 @@
  * available at http://quantlib.sourceforge.net/Authors.txt
 */
 /*! \file getcovariance.hpp
-    \brief Returns a covarinace matrix given a correlation matrix and a volatility array
+    \brief Covariance matrix calculation
 
     $Id$
 */
 
 // $Source$
 // $Log$
+// Revision 1.5  2001/06/05 09:35:13  lballabio
+// Updated docs to use Doxygen 1.2.8
+//
 // Revision 1.4  2001/05/24 15:38:08  nando
 // smoothing #include xx.hpp and cutting old Log messages
 //

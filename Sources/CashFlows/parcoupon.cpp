@@ -28,6 +28,9 @@
     $Id$
     $Source$
     $Log$
+    Revision 1.2  2001/06/05 09:35:14  lballabio
+    Updated docs to use Doxygen 1.2.8
+
     Revision 1.1  2001/06/01 16:50:16  lballabio
     Term structure on deposits and swaps
 
@@ -40,11 +43,10 @@
 namespace QuantLib {
 
     using Indexes::LiborManager;
-    using Indexes::Xibor;
     
     namespace CashFlows {
         
-        ParCoupon::ParCoupon(double nominal, const Xibor& index, 
+        ParCoupon::ParCoupon(double nominal, const Indexes::Xibor& index, 
             int n, TimeUnit unit, Spread spread, 
             const Handle<Calendar>& calendar, 
             const Handle<DayCounter>& dayCounter,
@@ -74,7 +76,7 @@ namespace QuantLib {
             Date settlementDate = termStructure_->settlementDate();
             if (startDate_ < settlementDate) {
                 // must have been fixed
-                Rate pastFixing =LiborManager::getHistory(
+                Rate pastFixing = LiborManager::getHistory(
                     index_.name(),n_,unit_)[startDate_];
                 QL_REQUIRE(pastFixing != Null<double>(),
                     "Missing " + index_.name() + " fixing for " +

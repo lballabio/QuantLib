@@ -28,6 +28,9 @@
 
 // $Source$
 // $Log$
+// Revision 1.5  2001/06/05 09:35:13  lballabio
+// Updated docs to use Doxygen 1.2.8
+//
 // Revision 1.4  2001/05/24 15:38:08  nando
 // smoothing #include xx.hpp and cutting old Log messages
 //
@@ -41,18 +44,19 @@
 namespace QuantLib {
 
     namespace Pricers {
-        //! This is a simple example of a multi-factor Monte Carlo pricer
 
+        //! Simple example of multi-factor Monte Carlo pricer
         class PlainBasketOption: public MultiFactorPricer {
-        public:
-            PlainBasketOption(const Array &underlying, const Array
-            &dividendYield, const Math::Matrix &covariance,
-            Rate riskFreeRate,  double residualTime,
-            int timesteps, long samples, long seed=0);
+          public:
+            PlainBasketOption(const Array& underlying, 
+                const Array& dividendYield, const Math::Matrix &covariance,
+                Rate riskFreeRate,  double residualTime,
+                int timesteps, long samples, long seed=0);
         };
 
     }
 
 }
+
 
 #endif

@@ -23,13 +23,16 @@
 */
 
 /*! \file finitedifferenceeuropean.hpp
-    \brief Simple example of european option calculated using finite differences
+    \brief Example of european option calculated using finite differences
 
     $Id$
 */
 
 // $Source$
 // $Log$
+// Revision 1.4  2001/06/05 09:35:13  lballabio
+// Updated docs to use Doxygen 1.2.8
+//
 // Revision 1.3  2001/05/24 15:38:08  nando
 // smoothing #include xx.hpp and cutting old Log messages
 //

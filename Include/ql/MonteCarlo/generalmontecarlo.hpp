@@ -22,13 +22,16 @@
  * available at http://quantlib.sourceforge.net/Authors.txt
 */
 /*! \file generalmontecarlo.hpp
-    \brief A class useful in many different Monte-Carlo-type simulations
+    \brief Generic model for MonteCarlo simulations
 
     $Id$
 */
 
 // $Source$
 // $Log$
+// Revision 1.6  2001/06/05 09:35:13  lballabio
+// Updated docs to use Doxygen 1.2.8
+//
 // Revision 1.5  2001/05/24 15:38:08  nando
 // smoothing #include xx.hpp and cutting old Log messages
 //
@@ -41,32 +44,34 @@
 namespace QuantLib {
 
     namespace MonteCarlo {
-    /*!
-    Given a sample-accumulator class SA and a sample-generator SG class,
-    a GeneralMonteCarlo<SA, SG>  class is constructed. This class
-    can be used to sample over the generator and store the results in the
-    accumulator. The accumulator itself can be returned upon request.
 
-    The minimal interfaces that SA and SG should implements are
-
-        class SA{
-            void add(SAMPLE_TYPE sample, double weight) const;
-        };
-
-        class SG{
-            SAMPLE_TYPE next() const;
-            double weight() const;
-        };
-
-    */
+        /*! Given a sample-accumulator class SA and a sample-generator SG class,
+            a GeneralMonteCarlo<SA, SG>  class is constructed. This class
+            can be used to sample over the generator and store the results in 
+            the accumulator. The accumulator itself can be returned upon 
+            request.
+    
+            The minimal interfaces that SA and SG should implements are
+    
+            \code
+            class SA{
+                void add(SAMPLE_TYPE sample, double weight) const;
+            };
+    
+            class SG{
+                SAMPLE_TYPE next() const;
+                double weight() const;
+            };
+            \endcode
+        */
         template<class SA, class SG>
         class GeneralMonteCarlo {
-        public:
-            GeneralMonteCarlo():isInitialized_(false){}
+          public:
+            GeneralMonteCarlo() : isInitialized_(false) {}
             GeneralMonteCarlo(SA &statisticAccumulator,
                               SG &sampleGenerator);
             SA sampleAccumulator(long iterations = 0) const;
-        private:
+          private:
             mutable bool isInitialized_;
             mutable SA sampleAccumulator_;
             mutable SG sampleGenerator_;

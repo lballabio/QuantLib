@@ -30,6 +30,9 @@
 
 //  $Source$
 //  $Log$
+//  Revision 1.3  2001/06/05 09:35:14  lballabio
+//  Updated docs to use Doxygen 1.2.8
+//
 //  Revision 1.2  2001/06/01 16:50:16  lballabio
 //  Term structure on deposits and swaps
 //
@@ -42,8 +45,6 @@
 
 namespace QuantLib {
 
-    using Indexes::Xibor;
-    
     namespace CashFlows {
         
         FixedRateCouponVector::FixedRateCouponVector(
@@ -224,7 +225,7 @@ namespace QuantLib {
 
         ParCouponVector::ParCouponVector(
           const std::vector<double>& nominals, 
-          const Xibor& index, const std::vector<Spread>& spreads, 
+          const Indexes::Xibor& index, const std::vector<Spread>& spreads, 
           const Date& startDate, const Date& endDate, 
           int frequency, const Handle<Calendar>& calendar, 
           RollingConvention rollingConvention, 

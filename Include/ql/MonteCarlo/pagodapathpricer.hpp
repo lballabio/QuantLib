@@ -29,6 +29,9 @@
 
 // $Source$
 // $Log$
+// Revision 1.6  2001/06/05 09:35:13  lballabio
+// Updated docs to use Doxygen 1.2.8
+//
 // Revision 1.5  2001/05/25 09:29:40  nando
 // smoothing #include xx.hpp and cutting old Log messages
 //
@@ -44,20 +47,14 @@
 namespace QuantLib {
 
     namespace MonteCarlo {
-        /*! \brief A pagoda option is a roofed asian option.
-        Given a certain portfolio, of assets at the end of the period
-        it is returned the minimum of a given roof and a certain fraction of
-        the positive portfolio performance.
-        If the performance of the portfolio is below then option is null.
-        */
 
         class PagodaPathPricer : public MultiPathPricer {
-        public:
+          public:
             PagodaPathPricer():MultiPathPricer(){}
             PagodaPathPricer(const Array &underlying, double roof,
                              double discount);
             double value(const MultiPath &path) const;
-        protected:
+          protected:
             double roof_, discount_;
             Array underlying_;
         };

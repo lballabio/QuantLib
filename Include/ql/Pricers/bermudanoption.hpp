@@ -23,13 +23,16 @@
 */
 
 /*! \file bermudanoption.hpp
-    \brief class for finite-difference evaluation of bermudan option
+    \brief Finite-difference evaluation of bermudan option
 
     $Id$
 */
 
 // $Source$
 // $Log$
+// Revision 1.5  2001/06/05 09:35:13  lballabio
+// Updated docs to use Doxygen 1.2.8
+//
 // Revision 1.4  2001/06/01 16:50:16  lballabio
 // Term structure on deposits and swaps
 //

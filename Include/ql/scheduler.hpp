@@ -30,6 +30,9 @@
 
 //  $Source$
 //  $Log$
+//  Revision 1.2  2001/06/05 09:35:13  lballabio
+//  Updated docs to use Doxygen 1.2.8
+//
 //  Revision 1.1  2001/05/31 08:56:40  lballabio
 //  Cash flows, scheduler, and generic swap added - the latter should be specialized and tested
 //
@@ -44,7 +47,7 @@
 
 namespace QuantLib {
 
-    //! date scheduler
+    //! %Date scheduler
     class Scheduler {
       public:
         Scheduler(const Handle<Calendar>& calendar, 

@@ -23,13 +23,16 @@
 */
 
 /*! \file usdlibor.hpp
-    \brief %UsdLibor index
+    \brief %USD %Libor index
 
     $Id$
 */
 
 // $Source$
 // $Log$
+// Revision 1.8  2001/06/05 09:35:13  lballabio
+// Updated docs to use Doxygen 1.2.8
+//
 // Revision 1.7  2001/06/01 16:50:16  lballabio
 // Term structure on deposits and swaps
 //
@@ -54,7 +57,7 @@ namespace QuantLib {
 
     namespace Indexes {
 
-        //! Libor index
+        //! %USD %Libor index
         class USDLibor : public Xibor {
           public:
             USDLibor(const RelinkableHandle<TermStructure>& h)

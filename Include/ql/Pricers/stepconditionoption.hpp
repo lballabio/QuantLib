@@ -23,13 +23,16 @@
 */
 
 /*! \file stepconditionoption.hpp
-  \brief Base class for options requiring additional code to be executed at each timestep
+    \brief Option requiring additional code to be executed at each time step
 
     $Id$
 */
 
 // $Source$
 // $Log$
+// Revision 1.7  2001/06/05 09:35:13  lballabio
+// Updated docs to use Doxygen 1.2.8
+//
 // Revision 1.6  2001/05/25 09:29:40  nando
 // smoothing #include xx.hpp and cutting old Log messages
 //
