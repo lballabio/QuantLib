@@ -32,6 +32,9 @@
     $Source$
     $Name$
     $Log$
+    Revision 1.29  2001/02/12 19:00:39  lballabio
+    Some more work on iterators
+
     Revision 1.28  2001/02/12 18:34:49  lballabio
     Some work on iterators
 
@@ -304,14 +307,6 @@
     #define QL_TEMPLATE_SPECIALIZATION  template<>
 #endif
 
-/*! \def QL_INHERITED_TYPEDEFS_WORK
-    The Borland C++ compiler seems not to recognize correctly typedefs inherited 
-    by/from a template class.
-*/
-#if !defined(BROKEN_TYPEDEF_INHERITANCE)
-    #define QL_INHERITED_TYPEDEFS_WORK
-#endif
-
 /*! \def QL_EXPRESSION_TEMPLATES_WORK
     Expression templates techniques (see T. L. Veldhuizen, <i>Expression
     templates</i>, C++ Report, 7(5):26-31, June 1995, available at
@@ -367,6 +362,11 @@
     };
     #define QL_ITERATOR     __quantlib_iterator
 #endif
+
+/*! \def QL_INHERIT_ITERATOR
+    Some STL implementations require custom iterators to inherit from 
+    std::iterator for some features to work.
+*/
 
 /*! \def QL_REVERSE_ITERATOR
     \brief Blame Microsoft for this one...

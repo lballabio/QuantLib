@@ -25,10 +25,10 @@
 #define QL_MIN      std::min
 #define QL_MAX      std::max
 
-#define BROKEN_TYPEDEF_INHERITANCE
 #define HAVE_EXPRESSION_TEMPLATES
 
 #define HAVE_STD_ITERATOR
+#define QL_INHERIT_ITERATOR
 
 
 #endif

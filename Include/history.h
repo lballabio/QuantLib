@@ -28,6 +28,9 @@
     $Source$
     $Name$
     $Log$
+    Revision 1.12  2001/02/12 19:00:39  lballabio
+    Some more work on iterators
+
     Revision 1.11  2001/02/12 18:34:49  lballabio
     Some work on iterators
 
@@ -166,19 +169,20 @@ namespace QuantLib {
         };
 
         //! random access iterator on history entries
-        class const_iterator : public QL_ITERATOR<
+        class const_iterator 
+        #if defined(QL_INHERIT_ITERATOR)
+        : public QL_ITERATOR<
             std::random_access_iterator_tag, Entry,
             int, const Entry*, const Entry&>
+        #endif
         {
             friend class History;
           public:
-            #if !defined(QL_INHERITED_TYPEDEFS_WORK)
             typedef std::random_access_iterator_tag iterator_category;
             typedef Entry                           value_type;
             typedef int                             difference_type;
             typedef const Entry*                    pointer;
             typedef const Entry&                    reference;
-            #endif
             //! \name Dereferencing
             //@{
             reference operator*() const  { return theEntry; }

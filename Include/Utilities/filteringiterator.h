@@ -28,6 +28,9 @@
     $Source$
     $Name$
     $Log$
+    Revision 1.9  2001/02/12 19:00:39  lballabio
+    Some more work on iterators
+
     Revision 1.8  2001/02/12 18:34:49  lballabio
     Some work on iterators
 
@@ -79,7 +82,9 @@ namespace QuantLib {
             condition.
         */
         template <class Iterator, class UnaryPredicate>
-        class filtering_iterator : public QL_ITERATOR<
+        class filtering_iterator 
+        #if defined(QL_INHERIT_ITERATOR)
+        : public QL_ITERATOR<
             typename filtering_iterator_tag<
                 typename std::iterator_traits<Iterator>::iterator_category
                 >::iterator_category,
@@ -87,9 +92,9 @@ namespace QuantLib {
             typename std::iterator_traits<Iterator>::difference_type,
             typename std::iterator_traits<Iterator>::pointer,
             typename std::iterator_traits<Iterator>::reference>
+            #endif
         {
           public:
-            #if !defined(QL_INHERITED_TYPEDEFS_WORK)
             typedef typename filtering_iterator_tag<
                 typename std::iterator_traits<Iterator>::iterator_category
                 >::iterator_category iterator_category;
@@ -101,7 +106,6 @@ namespace QuantLib {
                 pointer;
             typedef typename std::iterator_traits<Iterator>::reference 
                 reference;
-            #endif
             filtering_iterator(const Iterator&, const UnaryPredicate&,
                 const Iterator& beforeBegin, const Iterator& end);
             //! \name Dereferencing
