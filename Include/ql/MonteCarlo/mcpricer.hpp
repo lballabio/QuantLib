@@ -29,6 +29,9 @@
 
 // $Source$
 // $Log$
+// Revision 1.9  2001/07/13 13:13:14  aleppo
+// moved constructor from public to  protected
+//
 // Revision 1.8  2001/07/05 12:35:09  enri
 // - added some static_cast<int>() to prevent gcc warnings
 // - added some virtual constructor (same reason)
@@ -63,11 +66,11 @@ namespace QuantLib {
         class McPricer {
           public:
             McPricer() : isInitialized_(false){}
-            McPricer(long samples, long seed=0);
             virtual ~McPricer(){}
             virtual double value() const;
             virtual double errorEstimate() const;
           protected:
+            McPricer(long samples, long seed=0);
             long seed_;
             mutable long samples_;
             bool isInitialized_;
