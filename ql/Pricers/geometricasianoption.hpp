@@ -43,7 +43,7 @@ namespace QuantLib {
         //! geometric Asian option
         class GeometricAsianOption : public EuropeanOption    {
            public:
-            GeometricAsianOption(Type type, double underlying, 
+            GeometricAsianOption(Option::Type type, double underlying, 
                 double strike, Rate dividendYield, Rate riskFreeRate, 
                 Time residualTime, double volatility);
             double vega() const;
@@ -54,7 +54,7 @@ namespace QuantLib {
 
         // inline definitions
         
-        inline GeometricAsianOption::GeometricAsianOption(Type type,
+        inline GeometricAsianOption::GeometricAsianOption(Option::Type type,
             double underlying, double strike, Rate dividendYield,
             Rate riskFreeRate, Time residualTime, double volatility):
             EuropeanOption(type, underlying, strike, dividendYield/2,

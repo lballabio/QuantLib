@@ -34,7 +34,7 @@
 #ifndef quantlib_pricers_average_price_asian_h
 #define quantlib_pricers_average_price_asian_h
 
-#include "ql/options.hpp"
+#include "ql/option.hpp"
 #include "ql/types.hpp"
 #include "ql/MonteCarlo/mcpricer.hpp"
 

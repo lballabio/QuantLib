@@ -45,7 +45,7 @@ namespace QuantLib {
         using FiniteDifferences::firstDerivativeAtCenter;
         using FiniteDifferences::secondDerivativeAtCenter;
 
-        StepConditionOption::StepConditionOption(Type type, 
+        StepConditionOption::StepConditionOption(Option::Type type, 
             double underlying, double strike, Rate dividendYield, 
             Rate riskFreeRate, Time residualTime, double volatility, 
             int timeSteps, int gridPoints)

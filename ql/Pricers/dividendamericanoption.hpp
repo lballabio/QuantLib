@@ -43,7 +43,7 @@ namespace QuantLib {
         class DividendAmericanOption : public DividendOption {
           public:
             // constructor
-            DividendAmericanOption(Type type, double underlying,
+            DividendAmericanOption(Option::Type type, double underlying,
                 double strike, Rate dividendYield, Rate riskFreeRate,
                 Time residualTime, double volatility,
                 const std::vector<double>& dividends = std::vector<double>(),

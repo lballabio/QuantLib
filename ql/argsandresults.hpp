@@ -22,36 +22,35 @@
  * available at http://quantlib.org/group.html
 */
 
-/*! \file averagestrikeasian.hpp
-    \brief example of Monte Carlo pricer using a control variate
+/*! \file argsandresults.hpp
+    \brief Base classes for generic arguments and results
 
     \fullpath
-    ql/Pricers/%averagestrikeasian.hpp
+    ql/%argsandresults.hpp
 */
 
 // $Id$
 
-#ifndef quantlib_pricers_average_strike_asian_pricer_h
-#define quantlib_pricers_average_strike_asian_pricer_h
+#ifndef quantlib_args_and_results_h
+#define quantlib_args_and_results_h
 
-#include "ql/option.hpp"
-#include "ql/types.hpp"
-#include "ql/MonteCarlo/mcpricer.hpp"
+#include "ql/qldefines.hpp"
 
 namespace QuantLib {
 
-    namespace Pricers {
+    //! base class for generic argument groups
+    class Arguments {
+      public:
+	//! only here to make the class polymorphic and allow downcasting 
+        virtual void dummy() {}
+    };
 
-        //! example of Monte Carlo pricer using a control variate.
-        class AverageStrikeAsian : public McPricer {
-          public:
-            AverageStrikeAsian(Option::Type type, double underlying,
-               double strike, Rate dividendYield, Rate riskFreeRate,
-               double residualTime, double volatility, int timesteps,
-               long samples, long seed = 0);
-        };
-
-    }
+    //! base class for generic result groups
+    class Results {
+      public:
+	//! only here to make the class polymorphic and allow downcasting 
+        virtual void dummy() {}
+    };
 
 }
 

@@ -44,7 +44,7 @@ namespace QuantLib {
         //! European option with dividends
         class DividendEuropeanOption : public EuropeanOption    {
           public:
-            DividendEuropeanOption(Type type, double underlying, 
+            DividendEuropeanOption(Option::Type type, double underlying, 
                 double strike, Rate dividendYield, Rate riskFreeRate, 
                 Time residualTime, double volatility, 
                 const std::vector<double>& dividends,

@@ -44,7 +44,7 @@ namespace QuantLib {
         using FiniteDifferences::firstDerivativeAtCenter;
         using FiniteDifferences::secondDerivativeAtCenter;
 
-        BSMNumericalOption::BSMNumericalOption(BSMNumericalOption::Type type,
+        BSMNumericalOption::BSMNumericalOption(Option::Type type,
             double underlying, double strike, Rate dividendYield,
             Rate riskFreeRate, Time residualTime, double volatility,
             unsigned int gridPoints)
@@ -115,15 +115,15 @@ namespace QuantLib {
         void BSMNumericalOption::initializeInitialCondition() const {
             unsigned int j;
             switch (type_) {
-              case Call:
+              case Option::Call:
                 for(j = 0; j < gridPoints_; j++)
                     initialPrices_[j] = QL_MAX(grid_[j]-strike_,0.0);
                 break;
-              case Put:
+              case Option::Put:
                 for(j = 0; j < gridPoints_; j++)
                     initialPrices_[j] = QL_MAX(strike_-grid_[j],0.0);
                 break;
-              case Straddle:
+              case Option::Straddle:
                 for(j = 0; j < gridPoints_; j++)
                     initialPrices_[j] = QL_FABS(strike_-grid_[j]);
                 break;

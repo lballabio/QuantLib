@@ -45,7 +45,7 @@ namespace QuantLib {
         class AmericanOption : public StepConditionOption {
           public:
             // constructor
-            AmericanOption(Type type, double underlying, double strike,
+            AmericanOption(Option::Type type, double underlying, double strike,
                            Rate dividendYield, Rate riskFreeRate,
                            Time residualTime, double volatility,
                            int timeSteps, int gridPoints);
@@ -60,10 +60,10 @@ namespace QuantLib {
 
         // inline definitions
         
-        inline AmericanOption::AmericanOption(Type type, double underlying,
-            double strike, Rate dividendYield, Rate riskFreeRate,
-            Time residualTime, double volatility, int timeSteps,
-            int gridPoints)
+        inline AmericanOption::AmericanOption(Option::Type type, 
+            double underlying, double strike, Rate dividendYield, 
+            Rate riskFreeRate, Time residualTime, double volatility, 
+            int timeSteps, int gridPoints)
         : StepConditionOption(type, underlying, strike, dividendYield,
             riskFreeRate, residualTime, volatility, timeSteps,
             gridPoints) {}

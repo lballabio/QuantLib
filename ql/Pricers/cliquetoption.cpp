@@ -38,7 +38,7 @@ namespace QuantLib
 {
     namespace Pricers
     {
-        CliquetOption::CliquetOption(Type type,
+        CliquetOption::CliquetOption(Option::Type type,
                                      double underlying,
                                      Rate dividendYield,
                                      Rate riskFreeRate,

@@ -44,7 +44,7 @@ namespace QuantLib {
         //! Example of European option calculated using finite differences
         class FiniteDifferenceEuropean : public BSMNumericalOption {
           public:
-            FiniteDifferenceEuropean(Type type,
+            FiniteDifferenceEuropean(Option::Type type,
                                      double underlying,
                                      double strike,
                                      Rate dividendYield,

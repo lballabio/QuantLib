@@ -28,6 +28,7 @@ EXTRA_DIST= \
 	makefile.mak
 
 include_HEADERS = \
+	argsandresults.hpp \
 	array.hpp \
 	calendar.hpp \
 	cashflow.hpp \
@@ -45,7 +46,7 @@ include_HEADERS = \
 	instrument.hpp \
 	marketelement.hpp \
 	null.hpp \
-	options.hpp \
+	option.hpp \
 	qldefines.hpp \
 	quantlib.hpp \
 	relinkablehandle.hpp \
@@ -81,6 +82,7 @@ libQuantLib_la_SOURCES = \
     calendar.cpp \
     dataformatters.cpp \
     date.cpp \
+    option.cpp \
     scheduler.cpp \
     solver1d.cpp
 

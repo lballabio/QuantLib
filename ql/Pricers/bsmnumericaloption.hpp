@@ -44,9 +44,9 @@ namespace QuantLib {
         //! Black-Scholes-Merton option priced numerically
         class BSMNumericalOption : public SingleAssetOption {
           public:
-            BSMNumericalOption(Type type, double underlying, double strike,
-                Rate dividendYield, Rate riskFreeRate, Time residualTime,
-                double volatility, unsigned int gridPoints);
+            BSMNumericalOption(Option::Type type, double underlying, 
+                double strike, Rate dividendYield, Rate riskFreeRate, 
+                Time residualTime, double volatility, unsigned int gridPoints);
             // accessors
             virtual void calculate() const = 0;
             double value() const;

@@ -119,18 +119,18 @@ namespace QuantLib {
         Type* operator->() const;
         //@}
 
+        #if QL_ALLOW_TEMPLATE_METHOD_CALLS
         //! \name Casting
         //@{
         /*! Returns a null pointer in case of failure.
             \warning The returned pointer is not guaranteed to remain 
             allocated and should be discarded immediately after being used */
-        #if QL_ALLOW_TEMPLATE_METHOD_CALLS
         template <class Type2>
         Type2* downcast() const {
             return dynamic_cast<Type2*>(ptr_);
         }
-        #endif
         //@}
+        #endif
         
         //! \name Inspectors
         //@{

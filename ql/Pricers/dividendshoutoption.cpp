@@ -37,7 +37,7 @@ namespace QuantLib {
 
     namespace Pricers {
 
-        DividendShoutOption::DividendShoutOption(Type type,
+        DividendShoutOption::DividendShoutOption(Option::Type type,
                 double underlying, double strike, Rate dividendYield,
                 Rate riskFreeRate, Time residualTime, double volatility,
                 const std::vector<double>& dividends,

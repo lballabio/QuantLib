@@ -38,7 +38,7 @@ namespace QuantLib {
     namespace Pricers {
 
         BarrierOption::BarrierOption(BarrierType barrType,
-                                     Type type,
+                                     Option::Type type,
                                      double underlying,
                                      double strike,
                                      Rate dividendYield,
@@ -105,7 +105,7 @@ namespace QuantLib {
           if(!hasBeenCalculated_) {
             initialize_();
             switch (type_) {
-              case Call:
+              case Option::Call:
                 switch (barrType_) {
                   case DownIn:
                     if(strike_ >= barrier_)
@@ -133,7 +133,7 @@ namespace QuantLib {
                     break;
                 }
                 break;
-              case Put:
+              case Option::Put:
                 switch (barrType_) {
                   case DownIn:
                     if(strike_ >= barrier_)
@@ -161,7 +161,7 @@ namespace QuantLib {
                     break;
                 }
                 break;
-              case Straddle:
+              case Option::Straddle:
                 switch (barrType_) {
                   case DownIn:
                     if(strike_ >= barrier_)

@@ -38,9 +38,9 @@ namespace QuantLib {
     namespace Pricers {
 
         DividendEuropeanOption::DividendEuropeanOption(
-            Type type, double underlying, double strike, Rate dividendYield,
-            Rate riskFreeRate, Time residualTime, double volatility,
-            const std::vector<double>& dividends,
+            Option::Type type, double underlying, double strike, 
+            Rate dividendYield, Rate riskFreeRate, Time residualTime, 
+            double volatility, const std::vector<double>& dividends,
             const std::vector<Time>& exdivdates):
             EuropeanOption(type, underlying - riskless(riskFreeRate,
                 dividends, exdivdates), strike, dividendYield,

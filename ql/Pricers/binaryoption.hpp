@@ -43,7 +43,7 @@ namespace QuantLib  {
         //! Binary (digital) option        
         class BinaryOption : public SingleAssetOption {
           public:
-            BinaryOption(Type type, double underlying, double strike,
+            BinaryOption(Option::Type type, double underlying, double strike,
                          Rate dividendYield, Rate riskFreeRate, 
                          Time residualTime, double volatility, 
                          double cashPayoff = 1 );

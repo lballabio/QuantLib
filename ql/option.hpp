@@ -22,29 +22,56 @@
  * available at http://quantlib.org/group.html
 */
 
-/*! \file options.hpp
+/*! \file option.hpp
     \brief Base option class
 
     \fullpath
-    ql/%options.hpp
+    ql/%option.hpp
 */
 
 // $Id$
 
-#ifndef quantlib_options_h
-#define quantlib_options_h
+#ifndef quantlib_option_h
+#define quantlib_option_h
 
 #include "ql/qldefines.hpp"
+#include "ql/instrument.hpp"
+#include "ql/argsandresults.hpp"
+#include "ql/handle.hpp"
+#include "ql/null.hpp"
 
 namespace QuantLib {
 
+    class OptionPricingEngine;
+
     //! base option class
-    /*! This class has the only purpose of encapsulating the option type 
-        enumeration.
-    */
-    class Option {
+    class Option : public Instrument {
       public:
         enum Type { Call, Put, Straddle };
+        Option(const Handle<OptionPricingEngine>& engine,
+               const std::string& isinCode = "",
+               const std::string& description = "");
+      protected:
+        virtual void setupEngine() const = 0;
+        void performCalculations() const;
+        Handle<OptionPricingEngine> engine_;
+    };
+
+    //! option pricing results
+    class OptionResults : public virtual Results {
+      public:
+        OptionResults() : value(Null<double>()), isExpired(true) {}
+        double value;
+        bool isExpired;
+    };
+
+    
+    //! base class for option pricing engines
+    class OptionPricingEngine {
+      public:
+        virtual Handle<Arguments> parameters() const = 0;
+        virtual void calculate() const = 0;
+        virtual Handle<Results> results() const = 0;
     };
 
 }

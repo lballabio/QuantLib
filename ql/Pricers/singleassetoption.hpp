@@ -34,7 +34,7 @@
 #ifndef BSM_option_pricer_h
 #define BSM_option_pricer_h
 
-#include "ql/options.hpp"
+#include "ql/option.hpp"
 #include "ql/handle.hpp"
 #include "ql/solver1d.hpp"
 
@@ -50,11 +50,11 @@ namespace QuantLib {
         double ExercisePayoff(Option::Type type, double price, double strike);
 
         //! Black-Scholes-Merton option
-        class SingleAssetOption : public Option {
+        class SingleAssetOption {
           public:
-            SingleAssetOption(Type type, double underlying, double strike,
-                Rate dividendYield, Rate riskFreeRate, Time residualTime,
-                double volatility);
+            SingleAssetOption(Option::Type type, double underlying, 
+                double strike, Rate dividendYield, Rate riskFreeRate, 
+                Time residualTime, double volatility);
             virtual ~SingleAssetOption() {}    // just in case
             // modifiers
             virtual void setVolatility(double newVolatility) ;
@@ -75,7 +75,7 @@ namespace QuantLib {
             virtual Handle<SingleAssetOption> clone() const = 0;
           protected:
             // results declared as mutable to preserve the logical
-            Type type_;
+            Option::Type type_;
             double underlying_;
             double strike_;
             Rate dividendYield_;

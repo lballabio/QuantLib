@@ -39,13 +39,16 @@ namespace QuantLib {
 
         const Math::CumulativeNormalDistribution EuropeanOption::f_;
 
-        EuropeanOption::EuropeanOption(Type type, double underlying, double strike,
-            Rate dividendYield, Rate riskFreeRate, Time residualTime, double volatility)
-        : SingleAssetOption(type, underlying, strike, dividendYield, riskFreeRate,
-        residualTime, volatility), alpha_(Null<double>()), beta_(Null<double>()),
-        standardDeviation_(Null<double>()), D1_(Null<double>()), D2_(Null<double>()), 
-        NID1_(Null<double>()), dividendDiscount_(Null<DiscountFactor>()),
-        riskFreeDiscount_(Null<DiscountFactor>()) {}
+        EuropeanOption::EuropeanOption(Option::Type type, double underlying, 
+            double strike, Rate dividendYield, Rate riskFreeRate, 
+            Time residualTime, double volatility)
+        : SingleAssetOption(type, underlying, strike, dividendYield, 
+                            riskFreeRate, residualTime, volatility), 
+          alpha_(Null<double>()), beta_(Null<double>()),
+          standardDeviation_(Null<double>()), D1_(Null<double>()), 
+          D2_(Null<double>()), NID1_(Null<double>()), 
+          dividendDiscount_(Null<DiscountFactor>()),
+          riskFreeDiscount_(Null<DiscountFactor>()) {}
 
         void EuropeanOption::setVolatility(double newVolatility) {
             SingleAssetOption::setVolatility(newVolatility);

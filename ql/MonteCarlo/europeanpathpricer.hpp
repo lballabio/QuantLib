@@ -35,7 +35,7 @@
 #define quantlib_montecarlo_european_path_pricer_h
 
 #include "ql/MonteCarlo/pathpricer.hpp"
-#include "ql/options.hpp"
+#include "ql/option.hpp"
 
 namespace QuantLib {
 

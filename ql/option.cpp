@@ -22,38 +22,41 @@
  * available at http://quantlib.org/group.html
 */
 
-/*! \file averagestrikeasian.hpp
-    \brief example of Monte Carlo pricer using a control variate
+/*! \file option.cpp
+    \brief Base option class
 
     \fullpath
-    ql/Pricers/%averagestrikeasian.hpp
+    ql/%option.cpp
 */
 
 // $Id$
 
-#ifndef quantlib_pricers_average_strike_asian_pricer_h
-#define quantlib_pricers_average_strike_asian_pricer_h
-
 #include "ql/option.hpp"
-#include "ql/types.hpp"
-#include "ql/MonteCarlo/mcpricer.hpp"
 
 namespace QuantLib {
 
-    namespace Pricers {
+    Option::Option(const Handle<OptionPricingEngine>& engine,
+        const std::string& isinCode, const std::string& description)
+    : Instrument(isinCode, description), engine_(engine) {
+        QL_REQUIRE(!engine_.isNull(), "null pricing engine passed");
+    }
 
-        //! example of Monte Carlo pricer using a control variate.
-        class AverageStrikeAsian : public McPricer {
-          public:
-            AverageStrikeAsian(Option::Type type, double underlying,
-               double strike, Rate dividendYield, Rate riskFreeRate,
-               double residualTime, double volatility, int timesteps,
-               long samples, long seed = 0);
-        };
-
+    void Option::performCalculations() const {
+        setupEngine();
+        engine_->calculate();
+        const OptionResults* results = 
+        #if QL_ALLOW_TEMPLATE_METHOD_CALLS
+            engine_->results().downcast<OptionResults>();
+        #else
+            dynamic_cast<const OptionResults*>(engine_->results().pointer());
+        #endif
+        QL_ENSURE(results != 0, "no results returned from option pricer");
+        NPV_ = results->value;
+        isExpired_ = results->isExpired;
+        QL_ENSURE(isExpired_ || NPV_ != Null<double>(),
+            "null value returned from option pricer");
     }
 
 }
 
 
-#endif

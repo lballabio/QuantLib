@@ -45,7 +45,7 @@ namespace QuantLib {
         class EuropeanOption : public SingleAssetOption {
           public:
             // constructor
-            EuropeanOption(Type type, double underlying, double strike,
+            EuropeanOption(Option::Type type, double underlying, double strike,
                       Rate dividendYield, Rate riskFreeRate,
                       Time residualTime, double volatility);
             // accessors
@@ -81,13 +81,13 @@ namespace QuantLib {
         inline double EuropeanOption::alpha() const {
             if (alpha_==Null<double>()) {
                 switch (type_) {
-                    case Call:
+                    case Option::Call:
                         alpha_ = f_(D1());
                         break;
-                    case Put:
+                    case Option::Put:
                         alpha_ = f_(D1())-1.0;
                         break;
-                    case Straddle:
+                    case Option::Straddle:
                         alpha_ = 2.0*f_(D1())-1.0;
                         break;
                     default:
@@ -101,13 +101,13 @@ namespace QuantLib {
         inline double EuropeanOption::beta() const {
             if (beta_==Null<double>()) {
                 switch (type_) {
-                    case Call:
+                    case Option::Call:
                         beta_ = f_(D2());
                         break;
-                    case Put:
+                    case Option::Put:
                         beta_ = f_(D2())-1.0;
                         break;
-                    case Straddle:
+                    case Option::Straddle:
                         beta_ = 2.0*f_(D2())-1.0;
                         break;
                     default:
@@ -141,11 +141,11 @@ namespace QuantLib {
         inline double EuropeanOption::NID1() const {
             if (NID1_==Null<double>()) {
                 switch (type_) {
-                    case Call:
-                    case Put:
+                    case Option::Call:
+                    case Option::Put:
                         NID1_ = f_.derivative(D1());
                         break;
-                    case Straddle:
+                    case Option::Straddle:
                         NID1_ = 2.0*f_.derivative(D1());
                         break;
                     default:

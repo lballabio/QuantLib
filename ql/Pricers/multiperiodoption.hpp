@@ -48,7 +48,7 @@ namespace QuantLib {
             double controlVariateCorrection() const;
           protected:
             // constructor
-            MultiPeriodOption(Type type, double underlying,
+            MultiPeriodOption(Option::Type type, double underlying,
                 double strike, Rate dividendYield, Rate riskFreeRate,
                 Time residualTime, double volatility, int gridPoints,
                 const std::vector<Time>& dates,

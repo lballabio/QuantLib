@@ -43,10 +43,10 @@ namespace QuantLib {
         using FiniteDifferences::firstDerivativeAtCenter;
         using FiniteDifferences::secondDerivativeAtCenter;
 
-        MultiPeriodOption::MultiPeriodOption(Type type, double underlying,
-            double strike, Rate dividendYield, Rate riskFreeRate,
-            Time residualTime, double volatility, int gridPoints,
-            const std::vector<Time>& dates,
+        MultiPeriodOption::MultiPeriodOption(Option::Type type, 
+            double underlying, double strike, Rate dividendYield, 
+            Rate riskFreeRate, Time residualTime, double volatility, 
+            int gridPoints, const std::vector<Time>& dates,
             int timeSteps)
         : BSMNumericalOption(type, underlying, strike,
                              dividendYield, riskFreeRate,

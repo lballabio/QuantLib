@@ -34,7 +34,7 @@
 #ifndef quantlib_montecarlo_european_pricer_h
 #define quantlib_montecarlo_european_pricer_h
 
-#include "ql/options.hpp"
+#include "ql/option.hpp"
 #include "ql/types.hpp"
 #include "ql/MonteCarlo/mcpricer.hpp"
 

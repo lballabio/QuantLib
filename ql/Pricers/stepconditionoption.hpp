@@ -45,7 +45,8 @@ namespace QuantLib {
         class StepConditionOption : public BSMNumericalOption {
           protected:
             // constructor
-            StepConditionOption(Type type, double underlying, double strike,
+            StepConditionOption(Option::Type type, double underlying, 
+                                double strike,
                                 Rate dividendYield, Rate riskFreeRate,
                                 Time residualTime, double volatility,
                                 int timeSteps, int gridPoints);

@@ -103,11 +103,10 @@ namespace QuantLib {
             for (; begin != end; ++begin) {
                 // the following should be safe as long as nobody 
                 // messed with the coupons
-                #if QL_ALLOW_TEMPLATE_METHOD_CALLS
                 const FixedRateCoupon* coupon = 
+                #if QL_ALLOW_TEMPLATE_METHOD_CALLS
                     begin->downcast<FixedRateCoupon>();
                 #else
-                const FixedRateCoupon* coupon = 
                     dynamic_cast<const FixedRateCoupon*>(begin->pointer());
                 #endif
                 // however, we will check that it succeeded

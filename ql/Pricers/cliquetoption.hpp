@@ -53,7 +53,7 @@ namespace QuantLib {
         */
         class CliquetOption : public SingleAssetOption {
           public:
-            CliquetOption(Type type,
+            CliquetOption(Option::Type type,
                           double underlying,
                           Rate dividendYield,
                           Rate riskFreeRate,

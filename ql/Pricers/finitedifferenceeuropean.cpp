@@ -42,7 +42,7 @@ namespace QuantLib {
         using FiniteDifferences::firstDerivativeAtCenter;
         using FiniteDifferences::secondDerivativeAtCenter;
 
-        FiniteDifferenceEuropean::FiniteDifferenceEuropean(Type type,
+        FiniteDifferenceEuropean::FiniteDifferenceEuropean(Option::Type type,
             double underlying, double strike, Rate dividendYield,
             Rate riskFreeRate, Time residualTime, double volatility,
             unsigned int timeSteps, unsigned int gridPoints)

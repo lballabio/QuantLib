@@ -38,11 +38,10 @@ namespace QuantLib
 {
     namespace Pricers
     {
-        BinaryOption::BinaryOption(Type type, double underlying, double strike,
-                                   Rate dividendYield, Rate
-                                   riskFreeRate, Time residualTime,
-                                   double volatility, double
-                                   cashPayoff)
+        BinaryOption::BinaryOption(Option::Type type, double underlying, 
+                                   double strike, Rate dividendYield, 
+                                   Rate riskFreeRate, Time residualTime,
+                                   double volatility, double cashPayoff)
             : SingleAssetOption(type, underlying, strike, dividendYield,
                         riskFreeRate, residualTime, volatility),
             cashPayoff_(cashPayoff)

@@ -44,7 +44,7 @@ namespace QuantLib {
         class BermudanOption : public MultiPeriodOption {
           public:
             // constructor
-            BermudanOption(Type type, double underlying,
+            BermudanOption(Option::Type type, double underlying,
                 double strike, Rate dividendYield, Rate riskFreeRate,
                 Time residualTime, double volatility,
                 const std::vector<Time>& dates = std::vector<Time>(),

@@ -44,7 +44,7 @@ namespace QuantLib {
         class ShoutOption : public StepConditionOption {
           public:
             // constructor
-            ShoutOption(Type type, double underlying, double strike,
+            ShoutOption(Option::Type type, double underlying, double strike,
                            Rate dividendYield, Rate riskFreeRate,
                            Time residualTime, double volatility,
                            int timeSteps, int gridPoints);
@@ -59,7 +59,7 @@ namespace QuantLib {
 
         // inline definitions
         
-        inline ShoutOption::ShoutOption(Type type, double underlying,
+        inline ShoutOption::ShoutOption(Option::Type type, double underlying,
             double strike, Rate dividendYield, Rate riskFreeRate,
             Time residualTime, double volatility, int timeSteps,
             int gridPoints)

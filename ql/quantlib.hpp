@@ -29,6 +29,7 @@
 // include this first for additional safety
 #include "ql/qldefines.hpp"
 
+#include "ql/argsandresults.hpp"
 #include "ql/array.hpp"
 #include "ql/calendar.hpp"
 #include "ql/cashflow.hpp"
@@ -45,7 +46,7 @@
 #include "ql/instrument.hpp"
 #include "ql/marketelement.hpp"
 #include "ql/null.hpp"
-#include "ql/options.hpp"
+#include "ql/option.hpp"
 #include "ql/relinkablehandle.hpp"
 #include "ql/riskstatistics.hpp"
 #include "ql/scheduler.hpp"

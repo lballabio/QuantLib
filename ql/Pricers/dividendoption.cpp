@@ -44,7 +44,7 @@ namespace QuantLib {
         using Math::CubicSpline;
         using FiniteDifferences::valueAtCenter;
 
-        DividendOption::DividendOption(Type type, double underlying,
+        DividendOption::DividendOption(Option::Type type, double underlying,
             double strike, Rate dividendYield, Rate riskFreeRate,
             Time residualTime, double volatility,
             const std::vector<double>& dividends,

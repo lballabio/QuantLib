@@ -38,7 +38,7 @@ namespace QuantLib {
 
     namespace Pricers {
 
-        BermudanOption::BermudanOption(Type type, double underlying,
+        BermudanOption::BermudanOption(Option::Type type, double underlying,
             double strike, Rate dividendYield, Rate riskFreeRate,
             Time residualTime, double volatility,
             const std::vector<Time>& dates,
