@@ -120,7 +120,7 @@ namespace QuantLib {
                       Xetra,                  //!< Xetra
                       Eurex                   //!< Eurex
         };
-        Germany(Market market = Settlement);
+        Germany(Market market = FrankfurtStockExchange);
     };
 
 }

@@ -34,6 +34,10 @@
 
 class CalendarTest {
   public:
+    static void testGermanySettlement();
+    static void testGermanyFrankfurt();
+    static void testGermanyXetra();
+    static void testGermanyEurex();
     static void testTARGET();
     static void testUSSettlement();
     static void testUSGovernmentBondMarket();

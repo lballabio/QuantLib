@@ -18,9 +18,11 @@
 #include "calendars.hpp"
 #include <ql/dataformatters.hpp>
 #include <ql/calendar.hpp>
+#include <ql/Calendars/germany.hpp>
+#include <ql/Calendars/italy.hpp>
 #include <ql/Calendars/target.hpp>
-#include <ql/Calendars/london.hpp>
-#include <ql/Calendars/newyork.hpp>
+#include <ql/Calendars/unitedkingdom.hpp>
+#include <ql/Calendars/unitedstates.hpp>
 #include <ql/Calendars/tokyo.hpp>
 #include <ql/Calendars/jointcalendar.hpp>
 #include <ql/Functions/calendars.hpp>
@@ -390,10 +392,130 @@ void CalendarTest::testTARGET() {
 
 }
 
+void CalendarTest::testGermanyFrankfurt() {
+    BOOST_MESSAGE("Testing Germany Frankfurt Stock Exchange holiday list...");
+
+    std::vector<Date> expectedHol;
+
+    expectedHol.push_back(Date(1,January,2003));
+    expectedHol.push_back(Date(18,April,2003));
+    expectedHol.push_back(Date(21,April,2003));
+    expectedHol.push_back(Date(1,May,2003));
+    expectedHol.push_back(Date(24,December,2003));
+    expectedHol.push_back(Date(25,December,2003));
+    expectedHol.push_back(Date(26,December,2003));
+    expectedHol.push_back(Date(31,December,2003));
+
+    expectedHol.push_back(Date(1,January,2004));
+    expectedHol.push_back(Date(9,April,2004));
+    expectedHol.push_back(Date(12,April,2004));
+    expectedHol.push_back(Date(24,December,2004));
+    expectedHol.push_back(Date(31,December,2004));
+
+    Calendar c = Germany(Germany::FrankfurtStockExchange);
+    std::vector<Date> hol = holidayList(c, Date(1,January,2003),
+                                           Date(31,December,2004));
+    for (Size i=0; i<QL_MIN<Size>(hol.size(), expectedHol.size()); i++) {
+        if (hol[i]!=expectedHol[i])
+            BOOST_FAIL("expected holiday was "
+                       + DateFormatter::toString(expectedHol[i]) +
+                       " while calculated holiday is "
+                       + DateFormatter::toString(hol[i]));
+    }
+    if (hol.size()!=expectedHol.size())
+            BOOST_FAIL("there were "
+                + SizeFormatter::toString(expectedHol.size()) +
+                " expected holidays, while there are "
+                + SizeFormatter::toString(hol.size()) +
+                " calculated holidays");
+}
+
+void CalendarTest::testGermanyEurex() {
+    BOOST_MESSAGE("Testing Germany Eurex holiday list...");
+
+    std::vector<Date> expectedHol;
+
+    expectedHol.push_back(Date(1,January,2003));
+    expectedHol.push_back(Date(18,April,2003));
+    expectedHol.push_back(Date(21,April,2003));
+    expectedHol.push_back(Date(1,May,2003));
+    expectedHol.push_back(Date(24,December,2003));
+    expectedHol.push_back(Date(25,December,2003));
+    expectedHol.push_back(Date(26,December,2003));
+    expectedHol.push_back(Date(31,December,2003));
+
+    expectedHol.push_back(Date(1,January,2004));
+    expectedHol.push_back(Date(9,April,2004));
+    expectedHol.push_back(Date(12,April,2004));
+    expectedHol.push_back(Date(24,December,2004));
+    expectedHol.push_back(Date(31,December,2004));
+
+    Calendar c = Germany(Germany::Eurex);
+    std::vector<Date> hol = holidayList(c, Date(1,January,2003),
+                                           Date(31,December,2004));
+    for (Size i=0; i<QL_MIN<Size>(hol.size(), expectedHol.size()); i++) {
+        if (hol[i]!=expectedHol[i])
+            BOOST_FAIL("expected holiday was "
+                       + DateFormatter::toString(expectedHol[i]) +
+                       " while calculated holiday is "
+                       + DateFormatter::toString(hol[i]));
+    }
+    if (hol.size()!=expectedHol.size())
+            BOOST_FAIL("there were "
+                + SizeFormatter::toString(expectedHol.size()) +
+                " expected holidays, while there are "
+                + SizeFormatter::toString(hol.size()) +
+                " calculated holidays");
+}
+
+void CalendarTest::testGermanyXetra() {
+    BOOST_MESSAGE("Testing Germany Xetra holiday list...");
+
+    std::vector<Date> expectedHol;
+
+    expectedHol.push_back(Date(1,January,2003));
+    expectedHol.push_back(Date(18,April,2003));
+    expectedHol.push_back(Date(21,April,2003));
+    expectedHol.push_back(Date(1,May,2003));
+    expectedHol.push_back(Date(24,December,2003));
+    expectedHol.push_back(Date(25,December,2003));
+    expectedHol.push_back(Date(26,December,2003));
+    expectedHol.push_back(Date(31,December,2003));
+
+    expectedHol.push_back(Date(1,January,2004));
+    expectedHol.push_back(Date(9,April,2004));
+    expectedHol.push_back(Date(12,April,2004));
+    expectedHol.push_back(Date(24,December,2004));
+    expectedHol.push_back(Date(31,December,2004));
+
+    Calendar c = Germany(Germany::Xetra);
+    std::vector<Date> hol = holidayList(c, Date(1,January,2003),
+                                           Date(31,December,2004));
+    for (Size i=0; i<QL_MIN<Size>(hol.size(), expectedHol.size()); i++) {
+        if (hol[i]!=expectedHol[i])
+            BOOST_FAIL("expected holiday was "
+                       + DateFormatter::toString(expectedHol[i]) +
+                       " while calculated holiday is "
+                       + DateFormatter::toString(hol[i]));
+    }
+    if (hol.size()!=expectedHol.size())
+            BOOST_FAIL("there were "
+                + SizeFormatter::toString(expectedHol.size()) +
+                " expected holidays, while there are "
+                + SizeFormatter::toString(hol.size()) +
+                " calculated holidays");
+}
+
 test_suite* CalendarTest::suite() {
     test_suite* suite = BOOST_TEST_SUITE("Calendar tests");
 
+//    suite->add(BOOST_TEST_CASE(&CalendarTest::testGermanySettlement));
+    suite->add(BOOST_TEST_CASE(&CalendarTest::testGermanyFrankfurt));
+    suite->add(BOOST_TEST_CASE(&CalendarTest::testGermanyXetra));
+    suite->add(BOOST_TEST_CASE(&CalendarTest::testGermanyEurex));
+
     suite->add(BOOST_TEST_CASE(&CalendarTest::testTARGET));
+
     suite->add(BOOST_TEST_CASE(&CalendarTest::testUSSettlement));
     suite->add(BOOST_TEST_CASE(&CalendarTest::testUSGovernmentBondMarket));
     suite->add(BOOST_TEST_CASE(&CalendarTest::testUSNewYorkStockExchange));
