@@ -27,7 +27,7 @@ feedback, questions, etc. The mailing list is only for subscribers, so please
 subscribe before posting
 
 If you are interested in participating in QuantLib development, please send
-mail to Ferdinando Ametrano -- ferdinando@ametrano.net -- describing your
+mail to Ferdinando Ametrano -- nando AT ametrano DOT net -- describing your
 experience and interests.
 
 
@@ -74,12 +74,12 @@ The file INSTALL.txt contains more detailed instructions.
 
 QuantLib.dsw and QuantLib.dsp are MS VC++ 6 workspace and project files.
 
-QuantLib.mak is the MS VC++ command line makefile to be used with NMAKE, as in:
-NMAKE /f "QuantLib.mak" CFG="QuantLib - Win32 Release"
+QuantLib.mak is the MS VC++ command line makefile to be used with NMAKE, as
+in: NMAKE /f "QuantLib.mak" CFG="QuantLib - Win32 Release"
 
-makefile.mak is the Borland command line makefile. You can download the Borland
-Free compiler from: <http://www.borland.com/bcppbuilder/freecompiler/>
+makefile.mak is the Borland command line makefile. You can download the
+Borland Free compiler from: <http://www.borland.com/bcppbuilder/freecompiler/>
 
 QuantLib.nsi is a script file used to generate the Win32 binary installer. It
-has to be used by NSIS, the great free Nullsoft Scriptable Install System, that
-can be downloaded from <http://www.nullsoft.com/free/nsis/>
+has to be used by NSIS, the great free Nullsoft Scriptable Install System,
+that can be downloaded from <http://nsis.sourceforge.net>

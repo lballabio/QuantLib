@@ -15,7 +15,7 @@
  QuantLib License for more details.
 
  You should have received a copy of the QuantLib License along with this
- program; if not, please email ferdinando@ametrano.net
+ program; if not, please email quantlib-dev@lists.sf.net
 
  The QuantLib License is also available at http://quantlib.org/license.html
  The members of the QuantLib Group are listed in the QuantLib License
@@ -85,14 +85,13 @@
     <td><em><a href="http://www.nielses.dk/">Niels Elken
      Sønderby</a></em></td>
     <td>mail@nielses.dk</td>
-    <td>Gauss-Kronrod integration, option with
-        stochastic vol and jumps</td>
+    <td>Gauss-Kronrod integration</td>
     <td><a href="http://sourceforge.net/users/nielses/">nielses</a></td>
     </tr>
 
     <tr>
     <td><em>Sadruddin Rejeb</em></td>
-    <td>&#115;&#97;&#100;&#46;&#114;&#101;&#106;&#101;&#98;&#64;&#114;&#105;&#115;&#107;&#109;&#97;&#112;&#46;&#105;&#116;</td>
+    <td>sad@quantlib.org</td>
     <td>interest rate models</td>
     <td><a href=
     "http://sourceforge.net/users/sadrejeb/">sadrejeb</a></td>
@@ -117,10 +116,9 @@
         \item Neil Firth: Monte Carlo: Longstaff-Schwartz American option,
               Barrier option
         \item Marco Marchioro (marco.marchioro@riskmap.net)
-        \item Sadruddin Rejeb (sad.rejeb@riskmap.it), interest
+        \item Sadruddin Rejeb (sad@quantlib.org), interest
               rate models
-        \item Niels Elken S{\o}nderby: Gauss-Kronrod integration, option with
-              stochastic vol and jumps
+        \item Niels Elken S{\o}nderby: Gauss-Kronrod integration
         \item Liguo Song: RPM maintainer
     \end{itemize}
     \endlatexonly

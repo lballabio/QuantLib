@@ -7,7 +7,8 @@
 
  QuantLib is free software: you can redistribute it and/or modify it under the
  terms of the QuantLib license.  You should have received a copy of the
- license along with this program; if not, please email ferdinando@ametrano.net
+ license along with this program; if not, please email
+ quantlib-dev@lists.sf.net
  The license is also available online at http://quantlib.org/html/license.html
 
  This program is distributed in the hope that it will be useful, but WITHOUT
@@ -150,7 +151,7 @@ namespace QuantLib {
     Disposable<Array> operator/(const Array&, double);
     /*! \relates Array */
     Disposable<Array> operator/(double, const Array&);
-    
+
     // math functions
     /*! \relates Array */
     Disposable<Array> Abs(const Array&);
@@ -494,7 +495,7 @@ namespace QuantLib {
                        std::bind1st(std::divides<double>(),a));
         return result;
     }
-    
+
     // functions
 
     inline Disposable<Array> Abs(const Array& v) {

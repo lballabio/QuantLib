@@ -6,12 +6,13 @@
 #
 # QuantLib is free software: you can redistribute it and/or modify it under the
 # terms of the QuantLib license.  You should have received a copy of the
-# license along with this program; if not, please email ferdinando@ametrano.net
+# license along with this program; if not, please email
+# quantlib-dev@lists.sf.net
 # The license is also available online at http://quantlib.org/html/license.html
 #
 # This program is distributed in the hope that it will be useful, but WITHOUT
-# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
-# FOR A PARTICULAR PURPOSE.  See the license for more details.
+# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+# FITNESS FOR A PARTICULAR PURPOSE.  See the license for more details.
 if test "$1" == "" ; then
 echo usage: update_copyright YEAR ;
 else
@@ -45,6 +46,6 @@ BEGIN {
 }
 
 { print }
-' YEAR=$1 \$0 > .temp.file ; 
+' YEAR=$1 \$0 > .temp.file ;
 mv .temp.file \$0" ;
 fi

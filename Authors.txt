@@ -1,8 +1,9 @@
-Ferdinando Ametrano (ferdinando@ametrano.net) - admin
+Ferdinando Ametrano (nando AT ametrano DOT net) - admin
 Luigi Ballabio (luigi.ballabio@riskmap.net) - library designer
+Nicolas Di Césaré
+Dirk Eddelbuettel
+Neil Firth
 Marco Marchioro (marco.marchioro@riskmap.net)
 Sadruddin Rejeb (sad@quantlib.org)
-Nicolas Di Césaré
-Enrico Sirola (enrico.sirola@riskmap.net)
-Mario Aleppo (mario.aleppo@riskmap.net)
-Adolfo Benin (adolfo.benin@libero.it)
+Niels Elken Sonderby
+Liguo Song
