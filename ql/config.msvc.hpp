@@ -173,14 +173,6 @@
     #pragma comment(lib,"QuantLib.lib")
 #endif
 
-#if !defined (_MT) || !defined(_DLL)
-    #ifdef _DEBUG
-        #error Set 'Debug Multithreaded DLL' under C/C++ | Code Generation
-    #else
-        #error Set 'Multithreaded DLL' under C/C++ | Code Generation
-    #endif
-#endif
-
 #ifndef _CPPRTTI
     #error Check the 'C/C++ | C++ Language | Use RTTI' option
 #endif
