@@ -77,6 +77,7 @@
 #include "old_pricers.hpp"
 
 #include <iostream>
+#include <iomanip>
 
 using namespace boost::unit_test_framework;
 
@@ -86,8 +87,18 @@ namespace {
 
     void startTimer() { t.restart(); }
     void stopTimer() {
-        std::cout << " \nTests completed in "
-                  << t.elapsed() << " s\n " << std::endl;
+        double seconds = t.elapsed();
+        int hours = int(seconds/3600);
+        seconds -= hours * 3600;
+        int minutes = int(seconds/60);
+        seconds -= minutes * 60;
+        std::cout << " \nTests completed in ";
+        if (hours > 0)
+            std::cout << hours << " h ";
+        if (hours > 0 || minutes > 0)
+            std::cout << minutes << " m ";
+        std::cout << std::fixed << std::setprecision(0)
+                  << seconds << " s\n" << std::endl;
     }
 
 }
