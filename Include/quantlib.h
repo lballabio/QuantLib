@@ -25,6 +25,9 @@
     $Source$
     $Name$
     $Log$
+    Revision 1.19  2001/01/25 10:31:22  marmar
+    JacobiDecomposition renamed SymmetricSchurDecomposition
+
     Revision 1.18  2001/01/24 16:02:56  marmar
     math files added
 
@@ -154,7 +157,7 @@
 #include "array.h"
 #include "matrix.h"
 #include "matrixsqrt.h"
-#include "jacobidecomposition.h"
+#include "symmetricschurdecomposition.h"
 #include "multivariateaccumulator.h"
 #include "outerproduct.h"
 
