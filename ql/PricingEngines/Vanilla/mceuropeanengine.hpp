@@ -119,7 +119,7 @@ namespace QuantLib {
         QL_REQUIRE(payoff, "non-plain payoff given");
 
         return boost::shared_ptr<
-                          typename MCEuropeanEngine<RNG,S>::path_pricer_type>(
+                          MCEuropeanEngine<RNG,S>::path_pricer_type>(
           new EuropeanPathPricer(
               payoff->optionType(),
               this->arguments_.blackScholesProcess->stateVariable()->value(),
