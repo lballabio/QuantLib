@@ -39,7 +39,7 @@
 #endif
 #endif
 
-%include Vectors.i
+%include QLArray.i
 
 %{
 using QuantLib::Math::Statistics;
@@ -85,9 +85,9 @@ public:
     MultivariateAccumulator();
     int size() const;
     double samples() const;
-    PyArray mean() const;
+    Array mean() const;
     Matrix covariance() const;
-    void add(const PyArray &arr, double weight = 1.0);
+    void add(const Array& a, double weight = 1.0);
     void reset();
 };
 

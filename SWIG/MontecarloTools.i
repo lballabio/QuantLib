@@ -25,9 +25,12 @@
 	$Source$
 	$Name$
 	$Log$
+	Revision 1.3  2001/02/26 17:05:30  lballabio
+	Ultimate Array interface and typemap for SWIG
+
 	Revision 1.2  2001/02/13 10:08:58  marmar
 	Changed interface to StandardMultiPathGenerator
-
+	
 	Revision 1.1  2001/02/02 10:57:34  marmar
 	Basic swig interface for Monte Carlo tools
 	
@@ -42,6 +45,7 @@
 #include "quantlib.h"
 %}
 
+%include QLArray.i
 %include Vectors.i
 
 #if defined(SWIGPYTHON)
@@ -52,10 +56,10 @@ using QuantLib::MonteCarlo::GaussianArrayGenerator;
 
 class GaussianArrayGenerator{
     public:
-	GaussianArrayGenerator(const PyArray &average,
-                           const Matrix &covariance, 
+	GaussianArrayGenerator(const Array& average,
+                           const Matrix& covariance, 
                            long seed=0);
-	PyArray next() const;
+	Array next() const;
 	double weight() const;
 };
 
@@ -66,9 +70,9 @@ using QuantLib::MonteCarlo::StandardMultiPathGenerator;
 
 class StandardMultiPathGenerator{
     public:
-	StandardMultiPathGenerator(const DoubleVector &timeDelays, 
-	                           const PyArray &average, 
-                               const Matrix &covariance,
+	StandardMultiPathGenerator(const DoubleVector& timeDelays, 
+	                           const Array& average, 
+                               const Matrix& covariance,
                                long seed=0);
 	Matrix next() const;
 	double weight() const;

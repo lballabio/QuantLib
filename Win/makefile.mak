@@ -206,6 +206,7 @@ $(PYTHON_DIR)\quantlib_wrap.cpp:: \
     $(SWIG_DIR)\Operators.i \
     $(SWIG_DIR)\Options.i \
     $(SWIG_DIR)\Pricers.i \
+    $(SWIG_DIR)\QLArray.i \
     $(SWIG_DIR)\RandomGenerators.i \
     $(SWIG_DIR)\RiskStatistics.i \
     $(SWIG_DIR)\Solvers1D.i \

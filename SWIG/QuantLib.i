@@ -37,15 +37,18 @@
 #endif
 
 %except(python) {
-	try {
-		$function
-	} catch (std::exception& e) {
-		PyErr_SetString(PyExc_Exception,e.what());
-		return NULL;
-	} catch (...) {
-		PyErr_SetString(PyExc_Exception,"unknown error");
-		return NULL;
-	}
+    try {
+        $function
+    } catch (std::domain_error& de) {
+        PyErr_SetString(PyExc_IndexError,de.what());
+        return NULL;
+    } catch (std::exception& ex) {
+        PyErr_SetString(PyExc_Exception,ex.what());
+        return NULL;
+    } catch (...) {
+        PyErr_SetString(PyExc_Exception,"unknown error");
+        return NULL;
+    }
 }
 
 %include Barrier.i
@@ -65,6 +68,7 @@
 %include Operators.i
 %include Options.i
 %include Pricers.i
+%include QLArray.i
 %include RandomGenerators.i
 %include RiskStatistics.i
 %include Solvers1D.i

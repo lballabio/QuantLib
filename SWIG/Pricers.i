@@ -43,6 +43,7 @@
 %include Date.i
 %include Options.i
 %include Financial.i
+%include Vectors.i
 
 %{
 using QuantLib::Pricers::BSMEuropeanOption;

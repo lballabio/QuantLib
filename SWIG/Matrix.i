@@ -40,7 +40,7 @@
 #endif
 
 %include String.i
-%include Vectors.i
+%include QLArray.i
 
 %{
 using QuantLib::Math::Matrix;

@@ -39,7 +39,7 @@
 #endif
 #endif
 
-%include Vectors.i
+%include QLArray.i
 
 %{
 using QuantLib::Handle;

@@ -1,5 +1,6 @@
-EXTRA_DIST = BoundaryConditions.i Calendars.i Currencies.i Date.i \
-	DayCounters.i Financial.i History.i Instruments.i Operators.i \
-	Options.i Pricers.i QuantLib.i RandomGenerators.i Solvers1D.i \
-	Statistics.i String.i TermStructures.i Vectors.i Distributions.i \
-	MontecarloPricers.i Interpolation.i
+EXTRA_DIST = Barrier.i BoundaryConditions.i Calendars.i Currencies.i \
+    Date.i DayCounters.i Distributions.i Financial.i History.i \
+    Instruments.i Interpolation.i Matrix.i MontecarloPricers.i \
+    MontecarloTools.i Operators.i Options.i Pricers.i QLArray.i \
+    QuantLib.i RandomGenerators.i RiskStatistics.i Solvers1D.i \
+    Statistics.i String.i TermStructures.i Vectors.i

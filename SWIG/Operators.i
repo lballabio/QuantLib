@@ -39,7 +39,7 @@
 #endif
 #endif
 
-%include Vectors.i
+%include QLArray.i
 %include BoundaryConditions.i
 
 %{
@@ -49,11 +49,11 @@ using QuantLib::FiniteDifferences::TridiagonalOperator;
 class TridiagonalOperator {
   public:
     // constructors
-    TridiagonalOperator(PyArray low, PyArray mid, PyArray high);
+    TridiagonalOperator(Array low, Array mid, Array high);
     ~TridiagonalOperator();
     // operator interface
-    PyArray solveFor(PyArray rhs) const;
-    PyArray applyTo(PyArray v) const;
+    Array solveFor(const Array& rhs) const;
+    Array applyTo(const Array& v) const;
     // inspectors
     int size() const;
     // modifiers

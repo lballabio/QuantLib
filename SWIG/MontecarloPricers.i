@@ -25,10 +25,13 @@
 	$Source$
 	$Name$
 	$Log$
+	Revision 1.7  2001/02/26 17:05:30  lballabio
+	Ultimate Array interface and typemap for SWIG
+
 	Revision 1.6  2001/02/13 10:06:50  marmar
 	Ambiguous variable name underlyingGrowthRate changed in
 	unambiguos dividendYield
-
+	
 	Revision 1.5  2001/02/07 10:15:57  marmar
 	Interface for Himalaya-type option pricer
 	
@@ -55,7 +58,9 @@
 #include "quantlib.h"
 %}
 
+%include QLArray.i
 %include Vectors.i
+%include Matrix.i
 
 #if defined(SWIGPYTHON)
 
@@ -67,7 +72,7 @@ using QuantLib::MonteCarlo::StandardPathGenerator;
 class StandardPathGenerator{
     public:
 	StandardPathGenerator(int dimension, long seed=0);
-	PyArray next() const; // Note that currently Path and Array are equivalent
+	Array next() const; // Note that currently Path and Array are equivalent
 	double weight() const;
 };
 
@@ -131,13 +136,10 @@ class AverageStrikeAsian{
 using QuantLib::Pricers::PlainBasketOption;
 %}
 
-%include Vectors.i
-%include Matrix.i
-
 class PlainBasketOption{
     public:
-    PlainBasketOption(const PyArray &underlying, 
-        const PyArray &dividendYield, const Matrix &covariance, 
+    PlainBasketOption(const Array &underlying, 
+        const Array &dividendYield, const Matrix &covariance, 
         Rate riskFreeRate,  double residualTime, 
         int timesteps, long samples, long seed = 0);
 	double value() const;
@@ -149,12 +151,9 @@ class PlainBasketOption{
 using QuantLib::Pricers::Himalaya;
 %}
 
-%include Vectors.i
-%include Matrix.i
-
 class Himalaya{
     public:
-    Himalaya(const PyArray &underlying, const PyArray  &dividendYield, 
+    Himalaya(const Array& underlying, const Array& dividendYield, 
         const Matrix &covariance, Rate riskFreeRate, double strike, 
         const DoubleVector &timeDelays, long samples, long seed=0);
 	double value() const;

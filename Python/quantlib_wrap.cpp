@@ -519,9 +519,9 @@ SWIG_InstallConstants(PyObject *d, swig_const_info constants[]) {
 #define  SWIGTYPE_p_UniformRandomGenerator swig_types[29] 
 #define  SWIGTYPE_p_GaussianRandomGenerator swig_types[30] 
 #define  SWIGTYPE_p_MultivariateAccumulator swig_types[31] 
-#define  SWIGTYPE_p_InvCumulativeNormalDistribution swig_types[32] 
-#define  SWIGTYPE_p_NormalDistribution swig_types[33] 
-#define  SWIGTYPE_p_CumulativeNormalDistribution swig_types[34] 
+#define  SWIGTYPE_p_NormalDistribution swig_types[32] 
+#define  SWIGTYPE_p_CumulativeNormalDistribution swig_types[33] 
+#define  SWIGTYPE_p_InvCumulativeNormalDistribution swig_types[34] 
 #define  SWIGTYPE_p_Himalaya swig_types[35] 
 #define  SWIGTYPE_p_RiskStatistics swig_types[36] 
 #define  SWIGTYPE_p_Statistics swig_types[37] 
@@ -621,9 +621,9 @@ using QuantLib::Years;
 
 typedef std::vector<Date> DateVector;
 
-	Date DateFromSerialNumber(int serialNumber) {
-		return Date(serialNumber);
-	}
+    Date DateFromSerialNumber(int serialNumber) {
+        return Date(serialNumber);
+    }
 
 using QuantLib::Handle;
 using QuantLib::Calendar;
@@ -772,16 +772,7 @@ using QuantLib::DiscountFactor;
 #include <vector>
 typedef std::vector<int> IntVector;
 typedef std::vector<double> DoubleVector;
-using QuantLib::Array;
-typedef QuantLib::Array PyArray;
-typedef QuantLib::Math::LexicographicalView<Array::iterator> ArrayLexicographicalView;
-typedef QuantLib::Math::LexicographicalView<Array::iterator>::y_iterator 
-	ArrayLexicographicalViewColumn;
 using QuantLib::Null;
-
-    ArrayLexicographicalView CreateLexicographicView(Array& a, int xSize) {
-        return ArrayLexicographicalView(a.begin(),a.end(),xSize);
-    }
 
 #include "history.h"
 
@@ -857,6 +848,20 @@ InstrumentHandle NewStock(String isinCode = "", String description = "") {
 }
 
 #include "quantlib.h"
+
+#include "quantlib.h"
+
+using QuantLib::Array;
+typedef QuantLib::Math::LexicographicalView<Array::iterator> 
+    ArrayLexicographicalView;
+typedef QuantLib::Math::LexicographicalView<Array::iterator>::y_iterator 
+	ArrayLexicographicalViewColumn;
+using QuantLib::Null;
+using QuantLib::IsNull;
+
+    ArrayLexicographicalView CreateLexicographicView(Array& a, int xSize) {
+        return ArrayLexicographicalView(a.begin(),a.end(),xSize);
+    }
 
 using QuantLib::Handle;
 using QuantLib::Math::Interpolation;
@@ -1021,8 +1026,11 @@ static PyObject *_wrap_DateFromSerialNumber(PyObject *self, PyObject *args, PyOb
     {
         try {
             result = new Date (DateFromSerialNumber(arg0));
-        }catch (std::exception& e) {
-            PyErr_SetString(PyExc_Exception,e.what());
+        }catch (std::domain_error& de) {
+            PyErr_SetString(PyExc_IndexError,de.what());
+            return NULL;
+        }catch (std::exception& ex) {
+            PyErr_SetString(PyExc_Exception,ex.what());
             return NULL;
         }catch (...) {
             PyErr_SetString(PyExc_Exception,"unknown error");
@@ -1044,8 +1052,11 @@ static PyObject *_wrap_TARGET(PyObject *self, PyObject *args, PyObject *kwargs) 
     {
         try {
             result = new CalendarHandle (NewTARGET());
-        }catch (std::exception& e) {
-            PyErr_SetString(PyExc_Exception,e.what());
+        }catch (std::domain_error& de) {
+            PyErr_SetString(PyExc_IndexError,de.what());
+            return NULL;
+        }catch (std::exception& ex) {
+            PyErr_SetString(PyExc_Exception,ex.what());
             return NULL;
         }catch (...) {
             PyErr_SetString(PyExc_Exception,"unknown error");
@@ -1067,8 +1078,11 @@ static PyObject *_wrap_NewYork(PyObject *self, PyObject *args, PyObject *kwargs)
     {
         try {
             result = new CalendarHandle (NewNewYork());
-        }catch (std::exception& e) {
-            PyErr_SetString(PyExc_Exception,e.what());
+        }catch (std::domain_error& de) {
+            PyErr_SetString(PyExc_IndexError,de.what());
+            return NULL;
+        }catch (std::exception& ex) {
+            PyErr_SetString(PyExc_Exception,ex.what());
             return NULL;
         }catch (...) {
             PyErr_SetString(PyExc_Exception,"unknown error");
@@ -1090,8 +1104,11 @@ static PyObject *_wrap_London(PyObject *self, PyObject *args, PyObject *kwargs) 
     {
         try {
             result = new CalendarHandle (NewLondon());
-        }catch (std::exception& e) {
-            PyErr_SetString(PyExc_Exception,e.what());
+        }catch (std::domain_error& de) {
+            PyErr_SetString(PyExc_IndexError,de.what());
+            return NULL;
+        }catch (std::exception& ex) {
+            PyErr_SetString(PyExc_Exception,ex.what());
             return NULL;
         }catch (...) {
             PyErr_SetString(PyExc_Exception,"unknown error");
@@ -1113,8 +1130,11 @@ static PyObject *_wrap_Frankfurt(PyObject *self, PyObject *args, PyObject *kwarg
     {
         try {
             result = new CalendarHandle (NewFrankfurt());
-        }catch (std::exception& e) {
-            PyErr_SetString(PyExc_Exception,e.what());
+        }catch (std::domain_error& de) {
+            PyErr_SetString(PyExc_IndexError,de.what());
+            return NULL;
+        }catch (std::exception& ex) {
+            PyErr_SetString(PyExc_Exception,ex.what());
             return NULL;
         }catch (...) {
             PyErr_SetString(PyExc_Exception,"unknown error");
@@ -1136,8 +1156,11 @@ static PyObject *_wrap_Milan(PyObject *self, PyObject *args, PyObject *kwargs) {
     {
         try {
             result = new CalendarHandle (NewMilan());
-        }catch (std::exception& e) {
-            PyErr_SetString(PyExc_Exception,e.what());
+        }catch (std::domain_error& de) {
+            PyErr_SetString(PyExc_IndexError,de.what());
+            return NULL;
+        }catch (std::exception& ex) {
+            PyErr_SetString(PyExc_Exception,ex.what());
             return NULL;
         }catch (...) {
             PyErr_SetString(PyExc_Exception,"unknown error");
@@ -1159,8 +1182,11 @@ static PyObject *_wrap_Zurich(PyObject *self, PyObject *args, PyObject *kwargs) 
     {
         try {
             result = new CalendarHandle (NewZurich());
-        }catch (std::exception& e) {
-            PyErr_SetString(PyExc_Exception,e.what());
+        }catch (std::domain_error& de) {
+            PyErr_SetString(PyExc_IndexError,de.what());
+            return NULL;
+        }catch (std::exception& ex) {
+            PyErr_SetString(PyExc_Exception,ex.what());
             return NULL;
         }catch (...) {
             PyErr_SetString(PyExc_Exception,"unknown error");
@@ -1192,8 +1218,11 @@ static PyObject *_wrap_makeCalendar(PyObject *self, PyObject *args, PyObject *kw
     {
         try {
             result = new CalendarHandle (makeCalendar((String const &)*arg0));
-        }catch (std::exception& e) {
-            PyErr_SetString(PyExc_Exception,e.what());
+        }catch (std::domain_error& de) {
+            PyErr_SetString(PyExc_IndexError,de.what());
+            return NULL;
+        }catch (std::exception& ex) {
+            PyErr_SetString(PyExc_Exception,ex.what());
             return NULL;
         }catch (...) {
             PyErr_SetString(PyExc_Exception,"unknown error");
@@ -1218,8 +1247,11 @@ static PyObject *_wrap_EUR(PyObject *self, PyObject *args, PyObject *kwargs) {
     {
         try {
             result = new CurrencyHandle (NewEUR());
-        }catch (std::exception& e) {
-            PyErr_SetString(PyExc_Exception,e.what());
+        }catch (std::domain_error& de) {
+            PyErr_SetString(PyExc_IndexError,de.what());
+            return NULL;
+        }catch (std::exception& ex) {
+            PyErr_SetString(PyExc_Exception,ex.what());
             return NULL;
         }catch (...) {
             PyErr_SetString(PyExc_Exception,"unknown error");
@@ -1241,8 +1273,11 @@ static PyObject *_wrap_USD(PyObject *self, PyObject *args, PyObject *kwargs) {
     {
         try {
             result = new CurrencyHandle (NewUSD());
-        }catch (std::exception& e) {
-            PyErr_SetString(PyExc_Exception,e.what());
+        }catch (std::domain_error& de) {
+            PyErr_SetString(PyExc_IndexError,de.what());
+            return NULL;
+        }catch (std::exception& ex) {
+            PyErr_SetString(PyExc_Exception,ex.what());
             return NULL;
         }catch (...) {
             PyErr_SetString(PyExc_Exception,"unknown error");
@@ -1264,8 +1299,11 @@ static PyObject *_wrap_GBP(PyObject *self, PyObject *args, PyObject *kwargs) {
     {
         try {
             result = new CurrencyHandle (NewGBP());
-        }catch (std::exception& e) {
-            PyErr_SetString(PyExc_Exception,e.what());
+        }catch (std::domain_error& de) {
+            PyErr_SetString(PyExc_IndexError,de.what());
+            return NULL;
+        }catch (std::exception& ex) {
+            PyErr_SetString(PyExc_Exception,ex.what());
             return NULL;
         }catch (...) {
             PyErr_SetString(PyExc_Exception,"unknown error");
@@ -1287,8 +1325,11 @@ static PyObject *_wrap_DEM(PyObject *self, PyObject *args, PyObject *kwargs) {
     {
         try {
             result = new CurrencyHandle (NewDEM());
-        }catch (std::exception& e) {
-            PyErr_SetString(PyExc_Exception,e.what());
+        }catch (std::domain_error& de) {
+            PyErr_SetString(PyExc_IndexError,de.what());
+            return NULL;
+        }catch (std::exception& ex) {
+            PyErr_SetString(PyExc_Exception,ex.what());
             return NULL;
         }catch (...) {
             PyErr_SetString(PyExc_Exception,"unknown error");
@@ -1310,8 +1351,11 @@ static PyObject *_wrap_ITL(PyObject *self, PyObject *args, PyObject *kwargs) {
     {
         try {
             result = new CurrencyHandle (NewITL());
-        }catch (std::exception& e) {
-            PyErr_SetString(PyExc_Exception,e.what());
+        }catch (std::domain_error& de) {
+            PyErr_SetString(PyExc_IndexError,de.what());
+            return NULL;
+        }catch (std::exception& ex) {
+            PyErr_SetString(PyExc_Exception,ex.what());
             return NULL;
         }catch (...) {
             PyErr_SetString(PyExc_Exception,"unknown error");
@@ -1333,8 +1377,11 @@ static PyObject *_wrap_AUD(PyObject *self, PyObject *args, PyObject *kwargs) {
     {
         try {
             result = new CurrencyHandle (NewAUD());
-        }catch (std::exception& e) {
-            PyErr_SetString(PyExc_Exception,e.what());
+        }catch (std::domain_error& de) {
+            PyErr_SetString(PyExc_IndexError,de.what());
+            return NULL;
+        }catch (std::exception& ex) {
+            PyErr_SetString(PyExc_Exception,ex.what());
             return NULL;
         }catch (...) {
             PyErr_SetString(PyExc_Exception,"unknown error");
@@ -1356,8 +1403,11 @@ static PyObject *_wrap_CAD(PyObject *self, PyObject *args, PyObject *kwargs) {
     {
         try {
             result = new CurrencyHandle (NewCAD());
-        }catch (std::exception& e) {
-            PyErr_SetString(PyExc_Exception,e.what());
+        }catch (std::domain_error& de) {
+            PyErr_SetString(PyExc_IndexError,de.what());
+            return NULL;
+        }catch (std::exception& ex) {
+            PyErr_SetString(PyExc_Exception,ex.what());
             return NULL;
         }catch (...) {
             PyErr_SetString(PyExc_Exception,"unknown error");
@@ -1379,8 +1429,11 @@ static PyObject *_wrap_CHF(PyObject *self, PyObject *args, PyObject *kwargs) {
     {
         try {
             result = new CurrencyHandle (NewCHF());
-        }catch (std::exception& e) {
-            PyErr_SetString(PyExc_Exception,e.what());
+        }catch (std::domain_error& de) {
+            PyErr_SetString(PyExc_IndexError,de.what());
+            return NULL;
+        }catch (std::exception& ex) {
+            PyErr_SetString(PyExc_Exception,ex.what());
             return NULL;
         }catch (...) {
             PyErr_SetString(PyExc_Exception,"unknown error");
@@ -1402,8 +1455,11 @@ static PyObject *_wrap_DKK(PyObject *self, PyObject *args, PyObject *kwargs) {
     {
         try {
             result = new CurrencyHandle (NewDKK());
-        }catch (std::exception& e) {
-            PyErr_SetString(PyExc_Exception,e.what());
+        }catch (std::domain_error& de) {
+            PyErr_SetString(PyExc_IndexError,de.what());
+            return NULL;
+        }catch (std::exception& ex) {
+            PyErr_SetString(PyExc_Exception,ex.what());
             return NULL;
         }catch (...) {
             PyErr_SetString(PyExc_Exception,"unknown error");
@@ -1425,8 +1481,11 @@ static PyObject *_wrap_JPY(PyObject *self, PyObject *args, PyObject *kwargs) {
     {
         try {
             result = new CurrencyHandle (NewJPY());
-        }catch (std::exception& e) {
-            PyErr_SetString(PyExc_Exception,e.what());
+        }catch (std::domain_error& de) {
+            PyErr_SetString(PyExc_IndexError,de.what());
+            return NULL;
+        }catch (std::exception& ex) {
+            PyErr_SetString(PyExc_Exception,ex.what());
             return NULL;
         }catch (...) {
             PyErr_SetString(PyExc_Exception,"unknown error");
@@ -1448,8 +1507,11 @@ static PyObject *_wrap_SEK(PyObject *self, PyObject *args, PyObject *kwargs) {
     {
         try {
             result = new CurrencyHandle (NewSEK());
-        }catch (std::exception& e) {
-            PyErr_SetString(PyExc_Exception,e.what());
+        }catch (std::domain_error& de) {
+            PyErr_SetString(PyExc_IndexError,de.what());
+            return NULL;
+        }catch (std::exception& ex) {
+            PyErr_SetString(PyExc_Exception,ex.what());
             return NULL;
         }catch (...) {
             PyErr_SetString(PyExc_Exception,"unknown error");
@@ -1481,8 +1543,11 @@ static PyObject *_wrap_makeCurrency(PyObject *self, PyObject *args, PyObject *kw
     {
         try {
             result = new CurrencyHandle (makeCurrency((String const &)*arg0));
-        }catch (std::exception& e) {
-            PyErr_SetString(PyExc_Exception,e.what());
+        }catch (std::domain_error& de) {
+            PyErr_SetString(PyExc_IndexError,de.what());
+            return NULL;
+        }catch (std::exception& ex) {
+            PyErr_SetString(PyExc_Exception,ex.what());
             return NULL;
         }catch (...) {
             PyErr_SetString(PyExc_Exception,"unknown error");
@@ -1507,8 +1572,11 @@ static PyObject *_wrap_Actual360(PyObject *self, PyObject *args, PyObject *kwarg
     {
         try {
             result = new DayCounterHandle (NewActual360());
-        }catch (std::exception& e) {
-            PyErr_SetString(PyExc_Exception,e.what());
+        }catch (std::domain_error& de) {
+            PyErr_SetString(PyExc_IndexError,de.what());
+            return NULL;
+        }catch (std::exception& ex) {
+            PyErr_SetString(PyExc_Exception,ex.what());
             return NULL;
         }catch (...) {
             PyErr_SetString(PyExc_Exception,"unknown error");
@@ -1530,8 +1598,11 @@ static PyObject *_wrap_Actual365(PyObject *self, PyObject *args, PyObject *kwarg
     {
         try {
             result = new DayCounterHandle (NewActual365());
-        }catch (std::exception& e) {
-            PyErr_SetString(PyExc_Exception,e.what());
+        }catch (std::domain_error& de) {
+            PyErr_SetString(PyExc_IndexError,de.what());
+            return NULL;
+        }catch (std::exception& ex) {
+            PyErr_SetString(PyExc_Exception,ex.what());
             return NULL;
         }catch (...) {
             PyErr_SetString(PyExc_Exception,"unknown error");
@@ -1553,8 +1624,11 @@ static PyObject *_wrap_Thirty360(PyObject *self, PyObject *args, PyObject *kwarg
     {
         try {
             result = new DayCounterHandle (NewThirty360());
-        }catch (std::exception& e) {
-            PyErr_SetString(PyExc_Exception,e.what());
+        }catch (std::domain_error& de) {
+            PyErr_SetString(PyExc_IndexError,de.what());
+            return NULL;
+        }catch (std::exception& ex) {
+            PyErr_SetString(PyExc_Exception,ex.what());
             return NULL;
         }catch (...) {
             PyErr_SetString(PyExc_Exception,"unknown error");
@@ -1576,8 +1650,11 @@ static PyObject *_wrap_Thirty360European(PyObject *self, PyObject *args, PyObjec
     {
         try {
             result = new DayCounterHandle (NewThirty360European());
-        }catch (std::exception& e) {
-            PyErr_SetString(PyExc_Exception,e.what());
+        }catch (std::domain_error& de) {
+            PyErr_SetString(PyExc_IndexError,de.what());
+            return NULL;
+        }catch (std::exception& ex) {
+            PyErr_SetString(PyExc_Exception,ex.what());
             return NULL;
         }catch (...) {
             PyErr_SetString(PyExc_Exception,"unknown error");
@@ -1599,8 +1676,11 @@ static PyObject *_wrap_Thirty360Italian(PyObject *self, PyObject *args, PyObject
     {
         try {
             result = new DayCounterHandle (NewThirty360Italian());
-        }catch (std::exception& e) {
-            PyErr_SetString(PyExc_Exception,e.what());
+        }catch (std::domain_error& de) {
+            PyErr_SetString(PyExc_IndexError,de.what());
+            return NULL;
+        }catch (std::exception& ex) {
+            PyErr_SetString(PyExc_Exception,ex.what());
             return NULL;
         }catch (...) {
             PyErr_SetString(PyExc_Exception,"unknown error");
@@ -1632,8 +1712,11 @@ static PyObject *_wrap_makeDayCounter(PyObject *self, PyObject *args, PyObject *
     {
         try {
             result = new DayCounterHandle (makeDayCounter((String const &)*arg0));
-        }catch (std::exception& e) {
-            PyErr_SetString(PyExc_Exception,e.what());
+        }catch (std::domain_error& de) {
+            PyErr_SetString(PyExc_IndexError,de.what());
+            return NULL;
+        }catch (std::exception& ex) {
+            PyErr_SetString(PyExc_Exception,ex.what());
             return NULL;
         }catch (...) {
             PyErr_SetString(PyExc_Exception,"unknown error");
@@ -1643,33 +1726,6 @@ static PyObject *_wrap_makeDayCounter(PyObject *self, PyObject *args, PyObject *
     {
         delete arg0;
     }
-    return resultobj;
-}
-
-
-static PyObject *_wrap_LexicographicalView(PyObject *self, PyObject *args, PyObject *kwargs) {
-    PyObject *resultobj;
-    Array *arg0 ;
-    int arg1 ;
-    PyObject * argo0 =0 ;
-    char *kwnames[] = {
-        "a","xSize", NULL 
-    };
-    ArrayLexicographicalView *result ;
-    
-    if(!PyArg_ParseTupleAndKeywords(args,kwargs,"Oi:LexicographicalView",kwnames,&argo0,&arg1)) return NULL;
-    if ((SWIG_ConvertPtr(argo0,(void **) &arg0,SWIGTYPE_p_Array,1)) == -1) return NULL;
-    {
-        try {
-            result = new ArrayLexicographicalView (CreateLexicographicView(*arg0,arg1));
-        }catch (std::exception& e) {
-            PyErr_SetString(PyExc_Exception,e.what());
-            return NULL;
-        }catch (...) {
-            PyErr_SetString(PyExc_Exception,"unknown error");
-            return NULL;
-        }
-    }resultobj = SWIG_NewPointerObj((void *)result, SWIGTYPE_p_ArrayLexicographicalView);
     return resultobj;
 }
 
@@ -1691,8 +1747,11 @@ static PyObject *_wrap_ImpliedTermStructure(PyObject *self, PyObject *args, PyOb
     {
         try {
             result = new TermStructureHandle (NewImpliedTermStructure(*arg0,*arg1));
-        }catch (std::exception& e) {
-            PyErr_SetString(PyExc_Exception,e.what());
+        }catch (std::domain_error& de) {
+            PyErr_SetString(PyExc_IndexError,de.what());
+            return NULL;
+        }catch (std::exception& ex) {
+            PyErr_SetString(PyExc_Exception,ex.what());
             return NULL;
         }catch (...) {
             PyErr_SetString(PyExc_Exception,"unknown error");
@@ -1718,8 +1777,11 @@ static PyObject *_wrap_SpreadedTermStructure(PyObject *self, PyObject *args, PyO
     {
         try {
             result = new TermStructureHandle (NewSpreadedTermStructure(*arg0,arg1));
-        }catch (std::exception& e) {
-            PyErr_SetString(PyExc_Exception,e.what());
+        }catch (std::domain_error& de) {
+            PyErr_SetString(PyExc_IndexError,de.what());
+            return NULL;
+        }catch (std::exception& ex) {
+            PyErr_SetString(PyExc_Exception,ex.what());
             return NULL;
         }catch (...) {
             PyErr_SetString(PyExc_Exception,"unknown error");
@@ -1751,8 +1813,11 @@ static PyObject *_wrap_FlatForward(PyObject *self, PyObject *args, PyObject *kwa
     {
         try {
             result = new TermStructureHandle (NewFlatForward(*arg0,*arg1,*arg2,arg3));
-        }catch (std::exception& e) {
-            PyErr_SetString(PyExc_Exception,e.what());
+        }catch (std::domain_error& de) {
+            PyErr_SetString(PyExc_IndexError,de.what());
+            return NULL;
+        }catch (std::exception& ex) {
+            PyErr_SetString(PyExc_Exception,ex.what());
             return NULL;
         }catch (...) {
             PyErr_SetString(PyExc_Exception,"unknown error");
@@ -1821,8 +1886,11 @@ static PyObject *_wrap_PiecewiseConstantForwards(PyObject *self, PyObject *args,
     {
         try {
             result = new TermStructureHandle (NewPiecewiseConstantForwards(*arg0,*arg1,*arg2,*arg3));
-        }catch (std::exception& e) {
-            PyErr_SetString(PyExc_Exception,e.what());
+        }catch (std::domain_error& de) {
+            PyErr_SetString(PyExc_IndexError,de.what());
+            return NULL;
+        }catch (std::exception& ex) {
+            PyErr_SetString(PyExc_Exception,ex.what());
             return NULL;
         }catch (...) {
             PyErr_SetString(PyExc_Exception,"unknown error");
@@ -1869,8 +1937,11 @@ static PyObject *_wrap_Stock(PyObject *self, PyObject *args, PyObject *kwargs) {
     {
         try {
             result = new InstrumentHandle (NewStock(*arg0,*arg1));
-        }catch (std::exception& e) {
-            PyErr_SetString(PyExc_Exception,e.what());
+        }catch (std::domain_error& de) {
+            PyErr_SetString(PyExc_IndexError,de.what());
+            return NULL;
+        }catch (std::exception& ex) {
+            PyErr_SetString(PyExc_Exception,ex.what());
             return NULL;
         }catch (...) {
             PyErr_SetString(PyExc_Exception,"unknown error");
@@ -1887,25 +1958,142 @@ static PyObject *_wrap_Stock(PyObject *self, PyObject *args, PyObject *kwargs) {
 }
 
 
+static PyObject *_wrap_LexicographicalView(PyObject *self, PyObject *args, PyObject *kwargs) {
+    PyObject *resultobj;
+    Array *arg0 ;
+    int arg1 ;
+    Array temp ;
+    PyObject * obj0  = 0 ;
+    char *kwnames[] = {
+        "a","xSize", NULL 
+    };
+    ArrayLexicographicalView *result ;
+    
+    if(!PyArg_ParseTupleAndKeywords(args,kwargs,"Oi:LexicographicalView",kwnames,&obj0,&arg1)) return NULL;
+    {
+        Array* v;
+        if (PyTuple_Check(obj0) || PyList_Check(obj0)) {
+            int size = (PyTuple_Check(obj0) ? 
+            PyTuple_Size(obj0) :
+            PyList_Size(obj0));
+            temp = Array(size);
+            arg0 = &temp;
+            for (int i=0; i<size; i++) {
+                PyObject* o = PySequence_GetItem(obj0,i);
+                if (PyFloat_Check(o)) {
+                    (*arg0)[i] = PyFloat_AsDouble(o);
+                }else if (PyInt_Check(o)) {
+                    (*arg0)[i] = double(PyInt_AsLong(o));
+                }else {
+                    PyErr_SetString(PyExc_TypeError,
+                    "sequence must contain doubles");
+                    return NULL;
+                }
+            }
+        }else if ((SWIG_ConvertPtr(obj0,(void **) &v,
+        (swig_type_info *)SWIG_TypeQuery("Array *"),0)) != -1) {
+            arg0 = v;
+        }else {
+            PyErr_SetString(PyExc_TypeError,"not a sequence");
+            return NULL;
+        }
+    }
+    {
+        try {
+            result = new ArrayLexicographicalView (CreateLexicographicView(*arg0,arg1));
+        }catch (std::domain_error& de) {
+            PyErr_SetString(PyExc_IndexError,de.what());
+            return NULL;
+        }catch (std::exception& ex) {
+            PyErr_SetString(PyExc_Exception,ex.what());
+            return NULL;
+        }catch (...) {
+            PyErr_SetString(PyExc_Exception,"unknown error");
+            return NULL;
+        }
+    }resultobj = SWIG_NewPointerObj((void *)result, SWIGTYPE_p_ArrayLexicographicalView);
+    return resultobj;
+}
+
+
 static PyObject *_wrap_LinearInterpolation(PyObject *self, PyObject *args, PyObject *kwargs) {
     PyObject *resultobj;
     Array *arg0 ;
     Array *arg1 ;
-    PyObject * argo0 =0 ;
-    PyObject * argo1 =0 ;
+    Array temp ;
+    PyObject * obj0  = 0 ;
+    Array temp0 ;
+    PyObject * obj1  = 0 ;
     char *kwnames[] = {
         "x","y", NULL 
     };
     InterpolationHandle *result ;
     
-    if(!PyArg_ParseTupleAndKeywords(args,kwargs,"OO:LinearInterpolation",kwnames,&argo0,&argo1)) return NULL;
-    if ((SWIG_ConvertPtr(argo0,(void **) &arg0,SWIGTYPE_p_Array,1)) == -1) return NULL;
-    if ((SWIG_ConvertPtr(argo1,(void **) &arg1,SWIGTYPE_p_Array,1)) == -1) return NULL;
+    if(!PyArg_ParseTupleAndKeywords(args,kwargs,"OO:LinearInterpolation",kwnames,&obj0,&obj1)) return NULL;
+    {
+        Array* v;
+        if (PyTuple_Check(obj0) || PyList_Check(obj0)) {
+            int size = (PyTuple_Check(obj0) ? 
+            PyTuple_Size(obj0) :
+            PyList_Size(obj0));
+            temp = Array(size);
+            arg0 = &temp;
+            for (int i=0; i<size; i++) {
+                PyObject* o = PySequence_GetItem(obj0,i);
+                if (PyFloat_Check(o)) {
+                    (*arg0)[i] = PyFloat_AsDouble(o);
+                }else if (PyInt_Check(o)) {
+                    (*arg0)[i] = double(PyInt_AsLong(o));
+                }else {
+                    PyErr_SetString(PyExc_TypeError,
+                    "sequence must contain doubles");
+                    return NULL;
+                }
+            }
+        }else if ((SWIG_ConvertPtr(obj0,(void **) &v,
+        (swig_type_info *)SWIG_TypeQuery("Array *"),0)) != -1) {
+            arg0 = v;
+        }else {
+            PyErr_SetString(PyExc_TypeError,"not a sequence");
+            return NULL;
+        }
+    }
+    {
+        Array* v;
+        if (PyTuple_Check(obj1) || PyList_Check(obj1)) {
+            int size = (PyTuple_Check(obj1) ? 
+            PyTuple_Size(obj1) :
+            PyList_Size(obj1));
+            temp0 = Array(size);
+            arg1 = &temp0;
+            for (int i=0; i<size; i++) {
+                PyObject* o = PySequence_GetItem(obj1,i);
+                if (PyFloat_Check(o)) {
+                    (*arg1)[i] = PyFloat_AsDouble(o);
+                }else if (PyInt_Check(o)) {
+                    (*arg1)[i] = double(PyInt_AsLong(o));
+                }else {
+                    PyErr_SetString(PyExc_TypeError,
+                    "sequence must contain doubles");
+                    return NULL;
+                }
+            }
+        }else if ((SWIG_ConvertPtr(obj1,(void **) &v,
+        (swig_type_info *)SWIG_TypeQuery("Array *"),0)) != -1) {
+            arg1 = v;
+        }else {
+            PyErr_SetString(PyExc_TypeError,"not a sequence");
+            return NULL;
+        }
+    }
     {
         try {
             result = new InterpolationHandle (NewLinearInterpolation((Array const &)*arg0,(Array const &)*arg1));
-        }catch (std::exception& e) {
-            PyErr_SetString(PyExc_Exception,e.what());
+        }catch (std::domain_error& de) {
+            PyErr_SetString(PyExc_IndexError,de.what());
+            return NULL;
+        }catch (std::exception& ex) {
+            PyErr_SetString(PyExc_Exception,ex.what());
             return NULL;
         }catch (...) {
             PyErr_SetString(PyExc_Exception,"unknown error");
@@ -1920,21 +2108,80 @@ static PyObject *_wrap_CubicSpline(PyObject *self, PyObject *args, PyObject *kwa
     PyObject *resultobj;
     Array *arg0 ;
     Array *arg1 ;
-    PyObject * argo0 =0 ;
-    PyObject * argo1 =0 ;
+    Array temp ;
+    PyObject * obj0  = 0 ;
+    Array temp0 ;
+    PyObject * obj1  = 0 ;
     char *kwnames[] = {
         "x","y", NULL 
     };
     InterpolationHandle *result ;
     
-    if(!PyArg_ParseTupleAndKeywords(args,kwargs,"OO:CubicSpline",kwnames,&argo0,&argo1)) return NULL;
-    if ((SWIG_ConvertPtr(argo0,(void **) &arg0,SWIGTYPE_p_Array,1)) == -1) return NULL;
-    if ((SWIG_ConvertPtr(argo1,(void **) &arg1,SWIGTYPE_p_Array,1)) == -1) return NULL;
+    if(!PyArg_ParseTupleAndKeywords(args,kwargs,"OO:CubicSpline",kwnames,&obj0,&obj1)) return NULL;
+    {
+        Array* v;
+        if (PyTuple_Check(obj0) || PyList_Check(obj0)) {
+            int size = (PyTuple_Check(obj0) ? 
+            PyTuple_Size(obj0) :
+            PyList_Size(obj0));
+            temp = Array(size);
+            arg0 = &temp;
+            for (int i=0; i<size; i++) {
+                PyObject* o = PySequence_GetItem(obj0,i);
+                if (PyFloat_Check(o)) {
+                    (*arg0)[i] = PyFloat_AsDouble(o);
+                }else if (PyInt_Check(o)) {
+                    (*arg0)[i] = double(PyInt_AsLong(o));
+                }else {
+                    PyErr_SetString(PyExc_TypeError,
+                    "sequence must contain doubles");
+                    return NULL;
+                }
+            }
+        }else if ((SWIG_ConvertPtr(obj0,(void **) &v,
+        (swig_type_info *)SWIG_TypeQuery("Array *"),0)) != -1) {
+            arg0 = v;
+        }else {
+            PyErr_SetString(PyExc_TypeError,"not a sequence");
+            return NULL;
+        }
+    }
+    {
+        Array* v;
+        if (PyTuple_Check(obj1) || PyList_Check(obj1)) {
+            int size = (PyTuple_Check(obj1) ? 
+            PyTuple_Size(obj1) :
+            PyList_Size(obj1));
+            temp0 = Array(size);
+            arg1 = &temp0;
+            for (int i=0; i<size; i++) {
+                PyObject* o = PySequence_GetItem(obj1,i);
+                if (PyFloat_Check(o)) {
+                    (*arg1)[i] = PyFloat_AsDouble(o);
+                }else if (PyInt_Check(o)) {
+                    (*arg1)[i] = double(PyInt_AsLong(o));
+                }else {
+                    PyErr_SetString(PyExc_TypeError,
+                    "sequence must contain doubles");
+                    return NULL;
+                }
+            }
+        }else if ((SWIG_ConvertPtr(obj1,(void **) &v,
+        (swig_type_info *)SWIG_TypeQuery("Array *"),0)) != -1) {
+            arg1 = v;
+        }else {
+            PyErr_SetString(PyExc_TypeError,"not a sequence");
+            return NULL;
+        }
+    }
     {
         try {
             result = new InterpolationHandle (newCubicSpline((Array const &)*arg0,(Array const &)*arg1));
-        }catch (std::exception& e) {
-            PyErr_SetString(PyExc_Exception,e.what());
+        }catch (std::domain_error& de) {
+            PyErr_SetString(PyExc_IndexError,de.what());
+            return NULL;
+        }catch (std::exception& ex) {
+            PyErr_SetString(PyExc_Exception,ex.what());
             return NULL;
         }catch (...) {
             PyErr_SetString(PyExc_Exception,"unknown error");
@@ -1959,8 +2206,11 @@ static PyObject *_wrap_transpose(PyObject *self, PyObject *args, PyObject *kwarg
     {
         try {
             result = new Matrix (transpose((Matrix const &)*arg0));
-        }catch (std::exception& e) {
-            PyErr_SetString(PyExc_Exception,e.what());
+        }catch (std::domain_error& de) {
+            PyErr_SetString(PyExc_IndexError,de.what());
+            return NULL;
+        }catch (std::exception& ex) {
+            PyErr_SetString(PyExc_Exception,ex.what());
             return NULL;
         }catch (...) {
             PyErr_SetString(PyExc_Exception,"unknown error");
@@ -1975,21 +2225,80 @@ static PyObject *_wrap_outerProduct(PyObject *self, PyObject *args, PyObject *kw
     PyObject *resultobj;
     Array *arg0 ;
     Array *arg1 ;
-    PyObject * argo0 =0 ;
-    PyObject * argo1 =0 ;
+    Array temp ;
+    PyObject * obj0  = 0 ;
+    Array temp0 ;
+    PyObject * obj1  = 0 ;
     char *kwnames[] = {
         "v1","v2", NULL 
     };
     Matrix *result ;
     
-    if(!PyArg_ParseTupleAndKeywords(args,kwargs,"OO:outerProduct",kwnames,&argo0,&argo1)) return NULL;
-    if ((SWIG_ConvertPtr(argo0,(void **) &arg0,SWIGTYPE_p_Array,1)) == -1) return NULL;
-    if ((SWIG_ConvertPtr(argo1,(void **) &arg1,SWIGTYPE_p_Array,1)) == -1) return NULL;
+    if(!PyArg_ParseTupleAndKeywords(args,kwargs,"OO:outerProduct",kwnames,&obj0,&obj1)) return NULL;
+    {
+        Array* v;
+        if (PyTuple_Check(obj0) || PyList_Check(obj0)) {
+            int size = (PyTuple_Check(obj0) ? 
+            PyTuple_Size(obj0) :
+            PyList_Size(obj0));
+            temp = Array(size);
+            arg0 = &temp;
+            for (int i=0; i<size; i++) {
+                PyObject* o = PySequence_GetItem(obj0,i);
+                if (PyFloat_Check(o)) {
+                    (*arg0)[i] = PyFloat_AsDouble(o);
+                }else if (PyInt_Check(o)) {
+                    (*arg0)[i] = double(PyInt_AsLong(o));
+                }else {
+                    PyErr_SetString(PyExc_TypeError,
+                    "sequence must contain doubles");
+                    return NULL;
+                }
+            }
+        }else if ((SWIG_ConvertPtr(obj0,(void **) &v,
+        (swig_type_info *)SWIG_TypeQuery("Array *"),0)) != -1) {
+            arg0 = v;
+        }else {
+            PyErr_SetString(PyExc_TypeError,"not a sequence");
+            return NULL;
+        }
+    }
+    {
+        Array* v;
+        if (PyTuple_Check(obj1) || PyList_Check(obj1)) {
+            int size = (PyTuple_Check(obj1) ? 
+            PyTuple_Size(obj1) :
+            PyList_Size(obj1));
+            temp0 = Array(size);
+            arg1 = &temp0;
+            for (int i=0; i<size; i++) {
+                PyObject* o = PySequence_GetItem(obj1,i);
+                if (PyFloat_Check(o)) {
+                    (*arg1)[i] = PyFloat_AsDouble(o);
+                }else if (PyInt_Check(o)) {
+                    (*arg1)[i] = double(PyInt_AsLong(o));
+                }else {
+                    PyErr_SetString(PyExc_TypeError,
+                    "sequence must contain doubles");
+                    return NULL;
+                }
+            }
+        }else if ((SWIG_ConvertPtr(obj1,(void **) &v,
+        (swig_type_info *)SWIG_TypeQuery("Array *"),0)) != -1) {
+            arg1 = v;
+        }else {
+            PyErr_SetString(PyExc_TypeError,"not a sequence");
+            return NULL;
+        }
+    }
     {
         try {
             result = new Matrix (outerProduct((Array const &)*arg0,(Array const &)*arg1));
-        }catch (std::exception& e) {
-            PyErr_SetString(PyExc_Exception,e.what());
+        }catch (std::domain_error& de) {
+            PyErr_SetString(PyExc_IndexError,de.what());
+            return NULL;
+        }catch (std::exception& ex) {
+            PyErr_SetString(PyExc_Exception,ex.what());
             return NULL;
         }catch (...) {
             PyErr_SetString(PyExc_Exception,"unknown error");
@@ -2017,8 +2326,11 @@ static PyObject *_wrap_matrixProduct(PyObject *self, PyObject *args, PyObject *k
     {
         try {
             result = new Matrix (matrixProduct((Matrix const &)*arg0,(Matrix const &)*arg1));
-        }catch (std::exception& e) {
-            PyErr_SetString(PyExc_Exception,e.what());
+        }catch (std::domain_error& de) {
+            PyErr_SetString(PyExc_IndexError,de.what());
+            return NULL;
+        }catch (std::exception& ex) {
+            PyErr_SetString(PyExc_Exception,ex.what());
             return NULL;
         }catch (...) {
             PyErr_SetString(PyExc_Exception,"unknown error");
@@ -2043,8 +2355,11 @@ static PyObject *_wrap_matrixSqrt(PyObject *self, PyObject *args, PyObject *kwar
     {
         try {
             result = new Matrix (matrixSqrt((Matrix const &)*arg0));
-        }catch (std::exception& e) {
-            PyErr_SetString(PyExc_Exception,e.what());
+        }catch (std::domain_error& de) {
+            PyErr_SetString(PyExc_IndexError,de.what());
+            return NULL;
+        }catch (std::exception& ex) {
+            PyErr_SetString(PyExc_Exception,ex.what());
             return NULL;
         }catch (...) {
             PyErr_SetString(PyExc_Exception,"unknown error");
@@ -2067,8 +2382,11 @@ static PyObject *_wrap_Identity(PyObject *self, PyObject *args, PyObject *kwargs
     {
         try {
             result = new TridiagonalOperator (TridiagonalIdentity(arg0));
-        }catch (std::exception& e) {
-            PyErr_SetString(PyExc_Exception,e.what());
+        }catch (std::domain_error& de) {
+            PyErr_SetString(PyExc_IndexError,de.what());
+            return NULL;
+        }catch (std::exception& ex) {
+            PyErr_SetString(PyExc_Exception,ex.what());
             return NULL;
         }catch (...) {
             PyErr_SetString(PyExc_Exception,"unknown error");
@@ -2113,8 +2431,11 @@ static PyObject *_wrap_new_BoundaryCondition(PyObject *self, PyObject *args, PyO
         try {
             result = (BoundaryCondition *)new BoundaryCondition(*arg0,arg1);
             
-        }catch (std::exception& e) {
-            PyErr_SetString(PyExc_Exception,e.what());
+        }catch (std::domain_error& de) {
+            PyErr_SetString(PyExc_IndexError,de.what());
+            return NULL;
+        }catch (std::exception& ex) {
+            PyErr_SetString(PyExc_Exception,ex.what());
             return NULL;
         }catch (...) {
             PyErr_SetString(PyExc_Exception,"unknown error");
@@ -2142,8 +2463,11 @@ static PyObject *_wrap_delete_BoundaryCondition(PyObject *self, PyObject *args, 
         try {
             delete arg0;
             
-        }catch (std::exception& e) {
-            PyErr_SetString(PyExc_Exception,e.what());
+        }catch (std::domain_error& de) {
+            PyErr_SetString(PyExc_IndexError,de.what());
+            return NULL;
+        }catch (std::exception& ex) {
+            PyErr_SetString(PyExc_Exception,ex.what());
             return NULL;
         }catch (...) {
             PyErr_SetString(PyExc_Exception,"unknown error");
@@ -2169,8 +2493,11 @@ static PyObject *_wrap_BoundaryCondition_type(PyObject *self, PyObject *args, Py
     {
         try {
             result = new BoundaryConditionType (arg0->type());
-        }catch (std::exception& e) {
-            PyErr_SetString(PyExc_Exception,e.what());
+        }catch (std::domain_error& de) {
+            PyErr_SetString(PyExc_IndexError,de.what());
+            return NULL;
+        }catch (std::exception& ex) {
+            PyErr_SetString(PyExc_Exception,ex.what());
             return NULL;
         }catch (...) {
             PyErr_SetString(PyExc_Exception,"unknown error");
@@ -2211,8 +2538,11 @@ static PyObject *_wrap_BoundaryCondition_value(PyObject *self, PyObject *args, P
         try {
             result = (double )arg0->value();
             
-        }catch (std::exception& e) {
-            PyErr_SetString(PyExc_Exception,e.what());
+        }catch (std::domain_error& de) {
+            PyErr_SetString(PyExc_IndexError,de.what());
+            return NULL;
+        }catch (std::exception& ex) {
+            PyErr_SetString(PyExc_Exception,ex.what());
             return NULL;
         }catch (...) {
             PyErr_SetString(PyExc_Exception,"unknown error");
@@ -2284,8 +2614,11 @@ static PyObject *_wrap_new_Date(PyObject *self, PyObject *args, PyObject *kwargs
         try {
             result = (Date *)new Date(arg0,*arg1,arg2);
             
-        }catch (std::exception& e) {
-            PyErr_SetString(PyExc_Exception,e.what());
+        }catch (std::domain_error& de) {
+            PyErr_SetString(PyExc_IndexError,de.what());
+            return NULL;
+        }catch (std::exception& ex) {
+            PyErr_SetString(PyExc_Exception,ex.what());
             return NULL;
         }catch (...) {
             PyErr_SetString(PyExc_Exception,"unknown error");
@@ -2313,8 +2646,11 @@ static PyObject *_wrap_delete_Date(PyObject *self, PyObject *args, PyObject *kwa
         try {
             delete arg0;
             
-        }catch (std::exception& e) {
-            PyErr_SetString(PyExc_Exception,e.what());
+        }catch (std::domain_error& de) {
+            PyErr_SetString(PyExc_IndexError,de.what());
+            return NULL;
+        }catch (std::exception& ex) {
+            PyErr_SetString(PyExc_Exception,ex.what());
             return NULL;
         }catch (...) {
             PyErr_SetString(PyExc_Exception,"unknown error");
@@ -2340,8 +2676,11 @@ static PyObject *_wrap_Date_weekday(PyObject *self, PyObject *args, PyObject *kw
     {
         try {
             result = new Weekday (arg0->weekday());
-        }catch (std::exception& e) {
-            PyErr_SetString(PyExc_Exception,e.what());
+        }catch (std::domain_error& de) {
+            PyErr_SetString(PyExc_IndexError,de.what());
+            return NULL;
+        }catch (std::exception& ex) {
+            PyErr_SetString(PyExc_Exception,ex.what());
             return NULL;
         }catch (...) {
             PyErr_SetString(PyExc_Exception,"unknown error");
@@ -2349,13 +2688,13 @@ static PyObject *_wrap_Date_weekday(PyObject *self, PyObject *args, PyObject *kw
         }
     }{
         switch (*result) {
-            case Sunday:		resultobj = PyString_FromString("Sunday");	break;
-            case Monday:		resultobj = PyString_FromString("Monday");	break;
-            case Tuesday:		resultobj = PyString_FromString("Tuesday");	break;
-            case Wednesday:	resultobj = PyString_FromString("Wednesday");	break;
-            case Thursday:	resultobj = PyString_FromString("Thursday");	break;
-            case Friday:		resultobj = PyString_FromString("Friday");	break;
-            case Saturday:	resultobj = PyString_FromString("Saturday");	break;
+            case Sunday:        resultobj = PyString_FromString("Sunday");    break;
+            case Monday:        resultobj = PyString_FromString("Monday");    break;
+            case Tuesday:        resultobj = PyString_FromString("Tuesday");    break;
+            case Wednesday:    resultobj = PyString_FromString("Wednesday");    break;
+            case Thursday:    resultobj = PyString_FromString("Thursday");    break;
+            case Friday:        resultobj = PyString_FromString("Friday");    break;
+            case Saturday:    resultobj = PyString_FromString("Saturday");    break;
         }
     }
     {
@@ -2380,8 +2719,11 @@ static PyObject *_wrap_Date_dayOfMonth(PyObject *self, PyObject *args, PyObject 
         try {
             result = (Day )arg0->dayOfMonth();
             
-        }catch (std::exception& e) {
-            PyErr_SetString(PyExc_Exception,e.what());
+        }catch (std::domain_error& de) {
+            PyErr_SetString(PyExc_IndexError,de.what());
+            return NULL;
+        }catch (std::exception& ex) {
+            PyErr_SetString(PyExc_Exception,ex.what());
             return NULL;
         }catch (...) {
             PyErr_SetString(PyExc_Exception,"unknown error");
@@ -2407,8 +2749,11 @@ static PyObject *_wrap_Date_dayOfYear(PyObject *self, PyObject *args, PyObject *
         try {
             result = (Day )arg0->dayOfYear();
             
-        }catch (std::exception& e) {
-            PyErr_SetString(PyExc_Exception,e.what());
+        }catch (std::domain_error& de) {
+            PyErr_SetString(PyExc_IndexError,de.what());
+            return NULL;
+        }catch (std::exception& ex) {
+            PyErr_SetString(PyExc_Exception,ex.what());
             return NULL;
         }catch (...) {
             PyErr_SetString(PyExc_Exception,"unknown error");
@@ -2433,8 +2778,11 @@ static PyObject *_wrap_Date_month(PyObject *self, PyObject *args, PyObject *kwar
     {
         try {
             result = new Month (arg0->month());
-        }catch (std::exception& e) {
-            PyErr_SetString(PyExc_Exception,e.what());
+        }catch (std::domain_error& de) {
+            PyErr_SetString(PyExc_IndexError,de.what());
+            return NULL;
+        }catch (std::exception& ex) {
+            PyErr_SetString(PyExc_Exception,ex.what());
             return NULL;
         }catch (...) {
             PyErr_SetString(PyExc_Exception,"unknown error");
@@ -2442,18 +2790,18 @@ static PyObject *_wrap_Date_month(PyObject *self, PyObject *args, PyObject *kwar
         }
     }{
         switch (*result) {
-            case January:		resultobj = PyString_FromString("January");	break;
-            case February:	resultobj = PyString_FromString("February");	break;
-            case March:		resultobj = PyString_FromString("March");		break;
-            case April:		resultobj = PyString_FromString("April");		break;
-            case May:			resultobj = PyString_FromString("May");		break;
-            case June:		resultobj = PyString_FromString("June");		break;
-            case July:		resultobj = PyString_FromString("July");		break;
-            case August:		resultobj = PyString_FromString("August");	break;
-            case September:	resultobj = PyString_FromString("September");	break;
-            case October:		resultobj = PyString_FromString("October");	break;
-            case November:	resultobj = PyString_FromString("November");	break;
-            case December:	resultobj = PyString_FromString("December");	break;
+            case January:        resultobj = PyString_FromString("January");    break;
+            case February:    resultobj = PyString_FromString("February");    break;
+            case March:        resultobj = PyString_FromString("March");        break;
+            case April:        resultobj = PyString_FromString("April");        break;
+            case May:            resultobj = PyString_FromString("May");        break;
+            case June:        resultobj = PyString_FromString("June");        break;
+            case July:        resultobj = PyString_FromString("July");        break;
+            case August:        resultobj = PyString_FromString("August");    break;
+            case September:    resultobj = PyString_FromString("September");    break;
+            case October:        resultobj = PyString_FromString("October");    break;
+            case November:    resultobj = PyString_FromString("November");    break;
+            case December:    resultobj = PyString_FromString("December");    break;
         }
     }
     {
@@ -2478,8 +2826,11 @@ static PyObject *_wrap_Date_year(PyObject *self, PyObject *args, PyObject *kwarg
         try {
             result = (Year )arg0->year();
             
-        }catch (std::exception& e) {
-            PyErr_SetString(PyExc_Exception,e.what());
+        }catch (std::domain_error& de) {
+            PyErr_SetString(PyExc_IndexError,de.what());
+            return NULL;
+        }catch (std::exception& ex) {
+            PyErr_SetString(PyExc_Exception,ex.what());
             return NULL;
         }catch (...) {
             PyErr_SetString(PyExc_Exception,"unknown error");
@@ -2505,8 +2856,11 @@ static PyObject *_wrap_Date_serialNumber(PyObject *self, PyObject *args, PyObjec
         try {
             result = (int )arg0->serialNumber();
             
-        }catch (std::exception& e) {
-            PyErr_SetString(PyExc_Exception,e.what());
+        }catch (std::domain_error& de) {
+            PyErr_SetString(PyExc_IndexError,de.what());
+            return NULL;
+        }catch (std::exception& ex) {
+            PyErr_SetString(PyExc_Exception,ex.what());
             return NULL;
         }catch (...) {
             PyErr_SetString(PyExc_Exception,"unknown error");
@@ -2532,8 +2886,11 @@ static PyObject *_wrap_Date_plusDays(PyObject *self, PyObject *args, PyObject *k
     {
         try {
             result = new Date (arg0->plusDays(arg1));
-        }catch (std::exception& e) {
-            PyErr_SetString(PyExc_Exception,e.what());
+        }catch (std::domain_error& de) {
+            PyErr_SetString(PyExc_IndexError,de.what());
+            return NULL;
+        }catch (std::exception& ex) {
+            PyErr_SetString(PyExc_Exception,ex.what());
             return NULL;
         }catch (...) {
             PyErr_SetString(PyExc_Exception,"unknown error");
@@ -2559,8 +2916,11 @@ static PyObject *_wrap_Date_plusWeeks(PyObject *self, PyObject *args, PyObject *
     {
         try {
             result = new Date (arg0->plusWeeks(arg1));
-        }catch (std::exception& e) {
-            PyErr_SetString(PyExc_Exception,e.what());
+        }catch (std::domain_error& de) {
+            PyErr_SetString(PyExc_IndexError,de.what());
+            return NULL;
+        }catch (std::exception& ex) {
+            PyErr_SetString(PyExc_Exception,ex.what());
             return NULL;
         }catch (...) {
             PyErr_SetString(PyExc_Exception,"unknown error");
@@ -2586,8 +2946,11 @@ static PyObject *_wrap_Date_plusMonths(PyObject *self, PyObject *args, PyObject 
     {
         try {
             result = new Date (arg0->plusMonths(arg1));
-        }catch (std::exception& e) {
-            PyErr_SetString(PyExc_Exception,e.what());
+        }catch (std::domain_error& de) {
+            PyErr_SetString(PyExc_IndexError,de.what());
+            return NULL;
+        }catch (std::exception& ex) {
+            PyErr_SetString(PyExc_Exception,ex.what());
             return NULL;
         }catch (...) {
             PyErr_SetString(PyExc_Exception,"unknown error");
@@ -2613,8 +2976,11 @@ static PyObject *_wrap_Date_plusYears(PyObject *self, PyObject *args, PyObject *
     {
         try {
             result = new Date (arg0->plusYears(arg1));
-        }catch (std::exception& e) {
-            PyErr_SetString(PyExc_Exception,e.what());
+        }catch (std::domain_error& de) {
+            PyErr_SetString(PyExc_IndexError,de.what());
+            return NULL;
+        }catch (std::exception& ex) {
+            PyErr_SetString(PyExc_Exception,ex.what());
             return NULL;
         }catch (...) {
             PyErr_SetString(PyExc_Exception,"unknown error");
@@ -2663,8 +3029,11 @@ static PyObject *_wrap_Date_plus(PyObject *self, PyObject *args, PyObject *kwarg
     {
         try {
             result = new Date (arg0->plus(arg1,*arg2));
-        }catch (std::exception& e) {
-            PyErr_SetString(PyExc_Exception,e.what());
+        }catch (std::domain_error& de) {
+            PyErr_SetString(PyExc_IndexError,de.what());
+            return NULL;
+        }catch (std::exception& ex) {
+            PyErr_SetString(PyExc_Exception,ex.what());
             return NULL;
         }catch (...) {
             PyErr_SetString(PyExc_Exception,"unknown error");
@@ -2691,8 +3060,11 @@ static PyObject *_wrap_Date_isLeap(PyObject *self, PyObject *args, PyObject *kwa
         try {
             result = (bool )Date::isLeap(arg0);
             
-        }catch (std::exception& e) {
-            PyErr_SetString(PyExc_Exception,e.what());
+        }catch (std::domain_error& de) {
+            PyErr_SetString(PyExc_IndexError,de.what());
+            return NULL;
+        }catch (std::exception& ex) {
+            PyErr_SetString(PyExc_Exception,ex.what());
             return NULL;
         }catch (...) {
             PyErr_SetString(PyExc_Exception,"unknown error");
@@ -2714,8 +3086,11 @@ static PyObject *_wrap_Date_minDate(PyObject *self, PyObject *args, PyObject *kw
     {
         try {
             result = new Date (Date::minDate());
-        }catch (std::exception& e) {
-            PyErr_SetString(PyExc_Exception,e.what());
+        }catch (std::domain_error& de) {
+            PyErr_SetString(PyExc_IndexError,de.what());
+            return NULL;
+        }catch (std::exception& ex) {
+            PyErr_SetString(PyExc_Exception,ex.what());
             return NULL;
         }catch (...) {
             PyErr_SetString(PyExc_Exception,"unknown error");
@@ -2737,8 +3112,11 @@ static PyObject *_wrap_Date_maxDate(PyObject *self, PyObject *args, PyObject *kw
     {
         try {
             result = new Date (Date::maxDate());
-        }catch (std::exception& e) {
-            PyErr_SetString(PyExc_Exception,e.what());
+        }catch (std::domain_error& de) {
+            PyErr_SetString(PyExc_IndexError,de.what());
+            return NULL;
+        }catch (std::exception& ex) {
+            PyErr_SetString(PyExc_Exception,ex.what());
             return NULL;
         }catch (...) {
             PyErr_SetString(PyExc_Exception,"unknown error");
@@ -2771,8 +3149,11 @@ static PyObject *_wrap_Date_monthNumber(PyObject *self, PyObject *args, PyObject
         try {
             result = (int )Date_monthNumber(arg0);
             
-        }catch (std::exception& e) {
-            PyErr_SetString(PyExc_Exception,e.what());
+        }catch (std::domain_error& de) {
+            PyErr_SetString(PyExc_IndexError,de.what());
+            return NULL;
+        }catch (std::exception& ex) {
+            PyErr_SetString(PyExc_Exception,ex.what());
             return NULL;
         }catch (...) {
             PyErr_SetString(PyExc_Exception,"unknown error");
@@ -2805,8 +3186,11 @@ static PyObject *_wrap_Date_weekdayNumber(PyObject *self, PyObject *args, PyObje
         try {
             result = (int )Date_weekdayNumber(arg0);
             
-        }catch (std::exception& e) {
-            PyErr_SetString(PyExc_Exception,e.what());
+        }catch (std::domain_error& de) {
+            PyErr_SetString(PyExc_IndexError,de.what());
+            return NULL;
+        }catch (std::exception& ex) {
+            PyErr_SetString(PyExc_Exception,ex.what());
             return NULL;
         }catch (...) {
             PyErr_SetString(PyExc_Exception,"unknown error");
@@ -2839,8 +3223,11 @@ static PyObject *_wrap_Date___add__(PyObject *self, PyObject *args, PyObject *kw
     {
         try {
             result = new Date (Date___add__(arg0,arg1));
-        }catch (std::exception& e) {
-            PyErr_SetString(PyExc_Exception,e.what());
+        }catch (std::domain_error& de) {
+            PyErr_SetString(PyExc_IndexError,de.what());
+            return NULL;
+        }catch (std::exception& ex) {
+            PyErr_SetString(PyExc_Exception,ex.what());
             return NULL;
         }catch (...) {
             PyErr_SetString(PyExc_Exception,"unknown error");
@@ -2873,8 +3260,11 @@ static PyObject *_wrap_Date___sub__(PyObject *self, PyObject *args, PyObject *kw
     {
         try {
             result = new Date (Date___sub__(arg0,arg1));
-        }catch (std::exception& e) {
-            PyErr_SetString(PyExc_Exception,e.what());
+        }catch (std::domain_error& de) {
+            PyErr_SetString(PyExc_IndexError,de.what());
+            return NULL;
+        }catch (std::exception& ex) {
+            PyErr_SetString(PyExc_Exception,ex.what());
             return NULL;
         }catch (...) {
             PyErr_SetString(PyExc_Exception,"unknown error");
@@ -2914,8 +3304,11 @@ static PyObject *_wrap_Date___cmp__(PyObject *self, PyObject *args, PyObject *kw
         try {
             result = (int )Date___cmp__(arg0,(Date const &)*arg1);
             
-        }catch (std::exception& e) {
-            PyErr_SetString(PyExc_Exception,e.what());
+        }catch (std::domain_error& de) {
+            PyErr_SetString(PyExc_IndexError,de.what());
+            return NULL;
+        }catch (std::exception& ex) {
+            PyErr_SetString(PyExc_Exception,ex.what());
             return NULL;
         }catch (...) {
             PyErr_SetString(PyExc_Exception,"unknown error");
@@ -2947,8 +3340,11 @@ static PyObject *_wrap_Date___str__(PyObject *self, PyObject *args, PyObject *kw
     {
         try {
             result = new String (Date___str__(arg0));
-        }catch (std::exception& e) {
-            PyErr_SetString(PyExc_Exception,e.what());
+        }catch (std::domain_error& de) {
+            PyErr_SetString(PyExc_IndexError,de.what());
+            return NULL;
+        }catch (std::exception& ex) {
+            PyErr_SetString(PyExc_Exception,ex.what());
             return NULL;
         }catch (...) {
             PyErr_SetString(PyExc_Exception,"unknown error");
@@ -2985,8 +3381,11 @@ static PyObject *_wrap_Date___repr__(PyObject *self, PyObject *args, PyObject *k
     {
         try {
             result = new String (Date___repr__(arg0));
-        }catch (std::exception& e) {
-            PyErr_SetString(PyExc_Exception,e.what());
+        }catch (std::domain_error& de) {
+            PyErr_SetString(PyExc_IndexError,de.what());
+            return NULL;
+        }catch (std::exception& ex) {
+            PyErr_SetString(PyExc_Exception,ex.what());
             return NULL;
         }catch (...) {
             PyErr_SetString(PyExc_Exception,"unknown error");
@@ -2994,6 +3393,440 @@ static PyObject *_wrap_Date___repr__(PyObject *self, PyObject *args, PyObject *k
         }
     }{
         resultobj = PyString_FromString(result->c_str());
+    }
+    {
+        delete result;
+    }
+    return resultobj;
+}
+
+
+static PyObject *_wrap_delete_DateVector(PyObject *self, PyObject *args, PyObject *kwargs) {
+    PyObject *resultobj;
+    DateVector *arg0 ;
+    bool newObj ;
+    PyObject * obj0  = 0 ;
+    char *kwnames[] = {
+        "self", NULL 
+    };
+    
+    if(!PyArg_ParseTupleAndKeywords(args,kwargs,"O:delete_DateVector",kwnames,&obj0)) return NULL;
+    {
+        DateVector* v;
+        if ((SWIG_ConvertPtr(obj0,(void **) &v,
+        (swig_type_info *)SWIG_TypeQuery("DateVector *"),0)) != -1) {
+            arg0 = v;
+            newObj = false;
+        }else if (PyTuple_Check(obj0)) {
+            int size = PyTuple_Size(obj0);
+            arg0 = new DateVector(size);
+            newObj = true;
+            for (int i=0; i<size; i++) {
+                Date* d;
+                PyObject* o = PyTuple_GetItem(obj0,i);
+                if ((SWIG_ConvertPtr(o,(void **) &d,
+                (swig_type_info *)SWIG_TypeQuery("Date *"),0)) != -1) {
+                    (*arg0)[i] = *d;
+                }else {
+                    PyErr_SetString(PyExc_TypeError,"tuple must contain dates");
+                    delete arg0;
+                    return NULL;
+                }
+            }
+        }else if (PyList_Check(obj0)) {
+            int size = PyList_Size(obj0);
+            arg0 = new DateVector(size);
+            newObj = true;
+            for (int i=0; i<size; i++) {
+                Date* d;
+                PyObject* o = PyList_GetItem(obj0,i);
+                if ((SWIG_ConvertPtr(o,(void **) &d,
+                (swig_type_info *)SWIG_TypeQuery("Date *"),0)) != -1) {
+                    (*arg0)[i] = *d;
+                }else {
+                    PyErr_SetString(PyExc_TypeError,"list must contain dates");
+                    delete arg0;
+                    return NULL;
+                }
+            }
+        }else {
+            PyErr_SetString(PyExc_TypeError,"not a sequence");
+            return NULL;
+        }
+    }
+    {
+        try {
+            delete arg0;
+            
+        }catch (std::domain_error& de) {
+            PyErr_SetString(PyExc_IndexError,de.what());
+            return NULL;
+        }catch (std::exception& ex) {
+            PyErr_SetString(PyExc_Exception,ex.what());
+            return NULL;
+        }catch (...) {
+            PyErr_SetString(PyExc_Exception,"unknown error");
+            return NULL;
+        }
+    }Py_INCREF(Py_None);
+    resultobj = Py_None;
+    {
+        if (newObj)
+        delete arg0;
+    }
+    return resultobj;
+}
+
+
+int  DateVector___len__(DateVector *self) {
+    {
+        return self->size();
+    }
+}
+
+
+static PyObject *_wrap_DateVector___len__(PyObject *self, PyObject *args, PyObject *kwargs) {
+    PyObject *resultobj;
+    DateVector *arg0 ;
+    bool newObj ;
+    PyObject * obj0  = 0 ;
+    char *kwnames[] = {
+        "self", NULL 
+    };
+    int result ;
+    
+    if(!PyArg_ParseTupleAndKeywords(args,kwargs,"O:DateVector___len__",kwnames,&obj0)) return NULL;
+    {
+        DateVector* v;
+        if ((SWIG_ConvertPtr(obj0,(void **) &v,
+        (swig_type_info *)SWIG_TypeQuery("DateVector *"),0)) != -1) {
+            arg0 = v;
+            newObj = false;
+        }else if (PyTuple_Check(obj0)) {
+            int size = PyTuple_Size(obj0);
+            arg0 = new DateVector(size);
+            newObj = true;
+            for (int i=0; i<size; i++) {
+                Date* d;
+                PyObject* o = PyTuple_GetItem(obj0,i);
+                if ((SWIG_ConvertPtr(o,(void **) &d,
+                (swig_type_info *)SWIG_TypeQuery("Date *"),0)) != -1) {
+                    (*arg0)[i] = *d;
+                }else {
+                    PyErr_SetString(PyExc_TypeError,"tuple must contain dates");
+                    delete arg0;
+                    return NULL;
+                }
+            }
+        }else if (PyList_Check(obj0)) {
+            int size = PyList_Size(obj0);
+            arg0 = new DateVector(size);
+            newObj = true;
+            for (int i=0; i<size; i++) {
+                Date* d;
+                PyObject* o = PyList_GetItem(obj0,i);
+                if ((SWIG_ConvertPtr(o,(void **) &d,
+                (swig_type_info *)SWIG_TypeQuery("Date *"),0)) != -1) {
+                    (*arg0)[i] = *d;
+                }else {
+                    PyErr_SetString(PyExc_TypeError,"list must contain dates");
+                    delete arg0;
+                    return NULL;
+                }
+            }
+        }else {
+            PyErr_SetString(PyExc_TypeError,"not a sequence");
+            return NULL;
+        }
+    }
+    {
+        try {
+            result = (int )DateVector___len__(arg0);
+            
+        }catch (std::domain_error& de) {
+            PyErr_SetString(PyExc_IndexError,de.what());
+            return NULL;
+        }catch (std::exception& ex) {
+            PyErr_SetString(PyExc_Exception,ex.what());
+            return NULL;
+        }catch (...) {
+            PyErr_SetString(PyExc_Exception,"unknown error");
+            return NULL;
+        }
+    }resultobj = PyInt_FromLong((long)result);
+    {
+        if (newObj)
+        delete arg0;
+    }
+    return resultobj;
+}
+
+
+Date  DateVector___getitem__(DateVector *self,int i) {
+    {
+        if (i>=0 && i<self->size()) {
+            return (*self)[i];
+        }else if (i<0 && -i<=self->size()) {
+            return (*self)[self->size()+i];
+        }else {
+            throw std::domain_error("DateVector");
+        }
+    }
+}
+
+
+static PyObject *_wrap_DateVector___getitem__(PyObject *self, PyObject *args, PyObject *kwargs) {
+    PyObject *resultobj;
+    DateVector *arg0 ;
+    int arg1 ;
+    bool newObj ;
+    PyObject * obj0  = 0 ;
+    char *kwnames[] = {
+        "self","i", NULL 
+    };
+    Date *result ;
+    
+    if(!PyArg_ParseTupleAndKeywords(args,kwargs,"Oi:DateVector___getitem__",kwnames,&obj0,&arg1)) return NULL;
+    {
+        DateVector* v;
+        if ((SWIG_ConvertPtr(obj0,(void **) &v,
+        (swig_type_info *)SWIG_TypeQuery("DateVector *"),0)) != -1) {
+            arg0 = v;
+            newObj = false;
+        }else if (PyTuple_Check(obj0)) {
+            int size = PyTuple_Size(obj0);
+            arg0 = new DateVector(size);
+            newObj = true;
+            for (int i=0; i<size; i++) {
+                Date* d;
+                PyObject* o = PyTuple_GetItem(obj0,i);
+                if ((SWIG_ConvertPtr(o,(void **) &d,
+                (swig_type_info *)SWIG_TypeQuery("Date *"),0)) != -1) {
+                    (*arg0)[i] = *d;
+                }else {
+                    PyErr_SetString(PyExc_TypeError,"tuple must contain dates");
+                    delete arg0;
+                    return NULL;
+                }
+            }
+        }else if (PyList_Check(obj0)) {
+            int size = PyList_Size(obj0);
+            arg0 = new DateVector(size);
+            newObj = true;
+            for (int i=0; i<size; i++) {
+                Date* d;
+                PyObject* o = PyList_GetItem(obj0,i);
+                if ((SWIG_ConvertPtr(o,(void **) &d,
+                (swig_type_info *)SWIG_TypeQuery("Date *"),0)) != -1) {
+                    (*arg0)[i] = *d;
+                }else {
+                    PyErr_SetString(PyExc_TypeError,"list must contain dates");
+                    delete arg0;
+                    return NULL;
+                }
+            }
+        }else {
+            PyErr_SetString(PyExc_TypeError,"not a sequence");
+            return NULL;
+        }
+    }
+    {
+        try {
+            result = new Date (DateVector___getitem__(arg0,arg1));
+        }catch (std::domain_error& de) {
+            PyErr_SetString(PyExc_IndexError,de.what());
+            return NULL;
+        }catch (std::exception& ex) {
+            PyErr_SetString(PyExc_Exception,ex.what());
+            return NULL;
+        }catch (...) {
+            PyErr_SetString(PyExc_Exception,"unknown error");
+            return NULL;
+        }
+    }resultobj = SWIG_NewPointerObj((void *)result, SWIGTYPE_p_Date);
+    {
+        if (newObj)
+        delete arg0;
+    }
+    return resultobj;
+}
+
+
+void  DateVector___setitem__(DateVector *self,int i,Date d) {
+    {
+        (*self)[i] = d;
+    }
+}
+
+
+static PyObject *_wrap_DateVector___setitem__(PyObject *self, PyObject *args, PyObject *kwargs) {
+    PyObject *resultobj;
+    DateVector *arg0 ;
+    int arg1 ;
+    Date *arg2 ;
+    bool newObj ;
+    PyObject * obj0  = 0 ;
+    PyObject * argo2 =0 ;
+    char *kwnames[] = {
+        "self","i","d", NULL 
+    };
+    
+    if(!PyArg_ParseTupleAndKeywords(args,kwargs,"OiO:DateVector___setitem__",kwnames,&obj0,&arg1,&argo2)) return NULL;
+    {
+        DateVector* v;
+        if ((SWIG_ConvertPtr(obj0,(void **) &v,
+        (swig_type_info *)SWIG_TypeQuery("DateVector *"),0)) != -1) {
+            arg0 = v;
+            newObj = false;
+        }else if (PyTuple_Check(obj0)) {
+            int size = PyTuple_Size(obj0);
+            arg0 = new DateVector(size);
+            newObj = true;
+            for (int i=0; i<size; i++) {
+                Date* d;
+                PyObject* o = PyTuple_GetItem(obj0,i);
+                if ((SWIG_ConvertPtr(o,(void **) &d,
+                (swig_type_info *)SWIG_TypeQuery("Date *"),0)) != -1) {
+                    (*arg0)[i] = *d;
+                }else {
+                    PyErr_SetString(PyExc_TypeError,"tuple must contain dates");
+                    delete arg0;
+                    return NULL;
+                }
+            }
+        }else if (PyList_Check(obj0)) {
+            int size = PyList_Size(obj0);
+            arg0 = new DateVector(size);
+            newObj = true;
+            for (int i=0; i<size; i++) {
+                Date* d;
+                PyObject* o = PyList_GetItem(obj0,i);
+                if ((SWIG_ConvertPtr(o,(void **) &d,
+                (swig_type_info *)SWIG_TypeQuery("Date *"),0)) != -1) {
+                    (*arg0)[i] = *d;
+                }else {
+                    PyErr_SetString(PyExc_TypeError,"list must contain dates");
+                    delete arg0;
+                    return NULL;
+                }
+            }
+        }else {
+            PyErr_SetString(PyExc_TypeError,"not a sequence");
+            return NULL;
+        }
+    }
+    if ((SWIG_ConvertPtr(argo2,(void **) &arg2,SWIGTYPE_p_Date,1)) == -1) return NULL;
+    {
+        try {
+            DateVector___setitem__(arg0,arg1,*arg2);
+            
+        }catch (std::domain_error& de) {
+            PyErr_SetString(PyExc_IndexError,de.what());
+            return NULL;
+        }catch (std::exception& ex) {
+            PyErr_SetString(PyExc_Exception,ex.what());
+            return NULL;
+        }catch (...) {
+            PyErr_SetString(PyExc_Exception,"unknown error");
+            return NULL;
+        }
+    }Py_INCREF(Py_None);
+    resultobj = Py_None;
+    {
+        if (newObj)
+        delete arg0;
+    }
+    return resultobj;
+}
+
+
+String  DateVector___str__(DateVector *self) {
+    {
+        String s = "(";
+        for (int i=0; i<self->size(); i++) {
+            if (i != 0)
+            s += ", ";
+            s += QuantLib::DateFormatter::toString((*self)[i]);
+        }
+        s += ")";
+        return s;
+    }
+}
+
+
+static PyObject *_wrap_DateVector___str__(PyObject *self, PyObject *args, PyObject *kwargs) {
+    PyObject *resultobj;
+    DateVector *arg0 ;
+    bool newObj ;
+    PyObject * obj0  = 0 ;
+    char *kwnames[] = {
+        "self", NULL 
+    };
+    String *result ;
+    
+    if(!PyArg_ParseTupleAndKeywords(args,kwargs,"O:DateVector___str__",kwnames,&obj0)) return NULL;
+    {
+        DateVector* v;
+        if ((SWIG_ConvertPtr(obj0,(void **) &v,
+        (swig_type_info *)SWIG_TypeQuery("DateVector *"),0)) != -1) {
+            arg0 = v;
+            newObj = false;
+        }else if (PyTuple_Check(obj0)) {
+            int size = PyTuple_Size(obj0);
+            arg0 = new DateVector(size);
+            newObj = true;
+            for (int i=0; i<size; i++) {
+                Date* d;
+                PyObject* o = PyTuple_GetItem(obj0,i);
+                if ((SWIG_ConvertPtr(o,(void **) &d,
+                (swig_type_info *)SWIG_TypeQuery("Date *"),0)) != -1) {
+                    (*arg0)[i] = *d;
+                }else {
+                    PyErr_SetString(PyExc_TypeError,"tuple must contain dates");
+                    delete arg0;
+                    return NULL;
+                }
+            }
+        }else if (PyList_Check(obj0)) {
+            int size = PyList_Size(obj0);
+            arg0 = new DateVector(size);
+            newObj = true;
+            for (int i=0; i<size; i++) {
+                Date* d;
+                PyObject* o = PyList_GetItem(obj0,i);
+                if ((SWIG_ConvertPtr(o,(void **) &d,
+                (swig_type_info *)SWIG_TypeQuery("Date *"),0)) != -1) {
+                    (*arg0)[i] = *d;
+                }else {
+                    PyErr_SetString(PyExc_TypeError,"list must contain dates");
+                    delete arg0;
+                    return NULL;
+                }
+            }
+        }else {
+            PyErr_SetString(PyExc_TypeError,"not a sequence");
+            return NULL;
+        }
+    }
+    {
+        try {
+            result = new String (DateVector___str__(arg0));
+        }catch (std::domain_error& de) {
+            PyErr_SetString(PyExc_IndexError,de.what());
+            return NULL;
+        }catch (std::exception& ex) {
+            PyErr_SetString(PyExc_Exception,ex.what());
+            return NULL;
+        }catch (...) {
+            PyErr_SetString(PyExc_Exception,"unknown error");
+            return NULL;
+        }
+    }{
+        resultobj = PyString_FromString(result->c_str());
+    }
+    {
+        if (newObj)
+        delete arg0;
     }
     {
         delete result;
@@ -3016,8 +3849,11 @@ static PyObject *_wrap_delete_Calendar(PyObject *self, PyObject *args, PyObject 
         try {
             delete arg0;
             
-        }catch (std::exception& e) {
-            PyErr_SetString(PyExc_Exception,e.what());
+        }catch (std::domain_error& de) {
+            PyErr_SetString(PyExc_IndexError,de.what());
+            return NULL;
+        }catch (std::exception& ex) {
+            PyErr_SetString(PyExc_Exception,ex.what());
             return NULL;
         }catch (...) {
             PyErr_SetString(PyExc_Exception,"unknown error");
@@ -3054,8 +3890,11 @@ static PyObject *_wrap_Calendar_isBusinessDay(PyObject *self, PyObject *args, Py
         try {
             result = (bool )CalendarHandle_isBusinessDay(arg0,(Date const &)*arg1);
             
-        }catch (std::exception& e) {
-            PyErr_SetString(PyExc_Exception,e.what());
+        }catch (std::domain_error& de) {
+            PyErr_SetString(PyExc_IndexError,de.what());
+            return NULL;
+        }catch (std::exception& ex) {
+            PyErr_SetString(PyExc_Exception,ex.what());
             return NULL;
         }catch (...) {
             PyErr_SetString(PyExc_Exception,"unknown error");
@@ -3091,8 +3930,11 @@ static PyObject *_wrap_Calendar_isHoliday(PyObject *self, PyObject *args, PyObje
         try {
             result = (bool )CalendarHandle_isHoliday(arg0,(Date const &)*arg1);
             
-        }catch (std::exception& e) {
-            PyErr_SetString(PyExc_Exception,e.what());
+        }catch (std::domain_error& de) {
+            PyErr_SetString(PyExc_IndexError,de.what());
+            return NULL;
+        }catch (std::exception& ex) {
+            PyErr_SetString(PyExc_Exception,ex.what());
             return NULL;
         }catch (...) {
             PyErr_SetString(PyExc_Exception,"unknown error");
@@ -3130,8 +3972,11 @@ static PyObject *_wrap_Calendar_roll(PyObject *self, PyObject *args, PyObject *k
     {
         try {
             result = new Date (CalendarHandle_roll(arg0,(Date const &)*arg1,arg2));
-        }catch (std::exception& e) {
-            PyErr_SetString(PyExc_Exception,e.what());
+        }catch (std::domain_error& de) {
+            PyErr_SetString(PyExc_IndexError,de.what());
+            return NULL;
+        }catch (std::exception& ex) {
+            PyErr_SetString(PyExc_Exception,ex.what());
             return NULL;
         }catch (...) {
             PyErr_SetString(PyExc_Exception,"unknown error");
@@ -3193,8 +4038,11 @@ static PyObject *_wrap_Calendar_advance(PyObject *self, PyObject *args, PyObject
     {
         try {
             result = new Date (CalendarHandle_advance(arg0,(Date const &)*arg1,arg2,*arg3,arg4));
-        }catch (std::exception& e) {
-            PyErr_SetString(PyExc_Exception,e.what());
+        }catch (std::domain_error& de) {
+            PyErr_SetString(PyExc_IndexError,de.what());
+            return NULL;
+        }catch (std::exception& ex) {
+            PyErr_SetString(PyExc_Exception,ex.what());
             return NULL;
         }catch (...) {
             PyErr_SetString(PyExc_Exception,"unknown error");
@@ -3229,8 +4077,11 @@ static PyObject *_wrap_Calendar___str__(PyObject *self, PyObject *args, PyObject
     {
         try {
             result = new String (CalendarHandle___str__(arg0));
-        }catch (std::exception& e) {
-            PyErr_SetString(PyExc_Exception,e.what());
+        }catch (std::domain_error& de) {
+            PyErr_SetString(PyExc_IndexError,de.what());
+            return NULL;
+        }catch (std::exception& ex) {
+            PyErr_SetString(PyExc_Exception,ex.what());
             return NULL;
         }catch (...) {
             PyErr_SetString(PyExc_Exception,"unknown error");
@@ -3267,8 +4118,11 @@ static PyObject *_wrap_Calendar___repr__(PyObject *self, PyObject *args, PyObjec
     {
         try {
             result = new String (CalendarHandle___repr__(arg0));
-        }catch (std::exception& e) {
-            PyErr_SetString(PyExc_Exception,e.what());
+        }catch (std::domain_error& de) {
+            PyErr_SetString(PyExc_IndexError,de.what());
+            return NULL;
+        }catch (std::exception& ex) {
+            PyErr_SetString(PyExc_Exception,ex.what());
             return NULL;
         }catch (...) {
             PyErr_SetString(PyExc_Exception,"unknown error");
@@ -3309,8 +4163,11 @@ static PyObject *_wrap_Calendar___cmp__(PyObject *self, PyObject *args, PyObject
         try {
             result = (int )CalendarHandle___cmp__(arg0,(CalendarHandle const &)*arg1);
             
-        }catch (std::exception& e) {
-            PyErr_SetString(PyExc_Exception,e.what());
+        }catch (std::domain_error& de) {
+            PyErr_SetString(PyExc_IndexError,de.what());
+            return NULL;
+        }catch (std::exception& ex) {
+            PyErr_SetString(PyExc_Exception,ex.what());
             return NULL;
         }catch (...) {
             PyErr_SetString(PyExc_Exception,"unknown error");
@@ -3343,8 +4200,11 @@ static PyObject *_wrap_Calendar___nonzero__(PyObject *self, PyObject *args, PyOb
         try {
             result = (int )CalendarHandle___nonzero__(arg0);
             
-        }catch (std::exception& e) {
-            PyErr_SetString(PyExc_Exception,e.what());
+        }catch (std::domain_error& de) {
+            PyErr_SetString(PyExc_IndexError,de.what());
+            return NULL;
+        }catch (std::exception& ex) {
+            PyErr_SetString(PyExc_Exception,ex.what());
             return NULL;
         }catch (...) {
             PyErr_SetString(PyExc_Exception,"unknown error");
@@ -3369,8 +4229,11 @@ static PyObject *_wrap_delete_Currency(PyObject *self, PyObject *args, PyObject 
         try {
             delete arg0;
             
-        }catch (std::exception& e) {
-            PyErr_SetString(PyExc_Exception,e.what());
+        }catch (std::domain_error& de) {
+            PyErr_SetString(PyExc_IndexError,de.what());
+            return NULL;
+        }catch (std::exception& ex) {
+            PyErr_SetString(PyExc_Exception,ex.what());
             return NULL;
         }catch (...) {
             PyErr_SetString(PyExc_Exception,"unknown error");
@@ -3403,8 +4266,11 @@ static PyObject *_wrap_Currency_settlementCalendar(PyObject *self, PyObject *arg
     {
         try {
             result = new CalendarHandle (CurrencyHandle_settlementCalendar(arg0));
-        }catch (std::exception& e) {
-            PyErr_SetString(PyExc_Exception,e.what());
+        }catch (std::domain_error& de) {
+            PyErr_SetString(PyExc_IndexError,de.what());
+            return NULL;
+        }catch (std::exception& ex) {
+            PyErr_SetString(PyExc_Exception,ex.what());
             return NULL;
         }catch (...) {
             PyErr_SetString(PyExc_Exception,"unknown error");
@@ -3437,8 +4303,11 @@ static PyObject *_wrap_Currency_settlementDays(PyObject *self, PyObject *args, P
         try {
             result = (int )CurrencyHandle_settlementDays(arg0);
             
-        }catch (std::exception& e) {
-            PyErr_SetString(PyExc_Exception,e.what());
+        }catch (std::domain_error& de) {
+            PyErr_SetString(PyExc_IndexError,de.what());
+            return NULL;
+        }catch (std::exception& ex) {
+            PyErr_SetString(PyExc_Exception,ex.what());
             return NULL;
         }catch (...) {
             PyErr_SetString(PyExc_Exception,"unknown error");
@@ -3473,8 +4342,11 @@ static PyObject *_wrap_Currency_settlementDate(PyObject *self, PyObject *args, P
     {
         try {
             result = new Date (CurrencyHandle_settlementDate(arg0,(Date const &)*arg1));
-        }catch (std::exception& e) {
-            PyErr_SetString(PyExc_Exception,e.what());
+        }catch (std::domain_error& de) {
+            PyErr_SetString(PyExc_IndexError,de.what());
+            return NULL;
+        }catch (std::exception& ex) {
+            PyErr_SetString(PyExc_Exception,ex.what());
             return NULL;
         }catch (...) {
             PyErr_SetString(PyExc_Exception,"unknown error");
@@ -3506,8 +4378,11 @@ static PyObject *_wrap_Currency___str__(PyObject *self, PyObject *args, PyObject
     {
         try {
             result = new String (CurrencyHandle___str__(arg0));
-        }catch (std::exception& e) {
-            PyErr_SetString(PyExc_Exception,e.what());
+        }catch (std::domain_error& de) {
+            PyErr_SetString(PyExc_IndexError,de.what());
+            return NULL;
+        }catch (std::exception& ex) {
+            PyErr_SetString(PyExc_Exception,ex.what());
             return NULL;
         }catch (...) {
             PyErr_SetString(PyExc_Exception,"unknown error");
@@ -3544,8 +4419,11 @@ static PyObject *_wrap_Currency___repr__(PyObject *self, PyObject *args, PyObjec
     {
         try {
             result = new String (CurrencyHandle___repr__(arg0));
-        }catch (std::exception& e) {
-            PyErr_SetString(PyExc_Exception,e.what());
+        }catch (std::domain_error& de) {
+            PyErr_SetString(PyExc_IndexError,de.what());
+            return NULL;
+        }catch (std::exception& ex) {
+            PyErr_SetString(PyExc_Exception,ex.what());
             return NULL;
         }catch (...) {
             PyErr_SetString(PyExc_Exception,"unknown error");
@@ -3586,8 +4464,11 @@ static PyObject *_wrap_Currency___cmp__(PyObject *self, PyObject *args, PyObject
         try {
             result = (int )CurrencyHandle___cmp__(arg0,(CurrencyHandle const &)*arg1);
             
-        }catch (std::exception& e) {
-            PyErr_SetString(PyExc_Exception,e.what());
+        }catch (std::domain_error& de) {
+            PyErr_SetString(PyExc_IndexError,de.what());
+            return NULL;
+        }catch (std::exception& ex) {
+            PyErr_SetString(PyExc_Exception,ex.what());
             return NULL;
         }catch (...) {
             PyErr_SetString(PyExc_Exception,"unknown error");
@@ -3620,8 +4501,11 @@ static PyObject *_wrap_Currency___nonzero__(PyObject *self, PyObject *args, PyOb
         try {
             result = (int )CurrencyHandle___nonzero__(arg0);
             
-        }catch (std::exception& e) {
-            PyErr_SetString(PyExc_Exception,e.what());
+        }catch (std::domain_error& de) {
+            PyErr_SetString(PyExc_IndexError,de.what());
+            return NULL;
+        }catch (std::exception& ex) {
+            PyErr_SetString(PyExc_Exception,ex.what());
             return NULL;
         }catch (...) {
             PyErr_SetString(PyExc_Exception,"unknown error");
@@ -3646,8 +4530,11 @@ static PyObject *_wrap_delete_DayCounter(PyObject *self, PyObject *args, PyObjec
         try {
             delete arg0;
             
-        }catch (std::exception& e) {
-            PyErr_SetString(PyExc_Exception,e.what());
+        }catch (std::domain_error& de) {
+            PyErr_SetString(PyExc_IndexError,de.what());
+            return NULL;
+        }catch (std::exception& ex) {
+            PyErr_SetString(PyExc_Exception,ex.what());
             return NULL;
         }catch (...) {
             PyErr_SetString(PyExc_Exception,"unknown error");
@@ -3687,8 +4574,11 @@ static PyObject *_wrap_DayCounter_dayCount(PyObject *self, PyObject *args, PyObj
         try {
             result = (int )DayCounterHandle_dayCount(arg0,(Date const &)*arg1,(Date const &)*arg2);
             
-        }catch (std::exception& e) {
-            PyErr_SetString(PyExc_Exception,e.what());
+        }catch (std::domain_error& de) {
+            PyErr_SetString(PyExc_IndexError,de.what());
+            return NULL;
+        }catch (std::exception& ex) {
+            PyErr_SetString(PyExc_Exception,ex.what());
             return NULL;
         }catch (...) {
             PyErr_SetString(PyExc_Exception,"unknown error");
@@ -3727,8 +4617,11 @@ static PyObject *_wrap_DayCounter_yearFraction(PyObject *self, PyObject *args, P
         try {
             result = (Time )DayCounterHandle_yearFraction(arg0,(Date const &)*arg1,(Date const &)*arg2);
             
-        }catch (std::exception& e) {
-            PyErr_SetString(PyExc_Exception,e.what());
+        }catch (std::domain_error& de) {
+            PyErr_SetString(PyExc_IndexError,de.what());
+            return NULL;
+        }catch (std::exception& ex) {
+            PyErr_SetString(PyExc_Exception,ex.what());
             return NULL;
         }catch (...) {
             PyErr_SetString(PyExc_Exception,"unknown error");
@@ -3760,8 +4653,11 @@ static PyObject *_wrap_DayCounter___str__(PyObject *self, PyObject *args, PyObje
     {
         try {
             result = new String (DayCounterHandle___str__(arg0));
-        }catch (std::exception& e) {
-            PyErr_SetString(PyExc_Exception,e.what());
+        }catch (std::domain_error& de) {
+            PyErr_SetString(PyExc_IndexError,de.what());
+            return NULL;
+        }catch (std::exception& ex) {
+            PyErr_SetString(PyExc_Exception,ex.what());
             return NULL;
         }catch (...) {
             PyErr_SetString(PyExc_Exception,"unknown error");
@@ -3798,8 +4694,11 @@ static PyObject *_wrap_DayCounter___repr__(PyObject *self, PyObject *args, PyObj
     {
         try {
             result = new String (DayCounterHandle___repr__(arg0));
-        }catch (std::exception& e) {
-            PyErr_SetString(PyExc_Exception,e.what());
+        }catch (std::domain_error& de) {
+            PyErr_SetString(PyExc_IndexError,de.what());
+            return NULL;
+        }catch (std::exception& ex) {
+            PyErr_SetString(PyExc_Exception,ex.what());
             return NULL;
         }catch (...) {
             PyErr_SetString(PyExc_Exception,"unknown error");
@@ -3840,8 +4739,11 @@ static PyObject *_wrap_DayCounter___cmp__(PyObject *self, PyObject *args, PyObje
         try {
             result = (int )DayCounterHandle___cmp__(arg0,(DayCounterHandle const &)*arg1);
             
-        }catch (std::exception& e) {
-            PyErr_SetString(PyExc_Exception,e.what());
+        }catch (std::domain_error& de) {
+            PyErr_SetString(PyExc_IndexError,de.what());
+            return NULL;
+        }catch (std::exception& ex) {
+            PyErr_SetString(PyExc_Exception,ex.what());
             return NULL;
         }catch (...) {
             PyErr_SetString(PyExc_Exception,"unknown error");
@@ -3874,8 +4776,11 @@ static PyObject *_wrap_DayCounter___nonzero__(PyObject *self, PyObject *args, Py
         try {
             result = (int )DayCounterHandle___nonzero__(arg0);
             
-        }catch (std::exception& e) {
-            PyErr_SetString(PyExc_Exception,e.what());
+        }catch (std::domain_error& de) {
+            PyErr_SetString(PyExc_IndexError,de.what());
+            return NULL;
+        }catch (std::exception& ex) {
+            PyErr_SetString(PyExc_Exception,ex.what());
             return NULL;
         }catch (...) {
             PyErr_SetString(PyExc_Exception,"unknown error");
@@ -3900,8 +4805,11 @@ static PyObject *_wrap_new_NormalDistribution(PyObject *self, PyObject *args, Py
         try {
             result = (NormalDistribution *)new NormalDistribution(arg0,arg1);
             
-        }catch (std::exception& e) {
-            PyErr_SetString(PyExc_Exception,e.what());
+        }catch (std::domain_error& de) {
+            PyErr_SetString(PyExc_IndexError,de.what());
+            return NULL;
+        }catch (std::exception& ex) {
+            PyErr_SetString(PyExc_Exception,ex.what());
             return NULL;
         }catch (...) {
             PyErr_SetString(PyExc_Exception,"unknown error");
@@ -3926,8 +4834,11 @@ static PyObject *_wrap_delete_NormalDistribution(PyObject *self, PyObject *args,
         try {
             delete arg0;
             
-        }catch (std::exception& e) {
-            PyErr_SetString(PyExc_Exception,e.what());
+        }catch (std::domain_error& de) {
+            PyErr_SetString(PyExc_IndexError,de.what());
+            return NULL;
+        }catch (std::exception& ex) {
+            PyErr_SetString(PyExc_Exception,ex.what());
             return NULL;
         }catch (...) {
             PyErr_SetString(PyExc_Exception,"unknown error");
@@ -3955,8 +4866,11 @@ static PyObject *_wrap_NormalDistribution_derivative(PyObject *self, PyObject *a
         try {
             result = (double )arg0->derivative(arg1);
             
-        }catch (std::exception& e) {
-            PyErr_SetString(PyExc_Exception,e.what());
+        }catch (std::domain_error& de) {
+            PyErr_SetString(PyExc_IndexError,de.what());
+            return NULL;
+        }catch (std::exception& ex) {
+            PyErr_SetString(PyExc_Exception,ex.what());
             return NULL;
         }catch (...) {
             PyErr_SetString(PyExc_Exception,"unknown error");
@@ -3990,8 +4904,11 @@ static PyObject *_wrap_NormalDistribution___call__(PyObject *self, PyObject *arg
         try {
             result = (double )NormalDistribution___call__(arg0,arg1);
             
-        }catch (std::exception& e) {
-            PyErr_SetString(PyExc_Exception,e.what());
+        }catch (std::domain_error& de) {
+            PyErr_SetString(PyExc_IndexError,de.what());
+            return NULL;
+        }catch (std::exception& ex) {
+            PyErr_SetString(PyExc_Exception,ex.what());
             return NULL;
         }catch (...) {
             PyErr_SetString(PyExc_Exception,"unknown error");
@@ -4016,8 +4933,11 @@ static PyObject *_wrap_new_CumulativeNormalDistribution(PyObject *self, PyObject
         try {
             result = (CumulativeNormalDistribution *)new CumulativeNormalDistribution(arg0,arg1);
             
-        }catch (std::exception& e) {
-            PyErr_SetString(PyExc_Exception,e.what());
+        }catch (std::domain_error& de) {
+            PyErr_SetString(PyExc_IndexError,de.what());
+            return NULL;
+        }catch (std::exception& ex) {
+            PyErr_SetString(PyExc_Exception,ex.what());
             return NULL;
         }catch (...) {
             PyErr_SetString(PyExc_Exception,"unknown error");
@@ -4042,8 +4962,11 @@ static PyObject *_wrap_delete_CumulativeNormalDistribution(PyObject *self, PyObj
         try {
             delete arg0;
             
-        }catch (std::exception& e) {
-            PyErr_SetString(PyExc_Exception,e.what());
+        }catch (std::domain_error& de) {
+            PyErr_SetString(PyExc_IndexError,de.what());
+            return NULL;
+        }catch (std::exception& ex) {
+            PyErr_SetString(PyExc_Exception,ex.what());
             return NULL;
         }catch (...) {
             PyErr_SetString(PyExc_Exception,"unknown error");
@@ -4071,8 +4994,11 @@ static PyObject *_wrap_CumulativeNormalDistribution_derivative(PyObject *self, P
         try {
             result = (double )arg0->derivative(arg1);
             
-        }catch (std::exception& e) {
-            PyErr_SetString(PyExc_Exception,e.what());
+        }catch (std::domain_error& de) {
+            PyErr_SetString(PyExc_IndexError,de.what());
+            return NULL;
+        }catch (std::exception& ex) {
+            PyErr_SetString(PyExc_Exception,ex.what());
             return NULL;
         }catch (...) {
             PyErr_SetString(PyExc_Exception,"unknown error");
@@ -4106,8 +5032,11 @@ static PyObject *_wrap_CumulativeNormalDistribution___call__(PyObject *self, PyO
         try {
             result = (double )CumulativeNormalDistribution___call__(arg0,arg1);
             
-        }catch (std::exception& e) {
-            PyErr_SetString(PyExc_Exception,e.what());
+        }catch (std::domain_error& de) {
+            PyErr_SetString(PyExc_IndexError,de.what());
+            return NULL;
+        }catch (std::exception& ex) {
+            PyErr_SetString(PyExc_Exception,ex.what());
             return NULL;
         }catch (...) {
             PyErr_SetString(PyExc_Exception,"unknown error");
@@ -4132,8 +5061,11 @@ static PyObject *_wrap_new_InvCumulativeNormalDistribution(PyObject *self, PyObj
         try {
             result = (InvCumulativeNormalDistribution *)new InvCumulativeNormalDistribution(arg0,arg1);
             
-        }catch (std::exception& e) {
-            PyErr_SetString(PyExc_Exception,e.what());
+        }catch (std::domain_error& de) {
+            PyErr_SetString(PyExc_IndexError,de.what());
+            return NULL;
+        }catch (std::exception& ex) {
+            PyErr_SetString(PyExc_Exception,ex.what());
             return NULL;
         }catch (...) {
             PyErr_SetString(PyExc_Exception,"unknown error");
@@ -4158,8 +5090,11 @@ static PyObject *_wrap_delete_InvCumulativeNormalDistribution(PyObject *self, Py
         try {
             delete arg0;
             
-        }catch (std::exception& e) {
-            PyErr_SetString(PyExc_Exception,e.what());
+        }catch (std::domain_error& de) {
+            PyErr_SetString(PyExc_IndexError,de.what());
+            return NULL;
+        }catch (std::exception& ex) {
+            PyErr_SetString(PyExc_Exception,ex.what());
             return NULL;
         }catch (...) {
             PyErr_SetString(PyExc_Exception,"unknown error");
@@ -4194,471 +5129,17 @@ static PyObject *_wrap_InvCumulativeNormalDistribution___call__(PyObject *self, 
         try {
             result = (double )InvCumulativeNormalDistribution___call__(arg0,arg1);
             
-        }catch (std::exception& e) {
-            PyErr_SetString(PyExc_Exception,e.what());
+        }catch (std::domain_error& de) {
+            PyErr_SetString(PyExc_IndexError,de.what());
+            return NULL;
+        }catch (std::exception& ex) {
+            PyErr_SetString(PyExc_Exception,ex.what());
             return NULL;
         }catch (...) {
             PyErr_SetString(PyExc_Exception,"unknown error");
             return NULL;
         }
     }resultobj = PyFloat_FromDouble(result);
-    return resultobj;
-}
-
-
-static PyObject *_wrap_new_Array(PyObject *self, PyObject *args, PyObject *kwargs) {
-    PyObject *resultobj;
-    int arg0 ;
-    double arg1 = 0.0 ;
-    char *kwnames[] = {
-        "size","value", NULL 
-    };
-    Array *result ;
-    
-    if(!PyArg_ParseTupleAndKeywords(args,kwargs,"i|d:new_Array",kwnames,&arg0,&arg1)) return NULL;
-    {
-        try {
-            result = (Array *)new Array(arg0,arg1);
-            
-        }catch (std::exception& e) {
-            PyErr_SetString(PyExc_Exception,e.what());
-            return NULL;
-        }catch (...) {
-            PyErr_SetString(PyExc_Exception,"unknown error");
-            return NULL;
-        }
-    }resultobj = SWIG_NewPointerObj((void *) result, SWIGTYPE_p_Array);
-    return resultobj;
-}
-
-
-static PyObject *_wrap_delete_Array(PyObject *self, PyObject *args, PyObject *kwargs) {
-    PyObject *resultobj;
-    Array *arg0 ;
-    PyObject * argo0 =0 ;
-    char *kwnames[] = {
-        "self", NULL 
-    };
-    
-    if(!PyArg_ParseTupleAndKeywords(args,kwargs,"O:delete_Array",kwnames,&argo0)) return NULL;
-    if ((SWIG_ConvertPtr(argo0,(void **) &arg0,SWIGTYPE_p_Array,1)) == -1) return NULL;
-    {
-        try {
-            delete arg0;
-            
-        }catch (std::exception& e) {
-            PyErr_SetString(PyExc_Exception,e.what());
-            return NULL;
-        }catch (...) {
-            PyErr_SetString(PyExc_Exception,"unknown error");
-            return NULL;
-        }
-    }Py_INCREF(Py_None);
-    resultobj = Py_None;
-    return resultobj;
-}
-
-
-static PyObject *_wrap_Array_size(PyObject *self, PyObject *args, PyObject *kwargs) {
-    PyObject *resultobj;
-    Array *arg0 ;
-    PyObject * argo0 =0 ;
-    char *kwnames[] = {
-        "self", NULL 
-    };
-    int result ;
-    
-    if(!PyArg_ParseTupleAndKeywords(args,kwargs,"O:Array_size",kwnames,&argo0)) return NULL;
-    if ((SWIG_ConvertPtr(argo0,(void **) &arg0,SWIGTYPE_p_Array,1)) == -1) return NULL;
-    {
-        try {
-            result = (int )arg0->size();
-            
-        }catch (std::exception& e) {
-            PyErr_SetString(PyExc_Exception,e.what());
-            return NULL;
-        }catch (...) {
-            PyErr_SetString(PyExc_Exception,"unknown error");
-            return NULL;
-        }
-    }resultobj = PyInt_FromLong((long)result);
-    return resultobj;
-}
-
-
-double  Array___getitem__(Array *self,int i) {
-    {
-        return (*self)[i];
-    }
-}
-
-
-static PyObject *_wrap_Array___getitem__(PyObject *self, PyObject *args, PyObject *kwargs) {
-    PyObject *resultobj;
-    Array *arg0 ;
-    int arg1 ;
-    PyObject * argo0 =0 ;
-    char *kwnames[] = {
-        "self","i", NULL 
-    };
-    double result ;
-    
-    if(!PyArg_ParseTupleAndKeywords(args,kwargs,"Oi:Array___getitem__",kwnames,&argo0,&arg1)) return NULL;
-    if ((SWIG_ConvertPtr(argo0,(void **) &arg0,SWIGTYPE_p_Array,1)) == -1) return NULL;
-    {
-        try {
-            result = (double )Array___getitem__(arg0,arg1);
-            
-        }catch (std::exception& e) {
-            PyErr_SetString(PyExc_Exception,e.what());
-            return NULL;
-        }catch (...) {
-            PyErr_SetString(PyExc_Exception,"unknown error");
-            return NULL;
-        }
-    }resultobj = PyFloat_FromDouble(result);
-    return resultobj;
-}
-
-
-void  Array___setitem__(Array *self,int i,double x) {
-    {
-        (*self)[i] = x;
-    }
-}
-
-
-static PyObject *_wrap_Array___setitem__(PyObject *self, PyObject *args, PyObject *kwargs) {
-    PyObject *resultobj;
-    Array *arg0 ;
-    int arg1 ;
-    double arg2 ;
-    PyObject * argo0 =0 ;
-    char *kwnames[] = {
-        "self","i","x", NULL 
-    };
-    
-    if(!PyArg_ParseTupleAndKeywords(args,kwargs,"Oid:Array___setitem__",kwnames,&argo0,&arg1,&arg2)) return NULL;
-    if ((SWIG_ConvertPtr(argo0,(void **) &arg0,SWIGTYPE_p_Array,1)) == -1) return NULL;
-    {
-        try {
-            Array___setitem__(arg0,arg1,arg2);
-            
-        }catch (std::exception& e) {
-            PyErr_SetString(PyExc_Exception,e.what());
-            return NULL;
-        }catch (...) {
-            PyErr_SetString(PyExc_Exception,"unknown error");
-            return NULL;
-        }
-    }Py_INCREF(Py_None);
-    resultobj = Py_None;
-    return resultobj;
-}
-
-
-String  Array___str__(Array *self) {
-    {
-        String s = "(";
-        for (int i=0; i<self->size(); i++) {
-            if (i != 0)
-            s += ",";
-            s += QuantLib::DoubleFormatter::toString((*self)[i]);
-        }
-        s += ")";
-        return s;
-    }
-}
-
-
-static PyObject *_wrap_Array___str__(PyObject *self, PyObject *args, PyObject *kwargs) {
-    PyObject *resultobj;
-    Array *arg0 ;
-    PyObject * argo0 =0 ;
-    char *kwnames[] = {
-        "self", NULL 
-    };
-    String *result ;
-    
-    if(!PyArg_ParseTupleAndKeywords(args,kwargs,"O:Array___str__",kwnames,&argo0)) return NULL;
-    if ((SWIG_ConvertPtr(argo0,(void **) &arg0,SWIGTYPE_p_Array,1)) == -1) return NULL;
-    {
-        try {
-            result = new String (Array___str__(arg0));
-        }catch (std::exception& e) {
-            PyErr_SetString(PyExc_Exception,e.what());
-            return NULL;
-        }catch (...) {
-            PyErr_SetString(PyExc_Exception,"unknown error");
-            return NULL;
-        }
-    }{
-        resultobj = PyString_FromString(result->c_str());
-    }
-    {
-        delete result;
-    }
-    return resultobj;
-}
-
-
-static PyObject *_wrap_delete_ArrayLexicographicalView(PyObject *self, PyObject *args, PyObject *kwargs) {
-    PyObject *resultobj;
-    ArrayLexicographicalView *arg0 ;
-    PyObject * argo0 =0 ;
-    char *kwnames[] = {
-        "self", NULL 
-    };
-    
-    if(!PyArg_ParseTupleAndKeywords(args,kwargs,"O:delete_ArrayLexicographicalView",kwnames,&argo0)) return NULL;
-    if ((SWIG_ConvertPtr(argo0,(void **) &arg0,SWIGTYPE_p_ArrayLexicographicalView,1)) == -1) return NULL;
-    {
-        try {
-            delete arg0;
-            
-        }catch (std::exception& e) {
-            PyErr_SetString(PyExc_Exception,e.what());
-            return NULL;
-        }catch (...) {
-            PyErr_SetString(PyExc_Exception,"unknown error");
-            return NULL;
-        }
-    }Py_INCREF(Py_None);
-    resultobj = Py_None;
-    return resultobj;
-}
-
-
-static PyObject *_wrap_ArrayLexicographicalView_xSize(PyObject *self, PyObject *args, PyObject *kwargs) {
-    PyObject *resultobj;
-    ArrayLexicographicalView *arg0 ;
-    PyObject * argo0 =0 ;
-    char *kwnames[] = {
-        "self", NULL 
-    };
-    int result ;
-    
-    if(!PyArg_ParseTupleAndKeywords(args,kwargs,"O:ArrayLexicographicalView_xSize",kwnames,&argo0)) return NULL;
-    if ((SWIG_ConvertPtr(argo0,(void **) &arg0,SWIGTYPE_p_ArrayLexicographicalView,1)) == -1) return NULL;
-    {
-        try {
-            result = (int )arg0->xSize();
-            
-        }catch (std::exception& e) {
-            PyErr_SetString(PyExc_Exception,e.what());
-            return NULL;
-        }catch (...) {
-            PyErr_SetString(PyExc_Exception,"unknown error");
-            return NULL;
-        }
-    }resultobj = PyInt_FromLong((long)result);
-    return resultobj;
-}
-
-
-static PyObject *_wrap_ArrayLexicographicalView_ySize(PyObject *self, PyObject *args, PyObject *kwargs) {
-    PyObject *resultobj;
-    ArrayLexicographicalView *arg0 ;
-    PyObject * argo0 =0 ;
-    char *kwnames[] = {
-        "self", NULL 
-    };
-    int result ;
-    
-    if(!PyArg_ParseTupleAndKeywords(args,kwargs,"O:ArrayLexicographicalView_ySize",kwnames,&argo0)) return NULL;
-    if ((SWIG_ConvertPtr(argo0,(void **) &arg0,SWIGTYPE_p_ArrayLexicographicalView,1)) == -1) return NULL;
-    {
-        try {
-            result = (int )arg0->ySize();
-            
-        }catch (std::exception& e) {
-            PyErr_SetString(PyExc_Exception,e.what());
-            return NULL;
-        }catch (...) {
-            PyErr_SetString(PyExc_Exception,"unknown error");
-            return NULL;
-        }
-    }resultobj = PyInt_FromLong((long)result);
-    return resultobj;
-}
-
-
-ArrayLexicographicalViewColumn  ArrayLexicographicalView___getitem__(ArrayLexicographicalView *self,int i) {
-    {
-        return (*self)[i];
-    }
-}
-
-
-static PyObject *_wrap_ArrayLexicographicalView___getitem__(PyObject *self, PyObject *args, PyObject *kwargs) {
-    PyObject *resultobj;
-    ArrayLexicographicalView *arg0 ;
-    int arg1 ;
-    PyObject * argo0 =0 ;
-    char *kwnames[] = {
-        "self","i", NULL 
-    };
-    ArrayLexicographicalViewColumn *result ;
-    
-    if(!PyArg_ParseTupleAndKeywords(args,kwargs,"Oi:ArrayLexicographicalView___getitem__",kwnames,&argo0,&arg1)) return NULL;
-    if ((SWIG_ConvertPtr(argo0,(void **) &arg0,SWIGTYPE_p_ArrayLexicographicalView,1)) == -1) return NULL;
-    {
-        try {
-            result = new ArrayLexicographicalViewColumn (ArrayLexicographicalView___getitem__(arg0,arg1));
-        }catch (std::exception& e) {
-            PyErr_SetString(PyExc_Exception,e.what());
-            return NULL;
-        }catch (...) {
-            PyErr_SetString(PyExc_Exception,"unknown error");
-            return NULL;
-        }
-    }resultobj = SWIG_NewPointerObj((void *)result, SWIGTYPE_p_ArrayLexicographicalViewColumn);
-    return resultobj;
-}
-
-
-String  ArrayLexicographicalView___str__(ArrayLexicographicalView *self) {
-    {
-        String s;
-        for (int j=0; j<self->ySize(); j++) {
-            s += "\n";
-            for (int i=0; i<self->xSize(); i++) {
-                if (i != 0)
-                s += ",";
-                s += QuantLib::DoubleFormatter::toString((*self)[i][j]);
-            }
-        }
-        s += "\n";
-        return s;
-    }
-}
-
-
-static PyObject *_wrap_ArrayLexicographicalView___str__(PyObject *self, PyObject *args, PyObject *kwargs) {
-    PyObject *resultobj;
-    ArrayLexicographicalView *arg0 ;
-    PyObject * argo0 =0 ;
-    char *kwnames[] = {
-        "self", NULL 
-    };
-    String *result ;
-    
-    if(!PyArg_ParseTupleAndKeywords(args,kwargs,"O:ArrayLexicographicalView___str__",kwnames,&argo0)) return NULL;
-    if ((SWIG_ConvertPtr(argo0,(void **) &arg0,SWIGTYPE_p_ArrayLexicographicalView,1)) == -1) return NULL;
-    {
-        try {
-            result = new String (ArrayLexicographicalView___str__(arg0));
-        }catch (std::exception& e) {
-            PyErr_SetString(PyExc_Exception,e.what());
-            return NULL;
-        }catch (...) {
-            PyErr_SetString(PyExc_Exception,"unknown error");
-            return NULL;
-        }
-    }{
-        resultobj = PyString_FromString(result->c_str());
-    }
-    {
-        delete result;
-    }
-    return resultobj;
-}
-
-
-static PyObject *_wrap_delete_ArrayLexicographicalViewColumn(PyObject *self, PyObject *args, PyObject *kwargs) {
-    PyObject *resultobj;
-    ArrayLexicographicalViewColumn *arg0 ;
-    PyObject * argo0 =0 ;
-    char *kwnames[] = {
-        "self", NULL 
-    };
-    
-    if(!PyArg_ParseTupleAndKeywords(args,kwargs,"O:delete_ArrayLexicographicalViewColumn",kwnames,&argo0)) return NULL;
-    if ((SWIG_ConvertPtr(argo0,(void **) &arg0,SWIGTYPE_p_ArrayLexicographicalViewColumn,1)) == -1) return NULL;
-    {
-        try {
-            delete arg0;
-            
-        }catch (std::exception& e) {
-            PyErr_SetString(PyExc_Exception,e.what());
-            return NULL;
-        }catch (...) {
-            PyErr_SetString(PyExc_Exception,"unknown error");
-            return NULL;
-        }
-    }Py_INCREF(Py_None);
-    resultobj = Py_None;
-    return resultobj;
-}
-
-
-double  ArrayLexicographicalViewColumn___getitem__(ArrayLexicographicalViewColumn *self,int i) {
-    {
-        return (*self)[i];
-    }
-}
-
-
-static PyObject *_wrap_ArrayLexicographicalViewColumn___getitem__(PyObject *self, PyObject *args, PyObject *kwargs) {
-    PyObject *resultobj;
-    ArrayLexicographicalViewColumn *arg0 ;
-    int arg1 ;
-    PyObject * argo0 =0 ;
-    char *kwnames[] = {
-        "self","i", NULL 
-    };
-    double result ;
-    
-    if(!PyArg_ParseTupleAndKeywords(args,kwargs,"Oi:ArrayLexicographicalViewColumn___getitem__",kwnames,&argo0,&arg1)) return NULL;
-    if ((SWIG_ConvertPtr(argo0,(void **) &arg0,SWIGTYPE_p_ArrayLexicographicalViewColumn,1)) == -1) return NULL;
-    {
-        try {
-            result = (double )ArrayLexicographicalViewColumn___getitem__(arg0,arg1);
-            
-        }catch (std::exception& e) {
-            PyErr_SetString(PyExc_Exception,e.what());
-            return NULL;
-        }catch (...) {
-            PyErr_SetString(PyExc_Exception,"unknown error");
-            return NULL;
-        }
-    }resultobj = PyFloat_FromDouble(result);
-    return resultobj;
-}
-
-
-void  ArrayLexicographicalViewColumn___setitem__(ArrayLexicographicalViewColumn *self,int i,double x) {
-    {
-        (*self)[i] = x;
-    }
-}
-
-
-static PyObject *_wrap_ArrayLexicographicalViewColumn___setitem__(PyObject *self, PyObject *args, PyObject *kwargs) {
-    PyObject *resultobj;
-    ArrayLexicographicalViewColumn *arg0 ;
-    int arg1 ;
-    double arg2 ;
-    PyObject * argo0 =0 ;
-    char *kwnames[] = {
-        "self","i","x", NULL 
-    };
-    
-    if(!PyArg_ParseTupleAndKeywords(args,kwargs,"Oid:ArrayLexicographicalViewColumn___setitem__",kwnames,&argo0,&arg1,&arg2)) return NULL;
-    if ((SWIG_ConvertPtr(argo0,(void **) &arg0,SWIGTYPE_p_ArrayLexicographicalViewColumn,1)) == -1) return NULL;
-    {
-        try {
-            ArrayLexicographicalViewColumn___setitem__(arg0,arg1,arg2);
-            
-        }catch (std::exception& e) {
-            PyErr_SetString(PyExc_Exception,e.what());
-            return NULL;
-        }catch (...) {
-            PyErr_SetString(PyExc_Exception,"unknown error");
-            return NULL;
-        }
-    }Py_INCREF(Py_None);
-    resultobj = Py_None;
     return resultobj;
 }
 
@@ -4677,8 +5158,11 @@ static PyObject *_wrap_delete_HistoryIterator(PyObject *self, PyObject *args, Py
         try {
             delete arg0;
             
-        }catch (std::exception& e) {
-            PyErr_SetString(PyExc_Exception,e.what());
+        }catch (std::domain_error& de) {
+            PyErr_SetString(PyExc_IndexError,de.what());
+            return NULL;
+        }catch (std::exception& ex) {
+            PyErr_SetString(PyExc_Exception,ex.what());
             return NULL;
         }catch (...) {
             PyErr_SetString(PyExc_Exception,"unknown error");
@@ -4711,8 +5195,11 @@ static PyObject *_wrap_HistoryIterator_date(PyObject *self, PyObject *args, PyOb
     {
         try {
             result = new Date (HistoryIterator_date(arg0));
-        }catch (std::exception& e) {
-            PyErr_SetString(PyExc_Exception,e.what());
+        }catch (std::domain_error& de) {
+            PyErr_SetString(PyExc_IndexError,de.what());
+            return NULL;
+        }catch (std::exception& ex) {
+            PyErr_SetString(PyExc_Exception,ex.what());
             return NULL;
         }catch (...) {
             PyErr_SetString(PyExc_Exception,"unknown error");
@@ -4745,8 +5232,11 @@ static PyObject *_wrap_HistoryIterator_value(PyObject *self, PyObject *args, PyO
         try {
             result = (double )HistoryIterator_value(arg0);
             
-        }catch (std::exception& e) {
-            PyErr_SetString(PyExc_Exception,e.what());
+        }catch (std::domain_error& de) {
+            PyErr_SetString(PyExc_IndexError,de.what());
+            return NULL;
+        }catch (std::exception& ex) {
+            PyErr_SetString(PyExc_Exception,ex.what());
             return NULL;
         }catch (...) {
             PyErr_SetString(PyExc_Exception,"unknown error");
@@ -4778,8 +5268,11 @@ static PyObject *_wrap_HistoryIterator_advance(PyObject *self, PyObject *args, P
         try {
             HistoryIterator_advance(arg0);
             
-        }catch (std::exception& e) {
-            PyErr_SetString(PyExc_Exception,e.what());
+        }catch (std::domain_error& de) {
+            PyErr_SetString(PyExc_IndexError,de.what());
+            return NULL;
+        }catch (std::exception& ex) {
+            PyErr_SetString(PyExc_Exception,ex.what());
             return NULL;
         }catch (...) {
             PyErr_SetString(PyExc_Exception,"unknown error");
@@ -4816,8 +5309,11 @@ static PyObject *_wrap_HistoryIterator___cmp__(PyObject *self, PyObject *args, P
         try {
             result = (int )HistoryIterator___cmp__(arg0,(HistoryIterator const &)*arg1);
             
-        }catch (std::exception& e) {
-            PyErr_SetString(PyExc_Exception,e.what());
+        }catch (std::domain_error& de) {
+            PyErr_SetString(PyExc_IndexError,de.what());
+            return NULL;
+        }catch (std::exception& ex) {
+            PyErr_SetString(PyExc_Exception,ex.what());
             return NULL;
         }catch (...) {
             PyErr_SetString(PyExc_Exception,"unknown error");
@@ -4851,8 +5347,11 @@ static PyObject *_wrap_HistoryIterator___str__(PyObject *self, PyObject *args, P
     {
         try {
             result = new String (HistoryIterator___str__(arg0));
-        }catch (std::exception& e) {
-            PyErr_SetString(PyExc_Exception,e.what());
+        }catch (std::domain_error& de) {
+            PyErr_SetString(PyExc_IndexError,de.what());
+            return NULL;
+        }catch (std::exception& ex) {
+            PyErr_SetString(PyExc_Exception,ex.what());
             return NULL;
         }catch (...) {
             PyErr_SetString(PyExc_Exception,"unknown error");
@@ -4882,8 +5381,11 @@ static PyObject *_wrap_delete_HistoryValidIterator(PyObject *self, PyObject *arg
         try {
             delete arg0;
             
-        }catch (std::exception& e) {
-            PyErr_SetString(PyExc_Exception,e.what());
+        }catch (std::domain_error& de) {
+            PyErr_SetString(PyExc_IndexError,de.what());
+            return NULL;
+        }catch (std::exception& ex) {
+            PyErr_SetString(PyExc_Exception,ex.what());
             return NULL;
         }catch (...) {
             PyErr_SetString(PyExc_Exception,"unknown error");
@@ -4916,8 +5418,11 @@ static PyObject *_wrap_HistoryValidIterator_date(PyObject *self, PyObject *args,
     {
         try {
             result = new Date (HistoryValidIterator_date(arg0));
-        }catch (std::exception& e) {
-            PyErr_SetString(PyExc_Exception,e.what());
+        }catch (std::domain_error& de) {
+            PyErr_SetString(PyExc_IndexError,de.what());
+            return NULL;
+        }catch (std::exception& ex) {
+            PyErr_SetString(PyExc_Exception,ex.what());
             return NULL;
         }catch (...) {
             PyErr_SetString(PyExc_Exception,"unknown error");
@@ -4950,8 +5455,11 @@ static PyObject *_wrap_HistoryValidIterator_value(PyObject *self, PyObject *args
         try {
             result = (double )HistoryValidIterator_value(arg0);
             
-        }catch (std::exception& e) {
-            PyErr_SetString(PyExc_Exception,e.what());
+        }catch (std::domain_error& de) {
+            PyErr_SetString(PyExc_IndexError,de.what());
+            return NULL;
+        }catch (std::exception& ex) {
+            PyErr_SetString(PyExc_Exception,ex.what());
             return NULL;
         }catch (...) {
             PyErr_SetString(PyExc_Exception,"unknown error");
@@ -4983,8 +5491,11 @@ static PyObject *_wrap_HistoryValidIterator_advance(PyObject *self, PyObject *ar
         try {
             HistoryValidIterator_advance(arg0);
             
-        }catch (std::exception& e) {
-            PyErr_SetString(PyExc_Exception,e.what());
+        }catch (std::domain_error& de) {
+            PyErr_SetString(PyExc_IndexError,de.what());
+            return NULL;
+        }catch (std::exception& ex) {
+            PyErr_SetString(PyExc_Exception,ex.what());
             return NULL;
         }catch (...) {
             PyErr_SetString(PyExc_Exception,"unknown error");
@@ -5021,8 +5532,11 @@ static PyObject *_wrap_HistoryValidIterator___cmp__(PyObject *self, PyObject *ar
         try {
             result = (int )HistoryValidIterator___cmp__(arg0,(HistoryValidIterator const &)*arg1);
             
-        }catch (std::exception& e) {
-            PyErr_SetString(PyExc_Exception,e.what());
+        }catch (std::domain_error& de) {
+            PyErr_SetString(PyExc_IndexError,de.what());
+            return NULL;
+        }catch (std::exception& ex) {
+            PyErr_SetString(PyExc_Exception,ex.what());
             return NULL;
         }catch (...) {
             PyErr_SetString(PyExc_Exception,"unknown error");
@@ -5056,8 +5570,11 @@ static PyObject *_wrap_HistoryValidIterator___str__(PyObject *self, PyObject *ar
     {
         try {
             result = new String (HistoryValidIterator___str__(arg0));
-        }catch (std::exception& e) {
-            PyErr_SetString(PyExc_Exception,e.what());
+        }catch (std::domain_error& de) {
+            PyErr_SetString(PyExc_IndexError,de.what());
+            return NULL;
+        }catch (std::exception& ex) {
+            PyErr_SetString(PyExc_Exception,ex.what());
             return NULL;
         }catch (...) {
             PyErr_SetString(PyExc_Exception,"unknown error");
@@ -5087,8 +5604,11 @@ static PyObject *_wrap_delete_HistoryDataIterator(PyObject *self, PyObject *args
         try {
             delete arg0;
             
-        }catch (std::exception& e) {
-            PyErr_SetString(PyExc_Exception,e.what());
+        }catch (std::domain_error& de) {
+            PyErr_SetString(PyExc_IndexError,de.what());
+            return NULL;
+        }catch (std::exception& ex) {
+            PyErr_SetString(PyExc_Exception,ex.what());
             return NULL;
         }catch (...) {
             PyErr_SetString(PyExc_Exception,"unknown error");
@@ -5122,8 +5642,11 @@ static PyObject *_wrap_HistoryDataIterator___float__(PyObject *self, PyObject *a
         try {
             result = (double )HistoryDataIterator___float__(arg0);
             
-        }catch (std::exception& e) {
-            PyErr_SetString(PyExc_Exception,e.what());
+        }catch (std::domain_error& de) {
+            PyErr_SetString(PyExc_IndexError,de.what());
+            return NULL;
+        }catch (std::exception& ex) {
+            PyErr_SetString(PyExc_Exception,ex.what());
             return NULL;
         }catch (...) {
             PyErr_SetString(PyExc_Exception,"unknown error");
@@ -5155,8 +5678,11 @@ static PyObject *_wrap_HistoryDataIterator_advance(PyObject *self, PyObject *arg
         try {
             HistoryDataIterator_advance(arg0);
             
-        }catch (std::exception& e) {
-            PyErr_SetString(PyExc_Exception,e.what());
+        }catch (std::domain_error& de) {
+            PyErr_SetString(PyExc_IndexError,de.what());
+            return NULL;
+        }catch (std::exception& ex) {
+            PyErr_SetString(PyExc_Exception,ex.what());
             return NULL;
         }catch (...) {
             PyErr_SetString(PyExc_Exception,"unknown error");
@@ -5193,8 +5719,11 @@ static PyObject *_wrap_HistoryDataIterator___cmp__(PyObject *self, PyObject *arg
         try {
             result = (int )HistoryDataIterator___cmp__(arg0,(HistoryDataIterator const &)*arg1);
             
-        }catch (std::exception& e) {
-            PyErr_SetString(PyExc_Exception,e.what());
+        }catch (std::domain_error& de) {
+            PyErr_SetString(PyExc_IndexError,de.what());
+            return NULL;
+        }catch (std::exception& ex) {
+            PyErr_SetString(PyExc_Exception,ex.what());
             return NULL;
         }catch (...) {
             PyErr_SetString(PyExc_Exception,"unknown error");
@@ -5227,8 +5756,11 @@ static PyObject *_wrap_HistoryDataIterator___str__(PyObject *self, PyObject *arg
     {
         try {
             result = new String (HistoryDataIterator___str__(arg0));
-        }catch (std::exception& e) {
-            PyErr_SetString(PyExc_Exception,e.what());
+        }catch (std::domain_error& de) {
+            PyErr_SetString(PyExc_IndexError,de.what());
+            return NULL;
+        }catch (std::exception& ex) {
+            PyErr_SetString(PyExc_Exception,ex.what());
             return NULL;
         }catch (...) {
             PyErr_SetString(PyExc_Exception,"unknown error");
@@ -5258,8 +5790,11 @@ static PyObject *_wrap_delete_HistoryValidDataIterator(PyObject *self, PyObject 
         try {
             delete arg0;
             
-        }catch (std::exception& e) {
-            PyErr_SetString(PyExc_Exception,e.what());
+        }catch (std::domain_error& de) {
+            PyErr_SetString(PyExc_IndexError,de.what());
+            return NULL;
+        }catch (std::exception& ex) {
+            PyErr_SetString(PyExc_Exception,ex.what());
             return NULL;
         }catch (...) {
             PyErr_SetString(PyExc_Exception,"unknown error");
@@ -5293,8 +5828,11 @@ static PyObject *_wrap_HistoryValidDataIterator___float__(PyObject *self, PyObje
         try {
             result = (double )HistoryValidDataIterator___float__(arg0);
             
-        }catch (std::exception& e) {
-            PyErr_SetString(PyExc_Exception,e.what());
+        }catch (std::domain_error& de) {
+            PyErr_SetString(PyExc_IndexError,de.what());
+            return NULL;
+        }catch (std::exception& ex) {
+            PyErr_SetString(PyExc_Exception,ex.what());
             return NULL;
         }catch (...) {
             PyErr_SetString(PyExc_Exception,"unknown error");
@@ -5326,8 +5864,11 @@ static PyObject *_wrap_HistoryValidDataIterator_advance(PyObject *self, PyObject
         try {
             HistoryValidDataIterator_advance(arg0);
             
-        }catch (std::exception& e) {
-            PyErr_SetString(PyExc_Exception,e.what());
+        }catch (std::domain_error& de) {
+            PyErr_SetString(PyExc_IndexError,de.what());
+            return NULL;
+        }catch (std::exception& ex) {
+            PyErr_SetString(PyExc_Exception,ex.what());
             return NULL;
         }catch (...) {
             PyErr_SetString(PyExc_Exception,"unknown error");
@@ -5364,8 +5905,11 @@ static PyObject *_wrap_HistoryValidDataIterator___cmp__(PyObject *self, PyObject
         try {
             result = (int )HistoryValidDataIterator___cmp__(arg0,(HistoryValidDataIterator const &)*arg1);
             
-        }catch (std::exception& e) {
-            PyErr_SetString(PyExc_Exception,e.what());
+        }catch (std::domain_error& de) {
+            PyErr_SetString(PyExc_IndexError,de.what());
+            return NULL;
+        }catch (std::exception& ex) {
+            PyErr_SetString(PyExc_Exception,ex.what());
             return NULL;
         }catch (...) {
             PyErr_SetString(PyExc_Exception,"unknown error");
@@ -5398,8 +5942,11 @@ static PyObject *_wrap_HistoryValidDataIterator___str__(PyObject *self, PyObject
     {
         try {
             result = new String (HistoryValidDataIterator___str__(arg0));
-        }catch (std::exception& e) {
-            PyErr_SetString(PyExc_Exception,e.what());
+        }catch (std::domain_error& de) {
+            PyErr_SetString(PyExc_IndexError,de.what());
+            return NULL;
+        }catch (std::exception& ex) {
+            PyErr_SetString(PyExc_Exception,ex.what());
             return NULL;
         }catch (...) {
             PyErr_SetString(PyExc_Exception,"unknown error");
@@ -5419,6 +5966,7 @@ static PyObject *_wrap_new_History(PyObject *self, PyObject *args, PyObject *kwa
     PyObject *resultobj;
     DateVector *arg0 ;
     DoubleVector *arg1 ;
+    bool newObj ;
     PyObject * obj0  = 0 ;
     PyObject * obj1  = 0 ;
     char *kwnames[] = {
@@ -5428,14 +5976,20 @@ static PyObject *_wrap_new_History(PyObject *self, PyObject *args, PyObject *kwa
     
     if(!PyArg_ParseTupleAndKeywords(args,kwargs,"OO:new_History",kwnames,&obj0,&obj1)) return NULL;
     {
-        if (PyTuple_Check(obj0)) {
+        DateVector* v;
+        if ((SWIG_ConvertPtr(obj0,(void **) &v,
+        (swig_type_info *)SWIG_TypeQuery("DateVector *"),0)) != -1) {
+            arg0 = v;
+            newObj = false;
+        }else if (PyTuple_Check(obj0)) {
             int size = PyTuple_Size(obj0);
-            arg0 = new std::vector<Date>(size);
+            arg0 = new DateVector(size);
+            newObj = true;
             for (int i=0; i<size; i++) {
                 Date* d;
                 PyObject* o = PyTuple_GetItem(obj0,i);
                 if ((SWIG_ConvertPtr(o,(void **) &d,
-                (swig_type_info *)SWIG_TypeQuery("Date *"),1)) != -1) {
+                (swig_type_info *)SWIG_TypeQuery("Date *"),0)) != -1) {
                     (*arg0)[i] = *d;
                 }else {
                     PyErr_SetString(PyExc_TypeError,"tuple must contain dates");
@@ -5445,12 +5999,13 @@ static PyObject *_wrap_new_History(PyObject *self, PyObject *args, PyObject *kwa
             }
         }else if (PyList_Check(obj0)) {
             int size = PyList_Size(obj0);
-            arg0 = new std::vector<Date>(size);
+            arg0 = new DateVector(size);
+            newObj = true;
             for (int i=0; i<size; i++) {
                 Date* d;
                 PyObject* o = PyList_GetItem(obj0,i);
                 if ((SWIG_ConvertPtr(o,(void **) &d,
-                (swig_type_info *)SWIG_TypeQuery("Date *"),1)) != -1) {
+                (swig_type_info *)SWIG_TypeQuery("Date *"),0)) != -1) {
                     (*arg0)[i] = *d;
                 }else {
                     PyErr_SetString(PyExc_TypeError,"list must contain dates");
@@ -5507,8 +6062,11 @@ static PyObject *_wrap_new_History(PyObject *self, PyObject *args, PyObject *kwa
         try {
             result = (History *)new History(*arg0,*arg1);
             
-        }catch (std::exception& e) {
-            PyErr_SetString(PyExc_Exception,e.what());
+        }catch (std::domain_error& de) {
+            PyErr_SetString(PyExc_IndexError,de.what());
+            return NULL;
+        }catch (std::exception& ex) {
+            PyErr_SetString(PyExc_Exception,ex.what());
             return NULL;
         }catch (...) {
             PyErr_SetString(PyExc_Exception,"unknown error");
@@ -5516,6 +6074,7 @@ static PyObject *_wrap_new_History(PyObject *self, PyObject *args, PyObject *kwa
         }
     }resultobj = SWIG_NewPointerObj((void *) result, SWIGTYPE_p_History);
     {
+        if (newObj)
         delete arg0;
     }
     {
@@ -5539,8 +6098,11 @@ static PyObject *_wrap_delete_History(PyObject *self, PyObject *args, PyObject *
         try {
             delete arg0;
             
-        }catch (std::exception& e) {
-            PyErr_SetString(PyExc_Exception,e.what());
+        }catch (std::domain_error& de) {
+            PyErr_SetString(PyExc_IndexError,de.what());
+            return NULL;
+        }catch (std::exception& ex) {
+            PyErr_SetString(PyExc_Exception,ex.what());
             return NULL;
         }catch (...) {
             PyErr_SetString(PyExc_Exception,"unknown error");
@@ -5566,8 +6128,11 @@ static PyObject *_wrap_History_firstDate(PyObject *self, PyObject *args, PyObjec
     {
         try {
             result = new Date (arg0->firstDate());
-        }catch (std::exception& e) {
-            PyErr_SetString(PyExc_Exception,e.what());
+        }catch (std::domain_error& de) {
+            PyErr_SetString(PyExc_IndexError,de.what());
+            return NULL;
+        }catch (std::exception& ex) {
+            PyErr_SetString(PyExc_Exception,ex.what());
             return NULL;
         }catch (...) {
             PyErr_SetString(PyExc_Exception,"unknown error");
@@ -5592,8 +6157,11 @@ static PyObject *_wrap_History_lastDate(PyObject *self, PyObject *args, PyObject
     {
         try {
             result = new Date (arg0->lastDate());
-        }catch (std::exception& e) {
-            PyErr_SetString(PyExc_Exception,e.what());
+        }catch (std::domain_error& de) {
+            PyErr_SetString(PyExc_IndexError,de.what());
+            return NULL;
+        }catch (std::exception& ex) {
+            PyErr_SetString(PyExc_Exception,ex.what());
             return NULL;
         }catch (...) {
             PyErr_SetString(PyExc_Exception,"unknown error");
@@ -5619,8 +6187,11 @@ static PyObject *_wrap_History_size(PyObject *self, PyObject *args, PyObject *kw
         try {
             result = (int )arg0->size();
             
-        }catch (std::exception& e) {
-            PyErr_SetString(PyExc_Exception,e.what());
+        }catch (std::domain_error& de) {
+            PyErr_SetString(PyExc_IndexError,de.what());
+            return NULL;
+        }catch (std::exception& ex) {
+            PyErr_SetString(PyExc_Exception,ex.what());
             return NULL;
         }catch (...) {
             PyErr_SetString(PyExc_Exception,"unknown error");
@@ -5645,8 +6216,11 @@ static PyObject *_wrap_History_begin(PyObject *self, PyObject *args, PyObject *k
     {
         try {
             result = new HistoryIterator (arg0->begin());
-        }catch (std::exception& e) {
-            PyErr_SetString(PyExc_Exception,e.what());
+        }catch (std::domain_error& de) {
+            PyErr_SetString(PyExc_IndexError,de.what());
+            return NULL;
+        }catch (std::exception& ex) {
+            PyErr_SetString(PyExc_Exception,ex.what());
             return NULL;
         }catch (...) {
             PyErr_SetString(PyExc_Exception,"unknown error");
@@ -5671,8 +6245,11 @@ static PyObject *_wrap_History_end(PyObject *self, PyObject *args, PyObject *kwa
     {
         try {
             result = new HistoryIterator (arg0->end());
-        }catch (std::exception& e) {
-            PyErr_SetString(PyExc_Exception,e.what());
+        }catch (std::domain_error& de) {
+            PyErr_SetString(PyExc_IndexError,de.what());
+            return NULL;
+        }catch (std::exception& ex) {
+            PyErr_SetString(PyExc_Exception,ex.what());
             return NULL;
         }catch (...) {
             PyErr_SetString(PyExc_Exception,"unknown error");
@@ -5700,8 +6277,11 @@ static PyObject *_wrap_History_iterator(PyObject *self, PyObject *args, PyObject
     {
         try {
             result = new HistoryIterator (arg0->iterator(*arg1));
-        }catch (std::exception& e) {
-            PyErr_SetString(PyExc_Exception,e.what());
+        }catch (std::domain_error& de) {
+            PyErr_SetString(PyExc_IndexError,de.what());
+            return NULL;
+        }catch (std::exception& ex) {
+            PyErr_SetString(PyExc_Exception,ex.what());
             return NULL;
         }catch (...) {
             PyErr_SetString(PyExc_Exception,"unknown error");
@@ -5726,8 +6306,11 @@ static PyObject *_wrap_History_vbegin(PyObject *self, PyObject *args, PyObject *
     {
         try {
             result = new HistoryValidIterator (arg0->vbegin());
-        }catch (std::exception& e) {
-            PyErr_SetString(PyExc_Exception,e.what());
+        }catch (std::domain_error& de) {
+            PyErr_SetString(PyExc_IndexError,de.what());
+            return NULL;
+        }catch (std::exception& ex) {
+            PyErr_SetString(PyExc_Exception,ex.what());
             return NULL;
         }catch (...) {
             PyErr_SetString(PyExc_Exception,"unknown error");
@@ -5752,8 +6335,11 @@ static PyObject *_wrap_History_vend(PyObject *self, PyObject *args, PyObject *kw
     {
         try {
             result = new HistoryValidIterator (arg0->vend());
-        }catch (std::exception& e) {
-            PyErr_SetString(PyExc_Exception,e.what());
+        }catch (std::domain_error& de) {
+            PyErr_SetString(PyExc_IndexError,de.what());
+            return NULL;
+        }catch (std::exception& ex) {
+            PyErr_SetString(PyExc_Exception,ex.what());
             return NULL;
         }catch (...) {
             PyErr_SetString(PyExc_Exception,"unknown error");
@@ -5781,8 +6367,11 @@ static PyObject *_wrap_History_valid_iterator(PyObject *self, PyObject *args, Py
     {
         try {
             result = new HistoryValidIterator (arg0->valid_iterator(*arg1));
-        }catch (std::exception& e) {
-            PyErr_SetString(PyExc_Exception,e.what());
+        }catch (std::domain_error& de) {
+            PyErr_SetString(PyExc_IndexError,de.what());
+            return NULL;
+        }catch (std::exception& ex) {
+            PyErr_SetString(PyExc_Exception,ex.what());
             return NULL;
         }catch (...) {
             PyErr_SetString(PyExc_Exception,"unknown error");
@@ -5807,8 +6396,11 @@ static PyObject *_wrap_History_dbegin(PyObject *self, PyObject *args, PyObject *
     {
         try {
             result = new HistoryDataIterator (arg0->dbegin());
-        }catch (std::exception& e) {
-            PyErr_SetString(PyExc_Exception,e.what());
+        }catch (std::domain_error& de) {
+            PyErr_SetString(PyExc_IndexError,de.what());
+            return NULL;
+        }catch (std::exception& ex) {
+            PyErr_SetString(PyExc_Exception,ex.what());
             return NULL;
         }catch (...) {
             PyErr_SetString(PyExc_Exception,"unknown error");
@@ -5833,8 +6425,11 @@ static PyObject *_wrap_History_dend(PyObject *self, PyObject *args, PyObject *kw
     {
         try {
             result = new HistoryDataIterator (arg0->dend());
-        }catch (std::exception& e) {
-            PyErr_SetString(PyExc_Exception,e.what());
+        }catch (std::domain_error& de) {
+            PyErr_SetString(PyExc_IndexError,de.what());
+            return NULL;
+        }catch (std::exception& ex) {
+            PyErr_SetString(PyExc_Exception,ex.what());
             return NULL;
         }catch (...) {
             PyErr_SetString(PyExc_Exception,"unknown error");
@@ -5862,8 +6457,11 @@ static PyObject *_wrap_History_data_iterator(PyObject *self, PyObject *args, PyO
     {
         try {
             result = new HistoryDataIterator (arg0->data_iterator(*arg1));
-        }catch (std::exception& e) {
-            PyErr_SetString(PyExc_Exception,e.what());
+        }catch (std::domain_error& de) {
+            PyErr_SetString(PyExc_IndexError,de.what());
+            return NULL;
+        }catch (std::exception& ex) {
+            PyErr_SetString(PyExc_Exception,ex.what());
             return NULL;
         }catch (...) {
             PyErr_SetString(PyExc_Exception,"unknown error");
@@ -5888,8 +6486,11 @@ static PyObject *_wrap_History_vdbegin(PyObject *self, PyObject *args, PyObject 
     {
         try {
             result = new HistoryValidDataIterator (arg0->vdbegin());
-        }catch (std::exception& e) {
-            PyErr_SetString(PyExc_Exception,e.what());
+        }catch (std::domain_error& de) {
+            PyErr_SetString(PyExc_IndexError,de.what());
+            return NULL;
+        }catch (std::exception& ex) {
+            PyErr_SetString(PyExc_Exception,ex.what());
             return NULL;
         }catch (...) {
             PyErr_SetString(PyExc_Exception,"unknown error");
@@ -5914,8 +6515,11 @@ static PyObject *_wrap_History_vdend(PyObject *self, PyObject *args, PyObject *k
     {
         try {
             result = new HistoryValidDataIterator (arg0->vdend());
-        }catch (std::exception& e) {
-            PyErr_SetString(PyExc_Exception,e.what());
+        }catch (std::domain_error& de) {
+            PyErr_SetString(PyExc_IndexError,de.what());
+            return NULL;
+        }catch (std::exception& ex) {
+            PyErr_SetString(PyExc_Exception,ex.what());
             return NULL;
         }catch (...) {
             PyErr_SetString(PyExc_Exception,"unknown error");
@@ -5943,8 +6547,11 @@ static PyObject *_wrap_History_valid_data_iterator(PyObject *self, PyObject *arg
     {
         try {
             result = new HistoryValidDataIterator (arg0->valid_data_iterator(*arg1));
-        }catch (std::exception& e) {
-            PyErr_SetString(PyExc_Exception,e.what());
+        }catch (std::domain_error& de) {
+            PyErr_SetString(PyExc_IndexError,de.what());
+            return NULL;
+        }catch (std::exception& ex) {
+            PyErr_SetString(PyExc_Exception,ex.what());
             return NULL;
         }catch (...) {
             PyErr_SetString(PyExc_Exception,"unknown error");
@@ -5980,8 +6587,11 @@ static PyObject *_wrap_History___getitem__(PyObject *self, PyObject *args, PyObj
         try {
             result = (double )History___getitem__(arg0,*arg1);
             
-        }catch (std::exception& e) {
-            PyErr_SetString(PyExc_Exception,e.what());
+        }catch (std::domain_error& de) {
+            PyErr_SetString(PyExc_IndexError,de.what());
+            return NULL;
+        }catch (std::exception& ex) {
+            PyErr_SetString(PyExc_Exception,ex.what());
             return NULL;
         }catch (...) {
             PyErr_SetString(PyExc_Exception,"unknown error");
@@ -6015,8 +6625,11 @@ static PyObject *_wrap_History___str__(PyObject *self, PyObject *args, PyObject 
     {
         try {
             result = new String (History___str__(arg0));
-        }catch (std::exception& e) {
-            PyErr_SetString(PyExc_Exception,e.what());
+        }catch (std::domain_error& de) {
+            PyErr_SetString(PyExc_IndexError,de.what());
+            return NULL;
+        }catch (std::exception& ex) {
+            PyErr_SetString(PyExc_Exception,ex.what());
             return NULL;
         }catch (...) {
             PyErr_SetString(PyExc_Exception,"unknown error");
@@ -6055,8 +6668,11 @@ static PyObject *_wrap_History___repr__(PyObject *self, PyObject *args, PyObject
     {
         try {
             result = new String (History___repr__(arg0));
-        }catch (std::exception& e) {
-            PyErr_SetString(PyExc_Exception,e.what());
+        }catch (std::domain_error& de) {
+            PyErr_SetString(PyExc_IndexError,de.what());
+            return NULL;
+        }catch (std::exception& ex) {
+            PyErr_SetString(PyExc_Exception,ex.what());
             return NULL;
         }catch (...) {
             PyErr_SetString(PyExc_Exception,"unknown error");
@@ -6086,8 +6702,11 @@ static PyObject *_wrap_delete_TermStructure(PyObject *self, PyObject *args, PyOb
         try {
             delete arg0;
             
-        }catch (std::exception& e) {
-            PyErr_SetString(PyExc_Exception,e.what());
+        }catch (std::domain_error& de) {
+            PyErr_SetString(PyExc_IndexError,de.what());
+            return NULL;
+        }catch (std::exception& ex) {
+            PyErr_SetString(PyExc_Exception,ex.what());
             return NULL;
         }catch (...) {
             PyErr_SetString(PyExc_Exception,"unknown error");
@@ -6120,8 +6739,11 @@ static PyObject *_wrap_TermStructure_clone(PyObject *self, PyObject *args, PyObj
     {
         try {
             result = new TermStructureHandle (TermStructureHandle_clone(arg0));
-        }catch (std::exception& e) {
-            PyErr_SetString(PyExc_Exception,e.what());
+        }catch (std::domain_error& de) {
+            PyErr_SetString(PyExc_IndexError,de.what());
+            return NULL;
+        }catch (std::exception& ex) {
+            PyErr_SetString(PyExc_Exception,ex.what());
             return NULL;
         }catch (...) {
             PyErr_SetString(PyExc_Exception,"unknown error");
@@ -6153,8 +6775,11 @@ static PyObject *_wrap_TermStructure_currency(PyObject *self, PyObject *args, Py
     {
         try {
             result = new CurrencyHandle (TermStructureHandle_currency(arg0));
-        }catch (std::exception& e) {
-            PyErr_SetString(PyExc_Exception,e.what());
+        }catch (std::domain_error& de) {
+            PyErr_SetString(PyExc_IndexError,de.what());
+            return NULL;
+        }catch (std::exception& ex) {
+            PyErr_SetString(PyExc_Exception,ex.what());
             return NULL;
         }catch (...) {
             PyErr_SetString(PyExc_Exception,"unknown error");
@@ -6186,8 +6811,11 @@ static PyObject *_wrap_TermStructure_todaysDate(PyObject *self, PyObject *args, 
     {
         try {
             result = new Date (TermStructureHandle_todaysDate(arg0));
-        }catch (std::exception& e) {
-            PyErr_SetString(PyExc_Exception,e.what());
+        }catch (std::domain_error& de) {
+            PyErr_SetString(PyExc_IndexError,de.what());
+            return NULL;
+        }catch (std::exception& ex) {
+            PyErr_SetString(PyExc_Exception,ex.what());
             return NULL;
         }catch (...) {
             PyErr_SetString(PyExc_Exception,"unknown error");
@@ -6219,8 +6847,11 @@ static PyObject *_wrap_TermStructure_settlementDate(PyObject *self, PyObject *ar
     {
         try {
             result = new Date (TermStructureHandle_settlementDate(arg0));
-        }catch (std::exception& e) {
-            PyErr_SetString(PyExc_Exception,e.what());
+        }catch (std::domain_error& de) {
+            PyErr_SetString(PyExc_IndexError,de.what());
+            return NULL;
+        }catch (std::exception& ex) {
+            PyErr_SetString(PyExc_Exception,ex.what());
             return NULL;
         }catch (...) {
             PyErr_SetString(PyExc_Exception,"unknown error");
@@ -6252,8 +6883,11 @@ static PyObject *_wrap_TermStructure_calendar(PyObject *self, PyObject *args, Py
     {
         try {
             result = new CalendarHandle (TermStructureHandle_calendar(arg0));
-        }catch (std::exception& e) {
-            PyErr_SetString(PyExc_Exception,e.what());
+        }catch (std::domain_error& de) {
+            PyErr_SetString(PyExc_IndexError,de.what());
+            return NULL;
+        }catch (std::exception& ex) {
+            PyErr_SetString(PyExc_Exception,ex.what());
             return NULL;
         }catch (...) {
             PyErr_SetString(PyExc_Exception,"unknown error");
@@ -6285,8 +6919,11 @@ static PyObject *_wrap_TermStructure_maxDate(PyObject *self, PyObject *args, PyO
     {
         try {
             result = new Date (TermStructureHandle_maxDate(arg0));
-        }catch (std::exception& e) {
-            PyErr_SetString(PyExc_Exception,e.what());
+        }catch (std::domain_error& de) {
+            PyErr_SetString(PyExc_IndexError,de.what());
+            return NULL;
+        }catch (std::exception& ex) {
+            PyErr_SetString(PyExc_Exception,ex.what());
             return NULL;
         }catch (...) {
             PyErr_SetString(PyExc_Exception,"unknown error");
@@ -6318,8 +6955,11 @@ static PyObject *_wrap_TermStructure_minDate(PyObject *self, PyObject *args, PyO
     {
         try {
             result = new Date (TermStructureHandle_minDate(arg0));
-        }catch (std::exception& e) {
-            PyErr_SetString(PyExc_Exception,e.what());
+        }catch (std::domain_error& de) {
+            PyErr_SetString(PyExc_IndexError,de.what());
+            return NULL;
+        }catch (std::exception& ex) {
+            PyErr_SetString(PyExc_Exception,ex.what());
             return NULL;
         }catch (...) {
             PyErr_SetString(PyExc_Exception,"unknown error");
@@ -6358,8 +6998,11 @@ static PyObject *_wrap_TermStructure_zeroYield(PyObject *self, PyObject *args, P
         try {
             result = (Rate )TermStructureHandle_zeroYield(arg0,(Date const &)*arg1,arg2);
             
-        }catch (std::exception& e) {
-            PyErr_SetString(PyExc_Exception,e.what());
+        }catch (std::domain_error& de) {
+            PyErr_SetString(PyExc_IndexError,de.what());
+            return NULL;
+        }catch (std::exception& ex) {
+            PyErr_SetString(PyExc_Exception,ex.what());
             return NULL;
         }catch (...) {
             PyErr_SetString(PyExc_Exception,"unknown error");
@@ -6398,8 +7041,11 @@ static PyObject *_wrap_TermStructure_discount(PyObject *self, PyObject *args, Py
         try {
             result = (DiscountFactor )TermStructureHandle_discount(arg0,(Date const &)*arg1,arg2);
             
-        }catch (std::exception& e) {
-            PyErr_SetString(PyExc_Exception,e.what());
+        }catch (std::domain_error& de) {
+            PyErr_SetString(PyExc_IndexError,de.what());
+            return NULL;
+        }catch (std::exception& ex) {
+            PyErr_SetString(PyExc_Exception,ex.what());
             return NULL;
         }catch (...) {
             PyErr_SetString(PyExc_Exception,"unknown error");
@@ -6438,8 +7084,11 @@ static PyObject *_wrap_TermStructure_forward(PyObject *self, PyObject *args, PyO
         try {
             result = (Rate )TermStructureHandle_forward(arg0,(Date const &)*arg1,arg2);
             
-        }catch (std::exception& e) {
-            PyErr_SetString(PyExc_Exception,e.what());
+        }catch (std::domain_error& de) {
+            PyErr_SetString(PyExc_IndexError,de.what());
+            return NULL;
+        }catch (std::exception& ex) {
+            PyErr_SetString(PyExc_Exception,ex.what());
             return NULL;
         }catch (...) {
             PyErr_SetString(PyExc_Exception,"unknown error");
@@ -6472,8 +7121,11 @@ static PyObject *_wrap_TermStructure___nonzero__(PyObject *self, PyObject *args,
         try {
             result = (int )TermStructureHandle___nonzero__(arg0);
             
-        }catch (std::exception& e) {
-            PyErr_SetString(PyExc_Exception,e.what());
+        }catch (std::domain_error& de) {
+            PyErr_SetString(PyExc_IndexError,de.what());
+            return NULL;
+        }catch (std::exception& ex) {
+            PyErr_SetString(PyExc_Exception,ex.what());
             return NULL;
         }catch (...) {
             PyErr_SetString(PyExc_Exception,"unknown error");
@@ -6503,8 +7155,11 @@ static PyObject *_wrap_new_DepositRate(PyObject *self, PyObject *args, PyObject 
         try {
             result = (DepositRate *)new DepositRate(*arg0,arg1,*arg2);
             
-        }catch (std::exception& e) {
-            PyErr_SetString(PyExc_Exception,e.what());
+        }catch (std::domain_error& de) {
+            PyErr_SetString(PyExc_IndexError,de.what());
+            return NULL;
+        }catch (std::exception& ex) {
+            PyErr_SetString(PyExc_Exception,ex.what());
             return NULL;
         }catch (...) {
             PyErr_SetString(PyExc_Exception,"unknown error");
@@ -6529,8 +7184,11 @@ static PyObject *_wrap_delete_DepositRate(PyObject *self, PyObject *args, PyObje
         try {
             delete arg0;
             
-        }catch (std::exception& e) {
-            PyErr_SetString(PyExc_Exception,e.what());
+        }catch (std::domain_error& de) {
+            PyErr_SetString(PyExc_IndexError,de.what());
+            return NULL;
+        }catch (std::exception& ex) {
+            PyErr_SetString(PyExc_Exception,ex.what());
             return NULL;
         }catch (...) {
             PyErr_SetString(PyExc_Exception,"unknown error");
@@ -6556,8 +7214,11 @@ static PyObject *_wrap_DepositRate_maturity(PyObject *self, PyObject *args, PyOb
     {
         try {
             result = new Date (arg0->maturity());
-        }catch (std::exception& e) {
-            PyErr_SetString(PyExc_Exception,e.what());
+        }catch (std::domain_error& de) {
+            PyErr_SetString(PyExc_IndexError,de.what());
+            return NULL;
+        }catch (std::exception& ex) {
+            PyErr_SetString(PyExc_Exception,ex.what());
             return NULL;
         }catch (...) {
             PyErr_SetString(PyExc_Exception,"unknown error");
@@ -6583,8 +7244,11 @@ static PyObject *_wrap_DepositRate_rate(PyObject *self, PyObject *args, PyObject
         try {
             result = (Rate )arg0->rate();
             
-        }catch (std::exception& e) {
-            PyErr_SetString(PyExc_Exception,e.what());
+        }catch (std::domain_error& de) {
+            PyErr_SetString(PyExc_IndexError,de.what());
+            return NULL;
+        }catch (std::exception& ex) {
+            PyErr_SetString(PyExc_Exception,ex.what());
             return NULL;
         }catch (...) {
             PyErr_SetString(PyExc_Exception,"unknown error");
@@ -6609,8 +7273,11 @@ static PyObject *_wrap_DepositRate_dayCounter(PyObject *self, PyObject *args, Py
     {
         try {
             result = new DayCounterHandle (arg0->dayCounter());
-        }catch (std::exception& e) {
-            PyErr_SetString(PyExc_Exception,e.what());
+        }catch (std::domain_error& de) {
+            PyErr_SetString(PyExc_IndexError,de.what());
+            return NULL;
+        }catch (std::exception& ex) {
+            PyErr_SetString(PyExc_Exception,ex.what());
             return NULL;
         }catch (...) {
             PyErr_SetString(PyExc_Exception,"unknown error");
@@ -6635,8 +7302,11 @@ static PyObject *_wrap_delete_Instrument(PyObject *self, PyObject *args, PyObjec
         try {
             delete arg0;
             
-        }catch (std::exception& e) {
-            PyErr_SetString(PyExc_Exception,e.what());
+        }catch (std::domain_error& de) {
+            PyErr_SetString(PyExc_IndexError,de.what());
+            return NULL;
+        }catch (std::exception& ex) {
+            PyErr_SetString(PyExc_Exception,ex.what());
             return NULL;
         }catch (...) {
             PyErr_SetString(PyExc_Exception,"unknown error");
@@ -6670,8 +7340,11 @@ static PyObject *_wrap_Instrument_setPrice(PyObject *self, PyObject *args, PyObj
         try {
             InstrumentHandle_setPrice(arg0,arg1);
             
-        }catch (std::exception& e) {
-            PyErr_SetString(PyExc_Exception,e.what());
+        }catch (std::domain_error& de) {
+            PyErr_SetString(PyExc_IndexError,de.what());
+            return NULL;
+        }catch (std::exception& ex) {
+            PyErr_SetString(PyExc_Exception,ex.what());
             return NULL;
         }catch (...) {
             PyErr_SetString(PyExc_Exception,"unknown error");
@@ -6707,8 +7380,11 @@ static PyObject *_wrap_Instrument_setTermStructure(PyObject *self, PyObject *arg
         try {
             InstrumentHandle_setTermStructure(arg0,*arg1);
             
-        }catch (std::exception& e) {
-            PyErr_SetString(PyExc_Exception,e.what());
+        }catch (std::domain_error& de) {
+            PyErr_SetString(PyExc_IndexError,de.what());
+            return NULL;
+        }catch (std::exception& ex) {
+            PyErr_SetString(PyExc_Exception,ex.what());
             return NULL;
         }catch (...) {
             PyErr_SetString(PyExc_Exception,"unknown error");
@@ -6741,8 +7417,11 @@ static PyObject *_wrap_Instrument_isinCode(PyObject *self, PyObject *args, PyObj
     {
         try {
             result = new String (InstrumentHandle_isinCode(arg0));
-        }catch (std::exception& e) {
-            PyErr_SetString(PyExc_Exception,e.what());
+        }catch (std::domain_error& de) {
+            PyErr_SetString(PyExc_IndexError,de.what());
+            return NULL;
+        }catch (std::exception& ex) {
+            PyErr_SetString(PyExc_Exception,ex.what());
             return NULL;
         }catch (...) {
             PyErr_SetString(PyExc_Exception,"unknown error");
@@ -6779,8 +7458,11 @@ static PyObject *_wrap_Instrument_description(PyObject *self, PyObject *args, Py
     {
         try {
             result = new String (InstrumentHandle_description(arg0));
-        }catch (std::exception& e) {
-            PyErr_SetString(PyExc_Exception,e.what());
+        }catch (std::domain_error& de) {
+            PyErr_SetString(PyExc_IndexError,de.what());
+            return NULL;
+        }catch (std::exception& ex) {
+            PyErr_SetString(PyExc_Exception,ex.what());
             return NULL;
         }catch (...) {
             PyErr_SetString(PyExc_Exception,"unknown error");
@@ -6817,8 +7499,11 @@ static PyObject *_wrap_Instrument_termStructure(PyObject *self, PyObject *args, 
     {
         try {
             result = new TermStructureHandle (InstrumentHandle_termStructure(arg0));
-        }catch (std::exception& e) {
-            PyErr_SetString(PyExc_Exception,e.what());
+        }catch (std::domain_error& de) {
+            PyErr_SetString(PyExc_IndexError,de.what());
+            return NULL;
+        }catch (std::exception& ex) {
+            PyErr_SetString(PyExc_Exception,ex.what());
             return NULL;
         }catch (...) {
             PyErr_SetString(PyExc_Exception,"unknown error");
@@ -6851,8 +7536,11 @@ static PyObject *_wrap_Instrument_NPV(PyObject *self, PyObject *args, PyObject *
         try {
             result = (double )InstrumentHandle_NPV(arg0);
             
-        }catch (std::exception& e) {
-            PyErr_SetString(PyExc_Exception,e.what());
+        }catch (std::domain_error& de) {
+            PyErr_SetString(PyExc_IndexError,de.what());
+            return NULL;
+        }catch (std::exception& ex) {
+            PyErr_SetString(PyExc_Exception,ex.what());
             return NULL;
         }catch (...) {
             PyErr_SetString(PyExc_Exception,"unknown error");
@@ -6885,8 +7573,11 @@ static PyObject *_wrap_Instrument_price(PyObject *self, PyObject *args, PyObject
         try {
             result = (double )InstrumentHandle_price(arg0);
             
-        }catch (std::exception& e) {
-            PyErr_SetString(PyExc_Exception,e.what());
+        }catch (std::domain_error& de) {
+            PyErr_SetString(PyExc_IndexError,de.what());
+            return NULL;
+        }catch (std::exception& ex) {
+            PyErr_SetString(PyExc_Exception,ex.what());
             return NULL;
         }catch (...) {
             PyErr_SetString(PyExc_Exception,"unknown error");
@@ -6918,8 +7609,11 @@ static PyObject *_wrap_Instrument___str__(PyObject *self, PyObject *args, PyObje
     {
         try {
             result = new String (InstrumentHandle___str__(arg0));
-        }catch (std::exception& e) {
-            PyErr_SetString(PyExc_Exception,e.what());
+        }catch (std::domain_error& de) {
+            PyErr_SetString(PyExc_IndexError,de.what());
+            return NULL;
+        }catch (std::exception& ex) {
+            PyErr_SetString(PyExc_Exception,ex.what());
             return NULL;
         }catch (...) {
             PyErr_SetString(PyExc_Exception,"unknown error");
@@ -6956,8 +7650,11 @@ static PyObject *_wrap_Instrument___repr__(PyObject *self, PyObject *args, PyObj
     {
         try {
             result = new String (InstrumentHandle___repr__(arg0));
-        }catch (std::exception& e) {
-            PyErr_SetString(PyExc_Exception,e.what());
+        }catch (std::domain_error& de) {
+            PyErr_SetString(PyExc_IndexError,de.what());
+            return NULL;
+        }catch (std::exception& ex) {
+            PyErr_SetString(PyExc_Exception,ex.what());
             return NULL;
         }catch (...) {
             PyErr_SetString(PyExc_Exception,"unknown error");
@@ -6998,8 +7695,11 @@ static PyObject *_wrap_Instrument___cmp__(PyObject *self, PyObject *args, PyObje
         try {
             result = (int )InstrumentHandle___cmp__(arg0,(InstrumentHandle const &)*arg1);
             
-        }catch (std::exception& e) {
-            PyErr_SetString(PyExc_Exception,e.what());
+        }catch (std::domain_error& de) {
+            PyErr_SetString(PyExc_IndexError,de.what());
+            return NULL;
+        }catch (std::exception& ex) {
+            PyErr_SetString(PyExc_Exception,ex.what());
             return NULL;
         }catch (...) {
             PyErr_SetString(PyExc_Exception,"unknown error");
@@ -7032,14 +7732,966 @@ static PyObject *_wrap_Instrument___nonzero__(PyObject *self, PyObject *args, Py
         try {
             result = (int )InstrumentHandle___nonzero__(arg0);
             
-        }catch (std::exception& e) {
-            PyErr_SetString(PyExc_Exception,e.what());
+        }catch (std::domain_error& de) {
+            PyErr_SetString(PyExc_IndexError,de.what());
+            return NULL;
+        }catch (std::exception& ex) {
+            PyErr_SetString(PyExc_Exception,ex.what());
             return NULL;
         }catch (...) {
             PyErr_SetString(PyExc_Exception,"unknown error");
             return NULL;
         }
     }resultobj = PyInt_FromLong((long)result);
+    return resultobj;
+}
+
+
+static PyObject *_wrap_delete_Array(PyObject *self, PyObject *args, PyObject *kwargs) {
+    PyObject *resultobj;
+    Array *arg0 ;
+    Array temp ;
+    PyObject * obj0  = 0 ;
+    char *kwnames[] = {
+        "self", NULL 
+    };
+    
+    if(!PyArg_ParseTupleAndKeywords(args,kwargs,"O:delete_Array",kwnames,&obj0)) return NULL;
+    {
+        Array* v;
+        if (PyTuple_Check(obj0) || PyList_Check(obj0)) {
+            int size = (PyTuple_Check(obj0) ? 
+            PyTuple_Size(obj0) :
+            PyList_Size(obj0));
+            temp = Array(size);
+            arg0 = &temp;
+            for (int i=0; i<size; i++) {
+                PyObject* o = PySequence_GetItem(obj0,i);
+                if (PyFloat_Check(o)) {
+                    (*arg0)[i] = PyFloat_AsDouble(o);
+                }else if (PyInt_Check(o)) {
+                    (*arg0)[i] = double(PyInt_AsLong(o));
+                }else {
+                    PyErr_SetString(PyExc_TypeError,
+                    "sequence must contain doubles");
+                    return NULL;
+                }
+            }
+        }else if ((SWIG_ConvertPtr(obj0,(void **) &v,
+        (swig_type_info *)SWIG_TypeQuery("Array *"),0)) != -1) {
+            arg0 = v;
+        }else {
+            PyErr_SetString(PyExc_TypeError,"not a sequence");
+            return NULL;
+        }
+    }
+    {
+        try {
+            delete arg0;
+            
+        }catch (std::domain_error& de) {
+            PyErr_SetString(PyExc_IndexError,de.what());
+            return NULL;
+        }catch (std::exception& ex) {
+            PyErr_SetString(PyExc_Exception,ex.what());
+            return NULL;
+        }catch (...) {
+            PyErr_SetString(PyExc_Exception,"unknown error");
+            return NULL;
+        }
+    }Py_INCREF(Py_None);
+    resultobj = Py_None;
+    return resultobj;
+}
+
+
+int  Array___len__(Array *self) {
+    {
+        return self->size();
+    }
+}
+
+
+static PyObject *_wrap_Array___len__(PyObject *self, PyObject *args, PyObject *kwargs) {
+    PyObject *resultobj;
+    Array *arg0 ;
+    Array temp ;
+    PyObject * obj0  = 0 ;
+    char *kwnames[] = {
+        "self", NULL 
+    };
+    int result ;
+    
+    if(!PyArg_ParseTupleAndKeywords(args,kwargs,"O:Array___len__",kwnames,&obj0)) return NULL;
+    {
+        Array* v;
+        if (PyTuple_Check(obj0) || PyList_Check(obj0)) {
+            int size = (PyTuple_Check(obj0) ? 
+            PyTuple_Size(obj0) :
+            PyList_Size(obj0));
+            temp = Array(size);
+            arg0 = &temp;
+            for (int i=0; i<size; i++) {
+                PyObject* o = PySequence_GetItem(obj0,i);
+                if (PyFloat_Check(o)) {
+                    (*arg0)[i] = PyFloat_AsDouble(o);
+                }else if (PyInt_Check(o)) {
+                    (*arg0)[i] = double(PyInt_AsLong(o));
+                }else {
+                    PyErr_SetString(PyExc_TypeError,
+                    "sequence must contain doubles");
+                    return NULL;
+                }
+            }
+        }else if ((SWIG_ConvertPtr(obj0,(void **) &v,
+        (swig_type_info *)SWIG_TypeQuery("Array *"),0)) != -1) {
+            arg0 = v;
+        }else {
+            PyErr_SetString(PyExc_TypeError,"not a sequence");
+            return NULL;
+        }
+    }
+    {
+        try {
+            result = (int )Array___len__(arg0);
+            
+        }catch (std::domain_error& de) {
+            PyErr_SetString(PyExc_IndexError,de.what());
+            return NULL;
+        }catch (std::exception& ex) {
+            PyErr_SetString(PyExc_Exception,ex.what());
+            return NULL;
+        }catch (...) {
+            PyErr_SetString(PyExc_Exception,"unknown error");
+            return NULL;
+        }
+    }resultobj = PyInt_FromLong((long)result);
+    return resultobj;
+}
+
+
+double  Array___getitem__(Array *self,int i) {
+    {
+        if (i>=0 && i<self->size()) {
+            return (*self)[i];
+        }else if (i<0 && -i<=self->size()) {
+            return (*self)[self->size()+i];
+        }else {
+            throw std::domain_error("Array index out of range");
+        }
+    }
+}
+
+
+static PyObject *_wrap_Array___getitem__(PyObject *self, PyObject *args, PyObject *kwargs) {
+    PyObject *resultobj;
+    Array *arg0 ;
+    int arg1 ;
+    Array temp ;
+    PyObject * obj0  = 0 ;
+    char *kwnames[] = {
+        "self","i", NULL 
+    };
+    double result ;
+    
+    if(!PyArg_ParseTupleAndKeywords(args,kwargs,"Oi:Array___getitem__",kwnames,&obj0,&arg1)) return NULL;
+    {
+        Array* v;
+        if (PyTuple_Check(obj0) || PyList_Check(obj0)) {
+            int size = (PyTuple_Check(obj0) ? 
+            PyTuple_Size(obj0) :
+            PyList_Size(obj0));
+            temp = Array(size);
+            arg0 = &temp;
+            for (int i=0; i<size; i++) {
+                PyObject* o = PySequence_GetItem(obj0,i);
+                if (PyFloat_Check(o)) {
+                    (*arg0)[i] = PyFloat_AsDouble(o);
+                }else if (PyInt_Check(o)) {
+                    (*arg0)[i] = double(PyInt_AsLong(o));
+                }else {
+                    PyErr_SetString(PyExc_TypeError,
+                    "sequence must contain doubles");
+                    return NULL;
+                }
+            }
+        }else if ((SWIG_ConvertPtr(obj0,(void **) &v,
+        (swig_type_info *)SWIG_TypeQuery("Array *"),0)) != -1) {
+            arg0 = v;
+        }else {
+            PyErr_SetString(PyExc_TypeError,"not a sequence");
+            return NULL;
+        }
+    }
+    {
+        try {
+            result = (double )Array___getitem__(arg0,arg1);
+            
+        }catch (std::domain_error& de) {
+            PyErr_SetString(PyExc_IndexError,de.what());
+            return NULL;
+        }catch (std::exception& ex) {
+            PyErr_SetString(PyExc_Exception,ex.what());
+            return NULL;
+        }catch (...) {
+            PyErr_SetString(PyExc_Exception,"unknown error");
+            return NULL;
+        }
+    }resultobj = PyFloat_FromDouble(result);
+    return resultobj;
+}
+
+
+void  Array___setitem__(Array *self,int i,double x) {
+    {
+        if (i>=0 && i<self->size()) {
+            (*self)[i] = x;
+        }else if (i<0 && -i<=self->size()) {
+            (*self)[self->size()+i] = x;
+        }else {
+            throw std::domain_error("Array index out of range");
+        }
+    }
+}
+
+
+static PyObject *_wrap_Array___setitem__(PyObject *self, PyObject *args, PyObject *kwargs) {
+    PyObject *resultobj;
+    Array *arg0 ;
+    int arg1 ;
+    double arg2 ;
+    Array temp ;
+    PyObject * obj0  = 0 ;
+    char *kwnames[] = {
+        "self","i","x", NULL 
+    };
+    
+    if(!PyArg_ParseTupleAndKeywords(args,kwargs,"Oid:Array___setitem__",kwnames,&obj0,&arg1,&arg2)) return NULL;
+    {
+        Array* v;
+        if (PyTuple_Check(obj0) || PyList_Check(obj0)) {
+            int size = (PyTuple_Check(obj0) ? 
+            PyTuple_Size(obj0) :
+            PyList_Size(obj0));
+            temp = Array(size);
+            arg0 = &temp;
+            for (int i=0; i<size; i++) {
+                PyObject* o = PySequence_GetItem(obj0,i);
+                if (PyFloat_Check(o)) {
+                    (*arg0)[i] = PyFloat_AsDouble(o);
+                }else if (PyInt_Check(o)) {
+                    (*arg0)[i] = double(PyInt_AsLong(o));
+                }else {
+                    PyErr_SetString(PyExc_TypeError,
+                    "sequence must contain doubles");
+                    return NULL;
+                }
+            }
+        }else if ((SWIG_ConvertPtr(obj0,(void **) &v,
+        (swig_type_info *)SWIG_TypeQuery("Array *"),0)) != -1) {
+            arg0 = v;
+        }else {
+            PyErr_SetString(PyExc_TypeError,"not a sequence");
+            return NULL;
+        }
+    }
+    {
+        try {
+            Array___setitem__(arg0,arg1,arg2);
+            
+        }catch (std::domain_error& de) {
+            PyErr_SetString(PyExc_IndexError,de.what());
+            return NULL;
+        }catch (std::exception& ex) {
+            PyErr_SetString(PyExc_Exception,ex.what());
+            return NULL;
+        }catch (...) {
+            PyErr_SetString(PyExc_Exception,"unknown error");
+            return NULL;
+        }
+    }Py_INCREF(Py_None);
+    resultobj = Py_None;
+    return resultobj;
+}
+
+
+Array  Array___getslice__(Array *self,int i,int j) {
+    {
+        if (i<0)
+        i = self->size()+i;
+        if (j<0)
+        j = self->size()+j;
+        i = QL_MAX(0,i);
+        j = QL_MIN(self->size(),j);
+        Array tmp(j-i);
+        std::copy(self->begin()+i,self->begin()+j,tmp.begin());
+        return tmp;
+    }
+}
+
+
+static PyObject *_wrap_Array___getslice__(PyObject *self, PyObject *args, PyObject *kwargs) {
+    PyObject *resultobj;
+    Array *arg0 ;
+    int arg1 ;
+    int arg2 ;
+    Array temp ;
+    PyObject * obj0  = 0 ;
+    char *kwnames[] = {
+        "self","i","j", NULL 
+    };
+    Array *result ;
+    
+    if(!PyArg_ParseTupleAndKeywords(args,kwargs,"Oii:Array___getslice__",kwnames,&obj0,&arg1,&arg2)) return NULL;
+    {
+        Array* v;
+        if (PyTuple_Check(obj0) || PyList_Check(obj0)) {
+            int size = (PyTuple_Check(obj0) ? 
+            PyTuple_Size(obj0) :
+            PyList_Size(obj0));
+            temp = Array(size);
+            arg0 = &temp;
+            for (int i=0; i<size; i++) {
+                PyObject* o = PySequence_GetItem(obj0,i);
+                if (PyFloat_Check(o)) {
+                    (*arg0)[i] = PyFloat_AsDouble(o);
+                }else if (PyInt_Check(o)) {
+                    (*arg0)[i] = double(PyInt_AsLong(o));
+                }else {
+                    PyErr_SetString(PyExc_TypeError,
+                    "sequence must contain doubles");
+                    return NULL;
+                }
+            }
+        }else if ((SWIG_ConvertPtr(obj0,(void **) &v,
+        (swig_type_info *)SWIG_TypeQuery("Array *"),0)) != -1) {
+            arg0 = v;
+        }else {
+            PyErr_SetString(PyExc_TypeError,"not a sequence");
+            return NULL;
+        }
+    }
+    {
+        try {
+            result = new Array (Array___getslice__(arg0,arg1,arg2));
+        }catch (std::domain_error& de) {
+            PyErr_SetString(PyExc_IndexError,de.what());
+            return NULL;
+        }catch (std::exception& ex) {
+            PyErr_SetString(PyExc_Exception,ex.what());
+            return NULL;
+        }catch (...) {
+            PyErr_SetString(PyExc_Exception,"unknown error");
+            return NULL;
+        }
+    }resultobj = SWIG_NewPointerObj((void *)result, SWIGTYPE_p_Array);
+    return resultobj;
+}
+
+
+void  Array___setslice__(Array *self,int i,int j,Array const &rhs) {
+    {
+        if (i<0)
+        i = self->size()+i;
+        if (j<0)
+        j = self->size()+j;
+        i = QL_MAX(0,i);
+        j = QL_MIN(self->size(),j);
+        QL_ENSURE(rhs.size() == j-i, "Arrays are not resizable");
+        std::copy(rhs.begin(),rhs.end(),self->begin()+i);
+    }
+}
+
+
+static PyObject *_wrap_Array___setslice__(PyObject *self, PyObject *args, PyObject *kwargs) {
+    PyObject *resultobj;
+    Array *arg0 ;
+    int arg1 ;
+    int arg2 ;
+    Array *arg3 ;
+    Array temp ;
+    PyObject * obj0  = 0 ;
+    Array temp0 ;
+    PyObject * obj3  = 0 ;
+    char *kwnames[] = {
+        "self","i","j","rhs", NULL 
+    };
+    
+    if(!PyArg_ParseTupleAndKeywords(args,kwargs,"OiiO:Array___setslice__",kwnames,&obj0,&arg1,&arg2,&obj3)) return NULL;
+    {
+        Array* v;
+        if (PyTuple_Check(obj0) || PyList_Check(obj0)) {
+            int size = (PyTuple_Check(obj0) ? 
+            PyTuple_Size(obj0) :
+            PyList_Size(obj0));
+            temp = Array(size);
+            arg0 = &temp;
+            for (int i=0; i<size; i++) {
+                PyObject* o = PySequence_GetItem(obj0,i);
+                if (PyFloat_Check(o)) {
+                    (*arg0)[i] = PyFloat_AsDouble(o);
+                }else if (PyInt_Check(o)) {
+                    (*arg0)[i] = double(PyInt_AsLong(o));
+                }else {
+                    PyErr_SetString(PyExc_TypeError,
+                    "sequence must contain doubles");
+                    return NULL;
+                }
+            }
+        }else if ((SWIG_ConvertPtr(obj0,(void **) &v,
+        (swig_type_info *)SWIG_TypeQuery("Array *"),0)) != -1) {
+            arg0 = v;
+        }else {
+            PyErr_SetString(PyExc_TypeError,"not a sequence");
+            return NULL;
+        }
+    }
+    {
+        Array* v;
+        if (PyTuple_Check(obj3) || PyList_Check(obj3)) {
+            int size = (PyTuple_Check(obj3) ? 
+            PyTuple_Size(obj3) :
+            PyList_Size(obj3));
+            temp0 = Array(size);
+            arg3 = &temp0;
+            for (int i=0; i<size; i++) {
+                PyObject* o = PySequence_GetItem(obj3,i);
+                if (PyFloat_Check(o)) {
+                    (*arg3)[i] = PyFloat_AsDouble(o);
+                }else if (PyInt_Check(o)) {
+                    (*arg3)[i] = double(PyInt_AsLong(o));
+                }else {
+                    PyErr_SetString(PyExc_TypeError,
+                    "sequence must contain doubles");
+                    return NULL;
+                }
+            }
+        }else if ((SWIG_ConvertPtr(obj3,(void **) &v,
+        (swig_type_info *)SWIG_TypeQuery("Array *"),0)) != -1) {
+            arg3 = v;
+        }else {
+            PyErr_SetString(PyExc_TypeError,"not a sequence");
+            return NULL;
+        }
+    }
+    {
+        try {
+            Array___setslice__(arg0,arg1,arg2,(Array const &)*arg3);
+            
+        }catch (std::domain_error& de) {
+            PyErr_SetString(PyExc_IndexError,de.what());
+            return NULL;
+        }catch (std::exception& ex) {
+            PyErr_SetString(PyExc_Exception,ex.what());
+            return NULL;
+        }catch (...) {
+            PyErr_SetString(PyExc_Exception,"unknown error");
+            return NULL;
+        }
+    }Py_INCREF(Py_None);
+    resultobj = Py_None;
+    return resultobj;
+}
+
+
+String  Array___str__(Array *self) {
+    {
+        String s = "(";
+        for (int i=0; i<self->size(); i++) {
+            if (i != 0)
+            s += ", ";
+            s += QuantLib::DoubleFormatter::toString((*self)[i]);
+        }
+        s += ")";
+        return s;
+    }
+}
+
+
+static PyObject *_wrap_Array___str__(PyObject *self, PyObject *args, PyObject *kwargs) {
+    PyObject *resultobj;
+    Array *arg0 ;
+    Array temp ;
+    PyObject * obj0  = 0 ;
+    char *kwnames[] = {
+        "self", NULL 
+    };
+    String *result ;
+    
+    if(!PyArg_ParseTupleAndKeywords(args,kwargs,"O:Array___str__",kwnames,&obj0)) return NULL;
+    {
+        Array* v;
+        if (PyTuple_Check(obj0) || PyList_Check(obj0)) {
+            int size = (PyTuple_Check(obj0) ? 
+            PyTuple_Size(obj0) :
+            PyList_Size(obj0));
+            temp = Array(size);
+            arg0 = &temp;
+            for (int i=0; i<size; i++) {
+                PyObject* o = PySequence_GetItem(obj0,i);
+                if (PyFloat_Check(o)) {
+                    (*arg0)[i] = PyFloat_AsDouble(o);
+                }else if (PyInt_Check(o)) {
+                    (*arg0)[i] = double(PyInt_AsLong(o));
+                }else {
+                    PyErr_SetString(PyExc_TypeError,
+                    "sequence must contain doubles");
+                    return NULL;
+                }
+            }
+        }else if ((SWIG_ConvertPtr(obj0,(void **) &v,
+        (swig_type_info *)SWIG_TypeQuery("Array *"),0)) != -1) {
+            arg0 = v;
+        }else {
+            PyErr_SetString(PyExc_TypeError,"not a sequence");
+            return NULL;
+        }
+    }
+    {
+        try {
+            result = new String (Array___str__(arg0));
+        }catch (std::domain_error& de) {
+            PyErr_SetString(PyExc_IndexError,de.what());
+            return NULL;
+        }catch (std::exception& ex) {
+            PyErr_SetString(PyExc_Exception,ex.what());
+            return NULL;
+        }catch (...) {
+            PyErr_SetString(PyExc_Exception,"unknown error");
+            return NULL;
+        }
+    }{
+        resultobj = PyString_FromString(result->c_str());
+    }
+    {
+        delete result;
+    }
+    return resultobj;
+}
+
+
+String  Array___repr__(Array *self) {
+    {
+        String s = "(";
+        for (int i=0; i<self->size(); i++) {
+            if (i != 0)
+            s += ", ";
+            s += QuantLib::DoubleFormatter::toString((*self)[i]);
+        }
+        s += ")";
+        return s;
+    }
+}
+
+
+static PyObject *_wrap_Array___repr__(PyObject *self, PyObject *args, PyObject *kwargs) {
+    PyObject *resultobj;
+    Array *arg0 ;
+    Array temp ;
+    PyObject * obj0  = 0 ;
+    char *kwnames[] = {
+        "self", NULL 
+    };
+    String *result ;
+    
+    if(!PyArg_ParseTupleAndKeywords(args,kwargs,"O:Array___repr__",kwnames,&obj0)) return NULL;
+    {
+        Array* v;
+        if (PyTuple_Check(obj0) || PyList_Check(obj0)) {
+            int size = (PyTuple_Check(obj0) ? 
+            PyTuple_Size(obj0) :
+            PyList_Size(obj0));
+            temp = Array(size);
+            arg0 = &temp;
+            for (int i=0; i<size; i++) {
+                PyObject* o = PySequence_GetItem(obj0,i);
+                if (PyFloat_Check(o)) {
+                    (*arg0)[i] = PyFloat_AsDouble(o);
+                }else if (PyInt_Check(o)) {
+                    (*arg0)[i] = double(PyInt_AsLong(o));
+                }else {
+                    PyErr_SetString(PyExc_TypeError,
+                    "sequence must contain doubles");
+                    return NULL;
+                }
+            }
+        }else if ((SWIG_ConvertPtr(obj0,(void **) &v,
+        (swig_type_info *)SWIG_TypeQuery("Array *"),0)) != -1) {
+            arg0 = v;
+        }else {
+            PyErr_SetString(PyExc_TypeError,"not a sequence");
+            return NULL;
+        }
+    }
+    {
+        try {
+            result = new String (Array___repr__(arg0));
+        }catch (std::domain_error& de) {
+            PyErr_SetString(PyExc_IndexError,de.what());
+            return NULL;
+        }catch (std::exception& ex) {
+            PyErr_SetString(PyExc_Exception,ex.what());
+            return NULL;
+        }catch (...) {
+            PyErr_SetString(PyExc_Exception,"unknown error");
+            return NULL;
+        }
+    }{
+        resultobj = PyString_FromString(result->c_str());
+    }
+    {
+        delete result;
+    }
+    return resultobj;
+}
+
+
+int  Array___nonzero__(Array *self) {
+    {
+        return (self->size() == 0 ? 0 : 1);
+    }
+}
+
+
+static PyObject *_wrap_Array___nonzero__(PyObject *self, PyObject *args, PyObject *kwargs) {
+    PyObject *resultobj;
+    Array *arg0 ;
+    Array temp ;
+    PyObject * obj0  = 0 ;
+    char *kwnames[] = {
+        "self", NULL 
+    };
+    int result ;
+    
+    if(!PyArg_ParseTupleAndKeywords(args,kwargs,"O:Array___nonzero__",kwnames,&obj0)) return NULL;
+    {
+        Array* v;
+        if (PyTuple_Check(obj0) || PyList_Check(obj0)) {
+            int size = (PyTuple_Check(obj0) ? 
+            PyTuple_Size(obj0) :
+            PyList_Size(obj0));
+            temp = Array(size);
+            arg0 = &temp;
+            for (int i=0; i<size; i++) {
+                PyObject* o = PySequence_GetItem(obj0,i);
+                if (PyFloat_Check(o)) {
+                    (*arg0)[i] = PyFloat_AsDouble(o);
+                }else if (PyInt_Check(o)) {
+                    (*arg0)[i] = double(PyInt_AsLong(o));
+                }else {
+                    PyErr_SetString(PyExc_TypeError,
+                    "sequence must contain doubles");
+                    return NULL;
+                }
+            }
+        }else if ((SWIG_ConvertPtr(obj0,(void **) &v,
+        (swig_type_info *)SWIG_TypeQuery("Array *"),0)) != -1) {
+            arg0 = v;
+        }else {
+            PyErr_SetString(PyExc_TypeError,"not a sequence");
+            return NULL;
+        }
+    }
+    {
+        try {
+            result = (int )Array___nonzero__(arg0);
+            
+        }catch (std::domain_error& de) {
+            PyErr_SetString(PyExc_IndexError,de.what());
+            return NULL;
+        }catch (std::exception& ex) {
+            PyErr_SetString(PyExc_Exception,ex.what());
+            return NULL;
+        }catch (...) {
+            PyErr_SetString(PyExc_Exception,"unknown error");
+            return NULL;
+        }
+    }resultobj = PyInt_FromLong((long)result);
+    return resultobj;
+}
+
+
+static PyObject *_wrap_delete_ArrayLexicographicalView(PyObject *self, PyObject *args, PyObject *kwargs) {
+    PyObject *resultobj;
+    ArrayLexicographicalView *arg0 ;
+    PyObject * argo0 =0 ;
+    char *kwnames[] = {
+        "self", NULL 
+    };
+    
+    if(!PyArg_ParseTupleAndKeywords(args,kwargs,"O:delete_ArrayLexicographicalView",kwnames,&argo0)) return NULL;
+    if ((SWIG_ConvertPtr(argo0,(void **) &arg0,SWIGTYPE_p_ArrayLexicographicalView,1)) == -1) return NULL;
+    {
+        try {
+            delete arg0;
+            
+        }catch (std::domain_error& de) {
+            PyErr_SetString(PyExc_IndexError,de.what());
+            return NULL;
+        }catch (std::exception& ex) {
+            PyErr_SetString(PyExc_Exception,ex.what());
+            return NULL;
+        }catch (...) {
+            PyErr_SetString(PyExc_Exception,"unknown error");
+            return NULL;
+        }
+    }Py_INCREF(Py_None);
+    resultobj = Py_None;
+    return resultobj;
+}
+
+
+static PyObject *_wrap_ArrayLexicographicalView_xSize(PyObject *self, PyObject *args, PyObject *kwargs) {
+    PyObject *resultobj;
+    ArrayLexicographicalView *arg0 ;
+    PyObject * argo0 =0 ;
+    char *kwnames[] = {
+        "self", NULL 
+    };
+    int result ;
+    
+    if(!PyArg_ParseTupleAndKeywords(args,kwargs,"O:ArrayLexicographicalView_xSize",kwnames,&argo0)) return NULL;
+    if ((SWIG_ConvertPtr(argo0,(void **) &arg0,SWIGTYPE_p_ArrayLexicographicalView,1)) == -1) return NULL;
+    {
+        try {
+            result = (int )arg0->xSize();
+            
+        }catch (std::domain_error& de) {
+            PyErr_SetString(PyExc_IndexError,de.what());
+            return NULL;
+        }catch (std::exception& ex) {
+            PyErr_SetString(PyExc_Exception,ex.what());
+            return NULL;
+        }catch (...) {
+            PyErr_SetString(PyExc_Exception,"unknown error");
+            return NULL;
+        }
+    }resultobj = PyInt_FromLong((long)result);
+    return resultobj;
+}
+
+
+static PyObject *_wrap_ArrayLexicographicalView_ySize(PyObject *self, PyObject *args, PyObject *kwargs) {
+    PyObject *resultobj;
+    ArrayLexicographicalView *arg0 ;
+    PyObject * argo0 =0 ;
+    char *kwnames[] = {
+        "self", NULL 
+    };
+    int result ;
+    
+    if(!PyArg_ParseTupleAndKeywords(args,kwargs,"O:ArrayLexicographicalView_ySize",kwnames,&argo0)) return NULL;
+    if ((SWIG_ConvertPtr(argo0,(void **) &arg0,SWIGTYPE_p_ArrayLexicographicalView,1)) == -1) return NULL;
+    {
+        try {
+            result = (int )arg0->ySize();
+            
+        }catch (std::domain_error& de) {
+            PyErr_SetString(PyExc_IndexError,de.what());
+            return NULL;
+        }catch (std::exception& ex) {
+            PyErr_SetString(PyExc_Exception,ex.what());
+            return NULL;
+        }catch (...) {
+            PyErr_SetString(PyExc_Exception,"unknown error");
+            return NULL;
+        }
+    }resultobj = PyInt_FromLong((long)result);
+    return resultobj;
+}
+
+
+ArrayLexicographicalViewColumn  ArrayLexicographicalView___getitem__(ArrayLexicographicalView *self,int i) {
+    {
+        return (*self)[i];
+    }
+}
+
+
+static PyObject *_wrap_ArrayLexicographicalView___getitem__(PyObject *self, PyObject *args, PyObject *kwargs) {
+    PyObject *resultobj;
+    ArrayLexicographicalView *arg0 ;
+    int arg1 ;
+    PyObject * argo0 =0 ;
+    char *kwnames[] = {
+        "self","i", NULL 
+    };
+    ArrayLexicographicalViewColumn *result ;
+    
+    if(!PyArg_ParseTupleAndKeywords(args,kwargs,"Oi:ArrayLexicographicalView___getitem__",kwnames,&argo0,&arg1)) return NULL;
+    if ((SWIG_ConvertPtr(argo0,(void **) &arg0,SWIGTYPE_p_ArrayLexicographicalView,1)) == -1) return NULL;
+    {
+        try {
+            result = new ArrayLexicographicalViewColumn (ArrayLexicographicalView___getitem__(arg0,arg1));
+        }catch (std::domain_error& de) {
+            PyErr_SetString(PyExc_IndexError,de.what());
+            return NULL;
+        }catch (std::exception& ex) {
+            PyErr_SetString(PyExc_Exception,ex.what());
+            return NULL;
+        }catch (...) {
+            PyErr_SetString(PyExc_Exception,"unknown error");
+            return NULL;
+        }
+    }resultobj = SWIG_NewPointerObj((void *)result, SWIGTYPE_p_ArrayLexicographicalViewColumn);
+    return resultobj;
+}
+
+
+String  ArrayLexicographicalView___str__(ArrayLexicographicalView *self) {
+    {
+        String s;
+        for (int j=0; j<self->ySize(); j++) {
+            s += "\n";
+            for (int i=0; i<self->xSize(); i++) {
+                if (i != 0)
+                s += ",";
+                s += QuantLib::DoubleFormatter::toString((*self)[i][j]);
+            }
+        }
+        s += "\n";
+        return s;
+    }
+}
+
+
+static PyObject *_wrap_ArrayLexicographicalView___str__(PyObject *self, PyObject *args, PyObject *kwargs) {
+    PyObject *resultobj;
+    ArrayLexicographicalView *arg0 ;
+    PyObject * argo0 =0 ;
+    char *kwnames[] = {
+        "self", NULL 
+    };
+    String *result ;
+    
+    if(!PyArg_ParseTupleAndKeywords(args,kwargs,"O:ArrayLexicographicalView___str__",kwnames,&argo0)) return NULL;
+    if ((SWIG_ConvertPtr(argo0,(void **) &arg0,SWIGTYPE_p_ArrayLexicographicalView,1)) == -1) return NULL;
+    {
+        try {
+            result = new String (ArrayLexicographicalView___str__(arg0));
+        }catch (std::domain_error& de) {
+            PyErr_SetString(PyExc_IndexError,de.what());
+            return NULL;
+        }catch (std::exception& ex) {
+            PyErr_SetString(PyExc_Exception,ex.what());
+            return NULL;
+        }catch (...) {
+            PyErr_SetString(PyExc_Exception,"unknown error");
+            return NULL;
+        }
+    }{
+        resultobj = PyString_FromString(result->c_str());
+    }
+    {
+        delete result;
+    }
+    return resultobj;
+}
+
+
+static PyObject *_wrap_delete_ArrayLexicographicalViewColumn(PyObject *self, PyObject *args, PyObject *kwargs) {
+    PyObject *resultobj;
+    ArrayLexicographicalViewColumn *arg0 ;
+    PyObject * argo0 =0 ;
+    char *kwnames[] = {
+        "self", NULL 
+    };
+    
+    if(!PyArg_ParseTupleAndKeywords(args,kwargs,"O:delete_ArrayLexicographicalViewColumn",kwnames,&argo0)) return NULL;
+    if ((SWIG_ConvertPtr(argo0,(void **) &arg0,SWIGTYPE_p_ArrayLexicographicalViewColumn,1)) == -1) return NULL;
+    {
+        try {
+            delete arg0;
+            
+        }catch (std::domain_error& de) {
+            PyErr_SetString(PyExc_IndexError,de.what());
+            return NULL;
+        }catch (std::exception& ex) {
+            PyErr_SetString(PyExc_Exception,ex.what());
+            return NULL;
+        }catch (...) {
+            PyErr_SetString(PyExc_Exception,"unknown error");
+            return NULL;
+        }
+    }Py_INCREF(Py_None);
+    resultobj = Py_None;
+    return resultobj;
+}
+
+
+double  ArrayLexicographicalViewColumn___getitem__(ArrayLexicographicalViewColumn *self,int i) {
+    {
+        return (*self)[i];
+    }
+}
+
+
+static PyObject *_wrap_ArrayLexicographicalViewColumn___getitem__(PyObject *self, PyObject *args, PyObject *kwargs) {
+    PyObject *resultobj;
+    ArrayLexicographicalViewColumn *arg0 ;
+    int arg1 ;
+    PyObject * argo0 =0 ;
+    char *kwnames[] = {
+        "self","i", NULL 
+    };
+    double result ;
+    
+    if(!PyArg_ParseTupleAndKeywords(args,kwargs,"Oi:ArrayLexicographicalViewColumn___getitem__",kwnames,&argo0,&arg1)) return NULL;
+    if ((SWIG_ConvertPtr(argo0,(void **) &arg0,SWIGTYPE_p_ArrayLexicographicalViewColumn,1)) == -1) return NULL;
+    {
+        try {
+            result = (double )ArrayLexicographicalViewColumn___getitem__(arg0,arg1);
+            
+        }catch (std::domain_error& de) {
+            PyErr_SetString(PyExc_IndexError,de.what());
+            return NULL;
+        }catch (std::exception& ex) {
+            PyErr_SetString(PyExc_Exception,ex.what());
+            return NULL;
+        }catch (...) {
+            PyErr_SetString(PyExc_Exception,"unknown error");
+            return NULL;
+        }
+    }resultobj = PyFloat_FromDouble(result);
+    return resultobj;
+}
+
+
+void  ArrayLexicographicalViewColumn___setitem__(ArrayLexicographicalViewColumn *self,int i,double x) {
+    {
+        (*self)[i] = x;
+    }
+}
+
+
+static PyObject *_wrap_ArrayLexicographicalViewColumn___setitem__(PyObject *self, PyObject *args, PyObject *kwargs) {
+    PyObject *resultobj;
+    ArrayLexicographicalViewColumn *arg0 ;
+    int arg1 ;
+    double arg2 ;
+    PyObject * argo0 =0 ;
+    char *kwnames[] = {
+        "self","i","x", NULL 
+    };
+    
+    if(!PyArg_ParseTupleAndKeywords(args,kwargs,"Oid:ArrayLexicographicalViewColumn___setitem__",kwnames,&argo0,&arg1,&arg2)) return NULL;
+    if ((SWIG_ConvertPtr(argo0,(void **) &arg0,SWIGTYPE_p_ArrayLexicographicalViewColumn,1)) == -1) return NULL;
+    {
+        try {
+            ArrayLexicographicalViewColumn___setitem__(arg0,arg1,arg2);
+            
+        }catch (std::domain_error& de) {
+            PyErr_SetString(PyExc_IndexError,de.what());
+            return NULL;
+        }catch (std::exception& ex) {
+            PyErr_SetString(PyExc_Exception,ex.what());
+            return NULL;
+        }catch (...) {
+            PyErr_SetString(PyExc_Exception,"unknown error");
+            return NULL;
+        }
+    }Py_INCREF(Py_None);
+    resultobj = Py_None;
     return resultobj;
 }
 
@@ -7058,8 +8710,11 @@ static PyObject *_wrap_delete_Interpolation(PyObject *self, PyObject *args, PyOb
         try {
             delete arg0;
             
-        }catch (std::exception& e) {
-            PyErr_SetString(PyExc_Exception,e.what());
+        }catch (std::domain_error& de) {
+            PyErr_SetString(PyExc_IndexError,de.what());
+            return NULL;
+        }catch (std::exception& ex) {
+            PyErr_SetString(PyExc_Exception,ex.what());
             return NULL;
         }catch (...) {
             PyErr_SetString(PyExc_Exception,"unknown error");
@@ -7094,8 +8749,11 @@ static PyObject *_wrap_Interpolation___call__(PyObject *self, PyObject *args, Py
         try {
             result = (double )InterpolationHandle___call__(arg0,arg1);
             
-        }catch (std::exception& e) {
-            PyErr_SetString(PyExc_Exception,e.what());
+        }catch (std::domain_error& de) {
+            PyErr_SetString(PyExc_IndexError,de.what());
+            return NULL;
+        }catch (std::exception& ex) {
+            PyErr_SetString(PyExc_Exception,ex.what());
             return NULL;
         }catch (...) {
             PyErr_SetString(PyExc_Exception,"unknown error");
@@ -7128,8 +8786,11 @@ static PyObject *_wrap_Interpolation___nonzero__(PyObject *self, PyObject *args,
         try {
             result = (int )InterpolationHandle___nonzero__(arg0);
             
-        }catch (std::exception& e) {
-            PyErr_SetString(PyExc_Exception,e.what());
+        }catch (std::domain_error& de) {
+            PyErr_SetString(PyExc_IndexError,de.what());
+            return NULL;
+        }catch (std::exception& ex) {
+            PyErr_SetString(PyExc_Exception,ex.what());
             return NULL;
         }catch (...) {
             PyErr_SetString(PyExc_Exception,"unknown error");
@@ -7155,8 +8816,11 @@ static PyObject *_wrap_new_Matrix(PyObject *self, PyObject *args, PyObject *kwar
         try {
             result = (Matrix *)new Matrix(arg0,arg1,arg2);
             
-        }catch (std::exception& e) {
-            PyErr_SetString(PyExc_Exception,e.what());
+        }catch (std::domain_error& de) {
+            PyErr_SetString(PyExc_IndexError,de.what());
+            return NULL;
+        }catch (std::exception& ex) {
+            PyErr_SetString(PyExc_Exception,ex.what());
             return NULL;
         }catch (...) {
             PyErr_SetString(PyExc_Exception,"unknown error");
@@ -7181,8 +8845,11 @@ static PyObject *_wrap_delete_Matrix(PyObject *self, PyObject *args, PyObject *k
         try {
             delete arg0;
             
-        }catch (std::exception& e) {
-            PyErr_SetString(PyExc_Exception,e.what());
+        }catch (std::domain_error& de) {
+            PyErr_SetString(PyExc_IndexError,de.what());
+            return NULL;
+        }catch (std::exception& ex) {
+            PyErr_SetString(PyExc_Exception,ex.what());
             return NULL;
         }catch (...) {
             PyErr_SetString(PyExc_Exception,"unknown error");
@@ -7209,8 +8876,11 @@ static PyObject *_wrap_Matrix_rows(PyObject *self, PyObject *args, PyObject *kwa
         try {
             result = (int )arg0->rows();
             
-        }catch (std::exception& e) {
-            PyErr_SetString(PyExc_Exception,e.what());
+        }catch (std::domain_error& de) {
+            PyErr_SetString(PyExc_IndexError,de.what());
+            return NULL;
+        }catch (std::exception& ex) {
+            PyErr_SetString(PyExc_Exception,ex.what());
             return NULL;
         }catch (...) {
             PyErr_SetString(PyExc_Exception,"unknown error");
@@ -7236,8 +8906,11 @@ static PyObject *_wrap_Matrix_columns(PyObject *self, PyObject *args, PyObject *
         try {
             result = (int )arg0->columns();
             
-        }catch (std::exception& e) {
-            PyErr_SetString(PyExc_Exception,e.what());
+        }catch (std::domain_error& de) {
+            PyErr_SetString(PyExc_IndexError,de.what());
+            return NULL;
+        }catch (std::exception& ex) {
+            PyErr_SetString(PyExc_Exception,ex.what());
             return NULL;
         }catch (...) {
             PyErr_SetString(PyExc_Exception,"unknown error");
@@ -7270,8 +8943,11 @@ static PyObject *_wrap_Matrix___getitem__(PyObject *self, PyObject *args, PyObje
     {
         try {
             result = new MatrixRow (Matrix___getitem__(arg0,arg1));
-        }catch (std::exception& e) {
-            PyErr_SetString(PyExc_Exception,e.what());
+        }catch (std::domain_error& de) {
+            PyErr_SetString(PyExc_IndexError,de.what());
+            return NULL;
+        }catch (std::exception& ex) {
+            PyErr_SetString(PyExc_Exception,ex.what());
             return NULL;
         }catch (...) {
             PyErr_SetString(PyExc_Exception,"unknown error");
@@ -7306,8 +8982,11 @@ static PyObject *_wrap_Matrix___add__(PyObject *self, PyObject *args, PyObject *
     {
         try {
             result = new Matrix (Matrix___add__(arg0,(Matrix const &)*arg1));
-        }catch (std::exception& e) {
-            PyErr_SetString(PyExc_Exception,e.what());
+        }catch (std::domain_error& de) {
+            PyErr_SetString(PyExc_IndexError,de.what());
+            return NULL;
+        }catch (std::exception& ex) {
+            PyErr_SetString(PyExc_Exception,ex.what());
             return NULL;
         }catch (...) {
             PyErr_SetString(PyExc_Exception,"unknown error");
@@ -7342,8 +9021,11 @@ static PyObject *_wrap_Matrix___sub__(PyObject *self, PyObject *args, PyObject *
     {
         try {
             result = new Matrix (Matrix___sub__(arg0,(Matrix const &)*arg1));
-        }catch (std::exception& e) {
-            PyErr_SetString(PyExc_Exception,e.what());
+        }catch (std::domain_error& de) {
+            PyErr_SetString(PyExc_IndexError,de.what());
+            return NULL;
+        }catch (std::exception& ex) {
+            PyErr_SetString(PyExc_Exception,ex.what());
             return NULL;
         }catch (...) {
             PyErr_SetString(PyExc_Exception,"unknown error");
@@ -7376,8 +9058,11 @@ static PyObject *_wrap_Matrix___mul__(PyObject *self, PyObject *args, PyObject *
     {
         try {
             result = new Matrix (Matrix___mul__(arg0,arg1));
-        }catch (std::exception& e) {
-            PyErr_SetString(PyExc_Exception,e.what());
+        }catch (std::domain_error& de) {
+            PyErr_SetString(PyExc_IndexError,de.what());
+            return NULL;
+        }catch (std::exception& ex) {
+            PyErr_SetString(PyExc_Exception,ex.what());
             return NULL;
         }catch (...) {
             PyErr_SetString(PyExc_Exception,"unknown error");
@@ -7410,8 +9095,11 @@ static PyObject *_wrap_Matrix___div__(PyObject *self, PyObject *args, PyObject *
     {
         try {
             result = new Matrix (Matrix___div__(arg0,arg1));
-        }catch (std::exception& e) {
-            PyErr_SetString(PyExc_Exception,e.what());
+        }catch (std::domain_error& de) {
+            PyErr_SetString(PyExc_IndexError,de.what());
+            return NULL;
+        }catch (std::exception& ex) {
+            PyErr_SetString(PyExc_Exception,ex.what());
             return NULL;
         }catch (...) {
             PyErr_SetString(PyExc_Exception,"unknown error");
@@ -7453,8 +9141,11 @@ static PyObject *_wrap_Matrix___str__(PyObject *self, PyObject *args, PyObject *
     {
         try {
             result = new String (Matrix___str__(arg0));
-        }catch (std::exception& e) {
-            PyErr_SetString(PyExc_Exception,e.what());
+        }catch (std::domain_error& de) {
+            PyErr_SetString(PyExc_IndexError,de.what());
+            return NULL;
+        }catch (std::exception& ex) {
+            PyErr_SetString(PyExc_Exception,ex.what());
             return NULL;
         }catch (...) {
             PyErr_SetString(PyExc_Exception,"unknown error");
@@ -7484,8 +9175,11 @@ static PyObject *_wrap_delete_MatrixRow(PyObject *self, PyObject *args, PyObject
         try {
             delete arg0;
             
-        }catch (std::exception& e) {
-            PyErr_SetString(PyExc_Exception,e.what());
+        }catch (std::domain_error& de) {
+            PyErr_SetString(PyExc_IndexError,de.what());
+            return NULL;
+        }catch (std::exception& ex) {
+            PyErr_SetString(PyExc_Exception,ex.what());
             return NULL;
         }catch (...) {
             PyErr_SetString(PyExc_Exception,"unknown error");
@@ -7520,8 +9214,11 @@ static PyObject *_wrap_MatrixRow___getitem__(PyObject *self, PyObject *args, PyO
         try {
             result = (double )MatrixRow___getitem__(arg0,arg1);
             
-        }catch (std::exception& e) {
-            PyErr_SetString(PyExc_Exception,e.what());
+        }catch (std::domain_error& de) {
+            PyErr_SetString(PyExc_IndexError,de.what());
+            return NULL;
+        }catch (std::exception& ex) {
+            PyErr_SetString(PyExc_Exception,ex.what());
             return NULL;
         }catch (...) {
             PyErr_SetString(PyExc_Exception,"unknown error");
@@ -7555,8 +9252,11 @@ static PyObject *_wrap_MatrixRow___setitem__(PyObject *self, PyObject *args, PyO
         try {
             MatrixRow___setitem__(arg0,arg1,arg2);
             
-        }catch (std::exception& e) {
-            PyErr_SetString(PyExc_Exception,e.what());
+        }catch (std::domain_error& de) {
+            PyErr_SetString(PyExc_IndexError,de.what());
+            return NULL;
+        }catch (std::exception& ex) {
+            PyErr_SetString(PyExc_Exception,ex.what());
             return NULL;
         }catch (...) {
             PyErr_SetString(PyExc_Exception,"unknown error");
@@ -7582,8 +9282,11 @@ static PyObject *_wrap_new_StandardPathGenerator(PyObject *self, PyObject *args,
         try {
             result = (StandardPathGenerator *)new StandardPathGenerator(arg0,arg1);
             
-        }catch (std::exception& e) {
-            PyErr_SetString(PyExc_Exception,e.what());
+        }catch (std::domain_error& de) {
+            PyErr_SetString(PyExc_IndexError,de.what());
+            return NULL;
+        }catch (std::exception& ex) {
+            PyErr_SetString(PyExc_Exception,ex.what());
             return NULL;
         }catch (...) {
             PyErr_SetString(PyExc_Exception,"unknown error");
@@ -7601,28 +9304,24 @@ static PyObject *_wrap_StandardPathGenerator_next(PyObject *self, PyObject *args
     char *kwnames[] = {
         "self", NULL 
     };
-    PyArray *result ;
+    Array *result ;
     
     if(!PyArg_ParseTupleAndKeywords(args,kwargs,"O:StandardPathGenerator_next",kwnames,&argo0)) return NULL;
     if ((SWIG_ConvertPtr(argo0,(void **) &arg0,SWIGTYPE_p_StandardPathGenerator,1)) == -1) return NULL;
     {
         try {
-            result = new PyArray (arg0->next());
-        }catch (std::exception& e) {
-            PyErr_SetString(PyExc_Exception,e.what());
+            result = new Array (arg0->next());
+        }catch (std::domain_error& de) {
+            PyErr_SetString(PyExc_IndexError,de.what());
+            return NULL;
+        }catch (std::exception& ex) {
+            PyErr_SetString(PyExc_Exception,ex.what());
             return NULL;
         }catch (...) {
             PyErr_SetString(PyExc_Exception,"unknown error");
             return NULL;
         }
-    }{
-        resultobj = PyTuple_New(result->size());
-        for (int i=0; i<result->size(); i++)
-        PyTuple_SetItem(resultobj,i,PyFloat_FromDouble((*result)[i]));
-    }
-    {
-        delete result;
-    }
+    }resultobj = SWIG_NewPointerObj((void *)result, SWIGTYPE_p_Array);
     return resultobj;
 }
 
@@ -7642,8 +9341,11 @@ static PyObject *_wrap_StandardPathGenerator_weight(PyObject *self, PyObject *ar
         try {
             result = (double )arg0->weight();
             
-        }catch (std::exception& e) {
-            PyErr_SetString(PyExc_Exception,e.what());
+        }catch (std::domain_error& de) {
+            PyErr_SetString(PyExc_IndexError,de.what());
+            return NULL;
+        }catch (std::exception& ex) {
+            PyErr_SetString(PyExc_Exception,ex.what());
             return NULL;
         }catch (...) {
             PyErr_SetString(PyExc_Exception,"unknown error");
@@ -7695,8 +9397,11 @@ static PyObject *_wrap_new_McEuropeanPricer(PyObject *self, PyObject *args, PyOb
         try {
             result = (McEuropeanPricer *)new McEuropeanPricer(*arg0,arg1,arg2,arg3,arg4,arg5,arg6,arg7,arg8,arg9);
             
-        }catch (std::exception& e) {
-            PyErr_SetString(PyExc_Exception,e.what());
+        }catch (std::domain_error& de) {
+            PyErr_SetString(PyExc_IndexError,de.what());
+            return NULL;
+        }catch (std::exception& ex) {
+            PyErr_SetString(PyExc_Exception,ex.what());
             return NULL;
         }catch (...) {
             PyErr_SetString(PyExc_Exception,"unknown error");
@@ -7725,8 +9430,11 @@ static PyObject *_wrap_McEuropeanPricer_value(PyObject *self, PyObject *args, Py
         try {
             result = (double )arg0->value();
             
-        }catch (std::exception& e) {
-            PyErr_SetString(PyExc_Exception,e.what());
+        }catch (std::domain_error& de) {
+            PyErr_SetString(PyExc_IndexError,de.what());
+            return NULL;
+        }catch (std::exception& ex) {
+            PyErr_SetString(PyExc_Exception,ex.what());
             return NULL;
         }catch (...) {
             PyErr_SetString(PyExc_Exception,"unknown error");
@@ -7752,8 +9460,11 @@ static PyObject *_wrap_McEuropeanPricer_errorEstimate(PyObject *self, PyObject *
         try {
             result = (double )arg0->errorEstimate();
             
-        }catch (std::exception& e) {
-            PyErr_SetString(PyExc_Exception,e.what());
+        }catch (std::domain_error& de) {
+            PyErr_SetString(PyExc_IndexError,de.what());
+            return NULL;
+        }catch (std::exception& ex) {
+            PyErr_SetString(PyExc_Exception,ex.what());
             return NULL;
         }catch (...) {
             PyErr_SetString(PyExc_Exception,"unknown error");
@@ -7802,8 +9513,11 @@ static PyObject *_wrap_new_GeometricAsianOption(PyObject *self, PyObject *args, 
         try {
             result = (GeometricAsianOption *)new GeometricAsianOption(*arg0,arg1,arg2,arg3,arg4,arg5,arg6);
             
-        }catch (std::exception& e) {
-            PyErr_SetString(PyExc_Exception,e.what());
+        }catch (std::domain_error& de) {
+            PyErr_SetString(PyExc_IndexError,de.what());
+            return NULL;
+        }catch (std::exception& ex) {
+            PyErr_SetString(PyExc_Exception,ex.what());
             return NULL;
         }catch (...) {
             PyErr_SetString(PyExc_Exception,"unknown error");
@@ -7832,8 +9546,11 @@ static PyObject *_wrap_GeometricAsianOption_value(PyObject *self, PyObject *args
         try {
             result = (double )arg0->value();
             
-        }catch (std::exception& e) {
-            PyErr_SetString(PyExc_Exception,e.what());
+        }catch (std::domain_error& de) {
+            PyErr_SetString(PyExc_IndexError,de.what());
+            return NULL;
+        }catch (std::exception& ex) {
+            PyErr_SetString(PyExc_Exception,ex.what());
             return NULL;
         }catch (...) {
             PyErr_SetString(PyExc_Exception,"unknown error");
@@ -7885,8 +9602,11 @@ static PyObject *_wrap_new_AveragePriceAsian(PyObject *self, PyObject *args, PyO
         try {
             result = (AveragePriceAsian *)new AveragePriceAsian(*arg0,arg1,arg2,arg3,arg4,arg5,arg6,arg7,arg8,arg9);
             
-        }catch (std::exception& e) {
-            PyErr_SetString(PyExc_Exception,e.what());
+        }catch (std::domain_error& de) {
+            PyErr_SetString(PyExc_IndexError,de.what());
+            return NULL;
+        }catch (std::exception& ex) {
+            PyErr_SetString(PyExc_Exception,ex.what());
             return NULL;
         }catch (...) {
             PyErr_SetString(PyExc_Exception,"unknown error");
@@ -7915,8 +9635,11 @@ static PyObject *_wrap_AveragePriceAsian_value(PyObject *self, PyObject *args, P
         try {
             result = (double )arg0->value();
             
-        }catch (std::exception& e) {
-            PyErr_SetString(PyExc_Exception,e.what());
+        }catch (std::domain_error& de) {
+            PyErr_SetString(PyExc_IndexError,de.what());
+            return NULL;
+        }catch (std::exception& ex) {
+            PyErr_SetString(PyExc_Exception,ex.what());
             return NULL;
         }catch (...) {
             PyErr_SetString(PyExc_Exception,"unknown error");
@@ -7942,8 +9665,11 @@ static PyObject *_wrap_AveragePriceAsian_errorEstimate(PyObject *self, PyObject 
         try {
             result = (double )arg0->errorEstimate();
             
-        }catch (std::exception& e) {
-            PyErr_SetString(PyExc_Exception,e.what());
+        }catch (std::domain_error& de) {
+            PyErr_SetString(PyExc_IndexError,de.what());
+            return NULL;
+        }catch (std::exception& ex) {
+            PyErr_SetString(PyExc_Exception,ex.what());
             return NULL;
         }catch (...) {
             PyErr_SetString(PyExc_Exception,"unknown error");
@@ -7995,8 +9721,11 @@ static PyObject *_wrap_new_AverageStrikeAsian(PyObject *self, PyObject *args, Py
         try {
             result = (AverageStrikeAsian *)new AverageStrikeAsian(*arg0,arg1,arg2,arg3,arg4,arg5,arg6,arg7,arg8,arg9);
             
-        }catch (std::exception& e) {
-            PyErr_SetString(PyExc_Exception,e.what());
+        }catch (std::domain_error& de) {
+            PyErr_SetString(PyExc_IndexError,de.what());
+            return NULL;
+        }catch (std::exception& ex) {
+            PyErr_SetString(PyExc_Exception,ex.what());
             return NULL;
         }catch (...) {
             PyErr_SetString(PyExc_Exception,"unknown error");
@@ -8025,8 +9754,11 @@ static PyObject *_wrap_AverageStrikeAsian_value(PyObject *self, PyObject *args, 
         try {
             result = (double )arg0->value();
             
-        }catch (std::exception& e) {
-            PyErr_SetString(PyExc_Exception,e.what());
+        }catch (std::domain_error& de) {
+            PyErr_SetString(PyExc_IndexError,de.what());
+            return NULL;
+        }catch (std::exception& ex) {
+            PyErr_SetString(PyExc_Exception,ex.what());
             return NULL;
         }catch (...) {
             PyErr_SetString(PyExc_Exception,"unknown error");
@@ -8052,8 +9784,11 @@ static PyObject *_wrap_AverageStrikeAsian_errorEstimate(PyObject *self, PyObject
         try {
             result = (double )arg0->errorEstimate();
             
-        }catch (std::exception& e) {
-            PyErr_SetString(PyExc_Exception,e.what());
+        }catch (std::domain_error& de) {
+            PyErr_SetString(PyExc_IndexError,de.what());
+            return NULL;
+        }catch (std::exception& ex) {
+            PyErr_SetString(PyExc_Exception,ex.what());
             return NULL;
         }catch (...) {
             PyErr_SetString(PyExc_Exception,"unknown error");
@@ -8066,15 +9801,17 @@ static PyObject *_wrap_AverageStrikeAsian_errorEstimate(PyObject *self, PyObject
 
 static PyObject *_wrap_new_PlainBasketOption(PyObject *self, PyObject *args, PyObject *kwargs) {
     PyObject *resultobj;
-    PyArray *arg0 ;
-    PyArray *arg1 ;
+    Array *arg0 ;
+    Array *arg1 ;
     Matrix *arg2 ;
     Rate arg3 ;
     double arg4 ;
     int arg5 ;
     long arg6 ;
     long arg7 = 0 ;
+    Array temp ;
     PyObject * obj0  = 0 ;
+    Array temp0 ;
     PyObject * obj1  = 0 ;
     PyObject * argo2 =0 ;
     char *kwnames[] = {
@@ -8084,80 +9821,56 @@ static PyObject *_wrap_new_PlainBasketOption(PyObject *self, PyObject *args, PyO
     
     if(!PyArg_ParseTupleAndKeywords(args,kwargs,"OOOddil|l:new_PlainBasketOption",kwnames,&obj0,&obj1,&argo2,&arg3,&arg4,&arg5,&arg6,&arg7)) return NULL;
     {
-        if (PyTuple_Check(obj0)) {
-            int size = PyTuple_Size(obj0);
-            arg0 = new PyArray(size);
+        Array* v;
+        if (PyTuple_Check(obj0) || PyList_Check(obj0)) {
+            int size = (PyTuple_Check(obj0) ? 
+            PyTuple_Size(obj0) :
+            PyList_Size(obj0));
+            temp = Array(size);
+            arg0 = &temp;
             for (int i=0; i<size; i++) {
-                PyObject* o = PyTuple_GetItem(obj0,i);
+                PyObject* o = PySequence_GetItem(obj0,i);
                 if (PyFloat_Check(o)) {
                     (*arg0)[i] = PyFloat_AsDouble(o);
                 }else if (PyInt_Check(o)) {
                     (*arg0)[i] = double(PyInt_AsLong(o));
-                }else if (o == Py_None) {
-                    (*arg0)[i] = Null<double>();
                 }else {
-                    PyErr_SetString(PyExc_TypeError,"tuple must contain doubles");
-                    delete arg0;
+                    PyErr_SetString(PyExc_TypeError,
+                    "sequence must contain doubles");
                     return NULL;
                 }
             }
-        }else if (PyList_Check(obj0)) {
-            int size = PyList_Size(obj0);
-            arg0 = new PyArray(size);
-            for (int i=0; i<size; i++) {
-                PyObject* o = PyList_GetItem(obj0,i);
-                if (PyFloat_Check(o)) {
-                    (*arg0)[i] = PyFloat_AsDouble(o);
-                }else if (PyInt_Check(o)) {
-                    (*arg0)[i] = double(PyInt_AsLong(o));
-                }else if (o == Py_None) {
-                    (*arg0)[i] = Null<double>();
-                }else {
-                    PyErr_SetString(PyExc_TypeError,"list must contain doubles");
-                    delete arg0;
-                    return NULL;
-                }
-            }
+        }else if ((SWIG_ConvertPtr(obj0,(void **) &v,
+        (swig_type_info *)SWIG_TypeQuery("Array *"),0)) != -1) {
+            arg0 = v;
         }else {
             PyErr_SetString(PyExc_TypeError,"not a sequence");
             return NULL;
         }
     }
     {
-        if (PyTuple_Check(obj1)) {
-            int size = PyTuple_Size(obj1);
-            arg1 = new PyArray(size);
+        Array* v;
+        if (PyTuple_Check(obj1) || PyList_Check(obj1)) {
+            int size = (PyTuple_Check(obj1) ? 
+            PyTuple_Size(obj1) :
+            PyList_Size(obj1));
+            temp0 = Array(size);
+            arg1 = &temp0;
             for (int i=0; i<size; i++) {
-                PyObject* o = PyTuple_GetItem(obj1,i);
+                PyObject* o = PySequence_GetItem(obj1,i);
                 if (PyFloat_Check(o)) {
                     (*arg1)[i] = PyFloat_AsDouble(o);
                 }else if (PyInt_Check(o)) {
                     (*arg1)[i] = double(PyInt_AsLong(o));
-                }else if (o == Py_None) {
-                    (*arg1)[i] = Null<double>();
                 }else {
-                    PyErr_SetString(PyExc_TypeError,"tuple must contain doubles");
-                    delete arg1;
+                    PyErr_SetString(PyExc_TypeError,
+                    "sequence must contain doubles");
                     return NULL;
                 }
             }
-        }else if (PyList_Check(obj1)) {
-            int size = PyList_Size(obj1);
-            arg1 = new PyArray(size);
-            for (int i=0; i<size; i++) {
-                PyObject* o = PyList_GetItem(obj1,i);
-                if (PyFloat_Check(o)) {
-                    (*arg1)[i] = PyFloat_AsDouble(o);
-                }else if (PyInt_Check(o)) {
-                    (*arg1)[i] = double(PyInt_AsLong(o));
-                }else if (o == Py_None) {
-                    (*arg1)[i] = Null<double>();
-                }else {
-                    PyErr_SetString(PyExc_TypeError,"list must contain doubles");
-                    delete arg1;
-                    return NULL;
-                }
-            }
+        }else if ((SWIG_ConvertPtr(obj1,(void **) &v,
+        (swig_type_info *)SWIG_TypeQuery("Array *"),0)) != -1) {
+            arg1 = v;
         }else {
             PyErr_SetString(PyExc_TypeError,"not a sequence");
             return NULL;
@@ -8166,22 +9879,19 @@ static PyObject *_wrap_new_PlainBasketOption(PyObject *self, PyObject *args, PyO
     if ((SWIG_ConvertPtr(argo2,(void **) &arg2,SWIGTYPE_p_Matrix,1)) == -1) return NULL;
     {
         try {
-            result = (PlainBasketOption *)new PlainBasketOption((PyArray const &)*arg0,(PyArray const &)*arg1,(Matrix const &)*arg2,arg3,arg4,arg5,arg6,arg7);
+            result = (PlainBasketOption *)new PlainBasketOption((Array const &)*arg0,(Array const &)*arg1,(Matrix const &)*arg2,arg3,arg4,arg5,arg6,arg7);
             
-        }catch (std::exception& e) {
-            PyErr_SetString(PyExc_Exception,e.what());
+        }catch (std::domain_error& de) {
+            PyErr_SetString(PyExc_IndexError,de.what());
+            return NULL;
+        }catch (std::exception& ex) {
+            PyErr_SetString(PyExc_Exception,ex.what());
             return NULL;
         }catch (...) {
             PyErr_SetString(PyExc_Exception,"unknown error");
             return NULL;
         }
     }resultobj = SWIG_NewPointerObj((void *) result, SWIGTYPE_p_PlainBasketOption);
-    {
-        delete arg0;
-    }
-    {
-        delete arg1;
-    }
     return resultobj;
 }
 
@@ -8201,8 +9911,11 @@ static PyObject *_wrap_PlainBasketOption_value(PyObject *self, PyObject *args, P
         try {
             result = (double )arg0->value();
             
-        }catch (std::exception& e) {
-            PyErr_SetString(PyExc_Exception,e.what());
+        }catch (std::domain_error& de) {
+            PyErr_SetString(PyExc_IndexError,de.what());
+            return NULL;
+        }catch (std::exception& ex) {
+            PyErr_SetString(PyExc_Exception,ex.what());
             return NULL;
         }catch (...) {
             PyErr_SetString(PyExc_Exception,"unknown error");
@@ -8228,8 +9941,11 @@ static PyObject *_wrap_PlainBasketOption_errorEstimate(PyObject *self, PyObject 
         try {
             result = (double )arg0->errorEstimate();
             
-        }catch (std::exception& e) {
-            PyErr_SetString(PyExc_Exception,e.what());
+        }catch (std::domain_error& de) {
+            PyErr_SetString(PyExc_IndexError,de.what());
+            return NULL;
+        }catch (std::exception& ex) {
+            PyErr_SetString(PyExc_Exception,ex.what());
             return NULL;
         }catch (...) {
             PyErr_SetString(PyExc_Exception,"unknown error");
@@ -8242,15 +9958,17 @@ static PyObject *_wrap_PlainBasketOption_errorEstimate(PyObject *self, PyObject 
 
 static PyObject *_wrap_new_Himalaya(PyObject *self, PyObject *args, PyObject *kwargs) {
     PyObject *resultobj;
-    PyArray *arg0 ;
-    PyArray *arg1 ;
+    Array *arg0 ;
+    Array *arg1 ;
     Matrix *arg2 ;
     Rate arg3 ;
     double arg4 ;
     DoubleVector *arg5 ;
     long arg6 ;
     long arg7 = 0 ;
+    Array temp ;
     PyObject * obj0  = 0 ;
+    Array temp0 ;
     PyObject * obj1  = 0 ;
     PyObject * argo2 =0 ;
     PyObject * obj5  = 0 ;
@@ -8261,80 +9979,56 @@ static PyObject *_wrap_new_Himalaya(PyObject *self, PyObject *args, PyObject *kw
     
     if(!PyArg_ParseTupleAndKeywords(args,kwargs,"OOOddOl|l:new_Himalaya",kwnames,&obj0,&obj1,&argo2,&arg3,&arg4,&obj5,&arg6,&arg7)) return NULL;
     {
-        if (PyTuple_Check(obj0)) {
-            int size = PyTuple_Size(obj0);
-            arg0 = new PyArray(size);
+        Array* v;
+        if (PyTuple_Check(obj0) || PyList_Check(obj0)) {
+            int size = (PyTuple_Check(obj0) ? 
+            PyTuple_Size(obj0) :
+            PyList_Size(obj0));
+            temp = Array(size);
+            arg0 = &temp;
             for (int i=0; i<size; i++) {
-                PyObject* o = PyTuple_GetItem(obj0,i);
+                PyObject* o = PySequence_GetItem(obj0,i);
                 if (PyFloat_Check(o)) {
                     (*arg0)[i] = PyFloat_AsDouble(o);
                 }else if (PyInt_Check(o)) {
                     (*arg0)[i] = double(PyInt_AsLong(o));
-                }else if (o == Py_None) {
-                    (*arg0)[i] = Null<double>();
                 }else {
-                    PyErr_SetString(PyExc_TypeError,"tuple must contain doubles");
-                    delete arg0;
+                    PyErr_SetString(PyExc_TypeError,
+                    "sequence must contain doubles");
                     return NULL;
                 }
             }
-        }else if (PyList_Check(obj0)) {
-            int size = PyList_Size(obj0);
-            arg0 = new PyArray(size);
-            for (int i=0; i<size; i++) {
-                PyObject* o = PyList_GetItem(obj0,i);
-                if (PyFloat_Check(o)) {
-                    (*arg0)[i] = PyFloat_AsDouble(o);
-                }else if (PyInt_Check(o)) {
-                    (*arg0)[i] = double(PyInt_AsLong(o));
-                }else if (o == Py_None) {
-                    (*arg0)[i] = Null<double>();
-                }else {
-                    PyErr_SetString(PyExc_TypeError,"list must contain doubles");
-                    delete arg0;
-                    return NULL;
-                }
-            }
+        }else if ((SWIG_ConvertPtr(obj0,(void **) &v,
+        (swig_type_info *)SWIG_TypeQuery("Array *"),0)) != -1) {
+            arg0 = v;
         }else {
             PyErr_SetString(PyExc_TypeError,"not a sequence");
             return NULL;
         }
     }
     {
-        if (PyTuple_Check(obj1)) {
-            int size = PyTuple_Size(obj1);
-            arg1 = new PyArray(size);
+        Array* v;
+        if (PyTuple_Check(obj1) || PyList_Check(obj1)) {
+            int size = (PyTuple_Check(obj1) ? 
+            PyTuple_Size(obj1) :
+            PyList_Size(obj1));
+            temp0 = Array(size);
+            arg1 = &temp0;
             for (int i=0; i<size; i++) {
-                PyObject* o = PyTuple_GetItem(obj1,i);
+                PyObject* o = PySequence_GetItem(obj1,i);
                 if (PyFloat_Check(o)) {
                     (*arg1)[i] = PyFloat_AsDouble(o);
                 }else if (PyInt_Check(o)) {
                     (*arg1)[i] = double(PyInt_AsLong(o));
-                }else if (o == Py_None) {
-                    (*arg1)[i] = Null<double>();
                 }else {
-                    PyErr_SetString(PyExc_TypeError,"tuple must contain doubles");
-                    delete arg1;
+                    PyErr_SetString(PyExc_TypeError,
+                    "sequence must contain doubles");
                     return NULL;
                 }
             }
-        }else if (PyList_Check(obj1)) {
-            int size = PyList_Size(obj1);
-            arg1 = new PyArray(size);
-            for (int i=0; i<size; i++) {
-                PyObject* o = PyList_GetItem(obj1,i);
-                if (PyFloat_Check(o)) {
-                    (*arg1)[i] = PyFloat_AsDouble(o);
-                }else if (PyInt_Check(o)) {
-                    (*arg1)[i] = double(PyInt_AsLong(o));
-                }else if (o == Py_None) {
-                    (*arg1)[i] = Null<double>();
-                }else {
-                    PyErr_SetString(PyExc_TypeError,"list must contain doubles");
-                    delete arg1;
-                    return NULL;
-                }
-            }
+        }else if ((SWIG_ConvertPtr(obj1,(void **) &v,
+        (swig_type_info *)SWIG_TypeQuery("Array *"),0)) != -1) {
+            arg1 = v;
         }else {
             PyErr_SetString(PyExc_TypeError,"not a sequence");
             return NULL;
@@ -8383,22 +10077,19 @@ static PyObject *_wrap_new_Himalaya(PyObject *self, PyObject *args, PyObject *kw
     }
     {
         try {
-            result = (Himalaya *)new Himalaya((PyArray const &)*arg0,(PyArray const &)*arg1,(Matrix const &)*arg2,arg3,arg4,(DoubleVector const &)*arg5,arg6,arg7);
+            result = (Himalaya *)new Himalaya((Array const &)*arg0,(Array const &)*arg1,(Matrix const &)*arg2,arg3,arg4,(DoubleVector const &)*arg5,arg6,arg7);
             
-        }catch (std::exception& e) {
-            PyErr_SetString(PyExc_Exception,e.what());
+        }catch (std::domain_error& de) {
+            PyErr_SetString(PyExc_IndexError,de.what());
+            return NULL;
+        }catch (std::exception& ex) {
+            PyErr_SetString(PyExc_Exception,ex.what());
             return NULL;
         }catch (...) {
             PyErr_SetString(PyExc_Exception,"unknown error");
             return NULL;
         }
     }resultobj = SWIG_NewPointerObj((void *) result, SWIGTYPE_p_Himalaya);
-    {
-        delete arg0;
-    }
-    {
-        delete arg1;
-    }
     {
         delete arg5;
     }
@@ -8421,8 +10112,11 @@ static PyObject *_wrap_Himalaya_value(PyObject *self, PyObject *args, PyObject *
         try {
             result = (double )arg0->value();
             
-        }catch (std::exception& e) {
-            PyErr_SetString(PyExc_Exception,e.what());
+        }catch (std::domain_error& de) {
+            PyErr_SetString(PyExc_IndexError,de.what());
+            return NULL;
+        }catch (std::exception& ex) {
+            PyErr_SetString(PyExc_Exception,ex.what());
             return NULL;
         }catch (...) {
             PyErr_SetString(PyExc_Exception,"unknown error");
@@ -8448,8 +10142,11 @@ static PyObject *_wrap_Himalaya_errorEstimate(PyObject *self, PyObject *args, Py
         try {
             result = (double )arg0->errorEstimate();
             
-        }catch (std::exception& e) {
-            PyErr_SetString(PyExc_Exception,e.what());
+        }catch (std::domain_error& de) {
+            PyErr_SetString(PyExc_IndexError,de.what());
+            return NULL;
+        }catch (std::exception& ex) {
+            PyErr_SetString(PyExc_Exception,ex.what());
             return NULL;
         }catch (...) {
             PyErr_SetString(PyExc_Exception,"unknown error");
@@ -8462,9 +10159,10 @@ static PyObject *_wrap_Himalaya_errorEstimate(PyObject *self, PyObject *args, Py
 
 static PyObject *_wrap_new_GaussianArrayGenerator(PyObject *self, PyObject *args, PyObject *kwargs) {
     PyObject *resultobj;
-    PyArray *arg0 ;
+    Array *arg0 ;
     Matrix *arg1 ;
     long arg2 = 0 ;
+    Array temp ;
     PyObject * obj0  = 0 ;
     PyObject * argo1 =0 ;
     char *kwnames[] = {
@@ -8474,40 +10172,28 @@ static PyObject *_wrap_new_GaussianArrayGenerator(PyObject *self, PyObject *args
     
     if(!PyArg_ParseTupleAndKeywords(args,kwargs,"OO|l:new_GaussianArrayGenerator",kwnames,&obj0,&argo1,&arg2)) return NULL;
     {
-        if (PyTuple_Check(obj0)) {
-            int size = PyTuple_Size(obj0);
-            arg0 = new PyArray(size);
+        Array* v;
+        if (PyTuple_Check(obj0) || PyList_Check(obj0)) {
+            int size = (PyTuple_Check(obj0) ? 
+            PyTuple_Size(obj0) :
+            PyList_Size(obj0));
+            temp = Array(size);
+            arg0 = &temp;
             for (int i=0; i<size; i++) {
-                PyObject* o = PyTuple_GetItem(obj0,i);
+                PyObject* o = PySequence_GetItem(obj0,i);
                 if (PyFloat_Check(o)) {
                     (*arg0)[i] = PyFloat_AsDouble(o);
                 }else if (PyInt_Check(o)) {
                     (*arg0)[i] = double(PyInt_AsLong(o));
-                }else if (o == Py_None) {
-                    (*arg0)[i] = Null<double>();
                 }else {
-                    PyErr_SetString(PyExc_TypeError,"tuple must contain doubles");
-                    delete arg0;
+                    PyErr_SetString(PyExc_TypeError,
+                    "sequence must contain doubles");
                     return NULL;
                 }
             }
-        }else if (PyList_Check(obj0)) {
-            int size = PyList_Size(obj0);
-            arg0 = new PyArray(size);
-            for (int i=0; i<size; i++) {
-                PyObject* o = PyList_GetItem(obj0,i);
-                if (PyFloat_Check(o)) {
-                    (*arg0)[i] = PyFloat_AsDouble(o);
-                }else if (PyInt_Check(o)) {
-                    (*arg0)[i] = double(PyInt_AsLong(o));
-                }else if (o == Py_None) {
-                    (*arg0)[i] = Null<double>();
-                }else {
-                    PyErr_SetString(PyExc_TypeError,"list must contain doubles");
-                    delete arg0;
-                    return NULL;
-                }
-            }
+        }else if ((SWIG_ConvertPtr(obj0,(void **) &v,
+        (swig_type_info *)SWIG_TypeQuery("Array *"),0)) != -1) {
+            arg0 = v;
         }else {
             PyErr_SetString(PyExc_TypeError,"not a sequence");
             return NULL;
@@ -8516,19 +10202,19 @@ static PyObject *_wrap_new_GaussianArrayGenerator(PyObject *self, PyObject *args
     if ((SWIG_ConvertPtr(argo1,(void **) &arg1,SWIGTYPE_p_Matrix,1)) == -1) return NULL;
     {
         try {
-            result = (GaussianArrayGenerator *)new GaussianArrayGenerator((PyArray const &)*arg0,(Matrix const &)*arg1,arg2);
+            result = (GaussianArrayGenerator *)new GaussianArrayGenerator((Array const &)*arg0,(Matrix const &)*arg1,arg2);
             
-        }catch (std::exception& e) {
-            PyErr_SetString(PyExc_Exception,e.what());
+        }catch (std::domain_error& de) {
+            PyErr_SetString(PyExc_IndexError,de.what());
+            return NULL;
+        }catch (std::exception& ex) {
+            PyErr_SetString(PyExc_Exception,ex.what());
             return NULL;
         }catch (...) {
             PyErr_SetString(PyExc_Exception,"unknown error");
             return NULL;
         }
     }resultobj = SWIG_NewPointerObj((void *) result, SWIGTYPE_p_GaussianArrayGenerator);
-    {
-        delete arg0;
-    }
     return resultobj;
 }
 
@@ -8540,28 +10226,24 @@ static PyObject *_wrap_GaussianArrayGenerator_next(PyObject *self, PyObject *arg
     char *kwnames[] = {
         "self", NULL 
     };
-    PyArray *result ;
+    Array *result ;
     
     if(!PyArg_ParseTupleAndKeywords(args,kwargs,"O:GaussianArrayGenerator_next",kwnames,&argo0)) return NULL;
     if ((SWIG_ConvertPtr(argo0,(void **) &arg0,SWIGTYPE_p_GaussianArrayGenerator,1)) == -1) return NULL;
     {
         try {
-            result = new PyArray (arg0->next());
-        }catch (std::exception& e) {
-            PyErr_SetString(PyExc_Exception,e.what());
+            result = new Array (arg0->next());
+        }catch (std::domain_error& de) {
+            PyErr_SetString(PyExc_IndexError,de.what());
+            return NULL;
+        }catch (std::exception& ex) {
+            PyErr_SetString(PyExc_Exception,ex.what());
             return NULL;
         }catch (...) {
             PyErr_SetString(PyExc_Exception,"unknown error");
             return NULL;
         }
-    }{
-        resultobj = PyTuple_New(result->size());
-        for (int i=0; i<result->size(); i++)
-        PyTuple_SetItem(resultobj,i,PyFloat_FromDouble((*result)[i]));
-    }
-    {
-        delete result;
-    }
+    }resultobj = SWIG_NewPointerObj((void *)result, SWIGTYPE_p_Array);
     return resultobj;
 }
 
@@ -8581,8 +10263,11 @@ static PyObject *_wrap_GaussianArrayGenerator_weight(PyObject *self, PyObject *a
         try {
             result = (double )arg0->weight();
             
-        }catch (std::exception& e) {
-            PyErr_SetString(PyExc_Exception,e.what());
+        }catch (std::domain_error& de) {
+            PyErr_SetString(PyExc_IndexError,de.what());
+            return NULL;
+        }catch (std::exception& ex) {
+            PyErr_SetString(PyExc_Exception,ex.what());
             return NULL;
         }catch (...) {
             PyErr_SetString(PyExc_Exception,"unknown error");
@@ -8596,10 +10281,11 @@ static PyObject *_wrap_GaussianArrayGenerator_weight(PyObject *self, PyObject *a
 static PyObject *_wrap_new_StandardMultiPathGenerator(PyObject *self, PyObject *args, PyObject *kwargs) {
     PyObject *resultobj;
     DoubleVector *arg0 ;
-    PyArray *arg1 ;
+    Array *arg1 ;
     Matrix *arg2 ;
     long arg3 = 0 ;
     PyObject * obj0  = 0 ;
+    Array temp ;
     PyObject * obj1  = 0 ;
     PyObject * argo2 =0 ;
     char *kwnames[] = {
@@ -8649,40 +10335,28 @@ static PyObject *_wrap_new_StandardMultiPathGenerator(PyObject *self, PyObject *
         }
     }
     {
-        if (PyTuple_Check(obj1)) {
-            int size = PyTuple_Size(obj1);
-            arg1 = new PyArray(size);
+        Array* v;
+        if (PyTuple_Check(obj1) || PyList_Check(obj1)) {
+            int size = (PyTuple_Check(obj1) ? 
+            PyTuple_Size(obj1) :
+            PyList_Size(obj1));
+            temp = Array(size);
+            arg1 = &temp;
             for (int i=0; i<size; i++) {
-                PyObject* o = PyTuple_GetItem(obj1,i);
+                PyObject* o = PySequence_GetItem(obj1,i);
                 if (PyFloat_Check(o)) {
                     (*arg1)[i] = PyFloat_AsDouble(o);
                 }else if (PyInt_Check(o)) {
                     (*arg1)[i] = double(PyInt_AsLong(o));
-                }else if (o == Py_None) {
-                    (*arg1)[i] = Null<double>();
                 }else {
-                    PyErr_SetString(PyExc_TypeError,"tuple must contain doubles");
-                    delete arg1;
+                    PyErr_SetString(PyExc_TypeError,
+                    "sequence must contain doubles");
                     return NULL;
                 }
             }
-        }else if (PyList_Check(obj1)) {
-            int size = PyList_Size(obj1);
-            arg1 = new PyArray(size);
-            for (int i=0; i<size; i++) {
-                PyObject* o = PyList_GetItem(obj1,i);
-                if (PyFloat_Check(o)) {
-                    (*arg1)[i] = PyFloat_AsDouble(o);
-                }else if (PyInt_Check(o)) {
-                    (*arg1)[i] = double(PyInt_AsLong(o));
-                }else if (o == Py_None) {
-                    (*arg1)[i] = Null<double>();
-                }else {
-                    PyErr_SetString(PyExc_TypeError,"list must contain doubles");
-                    delete arg1;
-                    return NULL;
-                }
-            }
+        }else if ((SWIG_ConvertPtr(obj1,(void **) &v,
+        (swig_type_info *)SWIG_TypeQuery("Array *"),0)) != -1) {
+            arg1 = v;
         }else {
             PyErr_SetString(PyExc_TypeError,"not a sequence");
             return NULL;
@@ -8691,10 +10365,13 @@ static PyObject *_wrap_new_StandardMultiPathGenerator(PyObject *self, PyObject *
     if ((SWIG_ConvertPtr(argo2,(void **) &arg2,SWIGTYPE_p_Matrix,1)) == -1) return NULL;
     {
         try {
-            result = (StandardMultiPathGenerator *)new StandardMultiPathGenerator((DoubleVector const &)*arg0,(PyArray const &)*arg1,(Matrix const &)*arg2,arg3);
+            result = (StandardMultiPathGenerator *)new StandardMultiPathGenerator((DoubleVector const &)*arg0,(Array const &)*arg1,(Matrix const &)*arg2,arg3);
             
-        }catch (std::exception& e) {
-            PyErr_SetString(PyExc_Exception,e.what());
+        }catch (std::domain_error& de) {
+            PyErr_SetString(PyExc_IndexError,de.what());
+            return NULL;
+        }catch (std::exception& ex) {
+            PyErr_SetString(PyExc_Exception,ex.what());
             return NULL;
         }catch (...) {
             PyErr_SetString(PyExc_Exception,"unknown error");
@@ -8703,9 +10380,6 @@ static PyObject *_wrap_new_StandardMultiPathGenerator(PyObject *self, PyObject *
     }resultobj = SWIG_NewPointerObj((void *) result, SWIGTYPE_p_StandardMultiPathGenerator);
     {
         delete arg0;
-    }
-    {
-        delete arg1;
     }
     return resultobj;
 }
@@ -8725,8 +10399,11 @@ static PyObject *_wrap_StandardMultiPathGenerator_next(PyObject *self, PyObject 
     {
         try {
             result = new Matrix (arg0->next());
-        }catch (std::exception& e) {
-            PyErr_SetString(PyExc_Exception,e.what());
+        }catch (std::domain_error& de) {
+            PyErr_SetString(PyExc_IndexError,de.what());
+            return NULL;
+        }catch (std::exception& ex) {
+            PyErr_SetString(PyExc_Exception,ex.what());
             return NULL;
         }catch (...) {
             PyErr_SetString(PyExc_Exception,"unknown error");
@@ -8752,8 +10429,11 @@ static PyObject *_wrap_StandardMultiPathGenerator_weight(PyObject *self, PyObjec
         try {
             result = (double )arg0->weight();
             
-        }catch (std::exception& e) {
-            PyErr_SetString(PyExc_Exception,e.what());
+        }catch (std::domain_error& de) {
+            PyErr_SetString(PyExc_IndexError,de.what());
+            return NULL;
+        }catch (std::exception& ex) {
+            PyErr_SetString(PyExc_Exception,ex.what());
             return NULL;
         }catch (...) {
             PyErr_SetString(PyExc_Exception,"unknown error");
@@ -8766,11 +10446,14 @@ static PyObject *_wrap_StandardMultiPathGenerator_weight(PyObject *self, PyObjec
 
 static PyObject *_wrap_new_TridiagonalOperator(PyObject *self, PyObject *args, PyObject *kwargs) {
     PyObject *resultobj;
-    PyArray *arg0 ;
-    PyArray *arg1 ;
-    PyArray *arg2 ;
+    Array *arg0 ;
+    Array *arg1 ;
+    Array *arg2 ;
+    Array temp ;
     PyObject * obj0  = 0 ;
+    Array temp0 ;
     PyObject * obj1  = 0 ;
+    Array temp1 ;
     PyObject * obj2  = 0 ;
     char *kwnames[] = {
         "low","mid","high", NULL 
@@ -8779,120 +10462,84 @@ static PyObject *_wrap_new_TridiagonalOperator(PyObject *self, PyObject *args, P
     
     if(!PyArg_ParseTupleAndKeywords(args,kwargs,"OOO:new_TridiagonalOperator",kwnames,&obj0,&obj1,&obj2)) return NULL;
     {
-        if (PyTuple_Check(obj0)) {
-            int size = PyTuple_Size(obj0);
-            arg0 = new PyArray(size);
+        Array* v;
+        if (PyTuple_Check(obj0) || PyList_Check(obj0)) {
+            int size = (PyTuple_Check(obj0) ? 
+            PyTuple_Size(obj0) :
+            PyList_Size(obj0));
+            temp = Array(size);
+            arg0 = &temp;
             for (int i=0; i<size; i++) {
-                PyObject* o = PyTuple_GetItem(obj0,i);
+                PyObject* o = PySequence_GetItem(obj0,i);
                 if (PyFloat_Check(o)) {
                     (*arg0)[i] = PyFloat_AsDouble(o);
                 }else if (PyInt_Check(o)) {
                     (*arg0)[i] = double(PyInt_AsLong(o));
-                }else if (o == Py_None) {
-                    (*arg0)[i] = Null<double>();
                 }else {
-                    PyErr_SetString(PyExc_TypeError,"tuple must contain doubles");
-                    delete arg0;
+                    PyErr_SetString(PyExc_TypeError,
+                    "sequence must contain doubles");
                     return NULL;
                 }
             }
-        }else if (PyList_Check(obj0)) {
-            int size = PyList_Size(obj0);
-            arg0 = new PyArray(size);
-            for (int i=0; i<size; i++) {
-                PyObject* o = PyList_GetItem(obj0,i);
-                if (PyFloat_Check(o)) {
-                    (*arg0)[i] = PyFloat_AsDouble(o);
-                }else if (PyInt_Check(o)) {
-                    (*arg0)[i] = double(PyInt_AsLong(o));
-                }else if (o == Py_None) {
-                    (*arg0)[i] = Null<double>();
-                }else {
-                    PyErr_SetString(PyExc_TypeError,"list must contain doubles");
-                    delete arg0;
-                    return NULL;
-                }
-            }
+        }else if ((SWIG_ConvertPtr(obj0,(void **) &v,
+        (swig_type_info *)SWIG_TypeQuery("Array *"),0)) != -1) {
+            arg0 = v;
         }else {
             PyErr_SetString(PyExc_TypeError,"not a sequence");
             return NULL;
         }
     }
     {
-        if (PyTuple_Check(obj1)) {
-            int size = PyTuple_Size(obj1);
-            arg1 = new PyArray(size);
+        Array* v;
+        if (PyTuple_Check(obj1) || PyList_Check(obj1)) {
+            int size = (PyTuple_Check(obj1) ? 
+            PyTuple_Size(obj1) :
+            PyList_Size(obj1));
+            temp0 = Array(size);
+            arg1 = &temp0;
             for (int i=0; i<size; i++) {
-                PyObject* o = PyTuple_GetItem(obj1,i);
+                PyObject* o = PySequence_GetItem(obj1,i);
                 if (PyFloat_Check(o)) {
                     (*arg1)[i] = PyFloat_AsDouble(o);
                 }else if (PyInt_Check(o)) {
                     (*arg1)[i] = double(PyInt_AsLong(o));
-                }else if (o == Py_None) {
-                    (*arg1)[i] = Null<double>();
                 }else {
-                    PyErr_SetString(PyExc_TypeError,"tuple must contain doubles");
-                    delete arg1;
+                    PyErr_SetString(PyExc_TypeError,
+                    "sequence must contain doubles");
                     return NULL;
                 }
             }
-        }else if (PyList_Check(obj1)) {
-            int size = PyList_Size(obj1);
-            arg1 = new PyArray(size);
-            for (int i=0; i<size; i++) {
-                PyObject* o = PyList_GetItem(obj1,i);
-                if (PyFloat_Check(o)) {
-                    (*arg1)[i] = PyFloat_AsDouble(o);
-                }else if (PyInt_Check(o)) {
-                    (*arg1)[i] = double(PyInt_AsLong(o));
-                }else if (o == Py_None) {
-                    (*arg1)[i] = Null<double>();
-                }else {
-                    PyErr_SetString(PyExc_TypeError,"list must contain doubles");
-                    delete arg1;
-                    return NULL;
-                }
-            }
+        }else if ((SWIG_ConvertPtr(obj1,(void **) &v,
+        (swig_type_info *)SWIG_TypeQuery("Array *"),0)) != -1) {
+            arg1 = v;
         }else {
             PyErr_SetString(PyExc_TypeError,"not a sequence");
             return NULL;
         }
     }
     {
-        if (PyTuple_Check(obj2)) {
-            int size = PyTuple_Size(obj2);
-            arg2 = new PyArray(size);
+        Array* v;
+        if (PyTuple_Check(obj2) || PyList_Check(obj2)) {
+            int size = (PyTuple_Check(obj2) ? 
+            PyTuple_Size(obj2) :
+            PyList_Size(obj2));
+            temp1 = Array(size);
+            arg2 = &temp1;
             for (int i=0; i<size; i++) {
-                PyObject* o = PyTuple_GetItem(obj2,i);
+                PyObject* o = PySequence_GetItem(obj2,i);
                 if (PyFloat_Check(o)) {
                     (*arg2)[i] = PyFloat_AsDouble(o);
                 }else if (PyInt_Check(o)) {
                     (*arg2)[i] = double(PyInt_AsLong(o));
-                }else if (o == Py_None) {
-                    (*arg2)[i] = Null<double>();
                 }else {
-                    PyErr_SetString(PyExc_TypeError,"tuple must contain doubles");
-                    delete arg2;
+                    PyErr_SetString(PyExc_TypeError,
+                    "sequence must contain doubles");
                     return NULL;
                 }
             }
-        }else if (PyList_Check(obj2)) {
-            int size = PyList_Size(obj2);
-            arg2 = new PyArray(size);
-            for (int i=0; i<size; i++) {
-                PyObject* o = PyList_GetItem(obj2,i);
-                if (PyFloat_Check(o)) {
-                    (*arg2)[i] = PyFloat_AsDouble(o);
-                }else if (PyInt_Check(o)) {
-                    (*arg2)[i] = double(PyInt_AsLong(o));
-                }else if (o == Py_None) {
-                    (*arg2)[i] = Null<double>();
-                }else {
-                    PyErr_SetString(PyExc_TypeError,"list must contain doubles");
-                    delete arg2;
-                    return NULL;
-                }
-            }
+        }else if ((SWIG_ConvertPtr(obj2,(void **) &v,
+        (swig_type_info *)SWIG_TypeQuery("Array *"),0)) != -1) {
+            arg2 = v;
         }else {
             PyErr_SetString(PyExc_TypeError,"not a sequence");
             return NULL;
@@ -8902,23 +10549,17 @@ static PyObject *_wrap_new_TridiagonalOperator(PyObject *self, PyObject *args, P
         try {
             result = (TridiagonalOperator *)new TridiagonalOperator(*arg0,*arg1,*arg2);
             
-        }catch (std::exception& e) {
-            PyErr_SetString(PyExc_Exception,e.what());
+        }catch (std::domain_error& de) {
+            PyErr_SetString(PyExc_IndexError,de.what());
+            return NULL;
+        }catch (std::exception& ex) {
+            PyErr_SetString(PyExc_Exception,ex.what());
             return NULL;
         }catch (...) {
             PyErr_SetString(PyExc_Exception,"unknown error");
             return NULL;
         }
     }resultobj = SWIG_NewPointerObj((void *) result, SWIGTYPE_p_TridiagonalOperator);
-    {
-        delete arg0;
-    }
-    {
-        delete arg1;
-    }
-    {
-        delete arg2;
-    }
     return resultobj;
 }
 
@@ -8937,8 +10578,11 @@ static PyObject *_wrap_delete_TridiagonalOperator(PyObject *self, PyObject *args
         try {
             delete arg0;
             
-        }catch (std::exception& e) {
-            PyErr_SetString(PyExc_Exception,e.what());
+        }catch (std::domain_error& de) {
+            PyErr_SetString(PyExc_IndexError,de.what());
+            return NULL;
+        }catch (std::exception& ex) {
+            PyErr_SetString(PyExc_Exception,ex.what());
             return NULL;
         }catch (...) {
             PyErr_SetString(PyExc_Exception,"unknown error");
@@ -8953,51 +10597,40 @@ static PyObject *_wrap_delete_TridiagonalOperator(PyObject *self, PyObject *args
 static PyObject *_wrap_TridiagonalOperator_solveFor(PyObject *self, PyObject *args, PyObject *kwargs) {
     PyObject *resultobj;
     TridiagonalOperator *arg0 ;
-    PyArray *arg1 ;
+    Array *arg1 ;
     PyObject * argo0 =0 ;
+    Array temp ;
     PyObject * obj1  = 0 ;
     char *kwnames[] = {
         "self","rhs", NULL 
     };
-    PyArray *result ;
+    Array *result ;
     
     if(!PyArg_ParseTupleAndKeywords(args,kwargs,"OO:TridiagonalOperator_solveFor",kwnames,&argo0,&obj1)) return NULL;
     if ((SWIG_ConvertPtr(argo0,(void **) &arg0,SWIGTYPE_p_TridiagonalOperator,1)) == -1) return NULL;
     {
-        if (PyTuple_Check(obj1)) {
-            int size = PyTuple_Size(obj1);
-            arg1 = new PyArray(size);
+        Array* v;
+        if (PyTuple_Check(obj1) || PyList_Check(obj1)) {
+            int size = (PyTuple_Check(obj1) ? 
+            PyTuple_Size(obj1) :
+            PyList_Size(obj1));
+            temp = Array(size);
+            arg1 = &temp;
             for (int i=0; i<size; i++) {
-                PyObject* o = PyTuple_GetItem(obj1,i);
+                PyObject* o = PySequence_GetItem(obj1,i);
                 if (PyFloat_Check(o)) {
                     (*arg1)[i] = PyFloat_AsDouble(o);
                 }else if (PyInt_Check(o)) {
                     (*arg1)[i] = double(PyInt_AsLong(o));
-                }else if (o == Py_None) {
-                    (*arg1)[i] = Null<double>();
                 }else {
-                    PyErr_SetString(PyExc_TypeError,"tuple must contain doubles");
-                    delete arg1;
+                    PyErr_SetString(PyExc_TypeError,
+                    "sequence must contain doubles");
                     return NULL;
                 }
             }
-        }else if (PyList_Check(obj1)) {
-            int size = PyList_Size(obj1);
-            arg1 = new PyArray(size);
-            for (int i=0; i<size; i++) {
-                PyObject* o = PyList_GetItem(obj1,i);
-                if (PyFloat_Check(o)) {
-                    (*arg1)[i] = PyFloat_AsDouble(o);
-                }else if (PyInt_Check(o)) {
-                    (*arg1)[i] = double(PyInt_AsLong(o));
-                }else if (o == Py_None) {
-                    (*arg1)[i] = Null<double>();
-                }else {
-                    PyErr_SetString(PyExc_TypeError,"list must contain doubles");
-                    delete arg1;
-                    return NULL;
-                }
-            }
+        }else if ((SWIG_ConvertPtr(obj1,(void **) &v,
+        (swig_type_info *)SWIG_TypeQuery("Array *"),0)) != -1) {
+            arg1 = v;
         }else {
             PyErr_SetString(PyExc_TypeError,"not a sequence");
             return NULL;
@@ -9005,25 +10638,18 @@ static PyObject *_wrap_TridiagonalOperator_solveFor(PyObject *self, PyObject *ar
     }
     {
         try {
-            result = new PyArray (arg0->solveFor(*arg1));
-        }catch (std::exception& e) {
-            PyErr_SetString(PyExc_Exception,e.what());
+            result = new Array (arg0->solveFor((Array const &)*arg1));
+        }catch (std::domain_error& de) {
+            PyErr_SetString(PyExc_IndexError,de.what());
+            return NULL;
+        }catch (std::exception& ex) {
+            PyErr_SetString(PyExc_Exception,ex.what());
             return NULL;
         }catch (...) {
             PyErr_SetString(PyExc_Exception,"unknown error");
             return NULL;
         }
-    }{
-        resultobj = PyTuple_New(result->size());
-        for (int i=0; i<result->size(); i++)
-        PyTuple_SetItem(resultobj,i,PyFloat_FromDouble((*result)[i]));
-    }
-    {
-        delete arg1;
-    }
-    {
-        delete result;
-    }
+    }resultobj = SWIG_NewPointerObj((void *)result, SWIGTYPE_p_Array);
     return resultobj;
 }
 
@@ -9031,51 +10657,40 @@ static PyObject *_wrap_TridiagonalOperator_solveFor(PyObject *self, PyObject *ar
 static PyObject *_wrap_TridiagonalOperator_applyTo(PyObject *self, PyObject *args, PyObject *kwargs) {
     PyObject *resultobj;
     TridiagonalOperator *arg0 ;
-    PyArray *arg1 ;
+    Array *arg1 ;
     PyObject * argo0 =0 ;
+    Array temp ;
     PyObject * obj1  = 0 ;
     char *kwnames[] = {
         "self","v", NULL 
     };
-    PyArray *result ;
+    Array *result ;
     
     if(!PyArg_ParseTupleAndKeywords(args,kwargs,"OO:TridiagonalOperator_applyTo",kwnames,&argo0,&obj1)) return NULL;
     if ((SWIG_ConvertPtr(argo0,(void **) &arg0,SWIGTYPE_p_TridiagonalOperator,1)) == -1) return NULL;
     {
-        if (PyTuple_Check(obj1)) {
-            int size = PyTuple_Size(obj1);
-            arg1 = new PyArray(size);
+        Array* v;
+        if (PyTuple_Check(obj1) || PyList_Check(obj1)) {
+            int size = (PyTuple_Check(obj1) ? 
+            PyTuple_Size(obj1) :
+            PyList_Size(obj1));
+            temp = Array(size);
+            arg1 = &temp;
             for (int i=0; i<size; i++) {
-                PyObject* o = PyTuple_GetItem(obj1,i);
+                PyObject* o = PySequence_GetItem(obj1,i);
                 if (PyFloat_Check(o)) {
                     (*arg1)[i] = PyFloat_AsDouble(o);
                 }else if (PyInt_Check(o)) {
                     (*arg1)[i] = double(PyInt_AsLong(o));
-                }else if (o == Py_None) {
-                    (*arg1)[i] = Null<double>();
                 }else {
-                    PyErr_SetString(PyExc_TypeError,"tuple must contain doubles");
-                    delete arg1;
+                    PyErr_SetString(PyExc_TypeError,
+                    "sequence must contain doubles");
                     return NULL;
                 }
             }
-        }else if (PyList_Check(obj1)) {
-            int size = PyList_Size(obj1);
-            arg1 = new PyArray(size);
-            for (int i=0; i<size; i++) {
-                PyObject* o = PyList_GetItem(obj1,i);
-                if (PyFloat_Check(o)) {
-                    (*arg1)[i] = PyFloat_AsDouble(o);
-                }else if (PyInt_Check(o)) {
-                    (*arg1)[i] = double(PyInt_AsLong(o));
-                }else if (o == Py_None) {
-                    (*arg1)[i] = Null<double>();
-                }else {
-                    PyErr_SetString(PyExc_TypeError,"list must contain doubles");
-                    delete arg1;
-                    return NULL;
-                }
-            }
+        }else if ((SWIG_ConvertPtr(obj1,(void **) &v,
+        (swig_type_info *)SWIG_TypeQuery("Array *"),0)) != -1) {
+            arg1 = v;
         }else {
             PyErr_SetString(PyExc_TypeError,"not a sequence");
             return NULL;
@@ -9083,25 +10698,18 @@ static PyObject *_wrap_TridiagonalOperator_applyTo(PyObject *self, PyObject *arg
     }
     {
         try {
-            result = new PyArray (arg0->applyTo(*arg1));
-        }catch (std::exception& e) {
-            PyErr_SetString(PyExc_Exception,e.what());
+            result = new Array (arg0->applyTo((Array const &)*arg1));
+        }catch (std::domain_error& de) {
+            PyErr_SetString(PyExc_IndexError,de.what());
+            return NULL;
+        }catch (std::exception& ex) {
+            PyErr_SetString(PyExc_Exception,ex.what());
             return NULL;
         }catch (...) {
             PyErr_SetString(PyExc_Exception,"unknown error");
             return NULL;
         }
-    }{
-        resultobj = PyTuple_New(result->size());
-        for (int i=0; i<result->size(); i++)
-        PyTuple_SetItem(resultobj,i,PyFloat_FromDouble((*result)[i]));
-    }
-    {
-        delete arg1;
-    }
-    {
-        delete result;
-    }
+    }resultobj = SWIG_NewPointerObj((void *)result, SWIGTYPE_p_Array);
     return resultobj;
 }
 
@@ -9121,8 +10729,11 @@ static PyObject *_wrap_TridiagonalOperator_size(PyObject *self, PyObject *args, 
         try {
             result = (int )arg0->size();
             
-        }catch (std::exception& e) {
-            PyErr_SetString(PyExc_Exception,e.what());
+        }catch (std::domain_error& de) {
+            PyErr_SetString(PyExc_IndexError,de.what());
+            return NULL;
+        }catch (std::exception& ex) {
+            PyErr_SetString(PyExc_Exception,ex.what());
             return NULL;
         }catch (...) {
             PyErr_SetString(PyExc_Exception,"unknown error");
@@ -9150,8 +10761,11 @@ static PyObject *_wrap_TridiagonalOperator_setLowerBC(PyObject *self, PyObject *
         try {
             arg0->setLowerBC(*arg1);
             
-        }catch (std::exception& e) {
-            PyErr_SetString(PyExc_Exception,e.what());
+        }catch (std::domain_error& de) {
+            PyErr_SetString(PyExc_IndexError,de.what());
+            return NULL;
+        }catch (std::exception& ex) {
+            PyErr_SetString(PyExc_Exception,ex.what());
             return NULL;
         }catch (...) {
             PyErr_SetString(PyExc_Exception,"unknown error");
@@ -9180,8 +10794,11 @@ static PyObject *_wrap_TridiagonalOperator_setHigherBC(PyObject *self, PyObject 
         try {
             arg0->setHigherBC(*arg1);
             
-        }catch (std::exception& e) {
-            PyErr_SetString(PyExc_Exception,e.what());
+        }catch (std::domain_error& de) {
+            PyErr_SetString(PyExc_IndexError,de.what());
+            return NULL;
+        }catch (std::exception& ex) {
+            PyErr_SetString(PyExc_Exception,ex.what());
             return NULL;
         }catch (...) {
             PyErr_SetString(PyExc_Exception,"unknown error");
@@ -9209,8 +10826,11 @@ static PyObject *_wrap_TridiagonalOperator_setFirstRow(PyObject *self, PyObject 
         try {
             arg0->setFirstRow(arg1,arg2);
             
-        }catch (std::exception& e) {
-            PyErr_SetString(PyExc_Exception,e.what());
+        }catch (std::domain_error& de) {
+            PyErr_SetString(PyExc_IndexError,de.what());
+            return NULL;
+        }catch (std::exception& ex) {
+            PyErr_SetString(PyExc_Exception,ex.what());
             return NULL;
         }catch (...) {
             PyErr_SetString(PyExc_Exception,"unknown error");
@@ -9240,8 +10860,11 @@ static PyObject *_wrap_TridiagonalOperator_setMidRow(PyObject *self, PyObject *a
         try {
             arg0->setMidRow(arg1,arg2,arg3,arg4);
             
-        }catch (std::exception& e) {
-            PyErr_SetString(PyExc_Exception,e.what());
+        }catch (std::domain_error& de) {
+            PyErr_SetString(PyExc_IndexError,de.what());
+            return NULL;
+        }catch (std::exception& ex) {
+            PyErr_SetString(PyExc_Exception,ex.what());
             return NULL;
         }catch (...) {
             PyErr_SetString(PyExc_Exception,"unknown error");
@@ -9270,8 +10893,11 @@ static PyObject *_wrap_TridiagonalOperator_setMidRows(PyObject *self, PyObject *
         try {
             arg0->setMidRows(arg1,arg2,arg3);
             
-        }catch (std::exception& e) {
-            PyErr_SetString(PyExc_Exception,e.what());
+        }catch (std::domain_error& de) {
+            PyErr_SetString(PyExc_IndexError,de.what());
+            return NULL;
+        }catch (std::exception& ex) {
+            PyErr_SetString(PyExc_Exception,ex.what());
             return NULL;
         }catch (...) {
             PyErr_SetString(PyExc_Exception,"unknown error");
@@ -9299,8 +10925,11 @@ static PyObject *_wrap_TridiagonalOperator_setLastRow(PyObject *self, PyObject *
         try {
             arg0->setLastRow(arg1,arg2);
             
-        }catch (std::exception& e) {
-            PyErr_SetString(PyExc_Exception,e.what());
+        }catch (std::domain_error& de) {
+            PyErr_SetString(PyExc_IndexError,de.what());
+            return NULL;
+        }catch (std::exception& ex) {
+            PyErr_SetString(PyExc_Exception,ex.what());
             return NULL;
         }catch (...) {
             PyErr_SetString(PyExc_Exception,"unknown error");
@@ -9336,8 +10965,11 @@ static PyObject *_wrap_TridiagonalOperator___add__(PyObject *self, PyObject *arg
     {
         try {
             result = new TridiagonalOperator (TridiagonalOperator___add__(arg0,(TridiagonalOperator const &)*arg1));
-        }catch (std::exception& e) {
-            PyErr_SetString(PyExc_Exception,e.what());
+        }catch (std::domain_error& de) {
+            PyErr_SetString(PyExc_IndexError,de.what());
+            return NULL;
+        }catch (std::exception& ex) {
+            PyErr_SetString(PyExc_Exception,ex.what());
             return NULL;
         }catch (...) {
             PyErr_SetString(PyExc_Exception,"unknown error");
@@ -9372,8 +11004,11 @@ static PyObject *_wrap_TridiagonalOperator___sub__(PyObject *self, PyObject *arg
     {
         try {
             result = new TridiagonalOperator (TridiagonalOperator___sub__(arg0,(TridiagonalOperator const &)*arg1));
-        }catch (std::exception& e) {
-            PyErr_SetString(PyExc_Exception,e.what());
+        }catch (std::domain_error& de) {
+            PyErr_SetString(PyExc_IndexError,de.what());
+            return NULL;
+        }catch (std::exception& ex) {
+            PyErr_SetString(PyExc_Exception,ex.what());
             return NULL;
         }catch (...) {
             PyErr_SetString(PyExc_Exception,"unknown error");
@@ -9406,8 +11041,11 @@ static PyObject *_wrap_TridiagonalOperator___mul__(PyObject *self, PyObject *arg
     {
         try {
             result = new TridiagonalOperator (TridiagonalOperator___mul__(arg0,arg1));
-        }catch (std::exception& e) {
-            PyErr_SetString(PyExc_Exception,e.what());
+        }catch (std::domain_error& de) {
+            PyErr_SetString(PyExc_IndexError,de.what());
+            return NULL;
+        }catch (std::exception& ex) {
+            PyErr_SetString(PyExc_Exception,ex.what());
             return NULL;
         }catch (...) {
             PyErr_SetString(PyExc_Exception,"unknown error");
@@ -9440,8 +11078,11 @@ static PyObject *_wrap_TridiagonalOperator___rmul__(PyObject *self, PyObject *ar
     {
         try {
             result = new TridiagonalOperator (TridiagonalOperator___rmul__(arg0,arg1));
-        }catch (std::exception& e) {
-            PyErr_SetString(PyExc_Exception,e.what());
+        }catch (std::domain_error& de) {
+            PyErr_SetString(PyExc_IndexError,de.what());
+            return NULL;
+        }catch (std::exception& ex) {
+            PyErr_SetString(PyExc_Exception,ex.what());
             return NULL;
         }catch (...) {
             PyErr_SetString(PyExc_Exception,"unknown error");
@@ -9474,8 +11115,11 @@ static PyObject *_wrap_TridiagonalOperator___div__(PyObject *self, PyObject *arg
     {
         try {
             result = new TridiagonalOperator (TridiagonalOperator___div__(arg0,arg1));
-        }catch (std::exception& e) {
-            PyErr_SetString(PyExc_Exception,e.what());
+        }catch (std::domain_error& de) {
+            PyErr_SetString(PyExc_IndexError,de.what());
+            return NULL;
+        }catch (std::exception& ex) {
+            PyErr_SetString(PyExc_Exception,ex.what());
             return NULL;
         }catch (...) {
             PyErr_SetString(PyExc_Exception,"unknown error");
@@ -9500,8 +11144,11 @@ static PyObject *_wrap_new_DPlus(PyObject *self, PyObject *args, PyObject *kwarg
         try {
             result = (DPlus *)new DPlus(arg0,arg1);
             
-        }catch (std::exception& e) {
-            PyErr_SetString(PyExc_Exception,e.what());
+        }catch (std::domain_error& de) {
+            PyErr_SetString(PyExc_IndexError,de.what());
+            return NULL;
+        }catch (std::exception& ex) {
+            PyErr_SetString(PyExc_Exception,ex.what());
             return NULL;
         }catch (...) {
             PyErr_SetString(PyExc_Exception,"unknown error");
@@ -9526,8 +11173,11 @@ static PyObject *_wrap_delete_DPlus(PyObject *self, PyObject *args, PyObject *kw
         try {
             delete arg0;
             
-        }catch (std::exception& e) {
-            PyErr_SetString(PyExc_Exception,e.what());
+        }catch (std::domain_error& de) {
+            PyErr_SetString(PyExc_IndexError,de.what());
+            return NULL;
+        }catch (std::exception& ex) {
+            PyErr_SetString(PyExc_Exception,ex.what());
             return NULL;
         }catch (...) {
             PyErr_SetString(PyExc_Exception,"unknown error");
@@ -9553,8 +11203,11 @@ static PyObject *_wrap_new_DMinus(PyObject *self, PyObject *args, PyObject *kwar
         try {
             result = (DMinus *)new DMinus(arg0,arg1);
             
-        }catch (std::exception& e) {
-            PyErr_SetString(PyExc_Exception,e.what());
+        }catch (std::domain_error& de) {
+            PyErr_SetString(PyExc_IndexError,de.what());
+            return NULL;
+        }catch (std::exception& ex) {
+            PyErr_SetString(PyExc_Exception,ex.what());
             return NULL;
         }catch (...) {
             PyErr_SetString(PyExc_Exception,"unknown error");
@@ -9579,8 +11232,11 @@ static PyObject *_wrap_delete_DMinus(PyObject *self, PyObject *args, PyObject *k
         try {
             delete arg0;
             
-        }catch (std::exception& e) {
-            PyErr_SetString(PyExc_Exception,e.what());
+        }catch (std::domain_error& de) {
+            PyErr_SetString(PyExc_IndexError,de.what());
+            return NULL;
+        }catch (std::exception& ex) {
+            PyErr_SetString(PyExc_Exception,ex.what());
             return NULL;
         }catch (...) {
             PyErr_SetString(PyExc_Exception,"unknown error");
@@ -9606,8 +11262,11 @@ static PyObject *_wrap_new_DZero(PyObject *self, PyObject *args, PyObject *kwarg
         try {
             result = (DZero *)new DZero(arg0,arg1);
             
-        }catch (std::exception& e) {
-            PyErr_SetString(PyExc_Exception,e.what());
+        }catch (std::domain_error& de) {
+            PyErr_SetString(PyExc_IndexError,de.what());
+            return NULL;
+        }catch (std::exception& ex) {
+            PyErr_SetString(PyExc_Exception,ex.what());
             return NULL;
         }catch (...) {
             PyErr_SetString(PyExc_Exception,"unknown error");
@@ -9632,8 +11291,11 @@ static PyObject *_wrap_delete_DZero(PyObject *self, PyObject *args, PyObject *kw
         try {
             delete arg0;
             
-        }catch (std::exception& e) {
-            PyErr_SetString(PyExc_Exception,e.what());
+        }catch (std::domain_error& de) {
+            PyErr_SetString(PyExc_IndexError,de.what());
+            return NULL;
+        }catch (std::exception& ex) {
+            PyErr_SetString(PyExc_Exception,ex.what());
             return NULL;
         }catch (...) {
             PyErr_SetString(PyExc_Exception,"unknown error");
@@ -9659,8 +11321,11 @@ static PyObject *_wrap_new_DPlusDMinus(PyObject *self, PyObject *args, PyObject 
         try {
             result = (DPlusDMinus *)new DPlusDMinus(arg0,arg1);
             
-        }catch (std::exception& e) {
-            PyErr_SetString(PyExc_Exception,e.what());
+        }catch (std::domain_error& de) {
+            PyErr_SetString(PyExc_IndexError,de.what());
+            return NULL;
+        }catch (std::exception& ex) {
+            PyErr_SetString(PyExc_Exception,ex.what());
             return NULL;
         }catch (...) {
             PyErr_SetString(PyExc_Exception,"unknown error");
@@ -9685,8 +11350,11 @@ static PyObject *_wrap_delete_DPlusDMinus(PyObject *self, PyObject *args, PyObje
         try {
             delete arg0;
             
-        }catch (std::exception& e) {
-            PyErr_SetString(PyExc_Exception,e.what());
+        }catch (std::domain_error& de) {
+            PyErr_SetString(PyExc_IndexError,de.what());
+            return NULL;
+        }catch (std::exception& ex) {
+            PyErr_SetString(PyExc_Exception,ex.what());
             return NULL;
         }catch (...) {
             PyErr_SetString(PyExc_Exception,"unknown error");
@@ -9736,8 +11404,11 @@ static PyObject *_wrap_new_BSMEuropeanOption(PyObject *self, PyObject *args, PyO
         try {
             result = (BSMEuropeanOption *)new BSMEuropeanOption(*arg0,arg1,arg2,arg3,arg4,arg5,arg6);
             
-        }catch (std::exception& e) {
-            PyErr_SetString(PyExc_Exception,e.what());
+        }catch (std::domain_error& de) {
+            PyErr_SetString(PyExc_IndexError,de.what());
+            return NULL;
+        }catch (std::exception& ex) {
+            PyErr_SetString(PyExc_Exception,ex.what());
             return NULL;
         }catch (...) {
             PyErr_SetString(PyExc_Exception,"unknown error");
@@ -9765,8 +11436,11 @@ static PyObject *_wrap_delete_BSMEuropeanOption(PyObject *self, PyObject *args, 
         try {
             delete arg0;
             
-        }catch (std::exception& e) {
-            PyErr_SetString(PyExc_Exception,e.what());
+        }catch (std::domain_error& de) {
+            PyErr_SetString(PyExc_IndexError,de.what());
+            return NULL;
+        }catch (std::exception& ex) {
+            PyErr_SetString(PyExc_Exception,ex.what());
             return NULL;
         }catch (...) {
             PyErr_SetString(PyExc_Exception,"unknown error");
@@ -9793,8 +11467,11 @@ static PyObject *_wrap_BSMEuropeanOption_setVolatility(PyObject *self, PyObject 
         try {
             arg0->setVolatility(arg1);
             
-        }catch (std::exception& e) {
-            PyErr_SetString(PyExc_Exception,e.what());
+        }catch (std::domain_error& de) {
+            PyErr_SetString(PyExc_IndexError,de.what());
+            return NULL;
+        }catch (std::exception& ex) {
+            PyErr_SetString(PyExc_Exception,ex.what());
             return NULL;
         }catch (...) {
             PyErr_SetString(PyExc_Exception,"unknown error");
@@ -9821,8 +11498,11 @@ static PyObject *_wrap_BSMEuropeanOption_setRiskFreeRate(PyObject *self, PyObjec
         try {
             arg0->setRiskFreeRate(arg1);
             
-        }catch (std::exception& e) {
-            PyErr_SetString(PyExc_Exception,e.what());
+        }catch (std::domain_error& de) {
+            PyErr_SetString(PyExc_IndexError,de.what());
+            return NULL;
+        }catch (std::exception& ex) {
+            PyErr_SetString(PyExc_Exception,ex.what());
             return NULL;
         }catch (...) {
             PyErr_SetString(PyExc_Exception,"unknown error");
@@ -9849,8 +11529,11 @@ static PyObject *_wrap_BSMEuropeanOption_value(PyObject *self, PyObject *args, P
         try {
             result = (double )arg0->value();
             
-        }catch (std::exception& e) {
-            PyErr_SetString(PyExc_Exception,e.what());
+        }catch (std::domain_error& de) {
+            PyErr_SetString(PyExc_IndexError,de.what());
+            return NULL;
+        }catch (std::exception& ex) {
+            PyErr_SetString(PyExc_Exception,ex.what());
             return NULL;
         }catch (...) {
             PyErr_SetString(PyExc_Exception,"unknown error");
@@ -9876,8 +11559,11 @@ static PyObject *_wrap_BSMEuropeanOption_delta(PyObject *self, PyObject *args, P
         try {
             result = (double )arg0->delta();
             
-        }catch (std::exception& e) {
-            PyErr_SetString(PyExc_Exception,e.what());
+        }catch (std::domain_error& de) {
+            PyErr_SetString(PyExc_IndexError,de.what());
+            return NULL;
+        }catch (std::exception& ex) {
+            PyErr_SetString(PyExc_Exception,ex.what());
             return NULL;
         }catch (...) {
             PyErr_SetString(PyExc_Exception,"unknown error");
@@ -9903,8 +11589,11 @@ static PyObject *_wrap_BSMEuropeanOption_gamma(PyObject *self, PyObject *args, P
         try {
             result = (double )arg0->gamma();
             
-        }catch (std::exception& e) {
-            PyErr_SetString(PyExc_Exception,e.what());
+        }catch (std::domain_error& de) {
+            PyErr_SetString(PyExc_IndexError,de.what());
+            return NULL;
+        }catch (std::exception& ex) {
+            PyErr_SetString(PyExc_Exception,ex.what());
             return NULL;
         }catch (...) {
             PyErr_SetString(PyExc_Exception,"unknown error");
@@ -9930,8 +11619,11 @@ static PyObject *_wrap_BSMEuropeanOption_theta(PyObject *self, PyObject *args, P
         try {
             result = (double )arg0->theta();
             
-        }catch (std::exception& e) {
-            PyErr_SetString(PyExc_Exception,e.what());
+        }catch (std::domain_error& de) {
+            PyErr_SetString(PyExc_IndexError,de.what());
+            return NULL;
+        }catch (std::exception& ex) {
+            PyErr_SetString(PyExc_Exception,ex.what());
             return NULL;
         }catch (...) {
             PyErr_SetString(PyExc_Exception,"unknown error");
@@ -9957,8 +11649,11 @@ static PyObject *_wrap_BSMEuropeanOption_vega(PyObject *self, PyObject *args, Py
         try {
             result = (double )arg0->vega();
             
-        }catch (std::exception& e) {
-            PyErr_SetString(PyExc_Exception,e.what());
+        }catch (std::domain_error& de) {
+            PyErr_SetString(PyExc_IndexError,de.what());
+            return NULL;
+        }catch (std::exception& ex) {
+            PyErr_SetString(PyExc_Exception,ex.what());
             return NULL;
         }catch (...) {
             PyErr_SetString(PyExc_Exception,"unknown error");
@@ -9984,8 +11679,11 @@ static PyObject *_wrap_BSMEuropeanOption_rho(PyObject *self, PyObject *args, PyO
         try {
             result = (double )arg0->rho();
             
-        }catch (std::exception& e) {
-            PyErr_SetString(PyExc_Exception,e.what());
+        }catch (std::domain_error& de) {
+            PyErr_SetString(PyExc_IndexError,de.what());
+            return NULL;
+        }catch (std::exception& ex) {
+            PyErr_SetString(PyExc_Exception,ex.what());
             return NULL;
         }catch (...) {
             PyErr_SetString(PyExc_Exception,"unknown error");
@@ -10014,8 +11712,11 @@ static PyObject *_wrap_BSMEuropeanOption_impliedVolatility(PyObject *self, PyObj
         try {
             result = (double )arg0->impliedVolatility(arg1,arg2,arg3);
             
-        }catch (std::exception& e) {
-            PyErr_SetString(PyExc_Exception,e.what());
+        }catch (std::domain_error& de) {
+            PyErr_SetString(PyExc_IndexError,de.what());
+            return NULL;
+        }catch (std::exception& ex) {
+            PyErr_SetString(PyExc_Exception,ex.what());
             return NULL;
         }catch (...) {
             PyErr_SetString(PyExc_Exception,"unknown error");
@@ -10066,8 +11767,11 @@ static PyObject *_wrap_new_BSMAmericanOption(PyObject *self, PyObject *args, PyO
         try {
             result = (BSMAmericanOption *)new BSMAmericanOption(*arg0,arg1,arg2,arg3,arg4,arg5,arg6,arg7,arg8);
             
-        }catch (std::exception& e) {
-            PyErr_SetString(PyExc_Exception,e.what());
+        }catch (std::domain_error& de) {
+            PyErr_SetString(PyExc_IndexError,de.what());
+            return NULL;
+        }catch (std::exception& ex) {
+            PyErr_SetString(PyExc_Exception,ex.what());
             return NULL;
         }catch (...) {
             PyErr_SetString(PyExc_Exception,"unknown error");
@@ -10095,8 +11799,11 @@ static PyObject *_wrap_delete_BSMAmericanOption(PyObject *self, PyObject *args, 
         try {
             delete arg0;
             
-        }catch (std::exception& e) {
-            PyErr_SetString(PyExc_Exception,e.what());
+        }catch (std::domain_error& de) {
+            PyErr_SetString(PyExc_IndexError,de.what());
+            return NULL;
+        }catch (std::exception& ex) {
+            PyErr_SetString(PyExc_Exception,ex.what());
             return NULL;
         }catch (...) {
             PyErr_SetString(PyExc_Exception,"unknown error");
@@ -10123,8 +11830,11 @@ static PyObject *_wrap_BSMAmericanOption_setVolatility(PyObject *self, PyObject 
         try {
             arg0->setVolatility(arg1);
             
-        }catch (std::exception& e) {
-            PyErr_SetString(PyExc_Exception,e.what());
+        }catch (std::domain_error& de) {
+            PyErr_SetString(PyExc_IndexError,de.what());
+            return NULL;
+        }catch (std::exception& ex) {
+            PyErr_SetString(PyExc_Exception,ex.what());
             return NULL;
         }catch (...) {
             PyErr_SetString(PyExc_Exception,"unknown error");
@@ -10151,8 +11861,11 @@ static PyObject *_wrap_BSMAmericanOption_setRiskFreeRate(PyObject *self, PyObjec
         try {
             arg0->setRiskFreeRate(arg1);
             
-        }catch (std::exception& e) {
-            PyErr_SetString(PyExc_Exception,e.what());
+        }catch (std::domain_error& de) {
+            PyErr_SetString(PyExc_IndexError,de.what());
+            return NULL;
+        }catch (std::exception& ex) {
+            PyErr_SetString(PyExc_Exception,ex.what());
             return NULL;
         }catch (...) {
             PyErr_SetString(PyExc_Exception,"unknown error");
@@ -10179,8 +11892,11 @@ static PyObject *_wrap_BSMAmericanOption_value(PyObject *self, PyObject *args, P
         try {
             result = (double )arg0->value();
             
-        }catch (std::exception& e) {
-            PyErr_SetString(PyExc_Exception,e.what());
+        }catch (std::domain_error& de) {
+            PyErr_SetString(PyExc_IndexError,de.what());
+            return NULL;
+        }catch (std::exception& ex) {
+            PyErr_SetString(PyExc_Exception,ex.what());
             return NULL;
         }catch (...) {
             PyErr_SetString(PyExc_Exception,"unknown error");
@@ -10206,8 +11922,11 @@ static PyObject *_wrap_BSMAmericanOption_delta(PyObject *self, PyObject *args, P
         try {
             result = (double )arg0->delta();
             
-        }catch (std::exception& e) {
-            PyErr_SetString(PyExc_Exception,e.what());
+        }catch (std::domain_error& de) {
+            PyErr_SetString(PyExc_IndexError,de.what());
+            return NULL;
+        }catch (std::exception& ex) {
+            PyErr_SetString(PyExc_Exception,ex.what());
             return NULL;
         }catch (...) {
             PyErr_SetString(PyExc_Exception,"unknown error");
@@ -10233,8 +11952,11 @@ static PyObject *_wrap_BSMAmericanOption_gamma(PyObject *self, PyObject *args, P
         try {
             result = (double )arg0->gamma();
             
-        }catch (std::exception& e) {
-            PyErr_SetString(PyExc_Exception,e.what());
+        }catch (std::domain_error& de) {
+            PyErr_SetString(PyExc_IndexError,de.what());
+            return NULL;
+        }catch (std::exception& ex) {
+            PyErr_SetString(PyExc_Exception,ex.what());
             return NULL;
         }catch (...) {
             PyErr_SetString(PyExc_Exception,"unknown error");
@@ -10260,8 +11982,11 @@ static PyObject *_wrap_BSMAmericanOption_theta(PyObject *self, PyObject *args, P
         try {
             result = (double )arg0->theta();
             
-        }catch (std::exception& e) {
-            PyErr_SetString(PyExc_Exception,e.what());
+        }catch (std::domain_error& de) {
+            PyErr_SetString(PyExc_IndexError,de.what());
+            return NULL;
+        }catch (std::exception& ex) {
+            PyErr_SetString(PyExc_Exception,ex.what());
             return NULL;
         }catch (...) {
             PyErr_SetString(PyExc_Exception,"unknown error");
@@ -10287,8 +12012,11 @@ static PyObject *_wrap_BSMAmericanOption_vega(PyObject *self, PyObject *args, Py
         try {
             result = (double )arg0->vega();
             
-        }catch (std::exception& e) {
-            PyErr_SetString(PyExc_Exception,e.what());
+        }catch (std::domain_error& de) {
+            PyErr_SetString(PyExc_IndexError,de.what());
+            return NULL;
+        }catch (std::exception& ex) {
+            PyErr_SetString(PyExc_Exception,ex.what());
             return NULL;
         }catch (...) {
             PyErr_SetString(PyExc_Exception,"unknown error");
@@ -10314,8 +12042,11 @@ static PyObject *_wrap_BSMAmericanOption_rho(PyObject *self, PyObject *args, PyO
         try {
             result = (double )arg0->rho();
             
-        }catch (std::exception& e) {
-            PyErr_SetString(PyExc_Exception,e.what());
+        }catch (std::domain_error& de) {
+            PyErr_SetString(PyExc_IndexError,de.what());
+            return NULL;
+        }catch (std::exception& ex) {
+            PyErr_SetString(PyExc_Exception,ex.what());
             return NULL;
         }catch (...) {
             PyErr_SetString(PyExc_Exception,"unknown error");
@@ -10344,8 +12075,11 @@ static PyObject *_wrap_BSMAmericanOption_impliedVolatility(PyObject *self, PyObj
         try {
             result = (double )arg0->impliedVolatility(arg1,arg2,arg3);
             
-        }catch (std::exception& e) {
-            PyErr_SetString(PyExc_Exception,e.what());
+        }catch (std::domain_error& de) {
+            PyErr_SetString(PyExc_IndexError,de.what());
+            return NULL;
+        }catch (std::exception& ex) {
+            PyErr_SetString(PyExc_Exception,ex.what());
             return NULL;
         }catch (...) {
             PyErr_SetString(PyExc_Exception,"unknown error");
@@ -10480,8 +12214,11 @@ static PyObject *_wrap_new_DividendAmericanOption(PyObject *self, PyObject *args
         try {
             result = (DividendAmericanOption *)new DividendAmericanOption(*arg0,arg1,arg2,arg3,arg4,arg5,arg6,*arg7,*arg8,arg9,arg10);
             
-        }catch (std::exception& e) {
-            PyErr_SetString(PyExc_Exception,e.what());
+        }catch (std::domain_error& de) {
+            PyErr_SetString(PyExc_IndexError,de.what());
+            return NULL;
+        }catch (std::exception& ex) {
+            PyErr_SetString(PyExc_Exception,ex.what());
             return NULL;
         }catch (...) {
             PyErr_SetString(PyExc_Exception,"unknown error");
@@ -10515,8 +12252,11 @@ static PyObject *_wrap_delete_DividendAmericanOption(PyObject *self, PyObject *a
         try {
             delete arg0;
             
-        }catch (std::exception& e) {
-            PyErr_SetString(PyExc_Exception,e.what());
+        }catch (std::domain_error& de) {
+            PyErr_SetString(PyExc_IndexError,de.what());
+            return NULL;
+        }catch (std::exception& ex) {
+            PyErr_SetString(PyExc_Exception,ex.what());
             return NULL;
         }catch (...) {
             PyErr_SetString(PyExc_Exception,"unknown error");
@@ -10543,8 +12283,11 @@ static PyObject *_wrap_DividendAmericanOption_value(PyObject *self, PyObject *ar
         try {
             result = (double )arg0->value();
             
-        }catch (std::exception& e) {
-            PyErr_SetString(PyExc_Exception,e.what());
+        }catch (std::domain_error& de) {
+            PyErr_SetString(PyExc_IndexError,de.what());
+            return NULL;
+        }catch (std::exception& ex) {
+            PyErr_SetString(PyExc_Exception,ex.what());
             return NULL;
         }catch (...) {
             PyErr_SetString(PyExc_Exception,"unknown error");
@@ -10570,8 +12313,11 @@ static PyObject *_wrap_DividendAmericanOption_delta(PyObject *self, PyObject *ar
         try {
             result = (double )arg0->delta();
             
-        }catch (std::exception& e) {
-            PyErr_SetString(PyExc_Exception,e.what());
+        }catch (std::domain_error& de) {
+            PyErr_SetString(PyExc_IndexError,de.what());
+            return NULL;
+        }catch (std::exception& ex) {
+            PyErr_SetString(PyExc_Exception,ex.what());
             return NULL;
         }catch (...) {
             PyErr_SetString(PyExc_Exception,"unknown error");
@@ -10597,8 +12343,11 @@ static PyObject *_wrap_DividendAmericanOption_gamma(PyObject *self, PyObject *ar
         try {
             result = (double )arg0->gamma();
             
-        }catch (std::exception& e) {
-            PyErr_SetString(PyExc_Exception,e.what());
+        }catch (std::domain_error& de) {
+            PyErr_SetString(PyExc_IndexError,de.what());
+            return NULL;
+        }catch (std::exception& ex) {
+            PyErr_SetString(PyExc_Exception,ex.what());
             return NULL;
         }catch (...) {
             PyErr_SetString(PyExc_Exception,"unknown error");
@@ -10624,8 +12373,11 @@ static PyObject *_wrap_DividendAmericanOption_theta(PyObject *self, PyObject *ar
         try {
             result = (double )arg0->theta();
             
-        }catch (std::exception& e) {
-            PyErr_SetString(PyExc_Exception,e.what());
+        }catch (std::domain_error& de) {
+            PyErr_SetString(PyExc_IndexError,de.what());
+            return NULL;
+        }catch (std::exception& ex) {
+            PyErr_SetString(PyExc_Exception,ex.what());
             return NULL;
         }catch (...) {
             PyErr_SetString(PyExc_Exception,"unknown error");
@@ -10651,8 +12403,11 @@ static PyObject *_wrap_DividendAmericanOption_vega(PyObject *self, PyObject *arg
         try {
             result = (double )arg0->vega();
             
-        }catch (std::exception& e) {
-            PyErr_SetString(PyExc_Exception,e.what());
+        }catch (std::domain_error& de) {
+            PyErr_SetString(PyExc_IndexError,de.what());
+            return NULL;
+        }catch (std::exception& ex) {
+            PyErr_SetString(PyExc_Exception,ex.what());
             return NULL;
         }catch (...) {
             PyErr_SetString(PyExc_Exception,"unknown error");
@@ -10678,8 +12433,11 @@ static PyObject *_wrap_DividendAmericanOption_rho(PyObject *self, PyObject *args
         try {
             result = (double )arg0->rho();
             
-        }catch (std::exception& e) {
-            PyErr_SetString(PyExc_Exception,e.what());
+        }catch (std::domain_error& de) {
+            PyErr_SetString(PyExc_IndexError,de.what());
+            return NULL;
+        }catch (std::exception& ex) {
+            PyErr_SetString(PyExc_Exception,ex.what());
             return NULL;
         }catch (...) {
             PyErr_SetString(PyExc_Exception,"unknown error");
@@ -10708,8 +12466,11 @@ static PyObject *_wrap_DividendAmericanOption_impliedVolatility(PyObject *self, 
         try {
             result = (double )arg0->impliedVolatility(arg1,arg2,arg3);
             
-        }catch (std::exception& e) {
-            PyErr_SetString(PyExc_Exception,e.what());
+        }catch (std::domain_error& de) {
+            PyErr_SetString(PyExc_IndexError,de.what());
+            return NULL;
+        }catch (std::exception& ex) {
+            PyErr_SetString(PyExc_Exception,ex.what());
             return NULL;
         }catch (...) {
             PyErr_SetString(PyExc_Exception,"unknown error");
@@ -10842,8 +12603,11 @@ static PyObject *_wrap_new_DividendEuropeanOption(PyObject *self, PyObject *args
         try {
             result = (DividendEuropeanOption *)new DividendEuropeanOption(*arg0,arg1,arg2,arg3,arg4,arg5,arg6,*arg7,*arg8);
             
-        }catch (std::exception& e) {
-            PyErr_SetString(PyExc_Exception,e.what());
+        }catch (std::domain_error& de) {
+            PyErr_SetString(PyExc_IndexError,de.what());
+            return NULL;
+        }catch (std::exception& ex) {
+            PyErr_SetString(PyExc_Exception,ex.what());
             return NULL;
         }catch (...) {
             PyErr_SetString(PyExc_Exception,"unknown error");
@@ -10877,8 +12641,11 @@ static PyObject *_wrap_delete_DividendEuropeanOption(PyObject *self, PyObject *a
         try {
             delete arg0;
             
-        }catch (std::exception& e) {
-            PyErr_SetString(PyExc_Exception,e.what());
+        }catch (std::domain_error& de) {
+            PyErr_SetString(PyExc_IndexError,de.what());
+            return NULL;
+        }catch (std::exception& ex) {
+            PyErr_SetString(PyExc_Exception,ex.what());
             return NULL;
         }catch (...) {
             PyErr_SetString(PyExc_Exception,"unknown error");
@@ -10905,8 +12672,11 @@ static PyObject *_wrap_DividendEuropeanOption_value(PyObject *self, PyObject *ar
         try {
             result = (double )arg0->value();
             
-        }catch (std::exception& e) {
-            PyErr_SetString(PyExc_Exception,e.what());
+        }catch (std::domain_error& de) {
+            PyErr_SetString(PyExc_IndexError,de.what());
+            return NULL;
+        }catch (std::exception& ex) {
+            PyErr_SetString(PyExc_Exception,ex.what());
             return NULL;
         }catch (...) {
             PyErr_SetString(PyExc_Exception,"unknown error");
@@ -10932,8 +12702,11 @@ static PyObject *_wrap_DividendEuropeanOption_delta(PyObject *self, PyObject *ar
         try {
             result = (double )arg0->delta();
             
-        }catch (std::exception& e) {
-            PyErr_SetString(PyExc_Exception,e.what());
+        }catch (std::domain_error& de) {
+            PyErr_SetString(PyExc_IndexError,de.what());
+            return NULL;
+        }catch (std::exception& ex) {
+            PyErr_SetString(PyExc_Exception,ex.what());
             return NULL;
         }catch (...) {
             PyErr_SetString(PyExc_Exception,"unknown error");
@@ -10959,8 +12732,11 @@ static PyObject *_wrap_DividendEuropeanOption_gamma(PyObject *self, PyObject *ar
         try {
             result = (double )arg0->gamma();
             
-        }catch (std::exception& e) {
-            PyErr_SetString(PyExc_Exception,e.what());
+        }catch (std::domain_error& de) {
+            PyErr_SetString(PyExc_IndexError,de.what());
+            return NULL;
+        }catch (std::exception& ex) {
+            PyErr_SetString(PyExc_Exception,ex.what());
             return NULL;
         }catch (...) {
             PyErr_SetString(PyExc_Exception,"unknown error");
@@ -10986,8 +12762,11 @@ static PyObject *_wrap_DividendEuropeanOption_theta(PyObject *self, PyObject *ar
         try {
             result = (double )arg0->theta();
             
-        }catch (std::exception& e) {
-            PyErr_SetString(PyExc_Exception,e.what());
+        }catch (std::domain_error& de) {
+            PyErr_SetString(PyExc_IndexError,de.what());
+            return NULL;
+        }catch (std::exception& ex) {
+            PyErr_SetString(PyExc_Exception,ex.what());
             return NULL;
         }catch (...) {
             PyErr_SetString(PyExc_Exception,"unknown error");
@@ -11013,8 +12792,11 @@ static PyObject *_wrap_DividendEuropeanOption_vega(PyObject *self, PyObject *arg
         try {
             result = (double )arg0->vega();
             
-        }catch (std::exception& e) {
-            PyErr_SetString(PyExc_Exception,e.what());
+        }catch (std::domain_error& de) {
+            PyErr_SetString(PyExc_IndexError,de.what());
+            return NULL;
+        }catch (std::exception& ex) {
+            PyErr_SetString(PyExc_Exception,ex.what());
             return NULL;
         }catch (...) {
             PyErr_SetString(PyExc_Exception,"unknown error");
@@ -11040,8 +12822,11 @@ static PyObject *_wrap_DividendEuropeanOption_rho(PyObject *self, PyObject *args
         try {
             result = (double )arg0->rho();
             
-        }catch (std::exception& e) {
-            PyErr_SetString(PyExc_Exception,e.what());
+        }catch (std::domain_error& de) {
+            PyErr_SetString(PyExc_IndexError,de.what());
+            return NULL;
+        }catch (std::exception& ex) {
+            PyErr_SetString(PyExc_Exception,ex.what());
             return NULL;
         }catch (...) {
             PyErr_SetString(PyExc_Exception,"unknown error");
@@ -11070,8 +12855,11 @@ static PyObject *_wrap_DividendEuropeanOption_impliedVolatility(PyObject *self, 
         try {
             result = (double )arg0->impliedVolatility(arg1,arg2,arg3);
             
-        }catch (std::exception& e) {
-            PyErr_SetString(PyExc_Exception,e.what());
+        }catch (std::domain_error& de) {
+            PyErr_SetString(PyExc_IndexError,de.what());
+            return NULL;
+        }catch (std::exception& ex) {
+            PyErr_SetString(PyExc_Exception,ex.what());
             return NULL;
         }catch (...) {
             PyErr_SetString(PyExc_Exception,"unknown error");
@@ -11143,8 +12931,11 @@ static PyObject *_wrap_new_BarrierOption(PyObject *self, PyObject *args, PyObjec
         try {
             result = (BarrierOption *)new BarrierOption(*arg0,*arg1,arg2,arg3,arg4,arg5,arg6,arg7,arg8,arg9);
             
-        }catch (std::exception& e) {
-            PyErr_SetString(PyExc_Exception,e.what());
+        }catch (std::domain_error& de) {
+            PyErr_SetString(PyExc_IndexError,de.what());
+            return NULL;
+        }catch (std::exception& ex) {
+            PyErr_SetString(PyExc_Exception,ex.what());
             return NULL;
         }catch (...) {
             PyErr_SetString(PyExc_Exception,"unknown error");
@@ -11175,8 +12966,11 @@ static PyObject *_wrap_delete_BarrierOption(PyObject *self, PyObject *args, PyOb
         try {
             delete arg0;
             
-        }catch (std::exception& e) {
-            PyErr_SetString(PyExc_Exception,e.what());
+        }catch (std::domain_error& de) {
+            PyErr_SetString(PyExc_IndexError,de.what());
+            return NULL;
+        }catch (std::exception& ex) {
+            PyErr_SetString(PyExc_Exception,ex.what());
             return NULL;
         }catch (...) {
             PyErr_SetString(PyExc_Exception,"unknown error");
@@ -11203,8 +12997,11 @@ static PyObject *_wrap_BarrierOption_value(PyObject *self, PyObject *args, PyObj
         try {
             result = (double )arg0->value();
             
-        }catch (std::exception& e) {
-            PyErr_SetString(PyExc_Exception,e.what());
+        }catch (std::domain_error& de) {
+            PyErr_SetString(PyExc_IndexError,de.what());
+            return NULL;
+        }catch (std::exception& ex) {
+            PyErr_SetString(PyExc_Exception,ex.what());
             return NULL;
         }catch (...) {
             PyErr_SetString(PyExc_Exception,"unknown error");
@@ -11228,8 +13025,11 @@ static PyObject *_wrap_new_UniformRandomGenerator(PyObject *self, PyObject *args
         try {
             result = (UniformRandomGenerator *)new UniformRandomGenerator(arg0);
             
-        }catch (std::exception& e) {
-            PyErr_SetString(PyExc_Exception,e.what());
+        }catch (std::domain_error& de) {
+            PyErr_SetString(PyExc_IndexError,de.what());
+            return NULL;
+        }catch (std::exception& ex) {
+            PyErr_SetString(PyExc_Exception,ex.what());
             return NULL;
         }catch (...) {
             PyErr_SetString(PyExc_Exception,"unknown error");
@@ -11254,8 +13054,11 @@ static PyObject *_wrap_delete_UniformRandomGenerator(PyObject *self, PyObject *a
         try {
             delete arg0;
             
-        }catch (std::exception& e) {
-            PyErr_SetString(PyExc_Exception,e.what());
+        }catch (std::domain_error& de) {
+            PyErr_SetString(PyExc_IndexError,de.what());
+            return NULL;
+        }catch (std::exception& ex) {
+            PyErr_SetString(PyExc_Exception,ex.what());
             return NULL;
         }catch (...) {
             PyErr_SetString(PyExc_Exception,"unknown error");
@@ -11282,8 +13085,11 @@ static PyObject *_wrap_UniformRandomGenerator_next(PyObject *self, PyObject *arg
         try {
             result = (double )arg0->next();
             
-        }catch (std::exception& e) {
-            PyErr_SetString(PyExc_Exception,e.what());
+        }catch (std::domain_error& de) {
+            PyErr_SetString(PyExc_IndexError,de.what());
+            return NULL;
+        }catch (std::exception& ex) {
+            PyErr_SetString(PyExc_Exception,ex.what());
             return NULL;
         }catch (...) {
             PyErr_SetString(PyExc_Exception,"unknown error");
@@ -11309,8 +13115,11 @@ static PyObject *_wrap_UniformRandomGenerator_weight(PyObject *self, PyObject *a
         try {
             result = (double )arg0->weight();
             
-        }catch (std::exception& e) {
-            PyErr_SetString(PyExc_Exception,e.what());
+        }catch (std::domain_error& de) {
+            PyErr_SetString(PyExc_IndexError,de.what());
+            return NULL;
+        }catch (std::exception& ex) {
+            PyErr_SetString(PyExc_Exception,ex.what());
             return NULL;
         }catch (...) {
             PyErr_SetString(PyExc_Exception,"unknown error");
@@ -11334,8 +13143,11 @@ static PyObject *_wrap_new_GaussianRandomGenerator(PyObject *self, PyObject *arg
         try {
             result = (GaussianRandomGenerator *)new GaussianRandomGenerator(arg0);
             
-        }catch (std::exception& e) {
-            PyErr_SetString(PyExc_Exception,e.what());
+        }catch (std::domain_error& de) {
+            PyErr_SetString(PyExc_IndexError,de.what());
+            return NULL;
+        }catch (std::exception& ex) {
+            PyErr_SetString(PyExc_Exception,ex.what());
             return NULL;
         }catch (...) {
             PyErr_SetString(PyExc_Exception,"unknown error");
@@ -11360,8 +13172,11 @@ static PyObject *_wrap_delete_GaussianRandomGenerator(PyObject *self, PyObject *
         try {
             delete arg0;
             
-        }catch (std::exception& e) {
-            PyErr_SetString(PyExc_Exception,e.what());
+        }catch (std::domain_error& de) {
+            PyErr_SetString(PyExc_IndexError,de.what());
+            return NULL;
+        }catch (std::exception& ex) {
+            PyErr_SetString(PyExc_Exception,ex.what());
             return NULL;
         }catch (...) {
             PyErr_SetString(PyExc_Exception,"unknown error");
@@ -11388,8 +13203,11 @@ static PyObject *_wrap_GaussianRandomGenerator_next(PyObject *self, PyObject *ar
         try {
             result = (double )arg0->next();
             
-        }catch (std::exception& e) {
-            PyErr_SetString(PyExc_Exception,e.what());
+        }catch (std::domain_error& de) {
+            PyErr_SetString(PyExc_IndexError,de.what());
+            return NULL;
+        }catch (std::exception& ex) {
+            PyErr_SetString(PyExc_Exception,ex.what());
             return NULL;
         }catch (...) {
             PyErr_SetString(PyExc_Exception,"unknown error");
@@ -11415,8 +13233,11 @@ static PyObject *_wrap_GaussianRandomGenerator_weight(PyObject *self, PyObject *
         try {
             result = (double )arg0->weight();
             
-        }catch (std::exception& e) {
-            PyErr_SetString(PyExc_Exception,e.what());
+        }catch (std::domain_error& de) {
+            PyErr_SetString(PyExc_IndexError,de.what());
+            return NULL;
+        }catch (std::exception& ex) {
+            PyErr_SetString(PyExc_Exception,ex.what());
             return NULL;
         }catch (...) {
             PyErr_SetString(PyExc_Exception,"unknown error");
@@ -11439,8 +13260,11 @@ static PyObject *_wrap_new_VarTool(PyObject *self, PyObject *args, PyObject *kwa
         try {
             result = (VarTool *)new VarTool();
             
-        }catch (std::exception& e) {
-            PyErr_SetString(PyExc_Exception,e.what());
+        }catch (std::domain_error& de) {
+            PyErr_SetString(PyExc_IndexError,de.what());
+            return NULL;
+        }catch (std::exception& ex) {
+            PyErr_SetString(PyExc_Exception,ex.what());
             return NULL;
         }catch (...) {
             PyErr_SetString(PyExc_Exception,"unknown error");
@@ -11469,8 +13293,11 @@ static PyObject *_wrap_VarTool_valueAtRisk(PyObject *self, PyObject *args, PyObj
         try {
             result = (double )arg0->valueAtRisk(arg1,arg2,arg3);
             
-        }catch (std::exception& e) {
-            PyErr_SetString(PyExc_Exception,e.what());
+        }catch (std::domain_error& de) {
+            PyErr_SetString(PyExc_IndexError,de.what());
+            return NULL;
+        }catch (std::exception& ex) {
+            PyErr_SetString(PyExc_Exception,ex.what());
             return NULL;
         }catch (...) {
             PyErr_SetString(PyExc_Exception,"unknown error");
@@ -11499,8 +13326,11 @@ static PyObject *_wrap_VarTool_shortfall(PyObject *self, PyObject *args, PyObjec
         try {
             result = (double )arg0->shortfall(arg1,arg2,arg3);
             
-        }catch (std::exception& e) {
-            PyErr_SetString(PyExc_Exception,e.what());
+        }catch (std::domain_error& de) {
+            PyErr_SetString(PyExc_IndexError,de.what());
+            return NULL;
+        }catch (std::exception& ex) {
+            PyErr_SetString(PyExc_Exception,ex.what());
             return NULL;
         }catch (...) {
             PyErr_SetString(PyExc_Exception,"unknown error");
@@ -11529,8 +13359,11 @@ static PyObject *_wrap_VarTool_averageShortfall(PyObject *self, PyObject *args, 
         try {
             result = (double )arg0->averageShortfall(arg1,arg2,arg3);
             
-        }catch (std::exception& e) {
-            PyErr_SetString(PyExc_Exception,e.what());
+        }catch (std::domain_error& de) {
+            PyErr_SetString(PyExc_IndexError,de.what());
+            return NULL;
+        }catch (std::exception& ex) {
+            PyErr_SetString(PyExc_Exception,ex.what());
             return NULL;
         }catch (...) {
             PyErr_SetString(PyExc_Exception,"unknown error");
@@ -11553,8 +13386,11 @@ static PyObject *_wrap_new_RiskStatistics(PyObject *self, PyObject *args, PyObje
         try {
             result = (RiskStatistics *)new RiskStatistics();
             
-        }catch (std::exception& e) {
-            PyErr_SetString(PyExc_Exception,e.what());
+        }catch (std::domain_error& de) {
+            PyErr_SetString(PyExc_IndexError,de.what());
+            return NULL;
+        }catch (std::exception& ex) {
+            PyErr_SetString(PyExc_Exception,ex.what());
             return NULL;
         }catch (...) {
             PyErr_SetString(PyExc_Exception,"unknown error");
@@ -11579,8 +13415,11 @@ static PyObject *_wrap_delete_RiskStatistics(PyObject *self, PyObject *args, PyO
         try {
             delete arg0;
             
-        }catch (std::exception& e) {
-            PyErr_SetString(PyExc_Exception,e.what());
+        }catch (std::domain_error& de) {
+            PyErr_SetString(PyExc_IndexError,de.what());
+            return NULL;
+        }catch (std::exception& ex) {
+            PyErr_SetString(PyExc_Exception,ex.what());
             return NULL;
         }catch (...) {
             PyErr_SetString(PyExc_Exception,"unknown error");
@@ -11607,8 +13446,11 @@ static PyObject *_wrap_RiskStatistics_samples(PyObject *self, PyObject *args, Py
         try {
             result = (int )arg0->samples();
             
-        }catch (std::exception& e) {
-            PyErr_SetString(PyExc_Exception,e.what());
+        }catch (std::domain_error& de) {
+            PyErr_SetString(PyExc_IndexError,de.what());
+            return NULL;
+        }catch (std::exception& ex) {
+            PyErr_SetString(PyExc_Exception,ex.what());
             return NULL;
         }catch (...) {
             PyErr_SetString(PyExc_Exception,"unknown error");
@@ -11634,8 +13476,11 @@ static PyObject *_wrap_RiskStatistics_weightSum(PyObject *self, PyObject *args, 
         try {
             result = (double )arg0->weightSum();
             
-        }catch (std::exception& e) {
-            PyErr_SetString(PyExc_Exception,e.what());
+        }catch (std::domain_error& de) {
+            PyErr_SetString(PyExc_IndexError,de.what());
+            return NULL;
+        }catch (std::exception& ex) {
+            PyErr_SetString(PyExc_Exception,ex.what());
             return NULL;
         }catch (...) {
             PyErr_SetString(PyExc_Exception,"unknown error");
@@ -11661,8 +13506,11 @@ static PyObject *_wrap_RiskStatistics_mean(PyObject *self, PyObject *args, PyObj
         try {
             result = (double )arg0->mean();
             
-        }catch (std::exception& e) {
-            PyErr_SetString(PyExc_Exception,e.what());
+        }catch (std::domain_error& de) {
+            PyErr_SetString(PyExc_IndexError,de.what());
+            return NULL;
+        }catch (std::exception& ex) {
+            PyErr_SetString(PyExc_Exception,ex.what());
             return NULL;
         }catch (...) {
             PyErr_SetString(PyExc_Exception,"unknown error");
@@ -11688,8 +13536,11 @@ static PyObject *_wrap_RiskStatistics_variance(PyObject *self, PyObject *args, P
         try {
             result = (double )arg0->variance();
             
-        }catch (std::exception& e) {
-            PyErr_SetString(PyExc_Exception,e.what());
+        }catch (std::domain_error& de) {
+            PyErr_SetString(PyExc_IndexError,de.what());
+            return NULL;
+        }catch (std::exception& ex) {
+            PyErr_SetString(PyExc_Exception,ex.what());
             return NULL;
         }catch (...) {
             PyErr_SetString(PyExc_Exception,"unknown error");
@@ -11715,8 +13566,11 @@ static PyObject *_wrap_RiskStatistics_standardDeviation(PyObject *self, PyObject
         try {
             result = (double )arg0->standardDeviation();
             
-        }catch (std::exception& e) {
-            PyErr_SetString(PyExc_Exception,e.what());
+        }catch (std::domain_error& de) {
+            PyErr_SetString(PyExc_IndexError,de.what());
+            return NULL;
+        }catch (std::exception& ex) {
+            PyErr_SetString(PyExc_Exception,ex.what());
             return NULL;
         }catch (...) {
             PyErr_SetString(PyExc_Exception,"unknown error");
@@ -11742,8 +13596,11 @@ static PyObject *_wrap_RiskStatistics_errorEstimate(PyObject *self, PyObject *ar
         try {
             result = (double )arg0->errorEstimate();
             
-        }catch (std::exception& e) {
-            PyErr_SetString(PyExc_Exception,e.what());
+        }catch (std::domain_error& de) {
+            PyErr_SetString(PyExc_IndexError,de.what());
+            return NULL;
+        }catch (std::exception& ex) {
+            PyErr_SetString(PyExc_Exception,ex.what());
             return NULL;
         }catch (...) {
             PyErr_SetString(PyExc_Exception,"unknown error");
@@ -11769,8 +13626,11 @@ static PyObject *_wrap_RiskStatistics_skewness(PyObject *self, PyObject *args, P
         try {
             result = (double )arg0->skewness();
             
-        }catch (std::exception& e) {
-            PyErr_SetString(PyExc_Exception,e.what());
+        }catch (std::domain_error& de) {
+            PyErr_SetString(PyExc_IndexError,de.what());
+            return NULL;
+        }catch (std::exception& ex) {
+            PyErr_SetString(PyExc_Exception,ex.what());
             return NULL;
         }catch (...) {
             PyErr_SetString(PyExc_Exception,"unknown error");
@@ -11796,8 +13656,11 @@ static PyObject *_wrap_RiskStatistics_kurtosis(PyObject *self, PyObject *args, P
         try {
             result = (double )arg0->kurtosis();
             
-        }catch (std::exception& e) {
-            PyErr_SetString(PyExc_Exception,e.what());
+        }catch (std::domain_error& de) {
+            PyErr_SetString(PyExc_IndexError,de.what());
+            return NULL;
+        }catch (std::exception& ex) {
+            PyErr_SetString(PyExc_Exception,ex.what());
             return NULL;
         }catch (...) {
             PyErr_SetString(PyExc_Exception,"unknown error");
@@ -11823,8 +13686,11 @@ static PyObject *_wrap_RiskStatistics_min(PyObject *self, PyObject *args, PyObje
         try {
             result = (double )arg0->min();
             
-        }catch (std::exception& e) {
-            PyErr_SetString(PyExc_Exception,e.what());
+        }catch (std::domain_error& de) {
+            PyErr_SetString(PyExc_IndexError,de.what());
+            return NULL;
+        }catch (std::exception& ex) {
+            PyErr_SetString(PyExc_Exception,ex.what());
             return NULL;
         }catch (...) {
             PyErr_SetString(PyExc_Exception,"unknown error");
@@ -11850,8 +13716,11 @@ static PyObject *_wrap_RiskStatistics_max(PyObject *self, PyObject *args, PyObje
         try {
             result = (double )arg0->max();
             
-        }catch (std::exception& e) {
-            PyErr_SetString(PyExc_Exception,e.what());
+        }catch (std::domain_error& de) {
+            PyErr_SetString(PyExc_IndexError,de.what());
+            return NULL;
+        }catch (std::exception& ex) {
+            PyErr_SetString(PyExc_Exception,ex.what());
             return NULL;
         }catch (...) {
             PyErr_SetString(PyExc_Exception,"unknown error");
@@ -11878,8 +13747,11 @@ static PyObject *_wrap_RiskStatistics_valueAtRisk(PyObject *self, PyObject *args
         try {
             result = (double )arg0->valueAtRisk(arg1);
             
-        }catch (std::exception& e) {
-            PyErr_SetString(PyExc_Exception,e.what());
+        }catch (std::domain_error& de) {
+            PyErr_SetString(PyExc_IndexError,de.what());
+            return NULL;
+        }catch (std::exception& ex) {
+            PyErr_SetString(PyExc_Exception,ex.what());
             return NULL;
         }catch (...) {
             PyErr_SetString(PyExc_Exception,"unknown error");
@@ -11906,8 +13778,11 @@ static PyObject *_wrap_RiskStatistics_shortfall(PyObject *self, PyObject *args, 
         try {
             result = (double )arg0->shortfall(arg1);
             
-        }catch (std::exception& e) {
-            PyErr_SetString(PyExc_Exception,e.what());
+        }catch (std::domain_error& de) {
+            PyErr_SetString(PyExc_IndexError,de.what());
+            return NULL;
+        }catch (std::exception& ex) {
+            PyErr_SetString(PyExc_Exception,ex.what());
             return NULL;
         }catch (...) {
             PyErr_SetString(PyExc_Exception,"unknown error");
@@ -11934,8 +13809,11 @@ static PyObject *_wrap_RiskStatistics_averageShortfall(PyObject *self, PyObject 
         try {
             result = (double )arg0->averageShortfall(arg1);
             
-        }catch (std::exception& e) {
-            PyErr_SetString(PyExc_Exception,e.what());
+        }catch (std::domain_error& de) {
+            PyErr_SetString(PyExc_IndexError,de.what());
+            return NULL;
+        }catch (std::exception& ex) {
+            PyErr_SetString(PyExc_Exception,ex.what());
             return NULL;
         }catch (...) {
             PyErr_SetString(PyExc_Exception,"unknown error");
@@ -11962,8 +13840,11 @@ static PyObject *_wrap_RiskStatistics_add(PyObject *self, PyObject *args, PyObje
         try {
             arg0->add(arg1,arg2);
             
-        }catch (std::exception& e) {
-            PyErr_SetString(PyExc_Exception,e.what());
+        }catch (std::domain_error& de) {
+            PyErr_SetString(PyExc_IndexError,de.what());
+            return NULL;
+        }catch (std::exception& ex) {
+            PyErr_SetString(PyExc_Exception,ex.what());
             return NULL;
         }catch (...) {
             PyErr_SetString(PyExc_Exception,"unknown error");
@@ -11989,8 +13870,11 @@ static PyObject *_wrap_RiskStatistics_reset(PyObject *self, PyObject *args, PyOb
         try {
             arg0->reset();
             
-        }catch (std::exception& e) {
-            PyErr_SetString(PyExc_Exception,e.what());
+        }catch (std::domain_error& de) {
+            PyErr_SetString(PyExc_IndexError,de.what());
+            return NULL;
+        }catch (std::exception& ex) {
+            PyErr_SetString(PyExc_Exception,ex.what());
             return NULL;
         }catch (...) {
             PyErr_SetString(PyExc_Exception,"unknown error");
@@ -12065,8 +13949,11 @@ static PyObject *_wrap_RiskStatistics_addSequence(PyObject *self, PyObject *args
         try {
             RiskStatistics_addSequence(arg0,*arg1);
             
-        }catch (std::exception& e) {
-            PyErr_SetString(PyExc_Exception,e.what());
+        }catch (std::domain_error& de) {
+            PyErr_SetString(PyExc_IndexError,de.what());
+            return NULL;
+        }catch (std::exception& ex) {
+            PyErr_SetString(PyExc_Exception,ex.what());
             return NULL;
         }catch (...) {
             PyErr_SetString(PyExc_Exception,"unknown error");
@@ -12186,8 +14073,11 @@ static PyObject *_wrap_RiskStatistics_addWeightedSequence(PyObject *self, PyObje
         try {
             RiskStatistics_addWeightedSequence(arg0,*arg1,*arg2);
             
-        }catch (std::exception& e) {
-            PyErr_SetString(PyExc_Exception,e.what());
+        }catch (std::domain_error& de) {
+            PyErr_SetString(PyExc_IndexError,de.what());
+            return NULL;
+        }catch (std::exception& ex) {
+            PyErr_SetString(PyExc_Exception,ex.what());
             return NULL;
         }catch (...) {
             PyErr_SetString(PyExc_Exception,"unknown error");
@@ -12221,8 +14111,11 @@ static PyObject *_wrap_ObjectiveFunction_value(PyObject *self, PyObject *args, P
         try {
             result = (double )arg0->value(arg1);
             
-        }catch (std::exception& e) {
-            PyErr_SetString(PyExc_Exception,e.what());
+        }catch (std::domain_error& de) {
+            PyErr_SetString(PyExc_IndexError,de.what());
+            return NULL;
+        }catch (std::exception& ex) {
+            PyErr_SetString(PyExc_Exception,ex.what());
             return NULL;
         }catch (...) {
             PyErr_SetString(PyExc_Exception,"unknown error");
@@ -12249,8 +14142,11 @@ static PyObject *_wrap_ObjectiveFunction_derivative(PyObject *self, PyObject *ar
         try {
             result = (double )arg0->derivative(arg1);
             
-        }catch (std::exception& e) {
-            PyErr_SetString(PyExc_Exception,e.what());
+        }catch (std::domain_error& de) {
+            PyErr_SetString(PyExc_IndexError,de.what());
+            return NULL;
+        }catch (std::exception& ex) {
+            PyErr_SetString(PyExc_Exception,ex.what());
             return NULL;
         }catch (...) {
             PyErr_SetString(PyExc_Exception,"unknown error");
@@ -12282,8 +14178,11 @@ static PyObject *_wrap_Solver1D_solve(PyObject *self, PyObject *args, PyObject *
         try {
             result = (double )arg0->solve((ObjectiveFunction const &)*arg1,arg2,arg3,arg4);
             
-        }catch (std::exception& e) {
-            PyErr_SetString(PyExc_Exception,e.what());
+        }catch (std::domain_error& de) {
+            PyErr_SetString(PyExc_IndexError,de.what());
+            return NULL;
+        }catch (std::exception& ex) {
+            PyErr_SetString(PyExc_Exception,ex.what());
             return NULL;
         }catch (...) {
             PyErr_SetString(PyExc_Exception,"unknown error");
@@ -12316,8 +14215,11 @@ static PyObject *_wrap_Solver1D_bracketedSolve(PyObject *self, PyObject *args, P
         try {
             result = (double )arg0->solve((ObjectiveFunction const &)*arg1,arg2,arg3,arg4,arg5);
             
-        }catch (std::exception& e) {
-            PyErr_SetString(PyExc_Exception,e.what());
+        }catch (std::domain_error& de) {
+            PyErr_SetString(PyExc_IndexError,de.what());
+            return NULL;
+        }catch (std::exception& ex) {
+            PyErr_SetString(PyExc_Exception,ex.what());
             return NULL;
         }catch (...) {
             PyErr_SetString(PyExc_Exception,"unknown error");
@@ -12343,8 +14245,11 @@ static PyObject *_wrap_Solver1D_setMaxEvaluations(PyObject *self, PyObject *args
         try {
             arg0->setMaxEvaluations(arg1);
             
-        }catch (std::exception& e) {
-            PyErr_SetString(PyExc_Exception,e.what());
+        }catch (std::domain_error& de) {
+            PyErr_SetString(PyExc_IndexError,de.what());
+            return NULL;
+        }catch (std::exception& ex) {
+            PyErr_SetString(PyExc_Exception,ex.what());
             return NULL;
         }catch (...) {
             PyErr_SetString(PyExc_Exception,"unknown error");
@@ -12387,8 +14292,11 @@ static PyObject *_wrap_Solver1D_pySolve(PyObject *self, PyObject *args, PyObject
         try {
             result = (double )Solver1D_pySolve(arg0,arg1,arg2,arg3,arg4);
             
-        }catch (std::exception& e) {
-            PyErr_SetString(PyExc_Exception,e.what());
+        }catch (std::domain_error& de) {
+            PyErr_SetString(PyExc_IndexError,de.what());
+            return NULL;
+        }catch (std::exception& ex) {
+            PyErr_SetString(PyExc_Exception,ex.what());
             return NULL;
         }catch (...) {
             PyErr_SetString(PyExc_Exception,"unknown error");
@@ -12431,8 +14339,11 @@ static PyObject *_wrap_Solver1D_pyBracketedSolve(PyObject *self, PyObject *args,
         try {
             result = (double )Solver1D_pyBracketedSolve(arg0,arg1,arg2,arg3,arg4,arg5);
             
-        }catch (std::exception& e) {
-            PyErr_SetString(PyExc_Exception,e.what());
+        }catch (std::domain_error& de) {
+            PyErr_SetString(PyExc_IndexError,de.what());
+            return NULL;
+        }catch (std::exception& ex) {
+            PyErr_SetString(PyExc_Exception,ex.what());
             return NULL;
         }catch (...) {
             PyErr_SetString(PyExc_Exception,"unknown error");
@@ -12455,8 +14366,11 @@ static PyObject *_wrap_new_Bisection(PyObject *self, PyObject *args, PyObject *k
         try {
             result = (Bisection *)new Bisection();
             
-        }catch (std::exception& e) {
-            PyErr_SetString(PyExc_Exception,e.what());
+        }catch (std::domain_error& de) {
+            PyErr_SetString(PyExc_IndexError,de.what());
+            return NULL;
+        }catch (std::exception& ex) {
+            PyErr_SetString(PyExc_Exception,ex.what());
             return NULL;
         }catch (...) {
             PyErr_SetString(PyExc_Exception,"unknown error");
@@ -12481,8 +14395,11 @@ static PyObject *_wrap_delete_Bisection(PyObject *self, PyObject *args, PyObject
         try {
             delete arg0;
             
-        }catch (std::exception& e) {
-            PyErr_SetString(PyExc_Exception,e.what());
+        }catch (std::domain_error& de) {
+            PyErr_SetString(PyExc_IndexError,de.what());
+            return NULL;
+        }catch (std::exception& ex) {
+            PyErr_SetString(PyExc_Exception,ex.what());
             return NULL;
         }catch (...) {
             PyErr_SetString(PyExc_Exception,"unknown error");
@@ -12506,8 +14423,11 @@ static PyObject *_wrap_new_Brent(PyObject *self, PyObject *args, PyObject *kwarg
         try {
             result = (Brent *)new Brent();
             
-        }catch (std::exception& e) {
-            PyErr_SetString(PyExc_Exception,e.what());
+        }catch (std::domain_error& de) {
+            PyErr_SetString(PyExc_IndexError,de.what());
+            return NULL;
+        }catch (std::exception& ex) {
+            PyErr_SetString(PyExc_Exception,ex.what());
             return NULL;
         }catch (...) {
             PyErr_SetString(PyExc_Exception,"unknown error");
@@ -12532,8 +14452,11 @@ static PyObject *_wrap_delete_Brent(PyObject *self, PyObject *args, PyObject *kw
         try {
             delete arg0;
             
-        }catch (std::exception& e) {
-            PyErr_SetString(PyExc_Exception,e.what());
+        }catch (std::domain_error& de) {
+            PyErr_SetString(PyExc_IndexError,de.what());
+            return NULL;
+        }catch (std::exception& ex) {
+            PyErr_SetString(PyExc_Exception,ex.what());
             return NULL;
         }catch (...) {
             PyErr_SetString(PyExc_Exception,"unknown error");
@@ -12557,8 +14480,11 @@ static PyObject *_wrap_new_FalsePosition(PyObject *self, PyObject *args, PyObjec
         try {
             result = (FalsePosition *)new FalsePosition();
             
-        }catch (std::exception& e) {
-            PyErr_SetString(PyExc_Exception,e.what());
+        }catch (std::domain_error& de) {
+            PyErr_SetString(PyExc_IndexError,de.what());
+            return NULL;
+        }catch (std::exception& ex) {
+            PyErr_SetString(PyExc_Exception,ex.what());
             return NULL;
         }catch (...) {
             PyErr_SetString(PyExc_Exception,"unknown error");
@@ -12583,8 +14509,11 @@ static PyObject *_wrap_delete_FalsePosition(PyObject *self, PyObject *args, PyOb
         try {
             delete arg0;
             
-        }catch (std::exception& e) {
-            PyErr_SetString(PyExc_Exception,e.what());
+        }catch (std::domain_error& de) {
+            PyErr_SetString(PyExc_IndexError,de.what());
+            return NULL;
+        }catch (std::exception& ex) {
+            PyErr_SetString(PyExc_Exception,ex.what());
             return NULL;
         }catch (...) {
             PyErr_SetString(PyExc_Exception,"unknown error");
@@ -12608,8 +14537,11 @@ static PyObject *_wrap_new_Newton(PyObject *self, PyObject *args, PyObject *kwar
         try {
             result = (Newton *)new Newton();
             
-        }catch (std::exception& e) {
-            PyErr_SetString(PyExc_Exception,e.what());
+        }catch (std::domain_error& de) {
+            PyErr_SetString(PyExc_IndexError,de.what());
+            return NULL;
+        }catch (std::exception& ex) {
+            PyErr_SetString(PyExc_Exception,ex.what());
             return NULL;
         }catch (...) {
             PyErr_SetString(PyExc_Exception,"unknown error");
@@ -12634,8 +14566,11 @@ static PyObject *_wrap_delete_Newton(PyObject *self, PyObject *args, PyObject *k
         try {
             delete arg0;
             
-        }catch (std::exception& e) {
-            PyErr_SetString(PyExc_Exception,e.what());
+        }catch (std::domain_error& de) {
+            PyErr_SetString(PyExc_IndexError,de.what());
+            return NULL;
+        }catch (std::exception& ex) {
+            PyErr_SetString(PyExc_Exception,ex.what());
             return NULL;
         }catch (...) {
             PyErr_SetString(PyExc_Exception,"unknown error");
@@ -12659,8 +14594,11 @@ static PyObject *_wrap_new_NewtonSafe(PyObject *self, PyObject *args, PyObject *
         try {
             result = (NewtonSafe *)new NewtonSafe();
             
-        }catch (std::exception& e) {
-            PyErr_SetString(PyExc_Exception,e.what());
+        }catch (std::domain_error& de) {
+            PyErr_SetString(PyExc_IndexError,de.what());
+            return NULL;
+        }catch (std::exception& ex) {
+            PyErr_SetString(PyExc_Exception,ex.what());
             return NULL;
         }catch (...) {
             PyErr_SetString(PyExc_Exception,"unknown error");
@@ -12685,8 +14623,11 @@ static PyObject *_wrap_delete_NewtonSafe(PyObject *self, PyObject *args, PyObjec
         try {
             delete arg0;
             
-        }catch (std::exception& e) {
-            PyErr_SetString(PyExc_Exception,e.what());
+        }catch (std::domain_error& de) {
+            PyErr_SetString(PyExc_IndexError,de.what());
+            return NULL;
+        }catch (std::exception& ex) {
+            PyErr_SetString(PyExc_Exception,ex.what());
             return NULL;
         }catch (...) {
             PyErr_SetString(PyExc_Exception,"unknown error");
@@ -12710,8 +14651,11 @@ static PyObject *_wrap_new_Ridder(PyObject *self, PyObject *args, PyObject *kwar
         try {
             result = (Ridder *)new Ridder();
             
-        }catch (std::exception& e) {
-            PyErr_SetString(PyExc_Exception,e.what());
+        }catch (std::domain_error& de) {
+            PyErr_SetString(PyExc_IndexError,de.what());
+            return NULL;
+        }catch (std::exception& ex) {
+            PyErr_SetString(PyExc_Exception,ex.what());
             return NULL;
         }catch (...) {
             PyErr_SetString(PyExc_Exception,"unknown error");
@@ -12736,8 +14680,11 @@ static PyObject *_wrap_delete_Ridder(PyObject *self, PyObject *args, PyObject *k
         try {
             delete arg0;
             
-        }catch (std::exception& e) {
-            PyErr_SetString(PyExc_Exception,e.what());
+        }catch (std::domain_error& de) {
+            PyErr_SetString(PyExc_IndexError,de.what());
+            return NULL;
+        }catch (std::exception& ex) {
+            PyErr_SetString(PyExc_Exception,ex.what());
             return NULL;
         }catch (...) {
             PyErr_SetString(PyExc_Exception,"unknown error");
@@ -12761,8 +14708,11 @@ static PyObject *_wrap_new_Secant(PyObject *self, PyObject *args, PyObject *kwar
         try {
             result = (Secant *)new Secant();
             
-        }catch (std::exception& e) {
-            PyErr_SetString(PyExc_Exception,e.what());
+        }catch (std::domain_error& de) {
+            PyErr_SetString(PyExc_IndexError,de.what());
+            return NULL;
+        }catch (std::exception& ex) {
+            PyErr_SetString(PyExc_Exception,ex.what());
             return NULL;
         }catch (...) {
             PyErr_SetString(PyExc_Exception,"unknown error");
@@ -12787,8 +14737,11 @@ static PyObject *_wrap_delete_Secant(PyObject *self, PyObject *args, PyObject *k
         try {
             delete arg0;
             
-        }catch (std::exception& e) {
-            PyErr_SetString(PyExc_Exception,e.what());
+        }catch (std::domain_error& de) {
+            PyErr_SetString(PyExc_IndexError,de.what());
+            return NULL;
+        }catch (std::exception& ex) {
+            PyErr_SetString(PyExc_Exception,ex.what());
             return NULL;
         }catch (...) {
             PyErr_SetString(PyExc_Exception,"unknown error");
@@ -12812,8 +14765,11 @@ static PyObject *_wrap_new_Statistics(PyObject *self, PyObject *args, PyObject *
         try {
             result = (Statistics *)new Statistics();
             
-        }catch (std::exception& e) {
-            PyErr_SetString(PyExc_Exception,e.what());
+        }catch (std::domain_error& de) {
+            PyErr_SetString(PyExc_IndexError,de.what());
+            return NULL;
+        }catch (std::exception& ex) {
+            PyErr_SetString(PyExc_Exception,ex.what());
             return NULL;
         }catch (...) {
             PyErr_SetString(PyExc_Exception,"unknown error");
@@ -12838,8 +14794,11 @@ static PyObject *_wrap_delete_Statistics(PyObject *self, PyObject *args, PyObjec
         try {
             delete arg0;
             
-        }catch (std::exception& e) {
-            PyErr_SetString(PyExc_Exception,e.what());
+        }catch (std::domain_error& de) {
+            PyErr_SetString(PyExc_IndexError,de.what());
+            return NULL;
+        }catch (std::exception& ex) {
+            PyErr_SetString(PyExc_Exception,ex.what());
             return NULL;
         }catch (...) {
             PyErr_SetString(PyExc_Exception,"unknown error");
@@ -12866,8 +14825,11 @@ static PyObject *_wrap_Statistics_samples(PyObject *self, PyObject *args, PyObje
         try {
             result = (int )arg0->samples();
             
-        }catch (std::exception& e) {
-            PyErr_SetString(PyExc_Exception,e.what());
+        }catch (std::domain_error& de) {
+            PyErr_SetString(PyExc_IndexError,de.what());
+            return NULL;
+        }catch (std::exception& ex) {
+            PyErr_SetString(PyExc_Exception,ex.what());
             return NULL;
         }catch (...) {
             PyErr_SetString(PyExc_Exception,"unknown error");
@@ -12893,8 +14855,11 @@ static PyObject *_wrap_Statistics_weightSum(PyObject *self, PyObject *args, PyOb
         try {
             result = (double )arg0->weightSum();
             
-        }catch (std::exception& e) {
-            PyErr_SetString(PyExc_Exception,e.what());
+        }catch (std::domain_error& de) {
+            PyErr_SetString(PyExc_IndexError,de.what());
+            return NULL;
+        }catch (std::exception& ex) {
+            PyErr_SetString(PyExc_Exception,ex.what());
             return NULL;
         }catch (...) {
             PyErr_SetString(PyExc_Exception,"unknown error");
@@ -12920,8 +14885,11 @@ static PyObject *_wrap_Statistics_mean(PyObject *self, PyObject *args, PyObject 
         try {
             result = (double )arg0->mean();
             
-        }catch (std::exception& e) {
-            PyErr_SetString(PyExc_Exception,e.what());
+        }catch (std::domain_error& de) {
+            PyErr_SetString(PyExc_IndexError,de.what());
+            return NULL;
+        }catch (std::exception& ex) {
+            PyErr_SetString(PyExc_Exception,ex.what());
             return NULL;
         }catch (...) {
             PyErr_SetString(PyExc_Exception,"unknown error");
@@ -12947,8 +14915,11 @@ static PyObject *_wrap_Statistics_variance(PyObject *self, PyObject *args, PyObj
         try {
             result = (double )arg0->variance();
             
-        }catch (std::exception& e) {
-            PyErr_SetString(PyExc_Exception,e.what());
+        }catch (std::domain_error& de) {
+            PyErr_SetString(PyExc_IndexError,de.what());
+            return NULL;
+        }catch (std::exception& ex) {
+            PyErr_SetString(PyExc_Exception,ex.what());
             return NULL;
         }catch (...) {
             PyErr_SetString(PyExc_Exception,"unknown error");
@@ -12974,8 +14945,11 @@ static PyObject *_wrap_Statistics_standardDeviation(PyObject *self, PyObject *ar
         try {
             result = (double )arg0->standardDeviation();
             
-        }catch (std::exception& e) {
-            PyErr_SetString(PyExc_Exception,e.what());
+        }catch (std::domain_error& de) {
+            PyErr_SetString(PyExc_IndexError,de.what());
+            return NULL;
+        }catch (std::exception& ex) {
+            PyErr_SetString(PyExc_Exception,ex.what());
             return NULL;
         }catch (...) {
             PyErr_SetString(PyExc_Exception,"unknown error");
@@ -13001,8 +14975,11 @@ static PyObject *_wrap_Statistics_errorEstimate(PyObject *self, PyObject *args, 
         try {
             result = (double )arg0->errorEstimate();
             
-        }catch (std::exception& e) {
-            PyErr_SetString(PyExc_Exception,e.what());
+        }catch (std::domain_error& de) {
+            PyErr_SetString(PyExc_IndexError,de.what());
+            return NULL;
+        }catch (std::exception& ex) {
+            PyErr_SetString(PyExc_Exception,ex.what());
             return NULL;
         }catch (...) {
             PyErr_SetString(PyExc_Exception,"unknown error");
@@ -13028,8 +15005,11 @@ static PyObject *_wrap_Statistics_skewness(PyObject *self, PyObject *args, PyObj
         try {
             result = (double )arg0->skewness();
             
-        }catch (std::exception& e) {
-            PyErr_SetString(PyExc_Exception,e.what());
+        }catch (std::domain_error& de) {
+            PyErr_SetString(PyExc_IndexError,de.what());
+            return NULL;
+        }catch (std::exception& ex) {
+            PyErr_SetString(PyExc_Exception,ex.what());
             return NULL;
         }catch (...) {
             PyErr_SetString(PyExc_Exception,"unknown error");
@@ -13055,8 +15035,11 @@ static PyObject *_wrap_Statistics_kurtosis(PyObject *self, PyObject *args, PyObj
         try {
             result = (double )arg0->kurtosis();
             
-        }catch (std::exception& e) {
-            PyErr_SetString(PyExc_Exception,e.what());
+        }catch (std::domain_error& de) {
+            PyErr_SetString(PyExc_IndexError,de.what());
+            return NULL;
+        }catch (std::exception& ex) {
+            PyErr_SetString(PyExc_Exception,ex.what());
             return NULL;
         }catch (...) {
             PyErr_SetString(PyExc_Exception,"unknown error");
@@ -13082,8 +15065,11 @@ static PyObject *_wrap_Statistics_min(PyObject *self, PyObject *args, PyObject *
         try {
             result = (double )arg0->min();
             
-        }catch (std::exception& e) {
-            PyErr_SetString(PyExc_Exception,e.what());
+        }catch (std::domain_error& de) {
+            PyErr_SetString(PyExc_IndexError,de.what());
+            return NULL;
+        }catch (std::exception& ex) {
+            PyErr_SetString(PyExc_Exception,ex.what());
             return NULL;
         }catch (...) {
             PyErr_SetString(PyExc_Exception,"unknown error");
@@ -13109,8 +15095,11 @@ static PyObject *_wrap_Statistics_max(PyObject *self, PyObject *args, PyObject *
         try {
             result = (double )arg0->max();
             
-        }catch (std::exception& e) {
-            PyErr_SetString(PyExc_Exception,e.what());
+        }catch (std::domain_error& de) {
+            PyErr_SetString(PyExc_IndexError,de.what());
+            return NULL;
+        }catch (std::exception& ex) {
+            PyErr_SetString(PyExc_Exception,ex.what());
             return NULL;
         }catch (...) {
             PyErr_SetString(PyExc_Exception,"unknown error");
@@ -13137,8 +15126,11 @@ static PyObject *_wrap_Statistics_add(PyObject *self, PyObject *args, PyObject *
         try {
             arg0->add(arg1,arg2);
             
-        }catch (std::exception& e) {
-            PyErr_SetString(PyExc_Exception,e.what());
+        }catch (std::domain_error& de) {
+            PyErr_SetString(PyExc_IndexError,de.what());
+            return NULL;
+        }catch (std::exception& ex) {
+            PyErr_SetString(PyExc_Exception,ex.what());
             return NULL;
         }catch (...) {
             PyErr_SetString(PyExc_Exception,"unknown error");
@@ -13164,8 +15156,11 @@ static PyObject *_wrap_Statistics_reset(PyObject *self, PyObject *args, PyObject
         try {
             arg0->reset();
             
-        }catch (std::exception& e) {
-            PyErr_SetString(PyExc_Exception,e.what());
+        }catch (std::domain_error& de) {
+            PyErr_SetString(PyExc_IndexError,de.what());
+            return NULL;
+        }catch (std::exception& ex) {
+            PyErr_SetString(PyExc_Exception,ex.what());
             return NULL;
         }catch (...) {
             PyErr_SetString(PyExc_Exception,"unknown error");
@@ -13240,8 +15235,11 @@ static PyObject *_wrap_Statistics_addSequence(PyObject *self, PyObject *args, Py
         try {
             Statistics_addSequence(arg0,*arg1);
             
-        }catch (std::exception& e) {
-            PyErr_SetString(PyExc_Exception,e.what());
+        }catch (std::domain_error& de) {
+            PyErr_SetString(PyExc_IndexError,de.what());
+            return NULL;
+        }catch (std::exception& ex) {
+            PyErr_SetString(PyExc_Exception,ex.what());
             return NULL;
         }catch (...) {
             PyErr_SetString(PyExc_Exception,"unknown error");
@@ -13361,8 +15359,11 @@ static PyObject *_wrap_Statistics_addWeightedSequence(PyObject *self, PyObject *
         try {
             Statistics_addWeightedSequence(arg0,*arg1,*arg2);
             
-        }catch (std::exception& e) {
-            PyErr_SetString(PyExc_Exception,e.what());
+        }catch (std::domain_error& de) {
+            PyErr_SetString(PyExc_IndexError,de.what());
+            return NULL;
+        }catch (std::exception& ex) {
+            PyErr_SetString(PyExc_Exception,ex.what());
             return NULL;
         }catch (...) {
             PyErr_SetString(PyExc_Exception,"unknown error");
@@ -13392,8 +15393,11 @@ static PyObject *_wrap_new_MultivariateAccumulator(PyObject *self, PyObject *arg
         try {
             result = (MultivariateAccumulator *)new MultivariateAccumulator();
             
-        }catch (std::exception& e) {
-            PyErr_SetString(PyExc_Exception,e.what());
+        }catch (std::domain_error& de) {
+            PyErr_SetString(PyExc_IndexError,de.what());
+            return NULL;
+        }catch (std::exception& ex) {
+            PyErr_SetString(PyExc_Exception,ex.what());
             return NULL;
         }catch (...) {
             PyErr_SetString(PyExc_Exception,"unknown error");
@@ -13419,8 +15423,11 @@ static PyObject *_wrap_MultivariateAccumulator_size(PyObject *self, PyObject *ar
         try {
             result = (int )arg0->size();
             
-        }catch (std::exception& e) {
-            PyErr_SetString(PyExc_Exception,e.what());
+        }catch (std::domain_error& de) {
+            PyErr_SetString(PyExc_IndexError,de.what());
+            return NULL;
+        }catch (std::exception& ex) {
+            PyErr_SetString(PyExc_Exception,ex.what());
             return NULL;
         }catch (...) {
             PyErr_SetString(PyExc_Exception,"unknown error");
@@ -13446,8 +15453,11 @@ static PyObject *_wrap_MultivariateAccumulator_samples(PyObject *self, PyObject 
         try {
             result = (double )arg0->samples();
             
-        }catch (std::exception& e) {
-            PyErr_SetString(PyExc_Exception,e.what());
+        }catch (std::domain_error& de) {
+            PyErr_SetString(PyExc_IndexError,de.what());
+            return NULL;
+        }catch (std::exception& ex) {
+            PyErr_SetString(PyExc_Exception,ex.what());
             return NULL;
         }catch (...) {
             PyErr_SetString(PyExc_Exception,"unknown error");
@@ -13465,28 +15475,24 @@ static PyObject *_wrap_MultivariateAccumulator_mean(PyObject *self, PyObject *ar
     char *kwnames[] = {
         "self", NULL 
     };
-    PyArray *result ;
+    Array *result ;
     
     if(!PyArg_ParseTupleAndKeywords(args,kwargs,"O:MultivariateAccumulator_mean",kwnames,&argo0)) return NULL;
     if ((SWIG_ConvertPtr(argo0,(void **) &arg0,SWIGTYPE_p_MultivariateAccumulator,1)) == -1) return NULL;
     {
         try {
-            result = new PyArray (arg0->mean());
-        }catch (std::exception& e) {
-            PyErr_SetString(PyExc_Exception,e.what());
+            result = new Array (arg0->mean());
+        }catch (std::domain_error& de) {
+            PyErr_SetString(PyExc_IndexError,de.what());
+            return NULL;
+        }catch (std::exception& ex) {
+            PyErr_SetString(PyExc_Exception,ex.what());
             return NULL;
         }catch (...) {
             PyErr_SetString(PyExc_Exception,"unknown error");
             return NULL;
         }
-    }{
-        resultobj = PyTuple_New(result->size());
-        for (int i=0; i<result->size(); i++)
-        PyTuple_SetItem(resultobj,i,PyFloat_FromDouble((*result)[i]));
-    }
-    {
-        delete result;
-    }
+    }resultobj = SWIG_NewPointerObj((void *)result, SWIGTYPE_p_Array);
     return resultobj;
 }
 
@@ -13505,8 +15511,11 @@ static PyObject *_wrap_MultivariateAccumulator_covariance(PyObject *self, PyObje
     {
         try {
             result = new Matrix (arg0->covariance());
-        }catch (std::exception& e) {
-            PyErr_SetString(PyExc_Exception,e.what());
+        }catch (std::domain_error& de) {
+            PyErr_SetString(PyExc_IndexError,de.what());
+            return NULL;
+        }catch (std::exception& ex) {
+            PyErr_SetString(PyExc_Exception,ex.what());
             return NULL;
         }catch (...) {
             PyErr_SetString(PyExc_Exception,"unknown error");
@@ -13520,51 +15529,40 @@ static PyObject *_wrap_MultivariateAccumulator_covariance(PyObject *self, PyObje
 static PyObject *_wrap_MultivariateAccumulator_add(PyObject *self, PyObject *args, PyObject *kwargs) {
     PyObject *resultobj;
     MultivariateAccumulator *arg0 ;
-    PyArray *arg1 ;
+    Array *arg1 ;
     double arg2 = 1.0 ;
     PyObject * argo0 =0 ;
+    Array temp ;
     PyObject * obj1  = 0 ;
     char *kwnames[] = {
-        "self","arr","weight", NULL 
+        "self","a","weight", NULL 
     };
     
     if(!PyArg_ParseTupleAndKeywords(args,kwargs,"OO|d:MultivariateAccumulator_add",kwnames,&argo0,&obj1,&arg2)) return NULL;
     if ((SWIG_ConvertPtr(argo0,(void **) &arg0,SWIGTYPE_p_MultivariateAccumulator,1)) == -1) return NULL;
     {
-        if (PyTuple_Check(obj1)) {
-            int size = PyTuple_Size(obj1);
-            arg1 = new PyArray(size);
+        Array* v;
+        if (PyTuple_Check(obj1) || PyList_Check(obj1)) {
+            int size = (PyTuple_Check(obj1) ? 
+            PyTuple_Size(obj1) :
+            PyList_Size(obj1));
+            temp = Array(size);
+            arg1 = &temp;
             for (int i=0; i<size; i++) {
-                PyObject* o = PyTuple_GetItem(obj1,i);
+                PyObject* o = PySequence_GetItem(obj1,i);
                 if (PyFloat_Check(o)) {
                     (*arg1)[i] = PyFloat_AsDouble(o);
                 }else if (PyInt_Check(o)) {
                     (*arg1)[i] = double(PyInt_AsLong(o));
-                }else if (o == Py_None) {
-                    (*arg1)[i] = Null<double>();
                 }else {
-                    PyErr_SetString(PyExc_TypeError,"tuple must contain doubles");
-                    delete arg1;
+                    PyErr_SetString(PyExc_TypeError,
+                    "sequence must contain doubles");
                     return NULL;
                 }
             }
-        }else if (PyList_Check(obj1)) {
-            int size = PyList_Size(obj1);
-            arg1 = new PyArray(size);
-            for (int i=0; i<size; i++) {
-                PyObject* o = PyList_GetItem(obj1,i);
-                if (PyFloat_Check(o)) {
-                    (*arg1)[i] = PyFloat_AsDouble(o);
-                }else if (PyInt_Check(o)) {
-                    (*arg1)[i] = double(PyInt_AsLong(o));
-                }else if (o == Py_None) {
-                    (*arg1)[i] = Null<double>();
-                }else {
-                    PyErr_SetString(PyExc_TypeError,"list must contain doubles");
-                    delete arg1;
-                    return NULL;
-                }
-            }
+        }else if ((SWIG_ConvertPtr(obj1,(void **) &v,
+        (swig_type_info *)SWIG_TypeQuery("Array *"),0)) != -1) {
+            arg1 = v;
         }else {
             PyErr_SetString(PyExc_TypeError,"not a sequence");
             return NULL;
@@ -13572,10 +15570,13 @@ static PyObject *_wrap_MultivariateAccumulator_add(PyObject *self, PyObject *arg
     }
     {
         try {
-            arg0->add((PyArray const &)*arg1,arg2);
+            arg0->add((Array const &)*arg1,arg2);
             
-        }catch (std::exception& e) {
-            PyErr_SetString(PyExc_Exception,e.what());
+        }catch (std::domain_error& de) {
+            PyErr_SetString(PyExc_IndexError,de.what());
+            return NULL;
+        }catch (std::exception& ex) {
+            PyErr_SetString(PyExc_Exception,ex.what());
             return NULL;
         }catch (...) {
             PyErr_SetString(PyExc_Exception,"unknown error");
@@ -13583,9 +15584,6 @@ static PyObject *_wrap_MultivariateAccumulator_add(PyObject *self, PyObject *arg
         }
     }Py_INCREF(Py_None);
     resultobj = Py_None;
-    {
-        delete arg1;
-    }
     return resultobj;
 }
 
@@ -13604,8 +15602,11 @@ static PyObject *_wrap_MultivariateAccumulator_reset(PyObject *self, PyObject *a
         try {
             arg0->reset();
             
-        }catch (std::exception& e) {
-            PyErr_SetString(PyExc_Exception,e.what());
+        }catch (std::domain_error& de) {
+            PyErr_SetString(PyExc_IndexError,de.what());
+            return NULL;
+        }catch (std::exception& ex) {
+            PyErr_SetString(PyExc_Exception,ex.what());
             return NULL;
         }catch (...) {
             PyErr_SetString(PyExc_Exception,"unknown error");
@@ -13644,12 +15645,12 @@ static PyMethodDef QuantLibcMethods[] = {
 	 { "Thirty360European", (PyCFunction) _wrap_Thirty360European, METH_VARARGS | METH_KEYWORDS },
 	 { "Thirty360Italian", (PyCFunction) _wrap_Thirty360Italian, METH_VARARGS | METH_KEYWORDS },
 	 { "makeDayCounter", (PyCFunction) _wrap_makeDayCounter, METH_VARARGS | METH_KEYWORDS },
-	 { "LexicographicalView", (PyCFunction) _wrap_LexicographicalView, METH_VARARGS | METH_KEYWORDS },
 	 { "ImpliedTermStructure", (PyCFunction) _wrap_ImpliedTermStructure, METH_VARARGS | METH_KEYWORDS },
 	 { "SpreadedTermStructure", (PyCFunction) _wrap_SpreadedTermStructure, METH_VARARGS | METH_KEYWORDS },
 	 { "FlatForward", (PyCFunction) _wrap_FlatForward, METH_VARARGS | METH_KEYWORDS },
 	 { "PiecewiseConstantForwards", (PyCFunction) _wrap_PiecewiseConstantForwards, METH_VARARGS | METH_KEYWORDS },
 	 { "Stock", (PyCFunction) _wrap_Stock, METH_VARARGS | METH_KEYWORDS },
+	 { "LexicographicalView", (PyCFunction) _wrap_LexicographicalView, METH_VARARGS | METH_KEYWORDS },
 	 { "LinearInterpolation", (PyCFunction) _wrap_LinearInterpolation, METH_VARARGS | METH_KEYWORDS },
 	 { "CubicSpline", (PyCFunction) _wrap_CubicSpline, METH_VARARGS | METH_KEYWORDS },
 	 { "transpose", (PyCFunction) _wrap_transpose, METH_VARARGS | METH_KEYWORDS },
@@ -13684,6 +15685,11 @@ static PyMethodDef QuantLibcMethods[] = {
 	 { "Date___cmp__", (PyCFunction) _wrap_Date___cmp__, METH_VARARGS | METH_KEYWORDS },
 	 { "Date___str__", (PyCFunction) _wrap_Date___str__, METH_VARARGS | METH_KEYWORDS },
 	 { "Date___repr__", (PyCFunction) _wrap_Date___repr__, METH_VARARGS | METH_KEYWORDS },
+	 { "delete_DateVector", (PyCFunction) _wrap_delete_DateVector, METH_VARARGS | METH_KEYWORDS },
+	 { "DateVector___len__", (PyCFunction) _wrap_DateVector___len__, METH_VARARGS | METH_KEYWORDS },
+	 { "DateVector___getitem__", (PyCFunction) _wrap_DateVector___getitem__, METH_VARARGS | METH_KEYWORDS },
+	 { "DateVector___setitem__", (PyCFunction) _wrap_DateVector___setitem__, METH_VARARGS | METH_KEYWORDS },
+	 { "DateVector___str__", (PyCFunction) _wrap_DateVector___str__, METH_VARARGS | METH_KEYWORDS },
 	 { "delete_Calendar", (PyCFunction) _wrap_delete_Calendar, METH_VARARGS | METH_KEYWORDS },
 	 { "Calendar_isBusinessDay", (PyCFunction) _wrap_Calendar_isBusinessDay, METH_VARARGS | METH_KEYWORDS },
 	 { "Calendar_isHoliday", (PyCFunction) _wrap_Calendar_isHoliday, METH_VARARGS | METH_KEYWORDS },
@@ -13719,20 +15725,6 @@ static PyMethodDef QuantLibcMethods[] = {
 	 { "new_InvCumulativeNormalDistribution", (PyCFunction) _wrap_new_InvCumulativeNormalDistribution, METH_VARARGS | METH_KEYWORDS },
 	 { "delete_InvCumulativeNormalDistribution", (PyCFunction) _wrap_delete_InvCumulativeNormalDistribution, METH_VARARGS | METH_KEYWORDS },
 	 { "InvCumulativeNormalDistribution___call__", (PyCFunction) _wrap_InvCumulativeNormalDistribution___call__, METH_VARARGS | METH_KEYWORDS },
-	 { "new_Array", (PyCFunction) _wrap_new_Array, METH_VARARGS | METH_KEYWORDS },
-	 { "delete_Array", (PyCFunction) _wrap_delete_Array, METH_VARARGS | METH_KEYWORDS },
-	 { "Array_size", (PyCFunction) _wrap_Array_size, METH_VARARGS | METH_KEYWORDS },
-	 { "Array___getitem__", (PyCFunction) _wrap_Array___getitem__, METH_VARARGS | METH_KEYWORDS },
-	 { "Array___setitem__", (PyCFunction) _wrap_Array___setitem__, METH_VARARGS | METH_KEYWORDS },
-	 { "Array___str__", (PyCFunction) _wrap_Array___str__, METH_VARARGS | METH_KEYWORDS },
-	 { "delete_ArrayLexicographicalView", (PyCFunction) _wrap_delete_ArrayLexicographicalView, METH_VARARGS | METH_KEYWORDS },
-	 { "ArrayLexicographicalView_xSize", (PyCFunction) _wrap_ArrayLexicographicalView_xSize, METH_VARARGS | METH_KEYWORDS },
-	 { "ArrayLexicographicalView_ySize", (PyCFunction) _wrap_ArrayLexicographicalView_ySize, METH_VARARGS | METH_KEYWORDS },
-	 { "ArrayLexicographicalView___getitem__", (PyCFunction) _wrap_ArrayLexicographicalView___getitem__, METH_VARARGS | METH_KEYWORDS },
-	 { "ArrayLexicographicalView___str__", (PyCFunction) _wrap_ArrayLexicographicalView___str__, METH_VARARGS | METH_KEYWORDS },
-	 { "delete_ArrayLexicographicalViewColumn", (PyCFunction) _wrap_delete_ArrayLexicographicalViewColumn, METH_VARARGS | METH_KEYWORDS },
-	 { "ArrayLexicographicalViewColumn___getitem__", (PyCFunction) _wrap_ArrayLexicographicalViewColumn___getitem__, METH_VARARGS | METH_KEYWORDS },
-	 { "ArrayLexicographicalViewColumn___setitem__", (PyCFunction) _wrap_ArrayLexicographicalViewColumn___setitem__, METH_VARARGS | METH_KEYWORDS },
 	 { "delete_HistoryIterator", (PyCFunction) _wrap_delete_HistoryIterator, METH_VARARGS | METH_KEYWORDS },
 	 { "HistoryIterator_date", (PyCFunction) _wrap_HistoryIterator_date, METH_VARARGS | METH_KEYWORDS },
 	 { "HistoryIterator_value", (PyCFunction) _wrap_HistoryIterator_value, METH_VARARGS | METH_KEYWORDS },
@@ -13804,6 +15796,23 @@ static PyMethodDef QuantLibcMethods[] = {
 	 { "Instrument___repr__", (PyCFunction) _wrap_Instrument___repr__, METH_VARARGS | METH_KEYWORDS },
 	 { "Instrument___cmp__", (PyCFunction) _wrap_Instrument___cmp__, METH_VARARGS | METH_KEYWORDS },
 	 { "Instrument___nonzero__", (PyCFunction) _wrap_Instrument___nonzero__, METH_VARARGS | METH_KEYWORDS },
+	 { "delete_Array", (PyCFunction) _wrap_delete_Array, METH_VARARGS | METH_KEYWORDS },
+	 { "Array___len__", (PyCFunction) _wrap_Array___len__, METH_VARARGS | METH_KEYWORDS },
+	 { "Array___getitem__", (PyCFunction) _wrap_Array___getitem__, METH_VARARGS | METH_KEYWORDS },
+	 { "Array___setitem__", (PyCFunction) _wrap_Array___setitem__, METH_VARARGS | METH_KEYWORDS },
+	 { "Array___getslice__", (PyCFunction) _wrap_Array___getslice__, METH_VARARGS | METH_KEYWORDS },
+	 { "Array___setslice__", (PyCFunction) _wrap_Array___setslice__, METH_VARARGS | METH_KEYWORDS },
+	 { "Array___str__", (PyCFunction) _wrap_Array___str__, METH_VARARGS | METH_KEYWORDS },
+	 { "Array___repr__", (PyCFunction) _wrap_Array___repr__, METH_VARARGS | METH_KEYWORDS },
+	 { "Array___nonzero__", (PyCFunction) _wrap_Array___nonzero__, METH_VARARGS | METH_KEYWORDS },
+	 { "delete_ArrayLexicographicalView", (PyCFunction) _wrap_delete_ArrayLexicographicalView, METH_VARARGS | METH_KEYWORDS },
+	 { "ArrayLexicographicalView_xSize", (PyCFunction) _wrap_ArrayLexicographicalView_xSize, METH_VARARGS | METH_KEYWORDS },
+	 { "ArrayLexicographicalView_ySize", (PyCFunction) _wrap_ArrayLexicographicalView_ySize, METH_VARARGS | METH_KEYWORDS },
+	 { "ArrayLexicographicalView___getitem__", (PyCFunction) _wrap_ArrayLexicographicalView___getitem__, METH_VARARGS | METH_KEYWORDS },
+	 { "ArrayLexicographicalView___str__", (PyCFunction) _wrap_ArrayLexicographicalView___str__, METH_VARARGS | METH_KEYWORDS },
+	 { "delete_ArrayLexicographicalViewColumn", (PyCFunction) _wrap_delete_ArrayLexicographicalViewColumn, METH_VARARGS | METH_KEYWORDS },
+	 { "ArrayLexicographicalViewColumn___getitem__", (PyCFunction) _wrap_ArrayLexicographicalViewColumn___getitem__, METH_VARARGS | METH_KEYWORDS },
+	 { "ArrayLexicographicalViewColumn___setitem__", (PyCFunction) _wrap_ArrayLexicographicalViewColumn___setitem__, METH_VARARGS | METH_KEYWORDS },
 	 { "delete_Interpolation", (PyCFunction) _wrap_delete_Interpolation, METH_VARARGS | METH_KEYWORDS },
 	 { "Interpolation___call__", (PyCFunction) _wrap_Interpolation___call__, METH_VARARGS | METH_KEYWORDS },
 	 { "Interpolation___nonzero__", (PyCFunction) _wrap_Interpolation___nonzero__, METH_VARARGS | METH_KEYWORDS },
@@ -14062,9 +16071,9 @@ static swig_type_info _swigt__p_TridiagonalOperator[] = {{"_p_TridiagonalOperato
 static swig_type_info _swigt__p_UniformRandomGenerator[] = {{"_p_UniformRandomGenerator", 0, "UniformRandomGenerator *"},{"_p_UniformRandomGenerator"},{0}};
 static swig_type_info _swigt__p_GaussianRandomGenerator[] = {{"_p_GaussianRandomGenerator", 0, "GaussianRandomGenerator *"},{"_p_GaussianRandomGenerator"},{0}};
 static swig_type_info _swigt__p_MultivariateAccumulator[] = {{"_p_MultivariateAccumulator", 0, "MultivariateAccumulator *"},{"_p_MultivariateAccumulator"},{0}};
-static swig_type_info _swigt__p_InvCumulativeNormalDistribution[] = {{"_p_InvCumulativeNormalDistribution", 0, "InvCumulativeNormalDistribution *"},{"_p_InvCumulativeNormalDistribution"},{0}};
 static swig_type_info _swigt__p_NormalDistribution[] = {{"_p_NormalDistribution", 0, "NormalDistribution *"},{"_p_NormalDistribution"},{0}};
 static swig_type_info _swigt__p_CumulativeNormalDistribution[] = {{"_p_CumulativeNormalDistribution", 0, "CumulativeNormalDistribution *"},{"_p_CumulativeNormalDistribution"},{0}};
+static swig_type_info _swigt__p_InvCumulativeNormalDistribution[] = {{"_p_InvCumulativeNormalDistribution", 0, "InvCumulativeNormalDistribution *"},{"_p_InvCumulativeNormalDistribution"},{0}};
 static swig_type_info _swigt__p_Himalaya[] = {{"_p_Himalaya", 0, "Himalaya *"},{"_p_Himalaya"},{0}};
 static swig_type_info _swigt__p_RiskStatistics[] = {{"_p_RiskStatistics", 0, "RiskStatistics *"},{"_p_RiskStatistics"},{0}};
 static swig_type_info _swigt__p_Statistics[] = {{"_p_Statistics", 0, "Statistics *"},{"_p_Statistics"},{0}};
@@ -14120,9 +16129,9 @@ _swigt__p_TridiagonalOperator,
 _swigt__p_UniformRandomGenerator, 
 _swigt__p_GaussianRandomGenerator, 
 _swigt__p_MultivariateAccumulator, 
-_swigt__p_InvCumulativeNormalDistribution, 
 _swigt__p_NormalDistribution, 
 _swigt__p_CumulativeNormalDistribution, 
+_swigt__p_InvCumulativeNormalDistribution, 
 _swigt__p_Himalaya, 
 _swigt__p_RiskStatistics, 
 _swigt__p_Statistics, 
