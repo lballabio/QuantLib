@@ -26,7 +26,6 @@ using namespace QuantLib::Pricers;
 using CalibrationHelpers::CapHelper;
 using CalibrationHelpers::SwaptionHelper;
 
-using Calendars::TARGET;
 using DayCounters::ActualActual;
 using DayCounters::Actual360;
 using DayCounters::Thirty360;
@@ -34,7 +33,6 @@ using Indexes::Xibor;
 using Indexes::Euribor;
 
 using TermStructures::PiecewiseFlatForward;
-using TermStructures::FlatForward;
 using TermStructures::RateHelper;
 using TermStructures::DepositRateHelper;
 using TermStructures::SwapRateHelper;
@@ -61,9 +59,9 @@ double swaptionVols[] = {
 void calibrateModel(const Handle<Model>& model, 
                     CalibrationSet& calibs, 
                     double lambda) {
-    Handle<Optimization::Method> om(new Optimization::Simplex(lambda, 1e-7));
+    Handle<Optimization::Method> om(new Optimization::Simplex(lambda, 1e-9));
 
-    om->setEndCriteria(Optimization::EndCriteria(10000, 1e-5));
+    om->setEndCriteria(Optimization::EndCriteria(10000, 1e-7));
     model->calibrate(calibs, om);
 
     Size i;
@@ -87,18 +85,19 @@ void calibrateModel(const Handle<Model>& model,
 int main(int argc, char* argv[])
 {
     try {
-        Size i;
         Date todaysDate(15, February, 2002);
-        Calendar calendar = Calendars::Milan();
+        Calendar calendar = Calendars::TARGET();
         int settlementDays = 2;
         Currency currency = EUR;
 
-        //Bootstrapping the yield curve:
-        DayCounter depositDayCounter = Thirty360();
+        //Instruments used to bootstrap the yield curve:
         std::vector<Handle<RateHelper> > instruments;
 
-        //Deposit rates bootstrapping section
+        //Deposit rates
+        DayCounter depositDayCounter = Thirty360();
+
         Rate weekRates[3] = {3.295, 3.3, 3.3};
+        Size i;
         for (i=0; i<3; i++) {
             Handle<MarketElement> depositRate(
                 new SimpleMarketElement(weekRates[i]*0.01));
@@ -121,8 +120,7 @@ int main(int argc, char* argv[])
             instruments.push_back(depositHelper);
         }
 
-        //Swap bootstrapping section
-
+        //Swap rates
         Rate swapRates[13] = {
             3.6425, 4.0875, 4.38, 4.5815, 4.74325, 4.87375, 
             4.9775, 5.07, 5.13, 5.1825, 5.36, 5.45125, 5.43875};
@@ -144,6 +142,8 @@ int main(int argc, char* argv[])
             instruments.push_back(swapHelper);
         }
 
+
+        // bootstrapping the yield curve
         Handle<PiecewiseFlatForward> myTermStructure(new
             PiecewiseFlatForward(currency, depositDayCounter,
             todaysDate, calendar, settlementDays, instruments));
@@ -191,18 +191,32 @@ int main(int argc, char* argv[])
         TimeGrid grid(times, 30);
 
         Handle<Model> modelHW(new HullWhite(rhTermStructure));
+        Handle<Model> modelHW2(new HullWhite(rhTermStructure));
         Handle<Model> modelCIR(new ExtendedCoxIngersollRoss(rhTermStructure));
         Handle<Model> modelBK(new BlackKarasinski(rhTermStructure));
         Handle<Model> modelG2(new G2(rhTermStructure));
 
         std::cout << "Calibrating to swaptions" << std::endl;
 
-        std::cout << "Hull-White: " << std::endl;
+        std::cout << "Hull-White: (analitycal formulae)" << std::endl;
         swaptions.setPricingEngine(
             Handle<OptionPricingEngine>(new JamshidianSwaption(modelHW)));
+
+
         calibrateModel(modelHW, swaptions, 0.25);
         std::cout << "calibrated to " 
                   << ArrayFormatter::toString(modelHW->params(),6) 
+                  << std::endl 
+                  << std::endl;
+
+        std::cout << "Hull-White: (numerical calibration)" << std::endl;
+        swaptions.setPricingEngine(
+            Handle<OptionPricingEngine>(new TreeSwaption(modelHW2, grid)));
+
+
+        calibrateModel(modelHW2, swaptions, 0.25);
+        std::cout << "calibrated to " 
+                  << ArrayFormatter::toString(modelHW2->params(),6) 
                   << std::endl 
                   << std::endl;
 
@@ -216,11 +230,11 @@ int main(int argc, char* argv[])
                   << std::endl;
 
 /*
-        cout << "Cox-Ingersoll-Ross: " << endl;
+        std::cout << "Cox-Ingersoll-Ross: " << std::endl;
         swaptions.setPricingEngine(
             Handle<OptionPricingEngine>(new TreeSwaption(modelCIR, grid)));
         calibrateModel(modelCIR, swaptions, 0.25);
-        cout << "calibrated to " << modelCIR->params() << endl;
+        std::cout << "calibrated to " << modelCIR->params() << std::endl;
 */
 
         std::cout << "Pricing an ATM bermudan swaption" << std::endl;
@@ -236,7 +250,7 @@ int main(int argc, char* argv[])
         int fixingDays = 0;
 
         Handle<SimpleSwap> swap(new SimpleSwap(
-            payFixedRate, Date(15, February, 2003), 5, Years,
+            payFixedRate, todaysDate.plusYears(1), 5, Years,
             calendar, roll, 1000.0, fixedLegFrequency, fixedRate,
             fixedLegIsAdjusted, fixedLegDayCounter, floatingLegFrequency,
             indexSixMonths, fixingDays, 0.0, rhTermStructure));
@@ -256,13 +270,18 @@ int main(int argc, char* argv[])
         //Do the pricing for each model
         bermudanSwaption.setPricingEngine(
             Handle<OptionPricingEngine>(new TreeSwaption(modelHW, 100)));
-        std::cout << "HW:  " << bermudanSwaption.NPV() << std::endl;
+        std::cout << "HW:       " << bermudanSwaption.NPV() << std::endl;
+        bermudanSwaption.setPricingEngine(
+            Handle<OptionPricingEngine>(new TreeSwaption(modelHW2, 100)));
+        std::cout << "HW (num): " << bermudanSwaption.NPV() << std::endl;
         bermudanSwaption.setPricingEngine(
             Handle<OptionPricingEngine>(new TreeSwaption(modelBK, 100)));
-        std::cout << "BK:  " << bermudanSwaption.NPV() << std::endl;
-/*        bermudanSwaption.setPricingEngine(
+        std::cout << "BK:       " << bermudanSwaption.NPV() << std::endl;
+/*
+        bermudanSwaption.setPricingEngine(
             Handle<OptionPricingEngine>(new TreeSwaption(modelCIR, 100)));
-        std::cout << "CIR: " << bermudanSwaption.NPV() << std::endl;*/
+        std::cout << "CIR:     " << bermudanSwaption.NPV() << std::endl;
+*/
 
         std::cout << "Pricing an OTM bermudan swaption" << std::endl;
 
@@ -279,13 +298,18 @@ int main(int argc, char* argv[])
         //Do the pricing for each model
         otmBermudanSwaption.setPricingEngine(
             Handle<OptionPricingEngine>(new TreeSwaption(modelHW, 100)));
-        std::cout << "HW:  " << otmBermudanSwaption.NPV() << std::endl;
+        std::cout << "HW:       " << otmBermudanSwaption.NPV() << std::endl;
+        otmBermudanSwaption.setPricingEngine(
+            Handle<OptionPricingEngine>(new TreeSwaption(modelHW2, 100)));
+        std::cout << "HW (num): " << otmBermudanSwaption.NPV() << std::endl;
         otmBermudanSwaption.setPricingEngine(
             Handle<OptionPricingEngine>(new TreeSwaption(modelBK, 100)));
-        std::cout << "BK:  " << otmBermudanSwaption.NPV() << std::endl;
-/*        otmBermudanSwaption.setPricingEngine(
+        std::cout << "BK:       " << otmBermudanSwaption.NPV() << std::endl;
+/*
+        otmBermudanSwaption.setPricingEngine(
             Handle<OptionPricingEngine>(new TreeSwaption(modelCIR, 100)));
-        std::cout << "CIR: " << otmBermudanSwaption.NPV() << std::endl;*/
+        std::cout << "CIR:     " << otmBermudanSwaption.NPV() << std::endl;
+*/
 
         return 0;
     } catch (std::exception& e) {
