@@ -1,6 +1,6 @@
 
 /*
- Copyright (C) 2003 Ferdinando Ametrano
+ Copyright (C) 2003, 2004 Ferdinando Ametrano
  Copyright (C) 2000, 2001, 2002, 2003 RiskMap srl
 
  This file is part of QuantLib, a free-software/open-source library
@@ -55,10 +55,10 @@ namespace QuantLib {
                  the same size.
         */
         //@{
-        Matrix& operator+=(const Matrix&);
-        Matrix& operator-=(const Matrix&);
-        Matrix& operator*=(double);
-        Matrix& operator/=(double);
+        const Matrix& operator+=(const Matrix&);
+        const Matrix& operator-=(const Matrix&);
+        const Matrix& operator*=(double);
+        const Matrix& operator/=(double);
         //@}
 
         typedef double* iterator;
@@ -134,38 +134,38 @@ namespace QuantLib {
     // algebraic operators
 
     /*! \relates Matrix */
-    Disposable<Matrix> operator+(const Matrix&, const Matrix&);
+    const Disposable<Matrix> operator+(const Matrix&, const Matrix&);
     /*! \relates Matrix */
-    Disposable<Matrix> operator-(const Matrix&, const Matrix&);
+    const Disposable<Matrix> operator-(const Matrix&, const Matrix&);
     /*! \relates Matrix */
-    Disposable<Matrix> operator*(const Matrix&, double);
+    const Disposable<Matrix> operator*(const Matrix&, double);
     /*! \relates Matrix */
-    Disposable<Matrix> operator*(double, const Matrix&);
+    const Disposable<Matrix> operator*(double, const Matrix&);
     /*! \relates Matrix */
-    Disposable<Matrix> operator/(const Matrix&, double);
+    const Disposable<Matrix> operator/(const Matrix&, double);
 
 
     // vectorial products
 
     /*! \relates Matrix */
-    Disposable<Array> operator*(const Array&, const Matrix&);
+    const Disposable<Array> operator*(const Array&, const Matrix&);
     /*! \relates Matrix */
-    Disposable<Array> operator*(const Matrix&, const Array&);
+    const Disposable<Array> operator*(const Matrix&, const Array&);
     /*! \relates Matrix */
-    Disposable<Matrix> operator*(const Matrix&, const Matrix&);
+    const Disposable<Matrix> operator*(const Matrix&, const Matrix&);
 
     // misc. operations
 
     /*! \relates Matrix */
-    Disposable<Matrix> transpose(const Matrix&);
+    const Disposable<Matrix> transpose(const Matrix&);
 
     /*! \relates Matrix */
-    Disposable<Matrix> outerProduct(const Array& v1, const Array& v2);
+    const Disposable<Matrix> outerProduct(const Array& v1, const Array& v2);
 
     /*! \relates Matrix */
     template<class Iterator1, class Iterator2>
-    Disposable<Matrix> outerProduct(Iterator1 v1begin, Iterator1 v1end,
-                                    Iterator2 v2begin, Iterator2 v2end);
+    const Disposable<Matrix> outerProduct(Iterator1 v1begin, Iterator1 v1end,
+                                          Iterator2 v2begin, Iterator2 v2end);
 
     struct SalvagingAlgorithm {
         enum Type {None, Spectral, Hypersphere};
@@ -188,16 +188,16 @@ namespace QuantLib {
 
         \relates Matrix
     */
-    Disposable<Matrix> pseudoSqrt(const Matrix& realSymmetricMatrix,
-                                  SalvagingAlgorithm::Type sa);
+    const Disposable<Matrix> pseudoSqrt(const Matrix& realSymmetricMatrix,
+                                        SalvagingAlgorithm::Type sa);
 
-    Disposable<Matrix> rankReducedSqrt(const Matrix& realSymmetricMatrix,
-                                       Size maxRank,
-                                       double componentRetainedPercentage,
-                                       SalvagingAlgorithm::Type sa);
+    const Disposable<Matrix> rankReducedSqrt(const Matrix& realSymmetricMatrix,
+                                             Size maxRank,
+                                             double componentRetainedPercentag,
+                                             SalvagingAlgorithm::Type sa);
 
-    Disposable<Matrix> CholeskyDecomposition(const Matrix& m,
-                                             bool flexible = false);
+    const Disposable<Matrix> CholeskyDecomposition(const Matrix& m,
+                                                   bool flexible = false);
 
     // inline definitions
 
@@ -205,7 +205,7 @@ namespace QuantLib {
 
         use CholeskyDecompostion or pseudoSqrt instead
     */
-    inline Disposable<Matrix> matrixSqrt(const Matrix& m) {
+    inline const Disposable<Matrix> matrixSqrt(const Matrix& m) {
         return pseudoSqrt(m, SalvagingAlgorithm::None);
     }
 
@@ -283,7 +283,7 @@ namespace QuantLib {
         std::copy(from.begin(),from.end(),begin());
     }
 
-    inline Matrix& Matrix::operator+=(const Matrix& m) {
+    inline const Matrix& Matrix::operator+=(const Matrix& m) {
         QL_REQUIRE(rows_ == m.rows_ && columns_ == m.columns_,
                    "matrices with different sizes cannot be added");
         std::transform(begin(),end(),m.begin(),
@@ -291,7 +291,7 @@ namespace QuantLib {
         return *this;
     }
 
-    inline Matrix& Matrix::operator-=(const Matrix& m) {
+    inline const Matrix& Matrix::operator-=(const Matrix& m) {
         QL_REQUIRE(rows_ == m.rows_ && columns_ == m.columns_,
                    "matrices with different sizes cannot be subtracted");
         std::transform(begin(),end(),m.begin(),begin(),
@@ -299,13 +299,13 @@ namespace QuantLib {
         return *this;
     }
 
-    inline Matrix& Matrix::operator*=(double x) {
+    inline const Matrix& Matrix::operator*=(double x) {
         std::transform(begin(),end(),begin(),
                        std::bind2nd(std::multiplies<double>(),x));
         return *this;
     }
 
-    inline Matrix& Matrix::operator/=(double x) {
+    inline const Matrix& Matrix::operator/=(double x) {
         std::transform(begin(),end(),begin(),
                        std::bind2nd(std::divides<double>(),x));
         return *this;
@@ -441,8 +441,8 @@ namespace QuantLib {
         return columns_;
     }
 
-    inline Disposable<Matrix> operator+(const Matrix& m1,
-                                        const Matrix& m2) {
+    inline const Disposable<Matrix> operator+(const Matrix& m1,
+                                              const Matrix& m2) {
         QL_REQUIRE(m1.rows() == m2.rows() &&
                    m1.columns() == m2.columns(),
                    "matrices with different sizes cannot be added");
@@ -452,8 +452,8 @@ namespace QuantLib {
         return temp;
     }
 
-    inline Disposable<Matrix> operator-(const Matrix& m1,
-                                        const Matrix& m2) {
+    inline const Disposable<Matrix> operator-(const Matrix& m1,
+                                              const Matrix& m2) {
         QL_REQUIRE(m1.rows() == m2.rows() &&
                    m1.columns() == m2.columns(),
                    "matrices with different sizes cannot be subtracted");
@@ -463,28 +463,28 @@ namespace QuantLib {
         return temp;
     }
 
-    inline Disposable<Matrix> operator*(const Matrix& m, double x) {
+    inline const Disposable<Matrix> operator*(const Matrix& m, double x) {
         Matrix temp(m.rows(),m.columns());
         std::transform(m.begin(),m.end(),temp.begin(),
                        std::bind2nd(std::multiplies<double>(),x));
         return temp;
     }
 
-    inline Disposable<Matrix> operator*(double x, const Matrix& m) {
+    inline const Disposable<Matrix> operator*(double x, const Matrix& m) {
         Matrix temp(m.rows(),m.columns());
         std::transform(m.begin(),m.end(),temp.begin(),
                        std::bind2nd(std::multiplies<double>(),x));
         return temp;
     }
 
-    inline Disposable<Matrix> operator/(const Matrix& m, double x) {
+    inline const Disposable<Matrix> operator/(const Matrix& m, double x) {
         Matrix temp(m.rows(),m.columns());
         std::transform(m.begin(),m.end(),temp.begin(),
                        std::bind2nd(std::divides<double>(),x));
         return temp;
     }
 
-    inline Disposable<Array> operator*(const Array& v, const Matrix& m) {
+    inline const Disposable<Array> operator*(const Array& v, const Matrix& m) {
         QL_REQUIRE(v.size() == m.rows(),
                    "vectors and matrices with different sizes "
                    "cannot be multiplied");
@@ -496,7 +496,7 @@ namespace QuantLib {
         return result;
     }
 
-    inline Disposable<Array> operator*(const Matrix& m, const Array& v) {
+    inline const Disposable<Array> operator*(const Matrix& m, const Array& v) {
         QL_REQUIRE(v.size() == m.columns(),
                    "vectors and matrices with different sizes "
                    "cannot be multiplied");
@@ -507,8 +507,8 @@ namespace QuantLib {
         return result;
     }
 
-    inline Disposable<Matrix> operator*(const Matrix& m1,
-                                        const Matrix& m2) {
+    inline const Disposable<Matrix> operator*(const Matrix& m1,
+                                              const Matrix& m2) {
         QL_REQUIRE(m1.columns() == m2.rows(),
                    "matrices with different sizes cannot be multiplied");
         Matrix result(m1.rows(),m2.columns());
@@ -520,23 +520,23 @@ namespace QuantLib {
         return result;
     }
 
-    inline Disposable<Matrix> transpose(const Matrix& m) {
+    inline const Disposable<Matrix> transpose(const Matrix& m) {
         Matrix result(m.columns(),m.rows());
         for (Size i=0; i<m.rows(); i++)
             std::copy(m.row_begin(i),m.row_end(i),result.column_begin(i));
         return result;
     }
 
-    inline Disposable<Matrix> outerProduct(const Array& v1,
-                                           const Array& v2) {
+    inline const Disposable<Matrix> outerProduct(const Array& v1,
+                                                 const Array& v2) {
         return outerProduct(v1.begin(), v1.end(), v2.begin(), v2.end());
     }
 
     template<class Iterator1, class Iterator2>
-    inline Disposable<Matrix> outerProduct(Iterator1 v1begin,
-                                           Iterator1 v1end,
-                                           Iterator2 v2begin,
-                                           Iterator2 v2end) {
+    inline const Disposable<Matrix> outerProduct(Iterator1 v1begin,
+                                                 Iterator1 v1end,
+                                                 Iterator2 v2begin,
+                                                 Iterator2 v2end) {
 
         Size size1 = std::distance(v1begin, v1end);
         QL_REQUIRE(size1>0, "outerProduct: null dimension first vector");

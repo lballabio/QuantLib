@@ -1,6 +1,6 @@
 
 /*
- Copyright (C) 2003 Ferdinando Ametrano
+ Copyright (C) 2003, 2004 Ferdinando Ametrano
  Copyright (C) 2000, 2001, 2002, 2003 RiskMap srl
 
  This file is part of QuantLib, a free-software/open-source library
@@ -35,7 +35,7 @@ namespace QuantLib {
         Revised and extended in "Monte Carlo Methods in Finance",
         by Peter Jäckel, Chapter 6
     */
-    Disposable<Matrix> pseudoSqrt(const Matrix &realSymmetricMatrix,
+    const Disposable<Matrix> pseudoSqrt(const Matrix &realSymmetricMatrix,
         SalvagingAlgorithm::Type sa) {
 
 
@@ -95,10 +95,9 @@ namespace QuantLib {
     }
 
 
-    Disposable<Matrix> rankReducedSqrt(const Matrix& realSymmetricMatrix,
-                                       Size maxRank,
-                                       double componentRetainedPercentage,
-                                       SalvagingAlgorithm::Type sa) {
+    const Disposable<Matrix> rankReducedSqrt(const Matrix& realSymmetricMatrix,
+        Size maxRank, double componentRetainedPercentage,
+        SalvagingAlgorithm::Type sa) {
 
         QL_REQUIRE(componentRetainedPercentage>0.0,
             "Matrix rankReducedSqrt: no eigenvalues retained");
@@ -161,7 +160,8 @@ namespace QuantLib {
     }
 
 
-    Disposable<Matrix> CholeskyDecomposition(const Matrix &S, bool flexible) {
+    const Disposable<Matrix> CholeskyDecomposition(const Matrix &S,
+        bool flexible) {
         Size i, j, size = S.rows();
         // should check for simmetry too: the algorithm will only use
         // the upper triangular part of S anyway...
