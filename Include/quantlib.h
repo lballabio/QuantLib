@@ -25,10 +25,13 @@
 	$Source$
 	$Name$
 	$Log$
+	Revision 1.9  2000/12/27 17:18:35  lballabio
+	Changes for compiling under Linux and Alpha Linux
+
 	Revision 1.8  2000/12/27 15:23:38  marmar
 	Random number generators has been updated and documented.
 	Now the Sample Generator idea is fully implemented
-
+	
 	Revision 1.7  2000/12/15 12:17:58  marmar
 	Adding uniform and gaussian random number generators
 	
@@ -128,7 +131,6 @@
 #include "statistics.h"
 #include "newcubicspline.h"
 #include "location.h"		
-#include "randomgenerator.h"
 
 // Monte Carlo tools
 #include "boxmuller.h"		

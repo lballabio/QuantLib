@@ -54,7 +54,7 @@ MAKEINDEX	= makeindex
 DVIPS		= dvips
 
 # Options
-CC_OPTS		= -q -c -tWM -n$(OUTPUT_DIR) -w-8027 -w-8012 \
+CC_OPTS		= -q -c -tWM -n$(OUTPUT_DIR) -w-8026 -w-8027 -w-8012 \
 	-I$(INCLUDE_DIR) \
 	-I$(INCLUDE_DIR)\Calendars \
 	-I$(INCLUDE_DIR)\Currencies \

@@ -27,9 +27,12 @@
 	$Source$
 	$Name$
 	$Log$
+	Revision 1.11  2000/12/27 17:18:35  lballabio
+	Changes for compiling under Linux and Alpha Linux
+
 	Revision 1.10  2000/12/27 14:05:57  lballabio
 	Turned Require and Ensure functions into QL_REQUIRE and QL_ENSURE macros
-
+	
 	Revision 1.9  2000/12/14 12:32:31  lballabio
 	Added CVS tags in Doxygen file documentation blocks
 	
@@ -38,7 +41,6 @@
 #include "actualactual.h"
 #include "thirty360european.h"
 #include "null.h"
-#include <cmath>
 
 namespace QuantLib {
 

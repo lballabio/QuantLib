@@ -1,3 +1,6 @@
 Many thanks to the QuantLib contributors:
 
-Enrico Sirola (enrico.sirola@riskmap.net)
+David Binderman
+Peter Schmitteckert
+Enrico Sirola
+Bernd Johannes Wuebben

@@ -27,9 +27,12 @@
 	$Source$
 	$Name$
 	$Log$
+	Revision 1.4  2000/12/27 17:18:35  lballabio
+	Changes for compiling under Linux and Alpha Linux
+
 	Revision 1.3  2000/12/14 12:32:30  lballabio
 	Added CVS tags in Doxygen file documentation blocks
-
+	
 */
 
 #ifndef quantlib_normal_distribution_h
@@ -37,7 +40,6 @@
 
 #include "qldefines.h"
 #include <functional>
-#include <cmath>
 
 namespace QuantLib {
 

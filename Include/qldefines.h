@@ -31,9 +31,12 @@
 	$Source$
 	$Name$
 	$Log$
+	Revision 1.20  2000/12/27 17:18:35  lballabio
+	Changes for compiling under Linux and Alpha Linux
+
 	Revision 1.19  2000/12/27 14:05:56  lballabio
 	Turned Require and Ensure functions into QL_REQUIRE and QL_ENSURE macros
-
+	
 	Revision 1.18  2000/12/20 15:27:02  lballabio
 	Added new defines for helping Linux port
 	
@@ -86,30 +89,32 @@
 
 // Compiler-dependent switches
 
-#if defined(_MSC_VER)					// Microsoft Visual C++
+#if defined(_MSC_VER)					// Microsoft Visual C++ 6.0
 	// disable useless warnings
 	#pragma warning(disable: 4786)  // identifier truncated in debug info
 	// set switches
+	#define QL_USE_NEW_HEADERS					1
 	#define QL_CMATH_IN_STD						0
 	#define QL_CCTYPE_IN_STD					0
 	#define QL_CTIME_IN_STD						0
 	#define QL_HAS_LIMITS						1
-	#define QL_HAS_SSTREAM						1
-	#define QL_EXPRESSION_TEMPLATES_WORK		1
+	#define QL_HAS_MIN_AND_MAX					1
 	#define QL_TEMPLATE_METAPROGRAMMING_WORKS	1
+	#define QL_EXPRESSION_TEMPLATES_WORK		1
 	#define QL_REQUIRES_DUMMY_RETURN			1
 	#define QL_BROKEN_TEMPLATE_SPECIALIZATION	1
 	#define QL_GARBLED_MIN_AND_MAX				1
 	#define QL_GARBLED_REVERSE_ITERATORS		1
 	#define QL_GARBLED_PTR_CONST				1
 
-#elif defined(__BORLANDC__)				// Borland C++
+#elif defined(__BORLANDC__)				// Borland C++ 5.5
 	// set switches
+	#define QL_USE_NEW_HEADERS					1
 	#define QL_CMATH_IN_STD						1
 	#define QL_CCTYPE_IN_STD					1
 	#define QL_CTIME_IN_STD						1
 	#define QL_HAS_LIMITS						1
-	#define QL_HAS_SSTREAM						1
+	#define QL_HAS_MIN_AND_MAX					1
 	#define QL_TEMPLATE_METAPROGRAMMING_WORKS	0
 	#define QL_EXPRESSION_TEMPLATES_WORK		1
 	#define QL_REQUIRES_DUMMY_RETURN			0
@@ -118,13 +123,14 @@
 	#define QL_GARBLED_REVERSE_ITERATORS		0
 	#define QL_GARBLED_PTR_CONST				0
 
-#elif defined(__MWERKS__)				// Metrowerks CodeWarrior
+#elif defined(__MWERKS__)				// Metrowerks CodeWarrior 4.0
 	// set switches
+	#define QL_USE_NEW_HEADERS					1
 	#define QL_CMATH_IN_STD						1
 	#define QL_CCTYPE_IN_STD					1
 	#define QL_CTIME_IN_STD						1
 	#define QL_HAS_LIMITS						1
-	#define QL_HAS_SSTREAM						1
+	#define QL_HAS_MIN_AND_MAX					1
 	#define QL_TEMPLATE_METAPROGRAMMING_WORKS	1
 	#define QL_EXPRESSION_TEMPLATES_WORK		1
 	#define QL_REQUIRES_DUMMY_RETURN			1
@@ -133,13 +139,30 @@
 	#define QL_GARBLED_REVERSE_ITERATORS		0
 	#define QL_GARBLED_PTR_CONST				0
 
-#elif defined(__GNUC__)					// GNU C++
+#elif defined(__GNUC__)					// GNU C++ 2.95.2
 	// set switches
+	#define QL_USE_NEW_HEADERS					1
 	#define QL_CMATH_IN_STD						0
 	#define QL_CCTYPE_IN_STD					0
 	#define QL_CTIME_IN_STD						0
 	#define QL_HAS_LIMITS						0
-	#define QL_HAS_SSTREAM						0
+	#define QL_HAS_MIN_AND_MAX					1
+	#define QL_TEMPLATE_METAPROGRAMMING_WORKS	0
+	#define QL_EXPRESSION_TEMPLATES_WORK		0
+	#define QL_REQUIRES_DUMMY_RETURN			0
+	#define QL_BROKEN_TEMPLATE_SPECIALIZATION	0
+	#define QL_GARBLED_MIN_AND_MAX				0
+	#define QL_GARBLED_REVERSE_ITERATORS		0
+	#define QL_GARBLED_PTR_CONST				0
+
+#elif defined(__DECCXX)					// Compaq Alpha C++ 6.3
+	// set switches
+	#define QL_USE_NEW_HEADERS					0
+	#define QL_CMATH_IN_STD						0
+	#define QL_CCTYPE_IN_STD					0
+	#define QL_CTIME_IN_STD						0
+	#define QL_HAS_LIMITS						1
+	#define QL_HAS_MIN_AND_MAX					0
 	#define QL_TEMPLATE_METAPROGRAMMING_WORKS	0
 	#define QL_EXPRESSION_TEMPLATES_WORK		0
 	#define QL_REQUIRES_DUMMY_RETURN			0
@@ -150,11 +173,12 @@
 
 #else									// Generic ANSI C++ compliant compiler
 	// set switches
+	#define QL_USE_NEW_HEADERS					1
 	#define QL_CMATH_IN_STD						1
 	#define QL_CCTYPE_IN_STD					1
 	#define QL_CTIME_IN_STD						1
 	#define QL_HAS_LIMITS						1
-	#define QL_HAS_SSTREAM						1
+	#define QL_HAS_MIN_AND_MAX					1
 	#define QL_TEMPLATE_METAPROGRAMMING_WORKS	1
 	#define QL_EXPRESSION_TEMPLATES_WORK		1
 	#define QL_REQUIRES_DUMMY_RETURN			0
@@ -180,13 +204,24 @@
 	are sometimes too advanced for the template implementation of current compilers.
 */
 
+/*! \def QL_USE_NEW_HEADERS
+	\brief Are C headers included as <cmath>, or still as <math.h>?
+	
+	Some compilers still do not implement the new standard.
+*/
+
 /*! \def QL_CMATH_IN_STD
 	\brief Are math functions defined in the std namespace?
 	
 	Some compilers still define them in the global namespace.
 */
 
-#include <cmath>
+#if QL_USE_NEW_HEADERS
+	#include <cmath>
+#else
+	#include <math.h>
+#endif
+
 #if QL_CMATH_IN_STD
 	#define QL_SQRT	std::sqrt
 	#define QL_FABS	std::fabs
@@ -212,7 +247,13 @@
 	
 	Some compilers still define them in the global namespace.
 */
-#include <cctype>
+
+#if QL_USE_NEW_HEADERS
+	#include <cctype>
+#else
+	#include <ctype.h>
+#endif
+
 #if QL_CCTYPE_IN_STD
 	#define QL_STRLEN	std::strlen
 	#define QL_TOLOWER	std::tolower
@@ -228,7 +269,13 @@
 	
 	Some compilers still define them in the global namespace.
 */
-#include <ctime>
+
+#if QL_USE_NEW_HEADERS
+	#include <ctime>
+#else
+	#include <time.h>
+#endif
+
 #if QL_CTIME_IN_STD
 	#define QL_CLOCK	std::clock
 #else
@@ -255,21 +302,6 @@
 	#define QL_MIN_DOUBLE	DBL_MIN
 	#define QL_MAX_DOUBLE	DBL_MAX
 	#define QL_EPSILON		DBL_EPSILON
-#endif
-
-/*! \def QL_HAS_SSTREAM
-	\brief Does the <sstream> header exist?
-	
-	Some compilers do not give an implementation of it yet
-*/
-#if QL_HAS_SSTREAM
-	#include <sstream>
-	#define QL_ISSTREAM		std::istringstream
-	#define QL_OSSTREAM		std::ostringstream
-#else
-	#include <strstream>
-	#define QL_ISSTREAM		std::istrstream
-	#define QL_OSSTREAM		std::ostrstream
 #endif
 
 /*! \def QL_REQUIRES_DUMMY_RETURN
@@ -310,13 +342,23 @@
 	They decided to call them <tt>std::_cpp_min</tt> and <tt>std::_cpp_max</tt> to avoid
 	the hassle of rewriting their code.
 */
+
+/*! \def QL_HAS_MIN_AND_MAX
+	\brief are std::min and std::max defined?
+	
+	Some compilers do not implement them yet
+*/
+
 #include <algorithm>
 #if QL_GARBLED_MIN_AND_MAX
 	#define QL_MIN	std::_cpp_min
 	#define QL_MAX	std::_cpp_max
-#else
+#elif QL_HAS_MIN_MAX
 	#define QL_MIN	std::min
 	#define QL_MAX	std::max
+#else
+	template <class T> T QL_MIN(const T& x, const T& y) { return x < y ? x : y; }
+	template <class T> T QL_MAX(const T& x, const T& y) { return x > y ? x : y; }
 #endif
 
 /*! \def QL_GARBLED_REVERSE_ITERATORS

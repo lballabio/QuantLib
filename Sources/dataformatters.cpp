@@ -27,9 +27,12 @@
 	$Source$
 	$Name$
 	$Log$
+	Revision 1.9  2000/12/27 17:18:35  lballabio
+	Changes for compiling under Linux and Alpha Linux
+
 	Revision 1.8  2000/12/20 17:00:59  enri
 	modified to use new macros
-
+	
 	Revision 1.7  2000/12/20 15:29:47  lballabio
 	Using new defines for helping Linux port
 	
@@ -39,31 +42,20 @@
 */
 
 #include "dataformatters.h"
+#include <stdio.h>
 
 namespace QuantLib {
 	
 	std::string IntegerFormatter::toString(int i, int digits) {
-		QL_OSSTREAM out;
-		if (!IsNull(digits)) {
-			out.width(digits);
-			out.fill('0');
-		}
-		out << i;
-		return out.str();
+		char s[64];
+		sprintf(s,"%*d",(digits>64?64:digits),i);
+		return std::string(s);
 	}
 
 	std::string DoubleFormatter::toString(double x, int precision, int digits) {
-		QL_OSSTREAM out;
-		if (!IsNull(precision)) {
-			out.setf(std::ios::fixed);
-			out.precision(precision);
-		}
-		if (!IsNull(digits)) {
-			out.width(digits);
-			out.fill(' ');
-		}
-		out << x;
-		return out.str();
+		char s[64];
+		sprintf(s,"%*.*lf",(digits>64?64:digits),(precision>64?64:precision),x);
+		return std::string(s);
 	}
 
 	std::string EuroFormatter::toString(double amount) {

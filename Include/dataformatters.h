@@ -27,9 +27,12 @@
 	$Source$
 	$Name$
 	$Log$
+	Revision 1.6  2000/12/27 17:18:35  lballabio
+	Changes for compiling under Linux and Alpha Linux
+
 	Revision 1.5  2000/12/14 12:32:29  lballabio
 	Added CVS tags in Doxygen file documentation blocks
-
+	
 */
 
 #ifndef quantlib_data_formatters_h
@@ -45,13 +48,13 @@ namespace QuantLib {
 	//! Formats integers for output
 	class IntegerFormatter {
 	  public:
-		static std::string toString(int i, int digits = Null<int>());
+		static std::string toString(int i, int digits = 0);
 	};
 
 	//! Formats doubles for output
 	class DoubleFormatter {
 	  public:
-		static std::string toString(double x, int precision = Null<int>(), int digits = Null<int>());
+		static std::string toString(double x, int precision = 6, int digits = 0);
 	};
 
 	//! Formats amounts in Euro for output

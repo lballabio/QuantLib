@@ -27,9 +27,12 @@
 	$Source$
 	$Name$
 	$Log$
+	Revision 1.11  2000/12/27 17:18:35  lballabio
+	Changes for compiling under Linux and Alpha Linux
+
 	Revision 1.10  2000/12/27 14:05:56  lballabio
 	Turned Require and Ensure functions into QL_REQUIRE and QL_ENSURE macros
-
+	
 	Revision 1.9  2000/12/18 18:26:39  lballabio
 	Corrected Doxygen grouping
 	
@@ -49,7 +52,6 @@
 #include <algorithm>
 #include <functional>
 #include <numeric>
-#include <cmath>
 
 /* The concepts implemented here with regard to vector algebra are from 
    T. L. Veldhuizen, "Expression templates", C++ Report, 7(5):26-31, June 1995

@@ -27,9 +27,12 @@
 	$Source$
 	$Name$
 	$Log$
+	Revision 1.7  2000/12/27 17:18:35  lballabio
+	Changes for compiling under Linux and Alpha Linux
+
 	Revision 1.6  2000/12/27 14:05:56  lballabio
 	Turned Require and Ensure functions into QL_REQUIRE and QL_ENSURE macros
-
+	
 	Revision 1.5  2000/12/14 12:32:29  lballabio
 	Added CVS tags in Doxygen file documentation blocks
 	
@@ -49,7 +52,7 @@ namespace QuantLib {
 	  public:
 		explicit Error(const std::string& what = "") : message(what) {}
 		//! returns the error message.
-		const char* what() const { return message.c_str(); }
+		const char* what() const throw () { return message.c_str(); }
 	  private:
 		std::string message;
 	};
