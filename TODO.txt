@@ -10,6 +10,8 @@ COMPILING
     Borland projects
 
 LIBRARY
+    Nicolas spline contribution
+    Maxim integral
     introduce size_t where appropriate
     Payoff class from EuropeanOption into QuantLib
     timer class
