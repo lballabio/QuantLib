@@ -1,6 +1,6 @@
 
 /*
- * Copyright (C) 2000
+ * Copyright (C) 2000, 2001
  * Ferdinando Ametrano, Luigi Ballabio, Adolfo Benin, Marco Marchioro
  * 
  * This file is part of QuantLib.
@@ -18,15 +18,20 @@
  * You should have received a copy of the license along with this file;
  * if not, contact ferdinando@ametrano.net
  *
- * QuantLib license is also available at http://quantlib.sourceforge.net/LICENSE.TXT
+ * QuantLib license is also available at 
+ *   http://quantlib.sourceforge.net/LICENSE.TXT
 */
 
 /*! \file dividendamericanoption.cpp
-    \brief american option with discrete dividends
+    \brief american option with discrete deterministic dividends
     
     $Source$
     $Name$
     $Log$
+    Revision 1.15  2001/02/13 11:32:41  marmar
+    Efficency improved. Also, dividends do not have to be positive
+    to allow for negative cash flows
+
     Revision 1.14  2001/02/13 10:02:57  marmar
     Ambiguous variable name underlyingGrowthRate changed in
     unambiguos dividendYield
@@ -74,29 +79,29 @@ namespace QuantLib {
             const std::vector<Time>& exdivdates, int timeSteps, int gridPoints)
         : theDividends(dividends), theExDivDates(exdivdates), 
           theNumberOfDivs(dividends.size()), timeStepPerDiv(timeSteps),
-          BSMNumericalOption(type, underlying-addElements(dividends), 
+          BSMNumericalOption(type, underlying - addElements(dividends), 
           strike, dividendYield, riskFreeRate, residualTime, volatility, 
           gridPoints) {
 
-            QL_REQUIRE(theNumberOfDivs==theExDivDates.size(),
+            QL_REQUIRE(theNumberOfDivs == theExDivDates.size(),
                 "the number of dividends is different "
                 "from the number of dates");
-            QL_REQUIRE(theNumberOfDivs>=1,
+
+            QL_REQUIRE(theNumberOfDivs >= 1,
                 "the number of dividends must be at least one");
-            QL_REQUIRE(underlying-addElements(dividends)>0,
+
+            QL_REQUIRE(underlying - addElements(dividends)>0,
                 "Dividends cannot exceed underlying");
-            QL_REQUIRE(theExDivDates[0]>0,
+
+            QL_REQUIRE(theExDivDates[0] > 0,
                 "The dividend times must be positive");
-            QL_REQUIRE(theExDivDates[theExDivDates.size()-1]<residualTime,
+
+            QL_REQUIRE(theExDivDates[theExDivDates.size()-1] < residualTime,
                 "The dividend times must be within the residual time");
-            QL_REQUIRE(theDividends[0]>=0,
-                "Dividends cannot be negative");
-            for (unsigned int j=1; j<theNumberOfDivs;j++) {
-                QL_REQUIRE(theExDivDates[j-1]<theExDivDates[j],
+
+            for (unsigned int j = 1; j < theNumberOfDivs; j++) 
+                QL_REQUIRE(theExDivDates[j-1] < theExDivDates[j],
                     "Dividend dates must be in increasing order");
-                QL_REQUIRE(theDividends[j]>=0,
-                    "Dividends cannot be negative");
-            }
         }
 
         double DividendAmericanOption::value() const {
@@ -104,7 +109,7 @@ namespace QuantLib {
             if (!hasBeenCalculated)    {
                 double dt = theResidualTime/timeStepPerDiv;              
             
-                theOptionIsAmerican = true;
+                optionIsAmerican_ = true;
                 setGridLimits();
                 initializeGrid();
                 initializeInitialCondition();
@@ -124,7 +129,7 @@ namespace QuantLib {
                         endDate = theExDivDates[j];
                     else
                         endDate = dt;
-                    if (theOptionIsAmerican)
+                    if (optionIsAmerican_)
                         model.rollback(prices, beginDate, endDate, 
                             timeStepPerDiv, americanCondition);
                     else
@@ -138,10 +143,10 @@ namespace QuantLib {
                         double centre = valueAtCenter(theGrid);
                         double mltp = centre/theGrid[0];
                         double newMltp = mltp / (1 + (mltp - 1) * 
-                        theDividends[j] / (centre+theDividends[j]));
+                        theDividends[j] / (centre + theDividends[j]));
                         QL_ENSURE(newMltp>1,"Dividends are to big");
-                        sMin = (centre+theDividends[j])/newMltp;
-                        sMax = (centre+theDividends[j])*newMltp;
+                        sMin = (centre + theDividends[j])/newMltp;
+                        sMax = (centre + theDividends[j])*newMltp;
                         initializeGrid();
                         initializeInitialCondition();
                         initializeOperator();
@@ -153,7 +158,7 @@ namespace QuantLib {
                         //Last iteration: option price and greeks are computed
                         double theValuePlus = valueAtCenter(prices) - 
                             valueAtCenter(controlPrices);
-                        if(theOptionIsAmerican)
+                        if(optionIsAmerican_)
                             model.rollback(prices,dt,0,1,americanCondition);                  
                         else
                             model.rollback(prices,dt,0,1);            
@@ -173,18 +178,18 @@ namespace QuantLib {
                             secondDerivativeAtCenter(controlPrices,theGrid) + 
                             analitic.gamma();
     
-                        if (theOptionIsAmerican)
-                            model.rollback(prices,0,-dt,1,americanCondition);
+                        if (optionIsAmerican_)
+                            model.rollback(prices, 0, -dt, 1,americanCondition);
                         else
-                            model.rollback(prices,0,-dt,1);            
-                        model.rollback(controlPrices,0,-dt,1);
+                            model.rollback(prices, 0, -dt, 1);            
+                        model.rollback(controlPrices, 0, -dt, 1);
                     
                         double theValueMinus = valueAtCenter(prices) - 
                             valueAtCenter(controlPrices);
                         theTheta = (theValuePlus - theValueMinus) / 
-                            (2*dt)+analitic.theta();                                            
+                            (2*dt) + analitic.theta();                                            
                     }
-                } while (--j>=-1);                            
+                } while (--j >= -1);                            
                 hasBeenCalculated = true;
             }
             return theValue;
@@ -195,15 +200,15 @@ namespace QuantLib {
             const Array& oldGrid) const {
 
             int j;
-            Array vOldGrid(oldGrid+Div);
+            Array vOldGrid(oldGrid + Div);
             CubicSpline<Array::iterator,Array::iterator> priceSpline(
                 vOldGrid.begin(), vOldGrid.end(), prices.begin());
-            if (theOptionIsAmerican) {
-                for (j=0; j<prices.size(); j++)
+            if (optionIsAmerican_) {
+                for (j = 0; j < prices.size(); j++)
                     prices[j] = QL_MAX(priceSpline(newGrid[j]) , 
                         theInitialPrices[j]);
             } else {
-                for (j=0; j<prices.size(); j++)
+                for (j = 0; j < prices.size(); j++)
                     prices[j] = priceSpline(newGrid[j]);
             }
         }

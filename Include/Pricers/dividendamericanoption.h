@@ -23,11 +23,15 @@
 */
 
 /*! \file dividendamericanoption.h
-    \brief american option with discrete dividends
+    \brief american option with discrete deterministic dividends
     
     $Source$
     $Name$
     $Log$
+    Revision 1.11  2001/02/13 11:33:13  marmar
+    Efficency improved. Also, dividends do not have to be positive
+    to allow for negative cash flows
+
     Revision 1.10  2001/02/13 10:02:17  marmar
     Ambiguous variable name underlyingGrowthRate changed in
     unambiguos dividendYield
@@ -81,7 +85,7 @@ namespace QuantLib {
             // accessors
             double value() const;
             private:
-            mutable bool theOptionIsAmerican;
+            mutable bool optionIsAmerican_;
             int timeStepPerDiv;
             std::vector<double> theDividends;
             std::vector<Time> theExDivDates;
@@ -92,8 +96,7 @@ namespace QuantLib {
                 return Handle<BSMOption>(new DividendAmericanOption(*this));
             }
             double addElements(const std::vector<double>& A) const{
-                double sum = 0.0;
-                return sum = std::accumulate(A.begin(),A.end(),sum);   
+                return std::accumulate(A.begin(),A.end(), 0.0);   
             }
         };
 
