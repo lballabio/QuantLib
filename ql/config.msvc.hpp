@@ -59,6 +59,7 @@
 // 'identifier' : decorated name length exceeded,
 //                name was truncated in debug info
 #pragma warning(disable: 4786)
+#pragma warning(disable: 4503)
 
 #if _MSC_VER == 1200
 // move inside here configs specific to VC++ 6.0
