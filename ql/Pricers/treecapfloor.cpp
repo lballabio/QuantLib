@@ -1,5 +1,3 @@
-
-
 /*
  Copyright (C) 2001, 2002 Sadruddin Rejeb
 
@@ -51,12 +49,12 @@ namespace QuantLib {
                     Size i;
                     switch(type_) {
                       case Option::Call:
-                        for (i=0; i<newValues_.size(); i++)
-                          newValues_[i] = QL_MAX(newValues_[i] - strike_, 0.0);
+                        for (i=0; i<values_.size(); i++)
+                          values_[i] = QL_MAX(values_[i] - strike_, 0.0);
                         break;
                       case Option::Put:
-                        for (i=0; i<newValues_.size(); i++)
-                          newValues_[i] = QL_MAX(strike_ - newValues_[i], 0.0);
+                        for (i=0; i<values_.size(); i++)
+                          values_[i] = QL_MAX(strike_ - values_[i], 0.0);
                         break;
                       case Option::Straddle:
                           throw IllegalArgumentError(
@@ -67,7 +65,6 @@ namespace QuantLib {
                               "DiscountBondOptionAsset: invalid option type");
                     }
                 }
-                values_ = newValues_;
             }
           private:
             Option::Type type_;
@@ -117,11 +114,10 @@ namespace QuantLib {
                 Time tenor = bond - maturity;
                 double strike = 1.0/(1.0+exerciseRate*tenor);
 
-                std::vector<Handle<Asset> > assets(0);
                 Handle<Asset> dbo(
                     new DiscountBondOptionAsset(optionType, maturity, strike));
-                assets.push_back(dbo);
-                tree->rollback(assets, bond, maturity);
+                tree->initialize(dbo, bond);
+                tree->rollback(dbo, maturity);
                 double optionValue = tree->presentValue(dbo);
                 double capletValue = parameters_.nominals[i]*
                     (1.0+exerciseRate*tenor)*optionValue;

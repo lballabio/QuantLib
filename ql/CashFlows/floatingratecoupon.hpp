@@ -62,6 +62,7 @@ namespace QuantLib {
             //! \name Inspectors
             //@{
             const Handle<Indexes::Xibor>& index() const;
+            int FloatingRateCoupon::fixingDays() const;
             Rate fixing() const;
             Spread spread() const;
             //@}
@@ -86,6 +87,10 @@ namespace QuantLib {
         inline const Handle<Indexes::Xibor>&
         FloatingRateCoupon::index() const {
             return index_;
+        }
+
+        inline int FloatingRateCoupon::fixingDays() const {
+            return fixingDays_;
         }
 
         inline Rate FloatingRateCoupon::fixing() const {

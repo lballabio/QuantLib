@@ -40,7 +40,7 @@ namespace QuantLib {
         //! Swaption class
         class Swaption : public Option {
           public:
-            Swaption(const SimpleSwap& swap,
+            Swaption(const Handle<SimpleSwap>& swap,
                      const Exercise& exercise,
                      const RelinkableHandle<TermStructure>& termStructure,
                      const Handle<OptionPricingEngine>& engine);
@@ -50,7 +50,7 @@ namespace QuantLib {
             void setupEngine() const;
           private:
             // parameters
-            const SimpleSwap& swap_;
+            Handle<SimpleSwap> swap_;
             Exercise exercise_;
             const RelinkableHandle<TermStructure>& termStructure_;
             // helper class for implied volatility calculation

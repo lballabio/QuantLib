@@ -124,9 +124,7 @@
 #include <ql/Lattices/tree.hpp>
 #include <ql/Lattices/trinomialtree.hpp>
 
-#include <ql/Math/chisquaredistribution.hpp>
 #include <ql/Math/cubicspline.hpp>
-#include <ql/Math/gammafunction.hpp>
 #include <ql/Math/interpolation.hpp>
 #include <ql/Math/lexicographicalview.hpp>
 #include <ql/Math/linearinterpolation.hpp>
@@ -164,8 +162,6 @@
 #include <ql/Optimization/constraint.hpp>
 #include <ql/Optimization/costfunction.hpp>
 #include <ql/Optimization/criteria.hpp>
-#include <ql/Optimization/cubic.hpp>
-#include <ql/Optimization/genetic.hpp>
 #include <ql/Optimization/leastsquare.hpp>
 #include <ql/Optimization/linesearch.hpp>
 #include <ql/Optimization/optimizer.hpp>

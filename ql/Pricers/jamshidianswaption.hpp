@@ -1,5 +1,3 @@
-
-
 /*
  Copyright (C) 2001, 2002 Sadruddin Rejeb
 
@@ -35,7 +33,6 @@ namespace QuantLib {
     namespace Pricers {
 
         //! Jamshidian swaption pricer
-        //! \todo it doesn't work
         class JamshidianSwaption : public SwaptionPricingEngine {
           public:
             JamshidianSwaption() {}

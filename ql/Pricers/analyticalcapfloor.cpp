@@ -1,5 +1,3 @@
-
-
 /*
  Copyright (C) 2001, 2002 Sadruddin Rejeb
 
@@ -25,6 +23,8 @@
 // $Id$
 
 #include "ql/Pricers/analyticalcapfloor.hpp"
+
+#include <iostream>
 
 namespace QuantLib {
 

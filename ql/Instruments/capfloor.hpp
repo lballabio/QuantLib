@@ -1,4 +1,3 @@
-
 /*
  Copyright (C) 2001, 2002 Sadruddin Rejeb
 
@@ -40,7 +39,7 @@ namespace QuantLib {
           public:
             enum Type { Cap, Floor };
             VanillaCapFloor(Type type,
-                const SimpleSwap& swap,
+                const Handle<SimpleSwap>& swap,
                 const std::vector<Rate>& exerciseRates,
                 const RelinkableHandle<TermStructure>& termStructure,
                 const Handle<OptionPricingEngine>& engine)
@@ -52,23 +51,24 @@ namespace QuantLib {
             void setupEngine() const;
           private:
             Type type_;
-            const SimpleSwap& swap_;
+            Handle<SimpleSwap> swap_;
             std::vector<Rate> exerciseRates_;
             RelinkableHandle<TermStructure> termStructure_;
         };
 
         class VanillaCap : public VanillaCapFloor {
           public:
-            VanillaCap(const SimpleSwap& swap,
+            VanillaCap(const Handle<SimpleSwap>& swap,
                 const std::vector<Rate>& exerciseRates,
                 const RelinkableHandle<TermStructure>& termStructure,
                 const Handle<OptionPricingEngine>& engine)
-            : VanillaCapFloor(Cap, swap, exerciseRates, termStructure, engine) {}
+            : VanillaCapFloor(Cap, swap, exerciseRates, termStructure, engine)
+            {}
         };
 
         class VanillaFloor : public VanillaCapFloor {
           public:
-            VanillaFloor(const SimpleSwap& swap,
+            VanillaFloor(const Handle<SimpleSwap>& swap,
                   const std::vector<Rate>& exerciseRates,
                   const RelinkableHandle<TermStructure>& termStructure,
                   const Handle<OptionPricingEngine>& engine)

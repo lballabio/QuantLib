@@ -1,4 +1,3 @@
-
 /*
  Copyright (C) 2001, 2002 Sadruddin Rejeb
 
@@ -54,7 +53,7 @@ namespace QuantLib {
             parameters->endTimes.clear();
             parameters->nominals.clear();
 
-            std::vector<Handle<CashFlow> > floatingLeg = swap_.floatingLeg();
+            std::vector<Handle<CashFlow> > floatingLeg = swap_->floatingLeg();
             std::vector<Handle<CashFlow> >::const_iterator begin, end;
             begin = floatingLeg.begin();
             end   = floatingLeg.end();
@@ -73,7 +72,7 @@ namespace QuantLib {
         }
 
         void VanillaCapFloor::performCalculations() const {
-            if (swap_.maturity() <= termStructure_->settlementDate()) {
+            if (swap_->maturity() <= termStructure_->settlementDate()) {
                 isExpired_ = true;
                 NPV_ = 0.0;
             } else {

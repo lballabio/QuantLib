@@ -1,5 +1,3 @@
-
-
 /*
  Copyright (C) 2001, 2002 Sadruddin Rejeb
 
@@ -50,38 +48,42 @@ namespace QuantLib {
             : parameters_(params), bond_(bond) {}
 
             void reset(Size size) {
-                newValues_ = Array(size, 0.0);
+                values_ = Array(size, 0.0);
                 applyCondition();
             }
 
             virtual void applyCondition() {
                 Size i;
+
+                QL_REQUIRE(time()==bond_->time(),
+                    "Underlying bond has not been rolled back!");
+/*
                 for (i=0; i<parameters_.fixedPayTimes.size(); i++) {
                     if (time_ == parameters_.fixedPayTimes[i]) {
                         if (parameters_.payFixed)
-                            newValues_ -= parameters_.fixedCoupons[i];
+                            values_ -= parameters_.fixedCoupons[i];
                         else
-                            newValues_ += parameters_.fixedCoupons[i];
+                            values_ += parameters_.fixedCoupons[i];
                     }
                 }
+*/
                 for (i=0; i<parameters_.floatingResetTimes.size(); i++) {
                     if (time_ == parameters_.floatingResetTimes[i]) {
-                        for (Size j=0; j<newValues_.size(); j++) {
+                        for (Size j=0; j<values_.size(); j++) {
                             double coupon = parameters_.nominals[i]*
                                 (1.0 - bond_->values()[j]);
                             if (parameters_.payFixed)
-                                newValues_[j] += coupon;
+                                values_[j] += coupon;
                             else
-                                newValues_[j] -= coupon;
+                                values_[j] -= coupon;
                         }
                     }
                 }
                 for (i=0; i<parameters_.floatingPayTimes.size(); i++) {
                     if (time_ == parameters_.floatingPayTimes[i]) {
-                        bond_->reset(newValues_.size());
+                        bond_->reset(values_.size());
                     }
                 }
-                values_ = newValues_;
             }
           private:
             Instruments::SwaptionParameters parameters_;
@@ -96,16 +98,19 @@ namespace QuantLib {
             : parameters_(params), swap_(swap) {}
 
             void reset(Size size) {
-                newValues_ = Array(size, 0.0);
+                values_ = Array(size, 0.0);
                 applyCondition();
             }
 
             virtual void applySpecificCondition() {
-                for (Size i=0; i<newValues_.size(); i++)
-                    newValues_[i] = QL_MAX(swap_->values()[i], newValues_[i]);
+                for (Size i=0; i<values_.size(); i++)
+                    values_[i] = QL_MAX(swap_->values()[i], values_[i]);
             }
 
             virtual void applyCondition() {
+                QL_REQUIRE(time()==swap_->time(),
+                    "Underlying swap has not been rolled back!");
+
                 Size i;
                 if (parameters_.exerciseType != Exercise::American) {
                     for (i=0; i<parameters_.exerciseTimes.size(); i++) {
@@ -114,9 +119,11 @@ namespace QuantLib {
                         }
                     }
                 } else {
-                    applySpecificCondition();
+                    if (
+                      (time_ >= parameters_.exerciseTimes[0]) &&
+                      (time_ <= parameters_.exerciseTimes[1]))
+                        applySpecificCondition();
                 }
-                values_ = newValues_;
             }
 
           private:
@@ -162,15 +169,16 @@ namespace QuantLib {
             // do not rollback until 0 but until the first exercise date
             // sum with state prices...
 
-            tree->rollback(assets, times.back(), 0.0);
+            Time start = times.back();
+            tree->initialize(bond, start);
+            tree->initialize(swap, start);
+            tree->initialize(swaption, start);
+            tree->rollback(assets, 0.0);
             results_.value = swaption->values()[0];
 
-/*
             std::cout << "Discount bond price: " << bond->values()[0]*100.0 << std::endl;
             std::cout << "Theoretical value: " << model->termStructure()->discount(parameters_.floatingPayTimes[0])*100.0 << std::endl;
             std::cout << "Swap price: " << swap->values()[0] << std::endl;
-            std::cout << "Swaption price: " << swaption->values()[0] << std::endl;
-            */
         }
 
     }

@@ -1,5 +1,3 @@
-
-
 /*
  Copyright (C) 2001, 2002 Sadruddin Rejeb
 
@@ -40,7 +38,8 @@ namespace QuantLib {
                         const Handle<OneFactorModel>& model,
                         const std::vector<double>& amounts)
             : strike_(params.nominals[0]), maturity_(params.exerciseTimes[0]),
-              times_(params.fixedPayTimes), amounts_(amounts), model_(model) {}
+              times_(params.fixedPayTimes), amounts_(amounts), model_(model) {
+            }
 
             double operator()(double x) const {
                 double value = strike_;
@@ -65,6 +64,8 @@ namespace QuantLib {
                 parameters_.exerciseType == Exercise::European,
                 "Cannot use the Jamshidian decomposition on exotic swaptions");
             Time maturity = parameters_.exerciseTimes[0];
+            QL_REQUIRE(maturity==parameters_.floatingResetTimes[0],
+                "Maturity must be equal to first reset date");
 
             QL_REQUIRE( model_->type()==Model::OneFactor,
                 "Jamshidian decomposition is only valid for one-factor models");

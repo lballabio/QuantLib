@@ -35,7 +35,7 @@ namespace QuantLib {
         using CashFlows::FloatingRateCoupon;
 
         Swaption::Swaption(
-            const SimpleSwap& swap, const Exercise& exercise,
+            const Handle<SimpleSwap>& swap, const Exercise& exercise,
             const RelinkableHandle<TermStructure>& termStructure,
             const Handle<OptionPricingEngine>& engine)
         : Option(engine), swap_(swap), exercise_(exercise),
@@ -54,8 +54,8 @@ namespace QuantLib {
             DayCounter counter = termStructure_->dayCounter();
             Size i;
 
-            const std::vector<Handle<CashFlow> >& fixedLeg = swap_.fixedLeg();
-            parameters->payFixed = swap_.payFixedRate();
+            const std::vector<Handle<CashFlow> >& fixedLeg = swap_->fixedLeg();
+            parameters->payFixed = swap_->payFixedRate();
             parameters->fixedPayTimes.clear();
             parameters->fixedCoupons.clear();
             for (i=0; i<fixedLeg.size(); i++) {
@@ -68,33 +68,54 @@ namespace QuantLib {
             parameters->floatingPayTimes.clear();
             parameters->nominals.clear();
             const std::vector<Handle<CashFlow> >& floatingLeg =
-                swap_.floatingLeg();
+                swap_->floatingLeg();
             std::vector<Handle<CashFlow> >::const_iterator begin, end;
             begin = floatingLeg.begin();
             end   = floatingLeg.end();
+
             for (; begin != end; ++begin) {
                 Handle<FloatingRateCoupon> coupon = *begin;
                 QL_ENSURE(!coupon.isNull(), "not a floating rate coupon");
-                Date beginDate = coupon->accrualStartDate();
-                Time time = counter.yearFraction(today, beginDate);
+                const Handle<Indexes::Xibor>& index = coupon->index();
+                Date fixingDate = index->calendar().advance(
+                    coupon->accrualStartDate(), -coupon->fixingDays(), Days,
+                    index->rollingConvention());
+                Date fixingValueDate = index->calendar().advance(
+                    fixingDate, index->settlementDays(), Days,
+                    index->rollingConvention());
+                //Date resetDate =  index->calendar().roll(
+                //    coupon->accrualStartDate(), index->rollingConvention());
+                std::cout << "reset date:" << fixingValueDate << std::endl;
+                
+                Time time = counter.yearFraction(today, fixingValueDate);
                 parameters->floatingResetTimes.push_back(time);
+
+                Date payDate = index->calendar().advance(
+                    coupon->accrualEndDate(), 
+                    index->settlementDays()-coupon->fixingDays(), Days,
+                    index->rollingConvention());
+
+                std::cout << "pay date:" << payDate << std::endl;
+                std::cout << "coupon date: " << coupon->date() << std::endl;
                 time = counter.yearFraction(today, coupon->date());
                 parameters->floatingPayTimes.push_back(time);
                 parameters->nominals.push_back(coupon->nominal());
             }
-
             parameters->exerciseType = exercise_.type();
             parameters->exerciseTimes.clear();
             const std::vector<Date> dates = exercise_.dates();
             for (i=0; i<dates.size(); i++) {
-                Time time = counter.yearFraction(today, dates[i]);
+                Date exerciseDate = exercise_.calendar().advance(
+                    dates[i], exercise_.settlementDays(), Days,
+                    exercise_.rollingConvention());
+                std::cout << "exercise date: " << exerciseDate << std::endl;
+                Time time = counter.yearFraction(today, exerciseDate);
                 parameters->exerciseTimes.push_back(time);
             }
-
         }
 
         void Swaption::performCalculations() const {
-            if (swap_.maturity() <= termStructure_->settlementDate()) {
+            if (swap_->maturity() <= termStructure_->settlementDate()) {
                 isExpired_ = true;
                 NPV_ = 0.0;
             } else {

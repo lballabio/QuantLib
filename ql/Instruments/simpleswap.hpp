@@ -1,5 +1,3 @@
-
-
 /*
  Copyright (C) 2000, 2001, 2002 RiskMap srl
 
@@ -38,6 +36,28 @@ namespace QuantLib {
         //! Simple fixed-rate vs Libor swap
         class SimpleSwap : public Swap {
           public:
+            SimpleSwap(
+                bool payFixedRate,
+                const std::vector<Handle<CashFlow> >& fixedLeg,
+                const std::vector<Handle<CashFlow> >& floatingLeg,
+                // hook to term structure
+                const RelinkableHandle<TermStructure>& termStructure,
+                // description
+                const std::string& isinCode = "",
+                const std::string& description = "") 
+            : Swap(std::vector<Handle<CashFlow> >(),
+                   std::vector<Handle<CashFlow> >(),
+                   termStructure, isinCode, description),
+              payFixedRate_(payFixedRate) {
+                if (payFixedRate) {
+                    firstLeg_ = fixedLeg;
+                    secondLeg_ = floatingLeg;
+                } else {
+                    firstLeg_ = floatingLeg;
+                    secondLeg_ = fixedLeg;
+                }
+            }
+
             SimpleSwap(bool payFixedRate,
                 // dates
                 const Date& startDate, int n, TimeUnit units,
