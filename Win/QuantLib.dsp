@@ -41,7 +41,7 @@ RSC=rc.exe
 # PROP Intermediate_Dir "Release"
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /W3 /GX /O2 /D "WIN32" /D "NDEBUG" /D "_MBCS" /D "_LIB" /YX /FD /c
-# ADD CPP /nologo /MT /W3 /GR /GX /Od /Ob2 /D "WIN32" /D "NDEBUG" /D "_MBCS" /D "_LIB" /D "QL_RELEASE" /YX /FD /c
+# ADD CPP /nologo /MT /W3 /GR /GX /Od /Ob2 /I "..\Sources" /I "..\Sources\PDE" /I "..\Sources\Operators" /D "WIN32" /D "NDEBUG" /D "_MBCS" /D "_LIB" /D "QL_RELEASE" /YX /FD /c
 # ADD BASE RSC /l 0x409 /d "NDEBUG"
 # ADD RSC /l 0x409 /d "NDEBUG"
 BSC32=bscmake.exe
@@ -64,7 +64,7 @@ LIB32=link.exe -lib
 # PROP Intermediate_Dir "Debug"
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /W3 /Gm /GX /ZI /Od /D "WIN32" /D "_DEBUG" /D "_MBCS" /D "_LIB" /YX /FD /GZ /c
-# ADD CPP /nologo /MTd /W3 /Gm /GR /GX /ZI /Od /D "WIN32" /D "_DEBUG" /D "_MBCS" /D "_LIB" /D "QL_DEBUG" /YX /FD /GZ /c
+# ADD CPP /nologo /MTd /W3 /Gm /GR /GX /ZI /Od /I "..\Sources" /I "..\Sources\PDE" /I "..\Sources\Operators" /D "WIN32" /D "_DEBUG" /D "_MBCS" /D "_LIB" /D "QL_DEBUG" /YX /FD /GZ /c
 # ADD BASE RSC /l 0x409 /d "_DEBUG"
 # ADD RSC /l 0x409 /d "_DEBUG"
 BSC32=bscmake.exe
@@ -89,17 +89,14 @@ LIB32=link.exe -lib
 # Begin Source File
 
 SOURCE=..\Sources\daycounters\actualactual.cpp
-# ADD CPP /I "..\Sources"
 # End Source File
 # Begin Source File
 
 SOURCE=..\Sources\daycounters\thirty360.cpp
-# ADD CPP /I "..\Sources"
 # End Source File
 # Begin Source File
 
 SOURCE=..\Sources\DayCounters\thirty360italian.cpp
-# ADD CPP /I "..\Sources"
 # End Source File
 # End Group
 # Begin Group "Calendars"
@@ -151,12 +148,10 @@ SOURCE=..\Sources\TermStructures\piecewiseconstantforwards.cpp
 # Begin Source File
 
 SOURCE=..\Sources\Operators\blackscholesmerton.cpp
-# ADD CPP /I "..\Sources" /I "..\Sources\PDE"
 # End Source File
 # Begin Source File
 
 SOURCE=..\Sources\Operators\tridiagonaloperator.cpp
-# ADD CPP /I "..\Sources" /I "..\Sources\PDE"
 # End Source File
 # End Group
 # Begin Group "Pricers"
@@ -164,8 +159,16 @@ SOURCE=..\Sources\Operators\tridiagonaloperator.cpp
 # PROP Default_Filter ""
 # Begin Source File
 
+SOURCE=..\Sources\Pricers\bsmamericanoption.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=..\Sources\Pricers\bsmeuropeanoption.cpp
 # ADD CPP /I "..\Sources" /I "..\Sources\Operators" /I "..\Sources\PDE"
+# End Source File
+# Begin Source File
+
+SOURCE=..\Sources\Pricers\bsmnumericaloption.cpp
 # End Source File
 # End Group
 # Begin Group "Solvers1D"
@@ -174,37 +177,30 @@ SOURCE=..\Sources\Pricers\bsmeuropeanoption.cpp
 # Begin Source File
 
 SOURCE=..\Sources\Solvers1D\bisection.cpp
-# ADD CPP /I "..\Sources"
 # End Source File
 # Begin Source File
 
 SOURCE=..\Sources\Solvers1D\brent.cpp
-# ADD CPP /I "..\Sources"
 # End Source File
 # Begin Source File
 
 SOURCE=..\Sources\Solvers1D\falseposition.cpp
-# ADD CPP /I "..\Sources"
 # End Source File
 # Begin Source File
 
 SOURCE=..\Sources\Solvers1D\newton.cpp
-# ADD CPP /I "..\Sources"
 # End Source File
 # Begin Source File
 
 SOURCE=..\Sources\Solvers1D\newtonsafe.cpp
-# ADD CPP /I "..\Sources"
 # End Source File
 # Begin Source File
 
 SOURCE=..\Sources\Solvers1D\ridder.cpp
-# ADD CPP /I "..\Sources"
 # End Source File
 # Begin Source File
 
 SOURCE=..\Sources\Solvers1D\secant.cpp
-# ADD CPP /I "..\Sources"
 # End Source File
 # End Group
 # Begin Source File
