@@ -23,6 +23,7 @@
 #define quantlib_tracing_hpp
 
 #include <ql/types.hpp>
+#include <ql/errors.hpp>
 #include <ql/Patterns/singleton.hpp>
 #include <boost/current_function.hpp>
 #include <iosfwd>

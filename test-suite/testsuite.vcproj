@@ -2453,6 +2453,9 @@
 				</FileConfiguration>
 			</File>
 			<File
+				RelativePath=".\tracing.cpp">
+			</File>
+			<File
 				RelativePath="utilities.cpp">
 				<FileConfiguration
 					Name="Debug|Win32">
@@ -2638,6 +2641,9 @@
 			</File>
 			<File
 				RelativePath="termstructures.hpp">
+			</File>
+			<File
+				RelativePath=".\tracing.hpp">
 			</File>
 			<File
 				RelativePath="utilities.hpp">
