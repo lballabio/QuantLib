@@ -36,7 +36,7 @@ namespace QuantLib {
         typedef ForwardEngine<VanillaOption::arguments,
                               VanillaOption::results> engine;
         ForwardVanillaOption(
-            double moneyness,
+            Real moneyness,
             Date resetDate,
             const boost::shared_ptr<BlackScholesProcess>& stochProc,
             const boost::shared_ptr<StrikedTypePayoff>& payoff,
@@ -47,7 +47,7 @@ namespace QuantLib {
         void performCalculations() const;
       private:
         // arguments
-        double moneyness_;
+        Real moneyness_;
         Date resetDate_;
     };
 

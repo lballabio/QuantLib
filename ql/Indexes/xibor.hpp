@@ -31,7 +31,7 @@ namespace QuantLib {
     class Xibor : public Index, public Observer {
       public:
         Xibor(const std::string& familyName,
-              int n, TimeUnit units, int settlementDays,
+              Integer n, TimeUnit units, Integer settlementDays,
               Currency currency,
               const Calendar& calendar, bool isAdjusted,
               RollingConvention rollingConvention,
@@ -58,7 +58,7 @@ namespace QuantLib {
         std::string name() const;
         Period tenor() const;
         Frequency frequency() const;
-        int settlementDays() const;
+        Integer settlementDays() const;
         Currency currency() const;
         Calendar calendar() const;
         bool isAdjusted() const;
@@ -68,9 +68,9 @@ namespace QuantLib {
         //@}
       private:
         std::string familyName_;
-        int n_;
+        Integer n_;
         TimeUnit units_;
-        int settlementDays_;
+        Integer settlementDays_;
         Currency currency_;
         Calendar calendar_;
         bool isAdjusted_;
@@ -90,7 +90,7 @@ namespace QuantLib {
         return Period(n_,units_); 
     }
 
-    inline int Xibor::settlementDays() const { 
+    inline Integer Xibor::settlementDays() const { 
         return settlementDays_; 
     }
 

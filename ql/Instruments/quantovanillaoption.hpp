@@ -45,9 +45,9 @@ namespace QuantLib {
             const boost::shared_ptr<PricingEngine>& engine);
         //! \name greeks
         //@{
-        double qvega() const;
-        double qrho() const;
-        double qlambda() const;
+        Real qvega() const;
+        Real qrho() const;
+        Real qlambda() const;
         //@}
         void setupArguments(Arguments*) const;
       protected:
@@ -58,7 +58,7 @@ namespace QuantLib {
         RelinkableHandle<BlackVolTermStructure> exchRateVolTS_;
         RelinkableHandle<Quote> correlation_;
         // results
-        mutable double qvega_, qrho_, qlambda_;
+        mutable Real qvega_, qrho_, qlambda_;
     };
 
 }

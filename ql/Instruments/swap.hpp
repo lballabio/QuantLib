@@ -48,12 +48,12 @@ namespace QuantLib {
         //@{
         Date startDate() const;
         Date maturity() const;
-        double firstLegBPS() const;
-        double secondLegBPS() const;
+        Real firstLegBPS() const;
+        Real secondLegBPS() const;
         /*! \bug This method must still be checked. It is not guaranteed
                  to yield the right results.
         */
-        TimeBasket sensitivity(int basis = 2) const;
+        TimeBasket sensitivity(Integer basis = 2) const;
         //@}
       protected:
         // methods
@@ -62,7 +62,7 @@ namespace QuantLib {
         // data members
         std::vector<boost::shared_ptr<CashFlow> > firstLeg_, secondLeg_;
         RelinkableHandle<TermStructure> termStructure_;
-        mutable double firstLegBPS_, secondLegBPS_;
+        mutable Real firstLegBPS_, secondLegBPS_;
     };
 }
 

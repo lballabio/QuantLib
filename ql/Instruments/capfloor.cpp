@@ -137,15 +137,15 @@ namespace QuantLib {
                    ")");
     }
 
-    double CapFloor::impliedVolatility(double targetValue,
-                                       double accuracy,
-                                       Size maxEvaluations,
-                                       double minVol,
-                                       double maxVol) const {
+    Volatility CapFloor::impliedVolatility(Real targetValue,
+                                           Real accuracy,
+                                           Size maxEvaluations,
+                                           Volatility minVol,
+                                           Volatility maxVol) const {
         calculate();
         QL_REQUIRE(!isExpired(), "instrument expired");
 
-        double guess = 0.10;   // no way we can get a more accurate one
+        Volatility guess = 0.10;   // no way we can get a more accurate one
 
         ImpliedVolHelper f(*this,termStructure_,targetValue);
         Brent solver;
@@ -157,7 +157,7 @@ namespace QuantLib {
     CapFloor::ImpliedVolHelper::ImpliedVolHelper(
                          const CapFloor& cap,
                          const RelinkableHandle<TermStructure>& termStructure,
-                         double targetValue)
+                         Real targetValue)
     : termStructure_(termStructure), targetValue_(targetValue) {
 
         vol_ = boost::shared_ptr<SimpleQuote>(new SimpleQuote(0.0));
@@ -170,7 +170,7 @@ namespace QuantLib {
         results_ = dynamic_cast<const Value*>(engine_->results());
     }
 
-    double CapFloor::ImpliedVolHelper::operator()(double x) const {
+    Real CapFloor::ImpliedVolHelper::operator()(Volatility x) const {
         vol_->setValue(x);
         engine_->calculate();
         return results_->value-targetValue_;

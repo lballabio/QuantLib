@@ -31,7 +31,7 @@ namespace QuantLib {
     //! %GBP %Libor index
     class GBPLibor : public Xibor {
       public:
-        GBPLibor(int n, TimeUnit units,
+        GBPLibor(Integer n, TimeUnit units,
                  const RelinkableHandle<TermStructure>& h,
                  const DayCounter& dc = Actual365())
         : Xibor("GBPLibor", n, units, 0, GBP,

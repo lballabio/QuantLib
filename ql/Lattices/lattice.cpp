@@ -25,7 +25,7 @@ namespace QuantLib {
             statePrices_.push_back(Array(size(i+1), 0.0));
             for (Size j=0; j<size(i); j++) {
                 DiscountFactor disc = discount(i,j);
-                double statePrice = statePrices_[i][j];
+                Real statePrice = statePrices_[i][j];
                 for (Size l=0; l<n_; l++) {
                     statePrices_[i+1][descendant(i,j,l)] +=
                         statePrice*disc*probability(i,j,l);
@@ -41,7 +41,7 @@ namespace QuantLib {
         return statePrices_[i];
     }
 
-    double Lattice::presentValue(
+    Real Lattice::presentValue(
                            const boost::shared_ptr<DiscretizedAsset>& asset) {
         Size i = t_.findIndex(asset->time());
         return DotProduct(asset->values(), statePrices(i));
@@ -74,10 +74,10 @@ namespace QuantLib {
                    DecimalFormatter::toString(from) + ")");
 
         if (from > to) {
-            int iFrom = int(t_.findIndex(from));
-            int iTo = int(t_.findIndex(to));
+            Integer iFrom = Integer(t_.findIndex(from));
+            Integer iTo = Integer(t_.findIndex(to));
 
-            for (int i=iFrom-1; i>=iTo; i--) {
+            for (Integer i=iFrom-1; i>=iTo; i--) {
                 Array newValues(size(i));
                 stepback(i, asset->values(), newValues);
                 asset->time() = t_[i];
@@ -94,7 +94,7 @@ namespace QuantLib {
     void Lattice::stepback(Size i, const Array& values,
                            Array& newValues) const {
         for (Size j=0; j<size(i); j++) {
-            double value = 0.0;
+            Real value = 0.0;
             for (Size l=0; l<n_; l++) {
                 value += probability(i,j,l)*values[descendant(i,j,l)];
             }

@@ -32,7 +32,7 @@ namespace QuantLib {
     /*! \todo check settlement days */
     class ZARLibor : public Xibor {
       public:
-        ZARLibor(int n, TimeUnit units,
+        ZARLibor(Integer n, TimeUnit units,
                  const RelinkableHandle<TermStructure>& h,
                  const DayCounter& dc = Actual365())
         : Xibor("ZARLibor", n, units, 0, ZAR,

@@ -24,17 +24,17 @@ namespace QuantLib {
 
     SimpleSwap::SimpleSwap(
                          bool payFixedRate,
-                         const Date& startDate, int n, TimeUnit units,
+                         const Date& startDate, Integer n, TimeUnit units,
                          const Calendar& calendar,
                          RollingConvention rollingConvention,
-                         double nominal,
+                         Real nominal,
                          Frequency fixedFrequency,
                          Rate fixedRate,
                          bool fixedIsAdjusted,
                          const DayCounter& fixedDayCount,
                          Frequency floatingFrequency,
                          const boost::shared_ptr<Xibor>& index,
-                         int indexFixingDays,
+                         Integer indexFixingDays,
                          Spread spread,
                          const RelinkableHandle<TermStructure>& termStructure)
     : Swap(std::vector<boost::shared_ptr<CashFlow> >(),
@@ -57,12 +57,12 @@ namespace QuantLib {
 
         std::vector<boost::shared_ptr<CashFlow> > fixedLeg =
             FixedRateCouponVector(fixedSchedule, 
-                                  std::vector<double>(1,nominal), 
+                                  std::vector<Real>(1,nominal), 
                                   std::vector<Rate>(1,fixedRate), 
                                   fixedDayCount);
         std::vector<boost::shared_ptr<CashFlow> > floatingLeg =
             FloatingRateCouponVector(floatSchedule,
-                                     std::vector<double>(1,nominal),
+                                     std::vector<Real>(1,nominal),
                                      index, indexFixingDays, 
                                      std::vector<Spread>(1,spread));
         std::vector<boost::shared_ptr<CashFlow> >::const_iterator i;
@@ -80,13 +80,13 @@ namespace QuantLib {
 
     SimpleSwap::SimpleSwap(
                          bool payFixedRate,
-                         double nominal,
+                         Real nominal,
                          const Schedule& fixedSchedule,
                          Rate fixedRate,
                          const DayCounter& fixedDayCount,
                          const Schedule& floatSchedule,
                          const boost::shared_ptr<Xibor>& index,
-                         int indexFixingDays,
+                         Integer indexFixingDays,
                          Spread spread,
                          const RelinkableHandle<TermStructure>& termStructure)
     : Swap(std::vector<boost::shared_ptr<CashFlow> >(),
@@ -97,12 +97,12 @@ namespace QuantLib {
 
         std::vector<boost::shared_ptr<CashFlow> > fixedLeg =
             FixedRateCouponVector(fixedSchedule,
-                                  std::vector<double>(1,nominal), 
+                                  std::vector<Real>(1,nominal), 
                                   std::vector<Rate>(1,fixedRate), 
                                   fixedDayCount);
         std::vector<boost::shared_ptr<CashFlow> > floatingLeg =
             FloatingRateCouponVector(floatSchedule,
-                                     std::vector<double>(1,nominal),
+                                     std::vector<Real>(1,nominal),
                                      index, indexFixingDays, 
                                      std::vector<Spread>(1,spread));
         std::vector<boost::shared_ptr<CashFlow> >::const_iterator i;
@@ -137,7 +137,7 @@ namespace QuantLib {
 
         arguments->fixedResetTimes = arguments->fixedPayTimes =
             std::vector<Time>(fixedCoupons.size());
-        arguments->fixedCoupons = std::vector<double>(fixedCoupons.size());
+        arguments->fixedCoupons = std::vector<Real>(fixedCoupons.size());
 
         for (i=0; i<fixedCoupons.size(); i++) {
             boost::shared_ptr<FixedRateCoupon> coupon = 

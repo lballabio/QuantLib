@@ -63,8 +63,8 @@ namespace QuantLib {
                       globalCap(Null<Real>()),
                       globalFloor(Null<Real>()) {}
         void validate() const;
-        double accruedCoupon, lastFixing;
-        double localCap, localFloor, globalCap, globalFloor;
+        Real accruedCoupon, lastFixing;
+        Real localCap, localFloor, globalCap, globalFloor;
         std::vector<Date> resetDates;
     };
 

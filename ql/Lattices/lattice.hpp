@@ -44,7 +44,7 @@ namespace QuantLib {
         }
 
         //! Computes the present value of an asset using Arrow-Debrew prices
-        double presentValue(const boost::shared_ptr<DiscretizedAsset>& asset);
+        Real presentValue(const boost::shared_ptr<DiscretizedAsset>& asset);
 
         //! Initialize a DiscretizedAsset object.
         void initialize(const boost::shared_ptr<DiscretizedAsset>& asset,
@@ -74,9 +74,9 @@ namespace QuantLib {
         virtual Size descendant(Size i,
                                 Size index,
                                 Size branch) const = 0;
-        virtual double probability(Size i,
-                                   Size index,
-                                   Size branch) const = 0;
+        virtual Real probability(Size i,
+                                 Size index,
+                                 Size branch) const = 0;
 
       protected:
         void computeStatePrices(Size until);

@@ -62,7 +62,7 @@ namespace QuantLib {
         class engine;
         DiscreteAveragingAsianOption(
                 Average::Type averageType,
-                double runningProduct,
+                Real runningProduct,
                 Size pastFixings,
                 std::vector<Date> fixingDates,
                 const boost::shared_ptr<BlackScholesProcess>&,
@@ -73,7 +73,7 @@ namespace QuantLib {
         void setupArguments(Arguments*) const;
       protected:
         Average::Type averageType_;
-        double runningProduct_;
+        Real runningProduct_;
         Size pastFixings_;
         std::vector<Date> fixingDates_;
     };
@@ -87,7 +87,7 @@ namespace QuantLib {
                       pastFixings(Null<Size>()) {}
         void validate() const;
         Average::Type averageType;
-        double runningProduct;
+        Real runningProduct;
         Size pastFixings;
         std::vector<Date> fixingDates;
     };

@@ -29,7 +29,7 @@ namespace QuantLib {
     : OneAssetOption(stochProc, payoff, exercise, engine) {}
 
 
-    double OneAssetStrikedOption::strikeSensitivity() const {
+    Real OneAssetStrikedOption::strikeSensitivity() const {
         calculate();
         QL_REQUIRE(strikeSensitivity_ != Null<Real>(),
                    "strike sensitivity not provided");

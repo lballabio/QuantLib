@@ -40,14 +40,14 @@ namespace QuantLib {
     class StrikedTypePayoff : public TypePayoff {
       public:
         StrikedTypePayoff(Option::Type type,
-                          double strike)
+                          Real strike)
         : TypePayoff(type), strike_(strike) {
             QL_REQUIRE(strike >= 0.0,
                        "negative strike given");
         }
-        double strike() const { return strike_; };
+        Real strike() const { return strike_; };
       protected:
-        double strike_;
+        Real strike_;
     };
 
 
@@ -55,12 +55,12 @@ namespace QuantLib {
     class PlainVanillaPayoff : public StrikedTypePayoff {
       public:
         PlainVanillaPayoff(Option::Type type,
-                           double strike)
+                           Real strike)
         : StrikedTypePayoff(type, strike) {}
-        double operator()(double price) const;
+        Real operator()(Real price) const;
     };
 
-    inline double PlainVanillaPayoff::operator()(double price) const {
+    inline Real PlainVanillaPayoff::operator()(Real price) const {
         switch (type_) {
           case Option::Call:
             return QL_MAX(price-strike_,0.0);
@@ -78,15 +78,15 @@ namespace QuantLib {
     class PercentageStrikePayoff : public StrikedTypePayoff {
       public:
         PercentageStrikePayoff(Option::Type type,
-                               double moneyness)
+                               Real moneyness)
         : StrikedTypePayoff(type, moneyness) {
             QL_REQUIRE(moneyness>=0.0,
                        "negative moneyness not allowed");
         }
-        double operator()(double price) const;
+        Real operator()(Real price) const;
     };
 
-    inline double PercentageStrikePayoff::operator()(double price) const {
+    inline Real PercentageStrikePayoff::operator()(Real price) const {
         switch (type_) {
           case Option::Call:
             return price*QL_MAX(1.0-strike_,0.0);
@@ -104,16 +104,16 @@ namespace QuantLib {
     class CashOrNothingPayoff : public StrikedTypePayoff {
       public:
         CashOrNothingPayoff(Option::Type type,
-                            double strike,
-                            double cashPayoff)
+                            Real strike,
+                            Real cashPayoff)
         : StrikedTypePayoff(type, strike), cashPayoff_(cashPayoff) {}
-        double operator()(double price) const;
-        double cashPayoff() const { return cashPayoff_;}
+        Real operator()(Real price) const;
+        Real cashPayoff() const { return cashPayoff_;}
       private:
-        double cashPayoff_;
+        Real cashPayoff_;
     };
 
-    inline double CashOrNothingPayoff::operator()(double price) const {
+    inline Real CashOrNothingPayoff::operator()(Real price) const {
         switch (type_) {
           case Option::Call:
             return (price-strike_ > 0.0 ? cashPayoff_ : 0.0);
@@ -131,12 +131,12 @@ namespace QuantLib {
     class AssetOrNothingPayoff : public StrikedTypePayoff {
     public:
         AssetOrNothingPayoff(Option::Type type,
-                             double strike)
+                             Real strike)
         : StrikedTypePayoff(type, strike) {}
-        double operator()(double price) const;
+        Real operator()(Real price) const;
     };
 
-    inline double AssetOrNothingPayoff::operator()(double price) const {
+    inline Real AssetOrNothingPayoff::operator()(Real price) const {
         switch (type_) {
           case Option::Call:
             return (price-strike_ > 0.0 ? price : 0.0);
@@ -154,16 +154,16 @@ namespace QuantLib {
     class GapPayoff : public StrikedTypePayoff {
     public:
         GapPayoff(Option::Type type,
-                  double strike,
-                  double strikePayoff)
+                  Real strike,
+                  Real strikePayoff)
         : StrikedTypePayoff(type, strike), strikePayoff_(strikePayoff) {}
-        double operator()(double price) const;
-        double strikePayoff() const { return strikePayoff_;}
+        Real operator()(Real price) const;
+        Real strikePayoff() const { return strikePayoff_;}
     private:
-        double strikePayoff_;
+        Real strikePayoff_;
     };
 
-    inline double GapPayoff::operator()(double price) const {
+    inline Real GapPayoff::operator()(Real price) const {
         switch (type_) {
           case Option::Call:
             return (price-strike_ > 0.0 ? price-strikePayoff_ : 0.0);
@@ -180,16 +180,16 @@ namespace QuantLib {
     class SuperSharePayoff : public StrikedTypePayoff {
     public:
         SuperSharePayoff(Option::Type type,
-                         double strike,
-                         double strikeIncrement)
+                         Real strike,
+                         Real strikeIncrement)
         : StrikedTypePayoff(type, strike), strikeIncrement_(strikeIncrement) {}
-        double operator()(double price) const;
-        double strikeIncrement() const { return strikeIncrement_;}
+        Real operator()(Real price) const;
+        Real strikeIncrement() const { return strikeIncrement_;}
     private:
-        double strikeIncrement_;
+        Real strikeIncrement_;
     };
 
-    inline double SuperSharePayoff::operator()(double price) const {
+    inline Real SuperSharePayoff::operator()(Real price) const {
         switch (type_) {
           case Option::Call:
             return ((price-strike_                  > 0.0 ? 1.0 : 0.0)

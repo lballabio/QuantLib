@@ -44,16 +44,16 @@ namespace QuantLib {
         //@}
         //! \name greeks
         //@{
-        double delta() const;
-        double deltaForward() const;
-        double elasticity() const;
-        double gamma() const;
-        double theta() const;
-        double thetaPerDay() const;
-        double vega() const;
-        double rho() const;
-        double dividendRho() const;
-        double itmCashProbability() const;
+        Real delta() const;
+        Real deltaForward() const;
+        Real elasticity() const;
+        Real gamma() const;
+        Real theta() const;
+        Real thetaPerDay() const;
+        Real vega() const;
+        Real rho() const;
+        Real dividendRho() const;
+        Real itmCashProbability() const;
         //@}
         /*! \warning currently, this method returns the Black-Scholes 
                      implied volatility. It will give unconsistent 
@@ -71,17 +71,18 @@ namespace QuantLib {
 
             \bug run-time crashes are possible with the Borland compiler
         */
-        double impliedVolatility(double price,
-                                 double accuracy = 1.0e-4,
-                                 Size maxEvaluations = 100,
-                                 double minVol = QL_MIN_VOLATILITY,
-                                 double maxVol = QL_MAX_VOLATILITY) const;
+        Volatility impliedVolatility(Real price,
+                                     Real accuracy = 1.0e-4,
+                                     Size maxEvaluations = 100,
+                                     Volatility minVol = QL_MIN_VOLATILITY,
+                                     Volatility maxVol = QL_MAX_VOLATILITY) 
+                                                                        const;
         void setupArguments(Arguments*) const;
       protected:
         void setupExpired() const;
         void performCalculations() const;
         // results
-        mutable double delta_, deltaForward_, elasticity_, gamma_, theta_,
+        mutable Real delta_, deltaForward_, elasticity_, gamma_, theta_,
             thetaPerDay_, vega_, rho_, dividendRho_, itmCashProbability_;
         // arguments
         boost::shared_ptr<BlackScholesProcess> blackScholesProcess_;
@@ -90,11 +91,11 @@ namespace QuantLib {
         class ImpliedVolHelper {
           public:
             ImpliedVolHelper(const boost::shared_ptr<PricingEngine>& engine,
-                             double targetValue);
-            double operator()(double x) const;
+                             Real targetValue);
+            Real operator()(Volatility x) const;
           private:
             boost::shared_ptr<PricingEngine> engine_;
-            double targetValue_;
+            Real targetValue_;
             boost::shared_ptr<SimpleQuote> vol_;
             const Value* results_;
         };

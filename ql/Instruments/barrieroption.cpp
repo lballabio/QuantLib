@@ -25,8 +25,8 @@ namespace QuantLib {
 
     BarrierOption::BarrierOption(
         Barrier::Type barrierType,
-        double barrier,
-        double rebate,
+        Real barrier,
+        Real rebate,
         const boost::shared_ptr<BlackScholesProcess>& stochProc,
         const boost::shared_ptr<StrikedTypePayoff>& payoff,
         const boost::shared_ptr<Exercise>& exercise,

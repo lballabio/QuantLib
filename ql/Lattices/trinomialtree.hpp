@@ -42,18 +42,18 @@ namespace QuantLib {
         TrinomialTree(const boost::shared_ptr<StochasticProcess>& process,
                       const TimeGrid& timeGrid,
                       bool isPositive = false);
-        double dx(Size i) const { return dx_[i]; }
+        Real dx(Size i) const { return dx_[i]; }
         Size size(Size i) const;
-        double underlying(Size i, Size index) const;
+        Real underlying(Size i, Size index) const;
         const TimeGrid& timeGrid() const { return timeGrid_; }
 
         Size descendant(Size i, Size index, Size branch) const;
-        double probability(Size i, Size index, Size branch) const;
+        Real probability(Size i, Size index, Size branch) const;
 
       protected:
         std::vector<boost::shared_ptr<TrinomialBranching> > branchings_;
-        double x0_;
-        std::vector<double> dx_;
+        Real x0_;
+        std::vector<Real> dx_;
         TimeGrid timeGrid_;
     };
 
@@ -67,13 +67,13 @@ namespace QuantLib {
         virtual ~TrinomialBranching() {}
 
         Size descendant(Size index, Size branch) const;
-        double probability(Size index, Size branch) const;
-        int jMin() const;
+        Real probability(Size index, Size branch) const;
+        Integer jMin() const;
       private:
         friend class TrinomialTree;
 
-        std::vector<int> k_;
-        std::vector<std::vector<double> > probs_;
+        std::vector<Integer> k_;
+        std::vector<std::vector<Real> > probs_;
     };
 
     inline 
@@ -82,7 +82,7 @@ namespace QuantLib {
     }
 
     inline
-    double TrinomialTree::probability(Size i, Size j, Size b) const {
+    Real TrinomialTree::probability(Size i, Size j, Size b) const {
         return branchings_[i]->probability(j, b);
     }
 
@@ -92,11 +92,11 @@ namespace QuantLib {
     }
 
     inline 
-    double TrinomialBranching::probability(Size index, Size branch) const {
+    Real TrinomialBranching::probability(Size index, Size branch) const {
         return probs_[branch][index];
     }
 
-    inline int TrinomialBranching::jMin() const {
+    inline Integer TrinomialBranching::jMin() const {
         return *std::min_element(k_.begin(), k_.end()) - 1;
     }
 

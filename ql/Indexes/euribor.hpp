@@ -31,7 +31,7 @@ namespace QuantLib {
     //! %Euribor index
     class Euribor : public Xibor {
       public:
-        Euribor(int n, TimeUnit units,
+        Euribor(Integer n, TimeUnit units,
                 const RelinkableHandle<TermStructure>& h,
                 const DayCounter& dc = Actual360())
         : Xibor("Euribor", n, units, 2, EUR,

@@ -39,13 +39,13 @@ namespace QuantLib {
                                       boost::shared_ptr<PricingEngine>());
         //! \name greeks
         //@{
-        double strikeSensitivity() const;
+        Real strikeSensitivity() const;
         //@}
         void setupArguments(Arguments*) const;
       protected:
         void performCalculations() const;
         // results
-        mutable double strikeSensitivity_;
+        mutable Real strikeSensitivity_;
     };
 
 }

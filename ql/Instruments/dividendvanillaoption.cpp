@@ -24,7 +24,7 @@ namespace QuantLib {
         const boost::shared_ptr<StrikedTypePayoff>& payoff,
         const boost::shared_ptr<Exercise>& exercise,
         const std::vector<Date>& dividendDates,
-        const std::vector<double>& dividends,
+        const std::vector<Real>& dividends,
         const boost::shared_ptr<PricingEngine>& engine)
     : VanillaOption(stochProc, payoff, exercise, engine),
       dividendDates_(dividendDates), dividends_(dividends) {}

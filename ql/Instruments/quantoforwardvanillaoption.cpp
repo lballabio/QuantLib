@@ -23,7 +23,7 @@ namespace QuantLib {
         const RelinkableHandle<TermStructure>& foreignRiskFreeTS,
         const RelinkableHandle<BlackVolTermStructure>& exchRateVolTS,
         const RelinkableHandle<Quote>& correlation,
-        double moneyness,
+        Real moneyness,
         Date resetDate,
         const boost::shared_ptr<BlackScholesProcess>& stochProc,
         const boost::shared_ptr<StrikedTypePayoff>& payoff,

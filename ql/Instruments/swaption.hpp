@@ -57,7 +57,7 @@ namespace QuantLib {
         {}
         Rate fairRate;
         Rate fixedRate;
-        double fixedBPS;
+        Real fixedBPS;
 //        Exercise::Type exerciseType;
 //        std::vector<Time> exerciseTimes;
         void validate() const;

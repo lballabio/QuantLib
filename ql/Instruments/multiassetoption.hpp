@@ -47,19 +47,19 @@ namespace QuantLib {
         //@}
         //! \name greeks
         //@{
-        double delta() const;
-        double gamma() const;
-        double theta() const;
-        double vega() const;
-        double rho() const;
-        double dividendRho() const;
+        Real delta() const;
+        Real gamma() const;
+        Real theta() const;
+        Real vega() const;
+        Real rho() const;
+        Real dividendRho() const;
         //@}        
         void setupArguments(Arguments*) const;
       protected:
         void setupExpired() const;
         void performCalculations() const;
         // results
-        mutable double delta_,  gamma_, theta_,
+        mutable Real delta_,  gamma_, theta_,
             vega_, rho_, dividendRho_;
         // arguments        
         std::vector< boost::shared_ptr<BlackScholesProcess> > 

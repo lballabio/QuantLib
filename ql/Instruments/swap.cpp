@@ -56,8 +56,8 @@ namespace QuantLib {
                    "null term structure set");
         Date settlement = termStructure_->referenceDate();
         NPV_ = 0.0;
-        double firstLegNPV_ = 0.0;
-        double secondLegNPV_ = 0.0;
+        Real firstLegNPV_ = 0.0;
+        Real secondLegNPV_ = 0.0;
 
         // subtract first leg cash flows
         for (Size i=0; i<firstLeg_.size(); i++) {
@@ -121,17 +121,17 @@ namespace QuantLib {
         return d;
     }
 
-    double Swap::firstLegBPS() const {
+    Real Swap::firstLegBPS() const {
         calculate();
         return firstLegBPS_;
     }
 
-    double Swap::secondLegBPS() const {
+    Real Swap::secondLegBPS() const {
         calculate();
         return secondLegBPS_;
     }
 
-    TimeBasket Swap::sensitivity(int basis) const {
+    TimeBasket Swap::sensitivity(Integer basis) const {
         calculate();
         TimeBasket basket = BasisPointSensitivityBasket(firstLeg_,
                                                         termStructure_,

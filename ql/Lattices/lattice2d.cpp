@@ -32,7 +32,7 @@ namespace QuantLib {
             tree2_->descendant(i, index2, branch2)*modulo;
     }
 
-    double Lattice2D::probability(Size i, Size index, Size branch) const {
+    Real Lattice2D::probability(Size i, Size index, Size branch) const {
         Size modulo = tree1_->size(i);
 
         Size index1 = index % modulo;
@@ -40,14 +40,14 @@ namespace QuantLib {
         Size branch1 = branch % 3;
         Size branch2 = branch / 3;
 
-        double prob1 = tree1_->probability(i, index1, branch1);
-        double prob2 = tree2_->probability(i, index2, branch2);
+        Real prob1 = tree1_->probability(i, index1, branch1);
+        Real prob2 = tree2_->probability(i, index2, branch2);
         return prob1*prob2 + rho_*(m_[branch1][branch2])/36.0;
     }
 
     Lattice2D::Lattice2D(const boost::shared_ptr<TrinomialTree>& tree1,
                          const boost::shared_ptr<TrinomialTree>& tree2,
-                         double correlation)
+                         Real correlation)
     : Lattice(tree1->timeGrid(), 9),
       tree1_(tree1), tree2_(tree2), m_(3,3), rho_(QL_FABS(correlation)) {
 

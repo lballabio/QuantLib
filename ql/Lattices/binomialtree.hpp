@@ -34,7 +34,7 @@ namespace QuantLib {
       public:
         BinomialTree(const boost::shared_ptr<StochasticProcess>& process,
                      Time end,
-                     unsigned long steps);
+                     Size steps);
         Size size(Size i) const {
             return i+1;
         }
@@ -43,13 +43,13 @@ namespace QuantLib {
                         Size branch) const {
             return index + branch;
         }
-        virtual double underlying(Size i,
-                                  Size index) const = 0;
-        virtual double probability(Size i,
-                                   Size index,
-                                   Size branch) const = 0;
+        virtual Real underlying(Size i,
+                                Size index) const = 0;
+        virtual Real probability(Size i,
+                                 Size index,
+                                 Size branch) const = 0;
       protected:
-        double x0_, driftPerStep_;
+        Real x0_, driftPerStep_;
         Time dt_;
     };
 
@@ -63,15 +63,12 @@ namespace QuantLib {
         EqualProbabilitiesBinomialTree(
                            const boost::shared_ptr<StochasticProcess>& process,
                            Time end,
-                           unsigned long steps)
+                           Size steps)
         : BinomialTree(process, end, steps) {}
-        double underlying(Size i,
-                          Size index) const;
-        double probability(Size,
-                           Size,
-                           Size) const {return 0.5 ; }
+        Real underlying(Size i, Size index) const;
+        Real probability(Size, Size, Size) const { return 0.5; }
       protected:
-        double up_;
+        Real up_;
     };
 
 
@@ -83,15 +80,12 @@ namespace QuantLib {
         EqualJumpsBinomialTree(
                            const boost::shared_ptr<StochasticProcess>& process,
                            Time end,
-                           unsigned long steps)
+                           Size steps)
         : BinomialTree(process, end, steps) {}
-        double underlying(Size i,
-                          Size index) const;
-        double probability(Size,
-                           Size,
-                           Size branch) const;
+        Real underlying(Size i, Size index) const;
+        Real probability(Size, Size, Size branch) const;
       protected:
-        double dx_, pu_, pd_;
+        Real dx_, pu_, pd_;
     };
 
 
@@ -102,8 +96,8 @@ namespace QuantLib {
       public:
         JarrowRudd(const boost::shared_ptr<StochasticProcess>& process,
                    Time end,
-                   unsigned long steps,
-                   double strike);
+                   Size steps,
+                   Real strike);
     };
 
     //! Cox-Ross-Rubinstein (multiplicative) equal jumps binomial tree
@@ -112,8 +106,8 @@ namespace QuantLib {
       public:
         CoxRossRubinstein(const boost::shared_ptr<StochasticProcess>& process,
                           Time end,
-                          unsigned long steps,
-                          double strike);
+                          Size steps,
+                          Real strike);
     };
 
 
@@ -124,8 +118,8 @@ namespace QuantLib {
         AdditiveEQPBinomialTree(
                            const boost::shared_ptr<StochasticProcess>& process,
                            Time end,
-                           unsigned long steps,
-                           double strike);
+                           Size steps,
+                           Real strike);
     };
 
     //! %Trigeorgis (additive equal jumps) binomial tree
@@ -134,8 +128,8 @@ namespace QuantLib {
       public:
         Trigeorgis(const boost::shared_ptr<StochasticProcess>& process,
                    Time end,
-                   unsigned long steps,
-                   double strike);
+                   Size steps,
+                   Real strike);
     };
 
 
@@ -145,15 +139,12 @@ namespace QuantLib {
       public:
         Tian(const boost::shared_ptr<StochasticProcess>& process,
              Time end,
-             unsigned long steps,
-             double strike);
-        double underlying(Size i,
-                          Size index) const;
-        double probability(Size,
-                           Size,
-                           Size) const;
+             Size steps,
+             Real strike);
+        Real underlying(Size i, Size index) const;
+        Real probability(Size, Size, Size) const;
       protected:
-        double up_, down_, pu_, pd_;
+        Real up_, down_, pu_, pd_;
     };
 
     //! Leisen & Reimer tree: multiplicative approach
@@ -162,15 +153,12 @@ namespace QuantLib {
       public:
         LeisenReimer(const boost::shared_ptr<StochasticProcess>& process,
                      Time end,
-                     unsigned long steps,
-                     double strike);
-        double underlying(Size i,
-                          Size index) const;
-        double probability(Size,
-                           Size,
-                           Size) const;
+                     Size steps,
+                     Real strike);
+        Real underlying(Size i, Size index) const;
+        Real probability(Size, Size, Size) const;
       protected:
-        double up_, down_, pu_, pd_;
+        Real up_, down_, pu_, pd_;
     };
 
 }

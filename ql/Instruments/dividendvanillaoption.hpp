@@ -37,14 +37,14 @@ namespace QuantLib {
                       const boost::shared_ptr<StrikedTypePayoff>& payoff,
                       const boost::shared_ptr<Exercise>& exercise,
                       const std::vector<Date>& dividendDates,
-                      const std::vector<double>& dividends,
+                      const std::vector<Real>& dividends,
                       const boost::shared_ptr<PricingEngine>& engine =
                           boost::shared_ptr<PricingEngine>());
       protected:
         void setupArguments(Arguments*) const;
       private:
         std::vector<Date> dividendDates_;
-        std::vector<double> dividends_;
+        std::vector<Real> dividends_;
     };
 
 
@@ -54,7 +54,7 @@ namespace QuantLib {
         arguments() {}
         void validate() const;
         std::vector<Date> dividendDates;
-        std::vector<double> dividends;
+        std::vector<Real> dividends;
     };
 
     //! Dividend vanilla option engine base class

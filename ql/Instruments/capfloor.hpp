@@ -61,11 +61,12 @@ namespace QuantLib {
         //@}
         void setupArguments(Arguments*) const;
         //! implied term volatility
-        double impliedVolatility(double price,
-                                 double accuracy = 1.0e-4,
-                                 Size maxEvaluations = 100,
-                                 double minVol = QL_MIN_VOLATILITY,
-                                 double maxVol = QL_MAX_VOLATILITY) const;
+        Volatility impliedVolatility(Real price,
+                                     Real accuracy = 1.0e-4,
+                                     Size maxEvaluations = 100,
+                                     Volatility minVol = QL_MIN_VOLATILITY,
+                                     Volatility maxVol = QL_MAX_VOLATILITY)
+                                                                        const;
       private:
         Type type_;
         std::vector<boost::shared_ptr<CashFlow> > floatingLeg_;
@@ -77,12 +78,12 @@ namespace QuantLib {
           public:
             ImpliedVolHelper(const CapFloor&,
                              const RelinkableHandle<TermStructure>&,
-                             double targetValue);
-            double operator()(double x) const;
+                             Real targetValue);
+            Real operator()(Volatility x) const;
           private:
             boost::shared_ptr<PricingEngine> engine_;
             RelinkableHandle<TermStructure> termStructure_;
-            double targetValue_;
+            Real targetValue_;
             boost::shared_ptr<SimpleQuote> vol_;
             const Value* results_;
         };
@@ -140,7 +141,7 @@ namespace QuantLib {
         std::vector<Rate> capRates;
         std::vector<Rate> floorRates;
         std::vector<Rate> forwards;
-        std::vector<double> nominals;
+        std::vector<Real> nominals;
         void validate() const;
     };
 

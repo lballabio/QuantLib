@@ -43,8 +43,8 @@ namespace QuantLib {
         class arguments;
         class engine;
         BarrierOption(Barrier::Type barrierType,
-                      double barrier,
-                      double rebate,
+                      Real barrier,
+                      Real rebate,
                       const boost::shared_ptr<BlackScholesProcess>&,
                       const boost::shared_ptr<StrikedTypePayoff>& payoff,
                       const boost::shared_ptr<Exercise>& exercise,
@@ -55,16 +55,16 @@ namespace QuantLib {
         void performCalculations() const;
         // arguments
         Barrier::Type barrierType_;
-        double barrier_;
-        double rebate_;
+        Real barrier_;
+        Real rebate_;
     };
 
     //! %Arguments for barrier option calculation
     class BarrierOption::arguments : public OneAssetStrikedOption::arguments {
       public:
         Barrier::Type barrierType;
-        double barrier;
-        double rebate;
+        Real barrier;
+        Real rebate;
         void validate() const;
     };
 

@@ -37,77 +37,77 @@ namespace QuantLib {
             blackScholesProcess_->riskFreeRate()->referenceDate();
     }
 
-    double OneAssetOption::delta() const {
+    Real OneAssetOption::delta() const {
         calculate();
         QL_REQUIRE(delta_ != Null<Real>(), "delta not provided");
         return delta_;
     }
 
-    double OneAssetOption::deltaForward() const {
+    Real OneAssetOption::deltaForward() const {
         calculate();
         QL_REQUIRE(deltaForward_ != Null<Real>(),
                    "forward delta not provided");
         return deltaForward_;
     }
 
-    double OneAssetOption::elasticity() const {
+    Real OneAssetOption::elasticity() const {
         calculate();
         QL_REQUIRE(elasticity_ != Null<Real>(), "elasticity not provided");
         return elasticity_;
     }
 
-    double OneAssetOption::gamma() const {
+    Real OneAssetOption::gamma() const {
         calculate();
         QL_REQUIRE(gamma_ != Null<Real>(), "gamma not provided");
         return gamma_;
     }
 
-    double OneAssetOption::theta() const {
+    Real OneAssetOption::theta() const {
         calculate();
         QL_REQUIRE(theta_ != Null<Real>(), "theta not provided");
         return theta_;
     }
 
-    double OneAssetOption::thetaPerDay() const {
+    Real OneAssetOption::thetaPerDay() const {
         calculate();
         QL_REQUIRE(thetaPerDay_ != Null<Real>(), "theta per-day not provided");
         return thetaPerDay_;
     }
 
-    double OneAssetOption::vega() const {
+    Real OneAssetOption::vega() const {
         calculate();
         QL_REQUIRE(vega_ != Null<Real>(), "vega not provided");
         return vega_;
     }
 
-    double OneAssetOption::rho() const {
+    Real OneAssetOption::rho() const {
         calculate();
         QL_REQUIRE(rho_ != Null<Real>(), "rho not provided");
         return rho_;
     }
 
-    double OneAssetOption::dividendRho() const {
+    Real OneAssetOption::dividendRho() const {
         calculate();
         QL_REQUIRE(dividendRho_ != Null<Real>(), "dividend rho not provided");
         return dividendRho_;
     }
 
-    double OneAssetOption::itmCashProbability() const {
+    Real OneAssetOption::itmCashProbability() const {
         calculate();
         QL_REQUIRE(itmCashProbability_ != Null<Real>(),
                    "in-the-money cash probability not provided");
         return itmCashProbability_;
     }
 
-    double OneAssetOption::impliedVolatility(double targetValue,
-                                             double accuracy,
-                                             Size maxEvaluations,
-                                             double minVol,
-                                             double maxVol) const {
+    Volatility OneAssetOption::impliedVolatility(Real targetValue,
+                                                 Real accuracy,
+                                                 Size maxEvaluations,
+                                                 Volatility minVol,
+                                                 Volatility maxVol) const {
         calculate();
         QL_REQUIRE(!isExpired(), "option expired");
 
-        double guess = blackScholesProcess_->blackVolatility()->blackVol(
+        Volatility guess = blackScholesProcess_->blackVolatility()->blackVol(
                               exercise_->lastDate(),
                               blackScholesProcess_->stateVariable()->value());
 
@@ -115,7 +115,7 @@ namespace QuantLib {
         Brent solver;
         solver.setMaxEvaluations(maxEvaluations);
         // Borland compiler fails here: cannot enter into Solver1D::solve(...)
-        double result = solver.solve(f, accuracy, guess, minVol, maxVol);
+        Volatility result = solver.solve(f, accuracy, guess, minVol, maxVol);
         return result;
     }
 
@@ -209,7 +209,7 @@ namespace QuantLib {
 
     OneAssetOption::ImpliedVolHelper::ImpliedVolHelper(
                                const boost::shared_ptr<PricingEngine>& engine,
-                               double targetValue)
+                               Real targetValue)
     : engine_(engine), targetValue_(targetValue) {
         OneAssetOption::arguments* arguments_ =
             dynamic_cast<OneAssetOption::arguments*>(engine_->arguments());
@@ -246,7 +246,7 @@ namespace QuantLib {
                    "pricing engine does not supply needed results");
     }
 
-    double OneAssetOption::ImpliedVolHelper::operator()(double x) const {
+    Real OneAssetOption::ImpliedVolHelper::operator()(Volatility x) const {
         vol_->setValue(x);
         engine_->calculate();
         return results_->value-targetValue_;

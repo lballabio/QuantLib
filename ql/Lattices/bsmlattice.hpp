@@ -46,13 +46,13 @@ namespace QuantLib {
         Size descendant(Size i, Size index, Size branch) const {
             return tree_->descendant(i, index, branch);
         }
-        double probability(Size i, Size index, Size branch) const {
+        Real probability(Size i, Size index, Size branch) const {
             return tree_->probability(i, index, branch);
         }
       private:
         boost::shared_ptr<Tree> tree_;
         DiscountFactor discount_;
-        double pd_, pu_;
+        Real pd_, pu_;
     };
 
 }

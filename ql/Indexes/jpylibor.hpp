@@ -32,7 +32,7 @@ namespace QuantLib {
     /*! \todo check settlement days */
     class JPYLibor : public Xibor {
       public:
-        JPYLibor(int n, TimeUnit units,
+        JPYLibor(Integer n, TimeUnit units,
                  const RelinkableHandle<TermStructure>& h,
                  const DayCounter& dc = Actual360())
         : Xibor("JPYLibor", n, units, 2, JPY,

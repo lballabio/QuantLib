@@ -36,10 +36,10 @@ namespace QuantLib {
         class results;
         SimpleSwap(bool payFixedRate,
                    // dates
-                   const Date& startDate, int n, TimeUnit units,
+                   const Date& startDate, Integer n, TimeUnit units,
                    const Calendar& calendar,
                    RollingConvention rollingConvention,
-                   double nominal,
+                   Real nominal,
                    // fixed leg
                    Frequency fixedFrequency,
                    Rate fixedRate,
@@ -48,29 +48,29 @@ namespace QuantLib {
                    // floating leg
                    Frequency floatingFrequency,
                    const boost::shared_ptr<Xibor>& index,
-                   int indexFixingDays,
+                   Integer indexFixingDays,
                    Spread spread,
                    // hook to term structure
                    const RelinkableHandle<TermStructure>& termStructure);
         SimpleSwap(bool payFixedRate,
-                   double nominal,
+                   Real nominal,
                    const Schedule& fixedSchedule,
                    Rate fixedRate,
                    const DayCounter& fixedDayCount,
                    const Schedule& floatSchedule,
                    const boost::shared_ptr<Xibor>& index,
-                   int indexFixingDays,
+                   Integer indexFixingDays,
                    Spread spread,
                    const RelinkableHandle<TermStructure>& termStructure);
         // results
         Rate fairRate() const;
         Spread fairSpread() const;
-        double fixedLegBPS() const;
-        double floatingLegBPS() const;
+        Real fixedLegBPS() const;
+        Real floatingLegBPS() const;
         // inspectors
         Rate fixedRate() const;
         Spread spread() const;
-        double nominal() const;
+        Real nominal() const;
         bool payFixedRate() const;
         const std::vector<boost::shared_ptr<CashFlow> >& fixedLeg() const;
         const std::vector<boost::shared_ptr<CashFlow> >& floatingLeg() const;
@@ -80,7 +80,7 @@ namespace QuantLib {
         bool payFixedRate_;
         Rate fixedRate_;
         Spread spread_;
-        double nominal_;
+        Real nominal_;
     };
 
     //! %Arguments for simple swap calculation
@@ -89,10 +89,10 @@ namespace QuantLib {
         arguments() : payFixed(false),
                       nominal(Null<Real>()) {}
         bool payFixed;
-        double nominal;
+        Real nominal;
         std::vector<Time> fixedResetTimes;
         std::vector<Time> fixedPayTimes;
-        std::vector<double> fixedCoupons;
+        std::vector<Real> fixedCoupons;
         std::vector<Time> floatingAccrualTimes;
         std::vector<Time> floatingResetTimes;
         std::vector<Time> floatingPayTimes;
@@ -114,11 +114,11 @@ namespace QuantLib {
         return spread_ - NPV()/floatingLegBPS();
     }
 
-    inline double SimpleSwap::fixedLegBPS() const {
+    inline Real SimpleSwap::fixedLegBPS() const {
         return (payFixedRate_ ? firstLegBPS() : secondLegBPS());
     }
 
-    inline double SimpleSwap::floatingLegBPS() const {
+    inline Real SimpleSwap::floatingLegBPS() const {
         return (payFixedRate_ ? secondLegBPS() : firstLegBPS());
     }
 
@@ -130,7 +130,7 @@ namespace QuantLib {
         return spread_;
     }
 
-    inline double SimpleSwap::nominal() const {
+    inline Real SimpleSwap::nominal() const {
         return nominal_;
     }
 

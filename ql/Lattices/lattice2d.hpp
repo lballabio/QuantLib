@@ -38,17 +38,17 @@ namespace QuantLib {
       public:
         Lattice2D(const boost::shared_ptr<TrinomialTree>& tree1,
                   const boost::shared_ptr<TrinomialTree>& tree2,
-                  double correlation);
+                  Real correlation);
 
         Size size(Size i) const { return tree1_->size(i)*tree2_->size(i); }
       protected:
         Size descendant(Size i, Size index, Size branch) const;
-        double probability(Size i, Size index, Size branch) const;
+        Real probability(Size i, Size index, Size branch) const;
 
         boost::shared_ptr<Tree> tree1_, tree2_;
       private:
         Matrix m_;
-        double rho_;
+        Real rho_;
     };
 
 }

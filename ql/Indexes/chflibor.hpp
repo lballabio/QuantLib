@@ -32,7 +32,7 @@ namespace QuantLib {
     /*! \todo check settlement days and day-count */
     class CHFLibor : public Xibor {
       public:
-        CHFLibor(int n, TimeUnit units,
+        CHFLibor(Integer n, TimeUnit units,
                  const RelinkableHandle<TermStructure>& h,
                  const DayCounter& dc = Actual360())
         : Xibor("CHFLibor", n, units, 2, CHF,

@@ -32,7 +32,7 @@ namespace QuantLib {
     /*! \todo check settlement days */
     class AUDLibor : public Xibor {
       public:
-        AUDLibor(int n, TimeUnit units,
+        AUDLibor(Integer n, TimeUnit units,
                  const RelinkableHandle<TermStructure>& h,
                  const DayCounter& dc = Actual365())
         : Xibor("AUDLibor", n, units, 2, AUD,

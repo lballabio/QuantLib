@@ -21,7 +21,7 @@ namespace QuantLib {
 
     DiscreteAveragingAsianOption::DiscreteAveragingAsianOption(
         Average::Type averageType,
-        double runningProduct,
+        Real runningProduct,
         Size pastFixings,
         std::vector<Date> fixingDates,
         const boost::shared_ptr<BlackScholesProcess>& stochProc,
@@ -56,7 +56,7 @@ namespace QuantLib {
         OneAssetStrikedOption::arguments::validate();
         #endif
 
-        QL_REQUIRE(int(averageType) != -1, "unspecified average type");
+        QL_REQUIRE(Integer(averageType) != -1, "unspecified average type");
         QL_REQUIRE(runningProduct != Null<Real>(), "null running product");
         QL_REQUIRE(runningProduct >= 0.0, "negative running product");
         QL_REQUIRE(pastFixings != Null<Size>(), "null past-fixing number");
@@ -95,7 +95,7 @@ namespace QuantLib {
         OneAssetStrikedOption::arguments::validate();
         #endif
 
-        QL_REQUIRE(int(averageType) != -1, "unspecified average type");
+        QL_REQUIRE(Integer(averageType) != -1, "unspecified average type");
     }
 
 }
