@@ -33,6 +33,7 @@
 #include <ql/Calendars/nullcalendar.hpp>
 #include <ql/Calendars/oslo.hpp>
 #include <ql/Calendars/seoul.hpp>
+#include <ql/Calendars/singapore.hpp>
 #include <ql/Calendars/stockholm.hpp>
 #include <ql/Calendars/sydney.hpp>
 #include <ql/Calendars/taiwan.hpp>

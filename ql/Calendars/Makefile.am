@@ -17,6 +17,7 @@ include_HEADERS = \
 	nullcalendar.hpp \
 	oslo.hpp \
 	seoul.hpp \
+	singapore.hpp \
 	stockholm.hpp \
 	sydney.hpp \
 	taiwan.hpp \
@@ -42,6 +43,7 @@ libCalendars_la_SOURCES = \
 	newyork.cpp \
 	oslo.cpp \
 	seoul.cpp \
+	singapore.cpp \
 	stockholm.cpp \
 	sydney.cpp \
 	taiwan.cpp \
