@@ -20,6 +20,7 @@ OBJS = \
        blackswaption.obj$(_D) \
        fdbermudanoption.obj$(_D) \
        binaryoption.obj$(_D) \
+       capfloorpricer.obj$(_D) \
        cliquetoption.obj$(_D) \
        discretegeometricapo.obj$(_D) \
        discretegeometricaso.obj$(_D) \
@@ -42,6 +43,7 @@ OBJS = \
        mcmaxbasket.obj$(_D) \
        mcpagoda.obj$(_D) \
        singleassetoption.obj$(_D) \
+       swaptionpricer.obj$(_D) \
        treeswaption.obj$(_D)
 
 # Tools to be used

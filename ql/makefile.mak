@@ -30,7 +30,7 @@ FDM_LIB          = FiniteDifferences\FiniteDifferences$(_D).lib
 FUNCTIONS        = functions\functions$(_D).lib
 INDEXES_LIB      = Indexes\Indexes$(_D).lib
 INSTRUMENTS_LIB  = Instruments\Instruments$(_D).lib
-IRMODELING_LIB   = ShortRateModels\IRModelling$(_D).lib
+SHORTRATEMODELS_LIB = ShortRateModels\ShortRateModels$(_D).lib
 LATTICES_LIB     = Lattices\Lattices$(_D).lib
 MATH_LIB         = Math\Math$(_D).lib
 MONTECARLO_LIB   = MonteCarlo\MonteCarlo$(_D).lib
@@ -51,7 +51,7 @@ QUANTLIB_OBJS    = \
                    $(FUNCTIONS) \
                    $(INDEXES_LIB) \
                    $(INSTRUMENTS_LIB) \
-                   $(IRMODELING_LIB) \
+                   $(SHORTRATEMODELS_LIB) \
                    $(LATTICES_LIB) \
                    $(MATH_LIB) \
                    $(MONTECARLO_LIB) \
