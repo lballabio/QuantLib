@@ -119,29 +119,36 @@ namespace QuantLib {
 }
 
 /*! \def QL_ASSERT
-    \brief it throws an error if the given condition is not verified
+    \brief throw an error if the given condition is not verified
     \relates Error
 */
 #define QL_ASSERT(condition,description) \
-    (condition) || (throw QuantLib::AssertionFailedError(description),false)
+    do { \
+        if (!(condition)) \
+            throw QuantLib::AssertionFailedError(description); \
+    } while (false)
 
 
 /*! \def QL_REQUIRE
-    \brief it throws an error if the given pre-condition is not verified
+    \brief throw an error if the given pre-condition is not verified
     \relates Error
 */
 #define QL_REQUIRE(condition,description) \
-    (condition) || \
-    (throw QuantLib::PreconditionNotSatisfiedError(description),false)
+    do { \
+        if (!(condition)) \
+            throw QuantLib::PreconditionNotSatisfiedError(description); \
+    } while (false)
 
 
 /*! \def QL_ENSURE
-    \brief it throws an error if the given post-condition is not verified
+    \brief throw an error if the given post-condition is not verified
     \relates Error
 */
 #define QL_ENSURE(condition,description) \
-    (condition) || \
-    (throw QuantLib::PostconditionNotSatisfiedError(description),false)
+    do { \
+        if (!(condition)) \
+            throw QuantLib::PostconditionNotSatisfiedError(description); \
+    } while (false)
 
 
 
