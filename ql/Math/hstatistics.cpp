@@ -183,7 +183,6 @@ namespace QuantLib {
                 return (1.0-lambda) * (k->first) + lambda * ((k-1)->first);
             }
 
-           return result;
         }
 
         double HStatistics::potentialUpside(double y) const{
