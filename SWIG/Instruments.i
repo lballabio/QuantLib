@@ -26,6 +26,9 @@
     $Id$
     $Source$
     $Log$
+    Revision 1.20  2001/05/03 10:26:07  lballabio
+    Stock is now an actual shadow class
+
     Revision 1.19  2001/04/09 12:24:58  nando
     updated copyright notice header and improved CVS tags
 
@@ -100,14 +103,23 @@ typedef Handle<Instrument> InstrumentHandle;
 // actual instruments
 
 %{
-using QuantLib::Instruments::Stock;
-
-InstrumentHandle NewStock(String isinCode, String description) {
-	return InstrumentHandle(new Stock(isinCode,description));
-}
+    using QuantLib::Instruments::Stock;
+    typedef Handle<Instrument> StockHandle;
 %}
 
-%name(Stock) InstrumentHandle NewStock(String isinCode, String description);
+// actually they are the same class, but I'll fake inheritance...
+
+%name(Stock) class StockHandle : public InstrumentHandle {
+  public:
+    // constructor redefined below
+    ~StockHandle();
+};
+
+%addmethods StockHandle {
+    StockHandle(String isinCode, String description) {
+        return new StockHandle(new Stock(isinCode,description));
+    }
+}
 
 
 #endif
