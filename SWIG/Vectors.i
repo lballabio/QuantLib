@@ -23,6 +23,9 @@
 
 /* $Source$
    $Log$
+   Revision 1.22  2001/03/30 15:45:42  lballabio
+   Still working on make dist (and added IntVector and DoubleVector to Ruby module)
+
    Revision 1.21  2001/03/15 10:30:48  lballabio
    Added dummy returns to avoid warnings
 
@@ -48,11 +51,9 @@ using QuantLib::IntegerFormatter;
 using QuantLib::DoubleFormatter;
 %}
 
-// typemap Python sequence of ints to std::vector<int>
-
-%{
-typedef std::vector<int> IntVector;
-%}
+%typemap(ruby,in) VALUE {
+    $target = $source;
+};
 
 class IntVector {
   public:
@@ -60,10 +61,45 @@ class IntVector {
 };
 
 %addmethods IntVector {
+    #if defined(SWIGRUBY)
+    void crash() {}
+    IntVector(VALUE v) {
+    	if (rb_obj_is_kind_of(v,rb_cArray)) {
+            int size = RARRAY(v)->len;
+            IntVector* temp = new IntVector(size);
+            for (int i=0; i<size; i++) {
+                VALUE o = RARRAY(v)->ptr[i];
+                if (o == Qnil)
+                    (*temp)[i] = Null<int>();
+                else if (FIXNUM_P(o))
+                    (*temp)[i] = FIX2INT(o);
+                else
+                    rb_raise(rb_eTypeError,
+                        "wrong argument type (expected integers)");
+            }
+            return temp;
+        } else {
+            rb_raise(rb_eTypeError,
+                "wrong argument type (expected array)");
+        }
+    }
+    #endif
+    #if defined(SWIGPYTHON)
     IntVector(const IntVector& v) {
         return new IntVector(v);
     }
-    #if defined(SWIGPYTHON)
+    #endif
+    #if defined(SWIGPYTHON) || defined(SWIGRUBY)
+    String __str__() {
+        String s = "(";
+        for (int i=0; i<self->size(); i++) {
+            if (i != 0)
+                s += ", ";
+            s += IntegerFormatter::toString((*self)[i]);
+        }
+        s += ")";
+        return s;
+    }
     int __len__() {
         return self->size();
     }
@@ -86,6 +122,8 @@ class IntVector {
             throw IndexError("IntVector index out of range");
         }
     }
+    #endif
+    #if defined(SWIGPYTHON)
     IntVector __getslice__(int i, int j) {
         if (i<0)
             i = self->size()+i;
@@ -111,21 +149,19 @@ class IntVector {
         QL_ENSURE(rhs.size() == j-i, "IntVectors are not resizable");
         std::copy(rhs.begin(),rhs.end(),self->begin()+i);
     }
-    String __str__() {
-        String s = "(";
-        for (int i=0; i<self->size(); i++) {
-            if (i != 0)
-                s += ", ";
-            s += IntegerFormatter::toString((*self)[i]);
-        }
-        s += ")";
-        return s;
-    }
     int __nonzero__() {
         return (self->size() == 0 ? 0 : 1);
     }
     #endif
+    #if defined(SWIGRUBY)
+    void each() {
+        for (int i=0; i<self->size(); i++)
+            rb_yield(INT2NUM((*self)[i]));
+    }
+    #endif
 }; 
+
+// typemap Python sequence of ints to std::vector<int>
 
 %typemap(python,in) IntVector (IntVector temp), IntVector * (IntVector temp), 
   const IntVector & (IntVector temp), IntVector & (IntVector temp) {
@@ -157,22 +193,53 @@ class IntVector {
 };
 
 
-// typemap Python sequence of doubles to std::vector<double>
-
-%{
-typedef std::vector<double> DoubleVector;
-%}
-
 class DoubleVector {
   public:
     ~DoubleVector();
 };
 
 %addmethods DoubleVector {
+    #if defined(SWIGRUBY)
+    void crash() {}
+    DoubleVector(VALUE v) {
+    	if (rb_obj_is_kind_of(v,rb_cArray)) {
+            int size = RARRAY(v)->len;
+            DoubleVector* temp = new DoubleVector(size);
+            for (int i=0; i<size; i++) {
+                VALUE o = RARRAY(v)->ptr[i];
+                if (o == Qnil)
+                    (*temp)[i] = Null<int>();
+                else if (FIXNUM_P(o))
+                    (*temp)[i] = double(FIX2INT(o));
+                else if (TYPE(o) == T_FLOAT)
+                    (*temp)[i] = NUM2DBL(o);
+                else
+                    rb_raise(rb_eTypeError,
+                        "wrong argument type (expected integers)");
+            }
+            return temp;
+        } else {
+            rb_raise(rb_eTypeError,
+                "wrong argument type (expected array)");
+        }
+    }
+    #endif
+    #if defined(SWIGPYTHON)
     DoubleVector(const DoubleVector& v) {
         return new DoubleVector(v);
     }
-    #if defined(SWIGPYTHON)
+    #endif
+    #if defined(SWIGPYTHON) || defined(SWIGRUBY)
+    String __str__() {
+        String s = "(";
+        for (int i=0; i<self->size(); i++) {
+            if (i != 0)
+                s += ", ";
+            s += DoubleFormatter::toString((*self)[i]);
+        }
+        s += ")";
+        return s;
+    }
     int __len__() {
         return self->size();
     }
@@ -195,6 +262,8 @@ class DoubleVector {
             throw IndexError("DoubleVector index out of range");
         }
     }
+    #endif
+    #if defined(SWIGPYTHON)
     DoubleVector __getslice__(int i, int j) {
         if (i<0)
             i = self->size()+i;
@@ -220,21 +289,19 @@ class DoubleVector {
         QL_ENSURE(rhs.size() == j-i, "DoubleVectors are not resizable");
         std::copy(rhs.begin(),rhs.end(),self->begin()+i);
     }
-    String __str__() {
-        String s = "(";
-        for (int i=0; i<self->size(); i++) {
-            if (i != 0)
-                s += ", ";
-            s += DoubleFormatter::toString((*self)[i]);
-        }
-        s += ")";
-        return s;
-    }
     int __nonzero__() {
         return (self->size() == 0 ? 0 : 1);
     }
     #endif
+    #if defined(SWIGRUBY)
+    void each() {
+        for (int i=0; i<self->size(); i++)
+            rb_yield(rb_float_new((*self)[i]));
+    }
+    #endif
 }; 
+
+// typemap Python sequence of doubles to std::vector<double>
 
 %typemap(python,in) DoubleVector (DoubleVector temp), 
   DoubleVector * (DoubleVector temp), const DoubleVector & (DoubleVector temp), 
@@ -270,3 +337,17 @@ class DoubleVector {
 
 
 #endif
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -23,6 +23,9 @@
 
 /* $Source$
    $Log$
+   Revision 1.30  2001/03/30 15:45:42  lballabio
+   Still working on make dist (and added IntVector and DoubleVector to Ruby module)
+
    Revision 1.29  2001/03/28 13:33:51  lballabio
    Generated distribution almost complete (and added random generators to Ruby module)
 
@@ -97,6 +100,7 @@ using QuantLib::IndexError;
 %include RandomGenerators.i
 %include Statistics.i
 %include String.i
+%include Vectors.i
 #else
 // PLEASE ADD ANY NEW *.i FILE AT THE BOTTOM, NOT HERE
 // the following files have no problem with SWIG in debug mode

@@ -24,6 +24,9 @@
 
 /* $Source$
    $Log$
+   Revision 1.18  2001/03/30 15:45:42  lballabio
+   Still working on make dist (and added IntVector and DoubleVector to Ruby module)
+
    Revision 1.17  2001/03/28 13:33:51  lballabio
    Generated distribution almost complete (and added random generators to Ruby module)
 
@@ -44,8 +47,8 @@
 
 #if defined (SWIGPYTHON)
 %include QLArray.i
-%include Vectors.i
 #endif
+%include Vectors.i
 
 %{
 using QuantLib::Math::Statistics;
@@ -72,7 +75,7 @@ class Statistics {
 };
 
 %addmethods Statistics {
-    #if defined(SWIGPYTHON)
+    #if defined(SWIGPYTHON) || defined(SWIGRUBY)
     void addSequence(DoubleVector values) {
         self->addSequence(values.begin(), values.end());
     }

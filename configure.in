@@ -130,23 +130,35 @@ QL_CHECK_TEMPLATE_CLASS([iterator],[std::input_iterator_tag,double],\
 QL_CHECK_TEMPLATE_CLASS([iterator_traits],[int*],[iterator],[])
 
 
-AC_OUTPUT(Makefile Sources/Makefile Sources/FiniteDifferences/Makefile \
-	Sources/Calendars/Makefile \
-	Sources/Solvers1D/Makefile Sources/TermStructures/Makefile \
-	Sources/DayCounters/Makefile Sources/Math/Makefile \
-	Sources/Pricers/Makefile Include/Makefile \
-	Sources/MonteCarlo/Makefile \
-	Include/Calendars/Makefile Include/Currencies/Makefile \
-	Include/DayCounters/Makefile \
-	Include/FiniteDifferences/Makefile Include/Instruments/Makefile \
-	Include/Math/Makefile Include/Patterns/Makefile \
-	Include/Pricers/Makefile \
-	Include/Solvers1D/Makefile Include/TermStructures/Makefile \
+AC_OUTPUT(Makefile \
+	Include/Makefile \
+	Include/Calendars/Makefile \
+        Include/Currencies/Makefile \
+        Include/DayCounters/Makefile \
+	Include/FiniteDifferences/Makefile \
+        Include/Instruments/Makefile \
+        Include/Math/Makefile \
 	Include/MonteCarlo/Makefile \
+        Include/Patterns/Makefile \
+	Include/Pricers/Makefile \
+        Include/Solvers1D/Makefile \
+        Include/TermStructures/Makefile \
 	Include/Utilities/Makefile \
-	Python/Makefile Python/Tests/Makefile Python/COM/Makefile \
-	Ruby/Makefile Ruby/Tests/Makefile \
+	Sources/Makefile \
+	Sources/Calendars/Makefile \
+	Sources/DayCounters/Makefile \
+	Sources/FiniteDifferences/Makefile \
+	Sources/Math/Makefile \
+	Sources/MonteCarlo/Makefile \
+	Sources/Pricers/Makefile \
+	Sources/Solvers1D/Makefile \
+	Sources/TermStructures/Makefile \
+	Python/Makefile \
+	Python/Tests/Makefile \
+	Python/COM/Makefile \
+	Ruby/Makefile \
+	Ruby/Tests/Makefile \
 	SWIG/Makefile \
-	Examples/Makefile \
-	Docs/Makefile) 
+	Docs/Makefile \
+	Examples/Makefile)
 

@@ -4,10 +4,8 @@ SUBDIRS=Sources Include Docs SWIG Python Ruby Examples
 
 EXTRA_DIST=News.txt Authors.txt Contributors.txt \
 	History.txt LICENSE.TXT Readme.txt \
-	updateproject.sh makefile.mak
-	Ruby/extconf.rb \
-	README-win.txt QuantLib.dsp \
-	Mac/README.txt Mac/QuantLib.prj Mac/QuantLib.prj.exp
+	updateproject.sh makefile.mak \
+	README-win.txt QuantLib.dsp
 
 if PYTHON_FOUND
 if SWIG_FOUND 
