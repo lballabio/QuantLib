@@ -404,12 +404,14 @@ void AsianOptionTest::testMCDiscreteGeometricAveragePrice() {
                             Handle<TermStructure>(rTS),
                             Handle<BlackVolTermStructure>(volTS)));
 
-    boost::shared_ptr<PricingEngine> engine =
+    boost::shared_ptr<PricingEngine> engine;
+    engine =
+        MakeMCDiscreteGeometricAPEngine<LowDiscrepancy>().withStepsPerYear(1)
+                                                         .withSamples(8191);
 //        MakeMCDiscreteGeometricAPEngine<PseudoRandom>().withStepsPerYear(1)
 //                                            .withTolerance(0.003)
 //                                            .withSeed(42);
-        MakeMCDiscreteGeometricAPEngine<LowDiscrepancy>().withStepsPerYear(1)
-                                                         .withSamples(8191);
+    
     Average::Type averageType = Average::Geometric;
     Real runningAccumulator = 1.0;
     Size pastFixings = 0;
@@ -544,7 +546,8 @@ void AsianOptionTest::testMCDiscreteArithmeticAveragePrice() {
     boost::shared_ptr<SimpleQuote> vol(new SimpleQuote(0.20));
     boost::shared_ptr<BlackVolTermStructure> volTS = flatVol(today, vol, dc);
 
-    boost::shared_ptr<PricingEngine> engine =
+    boost::shared_ptr<PricingEngine> engine;
+    engine =
 /*
         MakeMCDiscreteArithmeticAPEngine<PseudoRandom>().withStepsPerYear(1)
                                                         .withTolerance(0.005)
