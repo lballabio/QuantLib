@@ -20,40 +20,8 @@
 
 #include <boost/test/unit_test.hpp>
 
-/*! \class QuantLib::AnalyticContinuousGeometricAveragePriceAsianEngine \
-    <ql/PricingEngines/Asian/analytic_cont_geom_av_price.hpp>
-
-    \test a) the correctness of the returned value is tested by reproducing
-          results available in literature, and results obtained using a
-          discrete average approximation.
-
-    \test b) the correctness of the returned greeks is tested by
-          reproducing numerical derivatives.
-*/
-
-/*! \class QuantLib::AnalyticDiscreteGeometricAveragePriceAsianEngine \
-    <ql/PricingEngines/Asian/analytic_discr_geom_av_price.hpp>
-
-    \test a) the correctness of the returned value is tested by
-          reproducing results available in literature.
-
-*/
-
-/*! \class QuantLib::MCDiscreteArithmeticAPEngine \
-    <ql/PricingEngines/Asian/mc_discr_arith_av_price.hpp>
-
-    \test a) the correctness of the returned value is tested by
-          reproducing results available in literature.
-
-*/
-
-/*! \class QuantLib::MCDiscreteGeometricAPEngine \
-    <ql/PricingEngines/Asian/mc_discr_geom_av_price.hpp>
-
-    \test a) the correctness of the returned value is tested by
-          reproducing results available in literature.
-
-*/
+/* remember to document new and/or updated tests in the Doxygen
+   comment block of the corresponding class */
 
 class AsianOptionTest {
   public:

@@ -32,6 +32,9 @@ namespace QuantLib {
     /*! Mersenne Twister random number generator of period 2**19937-1
 
         For more details see http://www.math.keio.ac.jp/matumoto/emt.html
+
+        \test the correctness of the returned values is tested by
+              checking them against known good results.
     */
     class MersenneTwisterUniformRng {
       public:
@@ -48,7 +51,7 @@ namespace QuantLib {
             Real result = (Real(nextInt32()) + 0.5)/4294967296.0;
             return sample_type(result,1.0);
         }
-        //! return  a random number on [0,0xffffffff]-interval 
+        //! return  a random number on [0,0xffffffff]-interval
         unsigned long nextInt32() const;
       private:
         void seedInitialization(unsigned long seed);

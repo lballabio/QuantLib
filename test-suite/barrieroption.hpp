@@ -1,6 +1,6 @@
 
 /*
- Copyright (C) 2003 Neil Firth 
+ Copyright (C) 2003 Neil Firth
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -20,19 +20,8 @@
 
 #include <boost/test/unit_test.hpp>
 
-/*! \class QuantLib::AnalyticBarrierEngine \
-    <ql/PricingEngines/Barrier/analyticbarrierengine.hpp>
-
-    \test the correctness of the returned value is tested by
-          reproducing results available in literature.
-*/
-
-/*! \class QuantLib::MCBarrierEngine \
-    <ql/PricingEngines/Barrier/mcbarrierengine.hpp>
-
-    \test the correctness of the returned value is tested by
-          reproducing results available in literature.
-*/
+/* remember to document new and/or updated tests in the Doxygen
+   comment block of the corresponding class */
 
 class BarrierOptionTest {
   public:

@@ -30,6 +30,8 @@ namespace QuantLib {
     //! Random seed generator
     /*! Random number generator used for automatic generation of
         initialization seeds.
+
+        \test correct initializaion of the single instance is tested.
     */
     class SeedGenerator : public Singleton<SeedGenerator> {
         friend class Singleton<SeedGenerator>;

@@ -40,8 +40,10 @@
 
 
 /*! \defgroup macros QuantLib macros
-    Global definitions and quite a few macros which help porting the code to
-    different compilers
+
+    Global definitions and quite a few macros which help porting the
+    code to different compilers.
+
     @{
 */
 
@@ -75,8 +77,10 @@
 
 
 /*! \defgroup miscMacros Generic macros
+
     Miscellaneous macros for compiler idiosyncrasies not fitting other
     categories.
+
     @{
 */
 
@@ -114,15 +118,16 @@
     \brief I/O initialization
 
     Sometimes, programs compiled with the free Borland compiler will
-    crash miserably upon attempting to write on std::cout.
-    Strangely enough, issuing the instruction
+    crash miserably upon attempting to write on std::cout.  Strangely
+    enough, issuing the instruction
     \code
     std::cout << std::string();
     \endcode
     at the beginning of the program will prevent other accesses to
-    std::cout from crashing the program. This macro, to be called at
-    the beginning of main(), encapsulates the above enchantment for
-    Borland and is defined as empty for the other compilers.
+    <code>std::cout</code> from crashing the program. This macro, to
+    be called at the beginning of <code>main()</code>, encapsulates
+    the above enchantment for Borland and is defined as empty for the
+    other compilers.
 */
 #if defined(QL_PATCH_BORLAND)
     #define QL_IO_INIT    std::cout << std::string();
@@ -133,9 +138,11 @@
 
 
 /*! \defgroup mathMacros Math functions
-    Some compilers still define math functions them in the global namespace.
-    For the code to be portable these macros should be used instead of
-    the actual functions.
+
+    Some compilers still define math functions in the global
+    namespace.  For the code to be portable these macros should be
+    used instead of the actual functions.
+
     @{
 */
 /*! \def QL_SQRT \brief square root */
@@ -157,10 +164,13 @@
 
 
 /*! \defgroup limitMacros Numeric limits
-    Some compilers do not give an implementation of <limits> yet.
-    For the code to be portable these macros should be used instead of the
-    corresponding method of std::numeric_limits or the corresponding macro
-    defined in <limits.h>.
+
+    Some compilers do not give an implementation of
+    <code>&lt;limits&gt;</code> yet.  For the code to be portable
+    these macros should be used instead of the corresponding method of
+    <code>std::numeric_limits</code> or the corresponding macro
+    defined in <code><limits.h></code>.
+
     @{
 */
 /*! \def QL_MIN_INTEGER
@@ -262,9 +272,11 @@
 
 
 /*! \defgroup timeMacros Time functions
+
     Some compilers still define time functions in the global namespace.
     For the code to be portable these macros should be used instead of
     the actual functions.
+
     @{
 */
 /*! \def QL_CLOCK
@@ -284,9 +296,11 @@
 
 
 /*! \defgroup strMacros String functions
-    Some compilers still define string functions in the global namespace.
-    For the code to be portable these macros should be used instead of
-    the actual functions.
+
+    Some compilers still define string functions in the global
+    namespace.  For the code to be portable these macros should be
+    used instead of the actual functions.
+
     @{
 */
 /*! \def QL_STRLEN  \brief string length */
@@ -301,9 +315,11 @@
 
 
 /*! \defgroup charMacros Character functions
-    Some compilers still define character functions in the global namespace.
-    For the code to be portable these macros should be used instead of
-    the actual functions.
+
+    Some compilers still define character functions in the global
+    namespace.  For the code to be portable these macros should be
+    used instead of the actual functions.
+
     @{
 */
 /*! \def QL_TOUPPER \brief convert to uppercase */
@@ -319,10 +335,13 @@
 
 
 /*! \defgroup algoMacros Min and max functions
-    Some compilers still do not define std::min and std::max. Moreover,
-    Visual C++ defines them but for unfathomable reasons garble their
-    names.  For the code to be portable these macros should be used
-    instead of the actual functions.
+
+    Some compilers still do not define <code>std::min</code> and
+    <code>std::max</code>. Moreover, Visual C++ defines them but for
+    unfathomable reasons garble their names.  For the code to be
+    portable these macros should be used instead of the actual
+    functions.
+
     @{
 */
 /*! \def QL_MIN \brief minimum between two elements */
@@ -344,10 +363,13 @@
 
 
 /*! \defgroup templateMacros Template capabilities
+
     Some compilers still do not fully implement the template syntax.
-    These macros can be used to select between alternate implementations of
-    blocks of code, namely, one that takes advantage of template programming
-    techniques and a less efficient one which is compatible with all compilers.
+    These macros can be used to select between alternate
+    implementations of blocks of code, namely, one that takes
+    advantage of template programming techniques and a less efficient
+    one which is compatible with all compilers.
+
     @{
 */
 
@@ -366,10 +388,12 @@
 
 
 /*! \defgroup iteratorMacros Iterator support
-    Some compilers still define the iterator struct outside the std namespace,
-    only partially implement it, or do not implement it at all.
-    For the code to be portable these macros should be used instead of
-    the actual functions.
+
+    Some compilers still define the iterator struct outside the std
+    namespace, only partially implement it, or do not implement it at
+    all.  For the code to be portable these macros should be used
+    instead of the actual functions.
+
     @{
 */
 /*! \def QL_ITERATOR
@@ -391,8 +415,8 @@
 #endif
 
 /*! \def QL_ITERATOR_TRAITS
-    For the code to be portable this macro should be used instead of the actual
-    struct.
+    For the code to be portable this macro should be used instead of
+    the actual struct.
 */
 /*! \def QL_SPECIALIZE_ITERATOR_TRAITS
     When using the %QuantLib implementation of iterator_traits or
@@ -464,10 +488,9 @@ QL_SPECIALIZE_ITERATOR_TRAITS(long double)
 /*! \def QL_REVERSE_ITERATOR
     \brief Blame Microsoft for this one...
 
-    They decided that <tt>std::reverse_iterator<iterator></tt> needed an extra
-    template argument.
-    For the code to be portable this macro should be used instead of the
-    actual class.
+    They decided that <code>std::reverse_iterator<iterator></code>
+    needed an extra template argument.  For the code to be portable
+    this macro should be used instead of the actual class.
 */
 #if defined(GARBLED_REVERSE_ITERATOR)
     #define QL_REVERSE_ITERATOR(iterator,type)    \
@@ -478,10 +501,10 @@ QL_SPECIALIZE_ITERATOR_TRAITS(long double)
 #endif
 
 /*! \def QL_FULL_ITERATOR_SUPPORT
-    Some compilers (most notably, Visual C++) still do not fully support
-    iterators in their STL implementation.
-    This macro can be used to select between alternate implementations of
-    blocks of code, namely, one that takes advantage of full iterator support
+    Some compilers (most notably, Visual C++) still do not fully
+    support iterators in their STL implementation.  This macro can be
+    used to select between alternate implementations of blocks of
+    code, namely, one that takes advantage of full iterator support
     and a less efficient one which is compatible with all compilers.
 */
 #if !defined(HAVE_INCOMPLETE_ITERATOR_SUPPORT)

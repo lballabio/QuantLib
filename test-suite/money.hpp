@@ -20,10 +20,8 @@
 
 #include <boost/test/unit_test.hpp>
 
-/*! \class QuantLib::Money <ql/money.hpp>
-
-    \test money arithmetic is tested with and without currency conversions.
-*/
+/* remember to document new and/or updated tests in the Doxygen
+   comment block of the corresponding class */
 
 class MoneyTest {
   public:

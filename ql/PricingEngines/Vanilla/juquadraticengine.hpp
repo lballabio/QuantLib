@@ -39,6 +39,9 @@ namespace QuantLib {
         The method of BAW gives answers to the same accuracy as in Ju (1999)
 
         \ingroup vanillaengines
+
+        \test the correctness of the returned value is tested by
+              reproducing results available in literature.
     */
     class JuQuadraticApproximationEngine
         : public VanillaOption::engine {

@@ -38,13 +38,14 @@ namespace QuantLib {
     //! Base constraint class
     class Constraint : public Bridge<Constraint,ConstraintImpl> {
       public:
+        typedef ConstraintImpl Impl;
         bool test(const Array& p) const { return impl_->test(p); }
         Real update(Array& p, const Array& direction, Real beta);
-        Constraint(const boost::shared_ptr<ConstraintImpl>& impl = 
-                                      boost::shared_ptr<ConstraintImpl>());
+        Constraint(const boost::shared_ptr<Constraint::Impl>& impl =
+                                      boost::shared_ptr<Constraint::Impl>());
     };
 
-    //! No constraint 
+    //! No constraint
     class NoConstraint : public Constraint {
       private:
         class Impl : public Constraint::Impl {
@@ -54,7 +55,7 @@ namespace QuantLib {
             }
         };
       public:
-        NoConstraint() 
+        NoConstraint()
         : Constraint(boost::shared_ptr<Constraint::Impl>(
                                                    new NoConstraint::Impl)) {}
     };
@@ -73,7 +74,7 @@ namespace QuantLib {
             }
         };
       public:
-        PositiveConstraint() 
+        PositiveConstraint()
         : Constraint(boost::shared_ptr<Constraint::Impl>(
                                              new PositiveConstraint::Impl)) {}
     };
@@ -83,20 +84,20 @@ namespace QuantLib {
       private:
         class Impl : public Constraint::Impl {
           public:
-            Impl(Real low, Real high) 
+            Impl(Real low, Real high)
             : low_(low), high_(high) {}
             bool test(const Array& params) const {
                 for (Size i=0; i<params.size(); i++) {
                     if ((params[i] < low_) || (params[i] > high_))
                         return false;
                 }
-                return true; 
+                return true;
             }
           private:
             Real low_, high_;
         };
       public:
-        BoundaryConstraint(Real low, Real high) 
+        BoundaryConstraint(Real low, Real high)
         : Constraint(boost::shared_ptr<Constraint::Impl>(
                                   new BoundaryConstraint::Impl(low, high))) {}
     };
@@ -127,7 +128,7 @@ namespace QuantLib {
                               const boost::shared_ptr<Constraint::Impl>& impl)
     : Bridge<Constraint,ConstraintImpl>(impl) {}
 
-    inline Real Constraint::update(Array& params, const Array& direction, 
+    inline Real Constraint::update(Array& params, const Array& direction,
                                    Real beta) {
 
         Real diff=beta;

@@ -30,7 +30,11 @@
 namespace QuantLib {
 
     //!  Monte Carlo pricing engine for discrete geometric average price Asian
-    /*! \ingroup asianengines */
+    /*! \ingroup asianengines 
+
+        \test the correctness of the returned value is tested by
+              reproducing results available in literature.
+    */
     template <class RNG = PseudoRandom, class S = Statistics>
     class MCDiscreteGeometricAPEngine : public MCDiscreteAveragingAsianEngine<RNG,S> {
       public:
@@ -65,7 +69,7 @@ namespace QuantLib {
             Size n = path.size();
             QL_REQUIRE(n>0, "the path cannot be empty");
             Real runningLog = runningLog_;
-            // path[i] is d log(S), the log increment 
+            // path[i] is d log(S), the log increment
             for (Size i=0; i<n; i++)
                 runningLog += (n-i)*path[i];
             Real averagePrice1;
@@ -74,7 +78,7 @@ namespace QuantLib {
                 averagePrice1 = underlying_ *
                                     QL_EXP(runningLog/(n+pastFixings_+1));
             else
-                averagePrice1 = underlying_ * 
+                averagePrice1 = underlying_ *
                                     QL_EXP(runningLog/n+pastFixings_);
 
             return discount_ * payoff_(averagePrice1);

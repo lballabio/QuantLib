@@ -32,7 +32,11 @@
 namespace QuantLib {
 
     //! Pricing engine for vanilla options using binomial trees
-    /*! \ingroup vanillaengines */
+    /*! \ingroup vanillaengines
+
+        \test the correctness of the returned value is tested by
+              checking it against analytic results.
+    */
     template <class TreeType>
     class BinomialVanillaEngine : public VanillaOption::engine {
       public:

@@ -20,17 +20,8 @@
 
 #include <boost/test/unit_test.hpp>
 
-/*! \class QuantLib::DZero <ql/FiniteDifferences/dzero.hpp>
-
-    \test the correctness of the returned values is tested by
-          checking them against numerical calculations.
-*/
-
-/*! \class QuantLib::DPlusDMinus <ql/FiniteDifferences/dplusdminus.hpp>
-
-    \test the correctness of the returned values is tested by
-          checking them against numerical calculations.
-*/
+/* remember to document new and/or updated tests in the Doxygen
+   comment block of the corresponding class */
 
 class OperatorTest {
   public:

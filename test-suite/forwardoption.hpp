@@ -20,25 +20,8 @@
 
 #include <boost/test/unit_test.hpp>
 
-/*! \class QuantLib::ForwardEngine \
-    <ql/PricingEngines/Forward/forwardengine.hpp>
-
-    \test a) the correctness of the returned value is tested by
-          reproducing results available in literature.
-
-    \test b) the correctness of the returned greeks is tested by
-          reproducing numerical derivatives.
-*/
-
-/*! \class QuantLib::ForwardPerformanceEngine \
-    <ql/PricingEngines/Forward/forwardperformanceengine.hpp>
-
-    \test a) the correctness of the returned value is tested by
-          reproducing results available in literature.
-
-    \test b) the correctness of the returned greeks is tested by
-          reproducing numerical derivatives.
-*/
+/* remember to document new and/or updated tests in the Doxygen
+   comment block of the corresponding class */
 
 class ForwardOptionTest {
   public:

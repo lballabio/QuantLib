@@ -48,7 +48,7 @@ namespace QuantLib {
         <li>Christmas, December 25th (moved to Monday if Sunday or Friday
             if Saturday)</li>
         </ul>
-        
+
         Holidays for the stock exchange (data from http://www.nyse.com):
         <ul>
         <li>Saturdays</li>
@@ -92,6 +92,9 @@ namespace QuantLib {
         </ul>
 
         \ingroup calendars
+
+        \test the correctness of the returned results is tested
+              against a list of known holidays.
     */
     class UnitedStates : public Calendar {
       private:

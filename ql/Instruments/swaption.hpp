@@ -29,7 +29,23 @@
 namespace QuantLib {
 
     //! %Swaption class
-    /*! \ingroup instruments */
+    /*! \ingroup instruments
+
+        \test a) the correctness of the returned value is tested by
+                 checking that the price of a payer (resp. receiver)
+                 swaption decreases (resp. increases) with the strike.
+
+        \test b) the correctness of the returned value is tested by
+                 checking that the price of a payer (resp. receiver)
+                 swaption increases (resp. decreases) with the spread.
+
+        \test c) the correctness of the returned value is tested by
+                 checking it against that of a swaption on a swap with
+                 no spread and a correspondingly adjusted fixed rate.
+
+        \test d) the correctness of the returned value is tested by
+                 checking it against a known good value.
+    */
     class Swaption : public Option {
       public:
         class arguments;

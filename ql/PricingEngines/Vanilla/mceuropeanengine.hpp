@@ -30,7 +30,11 @@
 namespace QuantLib {
 
     //! European option pricing engine using Monte Carlo simulation
-    /*! \ingroup vanillaengines */
+    /*! \ingroup vanillaengines
+
+        \test the correctness of the returned value is tested by
+              checking it against analytic results.
+    */
     template <class RNG = PseudoRandom, class S = Statistics>
     class MCEuropeanEngine : public MCVanillaEngine<RNG,S> {
       public:

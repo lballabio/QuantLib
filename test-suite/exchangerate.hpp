@@ -20,18 +20,8 @@
 
 #include <boost/test/unit_test.hpp>
 
-/*! \class QuantLib::ExchangeRate <ql/exchangerate.hpp>
-
-    \test application of direct and derived exchange rate is tested
-          against calculations.
-*/
-
-/*! \class QuantLib::ExchangeRateMamager \
-    <ql/Currencies/exchangeratemanager.hpp>
-
-    \test lookup of direct, triangulated, and derived exchange rates
-          is tested.
-*/
+/* remember to document new and/or updated tests in the Doxygen
+   comment block of the corresponding class */
 
 class ExchangeRateTest {
   public:

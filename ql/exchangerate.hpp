@@ -30,6 +30,9 @@
 namespace QuantLib {
 
     //! exchange rate between two currencies
+    /*! \test application of direct and derived exchange rate is
+              tested against calculations.
+    */
     class ExchangeRate {
       public:
         enum Type { Direct,  /*!< given directly by the user */

@@ -28,9 +28,12 @@
 namespace QuantLib {
 
     //! Integral of a one-dimensional function
+    /*! \test the correctness of the result is tested by checking it
+              against known good values.
+    */
     class SimpsonIntegral : public TrapezoidIntegral {
       public:
-        SimpsonIntegral(Real accuracy, 
+        SimpsonIntegral(Real accuracy,
                         Size maxIterations = Null<Size>())
         : TrapezoidIntegral(accuracy,Default,maxIterations) {}
         template <class F>

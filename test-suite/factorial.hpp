@@ -20,26 +20,8 @@
 
 #include <boost/test/unit_test.hpp>
 
-/*! \class QuantLib::Factorial \
-    <ql/Math/factorial.hpp>
-
-    \test the correctness of the returned value is tested by checking
-          it against numerical calculations.
-*/
-
-/*! \class QuantLib::GammaFunction \
-    <ql/Math/gammadistribution.hpp>
-
-    \test the correctness of the returned value is tested by checking
-          it against known good results.
-*/
-
-/*! \class QuantLib::PoissonDistribution \
-    <ql/Math/poissondistribution.hpp>
-
-    \test the correctness of the returned value is tested by checking
-          it against known good results.
-*/
+/* remember to document new and/or updated tests in the Doxygen
+   comment block of the corresponding class */
 
 class FactorialTest {
   public:

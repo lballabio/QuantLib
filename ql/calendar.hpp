@@ -31,7 +31,7 @@ namespace QuantLib {
     //! Business Day conventions
     /*! These conventions specify the algorithm used to adjust a date in case
         it is not a valid business day.
-        
+
         \ingroup datetime
     */
     enum BusinessDayConvention {
@@ -76,6 +76,10 @@ namespace QuantLib {
 		calendars will be moved to the exchange/country convention.
 
         \ingroup datetime
+
+        \test the methods for adding and removing holidays are tested
+              by inspecting the calendar before and after their
+              invocation.
     */
     class Calendar : public Bridge<Calendar,CalendarImpl> {
       public:
@@ -124,7 +128,7 @@ namespace QuantLib {
             \note The input date is not modified.
         */
         Date advance(const Date& date,
-                     const Period& period, 
+                     const Period& period,
                      BusinessDayConvention convention) const;
         //@}
 
@@ -137,15 +141,15 @@ namespace QuantLib {
             //! expressed relative to first day of year
             static Day easterMonday(Year y);
         };
-        /*! This default constructor returns a calendar with a null 
-            implementation, which is therefore unusable except as a 
+        /*! This default constructor returns a calendar with a null
+            implementation, which is therefore unusable except as a
             placeholder.
         */
         Calendar() {}
       protected:
         /*! This protected constructor will only be invoked by derived
             classes which define a given Calendar implementation */
-        Calendar(const boost::shared_ptr<CalendarImpl>& impl) 
+        Calendar(const boost::shared_ptr<CalendarImpl>& impl)
         : Bridge<Calendar,CalendarImpl>(impl) {}
     };
 

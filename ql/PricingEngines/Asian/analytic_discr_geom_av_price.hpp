@@ -34,9 +34,12 @@ namespace QuantLib {
 
         \bug calculated Greeks do not match numerical results
 
+        \test the correctness of the returned value is tested by
+              reproducing results available in literature.
+
         \ingroup asianengines
     */
-    class AnalyticDiscreteGeometricAveragePriceAsianEngine 
+    class AnalyticDiscreteGeometricAveragePriceAsianEngine
         : public DiscreteAveragingAsianOption::engine {
       public:
         void calculate() const;

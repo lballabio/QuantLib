@@ -27,6 +27,8 @@
 namespace QuantLib {
 
     //! purely virtual base class for market observables
+    /*! \test the observability of class instances is tested.
+     */
     class Quote : public Observable {
       public:
         virtual ~Quote() {}
@@ -53,6 +55,9 @@ namespace QuantLib {
 
 
     //! market element whose value depends on another market element
+    /*! \test the correctness of the returned values is tested by
+              checking them against numerical calculations.
+    */
     template <class UnaryFunction>
     class DerivedQuote : public Quote, public Observer {
       public:
@@ -73,6 +78,9 @@ namespace QuantLib {
 
 
     //! market element whose value depends on two other market element
+    /*! \test the correctness of the returned values is tested by
+              checking them against numerical calculations.
+    */
     template <class BinaryFunction>
     class CompositeQuote : public Quote, public Observer {
       public:

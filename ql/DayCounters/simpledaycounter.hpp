@@ -37,6 +37,9 @@ namespace QuantLib {
                  guaranteed to work with any other calendar.
 
         \ingroup daycounters
+
+        \test the correctness of the results is checked against known
+              good values.
     */
     class SimpleDayCounter : public DayCounter {
       private:

@@ -20,10 +20,8 @@
 
 #include <boost/test/unit_test.hpp>
 
-/*! \class QuantLib::Instrument <ql/instrument.hpp>
-
-    \test observability of class instances is checked.
-*/
+/* remember to document new and/or updated tests in the Doxygen
+   comment block of the corresponding class */
 
 class InstrumentTest {
   public:

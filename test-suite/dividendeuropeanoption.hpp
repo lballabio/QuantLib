@@ -20,12 +20,8 @@
 
 #include <boost/test/unit_test.hpp>
 
-/*! \class QuantLib::AnalyticDividendEuropeanEngine \
-    <ql/PricingEngines/Vanilla/analyticdividendeuropeanengine.hpp>
-
-    \test the correctness of the returned greeks is tested by
-          reproducing numerical derivatives.
-*/
+/* remember to document new and/or updated tests in the Doxygen
+   comment block of the corresponding class */
 
 class DividendEuropeanOptionTest {
   public:

@@ -36,6 +36,9 @@ namespace QuantLib {
         http://www.isda.org/c_and_a/pdf/mktc1198.pdf
 
         \ingroup daycounters
+
+        \test the correctness of the results is checked against known
+              good values.
     */
     class ActualActual : public DayCounter {
       public:
@@ -43,33 +46,33 @@ namespace QuantLib {
       private:
         class ISMA_Impl : public DayCounter::Impl {
           public:
-            std::string name() const { 
+            std::string name() const {
                 return std::string("act/act (Bond)");
             }
             BigInteger dayCount(const Date& d1, const Date& d2) const {
-                return (d2-d1); 
+                return (d2-d1);
             }
             Time yearFraction(const Date& d1, const Date& d2,
                               const Date&, const Date&) const;
         };
         class ISDA_Impl : public DayCounter::Impl {
           public:
-            std::string name() const { 
+            std::string name() const {
                 return std::string("act/act (ISDA)");
             }
             BigInteger dayCount(const Date& d1, const Date& d2) const {
-                return (d2-d1); 
+                return (d2-d1);
             }
             Time yearFraction(const Date& d1, const Date& d2,
                               const Date&, const Date&) const;
         };
         class AFB_Impl : public DayCounter::Impl {
           public:
-            std::string name() const { 
+            std::string name() const {
                 return std::string("act/act (Euro)");
             }
             BigInteger dayCount(const Date& d1, const Date& d2) const {
-                return (d2-d1); 
+                return (d2-d1);
             }
             Time yearFraction(const Date& d1, const Date& d2,
                               const Date&, const Date&) const;

@@ -33,10 +33,17 @@ namespace QuantLib {
 
         \ingroup asianengines
 
-        \todo handle seasoned options
+        \test a) the correctness of the returned value is tested by
+                 reproducing results available in literature, and
+                 results obtained using a discrete average
+                 approximation.
 
+        \test b) the correctness of the returned greeks is tested by
+                 reproducing numerical derivatives.
+
+        \todo handle seasoned options
     */
-    class AnalyticContinuousGeometricAveragePriceAsianEngine 
+    class AnalyticContinuousGeometricAveragePriceAsianEngine
         : public ContinuousAveragingAsianOption::engine {
       public:
         void calculate() const;

@@ -35,6 +35,9 @@ namespace QuantLib {
          E.G. Haug, McGraw-Hill, p.69 and following.
 
         \ingroup barrierengines
+
+        \test the correctness of the returned value is tested by
+              reproducing results available in literature.
     */
     class AnalyticBarrierEngine : public BarrierOption::engine {
       public:

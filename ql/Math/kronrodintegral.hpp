@@ -30,10 +30,15 @@ namespace QuantLib {
 
     //! Integral of a 1-dimensional function using the Gauss-Kronrod method
     /*! References:
+
         Gauss-Kronrod Integration
-        http://mathcssun1.emporia.edu/~oneilcat/ExperimentApplet3/ExperimentApplet3.html
+        <http://mathcssun1.emporia.edu/~oneilcat/ExperimentApplet3/ExperimentApplet3.html>
+
         NMS - Numerical Analysis Library
-        http://www.math.iastate.edu/burkardt/f_src/nms/nms.html
+        <http://www.math.iastate.edu/burkardt/f_src/nms/nms.html>
+
+        \test the correctness of the result is tested by checking it
+              against known good values.
     */
     class KronrodIntegral {
       public:

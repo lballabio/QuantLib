@@ -30,9 +30,14 @@
 namespace QuantLib {
 
     //! Normal distribution function
-    /*! formula here ...
-        Given x it returns its probability in a Gaussian normal distribution.
+    /*! Given x, it returns its probability in a Gaussian normal distribution.
         It provides the first derivative too.
+
+        \test the correctness of the returned value is tested by
+              checking it against numerical calculations. Cross-checks
+              are also performed against the
+              CumulativeNormalDistribution and InverseCumulativeNormal
+              classes.
     */
     class NormalDistribution : public std::unary_function<Real,Real> {
       public:

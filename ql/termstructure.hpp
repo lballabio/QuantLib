@@ -43,6 +43,8 @@ namespace QuantLib {
               frequencies
 
         \ingroup yieldtermstructures
+
+        \test observability against evaluation date changes is checked.
     */
     class YieldTermStructure : public BaseTermStructure,
                                public Extrapolator {

@@ -20,30 +20,8 @@
 
 #include <boost/test/unit_test.hpp>
 
-/*! \class QuantLib::SobolRsg <ql/RandomNumbers/sobolrsg.hpp>
-
-    \test a) the correctness of the returned values is tested by
-          reproducing known good values.
-
-    \test b) the correctness of the returned values is tested by
-          checking their discrepancy against known good values.
-*/
-
-/*! \class QuantLib::HaltonRsg <ql/RandomNumbers/haltonrsg.hpp>
-
-    \test a) the correctness of the returned values is tested by
-          reproducing known good values.
-
-    \test b) the correctness of the returned values is tested by
-          checking their discrepancy against known good values.
-*/
-
-/*! \class QuantLib::FaureRsg <ql/RandomNumbers/faurersg.hpp>
-
-    \test a) the correctness of the returned values is tested by
-          reproducing known good values.
-
-*/
+/* remember to document new and/or updated tests in the Doxygen
+   comment block of the corresponding class */
 
 class LowDiscrepancyTest {
   public:

@@ -44,6 +44,9 @@ namespace QuantLib {
         </i>
 
         \ingroup barrierengines
+
+        \test the correctness of the returned value is tested by
+              reproducing results available in literature.
     */
     template <class RNG = PseudoRandom, class S = Statistics>
     class MCBarrierEngine : public BarrierOption::engine,

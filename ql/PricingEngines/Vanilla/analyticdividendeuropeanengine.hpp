@@ -27,8 +27,12 @@
 namespace QuantLib {
 
     //! Analytic pricing engine for European options with discrete dividends
-    /*! \ingroup vanillaengines */
-    class AnalyticDividendEuropeanEngine 
+    /*! \ingroup vanillaengines
+
+        \test the correctness of the returned greeks is tested by
+              reproducing numerical derivatives.
+    */
+    class AnalyticDividendEuropeanEngine
         : public DividendVanillaOption::engine {
       public:
         void calculate() const;

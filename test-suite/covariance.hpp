@@ -21,14 +21,8 @@
 
 #include <boost/test/unit_test.hpp>
 
-/*! \fn QuantLib::pseudoSqrt <ql/Math/pseudosqrt.hpp>
-
-    \test a) the correctness of the results is tested by reproducing
-          known good data.
-
-    \test b) the correctness of the results is tested by checking
-          returned values against numerical calculations.
-*/
+/* remember to document new and/or updated tests in the Doxygen
+   comment block of the corresponding class */
 
 class CovarianceTest {
   public:

@@ -79,6 +79,9 @@ namespace QuantLib {
         \ingroup calendars
 
         \todo add LIFFE
+
+        \test the correctness of the returned results is tested
+              against a list of known holidays.
     */
     class UnitedKingdom : public Calendar {
       private:

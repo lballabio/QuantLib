@@ -20,29 +20,8 @@
 
 #include <boost/test/unit_test.hpp>
 
-/*! \class QuantLib::SegmentIntegral <ql/Math/segmentintegral.hpp>
-
-    \test the correctness of the result is tested by checking it against
-          known good values.
-*/
-
-/*! \class QuantLib::TrapezoidIntegral <ql/Math/trapezoidintegral.hpp>
-
-    \test the correctness of the result is tested by checking it against
-          known good values.
-*/
-
-/*! \class QuantLib::SimpsonIntegral <ql/Math/simpsonintegral.hpp>
-
-    \test the correctness of the result is tested by checking it against
-          known good values.
-*/
-
-/*! \class QuantLib::KronrodIntegral <ql/Math/kronrodintegral.hpp>
-
-    \test the correctness of the result is tested by checking it against
-          known good values.
-*/
+/* remember to document new and/or updated tests in the Doxygen
+   comment block of the corresponding class */
 
 class IntegralTest {
   public:

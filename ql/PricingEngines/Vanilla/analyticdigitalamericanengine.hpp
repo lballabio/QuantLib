@@ -33,6 +33,26 @@ namespace QuantLib {
         \todo add more greeks (as of now only delta and rho available)
 
         \ingroup vanillaengines
+
+        \test a) the correctness of the returned value in case of
+                 cash-or-nothing at-hit digital payoff is tested by
+                 reproducing results available in literature.
+
+        \test b) the correctness of the returned value in case of
+                 asset-or-nothing at-hit digital payoff is tested by
+                 reproducing results available in literature.
+
+        \test c) the correctness of the returned value in case of
+                 cash-or-nothing at-expiry digital payoff is tested by
+                 reproducing results available in literature.
+
+        \test d) the correctness of the returned value in case of
+                 asset-or-nothing at-expiry digital payoff is tested
+                 by reproducing results available in literature.
+
+        \test e) the correctness of the returned greeks in case of
+                 cash-or-nothing at-hit digital payoff is tested by
+                 reproducing numerical derivatives.
     */
     class AnalyticDigitalAmericanEngine : public VanillaOption::engine {
       public:

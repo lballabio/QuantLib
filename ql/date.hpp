@@ -140,6 +140,10 @@ namespace QuantLib {
         decreasing dates, and calculating their difference).
 
         \ingroup datetime
+
+        \test self-consistency of dates, serial numbers, days of
+              month, months, and weekdays is checked over the whole
+              date range.
     */
     class Date {
       public:

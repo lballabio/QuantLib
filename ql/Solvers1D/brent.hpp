@@ -27,6 +27,9 @@
 namespace QuantLib {
 
     //! %Brent 1-D solver
+    /*! \test the correctness of the returned values is tested by
+              checking them against known good results.
+    */
     class Brent : public Solver1D<Brent> {
       public:
         template <class F>

@@ -41,6 +41,9 @@ namespace QuantLib {
         different Jacobi transfomations see "Matrix computation,"
         second edition, by Golub and Van Loan,
         The Johns Hopkins University Press
+
+        \test the correctness of the returned values is tested by
+              checking their properties.
     */
     class SymmetricSchurDecomposition {
       public:
@@ -60,7 +63,7 @@ namespace QuantLib {
 
     //! This routines implements the Jacobi, a.k.a. Givens, rotation
     inline void SymmetricSchurDecomposition::jacobiRotate_(
-                                      Matrix &m, Real rot, Real dil, Size j1, 
+                                      Matrix &m, Real rot, Real dil, Size j1,
                                       Size k1, Size j2, Size k2) const {
         Real x1, x2;
         x1 = m[j1][k1];

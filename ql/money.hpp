@@ -28,6 +28,9 @@
 namespace QuantLib {
 
     //! amount of cash
+    /*! \test money arithmetic is tested with and without currency
+              conversions.
+    */
     class Money {
       public:
         //! \name Constructors

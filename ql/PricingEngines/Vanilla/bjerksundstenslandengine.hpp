@@ -26,12 +26,15 @@
 
 namespace QuantLib {
 
-    /*! Pricing engine for American options with 
+    /*! Pricing engine for American options with
         Bjerksund and Stensland approximation (1993)
 
         \ingroup vanillaengines
+
+        \test the correctness of the returned value is tested by
+              reproducing results available in literature.
     */
-    class BjerksundStenslandApproximationEngine 
+    class BjerksundStenslandApproximationEngine
         : public VanillaOption::engine {
       public:
         void calculate() const;

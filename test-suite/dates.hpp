@@ -20,11 +20,8 @@
 
 #include <boost/test/unit_test.hpp>
 
-/*! \class QuantLib::Date <ql/date.hpp>
-
-    \test self-consistency of dates, serial numbers, days of month,
-          months, and weekdays is checked over the whole date range.
-*/
+/* remember to document new and/or updated tests in the Doxygen
+   comment block of the corresponding class */
 
 class DateTest {
   public:

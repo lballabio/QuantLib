@@ -46,6 +46,9 @@ namespace QuantLib {
         of the sets of business days of the given calendars.
 
         \ingroup calendars
+
+        \test the correctness of the returned results is tested by
+              reproducing the calculations.
     */
     class JointCalendar : public Calendar {
       private:
@@ -68,7 +71,7 @@ namespace QuantLib {
         JointCalendar(const Calendar&, const Calendar&,
                       JointCalendarRule = JoinHolidays);
         JointCalendar(const Calendar&, const Calendar&,
-                      const Calendar&, 
+                      const Calendar&,
                       JointCalendarRule = JoinHolidays);
         JointCalendar(const Calendar&, const Calendar&,
                       const Calendar&, const Calendar&,

@@ -20,11 +20,8 @@
 
 #include <boost/test/unit_test.hpp>
 
-/*! \class QuantLib::CubicSpline <ql/Math/cubicspline.hpp>
-
-    \test the correctness of the returned values is tested by
-          reproducing results available in literature.
-*/
+/* remember to document new and/or updated tests in the Doxygen
+   comment block of the corresponding class */
 
 class InterpolationTest {
   public:

@@ -20,26 +20,8 @@
 
 #include <boost/test/unit_test.hpp>
 
-/*! \class QuantLib::BaroneAdesiWhaleyApproximationEngine \
-    <ql/PricingEngines/Vanilla/baroneadesiwhaleyengine.hpp>
-
-    \test the correctness of the returned value is tested by
-          reproducing results available in literature.
-*/
-
-/*! \class QuantLib::BjerksundStenslandApproximationEngine \
-    <ql/PricingEngines/Vanilla/bjerksundstenslandengine.hpp>
-
-    \test the correctness of the returned value is tested by
-          reproducing results available in literature.
-*/
-
-/*! \class QuantLib::JuQuadraticApproximationEngine \
-    <ql/PricingEngines/Vanilla/juquadraticengine.hpp>
-
-    \test the correctness of the returned value is tested by
-          reproducing results available in literature.
-*/
+/* remember to document new and/or updated tests in the Doxygen
+   comment block of the corresponding class */
 
 class AmericanOptionTest {
   public:

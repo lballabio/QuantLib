@@ -20,22 +20,8 @@
 
 #include <boost/test/unit_test.hpp>
 
-/*! \class QuantLib::Quote <ql/quote.hpp>
-
-    \test the observability of class instances is tested.
-*/
-
-/*! \class QuantLib::DerivedQuote <ql/quote.hpp>
-
-    \test the correctness of the returned values is tested by
-          checking them against numerical calculations.
-*/
-
-/*! \class QuantLib::CompositeQuote <ql/quote.hpp>
-
-    \test the correctness of the returned values is tested by
-          checking them against numerical calculations.
-*/
+/* remember to document new and/or updated tests in the Doxygen
+   comment block of the corresponding class */
 
 class QuoteTest {
   public:

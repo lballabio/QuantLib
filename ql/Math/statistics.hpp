@@ -27,6 +27,9 @@
 namespace QuantLib {
 
     //! default statistics tool
+    /*! \test the correctness of the returned values is tested by
+              checking them against numerical calculations.
+    */
     typedef GeneralStatistics Statistics;
 
 }

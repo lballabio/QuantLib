@@ -41,6 +41,9 @@ namespace QuantLib {
         </ul>
 
         \ingroup calendars
+
+        \test the correctness of the returned results is tested
+              against a list of known holidays.
     */
     class TARGET : public Calendar {
       private:

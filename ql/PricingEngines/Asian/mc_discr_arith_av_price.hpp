@@ -37,8 +37,11 @@ namespace QuantLib {
          discrete arithmetic average price engine) and
          AnalyticDiscreteGeometricAveragePriceAsianEngine (analytic discrete
          arithmetic average price engine) for control variation.
-    
+
          \ingroup asianengines
+
+         \test the correctness of the returned value is tested by
+               reproducing results available in literature.
     */
     template <class RNG = PseudoRandom, class S = Statistics>
     class MCDiscreteArithmeticAPEngine :

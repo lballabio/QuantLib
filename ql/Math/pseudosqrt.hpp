@@ -32,7 +32,7 @@ namespace QuantLib {
     };
 
     //! Returns the pseudo square root of a real symmetric matrix
-    /*! Given a matrix \f$ M \f$, the result \f$ S \f$ is defined 
+    /*! Given a matrix \f$ M \f$, the result \f$ S \f$ is defined
         as the matrix such that \f$ S S^T = M. \f$
         If the matrix is not positive semi definite, it can
         return an approximation of the pseudo square root
@@ -59,6 +59,12 @@ namespace QuantLib {
 
         \todo implement Higham algorithm:
               Higham "Computing the nearest correlation matrix"
+
+        \test a) the correctness of the results is tested by
+                 reproducing known good data.
+
+        \test b) the correctness of the results is tested by checking
+                 returned values against numerical calculations.
     */
     const Disposable<Matrix> pseudoSqrt(const Matrix&,
                                         SalvagingAlgorithm::Type);

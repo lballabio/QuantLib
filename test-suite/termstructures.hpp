@@ -20,40 +20,8 @@
 
 #include <boost/test/unit_test.hpp>
 
-/*! \class QuantLib::TermStructure <ql/termstructure.hpp>
-
-    \test observability against evaluation date changes is checked.
-*/
-
-/*! \class QuantLib::ImpliedTermStructure \
-    <ql/TermStructures/impliedtermstructure.hpp>
-
-    \test a) the correctness of the returned values is tested by
-             checking them against numerical calculations.
-
-    \test b) observability against changes in the underlying term
-             structure is checked.
-*/
-
-/*! \class QuantLib::ForwardSpreadedTermStructure \
-    <ql/TermStructures/forwardspreadedtermstructure.hpp>
-
-    \test a) the correctness of the returned values is tested by
-             checking them against numerical calculations.
-
-    \test b) observability against changes in the underlying term
-             structure and in the added spread is checked.
-*/
-
-/*! \class QuantLib::ZeroSpreadedTermStructure \
-    <ql/TermStructures/zerospreadedtermstructure.hpp>
-
-    \test a) the correctness of the returned values is tested by
-          checking them against numerical calculations.
-
-    \test b) observability against changes in the underlying term
-             structure and in the added spread is checked.
-*/
+/* remember to document new and/or updated tests in the Doxygen
+   comment block of the corresponding class */
 
 class TermStructureTest {
   public:

@@ -34,12 +34,14 @@ namespace QuantLib {
     //! Faure low-discrepancy sequence generator
     /*! It is based on existing Fortran and C algorithms to calculate pascal
         matrix and gray transforms.
-        [1] E. Thiemard Economic generation of low-discrepancy sequences with
-            a b-ary gray code.
-        [2] Algorithms 659, 647. http://www.netlib.org/toms/647,
-            http://www.netlib.org/toms/659
-    */
+        -# E. Thiemard Economic generation of low-discrepancy sequences with
+           a b-ary gray code.
+        -# Algorithms 659, 647. http://www.netlib.org/toms/647,
+           http://www.netlib.org/toms/659
 
+        \test the correctness of the returned values is tested by
+              reproducing known good values.
+    */
     class FaureRsg {
       public:
         typedef Sample<Array> sample_type;

@@ -20,24 +20,8 @@
 
 #include <boost/test/unit_test.hpp>
 
-/*! \class QuantLib::CapFloor <ql/Instruments/capfloor.hpp>
-
-    \test a) the correctness of the returned value is tested by checking
-          that the price of a cap (resp. floor) decreases
-          (resp. increases) with the strike rate.
-
-    \test b) the relationship between the values of caps, floors and
-          the resulting collars is checked.
-
-    \test c) the put-call parity between the values of caps, floors and
-          swaps is checked.
-
-    \test d) the correctness of the returned implied volatility is tested
-          by using it for reproducing the target value.
-
-    \test e) the correctness of the returned value is tested by checking
-          it against a known good value.
-*/
+/* remember to document new and/or updated tests in the Doxygen
+   comment block of the corresponding class */
 
 class CapFloorTest {
   public:

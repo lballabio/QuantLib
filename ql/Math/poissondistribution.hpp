@@ -29,9 +29,11 @@
 namespace QuantLib {
 
     //! Normal distribution function
-    /*! formula here ...
-        Given an integer \f$ k \f$, it returns its probability
+    /*! Given an integer \f$ k \f$, it returns its probability
         in a Poisson distribution.
+
+        \test the correctness of the returned value is tested by
+              checking it against known good results.
     */
     class PoissonDistribution : public std::unary_function<Real,Real> {
       public:

@@ -40,7 +40,14 @@ namespace QuantLib {
 
 
     //! Forward engine base class
-    /*! \ingroup forwardengines */
+    /*! \ingroup forwardengines
+
+        \test a) the correctness of the returned value is tested by
+                 reproducing results available in literature.
+
+        \test b) the correctness of the returned greeks is tested by
+                 reproducing numerical derivatives.
+    */
     template<class ArgumentsType, class ResultsType>
     class ForwardEngine
         : public GenericEngine<ForwardOptionArguments<ArgumentsType>,

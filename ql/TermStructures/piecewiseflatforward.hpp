@@ -45,6 +45,11 @@ namespace QuantLib {
         any two instruments have the same maturity date.
 
         \ingroup yieldtermstructures
+
+        \test a) the correctness of the returned values is tested by
+                 checking them against the original inputs.
+
+        \test b) the observability of the term structure is tested.
     */
     class PiecewiseFlatForward : public YieldTermStructure,
                                  public LazyObject {

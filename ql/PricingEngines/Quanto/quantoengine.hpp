@@ -57,6 +57,12 @@ namespace QuantLib {
                  simple Black-Scholes processes (i.e., no Merton.)
 
         \ingroup quantoengines
+
+        \test a) the correctness of the returned value is tested by
+                 reproducing results available in literature.
+
+        \test b) the correctness of the returned greeks is tested by
+                 reproducing numerical derivatives.
     */
     template<class ArgumentsType, class ResultsType>
     class QuantoEngine

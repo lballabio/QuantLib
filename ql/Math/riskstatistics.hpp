@@ -115,6 +115,9 @@ namespace QuantLib {
 
 
     //! default risk measures tool
+    /*! \test the correctness of the returned values is tested by
+              checking them against numerical calculations.
+    */
     typedef GaussianStatistics<GenericRiskStatistics<GeneralStatistics> >
                                                                RiskStatistics;
 

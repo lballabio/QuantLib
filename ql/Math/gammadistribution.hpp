@@ -40,7 +40,7 @@ namespace QuantLib {
     };
 
     //! Gamma function class
-    /*! This is a function defined by 
+    /*! This is a function defined by
         \f[
             \Gamma(z) = \int_0^{\infty}t^{z-1}e^{-t}dt
         \f]
@@ -48,6 +48,9 @@ namespace QuantLib {
         The implementation of the algorithm was inspired by
         "Numerical Recipes in C", 2nd edition,
         Press, Teukolsky, Vetterling, Flannery, chapter 6
+
+        \test the correctness of the returned value is tested by
+              checking it against known good results.
     */
     class GammaFunction : public std::unary_function<Real,Real> {
       public:

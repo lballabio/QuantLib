@@ -45,6 +45,9 @@ namespace QuantLib {
     //! Singular value decomposition
     /*! Refer to Golub and Van Loan: Matrix computation,
         The Johns Hopkins University Press
+
+        \test the correctness of the returned values is tested by
+              checking their properties.
     */
     class SVD {
       public:

@@ -26,17 +26,20 @@
 
 namespace QuantLib {
 
-    /*! Pricing engine for American options with 
+    /*! Pricing engine for American options with
         Barone-Adesi and Whaley approximation (1987)
 
         \ingroup vanillaengines
+
+        \test the correctness of the returned value is tested by
+              reproducing results available in literature.
     */
-    class BaroneAdesiWhaleyApproximationEngine 
+    class BaroneAdesiWhaleyApproximationEngine
         : public VanillaOption::engine {
       public:
         static Real criticalPrice(
             const boost::shared_ptr<StrikedTypePayoff>& payoff,
-            DiscountFactor riskFreeDiscount, 
+            DiscountFactor riskFreeDiscount,
             DiscountFactor dividendDiscount,
             Real variance,
             Real tolerance = 1e-6);

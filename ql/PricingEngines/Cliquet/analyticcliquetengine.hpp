@@ -27,7 +27,14 @@
 namespace QuantLib {
 
     //! Pricing engine for Cliquet options using analytical formulae
-    /*! \ingroup cliquetengines */
+    /*! \ingroup cliquetengines
+
+        \test a) the correctness of the returned value is tested by
+                 reproducing results available in literature.
+
+        \test b) the correctness of the returned greeks is tested by
+                 reproducing numerical derivatives.
+    */
     class AnalyticCliquetEngine : public CliquetOption::engine {
       public:
         void calculate() const;

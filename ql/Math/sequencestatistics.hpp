@@ -39,6 +39,9 @@ namespace QuantLib {
         lifted methods are the union of all the methods that might be
         requested to the 1-D underlying StatisticsType class, with the
         usual compile-time checks provided by the template approach.
+
+        \test the correctness of the returned values is tested by
+              checking them against numerical calculations.
     */
     template <class StatisticsType = Statistics>
     class SequenceStatistics {

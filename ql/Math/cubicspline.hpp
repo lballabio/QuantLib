@@ -46,6 +46,9 @@ namespace QuantLib {
         "Nonnegativity-, Monotonicity-, or Convexity-Preserving Cubic and
         Quintic Hermite Interpolation"
         Mathematics Of Computation, v. 52, n. 186, April 1989, pp. 471-494.
+
+        \test the correctness of the returned values is tested by
+              reproducing results available in literature.
     */
     class CubicSpline : public Interpolation {
       public:

@@ -49,6 +49,8 @@ namespace QuantLib {
         \warning Inverting LDS and PRS is possible, but it doesn't make sense
 
         \todo implement the other randomization algorithms
+
+        \test correct initialization is tested.
     */
     template <class LDS,
               class PRS = RandomSequenceGenerator<MersenneTwisterUniformRng> >

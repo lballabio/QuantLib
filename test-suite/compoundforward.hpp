@@ -20,15 +20,8 @@
 
 #include <boost/test/unit_test.hpp>
 
-/*! \class QuantLib::CompoundForward <ql/TermStructures/compoundforward.hpp>
-
-    \test a) the correctness of the curve is tested by reproducing the
-          input data.
-
-    \test b) the correctness of the curve is tested by checking the
-          consistency between returned rates and swaps priced on the
-          curve.
-*/
+/* remember to document new and/or updated tests in the Doxygen
+   comment block of the corresponding class */
 
 class CompoundForwardTest {
   public:

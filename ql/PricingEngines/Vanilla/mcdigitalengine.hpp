@@ -48,6 +48,10 @@ namespace QuantLib {
         </i>
 
         \ingroup vanillaengines
+
+        \test the correctness of the returned value in case of
+              cash-or-nothing at-hit digital payoff is tested by
+              reproducing known good results.
     */
     template<class RNG = PseudoRandom, class S = Statistics>
     class MCDigitalEngine : public MCVanillaEngine<RNG,S> {

@@ -29,6 +29,9 @@ namespace QuantLib {
     //! %Newton 1-D solver
     /*! \note This solver requires that the passed function object
               implement a method <tt>Real derivative(Real)</tt>.
+
+        \test the correctness of the returned values is tested by
+              checking them against known good results.
     */
     class Newton : public Solver1D<Newton> {
       public:
@@ -37,7 +40,7 @@ namespace QuantLib {
 
             /* The implementation of the algorithm was inspired by
                Press, Teukolsky, Vetterling, and Flannery,
-               "Numerical Recipes in C", 2nd edition, 
+               "Numerical Recipes in C", 2nd edition,
                Cambridge University Press
             */
 

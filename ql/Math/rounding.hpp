@@ -27,6 +27,9 @@
 namespace QuantLib {
 
     //! basic rounding class
+    /*! \test the correctness of the returned values is tested by
+              checking them against known good results.
+    */
     class Rounding {
       public:
         //! rounding methods

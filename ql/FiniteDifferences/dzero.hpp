@@ -34,6 +34,9 @@ namespace QuantLib {
         \f]
 
         \ingroup findiff
+
+        \test the correctness of the returned values is tested by
+              checking them against numerical calculations.
     */
     class DZero : public TridiagonalOperator {
       public:

@@ -105,14 +105,10 @@ namespace QuantLib {
         }
     };
 
-    /*! \brief comparison based on name
-        \relates Currency
-    */
+    /*! \relates Currency */
     bool operator==(const Currency&, const Currency&);
 
-    /*! \brief comparison based on name
-        \relates Currency
-    */
+    /*! \relates Currency */
     bool operator!=(const Currency&, const Currency&);
 
 

@@ -27,6 +27,9 @@
 namespace QuantLib {
 
     //! %Secant 1-D solver
+    /*! \test the correctness of the returned values is tested by
+              checking them against known good results.
+    */
     class Secant : public Solver1D<Secant> {
       public:
         template <class F>
@@ -34,7 +37,7 @@ namespace QuantLib {
 
             /* The implementation of the algorithm was inspired by
                Press, Teukolsky, Vetterling, and Flannery,
-               "Numerical Recipes in C", 2nd edition, 
+               "Numerical Recipes in C", 2nd edition,
                Cambridge University Press
             */
 

@@ -30,16 +30,15 @@ EXTRA_DIST = \
 examples:
 	$(MAKE) -C Examples examples
 
-.PHONY: docs-all docs-html docs-ps docs-pdf docs-man docs-clean
-.PHONY: docs-dist
+.PHONY: docs docs-man docs-online docs-dist docs-clean
 BASEPATH = @abs_top_srcdir@
-docs-all:
+docs:
 	BASEPATH=$(BASEPATH) $(MAKE) -C Docs docs-all
-docs-html:
+html-local:
 	BASEPATH=$(BASEPATH) $(MAKE) -C Docs docs-html
-docs-pdf:
+pdf-local:
 	BASEPATH=$(BASEPATH) $(MAKE) -C Docs docs-pdf
-docs-ps:
+ps-local:
 	BASEPATH=$(BASEPATH) $(MAKE) -C Docs docs-ps
 docs-man:
 	BASEPATH=$(BASEPATH) $(MAKE) -C Docs docs-man

@@ -20,47 +20,8 @@
 
 #include <boost/test/unit_test.hpp>
 
-/*! \class QuantLib::Brent <ql/Solvers1D/brent.hpp>
-
-    \test the correctness of the returned values is tested by
-          checking them against known good results.
-*/
-
-/*! \class QuantLib::Bisection <ql/Solvers1D/bisection.hpp>
-
-    \test the correctness of the returned values is tested by
-          checking them against known good results.
-*/
-
-/*! \class QuantLib::FalsePosition <ql/Solvers1D/falseposition.hpp>
-
-    \test the correctness of the returned values is tested by
-          checking them against known good results.
-*/
-
-/*! \class QuantLib::Ridder <ql/Solvers1D/ridder.hpp>
-
-    \test the correctness of the returned values is tested by
-          checking them against known good results.
-*/
-
-/*! \class QuantLib::Secant <ql/Solvers1D/secant.hpp>
-
-    \test the correctness of the returned values is tested by
-          checking them against known good results.
-*/
-
-/*! \class QuantLib::Newton <ql/Solvers1D/newton.hpp>
-
-    \test the correctness of the returned values is tested by
-          checking them against known good results.
-*/
-
-/*! \class QuantLib::NewtonSafe <ql/Solvers1D/newtonsafe.hpp>
-
-    \test the correctness of the returned values is tested by
-          checking them against known good results.
-*/
+/* remember to document new and/or updated tests in the Doxygen
+   comment block of the corresponding class */
 
 class Solver1DTest {
   public:

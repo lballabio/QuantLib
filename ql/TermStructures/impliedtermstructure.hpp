@@ -34,6 +34,12 @@ namespace QuantLib {
               reflected in this structure as well.
 
         \ingroup yieldtermstructures
+
+        \test a) the correctness of the returned values is tested by
+                 checking them against numerical calculations.
+
+        \test b) observability against changes in the underlying term
+                 structure is checked.
     */
     class ImpliedTermStructure : public DiscountStructure {
       public:

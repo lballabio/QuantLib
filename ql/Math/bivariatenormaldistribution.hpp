@@ -51,6 +51,8 @@ namespace QuantLib {
                 `Numerical Computation of the Multivariate Normal
                  Probabilities', J. Comput. Graph. Stat. 1, pp. 141-150.
 
+        \test the correctness of the returned value is tested by
+              checking it against known good results.
     */
     class BivariateCumulativeNormalDistribution {
       public:

@@ -21,20 +21,8 @@
 
 #include <boost/test/unit_test.hpp>
 
-/*! \class QuantLib::NormalDistribution <ql/Math/normaldistribution.hpp>
-
-    \test the correctness of the returned value is tested by checking
-          it against numerical calculations. Cross-checks are also
-          performed against the CumulativeNormalDistribution and
-          InverseCumulativeNormal classes.
-*/
-
-/*! \class QuantLib::BivariateCumulativeNormalDistribution \
-    <ql/Math/bivariatenormaldistribution.hpp>
-
-    \test the correctness of the returned value is tested by checking
-          it against known good results.
-*/
+/* remember to document new and/or updated tests in the Doxygen
+   comment block of the corresponding class */
 
 class DistributionTest {
   public:

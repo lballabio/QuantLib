@@ -28,6 +28,13 @@
 namespace QuantLib {
 
     //! compound-forward structure
+    /*! \test a) the correctness of the curve is tested by reproducing
+                 the input data.
+
+        \test b) the correctness of the curve is tested by checking
+                 the consistency between returned rates and swaps
+                 priced on the curve.
+    */
     class CompoundForward : public ForwardRateStructure {
       public:
         // constructor

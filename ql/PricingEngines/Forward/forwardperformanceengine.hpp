@@ -27,7 +27,14 @@
 namespace QuantLib {
 
     //! Forward performance engine
-    /*! \ingroup forwardengines */
+    /*! \ingroup forwardengines
+
+        \test a) the correctness of the returned value is tested by
+                 reproducing results available in literature.
+
+        \test b) the correctness of the returned greeks is tested by
+                 reproducing numerical derivatives.
+    */
     template<class ArgumentsType, class ResultsType>
     class ForwardPerformanceEngine
         : public ForwardEngine<ArgumentsType, ResultsType> {

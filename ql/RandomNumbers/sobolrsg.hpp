@@ -81,6 +81,12 @@ namespace QuantLib {
         For more info on Sobol' sequences see also "Monte Carlo
         Methods in Financial Engineering," by P. Glasserman, 2004,
         Springer, section 5.2.3
+
+        \test a) the correctness of the returned values is tested by
+                 reproducing known good values.
+
+        \test b) the correctness of the returned values is tested by
+                 checking their discrepancy against known good values.
     */
     class SobolRsg {
       public:

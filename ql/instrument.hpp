@@ -31,6 +31,8 @@ namespace QuantLib {
     //! Abstract instrument class
     /*! This class is purely abstract and defines the interface of concrete
         instruments which will be derived from this one.
+
+        \test observability of class instances is checked.
     */
     class Instrument : public LazyObject {
       public:
@@ -59,7 +61,7 @@ namespace QuantLib {
         */
         virtual void setupArguments(Arguments*) const;
       protected:
-        //! \name Calculations 
+        //! \name Calculations
         //@{
         void calculate() const;
         /*! This method must leave the instrument in a consistent
@@ -67,7 +69,7 @@ namespace QuantLib {
         */
         virtual void setupExpired() const;
         /*! In case a pricing engine is <b>not</b> used, this
-            method must be overridden to perform the actual 
+            method must be overridden to perform the actual
             calculations and set any needed results. In case
             a pricing engine is used, the default implementation
             can be used.
@@ -75,7 +77,7 @@ namespace QuantLib {
         virtual void performCalculations() const;
         //@}
         /*! \name Results
-            The value of this attribute and any other that derived 
+            The value of this attribute and any other that derived
             classes might declare must be set during calculation.
         */
         //@{

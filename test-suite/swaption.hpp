@@ -20,23 +20,8 @@
 
 #include <boost/test/unit_test.hpp>
 
-/*! \class QuantLib::Swaption <ql/Instruments/swaption.hpp>
-
-    \test a) the correctness of the returned value is tested by
-          checking that the price of a payer (resp. receiver) swaption
-          decreases (resp. increases) with the strike.
-
-    \test b) the correctness of the returned value is tested by
-          checking that the price of a payer (resp. receiver) swaption
-          increases (resp. decreases) with the spread.
-
-    \test c) the correctness of the returned value is tested by
-          checking it against that of a swaption on a swap with
-          no spread and a correspondingly adjusted fixed rate.
-
-    \test d) the correctness of the returned value is tested by checking
-          it against a known good value.
-*/
+/* remember to document new and/or updated tests in the Doxygen
+   comment block of the corresponding class */
 
 class SwaptionTest {
   public:
