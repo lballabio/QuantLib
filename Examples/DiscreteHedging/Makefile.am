@@ -12,8 +12,8 @@ DiscreteHedging_LDADD = ../../ql/libQuantLib.la
 
 EXTRA_DIST = \
     DiscreteHedging.dsp \
-    DiscreteHedging.mak \
     DiscreteHedging.vcproj \
+    DiscreteHedging_vc8.vcproj \
     makefile.mak \
     ReadMe.txt
 

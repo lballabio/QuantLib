@@ -12,8 +12,8 @@ EuropeanOption_LDADD = ../../ql/libQuantLib.la
 
 EXTRA_DIST = \
     EuropeanOption.dsp \
-    EuropeanOption.mak \
     EuropeanOption.vcproj \
+    EuropeanOption_vc8.vcproj \
     makefile.mak \
     ReadMe.txt
 

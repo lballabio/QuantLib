@@ -78,6 +78,7 @@ EXTRA_DIST = \
 	README.txt \
 	testsuite.dsp \
 	testsuite.vcproj \
+	testsuite_vc8.vcproj \
 	QuantLib-test-suite.dev \
 	makefile.mak
 
