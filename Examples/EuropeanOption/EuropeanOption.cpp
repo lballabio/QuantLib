@@ -19,6 +19,7 @@
 #include <ql/quantlib.hpp>
 
 using namespace QuantLib;
+using namespace QuantLib::Instruments;
 using namespace QuantLib::PricingEngines;
 using namespace QuantLib::Math;
 using namespace QuantLib::MonteCarlo;
@@ -505,10 +506,10 @@ int main(int argc, char* argv[])
         Handle<AnalyticEuropeanEngine> baseEngine(new
             AnalyticEuropeanEngine);
 
-        Handle<QuantoEngine<VanillaOptionArguments,
-                            VanillaOptionResults> >
-            quantoEngine(new QuantoEngine<VanillaOptionArguments,
-                                          VanillaOptionResults>(baseEngine));
+        Handle<QuantoEngine<VanillaOption::arguments,
+                            VanillaOption::results> >
+            quantoEngine(new QuantoEngine<VanillaOption::arguments,
+                                          VanillaOption::results>(baseEngine));
 
         double correlation = 0.0;
         Instruments::QuantoVanillaOption quantoOption(
@@ -567,10 +568,10 @@ int main(int argc, char* argv[])
              << std::endl;
 
 
-        Handle<ForwardEngine<VanillaOptionArguments,
-                             VanillaOptionResults> >
-            forwardEngine(new ForwardEngine<VanillaOptionArguments,
-                                            VanillaOptionResults>(baseEngine));
+        Handle<ForwardEngine<VanillaOption::arguments,
+                             VanillaOption::results> >
+            forwardEngine(new ForwardEngine<VanillaOption::arguments,
+                                            VanillaOption::results>(baseEngine));
 
         Instruments::ForwardVanillaOption forwardOption(
             type,
@@ -614,11 +615,11 @@ int main(int argc, char* argv[])
              << std::endl;
 
 
-        Handle<ForwardPerformanceEngine<VanillaOptionArguments,
-                                        VanillaOptionResults> >
+        Handle<ForwardPerformanceEngine<VanillaOption::arguments,
+                                        VanillaOption::results> >
             forwardPerformanceEngine(
-                new ForwardPerformanceEngine<VanillaOptionArguments,
-                                             VanillaOptionResults>(
+                new ForwardPerformanceEngine<VanillaOption::arguments,
+                                             VanillaOption::results>(
                     baseEngine));
 
         forwardOption.setPricingEngine(forwardPerformanceEngine);
@@ -654,11 +655,11 @@ int main(int argc, char* argv[])
 
 
 
-        Handle<QuantoEngine<ForwardOptionArguments<VanillaOptionArguments>,
-                            VanillaOptionResults> >
+        Handle<QuantoEngine<ForwardVanillaOption::arguments,
+                            ForwardVanillaOption::results> >
             quantoForwardEngine(
-               new QuantoEngine<ForwardOptionArguments<VanillaOptionArguments>,
-                                VanillaOptionResults>(forwardEngine));
+               new QuantoEngine<ForwardVanillaOption::arguments,
+                                ForwardVanillaOption::results>(forwardEngine));
 
         Instruments::QuantoForwardVanillaOption quantoForwardOption(
             type,
@@ -720,11 +721,11 @@ int main(int argc, char* argv[])
              << std::endl;
 
 
-        Handle<QuantoEngine<ForwardOptionArguments<VanillaOptionArguments>,
-                            VanillaOptionResults> >
+        Handle<QuantoEngine<ForwardVanillaOption::arguments,
+                            ForwardVanillaOption::results> >
             quantoForwardPerformanceEngine(
-               new QuantoEngine<ForwardOptionArguments<VanillaOptionArguments>,
-                                VanillaOptionResults>(
+               new QuantoEngine<ForwardVanillaOption::arguments,
+                                ForwardVanillaOption::results>(
                    forwardPerformanceEngine));
         quantoForwardOption.setPricingEngine(quantoForwardPerformanceEngine);
 
