@@ -46,14 +46,15 @@ namespace QuantLib {
             isInitialized_ = true;
         }
 
+
         double EverestPathPricer::operator()(const MultiPath & path) const {
             int numAssets = path.assetNumber();
             QL_REQUIRE(isInitialized_,
                 "EverestPathPricer: pricer not initialized");
 
             double minPrice = QL_MAX_DOUBLE;
-            for(int i = 0; i < numAssets; i++)
-                minPrice = QL_MIN(minPrice, QL_EXP(path[i][0]));
+            for(int j = 0; j < numAssets; j++)
+                minPrice = QL_MIN(minPrice, QL_EXP(path[j][0]));
 
             return discount_ * minPrice;
         }
