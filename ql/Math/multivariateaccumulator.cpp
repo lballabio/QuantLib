@@ -113,7 +113,7 @@ namespace QuantLib {
                           
                           correlation[i][j] = 1.0 ;
                       }
-                      else if(variances[i] != 0.0 || variances[j] != 0.0){
+                      else if(variances[i] == 0.0 || variances[j] == 0.0){
                           
                           correlation[i][j] = 0.0 ;   
                       }  
