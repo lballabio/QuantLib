@@ -74,8 +74,8 @@ namespace QuantLib {
           private:
             RelinkableHandle<TermStructure> termStructure_;
             Handle<Indexes::Xibor> index_;
-            Spread spread_;
             int fixingDays_;
+            Spread spread_;
         };
 
 
@@ -85,7 +85,7 @@ namespace QuantLib {
             termStructure_.unregisterObserver(this);
         }
 
-        inline const Handle<Indexes::Xibor>& 
+        inline const Handle<Indexes::Xibor>&
         FloatingRateCoupon::index() const {
             return index_;
         }
