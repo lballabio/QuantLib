@@ -46,7 +46,7 @@
 			<Tool
 				Name="VCLinkerTool"
 				OutputFile=".\build\Debug/EuropeanOption.exe"
-				LinkIncremental="1"
+				LinkIncremental="2"
 				SuppressStartupBanner="TRUE"
 				AdditionalLibraryDirectories="..\..\lib"
 				GenerateDebugInformation="TRUE"
@@ -183,7 +183,7 @@
 			<Tool
 				Name="VCLinkerTool"
 				OutputFile=".\build\DebugMTDLL/EuropeanOption.exe"
-				LinkIncremental="1"
+				LinkIncremental="2"
 				SuppressStartupBanner="TRUE"
 				AdditionalLibraryDirectories="..\..\lib"
 				GenerateDebugInformation="TRUE"
@@ -390,7 +390,7 @@
 			<Tool
 				Name="VCLinkerTool"
 				OutputFile=".\build\DebugST/EuropeanOption.exe"
-				LinkIncremental="1"
+				LinkIncremental="2"
 				SuppressStartupBanner="TRUE"
 				AdditionalLibraryDirectories="..\..\lib"
 				GenerateDebugInformation="TRUE"

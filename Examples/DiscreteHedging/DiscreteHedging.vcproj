@@ -186,7 +186,7 @@
 			<Tool
 				Name="VCLinkerTool"
 				OutputFile=".\build\DebugST/DiscreteHedging.exe"
-				LinkIncremental="1"
+				LinkIncremental="2"
 				SuppressStartupBanner="TRUE"
 				AdditionalLibraryDirectories="..\..\lib"
 				GenerateDebugInformation="TRUE"
@@ -322,7 +322,7 @@
 			<Tool
 				Name="VCLinkerTool"
 				OutputFile=".\build\Debug/DiscreteHedging.exe"
-				LinkIncremental="1"
+				LinkIncremental="2"
 				SuppressStartupBanner="TRUE"
 				AdditionalLibraryDirectories="..\..\lib"
 				GenerateDebugInformation="TRUE"
@@ -389,7 +389,7 @@
 			<Tool
 				Name="VCLinkerTool"
 				OutputFile=".\build\DebugMTDLL/DiscreteHedging.exe"
-				LinkIncremental="1"
+				LinkIncremental="2"
 				SuppressStartupBanner="TRUE"
 				AdditionalLibraryDirectories="..\..\lib"
 				GenerateDebugInformation="TRUE"

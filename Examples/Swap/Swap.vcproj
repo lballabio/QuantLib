@@ -45,7 +45,7 @@
 			<Tool
 				Name="VCLinkerTool"
 				OutputFile="build\Debug/SwapValuation.exe"
-				LinkIncremental="1"
+				LinkIncremental="2"
 				SuppressStartupBanner="TRUE"
 				AdditionalLibraryDirectories="..\..\lib"
 				GenerateDebugInformation="TRUE"
@@ -180,7 +180,7 @@
 			<Tool
 				Name="VCLinkerTool"
 				OutputFile="build\DebugMTDLL/SwapValuation.exe"
-				LinkIncremental="1"
+				LinkIncremental="2"
 				SuppressStartupBanner="TRUE"
 				AdditionalLibraryDirectories="..\..\lib"
 				GenerateDebugInformation="TRUE"
@@ -315,7 +315,7 @@
 			<Tool
 				Name="VCLinkerTool"
 				OutputFile="build\DebugST/SwapValuation.exe"
-				LinkIncremental="1"
+				LinkIncremental="2"
 				SuppressStartupBanner="TRUE"
 				AdditionalLibraryDirectories="..\..\lib"
 				GenerateDebugInformation="TRUE"

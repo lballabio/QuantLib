@@ -46,7 +46,7 @@
 			<Tool
 				Name="VCLinkerTool"
 				OutputFile=".\build\DebugST/BermudanSwaption.exe"
-				LinkIncremental="1"
+				LinkIncremental="2"
 				SuppressStartupBanner="TRUE"
 				AdditionalLibraryDirectories="..\..\lib"
 				GenerateDebugInformation="TRUE"
@@ -323,7 +323,7 @@
 			<Tool
 				Name="VCLinkerTool"
 				OutputFile=".\build\DebugMTDLL/BermudanSwaption.exe"
-				LinkIncremental="1"
+				LinkIncremental="2"
 				SuppressStartupBanner="TRUE"
 				AdditionalLibraryDirectories="..\..\lib"
 				GenerateDebugInformation="TRUE"
@@ -390,7 +390,7 @@
 			<Tool
 				Name="VCLinkerTool"
 				OutputFile=".\build\Debug/BermudanSwaption.exe"
-				LinkIncremental="1"
+				LinkIncremental="2"
 				SuppressStartupBanner="TRUE"
 				AdditionalLibraryDirectories="..\..\lib"
 				GenerateDebugInformation="TRUE"

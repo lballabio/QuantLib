@@ -116,7 +116,7 @@
 			<Tool
 				Name="VCLinkerTool"
 				OutputFile=".\build\DebugST/AmericanOption.exe"
-				LinkIncremental="1"
+				LinkIncremental="2"
 				SuppressStartupBanner="TRUE"
 				AdditionalLibraryDirectories="..\..\lib"
 				GenerateDebugInformation="TRUE"
@@ -253,7 +253,7 @@
 			<Tool
 				Name="VCLinkerTool"
 				OutputFile=".\build\Debug/AmericanOption.exe"
-				LinkIncremental="1"
+				LinkIncremental="2"
 				SuppressStartupBanner="TRUE"
 				AdditionalLibraryDirectories="..\..\lib"
 				GenerateDebugInformation="TRUE"
@@ -390,7 +390,7 @@
 			<Tool
 				Name="VCLinkerTool"
 				OutputFile=".\build\DebugMTDLL/AmericanOption.exe"
-				LinkIncremental="1"
+				LinkIncremental="2"
 				SuppressStartupBanner="TRUE"
 				AdditionalLibraryDirectories="..\..\lib"
 				GenerateDebugInformation="TRUE"
