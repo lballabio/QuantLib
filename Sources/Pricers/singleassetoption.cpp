@@ -30,6 +30,9 @@
 
 // $Id$
 // $Log$
+// Revision 1.7  2001/08/20 14:55:15  nando
+// typo fixed
+//
 // Revision 1.6  2001/08/20 14:49:21  sigmud
 // enhanced error messages
 //
@@ -117,12 +120,12 @@ namespace QuantLib {
             QL_REQUIRE(volatility >= QL_MIN_VOLATILITY,
                  "SingleAssetOption::setVolatility ("+
                  DoubleFormatter::toString(volatility)+
-                 "): Volatility to small");
+                 "): Volatility too small");
 
             QL_REQUIRE(volatility <= QL_MAX_VOLATILITY,
                 "SingleAssetOption::setVolatility ("+
                  DoubleFormatter::toString(volatility)+
-                 ") : Volatility to high");
+                 ") : Volatility too high");
 
             volatility_ = volatility;
             hasBeenCalculated_ = false;
