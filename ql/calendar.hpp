@@ -73,7 +73,7 @@ namespace QuantLib {
     */
     class Calendar {
       public:
-        //! \name %Calendar interface
+        //! \name Calendar interface
         //@{
         //! Returns the name of the calendar.
         /*! \warning This method is used for output and comparison between

@@ -54,7 +54,7 @@ namespace QuantLib {
     */
     class DayCounter {
       public:
-        //! \name %DayCounter interface
+        //! \name DayCounter interface
         //@{
         //! Returns the name of the day counter.
         /*! \warning This method is used for output and comparison between day
