@@ -16,7 +16,7 @@
 # Directories
 !if "$(QL_DIR)" == ""
 !message Set the QL_DIR environment variable to the absolute
-!message path of your QuantLib installation before running $(MAKE).
+!message path of where you want to install QuantLib before running $(MAKE).
 !message
 !error terminated
 !endif
@@ -79,7 +79,7 @@ LINK_OPTS    = $(LINK_OPTS) -v
 # Python module
 python: $(QUANTLIB_DLL)
 
-$(QUANTLIB_DLL):: quantlib_wrap$(_D).obj
+$(QUANTLIB_DLL):: quantlib_wrap$(_D).obj \
     $(QUANTLIB_LIB) \
     $(PYTHON_BCC_LIB)
     echo Linking Python module...
