@@ -26,10 +26,12 @@
     \brief base class for options with dividends
 
     $Id$
-
 */
 // $Source$
 // $Log$
+// Revision 1.18  2001/05/25 16:01:16  nando
+// R019-branch-merge2 merged into trunk
+//
 // Revision 1.17  2001/05/25 15:58:05  nando
 // R019-branch-merge2 merged into trunk
 //
@@ -112,13 +114,7 @@ namespace QuantLib {
             initializeOperator();
             initializeModel();
             initializeStepCondition();
-<<<<<<< dividendoption.cpp
-
-=======
-
->>>>>>> 1.12.2.1
             stepCondition_ -> applyTo(prices_, dates_[step]);
-
            }
 
         void DividendOption::movePricesBeforeExDiv(
