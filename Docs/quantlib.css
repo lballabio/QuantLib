@@ -1,3 +1,8 @@
+
+span.googlestyle {
+font-family: arial,sans-serif; font-size: 80%
+}
+
 body {
     font-family: georgia, verdana, arial, sans-serif;
     color: #000;
@@ -68,7 +73,7 @@ pre {
 
 .rule { margin-top: 2em }
 .recom { }
-.rationale { FONT-SIZE: 0.75em }
+.rationale { FONT-SIZE: 0.95em }
 
 H1 { text-align: center; }
 A.qindex {}
