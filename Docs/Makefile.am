@@ -1,5 +1,5 @@
 
-EXTRA_DIST = README.txt quantlib.doxy footer.html makefile.mak
+EXTRA_DIST = README.txt quantlib.doxy quantlibfooter.html makefile.mak
 
 docs-html:
 	$(DOXYGEN) quantlib.doxy
