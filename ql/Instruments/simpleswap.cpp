@@ -53,8 +53,7 @@ namespace QuantLib {
                std::vector<Handle<CashFlow> >(),
                termStructure, isinCode, description),
           payFixedRate_(payFixedRate), fixedRate_(fixedRate), 
-          nominal_(nominal), 
-          maturity_(calendar.advance(startDate,n,units,rollingConvention)) {
+          nominal_(nominal) {
                         
             maturity_ = calendar.advance(startDate,n,units,rollingConvention);
             
