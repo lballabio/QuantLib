@@ -1,10 +1,13 @@
 Many thanks to the QuantLib contributors:
 
-Christopher Baus
-Thomas Becker
+Christopher Baus - inspiration for custom iterators
+Thomas Becker - inspiration for custom iterators
 David Binderman
 Dirk Eddelbuettel - Debian packager
 Matteo Gallivanoni (matteo.gallivanoni@riskmap.net)
 Gilbert Peffer
 Peter Schmitteckert
 Bernd Johannes Wuebben
+
+To get the SourceForge user name go to
+http://sourceforge.net/project/memberlist.php?group_id=12740

@@ -5,9 +5,9 @@ Ferdinando Ametrano ferdinando@ametrano.net       admin
 Luigi Ballabio      luigi.ballabio@riskmap.net    designer
 Adolfo Benin        adolfo.benin@riskmap.net
 Marco Marchioro     marco.marchioro@riskmap.net
-RiskMap             www.riskmap.net               main sponsor
 Enrico Sirola       enrico.sirola@riskmap.net
 Maxim Sokolov       maxim_sokolov@rambler.ru
+RiskMap             www.riskmap.net               main sponsor
 
 To get the SourceForge user name from the developer name go to
 http://sourceforge.net/project/memberlist.php?group_id=12740
