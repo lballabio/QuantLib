@@ -1,4 +1,3 @@
-
 /*
  * Copyright (C) 2000
  * Ferdinando Ametrano, Luigi Ballabio, Adolfo Benin, Marco Marchioro
@@ -18,7 +17,8 @@
  * You should have received a copy of the license along with this file;
  * if not, contact ferdinando@ametrano.net
  *
- * QuantLib license is also available at http://quantlib.sourceforge.net/LICENSE.TXT
+ * QuantLib license is also available at 
+ * http://quantlib.sourceforge.net/LICENSE.TXT
 */
 
 /*! \file dataformatters.h
@@ -27,6 +27,9 @@
     $Source$
     $Name$
     $Log$
+    Revision 1.8  2001/03/05 12:46:34  lballabio
+    Line wraps
+
     Revision 1.7  2001/01/17 14:37:54  nando
     tabs removed
 
@@ -57,7 +60,8 @@ namespace QuantLib {
     //! Formats doubles for output
     class DoubleFormatter {
       public:
-        static std::string toString(double x, int precision = 6, int digits = 0);
+        static std::string toString(double x, int precision = 6, 
+            int digits = 0);
     };
 
     //! Formats amounts in Euro for output
