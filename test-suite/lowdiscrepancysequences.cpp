@@ -32,10 +32,12 @@ CppUnit::Test* LDSTest::suite() {
         new CppUnit::TestSuite("Low discrepancy sequences' tests");
 
     tests->addTest(new CppUnit::TestCaller<LDSTest>
-                   ("Testing primitive polynomials modulo two",
+        ("Testing " + IntegerFormatter::toString(PPMT_MAX_DIM) +
+         " primitive polynomials modulo two",
                     &LDSTest::testPolynomialsModuloTwo));
     tests->addTest(new CppUnit::TestCaller<LDSTest>
-                   ("Testing Sobol sequences",
+                   ("Testing Sobol sequences up to dimension " +
+                    IntegerFormatter::toString(PPMT_MAX_DIM),
                     &LDSTest::testSobol));
     tests->addTest(new CppUnit::TestCaller<LDSTest>
                    ("Testing Halton sequences",
@@ -307,22 +309,22 @@ void LDSTest::testHalton() {
 
 void LDSTest::testDiscrepancy() {
 
-    const double discrRandDim2[]   = {1.17e-002, 8.237109e-003, 5.823805e-003, 4.117800e-003, 2.911636e-003, 2.058806e-003, 1.455785e-003};
-    const double discrMersDim2[]   = {8.84e-003, 5.420340e-003, 5.228870e-003, 4.472290e-003, 4.751310e-003, 3.108620e-003, 2.971390e-003};
-    const double discrHaltDim2[]   = {1.26e-003, 6.731630e-004, 3.346330e-004, 1.908060e-004, 1.114830e-004, 5.051620e-005, 2.420830e-005};
-    const double discrSoboDim2[]   = {8.33e-004, 4.315594e-004, 2.238758e-004, 1.119264e-004, 5.691382e-005, 2.141007e-005}; // , null};
-    const double discrUnSoDim2[]   = {8.33e-004, 4.315594e-004, 2.238758e-004, 1.119264e-004, 5.691382e-005, 2.141007e-005}; // , null};
+    const double discrRandDim2[]   = {1.17e-002, 8.24e-003, 5.82e-003, 4.12e-003, 2.91e-003, 2.06e-003, 1.46e-003};
+    const double discrMersDim2[]   = {8.84e-003, 5.42e-003, 5.23e-003, 4.47e-003, 4.75e-003, 3.11e-003, 2.97e-003};
+    const double discrHaltDim2[]   = {1.26e-003, 6.73e-004, 3.35e-004, 1.91e-004, 1.11e-004, 5.05e-005, 2.42e-005};
+    const double discrSoboDim2[]   = {8.33e-004, 4.32e-004, 2.24e-004, 1.12e-004, 5.69e-005, 2.14e-005}; // , null};
+    const double discrUnSoDim2[]   = {8.33e-004, 4.32e-004, 2.24e-004, 1.12e-004, 5.69e-005, 2.14e-005}; // , null};
 
-    const double discrRandDim3[]   = {9.27e-003, 6.555276e-003, 4.634714e-003, 3.277038e-003, 2.317145e-003, 1.638444e-003, 1.158546e-003};
-    const double discrMersDim3[]   = {7.02e-003, 4.944720e-003, 4.821020e-003, 4.906070e-003, 3.330760e-003, 2.799090e-003, 2.620830e-003};
-    const double discrHaltDim3[]   = {1.63e-003, 9.616060e-004, 4.828400e-004, 2.667690e-004, 1.405420e-004, 7.635770e-005, 3.925840e-005};
-    const double discrSoboDim3[]   = {1.21e-003, 6.368504e-004, 3.395785e-004, 1.748127e-004, 9.213809e-005, 4.793048e-005, 2.558035e-005};
-    const double discrUnSoDim3[]   = {1.21e-003, 6.368504e-004, 3.395785e-004, 1.748127e-004, 9.213809e-005, 4.793048e-005, 2.558035e-005};
+    const double discrRandDim3[]   = {9.27e-003, 6.56e-003, 4.63e-003, 3.28e-003, 2.32e-003, 1.64e-003, 1.16e-003};
+    const double discrMersDim3[]   = {7.02e-003, 4.94e-003, 4.82e-003, 4.91e-003, 3.33e-003, 2.80e-003, 2.62e-003};
+    const double discrHaltDim3[]   = {1.63e-003, 9.62e-004, 4.83e-004, 2.67e-004, 1.41e-004, 7.64e-005, 3.93e-005};
+    const double discrSoboDim3[]   = {1.21e-003, 6.37e-004, 3.40e-004, 1.75e-004, 9.21e-005, 4.79e-005, 2.56e-005};
+    const double discrUnSoDim3[]   = {1.21e-003, 6.37e-004, 3.40e-004, 1.75e-004, 9.21e-005, 4.79e-005, 2.56e-005};
 
-    const double discrRandDim5[]   = {5.15e-003, 3.640862e-003, 2.574164e-003, 1.820097e-003, 1.286964e-003, 9.100071e-004, 6.434673e-004};
-    const double discrMersDim5[]   = {4.28e-003, 3.475630e-003, 2.478620e-003, 1.981710e-003, 1.567230e-003, 1.391420e-003, 6.331970e-004};
-    const double discrHaltDim5[]   = {1.93e-003, 1.225080e-003, 6.892330e-004, 4.217370e-004, 2.129280e-004, 1.251770e-004, 7.172580e-005};
-    const double discrSoboDim5[]   = {1.59e-003, 9.549688e-004, 5.330892e-004, 3.220460e-004, 1.631615e-004, 9.410558e-005, 5.189034e-005};
+    const double discrRandDim5[]   = {5.15e-003, 3.64e-003, 2.57e-003, 1.82e-003, 1.29e-003, 9.10e-004, 6.43e-004};
+    const double discrMersDim5[]   = {4.28e-003, 3.48e-003, 2.48e-003, 1.98e-003, 1.57e-003, 1.39e-003, 6.33e-004};
+    const double discrHaltDim5[]   = {1.93e-003, 1.23e-003, 6.89e-004, 4.22e-004, 2.13e-004, 1.25e-004, 7.17e-005};
+    const double discrSoboDim5[]   = {1.59e-003, 9.55e-004, 5.33e-004, 3.22e-004, 1.63e-004, 9.41e-005, 5.19e-005};
     const double discrUnSoDim5[]   = {1.85e-003, 9.390469e-004, 5.189855e-004, 2.986497e-004, 1.749999e-004, 9.506507e-005, 5.552621e-005};
 
     const double discrRandDim10[]  = {9.685310e-004, 6.846875e-004, 4.840881e-004, 3.422811e-004, 2.420219e-004, 1.711327e-004, 1.210082e-004};
@@ -349,7 +351,7 @@ void LDSTest::testDiscrepancy() {
     const double discrSoboDim50[]  = {2.98e-010, 2.912463e-010, 2.616133e-010, 1.526875e-010, 1.478398e-010, 1.145191e-010, 8.407479e-011};
     const double discrUnSoDim50[]  = {1.63e-005};
 
-    const double discrRandDim100[] = {2.78e-017, 1.963090e-017, 1.387950e-017, 9.813680e-018, 6.939110e-018, 4.906610e-018};
+    const double discrRandDim100[] = {2.78e-017, 1.96e-017, 1.39e-017, 9.81e-018, 6.94e-018, 4.91e-018, 3.47e-018};
     const double discrMersDim100[] = {5.30e-019, 7.293150e-019, 3.709980e-019, 3.333560e-019, 1.329750e-017, 6.695020e-018};
     const double discrHaltDim100[] = {3.63e-004, 1.813480e-004, 9.065170e-005, 4.532030e-005, 2.265880e-005, 1.132900e-005};
     const double discrSoboDim100[] = {1.26e-018};
@@ -396,7 +398,7 @@ void LDSTest::testDiscrepancy() {
 
         Size j, k, jMin = 10;
         // 7 loops would take too long for usual/frequent test running
-        // Size sampleLoops = 7,
+        // Size sampleLoops = 7;
         Size sampleLoops = 1;
 
         // true random numbers
