@@ -1083,6 +1083,14 @@ SOURCE=.\ql\MonteCarlo\digitalpathpricer.hpp
 # End Source File
 # Begin Source File
 
+SOURCE=.\ql\MonteCarlo\europeanmultipathpricer.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\MonteCarlo\europeanmultipathpricer.hpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\ql\MonteCarlo\europeanpathpricer.cpp
 # End Source File
 # Begin Source File

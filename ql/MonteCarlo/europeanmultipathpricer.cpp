@@ -59,7 +59,8 @@ namespace QuantLib {
 
         Array log_drift(numAssets, 0.0);
         Array log_random(numAssets, 0.0);
-        for (Size j = 0; j < numAssets; j++) {
+        Size j;
+        for (j = 0; j < numAssets; j++) {
             for (Size i = 0; i < n; i++) {
                 log_drift[j] += multiPath[j].drift()[i];
                 log_random[j] += multiPath[j].diffusion()[i];
@@ -68,7 +69,7 @@ namespace QuantLib {
 
         // calculate the final price of each asset
         Array finalPrice(numAssets, 0.0);
-        for (Size j = 0; j < numAssets; j++) {
+        for (j = 0; j < numAssets; j++) {
             finalPrice[j] = underlying_[j] * QL_EXP(log_drift[j]+log_random[j]);
         }
 
@@ -76,14 +77,14 @@ namespace QuantLib {
         double basketPrice = finalPrice[0];
         switch (basketType_) {
           case BasketOption::Max:        
-            for (Size j = 1; j < numAssets; j++) {
+            for (j = 1; j < numAssets; j++) {
                 if (finalPrice[j] > basketPrice) {
                     basketPrice = finalPrice[j];
                 }
             }
           break;
           case BasketOption::Min:        
-            for (Size j = 1; j < numAssets; j++) {
+            for (j = 1; j < numAssets; j++) {
                 if (finalPrice[j] < basketPrice) {
                     basketPrice = finalPrice[j];
                 }

@@ -119,6 +119,8 @@ CLEAN :
 	-@erase "$(INTDIR)\swaption.sbr"
 	-@erase "$(INTDIR)\termstructures.obj"
 	-@erase "$(INTDIR)\termstructures.sbr"
+	-@erase "$(INTDIR)\utilities.obj"
+	-@erase "$(INTDIR)\utilities.sbr"
 	-@erase "$(INTDIR)\vc60.idb"
 	-@erase "$(OUTDIR)\testsuite.bsc"
 	-@erase "$(OUTDIR)\testsuite.exe"
@@ -133,6 +135,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\americanoption.sbr" \
 	"$(INTDIR)\asianoptions.sbr" \
 	"$(INTDIR)\barrieroption.sbr" \
+	"$(INTDIR)\basketoption.sbr" \
 	"$(INTDIR)\binarybarrieroption.sbr" \
 	"$(INTDIR)\calendars.sbr" \
 	"$(INTDIR)\capfloor.sbr" \
@@ -162,7 +165,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\swap.sbr" \
 	"$(INTDIR)\swaption.sbr" \
 	"$(INTDIR)\termstructures.sbr" \
-	"$(INTDIR)\basketoption.sbr"
+	"$(INTDIR)\utilities.sbr"
 
 "$(OUTDIR)\testsuite.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -175,6 +178,7 @@ LINK32_OBJS= \
 	"$(INTDIR)\americanoption.obj" \
 	"$(INTDIR)\asianoptions.obj" \
 	"$(INTDIR)\barrieroption.obj" \
+	"$(INTDIR)\basketoption.obj" \
 	"$(INTDIR)\binarybarrieroption.obj" \
 	"$(INTDIR)\calendars.obj" \
 	"$(INTDIR)\capfloor.obj" \
@@ -204,7 +208,7 @@ LINK32_OBJS= \
 	"$(INTDIR)\swap.obj" \
 	"$(INTDIR)\swaption.obj" \
 	"$(INTDIR)\termstructures.obj" \
-	"$(INTDIR)\basketoption.obj" \
+	"$(INTDIR)\utilities.obj" \
 	"..\lib\Win32\VisualStudio\QuantLib.lib"
 
 "$(OUTDIR)\testsuite.exe" : "$(OUTDIR)" $(DEF_FILE) $(LINK32_OBJS)
@@ -301,6 +305,8 @@ CLEAN :
 	-@erase "$(INTDIR)\swaption.sbr"
 	-@erase "$(INTDIR)\termstructures.obj"
 	-@erase "$(INTDIR)\termstructures.sbr"
+	-@erase "$(INTDIR)\utilities.obj"
+	-@erase "$(INTDIR)\utilities.sbr"
 	-@erase "$(INTDIR)\vc60.idb"
 	-@erase "$(INTDIR)\vc60.pdb"
 	-@erase "$(OUTDIR)\testsuite.bsc"
@@ -318,6 +324,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\americanoption.sbr" \
 	"$(INTDIR)\asianoptions.sbr" \
 	"$(INTDIR)\barrieroption.sbr" \
+	"$(INTDIR)\basketoption.sbr" \
 	"$(INTDIR)\binarybarrieroption.sbr" \
 	"$(INTDIR)\calendars.sbr" \
 	"$(INTDIR)\capfloor.sbr" \
@@ -347,7 +354,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\swap.sbr" \
 	"$(INTDIR)\swaption.sbr" \
 	"$(INTDIR)\termstructures.sbr" \
-	"$(INTDIR)\basketoption.sbr"
+	"$(INTDIR)\utilities.sbr"
 
 "$(OUTDIR)\testsuite.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -360,6 +367,7 @@ LINK32_OBJS= \
 	"$(INTDIR)\americanoption.obj" \
 	"$(INTDIR)\asianoptions.obj" \
 	"$(INTDIR)\barrieroption.obj" \
+	"$(INTDIR)\basketoption.obj" \
 	"$(INTDIR)\binarybarrieroption.obj" \
 	"$(INTDIR)\calendars.obj" \
 	"$(INTDIR)\capfloor.obj" \
@@ -389,7 +397,7 @@ LINK32_OBJS= \
 	"$(INTDIR)\swap.obj" \
 	"$(INTDIR)\swaption.obj" \
 	"$(INTDIR)\termstructures.obj" \
-	"$(INTDIR)\basketoption.obj" \
+	"$(INTDIR)\utilities.obj" \
 	"..\lib\Win32\VisualStudio\QuantLib_d.lib"
 
 "$(OUTDIR)\testsuite.exe" : "$(OUTDIR)" $(DEF_FILE) $(LINK32_OBJS)
@@ -486,6 +494,8 @@ CLEAN :
 	-@erase "$(INTDIR)\swaption.sbr"
 	-@erase "$(INTDIR)\termstructures.obj"
 	-@erase "$(INTDIR)\termstructures.sbr"
+	-@erase "$(INTDIR)\utilities.obj"
+	-@erase "$(INTDIR)\utilities.sbr"
 	-@erase "$(INTDIR)\vc60.idb"
 	-@erase "$(OUTDIR)\testsuite.bsc"
 	-@erase "$(OUTDIR)\testsuite.exe"
@@ -500,6 +510,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\americanoption.sbr" \
 	"$(INTDIR)\asianoptions.sbr" \
 	"$(INTDIR)\barrieroption.sbr" \
+	"$(INTDIR)\basketoption.sbr" \
 	"$(INTDIR)\binarybarrieroption.sbr" \
 	"$(INTDIR)\calendars.sbr" \
 	"$(INTDIR)\capfloor.sbr" \
@@ -529,7 +540,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\swap.sbr" \
 	"$(INTDIR)\swaption.sbr" \
 	"$(INTDIR)\termstructures.sbr" \
-	"$(INTDIR)\basketoption.sbr"
+	"$(INTDIR)\utilities.sbr"
 
 "$(OUTDIR)\testsuite.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -542,6 +553,7 @@ LINK32_OBJS= \
 	"$(INTDIR)\americanoption.obj" \
 	"$(INTDIR)\asianoptions.obj" \
 	"$(INTDIR)\barrieroption.obj" \
+	"$(INTDIR)\basketoption.obj" \
 	"$(INTDIR)\binarybarrieroption.obj" \
 	"$(INTDIR)\calendars.obj" \
 	"$(INTDIR)\capfloor.obj" \
@@ -571,7 +583,7 @@ LINK32_OBJS= \
 	"$(INTDIR)\swap.obj" \
 	"$(INTDIR)\swaption.obj" \
 	"$(INTDIR)\termstructures.obj" \
-	"$(INTDIR)\basketoption.obj" \
+	"$(INTDIR)\utilities.obj" \
 	"..\lib\Win32\VisualStudio\QuantLib_MTDLL.lib"
 
 "$(OUTDIR)\testsuite.exe" : "$(OUTDIR)" $(DEF_FILE) $(LINK32_OBJS)
@@ -668,6 +680,8 @@ CLEAN :
 	-@erase "$(INTDIR)\swaption.sbr"
 	-@erase "$(INTDIR)\termstructures.obj"
 	-@erase "$(INTDIR)\termstructures.sbr"
+	-@erase "$(INTDIR)\utilities.obj"
+	-@erase "$(INTDIR)\utilities.sbr"
 	-@erase "$(INTDIR)\vc60.idb"
 	-@erase "$(INTDIR)\vc60.pdb"
 	-@erase "$(OUTDIR)\testsuite.bsc"
@@ -685,6 +699,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\americanoption.sbr" \
 	"$(INTDIR)\asianoptions.sbr" \
 	"$(INTDIR)\barrieroption.sbr" \
+	"$(INTDIR)\basketoption.sbr" \
 	"$(INTDIR)\binarybarrieroption.sbr" \
 	"$(INTDIR)\calendars.sbr" \
 	"$(INTDIR)\capfloor.sbr" \
@@ -714,7 +729,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\swap.sbr" \
 	"$(INTDIR)\swaption.sbr" \
 	"$(INTDIR)\termstructures.sbr" \
-	"$(INTDIR)\basketoption.sbr"
+	"$(INTDIR)\utilities.sbr"
 
 "$(OUTDIR)\testsuite.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -727,6 +742,7 @@ LINK32_OBJS= \
 	"$(INTDIR)\americanoption.obj" \
 	"$(INTDIR)\asianoptions.obj" \
 	"$(INTDIR)\barrieroption.obj" \
+	"$(INTDIR)\basketoption.obj" \
 	"$(INTDIR)\binarybarrieroption.obj" \
 	"$(INTDIR)\calendars.obj" \
 	"$(INTDIR)\capfloor.obj" \
@@ -756,7 +772,7 @@ LINK32_OBJS= \
 	"$(INTDIR)\swap.obj" \
 	"$(INTDIR)\swaption.obj" \
 	"$(INTDIR)\termstructures.obj" \
-	"$(INTDIR)\basketoption.obj" \
+	"$(INTDIR)\utilities.obj" \
 	"..\lib\Win32\VisualStudio\QuantLib_MTDLL_d.lib"
 
 "$(OUTDIR)\testsuite.exe" : "$(OUTDIR)" $(DEF_FILE) $(LINK32_OBJS)
@@ -972,51 +988,56 @@ SOURCE=.\termstructures.cpp
 "$(INTDIR)\termstructures.obj"	"$(INTDIR)\termstructures.sbr" : $(SOURCE) "$(INTDIR)"
 
 
+SOURCE=.\utilities.cpp
+
+"$(INTDIR)\utilities.obj"	"$(INTDIR)\utilities.sbr" : $(SOURCE) "$(INTDIR)"
+
+
 !IF  "$(CFG)" == "testsuite - Win32 Release"
 
 "QuantLib - Win32 Release" : 
-   cd "\Projects\QuantLib"
+   cd "\Projects\QuantLib\QuantLib"
    $(MAKE) /$(MAKEFLAGS) /F .\QuantLib.mak CFG="QuantLib - Win32 Release" 
    cd ".\test-suite"
 
 "QuantLib - Win32 ReleaseCLEAN" : 
-   cd "\Projects\QuantLib"
+   cd "\Projects\QuantLib\QuantLib"
    $(MAKE) /$(MAKEFLAGS) /F .\QuantLib.mak CFG="QuantLib - Win32 Release" RECURSE=1 CLEAN 
    cd ".\test-suite"
 
 !ELSEIF  "$(CFG)" == "testsuite - Win32 Debug"
 
 "QuantLib - Win32 Debug" : 
-   cd "\Projects\QuantLib"
+   cd "\Projects\QuantLib\QuantLib"
    $(MAKE) /$(MAKEFLAGS) /F .\QuantLib.mak CFG="QuantLib - Win32 Debug" 
    cd ".\test-suite"
 
 "QuantLib - Win32 DebugCLEAN" : 
-   cd "\Projects\QuantLib"
+   cd "\Projects\QuantLib\QuantLib"
    $(MAKE) /$(MAKEFLAGS) /F .\QuantLib.mak CFG="QuantLib - Win32 Debug" RECURSE=1 CLEAN 
    cd ".\test-suite"
 
 !ELSEIF  "$(CFG)" == "testsuite - Win32 Release MTDLL"
 
 "QuantLib - Win32 Release MTDLL" : 
-   cd "\Projects\QuantLib"
+   cd "\Projects\QuantLib\QuantLib"
    $(MAKE) /$(MAKEFLAGS) /F .\QuantLib.mak CFG="QuantLib - Win32 Release MTDLL" 
    cd ".\test-suite"
 
 "QuantLib - Win32 Release MTDLLCLEAN" : 
-   cd "\Projects\QuantLib"
+   cd "\Projects\QuantLib\QuantLib"
    $(MAKE) /$(MAKEFLAGS) /F .\QuantLib.mak CFG="QuantLib - Win32 Release MTDLL" RECURSE=1 CLEAN 
    cd ".\test-suite"
 
 !ELSEIF  "$(CFG)" == "testsuite - Win32 Debug MTDLL"
 
 "QuantLib - Win32 Debug MTDLL" : 
-   cd "\Projects\QuantLib"
+   cd "\Projects\QuantLib\QuantLib"
    $(MAKE) /$(MAKEFLAGS) /F .\QuantLib.mak CFG="QuantLib - Win32 Debug MTDLL" 
    cd ".\test-suite"
 
 "QuantLib - Win32 Debug MTDLLCLEAN" : 
-   cd "\Projects\QuantLib"
+   cd "\Projects\QuantLib\QuantLib"
    $(MAKE) /$(MAKEFLAGS) /F .\QuantLib.mak CFG="QuantLib - Win32 Debug MTDLL" RECURSE=1 CLEAN 
    cd ".\test-suite"
 

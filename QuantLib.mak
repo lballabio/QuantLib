@@ -168,6 +168,8 @@ CLEAN :
 	-@erase "$(INTDIR)\errorfunction.sbr"
 	-@erase "$(INTDIR)\errors.obj"
 	-@erase "$(INTDIR)\errors.sbr"
+	-@erase "$(INTDIR)\europeanmultipathpricer.obj"
+	-@erase "$(INTDIR)\europeanmultipathpricer.sbr"
 	-@erase "$(INTDIR)\europeanoption.obj"
 	-@erase "$(INTDIR)\europeanoption.sbr"
 	-@erase "$(INTDIR)\europeanpathpricer.obj"
@@ -443,9 +445,11 @@ BSC32_SBRS= \
 	"$(INTDIR)\xibormanager.sbr" \
 	"$(INTDIR)\asianoption.sbr" \
 	"$(INTDIR)\barrieroption.sbr" \
+	"$(INTDIR)\basketoption.sbr" \
 	"$(INTDIR)\binarybarrieroption.sbr" \
 	"$(INTDIR)\capfloor.sbr" \
 	"$(INTDIR)\forwardvanillaoption.sbr" \
+	"$(INTDIR)\multiassetoption.sbr" \
 	"$(INTDIR)\oneassetoption.sbr" \
 	"$(INTDIR)\oneassetstrikedoption.sbr" \
 	"$(INTDIR)\quantoforwardvanillaoption.sbr" \
@@ -539,6 +543,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\discretizedvanillaoption.sbr" \
 	"$(INTDIR)\integralengine.sbr" \
 	"$(INTDIR)\jumpdiffusionengine.sbr" \
+	"$(INTDIR)\stulzengine.sbr" \
 	"$(INTDIR)\haltonrsg.sbr" \
 	"$(INTDIR)\knuthuniformrng.sbr" \
 	"$(INTDIR)\lecuyeruniformrng.sbr" \
@@ -578,9 +583,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\grid.sbr" \
 	"$(INTDIR)\scheduler.sbr" \
 	"$(INTDIR)\voltermstructure.sbr" \
-	"$(INTDIR)\basketoption.sbr" \
-	"$(INTDIR)\multiassetoption.sbr" \
-	"$(INTDIR)\stulzengine.sbr"
+	"$(INTDIR)\europeanmultipathpricer.sbr"
 
 "$(OUTDIR)\QuantLib.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -628,9 +631,11 @@ LIB32_OBJS= \
 	"$(INTDIR)\xibormanager.obj" \
 	"$(INTDIR)\asianoption.obj" \
 	"$(INTDIR)\barrieroption.obj" \
+	"$(INTDIR)\basketoption.obj" \
 	"$(INTDIR)\binarybarrieroption.obj" \
 	"$(INTDIR)\capfloor.obj" \
 	"$(INTDIR)\forwardvanillaoption.obj" \
+	"$(INTDIR)\multiassetoption.obj" \
 	"$(INTDIR)\oneassetoption.obj" \
 	"$(INTDIR)\oneassetstrikedoption.obj" \
 	"$(INTDIR)\quantoforwardvanillaoption.obj" \
@@ -724,6 +729,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\discretizedvanillaoption.obj" \
 	"$(INTDIR)\integralengine.obj" \
 	"$(INTDIR)\jumpdiffusionengine.obj" \
+	"$(INTDIR)\stulzengine.obj" \
 	"$(INTDIR)\haltonrsg.obj" \
 	"$(INTDIR)\knuthuniformrng.obj" \
 	"$(INTDIR)\lecuyeruniformrng.obj" \
@@ -763,9 +769,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\grid.obj" \
 	"$(INTDIR)\scheduler.obj" \
 	"$(INTDIR)\voltermstructure.obj" \
-	"$(INTDIR)\basketoption.obj" \
-	"$(INTDIR)\multiassetoption.obj" \
-	"$(INTDIR)\stulzengine.obj"
+	"$(INTDIR)\europeanmultipathpricer.obj"
 
 ".\lib\Win32\VisualStudio\QuantLib.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
    if not exist lib\Win32\VisualStudio mkdir lib\Win32\VisualStudio
@@ -913,6 +917,8 @@ CLEAN :
 	-@erase "$(INTDIR)\errorfunction.sbr"
 	-@erase "$(INTDIR)\errors.obj"
 	-@erase "$(INTDIR)\errors.sbr"
+	-@erase "$(INTDIR)\europeanmultipathpricer.obj"
+	-@erase "$(INTDIR)\europeanmultipathpricer.sbr"
 	-@erase "$(INTDIR)\europeanoption.obj"
 	-@erase "$(INTDIR)\europeanoption.sbr"
 	-@erase "$(INTDIR)\europeanpathpricer.obj"
@@ -1189,9 +1195,11 @@ BSC32_SBRS= \
 	"$(INTDIR)\xibormanager.sbr" \
 	"$(INTDIR)\asianoption.sbr" \
 	"$(INTDIR)\barrieroption.sbr" \
+	"$(INTDIR)\basketoption.sbr" \
 	"$(INTDIR)\binarybarrieroption.sbr" \
 	"$(INTDIR)\capfloor.sbr" \
 	"$(INTDIR)\forwardvanillaoption.sbr" \
+	"$(INTDIR)\multiassetoption.sbr" \
 	"$(INTDIR)\oneassetoption.sbr" \
 	"$(INTDIR)\oneassetstrikedoption.sbr" \
 	"$(INTDIR)\quantoforwardvanillaoption.sbr" \
@@ -1285,6 +1293,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\discretizedvanillaoption.sbr" \
 	"$(INTDIR)\integralengine.sbr" \
 	"$(INTDIR)\jumpdiffusionengine.sbr" \
+	"$(INTDIR)\stulzengine.sbr" \
 	"$(INTDIR)\haltonrsg.sbr" \
 	"$(INTDIR)\knuthuniformrng.sbr" \
 	"$(INTDIR)\lecuyeruniformrng.sbr" \
@@ -1324,9 +1333,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\grid.sbr" \
 	"$(INTDIR)\scheduler.sbr" \
 	"$(INTDIR)\voltermstructure.sbr" \
-	"$(INTDIR)\basketoption.sbr" \
-	"$(INTDIR)\multiassetoption.sbr" \
-	"$(INTDIR)\stulzengine.sbr"
+	"$(INTDIR)\europeanmultipathpricer.sbr"
 
 "$(OUTDIR)\QuantLib.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -1374,9 +1381,11 @@ LIB32_OBJS= \
 	"$(INTDIR)\xibormanager.obj" \
 	"$(INTDIR)\asianoption.obj" \
 	"$(INTDIR)\barrieroption.obj" \
+	"$(INTDIR)\basketoption.obj" \
 	"$(INTDIR)\binarybarrieroption.obj" \
 	"$(INTDIR)\capfloor.obj" \
 	"$(INTDIR)\forwardvanillaoption.obj" \
+	"$(INTDIR)\multiassetoption.obj" \
 	"$(INTDIR)\oneassetoption.obj" \
 	"$(INTDIR)\oneassetstrikedoption.obj" \
 	"$(INTDIR)\quantoforwardvanillaoption.obj" \
@@ -1470,6 +1479,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\discretizedvanillaoption.obj" \
 	"$(INTDIR)\integralengine.obj" \
 	"$(INTDIR)\jumpdiffusionengine.obj" \
+	"$(INTDIR)\stulzengine.obj" \
 	"$(INTDIR)\haltonrsg.obj" \
 	"$(INTDIR)\knuthuniformrng.obj" \
 	"$(INTDIR)\lecuyeruniformrng.obj" \
@@ -1509,9 +1519,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\grid.obj" \
 	"$(INTDIR)\scheduler.obj" \
 	"$(INTDIR)\voltermstructure.obj" \
-	"$(INTDIR)\basketoption.obj" \
-	"$(INTDIR)\multiassetoption.obj" \
-	"$(INTDIR)\stulzengine.obj"
+	"$(INTDIR)\europeanmultipathpricer.obj"
 
 ".\lib\Win32\VisualStudio\QuantLib_d.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
    if not exist lib\Win32\VisualStudio mkdir lib\Win32\VisualStudio
@@ -1659,6 +1667,8 @@ CLEAN :
 	-@erase "$(INTDIR)\errorfunction.sbr"
 	-@erase "$(INTDIR)\errors.obj"
 	-@erase "$(INTDIR)\errors.sbr"
+	-@erase "$(INTDIR)\europeanmultipathpricer.obj"
+	-@erase "$(INTDIR)\europeanmultipathpricer.sbr"
 	-@erase "$(INTDIR)\europeanoption.obj"
 	-@erase "$(INTDIR)\europeanoption.sbr"
 	-@erase "$(INTDIR)\europeanpathpricer.obj"
@@ -1934,9 +1944,11 @@ BSC32_SBRS= \
 	"$(INTDIR)\xibormanager.sbr" \
 	"$(INTDIR)\asianoption.sbr" \
 	"$(INTDIR)\barrieroption.sbr" \
+	"$(INTDIR)\basketoption.sbr" \
 	"$(INTDIR)\binarybarrieroption.sbr" \
 	"$(INTDIR)\capfloor.sbr" \
 	"$(INTDIR)\forwardvanillaoption.sbr" \
+	"$(INTDIR)\multiassetoption.sbr" \
 	"$(INTDIR)\oneassetoption.sbr" \
 	"$(INTDIR)\oneassetstrikedoption.sbr" \
 	"$(INTDIR)\quantoforwardvanillaoption.sbr" \
@@ -2030,6 +2042,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\discretizedvanillaoption.sbr" \
 	"$(INTDIR)\integralengine.sbr" \
 	"$(INTDIR)\jumpdiffusionengine.sbr" \
+	"$(INTDIR)\stulzengine.sbr" \
 	"$(INTDIR)\haltonrsg.sbr" \
 	"$(INTDIR)\knuthuniformrng.sbr" \
 	"$(INTDIR)\lecuyeruniformrng.sbr" \
@@ -2069,9 +2082,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\grid.sbr" \
 	"$(INTDIR)\scheduler.sbr" \
 	"$(INTDIR)\voltermstructure.sbr" \
-	"$(INTDIR)\basketoption.sbr" \
-	"$(INTDIR)\multiassetoption.sbr" \
-	"$(INTDIR)\stulzengine.sbr"
+	"$(INTDIR)\europeanmultipathpricer.sbr"
 
 "$(OUTDIR)\QuantLib.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -2119,9 +2130,11 @@ LIB32_OBJS= \
 	"$(INTDIR)\xibormanager.obj" \
 	"$(INTDIR)\asianoption.obj" \
 	"$(INTDIR)\barrieroption.obj" \
+	"$(INTDIR)\basketoption.obj" \
 	"$(INTDIR)\binarybarrieroption.obj" \
 	"$(INTDIR)\capfloor.obj" \
 	"$(INTDIR)\forwardvanillaoption.obj" \
+	"$(INTDIR)\multiassetoption.obj" \
 	"$(INTDIR)\oneassetoption.obj" \
 	"$(INTDIR)\oneassetstrikedoption.obj" \
 	"$(INTDIR)\quantoforwardvanillaoption.obj" \
@@ -2215,6 +2228,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\discretizedvanillaoption.obj" \
 	"$(INTDIR)\integralengine.obj" \
 	"$(INTDIR)\jumpdiffusionengine.obj" \
+	"$(INTDIR)\stulzengine.obj" \
 	"$(INTDIR)\haltonrsg.obj" \
 	"$(INTDIR)\knuthuniformrng.obj" \
 	"$(INTDIR)\lecuyeruniformrng.obj" \
@@ -2254,9 +2268,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\grid.obj" \
 	"$(INTDIR)\scheduler.obj" \
 	"$(INTDIR)\voltermstructure.obj" \
-	"$(INTDIR)\basketoption.obj" \
-	"$(INTDIR)\multiassetoption.obj" \
-	"$(INTDIR)\stulzengine.obj"
+	"$(INTDIR)\europeanmultipathpricer.obj"
 
 ".\lib\Win32\VisualStudio\QuantLib_MTDLL.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
    if not exist lib\Win32\VisualStudio mkdir lib\Win32\VisualStudio
@@ -2404,6 +2416,8 @@ CLEAN :
 	-@erase "$(INTDIR)\errorfunction.sbr"
 	-@erase "$(INTDIR)\errors.obj"
 	-@erase "$(INTDIR)\errors.sbr"
+	-@erase "$(INTDIR)\europeanmultipathpricer.obj"
+	-@erase "$(INTDIR)\europeanmultipathpricer.sbr"
 	-@erase "$(INTDIR)\europeanoption.obj"
 	-@erase "$(INTDIR)\europeanoption.sbr"
 	-@erase "$(INTDIR)\europeanpathpricer.obj"
@@ -2680,9 +2694,11 @@ BSC32_SBRS= \
 	"$(INTDIR)\xibormanager.sbr" \
 	"$(INTDIR)\asianoption.sbr" \
 	"$(INTDIR)\barrieroption.sbr" \
+	"$(INTDIR)\basketoption.sbr" \
 	"$(INTDIR)\binarybarrieroption.sbr" \
 	"$(INTDIR)\capfloor.sbr" \
 	"$(INTDIR)\forwardvanillaoption.sbr" \
+	"$(INTDIR)\multiassetoption.sbr" \
 	"$(INTDIR)\oneassetoption.sbr" \
 	"$(INTDIR)\oneassetstrikedoption.sbr" \
 	"$(INTDIR)\quantoforwardvanillaoption.sbr" \
@@ -2776,6 +2792,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\discretizedvanillaoption.sbr" \
 	"$(INTDIR)\integralengine.sbr" \
 	"$(INTDIR)\jumpdiffusionengine.sbr" \
+	"$(INTDIR)\stulzengine.sbr" \
 	"$(INTDIR)\haltonrsg.sbr" \
 	"$(INTDIR)\knuthuniformrng.sbr" \
 	"$(INTDIR)\lecuyeruniformrng.sbr" \
@@ -2815,9 +2832,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\grid.sbr" \
 	"$(INTDIR)\scheduler.sbr" \
 	"$(INTDIR)\voltermstructure.sbr" \
-	"$(INTDIR)\basketoption.sbr" \
-	"$(INTDIR)\multiassetoption.sbr" \
-	"$(INTDIR)\stulzengine.sbr"
+	"$(INTDIR)\europeanmultipathpricer.sbr"
 
 "$(OUTDIR)\QuantLib.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -2865,9 +2880,11 @@ LIB32_OBJS= \
 	"$(INTDIR)\xibormanager.obj" \
 	"$(INTDIR)\asianoption.obj" \
 	"$(INTDIR)\barrieroption.obj" \
+	"$(INTDIR)\basketoption.obj" \
 	"$(INTDIR)\binarybarrieroption.obj" \
 	"$(INTDIR)\capfloor.obj" \
 	"$(INTDIR)\forwardvanillaoption.obj" \
+	"$(INTDIR)\multiassetoption.obj" \
 	"$(INTDIR)\oneassetoption.obj" \
 	"$(INTDIR)\oneassetstrikedoption.obj" \
 	"$(INTDIR)\quantoforwardvanillaoption.obj" \
@@ -2961,6 +2978,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\discretizedvanillaoption.obj" \
 	"$(INTDIR)\integralengine.obj" \
 	"$(INTDIR)\jumpdiffusionengine.obj" \
+	"$(INTDIR)\stulzengine.obj" \
 	"$(INTDIR)\haltonrsg.obj" \
 	"$(INTDIR)\knuthuniformrng.obj" \
 	"$(INTDIR)\lecuyeruniformrng.obj" \
@@ -3000,9 +3018,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\grid.obj" \
 	"$(INTDIR)\scheduler.obj" \
 	"$(INTDIR)\voltermstructure.obj" \
-	"$(INTDIR)\basketoption.obj" \
-	"$(INTDIR)\multiassetoption.obj" \
-	"$(INTDIR)\stulzengine.obj"
+	"$(INTDIR)\europeanmultipathpricer.obj"
 
 ".\lib\Win32\VisualStudio\QuantLib_MTDLL_d.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
    if not exist lib\Win32\VisualStudio mkdir lib\Win32\VisualStudio
@@ -3532,6 +3548,12 @@ SOURCE=.\ql\MonteCarlo\cliquetoptionpathpricer.cpp
 SOURCE=.\ql\MonteCarlo\digitalpathpricer.cpp
 
 "$(INTDIR)\digitalpathpricer.obj"	"$(INTDIR)\digitalpathpricer.sbr" : $(SOURCE) "$(INTDIR)"
+	$(CPP) $(CPP_PROJ) $(SOURCE)
+
+
+SOURCE=.\ql\MonteCarlo\europeanmultipathpricer.cpp
+
+"$(INTDIR)\europeanmultipathpricer.obj"	"$(INTDIR)\europeanmultipathpricer.sbr" : $(SOURCE) "$(INTDIR)"
 	$(CPP) $(CPP_PROJ) $(SOURCE)
 
 
