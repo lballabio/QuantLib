@@ -48,9 +48,9 @@ namespace QuantLib {
 
         void FdBermudanOption::executeIntermediateStep(int ) const{
 
-            int size = initialPrices_.size();
+            int size = intrinsicValues_.size();
             for(int j = 0; j < size; j++)
-                prices_[j] = QL_MAX(prices_[j], initialPrices_[j]);
+                prices_[j] = QL_MAX(prices_[j], intrinsicValues_[j]);
         }
 
         Handle<SingleAssetOption> FdBermudanOption::clone() const {

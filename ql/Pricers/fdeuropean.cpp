@@ -53,7 +53,7 @@ namespace QuantLib {
             FiniteDifferences::StandardFiniteDifferenceModel
                                 model(finiteDifferenceOperator_,BCs_);
 
-            euroPrices_ = initialPrices_;
+            euroPrices_ = intrinsicValues_;
 
             model.rollback(euroPrices_, residualTime_, 0, timeSteps_);
 

@@ -44,7 +44,7 @@ namespace QuantLib {
         : SingleAssetOption(type, underlying, strike, dividendYield,
             riskFreeRate, residualTime, volatility),
             gridPoints_(safeGridPoints(gridPoints, residualTime)),
-            grid_(gridPoints_), initialPrices_(gridPoints_),
+            grid_(gridPoints_), intrinsicValues_(gridPoints_),
             BCs_(2) {
                 hasBeenCalculated_ = false;
         }
@@ -103,7 +103,7 @@ namespace QuantLib {
         void FdBsmOption::initializeInitialCondition() const {
             Size j;
             for(j = 0; j < gridPoints_; j++)
-                initialPrices_[j] = ExercisePayoff(type_, grid_[j], strike_);
+                intrinsicValues_[j] = ExercisePayoff(type_, grid_[j], strike_);
         }
 
         void FdBsmOption::initializeOperator() const {
@@ -111,11 +111,11 @@ namespace QuantLib {
                 gridLogSpacing_, riskFreeRate_, dividendYield_, volatility_);
 
             BCs_[0] = Handle<BoundaryCondition>(
-                new NeumannBC(initialPrices_[1]-initialPrices_[0],
+                new NeumannBC(intrinsicValues_[1]-intrinsicValues_[0],
                               BoundaryCondition::Lower));
             BCs_[1] = Handle<BoundaryCondition>(
-                new NeumannBC(initialPrices_[gridPoints_-1] -
-                              initialPrices_[gridPoints_-2],
+                new NeumannBC(intrinsicValues_[gridPoints_-1] -
+                              intrinsicValues_[gridPoints_-2],
                               BoundaryCondition::Upper));
         }
 

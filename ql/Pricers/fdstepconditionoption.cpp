@@ -65,8 +65,8 @@ namespace QuantLib {
                 dividendYield_, riskFreeRate_, residualTime_, volatility_);
 
             // 2) Initialize prices on the grid
-            Array europeanPrices = initialPrices_;
-            Array americanPrices = initialPrices_;
+            Array europeanPrices = intrinsicValues_;
+            Array americanPrices = intrinsicValues_;
 
             // 3) Rollback
             model.rollback(europeanPrices, residualTime_, 0.0, timeSteps_);

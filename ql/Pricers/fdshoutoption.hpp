@@ -62,7 +62,7 @@ namespace QuantLib {
 
         inline void FdShoutOption::initializeStepCondition() const {
             stepCondition_ = Handle<FiniteDifferences::StandardStepCondition>(
-                new FiniteDifferences::ShoutCondition(initialPrices_,
+                new FiniteDifferences::ShoutCondition(intrinsicValues_,
                 residualTime_, riskFreeRate_));
         }
 

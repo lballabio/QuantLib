@@ -63,7 +63,7 @@ namespace QuantLib {
 
             mutable Array grid_;
             mutable FiniteDifferences::BSMOperator finiteDifferenceOperator_;
-            mutable Array initialPrices_;
+            mutable Array intrinsicValues_;
             typedef FiniteDifferences::BoundaryCondition<
                         FiniteDifferences::TridiagonalOperator>
                             BoundaryCondition;
