@@ -16,6 +16,7 @@ QL_TESTS = \
            factorial.hpp factorial.cpp \
            instruments.hpp instruments.cpp \
            integrals.hpp integrals.cpp \
+           interpolations.hpp interpolations.cpp \
            jumpdiffusion.hpp jumpdiffusion.cpp \
            lowdiscrepancysequences.hpp lowdiscrepancysequences.cpp \
            marketelements.hpp marketelements.cpp \

@@ -37,6 +37,7 @@ QL_TESTS = \
     factorial.obj$(_D) \
     instruments.obj$(_D) \
     integrals.obj$(_D) \
+    interpolations.obj$(_D) \
     jumpdiffusion.obj$(_D) \
     lowdiscrepancysequences.obj$(_D) \
     marketelements.obj$(_D) \

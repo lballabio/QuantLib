@@ -85,6 +85,8 @@ CLEAN :
 	-@erase "$(INTDIR)\instruments.sbr"
 	-@erase "$(INTDIR)\integrals.obj"
 	-@erase "$(INTDIR)\integrals.sbr"
+	-@erase "$(INTDIR)\interpolations.obj"
+	-@erase "$(INTDIR)\interpolations.sbr"
 	-@erase "$(INTDIR)\jumpdiffusion.obj"
 	-@erase "$(INTDIR)\jumpdiffusion.sbr"
 	-@erase "$(INTDIR)\lowdiscrepancysequences.obj"
@@ -162,7 +164,8 @@ BSC32_SBRS= \
 	"$(INTDIR)\swap.sbr" \
 	"$(INTDIR)\swaption.sbr" \
 	"$(INTDIR)\termstructures.sbr" \
-	"$(INTDIR)\utilities.sbr"
+	"$(INTDIR)\utilities.sbr" \
+	"$(INTDIR)\interpolations.sbr"
 
 "$(OUTDIR)\testsuite.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -205,6 +208,7 @@ LINK32_OBJS= \
 	"$(INTDIR)\swaption.obj" \
 	"$(INTDIR)\termstructures.obj" \
 	"$(INTDIR)\utilities.obj" \
+	"$(INTDIR)\interpolations.obj" \
 	"..\lib\Win32\VisualStudio\QuantLib.lib"
 
 "$(OUTDIR)\testsuite.exe" : "$(OUTDIR)" $(DEF_FILE) $(LINK32_OBJS)
@@ -267,6 +271,8 @@ CLEAN :
 	-@erase "$(INTDIR)\instruments.sbr"
 	-@erase "$(INTDIR)\integrals.obj"
 	-@erase "$(INTDIR)\integrals.sbr"
+	-@erase "$(INTDIR)\interpolations.obj"
+	-@erase "$(INTDIR)\interpolations.sbr"
 	-@erase "$(INTDIR)\jumpdiffusion.obj"
 	-@erase "$(INTDIR)\jumpdiffusion.sbr"
 	-@erase "$(INTDIR)\lowdiscrepancysequences.obj"
@@ -347,7 +353,8 @@ BSC32_SBRS= \
 	"$(INTDIR)\swap.sbr" \
 	"$(INTDIR)\swaption.sbr" \
 	"$(INTDIR)\termstructures.sbr" \
-	"$(INTDIR)\utilities.sbr"
+	"$(INTDIR)\utilities.sbr" \
+	"$(INTDIR)\interpolations.sbr"
 
 "$(OUTDIR)\testsuite.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -390,6 +397,7 @@ LINK32_OBJS= \
 	"$(INTDIR)\swaption.obj" \
 	"$(INTDIR)\termstructures.obj" \
 	"$(INTDIR)\utilities.obj" \
+	"$(INTDIR)\interpolations.obj" \
 	"..\lib\Win32\VisualStudio\QuantLib_d.lib"
 
 "$(OUTDIR)\testsuite.exe" : "$(OUTDIR)" $(DEF_FILE) $(LINK32_OBJS)
@@ -452,6 +460,8 @@ CLEAN :
 	-@erase "$(INTDIR)\instruments.sbr"
 	-@erase "$(INTDIR)\integrals.obj"
 	-@erase "$(INTDIR)\integrals.sbr"
+	-@erase "$(INTDIR)\interpolations.obj"
+	-@erase "$(INTDIR)\interpolations.sbr"
 	-@erase "$(INTDIR)\jumpdiffusion.obj"
 	-@erase "$(INTDIR)\jumpdiffusion.sbr"
 	-@erase "$(INTDIR)\lowdiscrepancysequences.obj"
@@ -529,7 +539,8 @@ BSC32_SBRS= \
 	"$(INTDIR)\swap.sbr" \
 	"$(INTDIR)\swaption.sbr" \
 	"$(INTDIR)\termstructures.sbr" \
-	"$(INTDIR)\utilities.sbr"
+	"$(INTDIR)\utilities.sbr" \
+	"$(INTDIR)\interpolations.sbr"
 
 "$(OUTDIR)\testsuite.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -572,6 +583,7 @@ LINK32_OBJS= \
 	"$(INTDIR)\swaption.obj" \
 	"$(INTDIR)\termstructures.obj" \
 	"$(INTDIR)\utilities.obj" \
+	"$(INTDIR)\interpolations.obj" \
 	"..\lib\Win32\VisualStudio\QuantLib_MTDLL.lib"
 
 "$(OUTDIR)\testsuite.exe" : "$(OUTDIR)" $(DEF_FILE) $(LINK32_OBJS)
@@ -634,6 +646,8 @@ CLEAN :
 	-@erase "$(INTDIR)\instruments.sbr"
 	-@erase "$(INTDIR)\integrals.obj"
 	-@erase "$(INTDIR)\integrals.sbr"
+	-@erase "$(INTDIR)\interpolations.obj"
+	-@erase "$(INTDIR)\interpolations.sbr"
 	-@erase "$(INTDIR)\jumpdiffusion.obj"
 	-@erase "$(INTDIR)\jumpdiffusion.sbr"
 	-@erase "$(INTDIR)\lowdiscrepancysequences.obj"
@@ -714,7 +728,8 @@ BSC32_SBRS= \
 	"$(INTDIR)\swap.sbr" \
 	"$(INTDIR)\swaption.sbr" \
 	"$(INTDIR)\termstructures.sbr" \
-	"$(INTDIR)\utilities.sbr"
+	"$(INTDIR)\utilities.sbr" \
+	"$(INTDIR)\interpolations.sbr"
 
 "$(OUTDIR)\testsuite.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -757,6 +772,7 @@ LINK32_OBJS= \
 	"$(INTDIR)\swaption.obj" \
 	"$(INTDIR)\termstructures.obj" \
 	"$(INTDIR)\utilities.obj" \
+	"$(INTDIR)\interpolations.obj" \
 	"..\lib\Win32\VisualStudio\QuantLib_MTDLL_d.lib"
 
 "$(OUTDIR)\testsuite.exe" : "$(OUTDIR)" $(DEF_FILE) $(LINK32_OBJS)
@@ -885,6 +901,11 @@ SOURCE=.\instruments.cpp
 SOURCE=.\integrals.cpp
 
 "$(INTDIR)\integrals.obj"	"$(INTDIR)\integrals.sbr" : $(SOURCE) "$(INTDIR)"
+
+
+SOURCE=.\interpolations.cpp
+
+"$(INTDIR)\interpolations.obj"	"$(INTDIR)\interpolations.sbr" : $(SOURCE) "$(INTDIR)"
 
 
 SOURCE=.\jumpdiffusion.cpp

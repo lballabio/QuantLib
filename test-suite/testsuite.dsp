@@ -205,6 +205,10 @@ SOURCE=.\integrals.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=.\interpolations.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\jumpdiffusion.cpp
 # End Source File
 # Begin Source File
@@ -338,6 +342,10 @@ SOURCE=.\instruments.hpp
 # Begin Source File
 
 SOURCE=.\integrals.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\interpolations.hpp
 # End Source File
 # Begin Source File
 
