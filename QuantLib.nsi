@@ -66,7 +66,7 @@ Section "Documentation"
 SetOutPath $INSTDIR\Docs\html
 File "Docs\html\*.*"
 SetOutPath $INSTDIR\Docs\pdf
-File "Docs\latex\refman.pdf"
+File "Docs\latex\refma*.pdf"
 
 ;Section "Examples"
 ;SetOutPath $INSTDIR\Examples
