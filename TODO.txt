@@ -19,3 +19,4 @@ add historicalvolatility to RiskMeasures
 handle library versioning to allow multiple installed versions
 rename all files/dirs to lowercase no spaces
 RPM package
+Examples: port to Linux and Borland
