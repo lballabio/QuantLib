@@ -27,6 +27,9 @@
 
     $Source$
     $Log$
+    Revision 1.10  2001/04/17 09:15:37  marmar
+    Another bug fixed
+
     Revision 1.9  2001/04/11 11:52:30  marmar
     Bug fixed in gamma(), (thanks to JH)
 
@@ -188,7 +191,7 @@ namespace QuantLib {
 
             gamma_ = (barrierPlus.value()
                       + barrierMinus.value() - 2.0 * value())/
-                       (underPlus-underlying_)*(underlying_-underMinu);
+                       ((underPlus-underlying_)*(underlying_-underMinu));
             theta_ = (barrierTimePlus.value() - value())/
                             (timePlus - residualTime_);
             greeksCalculated_ = true;
