@@ -1,4 +1,6 @@
 
+make unit test to work under VC++ and Borland
+
 clean up FDMultiPeriodOption
 update freshmeat description
 get in touch with Gnumeric team
@@ -20,7 +22,17 @@ COMPILING
 
 LIBRARY
 
+    PRICING ENGINE FRAMEWORK
+        use Exercise class
+        make forward/forward performance engine run
+        make combined quanto/forward engine run
+        create vanilla FD example
+        create vanilla MC example
+        add unit test
+        deprecate ported pricers
+
     MONTE CARLO FRAMEWORK
+        allow for time dependant parameters
         add example of Martingale control variate
         add examples of Montecarlo internal and Montecarlo convergence
         replace all instance of seed with a random generator
@@ -29,11 +41,15 @@ LIBRARY
         make drift and diffusion time dependant
 
     FINITE DIFFERENCE FRAMEWORK
+        allow for time dependant parameters
         boundary conditions as in Wilmott
         Douglas scheme (QuEP)
         Richardson extrapolation (QuEP)
         SOR for free boundary condition
         have time scheme as input
+
+    TREE framework
+        allow for time dependant parameters
 
     ASIAN:
         continuous geometric APO backward starting instead of forward starting
@@ -88,14 +104,7 @@ VARIUOS
     solve copyright issues for external packages (COOOL, GAlib, etc.)
     Gnumeric
     ISDA/FpML
-    Bloomberg
-    BankOf
-    ItalianBanks
-    Waters
-    DerivativesStrategies
-    GARP
     PRMIA
-    Broda
 
     check disable warning 4786 better
     understand difference between multi-threaded and multi-threaded dll
