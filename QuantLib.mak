@@ -138,6 +138,8 @@ CLEAN :
 	-@erase "$(INTDIR)\hullwhite.sbr"
 	-@erase "$(INTDIR)\jamshidianswaption.obj"
 	-@erase "$(INTDIR)\jamshidianswaption.sbr"
+	-@erase "$(INTDIR)\johannesburg.obj"
+	-@erase "$(INTDIR)\johannesburg.sbr"
 	-@erase "$(INTDIR)\knuthuniformrng.obj"
 	-@erase "$(INTDIR)\knuthuniformrng.sbr"
 	-@erase "$(INTDIR)\lecuyeruniformrng.obj"
@@ -234,6 +236,10 @@ CLEAN :
 	-@erase "$(INTDIR)\thirty360.sbr"
 	-@erase "$(INTDIR)\timefunction.obj"
 	-@erase "$(INTDIR)\timefunction.sbr"
+	-@erase "$(INTDIR)\tokyo.obj"
+	-@erase "$(INTDIR)\tokyo.sbr"
+	-@erase "$(INTDIR)\toronto.obj"
+	-@erase "$(INTDIR)\toronto.sbr"
 	-@erase "$(INTDIR)\tree.obj"
 	-@erase "$(INTDIR)\tree.sbr"
 	-@erase "$(INTDIR)\treecapfloor.obj"
@@ -271,6 +277,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\milan.sbr" \
 	"$(INTDIR)\newyork.sbr" \
 	"$(INTDIR)\target.sbr" \
+	"$(INTDIR)\tokyo.sbr" \
 	"$(INTDIR)\wellington.sbr" \
 	"$(INTDIR)\zurich.sbr" \
 	"$(INTDIR)\cashflowvectors.sbr" \
@@ -348,29 +355,31 @@ BSC32_SBRS= \
 	"$(INTDIR)\piecewiseflatforward.sbr" \
 	"$(INTDIR)\ratehelpers.sbr" \
 	"$(INTDIR)\blackkarasinski.sbr" \
+	"$(INTDIR)\coxingersollross.sbr" \
 	"$(INTDIR)\hullwhite.sbr" \
 	"$(INTDIR)\caphelper.sbr" \
 	"$(INTDIR)\swaptionhelper.sbr" \
 	"$(INTDIR)\g2.sbr" \
 	"$(INTDIR)\calibrationhelper.sbr" \
 	"$(INTDIR)\model.sbr" \
+	"$(INTDIR)\onefactormodel.sbr" \
 	"$(INTDIR)\timefunction.sbr" \
-	"$(INTDIR)\trinomialtree.sbr" \
 	"$(INTDIR)\armijo.sbr" \
 	"$(INTDIR)\conjugategradient.sbr" \
+	"$(INTDIR)\powell.sbr" \
+	"$(INTDIR)\simplex.sbr" \
+	"$(INTDIR)\simulatedannealing.sbr" \
 	"$(INTDIR)\steepestdescent.sbr" \
 	"$(INTDIR)\tree.sbr" \
+	"$(INTDIR)\trinomialtree.sbr" \
 	"$(INTDIR)\calendar.sbr" \
 	"$(INTDIR)\dataformatters.sbr" \
 	"$(INTDIR)\date.sbr" \
 	"$(INTDIR)\option.sbr" \
 	"$(INTDIR)\scheduler.sbr" \
 	"$(INTDIR)\solver1d.sbr" \
-	"$(INTDIR)\onefactormodel.sbr" \
-	"$(INTDIR)\powell.sbr" \
-	"$(INTDIR)\simplex.sbr" \
-	"$(INTDIR)\simulatedannealing.sbr" \
-	"$(INTDIR)\coxingersollross.sbr"
+	"$(INTDIR)\toronto.sbr" \
+	"$(INTDIR)\johannesburg.sbr"
 
 "$(OUTDIR)\QuantLib.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -386,6 +395,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\milan.obj" \
 	"$(INTDIR)\newyork.obj" \
 	"$(INTDIR)\target.obj" \
+	"$(INTDIR)\tokyo.obj" \
 	"$(INTDIR)\wellington.obj" \
 	"$(INTDIR)\zurich.obj" \
 	"$(INTDIR)\cashflowvectors.obj" \
@@ -463,29 +473,31 @@ LIB32_OBJS= \
 	"$(INTDIR)\piecewiseflatforward.obj" \
 	"$(INTDIR)\ratehelpers.obj" \
 	"$(INTDIR)\blackkarasinski.obj" \
+	"$(INTDIR)\coxingersollross.obj" \
 	"$(INTDIR)\hullwhite.obj" \
 	"$(INTDIR)\caphelper.obj" \
 	"$(INTDIR)\swaptionhelper.obj" \
 	"$(INTDIR)\g2.obj" \
 	"$(INTDIR)\calibrationhelper.obj" \
 	"$(INTDIR)\model.obj" \
+	"$(INTDIR)\onefactormodel.obj" \
 	"$(INTDIR)\timefunction.obj" \
-	"$(INTDIR)\trinomialtree.obj" \
 	"$(INTDIR)\armijo.obj" \
 	"$(INTDIR)\conjugategradient.obj" \
+	"$(INTDIR)\powell.obj" \
+	"$(INTDIR)\simplex.obj" \
+	"$(INTDIR)\simulatedannealing.obj" \
 	"$(INTDIR)\steepestdescent.obj" \
 	"$(INTDIR)\tree.obj" \
+	"$(INTDIR)\trinomialtree.obj" \
 	"$(INTDIR)\calendar.obj" \
 	"$(INTDIR)\dataformatters.obj" \
 	"$(INTDIR)\date.obj" \
 	"$(INTDIR)\option.obj" \
 	"$(INTDIR)\scheduler.obj" \
 	"$(INTDIR)\solver1d.obj" \
-	"$(INTDIR)\onefactormodel.obj" \
-	"$(INTDIR)\powell.obj" \
-	"$(INTDIR)\simplex.obj" \
-	"$(INTDIR)\simulatedannealing.obj" \
-	"$(INTDIR)\coxingersollross.obj"
+	"$(INTDIR)\toronto.obj" \
+	"$(INTDIR)\johannesburg.obj"
 
 ".\lib\Win32\VisualStudio\QuantLib.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
     $(LIB32) @<<
@@ -600,6 +612,8 @@ CLEAN :
 	-@erase "$(INTDIR)\hullwhite.sbr"
 	-@erase "$(INTDIR)\jamshidianswaption.obj"
 	-@erase "$(INTDIR)\jamshidianswaption.sbr"
+	-@erase "$(INTDIR)\johannesburg.obj"
+	-@erase "$(INTDIR)\johannesburg.sbr"
 	-@erase "$(INTDIR)\knuthuniformrng.obj"
 	-@erase "$(INTDIR)\knuthuniformrng.sbr"
 	-@erase "$(INTDIR)\lecuyeruniformrng.obj"
@@ -696,6 +710,10 @@ CLEAN :
 	-@erase "$(INTDIR)\thirty360.sbr"
 	-@erase "$(INTDIR)\timefunction.obj"
 	-@erase "$(INTDIR)\timefunction.sbr"
+	-@erase "$(INTDIR)\tokyo.obj"
+	-@erase "$(INTDIR)\tokyo.sbr"
+	-@erase "$(INTDIR)\toronto.obj"
+	-@erase "$(INTDIR)\toronto.sbr"
 	-@erase "$(INTDIR)\tree.obj"
 	-@erase "$(INTDIR)\tree.sbr"
 	-@erase "$(INTDIR)\treecapfloor.obj"
@@ -734,6 +752,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\milan.sbr" \
 	"$(INTDIR)\newyork.sbr" \
 	"$(INTDIR)\target.sbr" \
+	"$(INTDIR)\tokyo.sbr" \
 	"$(INTDIR)\wellington.sbr" \
 	"$(INTDIR)\zurich.sbr" \
 	"$(INTDIR)\cashflowvectors.sbr" \
@@ -811,29 +830,31 @@ BSC32_SBRS= \
 	"$(INTDIR)\piecewiseflatforward.sbr" \
 	"$(INTDIR)\ratehelpers.sbr" \
 	"$(INTDIR)\blackkarasinski.sbr" \
+	"$(INTDIR)\coxingersollross.sbr" \
 	"$(INTDIR)\hullwhite.sbr" \
 	"$(INTDIR)\caphelper.sbr" \
 	"$(INTDIR)\swaptionhelper.sbr" \
 	"$(INTDIR)\g2.sbr" \
 	"$(INTDIR)\calibrationhelper.sbr" \
 	"$(INTDIR)\model.sbr" \
+	"$(INTDIR)\onefactormodel.sbr" \
 	"$(INTDIR)\timefunction.sbr" \
-	"$(INTDIR)\trinomialtree.sbr" \
 	"$(INTDIR)\armijo.sbr" \
 	"$(INTDIR)\conjugategradient.sbr" \
+	"$(INTDIR)\powell.sbr" \
+	"$(INTDIR)\simplex.sbr" \
+	"$(INTDIR)\simulatedannealing.sbr" \
 	"$(INTDIR)\steepestdescent.sbr" \
 	"$(INTDIR)\tree.sbr" \
+	"$(INTDIR)\trinomialtree.sbr" \
 	"$(INTDIR)\calendar.sbr" \
 	"$(INTDIR)\dataformatters.sbr" \
 	"$(INTDIR)\date.sbr" \
 	"$(INTDIR)\option.sbr" \
 	"$(INTDIR)\scheduler.sbr" \
 	"$(INTDIR)\solver1d.sbr" \
-	"$(INTDIR)\onefactormodel.sbr" \
-	"$(INTDIR)\powell.sbr" \
-	"$(INTDIR)\simplex.sbr" \
-	"$(INTDIR)\simulatedannealing.sbr" \
-	"$(INTDIR)\coxingersollross.sbr"
+	"$(INTDIR)\toronto.sbr" \
+	"$(INTDIR)\johannesburg.sbr"
 
 "$(OUTDIR)\QuantLib.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -849,6 +870,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\milan.obj" \
 	"$(INTDIR)\newyork.obj" \
 	"$(INTDIR)\target.obj" \
+	"$(INTDIR)\tokyo.obj" \
 	"$(INTDIR)\wellington.obj" \
 	"$(INTDIR)\zurich.obj" \
 	"$(INTDIR)\cashflowvectors.obj" \
@@ -926,29 +948,31 @@ LIB32_OBJS= \
 	"$(INTDIR)\piecewiseflatforward.obj" \
 	"$(INTDIR)\ratehelpers.obj" \
 	"$(INTDIR)\blackkarasinski.obj" \
+	"$(INTDIR)\coxingersollross.obj" \
 	"$(INTDIR)\hullwhite.obj" \
 	"$(INTDIR)\caphelper.obj" \
 	"$(INTDIR)\swaptionhelper.obj" \
 	"$(INTDIR)\g2.obj" \
 	"$(INTDIR)\calibrationhelper.obj" \
 	"$(INTDIR)\model.obj" \
+	"$(INTDIR)\onefactormodel.obj" \
 	"$(INTDIR)\timefunction.obj" \
-	"$(INTDIR)\trinomialtree.obj" \
 	"$(INTDIR)\armijo.obj" \
 	"$(INTDIR)\conjugategradient.obj" \
+	"$(INTDIR)\powell.obj" \
+	"$(INTDIR)\simplex.obj" \
+	"$(INTDIR)\simulatedannealing.obj" \
 	"$(INTDIR)\steepestdescent.obj" \
 	"$(INTDIR)\tree.obj" \
+	"$(INTDIR)\trinomialtree.obj" \
 	"$(INTDIR)\calendar.obj" \
 	"$(INTDIR)\dataformatters.obj" \
 	"$(INTDIR)\date.obj" \
 	"$(INTDIR)\option.obj" \
 	"$(INTDIR)\scheduler.obj" \
 	"$(INTDIR)\solver1d.obj" \
-	"$(INTDIR)\onefactormodel.obj" \
-	"$(INTDIR)\powell.obj" \
-	"$(INTDIR)\simplex.obj" \
-	"$(INTDIR)\simulatedannealing.obj" \
-	"$(INTDIR)\coxingersollross.obj"
+	"$(INTDIR)\toronto.obj" \
+	"$(INTDIR)\johannesburg.obj"
 
 ".\lib\Win32\VisualStudio\QuantLib_d.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
     $(LIB32) @<<
@@ -1063,6 +1087,8 @@ CLEAN :
 	-@erase "$(INTDIR)\hullwhite.sbr"
 	-@erase "$(INTDIR)\jamshidianswaption.obj"
 	-@erase "$(INTDIR)\jamshidianswaption.sbr"
+	-@erase "$(INTDIR)\johannesburg.obj"
+	-@erase "$(INTDIR)\johannesburg.sbr"
 	-@erase "$(INTDIR)\knuthuniformrng.obj"
 	-@erase "$(INTDIR)\knuthuniformrng.sbr"
 	-@erase "$(INTDIR)\lecuyeruniformrng.obj"
@@ -1159,6 +1185,10 @@ CLEAN :
 	-@erase "$(INTDIR)\thirty360.sbr"
 	-@erase "$(INTDIR)\timefunction.obj"
 	-@erase "$(INTDIR)\timefunction.sbr"
+	-@erase "$(INTDIR)\tokyo.obj"
+	-@erase "$(INTDIR)\tokyo.sbr"
+	-@erase "$(INTDIR)\toronto.obj"
+	-@erase "$(INTDIR)\toronto.sbr"
 	-@erase "$(INTDIR)\tree.obj"
 	-@erase "$(INTDIR)\tree.sbr"
 	-@erase "$(INTDIR)\treecapfloor.obj"
@@ -1196,6 +1226,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\milan.sbr" \
 	"$(INTDIR)\newyork.sbr" \
 	"$(INTDIR)\target.sbr" \
+	"$(INTDIR)\tokyo.sbr" \
 	"$(INTDIR)\wellington.sbr" \
 	"$(INTDIR)\zurich.sbr" \
 	"$(INTDIR)\cashflowvectors.sbr" \
@@ -1273,29 +1304,31 @@ BSC32_SBRS= \
 	"$(INTDIR)\piecewiseflatforward.sbr" \
 	"$(INTDIR)\ratehelpers.sbr" \
 	"$(INTDIR)\blackkarasinski.sbr" \
+	"$(INTDIR)\coxingersollross.sbr" \
 	"$(INTDIR)\hullwhite.sbr" \
 	"$(INTDIR)\caphelper.sbr" \
 	"$(INTDIR)\swaptionhelper.sbr" \
 	"$(INTDIR)\g2.sbr" \
 	"$(INTDIR)\calibrationhelper.sbr" \
 	"$(INTDIR)\model.sbr" \
+	"$(INTDIR)\onefactormodel.sbr" \
 	"$(INTDIR)\timefunction.sbr" \
-	"$(INTDIR)\trinomialtree.sbr" \
 	"$(INTDIR)\armijo.sbr" \
 	"$(INTDIR)\conjugategradient.sbr" \
+	"$(INTDIR)\powell.sbr" \
+	"$(INTDIR)\simplex.sbr" \
+	"$(INTDIR)\simulatedannealing.sbr" \
 	"$(INTDIR)\steepestdescent.sbr" \
 	"$(INTDIR)\tree.sbr" \
+	"$(INTDIR)\trinomialtree.sbr" \
 	"$(INTDIR)\calendar.sbr" \
 	"$(INTDIR)\dataformatters.sbr" \
 	"$(INTDIR)\date.sbr" \
 	"$(INTDIR)\option.sbr" \
 	"$(INTDIR)\scheduler.sbr" \
 	"$(INTDIR)\solver1d.sbr" \
-	"$(INTDIR)\onefactormodel.sbr" \
-	"$(INTDIR)\powell.sbr" \
-	"$(INTDIR)\simplex.sbr" \
-	"$(INTDIR)\simulatedannealing.sbr" \
-	"$(INTDIR)\coxingersollross.sbr"
+	"$(INTDIR)\toronto.sbr" \
+	"$(INTDIR)\johannesburg.sbr"
 
 "$(OUTDIR)\QuantLib.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -1311,6 +1344,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\milan.obj" \
 	"$(INTDIR)\newyork.obj" \
 	"$(INTDIR)\target.obj" \
+	"$(INTDIR)\tokyo.obj" \
 	"$(INTDIR)\wellington.obj" \
 	"$(INTDIR)\zurich.obj" \
 	"$(INTDIR)\cashflowvectors.obj" \
@@ -1388,29 +1422,31 @@ LIB32_OBJS= \
 	"$(INTDIR)\piecewiseflatforward.obj" \
 	"$(INTDIR)\ratehelpers.obj" \
 	"$(INTDIR)\blackkarasinski.obj" \
+	"$(INTDIR)\coxingersollross.obj" \
 	"$(INTDIR)\hullwhite.obj" \
 	"$(INTDIR)\caphelper.obj" \
 	"$(INTDIR)\swaptionhelper.obj" \
 	"$(INTDIR)\g2.obj" \
 	"$(INTDIR)\calibrationhelper.obj" \
 	"$(INTDIR)\model.obj" \
+	"$(INTDIR)\onefactormodel.obj" \
 	"$(INTDIR)\timefunction.obj" \
-	"$(INTDIR)\trinomialtree.obj" \
 	"$(INTDIR)\armijo.obj" \
 	"$(INTDIR)\conjugategradient.obj" \
+	"$(INTDIR)\powell.obj" \
+	"$(INTDIR)\simplex.obj" \
+	"$(INTDIR)\simulatedannealing.obj" \
 	"$(INTDIR)\steepestdescent.obj" \
 	"$(INTDIR)\tree.obj" \
+	"$(INTDIR)\trinomialtree.obj" \
 	"$(INTDIR)\calendar.obj" \
 	"$(INTDIR)\dataformatters.obj" \
 	"$(INTDIR)\date.obj" \
 	"$(INTDIR)\option.obj" \
 	"$(INTDIR)\scheduler.obj" \
 	"$(INTDIR)\solver1d.obj" \
-	"$(INTDIR)\onefactormodel.obj" \
-	"$(INTDIR)\powell.obj" \
-	"$(INTDIR)\simplex.obj" \
-	"$(INTDIR)\simulatedannealing.obj" \
-	"$(INTDIR)\coxingersollross.obj"
+	"$(INTDIR)\toronto.obj" \
+	"$(INTDIR)\johannesburg.obj"
 
 ".\lib\Win32\VisualStudio\QuantLib.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
     $(LIB32) @<<
@@ -1525,6 +1561,8 @@ CLEAN :
 	-@erase "$(INTDIR)\hullwhite.sbr"
 	-@erase "$(INTDIR)\jamshidianswaption.obj"
 	-@erase "$(INTDIR)\jamshidianswaption.sbr"
+	-@erase "$(INTDIR)\johannesburg.obj"
+	-@erase "$(INTDIR)\johannesburg.sbr"
 	-@erase "$(INTDIR)\knuthuniformrng.obj"
 	-@erase "$(INTDIR)\knuthuniformrng.sbr"
 	-@erase "$(INTDIR)\lecuyeruniformrng.obj"
@@ -1621,6 +1659,10 @@ CLEAN :
 	-@erase "$(INTDIR)\thirty360.sbr"
 	-@erase "$(INTDIR)\timefunction.obj"
 	-@erase "$(INTDIR)\timefunction.sbr"
+	-@erase "$(INTDIR)\tokyo.obj"
+	-@erase "$(INTDIR)\tokyo.sbr"
+	-@erase "$(INTDIR)\toronto.obj"
+	-@erase "$(INTDIR)\toronto.sbr"
 	-@erase "$(INTDIR)\tree.obj"
 	-@erase "$(INTDIR)\tree.sbr"
 	-@erase "$(INTDIR)\treecapfloor.obj"
@@ -1659,6 +1701,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\milan.sbr" \
 	"$(INTDIR)\newyork.sbr" \
 	"$(INTDIR)\target.sbr" \
+	"$(INTDIR)\tokyo.sbr" \
 	"$(INTDIR)\wellington.sbr" \
 	"$(INTDIR)\zurich.sbr" \
 	"$(INTDIR)\cashflowvectors.sbr" \
@@ -1736,29 +1779,31 @@ BSC32_SBRS= \
 	"$(INTDIR)\piecewiseflatforward.sbr" \
 	"$(INTDIR)\ratehelpers.sbr" \
 	"$(INTDIR)\blackkarasinski.sbr" \
+	"$(INTDIR)\coxingersollross.sbr" \
 	"$(INTDIR)\hullwhite.sbr" \
 	"$(INTDIR)\caphelper.sbr" \
 	"$(INTDIR)\swaptionhelper.sbr" \
 	"$(INTDIR)\g2.sbr" \
 	"$(INTDIR)\calibrationhelper.sbr" \
 	"$(INTDIR)\model.sbr" \
+	"$(INTDIR)\onefactormodel.sbr" \
 	"$(INTDIR)\timefunction.sbr" \
-	"$(INTDIR)\trinomialtree.sbr" \
 	"$(INTDIR)\armijo.sbr" \
 	"$(INTDIR)\conjugategradient.sbr" \
+	"$(INTDIR)\powell.sbr" \
+	"$(INTDIR)\simplex.sbr" \
+	"$(INTDIR)\simulatedannealing.sbr" \
 	"$(INTDIR)\steepestdescent.sbr" \
 	"$(INTDIR)\tree.sbr" \
+	"$(INTDIR)\trinomialtree.sbr" \
 	"$(INTDIR)\calendar.sbr" \
 	"$(INTDIR)\dataformatters.sbr" \
 	"$(INTDIR)\date.sbr" \
 	"$(INTDIR)\option.sbr" \
 	"$(INTDIR)\scheduler.sbr" \
 	"$(INTDIR)\solver1d.sbr" \
-	"$(INTDIR)\onefactormodel.sbr" \
-	"$(INTDIR)\powell.sbr" \
-	"$(INTDIR)\simplex.sbr" \
-	"$(INTDIR)\simulatedannealing.sbr" \
-	"$(INTDIR)\coxingersollross.sbr"
+	"$(INTDIR)\toronto.sbr" \
+	"$(INTDIR)\johannesburg.sbr"
 
 "$(OUTDIR)\QuantLib.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -1774,6 +1819,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\milan.obj" \
 	"$(INTDIR)\newyork.obj" \
 	"$(INTDIR)\target.obj" \
+	"$(INTDIR)\tokyo.obj" \
 	"$(INTDIR)\wellington.obj" \
 	"$(INTDIR)\zurich.obj" \
 	"$(INTDIR)\cashflowvectors.obj" \
@@ -1851,29 +1897,31 @@ LIB32_OBJS= \
 	"$(INTDIR)\piecewiseflatforward.obj" \
 	"$(INTDIR)\ratehelpers.obj" \
 	"$(INTDIR)\blackkarasinski.obj" \
+	"$(INTDIR)\coxingersollross.obj" \
 	"$(INTDIR)\hullwhite.obj" \
 	"$(INTDIR)\caphelper.obj" \
 	"$(INTDIR)\swaptionhelper.obj" \
 	"$(INTDIR)\g2.obj" \
 	"$(INTDIR)\calibrationhelper.obj" \
 	"$(INTDIR)\model.obj" \
+	"$(INTDIR)\onefactormodel.obj" \
 	"$(INTDIR)\timefunction.obj" \
-	"$(INTDIR)\trinomialtree.obj" \
 	"$(INTDIR)\armijo.obj" \
 	"$(INTDIR)\conjugategradient.obj" \
+	"$(INTDIR)\powell.obj" \
+	"$(INTDIR)\simplex.obj" \
+	"$(INTDIR)\simulatedannealing.obj" \
 	"$(INTDIR)\steepestdescent.obj" \
 	"$(INTDIR)\tree.obj" \
+	"$(INTDIR)\trinomialtree.obj" \
 	"$(INTDIR)\calendar.obj" \
 	"$(INTDIR)\dataformatters.obj" \
 	"$(INTDIR)\date.obj" \
 	"$(INTDIR)\option.obj" \
 	"$(INTDIR)\scheduler.obj" \
 	"$(INTDIR)\solver1d.obj" \
-	"$(INTDIR)\onefactormodel.obj" \
-	"$(INTDIR)\powell.obj" \
-	"$(INTDIR)\simplex.obj" \
-	"$(INTDIR)\simulatedannealing.obj" \
-	"$(INTDIR)\coxingersollross.obj"
+	"$(INTDIR)\toronto.obj" \
+	"$(INTDIR)\johannesburg.obj"
 
 ".\lib\Win32\VisualStudio\QuantLib_d.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
     $(LIB32) @<<
@@ -1935,6 +1983,12 @@ SOURCE=.\ql\Calendars\helsinki.cpp
 	$(CPP) $(CPP_PROJ) $(SOURCE)
 
 
+SOURCE=.\ql\Calendars\johannesburg.cpp
+
+"$(INTDIR)\johannesburg.obj"	"$(INTDIR)\johannesburg.sbr" : $(SOURCE) "$(INTDIR)"
+	$(CPP) $(CPP_PROJ) $(SOURCE)
+
+
 SOURCE=.\ql\Calendars\london.cpp
 
 "$(INTDIR)\london.obj"	"$(INTDIR)\london.sbr" : $(SOURCE) "$(INTDIR)"
@@ -1956,6 +2010,18 @@ SOURCE=.\ql\Calendars\newyork.cpp
 SOURCE=.\ql\Calendars\target.cpp
 
 "$(INTDIR)\target.obj"	"$(INTDIR)\target.sbr" : $(SOURCE) "$(INTDIR)"
+	$(CPP) $(CPP_PROJ) $(SOURCE)
+
+
+SOURCE=.\ql\Calendars\tokyo.cpp
+
+"$(INTDIR)\tokyo.obj"	"$(INTDIR)\tokyo.sbr" : $(SOURCE) "$(INTDIR)"
+	$(CPP) $(CPP_PROJ) $(SOURCE)
+
+
+SOURCE=.\ql\Calendars\toronto.cpp
+
+"$(INTDIR)\toronto.obj"	"$(INTDIR)\toronto.sbr" : $(SOURCE) "$(INTDIR)"
 	$(CPP) $(CPP_PROJ) $(SOURCE)
 
 

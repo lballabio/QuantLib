@@ -17,10 +17,13 @@ BCC_LIBS       = $(MAKEDIR)\..\lib
 # Object files
 OBJS = frankfurt.obj$(_D) \
        helsinki.obj$(_D) \
+       johannesburg.obj$(_D) \
        london.obj$(_D) \
        milan.obj$(_D) \
        newyork.obj$(_D) \
        target.obj$(_D) \
+       tokyo.obj$(_D) \
+       toronto.obj$(_D) \
        wellington.obj$(_D) \
        zurich.obj$(_D)
 

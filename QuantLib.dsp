@@ -151,6 +151,14 @@ SOURCE=.\ql\Calendars\helsinki.hpp
 # End Source File
 # Begin Source File
 
+SOURCE=.\ql\Calendars\johannesburg.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\Calendars\johannesburg.hpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\ql\Calendars\london.cpp
 # End Source File
 # Begin Source File
@@ -180,6 +188,22 @@ SOURCE=.\ql\Calendars\target.cpp
 # Begin Source File
 
 SOURCE=.\ql\Calendars\target.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\Calendars\tokyo.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\Calendars\tokyo.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\Calendars\toronto.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\Calendars\toronto.hpp
 # End Source File
 # Begin Source File
 
@@ -355,11 +379,23 @@ SOURCE=.\ql\FiniteDifferences\valueatcenter.hpp
 # PROP Default_Filter ""
 # Begin Source File
 
+SOURCE=.\ql\Indexes\cadlibor.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\Indexes\chflibor.hpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\ql\Indexes\euribor.hpp
 # End Source File
 # Begin Source File
 
 SOURCE=.\ql\Indexes\gbplibor.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\Indexes\jpylibor.hpp
 # End Source File
 # Begin Source File
 
@@ -380,6 +416,10 @@ SOURCE=.\ql\Indexes\xibormanager.cpp
 # Begin Source File
 
 SOURCE=.\ql\Indexes\xibormanager.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\Indexes\zarlibor.hpp
 # End Source File
 # End Group
 # Begin Group "Instruments"

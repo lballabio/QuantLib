@@ -53,10 +53,13 @@
 
 #include <ql/Calendars/frankfurt.hpp>
 #include <ql/Calendars/helsinki.hpp>
+#include <ql/Calendars/johannesburg.hpp>
 #include <ql/Calendars/london.hpp>
 #include <ql/Calendars/milan.hpp>
 #include <ql/Calendars/newyork.hpp>
 #include <ql/Calendars/target.hpp>
+#include <ql/Calendars/tokyo.hpp>
+#include <ql/Calendars/toronto.hpp>
 #include <ql/Calendars/wellington.hpp>
 #include <ql/Calendars/zurich.hpp>
 
@@ -93,6 +96,10 @@
 #include <ql/Indexes/euribor.hpp>
 #include <ql/Indexes/gbplibor.hpp>
 #include <ql/Indexes/usdlibor.hpp>
+#include <ql/Indexes/jpylibor.hpp>
+#include <ql/Indexes/cadlibor.hpp>
+#include <ql/Indexes/chflibor.hpp>
+#include <ql/Indexes/zarlibor.hpp>
 #include <ql/Indexes/xibor.hpp>
 #include <ql/Indexes/xibormanager.hpp>
 
@@ -236,6 +243,7 @@
 
 
 /*** shortcuts for the full namespaces ***/
+
 namespace QL    = QuantLib;
 namespace QLCAL = QuantLib::Calendars;
 namespace QLCFL = QuantLib::CashFlows;
@@ -251,6 +259,5 @@ namespace QLRNG = QuantLib::RandomNumbers;
 namespace QLS1D = QuantLib::Solvers1D;
 namespace QLTST = QuantLib::TermStructures;
 namespace QLUTL = QuantLib::Utilities;
-
 
 #endif
