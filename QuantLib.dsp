@@ -171,6 +171,14 @@ SOURCE=.\ql\Calendars\johannesburg.hpp
 # End Source File
 # Begin Source File
 
+SOURCE=.\ql\Calendars\jointcalendar.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\Calendars\jointcalendar.hpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\ql\Calendars\london.cpp
 # End Source File
 # Begin Source File

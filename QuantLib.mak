@@ -109,6 +109,7 @@ CLEAN :
 	-@erase "$(INTDIR)\hullwhite.obj"
 	-@erase "$(INTDIR)\jamshidianswaption.obj"
 	-@erase "$(INTDIR)\johannesburg.obj"
+	-@erase "$(INTDIR)\jointcalendar.obj"
 	-@erase "$(INTDIR)\knuthuniformrng.obj"
 	-@erase "$(INTDIR)\lattice.obj"
 	-@erase "$(INTDIR)\lattice2d.obj"
@@ -338,7 +339,8 @@ LIB32_OBJS= \
 	"$(INTDIR)\option.obj" \
 	"$(INTDIR)\scheduler.obj" \
 	"$(INTDIR)\solver1d.obj" \
-	"$(INTDIR)\voltermstructure.obj"
+	"$(INTDIR)\voltermstructure.obj" \
+	"$(INTDIR)\jointcalendar.obj"
 
 ".\lib\Win32\VisualStudio\QuantLib.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
     $(LIB32) @<<
@@ -424,6 +426,7 @@ CLEAN :
 	-@erase "$(INTDIR)\hullwhite.obj"
 	-@erase "$(INTDIR)\jamshidianswaption.obj"
 	-@erase "$(INTDIR)\johannesburg.obj"
+	-@erase "$(INTDIR)\jointcalendar.obj"
 	-@erase "$(INTDIR)\knuthuniformrng.obj"
 	-@erase "$(INTDIR)\lattice.obj"
 	-@erase "$(INTDIR)\lattice2d.obj"
@@ -654,7 +657,8 @@ LIB32_OBJS= \
 	"$(INTDIR)\option.obj" \
 	"$(INTDIR)\scheduler.obj" \
 	"$(INTDIR)\solver1d.obj" \
-	"$(INTDIR)\voltermstructure.obj"
+	"$(INTDIR)\voltermstructure.obj" \
+	"$(INTDIR)\jointcalendar.obj"
 
 ".\lib\Win32\VisualStudio\QuantLib_d.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
     $(LIB32) @<<
@@ -740,6 +744,7 @@ CLEAN :
 	-@erase "$(INTDIR)\hullwhite.obj"
 	-@erase "$(INTDIR)\jamshidianswaption.obj"
 	-@erase "$(INTDIR)\johannesburg.obj"
+	-@erase "$(INTDIR)\jointcalendar.obj"
 	-@erase "$(INTDIR)\knuthuniformrng.obj"
 	-@erase "$(INTDIR)\lattice.obj"
 	-@erase "$(INTDIR)\lattice2d.obj"
@@ -969,7 +974,8 @@ LIB32_OBJS= \
 	"$(INTDIR)\option.obj" \
 	"$(INTDIR)\scheduler.obj" \
 	"$(INTDIR)\solver1d.obj" \
-	"$(INTDIR)\voltermstructure.obj"
+	"$(INTDIR)\voltermstructure.obj" \
+	"$(INTDIR)\jointcalendar.obj"
 
 ".\lib\Win32\VisualStudio\QuantLib.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
     $(LIB32) @<<
@@ -1055,6 +1061,7 @@ CLEAN :
 	-@erase "$(INTDIR)\hullwhite.obj"
 	-@erase "$(INTDIR)\jamshidianswaption.obj"
 	-@erase "$(INTDIR)\johannesburg.obj"
+	-@erase "$(INTDIR)\jointcalendar.obj"
 	-@erase "$(INTDIR)\knuthuniformrng.obj"
 	-@erase "$(INTDIR)\lattice.obj"
 	-@erase "$(INTDIR)\lattice2d.obj"
@@ -1285,7 +1292,8 @@ LIB32_OBJS= \
 	"$(INTDIR)\option.obj" \
 	"$(INTDIR)\scheduler.obj" \
 	"$(INTDIR)\solver1d.obj" \
-	"$(INTDIR)\voltermstructure.obj"
+	"$(INTDIR)\voltermstructure.obj" \
+	"$(INTDIR)\jointcalendar.obj"
 
 ".\lib\Win32\VisualStudio\QuantLib_d.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
     $(LIB32) @<<
@@ -1356,6 +1364,12 @@ SOURCE=.\ql\Calendars\helsinki.cpp
 SOURCE=.\ql\Calendars\johannesburg.cpp
 
 "$(INTDIR)\johannesburg.obj" : $(SOURCE) "$(INTDIR)"
+	$(CPP) $(CPP_PROJ) $(SOURCE)
+
+
+SOURCE=.\ql\Calendars\jointcalendar.cpp
+
+"$(INTDIR)\jointcalendar.obj" : $(SOURCE) "$(INTDIR)"
 	$(CPP) $(CPP_PROJ) $(SOURCE)
 
 

@@ -83,6 +83,8 @@ namespace QuantLib {
                         return true;
                 }
                 return false;
+              default:
+                throw Error("unknown joint calendar rule");
             }
         }
 
