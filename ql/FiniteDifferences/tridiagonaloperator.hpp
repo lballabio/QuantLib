@@ -85,7 +85,7 @@ namespace QuantLib {
             void setMidRows(double, double, double);
             void setLastRow(double, double);
             virtual bool isTimeDependent() {return false;}
-            virtual void setTime(Time t) {assert(0);}
+            virtual void setTime(Time t) {}
           protected:
             Array diagonal_, belowDiagonal_, aboveDiagonal_;
             BoundaryCondition lowerBC_, upperBC_;
