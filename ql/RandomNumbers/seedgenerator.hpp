@@ -35,7 +35,7 @@ namespace QuantLib {
         //! Get a new seed
         static unsigned long get();
       private:
-        SeedGenerator();
+        SeedGenerator() {}
         static MersenneTwisterUniformRng rng_;
     };
 
