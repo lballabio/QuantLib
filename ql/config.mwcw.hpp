@@ -22,42 +22,42 @@
 
 #define REQUIRES_DUMMY_RETURN
 
-#define HAVE_CSTDLIB
-#define QL_SIZE_T std::size_t
-#define QL_ATOI   std::atoi
+#define HAVE_CSTDLIB 1
+#define QL_SIZE_T    std::size_t
+#define QL_ATOI      std::atoi
 
-#define HAVE_CMATH
-#define QL_SQRT   std::sqrt
-#define QL_FABS   std::fabs
-#define QL_EXP    std::exp
-#define QL_LOG    std::log
-#define QL_SIN    std::sin
-#define QL_COS    std::cos
-#define QL_POW    std::pow
-#define QL_MODF   std::modf
-#define QL_FLOOR  std::floor
+#define HAVE_CMATH   1
+#define QL_SQRT      std::sqrt
+#define QL_FABS      std::fabs
+#define QL_EXP       std::exp
+#define QL_LOG       std::log
+#define QL_SIN       std::sin
+#define QL_COS       std::cos
+#define QL_POW       std::pow
+#define QL_MODF      std::modf
+#define QL_FLOOR     std::floor
 
-#define HAVE_LIMITS
+#define HAVE_LIMITS  1
 
-#define HAVE_CTIME
-#define QL_TIME_T   std::time_t
-#define QL_TM       std::tm
-#define QL_CLOCK    std::clock
-#define QL_TIME     std::time
-#define QL_GMTIME   std::gmtime
+#define HAVE_CTIME   1
+#define QL_TIME_T    std::time_t
+#define QL_TM        std::tm
+#define QL_CLOCK     std::clock
+#define QL_TIME      std::time
+#define QL_GMTIME    std::gmtime
 
-#define HAVE_CCTYPE
-#define QL_TOLOWER  std::tolower
-#define QL_TOUPPER  std::toupper
+#define HAVE_CCTYPE  1
+#define QL_TOLOWER   std::tolower
+#define QL_TOUPPER   std::toupper
 
-#define HAVE_CSTRING
-#define QL_STRLEN   std::strlen
+#define HAVE_CSTRING 1
+#define QL_STRLEN    std::strlen
 
-#define HAVE_CSTDIO
-#define QL_SPRINTF  std::sprintf
+#define HAVE_CSTDIO  1
+#define QL_SPRINTF   std::sprintf
 
-#define QL_MIN      std::min
-#define QL_MAX      std::max
+#define QL_MIN       std::min
+#define QL_MAX       std::max
 
 #define HAVE_EXPRESSION_TEMPLATES
 #define HAVE_TEMPLATE_METAPROGRAMMING

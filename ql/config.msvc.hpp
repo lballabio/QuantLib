@@ -42,11 +42,11 @@
 
 // STLPort or VC++ implementation?
 #if defined(__SGI_STL)
-    #define QL_MIN      _STL::min
-    #define QL_MAX      _STL::max
+    #define QL_MIN   _STL::min
+    #define QL_MAX   _STL::max
 #else
-    #define QL_MIN      std::_cpp_min
-    #define QL_MAX      std::_cpp_max
+    #define QL_MIN   std::_cpp_min
+    #define QL_MAX   std::_cpp_max
 #endif
 
 
@@ -60,39 +60,41 @@
 
 #define REQUIRES_DUMMY_RETURN
 
-#define HAVE_CSTDLIB
-#define QL_SIZE_T size_t
-#define QL_ATOI   atoi
+#define HAVE_CSTDLIB 1
+#define QL_SIZE_T    size_t
+#define QL_ATOI      atoi
 
-#define HAVE_CMATH
-#define QL_SQRT   sqrt
-#define QL_FABS   fabs
-#define QL_EXP    exp
-#define QL_LOG    log
-#define QL_SIN    sin
-#define QL_COS    cos
-#define QL_POW    pow
-#define QL_MODF   modf
-#define QL_FLOOR  floor
+#define HAVE_CMATH   1
+#define QL_SQRT      sqrt
+#define QL_FABS      fabs
+#define QL_EXP       exp
+#define QL_LOG       log
+#define QL_SIN       sin
+#define QL_COS       cos
+#define QL_POW       pow
+#define QL_MODF      modf
+#define QL_FLOOR     floor
+// missing
+#define M_PI         3.14159265358979323846
 
-#define HAVE_LIMITS
+#define HAVE_LIMITS  1
 
-#define HAVE_CTIME
-#define QL_TIME_T   time_t
-#define QL_TM       tm
-#define QL_CLOCK    clock
-#define QL_TIME     time
-#define QL_GMTIME   gmtime
+#define HAVE_CTIME   1
+#define QL_TIME_T    time_t
+#define QL_TM        tm
+#define QL_CLOCK     clock
+#define QL_TIME      time
+#define QL_GMTIME    gmtime
 
-#define HAVE_CCTYPE
-#define QL_TOLOWER  tolower
-#define QL_TOUPPER  toupper
+#define HAVE_CCTYPE  1
+#define QL_TOLOWER   tolower
+#define QL_TOUPPER   toupper
 
-#define HAVE_CSTRING
-#define QL_STRLEN   strlen
+#define HAVE_CSTRING 1
+#define QL_STRLEN    strlen
 
-#define HAVE_CSTDIO
-#define QL_SPRINTF  sprintf
+#define HAVE_CSTDIO  1
+#define QL_SPRINTF   sprintf
 
 #define BROKEN_TEMPLATE_SPECIALIZATION
 #define BROKEN_TEMPLATE_METHOD_CALLS
