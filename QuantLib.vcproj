@@ -7337,6 +7337,9 @@
 				Name="Vanilla"
 				Filter="">
 				<File
+					RelativePath=".\ql\PricingEngines\Vanilla\all.hpp">
+				</File>
+				<File
 					RelativePath="ql\PricingEngines\Vanilla\analyticdigitalamericanengine.cpp">
 					<FileConfiguration
 						Name="Debug MTDLL|Win32">
