@@ -1,16 +1,18 @@
 Many thanks to the QuantLib contributors:
 
-Dirk Eddelbuettel - Debian maintainer
-Christopher Baus - inspiration for custom iterators
-Thomas Becker - inspiration for custom iterators
-David Binderman
 Toyin Akin
 James Battle
+Christopher Baus
+Thomas Becker
+David Binderman
+Jon Davidson
+Dirk Eddelbuettel
 Matteo Gallivanoni
-Maxim Sokolov - examples
+Roman Gitlin
+Tomoya Kawanishi
 Gilbert Peffer
 Peter Schmitteckert
+David Schwartz
+Maxim Sokolov
 Bernd Johannes Wuebben
-Jon Davidson - UK bank holidays fix
-Tomoya Kawanishi - Japan holidays fix
-David Schwartz - fixes for VC7
+
