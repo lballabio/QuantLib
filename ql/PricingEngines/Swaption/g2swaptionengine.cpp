@@ -1,6 +1,6 @@
 
 /*
- Copyright (C) 2004 Ferdinando Ametrano
+ Copyright (C) 2004 Mike Parker
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -15,13 +15,14 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#ifndef quantlib_pricing_engines_swaption_all_hpp
-#define quantlib_pricing_engines_swaption_all_hpp
-
-#include <ql/PricingEngines/Swaption/blackswaptionengine.hpp>
 #include <ql/PricingEngines/Swaption/g2swaptionengine.hpp>
-#include <ql/PricingEngines/Swaption/jamshidianswaptionengine.hpp>
-#include <ql/PricingEngines/Swaption/discretizedswaption.hpp>
-#include <ql/PricingEngines/Swaption/treeswaptionengine.hpp>
 
-#endif
+namespace QuantLib {
+
+    void G2SwaptionEngine::calculate() const {
+
+		results_.value =  model_->swaption(arguments_, range_, intervals_);
+
+    }
+
+}

@@ -5,6 +5,7 @@ includedir = $(prefix)/include/ql/PricingEngines/Swaption
 include_HEADERS = \
     all.hpp \
     blackswaptionengine.hpp \
+    g2swaptionengine.hpp \
     jamshidianswaptionengine.hpp \
     discretizedswaption.hpp \
     treeswaptionengine.hpp
@@ -13,6 +14,7 @@ EXTRA_DIST=makefile.mak
 
 libSwaptionEngines_la_SOURCES = \
     blackswaptionengine.cpp \
+    g2swaptionengine.cpp \
     jamshidianswaptionengine.cpp \
     discretizedswaption.cpp \
     treeswaptionengine.cpp

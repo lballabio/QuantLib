@@ -1,6 +1,7 @@
 
 /*
  Copyright (C) 2001, 2002, 2003 Sadruddin Rejeb
+ Copyright (C) 2004 Mike Parker
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -30,9 +31,17 @@ namespace QuantLib {
       rho_(arguments_[4]) {
         a_ = ConstantParameter(a, PositiveConstraint());
         sigma_ = ConstantParameter(sigma, PositiveConstraint());
-        b_ = ConstantParameter(b, PositiveConstraint());
+		b_ = ConstantParameter(b, PositiveConstraint());
         eta_ = ConstantParameter(eta, PositiveConstraint());
-        rho_ = ConstantParameter(rho, BoundaryConstraint(-1.0, 1.0));
+
+        /*
+        a_ = ConstantParameter(a, BoundaryConstraint(0.0, 0.1));
+        sigma_ = ConstantParameter(sigma, BoundaryConstraint(0.015, 1.0));
+        b_ = ConstantParameter(b, BoundaryConstraint(0.0, 0.1));
+        eta_ = ConstantParameter(eta, BoundaryConstraint(0.01, 1.0));
+		*/
+
+        rho_ = ConstantParameter(rho, BoundaryConstraint(-1.0, -0.65));
         generateArguments();
     }
 
@@ -42,6 +51,7 @@ namespace QuantLib {
     }
 
     void G2::generateArguments() {
+		
         phi_ = FittingParameter(termStructure(), 
                                 a(), sigma(), b(), eta(), rho());
     }
@@ -63,7 +73,7 @@ namespace QuantLib {
     }
 
     Real G2::discountBondOption(Option::Type type, Real strike, 
-                                Time maturity, Time bondMaturity) const {
+                                  Time maturity, Time bondMaturity) const {
 
         Real v = sigmaP(maturity, bondMaturity);
         Real f = termStructure()->discount(bondMaturity);
@@ -107,25 +117,40 @@ namespace QuantLib {
           T_(start), t_(payTimes), rate_(fixedRate), size_(t_.size()), 
           A_(size_), Ba_(size_), Bb_(size_) {
 
+
             sigmax_ = sigma_*QL_SQRT(0.5*(1.0-QL_EXP(-2.0*a_*T_))/a_);
             sigmay_ =   eta_*QL_SQRT(0.5*(1.0-QL_EXP(-2.0*b_*T_))/b_);
             rhoxy_ = rho_*eta_*sigma_*(1.0 - QL_EXP(-(a_+b_)*T_))/
                 ((a_+b_)*sigmax_*sigmay_);
 
             Real temp = sigma_*sigma_/(a_*a_);
-            mux_ = (temp+rho_*sigma_*eta_/(a_*b_))*(1.0 - QL_EXP(-a*T_)) -
+            mux_ = -(
+				(temp+rho_*sigma_*eta_/(a_*b_))*(1.0 - QL_EXP(-a*T_)) -
                 0.5*temp*(1.0 - QL_EXP(-2.0*a_*T_)) -
                 rho_*sigma_*eta_/(b_*(a_+b_))*
-                (1.0- QL_EXP(-(b_+a_)*T_));
+                (1.0- QL_EXP(-(b_+a_)*T_))
+				);
+
+            temp = eta_*eta_/(b_*b_);
+            muy_ = -(
+				(temp+rho_*sigma_*eta_/(a_*b_))*(1.0 - QL_EXP(-b*T_)) -
+                0.5*temp*(1.0 - QL_EXP(-2.0*b_*T_)) -
+                rho_*sigma_*eta_/(a_*(a_+b_))*
+                (1.0- QL_EXP(-(b_+a_)*T_))
+				);
 
             for (Size i=0; i<size_; i++) {
                 A_[i] = model.A(T_, t_[i]);
-                Ba_[i] = model.B(a_, t_[i]);
-                Bb_[i] = model.B(b_, t_[i]);
+                Ba_[i] = model.B(a_, t_[i]-T_);
+                Bb_[i] = model.B(b_, t_[i]-T_);
             }
         }
 
+		Real mux() const { return mux_;}
+		Real sigmax() const { return sigmax_;}
+
         Real operator()(Real x) const {
+			
             CumulativeNormalDistribution phi;
             Real temp = (x - mux_)/sigmax_;
             Real txy = QL_SQRT(1.0 - rhoxy_*rhoxy_);
@@ -134,18 +159,20 @@ namespace QuantLib {
             Size i;
             for (i=0; i<size_; i++) {
                 Real tau = (i==0 ? t_[0] - T_ : t_[i] - t_[i-1]);
-                lambda[i] = (1.0+rate_*tau)*A_[i]*QL_EXP(-Ba_[i]*x);
-            }
+				Real c = (i==size_-1 ? (1.0+rate_*tau) : rate_*tau);
+                lambda[i] = c*A_[i]*QL_EXP(-Ba_[i]*x);
+			}
 
             SolvingFunction function(lambda, Bb_) ;
             Brent s1d;
             s1d.setMaxEvaluations(1000);
-            Real yb = s1d.solve(function, 1e-6, 0.0, -1.0, 1.0);
+            Real yb = s1d.solve(function, 1e-6, 0.00, -100.0, 100.0);
 
             Real h1 = (yb - muy_)/(sigmay_*txy) - 
                 rhoxy_*(x  - mux_)/(sigmax_*txy);
             Real value = phi(-w_*h1);
 
+			
             for (i=0; i<size_; i++) {
                 Real h2 = h1 + 
                     Bb_[i]*sigmay_*QL_SQRT(1.0-rhoxy_*rhoxy_);
@@ -154,8 +181,9 @@ namespace QuantLib {
                      rhoxy_*sigmay_*(x-mux_)/sigmax_);
                 value -= lambda[i] *QL_EXP(kappa)*phi(-w_*h2);
             }
-            return QL_EXP(-0.5*temp*temp*value/
-                          (sigmax_*QL_SQRT(2.0*M_PI)));
+
+            return QL_EXP(-0.5*temp*temp)*value/
+                          (sigmax_*QL_SQRT(2.0*M_PI));
         }
 
 
@@ -185,17 +213,23 @@ namespace QuantLib {
         Real mux_, muy_, sigmax_, sigmay_, rhoxy_;
     };
 
-    Real G2::swaption(const Swaption::arguments& arguments) const {
-        Time start = arguments.floatingResetTimes[0];
+    Real G2::swaption(const Swaption::arguments& arguments, Real range, Size intervals) const {
+ 		
+		
+		Time start = arguments.floatingResetTimes[0];
         Real w = (arguments.payFixed ? 1 : -1 );
         SwaptionPricingFunction function(a(), sigma(), b(), eta(), rho(), 
                                          w, start, 
                                          arguments.floatingPayTimes, 
                                          arguments.fixedRate, (*this));
-        SegmentIntegral integrator(1000);
+
+		Real upper = function.mux() + range*function.sigmax();
+		Real lower = function.mux() - range*function.sigmax();
+
+		SegmentIntegral integrator(intervals);
 
         return arguments.nominal*w*termStructure()->discount(start)*
-            integrator(function, -10000.0, 10000.0);
+            integrator(function, lower, upper);
     }
 
 }

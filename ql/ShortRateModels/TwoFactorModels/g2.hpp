@@ -1,6 +1,7 @@
 
 /*
  Copyright (C) 2001, 2002, 2003 Sadruddin Rejeb
+ Copyright (C) 2004 Mike Parker
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -42,12 +43,13 @@ namespace QuantLib {
         \f]
         and \f$ dW^1_t dW^2_t = \rho dt \f$.
 
-        \bug this class was not tested enough to guarantee
+        \bug This class was not tested enough to guarantee
              its functionality.
 
         \ingroup shortrate
     */
-    class G2 : public TwoFactorModel, public AffineModel,
+    class G2 : public TwoFactorModel,
+               public AffineModel,
                public TermStructureConsistentModel {
       public:
         G2(const RelinkableHandle<TermStructure>& termStructure,
@@ -55,7 +57,7 @@ namespace QuantLib {
            Real sigma = 0.01,
            Real b = 0.1, 
            Real eta = 0.01,
-           Real rho = 0.9);
+           Real rho = 0.0);
 
         boost::shared_ptr<ShortRateDynamics> dynamics() const;
 
@@ -63,7 +65,9 @@ namespace QuantLib {
                                 Real strike,
                                 Time maturity,
                                 Time bondMaturity) const;
-        Real swaption(const Swaption::arguments& arguments) const;
+        Real swaption(const Swaption::arguments& arguments,
+                      Real range,
+                      Size intervals) const;
 
         DiscountFactor discount(Time t) const {
             return termStructure()->discount(t);
@@ -104,14 +108,20 @@ namespace QuantLib {
     class G2::Dynamics : public TwoFactorModel::ShortRateDynamics {
       public:
         Dynamics(const Parameter& fitting, 
-                 Real a, Real sigma, Real b, Real eta, Real rho)
+                 Real a,
+                 Real sigma,
+                 Real b,
+                 Real eta,
+                 Real rho)
         : ShortRateDynamics(boost::shared_ptr<StochasticProcess>(
                                       new OrnsteinUhlenbeckProcess(a, sigma)),
                             boost::shared_ptr<StochasticProcess>(
                                       new OrnsteinUhlenbeckProcess(b, eta)),
                             rho), 
           fitting_(fitting) {}
-        virtual Rate shortRate(Time t, Real x, Real y) const {
+        virtual Rate shortRate(Time t,
+                               Real x,
+                               Real y) const {
             return fitting_(t) + x + y;
         }
       private:
@@ -133,7 +143,10 @@ namespace QuantLib {
         class Impl : public Parameter::Impl {
           public:
             Impl(const RelinkableHandle<TermStructure>& termStructure,
-                 Real a, Real sigma, Real b, Real eta, 
+                 Real a,
+                 Real sigma,
+                 Real b,
+                 Real eta, 
                  Real rho) 
             : termStructure_(termStructure), 
               a_(a), sigma_(sigma), b_(b), eta_(eta), rho_(rho) {}
@@ -153,8 +166,11 @@ namespace QuantLib {
         };
       public:
         FittingParameter(const RelinkableHandle<TermStructure>& termStructure,
-                         Real a, Real sigma, Real b, 
-                         Real eta, Real rho)
+                         Real a,
+                         Real sigma,
+                         Real b, 
+                         Real eta,
+                         Real rho)
         : TermStructureFittingParameter(boost::shared_ptr<Parameter::Impl>(
                           new FittingParameter::Impl(termStructure, a, sigma, 
                                                      b, eta, rho))) {}
