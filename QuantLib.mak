@@ -437,6 +437,8 @@ BSC32_SBRS= \
 	"$(INTDIR)\target.sbr" \
 	"$(INTDIR)\tokyo.sbr" \
 	"$(INTDIR)\toronto.sbr" \
+	"$(INTDIR)\unitedkingdom.sbr" \
+	"$(INTDIR)\unitedstates.sbr" \
 	"$(INTDIR)\warsaw.sbr" \
 	"$(INTDIR)\wellington.sbr" \
 	"$(INTDIR)\xetra.sbr" \
@@ -591,9 +593,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\grid.sbr" \
 	"$(INTDIR)\scheduler.sbr" \
 	"$(INTDIR)\stochasticprocess.sbr" \
-	"$(INTDIR)\voltermstructure.sbr" \
-	"$(INTDIR)\unitedkingdom.sbr" \
-	"$(INTDIR)\unitedstates.sbr"
+	"$(INTDIR)\voltermstructure.sbr"
 
 "$(OUTDIR)\QuantLib.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -622,6 +622,8 @@ LIB32_OBJS= \
 	"$(INTDIR)\target.obj" \
 	"$(INTDIR)\tokyo.obj" \
 	"$(INTDIR)\toronto.obj" \
+	"$(INTDIR)\unitedkingdom.obj" \
+	"$(INTDIR)\unitedstates.obj" \
 	"$(INTDIR)\warsaw.obj" \
 	"$(INTDIR)\wellington.obj" \
 	"$(INTDIR)\xetra.obj" \
@@ -777,8 +779,6 @@ LIB32_OBJS= \
 	"$(INTDIR)\scheduler.obj" \
 	"$(INTDIR)\stochasticprocess.obj" \
 	"$(INTDIR)\voltermstructure.obj" \
-	"$(INTDIR)\unitedkingdom.obj" \
-	"$(INTDIR)\unitedstates.obj" \
 	".\lib\QuantLibFunctions-vc6-mt-s-0_3_7.lib"
 
 ".\lib\QuantLib-vc6-mt-s-0_3_7.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
@@ -1195,6 +1195,8 @@ BSC32_SBRS= \
 	"$(INTDIR)\target.sbr" \
 	"$(INTDIR)\tokyo.sbr" \
 	"$(INTDIR)\toronto.sbr" \
+	"$(INTDIR)\unitedkingdom.sbr" \
+	"$(INTDIR)\unitedstates.sbr" \
 	"$(INTDIR)\warsaw.sbr" \
 	"$(INTDIR)\wellington.sbr" \
 	"$(INTDIR)\xetra.sbr" \
@@ -1349,9 +1351,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\grid.sbr" \
 	"$(INTDIR)\scheduler.sbr" \
 	"$(INTDIR)\stochasticprocess.sbr" \
-	"$(INTDIR)\voltermstructure.sbr" \
-	"$(INTDIR)\unitedkingdom.sbr" \
-	"$(INTDIR)\unitedstates.sbr"
+	"$(INTDIR)\voltermstructure.sbr"
 
 "$(OUTDIR)\QuantLib.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -1380,6 +1380,8 @@ LIB32_OBJS= \
 	"$(INTDIR)\target.obj" \
 	"$(INTDIR)\tokyo.obj" \
 	"$(INTDIR)\toronto.obj" \
+	"$(INTDIR)\unitedkingdom.obj" \
+	"$(INTDIR)\unitedstates.obj" \
 	"$(INTDIR)\warsaw.obj" \
 	"$(INTDIR)\wellington.obj" \
 	"$(INTDIR)\xetra.obj" \
@@ -1535,8 +1537,6 @@ LIB32_OBJS= \
 	"$(INTDIR)\scheduler.obj" \
 	"$(INTDIR)\stochasticprocess.obj" \
 	"$(INTDIR)\voltermstructure.obj" \
-	"$(INTDIR)\unitedkingdom.obj" \
-	"$(INTDIR)\unitedstates.obj" \
 	".\lib\QuantLibFunctions-vc6-mt-sgd-0_3_7.lib"
 
 ".\lib\QuantLib-vc6-mt-sgd-0_3_7.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
@@ -1952,6 +1952,8 @@ BSC32_SBRS= \
 	"$(INTDIR)\target.sbr" \
 	"$(INTDIR)\tokyo.sbr" \
 	"$(INTDIR)\toronto.sbr" \
+	"$(INTDIR)\unitedkingdom.sbr" \
+	"$(INTDIR)\unitedstates.sbr" \
 	"$(INTDIR)\warsaw.sbr" \
 	"$(INTDIR)\wellington.sbr" \
 	"$(INTDIR)\xetra.sbr" \
@@ -2106,9 +2108,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\grid.sbr" \
 	"$(INTDIR)\scheduler.sbr" \
 	"$(INTDIR)\stochasticprocess.sbr" \
-	"$(INTDIR)\voltermstructure.sbr" \
-	"$(INTDIR)\unitedkingdom.sbr" \
-	"$(INTDIR)\unitedstates.sbr"
+	"$(INTDIR)\voltermstructure.sbr"
 
 "$(OUTDIR)\QuantLib.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -2137,6 +2137,8 @@ LIB32_OBJS= \
 	"$(INTDIR)\target.obj" \
 	"$(INTDIR)\tokyo.obj" \
 	"$(INTDIR)\toronto.obj" \
+	"$(INTDIR)\unitedkingdom.obj" \
+	"$(INTDIR)\unitedstates.obj" \
 	"$(INTDIR)\warsaw.obj" \
 	"$(INTDIR)\wellington.obj" \
 	"$(INTDIR)\xetra.obj" \
@@ -2292,8 +2294,6 @@ LIB32_OBJS= \
 	"$(INTDIR)\scheduler.obj" \
 	"$(INTDIR)\stochasticprocess.obj" \
 	"$(INTDIR)\voltermstructure.obj" \
-	"$(INTDIR)\unitedkingdom.obj" \
-	"$(INTDIR)\unitedstates.obj" \
 	".\lib\QuantLibFunctions-vc6-mt-0_3_7.lib"
 
 ".\lib\QuantLib-vc6-mt-0_3_7.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
@@ -2710,6 +2710,8 @@ BSC32_SBRS= \
 	"$(INTDIR)\target.sbr" \
 	"$(INTDIR)\tokyo.sbr" \
 	"$(INTDIR)\toronto.sbr" \
+	"$(INTDIR)\unitedkingdom.sbr" \
+	"$(INTDIR)\unitedstates.sbr" \
 	"$(INTDIR)\warsaw.sbr" \
 	"$(INTDIR)\wellington.sbr" \
 	"$(INTDIR)\xetra.sbr" \
@@ -2864,9 +2866,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\grid.sbr" \
 	"$(INTDIR)\scheduler.sbr" \
 	"$(INTDIR)\stochasticprocess.sbr" \
-	"$(INTDIR)\voltermstructure.sbr" \
-	"$(INTDIR)\unitedkingdom.sbr" \
-	"$(INTDIR)\unitedstates.sbr"
+	"$(INTDIR)\voltermstructure.sbr"
 
 "$(OUTDIR)\QuantLib.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -2895,6 +2895,8 @@ LIB32_OBJS= \
 	"$(INTDIR)\target.obj" \
 	"$(INTDIR)\tokyo.obj" \
 	"$(INTDIR)\toronto.obj" \
+	"$(INTDIR)\unitedkingdom.obj" \
+	"$(INTDIR)\unitedstates.obj" \
 	"$(INTDIR)\warsaw.obj" \
 	"$(INTDIR)\wellington.obj" \
 	"$(INTDIR)\xetra.obj" \
@@ -3050,8 +3052,6 @@ LIB32_OBJS= \
 	"$(INTDIR)\scheduler.obj" \
 	"$(INTDIR)\stochasticprocess.obj" \
 	"$(INTDIR)\voltermstructure.obj" \
-	"$(INTDIR)\unitedkingdom.obj" \
-	"$(INTDIR)\unitedstates.obj" \
 	".\lib\QuantLibFunctions-vc6-mt-gd-0_3_7.lib"
 
 ".\lib\QuantLib-vc6-mt-gd-0_3_7.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
@@ -3467,6 +3467,8 @@ BSC32_SBRS= \
 	"$(INTDIR)\target.sbr" \
 	"$(INTDIR)\tokyo.sbr" \
 	"$(INTDIR)\toronto.sbr" \
+	"$(INTDIR)\unitedkingdom.sbr" \
+	"$(INTDIR)\unitedstates.sbr" \
 	"$(INTDIR)\warsaw.sbr" \
 	"$(INTDIR)\wellington.sbr" \
 	"$(INTDIR)\xetra.sbr" \
@@ -3621,9 +3623,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\grid.sbr" \
 	"$(INTDIR)\scheduler.sbr" \
 	"$(INTDIR)\stochasticprocess.sbr" \
-	"$(INTDIR)\voltermstructure.sbr" \
-	"$(INTDIR)\unitedkingdom.sbr" \
-	"$(INTDIR)\unitedstates.sbr"
+	"$(INTDIR)\voltermstructure.sbr"
 
 "$(OUTDIR)\QuantLib.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -3652,6 +3652,8 @@ LIB32_OBJS= \
 	"$(INTDIR)\target.obj" \
 	"$(INTDIR)\tokyo.obj" \
 	"$(INTDIR)\toronto.obj" \
+	"$(INTDIR)\unitedkingdom.obj" \
+	"$(INTDIR)\unitedstates.obj" \
 	"$(INTDIR)\warsaw.obj" \
 	"$(INTDIR)\wellington.obj" \
 	"$(INTDIR)\xetra.obj" \
@@ -3807,8 +3809,6 @@ LIB32_OBJS= \
 	"$(INTDIR)\scheduler.obj" \
 	"$(INTDIR)\stochasticprocess.obj" \
 	"$(INTDIR)\voltermstructure.obj" \
-	"$(INTDIR)\unitedkingdom.obj" \
-	"$(INTDIR)\unitedstates.obj" \
 	".\lib\QuantLibFunctions-vc6-s-0_3_7.lib"
 
 ".\lib\QuantLib-vc6-s-0_3_7.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
@@ -4225,6 +4225,8 @@ BSC32_SBRS= \
 	"$(INTDIR)\target.sbr" \
 	"$(INTDIR)\tokyo.sbr" \
 	"$(INTDIR)\toronto.sbr" \
+	"$(INTDIR)\unitedkingdom.sbr" \
+	"$(INTDIR)\unitedstates.sbr" \
 	"$(INTDIR)\warsaw.sbr" \
 	"$(INTDIR)\wellington.sbr" \
 	"$(INTDIR)\xetra.sbr" \
@@ -4379,9 +4381,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\grid.sbr" \
 	"$(INTDIR)\scheduler.sbr" \
 	"$(INTDIR)\stochasticprocess.sbr" \
-	"$(INTDIR)\voltermstructure.sbr" \
-	"$(INTDIR)\unitedkingdom.sbr" \
-	"$(INTDIR)\unitedstates.sbr"
+	"$(INTDIR)\voltermstructure.sbr"
 
 "$(OUTDIR)\QuantLib.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -4410,6 +4410,8 @@ LIB32_OBJS= \
 	"$(INTDIR)\target.obj" \
 	"$(INTDIR)\tokyo.obj" \
 	"$(INTDIR)\toronto.obj" \
+	"$(INTDIR)\unitedkingdom.obj" \
+	"$(INTDIR)\unitedstates.obj" \
 	"$(INTDIR)\warsaw.obj" \
 	"$(INTDIR)\wellington.obj" \
 	"$(INTDIR)\xetra.obj" \
@@ -4565,8 +4567,6 @@ LIB32_OBJS= \
 	"$(INTDIR)\scheduler.obj" \
 	"$(INTDIR)\stochasticprocess.obj" \
 	"$(INTDIR)\voltermstructure.obj" \
-	"$(INTDIR)\unitedkingdom.obj" \
-	"$(INTDIR)\unitedstates.obj" \
 	".\lib\QuantLibFunctions-vc6-sgd-0_3_7.lib"
 
 ".\lib\QuantLib-vc6-sgd-0_3_7.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)

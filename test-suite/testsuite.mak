@@ -173,13 +173,13 @@ BSC32_SBRS= \
 	"$(INTDIR)\quantooption.sbr" \
 	"$(INTDIR)\quotes.sbr" \
 	"$(INTDIR)\riskstats.sbr" \
+	"$(INTDIR)\rounding.sbr" \
 	"$(INTDIR)\solvers.sbr" \
 	"$(INTDIR)\stats.sbr" \
 	"$(INTDIR)\swap.sbr" \
 	"$(INTDIR)\swaption.sbr" \
 	"$(INTDIR)\termstructures.sbr" \
-	"$(INTDIR)\utilities.sbr" \
-	"$(INTDIR)\rounding.sbr"
+	"$(INTDIR)\utilities.sbr"
 
 "$(OUTDIR)\testsuite.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -220,13 +220,13 @@ LINK32_OBJS= \
 	"$(INTDIR)\quantooption.obj" \
 	"$(INTDIR)\quotes.obj" \
 	"$(INTDIR)\riskstats.obj" \
+	"$(INTDIR)\rounding.obj" \
 	"$(INTDIR)\solvers.obj" \
 	"$(INTDIR)\stats.obj" \
 	"$(INTDIR)\swap.obj" \
 	"$(INTDIR)\swaption.obj" \
 	"$(INTDIR)\termstructures.obj" \
 	"$(INTDIR)\utilities.obj" \
-	"$(INTDIR)\rounding.obj" \
 	"..\lib\QuantLib-vc6-mt-s-0_3_7.lib"
 
 "$(OUTDIR)\testsuite.exe" : "$(OUTDIR)" $(DEF_FILE) $(LINK32_OBJS)
@@ -394,13 +394,13 @@ BSC32_SBRS= \
 	"$(INTDIR)\quantooption.sbr" \
 	"$(INTDIR)\quotes.sbr" \
 	"$(INTDIR)\riskstats.sbr" \
+	"$(INTDIR)\rounding.sbr" \
 	"$(INTDIR)\solvers.sbr" \
 	"$(INTDIR)\stats.sbr" \
 	"$(INTDIR)\swap.sbr" \
 	"$(INTDIR)\swaption.sbr" \
 	"$(INTDIR)\termstructures.sbr" \
-	"$(INTDIR)\utilities.sbr" \
-	"$(INTDIR)\rounding.sbr"
+	"$(INTDIR)\utilities.sbr"
 
 "$(OUTDIR)\testsuite.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -441,13 +441,13 @@ LINK32_OBJS= \
 	"$(INTDIR)\quantooption.obj" \
 	"$(INTDIR)\quotes.obj" \
 	"$(INTDIR)\riskstats.obj" \
+	"$(INTDIR)\rounding.obj" \
 	"$(INTDIR)\solvers.obj" \
 	"$(INTDIR)\stats.obj" \
 	"$(INTDIR)\swap.obj" \
 	"$(INTDIR)\swaption.obj" \
 	"$(INTDIR)\termstructures.obj" \
 	"$(INTDIR)\utilities.obj" \
-	"$(INTDIR)\rounding.obj" \
 	"..\lib\QuantLib-vc6-mt-sgd-0_3_7.lib"
 
 "$(OUTDIR)\testsuite.exe" : "$(OUTDIR)" $(DEF_FILE) $(LINK32_OBJS)
@@ -614,13 +614,13 @@ BSC32_SBRS= \
 	"$(INTDIR)\quantooption.sbr" \
 	"$(INTDIR)\quotes.sbr" \
 	"$(INTDIR)\riskstats.sbr" \
+	"$(INTDIR)\rounding.sbr" \
 	"$(INTDIR)\solvers.sbr" \
 	"$(INTDIR)\stats.sbr" \
 	"$(INTDIR)\swap.sbr" \
 	"$(INTDIR)\swaption.sbr" \
 	"$(INTDIR)\termstructures.sbr" \
-	"$(INTDIR)\utilities.sbr" \
-	"$(INTDIR)\rounding.sbr"
+	"$(INTDIR)\utilities.sbr"
 
 "$(OUTDIR)\testsuite.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -661,13 +661,13 @@ LINK32_OBJS= \
 	"$(INTDIR)\quantooption.obj" \
 	"$(INTDIR)\quotes.obj" \
 	"$(INTDIR)\riskstats.obj" \
+	"$(INTDIR)\rounding.obj" \
 	"$(INTDIR)\solvers.obj" \
 	"$(INTDIR)\stats.obj" \
 	"$(INTDIR)\swap.obj" \
 	"$(INTDIR)\swaption.obj" \
 	"$(INTDIR)\termstructures.obj" \
 	"$(INTDIR)\utilities.obj" \
-	"$(INTDIR)\rounding.obj" \
 	"..\lib\QuantLib-vc6-mt-0_3_7.lib"
 
 "$(OUTDIR)\testsuite.exe" : "$(OUTDIR)" $(DEF_FILE) $(LINK32_OBJS)
@@ -835,13 +835,13 @@ BSC32_SBRS= \
 	"$(INTDIR)\quantooption.sbr" \
 	"$(INTDIR)\quotes.sbr" \
 	"$(INTDIR)\riskstats.sbr" \
+	"$(INTDIR)\rounding.sbr" \
 	"$(INTDIR)\solvers.sbr" \
 	"$(INTDIR)\stats.sbr" \
 	"$(INTDIR)\swap.sbr" \
 	"$(INTDIR)\swaption.sbr" \
 	"$(INTDIR)\termstructures.sbr" \
-	"$(INTDIR)\utilities.sbr" \
-	"$(INTDIR)\rounding.sbr"
+	"$(INTDIR)\utilities.sbr"
 
 "$(OUTDIR)\testsuite.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -882,13 +882,13 @@ LINK32_OBJS= \
 	"$(INTDIR)\quantooption.obj" \
 	"$(INTDIR)\quotes.obj" \
 	"$(INTDIR)\riskstats.obj" \
+	"$(INTDIR)\rounding.obj" \
 	"$(INTDIR)\solvers.obj" \
 	"$(INTDIR)\stats.obj" \
 	"$(INTDIR)\swap.obj" \
 	"$(INTDIR)\swaption.obj" \
 	"$(INTDIR)\termstructures.obj" \
 	"$(INTDIR)\utilities.obj" \
-	"$(INTDIR)\rounding.obj" \
 	"..\lib\QuantLib-vc6-mt-gd-0_3_7.lib"
 
 "$(OUTDIR)\testsuite.exe" : "$(OUTDIR)" $(DEF_FILE) $(LINK32_OBJS)
@@ -1053,13 +1053,13 @@ BSC32_SBRS= \
 	"$(INTDIR)\quantooption.sbr" \
 	"$(INTDIR)\quotes.sbr" \
 	"$(INTDIR)\riskstats.sbr" \
+	"$(INTDIR)\rounding.sbr" \
 	"$(INTDIR)\solvers.sbr" \
 	"$(INTDIR)\stats.sbr" \
 	"$(INTDIR)\swap.sbr" \
 	"$(INTDIR)\swaption.sbr" \
 	"$(INTDIR)\termstructures.sbr" \
-	"$(INTDIR)\utilities.sbr" \
-	"$(INTDIR)\rounding.sbr"
+	"$(INTDIR)\utilities.sbr"
 
 "$(OUTDIR)\testsuite.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -1100,13 +1100,13 @@ LINK32_OBJS= \
 	"$(INTDIR)\quantooption.obj" \
 	"$(INTDIR)\quotes.obj" \
 	"$(INTDIR)\riskstats.obj" \
+	"$(INTDIR)\rounding.obj" \
 	"$(INTDIR)\solvers.obj" \
 	"$(INTDIR)\stats.obj" \
 	"$(INTDIR)\swap.obj" \
 	"$(INTDIR)\swaption.obj" \
 	"$(INTDIR)\termstructures.obj" \
 	"$(INTDIR)\utilities.obj" \
-	"$(INTDIR)\rounding.obj" \
 	"..\lib\QuantLib-vc6-s-0_3_7.lib"
 
 "$(OUTDIR)\testsuite.exe" : "$(OUTDIR)" $(DEF_FILE) $(LINK32_OBJS)
@@ -1274,13 +1274,13 @@ BSC32_SBRS= \
 	"$(INTDIR)\quantooption.sbr" \
 	"$(INTDIR)\quotes.sbr" \
 	"$(INTDIR)\riskstats.sbr" \
+	"$(INTDIR)\rounding.sbr" \
 	"$(INTDIR)\solvers.sbr" \
 	"$(INTDIR)\stats.sbr" \
 	"$(INTDIR)\swap.sbr" \
 	"$(INTDIR)\swaption.sbr" \
 	"$(INTDIR)\termstructures.sbr" \
-	"$(INTDIR)\utilities.sbr" \
-	"$(INTDIR)\rounding.sbr"
+	"$(INTDIR)\utilities.sbr"
 
 "$(OUTDIR)\testsuite.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -1321,13 +1321,13 @@ LINK32_OBJS= \
 	"$(INTDIR)\quantooption.obj" \
 	"$(INTDIR)\quotes.obj" \
 	"$(INTDIR)\riskstats.obj" \
+	"$(INTDIR)\rounding.obj" \
 	"$(INTDIR)\solvers.obj" \
 	"$(INTDIR)\stats.obj" \
 	"$(INTDIR)\swap.obj" \
 	"$(INTDIR)\swaption.obj" \
 	"$(INTDIR)\termstructures.obj" \
 	"$(INTDIR)\utilities.obj" \
-	"$(INTDIR)\rounding.obj" \
 	"..\lib\QuantLib-vc6-sgd-0_3_7.lib"
 
 "$(OUTDIR)\testsuite.exe" : "$(OUTDIR)" $(DEF_FILE) $(LINK32_OBJS)
@@ -1587,72 +1587,72 @@ SOURCE=.\utilities.cpp
 !IF  "$(CFG)" == "testsuite - Win32 Release"
 
 "QuantLib - Win32 Release" : 
-   cd "\Projects\QuantLib"
+   cd "\Projects\QuantLib\Trunk\QuantLib"
    $(MAKE) /$(MAKEFLAGS) /F .\QuantLib.mak CFG="QuantLib - Win32 Release" 
    cd ".\test-suite"
 
 "QuantLib - Win32 ReleaseCLEAN" : 
-   cd "\Projects\QuantLib"
+   cd "\Projects\QuantLib\Trunk\QuantLib"
    $(MAKE) /$(MAKEFLAGS) /F .\QuantLib.mak CFG="QuantLib - Win32 Release" RECURSE=1 CLEAN 
    cd ".\test-suite"
 
 !ELSEIF  "$(CFG)" == "testsuite - Win32 Debug"
 
 "QuantLib - Win32 Debug" : 
-   cd "\Projects\QuantLib"
+   cd "\Projects\QuantLib\Trunk\QuantLib"
    $(MAKE) /$(MAKEFLAGS) /F .\QuantLib.mak CFG="QuantLib - Win32 Debug" 
    cd ".\test-suite"
 
 "QuantLib - Win32 DebugCLEAN" : 
-   cd "\Projects\QuantLib"
+   cd "\Projects\QuantLib\Trunk\QuantLib"
    $(MAKE) /$(MAKEFLAGS) /F .\QuantLib.mak CFG="QuantLib - Win32 Debug" RECURSE=1 CLEAN 
    cd ".\test-suite"
 
 !ELSEIF  "$(CFG)" == "testsuite - Win32 Release MTDLL"
 
 "QuantLib - Win32 Release MTDLL" : 
-   cd "\Projects\QuantLib"
+   cd "\Projects\QuantLib\Trunk\QuantLib"
    $(MAKE) /$(MAKEFLAGS) /F .\QuantLib.mak CFG="QuantLib - Win32 Release MTDLL" 
    cd ".\test-suite"
 
 "QuantLib - Win32 Release MTDLLCLEAN" : 
-   cd "\Projects\QuantLib"
+   cd "\Projects\QuantLib\Trunk\QuantLib"
    $(MAKE) /$(MAKEFLAGS) /F .\QuantLib.mak CFG="QuantLib - Win32 Release MTDLL" RECURSE=1 CLEAN 
    cd ".\test-suite"
 
 !ELSEIF  "$(CFG)" == "testsuite - Win32 Debug MTDLL"
 
 "QuantLib - Win32 Debug MTDLL" : 
-   cd "\Projects\QuantLib"
+   cd "\Projects\QuantLib\Trunk\QuantLib"
    $(MAKE) /$(MAKEFLAGS) /F .\QuantLib.mak CFG="QuantLib - Win32 Debug MTDLL" 
    cd ".\test-suite"
 
 "QuantLib - Win32 Debug MTDLLCLEAN" : 
-   cd "\Projects\QuantLib"
+   cd "\Projects\QuantLib\Trunk\QuantLib"
    $(MAKE) /$(MAKEFLAGS) /F .\QuantLib.mak CFG="QuantLib - Win32 Debug MTDLL" RECURSE=1 CLEAN 
    cd ".\test-suite"
 
 !ELSEIF  "$(CFG)" == "testsuite - Win32 Release SingleThread"
 
 "QuantLib - Win32 Release SingleThread" : 
-   cd "\Projects\QuantLib"
+   cd "\Projects\QuantLib\Trunk\QuantLib"
    $(MAKE) /$(MAKEFLAGS) /F .\QuantLib.mak CFG="QuantLib - Win32 Release SingleThread" 
    cd ".\test-suite"
 
 "QuantLib - Win32 Release SingleThreadCLEAN" : 
-   cd "\Projects\QuantLib"
+   cd "\Projects\QuantLib\Trunk\QuantLib"
    $(MAKE) /$(MAKEFLAGS) /F .\QuantLib.mak CFG="QuantLib - Win32 Release SingleThread" RECURSE=1 CLEAN 
    cd ".\test-suite"
 
 !ELSEIF  "$(CFG)" == "testsuite - Win32 Debug SingleThread"
 
 "QuantLib - Win32 Debug SingleThread" : 
-   cd "\Projects\QuantLib"
+   cd "\Projects\QuantLib\Trunk\QuantLib"
    $(MAKE) /$(MAKEFLAGS) /F .\QuantLib.mak CFG="QuantLib - Win32 Debug SingleThread" 
    cd ".\test-suite"
 
 "QuantLib - Win32 Debug SingleThreadCLEAN" : 
-   cd "\Projects\QuantLib"
+   cd "\Projects\QuantLib\Trunk\QuantLib"
    $(MAKE) /$(MAKEFLAGS) /F .\QuantLib.mak CFG="QuantLib - Win32 Debug SingleThread" RECURSE=1 CLEAN 
    cd ".\test-suite"
 

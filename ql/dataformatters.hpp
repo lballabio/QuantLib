@@ -55,6 +55,7 @@ namespace QuantLib {
     };
 
 
+    #ifndef QL_PATCH_MICROSOFT
     /*! \relates Array */
     std::ostream& operator<< (std::ostream&,
                               const Array&);
@@ -62,6 +63,7 @@ namespace QuantLib {
     /*! \relates Matrix */
     std::ostream& operator<< (std::ostream&,
                               const Matrix&);
+    #endif
 
 }
 

@@ -242,7 +242,8 @@ int main(int, char* [])
 
         calibrateModel(modelHW, swaptions, 0.05);
         std::cout << "calibrated to "
-                  << modelHW->params()
+                  << "a = " << modelHW->params()[0] << ", "
+                  << "sigma = " << modelHW->params()[1]
                   << std::endl
                   << std::endl;
 
@@ -253,7 +254,8 @@ int main(int, char* [])
 
         calibrateModel(modelHW2, swaptions, 0.05);
         std::cout << "calibrated to "
-                  << modelHW2->params()
+                  << "a = " << modelHW2->params()[0] << ", "
+                  << "sigma = " << modelHW2->params()[1]
                   << std::endl
                   << std::endl;
 
@@ -264,7 +266,8 @@ int main(int, char* [])
 
         calibrateModel(modelBK, swaptions, 0.05);
         std::cout << "calibrated to "
-                  << modelBK->params()
+                  << "a = " << modelBK->params()[0] << ", "
+                  << "sigma = " << modelBK->params()[1]
                   << std::endl
                   << std::endl;
 

@@ -25,7 +25,7 @@
 
 namespace QuantLib {
 
-
+    #ifndef QL_PATCH_MICROSOFT
     std::ostream& operator<< (std::ostream& stream, const Array& a) {
         return stream << ArrayFormatter::toString(a.begin(), a.end());
     }
@@ -39,6 +39,6 @@ namespace QuantLib {
         }
         return stream;
     }
-
+    #endif
 
 }
