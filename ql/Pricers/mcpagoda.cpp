@@ -90,7 +90,7 @@ namespace QuantLib {
         for (Size i=0; i<n; i++) {
             RelinkableHandle<Quote> u(
                     boost::shared_ptr<Quote>(new SimpleQuote(underlying[i])));
-            processes[i] = Handle<DiffusionProcess>(
+            processes[i] = boost::shared_ptr<DiffusionProcess>(
                                     new BlackScholesProcess(u, 
                                                             dividendYield[i],
                                                             riskFreeRate, 

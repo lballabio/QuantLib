@@ -47,7 +47,8 @@ namespace QuantLib {
             double qDiscount = QL_EXP(-dividendYield[i] * dt);
             double forward = (1.0/moneyness)*qDiscount/rDiscount;
             double variance = volatility[i]*volatility[i]*dt;
-            Handle<StrikedTypePayoff> payoff(new PlainVanillaPayoff(type,1.0));
+            boost::shared_ptr<StrikedTypePayoff> payoff(new
+                PlainVanillaPayoff(type,1.0));
             BlackFormula black(forward, rDiscount, variance, payoff);
             value_ += discount * moneyness * black.value();
             delta_ += 0.0;
