@@ -128,7 +128,7 @@ namespace QuantLib {
                      new ExtendedDiscountCurve(todaysDate_, dates_, discounts,
                                                calendar_, roll_, dayCounter_));
         }
-        catch (std::exception& e) {
+        catch (std::exception& ) {
             // signal incomplete state
             needsBootstrap_ = true;
             // rethrow

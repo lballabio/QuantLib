@@ -28,9 +28,9 @@ QL_LIB_DIR       = "$(QL_DIR)\lib"
 CC_OPTS = -vi- -I$(QL_INCLUDE_DIR)
 
 !ifdef _DEBUG
-CC_OPTS = $(CC_OPTS) -v -D_DEBUG
+    CC_OPTS = $(CC_OPTS) -v -D_DEBUG
 !else
-CC_OPTS = $(CC_OPTS) -O2 -DNDEBUG
+    CC_OPTS = $(CC_OPTS) -O2 -DNDEBUG
 !endif
 
 !ifdef __MT__
@@ -42,7 +42,7 @@ CC_OPTS = $(CC_OPTS) -O2 -DNDEBUG
 !endif
 
 !ifdef SAFE
-CC_OPTS = $(CC_OPTS) -DQL_EXTRA_SAFETY_CHECKS
+    CC_OPTS = $(CC_OPTS) -DQL_EXTRA_SAFETY_CHECKS
 !endif
 
 # Primary target:

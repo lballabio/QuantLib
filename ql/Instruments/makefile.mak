@@ -28,6 +28,7 @@ OBJS = \
     "barrieroption.obj$(_mt)$(_D)" \
     "basketoption.obj$(_mt)$(_D)" \
     "capfloor.obj$(_mt)$(_D)" \
+    "dividendvanillaoption.obj$(_mt)$(_D)" \
     "europeanoption.obj$(_mt)$(_D)" \
     "forwardvanillaoption.obj$(_mt)$(_D)" \
     "multiassetoption.obj$(_mt)$(_D)" \
@@ -49,9 +50,9 @@ TLIB      = tlib
 CC_OPTS = -vi- -q -c -I$(INCLUDE_DIR)
 
 !ifdef _DEBUG
-CC_OPTS = $(CC_OPTS) -v -D_DEBUG
+    CC_OPTS = $(CC_OPTS) -v -D_DEBUG
 !else
-CC_OPTS = $(CC_OPTS) -O2 -DNDEBUG
+    CC_OPTS = $(CC_OPTS) -O2 -DNDEBUG
 !endif
 
 !ifdef _RTLDLL
@@ -63,7 +64,7 @@ CC_OPTS = $(CC_OPTS) -O2 -DNDEBUG
 !endif
 
 !ifdef SAFE
-CC_OPTS = $(CC_OPTS) -DQL_EXTRA_SAFETY_CHECKS
+    CC_OPTS = $(CC_OPTS) -DQL_EXTRA_SAFETY_CHECKS
 !endif
 
 TLIB_OPTS    = /P128

@@ -41,7 +41,6 @@ CALENDAR_LIB         = "Calendars\Calendars$(_mt)$(_D).lib"
 CASHFLOWS_LIB        = "CashFlows\CashFlows$(_mt)$(_D).lib"
 DAYCOUNTER_LIB       = "DayCounters\DayCounters$(_mt)$(_D).lib"
 FDM_LIB              = "FiniteDifferences\FiniteDifferences$(_mt)$(_D).lib"
-FUNCTIONS            = "functions\functions$(_mt)$(_D).lib"
 INDEXES_LIB          = "Indexes\Indexes$(_mt)$(_D).lib"
 INSTRUMENTS_LIB      = "Instruments\Instruments$(_mt)$(_D).lib"
 LATTICES_LIB         = "Lattices\Lattices$(_mt)$(_D).lib"
@@ -58,11 +57,11 @@ VANILLA_ENGINES_LIB  = "PricingEngines\Vanilla\VanillaEngines$(_mt)$(_D).lib"
 RNG_LIB              = "RandomNumbers\RandomNumbers$(_mt)$(_D).lib"
 SHORTRATEMODELS_LIB  = "ShortRateModels\ShortRateModels$(_mt)$(_D).lib"
 CALIBRATION_LIB      = \
-                "ShortRateModels\CalibrationHelpers\CalibrationHelpers$(_mt)$(_D).lib"
+         "ShortRateModels\CalibrationHelpers\CalibrationHelpers$(_mt)$(_D).lib"
 ONEFACTOR_LIB        = \
-                "ShortRateModels\OneFactorModels\OneFactorModels$(_mt)$(_D).lib"
+         "ShortRateModels\OneFactorModels\OneFactorModels$(_mt)$(_D).lib"
 TWOFACTOR_LIB        = \
-                "ShortRateModels\TwoFactorModels\TwoFactorModels$(_mt)$(_D).lib"
+         "ShortRateModels\TwoFactorModels\TwoFactorModels$(_mt)$(_D).lib"
 TERMSTRUCT_LIB       = "TermStructures\TermStructures$(_mt)$(_D).lib"
 VOLATILITY_LIB       = "Volatilities\Volatilities$(_mt)$(_D).lib"
 
@@ -73,7 +72,6 @@ QUANTLIB_OBJS = \
     $(CORE_OBJS) \
     $(DAYCOUNTER_LIB) \
     $(FDM_LIB) \
-    $(FUNCTIONS) \
     $(INDEXES_LIB) \
     $(INSTRUMENTS_LIB) \
     $(SHORTRATEMODELS_LIB) \
@@ -168,8 +166,6 @@ SubLibraries:
     $(MAKE)
     cd ..\FiniteDifferences
     $(MAKE)
-    cd ..\functions
-    $(MAKE)
     cd ..\Indexes
     $(MAKE)
     cd ..\Instruments
@@ -223,8 +219,6 @@ clean::
     cd ..\DayCounters
     $(MAKE) clean
     cd ..\FiniteDifferences
-    $(MAKE) clean
-    cd ..\functions
     $(MAKE) clean
     cd ..\Indexes
     $(MAKE) clean

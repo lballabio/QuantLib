@@ -19,7 +19,9 @@
 !endif
 
 # Directories
+QL_INCLUDE_DIR = "$(QL_DIR)"
 INCLUDE_DIR    = ..\..
+OUTPUT_DIR     = ..\..\..\lib
 
 # Object files
 OBJS = \
@@ -34,12 +36,12 @@ TLIB      = tlib
 
 
 # Options
-CC_OPTS        = -vi- -q -c -I$(INCLUDE_DIR)
+CC_OPTS        = -vi- -q -c -I$(INCLUDE_DIR) -I$(QL_INCLUDE_DIR)
 
 !ifdef _DEBUG
-CC_OPTS = $(CC_OPTS) -v -D_DEBUG
+    CC_OPTS = $(CC_OPTS) -v -D_DEBUG
 !else
-CC_OPTS = $(CC_OPTS) -O2 -DNDEBUG
+    CC_OPTS = $(CC_OPTS) -O2 -DNDEBUG
 !endif
 
 !ifdef _RTLDLL
@@ -51,12 +53,12 @@ CC_OPTS = $(CC_OPTS) -O2 -DNDEBUG
 !endif
 
 !ifdef SAFE
-CC_OPTS = $(CC_OPTS) -DQL_EXTRA_SAFETY_CHECKS
+    CC_OPTS = $(CC_OPTS) -DQL_EXTRA_SAFETY_CHECKS
 !endif
 
-TLIB_OPTS    = /P128
+TLIB_OPTS    = /P32
 !ifdef _DEBUG
-TLIB_OPTS    = /P128
+TLIB_OPTS    = /P64
 !endif
 
 # Generic rules
@@ -67,13 +69,14 @@ TLIB_OPTS    = /P128
 
 # Primary target:
 # static library
-functions$(_mt)$(_D).lib:: $(OBJS)
-    if exist functions$(_mt)$(_D).lib     del functions$(_mt)$(_D).lib
-    $(TLIB) $(TLIB_OPTS) "functions$(_mt)$(_D).lib" /a $(OBJS)
+$(OUTPUT_DIR)\QuantLibFunctions-bcb$(_mt)$(_D)-0_3_6.lib:: $(OUTPUT_DIR) $(OBJS)
+    if exist $(OUTPUT_DIR)\QuantLibFunctions-bcb$(_mt)$(_D)-0_3_6.lib \
+         del $(OUTPUT_DIR)\QuantLibFunctions-bcb$(_mt)$(_D)-0_3_6.lib
+    $(TLIB) $(TLIB_OPTS) \
+            "$(OUTPUT_DIR)\QuantLibFunctions$(_mt)$(_D)-0_3_6.lib" /a $(OBJS)
 
-
-
-
+$(OUTPUT_DIR):
+    if not exist ..\..\..\lib md ..\..\..\lib
 
 # Clean up
 clean::

@@ -1140,6 +1140,9 @@
 				</FileConfiguration>
 			</File>
 			<File
+				RelativePath=".\dividendeuropeanoption.cpp">
+			</File>
+			<File
 				RelativePath="europeanoption.cpp">
 				<FileConfiguration
 					Name="Debug|Win32">
@@ -2438,6 +2441,9 @@
 			</File>
 			<File
 				RelativePath="distributions.hpp">
+			</File>
+			<File
+				RelativePath=".\dividendeuropeanoption.hpp">
 			</File>
 			<File
 				RelativePath="europeanoption.hpp">
