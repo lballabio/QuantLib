@@ -142,13 +142,13 @@ clean::
     if exist quantlib_wrap.obj      del quantlib_wrap.obj
     if exist quantlib_wrap_d.obj    del quantlib_wrap_d.obj
     if exist QuantLibc.dll          del QuantLibc.dll
+    if exist QuantLibc.tds          del QuantLibc.tds
     if exist QuantLibc_d.dll        del QuantLibc_d.dll
+    if exist QuantLibc_d.tds        del QuantLibc_d.tds
     if exist QuantLibc_d.ilc        del QuantLibc_d.ilc
     if exist QuantLibc_d.ild        del QuantLibc_d.ild
     if exist QuantLibc_d.ilf        del QuantLibc_d.ilf
     if exist QuantLibc_d.ils        del QuantLibc_d.ils
-    if exist QuantLibc.tds          del QuantLibc.tds
-    if exist QuantLibc_d.tds        del QuantLibc_d.tds
     cd Tests
     if exist *.pyc              del *.pyc
 
