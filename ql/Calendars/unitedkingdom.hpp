@@ -38,7 +38,7 @@ namespace QuantLib {
         <li>Early May Bank Holiday, first Monday of May</li>
         <li>Spring Bank Holiday, last Monday of May</li>
         <li>Summer Bank Holiday, last Monday of August</li>
-        <li>Christmas Day, December 25th (possibly moved to Monday or 
+        <li>Christmas Day, December 25th (possibly moved to Monday or
             Tuesday)</li>
         <li>Boxing Day, December 26th (possibly moved to Monday or
             Tuesday)</li>
@@ -54,7 +54,7 @@ namespace QuantLib {
         <li>Early May Bank Holiday, first Monday of May</li>
         <li>Spring Bank Holiday, last Monday of May</li>
         <li>Summer Bank Holiday, last Monday of August</li>
-        <li>Christmas Day, December 25th (possibly moved to Monday or 
+        <li>Christmas Day, December 25th (possibly moved to Monday or
             Tuesday)</li>
         <li>Boxing Day, December 26th (possibly moved to Monday or
             Tuesday)</li>
@@ -70,13 +70,15 @@ namespace QuantLib {
         <li>Early May Bank Holiday, first Monday of May</li>
         <li>Spring Bank Holiday, last Monday of May</li>
         <li>Summer Bank Holiday, last Monday of August</li>
-        <li>Christmas Day, December 25th (possibly moved to Monday or 
+        <li>Christmas Day, December 25th (possibly moved to Monday or
             Tuesday)</li>
         <li>Boxing Day, December 26th (possibly moved to Monday or
             Tuesday)</li>
         </ul>
 
         \ingroup calendars
+
+        \todo add LIFFE
     */
     class UnitedKingdom : public Calendar {
       private:
