@@ -61,7 +61,7 @@ namespace QuantLib {
             results_.rho = originalResults_->rho +
                 originalResults_->dividendRho;
             results_.dividendRho = originalResults_->dividendRho;
-            // exchangeRtae level needed here!!!!!
+            // exchangeRate level needed here!!!!!
             double exchangeRateFlatVol = arguments_.exchRateVolTS->blackVol(
                 arguments_.exercise.date(), arguments_.underlying);
             results_.vega = originalResults_->vega +
