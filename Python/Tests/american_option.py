@@ -25,6 +25,9 @@
 """ 
     $Source$
     $Log$
+    Revision 1.8  2001/03/02 15:44:03  lballabio
+    Cosmetic change
+
     Revision 1.7  2001/03/02 14:37:03  marmar
     Shout option included in tests
 
@@ -187,5 +190,5 @@ class AmericanOptionTest(TestUnit):
 
 
 if __name__ == '__main__':
-    AmericanOptionTest().test("StepConditionOption's")
+    AmericanOptionTest().test("step condition options")
 
