@@ -54,7 +54,8 @@ namespace QuantLib {
 
         results_.value = black.value();
         results_.delta = black.delta();
-        // results_.deltaForward = black.value();
+        results_.deltaForward = black.deltaForward();
+        results_.elasticity = black.elasticity();
         results_.gamma = black.gamma();
 
         Time t = arguments_.riskFreeTS->dayCounter().yearFraction(
@@ -72,8 +73,10 @@ namespace QuantLib {
             arguments_.exercise->lastDate());
         results_.vega = black.vega(t);
         results_.theta = black.theta(t);
+        results_.thetaPerDay = black.thetaPerDay(t);
 
         results_.strikeSensitivity = black.strikeSensitivity();
+        results_.itmProbability = black.itmProbability();
     }
 
 }
