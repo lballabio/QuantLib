@@ -21,7 +21,9 @@ This version number is in:
 
     QuantLib-SWIG/SWIG/ql.i
     QuantLib-SWIG/Python/setup.py
+    QuantLib-SWIG/Python/QuantLib-Python.spec
     QuantLib-SWIG/Ruby/setup.rb
+    QuantLib-SWIG/Ruby/QuantLib-Ruby.spec
     QuantLib-SWIG/MzScheme/setup.scm
     QuantLib-SWIG/Guile/setup.scm
 
