@@ -26,6 +26,7 @@
 class DateTest {
   public:
     static void testConsistency();
+    static void immDates();
     static boost::unit_test_framework::test_suite* suite();
 };
 

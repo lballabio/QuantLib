@@ -1,5 +1,6 @@
 
 /*
+ Copyright (C) 2004 Ferdinando Ametrano
  Copyright (C) 2003 RiskMap srl
 
  This file is part of QuantLib, a free-software/open-source library
@@ -21,6 +22,29 @@
 
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
+
+void DateTest::immDates() {
+    BOOST_MESSAGE("Testing IMM dates...");
+
+    Date counter = Date::minDate();
+    Date last = Date::maxDate().plusYears(-1);
+    Date imm;
+
+    while (counter<last) {
+        counter = counter.plusDays(1);
+        imm = counter.nextIMM();
+        Day d = imm.dayOfMonth();
+        Weekday w = imm.weekday();
+        Month m = imm.month();
+        if (!(d >= 15 && d <= 21) && (w == Wednesday) &&
+             (m == March || m == June || m == September || m == December) &&
+             (imm>=counter))
+            BOOST_FAIL(WeekdayFormatter::toString(imm) + " "
+                       + DateFormatter::toString(imm) +
+                       "is not the next IMM date for "
+                       + DateFormatter::toString(counter));
+    }
+}
 
 void DateTest::testConsistency() {
 
@@ -138,6 +162,7 @@ void DateTest::testConsistency() {
 test_suite* DateTest::suite() {
     test_suite* suite = BOOST_TEST_SUITE("Date tests");
     suite->add(BOOST_TEST_CASE(&DateTest::testConsistency));
+    suite->add(BOOST_TEST_CASE(&DateTest::immDates));
     return suite;
 }
 
