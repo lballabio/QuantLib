@@ -190,9 +190,11 @@ namespace QuantLib {
 
 
     std::string MoneyFormatter::toString(const Money& m) {
-        std::ostringstream s;
-        s << m.currency().code() << " " << m.rounded().value();
-        return s.str();
+        boost::format fmt = m.currency().format();
+        fmt % m.rounded().value()
+            % m.currency().code()
+            % m.currency().symbol();
+        return boost::io::str(fmt);
     }
 
 }

@@ -42,7 +42,7 @@ namespace QuantLib {
                                          new Data("Bulgarian lev", "BGL", 100,
                                                   "", "", 100,
                                                   Rounding(),
-                                                  Currency()));
+                                                  "%1$.2f %3%"));
             data_ = bglData;
         }
     };
@@ -60,7 +60,7 @@ namespace QuantLib {
                                      new Data("Belarussian ruble", "BYR", 974,
                                               "BR", "", 1,
                                               Rounding(),
-                                              Currency()));
+                                              "%2% %1$.0f"));
             data_ = byrData;
         }
     };
@@ -78,7 +78,7 @@ namespace QuantLib {
                                            new Data("Swiss franc", "CHF", 756,
                                                     "SwF", "", 100,
                                                     Rounding(),
-                                                    Currency()));
+                                                    "%3% %1$.2f"));
             data_ = chfData;
         }
     };
@@ -96,7 +96,7 @@ namespace QuantLib {
                                           new Data("Cyprus pound", "CYP", 196,
                                                    "\xA3" "C", "", 100,
                                                    Rounding(),
-                                                   Currency()));
+                                                   "%3% %1$.2f"));
             data_ = cypData;
         }
     };
@@ -114,7 +114,7 @@ namespace QuantLib {
                                           new Data("Czech koruna", "CZK", 203,
                                                    "Kc", "", 100,
                                                    Rounding(),
-                                                   Currency()));
+                                                   "%1$.2f %3%"));
             data_ = czkData;
         }
     };
@@ -132,7 +132,7 @@ namespace QuantLib {
                                           new Data("Danish krone", "DKK", 208,
                                                    "Dkr", "", 100,
                                                    Rounding(),
-                                                   Currency()));
+                                                   "%3% %1$.2f"));
             data_ = dkkData;
         }
     };
@@ -150,7 +150,7 @@ namespace QuantLib {
                                         new Data("Estonian kroon", "EEK", 233,
                                                  "KR", "", 100,
                                                  Rounding(),
-                                                 Currency()));
+                                                 "%1$.2f %2%"));
             data_ = eekData;
         }
     };
@@ -168,7 +168,7 @@ namespace QuantLib {
                                          new Data("European Euro", "EUR", 978,
                                                   "", "", 100,
                                                   ClosestRounding(2),
-                                                  Currency()));
+                                                  "%2% %1$.2f"));
             data_ = eurData;
         }
     };
@@ -186,7 +186,7 @@ namespace QuantLib {
                                 new Data("British pound sterling", "GBP", 826,
                                          "\xA3", "p", 100,
                                          Rounding(),
-                                         Currency()));
+                                         "%3% %1$.2f"));
             data_ = gbpData;
         }
     };
@@ -204,7 +204,7 @@ namespace QuantLib {
                                       new Data("Hungarian forint", "HUF", 348,
                                                "Ft", "", 1,
                                                Rounding(),
-                                               Currency()));
+                                               "%1$.0f %3%"));
             data_ = hufData;
         }
     };
@@ -222,7 +222,7 @@ namespace QuantLib {
                                          new Data("Iceland krona", "ISK", 352,
                                                   "IKr", "", 100,
                                                   Rounding(),
-                                                  Currency()));
+                                                  "%1$.2f %3%"));
             data_ = iskData;
         }
     };
@@ -240,7 +240,7 @@ namespace QuantLib {
                                       new Data("Lithuanian litas", "LTL", 440,
                                                "", "", 100,
                                                Rounding(),
-                                               Currency()));
+                                               "%1$.2f %3%"));
             data_ = ltlData;
         }
     };
@@ -258,7 +258,7 @@ namespace QuantLib {
                                            new Data("Latvian lat", "LVL", 428,
                                                     "Ls", "", 100,
                                                     Rounding(),
-                                                    Currency()));
+                                                    "%3% %1$.2f"));
             data_ = lvlData;
         }
     };
@@ -276,7 +276,7 @@ namespace QuantLib {
                                           new Data("Maltese lira", "MTL", 470,
                                                    "Lm", "", 100,
                                                    Rounding(),
-                                                   Currency()));
+                                                   "%3% %1$.2f"));
             data_ = mtlData;
         }
     };
@@ -294,7 +294,7 @@ namespace QuantLib {
                                        new Data("Norwegian krone", "NOK", 578,
                                                 "NKr", "", 100,
                                                 Rounding(),
-                                                Currency()));
+                                                "%3% %1$.2f"));
             data_ = nokData;
         }
     };
@@ -310,9 +310,9 @@ namespace QuantLib {
         PLNCurrency() {
             static boost::shared_ptr<Data> plnData(
                                           new Data("Polish zloty", "PLN", 985,
-                                                   "", "", 100,
+                                                   "zl", "", 100,
                                                    Rounding(),
-                                                   Currency()));
+                                                   "%1$.2f %3%"));
             data_ = plnData;
         }
     };
@@ -330,7 +330,7 @@ namespace QuantLib {
                                           new Data("Romanian leu", "ROL", 642,
                                                    "L", "", 100,
                                                    Rounding(),
-                                                   Currency()));
+                                                   "%1$.2f %3%"));
             data_ = rolData;
         }
     };
@@ -348,7 +348,7 @@ namespace QuantLib {
                                          new Data("Swedish krona", "SEK", 752,
                                                   "kr", "", 100,
                                                   Rounding(),
-                                                  Currency()));
+                                                  "%1$.2f %3%"));
             data_ = sekData;
         }
     };
@@ -366,7 +366,7 @@ namespace QuantLib {
                                        new Data("Slovenian tolar", "SIT", 705,
                                                 "SlT", "", 100,
                                                 Rounding(),
-                                                Currency()));
+                                                "%1$.2f %3%"));
             data_ = sitData;
         }
     };
@@ -384,7 +384,7 @@ namespace QuantLib {
                                          new Data("Slovak koruna", "SKK", 703,
                                                   "Sk", "", 100,
                                                   Rounding(),
-                                                  Currency()));
+                                                  "%1$.2f %3%"));
             data_ = skkData;
         }
     };
@@ -402,7 +402,7 @@ namespace QuantLib {
                                           new Data("Turkish lira", "TRL", 792,
                                                    "TL", "", 100,
                                                    Rounding(),
-                                                   Currency()));
+                                                   "%1$.0f %3%"));
             data_ = trlData;
         }
     };
@@ -423,6 +423,7 @@ namespace QuantLib {
                                       new Data("Austrian shilling", "ATS", 40,
                                                "", "", 100,
                                                Rounding(),
+                                               "%2% %1$.2f",
                                                EURCurrency()));
             data_ = atsData;
         }
@@ -441,6 +442,7 @@ namespace QuantLib {
                                           new Data("Belgian franc", "BEF", 56,
                                                    "", "", 1,
                                                    Rounding(),
+                                                   "%2% %1$.0f",
                                                    EURCurrency()));
             data_ = befData;
         }
@@ -457,8 +459,9 @@ namespace QuantLib {
         DEMCurrency() {
             static boost::shared_ptr<Data> demData(
                                          new Data("Deutsche mark", "DEM", 276,
-                                                  "", "", 100,
+                                                  "DM", "", 100,
                                                   Rounding(),
+                                                  "%1$.2f %3%",
                                                   EURCurrency()));
             data_ = demData;
         }
@@ -475,8 +478,9 @@ namespace QuantLib {
         ESPCurrency() {
             static boost::shared_ptr<Data> espData(
                                         new Data("Spanish peseta", "ESP", 724,
-                                                 "", "", 100,
+                                                 "Pta", "", 100,
                                                  Rounding(),
+                                                 "%1$.0f %3%",
                                                  EURCurrency()));
             data_ = espData;
         }
@@ -493,8 +497,9 @@ namespace QuantLib {
         FIMCurrency() {
             static boost::shared_ptr<Data> fimData(
                                         new Data("Finnish markka", "FIM", 246,
-                                                 "", "", 100,
+                                                 "mk", "", 100,
                                                  Rounding(),
+                                                 "%1$.2f %3%",
                                                  EURCurrency()));
             data_ = fimData;
         }
@@ -513,6 +518,7 @@ namespace QuantLib {
                                           new Data("French franc", "FRF", 250,
                                                    "", "", 100,
                                                    Rounding(),
+                                                   "%1$.2f %2%",
                                                    EURCurrency()));
             data_ = frfData;
         }
@@ -531,6 +537,7 @@ namespace QuantLib {
                                          new Data("Greek drachma", "GRD", 300,
                                                   "", "", 100,
                                                   Rounding(),
+                                                  "%1$.2f %2%",
                                                   EURCurrency()));
             data_ = grdData;
         }
@@ -549,6 +556,7 @@ namespace QuantLib {
                                             new Data("Irish punt", "IEP", 372,
                                                      "", "", 100,
                                                      Rounding(),
+                                                     "%2% %1$.2f",
                                                      EURCurrency()));
             data_ = iepData;
         }
@@ -567,6 +575,7 @@ namespace QuantLib {
                                           new Data("Italian lira", "ITL", 380,
                                                    "L", "", 1,
                                                    Rounding(),
+                                                   "%3% %1$.0f",
                                                    EURCurrency()));
             data_ = itlData;
         }
@@ -583,8 +592,9 @@ namespace QuantLib {
         LUFCurrency() {
             static boost::shared_ptr<Data> lufData(
                                       new Data("Luxembourg franc", "LUF", 442,
-                                               "", "", 100,
+                                               "F", "", 100,
                                                Rounding(),
+                                               "%1$.0f %3%",
                                                EURCurrency()));
             data_ = lufData;
         }
@@ -601,8 +611,9 @@ namespace QuantLib {
         NLGCurrency() {
             static boost::shared_ptr<Data> nlgData(
                                          new Data("Dutch guilder", "NLG", 528,
-                                                  "", "", 100,
+                                                  "f", "", 100,
                                                   Rounding(),
+                                                  "%3% %1$.2f",
                                                   EURCurrency()));
             data_ = nlgData;
         }
@@ -619,8 +630,9 @@ namespace QuantLib {
         PTECurrency() {
             static boost::shared_ptr<Data> pteData(
                                      new Data("Portuguese escudo", "PTE", 620,
-                                              "", "", 100,
+                                              "Esc", "", 100,
                                               Rounding(),
+                                              "%1$.0f %3%",
                                               EURCurrency()));
             data_ = pteData;
         }

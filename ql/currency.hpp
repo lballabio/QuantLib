@@ -26,6 +26,7 @@
 #include <ql/Math/rounding.hpp>
 #include <ql/errors.hpp>
 #include <boost/shared_ptr.hpp>
+#include <boost/format.hpp>
 #include <string>
 
 namespace QuantLib {
@@ -56,6 +57,11 @@ namespace QuantLib {
         Integer fractionsPerUnit() const;
         //! rounding convention
         const Rounding& rounding() const;
+        //! output format
+        /*! The format will be fed three positional parameters,
+            namely, value, code, and symbol, in this order.
+        */
+        boost::format format() const;
         //@}
         //! \name other info
         //@{
@@ -76,6 +82,7 @@ namespace QuantLib {
         Integer fractionsPerUnit;
         Rounding rounding;
         Currency triangulated;
+        boost::format format;
 
         Data(const std::string& name,
              const std::string& code,
@@ -84,10 +91,15 @@ namespace QuantLib {
              const std::string& fractionSymbol,
              Integer fractionsPerUnit,
              const Rounding& rounding,
+             const std::string& formatString,
              const Currency& triangulationCurrency = Currency())
         : name(name), code(code), numeric(numericCode),
           symbol(symbol), fractionsPerUnit(fractionsPerUnit),
-          rounding(rounding), triangulated(triangulationCurrency) {}
+          rounding(rounding), triangulated(triangulationCurrency),
+          format(formatString) {
+            format.exceptions(boost::io::all_error_bits ^
+                              boost::io::too_many_args_bit);
+        }
     };
 
     /*! \brief comparison based on name
@@ -210,6 +222,10 @@ namespace QuantLib {
 
     inline const Rounding& Currency::rounding() const {
         return data_->rounding;
+    }
+
+    inline boost::format Currency::format() const {
+        return data_->format;
     }
 
     inline bool Currency::isValid() const {

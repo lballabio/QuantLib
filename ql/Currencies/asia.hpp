@@ -42,7 +42,7 @@ namespace QuantLib {
                                         new Data("Bangladesh taka", "BDT", 50,
                                                  "", "", 100,
                                                  Rounding(),
-                                                 Currency()));
+                                                 "%3% %1$.2f"));
             data_ = bdtData;
         }
     };
@@ -60,7 +60,7 @@ namespace QuantLib {
                                           new Data("Chinese yuan", "CNY", 156,
                                                    "Y", "", 100,
                                                    Rounding(),
-                                                   Currency()));
+                                                   "%3% %1$.2f"));
             data_ = cnyData;
         }
     };
@@ -78,7 +78,7 @@ namespace QuantLib {
                                       new Data("Honk Kong dollar", "HKD", 344,
                                                "HK$", "", 100,
                                                Rounding(),
-                                               Currency()));
+                                               "%3% %1$.2f"));
             data_ = hkdData;
         }
     };
@@ -96,7 +96,7 @@ namespace QuantLib {
                                         new Data("Israeli shekel", "ILS", 376,
                                                  "NIS", "", 100,
                                                  Rounding(),
-                                                 Currency()));
+                                                 "%1$.2f %3%"));
             data_ = ilsData;
         }
     };
@@ -114,7 +114,7 @@ namespace QuantLib {
                                           new Data("Indian rupee", "INR", 356,
                                                    "Rs", "", 100,
                                                    Rounding(),
-                                                   Currency()));
+                                                   "%3% %1$.2f"));
             data_ = inrData;
         }
     };
@@ -132,7 +132,7 @@ namespace QuantLib {
                                            new Data("Iraqi dinar", "IQD", 368,
                                                     "ID", "", 1000,
                                                     Rounding(),
-                                                    Currency()));
+                                                    "%2% %1$.3f"));
             data_ = iqdData;
         }
     };
@@ -150,7 +150,7 @@ namespace QuantLib {
                                           new Data("Iranian rial", "IRR", 364,
                                                    "Rls", "", 1,
                                                    Rounding(),
-                                                   Currency()));
+                                                   "%3% %1$.2f"));
             data_ = irrData;
         }
     };
@@ -168,7 +168,7 @@ namespace QuantLib {
                                           new Data("Japanese yen", "JPY", 392,
                                                    "\xA5", "", 100,
                                                    Rounding(),
-                                                   Currency()));
+                                                   "%3% %1$.0f"));
             data_ = jpyData;
         }
     };
@@ -186,7 +186,7 @@ namespace QuantLib {
                                       new Data("South-Korean won", "KRW", 410,
                                                "W", "", 100,
                                                Rounding(),
-                                               Currency()));
+                                               "%3% %1$.0f"));
             data_ = krwData;
         }
     };
@@ -204,7 +204,7 @@ namespace QuantLib {
                                          new Data("Kuwaiti dinar", "KWD", 414,
                                                   "KD", "", 1000,
                                                   Rounding(),
-                                                  Currency()));
+                                                  "%3% %1$.3f"));
             data_ = kwdData;
         }
     };
@@ -222,7 +222,7 @@ namespace QuantLib {
                                            new Data("Nepal rupee", "NPR", 524,
                                                     "NRs", "", 100,
                                                     Rounding(),
-                                                    Currency()));
+                                                    "%3% %1$.2f"));
             data_ = nprData;
         }
     };
@@ -240,7 +240,7 @@ namespace QuantLib {
                                        new Data("Pakistani rupee", "PKR", 586,
                                                 "Rs", "", 100,
                                                 Rounding(),
-                                                Currency()));
+                                                "%3% %1$.2f"));
             data_ = pkrData;
         }
     };
@@ -258,7 +258,7 @@ namespace QuantLib {
                                            new Data("Saudi riyal", "SAR", 682,
                                                     "SRls", "", 100,
                                                     Rounding(),
-                                                    Currency()));
+                                                    "%3% %1$.2f"));
             data_ = sarData;
         }
     };
@@ -276,7 +276,7 @@ namespace QuantLib {
                                       new Data("Singapore dollar", "SGD", 702,
                                                "S$", "", 100,
                                                Rounding(),
-                                               Currency()));
+                                               "%3% %1$.2f"));
             data_ = sgdData;
         }
     };
@@ -294,7 +294,7 @@ namespace QuantLib {
                                              new Data("Thai baht", "THB", 764,
                                                       "Bht", "", 100,
                                                       Rounding(),
-                                                      Currency()));
+                                                      "%1$.2f %3%"));
             data_ = thbData;
         }
     };
@@ -312,7 +312,7 @@ namespace QuantLib {
                                          new Data("Taiwan dollar", "TWD", 901,
                                                   "NT$", "", 100,
                                                   Rounding(),
-                                                  Currency()));
+                                                  "%3% %1$.2f"));
             data_ = twdData;
         }
     };

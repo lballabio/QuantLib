@@ -42,7 +42,7 @@ namespace QuantLib {
                                        new Data("Argentinian peso", "ARS", 32,
                                                 "", "", 100,
                                                 Rounding(),
-                                                Currency()));
+                                                "%2% %1$.2f"));
             data_ = arsData;
         }
     };
@@ -60,7 +60,7 @@ namespace QuantLib {
                                         new Data("Brazilian real", "BRL", 986,
                                                  "R$", "", 100,
                                                  Rounding(),
-                                                 Currency()));
+                                                 "%3% %1$.2f"));
             data_ = brlData;
         }
     };
@@ -78,7 +78,7 @@ namespace QuantLib {
                                        new Data("Canadian dollar", "CAD", 124,
                                                 "Can$", "", 100,
                                                 Rounding(),
-                                                Currency()));
+                                                "%3% %1$.2f"));
             data_ = cadData;
         }
     };
@@ -96,7 +96,7 @@ namespace QuantLib {
                                           new Data("Chilean peso", "CLP", 152,
                                                    "Ch$", "", 100,
                                                    Rounding(),
-                                                   Currency()));
+                                                   "%3% %1$.0f"));
             data_ = clpData;
         }
     };
@@ -114,7 +114,7 @@ namespace QuantLib {
                                         new Data("Colombian peso", "COP", 170,
                                                  "Col$", "", 100,
                                                  Rounding(),
-                                                 Currency()));
+                                                 "%3% %1$.2f"));
             data_ = copData;
         }
     };
@@ -132,7 +132,7 @@ namespace QuantLib {
                                           new Data("Mexican peso", "MXN", 484,
                                                    "Mex$", "", 100,
                                                    Rounding(),
-                                                   Currency()));
+                                                   "%3% %1$.2f"));
             data_ = mxnData;
         }
     };
@@ -150,7 +150,7 @@ namespace QuantLib {
                               new Data("Trinidad & Tobago dollar", "TTD", 780,
                                        "TT$", "", 100,
                                        Rounding(),
-                                       Currency()));
+                                       "%3% %1$.2f"));
             data_ = ttdData;
         }
     };
@@ -168,7 +168,7 @@ namespace QuantLib {
                                            new Data("U.S. dollar", "USD", 840,
                                                     "$", "\xA2", 100,
                                                     Rounding(),
-                                                    Currency()));
+                                                    "%3% %1$.2f"));
             data_ = usdData;
         }
     };
@@ -186,7 +186,7 @@ namespace QuantLib {
                                     new Data("Venezuelan bolivar", "VEB", 862,
                                              "Bs", "", 100,
                                              Rounding(),
-                                             Currency()));
+                                             "%3% %1$.2f"));
             data_ = vebData;
         }
     };

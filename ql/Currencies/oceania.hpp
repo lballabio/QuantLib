@@ -42,7 +42,7 @@ namespace QuantLib {
                                       new Data("Australian dollar", "AUD", 36,
                                                "A$", "", 100,
                                                Rounding(),
-                                               Currency()));
+                                               "%3% %1$.2f"));
             data_ = audData;
         }
     };
@@ -60,7 +60,7 @@ namespace QuantLib {
                                     new Data("New Zealand dollar", "NZD", 554,
                                              "NZ$", "", 100,
                                              Rounding(),
-                                             Currency()));
+                                             "%3% %1$.2f"));
             data_ = nzdData;
         }
     };

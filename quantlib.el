@@ -53,7 +53,7 @@
 (setq c++-font-lock-extra-types
       (append c++-font-lock-extra-types
               '("Boost"
-                "shared_ptr")))
+                "shared_ptr" "format")))
 
 
 ; helper functions
