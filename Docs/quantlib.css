@@ -1,36 +1,36 @@
 body {
-  font-family: georgia, verdana, arial, sans-serif;
-  color: #000;
-  background: #fff;
+    font-family: georgia, verdana, arial, sans-serif;
+    color: #000;
+    background: #fff;
 }
 
 a:active { text-decoration: none }
 
 table.layout {
-  width: 100%;
-  padding-left: 1em;
-  padding-right: 1em;
-  border-left: 0;
-  border-right: 0;
-  margin-left: auto;
-  margin-right: auto;
-  font-family: georgia, verdana, arial, sans-serif;
+    width: 100%;
+    padding-left: 1em;
+    padding-right: 1em;
+    border-left: 0;
+    border-right: 0;
+    margin-left: auto;
+    margin-right: auto;
+    font-family: georgia, verdana, arial, sans-serif;
 }
 
 td.main {
-  font-family: georgia, verdana, arial, sans-serif;
-  vertical-align: top;
+    font-family: georgia, verdana, arial, sans-serif;
+    vertical-align: top;
 }
 
 td.navbar {
-  width: 20%;
-  font-family: verdana, arial, sans-serif;
-  color: #000;
-  background-color: #ccccff;
-  border-width: 1px;
-  border-color: #000;
-  vertical-align: top;
-  padding: 1em;
+    width: 20%;
+    font-family: verdana, arial, sans-serif;
+    color: #000;
+    background-color: #ccccff;
+    border-width: 1px;
+    border-color: #000;
+    vertical-align: top;
+    padding: 1em;
 }
 
 .navbartitle { text-align: center }
@@ -42,9 +42,9 @@ a.navlink { font-weight: normal }
 .addtopspace { margin-top: 2em }
 
 .endmatter {
-  font-family: times-new-roman, sans-serif;
-  font-size: 60%;
-  font-style: italic;
+    font-family: times-new-roman, sans-serif;
+    font-size: 60%;
+    font-style: italic;
 }
 
 .button { border-style: none }
@@ -54,15 +54,15 @@ a.navlink { font-weight: normal }
 .right { text-align: right }
 
 OL.navlinklist{
-  line-height: 2.0;
-  list-style-type: decimal;
+    line-height: 2.0;
+    list-style-type: decimal;
 }
 
 pre {
-	margin-left: 1%;
-	color: green;
-	background: white;
-	font-family: monospace;
+    margin-left: 1%;
+    color: green;
+    background: white;
+    font-family: monospace;
 }
 
 
@@ -94,10 +94,10 @@ DIV.ah {
     margin-top: 3em
 }
 DIV.fragment {
-	margin-left: 1%;
-	color: green;
-	background: white;
-	font-family: monospace;
+    margin-left: 1%;
+    color: green;
+    background: white;
+    font-family: monospace;
 }
 TD.md {
     background-color: #f2f2ff;
@@ -108,15 +108,15 @@ TD.mdname1 {
     color: black;
 }
 DIV.groupHeader {
-    margin-left: 16em;
-	margin-top: 12em;
-	margin-bottom: 6em;
-	font-weight: bold
+    margin-left: 1em;
+    margin-top: 1em;
+    margin-bottom: 0.5em;
+    font-weight: bold
 }
 DIV.groupText {
     margin-left: 16em;
     font-style: italic;
-	font-size: smaller
+    font-size: smaller
 }
 FONT.keyword {
     color: #008000;
