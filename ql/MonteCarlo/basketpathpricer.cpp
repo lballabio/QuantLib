@@ -55,7 +55,7 @@ namespace QuantLib {
                 + IntegerFormatter::toString(underlying_.size()) +" assets");
 
             double maxPrice = -QL_MAX_DOUBLE;
-            double growth = 0.0;
+            double growth;
 //            double log_drift = 0.0, log_random = 0.0;
             for(unsigned int j = 0; j < numAssets; j++){
                 growth = 0.0;

@@ -63,8 +63,8 @@ namespace QuantLib {
             MultiPath(const std::vector<Path>& multiPath);
             //! \name inspectors
             //@{
-            const Path& operator[](int j) const {return multiPath_[j]; }
-            Path& operator[](int j) {return multiPath_[j]; }
+            const Path& operator[](unsigned int j) const {return multiPath_[j]; }
+            Path& operator[](unsigned int j) {return multiPath_[j]; }
             unsigned int assetNumber() const {return multiPath_.size(); }
             unsigned int pathSize() const {return multiPath_[0].size(); }
             //@}

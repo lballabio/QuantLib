@@ -58,7 +58,7 @@ namespace QuantLib {
         class MultiPathGenerator {
           public:
             typedef MultiPath sample_type;
-            MultiPathGenerator(int timeDimension,
+            MultiPathGenerator(unsigned int timeDimension,
                                const Math::Matrix &covariance,
                                const Array &average = Array(),
                                long seed=0);
@@ -69,16 +69,17 @@ namespace QuantLib {
             MultiPath next() const;
             double weight() const{return weight_;}
         private:
-            int timeDimension_;
+            unsigned int timeDimension_;
             std::vector<Time> timeDelays_;
-            int numAssets_;
+            unsigned int numAssets_;
             mutable double weight_;
             Array average_;
             RAG rndArray_;
         };
 
         template <class RAG>
-        inline MultiPathGenerator<RAG >::MultiPathGenerator(int timeDimension,
+        inline MultiPathGenerator<RAG >::MultiPathGenerator(
+            unsigned int timeDimension,
             const Math::Matrix &covariance, const Array &average, long seed)
         : timeDimension_(timeDimension), timeDelays_(timeDimension, 1.0),
         numAssets_(covariance.rows()), average_(covariance.rows(),0.0),
