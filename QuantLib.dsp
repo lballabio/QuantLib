@@ -2116,6 +2116,10 @@ SOURCE=.\ql\types.hpp
 # End Source File
 # Begin Source File
 
+SOURCE=.\ql\userconfig.hpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\ql\voltermstructure.cpp
 # End Source File
 # Begin Source File
