@@ -227,6 +227,22 @@ SOURCE=.\Include\ql\DayCounters\actualactual.hpp
 # End Source File
 # Begin Source File
 
+SOURCE=.\Sources\DayCounters\actualactualeuro.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\Include\ql\DayCounters\actualactualeuro.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\Sources\DayCounters\actualactualhistorical.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\Include\ql\DayCounters\actualactualhistorical.hpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\Sources\DayCounters\thirty360.cpp
 # End Source File
 # Begin Source File

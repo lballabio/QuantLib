@@ -44,6 +44,10 @@ ALL : ".\lib\Win32\VisualStudio\QuantLib.lib" "$(OUTDIR)\QuantLib.bsc"
 CLEAN :
 	-@erase "$(INTDIR)\actualactual.obj"
 	-@erase "$(INTDIR)\actualactual.sbr"
+	-@erase "$(INTDIR)\actualactualeuro.obj"
+	-@erase "$(INTDIR)\actualactualeuro.sbr"
+	-@erase "$(INTDIR)\actualactualhistorical.obj"
+	-@erase "$(INTDIR)\actualactualhistorical.sbr"
 	-@erase "$(INTDIR)\averagepriceasian.obj"
 	-@erase "$(INTDIR)\averagepriceasian.sbr"
 	-@erase "$(INTDIR)\averagestrikeasian.obj"
@@ -280,7 +284,9 @@ BSC32_SBRS= \
 	"$(INTDIR)\dataformatters.sbr" \
 	"$(INTDIR)\date.sbr" \
 	"$(INTDIR)\scheduler.sbr" \
-	"$(INTDIR)\solver1d.sbr"
+	"$(INTDIR)\solver1d.sbr" \
+	"$(INTDIR)\actualactualhistorical.sbr" \
+	"$(INTDIR)\actualactualeuro.sbr"
 
 "$(OUTDIR)\QuantLib.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -365,7 +371,9 @@ LIB32_OBJS= \
 	"$(INTDIR)\dataformatters.obj" \
 	"$(INTDIR)\date.obj" \
 	"$(INTDIR)\scheduler.obj" \
-	"$(INTDIR)\solver1d.obj"
+	"$(INTDIR)\solver1d.obj" \
+	"$(INTDIR)\actualactualhistorical.obj" \
+	"$(INTDIR)\actualactualeuro.obj"
 
 ".\lib\Win32\VisualStudio\QuantLib.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
     $(LIB32) @<<
@@ -386,6 +394,10 @@ ALL : ".\lib\Win32\VisualStudio\QuantLib_d.lib" "$(OUTDIR)\QuantLib.bsc"
 CLEAN :
 	-@erase "$(INTDIR)\actualactual.obj"
 	-@erase "$(INTDIR)\actualactual.sbr"
+	-@erase "$(INTDIR)\actualactualeuro.obj"
+	-@erase "$(INTDIR)\actualactualeuro.sbr"
+	-@erase "$(INTDIR)\actualactualhistorical.obj"
+	-@erase "$(INTDIR)\actualactualhistorical.sbr"
 	-@erase "$(INTDIR)\averagepriceasian.obj"
 	-@erase "$(INTDIR)\averagepriceasian.sbr"
 	-@erase "$(INTDIR)\averagestrikeasian.obj"
@@ -623,7 +635,9 @@ BSC32_SBRS= \
 	"$(INTDIR)\dataformatters.sbr" \
 	"$(INTDIR)\date.sbr" \
 	"$(INTDIR)\scheduler.sbr" \
-	"$(INTDIR)\solver1d.sbr"
+	"$(INTDIR)\solver1d.sbr" \
+	"$(INTDIR)\actualactualhistorical.sbr" \
+	"$(INTDIR)\actualactualeuro.sbr"
 
 "$(OUTDIR)\QuantLib.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -708,7 +722,9 @@ LIB32_OBJS= \
 	"$(INTDIR)\dataformatters.obj" \
 	"$(INTDIR)\date.obj" \
 	"$(INTDIR)\scheduler.obj" \
-	"$(INTDIR)\solver1d.obj"
+	"$(INTDIR)\solver1d.obj" \
+	"$(INTDIR)\actualactualhistorical.obj" \
+	"$(INTDIR)\actualactualeuro.obj"
 
 ".\lib\Win32\VisualStudio\QuantLib_d.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
     $(LIB32) @<<
@@ -729,6 +745,10 @@ ALL : ".\lib\Win32\VisualStudio\QuantLib.lib" "$(OUTDIR)\QuantLib.bsc"
 CLEAN :
 	-@erase "$(INTDIR)\actualactual.obj"
 	-@erase "$(INTDIR)\actualactual.sbr"
+	-@erase "$(INTDIR)\actualactualeuro.obj"
+	-@erase "$(INTDIR)\actualactualeuro.sbr"
+	-@erase "$(INTDIR)\actualactualhistorical.obj"
+	-@erase "$(INTDIR)\actualactualhistorical.sbr"
 	-@erase "$(INTDIR)\averagepriceasian.obj"
 	-@erase "$(INTDIR)\averagepriceasian.sbr"
 	-@erase "$(INTDIR)\averagestrikeasian.obj"
@@ -965,7 +985,9 @@ BSC32_SBRS= \
 	"$(INTDIR)\dataformatters.sbr" \
 	"$(INTDIR)\date.sbr" \
 	"$(INTDIR)\scheduler.sbr" \
-	"$(INTDIR)\solver1d.sbr"
+	"$(INTDIR)\solver1d.sbr" \
+	"$(INTDIR)\actualactualhistorical.sbr" \
+	"$(INTDIR)\actualactualeuro.sbr"
 
 "$(OUTDIR)\QuantLib.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -1050,7 +1072,9 @@ LIB32_OBJS= \
 	"$(INTDIR)\dataformatters.obj" \
 	"$(INTDIR)\date.obj" \
 	"$(INTDIR)\scheduler.obj" \
-	"$(INTDIR)\solver1d.obj"
+	"$(INTDIR)\solver1d.obj" \
+	"$(INTDIR)\actualactualhistorical.obj" \
+	"$(INTDIR)\actualactualeuro.obj"
 
 ".\lib\Win32\VisualStudio\QuantLib.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
     $(LIB32) @<<
@@ -1071,6 +1095,10 @@ ALL : ".\lib\Win32\VisualStudio\QuantLib_d.lib" "$(OUTDIR)\QuantLib.bsc"
 CLEAN :
 	-@erase "$(INTDIR)\actualactual.obj"
 	-@erase "$(INTDIR)\actualactual.sbr"
+	-@erase "$(INTDIR)\actualactualeuro.obj"
+	-@erase "$(INTDIR)\actualactualeuro.sbr"
+	-@erase "$(INTDIR)\actualactualhistorical.obj"
+	-@erase "$(INTDIR)\actualactualhistorical.sbr"
 	-@erase "$(INTDIR)\averagepriceasian.obj"
 	-@erase "$(INTDIR)\averagepriceasian.sbr"
 	-@erase "$(INTDIR)\averagestrikeasian.obj"
@@ -1308,7 +1336,9 @@ BSC32_SBRS= \
 	"$(INTDIR)\dataformatters.sbr" \
 	"$(INTDIR)\date.sbr" \
 	"$(INTDIR)\scheduler.sbr" \
-	"$(INTDIR)\solver1d.sbr"
+	"$(INTDIR)\solver1d.sbr" \
+	"$(INTDIR)\actualactualhistorical.sbr" \
+	"$(INTDIR)\actualactualeuro.sbr"
 
 "$(OUTDIR)\QuantLib.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -1393,7 +1423,9 @@ LIB32_OBJS= \
 	"$(INTDIR)\dataformatters.obj" \
 	"$(INTDIR)\date.obj" \
 	"$(INTDIR)\scheduler.obj" \
-	"$(INTDIR)\solver1d.obj"
+	"$(INTDIR)\solver1d.obj" \
+	"$(INTDIR)\actualactualhistorical.obj" \
+	"$(INTDIR)\actualactualeuro.obj"
 
 ".\lib\Win32\VisualStudio\QuantLib_d.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
     $(LIB32) @<<
@@ -1500,6 +1532,18 @@ SOURCE=.\Sources\Calendars\zurich.cpp
 SOURCE=.\Sources\DayCounters\actualactual.cpp
 
 "$(INTDIR)\actualactual.obj"	"$(INTDIR)\actualactual.sbr" : $(SOURCE) "$(INTDIR)"
+	$(CPP) $(CPP_PROJ) $(SOURCE)
+
+
+SOURCE=.\Sources\DayCounters\actualactualeuro.cpp
+
+"$(INTDIR)\actualactualeuro.obj"	"$(INTDIR)\actualactualeuro.sbr" : $(SOURCE) "$(INTDIR)"
+	$(CPP) $(CPP_PROJ) $(SOURCE)
+
+
+SOURCE=.\Sources\DayCounters\actualactualhistorical.cpp
+
+"$(INTDIR)\actualactualhistorical.obj"	"$(INTDIR)\actualactualhistorical.sbr" : $(SOURCE) "$(INTDIR)"
 	$(CPP) $(CPP_PROJ) $(SOURCE)
 
 
