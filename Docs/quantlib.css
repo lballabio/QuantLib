@@ -26,7 +26,7 @@ td.navbar {
   width: 20%;
   font-family: verdana, arial, sans-serif;
   color: #000;
-  background-color: #99CCFF;
+  background-color: #fea;
   border-width: 1px;
   border-color: #000;
   vertical-align: top;
@@ -75,23 +75,66 @@ A.qindex {}
 A.qindexRef {}
 A.el { text-decoration: none; font-weight: bold }
 A.elRef { font-weight: bold }
-A.code { text-decoration: none; font-weight: normal; color: #4444ee }
-A.codeRef { font-weight: normal; color: #4444ee }
+A.code {
+    text-decoration: none;
+    font-weight: normal;
+    color: #4444ee;
+    background-color: white}
+A.codeRef { font-weight: normal; color: #4444ee;
+    background-color: white }
 DL.el { margin-left: -1cm }
-DIV.ah { background-color: black; margin-bottom: 3; margin-top: 3 }
+DIV.ah {
+    background-color: black;
+    color: white;
+    margin-bottom: 3em;
+    margin-top: 3em
+    }
 DIV.fragment {
 	margin-left: 10%;
 	color: green;
 	background: white;
 	font-family: monospace;
 }
-TD.md { background-color: #f2f2ff }
-DIV.groupHeader { margin-left: 16; margin-top: 12; margin-bottom: 6; font-weight: bold }
-DIV.groupText { margin-left: 16; font-style: italic; font-size: smaller }
-FONT.keyword       { color: #008000 }
-FONT.keywordtype   { color: #604020 }
-FONT.keywordflow   { color: #e08000 }
-FONT.comment       { color: #800000 }
-FONT.preprocessor  { color: #806020 }
-FONT.stringliteral { color: #002080 }
-FONT.charliteral   { color: #008080 }
+TD.md {
+    background-color: #f2f2ff;
+    color: white;
+}
+DIV.groupHeader {
+    margin-left: 16em;
+	margin-top: 12em;
+	margin-bottom: 6em;
+	font-weight: bold
+    }
+DIV.groupText {
+    margin-left: 16em;
+    font-style: italic;
+	font-size: smaller
+    }
+FONT.keyword {
+    color: #008000;
+    background-color: white
+    }
+FONT.keywordtype {
+    color: #604020;
+    background-color: white
+    }
+FONT.keywordflow {
+    color: #e08000;
+    background-color: white
+    }
+FONT.comment {
+    color: #800000;
+    background-color: white
+    }
+FONT.preprocessor {
+    color: #806020;
+    background-color: white
+    }
+FONT.stringliteral {
+    color: #002080;
+    background-color: white
+    }
+FONT.charliteral {
+    color: #008080;
+    background-color: white
+    }
