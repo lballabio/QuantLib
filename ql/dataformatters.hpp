@@ -31,13 +31,16 @@
 
 namespace QuantLib {
 
+    #ifndef QL_DISABLE_DEPRECATED
+
     //! Formats amounts in Euro for output
-    /*! Formatting follows Euro convention (x,xxx,xxx.xx) */
+    /*! Formatting follows Euro convention (x,xxx,xxx.xx)
+        \deprecated use MoneyFormatter instead
+    */
     class EuroFormatter {
       public:
         static std::string toString(Decimal amount);
     };
-
 
     /*! \relates Date
         \deprecated send to the stream the output of DateFormatter
@@ -55,6 +58,8 @@ namespace QuantLib {
         \deprecated send to the stream the output of MatrixFormatter
     */
     std::ostream& operator<<(std::ostream&, const Matrix&);
+    #endif
+
     #endif
 
 }

@@ -22,16 +22,21 @@
 
 #include <ql/basicdataformatters.hpp>
 #include <ql/null.hpp>
+#include <sstream>
+#include <iomanip>
 
 namespace QuantLib {
 
     std::string IntegerFormatter::toString(BigInteger l, Integer digits) {
         static BigInteger null = Null<BigInteger>();
-        if (l == null)
+        static std::ostringstream out;
+        if (l == null) {
             return std::string("null");
-        char s[64];
-        QL_SPRINTF(s,"%*ld",(digits>64?64:digits),l);
-        return std::string(s);
+        } else {
+            out.str("");
+            out << std::setw(digits) << l;
+            return out.str();
+        }
     }
 
     std::string IntegerFormatter::toPowerOfTwo(BigInteger l, Integer digits) {
@@ -43,11 +48,14 @@ namespace QuantLib {
 
     std::string SizeFormatter::toString(Size l, Integer digits) {
         static Size null = Null<Size>();
-        if (l == null)
+        static std::ostringstream out;
+        if (l == null) {
             return std::string("null");
-        char s[64];
-        QL_SPRINTF(s,"%*lu",(digits>64?64:digits),l);
-        return std::string(s);
+        } else {
+            out.str("");
+            out << std::setw(digits) << l;
+            return out.str();
+        }
     }
 
     std::string SizeFormatter::toOrdinal(Size l) {
@@ -79,22 +87,30 @@ namespace QuantLib {
 
     std::string DecimalFormatter::toString(Decimal x, Integer precision,
                                            Integer digits) {
-        if (x == Null<Decimal>())
+        static Decimal null = Null<Decimal>();
+        static std::ostringstream out;
+        if (x == null) {
             return std::string("null");
-        char s[64];
-        QL_SPRINTF(s,"%*.*f",(digits>64?64:digits),
-                             (precision>64?64:precision),x);
-        return std::string(s);
+        } else {
+            out.str("");
+            std::fixed(out);
+            out << std::setw(digits) << std::setprecision(precision) << x;
+            return out.str();
+        }
     }
 
     std::string DecimalFormatter::toExponential(Decimal x, Integer precision,
                                                 Integer digits) {
-        if (x == Null<Decimal>())
+        static Decimal null = Null<Decimal>();
+        static std::ostringstream out;
+        if (x == null) {
             return std::string("null");
-        char s[64];
-        QL_SPRINTF(s,"%*.*e",(digits>64?64:digits),
-                             (precision>64?64:precision),x);
-        return std::string(s);
+        } else {
+            out.str("");
+            std::scientific(out);
+            out << std::setw(digits) << std::setprecision(precision) << x;
+            return out.str();
+        }
     }
 
     std::string DecimalFormatter::toPercentage(Decimal x, Integer precision,

@@ -69,9 +69,6 @@
 #define HAVE_CSTRING 1
 #define QL_STRLEN    std::strlen
 
-#define HAVE_CSTDIO  1
-#define QL_SPRINTF   std::sprintf
-
 #define QL_MIN       std::min
 #define QL_MAX       std::max
 

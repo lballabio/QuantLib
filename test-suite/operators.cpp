@@ -62,10 +62,8 @@ void OperatorTest::testConsistency() {
                    std::minus<Real>());
     Real e = norm(diff.begin(),diff.end(),h);
     if (e > 1.0e-6) {
-        char s[10];
-        QL_SPRINTF(s,"%5.2e",e);
         BOOST_FAIL("norm of 1st derivative of cum minus Gaussian: "
-                   + std::string(s) + "\n"
+                   + DecimalFormatter::toExponential(e,2) + "\n"
                    "tolerance exceeded");
     }
 
@@ -75,10 +73,8 @@ void OperatorTest::testConsistency() {
                    std::minus<Real>());
     e = norm(diff.begin(),diff.end(),h);
     if (e > 1.0e-4) {
-        char s[10];
-        QL_SPRINTF(s,"%5.2e",e);
         BOOST_FAIL("norm of 2nd derivative of cum minus Gaussian derivative: "
-                   + std::string(s) + "\n"
+                   + DecimalFormatter::toExponential(e,2) + "\n"
                    "tolerance exceeded");
     }
 }

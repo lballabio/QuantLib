@@ -40,9 +40,6 @@ QL_CHECK_HEADER([stdlib])
 QL_CHECK_TYPE([size_t],[],[$ql_stdlib])
 QL_CHECK_FUNC([atoi],["1.0"],[$ql_stdlib])
 
-QL_CHECK_HEADER([stdio])
-QL_CHECK_FUNC([sprintf],[s,"foo"],[$ql_stdio])
-
 QL_CHECK_HEADER([math])
 QL_CHECK_FUNC([sqrt],[1.0],[$ql_math])
 QL_CHECK_FUNC([fabs],[1.0],[$ql_math])

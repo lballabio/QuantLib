@@ -25,6 +25,8 @@
 
 namespace QuantLib {
 
+    #ifndef QL_DISABLE_DEPRECATED
+
     std::string EuroFormatter::toString(Decimal amount) {
         std::string output;
         if (amount < 0.0) {
@@ -65,4 +67,5 @@ namespace QuantLib {
     }
     #endif
 
+    #endif
 }

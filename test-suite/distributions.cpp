@@ -71,12 +71,9 @@ void DistributionTest::testNormal() {
                    std::minus<Real>());
     Real e = norm(diff.begin(),diff.end(),h);
     if (e > 1.0e-16) {
-        char s[10];
-        QL_SPRINTF(s,"%5.2e",e);
-        BOOST_FAIL(
-            "norm of C++ NormalDistribution minus analytic Gaussian: "
-            + std::string(s) + "\n"
-            "tolerance exceeded");
+        BOOST_FAIL("norm of C++ NormalDistribution minus analytic Gaussian: "
+                   + DecimalFormatter::toExponential(e,2) + "\n"
+                   "tolerance exceeded");
     }
 
     // check that invCum . cum = identity
@@ -86,12 +83,9 @@ void DistributionTest::testNormal() {
                    std::minus<Real>());
     e = norm(diff.begin(),diff.end(),h);
     if (e > 1.0e-8) {
-        char s[10];
-        QL_SPRINTF(s,"%5.2e",e);
-        BOOST_FAIL(
-            "norm of invCum . cum minus identity: "
-            + std::string(s) + "\n"
-            "tolerance exceeded");
+        BOOST_FAIL("norm of invCum . cum minus identity: "
+                   + DecimalFormatter::toExponential(e,2) + "\n"
+                   "tolerance exceeded");
     }
 
     // check that cum.derivative = Gaussian
@@ -101,11 +95,9 @@ void DistributionTest::testNormal() {
                    std::minus<Real>());
     e = norm(diff.begin(),diff.end(),h);
     if (e > 1.0e-16) {
-        char s[10];
-        QL_SPRINTF(s,"%5.2e",e);
         BOOST_FAIL(
             "norm of C++ Cumulative.derivative minus analytic Gaussian: "
-            + std::string(s) + "\n"
+            + DecimalFormatter::toExponential(e,2) + "\n"
             "tolerance exceeded");
     }
 
@@ -116,12 +108,9 @@ void DistributionTest::testNormal() {
                    std::minus<Real>());
     e = norm(diff.begin(),diff.end(),h);
     if (e > 1.0e-16) {
-        char s[10];
-        QL_SPRINTF(s,"%5.2e",e);
-        BOOST_FAIL(
-            "norm of C++ Normal.derivative minus analytic derivative: "
-            + std::string(s) + "\n"
-            "tolerance exceeded");
+        BOOST_FAIL("norm of C++ Normal.derivative minus analytic derivative: "
+                   + DecimalFormatter::toExponential(e,2) + "\n"
+                   "tolerance exceeded");
     }
 }
 

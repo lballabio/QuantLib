@@ -123,9 +123,6 @@
 #define HAVE_CSTRING 1
 #define QL_STRLEN    strlen
 
-#define HAVE_CSTDIO  1
-#define QL_SPRINTF   sprintf
-
 #define HAVE_INCOMPLETE_ITERATOR_SUPPORT
 
 #define QL_PATCH_MICROSOFT
@@ -168,13 +165,13 @@
 // select linkage opt:
 //
 #ifdef _DLL
-#  if defined(_DEBUG) 
+#  if defined(_DEBUG)
 #    define QL_LIB_RT_OPT "-gd"
 #  else
 #    define QL_LIB_RT_OPT
 #  endif
 #else
-#  if defined(_DEBUG) 
+#  if defined(_DEBUG)
 #    define QL_LIB_RT_OPT "-sgd"
 #  else
 #    define QL_LIB_RT_OPT "-s"

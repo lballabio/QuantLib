@@ -318,28 +318,11 @@
 /*! @} */
 
 
-/*! \defgroup stdioMacros Input/output functions
-    Some compilers still define i/o functions in the global namespace.
-    For the code to be portable these macros should be used instead of
-    the actual functions.
-    @{
-*/
-/*! \def QL_SPRINTF \brief print to string */
-#if defined HAVE_CSTDIO
-    #include <cstdio>
-#elif defined HAVE_STDIO_H
-    #include <stdio.h>
-#else
-    #error Neither <cstdio> nor <stdio.h> found
-#endif
-/*! @} */
-
-
 /*! \defgroup algoMacros Min and max functions
-    Some compilers still do not define std::min and std::max. Moreover, Visual
-    C++ defines them but for unfathomable reasons garble their names.
-    For the code to be portable these macros should be used instead of
-    the actual functions.
+    Some compilers still do not define std::min and std::max. Moreover,
+    Visual C++ defines them but for unfathomable reasons garble their
+    names.  For the code to be portable these macros should be used
+    instead of the actual functions.
     @{
 */
 /*! \def QL_MIN \brief minimum between two elements */
