@@ -126,7 +126,7 @@ namespace QuantLib {
             size_t sampleNumber =
                 mcModel_->sampleAccumulator().samples();
 
-            QL_REQUIRE(samples>=minSample_,
+            QL_REQUIRE(sampleNumber>=minSample_,
                 "number of simulated samples lower than minSample_");
 
             return mcModel_->sampleAccumulator().errorEstimate();
