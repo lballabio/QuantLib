@@ -103,11 +103,11 @@ namespace QuantLib {
 
     inline void Instrument::setPricingEngine(
                                   const boost::shared_ptr<PricingEngine>& e) {
-        QL_REQUIRE(e, "null pricing engine");
         if (engine_)
             unregisterWith(engine_);
         engine_ = e;
-        registerWith(engine_);
+        if (engine_)
+            registerWith(engine_);
         // trigger (lazy) recalculation and notify observers
         update();
     }

@@ -39,12 +39,13 @@ double swaptionVols[] = {
     11.50, 11.20, 11.3, 10.6, 10.2, 10.10,  9.70,  9.50,  9.4,  8.60};
 
 void calibrateModel(const boost::shared_ptr<ShortRateModel>& model,
-                    CalibrationSet& calibs,
+                    const std::vector<boost::shared_ptr<CalibrationHelper> >&
+                                                                      helpers,
                     double lambda) {
 
     Simplex om(lambda, 1e-9);
     om.setEndCriteria(EndCriteria(10000, 1e-7));
-    model->calibrate(calibs, om);
+    model->calibrate(helpers, om);
 
     #if defined(QL_PATCH_DARWIN)
     // to be investigated
@@ -57,8 +58,8 @@ void calibrateModel(const boost::shared_ptr<ShortRateModel>& model,
         std::cout << IntegerFormatter::toString(swaptionLengths[i],2) << "y|";
         for (Size j=0; j<numCols; j++) {
             Size k = i*numCols + j;
-            double npv = calibs[k]->modelValue();
-            double implied = calibs[k]->impliedVolatility(npv, 1e-4,
+            double npv = helpers[k]->modelValue();
+            double implied = helpers[k]->impliedVolatility(npv, 1e-4,
                 1000, 0.05, 0.50)*100.0;
             std::cout << DoubleFormatter::toString(implied,1,4) << " (";
             k = i*10 + j;
@@ -194,7 +195,7 @@ int main(int, char* [])
         swaptionMaturities.push_back(Period(7, Years));
         swaptionMaturities.push_back(Period(10, Years));
 
-        CalibrationSet swaptions;
+        std::vector<boost::shared_ptr<CalibrationHelper> > swaptions;
 
         //List of times that have to be included in the timegrid
         std::list<Time> times;
@@ -213,6 +214,7 @@ int main(int, char* [])
                 swaptions.back()->addTimesTo(times);
             }
         }
+
         const std::vector<Time> termTimes = myTermStructure->times();
         for (i=0; i<termTimes.size(); i++)
             times.push_back(termTimes[i]);
@@ -227,9 +229,9 @@ int main(int, char* [])
         std::cout << "Calibrating to swaptions" << std::endl;
 
         std::cout << "Hull-White (analytic formulae):" << std::endl;
-        swaptions.setPricingEngine(
-            boost::shared_ptr<PricingEngine>(new JamshidianSwaption(modelHW)));
-
+        for (i=0; i<swaptions.size(); i++)
+            swaptions[i]->setPricingEngine(boost::shared_ptr<PricingEngine>(
+                                            new JamshidianSwaption(modelHW)));
 
         calibrateModel(modelHW, swaptions, 0.05);
         std::cout << "calibrated to "
@@ -238,9 +240,9 @@ int main(int, char* [])
                   << std::endl;
 
         std::cout << "Hull-White (numerical calibration):" << std::endl;
-        swaptions.setPricingEngine(
-            boost::shared_ptr<PricingEngine>(new TreeSwaption(modelHW2,grid)));
-
+        for (i=0; i<swaptions.size(); i++)
+            swaptions[i]->setPricingEngine(boost::shared_ptr<PricingEngine>(
+                                            new TreeSwaption(modelHW2,grid)));
 
         calibrateModel(modelHW2, swaptions, 0.05);
         std::cout << "calibrated to "
@@ -249,8 +251,10 @@ int main(int, char* [])
                   << std::endl;
 
         std::cout << "Black-Karasinski: " << std::endl;
-        swaptions.setPricingEngine(
-            boost::shared_ptr<PricingEngine>(new TreeSwaption(modelBK,grid)));
+        for (i=0; i<swaptions.size(); i++)
+            swaptions[i]->setPricingEngine(boost::shared_ptr<PricingEngine>(
+                                             new TreeSwaption(modelBK,grid)));
+
         calibrateModel(modelBK, swaptions, 0.05);
         std::cout << "calibrated to "
                   << modelBK->params()

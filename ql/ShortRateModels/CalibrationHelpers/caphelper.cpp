@@ -78,8 +78,7 @@ namespace QuantLib {
                               new Swap(floatingLeg, fixedLeg, termStructure));
         Rate fairRate = fixedRate - 
             swap->NPV()/swap->secondLegBPS();
-        engine_  = boost::shared_ptr<PricingEngine>(
-                                              new BlackCapFloor(blackModel_));
+        engine_  = boost::shared_ptr<PricingEngine>();
         cap_ = boost::shared_ptr<Cap>(new Cap(floatingLeg, 
                                               std::vector<Rate>(1, fairRate), 
                                               termStructure, engine_));
@@ -87,13 +86,12 @@ namespace QuantLib {
     }
 
     void CapHelper::addTimesTo(std::list<Time>& times) const {
-        CapFloor::arguments* params =
-            dynamic_cast<CapFloor::arguments*>(engine_->arguments());
-        cap_->setupArguments(params);
-        Size nPeriods = params->startTimes.size();
+        CapFloor::arguments params;
+        cap_->setupArguments(&params);
+        Size nPeriods = params.startTimes.size();
         for (Size i=0; i<nPeriods; i++) {
-            times.push_back(params->startTimes[i]);
-            times.push_back(params->endTimes[i]);
+            times.push_back(params.startTimes[i]);
+            times.push_back(params.endTimes[i]);
         }
     }
 

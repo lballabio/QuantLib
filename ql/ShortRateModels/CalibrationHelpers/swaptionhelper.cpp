@@ -62,8 +62,7 @@ namespace QuantLib {
                             0, // FIXME
                             0.0, termStructure));
         exerciseRate_ = fairFixedRate;
-        engine_  = boost::shared_ptr<PricingEngine>(
-                                              new BlackSwaption(blackModel_));
+        engine_  = boost::shared_ptr<PricingEngine>();
         Date exerciseDate = index->calendar().roll(
                                        startDate, index->rollingConvention());
 
@@ -76,20 +75,19 @@ namespace QuantLib {
     }
 
     void SwaptionHelper::addTimesTo(std::list<Time>& times) const {
-        Swaption::arguments* params =
-            dynamic_cast<Swaption::arguments*>(engine_->arguments());
-        swaption_->setupArguments(params);
+        Swaption::arguments params;
+        swaption_->setupArguments(&params);
         Size i;
-        for (i=0; i<params->stoppingTimes.size(); i++)
-            times.push_back(params->stoppingTimes[i]);
-        for (i=0; i<params->fixedResetTimes.size(); i++)
-            times.push_back(params->fixedResetTimes[i]);
-        for (i=0; i<params->fixedPayTimes.size(); i++)
-            times.push_back(params->fixedPayTimes[i]);
-        for (i=0; i<params->floatingResetTimes.size(); i++)
-            times.push_back(params->floatingResetTimes[i]);
-        for (i=0; i<params->floatingPayTimes.size(); i++)
-            times.push_back(params->floatingPayTimes[i]);
+        for (i=0; i<params.stoppingTimes.size(); i++)
+            times.push_back(params.stoppingTimes[i]);
+        for (i=0; i<params.fixedResetTimes.size(); i++)
+            times.push_back(params.fixedResetTimes[i]);
+        for (i=0; i<params.fixedPayTimes.size(); i++)
+            times.push_back(params.fixedPayTimes[i]);
+        for (i=0; i<params.floatingResetTimes.size(); i++)
+            times.push_back(params.floatingResetTimes[i]);
+        for (i=0; i<params.floatingPayTimes.size(); i++)
+            times.push_back(params.floatingPayTimes[i]);
     }
 
     double SwaptionHelper::modelValue() {
