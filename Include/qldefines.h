@@ -75,6 +75,7 @@
 	// set switches
 	#define QL_CMATH_IN_STD						0
 	#define QL_CCHAR_IN_STD						0
+	#define QL_CTIME_IN_STD						0
 	#define QL_EXPRESSION_TEMPLATES_WORK		1
 	#define QL_TEMPLATE_METAPROGRAMMING_WORKS	1
 	#define QL_REQUIRES_DUMMY_RETURN			1
@@ -88,6 +89,7 @@
 	// set switches
 	#define QL_CMATH_IN_STD						1
 	#define QL_CCHAR_IN_STD						1
+	#define QL_CTIME_IN_STD						1
 	#define QL_TEMPLATE_METAPROGRAMMING_WORKS	0
 	#define QL_EXPRESSION_TEMPLATES_WORK		0
 	#define QL_REQUIRES_DUMMY_RETURN			0
@@ -101,6 +103,7 @@
 	// set switches
 	#define QL_CMATH_IN_STD						1
 	#define QL_CCHAR_IN_STD						1
+	#define QL_CTIME_IN_STD						1
 	#define QL_TEMPLATE_METAPROGRAMMING_WORKS	1
 	#define QL_EXPRESSION_TEMPLATES_WORK		0
 	#define QL_REQUIRES_DUMMY_RETURN			1
@@ -114,6 +117,7 @@
 	// set switches
 	#define QL_CMATH_IN_STD						0
 	#define QL_CCHAR_IN_STD						0
+	#define QL_CTIME_IN_STD						0
 	#define QL_TEMPLATE_METAPROGRAMMING_WORKS	1
 	#define QL_EXPRESSION_TEMPLATES_WORK		0
 	#define QL_REQUIRES_DUMMY_RETURN			0
@@ -127,6 +131,7 @@
 	// set switches
 	#define QL_CMATH_IN_STD						1
 	#define QL_CCHAR_IN_STD						1
+	#define QL_CTIME_IN_STD						1
 	#define QL_TEMPLATE_METAPROGRAMMING_WORKS	1
 	#define QL_EXPRESSION_TEMPLATES_WORK		1
 	#define QL_REQUIRES_DUMMY_RETURN			0
@@ -195,6 +200,17 @@
 	#define QL_STRLEN	strlen
 	#define QL_TOLOWER	tolower
 	#define QL_TOUPPER	toupper
+#endif
+
+/*! \def QL_CTIME_IN_STD
+	\brief Are time functions defined in the std namespace?
+	
+	Some compilers still define them in the global namespace.
+*/
+#if QL_CTIME_IN_STD
+	#define QL_CLOCK	std::clock
+#else
+	#define QL_CLOCK	clock
 #endif
 
 /*! \def QL_REQUIRES_DUMMY_RETURN
