@@ -1,137 +1,112 @@
 check /Oi-
 
-2003-09-xx Release 0.3.3
-Changes since Release 0.3.1 (0.3.2 aborted):
+2003-09-xx Release 0.3.3 
+Release 0.3.2 skipped
+Changes since Release 0.3.1:
     MONTE CARLO FRAMEWORK
-    - Re-templatized Monte Carlo
-	model on traits
-    - new path generator based
-	on DiffusionProcess, TimeGrid, and externally initialized random
-	number generator
-	- added Halton low
-	discrepancy sequence
-	- added sequence generators: random sequence generator create
-	a sequence generator out of a random number generator.
-	InvCumGaussianRsg create a gaussian sequence generator out of a
-	uniform (random or low discrepancy) sequence generator
-	- RNG as constructor input constructor( long seed) deprecated
-	- Mersenne Twister random
-	number generator added (untested yet)
-	- ld PathPricer(s),
-	PathGenerators, etc are available with a trailing _old
-	- added Jäckel's Brownian Bridge (not used yet)
-	- Sobol Random Sequence
-	Generator. Unit and Jäckel
-	- added randomized
-	Halton sequences (very interesting results!!)
+    - Re-templatized Monte Carlo model based on traits.
+    - New path generator based on DiffusionProcess, TimeGrid, 
+      and externally initialized random number generator.
+    - Added Halton low discrepancy sequence.
+    - Added sequence generators: random sequence generator creates
+      a sequence generator out of a random number generator.
+      InvCumGaussianRsg creates a gaussian sequence generator out of a
+      uniform (random or low discrepancy) sequence generator.
+    - RNG as constructor input constructor( long seed) deprecated.
+    - Mersenne Twister random number generator added (untested yet.)
+    - Old PathPricers, PathGenerators, etc are available with a trailing _old
+    - Added Jäckel's Brownian Bridge (not used yet.)
+    - Sobol Random Sequence Generator. Unit and Jäckel.
+    - Added randomized Halton sequences.
 
     FINITE DIFFERENCE FRAMEWORK
-    - Old class Grid no longer exists, use
-	CenteredGrid to obtain the same result.
+    - Old class Grid no longer exists, use CenteredGrid to obtain the 
+      same result.
 
     LATTICE FRAMEWORK
-    - Abstracted discretized option
-    - additive
-	binomial trees.  All binomial trees now use DiffusionProcess
-	- added Tian binomial tree
-
-    VOLATILITY FRAMEWORK
+    - Abstracted discretized option.
+    - Additive binomial trees.  All binomial trees now use DiffusionProcess.
+    - Added Tian binomial tree.
 
     PRICING ENGINES FRAMEWORK
-    - partially implemented.
-    - quanto forward compounded engines
-    - Integral
-	(european) pricing engine
+    - Partially implemented.
+    - Quanto forward compounded engines.
+    - Integral (european) pricing engine.
 
     YIELD TERM STRUCTURE
-    - ZeroCurve: a term structure based on linear interpolation of zero yields (Marchioro)
+    - ZeroCurve: a term structure based on linear interpolation of 
+      zero yields.
 
     FIXED INCOME
-    - Up
-	front an in arrear indexedcoupon
-	- 	Specific implementation of compound forward rate from zero yield.
-	-  Added compound forward and zero
-	coupon implementations.
-	- Added Futures rate helper with specified maturity date.
-	- Added bucketed
-	bps calculation as well as simple fairRate calculation.
-	- Added swap constructor using specified maturity date as well as
-	added functionality in Scheduler.
-	- Added date bucketed
-	basis point sensitivity based on 1st derivative of zero coupon
-	rate.
-
+    - Up-front and in-arrear indexed coupon.
+    - Specific implementation of compound forward rate from zero yield.
+    - Added compound forward and zero coupon implementations.
+    - Added Futures rate helper with specified maturity date.
+    - Added bucketed bps calculation.
+    - Added swap constructor using specified maturity date as well as
+      added functionality in Scheduler.
+    - Added date-bucketed basis point sensitivity based on 1st derivative 
+      of zero coupon rate.
 
     OPTIMIZATION FRAMEWORK
-	-  Solvers now take any function (not
-	necessarily and ObjectiveFunction---as a matter of fact the latter
-	disappeared)
+    - Solvers now take any function. ObjectiveFunction disappeared.
 
     PATTERNS
-    - Abstracted lazy
-	object
+    - Abstracted lazy object.
+    - Abstracted the curiously recurring template pattern.
 
     DATE AND CALENDARS
-    - added joint calendars
-    - Tokyo, Stockholm,johannesburg calendar improved
+    - Added joint calendars.
+    - Tokyo, Stockholm, Johannesburg calendar improved.
     - "MonthEndReference" business day rolling convention. Similar to
-	"ModifiedFollowing", unless where original date is last business
-	day of month all resulting dates will also be last business day of
-	month.
-	- Added basic date generation starting from the end.
+      "ModifiedFollowing", unless where original date is last business
+      day of month all resulting dates will also be last business day of
+      month.
+    - Added basic date generation starting from the end.
 
     MISCELLANEA
-    - QuEP 9 "generic disposable objects" implemented
-    - added test suite
-    - dataformatters extended to format long integers, Ordinal numerals, power of two formatting
-    - Exercise class adopted
-    - Added user configuration section
-    - Inhibited automatic conversion of
-	Handle<T> to RelinkableHandle<T>
-	- diffusion process extended
-	- added
-	stikeSensitivity to the Greeks
-	- BS it does
-	handle t==0.0 and sigma==0.0
-	- timeGrid has been reworked
-	- added payoff file
-	for Payoff classes.  Added Cash-Or-Nothing and Asset-Or-Nothing
-	payoff classes
-	- Doxygen 1.3 released
+    - QuEP 9 "generic disposable objects" implemented.
+    - Added test suite.
+    - Dataformatters extended to format long integers, Ordinal numerals, 
+      power of two formatting.
+    - Exercise class adopted.
+    - Added user configuration section.
+    - Inhibited automatic conversion of Handle<T> to RelinkableHandle<T>.
+    - Diffusion process extended.
+    - Added strikeSensitivity to the Greeks.
+    - BS does handle t==0.0 and sigma==0.0.
+    - TimeGrid has been reworked.
+    - Added payoff file for Payoff classes.  Added Cash-Or-Nothing and 
+      Asset-Or-Nothing payoff classes.
+    - Upgraded to use Doxygen 1.3.
 
-	MATH
-	- added Gauss-Kronrod integration algorithm
-	- added primitive
-	polynomial modulo 2 up to dimension 18 (available up to dimension 27)
-	- added
-	BicubicSplineInterpolation
-	- Numerical Recipes algorithm is
-	back since there is a problem with Nicolas' code: it is unable to
-	fit a straight line, it waves around the line
-	- prime number generation
-	- Acklam's approximation for inverse cumulative normal
-	distribution function (replaced Moro's algorithm as default)
-	- added error function
-	- improved Cumulative Normal
-	Distribution function using the Error Function.
-	- matrix pseudo square algorithm using salvaging algorithm(s)
-	- added SequenceStatistics
-	- major Statistic reworking
-	- dded DiscrepancyStatistic that
-	inherit from SequenceStatistic and extend it with the calculation
-	of L2-discrepancy
-	- HStatistics
-	- added first and second derivative ot cubic splines
+    MATH
+    - Added Gauss-Kronrod integration algorithm.
+    - Added primitive polynomial modulo 2 up to dimension 18 (available up 
+      to dimension 27.)
+    - Added BicubicSplineInterpolation.
+    - Numerical Recipes algorithm is back since there is a problem with 
+      Nicolas' code: it is unable to fit a straight line, it waves around 
+      the line.
+    - Prime number generation.
+    - Acklam's approximation for inverse cumulative normal distribution 
+      function (replaced Moro's algorithm as default.)
+    - Added error function.
+    - Improved Cumulative Normal Distribution function using the 
+      error function.
+    - Matrix pseudo square algorithm using salvaging algorithm(s).
+    - Added SequenceStatistics.
+    - Major Statistic reworking.
+    - Added DiscrepancyStatistic that inherits from SequenceStatistic and 
+      extends it with the calculation of L2-discrepancy.
+    - HStatistics.
+    - Added first and second derivative ot cubic splines.
 
-	RISK MEASURES
-	- introduced semiVariance and
-	regret
-	- redefinition of average
-	shorfall (normalization factor now is cumulative(target) instead of
-	1.0)
+    RISK MEASURES
+    - Introduced semiVariance and regret.
+    - Redefinition of average shorfall (normalization factor now is 
+      cumulative(target) instead of 1.0)
 
-
-    BUILD PROCESS
 
 =====================================================
 
@@ -159,10 +134,10 @@ Changes since Release 0.3.0:
       accrual period
 
     MISCELLANEA
-	- added/verified holidays of many calendars
-	- added new calendars
-	- added new currencies
-	- more date formatters
+    - added/verified holidays of many calendars
+    - added new calendars
+    - added new currencies
+    - more date formatters
     - added Period(std::string&)
     - it is now possible to advance a calandar using a Period
     - added LogLinear Interpolation
@@ -201,7 +176,7 @@ Changes since Release 0.2.1:
     VOLATILITY FRAMEWORK
     - early works on reorganization of vol structures
 
-	YIELD TERM STRUCTURE
+    YIELD TERM STRUCTURE
     - new TermStructure class based on affine model
     - yield curves can be spreaded in term of zeros
      (ZeroSpreadedTermStructure) and forwards (ForwardSpreadedTermStructure)
@@ -217,8 +192,8 @@ Changes since Release 0.2.1:
     - cap/floor and  swaption tree pricer
     - cap/floor analytical pricer
     - vanilla swaption Jamshidian pricer
-    - Added	accruedAmount() to coupons
-    - Made cash	flow vector builders into functions
+    - Added accruedAmount() to coupons
+    - Made cash flow vector builders into functions
 
     OPTIMIZATION FRAMEWORK
     - added conjugate gradient, simplex
