@@ -30,6 +30,9 @@
 
 // $Source$
 // $Log$
+// Revision 1.11  2001/07/06 18:24:17  nando
+// slight modifications to avoid VisualStudio warnings
+//
 // Revision 1.10  2001/07/05 15:57:22  lballabio
 // Collected typedefs in a single file
 //
@@ -44,7 +47,6 @@
 #define BSM_option_pricer_h
 
 #include "ql/options.hpp"
-#include "ql/types.hpp"
 #include "ql/handle.hpp"
 #include "ql/solver1d.hpp"
 

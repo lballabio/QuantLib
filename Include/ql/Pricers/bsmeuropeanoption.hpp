@@ -30,6 +30,9 @@
 
 // $Source$
 // $Log$
+// Revision 1.7  2001/07/06 18:24:17  nando
+// slight modifications to avoid VisualStudio warnings
+//
 // Revision 1.6  2001/07/05 15:57:22  lballabio
 // Collected typedefs in a single file
 //
@@ -44,7 +47,6 @@
 #define BSM_european_option_pricer_h
 
 #include "ql/Pricers/bsmoption.hpp"
-#include "ql/types.hpp"
 
 namespace QuantLib {
 

@@ -30,14 +30,14 @@
 
 //  $Source$
 //  $Log$
+//  Revision 1.4  2001/07/06 18:24:17  nando
+//  slight modifications to avoid VisualStudio warnings
+//
 //  Revision 1.3  2001/07/02 12:36:17  sigmud
 //  pruned redundant header inclusions
 //
 //  Revision 1.2  2001/06/05 09:35:13  lballabio
 //  Updated docs to use Doxygen 1.2.8
-//
-//  Revision 1.1  2001/05/31 08:56:40  lballabio
-//  Cash flows, scheduler, and generic swap added - the latter should be specialized and tested
 //
 
 #ifndef quantlib_scheduler_hpp
@@ -51,9 +51,9 @@ namespace QuantLib {
     //! %Date scheduler
     class Scheduler {
       public:
-        Scheduler(const Handle<Calendar>& calendar, 
-            const Date& startDate, const Date& endDate, 
-            int frequency, RollingConvention rollingConvention, 
+        Scheduler(const Handle<Calendar>& calendar,
+            const Date& startDate, const Date& endDate,
+            int frequency, RollingConvention rollingConvention,
             bool isAdjusted, const Date& stubDate = Date());
         // inspectors
         int size() const { return dates_.size(); }
@@ -76,7 +76,7 @@ namespace QuantLib {
 
     inline const Date& Scheduler::date(int i) const {
         #if defined(QL_DEBUG)
-            QL_REQUIRE(i >= 0 && i <= dates_.size(),
+            QL_REQUIRE(i >= 0 && i <= int(dates_.size()),
                 "date index out of bounds");
         #endif
         return dates_[i];

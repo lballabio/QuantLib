@@ -28,24 +28,14 @@
 
 // $Source$
 // $Log$
+// Revision 1.21  2001/07/06 18:24:17  nando
+// slight modifications to avoid VisualStudio warnings
+//
 // Revision 1.20  2001/07/05 15:57:22  lballabio
 // Collected typedefs in a single file
 //
 // Revision 1.19  2001/07/03 13:19:38  lballabio
 // Added Knuth random generator after doubts were casted on the NR one
-//
-// Revision 1.18  2001/06/22 16:38:15  lballabio
-// Improved documentation
-//
-// Revision 1.17  2001/06/18 08:05:59  lballabio
-// Reworked indexes and floating rate coupon
-//
-// Revision 1.16  2001/06/15 13:52:06  lballabio
-// Reworked indexes
-//
-// Revision 1.15  2001/06/12 15:05:33  lballabio
-// Renamed Libor to GBPLibor and LiborManager to XiborManager
-//
 
 #ifndef quantlib_h
 #define quantlib_h

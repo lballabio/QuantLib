@@ -2,6 +2,9 @@
 # $Id$
 # $Source$
 # $Log$
+# Revision 1.19  2001/07/06 18:24:17  nando
+# slight modifications to avoid VisualStudio warnings
+#
 # Revision 1.18  2001/05/31 08:56:40  lballabio
 # Cash flows, scheduler, and generic swap added - the latter should be specialized and tested
 #
@@ -67,7 +70,6 @@ TLIB      = tlib
 
 # Options
 CC_OPTS        = -q -c -tWM \
-    -w-8026 -w-8027 -w-8012 \
     -I$(INCLUDE_DIR) \
     -I$(BCC_INCLUDE)
 !ifdef DEBUG

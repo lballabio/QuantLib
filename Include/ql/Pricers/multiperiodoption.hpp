@@ -30,6 +30,9 @@
 
 // $Source$
 // $Log$
+// Revision 1.10  2001/07/06 18:24:17  nando
+// slight modifications to avoid VisualStudio warnings
+//
 // Revision 1.9  2001/06/22 16:38:15  lballabio
 // Improved documentation
 //
@@ -40,8 +43,8 @@
 #ifndef quantlib_multi_period_option_pricer_h
 #define quantlib_multi_period_option_pricer_h
 
-#include "ql/Pricers/bsmnumericaloption.hpp"
 #include "ql/handle.hpp"
+#include "ql/Pricers/bsmnumericaloption.hpp"
 #include "ql/FiniteDifferences/standardstepcondition.hpp"
 #include "ql/FiniteDifferences/standardfdmodel.hpp"
 #include <vector>

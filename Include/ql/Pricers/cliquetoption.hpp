@@ -30,6 +30,9 @@
 
 // $Source$
 // $Log$
+// Revision 1.7  2001/07/06 18:24:17  nando
+// slight modifications to avoid VisualStudio warnings
+//
 // Revision 1.6  2001/06/22 16:38:15  lballabio
 // Improved documentation
 //
@@ -40,8 +43,8 @@
 #ifndef quantlib_pricers_cliquet_option_h
 #define quantlib_pricers_cliquet_option_h
 
-#include <vector>
 #include "ql/Pricers/bsmeuropeanoption.hpp"
+#include <vector>
 
 namespace QuantLib {
     

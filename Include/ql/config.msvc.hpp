@@ -4,6 +4,9 @@
 
 // $Source$
 // $Log$
+// Revision 1.10  2001/07/06 18:24:17  nando
+// slight modifications to avoid VisualStudio warnings
+//
 // Revision 1.9  2001/06/22 16:38:15  lballabio
 // Improved documentation
 //
@@ -21,8 +24,10 @@
 #ifndef quantlib_config_msvc_h
 #define quantlib_config_msvc_h
 
-#pragma warning(disable: 4786)  // identifier truncated in debug info
-#pragma warning(disable: 4190)  // C-linkage of SWIG wrappers
+// disable useless warning
+// 'identifier' : decorated name length exceeded,
+//                name was truncated in debug info
+#pragma warning(disable: 4786)
 
 #define REQUIRES_DUMMY_RETURN
 
