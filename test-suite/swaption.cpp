@@ -30,7 +30,6 @@
 
 using namespace QuantLib;
 using namespace QuantLib::TermStructures;
-using namespace QuantLib::Instruments;
 using namespace QuantLib::Pricers;
 
 namespace {

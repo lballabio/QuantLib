@@ -24,7 +24,6 @@
 
 
 using namespace QuantLib;
-using Instruments::SimpleSwap;
 using TermStructures::PiecewiseFlatForward;
 using TermStructures::FlatForward;
 using TermStructures::RateHelper;

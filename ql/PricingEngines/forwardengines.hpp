@@ -34,7 +34,7 @@ namespace QuantLib {
         //! Forward engine base class
         template<class ArgumentsType, class ResultsType>
         class ForwardEngine : public
-            GenericEngine<Instruments::ForwardOptionArguments<ArgumentsType>,
+            GenericEngine<ForwardOptionArguments<ArgumentsType>,
                           ResultsType> {
           public:
             ForwardEngine(const Handle<GenericEngine<ArgumentsType,

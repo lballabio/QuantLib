@@ -28,132 +28,128 @@
 
 namespace QuantLib {
 
-    namespace Instruments {
+    //! Simple fixed-rate vs Libor swap
+    class SimpleSwap : public Swap {
+      public:
+        class arguments;
+        class results;
+        SimpleSwap(bool payFixedRate,
+                   // dates
+                   const Date& startDate, int n, TimeUnit units,
+                   const Calendar& calendar,
+                   RollingConvention rollingConvention,
+                   double nominal,
+                   // fixed leg
+                   int fixedFrequency,
+                   Rate fixedRate,
+                   bool fixedIsAdjusted,
+                   const DayCounter& fixedDayCount,
+                   // floating leg
+                   int floatingFrequency,
+                   const Handle<Xibor>& index,
+                   int indexFixingDays,
+                   Spread spread,
+                   // hook to term structure
+                   const RelinkableHandle<TermStructure>& termStructure,
+                   // description
+                   const std::string& isinCode = "",
+                   const std::string& description = "");
+        SimpleSwap(bool payFixedRate,
+                   double nominal,
+                   const Schedule& fixedSchedule,
+                   Rate fixedRate,
+                   const DayCounter& fixedDayCount,
+                   const Schedule& floatSchedule,
+                   const Handle<Xibor>& index,
+                   int indexFixingDays,
+                   Spread spread,
+                   const RelinkableHandle<TermStructure>& termStructure,
+                   const std::string& isinCode = "",
+                   const std::string& description = "");
+        // results
+        Rate fairRate() const;
+        Spread fairSpread() const;
+        double fixedLegBPS() const;
+        double floatingLegBPS() const;
+        // inspectors
+        Rate fixedRate() const;
+        Spread spread() const;
+        double nominal() const;
+        bool payFixedRate() const;
+        const std::vector<Handle<CashFlow> >& fixedLeg() const;
+        const std::vector<Handle<CashFlow> >& floatingLeg() const;
+        // other
+        void setupArguments(Arguments* args) const;
+      private:
+        bool payFixedRate_;
+        Rate fixedRate_;
+        Spread spread_;
+        double nominal_;
+    };
 
-        //! Simple fixed-rate vs Libor swap
-        class SimpleSwap : public Swap {
-          public:
-            class arguments;
-            class results;
-            SimpleSwap(bool payFixedRate,
-                       // dates
-                       const Date& startDate, int n, TimeUnit units,
-                       const Calendar& calendar,
-                       RollingConvention rollingConvention,
-                       double nominal,
-                       // fixed leg
-                       int fixedFrequency,
-                       Rate fixedRate,
-                       bool fixedIsAdjusted,
-                       const DayCounter& fixedDayCount,
-                       // floating leg
-                       int floatingFrequency,
-                       const Handle<Xibor>& index,
-                       int indexFixingDays,
-                       Spread spread,
-                       // hook to term structure
-                       const RelinkableHandle<TermStructure>& termStructure,
-                       // description
-                       const std::string& isinCode = "",
-                       const std::string& description = "");
-            SimpleSwap(bool payFixedRate,
-                       double nominal,
-                       const Schedule& fixedSchedule,
-                       Rate fixedRate,
-                       const DayCounter& fixedDayCount,
-                       const Schedule& floatSchedule,
-                       const Handle<Xibor>& index,
-                       int indexFixingDays,
-                       Spread spread,
-                       const RelinkableHandle<TermStructure>& termStructure,
-                       const std::string& isinCode = "",
-                       const std::string& description = "");
-            // results
-            Rate fairRate() const;
-            Spread fairSpread() const;
-            double fixedLegBPS() const;
-            double floatingLegBPS() const;
-            // inspectors
-            Rate fixedRate() const;
-            Spread spread() const;
-            double nominal() const;
-            bool payFixedRate() const;
-            const std::vector<Handle<CashFlow> >& fixedLeg() const;
-            const std::vector<Handle<CashFlow> >& floatingLeg() const;
-            // other
-            void setupArguments(Arguments* args) const;
-          private:
-            bool payFixedRate_;
-            Rate fixedRate_;
-            Spread spread_;
-            double nominal_;
-        };
+    //! arguments for simple swap calculation
+    class SimpleSwap::arguments : public virtual Arguments {
+      public:
+        arguments() : payFixed(false),
+                      nominal(Null<double>()) {}
+        bool payFixed;
+        double nominal;
+        std::vector<Time> fixedResetTimes;
+        std::vector<Time> fixedPayTimes;
+        std::vector<double> fixedCoupons;
+        std::vector<Time> floatingAccrualTimes;
+        std::vector<Time> floatingResetTimes;
+        std::vector<Time> floatingPayTimes;
+        std::vector<Spread> floatingSpreads;
+        void validate() const;
+    };
 
-        //! arguments for simple swap calculation
-        class SimpleSwap::arguments : public virtual Arguments {
-          public:
-            arguments() : payFixed(false),
-                          nominal(Null<double>()) {}
-            bool payFixed;
-            double nominal;
-            std::vector<Time> fixedResetTimes;
-            std::vector<Time> fixedPayTimes;
-            std::vector<double> fixedCoupons;
-            std::vector<Time> floatingAccrualTimes;
-            std::vector<Time> floatingResetTimes;
-            std::vector<Time> floatingPayTimes;
-            std::vector<Spread> floatingSpreads;
-            void validate() const;
-        };
-
-        //! %results from swaption calculation
-        class SimpleSwap::results : public Value {};
+    //! %results from swaption calculation
+    class SimpleSwap::results : public Value {};
 
 
-        // inline definitions
+    // inline definitions
 
-        inline Rate SimpleSwap::fairRate() const {
-            return fixedRate_ - NPV()/fixedLegBPS();
-        }
+    inline Rate SimpleSwap::fairRate() const {
+        return fixedRate_ - NPV()/fixedLegBPS();
+    }
 
-        inline Spread SimpleSwap::fairSpread() const {
-            return spread_ - NPV()/floatingLegBPS();
-        }
+    inline Spread SimpleSwap::fairSpread() const {
+        return spread_ - NPV()/floatingLegBPS();
+    }
 
-        inline double SimpleSwap::fixedLegBPS() const {
-            return (payFixedRate_ ? firstLegBPS() : secondLegBPS());
-        }
+    inline double SimpleSwap::fixedLegBPS() const {
+        return (payFixedRate_ ? firstLegBPS() : secondLegBPS());
+    }
 
-        inline double SimpleSwap::floatingLegBPS() const {
-            return (payFixedRate_ ? secondLegBPS() : firstLegBPS());
-        }
+    inline double SimpleSwap::floatingLegBPS() const {
+        return (payFixedRate_ ? secondLegBPS() : firstLegBPS());
+    }
 
-        inline Rate SimpleSwap::fixedRate() const {
-            return fixedRate_;
-        }
+    inline Rate SimpleSwap::fixedRate() const {
+        return fixedRate_;
+    }
 
-        inline Spread SimpleSwap::spread() const {
-            return spread_;
-        }
+    inline Spread SimpleSwap::spread() const {
+        return spread_;
+    }
 
-        inline double SimpleSwap::nominal() const {
-            return nominal_;
-        }
+    inline double SimpleSwap::nominal() const {
+        return nominal_;
+    }
 
-        inline bool SimpleSwap::payFixedRate() const {
-            return payFixedRate_;
-        }
+    inline bool SimpleSwap::payFixedRate() const {
+        return payFixedRate_;
+    }
 
-        inline const std::vector<Handle<CashFlow> >&
-        SimpleSwap::fixedLeg() const {
-            return (payFixedRate_ ? firstLeg_ : secondLeg_);
-        }
+    inline const std::vector<Handle<CashFlow> >&
+    SimpleSwap::fixedLeg() const {
+        return (payFixedRate_ ? firstLeg_ : secondLeg_);
+    }
 
-        inline const std::vector<Handle<CashFlow> >&
-        SimpleSwap::floatingLeg() const {
-            return (payFixedRate_ ? secondLeg_ : firstLeg_);
-        }
-
+    inline const std::vector<Handle<CashFlow> >&
+    SimpleSwap::floatingLeg() const {
+        return (payFixedRate_ ? secondLeg_ : firstLeg_);
     }
 
 }

@@ -27,7 +27,6 @@ namespace QuantLib {
     namespace Pricers {
 
         using namespace ShortRateModels;
-        using namespace Instruments;
 
         class JamshidianSwaption::rStarFinder {
           public:

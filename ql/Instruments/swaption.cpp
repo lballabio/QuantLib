@@ -26,83 +26,79 @@
 
 namespace QuantLib {
 
-    namespace Instruments {
+    Swaption::Swaption(const Handle<SimpleSwap>& swap, 
+                       const Exercise& exercise,
+                       const RelinkableHandle<TermStructure>& termStructure,
+                       const Handle<PricingEngine>& engine)
+    : Option(engine), swap_(swap), exercise_(exercise),
+      termStructure_(termStructure) {
+        registerWith(swap_);
+        registerWith(termStructure_);
+    }
 
-        Swaption::Swaption(
-            const Handle<SimpleSwap>& swap, const Exercise& exercise,
-            const RelinkableHandle<TermStructure>& termStructure,
-            const Handle<PricingEngine>& engine)
-        : Option(engine), swap_(swap), exercise_(exercise),
-          termStructure_(termStructure) {
-            registerWith(swap_);
-            registerWith(termStructure_);
+    bool Swaption::isExpired() const {
+        return exercise_.dates().back() < termStructure_->referenceDate();
+    }
+
+    void Swaption::setupArguments(Arguments* args) const {
+
+        swap_->setupArguments(args);
+
+        Swaption::arguments* arguments =
+            dynamic_cast<Swaption::arguments*>(args);
+
+        QL_REQUIRE(arguments != 0, 
+                   "Swaption::setupArguments : "
+                   "wrong argument type");
+
+        Date settlement = termStructure_->referenceDate();
+        DayCounter counter = termStructure_->dayCounter();
+
+        // volatilities are calculated for zero-spreaded swaps.
+        // Therefore, the spread on the floating leg is removed
+        // and a corresponding correction is made on the fixed leg.
+        Spread correction = swap_->spread() * 
+            swap_->floatingLegBPS() /
+            swap_->fixedLegBPS();
+        // the above is the opposite of the needed value since the 
+        // two BPSs have opposite sign; hence the + sign below
+        arguments->fixedRate = swap_->fixedRate() + correction;
+        arguments->fairRate = swap_->fairRate() + correction;
+        // this is passed explicitly for precision
+        arguments->fixedBPS = QL_FABS(swap_->fixedLegBPS());
+
+        arguments->exerciseType = exercise_.type();
+        arguments->exerciseTimes.clear();
+        const std::vector<Date> dates = exercise_.dates();
+        for (Size i=0; i<dates.size(); i++) {
+            Time time = counter.yearFraction(settlement, dates[i]);
+            arguments->exerciseTimes.push_back(time);
         }
+    }
 
-        bool Swaption::isExpired() const {
-            return exercise_.dates().back() < termStructure_->referenceDate();
-        }
+    void Swaption::performCalculations() const {
+        Option::performCalculations();
+        QL_ENSURE(NPV_ != Null<double>(),
+                  "null value returned from swaption pricer");
+    }
 
-        void Swaption::setupArguments(Arguments* args) const {
+    void Swaption::arguments::validate() const {
+        #if defined(QL_PATCH_MICROSOFT)
+        SimpleSwap::arguments copy = *this;
+        copy.validate();
+        #else
+        SimpleSwap::arguments::validate();
+        #endif
 
-            swap_->setupArguments(args);
-
-            Swaption::arguments* arguments =
-                dynamic_cast<Swaption::arguments*>(args);
-                
-            QL_REQUIRE(arguments != 0, 
-                       "Swaption::setupArguments : "
-                       "wrong argument type");
-
-            Date settlement = termStructure_->referenceDate();
-            DayCounter counter = termStructure_->dayCounter();
-
-            // volatilities are calculated for zero-spreaded swaps.
-            // Therefore, the spread on the floating leg is removed
-            // and a corresponding correction is made on the fixed leg.
-            Spread correction = swap_->spread() * 
-                                swap_->floatingLegBPS() /
-                                swap_->fixedLegBPS();
-            // the above is the opposite of the needed value since the 
-            // two BPSs have opposite sign; hence the + sign below
-            arguments->fixedRate = swap_->fixedRate() + correction;
-            arguments->fairRate = swap_->fairRate() + correction;
-            // this is passed explicitly for precision
-            arguments->fixedBPS = QL_FABS(swap_->fixedLegBPS());
-
-            arguments->exerciseType = exercise_.type();
-            arguments->exerciseTimes.clear();
-            const std::vector<Date> dates = exercise_.dates();
-            for (Size i=0; i<dates.size(); i++) {
-                Time time = counter.yearFraction(settlement, dates[i]);
-                arguments->exerciseTimes.push_back(time);
-            }
-        }
-
-        void Swaption::performCalculations() const {
-            Option::performCalculations();
-            QL_ENSURE(NPV_ != Null<double>(),
-                      "null value returned from swaption pricer");
-        }
-
-        void Swaption::arguments::validate() const {
-            #if defined(QL_PATCH_MICROSOFT)
-            SimpleSwap::arguments copy = *this;
-            copy.validate();
-            #else
-            SimpleSwap::arguments::validate();
-            #endif
-
-            QL_REQUIRE(fixedRate != Null<double>(), 
-                       "Swaption::arguments: "
-                       "fixed swap rate null or not set");
-            QL_REQUIRE(fairRate != Null<double>(), 
-                       "Swaption::arguments: "
-                       "fair swap rate null or not set");
-            QL_REQUIRE(fixedBPS != Null<double>(), 
-                       "Swaption::arguments: "
-                       "fixed swap BPS null or not set");
-        }
-    
+        QL_REQUIRE(fixedRate != Null<double>(), 
+                   "Swaption::arguments: "
+                   "fixed swap rate null or not set");
+        QL_REQUIRE(fairRate != Null<double>(), 
+                   "Swaption::arguments: "
+                   "fair swap rate null or not set");
+        QL_REQUIRE(fixedBPS != Null<double>(), 
+                   "Swaption::arguments: "
+                   "fixed swap BPS null or not set");
     }
 
 }

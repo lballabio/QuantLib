@@ -50,8 +50,8 @@ namespace QuantLib {
 
               private:
                 Rate exerciseRate_;
-                Handle<Instruments::SimpleSwap> swap_;
-                Handle<Instruments::Swaption> swaption_;
+                Handle<SimpleSwap> swap_;
+                Handle<Swaption> swaption_;
             };
         }
     }

@@ -34,8 +34,8 @@ namespace QuantLib {
 
         //! Vanilla engine base class
         class VanillaEngine 
-        : public GenericEngine<Instruments::VanillaOption::arguments,
-                               Instruments::VanillaOption::results> {};
+        : public GenericEngine<VanillaOption::arguments,
+                               VanillaOption::results> {};
 
         //! Pricing engine for European options using analytical formulae
         class AnalyticEuropeanEngine : public VanillaEngine {

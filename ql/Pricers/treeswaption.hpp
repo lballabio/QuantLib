@@ -32,8 +32,8 @@ namespace QuantLib {
         //! Swaption priced on a lattice
         class TreeSwaption : public
             PricingEngines::LatticeShortRateModelEngine<
-                    Instruments::Swaption::arguments,
-                    Instruments::Swaption::results> {
+                                                        Swaption::arguments,
+                                                        Swaption::results> {
           public:
             TreeSwaption(const Handle<ShortRateModels::Model>& model,
                          Size timeSteps);

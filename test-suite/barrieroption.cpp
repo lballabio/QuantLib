@@ -31,7 +31,6 @@
 
 using namespace QuantLib;
 using namespace QuantLib::PricingEngines;
-using namespace QuantLib::Instruments;
 using namespace QuantLib::TermStructures;
 using namespace QuantLib::VolTermStructures;
 using namespace QuantLib::MonteCarlo;
@@ -42,7 +41,7 @@ namespace {
         Date today = Date::todaysDate();
         Calendar calendar = NullCalendar();
         //Date reference = calendar.advance(today,2,Days);        
-        Date reference = today;        
+        Date reference = today;
         return Handle<TermStructure>(
             new FlatForward(today,reference,
                             RelinkableHandle<MarketElement>(forward),

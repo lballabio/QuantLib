@@ -27,7 +27,6 @@ namespace QuantLib {
 
     namespace Pricers {
 
-        using namespace Instruments;
         using namespace ShortRateModels;
         using namespace Lattices;
         using namespace PricingEngines;

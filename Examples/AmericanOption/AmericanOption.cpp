@@ -126,7 +126,7 @@ int main(int argc, char* argv[])
                 new BlackVarianceSurface(settlementDate, dates, strikes, vols)));
 
         // European option
-        Instruments::VanillaOption euroOption(
+        VanillaOption euroOption(
             type,
             underlyingH,
             strike,
@@ -149,7 +149,7 @@ int main(int argc, char* argv[])
              << std::endl;
 
         // American option
-        Instruments::VanillaOption option(
+        VanillaOption option(
             type,
             underlyingH,
             strike,
@@ -157,7 +157,7 @@ int main(int argc, char* argv[])
             flatTermStructure,
             amExercise,
             flatVolTS);
-        
+
         Size timeSteps = 800;
 
         // Binomial Method (JR)

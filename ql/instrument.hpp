@@ -25,13 +25,10 @@
 #include <ql/Patterns/lazyobject.hpp>
 #include <ql/pricingengine.hpp>
 
-/*! \namespace QuantLib::Instruments
-    \brief Concrete implementations of the Instrument interface
-
-    See sect. \ref instruments
-*/
-
 namespace QuantLib {
+
+    //! \deprecated inner namespace aliases will be removed in next release
+    namespace Instruments = ::QuantLib;
 
     //! Abstract instrument class
     /*! This class is purely abstract and defines the interface of concrete

@@ -28,7 +28,6 @@ namespace QuantLib {
 
     namespace ShortRateModels {
 
-        using namespace Instruments;
         using namespace Math;
         using namespace Optimization;
 

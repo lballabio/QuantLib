@@ -29,7 +29,6 @@ namespace QuantLib {
         using namespace ShortRateModels;
         using namespace Lattices;
         using namespace PricingEngines;
-        using namespace Instruments;
 
         TreeSwaption::TreeSwaption(
             const Handle<ShortRateModels::Model>& model,

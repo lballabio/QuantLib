@@ -63,8 +63,7 @@ namespace QuantLib {
                                       double strike,
                                       Time maturity,
                                       Time bondMaturity) const;
-            double swaption(
-                const Instruments::Swaption::arguments& arguments) const;
+            double swaption(const Swaption::arguments& arguments) const;
 
             DiscountFactor discount(Time t) const {
                 return termStructure()->discount(t);

@@ -26,69 +26,65 @@
 
 namespace QuantLib {
 
-    namespace Instruments {
+    //! arguments for forward (strike-resetting) option calculation
+    template <class ArgumentsType> 
+    class ForwardOptionArguments : public ArgumentsType {
+      public:
+        ForwardOptionArguments() : moneyness(Null<double>()),
+                                   resetDate(Null<Date>()) {}
+        void validate() const;
+        double moneyness;
+        Date resetDate;
+    };
 
-        //! arguments for forward (strike-resetting) option calculation
-        template <class ArgumentsType> 
-        class ForwardOptionArguments : public ArgumentsType {
-          public:
-            ForwardOptionArguments() : moneyness(Null<double>()),
-                                       resetDate(Null<Date>()) {}
-            void validate() const;
-            double moneyness;
-            Date resetDate;
-        };
-
-        //! Forward version of a vanilla option
-        class ForwardVanillaOption : public VanillaOption {
-          public:
-            typedef ForwardOptionArguments<VanillaOption::arguments> arguments;
-            typedef VanillaOption::results results;
-            ForwardVanillaOption(
-                Option::Type type,
-                const RelinkableHandle<MarketElement>& underlying,
-                const RelinkableHandle<TermStructure>& dividendTS,
-                const RelinkableHandle<TermStructure>& riskFreeTS,
-                const Exercise& exercise,
-                const RelinkableHandle<BlackVolTermStructure>& volTS,
-                const Handle<PricingEngine>& engine,
-                double moneyness,
-                Date resetDate,
-                const std::string& isinCode = "",
-                const std::string& description = "");
-            void setupArguments(Arguments*) const;
-          protected:
-            void performCalculations() const;
-          private:
-            // arguments
-            double moneyness_;
-            Date resetDate_;
-        };
+    //! Forward version of a vanilla option
+    class ForwardVanillaOption : public VanillaOption {
+      public:
+        typedef ForwardOptionArguments<VanillaOption::arguments> arguments;
+        typedef VanillaOption::results results;
+        ForwardVanillaOption(
+                         Option::Type type,
+                         const RelinkableHandle<MarketElement>& underlying,
+                         const RelinkableHandle<TermStructure>& dividendTS,
+                         const RelinkableHandle<TermStructure>& riskFreeTS,
+                         const Exercise& exercise,
+                         const RelinkableHandle<BlackVolTermStructure>& volTS,
+                         const Handle<PricingEngine>& engine,
+                         double moneyness,
+                         Date resetDate,
+                         const std::string& isinCode = "",
+                         const std::string& description = "");
+        void setupArguments(Arguments*) const;
+      protected:
+        void performCalculations() const;
+      private:
+        // arguments
+        double moneyness_;
+        Date resetDate_;
+    };
 
 
 
-        template <class ArgumentsType> 
-        void ForwardOptionArguments<ArgumentsType>::validate() const {
-            ArgumentsType::validate();
-            QL_REQUIRE(moneyness != Null<double>(),
-                       "ForwardOption::arguments::validate() : "
-                       "null moneyness given");
-            QL_REQUIRE(moneyness > 0.0,
-                       "ForwardOption::arguments::validate() : "
-                       "negative or zero moneyness given");
-            QL_REQUIRE(resetDate != Null<Date>(),
-                       "ForwardOption::arguments::validate() : "
-                       "null reset date given");
-            Time resetTime = riskFreeTS->dayCounter().yearFraction(
+    template <class ArgumentsType> 
+    void ForwardOptionArguments<ArgumentsType>::validate() const {
+        ArgumentsType::validate();
+        QL_REQUIRE(moneyness != Null<double>(),
+                   "ForwardOption::arguments::validate() : "
+                   "null moneyness given");
+        QL_REQUIRE(moneyness > 0.0,
+                   "ForwardOption::arguments::validate() : "
+                   "negative or zero moneyness given");
+        QL_REQUIRE(resetDate != Null<Date>(),
+                   "ForwardOption::arguments::validate() : "
+                   "null reset date given");
+        Time resetTime = riskFreeTS->dayCounter().yearFraction(
                                       riskFreeTS->referenceDate(), resetDate);
-            QL_REQUIRE(resetTime >=0,
-                       "ForwardOption::arguments::validate() : "
-                       "negative reset time given");
-            QL_REQUIRE(maturity >= resetTime,
-                       "ForwardOption::arguments::validate() : "
-                       "reset time greater than maturity");
-        }
-
+        QL_REQUIRE(resetTime >=0,
+                   "ForwardOption::arguments::validate() : "
+                   "negative reset time given");
+        QL_REQUIRE(maturity >= resetTime,
+                   "ForwardOption::arguments::validate() : "
+                   "reset time greater than maturity");
     }
 
 }

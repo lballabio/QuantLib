@@ -25,8 +25,6 @@ namespace QuantLib {
 
     namespace Pricers {
 
-        using Instruments::CapFloor;
-
         void AnalyticalCapFloor::calculate() const {
             QL_REQUIRE(!model_.isNull(), 
                        "AnalyticalCapFloor: cannot price without model!");

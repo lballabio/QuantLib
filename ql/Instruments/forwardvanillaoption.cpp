@@ -23,60 +23,57 @@
 
 namespace QuantLib {
 
-    namespace Instruments {
+    ForwardVanillaOption::ForwardVanillaOption(
+                         Option::Type type,
+                         const RelinkableHandle<MarketElement>& underlying,
+                         const RelinkableHandle<TermStructure>& dividendTS,
+                         const RelinkableHandle<TermStructure>& riskFreeTS,
+                         const Exercise& exercise,
+                         const RelinkableHandle<BlackVolTermStructure>& volTS,
+                         const Handle<PricingEngine>& engine,
+                         double moneyness,
+                         Date resetDate,
+                         const std::string& isinCode,
+                         const std::string& description)
+    : VanillaOption(type, underlying, 0.0, dividendTS, riskFreeTS,
+                    exercise, volTS, engine, isinCode, description),
+      moneyness_(moneyness), resetDate_(resetDate) {}
 
-        ForwardVanillaOption::ForwardVanillaOption(Option::Type type,
-            const RelinkableHandle<MarketElement>& underlying,
-            const RelinkableHandle<TermStructure>& dividendTS,
-            const RelinkableHandle<TermStructure>& riskFreeTS,
-            const Exercise& exercise,
-            const RelinkableHandle<BlackVolTermStructure>& volTS,
-            const Handle<PricingEngine>& engine,
-            double moneyness,
-            Date resetDate,
-            const std::string& isinCode,
-            const std::string& description)
-        : VanillaOption(type, underlying, 0.0, dividendTS, riskFreeTS,
-          exercise, volTS, engine, isinCode, description),
-          moneyness_(moneyness), resetDate_(resetDate) {}
+    void ForwardVanillaOption::setupArguments(Arguments* args) const {
+        VanillaOption::setupArguments(args);
+        ForwardVanillaOption::arguments* arguments =
+            dynamic_cast<ForwardVanillaOption::arguments*>(args);
+        QL_REQUIRE(arguments != 0,
+                   "ForwardVanillaOption::setupArguments :"
+                   "wrong argument type");
 
-        void ForwardVanillaOption::setupArguments(Arguments* args) const {
-            VanillaOption::setupArguments(args);
-            ForwardVanillaOption::arguments* arguments =
-                dynamic_cast<ForwardVanillaOption::arguments*>(args);
-            QL_REQUIRE(arguments != 0,
-                       "ForwardVanillaOption::setupArguments :"
-                       "wrong argument type");
+        arguments->moneyness = moneyness_;
+        arguments->resetDate = resetDate_;
 
-            arguments->moneyness = moneyness_;
-            arguments->resetDate = resetDate_;
+    }
+
+    void ForwardVanillaOption::performCalculations() const {
+        if (isExpired()) {
+            NPV_ = delta_ = gamma_ = theta_ =
+                vega_ =   rho_ = dividendRho_ = strikeSensitivity_ = 0.0;
+        } else {
+            Option::performCalculations();
+
+            const ForwardVanillaOption::results* results =
+                dynamic_cast<const ForwardVanillaOption::results*>(
+                                                          engine_->results());
+            QL_ENSURE(results != 0,
+                      "no results returned from pricing engine");
+            delta_       = results->delta;
+            gamma_       = results->gamma;
+            theta_       = results->theta;
+            vega_        = results->vega;
+            rho_         = results->rho;
+            dividendRho_ = results->dividendRho;
 
         }
-
-        void ForwardVanillaOption::performCalculations() const {
-            if (isExpired()) {
-                NPV_ = delta_ = gamma_ = theta_ =
-                    vega_ =   rho_ = dividendRho_ = strikeSensitivity_ = 0.0;
-            } else {
-                Option::performCalculations();
-
-                const ForwardVanillaOption::results* results =
-                    dynamic_cast<const ForwardVanillaOption::results*>(
-                        engine_->results());
-                QL_ENSURE(results != 0,
-                          "no results returned from pricing engine");
-                delta_       = results->delta;
-                gamma_       = results->gamma;
-                theta_       = results->theta;
-                vega_        = results->vega;
-                rho_         = results->rho;
-                dividendRho_ = results->dividendRho;
-
-            }
-            QL_ENSURE(NPV_ != Null<double>(),
-                      "null value returned from option pricer");
-        }
-
+        QL_ENSURE(NPV_ != Null<double>(),
+                  "null value returned from option pricer");
     }
 
 }

@@ -18,7 +18,6 @@
 #include <ql/quantlib.hpp>
 
 using namespace QuantLib;
-using namespace QuantLib::Instruments;
 using namespace QuantLib::Pricers;
 using namespace QuantLib::ShortRateModels;
 using namespace QuantLib::TermStructures;
@@ -274,7 +273,7 @@ int main(int argc, char* argv[])
             bermudanDates.push_back(coupon->accrualStartDate());
         }
 
-        Instruments::Swaption bermudanSwaption(atmSwap,
+        Swaption bermudanSwaption(atmSwap,
             BermudanExercise(bermudanDates), rhTermStructure,
             Handle<PricingEngine>(new TreeSwaption(modelHW, 100)));
 
@@ -293,7 +292,7 @@ int main(int argc, char* argv[])
 
         std::cout << "Pricing an OTM bermudan swaption" << std::endl;
 
-        Instruments::Swaption otmBermudanSwaption(otmSwap,
+        Swaption otmBermudanSwaption(otmSwap,
             BermudanExercise(bermudanDates), rhTermStructure,
             Handle<PricingEngine>(new TreeSwaption(modelHW, 100)));
 
@@ -312,7 +311,7 @@ int main(int argc, char* argv[])
 
         std::cout << "Pricing an ITM bermudan swaption" << std::endl;
 
-        Instruments::Swaption itmBermudanSwaption(itmSwap,
+        Swaption itmBermudanSwaption(itmSwap,
             BermudanExercise(bermudanDates), rhTermStructure,
             Handle<PricingEngine>(new TreeSwaption(modelHW, 100)));
 

@@ -29,41 +29,38 @@
 
 namespace QuantLib {
 
-    namespace Instruments {
-
-        //! Interest rate swap
-        /*! The cash flows belonging to the first leg are payed;
-            the ones belonging to the first leg are received. */
-        class Swap : public Instrument {
-          public:
-            Swap(const std::vector<Handle<CashFlow> >& firstLeg,
-                 const std::vector<Handle<CashFlow> >& secondLeg,
-                 const RelinkableHandle<TermStructure>& termStructure,
-                 const std::string& isinCode = "",
-                 const std::string& description = "");
-            //! \name Instrument interface
-            //@{
-            bool isExpired() const;
-            //@}
-            //! \name Additional interface
-            //@{
-            Date startDate() const;
-            Date maturity() const;
-            double firstLegBPS() const;
-            double secondLegBPS() const;
-            TimeBasket sensitivity(int basis = 2) const;
-            //@}
-          protected:
-            // methods
-            void setupExpired() const;
-            void performCalculations() const;
-            // data members
-            std::vector<Handle<CashFlow> > firstLeg_, secondLeg_;
-            RelinkableHandle<TermStructure> termStructure_;
-            mutable double firstLegBPS_, secondLegBPS_;
-        };
-
-    }
+    //! Interest rate swap
+    /*! The cash flows belonging to the first leg are payed;
+        the ones belonging to the first leg are received. 
+    */
+    class Swap : public Instrument {
+      public:
+        Swap(const std::vector<Handle<CashFlow> >& firstLeg,
+             const std::vector<Handle<CashFlow> >& secondLeg,
+             const RelinkableHandle<TermStructure>& termStructure,
+             const std::string& isinCode = "",
+             const std::string& description = "");
+        //! \name Instrument interface
+        //@{
+        bool isExpired() const;
+        //@}
+        //! \name Additional interface
+        //@{
+        Date startDate() const;
+        Date maturity() const;
+        double firstLegBPS() const;
+        double secondLegBPS() const;
+        TimeBasket sensitivity(int basis = 2) const;
+        //@}
+      protected:
+        // methods
+        void setupExpired() const;
+        void performCalculations() const;
+        // data members
+        std::vector<Handle<CashFlow> > firstLeg_, secondLeg_;
+        RelinkableHandle<TermStructure> termStructure_;
+        mutable double firstLegBPS_, secondLegBPS_;
+    };
 
 }
 

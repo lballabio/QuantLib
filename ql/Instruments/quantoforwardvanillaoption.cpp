@@ -23,54 +23,50 @@
 
 namespace QuantLib {
 
-    namespace Instruments {
+    QuantoForwardVanillaOption::QuantoForwardVanillaOption(
+                 Option::Type type,
+                 const RelinkableHandle<MarketElement>& underlying,
+                 double strike,
+                 const RelinkableHandle<TermStructure>& dividendTS,
+                 const RelinkableHandle<TermStructure>& riskFreeTS,
+                 const Exercise& exercise,
+                 const RelinkableHandle<BlackVolTermStructure>& volTS,
+                 const Handle<PricingEngine>& engine,
+                 const RelinkableHandle<TermStructure>& foreignRiskFreeTS,
+                 const RelinkableHandle<BlackVolTermStructure>& exchRateVolTS,
+                 const RelinkableHandle<MarketElement>& correlation,
+                 double moneyness,
+                 Date resetDate,
+                 const std::string& isinCode,
+                 const std::string& description)
+    : QuantoVanillaOption(type, underlying, strike, dividendTS, riskFreeTS,
+                          exercise, volTS, engine, foreignRiskFreeTS, 
+                          exchRateVolTS, correlation, isinCode, description), 
+      moneyness_(moneyness), resetDate_(resetDate) {
+        QL_REQUIRE(!engine.isNull(),
+                   "QuantoForwardVanillaOption::QuantoForwardVanillaOption : "
+                   "null engine or wrong engine type");
+    }
 
-        QuantoForwardVanillaOption::QuantoForwardVanillaOption(
-            Option::Type type,
-            const RelinkableHandle<MarketElement>& underlying,
-            double strike,
-            const RelinkableHandle<TermStructure>& dividendTS,
-            const RelinkableHandle<TermStructure>& riskFreeTS,
-            const Exercise& exercise,
-            const RelinkableHandle<BlackVolTermStructure>& volTS,
-            const Handle<PricingEngine>& engine,
-            const RelinkableHandle<TermStructure>& foreignRiskFreeTS,
-            const RelinkableHandle<BlackVolTermStructure>& exchRateVolTS,
-            const RelinkableHandle<MarketElement>& correlation,
-            double moneyness,
-            Date resetDate,
-            const std::string& isinCode,
-            const std::string& description)
-        : QuantoVanillaOption(type, underlying, strike, dividendTS, riskFreeTS,
-          exercise, volTS, engine, foreignRiskFreeTS, exchRateVolTS,
-          correlation, isinCode, description), moneyness_(moneyness),
-          resetDate_(resetDate) {
-            QL_REQUIRE(!engine.isNull(),
-                "QuantoForwardVanillaOption::QuantoForwardVanillaOption : "
-                "null engine or wrong engine type");
-        }
+    void QuantoForwardVanillaOption::setupArguments(Arguments* args) 
+        const {
+        VanillaOption::setupArguments(args);
+        QuantoForwardVanillaOption::arguments* arguments =
+            dynamic_cast<QuantoForwardVanillaOption::arguments*>(args);
+        QL_REQUIRE(arguments != 0,
+                   "QuantoForwardVanillaOption::setupArguments() : "
+                   "pricing engine does not supply needed arguments");
 
-        void QuantoForwardVanillaOption::setupArguments(Arguments* args) 
-                                                                    const {
-            VanillaOption::setupArguments(args);
-            QuantoForwardVanillaOption::arguments* arguments =
-                dynamic_cast<QuantoForwardVanillaOption::arguments*>(args);
-            QL_REQUIRE(arguments != 0,
-               "QuantoForwardVanillaOption::setupArguments() : "
-               "pricing engine does not supply needed arguments");
+        arguments->foreignRiskFreeTS = foreignRiskFreeTS_;
+        arguments->exchRateVolTS = exchRateVolTS_;
+        QL_REQUIRE(!correlation_.isNull(),
+                   "QuantoVanillaOption::setupArguments() : "
+                   "null correlation given");
+        arguments->correlation =
+            correlation_->value();
 
-            arguments->foreignRiskFreeTS = foreignRiskFreeTS_;
-            arguments->exchRateVolTS = exchRateVolTS_;
-            QL_REQUIRE(!correlation_.isNull(),
-                "QuantoVanillaOption::setupArguments() : "
-                "null correlation given");
-            arguments->correlation =
-                correlation_->value();
-
-            arguments->moneyness = moneyness_;
-            arguments->resetDate = resetDate_;
-
-        }
+        arguments->moneyness = moneyness_;
+        arguments->resetDate = resetDate_;
 
     }
 

@@ -42,8 +42,8 @@ namespace QuantLib {
 
         //! Binary engine base class
         class BinaryEngine 
-            : public GenericEngine<Instruments::BinaryOption::arguments,
-            Instruments::BinaryOption::results> {};
+            : public GenericEngine<BinaryOption::arguments,
+                                   BinaryOption::results> {};
 
         //! Pricing engine for European binary options using analytic formulae
         class AnalyticEuropeanBinaryEngine : public BinaryEngine {

@@ -22,7 +22,6 @@
 #include <cppunit/TestCaller.h>
 
 using namespace QuantLib;
-using QuantLib::Instruments::Stock;
 
 void InstrumentTest::testObservable() {
 

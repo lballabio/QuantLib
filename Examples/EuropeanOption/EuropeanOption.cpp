@@ -19,7 +19,6 @@
 #include <ql/quantlib.hpp>
 
 using namespace QuantLib;
-using namespace QuantLib::Instruments;
 using namespace QuantLib::PricingEngines;
 using namespace QuantLib::Math;
 using namespace QuantLib::MonteCarlo;
@@ -232,18 +231,30 @@ int main(int argc, char* argv[])
         strikes[3] = underlying*1.2;
 
         Matrix vols(4,4);
-        vols[0][0] = volatility*1.1; vols[0][1] = volatility; vols[0][2] = volatility*0.9; vols[0][3] = volatility*0.8;
-        vols[1][0] = volatility*1.1; vols[1][1] = volatility; vols[1][2] = volatility*0.9; vols[1][3] = volatility*0.8;
-        vols[2][0] = volatility*1.1; vols[2][1] = volatility; vols[2][2] = volatility*0.9; vols[2][3] = volatility*0.8;
-        vols[3][0] = volatility*1.1; vols[3][1] = volatility; vols[3][2] = volatility*0.9; vols[3][3] = volatility*0.8;
-        
+        vols[0][0] = volatility*1.1; 
+                     vols[0][1] = volatility; 
+                                  vols[0][2] = volatility*0.9; 
+                                               vols[0][3] = volatility*0.8;
+        vols[1][0] = volatility*1.1; 
+                     vols[1][1] = volatility; 
+                                  vols[1][2] = volatility*0.9; 
+                                               vols[1][3] = volatility*0.8;
+        vols[2][0] = volatility*1.1; 
+                     vols[2][1] = volatility; 
+                                  vols[2][2] = volatility*0.9; 
+                                               vols[2][3] = volatility*0.8;
+        vols[3][0] = volatility*1.1; 
+                     vols[3][1] = volatility; 
+                                  vols[3][2] = volatility*0.9; 
+                                               vols[3][3] = volatility*0.8;
+
         RelinkableHandle<BlackVolTermStructure> blackSurface(
             Handle<BlackVolTermStructure>(
                 new BlackVarianceSurface(settlementDate, dates, 
                                          strikes, vols)));
 
 
-        Instruments::VanillaOption option(
+        VanillaOption option(
             type,
             underlyingH,
             strike,
@@ -482,7 +493,7 @@ int main(int argc, char* argv[])
                                           VanillaOption::results>(baseEngine));
 
         double correlation = 0.0;
-        Instruments::QuantoVanillaOption quantoOption(
+        QuantoVanillaOption quantoOption(
             type,
             underlyingH,
             strike,
@@ -543,7 +554,7 @@ int main(int argc, char* argv[])
             forwardEngine(new ForwardEngine<VanillaOption::arguments,
                                             VanillaOption::results>(baseEngine));
 
-        Instruments::ForwardVanillaOption forwardOption(
+        ForwardVanillaOption forwardOption(
             type,
             underlyingH,
             flatDividendTS,
@@ -631,7 +642,7 @@ int main(int argc, char* argv[])
                new QuantoEngine<ForwardVanillaOption::arguments,
                                 ForwardVanillaOption::results>(forwardEngine));
 
-        Instruments::QuantoForwardVanillaOption quantoForwardOption(
+        QuantoForwardVanillaOption quantoForwardOption(
             type,
             underlyingH,
             strike,

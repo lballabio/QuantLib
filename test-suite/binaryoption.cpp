@@ -33,7 +33,6 @@
 
 using namespace QuantLib;
 using namespace QuantLib::PricingEngines;
-using namespace QuantLib::Instruments;
 using namespace QuantLib::TermStructures;
 using namespace QuantLib::VolTermStructures;
 
@@ -128,7 +127,7 @@ void BinaryOptionTest::testValues() {
         Date exDate = calendar.advance(today,values[i].years,Years);
         EuropeanExercise exercise(exDate);
 
-        Instruments::BinaryOption binaryOption(
+        BinaryOption binaryOption(
                 values[i].type, 
                 values[i].barrier, 
                 values[i].rebate, 
@@ -212,7 +211,7 @@ void BinaryOptionTest::testAmericanValues() {
         Date exDate = calendar.advance(today,values[i].years,Years);
         AmericanExercise amExercise(today, exDate);
 
-        Instruments::BinaryOption binaryOption(
+        BinaryOption binaryOption(
                 values[i].type, 
                 values[i].barrier, 
                 values[i].rebate, 
@@ -314,7 +313,7 @@ void BinaryOptionTest::testSelfConsistency() {
 //                  Spread dQ = q*1.0e-4;
 
                   // reference option
-                  Instruments::BinaryOption opt(
+                  BinaryOption opt(
                       binaryTypes[j], 
                       k, 
                       rebate, 
@@ -513,7 +512,7 @@ void BinaryOptionTest::testEngineConsistency() {
                   volatilityH_SME->setValue(v);
 
                   // reference option
-                  Instruments::BinaryOption opt(
+                  BinaryOption opt(
                       binaryTypes[j], 
                       barrier, 
                       cashPayoff, 

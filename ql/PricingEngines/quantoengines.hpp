@@ -33,8 +33,8 @@ namespace QuantLib {
         //! Quanto engine base class
         template<class ArgumentsType, class ResultsType>
         class QuantoEngine : public
-            GenericEngine<Instruments::QuantoOptionArguments<ArgumentsType>,
-                          Instruments::QuantoOptionResults<ResultsType> > {
+            GenericEngine<QuantoOptionArguments<ArgumentsType>,
+                          QuantoOptionResults<ResultsType> > {
           public:
             QuantoEngine(const Handle<GenericEngine<ArgumentsType,
                                                     ResultsType> >&);

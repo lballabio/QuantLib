@@ -226,7 +226,7 @@ namespace QuantLib {
             bool fixedIsAdjusted_;
             DayCounter fixedDayCount_;
             Date settlement_;
-            Handle<Instruments::SimpleSwap> swap_;
+            Handle<SimpleSwap> swap_;
             RelinkableHandle<TermStructure> termStructureHandle_;
         };
 

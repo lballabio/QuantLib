@@ -33,7 +33,7 @@ namespace QuantLib {
         class DiscretizedSwap : public DiscretizedAsset {
           public:
             DiscretizedSwap(const Handle<NumericalMethod>& method,
-                            const Instruments::SimpleSwap::arguments& params)
+                            const SimpleSwap::arguments& params)
             : DiscretizedAsset(method), arguments_(params) {}
 
             void reset(Size size) {
@@ -63,14 +63,14 @@ namespace QuantLib {
                 }
             }
           private:
-            Instruments::SimpleSwap::arguments arguments_;
+            SimpleSwap::arguments arguments_;
         };
 
         class DiscretizedSwaption : public DiscretizedOption {
           public:
             DiscretizedSwaption(
                 const Handle<DiscretizedSwap>& swap,
-                const Instruments::Swaption::arguments& params)
+                const Swaption::arguments& params)
             : DiscretizedOption(swap,
                                 params.exerciseType,
                                 params.exerciseTimes) {}

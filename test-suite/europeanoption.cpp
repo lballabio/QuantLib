@@ -30,7 +30,6 @@
 
 using namespace QuantLib;
 using namespace QuantLib::PricingEngines;
-using namespace QuantLib::Instruments;
 using namespace QuantLib::TermStructures;
 using namespace QuantLib::VolTermStructures;
 using namespace QuantLib::MonteCarlo;

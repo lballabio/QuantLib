@@ -25,8 +25,6 @@ namespace QuantLib {
 
     namespace Pricers {
 
-        using Instruments::CapFloor;
-
         void BlackCapFloor::calculate() const {
             double value = 0.0;
             CapFloor::Type type = arguments_.type;

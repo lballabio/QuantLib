@@ -29,8 +29,6 @@ namespace QuantLib {
 
         namespace CalibrationHelpers {
 
-            using namespace Instruments;
-
             SwaptionHelper::SwaptionHelper(
                 const Period& maturity,
                 const Period& length,

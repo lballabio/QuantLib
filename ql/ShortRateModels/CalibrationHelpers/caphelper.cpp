@@ -30,8 +30,6 @@ namespace QuantLib {
 
         namespace CalibrationHelpers {
 
-            using namespace Instruments;
-
             CapHelper::CapHelper(
                 const Period& length,
                 const RelinkableHandle<MarketElement>& volatility,

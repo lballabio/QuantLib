@@ -26,75 +26,71 @@
 
 namespace QuantLib {
 
-    namespace Instruments {
+    //! currently just a container for arguments and results
+    class CliquetOption {
+      public:
+        class arguments;
+        class results;
+    };
 
-        //! currently just a container for arguments and results
-        class CliquetOption {
-          public:
-            class arguments;
-            class results;
-        };
+    //! arguments for cliquet option calculation
+    // should inherit from a strikeless version of VanillaOption::arguments
+    class CliquetOption::arguments : public VanillaOption::arguments {
+      public:
+        arguments() : moneyness(Null<double>()),
+                      accruedCoupon(Null<double>()),
+                      lastFixing(Null<double>()),
+                      localCap(Null<double>()),
+                      localFloor(Null<double>()),
+                      globalCap(Null<double>()),
+                      globalFloor(Null<double>()) {}
+        void validate() const;
+        double moneyness, accruedCoupon, lastFixing;
+        double localCap, localFloor, globalCap, globalFloor;
+        std::vector<Date> resetDates;
+    };
 
-        //! arguments for cliquet option calculation
-        // should inherit from a strikeless version of VanillaOption::arguments
-        class CliquetOption::arguments : public VanillaOption::arguments {
-          public:
-            arguments() : moneyness(Null<double>()),
-                          accruedCoupon(Null<double>()),
-                          lastFixing(Null<double>()),
-                          localCap(Null<double>()),
-                          localFloor(Null<double>()),
-                          globalCap(Null<double>()),
-                          globalFloor(Null<double>()) {}
-            void validate() const;
-            double moneyness, accruedCoupon, lastFixing;
-            double localCap, localFloor, globalCap, globalFloor;
-            std::vector<Date> resetDates;
-        };
 
-        
-        inline void CliquetOption::arguments::validate() const {
-            #if defined(QL_PATCH_MICROSOFT)
-            VanillaOption::arguments copy = *this;
-            copy.validate();
-            #else
-            VanillaOption::arguments::validate();
-            #endif
+    inline void CliquetOption::arguments::validate() const {
+        #if defined(QL_PATCH_MICROSOFT)
+        VanillaOption::arguments copy = *this;
+        copy.validate();
+        #else
+        VanillaOption::arguments::validate();
+        #endif
 
-            QL_REQUIRE(moneyness != Null<double>(),
+        QL_REQUIRE(moneyness != Null<double>(),
+                   "CliquetOption::arguments::validate() : "
+                   "null moneyness given");
+        QL_REQUIRE(moneyness > 0.0,
+                   "CliquetOption::arguments::validate() : "
+                   "negative or zero moneyness given");
+        QL_REQUIRE(accruedCoupon == Null<double>() || accruedCoupon >= 0.0,
+                   "CliquetOption::arguments::validate() : "
+                   "negative accrued coupon");
+        QL_REQUIRE(localCap == Null<double>() || localCap >= 0.0,
+                   "CliquetOption::arguments::validate() : "
+                   "negative local cap");
+        QL_REQUIRE(localFloor == Null<double>() || localFloor >= 0.0,
+                   "CliquetOption::arguments::validate() : "
+                   "negative local floor");
+        QL_REQUIRE(globalCap == Null<double>() || globalCap >= 0.0,
+                   "CliquetOption::arguments::validate() : "
+                   "negative global cap");
+        QL_REQUIRE(globalFloor == Null<double>() || globalFloor >= 0.0,
+                   "CliquetOption::arguments::validate() : "
+                   "negative global floor");
+        QL_REQUIRE(resetDates.size()>0,
+                   "CliquetOption::arguments::validate() : "
+                   "no reset dates given");
+        // sort resetDates here ???
+        for (Size i = 0; i < resetDates.size(); i++) {
+            Time resetTime = riskFreeTS->dayCounter().yearFraction(
+                                  riskFreeTS->referenceDate(), resetDates[i]);
+            QL_REQUIRE(maturity >= resetTime,
                        "CliquetOption::arguments::validate() : "
-                       "null moneyness given");
-            QL_REQUIRE(moneyness > 0.0,
-                       "CliquetOption::arguments::validate() : "
-                       "negative or zero moneyness given");
-            QL_REQUIRE(accruedCoupon == Null<double>() || accruedCoupon >= 0.0,
-                       "CliquetOption::arguments::validate() : "
-                       "negative accrued coupon");
-            QL_REQUIRE(localCap == Null<double>() || localCap >= 0.0,
-                       "CliquetOption::arguments::validate() : "
-                       "negative local cap");
-            QL_REQUIRE(localFloor == Null<double>() || localFloor >= 0.0,
-                       "CliquetOption::arguments::validate() : "
-                       "negative local floor");
-            QL_REQUIRE(globalCap == Null<double>() || globalCap >= 0.0,
-                       "CliquetOption::arguments::validate() : "
-                       "negative global cap");
-            QL_REQUIRE(globalFloor == Null<double>() || globalFloor >= 0.0,
-                       "CliquetOption::arguments::validate() : "
-                       "negative global floor");
-            QL_REQUIRE(resetDates.size()>0,
-                       "CliquetOption::arguments::validate() : "
-                       "no reset dates given");
-            // sort resetDates here ???
-            for (Size i = 0; i < resetDates.size(); i++) {
-                Time resetTime = riskFreeTS->dayCounter().yearFraction(
-                    riskFreeTS->referenceDate(), resetDates[i]);
-                QL_REQUIRE(maturity >= resetTime,
-                           "CliquetOption::arguments::validate() : "
-                           "reset time greater than maturity");
-            }
+                       "reset time greater than maturity");
         }
-
     }
 
 }

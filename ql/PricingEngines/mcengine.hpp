@@ -37,9 +37,8 @@ namespace QuantLib {
             Deriving a class from McEngine gives an easy way to write
             a Monte Carlo engine.
 
-            See McVanillaEngine as example of one factor engine,
-            McBasketEngine as example of multi factor engine.
-        */        
+            See McVanillaEngine as an example of one factor engine.
+        */
 
         template <class MC,
                   class S = Math::Statistics>
@@ -185,7 +184,7 @@ namespace QuantLib {
             return mcModel_->sampleAccumulator();
         }
 
-    
+
 
         //! Base class for Monte Carlo vanilla option engines
         template<class RNG = MonteCarlo::PseudoRandom, 
@@ -225,7 +224,7 @@ namespace QuantLib {
 
         // inline definitions
 
-        template<class RNG, class S>        
+        template<class RNG, class S>
         inline
         MCVanillaEngine<RNG,S>::MCVanillaEngine(Size maxTimeStepsPerYear,
                                                 bool antitheticVariate,
@@ -290,14 +289,14 @@ namespace QuantLib {
                            "engine does not provide "
                            "control variation pricing engine");
 
-                Instruments::VanillaOption::arguments* controlArguments =
-                    dynamic_cast<Instruments::VanillaOption::arguments*>(
+                VanillaOption::arguments* controlArguments =
+                    dynamic_cast<VanillaOption::arguments*>(
                         controlPE->arguments());
                 *controlArguments = arguments_;
                 controlPE->calculate();
 
-                const Instruments::VanillaOption::results* controlResults =
-                    dynamic_cast<const Instruments::VanillaOption::results*>(
+                const VanillaOption::results* controlResults =
+                    dynamic_cast<const VanillaOption::results*>(
                         controlPE->results());
                 double controlVariateValue = controlResults->value;
 
@@ -309,7 +308,7 @@ namespace QuantLib {
                            pathGenerator(), pathPricer(), stats_type(), 
                            antitheticVariate_, controlPP, 
                            controlVariateValue));
-           
+
             } else {
                 mcModel_ = 
                     Handle<MonteCarlo::MonteCarloModel<

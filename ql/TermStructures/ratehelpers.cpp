@@ -23,8 +23,6 @@
 
 namespace QuantLib {
 
-    using Instruments::SimpleSwap;
-
     namespace TermStructures {
 
         RateHelper::RateHelper(const RelinkableHandle<MarketElement>& quote)

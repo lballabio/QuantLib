@@ -27,39 +27,35 @@
 
 namespace QuantLib {
 
-    namespace Instruments {
-
-        //! Quanto version of a forward vanilla option
-        class QuantoForwardVanillaOption : public QuantoVanillaOption {
-          public:
-            typedef QuantoOptionArguments<ForwardVanillaOption::arguments>
-                arguments;
-            typedef QuantoOptionResults<ForwardVanillaOption::arguments>
-                results;
-            QuantoForwardVanillaOption(
-                Option::Type type,
-                const RelinkableHandle<MarketElement>& underlying,
-                double strike,
-                const RelinkableHandle<TermStructure>& dividendTS,
-                const RelinkableHandle<TermStructure>& riskFreeTS,
-                const Exercise& exercise,
-                const RelinkableHandle<BlackVolTermStructure>& volTS,
-                const Handle<PricingEngine>& engine,
-                const RelinkableHandle<TermStructure>& foreignRiskFreeTS,
-                const RelinkableHandle<BlackVolTermStructure>& exchRateVolTS,
-                const RelinkableHandle<MarketElement>& correlation,
-                double moneyness,
-                Date resetDate,
-                const std::string& isinCode = "",
-                const std::string& description = "");
-            void setupArguments(Arguments*) const;
-          private:
-            // arguments
-            double moneyness_;
-            Date resetDate_;
-        };
-
-    }
+    //! Quanto version of a forward vanilla option
+    class QuantoForwardVanillaOption : public QuantoVanillaOption {
+      public:
+        typedef QuantoOptionArguments<ForwardVanillaOption::arguments>
+        arguments;
+        typedef QuantoOptionResults<ForwardVanillaOption::arguments>
+        results;
+        QuantoForwardVanillaOption(
+                 Option::Type type,
+                 const RelinkableHandle<MarketElement>& underlying,
+                 double strike,
+                 const RelinkableHandle<TermStructure>& dividendTS,
+                 const RelinkableHandle<TermStructure>& riskFreeTS,
+                 const Exercise& exercise,
+                 const RelinkableHandle<BlackVolTermStructure>& volTS,
+                 const Handle<PricingEngine>& engine,
+                 const RelinkableHandle<TermStructure>& foreignRiskFreeTS,
+                 const RelinkableHandle<BlackVolTermStructure>& exchRateVolTS,
+                 const RelinkableHandle<MarketElement>& correlation,
+                 double moneyness,
+                 Date resetDate,
+                 const std::string& isinCode = "",
+                 const std::string& description = "");
+        void setupArguments(Arguments*) const;
+      private:
+        // arguments
+        double moneyness_;
+        Date resetDate_;
+    };
 
 }
 

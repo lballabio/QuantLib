@@ -24,137 +24,133 @@
 
 namespace QuantLib {
 
-    namespace Instruments {
+    Swap::Swap(const std::vector<Handle<CashFlow> >& firstLeg,
+               const std::vector<Handle<CashFlow> >& secondLeg,
+               const RelinkableHandle<TermStructure>& termStructure,
+               const std::string& isinCode, const std::string& description)
+    : Instrument(isinCode,description), firstLeg_(firstLeg),
+      secondLeg_(secondLeg), termStructure_(termStructure) {
+        registerWith(termStructure_);
+        std::vector<Handle<CashFlow> >::iterator i;
+        for (i = firstLeg_.begin(); i!= firstLeg_.end(); ++i)
+            registerWith(*i);
+        for (i = secondLeg_.begin(); i!= secondLeg_.end(); ++i)
+            registerWith(*i);
+    }
 
-        Swap::Swap(const std::vector<Handle<CashFlow> >& firstLeg,
-            const std::vector<Handle<CashFlow> >& secondLeg,
-            const RelinkableHandle<TermStructure>& termStructure,
-            const std::string& isinCode, const std::string& description)
-        : Instrument(isinCode,description), firstLeg_(firstLeg),
-          secondLeg_(secondLeg), termStructure_(termStructure) {
-            registerWith(termStructure_);
-            std::vector<Handle<CashFlow> >::iterator i;
-            for (i = firstLeg_.begin(); i!= firstLeg_.end(); ++i)
-                registerWith(*i);
-            for (i = secondLeg_.begin(); i!= secondLeg_.end(); ++i)
-                registerWith(*i);
-        }
+    bool Swap::isExpired() const {
+        Date lastPayment = Date::minDate();
+        std::vector<Handle<CashFlow> >::const_iterator i;
+        for (i = firstLeg_.begin(); i!= firstLeg_.end(); ++i)
+            lastPayment = QL_MAX(lastPayment, (*i)->date());
+        for (i = secondLeg_.begin(); i!= secondLeg_.end(); ++i)
+            lastPayment = QL_MAX(lastPayment, (*i)->date());
+        #if QL_TODAYS_PAYMENTS
+        return lastPayment < termStructure_->referenceDate();
+        #else
+        return lastPayment <= termStructure_->referenceDate();
+        #endif
+    }
 
-        bool Swap::isExpired() const {
-            Date lastPayment = Date::minDate();
-            std::vector<Handle<CashFlow> >::const_iterator i;
-            for (i = firstLeg_.begin(); i!= firstLeg_.end(); ++i)
-                lastPayment = QL_MAX(lastPayment, (*i)->date());
-            for (i = secondLeg_.begin(); i!= secondLeg_.end(); ++i)
-                lastPayment = QL_MAX(lastPayment, (*i)->date());
+    void Swap::setupExpired() const {
+        NPV_ = firstLegBPS_= secondLegBPS_ = 0.0;
+    }
+
+    void Swap::performCalculations() const {
+        QL_REQUIRE(!termStructure_.isNull(),
+                   "Swap::performCalculations trying to price swap "
+                   "on null term structure");
+        Date settlement = termStructure_->referenceDate();
+        NPV_ = 0.0;
+        double firstLegNPV_ = 0.0;
+        double secondLegNPV_ = 0.0;
+
+        // subtract first leg cash flows
+        for (Size i=0; i<firstLeg_.size(); i++) {
+            Date cashFlowDate = firstLeg_[i]->date();
             #if QL_TODAYS_PAYMENTS
-            return lastPayment < termStructure_->referenceDate();
+            if (cashFlowDate >= settlement) {
             #else
-            return lastPayment <= termStructure_->referenceDate();
+            if (cashFlowDate > settlement) {
             #endif
-        }
-
-        void Swap::setupExpired() const {
-            NPV_ = firstLegBPS_= secondLegBPS_ = 0.0;
-        }
-
-        void Swap::performCalculations() const {
-            QL_REQUIRE(!termStructure_.isNull(),
-                "Swap::performCalculations trying to price swap "
-                "on null term structure");
-            Date settlement = termStructure_->referenceDate();
-            NPV_ = 0.0;
-            double firstLegNPV_ = 0.0;
-            double secondLegNPV_ = 0.0;
-
-            // subtract first leg cash flows
-            for (Size i=0; i<firstLeg_.size(); i++) {
-                Date cashFlowDate = firstLeg_[i]->date();
-                #if QL_TODAYS_PAYMENTS
-                if (cashFlowDate >= settlement) {
-                #else
-                if (cashFlowDate > settlement) {
-                #endif
-                    firstLegNPV_ -= firstLeg_[i]->amount() *
-                        termStructure_->discount(cashFlowDate);
-                }
+                firstLegNPV_ -= firstLeg_[i]->amount() *
+                    termStructure_->discount(cashFlowDate);
             }
-            firstLegBPS_ = - BasisPointSensitivity(firstLeg_, termStructure_);
+        }
+        firstLegBPS_ = - BasisPointSensitivity(firstLeg_, termStructure_);
 
-            // add second leg cash flows
-            for (Size j=0; j<secondLeg_.size(); j++) {
-                Date cashFlowDate = secondLeg_[j]->date();
-                #if QL_TODAYS_PAYMENTS
-                if (cashFlowDate >= settlement) {
-                #else
-                if (cashFlowDate > settlement) {
-                #endif
-                    secondLegNPV_ += secondLeg_[j]->amount() *
-                        termStructure_->discount(cashFlowDate);
-                }
+        // add second leg cash flows
+        for (Size j=0; j<secondLeg_.size(); j++) {
+            Date cashFlowDate = secondLeg_[j]->date();
+            #if QL_TODAYS_PAYMENTS
+            if (cashFlowDate >= settlement) {
+            #else
+            if (cashFlowDate > settlement) {
+            #endif
+                secondLegNPV_ += secondLeg_[j]->amount() *
+                    termStructure_->discount(cashFlowDate);
             }
-            secondLegBPS_ = BasisPointSensitivity(secondLeg_, termStructure_);
-
-            NPV_ = firstLegNPV_ + secondLegNPV_;
         }
+        secondLegBPS_ = BasisPointSensitivity(secondLeg_, termStructure_);
 
-        Date Swap::startDate() const {
-            Date d = Date::maxDate();
-            Size i;
-            for (i=0; i<firstLeg_.size(); i++) {
-                try {
-                    Handle<Coupon> c = firstLeg_[i];
-                    d = QL_MIN(d, c->accrualStartDate());
-                } catch (...) {
-                    continue;
-                }
+        NPV_ = firstLegNPV_ + secondLegNPV_;
+    }
+
+    Date Swap::startDate() const {
+        Date d = Date::maxDate();
+        Size i;
+        for (i=0; i<firstLeg_.size(); i++) {
+            try {
+                Handle<Coupon> c = firstLeg_[i];
+                d = QL_MIN(d, c->accrualStartDate());
+            } catch (...) {
+                continue;
             }
-            for (i=0; i<secondLeg_.size(); i++) {
-                try {
-                    Handle<Coupon> c = secondLeg_[i];
-                    d = QL_MIN(d, c->accrualStartDate());
-                } catch (...) {
-                    continue;
-                }
+        }
+        for (i=0; i<secondLeg_.size(); i++) {
+            try {
+                Handle<Coupon> c = secondLeg_[i];
+                d = QL_MIN(d, c->accrualStartDate());
+            } catch (...) {
+                continue;
             }
-            QL_REQUIRE(d != Date::maxDate(),
-                       "Swap::startDate : not enough information available");
-            return d;
         }
+        QL_REQUIRE(d != Date::maxDate(),
+                   "Swap::startDate : not enough information available");
+        return d;
+    }
 
-        Date Swap::maturity() const {
-            Date d = Date::minDate();
-            Size i;
-            for (i=0; i<firstLeg_.size(); i++)
-                d = QL_MAX(d, firstLeg_[i]->date());
-            for (i=0; i<secondLeg_.size(); i++)
-                d = QL_MAX(d, secondLeg_[i]->date());
-            QL_REQUIRE(d != Date::minDate(),
-                       "Swap::maturity : empty swap");
-            return d;
-        }
+    Date Swap::maturity() const {
+        Date d = Date::minDate();
+        Size i;
+        for (i=0; i<firstLeg_.size(); i++)
+            d = QL_MAX(d, firstLeg_[i]->date());
+        for (i=0; i<secondLeg_.size(); i++)
+            d = QL_MAX(d, secondLeg_[i]->date());
+        QL_REQUIRE(d != Date::minDate(),
+                   "Swap::maturity : empty swap");
+        return d;
+    }
 
-        double Swap::firstLegBPS() const {
-            calculate();
-            return firstLegBPS_;
-        }
+    double Swap::firstLegBPS() const {
+        calculate();
+        return firstLegBPS_;
+    }
 
-        double Swap::secondLegBPS() const {
-            calculate();
-            return secondLegBPS_;
-        }
+    double Swap::secondLegBPS() const {
+        calculate();
+        return secondLegBPS_;
+    }
 
-        TimeBasket Swap::sensitivity(int basis) const {
-            calculate();
-            TimeBasket basket = BasisPointSensitivityBasket(firstLeg_,
-                                                            termStructure_,
-                                                            basis);
-            basket += BasisPointSensitivityBasket(secondLeg_,
-                                                  termStructure_,
-                                                  basis);
-            return basket;
-        }
-
+    TimeBasket Swap::sensitivity(int basis) const {
+        calculate();
+        TimeBasket basket = BasisPointSensitivityBasket(firstLeg_,
+                                                        termStructure_,
+                                                        basis);
+        basket += BasisPointSensitivityBasket(secondLeg_,
+                                              termStructure_,
+                                              basis);
+        return basket;
     }
 
 }

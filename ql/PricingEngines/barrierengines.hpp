@@ -37,9 +37,9 @@ namespace QuantLib {
 
         //! Barrier engine base class
         class BarrierEngine 
-        : public GenericEngine<Instruments::BarrierOption::arguments,
-                               Instruments::BarrierOption::results> {};
-        
+        : public GenericEngine<BarrierOption::arguments,
+                               BarrierOption::results> {};
+
         //! Pricing engine for Barrier options using analytical formulae
         /*! The formulas are taken from "Option pricing formulas", 
             E.G. Haug, McGraw-Hill, p.69 and following.

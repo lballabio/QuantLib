@@ -25,8 +25,6 @@ namespace QuantLib {
 
     namespace Pricers {
 
-        using Instruments::CapFloor;
-
         void DiscretizedCapFloor::preAdjustValues() {
             for (Size i=0; i<arguments_.startTimes.size(); i++) {
                 if (isOnTime(arguments_.startTimes[i])) {

@@ -33,75 +33,69 @@ namespace QuantLib {
         enum Type { CashAtHit, CashAtExpiry };
     };
 
-    namespace Instruments {
+    //! Binary option on a single asset.
+    /*! Depending on the exercise type, either the European or American
+        analytic pricing engine will be used if none is given.
+    */
+    class BinaryOption : public Option {
+      public:
+        class arguments;
+        class results;
+        BinaryOption(Binary::Type binaryType,
+                     double barrier,
+                     double cashPayoff,
+                     Option::Type type,
+                     const RelinkableHandle<MarketElement>& underlying,
+                     const RelinkableHandle<TermStructure>& dividendTS,
+                     const RelinkableHandle<TermStructure>& riskFreeTS,
+                     const Exercise& exercise,
+                     const RelinkableHandle<BlackVolTermStructure>& volTS,
+                     const Handle<PricingEngine>& engine =
+                     Handle<PricingEngine>(),
+                     const std::string& isinCode = "",
+                     const std::string& description = "");
+        //! \name greeks
+        //@{
+        double delta() const;
+        double gamma() const;
+        double theta() const;
+        double vega() const;
+        double rho() const;
+        double dividendRho() const;
+        double strikeSensitivity() const;
+        //@}
+        bool isExpired() const;
+        void setupArguments(Arguments*) const;
+      protected:
+        void setupExpired() const;
+        void performCalculations() const;
+        // results
+        mutable double delta_, gamma_, theta_, 
+            vega_, rho_, dividendRho_, strikeSensitivity_;
+        // arguments
+        Binary::Type binaryType_;
+        double barrier_;
+        double cashPayoff_;
+        Option::Type type_;
+        RelinkableHandle<MarketElement> underlying_;
+        Exercise exercise_;
+        RelinkableHandle<TermStructure> riskFreeTS_, dividendTS_;
+        RelinkableHandle<BlackVolTermStructure> volTS_;
+    };
 
-        //! Binary option on a single asset.
-        /*! Depending on the exercise type, either the European or American
-            analytic pricing engine will be used if none is given.
-        */
-        class BinaryOption : public Option {
-          public:
-            class arguments;
-            class results;
-            BinaryOption(Binary::Type binaryType,
-                          double barrier,
-                          double cashPayoff,
-                          Option::Type type,
-                          const RelinkableHandle<MarketElement>& underlying,
-                          const RelinkableHandle<TermStructure>& dividendTS,
-                          const RelinkableHandle<TermStructure>& riskFreeTS,
-                          const Exercise& exercise,
-                          const RelinkableHandle<BlackVolTermStructure>& volTS,
-                          const Handle<PricingEngine>& engine =
-                                                   Handle<PricingEngine>(),
-                          const std::string& isinCode = "",
-                          const std::string& description = "");
-            //! \name greeks
-            //@{
-            double delta() const;
-            double gamma() const;
-            double theta() const;
-            double vega() const;
-            double rho() const;
-            double dividendRho() const;
-            double strikeSensitivity() const;
-            //@}
-            bool isExpired() const;
-            void setupArguments(Arguments*) const;
-          protected:
-            void setupExpired() const;
-            void performCalculations() const;
-            // results
-            mutable double delta_, gamma_, theta_, 
-                           vega_, rho_, dividendRho_, strikeSensitivity_;
-            // arguments
-            Binary::Type binaryType_;
-            double barrier_;
-            double cashPayoff_;
-            Option::Type type_;
-            RelinkableHandle<MarketElement> underlying_;
-            Exercise exercise_;
-            RelinkableHandle<TermStructure> riskFreeTS_, dividendTS_;
-            RelinkableHandle<BlackVolTermStructure> volTS_;
-        };
+    //! %arguments for binary option calculation
+    class BinaryOption::arguments : public VanillaOption::arguments {
+      public:
+        arguments() : barrier(Null<double>()), 
+                      cashPayoff(Null<double>()) {}
+        Binary::Type binaryType;
+        double barrier;
+        double cashPayoff;
+        void validate() const;
+    };
 
-        //! %arguments for binary option calculation
-        class BinaryOption::arguments : public VanillaOption::arguments {
-          public:
-            arguments() : barrier(Null<double>()), 
-                          cashPayoff(Null<double>()) {}
-              Binary::Type binaryType;
-              double barrier;
-              double cashPayoff;
-              void validate() const;
-        };
-
-        //! %results from binary option calculation
-        class BinaryOption::results 
-        : public virtual VanillaOption::results {};
-
-    }
-
+    //! %results from binary option calculation
+    class BinaryOption::results : public virtual VanillaOption::results {};
 
 }
 

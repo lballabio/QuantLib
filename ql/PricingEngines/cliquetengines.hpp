@@ -31,8 +31,8 @@ namespace QuantLib {
 
         //! Cliquet engine base class
         class CliquetEngine 
-        : public GenericEngine<Instruments::CliquetOption::arguments,
-                               Instruments::VanillaOption::results> {};
+        : public GenericEngine<CliquetOption::arguments,
+                               VanillaOption::results> {};
 
         /*
         //! Monte Carlo cliquet engine

@@ -28,47 +28,43 @@
 
 namespace QuantLib {
 
-    namespace Instruments {
+    //! Swaption class
+    class Swaption : public Option {
+      public:
+        class arguments;
+        class results;
+        Swaption(const Handle<SimpleSwap>& swap,
+                 const Exercise& exercise,
+                 const RelinkableHandle<TermStructure>& termStructure,
+                 const Handle<PricingEngine>& engine);
+        bool isExpired() const;
+        void setupArguments(Arguments*) const;
+      protected:
+        void performCalculations() const;
+      private:
+        // arguments
+        Handle<SimpleSwap> swap_;
+        Exercise exercise_;
+        const RelinkableHandle<TermStructure>& termStructure_;
+    };
 
-        //! Swaption class
-        class Swaption : public Option {
-          public:
-            class arguments;
-            class results;
-            Swaption(const Handle<SimpleSwap>& swap,
-                     const Exercise& exercise,
-                     const RelinkableHandle<TermStructure>& termStructure,
-                     const Handle<PricingEngine>& engine);
-            bool isExpired() const;
-            void setupArguments(Arguments*) const;
-          protected:
-            void performCalculations() const;
-          private:
-            // arguments
-            Handle<SimpleSwap> swap_;
-            Exercise exercise_;
-            const RelinkableHandle<TermStructure>& termStructure_;
-        };
+    //! arguments for swaption calculation
+    class Swaption::arguments : public SimpleSwap::arguments {
+      public:
+        arguments() : fairRate(Null<double>()),
+                      fixedRate(Null<double>()),
+                      fixedBPS(Null<double>()),
+                      exerciseType(Exercise::Type(-1)) {}
+        Rate fairRate;
+        Rate fixedRate;
+        double fixedBPS;
+        Exercise::Type exerciseType;
+        std::vector<Time> exerciseTimes;
+        void validate() const;
+    };
 
-        //! arguments for swaption calculation
-        class Swaption::arguments : public SimpleSwap::arguments {
-          public:
-            arguments() : fairRate(Null<double>()),
-                          fixedRate(Null<double>()),
-                          fixedBPS(Null<double>()),
-                          exerciseType(Exercise::Type(-1)) {}
-            Rate fairRate;
-            Rate fixedRate;
-            double fixedBPS;
-            Exercise::Type exerciseType;
-            std::vector<Time> exerciseTimes;
-            void validate() const;
-        };
-
-        //! %results from swaption calculation
-        class Swaption::results : public Value {};
-
-    }
+    //! %results from swaption calculation
+    class Swaption::results : public Value {};
 
 }
 
