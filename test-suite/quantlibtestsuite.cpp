@@ -47,9 +47,9 @@ int main() {
     QLTestListener qlListener;
     runner.eventManager().addListener(&qlListener);
 
+    runner.addTest(OldPricerTest::suite());
     runner.addTest(new MersenneTwisterTest());
     runner.addTest(new DistributionTest);
-    runner.addTest(OldPricerTest::suite());
     runner.addTest(CapFloorTest::suite());
     runner.addTest(SwaptionTest::suite());
 

@@ -469,6 +469,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\haltonrsg.sbr" \
 	"$(INTDIR)\knuthuniformrng.sbr" \
 	"$(INTDIR)\lecuyeruniformrng.sbr" \
+	"$(INTDIR)\mt19937uniformrng.sbr" \
 	"$(INTDIR)\caphelper.sbr" \
 	"$(INTDIR)\swaptionhelper.sbr" \
 	"$(INTDIR)\blackkarasinski.sbr" \
@@ -504,8 +505,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\option.sbr" \
 	"$(INTDIR)\scheduler.sbr" \
 	"$(INTDIR)\solver1d.sbr" \
-	"$(INTDIR)\voltermstructure.sbr" \
-	"$(INTDIR)\mt19937uniformrng.sbr"
+	"$(INTDIR)\voltermstructure.sbr"
 
 "$(OUTDIR)\QuantLib.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -629,6 +629,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\haltonrsg.obj" \
 	"$(INTDIR)\knuthuniformrng.obj" \
 	"$(INTDIR)\lecuyeruniformrng.obj" \
+	"$(INTDIR)\mt19937uniformrng.obj" \
 	"$(INTDIR)\caphelper.obj" \
 	"$(INTDIR)\swaptionhelper.obj" \
 	"$(INTDIR)\blackkarasinski.obj" \
@@ -664,8 +665,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\option.obj" \
 	"$(INTDIR)\scheduler.obj" \
 	"$(INTDIR)\solver1d.obj" \
-	"$(INTDIR)\voltermstructure.obj" \
-	"$(INTDIR)\mt19937uniformrng.obj"
+	"$(INTDIR)\voltermstructure.obj"
 
 ".\lib\Win32\VisualStudio\QuantLib.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
     $(LIB32) @<<
@@ -1112,6 +1112,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\haltonrsg.sbr" \
 	"$(INTDIR)\knuthuniformrng.sbr" \
 	"$(INTDIR)\lecuyeruniformrng.sbr" \
+	"$(INTDIR)\mt19937uniformrng.sbr" \
 	"$(INTDIR)\caphelper.sbr" \
 	"$(INTDIR)\swaptionhelper.sbr" \
 	"$(INTDIR)\blackkarasinski.sbr" \
@@ -1147,8 +1148,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\option.sbr" \
 	"$(INTDIR)\scheduler.sbr" \
 	"$(INTDIR)\solver1d.sbr" \
-	"$(INTDIR)\voltermstructure.sbr" \
-	"$(INTDIR)\mt19937uniformrng.sbr"
+	"$(INTDIR)\voltermstructure.sbr"
 
 "$(OUTDIR)\QuantLib.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -1272,6 +1272,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\haltonrsg.obj" \
 	"$(INTDIR)\knuthuniformrng.obj" \
 	"$(INTDIR)\lecuyeruniformrng.obj" \
+	"$(INTDIR)\mt19937uniformrng.obj" \
 	"$(INTDIR)\caphelper.obj" \
 	"$(INTDIR)\swaptionhelper.obj" \
 	"$(INTDIR)\blackkarasinski.obj" \
@@ -1307,8 +1308,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\option.obj" \
 	"$(INTDIR)\scheduler.obj" \
 	"$(INTDIR)\solver1d.obj" \
-	"$(INTDIR)\voltermstructure.obj" \
-	"$(INTDIR)\mt19937uniformrng.obj"
+	"$(INTDIR)\voltermstructure.obj"
 
 ".\lib\Win32\VisualStudio\QuantLib_d.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
     $(LIB32) @<<
@@ -1754,6 +1754,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\haltonrsg.sbr" \
 	"$(INTDIR)\knuthuniformrng.sbr" \
 	"$(INTDIR)\lecuyeruniformrng.sbr" \
+	"$(INTDIR)\mt19937uniformrng.sbr" \
 	"$(INTDIR)\caphelper.sbr" \
 	"$(INTDIR)\swaptionhelper.sbr" \
 	"$(INTDIR)\blackkarasinski.sbr" \
@@ -1789,8 +1790,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\option.sbr" \
 	"$(INTDIR)\scheduler.sbr" \
 	"$(INTDIR)\solver1d.sbr" \
-	"$(INTDIR)\voltermstructure.sbr" \
-	"$(INTDIR)\mt19937uniformrng.sbr"
+	"$(INTDIR)\voltermstructure.sbr"
 
 "$(OUTDIR)\QuantLib.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -1914,6 +1914,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\haltonrsg.obj" \
 	"$(INTDIR)\knuthuniformrng.obj" \
 	"$(INTDIR)\lecuyeruniformrng.obj" \
+	"$(INTDIR)\mt19937uniformrng.obj" \
 	"$(INTDIR)\caphelper.obj" \
 	"$(INTDIR)\swaptionhelper.obj" \
 	"$(INTDIR)\blackkarasinski.obj" \
@@ -1949,8 +1950,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\option.obj" \
 	"$(INTDIR)\scheduler.obj" \
 	"$(INTDIR)\solver1d.obj" \
-	"$(INTDIR)\voltermstructure.obj" \
-	"$(INTDIR)\mt19937uniformrng.obj"
+	"$(INTDIR)\voltermstructure.obj"
 
 ".\lib\Win32\VisualStudio\QuantLib.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
     $(LIB32) @<<
@@ -2397,6 +2397,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\haltonrsg.sbr" \
 	"$(INTDIR)\knuthuniformrng.sbr" \
 	"$(INTDIR)\lecuyeruniformrng.sbr" \
+	"$(INTDIR)\mt19937uniformrng.sbr" \
 	"$(INTDIR)\caphelper.sbr" \
 	"$(INTDIR)\swaptionhelper.sbr" \
 	"$(INTDIR)\blackkarasinski.sbr" \
@@ -2432,8 +2433,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\option.sbr" \
 	"$(INTDIR)\scheduler.sbr" \
 	"$(INTDIR)\solver1d.sbr" \
-	"$(INTDIR)\voltermstructure.sbr" \
-	"$(INTDIR)\mt19937uniformrng.sbr"
+	"$(INTDIR)\voltermstructure.sbr"
 
 "$(OUTDIR)\QuantLib.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -2557,6 +2557,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\haltonrsg.obj" \
 	"$(INTDIR)\knuthuniformrng.obj" \
 	"$(INTDIR)\lecuyeruniformrng.obj" \
+	"$(INTDIR)\mt19937uniformrng.obj" \
 	"$(INTDIR)\caphelper.obj" \
 	"$(INTDIR)\swaptionhelper.obj" \
 	"$(INTDIR)\blackkarasinski.obj" \
@@ -2592,8 +2593,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\option.obj" \
 	"$(INTDIR)\scheduler.obj" \
 	"$(INTDIR)\solver1d.obj" \
-	"$(INTDIR)\voltermstructure.obj" \
-	"$(INTDIR)\mt19937uniformrng.obj"
+	"$(INTDIR)\voltermstructure.obj"
 
 ".\lib\Win32\VisualStudio\QuantLib_d.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
     $(LIB32) @<<

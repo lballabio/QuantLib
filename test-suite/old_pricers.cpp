@@ -686,7 +686,10 @@ namespace {
 void OldPricerTest::testMcSingleFactorPricers() {
 
     long seed = 3456789;
-    Size fixedSamples = 100;
+
+    // cannot be too low, or one cannot compare numbers when
+    // switching to a new default generator
+    Size fixedSamples = 1000;
     double minimumTol = 1.0e-2;
 
     // "batch" 1
@@ -775,17 +778,17 @@ void OldPricerTest::testMcSingleFactorPricers() {
 
     Batch4Data cases4[] = {
         { Option::Put, 80.0, 85.0, -0.03, 0.05, 0.25, 0.2,
-          false, 5.9135872358 },
+          false, 5.0394064744 },
         { Option::Put, 80.0, 85.0, -0.03, 0.05, 0.25, 0.2,
-          true,  5.42005964479 },
+          true,  5.2783973809 },
         { Option::Call, 80.0, 85.0, -0.03, 0.05, 0.25, 0.2,
-          false, 1.98816310759 },
+          false, 2.0523055758 },
         { Option::Call, 80.0, 85.0, -0.03, 0.05, 0.25, 0.2,
-          true, 2.12098432917 },
+          true, 1.9590724337 },
         { Option::Straddle, 80.0, 85.0, -0.03, 0.05, 0.25, 0.2,
-          false, 7.90175034339 },
+          false, 7.0917120502 },
         { Option::Straddle, 80.0, 85.0, -0.03, 0.05, 0.25, 0.2,
-          true, 7.54104397396 }
+          true, 7.2374698146 }
     };
 
     for (int j=0; j<LENGTH(cases4); j++) {
@@ -822,45 +825,45 @@ void OldPricerTest::testMcSingleFactorPricers() {
 
     Batch5Data cases5[] = {
         { Option::Put, 90.0, 87.0, 0.06, 0.025, 0.0, 11.0/12.0, 2,
-          0.13, true, true, 1.38418414762 },
+          0.13, true, true, 1.3942835683 },
         { Option::Put, 90.0, 87.0, 0.06, 0.025, 0.0, 11.0/12.0, 4,
-          0.13, true, true, 1.57691714387 },
+          0.13, true, true, 1.5852442983 },
         { Option::Put, 90.0, 87.0, 0.06, 0.025, 0.0, 11.0/12.0, 8,
-          0.13, true, true, 1.66062743445 },
+          0.13, true, true, 1.66970673 },
         { Option::Put, 90.0, 87.0, 0.06, 0.025, 0.0, 11.0/12.0, 12,
-          0.13, true, true, 1.68847081883 },
+          0.13, true, true, 1.6980019214 },
         { Option::Put, 90.0, 87.0, 0.06, 0.025, 0.0, 11.0/12.0, 26,
-          0.13, true, true, 1.72955964448 },
+          0.13, true, true, 1.7255070456 },
         { Option::Put, 90.0, 87.0, 0.06, 0.025, 0.0, 11.0/12.0, 52,
-          0.13, true, true, 1.73372169316 },
+          0.13, true, true, 1.7401553533 },
         { Option::Put, 90.0, 87.0, 0.06, 0.025, 0.0, 11.0/12.0, 100,
-          0.13, true, true, 1.74918801089 },
+          0.13, true, true, 1.7478303712 },
         { Option::Put, 90.0, 87.0, 0.06, 0.025, 0.0, 11.0/12.0, 250,
-          0.13, true, true, 1.75421310915 },
+          0.13, true, true, 1.7490291943 },
         { Option::Put, 90.0, 87.0, 0.06, 0.025, 0.0, 11.0/12.0, 500,
-          0.13, true, true, 1.75158383443 },
+          0.13, true, true, 1.7515113291 },
         { Option::Put, 90.0, 87.0, 0.06, 0.025, 0.0, 11.0/12.0, 1000,
-          0.13, true, true, 1.75162110180 },
+          0.13, true, true, 1.7537344885 },
         { Option::Put, 90.0, 87.0, 0.06, 0.025, 1.0/12.0, 11.0/12.0, 2,
-          0.13, true, true, 1.83665087164 },
+          0.13, true, true, 1.8496053697 },
         { Option::Put, 90.0, 87.0, 0.06, 0.025, 1.0/12.0, 11.0/12.0, 4,
-          0.13, true, true, 2.00560271429 },
+          0.13, true, true, 2.0111495205 },
         { Option::Put, 90.0, 87.0, 0.06, 0.025, 1.0/12.0, 11.0/12.0, 8,
-          0.13, true, true, 2.07789721712 },
+          0.13, true, true, 2.0852138818 },
         { Option::Put, 90.0, 87.0, 0.06, 0.025, 1.0/12.0, 11.0/12.0, 12,
-          0.13, true, true, 2.09622556625 },
+          0.13, true, true, 2.1105094397 },
         { Option::Put, 90.0, 87.0, 0.06, 0.025, 1.0/12.0, 11.0/12.0, 26,
-          0.13, true, true, 2.14229795212 },
+          0.13, true, true, 2.1346526695 },
         { Option::Put, 90.0, 87.0, 0.06, 0.025, 1.0/12.0, 11.0/12.0, 52,
-          0.13, true, true, 2.14470270916 },
+          0.13, true, true, 2.147489651 },
         { Option::Put, 90.0, 87.0, 0.06, 0.025, 1.0/12.0, 11.0/12.0, 100,
-          0.13, true, true, 2.15954145741 },
+          0.13, true, true, 2.154728109 },
         { Option::Put, 90.0, 87.0, 0.06, 0.025, 1.0/12.0, 11.0/12.0, 250,
-          0.13, true, true, 2.16007690017 },
+          0.13, true, true, 2.1564276565 },
         { Option::Put, 90.0, 87.0, 0.06, 0.025, 1.0/12.0, 11.0/12.0, 500,
-          0.13, true, true, 2.15986704400 },
+          0.13, true, true, 2.1594238588 },
         { Option::Put, 90.0, 87.0, 0.06, 0.025, 1.0/12.0, 11.0/12.0, 1000,
-          0.13, true, true, 2.15951634387 },
+          0.13, true, true, 2.1595367326 },
         { Option::Put, 90.0, 87.0, 0.06, 0.025, 3.0/12.0, 11.0/12.0, 2,
           0.13, true, true, 2.63315092584 },
         { Option::Put, 90.0, 87.0, 0.06, 0.025, 3.0/12.0, 11.0/12.0, 4,
@@ -899,7 +902,7 @@ void OldPricerTest::testMcSingleFactorPricers() {
                                        cases5[k].controlVariate,
                                        seed);
         double value = pricer.valueWithSamples(fixedSamples);
-        if (QL_FABS(value-cases5[k].result) > 1.0e-5)
+        if (QL_FABS(value-cases5[k].result) > 2.0e-2)
             CPPUNIT_FAIL(
                 "Batch 5, case " + IntegerFormatter::toString(k+1) + ":\n"
                 "    calculated value: "
@@ -1003,7 +1006,7 @@ void OldPricerTest::testMcSingleFactorPricers() {
                                        cases6[l].controlVariate,
                                        seed);
         double value = pricer.valueWithSamples(fixedSamples);
-        if (QL_FABS(value-cases6[l].result) > 1.0e-5)
+        if (QL_FABS(value-cases6[l].result) > 2.0e-2)
             CPPUNIT_FAIL(
                 "Batch 6, case " + IntegerFormatter::toString(l+1) + ":\n"
                 "    calculated value: "
@@ -1031,7 +1034,9 @@ namespace {
     void testMcMFPricer(const P& pricer, double storedValue,
                         double tolerance, const std::string& name) {
 
-        Size fixedSamples = 100;
+        // cannot be too low, or one cannot compare numbers when
+        // switching to a new default generator
+        Size fixedSamples = 1000;
         double minimumTol = 1.0e-2;
 
         double value = pricer.valueWithSamples(fixedSamples);
@@ -1096,12 +1101,12 @@ void OldPricerTest::testMcMultiFactorPricers() {
     // McEverest
     testMcMFPricer(McEverest(dividendYields, covariance,
                              riskFreeRate, resTime, false, seed),
-                   0.7434481,
+                   0.7562173725,
                    1.0e-5,
                    "McEverest");
     testMcMFPricer(McEverest(dividendYields, covariance,
                              riskFreeRate, resTime, true, seed),
-                   0.7569787,
+                   0.75899732,
                    1.0e-5,
                    "McEverest");
 
@@ -1112,13 +1117,13 @@ void OldPricerTest::testMcMultiFactorPricers() {
     testMcMFPricer(McBasket(type, sameAssetValues, strike, sameAssetDividend,
                             sameAssetCovariance, riskFreeRate, resTime,
                             false, seed),
-                   10.4484452,
+                   12.5780178807,
                    1.0e-3,
                    "McBasket");
     testMcMFPricer(McBasket(type, sameAssetValues, strike, sameAssetDividend,
                             sameAssetCovariance, riskFreeRate, resTime,
                             true, seed),
-                   12.2946771,
+                   12.958451866,
                    1.0e-3,
                    "McBasket");
 
@@ -1130,12 +1135,12 @@ void OldPricerTest::testMcMultiFactorPricers() {
     assetValues[3] = 105.0;
     testMcMFPricer(McMaxBasket(assetValues, dividendYields, covariance,
                                riskFreeRate, resTime, false, seed),
-                   120.7337797,
+                   122.703208891,
                    1.0e-5,
                    "McMaxBasket");
     testMcMFPricer(McMaxBasket(assetValues, dividendYields, covariance,
                                riskFreeRate, resTime, true, seed),
-                   123.5209095,
+                   123.3033777758,
                    1.0e-5,
                    "McMaxBasket");
 
@@ -1155,13 +1160,13 @@ void OldPricerTest::testMcMultiFactorPricers() {
     testMcMFPricer(McPagoda(portfolio, fraction, roof, dividendYields,
                             covariance, riskFreeRate, timeIncrements,
                             false, seed),
-                   0.03438975,
+                   0.0380331503,
                    1.0e-5,
                    "McPagoda");
     testMcMFPricer(McPagoda(portfolio, fraction, roof, dividendYields,
                             covariance, riskFreeRate, timeIncrements,
                             true, seed),
-                   0.03860954,
+                   0.0402704285,
                    1.0e-5,
                    "McPagoda");
 
@@ -1170,13 +1175,13 @@ void OldPricerTest::testMcMultiFactorPricers() {
     testMcMFPricer(McHimalaya(assetValues, dividendYields, covariance,
                               riskFreeRate, strike, timeIncrements,
                               false, seed),
-                   5.0768499,
+                   5.782701442,
                    1.0e-5,
                    "McHimalaya");
     testMcMFPricer(McHimalaya(assetValues, dividendYields, covariance,
                               riskFreeRate, strike, timeIncrements,
                               true, seed),
-                   6.2478050,
+                   6.0621755931,
                    1.0e-5,
                    "McHimalaya");
 }

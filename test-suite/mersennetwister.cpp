@@ -23,6 +23,8 @@ using namespace QuantLib::RandomNumbers;
 
 void MersenneTwisterTest::runTest() {
 
+    // the following numbers are provided by MT authors in order
+    // to check any actual implementation of MT
     static const unsigned long referenceLongValues[] = {
         1067595299,  955945823,  477289528, 4107218783, 4228976476,
         3344332714, 3355579695,  227628506,  810200273, 2591290167,
