@@ -26,8 +26,10 @@
     \brief common code for option evaluation
 
     $Source$
-    $Name$
     $Log$
+    Revision 1.15  2001/04/02 10:59:48  lballabio
+    Changed ObjectiveFunction::value to ObjectiveFunction::operator() - also in Python module
+
     Revision 1.14  2001/03/21 11:33:02  marmar
     Main loop transfered from method value to method calculate.
     Methods vega and rho moved from BSMNumericalOption to BSMOption
@@ -130,7 +132,7 @@ namespace QuantLib {
         class BSMOption::BSMFunction : public ObjectiveFunction {
           public:
             BSMFunction(const Handle<BSMOption>& tempBSM, double targetPrice);
-            double value(double x) const;
+            double operator()(double x) const;
           private:
             mutable Handle<BSMOption> bsm;
             double targetPrice_;
@@ -142,7 +144,7 @@ namespace QuantLib {
             targetPrice_ = targetPrice;
         }
         
-        inline double BSMOption::BSMFunction::value(double x) const {
+        inline double BSMOption::BSMFunction::operator()(double x) const {
             bsm -> setVolatility(x);
             return (bsm -> value() - targetPrice_);
         }
@@ -150,5 +152,6 @@ namespace QuantLib {
     }
 
 }
+
 
 #endif

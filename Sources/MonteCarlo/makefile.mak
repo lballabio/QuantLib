@@ -69,24 +69,10 @@ TLIB_OPTS    = /P128
 
 # Primary target:
 # static library
-MonteCarlo$(_D).lib:: Message $(OBJS)
+MonteCarlo$(_D).lib:: $(OBJS)
     if exist MonteCarlo$(_D).lib     del MonteCarlo$(_D).lib
     $(TLIB) $(TLIB_OPTS) MonteCarlo$(_D).lib /a $(OBJS)
 
-Message:
-    echo Building MonteCarlo library...
-
-avgpriceasianpathpricer.obj$(_D):
-avgstrikeasianpathpricer.obj$(_D):
-basketpathpricer.obj$(_D):
-controlvariatedpathpricer.obj$(_D):
-europeanpathpricer.obj$(_D):
-everestpathpricer.obj$(_D):
-geometricasianpathpricer.obj$(_D):
-getcovariance.obj$(_D):
-himalayapathpricer.obj$(_D):
-lecuyerrandomgenerator.obj$(_D):
-pagodapathpricer.obj$(_D):
 
 # Clean up
 clean::

@@ -18,15 +18,18 @@
  * You should have received a copy of the license along with this file;
  * if not, contact ferdinando@ametrano.net
  *
- * QuantLib license is also available at http://quantlib.sourceforge.net/LICENSE.TXT
+ * QuantLib license is also available at 
+ * http://quantlib.sourceforge.net/LICENSE.TXT
 */
 
 /*! \file ridder.cpp
     \brief Ridder 1-D solver
 
     $Source$
-    $Name$
     $Log$
+    Revision 1.16  2001/04/02 10:59:49  lballabio
+    Changed ObjectiveFunction::value to ObjectiveFunction::operator() - also in Python module
+
     Revision 1.15  2001/01/17 13:54:02  nando
     80 columns enforced
     tabs removed
@@ -67,7 +70,7 @@ namespace QuantLib {
             while (evaluationNumber_<=maxEvaluations_) {
                 xMid=0.5*(xMin_+xMax_);
                 // First of two function evaluations per iteraton
-                fxMid=f.value(xMid);
+                fxMid=f(xMid);
                 evaluationNumber_++;
                 s=QL_SQRT(fxMid*fxMid-fxMin_*fxMax_);
                 if (s == 0.0)
@@ -80,7 +83,7 @@ namespace QuantLib {
 
                 root_=nextRoot;
                 // Second of two function evaluations per iteration
-                froot=f.value(root_);
+                froot=f(root_);
                 evaluationNumber_++;
                 if (froot == 0.0)
                     return root_;

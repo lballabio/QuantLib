@@ -61,16 +61,10 @@ TLIB_OPTS    = /P128
 
 # Primary target:
 # static library
-DayCounters$(_D).lib:: Message $(OBJS)
+DayCounters$(_D).lib:: $(OBJS)
     if exist DayCounters$(_D).lib     del DayCounters$(_D).lib
     $(TLIB) $(TLIB_OPTS) DayCounters$(_D).lib /a $(OBJS)
 
-Message:
-    echo Building day counter library...
-
-actualactual.obj$(_D):
-thirty360.obj$(_D):
-thirty360italian.obj$(_D):
 
 # Clean up
 clean::

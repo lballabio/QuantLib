@@ -18,15 +18,18 @@
  * You should have received a copy of the license along with this file;
  * if not, contact ferdinando@ametrano.net
  *
- * QuantLib license is also available at http://quantlib.sourceforge.net/LICENSE.TXT
+ * QuantLib license is also available at 
+ * http://quantlib.sourceforge.net/LICENSE.TXT
 */
 
 /*! \file solver1d.cpp
     \brief Abstract 1-D solver class
 
     $Source$
-    $Name$
     $Log$
+    Revision 1.16  2001/04/02 10:59:48  lballabio
+    Changed ObjectiveFunction::value to ObjectiveFunction::operator() - also in Python module
+
     Revision 1.15  2001/03/15 15:31:26  aleppo
     Minimum at boudaries compatible with accuracy required.
 
@@ -67,20 +70,20 @@ namespace QuantLib {
         int flipflop = -1;
 
         root_ = guess;
-        fxMax_ = f.value(root_);
+        fxMax_ = f(root_);
 
         // monotonically crescent bias, as in optionValue(volatility)
         if (QL_FABS(fxMax_) <= xAccuracy)
             return root_;
         else if (fxMax_ > 0.0) {
             xMin_ = enforceBounds_(root_ - step);
-            fxMin_ = f.value(xMin_);
+            fxMin_ = f(xMin_);
             xMax_ = root_;
         } else {
             xMin_ = root_;
             fxMin_ = fxMax_;
             xMax_ = enforceBounds_(root_+step);
-            fxMax_ = f.value(xMax_);
+            fxMax_ = f(xMax_);
         }
 
         evaluationNumber_ = 2;
@@ -93,18 +96,18 @@ namespace QuantLib {
             }
             if (QL_FABS(fxMin_) < QL_FABS(fxMax_)) {
                 xMin_ = enforceBounds_(xMin_+growthFactor*(xMin_ - xMax_));
-                fxMin_= f.value(xMin_);
+                fxMin_= f(xMin_);
             } else if (QL_FABS(fxMin_) > QL_FABS(fxMax_)) {
                 xMax_ = enforceBounds_(xMax_+growthFactor*(xMax_ - xMin_));
-                fxMax_= f.value(xMax_);
+                fxMax_= f(xMax_);
             } else if (flipflop == -1) {
                 xMin_ = enforceBounds_(xMin_+growthFactor*(xMin_ - xMax_));
-                fxMin_= f.value(xMin_);
+                fxMin_= f(xMin_);
                 evaluationNumber_++;
                 flipflop = 1;
             } else if (flipflop == 1) {
                 xMax_ = enforceBounds_(xMax_+growthFactor*(xMax_ - xMin_));
-                fxMax_= f.value(xMax_);
+                fxMax_= f(xMax_);
                 flipflop = -1;
             }
             evaluationNumber_++;
@@ -142,11 +145,11 @@ namespace QuantLib {
                 ") > enforced hi bound (" +
                 DoubleFormatter::toString(hiBound_) + ")");
 
-        fxMin_ = f.value(xMin_);
+        fxMin_ = f(xMin_);
         if (QL_FABS(fxMin_) < xAccuracy)
             return xMin_;
 
-        fxMax_ = f.value(xMax_);
+        fxMax_ = f(xMax_);
         if (QL_FABS(fxMax_) < xAccuracy)
             return xMax_;
 

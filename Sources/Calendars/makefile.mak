@@ -67,22 +67,10 @@ TLIB_OPTS    = /P128
 
 # Primary target:
 # static library
-Calendars$(_D).lib:: Message $(OBJS)
+Calendars$(_D).lib:: $(OBJS)
     if exist Calendars$(_D).lib     del Calendars$(_D).lib
     $(TLIB) $(TLIB_OPTS) Calendars$(_D).lib /a $(OBJS)
 
-Message:
-    echo Building calendar library...
-
-westerncalendar.obj$(_D):
-frankfurt.obj$(_D):
-helsinki.obj$(_D):
-london.obj$(_D):
-milan.obj$(_D):
-newyork.obj$(_D):
-target.obj$(_D):
-wellington.obj$(_D):
-zurich.obj$(_D):
 
 # Clean up
 clean::

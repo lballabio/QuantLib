@@ -18,15 +18,18 @@
  * You should have received a copy of the license along with this file;
  * if not, contact ferdinando@ametrano.net
  *
- * QuantLib license is also available at http://quantlib.sourceforge.net/LICENSE.TXT
+ * QuantLib license is also available at 
+ * http://quantlib.sourceforge.net/LICENSE.TXT
 */
 
 /*! \file falseposition.cpp
     \brief false-position 1-D solver
 
     $Source$
-    $Name$
     $Log$
+    Revision 1.15  2001/04/02 10:59:49  lballabio
+    Changed ObjectiveFunction::value to ObjectiveFunction::operator() - also in Python module
+
     Revision 1.14  2001/01/17 13:54:02  nando
     80 columns enforced
     tabs removed
@@ -70,7 +73,7 @@ namespace QuantLib {
             while (evaluationNumber_<=maxEvaluations_) {  // False position loop
                 // Increment with respect to latest value
                 root_=xl+dx*fl/(fl-fh);
-                froot=f.value(root_);
+                froot=f(root_);
                 evaluationNumber_++;
                 if (froot < 0.0) {              // Replace appropriate limit
                     del=xl-root_;

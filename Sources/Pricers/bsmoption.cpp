@@ -19,15 +19,17 @@
  * if not, contact ferdinando@ametrano.net
  *
  * QuantLib license is also available at 
- *   http://quantlib.sourceforge.net/LICENSE.TXT
+ * http://quantlib.sourceforge.net/LICENSE.TXT
 */
 
 /*! \file bsmoption.cpp
     \brief common code for option evaluation
 
     $Source$
-    $Name$
     $Log$
+    Revision 1.24  2001/04/02 10:59:49  lballabio
+    Changed ObjectiveFunction::value to ObjectiveFunction::operator() - also in Python module
+
     Revision 1.23  2001/03/21 11:31:55  marmar
     Main loop tranfered from method value to method calculate.
     Methods vega and rho belong now to class BSMOption

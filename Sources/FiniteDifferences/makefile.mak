@@ -61,16 +61,10 @@ TLIB_OPTS    = /P128
 
 # Primary target:
 # static library
-FiniteDifferences$(_D).lib:: Message $(OBJS)
+FiniteDifferences$(_D).lib:: $(OBJS)
     if exist FiniteDifferences$(_D).lib     del FiniteDifferences$(_D).lib
     $(TLIB) $(TLIB_OPTS) FiniteDifferences$(_D).lib /a $(OBJS)
 
-Message:
-    echo Building finite differences library...
-
-bsmoperator.obj$(_D):
-tridiagonaloperator.obj$(_D):
-valueatcenter.obj$(_D):
 
 # Clean up
 clean::

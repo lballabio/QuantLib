@@ -59,14 +59,10 @@ TLIB_OPTS    = /P128
 
 # Primary target:
 # static library
-TermStructures$(_D).lib:: Message $(OBJS)
+TermStructures$(_D).lib:: $(OBJS)
     if exist TermStructures$(_D).lib     del TermStructures$(_D).lib
     $(TLIB) $(TLIB_OPTS) TermStructures$(_D).lib /a $(OBJS)
 
-Message:
-    echo Building term structure library...
-
-piecewiseconstantforwards.obj$(_D):
 
 # Clean up
 clean::

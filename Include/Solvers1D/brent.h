@@ -18,15 +18,18 @@
  * You should have received a copy of the license along with this file;
  * if not, contact ferdinando@ametrano.net
  *
- * QuantLib license is also available at http://quantlib.sourceforge.net/LICENSE.TXT
+ * QuantLib license is also available at 
+ * http://quantlib.sourceforge.net/LICENSE.TXT
 */
 
 /*! \file brent.h
     \brief Brent 1-D solver
 
     $Source$
-    $Name$
     $Log$
+    Revision 1.5  2001/04/02 10:59:48  lballabio
+    Changed ObjectiveFunction::value to ObjectiveFunction::operator() - also in Python module
+
     Revision 1.4  2001/01/17 13:53:20  nando
     80 columns enforced
     tabs removed

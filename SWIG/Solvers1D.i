@@ -24,6 +24,9 @@
 
 /* $Source$
    $Log$
+   Revision 1.13  2001/04/02 10:59:48  lballabio
+   Changed ObjectiveFunction::value to ObjectiveFunction::operator() - also in Python module
+
    Revision 1.12  2001/03/09 12:40:41  lballabio
    Spring cleaning for SWIG interfaces
 
@@ -38,12 +41,6 @@
 using QuantLib::ObjectiveFunction;
 %}
 
-class ObjectiveFunction {
-  public:
-	virtual double value(double x) const = 0;
-	virtual double derivative(double x) const;
-};
-
 #if defined(SWIGPYTHON)
 
 // Python function to solve for
@@ -56,9 +53,9 @@ class ObjectiveFunction {
 class PyObjectiveFunction : public ObjectiveFunction {
   public:
 	PyObjectiveFunction(PyObject *pyFunction) : thePyFunction(pyFunction) {}
-	double value(double x) const {
-		PyObject* pyResult = PyObject_CallMethod(thePyFunction,"value","d",x);
-		QL_ENSURE(pyResult != NULL, "failed to call value() on Python object");
+	double operator()(double x) const {
+		PyObject* pyResult = PyObject_CallFunction(thePyFunction,"d",x);
+		QL_ENSURE(pyResult != NULL, "failed to call Python function");
 		double result = PyFloat_AsDouble(pyResult);
 		Py_XDECREF(pyResult);
 		return result;
@@ -82,35 +79,6 @@ class PyObjectiveFunction : public ObjectiveFunction {
 
 %{
 using QuantLib::Solver1D;
-%}
-
-class Solver1D {
-  public:
-	virtual double solve(const ObjectiveFunction& f, double xAccuracy, 
-	  double guess, double step) const;
-	%name(bracketedSolve) virtual double solve(const ObjectiveFunction& f,
-	  double xAccuracy, double guess, double xMin, double xMax) const;
-	void setMaxEvaluations(int evaluations);
-};
-
-#if defined(SWIGPYTHON)
-%addmethods Solver1D {
-	double pySolve(PyObject *pyFunction, double xAccuracy, double guess, 
-	  double step) {
-		PyObjectiveFunction f(pyFunction);
-		return self->solve(f, xAccuracy, guess, step);
-	}
-	double pyBracketedSolve(PyObject *pyFunction, double xAccuracy, 
-	  double guess, double xMin, double xMax) {
-		PyObjectiveFunction f(pyFunction);
-		return self->solve(f, xAccuracy, guess, xMin, xMax);
-	}
-}
-#endif
-
-// Actual solvers
-
-%{
 using QuantLib::Solvers1D::Bisection;
 using QuantLib::Solvers1D::Brent;
 using QuantLib::Solvers1D::FalsePosition;
@@ -119,6 +87,28 @@ using QuantLib::Solvers1D::NewtonSafe;
 using QuantLib::Solvers1D::Ridder;
 using QuantLib::Solvers1D::Secant;
 %}
+
+class Solver1D {
+  public:
+	void setMaxEvaluations(int evaluations);
+};
+
+#if defined(SWIGPYTHON)
+%addmethods Solver1D {
+	double solve(PyObject *pyFunction, double xAccuracy, double guess, 
+	  double step) {
+		PyObjectiveFunction f(pyFunction);
+		return self->solve(f, xAccuracy, guess, step);
+	}
+	double bracketedSolve(PyObject *pyFunction, double xAccuracy, 
+	  double guess, double xMin, double xMax) {
+		PyObjectiveFunction f(pyFunction);
+		return self->solve(f, xAccuracy, guess, xMin, xMax);
+	}
+}
+#endif
+
+// Actual solvers
 
 class Bisection : public Solver1D {
   public:

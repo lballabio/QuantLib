@@ -18,15 +18,18 @@
  * You should have received a copy of the license along with this file;
  * if not, contact ferdinando@ametrano.net
  *
- * QuantLib license is also available at http://quantlib.sourceforge.net/LICENSE.TXT
+ * QuantLib license is also available at 
+ * http://quantlib.sourceforge.net/LICENSE.TXT
 */
 
 /*! \file solver1d.h
     \brief Abstract 1-D solver class
 
     $Source$
-    $Name$
     $Log$
+    Revision 1.12  2001/04/02 10:59:47  lballabio
+    Changed ObjectiveFunction::value to ObjectiveFunction::operator() - also in Python module
+
     Revision 1.11  2001/03/23 08:44:12  aleppo
     Small bug fixed
 
@@ -69,7 +72,7 @@ namespace QuantLib {
       public:
         virtual ~ObjectiveFunction() {}
         //! returns \f$ f(x) \f$
-        virtual double value(double x) const = 0;
+        virtual double operator()(double x) const = 0;
         //! returns \f$ f'(x) \f$
         virtual double derivative(double x) const { return Null<double>(); }
     };

@@ -27,6 +27,9 @@
 
     $Source$
     $Log$
+    Revision 1.17  2001/04/02 10:59:49  lballabio
+    Changed ObjectiveFunction::value to ObjectiveFunction::operator() - also in Python module
+
     Revision 1.16  2001/03/12 17:35:11  lballabio
     Removed global IsNull function - could have caused very vicious loops
 
@@ -78,7 +81,7 @@ namespace QuantLib {
             // and the last step
             dx=dxold;
 
-            froot = f.value(root_);
+            froot = f(root_);
             dfroot = f.derivative(root_);
             QL_REQUIRE(dfroot != Null<double>(),
                 "NewtonSafe requires function's derivative");
@@ -99,7 +102,7 @@ namespace QuantLib {
                 // Convergence criterion
                 if (QL_FABS(dx) < xAccuracy)
                     return root_;
-                froot = f.value(root_);
+                froot = f(root_);
                 dfroot = f.derivative(root_);
                 evaluationNumber_++;
                 if (froot < 0.0)

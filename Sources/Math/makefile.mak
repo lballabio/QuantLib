@@ -63,18 +63,10 @@ TLIB_OPTS    = /P128
 
 # Primary target:
 # static library
-Math$(_D).lib:: Message $(OBJS)
+Math$(_D).lib:: $(OBJS)
     if exist Math$(_D).lib     del Math$(_D).lib
     $(TLIB) $(TLIB_OPTS) Math$(_D).lib /a $(OBJS)
 
-Message:
-    echo Building math library...
-
-matrix.obj$(_D):
-multivariateaccumulator.obj$(_D):
-normaldistribution.obj$(_D):
-statistics.obj$(_D):
-symmetricschurdecomposition.obj$(_D):
 
 # Clean up
 clean::

@@ -78,33 +78,10 @@ TLIB_OPTS    = /P128
 
 # Primary target:
 # static library
-Pricers$(_D).lib:: Message $(OBJS)
+Pricers$(_D).lib:: $(OBJS)
     if exist Pricers$(_D).lib     del Pricers$(_D).lib
     $(TLIB) $(TLIB_OPTS) Pricers$(_D).lib /a $(OBJS)
 
-Message:
-    echo Building pricer library...
-
-averagepriceasian.obj$(_D):
-averagestrikeasian.obj$(_D):
-barrieroption.obj$(_D):
-bermudanoption.obj$(_D):
-binaryoption.obj$(_D):
-bsmeuropeanoption.obj$(_D):
-bsmnumericaloption.obj$(_D):
-bsmoption.obj$(_D):
-dividendamericanoption.obj$(_D):
-dividendeuropeanoption.obj$(_D):
-dividendoption.obj$(_D):
-dividendshoutoption.obj$(_D):
-everestoption.obj$(_D):
-finitedifferenceeuropean.obj$(_D):
-himalaya.obj$(_D):
-mceuropeanpricer.obj$(_D):
-multiperiodoption.obj$(_D):
-pagodaoption.obj$(_D):
-plainbasketoption.obj$(_D):
-stepconditionoption.obj$(_D):
 
 # Clean up
 clean::

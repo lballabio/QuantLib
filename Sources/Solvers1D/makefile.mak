@@ -65,20 +65,10 @@ TLIB_OPTS    = /P128
 
 # Primary target:
 # static library
-Solvers1D$(_D).lib:: Message $(OBJS)
+Solvers1D$(_D).lib:: $(OBJS)
     if exist Solvers1D$(_D).lib     del Solvers1D$(_D).lib
     $(TLIB) $(TLIB_OPTS) Solvers1D$(_D).lib /a $(OBJS)
 
-Message:
-    echo Building 1D solver library...
-
-bisection.obj$(_D):
-brent.obj$(_D):
-falseposition.obj$(_D):
-newton.obj$(_D):
-newtonsafe.obj$(_D):
-ridder.obj$(_D):
-secant.obj$(_D):
 
 # Clean up
 clean::
