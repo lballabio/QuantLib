@@ -8,7 +8,6 @@ include_HEADERS = \
    discretizedvanillaoption.hpp \
    genericengine.hpp \
    forwardengines.hpp \
-   forwardperformanceengines.hpp \
    quantoengines.hpp \
    vanillaengines.hpp
 
