@@ -1,3 +1,34 @@
+2002-04-19 01:35  Sadruddin Rejeb <sad.rejeb@riskmap.it>
+
+	* Docs/: Makefile.am (1.48), makefile.mak (1.31),
+	quantlibheader.html (1.14), userman.tex (1.5), pages/Makefile.am
+	(1.5), pages/fixedincome.docs (1.6), pages/lattices.docs (1.1):
+	Adding a page for lattice methods.
+
+2002-04-18 10:45  Luigi Ballabio <luigi.ballabio@riskmap.net>
+
+	* ql/history.hpp (1.10): Added null History::Entry
+
+2002-04-18 10:41  Luigi Ballabio <luigi.ballabio@riskmap.net>
+
+	* ql/: config.msvc.hpp (1.16), qldefines.hpp (1.39): Visual C++
+	.Net hack
+
+2002-04-18 10:27  Luigi Ballabio <luigi.ballabio@riskmap.net>
+
+	* ql/: config.msvc.hpp (1.15), qldefines.hpp (1.38): Visual C++
+	.Net hack
+
+2002-04-16 22:07  Ferdinando Ametrano <ferdinando@ametrano.net>
+
+	* ql/Math/: normaldistribution.cpp (1.8), normaldistribution.hpp
+	(1.9): fixed bug in Moro's Inverse Cumulative Normal Distribution. 
+	Now it is the default InvCumNormDist
+
+2002-04-16 22:05  Ferdinando Ametrano <ferdinando@ametrano.net>
+
+	* ChangeLog.txt (1.24): updated
+
 2002-04-16 20:50  Ferdinando Ametrano <ferdinando@ametrano.net>
 
 	* ql/functions/: mathf.cpp (1.7), mathf.hpp (1.5): normal
