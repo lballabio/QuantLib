@@ -27,9 +27,12 @@
 	$Source$
 	$Name$
 	$Log$
+	Revision 1.3  2000/12/20 17:00:59  enri
+	modified to use new macros
+
 	Revision 1.2  2000/12/18 18:31:17  lballabio
 	Added CVS tags
-
+	
 */
 
 
@@ -59,7 +62,7 @@ namespace QuantLib {
 		  private:
 			mutable long temp1, temp2;
 			mutable long y;
-			mutable std::vector<double> buffer;
+			mutable std::vector<long> buffer;
 			static const long m1, a1, q1, r1;
 			static const long m2;
 			static const long a2;

@@ -27,9 +27,12 @@
 	$Source$
 	$Name$
 	$Log$
+	Revision 1.15  2000/12/20 17:00:59  enri
+	modified to use new macros
+
 	Revision 1.14  2000/12/14 12:40:14  lballabio
 	Added CVS tags in Doxygen file documentation blocks
-
+	
 */
 
 #include "bsmoption.h"
@@ -70,7 +73,7 @@ namespace QuantLib {
 			// solver
 			Solvers1D::Brent s1d = Solvers1D::Brent();
 			s1d.setMaxEvaluations(maxEvaluations);
-			s1d.setLowBound(std::numeric_limits<double>::epsilon());
+			s1d.setLowBound(QL_EPSILON);
 		
 			return s1d.solve(bsmf, accuracy, theVolatility, 0.05);
 		}

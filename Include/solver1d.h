@@ -27,9 +27,12 @@
 	$Source$
 	$Name$
 	$Log$
+	Revision 1.8  2000/12/20 17:00:57  enri
+	modified to use new macros
+
 	Revision 1.7  2000/12/14 12:32:29  lballabio
 	Added CVS tags in Doxygen file documentation blocks
-
+	
 */
 
 /*! \namespace QuantLib::Solvers1D
@@ -43,8 +46,6 @@
 #include "null.h"
 #include "qlerrors.h"
 #include "dataformatters.h"
-#include <cmath>
-#include <limits>
 
 namespace QuantLib {
 

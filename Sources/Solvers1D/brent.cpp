@@ -27,9 +27,12 @@
 	$Source$
 	$Name$
 	$Log$
+	Revision 1.14  2000/12/20 17:00:59  enri
+	modified to use new macros
+
 	Revision 1.13  2000/12/14 12:32:31  lballabio
 	Added CVS tags in Doxygen file documentation blocks
-
+	
 */
 
 // The implementation of the algorithm was inspired by
@@ -65,7 +68,7 @@ namespace QuantLib {
 					froot=fxMax;
 					fxMax=fxMin;
 				}
-				xAcc1=2.0*std::numeric_limits<double>::epsilon()*QL_FABS(root)+0.5*xAccuracy; // Convergence check.
+				xAcc1=2.0*QL_EPSILON*QL_FABS(root)+0.5*xAccuracy; // Convergence check.
 				xMid=(xMax-root)/2.0;
 				if (QL_FABS(xMid) <= xAcc1 || froot == 0.0)		return root;
 				if (QL_FABS(e) >= xAcc1 && QL_FABS(fxMin) > QL_FABS(froot)) {

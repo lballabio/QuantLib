@@ -27,14 +27,16 @@
 	$Source$
 	$Name$
 	$Log$
+	Revision 1.3  2000/12/20 17:00:59  enri
+	modified to use new macros
+
 	Revision 1.2  2000/12/18 18:32:47  lballabio
 	Added CVS tags
-
+	
 */
 
 
 #include "randomgenerator.h"
-#include <limits>
 
 namespace QuantLib {
 
@@ -53,7 +55,7 @@ namespace QuantLib {
 		const int RandomGenerator::bufferSize = 32;
 		const long RandomGenerator::bufferNormalizer = 67108862L; 			// 1+(m1-1)/bufferSize
 
-		const long double RandomGenerator::maxRandom = 1.0-std::numeric_limits<double>::epsilon();
+		const long double RandomGenerator::maxRandom = 1.0-QL_EPSILON;
 	
 	}
 }
