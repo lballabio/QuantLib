@@ -1,9 +1,8 @@
 
 // $Id$
 
-// This file contains 21200 polinomials.
-// Another version does contain 8129334 polinomials.
-// Both are slightly edited versions of
+// This file contains 21200 polinomials. Another version does contain
+// 8129334 polinomials. Both are slightly edited versions of
 // PrimitivePolynomialsModuloTwoUpToDegree27.c
 //
 // © 2002 "Monte Carlo Methods in Finance"
@@ -17,7 +16,6 @@
 // ================================================================================
 
 #include "primitivepolynomials.h"
-
 
 static const long PrimitivePolynomialDegree01[]={
 0, // x+1 (1)(1)
