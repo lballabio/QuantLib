@@ -27,9 +27,12 @@
 	$Source$
 	$Name$
 	$Log$
+	Revision 1.4  2000/12/27 14:18:04  lballabio
+	added missing semicolons
+
 	Revision 1.3  2000/12/27 14:05:56  lballabio
 	Turned Require and Ensure functions into QL_REQUIRE and QL_ENSURE macros
-
+	
 	Revision 1.2  2000/12/20 15:19:56  lballabio
 	Removed History:: scopes not digestible by VC++
 	
@@ -70,8 +73,8 @@ namespace QuantLib {
 		template <class Iterator>
 		History(const Date& firstDate, const Date& lastDate, Iterator begin, Iterator end)
 		: theFirstDate(firstDate), theLastDate(lastDate), theValues(end-begin) {
-			QL_REQUIRE(lastDate >= firstDate, "invalid date range for history")
-			QL_REQUIRE(values.size() == (lastDate-firstDate)+1, "history size incompatible with date range")
+			QL_REQUIRE(lastDate >= firstDate, "invalid date range for history");
+			QL_REQUIRE(values.size() == (lastDate-firstDate)+1, "history size incompatible with date range");
 			std::copy(begin,end,theValues.begin());
 		}
 		/*! This constructor initializes the history with the given set of values, corresponding to the
