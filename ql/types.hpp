@@ -31,18 +31,18 @@ namespace QuantLib {
     typedef int Integer;
 
     //! large integer number
-    /*! This type is required to be at least 4 bytes.
-
-        \ingroup types
-    */
+    /*! \ingroup types */
     typedef long BigInteger;
 
-    //! real number
-    /*! Modify this typedef for less or more precision.
-        Changes will be propagated to all dependent types.
+    //! positive integer
+    /*! \ingroup types */
+    typedef unsigned int Natural;
 
-        \ingroup types 
-    */
+    //! large positive integer
+    typedef unsigned long BigNatural;
+
+    //! real number
+    /*! \ingroup types */
     typedef double Real;
 
     //! decimal number
