@@ -62,7 +62,6 @@ int main() {
     QLTestListener qlListener;
     runner.eventManager().addListener(&qlListener);
 
-
     runner.addTest(AmericanOptionTest::suite());
     runner.addTest(AsianOptionTest::suite());
     runner.addTest(BarrierOptionTest::suite());
@@ -79,7 +78,7 @@ int main() {
     runner.addTest(FactorialTest::suite());
     runner.addTest(InstrumentTest::suite());
     runner.addTest(IntegralTest::suite());
-//    runner.addTest(JumpDiffusionTest::suite());
+    runner.addTest(JumpDiffusionTest::suite());
     runner.addTest(LDSTest::suite());
     runner.addTest(MarketElementTest::suite());
     runner.addTest(MatricesTest::suite());

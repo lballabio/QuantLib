@@ -1,4 +1,4 @@
-add Merton76
+add Edgeworth expansion
 switch to BrownianBridge
 american at-expiry greeks
 american at-hit greeks to be completed

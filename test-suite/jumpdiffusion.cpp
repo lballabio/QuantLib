@@ -156,42 +156,54 @@ namespace {
     }
 
     void vanillaOptionTestFailed(std::string greekName,
-               const Handle<StrikedTypePayoff>& payoff,
-               const Handle<Exercise>& exercise,
-               double s,
-               double q,
-               double r,
-               Date today,
-               double v,
-               double expected,
-               double calculated,
-               double tolerance = Null<double>()) {
-      CPPUNIT_FAIL(exerciseTypeToString(exercise) + " "
-          + OptionTypeFormatter::toString(payoff->optionType()) +
-          " option with "
-          + payoffTypeToString(payoff) + ":\n"
-          "    underlying value: "
-          + DoubleFormatter::toString(s) + "\n"
-          "    strike:           "
-          + DoubleFormatter::toString(payoff->strike()) +"\n"
-          "    dividend yield:   "
-          + DoubleFormatter::toString(q) + "\n"
-          "    risk-free rate:   "
-          + DoubleFormatter::toString(r) + "\n"
-          "    reference date:   "
-          + DateFormatter::toString(today) + "\n"
-          "    maturity:         "
-          + DateFormatter::toString(exercise->lastDate()) + "\n"
-          "    volatility:       "
-          + DoubleFormatter::toString(v) + "\n\n"
-          "    expected   " + greekName + ": "
-          + DoubleFormatter::toString(expected) + "\n"
-          "    calculated " + greekName + ": "
-          + DoubleFormatter::toString(calculated) + "\n"
-          "    error:            "
-          + DoubleFormatter::toString(QL_FABS(expected-calculated)) + "\n"
-          + (tolerance==Null<double>() ? std::string("") :
-          "    tolerance:        " + DoubleFormatter::toString(tolerance)));
+                                 const Handle<StrikedTypePayoff>& payoff,
+                                 const Handle<Exercise>& exercise,
+                                 double s,
+                                 double q,
+                                 double r,
+                                 Date today,
+                                 DayCounter dc,
+                                 double v,
+                                 double intensity,
+                                 double gamma,
+                                 double expected,
+                                 double calculated,
+                                 double tolerance = Null<double>()) {
+
+        Time t = dc.yearFraction(today, exercise->lastDate());
+
+        CPPUNIT_FAIL(exerciseTypeToString(exercise) + " "
+            + OptionTypeFormatter::toString(payoff->optionType()) +
+            " option with "
+            + payoffTypeToString(payoff) + ":\n"
+            "    underlying value: "
+            + DoubleFormatter::toString(s) + "\n"
+            "    strike:           "
+            + DoubleFormatter::toString(payoff->strike()) +"\n"
+            "    dividend yield:   "
+            + DoubleFormatter::toString(q) + "\n"
+            "    risk-free rate:   "
+            + DoubleFormatter::toString(r) + "\n"
+            "    reference date:   "
+            + DateFormatter::toString(today) + "\n"
+            "    maturity:         "
+            + DateFormatter::toString(exercise->lastDate()) + "\n"
+            "    time to expiry:   "
+            + DoubleFormatter::toString(t) + "\n"
+            "    volatility:       "
+            + DoubleFormatter::toString(v) + "\n"
+            "    intensity:        "
+            + DoubleFormatter::toString(intensity) + "\n"
+            "    gamma:            "
+            + DoubleFormatter::toString(gamma) + "\n\n"
+            "    expected   " + greekName + ": "
+            + DoubleFormatter::toString(expected) + "\n"
+            "    calculated " + greekName + ": "
+            + DoubleFormatter::toString(calculated) + "\n"
+            "    error:            "
+            + DoubleFormatter::toString(QL_FABS(expected-calculated)) + "\n"
+            + (tolerance==Null<double>() ? std::string("") :
+            "    tolerance:        " + DoubleFormatter::toString(tolerance)));
     }
 
     struct HaugMertonData {
@@ -219,19 +231,25 @@ void JumpDiffusionTest::testMerton76() {
 
     /* The data below are from 
        "Option pricing formulas", E.G. Haug, McGraw-Hill 1998, pag 9
+
+       Haug use the arbitrary truncation criterium of 11 terms in the sum, which
+       doesn't guarantee convergence up to 1e-2.
+       Using Haug's criterium Haug's values have been correctly reproduced. Anyway the
+       following values have the right 1e-2 accuracy: any value different from Haug has
+       been noted
     */
     HaugMertonData values[] = {
         //        type, strike,   spot,    q,    r,    t,  vol, int, gamma, value, tol
         // gamma = 0.25, strike = 80
         { Option::Call,  80.00, 100.00, 0.00, 0.08, 0.10, 0.25, 1.0,  0.25, 20.67, 1e-2 },
-        { Option::Call,  80.00, 100.00, 0.00, 0.08, 0.25, 0.25, 1.0,  0.25, 22.74, 1e-2 },
+        { Option::Call,  80.00, 100.00, 0.00, 0.08, 0.25, 0.25, 1.0,  0.25, 21.74, 1e-2 },
         { Option::Call,  80.00, 100.00, 0.00, 0.08, 0.50, 0.25, 1.0,  0.25, 23.63, 1e-2 },
         { Option::Call,  80.00, 100.00, 0.00, 0.08, 0.10, 0.25, 5.0,  0.25, 20.65, 1e-2 },
         { Option::Call,  80.00, 100.00, 0.00, 0.08, 0.25, 0.25, 5.0,  0.25, 21.70, 1e-2 },
         { Option::Call,  80.00, 100.00, 0.00, 0.08, 0.50, 0.25, 5.0,  0.25, 23.61, 1e-2 },
         { Option::Call,  80.00, 100.00, 0.00, 0.08, 0.10, 0.25,10.0,  0.25, 20.64, 1e-2 },
         { Option::Call,  80.00, 100.00, 0.00, 0.08, 0.25, 0.25,10.0,  0.25, 21.70, 1e-2 },
-        { Option::Call,  80.00, 100.00, 0.00, 0.08, 0.50, 0.25,10.0,  0.25, 23.28, 1e-2 },
+        { Option::Call,  80.00, 100.00, 0.00, 0.08, 0.50, 0.25,10.0,  0.25, 23.61, 1e-2 }, // Haug 23.28
         // gamma = 0.25, strike = 90
         { Option::Call,  90.00, 100.00, 0.00, 0.08, 0.10, 0.25, 1.0,  0.25, 11.00, 1e-2 },
         { Option::Call,  90.00, 100.00, 0.00, 0.08, 0.25, 0.25, 1.0,  0.25, 12.74, 1e-2 },
@@ -241,7 +259,7 @@ void JumpDiffusionTest::testMerton76() {
         { Option::Call,  90.00, 100.00, 0.00, 0.08, 0.50, 0.25, 5.0,  0.25, 15.42, 1e-2 },
         { Option::Call,  90.00, 100.00, 0.00, 0.08, 0.10, 0.25,10.0,  0.25, 10.98, 1e-2 },
         { Option::Call,  90.00, 100.00, 0.00, 0.08, 0.25, 0.25,10.0,  0.25, 12.75, 1e-2 },
-        { Option::Call,  90.00, 100.00, 0.00, 0.08, 0.50, 0.25,10.0,  0.25, 15.20, 1e-2 },
+        { Option::Call,  90.00, 100.00, 0.00, 0.08, 0.50, 0.25,10.0,  0.25, 15.42, 1e-2 }, // Haug 15.20
         // gamma = 0.25, strike = 100
         { Option::Call, 100.00, 100.00, 0.00, 0.08, 0.10, 0.25, 1.0,  0.25,  3.42, 1e-2 },
         { Option::Call, 100.00, 100.00, 0.00, 0.08, 0.25, 0.25, 1.0,  0.25,  5.88, 1e-2 },
@@ -251,7 +269,7 @@ void JumpDiffusionTest::testMerton76() {
         { Option::Call, 100.00, 100.00, 0.00, 0.08, 0.50, 0.25, 5.0,  0.25,  9.02, 1e-2 },
         { Option::Call, 100.00, 100.00, 0.00, 0.08, 0.10, 0.25,10.0,  0.25,  3.53, 1e-2 },
         { Option::Call, 100.00, 100.00, 0.00, 0.08, 0.25, 0.25,10.0,  0.25,  5.97, 1e-2 },
-        { Option::Call, 100.00, 100.00, 0.00, 0.08, 0.50, 0.25,10.0,  0.25,  8.89, 1e-2 },
+        { Option::Call, 100.00, 100.00, 0.00, 0.08, 0.50, 0.25,10.0,  0.25,  9.03, 1e-2 }, // Haug 8.89
         // gamma = 0.25, strike = 110
         { Option::Call, 110.00, 100.00, 0.00, 0.08, 0.10, 0.25, 1.0,  0.25,  0.55, 1e-2 },
         { Option::Call, 110.00, 100.00, 0.00, 0.08, 0.25, 0.25, 1.0,  0.25,  2.11, 1e-2 },
@@ -261,7 +279,7 @@ void JumpDiffusionTest::testMerton76() {
         { Option::Call, 110.00, 100.00, 0.00, 0.08, 0.50, 0.25, 5.0,  0.25,  4.73, 1e-2 },
         { Option::Call, 110.00, 100.00, 0.00, 0.08, 0.10, 0.25,10.0,  0.25,  0.56, 1e-2 },
         { Option::Call, 110.00, 100.00, 0.00, 0.08, 0.25, 0.25,10.0,  0.25,  2.17, 1e-2 },
-        { Option::Call, 110.00, 100.00, 0.00, 0.08, 0.50, 0.25,10.0,  0.25,  4.66, 1e-2 },
+        { Option::Call, 110.00, 100.00, 0.00, 0.08, 0.50, 0.25,10.0,  0.25,  4.74, 1e-2 }, // Haug 4.66
         // gamma = 0.25, strike = 120
         { Option::Call, 120.00, 100.00, 0.00, 0.08, 0.10, 0.25, 1.0,  0.25,  0.10, 1e-2 },
         { Option::Call, 120.00, 100.00, 0.00, 0.08, 0.25, 0.25, 1.0,  0.25,  0.64, 1e-2 },
@@ -271,7 +289,7 @@ void JumpDiffusionTest::testMerton76() {
         { Option::Call, 120.00, 100.00, 0.00, 0.08, 0.50, 0.25, 5.0,  0.25,  2.25, 1e-2 },
         { Option::Call, 120.00, 100.00, 0.00, 0.08, 0.10, 0.25,10.0,  0.25,  0.05, 1e-2 },
         { Option::Call, 120.00, 100.00, 0.00, 0.08, 0.25, 0.25,10.0,  0.25,  0.62, 1e-2 },
-        { Option::Call, 120.00, 100.00, 0.00, 0.08, 0.50, 0.25,10.0,  0.25,  2.21, 1e-2 },
+        { Option::Call, 120.00, 100.00, 0.00, 0.08, 0.50, 0.25,10.0,  0.25,  2.25, 1e-2 }, // Haug 2.21
 
         // gamma = 0.50, strike = 80
         { Option::Call,  80.00, 100.00, 0.00, 0.08, 0.10, 0.25, 1.0,  0.50, 20.72, 1e-2 },
@@ -279,10 +297,10 @@ void JumpDiffusionTest::testMerton76() {
         { Option::Call,  80.00, 100.00, 0.00, 0.08, 0.50, 0.25, 1.0,  0.50, 23.71, 1e-2 },
         { Option::Call,  80.00, 100.00, 0.00, 0.08, 0.10, 0.25, 5.0,  0.50, 20.66, 1e-2 },
         { Option::Call,  80.00, 100.00, 0.00, 0.08, 0.25, 0.25, 5.0,  0.50, 21.73, 1e-2 },
-        { Option::Call,  80.00, 100.00, 0.00, 0.08, 0.50, 0.25, 5.0,  0.50, 21.63, 1e-2 },
+        { Option::Call,  80.00, 100.00, 0.00, 0.08, 0.50, 0.25, 5.0,  0.50, 23.63, 1e-2 },
         { Option::Call,  80.00, 100.00, 0.00, 0.08, 0.10, 0.25,10.0,  0.50, 20.65, 1e-2 },
         { Option::Call,  80.00, 100.00, 0.00, 0.08, 0.25, 0.25,10.0,  0.50, 21.71, 1e-2 },
-        { Option::Call,  80.00, 100.00, 0.00, 0.08, 0.50, 0.25,10.0,  0.50, 23.28, 1e-2 },
+        { Option::Call,  80.00, 100.00, 0.00, 0.08, 0.50, 0.25,10.0,  0.50, 23.61, 1e-2 }, // Haug 23.28
         // gamma = 0.50, strike = 90
         { Option::Call,  90.00, 100.00, 0.00, 0.08, 0.10, 0.25, 1.0,  0.50, 11.04, 1e-2 },
         { Option::Call,  90.00, 100.00, 0.00, 0.08, 0.25, 0.25, 1.0,  0.50, 12.72, 1e-2 },
@@ -292,7 +310,7 @@ void JumpDiffusionTest::testMerton76() {
         { Option::Call,  90.00, 100.00, 0.00, 0.08, 0.50, 0.25, 5.0,  0.50, 15.41, 1e-2 },
         { Option::Call,  90.00, 100.00, 0.00, 0.08, 0.10, 0.25,10.0,  0.50, 11.00, 1e-2 },
         { Option::Call,  90.00, 100.00, 0.00, 0.08, 0.25, 0.25,10.0,  0.50, 12.75, 1e-2 },
-        { Option::Call,  90.00, 100.00, 0.00, 0.08, 0.50, 0.25,10.0,  0.50, 15.18, 1e-2 },
+        { Option::Call,  90.00, 100.00, 0.00, 0.08, 0.50, 0.25,10.0,  0.50, 15.41, 1e-2 }, // Haug 15.18
         // gamma = 0.50, strike = 100
         { Option::Call, 100.00, 100.00, 0.00, 0.08, 0.10, 0.25, 1.0,  0.50,  3.14, 1e-2 },
         { Option::Call, 100.00, 100.00, 0.00, 0.08, 0.25, 0.25, 1.0,  0.50,  5.58, 1e-2 },
@@ -302,7 +320,7 @@ void JumpDiffusionTest::testMerton76() {
         { Option::Call, 100.00, 100.00, 0.00, 0.08, 0.50, 0.25, 5.0,  0.50,  8.96, 1e-2 },
         { Option::Call, 100.00, 100.00, 0.00, 0.08, 0.10, 0.25,10.0,  0.50,  3.46, 1e-2 },
         { Option::Call, 100.00, 100.00, 0.00, 0.08, 0.25, 0.25,10.0,  0.50,  5.93, 1e-2 },
-        { Option::Call, 100.00, 100.00, 0.00, 0.08, 0.50, 0.25,10.0,  0.50,  8.85, 1e-2 },
+        { Option::Call, 100.00, 100.00, 0.00, 0.08, 0.50, 0.25,10.0,  0.50,  9.00, 1e-2 }, // Haug 8.85
         // gamma = 0.50, strike = 110
         { Option::Call, 110.00, 100.00, 0.00, 0.08, 0.10, 0.25, 1.0,  0.50,  0.53, 1e-2 },
         { Option::Call, 110.00, 100.00, 0.00, 0.08, 0.25, 0.25, 1.0,  0.50,  1.93, 1e-2 },
@@ -312,7 +330,7 @@ void JumpDiffusionTest::testMerton76() {
         { Option::Call, 110.00, 100.00, 0.00, 0.08, 0.50, 0.25, 5.0,  0.50,  4.67, 1e-2 },
         { Option::Call, 110.00, 100.00, 0.00, 0.08, 0.10, 0.25,10.0,  0.50,  0.57, 1e-2 },
         { Option::Call, 110.00, 100.00, 0.00, 0.08, 0.25, 0.25,10.0,  0.50,  2.14, 1e-2 },
-        { Option::Call, 110.00, 100.00, 0.00, 0.08, 0.50, 0.25,10.0,  0.50,  4.62, 1e-2 },
+        { Option::Call, 110.00, 100.00, 0.00, 0.08, 0.50, 0.25,10.0,  0.50,  4.71, 1e-2 }, // Haug 4.62
         // gamma = 0.50, strike = 120
         { Option::Call, 120.00, 100.00, 0.00, 0.08, 0.10, 0.25, 1.0,  0.50,  0.19, 1e-2 },
         { Option::Call, 120.00, 100.00, 0.00, 0.08, 0.25, 0.25, 1.0,  0.50,  0.71, 1e-2 },
@@ -322,7 +340,7 @@ void JumpDiffusionTest::testMerton76() {
         { Option::Call, 120.00, 100.00, 0.00, 0.08, 0.50, 0.25, 5.0,  0.50,  2.23, 1e-2 },
         { Option::Call, 120.00, 100.00, 0.00, 0.08, 0.10, 0.25,10.0,  0.50,  0.07, 1e-2 },
         { Option::Call, 120.00, 100.00, 0.00, 0.08, 0.25, 0.25,10.0,  0.50,  0.64, 1e-2 },
-        { Option::Call, 120.00, 100.00, 0.00, 0.08, 0.50, 0.25,10.0,  0.50,  2.19, 1e-2 },
+        { Option::Call, 120.00, 100.00, 0.00, 0.08, 0.50, 0.25,10.0,  0.50,  2.24, 1e-2 }, // Haug 2.19
 
         // gamma = 0.75, strike = 80
         { Option::Call,  80.00, 100.00, 0.00, 0.08, 0.10, 0.25, 1.0,  0.75, 20.79, 1e-2 },
@@ -333,7 +351,7 @@ void JumpDiffusionTest::testMerton76() {
         { Option::Call,  80.00, 100.00, 0.00, 0.08, 0.50, 0.25, 5.0,  0.75, 23.67, 1e-2 },
         { Option::Call,  80.00, 100.00, 0.00, 0.08, 0.10, 0.25,10.0,  0.75, 20.66, 1e-2 },
         { Option::Call,  80.00, 100.00, 0.00, 0.08, 0.25, 0.25,10.0,  0.75, 21.74, 1e-2 },
-        { Option::Call,  80.00, 100.00, 0.00, 0.08, 0.50, 0.25,10.0,  0.75, 23.30, 1e-2 },
+        { Option::Call,  80.00, 100.00, 0.00, 0.08, 0.50, 0.25,10.0,  0.75, 23.64, 1e-2 }, // Haug 23.30
         // gamma = 0.75, strike = 90
         { Option::Call,  90.00, 100.00, 0.00, 0.08, 0.10, 0.25, 1.0,  0.75, 11.11, 1e-2 },
         { Option::Call,  90.00, 100.00, 0.00, 0.08, 0.25, 0.25, 1.0,  0.75, 12.75, 1e-2 },
@@ -343,7 +361,7 @@ void JumpDiffusionTest::testMerton76() {
         { Option::Call,  90.00, 100.00, 0.00, 0.08, 0.50, 0.25, 5.0,  0.75, 15.39, 1e-2 },
         { Option::Call,  90.00, 100.00, 0.00, 0.08, 0.10, 0.25,10.0,  0.75, 11.04, 1e-2 },
         { Option::Call,  90.00, 100.00, 0.00, 0.08, 0.25, 0.25,10.0,  0.75, 12.76, 1e-2 },
-        { Option::Call,  90.00, 100.00, 0.00, 0.08, 0.50, 0.25,10.0,  0.75, 15.17, 1e-2 },
+        { Option::Call,  90.00, 100.00, 0.00, 0.08, 0.50, 0.25,10.0,  0.75, 15.40, 1e-2 }, // Haug 15.17
         // gamma = 0.75, strike = 100
         { Option::Call, 100.00, 100.00, 0.00, 0.08, 0.10, 0.25, 1.0,  0.75,  2.70, 1e-2 },
         { Option::Call, 100.00, 100.00, 0.00, 0.08, 0.25, 0.25, 1.0,  0.75,  5.08, 1e-2 },
@@ -353,7 +371,7 @@ void JumpDiffusionTest::testMerton76() {
         { Option::Call, 100.00, 100.00, 0.00, 0.08, 0.50, 0.25, 5.0,  0.75,  8.85, 1e-2 },
         { Option::Call, 100.00, 100.00, 0.00, 0.08, 0.10, 0.25,10.0,  0.75,  3.33, 1e-2 },
         { Option::Call, 100.00, 100.00, 0.00, 0.08, 0.25, 0.25,10.0,  0.75,  5.85, 1e-2 },
-        { Option::Call, 100.00, 100.00, 0.00, 0.08, 0.50, 0.25,10.0,  0.75,  8.79, 1e-2 },
+        { Option::Call, 100.00, 100.00, 0.00, 0.08, 0.50, 0.25,10.0,  0.75,  8.95, 1e-2 }, // Haug 8.79
         // gamma = 0.75, strike = 110
         { Option::Call, 110.00, 100.00, 0.00, 0.08, 0.10, 0.25, 1.0,  0.75,  0.54, 1e-2 },
         { Option::Call, 110.00, 100.00, 0.00, 0.08, 0.25, 0.25, 1.0,  0.75,  1.69, 1e-2 },
@@ -363,7 +381,7 @@ void JumpDiffusionTest::testMerton76() {
         { Option::Call, 110.00, 100.00, 0.00, 0.08, 0.50, 0.25, 5.0,  0.75,  4.57, 1e-2 },
         { Option::Call, 110.00, 100.00, 0.00, 0.08, 0.10, 0.25,10.0,  0.75,  0.60, 1e-2 },
         { Option::Call, 110.00, 100.00, 0.00, 0.08, 0.25, 0.25,10.0,  0.75,  2.11, 1e-2 },
-        { Option::Call, 110.00, 100.00, 0.00, 0.08, 0.50, 0.25,10.0,  0.75,  4.56, 1e-2 },
+        { Option::Call, 110.00, 100.00, 0.00, 0.08, 0.50, 0.25,10.0,  0.75,  4.66, 1e-2 }, // Haug 4.56
         // gamma = 0.75, strike = 120
         { Option::Call, 120.00, 100.00, 0.00, 0.08, 0.10, 0.25, 1.0,  0.75,  0.29, 1e-2 },
         { Option::Call, 120.00, 100.00, 0.00, 0.08, 0.25, 0.25, 1.0,  0.75,  0.84, 1e-2 },
@@ -373,7 +391,7 @@ void JumpDiffusionTest::testMerton76() {
         { Option::Call, 120.00, 100.00, 0.00, 0.08, 0.50, 0.25, 5.0,  0.75,  2.21, 1e-2 },
         { Option::Call, 120.00, 100.00, 0.00, 0.08, 0.10, 0.25,10.0,  0.75,  0.11, 1e-2 },
         { Option::Call, 120.00, 100.00, 0.00, 0.08, 0.25, 0.25,10.0,  0.75,  0.67, 1e-2 },
-        { Option::Call, 120.00, 100.00, 0.00, 0.08, 0.50, 0.25,10.0,  0.75,  2.17, 1e-2 }
+        { Option::Call, 120.00, 100.00, 0.00, 0.08, 0.50, 0.25,10.0,  0.75,  2.23, 1e-2 }  // Haug 2.17
 };
 
 
@@ -386,10 +404,26 @@ void JumpDiffusionTest::testMerton76() {
     Handle<TermStructure> rTS = makeFlatCurve(rRate, dc);
     Handle<SimpleQuote> vol(new SimpleQuote(0.0));
     Handle<BlackVolTermStructure> volTS = makeFlatVolatility(vol, dc);
+
+    Handle<SimpleQuote> jumpIntensity(new SimpleQuote(0.0));
+    Handle<SimpleQuote> meanLogJump(new SimpleQuote(0.0));
+    Handle<SimpleQuote> jumpVol(new SimpleQuote(0.0));
+    
+    Handle<BlackScholesStochasticProcess> stochProcess(new
+        Merton76StochasticProcess(
+            RelinkableHandle<Quote>(spot),
+            RelinkableHandle<TermStructure>(qTS),
+            RelinkableHandle<TermStructure>(rTS),
+            RelinkableHandle<BlackVolTermStructure>(volTS),
+            RelinkableHandle<Quote>(jumpIntensity),
+            RelinkableHandle<Quote>(meanLogJump),
+            RelinkableHandle<Quote>(jumpVol)));
+
     Handle<VanillaEngine> baseEngine(new AnalyticEuropeanEngine);
     Handle<PricingEngine> engine(new JumpDiffusionEngine(baseEngine));
 
     Date today = Date::todaysDate();
+
 
     for (Size i=0; i<LENGTH(values); i++) {
 
@@ -403,32 +437,38 @@ void JumpDiffusionTest::testMerton76() {
         qRate->setValue(values[i].q);
         rRate->setValue(values[i].r);
 
-        double volSquare = values[i].v * values[i].v;
-        // z in Haug's notation
-        double diffusionVol = QL_SQRT((1.0 - values[i].gamma) * volSquare);
-        vol  ->setValue(diffusionVol);
 
         // delta in Haug's notation
-        double jumpVol =
-            QL_SQRT(values[i].gamma * volSquare / values[i].jumpIntensity);
-        double meanLogJump = 0.0;
-        Handle<BlackScholesStochasticProcess> stochProcess(new
-            Merton76StochasticProcess(
-                RelinkableHandle<Quote>(spot),
-                RelinkableHandle<TermStructure>(qTS),
-                RelinkableHandle<TermStructure>(rTS),
-                RelinkableHandle<BlackVolTermStructure>(volTS),
-                values[i].jumpIntensity,
-                meanLogJump,
-                jumpVol));
+        double jVol = values[i].v *
+            QL_SQRT(values[i].gamma / values[i].jumpIntensity);
+        jumpVol->setValue(jVol);
+        jumpIntensity->setValue(values[i].jumpIntensity);
 
-        VanillaOption option(stochProcess, payoff, exercise,
+        // z in Haug's notation
+        double diffusionVol = values[i].v * QL_SQRT(1.0 - values[i].gamma);
+        vol  ->setValue(diffusionVol);
+
+        // Haug is assuming zero meanJump
+        double meanJump = 0.0;
+        meanLogJump->setValue(QL_LOG(1.0+meanJump)-0.5*jVol*jVol);
+
+        double totalVol = QL_SQRT(values[i].jumpIntensity*jVol*jVol+diffusionVol*diffusionVol);
+        double error = QL_FABS(totalVol-values[i].v);
+        QL_REQUIRE(error<1e-13,
+            "" + DoubleFormatter::toString(error) +
+            " mismatch");
+
+        VanillaOption option(stochProcess,
+                             payoff,
+                             exercise,
                              engine);
 
         double calculated = option.NPV();
         if (QL_FABS(calculated-values[i].result) > values[i].tol) {
             vanillaOptionTestFailed("value", payoff, exercise, values[i].s, values[i].q,
-                values[i].r, today, values[i].v, values[i].result, calculated,
+                values[i].r, today, dc, values[i].v,
+                values[i].jumpIntensity, values[i].gamma,
+                values[i].result, calculated,
                 values[i].tol);
         }
     }

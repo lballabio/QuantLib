@@ -25,8 +25,11 @@
 namespace QuantLib {
 
     JumpDiffusionEngine::JumpDiffusionEngine(
-        const Handle<VanillaEngine>& baseEngine)
-    : baseEngine_(baseEngine) {
+        const Handle<VanillaEngine>& baseEngine,
+        double relativeAccuracy,
+        Size maxIterations)
+    : baseEngine_(baseEngine), relativeAccuracy_(relativeAccuracy),
+      maxIterations_(maxIterations) {
         QL_REQUIRE(!IsNull(baseEngine_),
                    "JumpDiffusionEngine: null base engine");
     }
@@ -45,12 +48,13 @@ namespace QuantLib {
         #endif
         QL_REQUIRE(!IsNull(jdProcess),"not a jump diffusion process");
 
-        double jumpSquareVol =
-            jdProcess->jumpVolatility*jdProcess->jumpVolatility;
-        double muPlusHalfSquareVol = jdProcess->meanLogJump + 0.5*jumpSquareVol;
+        double jumpSquareVol = jdProcess->logJumpVolatility->value()
+            * jdProcess->logJumpVolatility->value();
+        double muPlusHalfSquareVol = jdProcess->logJumpMean->value()
+            + 0.5*jumpSquareVol;
         // mean jump size
         double k = QL_EXP(muPlusHalfSquareVol) - 1.0;
-        double lambda = (k+1.0) * jdProcess->jumpIntensity;
+        double lambda = (k+1.0) * jdProcess->jumpIntensity->value();
 
         // dummy strike
         double variance = jdProcess->volTS->blackVariance(
@@ -70,7 +74,6 @@ namespace QuantLib {
         VanillaOption::arguments* baseArguments =
             dynamic_cast<VanillaOption::arguments*>(baseEngine_->arguments());
 
-        // *baseArguments = arguments_;
         baseArguments->payoff   = arguments_.payoff;
         baseArguments->exercise = arguments_.exercise;
         baseArguments->blackScholesProcess = 
@@ -86,12 +89,25 @@ namespace QuantLib {
             dynamic_cast<const VanillaOption::results*>(
             baseEngine_->results());
 
-        double r, v, weight, weightSum = 0.0;
-        for (Size i=0; i<11; i++) {
+        results_.value       = 0.0;
+        results_.delta       = 0.0;
+        results_.gamma       = 0.0;
+        results_.theta       = 0.0;
+        results_.vega        = 0.0;
+        results_.rho         = 0.0;
+        results_.dividendRho = 0.0;
+
+        double r, v, weight, lastContribution = 1.0;
+        Size i;
+        // Haug arbitrary criterium is:
+        //for (i=0; i<11; i++) {
+        for (i=0;
+             lastContribution>relativeAccuracy_ && i<maxIterations_;
+             i++) {
 
             // constant vol/rate assumption. It should be relaxed
             v = QL_SQRT((variance + i*jumpSquareVol)/t);
-            r = riskFreeRate - jdProcess->jumpIntensity*k
+            r = riskFreeRate - jdProcess->jumpIntensity->value()*k
                 + i*muPlusHalfSquareVol/t;
             baseArguments->blackScholesProcess->riskFreeTS =
                 RelinkableHandle<TermStructure>(
@@ -103,11 +119,11 @@ namespace QuantLib {
                         BlackConstantVol(rateRefDate, v, dc)));
 
 
+            baseArguments->validate();
             baseEngine_->calculate();
 
 
             weight = p(i);
-            weightSum += weight;
             results_.value       += weight * baseResults->value;
             results_.delta       += weight * baseResults->delta;
             results_.gamma       += weight * baseResults->gamma;
@@ -115,7 +131,23 @@ namespace QuantLib {
             results_.vega        += weight * baseResults->vega;
             results_.rho         += weight * baseResults->rho;
             results_.dividendRho += weight * baseResults->dividendRho;
+
+            lastContribution = weight * baseResults->value / results_.value;
         }
+        QL_ENSURE(i<maxIterations_,
+            "JumpDiffusionEngine::calculate : "
+            + IntegerFormatter::toString(i) +
+            " iterations have been not enough to reach the required "
+            + DoubleFormatter::toExponential(relativeAccuracy_) +
+            " accuracy. The "
+            + IntegerFormatter::toOrdinal(i) +
+            " addendum was "
+            + DoubleFormatter::toExponential(lastContribution) +
+            " while the running sum was "
+            + DoubleFormatter::toExponential(results_.value));
+
+
+//        std::cout << std::endl << DoubleFormatter::toString(lastContribution * results_.value,6) << ", i=" << i;
     }
 
 }
