@@ -19,6 +19,12 @@ LIBRARY
         add example of Martingale control variate
         add examples of Montecarlo internal and Montecarlo convergence
 
+    FINITE DIFFERENCE FRAMEWORK
+        boundary conditions as in Wilmott
+        Douglas scheme (QuEP)
+        Richardson extrapolation (QuEP)
+        SOR for free boundary condition
+
     ASIAN:
         continuous geometric APO backward starting instead of forward starting
         introduce continuous geometric ASO
@@ -35,9 +41,6 @@ LIBRARY
     introduce compoundpathpricer
     GaussianPathGenerator, etc: allow for more general random walks
 
-    QuEP:
-        Douglas Scheme
-        Richardson extrapolation
 
     what about barrier or FD with dividends ???
     revisite model/slice interface
