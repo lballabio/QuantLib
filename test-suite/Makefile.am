@@ -10,6 +10,7 @@ QL_TESTS = \
            covariance.hpp covariance.cpp \
            dates.hpp dates.cpp \
            daycounters.hpp daycounters.cpp \
+           digitaloption.hpp digitaloption.cpp \
            distributions.hpp distributions.cpp \
            europeanoption.hpp europeanoption.cpp \
            factorial.hpp factorial.cpp \

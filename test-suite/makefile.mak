@@ -31,6 +31,7 @@ QL_TESTS = \
     covariance.obj$(_D) \
     dates.obj$(_D) \
     daycounters.obj$(_D) \
+    digitaloption.obj$(_D) \
     distributions.obj$(_D) \
     europeanoption.obj$(_D) \
     factorial.obj$(_D) \
@@ -47,10 +48,10 @@ QL_TESTS = \
     quantlibtestsuite.obj$(_D) \
     riskstats.obj$(_D) \
     solvers.obj$(_D) \
-    stats.obj$(_D) \
     swap.obj$(_D) \
     swaption.obj$(_D) \
-    termstructures.obj$(_D)
+    termstructures.obj$(_D) \
+    stats.obj$(_D)
 
 # Tools to be used
 CC        = bcc32

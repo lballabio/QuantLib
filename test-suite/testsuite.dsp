@@ -181,6 +181,10 @@ SOURCE=.\daycounters.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=.\digitaloption.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\distributions.cpp
 # End Source File
 # Begin Source File
@@ -310,6 +314,10 @@ SOURCE=.\dates.hpp
 # Begin Source File
 
 SOURCE=.\daycounters.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\digitaloption.hpp
 # End Source File
 # Begin Source File
 
