@@ -39,15 +39,101 @@
 #endif
 #endif
 
+%include String.i
+
 %{
-// std::vector specializations
 #include <vector>
 typedef std::vector<int> IntVector;
 typedef std::vector<double> DoubleVector;
-// array
 using QuantLib::Array;
+typedef QuantLib::Array PyArray;
+typedef QuantLib::Math::LexicographicalView<Array::iterator> ArrayLexicographicalView;
+typedef QuantLib::Math::LexicographicalView<Array::iterator>::y_iterator 
+	ArrayLexicographicalViewColumn;
 using QuantLib::Null;
 %}
+
+// array as python shadow class
+
+class Array {
+  public:
+    Array(int size, double value = 0.0);
+    ~Array();
+    int size() const;
+};
+
+%addmethods Array {
+    double __getitem__(int i) {
+        return (*self)[i];
+    }
+    void __setitem__(int i, double x) {
+        (*self)[i] = x;
+    }
+    String __str__() {
+        String s = "(";
+        for (int i=0; i<self->size(); i++) {
+        	if (i != 0)
+        		s += ",";
+        	s += QuantLib::DoubleFormatter::toString((*self)[i]);
+        }
+        s += ")";
+        return s;
+    }
+}; 
+
+
+// 2-D view
+
+class ArrayLexicographicalView {
+  public:
+    ~ArrayLexicographicalView();
+    int xSize() const;
+    int ySize() const;
+};
+
+%{
+    ArrayLexicographicalView CreateLexicographicView(Array& a, int xSize) {
+        return ArrayLexicographicalView(a.begin(),a.end(),xSize);
+    }
+%}
+
+%name(LexicographicalView) ArrayLexicographicalView CreateLexicographicView(Array& a, int xSize);
+
+class ArrayLexicographicalViewColumn {
+  public:
+    ~ArrayLexicographicalViewColumn();
+};
+
+%addmethods ArrayLexicographicalView {
+    ArrayLexicographicalViewColumn __getitem__(int i) {
+        return (*self)[i];
+    }
+    String __str__() {
+        String s;
+        for (int j=0; j<self->ySize(); j++) {
+    	    s += "\n";
+            for (int i=0; i<self->xSize(); i++) {
+                if (i != 0)
+                    s += ",";
+                s += QuantLib::DoubleFormatter::toString((*self)[i][j]);
+            }
+        }
+        s += "\n";
+        return s;
+    }
+};
+
+%addmethods ArrayLexicographicalViewColumn {
+    double __getitem__(int i) {
+        return (*self)[i];
+    }
+    void __setitem__(int i, double x) {
+        (*self)[i] = x;
+    }
+};
+    	
+
+// typemaps
 
 %typemap(python,in) IntVector, IntVector *, const IntVector & {
     if (PyTuple_Check($source)) {
@@ -102,7 +188,7 @@ using QuantLib::Null;
 
 
 %typemap(python,in) DoubleVector, DoubleVector * ,const DoubleVector &, 
-                    Array, Array *, const Array & {
+                    PyArray, PyArray *, const PyArray & {
     if (PyTuple_Check($source)) {
         int size = PyTuple_Size($source);
         $target = new $basetype(size);
@@ -144,18 +230,18 @@ using QuantLib::Null;
 };
 
 %typemap(python,freearg) DoubleVector, DoubleVector *, const DoubleVector &,
-                         Array, Array *, const Array & {
+                         PyArray, PyArray *, const PyArray & {
     delete $source;
 };
 
 %typemap(python,out) DoubleVector, DoubleVector *, const DoubleVector &, 
-                     Array, Array *, const Array & {
+                     PyArray, PyArray *, const PyArray & {
     $target = PyTuple_New($source->size());
     for (int i=0; i<$source->size(); i++)
         PyTuple_SetItem($target,i,PyFloat_FromDouble((*$source)[i]));
 };
 
-%typemap(python,ret) DoubleVector, Array {
+%typemap(python,ret) DoubleVector, PyArray {
     delete $source;
 }
 
