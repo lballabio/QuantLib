@@ -40,7 +40,7 @@ namespace QuantLib {
       protected:
         double extraTermInBermudan ;
         void initializeStepCondition() const;
-        void executeIntermediateStep(int ) const;
+        void executeIntermediateStep(Size ) const;
     };
 
 }

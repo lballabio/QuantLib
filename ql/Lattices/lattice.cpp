@@ -76,7 +76,7 @@ namespace QuantLib {
                    DoubleFormatter::toString(from) + ")");
 
         if (from > to) {
-            int iFrom = t_.findIndex(from);
+            Size iFrom = t_.findIndex(from);
             int iTo = t_.findIndex(to);
 
             for (int i=iFrom-1; i>=iTo; i--) {

@@ -43,7 +43,7 @@ namespace QuantLib {
         void initializeControlVariate() const;
       private:
         std::vector<double> dividends_;
-        void executeIntermediateStep(int step) const;
+        void executeIntermediateStep(Size step) const;
         void movePricesBeforeExDiv(Array& prices,
                                    const Array& newGrid,
                                    const Array& oldGrid) const;

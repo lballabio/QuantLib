@@ -59,7 +59,7 @@ namespace QuantLib {
                   residualTime_, volatility_, dividends_, dates_));
     }
 
-    void FdDividendOption::executeIntermediateStep(int step) const{
+    void FdDividendOption::executeIntermediateStep(Size step) const{
 
         double newSMin = sMin_ + dividends_[step];
         double newSMax = sMax_ + dividends_[step];
@@ -91,7 +91,7 @@ namespace QuantLib {
     void FdDividendOption::movePricesBeforeExDiv(Array& prices,
                                                  const Array& newGrid,
                                                  const Array& oldGrid) const {
-        int j, gridSize = oldGrid.size();
+        Size j, gridSize = oldGrid.size();
 
         std::vector<double> logOldGrid(0);
         std::vector<double> tmpPrices(0);

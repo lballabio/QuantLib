@@ -34,10 +34,10 @@ namespace QuantLib {
         stepCondition_ = boost::shared_ptr<StandardStepCondition> ();
     }
 
-    void FdBermudanOption::executeIntermediateStep(int ) const{
+    void FdBermudanOption::executeIntermediateStep(Size ) const{
 
-        int size = intrinsicValues_.size();
-        for(int j = 0; j < size; j++)
+        Size size = intrinsicValues_.size();
+        for(Size j = 0; j < size; j++)
             prices_[j] = QL_MAX(prices_[j], intrinsicValues_[j]);
     }
 

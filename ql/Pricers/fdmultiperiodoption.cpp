@@ -57,7 +57,7 @@ namespace QuantLib {
 
             if(QL_FABS(dates_[lastIndex_] - residualTime) < dateTollerance){
                 lastDateIsResTime_ = true;
-                lastIndex_ =dateNumber_ - 2;
+                lastIndex_ = dateNumber_ - 2;
             }
 
             QL_REQUIRE(dates_[dateNumber_-1] <= residualTime,

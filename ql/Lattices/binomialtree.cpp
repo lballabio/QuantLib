@@ -42,14 +42,14 @@ namespace QuantLib {
 
 
     double EqualJumpsBinomialTree::underlying(Size i, Size index) const {
-        int j = (2*index - i);
+        long j = long(2*index - i);
         // exploiting equal jump and the x0_ tree centering
         return x0_*QL_EXP(j*dx_);
     }
 
     double EqualProbabilitiesBinomialTree::underlying(Size i,
                                                       Size index) const {
-        int j = (2*index - i);
+        long j = long(2*index - i);
         // exploiting the forward value tree centering
         return x0_*QL_EXP(i*driftPerStep_ + j*up_);
     }

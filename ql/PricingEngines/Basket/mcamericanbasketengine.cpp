@@ -517,7 +517,7 @@ namespace QuantLib {
             }
 
             // select in the money paths            
-            std::vector<int> itmPaths;
+            std::vector<Size> itmPaths;
             std::vector<double> y(N);
             for (i=0; i<N; i++) {
                 for (j=0; j<numAssets; j++) {

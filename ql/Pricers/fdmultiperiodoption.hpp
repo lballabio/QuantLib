@@ -56,7 +56,7 @@ namespace QuantLib {
         virtual void initializeControlVariate() const;
         virtual void initializeModel() const;
         virtual void initializeStepCondition() const;
-        virtual void executeIntermediateStep(int step) const = 0;
+        virtual void executeIntermediateStep(Size step) const = 0;
       private:
         mutable double controlVariateCorrection_;
     };

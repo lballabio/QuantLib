@@ -114,7 +114,7 @@ namespace QuantLib {
         //! returns the last date for which a historical datum exists
         const Date& lastDate() const { return lastDate_; }
         //! returns the number of historical data including null ones
-        int size() const { return values_.size(); }
+        Size size() const { return values_.size(); }
         //@}
         //! \name Historical data access
         //@{

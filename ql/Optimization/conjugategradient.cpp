@@ -33,7 +33,7 @@ namespace QuantLib {
         Array& X = x();
         Array& SearchDirection = searchDirection();
         // Set g at the size of the optimization problem search direction
-        int sz = searchDirection().size();
+        Size sz = searchDirection().size();
         Array g(sz), d(sz), sddiff(sz);
 
         functionValue() = P.valueAndGradient(g, X);
