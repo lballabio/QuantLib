@@ -42,12 +42,9 @@ namespace QuantLib {
     class CLGaussianRng {
       public:
         typedef Sample<double> sample_type;
+        typedef RNG urng_type;
         explicit CLGaussianRng(const RNG& uniformGenerator);
-        /*! \deprecated initialize with a random number
-          generator instead.
-        */
-        explicit CLGaussianRng(long seed = 0);
-        //! returns next sample from the Gaussian distribution
+        //! returns a sample from a Gaussian distribution
         sample_type next() const;
       private:
         RNG uniformGenerator_;
@@ -56,10 +53,6 @@ namespace QuantLib {
     template <class RNG>
     CLGaussianRng<RNG>::CLGaussianRng(const RNG& uniformGenerator)
     : uniformGenerator_(uniformGenerator) {}
-
-    template <class RNG>
-    CLGaussianRng<RNG>::CLGaussianRng(long seed)
-    : uniformGenerator_(seed) {}
 
     template <class RNG>
     inline typename CLGaussianRng<RNG>::sample_type

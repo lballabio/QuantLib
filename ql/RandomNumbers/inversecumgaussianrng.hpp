@@ -53,12 +53,9 @@ namespace QuantLib {
     class ICGaussianRng {
       public:
         typedef Sample<double> sample_type;
+        typedef RNG urng_type;
         explicit ICGaussianRng(const RNG& uniformGenerator);
-        /*! \deprecated initialize with a random number
-          generator instead.
-        */
-        explicit ICGaussianRng(long seed = 0);
-        //! returns next sample from the Gaussian distribution
+        //! returns a sample from a Gaussian distribution
         sample_type next() const;
       private:
         RNG uniformGenerator_;
@@ -68,10 +65,6 @@ namespace QuantLib {
     template <class RNG, class I>
     ICGaussianRng<RNG, I>::ICGaussianRng(const RNG& uniformGenerator)
     : uniformGenerator_(uniformGenerator) {}
-
-    template <class RNG, class I>
-    ICGaussianRng<RNG, I>::ICGaussianRng(long seed)
-    : uniformGenerator_(seed) {}
 
     template <class RNG, class I>
     inline typename ICGaussianRng<RNG, I>::sample_type

@@ -51,9 +51,10 @@ namespace QuantLib {
 
 
     template <class RNG>
-    inline RandomArrayGenerator<RNG>::RandomArrayGenerator(
+    RandomArrayGenerator<RNG>::RandomArrayGenerator(
                                              const Array& variance, long seed)
-    : next_(Array(variance.size()),1.0), generator_(seed),
+    : next_(Array(variance.size()),1.0), 
+      generator_(typename RNG::urng_type(seed)),
       sqrtVariance_(variance.size()) {
         for (Size i=0; i<variance.size(); i++) {
             QL_REQUIRE(variance[i] >= 0,
@@ -66,9 +67,10 @@ namespace QuantLib {
     }
 
     template <class RNG>
-    inline RandomArrayGenerator<RNG>::RandomArrayGenerator(
+    RandomArrayGenerator<RNG>::RandomArrayGenerator(
                                           const Matrix& covariance, long seed)
-    : next_(Array(covariance.rows()),1.0), generator_(seed) {
+    : next_(Array(covariance.rows()),1.0), 
+      generator_(typename RNG::urng_type(seed)) {
         QL_REQUIRE(covariance.rows() == covariance.columns(),
                    "Covariance matrix must be square (is "+
                    IntegerFormatter::toString(covariance.rows())+ " x "+
@@ -80,8 +82,8 @@ namespace QuantLib {
 
 
     template <class RNG>
-    inline const typename RandomArrayGenerator<RNG>::sample_type&
-    RandomArrayGenerator<RNG>::next() const{
+    const typename RandomArrayGenerator<RNG>::sample_type&
+    RandomArrayGenerator<RNG>::next() const {
         // starting point for product
         next_.weight = 1.0;
 

@@ -42,12 +42,9 @@ namespace QuantLib {
     class BoxMullerGaussianRng {
       public:
         typedef Sample<double> sample_type;
+        typedef RNG urng_type;
         explicit BoxMullerGaussianRng(const RNG& uniformGenerator);
-        /*! \deprecated initialize with a random number
-                        generator instead.
-        */
-        explicit BoxMullerGaussianRng(long seed = 0);
-        //! returns next sample from the Gaussian distribution
+        //! returns a sample from a Gaussian distribution
         sample_type next() const;
       private:
         RNG uniformGenerator_;
@@ -64,14 +61,9 @@ namespace QuantLib {
       weight_(0.0) {}
 
     template <class RNG>
-    BoxMullerGaussianRng<RNG>::BoxMullerGaussianRng(long seed)
-    : uniformGenerator_(seed), returnFirst_(true),
-      weight_(0.0) {}
-
-    template <class RNG>
     inline typename BoxMullerGaussianRng<RNG>::sample_type
     BoxMullerGaussianRng<RNG>::next() const {
-        if(returnFirst_) {
+        if (returnFirst_) {
             double x1,x2,r,ratio;
             do {
                 typename RNG::sample_type s1 = uniformGenerator_.next();
@@ -81,7 +73,7 @@ namespace QuantLib {
                 x2 = s2.value*2.0-1.0;
                 secondWeight_ = s2.weight;
                 r = x1*x1+x2*x2;
-            } while(r>=1.0 || r==0.0);
+            } while (r>=1.0 || r==0.0);
 
             ratio = QL_SQRT(-2.0*QL_LOG(r)/r);
             firstValue_ = x1*ratio;

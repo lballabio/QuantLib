@@ -207,7 +207,7 @@ namespace QuantLib {
                                const Matrix& covariance,
                                Time length,
                                Size timeSteps,
-                               long seed);
+                               long seed=0);
         MultiPathGenerator_old(const Array& drifts,
                                const Matrix& covariance,
                                const TimeGrid& times,
