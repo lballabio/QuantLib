@@ -4,7 +4,8 @@ Changes since release 0.3.8:
 
 - QL_SQRT, QL_MIN etc. deprecated in favor of std::sqrt, std::min...
 
-- DiscountCurve can now be set an interpolation other than log-linear
+- Interpolated discount curve can now be set an interpolation other
+  than log-linear
 
 - Added a tentative tracing facility to ease debugging
 

@@ -25,7 +25,6 @@ EXTRA_DIST=makefile.mak
 libTermStructures_la_SOURCES = \
     affinetermstructure.cpp \
     compoundforward.cpp \
-    discountcurve.cpp \
     extendeddiscountcurve.cpp \
     piecewiseflatforward.cpp \
     ratehelpers.cpp \

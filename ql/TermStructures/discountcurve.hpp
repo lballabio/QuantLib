@@ -24,22 +24,19 @@
 #define quantlib_discount_curve_hpp
 
 #include <ql/termstructure.hpp>
-#include <ql/Math/interpolation.hpp>
+#include <ql/Math/interpolationtraits.hpp>
 #include <vector>
 
 namespace QuantLib {
 
     //! Term structure based on interpolation of discount factors
-    /*! Log-linear interpolation (the default) guarantees
-        piecewise-constant forward rates.
-
-        \ingroup yieldtermstructures
-    */
-    class DiscountCurve : public YieldTermStructure {
+    /*! \ingroup yieldtermstructures */
+    template <class InterpolationTraits>
+    class InterpolatedDiscountCurve : public YieldTermStructure {
       public:
-        DiscountCurve(const std::vector<Date>& dates,
-                      const std::vector<DiscountFactor>& dfs,
-                      const DayCounter& dayCounter);
+        InterpolatedDiscountCurve(const std::vector<Date>& dates,
+                                  const std::vector<DiscountFactor>& dfs,
+                                  const DayCounter& dayCounter);
         //! \name Inspectors
         //@{
         DayCounter dayCounter() const;
@@ -49,25 +46,12 @@ namespace QuantLib {
         const std::vector<Date>& dates() const;
         const std::vector<DiscountFactor>& discounts() const;
         //@}
-        //! \name Modifiers
-        //@{
-        template <class Traits>
-        #if defined(QL_PATCH_MSVC6)
-        void setInterpolation(const Traits&) {
-        #else
-        void setInterpolation() {
-        #endif
-            interpolation_ =
-                Traits::make_interpolation(times_.begin(), times_.end(),
-                                           discounts_.begin());
-            update();
-        }
-        //@}
       protected:
-        DiscountCurve(const DayCounter&);
-        DiscountCurve(const Date& referenceDate, const DayCounter&);
-        DiscountCurve(Integer settlementDays, const Calendar&,
-                      const DayCounter&);
+        InterpolatedDiscountCurve(const DayCounter&);
+        InterpolatedDiscountCurve(const Date& referenceDate,
+                                  const DayCounter&);
+        InterpolatedDiscountCurve(Integer settlementDays, const Calendar&,
+                                  const DayCounter&);
         DiscountFactor discountImpl(Time) const;
         Size referenceNode(Time) const;
         DayCounter dayCounter_;
@@ -77,32 +61,130 @@ namespace QuantLib {
         mutable Interpolation interpolation_;
     };
 
+    //! Term structure based on log-linear interpolation of discount factors
+    /*! Log-linear interpolation guarantees piecewise-constant forward
+        rates.
+
+        \ingroup yieldtermstructures
+    */
+    typedef InterpolatedDiscountCurve<LogLinear> DiscountCurve;
+
 
     // inline definitions
 
-    inline DayCounter DiscountCurve::dayCounter() const {
+    template <class T>
+    inline DayCounter InterpolatedDiscountCurve<T>::dayCounter() const {
         return dayCounter_;
     }
 
-    inline Date DiscountCurve::maxDate() const {
+    template <class T>
+    inline Date InterpolatedDiscountCurve<T>::maxDate() const {
         return dates_.back();
     }
 
-    inline Time DiscountCurve::maxTime() const {
+    template <class T>
+    inline Time InterpolatedDiscountCurve<T>::maxTime() const {
         return times_.back();
     }
 
-    inline const std::vector<Time>& DiscountCurve::times() const {
+    template <class T>
+    inline const std::vector<Time>&
+    InterpolatedDiscountCurve<T>::times() const {
         return times_;
     }
 
-    inline const std::vector<Date>& DiscountCurve::dates() const {
+    template <class T>
+    inline const std::vector<Date>&
+    InterpolatedDiscountCurve<T>::dates() const {
         return dates_;
     }
 
+    template <class T>
     inline const std::vector<DiscountFactor>&
-    DiscountCurve::discounts() const {
+    InterpolatedDiscountCurve<T>::discounts() const {
         return discounts_;
+    }
+
+    template <class T>
+    inline InterpolatedDiscountCurve<T>::InterpolatedDiscountCurve(
+                                                 const DayCounter& dayCounter)
+    : dayCounter_(dayCounter) {}
+
+    template <class T>
+    inline InterpolatedDiscountCurve<T>::InterpolatedDiscountCurve(
+                                                 const Date& referenceDate,
+                                                 const DayCounter& dayCounter)
+    : YieldTermStructure(referenceDate), dayCounter_(dayCounter) {}
+
+    template <class T>
+    inline InterpolatedDiscountCurve<T>::InterpolatedDiscountCurve(
+                                                 Integer settlementDays,
+                                                 const Calendar& calendar,
+                                                 const DayCounter& dayCounter)
+    : YieldTermStructure(settlementDays,calendar), dayCounter_(dayCounter) {}
+
+
+    // template definitions
+
+    template <class T>
+    InterpolatedDiscountCurve<T>::InterpolatedDiscountCurve(
+                                 const std::vector<Date>& dates,
+                                 const std::vector<DiscountFactor>& discounts,
+                                 const DayCounter& dayCounter)
+    : YieldTermStructure(dates[0]),
+      dayCounter_(dayCounter), dates_(dates), discounts_(discounts) {
+        QL_REQUIRE(dates_.size() > 0,
+                   "no input dates given");
+        QL_REQUIRE(discounts_.size() > 0,
+                   "no input discount factors given");
+        QL_REQUIRE(discounts_.size() == dates_.size(),
+                   "dates/discount factors count mismatch");
+        QL_REQUIRE(discounts_[0] == 1.0,
+                   "the first discount must be == 1.0 "
+                   "to flag the corrsponding date as settlement date");
+
+        times_.resize(dates_.size());
+        times_[0] = 0.0;
+        for(Size i = 1; i < dates_.size(); i++) {
+            QL_REQUIRE(dates_[i] > dates_[i-1],
+                       "invalid date (" << dates_[i] << ", vs "
+                       << dates_[i-1] << ")");
+            QL_REQUIRE(discounts_[i] > 0.0, "negative discount");
+            times_[i] = dayCounter.yearFraction(dates_[0], dates_[i]);
+        }
+        interpolation_ = T::make_interpolation(times_.begin(), times_.end(),
+                                               discounts_.begin());
+    }
+
+    template <class T>
+    DiscountFactor InterpolatedDiscountCurve<T>::discountImpl(Time t) const {
+        if (t == 0.0) {
+            return discounts_[0];
+        } else {
+            Size n = referenceNode(t);
+            if (t == times_[n]) {
+                return discounts_[n];
+            } else {
+                return interpolation_(t, true);
+            }
+        }
+        QL_DUMMY_RETURN(DiscountFactor());
+    }
+
+    template <class T>
+    Size InterpolatedDiscountCurve<T>::referenceNode(Time t) const {
+        if (t >= times_.back())
+            return times_.size()-1;
+        std::vector<Time>::const_iterator i=times_.begin(),
+            j=times_.end(), k;
+        while (j-i > 1) {
+            k = i+(j-i)/2;
+            if (t <= *k)
+                j = k;
+            else
+                i = k;
+        }
+        return (j-times_.begin());
     }
 
 }
