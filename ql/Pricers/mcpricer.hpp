@@ -61,7 +61,7 @@ namespace QuantLib {
 
 
         template<class MC, class S>
-        const Size McPricer<MC,S>::minSample_ = 100;
+        const Size McPricer<MC,S>::minSample_ = 1023;
 
         // inline definitions
         template<class MC, class S>

@@ -101,7 +101,7 @@ namespace {
             engine = Handle<PricingEngine>(
                 MakeMCEuropeanEngine<LowDiscrepancy>()
                     .withStepsPerYear(1)
-                    .withSamples(100));
+                    .withSamples(1023));
             break;
           default:
             throw Error("Unknown engine type");

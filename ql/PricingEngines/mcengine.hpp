@@ -86,7 +86,7 @@ namespace QuantLib {
 
 
         template<class MC, class S>
-        const Size McSimulation<MC,S>::minSample_ = 100;
+        const Size McSimulation<MC,S>::minSample_ = 1023; // (2^10 - 1)
 
         // inline definitions
         template<class MC, class S>
@@ -100,10 +100,18 @@ namespace QuantLib {
             }
 
             Size nextBatch;
-            double order;
+            double order, accuracy;
             double result = mcModel_->sampleAccumulator().mean();
-            double accuracy = mcModel_->sampleAccumulator().errorEstimate()/
-                result;
+            double error = mcModel_->sampleAccumulator().errorEstimate();
+            if (result==0.0) {
+                if (error==0.0) { // deep OTM option
+                    accuracy = 0.99*tolerance; // this way it will exit
+                } else {
+                    accuracy = error; // not sure I like this approach
+                }
+            } else {
+                accuracy = error/result;
+            }
             while (accuracy > tolerance) {
                 // conservative estimate of how many samples are needed 
                 order = accuracy*accuracy/tolerance/tolerance;
@@ -120,8 +128,8 @@ namespace QuantLib {
                 sampleNumber += nextBatch;
                 mcModel_->addSamples(nextBatch);
                 result = mcModel_->sampleAccumulator().mean();
-                accuracy = mcModel_->sampleAccumulator().errorEstimate()/
-                    result;
+                error = mcModel_->sampleAccumulator().errorEstimate();
+                accuracy = ( (result==0.0) ? error : error/result);
             }
 
             return result;
