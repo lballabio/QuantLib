@@ -86,6 +86,7 @@ namespace QuantLib {
         double KnuthUniformRng::ranf_arr_cycle() const {
             ranf_array(ranf_arr_buf,QUALITY);
             ranf_arr_ptr=ranf_arr_buf.begin()+1;
+            ranf_arr_sentinel = ranf_arr_buf.begin()+100;
             return ranf_arr_buf[0];
         }
 

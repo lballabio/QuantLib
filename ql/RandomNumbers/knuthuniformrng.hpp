@@ -1,5 +1,4 @@
 
-
 /*
  Copyright (C) 2000, 2001, 2002 RiskMap srl
 
@@ -15,6 +14,7 @@
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
+
 /*! \file knuthuniformrng.hpp
     \brief Knuth uniform random number generator
 
@@ -45,7 +45,7 @@ namespace QuantLib {
             http://www-cs-faculty.stanford.edu/~knuth/programs.html,
             but rather a slightly modified version wrapped in a C++ class.
             Such modifications did not affect the code but only the data
-            structures used, which were converted in their C++/STL
+            structures used, which were converted to their standard C++
             equivalents.
         */
         class KnuthUniformRng {
@@ -58,8 +58,6 @@ namespace QuantLib {
                 uniformly chosen from (0.0,1.0) */
             sample_type next() const;
           private:
-            /* Knuth's names and routines were preserved as much as possible
-               while changing the data structures to more modern ones. */
             static const int KK, LL, TT, QUALITY;
             mutable std::vector<double> ranf_arr_buf;
             mutable std::vector<double>::const_iterator ranf_arr_ptr,
