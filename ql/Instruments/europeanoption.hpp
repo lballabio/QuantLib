@@ -31,7 +31,7 @@ namespace QuantLib {
     class EuropeanOption : public VanillaOption {
       public:
         class engine;
-        EuropeanOption(const boost::shared_ptr<BlackScholesStochasticProcess>&,
+        EuropeanOption(const boost::shared_ptr<BlackScholesProcess>&,
                        const boost::shared_ptr<StrikedTypePayoff>& payoff,
                        const boost::shared_ptr<Exercise>& exercise,
                        const boost::shared_ptr<PricingEngine>& engine =

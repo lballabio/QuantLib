@@ -31,7 +31,7 @@ namespace QuantLib {
             boost::dynamic_pointer_cast<AmericanExercise>(arguments_.exercise);
         QL_REQUIRE(ex, "non-American exercise given");
         QL_REQUIRE(ex->dates()[0]<=
-                   arguments_.blackScholesProcess->volatility()
+                   arguments_.blackScholesProcess->blackVolatility()
                    ->referenceDate(),
                    "American option with window exercise not handled yet");
 
@@ -39,12 +39,12 @@ namespace QuantLib {
             boost::dynamic_pointer_cast<StrikedTypePayoff>(arguments_.payoff);
         QL_REQUIRE(payoff, "non-striked payoff given");
 
-        const boost::shared_ptr<BlackScholesStochasticProcess>& process = 
+        const boost::shared_ptr<BlackScholesProcess>& process = 
             arguments_.blackScholesProcess;
 
         double spot = process->stateVariable()->value();
         double variance = 
-            process->volatility()->blackVariance(ex->lastDate(), 
+            process->blackVolatility()->blackVariance(ex->lastDate(), 
                                                  payoff->strike());
         Rate dividendDiscount = 
             process->dividendYield()->discount(ex->lastDate());

@@ -29,11 +29,11 @@ namespace QuantLib {
             boost::dynamic_pointer_cast<StrikedTypePayoff>(arguments_.payoff);
         QL_REQUIRE(payoff, "non-striked payoff given");
 
-        const boost::shared_ptr<BlackScholesStochasticProcess>& process =
+        const boost::shared_ptr<BlackScholesProcess>& process =
             arguments_.blackScholesProcess;
 
         double variance = 
-            process->volatility()->blackVariance(
+            process->blackVolatility()->blackVariance(
                                               arguments_.exercise->lastDate(),
                                               payoff->strike());
         DiscountFactor dividendDiscount =
@@ -63,9 +63,9 @@ namespace QuantLib {
                                     arguments_.exercise->lastDate());
         results_.dividendRho = black.dividendRho(t);
 
-        t = process->volatility()->dayCounter().yearFraction(
-                                       process->volatility()->referenceDate(),
-                                       arguments_.exercise->lastDate());
+        t = process->blackVolatility()->dayCounter().yearFraction(
+                                  process->blackVolatility()->referenceDate(),
+                                  arguments_.exercise->lastDate());
         results_.vega = black.vega(t);
         try {
             results_.theta = black.theta(spot, t);

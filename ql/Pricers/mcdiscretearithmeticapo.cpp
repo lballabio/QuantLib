@@ -123,9 +123,13 @@ namespace QuantLib {
                    "you must have at least 2 time-steps");
 
         // initialize the path generator
+        RelinkableHandle<Quote> u(
+                    boost::shared_ptr<Quote>(new SimpleQuote(underlying)));
         boost::shared_ptr<DiffusionProcess> diffusion(
-                          new BlackScholesProcess(riskFreeRate, dividendYield,
-                                                  volatility, underlying));
+                                     new BlackScholesProcess(u, 
+                                                             dividendYield,
+                                                             riskFreeRate, 
+                                                             volatility));
         TimeGrid grid(times.begin(), times.end());
         PseudoRandom::rsg_type rsg =
             PseudoRandom::make_sequence_generator(grid.size()-1,seed);

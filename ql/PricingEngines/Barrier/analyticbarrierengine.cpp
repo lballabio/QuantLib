@@ -148,7 +148,7 @@ namespace QuantLib {
     }
 
     double AnalyticBarrierEngine::volatility() const {
-        return arguments_.blackScholesProcess->volatility()->blackVol(
+        return arguments_.blackScholesProcess->blackVolatility()->blackVol(
                                                     residualTime(), strike());
     }
 

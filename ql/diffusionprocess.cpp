@@ -2,6 +2,7 @@
 /*
  Copyright (C) 2003 Ferdinando Ametrano
  Copyright (C) 2001, 2002, 2003 Sadruddin Rejeb
+ Copyright (C) 2004 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -23,61 +24,196 @@
 
 namespace QuantLib {
 
+    double DiffusionProcess::expectation(Time t0, double x0, Time dt) const {
+        return x0 + drift(t0, x0)*dt;
+    }
+
+    double DiffusionProcess::variance(Time t0, double x0, Time dt) const {
+        double sigma = diffusion(t0, x0);
+        return sigma*sigma*dt;
+    }
+
+
+
     BlackScholesProcess::BlackScholesProcess(
-                    const RelinkableHandle<TermStructure>& riskFreeTS,
+                    const RelinkableHandle<Quote>& x0,
                     const RelinkableHandle<TermStructure>& dividendTS,
-                    const RelinkableHandle<BlackVolTermStructure>& blackVolTS,
-                    double s0)
-    : DiffusionProcess(s0), riskFreeTS_(riskFreeTS),
-      dividendTS_(dividendTS) {
+                    const RelinkableHandle<TermStructure>& riskFreeTS,
+                    const RelinkableHandle<BlackVolTermStructure>& blackVolTS)
+    : x0_(x0), riskFreeRate_(riskFreeTS), dividendYield_(dividendTS),
+      blackVolatility_(blackVolTS), updated_(false) {
+        registerWith(x0_);
+        registerWith(riskFreeRate_);
+        registerWith(dividendYield_);
+        registerWith(blackVolatility_);
+    }
 
-        boost::shared_ptr<BlackVolTermStructure> blackVol = 
-            blackVolTS.currentLink();
-
-        // constant Black vol?
-        boost::shared_ptr<BlackConstantVol> constVol =
-            boost::dynamic_pointer_cast<BlackConstantVol>(blackVol);
-        if (constVol) {
-            // ok, the local vol is constant too.
-            localVolTS_ = RelinkableHandle<LocalVolTermStructure>(
-                boost::shared_ptr<LocalVolTermStructure>(
-                    new LocalConstantVol(constVol->referenceDate(),
-                                         constVol->blackVol(0.0, s0),
-                                         constVol->dayCounter())));
-            return;
-        }
-
-        // ok, so it's not constant. Maybe it's strike-independent?
-        boost::shared_ptr<BlackVarianceCurve> volCurve =
-            boost::dynamic_pointer_cast<BlackVarianceCurve>(blackVol);
-        if (volCurve) {
-            // ok, we can use the optimized algorithm
-            localVolTS_ = RelinkableHandle<LocalVolTermStructure>(
-                boost::shared_ptr<LocalVolTermStructure>(
-                    new LocalVolCurve(
-                        RelinkableHandle<BlackVarianceCurve>(volCurve))));
-            return;
-        }
-
-        // ok, so it's strike-dependent. Never mind.
-        localVolTS_ = RelinkableHandle<LocalVolTermStructure>(
-            boost::shared_ptr<LocalVolTermStructure>(
-                new LocalVolSurface(blackVolTS, riskFreeTS,
-                                    dividendTS, s0)));
+    double BlackScholesProcess::x0() const {
+        return x0_->value();
     }
 
     double BlackScholesProcess::drift(Time t, double x) const {
-        // the extrapolation boolean = true is a quick and dirty patch
-        // rethink how to handle extrapolation
-        bool extrapolation = true;
-
-        double sigma = localVolTS_->localVol(t, x, extrapolation);
-
+        double sigma = diffusion(t,x);
         // we could be more anticipatory if we know the right dt
         // for which the drift will be used
         double t1 = t + 0.0001;
-        return riskFreeTS_->forward(t, t1, extrapolation)
-            - dividendTS_->forward(t, t1, extrapolation)
-            - 0.5 * sigma * sigma;
+        return riskFreeRate_->forward(t, t1, true)
+             - dividendYield_->forward(t, t1, true)
+             - 0.5 * sigma * sigma;
     }
+
+    double BlackScholesProcess::diffusion(Time t, double x) const {
+        return localVolatility()->localVol(t, x, true);
+    }
+
+    void BlackScholesProcess::update() {
+        updated_ = false;
+        notifyObservers(); 
+    }
+
+    const boost::shared_ptr<Quote>& 
+    BlackScholesProcess::stateVariable() const {
+        return x0_.currentLink();
+    }
+
+    const boost::shared_ptr<TermStructure>& 
+    BlackScholesProcess::dividendYield() const {
+        return dividendYield_.currentLink();
+    }
+
+    const boost::shared_ptr<TermStructure>& 
+    BlackScholesProcess::riskFreeRate() const {
+        return riskFreeRate_.currentLink();
+    }
+
+    const boost::shared_ptr<BlackVolTermStructure>& 
+    BlackScholesProcess::blackVolatility() const {
+        return blackVolatility_.currentLink();
+    }
+
+    const boost::shared_ptr<LocalVolTermStructure>& 
+    BlackScholesProcess::localVolatility() const {
+        if (!updated_) {
+
+            // constant Black vol?
+            boost::shared_ptr<BlackConstantVol> constVol =
+                boost::dynamic_pointer_cast<BlackConstantVol>(
+                                                           blackVolatility());
+            if (constVol) {
+                // ok, the local vol is constant too.
+                localVolatility_.linkTo(
+                    boost::shared_ptr<LocalVolTermStructure>(
+                             new LocalConstantVol(constVol->referenceDate(),
+                                                  constVol->blackVol(
+                                                           0.0, x0_->value()),
+                                                  constVol->dayCounter())));
+                updated_ = true;
+                return localVolatility_.currentLink();
+            }
+
+            // ok, so it's not constant. Maybe it's strike-independent?
+            boost::shared_ptr<BlackVarianceCurve> volCurve =
+                boost::dynamic_pointer_cast<BlackVarianceCurve>(
+                                                           blackVolatility());
+            if (volCurve) {
+                // ok, we can use the optimized algorithm
+                localVolatility_.linkTo(
+                    boost::shared_ptr<LocalVolTermStructure>(
+                        new LocalVolCurve(
+                            RelinkableHandle<BlackVarianceCurve>(volCurve))));
+                updated_ = true;
+                return localVolatility_.currentLink();
+            }
+
+            // ok, so it's strike-dependent. Never mind.
+            localVolatility_.linkTo(
+                      boost::shared_ptr<LocalVolTermStructure>(
+                          new LocalVolSurface(blackVolatility_, riskFreeRate_,
+                                              dividendYield_, x0_->value())));
+            updated_ = true;
+            return localVolatility_.currentLink();
+
+        } else {
+            return localVolatility_.currentLink();
+        }
+    }
+
+
+
+    Merton76Process::Merton76Process(
+                         const RelinkableHandle<Quote>& stateVariable,
+                         const RelinkableHandle<TermStructure>& dividendTS,
+                         const RelinkableHandle<TermStructure>& riskFreeTS,
+                         const RelinkableHandle<BlackVolTermStructure>& volTS,
+                         const RelinkableHandle<Quote>& jumpInt,
+                         const RelinkableHandle<Quote>& logJMean,
+                         const RelinkableHandle<Quote>& logJVol)
+    : BlackScholesProcess(stateVariable, dividendTS, riskFreeTS, volTS),
+      jumpIntensity_(jumpInt), logMeanJump_(logJMean),
+      logJumpVolatility_(logJVol) {
+        registerWith(jumpIntensity_);
+        registerWith(logMeanJump_);
+        registerWith(logJumpVolatility_);
+    }
+
+    const boost::shared_ptr<Quote>& Merton76Process::jumpIntensity() const {
+        return jumpIntensity_.currentLink();
+    }
+
+    const boost::shared_ptr<Quote>& Merton76Process::logMeanJump() const {
+        return logMeanJump_.currentLink();
+    }
+
+    const boost::shared_ptr<Quote>& 
+    Merton76Process::logJumpVolatility() const {
+        return logJumpVolatility_.currentLink();
+    }
+
+
+    OrnsteinUhlenbeckProcess::OrnsteinUhlenbeckProcess(double speed,
+                                                       double vol,
+                                                       double x0)
+    : x0_(x0), speed_(speed), volatility_(vol) {}
+
+    double OrnsteinUhlenbeckProcess::x0() const {
+        return x0_;
+    }
+
+    double OrnsteinUhlenbeckProcess::drift(Time, double x) const {
+        return - speed_*x;
+    }
+
+    double OrnsteinUhlenbeckProcess::diffusion(Time, double) const {
+        return volatility_;
+    }
+
+    double OrnsteinUhlenbeckProcess::expectation(Time, double x0, 
+                                                 Time dt) const {
+        return x0*QL_EXP(-speed_*dt);
+    }
+
+    double OrnsteinUhlenbeckProcess::variance(Time, double, Time dt) const {
+        return 0.5*volatility_*volatility_/speed_*
+               (1.0 - QL_EXP(-2.0*speed_*dt));
+    }
+
+
+    SquareRootProcess::SquareRootProcess(double b,
+                                         double a,
+                                         double sigma,
+                                         double x0)
+    : x0_(x0), mean_(b), speed_(a), volatility_(sigma) {}
+
+    double SquareRootProcess::x0() const {
+        return x0_;
+    }
+
+    double SquareRootProcess::drift(Time, double x) const {
+        return speed_*(mean_ - x);
+    }
+
+    double SquareRootProcess::diffusion(Time, double x) const {
+        return volatility_*QL_SQRT(x);
+    }
+
 }

@@ -86,7 +86,7 @@ namespace QuantLib {
         QL_REQUIRE(payoff, "non-striked payoff given");
 
         double variance = 
-            arguments_.blackScholesProcess->volatility()->blackVariance(
+            arguments_.blackScholesProcess->blackVolatility()->blackVariance(
                                             ex->lastDate(), payoff->strike());
         DiscountFactor dividendDiscount =
             arguments_.blackScholesProcess->dividendYield()->discount(
@@ -120,9 +120,9 @@ namespace QuantLib {
                                             arguments_.exercise->lastDate());
             results_.dividendRho = black.dividendRho(t);
 
-            t = arguments_.blackScholesProcess->volatility()
+            t = arguments_.blackScholesProcess->blackVolatility()
                 ->dayCounter().yearFraction(arguments_.blackScholesProcess
-                                            ->volatility()->referenceDate(),
+                                         ->blackVolatility()->referenceDate(),
                                             arguments_.exercise->lastDate());
             results_.vega        = black.vega(t);
             results_.theta       = black.theta(spot, t);

@@ -49,7 +49,7 @@ namespace QuantLib {
     void BinomialVanillaEngine<T>::calculate() const {
 
         double s0 = arguments_.blackScholesProcess->stateVariable()->value();
-        double v = arguments_.blackScholesProcess->volatility()->blackVol(
+        double v = arguments_.blackScholesProcess->blackVolatility()->blackVol(
             arguments_.exercise->lastDate(), s0);
         Date maturityDate = arguments_.exercise->lastDate();
         Rate r = arguments_.blackScholesProcess->riskFreeRate()
@@ -82,7 +82,10 @@ namespace QuantLib {
             ->dayCounter().yearFraction(referenceDate, maturityDate);
 
         boost::shared_ptr<DiffusionProcess> bs(
-            new BlackScholesProcess(flatRiskFree, flatDividends, flatVol,s0));
+            new BlackScholesProcess(
+                   RelinkableHandle<Quote>(
+                             arguments_.blackScholesProcess->stateVariable()),
+                   flatDividends, flatRiskFree, flatVol));
         boost::shared_ptr<Tree> tree(new T(bs, maturity, timeSteps_,
                                            payoff->strike()));
 

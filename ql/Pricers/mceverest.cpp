@@ -70,10 +70,14 @@ namespace QuantLib {
 
         // initialize the path generator
         std::vector<boost::shared_ptr<DiffusionProcess> > processes(n);
+        RelinkableHandle<Quote> u(
+                              boost::shared_ptr<Quote>(new SimpleQuote(1.0)));
         for (Size i=0; i<n; i++)
             processes[i] = Handle<DiffusionProcess>(
-                     new BlackScholesProcess(riskFreeRate, dividendYield[i],
-                                             volatilities[i], 1.0));
+                                    new BlackScholesProcess(u, 
+                                                            dividendYield[i],
+                                                            riskFreeRate, 
+                                                            volatilities[i]));
 
         TimeGrid grid(residualTime, 1);
         PseudoRandom::rsg_type rsg = 

@@ -29,7 +29,7 @@ namespace QuantLib {
             boost::dynamic_pointer_cast<StrikedTypePayoff>(arguments_.payoff);
         QL_REQUIRE(payoff, "non-striked payoff given");
 
-        const boost::shared_ptr<BlackScholesStochasticProcess>& process =
+        const boost::shared_ptr<BlackScholesProcess>& process =
             arguments_.blackScholesProcess;
 
         Date settlementDate = process->riskFreeRate()->referenceDate();
@@ -51,7 +51,7 @@ namespace QuantLib {
         double forwardPrice = spot * dividendDiscount / riskFreeDiscount;
 
         double variance = 
-            process->volatility()->blackVariance(
+            process->blackVolatility()->blackVariance(
                                               arguments_.exercise->lastDate(),
                                               payoff->strike());
 
@@ -61,9 +61,9 @@ namespace QuantLib {
         results_.delta = black.delta(spot);
         results_.gamma = black.gamma(spot);
 
-        Time t = process->volatility()->dayCounter().yearFraction(
-                                       process->volatility()->referenceDate(),
-                                       arguments_.exercise->lastDate());
+        Time t = process->blackVolatility()->dayCounter().yearFraction(
+                                  process->blackVolatility()->referenceDate(),
+                                  arguments_.exercise->lastDate());
         results_.vega = black.vega(t);
 
         double delta_theta = 0.0, delta_rho = 0.0;

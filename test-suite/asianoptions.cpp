@@ -117,8 +117,8 @@ void AsianOptionTest::testGeometricDiscreteAverage() {
     boost::shared_ptr<BlackVolTermStructure> volTS = 
         makeFlatVolatility(vol, dc);
 
-    boost::shared_ptr<BlackScholesStochasticProcess> stochProcess(new
-        BlackScholesStochasticProcess(
+    boost::shared_ptr<BlackScholesProcess> stochProcess(new
+        BlackScholesProcess(
             RelinkableHandle<Quote>(spot),
             RelinkableHandle<TermStructure>(qTS),
             RelinkableHandle<TermStructure>(rTS),

@@ -51,7 +51,7 @@ namespace QuantLib {
         QL_REQUIRE(payoff, "non-striked payoff given");
 
         double variance = 
-            arguments_.blackScholesProcess->volatility()->blackVariance(
+            arguments_.blackScholesProcess->blackVolatility()->blackVariance(
                            arguments_.exercise->lastDate(), payoff->strike());
 
         double dividendDiscount = 

@@ -32,10 +32,10 @@ namespace QuantLib {
             boost::dynamic_pointer_cast<PlainVanillaPayoff>(arguments_.payoff);
         QL_REQUIRE(payoff, "non-plain payoff given");
 
-        boost::shared_ptr<BlackScholesStochasticProcess> process =
+        boost::shared_ptr<BlackScholesProcess> process =
             arguments_.blackScholesProcess;
         Date referenceDate = process->riskFreeRate()->referenceDate();
-        DayCounter dc = process->volatility()->dayCounter();
+        DayCounter dc = process->blackVolatility()->dayCounter();
         std::vector<Time> fixingTimes;
         Size i;
         for (i=0; i<arguments_.fixingDates.size(); i++) {
@@ -58,7 +58,7 @@ namespace QuantLib {
                                          fixingTimes.end(), 0.0);
 
 
-        double vola = process->volatility()->blackVol(
+        double vola = process->blackVolatility()->blackVol(
                                               arguments_.exercise->lastDate(),
                                               payoff->strike());
         double temp = 0.0;
@@ -98,9 +98,9 @@ namespace QuantLib {
                                     arguments_.exercise->lastDate());
         results_.dividendRho = black.dividendRho(t);
 
-        t = process->volatility()->dayCounter().yearFraction(
-                                       process->volatility()->referenceDate(),
-                                       arguments_.exercise->lastDate());
+        t = process->blackVolatility()->dayCounter().yearFraction(
+                                  process->blackVolatility()->referenceDate(),
+                                  arguments_.exercise->lastDate());
         results_.vega = black.vega(t);
         results_.theta = black.theta(process->stateVariable()->value(), t);
 

@@ -73,8 +73,8 @@ namespace {
         boost::shared_ptr<PricingEngine> engine(
                                           new AnalyticDividendEuropeanEngine);
 
-        boost::shared_ptr<BlackScholesStochasticProcess> stochProcess(new
-            BlackScholesStochasticProcess(
+        boost::shared_ptr<BlackScholesProcess> stochProcess(new
+            BlackScholesProcess(
                 RelinkableHandle<Quote>(u),
                 RelinkableHandle<TermStructure>(q),
                 RelinkableHandle<TermStructure>(r),

@@ -149,21 +149,13 @@ namespace QuantLib {
     boost::shared_ptr<QL_TYPENAME MCBarrierEngine<RNG,S>::path_generator_type>
     MCBarrierEngine<RNG,S>::pathGenerator() const
     {
-        boost::shared_ptr<DiffusionProcess> bs(new BlackScholesProcess(
-                RelinkableHandle<TermStructure>(
-                             arguments_.blackScholesProcess->riskFreeRate()),
-                RelinkableHandle<TermStructure>(
-                             arguments_.blackScholesProcess->dividendYield()),
-                RelinkableHandle<BlackVolTermStructure>(
-                             arguments_.blackScholesProcess->volatility()),
-                arguments_.blackScholesProcess->stateVariable()->value()));
-
         TimeGrid grid = timeGrid();
         typename RNG::rsg_type gen =
             RNG::make_sequence_generator(grid.size()-1,seed_);
         // BB here
         return boost::shared_ptr<path_generator_type>(new
-            path_generator_type(bs, grid, gen, true));
+            path_generator_type(arguments_.blackScholesProcess, 
+                                grid, gen, true));
     }
 
 
@@ -175,7 +167,7 @@ namespace QuantLib {
             boost::dynamic_pointer_cast<PlainVanillaPayoff>(arguments_.payoff);
         QL_REQUIRE(payoff, "non-plain payoff given");
 
-        boost::shared_ptr<BlackScholesStochasticProcess> process =
+        boost::shared_ptr<BlackScholesProcess> process =
             arguments_.blackScholesProcess;
 
         // do this with template parameters?
@@ -197,7 +189,7 @@ namespace QuantLib {
             RelinkableHandle<TermStructure> riskFree(process->riskFreeRate());
             RelinkableHandle<TermStructure> dividend(process->dividendYield());
             RelinkableHandle<BlackVolTermStructure> volatility(
-                                                       process->volatility());
+                                                  process->blackVolatility());
             return boost::shared_ptr<MCBarrierEngine<RNG,S>::path_pricer_type>(
                 new BarrierPathPricer(
                     arguments_.barrierType,
@@ -207,12 +199,7 @@ namespace QuantLib {
                     payoff->strike(),
                     process->stateVariable()->value(),
                     riskFree,
-                    boost::shared_ptr<DiffusionProcess>(
-                        new BlackScholesProcess(
-                                          riskFree,
-                                          dividend,
-                                          volatility,
-                                          process->stateVariable()->value())),
+                    process,
                     sequenceGen));
         }
     }

@@ -24,7 +24,7 @@
 #define quantlib_multiasset_option_h
 
 #include <ql/option.hpp>
-#include <ql/stochasticprocess.hpp>
+#include <ql/diffusionprocess.hpp>
 
 namespace QuantLib {
 
@@ -32,8 +32,7 @@ namespace QuantLib {
     class MultiAssetOption : public Option {
       public:
         MultiAssetOption(
-               const std::vector<
-                   boost::shared_ptr<BlackScholesStochasticProcess> >& 
+               const std::vector<boost::shared_ptr<BlackScholesProcess> >& 
                                                                    stochProcs,
                const boost::shared_ptr<Payoff>& payoff,
                const boost::shared_ptr<Exercise>& exercise,
@@ -63,7 +62,7 @@ namespace QuantLib {
         mutable double delta_,  gamma_, theta_,
             vega_, rho_, dividendRho_;
         // arguments        
-        std::vector< boost::shared_ptr<BlackScholesStochasticProcess> > 
+        std::vector< boost::shared_ptr<BlackScholesProcess> > 
             blackScholesProcesses_;
         Matrix correlation_;
     };
@@ -73,7 +72,7 @@ namespace QuantLib {
       public:
         arguments() {}
         void validate() const;
-        std::vector< boost::shared_ptr<BlackScholesStochasticProcess> > 
+        std::vector< boost::shared_ptr<BlackScholesProcess> > 
             blackScholesProcesses;
         Matrix correlation;
     };

@@ -150,8 +150,8 @@ namespace {
         }
 
 
-        boost::shared_ptr<BlackScholesStochasticProcess> stochProcess(new
-            BlackScholesStochasticProcess(
+        boost::shared_ptr<BlackScholesProcess> stochProcess(new
+            BlackScholesProcess(
                 RelinkableHandle<Quote>(u),
                 RelinkableHandle<TermStructure>(q),
                 RelinkableHandle<TermStructure>(r),
@@ -276,8 +276,8 @@ void EuropeanOptionTest::testValues() {
         rRate->setValue(values[i].r);
         vol  ->setValue(values[i].v);
 
-        boost::shared_ptr<BlackScholesStochasticProcess> stochProcess(new
-            BlackScholesStochasticProcess(
+        boost::shared_ptr<BlackScholesProcess> stochProcess(new
+            BlackScholesProcess(
                  RelinkableHandle<Quote>(spot),
                  RelinkableHandle<TermStructure>(qTS),
                  RelinkableHandle<TermStructure>(rTS),
@@ -341,8 +341,8 @@ void EuropeanOptionTest::testGreekValues() {
     boost::shared_ptr<BlackVolTermStructure> volTS = 
         makeFlatVolatility(vol, dc);
     boost::shared_ptr<PricingEngine> engine(new AnalyticEuropeanEngine);
-    boost::shared_ptr<BlackScholesStochasticProcess> stochProcess(new
-        BlackScholesStochasticProcess(
+    boost::shared_ptr<BlackScholesProcess> stochProcess(new
+        BlackScholesProcess(
              RelinkableHandle<Quote>(spot),
              RelinkableHandle<TermStructure>(qTS),
              RelinkableHandle<TermStructure>(rTS),
@@ -889,8 +889,8 @@ void EuropeanOptionTest::testImpliedVolContainment() {
     boost::shared_ptr<StrikedTypePayoff> payoff(
                                  new PlainVanillaPayoff(Option::Call, 100.0));
 
-    boost::shared_ptr<BlackScholesStochasticProcess> process(
-             new BlackScholesStochasticProcess(underlying, qTS, rTS, volTS));
+    boost::shared_ptr<BlackScholesProcess> process(
+             new BlackScholesProcess(underlying, qTS, rTS, volTS));
 
     // link to the same stochastic process, which shouldn't be changed
     // by calling methods of either option

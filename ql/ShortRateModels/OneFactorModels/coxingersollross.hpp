@@ -74,8 +74,11 @@ namespace QuantLib {
     class CoxIngersollRoss::HelperProcess : public DiffusionProcess {
       public:
         HelperProcess(double theta, double k, double sigma, double y0) 
-        : DiffusionProcess(y0), theta_(theta), k_(k), sigma_(sigma) {}
+        : y0_(y0), theta_(theta), k_(k), sigma_(sigma) {}
 
+        double x0() const {
+            return y0_;
+        }
         double drift(Time, double y) const {
             return (0.5*theta_*k_ - 0.125*sigma_*sigma_)/y 
                 - 0.5*k_*y;
@@ -85,7 +88,7 @@ namespace QuantLib {
         }
 
       private:
-        double theta_, k_, sigma_;
+        double y0_, theta_, k_, sigma_;
     };
 
     //! %Dynamics of the short-rate under the Cox-Ingersoll-Ross model

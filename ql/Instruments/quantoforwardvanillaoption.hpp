@@ -41,7 +41,7 @@ namespace QuantLib {
                  const RelinkableHandle<Quote>& correlation,
                  double moneyness,
                  Date resetDate,
-                 const boost::shared_ptr<BlackScholesStochasticProcess>&,
+                 const boost::shared_ptr<BlackScholesProcess>&,
                  const boost::shared_ptr<StrikedTypePayoff>& payoff,
                  const boost::shared_ptr<Exercise>& exercise,
                  const boost::shared_ptr<PricingEngine>& engine);

@@ -287,6 +287,8 @@ void ReplicationError::compute(int nTimeSteps, int nSamples)
        throughout time.
     */
     Date today = Date::todaysDate();
+    RelinkableHandle<Quote> stateVariable(
+                          boost::shared_ptr<Quote>(new SimpleQuote(s0_)));
     RelinkableHandle<TermStructure> riskFreeRate(
                           boost::shared_ptr<TermStructure>(
                                         new FlatForward(today, today, r_)));
@@ -297,8 +299,8 @@ void ReplicationError::compute(int nTimeSteps, int nSamples)
                           boost::shared_ptr<BlackVolTermStructure>(
                                         new BlackConstantVol(today, sigma_)));
     boost::shared_ptr<DiffusionProcess> diffusion(
-                          new BlackScholesProcess(riskFreeRate, dividendYield,
-                                                  volatility, s0_));
+                         new BlackScholesProcess(stateVariable, dividendYield,
+                                                 riskFreeRate, volatility));
 
     // Black Scholes equation rules the path generator:
     // at each step the log of the stock

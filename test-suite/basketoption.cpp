@@ -284,21 +284,21 @@ void BasketOptionTest::testEuroTwoValues() {
         vol1  ->setValue(values[i].v1);
         vol2  ->setValue(values[i].v2);
 
-        boost::shared_ptr<BlackScholesStochasticProcess> stochProcess1(new
-            BlackScholesStochasticProcess(
+        boost::shared_ptr<BlackScholesProcess> stochProcess1(new
+            BlackScholesProcess(
                 RelinkableHandle<Quote>(spot1),
                 RelinkableHandle<TermStructure>(qTS1),
                 RelinkableHandle<TermStructure>(rTS),
                 RelinkableHandle<BlackVolTermStructure>(volTS1)));
 
-        boost::shared_ptr<BlackScholesStochasticProcess> stochProcess2(new
-            BlackScholesStochasticProcess(
+        boost::shared_ptr<BlackScholesProcess> stochProcess2(new
+            BlackScholesProcess(
                 RelinkableHandle<Quote>(spot2),
                 RelinkableHandle<TermStructure>(qTS2),
                 RelinkableHandle<TermStructure>(rTS),
                 RelinkableHandle<BlackVolTermStructure>(volTS2)));
 
-        std::vector<boost::shared_ptr<BlackScholesStochasticProcess> > procs;
+        std::vector<boost::shared_ptr<BlackScholesProcess> > procs;
         procs.push_back(stochProcess1);
         procs.push_back(stochProcess2);
 
@@ -482,28 +482,28 @@ void BasketOptionTest::testBarraquandThreeValues() {
         vol2  ->setValue(values[i].v2);
         vol3  ->setValue(values[i].v3);
 
-        boost::shared_ptr<BlackScholesStochasticProcess> stochProcess1(new
-            BlackScholesStochasticProcess(
+        boost::shared_ptr<BlackScholesProcess> stochProcess1(new
+            BlackScholesProcess(
                 RelinkableHandle<Quote>(spot1),
                 RelinkableHandle<TermStructure>(qTS),
                 RelinkableHandle<TermStructure>(rTS),
                 RelinkableHandle<BlackVolTermStructure>(volTS1)));
 
-        boost::shared_ptr<BlackScholesStochasticProcess> stochProcess2(new
-            BlackScholesStochasticProcess(
+        boost::shared_ptr<BlackScholesProcess> stochProcess2(new
+            BlackScholesProcess(
                 RelinkableHandle<Quote>(spot2),
                 RelinkableHandle<TermStructure>(qTS),
                 RelinkableHandle<TermStructure>(rTS),
                 RelinkableHandle<BlackVolTermStructure>(volTS2)));
 
-        boost::shared_ptr<BlackScholesStochasticProcess> stochProcess3(new
-            BlackScholesStochasticProcess(
+        boost::shared_ptr<BlackScholesProcess> stochProcess3(new
+            BlackScholesProcess(
                 RelinkableHandle<Quote>(spot3),
                 RelinkableHandle<TermStructure>(qTS),
                 RelinkableHandle<TermStructure>(rTS),
                 RelinkableHandle<BlackVolTermStructure>(volTS3)));
 
-        std::vector<boost::shared_ptr<BlackScholesStochasticProcess> > procs;
+        std::vector<boost::shared_ptr<BlackScholesProcess> > procs;
         procs.push_back(stochProcess1);
         procs.push_back(stochProcess2);
         procs.push_back(stochProcess3);
@@ -609,28 +609,28 @@ void BasketOptionTest::testTavellaValues() {
     vol2  ->setValue(values[0].v2);
     vol3  ->setValue(values[0].v3);
 
-    boost::shared_ptr<BlackScholesStochasticProcess> stochProcess1(new
-        BlackScholesStochasticProcess(
+    boost::shared_ptr<BlackScholesProcess> stochProcess1(new
+        BlackScholesProcess(
             RelinkableHandle<Quote>(spot1),
             RelinkableHandle<TermStructure>(qTS),
             RelinkableHandle<TermStructure>(rTS),
             RelinkableHandle<BlackVolTermStructure>(volTS1)));
 
-    boost::shared_ptr<BlackScholesStochasticProcess> stochProcess2(new
-        BlackScholesStochasticProcess(
+    boost::shared_ptr<BlackScholesProcess> stochProcess2(new
+        BlackScholesProcess(
             RelinkableHandle<Quote>(spot2),
             RelinkableHandle<TermStructure>(qTS),
             RelinkableHandle<TermStructure>(rTS),
             RelinkableHandle<BlackVolTermStructure>(volTS2)));
 
-    boost::shared_ptr<BlackScholesStochasticProcess> stochProcess3(new
-        BlackScholesStochasticProcess(
+    boost::shared_ptr<BlackScholesProcess> stochProcess3(new
+        BlackScholesProcess(
             RelinkableHandle<Quote>(spot3),
             RelinkableHandle<TermStructure>(qTS),
             RelinkableHandle<TermStructure>(rTS),
             RelinkableHandle<BlackVolTermStructure>(volTS3)));
 
-    std::vector<boost::shared_ptr<BlackScholesStochasticProcess> > procs;
+    std::vector<boost::shared_ptr<BlackScholesProcess> > procs;
     procs.push_back(stochProcess1);
     procs.push_back(stochProcess2);
     procs.push_back(stochProcess3);
@@ -730,15 +730,15 @@ void BasketOptionTest::testOneDAmericanValues() {
 
     Date today = Date::todaysDate();
 
-    boost::shared_ptr<BlackScholesStochasticProcess> stochProcess1(new
-        BlackScholesStochasticProcess(
+    boost::shared_ptr<BlackScholesProcess> stochProcess1(new
+        BlackScholesProcess(
             RelinkableHandle<Quote>(spot1),
             RelinkableHandle<TermStructure>(qTS),
             RelinkableHandle<TermStructure>(rTS),
             RelinkableHandle<BlackVolTermStructure>(volTS1)));
 
 
-    std::vector<boost::shared_ptr<BlackScholesStochasticProcess> > procs;
+    std::vector<boost::shared_ptr<BlackScholesProcess> > procs;
     procs.push_back(stochProcess1);
 
     Matrix correlation(1, 1, 1.0);

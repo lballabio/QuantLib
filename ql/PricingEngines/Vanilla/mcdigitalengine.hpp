@@ -163,23 +163,14 @@ namespace QuantLib {
         PseudoRandom::ursg_type sequenceGen(grid.size()-1, 
                                             PseudoRandom::urng_type(76));
 
-        RelinkableHandle<TermStructure> riskFree(
-                             arguments_.blackScholesProcess->riskFreeRate());
-        RelinkableHandle<TermStructure> dividend(
-                             arguments_.blackScholesProcess->dividendYield());
-        RelinkableHandle<BlackVolTermStructure> volatility(
-                             arguments_.blackScholesProcess->volatility());
-
         return boost::shared_ptr<MCDigitalEngine<RNG,S>::path_pricer_type>(new
           DigitalPathPricer(
             payoff,
             exercise,
             arguments_.blackScholesProcess->stateVariable()->value(),
-            riskFree,
-            boost::shared_ptr<DiffusionProcess>(
-                       new BlackScholesProcess(riskFree, dividend, volatility,
-                                               arguments_.blackScholesProcess
-                                               ->stateVariable()->value())),
+            RelinkableHandle<TermStructure>(
+                              arguments_.blackScholesProcess->riskFreeRate()),
+            arguments_.blackScholesProcess,
             sequenceGen));
     }
 

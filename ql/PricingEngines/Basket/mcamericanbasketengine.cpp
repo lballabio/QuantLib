@@ -414,35 +414,26 @@ namespace QuantLib {
                 numAssets*(grid.size()-1),seed_);
 
         // set up the diffuction processes
-        std::vector<double> initialPrices (numAssets);
-        std::vector<boost::shared_ptr<DiffusionProcess> > diffusionProcs;
-        for (j = 0; j < numAssets; j++) { 
+        std::vector<double> initialPrices(numAssets);
+        std::vector<boost::shared_ptr<DiffusionProcess> > procs(numAssets);
+        for (j = 0; j < numAssets; j++) {
             initialPrices[j] = arguments_.blackScholesProcesses[j]
                 ->stateVariable()->value();
-            boost::shared_ptr<DiffusionProcess> bs(new
-              BlackScholesProcess(
-                    RelinkableHandle<TermStructure>(
-                        arguments_.blackScholesProcesses[j]->riskFreeRate()),
-                    RelinkableHandle<TermStructure>(
-                        arguments_.blackScholesProcesses[j]->dividendYield()),
-                    RelinkableHandle<BlackVolTermStructure>(
-                        arguments_.blackScholesProcesses[j]->volatility()),
-                    initialPrices[j]));
-            diffusionProcs.push_back(bs);
+            procs[j] = arguments_.blackScholesProcesses[j];
         }
 
         // create the MultiPathGenerator
         boost::shared_ptr<MultiPathGenerator<PseudoRandom::rsg_type> > 
             multipathGenerator(
                 new MultiPathGenerator<PseudoRandom::rsg_type> (
-                                            diffusionProcs, 
+                                            procs, 
                                             arguments_.correlation, grid, 
                                             gen, brownianBridge));
 
         boost::shared_ptr<MultiPathGenerator<LowDiscrepancy::rsg_type> >
             quasiMultipathGenerator(
             new MultiPathGenerator<LowDiscrepancy::rsg_type> (
-                                            diffusionProcs, 
+                                            procs, 
                                             arguments_.correlation, grid, 
                                             quasiGen, brownianBridge));
 

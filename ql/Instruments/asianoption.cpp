@@ -24,7 +24,7 @@ namespace QuantLib {
         double runningProduct,
         Size pastFixings,
         std::vector<Date> fixingDates,
-        const boost::shared_ptr<BlackScholesStochasticProcess>& stochProc,
+        const boost::shared_ptr<BlackScholesProcess>& stochProc,
         const boost::shared_ptr<StrikedTypePayoff>& payoff,
         const boost::shared_ptr<Exercise>& exercise,
         const boost::shared_ptr<PricingEngine>& engine)

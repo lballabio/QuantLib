@@ -23,7 +23,7 @@
 namespace QuantLib {
 
     OneAssetOption::OneAssetOption(
-        const boost::shared_ptr<BlackScholesStochasticProcess>& stochProc,
+        const boost::shared_ptr<BlackScholesProcess>& stochProc,
         const boost::shared_ptr<Payoff>& payoff,
         const boost::shared_ptr<Exercise>& exercise,
         const boost::shared_ptr<PricingEngine>& engine)
@@ -115,7 +115,7 @@ namespace QuantLib {
         calculate();
         QL_REQUIRE(!isExpired(), "option expired");
 
-        double guess = blackScholesProcess_->volatility()->blackVol(
+        double guess = blackScholesProcess_->blackVolatility()->blackVol(
                               exercise_->lastDate(),
                               blackScholesProcess_->stateVariable()->value());
 
@@ -210,7 +210,7 @@ namespace QuantLib {
                    "no dividend term structure given");
         QL_REQUIRE(blackScholesProcess->riskFreeRate(),
                    "no risk free term structure given");
-        QL_REQUIRE(blackScholesProcess->volatility(),
+        QL_REQUIRE(blackScholesProcess->blackVolatility(),
                    "no vol term structure given");
     }
 
@@ -237,17 +237,17 @@ namespace QuantLib {
         RelinkableHandle<TermStructure> riskFreeRate(
                             arguments_->blackScholesProcess->riskFreeRate());
         RelinkableHandle<BlackVolTermStructure> volatility;
-        boost::shared_ptr<BlackScholesStochasticProcess> process(
-               new BlackScholesStochasticProcess(stateVariable, dividendYield,
-                                                 riskFreeRate, volatility));
+        boost::shared_ptr<BlackScholesProcess> process(
+               new BlackScholesProcess(stateVariable, dividendYield,
+                                       riskFreeRate, volatility));
 
         vol_ = boost::shared_ptr<SimpleQuote>(new SimpleQuote(0.0));
         volatility.linkTo(boost::shared_ptr<BlackVolTermStructure>(
                     new BlackConstantVol(arguments_->blackScholesProcess
-                                         ->volatility()->referenceDate(),
+                                         ->blackVolatility()->referenceDate(),
                                          RelinkableHandle<Quote>(vol_),
                                          arguments_->blackScholesProcess
-                                         ->volatility()->dayCounter())));
+                                         ->blackVolatility()->dayCounter())));
         arguments_->blackScholesProcess = process;
         results_ = dynamic_cast<const Value*>(engine_->results());
         QL_REQUIRE(results_ != 0,

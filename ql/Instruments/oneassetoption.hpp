@@ -24,14 +24,14 @@
 #define quantlib_oneasset_option_h
 
 #include <ql/option.hpp>
-#include <ql/stochasticprocess.hpp>
+#include <ql/diffusionprocess.hpp>
 
 namespace QuantLib {
 
     //! Base class for options on a single asset
     class OneAssetOption : public Option {
       public:
-        OneAssetOption(const boost::shared_ptr<BlackScholesStochasticProcess>&,
+        OneAssetOption(const boost::shared_ptr<BlackScholesProcess>&,
                        const boost::shared_ptr<Payoff>& payoff,
                        const boost::shared_ptr<Exercise>& exercise,
                        const boost::shared_ptr<PricingEngine>& engine =
@@ -84,7 +84,7 @@ namespace QuantLib {
         mutable double delta_, deltaForward_, elasticity_, gamma_, theta_,
             thetaPerDay_, vega_, rho_, dividendRho_, itmCashProbability_;
         // arguments
-        boost::shared_ptr<BlackScholesStochasticProcess> blackScholesProcess_;
+        boost::shared_ptr<BlackScholesProcess> blackScholesProcess_;
       private:
         // helper class for implied volatility calculation
         class ImpliedVolHelper {
@@ -105,7 +105,7 @@ namespace QuantLib {
       public:
         arguments() {}
         void validate() const;
-        boost::shared_ptr<BlackScholesStochasticProcess> blackScholesProcess;
+        boost::shared_ptr<BlackScholesProcess> blackScholesProcess;
     };
 
     //! %Results from single-asset option calculation

@@ -46,7 +46,7 @@ namespace QuantLib {
         ForwardVanillaOption(
             double moneyness,
             Date resetDate,
-            const boost::shared_ptr<BlackScholesStochasticProcess>& stochProc,
+            const boost::shared_ptr<BlackScholesProcess>& stochProc,
             const boost::shared_ptr<StrikedTypePayoff>& payoff,
             const boost::shared_ptr<Exercise>& exercise,
             const boost::shared_ptr<PricingEngine>& engine);

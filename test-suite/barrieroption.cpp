@@ -240,8 +240,8 @@ void BarrierOptionTest::testHaugValues() {
         boost::shared_ptr<StrikedTypePayoff> payoff(new
             PlainVanillaPayoff(values[i].type, values[i].strike));
 
-        boost::shared_ptr<BlackScholesStochasticProcess> stochProcess(new
-            BlackScholesStochasticProcess(
+        boost::shared_ptr<BlackScholesProcess> stochProcess(new
+            BlackScholesProcess(
                 RelinkableHandle<Quote>(spot),
                 RelinkableHandle<TermStructure>(qTS),
                 RelinkableHandle<TermStructure>(rTS),
@@ -338,8 +338,8 @@ void BarrierOptionTest::testBabsiriValues() {
         boost::shared_ptr<StrikedTypePayoff> callPayoff(new
             PlainVanillaPayoff(Option::Call, values[i].strike));
 
-        boost::shared_ptr<BlackScholesStochasticProcess> stochProcess(new
-            BlackScholesStochasticProcess(
+        boost::shared_ptr<BlackScholesProcess> stochProcess(new
+            BlackScholesProcess(
                 RelinkableHandle<Quote>(underlying),
                 RelinkableHandle<TermStructure>(qTS),
                 RelinkableHandle<TermStructure>(rTS),
@@ -444,8 +444,8 @@ void BarrierOptionTest::testBeagleholeValues() {
         boost::shared_ptr<StrikedTypePayoff> callPayoff(new
             PlainVanillaPayoff(Option::Call, values[i].strike));
 
-        boost::shared_ptr<BlackScholesStochasticProcess> stochProcess(new
-            BlackScholesStochasticProcess(
+        boost::shared_ptr<BlackScholesProcess> stochProcess(new
+            BlackScholesProcess(
                 RelinkableHandle<Quote>(underlying),
                 RelinkableHandle<TermStructure>(qTS),
                 RelinkableHandle<TermStructure>(rTS),

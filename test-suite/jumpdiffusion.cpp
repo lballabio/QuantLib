@@ -310,15 +310,14 @@ void JumpDiffusionTest::testMerton76() {
     boost::shared_ptr<SimpleQuote> meanLogJump(new SimpleQuote(0.0));
     boost::shared_ptr<SimpleQuote> jumpVol(new SimpleQuote(0.0));
 
-    boost::shared_ptr<BlackScholesStochasticProcess> stochProcess(new
-        Merton76StochasticProcess(
-            RelinkableHandle<Quote>(spot),
-            RelinkableHandle<TermStructure>(qTS),
-            RelinkableHandle<TermStructure>(rTS),
-            RelinkableHandle<BlackVolTermStructure>(volTS),
-            RelinkableHandle<Quote>(jumpIntensity),
-            RelinkableHandle<Quote>(meanLogJump),
-            RelinkableHandle<Quote>(jumpVol)));
+    boost::shared_ptr<BlackScholesProcess> stochProcess(
+           new Merton76Process(RelinkableHandle<Quote>(spot),
+                               RelinkableHandle<TermStructure>(qTS),
+                               RelinkableHandle<TermStructure>(rTS),
+                               RelinkableHandle<BlackVolTermStructure>(volTS),
+                               RelinkableHandle<Quote>(jumpIntensity),
+                               RelinkableHandle<Quote>(meanLogJump),
+                               RelinkableHandle<Quote>(jumpVol)));
 
     boost::shared_ptr<VanillaOption::engine> baseEngine(
                                                   new AnalyticEuropeanEngine);
@@ -414,15 +413,14 @@ void JumpDiffusionTest::testGreeks() {
     boost::shared_ptr<SimpleQuote> meanLogJump(new SimpleQuote(0.0));
     boost::shared_ptr<SimpleQuote> jumpVol(new SimpleQuote(0.0));
 
-    boost::shared_ptr<BlackScholesStochasticProcess> stochProcess(new
-        Merton76StochasticProcess(
-            RelinkableHandle<Quote>(spot),
-            RelinkableHandle<TermStructure>(qTS),
-            RelinkableHandle<TermStructure>(rTS),
-            RelinkableHandle<BlackVolTermStructure>(volTS),
-            RelinkableHandle<Quote>(jumpIntensity),
-            RelinkableHandle<Quote>(meanLogJump),
-            RelinkableHandle<Quote>(jumpVol)));
+    boost::shared_ptr<BlackScholesProcess> stochProcess(
+        new Merton76Process(RelinkableHandle<Quote>(spot),
+                            RelinkableHandle<TermStructure>(qTS),
+                            RelinkableHandle<TermStructure>(rTS),
+                            RelinkableHandle<BlackVolTermStructure>(volTS),
+                            RelinkableHandle<Quote>(jumpIntensity),
+                            RelinkableHandle<Quote>(meanLogJump),
+                            RelinkableHandle<Quote>(jumpVol)));
 
     boost::shared_ptr<StrikedTypePayoff> payoff;
 

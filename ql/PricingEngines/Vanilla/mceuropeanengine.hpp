@@ -167,7 +167,7 @@ namespace QuantLib {
               arguments_.exercise->lastDate());
 
         TimeGridCalculator calc(t, maxTimeStepsPerYear_);
-        arguments_.blackScholesProcess->volatility()->accept(calc);
+        arguments_.blackScholesProcess->blackVolatility()->accept(calc);
         return TimeGrid(t, calc.size());
     }
 

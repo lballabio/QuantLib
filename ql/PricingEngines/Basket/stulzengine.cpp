@@ -93,7 +93,7 @@ namespace QuantLib {
 
     void StulzEngine::calculate() const {
 
-        std::vector<boost::shared_ptr<BlackScholesStochasticProcess> > procs = 
+        std::vector<boost::shared_ptr<BlackScholesProcess> > procs = 
             arguments_.blackScholesProcesses;
 
         QL_REQUIRE(arguments_.exercise->type() == Exercise::European,
@@ -112,9 +112,9 @@ namespace QuantLib {
 
         double strike = payoff->strike();
 
-        double variance1 = procs[0]->volatility()->blackVariance(
+        double variance1 = procs[0]->blackVolatility()->blackVariance(
                                                 exercise->lastDate(), strike);
-        double variance2 = procs[1]->volatility()->blackVariance(
+        double variance2 = procs[1]->blackVolatility()->blackVariance(
                                                 exercise->lastDate(), strike);
 
         double rho = arguments_.correlation[1][0];

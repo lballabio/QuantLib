@@ -157,11 +157,11 @@ int main(int, char* [])
         boost::shared_ptr<StrikedTypePayoff> payoff(new
             PlainVanillaPayoff(type, strike));
 
-        boost::shared_ptr<BlackScholesStochasticProcess> stochasticProcess(new
-            BlackScholesStochasticProcess(underlyingH, flatDividendTS,
-                flatTermStructure,
-                //  blackSurface
-                flatVolTS));
+        boost::shared_ptr<BlackScholesProcess> stochasticProcess(new
+            BlackScholesProcess(underlyingH, flatDividendTS,
+                                flatTermStructure,
+                                //  blackSurface
+                                flatVolTS));
 
         EuropeanOption option(stochasticProcess, payoff, exercise);
 

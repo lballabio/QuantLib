@@ -117,22 +117,12 @@ namespace QuantLib {
 
         std::vector<boost::shared_ptr<DiffusionProcess> > diffusionProcs;
         for (Size j = 0; j < numAssets; j++) {
-            RelinkableHandle<TermStructure> riskFree(
-                        arguments_.blackScholesProcesses[j]->riskFreeRate());
-            RelinkableHandle<TermStructure> dividend(
-                        arguments_.blackScholesProcesses[j]->dividendYield());
-            RelinkableHandle<BlackVolTermStructure> vol(
-                        arguments_.blackScholesProcesses[j]->volatility());
-            boost::shared_ptr<DiffusionProcess> bs(
-                   new BlackScholesProcess(riskFree, dividend, vol,
-                                           arguments_.blackScholesProcesses[j]
-                                           ->stateVariable()->value()));
-            diffusionProcs.push_back(bs);
+            diffusionProcs.push_back(arguments_.blackScholesProcesses[j]);
         }
 
         return boost::shared_ptr<path_generator_type>(new
             path_generator_type(diffusionProcs, arguments_.correlation, 
-                                    grid, gen, brownianBridge_));
+                                grid, gen, brownianBridge_));
 
     }
 

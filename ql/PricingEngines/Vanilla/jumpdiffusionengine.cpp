@@ -34,8 +34,8 @@ namespace QuantLib {
 
     void JumpDiffusionEngine::calculate() const {
 
-        boost::shared_ptr<Merton76StochasticProcess> jdProcess =
-            boost::dynamic_pointer_cast<Merton76StochasticProcess>(
+        boost::shared_ptr<Merton76Process> jdProcess =
+            boost::dynamic_pointer_cast<Merton76Process>(
                                               arguments_.blackScholesProcess);
         QL_REQUIRE(jdProcess, "not a jump diffusion process");
 
@@ -48,10 +48,10 @@ namespace QuantLib {
         double lambda = (k+1.0) * jdProcess->jumpIntensity()->value();
 
         // dummy strike
-        double variance = jdProcess->volatility()->blackVariance(
+        double variance = jdProcess->blackVolatility()->blackVariance(
                                         arguments_.exercise->lastDate(), 1.0);
-        DayCounter dc = jdProcess->volatility()->dayCounter();
-        Date volRefDate = jdProcess->volatility()->referenceDate();
+        DayCounter dc = jdProcess->blackVolatility()->dayCounter();
+        Date volRefDate = jdProcess->blackVolatility()->referenceDate();
         Time t = dc.yearFraction(volRefDate, arguments_.exercise->lastDate());
         Rate riskFreeRate = -QL_LOG(jdProcess->riskFreeRate()->discount(
                                           arguments_.exercise->lastDate()))/t;
@@ -69,10 +69,11 @@ namespace QuantLib {
         RelinkableHandle<Quote> stateVariable(jdProcess->stateVariable());
         RelinkableHandle<TermStructure> dividendTS(jdProcess->dividendYield());
         RelinkableHandle<TermStructure> riskFreeTS(jdProcess->riskFreeRate());
-        RelinkableHandle<BlackVolTermStructure> volTS(jdProcess->volatility());
+        RelinkableHandle<BlackVolTermStructure> volTS(
+                                                jdProcess->blackVolatility());
         baseArguments->blackScholesProcess = 
-            boost::shared_ptr<BlackScholesStochasticProcess>(
-                  new BlackScholesStochasticProcess(stateVariable, dividendTS,
+            boost::shared_ptr<BlackScholesProcess>(
+                            new BlackScholesProcess(stateVariable, dividendTS,
                                                     riskFreeTS, volTS));
         baseArguments->validate();
 
