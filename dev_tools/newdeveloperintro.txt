@@ -1,4 +1,8 @@
-You could take a look at the TODO.txt list in the source distribution.
+You could take a look at the TODO list at http://cvs.sourceforge.net/cgi-bin/viewcvs.cgi/quantlib/QuantLib/TODO.txt?rev=HEAD&content-type=text/vnd.viewcvs-markup
+
+The project roadmap is available at http://quantlib.org/html/overview.html,
+the planned extensions at http://quantlib.org/extensions.html
+
 The latest QuantLib code is available through CVS (more on that below). A
 periodic snapshot is available also at http://quantlib.org/snapshot.html.
 
