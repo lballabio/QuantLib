@@ -37,7 +37,7 @@ namespace QuantLib {
 
         std::vector<Date> dates = dates_;
         std::vector<Time> times = times_;
-        std::vector<Rate> discounts = discounts_;
+        std::vector<Rate> discounts = data_;
 
         for (i = 0, ci = 1; i < dates.size(); i++) {
             Date rateDate = dates[i];
@@ -58,10 +58,10 @@ namespace QuantLib {
         }
         dates_ = dates;
         times_ = times;
-        discounts_ = discounts;
+        data_ = discounts;
 
         interpolation_ = LogLinearInterpolation(times_.begin(), times_.end(),
-                                                discounts_.begin());
+                                                data_.begin());
     }
 
     boost::shared_ptr<CompoundForward>

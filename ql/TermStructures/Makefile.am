@@ -5,6 +5,7 @@ includedir = $(prefix)/include/ql/TermStructures
 include_HEADERS = \
     affinetermstructure.hpp \
     all.hpp \
+    bootstraptraits.hpp \
     compoundforward.hpp \
     discountcurve.hpp \
     drifttermstructure.hpp \

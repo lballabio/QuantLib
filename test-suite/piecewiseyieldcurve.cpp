@@ -143,11 +143,11 @@ namespace {
 
 namespace {
 
-    template <class I>
-    void testCurveConsistency(const I&) {
+    template <class T, class I>
+    void testCurveConsistency(const T&, const I&) {
 
         termStructure = boost::shared_ptr<YieldTermStructure>(
-                            new PiecewiseYieldCurve<I>(settlement,instruments,
+                          new PiecewiseYieldCurve<T,I>(settlement,instruments,
                                                        Actual360()));
 
         Handle<YieldTermStructure> euriborHandle;
@@ -208,7 +208,7 @@ void PiecewiseYieldCurveTest::testLogLinearDiscountConsistency() {
     QL_TEST_BEGIN
     QL_TEST_SETUP
 
-    testCurveConsistency(LogLinear());
+    testCurveConsistency(Discount(), LogLinear());
 
     QL_TEST_TEARDOWN
 }
@@ -221,7 +221,7 @@ void PiecewiseYieldCurveTest::testLinearDiscountConsistency() {
     QL_TEST_BEGIN
     QL_TEST_SETUP
 
-    testCurveConsistency(Linear());
+    testCurveConsistency(Discount(), Linear());
 
     QL_TEST_TEARDOWN
 }
@@ -234,7 +234,7 @@ void PiecewiseYieldCurveTest::testObservability() {
     QL_TEST_SETUP
 
     termStructure = boost::shared_ptr<YieldTermStructure>(
-                new PiecewiseYieldCurve<LogLinear>(settlementDays, calendar,
+       new PiecewiseYieldCurve<Discount,LogLinear>(settlementDays, calendar,
                                                    instruments, Actual360()));
 
     Flag f;

@@ -24,6 +24,7 @@
 
 #include <ql/TermStructures/discountcurve.hpp>
 #include <ql/TermStructures/ratehelpers.hpp>
+#include <ql/TermStructures/bootstraptraits.hpp>
 #include <ql/Solvers1D/brent.hpp>
 
 namespace QuantLib {
@@ -39,9 +40,6 @@ namespace QuantLib {
         instrument whose maturity marks the end of such segment is
         correctly repriced on the curve.
 
-        \warning Although working, this class is still being developed:
-                 don't use it yet.
-
         \warning The bootstrapping algorithm will raise an exception if
                  any two instruments have the same maturity date.
 
@@ -55,9 +53,11 @@ namespace QuantLib {
           checking them against the original inputs.
         - the observability of the term structure is tested.
     */
-    template <class Interpolator>
-    class PiecewiseYieldCurve : public InterpolatedDiscountCurve<Interpolator>,
+    template <class Traits, class Interpolator>
+    class PiecewiseYieldCurve : public Traits::curve<Interpolator>::type,
                                 public LazyObject {
+      private:
+        typedef typename Traits::curve<Interpolator>::type base_curve;
       public:
         //! \name Constructors
         //@{
@@ -100,14 +100,14 @@ namespace QuantLib {
 
     // objective function for solver
 
-    template <class I>
-    class PiecewiseYieldCurve<I>::ObjectiveFunction {
+    template <class C, class I>
+    class PiecewiseYieldCurve<C,I>::ObjectiveFunction {
       public:
-        ObjectiveFunction(const PiecewiseYieldCurve<I>*,
+        ObjectiveFunction(const PiecewiseYieldCurve<C,I>*,
                           const boost::shared_ptr<RateHelper>&, Size segment);
         Real operator()(DiscountFactor discountGuess) const;
       private:
-        const PiecewiseYieldCurve<I>* curve_;
+        const PiecewiseYieldCurve<C,I>* curve_;
         boost::shared_ptr<RateHelper> rateHelper_;
         Size segment_;
     };
@@ -128,64 +128,63 @@ namespace QuantLib {
 
     // inline definitions
 
-    template <class I>
-    inline const std::vector<Date>& PiecewiseYieldCurve<I>::dates() const {
+    template <class C, class I>
+    inline const std::vector<Date>& PiecewiseYieldCurve<C,I>::dates() const {
         calculate();
         return dates_;
     }
 
-    template <class I>
-    inline Date PiecewiseYieldCurve<I>::maxDate() const {
+    template <class C, class I>
+    inline Date PiecewiseYieldCurve<C,I>::maxDate() const {
         calculate();
         return dates_.back();
     }
 
-    template <class I>
-    inline const std::vector<Time>& PiecewiseYieldCurve<I>::times() const {
+    template <class C, class I>
+    inline const std::vector<Time>& PiecewiseYieldCurve<C,I>::times() const {
         calculate();
         return times_;
     }
 
-    template <class I>
-    inline Time PiecewiseYieldCurve<I>::maxTime() const {
+    template <class C, class I>
+    inline Time PiecewiseYieldCurve<C,I>::maxTime() const {
         calculate();
         return times_.back();
     }
 
-    template <class I>
-    inline void PiecewiseYieldCurve<I>::update() {
-        InterpolatedDiscountCurve<I>::update();
+    template <class C, class I>
+    inline void PiecewiseYieldCurve<C,I>::update() {
+        base_curve::update();
         LazyObject::update();
     }
 
 
     // template definitions
 
-    template <class I>
-    PiecewiseYieldCurve<I>::PiecewiseYieldCurve(
+    template <class C, class I>
+    PiecewiseYieldCurve<C,I>::PiecewiseYieldCurve(
                const Date& referenceDate,
                const std::vector<boost::shared_ptr<RateHelper> >& instruments,
                const DayCounter& dayCounter, Real accuracy,
                const I& interpolator)
-    : InterpolatedDiscountCurve<I>(referenceDate,dayCounter,interpolator),
+    : base_curve(referenceDate,dayCounter,interpolator),
       instruments_(instruments), accuracy_(accuracy) {
         checkInstruments();
     }
 
-    template <class I>
-    PiecewiseYieldCurve<I>::PiecewiseYieldCurve(
+    template <class C, class I>
+    PiecewiseYieldCurve<C,I>::PiecewiseYieldCurve(
                Integer settlementDays, const Calendar& calendar,
                const std::vector<boost::shared_ptr<RateHelper> >& instruments,
                const DayCounter& dayCounter, Real accuracy,
                const I& interpolator)
-    : InterpolatedDiscountCurve<I>(settlementDays, calendar, dayCounter,
-                                   interpolator),
+    : base_curve(settlementDays, calendar, dayCounter, interpolator),
       instruments_(instruments), accuracy_(accuracy) {
         checkInstruments();
     }
 
-    template <class I>
-    void PiecewiseYieldCurve<I>::checkInstruments() {
+    template <class C, class I>
+    void PiecewiseYieldCurve<C,I>::checkInstruments() {
 
         QL_REQUIRE(!instruments_.empty(), "no instrument given");
 
@@ -207,12 +206,12 @@ namespace QuantLib {
             registerWith(instruments_[i]);
     }
 
-    template <class I>
-    void PiecewiseYieldCurve<I>::performCalculations() const {
+    template <class C, class I>
+    void PiecewiseYieldCurve<C,I>::performCalculations() const {
         // values at reference date
         dates_ = std::vector<Date>(1, referenceDate());
         times_ = std::vector<Time>(1, 0.0);
-        discounts_ = std::vector<DiscountFactor>(1, 1.0);
+        data_ = std::vector<Real>(1, C::initialValue());
 
         Brent solver;
         // bootstrapping loop
@@ -220,32 +219,24 @@ namespace QuantLib {
             boost::shared_ptr<RateHelper> instrument = instruments_[i-1];
             // don't try this at home!
             instrument->setTermStructure(
-                                   const_cast<PiecewiseYieldCurve<I>*>(this));
-            DiscountFactor guess = instrument->discountGuess();
-            if (guess == Null<DiscountFactor>()) {
-                if (i > 1) {    // we can extrapolate
-                    guess = this->discount(instrument->latestDate(),true);
-                } else {        // any guess will do
-                    guess = 0.9;
-                }
+                                 const_cast<PiecewiseYieldCurve<C,I>*>(this));
+            Real guess;
+            if (i > 1) {    // we can extrapolate
+                guess = C::guess(this,instrument->latestDate());
+            } else {
+                guess = C::initialGuess();
             }
             // bracket
-            DiscountFactor min = accuracy_*1.0e-3;
-            #if defined(QL_NEGATIVE_RATES)
-            // discount are not required to be decreasing--all bets are off.
-            // We choose as max a value very unlikely to be exceeded.
-            DiscountFactor max = 3.0;
-            #else
-            DiscountFactor max = discounts_[i-1];
-            #endif
+            Real min = accuracy_*1.0e-3;
+            Real max = C::maxValueAfter(i, data_);
             solver.solve(ObjectiveFunction(this,instrument,i),
                          accuracy_,guess,min,max);
         }
     }
 
-    template <class I>
-    PiecewiseYieldCurve<I>::ObjectiveFunction::ObjectiveFunction(
-                              const PiecewiseYieldCurve<I>* curve,
+    template <class C, class I>
+    PiecewiseYieldCurve<C,I>::ObjectiveFunction::ObjectiveFunction(
+                              const PiecewiseYieldCurve<C,I>* curve,
                               const boost::shared_ptr<RateHelper>& rateHelper,
                               Size segment)
     : curve_(curve), rateHelper_(rateHelper), segment_(segment) {
@@ -254,17 +245,17 @@ namespace QuantLib {
         curve_->times_.push_back(
                             curve_->timeFromReference(curve_->dates_.back()));
         // add dummy value for next point - will be reset by operator()
-        curve_->discounts_.push_back(1.0);
+        curve_->data_.push_back(curve_->data_.back());
         curve_->interpolation_ =
             curve_->interpolator_.interpolate(curve_->times_.begin(),
                                               curve_->times_.end(),
-                                              curve_->discounts_.begin());
+                                              curve_->data_.begin());
     }
 
-    template <class I>
-    Real PiecewiseYieldCurve<I>::ObjectiveFunction::operator()(
-                                              DiscountFactor discount) const {
-        curve_->discounts_[segment_] = discount;
+    template <class C, class I>
+    Real PiecewiseYieldCurve<C,I>::ObjectiveFunction::operator()(Real guess)
+                                                                       const {
+        C::updateGuess(curve_->data_, guess, segment_);
         curve_->interpolation_.update();
         return rateHelper_->quoteError();
     }

@@ -64,8 +64,8 @@ namespace QuantLib {
         Size referenceNode(Time) const;
         DayCounter dayCounter_;
         mutable std::vector<Date> dates_;
-        mutable std::vector<DiscountFactor> discounts_;
         mutable std::vector<Time> times_;
+        mutable std::vector<DiscountFactor> data_;
         mutable Interpolation interpolation_;
         Interpolator interpolator_;
     };
@@ -111,7 +111,7 @@ namespace QuantLib {
     template <class T>
     inline const std::vector<DiscountFactor>&
     InterpolatedDiscountCurve<T>::discounts() const {
-        return discounts_;
+        return data_;
     }
 
     template <class T>
@@ -147,15 +147,15 @@ namespace QuantLib {
                                  const DayCounter& dayCounter,
                                  const T& interpolator)
     : YieldTermStructure(dates[0]),
-      dayCounter_(dayCounter), dates_(dates), discounts_(discounts),
+      dayCounter_(dayCounter), dates_(dates), data_(discounts),
       interpolator_(interpolator) {
         QL_REQUIRE(dates_.size() > 0,
                    "no input dates given");
-        QL_REQUIRE(discounts_.size() > 0,
+        QL_REQUIRE(data_.size() > 0,
                    "no input discount factors given");
-        QL_REQUIRE(discounts_.size() == dates_.size(),
+        QL_REQUIRE(data_.size() == dates_.size(),
                    "dates/discount factors count mismatch");
-        QL_REQUIRE(discounts_[0] == 1.0,
+        QL_REQUIRE(data_[0] == 1.0,
                    "the first discount must be == 1.0 "
                    "to flag the corrsponding date as settlement date");
 
@@ -165,22 +165,22 @@ namespace QuantLib {
             QL_REQUIRE(dates_[i] > dates_[i-1],
                        "invalid date (" << dates_[i] << ", vs "
                        << dates_[i-1] << ")");
-            QL_REQUIRE(discounts_[i] > 0.0, "negative discount");
+            QL_REQUIRE(data_[i] > 0.0, "negative discount");
             times_[i] = dayCounter.yearFraction(dates_[0], dates_[i]);
         }
         interpolation_ = interpolator_.interpolate(times_.begin(),
                                                    times_.end(),
-                                                   discounts_.begin());
+                                                   data_.begin());
     }
 
     template <class T>
     DiscountFactor InterpolatedDiscountCurve<T>::discountImpl(Time t) const {
         if (t == 0.0) {
-            return discounts_[0];
+            return data_[0];
         } else {
             Size n = referenceNode(t);
             if (t == times_[n]) {
-                return discounts_[n];
+                return data_[n];
             } else {
                 return interpolation_(t, true);
             }
