@@ -53,6 +53,13 @@ BSC32=bscmake.exe
 LINK32=link.exe
 # ADD BASE LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:console /machine:I386
 # ADD LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:console /machine:I386 /libpath:"..\lib"
+# Begin Special Build Tool
+TargetDir=.\build\Release
+TargetName=testsuite
+SOURCE="$(InputPath)"
+PostBuild_Desc=Auto run test
+PostBuild_Cmds="$(TargetDir)\$(TargetName).exe" --log_level=messages --build_info=yes --result_code=no --report_level=no
+# End Special Build Tool
 
 !ELSEIF  "$(CFG)" == "testsuite - Win32 Debug"
 
@@ -77,6 +84,13 @@ BSC32=bscmake.exe
 LINK32=link.exe
 # ADD BASE LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:console /debug /machine:I386 /pdbtype:sept
 # ADD LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:console /debug /machine:I386 /pdbtype:sept /libpath:"..\lib"
+# Begin Special Build Tool
+TargetDir=.\build\Debug
+TargetName=testsuite
+SOURCE="$(InputPath)"
+PostBuild_Desc=Auto run test
+PostBuild_Cmds="$(TargetDir)\$(TargetName).exe" --log_level=messages --build_info=yes --result_code=no --report_level=no --catch_system_errors=no
+# End Special Build Tool
 
 !ELSEIF  "$(CFG)" == "testsuite - Win32 Release MTDLL"
 
@@ -102,6 +116,13 @@ BSC32=bscmake.exe
 LINK32=link.exe
 # ADD BASE LINK32 cppunit.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:console /machine:I386 /libpath:"..\lib\Win32\VisualStudio\\"
 # ADD LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:console /machine:I386 /libpath:"..\lib"
+# Begin Special Build Tool
+TargetDir=.\build\ReleaseMTDLL
+TargetName=testsuite
+SOURCE="$(InputPath)"
+PostBuild_Desc=Auto run test
+PostBuild_Cmds="$(TargetDir)\$(TargetName).exe" --log_level=messages --build_info=yes --result_code=no --report_level=no
+# End Special Build Tool
 
 !ELSEIF  "$(CFG)" == "testsuite - Win32 Debug MTDLL"
 
@@ -127,6 +148,13 @@ BSC32=bscmake.exe
 LINK32=link.exe
 # ADD BASE LINK32 cppunitd.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:console /debug /machine:I386 /pdbtype:sept /libpath:"..\lib\Win32\VisualStudio\\"
 # ADD LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:console /debug /machine:I386 /pdbtype:sept /libpath:"..\lib"
+# Begin Special Build Tool
+TargetDir=.\build\DebugMTDLL
+TargetName=testsuite
+SOURCE="$(InputPath)"
+PostBuild_Desc=Auto run test
+PostBuild_Cmds="$(TargetDir)\$(TargetName).exe" --log_level=messages --build_info=yes --result_code=no --report_level=no --catch_system_errors=no
+# End Special Build Tool
 
 !ENDIF 
 
