@@ -15,22 +15,22 @@
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
-/*! \file wellington.cpp
-    \brief Wellington calendar
+/*! \file sydney.cpp
+    \brief Sydney calendar
 
     \fullpath
-    ql/Calendars/%wellington.cpp
+    ql/Calendars/%sydney.cpp
 */
 
 // $Id$
 
-#include <ql/Calendars/wellington.hpp>
+#include <ql/Calendars/sydney.hpp>
 
 namespace QuantLib {
 
     namespace Calendars {
 
-        bool Wellington::WelCalendarImpl::isBusinessDay(const Date& date)
+        bool Sydney::SydCalendarImpl::isBusinessDay(const Date& date)
           const {
             Weekday w = date.weekday();
             Day d = date.dayOfMonth(), dd = date.dayOfYear();
@@ -38,26 +38,24 @@ namespace QuantLib {
             Year y = date.year();
             Day em = easterMonday(y);
             if ((w == Saturday || w == Sunday)
-                // New Year's Day (possibly moved to Monday or Tuesday)
-                || ((d == 1 || (d == 3 && (w == Monday || w == Tuesday))) &&
+                // New Year's Day (possibly moved to Monday)
+                || ((d == 1 || ((d == 2 || d == 3) && w == Monday)) &&
                     m == January)
-                // Day after New Year's Day (possibly Monday or Tuesday)
-                || ((d == 2 || (d == 4 && (w == Monday || w == Tuesday))) &&
+                // Australia Day, January 26th (possibly moved to Monday)
+                || ((d == 26 || ((d == 27 || d == 28) && w == Monday)) &&
                     m == January)
-                // Anniversary Day, Monday nearest January 22nd
-                || ((d >= 19 && d <= 25) && w == Monday && m == January)
-                // Waitangi Day. February 6th
-                || (d == 6 && m == February)
                 // Good Friday
                 || (dd == em-3)
                 // Easter Monday
                 || (dd == em)
-                // ANZAC Day. April 25th
-                || (d == 25 && m == April)
-                // Queen's Birthday, first Monday in June
-                || (d <= 7 && w == Monday && m == June)
-                // Labour Day, fourth Monday in October
-                || ((d >= 22 && d <= 28) && w == Monday && m == October)
+                // ANZAC Day, April 25th (possibly moved to Monday)
+                || ((d == 25 || (d == 26 && w == Monday)) && m == April)
+                // Queen's Birthday, second Monday in June
+                || ((d > 7 && d <= 14) && w == Monday && m == June)
+                // Bank Holiday, first Monday in August
+                || (d <= 7 && w == Monday && m == August)
+                // Labour Day, first Monday in October
+                || (d <= 7 && w == Monday && m == October)
                 // Christmas, December 25th (possibly Monday or Tuesday)
                 || ((d == 25 || (d == 27 && (w == Monday || w == Tuesday)))
                     && m == December)

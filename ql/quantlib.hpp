@@ -60,6 +60,7 @@
 #include <ql/Calendars/target.hpp>
 #include <ql/Calendars/tokyo.hpp>
 #include <ql/Calendars/toronto.hpp>
+#include <ql/Calendars/sydney.hpp>
 #include <ql/Calendars/wellington.hpp>
 #include <ql/Calendars/zurich.hpp>
 
@@ -94,6 +95,7 @@
 #include <ql/FiniteDifferences/valueatcenter.hpp>
 
 #include <ql/Indexes/euribor.hpp>
+#include <ql/Indexes/audlibor.hpp>
 #include <ql/Indexes/gbplibor.hpp>
 #include <ql/Indexes/usdlibor.hpp>
 #include <ql/Indexes/jpylibor.hpp>

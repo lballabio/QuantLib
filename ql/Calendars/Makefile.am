@@ -13,7 +13,8 @@ include_HEADERS = \
 	newyork.hpp \
 	target.hpp \
 	tokyo.hpp \
-	toronto.hpp \
+	toronto.hpp \	
+	sydney.hpp \
 	wellington.hpp \
 	zurich.hpp
 
@@ -29,6 +30,7 @@ libCalendars_la_SOURCES = \
 	target.cpp \
 	tokyo.cpp \
 	toronto.cpp \
+	sydney.cpp \
 	wellington.cpp \
 	zurich.cpp
 

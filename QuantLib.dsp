@@ -183,6 +183,14 @@ SOURCE=.\ql\Calendars\newyork.hpp
 # End Source File
 # Begin Source File
 
+SOURCE=.\ql\Calendars\sydney.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\Calendars\sydney.hpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\ql\Calendars\target.cpp
 # End Source File
 # Begin Source File
@@ -377,6 +385,10 @@ SOURCE=.\ql\FiniteDifferences\valueatcenter.hpp
 # Begin Group "Indexes"
 
 # PROP Default_Filter ""
+# Begin Source File
+
+SOURCE=.\ql\Indexes\audlibor.hpp
+# End Source File
 # Begin Source File
 
 SOURCE=.\ql\Indexes\cadlibor.hpp

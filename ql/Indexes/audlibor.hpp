@@ -15,33 +15,33 @@
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
-/*! \file jpylibor.hpp
-    \brief %JPY %Libor index (Also known as TIBOR, check settlement days)
+/*! \file audlibor.hpp
+    \brief %AUD %Libor index (check settlement days)
 
     \fullpath
-    ql/Indexes/%jpylibor.hpp
+    ql/Indexes/%audlibor.hpp
 */
 
 // $Id$
 
-#ifndef quantlib_jpy_libor_hpp
-#define quantlib_jpy_libor_hpp
+#ifndef quantlib_aud_libor_hpp
+#define quantlib_aud_libor_hpp
 
 #include <ql/Indexes/xibor.hpp>
-#include <ql/Calendars/tokyo.hpp>
+#include <ql/Calendars/sydney.hpp>
 #include <ql/DayCounters/actual360.hpp>
 
 namespace QuantLib {
 
     namespace Indexes {
 
-        //! %JPY %Libor index (Also known as TIBOR, check settlement days)
-        class JPYLibor : public Xibor {
+        //! %AUD %Libor index (Also known as TIBOR, check settlement days)
+        class AUDLibor : public Xibor {
           public:
-            JPYLibor(int n, TimeUnit units,
+            AUDLibor(int n, TimeUnit units,
                 const RelinkableHandle<TermStructure>& h)
-            : Xibor("JPYLibor", n, units, 2, JPY,
-                Calendar(Calendars::Tokyo()), true, ModifiedFollowing,
+            : Xibor("AUDLibor", n, units, 2, AUD,
+                Calendar(Calendars::Sydney()), true, ModifiedFollowing,
                 DayCounter(DayCounters::Actual360()), h) {}
         };
 

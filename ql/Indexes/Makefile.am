@@ -5,12 +5,13 @@ INCLUDES= -I${top_srcdir} -I${top_builddir}
 includedir = $(prefix)/include/ql/Indexes
 
 include_HEADERS = \
+    audlibor.hpp \
+    cadlibor.hpp \
+    chflibor.hpp \
     euribor.hpp \
     gbplibor.hpp \
     usdlibor.hpp \
     jpylibor.hpp \
-    cadlibor.hpp \
-    chflibor.hpp \
     zarlibor.hpp \
     xibor.hpp \
     xibormanager.hpp

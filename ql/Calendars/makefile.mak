@@ -24,6 +24,7 @@ OBJS = frankfurt.obj$(_D) \
        target.obj$(_D) \
        tokyo.obj$(_D) \
        toronto.obj$(_D) \
+       sydney.obj$(_D) \
        wellington.obj$(_D) \
        zurich.obj$(_D)
 

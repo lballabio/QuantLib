@@ -228,6 +228,8 @@ CLEAN :
 	-@erase "$(INTDIR)\swaption.sbr"
 	-@erase "$(INTDIR)\swaptionhelper.obj"
 	-@erase "$(INTDIR)\swaptionhelper.sbr"
+	-@erase "$(INTDIR)\sydney.obj"
+	-@erase "$(INTDIR)\sydney.sbr"
 	-@erase "$(INTDIR)\symmetricschurdecomposition.obj"
 	-@erase "$(INTDIR)\symmetricschurdecomposition.sbr"
 	-@erase "$(INTDIR)\target.obj"
@@ -273,11 +275,13 @@ BSC32_FLAGS=/nologo /o"$(OUTDIR)\QuantLib.bsc"
 BSC32_SBRS= \
 	"$(INTDIR)\frankfurt.sbr" \
 	"$(INTDIR)\helsinki.sbr" \
+	"$(INTDIR)\johannesburg.sbr" \
 	"$(INTDIR)\london.sbr" \
 	"$(INTDIR)\milan.sbr" \
 	"$(INTDIR)\newyork.sbr" \
 	"$(INTDIR)\target.sbr" \
 	"$(INTDIR)\tokyo.sbr" \
+	"$(INTDIR)\toronto.sbr" \
 	"$(INTDIR)\wellington.sbr" \
 	"$(INTDIR)\zurich.sbr" \
 	"$(INTDIR)\cashflowvectors.sbr" \
@@ -378,8 +382,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\option.sbr" \
 	"$(INTDIR)\scheduler.sbr" \
 	"$(INTDIR)\solver1d.sbr" \
-	"$(INTDIR)\toronto.sbr" \
-	"$(INTDIR)\johannesburg.sbr"
+	"$(INTDIR)\sydney.sbr"
 
 "$(OUTDIR)\QuantLib.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -391,11 +394,13 @@ LIB32_FLAGS=/nologo /out:"lib\Win32\VisualStudio\QuantLib.lib"
 LIB32_OBJS= \
 	"$(INTDIR)\frankfurt.obj" \
 	"$(INTDIR)\helsinki.obj" \
+	"$(INTDIR)\johannesburg.obj" \
 	"$(INTDIR)\london.obj" \
 	"$(INTDIR)\milan.obj" \
 	"$(INTDIR)\newyork.obj" \
 	"$(INTDIR)\target.obj" \
 	"$(INTDIR)\tokyo.obj" \
+	"$(INTDIR)\toronto.obj" \
 	"$(INTDIR)\wellington.obj" \
 	"$(INTDIR)\zurich.obj" \
 	"$(INTDIR)\cashflowvectors.obj" \
@@ -496,8 +501,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\option.obj" \
 	"$(INTDIR)\scheduler.obj" \
 	"$(INTDIR)\solver1d.obj" \
-	"$(INTDIR)\toronto.obj" \
-	"$(INTDIR)\johannesburg.obj"
+	"$(INTDIR)\sydney.obj"
 
 ".\lib\Win32\VisualStudio\QuantLib.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
     $(LIB32) @<<
@@ -702,6 +706,8 @@ CLEAN :
 	-@erase "$(INTDIR)\swaption.sbr"
 	-@erase "$(INTDIR)\swaptionhelper.obj"
 	-@erase "$(INTDIR)\swaptionhelper.sbr"
+	-@erase "$(INTDIR)\sydney.obj"
+	-@erase "$(INTDIR)\sydney.sbr"
 	-@erase "$(INTDIR)\symmetricschurdecomposition.obj"
 	-@erase "$(INTDIR)\symmetricschurdecomposition.sbr"
 	-@erase "$(INTDIR)\target.obj"
@@ -748,11 +754,13 @@ BSC32_FLAGS=/nologo /o"$(OUTDIR)\QuantLib.bsc"
 BSC32_SBRS= \
 	"$(INTDIR)\frankfurt.sbr" \
 	"$(INTDIR)\helsinki.sbr" \
+	"$(INTDIR)\johannesburg.sbr" \
 	"$(INTDIR)\london.sbr" \
 	"$(INTDIR)\milan.sbr" \
 	"$(INTDIR)\newyork.sbr" \
 	"$(INTDIR)\target.sbr" \
 	"$(INTDIR)\tokyo.sbr" \
+	"$(INTDIR)\toronto.sbr" \
 	"$(INTDIR)\wellington.sbr" \
 	"$(INTDIR)\zurich.sbr" \
 	"$(INTDIR)\cashflowvectors.sbr" \
@@ -853,8 +861,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\option.sbr" \
 	"$(INTDIR)\scheduler.sbr" \
 	"$(INTDIR)\solver1d.sbr" \
-	"$(INTDIR)\toronto.sbr" \
-	"$(INTDIR)\johannesburg.sbr"
+	"$(INTDIR)\sydney.sbr"
 
 "$(OUTDIR)\QuantLib.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -866,11 +873,13 @@ LIB32_FLAGS=/nologo /out:"lib\Win32\VisualStudio\QuantLib_d.lib"
 LIB32_OBJS= \
 	"$(INTDIR)\frankfurt.obj" \
 	"$(INTDIR)\helsinki.obj" \
+	"$(INTDIR)\johannesburg.obj" \
 	"$(INTDIR)\london.obj" \
 	"$(INTDIR)\milan.obj" \
 	"$(INTDIR)\newyork.obj" \
 	"$(INTDIR)\target.obj" \
 	"$(INTDIR)\tokyo.obj" \
+	"$(INTDIR)\toronto.obj" \
 	"$(INTDIR)\wellington.obj" \
 	"$(INTDIR)\zurich.obj" \
 	"$(INTDIR)\cashflowvectors.obj" \
@@ -971,8 +980,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\option.obj" \
 	"$(INTDIR)\scheduler.obj" \
 	"$(INTDIR)\solver1d.obj" \
-	"$(INTDIR)\toronto.obj" \
-	"$(INTDIR)\johannesburg.obj"
+	"$(INTDIR)\sydney.obj"
 
 ".\lib\Win32\VisualStudio\QuantLib_d.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
     $(LIB32) @<<
@@ -1177,6 +1185,8 @@ CLEAN :
 	-@erase "$(INTDIR)\swaption.sbr"
 	-@erase "$(INTDIR)\swaptionhelper.obj"
 	-@erase "$(INTDIR)\swaptionhelper.sbr"
+	-@erase "$(INTDIR)\sydney.obj"
+	-@erase "$(INTDIR)\sydney.sbr"
 	-@erase "$(INTDIR)\symmetricschurdecomposition.obj"
 	-@erase "$(INTDIR)\symmetricschurdecomposition.sbr"
 	-@erase "$(INTDIR)\target.obj"
@@ -1222,11 +1232,13 @@ BSC32_FLAGS=/nologo /o"$(OUTDIR)\QuantLib.bsc"
 BSC32_SBRS= \
 	"$(INTDIR)\frankfurt.sbr" \
 	"$(INTDIR)\helsinki.sbr" \
+	"$(INTDIR)\johannesburg.sbr" \
 	"$(INTDIR)\london.sbr" \
 	"$(INTDIR)\milan.sbr" \
 	"$(INTDIR)\newyork.sbr" \
 	"$(INTDIR)\target.sbr" \
 	"$(INTDIR)\tokyo.sbr" \
+	"$(INTDIR)\toronto.sbr" \
 	"$(INTDIR)\wellington.sbr" \
 	"$(INTDIR)\zurich.sbr" \
 	"$(INTDIR)\cashflowvectors.sbr" \
@@ -1327,8 +1339,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\option.sbr" \
 	"$(INTDIR)\scheduler.sbr" \
 	"$(INTDIR)\solver1d.sbr" \
-	"$(INTDIR)\toronto.sbr" \
-	"$(INTDIR)\johannesburg.sbr"
+	"$(INTDIR)\sydney.sbr"
 
 "$(OUTDIR)\QuantLib.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -1340,11 +1351,13 @@ LIB32_FLAGS=/nologo /out:"lib\Win32\VisualStudio\QuantLib.lib"
 LIB32_OBJS= \
 	"$(INTDIR)\frankfurt.obj" \
 	"$(INTDIR)\helsinki.obj" \
+	"$(INTDIR)\johannesburg.obj" \
 	"$(INTDIR)\london.obj" \
 	"$(INTDIR)\milan.obj" \
 	"$(INTDIR)\newyork.obj" \
 	"$(INTDIR)\target.obj" \
 	"$(INTDIR)\tokyo.obj" \
+	"$(INTDIR)\toronto.obj" \
 	"$(INTDIR)\wellington.obj" \
 	"$(INTDIR)\zurich.obj" \
 	"$(INTDIR)\cashflowvectors.obj" \
@@ -1445,8 +1458,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\option.obj" \
 	"$(INTDIR)\scheduler.obj" \
 	"$(INTDIR)\solver1d.obj" \
-	"$(INTDIR)\toronto.obj" \
-	"$(INTDIR)\johannesburg.obj"
+	"$(INTDIR)\sydney.obj"
 
 ".\lib\Win32\VisualStudio\QuantLib.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
     $(LIB32) @<<
@@ -1651,6 +1663,8 @@ CLEAN :
 	-@erase "$(INTDIR)\swaption.sbr"
 	-@erase "$(INTDIR)\swaptionhelper.obj"
 	-@erase "$(INTDIR)\swaptionhelper.sbr"
+	-@erase "$(INTDIR)\sydney.obj"
+	-@erase "$(INTDIR)\sydney.sbr"
 	-@erase "$(INTDIR)\symmetricschurdecomposition.obj"
 	-@erase "$(INTDIR)\symmetricschurdecomposition.sbr"
 	-@erase "$(INTDIR)\target.obj"
@@ -1697,11 +1711,13 @@ BSC32_FLAGS=/nologo /o"$(OUTDIR)\QuantLib.bsc"
 BSC32_SBRS= \
 	"$(INTDIR)\frankfurt.sbr" \
 	"$(INTDIR)\helsinki.sbr" \
+	"$(INTDIR)\johannesburg.sbr" \
 	"$(INTDIR)\london.sbr" \
 	"$(INTDIR)\milan.sbr" \
 	"$(INTDIR)\newyork.sbr" \
 	"$(INTDIR)\target.sbr" \
 	"$(INTDIR)\tokyo.sbr" \
+	"$(INTDIR)\toronto.sbr" \
 	"$(INTDIR)\wellington.sbr" \
 	"$(INTDIR)\zurich.sbr" \
 	"$(INTDIR)\cashflowvectors.sbr" \
@@ -1802,8 +1818,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\option.sbr" \
 	"$(INTDIR)\scheduler.sbr" \
 	"$(INTDIR)\solver1d.sbr" \
-	"$(INTDIR)\toronto.sbr" \
-	"$(INTDIR)\johannesburg.sbr"
+	"$(INTDIR)\sydney.sbr"
 
 "$(OUTDIR)\QuantLib.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -1815,11 +1830,13 @@ LIB32_FLAGS=/nologo /out:"lib\Win32\VisualStudio\QuantLib_d.lib"
 LIB32_OBJS= \
 	"$(INTDIR)\frankfurt.obj" \
 	"$(INTDIR)\helsinki.obj" \
+	"$(INTDIR)\johannesburg.obj" \
 	"$(INTDIR)\london.obj" \
 	"$(INTDIR)\milan.obj" \
 	"$(INTDIR)\newyork.obj" \
 	"$(INTDIR)\target.obj" \
 	"$(INTDIR)\tokyo.obj" \
+	"$(INTDIR)\toronto.obj" \
 	"$(INTDIR)\wellington.obj" \
 	"$(INTDIR)\zurich.obj" \
 	"$(INTDIR)\cashflowvectors.obj" \
@@ -1920,8 +1937,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\option.obj" \
 	"$(INTDIR)\scheduler.obj" \
 	"$(INTDIR)\solver1d.obj" \
-	"$(INTDIR)\toronto.obj" \
-	"$(INTDIR)\johannesburg.obj"
+	"$(INTDIR)\sydney.obj"
 
 ".\lib\Win32\VisualStudio\QuantLib_d.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
     $(LIB32) @<<
@@ -2004,6 +2020,12 @@ SOURCE=.\ql\Calendars\milan.cpp
 SOURCE=.\ql\Calendars\newyork.cpp
 
 "$(INTDIR)\newyork.obj"	"$(INTDIR)\newyork.sbr" : $(SOURCE) "$(INTDIR)"
+	$(CPP) $(CPP_PROJ) $(SOURCE)
+
+
+SOURCE=.\ql\Calendars\sydney.cpp
+
+"$(INTDIR)\sydney.obj"	"$(INTDIR)\sydney.sbr" : $(SOURCE) "$(INTDIR)"
 	$(CPP) $(CPP_PROJ) $(SOURCE)
 
 
