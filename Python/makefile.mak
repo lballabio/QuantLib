@@ -34,10 +34,10 @@ PYTHON_LIBS    = "$(PYTHON_HOME)"\libs
 WIN_OBJS        = c0d32.obj
 
 # Libraries
-QUANTLIB_LIB     = "$(QL_DIR)\lib\Win32\Borland\QuantLib$(_D).lib
+QUANTLIB_LIB     = "$(QL_DIR)\lib\Win32\Borland\QuantLib$(_D).lib"
 QUANTLIB_DLL     = QuantLibc$(_D).dll
 WIN_LIBS         = import32.lib cw32mt.lib
-PYTHON_BCC_LIB   = bccpython.lib
+PYTHON_BCC_LIB   = bccpython$(_D).lib
 
 # Tools to be used
 CC        = bcc32
@@ -90,10 +90,10 @@ $(QUANTLIB_DLL):: quantlib_wrap$(_D).obj $(QUANTLIB_LIB) $(PYTHON_BCC_LIB)
 
 # Python lib in OMF format
 $(PYTHON_BCC_LIB):
-    if exist $(PYTHON_LIBS)\python15.lib \
-        $(COFF2OMF) -q $(PYTHON_LIBS)\python15.lib $(PYTHON_BCC_LIB)
-    if exist $(PYTHON_LIBS)\python20.lib \
-        $(COFF2OMF) -q $(PYTHON_LIBS)\python20.lib $(PYTHON_BCC_LIB)
+    if exist $(PYTHON_LIBS)\python15$(_D).lib \
+        $(COFF2OMF) -q $(PYTHON_LIBS)\python15$(_D).lib $(PYTHON_BCC_LIB)
+    if exist $(PYTHON_LIBS)\python20$(_D).lib \
+        $(COFF2OMF) -q $(PYTHON_LIBS)\python20$(_D).lib $(PYTHON_BCC_LIB)
 
 # Wrapper functions
 quantlib_wrap$(_D).obj:: quantlib_wrap.cpp
