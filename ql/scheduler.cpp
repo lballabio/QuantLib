@@ -31,7 +31,7 @@ namespace QuantLib {
                        bool isAdjusted,
                        const Date& stubDate, bool startFromEnd, 
                        bool longFinal)
-    : calendar_(calendar), frequency_(frequency), 
+    : calendar_(calendar), frequency_(Frequency(frequency)), 
       rollingConvention_(rollingConvention),
       isAdjusted_(isAdjusted), stubDate_(stubDate),
       startFromEnd_(startFromEnd),longFinal_(longFinal),
@@ -45,45 +45,56 @@ namespace QuantLib {
                    ") later than end date (" +
                    DateFormatter::toString(endDate) +
                    ")");
-        if (stubDate_ != Date()) {
-            QL_REQUIRE((stubDate_ > startDate && stubDate_ < endDate),
+        if (stubDate != Date()) {
+            QL_REQUIRE((stubDate > startDate && stubDate < endDate),
                        "stub date (" +
-                       DateFormatter::toString(stubDate_) +
+                       DateFormatter::toString(stubDate) +
                        ") out of range (start date (" +
                        DateFormatter::toString(startDate) +
                        "), end date (" +
                        DateFormatter::toString(endDate) + "))");
         }
-        QL_REQUIRE(12 % frequency_ == 0,
+        QL_REQUIRE(frequency == 0 || 12 % frequency == 0,
                    "frequency (" +
-                   IntegerFormatter::toString(frequency_) +
+                   IntegerFormatter::toString(frequency) +
                    " per year) does not correspond to "
                    "a whole number of months");
 
-        if (startFromEnd_) {
+        if (frequency == 0) {
+            QL_REQUIRE(stubDate == Date(),
+                       "stub date incompatible with frequency 'once'");
+            dates_.push_back(isAdjusted ? 
+                             calendar.roll(startDate,rollingConvention) : 
+                             startDate);
+            dates_.push_back(isAdjusted ? 
+                             calendar.roll(endDate,rollingConvention) : 
+                             endDate);
+        } else if (startFromEnd) {
             // calculations
             Date seed = endDate;
-            Date first = (isAdjusted_ ?
-                          calendar_.roll(startDate,rollingConvention_) :
+            Date first = (isAdjusted ?
+                          calendar.roll(startDate,rollingConvention) :
                           startDate);
             // add end date
-            dates_.push_back(endDate);
-	   
+            dates_.push_back(isAdjusted ? 
+                             calendar.roll(endDate,rollingConvention) : 
+                             endDate);
+
             // add stub date if given
-            if (stubDate_ != Date()) {
-                seed = stubDate_;
+            if (stubDate != Date()) {
+                seed = stubDate;
                 dates_.insert(dates_.begin(),
-                              isAdjusted_ ? 
-                              calendar_.roll(stubDate_) : 
-                              stubDate_);
+                              isAdjusted ? 
+                              calendar.roll(stubDate,rollingConvention) : 
+                              stubDate);
             }
-	   
+
             // add subsequent dates
-            int periods = 1, months = 12/frequency_;
+            int periods = 1, months = 12/frequency;
             while (true) {
                 Date temp = seed.plus(-periods*months,Months);
                 if (isAdjusted_)
-                    temp = calendar_.roll(temp,rollingConvention_);
+                    temp = calendar.roll(temp,rollingConvention);
                 dates_.insert(dates_.begin(),temp);
                 // check exit condition
                 if (temp <= first)
@@ -91,18 +102,18 @@ namespace QuantLib {
                 else
                     periods++;
             }
-	   
+
             // possibly correct first inserted date
             if (dates_[0] < first) {
                 dates_[0] = first;
-                if (longFinal_)
+                if (longFinal)
                     dates_.erase(dates_.begin()+1);
                 finalIsRegular_ = false;
             }
 
             // possibly collapse first two dates
-            if (calendar_.roll(dates_[0],rollingConvention_) ==
-                calendar_.roll(dates_[1],rollingConvention_)) {
+            if (calendar.roll(dates_[0],rollingConvention) ==
+                calendar.roll(dates_[1],rollingConvention)) {
                 dates_[1] = dates_[0];
                 dates_.erase(dates_.begin());
                 finalIsRegular_ = true;
@@ -111,25 +122,27 @@ namespace QuantLib {
             // calculations
             Date seed = startDate;
             Date last = (isAdjusted_ ?
-                         calendar_.roll(endDate,rollingConvention_) :
+                         calendar.roll(endDate,rollingConvention) :
                          endDate);
             // add start date
-            dates_.push_back(startDate);
-	   
+            dates_.push_back(isAdjusted_ ?
+                             calendar.roll(startDate,rollingConvention) :
+                             startDate);
+
             // add stub date if given
-            if (stubDate_ != Date()) {
-                seed = stubDate_;
-                dates_.push_back(isAdjusted_ ?
-                                 calendar_.roll(stubDate_) :
-                                 stubDate_);
+            if (stubDate != Date()) {
+                seed = stubDate;
+                dates_.push_back(isAdjusted ?
+                                 calendar.roll(stubDate,rollingConvention) :
+                                 stubDate);
             }
-	   
+
             // add subsequent dates
-            int periods = 1, months = 12/frequency_;
+            int periods = 1, months = 12/frequency;
             while (true) {
                 Date temp = seed.plus(periods*months,Months);
-                if (isAdjusted_)
-                    temp = calendar_.roll(temp,rollingConvention_);
+                if (isAdjusted)
+                    temp = calendar.roll(temp,rollingConvention);
                 dates_.push_back(temp);
                 // check exit condition
                 if (temp >= last)
@@ -137,10 +150,10 @@ namespace QuantLib {
                 else
                     periods++;
             }
-	   
+
             // possibly correct last inserted date
             if (dates_.back() > last) {
-                if (longFinal_)
+                if (longFinal)
                     dates_.pop_back();
                 dates_.back() = last;
                 finalIsRegular_ = false;
@@ -148,8 +161,8 @@ namespace QuantLib {
 
             // possibly collapse last two dates
             int N = dates_.size();
-            if (calendar_.roll(dates_[N-2],rollingConvention_) ==
-                calendar_.roll(dates_[N-1],rollingConvention_)) {
+            if (calendar.roll(dates_[N-2],rollingConvention) ==
+                calendar.roll(dates_[N-1],rollingConvention)) {
                 dates_[N-2] = dates_[N-1];
                 dates_.pop_back();
                 finalIsRegular_ = true;
@@ -159,7 +172,9 @@ namespace QuantLib {
 
 
     bool Schedule::isRegular(Size i) const {
-        if (startFromEnd_) {
+        if (frequency_ == 0) {
+            return true;
+        } else if (startFromEnd_) {
             if (i == 1)
                 return finalIsRegular_;
             else if (i == size()-1)
@@ -170,7 +185,6 @@ namespace QuantLib {
             else if (i == size()-1)
                 return finalIsRegular_;
         }
-        return true;
     }
 
 }

@@ -52,7 +52,7 @@ namespace QuantLib {
         const Calendar& calendar() const;
         const Date& startDate() const;
         const Date& endDate() const;
-        int frequency() const;
+        Frequency frequency() const;
         RollingConvention rollingConvention() const;
         bool isAdjusted() const;
         //@}
@@ -64,7 +64,7 @@ namespace QuantLib {
         //@}
       private:
         Calendar calendar_;
-        int frequency_;
+        Frequency frequency_;
         RollingConvention rollingConvention_;
         bool isAdjusted_;
         Date stubDate_;
@@ -89,7 +89,7 @@ namespace QuantLib {
           frequency_(frequency), rollingConvention_(rollingConvention),
           isAdjusted_(isAdjusted), stubDate_(Date()), 
           startFromEnd_(false), longFinal_(false) {}
-        
+
         MakeSchedule& withStubDate(const Date& d) {
             stubDate_ = d; 
             return *this;
@@ -134,12 +134,12 @@ namespace QuantLib {
                               const Calendar& calendar, 
                               RollingConvention rollingConvention,
                               bool isAdjusted)
-    : calendar_(calendar), frequency_(Null<int>()), 
+    : calendar_(calendar), frequency_(Frequency(-1)), 
       rollingConvention_(rollingConvention),
       isAdjusted_(isAdjusted), startFromEnd_(false), 
       longFinal_(false), finalIsRegular_(true),
       dates_(dates) {}
-        
+
 
     inline const Date& Schedule::date(Size i) const {
         QL_REQUIRE(i <= dates_.size(),
@@ -167,8 +167,8 @@ namespace QuantLib {
         return dates_.back();
     }
 
-    inline int Schedule::frequency() const {
-        QL_REQUIRE(frequency_ != Null<int>(),
+    inline Frequency Schedule::frequency() const {
+        QL_REQUIRE(int(frequency_) != -1,
                    "frequency not available");
         return frequency_;
     }
