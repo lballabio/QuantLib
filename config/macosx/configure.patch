@@ -1,0 +1,19 @@
+*** QuantLib-0.3.0-old/configure	Thu May  2 08:14:20 2002
+--- QuantLib-0.3.0/configure	Fri Sep 13 04:35:26 2002
+***************
+*** 1267,1273 ****
+  rm conftest.sed
+  
+  # expand $ac_aux_dir to an absolute path
+! am_aux_dir=`CDPATH=:; cd $ac_aux_dir && pwd`
+  
+  test x"${MISSING+set}" = xset || MISSING="\${SHELL} $am_aux_dir/missing"
+  # Use eval to expand $SHELL
+--- 1267,1273 ----
+  rm conftest.sed
+  
+  # expand $ac_aux_dir to an absolute path
+! am_aux_dir=`cd $ac_aux_dir && pwd`
+  
+  test x"${MISSING+set}" = xset || MISSING="\${SHELL} $am_aux_dir/missing"
+  # Use eval to expand $SHELL

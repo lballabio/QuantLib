@@ -1,0 +1,13 @@
+*** QuantLib-0.3.0-old/Examples/BermudanSwaption/BermudanSwaption.cpp	Sun Mar 31 13:08:55 2002
+--- QuantLib-0.3.0/Examples/BermudanSwaption/BermudanSwaption.cpp	Fri Sep 13 07:43:44 2002
+***************
+*** 64,69 ****
+--- 64,71 ----
+      om->setEndCriteria(Optimization::EndCriteria(10000, 1e-7));
+      model->calibrate(calibs, om);
+  
++     return; 
++ 
+      //Output the implied Black volatilities
+      Size i;
+      for (i=0; i<numRows; i++) {

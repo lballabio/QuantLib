@@ -1,0 +1,19 @@
+*** QuantLib-0.3.0-old/ql/history.hpp	Thu Apr 18 03:45:04 2002
+--- QuantLib-0.3.0/ql/history.hpp	Fri Sep 13 06:13:00 2002
+***************
+*** 132,138 ****
+              friend class const_iterator;
+            public:
+              Entry() {
+!                 static std::vector<double> v(1,Null<double>());
+                  date_ = Date();
+                  value_ = v.begin();
+              }
+--- 132,138 ----
+              friend class const_iterator;
+            public:
+              Entry() {
+!                 std::vector<double> v(1,Null<double>());
+                  date_ = Date();
+                  value_ = v.begin();
+              }
