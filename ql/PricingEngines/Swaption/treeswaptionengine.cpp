@@ -78,18 +78,18 @@ namespace QuantLib {
                                     new DiscretizedSwap(lattice, arguments_));
         Time lastFixedPay = arguments_.fixedPayTimes.back();
         Time lastFloatPay = arguments_.floatingPayTimes.back();
-        lattice->initialize(*swap,QL_MAX(lastFixedPay,lastFloatPay));
+        swap->initialize(lattice, QL_MAX(lastFixedPay,lastFloatPay));
 
         DiscretizedSwaption swaption(swap, arguments_);
-        lattice->initialize(swaption, arguments_.stoppingTimes.back());
+        swaption.initialize(lattice, arguments_.stoppingTimes.back());
 
         Time nextExercise = 
             *std::find_if(arguments_.stoppingTimes.begin(), 
                           arguments_.stoppingTimes.end(),
                           std::bind2nd(std::greater_equal<Time>(), 0.0));
-        lattice->rollback(swaption, nextExercise);
+        swaption.rollback(nextExercise);
 
-        results_.value = lattice->presentValue(swaption);
+        results_.value = swaption.presentValue();
     }
 
 }

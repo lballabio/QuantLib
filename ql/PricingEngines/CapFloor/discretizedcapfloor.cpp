@@ -26,8 +26,8 @@ namespace QuantLib {
                 Time end = arguments_.endTimes[i];
                 Time tenor = arguments_.accrualTimes[i];
                 DiscretizedDiscountBond bond(method());
-                method()->initialize(bond, end);
-                method()->rollback(bond, time_);
+                bond.initialize(method(), end);
+                bond.rollback(time_);
 
                 CapFloor::Type type = arguments_.type;
 

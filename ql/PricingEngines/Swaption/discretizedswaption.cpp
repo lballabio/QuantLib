@@ -25,9 +25,8 @@ namespace QuantLib {
             Time t = arguments_.floatingResetTimes[i];
             if (t >= 0.0 && isOnTime(t)) {
                 DiscretizedDiscountBond bond(method());
-                method()->initialize(bond, 
-                                     arguments_.floatingPayTimes[i]);
-                method()->rollback(bond,time_);
+                bond.initialize(method(), arguments_.floatingPayTimes[i]);
+                bond.rollback(time_);
 
                 Real nominal = arguments_.nominal;
                 for (Size j=0; j<values_.size(); j++) {

@@ -55,10 +55,10 @@ namespace QuantLib {
 
         DiscretizedCapFloor capfloor(lattice, arguments_);
 
-        lattice->initialize(capfloor, arguments_.endTimes.back());
-        lattice->rollback(capfloor, arguments_.startTimes.front());
+        capfloor.initialize(lattice, arguments_.endTimes.back());
+        capfloor.rollback(arguments_.startTimes.front());
 
-        results_.value = lattice->presentValue(capfloor);
+        results_.value = capfloor.presentValue();
     }
 
 }

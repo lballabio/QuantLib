@@ -43,8 +43,8 @@ namespace QuantLib {
           latestPostAdjustment_(QL_MAX_REAL) {}
         virtual ~DiscretizedAsset() {}
 
-        virtual void reset(Size size) = 0;
-
+        //! \name inspectors
+        //@{
         Time time() const { return time_; }
         Time& time() { return time_; }
 
@@ -54,6 +54,37 @@ namespace QuantLib {
         const boost::shared_ptr<NumericalMethod>& method() const {
             return method_;
         }
+        //@}
+
+        /*! \name High-level interface
+
+            Users of discretized assets should use these methods for
+            initializing, evolving and take the present value of the
+            assets.
+
+            @{
+        */
+        void initialize(const boost::shared_ptr<NumericalMethod>&,
+                        Time t);
+        void rollback(Time to);
+        void partialRollback(Time to);
+        Real presentValue();
+        //@}
+
+        /*! \name Low-level interface
+
+            These methods (that developers should override when
+            deriving from DiscretizedAsset) are to be used by
+            numerical methods and not directly by users.
+
+            @{
+        */
+
+        /*! This method should initialize the asset values to an Array
+            of the given size and with values depending on the
+            particular asset.
+        */
+        virtual void reset(Size size) = 0;
 
         /*! This method will be invoked after rollback and before any
             other asset (i.e., an option on this one) has any chance to 
@@ -64,6 +95,7 @@ namespace QuantLib {
             the protected preAdjustValuesImpl() method instead.
         */
         void preAdjustValues();
+
         /*! This method will be invoked after rollback and after any
             other asset had their chance to look at the values. For 
             instance, payments happening at the present time (and therefore 
@@ -75,21 +107,31 @@ namespace QuantLib {
         */
         void postAdjustValues();
 
+        /*! This method performs both pre- and post-adjustment */
         void adjustValues() {
             preAdjustValues();
             postAdjustValues();
         }
 
+        /*! This method appends to the given list the times at which
+            the numerical method should stop while rolling back.
+            Typical examples include payment times, exercise times
+            and such.
+        */
         virtual void addTimesTo(std::list<Time>&) const {}
+        //@}
       protected:
+        /*! This method checks whether the asset was rolled at the
+            given time. */
         bool isOnTime(Time t) const;
+        /*! This method performs the actual pre-adjustment */
         virtual void preAdjustValuesImpl() {}
+        /*! This method performs the actual post-adjustment */
         virtual void postAdjustValuesImpl() {}
 
         Time time_;
         Time latestPreAdjustment_, latestPostAdjustment_;
         Array values_;
-
       private:
         boost::shared_ptr<NumericalMethod> method_;
     };
@@ -131,6 +173,25 @@ namespace QuantLib {
 
 
     // inline definitions
+
+    inline void DiscretizedAsset::initialize(
+                             const boost::shared_ptr<NumericalMethod>& method,
+                             Time t) {
+        method_ = method;
+        method_->initialize(*this, t);
+    }
+
+    inline void DiscretizedAsset::rollback(Time to) {
+        method_->rollback(*this, to);
+    }
+
+    inline void DiscretizedAsset::partialRollback(Time to) {
+        method_->partialRollback(*this, to);
+    }
+
+    inline Real DiscretizedAsset::presentValue() {
+        return method_->presentValue(*this);
+    }
 
     inline void DiscretizedAsset::preAdjustValues() {
         if (!close_enough(time(),latestPreAdjustment_)) {

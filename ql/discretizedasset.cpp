@@ -26,7 +26,7 @@ namespace QuantLib {
            exercised. Here, with time flowing backward, options
            must be exercised before performing the adjustment.
         */
-        method()->partialRollback(*underlying_, time());
+        underlying_->partialRollback(time());
         underlying_->preAdjustValues();
         switch (exerciseType_) {
           case Exercise::American:

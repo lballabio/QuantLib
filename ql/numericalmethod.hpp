@@ -36,7 +36,20 @@ namespace QuantLib {
         NumericalMethod(const TimeGrid& timeGrid) : t_(timeGrid) {}
         virtual ~NumericalMethod() {}
 
+        //!\name Inspectors
+        //{
         const TimeGrid& timeGrid() const { return t_; }
+        //@}
+
+        /*! \name Numerical method interface
+
+            These methods are to be used by discretized assets and
+            must be overridden by developers implementing numerical
+            methods. Users are advised to use the corresponding
+            methods of DiscretizedAsset instead.
+
+            @{
+        */
 
         //! initialize an asset at the given time.
         virtual void initialize(DiscretizedAsset&,
@@ -55,7 +68,9 @@ namespace QuantLib {
                                      Time to) const = 0;
 
         //! computes the present value of an asset.
-        virtual double presentValue(DiscretizedAsset&) = 0;
+        virtual Real presentValue(DiscretizedAsset&) = 0;
+
+        //@}
       protected:
         TimeGrid t_;
     };

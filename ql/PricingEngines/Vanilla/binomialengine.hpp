@@ -96,9 +96,9 @@ namespace QuantLib {
 
         DiscretizedVanillaOption option(lattice, arguments_);
 
-        lattice->initialize(option, maturity);
-        lattice->rollback(option, 0.0);
-        results_.value = lattice->presentValue(option);
+        option.initialize(lattice, maturity);
+        option.rollback(0.0);
+        results_.value = option.presentValue();
     }
 
 }
