@@ -26,15 +26,7 @@ namespace QuantLib {
     namespace {
 
         /* Sobol' Levitan coefficients of the free direction integers as given
-           by Bratley, P., Fox, B.L. (1988) "Algorithm 659: Implementing Sobol's
-           quasirandom sequence generator," ACM Transactions on Mathematical
-           Software 14:88-100
-
-           See also "Monte Carlo Methods in Financial Engineering," by Paul
-           Glasserman, 2004, Springer, pag 311-312
-
-           Property A holds for 1<=d<=20 and d = 23, 31, 33, 34, 37
-           Property A' holds for d<=6
+           by Bratley, P., Fox, B.L. (1988)
         */
         const unsigned long dim02SLinitializers[] = {
             1UL, 0UL };
@@ -159,11 +151,6 @@ namespace QuantLib {
 
         /* coefficients of the free direction integers as given in
            "Monte Carlo Methods in Finance", by Peter Jäckel, section 8.3
-
-           Coefficients for 1<=d<=8 are the same as in Bradley-Fox
-
-           Property A holds for 1<=d<=32
-           Property A' holds for d<=6
         */
         const unsigned long dim09initializers[] = {
             1UL, 3UL, 7UL, 7UL, 21UL, 0UL };
@@ -250,19 +237,6 @@ namespace QuantLib {
 
         /* Lemieux coefficients of the free direction integers as given
            in Christiane Lemieux, private communication, September 2004
-
-           Coefficients for 1<=d<=40 are the same as in Bradley-Fox
-
-           Property A holds for 1<=d<=20 and d = 23, 31, 33, 34, 37
-           Property A' holds for d<=6
-           For dimension 40<d<=360 the coefficients have been calculated
-           as the optimal values based on the "resolution" criterion.
-
-           See "RandQMC user's guide - A package for randomized quasi-Monte
-           Carlo methods in C," by C. Lemieux, M. Cieslak, and K. Luttmer,
-           version January 13 2004
-           http://www.math.ucalgary.ca/~lemieux/randqmc.html
-
         */
         const unsigned long dim041Linitializers[] = {
             1UL,1UL,3UL,13UL,7UL,35UL,61UL,91UL,0UL};
@@ -1273,13 +1247,12 @@ namespace QuantLib {
     const int SobolRsg::bits_ = 8*sizeof(unsigned long);
     // 1/(2^bits_) (written as (1/2)/(2^(bits_-1)) to avoid long overflow)
     const double SobolRsg::normalizationFactor_ =
-    0.5/(1UL<<(SobolRsg::bits_-1));
+        0.5/(1UL<<(SobolRsg::bits_-1));
 
     SobolRsg::SobolRsg(Size dimensionality, unsigned long seed,
                        DirectionIntegers directionIntegers)
-    : dimensionality_(dimensionality),
-      sequenceCounter_(0),
-      firstDraw_(true), sequence_(Array(dimensionality), 1.0),
+    : dimensionality_(dimensionality), sequenceCounter_(0), firstDraw_(true),
+      sequence_(Array(dimensionality), 1.0),
       integerSequence_(dimensionality, 0),
       directionIntegers_(dimensionality,std::vector<unsigned long>(bits_))
     {
@@ -1341,7 +1314,7 @@ namespace QuantLib {
                 maxTabulated = sizeof(initializers)/sizeof(unsigned long *)+1;
                 for (k=1; k<QL_MIN(dimensionality_, maxTabulated); k++) {
                     j = 0;
-                    // 0UL marks the end of the coefficients for a given dimension
+                    // 0UL marks coefficients' end for a given dimension
                     while (initializers[k-1][j] != 0UL) {
                         directionIntegers_[k][j] = initializers[k-1][j];
                         directionIntegers_[k][j] <<= (bits_-j-1);
@@ -1354,7 +1327,7 @@ namespace QuantLib {
                 maxTabulated = sizeof(SLinitializers)/sizeof(unsigned long *)+1;
                 for (k=1; k<QL_MIN(dimensionality_, maxTabulated); k++) {
                     j = 0;
-                    // 0UL marks the end of the coefficients for a given dimension
+                    // 0UL marks coefficients' end for a given dimension
                     while (SLinitializers[k-1][j] != 0UL) {
                         directionIntegers_[k][j] = SLinitializers[k-1][j];
                         directionIntegers_[k][j] <<= (bits_-j-1);
@@ -1367,7 +1340,7 @@ namespace QuantLib {
                 maxTabulated = sizeof(Linitializers)/sizeof(unsigned long *)+1;
                 for (k=1; k<QL_MIN(dimensionality_, maxTabulated); k++) {
                     j = 0;
-                    // 0UL marks the end of the coefficients for a given dimension
+                    // 0UL marks coefficients' end for a given dimension
                     while (Linitializers[k-1][j] != 0UL) {
                         directionIntegers_[k][j] = Linitializers[k-1][j];
                         directionIntegers_[k][j] <<= (bits_-j-1);
