@@ -34,14 +34,24 @@
 
 class CalendarTest {
   public:
-    static void testGermanySettlement();
+//    static void testItalySettlement();
+    static void testItalyExchange();
+
+    static void testUKSettlement();
+    static void testUKExchange();
+    static void testUKMetals();
+
+//    static void testGermanySettlement();
     static void testGermanyFrankfurt();
     static void testGermanyXetra();
     static void testGermanyEurex();
+
     static void testTARGET();
+
     static void testUSSettlement();
     static void testUSGovernmentBondMarket();
     static void testUSNewYorkStockExchange();
+
     static void testModifiedCalendars();
     static void testJointCalendars();
     static boost::unit_test_framework::test_suite* suite();
