@@ -35,7 +35,8 @@ namespace QuantLib {
 
     namespace RandomNumbers {
 
-        //! Generates random arrays from a random number generator
+        //! Generates random arrays using a random number generator
+        /*! \deprecated use RandomSequenceGenerator instead. */
         template <class RNG>
         class RandomArrayGenerator {
           public:
