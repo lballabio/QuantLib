@@ -26,9 +26,11 @@
 
 namespace QuantLib {
 
+    /*! \bug sometimes yields negative vega when deeply in-the-money
+        \bug method impliedVolatility() utterly fails
+    */
     class FdDividendAmericanOption : public FdDividendOption {
       public:
-        // constructor
         FdDividendAmericanOption(
                  Option::Type type, double underlying,
                  double strike, Spread dividendYield, 
