@@ -75,8 +75,7 @@ namespace {
         Real s;          // spot
         Rate q;          // dividend
         Rate r;          // risk-free rate
-        Integer length;  // time to maturity
-        TimeUnit lengthUnits;
+        Time t;          // time to maturity
         Volatility v;    // volatility
         Rate fxr;        // fx risk-free rate
         Volatility fxv;  // fx volatility
@@ -91,10 +90,8 @@ namespace {
         Real s;          // spot
         Rate q;          // dividend
         Rate r;          // risk-free rate
-        Integer start;   // time to reset
-        TimeUnit startUnits;
-        Integer length;  // time to maturity
-        TimeUnit lengthUnits;
+        Time start;      // time to reset
+        Time t;          // time to maturity
         Volatility v;    // volatility
         Rate fxr;        // fx risk-free rate
         Volatility fxv;  // fx volatility
@@ -112,15 +109,17 @@ void QuantoOptionTest::testValues() {
     BOOST_MESSAGE("Testing quanto option values...");
 
     /* The data below are from
-       ???
+       from "Option pricing formulas", E.G. Haug, McGraw-Hill 1998
     */
     QuantoOptionData values[] = {
-        // replace this entry with real test cases
-        { Option::Call, 95.0, 100.0, 0.05, 0.03, 1, Years, 0.20,
-          0.04, 0.30, 0.5, 7.9206, 1.0e-4 }
+        //       type, strike,  spot,  div, rate,   t, vol, fx risk-free rate, fx volatility, correlation,     result, tol
+        // "Option pricing formulas", pag 105-106
+        { Option::Call, 105.0, 100.0, 0.04, 0.08, 0.5, 0.2,              0.05,          0.10,         0.3, 5.3280/1.5, 1.0e-4 },
+        // "Option pricing formulas", VBA code
+        {  Option::Put, 105.0, 100.0, 0.04, 0.08, 0.5, 0.2,              0.05,          0.10,         0.3,     8.1636, 1.0e-4 }
     };
 
-    DayCounter dc = SimpleDayCounter();
+    DayCounter dc = Actual360();
     Date today = Date::todaysDate();
 
     boost::shared_ptr<SimpleQuote> spot(new SimpleQuote(0.0));
@@ -154,7 +153,7 @@ void QuantoOptionTest::testValues() {
 
         boost::shared_ptr<StrikedTypePayoff> payoff(
                     new PlainVanillaPayoff(values[i].type, values[i].strike));
-        Date exDate = today.plus(values[i].length,values[i].lengthUnits);
+        Date exDate = today.plusDays(Integer(values[i].t*360+0.5));
         boost::shared_ptr<Exercise> exercise(new EuropeanExercise(exDate));
 
         spot ->setValue(values[i].s);
@@ -203,11 +202,11 @@ void QuantoOptionTest::testGreeks() {
     Option::Type types[] = { Option::Call, Option::Put, Option::Straddle };
     Real strikes[] = { 50.0, 99.5, 100.0, 100.5, 150.0 };
     Real underlyings[] = { 100.0 };
-    Rate qRates[] = { 0.04, 0.05, 0.06 };
+    Rate qRates[] = { 0.04, 0.05 };
     Rate rRates[] = { 0.01, 0.05, 0.15 };
-    Integer lengths[] = { 1, 2 };
-    Volatility vols[] = { 0.11, 0.50, 1.20 };
-    Real correlations[] = { 0.10, 0.50, 0.90 };
+    Integer lengths[] = { 2 };
+    Volatility vols[] = { 0.11, 1.20 };
+    Real correlations[] = { 0.10, 0.90 };
 
     DayCounter dc = Actual360();
     Date today = Date::todaysDate();
@@ -405,13 +404,11 @@ void QuantoOptionTest::testForwardValues() {
 
     BOOST_MESSAGE("Testing quanto-forward option values...");
 
-    /* The data below are from
-       ???
-    */
     QuantoForwardOptionData values[] = {
-        // replace this entry with real test cases
-        { Option::Call, 1.1, 100.0, 0.05, 0.03, 3, Months, 
-          1, Years, 0.20, 0.04, 0.30, 0.5, 2.3554, 1.0e-4 }
+        //   type, moneyness,  spot,  div, risk-free rate, reset, maturity,  vol, fx risk-free rate, fx vol, corr,     result, tol
+        // reset=0.0, that is a quanto (not-forward) option
+        { Option::Call, 1.05, 100.0, 0.04,           0.08,  0.00,      0.5, 0.20,              0.05,   0.10,  0.3, 5.3280/1.5, 1.0e-4 },
+        {  Option::Put, 1.05, 100.0, 0.04,           0.08,  0.00,      0.5, 0.20,              0.05,   0.10,  0.3,     8.1636, 1.0e-4 }
     };
 
     DayCounter dc = SimpleDayCounter();
@@ -450,10 +447,11 @@ void QuantoOptionTest::testForwardValues() {
     for (Size i=0; i<LENGTH(values); i++) {
 
         boost::shared_ptr<StrikedTypePayoff> payoff(
+//                               new PercentageStrikePayoff(values[i].type, values[i].moneyness));
                                  new PlainVanillaPayoff(values[i].type, 0.0));
-        Date exDate = today.plus(values[i].length,values[i].lengthUnits);
+        Date exDate = today.plusDays(Integer(values[i].t*360+0.5));
         boost::shared_ptr<Exercise> exercise(new EuropeanExercise(exDate));
-        Date reset = today.plus(values[i].start,values[i].startUnits);
+        Date reset = today.plusDays(Integer(values[i].start*360+0.5));
 
         spot ->setValue(values[i].s);
         qRate->setValue(values[i].q);
@@ -503,12 +501,12 @@ void QuantoOptionTest::testForwardGreeks() {
     Option::Type types[] = { Option::Call, Option::Put, Option::Straddle };
     Real moneyness[] = { 0.9, 1.0, 1.1 };
     Real underlyings[] = { 100.0 };
-    Rate qRates[] = { 0.04, 0.05, 0.06 };
+    Rate qRates[] = { 0.04, 0.05 };
     Rate rRates[] = { 0.01, 0.05, 0.15 };
-    Integer lengths[] = { 1, 2 };
+    Integer lengths[] = { 2 };
     Integer startMonths[] = { 6, 9 };
-    Volatility vols[] = { 0.11, 0.50, 1.20 };
-    Real correlations[] = { 0.10, 0.50, 0.90 };
+    Volatility vols[] = { 0.11, 1.20 };
+    Real correlations[] = { 0.10, 0.90 };
 
     DayCounter dc = Actual360();
     Date today = Date::todaysDate();

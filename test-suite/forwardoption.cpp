@@ -17,7 +17,6 @@
 
 #include "forwardoption.hpp"
 #include "utilities.hpp"
-#include <ql/DayCounters/simpledaycounter.hpp>
 #include <ql/DayCounters/actual360.hpp>
 #include <ql/Instruments/forwardvanillaoption.hpp>
 #include <ql/PricingEngines/Vanilla/analyticeuropeanengine.hpp>
@@ -70,10 +69,8 @@ namespace {
         Real s;          // spot
         Rate q;          // dividend
         Rate r;          // risk-free rate
-        Integer start;   // time to reset
-        TimeUnit startUnits;
-        Integer length;  // time to maturity
-        TimeUnit lengthUnits;
+        Time start;      // time to reset
+        Time t;          // time to maturity
         Volatility v;    // volatility
         Real result;     // expected result
         Real tol;        // tolerance
@@ -88,15 +85,17 @@ void ForwardOptionTest::testValues() {
     BOOST_MESSAGE("Testing forward option values...");
 
     /* The data below are from
-       ???
+       "Option pricing formulas", E.G. Haug, McGraw-Hill 1998
     */
     ForwardOptionData values[] = {
-        // replace this entry with real test cases
-        { Option::Call, 1.1, 100.0, 0.05, 0.03, 3, Months, 
-          1, Years, 0.20, 2.7588, 1.0e-4 }
+        //  type, moneyness, spot,  div, rate,start,   t,  vol, result, tol
+        // "Option pricing formulas", pag. 37
+        { Option::Call, 1.1, 60.0, 0.04, 0.08, 0.25, 1.0, 0.30, 4.4064, 1.0e-4 },
+        // "Option pricing formulas", VBA code
+        {  Option::Put, 1.1, 60.0, 0.04, 0.08, 0.25, 1.0, 0.30, 8.2971, 1.0e-4 }
     };
 
-    DayCounter dc = SimpleDayCounter();
+    DayCounter dc = Actual360();
     Date today = Date::todaysDate();
 
     boost::shared_ptr<SimpleQuote> spot(new SimpleQuote(0.0));
@@ -124,9 +123,9 @@ void ForwardOptionTest::testValues() {
 
         boost::shared_ptr<StrikedTypePayoff> payoff(
                                  new PlainVanillaPayoff(values[i].type, 0.0));
-        Date exDate = today.plus(values[i].length,values[i].lengthUnits);
+        Date exDate = today.plusDays(Integer(values[i].t*360+0.5));
         boost::shared_ptr<Exercise> exercise(new EuropeanExercise(exDate));
-        Date reset = today.plus(values[i].start,values[i].startUnits);
+        Date reset = today.plusDays(Integer(values[i].start*360+0.5));
 
         spot ->setValue(values[i].s);
         qRate->setValue(values[i].q);
@@ -155,16 +154,17 @@ void ForwardOptionTest::testPerformanceValues() {
 
     BOOST_MESSAGE("Testing forward performance option values...");
 
-    /* The data below are from
-       ???
+    /* The data below are the performance equivalent of the
+       forward options tested above and taken from
+       "Option pricing formulas", E.G. Haug, McGraw-Hill 1998
     */
     ForwardOptionData values[] = {
-        // replace this entry with real test cases
-        { Option::Call, 0.9, 100.0, 0.05, 0.03, 3, Months, 
-          1, Years, 0.20, 0.1128, 1.0e-4 }
+        //  type, moneyness, spot,  div, rate,start, maturity,  vol,                       result, tol
+        { Option::Call, 1.1, 60.0, 0.04, 0.08, 0.25,      1.0, 0.30, 4.4064/60*QL_EXP(-0.04*0.25), 1.0e-4 },
+        {  Option::Put, 1.1, 60.0, 0.04, 0.08, 0.25,      1.0, 0.30, 8.2971/60*QL_EXP(-0.04*0.25), 1.0e-4 }
     };
 
-    DayCounter dc = SimpleDayCounter();
+    DayCounter dc = Actual360();
     Date today = Date::todaysDate();
 
     boost::shared_ptr<SimpleQuote> spot(new SimpleQuote(0.0));
@@ -192,9 +192,9 @@ void ForwardOptionTest::testPerformanceValues() {
 
         boost::shared_ptr<StrikedTypePayoff> payoff(
                                  new PlainVanillaPayoff(values[i].type, 0.0));
-        Date exDate = today.plus(values[i].length,values[i].lengthUnits);
+        Date exDate = today.plusDays(Integer(values[i].t*360+0.5));
         boost::shared_ptr<Exercise> exercise(new EuropeanExercise(exDate));
-        Date reset = today.plus(values[i].start,values[i].startUnits);
+        Date reset = today.plusDays(Integer(values[i].start*360+0.5));
 
         spot ->setValue(values[i].s);
         qRate->setValue(values[i].q);
