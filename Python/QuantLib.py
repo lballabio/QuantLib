@@ -343,6 +343,7 @@ class DividendAmericanOptionPtr(DividendAmericanOption):
 DividendAmericanOption.value = new.instancemethod(QuantLibc.DividendAmericanOption_value, None, DividendAmericanOption)
 DividendAmericanOption.delta = new.instancemethod(QuantLibc.DividendAmericanOption_delta, None, DividendAmericanOption)
 DividendAmericanOption.gamma = new.instancemethod(QuantLibc.DividendAmericanOption_gamma, None, DividendAmericanOption)
+DividendAmericanOption.theta = new.instancemethod(QuantLibc.DividendAmericanOption_theta, None, DividendAmericanOption)
 DividendAmericanOption.vega = new.instancemethod(QuantLibc.DividendAmericanOption_vega, None, DividendAmericanOption)
 DividendAmericanOption.rho = new.instancemethod(QuantLibc.DividendAmericanOption_rho, None, DividendAmericanOption)
 DividendAmericanOption.impliedVolatility = new.instancemethod(QuantLibc.DividendAmericanOption_impliedVolatility, None, DividendAmericanOption)
@@ -364,7 +365,9 @@ class DividendEuropeanOptionPtr(DividendEuropeanOption):
 DividendEuropeanOption.value = new.instancemethod(QuantLibc.DividendEuropeanOption_value, None, DividendEuropeanOption)
 DividendEuropeanOption.delta = new.instancemethod(QuantLibc.DividendEuropeanOption_delta, None, DividendEuropeanOption)
 DividendEuropeanOption.gamma = new.instancemethod(QuantLibc.DividendEuropeanOption_gamma, None, DividendEuropeanOption)
+DividendEuropeanOption.theta = new.instancemethod(QuantLibc.DividendEuropeanOption_theta, None, DividendEuropeanOption)
 DividendEuropeanOption.vega = new.instancemethod(QuantLibc.DividendEuropeanOption_vega, None, DividendEuropeanOption)
+DividendEuropeanOption.rho = new.instancemethod(QuantLibc.DividendEuropeanOption_rho, None, DividendEuropeanOption)
 DividendEuropeanOption.impliedVolatility = new.instancemethod(QuantLibc.DividendEuropeanOption_impliedVolatility, None, DividendEuropeanOption)
 
 class ObjectiveFunction:
@@ -685,6 +688,11 @@ def ImpliedTermStructure(*args, **kwargs):
 
 def SpreadedTermStructure(*args, **kwargs):
     val = apply(QuantLibc.SpreadedTermStructure,args,kwargs)
+    if val: val = TermStructurePtr(val); val.thisown = 1
+    return val
+
+def FlatForward(*args, **kwargs):
+    val = apply(QuantLibc.FlatForward,args,kwargs)
     if val: val = TermStructurePtr(val); val.thisown = 1
     return val
 
