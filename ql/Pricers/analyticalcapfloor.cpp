@@ -29,10 +29,11 @@ namespace QuantLib {
     namespace Pricers {
 
         void AnalyticalCapFloor::calculate() const {
-            QL_REQUIRE(!model_.isNull(), "Cannot price without model!");
+            QL_REQUIRE(!model_.isNull(), 
+                       "AnalyticalCapFloor: cannot price without model!");
 
             QL_REQUIRE(model_->hasDiscountBondOptionFormula(),
-                "No analytical formula for discount bond options");
+                "AnalyticalCapFloor: No analytical formula for discount bond options");
 
             Option::Type optionType;
             switch (parameters_.type) {

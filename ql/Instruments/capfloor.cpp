@@ -58,7 +58,8 @@ namespace QuantLib {
 
             for (; begin != floatingLeg_.end(); ++begin) {
                 Handle<FloatingRateCoupon> coupon = *begin;
-                QL_ENSURE(!coupon.isNull(), "not a floating rate coupon");
+                QL_ENSURE(!coupon.isNull(), 
+                          "VanillaCapFloor::setupEngine floating rate coupon is Null");
                 Date beginDate = coupon->accrualStartDate();
                 Time time = counter.yearFraction(settlement, beginDate);
                 parameters->startTimes.push_back(time);
@@ -98,11 +99,14 @@ namespace QuantLib {
         void CapFloorPricingEngine::validateParameters() const {
             QL_REQUIRE(
                 parameters_.endTimes.size() == parameters_.startTimes.size(),
-                "Invalid pricing parameters");
+                "Invalid pricing parameters: size of startTimes(" +
+                IntegerFormatter::toString(parameters_.startTimes.size()) +
+                ") different from that of endTimes(" +
+                IntegerFormatter::toString(parameters_.endTimes.size()) +
+                ")");
             QL_REQUIRE(
                 parameters_.exerciseRates.size()==parameters_.startTimes.size(),
                 "Invalid pricing parameters");
-
         }
 
         const Results* CapFloorPricingEngine::results() const {
