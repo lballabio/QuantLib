@@ -27,9 +27,12 @@
 	$Source$
 	$Name$
 	$Log$
+	Revision 1.8  2000/12/28 11:40:20  aleppo
+	Modified QL_REQUIRE and others
+
 	Revision 1.7  2000/12/27 17:18:35  lballabio
 	Changes for compiling under Linux and Alpha Linux
-
+	
 	Revision 1.6  2000/12/27 14:05:56  lballabio
 	Turned Require and Ensure functions into QL_REQUIRE and QL_ENSURE macros
 	
@@ -67,6 +70,24 @@ namespace QuantLib {
 	};
 		
 	//! Specialized error
+	/*! Thrown upon an unsatisfied precondition.
+	*/
+	class PreconditionNotSatisfiedError : public Error {
+	  public:
+		explicit PreconditionNotSatisfiedError(const std::string& what = "")
+		: Error(what) {}
+	};
+		
+	//! Specialized error
+	/*! Thrown upon an unsatisfied postcondition.
+	*/
+	class PostconditionNotSatisfiedError : public Error {
+	  public:
+		explicit PostconditionNotSatisfiedError(const std::string& what = "")
+		: Error(what) {}
+	};
+		
+	//! Specialized error
 	/*! Thrown upon passing an argument with an illegal value.
 	*/
 	class IllegalArgumentError : public Error {
@@ -100,24 +121,24 @@ namespace QuantLib {
 	\relates Error
 */
 #define QL_ASSERT(condition,description) \
-	if (!(condition)) \
-		throw QuantLib::AssertionFailedError(description)
+    (condition) || (throw QuantLib::AssertionFailedError(description),false)
+
 
 /*! \def QL_REQUIRE
 	\brief it throws an error if the given pre-condition is not verified
 	\relates Error
 */
 #define QL_REQUIRE(condition,description) \
-	if (!(condition)) \
-		throw QuantLib::IllegalArgumentError(description)
+    (condition) || (throw QuantLib::PreconditionNotSatisfiedError(description),false)
+
 
 /*! \def QL_ENSURE
 	\brief it throws an error if the given post-condition is not verified
 	\relates Error
 */
 #define QL_ENSURE(condition,description) \
-	if (!(condition)) \
-		throw QuantLib::IllegalResultError(description)
+    (condition) || (throw QuantLib::PostconditionNotSatisfiedError(description),false)
+
 
 
 #endif
