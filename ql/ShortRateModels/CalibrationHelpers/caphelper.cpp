@@ -98,7 +98,7 @@ namespace QuantLib {
                 marketValue_ = blackPrice(volatility_->value());
             }
 
-            void CapHelper::addTimes(std::list<Time>& times) const {
+            void CapHelper::addTimesTo(std::list<Time>& times) const {
                 CapFloorArguments* params =
                     dynamic_cast<CapFloorArguments*>(engine_->arguments());
                 Size nPeriods = params->startTimes.size();

@@ -42,7 +42,7 @@ namespace QuantLib {
                     const Handle<Indexes::Xibor>& index,
                     const RelinkableHandle<TermStructure>& termStructure);
 
-                virtual void addTimes(std::list<Time>& times) const;
+                virtual void addTimesTo(std::list<Time>& times) const;
 
                 virtual double modelValue();
 

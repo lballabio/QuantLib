@@ -56,17 +56,15 @@ namespace QuantLib {
         virtual void reset(Size size) = 0;
 
         Time time() const { return time_; }
-        void setTime(Time t) { time_ = t; }
+        Time& time() { return time_; }
 
-        double value(Size i) const { return values_[i]; }
+        const Array& values() const { return values_; }
         Array& values() { return values_; }
-        void setValues(const Array& values) { values_ = values; }
 
         const Handle<NumericalMethod>& method() const { return method_; }
 
-
         virtual void adjustValues() {}
-        virtual void addTimes(std::list<Time>& times) const {}
+        virtual void addTimesTo(std::list<Time>& times) const {}
       protected:
         bool isOnTime(Time t) const;
 
@@ -91,12 +89,10 @@ namespace QuantLib {
     inline bool DiscretizedAsset::isOnTime(Time t) const {
         const TimeGrid& grid = method()->timeGrid();
         Time gridTime = grid[grid.findIndex(t)];
-        if (QL_FABS(gridTime - time()) < QL_EPSILON)
-            return true;
-        else
-            return false;
+        return (QL_FABS(gridTime - time()) < QL_EPSILON);
     }
 
 }
+
 
 #endif

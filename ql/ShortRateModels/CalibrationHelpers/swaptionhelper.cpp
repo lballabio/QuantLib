@@ -103,7 +103,7 @@ namespace QuantLib {
                 marketValue_ = blackPrice(volatility_->value());
             }
 
-            void SwaptionHelper::addTimes(std::list<Time>& times) const {
+            void SwaptionHelper::addTimesTo(std::list<Time>& times) const {
                 SwaptionArguments* params =
                     dynamic_cast<SwaptionArguments*>(engine_->arguments());
                 Size i;

@@ -42,7 +42,7 @@ namespace QuantLib {
 
             void adjustValues();
 
-            void addTimes(std::list<Time>& times) const {
+            void addTimesTo(std::list<Time>& times) const {
                 Time t;
                 Size i;
                 for (i=0; i<arguments_.fixedPayTimes.size(); i++) {
@@ -85,8 +85,8 @@ namespace QuantLib {
 
             virtual void adjustValues();
 
-            void addTimes(std::list<Time>& times) const {
-                swap_->addTimes(times);
+            void addTimesTo(std::list<Time>& times) const {
+                swap_->addTimesTo(times);
                 Time t;
                 for (Size i=0; i<arguments_.exerciseTimes.size(); i++) {
                     t = arguments_.exerciseTimes[i];

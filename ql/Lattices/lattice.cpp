@@ -58,7 +58,7 @@ namespace QuantLib {
                                  Time t) const {
 
             Size i = t_.findIndex(t);
-            asset->setTime(t);
+            asset->time() = t;
             asset->reset(size(i));
         }
 
@@ -75,8 +75,8 @@ namespace QuantLib {
             for (int i=(int)(iFrom-1); i>=(int)iTo; i--) {
                 Array newValues(size(i));
                 stepback(i, asset->values(), newValues);
-                asset->setTime(t_[i]);
-                asset->setValues(newValues);
+                asset->time() = t_[i];
+                asset->values() = newValues;
                 asset->adjustValues();
             }
         }

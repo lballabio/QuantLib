@@ -59,7 +59,7 @@ namespace QuantLib {
                 return QL_FABS(marketValue() - modelValue())/marketValue();
             }
 
-            virtual void addTimes(std::list<Time>& times) const = 0;
+            virtual void addTimesTo(std::list<Time>& times) const = 0;
 
             //! Black volatility implied by the model
             double impliedVolatility(double targetValue,

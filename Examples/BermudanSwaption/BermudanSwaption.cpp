@@ -220,7 +220,7 @@ int main(int argc, char* argv[])
                                        RelinkableHandle<MarketElement>(vol),
                                        indexSixMonths,
                                        rhTermStructure)));
-                swaptions.back()->addTimes(times);
+                swaptions.back()->addTimesTo(times);
             }
         }
         const std::vector<Time> termTimes = myTermStructure->times();
