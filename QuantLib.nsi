@@ -337,7 +337,7 @@ SectionEnd
 Section "PS documentation"
 SectionIn 1
   SetOutPath "$INSTDIR\Docs"
-  File "Docs\latex\*refman.ps"
+  File "Docs\latex\refman.ps"
   CreateShortCut "$SMPROGRAMS\QuantLib\Documentation (PS).lnk" \
                  "$INSTDIR\Docs\refman.ps"
 SectionEnd
