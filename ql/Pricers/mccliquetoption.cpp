@@ -30,12 +30,8 @@ namespace QuantLib {
 
     namespace Pricers {
 
-        using Math::Statistics;
-        using MonteCarlo::Path;
-        using MonteCarlo::GaussianPathGenerator_old;
-        using MonteCarlo::PathPricer_old;
-        using MonteCarlo::MonteCarloModel;
-        using MonteCarlo::CliquetOptionPathPricer_old;
+        using namespace Math;
+        using namespace MonteCarlo;
 
         McCliquetOption::McCliquetOption(Option::Type type,
           double underlying, double moneyness,
@@ -43,6 +39,9 @@ namespace QuantLib {
           const std::vector<Rate>& riskFreeRate,
           const std::vector<Time>& times,
           const std::vector<double>& volatility,
+          double accruedCoupon, double lastFixing,
+          double localCap, double localFloor, double globalCap,
+          double globalFloor, bool redemptionOnly, 
           bool antitheticVariance, long seed) {
 
             Size dimension = times.size();
@@ -77,8 +76,9 @@ namespace QuantLib {
             //! Initialize the pricer on the single Path
             Handle<PathPricer_old<Path> > cliquetPathPricer(
                 new CliquetOptionPathPricer_old(type,
-                underlying, moneyness, discounts,
-                antitheticVariance));
+                underlying, moneyness, accruedCoupon, lastFixing,
+                localCap, localFloor, globalCap, globalFloor,
+                discounts, redemptionOnly, antitheticVariance));
 
             //! Initialize the one-factor Monte Carlo
             mcModel_ = Handle<MonteCarloModel<Statistics,

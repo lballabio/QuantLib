@@ -48,8 +48,15 @@ namespace QuantLib {
                        const std::vector<Rate>& riskFreeRate,
                        const std::vector<Time>& times,
                        const std::vector<double>& volatility,
+                       double accruedCoupon,
+                       double lastFixing,
+                       double localCap,
+                       double localFloor,
+                       double globalCap,
+                       double globalFloor,
+                       bool redemptionOnly,
                        bool antitheticVariance,
-                       long seed=0);
+                       long seed);
         };
 
     }

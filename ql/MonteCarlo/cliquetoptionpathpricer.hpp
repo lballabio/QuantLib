@@ -63,15 +63,24 @@ namespace QuantLib {
         class CliquetOptionPathPricer_old : public PathPricer_old<Path> {
           public:
             CliquetOptionPathPricer_old(Option::Type type,
-                               double underlying,
-                               double moneyness,
-                               const std::vector<DiscountFactor>& discounts,
-                               bool useAntitheticVariance);
+                                        double underlying,
+                                        double moneyness,
+                                        double accruedCoupon,
+                                        double lastFixing,
+                                        double localCap,
+                                        double localFloor,
+                                        double globalCap,
+                                        double globalFloor,
+                                        const std::vector<DiscountFactor>& discounts,
+                                        bool redemptionOnly,
+                                        bool useAntitheticVariance);
             double operator()(const Path& path) const;
           private:
             Option::Type type_;
-            double underlying_, moneyness_;
+            double underlying_, moneyness_, accruedCoupon_;
+            double lastFixing_, localCap_, localFloor_, globalCap_, globalFloor_;
             std::vector<DiscountFactor> discounts_;
+            bool redemptionOnly_;
         };
 
     }
