@@ -25,15 +25,16 @@
 
 #include <ql/diffusionprocess.hpp>
 #include <ql/MonteCarlo/path.hpp>
+#include <ql/MonteCarlo/brownianbridge.hpp>
 #include <ql/RandomNumbers/randomarraygenerator.hpp>
 
 namespace QuantLib {
 
     //! Generates random paths using a sequence generator
     /*! Generates random paths with drift(S,t) and variance(S,t)
-        using a sequence generator
+        using a gaussian sequence generator
     */
-    template <class SG>
+    template <class GSG>
     class PathGenerator {
       public:
         typedef Sample<Path> sample_type;
@@ -41,10 +42,12 @@ namespace QuantLib {
         PathGenerator(const Handle<DiffusionProcess>& diffProcess,
                       Time length,
                       Size timeSteps,
-                      const SG& generator);
+                      const GSG& generator,
+                      bool brownianBridge = false);
         PathGenerator(const Handle<DiffusionProcess>& diffProcess,
                       const TimeGrid& timeGrid,
-                      const SG& generator);
+                      const GSG& generator,
+                      bool brownianBridge = false);
         //! \name inspectors
         //@{
         const sample_type& next() const;
@@ -53,21 +56,28 @@ namespace QuantLib {
         const TimeGrid& timeGrid() const { return timeGrid_; }
         //@}
       private:
-        SG generator_;
+        bool brownianBridge_;
+        GSG generator_;
         Size dimension_;
         TimeGrid timeGrid_;
         Handle<DiffusionProcess> diffProcess_;
         mutable sample_type next_;
+        Handle<BrownianBridge<GSG> > bb_;
         mutable double asset_;
     };
 
-    template <class SG>
-    PathGenerator<SG>::PathGenerator(
-                             const Handle<DiffusionProcess>& diffProcess,
-                             Time length, Size timeSteps, const SG& generator)
-    : generator_(generator), dimension_(generator_.dimension()),
+    template <class GSG>
+    PathGenerator<GSG>::PathGenerator(
+        const Handle<DiffusionProcess>& diffProcess,
+        Time length,
+        Size timeSteps,
+        const GSG& generator,
+        bool brownianBridge)
+    : brownianBridge_(brownianBridge), generator_(generator),
+      dimension_(generator_.dimension()),
       timeGrid_(length, timeSteps), diffProcess_(diffProcess),
-      next_(Path(timeGrid_),1.0) {
+      next_(Path(timeGrid_),1.0),
+      bb_(new BrownianBridge<GSG>(diffProcess_, timeGrid_, generator_)) {
         QL_REQUIRE(dimension_==timeSteps,
                    "PathGenerator::PathGenerator :"
                    "sequence generator dimensionality ("
@@ -77,13 +87,17 @@ namespace QuantLib {
                    ")");
     }
 
-    template <class SG>
-    PathGenerator<SG>::PathGenerator(
-                                const Handle<DiffusionProcess>& diffProcess,
-                                const TimeGrid& timeGrid, const SG& generator)
-    : generator_(generator), dimension_(generator_.dimension()),
+    template <class GSG>
+    PathGenerator<GSG>::PathGenerator(
+        const Handle<DiffusionProcess>& diffProcess,
+        const TimeGrid& timeGrid,
+        const GSG& generator,
+        bool brownianBridge)
+    : brownianBridge_(brownianBridge), generator_(generator),
+      dimension_(generator_.dimension()),
       timeGrid_(timeGrid), diffProcess_(diffProcess),
-      next_(Path(timeGrid_),1.0) {
+      next_(Path(timeGrid_),1.0),
+      bb_(new BrownianBridge<GSG>(diffProcess_, timeGrid_, generator_)) {
         QL_REQUIRE(dimension_==timeGrid_.size()-1,
                    "PathGenerator::PathGenerator :"
                    "sequence generator dimensionality ("
@@ -93,58 +107,97 @@ namespace QuantLib {
                    ")");
     }
 
-    template <class SG>
-    inline const typename PathGenerator<SG>::sample_type&
-    PathGenerator<SG>::next() const {
+    template <class GSG>
+    inline const typename PathGenerator<GSG>::sample_type&
+    PathGenerator<GSG>::next() const {
 
-        typedef typename SG::sample_type sequence_type;
-        const sequence_type& sequence_ = generator_.nextSequence();
 
-        next_.weight = sequence_.weight;
+        if (brownianBridge_) {
+            typedef typename BrownianBridge<GSG>::sample_type sequence_type;
+            const sequence_type& stdDev_ = bb_->next();
 
-        // starting point for asset value
-        asset_ = diffProcess_->x0();
-        double dt;
-        Time t;
-        for (Size i=0; i<next_.value.size(); i++) {
-            t = timeGrid_[i+1];
-            dt = timeGrid_.dt(i);
-            next_.value.drift()[i] = dt * 
-                diffProcess_->drift(t, asset_);
-            next_.value.diffusion()[i] = sequence_.value[i] *
-                QL_SQRT(diffProcess_->variance(t, asset_, dt));
-            asset_ *= QL_EXP(next_.value.drift()[i] + 
-                             next_.value.diffusion()[i]);
+            next_.weight = stdDev_.weight;
+
+            double dt;
+            Time t;
+            for (Size i=0; i<next_.value.size(); i++) {
+                t = timeGrid_[i+1];
+                dt = timeGrid_.dt(i);
+                next_.value.drift()[i] = dt * 
+                    diffProcess_->drift(t, asset_);
+                next_.value.diffusion()[i] = stdDev_.value[i];
+            }
+
+            return next_;
+        } else {
+            typedef typename GSG::sample_type sequence_type;
+            const sequence_type& sequence_ = generator_.nextSequence();
+
+            next_.weight = sequence_.weight;
+
+            // starting point for asset value
+            asset_ = diffProcess_->x0();
+            double dt;
+            Time t;
+            for (Size i=0; i<next_.value.size(); i++) {
+                t = timeGrid_[i+1];
+                dt = timeGrid_.dt(i);
+                next_.value.drift()[i] = dt * 
+                    diffProcess_->drift(t, asset_);
+                next_.value.diffusion()[i] = sequence_.value[i] *
+                    QL_SQRT(diffProcess_->variance(t, asset_, dt));
+                asset_ *= QL_EXP(next_.value.drift()[i] + 
+                                 next_.value.diffusion()[i]);
+            }
+
+            return next_;
         }
-
-        return next_;
     }
 
-    template <class SG>
-    inline const typename PathGenerator<SG>::sample_type&
-    PathGenerator<SG>::antithetic() const {
+    template <class GSG>
+    inline const typename PathGenerator<GSG>::sample_type&
+    PathGenerator<GSG>::antithetic() const {
 
-        typedef typename SG::sample_type sequence_type;
-        const sequence_type& sequence_ = generator_.lastSequence();
+        if (brownianBridge_) {
+            typedef typename BrownianBridge<GSG>::sample_type sequence_type;
+            const sequence_type& stdDev_ = bb_->last();
 
-        next_.weight = sequence_.weight;
+            next_.weight = stdDev_.weight;
 
-        // starting point for asset value
-        asset_ = diffProcess_->x0();
-        double dt;
-        Time t;
-        for (Size i=0; i<next_.value.size(); i++) {
-            t = timeGrid_[i+1];
-            dt = timeGrid_.dt(i);
-            next_.value.drift()[i] = dt * 
-                diffProcess_->drift(t, asset_);
-            next_.value.diffusion()[i] = - sequence_.value[i] *
-                QL_SQRT(diffProcess_->variance(t, asset_, dt));
-            asset_ *= QL_EXP(next_.value.drift()[i] + 
-                             next_.value.diffusion()[i]);
+            double dt;
+            Time t;
+            for (Size i=0; i<next_.value.size(); i++) {
+                t = timeGrid_[i+1];
+                dt = timeGrid_.dt(i);
+                next_.value.drift()[i] = dt * 
+                    diffProcess_->drift(t, asset_);
+                next_.value.diffusion()[i] = - stdDev_.value[i];
+            }
+
+            return next_;
+        } else {
+            typedef typename GSG::sample_type sequence_type;
+            const sequence_type& sequence_ = generator_.lastSequence();
+
+            next_.weight = sequence_.weight;
+
+            // starting point for asset value
+            asset_ = diffProcess_->x0();
+            double dt;
+            Time t;
+            for (Size i=0; i<next_.value.size(); i++) {
+                t = timeGrid_[i+1];
+                dt = timeGrid_.dt(i);
+                next_.value.drift()[i] = dt * 
+                    diffProcess_->drift(t, asset_);
+                next_.value.diffusion()[i] = - sequence_.value[i] *
+                    QL_SQRT(diffProcess_->variance(t, asset_, dt));
+                asset_ *= QL_EXP(next_.value.drift()[i] + 
+                                 next_.value.diffusion()[i]);
+            }
+
+            return next_;
         }
-
-        return next_;
     }
 
 

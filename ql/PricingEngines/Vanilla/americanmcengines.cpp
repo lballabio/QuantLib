@@ -69,11 +69,11 @@ namespace QuantLib {
         Size timeStep;
 
         // simulate the paths
-        Handle<DiffusionProcess> bs(
-                                new BlackScholesProcess(arguments_.blackScholesProcess->riskFreeTS, 
-                                                        arguments_.blackScholesProcess->dividendTS,
-                                                        arguments_.blackScholesProcess->volTS, 
-                                                        s0));
+        Handle<DiffusionProcess> bs(new
+            BlackScholesProcess(arguments_.blackScholesProcess->riskFreeTS, 
+                                arguments_.blackScholesProcess->dividendTS,
+                                arguments_.blackScholesProcess->volTS, 
+                                s0));
 
         Time T = arguments_.blackScholesProcess->riskFreeTS->dayCounter().yearFraction(
             arguments_.blackScholesProcess->riskFreeTS->referenceDate(),
@@ -84,8 +84,9 @@ namespace QuantLib {
         GaussianRandomSequenceGenerator gen = 
             PseudoRandom::make_sequence_generator(grid.size()-1,seed_);
 
-        Handle<GaussianPathGenerator> pathGenerator(
-                                    new GaussianPathGenerator(bs, grid, gen));
+        // BB here
+        Handle<GaussianPathGenerator> pathGenerator(new
+            GaussianPathGenerator(bs, grid, gen, false));
 
         GaussianPathGenerator::sample_type pathHolder = 
             pathGenerator->next();

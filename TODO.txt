@@ -1,7 +1,18 @@
-quanto-forward bug
+add Merton76
+switch to BrownianBridge
+american at-expiry greeks
+american at-hit greeks to be completed
+american at-hit lambda: is Haug wrong? Probably not, anyway...
+report case 3, 4 as wrong to Haug
+review MC engine for american options
+
+check accuracy of bivariate algo:
+Z. Drezner "Computation of the Bivariate Normal Integral" (January 78)
+
+investigate quanto-forward bug
 add tests for quanto and forward (Haug cases)
+
 make check as macro (so that cppunit reports the right line)
-greeks for american digital options
 introduce plain American Exercise (no from_date, no payoffAtExpiry)
 digitaloption testEngineConsistency as in in europeanoption test
 remove binarybarrier
@@ -147,6 +158,10 @@ MATH
 YIELD CURVE
 - future convexity adjustment
 - end of year turn
+- no today date (exogenous)
+- no zero/forward assumptions about daycounting and compounding, declare them
+   in constructors, specify them in methods
+- settle on time measurement. Days (and fraction of days), so that it makes sense whatever the daycount is (workingdays, act/act, etc)?
 
 CURRENCIES
 - Currency as class with methods returning related info

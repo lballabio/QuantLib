@@ -140,8 +140,9 @@ namespace QuantLib {
         TimeGrid grid = timeGrid();
         typename RNG::rsg_type gen =
             RNG::make_sequence_generator(grid.size()-1,seed_);
-        return Handle<path_generator_type>(
-                                      new path_generator_type(bs, grid, gen));
+        // BB here
+        return Handle<path_generator_type>(new
+            path_generator_type(bs, grid, gen, false));
     }
 
 
