@@ -30,6 +30,7 @@
 #define quantlib_vanilla_engines_h
 
 #include <ql/exercise.hpp>
+#include <ql/payoff.hpp>
 #include <ql/termstructure.hpp>
 #include <ql/voltermstructure.hpp>
 #include <ql/Math/normaldistribution.hpp>

@@ -59,6 +59,7 @@ include_HEADERS = \
 	null.hpp \
 	numericalmethod.hpp \
 	option.hpp \
+	payoff.hpp \
 	pricingengine.hpp \
 	qldefines.hpp \
 	quantlib.hpp \

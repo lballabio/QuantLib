@@ -39,7 +39,7 @@ namespace QuantLib  {
             BinaryOption(Option::Type type, double underlying, double strike,
                          Spread dividendYield, Rate riskFreeRate,
                          Time residualTime, double volatility,
-                         double cashPayoff = 1 );
+                         double cashPayoff);
             double value() const;
             double delta() const;
             double gamma() const;

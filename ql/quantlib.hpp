@@ -48,6 +48,7 @@
 #include <ql/null.hpp>
 #include <ql/numericalmethod.hpp>
 #include <ql/option.hpp>
+#include <ql/payoff.hpp>
 #include <ql/pricingengine.hpp>
 #include <ql/relinkablehandle.hpp>
 #include <ql/riskstatistics.hpp>

@@ -29,6 +29,7 @@
 #include <ql/option.hpp>
 #include <ql/solver1d.hpp>
 #include <ql/exercise.hpp>
+#include <ql/payoff.hpp>
 
 #define QL_MIN_VOLATILITY 1.0e-4
 #define QL_MIN_DIVYIELD 1.0e-7
