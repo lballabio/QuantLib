@@ -31,6 +31,13 @@
     $Source$
     $Name$
     $Log$
+    Revision 1.24  2001/01/17 16:33:40  nando
+    bug fix.
+    It was
+    # define QL_MIN_DOUBLE  std::numeric_limits<double>::min()
+    now it is
+    # define QL_MIN_DOUBLE  -std::numeric_limits<double>::max()
+
     Revision 1.23  2001/01/17 14:37:55  nando
     tabs removed
 
@@ -101,111 +108,112 @@
 //! global trace level (may be superseded locally by a greater value)
 #define QL_TRACE_LEVEL 0
 
+
 // Compiler-dependent switches
 
 #if defined(_MSC_VER)                    // Microsoft Visual C++ 6.0
     // disable useless warnings
     #pragma warning(disable: 4786)  // identifier truncated in debug info
     // set switches
-    #define QL_USE_NEW_HEADERS                    1
-    #define QL_CMATH_IN_STD                        0
-    #define QL_CCTYPE_IN_STD                    0
-    #define QL_CTIME_IN_STD                        0
-    #define QL_ITERATOR_IN_STD                  1
-    #define QL_HAS_LIMITS                        1
-    #define QL_HAS_MIN_AND_MAX                    1
-    #define QL_TEMPLATE_METAPROGRAMMING_WORKS    1
-    #define QL_EXPRESSION_TEMPLATES_WORK        1
-    #define QL_REQUIRES_DUMMY_RETURN            1
-    #define QL_BROKEN_TEMPLATE_SPECIALIZATION    1
-    #define QL_GARBLED_MIN_AND_MAX                1
-    #define QL_GARBLED_REVERSE_ITERATORS        1
-    #define QL_GARBLED_PTR_CONST                1
+    #define QL_USE_NEW_HEADERS                1
+    #define QL_CMATH_IN_STD                   0
+    #define QL_CCTYPE_IN_STD                  0
+    #define QL_CTIME_IN_STD                   0
+    #define QL_ITERATOR_IN_STD                1
+    #define QL_HAS_LIMITS                     1
+    #define QL_HAS_MIN_AND_MAX                1
+    #define QL_TEMPLATE_METAPROGRAMMING_WORKS 1
+    #define QL_EXPRESSION_TEMPLATES_WORK      1
+    #define QL_REQUIRES_DUMMY_RETURN          1
+    #define QL_BROKEN_TEMPLATE_SPECIALIZATION 1
+    #define QL_GARBLED_MIN_AND_MAX            1
+    #define QL_GARBLED_REVERSE_ITERATORS      1
+    #define QL_GARBLED_PTR_CONST              1
 
 #elif defined(__BORLANDC__)                // Borland C++ 5.5
     // set switches
-    #define QL_USE_NEW_HEADERS                    1
-    #define QL_CMATH_IN_STD                        1
-    #define QL_CCTYPE_IN_STD                    1
-    #define QL_CTIME_IN_STD                        1
-    #define QL_ITERATOR_IN_STD                  1
-    #define QL_HAS_LIMITS                        1
-    #define QL_HAS_MIN_AND_MAX                    1
-    #define QL_TEMPLATE_METAPROGRAMMING_WORKS    0
-    #define QL_EXPRESSION_TEMPLATES_WORK        1
-    #define QL_REQUIRES_DUMMY_RETURN            0
-    #define QL_BROKEN_TEMPLATE_SPECIALIZATION    0
-    #define QL_GARBLED_MIN_AND_MAX                0
-    #define QL_GARBLED_REVERSE_ITERATORS        0
-    #define QL_GARBLED_PTR_CONST                0
+    #define QL_USE_NEW_HEADERS                1
+    #define QL_CMATH_IN_STD                   1
+    #define QL_CCTYPE_IN_STD                  1
+    #define QL_CTIME_IN_STD                   1
+    #define QL_ITERATOR_IN_STD                1
+    #define QL_HAS_LIMITS                     1
+    #define QL_HAS_MIN_AND_MAX                1
+    #define QL_TEMPLATE_METAPROGRAMMING_WORKS 0
+    #define QL_EXPRESSION_TEMPLATES_WORK      1
+    #define QL_REQUIRES_DUMMY_RETURN          0
+    #define QL_BROKEN_TEMPLATE_SPECIALIZATION 0
+    #define QL_GARBLED_MIN_AND_MAX            0
+    #define QL_GARBLED_REVERSE_ITERATORS      0
+    #define QL_GARBLED_PTR_CONST              0
 
 #elif defined(__MWERKS__)                // Metrowerks CodeWarrior 4.0
     // set switches
-    #define QL_USE_NEW_HEADERS                    1
-    #define QL_CMATH_IN_STD                        1
-    #define QL_CCTYPE_IN_STD                    1
-    #define QL_CTIME_IN_STD                        1
-    #define QL_ITERATOR_IN_STD                  1
-    #define QL_HAS_LIMITS                        1
-    #define QL_HAS_MIN_AND_MAX                    1
-    #define QL_TEMPLATE_METAPROGRAMMING_WORKS    1
-    #define QL_EXPRESSION_TEMPLATES_WORK        1
-    #define QL_REQUIRES_DUMMY_RETURN            1
-    #define QL_BROKEN_TEMPLATE_SPECIALIZATION    0
-    #define QL_GARBLED_MIN_AND_MAX                0
-    #define QL_GARBLED_REVERSE_ITERATORS        0
-    #define QL_GARBLED_PTR_CONST                0
+    #define QL_USE_NEW_HEADERS                1
+    #define QL_CMATH_IN_STD                   1
+    #define QL_CCTYPE_IN_STD                  1
+    #define QL_CTIME_IN_STD                   1
+    #define QL_ITERATOR_IN_STD                1
+    #define QL_HAS_LIMITS                     1
+    #define QL_HAS_MIN_AND_MAX                1
+    #define QL_TEMPLATE_METAPROGRAMMING_WORKS 1
+    #define QL_EXPRESSION_TEMPLATES_WORK      1
+    #define QL_REQUIRES_DUMMY_RETURN          1
+    #define QL_BROKEN_TEMPLATE_SPECIALIZATION 0
+    #define QL_GARBLED_MIN_AND_MAX            0
+    #define QL_GARBLED_REVERSE_ITERATORS      0
+    #define QL_GARBLED_PTR_CONST              0
 
 #elif defined(__GNUC__)                    // GNU C++ 2.95.2
     // set switches
-    #define QL_USE_NEW_HEADERS                    1
-    #define QL_CMATH_IN_STD                        0
-    #define QL_CCTYPE_IN_STD                    0
-    #define QL_CTIME_IN_STD                        0
-    #define QL_ITERATOR_IN_STD                  0
-    #define QL_HAS_LIMITS                        0
-    #define QL_HAS_MIN_AND_MAX                    1
-    #define QL_TEMPLATE_METAPROGRAMMING_WORKS    0
-    #define QL_EXPRESSION_TEMPLATES_WORK        0
-    #define QL_REQUIRES_DUMMY_RETURN            0
-    #define QL_BROKEN_TEMPLATE_SPECIALIZATION    0
-    #define QL_GARBLED_MIN_AND_MAX                0
-    #define QL_GARBLED_REVERSE_ITERATORS        0
-    #define QL_GARBLED_PTR_CONST                0
+    #define QL_USE_NEW_HEADERS                1
+    #define QL_CMATH_IN_STD                   0
+    #define QL_CCTYPE_IN_STD                  0
+    #define QL_CTIME_IN_STD                   0
+    #define QL_ITERATOR_IN_STD                0
+    #define QL_HAS_LIMITS                     0
+    #define QL_HAS_MIN_AND_MAX                1
+    #define QL_TEMPLATE_METAPROGRAMMING_WORKS 0
+    #define QL_EXPRESSION_TEMPLATES_WORK      0
+    #define QL_REQUIRES_DUMMY_RETURN          0
+    #define QL_BROKEN_TEMPLATE_SPECIALIZATION 0
+    #define QL_GARBLED_MIN_AND_MAX            0
+    #define QL_GARBLED_REVERSE_ITERATORS      0
+    #define QL_GARBLED_PTR_CONST              0
 
 #elif defined(__DECCXX)                    // Compaq Alpha C++ 6.3
     // set switches
-    #define QL_USE_NEW_HEADERS                    0
-    #define QL_CMATH_IN_STD                        0
-    #define QL_CCTYPE_IN_STD                    0
-    #define QL_CTIME_IN_STD                        0
-    #define QL_ITERATOR_IN_STD                  1
-    #define QL_HAS_LIMITS                        1
-    #define QL_HAS_MIN_AND_MAX                    0
-    #define QL_TEMPLATE_METAPROGRAMMING_WORKS    0
-    #define QL_EXPRESSION_TEMPLATES_WORK        0
-    #define QL_REQUIRES_DUMMY_RETURN            0
-    #define QL_BROKEN_TEMPLATE_SPECIALIZATION    0
-    #define QL_GARBLED_MIN_AND_MAX                0
-    #define QL_GARBLED_REVERSE_ITERATORS        0
-    #define QL_GARBLED_PTR_CONST                0
+    #define QL_USE_NEW_HEADERS                0
+    #define QL_CMATH_IN_STD                   0
+    #define QL_CCTYPE_IN_STD                  0
+    #define QL_CTIME_IN_STD                   0
+    #define QL_ITERATOR_IN_STD                1
+    #define QL_HAS_LIMITS                     1
+    #define QL_HAS_MIN_AND_MAX                0
+    #define QL_TEMPLATE_METAPROGRAMMING_WORKS 0
+    #define QL_EXPRESSION_TEMPLATES_WORK      0
+    #define QL_REQUIRES_DUMMY_RETURN          0
+    #define QL_BROKEN_TEMPLATE_SPECIALIZATION 0
+    #define QL_GARBLED_MIN_AND_MAX            0
+    #define QL_GARBLED_REVERSE_ITERATORS      0
+    #define QL_GARBLED_PTR_CONST              0
 
 #else                                    // Generic ANSI C++ compliant compiler
     // set switches
-    #define QL_USE_NEW_HEADERS                    1
-    #define QL_CMATH_IN_STD                        1
-    #define QL_CCTYPE_IN_STD                    1
-    #define QL_CTIME_IN_STD                        1
-    #define QL_ITERATOR_IN_STD                  1
-    #define QL_HAS_LIMITS                        1
-    #define QL_HAS_MIN_AND_MAX                    1
-    #define QL_TEMPLATE_METAPROGRAMMING_WORKS    1
-    #define QL_EXPRESSION_TEMPLATES_WORK        1
-    #define QL_REQUIRES_DUMMY_RETURN            0
-    #define QL_BROKEN_TEMPLATE_SPECIALIZATION    0
-    #define QL_GARBLED_MIN_AND_MAX                0
-    #define QL_GARBLED_REVERSE_ITERATORS        0
-    #define QL_GARBLED_PTR_CONST                0
+    #define QL_USE_NEW_HEADERS                1
+    #define QL_CMATH_IN_STD                   1
+    #define QL_CCTYPE_IN_STD                  1
+    #define QL_CTIME_IN_STD                   1
+    #define QL_ITERATOR_IN_STD                1
+    #define QL_HAS_LIMITS                     1
+    #define QL_HAS_MIN_AND_MAX                1
+    #define QL_TEMPLATE_METAPROGRAMMING_WORKS 1
+    #define QL_EXPRESSION_TEMPLATES_WORK      1
+    #define QL_REQUIRES_DUMMY_RETURN          0
+    #define QL_BROKEN_TEMPLATE_SPECIALIZATION 0
+    #define QL_GARBLED_MIN_AND_MAX            0
+    #define QL_GARBLED_REVERSE_ITERATORS      0
+    #define QL_GARBLED_PTR_CONST              0
 
 #endif
 
@@ -249,9 +257,9 @@
 
 #if QL_CMATH_IN_STD
     /*! \def QL_SQRT \see QL_CMATH_IN_STD */
-    #define QL_SQRT    std::sqrt
+    #define QL_SQRT   std::sqrt
     /*! \def QL_FABS \see QL_CMATH_IN_STD */
-    #define QL_FABS    std::fabs
+    #define QL_FABS   std::fabs
     /*! \def QL_EXP \see QL_CMATH_IN_STD */
     #define QL_EXP    std::exp
     /*! \def QL_LOG \see QL_CMATH_IN_STD */
@@ -263,16 +271,16 @@
     /*! \def QL_POW \see QL_CMATH_IN_STD */
     #define QL_POW    std::pow
     /*! \def QL_MODF \see QL_CMATH_IN_STD */
-    #define QL_MODF    std::modf
+    #define QL_MODF   std::modf
 #else
-    #define QL_SQRT    sqrt
-    #define QL_FABS    fabs
+    #define QL_SQRT   sqrt
+    #define QL_FABS   fabs
     #define QL_EXP    exp
     #define QL_LOG    log
     #define QL_SIN    sin
     #define QL_COS    cos
     #define QL_POW    pow
-    #define QL_MODF    modf
+    #define QL_MODF   modf
 #endif
 
 /*! \def QL_CCTYPE_IN_STD
@@ -291,15 +299,15 @@
 
 #if QL_CCTYPE_IN_STD
     /*! \def QL_STRLEN \see QL_CCTYPE_IN_STD */
-    #define QL_STRLEN    std::strlen
+    #define QL_STRLEN   std::strlen
     /*! \def QL_TOLOWER \see QL_CCTYPE_IN_STD */
-    #define QL_TOLOWER    std::tolower
+    #define QL_TOLOWER  std::tolower
     /*! \def QL_TOUPPER \see QL_CCTYPE_IN_STD */
-    #define QL_TOUPPER    std::toupper
+    #define QL_TOUPPER  std::toupper
 #else
-    #define QL_STRLEN    strlen
-    #define QL_TOLOWER    tolower
-    #define QL_TOUPPER    toupper
+    #define QL_STRLEN   strlen
+    #define QL_TOLOWER  tolower
+    #define QL_TOUPPER  toupper
 #endif
 
 /*! \def QL_ITERATOR_IN_STD
@@ -314,9 +322,9 @@
 
 #if QL_ITERATOR_IN_STD
     /*! \def QL_ITERATOR \see QL_ITERATOR_IN_STD */
-    #define QL_ITERATOR    std::iterator
+    #define QL_ITERATOR   std::iterator
 #else
-    #define QL_ITERATOR    iterator
+    #define QL_ITERATOR   iterator
 #endif
 
 /*! \def QL_CTIME_IN_STD
@@ -351,23 +359,23 @@
 #if QL_HAS_LIMITS
     #include <limits>
     /*! \def QL_MIN_INT \see QL_HAS_LIMITS */
-    #define QL_MIN_INT        std::numeric_limits<int>::min()
+    #define QL_MIN_INT       std::numeric_limits<int>::min()
     /*! \def QL_MAX_INT \see QL_HAS_LIMITS */
-    #define QL_MAX_INT        std::numeric_limits<int>::max()
+    #define QL_MAX_INT       std::numeric_limits<int>::max()
     /*! \def QL_MIN_DOUBLE \see QL_HAS_LIMITS */
-    #define QL_MIN_DOUBLE    std::numeric_limits<double>::min()
+    #define QL_MIN_DOUBLE   -std::numeric_limits<double>::max()
     /*! \def QL_MAX_DOUBLE \see QL_HAS_LIMITS */
     #define QL_MAX_DOUBLE    std::numeric_limits<double>::max()
     /*! \def QL_EPSILON \see QL_HAS_LIMITS */
-    #define QL_EPSILON        std::numeric_limits<double>::epsilon()
+    #define QL_EPSILON       std::numeric_limits<double>::epsilon()
 #else
     #include <limits.h>
     #include <float.h>
-    #define QL_MIN_INT        INT_MIN
-    #define QL_MAX_INT        INT_MAX
-    #define QL_MIN_DOUBLE    DBL_MIN
+    #define QL_MIN_INT       INT_MIN
+    #define QL_MAX_INT       INT_MAX
+    #define QL_MIN_DOUBLE   -DBL_MAX
     #define QL_MAX_DOUBLE    DBL_MAX
-    #define QL_EPSILON        DBL_EPSILON
+    #define QL_EPSILON       DBL_EPSILON
 #endif
 
 /*! \def QL_GARBLED_MIN_AND_MAX
@@ -403,6 +411,8 @@
         return x > y ? x : y; }
 #endif
 
+// below for systems using configure
+// above the others
 
 #else
 #include "config.h"
@@ -416,26 +426,26 @@
 #if defined HAVE_LIMITS
 # include <limits>
 # define QL_MIN_INT      std::numeric_limits<int>::min()
-# define QL_MAX_INT     std::numeric_limits<int>::max()
-# define QL_MIN_DOUBLE     std::numeric_limits<double>::min()
-# define QL_MAX_DOUBLE     std::numeric_limits<double>::max()
-# define QL_EPSILON     std::numeric_limits<double>::epsilon()
+# define QL_MAX_INT      std::numeric_limits<int>::max()
+# define QL_MIN_DOUBLE  -std::numeric_limits<double>::max()
+# define QL_MAX_DOUBLE   std::numeric_limits<double>::max()
+# define QL_EPSILON      std::numeric_limits<double>::epsilon()
 #elif defined HAVE_FLOAT_H
 # if defined HAVE_CLIMITS
 #  include <climits>
 #  include <float.h>
 #  define QL_MIN_INT        INT_MIN
 #  define QL_MAX_INT        INT_MAX
-#  define QL_MIN_DOUBLE            DBL_MIN
-#  define QL_MAX_DOUBLE            DBL_MAX
+#  define QL_MIN_DOUBLE    -DBL_MAX
+#  define QL_MAX_DOUBLE     DBL_MAX
 #  define QL_EPSILON        DBL_EPSILON
 # elif defined HAVE_LIMITS_H
 #  include <limits.h>
 #  include <float.h>
 #  define QL_MIN_INT        INT_MIN
 #  define QL_MAX_INT        INT_MAX
-#  define QL_MIN_DOUBLE            DBL_MIN
-#  define QL_MAX_DOUBLE            DBL_MAX
+#  define QL_MIN_DOUBLE    -DBL_MAX
+#  define QL_MAX_DOUBLE     DBL_MAX
 #  define QL_EPSILON        DBL_EPSILON
 # endif
 #else
@@ -443,13 +453,13 @@
 #endif
 
 #include <algorithm>
-#define QL_GARBLED_REVERSE_ITERATORS 0
-#define QL_GARBLED_PTR_CONST 0
-#define QL_TEMPLATE_METAPROGRAMMING_WORKS    0
-#define QL_EXPRESSION_TEMPLATES_WORK        0
-#define QL_REQUIRES_DUMMY_RETURN            0
-#define QL_BROKEN_TEMPLATE_SPECIALIZATION    0
-#define QL_GARBLED_MIN_AND_MAX                0
+#define QL_GARBLED_REVERSE_ITERATORS      0
+#define QL_GARBLED_PTR_CONST              0
+#define QL_TEMPLATE_METAPROGRAMMING_WORKS 0
+#define QL_EXPRESSION_TEMPLATES_WORK      0
+#define QL_REQUIRES_DUMMY_RETURN          0
+#define QL_BROKEN_TEMPLATE_SPECIALIZATION 0
+#define QL_GARBLED_MIN_AND_MAX            0
 
 #endif /* HAVE_CONFIG_H */
 
