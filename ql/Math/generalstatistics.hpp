@@ -71,10 +71,46 @@ namespace QuantLib {
                 return QL_SQRT(variance());
             }
 
-            double downsideVariance() const;
+            /*! returns the variance of observations below mean 
+                \f[ \frac{\sum w_i (min(0, x_i-\langle x \rangle))^2 }{\sum w_i}. \f]
+
+                Markowitz (1959)
+            */
+            double GeneralStatistics::semiVariance() const {
+                return regret(mean());
+            }
+
+            /*! returns the semi deviation, defined as the
+                square root of the semi variance.
+            */
+            double semiDeviation() const {
+                return QL_SQRT(downsideVariance());
+            }
+
+            /*! returns the downside variance, defined as
+                \f[ \frac{N}{N-1} \times \frac{ \sum_{i=1}^{N}
+                \theta \times x_i^{2}}{ \sum_{i=1}^{N} w_i} \f],
+                where \f$ \theta \f$ = 0 if x > 0 and
+                \f$ \theta \f$ =1 if x <0
+            */
+            double downsideVariance() const {
+                return regret(0.0);
+            }
+
+            /*! returns the downside deviation, defined as the
+                square root of the downside variance.
+            */
             double downsideDeviation() const {
                 return QL_SQRT(downsideVariance());
             }
+
+            /*! returns the variance of observations below target 
+                \f[ \frac{\sum w_i (min(0, x_i-target))^2 }{\sum w_i}. \f]
+
+                See Dembo, Freeman "The Rules Of Risk", Wiley (2001)
+            */
+            double GeneralStatistics::regret(double target) const;
+
 
             /*! returns the error estimate \f$ \epsilon \f$, defined as the
                 square root of the ratio of the variance to the number of

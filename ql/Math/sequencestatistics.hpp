@@ -74,6 +74,8 @@ namespace QuantLib {
             std::vector<double> standardDeviation() const;
             std::vector<double> downsideVariance() const;
             std::vector<double> downsideDeviation() const;
+            std::vector<double> semiVariance() const;
+            std::vector<double> semiDeviation() const;
             std::vector<double> errorEstimate() const;
             std::vector<double> skewness() const;
             std::vector<double> kurtosis() const;
@@ -95,6 +97,8 @@ namespace QuantLib {
             std::vector<double> gaussianExpectedShortfall(
                 double percentile) const;
             std::vector<double> expectedShortfall(double percentile) const;
+
+            std::vector<double> regret(double target) const;
 
             std::vector<double> gaussianShortfall(
                 double target) const;
@@ -172,6 +176,8 @@ namespace QuantLib {
         DEFINE_SEQUENCE_STAT_CONST_METHOD_VOID(standardDeviation)
         DEFINE_SEQUENCE_STAT_CONST_METHOD_VOID(downsideVariance)
         DEFINE_SEQUENCE_STAT_CONST_METHOD_VOID(downsideDeviation)
+        DEFINE_SEQUENCE_STAT_CONST_METHOD_VOID(semiVariance)
+        DEFINE_SEQUENCE_STAT_CONST_METHOD_VOID(semiDeviation)
         DEFINE_SEQUENCE_STAT_CONST_METHOD_VOID(errorEstimate)
         DEFINE_SEQUENCE_STAT_CONST_METHOD_VOID(skewness)
         DEFINE_SEQUENCE_STAT_CONST_METHOD_VOID(kurtosis)
@@ -201,6 +207,7 @@ namespace QuantLib {
         DEFINE_SEQUENCE_STAT_CONST_METHOD_DOUBLE(potentialUpside)
         DEFINE_SEQUENCE_STAT_CONST_METHOD_DOUBLE(valueAtRisk)
         DEFINE_SEQUENCE_STAT_CONST_METHOD_DOUBLE(expectedShortfall)
+        DEFINE_SEQUENCE_STAT_CONST_METHOD_DOUBLE(regret)
         DEFINE_SEQUENCE_STAT_CONST_METHOD_DOUBLE(shortfall)
         DEFINE_SEQUENCE_STAT_CONST_METHOD_DOUBLE(averageShortfall)
         #undef DEFINE_SEQUENCE_STAT_CONST_METHOD_DOUBLE

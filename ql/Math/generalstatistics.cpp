@@ -77,7 +77,7 @@ namespace QuantLib {
             return result;
         }
 
-        double GeneralStatistics::downsideVariance() const {
+        double GeneralStatistics::regret(double target) const {
             double sampleWeight = weightSum();
             QL_REQUIRE(sampleWeight>0.0,
                        "GeneralStatistics::downsideVariance() : "
@@ -88,16 +88,13 @@ namespace QuantLib {
                        "GeneralStatistics::downsideVariance() : "
                        "sample number <=1, unsufficient");
 
-//            double m = mean();
             double result = 0.0;
             std::vector<std::pair<double,double> >::iterator it;
             for (it=samples_.begin(); it!=samples_.end(); it++) {
-                double temp = it->first;
-                // temp < 0.0 or temp<m ????
-                result += ( temp<0.0 ? it->second*temp*temp : 0);
+                double temp = it->first - target;
+                result += ( temp<0.0 ? it->second*temp*temp : 0.0);
             }
             result /= sampleWeight;
-//            result -= m*m;
             result *= sampleNumber/(sampleNumber-1.0);
             return result;
         }
