@@ -25,6 +25,11 @@
     $Source$
     $Name$
     $Log$
+    Revision 1.5  2001/01/30 09:03:38  marmar
+    GeneralMonteCarlo contains the basic ideas of any Monte Carlo
+    simulation: sample from a "sample generator" and accumulate
+    in a "sample accumulator".
+
     Revision 1.4  2001/01/17 14:37:56  nando
     tabs removed
 
@@ -59,8 +64,6 @@ namespace QuantLib {
             See EuropeanPathPricer as an example
         */
 
-        using MonteCarlo::MonteCarlo1D;
-
         class McPricer {
         public:
             McPricer():isInitialized_(false){}
@@ -72,7 +75,7 @@ namespace QuantLib {
             bool isInitialized_;
             long seed_;
             mutable long samples_;
-            mutable MonteCarlo1D montecarloPricer_;
+            mutable MonteCarlo::MonteCarlo1D montecarloPricer_;
         };
 
         inline McPricer::McPricer(long samples, long seed):

@@ -25,6 +25,11 @@
     $Source$
     $Name$
     $Log$
+    Revision 1.7  2001/01/30 09:03:38  marmar
+    GeneralMonteCarlo contains the basic ideas of any Monte Carlo
+    simulation: sample from a "sample generator" and accumulate
+    in a "sample accumulator".
+
     Revision 1.6  2001/01/29 15:00:49  marmar
     Modified to accomodate code-sharing with
     multi-dimensional Monte Carlo
@@ -51,12 +56,12 @@
 #define quantlib_montecarlo_one_dimensional_h
 
 #include "qldefines.h"
-#include "rate.h"
+#include "handle.h"
 #include "statistics.h"
+#include "pathpricer.h"
 #include "standardpathgenerator.h"
 #include "mcoptionsample.h"
-#include "handle.h"
-#include "pathpricer.h"
+#include "generalmontecarlo.h"
 
 namespace QuantLib {
 
@@ -78,28 +83,27 @@ namespace QuantLib {
             double value(long samples) const;
             double errorEstimate() const;
         private:
-            mutable OptionSample<StandardPathGenerator,PathPricer>
-                optionSample_;
-            mutable Math::Statistics sampleAccumulator_;
+            Math::Statistics sampleAccumulator_;
+            OptionSample<StandardPathGenerator,PathPricer> optionSample_;
+            GeneralMonteCarlo<Math::Statistics, 
+                  OptionSample<StandardPathGenerator,PathPricer> > monteCarlo_;
         };
 
-        // inline definitions
-
+        // inline definitions        
         inline MonteCarlo1D::MonteCarlo1D(
                 Handle<StandardPathGenerator> pathGenerator,
                 Handle<PathPricer> pathPricer) :
                 sampleAccumulator_(), 
-                optionSample_(pathGenerator, pathPricer){}
+                optionSample_(pathGenerator, pathPricer),
+                monteCarlo_(sampleAccumulator_, optionSample_){}
 
-        inline double MonteCarlo1D::value(long samples) const{
-            for(long i=1; i<=samples; i++)
-                sampleAccumulator_.add(optionSample_.next(),
-                    optionSample_.weight());
-            return sampleAccumulator_.mean();
+        inline double MonteCarlo1D::value(long samples) const{        
+            monteCarlo_.sample(samples);
+            return monteCarlo_.statisticAccumulator().mean();
         }
 
-        inline double MonteCarlo1D::errorEstimate() const{
-            return sampleAccumulator_.errorEstimate();
+        inline double MonteCarlo1D::errorEstimate() const{        
+            return monteCarlo_.statisticAccumulator().errorEstimate();
         }
 
     }
