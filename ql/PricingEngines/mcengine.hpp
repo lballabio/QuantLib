@@ -201,8 +201,7 @@ namespace QuantLib {
                                     arguments_.volTS, 
                                     arguments_.underlying));
 
-            return Handle<MonteCarlo::PathGenerator2<SG> >(
-                new MonteCarlo::PathGenerator2<SG>(bs, timeGrid_, sequenceGenerator_));
+            return Handle<PG>(new PG(bs, timeGrid_, sequenceGenerator_));
 
         }
 

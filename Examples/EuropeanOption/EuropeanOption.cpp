@@ -188,9 +188,10 @@ int main(int argc, char* argv[])
 
         // fifth method: Monte Carlo (crude)
         method ="MC (crude)";
+        Size mcSeed = 12345;
         bool antitheticVariance = false;
         McEuropean mcEur(Option::Call, underlying, strike, dividendYield,
-            riskFreeRate, maturity, volatility, antitheticVariance, 123456);
+            riskFreeRate, maturity, volatility, antitheticVariance, mcSeed);
         // let's require a tolerance of 0.002%
         value = mcEur.value(0.02);
         estimatedError = mcEur.errorEstimate();
@@ -209,7 +210,7 @@ int main(int argc, char* argv[])
         Size nSamples = mcEur.sampleAccumulator().samples();
         antitheticVariance = true;
         McEuropean mcEur2(Option::Call, underlying, strike, dividendYield,
-            riskFreeRate, maturity, volatility, antitheticVariance);
+            riskFreeRate, maturity, volatility, antitheticVariance, mcSeed);
         value = mcEur2.valueWithSamples(nSamples);
         estimatedError = mcEur2.errorEstimate();
         discrepancy = QL_FABS(value-rightValue);
@@ -284,8 +285,8 @@ int main(int argc, char* argv[])
             flatDividendTS,
             flatTermStructure,
             exercise,
-//            flatVolTS,
-            blackSurface,
+            flatVolTS,
+//            blackSurface,
             Handle<PricingEngine>(new AnalyticEuropeanEngine()));
 
 
@@ -401,7 +402,7 @@ int main(int argc, char* argv[])
         timeSteps = 365;
         Handle<TimeGrid> timeGrid(new TimeGrid(maturity, timeSteps));
         method = "MC (crude)";
-        UniformRandomGenerator rng(123456);
+        UniformRandomGenerator rng(mcSeed);
 
         UniformRandomSequenceGenerator rsg(timeSteps, rng);
         UniformLowDiscrepancySequenceGenerator ldsg(timeSteps);
@@ -421,7 +422,7 @@ int main(int argc, char* argv[])
         relativeDiscrepancy = discrepancy/rightValue;
         std::cout << method << "\t"
              << DoubleFormatter::toString(value, 4) << "\t"
-             << DoubleFormatter::toString(errorEstimate, 4) << "\t"
+             << DoubleFormatter::toString(errorEstimate, 4) << "\t\t"
              << DoubleFormatter::toString(discrepancy, 6) << "\t"
              << DoubleFormatter::toString(relativeDiscrepancy, 6)
              << std::endl;
