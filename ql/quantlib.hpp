@@ -158,6 +158,7 @@
 #include <ql/Math/incrementalstatistics.hpp>
 #include <ql/Math/interpolation.hpp>
 #include <ql/Math/interpolation2D.hpp>
+#include <ql/Math/kronrodintegral.hpp>
 #include <ql/Math/lexicographicalview.hpp>
 #include <ql/Math/linearinterpolation.hpp>
 #include <ql/Math/loglinearinterpolation.hpp>

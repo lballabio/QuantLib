@@ -17,6 +17,7 @@ include_HEADERS = \
 	gaussianstatistics.hpp \
 	generalstatistics.hpp \
 	incrementalstatistics.hpp \
+	kronrodintegral.hpp \
 	lexicographicalview.hpp \
 	linearinterpolation.hpp \
 	loglinearinterpolation.hpp \
