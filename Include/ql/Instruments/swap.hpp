@@ -30,6 +30,9 @@
 
 //  $Source$
 //  $Log$
+//  Revision 1.4  2001/07/02 12:36:18  sigmud
+//  pruned redundant header inclusions
+//
 //  Revision 1.3  2001/06/21 14:30:43  lballabio
 //  Observability is back
 //
@@ -46,7 +49,6 @@
 #include "ql/instrument.hpp"
 #include "ql/cashflow.hpp"
 #include "ql/termstructure.hpp"
-#include "ql/relinkablehandle.hpp"
 
 namespace QuantLib {
 

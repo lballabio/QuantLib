@@ -30,6 +30,9 @@
 
 // $Source$
 // $Log$
+// Revision 1.5  2001/07/02 12:36:17  sigmud
+// pruned redundant header inclusions
+//
 // Revision 1.4  2001/06/21 14:30:43  lballabio
 // Observability is back
 //
@@ -47,7 +50,6 @@
 #ifndef quantlib_relinkable_handle_h
 #define quantlib_relinkable_handle_h
 
-#include "ql/qlerrors.hpp"
 #include "ql/handle.hpp"
 #include "ql/Patterns/observable.hpp"
 

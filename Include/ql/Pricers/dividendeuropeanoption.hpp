@@ -30,6 +30,9 @@
 
 // $Source$
 // $Log$
+// Revision 1.7  2001/07/02 12:36:18  sigmud
+// pruned redundant header inclusions
+//
 // Revision 1.6  2001/06/22 16:38:15  lballabio
 // Improved documentation
 //
@@ -40,7 +43,6 @@
 #ifndef BSM_dividend_european_option_pricer_h
 #define BSM_dividend_european_option_pricer_h
 
-#include "ql/dataformatters.hpp"
 #include "ql/Pricers/bsmeuropeanoption.hpp"
 #include <vector>
 

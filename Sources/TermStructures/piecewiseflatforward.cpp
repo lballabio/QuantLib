@@ -30,6 +30,9 @@
 
 // $Source$
 // $Log$
+// Revision 1.13  2001/07/02 12:36:18  sigmud
+// pruned redundant header inclusions
+//
 // Revision 1.12  2001/06/13 16:18:23  lballabio
 // Polished rate helper interfaces
 //
@@ -61,7 +64,6 @@
 
 #include "ql/TermStructures/piecewiseflatforward.hpp"
 #include "ql/Solvers1D/brent.hpp"
-#include "ql/dataformatters.hpp"
 
 namespace QuantLib {
 

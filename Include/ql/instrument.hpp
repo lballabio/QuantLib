@@ -30,6 +30,9 @@
 
 // $Source$
 // $Log$
+// Revision 1.7  2001/07/02 12:36:17  sigmud
+// pruned redundant header inclusions
+//
 // Revision 1.6  2001/06/21 14:30:43  lballabio
 // Observability is back
 //
@@ -43,7 +46,6 @@
 #ifndef quantlib_instrument_h
 #define quantlib_instrument_h
 
-#include "ql/qldefines.hpp"
 #include "ql/Patterns/observable.hpp"
 #include <string>
 

@@ -30,6 +30,9 @@
 
 //  $Source$
 //  $Log$
+//  Revision 1.3  2001/07/02 12:36:17  sigmud
+//  pruned redundant header inclusions
+//
 //  Revision 1.2  2001/06/05 09:35:13  lballabio
 //  Updated docs to use Doxygen 1.2.8
 //
@@ -40,8 +43,6 @@
 #ifndef quantlib_scheduler_hpp
 #define quantlib_scheduler_hpp
 
-#include "ql/handle.hpp"
-#include "ql/date.hpp"
 #include "ql/calendar.hpp"
 #include <vector>
 

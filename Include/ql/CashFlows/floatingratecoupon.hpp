@@ -28,6 +28,9 @@
     $Id$
     $Source$
     $Log$
+    Revision 1.5  2001/07/02 12:36:18  sigmud
+    pruned redundant header inclusions
+
     Revision 1.4  2001/06/22 16:38:15  lballabio
     Improved documentation
 
@@ -46,8 +49,6 @@
 #define quantlib_floating_rate_coupon_hpp
 
 #include "ql/cashflow.hpp"
-#include "ql/index.hpp"
-#include "ql/termstructure.hpp"
 #include "ql/handle.hpp"
 #include "ql/Indexes/xibor.hpp"
 

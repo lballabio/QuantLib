@@ -29,6 +29,9 @@
 
 // $Source$
 // $Log$
+// Revision 1.7  2001/07/02 12:36:18  sigmud
+// pruned redundant header inclusions
+//
 // Revision 1.6  2001/06/22 16:38:15  lballabio
 // Improved documentation
 //
@@ -42,8 +45,6 @@
 #ifndef quantlib_montecarlo_get_covariance_h
 #define quantlib_montecarlo_get_covariance_h
 
-#include "ql/qlerrors.hpp"
-#include "ql/array.hpp"
 #include "ql/Math/matrix.hpp"
 
 namespace QuantLib {

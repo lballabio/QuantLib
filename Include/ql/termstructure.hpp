@@ -30,6 +30,9 @@
 
 // $Source$
 // $Log$
+// Revision 1.11  2001/07/02 12:36:17  sigmud
+// pruned redundant header inclusions
+//
 // Revision 1.10  2001/06/20 11:52:29  lballabio
 // Some observability is back
 //
@@ -50,7 +53,6 @@
 #ifndef quantlib_term_structure_h
 #define quantlib_term_structure_h
 
-#include "ql/date.hpp"
 #include "ql/calendar.hpp"
 #include "ql/rate.hpp"
 #include "ql/spread.hpp"

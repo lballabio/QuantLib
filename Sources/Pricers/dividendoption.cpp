@@ -29,6 +29,9 @@
 */
 // $Source$
 // $Log$
+// Revision 1.19  2001/07/02 12:36:18  sigmud
+// pruned redundant header inclusions
+//
 // Revision 1.18  2001/05/25 16:01:16  nando
 // R019-branch-merge2 merged into trunk
 //
@@ -41,7 +44,6 @@
 #include "ql/Math/cubicspline.hpp"
 #include "ql/Pricers/dividendeuropeanoption.hpp"
 #include "ql/FiniteDifferences/valueatcenter.hpp"
-#include <vector>
 
 namespace QuantLib {
 

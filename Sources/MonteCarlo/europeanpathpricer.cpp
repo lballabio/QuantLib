@@ -29,12 +29,14 @@
 
 // $Source$
 // $Log$
+// Revision 1.9  2001/07/02 12:36:18  sigmud
+// pruned redundant header inclusions
+//
 // Revision 1.8  2001/05/24 15:40:10  nando
 // smoothing #include xx.hpp and cutting old Log messages
 //
 
 #include "ql/MonteCarlo/europeanpathpricer.hpp"
-#include "ql/qlerrors.hpp"
 
 
 namespace QuantLib {

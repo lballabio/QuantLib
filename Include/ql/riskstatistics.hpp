@@ -30,6 +30,9 @@
 
 // $Source$
 // $Log$
+// Revision 1.8  2001/07/02 12:36:17  sigmud
+// pruned redundant header inclusions
+//
 // Revision 1.7  2001/06/11 16:00:23  nando
 // potentialUpFront is now potentialUpside.
 // Few typos fixed
@@ -52,7 +55,6 @@
 
 #include "ql/Math/statistics.hpp"
 #include "ql/Math/riskmeasures.hpp"
-#include <iostream>
 
 namespace QuantLib {
 

@@ -28,6 +28,9 @@
     $Id$
     $Source$
     $Log$
+    Revision 1.3  2001/07/02 12:36:18  sigmud
+    pruned redundant header inclusions
+
     Revision 1.2  2001/06/15 13:52:06  lballabio
     Reworked indexes
 
@@ -40,10 +43,8 @@
 #define quantlib_accruing_coupon_hpp
 
 #include "ql/cashflow.hpp"
-#include "ql/date.hpp"
 #include "ql/calendar.hpp"
 #include "ql/daycounter.hpp"
-#include "ql/handle.hpp"
 
 namespace QuantLib {
 

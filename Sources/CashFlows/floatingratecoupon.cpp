@@ -28,6 +28,9 @@
     $Id$
     $Source$
     $Log$
+    Revision 1.3  2001/07/02 12:36:18  sigmud
+    pruned redundant header inclusions
+
     Revision 1.2  2001/06/21 11:34:23  lballabio
     Ensured that floating rate coupon index stays alive
 
@@ -37,7 +40,6 @@
 */
 
 #include "ql/CashFlows/floatingratecoupon.hpp"
-#include "ql/dataformatters.hpp"
 #include "ql/Indexes/xibormanager.hpp"
 
 namespace QuantLib {

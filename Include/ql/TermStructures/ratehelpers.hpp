@@ -30,6 +30,9 @@
 
 // $Source$
 // $Log$
+// Revision 1.14  2001/07/02 12:36:18  sigmud
+// pruned redundant header inclusions
+//
 // Revision 1.13  2001/06/18 08:05:59  lballabio
 // Reworked indexes and floating rate coupon
 //
@@ -51,8 +54,6 @@
 #define quantlib_ratehelper_h
 
 #include "ql/termstructure.hpp"
-#include "ql/calendar.hpp"
-#include "ql/daycounter.hpp"
 #include "ql/Instruments/simpleswap.hpp"
 
 namespace QuantLib {

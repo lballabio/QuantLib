@@ -30,6 +30,9 @@
 
 //  $Source$
 //  $Log$
+//  Revision 1.10  2001/07/02 12:36:18  sigmud
+//  pruned redundant header inclusions
+//
 //  Revision 1.9  2001/06/22 16:38:15  lballabio
 //  Improved documentation
 //
@@ -37,12 +40,9 @@
 #ifndef quantlib_risk_measures_h
 #define quantlib_risk_measures_h
 
-#include "ql/qldefines.hpp"
 #include "ql/null.hpp"
-#include "ql/qlerrors.hpp"
 #include "ql/Math/normaldistribution.hpp"
 #include <iostream>
-#include <utility>
 #include <vector>
 
 

@@ -32,8 +32,6 @@
 #define quantlib_simple_swap_h
 
 #include "ql/Instruments/swap.hpp"
-#include "ql/calendar.hpp"
-#include "ql/daycounter.hpp"
 #include "ql/index.hpp"
 
 namespace QuantLib {

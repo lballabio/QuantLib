@@ -30,6 +30,9 @@
 
 //  $Source$
 //  $Log$
+//  Revision 1.7  2001/07/02 12:36:18  sigmud
+//  pruned redundant header inclusions
+//
 //  Revision 1.6  2001/06/22 16:38:15  lballabio
 //  Improved documentation
 //
@@ -53,13 +56,9 @@
 #define quantlib_cash_flow_vectors_hpp
 
 #include "ql/cashflow.hpp"
-#include "ql/rate.hpp"
-#include "ql/calendar.hpp"
-#include "ql/daycounter.hpp"
 #include "ql/index.hpp"
 #include "ql/termstructure.hpp"
 #include "ql/handle.hpp"
-#include <vector>
 
 namespace QuantLib {
 
