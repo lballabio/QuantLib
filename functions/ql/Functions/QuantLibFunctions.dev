@@ -73,7 +73,7 @@ BuildCmd=
 Major=0
 Minor=3
 Release=8
-Build=2
+Build=0
 LanguageID=1033
 CharsetID=1252
 CompanyName=
@@ -85,7 +85,7 @@ LegalTrademarks=
 OriginalFilename=
 ProductName=
 ProductVersion=
-AutoIncBuildNr=1
+AutoIncBuildNr=0
 
 [Unit5]
 FileName=vols.hpp

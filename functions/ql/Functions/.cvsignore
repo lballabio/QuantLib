@@ -11,3 +11,4 @@ build
 .deps
 .libs
 QuantLibFunctions.layout
+QuantLibFunctions_private.*
