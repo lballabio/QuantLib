@@ -23,7 +23,7 @@
 
 /*! \page faq Frequently asked questions
 
-    \section generic Generic questions
+    \section faq_generic Generic questions
 
     <strong>
     Is it OK to email a QuantLib developer to ask questions, or seek
@@ -51,7 +51,7 @@
     immediate care of it.
 
 
-    \section contributing Contributing to the project
+    \section faq_contributing Contributing to the project
 
     <strong>
     I'm interested in getting involved with the project. What should
@@ -67,18 +67,24 @@
     but it increases the odds that the chosen task will bore you or
     otherwise discourage you from completing it.
 
-    \section msvc Using Microsoft Visual C++
+
+    \section faq_build Building QuantLib
+
+
+    \section faq_using Using QuantLib
 
     <strong>
-    I encounter the following linking error:
+    When linking QuantLib to my project under Visual C++, I encounter
+    the following linking error:
     \code
     LINK : fatal error LNK1104: cannot open file "QuantLib-vcX-xx-xxx-a_b_c.lib"
     \endcode
     </strong>
 
-    The folder including QuantLib-vcX-xx-xxx-a_b_c.lib is not in your link path
-    (see Project Settings | Link | Input in VC6 or Property Pages | Linker |
-    Input in VC7) or you haven't really built QuantLib-vcX-xx-xxx-a_b_c.lib yet.
-    Note that each build configuration produces a different library.
+    The folder including QuantLib-vcX-xx-xxx-a_b_c.lib is not in your
+    link path (see Project Settings | Link | Input in VC6 or Property
+    Pages | Linker | Input in VC7) or you haven't really built
+    QuantLib-vcX-xx-xxx-a_b_c.lib yet.  Note that each build
+    configuration produces a different library.
 
 */
