@@ -28,6 +28,9 @@
     $Source$
     $Name$
     $Log$
+    Revision 1.8  2001/02/12 18:34:49  lballabio
+    Some work on iterators
+
     Revision 1.7  2001/01/25 15:11:55  lballabio
     Added helper functions to make iterators
 
@@ -61,14 +64,12 @@ namespace QuantLib {
     namespace Utilities {
 
         template <class IteratorTag>
-        class filtering_iterator_tag {
-          public:
+        struct filtering_iterator_tag {
             typedef filtering_iterator_tag iterator_category;
         };
 
         template <>
-        class filtering_iterator_tag<std::random_access_iterator_tag> {
-          public:
+        struct filtering_iterator_tag<std::random_access_iterator_tag> {
             typedef std::bidirectional_iterator_tag iterator_category;
         };
 
@@ -78,21 +79,29 @@ namespace QuantLib {
             condition.
         */
         template <class Iterator, class UnaryPredicate>
-        class filtering_iterator {
+        class filtering_iterator : public QL_ITERATOR<
+            typename filtering_iterator_tag<
+                typename std::iterator_traits<Iterator>::iterator_category
+                >::iterator_category,
+            typename std::iterator_traits<Iterator>::value_type,
+            typename std::iterator_traits<Iterator>::difference_type,
+            typename std::iterator_traits<Iterator>::pointer,
+            typename std::iterator_traits<Iterator>::reference>
+        {
           public:
-            typedef typename std::iterator_traits<Iterator>::iterator_category
-                underlying_category;
-            typedef 
-                filtering_iterator_tag<underlying_category>::iterator_category
-                    iterator_category;
-            typedef typename std::iterator_traits<Iterator>::value_type
+            #if !defined(QL_INHERITED_TYPEDEFS_WORK)
+            typedef typename filtering_iterator_tag<
+                typename std::iterator_traits<Iterator>::iterator_category
+                >::iterator_category iterator_category;
+            typedef typename std::iterator_traits<Iterator>::value_type 
                 value_type;
             typedef typename std::iterator_traits<Iterator>::difference_type
                 difference_type;
-            typedef typename std::iterator_traits<Iterator>::pointer
+            typedef typename std::iterator_traits<Iterator>::pointer 
                 pointer;
-            typedef typename std::iterator_traits<Iterator>::reference
+            typedef typename std::iterator_traits<Iterator>::reference 
                 reference;
+            #endif
             filtering_iterator(const Iterator&, const UnaryPredicate&,
                 const Iterator& beforeBegin, const Iterator& end);
             //! \name Dereferencing
@@ -177,7 +186,7 @@ namespace QuantLib {
         }
 
         template<class Iterator, class UnaryPredicate>
-        inline filtering_iterator<Iterator,UnaryPredicate>::reference
+        inline typename filtering_iterator<Iterator,UnaryPredicate>::reference
         filtering_iterator<Iterator,UnaryPredicate>::operator*() const {
             return *it_;
         }

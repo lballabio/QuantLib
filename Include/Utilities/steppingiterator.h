@@ -28,6 +28,9 @@
     $Source$
     $Name$
     $Log$
+    Revision 1.6  2001/02/12 18:34:49  lballabio
+    Some work on iterators
+
     Revision 1.5  2001/01/25 15:11:55  lballabio
     Added helper functions to make iterators
 
@@ -63,14 +66,23 @@ namespace QuantLib {
             \f$ n \f$ is an integer given upon construction.
         */
         template <class RandomAccessIterator>
-        class stepping_iterator {
+        class stepping_iterator : public QL_ITERATOR<
+            std::random_access_iterator_tag,
+            typename std::iterator_traits<RandomAccessIterator>::value_type,
+            typename std::iterator_traits<
+                RandomAccessIterator>::difference_type,
+            typename std::iterator_traits<RandomAccessIterator>::pointer,
+            typename std::iterator_traits<RandomAccessIterator>::reference>
+        {
           public:
+            #if !defined(QL_INHERITED_TYPEDEFS_WORK)
             typedef std::iterator_traits<RandomAccessIterator> traits;
             typedef std::random_access_iterator_tag   iterator_category;
             typedef typename traits::value_type       value_type;
             typedef typename traits::difference_type  difference_type;
             typedef typename traits::pointer          pointer;
             typedef typename traits::reference        reference;
+            #endif
             stepping_iterator(const RandomAccessIterator&, 
                 difference_type step);
             //! \name Dereferencing

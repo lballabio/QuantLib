@@ -32,6 +32,9 @@
     $Source$
     $Name$
     $Log$
+    Revision 1.28  2001/02/12 18:34:49  lballabio
+    Some work on iterators
+
     Revision 1.27  2001/02/09 19:24:30  lballabio
     Reorganized to include configuration file on all platforms
 
@@ -299,6 +302,14 @@
     #define QL_TEMPLATE_SPECIALIZATION
 #else
     #define QL_TEMPLATE_SPECIALIZATION  template<>
+#endif
+
+/*! \def QL_INHERITED_TYPEDEFS_WORK
+    The Borland C++ compiler seems not to recognize correctly typedefs inherited 
+    by/from a template class.
+*/
+#if !defined(BROKEN_TYPEDEF_INHERITANCE)
+    #define QL_INHERITED_TYPEDEFS_WORK
 #endif
 
 /*! \def QL_EXPRESSION_TEMPLATES_WORK

@@ -28,6 +28,9 @@
     $Source$
     $Name$
     $Log$
+    Revision 1.11  2001/02/12 18:34:49  lballabio
+    Some work on iterators
+
     Revision 1.10  2001/02/09 19:16:21  lballabio
     removed QL_PTR_CONST macro
 
@@ -163,22 +166,27 @@ namespace QuantLib {
         };
 
         //! random access iterator on history entries
-        class const_iterator {
+        class const_iterator : public QL_ITERATOR<
+            std::random_access_iterator_tag, Entry,
+            int, const Entry*, const Entry&>
+        {
             friend class History;
           public:
+            #if !defined(QL_INHERITED_TYPEDEFS_WORK)
             typedef std::random_access_iterator_tag iterator_category;
-            typedef Entry value_type;
-            typedef int difference_type;
-            typedef const Entry* pointer;
-            typedef const Entry& reference;
+            typedef Entry                           value_type;
+            typedef int                             difference_type;
+            typedef const Entry*                    pointer;
+            typedef const Entry&                    reference;
+            #endif
             //! \name Dereferencing
             //@{
-            const Entry& operator*() const { return theEntry; }
-            const Entry* operator->() const { return &theEntry; }
+            reference operator*() const  { return theEntry; }
+            pointer   operator->() const { return &theEntry; }
             //@}
             //! \name Random access
             //@{
-            Entry operator[](int i) const {
+            value_type operator[](difference_type i) const {
                 return Entry(theEntry.theDate+i,theEntry.theValue+i);
             }
             //@}
@@ -202,25 +210,25 @@ namespace QuantLib {
                 theEntry.theDate--; theEntry.theValue--;
                 return temp;
             }
-            const_iterator& operator+=(int i) {
+            const_iterator& operator+=(difference_type i) {
                 theEntry.theDate+=i; theEntry.theValue+=i;
                 return *this;
             }
-            const_iterator& operator-=(int i) {
+            const_iterator& operator-=(difference_type i) {
                 theEntry.theDate-=i; theEntry.theValue-=i;
                 return *this;
             }
-            const_iterator operator+(int i) {
+            const_iterator operator+(difference_type i) {
                 return const_iterator(theEntry.theDate+i,theEntry.theValue+i);
             }
-            const_iterator operator-(int i) {
+            const_iterator operator-(difference_type i) {
                 return const_iterator(theEntry.theDate-i,theEntry.theValue-i);
             }
             //@}
             //! \name Difference
             //@{
-            int operator-(const const_iterator& i) {
-                return theEntry.theValue-i.theEntry.theValue; }
+            difference_type operator-(const const_iterator& i) {
+                return theEntry.theDate-i.theEntry.theDate; }
             //@}
             //! \name Comparisons
             //@{

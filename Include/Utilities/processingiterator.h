@@ -28,6 +28,9 @@
     $Source$
     $Name$
     $Log$
+    Revision 1.4  2001/02/12 18:34:49  lballabio
+    Some work on iterators
+
     Revision 1.3  2001/02/09 19:15:52  lballabio
     removed QL_PTR_CONST macro
 
@@ -59,8 +62,15 @@ namespace QuantLib {
             Erfurt, Germany, 2000 (http://www.oonumerics.org/tmpw00/)
         */
         template <class Iterator, class UnaryFunction>
-        class processing_iterator {
+        class processing_iterator : public QL_ITERATOR<
+            typename std::iterator_traits<Iterator>::iterator_category,
+            typename UnaryFunction::result_type,
+            typename std::iterator_traits<Iterator>::difference_type,
+            const typename UnaryFunction::result_type*,
+            const typename UnaryFunction::result_type&>
+        {
           public:
+            #if !defined(QL_INHERITED_TYPEDEFS_WORK)
             typedef typename std::iterator_traits<Iterator>::iterator_category
                 iterator_category;
             typedef typename UnaryFunction::result_type
@@ -69,6 +79,7 @@ namespace QuantLib {
                 difference_type;
             typedef const value_type* pointer;
             typedef const value_type& reference;
+            #endif
             // constructor
             processing_iterator(const Iterator&, const UnaryFunction&);
             //! \name Dereferencing
@@ -181,7 +192,7 @@ namespace QuantLib {
         }
 
         template <class Iterator, class UnaryFunction>
-        inline const processing_iterator<Iterator,UnaryFunction>::value_type*
+        inline processing_iterator<Iterator,UnaryFunction>::pointer
         processing_iterator<Iterator,UnaryFunction>::operator->() const {
             return &x_;
         }

@@ -28,6 +28,9 @@
     $Source$
     $Name$
     $Log$
+    Revision 1.4  2001/02/12 18:34:49  lballabio
+    Some work on iterators
+
     Revision 1.3  2001/02/09 19:15:52  lballabio
     removed QL_PTR_CONST macro
 
@@ -60,15 +63,23 @@ namespace QuantLib {
             Erfurt, Germany, 2000 (http://www.oonumerics.org/tmpw00/)
         */
         template <class Iterator, class Function>
-        class combining_iterator {
+        class combining_iterator : public QL_ITERATOR<
+            typename std::iterator_traits<Iterator>::iterator_category,
+            typename Function::result_type,
+            typename std::iterator_traits<Iterator>::difference_type,
+            const typename Function::result_type*,
+            const typename Function::result_type&>
+        {
           public:
-            typedef typename std::iterator_traits<Iterator>::iterator_category
+            #if !defined(QL_INHERITED_TYPEDEFS_WORK)
+            typedef typename std::iterator_traits<Iterator>::iterator_category 
                 iterator_category;
             typedef typename Function::result_type value_type;
             typedef typename std::iterator_traits<Iterator>::difference_type
                 difference_type;
-            typedef const value_type* pointer;
-            typedef const value_type& reference;
+            typedef const typename Function::result_type* pointer;
+            typedef const typename Function::result_type& reference;
+            #endif
             // construct a combining iterator from a collection of iterators
             template <class IteratorCollectionIterator>
             combining_iterator(IteratorCollectionIterator it1, 
@@ -76,12 +87,12 @@ namespace QuantLib {
             : iteratorVector_(it1,it2), f_(func) {}
             //! \name Dereferencing
             //@{
-            reference operator*() const;
-            pointer operator->() const;
+            reference operator*()  const;
+            pointer   operator->() const;
             //@}
             //! \name Random access
             //@{
-            reference operator[](difference_type n) const;
+            value_type operator[](difference_type n) const;
             //@}
             //! \name Increment and decrement
             //@{
@@ -91,8 +102,8 @@ namespace QuantLib {
             combining_iterator  operator--(int);
             combining_iterator& operator+=(difference_type n);
             combining_iterator& operator-=(difference_type n);
-            combining_iterator  operator+(difference_type n) const;
-            combining_iterator  operator-(difference_type n) const;
+            combining_iterator  operator+ (difference_type n) const;
+            combining_iterator  operator- (difference_type n) const;
             //@}
             //! \name Difference
             //@{
@@ -183,17 +194,17 @@ namespace QuantLib {
         }
 
         template <class Iterator, class Function>
-        inline const combining_iterator<Iterator,Function>::value_type* 
+        inline combining_iterator<Iterator,Function>::pointer 
         combining_iterator<Iterator,Function>::operator->() const {
             x_ = f_(iteratorVector_.begin(), iteratorVector_.end());
             return &x_;
         }
 
         template <class Iterator, class Function>
-        inline combining_iterator<Iterator,Function>::reference
-        combining_iterator<Iterator,Function>::operator[]
-        (difference_type n) const {
-            return *(*this+n) ;
+        inline combining_iterator<Iterator,Function>::value_type
+        combining_iterator<Iterator,Function>::operator[](
+            difference_type n) const {
+                return *(*this+n) ;
         }
 
         template <class Iterator, class Function>
