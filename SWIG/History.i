@@ -130,7 +130,7 @@ class History {
     void advance() {
         (*self)++;
     }
-    bool __cmp__(const HistoryIterator& other) {
+    int __cmp__(const HistoryIterator& other) {
         return (*self == other ? 0 : -1);
     }
     String __str__() {
@@ -150,7 +150,7 @@ class History {
     void advance() {
         (*self)++;
     }
-    bool __cmp__(const HistoryValidIterator& other) {
+    int __cmp__(const HistoryValidIterator& other) {
         return (*self == other ? 0 : -1);
     }
     String __str__() {
@@ -167,7 +167,7 @@ class History {
     void advance() {
         (*self)++;
     }
-    bool __cmp__(const HistoryDataIterator& other) {
+    int __cmp__(const HistoryDataIterator& other) {
         return (*self == other ? 0 : -1);
     }
     String __str__() {
@@ -183,7 +183,7 @@ class History {
     void advance() {
         (*self)++;
     }
-    bool __cmp__(const HistoryValidDataIterator& other) {
+    int __cmp__(const HistoryValidDataIterator& other) {
         return (*self == other ? 0 : -1);
     }
     String __str__() {
