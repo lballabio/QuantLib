@@ -28,12 +28,12 @@ namespace QuantLib {
 
     //! safe %Newton 1-D solver
     /*! \note This solver requires that the passed function object
-              implement a method <tt>double derivative(double)</tt>.
+              implement a method <tt>Real derivative(Real)</tt>.
     */
     class NewtonSafe : public Solver1D<NewtonSafe> {
       public:
         template <class F>
-        double solveImpl(const F& f, double xAccuracy) const {
+        Real solveImpl(const F& f, Real xAccuracy) const {
 
             /* The implementation of the algorithm was inspired by
                Press, Teukolsky, Vetterling, and Flannery,
@@ -41,8 +41,8 @@ namespace QuantLib {
                Cambridge University Press
             */
 
-            double froot, dfroot, dx, dxold;
-            double xh, xl;
+            Real froot, dfroot, dx, dxold;
+            Real xh, xl;
 
             // Orient the search so that f(xl) < 0
             if (fxMin_ < 0.0) {

@@ -28,17 +28,17 @@ namespace QuantLib {
         : model_(model), instruments_(helpers) {}
         virtual ~CalibrationFunction() {}
 
-        virtual double value(const Array& params) const {
+        virtual Real value(const Array& params) const {
             model_->setParams(params);
 
-            double value = 0.0;
+            Real value = 0.0;
             for (Size i=0; i<instruments_.size(); i++) {
-                double diff = instruments_[i]->quoteError();
+                Real diff = instruments_[i]->quoteError();
                 value += diff*diff;
             }
             return value;
         }
-        virtual double finiteDifferenceEpsilon() const { return 1e-7; }
+        virtual Real finiteDifferenceEpsilon() const { return 1e-7; }
       private:
         boost::shared_ptr<ShortRateModel> model_;
         const std::vector<boost::shared_ptr<RateHelper> >& instruments_;

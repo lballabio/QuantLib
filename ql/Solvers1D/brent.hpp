@@ -30,7 +30,7 @@ namespace QuantLib {
     class Brent : public Solver1D<Brent> {
       public:
         template <class F>
-        double solveImpl(const F& f, double xAccuracy) const {
+        Real solveImpl(const F& f, Real xAccuracy) const {
 
             /* The implementation of the algorithm was inspired by
                Press, Teukolsky, Vetterling, and Flannery,
@@ -38,10 +38,10 @@ namespace QuantLib {
                University Press
             */
 
-            double min1, min2;
-            double froot, p, q, r, s, xAcc1, xMid;
+            Real min1, min2;
+            Real froot, p, q, r, s, xAcc1, xMid;
             // dummy assignements to avoid compiler warning
-            double d = 0.0, e = 0.0;
+            Real d = 0.0, e = 0.0;
 
             root_ = xMax_;
             froot = fxMax_;
@@ -112,7 +112,7 @@ namespace QuantLib {
             QL_DUMMY_RETURN(0.0);
         }
       private:
-        double sign(double a, double b) const {
+        Real sign(Real a, Real b) const {
             return b >= 0.0 ? QL_FABS(a) : -QL_FABS(a);
         }
     };

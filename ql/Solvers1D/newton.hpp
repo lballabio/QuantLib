@@ -28,12 +28,12 @@ namespace QuantLib {
 
     //! %Newton 1-D solver
     /*! \note This solver requires that the passed function object
-              implement a method <tt>double derivative(double)</tt>.
+              implement a method <tt>Real derivative(Real)</tt>.
     */
     class Newton : public Solver1D<Newton> {
       public:
         template <class F>
-        double solveImpl(const F& f, double xAccuracy) const {
+        Real solveImpl(const F& f, Real xAccuracy) const {
 
             /* The implementation of the algorithm was inspired by
                Press, Teukolsky, Vetterling, and Flannery,
@@ -41,7 +41,7 @@ namespace QuantLib {
                Cambridge University Press
             */
 
-            double froot, dfroot, dx;
+            Real froot, dfroot, dx;
 
             froot = f(root_);
             dfroot = f.derivative(root_);

@@ -48,15 +48,15 @@ namespace QuantLib {
       public:
         BlackVarianceCurve(const Date& referenceDate,
                            const std::vector<Date>& dates,
-                           const std::vector<double>& blackVolCurve,
+                           const std::vector<Volatility>& blackVolCurve,
                            const DayCounter& dayCounter = Actual365());
         //! \name BlackVolTermStructure interface
         //@{
         Date referenceDate() const;
         DayCounter dayCounter() const;
         Date maxDate() const;
-        double minStrike() const;
-        double maxStrike() const;
+        Real minStrike() const;
+        Real maxStrike() const;
         //@}
         //! \name Modifiers
         //@{
@@ -81,13 +81,13 @@ namespace QuantLib {
         virtual void accept(AcyclicVisitor&);
         //@}
       protected:
-        virtual double blackVarianceImpl(Time t, double) const;
+        virtual Real blackVarianceImpl(Time t, Real) const;
       private:
         Date referenceDate_;
         DayCounter dayCounter_;
         Date maxDate_;
         std::vector<Time> times_;
-        std::vector<double> variances_;
+        std::vector<Real> variances_;
         Interpolation varianceCurve_;
     };
 
@@ -106,11 +106,11 @@ namespace QuantLib {
         return maxDate_; 
     }
 
-    inline double BlackVarianceCurve::minStrike() const {
+    inline Real BlackVarianceCurve::minStrike() const {
         return QL_MIN_DOUBLE;
     }
 
-    inline double BlackVarianceCurve::maxStrike() const {
+    inline Real BlackVarianceCurve::maxStrike() const {
         return QL_MAX_DOUBLE;
     }
 

@@ -73,7 +73,7 @@ namespace QuantLib {
                                               Months, roll_);
         Time compoundTime = dayCounter_.yearFraction(referenceDate_,
                                                      compoundDate);
-        double qFactor = 0.0;
+        Real qFactor = 0.0;
         Size i;
         Integer ci;
         // Ignore first entry (SPOT with df=1.0)

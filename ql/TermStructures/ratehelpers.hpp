@@ -40,13 +40,13 @@ namespace QuantLib {
     class RateHelper : public Observer, public Observable {
       public:
         RateHelper(const RelinkableHandle<Quote>& quote);
-        RateHelper(double quote);
+        RateHelper(Real quote);
         virtual ~RateHelper() {}
         //! \name RateHelper interface
         //@{
-        double quoteError() const;
-        double referenceQuote() const { return quote_->value(); }
-        virtual double impliedQuote() const = 0;
+        Real quoteError() const;
+        Real referenceQuote() const { return quote_->value(); }
+        virtual Real impliedQuote() const = 0;
         virtual DiscountFactor discountGuess() const {
             return Null<Real>();
         }
@@ -86,13 +86,13 @@ namespace QuantLib {
                           const Calendar& calendar,
                           RollingConvention convention,
                           const DayCounter& dayCounter);
-        DepositRateHelper(double rate,
+        DepositRateHelper(Rate rate,
                           Integer n, TimeUnit units,
                           Integer settlementDays,
                           const Calendar& calendar,
                           RollingConvention convention,
                           const DayCounter& dayCounter);
-        double impliedQuote() const;
+        Real impliedQuote() const;
         DiscountFactor discountGuess() const;
         void setTermStructure(TermStructure*);
         Date maturity() const;
@@ -104,7 +104,7 @@ namespace QuantLib {
         RollingConvention convention_;
         DayCounter dayCounter_;
         Date settlement_, maturity_;
-        double yearFraction_;
+        Time yearFraction_;
     };
 
 
@@ -122,13 +122,13 @@ namespace QuantLib {
                       const Calendar& calendar,
                       RollingConvention convention,
                       const DayCounter& dayCounter);
-        FraRateHelper(double rate,
+        FraRateHelper(Rate rate,
                       Integer monthsToStart, Integer monthsToEnd,
                       Integer settlementDays,
                       const Calendar& calendar,
                       RollingConvention convention,
                       const DayCounter& dayCounter);
-        double impliedQuote() const;
+        Real impliedQuote() const;
         DiscountFactor discountGuess() const;
         void setTermStructure(TermStructure*);
         Date maturity() const;
@@ -139,7 +139,7 @@ namespace QuantLib {
         RollingConvention convention_;
         DayCounter dayCounter_;
         Date settlement_, start_, maturity_;
-        double yearFraction_;
+        Time yearFraction_;
     };
 
 
@@ -161,13 +161,13 @@ namespace QuantLib {
                           const Calendar& calendar,
                           RollingConvention convention,
                           const DayCounter& dayCounter);
-        FuturesRateHelper(double price,
+        FuturesRateHelper(Real price,
                           const Date& ImmDate,
                           Integer nMonths,
                           const Calendar& calendar,
                           RollingConvention convention,
                           const DayCounter& dayCounter);
-        double impliedQuote() const;
+        Real impliedQuote() const;
         DiscountFactor discountGuess() const;
         Date maturity() const;
       private:
@@ -177,7 +177,7 @@ namespace QuantLib {
         RollingConvention convention_;
         DayCounter dayCounter_;
         Date maturity_;
-        double yearFraction_;
+        Time yearFraction_;
     };
 
 
@@ -198,7 +198,7 @@ namespace QuantLib {
                        const DayCounter& fixedDayCount,
                        // floating leg
                        Frequency floatingFrequency);
-        SwapRateHelper(double rate,
+        SwapRateHelper(Rate rate,
                        Integer n, TimeUnit units,
                        Integer settlementDays,
                        const Calendar& calendar,
@@ -209,7 +209,7 @@ namespace QuantLib {
                        const DayCounter& fixedDayCount,
                        // floating leg
                        Frequency floatingFrequency);
-        double impliedQuote() const;
+        Real impliedQuote() const;
         // implementing discountGuess() is not worthwhile,
         // and may not avoid the root-finding process
         Date maturity() const;

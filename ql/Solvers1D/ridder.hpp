@@ -30,7 +30,7 @@ namespace QuantLib {
     class Ridder : public Solver1D<Ridder> {
       public:
         template <class F>
-        double solveImpl(const F& f, double xAcc) const {
+        Real solveImpl(const F& f, Real xAcc) const {
 
             /* The implementation of the algorithm was inspired by
                Press, Teukolsky, Vetterling, and Flannery,
@@ -38,12 +38,12 @@ namespace QuantLib {
                Cambridge University Press
             */
 
-            double fxMid, froot, s, xMid, nextRoot;
+            Real fxMid, froot, s, xMid, nextRoot;
 
             // test on Black-Scholes implied volatility show that
             // Ridder solver algorithm actually provides an
             // accuracy 100 times below promised
-            double xAccuracy = xAcc/100.0;
+            Real xAccuracy = xAcc/100.0;
 
             // Any highly unlikely value, to simplify logic below
             root_=QL_MIN_DOUBLE;
@@ -95,7 +95,7 @@ namespace QuantLib {
             QL_DUMMY_RETURN(0.0);
         }
       private:
-        double sign(double a, double b) const {
+        Real sign(Real a, Real b) const {
             return b >= 0.0 ? QL_FABS(a) : -QL_FABS(a);
         }
     };

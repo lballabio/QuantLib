@@ -49,7 +49,7 @@ namespace QuantLib {
                              InterpolatorDefaultExtrapolation };
         BlackVarianceSurface(const Date& referenceDate,
                              const std::vector<Date>& dates,
-                             const std::vector<double>& strikes,
+                             const std::vector<Real>& strikes,
                              const Matrix& blackVolMatrix,
                              Extrapolation lowerExtrapolation =
                              InterpolatorDefaultExtrapolation,
@@ -67,10 +67,10 @@ namespace QuantLib {
         Date maxDate() const { 
             return maxDate_; 
         }
-        double minStrike() const { 
+        Real minStrike() const { 
             return strikes_.front(); 
         }
-        double maxStrike() const { 
+        Real maxStrike() const { 
             return strikes_.back(); 
         }
         //@}
@@ -100,12 +100,12 @@ namespace QuantLib {
         virtual void accept(AcyclicVisitor&);
         //@}
       protected:
-        virtual double blackVarianceImpl(Time t, double strike) const;
+        virtual Real blackVarianceImpl(Time t, Real strike) const;
       private:
         Date referenceDate_;
         DayCounter dayCounter_;
         Date maxDate_;
-        std::vector<double> strikes_;
+        std::vector<Real> strikes_;
         std::vector<Time> times_;
         Matrix variances_;
         Interpolation2D varianceSurface_;

@@ -30,7 +30,7 @@ namespace QuantLib {
     class FalsePosition : public Solver1D<FalsePosition> {
       public:
         template <class F>
-        double solveImpl(const F& f, double xAccuracy) const {
+        Real solveImpl(const F& f, Real xAccuracy) const {
 
             /* The implementation of the algorithm was inspired by
                Press, Teukolsky, Vetterling, and Flannery,
@@ -38,7 +38,7 @@ namespace QuantLib {
                Cambridge University Press
             */
 
-            double fl, fh, xl, xh, dx, del, froot;
+            Real fl, fh, xl, xh, dx, del, froot;
 
             // Identify the limits so that xl corresponds to the low side
             if (fxMin_ < 0.0) {

@@ -37,7 +37,7 @@ namespace QuantLib {
                              public Observer {
       public:
         LocalConstantVol(const Date& referenceDate,
-                         double volatility,
+                         Volatility volatility,
                          const DayCounter& dayCounter = Actual365());
         LocalConstantVol(const Date& referenceDate,
                          const RelinkableHandle<Quote>& volatility,
@@ -47,8 +47,8 @@ namespace QuantLib {
         Date referenceDate() const { return referenceDate_; }
         DayCounter dayCounter() const { return dayCounter_; }
         Date maxDate() const { return Date::maxDate(); }
-        double minStrike() const { return QL_MIN_DOUBLE; }
-        double maxStrike() const { return QL_MAX_DOUBLE; }
+        Real minStrike() const { return QL_MIN_DOUBLE; }
+        Real maxStrike() const { return QL_MAX_DOUBLE; }
         //@}
         //! \name Observer interface
         //@{
@@ -59,7 +59,7 @@ namespace QuantLib {
         virtual void accept(AcyclicVisitor&);
         //@}
       private:
-        double localVolImpl(Time, double) const;
+        Volatility localVolImpl(Time, Real) const;
         Date referenceDate_;
         RelinkableHandle<Quote> volatility_;
         DayCounter dayCounter_;
@@ -68,7 +68,7 @@ namespace QuantLib {
     // inline definitions
 
     inline LocalConstantVol::LocalConstantVol(const Date& referenceDate, 
-                                              double volatility, 
+                                              Volatility volatility, 
                                               const DayCounter& dayCounter)
     : referenceDate_(referenceDate), dayCounter_(dayCounter) {
         volatility_.linkTo(
@@ -97,7 +97,7 @@ namespace QuantLib {
             LocalVolTermStructure::accept(v);
     }
 
-    inline double LocalConstantVol::localVolImpl(Time t, double) const {
+    inline Volatility LocalConstantVol::localVolImpl(Time t, Real) const {
         return volatility_->value();
     }
 

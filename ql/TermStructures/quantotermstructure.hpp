@@ -44,11 +44,11 @@ namespace QuantLib {
                   const RelinkableHandle<TermStructure>& foreignRiskFreeTS,
                   const RelinkableHandle<BlackVolTermStructure>& 
                   underlyingBlackVolTS,
-                  double strike,
+                  Real strike,
                   const RelinkableHandle<BlackVolTermStructure>& 
                   exchRateBlackVolTS,
-                  double exchRateATMlevel,
-                  double underlyingExchRateCorrelation);
+                  Real exchRateATMlevel,
+                  Real underlyingExchRateCorrelation);
         //! \name TermStructure interface
         //@{
         DayCounter dayCounter() const;
@@ -68,7 +68,7 @@ namespace QuantLib {
             foreignRiskFreeTS_;
         RelinkableHandle<BlackVolTermStructure> underlyingBlackVolTS_,
             exchRateBlackVolTS_;
-        double underlyingExchRateCorrelation_, strike_, exchRateATMlevel_;
+        Real underlyingExchRateCorrelation_, strike_, exchRateATMlevel_;
         Date maxDate_;
     };
 
@@ -81,11 +81,11 @@ namespace QuantLib {
                   const RelinkableHandle<TermStructure>& foreignRiskFreeTS,
                   const RelinkableHandle<BlackVolTermStructure>& 
                   underlyingBlackVolTS,
-                  double strike,
+                  Real strike,
                   const RelinkableHandle<BlackVolTermStructure>& 
                   exchRateBlackVolTS,
-                  double exchRateATMlevel,
-                  double underlyingExchRateCorrelation)
+                  Real exchRateATMlevel,
+                  Real underlyingExchRateCorrelation)
     : underlyingDividendTS_(underlyingDividendTS),
       riskFreeTS_(riskFreeTS), foreignRiskFreeTS_(foreignRiskFreeTS),
       underlyingBlackVolTS_(underlyingBlackVolTS),

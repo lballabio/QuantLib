@@ -64,7 +64,7 @@ namespace QuantLib {
         //@}
         //! \name Random access
         //@{
-        reference operator[](int i) const {
+        reference operator[](difference_type i) const {
             return it_[i*dn_];
         }
         //@}

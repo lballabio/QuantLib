@@ -37,7 +37,7 @@ namespace QuantLib {
                        const RelinkableHandle<BlackVolTermStructure>& blackTS,
                        const RelinkableHandle<TermStructure>& riskFreeTS,
                        const RelinkableHandle<TermStructure>& dividendTS,
-                       double underlying)
+                       Real underlying)
     : blackTS_(blackTS), riskFreeTS_(riskFreeTS),
       dividendTS_(dividendTS) {
         registerWith(blackTS_);
@@ -56,16 +56,16 @@ namespace QuantLib {
             LocalVolTermStructure::accept(v);
     }
 
-    double LocalVolSurface::localVolImpl(Time t, double underlyingLevel) 
+    Volatility LocalVolSurface::localVolImpl(Time t, Real underlyingLevel) 
                                                                      const {
 
-        double forwardValue = underlying_->value() *
+        Real forwardValue = underlying_->value() *
             (dividendTS_->discount(t, true)/
              riskFreeTS_->discount(t, true));
 
         // strike derivatives
-        double strike, y, dy, strikep, strikem;
-        double w, wp, wm, dwdy, d2wdy2;
+        Real strike, y, dy, strikep, strikem;
+        Real w, wp, wm, dwdy, d2wdy2;
         strike = underlyingLevel;
         y = QL_LOG(strike/forwardValue);
         dy = ((y!=0.0) ? y*0.000001 : 0.000001);
@@ -78,7 +78,7 @@ namespace QuantLib {
         d2wdy2 = (wp-2.0*w+wm)/(dy*dy);
 
         // time derivative
-        double dt, wpt, wmt, dwdt;
+        Real dt, wpt, wmt, dwdt;
         if (t==0.0) {
             dt = 0.0001;
             wpt = blackTS_->blackVariance(t+dt, strike, true);
@@ -114,11 +114,11 @@ namespace QuantLib {
         if (dwdy==0.0 && d2wdy2==0.0) { // avoid /w where w might be 0.0
             return QL_SQRT(dwdt);
         } else {
-            double den1 = 1.0 - y/w*dwdy;
-            double den2 = 0.25*(-0.25 - 1.0/w + y*y/w/w)*dwdy*dwdy;
-            double den3 = 0.5*d2wdy2;
-            double den = den1+den2+den3;
-            double result = dwdt / den;
+            Real den1 = 1.0 - y/w*dwdy;
+            Real den2 = 0.25*(-0.25 - 1.0/w + y*y/w/w)*dwdy*dwdy;
+            Real den3 = 0.5*d2wdy2;
+            Real den = den1+den2+den3;
+            Real result = dwdt / den;
             QL_ENSURE(result>=0.0,
                       "negative local vol^2 at strike "
                       + DecimalFormatter::toString(strike) +

@@ -25,7 +25,7 @@ namespace QuantLib {
     BlackVarianceCurve::BlackVarianceCurve(
         const Date& referenceDate,
         const std::vector<Date>& dates,
-        const std::vector<double>& blackVolCurve,
+        const std::vector<Volatility>& blackVolCurve,
         const DayCounter& dayCounter)
     : referenceDate_(referenceDate), dayCounter_(dayCounter),
       maxDate_(dates.back()) {
@@ -39,7 +39,7 @@ namespace QuantLib {
         QL_REQUIRE(dates[0]>referenceDate,
                    "cannot have dates[0] <= referenceDate");
 
-        variances_ = std::vector<double>(dates.size()+1);
+        variances_ = std::vector<Real>(dates.size()+1);
         times_ = std::vector<Time>(dates.size()+1);
         variances_[0] = 0.0;
         times_[0] = 0.0;
@@ -62,7 +62,7 @@ namespace QuantLib {
         #endif
     }
 
-    double BlackVarianceCurve::blackVarianceImpl(Time t, double) const {
+    Real BlackVarianceCurve::blackVarianceImpl(Time t, Real) const {
         if (t<=times_.back()) {
             return varianceCurve_(t, true);
         } else {

@@ -25,7 +25,7 @@ namespace QuantLib {
     BlackVarianceSurface::BlackVarianceSurface(
         const Date& referenceDate,
         const std::vector<Date>& dates,
-        const std::vector<double>& strikes,
+        const std::vector<Real>& strikes,
         const Matrix& blackVolMatrix,
         BlackVarianceSurface::Extrapolation lowerEx,
         BlackVarianceSurface::Extrapolation upperEx,
@@ -69,8 +69,7 @@ namespace QuantLib {
     }
 
 
-    double BlackVarianceSurface::blackVarianceImpl(Time t, double strike) 
-                                                                      const {
+    Real BlackVarianceSurface::blackVarianceImpl(Time t, Real strike) const {
 
         if (t==0.0) return 0.0;
 

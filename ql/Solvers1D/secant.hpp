@@ -30,7 +30,7 @@ namespace QuantLib {
     class Secant : public Solver1D<Secant> {
       public:
         template <class F>
-        double solveImpl(const F& f, double xAccuracy) const {
+        Real solveImpl(const F& f, Real xAccuracy) const {
 
             /* The implementation of the algorithm was inspired by
                Press, Teukolsky, Vetterling, and Flannery,
@@ -38,7 +38,7 @@ namespace QuantLib {
                Cambridge University Press
             */
 
-            double fl, froot, dx, xl;
+            Real fl, froot, dx, xl;
 
             // Pick the bound with the smaller function value
             // as the most recent guess

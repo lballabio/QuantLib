@@ -50,8 +50,8 @@ namespace QuantLib {
         }
         DayCounter dayCounter() const;
         Date maxDate() const;
-        double minStrike() const;
-        double maxStrike() const;
+        Real minStrike() const;
+        Real maxStrike() const;
         //@}
         //! \name Observer interface
         //@{
@@ -62,7 +62,7 @@ namespace QuantLib {
         virtual void accept(AcyclicVisitor&);
         //@}
       protected:
-        virtual double blackVarianceImpl(Time t, double strike) const;
+        virtual Real blackVarianceImpl(Time t, Real strike) const;
       private:
         RelinkableHandle<BlackVolTermStructure> originalTS_;
         Date newReferenceDate_;
@@ -85,11 +85,11 @@ namespace QuantLib {
         return originalTS_->maxDate();
     }
 
-    inline double ImpliedVolTermStructure::minStrike() const {
+    inline Real ImpliedVolTermStructure::minStrike() const {
         return originalTS_->minStrike();
     }
 
-    inline double ImpliedVolTermStructure::maxStrike() const {
+    inline Real ImpliedVolTermStructure::maxStrike() const {
         return originalTS_->maxStrike();
     }
 
@@ -106,8 +106,8 @@ namespace QuantLib {
             BlackVarianceTermStructure::accept(v);
     }
 
-    inline double ImpliedVolTermStructure::blackVarianceImpl(
-                                                Time t, double strike) const {
+    inline Real ImpliedVolTermStructure::blackVarianceImpl(
+                                                Time t, Real strike) const {
         /* timeShift (and/or variance) variance at evaluation date
            cannot be cached since the original curve could change
            between invocations of this method */

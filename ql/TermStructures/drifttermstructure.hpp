@@ -59,7 +59,7 @@ namespace QuantLib {
       private:
         RelinkableHandle<TermStructure> riskFreeTS_, dividendTS_;
         RelinkableHandle<BlackVolTermStructure> blackVolTS_;
-        double underlyingLevel_;
+        Real underlyingLevel_;
         Date maxDate_;
     };
 

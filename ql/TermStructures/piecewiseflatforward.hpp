@@ -55,7 +55,7 @@ namespace QuantLib {
                const Date& referenceDate,
                const std::vector<boost::shared_ptr<RateHelper> >& instruments,
                const DayCounter& dayCounter,
-               double accuracy=1.0e-12);
+               Real accuracy = 1.0e-12);
         /*! In this constructor, the first date must be the reference
           date of the curve, the other dates are the nodes of the
           term structure. The forward rate at index \f$i\f$ is used
@@ -100,7 +100,7 @@ namespace QuantLib {
         mutable std::vector<Date> dates_;
         mutable std::vector<DiscountFactor> discounts_;
         mutable std::vector<Rate> forwards_, zeroYields_;
-        double accuracy_;
+        Real accuracy_;
     };
 
     // inline definitions

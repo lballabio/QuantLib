@@ -30,7 +30,7 @@ namespace QuantLib {
     class Bisection : public Solver1D<Bisection> {
       public:
         template <class F>
-        double solveImpl(const F& f, double xAccuracy) const {
+        Real solveImpl(const F& f, Real xAccuracy) const {
 
             /* The implementation of the algorithm was inspired by
                Press, Teukolsky, Vetterling, and Flannery,
@@ -38,7 +38,7 @@ namespace QuantLib {
                University Press
             */
 
-            double dx, xMid, fMid;
+            Real dx, xMid, fMid;
 
             // Orient the search so that f>0 lies at root_+dx
             if (fxMin_ < 0.0) {

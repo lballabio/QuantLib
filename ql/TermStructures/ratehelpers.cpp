@@ -28,7 +28,7 @@ namespace QuantLib {
         registerWith(quote_);
     }
 
-    RateHelper::RateHelper(double quote)
+    RateHelper::RateHelper(Real quote)
     : quote_(RelinkableHandle<Quote>(
                            boost::shared_ptr<Quote>(new SimpleQuote(quote)))),
       termStructure_(0) {
@@ -40,7 +40,7 @@ namespace QuantLib {
         termStructure_ = t;
     }
 
-    double RateHelper::quoteError() const {
+    Real RateHelper::quoteError() const {
         return quote_->value()-impliedQuote();
     }
 
@@ -56,7 +56,7 @@ namespace QuantLib {
       convention_(convention), dayCounter_(dayCounter) {}
 
     DepositRateHelper::DepositRateHelper(
-                       double rate,
+                       Rate rate,
                        Integer n, TimeUnit units, Integer settlementDays,
                        const Calendar& calendar, RollingConvention convention,
                        const DayCounter& dayCounter)
@@ -64,7 +64,7 @@ namespace QuantLib {
       settlementDays_(settlementDays), calendar_(calendar),
       convention_(convention), dayCounter_(dayCounter) {}
 
-    double DepositRateHelper::impliedQuote() const {
+    Real DepositRateHelper::impliedQuote() const {
         QL_REQUIRE(termStructure_ != 0, "term structure not set");
         return (termStructure_->discount(settlement_) /
                 termStructure_->discount(maturity_)-1.0) /
@@ -109,7 +109,7 @@ namespace QuantLib {
       calendar_(calendar), convention_(convention),
       dayCounter_(dayCounter) {}
 
-    FraRateHelper::FraRateHelper(double rate,
+    FraRateHelper::FraRateHelper(Rate rate,
                                  Integer monthsToStart, Integer monthsToEnd,
                                  Integer settlementDays,
                                  const Calendar& calendar, 
@@ -121,7 +121,7 @@ namespace QuantLib {
       calendar_(calendar), convention_(convention),
       dayCounter_(dayCounter) {}
 
-    double FraRateHelper::impliedQuote() const {
+    Real FraRateHelper::impliedQuote() const {
         QL_REQUIRE(termStructure_ != 0, "term structure not set");
         return (termStructure_->discount(start_) /
                 termStructure_->discount(maturity_)-1.0) /
@@ -177,7 +177,7 @@ namespace QuantLib {
         yearFraction_ = dayCounter_.yearFraction(ImmDate_, maturity_);
     }
 
-    FuturesRateHelper::FuturesRateHelper(double price,
+    FuturesRateHelper::FuturesRateHelper(Real price,
                                          const Date& ImmDate, Integer nMonths,
                                          const Calendar& calendar, 
                                          RollingConvention convention,
@@ -191,7 +191,7 @@ namespace QuantLib {
         yearFraction_ = dayCounter_.yearFraction(ImmDate_, maturity_);
     }
 
-    double FuturesRateHelper::impliedQuote() const {
+    Real FuturesRateHelper::impliedQuote() const {
         QL_REQUIRE(termStructure_ != 0, "term structure not set");
         return 100 * (1.0-(termStructure_->discount(ImmDate_) /
                            termStructure_->discount(maturity_)-1.0) /
@@ -227,7 +227,7 @@ namespace QuantLib {
       fixedDayCount_(fixedDayCount) {}
 
     SwapRateHelper::SwapRateHelper(
-                            double rate,
+                            Rate rate,
                             Integer n, TimeUnit units, Integer settlementDays,
                             const Calendar& calendar, 
                             RollingConvention convention,
@@ -279,7 +279,7 @@ namespace QuantLib {
         return swap_->maturity();
     }
 
-    double SwapRateHelper::impliedQuote() const {
+    Real SwapRateHelper::impliedQuote() const {
         QL_REQUIRE(termStructure_ != 0, "term structure not set");
         // we didn't register as observers - force calculation
         swap_->recalculate();

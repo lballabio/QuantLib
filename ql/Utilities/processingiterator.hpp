@@ -61,7 +61,7 @@ namespace QuantLib {
         //@}
         //! \name Random access
         //@{
-        value_type operator[](int) const;
+        value_type operator[](difference_type) const;
         //@}
         //! \name Increment and decrement
         //@{
@@ -171,7 +171,8 @@ namespace QuantLib {
 
     template <class I, class F>
     inline typename processing_iterator<I,F>::value_type
-    processing_iterator<I,F>::operator[](int i) const {
+    processing_iterator<I,F>::operator[](
+                 typename processing_iterator<I,F>::difference_type i) const {
         return *(*this+i);
     }
 

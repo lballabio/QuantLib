@@ -37,7 +37,7 @@ namespace QuantLib {
       public:
         FFObjFunction(const PiecewiseFlatForward*,
                       const boost::shared_ptr<RateHelper>&, Size segment);
-        double operator()(double discountGuess) const;
+        Real operator()(DiscountFactor discountGuess) const;
       private:
         const PiecewiseFlatForward* curve_;
         boost::shared_ptr<RateHelper> rateHelper_;
@@ -48,7 +48,7 @@ namespace QuantLib {
                const Date& todaysDate,
                const Date& referenceDate,
                const std::vector<boost::shared_ptr<RateHelper> >& instruments,
-               const DayCounter& dayCounter, double accuracy)
+               const DayCounter& dayCounter, Real accuracy)
     : dayCounter_(dayCounter), todaysDate_(todaysDate), 
       referenceDate_(referenceDate), instruments_(instruments), 
       accuracy_(accuracy) {
@@ -118,8 +118,8 @@ namespace QuantLib {
             // don't try this at home!
             instrument->setTermStructure(
                                      const_cast<PiecewiseFlatForward*>(this));
-            double guess = instrument->discountGuess();
-            if (guess == Null<Real>()) {
+            DiscountFactor guess = instrument->discountGuess();
+            if (guess == Null<DiscountFactor>()) {
                 if (i > 1) {    // we can extrapolate
                     guess = this->discount(instrument->maturity(),true);
                 } else {        // any guess will do
@@ -127,7 +127,7 @@ namespace QuantLib {
                 }
             }
             // bracket
-            double min = accuracy_*10e-4, max = discounts_[i-1];
+            DiscountFactor min = accuracy_*1.0e-3, max = discounts_[i-1];
             solver.solve(FFObjFunction(this,instrument,i),
                          accuracy_,guess,min,max);
         }
@@ -179,7 +179,7 @@ namespace QuantLib {
 
     Rate PiecewiseFlatForward::compoundForwardImpl(Time t, Integer compFreq) 
                                                                       const {
-		double zy = zeroYieldImpl(t);
+		Rate zy = zeroYieldImpl(t);
 		if (compFreq == 0)
             return zy;
 		if (t <= 1.0/compFreq)
@@ -222,8 +222,8 @@ namespace QuantLib {
         curve_->zeroYields_.push_back(0.0);
     }
 
-    double PiecewiseFlatForward::FFObjFunction::operator()(double discount) 
-                                                                      const {
+    Real PiecewiseFlatForward::FFObjFunction::operator()(
+                                              DiscountFactor discount) const {
         curve_->discounts_[segment_] = discount;
         curve_->zeroYields_[segment_] =
             -QL_LOG(discount) / curve_->times_[segment_];

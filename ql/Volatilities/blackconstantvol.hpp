@@ -38,7 +38,7 @@ namespace QuantLib {
                              public Observer {
       public:
         BlackConstantVol(const Date& referenceDate,
-                         double volatility,
+                         Volatility volatility,
                          const DayCounter& dayCounter = Actual365());
         BlackConstantVol(const Date& referenceDate,
                          const RelinkableHandle<Quote>& volatility,
@@ -48,10 +48,8 @@ namespace QuantLib {
         Date referenceDate() const;
         DayCounter dayCounter() const;
         Date maxDate() const;
-        double minStrike() const;
-        double maxStrike() const;
-        double blackForwardVol(Time t1, Time t2, double strike,
-                               bool extrapolate = false) const;
+        Real minStrike() const;
+        Real maxStrike() const;
         //@}
         //! \name Observer interface
         //@{
@@ -62,7 +60,7 @@ namespace QuantLib {
         virtual void accept(AcyclicVisitor&);
         //@}
       protected:
-        virtual double blackVolImpl(Time t, double) const;
+        virtual Volatility blackVolImpl(Time t, Real) const;
       private:
         Date referenceDate_;
         RelinkableHandle<Quote> volatility_;
@@ -73,7 +71,7 @@ namespace QuantLib {
     // inline definitions
 
     inline BlackConstantVol::BlackConstantVol(const Date& referenceDate,
-                                              double volatility, 
+                                              Volatility volatility, 
                                               const DayCounter& dayCounter)
     : referenceDate_(referenceDate), dayCounter_(dayCounter) {
         volatility_.linkTo(
@@ -102,11 +100,11 @@ namespace QuantLib {
         return Date::maxDate();
     }
 
-    inline double BlackConstantVol::minStrike() const {
+    inline Real BlackConstantVol::minStrike() const {
         return QL_MIN_DOUBLE;
     }
 
-    inline double BlackConstantVol::maxStrike() const {
+    inline Real BlackConstantVol::maxStrike() const {
         return QL_MAX_DOUBLE;
     }
 
@@ -123,14 +121,7 @@ namespace QuantLib {
             BlackVolatilityTermStructure::accept(v);
     }
 
-    inline double BlackConstantVol::blackVolImpl(Time t, double) const {
-        return volatility_->value();
-    }
-
-    // overload base class method in order to avoid numerical round-off
-    inline double BlackConstantVol::blackForwardVol(Time t1, Time t2,
-                                                    double, bool) const {
-        QL_REQUIRE(t2>=t1, "time2 < time1");
+    inline Volatility BlackConstantVol::blackVolImpl(Time t, Real) const {
         return volatility_->value();
     }
 

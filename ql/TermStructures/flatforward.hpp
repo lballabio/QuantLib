@@ -108,7 +108,7 @@ namespace QuantLib {
 
     inline Rate FlatForward::compoundForwardImpl(Time t, 
                                                  Integer compFreq) const {
-        double zy = zeroYieldImpl(t);
+        Rate zy = zeroYieldImpl(t);
         if (compFreq == 0)
             return zy;
         if (t <= 1.0/compFreq)
