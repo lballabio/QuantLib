@@ -1,6 +1,6 @@
 
 /*
- Copyright (C) 2004 Ferdinando Ametrano
+ Copyright (C) 2004, 2005 Ferdinando Ametrano
  Copyright (C) 2000, 2001, 2002, 2003 RiskMap srl
 
  This file is part of QuantLib, a free-software/open-source library
@@ -89,8 +89,6 @@ namespace QuantLib {
         if ((w == Saturday || w == Sunday)
             // New Year's Day (possibly moved to Monday if on Sunday)
             || ((d == 1 || (d == 2 && w == Monday)) && m == January)
-            // Martin Luther King's birthday (third Monday in January)
-            || ((d >= 15 && d <= 21) && w == Monday && m == January)
             // Washington's birthday (third Monday in February)
             || ((d >= 15 && d <= 21) && w == Monday && m == February)
             // Good Friday
@@ -106,8 +104,45 @@ namespace QuantLib {
             || ((d >= 22 && d <= 28) && w == Thursday && m == November)
             // Christmas (Monday if Sunday or Friday if Saturday)
             || ((d == 25 || (d == 26 && w == Monday) ||
-                 (d == 24 && w == Friday)) && m == December))
-            return false;
+                 (d == 24 && w == Friday)) && m == December)
+            ) return false;
+
+        if (y >= 1998) {
+            if (// Martin Luther King's birthday (third Monday in January)
+                ((d >= 15 && d <= 21) && w == Monday && m == January)
+                // Reagan's funeral
+                || (y == 2004 && m == June && d == 11)
+                // September 11, 2001
+                || (y == 2001 && m == September && (11 <= d && d <= 14))
+                ) return false;
+        } else if (y <= 1980) {
+            if (// Presidential election days
+                ((y % 4 == 0) && m == November && d <= 7 && w == Tuesday)
+                // 1977 Blackout
+                || (y == 1977 && m == July && d == 14)
+                // Funeral of former President Lyndon B. Johnson.
+                || (y == 1973 && m == January && d == 25)
+                // Funeral of former President Harry S. Truman
+                || (y == 1972 && m == December && d == 28)
+                // National Day of Participation for the lunar exploration.
+                || (y == 1969 && m == July && d == 21)
+                // Funeral of former President Eisenhower.
+                || (y == 1969 && m == March && d == 31)
+                // Closed all day - heavy snow.
+                || (y == 1969 && m == February && d == 10)
+                // Day after Independence Day.
+                || (y == 1968 && m == July && d == 5)
+                // June 12-Dec. 31, 1968
+                // Four day week (closed on Wednesdays) - Paperwork Crisis
+                || (y == 1968 && dd >= 163 && w == Wednesday)
+                ) return false;
+        } else {
+            if (// Nixon's funeral
+                (y == 1994 && m == April && d == 27)
+                ) return false;
+        }
+
+
         return true;
     }
 

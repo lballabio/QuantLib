@@ -1,5 +1,6 @@
 
 /*
+ Copyright (C) 2005 Ferdinando Ametrano
  Copyright (C) 2003, 2004 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
@@ -244,6 +245,7 @@ void CalendarTest::testUSNewYorkStockExchange() {
     expectedHol.push_back(Date(16,February,2004));
     expectedHol.push_back(Date(9,April,2004));
     expectedHol.push_back(Date(31,May,2004));
+    expectedHol.push_back(Date(11,June,2004));
     expectedHol.push_back(Date(5,July,2004));
     expectedHol.push_back(Date(6,September,2004));
     expectedHol.push_back(Date(25,November,2004));
@@ -285,6 +287,45 @@ void CalendarTest::testUSNewYorkStockExchange() {
                 " expected holidays, while there are "
                 + SizeFormatter::toString(hol.size()) +
                 " calculated holidays");
+
+    std::vector<Date> histClose;
+    histClose.push_back(Date(11,June,2004));     // Reagan's funeral
+    histClose.push_back(Date(14,September,2001));// September 11, 2001
+    histClose.push_back(Date(13,September,2001));// September 11, 2001
+    histClose.push_back(Date(12,September,2001));// September 11, 2001
+    histClose.push_back(Date(11,September,2001));// September 11, 2001
+    histClose.push_back(Date(14,July,1977));     // 1977 Blackout
+    histClose.push_back(Date(25,January,1973));  // Johnson's funeral.
+    histClose.push_back(Date(28,December,1972)); // Truman's funeral
+    histClose.push_back(Date(21,July,1969));     // Lunar exploration nat. day
+    histClose.push_back(Date(31,March,1969));    // Eisenhower's funeral
+    histClose.push_back(Date(10,February,1969)); // heavy snow
+    histClose.push_back(Date(5,July,1968));      // Day after Independence Day
+    // June 12-Dec. 31, 1968
+    // Four day week (closed on Wednesdays) - Paperwork Crisis
+    histClose.push_back(Date(12,Jun,1968));
+    histClose.push_back(Date(19,Jun,1968));
+    histClose.push_back(Date(26,Jun,1968));
+    histClose.push_back(Date(3,Jul,1968 ));
+    histClose.push_back(Date(10,Jul,1968));
+    histClose.push_back(Date(17,Jul,1968));
+    histClose.push_back(Date(20,Nov,1968));
+    histClose.push_back(Date(27,Nov,1968));
+    histClose.push_back(Date(4,Dec,1968 ));
+    histClose.push_back(Date(11,Dec,1968));
+    histClose.push_back(Date(18,Dec,1968));
+    // Presidential election days
+    histClose.push_back(Date(4,Nov,1980));
+    histClose.push_back(Date(2,Nov,1976));
+    histClose.push_back(Date(7,Nov,1972));
+    histClose.push_back(Date(5,Nov,1968));
+    histClose.push_back(Date(3,Nov,1964));
+    for (Size i=0; i<histClose.size(); i++) {
+        if (!c.isHoliday(histClose[i]))
+            BOOST_FAIL(DateFormatter::toString(histClose[i]) +
+                       " should be holiday (historical close)");
+    }
+
 
 }
 

@@ -55,7 +55,8 @@ namespace QuantLib {
         <li>Sundays</li>
         <li>New Year's Day, January 1st (possibly moved to Monday if
             actually on Sunday)</li>
-        <li>Martin Luther King's birthday, third Monday in January</li>
+        <li>Martin Luther King's birthday, third Monday in January (since
+            1998)</li>
         <li>Presidents' Day (a.k.a. Washington's birthday),
 		    third Monday in February</li>
         <li>Good Friday</li>
@@ -64,8 +65,11 @@ namespace QuantLib {
             Friday if Saturday)</li>
         <li>Labor Day, first Monday in September</li>
         <li>Thanksgiving Day, fourth Thursday in November</li>
+        <li>Presidential election day, first Tuesday in November of election
+            years (until 1980)</li>
         <li>Christmas, December 25th (moved to Monday if Sunday or Friday
             if Saturday)</li>
+        <li>Special historic closings</li>
         </ul>
 
         Holidays for the government bond market (data from
