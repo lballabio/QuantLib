@@ -101,7 +101,8 @@ libQuantLib_la_LIBADD = \
     ShortRateModels/CalibrationHelpers/libCalibrationHelpers.la \
     ShortRateModels/OneFactorModels/libOneFactorModels.la \
     ShortRateModels/TwoFactorModels/libTwoFactorModels.la \
-    TermStructures/libTermStructures.la
+    TermStructures/libTermStructures.la \
+    Volatilities/libVolatilities.la \
 
 libQuantLib_la_SOURCES = \
     calendar.cpp \

@@ -12,3 +12,10 @@ include_HEADERS = \
     localvolcurve.hpp \
     localvolsurface.hpp \
     swaptionvolmatrix.hpp
+
+EXTRA_DIST=makefile.mak
+
+libVolatilities_la_SOURCES = \
+    localvolsurface.cpp
+
+noinst_LTLIBRARIES = libVolatilities.la

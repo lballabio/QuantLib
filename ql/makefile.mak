@@ -44,6 +44,7 @@ PRICING_ENGINES_LIB = PricingEngines$(_D).lib
 RNG_LIB             = RandomNumbers$(_D).lib
 TERMSTRUCT_LIB      = TermStructures$(_D).lib
 TWOFACTOR_LIB       = TwoFactorModels$(_D).lib
+VOLATILITY_LIB      = Volatilities$(_D).lib
 
 QUANTLIB_OBJS = \
     $(CALENDAR_LIB) \
@@ -65,7 +66,8 @@ QUANTLIB_OBJS = \
     $(PRICING_ENGINES_LIB) \
     $(RNG_LIB) \
     $(TERMSTRUCT_LIB) \
-    $(TWOFACTOR_LIB)
+    $(TWOFACTOR_LIB) \
+    $(VOLATILITY_LIB) 
 
 # Tools to be used
 CC        = bcc32
@@ -115,6 +117,8 @@ SubLibraries:
     $(MAKE)
     cd ..\DayCounters
     $(MAKE)
+    cd ..\FiniteDifferences
+    $(MAKE)
     cd ..\functions
     $(MAKE)
     cd ..\Indexes
@@ -137,7 +141,7 @@ SubLibraries:
     $(MAKE)
     cd ..\TermStructures
     $(MAKE)
-    cd ..\FiniteDifferences
+    cd ..\Volatilities
     $(MAKE)
     cd ..\ShortRateModels
     $(MAKE)
@@ -190,6 +194,8 @@ clean::
     cd ..\RandomNumbers
     $(MAKE) clean
     cd ..\TermStructures
+    $(MAKE) clean
+    cd ..\Volatilities
     $(MAKE) clean
     cd ..
     if exist *.obj         del /q *.obj

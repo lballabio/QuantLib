@@ -207,6 +207,8 @@ CLEAN :
 	-@erase "$(INTDIR)\lattice2d.sbr"
 	-@erase "$(INTDIR)\lecuyeruniformrng.obj"
 	-@erase "$(INTDIR)\lecuyeruniformrng.sbr"
+	-@erase "$(INTDIR)\localvolsurface.obj"
+	-@erase "$(INTDIR)\localvolsurface.sbr"
 	-@erase "$(INTDIR)\london.obj"
 	-@erase "$(INTDIR)\london.sbr"
 	-@erase "$(INTDIR)\mathf.obj"
@@ -384,6 +386,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\parcoupon.sbr" \
 	"$(INTDIR)\shortfloatingcoupon.sbr" \
 	"$(INTDIR)\actualactual.sbr" \
+	"$(INTDIR)\simpledaycounter.sbr" \
 	"$(INTDIR)\thirty360.sbr" \
 	"$(INTDIR)\boundarycondition.sbr" \
 	"$(INTDIR)\bsmoperator.sbr" \
@@ -516,7 +519,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\grid.sbr" \
 	"$(INTDIR)\scheduler.sbr" \
 	"$(INTDIR)\voltermstructure.sbr" \
-	"$(INTDIR)\simpledaycounter.sbr"
+	"$(INTDIR)\localvolsurface.sbr"
 
 "$(OUTDIR)\QuantLib.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -547,6 +550,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\parcoupon.obj" \
 	"$(INTDIR)\shortfloatingcoupon.obj" \
 	"$(INTDIR)\actualactual.obj" \
+	"$(INTDIR)\simpledaycounter.obj" \
 	"$(INTDIR)\thirty360.obj" \
 	"$(INTDIR)\boundarycondition.obj" \
 	"$(INTDIR)\bsmoperator.obj" \
@@ -679,7 +683,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\grid.obj" \
 	"$(INTDIR)\scheduler.obj" \
 	"$(INTDIR)\voltermstructure.obj" \
-	"$(INTDIR)\simpledaycounter.obj"
+	"$(INTDIR)\localvolsurface.obj"
 
 ".\lib\Win32\VisualStudio\QuantLib.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
     $(LIB32) @<<
@@ -862,6 +866,8 @@ CLEAN :
 	-@erase "$(INTDIR)\lattice2d.sbr"
 	-@erase "$(INTDIR)\lecuyeruniformrng.obj"
 	-@erase "$(INTDIR)\lecuyeruniformrng.sbr"
+	-@erase "$(INTDIR)\localvolsurface.obj"
+	-@erase "$(INTDIR)\localvolsurface.sbr"
 	-@erase "$(INTDIR)\london.obj"
 	-@erase "$(INTDIR)\london.sbr"
 	-@erase "$(INTDIR)\mathf.obj"
@@ -1039,6 +1045,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\parcoupon.sbr" \
 	"$(INTDIR)\shortfloatingcoupon.sbr" \
 	"$(INTDIR)\actualactual.sbr" \
+	"$(INTDIR)\simpledaycounter.sbr" \
 	"$(INTDIR)\thirty360.sbr" \
 	"$(INTDIR)\boundarycondition.sbr" \
 	"$(INTDIR)\bsmoperator.sbr" \
@@ -1171,7 +1178,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\grid.sbr" \
 	"$(INTDIR)\scheduler.sbr" \
 	"$(INTDIR)\voltermstructure.sbr" \
-	"$(INTDIR)\simpledaycounter.sbr"
+	"$(INTDIR)\localvolsurface.sbr"
 
 "$(OUTDIR)\QuantLib.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -1202,6 +1209,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\parcoupon.obj" \
 	"$(INTDIR)\shortfloatingcoupon.obj" \
 	"$(INTDIR)\actualactual.obj" \
+	"$(INTDIR)\simpledaycounter.obj" \
 	"$(INTDIR)\thirty360.obj" \
 	"$(INTDIR)\boundarycondition.obj" \
 	"$(INTDIR)\bsmoperator.obj" \
@@ -1334,7 +1342,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\grid.obj" \
 	"$(INTDIR)\scheduler.obj" \
 	"$(INTDIR)\voltermstructure.obj" \
-	"$(INTDIR)\simpledaycounter.obj"
+	"$(INTDIR)\localvolsurface.obj"
 
 ".\lib\Win32\VisualStudio\QuantLib_d.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
     $(LIB32) @<<
@@ -1517,6 +1525,8 @@ CLEAN :
 	-@erase "$(INTDIR)\lattice2d.sbr"
 	-@erase "$(INTDIR)\lecuyeruniformrng.obj"
 	-@erase "$(INTDIR)\lecuyeruniformrng.sbr"
+	-@erase "$(INTDIR)\localvolsurface.obj"
+	-@erase "$(INTDIR)\localvolsurface.sbr"
 	-@erase "$(INTDIR)\london.obj"
 	-@erase "$(INTDIR)\london.sbr"
 	-@erase "$(INTDIR)\mathf.obj"
@@ -1694,6 +1704,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\parcoupon.sbr" \
 	"$(INTDIR)\shortfloatingcoupon.sbr" \
 	"$(INTDIR)\actualactual.sbr" \
+	"$(INTDIR)\simpledaycounter.sbr" \
 	"$(INTDIR)\thirty360.sbr" \
 	"$(INTDIR)\boundarycondition.sbr" \
 	"$(INTDIR)\bsmoperator.sbr" \
@@ -1826,7 +1837,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\grid.sbr" \
 	"$(INTDIR)\scheduler.sbr" \
 	"$(INTDIR)\voltermstructure.sbr" \
-	"$(INTDIR)\simpledaycounter.sbr"
+	"$(INTDIR)\localvolsurface.sbr"
 
 "$(OUTDIR)\QuantLib.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -1857,6 +1868,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\parcoupon.obj" \
 	"$(INTDIR)\shortfloatingcoupon.obj" \
 	"$(INTDIR)\actualactual.obj" \
+	"$(INTDIR)\simpledaycounter.obj" \
 	"$(INTDIR)\thirty360.obj" \
 	"$(INTDIR)\boundarycondition.obj" \
 	"$(INTDIR)\bsmoperator.obj" \
@@ -1989,7 +2001,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\grid.obj" \
 	"$(INTDIR)\scheduler.obj" \
 	"$(INTDIR)\voltermstructure.obj" \
-	"$(INTDIR)\simpledaycounter.obj"
+	"$(INTDIR)\localvolsurface.obj"
 
 ".\lib\Win32\VisualStudio\QuantLib.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
     $(LIB32) @<<
@@ -2172,6 +2184,8 @@ CLEAN :
 	-@erase "$(INTDIR)\lattice2d.sbr"
 	-@erase "$(INTDIR)\lecuyeruniformrng.obj"
 	-@erase "$(INTDIR)\lecuyeruniformrng.sbr"
+	-@erase "$(INTDIR)\localvolsurface.obj"
+	-@erase "$(INTDIR)\localvolsurface.sbr"
 	-@erase "$(INTDIR)\london.obj"
 	-@erase "$(INTDIR)\london.sbr"
 	-@erase "$(INTDIR)\mathf.obj"
@@ -2349,6 +2363,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\parcoupon.sbr" \
 	"$(INTDIR)\shortfloatingcoupon.sbr" \
 	"$(INTDIR)\actualactual.sbr" \
+	"$(INTDIR)\simpledaycounter.sbr" \
 	"$(INTDIR)\thirty360.sbr" \
 	"$(INTDIR)\boundarycondition.sbr" \
 	"$(INTDIR)\bsmoperator.sbr" \
@@ -2481,7 +2496,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\grid.sbr" \
 	"$(INTDIR)\scheduler.sbr" \
 	"$(INTDIR)\voltermstructure.sbr" \
-	"$(INTDIR)\simpledaycounter.sbr"
+	"$(INTDIR)\localvolsurface.sbr"
 
 "$(OUTDIR)\QuantLib.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -2512,6 +2527,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\parcoupon.obj" \
 	"$(INTDIR)\shortfloatingcoupon.obj" \
 	"$(INTDIR)\actualactual.obj" \
+	"$(INTDIR)\simpledaycounter.obj" \
 	"$(INTDIR)\thirty360.obj" \
 	"$(INTDIR)\boundarycondition.obj" \
 	"$(INTDIR)\bsmoperator.obj" \
@@ -2644,7 +2660,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\grid.obj" \
 	"$(INTDIR)\scheduler.obj" \
 	"$(INTDIR)\voltermstructure.obj" \
-	"$(INTDIR)\simpledaycounter.obj"
+	"$(INTDIR)\localvolsurface.obj"
 
 ".\lib\Win32\VisualStudio\QuantLib_d.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
     $(LIB32) @<<
@@ -2827,6 +2843,8 @@ CLEAN :
 	-@erase "$(INTDIR)\lattice2d.sbr"
 	-@erase "$(INTDIR)\lecuyeruniformrng.obj"
 	-@erase "$(INTDIR)\lecuyeruniformrng.sbr"
+	-@erase "$(INTDIR)\localvolsurface.obj"
+	-@erase "$(INTDIR)\localvolsurface.sbr"
 	-@erase "$(INTDIR)\london.obj"
 	-@erase "$(INTDIR)\london.sbr"
 	-@erase "$(INTDIR)\mathf.obj"
@@ -3004,6 +3022,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\parcoupon.sbr" \
 	"$(INTDIR)\shortfloatingcoupon.sbr" \
 	"$(INTDIR)\actualactual.sbr" \
+	"$(INTDIR)\simpledaycounter.sbr" \
 	"$(INTDIR)\thirty360.sbr" \
 	"$(INTDIR)\boundarycondition.sbr" \
 	"$(INTDIR)\bsmoperator.sbr" \
@@ -3136,7 +3155,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\grid.sbr" \
 	"$(INTDIR)\scheduler.sbr" \
 	"$(INTDIR)\voltermstructure.sbr" \
-	"$(INTDIR)\simpledaycounter.sbr"
+	"$(INTDIR)\localvolsurface.sbr"
 
 "$(OUTDIR)\QuantLib.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -3167,6 +3186,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\parcoupon.obj" \
 	"$(INTDIR)\shortfloatingcoupon.obj" \
 	"$(INTDIR)\actualactual.obj" \
+	"$(INTDIR)\simpledaycounter.obj" \
 	"$(INTDIR)\thirty360.obj" \
 	"$(INTDIR)\boundarycondition.obj" \
 	"$(INTDIR)\bsmoperator.obj" \
@@ -3299,7 +3319,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\grid.obj" \
 	"$(INTDIR)\scheduler.obj" \
 	"$(INTDIR)\voltermstructure.obj" \
-	"$(INTDIR)\simpledaycounter.obj"
+	"$(INTDIR)\localvolsurface.obj"
 
 ".\lib\Win32\VisualStudio\QuantLib.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
     $(LIB32) @<<
@@ -4306,6 +4326,12 @@ SOURCE=.\ql\TermStructures\ratehelpers.cpp
 SOURCE=.\ql\TermStructures\zerocurve.cpp
 
 "$(INTDIR)\zerocurve.obj"	"$(INTDIR)\zerocurve.sbr" : $(SOURCE) "$(INTDIR)"
+	$(CPP) $(CPP_PROJ) $(SOURCE)
+
+
+SOURCE=.\ql\Volatilities\localvolsurface.cpp
+
+"$(INTDIR)\localvolsurface.obj"	"$(INTDIR)\localvolsurface.sbr" : $(SOURCE) "$(INTDIR)"
 	$(CPP) $(CPP_PROJ) $(SOURCE)
 
 
