@@ -1,6 +1,6 @@
 
 /*
- Copyright (C) 2003 Ferdinando Ametrano
+ Copyright (C) 2003, 2004 Ferdinando Ametrano
  Copyright (C) 2003 RiskMap srl
 
  This file is part of QuantLib, a free-software/open-source library
@@ -24,6 +24,17 @@
 
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
+
+namespace {
+
+    Real norm(const Matrix& m) {
+        Real sum = 0.0;
+        for (Size i=0; i<m.rows(); i++)
+            for (Size j=0; j<m.columns(); j++)
+                sum += m[i][j]*m[i][j];
+        return QL_SQRT(sum);
+    }
+}
 
 void CovarianceTest::testSalvagingCorrelation() {
 
@@ -53,7 +64,7 @@ void CovarianceTest::testSalvagingCorrelation() {
             expected   = goodCorr[i][j];
             calculated = calcCorr[i][j];
             if (QL_FABS(calculated-expected) > 1.0e-10)
-                BOOST_FAIL("SalvagingCorrelation with spectral alg"
+                BOOST_FAIL("SalvagingCorrelation with spectral alg "
                            "cor[" + SizeFormatter::toString(i) + "]"
                            "[" + SizeFormatter::toString(j) + "]:\n"
                            "    calculated: "
@@ -63,37 +74,22 @@ void CovarianceTest::testSalvagingCorrelation() {
         }
     }
 
-
     Matrix badCov(n, n);
-    badCov[0][0] = 1.0; badCov[0][1] = 0.9; badCov[0][2] = 0.7;
-    badCov[1][0] = 0.9; badCov[1][1] = 1.0; badCov[1][2] = 0.3;
-    badCov[2][0] = 0.7; badCov[2][1] = 0.3; badCov[2][2] = 1.0;
-
-    Matrix goodCov(n, n);
-    goodCov[0][0] = goodCov[1][1] = goodCov[2][2] = 1.00000000000;
-    goodCov[0][1] = goodCov[1][0] = 0.894024408508599;
-    goodCov[0][2] = goodCov[2][0] = 0.696319066114392;
-    goodCov[1][2] = goodCov[2][1] = 0.300969036104592;
+    badCov[0][0] = 0.04000; badCov[0][1] = 0.03240; badCov[0][2] = 0.02240;
+    badCov[1][0] = 0.03240; badCov[1][1] = 0.03240; badCov[1][2] = 0.00864;
+    badCov[2][0] = 0.02240; badCov[2][1] = 0.00864; badCov[2][2] = 0.02560;
 
     b = pseudoSqrt(badCov, SalvagingAlgorithm::Spectral);
-    Matrix calcCov = b * transpose(b);
+    Matrix goodCov = b * transpose(b);
 
-    for (Size i=0; i<n; i++) {
-        for (Size j=0; j<n; j++) {
-            expected   = goodCov[i][j];
-            calculated = calcCov[i][j];
-            if (QL_FABS(calculated-expected) > 1.0e-10)
-                BOOST_FAIL("SalvagingCorrelation with spectral alg"
-                           "cov[" + SizeFormatter::toString(i) + "]"
-                           "[" + SizeFormatter::toString(j) + "]:\n"
-                           "    calculated: "
-                           + DecimalFormatter::toString(calculated,16) + "\n"
-                           "    expected:   "
-                           + DecimalFormatter::toString(expected,16));
-        }
-    }
-
-
+    Real error = norm(goodCov-badCov);
+    if (error > 5.0e-4)
+        BOOST_FAIL(DecimalFormatter::toExponential(error) + 
+            " error while salvaging covariance matrix with spectral alg\n"
+            "input matrix:\n" +
+            SequenceFormatter::toString(badCov.begin(), badCov.end(), 6, 0, n)
+            + "\nsalvaged matrix:\n" +
+            SequenceFormatter::toString(goodCov.begin(),goodCov.end(),6,0,n));
 
 }
 
