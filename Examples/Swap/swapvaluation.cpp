@@ -125,27 +125,27 @@ int main(int argc, char* argv[])
 
         Handle<RateHelper> s2y(new SwapRateHelper(
             s2yQuote, settlementDays,
-            2, calendar, ModifiedFollowing, swFixedLegFrequency,
+            2, Years, calendar, ModifiedFollowing, swFixedLegFrequency,
             swFixedLegIsAdjusted, swFixedLegDayCounter,
             swFloatingLegFrequency));
         Handle<RateHelper> s3y(new SwapRateHelper(
             s3yQuote, settlementDays,
-            3, calendar, ModifiedFollowing, swFixedLegFrequency,
+            3, Years, calendar, ModifiedFollowing, swFixedLegFrequency,
             swFixedLegIsAdjusted, swFixedLegDayCounter,
             swFloatingLegFrequency));
         Handle<RateHelper> s5y(new SwapRateHelper(
             s5yQuote, settlementDays,
-            5, calendar, ModifiedFollowing, swFixedLegFrequency,
+            5, Years, calendar, ModifiedFollowing, swFixedLegFrequency,
             swFixedLegIsAdjusted, swFixedLegDayCounter,
             swFloatingLegFrequency));
         Handle<RateHelper> s10y(new SwapRateHelper(
             s10yQuote, settlementDays,
-            10, calendar, ModifiedFollowing, swFixedLegFrequency,
+            10, Years, calendar, ModifiedFollowing, swFixedLegFrequency,
             swFixedLegIsAdjusted, swFixedLegDayCounter,
             swFloatingLegFrequency));
         Handle<RateHelper> s15y(new SwapRateHelper(
             s15yQuote, settlementDays,
-            15, calendar, ModifiedFollowing, swFixedLegFrequency,
+            15, Years, calendar, ModifiedFollowing, swFixedLegFrequency,
             swFixedLegIsAdjusted, swFixedLegDayCounter,
             swFloatingLegFrequency));
 
@@ -358,27 +358,27 @@ int main(int argc, char* argv[])
         // setup swaps
         s2y=Handle<RateHelper>(new SwapRateHelper(
             RelinkableHandle<MarketElement>(s2yRate), settlementDays,
-            2, calendar, ModifiedFollowing, swFixedLegFrequency,
+            2, Years, calendar, ModifiedFollowing, swFixedLegFrequency,
             swFixedLegIsAdjusted, swFixedLegDayCounter,
             swFloatingLegFrequency));
         s3y=Handle<RateHelper>(new SwapRateHelper(
             RelinkableHandle<MarketElement>(s3yRate), settlementDays,
-            3, calendar, ModifiedFollowing, swFixedLegFrequency,
+            3, Years, calendar, ModifiedFollowing, swFixedLegFrequency,
             swFixedLegIsAdjusted, swFixedLegDayCounter,
             swFloatingLegFrequency));
         s5y=Handle<RateHelper>(new SwapRateHelper(
             RelinkableHandle<MarketElement>(s5yRate), settlementDays,
-            5, calendar, ModifiedFollowing, swFixedLegFrequency,
+            5, Years, calendar, ModifiedFollowing, swFixedLegFrequency,
             swFixedLegIsAdjusted, swFixedLegDayCounter,
             swFloatingLegFrequency));
         s10y=Handle<RateHelper>(new SwapRateHelper(
             RelinkableHandle<MarketElement>(s10yRate), settlementDays,
-            10, calendar, ModifiedFollowing, swFixedLegFrequency,
+            10, Years, calendar, ModifiedFollowing, swFixedLegFrequency,
             swFixedLegIsAdjusted, swFixedLegDayCounter,
             swFloatingLegFrequency));
         s15y=Handle<RateHelper>(new SwapRateHelper(
             RelinkableHandle<MarketElement>(s15yRate), settlementDays,
-            15, calendar, ModifiedFollowing, swFixedLegFrequency,
+            15, Years, calendar, ModifiedFollowing, swFixedLegFrequency,
             swFixedLegIsAdjusted, swFixedLegDayCounter,
             swFloatingLegFrequency));
 

@@ -203,9 +203,31 @@ namespace QuantLib {
                            const DayCounter& fixedDayCount,
                            // floating leg
                            int floatingFrequency);
+            SwapRateHelper(const RelinkableHandle<MarketElement>& rate,
+                           int settlementDays,
+                           int numberOfUnits, TimeUnit units,
+                           const Calendar& calendar,
+                           RollingConvention convention,
+                           // fixed leg
+                           int fixedFrequency,
+                           bool fixedIsAdjusted,
+                           const DayCounter& fixedDayCount,
+                           // floating leg
+                           int floatingFrequency);
             SwapRateHelper(double rate,
                            int settlementDays,
                            int lengthInYears,
+                           const Calendar& calendar,
+                           RollingConvention convention,
+                           // fixed leg
+                           int fixedFrequency,
+                           bool fixedIsAdjusted,
+                           const DayCounter& fixedDayCount,
+                           // floating leg
+                           int floatingFrequency);
+            SwapRateHelper(double rate,
+                           int settlementDays,
+                           int numberOfUnits, TimeUnit units,
                            const Calendar& calendar,
                            RollingConvention convention,
                            // fixed leg
@@ -221,7 +243,8 @@ namespace QuantLib {
             void setTermStructure(TermStructure*);
           protected:  
             int settlementDays_;
-            int lengthInYears_;
+	   int numberOfUnits_;
+	   TimeUnit units_;
             Calendar calendar_;
             RollingConvention convention_;
             int fixedFrequency_, floatingFrequency_;

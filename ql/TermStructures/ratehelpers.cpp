@@ -207,7 +207,24 @@ namespace QuantLib {
             const DayCounter& fixedDayCount,
             int floatingFrequency)
         : RateHelper(rate), settlementDays_(settlementDays),
-          lengthInYears_(lengthInYears), calendar_(calendar),
+          numberOfUnits_(lengthInYears), units_(Years),
+	  calendar_(calendar),
+          convention_(convention),
+          fixedFrequency_(fixedFrequency),
+          floatingFrequency_(floatingFrequency),
+          fixedIsAdjusted_(fixedIsAdjusted),
+          fixedDayCount_(fixedDayCount) {}
+
+        SwapRateHelper::SwapRateHelper(
+            const RelinkableHandle<MarketElement>& rate,
+            int settlementDays, int numberOfUnits, TimeUnit units,
+            const Calendar& calendar, RollingConvention convention,
+            int fixedFrequency, bool fixedIsAdjusted,
+            const DayCounter& fixedDayCount,
+            int floatingFrequency)
+        : RateHelper(rate), settlementDays_(settlementDays),
+          numberOfUnits_(numberOfUnits), units_(units),
+	  calendar_(calendar),
           convention_(convention),
           fixedFrequency_(fixedFrequency),
           floatingFrequency_(floatingFrequency),
@@ -221,7 +238,23 @@ namespace QuantLib {
             const DayCounter& fixedDayCount,
             int floatingFrequency)
         : RateHelper(rate), settlementDays_(settlementDays),
-          lengthInYears_(lengthInYears), calendar_(calendar),
+          numberOfUnits_(lengthInYears), units_(Years),
+	  calendar_(calendar),
+          convention_(convention),
+          fixedFrequency_(fixedFrequency),
+          floatingFrequency_(floatingFrequency),
+          fixedIsAdjusted_(fixedIsAdjusted),
+          fixedDayCount_(fixedDayCount) {}
+
+        SwapRateHelper::SwapRateHelper(double rate,
+            int settlementDays, int numberOfUnits, TimeUnit units,
+            const Calendar& calendar, RollingConvention convention,
+            int fixedFrequency, bool fixedIsAdjusted,
+            const DayCounter& fixedDayCount,
+            int floatingFrequency)
+        : RateHelper(rate), settlementDays_(settlementDays),
+          numberOfUnits_(numberOfUnits), units_(units),
+	  calendar_(calendar),
           convention_(convention),
           fixedFrequency_(fixedFrequency),
           floatingFrequency_(floatingFrequency),
@@ -245,7 +278,7 @@ namespace QuantLib {
                 termStructureHandle_));
             swap_ = Handle<SimpleSwap>(
                 new SimpleSwap(true,                // pay fixed rate
-                    settlement_, lengthInYears_, Years, calendar_,
+                    settlement_, numberOfUnits_, units_, calendar_,
                     convention_,
                     100.0,
                     fixedFrequency_,

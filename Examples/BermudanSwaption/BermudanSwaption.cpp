@@ -139,7 +139,8 @@ int main(int argc, char* argv[])
                 new SimpleMarketElement(swapRates[i]*0.01));
             Handle<RateHelper> swapHelper(new SwapRateHelper(
                 RelinkableHandle<MarketElement>(swapRate), settlementDays,
-                swapYears[i], calendar, ModifiedFollowing, swFixedLegFrequency,
+                swapYears[i], Years, calendar, ModifiedFollowing,
+		swFixedLegFrequency,
                 swFixedLegIsAdjusted, swFixedLegDayCounter,
                 swFloatingLegFrequency));
             instruments.push_back(swapHelper);
