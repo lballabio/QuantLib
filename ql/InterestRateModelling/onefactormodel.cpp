@@ -90,7 +90,7 @@ namespace QuantLib {
             const Handle<ShortRateProcess>& process,
             const Handle<TermStructureFittingParameter::NumericalImpl>& theta,
             const TimeGrid& timeGrid)
-        : TrinomialTree(process, timeGrid), process_(process) {
+        : Lattices::TrinomialTree(process, timeGrid), process_(process) {
 
             theta->reset();
             for (Size i=0; i<(timeGrid.size() - 1); i++) {

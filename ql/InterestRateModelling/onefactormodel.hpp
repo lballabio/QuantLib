@@ -53,7 +53,7 @@ namespace QuantLib {
               public:
                 OwnTrinomialTree(const Handle<ShortRateProcess>& process,
                                  const TimeGrid& timeGrid) 
-                : TrinomialTree(process, timeGrid), process_(process) {}
+                : Lattices::TrinomialTree(process, timeGrid), process_(process) {}
 
                 OwnTrinomialTree(
                     const Handle<ShortRateProcess>& process,
