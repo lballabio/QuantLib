@@ -27,9 +27,6 @@ NULL=
 NULL=nul
 !ENDIF 
 
-CPP=cl.exe
-RSC=rc.exe
-
 !IF  "$(CFG)" == "QuantLib - Win32 Release"
 
 OUTDIR=.\build\Release
@@ -253,7 +250,40 @@ CLEAN :
 "$(OUTDIR)" :
     if not exist "$(OUTDIR)/$(NULL)" mkdir "$(OUTDIR)"
 
+CPP=cl.exe
 CPP_PROJ=/nologo /MD /W3 /Gi /GR /GX /Od /Ob2 /I ".\\" /D "WIN32" /D "NDEBUG" /D "_MBCS" /D "_LIB" /FR"$(INTDIR)\\" /Fp"$(INTDIR)\QuantLib.pch" /YX /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\\" /FD /c 
+
+.c{$(INTDIR)}.obj::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.cpp{$(INTDIR)}.obj::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.cxx{$(INTDIR)}.obj::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.c{$(INTDIR)}.sbr::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.cpp{$(INTDIR)}.sbr::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.cxx{$(INTDIR)}.sbr::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+RSC=rc.exe
 BSC32=bscmake.exe
 BSC32_FLAGS=/nologo /o"$(OUTDIR)\QuantLib.bsc" 
 BSC32_SBRS= \
@@ -280,6 +310,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\simpleswap.sbr" \
 	"$(INTDIR)\stock.sbr" \
 	"$(INTDIR)\swap.sbr" \
+	"$(INTDIR)\swaption.sbr" \
 	"$(INTDIR)\matrix.sbr" \
 	"$(INTDIR)\multivariateaccumulator.sbr" \
 	"$(INTDIR)\normaldistribution.sbr" \
@@ -297,6 +328,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\himalayapathpricer.sbr" \
 	"$(INTDIR)\maxbasketpathpricer.sbr" \
 	"$(INTDIR)\pagodapathpricer.sbr" \
+	"$(INTDIR)\analyticalcapfloor.sbr" \
 	"$(INTDIR)\barrieroption.sbr" \
 	"$(INTDIR)\binaryoption.sbr" \
 	"$(INTDIR)\cliquetoption.sbr" \
@@ -313,6 +345,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\fdeuropean.sbr" \
 	"$(INTDIR)\fdmultiperiodoption.sbr" \
 	"$(INTDIR)\fdstepconditionoption.sbr" \
+	"$(INTDIR)\jamshidianswaption.sbr" \
 	"$(INTDIR)\mcbasket.sbr" \
 	"$(INTDIR)\mcdiscretearithmeticapo.sbr" \
 	"$(INTDIR)\mcdiscretearithmeticaso.sbr" \
@@ -322,6 +355,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\mcmaxbasket.sbr" \
 	"$(INTDIR)\mcpagoda.sbr" \
 	"$(INTDIR)\singleassetoption.sbr" \
+	"$(INTDIR)\treecapfloor.sbr" \
 	"$(INTDIR)\treeswaption.sbr" \
 	"$(INTDIR)\knuthuniformrng.sbr" \
 	"$(INTDIR)\lecuyeruniformrng.sbr" \
@@ -335,10 +369,15 @@ BSC32_SBRS= \
 	"$(INTDIR)\piecewiseflatforward.sbr" \
 	"$(INTDIR)\ratehelpers.sbr" \
 	"$(INTDIR)\blackkarasinski.sbr" \
+	"$(INTDIR)\coxingersollrossplus.sbr" \
 	"$(INTDIR)\hullwhite.sbr" \
 	"$(INTDIR)\caphelper.sbr" \
 	"$(INTDIR)\swaptionhelper.sbr" \
+	"$(INTDIR)\g2.sbr" \
+	"$(INTDIR)\calibrationhelper.sbr" \
+	"$(INTDIR)\grid.sbr" \
 	"$(INTDIR)\model.sbr" \
+	"$(INTDIR)\timefunction.sbr" \
 	"$(INTDIR)\trinomialtree.sbr" \
 	"$(INTDIR)\armijo.sbr" \
 	"$(INTDIR)\conjugategradient.sbr" \
@@ -349,16 +388,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\date.sbr" \
 	"$(INTDIR)\option.sbr" \
 	"$(INTDIR)\scheduler.sbr" \
-	"$(INTDIR)\solver1d.sbr" \
-	"$(INTDIR)\g2.sbr" \
-	"$(INTDIR)\grid.sbr" \
-	"$(INTDIR)\timefunction.sbr" \
-	"$(INTDIR)\calibrationhelper.sbr" \
-	"$(INTDIR)\coxingersollrossplus.sbr" \
-	"$(INTDIR)\swaption.sbr" \
-	"$(INTDIR)\jamshidianswaption.sbr" \
-	"$(INTDIR)\treecapfloor.sbr" \
-	"$(INTDIR)\analyticalcapfloor.sbr"
+	"$(INTDIR)\solver1d.sbr"
 
 "$(OUTDIR)\QuantLib.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -391,6 +421,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\simpleswap.obj" \
 	"$(INTDIR)\stock.obj" \
 	"$(INTDIR)\swap.obj" \
+	"$(INTDIR)\swaption.obj" \
 	"$(INTDIR)\matrix.obj" \
 	"$(INTDIR)\multivariateaccumulator.obj" \
 	"$(INTDIR)\normaldistribution.obj" \
@@ -408,6 +439,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\himalayapathpricer.obj" \
 	"$(INTDIR)\maxbasketpathpricer.obj" \
 	"$(INTDIR)\pagodapathpricer.obj" \
+	"$(INTDIR)\analyticalcapfloor.obj" \
 	"$(INTDIR)\barrieroption.obj" \
 	"$(INTDIR)\binaryoption.obj" \
 	"$(INTDIR)\cliquetoption.obj" \
@@ -424,6 +456,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\fdeuropean.obj" \
 	"$(INTDIR)\fdmultiperiodoption.obj" \
 	"$(INTDIR)\fdstepconditionoption.obj" \
+	"$(INTDIR)\jamshidianswaption.obj" \
 	"$(INTDIR)\mcbasket.obj" \
 	"$(INTDIR)\mcdiscretearithmeticapo.obj" \
 	"$(INTDIR)\mcdiscretearithmeticaso.obj" \
@@ -433,6 +466,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\mcmaxbasket.obj" \
 	"$(INTDIR)\mcpagoda.obj" \
 	"$(INTDIR)\singleassetoption.obj" \
+	"$(INTDIR)\treecapfloor.obj" \
 	"$(INTDIR)\treeswaption.obj" \
 	"$(INTDIR)\knuthuniformrng.obj" \
 	"$(INTDIR)\lecuyeruniformrng.obj" \
@@ -446,10 +480,15 @@ LIB32_OBJS= \
 	"$(INTDIR)\piecewiseflatforward.obj" \
 	"$(INTDIR)\ratehelpers.obj" \
 	"$(INTDIR)\blackkarasinski.obj" \
+	"$(INTDIR)\coxingersollrossplus.obj" \
 	"$(INTDIR)\hullwhite.obj" \
 	"$(INTDIR)\caphelper.obj" \
 	"$(INTDIR)\swaptionhelper.obj" \
+	"$(INTDIR)\g2.obj" \
+	"$(INTDIR)\calibrationhelper.obj" \
+	"$(INTDIR)\grid.obj" \
 	"$(INTDIR)\model.obj" \
+	"$(INTDIR)\timefunction.obj" \
 	"$(INTDIR)\trinomialtree.obj" \
 	"$(INTDIR)\armijo.obj" \
 	"$(INTDIR)\conjugategradient.obj" \
@@ -460,16 +499,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\date.obj" \
 	"$(INTDIR)\option.obj" \
 	"$(INTDIR)\scheduler.obj" \
-	"$(INTDIR)\solver1d.obj" \
-	"$(INTDIR)\g2.obj" \
-	"$(INTDIR)\grid.obj" \
-	"$(INTDIR)\timefunction.obj" \
-	"$(INTDIR)\calibrationhelper.obj" \
-	"$(INTDIR)\coxingersollrossplus.obj" \
-	"$(INTDIR)\swaption.obj" \
-	"$(INTDIR)\jamshidianswaption.obj" \
-	"$(INTDIR)\treecapfloor.obj" \
-	"$(INTDIR)\analyticalcapfloor.obj"
+	"$(INTDIR)\solver1d.obj"
 
 ".\lib\Win32\VisualStudio\QuantLib.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
     $(LIB32) @<<
@@ -700,7 +730,40 @@ CLEAN :
 "$(OUTDIR)" :
     if not exist "$(OUTDIR)/$(NULL)" mkdir "$(OUTDIR)"
 
+CPP=cl.exe
 CPP_PROJ=/nologo /MDd /W3 /Gi /GR /GX /ZI /Od /I ".\\" /D "WIN32" /D "_DEBUG" /D "_MBCS" /D "_LIB" /D "QL_DEBUG" /FR"$(INTDIR)\\" /Fp"$(INTDIR)\QuantLib.pch" /YX /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\\" /FD /GZ /c 
+
+.c{$(INTDIR)}.obj::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.cpp{$(INTDIR)}.obj::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.cxx{$(INTDIR)}.obj::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.c{$(INTDIR)}.sbr::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.cpp{$(INTDIR)}.sbr::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.cxx{$(INTDIR)}.sbr::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+RSC=rc.exe
 BSC32=bscmake.exe
 BSC32_FLAGS=/nologo /o"$(OUTDIR)\QuantLib.bsc" 
 BSC32_SBRS= \
@@ -727,6 +790,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\simpleswap.sbr" \
 	"$(INTDIR)\stock.sbr" \
 	"$(INTDIR)\swap.sbr" \
+	"$(INTDIR)\swaption.sbr" \
 	"$(INTDIR)\matrix.sbr" \
 	"$(INTDIR)\multivariateaccumulator.sbr" \
 	"$(INTDIR)\normaldistribution.sbr" \
@@ -744,6 +808,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\himalayapathpricer.sbr" \
 	"$(INTDIR)\maxbasketpathpricer.sbr" \
 	"$(INTDIR)\pagodapathpricer.sbr" \
+	"$(INTDIR)\analyticalcapfloor.sbr" \
 	"$(INTDIR)\barrieroption.sbr" \
 	"$(INTDIR)\binaryoption.sbr" \
 	"$(INTDIR)\cliquetoption.sbr" \
@@ -760,6 +825,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\fdeuropean.sbr" \
 	"$(INTDIR)\fdmultiperiodoption.sbr" \
 	"$(INTDIR)\fdstepconditionoption.sbr" \
+	"$(INTDIR)\jamshidianswaption.sbr" \
 	"$(INTDIR)\mcbasket.sbr" \
 	"$(INTDIR)\mcdiscretearithmeticapo.sbr" \
 	"$(INTDIR)\mcdiscretearithmeticaso.sbr" \
@@ -769,6 +835,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\mcmaxbasket.sbr" \
 	"$(INTDIR)\mcpagoda.sbr" \
 	"$(INTDIR)\singleassetoption.sbr" \
+	"$(INTDIR)\treecapfloor.sbr" \
 	"$(INTDIR)\treeswaption.sbr" \
 	"$(INTDIR)\knuthuniformrng.sbr" \
 	"$(INTDIR)\lecuyeruniformrng.sbr" \
@@ -782,10 +849,15 @@ BSC32_SBRS= \
 	"$(INTDIR)\piecewiseflatforward.sbr" \
 	"$(INTDIR)\ratehelpers.sbr" \
 	"$(INTDIR)\blackkarasinski.sbr" \
+	"$(INTDIR)\coxingersollrossplus.sbr" \
 	"$(INTDIR)\hullwhite.sbr" \
 	"$(INTDIR)\caphelper.sbr" \
 	"$(INTDIR)\swaptionhelper.sbr" \
+	"$(INTDIR)\g2.sbr" \
+	"$(INTDIR)\calibrationhelper.sbr" \
+	"$(INTDIR)\grid.sbr" \
 	"$(INTDIR)\model.sbr" \
+	"$(INTDIR)\timefunction.sbr" \
 	"$(INTDIR)\trinomialtree.sbr" \
 	"$(INTDIR)\armijo.sbr" \
 	"$(INTDIR)\conjugategradient.sbr" \
@@ -796,16 +868,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\date.sbr" \
 	"$(INTDIR)\option.sbr" \
 	"$(INTDIR)\scheduler.sbr" \
-	"$(INTDIR)\solver1d.sbr" \
-	"$(INTDIR)\g2.sbr" \
-	"$(INTDIR)\grid.sbr" \
-	"$(INTDIR)\timefunction.sbr" \
-	"$(INTDIR)\calibrationhelper.sbr" \
-	"$(INTDIR)\coxingersollrossplus.sbr" \
-	"$(INTDIR)\swaption.sbr" \
-	"$(INTDIR)\jamshidianswaption.sbr" \
-	"$(INTDIR)\treecapfloor.sbr" \
-	"$(INTDIR)\analyticalcapfloor.sbr"
+	"$(INTDIR)\solver1d.sbr"
 
 "$(OUTDIR)\QuantLib.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -838,6 +901,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\simpleswap.obj" \
 	"$(INTDIR)\stock.obj" \
 	"$(INTDIR)\swap.obj" \
+	"$(INTDIR)\swaption.obj" \
 	"$(INTDIR)\matrix.obj" \
 	"$(INTDIR)\multivariateaccumulator.obj" \
 	"$(INTDIR)\normaldistribution.obj" \
@@ -855,6 +919,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\himalayapathpricer.obj" \
 	"$(INTDIR)\maxbasketpathpricer.obj" \
 	"$(INTDIR)\pagodapathpricer.obj" \
+	"$(INTDIR)\analyticalcapfloor.obj" \
 	"$(INTDIR)\barrieroption.obj" \
 	"$(INTDIR)\binaryoption.obj" \
 	"$(INTDIR)\cliquetoption.obj" \
@@ -871,6 +936,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\fdeuropean.obj" \
 	"$(INTDIR)\fdmultiperiodoption.obj" \
 	"$(INTDIR)\fdstepconditionoption.obj" \
+	"$(INTDIR)\jamshidianswaption.obj" \
 	"$(INTDIR)\mcbasket.obj" \
 	"$(INTDIR)\mcdiscretearithmeticapo.obj" \
 	"$(INTDIR)\mcdiscretearithmeticaso.obj" \
@@ -880,6 +946,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\mcmaxbasket.obj" \
 	"$(INTDIR)\mcpagoda.obj" \
 	"$(INTDIR)\singleassetoption.obj" \
+	"$(INTDIR)\treecapfloor.obj" \
 	"$(INTDIR)\treeswaption.obj" \
 	"$(INTDIR)\knuthuniformrng.obj" \
 	"$(INTDIR)\lecuyeruniformrng.obj" \
@@ -893,10 +960,15 @@ LIB32_OBJS= \
 	"$(INTDIR)\piecewiseflatforward.obj" \
 	"$(INTDIR)\ratehelpers.obj" \
 	"$(INTDIR)\blackkarasinski.obj" \
+	"$(INTDIR)\coxingersollrossplus.obj" \
 	"$(INTDIR)\hullwhite.obj" \
 	"$(INTDIR)\caphelper.obj" \
 	"$(INTDIR)\swaptionhelper.obj" \
+	"$(INTDIR)\g2.obj" \
+	"$(INTDIR)\calibrationhelper.obj" \
+	"$(INTDIR)\grid.obj" \
 	"$(INTDIR)\model.obj" \
+	"$(INTDIR)\timefunction.obj" \
 	"$(INTDIR)\trinomialtree.obj" \
 	"$(INTDIR)\armijo.obj" \
 	"$(INTDIR)\conjugategradient.obj" \
@@ -907,16 +979,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\date.obj" \
 	"$(INTDIR)\option.obj" \
 	"$(INTDIR)\scheduler.obj" \
-	"$(INTDIR)\solver1d.obj" \
-	"$(INTDIR)\g2.obj" \
-	"$(INTDIR)\grid.obj" \
-	"$(INTDIR)\timefunction.obj" \
-	"$(INTDIR)\calibrationhelper.obj" \
-	"$(INTDIR)\coxingersollrossplus.obj" \
-	"$(INTDIR)\swaption.obj" \
-	"$(INTDIR)\jamshidianswaption.obj" \
-	"$(INTDIR)\treecapfloor.obj" \
-	"$(INTDIR)\analyticalcapfloor.obj"
+	"$(INTDIR)\solver1d.obj"
 
 ".\lib\Win32\VisualStudio\QuantLib_d.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
     $(LIB32) @<<
@@ -1146,7 +1209,40 @@ CLEAN :
 "$(OUTDIR)" :
     if not exist "$(OUTDIR)/$(NULL)" mkdir "$(OUTDIR)"
 
+CPP=cl.exe
 CPP_PROJ=/nologo /MD /W3 /Gi /GR /GX /Od /Ob2 /I ".\\" /D "WIN32" /D "NDEBUG" /D "_MBCS" /D "_LIB" /FR"$(INTDIR)\\" /Fp"$(INTDIR)\QuantLib.pch" /YX /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\\" /FD /c 
+
+.c{$(INTDIR)}.obj::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.cpp{$(INTDIR)}.obj::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.cxx{$(INTDIR)}.obj::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.c{$(INTDIR)}.sbr::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.cpp{$(INTDIR)}.sbr::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.cxx{$(INTDIR)}.sbr::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+RSC=rc.exe
 BSC32=bscmake.exe
 BSC32_FLAGS=/nologo /o"$(OUTDIR)\QuantLib.bsc" 
 BSC32_SBRS= \
@@ -1173,6 +1269,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\simpleswap.sbr" \
 	"$(INTDIR)\stock.sbr" \
 	"$(INTDIR)\swap.sbr" \
+	"$(INTDIR)\swaption.sbr" \
 	"$(INTDIR)\matrix.sbr" \
 	"$(INTDIR)\multivariateaccumulator.sbr" \
 	"$(INTDIR)\normaldistribution.sbr" \
@@ -1190,6 +1287,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\himalayapathpricer.sbr" \
 	"$(INTDIR)\maxbasketpathpricer.sbr" \
 	"$(INTDIR)\pagodapathpricer.sbr" \
+	"$(INTDIR)\analyticalcapfloor.sbr" \
 	"$(INTDIR)\barrieroption.sbr" \
 	"$(INTDIR)\binaryoption.sbr" \
 	"$(INTDIR)\cliquetoption.sbr" \
@@ -1206,6 +1304,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\fdeuropean.sbr" \
 	"$(INTDIR)\fdmultiperiodoption.sbr" \
 	"$(INTDIR)\fdstepconditionoption.sbr" \
+	"$(INTDIR)\jamshidianswaption.sbr" \
 	"$(INTDIR)\mcbasket.sbr" \
 	"$(INTDIR)\mcdiscretearithmeticapo.sbr" \
 	"$(INTDIR)\mcdiscretearithmeticaso.sbr" \
@@ -1215,6 +1314,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\mcmaxbasket.sbr" \
 	"$(INTDIR)\mcpagoda.sbr" \
 	"$(INTDIR)\singleassetoption.sbr" \
+	"$(INTDIR)\treecapfloor.sbr" \
 	"$(INTDIR)\treeswaption.sbr" \
 	"$(INTDIR)\knuthuniformrng.sbr" \
 	"$(INTDIR)\lecuyeruniformrng.sbr" \
@@ -1228,10 +1328,15 @@ BSC32_SBRS= \
 	"$(INTDIR)\piecewiseflatforward.sbr" \
 	"$(INTDIR)\ratehelpers.sbr" \
 	"$(INTDIR)\blackkarasinski.sbr" \
+	"$(INTDIR)\coxingersollrossplus.sbr" \
 	"$(INTDIR)\hullwhite.sbr" \
 	"$(INTDIR)\caphelper.sbr" \
 	"$(INTDIR)\swaptionhelper.sbr" \
+	"$(INTDIR)\g2.sbr" \
+	"$(INTDIR)\calibrationhelper.sbr" \
+	"$(INTDIR)\grid.sbr" \
 	"$(INTDIR)\model.sbr" \
+	"$(INTDIR)\timefunction.sbr" \
 	"$(INTDIR)\trinomialtree.sbr" \
 	"$(INTDIR)\armijo.sbr" \
 	"$(INTDIR)\conjugategradient.sbr" \
@@ -1242,16 +1347,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\date.sbr" \
 	"$(INTDIR)\option.sbr" \
 	"$(INTDIR)\scheduler.sbr" \
-	"$(INTDIR)\solver1d.sbr" \
-	"$(INTDIR)\g2.sbr" \
-	"$(INTDIR)\grid.sbr" \
-	"$(INTDIR)\timefunction.sbr" \
-	"$(INTDIR)\calibrationhelper.sbr" \
-	"$(INTDIR)\coxingersollrossplus.sbr" \
-	"$(INTDIR)\swaption.sbr" \
-	"$(INTDIR)\jamshidianswaption.sbr" \
-	"$(INTDIR)\treecapfloor.sbr" \
-	"$(INTDIR)\analyticalcapfloor.sbr"
+	"$(INTDIR)\solver1d.sbr"
 
 "$(OUTDIR)\QuantLib.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -1284,6 +1380,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\simpleswap.obj" \
 	"$(INTDIR)\stock.obj" \
 	"$(INTDIR)\swap.obj" \
+	"$(INTDIR)\swaption.obj" \
 	"$(INTDIR)\matrix.obj" \
 	"$(INTDIR)\multivariateaccumulator.obj" \
 	"$(INTDIR)\normaldistribution.obj" \
@@ -1301,6 +1398,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\himalayapathpricer.obj" \
 	"$(INTDIR)\maxbasketpathpricer.obj" \
 	"$(INTDIR)\pagodapathpricer.obj" \
+	"$(INTDIR)\analyticalcapfloor.obj" \
 	"$(INTDIR)\barrieroption.obj" \
 	"$(INTDIR)\binaryoption.obj" \
 	"$(INTDIR)\cliquetoption.obj" \
@@ -1317,6 +1415,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\fdeuropean.obj" \
 	"$(INTDIR)\fdmultiperiodoption.obj" \
 	"$(INTDIR)\fdstepconditionoption.obj" \
+	"$(INTDIR)\jamshidianswaption.obj" \
 	"$(INTDIR)\mcbasket.obj" \
 	"$(INTDIR)\mcdiscretearithmeticapo.obj" \
 	"$(INTDIR)\mcdiscretearithmeticaso.obj" \
@@ -1326,6 +1425,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\mcmaxbasket.obj" \
 	"$(INTDIR)\mcpagoda.obj" \
 	"$(INTDIR)\singleassetoption.obj" \
+	"$(INTDIR)\treecapfloor.obj" \
 	"$(INTDIR)\treeswaption.obj" \
 	"$(INTDIR)\knuthuniformrng.obj" \
 	"$(INTDIR)\lecuyeruniformrng.obj" \
@@ -1339,10 +1439,15 @@ LIB32_OBJS= \
 	"$(INTDIR)\piecewiseflatforward.obj" \
 	"$(INTDIR)\ratehelpers.obj" \
 	"$(INTDIR)\blackkarasinski.obj" \
+	"$(INTDIR)\coxingersollrossplus.obj" \
 	"$(INTDIR)\hullwhite.obj" \
 	"$(INTDIR)\caphelper.obj" \
 	"$(INTDIR)\swaptionhelper.obj" \
+	"$(INTDIR)\g2.obj" \
+	"$(INTDIR)\calibrationhelper.obj" \
+	"$(INTDIR)\grid.obj" \
 	"$(INTDIR)\model.obj" \
+	"$(INTDIR)\timefunction.obj" \
 	"$(INTDIR)\trinomialtree.obj" \
 	"$(INTDIR)\armijo.obj" \
 	"$(INTDIR)\conjugategradient.obj" \
@@ -1353,16 +1458,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\date.obj" \
 	"$(INTDIR)\option.obj" \
 	"$(INTDIR)\scheduler.obj" \
-	"$(INTDIR)\solver1d.obj" \
-	"$(INTDIR)\g2.obj" \
-	"$(INTDIR)\grid.obj" \
-	"$(INTDIR)\timefunction.obj" \
-	"$(INTDIR)\calibrationhelper.obj" \
-	"$(INTDIR)\coxingersollrossplus.obj" \
-	"$(INTDIR)\swaption.obj" \
-	"$(INTDIR)\jamshidianswaption.obj" \
-	"$(INTDIR)\treecapfloor.obj" \
-	"$(INTDIR)\analyticalcapfloor.obj"
+	"$(INTDIR)\solver1d.obj"
 
 ".\lib\Win32\VisualStudio\QuantLib.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
     $(LIB32) @<<
@@ -1593,7 +1689,40 @@ CLEAN :
 "$(OUTDIR)" :
     if not exist "$(OUTDIR)/$(NULL)" mkdir "$(OUTDIR)"
 
+CPP=cl.exe
 CPP_PROJ=/nologo /MDd /W3 /Gi /GR /GX /ZI /Od /I ".\\" /D "WIN32" /D "_DEBUG" /D "_MBCS" /D "_LIB" /D "QL_DEBUG" /FR"$(INTDIR)\\" /Fp"$(INTDIR)\QuantLib.pch" /YX /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\\" /FD /GZ /c 
+
+.c{$(INTDIR)}.obj::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.cpp{$(INTDIR)}.obj::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.cxx{$(INTDIR)}.obj::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.c{$(INTDIR)}.sbr::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.cpp{$(INTDIR)}.sbr::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.cxx{$(INTDIR)}.sbr::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+RSC=rc.exe
 BSC32=bscmake.exe
 BSC32_FLAGS=/nologo /o"$(OUTDIR)\QuantLib.bsc" 
 BSC32_SBRS= \
@@ -1620,6 +1749,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\simpleswap.sbr" \
 	"$(INTDIR)\stock.sbr" \
 	"$(INTDIR)\swap.sbr" \
+	"$(INTDIR)\swaption.sbr" \
 	"$(INTDIR)\matrix.sbr" \
 	"$(INTDIR)\multivariateaccumulator.sbr" \
 	"$(INTDIR)\normaldistribution.sbr" \
@@ -1637,6 +1767,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\himalayapathpricer.sbr" \
 	"$(INTDIR)\maxbasketpathpricer.sbr" \
 	"$(INTDIR)\pagodapathpricer.sbr" \
+	"$(INTDIR)\analyticalcapfloor.sbr" \
 	"$(INTDIR)\barrieroption.sbr" \
 	"$(INTDIR)\binaryoption.sbr" \
 	"$(INTDIR)\cliquetoption.sbr" \
@@ -1653,6 +1784,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\fdeuropean.sbr" \
 	"$(INTDIR)\fdmultiperiodoption.sbr" \
 	"$(INTDIR)\fdstepconditionoption.sbr" \
+	"$(INTDIR)\jamshidianswaption.sbr" \
 	"$(INTDIR)\mcbasket.sbr" \
 	"$(INTDIR)\mcdiscretearithmeticapo.sbr" \
 	"$(INTDIR)\mcdiscretearithmeticaso.sbr" \
@@ -1662,6 +1794,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\mcmaxbasket.sbr" \
 	"$(INTDIR)\mcpagoda.sbr" \
 	"$(INTDIR)\singleassetoption.sbr" \
+	"$(INTDIR)\treecapfloor.sbr" \
 	"$(INTDIR)\treeswaption.sbr" \
 	"$(INTDIR)\knuthuniformrng.sbr" \
 	"$(INTDIR)\lecuyeruniformrng.sbr" \
@@ -1675,10 +1808,15 @@ BSC32_SBRS= \
 	"$(INTDIR)\piecewiseflatforward.sbr" \
 	"$(INTDIR)\ratehelpers.sbr" \
 	"$(INTDIR)\blackkarasinski.sbr" \
+	"$(INTDIR)\coxingersollrossplus.sbr" \
 	"$(INTDIR)\hullwhite.sbr" \
 	"$(INTDIR)\caphelper.sbr" \
 	"$(INTDIR)\swaptionhelper.sbr" \
+	"$(INTDIR)\g2.sbr" \
+	"$(INTDIR)\calibrationhelper.sbr" \
+	"$(INTDIR)\grid.sbr" \
 	"$(INTDIR)\model.sbr" \
+	"$(INTDIR)\timefunction.sbr" \
 	"$(INTDIR)\trinomialtree.sbr" \
 	"$(INTDIR)\armijo.sbr" \
 	"$(INTDIR)\conjugategradient.sbr" \
@@ -1689,16 +1827,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\date.sbr" \
 	"$(INTDIR)\option.sbr" \
 	"$(INTDIR)\scheduler.sbr" \
-	"$(INTDIR)\solver1d.sbr" \
-	"$(INTDIR)\g2.sbr" \
-	"$(INTDIR)\grid.sbr" \
-	"$(INTDIR)\timefunction.sbr" \
-	"$(INTDIR)\calibrationhelper.sbr" \
-	"$(INTDIR)\coxingersollrossplus.sbr" \
-	"$(INTDIR)\swaption.sbr" \
-	"$(INTDIR)\jamshidianswaption.sbr" \
-	"$(INTDIR)\treecapfloor.sbr" \
-	"$(INTDIR)\analyticalcapfloor.sbr"
+	"$(INTDIR)\solver1d.sbr"
 
 "$(OUTDIR)\QuantLib.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -1731,6 +1860,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\simpleswap.obj" \
 	"$(INTDIR)\stock.obj" \
 	"$(INTDIR)\swap.obj" \
+	"$(INTDIR)\swaption.obj" \
 	"$(INTDIR)\matrix.obj" \
 	"$(INTDIR)\multivariateaccumulator.obj" \
 	"$(INTDIR)\normaldistribution.obj" \
@@ -1748,6 +1878,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\himalayapathpricer.obj" \
 	"$(INTDIR)\maxbasketpathpricer.obj" \
 	"$(INTDIR)\pagodapathpricer.obj" \
+	"$(INTDIR)\analyticalcapfloor.obj" \
 	"$(INTDIR)\barrieroption.obj" \
 	"$(INTDIR)\binaryoption.obj" \
 	"$(INTDIR)\cliquetoption.obj" \
@@ -1764,6 +1895,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\fdeuropean.obj" \
 	"$(INTDIR)\fdmultiperiodoption.obj" \
 	"$(INTDIR)\fdstepconditionoption.obj" \
+	"$(INTDIR)\jamshidianswaption.obj" \
 	"$(INTDIR)\mcbasket.obj" \
 	"$(INTDIR)\mcdiscretearithmeticapo.obj" \
 	"$(INTDIR)\mcdiscretearithmeticaso.obj" \
@@ -1773,6 +1905,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\mcmaxbasket.obj" \
 	"$(INTDIR)\mcpagoda.obj" \
 	"$(INTDIR)\singleassetoption.obj" \
+	"$(INTDIR)\treecapfloor.obj" \
 	"$(INTDIR)\treeswaption.obj" \
 	"$(INTDIR)\knuthuniformrng.obj" \
 	"$(INTDIR)\lecuyeruniformrng.obj" \
@@ -1786,10 +1919,15 @@ LIB32_OBJS= \
 	"$(INTDIR)\piecewiseflatforward.obj" \
 	"$(INTDIR)\ratehelpers.obj" \
 	"$(INTDIR)\blackkarasinski.obj" \
+	"$(INTDIR)\coxingersollrossplus.obj" \
 	"$(INTDIR)\hullwhite.obj" \
 	"$(INTDIR)\caphelper.obj" \
 	"$(INTDIR)\swaptionhelper.obj" \
+	"$(INTDIR)\g2.obj" \
+	"$(INTDIR)\calibrationhelper.obj" \
+	"$(INTDIR)\grid.obj" \
 	"$(INTDIR)\model.obj" \
+	"$(INTDIR)\timefunction.obj" \
 	"$(INTDIR)\trinomialtree.obj" \
 	"$(INTDIR)\armijo.obj" \
 	"$(INTDIR)\conjugategradient.obj" \
@@ -1800,16 +1938,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\date.obj" \
 	"$(INTDIR)\option.obj" \
 	"$(INTDIR)\scheduler.obj" \
-	"$(INTDIR)\solver1d.obj" \
-	"$(INTDIR)\g2.obj" \
-	"$(INTDIR)\grid.obj" \
-	"$(INTDIR)\timefunction.obj" \
-	"$(INTDIR)\calibrationhelper.obj" \
-	"$(INTDIR)\coxingersollrossplus.obj" \
-	"$(INTDIR)\swaption.obj" \
-	"$(INTDIR)\jamshidianswaption.obj" \
-	"$(INTDIR)\treecapfloor.obj" \
-	"$(INTDIR)\analyticalcapfloor.obj"
+	"$(INTDIR)\solver1d.obj"
 
 ".\lib\Win32\VisualStudio\QuantLib_d.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
     $(LIB32) @<<
@@ -1817,36 +1946,6 @@ LIB32_OBJS= \
 <<
 
 !ENDIF 
-
-.c{$(INTDIR)}.obj::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-.cpp{$(INTDIR)}.obj::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-.cxx{$(INTDIR)}.obj::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-.c{$(INTDIR)}.sbr::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-.cpp{$(INTDIR)}.sbr::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-.cxx{$(INTDIR)}.sbr::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
 
 
 !IF "$(NO_EXTERNAL_DEPS)" != "1"
