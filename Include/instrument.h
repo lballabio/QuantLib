@@ -27,9 +27,12 @@
 	$Source$
 	$Name$
 	$Log$
+	Revision 1.7  2000/12/15 10:00:38  enri
+	Instrument interface slightly changed. PricedInstrument added.
+
 	Revision 1.6  2000/12/14 12:32:29  lballabio
 	Added CVS tags in Doxygen file documentation blocks
-
+	
 */
 
 #ifndef quantlib_financial_instrument_h
@@ -51,10 +54,7 @@ namespace QuantLib {
 	*/
 	class Instrument {
 	  public:
-		Instrument()
-		: termStructureHasChanged(true), swaptionVolHasChanged(true), forwardVolHasChanged(true), 
-		  theSettlementDate(Date()), theNPV(0.0), expired(false) {}
-		Instrument(const std::string& isinCode, const std::string& description)
+		Instrument(const std::string& isinCode = "", const std::string& description = "")
 		: theISINCode(isinCode), theDescription(description), 
 		  termStructureHasChanged(true), swaptionVolHasChanged(true), forwardVolHasChanged(true), 
 		  theSettlementDate(Date()), theNPV(0.0), expired(false) {}
@@ -198,30 +198,33 @@ namespace QuantLib {
 	
 	// derived classes
 	
-	//! Abstract instrument class
-	/*! It implements the <b>setPrice</b> and <b>price</b> methods for instruments
-		for instruments whose prices are available on the market.
+	//! Priced instrument class
+	/*! It implements the Instrument interface for instruments
+		whose prices are available on the market.
 	*/
 	class PricedInstrument : public Instrument {
 	  public:
-		PricedInstrument() : priceIsSet(false) {}
-		PricedInstrument(const std::string& isinCode, const std::string& description)
+		PricedInstrument(const std::string& isinCode = "", const std::string& description = "")
 		: Instrument(isinCode,description), priceIsSet(false) {}
 		void setPrice(double price) { thePrice = price; priceIsSet = true; }
 		double price() const { Require(priceIsSet, "price not set"); return thePrice; }
+		bool useTermStructure() const { return false; }
+		bool useSwaptionVolatility() const { return false; }
+		bool useForwardVolatility() const { return false; }
 	  private:
+		bool needsFinalCalculations() const { return true; }
+		void performFinalCalculations() const { theNPV = price(); }	// it will throw an exception if not set
 		bool priceIsSet;
 		double thePrice;
 	};
 	
-	//! Abstract instrument class
+	//! Over-the-counter instrument class
 	/*! It inhibits the <b>setPrice</b> method and redirects the <b>price</b> method to <b>NPV</b>
 		for over-the-counter instruments.
 	*/
 	class OTCInstrument : public Instrument { // over the counter
 	  public:
-		OTCInstrument() {}
-		OTCInstrument(const std::string& isinCode, const std::string& description)
+		OTCInstrument(const std::string& isinCode = "", const std::string& description = "")
 		: Instrument(isinCode,description) {}
 		void setPrice(double price) { throw Error("Cannot set price"); }
 		double price() const { return NPV(); }
@@ -308,7 +311,7 @@ namespace QuantLib {
 	
 	inline double Instrument::NPV() const {
 		calculate();
-		return (expired ? 0.0 :theNPV); 
+		return (expired ? 0.0 : theNPV); 
 	}
 	
 	inline Handle<TermStructure> Instrument::termStructure() const {
