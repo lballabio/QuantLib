@@ -76,6 +76,9 @@ SectionIn 1 2 3
     SetOutPath  $INSTDIR\ql\FiniteDifferences
     File /r "ql\FiniteDifferences\*.hpp"
 
+    SetOutPath  $INSTDIR\ql\functions
+    File /r "ql\functions\*.hpp"
+
     SetOutPath  $INSTDIR\ql\Indexes
     File /r "ql\Indexes\*.hpp"
 
@@ -123,6 +126,9 @@ SectionIn 1 2 3
 
     SetOutPath  $INSTDIR\ql\Utilities
     File /r "ql\Utilities\*.hpp"
+
+    SetOutPath  $INSTDIR\ql\Volatilities
+    File /r "ql\Volatilities\*.hpp"
 
     SetOutPath $INSTDIR\lib\Win32\VisualStudio
     File "lib\Win32\VisualStudio\QuantLib.lib"
@@ -198,6 +204,10 @@ SectionIn 1
   File /r "ql\FiniteDifferences\*.cpp"
   File /r "ql\FiniteDifferences\makefile.mak"
 
+  SetOutPath  $INSTDIR\ql\functions
+  File /r "ql\functions\*.cpp"
+  File /r "ql\functions\makefile.mak"
+
   SetOutPath  $INSTDIR\ql\Indexes
   File /r "ql\Indexes\*.cpp"
   File /r "ql\Indexes\makefile.mak"
@@ -253,6 +263,10 @@ SectionIn 1
   SetOutPath  $INSTDIR\ql\TermStructures
   File /r "ql\TermStructures\*.cpp"
   File /r "ql\TermStructures\makefile.mak"
+
+#  SetOutPath  $INSTDIR\ql\Volatilities
+#  File /r "ql\Volatilities\*.cpp"
+#  File /r "ql\Volatilities\makefile.mak"
 
   CreateShortCut "$SMPROGRAMS\QuantLib\QuantLib project workspace.lnk" \
                  "$INSTDIR\QuantLib.dsw"
