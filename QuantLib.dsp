@@ -751,6 +751,14 @@ SOURCE=.\ql\Pricers\binaryoption.hpp
 # End Source File
 # Begin Source File
 
+SOURCE=.\ql\Pricers\binomialplainoption.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\Pricers\binomialplainoption.hpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\ql\Pricers\blackcapfloor.cpp
 # End Source File
 # Begin Source File
@@ -1235,11 +1243,35 @@ SOURCE=.\ql\Optimization\steepestdescent.hpp
 # PROP Default_Filter ""
 # Begin Source File
 
-SOURCE=.\ql\Lattices\column.hpp
+SOURCE=.\ql\Lattices\binomialtree.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\ql\Lattices\tree.cpp
+SOURCE=.\ql\Lattices\binomialtree.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\Lattices\bsmlattice.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\Lattices\bsmlattice.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\Lattices\lattice.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\Lattices\lattice.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\Lattices\lattice2d.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\Lattices\lattice2d.hpp
 # End Source File
 # Begin Source File
 
@@ -1252,14 +1284,6 @@ SOURCE=.\ql\Lattices\trinomialtree.cpp
 # Begin Source File
 
 SOURCE=.\ql\Lattices\trinomialtree.hpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\ql\Lattices\twodimensionaltree.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\ql\Lattices\twodimensionaltree.hpp
 # End Source File
 # End Group
 # Begin Group "functions"

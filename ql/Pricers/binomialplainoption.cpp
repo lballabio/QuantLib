@@ -79,23 +79,24 @@ namespace QuantLib {
             double strike = parameters_.strike;
 
             Array prices(values_.size(), 0.0);
+            Size j;
             switch (parameters_.type) {
               case Option::Call:
-                for (Size j=0; j<values_.size(); j++)
+                for (j=0; j<values_.size(); j++)
                     prices[j] = QL_MAX(tree->underlying(i, j) - strike, 0.0);
                 break;
               case Option::Put:
-                for (Size j=0; j<values_.size(); j++)
+                for (j=0; j<values_.size(); j++)
                     prices[j] = QL_MAX(strike - tree->underlying(i, j), 0.0);
                 break;
               case Option::Straddle:
-                for (Size j=0; j<values_.size(); j++)
+                for (j=0; j<values_.size(); j++)
                     prices[j] = QL_FABS(tree->underlying(i, j) - strike);
                 break;
               default:
                 throw IllegalArgumentError("invalid option type");
             }
-            for (Size j=0; j<values_.size(); j++) {
+            for (j=0; j<values_.size(); j++) {
                 values_[j] = QL_MAX(values_[j], prices[j]);
             }
         }

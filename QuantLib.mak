@@ -60,6 +60,10 @@ CLEAN :
 	-@erase "$(INTDIR)\basketpathpricer.sbr"
 	-@erase "$(INTDIR)\binaryoption.obj"
 	-@erase "$(INTDIR)\binaryoption.sbr"
+	-@erase "$(INTDIR)\binomialplainoption.obj"
+	-@erase "$(INTDIR)\binomialplainoption.sbr"
+	-@erase "$(INTDIR)\binomialtree.obj"
+	-@erase "$(INTDIR)\binomialtree.sbr"
 	-@erase "$(INTDIR)\bisection.obj"
 	-@erase "$(INTDIR)\bisection.sbr"
 	-@erase "$(INTDIR)\blackcapfloor.obj"
@@ -70,6 +74,8 @@ CLEAN :
 	-@erase "$(INTDIR)\blackswaption.sbr"
 	-@erase "$(INTDIR)\brent.obj"
 	-@erase "$(INTDIR)\brent.sbr"
+	-@erase "$(INTDIR)\bsmlattice.obj"
+	-@erase "$(INTDIR)\bsmlattice.sbr"
 	-@erase "$(INTDIR)\bsmoperator.obj"
 	-@erase "$(INTDIR)\bsmoperator.sbr"
 	-@erase "$(INTDIR)\calendar.obj"
@@ -158,6 +164,10 @@ CLEAN :
 	-@erase "$(INTDIR)\johannesburg.sbr"
 	-@erase "$(INTDIR)\knuthuniformrng.obj"
 	-@erase "$(INTDIR)\knuthuniformrng.sbr"
+	-@erase "$(INTDIR)\lattice.obj"
+	-@erase "$(INTDIR)\lattice.sbr"
+	-@erase "$(INTDIR)\lattice2d.obj"
+	-@erase "$(INTDIR)\lattice2d.sbr"
 	-@erase "$(INTDIR)\lecuyeruniformrng.obj"
 	-@erase "$(INTDIR)\lecuyeruniformrng.sbr"
 	-@erase "$(INTDIR)\london.obj"
@@ -256,8 +266,6 @@ CLEAN :
 	-@erase "$(INTDIR)\tokyo.sbr"
 	-@erase "$(INTDIR)\toronto.obj"
 	-@erase "$(INTDIR)\toronto.sbr"
-	-@erase "$(INTDIR)\tree.obj"
-	-@erase "$(INTDIR)\tree.sbr"
 	-@erase "$(INTDIR)\treecapfloor.obj"
 	-@erase "$(INTDIR)\treecapfloor.sbr"
 	-@erase "$(INTDIR)\treeswaption.obj"
@@ -266,8 +274,6 @@ CLEAN :
 	-@erase "$(INTDIR)\tridiagonaloperator.sbr"
 	-@erase "$(INTDIR)\trinomialtree.obj"
 	-@erase "$(INTDIR)\trinomialtree.sbr"
-	-@erase "$(INTDIR)\twodimensionaltree.obj"
-	-@erase "$(INTDIR)\twodimensionaltree.sbr"
 	-@erase "$(INTDIR)\twofactormodel.obj"
 	-@erase "$(INTDIR)\twofactormodel.sbr"
 	-@erase "$(INTDIR)\valueatcenter.obj"
@@ -344,6 +350,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\analyticalcapfloor.sbr" \
 	"$(INTDIR)\barrieroption.sbr" \
 	"$(INTDIR)\binaryoption.sbr" \
+	"$(INTDIR)\binomialplainoption.sbr" \
 	"$(INTDIR)\blackcapfloor.sbr" \
 	"$(INTDIR)\blackswaption.sbr" \
 	"$(INTDIR)\capfloorpricer.sbr" \
@@ -383,15 +390,18 @@ BSC32_SBRS= \
 	"$(INTDIR)\newtonsafe.sbr" \
 	"$(INTDIR)\ridder.sbr" \
 	"$(INTDIR)\secant.sbr" \
+	"$(INTDIR)\affinetermstructure.sbr" \
 	"$(INTDIR)\piecewiseflatforward.sbr" \
 	"$(INTDIR)\ratehelpers.sbr" \
 	"$(INTDIR)\armijo.sbr" \
 	"$(INTDIR)\conjugategradient.sbr" \
 	"$(INTDIR)\simplex.sbr" \
 	"$(INTDIR)\steepestdescent.sbr" \
-	"$(INTDIR)\tree.sbr" \
+	"$(INTDIR)\binomialtree.sbr" \
+	"$(INTDIR)\bsmlattice.sbr" \
+	"$(INTDIR)\lattice.sbr" \
+	"$(INTDIR)\lattice2d.sbr" \
 	"$(INTDIR)\trinomialtree.sbr" \
-	"$(INTDIR)\twodimensionaltree.sbr" \
 	"$(INTDIR)\daycounters.sbr" \
 	"$(INTDIR)\mathf.sbr" \
 	"$(INTDIR)\caphelper.sbr" \
@@ -411,8 +421,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\date.sbr" \
 	"$(INTDIR)\option.sbr" \
 	"$(INTDIR)\scheduler.sbr" \
-	"$(INTDIR)\solver1d.sbr" \
-	"$(INTDIR)\affinetermstructure.sbr"
+	"$(INTDIR)\solver1d.sbr"
 
 "$(OUTDIR)\QuantLib.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -473,6 +482,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\analyticalcapfloor.obj" \
 	"$(INTDIR)\barrieroption.obj" \
 	"$(INTDIR)\binaryoption.obj" \
+	"$(INTDIR)\binomialplainoption.obj" \
 	"$(INTDIR)\blackcapfloor.obj" \
 	"$(INTDIR)\blackswaption.obj" \
 	"$(INTDIR)\capfloorpricer.obj" \
@@ -512,15 +522,18 @@ LIB32_OBJS= \
 	"$(INTDIR)\newtonsafe.obj" \
 	"$(INTDIR)\ridder.obj" \
 	"$(INTDIR)\secant.obj" \
+	"$(INTDIR)\affinetermstructure.obj" \
 	"$(INTDIR)\piecewiseflatforward.obj" \
 	"$(INTDIR)\ratehelpers.obj" \
 	"$(INTDIR)\armijo.obj" \
 	"$(INTDIR)\conjugategradient.obj" \
 	"$(INTDIR)\simplex.obj" \
 	"$(INTDIR)\steepestdescent.obj" \
-	"$(INTDIR)\tree.obj" \
+	"$(INTDIR)\binomialtree.obj" \
+	"$(INTDIR)\bsmlattice.obj" \
+	"$(INTDIR)\lattice.obj" \
+	"$(INTDIR)\lattice2d.obj" \
 	"$(INTDIR)\trinomialtree.obj" \
-	"$(INTDIR)\twodimensionaltree.obj" \
 	"$(INTDIR)\daycounters.obj" \
 	"$(INTDIR)\mathf.obj" \
 	"$(INTDIR)\caphelper.obj" \
@@ -540,8 +553,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\date.obj" \
 	"$(INTDIR)\option.obj" \
 	"$(INTDIR)\scheduler.obj" \
-	"$(INTDIR)\solver1d.obj" \
-	"$(INTDIR)\affinetermstructure.obj"
+	"$(INTDIR)\solver1d.obj"
 
 ".\lib\Win32\VisualStudio\QuantLib.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
     $(LIB32) @<<
@@ -578,6 +590,10 @@ CLEAN :
 	-@erase "$(INTDIR)\basketpathpricer.sbr"
 	-@erase "$(INTDIR)\binaryoption.obj"
 	-@erase "$(INTDIR)\binaryoption.sbr"
+	-@erase "$(INTDIR)\binomialplainoption.obj"
+	-@erase "$(INTDIR)\binomialplainoption.sbr"
+	-@erase "$(INTDIR)\binomialtree.obj"
+	-@erase "$(INTDIR)\binomialtree.sbr"
 	-@erase "$(INTDIR)\bisection.obj"
 	-@erase "$(INTDIR)\bisection.sbr"
 	-@erase "$(INTDIR)\blackcapfloor.obj"
@@ -588,6 +604,8 @@ CLEAN :
 	-@erase "$(INTDIR)\blackswaption.sbr"
 	-@erase "$(INTDIR)\brent.obj"
 	-@erase "$(INTDIR)\brent.sbr"
+	-@erase "$(INTDIR)\bsmlattice.obj"
+	-@erase "$(INTDIR)\bsmlattice.sbr"
 	-@erase "$(INTDIR)\bsmoperator.obj"
 	-@erase "$(INTDIR)\bsmoperator.sbr"
 	-@erase "$(INTDIR)\calendar.obj"
@@ -676,6 +694,10 @@ CLEAN :
 	-@erase "$(INTDIR)\johannesburg.sbr"
 	-@erase "$(INTDIR)\knuthuniformrng.obj"
 	-@erase "$(INTDIR)\knuthuniformrng.sbr"
+	-@erase "$(INTDIR)\lattice.obj"
+	-@erase "$(INTDIR)\lattice.sbr"
+	-@erase "$(INTDIR)\lattice2d.obj"
+	-@erase "$(INTDIR)\lattice2d.sbr"
 	-@erase "$(INTDIR)\lecuyeruniformrng.obj"
 	-@erase "$(INTDIR)\lecuyeruniformrng.sbr"
 	-@erase "$(INTDIR)\london.obj"
@@ -774,8 +796,6 @@ CLEAN :
 	-@erase "$(INTDIR)\tokyo.sbr"
 	-@erase "$(INTDIR)\toronto.obj"
 	-@erase "$(INTDIR)\toronto.sbr"
-	-@erase "$(INTDIR)\tree.obj"
-	-@erase "$(INTDIR)\tree.sbr"
 	-@erase "$(INTDIR)\treecapfloor.obj"
 	-@erase "$(INTDIR)\treecapfloor.sbr"
 	-@erase "$(INTDIR)\treeswaption.obj"
@@ -784,8 +804,6 @@ CLEAN :
 	-@erase "$(INTDIR)\tridiagonaloperator.sbr"
 	-@erase "$(INTDIR)\trinomialtree.obj"
 	-@erase "$(INTDIR)\trinomialtree.sbr"
-	-@erase "$(INTDIR)\twodimensionaltree.obj"
-	-@erase "$(INTDIR)\twodimensionaltree.sbr"
 	-@erase "$(INTDIR)\twofactormodel.obj"
 	-@erase "$(INTDIR)\twofactormodel.sbr"
 	-@erase "$(INTDIR)\valueatcenter.obj"
@@ -863,6 +881,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\analyticalcapfloor.sbr" \
 	"$(INTDIR)\barrieroption.sbr" \
 	"$(INTDIR)\binaryoption.sbr" \
+	"$(INTDIR)\binomialplainoption.sbr" \
 	"$(INTDIR)\blackcapfloor.sbr" \
 	"$(INTDIR)\blackswaption.sbr" \
 	"$(INTDIR)\capfloorpricer.sbr" \
@@ -902,15 +921,18 @@ BSC32_SBRS= \
 	"$(INTDIR)\newtonsafe.sbr" \
 	"$(INTDIR)\ridder.sbr" \
 	"$(INTDIR)\secant.sbr" \
+	"$(INTDIR)\affinetermstructure.sbr" \
 	"$(INTDIR)\piecewiseflatforward.sbr" \
 	"$(INTDIR)\ratehelpers.sbr" \
 	"$(INTDIR)\armijo.sbr" \
 	"$(INTDIR)\conjugategradient.sbr" \
 	"$(INTDIR)\simplex.sbr" \
 	"$(INTDIR)\steepestdescent.sbr" \
-	"$(INTDIR)\tree.sbr" \
+	"$(INTDIR)\binomialtree.sbr" \
+	"$(INTDIR)\bsmlattice.sbr" \
+	"$(INTDIR)\lattice.sbr" \
+	"$(INTDIR)\lattice2d.sbr" \
 	"$(INTDIR)\trinomialtree.sbr" \
-	"$(INTDIR)\twodimensionaltree.sbr" \
 	"$(INTDIR)\daycounters.sbr" \
 	"$(INTDIR)\mathf.sbr" \
 	"$(INTDIR)\caphelper.sbr" \
@@ -930,8 +952,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\date.sbr" \
 	"$(INTDIR)\option.sbr" \
 	"$(INTDIR)\scheduler.sbr" \
-	"$(INTDIR)\solver1d.sbr" \
-	"$(INTDIR)\affinetermstructure.sbr"
+	"$(INTDIR)\solver1d.sbr"
 
 "$(OUTDIR)\QuantLib.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -992,6 +1013,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\analyticalcapfloor.obj" \
 	"$(INTDIR)\barrieroption.obj" \
 	"$(INTDIR)\binaryoption.obj" \
+	"$(INTDIR)\binomialplainoption.obj" \
 	"$(INTDIR)\blackcapfloor.obj" \
 	"$(INTDIR)\blackswaption.obj" \
 	"$(INTDIR)\capfloorpricer.obj" \
@@ -1031,15 +1053,18 @@ LIB32_OBJS= \
 	"$(INTDIR)\newtonsafe.obj" \
 	"$(INTDIR)\ridder.obj" \
 	"$(INTDIR)\secant.obj" \
+	"$(INTDIR)\affinetermstructure.obj" \
 	"$(INTDIR)\piecewiseflatforward.obj" \
 	"$(INTDIR)\ratehelpers.obj" \
 	"$(INTDIR)\armijo.obj" \
 	"$(INTDIR)\conjugategradient.obj" \
 	"$(INTDIR)\simplex.obj" \
 	"$(INTDIR)\steepestdescent.obj" \
-	"$(INTDIR)\tree.obj" \
+	"$(INTDIR)\binomialtree.obj" \
+	"$(INTDIR)\bsmlattice.obj" \
+	"$(INTDIR)\lattice.obj" \
+	"$(INTDIR)\lattice2d.obj" \
 	"$(INTDIR)\trinomialtree.obj" \
-	"$(INTDIR)\twodimensionaltree.obj" \
 	"$(INTDIR)\daycounters.obj" \
 	"$(INTDIR)\mathf.obj" \
 	"$(INTDIR)\caphelper.obj" \
@@ -1059,8 +1084,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\date.obj" \
 	"$(INTDIR)\option.obj" \
 	"$(INTDIR)\scheduler.obj" \
-	"$(INTDIR)\solver1d.obj" \
-	"$(INTDIR)\affinetermstructure.obj"
+	"$(INTDIR)\solver1d.obj"
 
 ".\lib\Win32\VisualStudio\QuantLib_d.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
     $(LIB32) @<<
@@ -1097,6 +1121,10 @@ CLEAN :
 	-@erase "$(INTDIR)\basketpathpricer.sbr"
 	-@erase "$(INTDIR)\binaryoption.obj"
 	-@erase "$(INTDIR)\binaryoption.sbr"
+	-@erase "$(INTDIR)\binomialplainoption.obj"
+	-@erase "$(INTDIR)\binomialplainoption.sbr"
+	-@erase "$(INTDIR)\binomialtree.obj"
+	-@erase "$(INTDIR)\binomialtree.sbr"
 	-@erase "$(INTDIR)\bisection.obj"
 	-@erase "$(INTDIR)\bisection.sbr"
 	-@erase "$(INTDIR)\blackcapfloor.obj"
@@ -1107,6 +1135,8 @@ CLEAN :
 	-@erase "$(INTDIR)\blackswaption.sbr"
 	-@erase "$(INTDIR)\brent.obj"
 	-@erase "$(INTDIR)\brent.sbr"
+	-@erase "$(INTDIR)\bsmlattice.obj"
+	-@erase "$(INTDIR)\bsmlattice.sbr"
 	-@erase "$(INTDIR)\bsmoperator.obj"
 	-@erase "$(INTDIR)\bsmoperator.sbr"
 	-@erase "$(INTDIR)\calendar.obj"
@@ -1195,6 +1225,10 @@ CLEAN :
 	-@erase "$(INTDIR)\johannesburg.sbr"
 	-@erase "$(INTDIR)\knuthuniformrng.obj"
 	-@erase "$(INTDIR)\knuthuniformrng.sbr"
+	-@erase "$(INTDIR)\lattice.obj"
+	-@erase "$(INTDIR)\lattice.sbr"
+	-@erase "$(INTDIR)\lattice2d.obj"
+	-@erase "$(INTDIR)\lattice2d.sbr"
 	-@erase "$(INTDIR)\lecuyeruniformrng.obj"
 	-@erase "$(INTDIR)\lecuyeruniformrng.sbr"
 	-@erase "$(INTDIR)\london.obj"
@@ -1293,8 +1327,6 @@ CLEAN :
 	-@erase "$(INTDIR)\tokyo.sbr"
 	-@erase "$(INTDIR)\toronto.obj"
 	-@erase "$(INTDIR)\toronto.sbr"
-	-@erase "$(INTDIR)\tree.obj"
-	-@erase "$(INTDIR)\tree.sbr"
 	-@erase "$(INTDIR)\treecapfloor.obj"
 	-@erase "$(INTDIR)\treecapfloor.sbr"
 	-@erase "$(INTDIR)\treeswaption.obj"
@@ -1303,8 +1335,6 @@ CLEAN :
 	-@erase "$(INTDIR)\tridiagonaloperator.sbr"
 	-@erase "$(INTDIR)\trinomialtree.obj"
 	-@erase "$(INTDIR)\trinomialtree.sbr"
-	-@erase "$(INTDIR)\twodimensionaltree.obj"
-	-@erase "$(INTDIR)\twodimensionaltree.sbr"
 	-@erase "$(INTDIR)\twofactormodel.obj"
 	-@erase "$(INTDIR)\twofactormodel.sbr"
 	-@erase "$(INTDIR)\valueatcenter.obj"
@@ -1381,6 +1411,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\analyticalcapfloor.sbr" \
 	"$(INTDIR)\barrieroption.sbr" \
 	"$(INTDIR)\binaryoption.sbr" \
+	"$(INTDIR)\binomialplainoption.sbr" \
 	"$(INTDIR)\blackcapfloor.sbr" \
 	"$(INTDIR)\blackswaption.sbr" \
 	"$(INTDIR)\capfloorpricer.sbr" \
@@ -1420,15 +1451,18 @@ BSC32_SBRS= \
 	"$(INTDIR)\newtonsafe.sbr" \
 	"$(INTDIR)\ridder.sbr" \
 	"$(INTDIR)\secant.sbr" \
+	"$(INTDIR)\affinetermstructure.sbr" \
 	"$(INTDIR)\piecewiseflatforward.sbr" \
 	"$(INTDIR)\ratehelpers.sbr" \
 	"$(INTDIR)\armijo.sbr" \
 	"$(INTDIR)\conjugategradient.sbr" \
 	"$(INTDIR)\simplex.sbr" \
 	"$(INTDIR)\steepestdescent.sbr" \
-	"$(INTDIR)\tree.sbr" \
+	"$(INTDIR)\binomialtree.sbr" \
+	"$(INTDIR)\bsmlattice.sbr" \
+	"$(INTDIR)\lattice.sbr" \
+	"$(INTDIR)\lattice2d.sbr" \
 	"$(INTDIR)\trinomialtree.sbr" \
-	"$(INTDIR)\twodimensionaltree.sbr" \
 	"$(INTDIR)\daycounters.sbr" \
 	"$(INTDIR)\mathf.sbr" \
 	"$(INTDIR)\caphelper.sbr" \
@@ -1448,8 +1482,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\date.sbr" \
 	"$(INTDIR)\option.sbr" \
 	"$(INTDIR)\scheduler.sbr" \
-	"$(INTDIR)\solver1d.sbr" \
-	"$(INTDIR)\affinetermstructure.sbr"
+	"$(INTDIR)\solver1d.sbr"
 
 "$(OUTDIR)\QuantLib.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -1510,6 +1543,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\analyticalcapfloor.obj" \
 	"$(INTDIR)\barrieroption.obj" \
 	"$(INTDIR)\binaryoption.obj" \
+	"$(INTDIR)\binomialplainoption.obj" \
 	"$(INTDIR)\blackcapfloor.obj" \
 	"$(INTDIR)\blackswaption.obj" \
 	"$(INTDIR)\capfloorpricer.obj" \
@@ -1549,15 +1583,18 @@ LIB32_OBJS= \
 	"$(INTDIR)\newtonsafe.obj" \
 	"$(INTDIR)\ridder.obj" \
 	"$(INTDIR)\secant.obj" \
+	"$(INTDIR)\affinetermstructure.obj" \
 	"$(INTDIR)\piecewiseflatforward.obj" \
 	"$(INTDIR)\ratehelpers.obj" \
 	"$(INTDIR)\armijo.obj" \
 	"$(INTDIR)\conjugategradient.obj" \
 	"$(INTDIR)\simplex.obj" \
 	"$(INTDIR)\steepestdescent.obj" \
-	"$(INTDIR)\tree.obj" \
+	"$(INTDIR)\binomialtree.obj" \
+	"$(INTDIR)\bsmlattice.obj" \
+	"$(INTDIR)\lattice.obj" \
+	"$(INTDIR)\lattice2d.obj" \
 	"$(INTDIR)\trinomialtree.obj" \
-	"$(INTDIR)\twodimensionaltree.obj" \
 	"$(INTDIR)\daycounters.obj" \
 	"$(INTDIR)\mathf.obj" \
 	"$(INTDIR)\caphelper.obj" \
@@ -1577,8 +1614,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\date.obj" \
 	"$(INTDIR)\option.obj" \
 	"$(INTDIR)\scheduler.obj" \
-	"$(INTDIR)\solver1d.obj" \
-	"$(INTDIR)\affinetermstructure.obj"
+	"$(INTDIR)\solver1d.obj"
 
 ".\lib\Win32\VisualStudio\QuantLib.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
     $(LIB32) @<<
@@ -1615,6 +1651,10 @@ CLEAN :
 	-@erase "$(INTDIR)\basketpathpricer.sbr"
 	-@erase "$(INTDIR)\binaryoption.obj"
 	-@erase "$(INTDIR)\binaryoption.sbr"
+	-@erase "$(INTDIR)\binomialplainoption.obj"
+	-@erase "$(INTDIR)\binomialplainoption.sbr"
+	-@erase "$(INTDIR)\binomialtree.obj"
+	-@erase "$(INTDIR)\binomialtree.sbr"
 	-@erase "$(INTDIR)\bisection.obj"
 	-@erase "$(INTDIR)\bisection.sbr"
 	-@erase "$(INTDIR)\blackcapfloor.obj"
@@ -1625,6 +1665,8 @@ CLEAN :
 	-@erase "$(INTDIR)\blackswaption.sbr"
 	-@erase "$(INTDIR)\brent.obj"
 	-@erase "$(INTDIR)\brent.sbr"
+	-@erase "$(INTDIR)\bsmlattice.obj"
+	-@erase "$(INTDIR)\bsmlattice.sbr"
 	-@erase "$(INTDIR)\bsmoperator.obj"
 	-@erase "$(INTDIR)\bsmoperator.sbr"
 	-@erase "$(INTDIR)\calendar.obj"
@@ -1713,6 +1755,10 @@ CLEAN :
 	-@erase "$(INTDIR)\johannesburg.sbr"
 	-@erase "$(INTDIR)\knuthuniformrng.obj"
 	-@erase "$(INTDIR)\knuthuniformrng.sbr"
+	-@erase "$(INTDIR)\lattice.obj"
+	-@erase "$(INTDIR)\lattice.sbr"
+	-@erase "$(INTDIR)\lattice2d.obj"
+	-@erase "$(INTDIR)\lattice2d.sbr"
 	-@erase "$(INTDIR)\lecuyeruniformrng.obj"
 	-@erase "$(INTDIR)\lecuyeruniformrng.sbr"
 	-@erase "$(INTDIR)\london.obj"
@@ -1811,8 +1857,6 @@ CLEAN :
 	-@erase "$(INTDIR)\tokyo.sbr"
 	-@erase "$(INTDIR)\toronto.obj"
 	-@erase "$(INTDIR)\toronto.sbr"
-	-@erase "$(INTDIR)\tree.obj"
-	-@erase "$(INTDIR)\tree.sbr"
 	-@erase "$(INTDIR)\treecapfloor.obj"
 	-@erase "$(INTDIR)\treecapfloor.sbr"
 	-@erase "$(INTDIR)\treeswaption.obj"
@@ -1821,8 +1865,6 @@ CLEAN :
 	-@erase "$(INTDIR)\tridiagonaloperator.sbr"
 	-@erase "$(INTDIR)\trinomialtree.obj"
 	-@erase "$(INTDIR)\trinomialtree.sbr"
-	-@erase "$(INTDIR)\twodimensionaltree.obj"
-	-@erase "$(INTDIR)\twodimensionaltree.sbr"
 	-@erase "$(INTDIR)\twofactormodel.obj"
 	-@erase "$(INTDIR)\twofactormodel.sbr"
 	-@erase "$(INTDIR)\valueatcenter.obj"
@@ -1900,6 +1942,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\analyticalcapfloor.sbr" \
 	"$(INTDIR)\barrieroption.sbr" \
 	"$(INTDIR)\binaryoption.sbr" \
+	"$(INTDIR)\binomialplainoption.sbr" \
 	"$(INTDIR)\blackcapfloor.sbr" \
 	"$(INTDIR)\blackswaption.sbr" \
 	"$(INTDIR)\capfloorpricer.sbr" \
@@ -1939,15 +1982,18 @@ BSC32_SBRS= \
 	"$(INTDIR)\newtonsafe.sbr" \
 	"$(INTDIR)\ridder.sbr" \
 	"$(INTDIR)\secant.sbr" \
+	"$(INTDIR)\affinetermstructure.sbr" \
 	"$(INTDIR)\piecewiseflatforward.sbr" \
 	"$(INTDIR)\ratehelpers.sbr" \
 	"$(INTDIR)\armijo.sbr" \
 	"$(INTDIR)\conjugategradient.sbr" \
 	"$(INTDIR)\simplex.sbr" \
 	"$(INTDIR)\steepestdescent.sbr" \
-	"$(INTDIR)\tree.sbr" \
+	"$(INTDIR)\binomialtree.sbr" \
+	"$(INTDIR)\bsmlattice.sbr" \
+	"$(INTDIR)\lattice.sbr" \
+	"$(INTDIR)\lattice2d.sbr" \
 	"$(INTDIR)\trinomialtree.sbr" \
-	"$(INTDIR)\twodimensionaltree.sbr" \
 	"$(INTDIR)\daycounters.sbr" \
 	"$(INTDIR)\mathf.sbr" \
 	"$(INTDIR)\caphelper.sbr" \
@@ -1967,8 +2013,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\date.sbr" \
 	"$(INTDIR)\option.sbr" \
 	"$(INTDIR)\scheduler.sbr" \
-	"$(INTDIR)\solver1d.sbr" \
-	"$(INTDIR)\affinetermstructure.sbr"
+	"$(INTDIR)\solver1d.sbr"
 
 "$(OUTDIR)\QuantLib.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -2029,6 +2074,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\analyticalcapfloor.obj" \
 	"$(INTDIR)\barrieroption.obj" \
 	"$(INTDIR)\binaryoption.obj" \
+	"$(INTDIR)\binomialplainoption.obj" \
 	"$(INTDIR)\blackcapfloor.obj" \
 	"$(INTDIR)\blackswaption.obj" \
 	"$(INTDIR)\capfloorpricer.obj" \
@@ -2068,15 +2114,18 @@ LIB32_OBJS= \
 	"$(INTDIR)\newtonsafe.obj" \
 	"$(INTDIR)\ridder.obj" \
 	"$(INTDIR)\secant.obj" \
+	"$(INTDIR)\affinetermstructure.obj" \
 	"$(INTDIR)\piecewiseflatforward.obj" \
 	"$(INTDIR)\ratehelpers.obj" \
 	"$(INTDIR)\armijo.obj" \
 	"$(INTDIR)\conjugategradient.obj" \
 	"$(INTDIR)\simplex.obj" \
 	"$(INTDIR)\steepestdescent.obj" \
-	"$(INTDIR)\tree.obj" \
+	"$(INTDIR)\binomialtree.obj" \
+	"$(INTDIR)\bsmlattice.obj" \
+	"$(INTDIR)\lattice.obj" \
+	"$(INTDIR)\lattice2d.obj" \
 	"$(INTDIR)\trinomialtree.obj" \
-	"$(INTDIR)\twodimensionaltree.obj" \
 	"$(INTDIR)\daycounters.obj" \
 	"$(INTDIR)\mathf.obj" \
 	"$(INTDIR)\caphelper.obj" \
@@ -2096,8 +2145,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\date.obj" \
 	"$(INTDIR)\option.obj" \
 	"$(INTDIR)\scheduler.obj" \
-	"$(INTDIR)\solver1d.obj" \
-	"$(INTDIR)\affinetermstructure.obj"
+	"$(INTDIR)\solver1d.obj"
 
 ".\lib\Win32\VisualStudio\QuantLib_d.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
     $(LIB32) @<<
@@ -2453,6 +2501,12 @@ SOURCE=.\ql\Pricers\binaryoption.cpp
 	$(CPP) $(CPP_PROJ) $(SOURCE)
 
 
+SOURCE=.\ql\Pricers\binomialplainoption.cpp
+
+"$(INTDIR)\binomialplainoption.obj"	"$(INTDIR)\binomialplainoption.sbr" : $(SOURCE) "$(INTDIR)"
+	$(CPP) $(CPP_PROJ) $(SOURCE)
+
+
 SOURCE=.\ql\Pricers\blackcapfloor.cpp
 
 "$(INTDIR)\blackcapfloor.obj"	"$(INTDIR)\blackcapfloor.sbr" : $(SOURCE) "$(INTDIR)"
@@ -2729,21 +2783,33 @@ SOURCE=.\ql\Optimization\steepestdescent.cpp
 	$(CPP) $(CPP_PROJ) $(SOURCE)
 
 
-SOURCE=.\ql\Lattices\tree.cpp
+SOURCE=.\ql\Lattices\binomialtree.cpp
 
-"$(INTDIR)\tree.obj"	"$(INTDIR)\tree.sbr" : $(SOURCE) "$(INTDIR)"
+"$(INTDIR)\binomialtree.obj"	"$(INTDIR)\binomialtree.sbr" : $(SOURCE) "$(INTDIR)"
+	$(CPP) $(CPP_PROJ) $(SOURCE)
+
+
+SOURCE=.\ql\Lattices\bsmlattice.cpp
+
+"$(INTDIR)\bsmlattice.obj"	"$(INTDIR)\bsmlattice.sbr" : $(SOURCE) "$(INTDIR)"
+	$(CPP) $(CPP_PROJ) $(SOURCE)
+
+
+SOURCE=.\ql\Lattices\lattice.cpp
+
+"$(INTDIR)\lattice.obj"	"$(INTDIR)\lattice.sbr" : $(SOURCE) "$(INTDIR)"
+	$(CPP) $(CPP_PROJ) $(SOURCE)
+
+
+SOURCE=.\ql\Lattices\lattice2d.cpp
+
+"$(INTDIR)\lattice2d.obj"	"$(INTDIR)\lattice2d.sbr" : $(SOURCE) "$(INTDIR)"
 	$(CPP) $(CPP_PROJ) $(SOURCE)
 
 
 SOURCE=.\ql\Lattices\trinomialtree.cpp
 
 "$(INTDIR)\trinomialtree.obj"	"$(INTDIR)\trinomialtree.sbr" : $(SOURCE) "$(INTDIR)"
-	$(CPP) $(CPP_PROJ) $(SOURCE)
-
-
-SOURCE=.\ql\Lattices\twodimensionaltree.cpp
-
-"$(INTDIR)\twodimensionaltree.obj"	"$(INTDIR)\twodimensionaltree.sbr" : $(SOURCE) "$(INTDIR)"
 	$(CPP) $(CPP_PROJ) $(SOURCE)
 
 
