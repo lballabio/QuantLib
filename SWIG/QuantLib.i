@@ -42,4 +42,5 @@ Contact ferdinando@ametrano.net if LICENSE.TXT was not distributed with this fil
 %include Pricers.i
 %include Solvers1D.i
 %include TermStructures.i
+%include Statistics.i
 
