@@ -52,10 +52,11 @@ namespace QuantLib {
         - the observability of the term structure is tested.
     */
     template <class Traits, class Interpolator>
-    class PiecewiseYieldCurve : public Traits::curve<Interpolator>::type,
-                                public LazyObject {
+    class PiecewiseYieldCurve
+        : public Traits::template curve<Interpolator>::type,
+          public LazyObject {
       private:
-        typedef typename Traits::curve<Interpolator>::type base_curve;
+        typedef typename Traits::template curve<Interpolator>::type base_curve;
       public:
         //! \name Constructors
         //@{

@@ -93,5 +93,6 @@ namespace QuantLib {
             - secondDerivativeAtCenter(controlPrices, grid_)
             + black.gamma(spot);
     }
+
 }
 

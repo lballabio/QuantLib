@@ -32,11 +32,13 @@ namespace QuantLib {
         \test the correctness of the returned value is tested by
               checking it against analytic results.
     */
-    class FDEuropeanEngine : public FDVanillaEngine {
+    class FDEuropeanEngine : public VanillaOption::engine,
+                             public FDVanillaEngine {
       public:
         FDEuropeanEngine(Size timeSteps=100, Size gridPoints=100,
                          bool timeDependent = false)
-        : FDVanillaEngine(timeSteps, gridPoints, timeDependent) {}
+        : FDVanillaEngine(&arguments_,
+                          timeSteps, gridPoints, timeDependent) {}
       private:
         mutable Array euroPrices_;
         void calculate() const;

@@ -15,7 +15,12 @@ include_HEADERS = \
     jumpdiffusionengine.hpp \
     juquadraticengine.hpp \
     fdamericanengine.hpp \
+    fdbermudanengine.hpp \
+    fddividendamericanengine.hpp \
+    fddividendengine.hpp \
+    fddividendshoutengine.hpp \
     fdeuropeanengine.hpp \
+    fdmultiperiodengine.hpp \
     fdshoutengine.hpp \
     fdstepconditionengine.hpp \
     fdvanillaengine.hpp \
@@ -35,7 +40,9 @@ libVanillaEngines_la_SOURCES = \
     integralengine.cpp \
     jumpdiffusionengine.cpp \
     juquadraticengine.cpp \
+    fddividendengine.cpp \
     fdeuropeanengine.cpp \
+    fdmultiperiodengine.cpp \
     fdstepconditionengine.cpp \
     fdvanillaengine.cpp \
     mcdigitalengine.cpp

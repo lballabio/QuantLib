@@ -27,7 +27,12 @@
 #include <ql/PricingEngines/Vanilla/bjerksundstenslandengine.hpp>
 #include <ql/PricingEngines/Vanilla/discretizedvanillaoption.hpp>
 #include <ql/PricingEngines/Vanilla/fdamericanengine.hpp>
+#include <ql/PricingEngines/Vanilla/fdbermudanengine.hpp>
+#include <ql/PricingEngines/Vanilla/fddividendamericanengine.hpp>
+#include <ql/PricingEngines/Vanilla/fddividendengine.hpp>
+#include <ql/PricingEngines/Vanilla/fddividendshoutengine.hpp>
 #include <ql/PricingEngines/Vanilla/fdeuropeanengine.hpp>
+#include <ql/PricingEngines/Vanilla/fdmultiperiodengine.hpp>
 #include <ql/PricingEngines/Vanilla/fdshoutengine.hpp>
 #include <ql/PricingEngines/Vanilla/fdstepconditionengine.hpp>
 #include <ql/PricingEngines/Vanilla/fdvanillaengine.hpp>

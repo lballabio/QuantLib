@@ -15,31 +15,27 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file fdshoutengine.hpp
-    \brief Finite-differences shout engine
+/*! \file fddividendshoutengine.hpp
+    \brief base class for shout engine with dividends
 */
 
-#ifndef quantlib_fd_shout_engine_hpp
-#define quantlib_fd_shout_engine_hpp
+#ifndef quantlib_fd_dividend_shout_engine_hpp
+#define quantlib_fd_dividend_shout_engine_hpp
 
-#include <ql/PricingEngines/Vanilla/fdstepconditionengine.hpp>
-#include <ql/FiniteDifferences/fdtypedefs.hpp>
+#include <ql/PricingEngines/Vanilla/fddividendengine.hpp>
 #include <ql/FiniteDifferences/shoutcondition.hpp>
 
 namespace QuantLib {
 
-    //! Finite-differences pricing engine for shout vanilla options
-    /*! \ingroup vanillaengines
-
-        \test the correctness of the returned greeks is tested by
-              reproducing numerical derivatives.
-    */
-    class FDShoutEngine : public FDStepConditionEngine {
+    //! Finite-differences shout engine with dividends
+    /*! \ingroup vanillaengines */
+    class FDDividendShoutEngine : public FDDividendEngine {
       public:
-        FDShoutEngine(Size timeSteps=100, Size gridPoints=100,
-                      bool timeDependent = false)
-        : FDStepConditionEngine(timeSteps, gridPoints, timeDependent) {}
-      private:
+        FDDividendShoutEngine(Size timeSteps = 100, Size gridPoints = 100,
+                              bool timeDependent = false)
+        : FDDividendEngine(timeSteps, gridPoints,
+                           timeDependent) {}
+      protected:
         void initializeStepCondition() const {
             Time residualTime = getResidualTime();
             Rate riskFreeRate = getProcess()->riskFreeRate()

@@ -24,14 +24,16 @@
 namespace QuantLib {
 
     void FDVanillaEngine::setGridLimits() const {
-        const boost::shared_ptr<BlackScholesProcess>& process =
-            arguments_.blackScholesProcess;
-        boost::shared_ptr<StrikedTypePayoff> payoff =
-            boost::dynamic_pointer_cast<StrikedTypePayoff>(arguments_.payoff);
+        setGridLimits(getProcess()->stateVariable()->value(),
+                      getResidualTime());
+    }
 
-        Real center_ = process->stateVariable()->value();
-        Date exerciseDate = arguments_.exercise->lastDate();
-        Time t = getResidualTime();
+    void FDVanillaEngine::setGridLimits(Real center, Time t) const {
+        center_ = center;
+        boost::shared_ptr<StrikedTypePayoff> payoff =
+            boost::dynamic_pointer_cast<StrikedTypePayoff>(
+                                                   vanillaArguments_->payoff);
+        Date exerciseDate = vanillaArguments_->exercise->lastDate();
 
         Size newGridPoints = safeGridPoints(gridPoints_, t);
         if (newGridPoints > grid_.size()) {
@@ -39,8 +41,8 @@ namespace QuantLib {
             intrinsicValues_ = Array(newGridPoints);
         }
 
-        Real volSqrtTime =
-            std::sqrt(process->blackVolatility()->blackVariance(t, center_));
+        Real volSqrtTime = std::sqrt(getProcess()->blackVolatility()
+                                     ->blackVariance(t, center_));
 
         // the prefactor fine tunes performance at small volatilities
         Real prefactor = 1.0 + 0.02/volSqrtTime;
@@ -71,20 +73,17 @@ namespace QuantLib {
 
     void FDVanillaEngine::initializeInitialCondition() const {
         boost::shared_ptr<Payoff> payoff =
-            boost::dynamic_pointer_cast<Payoff>(arguments_.payoff);
+            boost::dynamic_pointer_cast<Payoff>(vanillaArguments_->payoff);
         for(Size j = 0; j < grid_.size(); j++)
             intrinsicValues_[j] = (*payoff)(grid_[j]);
     }
 
     void FDVanillaEngine::initializeOperator() const {
-        const boost::shared_ptr<BlackScholesProcess>& process =
-            arguments_.blackScholesProcess;
-
         if (timeDependent_)
-            finiteDifferenceOperator_ = BSMTermOperator(grid_, process,
+            finiteDifferenceOperator_ = BSMTermOperator(grid_, getProcess(),
                                                         getResidualTime());
         else
-            finiteDifferenceOperator_ = BSMOperator(grid_, process,
+            finiteDifferenceOperator_ = BSMOperator(grid_, getProcess(),
                                                     getResidualTime());
 
         BCs_[0] = boost::shared_ptr<BoundaryCondition>(new NeumannBC(
@@ -97,12 +96,14 @@ namespace QuantLib {
     }
 
     Time FDVanillaEngine::getResidualTime() const {
-        const boost::shared_ptr<BlackScholesProcess>& process =
-            arguments_.blackScholesProcess;
-        Date exerciseDate = arguments_.exercise->lastDate();
-        DayCounter rfdc  = process->riskFreeRate()->dayCounter();
-        Time t =  rfdc.yearFraction(process->riskFreeRate()->referenceDate(),
-                                    exerciseDate);
+        return getYearFraction(vanillaArguments_->exercise->lastDate());
+    }
+
+    Time FDVanillaEngine::getYearFraction(Date d) const {
+        DayCounter rfdc  = getProcess()->riskFreeRate()->dayCounter();
+        Time t =  rfdc.yearFraction(getProcess()->riskFreeRate()
+                                    ->referenceDate(),
+                                    d);
         if (std::fabs(t) < 1e-8) t = 0;
         return t;
     }

@@ -30,11 +30,13 @@ namespace QuantLib {
 
     //! Finite-differences pricing engine for American-style vanilla options
     /*! \ingroup vanillaengines */
-    class FDStepConditionEngine : public FDVanillaEngine {
+    class FDStepConditionEngine : public VanillaOption::engine,
+                                  public FDVanillaEngine {
       public:
         FDStepConditionEngine(Size timeSteps, Size gridPoints,
                               bool timeDependent = false)
-        : FDVanillaEngine(timeSteps, gridPoints,timeDependent),
+        : FDVanillaEngine(&arguments_, timeSteps, gridPoints,
+                          timeDependent),
           controlBCs_(2), controlPrices_(gridPoints) {}
       protected:
         mutable boost::shared_ptr<StandardStepCondition> stepCondition_;

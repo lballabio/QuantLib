@@ -23,8 +23,9 @@
 #include <ql/Instruments/vanillaoption.hpp>
 #include <ql/PricingEngines/Vanilla/baroneadesiwhaleyengine.hpp>
 #include <ql/PricingEngines/Vanilla/bjerksundstenslandengine.hpp>
-#include <ql/PricingEngines/Vanilla/fdamericanengine.hpp>
 #include <ql/PricingEngines/Vanilla/juquadraticengine.hpp>
+#include <ql/PricingEngines/Vanilla/fdamericanengine.hpp>
+#include <ql/PricingEngines/Vanilla/fdshoutengine.hpp>
 #include <ql/TermStructures/flatforward.hpp>
 #include <ql/Volatilities/blackconstantvol.hpp>
 #include <ql/Utilities/dataformatters.hpp>
@@ -62,6 +63,10 @@ namespace {
         Volatility v;  // volatility
         Real result;   // expected result
     };
+
+    void teardown() {
+        Settings::instance().setEvaluationDate(Date());
+    }
 
 }
 
@@ -411,16 +416,141 @@ void AmericanOptionTest::testFdValues() {
 }
 
 
+namespace {
+
+    template <class Engine>
+    void testFdGreeks(const Engine&) {
+
+        std::map<std::string,Real> calculated, expected, tolerance;
+        tolerance["delta"]  = 7.0e-4;
+        tolerance["gamma"]  = 2.0e-4;
+
+        Option::Type types[] = { Option::Call, Option::Put };
+        Real strikes[] = { 50.0, 99.5, 100.0, 100.5, 150.0 };
+        Real underlyings[] = { 100.0 };
+        Rate qRates[] = { 0.04, 0.05, 0.06 };
+        Rate rRates[] = { 0.01, 0.05, 0.15 };
+        Integer years[] = { 1, 2 };
+        Volatility vols[] = { 0.11, 0.50, 1.20 };
+
+        DayCounter dc = Actual360();
+        Date today = Date::todaysDate();
+        Settings::instance().setEvaluationDate(today);
+
+        boost::shared_ptr<SimpleQuote> spot(new SimpleQuote(0.0));
+        boost::shared_ptr<SimpleQuote> qRate(new SimpleQuote(0.0));
+        Handle<YieldTermStructure> qTS(flatRate(qRate, dc));
+        boost::shared_ptr<SimpleQuote> rRate(new SimpleQuote(0.0));
+        Handle<YieldTermStructure> rTS(flatRate(rRate, dc));
+        boost::shared_ptr<SimpleQuote> vol(new SimpleQuote(0.0));
+        Handle<BlackVolTermStructure> volTS(flatVol(vol, dc));
+
+        boost::shared_ptr<StrikedTypePayoff> payoff;
+
+        for (Size i=0; i<LENGTH(types); i++) {
+          for (Size j=0; j<LENGTH(strikes); j++) {
+            for (Size k=0; k<LENGTH(years); k++) {
+              Date exDate = today + years[k]*Years;
+              boost::shared_ptr<Exercise> exercise(
+                                         new AmericanExercise(today, exDate));
+              boost::shared_ptr<StrikedTypePayoff> payoff(
+                                new PlainVanillaPayoff(types[i], strikes[j]));
+              boost::shared_ptr<BlackScholesProcess> stochProcess(
+                                  new BlackScholesProcess(Handle<Quote>(spot),
+                                                          qTS, rTS, volTS));
+              boost::shared_ptr<PricingEngine> engine(new Engine);
+
+              VanillaOption option(stochProcess, payoff, exercise, engine);
+
+              for (Size l=0; l<LENGTH(underlyings); l++) {
+                for (Size m=0; m<LENGTH(qRates); m++) {
+                  for (Size n=0; n<LENGTH(rRates); n++) {
+                    for (Size p=0; p<LENGTH(vols); p++) {
+                        Real u = underlyings[l];
+                        Rate q = qRates[m],
+                             r = rRates[n];
+                        Volatility v = vols[p];
+                        spot->setValue(u);
+                        qRate->setValue(q);
+                        rRate->setValue(r);
+                        vol->setValue(v);
+
+                        Real value = option.NPV();
+                        calculated["delta"]  = option.delta();
+                        calculated["gamma"]  = option.gamma();
+
+                        if (value > spot->value()*1.0e-5) {
+                            // perturb spot and get delta and gamma
+                            Real du = u*1.0e-4;
+                            spot->setValue(u+du);
+                            Real value_p = option.NPV(),
+                                 delta_p = option.delta();
+                            spot->setValue(u-du);
+                            Real value_m = option.NPV(),
+                                 delta_m = option.delta();
+                            spot->setValue(u);
+                            expected["delta"] = (value_p - value_m)/(2*du);
+                            expected["gamma"] = (delta_p - delta_m)/(2*du);
+
+                            // compare
+                            std::map<std::string,Real>::iterator it;
+                            for (it = calculated.begin();
+                                 it != calculated.end(); ++it) {
+                                std::string greek = it->first;
+                                Real expct = expected  [greek],
+                                    calcl = calculated[greek],
+                                    tol   = tolerance [greek];
+                                Real error = relativeError(expct,calcl,u);
+                                if (error>tol) {
+                                    REPORT_FAILURE(greek, payoff, exercise,
+                                                   u, q, r, today, v,
+                                                   expct, calcl, error, tol);
+                                }
+                            }
+                        }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+    }
+
+}
+
+void AmericanOptionTest::testFdAmericanGreeks() {
+
+    BOOST_MESSAGE("Testing finite-differences American option greeks...");
+
+    QL_TEST_BEGIN
+
+    testFdGreeks(FDAmericanEngine());
+
+    QL_TEST_TEARDOWN
+}
+
+void AmericanOptionTest::testFdShoutGreeks() {
+
+    BOOST_MESSAGE("Testing finite-differences shout option greeks...");
+
+    QL_TEST_BEGIN
+
+    testFdGreeks(FDShoutEngine());
+
+    QL_TEST_TEARDOWN
+}
+
 test_suite* AmericanOptionTest::suite() {
     test_suite* suite = BOOST_TEST_SUITE("American option tests");
     suite->add(
           BOOST_TEST_CASE(&AmericanOptionTest::testBaroneAdesiWhaleyValues));
     suite->add(
           BOOST_TEST_CASE(&AmericanOptionTest::testBjerksundStenslandValues));
-    suite->add(
-          BOOST_TEST_CASE(&AmericanOptionTest::testJuValues));
-    suite->add(
-          BOOST_TEST_CASE(&AmericanOptionTest::testFdValues));
+    suite->add(BOOST_TEST_CASE(&AmericanOptionTest::testJuValues));
+    suite->add(BOOST_TEST_CASE(&AmericanOptionTest::testFdValues));
+    suite->add(BOOST_TEST_CASE(&AmericanOptionTest::testFdAmericanGreeks));
+    suite->add(BOOST_TEST_CASE(&AmericanOptionTest::testFdShoutGreeks));
     return suite;
 }
 

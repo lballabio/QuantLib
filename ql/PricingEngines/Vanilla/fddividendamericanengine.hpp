@@ -15,34 +15,36 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file fdamericanengine.hpp
-    \brief Finite-differences American option engine
+/*! \file fddividendamericanengine.hpp
+    \brief american engine with discrete deterministic dividends
 */
 
-#ifndef quantlib_fd_american_engine_hpp
-#define quantlib_fd_american_engine_hpp
+#ifndef quantlib_fd_dividend_american_engine_hpp
+#define quantlib_fd_dividend_american_engine_hpp
 
-#include <ql/PricingEngines/Vanilla/fdstepconditionengine.hpp>
-#include <ql/FiniteDifferences/fdtypedefs.hpp>
+#include <ql/PricingEngines/Vanilla/fddividendengine.hpp>
 #include <ql/FiniteDifferences/americancondition.hpp>
 
 namespace QuantLib {
 
-    //! Finite-differences pricing engine for American vanilla options
+    //! Finite-differences pricing engine for dividend American options
     /*! \ingroup vanillaengines
 
         \test
-        - the correctness of the returned value is tested by
-          reproducing results available in literature.
         - the correctness of the returned greeks is tested by
           reproducing numerical derivatives.
+        - the invariance of the results upon addition of null
+          dividends is tested.
+
+        \bug method impliedVolatility() utterly fails
     */
-    class FDAmericanEngine : public FDStepConditionEngine {
+    class FDDividendAmericanEngine : public FDDividendEngine {
       public:
-        FDAmericanEngine(Size timeSteps=100, Size gridPoints=100,
-                         bool timeDependent = false)
-        : FDStepConditionEngine(timeSteps, gridPoints, timeDependent) {}
-      private:
+        FDDividendAmericanEngine(Size timeSteps = 100,
+                                 Size gridPoints = 100,
+                                 bool timeDependent = false)
+        : FDDividendEngine(timeSteps, gridPoints, timeDependent) {}
+      protected:
         void initializeStepCondition() const {
             stepCondition_ = boost::shared_ptr<StandardStepCondition>(
                                      new AmericanCondition(intrinsicValues_));

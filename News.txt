@@ -4,8 +4,8 @@ Changes since release 0.3.8:
 
 - QL_SQRT, QL_MIN etc. deprecated in favor of std::sqrt, std::min...
 
-- Interpolated discount curve can now be set an interpolation other
-  than log-linear
+- Interpolated discount, zero-yield and forward-rate curves can now be
+  set any interpolation
 
 - Added a tentative tracing facility to ease debugging
 
@@ -36,4 +36,7 @@ Changes since release 0.3.8:
   PiecewiseYieldCurve<ForwardRate,Linear>
 
 - Added Bratislava and Prague calendars.
+
+- Migrated finite-difference pricers to pricing-engine framework (thanks
+  to Joseph Wang)
 
