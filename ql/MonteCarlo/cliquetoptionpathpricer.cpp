@@ -27,8 +27,6 @@
 #include <ql/MonteCarlo/cliquetoptionpathpricer.hpp>
 #include <ql/Pricers/singleassetoption.hpp>
 
-using QuantLib::Pricers::ExercisePayoff;
-
 namespace QuantLib {
 
     namespace MonteCarlo {

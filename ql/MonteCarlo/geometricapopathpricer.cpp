@@ -28,8 +28,6 @@
 #include <ql/MonteCarlo/geometricapopathpricer.hpp>
 #include <ql/Pricers/singleassetoption.hpp>
 
-using QuantLib::Pricers::ExercisePayoff;
-
 namespace QuantLib {
 
     namespace MonteCarlo {
