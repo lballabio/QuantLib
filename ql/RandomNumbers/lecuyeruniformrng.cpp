@@ -41,7 +41,9 @@ namespace QuantLib {
         const long LecuyerUniformRng::r2 = 3791L;
 
         const int LecuyerUniformRng::bufferSize = 32;
-        const long LecuyerUniformRng::bufferNormalizer = 67108862L;             // 1+(m1-1)/bufferSize
+
+        // int(1+m1/bufferSize) = int(1+(m1-1)/bufferSize)
+        const long LecuyerUniformRng::bufferNormalizer = 67108862L;
 
         const long double LecuyerUniformRng::maxRandom = 1.0-QL_EPSILON;
 
