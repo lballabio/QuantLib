@@ -17,7 +17,8 @@
  * You should have received a copy of the license along with this file;
  * if not, contact ferdinando@ametrano.net
  *
- * QuantLib license is also available at http://quantlib.sourceforge.net/LICENSE.TXT
+ * QuantLib license is also available at 
+ * http://quantlib.sourceforge.net/LICENSE.TXT
 */
 
 %module QuantLib
@@ -56,6 +57,7 @@
 %include Financial.i
 %include History.i
 %include Instruments.i
+%include Interpolation.i
 %include MontecarloPricers.i
 %include Operators.i
 %include Options.i
