@@ -7,23 +7,23 @@
 CFG=QuantLib - Win32 Debug SingleThread
 !MESSAGE This is not a valid makefile. To build this project using NMAKE,
 !MESSAGE use the Export Makefile command and run
-!MESSAGE
+!MESSAGE 
 !MESSAGE NMAKE /f "QuantLib.mak".
-!MESSAGE
+!MESSAGE 
 !MESSAGE You can specify a configuration when running NMAKE
 !MESSAGE by defining the macro CFG on the command line. For example:
-!MESSAGE
+!MESSAGE 
 !MESSAGE NMAKE /f "QuantLib.mak" CFG="QuantLib - Win32 Debug SingleThread"
-!MESSAGE
+!MESSAGE 
 !MESSAGE Possible choices for configuration are:
-!MESSAGE
+!MESSAGE 
 !MESSAGE "QuantLib - Win32 Release" (based on "Win32 (x86) Static Library")
 !MESSAGE "QuantLib - Win32 Debug" (based on "Win32 (x86) Static Library")
 !MESSAGE "QuantLib - Win32 Release MTDLL" (based on "Win32 (x86) Static Library")
 !MESSAGE "QuantLib - Win32 Debug MTDLL" (based on "Win32 (x86) Static Library")
 !MESSAGE "QuantLib - Win32 Release SingleThread" (based on "Win32 (x86) Static Library")
 !MESSAGE "QuantLib - Win32 Debug SingleThread" (based on "Win32 (x86) Static Library")
-!MESSAGE
+!MESSAGE 
 
 # Begin Project
 # PROP AllowPerConfigDependencies 0
@@ -45,7 +45,7 @@ RSC=rc.exe
 # PROP Intermediate_Dir "build\vc6\Release"
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /W3 /GX /O2 /D "WIN32" /D "NDEBUG" /D "_MBCS" /D "_LIB" /YX /FD /c
-# ADD CPP /nologo /MT /W3 /Gi /GR /GX /O2 /Ob2 /I "." /D "NDEBUG" /D "WIN32" /D "_MBCS" /D "_LIB" /D "" /Fr /YX /FD /Oi- /c
+# ADD CPP /nologo /MT /W3 /Gi /GR /GX /O2 /Ob2 /I "." /D "NDEBUG" /D "WIN32" /D "_MBCS" /D "_LIB" /Fr /YX /FD /Oi- /c
 # ADD BASE RSC /l 0x409 /d "NDEBUG"
 # ADD RSC /l 0x409 /d "NDEBUG"
 BSC32=bscmake.exe
@@ -73,7 +73,7 @@ PreLink_Cmds=if not exist lib mkdir lib
 # PROP Intermediate_Dir "build\vc6\Debug"
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /W3 /Gm /GX /ZI /Od /D "WIN32" /D "_DEBUG" /D "_MBCS" /D "_LIB" /YX /FD /GZ /c
-# ADD CPP /nologo /MTd /W3 /Gm /Gi /GR /GX /ZI /Od /I "." /D "_DEBUG" /D "WIN32" /D "_MBCS" /D "_LIB" /D "" /Fr /YX /Fd".\lib\QuantLib-vc6-mt-sgd-0_3_9" /FD /GZ /c
+# ADD CPP /nologo /MTd /W3 /Gm /Gi /GR /GX /ZI /Od /I "." /D "_DEBUG" /D "WIN32" /D "_MBCS" /D "_LIB" /Fr /YX /Fd".\lib\QuantLib-vc6-mt-sgd-0_3_9" /FD /GZ /c
 # ADD BASE RSC /l 0x409 /d "_DEBUG"
 # ADD RSC /l 0x409 /d "_DEBUG"
 BSC32=bscmake.exe
@@ -100,8 +100,8 @@ PreLink_Cmds=if not exist lib mkdir lib
 # PROP Output_Dir "build\vc6\ReleaseMTDLL"
 # PROP Intermediate_Dir "build\vc6\ReleaseMTDLL"
 # PROP Target_Dir ""
-# ADD BASE CPP /nologo /MD /W3 /GR /GX /O2 /Ob2 /I "." /D "NDEBUG" /D "WIN32" /D "_MBCS" /D "_LIB" /D "" /Fr /YX /FD /Oi- /c
-# ADD CPP /nologo /MD /W3 /Gi /GR /GX /O2 /Ob2 /I "." /D "NDEBUG" /D "WIN32" /D "_MBCS" /D "_LIB" /D "" /Fr /YX /FD /Oi- /c
+# ADD BASE CPP /nologo /MD /W3 /GR /GX /O2 /Ob2 /I "." /D "NDEBUG" /D "WIN32" /D "_MBCS" /D "_LIB" /Fr /YX /FD /Oi- /c
+# ADD CPP /nologo /MD /W3 /Gi /GR /GX /O2 /Ob2 /I "." /D "NDEBUG" /D "WIN32" /D "_MBCS" /D "_LIB" /Fr /YX /FD /Oi- /c
 # ADD BASE RSC /l 0x409 /d "NDEBUG"
 # ADD RSC /l 0x409 /d "NDEBUG"
 BSC32=bscmake.exe
@@ -128,8 +128,8 @@ PreLink_Cmds=if not exist lib mkdir lib
 # PROP Output_Dir "build\vc6\DebugMTDLL"
 # PROP Intermediate_Dir "build\vc6\DebugMTDLL"
 # PROP Target_Dir ""
-# ADD BASE CPP /nologo /MDd /W3 /GR /GX /ZI /Od /I "." /D "_DEBUG" /D "WIN32" /D "_MBCS" /D "_LIB" /D "" /Fr /YX /Fd".\lib\QuantLib-vc6-mt-gd-0_3_9" /FD /GZ /c
-# ADD CPP /nologo /MDd /W3 /Gm /Gi /GR /GX /ZI /Od /I "." /D "_DEBUG" /D "WIN32" /D "_MBCS" /D "_LIB" /D "" /Fr /YX /Fd".\lib\QuantLib-vc6-mt-gd-0_3_9" /FD /GZ /c
+# ADD BASE CPP /nologo /MDd /W3 /GR /GX /ZI /Od /I "." /D "_DEBUG" /D "WIN32" /D "_MBCS" /D "_LIB" /Fr /YX /Fd".\lib\QuantLib-vc6-mt-gd-0_3_9" /FD /GZ /c
+# ADD CPP /nologo /MDd /W3 /Gm /Gi /GR /GX /ZI /Od /I "." /D "_DEBUG" /D "WIN32" /D "_MBCS" /D "_LIB" /Fr /YX /Fd".\lib\QuantLib-vc6-mt-gd-0_3_9" /FD /GZ /c
 # ADD BASE RSC /l 0x409 /d "_DEBUG"
 # ADD RSC /l 0x409 /d "_DEBUG"
 BSC32=bscmake.exe
@@ -156,8 +156,8 @@ PreLink_Cmds=if not exist lib mkdir lib
 # PROP Output_Dir "build\vc6\ReleaseST"
 # PROP Intermediate_Dir "build\vc6\ReleaseST"
 # PROP Target_Dir ""
-# ADD BASE CPP /nologo /MT /W3 /Gi /GR /GX /O2 /Ob2 /I "." /D "NDEBUG" /D "WIN32" /D "_MBCS" /D "_LIB" /D "" /Fr /YX /FD /Oi- /c
-# ADD CPP /nologo /W3 /Gi /GR /GX /O2 /Ob2 /I "." /D "NDEBUG" /D "WIN32" /D "_MBCS" /D "_LIB" /D "" /Fr /YX /FD /Oi- /c
+# ADD BASE CPP /nologo /MT /W3 /Gi /GR /GX /O2 /Ob2 /I "." /D "NDEBUG" /D "WIN32" /D "_MBCS" /D "_LIB" /Fr /YX /FD /Oi- /c
+# ADD CPP /nologo /W3 /Gi /GR /GX /O2 /Ob2 /I "." /D "NDEBUG" /D "WIN32" /D "_MBCS" /D "_LIB" /Fr /YX /FD /Oi- /c
 # ADD BASE RSC /l 0x409 /d "NDEBUG"
 # ADD RSC /l 0x409 /d "NDEBUG"
 BSC32=bscmake.exe
@@ -184,8 +184,8 @@ PreLink_Cmds=if not exist lib mkdir lib
 # PROP Output_Dir "build\vc6\DebugST"
 # PROP Intermediate_Dir "build\vc6\DebugST"
 # PROP Target_Dir ""
-# ADD BASE CPP /nologo /MTd /W3 /Gm /Gi /GR /GX /ZI /Od /I "." /D "_DEBUG" /D "WIN32" /D "_MBCS" /D "_LIB" /D "" /Fr /YX /Fd".\lib\QuantLib-vc6-sgd-0_3_9" /FD /GZ /c
-# ADD CPP /nologo /W3 /Gm /Gi /GR /GX /ZI /Od /I "." /D "_DEBUG" /D "WIN32" /D "_MBCS" /D "_LIB" /D "" /Fr /YX /Fd".\lib\QuantLib-vc6-sgd-0_3_9" /FD /GZ /c
+# ADD BASE CPP /nologo /MTd /W3 /Gm /Gi /GR /GX /ZI /Od /I "." /D "_DEBUG" /D "WIN32" /D "_MBCS" /D "_LIB" /Fr /YX /Fd".\lib\QuantLib-vc6-sgd-0_3_9" /FD /GZ /c
+# ADD CPP /nologo /W3 /Gm /Gi /GR /GX /ZI /Od /I "." /D "_DEBUG" /D "WIN32" /D "_MBCS" /D "_LIB" /Fr /YX /Fd".\lib\QuantLib-vc6-sgd-0_3_9" /FD /GZ /c
 # ADD BASE RSC /l 0x409 /d "_DEBUG"
 # ADD RSC /l 0x409 /d "_DEBUG"
 BSC32=bscmake.exe
@@ -200,7 +200,7 @@ PreLink_Desc=Make build directory
 PreLink_Cmds=if not exist lib mkdir lib
 # End Special Build Tool
 
-!ENDIF
+!ENDIF 
 
 # Begin Target
 
@@ -1654,6 +1654,10 @@ SOURCE=.\ql\PricingEngines\Quanto\quantoengine.hpp
 # PROP Default_Filter ""
 # Begin Source File
 
+SOURCE=.\ql\PricingEngines\Vanilla\all.hpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\ql\PricingEngines\Vanilla\analyticdigitalamericanengine.cpp
 # End Source File
 # Begin Source File
@@ -1703,6 +1707,14 @@ SOURCE=.\ql\PricingEngines\Vanilla\discretizedvanillaoption.cpp
 # Begin Source File
 
 SOURCE=.\ql\PricingEngines\Vanilla\discretizedvanillaoption.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\PricingEngines\Vanilla\fdeuropeanengine.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\PricingEngines\Vanilla\fdeuropeanengine.hpp
 # End Source File
 # Begin Source File
 
@@ -2175,10 +2187,6 @@ SOURCE=.\ql\TermStructures\compoundforward.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\ql\TermStructures\discountcurve.cpp
-# End Source File
-# Begin Source File
-
 SOURCE=.\ql\TermStructures\discountcurve.hpp
 # End Source File
 # Begin Source File
@@ -2255,11 +2263,23 @@ SOURCE=.\ql\TermStructures\zeroyieldstructure.hpp
 # PROP Default_Filter ""
 # Begin Source File
 
+SOURCE=.\ql\Utilities\all.hpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\ql\Utilities\combiningiterator.hpp
 # End Source File
 # Begin Source File
 
 SOURCE=.\ql\Utilities\couplingiterator.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\Utilities\dataformatters.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\Utilities\dataformatters.hpp
 # End Source File
 # Begin Source File
 
@@ -2276,6 +2296,18 @@ SOURCE=.\ql\Utilities\processingiterator.hpp
 # Begin Source File
 
 SOURCE=.\ql\Utilities\steppingiterator.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\Utilities\strings.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\Utilities\tracing.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\Utilities\tracing.hpp
 # End Source File
 # End Group
 # Begin Group "Volatilities"

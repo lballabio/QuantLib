@@ -2,6 +2,8 @@
 .autodepend
 .silent
 
+MAKE = $(MAKE)
+
 !ifdef _DEBUG
 !ifndef _RTLDLL
     _D = -sd
@@ -70,6 +72,7 @@ ONEFACTOR_LIB        = \
 TWOFACTOR_LIB        = \
          "ShortRateModels\TwoFactorModels\TwoFactorModels$(_mt)$(_D).lib"
 TERMSTRUCT_LIB       = "TermStructures\TermStructures$(_mt)$(_D).lib"
+UTILITIES_LIB        = "Utilities\Utilities$(_mt)$(_D).lib"
 VOLATILITY_LIB       = "Volatilities\Volatilities$(_mt)$(_D).lib"
 
 QUANTLIB_OBJS = \
@@ -100,6 +103,7 @@ QUANTLIB_OBJS = \
     $(RNG_LIB) \
     $(TERMSTRUCT_LIB) \
     $(TWOFACTOR_LIB) \
+    $(UTILITIES_LIB) \
     $(VOLATILITY_LIB)
 
 # Tools to be used
@@ -157,11 +161,12 @@ TLIB_OPTS    = /P1024
 
 # Primary target:
 # QuantLib library
-$(OUTPUT_DIR)\QuantLib-bcb$(_mt)$(_D)-$(VERSION_STRING).lib:: $(OUTPUT_DIR) $(CORE_OBJS) \
-                                                                SubLibraries
+$(OUTPUT_DIR)\QuantLib-bcb$(_mt)$(_D)-$(VERSION_STRING).lib:: $(OUTPUT_DIR) \
+                                                     $(CORE_OBJS) SubLibraries
     if exist $(OUTPUT_DIR)\QuantLib-bcb$(_mt)$(_D)-$(VERSION_STRING).lib \
          del $(OUTPUT_DIR)\QuantLib-bcb$(_mt)$(_D)-$(VERSION_STRING).lib
-    $(TLIB) $(TLIB_OPTS) "$(OUTPUT_DIR)\QuantLib-bcb$(_mt)$(_D)-$(VERSION_STRING).lib" \
+    $(TLIB) $(TLIB_OPTS) \
+        "$(OUTPUT_DIR)\QuantLib-bcb$(_mt)$(_D)-$(VERSION_STRING).lib" \
         /a $(QUANTLIB_OBJS)
 
 $(OUTPUT_DIR):
@@ -211,6 +216,8 @@ SubLibraries:
     cd ..\Lattices
     $(MAKE)
     cd ..\TermStructures
+    $(MAKE)
+    cd ..\Utilities
     $(MAKE)
     cd ..\Volatilities
     $(MAKE)

@@ -7,23 +7,23 @@
 CFG=testsuite - Win32 Debug SingleThread
 !MESSAGE This is not a valid makefile. To build this project using NMAKE,
 !MESSAGE use the Export Makefile command and run
-!MESSAGE
+!MESSAGE 
 !MESSAGE NMAKE /f "testsuite.mak".
-!MESSAGE
+!MESSAGE 
 !MESSAGE You can specify a configuration when running NMAKE
 !MESSAGE by defining the macro CFG on the command line. For example:
-!MESSAGE
+!MESSAGE 
 !MESSAGE NMAKE /f "testsuite.mak" CFG="testsuite - Win32 Debug SingleThread"
-!MESSAGE
+!MESSAGE 
 !MESSAGE Possible choices for configuration are:
-!MESSAGE
+!MESSAGE 
 !MESSAGE "testsuite - Win32 Release" (based on "Win32 (x86) Console Application")
 !MESSAGE "testsuite - Win32 Debug" (based on "Win32 (x86) Console Application")
 !MESSAGE "testsuite - Win32 Release MTDLL" (based on "Win32 (x86) Console Application")
 !MESSAGE "testsuite - Win32 Debug MTDLL" (based on "Win32 (x86) Console Application")
 !MESSAGE "testsuite - Win32 Release SingleThread" (based on "Win32 (x86) Console Application")
 !MESSAGE "testsuite - Win32 Debug SingleThread" (based on "Win32 (x86) Console Application")
-!MESSAGE
+!MESSAGE 
 
 # Begin Project
 # PROP AllowPerConfigDependencies 0
@@ -46,7 +46,7 @@ RSC=rc.exe
 # PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /W3 /GX /O2 /D "WIN32" /D "NDEBUG" /D "_CONSOLE" /D "_MBCS" /YX /FD /c
-# ADD CPP /nologo /MT /W3 /Gi /GR /GX /O2 /Ob2 /I ".." /I "..\functions" /D "NDEBUG" /D "WIN32" /D "_CONSOLE" /D "_MBCS" /D "" /Fr /YX /FD /c
+# ADD CPP /nologo /MT /W3 /Gi /GR /GX /O2 /Ob2 /I ".." /I "..\functions" /D "NDEBUG" /D "WIN32" /D "_CONSOLE" /D "_MBCS" /Fr /YX /FD /c
 # ADD BASE RSC /l 0x409 /d "NDEBUG"
 # ADD RSC /l 0x409 /d "NDEBUG"
 BSC32=bscmake.exe
@@ -77,7 +77,7 @@ PostBuild_Cmds="$(TargetDir)\$(TargetName).exe" --log_level=messages --build_inf
 # PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /W3 /Gm /GX /ZI /Od /D "WIN32" /D "_DEBUG" /D "_CONSOLE" /D "_MBCS" /YX /FD /GZ /c
-# ADD CPP /nologo /MTd /W3 /Gm /Gi /GR /GX /ZI /Od /I ".." /I "..\functions" /D "_DEBUG" /D "WIN32" /D "_CONSOLE" /D "_MBCS" /D "" /Fr /YX /FD /GZ /c
+# ADD CPP /nologo /MTd /W3 /Gm /Gi /GR /GX /ZI /Od /I ".." /I "..\functions" /D "_DEBUG" /D "WIN32" /D "_CONSOLE" /D "_MBCS" /Fr /YX /FD /GZ /c
 # ADD BASE RSC /l 0x409 /d "_DEBUG"
 # ADD RSC /l 0x409 /d "_DEBUG"
 BSC32=bscmake.exe
@@ -108,8 +108,8 @@ PostBuild_Cmds="$(TargetDir)\$(TargetName).exe" --log_level=messages --build_inf
 # PROP Intermediate_Dir "build\vc6\ReleaseMTDLL"
 # PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
-# ADD BASE CPP /nologo /MD /W3 /GR /GX /O2 /Ob2 /I ".." /D "NDEBUG" /D "WIN32" /D "_CONSOLE" /D "_MBCS" /D "" /YX /FD /c
-# ADD CPP /nologo /MD /W3 /Gi /GR /GX /O2 /Ob2 /I ".." /I "..\functions" /D "NDEBUG" /D "WIN32" /D "_CONSOLE" /D "_MBCS" /D "" /Fr /YX /FD /c
+# ADD BASE CPP /nologo /MD /W3 /GR /GX /O2 /Ob2 /I ".." /D "NDEBUG" /D "WIN32" /D "_CONSOLE" /D "_MBCS" /YX /FD /c
+# ADD CPP /nologo /MD /W3 /Gi /GR /GX /O2 /Ob2 /I ".." /I "..\functions" /D "NDEBUG" /D "WIN32" /D "_CONSOLE" /D "_MBCS" /Fr /YX /FD /c
 # ADD BASE RSC /l 0x409 /d "NDEBUG"
 # ADD RSC /l 0x409 /d "NDEBUG"
 BSC32=bscmake.exe
@@ -140,8 +140,8 @@ PostBuild_Cmds="$(TargetDir)\$(TargetName).exe" --log_level=messages --build_inf
 # PROP Intermediate_Dir "build\vc6\DebugMTDLL"
 # PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
-# ADD BASE CPP /nologo /MDd /W3 /Gm /GR /GX /ZI /Od /I ".." /D "_DEBUG" /D "WIN32" /D "_CONSOLE" /D "_MBCS" /D "" /YX /FD /GZ /c
-# ADD CPP /nologo /MDd /W3 /Gm /Gi /GR /GX /ZI /Od /I ".." /I "..\functions" /D "_DEBUG" /D "WIN32" /D "_CONSOLE" /D "_MBCS" /D "" /Fr /YX /FD /GZ /c
+# ADD BASE CPP /nologo /MDd /W3 /Gm /GR /GX /ZI /Od /I ".." /D "_DEBUG" /D "WIN32" /D "_CONSOLE" /D "_MBCS" /YX /FD /GZ /c
+# ADD CPP /nologo /MDd /W3 /Gm /Gi /GR /GX /ZI /Od /I ".." /I "..\functions" /D "_DEBUG" /D "WIN32" /D "_CONSOLE" /D "_MBCS" /Fr /YX /FD /GZ /c
 # ADD BASE RSC /l 0x409 /d "_DEBUG"
 # ADD RSC /l 0x409 /d "_DEBUG"
 BSC32=bscmake.exe
@@ -172,8 +172,8 @@ PostBuild_Cmds="$(TargetDir)\$(TargetName).exe" --log_level=messages --build_inf
 # PROP Intermediate_Dir "build\vc6\ReleaseST"
 # PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
-# ADD BASE CPP /nologo /MT /W3 /Gi /GR /GX /O2 /Ob2 /I ".." /D "NDEBUG" /D "WIN32" /D "_CONSOLE" /D "_MBCS" /D "" /Fr /YX /FD /c
-# ADD CPP /nologo /W3 /Gi /GR /GX /O2 /Ob2 /I ".." /I "..\functions" /D "NDEBUG" /D "WIN32" /D "_CONSOLE" /D "_MBCS" /D "" /Fr /YX /FD /c
+# ADD BASE CPP /nologo /MT /W3 /Gi /GR /GX /O2 /Ob2 /I ".." /D "NDEBUG" /D "WIN32" /D "_CONSOLE" /D "_MBCS" /Fr /YX /FD /c
+# ADD CPP /nologo /W3 /Gi /GR /GX /O2 /Ob2 /I ".." /I "..\functions" /D "NDEBUG" /D "WIN32" /D "_CONSOLE" /D "_MBCS" /Fr /YX /FD /c
 # ADD BASE RSC /l 0x409 /d "NDEBUG"
 # ADD RSC /l 0x409 /d "NDEBUG"
 BSC32=bscmake.exe
@@ -204,8 +204,8 @@ PostBuild_Cmds="$(TargetDir)\$(TargetName).exe" --log_level=messages --build_inf
 # PROP Intermediate_Dir "build\vc6\DebugST"
 # PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
-# ADD BASE CPP /nologo /MTd /W3 /Gm /Gi /GR /GX /ZI /Od /I ".." /D "_DEBUG" /D "WIN32" /D "_CONSOLE" /D "_MBCS" /D "" /Fr /YX /FD /GZ /c
-# ADD CPP /nologo /W3 /Gm /Gi /GR /GX /ZI /Od /I ".." /I "..\functions" /D "_DEBUG" /D "WIN32" /D "_CONSOLE" /D "_MBCS" /D "" /Fr /YX /FD /GZ /c
+# ADD BASE CPP /nologo /MTd /W3 /Gm /Gi /GR /GX /ZI /Od /I ".." /D "_DEBUG" /D "WIN32" /D "_CONSOLE" /D "_MBCS" /Fr /YX /FD /GZ /c
+# ADD CPP /nologo /W3 /Gm /Gi /GR /GX /ZI /Od /I ".." /I "..\functions" /D "_DEBUG" /D "WIN32" /D "_CONSOLE" /D "_MBCS" /Fr /YX /FD /GZ /c
 # ADD BASE RSC /l 0x409 /d "_DEBUG"
 # ADD RSC /l 0x409 /d "_DEBUG"
 BSC32=bscmake.exe
@@ -222,7 +222,7 @@ PostBuild_Desc=Auto run test
 PostBuild_Cmds="$(TargetDir)\$(TargetName).exe" --log_level=messages --build_info=yes --result_code=no --report_level=short --catch_system_errors=no
 # End Special Build Tool
 
-!ENDIF
+!ENDIF 
 
 # Begin Target
 
@@ -405,6 +405,10 @@ SOURCE=.\termstructures.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=.\tracing.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\utilities.cpp
 # End Source File
 # End Group
@@ -574,6 +578,10 @@ SOURCE=.\swaption.hpp
 # Begin Source File
 
 SOURCE=.\termstructures.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\tracing.hpp
 # End Source File
 # Begin Source File
 

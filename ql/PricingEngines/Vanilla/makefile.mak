@@ -29,6 +29,7 @@ OBJS = \
     "baroneadesiwhaleyengine.obj$(_mt)$(_D)" \
     "bjerksundstenslandengine.obj$(_mt)$(_D)" \
     "discretizedvanillaoption.obj$(_mt)$(_D)" \
+    "fdeuropeanengine.obj$(_mt)$(_D)" \
     "integralengine.obj$(_mt)$(_D)" \
     "jumpdiffusionengine.obj$(_mt)$(_D)" \
     "juquadraticengine.obj$(_mt)$(_D)" \
