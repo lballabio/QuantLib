@@ -21,6 +21,7 @@
 #include <ql/Instruments/vanillaoption.hpp>
 #include <ql/PricingEngines/Vanilla/baroneadesiwhaleyengine.hpp>
 #include <ql/PricingEngines/Vanilla/bjerksundstenslandengine.hpp>
+#include <ql/PricingEngines/Vanilla/juquadraticengine.hpp>
 #include <ql/TermStructures/flatforward.hpp>
 #include <ql/Volatilities/blackconstantvol.hpp>
 #include <map>
@@ -93,7 +94,7 @@ void AmericanOptionTest::testBaroneAdesiWhaleyValues() {
       { Option::Call, 100.00, 100.00, 0.10, 0.10, 0.10, 0.15,  1.8771, 1e-2 },
       { Option::Call, 100.00, 110.00, 0.10, 0.10, 0.10, 0.15, 10.0089, 1e-2 },
       { Option::Call, 100.00,  90.00, 0.10, 0.10, 0.10, 0.25,  0.3159, 1e-2 },
-      { Option::Call, 100.00, 100.00, 0.10, 0.10, 0.10, 0.25,  3.1280, 1e-2 },
+      { Option::Call, 100.00, 100.00, 0.10, 0.10, 0.10, 0.25,  3.1280, 1e-2 },      
       { Option::Call, 100.00, 110.00, 0.10, 0.10, 0.10, 0.25, 10.3919, 1e-2 },
       { Option::Call, 100.00,  90.00, 0.10, 0.10, 0.10, 0.35,  0.9495, 1e-2 },
       { Option::Call, 100.00, 100.00, 0.10, 0.10, 0.10, 0.35,  4.3777, 1e-2 },
@@ -235,6 +236,131 @@ void AmericanOptionTest::testBjerksundStenslandValues() {
 
 }
 
+void AmericanOptionTest::testJuValues() {
+
+    BOOST_MESSAGE("Testing Ju approximation "
+                  "for American options...");
+
+    /* The data below are from
+        An Approximate Formula for Pricing American Options
+        Journal of Derivatives Winter 1999
+        Ju, N.               
+    */
+    AmericanOptionData values[] = {
+      //        type, strike,   spot,    q,    r,    t,     vol,   value, tol
+      // These values are from Exhibit 3 - Short dated Put Options
+      { Option::Put, 35.00,   40.00,  0.0,  0.0488, 0.0833,  0.2,  0.006, 1e-3 },
+      { Option::Put, 35.00,   40.00,  0.0,  0.0488, 0.3333,  0.2,  0.201, 1e-3 },
+      { Option::Put, 35.00,   40.00,  0.0,  0.0488, 0.5833,  0.2,  0.433, 1e-3 },
+
+      { Option::Put, 40.00,   40.00,  0.0,  0.0488, 0.0833,  0.2,  0.851, 1e-3 },
+      { Option::Put, 40.00,   40.00,  0.0,  0.0488, 0.3333,  0.2,  1.576, 1e-3 },
+      { Option::Put, 40.00,   40.00,  0.0,  0.0488, 0.5833,  0.2,  1.984, 1e-3 },
+
+      { Option::Put, 45.00,   40.00,  0.0,  0.0488, 0.0833,  0.2,  5.000, 1e-3 },
+      { Option::Put, 45.00,   40.00,  0.0,  0.0488, 0.3333,  0.2,  5.084, 1e-3 },
+      { Option::Put, 45.00,   40.00,  0.0,  0.0488, 0.5833,  0.2,  5.260, 1e-3 },
+      
+      { Option::Put, 35.00,   40.00,  0.0,  0.0488, 0.0833,  0.3,  0.078, 1e-3 },
+      { Option::Put, 35.00,   40.00,  0.0,  0.0488, 0.3333,  0.3,  0.697, 1e-3 },
+      { Option::Put, 35.00,   40.00,  0.0,  0.0488, 0.5833,  0.3,  1.218, 1e-3 },
+
+      { Option::Put, 40.00,   40.00,  0.0,  0.0488, 0.0833,  0.3,  1.309, 1e-3 },
+      { Option::Put, 40.00,   40.00,  0.0,  0.0488, 0.3333,  0.3,  2.477, 1e-3 },
+      { Option::Put, 40.00,   40.00,  0.0,  0.0488, 0.5833,  0.3,  3.161, 1e-3 },
+
+      { Option::Put, 45.00,   40.00,  0.0,  0.0488, 0.0833,  0.3,  5.059, 1e-3 },
+      { Option::Put, 45.00,   40.00,  0.0,  0.0488, 0.3333,  0.3,  5.699, 1e-3 },
+      { Option::Put, 45.00,   40.00,  0.0,  0.0488, 0.5833,  0.3,  6.231, 1e-3 },
+
+      { Option::Put, 35.00,   40.00,  0.0,  0.0488, 0.0833,  0.4,  0.247, 1e-3 },
+      { Option::Put, 35.00,   40.00,  0.0,  0.0488, 0.3333,  0.4,  1.344, 1e-3 },
+      { Option::Put, 35.00,   40.00,  0.0,  0.0488, 0.5833,  0.4,  2.150, 1e-3 },
+
+      { Option::Put, 40.00,   40.00,  0.0,  0.0488, 0.0833,  0.4,  1.767, 1e-3 },
+      { Option::Put, 40.00,   40.00,  0.0,  0.0488, 0.3333,  0.4,  3.381, 1e-3 },
+      { Option::Put, 40.00,   40.00,  0.0,  0.0488, 0.5833,  0.4,  4.342, 1e-3 },
+
+      { Option::Put, 45.00,   40.00,  0.0,  0.0488, 0.0833,  0.4,  5.288, 1e-3 },
+      { Option::Put, 45.00,   40.00,  0.0,  0.0488, 0.3333,  0.4,  6.501, 1e-3 },
+      { Option::Put, 45.00,   40.00,  0.0,  0.0488, 0.5833,  0.4,  7.367, 1e-3 },
+
+      // Type in Exhibits 4 and 5 if you have some spare time ;-)
+
+      //        type, strike,   spot,    q,    r,    t,     vol,   value, tol
+      // These values are from Exhibit 6 - Long dated Call Options with dividends
+      { Option::Call, 100.00,   80.00,  0.07,  0.03, 3.0,  0.2,  2.605, 1e-3 },
+      { Option::Call, 100.00,   90.00,  0.07,  0.03, 3.0,  0.2,  5.182, 1e-3 },
+      { Option::Call, 100.00,   100.00,  0.07,  0.03, 3.0,  0.2,  9.065, 1e-3 },
+      { Option::Call, 100.00,   110.00,  0.07,  0.03, 3.0,  0.2,  14.430, 1e-3 },
+      { Option::Call, 100.00,   120.00,  0.07,  0.03, 3.0,  0.2,  21.398, 1e-3 },      
+
+      { Option::Call, 100.00,   80.00,  0.07,  0.03, 3.0,  0.4,  11.336, 1e-3 },
+      { Option::Call, 100.00,   90.00,  0.07,  0.03, 3.0,  0.4,  15.711, 1e-3 },
+      { Option::Call, 100.00,   100.00,  0.07,  0.03, 3.0,  0.4,  20.760, 1e-3 },      
+      { Option::Call, 100.00,   110.00,  0.07,  0.03, 3.0,  0.4,  26.440, 1e-3 },
+      { Option::Call, 100.00,   120.00,  0.07,  0.03, 3.0,  0.4,  32.709, 1e-3 },      
+
+      { Option::Call, 100.00,   80.00,  0.07,  0.0, 3.0,  0.3,  5.552, 1e-3 },
+      { Option::Call, 100.00,   90.00,  0.07,  0.0, 3.0,  0.3,  8.868, 1e-3 },
+      { Option::Call, 100.00,   100.00,  0.07,  0.0, 3.0,  0.3,  13.158, 1e-3 },
+      { Option::Call, 100.00,   110.00,  0.07,  0.0, 3.0,  0.3,  18.458, 1e-3 },
+      { Option::Call, 100.00,   120.00,  0.07,  0.0, 3.0,  0.3,  24.786, 1e-3 },      
+
+      { Option::Call, 100.00,   80.00,  0.03,  0.07, 3.0,  0.3,  12.177, 1e-3 },
+      { Option::Call, 100.00,   90.00,  0.03,  0.07, 3.0,  0.3,  17.411, 1e-3 },
+      { Option::Call, 100.00,   100.00,  0.03,  0.07, 3.0,  0.3,  23.402, 1e-3 },
+      { Option::Call, 100.00,   110.00,  0.03,  0.07, 3.0,  0.3,  30.028, 1e-3 },
+      { Option::Call, 100.00,   120.00,  0.03,  0.07, 3.0,  0.3,  37.177, 1e-3 }
+    };
+
+    Date today = Date::todaysDate();
+    DayCounter dc = Actual360();
+    boost::shared_ptr<SimpleQuote> spot(new SimpleQuote(0.0));
+    boost::shared_ptr<SimpleQuote> qRate(new SimpleQuote(0.0));
+    boost::shared_ptr<TermStructure> qTS = flatRate(today, qRate, dc);
+    boost::shared_ptr<SimpleQuote> rRate(new SimpleQuote(0.0));
+    boost::shared_ptr<TermStructure> rTS = flatRate(today, rRate, dc);
+    boost::shared_ptr<SimpleQuote> vol(new SimpleQuote(0.0));
+    boost::shared_ptr<BlackVolTermStructure> volTS = flatVol(today, vol, dc);
+    boost::shared_ptr<PricingEngine> engine(
+                                    new JuQuadraticApproximationEngine);
+
+    for (Size i=0; i<LENGTH(values); i++) {
+
+        boost::shared_ptr<StrikedTypePayoff> payoff(new
+            PlainVanillaPayoff(values[i].type, values[i].strike));
+
+        Date exDate = today.plusDays(Integer(values[i].t*360+0.5));
+        boost::shared_ptr<Exercise> exercise(
+                                         new AmericanExercise(today, exDate));
+
+        spot ->setValue(values[i].s);
+        qRate->setValue(values[i].q);
+        rRate->setValue(values[i].r);
+        vol  ->setValue(values[i].v);
+
+        boost::shared_ptr<BlackScholesProcess> stochProcess(new
+            BlackScholesProcess(
+                RelinkableHandle<Quote>(spot),
+                RelinkableHandle<TermStructure>(qTS),
+                RelinkableHandle<TermStructure>(rTS),
+                RelinkableHandle<BlackVolTermStructure>(volTS)));
+
+        VanillaOption option(stochProcess, payoff, exercise,
+                             engine);
+
+        Real calculated = option.NPV();
+        Real error = QL_FABS(calculated-values[i].result);        
+        if (error > values[i].tol) {
+            REPORT_FAILURE("value", payoff, exercise, values[i].s, values[i].q,
+                           values[i].r, today, values[i].v, values[i].result, 
+                           calculated, error, values[i].tol);
+        }
+    }
+
+}
+
 
 test_suite* AmericanOptionTest::suite() {
     test_suite* suite = BOOST_TEST_SUITE("American option tests");
@@ -242,6 +368,8 @@ test_suite* AmericanOptionTest::suite() {
           BOOST_TEST_CASE(&AmericanOptionTest::testBaroneAdesiWhaleyValues));
     suite->add(
           BOOST_TEST_CASE(&AmericanOptionTest::testBjerksundStenslandValues));
+    suite->add(
+          BOOST_TEST_CASE(&AmericanOptionTest::testJuValues));
     return suite;
 }
 

@@ -34,10 +34,18 @@
           reproducing results available in literature.
 */
 
+/*! \class QuantLib::JuQuadraticApproximationEngine \
+    <ql/PricingEngines/Vanilla/juquadraticengine.hpp>
+
+    \test the correctness of the returned value is tested by
+          reproducing results available in literature.
+*/
+
 class AmericanOptionTest {
   public:
     static void testBaroneAdesiWhaleyValues();
     static void testBjerksundStenslandValues();
+    static void testJuValues();
     static boost::unit_test_framework::test_suite* suite();
 };
 
