@@ -124,9 +124,6 @@ void BinaryOptionTest::testValues() {
     Date today = Date::todaysDate();
     Calendar calendar = NullCalendar();
 
-    Handle<PricingEngine> euroEngine = Handle<PricingEngine>(
-        new PricingEngines::AnalyticEuropeanBinaryEngine());
-
     for (Size i=0; i<LENGTH(values); i++) {
         volatilityH_SME->setValue(values[i].volatility);
 
@@ -142,8 +139,8 @@ void BinaryOptionTest::testValues() {
                 RelinkableHandle<TermStructure>(qTS), 
                 RelinkableHandle<TermStructure>(rTS),
                 exercise, 
-                RelinkableHandle<BlackVolTermStructure>(volTS), 
-                euroEngine);
+                RelinkableHandle<BlackVolTermStructure>(volTS));
+
         double calculated = binaryOption.NPV();
         double expected = values[i].value;
         if (QL_FABS(calculated-expected) > maxErrorAllowed) {
@@ -209,9 +206,6 @@ void BinaryOptionTest::testAmericanValues() {
     Date today = Date::todaysDate();
     Calendar calendar = NullCalendar();
 
-    Handle<PricingEngine> amEngine = Handle<PricingEngine>(
-        new PricingEngines::AnalyticAmericanBinaryEngine());
-
     for (Size i=0; i<LENGTH(values); i++) {
         volatilityH_SME->setValue(values[i].volatility);
         rH_SME->setValue(values[i].rate);
@@ -229,8 +223,8 @@ void BinaryOptionTest::testAmericanValues() {
                 RelinkableHandle<TermStructure>(qTS), 
                 RelinkableHandle<TermStructure>(rTS),
                 amExercise, 
-                RelinkableHandle<BlackVolTermStructure>(volTS), 
-                amEngine);
+                RelinkableHandle<BlackVolTermStructure>(volTS));
+
         double calculated = binaryOption.NPV();
         double expected = values[i].value;
         if (QL_FABS(calculated-expected) > maxErrorAllowed) {

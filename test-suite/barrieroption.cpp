@@ -147,25 +147,6 @@ void BarrierOptionTest::testHaugValues() {
     Date exDate = calendar.advance(today,6,Months);
     EuropeanExercise exercise(exDate);
 
-    Handle<PricingEngine> engine(new AnalyticBarrierEngine);
-/*
-    Handle<PricingEngine> mcEngine = Handle<PricingEngine>(        
-        new PricingEngines::MCBarrierEngine<MonteCarlo::PseudoRandom, 
-                                            Math::Statistics>
-                    (timeSteps, antitheticVariate, 
-                    controlVariate, requiredSamples,                     
-                    requiredTolerance, maxSamples, isBiased, 5));
-                    //Null<long>()));        
-
-    Handle<PricingEngine> mcPutEngine = Handle<PricingEngine>(        
-        new PricingEngines::MCBarrierEngine<MonteCarlo::PseudoRandom, 
-                                            Math::Statistics>
-                    (timeSteps, antitheticVariate, 
-                    controlVariate, requiredSamples,                     
-                    requiredTolerance, maxSamples, isBiased, 45));
-                    //Null<long>()));        
-*/
-
     for (Size i=0; i<LENGTH(values); i++) {
         volatility->setValue(values[i].volatility);
 
@@ -179,8 +160,7 @@ void BarrierOptionTest::testHaugValues() {
                 RelinkableHandle<TermStructure>(qTS), 
                 RelinkableHandle<TermStructure>(rTS),
                 exercise, 
-                RelinkableHandle<BlackVolTermStructure>(volTS), 
-                engine);
+                RelinkableHandle<BlackVolTermStructure>(volTS));
         double calculated = barrierCallOption.NPV();
         double expected = values[i].callValue;
         if (QL_FABS(calculated-expected) > maxErrorAllowed) {
@@ -193,20 +173,6 @@ void BarrierOptionTest::testHaugValues() {
                     DoubleFormatter::toString(expected));
         }
 
-        /*
-        barrierCallOption.setPricingEngine(mcEngine);
-        calculated = barrierCallOption.NPV();
-        if (QL_FABS(calculated-expected) > maxMCErrorAllowed) {
-            CPPUNIT_FAIL(
-                "Data at index " + IntegerFormatter::toString(i) + ", "
-                "Barrier call option MC:\n"
-                    "    value:    " +
-                    DoubleFormatter::toString(calculated) + "\n"
-                    "    expected: " +
-                    DoubleFormatter::toString(expected));
-        }
-*/
-
         BarrierOption barrierPutOption(
                 values[i].type, 
                 values[i].barrier, 
@@ -217,8 +183,7 @@ void BarrierOptionTest::testHaugValues() {
                 RelinkableHandle<TermStructure>(qTS), 
                 RelinkableHandle<TermStructure>(rTS),
                 exercise, 
-                RelinkableHandle<BlackVolTermStructure>(volTS), 
-                engine);
+                RelinkableHandle<BlackVolTermStructure>(volTS));
         calculated = barrierPutOption.NPV();
         expected = values[i].putValue;
         if (QL_FABS(calculated-expected) > maxErrorAllowed) {
@@ -231,20 +196,6 @@ void BarrierOptionTest::testHaugValues() {
                     DoubleFormatter::toString(expected));
         }
 
-        /*
-        barrierPutOption.setPricingEngine(mcPutEngine);
-        calculated = barrierPutOption.NPV();
-        if (QL_FABS(calculated-expected) > maxMCErrorAllowed) {
-            CPPUNIT_FAIL(
-                "Data at index " + IntegerFormatter::toString(i) + ", "
-                "Barrier put option MC:\n"
-                    "    value:    " +
-                    DoubleFormatter::toString(calculated) + "\n"
-                    "    expected: " +
-                    DoubleFormatter::toString(expected));
-        }
-
-*/
         BarrierOption barrierStraddleOption(
                 values[i].type, 
                 values[i].barrier, 
@@ -255,8 +206,7 @@ void BarrierOptionTest::testHaugValues() {
                 RelinkableHandle<TermStructure>(qTS), 
                 RelinkableHandle<TermStructure>(rTS),
                 exercise, 
-                RelinkableHandle<BlackVolTermStructure>(volTS), 
-                engine);
+                RelinkableHandle<BlackVolTermStructure>(volTS));
         calculated = barrierStraddleOption.NPV();
         expected = values[i].callValue+values[i].putValue;
         if (QL_FABS(calculated-expected) > maxStraddleErrorAllowed) {

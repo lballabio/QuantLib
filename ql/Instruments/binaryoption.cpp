@@ -23,8 +23,10 @@
 
 #include <ql/Volatilities/blackconstantvol.hpp>
 #include <ql/Instruments/binaryoption.hpp>
+#include <ql/PricingEngines/binaryengines.hpp>
 
 using QuantLib::VolTermStructures::BlackConstantVol;
+using namespace QuantLib::PricingEngines;
 
 namespace QuantLib {
 
@@ -59,6 +61,20 @@ namespace QuantLib {
           type_(type), underlying_(underlying), exercise_(exercise), 
           riskFreeTS_(riskFreeTS), dividendTS_(dividendTS),
           volTS_(volTS) {
+            
+            if (engine.isNull()) {
+                switch (exercise.type()) {
+                  case Exercise::European:
+                    setPricingEngine(Handle<PricingEngine>(
+                                           new AnalyticEuropeanBinaryEngine));
+                    break;
+                  case Exercise::American:
+                    setPricingEngine(Handle<PricingEngine>(
+                                           new AnalyticAmericanBinaryEngine));
+                    break;
+                }
+            }
+
             registerWith(underlying_);
             registerWith(dividendTS_);
             registerWith(riskFreeTS_);

@@ -23,8 +23,10 @@
 
 #include <ql/Volatilities/blackconstantvol.hpp>
 #include <ql/Instruments/barrieroption.hpp>
+#include <ql/PricingEngines/barrierengines.hpp>
 
 using QuantLib::VolTermStructures::BlackConstantVol;
+using QuantLib::PricingEngines::AnalyticBarrierEngine;
 
 namespace QuantLib {
 
@@ -49,6 +51,11 @@ namespace QuantLib {
           strike_(strike), exercise_(exercise), 
           riskFreeTS_(riskFreeTS), dividendTS_(dividendTS),
           volTS_(volTS) {
+
+            if (engine.isNull())
+                setPricingEngine(Handle<PricingEngine>(
+                                                  new AnalyticBarrierEngine));
+
             registerWith(underlying_);
             registerWith(dividendTS_);
             registerWith(riskFreeTS_);
@@ -176,6 +183,48 @@ namespace QuantLib {
             QL_ENSURE(NPV_ != Null<double>(),
                       "BarrierOption::performCalculations : "
                       "null value returned from option pricer");
+        }
+
+        void BarrierOption::arguments::validate() const {
+            #if defined(QL_PATCH_MICROSOFT)
+            VanillaOption::arguments copy = *this;
+            copy.validate();
+            #else
+            VanillaOption::arguments::validate();
+            #endif
+
+            switch (barrierType) {
+                case Barrier::DownIn:
+                    QL_REQUIRE(underlying >= barrier, "underlying (" +
+                        DoubleFormatter::toString(underlying) +
+                        ") < barrier (" +
+                        DoubleFormatter::toString(barrier) +
+                        "): down-and-in barrier undefined");
+                    break;
+                case Barrier::UpIn:
+                    QL_REQUIRE(underlying <= barrier, "underlying ("+
+                        DoubleFormatter::toString(underlying) +
+                        ") > barrier ("+
+                        DoubleFormatter::toString(barrier) +
+                        "): up-and-in barrier undefined");
+                    break;
+                case Barrier::DownOut:
+                    QL_REQUIRE(underlying >= barrier, "underlying ("+
+                        DoubleFormatter::toString(underlying) +
+                        ") < barrier ("+ 
+                        DoubleFormatter::toString(barrier) +
+                        "): down-and-out barrier undefined");
+                    break;
+                case Barrier::UpOut:
+                    QL_REQUIRE(underlying <= barrier, "underlying ("+
+                        DoubleFormatter::toString(underlying) +
+                        ") > barrier ("+
+                        DoubleFormatter::toString(barrier) +
+                        "): up-and-out barrier undefined");
+                    break;
+                default:
+                    throw Error("Barrier Option: unknown type");
+            }
         }
         
     }

@@ -42,7 +42,7 @@ namespace QuantLib {
 
             Handle<PlainVanillaPayoff> payoff = arguments_.payoff;
 
-//            Binary::Type binaryType = arguments_.binaryType;
+            // Binary::Type binaryType = arguments_.binaryType;
             double barrier = arguments_.barrier;
             double cashPayoff = arguments_.cashPayoff;
 

@@ -35,8 +35,10 @@ namespace QuantLib {
 
     namespace Instruments {
 
-        //! Binary option on a single asset
-
+        //! Binary option on a single asset.
+        /*! Depending on the exercise type, either the European or American
+            analytic pricing engine will be used if none is given.
+        */
         class BinaryOption : public Option {
           public:
             class arguments;
