@@ -21,6 +21,13 @@
  * QuantLib license is also available at http://quantlib.sourceforge.net/LICENSE.TXT
 */
 
+// $Source$
+
+// $Log$
+// Revision 1.12  2000/12/13 18:10:41  nando
+// CVS keyword added
+//
+
 #include "bsmoption.h"
 #include "brent.h"
 

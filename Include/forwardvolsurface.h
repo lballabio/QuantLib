@@ -21,6 +21,13 @@
  * QuantLib license is also available at http://quantlib.sourceforge.net/LICENSE.TXT
 */
 
+// $Source$
+
+// $Log$
+// Revision 1.7  2000/12/13 18:09:52  nando
+// CVS keyword added
+//
+
 /*! \file forwardvolsurface.h
 	\brief Forward volatility surface
 */

@@ -25,6 +25,13 @@
 	\brief 1-D array used in linear algebra.
 */
 
+// $Source$
+
+// $Log$
+// Revision 1.7  2000/12/13 18:09:52  nando
+// CVS keyword added
+//
+
 #ifndef quantlib_array_h
 #define quantlib_array_h
 

@@ -21,6 +21,13 @@
  * QuantLib license is also available at http://quantlib.sourceforge.net/LICENSE.TXT
 */
 
+// $Source$
+
+// $Log$
+// Revision 1.3  2000/12/13 18:09:54  nando
+// CVS keyword added
+//
+
 #ifndef quantlib_piecewise_constant_forward_curve_h
 #define quantlib_piecewise_constant_forward_curve_h
 

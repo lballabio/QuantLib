@@ -21,6 +21,13 @@
  * QuantLib license is also available at http://quantlib.sourceforge.net/LICENSE.TXT
 */
 
+// $Source$
+
+// $Log$
+// Revision 1.2  2000/12/13 18:09:53  nando
+// CVS keyword added
+//
+
 #ifndef BSM_option_pricer_h
 #define BSM_option_pricer_h
 

@@ -21,6 +21,13 @@
  * QuantLib license is also available at http://quantlib.sourceforge.net/LICENSE.TXT
 */
 
+// $Source$
+
+// $Log$
+// Revision 1.5  2000/12/13 18:09:53  nando
+// CVS keyword added
+//
+
 /*! \file statistics.h
 	\brief statistic tools
 */

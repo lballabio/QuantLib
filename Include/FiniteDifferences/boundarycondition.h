@@ -21,6 +21,13 @@
  * QuantLib license is also available at http://quantlib.sourceforge.net/LICENSE.TXT
 */
 
+// $Source$
+
+// $Log$
+// Revision 1.2  2000/12/13 18:09:53  nando
+// CVS keyword added
+//
+
 #ifndef quantlib_boundary_condition
 #define quantlib_boundary_condition
 
