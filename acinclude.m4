@@ -47,6 +47,7 @@ AC_DEFUN([QL_CHECK_FUNC],
     [AC_TRY_COMPILE(
         [@%:@include <$3>],
         [double x;
+         char s[10];
          $1($2);
         ],
         [AC_MSG_RESULT([yes])
