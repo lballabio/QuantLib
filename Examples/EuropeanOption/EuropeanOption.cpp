@@ -224,6 +224,9 @@ int main(int argc, char* argv[])
         EuropeanExercise exercise(exerciseDate);
 
 
+        RelinkableHandle<MarketElement> underlyingH(
+            Handle<MarketElement>(new SimpleMarketElement(underlying)));
+
         // bootstrap the yield/dividend/vol curves
         RelinkableHandle<TermStructure> flatTermStructure(
             Handle<TermStructure>(
@@ -240,8 +243,7 @@ int main(int argc, char* argv[])
 
         Instruments::VanillaOption option(
             Option::Call,
-            RelinkableHandle<MarketElement>(
-                Handle<MarketElement>(new SimpleMarketElement(underlying))),
+            underlyingH,
             strike,
             flatDividendTS,
             flatTermStructure,
@@ -301,8 +303,7 @@ int main(int argc, char* argv[])
         double correlation = 0.0;
         Instruments::QuantoVanillaOption quantoOption(
             Option::Call,
-            RelinkableHandle<MarketElement>(
-                Handle<MarketElement>(new SimpleMarketElement(underlying))),
+            underlyingH,
             strike,
             flatDividendTS,
             flatTermStructure,
@@ -354,6 +355,191 @@ int main(int argc, char* argv[])
         std::cout << "quanto qlambda: "
              << DoubleFormatter::toString(qlambda, 4)
              << std::endl;
+
+
+        Handle<PricingEngines::ForwardVanillaAnalyticEngine> forwardEngine(new
+            PricingEngines::ForwardVanillaAnalyticEngine(baseEngine));
+
+        Instruments::ForwardVanillaOption forwardOption(
+            Option::Call,
+            underlyingH,
+            flatDividendTS,
+            flatTermStructure,
+            exercise,
+            flatVolTS,
+            forwardEngine,
+            1.1, // moneyness
+            settlementDate.plusMonths(1) // reset Date
+            );
+            
+        value   = forwardOption.NPV();
+        delta   = forwardOption.delta();
+        gamma   = forwardOption.gamma();
+        theta   = forwardOption.theta();
+        vega    = forwardOption.vega();
+        rho     = forwardOption.rho();
+        divRho  = forwardOption.dividendRho();
+        std::cout << std::endl << std::endl << "forward: "
+             << DoubleFormatter::toString(value, 4)
+             << std::endl;
+        std::cout << "forward delta: "
+             << DoubleFormatter::toString(delta, 4)
+             << std::endl;
+        std::cout << "forward gamma: "
+             << DoubleFormatter::toString(gamma, 4)
+             << std::endl;
+        std::cout << "forward theta: "
+             << DoubleFormatter::toString(theta, 4)
+             << std::endl;
+        std::cout << "forward vega: "
+             << DoubleFormatter::toString(vega, 4)
+             << std::endl;
+        std::cout << "forward rho: "
+             << DoubleFormatter::toString(rho, 4)
+             << std::endl;
+        std::cout << "forward divRho: "
+             << DoubleFormatter::toString(divRho, 4)
+             << std::endl;
+
+
+        Handle<PricingEngines::ForwardPerformanceVanillaAnalyticEngine>
+            forwardPerformanceEngine(new
+            PricingEngines::ForwardPerformanceVanillaAnalyticEngine(baseEngine));
+
+        forwardOption.setPricingEngine(forwardPerformanceEngine);
+
+        value   = forwardOption.NPV();
+        delta   = forwardOption.delta();
+        gamma   = forwardOption.gamma();
+        theta   = forwardOption.theta();
+        vega    = forwardOption.vega();
+        rho     = forwardOption.rho();
+        divRho  = forwardOption.dividendRho();
+        std::cout << std::endl << std::endl << "forward performance: "
+             << DoubleFormatter::toString(value, 4)
+             << std::endl;
+        std::cout << "forward performance delta: "
+             << DoubleFormatter::toString(delta, 4)
+             << std::endl;
+        std::cout << "forward performance gamma: "
+             << DoubleFormatter::toString(gamma, 4)
+             << std::endl;
+        std::cout << "forward performance theta: "
+             << DoubleFormatter::toString(theta, 4)
+             << std::endl;
+        std::cout << "forward performance vega: "
+             << DoubleFormatter::toString(vega, 4)
+             << std::endl;
+        std::cout << "forward performance rho: "
+             << DoubleFormatter::toString(rho, 4)
+             << std::endl;
+        std::cout << "forward performance divRho: "
+             << DoubleFormatter::toString(divRho, 4)
+             << std::endl;
+
+
+
+///////////////////////////////////
+
+
+        Handle<PricingEngines::QuantoVanillaAnalyticEngine>
+            quantoForwardEngine(new
+            PricingEngines::QuantoVanillaAnalyticEngine(forwardEngine));
+        quantoOption.setPricingEngine(quantoForwardEngine);
+
+        value   = quantoOption.NPV();
+        delta   = quantoOption.delta();
+        gamma   = quantoOption.gamma();
+        theta   = quantoOption.theta();
+        vega    = quantoOption.vega();
+        rho     = quantoOption.rho();
+        divRho  = quantoOption.dividendRho();
+        qvega   = quantoOption.qvega();
+        qrho    = quantoOption.qrho();
+        qlambda = quantoOption.qlambda();
+        std::cout << std::endl << std::endl << "quanto forward: "
+             << DoubleFormatter::toString(value, 4)
+             << std::endl;
+        std::cout << "quanto forward delta: "
+             << DoubleFormatter::toString(delta, 4)
+             << std::endl;
+        std::cout << "quanto forward gamma: "
+             << DoubleFormatter::toString(gamma, 4)
+             << std::endl;
+        std::cout << "quanto forward theta: "
+             << DoubleFormatter::toString(theta, 4)
+             << std::endl;
+        std::cout << "quanto forward vega: "
+             << DoubleFormatter::toString(vega, 4)
+             << std::endl;
+        std::cout << "quanto forward rho: "
+             << DoubleFormatter::toString(rho, 4)
+             << std::endl;
+        std::cout << "quanto forward divRho: "
+             << DoubleFormatter::toString(divRho, 4)
+             << std::endl;
+        std::cout << "quanto forward qvega: "
+             << DoubleFormatter::toString(qvega, 4)
+             << std::endl;
+        std::cout << "quanto forward qrho: "
+             << DoubleFormatter::toString(qrho, 4)
+             << std::endl;
+        std::cout << "quanto forward qlambda: "
+             << DoubleFormatter::toString(qlambda, 4)
+             << std::endl;
+
+
+
+        
+        
+        Handle<PricingEngines::QuantoVanillaAnalyticEngine>
+            quantoForwardPerformanceEngine(new
+            PricingEngines::QuantoVanillaAnalyticEngine(forwardPerformanceEngine));
+        quantoOption.setPricingEngine(quantoForwardPerformanceEngine);
+
+        value   = quantoOption.NPV();
+        delta   = quantoOption.delta();
+        gamma   = quantoOption.gamma();
+        theta   = quantoOption.theta();
+        vega    = quantoOption.vega();
+        rho     = quantoOption.rho();
+        divRho  = quantoOption.dividendRho();
+        qvega   = quantoOption.qvega();
+        qrho    = quantoOption.qrho();
+        qlambda = quantoOption.qlambda();
+        std::cout << std::endl << std::endl << "quanto forward performance: "
+             << DoubleFormatter::toString(value, 4)
+             << std::endl;
+        std::cout << "quanto forward performance delta: "
+             << DoubleFormatter::toString(delta, 4)
+             << std::endl;
+        std::cout << "quanto forward performance gamma: "
+             << DoubleFormatter::toString(gamma, 4)
+             << std::endl;
+        std::cout << "quanto forward performance theta: "
+             << DoubleFormatter::toString(theta, 4)
+             << std::endl;
+        std::cout << "quanto forward performance vega: "
+             << DoubleFormatter::toString(vega, 4)
+             << std::endl;
+        std::cout << "quanto forward performance rho: "
+             << DoubleFormatter::toString(rho, 4)
+             << std::endl;
+        std::cout << "quanto forward performance divRho: "
+             << DoubleFormatter::toString(divRho, 4)
+             << std::endl;
+        std::cout << "quanto forward performance qvega: "
+             << DoubleFormatter::toString(qvega, 4)
+             << std::endl;
+        std::cout << "quanto forward performance qrho: "
+             << DoubleFormatter::toString(qrho, 4)
+             << std::endl;
+        std::cout << "quanto forward performance qlambda: "
+             << DoubleFormatter::toString(qlambda, 4)
+             << std::endl;
+
+
+
 
 
             

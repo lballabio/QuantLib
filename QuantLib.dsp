@@ -511,6 +511,14 @@ SOURCE=.\ql\Instruments\forwardvanillaoption.hpp
 # End Source File
 # Begin Source File
 
+SOURCE=.\ql\Instruments\quantoforwardvanillaoption.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\Instruments\quantoforwardvanillaoption.hpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\ql\Instruments\quantovanillaoption.cpp
 # End Source File
 # Begin Source File
