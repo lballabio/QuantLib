@@ -47,6 +47,7 @@ OBJS = \
        performanceoption.obj$(_D) \
        singleassetoption.obj$(_D) \
        swaptionpricer.obj$(_D) \
+       treecapfloor.obj$(_D) \
        treeswaption.obj$(_D)
 
 # Tools to be used
