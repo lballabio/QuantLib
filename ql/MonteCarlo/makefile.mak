@@ -23,6 +23,7 @@ OBJS = \
     cliquetoptionpathpricer.obj$(_D) \
     digitalpathpricer.obj$(_D) \
     europeanpathpricer.obj$(_D) \
+    europeanmultipathpricer.obj$(_D) \
     everestpathpricer.obj$(_D) \
     geometricapopathpricer.obj$(_D) \
     geometricasopathpricer.obj$(_D) \
