@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2000
+ * Copyright (C) 2001
  * Ferdinando Ametrano, Luigi Ballabio, Adolfo Benin, Marco Marchioro
  * 
  * This file is part of QuantLib.
@@ -27,6 +27,9 @@
     $Source$
     $Name$
     $Log$
+    Revision 1.2  2001/01/24 09:20:24  marmar
+    Function Matrix transpose(Matrix & m const); added
+
     Revision 1.1  2001/01/23 18:12:50  lballabio
     Added matrix.h to Include/Math
 
@@ -39,6 +42,7 @@
 #include "qlerrors.h"
 #include "array.h"
 #include "steppingiterator.h"
+#include <algorithm>
 
 namespace QuantLib {
     
@@ -163,6 +167,13 @@ namespace QuantLib {
         Array operator*(const Matrix&, const Array&);
         /*! \relates Matrix */
         Matrix operator*(const Matrix&, const Matrix&);
+
+
+        // misc. operations
+        
+        /*! \relates Matrix */
+        Matrix transpose(const Matrix&);
+        
 
 
         // inline definitions
@@ -455,6 +466,13 @@ namespace QuantLib {
             return result;
         }
         
+        inline Matrix transpose(const Matrix& m) {
+            Matrix result(m.columns(),m.rows());
+            for (int i=0; i<m.rows(); i++)
+                std::copy(m.row_begin(i),m.row_end(i),result.column_begin(i));
+            return result;
+        }
+
     }
 
 }
