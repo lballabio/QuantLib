@@ -3,4 +3,4 @@ The main issue seems to be the lack of a complete implementation of the C++
 template standard library in gcc. 
 Any contribution is welcome as a Linux gcc port is definitely a priority.
 
-The tentative Linux makefile is only used to produce documentation with DoxyGen.
+The tentative Linux Makefile is only used to produce documentation with DoxyGen.
