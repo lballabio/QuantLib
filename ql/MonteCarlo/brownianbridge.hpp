@@ -93,8 +93,9 @@ namespace QuantLib {
         template <class GSG>
         BrownianBridge<GSG>::BrownianBridge(GSG generator)
         : generator_(generator), dimension_(generator_.dimension()),
-          timeGrid_(dimension_, dimension_),
-          next_(std::vector<double>(dimension_), 1.0), bridgeIndex_(dimension_),
+          timeGrid_(Time(dimension_), dimension_),
+          next_(std::vector<double>(dimension_), 1.0),
+          bridgeIndex_(dimension_),
           leftIndex_(dimension_),  rightIndex_(dimension_),
           leftWeight_(dimension_), rightWeight_(dimension_),
           stdDev_(dimension_) {
@@ -106,7 +107,8 @@ namespace QuantLib {
             GSG generator)
         : generator_(generator), dimension_(generator_.dimension()),
           timeGrid_(length, timeSteps),
-          next_(std::vector<double>(dimension_), 1.0), bridgeIndex_(dimension_),
+          next_(std::vector<double>(dimension_), 1.0),
+          bridgeIndex_(dimension_),
           leftIndex_(dimension_),  rightIndex_(dimension_),
           leftWeight_(dimension_), rightWeight_(dimension_),
           stdDev_(dimension_) {
@@ -127,7 +129,8 @@ namespace QuantLib {
             GSG generator)
         : generator_(generator), dimension_(generator_.dimension()),
           timeGrid_(timeGrid),
-          next_(std::vector<double>(dimension_), 1.0), bridgeIndex_(dimension_),
+          next_(std::vector<double>(dimension_), 1.0),
+          bridgeIndex_(dimension_),
           leftIndex_(dimension_),  rightIndex_(dimension_),
           leftWeight_(dimension_), rightWeight_(dimension_),
           stdDev_(dimension_) {
@@ -144,12 +147,14 @@ namespace QuantLib {
         }
 
         template <class GSG>
-        BrownianBridge<GSG>::BrownianBridge(const std::vector<double>& variances,
-                                            const TimeGrid& timeGrid,
-                                            GSG generator)
+        BrownianBridge<GSG>::BrownianBridge(
+            const std::vector<double>& variances,
+            const TimeGrid& timeGrid,
+            GSG generator)
         : generator_(generator), dimension_(generator_.dimension()),
           timeGrid_(timeGrid),
-          next_(std::vector<double>(dimension_), 1.0), bridgeIndex_(dimension_),
+          next_(std::vector<double>(dimension_), 1.0),
+          bridgeIndex_(dimension_),
           leftIndex_(dimension_),  rightIndex_(dimension_),
           leftWeight_(dimension_), rightWeight_(dimension_),
           stdDev_(dimension_) {
@@ -176,7 +181,8 @@ namespace QuantLib {
             GSG generator)
         : generator_(generator), dimension_(generator_.dimension()),
           timeGrid_(timeGrid),
-          next_(std::vector<double>(dimension_), 1.0), bridgeIndex_(dimension_),
+          next_(std::vector<double>(dimension_), 1.0),
+          bridgeIndex_(dimension_),
           leftIndex_(dimension_),  rightIndex_(dimension_),
           leftWeight_(dimension_), rightWeight_(dimension_),
           stdDev_(dimension_) {
@@ -204,7 +210,8 @@ namespace QuantLib {
             std::vector<Size> map(dimension_);
             // map is used to indicate which points are already constructed.
             // If map[i] is zero, path point i is yet unconstructed.
-            // map[i]-1 is the index of the variate that constructs the path point # i.
+            // map[i]-1 is the index of the variate that constructs
+            // the path point # i.
 
             Size i,j,k,l;
             //  The first point in the construction is the global step.
@@ -230,7 +237,7 @@ namespace QuantLib {
                 rightIndex_[i]  = k;
                 leftWeight_[i]  = (v[k]-v[l])  /(v[k]-v[j-1]);
                 rightWeight_[i] = (v[l]-v[j-1])/(v[k]-v[j]-1);
-                stdDev_[i]      = sqrt(((v[l]-v[j-1])*(v[k]-v[l]))/(v[k]-v[j-1]));
+                stdDev_[i] = sqrt(((v[l]-v[j-1])*(v[k]-v[l]))/(v[k]-v[j-1]));
                 j=k+1;
                 if (j>=dimension_) j=0;	//	Wrap around.
             }
