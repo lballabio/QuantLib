@@ -22,7 +22,7 @@
 #ifndef quantlib_pricers_black_swaption_h
 #define quantlib_pricers_black_swaption_h
 
-#include <ql/blackmodel.hpp>
+#include <ql/Pricers/blackmodel.hpp>
 #include <ql/Pricers/swaptionpricer.hpp>
 #include <ql/PricingEngines/genericmodelengine.hpp>
 

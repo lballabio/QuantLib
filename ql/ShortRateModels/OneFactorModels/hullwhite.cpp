@@ -21,7 +21,7 @@
 
 #include <ql/ShortRateModels/OneFactorModels/hullwhite.hpp>
 #include <ql/Lattices/trinomialtree.hpp>
-#include <ql/blackmodel.hpp>
+#include <ql/Pricers/blackmodel.hpp>
 
 namespace QuantLib {
 

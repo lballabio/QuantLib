@@ -5,6 +5,7 @@ includedir = $(prefix)/include/ql/Pricers
 include_HEADERS = \
     analyticalcapfloor.hpp \
     blackcapfloor.hpp \
+    blackmodel.hpp \
     blackswaption.hpp \
     capfloorpricer.hpp \
     cliquetoption.hpp \

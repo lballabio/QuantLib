@@ -20,7 +20,7 @@
 */
 
 #include <ql/ShortRateModels/TwoFactorModels/g2.hpp>
-#include <ql/blackmodel.hpp>
+#include <ql/Pricers/blackmodel.hpp>
 #include <ql/Math/segmentintegral.hpp>
 #include <ql/Solvers1D/brent.hpp>
 

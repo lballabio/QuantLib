@@ -24,6 +24,7 @@
 
 #include <ql/capvolstructures.hpp>
 #include <ql/Math/interpolationtraits.hpp>
+#include <ql/DayCounters/thirty360.hpp>
 #include <vector>
 
 namespace QuantLib {
@@ -41,8 +42,7 @@ namespace QuantLib {
     */
     class CapFlatVolatilityVector : public CapFlatVolatilityStructure {
       public:
-        CapFlatVolatilityVector(
-                                const Date& todaysDate,
+        CapFlatVolatilityVector(const Date& todaysDate,
                                 const Calendar& calendar,
                                 int settlementDays,
                                 const std::vector<Period>& lengths,

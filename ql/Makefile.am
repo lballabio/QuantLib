@@ -34,7 +34,6 @@ EXTRA_DIST= \
 
 include_HEADERS = \
 	argsandresults.hpp \
-	blackmodel.hpp \
 	calendar.hpp \
 	capvolstructures.hpp \
 	cashflow.hpp \

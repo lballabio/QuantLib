@@ -20,7 +20,7 @@
 */
 
 #include <ql/ShortRateModels/OneFactorModels/vasicek.hpp>
-#include <ql/blackmodel.hpp>
+#include <ql/Pricers/blackmodel.hpp>
 
 namespace QuantLib {
 

@@ -743,6 +743,10 @@ SOURCE=.\ql\Lattices\trinomialtree.hpp
 # PROP Default_Filter ""
 # Begin Source File
 
+SOURCE=.\ql\Math\array.hpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\ql\Math\beta.cpp
 # End Source File
 # Begin Source File
@@ -1220,6 +1224,10 @@ SOURCE=.\ql\Pricers\blackcapfloor.cpp
 # Begin Source File
 
 SOURCE=.\ql\Pricers\blackcapfloor.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\Pricers\blackmodel.hpp
 # End Source File
 # Begin Source File
 
@@ -1992,14 +2000,6 @@ SOURCE=.\ql\argsandresults.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\ql\array.hpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\ql\blackmodel.hpp
-# End Source File
-# Begin Source File
-
 SOURCE=.\ql\calendar.cpp
 # End Source File
 # Begin Source File
@@ -2133,10 +2133,6 @@ SOURCE=.\ql\pricingengine.hpp
 # Begin Source File
 
 SOURCE=.\ql\qldefines.hpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\ql\quantlib.hpp
 # End Source File
 # Begin Source File
 

@@ -23,8 +23,8 @@
 #define quantlib_interest_rate_modelling_calibration_helper_h
 
 #include <ql/grid.hpp>
-#include <ql/blackmodel.hpp>
 #include <ql/pricingengine.hpp>
+#include <ql/Pricers/blackmodel.hpp>
 
 namespace QuantLib {
 
