@@ -27,6 +27,9 @@
     $Source$
     $Name$
     $Log$
+    Revision 1.9  2001/02/16 15:19:52  lballabio
+    Used QL_DECLARE_TEMPLATE_SPECIFICATIONS macro
+
     Revision 1.8  2001/02/09 19:21:09  lballabio
     removed QL_DECLARE_TEMPLATE_SPECIALIZATION macro
 
@@ -80,11 +83,12 @@ namespace QuantLib {
         Date advance(const Date&, int n, TimeUnit unit, bool modified = false) const;
     };
 
-    QL_TEMPLATE_SPECIALIZATION
-    bool operator==(const Handle<Calendar>&, const Handle<Calendar>&);
-    
-    QL_TEMPLATE_SPECIALIZATION
-    bool operator!=(const Handle<Calendar>&, const Handle<Calendar>&);
+    #if defined(QL_DECLARE_TEMPLATE_SPECIALIZATIONS)
+        template<>
+        bool operator==(const Handle<Calendar>&, const Handle<Calendar>&);
+        template<>
+        bool operator!=(const Handle<Calendar>&, const Handle<Calendar>&);
+    #endif
 
     namespace Calendars {
 
@@ -105,14 +109,14 @@ namespace QuantLib {
     /*! Returns <tt>true</tt> iff the two calendars belong to the same derived class.
         \relates Calendar
     */
-    QL_TEMPLATE_SPECIALIZATION
+    template<>
     inline bool operator==(const Handle<Calendar>& h1, 
         const Handle<Calendar>& h2) {
             return (h1->name() == h2->name());
     }
 
     /*! \relates Calendar */
-    QL_TEMPLATE_SPECIALIZATION
+    template<>
     inline bool operator!=(const Handle<Calendar>& h1, 
         const Handle<Calendar>& h2) {
             return (h1->name() != h2->name());

@@ -27,6 +27,9 @@
     $Source$
     $Name$
     $Log$
+    Revision 1.13  2001/02/16 15:19:52  lballabio
+    Used QL_DECLARE_TEMPLATE_SPECIFICATIONS macro
+
     Revision 1.12  2001/02/09 19:21:09  lballabio
     removed QL_DECLARE_TEMPLATE_SPECIALIZATION macro
 
@@ -221,15 +224,12 @@ namespace QuantLib {
 
     };
 
-    /*! \relates Instrument
-        \brief returns <tt>true</tt> iff two instruments have the same ISIN code
-    */
-    QL_TEMPLATE_SPECIALIZATION
-    bool operator==(const Handle<Instrument>&, const Handle<Instrument>&);
-    /*! \relates Instrument */
-    QL_TEMPLATE_SPECIALIZATION
-    bool operator!=(const Handle<Instrument>&, const Handle<Instrument>&);
-
+    #if defined(QL_DECLARE_TEMPLATE_SPECIALIZATIONS)
+        template <>
+        bool operator==(const Handle<Instrument>&, const Handle<Instrument>&);
+        template <>
+        bool operator!=(const Handle<Instrument>&, const Handle<Instrument>&);
+    #endif
 
     // derived classes
 
@@ -402,13 +402,17 @@ namespace QuantLib {
 
     // comparisons
 
-    QL_TEMPLATE_SPECIALIZATION
+    /*! \relates Instrument
+        \brief returns <tt>true</tt> iff two instruments have the same ISIN code
+    */
+    template <>
     inline bool operator==(const Handle<Instrument>& i, 
         const Handle<Instrument>& j) {
             return (i->isinCode() == j->isinCode());
     }
 
-    QL_TEMPLATE_SPECIALIZATION
+    /*! \relates Instrument */
+    template <>
     inline bool operator!=(const Handle<Instrument>& i, 
         const Handle<Instrument>& j) {
             return (i->isinCode() != j->isinCode());

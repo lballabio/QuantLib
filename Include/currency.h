@@ -27,6 +27,9 @@
     $Source$
     $Name$
     $Log$
+    Revision 1.9  2001/02/16 15:19:52  lballabio
+    Used QL_DECLARE_TEMPLATE_SPECIFICATIONS macro
+
     Revision 1.8  2001/02/09 19:21:09  lballabio
     removed QL_DECLARE_TEMPLATE_SPECIALIZATION macro
 
@@ -81,12 +84,12 @@ namespace QuantLib {
 
     // comparison based on name
 
-    QL_TEMPLATE_SPECIALIZATION
-    bool operator==(const Handle<Currency>&, const Handle<Currency>&);
-    
-    QL_TEMPLATE_SPECIALIZATION
-    bool operator!=(const Handle<Currency>&, const Handle<Currency>&);
-
+    #if defined(QL_DECLARE_TEMPLATE_SPECIALIZATIONS)
+        template<>
+        bool operator==(const Handle<Currency>&, const Handle<Currency>&);
+        template<>
+        bool operator!=(const Handle<Currency>&, const Handle<Currency>&);
+    #endif
 
     // inline definitions
 
@@ -97,14 +100,14 @@ namespace QuantLib {
     /*! Returns <tt>true</tt> iff the two currencies belong to the same derived class.
         \relates Currency
     */
-    QL_TEMPLATE_SPECIALIZATION
+    template <>
     inline bool operator==(const Handle<Currency>& c1, 
         const Handle<Currency>& c2) {
             return (c1->name() == c2->name());
     }
 
     /*! \relates Currency */
-    QL_TEMPLATE_SPECIALIZATION
+    template <>
     inline bool operator!=(const Handle<Currency>& c1, 
         const Handle<Currency>& c2) {
             return (c1->name() != c2->name());
