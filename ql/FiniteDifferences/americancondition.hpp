@@ -35,9 +35,11 @@ namespace QuantLib {
         AmericanCondition(Option::Type type,
                           Real strike);
         AmericanCondition(const Array& intrinsicValues);
-        void applyTo(Array& a,
-                     Time t) const;
+        void applyTo(Array& a, Time t) const;
+        #ifndef QL_DISABLE_DEPRECATED
+        /*! \deprecated use adjustValues() on the asset itself */
         void applyTo(boost::shared_ptr<DiscretizedAsset> asset) const;
+        #endif
       private:
         Array intrinsicValues_;
         boost::shared_ptr<Payoff> payoff_;
@@ -67,6 +69,7 @@ namespace QuantLib {
 
     }
 
+    #ifndef QL_DISABLE_DEPRECATED
     inline void AmericanCondition::applyTo(
                             boost::shared_ptr<DiscretizedAsset> asset) const {
         if (intrinsicValues_.size()!=0) {
@@ -81,6 +84,7 @@ namespace QuantLib {
                                             (*payoff_)(asset->values()[i]));
         }
     }
+    #endif
 
 }
 

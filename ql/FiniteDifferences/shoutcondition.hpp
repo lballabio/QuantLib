@@ -46,7 +46,10 @@ namespace QuantLib {
                        Rate rate);
         void applyTo(Array& a,
                      Time t) const;
+        #ifndef QL_DISABLE_DEPRECATED
+        /*! \deprecated use adjustValues() on the asset itself */
         void applyTo(boost::shared_ptr<DiscretizedAsset> asset) const;
+        #endif
       private:
         Array intrinsicValues_;
         boost::shared_ptr<Payoff> payoff_;
@@ -81,6 +84,7 @@ namespace QuantLib {
         }
     }
 
+    #ifndef QL_DISABLE_DEPRECATED
     inline void ShoutCondition::applyTo(
                             boost::shared_ptr<DiscretizedAsset> asset) const {
         DiscountFactor disc = QL_EXP(-rate_ * (asset->time() - resTime_));
@@ -98,6 +102,7 @@ namespace QuantLib {
                                             disc);
         }
     }
+    #endif
 
 }
 
