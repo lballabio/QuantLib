@@ -14,6 +14,7 @@
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
+
 /*! \file affinetermstructure.hpp
     \brief Affine term structure
 
@@ -50,13 +51,13 @@ namespace QuantLib {
             //! constructor using a fixed model
             AffineTermStructure(
                 const Date& todaysDate,
-                const Date& settlementDate,
+                const Date& referenceDate,
                 const Handle<ShortRateModels::AffineModel>& model,
                 const DayCounter& dayCounter);
             //! constructor using a model that has to be calibrated
             AffineTermStructure(
                 const Date& todaysDate,
-                const Date& settlementDate,
+                const Date& referenceDate,
                 const Handle<ShortRateModels::AffineModel>& model,
                 const std::vector<Handle<RateHelper> >& instruments,
                 const Handle<Optimization::Method>& method,
@@ -65,7 +66,7 @@ namespace QuantLib {
             // inspectors
             DayCounter dayCounter() const;
             Date todaysDate() const {return todaysDate_; }
-            Date settlementDate() const;
+            Date referenceDate() const;
             Date maxDate() const;
 
             void update();
@@ -78,7 +79,7 @@ namespace QuantLib {
             void calibrate() const;
 
             DayCounter dayCounter_;
-            Date todaysDate_, settlementDate_;
+            Date todaysDate_, referenceDate_;
 
             mutable bool needsRecalibration_;
             Handle<ShortRateModels::AffineModel> model_;
@@ -90,8 +91,8 @@ namespace QuantLib {
             return dayCounter_;
         }
 
-        inline Date AffineTermStructure::settlementDate() const {
-            return settlementDate_;
+        inline Date AffineTermStructure::referenceDate() const {
+            return referenceDate_;
         }
 
         inline Date AffineTermStructure::maxDate() const {

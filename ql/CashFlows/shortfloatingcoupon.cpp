@@ -14,6 +14,7 @@
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
+
 /*! \file shortfloatingcoupon.cpp
     \brief Short coupon at par on a term structure
 
@@ -38,25 +39,24 @@ namespace QuantLib {
           const Date& startDate, const Date& endDate,
           int fixingDays, Spread spread,
           const Date& refPeriodStart, const Date& refPeriodEnd)
-        : FloatingRateCoupon(nominal,paymentDate,index,startDate,endDate,fixingDays,
+        : FloatingRateCoupon(nominal,paymentDate,index,
+                             startDate,endDate,fixingDays,
                              spread,refPeriodStart,refPeriodEnd) {}
 
         double ShortFloatingRateCoupon::amount() const {
             QL_REQUIRE(!index()->termStructure().isNull(),
                 "null term structure set to par coupon");
-            Date settlementDate = index()->termStructure()->settlementDate();
+            Date today = index()->termStructure()->todaysDate();
             Date fixingDate = index()->calendar().advance(
-                accrualStartDate_, -fixingDays(), Days,
-                Preceding);
-            Date fixingValueDate = index()->calendar().advance(
-                fixingDate, index()->settlementDays(), Days,
-                Following);
-            QL_REQUIRE(fixingValueDate > settlementDate,
+                accrualStartDate_, -fixingDays(), Days);
+            QL_REQUIRE(fixingDate >= today,
                        // must have been fixed
                        // but we have no way to interpolate the fixing yet
                        "short/long floating coupons not supported yet"
-                       " (start = " + DateFormatter::toString(accrualStartDate_) +
-                       ", end = " + DateFormatter::toString(accrualEndDate_) + ")");
+                       " (start = " + 
+                       DateFormatter::toString(accrualStartDate_) +
+                       ", end = " + 
+                       DateFormatter::toString(accrualEndDate_) + ")");
             return FloatingRateCoupon::amount();
         }
 

@@ -49,7 +49,7 @@ namespace QuantLib {
             arguments->forwards.clear();
             arguments->nominals.clear();
 
-            Date settlement = termStructure_->settlementDate();
+            Date settlement = termStructure_->referenceDate();
             DayCounter counter = termStructure_->dayCounter();
 
             std::vector<Handle<CashFlow> >::const_iterator begin =
@@ -60,7 +60,8 @@ namespace QuantLib {
             for (; begin != floatingLeg_.end(); ++begin) {
                 Handle<FloatingRateCoupon> coupon = *begin;
                 QL_ENSURE(!coupon.isNull(), 
-                          "VanillaCapFloor::setupEngine Not a floating rate coupon");
+                          "VanillaCapFloor::setupEngine: "
+                          "not a floating rate coupon");
                 Date beginDate = coupon->accrualStartDate();
                 Time time = counter.yearFraction(settlement, beginDate);
                 arguments->startTimes.push_back(time);
@@ -69,7 +70,7 @@ namespace QuantLib {
                 // this is passed explicitly for precision
                 arguments->accrualTimes.push_back(coupon->accrualPeriod());
                 // this is passed explicitly for precision
-                if (arguments->endTimes.back() >= 0.0)  // but only if really needed 
+                if (arguments->endTimes.back() >= 0.0)  // but only if needed 
                     arguments->forwards.push_back(coupon->fixing());
                 else
                     arguments->forwards.push_back(Null<Rate>());
@@ -91,7 +92,7 @@ namespace QuantLib {
         }
 
         void VanillaCapFloor::performCalculations() const {
-            if (floatingLeg_.back()->date()<termStructure_->settlementDate()) {
+            if (floatingLeg_.back()->date()<termStructure_->referenceDate()) {
                 isExpired_ = true;
                 NPV_ = 0.0;
             } else {

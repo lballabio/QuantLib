@@ -14,6 +14,7 @@
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
+
 /*! \file piecewiseflatforward.cpp
     \brief piecewise flat forward term structure
 
@@ -33,11 +34,11 @@ namespace QuantLib {
     namespace TermStructures {
 
         PiecewiseFlatForward::PiecewiseFlatForward(const Date& todaysDate,
-            const Date& settlementDate,
+            const Date& referenceDate,
             const std::vector<Handle<RateHelper> >& instruments,
             const DayCounter& dayCounter, double accuracy)
         : dayCounter_(dayCounter), todaysDate_(todaysDate), 
-          settlementDate_(settlementDate), instruments_(instruments), 
+          referenceDate_(referenceDate), instruments_(instruments), 
           needsBootstrap_(true), accuracy_(accuracy) {
 
             QL_REQUIRE(instruments_.size()>0, "No instrument given");
@@ -66,7 +67,7 @@ namespace QuantLib {
             const std::vector<Date>& dates, const std::vector<Rate>& forwards,
             const DayCounter& dayCounter)
         : dayCounter_(dayCounter), todaysDate_(todaysDate), 
-          settlementDate_(dates[0]), needsBootstrap_(false),
+          referenceDate_(dates[0]), needsBootstrap_(false),
           times_(dates.size()), dates_(dates), 
           discounts_(dates.size()), forwards_(forwards), 
           zeroYields_(dates.size()) {
@@ -78,7 +79,7 @@ namespace QuantLib {
             discounts_[0]=1.0;
             zeroYields_[0]=forwards_[0];
             for (Size i=1; i<dates_.size(); i++) {
-                times_[i] = dayCounter_.yearFraction(settlementDate_,
+                times_[i] = dayCounter_.yearFraction(referenceDate_,
                     dates_[i]);
                 discounts_[i] = discounts_[i-1] * QL_EXP(-forwards_[i]*
                     (times_[i]-times_[i-1]));
@@ -91,8 +92,8 @@ namespace QuantLib {
             // term structure methods are called by the rate helpers
             needsBootstrap_ = false;
             try {
-                // values at settlement date
-                dates_ = std::vector<Date>(1, settlementDate_);
+                // values at reference date
+                dates_ = std::vector<Date>(1, referenceDate_);
                 times_ = std::vector<Time>(1, 0.0);
                 discounts_ = std::vector<DiscountFactor>(1, 1.0);
                 forwards_ = zeroYields_ = std::vector<Rate>();
@@ -252,9 +253,9 @@ namespace QuantLib {
             // extend curve to next point
             curve_->dates_.push_back(rateHelper_->maturity());
             curve_->times_.push_back(curve_->dayCounter().yearFraction(
-                curve_->settlementDate(),curve_->dates_.back()));
+                curve_->referenceDate(),curve_->dates_.back()));
             if (segment_ == 1) {
-                // add dummy values at settlement
+                // add dummy values at reference
                 curve_->forwards_.push_back(0.0);
                 curve_->zeroYields_.push_back(0.0);
             }

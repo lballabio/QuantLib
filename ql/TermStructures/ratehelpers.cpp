@@ -14,6 +14,7 @@
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
+
 /*! \file ratehelpers.cpp
     \brief rate helpers base class
 
@@ -30,22 +31,6 @@ namespace QuantLib {
     using Instruments::SimpleSwap;
     using Indexes::Xibor;
 
-    namespace {
-        
-        int settlementDays(const Date& today, const Date& settlement,
-                           const Calendar& calendar) {
-            Date temp = today;
-            int n = 0;
-            while (temp < settlement) {
-                temp = temp+1;
-                if (calendar.isBusinessDay(temp))
-                    n++;
-            }
-            return n;
-        }
-
-    }
-
     namespace TermStructures {
 
         RateHelper::RateHelper(const RelinkableHandle<MarketElement>& quote)
@@ -56,7 +41,7 @@ namespace QuantLib {
         RateHelper::RateHelper(double quote)
         : quote_(RelinkableHandle<MarketElement>(
             Handle<MarketElement>(new SimpleMarketElement(quote)))),
-        termStructure_(0) {
+          termStructure_(0) {
             registerWith(quote_);
         }
 
@@ -73,17 +58,19 @@ namespace QuantLib {
 
         DepositRateHelper::DepositRateHelper(
             const RelinkableHandle<MarketElement>& rate,
-            int n, TimeUnit units,
+            int n, TimeUnit units, int settlementDays,
             const Calendar& calendar, RollingConvention convention,
             const DayCounter& dayCounter)
-        : RateHelper(rate), n_(n), units_(units), calendar_(calendar),
+        : RateHelper(rate), n_(n), units_(units), 
+          settlementDays_(settlementDays), calendar_(calendar),
           convention_(convention), dayCounter_(dayCounter) {}
 
         DepositRateHelper::DepositRateHelper(double rate,
-            int n, TimeUnit units,
+            int n, TimeUnit units, int settlementDays,
             const Calendar& calendar, RollingConvention convention,
             const DayCounter& dayCounter)
-        : RateHelper(rate), n_(n), units_(units), calendar_(calendar),
+        : RateHelper(rate), n_(n), units_(units), 
+          settlementDays_(settlementDays), calendar_(calendar),
           convention_(convention), dayCounter_(dayCounter) {}
 
         double DepositRateHelper::impliedQuote() const {
@@ -103,7 +90,8 @@ namespace QuantLib {
 
         void DepositRateHelper::setTermStructure(TermStructure* t) {
             RateHelper::setTermStructure(t);
-            settlement_ = termStructure_->settlementDate();
+            Date today = termStructure_->todaysDate();
+            settlement_ = calendar_.advance(today,settlementDays_,Days);
             maturity_ = calendar_.advance(
                 settlement_,n_,units_,convention_);
             yearFraction_ = dayCounter_.yearFraction(settlement_,maturity_);
@@ -119,19 +107,23 @@ namespace QuantLib {
         FraRateHelper::FraRateHelper(
             const RelinkableHandle<MarketElement>& rate,
             int monthsToStart, int monthsToEnd,
+            int settlementDays,
             const Calendar& calendar, RollingConvention convention,
             const DayCounter& dayCounter)
         : RateHelper(rate),
           monthsToStart_(monthsToStart), monthsToEnd_(monthsToEnd),
+          settlementDays_(settlementDays),
           calendar_(calendar), convention_(convention),
           dayCounter_(dayCounter) {}
 
         FraRateHelper::FraRateHelper(double rate,
             int monthsToStart, int monthsToEnd,
+            int settlementDays,
             const Calendar& calendar, RollingConvention convention,
             const DayCounter& dayCounter)
         : RateHelper(rate),
           monthsToStart_(monthsToStart), monthsToEnd_(monthsToEnd),
+          settlementDays_(settlementDays),
           calendar_(calendar), convention_(convention),
           dayCounter_(dayCounter) {}
 
@@ -152,7 +144,8 @@ namespace QuantLib {
 
         void FraRateHelper::setTermStructure(TermStructure* t) {
             RateHelper::setTermStructure(t);
-            settlement_ = termStructure_->settlementDate();
+            Date today = termStructure_->todaysDate();
+            settlement_ = calendar_.advance(today,settlementDays_,Days);
             start_ = calendar_.advance(
                 settlement_,monthsToStart_,Months,convention_);
             maturity_ = calendar_.advance(
@@ -213,58 +206,28 @@ namespace QuantLib {
 
         SwapRateHelper::SwapRateHelper(
             const RelinkableHandle<MarketElement>& rate,
-            int lengthInYears,
+            int n, TimeUnit units, int settlementDays,
             const Calendar& calendar, RollingConvention convention,
             int fixedFrequency, bool fixedIsAdjusted,
             const DayCounter& fixedDayCount,
             int floatingFrequency)
         : RateHelper(rate), 
-          numberOfUnits_(lengthInYears), units_(Years),
-          calendar_(calendar),
-          convention_(convention),
-          fixedFrequency_(fixedFrequency),
-          floatingFrequency_(floatingFrequency),
-          fixedIsAdjusted_(fixedIsAdjusted),
-          fixedDayCount_(fixedDayCount) {}
-
-        SwapRateHelper::SwapRateHelper(
-            const RelinkableHandle<MarketElement>& rate,
-            int numberOfUnits, TimeUnit units,
-            const Calendar& calendar, RollingConvention convention,
-            int fixedFrequency, bool fixedIsAdjusted,
-            const DayCounter& fixedDayCount,
-            int floatingFrequency)
-        : RateHelper(rate), 
-          numberOfUnits_(numberOfUnits), units_(units), calendar_(calendar),
-          convention_(convention),
+          n_(n), units_(units), settlementDays_(settlementDays),
+          calendar_(calendar), convention_(convention),
           fixedFrequency_(fixedFrequency),
           floatingFrequency_(floatingFrequency),
           fixedIsAdjusted_(fixedIsAdjusted),
           fixedDayCount_(fixedDayCount) {}
 
         SwapRateHelper::SwapRateHelper(double rate,
-            int lengthInYears,
+            int n, TimeUnit units, int settlementDays,
             const Calendar& calendar, RollingConvention convention,
             int fixedFrequency, bool fixedIsAdjusted,
             const DayCounter& fixedDayCount,
             int floatingFrequency)
         : RateHelper(rate), 
-          numberOfUnits_(lengthInYears), units_(Years), calendar_(calendar),
-          convention_(convention),
-          fixedFrequency_(fixedFrequency),
-          floatingFrequency_(floatingFrequency),
-          fixedIsAdjusted_(fixedIsAdjusted),
-          fixedDayCount_(fixedDayCount) {}
-
-        SwapRateHelper::SwapRateHelper(double rate,
-            int numberOfUnits, TimeUnit units,
-            const Calendar& calendar, RollingConvention convention,
-            int fixedFrequency, bool fixedIsAdjusted,
-            const DayCounter& fixedDayCount,
-            int floatingFrequency)
-        : RateHelper(rate), 
-          numberOfUnits_(numberOfUnits), units_(units), calendar_(calendar),
-          convention_(convention),
+          n_(n), units_(units), settlementDays_(settlementDays),
+          calendar_(calendar), convention_(convention),
           fixedFrequency_(fixedFrequency),
           floatingFrequency_(floatingFrequency),
           fixedIsAdjusted_(fixedIsAdjusted),
@@ -276,9 +239,9 @@ namespace QuantLib {
             termStructureHandle_.linkTo(
                 Handle<TermStructure>(t,false),false);
             RateHelper::setTermStructure(t);
-            settlement_ = termStructure_->settlementDate();
-            int fixingDays = settlementDays(termStructure_->todaysDate(),
-                                            settlement_, calendar_);
+            Date today = termStructure_->todaysDate();
+            settlement_ = calendar_.advance(today,settlementDays_,Days);
+            int fixingDays = settlementDays_;
             // dummy Libor index with curve/swap arguments
             Handle<Xibor> dummyIndex(new Xibor("dummy",
                 12/floatingFrequency_,Months, fixingDays,
@@ -288,7 +251,7 @@ namespace QuantLib {
                 termStructureHandle_));
             swap_ = Handle<SimpleSwap>(
                 new SimpleSwap(true,                // pay fixed rate
-                    settlement_, numberOfUnits_, units_, calendar_,
+                    settlement_, n_, units_, calendar_,
                     convention_,
                     100.0,
                     fixedFrequency_,

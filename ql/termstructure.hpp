@@ -14,6 +14,7 @@
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
+
 /*! \file termstructure.hpp
     \brief Term structure
 
@@ -59,15 +60,15 @@ namespace QuantLib {
         //@{
         //! zero yield rate at a given date
         Rate zeroYield(const Date&, bool extrapolate = false) const;
-        //! zero yield rate at a given time from settlement
+        //! zero yield rate at a given time from reference
         Rate zeroYield(Time, bool extrapolate = false) const;
         //! discount factor at a given date
         DiscountFactor discount(const Date&, bool extrapolate = false) const;
-        //! discount factor at a given time from settlement
+        //! discount factor at a given time from reference
         DiscountFactor discount(Time, bool extrapolate = false) const;
         //! instantaneous forward rate at a given date
         Rate instantaneousForward(const Date&, bool extrapolate = false) const;
-        //! instantaneous forward rate at a given time from settlement
+        //! instantaneous forward rate at a given time from reference
         Rate instantaneousForward(Time, bool extrapolate = false) const;
         //! discrete forward rate between two dates
         Rate forward(const Date&, const Date&, bool extrapolate = false) const;
@@ -79,8 +80,8 @@ namespace QuantLib {
         //@{
         //! returns today's date
         virtual Date todaysDate() const = 0;
-        //! returns the settlement date
-        virtual Date settlementDate() const = 0;
+        //! returns the reference date, i.e., the date at which discount = 1
+        virtual Date referenceDate() const = 0;
         //! returns the day counter
         virtual DayCounter dayCounter() const = 0;
         //! returns the latest date for which the curve can return rates
@@ -174,7 +175,7 @@ namespace QuantLib {
 
     inline Rate TermStructure::zeroYield(const Date& d,
         bool extrapolate) const {
-            Time t = dayCounter().yearFraction(settlementDate(),d);
+            Time t = dayCounter().yearFraction(referenceDate(),d);
             return zeroYieldImpl(t,extrapolate);
     }
 
@@ -184,7 +185,7 @@ namespace QuantLib {
 
     inline DiscountFactor TermStructure::discount(const Date& d,
         bool extrapolate) const {
-            Time t = dayCounter().yearFraction(settlementDate(),d);
+            Time t = dayCounter().yearFraction(referenceDate(),d);
             return discountImpl(t,extrapolate);
     }
 
@@ -195,7 +196,7 @@ namespace QuantLib {
 
     inline Rate TermStructure::instantaneousForward(const Date& d,
         bool extrapolate) const {
-            Time t = dayCounter().yearFraction(settlementDate(),d);
+            Time t = dayCounter().yearFraction(referenceDate(),d);
             return forwardImpl(t,extrapolate);
     }
 
@@ -206,8 +207,8 @@ namespace QuantLib {
 
     inline Rate TermStructure::forward(const Date& d1,
         const Date& d2, bool extrapolate) const {
-            Time t1 = dayCounter().yearFraction(settlementDate(),d1);
-            Time t2 = dayCounter().yearFraction(settlementDate(),d2);
+            Time t1 = dayCounter().yearFraction(referenceDate(),d1);
+            Time t2 = dayCounter().yearFraction(referenceDate(),d2);
             return forward(t1, t2, extrapolate);
     }
 
@@ -221,7 +222,7 @@ namespace QuantLib {
     }
 
     inline Time TermStructure::maxTime() const {
-            return dayCounter().yearFraction(settlementDate(), maxDate());
+            return dayCounter().yearFraction(referenceDate(), maxDate());
     }
 
     // curve deriving discount and forward from zero yield

@@ -14,6 +14,7 @@
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
+
 /*! \file zerospreadedtermstructure.hpp
     \brief Zero spreaded term structure
 
@@ -43,7 +44,7 @@ namespace QuantLib {
             //! \name TermStructure interface
             //@{
             DayCounter dayCounter() const;
-            Date settlementDate() const;
+            Date referenceDate() const;
             Date todaysDate() const;
             Date maxDate() const;
             Time maxTime() const;
@@ -81,8 +82,8 @@ namespace QuantLib {
             return originalCurve_->todaysDate();
         }
 
-        inline Date ZeroSpreadedTermStructure::settlementDate() const {
-            return originalCurve_->settlementDate();
+        inline Date ZeroSpreadedTermStructure::referenceDate() const {
+            return originalCurve_->referenceDate();
         }
 
         inline Date ZeroSpreadedTermStructure::maxDate() const {

@@ -14,6 +14,7 @@
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
+
 /*! \file flatforward.hpp
     \brief flat forward rate term structure
 
@@ -38,17 +39,17 @@ namespace QuantLib {
           public:
             // constructors
             FlatForward(const Date& todaysDate,
-                        const Date& settlementDate,
+                        const Date& referenceDate,
                         Rate forward,
                         const DayCounter& dayCounter);
             FlatForward(const Date& todaysDate,
-                        const Date& settlementDate,
+                        const Date& referenceDate,
                         const RelinkableHandle<MarketElement>& forward,
                         const DayCounter& dayCounter);
             // inspectors
             DayCounter dayCounter() const;
             Date todaysDate() const {return todaysDate_; }
-            Date settlementDate() const;
+            Date referenceDate() const;
             Date maxDate() const;
             // Observer interface
             void update();
@@ -58,7 +59,7 @@ namespace QuantLib {
                 bool extrapolate = false) const;
             Rate forwardImpl(Time, bool extrapolate = false) const;
           private:
-            Date todaysDate_, settlementDate_;
+            Date todaysDate_, referenceDate_;
             DayCounter dayCounter_;
             RelinkableHandle<MarketElement> forward_;
         };
@@ -66,9 +67,9 @@ namespace QuantLib {
         // inline definitions
 
         inline FlatForward::FlatForward(const Date& todaysDate,
-            const Date& settlementDate,
+            const Date& referenceDate,
             Rate forward, const DayCounter& dayCounter)
-        : todaysDate_(todaysDate), settlementDate_(settlementDate),
+        : todaysDate_(todaysDate), referenceDate_(referenceDate),
           dayCounter_(dayCounter) {
             forward_.linkTo(
                 Handle<MarketElement>(new SimpleMarketElement(forward)));
@@ -76,10 +77,10 @@ namespace QuantLib {
         }
 
         inline FlatForward::FlatForward(const Date& todaysDate,
-            const Date& settlementDate,
+            const Date& referenceDate,
             const RelinkableHandle<MarketElement>& forward,
             const DayCounter& dayCounter)
-        : todaysDate_(todaysDate), settlementDate_(settlementDate),
+        : todaysDate_(todaysDate), referenceDate_(referenceDate),
           dayCounter_(dayCounter), forward_(forward) {
             registerWith(forward_);
         }
@@ -88,8 +89,8 @@ namespace QuantLib {
             return dayCounter_;
         }
 
-        inline Date FlatForward::settlementDate() const {
-            return settlementDate_;
+        inline Date FlatForward::referenceDate() const {
+            return referenceDate_;
         }
 
         inline Date FlatForward::maxDate() const {

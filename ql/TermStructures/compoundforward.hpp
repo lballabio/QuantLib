@@ -40,7 +40,7 @@ namespace QuantLib {
           public:
           // constructor
             CompoundForward(const Date& todaysDate,
-                            const Date& settlementDate,
+                            const Date& referenceDate,
                             const Calendar& calendar,
                             const std::vector<Date>& inpDates,
                             const std::vector<Rate>& inpFwdRates,
@@ -49,7 +49,7 @@ namespace QuantLib {
                             const DayCounter& dayCounter);
 
             CompoundForward(const Date& todaysDate,
-                            const Date& settlementDate,
+                            const Date& referenceDate,
                             const Calendar& calendar,
                             const std::vector<std::string>& inpPeriods,
                             const std::vector<Rate>& inpFwdRates,
@@ -58,7 +58,7 @@ namespace QuantLib {
                             const DayCounter& dayCounter);
 
             CompoundForward(const Date& todaysDate,
-                            const Date& settlementDate,
+                            const Date& referenceDate,
                             const Calendar& calendar,
                             const std::vector<Period>& inpPeriods,
                             const std::vector<Rate>& inpFwdRates,
@@ -69,7 +69,7 @@ namespace QuantLib {
             DayCounter dayCounter() const;
             Calendar calendar() const;
             Date todaysDate() const {return todaysDate_; }
-            Date settlementDate() const;
+            Date referenceDate() const;
             RollingConvention roll() const;
             int compoundFrequency() const;
             const std::vector<Date>& dates() const;
@@ -85,7 +85,7 @@ namespace QuantLib {
             int referenceNode(Time t, bool extrapolate) const;
             void bootstrap() const;
             // data members
-            Date todaysDate_, settlementDate_;
+            Date todaysDate_, referenceDate_;
             Calendar calendar_;
             int settlementDays_;
             RollingConvention roll_;
@@ -117,8 +117,8 @@ namespace QuantLib {
             return calendar_;
         }
 
-        inline Date CompoundForward::settlementDate() const {
-            return settlementDate_;
+        inline Date CompoundForward::referenceDate() const {
+            return referenceDate_;
         }
 
         inline RollingConvention CompoundForward::roll() const {

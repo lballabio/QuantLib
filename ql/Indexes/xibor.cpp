@@ -69,8 +69,8 @@ namespace QuantLib {
         Rate Xibor::fixing(const Date& fixingDate) const {
             QL_REQUIRE(!termStructure_.isNull(),
                 "null term structure set");
-            Date settlementDate = termStructure_->settlementDate();
-            if (fixingDate < settlementDate) {
+            Date today = termStructure_->todaysDate();
+            if (fixingDate < today) {
                 // must have been fixed
                 Rate pastFixing =
                     XiborManager::getHistory(name())[fixingDate];
@@ -79,7 +79,7 @@ namespace QuantLib {
                         DateFormatter::toString(fixingDate));
                 return pastFixing;
             }
-            if (fixingDate == settlementDate) {
+            if (fixingDate == today) {
                 // might have been fixed
                 try {
                     Rate pastFixing =
@@ -92,15 +92,16 @@ namespace QuantLib {
                     ;       // fall through and forecast
                 }
             }
-            Date endDate = fixingDate.plus(n_,units_);
-            if (isAdjusted_)
-                endDate = calendar_.roll(endDate,rollingConvention_);
+            Date fixingValueDate = calendar_.advance(fixingDate,
+                                                     settlementDays_,Days);
+            Date endValueDate = calendar_.advance(fixingValueDate,n_,units_,
+                                                  rollingConvention_);
             DiscountFactor fixingDiscount =
-                termStructure_->discount(fixingDate);
+                termStructure_->discount(fixingValueDate);
             DiscountFactor endDiscount =
-                termStructure_->discount(endDate);
+                termStructure_->discount(endValueDate);
             double fixingPeriod =
-                dayCounter_.yearFraction(fixingDate, endDate);
+                dayCounter_.yearFraction(fixingValueDate, endValueDate);
             return (fixingDiscount/endDiscount-1.0) / fixingPeriod;
         }
 

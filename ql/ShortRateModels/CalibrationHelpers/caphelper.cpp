@@ -63,9 +63,9 @@ namespace QuantLib {
                 } else
                     throw Error("Invalid index tenor");
                 Rate fixedRate = 0.04;//dummy value
-                Date startDate = termStructure->settlementDate().
+                Date startDate = termStructure->referenceDate().
                     plus(indexTenor.length(), indexTenor.units());
-                Date maturity = termStructure->settlementDate().
+                Date maturity = termStructure->referenceDate().
                     plus(length.length(), length.units());
 
                 Handle<Xibor> dummyIndex(new Xibor("dummy",

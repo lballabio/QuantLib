@@ -14,6 +14,7 @@
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
+
 /*! \file swap.cpp
     \brief Interest rate swap
 
@@ -50,7 +51,7 @@ namespace QuantLib {
             QL_REQUIRE(!termStructure_.isNull(),
                 "Swap::performCalculations trying to price swap "
                 "on null term structure");
-            Date settlement = termStructure_->settlementDate();
+            Date settlement = termStructure_->referenceDate();
             NPV_ = 0.0;
             firstLegBPS_ = 0.0;
             secondLegBPS_ = 0.0;

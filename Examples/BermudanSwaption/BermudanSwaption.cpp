@@ -106,6 +106,7 @@ int main(int argc, char* argv[])
 
         //Deposit rates
         DayCounter depositDayCounter = Thirty360();
+        int settlementDays = 2;
 
         Rate weekRates[3] = {3.295, 3.3, 3.3};
         Size i;
@@ -113,7 +114,7 @@ int main(int argc, char* argv[])
             Handle<MarketElement> depositRate(
                 new SimpleMarketElement(weekRates[i]*0.01));
             Handle<RateHelper> depositHelper(new DepositRateHelper(
-                depositRate, i+1, Weeks, calendar,
+                depositRate, i+1, Weeks, settlementDays, calendar,
                 ModifiedFollowing, depositDayCounter));
             instruments.push_back(depositHelper);
         }
@@ -126,7 +127,7 @@ int main(int argc, char* argv[])
             Handle<MarketElement> depositRate(
                 new SimpleMarketElement(depositRates[i]*0.01));
             Handle<RateHelper> depositHelper(new DepositRateHelper(
-                depositRate, i+1, Months, calendar,
+                depositRate, i+1, Months, settlementDays, calendar,
                 ModifiedFollowing, depositDayCounter));
             instruments.push_back(depositHelper);
         }
@@ -147,7 +148,8 @@ int main(int argc, char* argv[])
                 new SimpleMarketElement(swapRates[i]*0.01));
             Handle<RateHelper> swapHelper(new SwapRateHelper(
                 RelinkableHandle<MarketElement>(swapRate),
-                swapYears[i], Years, calendar, ModifiedFollowing,
+                swapYears[i], Years, settlementDays, 
+                calendar, ModifiedFollowing,
                 swFixedLegFrequency,
                 swFixedLegIsAdjusted, swFixedLegDayCounter,
                 swFloatingLegFrequency));
@@ -232,7 +234,8 @@ int main(int argc, char* argv[])
         for (i=0; i<termTimes.size(); i++)
             times.push_back(termTimes[i]);
 		// please add a comment here
-		// wouldn't be safer to have the sort unique in the TimeGrid constructor
+		// wouldn't be safer to have the sort/unique in 
+        // the TimeGrid constructor?
         times.sort();
         times.unique();
         //Building time-grid

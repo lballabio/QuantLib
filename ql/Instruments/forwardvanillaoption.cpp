@@ -14,6 +14,7 @@
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
+
 /*! \file forwardvanillaoption.cpp
     \brief Forward version of a vanilla option
 
@@ -65,7 +66,7 @@ namespace QuantLib {
         }
 
         void ForwardVanillaOption::performCalculations() const {
-            if (exerciseDate_ <= riskFreeRate_->settlementDate()) {
+            if (exerciseDate_ <= riskFreeRate_->referenceDate()) {
                 isExpired_ = true;
                 NPV_ = delta_ = gamma_ =       theta_ =
                         vega_ =   rho_ = dividendRho_ = 0.0;

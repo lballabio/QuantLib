@@ -56,22 +56,22 @@ namespace QuantLib {
 
         AffineTermStructure::AffineTermStructure(
             const Date& todaysDate,
-            const Date& settlementDate,
+            const Date& referenceDate,
             const Handle<ShortRateModels::AffineModel>& model,
             const DayCounter& dayCounter)
         : dayCounter_(dayCounter), todaysDate_(todaysDate), 
-          settlementDate_(settlementDate), needsRecalibration_(false), 
+          referenceDate_(referenceDate), needsRecalibration_(false), 
           model_(model) { }
 
         AffineTermStructure::AffineTermStructure(
             const Date& todaysDate,
-            const Date& settlementDate,
+            const Date& referenceDate,
             const Handle<ShortRateModels::AffineModel>& model,
             const std::vector<Handle<RateHelper> >& instruments,
             const Handle<Optimization::Method>& method,
             const DayCounter& dayCounter)
         : dayCounter_(dayCounter), todaysDate_(todaysDate), 
-          settlementDate_(settlementDate), needsRecalibration_(true), 
+          referenceDate_(referenceDate), needsRecalibration_(true), 
           model_(model), instruments_(instruments), method_(method) {
             for (Size i=0; i<instruments_.size(); i++)
                 registerWith(instruments_[i]);

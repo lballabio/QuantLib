@@ -14,6 +14,7 @@
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
+
 /*! \file impliedtermstructure.hpp
     \brief Implied term structure
 
@@ -32,7 +33,7 @@ namespace QuantLib {
     namespace TermStructures {
 
         //! Implied term structure at a given date in the future
-        /*! The given date will be the implied settlement date.
+        /*! The given date will be the implied reference date.
             \note This term structure will remain linked to the original
                 structure, i.e., any changes in the latter will be reflected in
                 this structure as well.
@@ -42,12 +43,12 @@ namespace QuantLib {
           public:
             ImpliedTermStructure(const RelinkableHandle<TermStructure>&,
                                  const Date& newTodaysDate,
-                                 const Date& newSettlementDate);
+                                 const Date& newReferenceDate);
             //! \name TermStructure interface
             //@{
             DayCounter dayCounter() const;
             Date todaysDate() const;
-            Date settlementDate() const;
+            Date referenceDate() const;
             Date maxDate() const;
             Time maxTime() const;
             //@}
@@ -60,16 +61,16 @@ namespace QuantLib {
             DiscountFactor discountImpl(Time, bool extrapolate = false) const;
           private:
             RelinkableHandle<TermStructure> originalCurve_;
-            Date newTodaysDate_, newSettlementDate_;
+            Date newTodaysDate_, newReferenceDate_;
         };
 
 
 
         inline ImpliedTermStructure::ImpliedTermStructure(
             const RelinkableHandle<TermStructure>& h,
-            const Date& newTodaysDate, const Date& newSettlementDate)
+            const Date& newTodaysDate, const Date& newReferenceDate)
         : originalCurve_(h), newTodaysDate_(newTodaysDate),
-          newSettlementDate_(newSettlementDate) {
+          newReferenceDate_(newReferenceDate) {
             registerWith(originalCurve_);
         }
 
@@ -81,8 +82,8 @@ namespace QuantLib {
             return newTodaysDate_;
         }
 
-        inline Date ImpliedTermStructure::settlementDate() const {
-            return newSettlementDate_;
+        inline Date ImpliedTermStructure::referenceDate() const {
+            return newReferenceDate_;
         }
 
         inline Date ImpliedTermStructure::maxDate() const {
@@ -91,7 +92,7 @@ namespace QuantLib {
 
         inline Time ImpliedTermStructure::maxTime() const {
             return dayCounter().yearFraction(
-                newSettlementDate_,originalCurve_->maxDate());
+                newReferenceDate_,originalCurve_->maxDate());
         }
 
         inline void ImpliedTermStructure::update() {
@@ -100,22 +101,20 @@ namespace QuantLib {
 
         inline DiscountFactor ImpliedTermStructure::discountImpl(Time t,
             bool extrapolate) const {
-                /* t is relative to the current settlement date
+                /* t is relative to the current reference date
                    and needs to be converted to the time relative
-                   to the settlement date of the original curve */
+                   to the reference date of the original curve */
                 Time originalTime = t + dayCounter().yearFraction(
-                    originalCurve_->settlementDate(),
-                    newSettlementDate_);
+                    originalCurve_->referenceDate(), newReferenceDate_);
                 // evaluationDate cannot be an extrapolation
                 /* discount at evaluation date cannot be cached
                    since the original curve could change between
                    invocations of this method */
                 return originalCurve_->discount(originalTime, extrapolate) /
-                       originalCurve_->discount(settlementDate(),false);
+                       originalCurve_->discount(referenceDate(),false);
         }
     }
 }
 
+
 #endif
-
-

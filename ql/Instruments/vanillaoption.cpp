@@ -1,5 +1,4 @@
 
-
 /*
  Copyright (C) 2000, 2001, 2002 RiskMap srl
 
@@ -15,6 +14,7 @@
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
+
 /*! \file vanillaoption.cpp
     \brief Vanilla (no dividends, no barriers) option on a single asset
 
@@ -151,7 +151,7 @@ namespace QuantLib {
             // volatility term structure
             arguments->residualTime =
                 riskFreeRate_->dayCounter().yearFraction(
-                    riskFreeRate_->settlementDate(), exerciseDate_);
+                    riskFreeRate_->referenceDate(), exerciseDate_);
 
             QL_REQUIRE(!volatility_.isNull(),
                 "VanillaOption::setupEngine : "
@@ -160,7 +160,7 @@ namespace QuantLib {
         }
 
         void VanillaOption::performCalculations() const {
-            if (exerciseDate_ <= riskFreeRate_->settlementDate()) {
+            if (exerciseDate_ <= riskFreeRate_->referenceDate()) {
                 isExpired_ = true;
                 NPV_ = delta_ = gamma_ = theta_ =
                     vega_ = rho_ = dividendRho_ = 0.0;

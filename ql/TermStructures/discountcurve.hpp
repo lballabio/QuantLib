@@ -52,7 +52,7 @@ namespace QuantLib {
 
             DayCounter dayCounter() const;
             Date todaysDate() const {return todaysDate_; }
-            Date settlementDate() const;
+            Date referenceDate() const;
             const std::vector<Date>& dates() const;
             Date maxDate() const;
             const std::vector<Time>& times() const;
@@ -74,7 +74,7 @@ namespace QuantLib {
        
         // inline definitions
 
-        inline Date DiscountCurve::settlementDate() const {
+        inline Date DiscountCurve::referenceDate() const {
             return dates_[0];
         }
 

@@ -1,3 +1,4 @@
+
 /*
  Copyright (C) 2001, 2002 Sadruddin Rejeb
 
@@ -13,6 +14,7 @@
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
+
 /*! \file swaption.cpp
     \brief Swaption
 
@@ -52,7 +54,7 @@ namespace QuantLib {
             QL_REQUIRE(arguments != 0, "Swaption: "
                        "pricing engine does not supply needed arguments");
 
-            Date settlement = termStructure_->settlementDate();
+            Date settlement = termStructure_->referenceDate();
             DayCounter counter = termStructure_->dayCounter();
             Size i;
 
@@ -136,7 +138,7 @@ namespace QuantLib {
         }
 
         void Swaption::performCalculations() const {
-            if (exercise_.dates().back() < termStructure_->settlementDate()) {
+            if (exercise_.dates().back() < termStructure_->referenceDate()) {
                 isExpired_ = true;
                 NPV_ = 0.0;
             } else {

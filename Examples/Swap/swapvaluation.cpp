@@ -94,25 +94,26 @@ int main(int argc, char* argv[])
 
         // setup deposits
         DayCounter depositDayCounter = Actual360();
+        int settlementDays = 2;
 
         Handle<RateHelper> d1w(new DepositRateHelper(
-            d1wQuote,
-            1, Weeks, calendar, ModifiedFollowing, depositDayCounter));
+            d1wQuote, 1, Weeks, settlementDays, 
+            calendar, ModifiedFollowing, depositDayCounter));
         Handle<RateHelper> d1m(new DepositRateHelper(
-            d1mQuote,
-            1, Months, calendar, ModifiedFollowing, depositDayCounter));
+            d1mQuote, 1, Months, settlementDays, 
+            calendar, ModifiedFollowing, depositDayCounter));
         Handle<RateHelper> d3m(new DepositRateHelper(
-            d3mQuote,
-            3, Months, calendar, ModifiedFollowing, depositDayCounter));
+            d3mQuote, 3, Months, settlementDays, 
+            calendar, ModifiedFollowing, depositDayCounter));
         Handle<RateHelper> d6m(new DepositRateHelper(
-            d6mQuote,
-            6, Months, calendar, ModifiedFollowing, depositDayCounter));
+            d6mQuote, 6, Months, settlementDays, 
+            calendar, ModifiedFollowing, depositDayCounter));
         Handle<RateHelper> d9m(new DepositRateHelper(
-            d9mQuote,
-            9, Months, calendar, ModifiedFollowing, depositDayCounter));
+            d9mQuote, 9, Months, settlementDays, 
+            calendar, ModifiedFollowing, depositDayCounter));
         Handle<RateHelper> d1y(new DepositRateHelper(
-            d1yQuote,
-            1, Years, calendar, ModifiedFollowing, depositDayCounter));
+            d1yQuote, 1, Years, settlementDays, 
+            calendar, ModifiedFollowing, depositDayCounter));
 
         // setup swaps
         int swFixedLegFrequency = 1;
@@ -121,28 +122,28 @@ int main(int argc, char* argv[])
         int swFloatingLegFrequency = 2;
 
         Handle<RateHelper> s2y(new SwapRateHelper(
-            s2yQuote,
-            2, Years, calendar, ModifiedFollowing, swFixedLegFrequency,
+            s2yQuote, 2, Years, settlementDays, 
+            calendar, ModifiedFollowing, swFixedLegFrequency,
             swFixedLegIsAdjusted, swFixedLegDayCounter,
             swFloatingLegFrequency));
         Handle<RateHelper> s3y(new SwapRateHelper(
-            s3yQuote,
-            3, Years, calendar, ModifiedFollowing, swFixedLegFrequency,
+            s3yQuote, 3, Years, settlementDays, 
+            calendar, ModifiedFollowing, swFixedLegFrequency,
             swFixedLegIsAdjusted, swFixedLegDayCounter,
             swFloatingLegFrequency));
         Handle<RateHelper> s5y(new SwapRateHelper(
-            s5yQuote,
-            5, Years, calendar, ModifiedFollowing, swFixedLegFrequency,
+            s5yQuote, 5, Years, settlementDays, 
+            calendar, ModifiedFollowing, swFixedLegFrequency,
             swFixedLegIsAdjusted, swFixedLegDayCounter,
             swFloatingLegFrequency));
         Handle<RateHelper> s10y(new SwapRateHelper(
-            s10yQuote,
-            10, Years, calendar, ModifiedFollowing, swFixedLegFrequency,
+            s10yQuote, 10, Years, settlementDays, 
+            calendar, ModifiedFollowing, swFixedLegFrequency,
             swFixedLegIsAdjusted, swFixedLegDayCounter,
             swFloatingLegFrequency));
         Handle<RateHelper> s15y(new SwapRateHelper(
-            s15yQuote,
-            15, Years, calendar, ModifiedFollowing, swFixedLegFrequency,
+            s15yQuote, 15, Years, settlementDays, 
+            calendar, ModifiedFollowing, swFixedLegFrequency,
             swFixedLegIsAdjusted, swFixedLegDayCounter,
             swFloatingLegFrequency));
 
@@ -333,47 +334,58 @@ int main(int argc, char* argv[])
         // setup deposits
         d1w =Handle<RateHelper>(new DepositRateHelper(
             RelinkableHandle<MarketElement>(d1wRate),
-            1, Weeks, calendar, ModifiedFollowing, depositDayCounter));
+            1, Weeks, settlementDays, 
+            calendar, ModifiedFollowing, depositDayCounter));
         d1m=Handle<RateHelper>(new DepositRateHelper(
             RelinkableHandle<MarketElement>(d1mRate),
-            1, Months, calendar, ModifiedFollowing, depositDayCounter));
+            1, Months, settlementDays, 
+            calendar, ModifiedFollowing, depositDayCounter));
         d3m=Handle<RateHelper>(new DepositRateHelper(
             RelinkableHandle<MarketElement>(d3mRate),
-            3, Months, calendar, ModifiedFollowing, depositDayCounter));
+            3, Months, settlementDays, 
+            calendar, ModifiedFollowing, depositDayCounter));
         d6m=Handle<RateHelper>(new DepositRateHelper(
             RelinkableHandle<MarketElement>(d6mRate),
-            6, Months, calendar, ModifiedFollowing, depositDayCounter));
+            6, Months, settlementDays, 
+            calendar, ModifiedFollowing, depositDayCounter));
         d9m=Handle<RateHelper>(new DepositRateHelper(
             RelinkableHandle<MarketElement>(d9mRate),
-            9, Months, calendar, ModifiedFollowing, depositDayCounter));
+            9, Months, settlementDays, 
+            calendar, ModifiedFollowing, depositDayCounter));
         d1y=Handle<RateHelper>(new DepositRateHelper(
             RelinkableHandle<MarketElement>(d1yRate),
-            1, Years, calendar, ModifiedFollowing, depositDayCounter));
+            1, Years, settlementDays, 
+            calendar, ModifiedFollowing, depositDayCounter));
 
         // setup swaps
         s2y=Handle<RateHelper>(new SwapRateHelper(
             RelinkableHandle<MarketElement>(s2yRate),
-            2, Years, calendar, ModifiedFollowing, swFixedLegFrequency,
+            2, Years, settlementDays, 
+            calendar, ModifiedFollowing, swFixedLegFrequency,
             swFixedLegIsAdjusted, swFixedLegDayCounter,
             swFloatingLegFrequency));
         s3y=Handle<RateHelper>(new SwapRateHelper(
             RelinkableHandle<MarketElement>(s3yRate),
-            3, Years, calendar, ModifiedFollowing, swFixedLegFrequency,
+            3, Years, settlementDays, 
+            calendar, ModifiedFollowing, swFixedLegFrequency,
             swFixedLegIsAdjusted, swFixedLegDayCounter,
             swFloatingLegFrequency));
         s5y=Handle<RateHelper>(new SwapRateHelper(
             RelinkableHandle<MarketElement>(s5yRate),
-            5, Years, calendar, ModifiedFollowing, swFixedLegFrequency,
+            5, Years, settlementDays, 
+            calendar, ModifiedFollowing, swFixedLegFrequency,
             swFixedLegIsAdjusted, swFixedLegDayCounter,
             swFloatingLegFrequency));
         s10y=Handle<RateHelper>(new SwapRateHelper(
             RelinkableHandle<MarketElement>(s10yRate),
-            10, Years, calendar, ModifiedFollowing, swFixedLegFrequency,
+            10, Years, settlementDays, 
+            calendar, ModifiedFollowing, swFixedLegFrequency,
             swFixedLegIsAdjusted, swFixedLegDayCounter,
             swFloatingLegFrequency));
         s15y=Handle<RateHelper>(new SwapRateHelper(
             RelinkableHandle<MarketElement>(s15yRate),
-            15, Years, calendar, ModifiedFollowing, swFixedLegFrequency,
+            15, Years, settlementDays, 
+            calendar, ModifiedFollowing, swFixedLegFrequency,
             swFixedLegIsAdjusted, swFixedLegDayCounter,
             swFloatingLegFrequency));
 
@@ -383,15 +395,15 @@ int main(int argc, char* argv[])
         // setup FRAs
         Handle<RateHelper> fra3x6(new FraRateHelper(
             RelinkableHandle<MarketElement>(fra3x6Rate),
-            3, 6, calendar, ModifiedFollowing,
+            3, 6, settlementDays, calendar, ModifiedFollowing,
             depositDayCounter));
         Handle<RateHelper> fra6x9(new FraRateHelper(
             RelinkableHandle<MarketElement>(fra6x9Rate),
-            6, 9, calendar, ModifiedFollowing,
+            6, 9, settlementDays, calendar, ModifiedFollowing,
             depositDayCounter));
         Handle<RateHelper> fra6x12(new FraRateHelper(
             RelinkableHandle<MarketElement>(fra6x12Rate),
-            6, 12, calendar, ModifiedFollowing,
+            6, 12, settlementDays, calendar, ModifiedFollowing,
             depositDayCounter));
 
         // setup futures

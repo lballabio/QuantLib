@@ -1,5 +1,4 @@
 
-
 /*
  Copyright (C) 2000, 2001, 2002 RiskMap srl
 
@@ -15,6 +14,7 @@
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
+
 /*! \file ratehelpers.hpp
     \brief rate helpers base class
 
@@ -82,18 +82,20 @@ namespace QuantLib {
 
 
         //! Deposit rate
-        /*! \warning This class assumes that the settlement date
+        /*! \warning This class assumes that the reference date
                      does not change between calls of setTermStructure().
         */
         class DepositRateHelper : public RateHelper {
           public:
             DepositRateHelper(const RelinkableHandle<MarketElement>& rate,
                               int n, TimeUnit units,
+                              int settlementDays,
                               const Calendar& calendar,
                               RollingConvention convention,
                               const DayCounter& dayCounter);
             DepositRateHelper(double rate,
                               int n, TimeUnit units,
+                              int settlementDays,
                               const Calendar& calendar,
                               RollingConvention convention,
                               const DayCounter& dayCounter);
@@ -104,6 +106,7 @@ namespace QuantLib {
           private:
             int n_;
             TimeUnit units_;
+            int settlementDays_;
             Calendar calendar_;
             RollingConvention convention_;
             DayCounter dayCounter_;
@@ -113,7 +116,7 @@ namespace QuantLib {
 
 
         //! Forward rate agreement
-        /*! \warning This class assumes that the settlement date
+        /*! \warning This class assumes that the reference date
                      does not change between calls of setTermStructure().
 
             \todo convexity adjustment should be implemented.
@@ -122,11 +125,13 @@ namespace QuantLib {
           public:
             FraRateHelper(const RelinkableHandle<MarketElement>& rate,
                           int monthsToStart, int monthsToEnd,
+                          int settlementDays,
                           const Calendar& calendar,
                           RollingConvention convention,
                           const DayCounter& dayCounter);
             FraRateHelper(double rate,
                           int monthsToStart, int monthsToEnd,
+                          int settlementDays,
                           const Calendar& calendar,
                           RollingConvention convention,
                           const DayCounter& dayCounter);
@@ -136,7 +141,7 @@ namespace QuantLib {
             Date maturity() const;
           private:
             int monthsToStart_, monthsToEnd_;
-            TimeUnit units_;
+            int settlementDays_;
             Calendar calendar_;
             RollingConvention convention_;
             DayCounter dayCounter_;
@@ -146,7 +151,7 @@ namespace QuantLib {
 
 
         //! Interest Rate Futures
-        /*! \warning This class assumes that the settlement date
+        /*! \warning This class assumes that the reference date
                      does not change between calls of setTermStructure().
         */
         class FuturesRateHelper : public RateHelper {
@@ -177,24 +182,15 @@ namespace QuantLib {
         };
 
 
-        //! swap rate
+        //! Swap rate
         /*! \warning This class assumes that the settlement date
                      does not change between calls of setTermStructure().
         */
         class SwapRateHelper : public RateHelper {
           public:
             SwapRateHelper(const RelinkableHandle<MarketElement>& rate,
-                           int lengthInYears,
-                           const Calendar& calendar,
-                           RollingConvention convention,
-                           // fixed leg
-                           int fixedFrequency,
-                           bool fixedIsAdjusted,
-                           const DayCounter& fixedDayCount,
-                           // floating leg
-                           int floatingFrequency);
-            SwapRateHelper(const RelinkableHandle<MarketElement>& rate,
-                           int numberOfUnits, TimeUnit units,
+                           int n, TimeUnit units,
+                           int settlementDays,
                            const Calendar& calendar,
                            RollingConvention convention,
                            // fixed leg
@@ -204,17 +200,8 @@ namespace QuantLib {
                            // floating leg
                            int floatingFrequency);
             SwapRateHelper(double rate,
-                           int lengthInYears,
-                           const Calendar& calendar,
-                           RollingConvention convention,
-                           // fixed leg
-                           int fixedFrequency,
-                           bool fixedIsAdjusted,
-                           const DayCounter& fixedDayCount,
-                           // floating leg
-                           int floatingFrequency);
-            SwapRateHelper(double rate,
-                           int numberOfUnits, TimeUnit units,
+                           int n, TimeUnit units,
+                           int settlementDays,
                            const Calendar& calendar,
                            RollingConvention convention,
                            // fixed leg
@@ -229,8 +216,9 @@ namespace QuantLib {
             Date maturity() const;
             void setTermStructure(TermStructure*);
           protected:  
-    	    int numberOfUnits_;
+    	    int n_;
 	        TimeUnit units_;
+            int settlementDays_;
             Calendar calendar_;
             RollingConvention convention_;
             int fixedFrequency_, floatingFrequency_;

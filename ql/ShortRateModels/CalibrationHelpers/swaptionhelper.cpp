@@ -14,6 +14,7 @@
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
+
 /*! \file swaptionhelper.cpp
     \brief Swaption calibration helper
 
@@ -57,7 +58,7 @@ namespace QuantLib {
                 } else
                     throw Error("index tenor not valid!");
                 Date startDate = index->calendar().advance(
-                    termStructure->settlementDate(),
+                    termStructure->referenceDate(),
                     maturity.length(), maturity.units());
                 Rate fixedRate = 0.04;//dummy value
                 swap_ = Handle<SimpleSwap>(new SimpleSwap(

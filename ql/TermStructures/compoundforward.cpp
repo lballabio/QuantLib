@@ -34,14 +34,14 @@ namespace QuantLib {
     namespace TermStructures {
 
         CompoundForward::CompoundForward(const Date  & todaysDate,
-                                         const Date  & settlementDate,
+                                         const Date  & referenceDate,
                                          const Calendar& calendar,
                                          const std::vector < Date > &dates,
                                          const std::vector < Rate > &forwards,
                                          const RollingConvention roll,
                                          const int compoundFrequency,
                                          const DayCounter & dayCounter)
-        : todaysDate_(todaysDate), settlementDate_(settlementDate),
+        : todaysDate_(todaysDate), referenceDate_(referenceDate),
           calendar_(calendar), roll_(roll), 
           compoundFrequency_(compoundFrequency), dayCounter_(dayCounter),
           needsBootstrap_(true), inputDates_(dates),
@@ -57,15 +57,15 @@ namespace QuantLib {
         }
 
         CompoundForward::CompoundForward(
-                                 const Date  & todaysDate,
-                                 const Date  & settlementDate,
+                                 const Date& todaysDate,
+                                 const Date& referenceDate,
                                  const Calendar& calendar,
                                  const std::vector<std::string>& identifiers,
                                  const std::vector<Rate>& forwards,
                                  const RollingConvention roll,
                                  const int compoundFrequency,
                                  const DayCounter& dayCounter)
-        : todaysDate_(todaysDate), settlementDate_(settlementDate),
+        : todaysDate_(todaysDate), referenceDate_(referenceDate),
           calendar_(calendar), roll_(roll), 
           compoundFrequency_(compoundFrequency), dayCounter_(dayCounter),
           needsBootstrap_(true), forwards_(forwards) {
@@ -77,9 +77,9 @@ namespace QuantLib {
             discounts_ = std::vector < DiscountFactor > ();
 
             for(Size i = 0; i < identifiers.size(); i++)
-                dates_.push_back(calendar.advance(settlementDate_,
-                                              Period(identifiers[i]),
-                                              roll));
+                dates_.push_back(calendar.advance(referenceDate_,
+                                                  Period(identifiers[i]),
+                                                  roll));
             inputDates_ = dates_;
 
             validateInputs();
@@ -87,14 +87,14 @@ namespace QuantLib {
 
         CompoundForward::CompoundForward(
                                       const Date  & todaysDate,
-                                      const Date  & settlementDate,
+                                      const Date  & referenceDate,
                                       const Calendar& calendar,
                                       const std::vector<Period>& inpPeriods,
                                       const std::vector<Rate>& forwards,
                                       const RollingConvention roll,
                                       const int compoundFrequency,
                                       const DayCounter& dayCounter)
-        : todaysDate_(todaysDate), settlementDate_(settlementDate),
+        : todaysDate_(todaysDate), referenceDate_(referenceDate),
           calendar_(calendar), roll_(roll), 
           compoundFrequency_(compoundFrequency), dayCounter_(dayCounter),
           needsBootstrap_(true), forwards_(forwards)  {
@@ -106,7 +106,7 @@ namespace QuantLib {
             discounts_ = std::vector < DiscountFactor > ();
 
             for(Size i = 0; i < inpPeriods.size(); i++)
-                dates_.push_back(calendar.advance(settlementDate_,
+                dates_.push_back(calendar.advance(referenceDate_,
                                                   inpPeriods[i],
                                                   roll));
             inputDates_ = dates_;
@@ -119,7 +119,7 @@ namespace QuantLib {
             // term structure methods are called by the rate helpers
             needsBootstrap_ = false;
             try {
-                Date compoundDate = calendar_.advance(settlementDate_,
+                Date compoundDate = calendar_.advance(referenceDate_,
                                                       compoundFrequency_,
                                                       Months, roll_);
 
@@ -130,9 +130,9 @@ namespace QuantLib {
                     Date rateDate = dates_[i];
                     Rate fwd = forwards_[i];
                     if (compoundDate >= rateDate) {
-                        t = dayCounter_.yearFraction(settlementDate_,
+                        t = dayCounter_.yearFraction(referenceDate_,
                                                      rateDate,
-                                                     settlementDate_,
+                                                     referenceDate_,
                                                      rateDate);
                         df = 1.0 / (1.0 + fwd * t);
                         ci = i;
@@ -154,8 +154,8 @@ namespace QuantLib {
                         }
                         prev = discounts_[a];
                         aDate = dates_[a];
-                        t = dayCounter_.yearFraction(settlementDate_, aDate,
-                                                     settlementDate_, aDate);
+                        t = dayCounter_.yearFraction(referenceDate_, aDate,
+                                                     referenceDate_, aDate);
                         tempD += fwd * prev * t;
 
                         aDate = dates_[discounts_.size()];
@@ -180,14 +180,14 @@ namespace QuantLib {
         void CompoundForward::validateInputs() const {
             Size i,ci; // needed here to compile with VC++
             for(i = 0; i < dates_.size(); i++)
-                times_.push_back(dayCounter_.yearFraction(settlementDate_,
-                                                      dates_[i]));
+                times_.push_back(dayCounter_.yearFraction(referenceDate_,
+                                                          dates_[i]));
 
             fwdinterp_ = Handle<FwdInterpolation>(
                 new FwdInterpolation(
                     times_.begin(), times_.end(), forwards_.begin()));
 
-            Date compoundDate = calendar_.advance(settlementDate_,
+            Date compoundDate = calendar_.advance(referenceDate_,
                                                   compoundFrequency_,
                                                   Months,
                                                   roll_);
@@ -200,21 +200,21 @@ namespace QuantLib {
                 if (compoundDate < rateDate) {
                     Date tmpDate;
 
-                    tmpDate = calendar_.advance(settlementDate_,
+                    tmpDate = calendar_.advance(referenceDate_,
                                                 compoundFrequency_ *
                                                 (++ci), Months, roll_);
                      // Missed any forwards?
                     while(tmpDate < rateDate) {
-                        Time t = dayCounter_.yearFraction(settlementDate_,
-                                                        tmpDate);
+                        Time t = dayCounter_.yearFraction(referenceDate_,
+                                                          tmpDate);
                         Rate r = (*fwdinterp_) (t);
 
                         dates_.insert(dates_.begin() + i, tmpDate);
                         forwards_.insert(forwards_.begin() + i, r);
                         i++;
-                        tmpDate = calendar_.advance(settlementDate_,
-                                                     compoundFrequency_ *
-                                                     (++ci), Months, roll_);
+                        tmpDate = calendar_.advance(referenceDate_,
+                                                    compoundFrequency_*(++ci), 
+                                                    Months, roll_);
                     }
                 }
             }

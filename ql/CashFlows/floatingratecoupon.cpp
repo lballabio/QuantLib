@@ -14,6 +14,7 @@
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
+
 /*! \file floatingratecoupon.cpp
     \brief Coupon at par on a term structure
 
@@ -49,14 +50,11 @@ namespace QuantLib {
             Handle<TermStructure> termStructure = index_->termStructure();
             QL_REQUIRE(!termStructure.isNull(),
                        "null term structure set to par coupon");
-            Date settlementDate = termStructure->settlementDate();
+            Date today = termStructure->todaysDate();
             Date fixingDate = index_->calendar().advance(
                 accrualStartDate_, -fixingDays_, Days,
                 Preceding);
-            Date fixingValueDate = index_->calendar().advance(
-                fixingDate, index_->settlementDays(), Days,
-                Following);
-            if (fixingValueDate < settlementDate) {
+            if (fixingDate < today) {
                 // must have been fixed
                 Rate pastFixing = XiborManager::getHistory(
                     index_->name())[fixingDate];
@@ -65,7 +63,7 @@ namespace QuantLib {
                         DateFormatter::toString(fixingDate));
                 return (pastFixing+spread_)*accrualPeriod()*nominal();
             }
-            if (fixingValueDate == settlementDate) {
+            if (fixingDate == today) {
                 // might have been fixed
                 try {
                     Rate pastFixing = XiborManager::getHistory(
@@ -79,14 +77,16 @@ namespace QuantLib {
                     ;       // fall through and forecast
                 }
             }
+            Date fixingValueDate = index_->calendar().advance(
+                fixingDate, index_->settlementDays(), Days);
             DiscountFactor startDiscount =
                 termStructure->discount(fixingValueDate);
             Date temp = index_->calendar().advance(accrualEndDate_,
-                            -fixingDays_, Days, Preceding);
+                                                   -fixingDays_, Days);
             DiscountFactor endDiscount =
                 termStructure->discount(
                     index_->calendar().advance(temp,
-                        index_->settlementDays(), Days, Following));
+                        index_->settlementDays(), Days));
             return ((startDiscount/endDiscount-1.0) +
                 spread_*accrualPeriod()) * nominal();
         }

@@ -14,6 +14,7 @@
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
+
 /*! \file forwardspreadedtermstructure.hpp
     \brief Forward spreaded term structure
 
@@ -46,7 +47,7 @@ namespace QuantLib {
             //@{
             DayCounter dayCounter() const;
             Date todaysDate() const;
-            Date settlementDate() const;
+            Date referenceDate() const;
             Date maxDate() const;
             Time maxTime() const;
             //@}
@@ -83,8 +84,8 @@ namespace QuantLib {
             return originalCurve_->todaysDate();
         }
 
-        inline Date ForwardSpreadedTermStructure::settlementDate() const {
-            return originalCurve_->settlementDate();
+        inline Date ForwardSpreadedTermStructure::referenceDate() const {
+            return originalCurve_->referenceDate();
         }
 
         inline Date ForwardSpreadedTermStructure::maxDate() const {
