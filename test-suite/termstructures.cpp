@@ -17,13 +17,16 @@
 
 #include "termstructures.hpp"
 #include "utilities.hpp"
+#include <ql/TermStructures/flatforward.hpp>
 #include <ql/TermStructures/piecewiseflatforward.hpp>
 #include <ql/TermStructures/impliedtermstructure.hpp>
 #include <ql/TermStructures/forwardspreadedtermstructure.hpp>
 #include <ql/TermStructures/zerospreadedtermstructure.hpp>
 #include <ql/Calendars/target.hpp>
+#include <ql/Calendars/nullcalendar.hpp>
 #include <ql/DayCounters/actual360.hpp>
 #include <ql/DayCounters/thirty360.hpp>
+#include <ql/Math/comparison.hpp>
 
 using namespace QuantLib;
 using namespace boost::unit_test_framework;
@@ -48,6 +51,7 @@ namespace {
         calendar_ = TARGET();
         settlementDays_ = 2;
         Date today = calendar_.adjust(Date::todaysDate());
+        Settings::instance().setEvaluationDate(today);
         Date settlement = calendar_.advance(today,settlementDays_,Days);
         Datum depositData[] = {
             { 1, Months, 4.581 },
@@ -85,10 +89,51 @@ namespace {
                                              Semiannual, ModifiedFollowing));
         }
         termStructure_ = boost::shared_ptr<TermStructure>(
-          new PiecewiseFlatForward(today,settlement,instruments,Actual360()));
+                new PiecewiseFlatForward(settlement,instruments,Actual360()));
+    }
+
+    void finalize() {
+        Settings::instance().setEvaluationDate(Date());
     }
 
 }
+
+
+void TermStructureTest::testReferenceChange() {
+
+    BOOST_MESSAGE("Testing term structure against evaluation date change...");
+
+    initialize();
+
+    termStructure_ = boost::shared_ptr<TermStructure>(
+         new FlatForward(settlementDays_, NullCalendar(), 0.03, Actual360()));
+
+    Date today = Settings::instance().evaluationDate();
+    Integer days[] = { 10, 30, 60, 120, 360, 720 };
+    Integer i;
+
+    std::vector<DiscountFactor> expected(LENGTH(days));
+    for (i=0; i<LENGTH(days); i++)
+        expected[i] = termStructure_->discount(today+days[i]);
+
+    Settings::instance().setEvaluationDate(today+30);
+    std::vector<DiscountFactor> calculated(LENGTH(days));
+    for (i=0; i<LENGTH(days); i++)
+        calculated[i] = termStructure_->discount(today+30+days[i]);
+
+    for (i=0; i<LENGTH(days); i++) {
+        if (!close(expected[i],calculated[i]))
+            BOOST_FAIL("Discount at "
+                       + IntegerFormatter::toString(days[i]) + "days:\n"
+                       "    before date change: "
+                       + DecimalFormatter::toString(expected[i],12) + "\n"
+                       "    after date change:  "
+                       + DecimalFormatter::toString(calculated[i],12));
+    }
+
+    finalize();
+}
+
 
 void TermStructureTest::testImplied() {
 
@@ -97,12 +142,13 @@ void TermStructureTest::testImplied() {
     initialize();
 
     Real tolerance = 1.0e-10;
-    Date newToday = termStructure_->todaysDate().plusYears(3);
+    Date today = Settings::instance().evaluationDate();
+    Date newToday = today.plusYears(3);
     Date newSettlement = calendar_.advance(newToday,settlementDays_,Days);
     Date testDate = newSettlement.plusYears(5);
     boost::shared_ptr<TermStructure> implied(
         new ImpliedTermStructure(Handle<TermStructure>(termStructure_),
-                                 newToday, newSettlement));
+                                 newSettlement));
     DiscountFactor baseDiscount = termStructure_->discount(newSettlement);
     DiscountFactor discount = termStructure_->discount(testDate);
     DiscountFactor impliedDiscount = implied->discount(testDate);
@@ -121,11 +167,12 @@ void TermStructureTest::testImpliedObs() {
 
     initialize();
 
-    Date newToday = termStructure_->todaysDate().plusYears(3);
+    Date today = Settings::instance().evaluationDate();
+    Date newToday = today.plusYears(3);
     Date newSettlement = calendar_.advance(newToday,settlementDays_,Days);
     Handle<TermStructure> h;
     boost::shared_ptr<TermStructure> implied(
-        new ImpliedTermStructure(h, newToday, newSettlement));
+                                  new ImpliedTermStructure(h, newSettlement));
     Flag flag;
     flag.registerWith(implied);
     h.linkTo(termStructure_);
@@ -229,6 +276,7 @@ void TermStructureTest::testZSpreadedObs() {
 
 test_suite* TermStructureTest::suite() {
     test_suite* suite = BOOST_TEST_SUITE("Term structure tests");
+    suite->add(BOOST_TEST_CASE(&TermStructureTest::testReferenceChange));
     suite->add(BOOST_TEST_CASE(&TermStructureTest::testImplied));
     suite->add(BOOST_TEST_CASE(&TermStructureTest::testImpliedObs));
     suite->add(BOOST_TEST_CASE(&TermStructureTest::testFSpreaded));

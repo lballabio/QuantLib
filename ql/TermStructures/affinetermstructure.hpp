@@ -42,14 +42,38 @@ namespace QuantLib {
     class AffineTermStructure : public DiscountStructure,
                                 public LazyObject {
       public:
+        #ifndef QL_DISABLE_DEPRECATED
         //! constructor using a fixed model
+        /*! \deprecated use the constructor without today's date. */
         AffineTermStructure(const Date& todaysDate,
                             const Date& referenceDate,
                             const boost::shared_ptr<AffineModel>& model,
                             const DayCounter& dayCounter);
         //! constructor using a model that has to be calibrated
+        /*! \deprecated use the constructor without today's date. */
         AffineTermStructure(const Date& todaysDate,
                             const Date& referenceDate,
+                            const boost::shared_ptr<AffineModel>& model,
+                            const std::vector<boost::shared_ptr<RateHelper> >&,
+                            const boost::shared_ptr<OptimizationMethod>&,
+                            const DayCounter& dayCounter);
+        #endif
+        //! constructor using a fixed model
+        AffineTermStructure(const Date& referenceDate,
+                            const boost::shared_ptr<AffineModel>& model,
+                            const DayCounter& dayCounter);
+        //! constructor using a model that has to be calibrated
+        AffineTermStructure(const Date& referenceDate,
+                            const boost::shared_ptr<AffineModel>& model,
+                            const std::vector<boost::shared_ptr<RateHelper> >&,
+                            const boost::shared_ptr<OptimizationMethod>&,
+                            const DayCounter& dayCounter);
+        //! constructor using a fixed model
+        AffineTermStructure(Integer settlementDays, const Calendar& calendar,
+                            const boost::shared_ptr<AffineModel>& model,
+                            const DayCounter& dayCounter);
+        //! constructor using a model that has to be calibrated
+        AffineTermStructure(Integer settlementDays, const Calendar& calendar,
                             const boost::shared_ptr<AffineModel>& model,
                             const std::vector<boost::shared_ptr<RateHelper> >&,
                             const boost::shared_ptr<OptimizationMethod>&,
@@ -57,9 +81,9 @@ namespace QuantLib {
 
         // inspectors
         DayCounter dayCounter() const;
-        Date todaysDate() const {return todaysDate_; }
-        Date referenceDate() const;
         Date maxDate() const;
+        // observer interface
+        void update();
       protected:
         DiscountFactor discountImpl(Time) const;
       private:
@@ -68,7 +92,6 @@ namespace QuantLib {
         virtual void performCalculations() const;
 
         DayCounter dayCounter_;
-        Date todaysDate_, referenceDate_;
 
         boost::shared_ptr<AffineModel> model_;
         std::vector<boost::shared_ptr<RateHelper> > instruments_;
@@ -79,12 +102,13 @@ namespace QuantLib {
         return dayCounter_;
     }
 
-    inline Date AffineTermStructure::referenceDate() const {
-        return referenceDate_;
-    }
-
     inline Date AffineTermStructure::maxDate() const {
         return Date::maxDate();
+    }
+
+    inline void AffineTermStructure::update() {
+        DiscountStructure::update();
+        LazyObject::update();
     }
 
     inline DiscountFactor AffineTermStructure::discountImpl(Time t) const {

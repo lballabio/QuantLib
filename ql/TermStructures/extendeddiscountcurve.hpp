@@ -32,24 +32,28 @@ namespace QuantLib {
 
         Rates are assumed to be annual continuos compounding.
     */
-    class ExtendedDiscountCurve : public DiscountCurve,
-                                  public Observer {
+    class ExtendedDiscountCurve : public DiscountCurve {
       public:
         // constructor
-        ExtendedDiscountCurve(const Date &todaysDate,
-                              const std::vector<Date> &dates,
-                              const std::vector<DiscountFactor> &dfs,
-                              const Calendar & calendar,
+        #ifndef QL_DISABLE_DEPRECATED
+        /*! \deprecated use the constructor without today's date */
+        ExtendedDiscountCurve(const Date& todaysDate,
+                              const std::vector<Date>& dates,
+                              const std::vector<DiscountFactor>& dfs,
+                              const Calendar& calendar,
                               const BusinessDayConvention conv,
-                              const DayCounter & dayCounter = Actual365());
+                              const DayCounter& dayCounter = Actual365());
+        #endif
+        ExtendedDiscountCurve(const std::vector<Date>& dates,
+                              const std::vector<DiscountFactor>& dfs,
+                              const Calendar& calendar,
+                              const BusinessDayConvention conv,
+                              const DayCounter& dayCounter = Actual365());
         Calendar calendar() const { return calendar_; };
         BusinessDayConvention businessDayConvention() const {
             return conv_;
         }
-        //! \name Observer interface
-        //@{
         void update();
-        //@}
       protected:
         void calibrateNodes() const;
         boost::shared_ptr<TermStructure> reversebootstrap(Integer) const;
@@ -58,7 +62,7 @@ namespace QuantLib {
       private:
         Calendar calendar_;
         BusinessDayConvention conv_;
-        mutable std::map<Integer,boost::shared_ptr<TermStructure> > 
+        mutable std::map<Integer,boost::shared_ptr<TermStructure> >
                                                          forwardCurveMap_;
     };
 
@@ -66,7 +70,7 @@ namespace QuantLib {
 
     inline void ExtendedDiscountCurve::update() {
         forwardCurveMap_.clear();
-        notifyObservers();
+        DiscountCurve::update();
     }
 
 }

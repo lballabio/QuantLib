@@ -19,43 +19,46 @@
     \brief compounded forward term structure
 */
 
-#ifndef quantlib_compoundforward_curve_h
-#define quantlib_compoundforward_curve_h
- 
+#ifndef quantlib_compoundforward_curve_hpp
+#define quantlib_compoundforward_curve_hpp
+
 #include <ql/termstructure.hpp>
 #include <ql/Math/loglinearinterpolation.hpp>
 
 namespace QuantLib {
 
-    class CompoundForward : public ForwardRateStructure,
-                            public Observer {
+    //! compound-forward structure
+    class CompoundForward : public ForwardRateStructure {
       public:
         // constructor
-        CompoundForward(const Date & todaysDate,
-                        const Date & referenceDate,
-                        const std::vector<Date> &dates,
-                        const std::vector<Rate> &forwards,
-                        const Calendar & calendar,
+        #ifndef QL_DISABLE_DEPRECATED
+        /*! \deprecated use the constructor without today's date */
+        CompoundForward(const Date& todaysDate,
+                        const Date& referenceDate,
+                        const std::vector<Date>& dates,
+                        const std::vector<Rate>& forwards,
+                        const Calendar& calendar,
                         const BusinessDayConvention conv,
                         const Integer compounding,
-                        const DayCounter & dayCounter);
-        Date todaysDate() const { return todaysDate_; }
-        Date referenceDate() const { return referenceDate_; };
-        Calendar calendar() const { return calendar_; };
-        BusinessDayConvention businessDayConvention() const {
-            return conv_; };
-        DayCounter dayCounter() const { return dayCounter_; };
-        Integer compounding() const { return compounding_; };
+                        const DayCounter& dayCounter);
+        #endif
+        CompoundForward(const Date& referenceDate,
+                        const std::vector<Date>& dates,
+                        const std::vector<Rate>& forwards,
+                        const Calendar& calendar,
+                        const BusinessDayConvention conv,
+                        const Integer compounding,
+                        const DayCounter& dayCounter);
+        Calendar calendar() const { return calendar_; }
+        BusinessDayConvention businessDayConvention() const { return conv_; }
+        DayCounter dayCounter() const { return dayCounter_; }
+        Integer compounding() const { return compounding_; }
         Date maxDate() const;
         Time maxTime() const;
         const std::vector<Time>& times() const;
         const std::vector<Date>& dates() const;
         const std::vector<Rate>& forwards() const;
         boost::shared_ptr<TermStructure> discountCurve() const;
-        //! \name Observer interface
-        //@{
-        void update();
-        //@}
       protected:
         // methods
         void calibrateNodes() const;
@@ -67,8 +70,6 @@ namespace QuantLib {
         Rate compoundForwardImpl(Time, Integer) const;
       private:
         // data members
-        Date todaysDate_;
-        Date referenceDate_;
         DayCounter dayCounter_;
         Calendar calendar_;
         BusinessDayConvention conv_;
@@ -101,11 +102,6 @@ namespace QuantLib {
 
     inline const std::vector<Rate>& CompoundForward::forwards() const {
         return forwards_;
-    }
-
-    inline void CompoundForward::update() {
-        needsBootstrap_ = true;
-        notifyObservers();
     }
 
 }

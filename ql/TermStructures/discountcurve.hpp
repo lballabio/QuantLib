@@ -19,8 +19,8 @@
     \brief pre-bootstrapped discount factor structure
 */
 
-#ifndef quantlib_discount_curve_h
-#define quantlib_discount_curve_h
+#ifndef quantlib_discount_curve_hpp
+#define quantlib_discount_curve_hpp
 
 #include <ql/termstructure.hpp>
 #include <ql/DayCounters/actual365.hpp>
@@ -38,13 +38,18 @@ namespace QuantLib {
     class DiscountCurve : public DiscountStructure {
       public:
         // constructor
-        DiscountCurve(const Date &todaysDate,
-                      const std::vector<Date> &dates,
-                      const std::vector<DiscountFactor> &dfs,
-                      const DayCounter & dayCounter = Actual365());
-        Date todaysDate() const { return todaysDate_; }
-        Date referenceDate() const { return referenceDate_; }
+        #ifndef QL_DISABLE_DEPRECATED
+        /*! \deprecated use the constructor without today's date. */
+        DiscountCurve(const Date& todaysDate,
+                      const std::vector<Date>& dates,
+                      const std::vector<DiscountFactor>& dfs,
+                      const DayCounter& dayCounter = Actual365());
+        #endif
+        DiscountCurve(const std::vector<Date>& dates,
+                      const std::vector<DiscountFactor>& dfs,
+                      const DayCounter& dayCounter = Actual365());
         DayCounter dayCounter() const { return dayCounter_; }
+        Calendar calendar() const { return Calendar(); }
         Date maxDate() const;
         Time maxTime() const;
         const std::vector<Time>& times() const;
@@ -53,8 +58,6 @@ namespace QuantLib {
       protected:
         DiscountFactor discountImpl(Time) const;
         Size referenceNode(Time) const;
-        Date todaysDate_;
-        Date referenceDate_;
         DayCounter dayCounter_;
         mutable std::vector<Date> dates_;
         mutable std::vector<DiscountFactor> discounts_;
@@ -72,7 +75,7 @@ namespace QuantLib {
         return dates_.back();
     }
 
-    inline const std::vector<DiscountFactor>& 
+    inline const std::vector<DiscountFactor>&
     DiscountCurve::discounts() const {
         return discounts_;
     }

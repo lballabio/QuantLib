@@ -32,6 +32,7 @@ namespace QuantLib {
                          fixingDays, spread, refPeriodStart, refPeriodEnd),
       index_(index), dayCounter_(dayCounter) {
         registerWith(index_);
+        registerWith(Settings::instance().evaluationDateGuard());
     }
 
     Real ParCoupon::amount() const {
@@ -39,7 +40,7 @@ namespace QuantLib {
             index_->termStructure();
         QL_REQUIRE(termStructure,
                    "null term structure set to par coupon");
-        Date today = termStructure->todaysDate();
+        Date today = Settings::instance().evaluationDate();
         Date fixing_date = fixingDate();
         if (fixing_date < today) {
             // must have been fixed

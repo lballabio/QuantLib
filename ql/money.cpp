@@ -31,8 +31,7 @@ namespace QuantLib {
             if (m.currency() != target) {
                 ExchangeRate rate =
                     ExchangeRateManager::instance().lookup(m.currency(),
-                                                           target,
-                                                           Date::todaysDate());
+                                                           target);
                 m = rate.exchange(m).rounded();
             }
         }

@@ -29,42 +29,56 @@ namespace QuantLib {
 
     //! Flat interest-rate curve
     /*! \ingroup termstructures */
-    class FlatForward : public TermStructure, public Observer {
+    class FlatForward : public TermStructure {
       public:
         // constructors
+        #ifndef QL_DISABLE_DEPRECATED
+        /*! \deprecated use one of the non-deprecated constructors. */
         FlatForward(const Date& todaysDate,
                     const Date& referenceDate,
                     Rate forward,
                     const DayCounter& dayCounter = Actual365());
+        /*! \deprecated use one of the non-deprecated constructors. */
         FlatForward(const Date& todaysDate,
                     const Date& referenceDate,
                     const Handle<Quote>& forward,
                     const DayCounter& dayCounter = Actual365());
+        #endif
+        FlatForward(const Date& referenceDate,
+                    const Handle<Quote>& forward,
+                    const DayCounter& dayCounter = Actual365());
+        FlatForward(const Date& referenceDate,
+                    Rate forward,
+                    const DayCounter& dayCounter = Actual365());
+
+        FlatForward(Integer settlementDays, const Calendar& calendar,
+                    const Handle<Quote>& forward,
+                    const DayCounter& dayCounter = Actual365());
+        FlatForward(Integer settlementDays, const Calendar& calendar,
+                    Rate forward,
+                    const DayCounter& dayCounter = Actual365());
+
         // inspectors
         DayCounter dayCounter() const;
-        Date todaysDate() const { return todaysDate_; }
-        Date referenceDate() const;
         Date maxDate() const;
-        // Observer interface
-        void update();
       protected:
         Rate zeroYieldImpl(Time) const;
         DiscountFactor discountImpl(Time) const;
         Rate forwardImpl(Time) const;
         Rate compoundForwardImpl(Time t, Integer compFreq) const;
       private:
-        Date todaysDate_, referenceDate_;
         DayCounter dayCounter_;
         Handle<Quote> forward_;
     };
 
     // inline definitions
 
+    #ifndef QL_DISABLE_DEPRECATED
     inline FlatForward::FlatForward(const Date& todaysDate,
                                     const Date& referenceDate,
-                                    Rate forward, 
+                                    Rate forward,
                                     const DayCounter& dayCounter)
-    : todaysDate_(todaysDate), referenceDate_(referenceDate),
+    : TermStructure(todaysDate, referenceDate),
       dayCounter_(dayCounter) {
         forward_.linkTo(boost::shared_ptr<Quote>(new SimpleQuote(forward)));
     }
@@ -73,25 +87,50 @@ namespace QuantLib {
                                     const Date& referenceDate,
                                     const Handle<Quote>& forward,
                                     const DayCounter& dayCounter)
-    : todaysDate_(todaysDate), referenceDate_(referenceDate),
+    : TermStructure(todaysDate, referenceDate),
       dayCounter_(dayCounter), forward_(forward) {
         registerWith(forward_);
+    }
+    #endif
+
+    inline FlatForward::FlatForward(const Date& referenceDate,
+                                    const Handle<Quote>& forward,
+                                    const DayCounter& dayCounter)
+    : TermStructure(referenceDate), dayCounter_(dayCounter),
+      forward_(forward) {
+        registerWith(forward_);
+    }
+
+    inline FlatForward::FlatForward(const Date& referenceDate,
+                                    Rate forward,
+                                    const DayCounter& dayCounter)
+    : TermStructure(referenceDate), dayCounter_(dayCounter) {
+        forward_.linkTo(boost::shared_ptr<Quote>(new SimpleQuote(forward)));
+    }
+
+    inline FlatForward::FlatForward(Integer settlementDays,
+                                    const Calendar& calendar,
+                                    const Handle<Quote>& forward,
+                                    const DayCounter& dayCounter)
+    : TermStructure(settlementDays,calendar), dayCounter_(dayCounter),
+      forward_(forward) {
+        registerWith(forward_);
+    }
+
+    inline FlatForward::FlatForward(Integer settlementDays,
+                                    const Calendar& calendar,
+                                    Rate forward,
+                                    const DayCounter& dayCounter)
+    : TermStructure(settlementDays,calendar), dayCounter_(dayCounter) {
+        forward_.linkTo(boost::shared_ptr<Quote>(new SimpleQuote(forward)));
     }
 
     inline DayCounter FlatForward::dayCounter() const {
         return dayCounter_;
     }
 
-    inline Date FlatForward::referenceDate() const {
-        return referenceDate_;
-    }
-
     inline Date FlatForward::maxDate() const {
         return Date::maxDate();
-    }
-
-    inline void FlatForward::update() {
-        notifyObservers();
     }
 
     inline Rate FlatForward::zeroYieldImpl(Time t) const {
@@ -106,7 +145,7 @@ namespace QuantLib {
         return forward_->value();
     }
 
-    inline Rate FlatForward::compoundForwardImpl(Time t, 
+    inline Rate FlatForward::compoundForwardImpl(Time t,
                                                  Integer compFreq) const {
         Rate zy = zeroYieldImpl(t);
         if (compFreq == 0)

@@ -49,10 +49,29 @@ namespace QuantLib {
     class PiecewiseFlatForward : public TermStructure,
                                  public LazyObject {
       public:
-        // constructor
+        //! \name Constructors
+        //@{
+        #ifndef QL_DISABLE_DEPRECATED
+        /*! \deprecated use a constructor without today's date */
         PiecewiseFlatForward(
                const Date& todaysDate,
                const Date& referenceDate,
+               const std::vector<boost::shared_ptr<RateHelper> >& instruments,
+               const DayCounter& dayCounter,
+               Real accuracy = 1.0e-12);
+        /*! \deprecated use the constructor without today's date */
+        PiecewiseFlatForward(const Date& todaysDate,
+                             const std::vector<Date>& dates,
+                             const std::vector<Rate>& forwards,
+                             const DayCounter& dayCounter);
+        #endif
+        PiecewiseFlatForward(
+               const Date& referenceDate,
+               const std::vector<boost::shared_ptr<RateHelper> >& instruments,
+               const DayCounter& dayCounter,
+               Real accuracy = 1.0e-12);
+        PiecewiseFlatForward(
+               Integer settlementDays, const Calendar& calendar,
                const std::vector<boost::shared_ptr<RateHelper> >& instruments,
                const DayCounter& dayCounter,
                Real accuracy = 1.0e-12);
@@ -60,22 +79,24 @@ namespace QuantLib {
           date of the curve, the other dates are the nodes of the
           term structure. The forward rate at index \f$i\f$ is used
           in the period \f$t_{i-1} < t \le t_i\f$. Therefore,
-          forwards[0] is used only to compute the zero yield for 
+          forwards[0] is used only to compute the zero yield for
           \f$t = 0\f$.
         */
-        PiecewiseFlatForward(const Date& todaysDate,
-                             const std::vector<Date>& dates,
+        PiecewiseFlatForward(const std::vector<Date>& dates,
                              const std::vector<Rate>& forwards,
                              const DayCounter& dayCounter);
+        //@}
         //! \name TermStructure interface
         //@{
         DayCounter dayCounter() const;
-        Date todaysDate() const { return todaysDate_; }
-        Date referenceDate() const;
         const std::vector<Date>& dates() const;
         Date maxDate() const;
         const std::vector<Time>& times() const;
         Time maxTime() const;
+        //@}
+        //! \name Observer interface
+        //@{
+        void update();
         //@}
       protected:
         /* We implement all calculation methods in order to take advantage
@@ -91,10 +112,10 @@ namespace QuantLib {
         friend class FFObjFunction;
         // methods
         Size referenceNode(Time t) const;
+        void checkInstruments();
         void performCalculations() const;
         // data members
         DayCounter dayCounter_;
-        Date todaysDate_, referenceDate_;
         std::vector<boost::shared_ptr<RateHelper> > instruments_;
         mutable std::vector<Time> times_;
         mutable std::vector<Date> dates_;
@@ -103,14 +124,11 @@ namespace QuantLib {
         Real accuracy_;
     };
 
+
     // inline definitions
 
     inline DayCounter PiecewiseFlatForward::dayCounter() const {
         return dayCounter_;
-    }
-
-    inline Date PiecewiseFlatForward::referenceDate() const {
-        return referenceDate_;
     }
 
     inline const std::vector<Date>& PiecewiseFlatForward::dates() const {
@@ -131,6 +149,11 @@ namespace QuantLib {
     inline Time PiecewiseFlatForward::maxTime() const {
         calculate();
         return times_.back();
+    }
+
+    inline void PiecewiseFlatForward::update() {
+        TermStructure::update();
+        LazyObject::update();
     }
 
 }

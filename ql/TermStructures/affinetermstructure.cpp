@@ -44,13 +44,14 @@ namespace QuantLib {
         const std::vector<boost::shared_ptr<RateHelper> >& instruments_;
     };
 
+    #ifndef QL_DISABLE_DEPRECATED
     AffineTermStructure::AffineTermStructure(
                                   const Date& todaysDate,
                                   const Date& referenceDate,
                                   const boost::shared_ptr<AffineModel>& model,
                                   const DayCounter& dayCounter)
-    : dayCounter_(dayCounter), todaysDate_(todaysDate), 
-      referenceDate_(referenceDate), model_(model) { }
+    : DiscountStructure(todaysDate,referenceDate), dayCounter_(dayCounter),
+      model_(model) {}
 
     AffineTermStructure::AffineTermStructure(
                const Date& todaysDate,
@@ -59,15 +60,55 @@ namespace QuantLib {
                const std::vector<boost::shared_ptr<RateHelper> >& instruments,
                const boost::shared_ptr<OptimizationMethod>& method,
                const DayCounter& dayCounter)
-    : dayCounter_(dayCounter), todaysDate_(todaysDate), 
-      referenceDate_(referenceDate), model_(model), 
-      instruments_(instruments), method_(method) {
+    : DiscountStructure(todaysDate,referenceDate), dayCounter_(dayCounter),
+      model_(model), instruments_(instruments), method_(method) {
+        for (Size i=0; i<instruments_.size(); i++)
+            registerWith(instruments_[i]);
+    }
+    #endif
+
+    AffineTermStructure::AffineTermStructure(
+                                  const Date& referenceDate,
+                                  const boost::shared_ptr<AffineModel>& model,
+                                  const DayCounter& dayCounter)
+    : DiscountStructure(referenceDate), dayCounter_(dayCounter),
+      model_(model) {}
+
+    AffineTermStructure::AffineTermStructure(
+               const Date& referenceDate,
+               const boost::shared_ptr<AffineModel>& model,
+               const std::vector<boost::shared_ptr<RateHelper> >& instruments,
+               const boost::shared_ptr<OptimizationMethod>& method,
+               const DayCounter& dayCounter)
+    : DiscountStructure(referenceDate), dayCounter_(dayCounter),
+      model_(model), instruments_(instruments), method_(method) {
+        for (Size i=0; i<instruments_.size(); i++)
+            registerWith(instruments_[i]);
+    }
+
+    AffineTermStructure::AffineTermStructure(
+                                  Integer settlementDays,
+                                  const Calendar& calendar,
+                                  const boost::shared_ptr<AffineModel>& model,
+                                  const DayCounter& dayCounter)
+    : DiscountStructure(settlementDays,calendar), dayCounter_(dayCounter),
+      model_(model) {}
+
+    AffineTermStructure::AffineTermStructure(
+               Integer settlementDays,
+               const Calendar& calendar,
+               const boost::shared_ptr<AffineModel>& model,
+               const std::vector<boost::shared_ptr<RateHelper> >& instruments,
+               const boost::shared_ptr<OptimizationMethod>& method,
+               const DayCounter& dayCounter)
+    : DiscountStructure(settlementDays,calendar), dayCounter_(dayCounter),
+      model_(model), instruments_(instruments), method_(method) {
         for (Size i=0; i<instruments_.size(); i++)
             registerWith(instruments_[i]);
     }
 
     void AffineTermStructure::performCalculations() const {
-        boost::shared_ptr<ShortRateModel> model = 
+        boost::shared_ptr<ShortRateModel> model =
             boost::dynamic_pointer_cast<ShortRateModel>(model_);
         CalibrationFunction f(model, instruments_);
 

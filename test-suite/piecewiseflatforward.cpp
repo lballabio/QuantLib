@@ -75,6 +75,7 @@ namespace {
 
     Size deposits, swaps;
     std::vector<boost::shared_ptr<SimpleQuote> > rates;
+    std::vector<boost::shared_ptr<RateHelper> > instruments;
     boost::shared_ptr<TermStructure> termStructure;
 
     void initialize() {
@@ -84,6 +85,7 @@ namespace {
         settlementDays = 2;
         fixingDays = 2;
         today = calendar.adjust(Date::todaysDate());
+        Settings::instance().setEvaluationDate(today);
         settlement = calendar.advance(today,settlementDays,Days);
         depoConvention = ModifiedFollowing;
         depoDayCounter = Actual360();
@@ -109,8 +111,8 @@ namespace {
         }
 
         // rate helpers
-        std::vector<boost::shared_ptr<RateHelper> >
-            instruments(deposits+swaps);
+        instruments =
+            std::vector<boost::shared_ptr<RateHelper> >(deposits+swaps);
         for (i=0; i<deposits; i++) {
             Handle<Quote> r(rates[i]);
             instruments[i] = boost::shared_ptr<RateHelper>(
@@ -130,8 +132,12 @@ namespace {
 
         // instantiate curve
         termStructure = boost::shared_ptr<TermStructure>(
-          new PiecewiseFlatForward(today,settlement,instruments,Actual360()));
+                new PiecewiseFlatForward(settlement,instruments,Actual360()));
 
+    }
+
+    void finalize() {
+        Settings::instance().setEvaluationDate(Date());
     }
 
 }
@@ -190,6 +196,8 @@ void PiecewiseFlatForwardTest::testConsistency() {
                 + RateFormatter::toString(expectedRate,8));
         }
     }
+
+    finalize();
 }
 
 void PiecewiseFlatForwardTest::testObservability() {
@@ -198,6 +206,10 @@ void PiecewiseFlatForwardTest::testObservability() {
 
     initialize();
 
+    termStructure = boost::shared_ptr<TermStructure>(
+                          new PiecewiseFlatForward(settlementDays,calendar,
+                                                   instruments,Actual360()));
+
     Flag f;
     f.registerWith(termStructure);
 
@@ -205,9 +217,15 @@ void PiecewiseFlatForwardTest::testObservability() {
         f.lower();
         rates[i]->setValue(rates[i]->value()*1.01);
         if (!f.isUp())
-            BOOST_FAIL("Observer was not notified "
-                       "of piecewise flat forward curve change");
+            BOOST_FAIL("Observer was not notified of underlying rate change");
     }
+
+    f.lower();
+    Settings::instance().setEvaluationDate(calendar.advance(today,1,Months));
+    if (!f.isUp())
+            BOOST_FAIL("Observer was not notified of date change");
+
+    finalize();
 }
 
 

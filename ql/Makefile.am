@@ -65,6 +65,7 @@ include_HEADERS = \
 	quote.hpp \
 	relinkablehandle.hpp \
 	schedule.hpp \
+	settings.hpp \
 	solver1d.hpp \
 	stochasticprocess.hpp \
 	swaptionvolstructure.hpp \

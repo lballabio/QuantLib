@@ -32,9 +32,7 @@ namespace QuantLib {
                 dayCounter) {}
 
     Real Short<ParCoupon>::amount() const {
-        QL_REQUIRE(index()->termStructure(),
-                   "null term structure set to par coupon");
-        Date today = index()->termStructure()->todaysDate();
+        Date today = Settings::instance().evaluationDate();
         Date fixing_date = fixingDate();
         QL_REQUIRE(fixing_date >= today,
                    // must have been fixed

@@ -33,22 +33,20 @@ namespace QuantLib {
 
         \ingroup termstructures
     */
-    class ZeroSpreadedTermStructure : public ZeroYieldStructure,
-                                      public Observer {
+    class ZeroSpreadedTermStructure : public ZeroYieldStructure {
       public:
         ZeroSpreadedTermStructure(const Handle<TermStructure>&,
                                   const Handle<Quote>& spread);
         //! \name TermStructure interface
         //@{
         DayCounter dayCounter() const;
-        Date referenceDate() const;
-        Date todaysDate() const;
+        Calendar calendar() const;
+        const Date& referenceDate() const;
+        #ifndef QL_DISABLE_DEPRECATED
+        const Date& todaysDate() const;
+        #endif
         Date maxDate() const;
         Time maxTime() const;
-        //@}
-        //! \name Observer interface
-        //@{
-        void update();
         //@}
       protected:
         //! returns the spreaded zero yield rate
@@ -75,11 +73,17 @@ namespace QuantLib {
         return originalCurve_->dayCounter();
     }
 
-    inline Date ZeroSpreadedTermStructure::todaysDate() const {
-        return originalCurve_->todaysDate();
+    inline Calendar ZeroSpreadedTermStructure::calendar() const {
+        return originalCurve_->calendar();
     }
 
-    inline Date ZeroSpreadedTermStructure::referenceDate() const {
+    #ifndef QL_DISABLE_DEPRECATED
+    inline const Date& ZeroSpreadedTermStructure::todaysDate() const {
+        return originalCurve_->todaysDate();
+    }
+    #endif
+
+    inline const Date& ZeroSpreadedTermStructure::referenceDate() const {
         return originalCurve_->referenceDate();
     }
 
@@ -91,17 +95,13 @@ namespace QuantLib {
         return originalCurve_->maxTime();
     }
 
-    inline void ZeroSpreadedTermStructure::update() {
-        notifyObservers();
-    }
-
     inline Rate ZeroSpreadedTermStructure::zeroYieldImpl(Time t) const {
         return originalCurve_->zeroYield(t, true) + spread_->value();
     }
 
     inline Rate ZeroSpreadedTermStructure::forwardImpl(Time t) const {
         return originalCurve_->instantaneousForward(t, true) +
-            spread_->value();
+               spread_->value();
     }
 
 }

@@ -107,13 +107,15 @@ namespace {
         calendar_ = index_->calendar();
         convention_ = ModifiedFollowing;
         today_ = calendar_.adjust(Date::todaysDate());
+        Settings::instance().setEvaluationDate(today_);
         settlementDays_ = 2;
         fixingDays_ = 2;
         settlement_ = calendar_.advance(today_,settlementDays_,Days);
-        termStructure_.linkTo(
-              boost::shared_ptr<TermStructure>(
-                                           new FlatForward(today_,settlement_,
-                                                           0.05,Actual360())));
+        termStructure_.linkTo(flatRate(settlement_,0.05,Actual360()));
+    }
+
+    void finalize() {
+        Settings::instance().setEvaluationDate(Date());
     }
 
 }
@@ -190,6 +192,8 @@ void CapFloorTest::testStrikeDependency() {
             }
         }
     }
+
+    finalize();
 }
 
 void CapFloorTest::testConsistency() {
@@ -244,6 +248,8 @@ void CapFloorTest::testConsistency() {
         }
       }
     }
+
+    finalize();
 }
 
 void CapFloorTest::testParity() {
@@ -297,6 +303,8 @@ void CapFloorTest::testParity() {
         }
       }
     }
+
+    finalize();
 }
 
 void CapFloorTest::testImpliedVolatility() {
@@ -331,10 +339,8 @@ void CapFloorTest::testImpliedVolatility() {
 
                         Rate r = rRates[n];
                         Volatility v = vols[m];
-                        termStructure_.linkTo(
-                            boost::shared_ptr<TermStructure>(
-                                new FlatForward(today_,settlement_,r,
-                                                Actual360())));
+                        termStructure_.linkTo(flatRate(settlement_,r,
+                                                       Actual360()));
                         capfloor->setPricingEngine(makeEngine(v));
 
                         Real value = capfloor->NPV();
@@ -389,6 +395,8 @@ void CapFloorTest::testImpliedVolatility() {
             }
         }
     }
+
+    finalize();
 }
 
 void CapFloorTest::testCachedValue() {
@@ -399,10 +407,8 @@ void CapFloorTest::testCachedValue() {
 
     Date cachedToday(14,March,2002),
          cachedSettlement(18,March,2002);
-    termStructure_.linkTo(
-        boost::shared_ptr<TermStructure>(
-                                 new FlatForward(cachedToday,cachedSettlement,
-                                                 0.05, Actual360())));
+    Settings::instance().setEvaluationDate(cachedToday);
+    termStructure_.linkTo(flatRate(cachedSettlement, 0.05, Actual360()));
     Date startDate = termStructure_->referenceDate();
     std::vector<boost::shared_ptr<CashFlow> > leg = makeLeg(startDate,20);
     boost::shared_ptr<Instrument> cap = makeCapFloor(CapFloor::Cap,leg,
@@ -432,6 +438,8 @@ void CapFloorTest::testCachedValue() {
             DecimalFormatter::toString(floor->NPV(),12) + "\n"
             "    expected:   " +
             DecimalFormatter::toString(cachedFloorNPV,12));
+
+    finalize();
 }
 
 

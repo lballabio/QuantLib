@@ -28,36 +28,34 @@
 namespace QuantLib {
 
     //! Quanto term structure
-    /*! Quanto term structure for modelling quanto effect in 
+    /*! Quanto term structure for modelling quanto effect in
         option pricing.
-    
+
         \note This term structure will remain linked to the original
               structures, i.e., any changes in the latters will be
               reflected in this structure as well.
     */
-    class QuantoTermStructure : public ZeroYieldStructure,
-                                public Observer {
+    class QuantoTermStructure : public ZeroYieldStructure {
       public:
         QuantoTermStructure(const Handle<TermStructure>& underlyingDividendTS,
                             const Handle<TermStructure>& riskFreeTS,
                             const Handle<TermStructure>& foreignRiskFreeTS,
-                            const Handle<BlackVolTermStructure>& 
+                            const Handle<BlackVolTermStructure>&
                             underlyingBlackVolTS,
                             Real strike,
-                            const Handle<BlackVolTermStructure>& 
+                            const Handle<BlackVolTermStructure>&
                             exchRateBlackVolTS,
                             Real exchRateATMlevel,
                             Real underlyingExchRateCorrelation);
         //! \name TermStructure interface
         //@{
         DayCounter dayCounter() const;
-        Date todaysDate() const;
-        Date referenceDate() const;
-        Date maxDate() const {return maxDate_; }
-        //@}
-        //! \name Observer interface
-        //@{
-        void update();
+        Calendar calendar() const;
+        #ifndef QL_DISABLE_DEPRECATED
+        const Date& todaysDate() const;
+        #endif
+        const Date& referenceDate() const;
+        Date maxDate() const { return maxDate_; }
         //@}
       protected:
         //! returns the zero yield as seen from the evaluation date
@@ -78,10 +76,10 @@ namespace QuantLib {
                             const Handle<TermStructure>& underlyingDividendTS,
                             const Handle<TermStructure>& riskFreeTS,
                             const Handle<TermStructure>& foreignRiskFreeTS,
-                            const Handle<BlackVolTermStructure>& 
+                            const Handle<BlackVolTermStructure>&
                             underlyingBlackVolTS,
                             Real strike,
-                            const Handle<BlackVolTermStructure>& 
+                            const Handle<BlackVolTermStructure>&
                             exchRateBlackVolTS,
                             Real exchRateATMlevel,
                             Real underlyingExchRateCorrelation)
@@ -109,22 +107,23 @@ namespace QuantLib {
         return underlyingDividendTS_->dayCounter();
     }
 
-    inline Date QuantoTermStructure::todaysDate() const {
+    inline Calendar QuantoTermStructure::calendar() const {
+        return underlyingDividendTS_->calendar();
+    }
+
+    #ifndef QL_DISABLE_DEPRECATED
+    inline const Date& QuantoTermStructure::todaysDate() const {
         return underlyingDividendTS_->todaysDate();
     }
+    #endif
 
-    inline Date QuantoTermStructure::referenceDate() const {
+    inline const Date& QuantoTermStructure::referenceDate() const {
         return underlyingDividendTS_->referenceDate();
-    }
-
-    inline void QuantoTermStructure::update() {
-        notifyObservers();
     }
 
     inline Rate QuantoTermStructure::zeroYieldImpl(Time t) const {
         // warning: here it is assumed that all TS have the same daycount.
-        //          It should be QL_REQUIREd, or maybe even enforced in the
-        //          whole QuantLib
+        //          It should be QL_REQUIREd
         return underlyingDividendTS_->zeroYield(t, true)
             +            riskFreeTS_->zeroYield(t, true)
             -     foreignRiskFreeTS_->zeroYield(t, true)

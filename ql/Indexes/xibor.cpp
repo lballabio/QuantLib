@@ -57,8 +57,7 @@ namespace QuantLib {
     }
 
     Rate Xibor::fixing(const Date& fixingDate) const {
-        QL_REQUIRE(!termStructure_.empty(), "no term structure set");
-        Date today = termStructure_->todaysDate();
+        Date today = Settings::instance().evaluationDate();
         if (fixingDate < today) {
             // must have been fixed
             #ifndef QL_DISABLE_DEPRECATED
@@ -103,6 +102,8 @@ namespace QuantLib {
                 ;       // fall through and forecast
             }
         }
+        // forecast
+        QL_REQUIRE(!termStructure_.empty(), "no term structure set");
         Date fixingValueDate = calendar_.advance(fixingDate,
                                                  settlementDays_,Days);
         Date endValueDate = calendar_.advance(fixingValueDate,n_,units_,

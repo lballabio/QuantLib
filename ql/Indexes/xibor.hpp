@@ -43,6 +43,7 @@ namespace QuantLib {
           convention_(convention),
           dayCounter_(dayCounter), termStructure_(h) {
             registerWith(termStructure_);
+            registerWith(Settings::instance().evaluationDateGuard());
         }
         #ifndef QL_DISABLE_DEPRECATED
         /*! \deprecated use the constructor taking a Currency instance */
@@ -59,6 +60,7 @@ namespace QuantLib {
           convention_(convention),
           dayCounter_(dayCounter), termStructure_(h) {
             registerWith(termStructure_);
+            registerWith(Settings::instance().evaluationDateGuard());
         }
         #endif
         //! \name Index interface

@@ -20,23 +20,22 @@
 
 namespace QuantLib {
 
+    #ifndef QL_DISABLE_DEPRECATED
     DiscountCurve::DiscountCurve(const Date &todaysDate,
                                  const std::vector<Date>& dates,
                                  const std::vector<DiscountFactor>& discounts,
                                  const DayCounter& dayCounter)
-    : todaysDate_(todaysDate), dayCounter_(dayCounter),
+    : DiscountStructure(todaysDate, dates[0]), dayCounter_(dayCounter),
       dates_(dates), discounts_(discounts) {
-        QL_REQUIRE(dates_.size() > 0, 
+        QL_REQUIRE(dates_.size() > 0,
                    "no input Dates given");
-        QL_REQUIRE(discounts_.size() > 0, 
+        QL_REQUIRE(discounts_.size() > 0,
                    "no input Discount factors given");
         QL_REQUIRE(discounts_.size() == dates_.size(),
                    "dates/discount factors count mismatch");
         QL_REQUIRE(discounts_[0] == 1.0,
                    "the first discount must be == 1.0 "
                    "to flag the corrsponding date as settlement date");
-
-        referenceDate_ = dates_[0];
 
         times_.resize(dates_.size());
         times_[0] = 0.0;
@@ -46,8 +45,39 @@ namespace QuantLib {
                        DateFormatter::toString(dates_[i])+", vs "+
                        DateFormatter::toString(dates_[i-1])+")");
             QL_REQUIRE(discounts_[i] > 0.0, "negative discount");
-            times_[i] = 
-                dayCounter_.yearFraction(referenceDate_, dates_[i]);
+            times_[i] =
+                dayCounter_.yearFraction(dates_[0], dates_[i]);
+        }
+        interpolation_ = LogLinearInterpolation(times_.begin(), times_.end(),
+                                                discounts_.begin());
+    }
+    #endif
+
+    DiscountCurve::DiscountCurve(const std::vector<Date>& dates,
+                                 const std::vector<DiscountFactor>& discounts,
+                                 const DayCounter& dayCounter)
+    : DiscountStructure(dates[0]), dayCounter_(dayCounter),
+      dates_(dates), discounts_(discounts) {
+        QL_REQUIRE(dates_.size() > 0,
+                   "no input Dates given");
+        QL_REQUIRE(discounts_.size() > 0,
+                   "no input Discount factors given");
+        QL_REQUIRE(discounts_.size() == dates_.size(),
+                   "dates/discount factors count mismatch");
+        QL_REQUIRE(discounts_[0] == 1.0,
+                   "the first discount must be == 1.0 "
+                   "to flag the corrsponding date as settlement date");
+
+        times_.resize(dates_.size());
+        times_[0] = 0.0;
+        for(Size i = 1; i < dates_.size(); i++) {
+            QL_REQUIRE(dates_[i] > dates_[i-1],
+                       "invalid date ("+
+                       DateFormatter::toString(dates_[i])+", vs "+
+                       DateFormatter::toString(dates_[i-1])+")");
+            QL_REQUIRE(discounts_[i] > 0.0, "negative discount");
+            times_[i] =
+                dayCounter_.yearFraction(dates_[0], dates_[i]);
         }
         interpolation_ = LogLinearInterpolation(times_.begin(), times_.end(),
                                                 discounts_.begin());

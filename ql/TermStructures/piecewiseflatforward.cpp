@@ -44,16 +44,91 @@ namespace QuantLib {
         Size segment_;
     };
 
+    #ifndef QL_DISABLE_DEPRECATED
     PiecewiseFlatForward::PiecewiseFlatForward(
                const Date& todaysDate,
                const Date& referenceDate,
                const std::vector<boost::shared_ptr<RateHelper> >& instruments,
                const DayCounter& dayCounter, Real accuracy)
-    : dayCounter_(dayCounter), todaysDate_(todaysDate), 
-      referenceDate_(referenceDate), instruments_(instruments), 
-      accuracy_(accuracy) {
+    : TermStructure(todaysDate,referenceDate), dayCounter_(dayCounter),
+      instruments_(instruments), accuracy_(accuracy) {
+        checkInstruments();
+    }
 
-        QL_REQUIRE(instruments_.size()>0, "no instrument given");
+    PiecewiseFlatForward::PiecewiseFlatForward(
+                                           const Date& todaysDate,
+                                           const std::vector<Date>& dates,
+                                           const std::vector<Rate>& forwards,
+                                           const DayCounter& dayCounter)
+    : TermStructure(todaysDate, dates[0]), dayCounter_(dayCounter),
+      times_(dates.size()), dates_(dates), discounts_(dates.size()),
+      forwards_(forwards), zeroYields_(dates.size()) {
+
+        QL_REQUIRE(!dates_.empty(), "no dates given");
+        QL_REQUIRE(dates_.size()==forwards_.size(),
+                   "mismatch between dates and forwards");
+        times_[0]=0.0;
+        discounts_[0]=1.0;
+        zeroYields_[0]=forwards_[0];
+        for (Size i=1; i<dates_.size(); i++) {
+            times_[i] = dayCounter_.yearFraction(referenceDate(),
+                                                 dates_[i]);
+            zeroYields_[i] = (forwards_[i]*(times_[i]-times_[i-1])+
+                              zeroYields_[i-1]*times_[i-1])/times_[i];
+            discounts_[i] = QL_EXP(-zeroYields_[i]*times_[i]);
+        }
+        // we don't want to launch the boostrapping process
+        freeze();
+    }
+    #endif
+
+    PiecewiseFlatForward::PiecewiseFlatForward(
+               const Date& referenceDate,
+               const std::vector<boost::shared_ptr<RateHelper> >& instruments,
+               const DayCounter& dayCounter, Real accuracy)
+    : TermStructure(referenceDate), dayCounter_(dayCounter),
+      instruments_(instruments), accuracy_(accuracy) {
+        checkInstruments();
+    }
+
+    PiecewiseFlatForward::PiecewiseFlatForward(
+               Integer settlementDays, const Calendar& calendar,
+               const std::vector<boost::shared_ptr<RateHelper> >& instruments,
+               const DayCounter& dayCounter, Real accuracy)
+    : TermStructure(settlementDays, calendar), dayCounter_(dayCounter),
+      instruments_(instruments), accuracy_(accuracy) {
+        checkInstruments();
+    }
+
+    PiecewiseFlatForward::PiecewiseFlatForward(
+                                           const std::vector<Date>& dates,
+                                           const std::vector<Rate>& forwards,
+                                           const DayCounter& dayCounter)
+    : TermStructure(dates[0]), dayCounter_(dayCounter),
+      times_(dates.size()), dates_(dates), discounts_(dates.size()),
+      forwards_(forwards), zeroYields_(dates.size()) {
+
+        QL_REQUIRE(dates_.size()>0,
+                   "no dates given");
+        QL_REQUIRE(dates_.size()==forwards_.size(),
+                   "mismatch between dates and forwards");
+        times_[0]=0.0;
+        discounts_[0]=1.0;
+        zeroYields_[0]=forwards_[0];
+        for (Size i=1; i<dates_.size(); i++) {
+            times_[i] = dayCounter_.yearFraction(referenceDate(),
+                                                 dates_[i]);
+            zeroYields_[i] = (forwards_[i]*(times_[i]-times_[i-1])+
+                              zeroYields_[i-1]*times_[i-1])/times_[i];
+            discounts_[i] = QL_EXP(-zeroYields_[i]*times_[i]);
+        }
+        // we don't want to launch the boostrapping process
+        freeze();
+    }
+
+    void PiecewiseFlatForward::checkInstruments() {
+
+        QL_REQUIRE(!instruments_.empty(), "no instrument given");
 
         // sort rate helpers
         Size i;
@@ -64,7 +139,7 @@ namespace QuantLib {
         // check that there is no instruments with the same maturity
         for (i=1; i<instruments_.size(); i++) {
             Date m1 = instruments_[i-1]->maturity(),
-                m2 = instruments_[i]->maturity();
+                 m2 = instruments_[i]->maturity();
             QL_REQUIRE(m1 != m2,
                        "two instruments have the same maturity (" +
                        DateFormatter::toString(m1) + ")");
@@ -73,37 +148,9 @@ namespace QuantLib {
             registerWith(instruments_[i]);
     }
 
-    PiecewiseFlatForward::PiecewiseFlatForward(
-                                           const Date& todaysDate,
-                                           const std::vector<Date>& dates, 
-                                           const std::vector<Rate>& forwards,
-                                           const DayCounter& dayCounter)
-    : dayCounter_(dayCounter), todaysDate_(todaysDate), 
-      referenceDate_(dates[0]), times_(dates.size()), dates_(dates), 
-      discounts_(dates.size()), forwards_(forwards), 
-      zeroYields_(dates.size()) {
-
-        QL_REQUIRE(dates_.size()>0,
-                   "no dates given");
-        QL_REQUIRE(dates_.size()==forwards_.size(),
-                   "mismatch between dates and forwards");
-        times_[0]=0.0;
-        discounts_[0]=1.0;
-        zeroYields_[0]=forwards_[0];
-        for (Size i=1; i<dates_.size(); i++) {
-            times_[i] = dayCounter_.yearFraction(referenceDate_, 
-                                                 dates_[i]);
-            zeroYields_[i] = (forwards_[i]*(times_[i]-times_[i-1])+
-                              zeroYields_[i-1]*times_[i-1])/times_[i];
-            discounts_[i] = QL_EXP(-zeroYields_[i]*times_[i]);
-        }
-        // we don't want to launch the boostrapping process
-        freeze();
-    }
-
     void PiecewiseFlatForward::performCalculations() const {
         // values at reference date
-        dates_ = std::vector<Date>(1, referenceDate_);
+        dates_ = std::vector<Date>(1, referenceDate());
         times_ = std::vector<Time>(1, 0.0);
         discounts_ = std::vector<DiscountFactor>(1, 1.0);
         forwards_ = zeroYields_ = std::vector<Rate>();
@@ -177,7 +224,7 @@ namespace QuantLib {
         QL_DUMMY_RETURN(Rate());
     }
 
-    Rate PiecewiseFlatForward::compoundForwardImpl(Time t, Integer compFreq) 
+    Rate PiecewiseFlatForward::compoundForwardImpl(Time t, Integer compFreq)
                                                                       const {
 		Rate zy = zeroYieldImpl(t);
 		if (compFreq == 0)

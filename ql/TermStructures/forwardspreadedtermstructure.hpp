@@ -33,29 +33,27 @@ namespace QuantLib {
 
         \ingroup termstructures
     */
-    class ForwardSpreadedTermStructure : public ForwardRateStructure,
-                                         public Observer {
+    class ForwardSpreadedTermStructure : public ForwardRateStructure {
       public:
         ForwardSpreadedTermStructure(const Handle<TermStructure>&,
                                      const Handle<Quote>& spread);
         //! \name TermStructure interface
         //@{
         DayCounter dayCounter() const;
-        Date todaysDate() const;
-        Date referenceDate() const;
+        Calendar calendar() const;
+        #ifndef QL_DISABLE_DEPRECATED
+        const Date& todaysDate() const;
+        #endif
+        const Date& referenceDate() const;
         Date maxDate() const;
         Time maxTime() const;
-        //@}
-        //! \name Observer interface
-        //@{
-        void update();
         //@}
       protected:
         //! returns the spreaded forward rate
         Rate forwardImpl(Time) const;
         //! returns the spreaded zero yield rate
-        /*! \warning This method must disappear should the spread become a
-          curve
+        /*! \warning This method must disappear should the spread
+                     become a curve
         */
         Rate zeroYieldImpl(Time) const;
       private:
@@ -75,11 +73,17 @@ namespace QuantLib {
         return originalCurve_->dayCounter();
     }
 
-    inline Date ForwardSpreadedTermStructure::todaysDate() const {
-        return originalCurve_->todaysDate();
+    inline Calendar ForwardSpreadedTermStructure::calendar() const {
+        return originalCurve_->calendar();
     }
 
-    inline Date ForwardSpreadedTermStructure::referenceDate() const {
+    #ifndef QL_DISABLE_DEPRECATED
+    inline const Date& ForwardSpreadedTermStructure::todaysDate() const {
+        return originalCurve_->todaysDate();
+    }
+    #endif
+
+    inline const Date& ForwardSpreadedTermStructure::referenceDate() const {
         return originalCurve_->referenceDate();
     }
 
@@ -89,10 +93,6 @@ namespace QuantLib {
 
     inline Time ForwardSpreadedTermStructure::maxTime() const {
         return originalCurve_->maxTime();
-    }
-
-    inline void ForwardSpreadedTermStructure::update() {
-        notifyObservers();
     }
 
     inline Rate ForwardSpreadedTermStructure::forwardImpl(Time t) const {

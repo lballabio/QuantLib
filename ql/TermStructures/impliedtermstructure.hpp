@@ -28,47 +28,56 @@ namespace QuantLib {
 
     //! Implied term structure at a given date in the future
     /*! The given date will be the implied reference date.
-    
+
         \note This term structure will remain linked to the original
               structure, i.e., any changes in the latter will be
               reflected in this structure as well.
 
         \ingroup termstructures
     */
-    class ImpliedTermStructure : public DiscountStructure,
-                                 public Observer {
+    class ImpliedTermStructure : public DiscountStructure {
       public:
+        #ifndef QL_DISABLE_DEPRECATED
+        /*! \deprecated use the constructor without today's date; set the
+                        evaluation date through Settings::instance().
+        */
         ImpliedTermStructure(const Handle<TermStructure>&,
                              const Date& newTodaysDate,
                              const Date& newReferenceDate);
+        #endif
+        ImpliedTermStructure(const Handle<TermStructure>&,
+                             const Date& referenceDate);
         //! \name TermStructure interface
         //@{
         DayCounter dayCounter() const;
-        Date todaysDate() const;
-        Date referenceDate() const;
+        Calendar calendar() const;
         Date maxDate() const;
-        Time maxTime() const;
-        //@}
-        //! \name Observer interface
-        //@{
-        void update();
         //@}
       protected:
         //! returns the discount factor as seen from the evaluation date
         DiscountFactor discountImpl(Time) const;
       private:
         Handle<TermStructure> originalCurve_;
-        Date newTodaysDate_, newReferenceDate_;
     };
 
 
+    // inline definitions
+
+    #ifndef QL_DISABLE_DEPRECATED
+    inline ImpliedTermStructure::ImpliedTermStructure(
+                                               const Handle<TermStructure>& h,
+                                               const Date& todaysDate,
+                                               const Date& referenceDate)
+    : DiscountStructure(todaysDate, referenceDate),
+      originalCurve_(h) {
+        registerWith(originalCurve_);
+    }
+    #endif
 
     inline ImpliedTermStructure::ImpliedTermStructure(
                                                const Handle<TermStructure>& h,
-                                               const Date& newTodaysDate, 
-                                               const Date& newReferenceDate)
-    : originalCurve_(h), newTodaysDate_(newTodaysDate),
-      newReferenceDate_(newReferenceDate) {
+                                               const Date& referenceDate)
+    : DiscountStructure(referenceDate), originalCurve_(h) {
         registerWith(originalCurve_);
     }
 
@@ -76,39 +85,26 @@ namespace QuantLib {
         return originalCurve_->dayCounter();
     }
 
-    inline Date ImpliedTermStructure::todaysDate() const {
-        return newTodaysDate_;
-    }
-
-    inline Date ImpliedTermStructure::referenceDate() const {
-        return newReferenceDate_;
+    inline Calendar ImpliedTermStructure::calendar() const {
+        return originalCurve_->calendar();
     }
 
     inline Date ImpliedTermStructure::maxDate() const {
         return originalCurve_->maxDate();
     }
 
-    inline Time ImpliedTermStructure::maxTime() const {
-        return dayCounter().yearFraction(
-                                 newReferenceDate_,originalCurve_->maxDate());
-    }
-
-    inline void ImpliedTermStructure::update() {
-        notifyObservers();
-    }
-
     inline DiscountFactor ImpliedTermStructure::discountImpl(Time t) const {
         /* t is relative to the current reference date
            and needs to be converted to the time relative
            to the reference date of the original curve */
-        Time originalTime = 
-            t + dayCounter().yearFraction(originalCurve_->referenceDate(), 
-                                          newReferenceDate_);
+        Date ref = referenceDate();
+        Time originalTime =
+            t + dayCounter().yearFraction(originalCurve_->referenceDate(),ref);
         /* discount at evaluation date cannot be cached
            since the original curve could change between
            invocations of this method */
         return originalCurve_->discount(originalTime, true) /
-            originalCurve_->discount(referenceDate(), true);
+               originalCurve_->discount(ref, true);
     }
 
 }

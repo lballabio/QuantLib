@@ -54,7 +54,7 @@ namespace QuantLib {
     }
 
     void BPSBasketCalculator::visit(Coupon& c) {
-        Date today = termStructure_->todaysDate(),
+        Date today = Settings::instance().evaluationDate(),
              accrualStart = c.accrualStartDate(),
              accrualEnd = c.accrualEndDate(),
              payment = c.date();
@@ -77,7 +77,7 @@ namespace QuantLib {
     }
 
     void BPSBasketCalculator::visit(FixedRateCoupon& c) {
-        Date today = termStructure_->todaysDate(),
+        Date today = Settings::instance().evaluationDate(),
              payment = c.date();
         if (payment > today) {
             Real bps = sensfactor(payment);

@@ -73,10 +73,13 @@ namespace {
                                                  termStructure_));
         calendar_ = index_->calendar();
         today_ = calendar_.adjust(Date::todaysDate());
+        Settings::instance().setEvaluationDate(today_);
         settlement_ = calendar_.advance(today_,settlementDays_,Days);
-        termStructure_.linkTo(
-          boost::shared_ptr<TermStructure>(new FlatForward(today_,settlement_,
-                                                           0.05,Actual365())));
+        termStructure_.linkTo(flatRate(settlement_,0.05,Actual365()));
+    }
+
+    void finalize() {
+        Settings::instance().setEvaluationDate(Date());
     }
 
 }
@@ -108,6 +111,8 @@ void SwapTest::testFairRate() {
             }
         }
     }
+
+    finalize();
 }
 
 void SwapTest::testFairSpread() {
@@ -138,6 +143,8 @@ void SwapTest::testFairSpread() {
             }
         }
     }
+
+    finalize();
 }
 
 void SwapTest::testRateDependency() {
@@ -180,6 +187,8 @@ void SwapTest::testRateDependency() {
             }
         }
     }
+
+    finalize();
 }
 
 void SwapTest::testSpreadDependency() {
@@ -222,6 +231,8 @@ void SwapTest::testSpreadDependency() {
             }
         }
     }
+
+    finalize();
 }
 
 void SwapTest::testCachedValue() {
@@ -231,10 +242,9 @@ void SwapTest::testCachedValue() {
     initialize();
 
     today_ = Date(17,June,2002);
+    Settings::instance().setEvaluationDate(today_);
     settlement_ = calendar_.advance(today_,settlementDays_,Days);
-    termStructure_.linkTo(
-        boost::shared_ptr<TermStructure>(new FlatForward(today_,settlement_,
-                                                         0.05,Actual365())));
+    termStructure_.linkTo(flatRate(settlement_,0.05,Actual365()));
 
     boost::shared_ptr<SimpleSwap> swap = makeSwap(10, 0.06, 0.001);
 #ifndef QL_USE_INDEXED_COUPON
@@ -250,6 +260,8 @@ void SwapTest::testCachedValue() {
             DecimalFormatter::toString(swap->NPV(),12) + "\n"
             "    expected:   " +
             DecimalFormatter::toString(cachedNPV,12));
+
+    finalize();
 }
 
 

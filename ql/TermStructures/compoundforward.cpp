@@ -20,6 +20,7 @@
 
 namespace QuantLib {
 
+    #ifndef QL_DISABLE_DEPRECATED
     CompoundForward::CompoundForward(const Date & todaysDate,
                                      const Date & referenceDate,
                                      const std::vector<Date> &dates,
@@ -28,13 +29,33 @@ namespace QuantLib {
                                      const BusinessDayConvention conv,
                                      const Integer compounding,
                                      const DayCounter & dayCounter)
-    : todaysDate_(todaysDate), referenceDate_(referenceDate),
+    : ForwardRateStructure(todaysDate, referenceDate),
       dayCounter_(dayCounter), calendar_(calendar), conv_(conv),
       compounding_(compounding), needsBootstrap_(true),
       dates_(dates), forwards_(forwards) {
-        QL_REQUIRE(dates_.size() > 0, 
+        QL_REQUIRE(dates_.size() > 0,
                    "no input dates given");
-        QL_REQUIRE(forwards_.size() > 0, 
+        QL_REQUIRE(forwards_.size() > 0,
+                   "no input rates given");
+        QL_REQUIRE(dates_.size() == forwards_.size(),
+                   "inconsistent number of dates/forward rates");
+        calibrateNodes();
+    }
+    #endif
+
+    CompoundForward::CompoundForward(const Date & referenceDate,
+                                     const std::vector<Date> &dates,
+                                     const std::vector<Rate> &forwards,
+                                     const Calendar & calendar,
+                                     const BusinessDayConvention conv,
+                                     const Integer compounding,
+                                     const DayCounter & dayCounter)
+    : ForwardRateStructure(referenceDate), dayCounter_(dayCounter),
+      calendar_(calendar), conv_(conv), compounding_(compounding),
+      needsBootstrap_(true), dates_(dates), forwards_(forwards) {
+        QL_REQUIRE(dates_.size() > 0,
+                   "no input dates given");
+        QL_REQUIRE(forwards_.size() > 0,
                    "no input rates given");
         QL_REQUIRE(dates_.size() == forwards_.size(),
                    "inconsistent number of dates/forward rates");
@@ -47,26 +68,26 @@ namespace QuantLib {
 
         times_.resize(dates_.size());
         for (i = 0; i < dates_.size(); i++)
-            times_[i] = dayCounter_.yearFraction(referenceDate_,dates_[i]);
+            times_[i] = dayCounter_.yearFraction(referenceDate(),dates_[i]);
         fwdinterp_ = LinearInterpolation(times_.begin(), times_.end(),
                                          forwards_.begin());
-	 
+
         std::vector<Date> dates = dates_;
         std::vector<Time> times = times_;
         std::vector<Rate> forwards = forwards_;
-	 
+
         for (i = 0, ci = 1; i < dates.size(); i++) {
             Date rateDate = dates[i];
-            Date tmpDate = calendar_.advance(referenceDate_,
+            Date tmpDate = calendar_.advance(referenceDate(),
                                              ci, Months, conv_);
             while (rateDate > tmpDate) {
                 dates.insert(dates.begin() + i, tmpDate);
-                Time t = dayCounter_.yearFraction(referenceDate_,tmpDate);
+                Time t = dayCounter_.yearFraction(referenceDate(),tmpDate);
                 times.insert(times.begin() + i, t);
                 forwards.insert(forwards.begin() + i,
                                 fwdinterp_(t,true));
                 i++;
-                tmpDate = calendar_.advance(referenceDate_,
+                tmpDate = calendar_.advance(referenceDate(),
                                             ++ci, Months, conv_);
             }
             if (tmpDate == rateDate)
@@ -76,12 +97,12 @@ namespace QuantLib {
         times_ = times;
         forwards_ = forwards;
 
-        if (dates_[0] != referenceDate_) {
-            dates_.insert(dates_.begin(),referenceDate_);
+        if (dates_[0] != referenceDate()) {
+            dates_.insert(dates_.begin(),referenceDate());
             times_.insert(times_.begin(), 0.0);
             forwards_.insert(forwards_.begin(), forwards_[0]);
         }
-	 
+
         fwdinterp_ = LinearInterpolation(times_.begin(), times_.end(),
                                          forwards_.begin());
     }
@@ -92,10 +113,10 @@ namespace QuantLib {
                    "continuous compounding needs no bootstrap.");
         try {
             std::vector<DiscountFactor> discounts;
-            Date compoundDate = calendar_.advance(referenceDate_,
+            Date compoundDate = calendar_.advance(referenceDate(),
                                                   12/compounding_,
                                                   Months, conv_);
-            Time compoundTime = dayCounter_.yearFraction(referenceDate_,
+            Time compoundTime = dayCounter_.yearFraction(referenceDate(),
                                                          compoundDate);
             Real qFactor = 0.0;
             Size i;
@@ -103,14 +124,14 @@ namespace QuantLib {
             for (i = 0, ci = 1; i < dates_.size(); i++) {
                 DiscountFactor df;
                 Date rateDate = dates_[i];
-                Time t = dayCounter_.yearFraction(referenceDate_,rateDate);
+                Time t = dayCounter_.yearFraction(referenceDate(),rateDate);
                 Rate r = instantaneousForward(t);
                 if (t <= compoundTime) {
                     df = 1.0/(1.0+r*t);
                     qFactor = df*t;
                 } else {
-                    Date tmpDate = 
-                        calendar_.advance(referenceDate_,
+                    Date tmpDate =
+                        calendar_.advance(referenceDate(),
                                           (12/compounding_) * (ci+1),
                                           Months, conv_);
                     Time tt = dayCounter_.yearFraction(compoundDate,
@@ -125,7 +146,7 @@ namespace QuantLib {
                 discounts.push_back(df);
             }
             discountCurve_ = boost::shared_ptr<DiscountCurve>(
-                     new ExtendedDiscountCurve(todaysDate_, dates_, discounts,
+                     new ExtendedDiscountCurve(dates_, discounts,
                                                calendar_, conv_, dayCounter_));
         }
         catch (std::exception& ) {

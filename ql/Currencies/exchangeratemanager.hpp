@@ -58,7 +58,7 @@ namespace QuantLib {
         */
         ExchangeRate lookup(const Currency& source,
                             const Currency& target,
-                            const Date& date,
+                            Date date = Date(),
                             ExchangeRate::Type type =
                                                  ExchangeRate::Derived) const;
         //! remove the added exchange rates

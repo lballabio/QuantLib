@@ -20,6 +20,7 @@
 
 namespace QuantLib {
 
+    #ifndef QL_DISABLE_DEPRECATED
     ExtendedDiscountCurve::ExtendedDiscountCurve(
                                  const Date &todaysDate,
                                  const std::vector<Date>& dates,
@@ -31,27 +32,39 @@ namespace QuantLib {
       calendar_(calendar), conv_(conv) {
         calibrateNodes();
     }
+    #endif
+
+    ExtendedDiscountCurve::ExtendedDiscountCurve(
+                                 const std::vector<Date>& dates,
+                                 const std::vector<DiscountFactor>& discounts,
+                                 const Calendar& calendar,
+                                 const BusinessDayConvention conv,
+                                 const DayCounter& dayCounter)
+    : DiscountCurve(dates,discounts,dayCounter),
+      calendar_(calendar), conv_(conv) {
+        calibrateNodes();
+    }
 
     void ExtendedDiscountCurve::calibrateNodes() const {
         Size i;
         Integer ci;
-	 
+
         std::vector<Date> dates = dates_;
         std::vector<Time> times = times_;
         std::vector<Rate> discounts = discounts_;
-	 
+
         for (i = 0, ci = 1; i < dates.size(); i++) {
             Date rateDate = dates[i];
-            Date tmpDate = calendar_.advance(referenceDate_,
+            Date tmpDate = calendar_.advance(referenceDate(),
                                              ci, Months, conv_);
             while (rateDate > tmpDate) {
                 dates.insert(dates.begin() + i, tmpDate);
-                Time t = dayCounter_.yearFraction(referenceDate_,tmpDate);
+                Time t = dayCounter_.yearFraction(referenceDate(),tmpDate);
                 times.insert(times.begin() + i, t);
                 discounts.insert(discounts.begin() + i,
                                  interpolation_(t,true));
                 i++;
-                tmpDate = calendar_.advance(referenceDate_,
+                tmpDate = calendar_.advance(referenceDate(),
                                             ++ci, Months, conv_);
             }
             if (tmpDate == rateDate)
@@ -65,13 +78,13 @@ namespace QuantLib {
                                                 discounts_.begin());
     }
 
-    boost::shared_ptr<TermStructure> 
+    boost::shared_ptr<TermStructure>
     ExtendedDiscountCurve::reversebootstrap(Integer compounding) const {
         std::vector<Rate> forwards;
-        Date compoundDate = calendar_.advance(referenceDate_,
+        Date compoundDate = calendar_.advance(referenceDate(),
                                               12/compounding,
                                               Months, conv_);
-        Time compoundTime = dayCounter_.yearFraction(referenceDate_,
+        Time compoundTime = dayCounter_.yearFraction(referenceDate(),
                                                      compoundDate);
         Real qFactor = 0.0;
         Size i;
@@ -80,13 +93,13 @@ namespace QuantLib {
         for (i = 1, ci = 1; i < dates_.size(); i++) {
             Rate fwd;
             Date rateDate = dates_[i];
-            Time t = dayCounter_.yearFraction(referenceDate_,rateDate);
+            Time t = dayCounter_.yearFraction(referenceDate(),rateDate);
             DiscountFactor df = discount(t);
             if (t <= compoundTime) {
                 fwd = ((1.0/df)-1.0)/t;
                 qFactor = df*t;
             } else {
-                Date tmpDate = calendar_.advance(referenceDate_,
+                Date tmpDate = calendar_.advance(referenceDate(),
                                                  (12/compounding) * (ci+1),
                                                  Months, conv_);
                 Time tt = dayCounter_.yearFraction(compoundDate,
@@ -104,13 +117,13 @@ namespace QuantLib {
         forwards.insert(forwards.begin(),forwards[0]);
 
         return boost::shared_ptr<CompoundForward>(
-                        new CompoundForward(todaysDate_, referenceDate_,
+                        new CompoundForward(referenceDate(),
                                             dates_, forwards, calendar_,conv_,
                                             compounding, dayCounter_));
     }
 
-    Rate ExtendedDiscountCurve::compoundForwardImpl(Time t, 
-                                                    Integer compounding) 
+    Rate ExtendedDiscountCurve::compoundForwardImpl(Time t,
+                                                    Integer compounding)
                                                                       const {
         if (compounding == 0)
             return DiscountCurve::compoundForwardImpl(t, compounding);
@@ -118,7 +131,7 @@ namespace QuantLib {
                                                           true);
     }
 
-    boost::shared_ptr<TermStructure> 
+    boost::shared_ptr<TermStructure>
     ExtendedDiscountCurve::forwardCurve(Integer compounding) const {
         if (forwardCurveMap_.find(compounding) == forwardCurveMap_.end())
             forwardCurveMap_[compounding] = reversebootstrap(compounding);

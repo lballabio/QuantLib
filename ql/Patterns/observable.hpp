@@ -34,7 +34,7 @@ namespace QuantLib {
         friend class Observer;
       public:
         virtual ~Observable() {}
-        /*! This method should be called at the end of non-const methods 
+        /*! This method should be called at the end of non-const methods
             or when the programmer desires to notify any changes.
         */
         void notifyObservers();
@@ -67,7 +67,7 @@ namespace QuantLib {
         void unregisterWith(const boost::shared_ptr<T>& h) {
             if (h) {
                 boost::shared_ptr<Observable> obs = h;
-                for (iterator i=observables_.begin(); 
+                for (iterator i=observables_.begin();
                               i!=observables_.end();
                               ++i) {
                     if (*i == obs) {

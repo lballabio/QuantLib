@@ -79,7 +79,7 @@ namespace {
         settlementDays = 0;
         fixingDays = 0;
         today = calendar.adjust(Date::todaysDate());
-        // just for fun
+        Settings::instance().setEvaluationDate(today);
         settlement = calendar.advance(today,settlementDays,Days);
         convention = ModifiedFollowing;
         dayCounter = Actual365();
@@ -108,9 +108,13 @@ namespace {
         }
 
         termStructure = boost::shared_ptr<TermStructure>(
-                             new CompoundForward(today,settlement,dates,rates,
+                             new CompoundForward(settlement,dates,rates,
                                                  calendar,convention,
                                                  frequency,dayCounter));
+    }
+
+    void finalize() {
+        Settings::instance().setEvaluationDate(Date());
     }
 
 }
@@ -150,6 +154,8 @@ void CompoundForwardTest::testSuppliedRates() {
                 + RateFormatter::toString(expectedRate,8));
         }
     }
+
+    finalize();
 }
 
 void CompoundForwardTest::testConvertedRates() {
@@ -189,6 +195,8 @@ void CompoundForwardTest::testConvertedRates() {
                 + RateFormatter::toString(expectedRate,8));
         }
     }
+
+    finalize();
 }
 
 

@@ -54,7 +54,9 @@ namespace QuantLib {
                        const DayCounter& dayCounter)
     : RateHelper(rate), n_(n), units_(units),
       settlementDays_(settlementDays), calendar_(calendar),
-      convention_(convention), dayCounter_(dayCounter) {}
+      convention_(convention), dayCounter_(dayCounter) {
+        registerWith(Settings::instance().evaluationDateGuard());
+    }
 
     DepositRateHelper::DepositRateHelper(
                        Rate rate,
@@ -64,7 +66,9 @@ namespace QuantLib {
                        const DayCounter& dayCounter)
     : RateHelper(rate), n_(n), units_(units),
       settlementDays_(settlementDays), calendar_(calendar),
-      convention_(convention), dayCounter_(dayCounter) {}
+      convention_(convention), dayCounter_(dayCounter) {
+        registerWith(Settings::instance().evaluationDateGuard());
+    }
 
     Real DepositRateHelper::impliedQuote() const {
         QL_REQUIRE(termStructure_ != 0, "term structure not set");
@@ -85,7 +89,7 @@ namespace QuantLib {
 
     void DepositRateHelper::setTermStructure(TermStructure* t) {
         RateHelper::setTermStructure(t);
-        Date today = termStructure_->todaysDate();
+        Date today = Settings::instance().evaluationDate();
         settlement_ = calendar_.advance(today,settlementDays_,Days);
         maturity_ = calendar_.advance(
                                       settlement_,n_,units_,convention_);
@@ -109,7 +113,9 @@ namespace QuantLib {
       monthsToStart_(monthsToStart), monthsToEnd_(monthsToEnd),
       settlementDays_(settlementDays),
       calendar_(calendar), convention_(convention),
-      dayCounter_(dayCounter) {}
+      dayCounter_(dayCounter) {
+        registerWith(Settings::instance().evaluationDateGuard());
+    }
 
     FraRateHelper::FraRateHelper(Rate rate,
                                  Integer monthsToStart, Integer monthsToEnd,
@@ -121,7 +127,9 @@ namespace QuantLib {
       monthsToStart_(monthsToStart), monthsToEnd_(monthsToEnd),
       settlementDays_(settlementDays),
       calendar_(calendar), convention_(convention),
-      dayCounter_(dayCounter) {}
+      dayCounter_(dayCounter) {
+        registerWith(Settings::instance().evaluationDateGuard());
+    }
 
     Real FraRateHelper::impliedQuote() const {
         QL_REQUIRE(termStructure_ != 0, "term structure not set");
@@ -140,7 +148,7 @@ namespace QuantLib {
 
     void FraRateHelper::setTermStructure(TermStructure* t) {
         RateHelper::setTermStructure(t);
-        Date today = termStructure_->todaysDate();
+        Date today = Settings::instance().evaluationDate();
         settlement_ = calendar_.advance(today,settlementDays_,Days);
         start_ = calendar_.advance(
                                settlement_,monthsToStart_,Months,convention_);
@@ -230,7 +238,9 @@ namespace QuantLib {
       floatingConvention_(floatingConvention),
       fixedFrequency_(fixedFrequency),
       floatingFrequency_(floatingFrequency),
-      fixedDayCount_(fixedDayCount) {}
+      fixedDayCount_(fixedDayCount) {
+        registerWith(Settings::instance().evaluationDateGuard());
+    }
 
     SwapRateHelper::SwapRateHelper(
                             Rate rate,
@@ -247,7 +257,9 @@ namespace QuantLib {
       floatingConvention_(floatingConvention),
       fixedFrequency_(fixedFrequency),
       floatingFrequency_(floatingFrequency),
-      fixedDayCount_(fixedDayCount) {}
+      fixedDayCount_(fixedDayCount) {
+        registerWith(Settings::instance().evaluationDateGuard());
+    }
 
     void SwapRateHelper::setTermStructure(TermStructure* t) {
         // do not set the relinkable handle as an observer -
@@ -256,7 +268,7 @@ namespace QuantLib {
                               boost::shared_ptr<TermStructure>(t,no_deletion),
                               false);
         RateHelper::setTermStructure(t);
-        Date today = termStructure_->todaysDate();
+        Date today = Settings::instance().evaluationDate();
         settlement_ = calendar_.advance(today,settlementDays_,Days);
         Date endDate = calendar_.advance(settlement_, n_, units_,
                                          floatingConvention_);

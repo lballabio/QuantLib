@@ -116,13 +116,11 @@ namespace QuantLib {
             boost::shared_ptr<TermStructure>(
                new ImpliedTermStructure(
                              Handle<TermStructure>(process->dividendYield()),
-                             this->arguments_.resetDate,
                              this->arguments_.resetDate)));
         Handle<TermStructure> riskFreeRate(
             boost::shared_ptr<TermStructure>(
                new ImpliedTermStructure(
                               Handle<TermStructure>(process->riskFreeRate()),
-                              this->arguments_.resetDate,
                               this->arguments_.resetDate)));
         // The following approach is ok if the vol is at most
         // time dependant. It is plain wrong if it is asset dependant.

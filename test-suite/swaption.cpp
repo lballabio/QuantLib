@@ -82,7 +82,6 @@ namespace {
     }
 
     void initialize() {
-        today_ = Date::todaysDate();
         settlementDays_ = 2;
         fixingDays_ = 2;
         nominal_ = 100.0;
@@ -95,10 +94,14 @@ namespace {
                                      new Euribor(12/floatingFrequency_,Months,
                                                  termStructure_));
         calendar_ = index_->calendar();
+        today_ = calendar_.adjust(Date::todaysDate());
+        Settings::instance().setEvaluationDate(today_);
         settlement_ = calendar_.advance(today_,settlementDays_,Days);
-        termStructure_.linkTo(
-          boost::shared_ptr<TermStructure>(new FlatForward(today_,settlement_,
-                                                           0.05,Actual365())));
+        termStructure_.linkTo(flatRate(settlement_,0.05,Actual365()));
+    }
+
+    void finalize() {
+        Settings::instance().setEvaluationDate(Date());
     }
 
 }
@@ -177,6 +180,8 @@ void SwaptionTest::testStrikeDependency() {
             }
         }
     }
+
+    finalize();
 }
 
 void SwaptionTest::testSpreadDependency() {
@@ -253,6 +258,8 @@ void SwaptionTest::testSpreadDependency() {
             }
         }
     }
+
+    finalize();
 }
 
 void SwaptionTest::testSpreadTreatment() {
@@ -304,6 +311,8 @@ void SwaptionTest::testSpreadTreatment() {
             }
         }
     }
+
+    finalize();
 }
 
 void SwaptionTest::testCachedValue() {
@@ -314,9 +323,8 @@ void SwaptionTest::testCachedValue() {
 
     today_ = Date(13,March,2002);
     settlement_ = Date(15,March,2002);
-    termStructure_.linkTo(
-        boost::shared_ptr<TermStructure>(new FlatForward(today_,settlement_,
-                                                         0.05,Actual365())));
+    Settings::instance().setEvaluationDate(today_);
+    termStructure_.linkTo(flatRate(settlement_,0.05,Actual365()));
     Date exerciseDate = calendar_.advance(settlement_,5,Years);
     Date startDate = calendar_.advance(exerciseDate,settlementDays_,Days);
     boost::shared_ptr<SimpleSwap> swap = makeSwap(startDate,10,0.06,0.0,true);
@@ -335,6 +343,8 @@ void SwaptionTest::testCachedValue() {
             DecimalFormatter::toString(swaption->NPV(),12) + "\n"
             "    expected:   " +
             DecimalFormatter::toString(cachedNPV,12));
+
+    finalize();
 }
 
 

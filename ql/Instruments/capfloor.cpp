@@ -45,7 +45,9 @@ namespace QuantLib {
         std::vector<boost::shared_ptr<CashFlow> >::const_iterator i;
         for (i = floatingLeg_.begin(); i != floatingLeg_.end(); ++i)
             registerWith(*i);
+
         registerWith(termStructure);
+        registerWith(Settings::instance().evaluationDateGuard());
     }
 
     bool CapFloor::isExpired() const {
@@ -70,7 +72,7 @@ namespace QuantLib {
         arguments->forwards.clear();
         arguments->nominals.clear();
 
-        Date today = termStructure_->todaysDate();
+        Date today = Settings::instance().evaluationDate();
         Date settlement = termStructure_->referenceDate();
         DayCounter counter = termStructure_->dayCounter();
 

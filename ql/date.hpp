@@ -163,6 +163,7 @@ namespace QuantLib {
         Month month() const;
         Year year() const;
         BigInteger serialNumber() const;
+        bool null() const;
         //@}
 
         //! \name date algebra
@@ -269,6 +270,10 @@ namespace QuantLib {
 
     inline BigInteger Date::serialNumber() const {
         return serialNumber_;
+    }
+
+    inline bool Date::null() const {
+        return serialNumber_ == 0L;
     }
 
     inline Date Date::operator+(BigInteger days) const {

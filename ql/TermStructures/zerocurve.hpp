@@ -19,8 +19,8 @@
     \brief pre-bootstrapped zero curve structure
 */
 
-#ifndef quantlib_zero_curve_h
-#define quantlib_zero_curve_h
+#ifndef quantlib_zero_curve_hpp
+#define quantlib_zero_curve_hpp
 
 #include <ql/termstructure.hpp>
 #include <ql/DayCounters/actual365.hpp>
@@ -33,14 +33,19 @@ namespace QuantLib {
     class ZeroCurve : public ZeroYieldStructure {
       public:
         // constructor
-        ZeroCurve (const Date& todaysDate,
-                   const std::vector<Date>& dates,
-                   const std::vector<Rate>& yields,
-                   const DayCounter& dayCounter = Actual365());
-
+        #ifndef QL_DISABLE_DEPRECATED
+        /*! \deprecated use the constructor without today's date */
+        ZeroCurve(const Date& todaysDate,
+                  const std::vector<Date>& dates,
+                  const std::vector<Rate>& yields,
+                  const DayCounter& dayCounter = Actual365());
+        #endif
+        ZeroCurve(const std::vector<Date>& dates,
+                  const std::vector<Rate>& yields,
+                  const DayCounter& dayCounter = Actual365());
+        // inspectors
         DayCounter dayCounter() const;
-        Date todaysDate() const {return todaysDate_; }
-        Date referenceDate() const;
+        Calendar calendar() const;
         const std::vector<Date>& dates() const;
         Date maxDate() const;
         const std::vector<Time>& times() const;
@@ -48,7 +53,6 @@ namespace QuantLib {
       protected:
         Rate zeroYieldImpl(Time t) const;
       private:
-        Date todaysDate_;
         std::vector<Date> dates_;
         std::vector<Rate> yields_;
         DayCounter dayCounter_;
@@ -58,12 +62,12 @@ namespace QuantLib {
 
     // inline definitions
 
-    inline Date ZeroCurve::referenceDate() const {
-        return dates_[0];
-    }
-
     inline DayCounter ZeroCurve::dayCounter() const {
         return dayCounter_;
+    }
+
+    inline Calendar ZeroCurve::calendar() const {
+        return Calendar();
     }
 
     inline const std::vector<Date>& ZeroCurve::dates() const {

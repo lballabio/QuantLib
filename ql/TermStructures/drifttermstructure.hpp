@@ -30,13 +30,12 @@ namespace QuantLib {
     //! Drift term structure
     /*! Drift term structure for modelling the common drift term:
         riskFreeRate - dividendYield - 0.5*vol*vol
-    
+
         \note This term structure will remain linked to the original
               structures, i.e., any changes in the latters will be
               reflected in this structure as well.
     */
-    class DriftTermStructure : public ZeroYieldStructure,
-                               public Observer {
+    class DriftTermStructure : public ZeroYieldStructure {
       public:
         DriftTermStructure(const Handle<TermStructure>& riskFreeTS,
                            const Handle<TermStructure>& dividendTS,
@@ -44,13 +43,12 @@ namespace QuantLib {
         //! \name TermStructure interface
         //@{
         DayCounter dayCounter() const;
-        Date todaysDate() const;
-        Date referenceDate() const;
-        Date maxDate() const {return maxDate_; }
-        //@}
-        //! \name Observer interface
-        //@{
-        void update();
+        Calendar calendar() const;
+        #ifndef QL_DISABLE_DEPRECATED
+        const Date& todaysDate() const;
+        #endif
+        const Date& referenceDate() const;
+        Date maxDate() const;
         //@}
       protected:
         //! returns the discount factor as seen from the evaluation date
@@ -63,6 +61,7 @@ namespace QuantLib {
     };
 
 
+    // inline definitions
 
     inline DriftTermStructure::DriftTermStructure(
                               const Handle<TermStructure>& riskFreeTS,
@@ -84,26 +83,31 @@ namespace QuantLib {
         return riskFreeTS_->dayCounter();
     }
 
-    inline Date DriftTermStructure::todaysDate() const {
-        return riskFreeTS_->todaysDate();
+    inline Calendar DriftTermStructure::calendar() const {
+        return riskFreeTS_->calendar();
     }
 
-    inline Date DriftTermStructure::referenceDate() const {
+    #ifndef QL_DISABLE_DEPRECATED
+    inline const Date& DriftTermStructure::todaysDate() const {
+        return riskFreeTS_->todaysDate();
+    }
+    #endif
+
+    inline const Date& DriftTermStructure::referenceDate() const {
         return riskFreeTS_->referenceDate();
     }
 
-    inline void DriftTermStructure::update() {
-        notifyObservers();
+    inline Date DriftTermStructure::maxDate() const {
+        return maxDate_;
     }
 
     inline Rate DriftTermStructure::zeroYieldImpl(Time t) const {
         // warning: here it is assumed that all TS have the same daycount.
-        //          It should be QL_REQUIREd, or maybe even enforced in the
-        //          whole QuantLib
+        //          It should be QL_REQUIREd
         return riskFreeTS_->zeroYield(referenceDate(),true)
-            - dividendTS_->zeroYield(t, true)
-            - 0.5 * blackVolTS_->blackVol(t, underlyingLevel_, true)
-                  * blackVolTS_->blackVol(t, underlyingLevel_, true);
+             - dividendTS_->zeroYield(t, true)
+             - 0.5 * blackVolTS_->blackVol(t, underlyingLevel_, true)
+                   * blackVolTS_->blackVol(t, underlyingLevel_, true);
     }
 }
 

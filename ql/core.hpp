@@ -47,6 +47,7 @@
 #include <ql/quote.hpp>
 #include <ql/relinkablehandle.hpp>
 #include <ql/schedule.hpp>
+#include <ql/settings.hpp>
 #include <ql/solver1d.hpp>
 #include <ql/stochasticprocess.hpp>
 #include <ql/swaptionvolstructure.hpp>

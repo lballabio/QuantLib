@@ -18,6 +18,7 @@
 
 #include <ql/Currencies/exchangeratemanager.hpp>
 #include <ql/Currencies/europe.hpp>
+#include <ql/settings.hpp>
 
 namespace QuantLib {
 
@@ -43,8 +44,11 @@ namespace QuantLib {
 
     ExchangeRate ExchangeRateManager::lookup(const Currency& source,
                                              const Currency& target,
-                                             const Date& date,
+                                             Date date,
                                              ExchangeRate::Type type) const {
+        if (date.null())
+            date = Settings::instance().evaluationDate();
+
         if (type == ExchangeRate::Direct) {
             return directLookup(source,target,date);
         } else if (source.triangulationCurrency().isValid()) {

@@ -50,7 +50,7 @@ namespace QuantLib {
     void BinomialVanillaEngine<T>::calculate() const {
 
         Real s0 = arguments_.blackScholesProcess->stateVariable()->value();
-        Volatility v = 
+        Volatility v =
             arguments_.blackScholesProcess->blackVolatility()->blackVol(
                                          arguments_.exercise->lastDate(), s0);
         Date maturityDate = arguments_.exercise->lastDate();
@@ -58,20 +58,18 @@ namespace QuantLib {
             ->zeroYield(maturityDate);
         Rate q = arguments_.blackScholesProcess->dividendYield()
             ->zeroYield(maturityDate);
-        Date referenceDate = 
+        Date referenceDate =
             arguments_.blackScholesProcess->riskFreeRate()->referenceDate();
-        Date todaysDate = 
-            arguments_.blackScholesProcess->riskFreeRate()->todaysDate();
-        DayCounter dc = 
+        DayCounter dc =
             arguments_.blackScholesProcess->riskFreeRate()->dayCounter();
 
         // binomial trees with constant coefficient
         Handle<TermStructure> flatRiskFree(
             boost::shared_ptr<TermStructure>(
-                new FlatForward(todaysDate, referenceDate, r, dc)));
+                new FlatForward(referenceDate, r, dc)));
         Handle<TermStructure> flatDividends(
             boost::shared_ptr<TermStructure>(
-                new FlatForward(todaysDate, referenceDate, q, dc)));
+                new FlatForward(referenceDate, q, dc)));
         Handle<BlackVolTermStructure> flatVol(
             boost::shared_ptr<BlackVolTermStructure>(
                 new BlackConstantVol(referenceDate, v, dc)));
