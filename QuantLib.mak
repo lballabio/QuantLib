@@ -70,8 +70,6 @@ CLEAN :
 	-@erase "$(INTDIR)\cashflowvectors.sbr"
 	-@erase "$(INTDIR)\cliquetoption.obj"
 	-@erase "$(INTDIR)\cliquetoption.sbr"
-	-@erase "$(INTDIR)\controlvariatedpathpricer.obj"
-	-@erase "$(INTDIR)\controlvariatedpathpricer.sbr"
 	-@erase "$(INTDIR)\dataformatters.obj"
 	-@erase "$(INTDIR)\dataformatters.sbr"
 	-@erase "$(INTDIR)\date.obj"
@@ -240,10 +238,13 @@ BSC32_SBRS= \
 	"$(INTDIR)\segmentintegral.sbr" \
 	"$(INTDIR)\statistics.sbr" \
 	"$(INTDIR)\symmetricschurdecomposition.sbr" \
+	"$(INTDIR)\arithmeticapopathpricer.sbr" \
+	"$(INTDIR)\arithmeticasopathpricer.sbr" \
 	"$(INTDIR)\basketpathpricer.sbr" \
-	"$(INTDIR)\controlvariatedpathpricer.sbr" \
 	"$(INTDIR)\europeanpathpricer.sbr" \
 	"$(INTDIR)\everestpathpricer.sbr" \
+	"$(INTDIR)\geometricapopathpricer.sbr" \
+	"$(INTDIR)\geometricasopathpricer.sbr" \
 	"$(INTDIR)\getcovariance.sbr" \
 	"$(INTDIR)\himalayapathpricer.sbr" \
 	"$(INTDIR)\pagodapathpricer.sbr" \
@@ -253,6 +254,8 @@ BSC32_SBRS= \
 	"$(INTDIR)\binaryoption.sbr" \
 	"$(INTDIR)\bsmnumericaloption.sbr" \
 	"$(INTDIR)\cliquetoption.sbr" \
+	"$(INTDIR)\discretegeometricapo.sbr" \
+	"$(INTDIR)\discretegeometricaso.sbr" \
 	"$(INTDIR)\dividendamericanoption.sbr" \
 	"$(INTDIR)\dividendeuropeanoption.sbr" \
 	"$(INTDIR)\dividendoption.sbr" \
@@ -261,6 +264,8 @@ BSC32_SBRS= \
 	"$(INTDIR)\europeanoption.sbr" \
 	"$(INTDIR)\finitedifferenceeuropean.sbr" \
 	"$(INTDIR)\mcbasket.sbr" \
+	"$(INTDIR)\mcdiscretearithmeticapo.sbr" \
+	"$(INTDIR)\mcdiscretearithmeticaso.sbr" \
 	"$(INTDIR)\mceuropean.sbr" \
 	"$(INTDIR)\mceverest.sbr" \
 	"$(INTDIR)\mchimalaya.sbr" \
@@ -284,15 +289,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\date.sbr" \
 	"$(INTDIR)\option.sbr" \
 	"$(INTDIR)\scheduler.sbr" \
-	"$(INTDIR)\solver1d.sbr" \
-	"$(INTDIR)\discretegeometricaso.sbr" \
-	"$(INTDIR)\discretegeometricapo.sbr" \
-	"$(INTDIR)\mcdiscretearithmeticapo.sbr" \
-	"$(INTDIR)\mcdiscretearithmeticaso.sbr" \
-	"$(INTDIR)\geometricasopathpricer.sbr" \
-	"$(INTDIR)\geometricapopathpricer.sbr" \
-	"$(INTDIR)\arithmeticasopathpricer.sbr" \
-	"$(INTDIR)\arithmeticapopathpricer.sbr"
+	"$(INTDIR)\solver1d.sbr"
 
 "$(OUTDIR)\QuantLib.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -329,10 +326,13 @@ LIB32_OBJS= \
 	"$(INTDIR)\segmentintegral.obj" \
 	"$(INTDIR)\statistics.obj" \
 	"$(INTDIR)\symmetricschurdecomposition.obj" \
+	"$(INTDIR)\arithmeticapopathpricer.obj" \
+	"$(INTDIR)\arithmeticasopathpricer.obj" \
 	"$(INTDIR)\basketpathpricer.obj" \
-	"$(INTDIR)\controlvariatedpathpricer.obj" \
 	"$(INTDIR)\europeanpathpricer.obj" \
 	"$(INTDIR)\everestpathpricer.obj" \
+	"$(INTDIR)\geometricapopathpricer.obj" \
+	"$(INTDIR)\geometricasopathpricer.obj" \
 	"$(INTDIR)\getcovariance.obj" \
 	"$(INTDIR)\himalayapathpricer.obj" \
 	"$(INTDIR)\pagodapathpricer.obj" \
@@ -342,6 +342,8 @@ LIB32_OBJS= \
 	"$(INTDIR)\binaryoption.obj" \
 	"$(INTDIR)\bsmnumericaloption.obj" \
 	"$(INTDIR)\cliquetoption.obj" \
+	"$(INTDIR)\discretegeometricapo.obj" \
+	"$(INTDIR)\discretegeometricaso.obj" \
 	"$(INTDIR)\dividendamericanoption.obj" \
 	"$(INTDIR)\dividendeuropeanoption.obj" \
 	"$(INTDIR)\dividendoption.obj" \
@@ -350,6 +352,8 @@ LIB32_OBJS= \
 	"$(INTDIR)\europeanoption.obj" \
 	"$(INTDIR)\finitedifferenceeuropean.obj" \
 	"$(INTDIR)\mcbasket.obj" \
+	"$(INTDIR)\mcdiscretearithmeticapo.obj" \
+	"$(INTDIR)\mcdiscretearithmeticaso.obj" \
 	"$(INTDIR)\mceuropean.obj" \
 	"$(INTDIR)\mceverest.obj" \
 	"$(INTDIR)\mchimalaya.obj" \
@@ -373,15 +377,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\date.obj" \
 	"$(INTDIR)\option.obj" \
 	"$(INTDIR)\scheduler.obj" \
-	"$(INTDIR)\solver1d.obj" \
-	"$(INTDIR)\discretegeometricaso.obj" \
-	"$(INTDIR)\discretegeometricapo.obj" \
-	"$(INTDIR)\mcdiscretearithmeticapo.obj" \
-	"$(INTDIR)\mcdiscretearithmeticaso.obj" \
-	"$(INTDIR)\geometricasopathpricer.obj" \
-	"$(INTDIR)\geometricapopathpricer.obj" \
-	"$(INTDIR)\arithmeticasopathpricer.obj" \
-	"$(INTDIR)\arithmeticapopathpricer.obj"
+	"$(INTDIR)\solver1d.obj"
 
 ".\lib\Win32\VisualStudio\QuantLib.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
     $(LIB32) @<<
@@ -428,8 +424,6 @@ CLEAN :
 	-@erase "$(INTDIR)\cashflowvectors.sbr"
 	-@erase "$(INTDIR)\cliquetoption.obj"
 	-@erase "$(INTDIR)\cliquetoption.sbr"
-	-@erase "$(INTDIR)\controlvariatedpathpricer.obj"
-	-@erase "$(INTDIR)\controlvariatedpathpricer.sbr"
 	-@erase "$(INTDIR)\dataformatters.obj"
 	-@erase "$(INTDIR)\dataformatters.sbr"
 	-@erase "$(INTDIR)\date.obj"
@@ -599,10 +593,13 @@ BSC32_SBRS= \
 	"$(INTDIR)\segmentintegral.sbr" \
 	"$(INTDIR)\statistics.sbr" \
 	"$(INTDIR)\symmetricschurdecomposition.sbr" \
+	"$(INTDIR)\arithmeticapopathpricer.sbr" \
+	"$(INTDIR)\arithmeticasopathpricer.sbr" \
 	"$(INTDIR)\basketpathpricer.sbr" \
-	"$(INTDIR)\controlvariatedpathpricer.sbr" \
 	"$(INTDIR)\europeanpathpricer.sbr" \
 	"$(INTDIR)\everestpathpricer.sbr" \
+	"$(INTDIR)\geometricapopathpricer.sbr" \
+	"$(INTDIR)\geometricasopathpricer.sbr" \
 	"$(INTDIR)\getcovariance.sbr" \
 	"$(INTDIR)\himalayapathpricer.sbr" \
 	"$(INTDIR)\pagodapathpricer.sbr" \
@@ -612,6 +609,8 @@ BSC32_SBRS= \
 	"$(INTDIR)\binaryoption.sbr" \
 	"$(INTDIR)\bsmnumericaloption.sbr" \
 	"$(INTDIR)\cliquetoption.sbr" \
+	"$(INTDIR)\discretegeometricapo.sbr" \
+	"$(INTDIR)\discretegeometricaso.sbr" \
 	"$(INTDIR)\dividendamericanoption.sbr" \
 	"$(INTDIR)\dividendeuropeanoption.sbr" \
 	"$(INTDIR)\dividendoption.sbr" \
@@ -620,6 +619,8 @@ BSC32_SBRS= \
 	"$(INTDIR)\europeanoption.sbr" \
 	"$(INTDIR)\finitedifferenceeuropean.sbr" \
 	"$(INTDIR)\mcbasket.sbr" \
+	"$(INTDIR)\mcdiscretearithmeticapo.sbr" \
+	"$(INTDIR)\mcdiscretearithmeticaso.sbr" \
 	"$(INTDIR)\mceuropean.sbr" \
 	"$(INTDIR)\mceverest.sbr" \
 	"$(INTDIR)\mchimalaya.sbr" \
@@ -643,15 +644,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\date.sbr" \
 	"$(INTDIR)\option.sbr" \
 	"$(INTDIR)\scheduler.sbr" \
-	"$(INTDIR)\solver1d.sbr" \
-	"$(INTDIR)\discretegeometricaso.sbr" \
-	"$(INTDIR)\discretegeometricapo.sbr" \
-	"$(INTDIR)\mcdiscretearithmeticapo.sbr" \
-	"$(INTDIR)\mcdiscretearithmeticaso.sbr" \
-	"$(INTDIR)\geometricasopathpricer.sbr" \
-	"$(INTDIR)\geometricapopathpricer.sbr" \
-	"$(INTDIR)\arithmeticasopathpricer.sbr" \
-	"$(INTDIR)\arithmeticapopathpricer.sbr"
+	"$(INTDIR)\solver1d.sbr"
 
 "$(OUTDIR)\QuantLib.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -688,10 +681,13 @@ LIB32_OBJS= \
 	"$(INTDIR)\segmentintegral.obj" \
 	"$(INTDIR)\statistics.obj" \
 	"$(INTDIR)\symmetricschurdecomposition.obj" \
+	"$(INTDIR)\arithmeticapopathpricer.obj" \
+	"$(INTDIR)\arithmeticasopathpricer.obj" \
 	"$(INTDIR)\basketpathpricer.obj" \
-	"$(INTDIR)\controlvariatedpathpricer.obj" \
 	"$(INTDIR)\europeanpathpricer.obj" \
 	"$(INTDIR)\everestpathpricer.obj" \
+	"$(INTDIR)\geometricapopathpricer.obj" \
+	"$(INTDIR)\geometricasopathpricer.obj" \
 	"$(INTDIR)\getcovariance.obj" \
 	"$(INTDIR)\himalayapathpricer.obj" \
 	"$(INTDIR)\pagodapathpricer.obj" \
@@ -701,6 +697,8 @@ LIB32_OBJS= \
 	"$(INTDIR)\binaryoption.obj" \
 	"$(INTDIR)\bsmnumericaloption.obj" \
 	"$(INTDIR)\cliquetoption.obj" \
+	"$(INTDIR)\discretegeometricapo.obj" \
+	"$(INTDIR)\discretegeometricaso.obj" \
 	"$(INTDIR)\dividendamericanoption.obj" \
 	"$(INTDIR)\dividendeuropeanoption.obj" \
 	"$(INTDIR)\dividendoption.obj" \
@@ -709,6 +707,8 @@ LIB32_OBJS= \
 	"$(INTDIR)\europeanoption.obj" \
 	"$(INTDIR)\finitedifferenceeuropean.obj" \
 	"$(INTDIR)\mcbasket.obj" \
+	"$(INTDIR)\mcdiscretearithmeticapo.obj" \
+	"$(INTDIR)\mcdiscretearithmeticaso.obj" \
 	"$(INTDIR)\mceuropean.obj" \
 	"$(INTDIR)\mceverest.obj" \
 	"$(INTDIR)\mchimalaya.obj" \
@@ -732,15 +732,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\date.obj" \
 	"$(INTDIR)\option.obj" \
 	"$(INTDIR)\scheduler.obj" \
-	"$(INTDIR)\solver1d.obj" \
-	"$(INTDIR)\discretegeometricaso.obj" \
-	"$(INTDIR)\discretegeometricapo.obj" \
-	"$(INTDIR)\mcdiscretearithmeticapo.obj" \
-	"$(INTDIR)\mcdiscretearithmeticaso.obj" \
-	"$(INTDIR)\geometricasopathpricer.obj" \
-	"$(INTDIR)\geometricapopathpricer.obj" \
-	"$(INTDIR)\arithmeticasopathpricer.obj" \
-	"$(INTDIR)\arithmeticapopathpricer.obj"
+	"$(INTDIR)\solver1d.obj"
 
 ".\lib\Win32\VisualStudio\QuantLib_d.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
     $(LIB32) @<<
@@ -787,8 +779,6 @@ CLEAN :
 	-@erase "$(INTDIR)\cashflowvectors.sbr"
 	-@erase "$(INTDIR)\cliquetoption.obj"
 	-@erase "$(INTDIR)\cliquetoption.sbr"
-	-@erase "$(INTDIR)\controlvariatedpathpricer.obj"
-	-@erase "$(INTDIR)\controlvariatedpathpricer.sbr"
 	-@erase "$(INTDIR)\dataformatters.obj"
 	-@erase "$(INTDIR)\dataformatters.sbr"
 	-@erase "$(INTDIR)\date.obj"
@@ -957,10 +947,13 @@ BSC32_SBRS= \
 	"$(INTDIR)\segmentintegral.sbr" \
 	"$(INTDIR)\statistics.sbr" \
 	"$(INTDIR)\symmetricschurdecomposition.sbr" \
+	"$(INTDIR)\arithmeticapopathpricer.sbr" \
+	"$(INTDIR)\arithmeticasopathpricer.sbr" \
 	"$(INTDIR)\basketpathpricer.sbr" \
-	"$(INTDIR)\controlvariatedpathpricer.sbr" \
 	"$(INTDIR)\europeanpathpricer.sbr" \
 	"$(INTDIR)\everestpathpricer.sbr" \
+	"$(INTDIR)\geometricapopathpricer.sbr" \
+	"$(INTDIR)\geometricasopathpricer.sbr" \
 	"$(INTDIR)\getcovariance.sbr" \
 	"$(INTDIR)\himalayapathpricer.sbr" \
 	"$(INTDIR)\pagodapathpricer.sbr" \
@@ -970,6 +963,8 @@ BSC32_SBRS= \
 	"$(INTDIR)\binaryoption.sbr" \
 	"$(INTDIR)\bsmnumericaloption.sbr" \
 	"$(INTDIR)\cliquetoption.sbr" \
+	"$(INTDIR)\discretegeometricapo.sbr" \
+	"$(INTDIR)\discretegeometricaso.sbr" \
 	"$(INTDIR)\dividendamericanoption.sbr" \
 	"$(INTDIR)\dividendeuropeanoption.sbr" \
 	"$(INTDIR)\dividendoption.sbr" \
@@ -978,6 +973,8 @@ BSC32_SBRS= \
 	"$(INTDIR)\europeanoption.sbr" \
 	"$(INTDIR)\finitedifferenceeuropean.sbr" \
 	"$(INTDIR)\mcbasket.sbr" \
+	"$(INTDIR)\mcdiscretearithmeticapo.sbr" \
+	"$(INTDIR)\mcdiscretearithmeticaso.sbr" \
 	"$(INTDIR)\mceuropean.sbr" \
 	"$(INTDIR)\mceverest.sbr" \
 	"$(INTDIR)\mchimalaya.sbr" \
@@ -1001,15 +998,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\date.sbr" \
 	"$(INTDIR)\option.sbr" \
 	"$(INTDIR)\scheduler.sbr" \
-	"$(INTDIR)\solver1d.sbr" \
-	"$(INTDIR)\discretegeometricaso.sbr" \
-	"$(INTDIR)\discretegeometricapo.sbr" \
-	"$(INTDIR)\mcdiscretearithmeticapo.sbr" \
-	"$(INTDIR)\mcdiscretearithmeticaso.sbr" \
-	"$(INTDIR)\geometricasopathpricer.sbr" \
-	"$(INTDIR)\geometricapopathpricer.sbr" \
-	"$(INTDIR)\arithmeticasopathpricer.sbr" \
-	"$(INTDIR)\arithmeticapopathpricer.sbr"
+	"$(INTDIR)\solver1d.sbr"
 
 "$(OUTDIR)\QuantLib.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -1046,10 +1035,13 @@ LIB32_OBJS= \
 	"$(INTDIR)\segmentintegral.obj" \
 	"$(INTDIR)\statistics.obj" \
 	"$(INTDIR)\symmetricschurdecomposition.obj" \
+	"$(INTDIR)\arithmeticapopathpricer.obj" \
+	"$(INTDIR)\arithmeticasopathpricer.obj" \
 	"$(INTDIR)\basketpathpricer.obj" \
-	"$(INTDIR)\controlvariatedpathpricer.obj" \
 	"$(INTDIR)\europeanpathpricer.obj" \
 	"$(INTDIR)\everestpathpricer.obj" \
+	"$(INTDIR)\geometricapopathpricer.obj" \
+	"$(INTDIR)\geometricasopathpricer.obj" \
 	"$(INTDIR)\getcovariance.obj" \
 	"$(INTDIR)\himalayapathpricer.obj" \
 	"$(INTDIR)\pagodapathpricer.obj" \
@@ -1059,6 +1051,8 @@ LIB32_OBJS= \
 	"$(INTDIR)\binaryoption.obj" \
 	"$(INTDIR)\bsmnumericaloption.obj" \
 	"$(INTDIR)\cliquetoption.obj" \
+	"$(INTDIR)\discretegeometricapo.obj" \
+	"$(INTDIR)\discretegeometricaso.obj" \
 	"$(INTDIR)\dividendamericanoption.obj" \
 	"$(INTDIR)\dividendeuropeanoption.obj" \
 	"$(INTDIR)\dividendoption.obj" \
@@ -1067,6 +1061,8 @@ LIB32_OBJS= \
 	"$(INTDIR)\europeanoption.obj" \
 	"$(INTDIR)\finitedifferenceeuropean.obj" \
 	"$(INTDIR)\mcbasket.obj" \
+	"$(INTDIR)\mcdiscretearithmeticapo.obj" \
+	"$(INTDIR)\mcdiscretearithmeticaso.obj" \
 	"$(INTDIR)\mceuropean.obj" \
 	"$(INTDIR)\mceverest.obj" \
 	"$(INTDIR)\mchimalaya.obj" \
@@ -1090,15 +1086,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\date.obj" \
 	"$(INTDIR)\option.obj" \
 	"$(INTDIR)\scheduler.obj" \
-	"$(INTDIR)\solver1d.obj" \
-	"$(INTDIR)\discretegeometricaso.obj" \
-	"$(INTDIR)\discretegeometricapo.obj" \
-	"$(INTDIR)\mcdiscretearithmeticapo.obj" \
-	"$(INTDIR)\mcdiscretearithmeticaso.obj" \
-	"$(INTDIR)\geometricasopathpricer.obj" \
-	"$(INTDIR)\geometricapopathpricer.obj" \
-	"$(INTDIR)\arithmeticasopathpricer.obj" \
-	"$(INTDIR)\arithmeticapopathpricer.obj"
+	"$(INTDIR)\solver1d.obj"
 
 ".\lib\Win32\VisualStudio\QuantLib.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
     $(LIB32) @<<
@@ -1145,8 +1133,6 @@ CLEAN :
 	-@erase "$(INTDIR)\cashflowvectors.sbr"
 	-@erase "$(INTDIR)\cliquetoption.obj"
 	-@erase "$(INTDIR)\cliquetoption.sbr"
-	-@erase "$(INTDIR)\controlvariatedpathpricer.obj"
-	-@erase "$(INTDIR)\controlvariatedpathpricer.sbr"
 	-@erase "$(INTDIR)\dataformatters.obj"
 	-@erase "$(INTDIR)\dataformatters.sbr"
 	-@erase "$(INTDIR)\date.obj"
@@ -1316,10 +1302,13 @@ BSC32_SBRS= \
 	"$(INTDIR)\segmentintegral.sbr" \
 	"$(INTDIR)\statistics.sbr" \
 	"$(INTDIR)\symmetricschurdecomposition.sbr" \
+	"$(INTDIR)\arithmeticapopathpricer.sbr" \
+	"$(INTDIR)\arithmeticasopathpricer.sbr" \
 	"$(INTDIR)\basketpathpricer.sbr" \
-	"$(INTDIR)\controlvariatedpathpricer.sbr" \
 	"$(INTDIR)\europeanpathpricer.sbr" \
 	"$(INTDIR)\everestpathpricer.sbr" \
+	"$(INTDIR)\geometricapopathpricer.sbr" \
+	"$(INTDIR)\geometricasopathpricer.sbr" \
 	"$(INTDIR)\getcovariance.sbr" \
 	"$(INTDIR)\himalayapathpricer.sbr" \
 	"$(INTDIR)\pagodapathpricer.sbr" \
@@ -1329,6 +1318,8 @@ BSC32_SBRS= \
 	"$(INTDIR)\binaryoption.sbr" \
 	"$(INTDIR)\bsmnumericaloption.sbr" \
 	"$(INTDIR)\cliquetoption.sbr" \
+	"$(INTDIR)\discretegeometricapo.sbr" \
+	"$(INTDIR)\discretegeometricaso.sbr" \
 	"$(INTDIR)\dividendamericanoption.sbr" \
 	"$(INTDIR)\dividendeuropeanoption.sbr" \
 	"$(INTDIR)\dividendoption.sbr" \
@@ -1337,6 +1328,8 @@ BSC32_SBRS= \
 	"$(INTDIR)\europeanoption.sbr" \
 	"$(INTDIR)\finitedifferenceeuropean.sbr" \
 	"$(INTDIR)\mcbasket.sbr" \
+	"$(INTDIR)\mcdiscretearithmeticapo.sbr" \
+	"$(INTDIR)\mcdiscretearithmeticaso.sbr" \
 	"$(INTDIR)\mceuropean.sbr" \
 	"$(INTDIR)\mceverest.sbr" \
 	"$(INTDIR)\mchimalaya.sbr" \
@@ -1360,15 +1353,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\date.sbr" \
 	"$(INTDIR)\option.sbr" \
 	"$(INTDIR)\scheduler.sbr" \
-	"$(INTDIR)\solver1d.sbr" \
-	"$(INTDIR)\discretegeometricaso.sbr" \
-	"$(INTDIR)\discretegeometricapo.sbr" \
-	"$(INTDIR)\mcdiscretearithmeticapo.sbr" \
-	"$(INTDIR)\mcdiscretearithmeticaso.sbr" \
-	"$(INTDIR)\geometricasopathpricer.sbr" \
-	"$(INTDIR)\geometricapopathpricer.sbr" \
-	"$(INTDIR)\arithmeticasopathpricer.sbr" \
-	"$(INTDIR)\arithmeticapopathpricer.sbr"
+	"$(INTDIR)\solver1d.sbr"
 
 "$(OUTDIR)\QuantLib.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -1405,10 +1390,13 @@ LIB32_OBJS= \
 	"$(INTDIR)\segmentintegral.obj" \
 	"$(INTDIR)\statistics.obj" \
 	"$(INTDIR)\symmetricschurdecomposition.obj" \
+	"$(INTDIR)\arithmeticapopathpricer.obj" \
+	"$(INTDIR)\arithmeticasopathpricer.obj" \
 	"$(INTDIR)\basketpathpricer.obj" \
-	"$(INTDIR)\controlvariatedpathpricer.obj" \
 	"$(INTDIR)\europeanpathpricer.obj" \
 	"$(INTDIR)\everestpathpricer.obj" \
+	"$(INTDIR)\geometricapopathpricer.obj" \
+	"$(INTDIR)\geometricasopathpricer.obj" \
 	"$(INTDIR)\getcovariance.obj" \
 	"$(INTDIR)\himalayapathpricer.obj" \
 	"$(INTDIR)\pagodapathpricer.obj" \
@@ -1418,6 +1406,8 @@ LIB32_OBJS= \
 	"$(INTDIR)\binaryoption.obj" \
 	"$(INTDIR)\bsmnumericaloption.obj" \
 	"$(INTDIR)\cliquetoption.obj" \
+	"$(INTDIR)\discretegeometricapo.obj" \
+	"$(INTDIR)\discretegeometricaso.obj" \
 	"$(INTDIR)\dividendamericanoption.obj" \
 	"$(INTDIR)\dividendeuropeanoption.obj" \
 	"$(INTDIR)\dividendoption.obj" \
@@ -1426,6 +1416,8 @@ LIB32_OBJS= \
 	"$(INTDIR)\europeanoption.obj" \
 	"$(INTDIR)\finitedifferenceeuropean.obj" \
 	"$(INTDIR)\mcbasket.obj" \
+	"$(INTDIR)\mcdiscretearithmeticapo.obj" \
+	"$(INTDIR)\mcdiscretearithmeticaso.obj" \
 	"$(INTDIR)\mceuropean.obj" \
 	"$(INTDIR)\mceverest.obj" \
 	"$(INTDIR)\mchimalaya.obj" \
@@ -1449,15 +1441,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\date.obj" \
 	"$(INTDIR)\option.obj" \
 	"$(INTDIR)\scheduler.obj" \
-	"$(INTDIR)\solver1d.obj" \
-	"$(INTDIR)\discretegeometricaso.obj" \
-	"$(INTDIR)\discretegeometricapo.obj" \
-	"$(INTDIR)\mcdiscretearithmeticapo.obj" \
-	"$(INTDIR)\mcdiscretearithmeticaso.obj" \
-	"$(INTDIR)\geometricasopathpricer.obj" \
-	"$(INTDIR)\geometricapopathpricer.obj" \
-	"$(INTDIR)\arithmeticasopathpricer.obj" \
-	"$(INTDIR)\arithmeticapopathpricer.obj"
+	"$(INTDIR)\solver1d.obj"
 
 ".\lib\Win32\VisualStudio\QuantLib_d.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
     $(LIB32) @<<
@@ -1684,12 +1668,6 @@ SOURCE=.\ql\MonteCarlo\arithmeticasopathpricer.cpp
 SOURCE=.\ql\MonteCarlo\basketpathpricer.cpp
 
 "$(INTDIR)\basketpathpricer.obj"	"$(INTDIR)\basketpathpricer.sbr" : $(SOURCE) "$(INTDIR)"
-	$(CPP) $(CPP_PROJ) $(SOURCE)
-
-
-SOURCE=.\ql\MonteCarlo\controlvariatedpathpricer.cpp
-
-"$(INTDIR)\controlvariatedpathpricer.obj"	"$(INTDIR)\controlvariatedpathpricer.sbr" : $(SOURCE) "$(INTDIR)"
 	$(CPP) $(CPP_PROJ) $(SOURCE)
 
 

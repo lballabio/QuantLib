@@ -19,7 +19,6 @@ OBJS = \
     arithmeticapopathpricer.obj$(_D) \
     arithmeticasopathpricer.obj$(_D) \
     basketpathpricer.obj$(_D) \
-    controlvariatedpathpricer.obj$(_D) \
     europeanpathpricer.obj$(_D) \
     everestpathpricer.obj$(_D) \
     geometricapopathpricer.obj$(_D) \

@@ -499,14 +499,6 @@ SOURCE=.\ql\MonteCarlo\basketpathpricer.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\ql\MonteCarlo\controlvariatedpathpricer.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\ql\MonteCarlo\controlvariatedpathpricer.hpp
-# End Source File
-# Begin Source File
-
 SOURCE=.\ql\MonteCarlo\europeanpathpricer.cpp
 # End Source File
 # Begin Source File

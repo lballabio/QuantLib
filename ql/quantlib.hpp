@@ -117,7 +117,6 @@
 #include "ql/MonteCarlo/arithmeticapopathpricer.hpp"
 #include "ql/MonteCarlo/arithmeticasopathpricer.hpp"
 #include "ql/MonteCarlo/basketpathpricer.hpp"
-#include "ql/MonteCarlo/controlvariatedpathpricer.hpp"
 #include "ql/MonteCarlo/europeanpathpricer.hpp"
 #include "ql/MonteCarlo/everestpathpricer.hpp"
 #include "ql/MonteCarlo/geometricapopathpricer.hpp"
