@@ -90,7 +90,7 @@ namespace QuantLib {
         stepCondition_ -> applyTo(prices_, dates_[step]);
     }
 
-    void FdDividendOption::movePricesBeforeExDiv(Array& prices, 
+    void FdDividendOption::movePricesBeforeExDiv(Array& prices,
                                                  const Array& newGrid,
                                                  const Array& oldGrid) const {
         int j, gridSize = oldGrid.size();
@@ -108,9 +108,11 @@ namespace QuantLib {
         }
 
         CubicSplineInterpolation<std::vector<double>::iterator,
-            std::vector<double>::iterator> priceSpline(logOldGrid.begin(), 
-                                                       logOldGrid.end(), 
-                                                       tmpPrices.begin());
+            std::vector<double>::iterator> priceSpline(
+                logOldGrid.begin(), logOldGrid.end(), tmpPrices.begin(),
+                Null<double>(), 0.0, // something better needed here
+                Null<double>(), 0.0, // something better needed here
+                false);
 
         for (j = 0; j < gridSize; j++)
             prices[j] = priceSpline(QL_LOG(newGrid[j]), true);

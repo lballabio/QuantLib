@@ -30,9 +30,15 @@
 namespace QuantLib {
 
     double interpolate(const std::vector<double>& x_values,
-                       const std::vector<double>& y_values, double x,
+                       const std::vector<double>& y_values,
+                       double x,
                        int interpolationType,
-                       bool allowExtrapolation) {
+                       bool allowExtrapolation,
+                       double y1a,
+                       double y2a,
+                       double y1b,
+                       double y2b,
+                       bool monotonicityConstraint) {
 
         double result = 0.0;
 
@@ -49,7 +55,8 @@ namespace QuantLib {
                         std::vector<double>::const_iterator,
 			            std::vector<double>::const_iterator>(
                     x_values.begin(), x_values.end(),
-                    y_values.begin())(x, allowExtrapolation);
+                    y_values.begin(), y1a, y2a, y1b, y2b,
+                    monotonicityConstraint)(x, allowExtrapolation);
             break;
           case 3:
             result = LogLinearInterpolation<

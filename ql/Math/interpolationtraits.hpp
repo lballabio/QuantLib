@@ -32,14 +32,14 @@ namespace QuantLib {
     class Linear {
       public:
         template <class I1, class I2>
-        static Handle<Interpolation<I1,I2> > 
+        static Handle<Interpolation<I1,I2> >
         make_interpolation(const I1& xBegin, const I1& xEnd,
                            const I2& yBegin) {
             return Handle<Interpolation<I1,I2> >(
                           new LinearInterpolation<I1,I2>(xBegin,xEnd,yBegin));
         }
         template <class I1, class I2, class M>
-        static Handle<Interpolation2D<I1,I2,M> > 
+        static Handle<Interpolation2D<I1,I2,M> >
         make_interpolation(const I1& xBegin, const I1& xEnd,
                            const I2& yBegin, const I2& yEnd,
                            const M& z) {
@@ -53,7 +53,7 @@ namespace QuantLib {
     class LogLinear {
       public:
         template <class I1, class I2>
-        static Handle<Interpolation<I1,I2> > 
+        static Handle<Interpolation<I1,I2> >
         make_interpolation(const I1& xBegin, const I1& xEnd,
                            const I2& yBegin) {
             return Handle<Interpolation<I1,I2> >(
@@ -65,14 +65,15 @@ namespace QuantLib {
     class CubicSpline {
       public:
         template <class I1, class I2>
-        static Handle<Interpolation<I1,I2> > 
+        static Handle<Interpolation<I1,I2> >
         make_interpolation(const I1& xBegin, const I1& xEnd,
                            const I2& yBegin) {
             return Handle<Interpolation<I1,I2> >(
-                     new CubicSplineInterpolation<I1,I2>(xBegin,xEnd,yBegin));
+                     new CubicSplineInterpolation<I1,I2>(xBegin,xEnd,yBegin,
+                     Null<double>(), 0.0, Null<double>(), 0.0, false));
         }
         template <class I1, class I2, class M>
-        static Handle<Interpolation2D<I1,I2,M> > 
+        static Handle<Interpolation2D<I1,I2,M> >
         make_interpolation(const I1& xBegin, const I1& xEnd,
                            const I2& yBegin, const I2& yEnd,
                            const M& z) {

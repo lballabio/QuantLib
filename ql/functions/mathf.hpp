@@ -31,7 +31,12 @@ namespace QuantLib {
                        const std::vector<double>& y_values,
                        double x,
                        int interpolationType,
-                       bool allowExtrapolation);
+                       bool allowExtrapolation,
+                       double y1a,
+                       double y2a,
+                       double y1b,
+                       double y2b,
+                       bool monotonicityConstraint);
 
     double interpolate2D(const std::vector<double>& x_values,
                          const std::vector<double>& y_values,

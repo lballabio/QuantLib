@@ -28,7 +28,7 @@
 namespace QuantLib {
 
     //! bicubic spline interpolation between discrete points
-    template <class RandomAccessIteratorX, 
+    template <class RandomAccessIteratorX,
               class RandomAccessIteratorY,
               class MatricialData>
     class BicubicSplineInterpolation
@@ -55,7 +55,7 @@ namespace QuantLib {
         Size rows_;
         std::vector<CubicSplineInterpolation<
                             RandomAccessIteratorX,
-                            typename MatricialData::const_row_iterator> > 
+                            typename MatricialData::const_row_iterator> >
                                                                      splines_;
     };
 
@@ -66,19 +66,22 @@ namespace QuantLib {
                                              const I1& xBegin, const I1& xEnd,
                                              const I2& yBegin, const I2& yEnd,
                                              const M& data)
-    : Interpolation2D<I1,I2, M>(xBegin,xEnd,yBegin,yEnd,data), 
+    : Interpolation2D<I1,I2, M>(xBegin,xEnd,yBegin,yEnd,data),
       rows_(data_.rows()) {
         typedef typename M::const_row_iterator row_iterator;
         for (Size i = 0; i< rows_; i++)
             splines_.push_back(CubicSplineInterpolation<I1, row_iterator>(
-                                           xBegin, xEnd, data_.row_begin(i)));
+           xBegin, xEnd, data_.row_begin(i),
+           Null<double>(), 0.0, // something better needed here
+           Null<double>(), 0.0, // something better needed here
+           false));
     }
 
     template <class I1, class I2, class M>
     double BicubicSplineInterpolation<I1,I2,M>::operator()(
-               const typename 
+               const typename
                BicubicSplineInterpolation<I1,I2,M>::first_argument_type& x,
-               const typename 
+               const typename
                BicubicSplineInterpolation<I1,I2,M>::second_argument_type& y,
                bool allowExtrapolation) const {
 
@@ -87,8 +90,11 @@ namespace QuantLib {
             newColumn[i]=splines_[i](x, allowExtrapolation);
         }
 
-        CubicSplineInterpolation<I2,std::vector<result_type>::const_iterator> 
-        columnSpline(yBegin_, yEnd_, newColumn.begin());
+        CubicSplineInterpolation<I2,std::vector<result_type>::const_iterator>
+            columnSpline(yBegin_, yEnd_, newColumn.begin(),
+                Null<double>(), 0.0, // something better needed here
+                Null<double>(), 0.0, // something better needed here
+                false);
 
         return columnSpline(y, allowExtrapolation);
     }
