@@ -20,7 +20,6 @@
 #include <ql/MonteCarlo/getcovariance.hpp>
 #include <ql/Math/symmetricschurdecomposition.hpp>
 #include <ql/Math/sequencestatistics.hpp>
-#include <ql/Math/multivariateaccumulator.hpp>
 #include <cppunit/TestSuite.h>
 #include <cppunit/TestCaller.h>
 
@@ -173,7 +172,6 @@ void CovarianceTest::testCovariance() {
     expCor[1][0] = 0.9970544855015813; expCor[1][1] = 1.0000000000000000;
 
     SequenceStatistics<> s(n);
-    MultivariateAccumulator ma(n);
     std::vector<double> temp(n);
 
     for (i = 0; i<LENGTH(data); i++) {
@@ -181,7 +179,6 @@ void CovarianceTest::testCovariance() {
             temp[j]= data[i][j];
         }
         s.add(temp, weights[i]);
-        ma.add(temp, weights[i]);
     }
 
 
@@ -189,8 +186,6 @@ void CovarianceTest::testCovariance() {
     std::vector<double> std = s.standardDeviation();
     Matrix calcCov  =  s.covariance();
     Matrix calcCor  =  s.correlation();
-    Matrix calcCov2 = ma.covariance();
-    Matrix calcCor2 = ma.correlation();
 
 
     Matrix expCov(n, n);
@@ -214,15 +209,6 @@ void CovarianceTest::testCovariance() {
                              + DoubleFormatter::toString(calculated,16) + "\n"
                              "    expected:   "
                              + DoubleFormatter::toString(expected,16));
-            calculated = calcCor2[i][j];
-            if (QL_FABS(calculated-expected) > 1.0e-10)
-                CPPUNIT_FAIL("MultivariateAccumulator "
-                             "cor[" + IntegerFormatter::toString(i) + "]"
-                             "[" + IntegerFormatter::toString(j) + "]:\n"
-                             "    calculated: "
-                             + DoubleFormatter::toString(calculated,16) + "\n"
-                             "    expected:   "
-                             + DoubleFormatter::toString(expected,16));
 
             expected   =  expCov[i][j];
             calculated = calcCov[i][j];
@@ -234,16 +220,6 @@ void CovarianceTest::testCovariance() {
                              + DoubleFormatter::toString(calculated,16) + "\n"
                              "    expected:   "
                              + DoubleFormatter::toString(expected,16));
-            calculated = calcCov2[i][j];
-            if (QL_FABS(calculated-expected) > 1.0e-10)
-                CPPUNIT_FAIL("MultivariateAccumulator "
-                             "cov[" + IntegerFormatter::toString(i) + "]"
-                             "[" + IntegerFormatter::toString(j) + "]:\n"
-                             "    calculated: "
-                             + DoubleFormatter::toString(calculated,16) + "\n"
-                             "    expected:   "
-                             + DoubleFormatter::toString(expected,16));
-        
         
         }
     }

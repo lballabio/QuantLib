@@ -20,7 +20,6 @@ OBJS = \
     generalstatistics.obj$(_D) \
     incrementalstatistics.obj$(_D) \
     matrix.obj$(_D) \
-    multivariateaccumulator.obj$(_D) \
     normaldistribution.obj$(_D) \
     primenumbers.obj$(_D) \
     svd.obj$(_D) \

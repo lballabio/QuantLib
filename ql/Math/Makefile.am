@@ -22,7 +22,6 @@ include_HEADERS = \
 	linearinterpolation.hpp \
 	loglinearinterpolation.hpp \
 	matrix.hpp \
-	multivariateaccumulator.hpp \
 	normaldistribution.hpp \
 	primenumbers.hpp \
 	riskstatistics.hpp \
@@ -45,7 +44,6 @@ libMath_la_SOURCES = \
 	generalstatistics.cpp \
 	incrementalstatistics.cpp \
 	matrix.cpp \
-	multivariateaccumulator.cpp \
 	normaldistribution.cpp \
 	primenumbers.cpp \
 	symmetricschurdecomposition.cpp \

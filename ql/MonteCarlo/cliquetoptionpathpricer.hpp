@@ -40,14 +40,17 @@ namespace QuantLib {
                            double localFloor,
                            double globalCap,
                            double globalFloor,
+                           bool redemptionOnly,
                            const RelinkableHandle<TermStructure>& riskFreeTS);
         double operator()(const Path& path) const;
       private:
         Option::Type type_;
         double underlying_, moneyness_, accruedCoupon_;
         double lastFixing_, localCap_, localFloor_, globalCap_, globalFloor_;
+        bool redemptionOnly_;
         RelinkableHandle<TermStructure> riskFreeTS_;
     };
+
 
 
     //! %path pricer for cliquet options

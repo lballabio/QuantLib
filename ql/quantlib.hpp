@@ -165,7 +165,6 @@
 #include <ql/Math/linearinterpolation.hpp>
 #include <ql/Math/loglinearinterpolation.hpp>
 #include <ql/Math/matrix.hpp>
-#include <ql/Math/multivariateaccumulator.hpp>
 #include <ql/Math/normaldistribution.hpp>
 #include <ql/Math/primenumbers.hpp>
 #include <ql/Math/riskstatistics.hpp>

@@ -19,10 +19,19 @@ quantlib::
     $(MAKE)
     cd ..
 
+# test
+test: tests
+
 # tests
 tests:: quantlib
     cd test-suite
     $(MAKE) -DQL_DIR=".."
+    cd ..
+
+#all
+all:: examples tests
+    cd test-suite
+    test-suite
     cd ..
 
 # Examples

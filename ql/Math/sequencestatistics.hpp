@@ -46,6 +46,10 @@ namespace QuantLib {
         typedef StatisticsType statistics_type;
         // constructor
         SequenceStatistics(Size dimension);
+        //! \name inspectors
+        //@{
+        Size size() const { return dimension_; }
+        //@}
         //! \name covariance and correlation
         //@{
         //! returns the covariance Matrix
