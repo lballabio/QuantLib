@@ -27,6 +27,9 @@
 
     $Source$
     $Log$
+    Revision 1.4  2001/03/19 18:39:27  nando
+    conflict resolved
+
     Revision 1.3  2001/03/19 17:52:56  nando
     introduces DepositRate2.
     Later this will superseed DepositRate
@@ -51,18 +54,22 @@
 #include "calendar.h"
 #include "rate.h"
 #include "termstructure.h"
+#include "dataformatters.h"
+#include <iostream>
+
 
 namespace QuantLib {
 
     //! %rate helper
     class RateHelper {
       public:
+        RateHelper() {}
         RateHelper(const Date& maturity,
                    Rate rate,
                    const Handle<DayCounter>& dayCounter);
         virtual ~RateHelper() {}
-        virtual double value() const = 0;
-        virtual double guess() const = 0;
+        virtual double rateError() const = 0;
+        virtual double discountGuess() const = 0;
         //! \name Modifiers
         //@{
         //! sets the term structure to be used by value() method
@@ -76,7 +83,7 @@ namespace QuantLib {
         //@}
       protected:
         Date maturity_;
-        Time timeToMatutity_;
+        Time timeToMaturity_;
         Rate rate_;
         Handle<DayCounter> dayCounter_;
         Handle<TermStructure> termStructure_;
@@ -84,81 +91,90 @@ namespace QuantLib {
 
     
     //! %deposit rate
+
     class DepositRate2 : public RateHelper {
       public:
+        DepositRate2() {}
         DepositRate2(const Date& maturity,
                     Rate rate,
                     const Handle<DayCounter>& dayCounter);
-        double value() const;
-        double guess() const;
+        double rateError() const;
+        double discountGuess() const;
     };
 
     //! %forward rate
     class ForwardRate : public RateHelper {
       public:
+        ForwardRate() {}
         ForwardRate(const Date& maturity,
                     Rate rate,
                     const Handle<DayCounter>& dayCounter);
-        double value() const;
-        double guess() const;
+        double rateError() const;
+        double discountGuess() const;
     };
 
     //! %swap rate
     class SwapRate : public RateHelper {
       public:
+        SwapRate() {}
         SwapRate(const Date& maturity,
                  Rate rate,
                  const Handle<DayCounter>& dayCounter);
-        double value() const;
-        double guess() const;
+        double rateError() const;
+        double discountGuess() const;
     };
 
 
 
     // inline
-    RateHelper::RateHelper(const Date& maturity,
+    inline RateHelper::RateHelper(const Date& maturity,
                            Rate rate,
                            const Handle<DayCounter>& dayCounter) 
     : maturity_(maturity), rate_(rate), dayCounter_(dayCounter) {}
 
 
 
-    void RateHelper::setTermStructure(const Handle<TermStructure>& termStructure) {
+    inline void RateHelper::setTermStructure(const Handle<TermStructure>& termStructure) {
         termStructure_ = termStructure;
-        timeToMatutity_ = dayCounter_->yearFraction(termStructure_->settlementDate(),
+
+//        std::cout << std::endl << DateFormatter::toString(maturity_) 
+//            << termStructure_->discount(maturity_) << " "
+//            << std::endl;
+
+        timeToMaturity_ = dayCounter_->yearFraction(termStructure_->settlementDate(),
             maturity_);
     }
 
     
-    Date RateHelper::maturity() const {
+    inline Date RateHelper::maturity() const {
         return maturity_;
     }
 
 
-    Rate RateHelper::rate() const {
+    inline Rate RateHelper::rate() const {
         return rate_;
     }
 
     
-    Handle<DayCounter> RateHelper::dayCounter() const {
+    inline Handle<DayCounter> RateHelper::dayCounter() const {
         return dayCounter_;
     }
 
 
 
-    DepositRate2::DepositRate2(const Date& maturity,
+    inline DepositRate2::DepositRate2(const Date& maturity,
                              Rate rate,
                              const Handle<DayCounter>& dayCounter)
     : RateHelper(maturity, rate, dayCounter) {}
 
 
-    ForwardRate::ForwardRate(const Date& maturity,
+    inline ForwardRate::ForwardRate(const Date& maturity,
                              Rate rate,
                              const Handle<DayCounter>& dayCounter)
     : RateHelper(maturity, rate, dayCounter) {}
 
 
-    SwapRate::SwapRate(const Date& maturity,
+    inline SwapRate::SwapRate(const Date& maturity,
                        Rate rate,
                        const Handle<DayCounter>& dayCounter)
     : RateHelper(maturity, rate, dayCounter) {}

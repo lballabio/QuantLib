@@ -26,6 +26,9 @@
 
     $Source$
     $Log$
+    Revision 1.4  2001/03/19 18:39:10  nando
+    conflict resolved
+
     Revision 1.3  2001/03/19 17:52:19  nando
     introduces DepositRate2.
     Later this will superseed DepositRate
@@ -43,34 +46,35 @@
 
 #include "ratehelper.h"
 
+
 namespace QuantLib {
 
-    double DepositRate2::value() const {
-        Time t = dayCounter_->yearFraction(termStructure_->settlementDate(),
-            maturity_);
-        Rate impliedRate = (1.0/termStructure_->discount(maturity_)-1.0)/t;
+    double DepositRate2::rateError() const {
+
+//        std::cout << termStructure_->discount(maturity_) << " " << timeToMaturity_ <<
+//            " " << impliedRate << " " << rate_ << std::endl;
+
+        Rate impliedRate = (1.0/termStructure_->discount(maturity_)-1.0)/timeToMaturity_;
         return rate_-impliedRate;
     }
 
-    double DepositRate2::guess() const {
-        Time t = dayCounter_->yearFraction(termStructure_->settlementDate(),
-            maturity_);
-        return 1.0/(1.0+rate_ * t);
+    double DepositRate2::discountGuess() const {
+        return 1.0/(1.0+rate_ * timeToMaturity_);
     }
 
-    double ForwardRate::value() const {
+    double ForwardRate::rateError() const {
         return 0.0;
     }
 
-    double ForwardRate::guess() const {
+    double ForwardRate::discountGuess() const {
         return 0.0;
     }
 
-    double SwapRate::value() const {
+    double SwapRate::rateError() const {
         return 0.0;
     }
 
-    double SwapRate::guess() const {
+    double SwapRate::discountGuess() const {
         return 0.0;
     }
 
