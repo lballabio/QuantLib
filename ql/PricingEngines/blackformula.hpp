@@ -26,6 +26,11 @@
 
 namespace QuantLib {
 
+    //! Black-formula calculator
+    /*! \bug When the variance is null, division by zero occur during
+             the calculation of delta, delta forward, gamma, gamma
+             forward, rho, dividend rho, vega, and strike sensitivity.
+    */
     class BlackFormula {
       public:
         BlackFormula(Real forward,

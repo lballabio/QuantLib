@@ -34,6 +34,9 @@ namespace QuantLib {
         \f]
         where \f$ \alpha \f$ and \f$ \sigma \f$ are constants. 
 
+        \bug When the term structure is relinked, the r0 parameter of
+             the underlying Vasicek model is not updated.
+
         \ingroup shortrate
     */
     class HullWhite : public Vasicek, public TermStructureConsistentModel {
