@@ -519,11 +519,6 @@ void BinaryBarrierOptionTest::testEngineConsistency() {
                   opt.setPricingEngine(mcEngine);
                   calcMC = opt.NPV();
 
-                  //std::cout << "\nAnalytic: " +
-                  //    DoubleFormatter::toString(calcAnalytic) +
-                  //    "   MC: " + DoubleFormatter::toString(calcMC)
-                  //    << std::endl;
-
                   // check
                   if (relError(calcAnalytic,calcMC,u) > tolerance) {
                       CPPUNIT_FAIL(
@@ -570,10 +565,11 @@ CppUnit::Test* BinaryBarrierOptionTest::suite() {
                     &BinaryBarrierOptionTest::testAmericanValues));
     tests->addTest(new CppUnit::TestCaller<BinaryBarrierOptionTest>
                    ("Testing binary barrier option greeks",
-                    &BinaryBarrierOptionTest::testSelfConsistency));
+                   &BinaryBarrierOptionTest::testSelfConsistency));
 
     tests->addTest(new CppUnit::TestCaller<BinaryBarrierOptionTest>
-                   ("Testing Monte Carlo pricing engine for binary barrier options",
+                   ("Testing Monte Carlo pricing engine "
+                    "for binary barrier options",
                     &BinaryBarrierOptionTest::testEngineConsistency));
 
     return tests;
