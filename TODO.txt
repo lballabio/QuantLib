@@ -1,163 +1,116 @@
 
-REWRITE AND UPDATE PROJECT OVERVIEW!!!!!!!!!!!!!!!!
+GENERAL
+- develop a framework for stochastic processes
 
-Sobol template rngtypedefs + python
-verify drop in polinomials' files
-cliquet move forward
-optimize PathPricer
-MultiPath and MultiPathPricer
+DOCUMENTATION
+- rewrite and/or update project overview
+- add a "Getting started" page to the site for how to approach the library
+- draw a road map for future releases
+- keep the "to do" list on the site updated (automatically?)
+- add a developer blog to the site? A forum where users can leave
+  their remarks?
+- create a FAQ
+- parts of the library badly need some more documentation
 
 UNIT TEST SUITE
--*add covariance/correlation test for SequenceStatistics
+* add results of the test suite to web site ((semi-)automatically?) in order 
+  to give the library some kind of certification
+- add covariance/correlation test for SequenceStatistics
 - add Gauss-Kronrod test
 - add single factor calibration test
 - add bermudan (single factor) pricing test
 - add quanto, forward and performance forward to test suite
 
+INSTRUMENTS AND GENERAL PRICING ISSUES
+- build basic Bond classes
+- continuous geometric APO backward starting instead of forward starting
+- introduce continuous geometric ASO
+- handle backward starting Asian
+- IRR, duration, etc for a sequence of cash flows
+- implement dividendRho for dividendOption
+
 PRICING ENGINE FRAMEWORK
--*create vanilla FD example
--*create vanilla MC example (make it work)
--*add new engines to test-suite
-- fix quantotermstructure/drifttermstructure problem
--*MC with tolerance in the constructor
+- design a framework for finite-differences pricing engines
+- fix quanto-term-structure/drift-term-structure problem
 - create Arguments class not including strike and use it in forward options
-- deprecate old pricers
+- deprecate old pricers whenever new ones are created
 
 MONTE CARLO FRAMEWORK
--*revise multidimensional MonteCarlo
--*revise extrapolation in diffusion process
+* number of samples as (n_batches, batch_size)
+* use brownian bridge in path generation
+- revise multidimensional MonteCarlo
+- revise extrapolation in diffusion process
 - predictor-corrector scheme
--*replace all instance of seed with a random generator
--*settle on interface (tolerance, number of samples)
--*number of samples as (n#batches, batch_size)
 - add example of Martingale control variate
 - add examples of Montecarlo internal and Montecarlo convergence
 - add Milstein Scheme
 - Hypersphere approximation for non positive semi definite correlation
   matrices
--*use brownian bridge in path generation
--*rename MultiPath as MultiAssetPath
-- move all (Multi)PathPricer under a folder (namespace?) PathPricers
+- rename MultiPath as MultiAssetPath
+- move all (Multi)PathPricer under a folder PathPricers?
 - greeks calculation
+- introduce compound path pricer?
 
 INTEGRAL PRICING ENGINE FRAMEWORK
 - use Gauss-Kronrod algorythm
 - tolerance interface
 
 FINITE DIFFERENCE FRAMEWORK
--*use DicretisedAsset instead of array
--*use TimeGrid
--*use assetGrid
--*allow for time dependant parameters
--*boundary conditions as in Wilmott
--*Douglas scheme (QuEP)
--*Richardson extrapolation (QuEP)
--*SOR rollback for free boundary condition
--*replace all xxAtCenter with more general not "centered" functions
+* general review and redesign for pricing engines
+* replace all xxAtCenter with more general not "centered" functions
+- use DiscretisedAsset instead of array?
+- use TimeGrid
+- use assetGrid
+- allow for time-dependent parameters
+- boundary conditions as in Wilmott
+- Douglas scheme
+- Richardson extrapolation
+- SOR rollback for free boundary condition
 - clean up FDMultiPeriodOption
 - check american with discrete dividends
 - merge rollback scheme with tree rollback scheme
+- what about barrier or FD with dividends?
 
 LATTICE FRAMEWORK
-- turn 'void stepBack' into 'Disposable<Array> stepBack'
-
-VOLATILITY
--*local volatility
-- investigate extrapolation effect, consider one side differences,
-  instead of central, when on the border
-- visitor pattern
-- blackSurface: check time extrapolation
-
-MATH
--*fix cubic spline
-- have Interpolator to check for sorted arrays
-
-MISCELLANEA
-- verify PDB distribution
-- remove defines in MS VC project settings
-- solve copyright issues for external packages (COOOL, GAlib, etc.)
-- ISDA/FpML
-- PRMIA
-- update freshmeat description
-- get in touch with Gnumeric team
-- Louw copyright
-- revise interpolation allowExtrapolation
-- add solver's target value (now the target value is 0.0)
-- RPM package
-- document namespaces on InterestRateDerivatives, Optimizers
-- introduce compoundpathpricer ???
-- GaussianPathGenerator, etc: allow for more general random walks
-- what about barrier or FD with dividends ???
-- revisite model/slice interface
-- IRR, duration, etc for a cash flow stream
-- QuantLib dynamic Win32 library (QuantLib.dll)
-- clean up accuracy definition in solver1D (x or f(x) accuracy ?)
-- implement round as per OMG enumeration/definition
-- add one-touch option (american binary)
-- implement dividendRho for dividendOption
-- add historicalvolatility to RiskMeasures
-- histogram class
-- contact M. Higgings
-- check disable warning 4786 better
-- && (_MSC_VER >= 1200)
-
-ASIAN
-- continuous geometric APO backward starting instead of forward starting
-- introduce continuous geometric ASO
-- handle backward starting asian
-
-OPTIMIZATION FRAMEWORK
-- create a framework similar to the Solver1d framework
-- add GALib (genetic algorithm)
-- add COOOL algorithms
-
-QuEP
-- Currency as class with methods returning related info
-- implement currency as per OMG definition
-
-DOCUMENTATION
-- http://www.iisec.com/
-- use tidy (if available) on the HTML documentation
-- enforce fulpath&classesinclude DoxyGen requirements
-- add/update FAQ material in QuantLib-site TOD.txt
-
-YIELD CURVE
-- future convexity adjustment
-- end of year turn
-
-TREES
-- check addDates
+- Investigate templatization
 - BS correction
 - merge rollback scheme with FD rollback scheme
 - trinomial trees
 - implied trinomial trees
 
-COMPILING
-- borland compiler build tree indipendent from source tree
-- check compile success/failure on other platforms/compilers available @SF
-- Borland projects
+VOLATILITY
+- investigate extrapolation effect: consider one side differences,
+  instead of central, when on the border
+- Black surface: check time extrapolation
 
-======================================
+MATH
+* fix cubic spline
+* revise the allowExtrapolation thing. Global instead of per-call?
+- have Interpolator check for sorted arrays?
+- add target value to solver? (now the target value is 0.0)
+- clean up accuracy definition in solver1D (x or f(x) accuracy ?)
+- add GALib? (genetic algorithm)
+- add COOOL algorithms?
+- add historical volatility to risk measures
+- histogram class
 
-+Changes to the Web Site
-  * Improve documentation, maybe add a web-log where web-surfer can leave
-    their remarks
-  * Update the "to do" list
-  * Draw a road map of future works
+YIELD CURVE
+- future convexity adjustment
+- end of year turn
 
-+Importance of Unit Testing
-  The idea is to certify the quality of QuantLib using a unit-test framework.
-  The tests would also serve as concrete examples on how the library should
-  be used.
-  QuantLib would be defined by what is tested, all the major features should
-  be tested. In this way it will also be possible to maintain the synchronization
-  of QuantLib with QuantLib.NET.
-  All the tests in python will be moved to corresponding tests written in C++.
+CURRENCIES
+- Currency as class with methods returning related info
+- implement currency as per OMG definition
 
-+Changes to the Library
-  * Improve the documentation
-  * Move to the Instrument/pricing engine framework
-  * Refactor of the Finite-Difference framework merging with
-    the Tree/Lattice framework
-  * Develop a framework for stochastic processes
-  * Build basic Bond classes
+ODDS AND ENDS
+- ISDA/FpML
+- PRMIA
+- update freshmeat description
+- get in touch with Gnumeric team
+- Louw copyright
+- QuantLib dynamic Win32 library (QuantLib.dll)
+- implement round as per OMG enumeration/definition
+- contact M. Higgings
+- check disable warning 4786 better
+- && (_MSC_VER >= 1200)
+
