@@ -57,7 +57,8 @@ namespace QuantLib {
     class SobolRsg {
       public:
         typedef Sample<Array> sample_type;
-        enum DirectionIntegers { Unit, Jaeckel, SobolLevitan };
+        enum DirectionIntegers {
+            Unit, Jaeckel, SobolLevitan, SobolLevitanLemieux };
         //! \pre dimensionality must be <= PPMT_MAX_DIM
         SobolRsg(Size dimensionality,
                  unsigned long seed = 0,
