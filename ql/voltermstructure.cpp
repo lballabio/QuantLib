@@ -20,6 +20,7 @@
 */
 
 #include <ql/voltermstructure.hpp>
+#include <ql/dataformatters.hpp>
 
 namespace QuantLib {
 
@@ -72,14 +73,9 @@ namespace QuantLib {
         if (time2==time1) {
             if (time1==0.0) {
                 Time epsilon = 0.00001;
-                double var1 = blackVarianceImpl(time1,         strike,
+                double var = blackVarianceImpl(epsilon, strike,
                     extrapolate);
-                double var2 = blackVarianceImpl(time1+epsilon, strike,
-                    extrapolate);
-                QL_REQUIRE(var2>=var1,
-                    "BlackVolTermStructure::blackForwardVol : "
-                    "variances must be non-decreasing");
-                return QL_SQRT((var2-var1)/epsilon);
+                return QL_SQRT(var/epsilon);
             } else {
                 QL_REQUIRE(time1>0.0,
                     "BlackVolTermStructure::blackForwardVol : "
@@ -97,7 +93,11 @@ namespace QuantLib {
         } else {
             QL_REQUIRE(time2>time1,
                 "BlackVolTermStructure::blackForwardVol : "
-                "time2<time1");
+                "time2 ("
+                + DoubleFormatter::toString(time2) +
+                ") < time1("
+                + DoubleFormatter::toString(time1) +
+                ")");
             double var1 = blackVarianceImpl(time1, strike, extrapolate);
             double var2 = blackVarianceImpl(time2, strike, extrapolate);
             QL_REQUIRE(var2>=var1,
@@ -120,9 +120,13 @@ namespace QuantLib {
     double BlackVolTermStructure::blackForwardVariance(Time time1,
         Time time2, double strike, bool extrapolate) const {
 
-        QL_REQUIRE(time2>time1,
+        QL_REQUIRE(time2>=time1,
             "VolTermStructure::blackForwardVariance : "
-            "time2<=time1");
+            "time2 ("
+            + DoubleFormatter::toString(time2) +
+            ") < time1("
+            + DoubleFormatter::toString(time1) +
+            ")");
         double v1 = blackVarianceImpl(time1, strike, extrapolate);
         double v2 = blackVarianceImpl(time2, strike, extrapolate);
         double result = v2-v1;
