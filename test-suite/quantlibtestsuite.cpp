@@ -63,7 +63,7 @@ int main() {
     runner.addTest(new MatricesTest());
     runner.addTest(new MersenneTwisterTest());
     runner.addTest(new OperatorTest);
-    runner.addTest(new PiecewiseFlatForwardTest);
+    runner.addTest(PiecewiseFlatForwardTest::suite());
     runner.addTest(new RiskStatisticsTest);
     runner.addTest(new Solver1DTest);
     runner.addTest(SimpleSwapTest::suite());
