@@ -735,6 +735,22 @@ SOURCE=.\ql\Pricers\binaryoption.hpp
 # End Source File
 # Begin Source File
 
+SOURCE=.\ql\Pricers\blackcapfloor.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\Pricers\blackcapfloor.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\Pricers\blackswaption.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\Pricers\blackswaption.hpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\ql\Pricers\cliquetoption.cpp
 # End Source File
 # Begin Source File
@@ -1173,6 +1189,10 @@ SOURCE=.\ql\InterestRateModelling\TwoFactorModels\g2.cpp
 SOURCE=.\ql\InterestRateModelling\TwoFactorModels\g2.hpp
 # End Source File
 # End Group
+# Begin Source File
+
+SOURCE=.\ql\InterestRateModelling\blackmodel.hpp
+# End Source File
 # Begin Source File
 
 SOURCE=.\ql\InterestRateModelling\calibrationhelper.cpp

@@ -62,8 +62,12 @@ CLEAN :
 	-@erase "$(INTDIR)\binomialtree.sbr"
 	-@erase "$(INTDIR)\bisection.obj"
 	-@erase "$(INTDIR)\bisection.sbr"
+	-@erase "$(INTDIR)\blackcapfloor.obj"
+	-@erase "$(INTDIR)\blackcapfloor.sbr"
 	-@erase "$(INTDIR)\blackkarasinski.obj"
 	-@erase "$(INTDIR)\blackkarasinski.sbr"
+	-@erase "$(INTDIR)\blackswaption.obj"
+	-@erase "$(INTDIR)\blackswaption.sbr"
 	-@erase "$(INTDIR)\brent.obj"
 	-@erase "$(INTDIR)\brent.sbr"
 	-@erase "$(INTDIR)\bsmoperator.obj"
@@ -382,7 +386,9 @@ BSC32_SBRS= \
 	"$(INTDIR)\date.sbr" \
 	"$(INTDIR)\option.sbr" \
 	"$(INTDIR)\scheduler.sbr" \
-	"$(INTDIR)\solver1d.sbr"
+	"$(INTDIR)\solver1d.sbr" \
+	"$(INTDIR)\blackswaption.sbr" \
+	"$(INTDIR)\blackcapfloor.sbr"
 
 "$(OUTDIR)\QuantLib.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -501,7 +507,9 @@ LIB32_OBJS= \
 	"$(INTDIR)\date.obj" \
 	"$(INTDIR)\option.obj" \
 	"$(INTDIR)\scheduler.obj" \
-	"$(INTDIR)\solver1d.obj"
+	"$(INTDIR)\solver1d.obj" \
+	"$(INTDIR)\blackswaption.obj" \
+	"$(INTDIR)\blackcapfloor.obj"
 
 ".\lib\Win32\VisualStudio\QuantLib.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
     $(LIB32) @<<
@@ -540,8 +548,12 @@ CLEAN :
 	-@erase "$(INTDIR)\binomialtree.sbr"
 	-@erase "$(INTDIR)\bisection.obj"
 	-@erase "$(INTDIR)\bisection.sbr"
+	-@erase "$(INTDIR)\blackcapfloor.obj"
+	-@erase "$(INTDIR)\blackcapfloor.sbr"
 	-@erase "$(INTDIR)\blackkarasinski.obj"
 	-@erase "$(INTDIR)\blackkarasinski.sbr"
+	-@erase "$(INTDIR)\blackswaption.obj"
+	-@erase "$(INTDIR)\blackswaption.sbr"
 	-@erase "$(INTDIR)\brent.obj"
 	-@erase "$(INTDIR)\brent.sbr"
 	-@erase "$(INTDIR)\bsmoperator.obj"
@@ -861,7 +873,9 @@ BSC32_SBRS= \
 	"$(INTDIR)\date.sbr" \
 	"$(INTDIR)\option.sbr" \
 	"$(INTDIR)\scheduler.sbr" \
-	"$(INTDIR)\solver1d.sbr"
+	"$(INTDIR)\solver1d.sbr" \
+	"$(INTDIR)\blackswaption.sbr" \
+	"$(INTDIR)\blackcapfloor.sbr"
 
 "$(OUTDIR)\QuantLib.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -980,7 +994,9 @@ LIB32_OBJS= \
 	"$(INTDIR)\date.obj" \
 	"$(INTDIR)\option.obj" \
 	"$(INTDIR)\scheduler.obj" \
-	"$(INTDIR)\solver1d.obj"
+	"$(INTDIR)\solver1d.obj" \
+	"$(INTDIR)\blackswaption.obj" \
+	"$(INTDIR)\blackcapfloor.obj"
 
 ".\lib\Win32\VisualStudio\QuantLib_d.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
     $(LIB32) @<<
@@ -1019,8 +1035,12 @@ CLEAN :
 	-@erase "$(INTDIR)\binomialtree.sbr"
 	-@erase "$(INTDIR)\bisection.obj"
 	-@erase "$(INTDIR)\bisection.sbr"
+	-@erase "$(INTDIR)\blackcapfloor.obj"
+	-@erase "$(INTDIR)\blackcapfloor.sbr"
 	-@erase "$(INTDIR)\blackkarasinski.obj"
 	-@erase "$(INTDIR)\blackkarasinski.sbr"
+	-@erase "$(INTDIR)\blackswaption.obj"
+	-@erase "$(INTDIR)\blackswaption.sbr"
 	-@erase "$(INTDIR)\brent.obj"
 	-@erase "$(INTDIR)\brent.sbr"
 	-@erase "$(INTDIR)\bsmoperator.obj"
@@ -1339,7 +1359,9 @@ BSC32_SBRS= \
 	"$(INTDIR)\date.sbr" \
 	"$(INTDIR)\option.sbr" \
 	"$(INTDIR)\scheduler.sbr" \
-	"$(INTDIR)\solver1d.sbr"
+	"$(INTDIR)\solver1d.sbr" \
+	"$(INTDIR)\blackswaption.sbr" \
+	"$(INTDIR)\blackcapfloor.sbr"
 
 "$(OUTDIR)\QuantLib.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -1458,7 +1480,9 @@ LIB32_OBJS= \
 	"$(INTDIR)\date.obj" \
 	"$(INTDIR)\option.obj" \
 	"$(INTDIR)\scheduler.obj" \
-	"$(INTDIR)\solver1d.obj"
+	"$(INTDIR)\solver1d.obj" \
+	"$(INTDIR)\blackswaption.obj" \
+	"$(INTDIR)\blackcapfloor.obj"
 
 ".\lib\Win32\VisualStudio\QuantLib.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
     $(LIB32) @<<
@@ -1497,8 +1521,12 @@ CLEAN :
 	-@erase "$(INTDIR)\binomialtree.sbr"
 	-@erase "$(INTDIR)\bisection.obj"
 	-@erase "$(INTDIR)\bisection.sbr"
+	-@erase "$(INTDIR)\blackcapfloor.obj"
+	-@erase "$(INTDIR)\blackcapfloor.sbr"
 	-@erase "$(INTDIR)\blackkarasinski.obj"
 	-@erase "$(INTDIR)\blackkarasinski.sbr"
+	-@erase "$(INTDIR)\blackswaption.obj"
+	-@erase "$(INTDIR)\blackswaption.sbr"
 	-@erase "$(INTDIR)\brent.obj"
 	-@erase "$(INTDIR)\brent.sbr"
 	-@erase "$(INTDIR)\bsmoperator.obj"
@@ -1818,7 +1846,9 @@ BSC32_SBRS= \
 	"$(INTDIR)\date.sbr" \
 	"$(INTDIR)\option.sbr" \
 	"$(INTDIR)\scheduler.sbr" \
-	"$(INTDIR)\solver1d.sbr"
+	"$(INTDIR)\solver1d.sbr" \
+	"$(INTDIR)\blackswaption.sbr" \
+	"$(INTDIR)\blackcapfloor.sbr"
 
 "$(OUTDIR)\QuantLib.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -1937,7 +1967,9 @@ LIB32_OBJS= \
 	"$(INTDIR)\date.obj" \
 	"$(INTDIR)\option.obj" \
 	"$(INTDIR)\scheduler.obj" \
-	"$(INTDIR)\solver1d.obj"
+	"$(INTDIR)\solver1d.obj" \
+	"$(INTDIR)\blackswaption.obj" \
+	"$(INTDIR)\blackcapfloor.obj"
 
 ".\lib\Win32\VisualStudio\QuantLib_d.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
     $(LIB32) @<<
@@ -2278,6 +2310,18 @@ SOURCE=.\ql\Pricers\barrieroption.cpp
 SOURCE=.\ql\Pricers\binaryoption.cpp
 
 "$(INTDIR)\binaryoption.obj"	"$(INTDIR)\binaryoption.sbr" : $(SOURCE) "$(INTDIR)"
+	$(CPP) $(CPP_PROJ) $(SOURCE)
+
+
+SOURCE=.\ql\Pricers\blackcapfloor.cpp
+
+"$(INTDIR)\blackcapfloor.obj"	"$(INTDIR)\blackcapfloor.sbr" : $(SOURCE) "$(INTDIR)"
+	$(CPP) $(CPP_PROJ) $(SOURCE)
+
+
+SOURCE=.\ql\Pricers\blackswaption.cpp
+
+"$(INTDIR)\blackswaption.obj"	"$(INTDIR)\blackswaption.sbr" : $(SOURCE) "$(INTDIR)"
 	$(CPP) $(CPP_PROJ) $(SOURCE)
 
 

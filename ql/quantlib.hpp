@@ -116,6 +116,7 @@
 #include <ql/Instruments/swap.hpp>
 #include <ql/Instruments/swaption.hpp>
 
+#include <ql/InterestRateModelling/blackmodel.hpp>
 #include <ql/InterestRateModelling/calibrationhelper.hpp>
 #include <ql/InterestRateModelling/model.hpp>
 #include <ql/InterestRateModelling/onefactormodel.hpp>
@@ -187,6 +188,8 @@
 #include <ql/Pricers/analyticalcapfloor.hpp>
 #include <ql/Pricers/barrieroption.hpp>
 #include <ql/Pricers/binaryoption.hpp>
+#include <ql/Pricers/blackcapfloor.hpp>
+#include <ql/Pricers/blackswaption.hpp>
 #include <ql/Pricers/cliquetoption.hpp>
 #include <ql/Pricers/continuousgeometricapo.hpp>
 #include <ql/Pricers/discretegeometricapo.hpp>
