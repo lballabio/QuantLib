@@ -76,7 +76,7 @@ namespace QuantLib {
 
                 Markowitz (1959)
             */
-            double GeneralStatistics::semiVariance() const {
+            double semiVariance() const {
                 return regret(mean());
             }
 
@@ -84,7 +84,7 @@ namespace QuantLib {
                 square root of the semi variance.
             */
             double semiDeviation() const {
-                return QL_SQRT(downsideVariance());
+                return QL_SQRT(semiVariance());
             }
 
             /*! returns the downside variance, defined as
@@ -109,7 +109,7 @@ namespace QuantLib {
 
                 See Dembo, Freeman "The Rules Of Risk", Wiley (2001)
             */
-            double GeneralStatistics::regret(double target) const;
+            double regret(double target) const;
 
 
             /*! returns the error estimate \f$ \epsilon \f$, defined as the

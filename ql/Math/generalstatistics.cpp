@@ -91,7 +91,7 @@ namespace QuantLib {
                 }
             }
 
-            if (sampleWeight=0.0) {
+            if (sampleWeight==0.0) {
                 QL_REQUIRE(weightSum()>0.0,
                        "GeneralStatistics::regret() : "
                        "empty sample (zero weight sum)");

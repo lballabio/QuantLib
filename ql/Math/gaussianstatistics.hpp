@@ -44,6 +44,32 @@ namespace QuantLib {
           public:
             //! \name Gaussian risk measures
             //@{
+
+            /*! returns the downside variance, defined as
+                \f[ \frac{N}{N-1} \times \frac{ \sum_{i=1}^{N}
+                \theta \times x_i^{2}}{ \sum_{i=1}^{N} w_i} \f],
+                where \f$ \theta \f$ = 0 if x > 0 and
+                \f$ \theta \f$ =1 if x <0
+            */
+            double gaussianDownsideVariance() const {
+                return gaussianRegret(0.0);
+            }
+
+            /*! returns the downside deviation, defined as the
+                square root of the downside variance.
+            */
+            double gaussianDownsideDeviation() const {
+                return QL_SQRT(gaussianDownsideVariance());
+            }
+
+            /*! returns the variance of observations below target 
+                \f[ \frac{\sum w_i (min(0, x_i-target))^2 }{\sum w_i}. \f]
+
+                See Dembo, Freeman "The Rules Of Risk", Wiley (2001)
+            */
+            double gaussianRegret(double target) const;
+
+
             /*! gaussian-assumption y-th percentile, defined as the value x
                 such that \f[ y = \frac{1}{\sqrt{2 \pi}}
                                       \int_{-\infty}^{x} \exp (-u^2/2) du \f]
@@ -67,6 +93,22 @@ namespace QuantLib {
             //@}
         };
 
+
+        template<class Stat>
+        inline double GaussianStatistics<Stat>::gaussianRegret(
+        double target) const {
+            double m = mean();
+            double std = standardDeviation();
+            double variance = std*std;
+            Math::CumulativeNormalDistribution gIntegral(m, std);
+            Math::NormalDistribution g(m, std);
+            double firstTerm = variance + m*m - 2.0*target*m + target*target;
+            double alfa = gIntegral(target);
+            double secondTerm = m - target;
+            double beta = variance*g(target);
+            double result = alfa*firstTerm - beta*secondTerm;
+            return result/alfa;
+        }
 
         /*! \pre percentile must be in range (0%-100%) extremes excluded */
         template<class Stat>

@@ -243,8 +243,6 @@ void RiskStatisticsTest::runTest() {
                     + DoubleFormatter::toString(tolerance,16));
 
 
-            // missing downsideVariance() test
-
             // standardDeviation
             expected = sigmas[j];
             tolerance = expected*1.0e-1;
@@ -277,8 +275,6 @@ void RiskStatisticsTest::runTest() {
                     "    tolerance:   "
                     + DoubleFormatter::toString(tolerance,16));
 
-
-            // missing downsideDeviation() test
 
             // missing errorEstimate() test
 
@@ -651,6 +647,88 @@ void RiskStatisticsTest::runTest() {
                     "    tolerance:   "
                     + DoubleFormatter::toString(tolerance,16));
 
+
+            // regret
+            expected = sigmas[j]*sigmas[j];
+            tolerance = expected*1.0e-1;
+            calculated = igs.gaussianRegret(target);
+            if (QL_FABS(calculated-expected) > tolerance)
+                CPPUNIT_FAIL(
+                    "IncrementalGaussianStatistics: "
+                    "wrong gaussian regret("
+                    + DoubleFormatter::toString(target,2) +
+                    ") for N("
+                    + DoubleFormatter::toString(averages[i],2) + ", "
+                    + DoubleFormatter::toString(sigmas[j],2) + ")\n"
+                    "    calculated: "
+                    + DoubleFormatter::toString(calculated,16) + "\n"
+                    "    expected:   "
+                    + DoubleFormatter::toString(expected,16) + "\n"
+                    "    tolerance:   "
+                    + DoubleFormatter::toString(tolerance,16));
+            calculated = s.gaussianRegret(target);
+            if (QL_FABS(calculated-expected) > tolerance)
+                CPPUNIT_FAIL(
+                    "Statistics: "
+                    "wrong gaussian regret("
+                    + DoubleFormatter::toString(target,2) +
+                    ") for N("
+                    + DoubleFormatter::toString(averages[i],2) + ", "
+                    + DoubleFormatter::toString(sigmas[j],2) + ")\n"
+                    "    calculated: "
+                    + DoubleFormatter::toString(calculated,16) + "\n"
+                    "    expected:   "
+                    + DoubleFormatter::toString(expected,16) + "\n"
+                    "    tolerance:   "
+                    + DoubleFormatter::toString(tolerance,16));
+            calculated = s.regret(target);
+            if (QL_FABS(calculated-expected) > tolerance)
+                CPPUNIT_FAIL(
+                    "Statistics: "
+                    "wrong regret("
+                    + DoubleFormatter::toString(target,2) +
+                    ") for N("
+                    + DoubleFormatter::toString(averages[i],2) + ", "
+                    + DoubleFormatter::toString(sigmas[j],2) + ")\n"
+                    "    calculated: "
+                    + DoubleFormatter::toString(calculated,16) + "\n"
+                    "    expected:   "
+                    + DoubleFormatter::toString(expected,16) + "\n"
+                    "    tolerance:   "
+                    + DoubleFormatter::toString(tolerance,16));
+
+
+            // downsideVariance
+            expected = s.downsideVariance();
+            tolerance = (expected == 0.0 ? 1.0e-3 : QL_FABS(expected*1.0e-3));
+            calculated = igs.downsideVariance();
+            if (QL_FABS(calculated-expected) > tolerance)
+                CPPUNIT_FAIL(
+                    "IncrementalGaussianStatistics: "
+                    "wrong downside variance"
+                    " for N("
+                    + DoubleFormatter::toString(averages[i],2) + ", "
+                    + DoubleFormatter::toString(sigmas[j],2) + ")\n"
+                    "    calculated: "
+                    + DoubleFormatter::toString(calculated,16) + "\n"
+                    "    expected:   "
+                    + DoubleFormatter::toString(expected,16) + "\n"
+                    "    tolerance:   "
+                    + DoubleFormatter::toString(tolerance,16));
+            calculated = igs.gaussianDownsideVariance();
+            if (QL_FABS(calculated-expected) > tolerance)
+                CPPUNIT_FAIL(
+                    "IncrementalGaussianStatistics: "
+                    "wrong gaussian downside variance"
+                    " for N("
+                    + DoubleFormatter::toString(averages[i],2) + ", "
+                    + DoubleFormatter::toString(sigmas[j],2) + ")\n"
+                    "    calculated: "
+                    + DoubleFormatter::toString(calculated,16) + "\n"
+                    "    expected:   "
+                    + DoubleFormatter::toString(expected,16) + "\n"
+                    "    tolerance:   "
+                    + DoubleFormatter::toString(tolerance,16));
             
             igs.reset();
             s.reset();

@@ -481,59 +481,5 @@ void StatisticsTest::runTest() {
         ss.add(temp, weights[i]);
     }
 
-
-
-    expected = 0.111111111;
-    calculated = igs.downsideVariance();
-    if (QL_FABS(calculated-expected) > tolerance)
-        CPPUNIT_FAIL(
-            "IncrementalGaussianStatistics: "
-            "wrong downside variance\n"
-            "    calculated: "
-            + DoubleFormatter::toString(calculated) + "\n"
-            "    expected:   "
-            + DoubleFormatter::toString(expected));
-    calculatedSequence = sigs.downsideVariance();
-    for (i=0; i<dimension; i++) {
-        if (QL_FABS(calculatedSequence[i]-expected) > tolerance)
-            CPPUNIT_FAIL(
-                "SequenceStatistics<IncrementalGaussianStatistics>: "
-                + IntegerFormatter::toOrdinal(i+1) + " dimension: "
-                "wrong downside variance\n"
-                "    calculated: "
-                + DoubleFormatter::toString(calculatedSequence[i]) + "\n"
-                "    expected:   "
-                + DoubleFormatter::toString(expected));
-    }
-
-    
-    
-    
-    
-    
-    
-    expected = 0.333333333;
-    calculated = igs.downsideDeviation();
-    if (QL_FABS(calculated-expected) > tolerance)
-        CPPUNIT_FAIL(
-            "IncrementalGaussianStatistics: "
-            "wrong downside deviation\n"
-            "    calculated: "
-            + DoubleFormatter::toString(calculated) + "\n"
-            "    expected:   "
-            + DoubleFormatter::toString(expected));
-    calculatedSequence = sigs.downsideDeviation();
-    for (i=0; i<dimension; i++) {
-        if (QL_FABS(calculatedSequence[i]-expected) > tolerance)
-            CPPUNIT_FAIL(
-                "SequenceStatistics<IncrementalGaussianStatistics>: "
-                + IntegerFormatter::toOrdinal(i+1) + " dimension: "
-                "wrong downside deviation\n"
-                "    calculated: "
-                + DoubleFormatter::toString(calculatedSequence[i]) + "\n"
-                "    expected:   "
-                + DoubleFormatter::toString(expected));
-    }
-
 }
 

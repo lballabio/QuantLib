@@ -102,15 +102,19 @@ namespace QuantLib {
         }
 
         double IncrementalStatistics::downsideVariance() const {
-            QL_REQUIRE(sampleWeight_>0.0,
+            if (downsideSampleWeight_==0.0) {
+                QL_REQUIRE(sampleWeight_>0.0,
                        "IncrementalStatistics::downsideVariance() : "
                        "sampleWeight_=0, unsufficient");
-            QL_REQUIRE(sampleNumber_>1,
-                       "IncrementalStatistics::downsideVariance() : "
-                       "sample number <=1, unsufficient");
+                return 0.0;
+            }
 
-            return (sampleNumber_/(sampleNumber_-1.0))*
-                (downsideQuadraticSum_ /sampleWeight_);
+            QL_REQUIRE(downsideSampleNumber_>1,
+                       "IncrementalStatistics::downsideVariance() : "
+                       "sample number below zero <=1, unsufficient");
+
+            return (downsideSampleNumber_/(downsideSampleNumber_-1.0))*
+                (downsideQuadraticSum_ /downsideSampleWeight_);
         }
 
         double IncrementalStatistics::skewness() const {
