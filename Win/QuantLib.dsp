@@ -88,18 +88,18 @@ LIB32=link.exe -lib
 # PROP Default_Filter ""
 # Begin Source File
 
-SOURCE=..\daycounters\actualactual.cpp
-# ADD CPP /I ".."
+SOURCE=..\Sources\daycounters\actualactual.cpp
+# ADD CPP /I "..\Sources"
 # End Source File
 # Begin Source File
 
-SOURCE=..\daycounters\thirty360.cpp
-# ADD CPP /I ".."
+SOURCE=..\Sources\daycounters\thirty360.cpp
+# ADD CPP /I "..\Sources"
 # End Source File
 # Begin Source File
 
-SOURCE=..\DayCounters\thirty360italian.cpp
-# ADD CPP /I ".."
+SOURCE=..\Sources\DayCounters\thirty360italian.cpp
+# ADD CPP /I "..\Sources"
 # End Source File
 # End Group
 # Begin Group "Calendars"
@@ -107,33 +107,33 @@ SOURCE=..\DayCounters\thirty360italian.cpp
 # PROP Default_Filter ""
 # Begin Source File
 
-SOURCE=..\Calendars\frankfurt.cpp
-# ADD CPP /I ".."
+SOURCE=..\Sources\Calendars\frankfurt.cpp
+# ADD CPP /I "..\Sources"
 # End Source File
 # Begin Source File
 
-SOURCE=..\Calendars\london.cpp
-# ADD CPP /I ".."
+SOURCE=..\Sources\Calendars\london.cpp
+# ADD CPP /I "..\Sources"
 # End Source File
 # Begin Source File
 
-SOURCE=..\Calendars\milan.cpp
-# ADD CPP /I ".."
+SOURCE=..\Sources\Calendars\milan.cpp
+# ADD CPP /I "..\Sources"
 # End Source File
 # Begin Source File
 
-SOURCE=..\Calendars\newyork.cpp
-# ADD CPP /I ".."
+SOURCE=..\Sources\Calendars\newyork.cpp
+# ADD CPP /I "..\Sources"
 # End Source File
 # Begin Source File
 
-SOURCE=..\Calendars\target.cpp
-# ADD CPP /I ".."
+SOURCE=..\Sources\Calendars\target.cpp
+# ADD CPP /I "..\Sources"
 # End Source File
 # Begin Source File
 
-SOURCE=..\Calendars\westerncalendar.cpp
-# ADD CPP /I ".."
+SOURCE=..\Sources\Calendars\westerncalendar.cpp
+# ADD CPP /I "..\Sources"
 # End Source File
 # End Group
 # Begin Group "Term Structures"
@@ -141,8 +141,8 @@ SOURCE=..\Calendars\westerncalendar.cpp
 # PROP Default_Filter ""
 # Begin Source File
 
-SOURCE=..\TermStructures\piecewiseconstantforwards.cpp
-# ADD CPP /I ".."
+SOURCE=..\Sources\TermStructures\piecewiseconstantforwards.cpp
+# ADD CPP /I "..\Sources"
 # End Source File
 # End Group
 # Begin Group "Operators"
@@ -150,11 +150,13 @@ SOURCE=..\TermStructures\piecewiseconstantforwards.cpp
 # PROP Default_Filter ""
 # Begin Source File
 
-SOURCE=..\Operators\blackscholesmerton.cpp
+SOURCE=..\Sources\Operators\blackscholesmerton.cpp
+# ADD CPP /I "..\Sources" /I "..\Sources\PDE"
 # End Source File
 # Begin Source File
 
-SOURCE=..\Operators\tridiagonaloperator.cpp
+SOURCE=..\Sources\Operators\tridiagonaloperator.cpp
+# ADD CPP /I "..\Sources" /I "..\Sources\PDE"
 # End Source File
 # End Group
 # Begin Group "Pricers"
@@ -162,16 +164,17 @@ SOURCE=..\Operators\tridiagonaloperator.cpp
 # PROP Default_Filter ""
 # Begin Source File
 
-SOURCE=..\Pricers\bsmeuropeanoption.cpp
+SOURCE=..\Sources\Pricers\bsmeuropeanoption.cpp
+# ADD CPP /I "..\Sources" /I "..\Sources\Operators" /I "..\Sources\PDE"
 # End Source File
 # End Group
 # Begin Source File
 
-SOURCE=..\calendar.cpp
+SOURCE=..\Sources\calendar.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\date.cpp
+SOURCE=..\Sources\date.cpp
 # End Source File
 # End Group
 # Begin Group "Interfaces"
