@@ -1,11 +1,10 @@
-INCLUDES = -I$(top_srcdir)/Include \
-           -I$(top_srcdir)/Include/Math \
-           -I$(top_srcdir)/Include/Patterns
 
 SUBDIRS = FiniteDifferences Calendars Solvers1D TermStructures \
 	DayCounters Math Pricers MonteCarlo
 
 EXTRA_DIST=makefile.mak
+
+INCLUDES = -I$(top_srcdir)/Include
 
 libQuantLib_la_LIBADD = ./Calendars/libCalendars.la \
 	DayCounters/libDayCounters.la \

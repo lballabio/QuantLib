@@ -1,8 +1,7 @@
 
 EXTRA_DIST=makefile.mak
 
-INCLUDES = -I$(top_srcdir)/Include \
-	-I$(top_srcdir)/Include/Calendars
+INCLUDES = -I$(top_srcdir)/Include
 
 libCalendars_la_SOURCES = frankfurt.cpp \
                           helsinki.cpp \

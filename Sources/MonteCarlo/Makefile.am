@@ -1,10 +1,7 @@
 
 EXTRA_DIST=makefile.mak
 
-INCLUDES = -I$(top_srcdir)/Include/ \
-	-I$(top_srcdir)/Include/MonteCarlo \
-	-I$(top_srcdir)/Include/Math \
-	-I$(top_srcdir)/Include/Utilities
+INCLUDES = -I$(top_srcdir)/Include
 
 libMonteCarlo_la_SOURCES = \
 	avgstrikeasianpathpricer.cpp \

@@ -1,13 +1,7 @@
 
 EXTRA_DIST=makefile.mak
 
-INCLUDES = -I$(top_srcdir)/Include \
-	-I$(top_srcdir)/Include/Pricers \
-	-I$(top_srcdir)/Include/FiniteDifferences \
-	-I$(top_srcdir)/Include/Math \
-	-I$(top_srcdir)/Include/Solvers1D \
-	-I$(top_srcdir)/Include/MonteCarlo \
-	-I$(top_srcdir)/Include/Utilities
+INCLUDES = -I$(top_srcdir)/Include
 
 libPricers_la_SOURCES = \
     averagepriceasian.cpp \

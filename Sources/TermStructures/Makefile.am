@@ -1,9 +1,7 @@
 
 EXTRA_DIST=makefile.mak
 
-INCLUDES = -I$(top_srcdir)/Include/ \
-	-I$(top_srcdir)/Include/TermStructures \
-	-I$(top_srcdir)/Include/Patterns
+INCLUDES = -I$(top_srcdir)/Include
 
 libTermStructures_la_SOURCES = piecewiseconstantforwards.cpp
 

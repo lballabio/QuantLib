@@ -148,20 +148,7 @@ setup ( cmdclass = cmdclass, \
 		Extension ( "QuantLibc", \
                             ["quantlib_wrap.cpp"], \
                             libraries = ["QuantLib"], \
-                            include_dirs = [predir \
-                                            #"%s/Calendars" % predir, \
-                                            #"%s/Currencies" % predir, \
-                                            #"%s/DayCounters" % predir, \
-                                            #"%s/FiniteDifferences" % predir, \
-                                            #"%s/Instruments" % predir, \
-                                            #"%s/Math" % predir, \
-                                            #"%s/Patterns" % predir, \
-                                            #"%s/Pricers" % predir, \
-                                            #"%s/Solvers1D" % predir, \
-                                            #"%s/TermStructures" % predir, \
-                                            #"%s/MonteCarlo" % predir, \
-                                            #"%s/Utilities" % predir \
-                                            ] \
+                            include_dirs = [predir] \
                             ) \
                 ] \
         )
