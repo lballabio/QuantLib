@@ -26,3 +26,4 @@ Changes since latest release:
 - Added DayCounter parameter to ParCoupon (to be used for accruing spreads
   and past fixings.) When missing, it defaults to that of the term structure.
 
+- Added compilation flag to select default floating-coupon type
