@@ -35,6 +35,7 @@
 
 #include <ql/array.hpp>
 #include <ql/handle.hpp>
+#include <vector>
 
 namespace QuantLib {
 
@@ -46,7 +47,9 @@ namespace QuantLib {
         class Path {
           public:
             Path(size_t size);
-            Path(const Array& drift, const Array& diffusion);
+            Path(const std::vector<Time>& times,
+                 const Array& drift,
+                 const Array& diffusion);
             //! \name inspectors
             //@{
             double operator[](int i) const;
@@ -54,12 +57,15 @@ namespace QuantLib {
             //@}
             //! \name read/write access to components
             //@{
+            const std::vector<Time>& times() const;
+            std::vector<Time>& times();
             const Array& drift() const;
             Array& drift();
             const Array& diffusion() const;
             Array& diffusion();
             //@}
           private:
+            std::vector<Time> times_;
             Array drift_;
             Array diffusion_;
         };
@@ -67,12 +73,15 @@ namespace QuantLib {
         // inline definitions
 
         inline Path::Path(size_t size)
-        : drift_(size), diffusion_(size) {}
+        : times_(size), drift_(size), diffusion_(size) {}
 
-        inline Path::Path(const Array& drift, const Array& diffusion)
-        : drift_(drift), diffusion_(diffusion) {
+        inline Path::Path(const std::vector<Time>& times, const Array& drift,
+            const Array& diffusion)
+        : times_(times), drift_(drift), diffusion_(diffusion) {
             QL_REQUIRE(drift_.size() == diffusion_.size(),
                 "Path: drift and diffusion have different size");
+            QL_REQUIRE(times_.size() == drift_.size(),
+                "Path: times and drift have different size");
         }
 
         inline double Path::operator[](int i) const {
@@ -81,6 +90,14 @@ namespace QuantLib {
 
         inline size_t Path::size() const {
             return drift_.size();
+        }
+
+        inline const std::vector<Time>& Path::times() const {
+            return times_;
+        }
+
+        inline std::vector<Time>& Path::times() {
+            return times_;
         }
 
         inline const Array& Path::drift() const {

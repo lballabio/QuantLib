@@ -27,28 +27,8 @@
 
 using namespace QuantLib;
 
-// class for statistical analysis
-using QuantLib::Math::Statistics;
-
-// single Path of a random variable
-// It contains the list of variations
-using QuantLib::MonteCarlo::Path;
-
-// the pricer computes final portfolio's value for each random variable path
-using QuantLib::MonteCarlo::PathPricer;
-
-// the path generators
-using QuantLib::MonteCarlo::GaussianPathGenerator;
-
-// the pricing model for option on a single asset
-using QuantLib::MonteCarlo::OneFactorMonteCarloOption;
-
-// the more general model for option on a single asset
-using QuantLib::MonteCarlo::MonteCarloModel;
-
-using QuantLib::MonteCarlo::EuropeanPathPricer;
-using QuantLib::RandomNumbers::UniformRandomGenerator;
 using QuantLib::Pricers::EuropeanOption;
+using QuantLib::Pricers::McEuropean;
 using QuantLib::Pricers::FiniteDifferenceEuropean;
 
 // helper function for option payoff: MAX((stike-underlying),0), etc.
@@ -87,11 +67,11 @@ int main(int argc, char* argv[])
 {
     try {
         // our option
-        double underlying = 100;
+        double underlying = 102;
         double strike = 100;      // at the money
         Spread dividendYield = 0.0; // no dividends
         Rate riskFreeRate = 0.05; // 5%
-        Time maturity = 1.0;      // 1 year
+        Time maturity = 0.25;      // 3 months
         double volatility = 0.20; // 20%
         std::cout << "Time to maturity = "        << maturity
                   << std::endl;
@@ -187,39 +167,14 @@ int main(int argc, char* argv[])
 
 
 
-        // Monte Carlo methods
-        // for plain vanilla european option the number of steps is not
-        // significant. Let's go for the fastest way: just one step
-        int nTimeSteps = 1;
-        int nSamples = 200000;
-        // this causes the actual seed to change randomly at each run
-        long seed = 0;
-        double drift = riskFreeRate - 0.5*volatility*volatility;
-        Statistics samples;
-        Handle<GaussianPathGenerator> myPathGenerator(
-            new GaussianPathGenerator(drift, volatility*volatility,
-                maturity, nTimeSteps, seed));
-
-
-        // fifth method:  MonteCarlo
-        method ="Monte Carlo";
+        // fifth method: Monte Carlo (crude)
+        method ="MC (crude)";
+        double nSamples = 200;
         bool antitheticVariance = false;
-        // The European path pricer
-        Handle<PathPricer<Path> > myEuropeanPathPricer =
-            Handle<PathPricer<Path> >(new EuropeanPathPricer(Option::Call,
-            underlying, strike, exp(-riskFreeRate*maturity),
-            antitheticVariance));
-        // The OneFactorMontecarloModel generates paths using myPathGenerator
-        // each path is priced using myPathPricer
-        // prices will be accumulated into samples
-        OneFactorMonteCarloOption mc(myPathGenerator, myEuropeanPathPricer,
-            samples);
-        // the model simulates nSamples paths
-        mc.addSamples(nSamples);
-        // the sampleAccumulator method of OneFactorMonteCarloOption
-        // gives access to all the methods of statisticAccumulator
-        value = mc.sampleAccumulator().mean();
-        estimatedError = mc.sampleAccumulator().errorEstimate();
+        McEuropean mcEur(Option::Call, underlying, strike, dividendYield,
+            riskFreeRate, maturity, volatility, antitheticVariance);
+        value = mcEur.value(nSamples);
+        estimatedError = mcEur.errorEstimate();
         discrepancy = QL_FABS(value-rightValue);
         relativeDiscrepancy = discrepancy/rightValue;
         std::cout << method << "\t"
@@ -229,22 +184,13 @@ int main(int argc, char* argv[])
              << DoubleFormatter::toString(relativeDiscrepancy, 6)
              << std::endl;
 
-        // sixth method:  MonteCarlo with antithetic variance reduction
-        method ="MC antithetic";
+        // sixth method: Monte Carlo with antithetic variance reduction
+        method ="MC (antithetic)";
         antitheticVariance = true;
-        // The European path pricer, this time with antithetic variance
-        // reduction
-        myEuropeanPathPricer =
-            Handle<PathPricer<Path> >(new EuropeanPathPricer(Option::Call,
-            underlying, strike, exp(-riskFreeRate*maturity),
-            antitheticVariance));
-        // reset the statistic accumulator
-        samples.reset();
-        mc = OneFactorMonteCarloOption(myPathGenerator, myEuropeanPathPricer,
-            samples);
-        mc.addSamples(nSamples);
-        value = mc.sampleAccumulator().mean();
-        estimatedError = mc.sampleAccumulator().errorEstimate();
+        McEuropean mcEur2(Option::Call, underlying, strike, dividendYield,
+            riskFreeRate, maturity, volatility, antitheticVariance);
+        value = mcEur2.value(nSamples);
+        estimatedError = mcEur2.errorEstimate();
         discrepancy = QL_FABS(value-rightValue);
         relativeDiscrepancy = discrepancy/rightValue;
         std::cout << method << "\t"
@@ -253,6 +199,7 @@ int main(int argc, char* argv[])
              << DoubleFormatter::toString(discrepancy, 6) << "\t"
              << DoubleFormatter::toString(relativeDiscrepancy, 6)
              << std::endl;
+
 
 
         return 0;

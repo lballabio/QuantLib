@@ -74,23 +74,37 @@ namespace QuantLib {
         PathGenerator<RNG>::PathGenerator(double drift, double variance,
             Time length, size_t steps, long seed)
         : next_(Path(steps),1.0) {
+            QL_REQUIRE(steps > 0, "PathGenerator: Time steps(" +
+                IntegerFormatter::toString(steps) +
+                ") must be greater than zero");
+            QL_REQUIRE(length > 0, "PathGenerator: length must be > 0");
+            Time dt = length/steps;
+            for (size_t i = 0; i< steps; i++) {
+                next_.value.times()[i] = (i+1)*dt;
+            }
+
+            next_.value.drift() = Array(steps, drift*dt);
+
             QL_REQUIRE(variance >= 0.0, "PathGenerator: negative variance");
-            next_.value.drift() = Array(steps, drift*length/steps);
             generator_ = Handle<RandomNumbers::RandomArrayGenerator<RNG> >(
                 new RandomNumbers::RandomArrayGenerator<RNG>(
-                    Array(steps, variance*length/steps), seed));
+                    Array(steps, variance*dt), seed));
         }
 
         template <class RNG>
         PathGenerator<RNG>::PathGenerator(double drift, double variance,
             const std::vector<Time>& times, long seed)
         : next_(Path(times.size()),1.0) {
-            QL_REQUIRE(variance >= 0.0, "PathGenerator: negative variance");
             QL_REQUIRE(times.size() > 0, "PathGenerator: no times given");
-            QL_REQUIRE(times[0] >= 0.0, "PathGenerator: negative time given");
+            QL_REQUIRE(times[0] >= 0.0, "PathGenerator: first time(" +
+                 DoubleFormatter::toString(times[0]) + ") must be non negative");
+            next_.value.times() = times;
+
             Array vrnc(times.size());
             Time dt = times[0];
             next_.value.drift()[0] = drift*dt;
+
+            QL_REQUIRE(variance >= 0.0, "PathGenerator: negative variance");
             vrnc[0] = variance*dt;
             for (size_t i=1; i<times.size(); i++) {
                 QL_REQUIRE(times[i] > times[i-1],

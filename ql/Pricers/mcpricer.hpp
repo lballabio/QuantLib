@@ -70,7 +70,7 @@ namespace QuantLib {
 
 
         template<class S, class PG, class PP>
-        const size_t McPricer<S, PG, PP>::minSample_ = 10000;
+        const size_t McPricer<S, PG, PP>::minSample_ = 100;
 
         // inline definitions
         template<class S, class PG, class PP>
@@ -93,11 +93,14 @@ namespace QuantLib {
                 // conservative estimate of how many samples are needed 
                 order = accuracy*accuracy/tolerance/tolerance;
                 nextBatch = size_t(
-                    QL_MAX(sampleNumber*order/2.0-sampleNumber, 100.0));
+                    QL_MAX(sampleNumber*order*0.8-sampleNumber,
+                    double(minSample_)));
                 // do not exceed maxSamples
                 nextBatch = QL_MIN(nextBatch, maxSamples-sampleNumber);
                 QL_REQUIRE(nextBatch>0,
                     "max number of samples exceeded");
+                std::cout << nextBatch << std::endl;
+
                 sampleNumber += nextBatch;
                 mcModel_->addSamples(nextBatch);
                 result = mcModel_->sampleAccumulator().mean();
