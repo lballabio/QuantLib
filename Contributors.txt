@@ -4,5 +4,6 @@ Christopher Baus
 Thomas Becker
 David Binderman
 Gilbert Peffer
+Maxim "Ronin" <godzila07@rambler.ru>
 Peter Schmitteckert
 Bernd Johannes Wuebben

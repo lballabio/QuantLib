@@ -29,18 +29,11 @@
 
 // $Source$
 // $Log$
+// Revision 1.9  2001/07/05 13:51:04  nando
+// Maxim "Ronin" contribution on efficiency and style
+//
 // Revision 1.8  2001/07/04 12:00:37  uid40428
 // Array of random numbers built with an array of dates
-//
-// Revision 1.7  2001/06/22 16:38:15  lballabio
-// Improved documentation
-//
-// Revision 1.6  2001/05/25 09:29:40  nando
-// smoothing #include xx.hpp and cutting old Log messages
-//
-// Revision 1.5  2001/05/24 15:38:08  nando
-// smoothing #include xx.hpp and cutting old Log messages
-//
 
 #ifndef quantlib_montecarlo_random_array_generator_h
 #define quantlib_montecarlo_random_array_generator_h
@@ -57,22 +50,22 @@ namespace QuantLib {
         class RandomArrayGenerator {
           public:
             // typedef Array SampleType;
-            // this typedef would make RandomArrayGenerator into a sample 
+            // this typedef would make RandomArrayGenerator into a sample
             // generator
             RandomArrayGenerator();
-            
-            RandomArrayGenerator(int dimension, 
+
+            RandomArrayGenerator(int dimension,
                                  double average = 0.0,
-                                 double stddev = 1.0, 
+                                 double variance = 1.0,
                                  long seed=0);
-            RandomArrayGenerator( const std::vector<Time> & dates, 
-                                  double average = 0.0, 
-                                  double stddev = 1.0, 
-                                  long seed=0);              
-            RandomArrayGenerator(const Math::Matrix &covariance, 
+            RandomArrayGenerator(const std::vector<Time> & dates,
+                                 double average = 0.0,
+                                 double variance = 1.0,
+                                 long seed=0);
+            RandomArrayGenerator(const Math::Matrix &covariance,
                                  long seed=0);
             RandomArrayGenerator(const Array &average,
-                                 const Math::Matrix &covariance, 
+                                 const Math::Matrix &covariance,
                                  long seed=0);
             Array next() const;
             double weight() const{return weight_;}
@@ -104,7 +97,7 @@ namespace QuantLib {
         }
 
         template <class RP>
-        inline RandomArrayGenerator<RP>::RandomArrayGenerator( 
+        inline RandomArrayGenerator<RP>::RandomArrayGenerator(
                 const std::vector<Time> & dates,
                 double average, double variance, long seed):
                 size_(dates.size()),
@@ -136,7 +129,7 @@ namespace QuantLib {
                 }
             }
         }
-                
+
         template <class RP>
         inline RandomArrayGenerator<RP >::RandomArrayGenerator(
             const Math::Matrix &covariance, long seed):
@@ -193,7 +186,7 @@ namespace QuantLib {
             if(averageArray_.size() == 0){
                 for(int j = 0; j < size_; j++){
                     nextArray[j] = average_ * timeDelays_[j]
-                                + rndPoint_.next() * sqrtVariance_ *     
+                                + rndPoint_.next() * sqrtVariance_ *
                                                      QL_SQRT(timeDelays_[j]);
                     weight_ *= rndPoint_.weight();
                 }
@@ -202,7 +195,7 @@ namespace QuantLib {
                 for(int j = 0; j < size_; j++){
                     nextArray[j] = rndPoint_.next();
                     weight_ *= rndPoint_.weight();
-                }    
+                }
                 nextArray = averageArray_ + sqrtCovariance_ * nextArray;
 
             }

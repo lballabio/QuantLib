@@ -29,11 +29,8 @@
 
 // $Source$
 // $Log$
-// Revision 1.9  2001/07/02 12:36:18  sigmud
-// pruned redundant header inclusions
-//
-// Revision 1.8  2001/05/24 15:40:10  nando
-// smoothing #include xx.hpp and cutting old Log messages
+// Revision 1.10  2001/07/05 13:51:05  nando
+// Maxim "Ronin" contribution on efficiency and style
 //
 
 #include "ql/MonteCarlo/europeanpathpricer.hpp"
@@ -63,11 +60,12 @@ namespace QuantLib {
             QL_REQUIRE(n>0,
                 "SinglePathEuropeanPricer: the path cannot be empty");
 
-            double price = underlying_;
+            double log_price = 0.0;
             for(int i = 0; i < n; i++)
-                price *= QL_EXP(path[i]);
+                log_price += path[i];
 
-            return computePlainVanilla(type_, price, strike_, discount_);
+            return computePlainVanilla(type_, underlying_*QL_EXP(log_price),
+                strike_, discount_);
         }
 
         double EuropeanPathPricer::computePlainVanilla(
