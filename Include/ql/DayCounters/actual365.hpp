@@ -30,6 +30,9 @@
 
 // $Id$
 // $Log$
+// Revision 1.9  2001/08/29 15:18:04  nando
+// _DEBUG instead of QL_DEBUG to select which lib is to link under MS VC++
+//
 // Revision 1.8  2001/08/09 14:59:46  sigmud
 // header modification
 //
@@ -58,7 +61,7 @@ namespace QuantLib {
 
     namespace DayCounters {
 
-        //! Actual/365 day counter
+        //! Actual/365 day count convention
         class Actual365 : public DayCounter {
           public:
             std::string name() const { return std::string("act/365"); }

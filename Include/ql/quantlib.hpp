@@ -26,6 +26,9 @@
 
 // $Id$
 // $Log$
+// Revision 1.34  2001/08/29 15:18:04  nando
+// _DEBUG instead of QL_DEBUG to select which lib is to link under MS VC++
+//
 // Revision 1.33  2001/08/28 14:46:01  enri
 // .am files for examples added, minor changes to permit compilation on unixes
 //
@@ -258,7 +261,7 @@ namespace QLUTL = QuantLib::Utilities;
 /*** library to be linked***/
 
 #if defined(_MSC_VER)
-    #ifdef QL_DEBUG
+    #ifdef _DEBUG
         #pragma comment(lib,"QuantLib_d.lib")
     #else
         #pragma comment(lib,"QuantLib.lib")

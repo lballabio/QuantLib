@@ -30,23 +30,8 @@
 
 // $Id$
 // $Log$
-// Revision 1.27  2001/08/09 14:59:47  sigmud
-// header modification
-//
-// Revision 1.26  2001/08/08 11:07:49  sigmud
-// inserting \fullpath for doxygen
-//
-// Revision 1.25  2001/08/07 11:25:55  sigmud
-// copyright header maintenance
-//
-// Revision 1.24  2001/07/25 15:47:29  sigmud
-// Change from quantlib.sourceforge.net to quantlib.org
-//
-// Revision 1.23  2001/07/13 14:23:11  sigmud
-// removed a few gcc compile warnings
-//
-// Revision 1.22  2001/05/24 15:40:09  nando
-// smoothing #include xx.hpp and cutting old Log messages
+// Revision 1.28  2001/08/29 15:18:04  nando
+// _DEBUG instead of QL_DEBUG to select which lib is to link under MS VC++
 //
 
 #include "ql/DayCounters/actualactual.hpp"
@@ -65,7 +50,7 @@ namespace QuantLib {
             int months = int(0.5+12*double(refPeriodEnd-refPeriodStart)/365);
             QL_REQUIRE(months != 0 && 12%months == 0,
                 "number of months does not divide 12 exactly");
-            double period = double(months)/12;
+            double period = double(months)/12.0;
             if (d2 <= refPeriodEnd) {
                 if (d1 >= refPeriodStart)
                     return period*double(dayCount(d1,d2)) /

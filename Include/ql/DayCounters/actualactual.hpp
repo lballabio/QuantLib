@@ -30,23 +30,8 @@
 
 // $Id$
 // $Log$
-// Revision 1.10  2001/08/09 14:59:46  sigmud
-// header modification
-//
-// Revision 1.9  2001/08/08 11:07:48  sigmud
-// inserting \fullpath for doxygen
-//
-// Revision 1.8  2001/08/07 11:25:53  sigmud
-// copyright header maintenance
-//
-// Revision 1.7  2001/07/25 15:47:27  sigmud
-// Change from quantlib.sourceforge.net to quantlib.org
-//
-// Revision 1.6  2001/06/15 13:52:07  lballabio
-// Reworked indexes
-//
-// Revision 1.5  2001/05/24 15:38:08  nando
-// smoothing #include xx.hpp and cutting old Log messages
+// Revision 1.11  2001/08/29 15:18:04  nando
+// _DEBUG instead of QL_DEBUG to select which lib is to link under MS VC++
 //
 
 #ifndef quantlib_actualactual_day_counter_h
@@ -58,18 +43,25 @@ namespace QuantLib {
 
     namespace DayCounters {
 
-        //! Actual/actual day count according to ISMA
-        /*! \todo Actual/Actual day count following the ISDA and AFB 
+        //! Actual/Actual day count according to ISMA and US Treasury
+        /*! Actual/Actual day count according to ISMA and US Treasury
+            convention. Also known as "Actual/Actual (Bond)".
+            For more detail please refer to:
+            http://www.isda.org/c_and_a/pdf/mktc1198.pdf
+
+            \todo Actual/Actual day count following the ISDA and AFB 
             conventions should be implemented.
         */
         class ActualActual : public DayCounter {
           public:
-            std::string name() const { return std::string("act/act"); }
-            int dayCount(const Date& d1, const Date& d2) const {
-                return (d2-d1); }
-            Time yearFraction(const Date& d1, const Date& d2,
-              const Date& refPeriodStart = Date(),
-              const Date& refPeriodEnd = Date()) const;
+            std::string name() const { return std::string("act/act(b)"); }
+            int dayCount(const Date& d1,
+                         const Date& d2) const {
+                            return (d2-d1); }
+            Time yearFraction(const Date& d1,
+                              const Date& d2,
+                              const Date& refPeriodStart,
+                              const Date& refPeriodEnd) const;
         };
 
     }
