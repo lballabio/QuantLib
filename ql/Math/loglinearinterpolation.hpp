@@ -51,7 +51,7 @@ namespace QuantLib {
              : logY_(xEnd-xBegin),
                Interpolation<RandomAccessIterator1,RandomAccessIterator2>(
                xBegin, xEnd, yBegin) {
-                 for (Size i=0; i<xEnd-xBegin; i++) {
+                 for (int i=0; i<xEnd-xBegin; i++) {
                      QL_REQUIRE(*(yBegin+i)>0.0,
                         "LogLinearInterpolation::LogLinearInterpolation : "
                         "negative values not allowed");
