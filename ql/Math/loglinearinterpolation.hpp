@@ -1,6 +1,6 @@
 
 /*
- Copyright (C) 2002 Andre Louw.
+ Copyright (C) 2002 Ferdinando Ametrano
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -27,7 +27,7 @@
 #ifndef quantlib_loglinear_interpolation_h
 #define quantlib_loglinear_interpolation_h
 
-#include <ql/Math/interpolation.hpp>
+#include <ql/Math/linearinterpolation.hpp>
 #include <algorithm>
 
 namespace QuantLib {
@@ -48,10 +48,29 @@ namespace QuantLib {
              LogLinearInterpolation(const RandomAccessIterator1& xBegin,
                                     const RandomAccessIterator1& xEnd,
                                     const RandomAccessIterator2& yBegin)
-             : Interpolation<RandomAccessIterator1,RandomAccessIterator2>(
-                 xBegin,xEnd,yBegin) {}
+             : logY_(xEnd-xBegin),
+               Interpolation<RandomAccessIterator1,RandomAccessIterator2>(
+               xBegin, xEnd, yBegin) {
+                 for (Size i=0; i<xEnd-xBegin; i++) {
+                     QL_REQUIRE(*(yBegin+i)>0.0,
+                        "LogLinearInterpolation::LogLinearInterpolation : "
+                        "negative values not allowed");
+                     logY_[i]=QL_LOG(*(yBegin+i));
+                 }
+                 linearInterpolation_ =
+                     Handle<LinearInterpolation<RandomAccessIterator1,
+                     std::vector<result_type>::const_iterator> >(
+                     new LinearInterpolation<RandomAccessIterator1,
+                     std::vector<result_type>::const_iterator>(xBegin,
+                     xEnd, logY_.begin()));
+             }
             result_type operator()(const argument_type& x,
                 bool allowExtrapolation = false) const;
+          private:
+              std::vector<result_type> logY_;
+              Handle<LinearInterpolation<RandomAccessIterator1,
+                  std::vector<result_type>::const_iterator> >
+                  linearInterpolation_;
         };
 
 
@@ -62,17 +81,9 @@ namespace QuantLib {
         LogLinearInterpolation<I1,I2>::operator()(
             const LogLinearInterpolation<I1,I2>::argument_type& x,
             bool allowExtrapolation) const {
-                locate(x);
-                if (isOutOfRange_) {
-                    QL_REQUIRE(allowExtrapolation,
-                        "LogLinearInterpolation::operator() : "
-                        "extrapolation not allowed");
-                }
-                I2 j = yBegin_+(position_-xBegin_);
-                return (QL_POW(*j,(x/(*position_)*((*(position_+1))-x)/
-                                   ((*(position_+1))-(*position_))))) * 
-                    (QL_POW(*(j+1),(x/(*(position_+1))*(x-(*position_))/
-                                    ((*(position_+1))-(*position_)))));
+                result_type logResult = (*linearInterpolation_)(x,
+                    allowExtrapolation);
+                return QL_EXP(logResult);
         }
 
     }
