@@ -28,7 +28,7 @@ namespace QuantLib {
     KnuthUniformRng::KnuthUniformRng(long seed)
     : ranf_arr_buf(QUALITY), ran_u(QUALITY) {
         ranf_arr_ptr = ranf_arr_sentinel = ranf_arr_buf.end();
-        ranf_start(seed != 0 ? seed : SeedGenerator::get());
+        ranf_start(seed != 0 ? seed : SeedGenerator::instance().get());
     }
 
     void KnuthUniformRng::ranf_start(long seed) {

@@ -37,7 +37,7 @@ using namespace boost::unit_test_framework;
 
 void LowDiscrepancyTest::testSeedGenerator() {
     BOOST_MESSAGE("Testing random seed generator...");
-    long temp = SeedGenerator::get();
+    unsigned long temp = SeedGenerator::instance().get();
 }
 
 void LowDiscrepancyTest::testPolynomialsModuloTwo() {
@@ -77,7 +77,7 @@ void LowDiscrepancyTest::testPolynomialsModuloTwo() {
 
 void LowDiscrepancyTest::testRandomizedLowDiscrepancySequence() {
 
-    BOOST_MESSAGE("Testing Randomized low discrepancy sequences up to "
+    BOOST_MESSAGE("Testing randomized low-discrepancy sequences up to "
                   "dimension " + IntegerFormatter::toString(PPMT_MAX_DIM) +
                   "...");
 

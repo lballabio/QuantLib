@@ -19,10 +19,11 @@
     \brief Random seed generator
 */
 
-#ifndef quantlib_seedgenerator_hpp
-#define quantlib_seedgenerator_hpp
+#ifndef quantlib_seed_generator_hpp
+#define quantlib_seed_generator_hpp
 
 #include <ql/RandomNumbers/mt19937uniformrng.hpp>
+#include <ql/Patterns/singleton.hpp>
 
 namespace QuantLib {
 
@@ -30,13 +31,14 @@ namespace QuantLib {
     /*! Random number generator used for automatic generation of
         initialization seeds.
     */
-    class SeedGenerator {
+    class SeedGenerator : public Singleton<SeedGenerator> {
+        friend class Singleton<SeedGenerator>;
       public:
-        //! Get a new seed
-        static unsigned long get();
+        unsigned long get();
       private:
-        SeedGenerator() {}
-        static MersenneTwisterUniformRng rng_;
+        SeedGenerator();
+        void initialize();
+        MersenneTwisterUniformRng rng_;
     };
 
 }

@@ -19,24 +19,24 @@
 
 namespace QuantLib {
 
-    MersenneTwisterUniformRng SeedGenerator::rng_(QL_TIME(0));
+    // we need to prevent rng from being default-initialized
+    SeedGenerator::SeedGenerator() : rng_(42UL) {}
 
-    /*
-    SeedGenerator::SeedGenerator() {
+    void SeedGenerator::initialize() {
 
         // firstSeed is chosen based on clock() and used for the first rng
-        unsigned long firstSeed = long(QL_TIME(0));
+        unsigned long firstSeed = (unsigned long)(QL_TIME(0));
         MersenneTwisterUniformRng first(firstSeed);
 
-        std::vector<unsigned long> init(4);
-        init[0]=first.nextInt32();
-        init[1]=first.nextInt32();
-        init[2]=first.nextInt32();
-        init[3]=first.nextInt32();
-        MersenneTwisterUniformRng second(init);
+        // secondSeed is as random as it could be
+        // feel free to suggest improvements
+        unsigned long secondSeed = first.nextInt32();
+
+        MersenneTwisterUniformRng second(secondSeed);
 
         // use the second rng to initialize the final one
-        long skip = long(second.next().value * 10000);
+        unsigned long skip = second.nextInt32() % 1000;
+        std::vector<unsigned long> init(4);
         init[0]=second.nextInt32();
         init[1]=second.nextInt32();
         init[2]=second.nextInt32();
@@ -44,12 +44,12 @@ namespace QuantLib {
 
         rng_ = MersenneTwisterUniformRng(init);
 
-        for (long i=0; i<skip ; i++)
+        for (unsigned long i=0; i<skip ; i++)
             rng_.nextInt32();
     }
-    */
 
     unsigned long SeedGenerator::get() {
         return rng_.nextInt32();
     }
+
 }

@@ -88,7 +88,7 @@ namespace QuantLib {
 
     void MersenneTwisterUniformRng::seedInitialization(unsigned long seed) {
         /* initializes mt with a seed */
-        unsigned long s = (seed != 0 ? seed : SeedGenerator::get());
+        unsigned long s = (seed != 0 ? seed : SeedGenerator::instance().get());
         mt[0]= s & 0xffffffffUL;
         for (mti=1; mti<N; mti++) {
             mt[mti] =
