@@ -1,7 +1,7 @@
 
 /*
- Copyright (C) 2003 Ferdinando Ametrano
- Copyright (C) 2003 Neil Firth 
+ Copyright (C) 2003, 2004 Ferdinando Ametrano
+ Copyright (C) 2003 Neil Firth
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -24,15 +24,30 @@
 
 class DigitalOptionTest : public CppUnit::TestFixture {
   public:
-    void testCashOrNothingValues();    
-    void testAssetOrNothingValues();    
-    void testGapValues();
-    
-    void testCashOrNothingAmericanValues();    
-    void testCashOrNothingAmericanGreeks();
+    // European values
+    void testCashOrNothingEuropeanValues();
+    void testAssetOrNothingEuropeanValues();
+    void testGapEuropeanValues();
 
-    void testAssetOrNothingAmericanValues();    
-//    void testAssetOrNothingAmericanValues();
+    // American at-hit values
+    void testCashAtHitOrNothingAmericanValues();
+    void testAssetAtHitOrNothingAmericanValues();
+
+    // American at-expiry values
+    void testCashAtExpiryOrNothingAmericanValues();
+    void testAssetAtExpiryOrNothingAmericanValues();
+
+    // European greeks
+    // tested in europeanoption.hpp test
+
+    // American at-hit greeks
+    void testCashAtHitOrNothingAmericanGreeks();
+//    void testAssetAtHitOrNothingAmericanGreeks();
+
+
+    // American at-expiry greeks
+//    void testCashAtExpiryOrNothingAmericanGreeks();
+//    void testAssetAtExpiryOrNothingAmericanGreeks();
 
     void testEngineConsistency();
     static CppUnit::Test* suite();
