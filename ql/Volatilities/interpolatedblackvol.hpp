@@ -89,8 +89,8 @@ namespace QuantLib {
                 "mismatch between money-strike vector and vol matrix rows");
 
             Size j, i;
-            QuantLib::Math::Matrix variances(i,j);
-            times_ = std::vector<Time>(j);
+            QuantLib::Math::Matrix variances(moneyStrikes.size(),dates.size());
+            times_ = std::vector<Time>(dates.size());
             times_[0] = dayCounter_.yearFraction(referenceDate, dates[0]);
             QL_REQUIRE(times_[0]>=0.0,
                 "minimum date previous than reference date");
@@ -130,7 +130,7 @@ namespace QuantLib {
                 "InterpolatedBlackVolStructure<Interpolator2D>::blackVol : "
                 "negative time not allowed");
 
-            double variance = varianceSurface_->(evaluationTime, strike,
+            double variance = (*varianceSurface_)(evaluationTime, strike,
                 extrapolate);
             
             return QL_SQRT(variance/evaluationTime);
