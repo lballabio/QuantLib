@@ -21,10 +21,6 @@
  * QuantLib license is also available at http://quantlib.sourceforge.net/LICENSE.TXT
 */
 
-/*! \file finitedifferences.h
-	\brief Global include file for the package on finite difference methods.
-*/
-
 #include "qldefines.h"
 
 #if QL_INCLUDE_IN_SUBFOLDERS

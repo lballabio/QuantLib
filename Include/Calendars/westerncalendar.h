@@ -35,7 +35,7 @@ namespace QuantLib {
 
 	namespace Calendars {
 	
-		//! Frankfurt calendar
+		//! Western calendar
 		/*! This calendar provides derived calendars with the means of determining 
 			the Easter Monday for a given year.
 		*/

@@ -38,6 +38,9 @@ namespace QuantLib {
 	//! Abstract instrument class
 	/*! This class is purely abstract and defines the interface of concrete
 		instruments which will be derived from this one.
+				
+		\todo Methods should be added for adding a spread to the term structure or volatility surface
+		used to price the instrument.
 	*/
 	class Instrument {
 	  public:

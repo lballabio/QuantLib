@@ -21,12 +21,6 @@
  * QuantLib license is also available at http://quantlib.sourceforge.net/LICENSE.TXT
 */
 
-/*! \file pricers.h
-	\brief Global include file for pricer classes.
-	
-	This file includes the header files of all concrete pricers.
-*/
-
 #include "qldefines.h"
 
 #if QL_INCLUDE_IN_SUBFOLDERS

@@ -21,10 +21,6 @@
  * QuantLib license is also available at http://quantlib.sourceforge.net/LICENSE.TXT
 */
 
-/*! \file termstructures.h
-	\brief Global include file for term structure classes.
-*/
-
 #include "qldefines.h"
 
 #if QL_INCLUDE_IN_SUBFOLDERS

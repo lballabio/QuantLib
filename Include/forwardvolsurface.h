@@ -39,6 +39,9 @@ namespace QuantLib {
 	//! Forward volatility surface
 	/*! This class is purely abstract and defines the interface of concrete
 		forward volatility structures which will be derived from this one.
+				
+		\todo A way should be implemented of constructing a ForwardVolatilitySurface
+		from a generic term volatility structure.
 	*/
 	class ForwardVolatilitySurface : public Patterns::Observable {
 	  public:
