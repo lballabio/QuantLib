@@ -171,10 +171,9 @@ namespace QuantLib {
         template<class Stat>
         inline double GaussianStatistics<Stat>::gaussianAverageShortfall(
             double target) const {
-            Math::CumulativeNormalDistribution gIntegral(mean(),
-                standardDeviation());
             double m = mean();
             double std = standardDeviation();
+            Math::CumulativeNormalDistribution gIntegral(m, std);
             Math::NormalDistribution g(m, std);
             return ( (target-m)*gIntegral(target) + std*std*g(target) );
         }

@@ -78,22 +78,30 @@ namespace QuantLib {
         }
 
         double GeneralStatistics::regret(double target) const {
-            double sampleWeight = weightSum();
-            QL_REQUIRE(sampleWeight>0.0,
-                       "GeneralStatistics::downsideVariance() : "
-                       "empty sample (zero weight sum)");
 
-            Size sampleNumber = samples_.size();
-            QL_REQUIRE(sampleNumber>1.0,
-                       "GeneralStatistics::downsideVariance() : "
-                       "sample number <=1, unsufficient");
-
-            double result = 0.0;
+            double result = 0.0, sampleWeight = 0.0;
+            Size sampleNumber = 0;
             std::vector<std::pair<double,double> >::iterator it;
             for (it=samples_.begin(); it!=samples_.end(); it++) {
                 double temp = it->first - target;
-                result += ( temp<0.0 ? it->second*temp*temp : 0.0);
+                if (temp<0.0) {
+                    result       += it->second*temp*temp;
+                    sampleWeight += it->second;
+                    sampleNumber++;
+                }
             }
+
+            if (sampleWeight=0.0) {
+                QL_REQUIRE(weightSum()>0.0,
+                       "GeneralStatistics::regret() : "
+                       "empty sample (zero weight sum)");
+                return 0.0;
+            }
+
+            QL_REQUIRE(sampleNumber>1.0,
+                       "GeneralStatistics::regret() : "
+                       "sample under target <=1, unsufficient");
+
             result /= sampleWeight;
             result *= sampleNumber/(sampleNumber-1.0);
             return result;

@@ -129,8 +129,8 @@ namespace QuantLib {
             void reset();
             //@}
           protected:
-            Size sampleNumber_;
-            double sampleWeight_;
+            Size sampleNumber_, downsideSampleNumber_;
+            double sampleWeight_, downsideSampleWeight_;
             double sum_, quadraticSum_, downsideQuadraticSum_,
                    cubicSum_, fourthPowerSum_;
             double min_, max_;

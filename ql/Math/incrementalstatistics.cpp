@@ -36,7 +36,9 @@ namespace QuantLib {
             min_ = QL_MAX_DOUBLE;
             max_ = QL_MIN_DOUBLE;
             sampleNumber_ = 0;
+            downsideSampleNumber_ = 0;
             sampleWeight_ = 0.0;
+            downsideSampleWeight_ = 0.0;
             sum_ = 0.0;
             quadraticSum_ = 0.0;
             downsideQuadraticSum_ = 0.0;
@@ -63,7 +65,11 @@ namespace QuantLib {
             sum_ += temp;
             temp *= value;
             quadraticSum_ += temp;
-            downsideQuadraticSum_ += value < 0.0 ? temp : 0.0;
+            if (value<0.0) {
+                downsideQuadraticSum_ += temp;
+                downsideSampleNumber_++;
+                downsideSampleWeight_ += weight;
+            }
             temp *= value;
             cubicSum_ += temp;
             temp *= value;

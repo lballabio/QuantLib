@@ -158,6 +158,17 @@ namespace QuantLib {
             double valueAtRisk(double percentile) const;
 
             //! Expected Shortfall at a given percentile
+            /*! returns the expected loss given that the loss has exceeded
+                a VaR threshold:
+
+                \f[ y = E(x | x>VaR(percentile) ) \f]
+                
+                that is the average of observations below the given percentile.
+                Also know as conditional Value-at-Risk.
+
+                Artzner, Delbaen, Eber, Heath (1999)
+                "Coherent measures of risk", Mathematical Finance 9
+            */
             double expectedShortfall(double percentile) const;
 
             //! Shortfall risk measure (observations below target)
