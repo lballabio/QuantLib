@@ -221,18 +221,6 @@ namespace QuantLib {
         template <class S>
         double GenericRiskStatistics<S>::averageShortfall(double target) 
                                                                      const {
-            QL_ENSURE(samples() != 0,
-                      "GenericRiskStatistics::averageShortfall() : "
-                      "empty sample set");
-            /* we don't want to integrate between [-infty, +infty] as below,
-               but [-infty, target], so we need to normalize appropriately
-
-            return expectationValue(clip(std::bind1st(std::minus<double>(),
-                                                      target),
-                                         std::bind2nd(std::less<double>(),
-                                                      target)),
-                                    everywhere()).first;
-            */
             std::pair<double,Size> result = 
                 expectationValue(std::bind1st(std::minus<double>(),
                                               target),

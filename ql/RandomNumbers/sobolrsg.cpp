@@ -25,7 +25,6 @@
 #include <ql/RandomNumbers/primitivepolynomials.h>
 #include <ql/RandomNumbers/mt19937uniformrng.hpp>
 #include <ql/dataformatters.hpp>
-#include <fstream>
 
 namespace QuantLib {
 
@@ -244,7 +243,7 @@ namespace QuantLib {
                     // used in the recurrence relation, and the lowest order
                     // coefficient a[k][gk] is always set: this is the reason
                     // why the highest and lowest coefficient of
-                    // the polynomial ppmt[k] is not included in its encoding,
+                    // the polynomial ppmt[k] are not included in its encoding,
                     // provided that its degree is known.
                     // That is: a[k][j] = ppmt[k] >> (gk-j-1)
                     for (Size j=1; j<gk; j++) {
@@ -259,26 +258,9 @@ namespace QuantLib {
                     directionIntegers_[k][l]=n;
                 }
             }
-
-/* equivalent NumericalRecipes-like code
-            for (k=1; k<dimensionality_; k++) {
-                for (Size j=degree[k];j<bits_;j++) {
-                    long ipp=ppmt[k];
-                    unsigned long i=directionIntegers_[k][j-degree[k]];
-                    i ^= (i >> degree[k]);
-                    for (Size l=degree[k]-1;l>=1;l--) {
-                        if (ipp & 1) i ^= directionIntegers_[k][j-l];
-                        ipp >>= 1;
-                    }
-                    directionIntegers_[k][j]=i;
-                }
-            }
-*/
-
-            
             
             // in case one needs to check the directionIntegers used
-            bool printDirectionIntegers = false;
+            /* bool printDirectionIntegers = false;
             if (printDirectionIntegers) {
                 std::ofstream outStream("directionIntegers.txt");
                 for (k=0; k<QL_MIN(32UL,dimensionality_); k++) {
@@ -291,9 +273,7 @@ namespace QuantLib {
                     }
                 }
                 outStream.close();
-            }
-            
-            
+            } */
             
             // initialize the Sobol integer/double vectors
             for (k=0; k<dimensionality_; k++) {

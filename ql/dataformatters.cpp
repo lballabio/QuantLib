@@ -48,7 +48,7 @@ namespace QuantLib {
     }
 
     std::string IntegerFormatter::toPowerOfTwo(unsigned long l, int digits) {
-        if (l == long(Null<int>()))
+        if (long(l) == Null<int>())
             return std::string("null");
 
         int power = 0;
@@ -56,8 +56,7 @@ namespace QuantLib {
             power++;
             l >>= 1;
         }
-        std::string powerOfTwo("*2^");
-        return toString(l, digits) + powerOfTwo + toString(power, 2);
+        return toString(l,digits) + "*2^" + toString(power,2);
     }
 
     std::string DoubleFormatter::toString(double x, int precision, 
