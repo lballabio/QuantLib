@@ -27,8 +27,7 @@
     The simplest way to compile and install %QuantLib is:
 
     -# get the sources from <br>
-       http://sourceforge.net/project/showfiles.php?group_id=12740
-       and untar them.
+       http://quantlib.org/download.html and untar them.
     -# `cd' to the %QuantLib directory and type `./configure' to configure the
        package for your system.  If you're using `csh' on an old version of
        System V, you might need to type `sh ./configure' instead to prevent
@@ -57,7 +56,7 @@
 
     \subsection win32 Win32
     Binary installers are available at <br>
-    http://sourceforge.net/project/showfiles.php?group_id=12740
+    http://quantlib.org/download.html
 
     Visual C++ 6.0 projects files and Borland C++ makefiles are supplied in case
     one wants to rebuild the library.

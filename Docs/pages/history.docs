@@ -25,7 +25,6 @@
 
     <strong>Release 0.2.1 - December 3rd, 2001</strong>
 
-    - Library:
         MONTE CARLO FRAMEWORK
         - Path and MultiPath are now classes on their own
         - PathPricer now handles both Path and MultiPath
@@ -71,10 +70,10 @@
         - generic bug fixes
         - removed classes deprecated in 0.2.0
 
-    - Installation facilities:
+       INSTALLATION FACILITIES
         - improved and smoother Win32 binary installer
 
-    - Documentation:
+       DOCUMENTATION
         - general re-hauling
         - improved and extended Monte Carlo documentation
         - improved and extended examples
