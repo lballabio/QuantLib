@@ -21,13 +21,13 @@
  * QuantLib license is also available at http://quantlib.sourceforge.net/LICENSE.TXT
 */
 
-/*! \file europeanoption.h
+/*! \file bsmeuropeanoption.h
 	\brief european option
 	
 	$Source$
 	$Name$
 	$Log$
-	Revision 1.3  2000/12/14 12:32:30  lballabio
+	Revision 1.4  2000/12/14 12:40:13  lballabio
 	Added CVS tags in Doxygen file documentation blocks
 
 */
