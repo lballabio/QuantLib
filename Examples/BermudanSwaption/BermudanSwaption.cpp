@@ -122,7 +122,7 @@ int main(int, char* [])
         Integer swapYears[13] = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 15, 20, 30};
 
         Frequency swFixedLegFrequency = Annual;
-        bool swFixedLegIsAdjusted = false;
+        BusinessDayConvention swFixedLegConvention = Unadjusted;
         DayCounter swFixedLegDayCounter = Thirty360(Thirty360::European);
         Frequency swFloatingLegFrequency = Semiannual;
 
@@ -132,10 +132,9 @@ int main(int, char* [])
             boost::shared_ptr<RateHelper> swapHelper(new SwapRateHelper(
                 RelinkableHandle<Quote>(swapRate),
                 swapYears[i], Years, settlementDays,
-                calendar, ModifiedFollowing,
-                swFixedLegFrequency,
-                swFixedLegIsAdjusted, swFixedLegDayCounter,
-                swFloatingLegFrequency));
+                calendar, swFixedLegFrequency,
+                swFixedLegConvention, swFixedLegDayCounter,
+                swFloatingLegFrequency, ModifiedFollowing));
             instruments.push_back(swapHelper);
         }
 
@@ -150,8 +149,8 @@ int main(int, char* [])
 
         // Define the ATM/OTM/ITM swaps
         Frequency fixedLegFrequency = Annual;
-        bool fixedLegIsAdjusted = false;
-        BusinessDayConvention roll = ModifiedFollowing;
+        BusinessDayConvention fixedLegConvention = Unadjusted;
+        BusinessDayConvention floatingLegConvention = ModifiedFollowing;
         DayCounter fixedLegDayCounter = Thirty360(Thirty360::European);
         Frequency floatingLegFrequency = Semiannual;
         bool payFixedRate = true;
@@ -160,28 +159,36 @@ int main(int, char* [])
         boost::shared_ptr<Xibor> indexSixMonths(
                                      new Euribor(6, Months, rhTermStructure));
 
+        Date startDate = calendar.advance(settlementDate,1,Years,
+                                          floatingLegConvention);
+        Date maturity = calendar.advance(startDate,5,Years,
+                                         floatingLegConvention);
+        Schedule fixedSchedule(calendar,startDate,maturity,
+                               fixedLegFrequency,fixedLegConvention);
+        Schedule floatSchedule(calendar,startDate,maturity,
+                               floatingLegFrequency,floatingLegConvention);
         boost::shared_ptr<SimpleSwap> swap(new SimpleSwap(
-            payFixedRate, settlementDate.plusYears(1), 5, Years,
-            calendar, roll, 1000.0, fixedLegFrequency, dummyFixedRate,
-            fixedLegIsAdjusted, fixedLegDayCounter, floatingLegFrequency,
-            indexSixMonths, fixingDays, 0.0, rhTermStructure));
+            payFixedRate, 1000.0,
+            fixedSchedule, dummyFixedRate, fixedLegDayCounter,
+            floatSchedule, indexSixMonths, fixingDays, 0.0,
+            rhTermStructure));
         Rate fixedATMRate = swap->fairRate();
 
         boost::shared_ptr<SimpleSwap> atmSwap(new SimpleSwap(
-            payFixedRate, settlementDate.plusYears(1), 5, Years,
-            calendar, roll, 1000.0, fixedLegFrequency, fixedATMRate,
-            fixedLegIsAdjusted, fixedLegDayCounter, floatingLegFrequency,
-            indexSixMonths, fixingDays, 0.0, rhTermStructure));
+            payFixedRate, 1000.0,
+            fixedSchedule, fixedATMRate, fixedLegDayCounter,
+            floatSchedule, indexSixMonths, fixingDays, 0.0,
+            rhTermStructure));
         boost::shared_ptr<SimpleSwap> otmSwap(new SimpleSwap(
-            payFixedRate, settlementDate.plusYears(1), 5, Years,
-            calendar, roll, 1000.0, fixedLegFrequency, fixedATMRate * 1.2,
-            fixedLegIsAdjusted, fixedLegDayCounter, floatingLegFrequency,
-            indexSixMonths, fixingDays, 0.0, rhTermStructure));
+            payFixedRate, 1000.0,
+            fixedSchedule, fixedATMRate * 1.2, fixedLegDayCounter,
+            floatSchedule, indexSixMonths, fixingDays, 0.0,
+            rhTermStructure));
         boost::shared_ptr<SimpleSwap> itmSwap(new SimpleSwap(
-            payFixedRate, settlementDate.plusYears(1), 5, Years,
-            calendar, roll, 1000.0, fixedLegFrequency, fixedATMRate * 0.8,
-            fixedLegIsAdjusted, fixedLegDayCounter, floatingLegFrequency,
-            indexSixMonths, fixingDays, 0.0, rhTermStructure));
+            payFixedRate, 1000.0,
+            fixedSchedule, fixedATMRate * 0.8, fixedLegDayCounter,
+            floatSchedule, indexSixMonths, fixingDays, 0.0,
+            rhTermStructure));
 
         std::vector<Period> swaptionMaturities;
         swaptionMaturities.push_back(Period(1, Months));

@@ -202,40 +202,40 @@ int main(int, char* [])
 
         // setup swaps
         Frequency swFixedLegFrequency = Annual;
-        bool swFixedLegIsAdjusted = false;
+        BusinessDayConvention swFixedLegConvention = Unadjusted;
         DayCounter swFixedLegDayCounter = Thirty360(Thirty360::European);
         Frequency swFloatingLegFrequency = Semiannual;
 
         boost::shared_ptr<RateHelper> s2y(new SwapRateHelper(
             RelinkableHandle<Quote>(s2yRate), 
             2, Years, settlementDays, 
-            calendar, ModifiedFollowing, swFixedLegFrequency,
-            swFixedLegIsAdjusted, swFixedLegDayCounter,
-            swFloatingLegFrequency));
+            calendar, swFixedLegFrequency,
+            swFixedLegConvention, swFixedLegDayCounter,
+            swFloatingLegFrequency, ModifiedFollowing));
         boost::shared_ptr<RateHelper> s3y(new SwapRateHelper(
             RelinkableHandle<Quote>(s3yRate), 
             3, Years, settlementDays, 
-            calendar, ModifiedFollowing, swFixedLegFrequency,
-            swFixedLegIsAdjusted, swFixedLegDayCounter,
-            swFloatingLegFrequency));
+            calendar, swFixedLegFrequency,
+            swFixedLegConvention, swFixedLegDayCounter,
+            swFloatingLegFrequency, ModifiedFollowing));
         boost::shared_ptr<RateHelper> s5y(new SwapRateHelper(
             RelinkableHandle<Quote>(s5yRate), 
             5, Years, settlementDays, 
-            calendar, ModifiedFollowing, swFixedLegFrequency,
-            swFixedLegIsAdjusted, swFixedLegDayCounter,
-            swFloatingLegFrequency));
+            calendar, swFixedLegFrequency,
+            swFixedLegConvention, swFixedLegDayCounter,
+            swFloatingLegFrequency, ModifiedFollowing));
         boost::shared_ptr<RateHelper> s10y(new SwapRateHelper(
             RelinkableHandle<Quote>(s10yRate), 
             10, Years, settlementDays, 
-            calendar, ModifiedFollowing, swFixedLegFrequency,
-            swFixedLegIsAdjusted, swFixedLegDayCounter,
-            swFloatingLegFrequency));
+            calendar, swFixedLegFrequency,
+            swFixedLegConvention, swFixedLegDayCounter,
+            swFloatingLegFrequency, ModifiedFollowing));
         boost::shared_ptr<RateHelper> s15y(new SwapRateHelper(
             RelinkableHandle<Quote>(s15yRate), 
             15, Years, settlementDays, 
-            calendar, ModifiedFollowing, swFixedLegFrequency,
-            swFixedLegIsAdjusted, swFixedLegDayCounter,
-            swFloatingLegFrequency));
+            calendar, swFixedLegFrequency,
+            swFixedLegConvention, swFixedLegDayCounter,
+            swFloatingLegFrequency, ModifiedFollowing));
 
 
         /*********************
@@ -320,8 +320,8 @@ int main(int, char* [])
         Real nominal = 1000000.0;
         // fixed leg
         Frequency fixedLegFrequency = Annual;
-        bool fixedLegIsAdjusted = false;
-        BusinessDayConvention roll = ModifiedFollowing;
+        BusinessDayConvention fixedLegConvention = Unadjusted;
+        BusinessDayConvention floatingLegConvention = ModifiedFollowing;
         DayCounter fixedLegDayCounter = Thirty360(Thirty360::European);
         Integer fixingDays = 2;
         Rate fixedRate = 0.04;
@@ -334,18 +334,31 @@ int main(int, char* [])
 
         Integer lenghtInYears = 5;
         bool payFixedRate = true;
-        SimpleSwap spot5YearSwap(payFixedRate, settlementDate, lenghtInYears,
-            Years, calendar, roll, nominal, fixedLegFrequency, fixedRate,
-            fixedLegIsAdjusted, fixedLegDayCounter, floatingLegFrequency,
-            euriborIndex, fixingDays, spread,
-            discountingTermStructure); // using the discounting curve
-        SimpleSwap oneYearForward5YearSwap(payFixedRate,
-            calendar.advance(settlementDate, 1, Years, ModifiedFollowing),
-            lenghtInYears, Years,
-            calendar, roll, nominal, fixedLegFrequency, fixedRate,
-            fixedLegIsAdjusted, fixedLegDayCounter, floatingLegFrequency,
-            euriborIndex, fixingDays, spread,
-            discountingTermStructure); // using the discounting curve
+
+        Date maturity = calendar.advance(settlementDate, lenghtInYears, Years,
+                                         floatingLegConvention);
+        Schedule fixedSchedule(calendar, settlementDate, maturity,
+                               fixedLegFrequency, fixedLegConvention);
+        Schedule floatSchedule(calendar, settlementDate, maturity,
+                               floatingLegFrequency, floatingLegConvention);
+        SimpleSwap spot5YearSwap(
+            payFixedRate, nominal,
+            fixedSchedule, fixedRate, fixedLegDayCounter,
+            floatSchedule, euriborIndex, fixingDays, spread,
+            discountingTermStructure);
+
+        Date fwdStart = calendar.advance(settlementDate, 1, Years);
+        Date fwdMaturity = calendar.advance(fwdStart, lenghtInYears, Years,
+                                            floatingLegConvention);
+        Schedule fwdFixedSchedule(calendar, fwdStart, fwdMaturity,
+                                  fixedLegFrequency, fixedLegConvention);
+        Schedule fwdFloatSchedule(calendar, fwdStart, fwdMaturity,
+                                  floatingLegFrequency, floatingLegConvention);
+        SimpleSwap oneYearForward5YearSwap(
+            payFixedRate, nominal,
+            fwdFixedSchedule, fixedRate, fixedLegDayCounter,
+            fwdFloatSchedule, euriborIndex, fixingDays, spread,
+            discountingTermStructure);
 
 
         /***************
