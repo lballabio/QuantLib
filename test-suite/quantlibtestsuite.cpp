@@ -78,14 +78,8 @@ int main() {
     runner.addTest(CapFloorTest::suite());
     runner.addTest(EuropeanOptionTest::suite());
 
+    std::string header = "Testing QuantLib " QL_VERSION;
 
-    std::string quote = "\n"
-        "                    Testing can never demonstrate the absence   \n"
-        "                    of errors in software, only their presence. \n"
-        "                                           -- W.E. Dijkstra \n";
-    std::string header = "Testing QuantLib " QL_VERSION " using CppUnit " CPPUNIT_VERSION;
-
-    std::cerr << quote << std::endl;
     std::cerr << std::string(header.length(),'=') << std::endl;
     std::cerr << header << std::endl;
     std::cerr << std::string(header.length(),'=');
