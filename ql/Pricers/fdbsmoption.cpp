@@ -101,11 +101,11 @@ namespace QuantLib {
 
             BCs_[0] = Handle<BoundaryCondition>(
                 new NeumannBC(intrinsicValues_[1]-intrinsicValues_[0],
-                              BoundaryCondition::Lower));
+                              NeumannBC::Lower));
             BCs_[1] = Handle<BoundaryCondition>(
                 new NeumannBC(intrinsicValues_[gridPoints_-1] -
                               intrinsicValues_[gridPoints_-2],
-                              BoundaryCondition::Upper));
+                              NeumannBC::Upper));
         }
 
     }
