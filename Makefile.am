@@ -34,11 +34,10 @@ EXTRA_DIST=News.txt Contributors.txt History.txt LICENSE.TXT \
 	Win/README.txt \
 	Win/makefile.mak \
 	Docs/README.txt \
-	Docs/offline.doxy \
-	Docs/online.doxy \
-	Docs/onlinefooter.html \
+	Docs/quantlib.doxy \
+	Docs/footer.html \
 	Examples/history_iterators.cpp
- 
+
 
 if SWIG_FOUND
 python:

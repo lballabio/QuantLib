@@ -1,3 +1,6 @@
+
+# $Source$
+
 #
 # makefile for QuantLib under Borland C++
 #
@@ -365,12 +368,12 @@ clean::
 # Documentation
 HTML::
     cd ..\Docs
-    $(DOXYGEN) offline.doxy
+    $(DOXYGEN) quantlib.doxy
     cd ..\Win
 
 PDF::
     cd ..\Docs
-    $(DOXYGEN) offline.doxy
+    $(DOXYGEN) quantlib.doxy
     cd latex
     $(PDFLATEX) refman
     $(MAKEINDEX) refman.idx
@@ -379,7 +382,7 @@ PDF::
 
 PS::
     cd ..\Docs
-    $(DOXYGEN) offline.doxy
+    $(DOXYGEN) quantlib.doxy
     cd latex
     $(LATEX) refman
     $(MAKEINDEX) refman.idx
@@ -389,7 +392,7 @@ PS::
 
 alldocs::
     cd ..\Docs
-    $(DOXYGEN) offline.doxy
+    $(DOXYGEN) quantlib.doxy
     cd latex
     $(PDFLATEX) refman
     $(MAKEINDEX) refman.idx

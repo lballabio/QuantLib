@@ -1,3 +1,13 @@
+
+******************************************************
+ $Source$
+ $Log$
+ Revision 1.7  2001/03/15 16:08:15  nando
+ doxy config file renamed and unified (Win32 and Linux)
+ html doc footer modified
+
+******************************************************
+
 The documentation is automatically extracted from the source code using
 DoxyGen (http://www.stack.nl/~dimitri/doxygen/).
 
