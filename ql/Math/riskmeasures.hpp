@@ -42,8 +42,8 @@ namespace QuantLib {
           public:
             RiskMeasures() {}
             double potentialUpside(double percentile,
-                                    double mean,
-                                    double std) const ;
+                                   double mean,
+                                   double std) const ;
             double valueAtRisk(double percentile,
                                double mean,
                                double std) const ;

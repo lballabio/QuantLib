@@ -33,33 +33,29 @@ namespace QuantLib {
 
     namespace Functions {
 
-        double interpolate(
-            const std::vector<double>& x_values,
-            const std::vector<double>& y_values,
-            double x,
-            int interpolationType,
-            bool allowExtrapolation);
+        double interpolate(const std::vector<double>& x_values,
+                           const std::vector<double>& y_values,
+                           double x,
+                           int interpolationType,
+                           bool allowExtrapolation);
 
-        double interpolate2D(
-            const std::vector<double>& x_values,
-            const std::vector<double>& y_values,
-            const Math::Matrix& dataMatrix,
-            double x,
-            double y,
-            int interpolation2DType,
-            bool allowExtrapolation);
+        double interpolate2D(const std::vector<double>& x_values,
+                             const std::vector<double>& y_values,
+                             const Math::Matrix& dataMatrix,
+                             double x,
+                             double y,
+                             int interpolation2DType,
+                             bool allowExtrapolation);
 
 
 
-        double normDist(
-            double x,
-            double mean = 0.0,
-            double standard_dev = 1.0,
-            bool cumulative = false);
-
+        double normDist(double x,
+                        double mean = 0.0,
+                        double standard_dev = 1.0,
+                        bool cumulative = false);
         double normInv(double probability,
-            double mean = 0.0,
-            double standard_dev = 1.0);
+                       double mean = 0.0,
+                       double standard_dev = 1.0);
 
     }
 

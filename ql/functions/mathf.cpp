@@ -29,6 +29,7 @@
 #include <ql/Math/loglinearinterpolation.hpp>
 #include <ql/Math/bilinearinterpolation.hpp>
 #include <ql/Math/normaldistribution.hpp>
+#include <ql/Math/riskmeasures.hpp>
 
 using QuantLib::Array;
 using QuantLib::Math::Matrix;
@@ -41,6 +42,7 @@ using QuantLib::Math::BilinearInterpolation;
 using QuantLib::Math::NormalDistribution;
 using QuantLib::Math::CumulativeNormalDistribution;
 using QuantLib::Math::InvCumulativeNormalDistribution;
+using QuantLib::Math::RiskMeasures;
 
 namespace QuantLib {
 
