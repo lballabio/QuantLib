@@ -28,7 +28,6 @@ SUBDIRS = \
 EXTRA_DIST= \
 	config.ansi.hpp \
 	config.bcc.hpp \
-	config.decc.hpp \
 	config.msvc.hpp \
 	config.mwcw.hpp \
 	makefile.mak
