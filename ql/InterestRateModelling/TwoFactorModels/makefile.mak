@@ -16,9 +16,7 @@ BCC_LIBS       = $(MAKEDIR)\..\lib
 
 # Object files
 OBJS = \
-       blackkarasinski.obj$(_D) \
-       coxingersollrossplus.obj$(_D) \
-       hullwhite.obj$(_D)
+       g2.obj$(_D)
 
 # Tools to be used
 CC        = bcc32
@@ -46,9 +44,9 @@ TLIB_OPTS    = /P128
 
 # Primary target:
 # static library
-OneFactorModels$(_D).lib:: $(OBJS)
-    if exist OneFactorModels$(_D).lib     del OneFactorModels$(_D).lib
-    $(TLIB) $(TLIB_OPTS) OneFactorModels$(_D).lib /a $(OBJS)
+TwoFactorModels$(_D).lib:: $(OBJS)
+    if exist TwoFactorModels$(_D).lib     del TwoFactorModels$(_D).lib
+    $(TLIB) $(TLIB_OPTS) TwoFactorModels$(_D).lib /a $(OBJS)
 
 
 # Clean up
