@@ -2,9 +2,11 @@
 
 # Run this to generate all the auto-generated files needed by the GNU
 # configure program
-
-# this is present in gsl
-#libtoolize --automake
+# this is known to work with the following tools:
+#
+# automake 1.4p4
+# autoconf 2.13
+# libtool 1.3.5
 
 aclocal
 # cppunit approach

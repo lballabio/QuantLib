@@ -2,6 +2,9 @@
 # $Id$
 # $Source$
 # $Log$
+# Revision 1.46  2001/09/03 10:50:23  enri
+# bootstrap script name changed from updateproject.sh to bootstrap
+#
 # Revision 1.45  2001/08/29 09:17:42  nando
 # updated EXTRA_DIST files
 #
@@ -15,8 +18,8 @@
 # typo fixed
 #
 
+#AUTOMAKE_OPTIONS=foreign dist-bzip2
 AUTOMAKE_OPTIONS=foreign
-
 SUBDIRS=Sources Include Docs Examples
 CFLAGS=-Wall
 
