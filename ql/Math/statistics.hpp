@@ -111,8 +111,8 @@ namespace QuantLib {
             /*! returns the maximum sample value */
             double max() const;
 
-            /*! gaussian-assumption y percentile, defined as the value x such
-                that \f[ y = \frac{1}{\sqrt{2 \pi}}
+            /*! gaussian-assumption y-th percentile, defined as the value x
+                such that \f[ y = \frac{1}{\sqrt{2 \pi}}
                                       \int_{-\infty}^{x} \exp (-u^2/2) du \f]
             */
             double gaussianPercentile(double y) const;
@@ -189,7 +189,8 @@ namespace QuantLib {
 
         inline double Statistics::mean() const {
             QL_REQUIRE(sampleWeight_>0.0,
-                       "Stat::mean() : sampleWeight_=0, unsufficient");
+                       "Statistics::mean() : "
+                       "sampleWeight_=0, unsufficient");
             return sum_/sampleWeight_;
         }
 
@@ -204,17 +205,22 @@ namespace QuantLib {
         inline double Statistics::errorEstimate() const {
             double var = variance();
             QL_REQUIRE(samples() > 0,
-                       "Statistics: zero samples are not sufficient");
+                       "Statistics::errorEstimate : "
+                       "zero samples are not sufficient");
             return QL_SQRT(var/samples());
         }
 
         inline double Statistics::min() const {
-            QL_REQUIRE(sampleNumber_>0, "Stat::min_() : empty sample");
+            QL_REQUIRE(sampleNumber_>0,
+                       "Statistics::min_() : "
+                       "empty sample");
             return min_;
         }
 
         inline double Statistics::max() const {
-            QL_REQUIRE(sampleNumber_>0, "Stat::max_() : empty sample");
+            QL_REQUIRE(sampleNumber_>0,
+                       "Statistics::max_() : "
+                       "empty sample");
             return max_;
         }
 

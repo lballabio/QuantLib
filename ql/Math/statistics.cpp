@@ -48,13 +48,15 @@ namespace QuantLib {
         /*! \pre weights must be positive or null */
         void Statistics::add(double value, double weight) {
             QL_REQUIRE(weight>=0.0,
-                "Statistics::add : negative weight (" +
+                "Statistics::add : "
+                "negative weight (" +
                 DoubleFormatter::toString(weight) + ") not allowed");
 
             Size oldSamples = sampleNumber_;
             sampleNumber_++;
             QL_ENSURE(sampleNumber_ > oldSamples,
-                      "Statistics::add : maximum number of samples reached");
+                      "Statistics::add : "
+                      "maximum number of samples reached");
 
             sampleWeight_ += weight;
 
@@ -74,9 +76,11 @@ namespace QuantLib {
 
         double Statistics::variance() const {
             QL_REQUIRE(sampleWeight_>0.0,
-                       "Stat::variance() : sampleWeight_=0, unsufficient");
+                       "Statistics::variance() : "
+                       "sampleWeight_=0, unsufficient");
             QL_REQUIRE(sampleNumber_>1,
-                       "Stat::variance() : sample number <=1, unsufficient");
+                       "Statistics::variance() : "
+                       "sample number <=1, unsufficient");
 
             double m = mean();
             double v = quadraticSum_/sampleWeight_;
@@ -87,7 +91,8 @@ namespace QuantLib {
 //                v = 0.0;
 
             QL_ENSURE(v >= 0.0,
-                      "Statistics: negative variance (" +
+                      "Statistics::variance :"
+                      "negative variance (" +
                       DoubleFormatter::toString(v,20) + ")");
 
             return v;
@@ -95,9 +100,11 @@ namespace QuantLib {
 
         double Statistics::downsideVariance() const {
             QL_REQUIRE(sampleWeight_>0.0,
-                       "Stat::variance() : sampleWeight_=0, unsufficient");
+                       "Statistics::downsideVariance() : "
+                       "sampleWeight_=0, unsufficient");
             QL_REQUIRE(sampleNumber_>1,
-                       "Stat::variance() : sample number <=1, unsufficient");
+                       "Statistics::downsideVariance() : "
+                       "sample number <=1, unsufficient");
 
             return (sampleNumber_/(sampleNumber_-1.0))*
                 (downsideQuadraticSum_ /sampleWeight_);
@@ -105,7 +112,8 @@ namespace QuantLib {
 
         double Statistics::skewness() const {
             QL_REQUIRE(sampleNumber_>2,
-                       "Stat::skewness() : sample number <=2, unsufficient");
+                       "Statistics::skewness() : "
+                       "sample number <=2, unsufficient");
             double s = standardDeviation();
 
             if (s==0.0) return 0.0;
@@ -123,7 +131,8 @@ namespace QuantLib {
 
         double Statistics::kurtosis() const {
             QL_REQUIRE(sampleNumber_>3,
-                       "Stat::kurtosis() : sample number <=3, unsufficient");
+                       "Statistics::kurtosis() : "
+                       "sample number <=3, unsufficient");
 
             double m = mean();
             double v = variance();
