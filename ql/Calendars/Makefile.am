@@ -13,7 +13,7 @@ include_HEADERS = \
 	newyork.hpp \
 	target.hpp \
 	tokyo.hpp \
-	toronto.hpp \	
+	toronto.hpp \
 	sydney.hpp \
 	wellington.hpp \
 	zurich.hpp
