@@ -24,9 +24,64 @@
 #define quantlib_data_formatters_hpp
 
 #include <ql/basicdataformatters.hpp>
+#include <ql/currency.hpp>
+#include <ql/option.hpp>
 #include <ql/Math/matrix.hpp>
+#include <iostream>
 
 namespace QuantLib {
+
+    //! Formats amounts in Euro for output
+    /*! Formatting follows Euro convention (x,xxx,xxx.xx) */
+    class EuroFormatter {
+      public:
+        static std::string toString(Decimal amount);
+    };
+
+    //! Formats rates for output
+    /*! Formatting is in percentage form (xx.xxxxx%) */
+    class RateFormatter {
+      public:
+        static std::string toString(Rate rate,
+                                    Integer precision = 5);
+    };
+
+    //! Formats volatilities for output
+    /*! Formatting is in percentage form (xx.xxxxx%) */
+    class VolatilityFormatter {
+      public:
+        static std::string toString(Volatility vol,
+                                    Integer precision = 5);
+    };
+
+
+    //! Formats dates for output
+    /*! Formatting can be in short (mm/dd/yyyy)
+        or long (Month ddth, yyyy) form.
+    */
+    class DateFormatter {
+      public:
+        enum Format { Long, Short, ISO };
+        static std::string toString(const Date& d,
+                                    Format f = Long);
+    };
+
+    /*! \relates Date */
+    std::ostream& operator<<(std::ostream&, const Date&);
+
+
+    //! Formats currencies for output
+    class CurrencyFormatter {
+      public:
+        static std::string toString(CurrencyTag c);
+    };
+
+    //! Formats option type for output
+    class OptionTypeFormatter {
+      public:
+        static std::string toString(Option::Type type);
+    };
+
 
     //! Formats arrays for output
     class ArrayFormatter {
