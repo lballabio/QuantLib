@@ -36,11 +36,11 @@ namespace {
                        const std::string& function,
                        const std::string& message) {
         std::ostringstream msg;
-        #if QL_ERROR_LINES
-        msg << trim(file) << ":" << line << ": ";
-        #endif
         if (function != "(unknown)")
             msg << function << ": ";
+        #if QL_ERROR_LINES
+        msg << "\n  " << trim(file) << "(" << line << "): ";
+        #endif
         msg << message;
         return msg.str();
     }
