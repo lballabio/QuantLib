@@ -16,14 +16,12 @@ LIBRARY
     check geometric continuous and/or discrete
     example of european Martingale control variate
 
-    next&weight in a std::pair
-
-    Nicolas spline contribution
     update sflogo for offline documentation
     ******
 
 
     Maxim integral
+    Nicolas spline contribution
 
     QuEP:
         Currency as class with methods returning related info

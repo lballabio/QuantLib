@@ -58,5 +58,5 @@ dist-hook:
 	cp $(srcdir)/Docs/images/QL-small-notitle.jpg $(distdir)/Docs/images/
 	cp $(srcdir)/Docs/images/QL-largish.eps $(distdir)/Docs/images/
 	cp $(srcdir)/Docs/images/QL-largish.pdf $(distdir)/Docs/images/
-	cp $(srcdir)/Docs/images/sfnetlogo.bmp $(distdir)/Docs/images/
+	cp $(srcdir)/Docs/images/sfnetlogo.png $(distdir)/Docs/images/
 
