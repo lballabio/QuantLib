@@ -31,8 +31,6 @@ EXTRA_DIST = \
 	makefile.mak
 
 dist-hook:
-    mkdir $(distdir)/config
-    cp $(srcdir)/config/* $(distdir)/config/*
 	mkdir $(distdir)/lib
 	mkdir $(distdir)/lib/Win32
 	mkdir $(distdir)/lib/Win32/Borland
