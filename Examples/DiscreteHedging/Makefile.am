@@ -5,7 +5,7 @@ bin_PROGRAMS = DiscreteHedging
 DiscreteHedging_SOURCES = DiscreteHedging.cpp
 DiscreteHedging_LDADD = ../../ql/libQuantLib.la
 
-TESTS = DiscreteHedging@EXEEXT@
+TESTS = DiscreteHedging
 
 EXTRA_DIST = \
     DiscreteHedging.dsp \

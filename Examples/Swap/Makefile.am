@@ -5,7 +5,7 @@ bin_PROGRAMS = SwapValuation
 SwapValuation_SOURCES = swapvaluation.cpp
 SwapValuation_LDADD = ../../ql/libQuantLib.la
 
-TESTS = SwapValuation@EXEEXT@
+TESTS = SwapValuation
 
 EXTRA_DIST = \
     Swap.dsp \

@@ -5,7 +5,7 @@ bin_PROGRAMS = BermudanSwaption
 BermudanSwaption_SOURCES = BermudanSwaption.cpp
 BermudanSwaption_LDADD = ../../ql/libQuantLib.la
 
-TESTS = BermudanSwaption@EXEEXT@
+TESTS = BermudanSwaption
 
 EXTRA_DIST = \
     BermudanSwaption.dsp \

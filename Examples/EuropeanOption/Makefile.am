@@ -5,7 +5,7 @@ bin_PROGRAMS = EuropeanOption
 EuropeanOption_SOURCES = EuropeanOption.cpp
 EuropeanOption_LDADD = ../../ql/libQuantLib.la
 
-TESTS = EuropeanOption@EXEEXT@
+TESTS = EuropeanOption
 
 EXTRA_DIST = \
     EuropeanOption.dsp \
