@@ -37,14 +37,16 @@ namespace QuantLib {
 
         class VanillaCapFloor : public Option {
           public:
-            enum Type { Cap, Floor };
+            enum Type { Cap, Floor, Collar };
             VanillaCapFloor(Type type,
                 const CashFlows::FloatingRateCouponVector& floatingLeg,
-                const std::vector<Rate>& exerciseRates,
+                const std::vector<Rate>& capRates,
+                const std::vector<Rate>& floorRates,
                 const RelinkableHandle<TermStructure>& termStructure,
                 const Handle<OptionPricingEngine>& engine)
             : Option(engine), type_(type), floatingLeg_(floatingLeg),
-              exerciseRates_(exerciseRates), termStructure_(termStructure) {}
+              capRates_(capRates), floorRates_(floorRates),
+              termStructure_(termStructure) {}
             virtual ~VanillaCapFloor() {}
           protected:
             void performCalculations() const;
@@ -52,7 +54,8 @@ namespace QuantLib {
           private:
             Type type_;
             CashFlows::FloatingRateCouponVector floatingLeg_;
-            std::vector<Rate> exerciseRates_;
+            std::vector<Rate> capRates_;
+            std::vector<Rate> floorRates_;
             RelinkableHandle<TermStructure> termStructure_;
         };
 
@@ -63,7 +66,8 @@ namespace QuantLib {
                 const std::vector<Rate>& exerciseRates,
                 const RelinkableHandle<TermStructure>& termStructure,
                 const Handle<OptionPricingEngine>& engine)
-            : VanillaCapFloor(Cap, floatingLeg, exerciseRates, 
+            : VanillaCapFloor(Cap, floatingLeg, 
+                              exerciseRates, std::vector<Rate>(1, 0.0),
                               termStructure, engine)
             {}
         };
@@ -75,33 +79,39 @@ namespace QuantLib {
                 const std::vector<Rate>& exerciseRates,
                 const RelinkableHandle<TermStructure>& termStructure,
                 const Handle<OptionPricingEngine>& engine)
-            : VanillaCapFloor(Floor, floatingLeg, exerciseRates, 
+            : VanillaCapFloor(Floor, floatingLeg, 
+                              std::vector<Rate>(1, 0.0), exerciseRates,
                               termStructure, engine)
             {}
         };
-/*
-        class Collar : public VanillaCapFloor {
+
+        class VanillaCollar : public VanillaCapFloor {
           public:
-            VanillaFloor(const CashFlows::FloatingRateCouponVector& swap,
-                const std::vector<Rate>& exerciseRates,
+            VanillaCollar(
+                const CashFlows::FloatingRateCouponVector& floatingLeg,
+                const std::vector<Rate>& capRates,
+                const std::vector<Rate>& floorRates,
                 const RelinkableHandle<TermStructure>& termStructure,
                 const Handle<OptionPricingEngine>& engine)
-            : VanillaCapFloor(Collar, swap, exerciseRates, termStructure, engine)
+            : VanillaCapFloor(Collar, floatingLeg, capRates, floorRates,
+                              termStructure, engine)
             {}
         };
-*/
+
         //! parameters for cap/floor calculation
         class CapFloorParameters : public virtual Arguments {
           public:
             CapFloorParameters() : type(VanillaCapFloor::Type(-1)),
                                    startTimes(0),
                                    endTimes(0),
-                                   exerciseRates(0),
+                                   capRates(0),
+                                   floorRates(0),
                                    nominals(0) {}
             VanillaCapFloor::Type type;
             std::vector<Time> startTimes;
             std::vector<Time> endTimes;
-            std::vector<Rate> exerciseRates;
+            std::vector<Rate> capRates;
+            std::vector<Rate> floorRates;
             std::vector<double> nominals;
             void validate() const {
                 QL_REQUIRE(
@@ -111,7 +121,9 @@ namespace QuantLib {
                     ") different from that of endTimes(" +
                     IntegerFormatter::toString(endTimes.size()) +
                     ")");
-                QL_REQUIRE(exerciseRates.size()==startTimes.size(),
+                QL_REQUIRE(capRates.size()==startTimes.size(),
+                    "Invalid pricing parameters");
+                QL_REQUIRE(floorRates.size()==startTimes.size(),
                     "Invalid pricing parameters");
             }
 
@@ -143,22 +155,30 @@ namespace QuantLib {
                             NumericalDiscountBond(method()));
                         method()->initialize(bond, end);
                         method()->rollback(bond,time_);
-                        double accrual = 
-                            1.0 + parameters_.exerciseRates[i]*(end - time_);
-                        double factor = parameters_.nominals[i]*accrual;
-                        double strike = 1.0/accrual;
-                        switch(parameters_.type) {
-                          case Instruments::VanillaCapFloor::Floor:
-                            for (i=0; i<values_.size(); i++)
-                                values_[i] += factor*
-                                    QL_MAX(bond->values()[i] - strike, 0.0);
-                            break;
-                          case Instruments::VanillaCapFloor::Call:
-                            for (i=0; i<values_.size(); i++)
-                                values_[i] += factor*
-                                    QL_MAX(strike - bond->values()[i], 0.0);
-                            break;
+
+                        Instruments::VanillaCapFloor::Type type = 
+                            parameters_.type;
+
+                        if ( (type == Instruments::VanillaCapFloor::Cap) ||
+                             (type == Instruments::VanillaCapFloor::Collar)) {
+                            double accrual = 1.0 + 
+                                parameters_.capRates[i]*(end - time_);
+                            double strike = 1.0/accrual;
+                            for (Size j=0; j<values_.size(); j++)
+                                values_[j] += parameters_.nominals[i]*accrual*
+                                    QL_MAX(strike - bond->values()[j], 0.0);
                         }
+
+                        if ( (type == Instruments::VanillaCapFloor::Floor) ||
+                             (type == Instruments::VanillaCapFloor::Collar)) {
+                            double accrual = 1.0 + 
+                                parameters_.floorRates[i]*(end - time_);
+                            double strike = 1.0/accrual;
+                            for (Size j=0; j<values_.size(); j++)
+                                values_[j] += parameters_.nominals[i]*accrual*
+                                    QL_MAX(bond->values()[j] - strike, 0.0);
+                        }
+
                     }
                 }
             }

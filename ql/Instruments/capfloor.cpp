@@ -40,7 +40,8 @@ namespace QuantLib {
                        "pricing engine does not supply needed parameters");
 
             parameters->type = type_;
-            parameters->exerciseRates.clear();
+            parameters->capRates.clear();
+            parameters->floorRates.clear();
             parameters->startTimes.clear();
             parameters->endTimes.clear();
             parameters->nominals.clear();
@@ -50,7 +51,8 @@ namespace QuantLib {
 
             std::vector<Handle<CashFlow> >::const_iterator begin =
                 floatingLeg_.begin();
-            std::vector<Rate>::const_iterator rates = exerciseRates_.begin();
+            std::vector<Rate>::const_iterator caps = capRates_.begin();
+            std::vector<Rate>::const_iterator floors = floorRates_.begin();
 
             for (; begin != floatingLeg_.end(); ++begin) {
                 Handle<FloatingRateCoupon> coupon = *begin;
@@ -62,11 +64,17 @@ namespace QuantLib {
                 time = counter.yearFraction(settlement, coupon->date());
                 parameters->endTimes.push_back(time);
                 parameters->nominals.push_back(coupon->nominal());
-                if (rates == exerciseRates_.end()) {
-                    parameters->exerciseRates.push_back(exerciseRates_.back());
+                if (caps == capRates_.end()) {
+                    parameters->capRates.push_back(capRates_.back());
                 } else {
-                    parameters->exerciseRates.push_back(*rates);
-                    rates++;
+                    parameters->capRates.push_back(*caps);
+                    caps++;
+                }
+                if (floors == floorRates_.end()) {
+                    parameters->floorRates.push_back(floorRates_.back());
+                } else {
+                    parameters->floorRates.push_back(*floors);
+                    floors++;
                 }
 
             }
