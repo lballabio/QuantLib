@@ -19,13 +19,13 @@
 # Primary target:
 # QuantLib Examples
 examples::
-    cd BermudanSwaption
-    $(MAKE)
-    cd ..\DiscreteHedging
+    cd DiscreteHedging
     $(MAKE)
     cd ..\EuropeanOption
     $(MAKE)
     cd ..\Swap
+    $(MAKE)
+    cd ..\BermudanSwaption
     $(MAKE)
     cd ..
 

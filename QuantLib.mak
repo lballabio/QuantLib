@@ -318,6 +318,8 @@ BSC32_SBRS= \
 	"$(INTDIR)\stock.sbr" \
 	"$(INTDIR)\swap.sbr" \
 	"$(INTDIR)\swaption.sbr" \
+	"$(INTDIR)\chisquaredistribution.sbr" \
+	"$(INTDIR)\gammadistribution.sbr" \
 	"$(INTDIR)\matrix.sbr" \
 	"$(INTDIR)\multivariateaccumulator.sbr" \
 	"$(INTDIR)\normaldistribution.sbr" \
@@ -404,9 +406,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\date.sbr" \
 	"$(INTDIR)\option.sbr" \
 	"$(INTDIR)\scheduler.sbr" \
-	"$(INTDIR)\solver1d.sbr" \
-	"$(INTDIR)\gammadistribution.sbr" \
-	"$(INTDIR)\chisquaredistribution.sbr"
+	"$(INTDIR)\solver1d.sbr"
 
 "$(OUTDIR)\QuantLib.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -445,6 +445,8 @@ LIB32_OBJS= \
 	"$(INTDIR)\stock.obj" \
 	"$(INTDIR)\swap.obj" \
 	"$(INTDIR)\swaption.obj" \
+	"$(INTDIR)\chisquaredistribution.obj" \
+	"$(INTDIR)\gammadistribution.obj" \
 	"$(INTDIR)\matrix.obj" \
 	"$(INTDIR)\multivariateaccumulator.obj" \
 	"$(INTDIR)\normaldistribution.obj" \
@@ -531,9 +533,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\date.obj" \
 	"$(INTDIR)\option.obj" \
 	"$(INTDIR)\scheduler.obj" \
-	"$(INTDIR)\solver1d.obj" \
-	"$(INTDIR)\gammadistribution.obj" \
-	"$(INTDIR)\chisquaredistribution.obj"
+	"$(INTDIR)\solver1d.obj"
 
 ".\lib\Win32\VisualStudio\QuantLib.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
     $(LIB32) @<<
@@ -829,6 +829,8 @@ BSC32_SBRS= \
 	"$(INTDIR)\stock.sbr" \
 	"$(INTDIR)\swap.sbr" \
 	"$(INTDIR)\swaption.sbr" \
+	"$(INTDIR)\chisquaredistribution.sbr" \
+	"$(INTDIR)\gammadistribution.sbr" \
 	"$(INTDIR)\matrix.sbr" \
 	"$(INTDIR)\multivariateaccumulator.sbr" \
 	"$(INTDIR)\normaldistribution.sbr" \
@@ -915,9 +917,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\date.sbr" \
 	"$(INTDIR)\option.sbr" \
 	"$(INTDIR)\scheduler.sbr" \
-	"$(INTDIR)\solver1d.sbr" \
-	"$(INTDIR)\gammadistribution.sbr" \
-	"$(INTDIR)\chisquaredistribution.sbr"
+	"$(INTDIR)\solver1d.sbr"
 
 "$(OUTDIR)\QuantLib.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -956,6 +956,8 @@ LIB32_OBJS= \
 	"$(INTDIR)\stock.obj" \
 	"$(INTDIR)\swap.obj" \
 	"$(INTDIR)\swaption.obj" \
+	"$(INTDIR)\chisquaredistribution.obj" \
+	"$(INTDIR)\gammadistribution.obj" \
 	"$(INTDIR)\matrix.obj" \
 	"$(INTDIR)\multivariateaccumulator.obj" \
 	"$(INTDIR)\normaldistribution.obj" \
@@ -1042,9 +1044,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\date.obj" \
 	"$(INTDIR)\option.obj" \
 	"$(INTDIR)\scheduler.obj" \
-	"$(INTDIR)\solver1d.obj" \
-	"$(INTDIR)\gammadistribution.obj" \
-	"$(INTDIR)\chisquaredistribution.obj"
+	"$(INTDIR)\solver1d.obj"
 
 ".\lib\Win32\VisualStudio\QuantLib_d.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
     $(LIB32) @<<
@@ -1339,6 +1339,8 @@ BSC32_SBRS= \
 	"$(INTDIR)\stock.sbr" \
 	"$(INTDIR)\swap.sbr" \
 	"$(INTDIR)\swaption.sbr" \
+	"$(INTDIR)\chisquaredistribution.sbr" \
+	"$(INTDIR)\gammadistribution.sbr" \
 	"$(INTDIR)\matrix.sbr" \
 	"$(INTDIR)\multivariateaccumulator.sbr" \
 	"$(INTDIR)\normaldistribution.sbr" \
@@ -1425,9 +1427,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\date.sbr" \
 	"$(INTDIR)\option.sbr" \
 	"$(INTDIR)\scheduler.sbr" \
-	"$(INTDIR)\solver1d.sbr" \
-	"$(INTDIR)\gammadistribution.sbr" \
-	"$(INTDIR)\chisquaredistribution.sbr"
+	"$(INTDIR)\solver1d.sbr"
 
 "$(OUTDIR)\QuantLib.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -1466,6 +1466,8 @@ LIB32_OBJS= \
 	"$(INTDIR)\stock.obj" \
 	"$(INTDIR)\swap.obj" \
 	"$(INTDIR)\swaption.obj" \
+	"$(INTDIR)\chisquaredistribution.obj" \
+	"$(INTDIR)\gammadistribution.obj" \
 	"$(INTDIR)\matrix.obj" \
 	"$(INTDIR)\multivariateaccumulator.obj" \
 	"$(INTDIR)\normaldistribution.obj" \
@@ -1552,9 +1554,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\date.obj" \
 	"$(INTDIR)\option.obj" \
 	"$(INTDIR)\scheduler.obj" \
-	"$(INTDIR)\solver1d.obj" \
-	"$(INTDIR)\gammadistribution.obj" \
-	"$(INTDIR)\chisquaredistribution.obj"
+	"$(INTDIR)\solver1d.obj"
 
 ".\lib\Win32\VisualStudio\QuantLib.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
     $(LIB32) @<<
@@ -1850,6 +1850,8 @@ BSC32_SBRS= \
 	"$(INTDIR)\stock.sbr" \
 	"$(INTDIR)\swap.sbr" \
 	"$(INTDIR)\swaption.sbr" \
+	"$(INTDIR)\chisquaredistribution.sbr" \
+	"$(INTDIR)\gammadistribution.sbr" \
 	"$(INTDIR)\matrix.sbr" \
 	"$(INTDIR)\multivariateaccumulator.sbr" \
 	"$(INTDIR)\normaldistribution.sbr" \
@@ -1936,9 +1938,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\date.sbr" \
 	"$(INTDIR)\option.sbr" \
 	"$(INTDIR)\scheduler.sbr" \
-	"$(INTDIR)\solver1d.sbr" \
-	"$(INTDIR)\gammadistribution.sbr" \
-	"$(INTDIR)\chisquaredistribution.sbr"
+	"$(INTDIR)\solver1d.sbr"
 
 "$(OUTDIR)\QuantLib.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -1977,6 +1977,8 @@ LIB32_OBJS= \
 	"$(INTDIR)\stock.obj" \
 	"$(INTDIR)\swap.obj" \
 	"$(INTDIR)\swaption.obj" \
+	"$(INTDIR)\chisquaredistribution.obj" \
+	"$(INTDIR)\gammadistribution.obj" \
 	"$(INTDIR)\matrix.obj" \
 	"$(INTDIR)\multivariateaccumulator.obj" \
 	"$(INTDIR)\normaldistribution.obj" \
@@ -2063,9 +2065,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\date.obj" \
 	"$(INTDIR)\option.obj" \
 	"$(INTDIR)\scheduler.obj" \
-	"$(INTDIR)\solver1d.obj" \
-	"$(INTDIR)\gammadistribution.obj" \
-	"$(INTDIR)\chisquaredistribution.obj"
+	"$(INTDIR)\solver1d.obj"
 
 ".\lib\Win32\VisualStudio\QuantLib_d.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
     $(LIB32) @<<

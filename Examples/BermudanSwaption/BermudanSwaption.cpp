@@ -70,7 +70,8 @@ void calibrateModel(const Handle<Model>& model,
     model->calibrate(calibs, om);
 
     cout.precision(2);
-    for (Size i=0; i<numRows; i++) {
+    Size i;
+    for (i=0; i<numRows; i++) {
         cout << setw(2) << swaptionLengths[i] << "y|";
         for (Size j=0; j<numCols; j++) {
             Size k = i*numCols + j;
@@ -173,7 +174,7 @@ int main(int argc, char* argv[])
 
         std::list<Time> times;
 
-        for (unsigned int i=0; i<numRows; i++) {
+        for (i=0; i<numRows; i++) {
             for (unsigned int j=0; j<numCols; j++) {
                 unsigned int k = i*10 + j;
                 Handle<MarketElement> vol(
@@ -188,7 +189,7 @@ int main(int argc, char* argv[])
             }
         }
         const std::vector<Time> termTimes = myTermStructure->times();
-        for (Size i=0; i<termTimes.size(); i++)
+        for (i=0; i<termTimes.size(); i++)
             times.push_back(termTimes[i]);
         times.sort();
         times.unique();
