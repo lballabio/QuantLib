@@ -27,6 +27,9 @@
 
     $Source$
     $Log$
+    Revision 1.10  2001/03/13 11:11:52  lballabio
+    Removed comparison
+
     Revision 1.9  2001/03/12 17:35:09  lballabio
     Removed global IsNull function - could have caused very vicious loops
 
@@ -96,8 +99,6 @@ namespace QuantLib {
     */
     template <class Type>
     class Handle {
-        friend bool operator==(const Handle<Type>&, const Handle<Type>&);
-        friend bool operator!=(const Handle<Type>&, const Handle<Type>&);
       public:
         //! \name constructors, destructor, and assignment
         //@{
@@ -205,19 +206,6 @@ namespace QuantLib {
     template <class Type>
     inline bool Handle<Type>::isNull() const {
         return (ptr_ == 0);
-    }
-
-    //! Returns <tt>true</tt> iff the two handles contain the same pointer
-    /*! \relates Handle */
-    template <class Type>
-    inline bool operator==(const Handle<Type>& h1, const Handle<Type>& h2) {
-        return (h1.ptr_ == h2.ptr_);
-    }
-
-    /*! \relates Handle */
-    template <class Type>
-    inline bool operator!=(const Handle<Type>& h1, const Handle<Type>& h2) {
-        return (h1.ptr_ != h2.ptr_);
     }
 
 }
