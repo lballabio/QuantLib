@@ -51,7 +51,7 @@ namespace QuantLib {
               isAdjusted_(isAdjusted),
               rollingConvention_(rollingConvention),
               dayCounter_(dayCounter), termStructure_(h) {
-                registerWith(h);
+                registerWith(termStructure_);
             }
             //! \name Index interface
             //@{
