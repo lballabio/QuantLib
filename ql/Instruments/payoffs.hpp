@@ -28,20 +28,31 @@
 namespace QuantLib {
 
     /*! Intermediate class for all those payoff that have
-        both a strike and a type but are not necessarily plain-vanilla
+        a type
     */
-    class StrikedTypePayoff : public Payoff {
+    class TypePayoff : public Payoff {
+      public:
+        TypePayoff(Option::Type type)
+        : type_(type) {}
+        Option::Type optionType() const { return type_; };
+      protected:
+        Option::Type type_;
+    };
+
+    /*! Intermediate class for all those payoff that have
+        a (fixed?) strike
+    */
+    class StrikedTypePayoff : public TypePayoff {
       public:
         StrikedTypePayoff(Option::Type type,
                           double strike)
-        : type_(type), strike_(strike) {
+        : TypePayoff(type), strike_(strike) {
             QL_REQUIRE(strike >= 0.0,
                        "StrikedTypePayoff: negative strike given");
         }
-        Option::Type optionType() const { return type_; };
         double strike() const { return strike_; };
+        void setStrike(double strike) { strike_ = strike; };
       protected:
-        Option::Type type_;
         double strike_;
     };
 
@@ -69,7 +80,32 @@ namespace QuantLib {
     }
 
 
-    //! Binary Cash-Or-Nothing option payoff
+    class PercentageStrikePayoff : public StrikedTypePayoff {
+      public:
+        PercentageStrikePayoff(Option::Type type,
+                           double moneyness)
+        : StrikedTypePayoff(type, moneyness) {
+            QL_REQUIRE(moneyness>=0.0,
+            "PercentageStrikePayoff::PercentageStrikePayoff :"
+            "negative moneyness not allowed");
+        }
+        double operator()(double price) const;
+    };
+
+    inline double PercentageStrikePayoff::operator()(double price) const {
+        switch (type_) {
+          case Option::Call:
+            return price*QL_MAX(1.0-strike_,0.0);
+          case Option::Put:
+            return price*QL_MAX(strike_-1.0,0.0);
+          case Option::Straddle:
+            return price*QL_FABS(strike_-1.0);
+          default:
+            throw Error("Unknown/Illegal option type");
+        }
+    }
+
+    //! Binary Cash-Or-Nothing payoff
     class CashOrNothingPayoff : public StrikedTypePayoff {
       public:
         CashOrNothingPayoff(Option::Type type,
@@ -77,6 +113,7 @@ namespace QuantLib {
                             double cashPayoff)
         : StrikedTypePayoff(type, strike), cashPayoff_(cashPayoff) {}
         double operator()(double price) const;
+        double cashPayoff() const { return cashPayoff_;}
       private:
         double cashPayoff_;
     };
@@ -95,7 +132,7 @@ namespace QuantLib {
     }
 
 
-    //! Binary Asset-Or-Nothing option payoff
+    //! Binary Asset-Or-Nothing payoff
     class AssetOrNothingPayoff : public StrikedTypePayoff {
     public:
         AssetOrNothingPayoff(Option::Type type,
@@ -118,19 +155,20 @@ namespace QuantLib {
     }
 
 
-    //! Binary supershare option payoff
-    class SupersharePayoff : public StrikedTypePayoff {
+    //! Binary supershare payoff
+    class SuperSharePayoff : public StrikedTypePayoff {
     public:
-        SupersharePayoff(Option::Type type,
+        SuperSharePayoff(Option::Type type,
                          double strike,
                          double strikeIncrement)
         : StrikedTypePayoff(type, strike), strikeIncrement_(strikeIncrement) {}
         double operator()(double price) const;
+        double strikeIncrement() const { return strikeIncrement_;}
     private:
         double strikeIncrement_;
     };
 
-    inline double SupersharePayoff::operator()(double price) const {
+    inline double SuperSharePayoff::operator()(double price) const {
         switch (type_) {
           case Option::Call:
               return ((price-strike_                  > 0.0 ? 1.0 : 0.0)
