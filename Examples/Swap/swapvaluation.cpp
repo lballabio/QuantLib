@@ -263,7 +263,7 @@ int main(int argc, char* argv[])
             << RateFormatter::toString(fairFixedRate,8)
             << std::endl;
         // let's check that the 5 years swap has been correctly re-priced
-        QL_REQUIRE(abs(fairFixedRate-s5yQuote)<1e-8,
+        QL_REQUIRE(QL_FABS(fairFixedRate-s5yQuote)<1e-8,
             "5 years swap mispriced!");
 
         // now let's price the 1Y forward 5Y swap
@@ -528,7 +528,7 @@ int main(int argc, char* argv[])
             << RateFormatter::toString(fairFixedRate,8)
             << std::endl;
         // let's check that the 5 years swap has been correctly re-priced
-        QL_REQUIRE(abs(fairFixedRate-s5yQuote)<1e-8,
+        QL_REQUIRE(QL_FABS(fairFixedRate-s5yQuote)<1e-8,
             "5 years swap mispriced!");
 
         // now let's price the 1Y forward 5Y swap
@@ -572,7 +572,7 @@ int main(int argc, char* argv[])
             << RateFormatter::toString(fairFixedRate,8)
             << std::endl;
         // let's check that the 5 years swap has been correctly re-priced
-        QL_REQUIRE(abs(fairFixedRate-s5yRate->value())<1e-8,
+        QL_REQUIRE(QL_FABS(fairFixedRate-s5yRate->value())<1e-8,
             "5 years swap mispriced!");
 
         // now let's price the 1Y forward 5Y swap
@@ -630,7 +630,7 @@ int main(int argc, char* argv[])
             << RateFormatter::toString(fairFixedRate,8)
             << std::endl;
         // let's check that the 5 years swap has been correctly re-priced
-        QL_REQUIRE(abs(fairFixedRate-s5yRate->value())<1e-8,
+        QL_REQUIRE(QL_FABS(fairFixedRate-s5yRate->value())<1e-8,
             "5 years swap mispriced!");
 
         NPV = oneYearForward5YearSwap.NPV();
@@ -672,7 +672,7 @@ int main(int argc, char* argv[])
             << RateFormatter::toString(fairFixedRate,8)
             << std::endl;
         // let's check that the 5 years swap has been correctly re-priced
-        QL_REQUIRE(abs(fairFixedRate-s5yRate->value())<1e-8,
+        QL_REQUIRE(QL_FABS(fairFixedRate-s5yRate->value())<1e-8,
             "5 years swap mispriced!");
 
         NPV = oneYearForward5YearSwap.NPV();
