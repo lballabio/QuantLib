@@ -2,16 +2,16 @@
 /*
  * Copyright (C) 2000
  * Ferdinando Ametrano, Luigi Ballabio, Adolfo Benin, Marco Marchioro
- * 
+ *
  * This file is part of QuantLib.
  * QuantLib is a C++ open source library for financial quantitative
  * analysts and developers --- http://quantlib.sourceforge.net/
  *
  * QuantLib is free software and you are allowed to use, copy, modify, merge,
- * publish, distribute, and/or sell copies of it under the conditions stated 
+ * publish, distribute, and/or sell copies of it under the conditions stated
  * in the QuantLib License.
  *
- * This program is distributed in the hope that it will be useful, but 
+ * This program is distributed in the hope that it will be useful, but
  * WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
  * or FITNESS FOR A PARTICULAR PURPOSE. See the license for more details.
  *
@@ -49,7 +49,7 @@ using QuantLib::RiskTool::RiskTool;
 
 class RiskTool {
   public:
-    RiskTool(double target);
+    RiskTool();
     virtual ~RiskTool();
     // Accessors
     int samples() const;
@@ -63,11 +63,11 @@ class RiskTool {
     double min() const;
     double max() const;
     double valueAtRisk(double percentile) const;
-    double shortfall() const;
-    double averageShortfall() const;
+    double shortfall(double target) const;
+    double averageShortfall(double target) const;
     // Modifiers
     void add(double value, double weight = 1.0);
-    void reset(double target);
+    void reset();
 };
 
 %addmethods RiskTool {

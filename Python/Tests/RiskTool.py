@@ -1,16 +1,16 @@
 """
 /*
  * Copyright (C) 2000-2001 QuantLib Group
- * 
+ *
  * This file is part of QuantLib.
  * QuantLib is a C++ open source library for financial quantitative
  * analysts and developers --- http://quantlib.sourceforge.net/
  *
  * QuantLib is free software and you are allowed to use, copy, modify, merge,
- * publish, distribute, and/or sell copies of it under the conditions stated 
+ * publish, distribute, and/or sell copies of it under the conditions stated
  * in the QuantLib License.
  *
- * This program is distributed in the hope that it will be useful, but 
+ * This program is distributed in the hope that it will be useful, but
  * WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
  * or FITNESS FOR A PARTICULAR PURPOSE. See the license for more details.
  *
@@ -22,9 +22,14 @@
 */
 """
 
-""" 
+"""
     $Source$
     $Log$
+    Revision 1.3  2001/01/16 11:33:23  nando
+    updated RiskTool.
+    now constructor doesn't require target, while
+    shortfall and averageShortfall require target as input parameter
+
     Revision 1.2  2001/01/15 13:27:07  aleppo
     improved Python test
 
@@ -52,7 +57,7 @@ print 'Testing RiskTool'
 
 average = 0.0
 sigma = 1.0
-#cannot be changed
+#cannot be changed, it is a strong assumption to compute values to be checked
 target = average
 
 
@@ -73,7 +78,7 @@ for i in range(N):
 
 weights = map(lambda x: gaussian(x,average,sigma), data)
 
-s = RiskTool(target)
+s = RiskTool()
 s.addWeightedSequence(data, weights)
 
 print 'samples .......... %9d' % s.samples(),
@@ -113,18 +118,25 @@ else:
     raise 'wrong variance'
 
 print 'standard Deviation %9.3f' % s.standardDeviation(),
-if (abs(s.standardDeviation()-sigma)<1e-4):
+if (abs(s.standardDeviation()-sigma)<1e-3):
     print 'OK'
 else:
+    print
+    print 'wrong standard deviation %f should be %f' % (s.standardDeviation(), \
+                                                                         sigma)
+    print 'error %e' % (abs(s.standardDeviation()))
     raise 'wrong standard deviation'
 
 print 'skewness ......... %+9.1e' % s.skewness(),
-if (abs(s.skewness())<1e-15):
+if abs(s.skewness())<1e-12:
     print 'OK'
 else:
+    print
+    print 'wrong skewness %f should be %f' % (s.skewness(), 0.0)
+    print 'error %e' % (abs(s.skewness()))
     raise 'wrong skewness'
 
-print 'excess kurtosis .. %+9.1e' % s.kurtosis(), 
+print 'excess kurtosis .. %+9.1e' % s.kurtosis(),
 if (abs(s.kurtosis())<1e-3):
     print 'OK'
 else:
@@ -136,28 +148,42 @@ if (1):
 else:
     raise 'wrong'
 
-print 'VAR .............. %9.3f' % s.valueAtRisk(0.9772),
-if (abs(s.valueAtRisk(0.9772)-2.0*sigma)<1e-3):
-    print 'OK'
-else:
-    raise 'wrong'
-
-print 'shortfall ........ %9.3f' % s.shortfall(),
-if (abs(s.shortfall()-0.5)<1e-15):
+rightVAR = -min(average-2.0*sigma, 0.0)
+VAR = s.valueAtRisk(0.9772)
+print 'Value-at-Risk .... %9.3f' % VAR,
+if (abs(VAR-rightVAR)<1e-3):
     print 'OK'
 else:
     print
-    print 'wrong shortfall %f should be %f' % (s.shortfall(), 0.5)
+    print 'wrong valueAtRisk %f should be %f' % (VAR, rightVAR)
+    print 'error %e' % (abs(VAR-rightVAR))
+    raise 'wrong valueAtRisk'
+
+
+rightShortfall = 0.5
+shortfall = s.shortfall(target)
+print 'shortfall ........ %9.3f' % shortfall,
+if abs(shortfall-rightShortfall)<1e-9:
+    print 'OK'
+else:
+    print
+    print 'wrong shortfall %f should be %f' % (shortfall, rightShortfall)
+    print 'error %e' % (abs(shortfall-rightShortfall))
     raise 'wrong shortfall'
 
-print 'averageShortfall . %9.3f' % s.averageShortfall(),
-if abs(s.averageShortfall()-sigma/sqrt( 2 * 3.14159265358979323846 ))<1e-7:
+
+rightAverageShortfall = sigma/sqrt( 2 * 3.14159265358979323846 )
+averageShortfall = s.averageShortfall(target)
+print 'averageShortfall . %9.3f' % averageShortfall,
+if abs(averageShortfall-rightAverageShortfall)<1e-4:
     print 'OK'
 else:
     print
-    print 'wrong average shortfall %f should be %f' % \
-          (s.averageShortfall(), sigma/sqrt( 2 * 3.14159265358979323846 ))
+    print 'wrong average shortfall %f should be %f' % (averageShortfall,
+                                                    rightAverageShortfall)
+    print 'error %e' % ( abs(averageShortfall - rightAverageShortfall) )
     raise 'wrong average shortfall'
+
 
 print
 print 'Test passed (elapsed time', time.time() - startTime, ')'
