@@ -46,10 +46,17 @@ namespace QuantLib {
             using super::size;
             //! element access
             using super::operator[];
+            // iterators
+            typedef super::iterator iterator;
+            typedef super::const_iterator const_iterator;
+            typedef super::reverse_iterator reverse_iterator;
+            typedef super::const_reverse_iterator const_reverse_iterator;
             using super::begin;
             using super::end;
             using super::rbegin;
             using super::rend;
+            //! membership
+            bool hasDate(const Date&) const;
             //@}
             //! \name Algebra
             //@{
@@ -65,6 +72,11 @@ namespace QuantLib {
 
 
         // inline definitions
+
+        inline bool TimeBasket::hasDate(const Date& d) const {
+            const_iterator i = find(d);
+            return i != end();
+        }
 
         inline TimeBasket& TimeBasket::operator+=(const TimeBasket& other) {
             for (const_iterator j = other.begin(); j != other.end(); j++)
