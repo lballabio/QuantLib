@@ -25,6 +25,9 @@
     $Source$
     $Name$
     $Log$
+    Revision 1.4  2001/01/05 11:42:38  lballabio
+    Renamed SinglePathEuropeanPricer to EuropeanPathPricer
+
     Revision 1.3  2001/01/05 11:18:04  lballabio
     Renamed SinglePathGeometricAsianPricer to GeometricAsianPathPricer
 
@@ -55,7 +58,7 @@ namespace QuantLib {
 
         McAsianPricer::McAsianPricer(Option::Type type, double underlying, 
           double strike, Rate underlyingGrowthRate, Rate riskFreeRate, 
-          double residualTime, double volatility, int timesteps, int samples,
+          double residualTime, double volatility, int timesteps, long samples,
           long seed)
         : McPricer(samples, seed) {
 

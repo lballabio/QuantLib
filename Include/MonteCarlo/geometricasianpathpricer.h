@@ -25,6 +25,9 @@
     $Source$
     $Name$
     $Log$
+    Revision 1.2  2001/01/05 11:42:37  lballabio
+    Renamed SinglePathEuropeanPricer to EuropeanPathPricer
+
     Revision 1.1  2001/01/05 11:18:03  lballabio
     Renamed SinglePathGeometricAsianPricer to GeometricAsianPathPricer
 
@@ -38,15 +41,15 @@
 #define quantlib_montecarlo_geometric_asian_pricer_h
 
 #include "qldefines.h"
-#include "singlepatheuropeanpricer.h"
+#include "europeanpathpricer.h"
 
 namespace QuantLib {
 
     namespace MonteCarlo {
 
-        class GeometricAsianPathPricer : public SinglePathEuropeanPricer{
+        class GeometricAsianPathPricer : public EuropeanPathPricer {
           public:
-            GeometricAsianPathPricer() : SinglePathEuropeanPricer() {}
+            GeometricAsianPathPricer() {}
             GeometricAsianPathPricer(Option::Type type, double underlying,
                 double strike, double discount);
             virtual double value(const Path &path) const;

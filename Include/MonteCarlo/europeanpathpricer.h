@@ -20,11 +20,14 @@
  * QuantLib license is also available at http://quantlib.sourceforge.net/LICENSE.TXT
 */
 
-/*! \file singlepatheuropeanpricer.h
+/*! \file europeanpathpricer.h
     
     $Source$
     $Name$
     $Log$
+    Revision 1.1  2001/01/05 11:42:37  lballabio
+    Renamed SinglePathEuropeanPricer to EuropeanPathPricer
+
     Revision 1.2  2001/01/05 11:02:37  lballabio
     Renamed SinglePathPricer to PathPricer
 
@@ -33,8 +36,8 @@
                 
 */
 
-#ifndef quantlib_montecarlo_single_path_european_pricer_h
-#define quantlib_montecarlo_single_path_european_pricer_h
+#ifndef quantlib_montecarlo_european_path_pricer_h
+#define quantlib_montecarlo_european_path_pricer_h
 
 #include "pathpricer.h"
 #include "options.h"
@@ -43,21 +46,20 @@ namespace QuantLib {
 
     namespace MonteCarlo {
 
-        class SinglePathEuropeanPricer : public PathPricer {
-        public:
-            SinglePathEuropeanPricer() : PathPricer() {}
-            SinglePathEuropeanPricer(Option::Type optiontype, 
-                    double underlying, double strike, double discount);
-
+        class EuropeanPathPricer : public PathPricer {
+          public:
+            EuropeanPathPricer() {}
+            EuropeanPathPricer(Option::Type type, double underlying, 
+                double strike, double discount);
             double value(const Path &path) const;
-        protected:
-            mutable Option::Type optionType_;
+          protected:
+            mutable Option::Type type_;
             mutable double underlying_, strike_, discount_;
-            double computePlainVanilla(Option::Type optiontype, double price, 
-                double strike, double discount) const;        
+            double computePlainVanilla(Option::Type type, double price, 
+                double strike, double discount) const;
         };
 
-    }    
+    }
 
 }
 

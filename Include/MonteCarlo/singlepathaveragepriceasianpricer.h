@@ -19,36 +19,41 @@
  *
  * QuantLib license is also available at http://quantlib.sourceforge.net/LICENSE.TXT
 */
-/*! \file singlepathaveragepriceasianpricer.h
-	
-	$Source$
-	$Name$
-	$Log$
-	Revision 1.1  2001/01/04 17:31:22  marmar
-	Alpha version of the Monte Carlo tools.
 
+/*! \file singlepathaveragepriceasianpricer.h
+    
+    $Source$
+    $Name$
+    $Log$
+    Revision 1.2  2001/01/05 11:42:37  lballabio
+    Renamed SinglePathEuropeanPricer to EuropeanPathPricer
+
+    Revision 1.1  2001/01/04 17:31:22  marmar
+    Alpha version of the Monte Carlo tools.
+    
 */
 
-#ifndef quantlib_montecarlo_single_path_average_price_asian_pricer_h
-#define quantlib_montecarlo_single_path_average_price_asian_pricer_h
+#ifndef quantlib_montecarlo_average_price_asian_path_pricer_h
+#define quantlib_montecarlo_average_price_asian_path_pricer_h
 
 #include "qldefines.h"
-#include "singlepatheuropeanpricer.h"
+#include "europeanpathpricer.h"
 
 namespace QuantLib {
 
-	namespace MonteCarlo {
+    namespace MonteCarlo {
 
-		class SinglePathAveragePriceAsianPricer : public SinglePathEuropeanPricer{
-		public:
-			SinglePathAveragePriceAsianPricer():SinglePathEuropeanPricer(){}
-			SinglePathAveragePriceAsianPricer(Option::Type optiontype, 
-				double underlying, double strike, double discount);
-			virtual double value(const Path &path) const;
-		};
-
-		
-	}
+        class SinglePathAveragePriceAsianPricer : public EuropeanPathPricer {
+        public:
+            SinglePathAveragePriceAsianPricer() {}
+            SinglePathAveragePriceAsianPricer(Option::Type type, 
+                double underlying, double strike, double discount);
+            virtual double value(const Path &path) const;
+        };
+        
+    }
 
 }
+
+
 #endif

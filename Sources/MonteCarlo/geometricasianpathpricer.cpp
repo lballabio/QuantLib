@@ -25,9 +25,12 @@
 	$Source$
 	$Name$
 	$Log$
+	Revision 1.2  2001/01/05 11:42:38  lballabio
+	Renamed SinglePathEuropeanPricer to EuropeanPathPricer
+
 	Revision 1.1  2001/01/05 11:18:04  lballabio
 	Renamed SinglePathGeometricAsianPricer to GeometricAsianPathPricer
-
+	
 	Revision 1.1  2001/01/04 17:31:23  marmar
 	Alpha version of the Monte Carlo tools.
 	
@@ -41,7 +44,7 @@ namespace QuantLib {
 
 		GeometricAsianPathPricer::GeometricAsianPathPricer(Option::Type type,
 		    double underlying, double strike, double discount)
-		: SinglePathEuropeanPricer(type, underlying, strike, discount) {
+		: EuropeanPathPricer(type, underlying, strike, discount) {
 			isInitialized_=true;
 		}
 
@@ -61,8 +64,7 @@ namespace QuantLib {
 			}
 			average = QL_EXP(average/n);
 
-			return computePlainVanilla(optionType_, average, strike_,
-			    discount_);
+			return computePlainVanilla(type_, average, strike_, discount_);
 		}
 		
 	}

@@ -25,6 +25,9 @@
     $Source$
     $Name$
     $Log$
+    Revision 1.3  2001/01/05 11:42:38  lballabio
+    Renamed SinglePathEuropeanPricer to EuropeanPathPricer
+
     Revision 1.2  2001/01/05 11:02:38  lballabio
     Renamed SinglePathPricer to PathPricer
 
@@ -50,7 +53,7 @@ namespace QuantLib {
             McAsianPricer(Option::Type type, double underlying, double strike, 
                Rate underlyingGrowthRate,   Rate riskFreeRate, 
                double residualTime, double volatility, int timesteps, 
-               int samples, long seed=0);
+               long samples, long seed=0);
         };
 
     }

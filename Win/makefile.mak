@@ -49,7 +49,7 @@ MATH_OBJS        = $(OUTPUT_DIR)\normaldistribution.obj \
 MONTECARLO_OBJS  = $(OUTPUT_DIR)\lecuyerrandomgenerator.obj \
                    $(OUTPUT_DIR)\singlepathaveragepriceasianpricer.obj \
                    $(OUTPUT_DIR)\geometricasianpathpricer.obj \
-                   $(OUTPUT_DIR)\singlepatheuropeanpricer.obj \
+                   $(OUTPUT_DIR)\europeanpathpricer.obj \
                    $(OUTPUT_DIR)\singlepathcontrolvariatedpricer.obj
 		  
 FDM_OBJS         = $(OUTPUT_DIR)\tridiagonaloperator.obj \
@@ -233,8 +233,8 @@ $(OUTPUT_DIR)\newcubicspline.obj: $(SOURCES_DIR)\Math\newcubicspline.cpp
 MonteCarlo: $(OUTPUT_DIR) $(MONTECARLO_OBJS)
 $(OUTPUT_DIR)\lecuyerrandomgenerator.obj: \
     $(SOURCES_DIR)\MonteCarlo\lecuyerrandomgenerator.cpp
-$(OUTPUT_DIR)\singlepatheuropeanpricer.obj: \
-    $(SOURCES_DIR)\MonteCarlo\singlepatheuropeanpricer.cpp 
+$(OUTPUT_DIR)\europeanpathpricer.obj: \
+    $(SOURCES_DIR)\MonteCarlo\europeanpathpricer.cpp 
 $(OUTPUT_DIR)\geometricasianpathpricer.obj: \
     $(SOURCES_DIR)\MonteCarlo\geometricasianpathpricer.cpp 
 $(OUTPUT_DIR)\singlepathaveragepriceasianpricer.obj: \

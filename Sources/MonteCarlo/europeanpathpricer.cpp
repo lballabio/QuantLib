@@ -20,11 +20,14 @@
  * QuantLib license is also available at http://quantlib.sourceforge.net/LICENSE.TXT
 */
 
-/*! \file singlepatheuropeanpricer.cpp
+/*! \file europeanpathpricer.cpp
     
     $Source$
     $Name$
     $Log$
+    Revision 1.1  2001/01/05 11:42:38  lballabio
+    Renamed SinglePathEuropeanPricer to EuropeanPathPricer
+
     Revision 1.2  2001/01/05 11:02:38  lballabio
     Renamed SinglePathPricer to PathPricer
 
@@ -33,7 +36,7 @@
                 
 */
 
-#include "singlepatheuropeanpricer.h"    
+#include "europeanpathpricer.h"    
 #include "qlerrors.h"
 
 
@@ -41,11 +44,10 @@ namespace QuantLib {
 
     namespace MonteCarlo {
 
-        SinglePathEuropeanPricer::SinglePathEuropeanPricer(
-            Option::Type optiontype, double underlying, double strike, 
-            double discount)
-        : optionType_(optiontype),underlying_(underlying), strike_(strike),
-            discount_(discount) {
+        EuropeanPathPricer::EuropeanPathPricer(Option::Type type, 
+          double underlying, double strike, double discount)
+        : type_(type),underlying_(underlying), strike_(strike), 
+          discount_(discount) {
             QL_REQUIRE(strike_ > 0.0, 
                 "SinglePathEuropeanPricer: strike must be positive");              
             QL_REQUIRE(underlying_ > 0.0, 
@@ -55,7 +57,7 @@ namespace QuantLib {
             isInitialized_ = true;
         }
 
-        double SinglePathEuropeanPricer::value(const Path & path) const {
+        double EuropeanPathPricer::value(const Path & path) const {
             int n = path.size();
             QL_REQUIRE(isInitialized_,
                 "SinglePathEuropeanPricer: pricer not initialized");
@@ -66,14 +68,14 @@ namespace QuantLib {
             for(unsigned int i = 0; i < n; i++)
                 price *= QL_EXP(path[i]);
             
-            return computePlainVanilla(optionType_, price, strike_, discount_);
+            return computePlainVanilla(type_, price, strike_, discount_);
         }
 
-        double SinglePathEuropeanPricer::computePlainVanilla(
-          Option::Type optiontype, double price, double strike, 
+        double EuropeanPathPricer::computePlainVanilla(
+          Option::Type type, double price, double strike, 
           double discount) const {
             double optionPrice;
-            switch (optiontype) {
+            switch (type) {
               case Option::Call:
                     optionPrice = QL_MAX(price-strike,0.0);
                 break;

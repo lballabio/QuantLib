@@ -25,6 +25,9 @@
     $Source$
     $Name$
     $Log$
+    Revision 1.3  2001/01/05 11:42:38  lballabio
+    Renamed SinglePathEuropeanPricer to EuropeanPathPricer
+
     Revision 1.2  2001/01/05 11:02:38  lballabio
     Renamed SinglePathPricer to PathPricer
 
@@ -35,21 +38,21 @@
 
 #include "mceuropeanpricer.h"
 #include "handle.h"
-#include "singlepatheuropeanpricer.h"
+#include "europeanpathpricer.h"
 
 namespace QuantLib {
 
     namespace Pricers {
 
         using MonteCarlo::PathPricer;
-        using MonteCarlo::SinglePathEuropeanPricer;
+        using MonteCarlo::EuropeanPathPricer;
 
         McEuropeanPricer::McEuropeanPricer(Option::Type type, double underlying,
           double strike, Rate underlyingGrowthRate, Rate riskFreeRate,
-          double residualTime, double volatility, int timesteps, int samples,
+          double residualTime, double volatility, int timesteps, long samples,
           long seed)
         : McPricer(samples, seed) {
-            Handle<PathPricer> spPricer(new SinglePathEuropeanPricer(type,
+            Handle<PathPricer> spPricer(new EuropeanPathPricer(type,
                 underlying, strike, QL_EXP(-riskFreeRate*residualTime)));
 
             montecarloPricer_ = MonteCarlo1D(spPricer, underlyingGrowthRate,

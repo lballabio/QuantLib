@@ -19,14 +19,18 @@
  *
  * QuantLib license is also available at http://quantlib.sourceforge.net/LICENSE.TXT
 */
-/*! \file mceuropeanpricer.h
-	
-	$Source$
-	$Name$
-	$Log$
-	Revision 1.1  2001/01/04 17:31:23  marmar
-	Alpha version of the Monte Carlo tools.
 
+/*! \file mceuropeanpricer.h
+    
+    $Source$
+    $Name$
+    $Log$
+    Revision 1.2  2001/01/05 11:42:38  lballabio
+    Renamed SinglePathEuropeanPricer to EuropeanPathPricer
+
+    Revision 1.1  2001/01/04 17:31:23  marmar
+    Alpha version of the Monte Carlo tools.
+    
 */
 
 #ifndef quantlib_mc_european_pricer_h
@@ -39,18 +43,21 @@
 
 namespace QuantLib {
 
-	namespace Pricers {
+    namespace Pricers {
 
-		using MonteCarlo::MonteCarlo1D;
+        using MonteCarlo::MonteCarlo1D;
 
-		class McEuropeanPricer: public McPricer {
-		public:
-			McEuropeanPricer(Option::Type type, double underlying, double strike, 
-				 Rate underlyingGrowthRate,   Rate riskFreeRate, double residualTime, 
-				 double volatility,	int timesteps, int confnumber, long seed=0);
-		};
+        class McEuropeanPricer: public McPricer {
+        public:
+            McEuropeanPricer(Option::Type type, double underlying, 
+            double strike, Rate underlyingGrowthRate, Rate riskFreeRate, 
+            double residualTime, double volatility, int timesteps, 
+            long samples, long seed=0);
+        };
 
-	}
+    }
 
 }
+
+
 #endif
