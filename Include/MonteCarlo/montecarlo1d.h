@@ -20,14 +20,17 @@
  * QuantLib license is also available at http://quantlib.sourceforge.net/LICENSE.TXT
 */
 /*! \file montecarlo1d.h
-	\brief Create a sample generator from a path generator and a single-path pricer
-	
-	$Source$
-	$Name$
-	$Log$
-	Revision 1.1  2001/01/04 17:31:22  marmar
-	Alpha version of the Monte Carlo tools.
+    \brief Create a sample generator from a path generator and a single-path pricer
+    
+    $Source$
+    $Name$
+    $Log$
+    Revision 1.2  2001/01/05 11:02:37  lballabio
+    Renamed SinglePathPricer to PathPricer
 
+    Revision 1.1  2001/01/04 17:31:22  marmar
+    Alpha version of the Monte Carlo tools.
+    
 */
 
 
@@ -40,56 +43,62 @@
 #include "standardpathgenerator.h"
 #include "mcoptionsample.h"
 #include "handle.h"
-
-#include "singlepathpricer.h"
+#include "pathpricer.h"
 
 namespace QuantLib {
 
-	namespace MonteCarlo {
-		//! General purpose 1D Monte Carlo pricer
-		using Math::Statistics;
+    namespace MonteCarlo {
 
-		class MonteCarlo1D {
-		public:
-			MonteCarlo1D(){}
-			MonteCarlo1D(Handle<SinglePathPricer> singlePathPricer, Rate underlyingGrowthRate,
-						Rate riskFreeRate, double residualTime, double volatility,	
-						int timesteps, long seed=0);
-			double value(int confnumber) const;
-			double errorEstimate() const;
-		 private:  
-			int confnumber_;
-			mutable OptionSample<StandardPathGenerator, SinglePathPricer > optionSample_;
-			mutable Statistics sampleAccumulator_;
-		};
+        using Math::Statistics;
 
+        //! General purpose 1D Monte Carlo pricer
+        class MonteCarlo1D {
+          public:
+            MonteCarlo1D(){}
+            MonteCarlo1D(Handle<PathPricer> pathPricer, 
+              Rate underlyingGrowthRate, Rate riskFreeRate, double residualTime,
+              double volatility, int timesteps, long seed=0);
+            double value(long samples) const;
+            double errorEstimate() const;
+          private:
+            mutable OptionSample<StandardPathGenerator,PathPricer>
+                optionSample_;
+            mutable Statistics sampleAccumulator_;
+        };
 
-		inline MonteCarlo1D::MonteCarlo1D(Handle<SinglePathPricer> singlePathPricer, Rate underlyingGrowthRate,   
-							Rate riskFreeRate, double residualTime, double volatility,	
-							int timesteps, long seed): sampleAccumulator_(){
+        // inline definitions
+        
+        inline MonteCarlo1D::MonteCarlo1D(Handle<PathPricer> singlePathPricer,
+            Rate underlyingGrowthRate, Rate riskFreeRate, double residualTime,
+            double volatility, int timesteps, long seed) 
+        : sampleAccumulator_() {
 
-			double deltaT = residualTime/timesteps;
-			double mu = deltaT*(riskFreeRate-underlyingGrowthRate-0.5*volatility*volatility);
-			double sigma = volatility*QL_SQRT(deltaT);
+            double deltaT = residualTime/timesteps;
+            double mu = deltaT * (riskFreeRate - underlyingGrowthRate -
+                0.5 * volatility * volatility);
+            double sigma = volatility*QL_SQRT(deltaT);
 
-			StandardPathGenerator pathGenerator(timesteps, mu, sigma, seed);
+            StandardPathGenerator pathGenerator(timesteps, mu, sigma, seed);
 
-			optionSample_ = OptionSample<StandardPathGenerator, SinglePathPricer >
-									(pathGenerator, singlePathPricer);
+            optionSample_ = OptionSample<StandardPathGenerator,PathPricer>    
+              (pathGenerator, singlePathPricer);
 
-		}
+        }
 
-		inline double MonteCarlo1D::value(int confnumber) const{
-			for(int i=1;i<=confnumber;i++)
-				sampleAccumulator_.add(optionSample_.next(), optionSample_.weight());
-			return sampleAccumulator_.mean();
-		}
+        inline double MonteCarlo1D::value(long samples) const{
+            for(long i=1; i<=samples; i++)
+                sampleAccumulator_.add(optionSample_.next(),
+                    optionSample_.weight());
+            return sampleAccumulator_.mean();
+        }
 
-		inline double MonteCarlo1D::errorEstimate() const{ 
-			return sampleAccumulator_.errorEstimate(); 
-		}
+        inline double MonteCarlo1D::errorEstimate() const{ 
+            return sampleAccumulator_.errorEstimate(); 
+        }
 
-	}
+    }
 
 }
+
+
 #endif

@@ -19,38 +19,42 @@
  *
  * QuantLib license is also available at http://quantlib.sourceforge.net/LICENSE.TXT
 */
+
 /*! \file singlepathcontrolvariatedpricer.cpp
-	
-	$Source$
-	$Name$
-	$Log$
-	Revision 1.1  2001/01/04 17:31:23  marmar
-	Alpha version of the Monte Carlo tools.
-		
+    
+    $Source$
+    $Name$
+    $Log$
+    Revision 1.2  2001/01/05 11:02:38  lballabio
+    Renamed SinglePathPricer to PathPricer
+
+    Revision 1.1  2001/01/04 17:31:23  marmar
+    Alpha version of the Monte Carlo tools.
+            
 */
 
 #include "singlepathcontrolvariatedpricer.h"
 
 namespace QuantLib {
 
-	namespace MonteCarlo {
+    namespace MonteCarlo {
 
-		SinglePathControlVariatedPricer::SinglePathControlVariatedPricer(
-												Handle<SinglePathPricer > pricer, 
-												Handle<SinglePathPricer > controlVariate, 
-												double controlVariateValue):
-												pricer_(pricer),
-												controlVariate_(controlVariate),
-												controlVariateValue_(controlVariateValue){
-			isInitialized_=true;
-		}
-			
-		double SinglePathControlVariatedPricer::value(const Path &path) const{
+        SinglePathControlVariatedPricer::SinglePathControlVariatedPricer(
+            Handle<PathPricer > pricer,
+            Handle<PathPricer > controlVariate,
+            double controlVariateValue)
+        : pricer_(pricer), controlVariate_(controlVariate), 
+          controlVariateValue_(controlVariateValue) {
+            isInitialized_=true;
+        }
+        
+        double SinglePathControlVariatedPricer::value(const Path &path) const {
+            QL_REQUIRE(isInitialized_,
+                "SinglePathControlVariatedPricer not initialized");
+            return pricer_->value(path) - controlVariate_->value(path) + 
+                controlVariateValue_;
+        }
 
-			QL_REQUIRE(isInitialized_,"SinglePathControlVariatedPricer not initialized");
-			return pricer_ -> value(path) - controlVariate_ -> value(path) + controlVariateValue_;
-		}
-
-	}
+    }
 
 }

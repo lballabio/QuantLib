@@ -19,14 +19,18 @@
  *
  * QuantLib license is also available at http://quantlib.sourceforge.net/LICENSE.TXT
 */
-/*! \file mcasianpricer.h
-	
-	$Source$
-	$Name$
-	$Log$
-	Revision 1.1  2001/01/04 17:31:23  marmar
-	Alpha version of the Monte Carlo tools.
 
+/*! \file mcasianpricer.h
+    
+    $Source$
+    $Name$
+    $Log$
+    Revision 1.2  2001/01/05 11:02:38  lballabio
+    Renamed SinglePathPricer to PathPricer
+
+    Revision 1.1  2001/01/04 17:31:23  marmar
+    Alpha version of the Monte Carlo tools.
+    
 */
 
 #ifndef quantlib_montecarlo_asian_pricer_h
@@ -39,16 +43,19 @@
 
 namespace QuantLib {
 
-	namespace Pricers {
+    namespace Pricers {
 
-		class McAsianPricer: public McPricer {
-		public:
-			McAsianPricer(Option::Type type, double underlying, double strike, 
-				 Rate underlyingGrowthRate,   Rate riskFreeRate, double residualTime, 
-				 double volatility,	int timesteps, int confnumber, long seed=0);
-		};
+        class McAsianPricer: public McPricer {
+          public:
+            McAsianPricer(Option::Type type, double underlying, double strike, 
+               Rate underlyingGrowthRate,   Rate riskFreeRate, 
+               double residualTime, double volatility, int timesteps, 
+               int samples, long seed=0);
+        };
 
-	}
+    }
 
 }
+
+
 #endif

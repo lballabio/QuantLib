@@ -20,36 +20,41 @@
  * QuantLib license is also available at http://quantlib.sourceforge.net/LICENSE.TXT
 */
 /*! \file singlepathpricer.h
-	
-	$Source$
-	$Name$
-	$Log$
-	Revision 1.1  2001/01/04 17:31:22  marmar
-	Alpha version of the Monte Carlo tools.
+    
+    $Source$
+    $Name$
+    $Log$
+    Revision 1.1  2001/01/05 11:02:37  lballabio
+    Renamed SinglePathPricer to PathPricer
 
+    Revision 1.1  2001/01/04 17:31:22  marmar
+    Alpha version of the Monte Carlo tools.
+    
 */
 
-#ifndef quantlib_montecarlo_single_path_pricer_h
-#define quantlib_montecarlo_single_path_pricer_h
+#ifndef quantlib_montecarlo_path_pricer_h
+#define quantlib_montecarlo_path_pricer_h
 
 #include "qldefines.h"
 #include "path.h"
 
 namespace QuantLib {
 
-	namespace MonteCarlo {
+    namespace MonteCarlo {
 
-		class SinglePathPricer {
-		public:
-			typedef double SampleType;
-			SinglePathPricer():isInitialized_(false) {}
-			~SinglePathPricer() {}
-			virtual double value(const Path &path) const=0;
-		protected:
-			bool isInitialized_;
-		};
+        class PathPricer {
+          public:
+            typedef double SampleType;
+            PathPricer() : isInitialized_(false) {}
+            virtual ~PathPricer() {}
+            virtual double value(const Path &path) const=0;
+          protected:
+            bool isInitialized_;
+        };
 
-	}
+    }
 
 }
+
+
 #endif

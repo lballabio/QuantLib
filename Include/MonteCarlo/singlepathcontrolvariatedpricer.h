@@ -19,14 +19,18 @@
  *
  * QuantLib license is also available at http://quantlib.sourceforge.net/LICENSE.TXT
 */
+
 /*! \file singlepathcontrolvariatedpricer.h
-	
-	$Source$
-	$Name$
-	$Log$
-	Revision 1.1  2001/01/04 17:31:22  marmar
-	Alpha version of the Monte Carlo tools.
-			
+    
+    $Source$
+    $Name$
+    $Log$
+    Revision 1.2  2001/01/05 11:02:37  lballabio
+    Renamed SinglePathPricer to PathPricer
+
+    Revision 1.1  2001/01/04 17:31:22  marmar
+    Alpha version of the Monte Carlo tools.
+                
 */
 
 #ifndef quantlib_montecarlo_single_path_control_variated_pricer_h
@@ -34,25 +38,26 @@
 
 #include "qldefines.h"
 #include "handle.h"
-#include "singlepathpricer.h"
+#include "pathpricer.h"
 
 namespace QuantLib {
 
-	namespace MonteCarlo {
+    namespace MonteCarlo {
 
-		class SinglePathControlVariatedPricer: public SinglePathPricer {
-		public:
-			SinglePathControlVariatedPricer():SinglePathPricer(){}
-			SinglePathControlVariatedPricer(Handle<SinglePathPricer > pricer, 
-											Handle<SinglePathPricer > controlVariate, 
-											double controlVariateValue);
-			double value(const Path &path) const;
-		private:
-			Handle<SinglePathPricer> pricer_, controlVariate_;
-			double controlVariateValue_;
-		};
+        class SinglePathControlVariatedPricer: public PathPricer {
+        public:
+            SinglePathControlVariatedPricer() : PathPricer() {}
+            SinglePathControlVariatedPricer(Handle<PathPricer > pricer,
+                Handle<PathPricer > controlVariate, double controlVariateValue);
+            double value(const Path &path) const;
+        private:
+            Handle<PathPricer> pricer_, controlVariate_;
+            double controlVariateValue_;
+        };
 
-	}
+    }
 
 }
+
+
 #endif
