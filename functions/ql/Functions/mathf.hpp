@@ -29,19 +29,19 @@
 namespace QuantLib {
 
     template<class I1, class I2, class I3>
-    std::vector<double> interpolate(const I1& xx_begin,
-                                    const I1& xx_end,
-                                    const I2& yy_begin,
-                                    const I3& x_begin,
-                                    const I3& x_end,
-                                    int interpolationType,
-                                    bool allowExtrapolation,
-                                    CubicSpline::BoundaryCondition leftCondition,
-                                    double leftConditionValue,
-                                    CubicSpline::BoundaryCondition rightCondition,
-                                    double rightConditionValue,
-                                    bool monotonicityConstraint,
-                                    int derivativeOrder) {
+    std::vector<Real> interpolate(const I1& xx_begin,
+                                  const I1& xx_end,
+                                  const I2& yy_begin,
+                                  const I3& x_begin,
+                                  const I3& x_end,
+                                  Integer interpolationType,
+                                  bool allowExtrapolation,
+                                  CubicSpline::BoundaryCondition leftCondition,
+                                  Real leftConditionValue,
+                                  CubicSpline::BoundaryCondition rightCondition,
+                                  Real rightConditionValue,
+                                  bool monotonicityConstraint,
+                                  Integer derivativeOrder) {
 
         Interpolation f;
 
@@ -63,7 +63,7 @@ namespace QuantLib {
         }
 
         Size i, n = x_end-x_begin;
-        std::vector<double> result(n);
+        std::vector<Real> result(n);
         switch (derivativeOrder) {
           case -1:
               for (i=0; i<n; i++) {
@@ -95,28 +95,28 @@ namespace QuantLib {
     }
 
 
-    double interpolate2D(const std::vector<double>& x_values,
-                         const std::vector<double>& y_values,
-                         const Matrix& dataMatrix,
-                         double x,
-                         double y,
-                         int interpolation2DType,
-                         bool allowExtrapolation);
+    Real interpolate2D(const std::vector<Real>& x_values,
+                       const std::vector<Real>& y_values,
+                       const Matrix& dataMatrix,
+                       Real x,
+                       Real y,
+                       Integer interpolation2DType,
+                       bool allowExtrapolation);
 
 
 
-    double normDist(double x,
-                    double mean = 0.0,
-                    double standard_dev = 1.0,
-                    bool cumulative = false);
-    double normInv(double probability,
-                   double mean = 0.0,
-                   double standard_dev = 1.0);
+    Real normDist(Real x,
+                  Real mean = 0.0,
+                  Real standard_dev = 1.0,
+                  bool cumulative = false);
+    Real normInv(Real probability,
+                 Real mean = 0.0,
+                 Real standard_dev = 1.0);
 
     Size primeNumbers(Size absoluteIndex);
 
-    double rand();
-    void randomize(unsigned long seed);
+    Real rand();
+    void randomize(BigNatural seed);
 
 }
 

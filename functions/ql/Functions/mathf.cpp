@@ -24,13 +24,13 @@
 
 namespace QuantLib {
 
-    double interpolate2D(const std::vector<double>& x_values,
-                         const std::vector<double>& y_values, 
-                         const Matrix& dataMatrix,
-                         double x, double y, int interpolation2DType,
-                         bool allowExtrapolation) {
+    Real interpolate2D(const std::vector<Real>& x_values,
+                       const std::vector<Real>& y_values, 
+                       const Matrix& dataMatrix,
+                       Real x, Real y, Integer interpolation2DType,
+                       bool allowExtrapolation) {
 
-        double result = 0.0;
+        Real result = 0.0;
 
         switch (interpolation2DType) {
           case 1:
@@ -50,8 +50,8 @@ namespace QuantLib {
         return result;
     }
 
-    double normDist(double x, double mean, double standard_dev,
-                    bool cumulative) {
+    Real normDist(Real x, Real mean, Real standard_dev,
+                  bool cumulative) {
         if (cumulative) {
             return CumulativeNormalDistribution(mean, standard_dev)(x);
         } else {
@@ -60,7 +60,7 @@ namespace QuantLib {
     }
 
 
-    double normInv(double probability, double mean, double standard_dev) {
+    Real normInv(Real probability, Real mean, Real standard_dev) {
         return InverseCumulativeNormal(mean, standard_dev)
             (probability);
     }
@@ -72,10 +72,10 @@ namespace QuantLib {
 
     static MersenneTwisterUniformRng rng;
 
-    double rand() {
+    Real rand() {
         return rng.next().value;
     }
-    void randomize(unsigned long seed) {
+    void randomize(BigNatural seed) {
         rng = MersenneTwisterUniformRng(seed);
     }
 
