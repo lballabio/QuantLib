@@ -30,15 +30,15 @@
 
     Under the Examples folder you can find examples of %QuantLib usage,
     including makefiles for gcc, Borland Free compiler,
-    and Microsoft Visual C++. For the latter projects files are also available.
+    and Microsoft Visual C++. For the latter project files are also available.
 
 
     \subsection microsoftvisual Microsoft Visual C++
     A few suggestions for Visual C++ users wanting to use %QuantLib into their
     own application:
-    -# As long as you include ql/quantlib.hpp, you won't have to explicitly link
-    your application to QuantLib.lib (or QuantLib_d.lib). This is automatically
-    done by quantlib.hpp using the pragma statement:
+    -# As long as you include ql/quantlib.hpp, you won't have to explicitly
+    link your application to QuantLib.lib (or QuantLib_d.lib). This is
+    automatically done by quantlib.hpp using the pragma statement:
     \code
     #ifdef _DEBUG
         #pragma comment(lib,"QuantLib_d.lib")
@@ -53,17 +53,17 @@
     This setting is in the project settings, "C/C++" tab, "Code Generation"
     category.
     You'll have to check the "Use RTTI" option under the "C++ Language"
-    category, too.
+    category, too. Finally, you have to define NOMINMAX
     -# To create your own project, add it to a new or existing Workspace.
     Under File | New | Projects select "Win32 Console Application" (or
     equivalent).
-    Under Project | Settings select your project. Select setting for: "All
+    Under Project | Settings select your project. Select settings for: "All
     configuration".
     On the "C/C++" tab select "Preprocessor" and under "Additional include
-    directory" add "$(QL_DIR)". This will add your current %QuantLib
+    directory" add "\$(QL_DIR)". This will add your current %QuantLib
     installation directory to the include path.
     On the "Link" tab select "Input" and under "Additional library path" add
-    "$(QL_DIR)\lib\Win32\VisualStudio\". This will add your current %QuantLib
+    "\$(QL_DIR)\lib\Win32\VisualStudio\". This will add your current %QuantLib
     installation directory to the library path.
     -# To compile in "Win32 Debug" configuration you will need the %QuantLib
     debug libraries, available for download from
@@ -71,7 +71,7 @@
     -# The "Win32 OnTheEdgeRelease" and "Win 32 OnTheEdgeDebug" configurations
     are equivalent to "Win32 Release" and "Win32 Debug" respectively, except
     that they do not use the installed %QuantLib libraries, but look for the
-    *.hpp and *.lib %QuantLib files in a relative ..\%QuantLib path. This is
+    hpp and lib %QuantLib files in a relative ..\\%QuantLib path. This is
     mainly for %QuantLib developers, to allow them to check the examples
     without having to install their unstable working version of %QuantLib.
     The "OnTheEdge" approach may be adopted in projects using %QuantLib,

@@ -5,7 +5,9 @@ MYPATH=.
 
 # search in egrep form like    '.gif|.jpeg|.cpp'     if you search for extension
 # use $ after every pattern in order to select the end of the filename (= extension)
-SEARCH='.cpp$|.hpp$'
+SEARCH='.py$'
+SEARCH='.rb$'
+SEARCH='.cpp$|.hpp$|.i$'
 
 
 while getopts "p:d:s:" flag ; do
@@ -20,9 +22,12 @@ done
 find $MYPATH -type f | egrep -i $SEARCH | while read FILE; do
 
 	mybegin=`    grep -n '^\/\*'  $FILE | head -1 | cut -f1 -d: `
+#	mybegin=`    grep -n '^"""'  $FILE | head -1 | cut -f1 -d: `
+#	mybegin=`    grep -n '^=begin'  $FILE | head -1 | cut -f1 -d: `
 	mycopyright=`grep -n Copyright $FILE | head -1 | cut -f1 -d: `
 	myend=`      grep -n '^\*\/$'  $FILE | head -1 | cut -f1 -d: `
-#	myend=`      grep -n '^\*\/$'  $FILE | head -2 | tail -1 |cut -f1 -d: `
+#	myend=`      grep -n '^"""$'  $FILE | head -2 | tail -1 |cut -f1 -d: `
+#	myend=`      grep -n '^=end'  $FILE | head -2 | tail -1 |cut -f1 -d: `
 
 
 	if [ ! x`expr $mybegin + 1` =  x$mycopyright -o $mycopyright -gt $myend ]; then
