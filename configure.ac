@@ -31,6 +31,7 @@ AC_PATH_PROG([SED], [sed])
 AC_PATH_PROG([DOXYGEN], [doxygen])
 AC_PATH_PROG([LATEX], [latex])
 AC_PATH_PROG([PDFLATEX], [pdflatex])
+AC_PATH_PROG([MAKEINDEX], [makeindex])
 AC_PATH_PROG([DVIPS], [dvips])
 
 AC_LANG([C++])
@@ -98,6 +99,44 @@ case $host in
               [Define if running on a Sun Solaris machine.])
     ;;
 esac
+
+# site configuration
+AC_ARG_ENABLE([early-payments],
+              AC_HELP_STRING([--enable-early-payments],
+                             [If enabled (the default), payments are 
+                              considered to be settled at the beginning 
+                              of the day. Therefore, payments occurring 
+                              at today's date are not included in the NPV 
+                              of an instrument.]),
+              [ql_early_payments=$enableval],
+              [ql_early_payments=yes])
+if test "$ql_early_payments" = "no" ; then
+   AC_DEFINE([QL_LATE_PAYMENTS],[1],
+             [Define this if payments occurring today should enter the NPV
+              of an instrument.])
+else
+   AC_DEFINE([QL_EARLY_PAYMENTS],[1],
+             [Define this if payments occurring today should not enter 
+              the NPV of an instrument.])
+fi
+
+AC_ARG_ENABLE([early-swap-payments],
+              AC_HELP_STRING([--enable-early-swap-payments],
+                             [Same as --enable-early-payments.
+                              If given, it overrides the former for
+                              interest rate swaps.]),
+              [ql_early_swap_payments=$enableval])
+if test "$ql_early_swap_payments" = "no" ; then
+   AC_DEFINE([QL_LATE_SWAP_PAYMENTS],[1],
+             [Define this if payments occurring today should enter the NPV
+              of a swap.])
+else
+if test "$ql_early_swap_payments" = "yes" ; then
+   AC_DEFINE([QL_EARLY_SWAP_PAYMENTS],[1],
+             [Define this if payments occurring today should not enter the NPV
+              of a swap.])
+fi
+fi
 
 # done, output the configured files
 AC_CONFIG_FILES([

@@ -4,12 +4,11 @@
 EXTRA_DIST = \
              authors.docs \
              coreclasses.docs \
-			 currencies.docs \
+             currencies.docs \
              datetime.docs \
              examples.docs \
              findiff.docs \
              fixedincome.docs \
-             groups.docs \
              history.docs \
              index.docs \
              install.docs \

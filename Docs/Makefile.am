@@ -14,7 +14,9 @@ EXTRA_DIST = \
              userman.tex \
              README.txt
 
-docs-all: docs-pdf docs-ps
+TEX_PARAMETERS = buf_size=500000 pool_size=512000 extra_mem_top=263000 extra_mem_bot=263000 max_strings=30000 hash_extra=10000
+
+docs-all: docs-ps docs-pdf
 docs-html: docs-html-offline
 docs-html-offline:
 	$(SED) -e "s/_MAN           = NO/_MAN           = YES/" \
@@ -35,14 +37,14 @@ docs-html-online:
 	cp images/*.png html
 	cp images/*.eps latex
 	cp images/*.pdf latex
-docs-ps: tex-files
-	buf_size=500000 pool_size=512000 \
-	extra_mem_top=263000 extra_mem_bot=263000 \
-	max_strings=30000 hash_extra=10000 $(MAKE) -C latex ps
 docs-pdf: tex-files
-	buf_size=500000 pool_size=512000 \
-	extra_mem_top=263000 extra_mem_bot=263000 \
-	max_strings=30000 hash_extra=10000 $(MAKE) -C latex pdf
+	cd latex && $(TEX_PARAMETERS) $(PDFLATEX) refman
+	cd latex && $(MAKEINDEX) refman
+	cd latex && $(TEX_PARAMETERS) $(PDFLATEX) refman
+docs-ps: tex-files
+	cd latex && $(TEX_PARAMETERS) $(LATEX) refman
+	cd latex && $(MAKEINDEX) refman
+	cd latex && $(TEX_PARAMETERS) $(LATEX) refman
 docs-man: docs-html
 docs-clean:
 	rm -Rf man

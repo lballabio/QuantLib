@@ -21,6 +21,10 @@
  The members of the QuantLib Group are listed in the QuantLib License
 */
 
+/*! \example BermudanSwaption.cpp
+    This is an example of using the %QuantLib short rate models.
+*/
+
 /*! \example DiscreteHedging.cpp
     This is an example of using the %QuantLib Monte Carlo framework.
 */

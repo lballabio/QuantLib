@@ -34,8 +34,6 @@ docs-html:
 	$(MAKE) -C Docs docs-html
 docs-html-online:
 	$(MAKE) -C docs-html-online
-docs-ps:
-	$(MAKE) -C docs-ps
 docs-pdf:
 	$(MAKE) -C docs-pdf
 docs-man:

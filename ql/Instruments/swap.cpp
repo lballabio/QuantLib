@@ -27,6 +27,21 @@
 #include <ql/Instruments/swap.hpp>
 #include <ql/CashFlows/coupon.hpp>
 
+/* The following checks whether the user wants coupon payments with
+   date corresponding to the evaluation date to be included in the NPV.
+*/
+#if defined(QL_EARLY_SWAP_PAYMENTS)
+    #define QL_INCLUDE_TODAYS_COUPON 0
+#elif defined(QL_LATE_SWAP_PAYMENTS)
+    #define QL_INCLUDE_TODAYS_COUPON 1
+#elif defined(QL_EARLY_PAYMENTS)
+    #define QL_INCLUDE_TODAYS_COUPON 0
+#elif defined(QL_LATE_PAYMENTS)
+    #define QL_INCLUDE_TODAYS_COUPON 1
+#else
+    #define QL_INCLUDE_TODAYS_COUPON 0
+#endif
+
 namespace QuantLib {
 
     using CashFlows::Coupon;
@@ -59,7 +74,11 @@ namespace QuantLib {
             // subtract first leg cash flows and BPS
             for (Size i=0; i<firstLeg_.size(); i++) {
                 Date cashFlowDate = firstLeg_[i]->date();
+                #if QL_INCLUDE_TODAYS_COUPON
                 if (cashFlowDate >= settlement) {
+                #else
+                if (cashFlowDate > settlement) {
+                #endif
                     isExpired_ = false;  // keeping track of whether this
                                          // was already set isn't worth the
                                          // effort
