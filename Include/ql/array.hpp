@@ -6,7 +6,7 @@
  * QuantLib is a C++ open source library for financial quantitative
  * analysts and developers --- http://quantlib.org/
  *
- * QuantLib is free software and you are allowed to use, copy, modify, merge,
+ * QuantLib is free software and you are allowed to use, copy_, modify, merge,
  * publish, distribute, and/or sell copies of it under the conditions stated
  * in the QuantLib License.
  *
@@ -14,7 +14,7 @@
  * WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
  * or FITNESS FOR A PARTICULAR PURPOSE. See the license for more details.
  *
- * You should have received a copy of the license along with this file;
+ * You should have received a copy_ of the license along with this file;
  * if not, please email quantlib-users@lists.sourceforge.net
  * The license is also available at http://quantlib.org/LICENSE.TXT
  *
@@ -30,6 +30,9 @@
 
 // $Id$
 // $Log$
+// Revision 1.14  2001/08/28 10:22:01  nando
+// added trailing underscore to private members
+//
 // Revision 1.13  2001/08/22 13:58:37  nando
 // typo fixed
 //
@@ -94,14 +97,14 @@ namespace QuantLib {
         Array(const Array& from);
         #if QL_EXPRESSION_TEMPLATES_WORK
         template <class Iter> Array(const VectorialExpression<Iter>& e)
-        : pointer(0), n(0), bufferSize(0) { allocate(e.size()); copy(e); }
+        : pointer_(0), n_(0), bufferSize_(0) { allocate_(e.size()); copy_(e); }
         #endif
         ~Array();
         Array& operator=(const Array& from);
         #if QL_EXPRESSION_TEMPLATES_WORK
         template <class Iter> Array& operator=(
           const VectorialExpression<Iter>& e) {
-            resize(e.size()); copy(e); return *this;
+            resize_(e.size()); copy_(e); return *this;
         }
         #endif
         //@}
@@ -201,13 +204,13 @@ namespace QuantLib {
         reverse_iterator rend();
         //@}
       private:
-        void allocate(int size);
-        void resize(int size);
-        void copy(const Array& from) {
+        void allocate_(int size);
+        void resize_(int size);
+        void copy_(const Array& from) {
             std::copy(from.begin(),from.end(),begin());
         }
         #if QL_EXPRESSION_TEMPLATES_WORK
-        template <class Iter> void copy(
+        template <class Iter> void copy_(
           const VectorialExpression<Iter>& e) {
             iterator i = begin(), j = end();
             while (i != j) {
@@ -216,8 +219,8 @@ namespace QuantLib {
             }
         }
         #endif
-        double* pointer;
-        int n, bufferSize;
+        double* pointer_;
+        int n_, bufferSize_;
     };
 
     /*! \relates Array */
@@ -519,50 +522,50 @@ namespace QuantLib {
     // inline definitions
 
     inline Array::Array(int size)
-    : pointer(0), n(0), bufferSize(0) {
+    : pointer_(0), n_(0), bufferSize_(0) {
         if (size > 0)
-            allocate(size);
+            allocate_(size);
     }
 
     inline Array::Array(int size, double value)
-    : pointer(0), n(0), bufferSize(0) {
+    : pointer_(0), n_(0), bufferSize_(0) {
         if (size > 0)
-            allocate(size);
+            allocate_(size);
         std::fill(begin(),end(),value);
     }
 
     inline Array::Array(int size, double value, double increment)
-    : pointer(0), n(0), bufferSize(0) {
+    : pointer_(0), n_(0), bufferSize_(0) {
         if (size > 0)
-            allocate(size);
+            allocate_(size);
         for (iterator i=begin(); i!=end(); i++,value+=increment)
             *i = value;
     }
 
     inline Array::Array(const Array& from)
-    : pointer(0), n(0), bufferSize(0) {
-        allocate(from.size());
-        copy(from);
+    : pointer_(0), n_(0), bufferSize_(0) {
+        allocate_(from.size());
+        copy_(from);
     }
 
     inline Array::~Array() {
-        if (pointer != 0 && bufferSize != 0)
-            delete[] pointer;
-        pointer = 0;
-        n = bufferSize = 0;
+        if (pointer_ != 0 && bufferSize_ != 0)
+            delete[] pointer_;
+        pointer_ = 0;
+        n_ = bufferSize_ = 0;
     }
 
     inline Array& Array::operator=(const Array& from) {
         if (this != &from) {
-            resize(from.size());
-            copy(from);
+            resize_(from.size());
+            copy_(from);
         }
         return *this;
     }
 
     inline Array& Array::operator+=(const Array& v) {
         #ifdef QL_DEBUG
-            QL_REQUIRE(n == v.n,
+            QL_REQUIRE(n_ == v.n_,
                 "arrays with different sizes cannot be added");
         #endif
         std::transform(begin(),end(),v.begin(),begin(),std::plus<double>());
@@ -577,7 +580,7 @@ namespace QuantLib {
 
     inline Array& Array::operator-=(const Array& v) {
         #ifdef QL_DEBUG
-            QL_REQUIRE(n == v.n,
+            QL_REQUIRE(n_ == v.n_,
                 "arrays with different sizes cannot be subtracted");
         #endif
         std::transform(begin(),end(),v.begin(),begin(),
@@ -593,7 +596,7 @@ namespace QuantLib {
 
     inline Array& Array::operator*=(const Array& v) {
         #ifdef QL_DEBUG
-            QL_REQUIRE(n == v.n,
+            QL_REQUIRE(n_ == v.n_,
                 "arrays with different sizes cannot be multiplied");
         #endif
         std::transform(begin(),end(),v.begin(),begin(),
@@ -609,7 +612,7 @@ namespace QuantLib {
 
     inline Array& Array::operator/=(const Array& v) {
         #ifdef QL_DEBUG
-            QL_REQUIRE(n == v.n,
+            QL_REQUIRE(n_ == v.n_,
                 "arrays with different sizes cannot be divided");
         #endif
         std::transform(begin(),end(),v.begin(),begin(),
@@ -625,51 +628,51 @@ namespace QuantLib {
 
     inline double Array::operator[](int i) const {
         #ifdef QL_DEBUG
-            QL_REQUIRE(i>=0 && i<n,
+            QL_REQUIRE(i>=0 && i<n_,
                 "array cannot be accessed out of range");
         #endif
-        return pointer[i];
+        return pointer_[i];
     }
 
     inline double& Array::operator[](int i) {
         #ifdef QL_DEBUG
-            QL_REQUIRE(i>=0 && i<n,
+            QL_REQUIRE(i>=0 && i<n_,
                 "array cannot be accessed out of range");
         #endif
-        return pointer[i];
+        return pointer_[i];
     }
 
     inline int Array::size() const {
-        return n;
+        return n_;
     }
 
-    inline void Array::resize(int size) {
-        if (size != n) {
-            if (size <= bufferSize) {
-                n = size;
+    inline void Array::resize_(int size) {
+        if (size != n_) {
+            if (size <= bufferSize_) {
+                n_ = size;
             } else {
                 Array temp(size);
                 std::copy(begin(),end(),temp.begin());
-                allocate(size);
-                copy(temp);
+                allocate_(size);
+                copy_(temp);
             }
         }
     }
 
     inline Array::const_iterator Array::begin() const {
-        return pointer;
+        return pointer_;
     }
 
     inline Array::iterator Array::begin() {
-        return pointer;
+        return pointer_;
     }
 
     inline Array::const_iterator Array::end() const {
-        return pointer+n;
+        return pointer_+n_;
     }
 
     inline Array::iterator Array::end() {
-        return pointer+n;
+        return pointer_+n_;
     }
 
     inline Array::const_reverse_iterator Array::rbegin() const {
@@ -688,30 +691,30 @@ namespace QuantLib {
         return reverse_iterator(begin());
     }
 
-    inline void Array::allocate(int size) {
-        if (pointer != 0 && bufferSize != 0)
-            delete[] pointer;
+    inline void Array::allocate_(int size) {
+        if (pointer_ != 0 && bufferSize_ != 0)
+            delete[] pointer_;
         if (size <= 0) {
-            pointer = 0;
+            pointer_ = 0;
         } else {
-            n = size;
-            bufferSize = size+size/10+10;
+            n_ = size;
+            bufferSize_ = size+size/10+10;
             try {
-                pointer = new double[bufferSize];
+                pointer_ = new double[bufferSize_];
             }
             catch (...) {
-                pointer = 0;
+                pointer_ = 0;
             }
-            if (pointer == 0) {
-                n = bufferSize = size;
+            if (pointer_ == 0) {
+                n_ = bufferSize_ = size;
                 try {
-                    pointer = new double[bufferSize];
+                    pointer_ = new double[bufferSize_];
                 }
                 catch (...) {
-                    pointer = 0;
+                    pointer_ = 0;
                 }
-                if (pointer == 0) {
-                    n = bufferSize = 0;
+                if (pointer_ == 0) {
+                    n_ = bufferSize_ = 0;
                     throw OutOfMemoryError("Array");
                 }
             }
