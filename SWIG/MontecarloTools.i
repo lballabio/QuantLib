@@ -25,9 +25,12 @@
 	$Source$
 	$Name$
 	$Log$
+	Revision 1.2  2001/02/13 10:08:58  marmar
+	Changed interface to StandardMultiPathGenerator
+
 	Revision 1.1  2001/02/02 10:57:34  marmar
 	Basic swig interface for Monte Carlo tools
-
+	
 */
 
 #ifndef shaft_Montecarlo_Tools_i
@@ -50,7 +53,8 @@ using QuantLib::MonteCarlo::GaussianArrayGenerator;
 class GaussianArrayGenerator{
     public:
 	GaussianArrayGenerator(const PyArray &average,
-                               const Matrix &covariance, long seed=0);
+                           const Matrix &covariance, 
+                           long seed=0);
 	PyArray next() const;
 	double weight() const;
 };
@@ -62,8 +66,10 @@ using QuantLib::MonteCarlo::StandardMultiPathGenerator;
 
 class StandardMultiPathGenerator{
     public:
-	StandardMultiPathGenerator(int timeDimension, const PyArray &average,
-                               const Matrix &covariance, long seed=0);
+	StandardMultiPathGenerator(const DoubleVector &timeDelays, 
+	                           const PyArray &average, 
+                               const Matrix &covariance,
+                               long seed=0);
 	Matrix next() const;
 	double weight() const;
 };
