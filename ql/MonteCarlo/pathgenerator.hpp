@@ -172,7 +172,7 @@ namespace QuantLib {
             next_.value.drift()[0] = dt * 
                 diffProcess_->drift(t, asset_);
             next_.value.diffusion()[0] = - stdDev_.value[0];
-            for (Size i=0; i<next_.value.size(); i++) {
+            for (Size i=1; i<next_.value.size(); i++) {
                 t = timeGrid_[i+1];
                 dt = timeGrid_.dt(i);
                 next_.value.drift()[i] = dt * 
