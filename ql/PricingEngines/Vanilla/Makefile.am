@@ -15,6 +15,7 @@ libVanillaEngines_la_SOURCES = \
     americanmcengines.cpp \
     analyticamericanengine.cpp \
     analyticeuropeanengine.cpp \
+    baroneadesiwhaleyengine.cpp \
     discretizedvanillaoption.cpp \
     integralengines.cpp
 

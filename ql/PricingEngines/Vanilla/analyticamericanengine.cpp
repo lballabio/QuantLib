@@ -29,8 +29,6 @@ namespace QuantLib {
                    "AnalyticAmericanEngine::calculate() : "
                    "not an American Option");
 
-/* it doesn't compile :(
-
         #if defined(HAVE_BOOST)
         Handle<AmericanExercise> ex = 
             boost::dynamic_pointer_cast<AmericanExercise>(arguments_.exercise);
@@ -42,7 +40,7 @@ namespace QuantLib {
         QL_REQUIRE(!ex->payoffAtExpiry(),
                    "AnalyticAmericanEngine::calculate() : "
                    "payoff at expiry not handled yet");
-*/
+
 
         #if defined(HAVE_BOOST)
         Handle<CashOrNothingPayoff> payoff = 

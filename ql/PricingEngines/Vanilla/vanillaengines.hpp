@@ -51,6 +51,14 @@ namespace QuantLib {
         void calculate() const;
     };
 
+    /*! Pricing engine for American vanilla options with 
+        Barone-Adesi and Whaley approximation (1987)
+    */
+    class BaroneAdesiWhaleyApproximationEngine : public VanillaEngine {
+      public:
+        void calculate() const;
+    };
+
     //! Pricing engine for European vanilla options using integral approach
     class IntegralEngine : public VanillaEngine {
       public:
