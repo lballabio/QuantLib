@@ -92,6 +92,8 @@ CLEAN :
 	-@erase "$(INTDIR)\binomialtree.sbr"
 	-@erase "$(INTDIR)\bivariatenormaldistribution.obj"
 	-@erase "$(INTDIR)\bivariatenormaldistribution.sbr"
+	-@erase "$(INTDIR)\bjerksundstenslandengine.obj"
+	-@erase "$(INTDIR)\bjerksundstenslandengine.sbr"
 	-@erase "$(INTDIR)\blackcapfloor.obj"
 	-@erase "$(INTDIR)\blackcapfloor.sbr"
 	-@erase "$(INTDIR)\blackkarasinski.obj"
@@ -146,6 +148,8 @@ CLEAN :
 	-@erase "$(INTDIR)\daycounters.sbr"
 	-@erase "$(INTDIR)\diffusionprocess.obj"
 	-@erase "$(INTDIR)\diffusionprocess.sbr"
+	-@erase "$(INTDIR)\digitalpathpricer.obj"
+	-@erase "$(INTDIR)\digitalpathpricer.sbr"
 	-@erase "$(INTDIR)\discountcurve.obj"
 	-@erase "$(INTDIR)\discountcurve.sbr"
 	-@erase "$(INTDIR)\discrepancystatistics.obj"
@@ -519,6 +523,8 @@ BSC32_SBRS= \
 	"$(INTDIR)\americanmcengines.sbr" \
 	"$(INTDIR)\analyticamericanengine.sbr" \
 	"$(INTDIR)\analyticeuropeanengine.sbr" \
+	"$(INTDIR)\baroneadesiwhaleyengine.sbr" \
+	"$(INTDIR)\bjerksundstenslandengine.sbr" \
 	"$(INTDIR)\discretizedvanillaoption.sbr" \
 	"$(INTDIR)\integralengines.sbr" \
 	"$(INTDIR)\haltonrsg.sbr" \
@@ -559,7 +565,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\grid.sbr" \
 	"$(INTDIR)\scheduler.sbr" \
 	"$(INTDIR)\voltermstructure.sbr" \
-	"$(INTDIR)\baroneadesiwhaleyengine.sbr"
+	"$(INTDIR)\digitalpathpricer.sbr"
 
 "$(OUTDIR)\QuantLib.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -697,6 +703,8 @@ LIB32_OBJS= \
 	"$(INTDIR)\americanmcengines.obj" \
 	"$(INTDIR)\analyticamericanengine.obj" \
 	"$(INTDIR)\analyticeuropeanengine.obj" \
+	"$(INTDIR)\baroneadesiwhaleyengine.obj" \
+	"$(INTDIR)\bjerksundstenslandengine.obj" \
 	"$(INTDIR)\discretizedvanillaoption.obj" \
 	"$(INTDIR)\integralengines.obj" \
 	"$(INTDIR)\haltonrsg.obj" \
@@ -737,7 +745,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\grid.obj" \
 	"$(INTDIR)\scheduler.obj" \
 	"$(INTDIR)\voltermstructure.obj" \
-	"$(INTDIR)\baroneadesiwhaleyengine.obj"
+	"$(INTDIR)\digitalpathpricer.obj"
 
 ".\lib\Win32\VisualStudio\QuantLib.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
    if not exist lib\Win32\VisualStudio mkdir lib\Win32\VisualStudio
@@ -809,6 +817,8 @@ CLEAN :
 	-@erase "$(INTDIR)\binomialtree.sbr"
 	-@erase "$(INTDIR)\bivariatenormaldistribution.obj"
 	-@erase "$(INTDIR)\bivariatenormaldistribution.sbr"
+	-@erase "$(INTDIR)\bjerksundstenslandengine.obj"
+	-@erase "$(INTDIR)\bjerksundstenslandengine.sbr"
 	-@erase "$(INTDIR)\blackcapfloor.obj"
 	-@erase "$(INTDIR)\blackcapfloor.sbr"
 	-@erase "$(INTDIR)\blackkarasinski.obj"
@@ -863,6 +873,8 @@ CLEAN :
 	-@erase "$(INTDIR)\daycounters.sbr"
 	-@erase "$(INTDIR)\diffusionprocess.obj"
 	-@erase "$(INTDIR)\diffusionprocess.sbr"
+	-@erase "$(INTDIR)\digitalpathpricer.obj"
+	-@erase "$(INTDIR)\digitalpathpricer.sbr"
 	-@erase "$(INTDIR)\discountcurve.obj"
 	-@erase "$(INTDIR)\discountcurve.sbr"
 	-@erase "$(INTDIR)\discrepancystatistics.obj"
@@ -1237,6 +1249,8 @@ BSC32_SBRS= \
 	"$(INTDIR)\americanmcengines.sbr" \
 	"$(INTDIR)\analyticamericanengine.sbr" \
 	"$(INTDIR)\analyticeuropeanengine.sbr" \
+	"$(INTDIR)\baroneadesiwhaleyengine.sbr" \
+	"$(INTDIR)\bjerksundstenslandengine.sbr" \
 	"$(INTDIR)\discretizedvanillaoption.sbr" \
 	"$(INTDIR)\integralengines.sbr" \
 	"$(INTDIR)\haltonrsg.sbr" \
@@ -1277,7 +1291,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\grid.sbr" \
 	"$(INTDIR)\scheduler.sbr" \
 	"$(INTDIR)\voltermstructure.sbr" \
-	"$(INTDIR)\baroneadesiwhaleyengine.sbr"
+	"$(INTDIR)\digitalpathpricer.sbr"
 
 "$(OUTDIR)\QuantLib.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -1415,6 +1429,8 @@ LIB32_OBJS= \
 	"$(INTDIR)\americanmcengines.obj" \
 	"$(INTDIR)\analyticamericanengine.obj" \
 	"$(INTDIR)\analyticeuropeanengine.obj" \
+	"$(INTDIR)\baroneadesiwhaleyengine.obj" \
+	"$(INTDIR)\bjerksundstenslandengine.obj" \
 	"$(INTDIR)\discretizedvanillaoption.obj" \
 	"$(INTDIR)\integralengines.obj" \
 	"$(INTDIR)\haltonrsg.obj" \
@@ -1455,7 +1471,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\grid.obj" \
 	"$(INTDIR)\scheduler.obj" \
 	"$(INTDIR)\voltermstructure.obj" \
-	"$(INTDIR)\baroneadesiwhaleyengine.obj"
+	"$(INTDIR)\digitalpathpricer.obj"
 
 ".\lib\Win32\VisualStudio\QuantLib_d.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
    if not exist lib\Win32\VisualStudio mkdir lib\Win32\VisualStudio
@@ -1527,6 +1543,8 @@ CLEAN :
 	-@erase "$(INTDIR)\binomialtree.sbr"
 	-@erase "$(INTDIR)\bivariatenormaldistribution.obj"
 	-@erase "$(INTDIR)\bivariatenormaldistribution.sbr"
+	-@erase "$(INTDIR)\bjerksundstenslandengine.obj"
+	-@erase "$(INTDIR)\bjerksundstenslandengine.sbr"
 	-@erase "$(INTDIR)\blackcapfloor.obj"
 	-@erase "$(INTDIR)\blackcapfloor.sbr"
 	-@erase "$(INTDIR)\blackkarasinski.obj"
@@ -1581,6 +1599,8 @@ CLEAN :
 	-@erase "$(INTDIR)\daycounters.sbr"
 	-@erase "$(INTDIR)\diffusionprocess.obj"
 	-@erase "$(INTDIR)\diffusionprocess.sbr"
+	-@erase "$(INTDIR)\digitalpathpricer.obj"
+	-@erase "$(INTDIR)\digitalpathpricer.sbr"
 	-@erase "$(INTDIR)\discountcurve.obj"
 	-@erase "$(INTDIR)\discountcurve.sbr"
 	-@erase "$(INTDIR)\discrepancystatistics.obj"
@@ -1954,6 +1974,8 @@ BSC32_SBRS= \
 	"$(INTDIR)\americanmcengines.sbr" \
 	"$(INTDIR)\analyticamericanengine.sbr" \
 	"$(INTDIR)\analyticeuropeanengine.sbr" \
+	"$(INTDIR)\baroneadesiwhaleyengine.sbr" \
+	"$(INTDIR)\bjerksundstenslandengine.sbr" \
 	"$(INTDIR)\discretizedvanillaoption.sbr" \
 	"$(INTDIR)\integralengines.sbr" \
 	"$(INTDIR)\haltonrsg.sbr" \
@@ -1994,7 +2016,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\grid.sbr" \
 	"$(INTDIR)\scheduler.sbr" \
 	"$(INTDIR)\voltermstructure.sbr" \
-	"$(INTDIR)\baroneadesiwhaleyengine.sbr"
+	"$(INTDIR)\digitalpathpricer.sbr"
 
 "$(OUTDIR)\QuantLib.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -2132,6 +2154,8 @@ LIB32_OBJS= \
 	"$(INTDIR)\americanmcengines.obj" \
 	"$(INTDIR)\analyticamericanengine.obj" \
 	"$(INTDIR)\analyticeuropeanengine.obj" \
+	"$(INTDIR)\baroneadesiwhaleyengine.obj" \
+	"$(INTDIR)\bjerksundstenslandengine.obj" \
 	"$(INTDIR)\discretizedvanillaoption.obj" \
 	"$(INTDIR)\integralengines.obj" \
 	"$(INTDIR)\haltonrsg.obj" \
@@ -2172,7 +2196,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\grid.obj" \
 	"$(INTDIR)\scheduler.obj" \
 	"$(INTDIR)\voltermstructure.obj" \
-	"$(INTDIR)\baroneadesiwhaleyengine.obj"
+	"$(INTDIR)\digitalpathpricer.obj"
 
 ".\lib\Win32\VisualStudio\QuantLib_MTDLL.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
    if not exist lib\Win32\VisualStudio mkdir lib\Win32\VisualStudio
@@ -2244,6 +2268,8 @@ CLEAN :
 	-@erase "$(INTDIR)\binomialtree.sbr"
 	-@erase "$(INTDIR)\bivariatenormaldistribution.obj"
 	-@erase "$(INTDIR)\bivariatenormaldistribution.sbr"
+	-@erase "$(INTDIR)\bjerksundstenslandengine.obj"
+	-@erase "$(INTDIR)\bjerksundstenslandengine.sbr"
 	-@erase "$(INTDIR)\blackcapfloor.obj"
 	-@erase "$(INTDIR)\blackcapfloor.sbr"
 	-@erase "$(INTDIR)\blackkarasinski.obj"
@@ -2298,6 +2324,8 @@ CLEAN :
 	-@erase "$(INTDIR)\daycounters.sbr"
 	-@erase "$(INTDIR)\diffusionprocess.obj"
 	-@erase "$(INTDIR)\diffusionprocess.sbr"
+	-@erase "$(INTDIR)\digitalpathpricer.obj"
+	-@erase "$(INTDIR)\digitalpathpricer.sbr"
 	-@erase "$(INTDIR)\discountcurve.obj"
 	-@erase "$(INTDIR)\discountcurve.sbr"
 	-@erase "$(INTDIR)\discrepancystatistics.obj"
@@ -2672,6 +2700,8 @@ BSC32_SBRS= \
 	"$(INTDIR)\americanmcengines.sbr" \
 	"$(INTDIR)\analyticamericanengine.sbr" \
 	"$(INTDIR)\analyticeuropeanengine.sbr" \
+	"$(INTDIR)\baroneadesiwhaleyengine.sbr" \
+	"$(INTDIR)\bjerksundstenslandengine.sbr" \
 	"$(INTDIR)\discretizedvanillaoption.sbr" \
 	"$(INTDIR)\integralengines.sbr" \
 	"$(INTDIR)\haltonrsg.sbr" \
@@ -2712,7 +2742,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\grid.sbr" \
 	"$(INTDIR)\scheduler.sbr" \
 	"$(INTDIR)\voltermstructure.sbr" \
-	"$(INTDIR)\baroneadesiwhaleyengine.sbr"
+	"$(INTDIR)\digitalpathpricer.sbr"
 
 "$(OUTDIR)\QuantLib.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -2850,6 +2880,8 @@ LIB32_OBJS= \
 	"$(INTDIR)\americanmcengines.obj" \
 	"$(INTDIR)\analyticamericanengine.obj" \
 	"$(INTDIR)\analyticeuropeanengine.obj" \
+	"$(INTDIR)\baroneadesiwhaleyengine.obj" \
+	"$(INTDIR)\bjerksundstenslandengine.obj" \
 	"$(INTDIR)\discretizedvanillaoption.obj" \
 	"$(INTDIR)\integralengines.obj" \
 	"$(INTDIR)\haltonrsg.obj" \
@@ -2890,7 +2922,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\grid.obj" \
 	"$(INTDIR)\scheduler.obj" \
 	"$(INTDIR)\voltermstructure.obj" \
-	"$(INTDIR)\baroneadesiwhaleyengine.obj"
+	"$(INTDIR)\digitalpathpricer.obj"
 
 ".\lib\Win32\VisualStudio\QuantLib_MTDLL_d.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
    if not exist lib\Win32\VisualStudio mkdir lib\Win32\VisualStudio
@@ -3405,6 +3437,12 @@ SOURCE=.\ql\MonteCarlo\cliquetoptionpathpricer.cpp
 	$(CPP) $(CPP_PROJ) $(SOURCE)
 
 
+SOURCE=.\ql\MonteCarlo\digitalpathpricer.cpp
+
+"$(INTDIR)\digitalpathpricer.obj"	"$(INTDIR)\digitalpathpricer.sbr" : $(SOURCE) "$(INTDIR)"
+	$(CPP) $(CPP_PROJ) $(SOURCE)
+
+
 SOURCE=.\ql\MonteCarlo\europeanpathpricer.cpp
 
 "$(INTDIR)\europeanpathpricer.obj"	"$(INTDIR)\europeanpathpricer.sbr" : $(SOURCE) "$(INTDIR)"
@@ -3752,6 +3790,12 @@ SOURCE=.\ql\PricingEngines\Vanilla\analyticeuropeanengine.cpp
 SOURCE=.\ql\PricingEngines\Vanilla\baroneadesiwhaleyengine.cpp
 
 "$(INTDIR)\baroneadesiwhaleyengine.obj"	"$(INTDIR)\baroneadesiwhaleyengine.sbr" : $(SOURCE) "$(INTDIR)"
+	$(CPP) $(CPP_PROJ) $(SOURCE)
+
+
+SOURCE=.\ql\PricingEngines\Vanilla\bjerksundstenslandengine.cpp
+
+"$(INTDIR)\bjerksundstenslandengine.obj"	"$(INTDIR)\bjerksundstenslandengine.sbr" : $(SOURCE) "$(INTDIR)"
 	$(CPP) $(CPP_PROJ) $(SOURCE)
 
 

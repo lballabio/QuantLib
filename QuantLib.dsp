@@ -1059,6 +1059,14 @@ SOURCE=.\ql\MonteCarlo\cliquetoptionpathpricer.hpp
 # End Source File
 # Begin Source File
 
+SOURCE=.\ql\MonteCarlo\digitalpathpricer.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\MonteCarlo\digitalpathpricer.hpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\ql\MonteCarlo\europeanpathpricer.cpp
 # End Source File
 # Begin Source File
@@ -1634,6 +1642,10 @@ SOURCE=.\ql\PricingEngines\Vanilla\baroneadesiwhaleyengine.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=.\ql\PricingEngines\Vanilla\bjerksundstenslandengine.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\ql\PricingEngines\Vanilla\discretizedvanillaoption.cpp
 # End Source File
 # Begin Source File
@@ -1643,6 +1655,10 @@ SOURCE=.\ql\PricingEngines\Vanilla\discretizedvanillaoption.hpp
 # Begin Source File
 
 SOURCE=.\ql\PricingEngines\Vanilla\integralengines.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\PricingEngines\Vanilla\mcdigitalengine.hpp
 # End Source File
 # Begin Source File
 
