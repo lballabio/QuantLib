@@ -2,31 +2,12 @@
 # $Id$
 # $Source$
 # $Log$
+# Revision 1.19  2001/08/23 11:22:17  nando
+# Win32 documentation installer
+#
 # Revision 1.18  2001/08/23 08:42:57  lballabio
 # A few fixes for making docs on Linux
 #
-# Revision 1.17  2001/08/22 17:54:35  lballabio
-# Documentation revamped
-#
-# Revision 1.16  2001/07/26 08:27:00  nando
-# wrong path bug fixed
-#
-# Revision 1.15  2001/07/24 16:59:33  nando
-# documentation revised
-#
-# Revision 1.14  2001/07/23 08:30:05  lballabio
-# Fixed indentation
-#
-# Revision 1.13  2001/07/19 16:40:10  lballabio
-# Improved docs a bit
-#
-# Revision 1.12  2001/06/25 11:22:11  enri
-# dist target fixed
-#
-# Revision 1.11  2001/06/25 10:04:01  nando
-# R019-branch-merge5 merged into trunk
-#
-
 EXTRA_DIST = makefile.mak \
              groups.docs \
              index.docs \
@@ -41,6 +22,7 @@ EXTRA_DIST = makefile.mak \
              quantlibheader.html \
              quantlibfooter.html \
              quantlibheader.tex \
+             QuantLib-docs.nsi \
              README.txt
 
 docs-all: docs-pdf
