@@ -69,34 +69,24 @@ namespace QuantLib {
     }
 
 
-    double BlackVarianceSurface::blackVarianceImpl(Time t, double strike,
-                                                   bool extrapolate) const {
+    double BlackVarianceSurface::blackVarianceImpl(Time t, double strike) 
+                                                                      const {
 
         if (t==0.0) return 0.0;
 
         // enforce constant extrapolation when required
-        if (strike < strikes_.front() && strike < strikes_.back()
-            && extrapolate
+        if (strike < strikes_.front() 
             && lowerExtrapolation_ == ConstantExtrapolation)
             strike = strikes_.front();
-        if (strike > strikes_.back() && strike > strikes_.front()
-            && extrapolate
+        if (strike > strikes_.back()
             && upperExtrapolation_ == ConstantExtrapolation)
             strike = strikes_.back();
 
-        QL_REQUIRE(t>0.0,
-                   "negative time (" + DoubleFormatter::toString(t) +
-                   ") not allowed");
         if (t<=times_.back())
-            return varianceSurface_(t, strike, extrapolate);
+            return varianceSurface_(t, strike, true);
         else // t>times_.back() || extrapolate
-            QL_REQUIRE(extrapolate,
-                       "time (" + DoubleFormatter::toString(t) +
-                       ") greater than max time (" +
-                       DoubleFormatter::toString(times_.back()) +
-                       ")");
-        return varianceSurface_(times_.back(), strike, extrapolate)*
-            t/times_.back();
+            return varianceSurface_(times_.back(), strike, true) *
+                t/times_.back();
     }
 
 }

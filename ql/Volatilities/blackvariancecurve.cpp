@@ -62,23 +62,12 @@ namespace QuantLib {
         #endif
     }
 
-    double BlackVarianceCurve::blackVarianceImpl(Time t, double,
-                                                 bool extrapolate) const {
-
-        QL_REQUIRE(t>=0.0,
-                   "negative time (" + DoubleFormatter::toString(t) +
-                   ") not allowed");
-
+    double BlackVarianceCurve::blackVarianceImpl(Time t, double) const {
         if (t<=times_.back()) {
-            return varianceCurve_(t, extrapolate);
-        // for later times extrapolate with flat vol
-        } else { // t>times_.back() || extrapolate
-            QL_REQUIRE(extrapolate,
-                       "time (" + DoubleFormatter::toString(t) +
-                       ") greater than max time (" +
-                       DoubleFormatter::toString(times_.back()) +
-                       ")");
-            return varianceCurve_(times_.back(), extrapolate)*t/times_.back();
+            return varianceCurve_(t, true);
+        } else {
+            // extrapolate with flat vol
+            return varianceCurve_(times_.back(), true)*t/times_.back();
         }
     }
 

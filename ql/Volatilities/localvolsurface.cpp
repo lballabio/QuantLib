@@ -56,12 +56,12 @@ namespace QuantLib {
             LocalVolTermStructure::accept(v);
     }
 
-    double LocalVolSurface::localVolImpl(Time t, double underlyingLevel, 
-                                         bool extrapolate) const {
+    double LocalVolSurface::localVolImpl(Time t, double underlyingLevel) 
+                                                                     const {
 
         double forwardValue = underlying_->value() *
-            (dividendTS_->discount(t, extrapolate)/
-             riskFreeTS_->discount(t, extrapolate));
+            (dividendTS_->discount(t, true)/
+             riskFreeTS_->discount(t, true));
 
         // strike derivatives
         double strike, y, dy, strikep, strikem;
@@ -71,7 +71,7 @@ namespace QuantLib {
         dy = ((y!=0.0) ? y*0.000001 : 0.000001);
         strikep=strike*QL_EXP(dy);
         strikem=strike/QL_EXP(dy);
-        w  = blackTS_->blackVariance(t, strike,  extrapolate);
+        w  = blackTS_->blackVariance(t, strike,  true);
         wp = blackTS_->blackVariance(t, strikep, true);
         wm = blackTS_->blackVariance(t, strikem, true);
         dwdy = (wp-wm)/(2.0*dy);
@@ -82,32 +82,32 @@ namespace QuantLib {
         if (t==0.0) {
             dt = 0.0001;
             wpt = blackTS_->blackVariance(t+dt, strike, true);
-            QL_REQUIRE(wpt>=w,
-                       "decreasing variance at strike "
-                       + DoubleFormatter::toString(strike) +
-                       " between time "
-                       + DoubleFormatter::toString(t) +
-                       " and time "
-                       + DoubleFormatter::toString(t+dt));
+            QL_ENSURE(wpt>=w,
+                      "decreasing variance at strike "
+                      + DoubleFormatter::toString(strike) +
+                      " between time "
+                      + DoubleFormatter::toString(t) +
+                      " and time "
+                      + DoubleFormatter::toString(t+dt));
             dwdt = (wpt-w)/dt;
         } else {
             dt = QL_MIN(0.0001, t/2.0);
             wpt = blackTS_->blackVariance(t+dt, strike, true);
             wmt = blackTS_->blackVariance(t-dt, strike, true);
-            QL_REQUIRE(wpt>=w,
-                       "decreasing variance at strike "
-                       + DoubleFormatter::toString(strike) +
-                       " between time "
-                       + DoubleFormatter::toString(t) +
-                       " and time "
-                       + DoubleFormatter::toString(t+dt));
-            QL_REQUIRE(w>=wmt,
-                       "decreasing variance at strike "
-                       + DoubleFormatter::toString(strike) +
-                       " between time "
-                       + DoubleFormatter::toString(t-dt) +
-                       " and time "
-                       + DoubleFormatter::toString(t));
+            QL_ENSURE(wpt>=w,
+                      "decreasing variance at strike "
+                      + DoubleFormatter::toString(strike) +
+                      " between time "
+                      + DoubleFormatter::toString(t) +
+                      " and time "
+                      + DoubleFormatter::toString(t+dt));
+            QL_ENSURE(w>=wmt,
+                      "decreasing variance at strike "
+                      + DoubleFormatter::toString(strike) +
+                      " between time "
+                      + DoubleFormatter::toString(t-dt) +
+                      " and time "
+                      + DoubleFormatter::toString(t));
             dwdt = (wpt-wmt)/(2.0*dt);
         }
 
@@ -119,12 +119,12 @@ namespace QuantLib {
             double den3 = 0.5*d2wdy2;
             double den = den1+den2+den3;
             double result = dwdt / den;
-            QL_REQUIRE(result>=0.0,
-                       "negative local vol^2 at strike "
-                       + DoubleFormatter::toString(strike) +
-                       " and time "
-                       + DoubleFormatter::toString(t) +
-                       "; the black vol surface is not smooth enough");
+            QL_ENSURE(result>=0.0,
+                      "negative local vol^2 at strike "
+                      + DoubleFormatter::toString(strike) +
+                      " and time "
+                      + DoubleFormatter::toString(t) +
+                      "; the black vol surface is not smooth enough");
             return QL_SQRT(result);
             // return QL_SQRT(dwdt / (1.0 - y/w*dwdy +
             //    0.25*(-0.25 - 1.0/w + y*y/w/w)*dwdy*dwdy + 0.5*d2wdy2));

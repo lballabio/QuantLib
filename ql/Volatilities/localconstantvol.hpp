@@ -47,6 +47,8 @@ namespace QuantLib {
         Date referenceDate() const { return referenceDate_; }
         DayCounter dayCounter() const { return dayCounter_; }
         Date maxDate() const { return Date::maxDate(); }
+        double minStrike() const { return QL_MIN_DOUBLE; }
+        double maxStrike() const { return QL_MAX_DOUBLE; }
         //@}
         //! \name Observer interface
         //@{
@@ -57,7 +59,7 @@ namespace QuantLib {
         virtual void accept(AcyclicVisitor&);
         //@}
       private:
-        double localVolImpl(Time,double,bool extrapolate) const;
+        double localVolImpl(Time, double) const;
         Date referenceDate_;
         RelinkableHandle<Quote> volatility_;
         DayCounter dayCounter_;
@@ -95,11 +97,10 @@ namespace QuantLib {
             LocalVolTermStructure::accept(v);
     }
 
-    inline double LocalConstantVol::localVolImpl(Time t, double, 
-                                                 bool) const {
-        QL_REQUIRE(t >= 0.0, "negative time given");
+    inline double LocalConstantVol::localVolImpl(Time t, double) const {
         return volatility_->value();
     }
+
 }
 
 

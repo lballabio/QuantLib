@@ -58,6 +58,8 @@ namespace QuantLib {
             return blackTS_->dayCounter();
         }
         Date maxDate() const { return blackTS_->maxDate(); }
+        double minStrike() const { return blackTS_->minStrike(); }
+        double maxStrike() const { return blackTS_->maxStrike(); }
         //@}
         //! \name Observer interface
         //@{
@@ -68,7 +70,7 @@ namespace QuantLib {
         virtual void accept(AcyclicVisitor&);
         //@}
       protected:
-        double localVolImpl(Time, double, bool extrapolate) const;
+        double localVolImpl(Time, double) const;
       private:
         RelinkableHandle<BlackVolTermStructure> blackTS_;
         RelinkableHandle<TermStructure> riskFreeTS_, dividendTS_;

@@ -48,6 +48,8 @@ namespace QuantLib {
         Date referenceDate() const;
         DayCounter dayCounter() const;
         Date maxDate() const;
+        double minStrike() const;
+        double maxStrike() const;
         double blackForwardVol(Time t1, Time t2, double strike,
                                bool extrapolate = false) const;
         //@}
@@ -60,8 +62,7 @@ namespace QuantLib {
         virtual void accept(AcyclicVisitor&);
         //@}
       protected:
-        virtual double blackVolImpl(Time t, double,
-                                    bool extrapolate = false) const;
+        virtual double blackVolImpl(Time t, double) const;
       private:
         Date referenceDate_;
         RelinkableHandle<Quote> volatility_;
@@ -101,6 +102,14 @@ namespace QuantLib {
         return Date::maxDate();
     }
 
+    inline double BlackConstantVol::minStrike() const {
+        return QL_MIN_DOUBLE;
+    }
+
+    inline double BlackConstantVol::maxStrike() const {
+        return QL_MAX_DOUBLE;
+    }
+
     inline void BlackConstantVol::update() {
         notifyObservers();
     }
@@ -114,11 +123,7 @@ namespace QuantLib {
             BlackVolatilityTermStructure::accept(v);
     }
 
-    inline double BlackConstantVol::blackVolImpl(Time t, double,
-                                                 bool) const {
-        QL_REQUIRE(t >= 0.0,
-                   "negative time (" + DoubleFormatter::toString(t) +
-                   ") not allowed");
+    inline double BlackConstantVol::blackVolImpl(Time t, double) const {
         return volatility_->value();
     }
 

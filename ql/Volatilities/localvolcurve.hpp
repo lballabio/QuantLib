@@ -45,6 +45,12 @@ namespace QuantLib {
         Date maxDate() const { 
             return blackVarianceCurve_->maxDate(); 
         }
+        double minStrike() const { 
+            return QL_MIN_DOUBLE;
+        }
+        double maxStrike() const { 
+            return QL_MAX_DOUBLE;
+        }
         //@}
         //! \name Observer interface
         //@{
@@ -57,7 +63,7 @@ namespace QuantLib {
         virtual void accept(AcyclicVisitor&);
         //@}
       protected:
-        double localVolImpl(Time, double, bool extrapolate) const;
+        double localVolImpl(Time, double) const;
       private:
         RelinkableHandle<BlackVarianceCurve> blackVarianceCurve_;
     };
@@ -87,14 +93,11 @@ namespace QuantLib {
         \f]
         can be deduced which is here implemented.
     */
-    inline double LocalVolCurve::localVolImpl(Time t, double dummy, 
-                                              bool extrapolate) const {
+    inline double LocalVolCurve::localVolImpl(Time t, double dummy) const {
 
         double dt = (1.0/365.0);
-        double var1 = blackVarianceCurve_->blackVariance(t, dummy,
-                                                         extrapolate);
-        double var2 = blackVarianceCurve_->blackVariance(t+dt, dummy,
-                                                         true);
+        double var1 = blackVarianceCurve_->blackVariance(t, dummy, true);
+        double var2 = blackVarianceCurve_->blackVariance(t+dt, dummy, true);
         double derivative = (var2-var1)/dt;
         return QL_SQRT(derivative);
     }

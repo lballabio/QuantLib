@@ -16,150 +16,83 @@
 */
 
 #include <ql/voltermstructure.hpp>
-#include <ql/dataformatters.hpp>
 
 namespace QuantLib {
 
 	const double BlackVolTermStructure::dT = 1.0/365.0;
 
-	double BlackVolTermStructure::maxTime() const {
-        return dayCounter().yearFraction(referenceDate(), maxDate());
-    }
-
-    double BlackVolTermStructure::blackVol(const Date& maturity,
-        double strike, bool extrapolate) const {
-
-        Time t = dayCounter().yearFraction(referenceDate(), maturity);
-        return blackVolImpl(t, strike, extrapolate);
-    }
-
-    double BlackVolTermStructure::blackVol(Time maturity,
-        double strike, bool extrapolate) const {
-
-        return blackVolImpl(maturity, strike, extrapolate);
-    }
-
-    double BlackVolTermStructure::blackVariance(const Date& maturity,
-        double strike, bool extrapolate) const {
-
-        Time t = dayCounter().yearFraction(referenceDate(), maturity);
-        return blackVarianceImpl(t, strike, extrapolate);
-    }
-
-    double BlackVolTermStructure::blackVariance(Time maturity,
-        double strike, bool extrapolate) const {
-
-        return blackVarianceImpl(maturity, strike, extrapolate);
-    }
-
-
     double BlackVolTermStructure::blackForwardVol(const Date& date1,
-        const Date& date2, double strike, bool extrapolate) const {
-
+                                                  const Date& date2, 
+                                                  double strike, 
+                                                  bool extrapolate) const {
+        QL_REQUIRE(date1 <= date2,
+                   DateFormatter::toString(date1) +
+                   " later than " +
+                   DateFormatter::toString(date2));
         Time time1 = dayCounter().yearFraction(referenceDate(), date1);
         Time time2 = dayCounter().yearFraction(referenceDate(), date2);
         return blackForwardVol(time1, time2, strike, extrapolate);
     }
 
-
     double BlackVolTermStructure::blackForwardVol(Time time1, Time time2,
-        double strike, bool extrapolate) const {
-
-
+                                                  double strike, 
+                                                  bool extrapolate) const {
+        QL_REQUIRE(time1 <= time2,
+                   DoubleFormatter::toString(time1) +
+                   " later than " +
+                   DoubleFormatter::toString(time2));
+        checkRange(time2,strike,extrapolate);
         if (time2==time1) {
             if (time1==0.0) {
                 Time epsilon = 0.00001;
-                double var = blackVarianceImpl(epsilon, strike,
-                    extrapolate);
+                double var = blackVarianceImpl(epsilon, strike);
                 return QL_SQRT(var/epsilon);
             } else {
-                QL_REQUIRE(time1>0.0, "negative times");
                 Time epsilon = QL_MIN(0.00001, time1);
-                double var1 = blackVarianceImpl(time1-epsilon, strike,
-                    extrapolate);
-                double var2 = blackVarianceImpl(time1+epsilon, strike,
-                    extrapolate);
-                QL_REQUIRE(var2>=var1,
-                           "variances must be non-decreasing");
+                double var1 = blackVarianceImpl(time1-epsilon, strike);
+                double var2 = blackVarianceImpl(time1+epsilon, strike);
+                QL_ENSURE(var2>=var1,
+                          "variances must be non-decreasing");
                 return QL_SQRT((var2-var1)/(2*epsilon));
             }
         } else {
-            QL_REQUIRE(time2>time1,
-                       "time2 ("
-                       + DoubleFormatter::toString(time2) +
-                       ") < time1("
-                       + DoubleFormatter::toString(time1) +
-                       ")");
-            double var1 = blackVarianceImpl(time1, strike, extrapolate);
-            double var2 = blackVarianceImpl(time2, strike, extrapolate);
-            QL_REQUIRE(var2>=var1,
-                       "variances must be non-decreasing");
+            double var1 = blackVarianceImpl(time1, strike);
+            double var2 = blackVarianceImpl(time2, strike);
+            QL_ENSURE(var2>=var1,
+                      "variances must be non-decreasing");
             return QL_SQRT((var2-var1)/(time2-time1));
         }
     }
 
-
     double BlackVolTermStructure::blackForwardVariance(const Date& date1,
-        const Date& date2, double strike, bool extrapolate) const {
-
+                                                       const Date& date2, 
+                                                       double strike, 
+                                                       bool extrapolate) 
+                                                                      const {
+        QL_REQUIRE(date1 <= date2,
+                   DateFormatter::toString(date1) +
+                   " later than " +
+                   DateFormatter::toString(date2));
         Time time1 = dayCounter().yearFraction(referenceDate(), date1);
         Time time2 = dayCounter().yearFraction(referenceDate(), date2);
         return blackForwardVariance(time1, time2, strike, extrapolate);
     }
 
 
-    double BlackVolTermStructure::blackForwardVariance(Time time1,
-        Time time2, double strike, bool extrapolate) const {
-
-        QL_REQUIRE(time2>=time1,
-                   "time2 ("
-                   + DoubleFormatter::toString(time2) +
-                   ") < time1("
-                   + DoubleFormatter::toString(time1) +
-                   ")");
-        double v1 = blackVarianceImpl(time1, strike, extrapolate);
-        double v2 = blackVarianceImpl(time2, strike, extrapolate);
+    double BlackVolTermStructure::blackForwardVariance(Time time1, Time time2, 
+                                                       double strike, 
+                                                       bool extrapolate) 
+                                                                      const {
+        QL_REQUIRE(time1 <= time2,
+                   DoubleFormatter::toString(time1) +
+                   " later than " +
+                   DoubleFormatter::toString(time2));
+        double v1 = blackVarianceImpl(time1, strike);
+        double v2 = blackVarianceImpl(time2, strike);
         double result = v2-v1;
-        QL_REQUIRE(result>=0.0,
-                   "variances must be non-decreasing");
+        QL_ENSURE(result>=0.0,
+                  "variances must be non-decreasing");
         return result;
-    }
-
-
-	 double BlackVolatilityTermStructure ::blackVarianceImpl(Time maturity,
-        double strike, bool extrapolate) const {
-
-        double vol = blackVolImpl(maturity, strike, extrapolate);
-        return vol*vol*maturity;
-    }
-
-	 double BlackVarianceTermStructure ::blackVolImpl(Time maturity,
-		 double strike, bool extrapolate) const {
-
-         QL_REQUIRE(maturity>=0,
-                    "negative time not allowed");
-        Time nonZeroMaturity = (maturity==0.0 ? 0.00001 : maturity);
-        double var = blackVarianceImpl(nonZeroMaturity, strike, extrapolate);
-        return QL_SQRT(var/nonZeroMaturity);
-    }
-
-
-
-    double LocalVolTermStructure::maxTime() const {
-        return dayCounter().yearFraction(referenceDate(), maxDate());
-    }
-
-    double LocalVolTermStructure::localVol(const Date& d,
-        double underlyingLevel, bool extrapolate) const {
-
-        Time t = dayCounter().yearFraction(referenceDate(), d);
-        return localVolImpl(t, underlyingLevel, extrapolate);
-    }
-
-    double LocalVolTermStructure::localVol(Time t,
-        double underlyingLevel, bool extrapolate) const {
-
-        return localVolImpl(t, underlyingLevel, extrapolate);
     }
 
 }

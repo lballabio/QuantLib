@@ -20,8 +20,8 @@
     \brief Black volatility curve modelled as variance curve
 */
 
-#ifndef quantlib_blackvariancecurve_hpp
-#define quantlib_blackvariancecurve_hpp
+#ifndef quantlib_black_variance_curve_hpp
+#define quantlib_black_variance_curve_hpp
 
 #include <ql/voltermstructure.hpp>
 #include <ql/Math/interpolation.hpp>
@@ -55,6 +55,8 @@ namespace QuantLib {
         Date referenceDate() const;
         DayCounter dayCounter() const;
         Date maxDate() const;
+        double minStrike() const;
+        double maxStrike() const;
         //@}
         //! \name Modifiers
         //@{
@@ -78,10 +80,9 @@ namespace QuantLib {
         //@{
         virtual void accept(AcyclicVisitor&);
         //@}
-        protected:
-        virtual double blackVarianceImpl(Time t, double,
-                                         bool extrapolate = false) const;
-        private:
+      protected:
+        virtual double blackVarianceImpl(Time t, double) const;
+      private:
         Date referenceDate_;
         DayCounter dayCounter_;
         Date maxDate_;
@@ -103,6 +104,14 @@ namespace QuantLib {
 
     inline Date BlackVarianceCurve::maxDate() const { 
         return maxDate_; 
+    }
+
+    inline double BlackVarianceCurve::minStrike() const {
+        return QL_MIN_DOUBLE;
+    }
+
+    inline double BlackVarianceCurve::maxStrike() const {
+        return QL_MAX_DOUBLE;
     }
 
     inline void BlackVarianceCurve::update() {

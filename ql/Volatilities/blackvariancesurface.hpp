@@ -20,8 +20,8 @@
     \brief Black volatility surface modelled as variance surface
 */
 
-#ifndef quantlib_blackvariancesurface_hpp
-#define quantlib_blackvariancesurface_hpp
+#ifndef quantlib_black_variance_surface_hpp
+#define quantlib_black_variance_surface_hpp
 
 #include <ql/voltermstructure.hpp>
 #include <ql/Math/matrix.hpp>
@@ -67,6 +67,12 @@ namespace QuantLib {
         Date maxDate() const { 
             return maxDate_; 
         }
+        double minStrike() const { 
+            return strikes_.front(); 
+        }
+        double maxStrike() const { 
+            return strikes_.back(); 
+        }
         //@}
         //! \name Modifiers
         //@{
@@ -94,9 +100,7 @@ namespace QuantLib {
         virtual void accept(AcyclicVisitor&);
         //@}
       protected:
-        virtual double blackVarianceImpl(Time t,
-                                         double strike,
-                                         bool extrapolate = false) const;
+        virtual double blackVarianceImpl(Time t, double strike) const;
       private:
         Date referenceDate_;
         DayCounter dayCounter_;

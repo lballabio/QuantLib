@@ -1,7 +1,7 @@
 
 /*
  Copyright (C) 2002, 2003 Ferdinando Ametrano
- Copyright (C) 2003 StatPro Italia srl
+ Copyright (C) 2003, 2004 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -25,7 +25,9 @@
 
 #include <ql/calendar.hpp>
 #include <ql/daycounter.hpp>
+#include <ql/dataformatters.hpp>
 #include <ql/marketelement.hpp>
+#include <ql/Math/extrapolation.hpp>
 #include <ql/Patterns/visitor.hpp>
 #include <vector>
 
@@ -38,7 +40,8 @@ namespace QuantLib {
 
         Volatilities are assumed to be expressed on an annual basis.
     */
-    class BlackVolTermStructure : public Observable {
+    class BlackVolTermStructure : public Observable,
+                                  public Extrapolator {
       public:
         virtual ~BlackVolTermStructure() {}
         //! \name Black Volatility
@@ -86,26 +89,40 @@ namespace QuantLib {
         virtual Date referenceDate() const = 0;
         //! returns the day counter
         virtual DayCounter dayCounter() const = 0;
+        //@}
+        //! \name Limits
+        //@{
         //! the latest date for which the term structure can return vols
         virtual Date maxDate() const = 0;
         //! the latest time for which the term structure can return vols
         Time maxTime() const;
+        //! the minimum strike for which the term structure can return vols
+        virtual double minStrike() const = 0;
+        //! the maximum strike for which the term structure can return vols
+        virtual double maxStrike() const = 0;
         //@}
         //! \name Visitability
         //@{
         virtual void accept(AcyclicVisitor&);
         //@}
       protected:
-        //! implements the actual Black variance calculation in derived classes
-        virtual double blackVarianceImpl(Time t,
-                                         double strike,
-                                         bool extrapolate = false) const = 0;
-        //! implements the actual Black vol calculation in derived classes
-        virtual double blackVolImpl(Time t,
-                                    double strike,
-                                    bool extrapolate = false) const = 0;
+        /*! \name Calculations
+
+            These methods must be implemented in derived classes to perform
+            the actual volatility calculations. When they are called,
+            range check has already been performed; therefore, they must
+            assume that extrapolation is required.
+        */
+        //@{
+        //! Black variance calculation
+        virtual double blackVarianceImpl(Time t, double strike) const = 0;
+        //! Black volatility calculation
+        virtual double blackVolImpl(Time t, double strike) const = 0;
+        //@}
 	  private:
         static const double dT;
+        void checkRange(const Date&, double strike, bool extrapolate) const;
+        void checkRange(Time, double strike, bool extrapolate) const;
     };
 
 
@@ -127,9 +144,7 @@ namespace QuantLib {
         /*! Returns the variance for the given strike and date calculating it
             from the volatility.
         */
-        double blackVarianceImpl(Time maturity,
-                                 double strike,
-                                 bool extrapolate = false) const;
+        double blackVarianceImpl(Time maturity, double strike) const;
     };
 
 
@@ -151,9 +166,7 @@ namespace QuantLib {
         /*! Returns the volatility for the given strike and date calculating it
             from the variance.
         */
-        double blackVolImpl(Time maturity,
-                            double strike,
-                            bool extrapolate = false) const;
+        double blackVolImpl(Time maturity, double strike) const;
     };
 
 
@@ -163,7 +176,8 @@ namespace QuantLib {
 
         Volatilities are assumed to be expressed on an annual basis.
     */
-    class LocalVolTermStructure : public Observable {
+    class LocalVolTermStructure : public Observable,
+                                  public Extrapolator {
       public:
         virtual ~LocalVolTermStructure() {}
         //! \name Local Volatility
@@ -181,25 +195,78 @@ namespace QuantLib {
         virtual Date referenceDate() const = 0;
         //! returns the day counter
         virtual DayCounter dayCounter() const = 0;
+        //@}
+        //! \name Limits
+        //@{
         //! the latest date for which the term structure can return vols
         virtual Date maxDate() const = 0;
         //! the latest time for which the term structure can return vols
         Time maxTime() const;
+        //! the minimum strike for which the term structure can return vols
+        virtual double minStrike() const = 0;
+        //! the maximum strike for which the term structure can return vols
+        virtual double maxStrike() const = 0;
         //@}
         //! \name Visitability
         //@{
         virtual void accept(AcyclicVisitor&);
         //@}
       protected:
-        //! implements the actual local vol calculation in derived classes
-        virtual double localVolImpl(Time t,
-                                    double strike,
-                                    bool extrapolate = false) const = 0;
+        /*! \name Calculations
+
+            These methods must be implemented in derived classes to perform
+            the actual volatility calculations. When they are called,
+            range check has already been performed; therefore, they must
+            assume that extrapolation is required.
+        */
+        //@{
+        //! local vol calculation
+        virtual double localVolImpl(Time t, double strike) const = 0;
+        //@}
+      private:
+        void checkRange(const Date&, double strike, bool extrapolate) const;
+        void checkRange(Time, double strike, bool extrapolate) const;
     };
 
 
 
     // inline definitions
+
+	inline double BlackVolTermStructure::maxTime() const {
+        return dayCounter().yearFraction(referenceDate(), maxDate());
+    }
+
+    inline double BlackVolTermStructure::blackVol(const Date& maturity,
+                                                  double strike, 
+                                                  bool extrapolate) const {
+        checkRange(maturity,strike,extrapolate);
+        Time t = dayCounter().yearFraction(referenceDate(), maturity);
+        return blackVolImpl(t, strike);
+    }
+
+    inline double BlackVolTermStructure::blackVol(Time maturity,
+                                                  double strike, 
+                                                  bool extrapolate) const {
+        checkRange(maturity,strike,extrapolate);
+        return blackVolImpl(maturity, strike);
+    }
+
+    inline double BlackVolTermStructure::blackVariance(const Date& maturity,
+                                                       double strike, 
+                                                       bool extrapolate) 
+                                                                      const {
+        checkRange(maturity,strike,extrapolate);
+        Time t = dayCounter().yearFraction(referenceDate(), maturity);
+        return blackVarianceImpl(t, strike);
+    }
+
+    inline double BlackVolTermStructure::blackVariance(Time maturity,
+                                                       double strike, 
+                                                       bool extrapolate) 
+                                                                      const {
+        checkRange(maturity,strike,extrapolate);
+        return blackVarianceImpl(maturity, strike);
+    }
 
     inline void BlackVolTermStructure::accept(AcyclicVisitor& v) {
         Visitor<BlackVolTermStructure>* v1 = 
@@ -208,6 +275,38 @@ namespace QuantLib {
             v1->visit(*this);
         else
             QL_FAIL("not a Black-volatility term structure visitor");
+    }
+
+    inline void BlackVolTermStructure::checkRange(const Date& d, double k, 
+                                                  bool extrapolate) const {
+        Time t = dayCounter().yearFraction(referenceDate(),d);
+        checkRange(t,k,extrapolate);
+    }
+
+    inline void BlackVolTermStructure::checkRange(Time t, double k, 
+                                                  bool extrapolate) const {
+        QL_REQUIRE(t >= 0.0,
+                   "negative time (" +
+                   DoubleFormatter::toString(t) +
+                   ") given");
+        QL_REQUIRE(extrapolate || allowsExtrapolation() || t <= maxTime(),
+                   "time (" +
+                   DoubleFormatter::toString(t) +
+                   ") is past max curve time (" +
+                   DoubleFormatter::toString(maxTime()) + ")");
+        QL_REQUIRE(extrapolate || allowsExtrapolation() || 
+                   (k >= minStrike() && k <= maxStrike()),
+                   "strike (" +
+                   DoubleFormatter::toString(k) +
+                   ") is outside the curve domain [" +
+                   DoubleFormatter::toString(minStrike()) + "," +
+                   DoubleFormatter::toString(maxStrike()) + "]");
+    }
+
+    inline double BlackVolatilityTermStructure::blackVarianceImpl(
+                                         Time maturity, double strike) const {
+        double vol = blackVolImpl(maturity, strike);
+        return vol*vol*maturity;
     }
 
     inline void BlackVolatilityTermStructure::accept(AcyclicVisitor& v) {
@@ -219,6 +318,15 @@ namespace QuantLib {
             BlackVolTermStructure::accept(v);
     }
 
+
+
+    inline double BlackVarianceTermStructure ::blackVolImpl(
+                                         Time maturity, double strike) const {
+        Time nonZeroMaturity = (maturity==0.0 ? 0.00001 : maturity);
+        double var = blackVarianceImpl(nonZeroMaturity, strike);
+        return QL_SQRT(var/nonZeroMaturity);
+    }
+
     inline void BlackVarianceTermStructure::accept(AcyclicVisitor& v) {
         Visitor<BlackVarianceTermStructure>* v1 = 
             dynamic_cast<Visitor<BlackVarianceTermStructure>*>(&v);
@@ -228,6 +336,27 @@ namespace QuantLib {
             BlackVolTermStructure::accept(v);
     }
 
+
+
+    inline double LocalVolTermStructure::maxTime() const {
+        return dayCounter().yearFraction(referenceDate(), maxDate());
+    }
+
+    inline double LocalVolTermStructure::localVol(const Date& d,
+                                                  double underlyingLevel, 
+                                                  bool extrapolate) const {
+        checkRange(d,underlyingLevel,extrapolate);
+        Time t = dayCounter().yearFraction(referenceDate(), d);
+        return localVolImpl(t, underlyingLevel);
+    }
+
+    inline double LocalVolTermStructure::localVol(Time t,
+                                                  double underlyingLevel, 
+                                                  bool extrapolate) const {
+        checkRange(t,underlyingLevel,extrapolate);
+        return localVolImpl(t, underlyingLevel);
+    }
+
     inline void LocalVolTermStructure::accept(AcyclicVisitor& v) {
         Visitor<LocalVolTermStructure>* v1 = 
             dynamic_cast<Visitor<LocalVolTermStructure>*>(&v);
@@ -235,6 +364,32 @@ namespace QuantLib {
             v1->visit(*this);
         else
             QL_FAIL("not a local-volatility term structure visitor");
+    }
+
+    inline void LocalVolTermStructure::checkRange(const Date& d, double k, 
+                                                  bool extrapolate) const {
+        Time t = dayCounter().yearFraction(referenceDate(),d);
+        checkRange(t,k,extrapolate);
+    }
+
+    inline void LocalVolTermStructure::checkRange(Time t, double k, 
+                                                  bool extrapolate) const {
+        QL_REQUIRE(t >= 0.0,
+                   "negative time (" +
+                   DoubleFormatter::toString(t) +
+                   ") given");
+        QL_REQUIRE(extrapolate || allowsExtrapolation() || t <= maxTime(),
+                   "time (" +
+                   DoubleFormatter::toString(t) +
+                   ") is past max curve time (" +
+                   DoubleFormatter::toString(maxTime()) + ")");
+        QL_REQUIRE(extrapolate || allowsExtrapolation() || 
+                   (k >= minStrike() && k <= maxStrike()),
+                   "strike (" +
+                   DoubleFormatter::toString(k) +
+                   ") is outside the curve domain [" +
+                   DoubleFormatter::toString(minStrike()) + "," +
+                   DoubleFormatter::toString(maxStrike()) + "]");
     }
 
 }
