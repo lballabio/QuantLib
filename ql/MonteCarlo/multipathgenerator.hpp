@@ -72,8 +72,8 @@ namespace QuantLib {
         private:
             size_t numAssets_;
             RAG rndArrayGen_;
-            std::vector<Time> timeDelays_;
             mutable sample_type next_;
+            std::vector<Time> timeDelays_;
         };
 
         template <class RAG>
@@ -119,7 +119,8 @@ namespace QuantLib {
             const std::vector<Time>& times, long seed)
         : numAssets_(covariance.rows()),
           rndArrayGen_(covariance, seed),
-          next_(MultiPath(covariance.rows(),times.size()),1.0) {
+          next_(MultiPath(covariance.rows(),times.size()),1.0),
+          timeDelays_(times.size()) {
 
             QL_REQUIRE(times.size() > 0,
                 "MultiPathGenerator: no times given");
