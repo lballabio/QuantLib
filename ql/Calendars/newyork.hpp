@@ -45,6 +45,8 @@ namespace QuantLib {
             if Saturday)</li>
         </ul>
         Data from http://www.nyse.com
+
+        \ingroup calendars
     */
     class NewYork : public Calendar {
       private:

@@ -28,20 +28,22 @@ namespace QuantLib {
 
     //! %Zurich calendar
     /*! Holidays:
-      <ul>
-      <li>Saturdays</li>
-      <li>Sundays</li>
-      <li>New Year's Day, January 1st</li>
-      <li>Berchtoldstag, January 2nd</li>
-      <li>Good Friday</li>
-      <li>Easter Monday</li>
-      <li>Ascension Day</li>
-      <li>Whit Monday</li>
-      <li>Labour Day, May 1st</li>
-      <li>National Day, August 1st</li>
-      <li>Christmas, December 25th</li>
-      <li>St. Stephen's Day, December 26th</li>
-      </ul>
+        <ul>
+        <li>Saturdays</li>
+        <li>Sundays</li>
+        <li>New Year's Day, January 1st</li>
+        <li>Berchtoldstag, January 2nd</li>
+        <li>Good Friday</li>
+        <li>Easter Monday</li>
+        <li>Ascension Day</li>
+        <li>Whit Monday</li>
+        <li>Labour Day, May 1st</li>
+        <li>National Day, August 1st</li>
+        <li>Christmas, December 25th</li>
+        <li>St. Stephen's Day, December 26th</li>
+        </ul>
+
+        \ingroup calendars
     */
     class Zurich : public Calendar {
       private:

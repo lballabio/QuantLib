@@ -28,20 +28,22 @@ namespace QuantLib {
 
     //! %Oslo calendar
     /*! Holidays:
-      <ul>
-      <li>Saturdays</li>
-      <li>Sundays</li>
-      <li>Holy Thursday</li>
-      <li>Good Friday</li>
-      <li>Easter Monday</li>
-      <li>Ascension</li>
-      <li>Whit(Pentecost) Monday </li>
-      <li>New Year's Day, January 1st</li>
-      <li>May Day, May 1st</li>
-      <li>National Independence Day, May 17st</li>
-      <li>Christmas, December 25th</li>
-      <li>Boxing Day, December 26th</li>
-      </ul>
+        <ul>
+        <li>Saturdays</li>
+        <li>Sundays</li>
+        <li>Holy Thursday</li>
+        <li>Good Friday</li>
+        <li>Easter Monday</li>
+        <li>Ascension</li>
+        <li>Whit(Pentecost) Monday </li>
+        <li>New Year's Day, January 1st</li>
+        <li>May Day, May 1st</li>
+        <li>National Independence Day, May 17st</li>
+        <li>Christmas, December 25th</li>
+        <li>Boxing Day, December 26th</li>
+        </ul>
+
+        \ingroup calendars
     */
     class Oslo : public Calendar {
       private:

@@ -44,6 +44,8 @@ namespace QuantLib {
         Italian convention: starting dates or ending dates that
         occur on February and are grater than 27 become equal to 30
         for computational sake.
+
+        \ingroup daycounters
     */
     class Thirty360 : public DayCounter {
       public:

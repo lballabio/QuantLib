@@ -43,6 +43,8 @@ namespace QuantLib {
         <li>Christmas, December 25th</li>
         <li>Boxing Day, December 26th</li>
         </ul>
+
+        \ingroup calendars
     */
     class Helsinki : public Calendar {
       private:

@@ -28,25 +28,28 @@ namespace QuantLib {
 
     //! %Wellington calendar
     /*! Holidays:
-      <ul>
-      <li>Saturdays</li>
-      <li>Sundays</li>
-      <li>New Year's Day, January 1st (possibly moved to Monday or
-          Tuesday)</li>
-      <li>Day after New Year's Day, January 2st (possibly moved to
-          Monday or Tuesday)</li>
-      <li>Anniversary Day, Monday nearest January 22nd</li>
-      <li>Waitangi Day. February 6th</li>
-      <li>Good Friday</li>
-      <li>Easter Monday</li>
-      <li>ANZAC Day. April 25th</li>
-      <li>Queen's Birthday, first Monday in June</li>
-      <li>Labour Day, fourth Monday in October</li>
-      <li>Christmas, December 25th (possibly moved to Monday or Tuesday)</li>
-      <li>Boxing Day, December 26th (possibly moved to Monday or Tuesday)</li>
-      </ul>
-      \note The holiday rules for Wellington were documented by
-            David Gilbert for IDB (http://www.jrefinery.com/ibd/)
+        <ul>
+        <li>Saturdays</li>
+        <li>Sundays</li>
+        <li>New Year's Day, January 1st (possibly moved to Monday or
+            Tuesday)</li>
+        <li>Day after New Year's Day, January 2st (possibly moved to
+            Monday or Tuesday)</li>
+        <li>Anniversary Day, Monday nearest January 22nd</li>
+        <li>Waitangi Day. February 6th</li>
+        <li>Good Friday</li>
+        <li>Easter Monday</li>
+        <li>ANZAC Day. April 25th</li>
+        <li>Queen's Birthday, first Monday in June</li>
+        <li>Labour Day, fourth Monday in October</li>
+        <li>Christmas, December 25th (possibly moved to Monday or Tuesday)</li>
+        <li>Boxing Day, December 26th (possibly moved to Monday or 
+            Tuesday)</li>
+        </ul>
+        \note The holiday rules for Wellington were documented by
+        David Gilbert for IDB (http://www.jrefinery.com/ibd/)
+
+        \ingroup calendars
     */
     class Wellington : public Calendar {
       private:

@@ -30,6 +30,8 @@ namespace QuantLib {
     //! Rolling conventions
     /*! These conventions specify the algorithm used to find the business day
         which is "closest" to a given holiday.
+
+        \ingroup datetime
     */
     enum RollingConvention {
         Preceding,          /*!< Choose the first business day before
@@ -65,6 +67,8 @@ namespace QuantLib {
 
         The Bridge pattern is used to provide the base behavior of the
         calendar, namely, to determine whether a date is a business day.
+
+        \ingroup datetime
     */
     class Calendar : public Bridge<Calendar,CalendarImpl> {
       public:

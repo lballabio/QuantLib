@@ -1,6 +1,6 @@
 
 /*
- Copyright (C) 2000-2003 RiskMap srl
+ Copyright (C) 2000-2004 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -21,12 +21,10 @@
  The members of the QuantLib Group are listed in the QuantLib License
 */
 
-/*! \page datetime Date and time calculations
+/*! \defgroup datetime Date and time calculations
 
-    \section date Dates
-
-    The concrete class QuantLib::Date implements the concept of date.
-    Its functionalities include:
+    The concrete class <tt>QuantLib::Date</tt> implements the concept
+    of date. Its functionalities include:
 
     - providing basic information such as weekday, day of the month,
       day of the year, month, and year;
@@ -38,36 +36,26 @@
     - incrementing or decrementing a date of a given number of days,
       or of a given period expressed in weeks, months, or years.
 
-    \section calendars Calendars
-
-    The abstract class QuantLib::Calendar provides the
-    interface for determining whether a date is a business day or a
-    holiday for a given market, or incrementing/decrementing a date of
-    a given number of business days. A number of calendars is
-    contained in the ql/Calendars directory.
-
-
-    \section daycounters Day counters
-
-    The abstract class QuantLib::DayCounter provides more advanced means
-    of measuring the distance between two dates according to a given
-    market convention, both as number of days of fraction of year. A
-    number of such conventions is contained in the ql/DayCounters
-    directory, namely,
-
-    - Actual/360
-    - Actual/365
-    - Actual/Actual, which can be calculated according to:
-        - ISMA and US Treasury convention, also known as "Actual/Actual
-          (Bond)";
-        - ISDA, also known as "Actual/Actual (Historical)";
-        - AFB, also known as "Actual/Actual (Euro)";
-    - 30/360, which can be calculated according to:
-        - USA convention;
-        - European convention;
-        - Italian convention.
-
-
+    @{
 */
 
+/*! \defgroup calendars Calendars
+
+    The class <tt>QuantLib::Calendar</tt> provides the interface for
+    determining whether a date is a business day or a holiday for a
+    given market, or incrementing/decrementing a date of a given
+    number of business days. A number of calendars is contained in the
+    <tt>ql/Calendars</tt> directory.
+*/
+
+/*! \defgroup daycounters Day counters
+
+    The class <tt>QuantLib::DayCounter</tt> provides more advanced
+    means of measuring the distance between two dates according to a
+    given market convention, both as number of days of fraction of
+    year. A number of such conventions is contained in the
+    <tt>ql/DayCounters</tt> directory.
+*/
+
+/*! @} */
 

@@ -46,6 +46,8 @@ namespace QuantLib {
 
         The Bridge pattern is used to provide the base behavior of the
         day counter.
+
+        \ingroup datetime
     */
     class DayCounter : public Bridge<DayCounter,DayCounterImpl> {
       public:

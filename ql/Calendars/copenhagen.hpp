@@ -27,20 +27,22 @@ namespace QuantLib {
 
     //! %Copenhagen calendar
     /*! Holidays:
-      <ul>
-      <li>Saturdays</li>
-      <li>Sundays</li>
-      <li>Maunday Thursday</li>
-      <li>Good Friday</li>
-      <li>Easter Monday</li>
-      <li>General Prayer Day, 25 days after Easter Monday</li>      
-      <li>Ascension</li>      
-      <li>Whit (Pentecost) Monday </li>
-      <li>New Year's Day, January 1st</li>
-      <li>Constitution Day, June 5th</li>
-      <li>Christmas, December 25th</li>
-      <li>Boxing Day, December 26th</li>
-      </ul>
+        <ul>
+        <li>Saturdays</li>
+        <li>Sundays</li>
+        <li>Maunday Thursday</li>
+        <li>Good Friday</li>
+        <li>Easter Monday</li>
+        <li>General Prayer Day, 25 days after Easter Monday</li>      
+        <li>Ascension</li>      
+        <li>Whit (Pentecost) Monday </li>
+        <li>New Year's Day, January 1st</li>
+        <li>Constitution Day, June 5th</li>
+        <li>Christmas, December 25th</li>
+        <li>Boxing Day, December 26th</li>
+        </ul>
+
+        \ingroup calendars
     */
     class Copenhagen : public Calendar {
       private:

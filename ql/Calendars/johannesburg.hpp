@@ -46,6 +46,8 @@ namespace QuantLib {
         <li>Christmas December 25th </li>
         <li>Day of Goodwill December 26th (possibly moved to Monday)</li>
         </ul>
+
+        \ingroup calendars
     */
     class Johannesburg : public Calendar {
       private:

@@ -28,20 +28,22 @@ namespace QuantLib {
 
     //! %Warsaw calendar
     /*! Holidays:
-      <ul>
-      <li>Saturdays</li>
-      <li>Sundays</li>
-      <li>Easter Monday</li>
-      <li>Corpus Christi</li>
-      <li>New Year's Day, January 1st</li>
-      <li>May Day, May 1st</li>
-      <li>Constitution Day, May 3rd</li>
-      <li>Assumption of the Blessed Virgin Mary, August 15th</li>
-      <li>All Saints Day, November 1st</li>
-      <li>Independence Day, November 11th</li>
-      <li>Christmas, December 25th</li>
-      <li>2nd Day of Christmas, December 26th</li>
-      </ul>
+        <ul>
+        <li>Saturdays</li>
+        <li>Sundays</li>
+        <li>Easter Monday</li>
+        <li>Corpus Christi</li>
+        <li>New Year's Day, January 1st</li>
+        <li>May Day, May 1st</li>
+        <li>Constitution Day, May 3rd</li>
+        <li>Assumption of the Blessed Virgin Mary, August 15th</li>
+        <li>All Saints Day, November 1st</li>
+        <li>Independence Day, November 11th</li>
+        <li>Christmas, December 25th</li>
+        <li>2nd Day of Christmas, December 26th</li>
+        </ul>
+
+        \ingroup calendars
     */
     class Warsaw : public Calendar {
       private:

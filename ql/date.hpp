@@ -30,10 +30,13 @@
 namespace QuantLib {
 
     //! Day number
+    /*! \ingroup datetime */
     typedef int Day;
 
     /*! Day's serial number MOD 7;
-    WEEKDAY Excel function is the same except for Sunday = 7
+        WEEKDAY Excel function is the same except for Sunday = 7.
+
+        \ingroup datetime
     */
     enum Weekday { Sunday    = 1,
                    Monday    = 2,
@@ -41,9 +44,11 @@ namespace QuantLib {
                    Wednesday = 4,
                    Thursday  = 5,
                    Friday    = 6,
-                   Saturday  = 7};
+                   Saturday  = 7
+    };
 
     //! Month names
+    /*! \ingroup datetime */
     enum Month { January   = 1,
                  February  = 2,
                  March     = 3,
@@ -55,26 +60,33 @@ namespace QuantLib {
                  September = 9,
                  October   = 10,
                  November  = 11,
-                 December  = 12 };
+                 December  = 12 
+    };
 
     //! Year number
+    /*! \ingroup datetime */
     typedef int Year;
 
     //! Frequency of events
-    enum Frequency { Once = 0,    //!< e.g., a zero-coupon
-                     Annual = 1,
-                     Semiannual = 2,
-                     Quarterly = 4,
-                     Bimonthly = 6,
-                     Monthly = 12 };
+    /*! \ingroup datetime */
+    enum Frequency { Once = 0,          //!< only once, e.g., a zero-coupon
+                     Annual = 1,        //!< once a year
+                     Semiannual = 2,    //!< twice a year
+                     Quarterly = 4,     //!< every third month
+                     Bimonthly = 6,     //!< every second month
+                     Monthly = 12       //!< once a month
+    };
 
     //! Units used to describe time periods
+    /*! \ingroup datetime */
     enum TimeUnit { Days   = 0,
                     Weeks  = 1,
                     Months = 2,
-                    Years  = 3 };
+                    Years  = 3 
+    };
 
     //! Time period described by a number of a given time unit
+    /*! \ingroup datetime */
     class Period {
       public:
         Period()
@@ -126,6 +138,8 @@ namespace QuantLib {
     /*! This class provides methods to inspect dates as well as methods and
         operators which implement a limited date algebra (increasing and
         decreasing dates, and calculating their difference).
+
+        \ingroup datetime
     */
     class Date {
       public:

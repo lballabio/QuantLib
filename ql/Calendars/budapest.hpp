@@ -42,6 +42,8 @@ namespace QuantLib {
         <li>Christmas, December 25th</li>
         <li>2nd Day of Christmas, December 26th</li>
         </ul>
+
+        \ingroup calendars
     */
     class Budapest : public Calendar {
       private:

@@ -27,6 +27,7 @@
 namespace QuantLib {
 
     //! Actual/360 day count convention
+    /*! \ingroup daycounters */
     class Actual360 : public DayCounter {
       private:
         class Impl : public DayCounter::Impl {

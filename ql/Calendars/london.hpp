@@ -42,6 +42,8 @@ namespace QuantLib {
             Tuesday)</li>
         </ul>
         See http://www.dti.gov.uk/er/bankhol.htm
+
+        \ingroup calendars
     */
     class London : public Calendar {
       private:

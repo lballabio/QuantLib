@@ -61,7 +61,6 @@ tex-files: docs-html
            -e "/input{group}/d" \
            -e "/include{coreclasses}/d" \
            -e "/include{currencies}/d" \
-           -e "/include{datetime}/d" \
            -e "/include{findiff}/d" \
            -e "/include{fixedincome}/d" \
            -e "/include{history}/d" \

@@ -34,6 +34,8 @@ namespace QuantLib {
 
         For more details, refer to
         http://www.isda.org/c_and_a/pdf/mktc1198.pdf
+
+        \ingroup daycounters
     */
     class ActualActual : public DayCounter {
       public:

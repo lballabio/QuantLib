@@ -29,6 +29,8 @@ namespace QuantLib {
     //! %Calendar for reproducing theoretical calculations.
     /*! This calendar has no holidays. It ensures that dates at
         whole-month distances have the same day of month.
+
+        \ingroup calendars
     */
     class NullCalendar : public Calendar {
       private:

@@ -35,6 +35,8 @@ namespace QuantLib {
                  NullCalendar, which ensures that dates at whole-month
                  distances share the same day of month. It is <b>not</b>
                  guaranteed to work with any other calendar.
+
+        \ingroup daycounters
     */
     class SimpleDayCounter : public DayCounter {
       private:
