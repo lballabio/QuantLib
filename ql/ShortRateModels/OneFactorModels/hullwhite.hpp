@@ -1,3 +1,4 @@
+
 /*
  Copyright (C) 2001, 2002 Sadruddin Rejeb
 
@@ -13,6 +14,7 @@
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
+
 /*! \file hullwhite.hpp
     \brief Hull & White (HW) model
 
@@ -84,8 +86,12 @@ namespace QuantLib {
                   new OrnsteinUhlenbeckProcess(a, sigma))),
               fitting_(fitting) {}
 
-            double variable(Time t, Rate r)    const { return r - fitting_(t); }
-            double shortRate(Time t, double x) const { return x + fitting_(t); }
+            double variable(Time t, Rate r) const { 
+                return r - fitting_(t); 
+            }
+            double shortRate(Time t, double x) const { 
+                return x + fitting_(t); 
+            }
           private:
             Parameter fitting_;
         };
@@ -99,17 +105,16 @@ namespace QuantLib {
         */
         class HullWhite::FittingParameter 
             : public TermStructureFittingParameter {
-          public:
-            class HullWhiteImpl : public Parameter::ParameterImpl {
+          private:
+            class Impl : public Parameter::Impl {
               public:
-                HullWhiteImpl(
-                    const RelinkableHandle<TermStructure>& termStructure,
-                   double a, double sigma) 
+                Impl(const RelinkableHandle<TermStructure>& termStructure,
+                     double a, double sigma) 
                 : termStructure_(termStructure), a_(a), sigma_(sigma) {}
-                virtual ~HullWhiteImpl() {}
 
                 double value(const Array& params, Time t) const {
-                    double forwardRate = termStructure_->instantaneousForward(t);
+                    double forwardRate = 
+                        termStructure_->instantaneousForward(t);
                     double temp = sigma_*(1.0 - QL_EXP(-a_*t))/a_;
                     return (forwardRate + 0.5*temp*temp);
                 }
@@ -117,12 +122,13 @@ namespace QuantLib {
                 RelinkableHandle<TermStructure> termStructure_;
                 double a_, sigma_;
             };
-
+          public:
             FittingParameter(
                 const RelinkableHandle<TermStructure>& termStructure,
                 double a, double sigma)
-            : TermStructureFittingParameter(Handle<ParameterImpl>(
-                new HullWhiteImpl(termStructure, a, sigma))) {}
+            : TermStructureFittingParameter(Handle<Parameter::Impl>(
+                new HullWhite::FittingParameter::Impl(
+                    termStructure, a, sigma))) {}
         };
 
         // inline definitions

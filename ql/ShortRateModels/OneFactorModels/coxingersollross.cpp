@@ -1,3 +1,4 @@
+
 /*
  Copyright (C) 2001, 2002 Sadruddin Rejeb
 
@@ -13,6 +14,7 @@
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
+
 /*! \file coxingersollross.cpp
     \brief Cox-Ingersoll-Ross model
 
@@ -36,11 +38,10 @@ namespace QuantLib {
         using Optimization::PositiveConstraint;
 
         class CoxIngersollRoss::VolatilityConstraint : public Constraint {
-          public:
-              // MS VC 6 needs the explicit Constraint::
-              class Implementation : public Constraint::ConstraintImpl {
+          private:
+              class Impl : public Constraint::Impl {
               public:
-                Implementation(const Parameter& theta, const Parameter& k) 
+                Impl(const Parameter& theta, const Parameter& k) 
                 : theta_(theta), k_(k) {}
                 bool test(const Array& params) const {
                     if (params[0] <= 0.0)
@@ -54,9 +55,10 @@ namespace QuantLib {
                 const Parameter& theta_;
                 const Parameter& k_;
             };
+          public:
             VolatilityConstraint(const Parameter& theta, const Parameter& k)
-            : Constraint(Handle<ConstraintImpl>(new Implementation(theta, k)))
-            {}
+            : Constraint(Handle<Constraint::Impl>(
+                new VolatilityConstraint::Impl(theta, k))) {}
         };
 
         CoxIngersollRoss::CoxIngersollRoss(

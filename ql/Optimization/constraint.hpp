@@ -1,3 +1,4 @@
+
 /*
  Copyright (C) 2001, 2002 Sadruddin Rejeb
 
@@ -13,6 +14,7 @@
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
+
 /*! \file constraint.hpp
     \brief Abstract constraint class
 
@@ -26,45 +28,46 @@
 #define quantlib_optimization_constraint_h
 
 #include <ql/array.hpp>
+#include <ql/Patterns/bridge.hpp>
 
 namespace QuantLib {
 
     namespace Optimization {
 
+        //! Base class for Constraint implementations
+        class ConstraintImpl {
+          public:
+            virtual ~ConstraintImpl() {}
+            //! Tests if params satisfy the constraint
+            virtual bool test(const Array& params) const = 0;
+        };
 
         //! Base constraint class
-        class Constraint {
+        class Constraint : public Patterns::Bridge<Constraint,ConstraintImpl> {
           public:
-            //! Actual implementation class
-            class ConstraintImpl {
-              public:
-                //! Tests if params satisfy the constraint
-                virtual bool test(const Array& params) const = 0;
-            };
-            Constraint(const Handle<ConstraintImpl>& impl) : impl_(impl) {}
+            Constraint(const Handle<ConstraintImpl>& impl);
             bool test(const Array& p) const { return impl_->test(p); }
             double update(Array& p, const Array& direction, double beta);
-          private:
-            Handle<ConstraintImpl> impl_;
         };
 
         //! No constraint 
         class NoConstraint : public Constraint {
-          public:
-            class NoConstraintImpl : public Constraint::ConstraintImpl {
+          private:
+            class Impl : public Constraint::Impl {
               public:
                 bool test(const Array& params) const {
                     return true;
                 }
             };
+          public:
             NoConstraint() 
-            : Constraint(Handle<ConstraintImpl>(new NoConstraintImpl)) {}
+            : Constraint(Handle<Constraint::Impl>(new NoConstraint::Impl)) {}
         };
 
         //! Constraint imposing positivity to all arguments
         class PositiveConstraint : public Constraint {
-          public:
-            class PositiveConstraintImpl : public Constraint::ConstraintImpl {
+          private:
+            class Impl : public Constraint::Impl {
               public:
                 bool test(const Array& params) const {
                     for (Size i=0; i<params.size(); i++) {
@@ -74,16 +77,18 @@ namespace QuantLib {
                     return true;
                 }
             };
+          public:
             PositiveConstraint() 
-            : Constraint(Handle<ConstraintImpl>(new PositiveConstraintImpl)) {}
+            : Constraint(Handle<Constraint::Impl>(
+                 new PositiveConstraint::Impl)) {}
         };
 
         //! Constraint imposing all arguments to be in [low,high]
         class BoundaryConstraint : public Constraint {
-          public:
-            class BoundaryConstraintImpl : public Constraint::ConstraintImpl {
+          private:
+            class Impl : public Constraint::Impl {
               public:
-                BoundaryConstraintImpl(double low, double high) 
+                Impl(double low, double high) 
                 : low_(low), high_(high) {}
                 bool test(const Array& params) const {
                     for (Size i=0; i<params.size(); i++) {
@@ -95,12 +100,16 @@ namespace QuantLib {
               private:
                 double low_, high_;
             };
+          public:
             BoundaryConstraint(double low, double high) 
-            : Constraint(Handle<ConstraintImpl>(
-                new BoundaryConstraintImpl(low, high))) {}
+            : Constraint(Handle<Constraint::Impl>(
+                new BoundaryConstraint::Impl(low, high))) {}
         };
 
         // inline definitions
+
+        inline Constraint::Constraint(const Handle<Constraint::Impl>& impl)
+        : Patterns::Bridge<Constraint,ConstraintImpl>(impl) {}
 
         inline double Constraint::update(
             Array& params, const Array& direction, double beta) {

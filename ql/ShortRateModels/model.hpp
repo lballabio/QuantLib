@@ -1,3 +1,4 @@
+
 /*
  Copyright (C) 2001, 2002 Sadruddin Rejeb
 
@@ -118,10 +119,10 @@ namespace QuantLib {
         }
 
         class Model::PrivateConstraint : public Optimization::Constraint {
-          public:
-            class Implementation :  public Optimization::Constraint::ConstraintImpl {
+          private:
+            class Impl :  public Optimization::Constraint::Impl {
               public:
-                Implementation(const std::vector<Parameter>& arguments)
+                Impl(const std::vector<Parameter>& arguments)
                 : arguments_(arguments) {}
                 bool test(const Array& params) const {
                     Size k=0;
@@ -138,10 +139,10 @@ namespace QuantLib {
               private:
                 const std::vector<Parameter>& arguments_;
             };
+          public:
             PrivateConstraint(const std::vector<Parameter>& arguments)
-            : Optimization::Constraint(Handle<ConstraintImpl>(
-                new Implementation(arguments)))
-            {}
+            : Optimization::Constraint(Handle<Constraint::Impl>(
+                new PrivateConstraint::Impl(arguments))) {}
         };
 
     }

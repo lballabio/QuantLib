@@ -1,3 +1,4 @@
+
 /*
  Copyright (C) 2001, 2002 Sadruddin Rejeb
 
@@ -13,6 +14,7 @@
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
+
 /*! \file extendedcoxingersollross.hpp
     \brief Extended Cox-Ingersoll-Ross model
 
@@ -109,18 +111,17 @@ namespace QuantLib {
         */
         class ExtendedCoxIngersollRoss::FittingParameter 
         : public TermStructureFittingParameter {
-          public:
-              class CIRImpl : public Parameter::ParameterImpl {
+          private:
+            class Impl : public Parameter::Impl {
               public:
-                CIRImpl(
-                    const RelinkableHandle<TermStructure>& termStructure,
-                    double theta, double k, double sigma, double x0) 
+                Impl(const RelinkableHandle<TermStructure>& termStructure,
+                     double theta, double k, double sigma, double x0) 
                 : termStructure_(termStructure), 
                   theta_(theta), k_(k), sigma_(sigma), x0_(x0) {}
-                virtual ~CIRImpl() {}
 
                 double value(const Array& params, Time t) const {
-                    double forwardRate = termStructure_->instantaneousForward(t);
+                    double forwardRate = 
+                        termStructure_->instantaneousForward(t);
                     double h = QL_SQRT(k_*k_ + 2.0*sigma_*sigma_);
                     double expth = QL_EXP(t*h);
                     double temp = 2.0*h + (k_+h)*(expth-1.0);
@@ -133,11 +134,13 @@ namespace QuantLib {
                 RelinkableHandle<TermStructure> termStructure_;
                 double theta_, k_, sigma_, x0_;
             };
+          public:
             FittingParameter(
                 const RelinkableHandle<TermStructure>& termStructure,
                 double theta, double k, double sigma, double x0) 
-            : TermStructureFittingParameter(Handle<ParameterImpl>(
-                new CIRImpl(termStructure, theta, k, sigma, x0))) {}
+            : TermStructureFittingParameter(Handle<Parameter::Impl>(
+                new ExtendedCoxIngersollRoss::FittingParameter::Impl(
+                    termStructure, theta, k, sigma, x0))) {}
         };
 
         // inline definitions

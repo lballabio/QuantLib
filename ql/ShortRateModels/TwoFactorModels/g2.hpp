@@ -1,3 +1,4 @@
+
 /*
  Copyright (C) 2001, 2002 Sadruddin Rejeb
 
@@ -13,6 +14,7 @@
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
+
 /*! \file g2.hpp
     \brief Two-factor additive Gaussian Model G2++
 
@@ -130,15 +132,14 @@ namespace QuantLib {
             where \f$ f(t) \f$ is the instantaneous forward rate at \f$ t \f$.
         */
         class G2::FittingParameter : public TermStructureFittingParameter {
-          public:
-            class G2Impl : public Parameter::ParameterImpl {
+          private:
+            class Impl : public Parameter::Impl {
               public:
-                G2Impl(const RelinkableHandle<TermStructure>& termStructure,
-                       double a, double sigma, double b, double eta, 
-                       double rho) 
+                Impl(const RelinkableHandle<TermStructure>& termStructure,
+                     double a, double sigma, double b, double eta, 
+                     double rho) 
                 : termStructure_(termStructure), 
                   a_(a), sigma_(sigma), b_(b), eta_(eta), rho_(rho) {}
-                virtual ~G2Impl() {}
 
                 double value(const Array& params, Time t) const {
                     double forward = termStructure_->instantaneousForward(t);
@@ -153,12 +154,13 @@ namespace QuantLib {
                 RelinkableHandle<TermStructure> termStructure_;
                 double a_, sigma_, b_, eta_, rho_;
             };
-
+          public:
             FittingParameter(
                 const RelinkableHandle<TermStructure>& termStructure,
                 double a, double sigma, double b, double eta, double rho)
-            : TermStructureFittingParameter(Handle<ParameterImpl>(
-                new G2Impl(termStructure, a, sigma, b, eta, rho))) {}
+            : TermStructureFittingParameter(Handle<Parameter::Impl>(
+                new G2::FittingParameter::Impl(termStructure, a, sigma, 
+                                               b, eta, rho))) {}
         };
 
     }

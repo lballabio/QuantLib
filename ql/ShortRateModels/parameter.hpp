@@ -1,3 +1,4 @@
+
 /*
  Copyright (C) 2001, 2002 Sadruddin Rejeb
 
@@ -13,6 +14,7 @@
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
+
 /*! \file parameter.hpp
     \brief Model parameter classes
 
@@ -28,57 +30,62 @@
 #include <ql/qldefines.hpp>
 #include <ql/termstructure.hpp>
 #include <ql/Optimization/constraint.hpp>
+#include <ql/Patterns/bridge.hpp>
 
 namespace QuantLib {
 
     namespace ShortRateModels {
 
-        //! Base class for model arguments
-        class Parameter {
+        //! Base class for model parameter implementation
+        class ParameterImpl {
           public:
-            class ParameterImpl {
-              public:
-                virtual double value(const Array& params, Time t) const = 0;
-            };
+            virtual ~ParameterImpl() {}
+            virtual double value(const Array& params, Time t) const = 0;
+        };
 
-            Parameter() : constraint_(Optimization::NoConstraint()) {}
+        //! Base class for model arguments
+        class Parameter : public Patterns::Bridge<Parameter,ParameterImpl> {
+          public:
+            Parameter() 
+            : Patterns::Bridge<Parameter,ParameterImpl>(
+                Handle<ParameterImpl>()),
+              constraint_(Optimization::NoConstraint()) {}
             Parameter(Size size, 
                       const Handle<ParameterImpl>& impl, 
                       const Optimization::Constraint& constraint)
-            : params_(size), impl_(impl), constraint_(constraint) {}
-            virtual ~Parameter() {}
+            : Patterns::Bridge<Parameter,ParameterImpl>(impl),
+              params_(size), constraint_(constraint) {}
 
             const Array& params() const { return params_; }
             void setParam(Size i, double x) { params_[i] = x; }
             bool testParams(const Array& params) const { 
                 return constraint_.test(params);
             }
-            virtual Size size() const { return params_.size(); }
-
-            double operator()(Time t) const { return impl_->value(params_, t); }
+            Size size() const { return params_.size(); }
+            double operator()(Time t) const { 
+                return impl_->value(params_, t); 
+            }
 
             const Handle<ParameterImpl>& implementation() const {return impl_;}
-
           protected:
             Array params_;
-            Handle<ParameterImpl> impl_;
             Optimization::Constraint constraint_;
         };
 
         //! Standard constant parameter \f$ a(t) = a \f$
         class ConstantParameter : public Parameter {
-          public:
-            class ConstantParameterImpl : public Parameter::ParameterImpl {
+          private:
+            class Impl : public Parameter::Impl {
               public:
                 double value(const Array& params, Time t) const {
                     return params[0];
                 }
             };
-
+          public:
             ConstantParameter(
                 const Optimization::Constraint& constraint) 
             : Parameter(1, 
-                        Handle<ParameterImpl>(new ConstantParameterImpl), 
+                        Handle<Parameter::Impl>(new ConstantParameter::Impl), 
                         constraint) 
             {}
 
@@ -86,7 +93,7 @@ namespace QuantLib {
                 double value,
                 const Optimization::Constraint& constraint) 
             : Parameter(1, 
-                        Handle<ParameterImpl>(new ConstantParameterImpl), 
+                        Handle<Parameter::Impl>(new ConstantParameter::Impl), 
                         constraint) {
                 params_[0] = value;
                 QL_REQUIRE(testParams(params_), 
@@ -97,17 +104,17 @@ namespace QuantLib {
 
         //! Parameter which is always zero \f$ a(t) = 0 \f$
         class NullParameter : public Parameter {
-          public:
-            class NullParameterImpl : public Parameter::ParameterImpl {
+          private:
+            class Impl : public Parameter::Impl {
               public:
                 double value(const Array& params, Time t) const {
                     return 0.0;
                 }
             };
-
+          public:
             NullParameter() 
             : Parameter(0, 
-                        Handle<ParameterImpl>(new NullParameterImpl), 
+                        Handle<Parameter::Impl>(new NullParameter::Impl), 
                         Optimization::NoConstraint()) 
             {}
         };
@@ -118,12 +125,11 @@ namespace QuantLib {
             model
         */
         class PiecewiseConstantParameter : public Parameter {
-          public:
-            class PiecewiseConstantParameterImpl : public Parameter::ParameterImpl {
+          private:
+            class Impl : public Parameter::Impl {
               public:
-                PiecewiseConstantParameterImpl(const std::vector<Time>& times)
+                Impl(const std::vector<Time>& times)
                 : times_(times) {}
-                virtual ~PiecewiseConstantParameterImpl() {}
 
                 double value(const Array& params, Time t) const {
                     Size size = times_.size();
@@ -136,11 +142,11 @@ namespace QuantLib {
               private:
                 std::vector<Time> times_;
             };
-
+          public:
             PiecewiseConstantParameter(const std::vector<Time>& times) 
             : Parameter(times.size()+1, 
-                        Handle<ParameterImpl>(
-                            new PiecewiseConstantParameterImpl(times)),
+                        Handle<Parameter::Impl>(
+                            new PiecewiseConstantParameter::Impl(times)),
                         Optimization::NoConstraint()) 
             {}
         };
@@ -148,12 +154,11 @@ namespace QuantLib {
         //! Deterministic time-dependent parameter used for yield-curve fitting
         class TermStructureFittingParameter : public Parameter {
           public:
-            class NumericalImpl : public Parameter::ParameterImpl {
+            class NumericalImpl : public Parameter::Impl {
               public:
                 NumericalImpl(
                     const RelinkableHandle<TermStructure>& termStructure)
                 : times_(0), values_(0), termStructure_(termStructure) {}
-                virtual ~NumericalImpl() {}
 
                 void set(Time t, double x) {
                     times_.push_back(t);
@@ -169,7 +174,8 @@ namespace QuantLib {
                 double value(const Array& params, Time t) const {
                     std::vector<Time>::const_iterator result = 
                         std::find(times_.begin(), times_.end(), t);
-                    QL_REQUIRE(result!=times_.end(),"Fitting parameter unset!");
+                    QL_REQUIRE(result!=times_.end(),
+                               "Fitting parameter not set!");
                     return values_[result - times_.begin()];
                 }
                 const RelinkableHandle<TermStructure>& termStructure() const {
@@ -181,12 +187,12 @@ namespace QuantLib {
                 RelinkableHandle<TermStructure> termStructure_;
             };
 
-            TermStructureFittingParameter(const Handle<ParameterImpl>& impl)
+            TermStructureFittingParameter(const Handle<Parameter::Impl>& impl)
             : Parameter(0, impl, Optimization::NoConstraint()) {}
 
             TermStructureFittingParameter(
                 const RelinkableHandle<TermStructure>& term)
-            : Parameter(0, Handle<ParameterImpl>(new NumericalImpl(term)),
+            : Parameter(0, Handle<Parameter::Impl>(new NumericalImpl(term)),
                         Optimization::NoConstraint())
             {} 
         };
