@@ -27,6 +27,9 @@
     $Source$
     $Name$
     $Log$
+    Revision 1.3  2001/04/04 06:21:35  marmar
+    Error messages changed
+
     Revision 1.2  2001/02/16 15:14:07  lballabio
     renamed sqrt to matrixSqrt
 
@@ -68,10 +71,11 @@ namespace QuantLib {
           for(i = 0; i < size;i++){
               if(QL_FABS(evalues[i]) <= tolerance*maxEv) 
                   evalues[i] = 0;
-              QL_REQUIRE(evalues[i] >=0, 
-                  "sqrt: some eigenvalues are negative: ("+
-                  DoubleFormatter::toString(i)+") = "
-                  + DoubleFormatter::toString(evalues[i]));
+              QL_ENSURE(evalues[i] >=0, 
+                  "sqrt: some eigenvalues("+
+                  IntegerFormatter::toString(i) + ") = " +
+                  DoubleFormatter::toString(evalues[i]) +
+                  " are negative!");
               diagonal[i][i] = QL_SQRT(evalues[i]);
           }
           
