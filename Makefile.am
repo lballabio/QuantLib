@@ -2,6 +2,9 @@
 # $Id$
 # $Source$
 # $Log$
+# Revision 1.40  2001/08/23 13:07:24  nando
+# bug fixed
+#
 # Revision 1.39  2001/08/23 13:04:54  nando
 # typo fixed
 #
@@ -37,24 +40,26 @@ dist-hook:
 	cp -p $(srcdir)/lib/Win32/Borland/README.txt $(distdir)/lib/Win32/Borland/README.txt
 	cp -p $(srcdir)/lib/Win32/VisualStudio/README.txt $(distdir)/lib/Win32/VisualStudio/README.txt
 	mkdir $(distdir)/Docs/Examples
-	cp $(srcdir)/Docs/Examples/*.dsw $(distdir)/Docs/Examples/
-	cp $(srcdir)/Docs/Examples/*.mak $(distdir)/Docs/Examples/
-	cp $(srcdir)/Docs/Examples/*.txt $(distdir)/Docs/Examples/
-	mkdir $(distdir)/Docs/Examples/HedgingError
-	cp $(srcdir)/Docs/Examples/HedgingError/*.cpp $(distdir)/Docs/Examples/HedgingError/
-	cp $(srcdir)/Docs/Examples/HedgingError/*.dsp $(distdir)/Docs/Examples/HedgingError/
-	cp $(srcdir)/Docs/Examples/HedgingError/*.mak $(distdir)/Docs/Examples/HedgingError/
-	cp $(srcdir)/Docs/Examples/HedgingError/*.txt $(distdir)/Docs/Examples/HedgingError/
-	mkdir $(distdir)/Docs/Examples/Parities
-	cp $(srcdir)/Docs/Examples/Parities/*.cpp $(distdir)/Docs/Examples/Parities/
-	cp $(srcdir)/Docs/Examples/Parities/*.dsp $(distdir)/Docs/Examples/Parities/
-	cp $(srcdir)/Docs/Examples/Parities/*.mak $(distdir)/Docs/Examples/Parities/
-	cp $(srcdir)/Docs/Examples/Parities/*.txt $(distdir)/Docs/Examples/Parities/
+	cp $(srcdir)/Docs/Examples/*.cpp $(distdir)/Docs/Examples/
 	mkdir $(distdir)/Docs/images
 	cp $(srcdir)/Docs/images/QL-largish.jpg $(distdir)/Docs/images/
 	cp $(srcdir)/Docs/images/QL-small-notitle.jpg $(distdir)/Docs/images/
 	cp $(srcdir)/Docs/images/QL-largish.eps $(distdir)/Docs/images/
 	cp $(srcdir)/Docs/images/QL-largish.pdf $(distdir)/Docs/images/
+	mkdir $(distdir)/Examples
+	cp $(srcdir)/Examples/*.dsw $(distdir)/Examples/
+	cp $(srcdir)/Examples/*.mak $(distdir)/Examples/
+	cp $(srcdir)/Examples/*.txt $(distdir)/Examples/
+	mkdir $(distdir)/Examples/HedgingError
+	cp $(srcdir)/Examples/HedgingError/*.cpp $(distdir)/Examples/HedgingError/
+	cp $(srcdir)/Examples/HedgingError/*.dsp $(distdir)/Examples/HedgingError/
+	cp $(srcdir)/Examples/HedgingError/*.mak $(distdir)/Examples/HedgingError/
+	cp $(srcdir)/Examples/HedgingError/*.txt $(distdir)/Examples/HedgingError/
+	mkdir $(distdir)/Examples/Parities
+	cp $(srcdir)/Examples/Parities/*.cpp $(distdir)/Examples/Parities/
+	cp $(srcdir)/Examples/Parities/*.dsp $(distdir)/Examples/Parities/
+	cp $(srcdir)/Examples/Parities/*.mak $(distdir)/Examples/Parities/
+	cp $(srcdir)/Examples/Parities/*.txt $(distdir)/Examples/Parities/
 
 if DOXYGEN_FOUND
 docs-all:
