@@ -92,7 +92,7 @@ namespace QuantLib
 	 QL_REQUIRE(identifiers.size()==forwards_.size(),
 		    "Inconsistent number of Identifiers/Forward Rates");
 	 settlementDate_ = calendar.advance(todaysDate_,settlementDays_,Days);
-     Size i;
+	 Size i;
 	 for (i=0; i<identifiers.size(); i++)
 	 {
 	    std::string identifier;
@@ -131,10 +131,10 @@ namespace QuantLib
 						  compoundFrequency_, Months,
 						  roll_);
 	    
-	    for (Size i=0,ci=1; i<dates_.size(); i++)
+	    for (Size i=0,ci=0; i<dates_.size(); i++)
 	    {
 	       DiscountFactor df;
-	       Time t = 0.0;
+	       Time t;
 
 	       Date rateDate = dates_.at(i);
 	       Rate fwd = forwards_.at(i);
@@ -143,21 +143,17 @@ namespace QuantLib
 		  t = dayCounter_.yearFraction(settlementDate_,rateDate,
 					       settlementDate_,rateDate);
 		  df = 1.0/(1.0+fwd*t);
-		  std::cout << rateDate
-			    << ", fwd => "
-			    << DoubleFormatter::toString(fwd,8)
-			    << ", df => "
-			    << DoubleFormatter::toString(df,8) << std::endl;
 		  ci = i;
 	       }
 	       else
 	       {
-		  Size a, currCnt;
-		  double tempD = 0.0, prev = 0.0;
+		  Size a;
 		  Date aDate, pDate;
-
-		  currCnt = discounts_.size();
-		  for (a = currCnt-1; a>ci; a--)
+		  double tempD = 0.0, prev;
+		     
+		  QL_REQUIRE(discounts_.size()>0,
+			     "Needs forward on at least compounding start");
+		  for (a=discounts_.size()-1; a>ci; a--)
 		  {
 		     prev = discounts_.at(a);
 		     aDate = dates_.at(a);
@@ -166,33 +162,17 @@ namespace QuantLib
 						  pDate,aDate);
 		     tempD += fwd*prev*t;
 		  }
-		  // currCnt could start at 0 (start bootstrapping above
-		  // compounding)
-		  if (currCnt == 0)
-		     t = dayCounter_.yearFraction(settlementDate_,rateDate,
-						  settlementDate_,rateDate);
-		  else
-		  {
-		     prev = discounts_.at(a);
-		     aDate = dates_.at(a);
-		     t = dayCounter_.yearFraction(settlementDate_,aDate,
-						  settlementDate_,aDate);
-		     tempD += fwd*prev*t;
+		  prev = discounts_.at(a);
+		  aDate = dates_.at(a);
+		  t = dayCounter_.yearFraction(settlementDate_,aDate,
+					       settlementDate_,aDate);
+		  tempD += fwd*prev*t;
 		     
-		     aDate = dates_.at(currCnt);
-		     pDate = dates_.at(currCnt-1);
-		     t = dayCounter_.yearFraction(pDate,aDate,
-						  pDate,aDate);
-		  }
+		  aDate = dates_.at(discounts_.size());
+		  pDate = dates_.at(discounts_.size()-1);
+		  t = dayCounter_.yearFraction(pDate,aDate,
+					       pDate,aDate);
 		  df = (1.0-tempD)/(1.0+fwd*t);
-		  std::cout << rateDate
-			    << ", fwd => "
-			    << DoubleFormatter::toString(fwd,8)
-			    << ", df => "
-			    << DoubleFormatter::toString(df,8)
-			    << ", tempD => "
-			    << DoubleFormatter::toString(tempD,8)
-			    << std::endl;
 	       }
 	       discounts_.push_back(df);
 	       zeroYields_.push_back(-QL_LOG(df) / times_[i]);
@@ -215,7 +195,6 @@ namespace QuantLib
 	    Date rateDate;
 
 	    rateDate = dates_.at(i);
-	    std::cout << "Checking " << rateDate << "  ..." << std::endl;
 	    // Passed compounding?
 	    if (compoundDate < rateDate)
 	    {
@@ -228,7 +207,6 @@ namespace QuantLib
 	       // Missed any forwards?
 	       while (tmpDate < rateDate)
 	       {
-		  std::cout << "Found " << tmpDate << std::endl;
 		  Time t = dayCounter_.yearFraction(settlementDate_, tmpDate);
 		  Rate r = (*fwdinterp_)(t);
 
