@@ -8,29 +8,22 @@
 !endif
 
 # Directories
-BOOST_INCLUDE_DIR   = "$(BOOST_DIR)"
+BOOST_INCLUDE_DIR   = "$(BOOST_INCLUDE_DIR)"
 INCLUDE_DIR    = ..\..\..
-BCC_INCLUDE    = $(MAKEDIR)\..\include
-
 
 # Object files
 OBJS = \
     analyticbarrierengine.obj$(_D) \
     mcbarrierengine.obj$(_D)
 
-
-
 # Tools to be used
 CC        = bcc32
 TLIB      = tlib
 
-
-
 # Options
 CC_OPTS        = -vi- -q -c -tWM \
     -I$(BOOST_INCLUDE_DIR) \
-    -I$(INCLUDE_DIR) \
-    -I$(BCC_INCLUDE)
+    -I$(INCLUDE_DIR)
 
 !ifdef DEBUG
 CC_OPTS = $(CC_OPTS) -v -DQL_DEBUG

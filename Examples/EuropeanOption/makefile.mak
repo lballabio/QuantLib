@@ -11,19 +11,16 @@
 
 
 # Directories
-BOOST_INCLUDE_DIR   = "$(BOOST_DIR)"
+BOOST_INCLUDE_DIR   = "$(BOOST_INCLUDE_DIR)"
 QL_INCLUDE_DIR   = "$(QL_DIR)"
 QL_LIB_DIR       = "$(QL_DIR)\lib\Win32\Borland"
-BCC_INCLUDE      = $(MAKEDIR)\..\include
-BCC_LIBS         = $(MAKEDIR)\..\lib
 
 #Warning W8057 : Parameter 'argc' is never used in function main(int,char * *)
 
 # Options
 CC_OPTS = -vi- -w-8057 \
     -I$(BOOST_INCLUDE_DIR) \
-    -I$(QL_INCLUDE_DIR) \
-    -I$(BCC_INCLUDE)
+    -I$(QL_INCLUDE_DIR)
 
 !ifdef DEBUG
 CC_OPTS = $(CC_OPTS) -v -DQL_DEBUG
@@ -36,7 +33,7 @@ CC_OPTS = $(CC_OPTS) -DQL_EXTRA_SAFETY_CHECKS
 
 # Primary target:
 EuropeanOption$(_D).exe: EuropeanOption.cpp
-    bcc32 $(CC_OPTS) -L$(QL_LIB_DIR) -L$(BCC_LIBS) \
+    bcc32 $(CC_OPTS) -L$(QL_LIB_DIR) \
     -o"EuropeanOption$(_D).obj" -eEuropeanOption$(_D).exe \
     EuropeanOption.cpp QuantLib$(_D).lib
 

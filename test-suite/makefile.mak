@@ -11,11 +11,10 @@
 !endif
 
 # Directories
-BOOST_INCLUDE_DIR   = "$(BOOST_DIR)"
-QL_INCLUDE_DIR      = "$(QL_DIR)"
-QL_LIB_DIR          = "$(QL_DIR)\lib\Win32\Borland"
-BCC_INCLUDE         = $(MAKEDIR)\..\include
-BCC_LIBS            = $(MAKEDIR)\..\lib
+BOOST_INCLUDE_DIR = "$(BOOST_INCLUDE_DIR)"
+BOOST_LIB_DIR     = "$(BOOST_LIB_DIR)"
+QL_INCLUDE_DIR    = "$(QL_DIR)"
+QL_LIB_DIR        = "$(QL_DIR)\lib\Win32\Borland"
 
 # Object files
 QL_TESTS = \
@@ -43,7 +42,6 @@ QL_TESTS = \
     old_pricers.obj$(_D) \
     operators.obj$(_D) \
     piecewiseflatforward.obj$(_D) \
-    qltestlistener.obj$(_D) \
     quantlibtestsuite.obj$(_D) \
     quotes.obj$(_D) \
     riskstats.obj$(_D) \
@@ -60,8 +58,7 @@ CC        = bcc32
 # Options
 CC_OPTS = -vi- \
     -I$(BOOST_INCLUDE_DIR) \
-    -I$(QL_INCLUDE_DIR) \
-    -I$(BCC_INCLUDE)
+    -I$(QL_INCLUDE_DIR)
 !ifdef DEBUG
 CC_OPTS = $(CC_OPTS) -v -DQL_DEBUG
 !else
@@ -80,7 +77,7 @@ CC_OPTS = $(CC_OPTS) -DQL_EXTRA_SAFETY_CHECKS
 
 # Primary target:
 test-suite$(_D).exe: $(QL_TESTS)
-    $(CC) $(CC_OPTS) -L$(QL_LIB_DIR) -L$(BCC_LIBS) \
+    $(CC) $(CC_OPTS) -L$(QL_LIB_DIR) -L$(BOOST_LIB_DIR) \
     -etest-suite$(_D).exe $(QL_TESTS) \
     QuantLib$(_D).lib
 
