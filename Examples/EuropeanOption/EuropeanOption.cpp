@@ -25,16 +25,7 @@
 
 #include <ql/quantlib.hpp>
 
-// Rate and Time are just double, but having their own types allows for
-// a stronger check at compile time
-using QuantLib::Rate;
-using QuantLib::Time;
-
-// Option is a helper class that holds the enumeration {Call, Put, Straddle}
-using QuantLib::Option;
-
-// Handle is the QuantLib way to have reference-counted objects
-using QuantLib::Handle;
+using namespace QuantLib;
 
 // class for statistical analysis
 using QuantLib::Math::Statistics;
@@ -59,9 +50,6 @@ using QuantLib::MonteCarlo::EuropeanPathPricer;
 using QuantLib::RandomNumbers::UniformRandomGenerator;
 using QuantLib::Pricers::EuropeanOption;
 using QuantLib::Pricers::FiniteDifferenceEuropean;
-
-// to format the output of doubles
-using QuantLib::DoubleFormatter;
 
 // helper function for option payoff: MAX((stike-underlying),0), etc.
 using QuantLib::Pricers::ExercisePayoff;
@@ -101,7 +89,7 @@ int main(int argc, char* argv[])
         // our option
         double underlying = 100;
         double strike = 100;      // at the money
-        Rate dividendYield = 0.0; // no dividends
+        Spread dividendYield = 0.0; // no dividends
         Rate riskFreeRate = 0.05; // 5%
         Time maturity = 1.0;      // 1 year
         double volatility = 0.20; // 20%

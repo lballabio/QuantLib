@@ -43,7 +43,7 @@ namespace QuantLib {
         using FiniteDifferences::secondDerivativeAtCenter;
 
         FiniteDifferenceEuropean::FiniteDifferenceEuropean(Option::Type type,
-            double underlying, double strike, Rate dividendYield,
+            double underlying, double strike, Spread dividendYield,
             Rate riskFreeRate, Time residualTime, double volatility,
             size_t timeSteps, size_t gridPoints)
             : BSMNumericalOption(type, underlying, strike, dividendYield,

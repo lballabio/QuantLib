@@ -48,7 +48,7 @@ namespace QuantLib {
         using MonteCarlo::GeometricAsianPathPricer;
 
         McAverageStrikeAsian::McAverageStrikeAsian(Option::Type type,
-          double underlying, Rate dividendYield, Rate riskFreeRate,
+          double underlying, Spread dividendYield, Rate riskFreeRate,
           const std::vector<Time>& times, double volatility,
           bool antitheticVariance, long seed) {
 

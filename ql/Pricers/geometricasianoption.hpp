@@ -46,7 +46,7 @@ namespace QuantLib {
             GeometricAsianOption(Option::Type type,
                                  double underlying,
                                  double strike,
-                                 Rate dividendYield,
+                                 Spread dividendYield,
                                  Rate riskFreeRate,
                                  Time residualTime,
                                  double volatility);
@@ -59,7 +59,7 @@ namespace QuantLib {
         // inline definitions
         
         inline GeometricAsianOption::GeometricAsianOption(Option::Type type,
-            double underlying, double strike, Rate dividendYield,
+            double underlying, double strike, Spread dividendYield,
             Rate riskFreeRate, Time residualTime, double volatility)
         : EuropeanOption(type, underlying, strike,
             (riskFreeRate+dividendYield+volatility*volatility/6.0)/2.0,

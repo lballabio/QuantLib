@@ -46,7 +46,7 @@ namespace QuantLib {
         using FiniteDifferences::secondDerivativeAtCenter;
 
         StepConditionOption::StepConditionOption(Option::Type type, 
-            double underlying, double strike, Rate dividendYield, 
+            double underlying, double strike, Spread dividendYield, 
             Rate riskFreeRate, Time residualTime, double volatility, 
             int timeSteps, int gridPoints)
         : BSMNumericalOption(type, underlying, strike, dividendYield,

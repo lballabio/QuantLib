@@ -45,7 +45,7 @@ namespace QuantLib {
         using FiniteDifferences::secondDerivativeAtCenter;
 
         BSMNumericalOption::BSMNumericalOption(Option::Type type,
-            double underlying, double strike, Rate dividendYield,
+            double underlying, double strike, Spread dividendYield,
             Rate riskFreeRate, Time residualTime, double volatility,
             size_t gridPoints)
         : SingleAssetOption(type, underlying, strike, dividendYield, 

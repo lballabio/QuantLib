@@ -36,6 +36,7 @@
 namespace QuantLib {
 
     Date Calendar::roll(const Date& d , RollingConvention c) const {
+        QL_REQUIRE(d!=Date(), "Calendar::roll : null date");
         Date d1 = d;
         if (c == Following || c == ModifiedFollowing) {
             while (isHoliday(d1))
@@ -57,6 +58,7 @@ namespace QuantLib {
 
     Date Calendar::advance(const Date& d, int n, TimeUnit unit,
       RollingConvention c) const {
+        QL_REQUIRE(d!=Date(), "Calendar::roll : null date");
         if (n == 0) {
             return roll(d,c);
         } else if (unit == Days) {

@@ -46,7 +46,7 @@ namespace QuantLib {
           public:
             // constructor
             EuropeanOption(Option::Type type, double underlying, 
-                double strike, Rate dividendYield, Rate riskFreeRate,
+                double strike, Spread dividendYield, Rate riskFreeRate,
                 Time residualTime, double volatility);
             // accessors
             double value() const;

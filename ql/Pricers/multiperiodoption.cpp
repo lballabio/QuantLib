@@ -44,7 +44,7 @@ namespace QuantLib {
         using FiniteDifferences::secondDerivativeAtCenter;
 
         MultiPeriodOption::MultiPeriodOption(Option::Type type, 
-            double underlying, double strike, Rate dividendYield, 
+            double underlying, double strike, Spread dividendYield, 
             Rate riskFreeRate, Time residualTime, double volatility, 
             int gridPoints, const std::vector<Time>& dates,
             int timeSteps)

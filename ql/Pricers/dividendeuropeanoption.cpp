@@ -39,7 +39,7 @@ namespace QuantLib {
 
         DividendEuropeanOption::DividendEuropeanOption(
             Option::Type type, double underlying, double strike, 
-            Rate dividendYield, Rate riskFreeRate, Time residualTime, 
+            Spread dividendYield, Rate riskFreeRate, Time residualTime, 
             double volatility, const std::vector<double>& dividends,
             const std::vector<Time>& exdivdates):
             EuropeanOption(type, underlying - riskless(riskFreeRate,

@@ -44,7 +44,7 @@ namespace QuantLib {
         using MonteCarlo::EuropeanPathPricer;
 
         McEuropean::McEuropean(Option::Type type, 
-          double underlying, double strike, Rate dividendYield, 
+          double underlying, double strike, Spread dividendYield, 
           Rate riskFreeRate, double residualTime, double volatility,
           bool antitheticVariance, long seed) {
 

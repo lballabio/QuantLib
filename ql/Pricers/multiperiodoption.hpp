@@ -49,7 +49,7 @@ namespace QuantLib {
           protected:
             // constructor
             MultiPeriodOption(Option::Type type, double underlying,
-                double strike, Rate dividendYield, Rate riskFreeRate,
+                double strike, Spread dividendYield, Rate riskFreeRate,
                 Time residualTime, double volatility, int gridPoints,
                 const std::vector<Time>& dates,
                 int timeSteps);

@@ -44,7 +44,7 @@ namespace QuantLib {
           public:
             // constructor
             DividendAmericanOption(Option::Type type, double underlying,
-                double strike, Rate dividendYield, Rate riskFreeRate,
+                double strike, Spread dividendYield, Rate riskFreeRate,
                 Time residualTime, double volatility,
                 const std::vector<double>& dividends = std::vector<double>(),
                 const std::vector<Time>& exdivdates = std::vector<Time>(),

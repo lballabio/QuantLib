@@ -112,7 +112,8 @@ namespace QuantLib {
                                       volatility(Null<double>()) {}
             Option::Type type;
             double underlying, strike;
-            Rate dividendYield, riskFreeRate;
+            Spread dividendYield;
+            Rate riskFreeRate;
             Time residualTime;
             double volatility;
         };

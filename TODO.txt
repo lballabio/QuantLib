@@ -9,9 +9,12 @@ COMPILING
 
 LIBRARY
     *****
+    check FRA mXn definition
+    implement swap discountGuess()
+    explicit/implicit instead of BackwardEuler, ForwardEuler
+    use pragma in config.msvc.hpp for MS VC++ requirement
     asian continuous and/or discrete
     check geometric continuous and/or discrete
-    introduce compoundpathpricer
     example of european Martingale control variate
     next&weight in a std::pair
     check fraction in McPagoda
@@ -19,17 +22,18 @@ LIBRARY
         redesign payoff class for integral (Green) option pricing, step
         condition, etc
 
-    FuturesRateHelpers as FRA (no convexity)
-    allow for negative dividendYield (that is cost of carry)
     Currency as class with methods returning related info
     Nicolas spline contribution
     Maxim integral
-    introduce size_t where appropriate
     ******
 
-    explicit/implicit instead of BackwardEuler, ForwardEuler
+    introduce compoundpathpricer
+    GaussianPathGenerator, etc: allow for more general random walks
+
     Douglas Scheme
     Richardson extrapolation
+    what about barrier or FD with dividends ???
+    revisite model/slice interface
 
     add futures (and convexity adjustment) to the bootstrapping method
     cash flow stream for IRR, duration
@@ -39,11 +43,8 @@ LIBRARY
     implement currency as per OMG definition
     implement round as per OMG enumeration/definition
     add one-touch option (american binary)
-    GaussianPathGenerator, etc: allow for more general random walks
     implement dividendRho for dividendOption
     redesign segment integral
-    what about barrier or FD with dividends ???
-    revisite model/slice interface
     add historicalvolatility to RiskMeasures
     rename all files/dirs to lowercase no spaces (except INSTALL, TODO?)
     histogram class
@@ -54,4 +55,4 @@ DOCUMENTATION ***
     complete MC documentation
     ******
     enforce fulpath&classesinclude DoxyGen requirements
-    add/update DoxyGen TODO with CVS TODO.txt file
+    add/update FAQ material in QuantLib-site TOD.txt

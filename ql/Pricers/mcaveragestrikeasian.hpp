@@ -50,7 +50,7 @@ namespace QuantLib {
           public:
             McAverageStrikeAsian(Option::Type type,
                                  double underlying,
-                                 Rate dividendYield,
+                                 Spread dividendYield,
                                  Rate riskFreeRate,
                                  const std::vector<Time>& times,
                                  double volatility,

@@ -40,7 +40,7 @@ namespace QuantLib {
         const Math::CumulativeNormalDistribution EuropeanOption::f_;
 
         EuropeanOption::EuropeanOption(Option::Type type, double underlying, 
-            double strike, Rate dividendYield, Rate riskFreeRate, 
+            double strike, Spread dividendYield, Rate riskFreeRate, 
             Time residualTime, double volatility)
         : SingleAssetOption(type, underlying, strike, dividendYield, 
                             riskFreeRate, residualTime, volatility), 

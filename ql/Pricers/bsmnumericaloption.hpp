@@ -45,7 +45,7 @@ namespace QuantLib {
         class BSMNumericalOption : public SingleAssetOption {
           public:
             BSMNumericalOption(Option::Type type, double underlying, 
-                double strike, Rate dividendYield, Rate riskFreeRate, 
+                double strike, Spread dividendYield, Rate riskFreeRate, 
                 Time residualTime, double volatility, size_t gridPoints);
             // accessors
             virtual void calculate() const = 0;

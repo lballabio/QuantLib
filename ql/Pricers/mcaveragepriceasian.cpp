@@ -48,7 +48,7 @@ namespace QuantLib {
         using MonteCarlo::GeometricAsianPathPricer;
 
         McAveragePriceAsian::McAveragePriceAsian(Option::Type type,
-            double underlying, double strike, Rate dividendYield,
+            double underlying, double strike, Spread dividendYield,
             Rate riskFreeRate, const std::vector<Time>& times,
             double volatility, bool antitheticVariance, long seed) {
 

@@ -55,7 +55,7 @@ namespace QuantLib {
             SingleAssetOption(Option::Type type,
                               double underlying,
                               double strike,
-                              Rate dividendYield,
+                              Spread dividendYield,
                               Rate riskFreeRate,
                               Time residualTime,
                               double volatility);
@@ -83,7 +83,7 @@ namespace QuantLib {
             Option::Type type_;
             double underlying_;
             double strike_;
-            Rate dividendYield_;
+            Spread dividendYield_;
             Time residualTime_;
             mutable bool hasBeenCalculated_;
             mutable double rho_, dividendRho_, vega_;

@@ -49,7 +49,7 @@ namespace QuantLib {
             McEuropean(Option::Type type,
                              double underlying,
                              double strike,
-                             Rate dividendYield,
+                             Spread dividendYield,
                              Rate riskFreeRate,
                              double residualTime,
                              double volatility,

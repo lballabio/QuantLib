@@ -82,7 +82,7 @@ namespace QuantLib {
             void update() { notifyObservers(); }
             //@}
           protected:
-            RelinkableHandle<MarketElement> rate_;
+            RelinkableHandle<MarketElement> quote_;
             TermStructure* termStructure_;
         };
 
@@ -162,7 +162,6 @@ namespace QuantLib {
                               const Handle<DayCounter>& dayCounter);
             Rate impliedRate() const;
             DiscountFactor discountGuess() const;
-            void setTermStructure(TermStructure*);
             Date maturity() const;
           private:
             Date ImmDate_;
@@ -171,7 +170,7 @@ namespace QuantLib {
             Handle<Calendar> calendar_;
             RollingConvention convention_;
             Handle<DayCounter> dayCounter_;
-            Date settlement_, maturity_;
+            Date maturity_;
             double yearFraction_;
         };
 
@@ -179,6 +178,8 @@ namespace QuantLib {
         //! swap rate
         /*! \warning This class assumes that today's date does not change 
             between calls of setTermStructure().
+
+            \todo discountGuess() should be implemented.
         */
         class SwapRateHelper : public RateHelper {
           public:

@@ -58,7 +58,7 @@ namespace QuantLib {
         const double SingleAssetOption::dRMultiplier_ = 0.0001;
 
         SingleAssetOption::SingleAssetOption(Option::Type type, 
-            double underlying, double strike, Rate dividendYield, 
+            double underlying, double strike, Spread dividendYield, 
             Rate riskFreeRate, Time residualTime, double volatility)
             : type_(type), underlying_(underlying),
             strike_(strike), dividendYield_(dividendYield),

@@ -39,7 +39,7 @@ namespace QuantLib
     {
         CliquetOption::CliquetOption(Option::Type type,
                                      double underlying,
-                                     Rate dividendYield,
+                                     Spread dividendYield,
                                      Rate riskFreeRate,
                                      const std::vector<Time> &dates,
                                      double volatility)

@@ -47,7 +47,7 @@ namespace QuantLib {
             FiniteDifferenceEuropean(Option::Type type,
                                      double underlying,
                                      double strike,
-                                     Rate dividendYield,
+                                     Spread dividendYield,
                                      Rate riskFreeRate,
                                      Time residualTime,
                                      double volatility,

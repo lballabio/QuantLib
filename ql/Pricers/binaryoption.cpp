@@ -39,7 +39,7 @@ namespace QuantLib
     namespace Pricers
     {
         BinaryOption::BinaryOption(Option::Type type, double underlying, 
-                                   double strike, Rate dividendYield, 
+                                   double strike, Spread dividendYield, 
                                    Rate riskFreeRate, Time residualTime,
                                    double volatility, double cashPayoff)
             : SingleAssetOption(type, underlying, strike, dividendYield,
