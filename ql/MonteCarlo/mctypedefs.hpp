@@ -42,6 +42,9 @@ namespace QuantLib {
         typedef PathGenerator<RandomNumbers::GaussianRandomGenerator>
             GaussianPathGenerator;
 
+        typedef PathGenerator2<RandomNumbers::GaussianRandomGenerator>
+            GaussianPathGenerator2;
+
         //! default choice for Gaussian multi-path generator.
         typedef
         MultiPathGenerator<RandomNumbers::RandomArrayGenerator<
