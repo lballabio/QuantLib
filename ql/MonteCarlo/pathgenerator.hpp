@@ -1,6 +1,7 @@
 
 
 /*
+ Copyright (C) 2002 Ferdinando Ametrano
  Copyright (C) 2000, 2001, 2002 RiskMap srl
 
  This file is part of QuantLib, a free-software/open-source library
@@ -23,6 +24,7 @@
 
 #include <ql/MonteCarlo/path.hpp>
 #include <ql/RandomNumbers/randomarraygenerator.hpp>
+#include <ql/diffusionprocess.hpp>
 
 namespace QuantLib {
 
@@ -46,6 +48,10 @@ namespace QuantLib {
                 and must <b>not</b> be included in the passed vector */
             PathGenerator(double drift,
                           double variance,
+                          const std::vector<Time>& times,
+                          long seed = 0);
+            PathGenerator(const std::vector<double>& drift,
+                          const std::vector<double>& variance,
                           const std::vector<Time>& times,
                           long seed = 0);
             //! \name inspectors
@@ -110,6 +116,47 @@ namespace QuantLib {
                 seed));
         }
 
+        template <class RNG>
+        PathGenerator<RNG>::PathGenerator(
+            const std::vector<double>& drift,
+            const std::vector<double>& variance,
+            const std::vector<Time>& times, long seed)
+        : next_(Path(times.size()),1.0) {
+            QL_REQUIRE(times.size() > 0, "PathGenerator: no times given");
+            QL_REQUIRE(times[0] >= 0.0, "PathGenerator: first time(" +
+                 DoubleFormatter::toString(times[0]) + ") must be non negative");
+
+            QL_REQUIRE(variance.size()==times.size(),
+                "PathGenerator: mismatch between variance and time arrays");
+            QL_REQUIRE(drift.size()==times.size(),
+                "PathGenerator: mismatch between drift and time arrays");
+            
+            
+            Array variancePerTime(times.size());
+            double dt = times[0];
+            next_.value.drift()[0] = drift[0]*dt;
+            QL_REQUIRE(variance[0] >= 0.0, "PathGenerator: negative variance");
+            variancePerTime[0] = variance[0]*dt;
+            for(Size i = 1; i < times.size(); i++) {
+                QL_REQUIRE(times[i] >= times[i-1],
+                    "MultiPathGenerator: time(" +
+                    IntegerFormatter::toString(i-1)+")=" +
+                    DoubleFormatter::toString(times[i-1]) +
+                    " is later than time(" +
+                    IntegerFormatter::toString(i) + ")=" +
+                    DoubleFormatter::toString(times[i]));
+                dt = times[i] - times[i-1];
+                next_.value.drift()[i] = drift[i]*dt;
+                QL_REQUIRE(variance[i] >= 0.0, "PathGenerator: negative variance");
+                variancePerTime[i] = variance[i]*dt;
+            }
+            next_.value.times() = times;
+
+            generator_ = Handle<RandomNumbers::RandomArrayGenerator<RNG> >(
+                new RandomNumbers::RandomArrayGenerator<RNG>(variancePerTime,
+                seed));
+        }
+    
         template <class RNG>
         inline const PathGenerator<RNG>::sample_type&
         PathGenerator<RNG>::next() const {
