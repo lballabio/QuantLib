@@ -95,16 +95,20 @@ namespace QuantLib {
     // inline definitions
 
     inline std::string DayCounter::name() const {
+
+        QL_REQUIRE(impl_, "no implementation provided");
         return impl_->name();
     }
 
     inline BigInteger DayCounter::dayCount(const Date& d1,
                                            const Date& d2) const {
+        QL_REQUIRE(impl_, "no implementation provided");
         return impl_->dayCount(d1,d2);
     }
 
     inline Time DayCounter::yearFraction(const Date& d1, const Date& d2,
         const Date& refPeriodStart, const Date& refPeriodEnd) const {
+            QL_REQUIRE(impl_, "no implementation provided");
             return impl_->yearFraction(d1,d2,refPeriodStart,refPeriodEnd);
     }
 
