@@ -21,8 +21,9 @@
 !endif
 
 # Directories
-QL_INCLUDE_DIR    = "$(QL_DIR)"
-QL_LIB_DIR        = "$(QL_DIR)\lib"
+QL_INCLUDE_DIR     = "$(QL_DIR)"
+QL_LIB_DIR         = "$(QL_DIR)\lib"
+QL_FUN_INCLUDE_DIR = "$(QL_DIR)\functions"
 
 # Object files
 QL_TESTS = \
@@ -69,7 +70,7 @@ QL_TESTS = \
 CC        = bcc32
 
 # Options
-CC_OPTS = -vi- -I$(QL_INCLUDE_DIR)
+CC_OPTS = -vi- -I$(QL_INCLUDE_DIR) -I$(QL_FUN_INCLUDE_DIR)
 
 !ifdef _DEBUG
     CC_OPTS = $(CC_OPTS) -v -D_DEBUG

@@ -16,13 +16,14 @@
 */
 
 #include "calendars.hpp"
+#include <ql/dataformatters.hpp>
 #include <ql/calendar.hpp>
 #include <ql/Calendars/target.hpp>
 #include <ql/Calendars/london.hpp>
 #include <ql/Calendars/newyork.hpp>
 #include <ql/Calendars/tokyo.hpp>
 #include <ql/Calendars/jointcalendar.hpp>
-#include <ql/dataformatters.hpp>
+#include <ql/Functions/calendars.hpp>
 #include <fstream>
 
 using namespace QuantLib;
@@ -197,11 +198,209 @@ void CalendarTest::testJointCalendars() {
     }
 }
 
+void CalendarTest::testUSSettlement() {
+    BOOST_MESSAGE("Testing US settlement holiday list...");
+
+    std::vector<Date> expectedHol;
+    expectedHol.push_back(Date(1,January,2004));
+    expectedHol.push_back(Date(19,January,2004));
+    expectedHol.push_back(Date(16,February,2004));
+    expectedHol.push_back(Date(9,April,2004));
+    expectedHol.push_back(Date(31,May,2004));
+    expectedHol.push_back(Date(5,July,2004));
+    expectedHol.push_back(Date(6,September,2004));
+    expectedHol.push_back(Date(11,October,2004));
+    expectedHol.push_back(Date(11,November,2004));
+    expectedHol.push_back(Date(25,November,2004));
+    expectedHol.push_back(Date(24,December,2004));
+    expectedHol.push_back(Date(31,December,2004));
+
+    Calendar c = UnitedStates(UnitedStates::Settlement);
+    std::vector<Date> hol = holidayList(c, Date(1,January,2004),
+                                           Date(31,December,2004));
+    for (Size i=0; i<QL_MIN<Size>(hol.size(), expectedHol.size()); i++) {
+        if (hol[i]!=expectedHol[i])
+            BOOST_FAIL("expected holiday was "
+                       + DateFormatter::toString(expectedHol[i]) +
+                       " while calculated holiday is "
+                       + DateFormatter::toString(hol[i]));
+    }
+    if (hol.size()!=expectedHol.size())
+            BOOST_FAIL("there were "
+                + SizeFormatter::toString(expectedHol.size()) +
+                " expected holidays, while there are "
+                + SizeFormatter::toString(hol.size()) +
+                " calculated holidays");
+}
+
+void CalendarTest::testUSGovernmentBondMarket() {
+    BOOST_MESSAGE("Testing US Government Bond Market holiday list...");
+
+    std::vector<Date> expectedHol;
+    expectedHol.push_back(Date(1,January,2004));
+    expectedHol.push_back(Date(19,January,2004));
+    expectedHol.push_back(Date(16,February,2004));
+    expectedHol.push_back(Date(9,April,2004));
+    expectedHol.push_back(Date(31,May,2004));
+    expectedHol.push_back(Date(5,July,2004));
+    expectedHol.push_back(Date(6,September,2004));
+    expectedHol.push_back(Date(11,October,2004));
+    expectedHol.push_back(Date(11,November,2004));
+    expectedHol.push_back(Date(25,November,2004));
+    expectedHol.push_back(Date(24,December,2004));
+
+    Calendar c = UnitedStates(UnitedStates::GovernmentBond);
+    std::vector<Date> hol = holidayList(c, Date(1,January,2004),
+                                           Date(31,December,2004));
+
+    for (Size i=0; i<QL_MIN<Size>(hol.size(), expectedHol.size()); i++) {
+        if (hol[i]!=expectedHol[i])
+            BOOST_FAIL("expected holiday was "
+                       + DateFormatter::toString(expectedHol[i]) +
+                       " while calculated holiday is "
+                       + DateFormatter::toString(hol[i]));
+    }
+    if (hol.size()!=expectedHol.size())
+            BOOST_FAIL("there were "
+                + SizeFormatter::toString(expectedHol.size()) +
+                " expected holidays, while there are "
+                + SizeFormatter::toString(hol.size()) +
+                " calculated holidays");
+}
+
+void CalendarTest::testUSNewYorkStockExchange() {
+    BOOST_MESSAGE("Testing US New York Stock Exchange holiday list...");
+
+    std::vector<Date> expectedHol;
+    expectedHol.push_back(Date(1,January,2004));
+    expectedHol.push_back(Date(19,January,2004));
+    expectedHol.push_back(Date(16,February,2004));
+    expectedHol.push_back(Date(9,April,2004));
+    expectedHol.push_back(Date(31,May,2004));
+    expectedHol.push_back(Date(5,July,2004));
+    expectedHol.push_back(Date(6,September,2004));
+    expectedHol.push_back(Date(25,November,2004));
+    expectedHol.push_back(Date(24,December,2004));
+
+    expectedHol.push_back(Date(17,January,2005));
+    expectedHol.push_back(Date(21,February,2005));
+    expectedHol.push_back(Date(25,March,2005));
+    expectedHol.push_back(Date(30,May,2005));
+    expectedHol.push_back(Date(4,July,2005));
+    expectedHol.push_back(Date(5,September,2005));
+    expectedHol.push_back(Date(24,November,2005));
+    expectedHol.push_back(Date(26,December,2005));
+
+    expectedHol.push_back(Date(2,January,2006));
+    expectedHol.push_back(Date(16,January,2006));
+    expectedHol.push_back(Date(20,February,2006));
+    expectedHol.push_back(Date(14,April,2006));
+    expectedHol.push_back(Date(29,May,2006));
+    expectedHol.push_back(Date(4,July,2006));
+    expectedHol.push_back(Date(4,September,2006));
+    expectedHol.push_back(Date(23,November,2006));
+    expectedHol.push_back(Date(25,December,2006));
+
+    Calendar c = UnitedStates(UnitedStates::Exchange);
+    std::vector<Date> hol = holidayList(c, Date(1,January,2004),
+                                           Date(31,December,2006));
+
+    for (Size i=0; i<QL_MIN<Size>(hol.size(), expectedHol.size()); i++) {
+        if (hol[i]!=expectedHol[i])
+            BOOST_FAIL("expected holiday was "
+                       + DateFormatter::toString(expectedHol[i]) +
+                       " while calculated holiday is "
+                       + DateFormatter::toString(hol[i]));
+    }
+    if (hol.size()!=expectedHol.size())
+            BOOST_FAIL("there were "
+                + SizeFormatter::toString(expectedHol.size()) +
+                " expected holidays, while there are "
+                + SizeFormatter::toString(hol.size()) +
+                " calculated holidays");
+
+}
+
+void CalendarTest::testTARGET() {
+    BOOST_MESSAGE("Testing TARGET holiday list...");
+
+    std::vector<Date> expectedHol;
+    expectedHol.push_back(Date(1,January,1999));
+    expectedHol.push_back(Date(31,December,1999));
+
+    expectedHol.push_back(Date(21,April,2000));
+    expectedHol.push_back(Date(24,April,2000));
+    expectedHol.push_back(Date(1,May,2000));
+    expectedHol.push_back(Date(25,December,2000));
+    expectedHol.push_back(Date(26,December,2000));
+
+    expectedHol.push_back(Date(1,January,2001));
+    expectedHol.push_back(Date(13,April,2001));
+    expectedHol.push_back(Date(16,April,2001));
+    expectedHol.push_back(Date(1,May,2001));
+    expectedHol.push_back(Date(25,December,2001));
+    expectedHol.push_back(Date(26,December,2001));
+    expectedHol.push_back(Date(31,December,2001));
+
+    expectedHol.push_back(Date(1,January,2002));
+    expectedHol.push_back(Date(29,March,2002));
+    expectedHol.push_back(Date(1,April,2002));
+    expectedHol.push_back(Date(1,May,2002));
+    expectedHol.push_back(Date(25,December,2002));
+    expectedHol.push_back(Date(26,December,2002));
+
+    expectedHol.push_back(Date(1,January,2003));
+    expectedHol.push_back(Date(18,April,2003));
+    expectedHol.push_back(Date(21,April,2003));
+    expectedHol.push_back(Date(1,May,2003));
+    expectedHol.push_back(Date(25,December,2003));
+    expectedHol.push_back(Date(26,December,2003));
+
+    expectedHol.push_back(Date(1,January,2004));
+    expectedHol.push_back(Date(9,April,2004));
+    expectedHol.push_back(Date(12,April,2004));
+
+    expectedHol.push_back(Date(25,March,2005));
+    expectedHol.push_back(Date(28,March,2005));
+    expectedHol.push_back(Date(26,December,2005));
+
+    expectedHol.push_back(Date(14,April,2006));
+    expectedHol.push_back(Date(17,April,2006));
+    expectedHol.push_back(Date(1,May,2006));
+    expectedHol.push_back(Date(25,December,2006));
+    expectedHol.push_back(Date(26,December,2006));
+
+    Calendar c = TARGET();
+    std::vector<Date> hol = holidayList(c, Date(1,January,1999),
+                                           Date(31,December,2006));
+
+    for (Size i=0; i<QL_MIN<Size>(hol.size(), expectedHol.size()); i++) {
+        if (hol[i]!=expectedHol[i])
+            BOOST_FAIL("expected holiday was "
+                       + DateFormatter::toString(expectedHol[i]) +
+                       " while calculated holiday is "
+                       + DateFormatter::toString(hol[i]));
+    }
+    if (hol.size()!=expectedHol.size())
+            BOOST_FAIL("there were "
+                + SizeFormatter::toString(expectedHol.size()) +
+                " expected holidays, while there are "
+                + SizeFormatter::toString(hol.size()) +
+                " calculated holidays");
+
+}
 
 test_suite* CalendarTest::suite() {
     test_suite* suite = BOOST_TEST_SUITE("Calendar tests");
+
+    suite->add(BOOST_TEST_CASE(&CalendarTest::testTARGET));
+    suite->add(BOOST_TEST_CASE(&CalendarTest::testUSSettlement));
+    suite->add(BOOST_TEST_CASE(&CalendarTest::testUSGovernmentBondMarket));
+    suite->add(BOOST_TEST_CASE(&CalendarTest::testUSNewYorkStockExchange));
+
     suite->add(BOOST_TEST_CASE(&CalendarTest::testModifiedCalendars));
     suite->add(BOOST_TEST_CASE(&CalendarTest::testJointCalendars));
+
     return suite;
 }
 
