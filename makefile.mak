@@ -5,6 +5,9 @@
 # $Id$
 # $Source$
 # $Log$
+# Revision 1.17  2001/05/24 16:06:17  nando
+# commented out QL_DIR requirement
+#
 # Revision 1.16  2001/05/24 12:52:01  nando
 # smoothing #include xx.hpp
 #
@@ -18,13 +21,6 @@
 .autodepend
 .silent
 
-# Directories
-!if "$(QL_DIR)" == ""
-!message Set the QL_DIR environment variable to the absolute
-!message path of your QuantLib installation before running $(MAKE).
-!message
-!error terminated
-!endif
 
 # Options
 !ifdef DEBUG
@@ -40,6 +36,12 @@ quantlib::
 
 # QuantLib library
 install::
+#!if "$(QL_DIR)" == ""
+#!message Set the QL_DIR environment variable to the absolute
+#!message path of your QuantLib installation before running $(MAKE).
+#!message
+#!error terminated
+#!endif
     if exist "$(QL_DIR)\Include\ql" rmdir /S /Q "$(QL_DIR)\Include\ql"
     xcopy Include\ql\*.hpp "$(QL_DIR)\Include\ql" /S /I
     if exist "$(QL_DIR)\lib\Win32\VisualStudio" rmdir /S /Q "$(QL_DIR)\lib\Win32\VisualStudio"
