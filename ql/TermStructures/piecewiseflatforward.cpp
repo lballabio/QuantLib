@@ -112,27 +112,29 @@ namespace QuantLib {
                             accuracy_,guess,min,max);
                     } catch (std::exception& e) {
 
+                        size_t k = i-1; // only outputs the last results
+                        // size_t k = 0; // outputs all results
                         std::string forward_string;
-                        for(size_t j1 = i-1; j1 < i; j1++){
+                        for(size_t j1 = k; j1 < i; j1++){
                             forward_string += 
                                 DoubleFormatter::toString(forwards_[j1],3) + " ";
                         }
 
                         std::string discount_string;
-                        for(size_t j2 = i-1; j2 < i; j2++){
+                        for(size_t j2 = k; j2 < i; j2++){
                             discount_string += " " +
                                 DoubleFormatter::toString(discounts_[j2],10) + " ";
                         }
 
                         std::string zeroYield_string;
-                        for(size_t j3 = i-1; j3 < i; j3++){
+                        for(size_t j3 = k; j3 < i; j3++){
                             zeroYield_string += " " +
                                 DoubleFormatter::toString(zeroYields_[j3],3) + " ";
                         }
 
                         
                         throw Error(
-                            "Could not bootstarp curve. segment " +
+                            "Could not bootstrap curve. segment " +
                             IntegerFormatter::toString(i) + " of " +
                             IntegerFormatter::toString(instruments_.size()) + 
                             ", last forward = " + forward_string +
