@@ -59,7 +59,8 @@ namespace QuantLib {
                 const RandomAccessIteratorX& xEnd,
                 const RandomAccessIteratorY& yBegin,
                 const RandomAccessIteratorY& yEnd,
-                const MatricialData& data);
+                const MatricialData& data,
+                bool allowExtrapolation);
             virtual ~Interpolation2D() {}
             /*! This operator must be overridden to provide an implementation
                 of the actual interpolation.
@@ -76,6 +77,7 @@ namespace QuantLib {
             // the iterators above already introduce lifetime issues.
             // There would be no added advantage in copying the data.
             const MatricialData& data_;
+            bool allowExtrapolation_;
         };
 
 
@@ -84,9 +86,10 @@ namespace QuantLib {
         template <class I1, class I2, class M>
         inline Interpolation2D<I1,I2,M>::Interpolation2D(
             const I1& xBegin, const I1& xEnd, 
-            const I2& yBegin, const I2& yEnd, const M& data)
+            const I2& yBegin, const I2& yEnd, const M& data,
+            bool allowExtrapolation)
         : xBegin_(xBegin), xEnd_(xEnd), yBegin_(yBegin), yEnd_(yEnd), 
-          data_(data) {
+          data_(data), allowExtrapolation_(allowExtrapolation) {
             #ifdef QL_DEBUG
                 QL_REQUIRE(xEnd_-xBegin_ >= 2,
                     "not enough columns to interpolate");

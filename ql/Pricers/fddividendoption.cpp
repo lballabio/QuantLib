@@ -124,7 +124,7 @@ namespace QuantLib {
 
             CubicSpline<std::vector<double>::iterator,
               std::vector<double>::iterator> priceSpline(
-                logOldGrid.begin(), logOldGrid.end(), tmpPrices.begin());
+                logOldGrid.begin(), logOldGrid.end(), tmpPrices.begin(), true);
 
             for (j = 0; j < gridSize; j++)
                 prices[j] = priceSpline(QL_LOG(newGrid[j]));

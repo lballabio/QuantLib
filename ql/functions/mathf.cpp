@@ -55,14 +55,14 @@ namespace QuantLib {
                         std::vector<double>::const_iterator, 
 			            std::vector<double>::const_iterator>(
                         x_values.begin(), x_values.end(),
-                        y_values.begin())(x);
+                        y_values.begin(), allowExtrapolation)(x);
                     break;
                 case 2:
                     result = CubicSpline<
                         std::vector<double>::const_iterator, 
 			            std::vector<double>::const_iterator>(
                         x_values.begin(), x_values.end(),
-                        y_values.begin())(x);
+                        y_values.begin(), allowExtrapolation)(x);
                     break;
                 default:
                     throw IllegalArgumentError(
@@ -85,7 +85,8 @@ namespace QuantLib {
                         std::vector<double>::const_iterator,
 			            std::vector<double>::const_iterator,
                         Matrix>(x_values.begin(), x_values.end(),
-                        y_values.begin(), y_values.end(), dataMatrix)(x,y);
+                        y_values.begin(), y_values.end(), dataMatrix,
+                        allowExtrapolation)(x,y);
                     break;
                 default:
                     throw IllegalArgumentError(

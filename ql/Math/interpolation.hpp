@@ -52,7 +52,8 @@ namespace QuantLib {
                 result_type;
             Interpolation(const RandomAccessIterator1& xBegin,
                 const RandomAccessIterator1& xEnd,
-                const RandomAccessIterator2& yBegin);
+                const RandomAccessIterator2& yBegin,
+                bool allowExtrapolation);
             /*! This operator must be overridden to provide an implementation
                 of the actual interpolation.
 
@@ -63,14 +64,16 @@ namespace QuantLib {
           protected:
             RandomAccessIterator1 xBegin_, xEnd_;
             RandomAccessIterator2 yBegin_;
+            bool allowExtrapolation_;
         };
 
         // inline definitions
 
         template <class I1, class I2>
         inline Interpolation<I1,I2>::Interpolation(const I1& xBegin,
-            const I1& xEnd, const I2& yBegin)
-        : xBegin_(xBegin), xEnd_(xEnd), yBegin_(yBegin) {
+            const I1& xEnd, const I2& yBegin, bool allowExtrapolation)
+        : xBegin_(xBegin), xEnd_(xEnd), yBegin_(yBegin),
+          allowExtrapolation_(allowExtrapolation) {
             #ifdef QL_DEBUG
                 QL_REQUIRE(xEnd_-xBegin_ >= 2,
                     "not enough points to interpolate");
