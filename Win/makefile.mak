@@ -141,7 +141,10 @@ QuantLib: $(OUTPUT_DIR)\QuantLib.lib
 # Python module
 Python: $(PYTHON_DIR)\QuantLibc.dll
 
-$(PYTHON_DIR)\QuantLibc.dll:: $(OUTPUT_DIR) $(OUTPUT_DIR)\quantlib_wrap.obj $(OUTPUT_DIR)\QuantLib.lib $(PYTHON_BCC_LIB)
+$(PYTHON_DIR)\QuantLibc.dll::   $(OUTPUT_DIR) \
+                                $(OUTPUT_DIR)\QuantLib.lib \
+                                $(OUTPUT_DIR)\quantlib_wrap.obj \
+                                $(PYTHON_BCC_LIB)
     echo Linking Python module...
     $(LINK) $(LINK_OPTS) -Tpd $(OUTPUT_DIR)\quantlib_wrap.obj $(WIN_OBJS),$(PYTHON_DIR)\QuantLibc.dll,, $(OUTPUT_DIR)\QuantLib.lib $(PYTHON_BCC_LIB) $(WIN_LIBS), QuantLibc.def
     del $(PYTHON_DIR)\QuantLibc.ilc
