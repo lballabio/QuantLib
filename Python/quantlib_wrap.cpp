@@ -667,6 +667,18 @@ using QuantLib::TermStructure;
 using QuantLib::Handle;
 typedef Handle<TermStructure> TermStructureHandle;
 
+using QuantLib::ImpliedTermStructure;
+
+TermStructureHandle NewImpliedTermStructure(TermStructureHandle curve, Date evaluationDate) {
+	return Handle<TermStructure>(new ImpliedTermStructure(curve,evaluationDate));
+}
+
+using QuantLib::SpreadedTermStructure;
+
+TermStructureHandle NewSpreadedTermStructure(TermStructureHandle curve, Spread spread) {
+	return Handle<TermStructure>(new SpreadedTermStructure(curve,spread));
+}
+
 #include "piecewiseconstantforwards.h"
 
 using QuantLib::TermStructures::PiecewiseConstantForwards;
@@ -1140,6 +1152,62 @@ static PyObject *_wrap_ITL(PyObject *self, PyObject *args, PyObject *kwargs) {
             return NULL;
         }
     }resultobj = SWIG_NewPointerObj((void *)result, SWIGTYPE_p_CurrencyHandle);
+    return resultobj;
+}
+
+
+static PyObject *_wrap_ImpliedTermStructure(PyObject *self, PyObject *args, PyObject *kwargs) {
+    PyObject *resultobj;
+    TermStructureHandle *arg0 ;
+    Date *arg1 ;
+    PyObject * argo0 =0 ;
+    PyObject * argo1 =0 ;
+    char *kwnames[] = {
+        "curve","evaluationDate", NULL 
+    };
+    TermStructureHandle *result ;
+    
+    if(!PyArg_ParseTupleAndKeywords(args,kwargs,"OO:ImpliedTermStructure",kwnames,&argo0,&argo1)) return NULL;
+    if ((SWIG_ConvertPtr(argo0,(void **) &arg0,SWIGTYPE_p_TermStructureHandle,1)) == -1) return NULL;
+    if ((SWIG_ConvertPtr(argo1,(void **) &arg1,SWIGTYPE_p_Date,1)) == -1) return NULL;
+    {
+        try {
+            result = new TermStructureHandle (NewImpliedTermStructure(*arg0,*arg1));
+        }catch (std::exception& e) {
+            PyErr_SetString(PyExc_Exception,e.what());
+            return NULL;
+        }catch (...) {
+            PyErr_SetString(PyExc_Exception,"unknown error");
+            return NULL;
+        }
+    }resultobj = SWIG_NewPointerObj((void *)result, SWIGTYPE_p_TermStructureHandle);
+    return resultobj;
+}
+
+
+static PyObject *_wrap_SpreadedTermStructure(PyObject *self, PyObject *args, PyObject *kwargs) {
+    PyObject *resultobj;
+    TermStructureHandle *arg0 ;
+    Spread arg1 ;
+    PyObject * argo0 =0 ;
+    char *kwnames[] = {
+        "curve","spread", NULL 
+    };
+    TermStructureHandle *result ;
+    
+    if(!PyArg_ParseTupleAndKeywords(args,kwargs,"Od:SpreadedTermStructure",kwnames,&argo0,&arg1)) return NULL;
+    if ((SWIG_ConvertPtr(argo0,(void **) &arg0,SWIGTYPE_p_TermStructureHandle,1)) == -1) return NULL;
+    {
+        try {
+            result = new TermStructureHandle (NewSpreadedTermStructure(*arg0,arg1));
+        }catch (std::exception& e) {
+            PyErr_SetString(PyExc_Exception,e.what());
+            return NULL;
+        }catch (...) {
+            PyErr_SetString(PyExc_Exception,"unknown error");
+            return NULL;
+        }
+    }resultobj = SWIG_NewPointerObj((void *)result, SWIGTYPE_p_TermStructureHandle);
     return resultobj;
 }
 
@@ -6128,6 +6196,8 @@ static PyMethodDef QuantLibcMethods[] = {
 	 { "GBP", (PyCFunction) _wrap_GBP, METH_VARARGS | METH_KEYWORDS },
 	 { "DEM", (PyCFunction) _wrap_DEM, METH_VARARGS | METH_KEYWORDS },
 	 { "ITL", (PyCFunction) _wrap_ITL, METH_VARARGS | METH_KEYWORDS },
+	 { "ImpliedTermStructure", (PyCFunction) _wrap_ImpliedTermStructure, METH_VARARGS | METH_KEYWORDS },
+	 { "SpreadedTermStructure", (PyCFunction) _wrap_SpreadedTermStructure, METH_VARARGS | METH_KEYWORDS },
 	 { "PiecewiseConstantForwards", (PyCFunction) _wrap_PiecewiseConstantForwards, METH_VARARGS | METH_KEYWORDS },
 	 { "Stock", (PyCFunction) _wrap_Stock, METH_VARARGS | METH_KEYWORDS },
 	 { "new_Date", (PyCFunction) _wrap_new_Date, METH_VARARGS | METH_KEYWORDS },

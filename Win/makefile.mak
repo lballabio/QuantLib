@@ -42,7 +42,7 @@ LINK_OPTS	= -q -x -L$(BCC_LIBS)
 
 # Primary target:
 # Python module
-$(PYTHON_DIR)\QuantLibc.dll::	$(OUTPUT_DIR)\quantlib_wrap.obj QuantLib $(PYTHON_BCC_LIB)
+$(PYTHON_DIR)\QuantLibc.dll:: $(OUTPUT_DIR) $(OUTPUT_DIR)\quantlib_wrap.obj QuantLib $(PYTHON_BCC_LIB)
 	@echo Linking Python module...
 	@$(LINK) $(LINK_OPTS) -Tpd $(OUTPUT_DIR)\quantlib_wrap.obj $(CORE_OBJS) $(CALENDAR_OBJS) $(DAYCOUNT_OBJS) $(OPERATOR_OBJS) $(PRICER_OBJS) $(SOLVER1D_OBJS) $(TERMSTRUC_OBJS) $(WIN_OBJS),$(PYTHON_DIR)\QuantLibc.dll,, $(PYTHON_BCC_LIB) $(WIN_LIBS), QuantLibc.def
 	@del $(PYTHON_DIR)\QuantLibc.ilc
@@ -52,9 +52,13 @@ $(PYTHON_DIR)\QuantLibc.dll::	$(OUTPUT_DIR)\quantlib_wrap.obj QuantLib $(PYTHON_
 	@del $(PYTHON_DIR)\QuantLibc.tds
 	@echo Build completed
 
+# make sure the output directory exists
+$(OUTPUT_DIR):
+	@if not exist $(OUTPUT_DIR) md $(OUTPUT_DIR)
+
 # Python lib in OMF format
 $(PYTHON_BCC_LIB):
-	@$(COFF2OMF) $(PYTHON_LIBS)\python15.lib $(PYTHON_BCC_LIB)
+	@$(COFF2OMF) -q $(PYTHON_LIBS)\python15.lib $(PYTHON_BCC_LIB)
 
 # Wrapper functions
 $(OUTPUT_DIR)\quantlib_wrap.obj:: $(PYTHON_DIR)\quantlib_wrap.cpp

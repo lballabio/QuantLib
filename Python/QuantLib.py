@@ -601,6 +601,16 @@ def ITL(*args, **kwargs):
     if val: val = CurrencyPtr(val); val.thisown = 1
     return val
 
+def ImpliedTermStructure(*args, **kwargs):
+    val = apply(QuantLibc.ImpliedTermStructure,args,kwargs)
+    if val: val = TermStructurePtr(val); val.thisown = 1
+    return val
+
+def SpreadedTermStructure(*args, **kwargs):
+    val = apply(QuantLibc.SpreadedTermStructure,args,kwargs)
+    if val: val = TermStructurePtr(val); val.thisown = 1
+    return val
+
 def PiecewiseConstantForwards(*args, **kwargs):
     val = apply(QuantLibc.PiecewiseConstantForwards,args,kwargs)
     if val: val = TermStructurePtr(val); val.thisown = 1

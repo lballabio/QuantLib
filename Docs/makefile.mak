@@ -16,5 +16,7 @@ CompileLaTeX::
 	@pdflatex refman
 	@makeindex refman.idx
 	@pdflatex refman
-	@cd..
+	@cd ..
+	@if not exist pdf md pdf
+	@copy latex\refman.pdf pdf
 
