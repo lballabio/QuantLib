@@ -1,6 +1,4 @@
 Makefile.in
-*.obj
-*.obj_d
 config.hpp
 config.hpp.in
 stamp-h1
