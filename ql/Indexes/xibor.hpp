@@ -45,7 +45,7 @@ namespace QuantLib {
           convention_(convention),
           dayCounter_(dayCounter), termStructure_(h) {
             registerWith(termStructure_);
-            registerWith(Settings::instance().evaluationDateGuard());
+            registerWith(Settings::instance().evaluationDate());
         }
         //! \name Index interface
         //@{

@@ -92,7 +92,7 @@ namespace {
         settlementDays = 2;
         fixingDays = 2;
         today = calendar.adjust(Date::todaysDate());
-        Settings::instance().setEvaluationDate(today);
+        Settings::instance().evaluationDate() = today;
         settlement = calendar.advance(today,settlementDays,Days);
         depoConvention = ModifiedFollowing;
         depoDayCounter = Actual360();
@@ -139,7 +139,7 @@ namespace {
     }
 
     void teardown() {
-        Settings::instance().setEvaluationDate(Date());
+        Settings::instance().evaluationDate() = Date();
     }
 
 }
@@ -373,7 +373,7 @@ void PiecewiseYieldCurveTest::testObservability() {
     }
 
     f.lower();
-    Settings::instance().setEvaluationDate(calendar.advance(today,1,Months));
+    Settings::instance().evaluationDate() = calendar.advance(today,1,Months);
     if (!f.isUp())
             BOOST_FAIL("Observer was not notified of date change");
 

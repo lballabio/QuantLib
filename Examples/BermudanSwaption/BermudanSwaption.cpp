@@ -73,7 +73,7 @@ int main(int, char* [])
         Date todaysDate(15, February, 2002);
         Calendar calendar = TARGET();
         Date settlementDate(19, February, 2002);
-        Settings::instance().setEvaluationDate(todaysDate);
+        Settings::instance().evaluationDate() = todaysDate;
 
         // flat yield term structure impling 1x5 swap at 5%
         boost::shared_ptr<Quote> flatRate(new SimpleQuote(0.04875825));

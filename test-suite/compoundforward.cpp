@@ -83,7 +83,7 @@ namespace {
         settlementDays = 0;
         fixingDays = 0;
         today = calendar.adjust(Date::todaysDate());
-        Settings::instance().setEvaluationDate(today);
+        Settings::instance().evaluationDate() = today;
         settlement = calendar.advance(today,settlementDays,Days);
         convention = ModifiedFollowing;
         dayCounter = Actual365Fixed();
@@ -118,7 +118,7 @@ namespace {
     }
 
     void teardown() {
-        Settings::instance().setEvaluationDate(Date());
+        Settings::instance().evaluationDate() = Date();
     }
 
 }

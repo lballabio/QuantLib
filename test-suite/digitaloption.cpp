@@ -68,7 +68,7 @@ namespace {
     };
 
     void teardown() {
-        Settings::instance().setEvaluationDate(Date());
+        Settings::instance().evaluationDate() = Date();
     }
 
 }
@@ -518,7 +518,7 @@ void DigitalOptionTest::testCashAtHitOrNothingAmericanGreeks() {
 
     DayCounter dc = Actual360();
     Date today = Date::todaysDate();
-    Settings::instance().setEvaluationDate(today);
+    Settings::instance().evaluationDate() = today;
 
     boost::shared_ptr<SimpleQuote> spot(new SimpleQuote(0.0));
     boost::shared_ptr<SimpleQuote> qRate(new SimpleQuote(0.0));

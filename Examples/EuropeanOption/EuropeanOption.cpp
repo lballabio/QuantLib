@@ -71,7 +71,7 @@ int main(int, char* [])
 
         Date todaysDate(15, May, 1998);
         Date settlementDate(17, May, 1998);
-        Settings::instance().setEvaluationDate(todaysDate);
+        Settings::instance().evaluationDate() = todaysDate;
 
         Date exerciseDate(17, May, 1999);
         DayCounter dayCounter = Actual365Fixed();

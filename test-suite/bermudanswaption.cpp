@@ -79,14 +79,14 @@ namespace {
                     new Euribor(12/floatingFrequency_,Months,termStructure_));
         calendar_ = index_->calendar();
         today_ = calendar_.adjust(Date::todaysDate());
-        Settings::instance().setEvaluationDate(today_);
+        Settings::instance().evaluationDate() = today_;
         settlement_ = calendar_.advance(today_,settlementDays_,Days);
 
         termStructure_.linkTo(flatRate(settlement_,0.05, Actual365Fixed()));
     }
 
     void teardown() {
-        Settings::instance().setEvaluationDate(Date());
+        Settings::instance().evaluationDate() = Date();
     }
 
 }
@@ -99,7 +99,7 @@ void BermudanSwaptionTest::testCachedValues() {
     QL_TEST_SETUP
 
     today_ = Date(15, February, 2002);
-    Settings::instance().setEvaluationDate(today_);
+    Settings::instance().evaluationDate() = today_;
     settlement_ = Date(19, February, 2002);
     // flat yield term structure impling 1x5 swap at 5%
     termStructure_.linkTo(flatRate(settlement_,0.04875825,

@@ -37,7 +37,7 @@ namespace {
     };
 
     void teardown() {
-        Settings::instance().setEvaluationDate(Date());
+        Settings::instance().evaluationDate() = Date();
     }
 
 }
@@ -50,7 +50,7 @@ void ShortRateModelTest::testCachedHullWhite() {
 
     Date today(15, February, 2002);
     Date settlement(19, February, 2002);
-    Settings::instance().setEvaluationDate(today);
+    Settings::instance().evaluationDate() = today;
 
     Handle<YieldTermStructure> termStructure;
     termStructure.linkTo(flatRate(settlement,0.04875825,

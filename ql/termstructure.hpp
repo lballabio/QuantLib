@@ -107,7 +107,7 @@ namespace QuantLib {
                                         const Calendar& calendar)
     : moving_(true), updated_(false), settlementDays_(settlementDays),
       calendar_(calendar) {
-        registerWith(Settings::instance().evaluationDateGuard());
+        registerWith(Settings::instance().evaluationDate());
     }
 
     inline const Date& TermStructure::referenceDate() const {

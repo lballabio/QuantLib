@@ -33,7 +33,7 @@ namespace QuantLib {
                          fixingDays, spread, refPeriodStart, refPeriodEnd),
       index_(index), dayCounter_(dayCounter) {
         registerWith(index_);
-        registerWith(Settings::instance().evaluationDateGuard());
+        registerWith(Settings::instance().evaluationDate());
     }
 
     Real ParCoupon::amount() const {

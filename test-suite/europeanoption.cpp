@@ -175,7 +175,7 @@ namespace {
     }
 
     void teardown() {
-        Settings::instance().setEvaluationDate(Date());
+        Settings::instance().evaluationDate() = Date();
     }
 
 }
@@ -585,7 +585,7 @@ void EuropeanOptionTest::testGreeks() {
 
     DayCounter dc = Actual360();
     Date today = Date::todaysDate();
-    Settings::instance().setEvaluationDate(today);
+    Settings::instance().evaluationDate() = today;
 
     boost::shared_ptr<SimpleQuote> spot(new SimpleQuote(0.0));
     boost::shared_ptr<SimpleQuote> qRate(new SimpleQuote(0.0));
@@ -687,11 +687,11 @@ void EuropeanOptionTest::testGreeks() {
 
                           // perturb date and get theta
                           Time dT = dc.yearFraction(today-1, today+1);
-                          Settings::instance().setEvaluationDate(today-1);
+                          Settings::instance().evaluationDate() = today-1;
                           value_m = option.NPV();
-                          Settings::instance().setEvaluationDate(today+1);
+                          Settings::instance().evaluationDate() = today+1;
                           value_p = option.NPV();
-                          Settings::instance().setEvaluationDate(today);
+                          Settings::instance().evaluationDate() = today;
                           expected["theta"] = (value_p - value_m)/dT;
 
                           // compare
@@ -1145,7 +1145,7 @@ void EuropeanOptionTest::testFdGreeks() {
 
     DayCounter dc = Actual360();
     Date today = Date::todaysDate();
-    Settings::instance().setEvaluationDate(today);
+    Settings::instance().evaluationDate() = today;
 
     boost::shared_ptr<SimpleQuote> spot(new SimpleQuote(0.0));
     boost::shared_ptr<SimpleQuote> qRate(new SimpleQuote(0.0));
@@ -1204,11 +1204,11 @@ void EuropeanOptionTest::testFdGreeks() {
 
                         // perturb date and get theta
                         Time dT = dc.yearFraction(today-1, today+1);
-                        Settings::instance().setEvaluationDate(today-1);
+                        Settings::instance().evaluationDate() = today-1;
                         value_m = option.NPV();
-                        Settings::instance().setEvaluationDate(today+1);
+                        Settings::instance().evaluationDate() = today+1;
                         value_p = option.NPV();
-                        Settings::instance().setEvaluationDate(today);
+                        Settings::instance().evaluationDate() = today;
                         expected["theta"] = (value_p - value_m)/dT;
 
                         // compare

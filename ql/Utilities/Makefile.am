@@ -8,6 +8,7 @@ include_HEADERS = \
     dataparsers.hpp \
     disposable.hpp \
     null.hpp \
+    observablevalue.hpp \
     steppingiterator.hpp \
     strings.hpp \
     tracing.hpp

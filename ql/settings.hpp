@@ -26,7 +26,7 @@
 
 #include <ql/date.hpp>
 #include <ql/Patterns/singleton.hpp>
-#include <ql/Patterns/observable.hpp>
+#include <ql/Utilities/observablevalue.hpp>
 
 namespace QuantLib {
 
@@ -34,16 +34,27 @@ namespace QuantLib {
     class Settings : public Singleton<Settings> {
         friend class Singleton<Settings>;
       private:
-        Settings();
+        Settings() {}
+        class DateProxy : public ObservableValue<Date> {
+          public:
+            DateProxy();
+            DateProxy& operator=(const Date&);
+            operator Date() const;
+        };
       public:
         //! \name Evaluation date
         //@{
         //! the date at which pricing is to be performed
-        /*! If not set, the current date will be used */
-        Date evaluationDate() const;
+        /*! If not set, the current date will be used.
+            \note setting the evaluation date to the null date will
+                  actually cause it to be set to today's date.
+        */
+        DateProxy& evaluationDate();
+        #ifndef QL_DISABLE_DEPRECATED
         //! change the evaluation date and notify registered instruments
         /*! \note settings the evaluation date to the null date will
                   cause evaluationDate() to return today's date.
+            \deprecated assign the new value to evaluationDate() instead
         */
         void setEvaluationDate(const Date&);
         //! observable sending notification when the evaluation date changes
@@ -53,37 +64,47 @@ namespace QuantLib {
                      (which results in today's date being used for
                      pricing) and the current date changes as the
                      clock strikes midnight.
+            \deprecated register with evaluationDate() instead
         */
         boost::shared_ptr<Observable> evaluationDateGuard() const;
         //@}
+        #endif
       private:
         // evaluation date
-        Date evaluationDate_;
-        boost::shared_ptr<Observable> evaluationDateGuard_;
+        DateProxy evaluationDate_;
     };
 
 
     // inline definitions
 
-    inline Settings::Settings() {
-        evaluationDateGuard_ = boost::shared_ptr<Observable>(new Observable);
+    inline Settings::DateProxy& Settings::evaluationDate() {
+        return evaluationDate_;
     }
 
-    inline Date Settings::evaluationDate() const {
-        if (evaluationDate_ == Date())
-            return Date::todaysDate();
-        else
-            return evaluationDate_;
-    }
-
+    #ifndef QL_DISABLE_DEPRECATED
     inline void Settings::setEvaluationDate(const Date& d) {
         evaluationDate_ = d;
-        evaluationDateGuard_->notifyObservers();
     }
 
     inline
     boost::shared_ptr<Observable> Settings::evaluationDateGuard() const {
-        return evaluationDateGuard_;
+        return evaluationDate_;
+    }
+    #endif
+
+    inline Settings::DateProxy::DateProxy() : ObservableValue<Date>(Date()) {}
+
+    inline Settings::DateProxy::operator Date() const {
+        if (value() == Date())
+            return Date::todaysDate();
+        else
+            return value();
+    }
+
+    inline
+    Settings::DateProxy& Settings::DateProxy::operator=(const Date& d) {
+        ObservableValue<Date>::operator=(d);
+        return *this;
     }
 
 }

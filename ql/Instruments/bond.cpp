@@ -145,7 +145,7 @@ namespace QuantLib {
     : settlementDays_(settlementDays), calendar_(calendar),
       businessDayConvention_(businessDayConvention), dayCount_(dayCount),
       frequency_(NoFrequency), discountCurve_(discountCurve) {
-        registerWith(Settings::instance().evaluationDateGuard());
+        registerWith(Settings::instance().evaluationDate());
         registerWith(discountCurve_);
     }
 

@@ -49,7 +49,7 @@ namespace QuantLib {
             registerWith(*i);
 
         registerWith(termStructure);
-        registerWith(Settings::instance().evaluationDateGuard());
+        registerWith(Settings::instance().evaluationDate());
     }
 
     bool CapFloor::isExpired() const {

@@ -43,11 +43,11 @@ namespace {
     void setup() {
         calendar = TARGET();
         today = calendar.adjust(Date::todaysDate());
-        Settings::instance().setEvaluationDate(today);
+        Settings::instance().evaluationDate() = today;
     }
 
     void teardown() {
-        Settings::instance().setEvaluationDate(Date());
+        Settings::instance().evaluationDate() = Date();
     }
 
 }
@@ -220,7 +220,7 @@ void BondTest::testCached() {
     // with implicit settlement calculation:
 
     Date today(22,November,2004);
-    Settings::instance().setEvaluationDate(today);
+    Settings::instance().evaluationDate() = today;
 
     Calendar bondCalendar = NullCalendar();
     DayCounter bondDayCount = ActualActual(ActualActual::ISMA);
@@ -388,7 +388,7 @@ void BondTest::testCached() {
     // this should give the same result since the issue date is the
     // earliest possible settlement date
 
-    Settings::instance().setEvaluationDate(Date(22,November,2004));
+    Settings::instance().evaluationDate() = Date(22,November,2004);
 
     price = bond3.cleanPrice(marketYield3, Compounded);
     if (std::fabs(price-cachedPrice3) > tolerance) {
@@ -412,7 +412,7 @@ void BondTest::testCachedZero() {
     QL_TEST_BEGIN
 
     Date today(22,November,2004);
-    Settings::instance().setEvaluationDate(today);
+    Settings::instance().evaluationDate() = today;
 
     Integer settlementDays = 1;
 
@@ -491,7 +491,7 @@ void BondTest::testCachedFixed() {
     QL_TEST_BEGIN
 
     Date today(22,November,2004);
-    Settings::instance().setEvaluationDate(today);
+    Settings::instance().evaluationDate() = today;
 
     Integer settlementDays = 1;
 
@@ -590,7 +590,7 @@ void BondTest::testCachedFloating() {
     QL_TEST_BEGIN
 
     Date today(22,November,2004);
-    Settings::instance().setEvaluationDate(today);
+    Settings::instance().evaluationDate() = today;
 
     Integer settlementDays = 1;
 

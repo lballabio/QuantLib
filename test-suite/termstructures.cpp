@@ -55,7 +55,7 @@ namespace {
         calendar_ = TARGET();
         settlementDays_ = 2;
         Date today = calendar_.adjust(Date::todaysDate());
-        Settings::instance().setEvaluationDate(today);
+        Settings::instance().evaluationDate() = today;
         Date settlement = calendar_.advance(today,settlementDays_,Days);
         Datum depositData[] = {
             { 1, Months, 4.581 },
@@ -97,7 +97,7 @@ namespace {
     }
 
     void teardown() {
-        Settings::instance().setEvaluationDate(Date());
+        Settings::instance().evaluationDate() = Date();
     }
 
 }
@@ -121,7 +121,7 @@ void TermStructureTest::testReferenceChange() {
     for (i=0; i<LENGTH(days); i++)
         expected[i] = termStructure_->discount(today+days[i]);
 
-    Settings::instance().setEvaluationDate(today+30);
+    Settings::instance().evaluationDate() = today+30;
     std::vector<DiscountFactor> calculated(LENGTH(days));
     for (i=0; i<LENGTH(days); i++)
         calculated[i] = termStructure_->discount(today+30+days[i]);

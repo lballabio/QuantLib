@@ -99,13 +99,13 @@ namespace {
                                                  termStructure_));
         calendar_ = index_->calendar();
         today_ = calendar_.adjust(Date::todaysDate());
-        Settings::instance().setEvaluationDate(today_);
+        Settings::instance().evaluationDate() = today_;
         settlement_ = calendar_.advance(today_,settlementDays_,Days);
         termStructure_.linkTo(flatRate(settlement_,0.05,Actual365Fixed()));
     }
 
     void teardown() {
-        Settings::instance().setEvaluationDate(Date());
+        Settings::instance().evaluationDate() = Date();
     }
 
 }
@@ -303,7 +303,7 @@ void SwaptionTest::testCachedValue() {
 
     today_ = Date(13,March,2002);
     settlement_ = Date(15,March,2002);
-    Settings::instance().setEvaluationDate(today_);
+    Settings::instance().evaluationDate() = today_;
     termStructure_.linkTo(flatRate(settlement_,0.05,Actual365Fixed()));
     Date exerciseDate = calendar_.advance(settlement_,5,Years);
     Date startDate = calendar_.advance(exerciseDate,settlementDays_,Days);

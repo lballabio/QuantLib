@@ -48,7 +48,7 @@ int main(int, char* [])
         Integer fixingDays = 2;
         Date todaysDate = calendar.advance(settlementDate, -fixingDays, Days);
         // nothing to do with Date::todaysDate
-        Settings::instance().setEvaluationDate(todaysDate);
+        Settings::instance().evaluationDate() = todaysDate;
 
 
         todaysDate = Settings::instance().evaluationDate();

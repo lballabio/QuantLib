@@ -110,7 +110,7 @@ namespace {
         calendar_ = index_->calendar();
         convention_ = ModifiedFollowing;
         today_ = calendar_.adjust(Date::todaysDate());
-        Settings::instance().setEvaluationDate(today_);
+        Settings::instance().evaluationDate() = today_;
         settlementDays_ = 2;
         fixingDays_ = 2;
         settlement_ = calendar_.advance(today_,settlementDays_,Days);
@@ -118,7 +118,7 @@ namespace {
     }
 
     void teardown() {
-        Settings::instance().setEvaluationDate(Date());
+        Settings::instance().evaluationDate() = Date();
     }
 
 }
@@ -388,7 +388,7 @@ void CapFloorTest::testCachedValue() {
 
     Date cachedToday(14,March,2002),
          cachedSettlement(18,March,2002);
-    Settings::instance().setEvaluationDate(cachedToday);
+    Settings::instance().evaluationDate() = cachedToday;
     termStructure_.linkTo(flatRate(cachedSettlement, 0.05, Actual360()));
     Date startDate = termStructure_->referenceDate();
     std::vector<boost::shared_ptr<CashFlow> > leg = makeLeg(startDate,20);

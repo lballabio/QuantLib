@@ -58,7 +58,7 @@ namespace QuantLib {
     : RateHelper(rate), n_(n), units_(units),
       settlementDays_(settlementDays), calendar_(calendar),
       convention_(convention), dayCounter_(dayCounter) {
-        registerWith(Settings::instance().evaluationDateGuard());
+        registerWith(Settings::instance().evaluationDate());
     }
 
     DepositRateHelper::DepositRateHelper(
@@ -70,7 +70,7 @@ namespace QuantLib {
     : RateHelper(rate), n_(n), units_(units),
       settlementDays_(settlementDays), calendar_(calendar),
       convention_(convention), dayCounter_(dayCounter) {
-        registerWith(Settings::instance().evaluationDateGuard());
+        registerWith(Settings::instance().evaluationDate());
     }
 
     Real DepositRateHelper::impliedQuote() const {
@@ -116,7 +116,7 @@ namespace QuantLib {
       settlementDays_(settlementDays),
       calendar_(calendar), convention_(convention),
       dayCounter_(dayCounter) {
-        registerWith(Settings::instance().evaluationDateGuard());
+        registerWith(Settings::instance().evaluationDate());
     }
 
     FraRateHelper::FraRateHelper(Rate rate,
@@ -130,7 +130,7 @@ namespace QuantLib {
       settlementDays_(settlementDays),
       calendar_(calendar), convention_(convention),
       dayCounter_(dayCounter) {
-        registerWith(Settings::instance().evaluationDateGuard());
+        registerWith(Settings::instance().evaluationDate());
     }
 
     Real FraRateHelper::impliedQuote() const {
@@ -241,7 +241,7 @@ namespace QuantLib {
       fixedFrequency_(fixedFrequency),
       floatingFrequency_(floatingFrequency),
       fixedDayCount_(fixedDayCount) {
-        registerWith(Settings::instance().evaluationDateGuard());
+        registerWith(Settings::instance().evaluationDate());
     }
 
     SwapRateHelper::SwapRateHelper(
@@ -260,7 +260,7 @@ namespace QuantLib {
       fixedFrequency_(fixedFrequency),
       floatingFrequency_(floatingFrequency),
       fixedDayCount_(fixedDayCount) {
-        registerWith(Settings::instance().evaluationDateGuard());
+        registerWith(Settings::instance().evaluationDate());
     }
 
     void SwapRateHelper::setTermStructure(YieldTermStructure* t) {
