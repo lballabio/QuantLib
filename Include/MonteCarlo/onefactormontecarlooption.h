@@ -21,11 +21,14 @@
  * http://quantlib.sourceforge.net/LICENSE.TXT
 */
 
-/*! \file montecarlooption1d.h
+/*! \file onefactormontecarlooption.h
 
     $Source$
     $Name$
     $Log$
+    Revision 1.2  2001/02/06 09:14:19  lballabio
+    Fixed file names in Doxygen tags
+
     Revision 1.1  2001/01/30 15:46:32  marmar
     Special cases of a PathMonteCarlo defined for convenience in
     single- and multi-factor Monte Carlo option-pricing

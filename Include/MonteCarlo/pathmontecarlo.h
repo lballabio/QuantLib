@@ -20,12 +20,15 @@
  * QuantLib license is also available at 
  * http://quantlib.sourceforge.net/LICENSE.TXT
 */
-/*! \file montecarlooption.h
+/*! \file pathmontecarlo.h
     \brief Create a sample generator from a path generator and a path pricer
 
     $Source$
     $Name$
     $Log$
+    Revision 1.2  2001/02/06 09:14:19  lballabio
+    Fixed file names in Doxygen tags
+
     Revision 1.1  2001/01/30 15:44:56  marmar
     PathMonteCarlo combines a statistic accumulator, a path generator
     and a path pricer into a general tool for Monte Carlo evaluations
