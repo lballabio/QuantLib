@@ -27,6 +27,9 @@
     $Source$
     $Name$
     $Log$
+    Revision 1.13  2001/01/15 13:38:33  lballabio
+    Using new cubic spline
+
     Revision 1.12  2001/01/08 11:44:18  lballabio
     Array back into QuantLib namespace - Math namespace broke expression templates, go figure
 
@@ -48,13 +51,13 @@
 #include "dividendeuropeanoption.h"
 #include "finitedifferencemodel.h"
 #include "cranknicolson.h"
-#include "newcubicspline.h"
+#include "cubicspline.h"
 
 namespace QuantLib {
 
     namespace Pricers {
     
-    using Math::NewCubicSpline;
+    using Math::CubicSpline;
     using FiniteDifferences::FiniteDifferenceModel;
     using FiniteDifferences::CrankNicolson;
     using FiniteDifferences::StepCondition;
@@ -189,14 +192,15 @@ namespace QuantLib {
 
             int j;
             Array vOldGrid(oldGrid+Div);
-            NewCubicSpline priceSpline(vOldGrid, prices);
+            CubicSpline<Array::iterator,Array::iterator> priceSpline(
+                vOldGrid.begin(), vOldGrid.end(), prices.begin());
             if (theOptionIsAmerican) {
                 for (j=0; j<prices.size(); j++)
-                    prices[j] = QL_MAX(priceSpline.value(newGrid[j], j) , 
+                    prices[j] = QL_MAX(priceSpline(newGrid[j]) , 
                         theInitialPrices[j]);
             } else {
                 for (j=0; j<prices.size(); j++)
-                    prices[j] = priceSpline.value(newGrid[j], j);
+                    prices[j] = priceSpline(newGrid[j]);
             }
         }
         
