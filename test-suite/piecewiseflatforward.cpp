@@ -46,7 +46,7 @@ void PiecewiseFlatForwardTest::runTest() {
 
     Calendar calendar = TARGET();
     int settlementDays = 2, fixingDays = 2;
-    Date today = Date::todaysDate();
+    Date today = calendar.roll(Date::todaysDate());
     Date settlement = calendar.advance(today,settlementDays,Days);
     RelinkableHandle<TermStructure> euriborHandle;
 

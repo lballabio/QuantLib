@@ -47,9 +47,9 @@ namespace {
 }
 
 void TermStructureTest::setUp() {
-    Date today = Date::todaysDate();
     calendar_ = TARGET();
     settlementDays_ = 2;
+    Date today = calendar_.roll(Date::todaysDate());
     Date settlement = calendar_.advance(today,settlementDays_,Days);
     Datum depositData[] = {
         { 1, Months, 4.581 },

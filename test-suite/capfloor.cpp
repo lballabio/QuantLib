@@ -38,12 +38,12 @@ using QuantLib::Instruments::SimpleSwap;
 using QuantLib::Pricers::BlackCapFloor;
 
 void CapFloorTest::setUp() {
-    today_ = Date::todaysDate();
     nominals_ = std::vector<double>(1,100.0);
-    rollingConvention_ = ModifiedFollowing;
     frequency_ = 2;
     index_ = Handle<Xibor>(new Euribor(12/frequency_,Months,termStructure_));
     calendar_ = index_->calendar();
+    rollingConvention_ = ModifiedFollowing;
+    today_ = calendar_.roll(Date::todaysDate());
     settlementDays_ = 2;
     fixingDays_ = 2;
     settlement_ = calendar_.advance(today_,settlementDays_,Days);
