@@ -27,6 +27,9 @@
 
 // $Source$
 // $Log$
+// Revision 1.2  2001/07/24 16:54:05  dzuki
+// Minor fixes.
+//
 // Revision 1.1  2001/07/24 16:36:58  dzuki
 // Discontinuous hedging error calculation example (HedgingError)
 //
@@ -108,7 +111,7 @@ double PathHedgeErrorCalculator::value(const Path & path) const
 
 	double delta = option.delta();
 	double money_account = option.value() - delta*stock;
-    double dt = maturity_/n;
+        double dt = maturity_/n;
 	
 	for(int i = 0; i < n; i++){
         log_price += path[i];
@@ -182,7 +185,7 @@ public:
                 QL_SQRT(3.1415926535/4/nTimeSteps)*option.vega()*sigma_;
         
         cout << "Value of the hedging error SD"
-                " computed using Derman's formula:\t "<< theoretical_error_sd;
+                " computed using Derman & Kamal's formula:\t "<< theoretical_error_sd;
 
 		double tau = maturity_ / nTimeSteps;
 		double sigma = sigma_* sqrt(tau);
