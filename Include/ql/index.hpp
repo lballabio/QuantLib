@@ -30,6 +30,9 @@
 
 // $Source$
 // $Log$
+// Revision 1.7  2001/06/15 13:52:06  lballabio
+// Reworked indexes
+//
 // Revision 1.6  2001/06/13 15:01:41  marmar
 // Virtual destructor added
 //
@@ -53,23 +56,19 @@ namespace QuantLib {
     //! purely virtual base class for indexes
     class Index {
       public:
-        //! \name inspectors
-        //@{
         virtual ~Index() {}
-        virtual Currency currency() const = 0;
-        virtual Handle<Calendar> calendar() const = 0;
-        virtual bool isAdjusted() const = 0;
-        virtual RollingConvention rollingConvention() const = 0;
-        virtual Handle<DayCounter> dayCounter() const = 0;
+        //! Returns the name of the index.
+        /*! \warning This method is used for output and comparison between
+            indexes.
+            It is <b>not</b> meant to be used for writing switch-on-type code.
+        */
         virtual std::string name() const = 0;
-        //@}
-        /*! \brief return the fixing at the given date and tenor
+        /*! \brief returns the fixing at the given date
             \note any date passed as arguments must be a value date,
             i.e., the real calendar date advanced by a number of
             settlement days.
         */
-        virtual Rate fixing(const Date& fixingDate,
-            int n, TimeUnit unit) const = 0;
+        virtual Rate fixing(const Date& fixingDate) const = 0;
     };
 
 }

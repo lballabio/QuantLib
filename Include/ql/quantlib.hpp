@@ -28,6 +28,9 @@
 
 // $Source$
 // $Log$
+// Revision 1.16  2001/06/15 13:52:06  lballabio
+// Reworked indexes
+//
 // Revision 1.15  2001/06/12 15:05:33  lballabio
 // Renamed Libor to GBPLibor and LiborManager to XiborManager
 //
@@ -91,7 +94,6 @@
 #include "ql/CashFlows/accruingcoupon.hpp"
 #include "ql/CashFlows/cashflowvectors.hpp"
 #include "ql/CashFlows/fixedratecoupon.hpp"
-#include "ql/CashFlows/indexlinkedcoupon.hpp"
 #include "ql/CashFlows/simplecashflow.hpp"
 
 #include "ql/DayCounters/actual360.hpp"

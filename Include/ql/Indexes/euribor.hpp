@@ -30,6 +30,9 @@
 
 // $Source$
 // $Log$
+// Revision 1.9  2001/06/15 13:52:07  lballabio
+// Reworked indexes
+//
 // Revision 1.8  2001/06/05 09:35:13  lballabio
 // Updated docs to use Doxygen 1.2.8
 //
@@ -60,10 +63,12 @@ namespace QuantLib {
         //! %Euribor index
         class Euribor : public Xibor {
           public:
-            Euribor(const RelinkableHandle<TermStructure>& h)
-            : Xibor("Euribor", EUR, Handle<Calendar>(new Calendars::TARGET), 
-                    true, ModifiedFollowing, 
-                    Handle<DayCounter>(new DayCounters::Actual360), h) {}
+            Euribor(int n, TimeUnit units, 
+                const RelinkableHandle<TermStructure>& h)
+            : Xibor("Euribor", n, units, EUR, 
+                Handle<Calendar>(new Calendars::TARGET), 
+                true, ModifiedFollowing, 
+                Handle<DayCounter>(new DayCounters::Actual360), h) {}
         };
 
     }

@@ -30,6 +30,9 @@
 
 //  $Source$
 //  $Log$
+//  Revision 1.2  2001/06/15 13:52:06  lballabio
+//  Reworked indexes
+//
 //  Revision 1.1  2001/05/31 08:56:40  lballabio
 //  Cash flows, scheduler, and generic swap added - the latter should be specialized and tested
 //
@@ -42,13 +45,18 @@
 namespace QuantLib {
 
     //! Base class for cash flows
-    /*! This class is purely virtual */
+    /*! This class is purely virtual and acts as a base class for the actual 
+        cash flow implementations. 
+    */
     class CashFlow {
       public:
         virtual ~CashFlow() {}
         //! returns the amount of the cash flow
+        /*! \note The amount is not discounted, i.e., it is the actual amount 
+            paid at the cash flow date.
+        */
         virtual double amount() const = 0;
-        //! returns the value date of the cash flow
+        //! returns the date at which the cash flow is settled
         virtual Date date() const = 0;
     };
 

@@ -30,6 +30,9 @@
 
 // $Source$
 // $Log$
+// Revision 1.5  2001/06/15 13:52:06  lballabio
+// Reworked indexes
+//
 // Revision 1.4  2001/05/24 15:38:07  nando
 // smoothing #include xx.hpp and cutting old Log messages
 //
@@ -59,8 +62,8 @@ namespace QuantLib {
         explicit Array(int size = 0);
         //! creates the array and fills it with <tt>value</tt>
         Array(int size, double value);
-        /*! creates the array and fills it according to \f$ a_{0} = value,
-            a_{i}=a_{i-1}+increment \f$
+        /*! \brief creates the array and fills it according to 
+            \f$ a_{0} = value, a_{i}=a_{i-1}+increment \f$
         */
         Array(int size, double value, double increment);
         Array(const Array& from);

@@ -30,6 +30,9 @@
 
 // $Source$
 // $Log$
+// Revision 1.6  2001/06/15 13:52:07  lballabio
+// Reworked indexes
+//
 // Revision 1.5  2001/06/01 16:50:16  lballabio
 // Term structure on deposits and swaps
 //
@@ -50,13 +53,11 @@ namespace QuantLib {
 
     namespace Indexes {
 
-        //! purely virtual base class for libor indexes
-        /*! \todo add deposit conventions to Currency class and
-            implement any other inspector by using currency().
-        */
+        //! base class for libor indexes
         class Xibor : public Index {
           public:
-            Xibor(const std::string& name, Currency currency, 
+            Xibor(const std::string& name, 
+                int n, TimeUnit units, Currency currency, 
                 const Handle<Calendar>& calendar, bool isAdjusted, 
                 RollingConvention rollingConvention,
                 const Handle<DayCounter>& dayCounter,
@@ -64,14 +65,14 @@ namespace QuantLib {
             : name_(name), currency_(currency), calendar_(calendar), 
               isAdjusted_(isAdjusted), rollingConvention_(rollingConvention), 
               dayCounter_(dayCounter), termStructure_(h) {}
-            //! \name Fixings
+            //! \name Index interface
             //@{
-            Rate fixing(const Date& fixingDate,
-                int n, TimeUnit unit) const;
+            Rate fixing(const Date& fixingDate) const;
             //@}
             //! \name Inspectors
             //@{
-            std::string name() const { return name_; }
+            std::string name() const;
+            Period tenor() const { return Period(n_,units_); }
             Currency currency() const { return currency_; }
             Handle<Calendar> calendar() const { return calendar_; }
             bool isAdjusted() const { return isAdjusted_; }
@@ -81,6 +82,8 @@ namespace QuantLib {
             //@}
           private:
             std::string name_;
+            int n_;
+            TimeUnit units_;
             Currency currency_;
             Handle<Calendar> calendar_;
             bool isAdjusted_;

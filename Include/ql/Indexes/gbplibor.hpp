@@ -30,6 +30,9 @@
 
 // $Source$
 // $Log$
+// Revision 1.2  2001/06/15 13:52:07  lballabio
+// Reworked indexes
+//
 // Revision 1.1  2001/06/12 15:05:33  lballabio
 // Renamed Libor to GBPLibor and LiborManager to XiborManager
 //
@@ -48,10 +51,12 @@ namespace QuantLib {
         //! %GBP %Libor index
         class GBPLibor : public Xibor {
           public:
-            GBPLibor(const RelinkableHandle<TermStructure>& h)
-            : Xibor("GBPLibor", GBP, Handle<Calendar>(new Calendars::London),
-                    true, ModifiedFollowing, 
-                    Handle<DayCounter>(new DayCounters::Actual365), h) {}
+            GBPLibor(int n, TimeUnit units, 
+                const RelinkableHandle<TermStructure>& h)
+            : Xibor("GBPLibor", n, units, GBP, 
+                Handle<Calendar>(new Calendars::London),
+                true, ModifiedFollowing, 
+                Handle<DayCounter>(new DayCounters::Actual365), h) {}
         };
 
     }

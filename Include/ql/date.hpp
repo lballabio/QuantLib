@@ -30,6 +30,9 @@
 
 // $Source$
 // $Log$
+// Revision 1.4  2001/06/15 13:52:06  lballabio
+// Reworked indexes
+//
 // Revision 1.3  2001/05/24 15:38:07  nando
 // smoothing #include xx.hpp and cutting old Log messages
 //
@@ -38,6 +41,7 @@
 #define quantlib_date_h
 
 #include "ql/qlerrors.hpp"
+#include <utility>
 
 namespace QuantLib {
 
@@ -77,6 +81,15 @@ namespace QuantLib {
                     Weeks  = 1,
                     Months = 2,
                     Years  = 3 };
+
+    //! Time period described by a number of a given time unit
+    class Period : private std::pair<int,TimeUnit> {
+      public:
+        Period(int n, TimeUnit units)
+        : std::pair<int,TimeUnit>(n,units) {}
+        int length() const { return first; }
+        TimeUnit units() const { return second; }
+    };
 
 
     //! Concrete date class

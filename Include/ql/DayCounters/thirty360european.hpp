@@ -30,6 +30,9 @@
 
 // $Source$
 // $Log$
+// Revision 1.4  2001/06/15 13:52:07  lballabio
+// Reworked indexes
+//
 // Revision 1.3  2001/05/24 15:38:08  nando
 // smoothing #include xx.hpp and cutting old Log messages
 //
@@ -51,7 +54,8 @@ namespace QuantLib {
                     + QL_MAX(0,30-d1.dayOfMonth()) + QL_MIN(30,d2.dayOfMonth());
             }
             Time yearFraction(const Date& d1, const Date& d2,
-              const Date& refPeriodStart = Date(), const Date& refPeriodEnd = Date()) const {
+              const Date& refPeriodStart = Date(), 
+              const Date& refPeriodEnd = Date()) const {
                 return dayCount(d1,d2)/360.0;
             }
         };

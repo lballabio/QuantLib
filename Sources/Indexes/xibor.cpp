@@ -30,6 +30,9 @@
 
 // $Source$
 // $Log$
+// Revision 1.8  2001/06/15 13:52:07  lballabio
+// Reworked indexes
+//
 // Revision 1.7  2001/06/12 15:05:34  lballabio
 // Renamed Libor to GBPLibor and LiborManager to XiborManager
 //
@@ -53,15 +56,30 @@ namespace QuantLib {
 
     namespace Indexes {
 
-        Rate Xibor::fixing(const Date& fixingDate,
-          int n, TimeUnit unit) const {
+        std::string Xibor::name() const {
+            switch (units_) {
+              case Days:
+                return name_+IntegerFormatter::toString(n_)+"d";
+              case Weeks:
+                return name_+IntegerFormatter::toString(n_)+"w";
+              case Months:
+                return name_+IntegerFormatter::toString(n_)+"m";
+              case Years:
+                return name_+IntegerFormatter::toString(n_)+"y";
+              default:
+                throw Error("invalid time unit");
+            }
+            QL_DUMMY_RETURN(std::string());
+        }
+                    
+        Rate Xibor::fixing(const Date& fixingDate) const {
             QL_REQUIRE(!termStructure_.isNull(),
                 "null term structure set");
             Date settlementDate = termStructure_->settlementDate();
             if (fixingDate < settlementDate) {
                 // must have been fixed
                 Rate pastFixing =
-                    XiborManager::getHistory(name_,n,unit)[fixingDate];
+                    XiborManager::getHistory(name_)[fixingDate];
                 QL_REQUIRE(pastFixing != Null<double>(),
                     "Missing " + name_ + " fixing for " +
                         DateFormatter::toString(fixingDate));
@@ -71,7 +89,7 @@ namespace QuantLib {
                 // might have been fixed
                 try {
                     Rate pastFixing =
-                        XiborManager::getHistory(name_,n,unit)[fixingDate];
+                        XiborManager::getHistory(name_)[fixingDate];
                     if (pastFixing != Null<double>())
                         return pastFixing;
                     else
@@ -80,7 +98,7 @@ namespace QuantLib {
                     ;       // fall through and forecast
                 }
             }
-            Date endDate = fixingDate.plus(n,unit);
+            Date endDate = fixingDate.plus(n_,units_);
             if (isAdjusted_)
                 endDate = calendar_->roll(endDate,rollingConvention_);
             DiscountFactor fixingDiscount =

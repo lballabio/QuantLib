@@ -30,6 +30,9 @@
 
 // $Source$
 // $Log$
+// Revision 1.10  2001/06/15 13:52:07  lballabio
+// Reworked indexes
+//
 // Revision 1.9  2001/06/12 09:36:37  lballabio
 // name() now returns the class name
 //
@@ -63,14 +66,17 @@ namespace QuantLib {
         //! %USD %Libor index
         class USDLibor : public Xibor {
           public:
-            USDLibor(const RelinkableHandle<TermStructure>& h)
-            : Xibor("USDLibor", USD, Handle<Calendar>(new Calendars::NewYork), 
-                    true, ModifiedFollowing, 
-                    Handle<DayCounter>(new DayCounters::Actual360), h) {}
+            USDLibor(int n, TimeUnit units, 
+                const RelinkableHandle<TermStructure>& h)
+            : Xibor("USDLibor", n, units, USD, 
+                Handle<Calendar>(new Calendars::NewYork), 
+                true, ModifiedFollowing, 
+                Handle<DayCounter>(new DayCounters::Actual360), h) {}
         };
 
     }
 
 }
+
 
 #endif

@@ -30,6 +30,9 @@
 
 //  $Source$
 //  $Log$
+//  Revision 1.2  2001/06/15 13:52:07  lballabio
+//  Reworked indexes
+//
 //  Revision 1.1  2001/05/31 08:56:40  lballabio
 //  Cash flows, scheduler, and generic swap added - the latter should be specialized and tested
 //
@@ -44,6 +47,7 @@ namespace QuantLib {
     namespace CashFlows {
         
         //! Predetermined cash flow
+        /*! This cash flow pays a predetermined amount at a given date. */
         class SimpleCashFlow : public CashFlow {
           public:
             SimpleCashFlow(double amount, const Date& date)

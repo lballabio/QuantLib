@@ -28,6 +28,9 @@
     $Id$
     $Source$
     $Log$
+    Revision 1.4  2001/06/15 13:52:07  lballabio
+    Reworked indexes
+
     Revision 1.3  2001/06/12 15:05:33  lballabio
     Renamed Libor to GBPLibor and LiborManager to XiborManager
 
@@ -80,7 +83,7 @@ namespace QuantLib {
             if (startDate_ < settlementDate) {
                 // must have been fixed
                 Rate pastFixing = XiborManager::getHistory(
-                    index_.name(),n_,unit_)[startDate_];
+                    index_.name())[startDate_];
                 QL_REQUIRE(pastFixing != Null<double>(),
                     "Missing " + index_.name() + " fixing for " +
                         DateFormatter::toString(startDate_));
@@ -90,7 +93,7 @@ namespace QuantLib {
                 // might have been fixed
                 try {
                     Rate pastFixing = XiborManager::getHistory(
-                        index_.name(),n_,unit_)[startDate_];
+                        index_.name())[startDate_];
                     if (pastFixing != Null<double>())
                         return (pastFixing+spread_)*accrualPeriod()*nominal_;
                     else

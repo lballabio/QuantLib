@@ -28,6 +28,9 @@
     $Id$
     $Source$
     $Log$
+    Revision 1.2  2001/06/15 13:52:06  lballabio
+    Reworked indexes
+
     Revision 1.1  2001/05/31 08:56:40  lballabio
     Cash flows, scheduler, and generic swap added - the latter should be specialized and tested
 
@@ -47,6 +50,10 @@ namespace QuantLib {
     namespace CashFlows {
         
         //! Coupon accruing over a fixed period
+        /*! This class implements part of the CashFlow interface but it 
+            is still abstract and provides derived classes with methods for 
+            accrual period calculations. 
+        */
         class AccruingCoupon : public CashFlow {
           public:
             AccruingCoupon(const Handle<Calendar>& calendar, 
@@ -59,13 +66,21 @@ namespace QuantLib {
               dayCounter_(dayCounter), startDate_(startDate), 
               endDate_(endDate), refPeriodStart_(refPeriodStart), 
               refPeriodEnd_(refPeriodEnd) {}
-            // partial CashFlow interface
+            //! \name Partial CashFlow interface
+            //@{
             Date date() const;
-            // other inspectors
+            //@}
+            //! \name Inspectors
+            //@{
+            //! start of the accrual period
             const Date& accrualStartDate() const { return startDate_; }
+            //! end of the accrual period
             const Date& accrualEndDate() const { return endDate_; }
+            //! accrual period as fraction of year
             double accrualPeriod() const;
+            //! accrual period in days
             int accrualDays() const;
+            //@}
           protected:
             Date startDate_, endDate_, refPeriodStart_, refPeriodEnd_;
             Handle<Calendar> calendar_;

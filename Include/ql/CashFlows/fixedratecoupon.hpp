@@ -30,6 +30,9 @@
 
 //  $Source$
 //  $Log$
+//  Revision 1.3  2001/06/15 13:52:07  lballabio
+//  Reworked indexes
+//
 //  Revision 1.2  2001/05/31 13:17:36  lballabio
 //  Added SimpleSwap
 //
@@ -47,7 +50,7 @@ namespace QuantLib {
 
     namespace CashFlows {
         
-        //! Coupon paying a fixed annual rate
+        //! Coupon paying a fixed interest rate
         class FixedRateCoupon : public AccruingCoupon {
           public:
             FixedRateCoupon(double nominal, Rate rate, 
@@ -60,10 +63,15 @@ namespace QuantLib {
             : AccruingCoupon(calendar, rollingConvention, dayCounter, 
               startDate, endDate, refPeriodStart, refPeriodEnd), 
               nominal_(nominal), rate_(rate) {}
-            // CashFlow interface
+            //! \name CashFlow interface
+            //@{
             double amount() const;
-            // other inspectors
+            //@}
+            //! \name Inspectors
+            //@{
             double nominal() const { return nominal_; }
+            Rate rate() const { return rate_; }
+            //@}
           private:
             double nominal_;
             Rate rate_;

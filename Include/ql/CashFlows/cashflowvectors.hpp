@@ -30,6 +30,9 @@
 
 //  $Source$
 //  $Log$
+//  Revision 1.3  2001/06/15 13:52:07  lballabio
+//  Reworked indexes
+//
 //  Revision 1.2  2001/06/01 16:50:16  lballabio
 //  Term structure on deposits and swaps
 //
@@ -42,7 +45,6 @@
 
 #include "ql/cashflow.hpp"
 #include "ql/CashFlows/fixedratecoupon.hpp"
-#include "ql/CashFlows/indexlinkedcoupon.hpp"
 #include "ql/CashFlows/parcoupon.hpp"
 #include <vector>
 
@@ -61,21 +63,6 @@ namespace QuantLib {
                 const Handle<DayCounter>& dayCount, 
                 const Date& stubDate = Date(), 
                 const Handle<DayCounter>& firstPeriodDayCount = 
-                    Handle<DayCounter>());
-        };
-
-        class IndexLinkedCouponVector : public std::vector<Handle<CashFlow> > {
-          public:
-            IndexLinkedCouponVector(
-                const std::vector<double>& nominals, 
-                const Handle<Index>& index, int fixingDays,
-                const std::vector<Spread>& spreads, 
-                const Date& startDate, const Date& endDate, 
-                int frequency, const Handle<Calendar>& calendar, 
-                RollingConvention rollingConvention, bool isAdjusted, 
-                const Handle<DayCounter>& dayCount, 
-                const Date& stubDate = Date(), 
-                const Handle<DayCounter>& firstPeriodDayCount =
                     Handle<DayCounter>());
         };
 

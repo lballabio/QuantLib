@@ -30,6 +30,9 @@
 
 // $Source$
 // $Log$
+// Revision 1.2  2001/06/15 13:52:07  lballabio
+// Reworked indexes
+//
 // Revision 1.1  2001/06/12 15:05:34  lballabio
 // Renamed Libor to GBPLibor and LiborManager to XiborManager
 //
@@ -42,41 +45,21 @@ namespace QuantLib {
 
         XiborManager::HistoryMap XiborManager::historyMap_;
 
-        std::string XiborManager::tag(int n, TimeUnit unit) {
-            switch (unit) {
-              case Days:
-                return IntegerFormatter::toString(n)+"d";
-              case Weeks:
-                return IntegerFormatter::toString(n)+"w";
-              case Months:
-                return IntegerFormatter::toString(n)+"m";
-              case Years:
-                return IntegerFormatter::toString(n)+"y";
-              default:
-                throw Error("invalid time unit");
-            }
-            QL_DUMMY_RETURN(std::string())
+        void XiborManager::setHistory(const std::string& name, 
+            const History& history) {
+                historyMap_[name] = history;
         }
 
-        void XiborManager::setHistory(const std::string& name,
-            int n, TimeUnit unit, const History& history) {
-                historyMap_[name+tag(n,unit)] = history;
-        }
-
-        const History& XiborManager::getHistory(
-            const std::string& name, int n, TimeUnit unit) {
+        const History& XiborManager::getHistory(const std::string& name) {
                 XiborManager::HistoryMap::const_iterator i =
-                    historyMap_.find(name+tag(n,unit));
+                    historyMap_.find(name);
                 QL_REQUIRE(i != historyMap_.end(),
-                    name + " " +
-                    tag(n,unit) + " history not loaded");
+                    name + " history not loaded");
                 return i->second;
         }
 
-        bool XiborManager::hasHistory(const std::string& name,
-            int n, TimeUnit unit) {
-                return (historyMap_.find(name+tag(n,unit)) !=
-                        historyMap_.end());
+        bool XiborManager::hasHistory(const std::string& name) {
+                return (historyMap_.find(name) != historyMap_.end());
         }
 
     }

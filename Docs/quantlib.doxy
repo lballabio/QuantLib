@@ -13,13 +13,13 @@ EXTRACT_STATIC         = NO
 HIDE_UNDOC_MEMBERS     = NO
 HIDE_UNDOC_CLASSES     = YES
 BRIEF_MEMBER_DESC      = YES
-REPEAT_BRIEF           = YES
+REPEAT_BRIEF           = NO
 ALWAYS_DETAILED_SEC    = NO
 FULL_PATH_NAMES        = NO
 STRIP_FROM_PATH        = 
 INTERNAL_DOCS          = NO
 CLASS_DIAGRAMS         = YES
-SOURCE_BROWSER         = YES
+SOURCE_BROWSER         = NO
 INLINE_SOURCES         = NO
 STRIP_CODE_COMMENTS    = YES
 CASE_SENSE_NAMES       = NO
@@ -40,7 +40,7 @@ GENERATE_BUGLIST       = YES
 ALIASES                = 
 MAX_INITIALIZER_LINES  = 30
 OPTIMIZE_OUTPUT_FOR_C  = NO
-SHOW_USED_FILES        = NO
+SHOW_USED_FILES        = YES
 #---------------------------------------------------------------------------
 # configuration options related to warning and progress messages
 #---------------------------------------------------------------------------

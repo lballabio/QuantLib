@@ -30,6 +30,9 @@
 
 // $Source$
 // $Log$
+// Revision 1.2  2001/06/15 13:52:07  lballabio
+// Reworked indexes
+//
 // Revision 1.1  2001/06/12 15:05:33  lballabio
 // Renamed Libor to GBPLibor and LiborManager to XiborManager
 //
@@ -50,13 +53,10 @@ namespace QuantLib {
           public:
             // historical fixings
             static void setHistory(const std::string& name, 
-                int n, TimeUnit unit, const History&);
-            static const History& getHistory(const std::string& name, 
-                int n, TimeUnit unit);
-            static bool hasHistory(const std::string& name, 
-                int n, TimeUnit unit);
+                const History&);
+            static const History& getHistory(const std::string& name);
+            static bool hasHistory(const std::string& name);
           private:
-            static std::string tag(int n, TimeUnit unit);
             typedef std::map<std::string,History> HistoryMap;
             static HistoryMap historyMap_;
         };
