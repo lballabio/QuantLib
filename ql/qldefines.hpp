@@ -47,10 +47,10 @@
 */
 
 //! version number
-#define QL_HEX_VERSION 0x000201a4
+#define QL_HEX_VERSION 0x000201a5
 
 //! version string
-#define QL_VERSION "0.2.1a4"
+#define QL_VERSION "0.2.1a5"
 
 //! global trace level (may be superseded locally by a greater value)
 #define QL_TRACE_LEVEL 0
