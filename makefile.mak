@@ -5,7 +5,7 @@
 
 
 .autodepend
-#.silent
+.silent
 
 # Options
 !ifdef DEBUG

@@ -1,3 +1,4 @@
+
 /*
  Copyright (C) 2001, 2002 Sadruddin Rejeb
 
@@ -13,6 +14,7 @@
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
+
 /*! \file blackmodel.hpp
     \brief Abstract class for Black-type models (market models)
 
@@ -85,7 +87,7 @@ namespace QuantLib {
             d_2(f,k,v) = d_1(f,k,v) - v.
         \f]
     */
-    inline double BlackModel::formula(double f, double k, double v, double w) {
+    inline double BlackModel::formula(double k, double f, double v, double w) {
             if (QL_FABS(v) < QL_EPSILON)
                 return QL_MAX(f*w - k*w, 0.0);
             double d1 = QL_LOG(f/k)/v + 0.5*v;
@@ -95,4 +97,6 @@ namespace QuantLib {
     }
 
 }
+
+
 #endif
