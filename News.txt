@@ -1,5 +1,5 @@
-June 2004 Release 0.3.6
-Changes since Release 0.3.5:
+June 2004 Release 0.3.7
+Changes since Release 0.3.6:
 
     **************************************************************
     ***                                                        ***
@@ -8,8 +8,6 @@ Changes since Release 0.3.5:
     *** before compiling and using QuantLib.                   ***
     ***                                                        ***
     **************************************************************
-
-
 
     Date, calendars, and day count conventions
     -
@@ -72,6 +70,15 @@ Changes since Release 0.3.5:
     Distribution
     - Fink package available
 
+
+=====================================================
+
+2004-04-15 Release 0.3.6
+Changes since Release 0.3.5:
+   
+    Bug-fix release for QuantLib 0.3.5. A bug was removed where calls
+    to impliedVolatility() would break the state of the option and of
+    all options sharing the same stochastic process.
 
 =====================================================
 

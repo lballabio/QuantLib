@@ -1,5 +1,7 @@
 
-June 2004 Release 0.3.6
+June 2004  Release 0.3.7
+
+2004-04-15 Release 0.3.6
 
 2004-03-31 Release 0.3.5
 
