@@ -1,0 +1,6 @@
+The QuantLib Group includes:
+
+Ferdinando Ametrano (ferdinando@ametrano.net)
+Luigi Ballabio (luigi.ballabio@riskmap.net)
+Adolfo Benin (adolfo.benin@riskmap.net)
+Marco Marchioro (marco.marchioro@riskmap.net)
