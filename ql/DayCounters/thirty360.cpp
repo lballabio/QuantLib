@@ -23,8 +23,10 @@ namespace QuantLib {
     Thirty360::implementation(Thirty360::Convention c) {
         switch (c) {
           case USA:
+          case BondBasis:
             return boost::shared_ptr<DayCounter::Impl>(new US_Impl);
           case European:
+          case EurobondBasis:
             return boost::shared_ptr<DayCounter::Impl>(new EU_Impl);
           case Italian:
             return boost::shared_ptr<DayCounter::Impl>(new IT_Impl);

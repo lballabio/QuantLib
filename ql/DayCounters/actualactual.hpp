@@ -47,7 +47,9 @@ namespace QuantLib {
     */
     class ActualActual : public DayCounter {
       public:
-        enum Convention { ISMA, Bond, ISDA, Historical, AFB, Euro };
+        enum Convention { ISMA, Bond,
+                          ISDA, Historical,
+                          AFB, Euro };
       private:
         class ISMA_Impl : public DayCounter::Impl {
           public:
