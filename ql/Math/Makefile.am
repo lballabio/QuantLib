@@ -9,6 +9,7 @@ include_HEADERS = \
 	bicubicsplineinterpolation.hpp \
     chisquaredistribution.hpp \
 	cubicspline.hpp \
+	errorfunction.hpp \
 	interpolation.hpp \
 	interpolation2D.hpp \
     gammadistribution.hpp \
@@ -29,6 +30,7 @@ EXTRA_DIST=makefile.mak
 
 libMath_la_SOURCES = \
     chisquaredistribution.cpp \
+	errorfunction.cpp \
     gammadistribution.cpp \
     matrix.cpp \
     multivariateaccumulator.cpp \

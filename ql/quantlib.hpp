@@ -147,6 +147,7 @@
 #include <ql/Math/bicubicsplineinterpolation.hpp>
 #include <ql/Math/chisquaredistribution.hpp>
 #include <ql/Math/cubicspline.hpp>
+#include <ql/Math/errorfunction.hpp>
 #include <ql/Math/gammadistribution.hpp>
 #include <ql/Math/interpolation.hpp>
 #include <ql/Math/interpolation2D.hpp>

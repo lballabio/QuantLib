@@ -691,6 +691,14 @@ SOURCE=.\ql\Math\cubicspline.hpp
 # End Source File
 # Begin Source File
 
+SOURCE=.\ql\Math\errorfunction.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\Math\errorfunction.hpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\ql\Math\gammadistribution.cpp
 # End Source File
 # Begin Source File
