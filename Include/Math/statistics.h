@@ -27,9 +27,12 @@
 	$Source$
 	$Name$
 	$Log$
+	Revision 1.7  2000/12/15 09:17:56  nando
+	removed unnecessary variable token
+
 	Revision 1.6  2000/12/14 12:32:30  lballabio
 	Added CVS tags in Doxygen file documentation blocks
-
+	
 */
 
 #ifndef quantlib_statistic_h
@@ -120,14 +123,13 @@ namespace QuantLib {
 		  Require(weight>=0.0, "Statistics::add : negative weight not allowed");
 		  theSampleNumber += 1;
 		  theSampleWeight += weight;
-		  double token = value;
 		  double temp = weight*value;		  
 		  theSum += temp;
-		  temp *= token;
+		  temp *= value;
 		  theQuadraticSum += temp;
-		  temp *= token;
+		  temp *= value;
 		  theCubicSum += temp;
-		  temp *= token;
+		  temp *= value;
 		  theFourthPowerSum += temp;
 		  theMin=QL_MIN(value, theMin);
 		  theMax=QL_MAX(value, theMax);
