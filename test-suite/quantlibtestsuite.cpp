@@ -18,9 +18,11 @@
 #include <ql/qldefines.hpp>
 #include <boost/test/unit_test.hpp>
 
-#define BOOST_LIB_NAME "boost_unit_test_framework"
+#define BOOST_LIB_DIAGNOSTIC
+#define BOOST_LIB_NAME boost_unit_test_framework
 #include <boost/config/auto_link.hpp>
 #undef BOOST_LIB_NAME
+#undef BOOST_LIB_DIAGNOSTIC
 
 #include "americanoption.hpp"
 #include "asianoptions.hpp"

@@ -41,7 +41,7 @@
 				Name="VCCustomBuildTool"/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="libboost_unit_test_framework-vc71-mt-sgd-1_31.lib odbc32.lib odbccp32.lib"
+				AdditionalDependencies="odbc32.lib odbccp32.lib"
 				OutputFile=".\build\Debug/testsuite.exe"
 				LinkIncremental="1"
 				SuppressStartupBanner="TRUE"
@@ -107,7 +107,7 @@
 				Name="VCCustomBuildTool"/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="libboost_unit_test_framework-vc71-mt-s-1_31.lib odbc32.lib odbccp32.lib"
+				AdditionalDependencies="odbc32.lib odbccp32.lib"
 				OutputFile=".\build\Release/testsuite.exe"
 				LinkIncremental="1"
 				SuppressStartupBanner="TRUE"
@@ -171,7 +171,7 @@
 				Name="VCCustomBuildTool"/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="libboost_unit_test_framework-vc71-mt-gd-1_31.lib odbc32.lib odbccp32.lib"
+				AdditionalDependencies="odbc32.lib odbccp32.lib"
 				OutputFile=".\build\DebugMTDLL/testsuite.exe"
 				LinkIncremental="1"
 				SuppressStartupBanner="TRUE"
@@ -237,7 +237,7 @@
 				Name="VCCustomBuildTool"/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="libboost_unit_test_framework-vc71-mt-1_31.lib odbc32.lib odbccp32.lib"
+				AdditionalDependencies="odbc32.lib odbccp32.lib"
 				OutputFile=".\build\ReleaseMTDLL/testsuite.exe"
 				LinkIncremental="1"
 				SuppressStartupBanner="TRUE"
