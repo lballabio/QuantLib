@@ -32,10 +32,10 @@ RSC=rc.exe
 
 !IF  "$(CFG)" == "Parities - Win32 Release"
 
-OUTDIR=.\Release
-INTDIR=.\Release
+OUTDIR=.\build\Release
+INTDIR=.\build\Release
 # Begin Custom Macros
-OutDir=.\Release
+OutDir=.\build\Release
 # End Custom Macros
 
 ALL : "$(OUTDIR)\Parities.exe" "$(OUTDIR)\Parities.bsc"
@@ -74,10 +74,10 @@ LINK32_OBJS= \
 
 !ELSEIF  "$(CFG)" == "Parities - Win32 Debug"
 
-OUTDIR=.\Debug
-INTDIR=.\Debug
+OUTDIR=.\build\Debug
+INTDIR=.\build\Debug
 # Begin Custom Macros
-OutDir=.\Debug
+OutDir=.\build\Debug
 # End Custom Macros
 
 ALL : "$(OUTDIR)\Parities.exe" "$(OUTDIR)\Parities.bsc"
@@ -119,10 +119,10 @@ LINK32_OBJS= \
 
 !ELSEIF  "$(CFG)" == "Parities - Win32 OnTheEdgeRelease"
 
-OUTDIR=.\OnTheEdgeRelease
-INTDIR=.\OnTheEdgeRelease
+OUTDIR=.\build\OnTheEdgeRelease
+INTDIR=.\build\OnTheEdgeRelease
 # Begin Custom Macros
-OutDir=.\OnTheEdgeRelease
+OutDir=.\build\OnTheEdgeRelease
 # End Custom Macros
 
 ALL : "$(OUTDIR)\Parities.exe" "$(OUTDIR)\Parities.bsc"
@@ -161,10 +161,10 @@ LINK32_OBJS= \
 
 !ELSEIF  "$(CFG)" == "Parities - Win32 OnTheEdgeDebug"
 
-OUTDIR=.\OnTheEdgeDebug
-INTDIR=.\OnTheEdgeDebug
+OUTDIR=.\build\OnTheEdgeDebug
+INTDIR=.\build\OnTheEdgeDebug
 # Begin Custom Macros
-OutDir=.\OnTheEdgeDebug
+OutDir=.\build\OnTheEdgeDebug
 # End Custom Macros
 
 ALL : "$(OUTDIR)\Parities.exe" "$(OUTDIR)\Parities.bsc"

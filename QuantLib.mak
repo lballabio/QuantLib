@@ -32,10 +32,10 @@ RSC=rc.exe
 
 !IF  "$(CFG)" == "QuantLib - Win32 Release"
 
-OUTDIR=.\Release
-INTDIR=.\Release
+OUTDIR=.\build\Release
+INTDIR=.\build\Release
 # Begin Custom Macros
-OutDir=.\Release
+OutDir=.\build\Release
 # End Custom Macros
 
 ALL : ".\lib\Win32\VisualStudio\QuantLib.lib" "$(OUTDIR)\QuantLib.bsc"
@@ -209,11 +209,7 @@ CPP_PROJ=/nologo /MD /W3 /Gi /GR /GX /Od /Ob2 /I ".\\" /D "WIN32" /D "NDEBUG" /D
 BSC32=bscmake.exe
 BSC32_FLAGS=/nologo /o"$(OUTDIR)\QuantLib.bsc" 
 BSC32_SBRS= \
-	"$(INTDIR)\calendar.sbr" \
-	"$(INTDIR)\dataformatters.sbr" \
-	"$(INTDIR)\date.sbr" \
-	"$(INTDIR)\scheduler.sbr" \
-	"$(INTDIR)\solver1d.sbr" \
+	"$(INTDIR)\frankfurt.sbr" \
 	"$(INTDIR)\helsinki.sbr" \
 	"$(INTDIR)\london.sbr" \
 	"$(INTDIR)\milan.sbr" \
@@ -222,7 +218,6 @@ BSC32_SBRS= \
 	"$(INTDIR)\wellington.sbr" \
 	"$(INTDIR)\westerncalendar.sbr" \
 	"$(INTDIR)\zurich.sbr" \
-	"$(INTDIR)\frankfurt.sbr" \
 	"$(INTDIR)\actualactual.sbr" \
 	"$(INTDIR)\actualactualeuro.sbr" \
 	"$(INTDIR)\actualactualhistorical.sbr" \
@@ -231,15 +226,27 @@ BSC32_SBRS= \
 	"$(INTDIR)\bsmoperator.sbr" \
 	"$(INTDIR)\tridiagonaloperator.sbr" \
 	"$(INTDIR)\valueatcenter.sbr" \
+	"$(INTDIR)\simpleswap.sbr" \
 	"$(INTDIR)\stock.sbr" \
 	"$(INTDIR)\swap.sbr" \
-	"$(INTDIR)\simpleswap.sbr" \
 	"$(INTDIR)\matrix.sbr" \
 	"$(INTDIR)\multivariateaccumulator.sbr" \
 	"$(INTDIR)\normaldistribution.sbr" \
 	"$(INTDIR)\segmentintegral.sbr" \
 	"$(INTDIR)\statistics.sbr" \
 	"$(INTDIR)\symmetricschurdecomposition.sbr" \
+	"$(INTDIR)\avgpriceasianpathpricer.sbr" \
+	"$(INTDIR)\avgstrikeasianpathpricer.sbr" \
+	"$(INTDIR)\basketpathpricer.sbr" \
+	"$(INTDIR)\controlvariatedpathpricer.sbr" \
+	"$(INTDIR)\europeanpathpricer.sbr" \
+	"$(INTDIR)\everestpathpricer.sbr" \
+	"$(INTDIR)\geometricasianpathpricer.sbr" \
+	"$(INTDIR)\getcovariance.sbr" \
+	"$(INTDIR)\himalayapathpricer.sbr" \
+	"$(INTDIR)\knuthrandomgenerator.sbr" \
+	"$(INTDIR)\lecuyerrandomgenerator.sbr" \
+	"$(INTDIR)\pagodapathpricer.sbr" \
 	"$(INTDIR)\averagepriceasian.sbr" \
 	"$(INTDIR)\averagestrikeasian.sbr" \
 	"$(INTDIR)\barrieroption.sbr" \
@@ -275,18 +282,11 @@ BSC32_SBRS= \
 	"$(INTDIR)\xibormanager.sbr" \
 	"$(INTDIR)\cashflowvectors.sbr" \
 	"$(INTDIR)\floatingratecoupon.sbr" \
-	"$(INTDIR)\avgpriceasianpathpricer.sbr" \
-	"$(INTDIR)\avgstrikeasianpathpricer.sbr" \
-	"$(INTDIR)\basketpathpricer.sbr" \
-	"$(INTDIR)\controlvariatedpathpricer.sbr" \
-	"$(INTDIR)\europeanpathpricer.sbr" \
-	"$(INTDIR)\everestpathpricer.sbr" \
-	"$(INTDIR)\geometricasianpathpricer.sbr" \
-	"$(INTDIR)\getcovariance.sbr" \
-	"$(INTDIR)\himalayapathpricer.sbr" \
-	"$(INTDIR)\knuthrandomgenerator.sbr" \
-	"$(INTDIR)\lecuyerrandomgenerator.sbr" \
-	"$(INTDIR)\pagodapathpricer.sbr"
+	"$(INTDIR)\calendar.sbr" \
+	"$(INTDIR)\dataformatters.sbr" \
+	"$(INTDIR)\date.sbr" \
+	"$(INTDIR)\scheduler.sbr" \
+	"$(INTDIR)\solver1d.sbr"
 
 "$(OUTDIR)\QuantLib.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -296,11 +296,7 @@ BSC32_SBRS= \
 LIB32=link.exe -lib
 LIB32_FLAGS=/nologo /out:"lib\Win32\VisualStudio\QuantLib.lib" 
 LIB32_OBJS= \
-	"$(INTDIR)\calendar.obj" \
-	"$(INTDIR)\dataformatters.obj" \
-	"$(INTDIR)\date.obj" \
-	"$(INTDIR)\scheduler.obj" \
-	"$(INTDIR)\solver1d.obj" \
+	"$(INTDIR)\frankfurt.obj" \
 	"$(INTDIR)\helsinki.obj" \
 	"$(INTDIR)\london.obj" \
 	"$(INTDIR)\milan.obj" \
@@ -309,7 +305,6 @@ LIB32_OBJS= \
 	"$(INTDIR)\wellington.obj" \
 	"$(INTDIR)\westerncalendar.obj" \
 	"$(INTDIR)\zurich.obj" \
-	"$(INTDIR)\frankfurt.obj" \
 	"$(INTDIR)\actualactual.obj" \
 	"$(INTDIR)\actualactualeuro.obj" \
 	"$(INTDIR)\actualactualhistorical.obj" \
@@ -318,15 +313,27 @@ LIB32_OBJS= \
 	"$(INTDIR)\bsmoperator.obj" \
 	"$(INTDIR)\tridiagonaloperator.obj" \
 	"$(INTDIR)\valueatcenter.obj" \
+	"$(INTDIR)\simpleswap.obj" \
 	"$(INTDIR)\stock.obj" \
 	"$(INTDIR)\swap.obj" \
-	"$(INTDIR)\simpleswap.obj" \
 	"$(INTDIR)\matrix.obj" \
 	"$(INTDIR)\multivariateaccumulator.obj" \
 	"$(INTDIR)\normaldistribution.obj" \
 	"$(INTDIR)\segmentintegral.obj" \
 	"$(INTDIR)\statistics.obj" \
 	"$(INTDIR)\symmetricschurdecomposition.obj" \
+	"$(INTDIR)\avgpriceasianpathpricer.obj" \
+	"$(INTDIR)\avgstrikeasianpathpricer.obj" \
+	"$(INTDIR)\basketpathpricer.obj" \
+	"$(INTDIR)\controlvariatedpathpricer.obj" \
+	"$(INTDIR)\europeanpathpricer.obj" \
+	"$(INTDIR)\everestpathpricer.obj" \
+	"$(INTDIR)\geometricasianpathpricer.obj" \
+	"$(INTDIR)\getcovariance.obj" \
+	"$(INTDIR)\himalayapathpricer.obj" \
+	"$(INTDIR)\knuthrandomgenerator.obj" \
+	"$(INTDIR)\lecuyerrandomgenerator.obj" \
+	"$(INTDIR)\pagodapathpricer.obj" \
 	"$(INTDIR)\averagepriceasian.obj" \
 	"$(INTDIR)\averagestrikeasian.obj" \
 	"$(INTDIR)\barrieroption.obj" \
@@ -362,18 +369,11 @@ LIB32_OBJS= \
 	"$(INTDIR)\xibormanager.obj" \
 	"$(INTDIR)\cashflowvectors.obj" \
 	"$(INTDIR)\floatingratecoupon.obj" \
-	"$(INTDIR)\avgpriceasianpathpricer.obj" \
-	"$(INTDIR)\avgstrikeasianpathpricer.obj" \
-	"$(INTDIR)\basketpathpricer.obj" \
-	"$(INTDIR)\controlvariatedpathpricer.obj" \
-	"$(INTDIR)\europeanpathpricer.obj" \
-	"$(INTDIR)\everestpathpricer.obj" \
-	"$(INTDIR)\geometricasianpathpricer.obj" \
-	"$(INTDIR)\getcovariance.obj" \
-	"$(INTDIR)\himalayapathpricer.obj" \
-	"$(INTDIR)\knuthrandomgenerator.obj" \
-	"$(INTDIR)\lecuyerrandomgenerator.obj" \
-	"$(INTDIR)\pagodapathpricer.obj"
+	"$(INTDIR)\calendar.obj" \
+	"$(INTDIR)\dataformatters.obj" \
+	"$(INTDIR)\date.obj" \
+	"$(INTDIR)\scheduler.obj" \
+	"$(INTDIR)\solver1d.obj"
 
 ".\lib\Win32\VisualStudio\QuantLib.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
     $(LIB32) @<<
@@ -382,10 +382,10 @@ LIB32_OBJS= \
 
 !ELSEIF  "$(CFG)" == "QuantLib - Win32 Debug"
 
-OUTDIR=.\Debug
-INTDIR=.\Debug
+OUTDIR=.\build\Debug
+INTDIR=.\build\Debug
 # Begin Custom Macros
-OutDir=.\Debug
+OutDir=.\build\Debug
 # End Custom Macros
 
 ALL : ".\lib\Win32\VisualStudio\QuantLib_d.lib" "$(OUTDIR)\QuantLib.bsc"
@@ -560,11 +560,7 @@ CPP_PROJ=/nologo /MDd /W3 /Gi /GR /GX /ZI /Od /I ".\\" /D "WIN32" /D "_DEBUG" /D
 BSC32=bscmake.exe
 BSC32_FLAGS=/nologo /o"$(OUTDIR)\QuantLib.bsc" 
 BSC32_SBRS= \
-	"$(INTDIR)\calendar.sbr" \
-	"$(INTDIR)\dataformatters.sbr" \
-	"$(INTDIR)\date.sbr" \
-	"$(INTDIR)\scheduler.sbr" \
-	"$(INTDIR)\solver1d.sbr" \
+	"$(INTDIR)\frankfurt.sbr" \
 	"$(INTDIR)\helsinki.sbr" \
 	"$(INTDIR)\london.sbr" \
 	"$(INTDIR)\milan.sbr" \
@@ -573,7 +569,6 @@ BSC32_SBRS= \
 	"$(INTDIR)\wellington.sbr" \
 	"$(INTDIR)\westerncalendar.sbr" \
 	"$(INTDIR)\zurich.sbr" \
-	"$(INTDIR)\frankfurt.sbr" \
 	"$(INTDIR)\actualactual.sbr" \
 	"$(INTDIR)\actualactualeuro.sbr" \
 	"$(INTDIR)\actualactualhistorical.sbr" \
@@ -582,15 +577,27 @@ BSC32_SBRS= \
 	"$(INTDIR)\bsmoperator.sbr" \
 	"$(INTDIR)\tridiagonaloperator.sbr" \
 	"$(INTDIR)\valueatcenter.sbr" \
+	"$(INTDIR)\simpleswap.sbr" \
 	"$(INTDIR)\stock.sbr" \
 	"$(INTDIR)\swap.sbr" \
-	"$(INTDIR)\simpleswap.sbr" \
 	"$(INTDIR)\matrix.sbr" \
 	"$(INTDIR)\multivariateaccumulator.sbr" \
 	"$(INTDIR)\normaldistribution.sbr" \
 	"$(INTDIR)\segmentintegral.sbr" \
 	"$(INTDIR)\statistics.sbr" \
 	"$(INTDIR)\symmetricschurdecomposition.sbr" \
+	"$(INTDIR)\avgpriceasianpathpricer.sbr" \
+	"$(INTDIR)\avgstrikeasianpathpricer.sbr" \
+	"$(INTDIR)\basketpathpricer.sbr" \
+	"$(INTDIR)\controlvariatedpathpricer.sbr" \
+	"$(INTDIR)\europeanpathpricer.sbr" \
+	"$(INTDIR)\everestpathpricer.sbr" \
+	"$(INTDIR)\geometricasianpathpricer.sbr" \
+	"$(INTDIR)\getcovariance.sbr" \
+	"$(INTDIR)\himalayapathpricer.sbr" \
+	"$(INTDIR)\knuthrandomgenerator.sbr" \
+	"$(INTDIR)\lecuyerrandomgenerator.sbr" \
+	"$(INTDIR)\pagodapathpricer.sbr" \
 	"$(INTDIR)\averagepriceasian.sbr" \
 	"$(INTDIR)\averagestrikeasian.sbr" \
 	"$(INTDIR)\barrieroption.sbr" \
@@ -626,18 +633,11 @@ BSC32_SBRS= \
 	"$(INTDIR)\xibormanager.sbr" \
 	"$(INTDIR)\cashflowvectors.sbr" \
 	"$(INTDIR)\floatingratecoupon.sbr" \
-	"$(INTDIR)\avgpriceasianpathpricer.sbr" \
-	"$(INTDIR)\avgstrikeasianpathpricer.sbr" \
-	"$(INTDIR)\basketpathpricer.sbr" \
-	"$(INTDIR)\controlvariatedpathpricer.sbr" \
-	"$(INTDIR)\europeanpathpricer.sbr" \
-	"$(INTDIR)\everestpathpricer.sbr" \
-	"$(INTDIR)\geometricasianpathpricer.sbr" \
-	"$(INTDIR)\getcovariance.sbr" \
-	"$(INTDIR)\himalayapathpricer.sbr" \
-	"$(INTDIR)\knuthrandomgenerator.sbr" \
-	"$(INTDIR)\lecuyerrandomgenerator.sbr" \
-	"$(INTDIR)\pagodapathpricer.sbr"
+	"$(INTDIR)\calendar.sbr" \
+	"$(INTDIR)\dataformatters.sbr" \
+	"$(INTDIR)\date.sbr" \
+	"$(INTDIR)\scheduler.sbr" \
+	"$(INTDIR)\solver1d.sbr"
 
 "$(OUTDIR)\QuantLib.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -647,11 +647,7 @@ BSC32_SBRS= \
 LIB32=link.exe -lib
 LIB32_FLAGS=/nologo /out:"lib\Win32\VisualStudio\QuantLib_d.lib" 
 LIB32_OBJS= \
-	"$(INTDIR)\calendar.obj" \
-	"$(INTDIR)\dataformatters.obj" \
-	"$(INTDIR)\date.obj" \
-	"$(INTDIR)\scheduler.obj" \
-	"$(INTDIR)\solver1d.obj" \
+	"$(INTDIR)\frankfurt.obj" \
 	"$(INTDIR)\helsinki.obj" \
 	"$(INTDIR)\london.obj" \
 	"$(INTDIR)\milan.obj" \
@@ -660,7 +656,6 @@ LIB32_OBJS= \
 	"$(INTDIR)\wellington.obj" \
 	"$(INTDIR)\westerncalendar.obj" \
 	"$(INTDIR)\zurich.obj" \
-	"$(INTDIR)\frankfurt.obj" \
 	"$(INTDIR)\actualactual.obj" \
 	"$(INTDIR)\actualactualeuro.obj" \
 	"$(INTDIR)\actualactualhistorical.obj" \
@@ -669,15 +664,27 @@ LIB32_OBJS= \
 	"$(INTDIR)\bsmoperator.obj" \
 	"$(INTDIR)\tridiagonaloperator.obj" \
 	"$(INTDIR)\valueatcenter.obj" \
+	"$(INTDIR)\simpleswap.obj" \
 	"$(INTDIR)\stock.obj" \
 	"$(INTDIR)\swap.obj" \
-	"$(INTDIR)\simpleswap.obj" \
 	"$(INTDIR)\matrix.obj" \
 	"$(INTDIR)\multivariateaccumulator.obj" \
 	"$(INTDIR)\normaldistribution.obj" \
 	"$(INTDIR)\segmentintegral.obj" \
 	"$(INTDIR)\statistics.obj" \
 	"$(INTDIR)\symmetricschurdecomposition.obj" \
+	"$(INTDIR)\avgpriceasianpathpricer.obj" \
+	"$(INTDIR)\avgstrikeasianpathpricer.obj" \
+	"$(INTDIR)\basketpathpricer.obj" \
+	"$(INTDIR)\controlvariatedpathpricer.obj" \
+	"$(INTDIR)\europeanpathpricer.obj" \
+	"$(INTDIR)\everestpathpricer.obj" \
+	"$(INTDIR)\geometricasianpathpricer.obj" \
+	"$(INTDIR)\getcovariance.obj" \
+	"$(INTDIR)\himalayapathpricer.obj" \
+	"$(INTDIR)\knuthrandomgenerator.obj" \
+	"$(INTDIR)\lecuyerrandomgenerator.obj" \
+	"$(INTDIR)\pagodapathpricer.obj" \
 	"$(INTDIR)\averagepriceasian.obj" \
 	"$(INTDIR)\averagestrikeasian.obj" \
 	"$(INTDIR)\barrieroption.obj" \
@@ -713,18 +720,11 @@ LIB32_OBJS= \
 	"$(INTDIR)\xibormanager.obj" \
 	"$(INTDIR)\cashflowvectors.obj" \
 	"$(INTDIR)\floatingratecoupon.obj" \
-	"$(INTDIR)\avgpriceasianpathpricer.obj" \
-	"$(INTDIR)\avgstrikeasianpathpricer.obj" \
-	"$(INTDIR)\basketpathpricer.obj" \
-	"$(INTDIR)\controlvariatedpathpricer.obj" \
-	"$(INTDIR)\europeanpathpricer.obj" \
-	"$(INTDIR)\everestpathpricer.obj" \
-	"$(INTDIR)\geometricasianpathpricer.obj" \
-	"$(INTDIR)\getcovariance.obj" \
-	"$(INTDIR)\himalayapathpricer.obj" \
-	"$(INTDIR)\knuthrandomgenerator.obj" \
-	"$(INTDIR)\lecuyerrandomgenerator.obj" \
-	"$(INTDIR)\pagodapathpricer.obj"
+	"$(INTDIR)\calendar.obj" \
+	"$(INTDIR)\dataformatters.obj" \
+	"$(INTDIR)\date.obj" \
+	"$(INTDIR)\scheduler.obj" \
+	"$(INTDIR)\solver1d.obj"
 
 ".\lib\Win32\VisualStudio\QuantLib_d.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
     $(LIB32) @<<
@@ -733,10 +733,10 @@ LIB32_OBJS= \
 
 !ELSEIF  "$(CFG)" == "QuantLib - Win32 OnTheEdgeRelease"
 
-OUTDIR=.\OnTheEdgeRelease
-INTDIR=.\OnTheEdgeRelease
+OUTDIR=.\build\OnTheEdgeRelease
+INTDIR=.\build\OnTheEdgeRelease
 # Begin Custom Macros
-OutDir=.\OnTheEdgeRelease
+OutDir=.\build\OnTheEdgeRelease
 # End Custom Macros
 
 ALL : ".\lib\Win32\VisualStudio\QuantLib.lib" "$(OUTDIR)\QuantLib.bsc"
@@ -910,11 +910,7 @@ CPP_PROJ=/nologo /MD /W3 /Gi /GR /GX /Od /Ob2 /I ".\\" /D "WIN32" /D "NDEBUG" /D
 BSC32=bscmake.exe
 BSC32_FLAGS=/nologo /o"$(OUTDIR)\QuantLib.bsc" 
 BSC32_SBRS= \
-	"$(INTDIR)\calendar.sbr" \
-	"$(INTDIR)\dataformatters.sbr" \
-	"$(INTDIR)\date.sbr" \
-	"$(INTDIR)\scheduler.sbr" \
-	"$(INTDIR)\solver1d.sbr" \
+	"$(INTDIR)\frankfurt.sbr" \
 	"$(INTDIR)\helsinki.sbr" \
 	"$(INTDIR)\london.sbr" \
 	"$(INTDIR)\milan.sbr" \
@@ -923,7 +919,6 @@ BSC32_SBRS= \
 	"$(INTDIR)\wellington.sbr" \
 	"$(INTDIR)\westerncalendar.sbr" \
 	"$(INTDIR)\zurich.sbr" \
-	"$(INTDIR)\frankfurt.sbr" \
 	"$(INTDIR)\actualactual.sbr" \
 	"$(INTDIR)\actualactualeuro.sbr" \
 	"$(INTDIR)\actualactualhistorical.sbr" \
@@ -932,15 +927,27 @@ BSC32_SBRS= \
 	"$(INTDIR)\bsmoperator.sbr" \
 	"$(INTDIR)\tridiagonaloperator.sbr" \
 	"$(INTDIR)\valueatcenter.sbr" \
+	"$(INTDIR)\simpleswap.sbr" \
 	"$(INTDIR)\stock.sbr" \
 	"$(INTDIR)\swap.sbr" \
-	"$(INTDIR)\simpleswap.sbr" \
 	"$(INTDIR)\matrix.sbr" \
 	"$(INTDIR)\multivariateaccumulator.sbr" \
 	"$(INTDIR)\normaldistribution.sbr" \
 	"$(INTDIR)\segmentintegral.sbr" \
 	"$(INTDIR)\statistics.sbr" \
 	"$(INTDIR)\symmetricschurdecomposition.sbr" \
+	"$(INTDIR)\avgpriceasianpathpricer.sbr" \
+	"$(INTDIR)\avgstrikeasianpathpricer.sbr" \
+	"$(INTDIR)\basketpathpricer.sbr" \
+	"$(INTDIR)\controlvariatedpathpricer.sbr" \
+	"$(INTDIR)\europeanpathpricer.sbr" \
+	"$(INTDIR)\everestpathpricer.sbr" \
+	"$(INTDIR)\geometricasianpathpricer.sbr" \
+	"$(INTDIR)\getcovariance.sbr" \
+	"$(INTDIR)\himalayapathpricer.sbr" \
+	"$(INTDIR)\knuthrandomgenerator.sbr" \
+	"$(INTDIR)\lecuyerrandomgenerator.sbr" \
+	"$(INTDIR)\pagodapathpricer.sbr" \
 	"$(INTDIR)\averagepriceasian.sbr" \
 	"$(INTDIR)\averagestrikeasian.sbr" \
 	"$(INTDIR)\barrieroption.sbr" \
@@ -976,18 +983,11 @@ BSC32_SBRS= \
 	"$(INTDIR)\xibormanager.sbr" \
 	"$(INTDIR)\cashflowvectors.sbr" \
 	"$(INTDIR)\floatingratecoupon.sbr" \
-	"$(INTDIR)\avgpriceasianpathpricer.sbr" \
-	"$(INTDIR)\avgstrikeasianpathpricer.sbr" \
-	"$(INTDIR)\basketpathpricer.sbr" \
-	"$(INTDIR)\controlvariatedpathpricer.sbr" \
-	"$(INTDIR)\europeanpathpricer.sbr" \
-	"$(INTDIR)\everestpathpricer.sbr" \
-	"$(INTDIR)\geometricasianpathpricer.sbr" \
-	"$(INTDIR)\getcovariance.sbr" \
-	"$(INTDIR)\himalayapathpricer.sbr" \
-	"$(INTDIR)\knuthrandomgenerator.sbr" \
-	"$(INTDIR)\lecuyerrandomgenerator.sbr" \
-	"$(INTDIR)\pagodapathpricer.sbr"
+	"$(INTDIR)\calendar.sbr" \
+	"$(INTDIR)\dataformatters.sbr" \
+	"$(INTDIR)\date.sbr" \
+	"$(INTDIR)\scheduler.sbr" \
+	"$(INTDIR)\solver1d.sbr"
 
 "$(OUTDIR)\QuantLib.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -997,11 +997,7 @@ BSC32_SBRS= \
 LIB32=link.exe -lib
 LIB32_FLAGS=/nologo /out:"lib\Win32\VisualStudio\QuantLib.lib" 
 LIB32_OBJS= \
-	"$(INTDIR)\calendar.obj" \
-	"$(INTDIR)\dataformatters.obj" \
-	"$(INTDIR)\date.obj" \
-	"$(INTDIR)\scheduler.obj" \
-	"$(INTDIR)\solver1d.obj" \
+	"$(INTDIR)\frankfurt.obj" \
 	"$(INTDIR)\helsinki.obj" \
 	"$(INTDIR)\london.obj" \
 	"$(INTDIR)\milan.obj" \
@@ -1010,7 +1006,6 @@ LIB32_OBJS= \
 	"$(INTDIR)\wellington.obj" \
 	"$(INTDIR)\westerncalendar.obj" \
 	"$(INTDIR)\zurich.obj" \
-	"$(INTDIR)\frankfurt.obj" \
 	"$(INTDIR)\actualactual.obj" \
 	"$(INTDIR)\actualactualeuro.obj" \
 	"$(INTDIR)\actualactualhistorical.obj" \
@@ -1019,15 +1014,27 @@ LIB32_OBJS= \
 	"$(INTDIR)\bsmoperator.obj" \
 	"$(INTDIR)\tridiagonaloperator.obj" \
 	"$(INTDIR)\valueatcenter.obj" \
+	"$(INTDIR)\simpleswap.obj" \
 	"$(INTDIR)\stock.obj" \
 	"$(INTDIR)\swap.obj" \
-	"$(INTDIR)\simpleswap.obj" \
 	"$(INTDIR)\matrix.obj" \
 	"$(INTDIR)\multivariateaccumulator.obj" \
 	"$(INTDIR)\normaldistribution.obj" \
 	"$(INTDIR)\segmentintegral.obj" \
 	"$(INTDIR)\statistics.obj" \
 	"$(INTDIR)\symmetricschurdecomposition.obj" \
+	"$(INTDIR)\avgpriceasianpathpricer.obj" \
+	"$(INTDIR)\avgstrikeasianpathpricer.obj" \
+	"$(INTDIR)\basketpathpricer.obj" \
+	"$(INTDIR)\controlvariatedpathpricer.obj" \
+	"$(INTDIR)\europeanpathpricer.obj" \
+	"$(INTDIR)\everestpathpricer.obj" \
+	"$(INTDIR)\geometricasianpathpricer.obj" \
+	"$(INTDIR)\getcovariance.obj" \
+	"$(INTDIR)\himalayapathpricer.obj" \
+	"$(INTDIR)\knuthrandomgenerator.obj" \
+	"$(INTDIR)\lecuyerrandomgenerator.obj" \
+	"$(INTDIR)\pagodapathpricer.obj" \
 	"$(INTDIR)\averagepriceasian.obj" \
 	"$(INTDIR)\averagestrikeasian.obj" \
 	"$(INTDIR)\barrieroption.obj" \
@@ -1063,18 +1070,11 @@ LIB32_OBJS= \
 	"$(INTDIR)\xibormanager.obj" \
 	"$(INTDIR)\cashflowvectors.obj" \
 	"$(INTDIR)\floatingratecoupon.obj" \
-	"$(INTDIR)\avgpriceasianpathpricer.obj" \
-	"$(INTDIR)\avgstrikeasianpathpricer.obj" \
-	"$(INTDIR)\basketpathpricer.obj" \
-	"$(INTDIR)\controlvariatedpathpricer.obj" \
-	"$(INTDIR)\europeanpathpricer.obj" \
-	"$(INTDIR)\everestpathpricer.obj" \
-	"$(INTDIR)\geometricasianpathpricer.obj" \
-	"$(INTDIR)\getcovariance.obj" \
-	"$(INTDIR)\himalayapathpricer.obj" \
-	"$(INTDIR)\knuthrandomgenerator.obj" \
-	"$(INTDIR)\lecuyerrandomgenerator.obj" \
-	"$(INTDIR)\pagodapathpricer.obj"
+	"$(INTDIR)\calendar.obj" \
+	"$(INTDIR)\dataformatters.obj" \
+	"$(INTDIR)\date.obj" \
+	"$(INTDIR)\scheduler.obj" \
+	"$(INTDIR)\solver1d.obj"
 
 ".\lib\Win32\VisualStudio\QuantLib.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
     $(LIB32) @<<
@@ -1083,10 +1083,10 @@ LIB32_OBJS= \
 
 !ELSEIF  "$(CFG)" == "QuantLib - Win32 OnTheEdgeDebug"
 
-OUTDIR=.\OnTheEdgeDebug
-INTDIR=.\OnTheEdgeDebug
+OUTDIR=.\build\OnTheEdgeDebug
+INTDIR=.\build\OnTheEdgeDebug
 # Begin Custom Macros
-OutDir=.\OnTheEdgeDebug
+OutDir=.\build\OnTheEdgeDebug
 # End Custom Macros
 
 ALL : ".\lib\Win32\VisualStudio\QuantLib_d.lib" "$(OUTDIR)\QuantLib.bsc"
@@ -1261,11 +1261,7 @@ CPP_PROJ=/nologo /MDd /W3 /Gi /GR /GX /ZI /Od /I ".\\" /D "WIN32" /D "_DEBUG" /D
 BSC32=bscmake.exe
 BSC32_FLAGS=/nologo /o"$(OUTDIR)\QuantLib.bsc" 
 BSC32_SBRS= \
-	"$(INTDIR)\calendar.sbr" \
-	"$(INTDIR)\dataformatters.sbr" \
-	"$(INTDIR)\date.sbr" \
-	"$(INTDIR)\scheduler.sbr" \
-	"$(INTDIR)\solver1d.sbr" \
+	"$(INTDIR)\frankfurt.sbr" \
 	"$(INTDIR)\helsinki.sbr" \
 	"$(INTDIR)\london.sbr" \
 	"$(INTDIR)\milan.sbr" \
@@ -1274,7 +1270,6 @@ BSC32_SBRS= \
 	"$(INTDIR)\wellington.sbr" \
 	"$(INTDIR)\westerncalendar.sbr" \
 	"$(INTDIR)\zurich.sbr" \
-	"$(INTDIR)\frankfurt.sbr" \
 	"$(INTDIR)\actualactual.sbr" \
 	"$(INTDIR)\actualactualeuro.sbr" \
 	"$(INTDIR)\actualactualhistorical.sbr" \
@@ -1283,15 +1278,27 @@ BSC32_SBRS= \
 	"$(INTDIR)\bsmoperator.sbr" \
 	"$(INTDIR)\tridiagonaloperator.sbr" \
 	"$(INTDIR)\valueatcenter.sbr" \
+	"$(INTDIR)\simpleswap.sbr" \
 	"$(INTDIR)\stock.sbr" \
 	"$(INTDIR)\swap.sbr" \
-	"$(INTDIR)\simpleswap.sbr" \
 	"$(INTDIR)\matrix.sbr" \
 	"$(INTDIR)\multivariateaccumulator.sbr" \
 	"$(INTDIR)\normaldistribution.sbr" \
 	"$(INTDIR)\segmentintegral.sbr" \
 	"$(INTDIR)\statistics.sbr" \
 	"$(INTDIR)\symmetricschurdecomposition.sbr" \
+	"$(INTDIR)\avgpriceasianpathpricer.sbr" \
+	"$(INTDIR)\avgstrikeasianpathpricer.sbr" \
+	"$(INTDIR)\basketpathpricer.sbr" \
+	"$(INTDIR)\controlvariatedpathpricer.sbr" \
+	"$(INTDIR)\europeanpathpricer.sbr" \
+	"$(INTDIR)\everestpathpricer.sbr" \
+	"$(INTDIR)\geometricasianpathpricer.sbr" \
+	"$(INTDIR)\getcovariance.sbr" \
+	"$(INTDIR)\himalayapathpricer.sbr" \
+	"$(INTDIR)\knuthrandomgenerator.sbr" \
+	"$(INTDIR)\lecuyerrandomgenerator.sbr" \
+	"$(INTDIR)\pagodapathpricer.sbr" \
 	"$(INTDIR)\averagepriceasian.sbr" \
 	"$(INTDIR)\averagestrikeasian.sbr" \
 	"$(INTDIR)\barrieroption.sbr" \
@@ -1327,18 +1334,11 @@ BSC32_SBRS= \
 	"$(INTDIR)\xibormanager.sbr" \
 	"$(INTDIR)\cashflowvectors.sbr" \
 	"$(INTDIR)\floatingratecoupon.sbr" \
-	"$(INTDIR)\avgpriceasianpathpricer.sbr" \
-	"$(INTDIR)\avgstrikeasianpathpricer.sbr" \
-	"$(INTDIR)\basketpathpricer.sbr" \
-	"$(INTDIR)\controlvariatedpathpricer.sbr" \
-	"$(INTDIR)\europeanpathpricer.sbr" \
-	"$(INTDIR)\everestpathpricer.sbr" \
-	"$(INTDIR)\geometricasianpathpricer.sbr" \
-	"$(INTDIR)\getcovariance.sbr" \
-	"$(INTDIR)\himalayapathpricer.sbr" \
-	"$(INTDIR)\knuthrandomgenerator.sbr" \
-	"$(INTDIR)\lecuyerrandomgenerator.sbr" \
-	"$(INTDIR)\pagodapathpricer.sbr"
+	"$(INTDIR)\calendar.sbr" \
+	"$(INTDIR)\dataformatters.sbr" \
+	"$(INTDIR)\date.sbr" \
+	"$(INTDIR)\scheduler.sbr" \
+	"$(INTDIR)\solver1d.sbr"
 
 "$(OUTDIR)\QuantLib.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -1348,11 +1348,7 @@ BSC32_SBRS= \
 LIB32=link.exe -lib
 LIB32_FLAGS=/nologo /out:"lib\Win32\VisualStudio\QuantLib_d.lib" 
 LIB32_OBJS= \
-	"$(INTDIR)\calendar.obj" \
-	"$(INTDIR)\dataformatters.obj" \
-	"$(INTDIR)\date.obj" \
-	"$(INTDIR)\scheduler.obj" \
-	"$(INTDIR)\solver1d.obj" \
+	"$(INTDIR)\frankfurt.obj" \
 	"$(INTDIR)\helsinki.obj" \
 	"$(INTDIR)\london.obj" \
 	"$(INTDIR)\milan.obj" \
@@ -1361,7 +1357,6 @@ LIB32_OBJS= \
 	"$(INTDIR)\wellington.obj" \
 	"$(INTDIR)\westerncalendar.obj" \
 	"$(INTDIR)\zurich.obj" \
-	"$(INTDIR)\frankfurt.obj" \
 	"$(INTDIR)\actualactual.obj" \
 	"$(INTDIR)\actualactualeuro.obj" \
 	"$(INTDIR)\actualactualhistorical.obj" \
@@ -1370,15 +1365,27 @@ LIB32_OBJS= \
 	"$(INTDIR)\bsmoperator.obj" \
 	"$(INTDIR)\tridiagonaloperator.obj" \
 	"$(INTDIR)\valueatcenter.obj" \
+	"$(INTDIR)\simpleswap.obj" \
 	"$(INTDIR)\stock.obj" \
 	"$(INTDIR)\swap.obj" \
-	"$(INTDIR)\simpleswap.obj" \
 	"$(INTDIR)\matrix.obj" \
 	"$(INTDIR)\multivariateaccumulator.obj" \
 	"$(INTDIR)\normaldistribution.obj" \
 	"$(INTDIR)\segmentintegral.obj" \
 	"$(INTDIR)\statistics.obj" \
 	"$(INTDIR)\symmetricschurdecomposition.obj" \
+	"$(INTDIR)\avgpriceasianpathpricer.obj" \
+	"$(INTDIR)\avgstrikeasianpathpricer.obj" \
+	"$(INTDIR)\basketpathpricer.obj" \
+	"$(INTDIR)\controlvariatedpathpricer.obj" \
+	"$(INTDIR)\europeanpathpricer.obj" \
+	"$(INTDIR)\everestpathpricer.obj" \
+	"$(INTDIR)\geometricasianpathpricer.obj" \
+	"$(INTDIR)\getcovariance.obj" \
+	"$(INTDIR)\himalayapathpricer.obj" \
+	"$(INTDIR)\knuthrandomgenerator.obj" \
+	"$(INTDIR)\lecuyerrandomgenerator.obj" \
+	"$(INTDIR)\pagodapathpricer.obj" \
 	"$(INTDIR)\averagepriceasian.obj" \
 	"$(INTDIR)\averagestrikeasian.obj" \
 	"$(INTDIR)\barrieroption.obj" \
@@ -1414,18 +1421,11 @@ LIB32_OBJS= \
 	"$(INTDIR)\xibormanager.obj" \
 	"$(INTDIR)\cashflowvectors.obj" \
 	"$(INTDIR)\floatingratecoupon.obj" \
-	"$(INTDIR)\avgpriceasianpathpricer.obj" \
-	"$(INTDIR)\avgstrikeasianpathpricer.obj" \
-	"$(INTDIR)\basketpathpricer.obj" \
-	"$(INTDIR)\controlvariatedpathpricer.obj" \
-	"$(INTDIR)\europeanpathpricer.obj" \
-	"$(INTDIR)\everestpathpricer.obj" \
-	"$(INTDIR)\geometricasianpathpricer.obj" \
-	"$(INTDIR)\getcovariance.obj" \
-	"$(INTDIR)\himalayapathpricer.obj" \
-	"$(INTDIR)\knuthrandomgenerator.obj" \
-	"$(INTDIR)\lecuyerrandomgenerator.obj" \
-	"$(INTDIR)\pagodapathpricer.obj"
+	"$(INTDIR)\calendar.obj" \
+	"$(INTDIR)\dataformatters.obj" \
+	"$(INTDIR)\date.obj" \
+	"$(INTDIR)\scheduler.obj" \
+	"$(INTDIR)\solver1d.obj"
 
 ".\lib\Win32\VisualStudio\QuantLib_d.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
     $(LIB32) @<<
