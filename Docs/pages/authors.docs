@@ -47,6 +47,13 @@
     </tr>
 
     <tr>
+    <td><em>Nicolas Di C&eacute;sar&eacute;</em></td>
+    <td> </td>
+    <td> spline, optimization</td>
+    <td><a href="http://sourceforge.net/users/dicesare/">dicesare</a></td>
+    </tr>
+
+    <tr>
     <td><em>Marco Marchioro</em></td>
     <td>marco.marchioro@riskmap.net</td>
     <td> </td>
@@ -54,17 +61,18 @@
     </tr>
 
     <tr>
+    <td><em>Sadruddin Rejeb</em></td>
+    <td>sad.rejeb@riskmap.it</td>
+    <td>single factor interest rate models</td>
+    <td><a href=
+    "http://sourceforge.net/users/sadrejeb/">sadrejeb</a></td>
+    </tr>
+
+    <tr>
     <td><em>Enrico Sirola</em></td>
     <td>enrico.sirola@riskmap.net</td>
     <td> </td>
     <td><a href="http://sourceforge.net/users/enri/">enri</a></td>
-    </tr>
-
-    <tr>
-    <td><em>Maxim Sokolov</em></td>
-    <td>maxim_sokolov@rambler.ru</td>
-    <td>examples</td>
-    <td><a href="http://sourceforge.net/users/dzuki/">dzuki</a></td>
     </tr>
 
     <tr>
@@ -83,9 +91,10 @@
               project manager
         \item Luigi Ballabio (luigi.ballabio@riskmap.net), library designer
         \item Adolfo Benin (adolfo.benin@riskmap.net)
+        \item Nicolas Di Césaré
         \item Marco Marchioro (marco.marchioro@riskmap.net)
+        \item Sadruddin Rejeb (sad.rejeb@riskmap.it), gcc 3.0.1 port
         \item Enrico Sirola (enrico.sirola@riskmap.net)
-        \item Maxim Sokolov (maxim\_sokolov@rambler.ru), examples
         \item RiskMap (info@riskmap.net), main sponsor
     \end{itemize}
     \endlatexonly
@@ -126,7 +135,7 @@
     <tr>
     <td><em>Dirk Eddelbuettel</em></td>
     <td> </td>
-    <td>Debian packager</td>
+    <td>Debian maintainer</td>
     <td><a href=
     "http://sourceforge.net/users/eddelbuettel/">eddelbuettel</a></td>
     </tr>
@@ -147,18 +156,17 @@
     </tr>
 
     <tr>
-    <td><em>Sadruddin Rejeb</em></td>
-    <td>sad.rejeb@riskmap.it</td>
-    <td>gcc 3.0.1 port</td>
-    <td><a href=
-    "http://sourceforge.net/users/sadrejeb/">sadrejeb</a></td>
-    </tr>
-
-    <tr>
     <td><em>Peter Schmitteckert</em></td>
     <td>quantlib@schmitteckert.com</td>
     <td> </td>
     <td> </td>
+    </tr>
+
+    <tr>
+    <td><em>Maxim Sokolov</em></td>
+    <td>maxim_sokolov@rambler.ru</td>
+    <td>examples</td>
+    <td><a href="http://sourceforge.net/users/dzuki/">dzuki</a></td>
     </tr>
 
     <tr>
@@ -176,11 +184,11 @@
         \item Christopher Baus, inspiration for custom iterators
         \item Thomas Becker, inspiration for custom iterators
         \item David Binderman
-        \item Dirk Eddelbuettel, Debian packager
+        \item Dirk Eddelbuettel, Debian maintainer
         \item Matteo Gallivanoni (matteo.gallivanoni@riskmap.net)
         \item Gilbert Peffer
-        \item Sadruddin Rejeb (sad.rejeb@riskmap.it), gcc 3.0.1 port
         \item Peter Schmitteckert (quantlib@schmitteckert.com)
+        \item Maxim Sokolov (maxim\_sokolov@rambler.ru), examples
         \item Bernd Johannes Wuebben
     \end{itemize}
     \endlatexonly

@@ -1,6 +1,6 @@
 
 
-move Sad into authors group
+solve copyright issues (COOOL, GAlib, etc.)
 separate SF projects for QuantLib-Python, etc.
 
 DISTRIBUTING

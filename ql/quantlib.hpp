@@ -33,6 +33,7 @@
 #include <ql/array.hpp>
 #include <ql/calendar.hpp>
 #include <ql/cashflow.hpp>
+#include <ql/constraint.hpp>
 #include <ql/currency.hpp>
 #include <ql/dataformatters.hpp>
 #include <ql/date.hpp>
@@ -45,12 +46,14 @@
 #include <ql/index.hpp>
 #include <ql/instrument.hpp>
 #include <ql/marketelement.hpp>
+#include <ql/minimizer.hpp>
 #include <ql/null.hpp>
 #include <ql/option.hpp>
 #include <ql/relinkablehandle.hpp>
 #include <ql/riskstatistics.hpp>
 #include <ql/scheduler.hpp>
 #include <ql/solver1d.hpp>
+#include <ql/stochasticprocess.hpp>
 #include <ql/swaptionvolsurface.hpp>
 #include <ql/termstructure.hpp>
 #include <ql/types.hpp>
@@ -86,6 +89,7 @@
 #include <ql/FiniteDifferences/fdtypedefs.hpp>
 #include <ql/FiniteDifferences/finitedifferencemodel.hpp>
 #include <ql/FiniteDifferences/impliciteuler.hpp>
+#include <ql/FiniteDifferences/onefactoroperator.hpp>
 #include <ql/FiniteDifferences/stepcondition.hpp>
 #include <ql/FiniteDifferences/tridiagonaloperator.hpp>
 #include <ql/FiniteDifferences/valueatcenter.hpp>
@@ -96,10 +100,25 @@
 #include <ql/Indexes/xibor.hpp>
 #include <ql/Indexes/xibormanager.hpp>
 
+#include <ql/Instruments/capfloor.hpp>
+#include <ql/Instruments/europeanswaption.hpp>
 #include <ql/Instruments/plainoption.hpp>
 #include <ql/Instruments/simpleswap.hpp>
 #include <ql/Instruments/stock.hpp>
 #include <ql/Instruments/swap.hpp>
+
+#include <ql/InterestRateModelling/grid.hpp>
+#include <ql/InterestRateModelling/model.hpp>
+#include <ql/InterestRateModelling/onefactormodel.hpp>
+#include <ql/InterestRateModelling/swapfuturevalue.hpp>
+#include <ql/InterestRateModelling/CalibrationHelpers/cap.hpp>
+#include <ql/InterestRateModelling/CalibrationHelpers/swaption.hpp>
+#include <ql/InterestRateModelling/OneFactorModels/blackdermanandtoy.hpp>
+#include <ql/InterestRateModelling/OneFactorModels/blackkarasinski.hpp>
+#include <ql/InterestRateModelling/OneFactorModels/hoandlee.hpp>
+#include <ql/InterestRateModelling/OneFactorModels/hullandwhite.hpp>
+#include <ql/InterestRateModelling/OneFactorModels/node.hpp>
+#include <ql/InterestRateModelling/OneFactorModels/tree.hpp>
 
 #include <ql/Math/cubicspline.hpp>
 #include <ql/Math/interpolation.hpp>
@@ -133,6 +152,15 @@
 #include <ql/MonteCarlo/pathgenerator.hpp>
 #include <ql/MonteCarlo/pathpricer.hpp>
 #include <ql/MonteCarlo/sample.hpp>
+
+#include <ql/Optimization/armijo.hpp>
+#include <ql/Optimization/conjugategradient.hpp>
+#include <ql/Optimization/costfunction.hpp>
+#include <ql/Optimization/criteria.hpp>
+#include <ql/Optimization/leastsquare.hpp>
+#include <ql/Optimization/linesearch.hpp>
+#include <ql/Optimization/optimizer.hpp>
+#include <ql/Optimization/steepestdescent.hpp>
 
 #include <ql/Patterns/factory.hpp>
 #include <ql/Patterns/observable.hpp>

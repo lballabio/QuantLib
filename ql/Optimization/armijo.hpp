@@ -29,7 +29,7 @@
     ql/Optimization/%armijo.hpp
 */
 
-#ifndef quantlib_optimization_armijo_h_
+#ifndef quantlib_optimization_armijo_h
 #define quantlib_optimization_armijo_h
 
 #include "ql/Optimization/linesearch.hpp"
