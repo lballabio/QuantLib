@@ -168,7 +168,7 @@ namespace QuantLib {
                                             PseudoRandom::urng_type(76));
 
         return boost::shared_ptr<
-                           MCDigitalEngine<RNG,S>::path_pricer_type>(
+                        QL_TYPENAME MCDigitalEngine<RNG,S>::path_pricer_type>(
           new DigitalPathPricer(
             payoff,
             exercise,

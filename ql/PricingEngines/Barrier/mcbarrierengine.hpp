@@ -176,7 +176,7 @@ namespace QuantLib {
         // do this with template parameters?
         if (isBiased_) {
             return boost::shared_ptr<
-                           MCBarrierEngine<RNG,S>::path_pricer_type>(
+                        QL_TYPENAME MCBarrierEngine<RNG,S>::path_pricer_type>(
                 new BiasedBarrierPathPricer(
                        arguments_.barrierType,
                        arguments_.barrier,
@@ -191,7 +191,7 @@ namespace QuantLib {
                                                 PseudoRandom::urng_type(5));
 
             return boost::shared_ptr<
-                           MCBarrierEngine<RNG,S>::path_pricer_type>(
+                        QL_TYPENAME MCBarrierEngine<RNG,S>::path_pricer_type>(
                 new BarrierPathPricer(
                     arguments_.barrierType,
                     arguments_.barrier,

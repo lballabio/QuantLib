@@ -145,7 +145,7 @@ namespace QuantLib {
         }
 
         return boost::shared_ptr<
-                            MCBasketEngine<RNG,S>::path_pricer_type>(
+                         QL_TYPENAME MCBasketEngine<RNG,S>::path_pricer_type>(
             new EuropeanMultiPathPricer(
                 arguments_.basketType,
                 payoff->optionType(),
