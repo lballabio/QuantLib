@@ -29,9 +29,8 @@
 
     After uncompressing the sources:
     -# `cd' to the %QuantLib directory and type `./configure' to
-       configure the package for your system.  Before doing this,
-       you might want to type `./configure --help' to obtain
-       information on additional features you can enable.
+       configure the package for your system; see the \ref config section
+       for configuration options.
     -# Type `make' to compile the package.
     -# Type `make install' to install the library. This might require
        administrative privileges.
@@ -41,8 +40,7 @@
     http://quantlib.org/download.html
 
     Before compiling the library, you might want to edit the file
-    "ql/userconfig.hpp" and enable additional features by uncommenting
-    the relevant lines.
+    "ql/userconfig.hpp"; see the \ref config section for details.
 
     Visual C++ 6.0/7.1 projects files are supplied for building the library.
 
