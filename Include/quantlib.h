@@ -25,9 +25,12 @@
 	$Source$
 	$Name$
 	$Log$
+	Revision 1.12  2001/01/11 11:51:58  lballabio
+	Added QLUTL alias for QuantLib::Utilities::
+
 	Revision 1.11  2001/01/04 11:58:10  lballabio
 	Differential operators added
-
+	
 	Revision 1.10  2000/12/28 15:25:38  marmar
 	QLMNT QuantLib::MonteCarlo::
 	
@@ -215,6 +218,7 @@
 #define QLPRC QuantLib::Pricers::
 #define QLS1D QuantLib::Solvers1D::
 #define QLTST QuantLib::TermStructures::
+#define QLUTL QuantLib::Utilities::
 
 
 #endif
