@@ -4,11 +4,13 @@
 .autodepend
 .silent
 
-# Options
+# MAKE Options
 !ifdef DEBUG
     MAKE = $(MAKE) -DDEBUG
 !endif
-
+!ifdef SAFE
+    MAKE = $(MAKE) -DSAFE
+!endif
 !ifdef QL_DIR
     MAKE = $(MAKE) -DQL_DIR="$(QL_DIR)"
 !endif

@@ -32,6 +32,9 @@ CC_OPTS        = -vi- -q -c -tWM -n$(OUTPUT_DIR) \
 !ifdef DEBUG
 CC_OPTS = $(CC_OPTS) -v -DQL_DEBUG
 !endif
+!ifdef SAFE
+CC_OPTS = $(CC_OPTS) -DSAFE_CHECKS
+!endif
 
 TLIB_OPTS    = /P256
 !ifdef DEBUG

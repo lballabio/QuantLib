@@ -73,6 +73,9 @@ TLIB      = tlib
 !ifdef DEBUG
     MAKE = $(MAKE) -DDEBUG
 !endif
+!ifdef SAFE
+    MAKE = $(MAKE) -DSAFE
+!endif
 
 # Options
 CC_OPTS        = -vi- -q -c -tWM \

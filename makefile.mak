@@ -8,24 +8,25 @@
 !ifdef DEBUG
     MAKE = $(MAKE) -DDEBUG
 !endif
+!ifdef SAFE
+    MAKE = $(MAKE) -DSAFE
+!endif
 
 # Primary target:
 # QuantLib library
 quantlib::
     cd ql
     $(MAKE)
-    #cd ..\test-suite
-    #$(MAKE) -DQL_DIR=".."
     cd ..
 
 # tests
-tests::
+tests:: quantlib
     cd test-suite
     $(MAKE) -DQL_DIR=".."
     cd ..
 
 # Examples
-examples::
+examples:: quantlib
     cd Examples
     $(MAKE) -DQL_DIR="..\.."
     cd ..
