@@ -25,6 +25,9 @@
     $Source$
     $Name$
     $Log$
+    Revision 1.4  2001/02/02 10:21:00  marmar
+    PathGenerator replaced by RandomArrayGenerator
+
     Revision 1.3  2001/01/17 14:37:56  nando
     tabs removed
 
@@ -41,7 +44,7 @@
 #define quantlib_montecarlo_standard_path_generator_h
 
 #include "gaussianrandomgenerator.h"
-#include "pathgenerator.h"
+#include "randomarraygenerator.h"
 
 namespace QuantLib {
 
@@ -52,7 +55,8 @@ namespace QuantLib {
         See the corresponding class for documentation.
     */
 
-        typedef PathGenerator<GaussianRandomGenerator > StandardPathGenerator;
+        typedef RandomArrayGenerator<GaussianRandomGenerator > 
+                                               StandardPathGenerator;
 
     }
 }
