@@ -22,7 +22,7 @@
 #ifndef quantlib_finite_difference_value_at_center_h
 #define quantlib_finite_difference_value_at_center_h
 
-#include <ql/array.hpp>
+#include <ql/Math/array.hpp>
 
 namespace QuantLib {
 

@@ -23,7 +23,7 @@
 #ifndef quantlib_matrix_h
 #define quantlib_matrix_h
 
-#include <ql/array.hpp>
+#include <ql/Math/array.hpp>
 #include <ql/Utilities/steppingiterator.hpp>
 
 namespace QuantLib {

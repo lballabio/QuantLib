@@ -19,7 +19,7 @@
     \brief compute value, first, and second derivatives at grid center
 */
 
-#include <ql/array.hpp>
+#include <ql/Math/array.hpp>
 
 namespace QuantLib {
 

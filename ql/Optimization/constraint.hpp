@@ -22,7 +22,7 @@
 #ifndef quantlib_optimization_constraint_h
 #define quantlib_optimization_constraint_h
 
-#include <ql/array.hpp>
+#include <ql/Math/array.hpp>
 #include <ql/Patterns/bridge.hpp>
 
 namespace QuantLib {

@@ -22,7 +22,7 @@
 #ifndef quantlib_random_sequence_generator_h
 #define quantlib_random_sequence_generator_h
 
-#include <ql/array.hpp>
+#include <ql/Math/array.hpp>
 #include <ql/MonteCarlo/sample.hpp>
 
 namespace QuantLib {

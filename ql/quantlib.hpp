@@ -19,11 +19,10 @@
 #ifndef quantlib_h
 #define quantlib_h
 
-// include this first for additional safety
 #include <ql/qldefines.hpp>
+#include <ql/core.hpp>
 
 #include <ql/argsandresults.hpp>
-#include <ql/array.hpp>
 #include <ql/blackmodel.hpp>
 #include <ql/calendar.hpp>
 #include <ql/capvolstructures.hpp>
@@ -149,6 +148,7 @@
 #include <ql/Lattices/tree.hpp>
 #include <ql/Lattices/trinomialtree.hpp>
 
+#include <ql/Math/array.hpp>
 #include <ql/Math/beta.hpp>
 #include <ql/Math/bicubicsplineinterpolation.hpp>
 #include <ql/Math/bilinearinterpolation.hpp>

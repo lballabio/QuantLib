@@ -23,7 +23,7 @@
 #ifndef quantlib_inversecumulative_gaussian_rsg_h
 #define quantlib_inversecumulative_gaussian_rsg_h
 
-#include <ql/array.hpp>
+#include <ql/Math/array.hpp>
 #include <ql/MonteCarlo/sample.hpp>
 
 namespace QuantLib {

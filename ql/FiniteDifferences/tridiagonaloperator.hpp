@@ -22,7 +22,7 @@
 #ifndef quantlib_tridiagonal_operator_h
 #define quantlib_tridiagonal_operator_h
 
-#include <ql/array.hpp>
+#include <ql/Math/array.hpp>
 #include <ql/handle.hpp>
 
 namespace QuantLib {

@@ -34,7 +34,6 @@ EXTRA_DIST= \
 
 include_HEADERS = \
 	argsandresults.hpp \
-	array.hpp \
 	blackmodel.hpp \
 	calendar.hpp \
 	capvolstructures.hpp \

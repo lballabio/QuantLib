@@ -22,7 +22,7 @@
 #ifndef quantlib_optimization_costfunction_h
 #define quantlib_optimization_costfunction_h
 
-#include <ql/array.hpp>
+#include <ql/Math/array.hpp>
 
 namespace QuantLib {
 

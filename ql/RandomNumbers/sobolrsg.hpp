@@ -22,7 +22,7 @@
 #ifndef quantlib_sobol_ld_rsg_h
 #define quantlib_sobol_ld_rsg_h
 
-#include <ql/array.hpp>
+#include <ql/Math/array.hpp>
 #include <ql/MonteCarlo/sample.hpp>
 #include <vector>
 
