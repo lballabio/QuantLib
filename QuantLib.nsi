@@ -2,6 +2,9 @@
 # $Id$
 # $Source$
 # $Log$
+# Revision 1.16  2001/07/11 09:44:57  nando
+# install executable sets environment variable QL_DIR
+#
 # Revision 1.15  2001/06/05 12:45:26  nando
 # R019-branch-merge4 merged into trunk
 #
@@ -70,17 +73,17 @@ File /r "Include\ql\TermStructures\*.hpp"
 SetOutPath  $INSTDIR\Include\ql\Utilities
 File /r "Include\ql\Utilities\*.hpp"
 WriteRegStr HKEY_LOCAL_MACHINE \
+            "Software\Microsoft\Windows\CurrentVersion\Uninstall\QuantLib" \
+            "DisplayName" "QuantLib (remove only)"
+WriteRegStr HKEY_LOCAL_MACHINE \
+            "Software\Microsoft\Windows\CurrentVersion\Uninstall\QuantLib" \
+            "UninstallString" '"QuantLibUninstall.exe"'
+WriteRegStr HKEY_LOCAL_MACHINE \
             "SOFTWARE\QuantLib" \
-            "Install_Dir" \
-            "$INSTDIR"
-WriteRegStr HKEY_LOCAL_MACHINE \
-            "Software\Microsoft\Windows\CurrentVersion\Uninstall\QuantLib" \
-            "DisplayName" \
-            "QuantLib (remove only)"
-WriteRegStr HKEY_LOCAL_MACHINE \
-            "Software\Microsoft\Windows\CurrentVersion\Uninstall\QuantLib" \
-            "UninstallString" \
-            '"QuantLibUninstall.exe"'
+            "Install_Dir" "$INSTDIR"
+WriteRegStr HKEY_CURRENT_USER \
+            "Environment" \
+            "QL_DIR" "$INSTDIR"
 SectionEnd
 
 Section "Start Menu Shortcuts"
@@ -91,10 +94,9 @@ CreateShortCut "$SMPROGRAMS\QuantLib\Uninstall.lnk" \
 SectionEnd
 
 Section "Uninstall"
-DeleteRegKey HKEY_LOCAL_MACHINE \
-             "Software\Microsoft\Windows\CurrentVersion\Uninstall\QuantLib"
-DeleteRegKey HKEY_LOCAL_MACHINE \
-             SOFTWARE\QuantLib
+DeleteRegKey   HKEY_LOCAL_MACHINE "Software\Microsoft\Windows\CurrentVersion\Uninstall\QuantLib"
+DeleteRegKey   HKEY_LOCAL_MACHINE SOFTWARE\QuantLib
+DeleteRegValue HKEY_CURRENT_USER  "Environment" "QL_DIR"
 Delete "$SMPROGRAMS\QuantLib\*.*"
 RMDir "$SMPROGRAMS\QuantLib"
 RMDir /r $INSTDIR\Include
