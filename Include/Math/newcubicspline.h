@@ -27,13 +27,16 @@
 	$Source$
 	$Name$
 	$Log$
+	Revision 1.4  2001/01/08 10:28:16  lballabio
+	Moved Array to Math namespace
+
 	Revision 1.3  2000/12/14 12:32:30  lballabio
 	Added CVS tags in Doxygen file documentation blocks
-
+	
 */
 
-#ifndef ql_cubic_spline_h
-#define ql_cubic_spline_h
+#ifndef quantlib_cubic_spline_h
+#define quantlib_cubic_spline_h
 
 #include "array.h"
 #include "location.h"
@@ -41,19 +44,25 @@
 
 namespace QuantLib{
 
-	class NewCubicSpline{
-	  public:
-		// constructor
-		  NewCubicSpline(Array xvalues, Array yvalues, double dy1=1.0e+30, double dyn=1.0e+30);
-		// accessors
-//		double value(double x, int guess = -1) const;
-//		double firstDerivative(double x, int guess = -1) const;
-		double value(double x, int guess ) const;
-		double firstDerivative(double x, int guess) const;
-		private:
-		Array xValues, yValues, coeffs;
-		bool isStrictlyAscending(Array v);
-	};
+	namespace Math {
+	
+		class NewCubicSpline {
+		  public:
+			// constructor
+			  NewCubicSpline(Array xvalues, Array yvalues, double dy1=1.0e+30, double dyn=1.0e+30);
+			// accessors
+			// double value(double x, int guess = -1) const;
+			// double firstDerivative(double x, int guess = -1) const;
+			double value(double x, int guess ) const;
+			double firstDerivative(double x, int guess) const;
+			private:
+			Array xValues, yValues, coeffs;
+			bool isStrictlyAscending(Array v);
+		};
+
+	}
 
 }
+
+
 #endif

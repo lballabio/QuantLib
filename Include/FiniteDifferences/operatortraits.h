@@ -27,9 +27,12 @@
 	$Source$
 	$Name$
 	$Log$
+	Revision 1.4  2001/01/08 10:28:16  lballabio
+	Moved Array to Math namespace
+
 	Revision 1.3  2000/12/14 12:32:30  lballabio
 	Added CVS tags in Doxygen file documentation blocks
-
+	
 */
 
 #ifndef quantlib_operator_traits_h
@@ -45,7 +48,7 @@ namespace QuantLib {
 		template<class Operator>
 		class OperatorTraits {
 		  public:
-			typedef Array arrayType;
+			typedef Math::Array arrayType;
 		};
 	
 	}

@@ -1,4 +1,4 @@
-		
+     
 /*
  * Copyright (C) 2000
  * Ferdinando Ametrano, Luigi Ballabio, Adolfo Benin, Marco Marchioro
@@ -22,14 +22,17 @@
 */
 
 /*! \file dividendamericanoption.h
-	\brief american option with discrete dividends
-	
-	$Source$
-	$Name$
-	$Log$
-	Revision 1.6  2000/12/14 12:32:30  lballabio
-	Added CVS tags in Doxygen file documentation blocks
+    \brief american option with discrete dividends
+    
+    $Source$
+    $Name$
+    $Log$
+    Revision 1.7  2001/01/08 10:28:16  lballabio
+    Moved Array to Math namespace
 
+    Revision 1.6  2000/12/14 12:32:30  lballabio
+    Added CVS tags in Doxygen file documentation blocks
+    
 */
 
 #ifndef shaft_dividend_american_option_pricer_h
@@ -53,31 +56,38 @@
 #include "americancondition.h"
 */
 namespace QuantLib {
-	namespace Pricers {
+    namespace Pricers {
 
-		class DividendAmericanOption : public BSMNumericalOption {
-		  public:
-			// constructor
-			DividendAmericanOption(Option::Type type, double underlying, double strike, 
-			  Rate underlyingGrowthRate, Rate riskFreeRate, Time residualTime, double volatility,
-			   std::vector<double> dividends, std::vector<Time> exdivdates, int timeSteps, int gridPoints);
-			// accessors
-			double value() const;
-			private:
-			mutable bool theOptionIsAmerican;
-			double timeStepPerDiv;
-			std::vector<double> theDividends;
-			std::vector<Time> theExDivDates;
-			unsigned int  theNumberOfDivs;
-			void movePricesBeforeExDiv(double Div, const Array& newGrid, Array& prices, const Array& oldGrid) const;
-			Handle<BSMOption> clone() const { return Handle<BSMOption>(new DividendAmericanOption(*this)); }
+        class DividendAmericanOption : public BSMNumericalOption {
+          public:
+            // constructor
+            DividendAmericanOption(Type type, double underlying, 
+                double strike, Rate underlyingGrowthRate, Rate riskFreeRate, 
+                Time residualTime, double volatility, 
+                const std::vector<double>& dividends, 
+                const std::vector<Time>& exdivdates, int timeSteps, 
+                int gridPoints);
+            // accessors
+            double value() const;
+            private:
+            mutable bool theOptionIsAmerican;
+            double timeStepPerDiv;
+            std::vector<double> theDividends;
+            std::vector<Time> theExDivDates;
+            unsigned int  theNumberOfDivs;
+            void movePricesBeforeExDiv(double Div, const Math::Array& newGrid, 
+                Math::Array& prices, const Math::Array& oldGrid) const;
+            Handle<BSMOption> clone() const { 
+                return Handle<BSMOption>(new DividendAmericanOption(*this));
+            }
+            double addElements(const std::vector<double>& A) const{
+                double sum = 0.0;
+                return sum = std::accumulate(A.begin(),A.end(),sum);   
+            }
+        };
 
-			double addElements(const std::vector<double>& A) const{
-				double sum = 0.0;
-				return sum = std::accumulate(A.begin(),A.end(),sum);   
-			}
-		};
-
-	}
+    }
 }
+
+
 #endif

@@ -27,6 +27,9 @@
     $Source$
     $Name$
     $Log$
+    Revision 1.11  2001/01/08 10:28:17  lballabio
+    Moved Array to Math namespace
+
     Revision 1.10  2001/01/08 10:12:02  lballabio
     Fixed humongous bug where prices were not modified by dividends
 
@@ -58,8 +61,8 @@ namespace QuantLib {
         DividendAmericanOption::DividendAmericanOption(
         DividendAmericanOption::Type type, double underlying, double strike,
             Rate underlyingGrowthRate, Rate riskFreeRate, Time residualTime, 
-            double volatility, std::vector<double> dividends, 
-            std::vector<Time> exdivdates, int timeSteps, int gridPoints)
+            double volatility, const std::vector<double>& dividends, 
+            const std::vector<Time>& exdivdates, int timeSteps, int gridPoints)
         : theDividends(dividends), theExDivDates(exdivdates), 
           theNumberOfDivs(dividends.size()), timeStepPerDiv(timeSteps),
           BSMNumericalOption(type, underlying-addElements(dividends), 
@@ -179,7 +182,8 @@ namespace QuantLib {
         }
 
         void DividendAmericanOption::movePricesBeforeExDiv(double Div, 
-            const Array& newGrid, Array& prices, const Array& oldGrid) const {
+            const Math::Array& newGrid, Math::Array& prices, 
+            const Math::Array& oldGrid) const {
 
             int j;
             Array vOldGrid(oldGrid+Div);

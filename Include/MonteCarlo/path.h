@@ -20,13 +20,17 @@
  * QuantLib license is also available at http://quantlib.sourceforge.net/LICENSE.TXT
 */
 /*! \file path.h
-	\brief This class represent the idea of path	
+	\brief Monte Carlo path
+	
 	$Source$
 	$Name$
 	$Log$
+	Revision 1.3  2001/01/08 10:28:16  lballabio
+	Moved Array to Math namespace
+
 	Revision 1.2  2001/01/05 15:58:27  lballabio
 	Fixed Doxygen documentation
-
+	
 	Revision 1.1  2001/01/04 17:31:22  marmar
 	Alpha version of the Monte Carlo tools.
 	
@@ -44,15 +48,19 @@ namespace QuantLib {
 
     	/*!
     	For the time being Path is equivalent to Array.	In the future this 
-    	could change and path might contain more information.
-    	As today, Path contains the list of continuously-compunded variations,
-    		LOG(Y_{i+1}/Y_i) for i = 0, ..., n-1 ,
-    	where Y_i is the value of the underlying at discretized time i.
+    	could change and Path might contain more information.
+    	As of today, Path contains the list of continuously-compunded
+    	variations,
+    	\f[
+    		\log \frac{Y_{i+1}}{Y_i} \mathrm{for} i = 0, \ldots, n-1
+    	\f]
+    	where \f$ Y_i \f$ is the value of the underlying at discretized time 
+    	\f$ t_i \f$.
     	*/
-		typedef Array Path;
+		typedef Math::Array Path;
 	}
 
 }
 
-#endif
 
+#endif

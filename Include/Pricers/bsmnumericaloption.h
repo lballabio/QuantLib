@@ -27,9 +27,12 @@
 	$Source$
 	$Name$
 	$Log$
+	Revision 1.7  2001/01/08 10:28:16  lballabio
+	Moved Array to Math namespace
+
 	Revision 1.6  2000/12/14 12:32:30  lballabio
 	Added CVS tags in Doxygen file documentation blocks
-
+	
 */
 
 #ifndef BSM_numerical_option_pricer_h
@@ -63,9 +66,9 @@ namespace QuantLib {
 		
 		  protected:
 			// methods
-			double valueAtCenter(const Array& a) const;
-			double firstDerivativeAtCenter(const Array& a, const Array& g) const;
-			double secondDerivativeAtCenter(const Array& a, const Array& g) const;
+			double valueAtCenter(const Math::Array& a) const;
+			double firstDerivativeAtCenter(const Math::Array& a, const Math::Array& g) const;
+			double secondDerivativeAtCenter(const Math::Array& a, const Math::Array& g) const;
 			void setGridLimits() const;
 			void initializeGrid() const;
 			void initializeInitialCondition() const;
@@ -77,9 +80,9 @@ namespace QuantLib {
 			mutable double theDelta, theGamma, theTheta;
 			mutable double  theRho, theVega;
 		
-			mutable Array theGrid;
+			mutable Math::Array theGrid;
 			mutable FiniteDifferences::BSMOperator theOperator;
-			mutable Array theInitialPrices;
+			mutable Math::Array theInitialPrices;
 			// temporaries
 			mutable double sMin, sMax;
 		  private:

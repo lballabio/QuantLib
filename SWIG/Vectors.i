@@ -45,7 +45,7 @@
 typedef std::vector<int> IntVector;
 typedef std::vector<double> DoubleVector;
 // array
-using QuantLib::Array;
+using QuantLib::Math::Array;
 %}
 
 %typemap(python,in) IntVector, IntVector *, const IntVector & {

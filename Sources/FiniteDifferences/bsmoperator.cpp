@@ -22,32 +22,35 @@
 */
 
 /*! \file bsmoperator.cpp
-	\brief differential operator for Black-Scholes-Merton equation
+    \brief differential operator for Black-Scholes-Merton equation
 
-	$Source$
-	$Name$
-	$Log$
-	Revision 1.4  2000/12/14 12:32:31  lballabio
-	Added CVS tags in Doxygen file documentation blocks
+    $Source$
+    $Name$
+    $Log$
+    Revision 1.5  2001/01/08 10:28:17  lballabio
+    Moved Array to Math namespace
 
+    Revision 1.4  2000/12/14 12:32:31  lballabio
+    Added CVS tags in Doxygen file documentation blocks
+    
 */
 
 #include "bsmoperator.h"
 
 namespace QuantLib {
 
-	namespace FiniteDifferences {
-	
-		BSMOperator::BSMOperator(int size, double dx, double r, double q, double sigma)
-		: TridiagonalOperator(size) {
-			double sigma2 = sigma*sigma;
-			double nu = r-q-sigma2/2;
-			double pd = -(sigma2/dx-nu)/(2*dx);
-			double pu = -(sigma2/dx+nu)/(2*dx);
-			double pm = sigma2/(dx*dx)+r;
-			setMidRows(pd,pm,pu);
-		}
-	
-	}
+    namespace FiniteDifferences {
+    
+        BSMOperator::BSMOperator(int size, double dx, double r, double q, double sigma)
+        : TridiagonalOperator(size) {
+            double sigma2 = sigma*sigma;
+            double nu = r-q-sigma2/2;
+            double pd = -(sigma2/dx-nu)/(2*dx);
+            double pu = -(sigma2/dx+nu)/(2*dx);
+            double pm = sigma2/(dx*dx)+r;
+            setMidRows(pd,pm,pu);
+        }
+    
+    }
 
 }
