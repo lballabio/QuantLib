@@ -60,6 +60,7 @@ MONTECARLO_OBJS  = $(OUTPUT_DIR)\avgpriceasianpathpricer.obj \
 FDM_OBJS         = $(OUTPUT_DIR)\tridiagonaloperator.obj \
                    $(OUTPUT_DIR)\bsmoperator.obj
 
+
 PRICER_OBJS      = $(OUTPUT_DIR)\bsmoption.obj \
                    $(OUTPUT_DIR)\averagestrikeasian.obj \
                    $(OUTPUT_DIR)\averagepriceasian.obj \ 
@@ -67,6 +68,7 @@ PRICER_OBJS      = $(OUTPUT_DIR)\bsmoption.obj \
                    $(OUTPUT_DIR)\bsmeuropeanoption.obj \
                    $(OUTPUT_DIR)\bsmamericanoption.obj \
                    $(OUTPUT_DIR)\dividendamericanoption.obj \
+                   $(OUTPUT_DIR)\dividendeuropeanoption.obj \
                    $(OUTPUT_DIR)\himalaya.obj \
                    $(OUTPUT_DIR)\mceuropeanpricer.obj \
                    $(OUTPUT_DIR)\plainbasketoption.obj 
@@ -300,12 +302,16 @@ $(OUTPUT_DIR)\bsmamericanoption.obj: \
                 $(SOURCES_DIR)\Pricers\bsmamericanoption.cpp
 $(OUTPUT_DIR)\dividendamericanoption.obj: \
                 $(SOURCES_DIR)\Pricers\dividendamericanoption.cpp
+$(OUTPUT_DIR)\dividendeuropeanoption.obj: \
+                $(SOURCES_DIR)\Pricers\dividendeuropeanoption.cpp
 $(OUTPUT_DIR)\himalaya.obj: \
                 $(SOURCES_DIR)\Pricers\himalaya.cpp
 $(OUTPUT_DIR)\mceuropeanpricer.obj: \
                 $(SOURCES_DIR)\Pricers\mceuropeanpricer.cpp
 $(OUTPUT_DIR)\plainbasketoption.obj: \
                 $(SOURCES_DIR)\Pricers\plainbasketoption.cpp
+                
+                
 
 # 1D solvers
 Solvers1D: $(OUTPUT_DIR) $(SOLVER1D_OBJS)
