@@ -27,6 +27,9 @@
 
     $Source$
     $Log$
+    Revision 1.19  2001/05/08 17:22:08  lballabio
+    Modified reference period calculation
+
     Revision 1.18  2001/05/03 15:36:34  lballabio
     Hopefully fixed algorithm
 
@@ -78,14 +81,11 @@ namespace QuantLib {
             QL_REQUIRE(refPeriodStart != Date() && refPeriodEnd != Date() &&
                 refPeriodEnd > refPeriodStart && refPeriodEnd > d1,
                 "Invalid reference period");
-            double period = Thirty360European().yearFraction(
-                refPeriodStart,refPeriodEnd);
-            int months;
-            double temp;
-            QL_ENSURE(QL_FABS(QL_MODF(period*12.0, &temp)) <= 1.0e-10,
-                "non-integer number of months");
-            months = int(temp+0.1);
-
+            // estimate roughly the length in months of a period
+            int months = int(0.5+12*double(refPeriodEnd-refPeriodStart)/365);
+            QL_REQUIRE(months != 0 && 12%months == 0,
+                "number of months does not divide 12 exactly");
+            double period = double(months)/12;
             if (d2 <= refPeriodEnd) {
                 if (d1 >= refPeriodStart)
                     return period*double(dayCount(d1,d2)) / 
