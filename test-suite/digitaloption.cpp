@@ -685,7 +685,7 @@ void DigitalOptionTest::testMCCashAtHit() {
     boost::shared_ptr<BlackVolTermStructure> volTS = flatVol(today, vol, dc);
 
     Size maxTimeStepsPerYear = 90;
-    bool brownianBridge  = false;
+    bool brownianBridge, antitheticVariate;
     bool controlVariate = false;
     Size maxSamples = 1000000;
     BigNatural seed = 1;
@@ -710,7 +710,8 @@ void DigitalOptionTest::testMCCashAtHit() {
                                 Handle<YieldTermStructure>(rTS),
                                 Handle<BlackVolTermStructure>(volTS)));
 
-        bool antitheticVariate = true;
+        antitheticVariate = true;
+        brownianBridge = false;
         boost::shared_ptr<PricingEngine> mcEngine(new
             MCDigitalEngine<PseudoRandom>(maxTimeStepsPerYear, brownianBridge,
                                           antitheticVariate, controlVariate,
@@ -718,9 +719,11 @@ void DigitalOptionTest::testMCCashAtHit() {
                                           maxSamples, seed));
 
         antitheticVariate = false;
+        brownianBridge = true;
         Size requiredSamples = Size(QL_POW(2.0, 14)-1);
         boost::shared_ptr<PricingEngine> mcldEngine(new
             MCDigitalEngine<LowDiscrepancy>(maxTimeStepsPerYear,
+                                            brownianBridge,
                                             antitheticVariate, controlVariate,
                                             requiredSamples, Null<Real>(),
                                             maxSamples, seed));
