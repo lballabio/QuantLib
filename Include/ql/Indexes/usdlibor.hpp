@@ -30,6 +30,9 @@
 
 // $Source$
 // $Log$
+// Revision 1.9  2001/06/12 09:36:37  lballabio
+// name() now returns the class name
+//
 // Revision 1.8  2001/06/05 09:35:13  lballabio
 // Updated docs to use Doxygen 1.2.8
 //
@@ -61,7 +64,7 @@ namespace QuantLib {
         class USDLibor : public Xibor {
           public:
             USDLibor(const RelinkableHandle<TermStructure>& h)
-            : Xibor("USD-Libor", USD, Handle<Calendar>(new Calendars::NewYork), 
+            : Xibor("USDLibor", USD, Handle<Calendar>(new Calendars::NewYork), 
                     true, ModifiedFollowing, 
                     Handle<DayCounter>(new DayCounters::Actual360), h) {}
         };
