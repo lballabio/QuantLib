@@ -39,6 +39,8 @@
 
 /*! \namespace QuantLib::CashFlows
     \brief Concrete implementations of the CashFlow interface
+
+    /*! See sect. \ref cashflows */
 */
 
 namespace QuantLib {

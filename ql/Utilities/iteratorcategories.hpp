@@ -39,6 +39,7 @@
 namespace QuantLib {
 
     //! Classes and functions of general utility
+    /*! See sect. \ref utilities */
     namespace Utilities {
 
         //! most generic of two given iterator categories

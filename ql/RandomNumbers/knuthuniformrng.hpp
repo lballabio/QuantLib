@@ -40,9 +40,7 @@
 namespace QuantLib {
 
     //! Random Number Generators and Low Discrepancy Sequences
-    /*! Implementation of Random Number Generators and
-        Low Discrepancy Sequences. They share the same namespace.
-    */
+    /*! See sect. \ref randomnumbers */
     namespace RandomNumbers {
 
         //! Uniform random number generator

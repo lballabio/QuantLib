@@ -40,6 +40,7 @@
 namespace QuantLib {
 
     //! Implementations of design patterns
+    /*! See sect. \ref patterns */
     namespace Patterns {
 
         //! Object that gets notified when a given observable changes

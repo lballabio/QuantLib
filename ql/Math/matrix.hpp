@@ -40,6 +40,7 @@
 namespace QuantLib {
 
     //! Mathematical functions and classes
+    /*! See sect. \ref math */
     namespace Math {
 
         //! %matrix used in linear algebra.

@@ -51,7 +51,6 @@ LIBRARY
 DOCUMENTATION ***
     ******
     add MS-Windows Help and TeX DVI format.
-    insert QuantLib-site\tobeincludedindoxygen.txt into DoxyGen documentation
     complete MC documentation
     ******
     enforce fulpath&classesinclude DoxyGen requirements

@@ -42,6 +42,8 @@
 
 /*! \namespace QuantLib::TermStructures
     \brief Concrete implementations of the TermStructure interface
+
+    /*! See sect. \ref termstructures */
 */
 
 namespace QuantLib {

@@ -53,6 +53,9 @@
     <li>The abstract class Currency provides the common interface of the classes
     implemented in the Currencies namespace.</li>
 
+    <li>The abstract class Index provides the common interface of the classes
+    implemented in the Indexes namespace.</li>
+
     <li>The abstract class Instrument provides the common interface of the classes
     implemented in the Instruments namespace.</li>
 

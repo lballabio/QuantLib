@@ -40,6 +40,8 @@
 
 /*! \namespace QuantLib::Indexes
     \brief Concrete implementations of the Index interface
+
+    /*! See sect. \ref indexes */
 */
 
 namespace QuantLib {

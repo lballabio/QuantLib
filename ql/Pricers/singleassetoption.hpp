@@ -43,6 +43,7 @@
 namespace QuantLib {
 
     //! Pricing models for options
+    /*! See sect. \ref pricers */
     namespace Pricers {
 
 

@@ -41,6 +41,8 @@ namespace QuantLib {
 
     /*! \namespace QuantLib::Solvers1D
         \brief Concrete implementations of the Solver1D interface
+
+        /*! See sect. \ref solvers1d */
     */
     
     #define MAX_FUNCTION_EVALUATIONS 100

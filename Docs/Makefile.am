@@ -4,6 +4,7 @@
 EXTRA_DIST = \
              authors.docs \
              calendars.docs \
+             cashflows.docs \
              coreclasses.docs \
              currencies.docs \
              daycounters.docs \
@@ -12,24 +13,30 @@ EXTRA_DIST = \
              groups.docs \
              history.docs \
              index.docs \
+             indexes.docs \
              install.docs \
              instruments.docs \
              license.docs \
              makefile.mak \
+             math.docs \
              mcarlo.docs \
              overview.docs \
+             patterns.docs \
              platforms.docs \
+             pricers.docs \
              quantlib.css \
              quantlib.doxy \
              quantlibfooter.html \
              quantlibfooteronline.html \
              quantlibheader.html \
              quantlibheader.tex \
+             randomnumbers.docs \
              README.txt \
              resources.docs \
              solvers1d.docs \
              termstructures.docs \
              usage.docs \
+             utilities.docs \
              where.docs
 
 docs-all: docs-pdf docs-ps
@@ -94,20 +101,34 @@ tex-files: docs-html
 	       -e "64,$$ s/include{coreclasses}/ /" \
 	       -e "64,$$ s/input{calendars}/ /" \
 	       -e "64,$$ s/include{calendars}/ /" \
+	       -e "64,$$ s/input{cashflows}/ /" \
+	       -e "64,$$ s/include{cashflows}/ /" \
 	       -e "64,$$ s/input{currencies}/ /" \
 	       -e "64,$$ s/include{currencies}/ /" \
 	       -e "64,$$ s/input{daycounters}/ /" \
 	       -e "64,$$ s/include{daycounters}/ /" \
-	       -e "64,$$ s/input{instruments}/ /" \
-	       -e "64,$$ s/include{instruments}/ /" \
 	       -e "64,$$ s/input{findiff}/ /" \
 	       -e "64,$$ s/include{findiff}/ /" \
+	       -e "64,$$ s/input{indexes}/ /" \
+	       -e "64,$$ s/include{indexes}/ /" \
+	       -e "64,$$ s/input{instruments}/ /" \
+	       -e "64,$$ s/include{instruments}/ /" \
+	       -e "64,$$ s/input{math}/ /" \
+	       -e "64,$$ s/include{math}/ /" \
 	       -e "64,$$ s/input{mcarlo}/ /" \
 	       -e "64,$$ s/include{mcarlo}/ /" \
+	       -e "64,$$ s/input{patterns}/ /" \
+	       -e "64,$$ s/include{patterns}/ /" \
+	       -e "64,$$ s/input{pricers}/ /" \
+	       -e "64,$$ s/include{pricers}/ /" \
+	       -e "64,$$ s/input{randomnumbers}/ /" \
+	       -e "64,$$ s/include{randomnumbers}/ /" \
 	       -e "64,$$ s/input{solvers1d}/ /" \
 	       -e "64,$$ s/include{solvers1d}/ /" \
 	       -e "64,$$ s/input{termstructures}/ /" \
 	       -e "64,$$ s/include{termstructures}/ /" \
+	       -e "64,$$ s/input{utilities}/ /" \
+	       -e "64,$$ s/include{utilities}/ /" \
 	       -e "s/ple Documentation}/ple Documentation}\\\\label{exchap}/" \
 	       oldrefman.tex > latex/refman.tex
 	rm -f oldrefman.tex

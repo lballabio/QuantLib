@@ -34,9 +34,7 @@
 /*! \namespace QuantLib
     \brief a.k.a. the %QuantLib Foundation
 
-    The root namespace <tt>%QuantLib</tt> contains what can be considered
-    the <b>%QuantLib foundation</b>, i.e., the core of abstract classes upon
-    which the rest of the library is built.
+    /*! See sect. \ref coreclasses */
 */
 
 #ifndef quantlib_defines_h

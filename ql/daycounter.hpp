@@ -40,6 +40,8 @@
 
 /*! \namespace QuantLib::DayCounters
     \brief Concrete implementations of the DayCounter interface
+
+    /*! See sect. \ref dayconters */
 */
 
 namespace QuantLib {
