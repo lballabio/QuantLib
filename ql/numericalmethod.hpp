@@ -63,6 +63,20 @@ namespace QuantLib {
 
         /*! Roll back an asset until the given time, but do not perform
             the final adjustment.
+
+            \warning In version 0.3.7 and earlier, this method was
+                     called rollAlmostBack method and performed
+                     pre-adjustment. This is no longer true; when
+                     migrating your code, you'll have to replace calls
+                     such as:
+                     \code
+                     method->rollAlmostBack(asset,t);
+                     \endcode
+                     with the two statements:
+                     \code
+                     method->partialRollback(asset,t);
+                     asset->preAdjustValues();
+                     \endcode
         */
         virtual void partialRollback(DiscretizedAsset&,
                                      Time to) const = 0;

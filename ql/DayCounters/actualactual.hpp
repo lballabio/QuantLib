@@ -28,17 +28,16 @@ namespace QuantLib {
 
     //! Actual/Actual day count
     /*! The day count can be calculated according to:
-    
+
         - the ISDA convention, also known as "Actual/Actual (Historical)",
-        "Actual/Actual", "Act/Act", "Actual/365", "Act/365", and "A/365";
-        - ISMA and US Treasury convention, also known as "Actual/Actual (Bond)";
-        - to AFB, also known as "Actual/Actual (Euro)".
+          "Actual/Actual", "Act/Act", and according to ISDA also "Actual/365",
+          "Act/365", and "A/365";
+        - the ISMA and US Treasury convention, also known as
+          "Actual/Actual (Bond)";
+        - the AFB convention, also known as "Actual/Actual (Euro)".
 
         For more details, refer to
-        http://www.isda.org/c_and_a/pdf/mktc1198.pdf
-
-        \warning this is the same as "Actual/365", while "Actual/365 (Fixed)"
-                 is a different daycount
+        http://www.isda.org/publications/pdf/Day-Count-Fracation1999.pdf
 
         \ingroup daycounters
 

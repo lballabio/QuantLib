@@ -55,7 +55,9 @@ namespace QuantLib {
 
             Users of discretized assets should use these methods in
             order to initialize, evolve and take the present value of
-            the assets.
+            the assets.  They call the corresponding methods in the
+            NumericalMethod interface, to which we refer for
+            documentation.
 
             @{
         */
@@ -70,7 +72,9 @@ namespace QuantLib {
 
             These methods (that developers should override when
             deriving from DiscretizedAsset) are to be used by
-            numerical methods and not directly by users.
+            numerical methods and not directly by users, with the
+            exception of preAdjustValues() and postAdjustValues() that
+            can be used together with partialRollback().
 
             @{
         */
