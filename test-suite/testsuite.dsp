@@ -301,6 +301,10 @@ SOURCE=.\factorial.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=.\forwardoption.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\instruments.cpp
 # End Source File
 # Begin Source File
@@ -342,6 +346,10 @@ SOURCE=.\piecewiseflatforward.cpp
 # Begin Source File
 
 SOURCE=.\quantlibtestsuite.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\quantooption.cpp
 # End Source File
 # Begin Source File
 
@@ -445,6 +453,10 @@ SOURCE=.\factorial.hpp
 # End Source File
 # Begin Source File
 
+SOURCE=.\forwardoption.hpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\instruments.hpp
 # End Source File
 # Begin Source File
@@ -482,6 +494,10 @@ SOURCE=.\operators.hpp
 # Begin Source File
 
 SOURCE=.\piecewiseflatforward.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\quantooption.hpp
 # End Source File
 # Begin Source File
 

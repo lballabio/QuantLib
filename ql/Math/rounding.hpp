@@ -27,7 +27,7 @@
 namespace QuantLib {
 
     //! Type of rounding
-    
+
     enum RoundingType {
 	ROUND_UP,
 	ROUND_DOWN,
@@ -35,7 +35,7 @@ namespace QuantLib {
 	ROUND_CEILING,
 	DONT_ROUND
     };
-    
+
     //! Basic rounding.
     /*! Round up means first decimal place past precision will be rounded up
       if greater than digit.
@@ -43,77 +43,79 @@ namespace QuantLib {
     */
 
     class Rounding {
-    public:
-	Rounding() {}
-	Rounding(const long precision,
-		 const RoundingType type = ROUND_UP,
-		 const int digit = 5)
-	: precision_(precision),type_(type),digit_(digit) {}
-	Decimal round(const Decimal value) const;
+      public:
+	  Rounding() {}
+	  Rounding(const long precision,
+               const RoundingType type = ROUND_UP,
+               const int digit = 5)
+	  : precision_(precision),type_(type),digit_(digit) {}
+	  Decimal round(const Decimal value) const;
     private:
-	long precision_;
-	RoundingType type_;
-	int digit_;
+	  long precision_;
+	  RoundingType type_;
+	  int digit_;
     };
 
     //! Ceiling truncation.
     /*! Positive numbers will be rounded down, negative numbers will be
       rounded up.
     */
-    
+
     class CeilingTruncation : public Rounding {
-    public:
-	CeilingTruncation(const long precision, const int digit = 5)
-	: Rounding(precision,ROUND_CEILING,digit) {}
+      public:
+    	CeilingTruncation(const long precision,
+	                      const int digit = 5)
+	    : Rounding(precision,ROUND_CEILING,digit) {}
     };
-    
+
     //! Floor truncation.
     /*! Positive numbers will be rounded up, negative numbers will be
       rounded down.
     */
-    
+
     class FloorTruncation : public Rounding {
-    public:
-	FloorTruncation(const long precision, const int digit = 5)
-	: Rounding(precision,ROUND_FLOOR,digit) {}
+      public:
+	    FloorTruncation(const long precision,
+	                    const int digit = 5)
+        : Rounding(precision,ROUND_FLOOR,digit) {}
     };
-    
+
     inline Decimal Rounding::round(const Decimal value) const {
-	if (type_ == DONT_ROUND) return value;
-	double mult = pow(10.0,precision_);
-	bool neg = (value < 0.0);
-	double lvalue = QL_FABS(value)*mult;
-	double integral = 0.0;
-	double modVal = QL_MODF(lvalue,&integral);
-	switch (type_) {
-	    case ROUND_UP:
-		lvalue -= modVal;
-		if (modVal >= (digit_/10.0))
-		    lvalue += 1.0;
-		break;
-	    case ROUND_DOWN:
-		lvalue -= modVal;
-		break;
-	    case ROUND_FLOOR:
-		lvalue -= modVal;
-		if (!neg) {
-		    if (modVal >= (digit_/10.0))
-			lvalue += 1.0;
-		}
-		break;
-	    case ROUND_CEILING:
-		lvalue -= modVal;
-		if (neg) {
-		    if (modVal >= (digit_/10.0))
-			lvalue += 1.0;
-		}
-		break;
-	    default:
-		break;
-	}
-	return (neg) ? (lvalue/mult)*-1.0 : lvalue/mult;
+    	if (type_ == DONT_ROUND) return value;
+    	double mult = pow(10.0,precision_);
+    	bool neg = (value < 0.0);
+    	double lvalue = QL_FABS(value)*mult;
+    	double integral = 0.0;
+    	double modVal = QL_MODF(lvalue,&integral);
+    	switch (type_) {
+          case ROUND_UP:
+    		lvalue -= modVal;
+    		if (modVal >= (digit_/10.0))
+    		    lvalue += 1.0;
+    		break;
+          case ROUND_DOWN:
+    		lvalue -= modVal;
+    		break;
+          case ROUND_FLOOR:
+    		lvalue -= modVal;
+    		if (!neg) {
+    		    if (modVal >= (digit_/10.0))
+    			lvalue += 1.0;
+    		}
+    		break;
+          case ROUND_CEILING:
+    		lvalue -= modVal;
+    		if (neg) {
+    		    if (modVal >= (digit_/10.0))
+    			lvalue += 1.0;
+    		}
+    		break;
+          default:
+    		break;
+    	}
+    	return (neg) ? (lvalue/mult)*-1.0 : lvalue/mult;
     }
-    
+
 }
 
 #endif

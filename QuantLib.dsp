@@ -215,6 +215,10 @@ PreLink_Cmds=if not exist lib mkdir lib
 # PROP Default_Filter ""
 # Begin Source File
 
+SOURCE=.\ql\Calendars\all.hpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\ql\Calendars\beijing.cpp
 # End Source File
 # Begin Source File
@@ -887,6 +891,10 @@ SOURCE=.\ql\Lattices\trinomialtree.hpp
 # PROP Default_Filter ""
 # Begin Source File
 
+SOURCE=.\ql\Math\all.hpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\ql\Math\array.hpp
 # End Source File
 # Begin Source File
@@ -939,6 +947,10 @@ SOURCE=.\ql\Math\comparison.hpp
 # End Source File
 # Begin Source File
 
+SOURCE=.\ql\Math\core.hpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\ql\Math\cubicspline.hpp
 # End Source File
 # Begin Source File
@@ -956,6 +968,10 @@ SOURCE=.\ql\Math\errorfunction.cpp
 # Begin Source File
 
 SOURCE=.\ql\Math\errorfunction.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\Math\extrapolation.hpp
 # End Source File
 # Begin Source File
 
@@ -1072,6 +1088,10 @@ SOURCE=.\ql\Math\pseudosqrt.hpp
 # Begin Source File
 
 SOURCE=.\ql\Math\riskstatistics.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\Math\rounding.hpp
 # End Source File
 # Begin Source File
 
@@ -1255,6 +1275,10 @@ SOURCE=.\ql\Patterns\visitor.hpp
 # PROP Default_Filter ""
 # Begin Source File
 
+SOURCE=.\ql\Pricers\all.hpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\ql\Pricers\cliquetoptionpricer.cpp
 # End Source File
 # Begin Source File
@@ -1264,6 +1288,10 @@ SOURCE=.\ql\Pricers\cliquetoptionpricer.hpp
 # Begin Source File
 
 SOURCE=.\ql\Pricers\continuousgeometricapo.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\Pricers\core.hpp
 # End Source File
 # Begin Source File
 
@@ -1758,6 +1786,14 @@ SOURCE=.\ql\PricingEngines\Cliquet\analyticperformanceengine.cpp
 # Begin Source File
 
 SOURCE=.\ql\PricingEngines\Cliquet\analyticperformanceengine.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\PricingEngines\Cliquet\mccliquetengine.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\PricingEngines\Cliquet\mccliquetengine.hpp
 # End Source File
 # End Group
 # Begin Source File

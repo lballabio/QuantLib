@@ -87,6 +87,8 @@ CLEAN :
 	-@erase "$(INTDIR)\europeanoption.sbr"
 	-@erase "$(INTDIR)\factorial.obj"
 	-@erase "$(INTDIR)\factorial.sbr"
+	-@erase "$(INTDIR)\forwardoption.obj"
+	-@erase "$(INTDIR)\forwardoption.sbr"
 	-@erase "$(INTDIR)\instruments.obj"
 	-@erase "$(INTDIR)\instruments.sbr"
 	-@erase "$(INTDIR)\integrals.obj"
@@ -109,6 +111,8 @@ CLEAN :
 	-@erase "$(INTDIR)\piecewiseflatforward.sbr"
 	-@erase "$(INTDIR)\quantlibtestsuite.obj"
 	-@erase "$(INTDIR)\quantlibtestsuite.sbr"
+	-@erase "$(INTDIR)\quantooption.obj"
+	-@erase "$(INTDIR)\quantooption.sbr"
 	-@erase "$(INTDIR)\quotes.obj"
 	-@erase "$(INTDIR)\quotes.sbr"
 	-@erase "$(INTDIR)\riskstats.obj"
@@ -142,6 +146,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\basketoption.sbr" \
 	"$(INTDIR)\calendars.sbr" \
 	"$(INTDIR)\capfloor.sbr" \
+	"$(INTDIR)\cliquetoption.sbr" \
 	"$(INTDIR)\compoundforward.sbr" \
 	"$(INTDIR)\covariance.sbr" \
 	"$(INTDIR)\dates.sbr" \
@@ -170,7 +175,8 @@ BSC32_SBRS= \
 	"$(INTDIR)\swaption.sbr" \
 	"$(INTDIR)\termstructures.sbr" \
 	"$(INTDIR)\utilities.sbr" \
-	"$(INTDIR)\cliquetoption.sbr"
+	"$(INTDIR)\forwardoption.sbr" \
+	"$(INTDIR)\quantooption.sbr"
 
 "$(OUTDIR)\testsuite.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -186,6 +192,7 @@ LINK32_OBJS= \
 	"$(INTDIR)\basketoption.obj" \
 	"$(INTDIR)\calendars.obj" \
 	"$(INTDIR)\capfloor.obj" \
+	"$(INTDIR)\cliquetoption.obj" \
 	"$(INTDIR)\compoundforward.obj" \
 	"$(INTDIR)\covariance.obj" \
 	"$(INTDIR)\dates.obj" \
@@ -214,7 +221,8 @@ LINK32_OBJS= \
 	"$(INTDIR)\swaption.obj" \
 	"$(INTDIR)\termstructures.obj" \
 	"$(INTDIR)\utilities.obj" \
-	"$(INTDIR)\cliquetoption.obj" \
+	"$(INTDIR)\forwardoption.obj" \
+	"$(INTDIR)\quantooption.obj" \
 	"..\lib\QuantLib-vc6-mt-s-0_3_7.lib"
 
 "$(OUTDIR)\testsuite.exe" : "$(OUTDIR)" $(DEF_FILE) $(LINK32_OBJS)
@@ -293,6 +301,8 @@ CLEAN :
 	-@erase "$(INTDIR)\europeanoption.sbr"
 	-@erase "$(INTDIR)\factorial.obj"
 	-@erase "$(INTDIR)\factorial.sbr"
+	-@erase "$(INTDIR)\forwardoption.obj"
+	-@erase "$(INTDIR)\forwardoption.sbr"
 	-@erase "$(INTDIR)\instruments.obj"
 	-@erase "$(INTDIR)\instruments.sbr"
 	-@erase "$(INTDIR)\integrals.obj"
@@ -315,6 +325,8 @@ CLEAN :
 	-@erase "$(INTDIR)\piecewiseflatforward.sbr"
 	-@erase "$(INTDIR)\quantlibtestsuite.obj"
 	-@erase "$(INTDIR)\quantlibtestsuite.sbr"
+	-@erase "$(INTDIR)\quantooption.obj"
+	-@erase "$(INTDIR)\quantooption.sbr"
 	-@erase "$(INTDIR)\quotes.obj"
 	-@erase "$(INTDIR)\quotes.sbr"
 	-@erase "$(INTDIR)\riskstats.obj"
@@ -351,6 +363,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\basketoption.sbr" \
 	"$(INTDIR)\calendars.sbr" \
 	"$(INTDIR)\capfloor.sbr" \
+	"$(INTDIR)\cliquetoption.sbr" \
 	"$(INTDIR)\compoundforward.sbr" \
 	"$(INTDIR)\covariance.sbr" \
 	"$(INTDIR)\dates.sbr" \
@@ -379,7 +392,8 @@ BSC32_SBRS= \
 	"$(INTDIR)\swaption.sbr" \
 	"$(INTDIR)\termstructures.sbr" \
 	"$(INTDIR)\utilities.sbr" \
-	"$(INTDIR)\cliquetoption.sbr"
+	"$(INTDIR)\forwardoption.sbr" \
+	"$(INTDIR)\quantooption.sbr"
 
 "$(OUTDIR)\testsuite.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -395,6 +409,7 @@ LINK32_OBJS= \
 	"$(INTDIR)\basketoption.obj" \
 	"$(INTDIR)\calendars.obj" \
 	"$(INTDIR)\capfloor.obj" \
+	"$(INTDIR)\cliquetoption.obj" \
 	"$(INTDIR)\compoundforward.obj" \
 	"$(INTDIR)\covariance.obj" \
 	"$(INTDIR)\dates.obj" \
@@ -423,7 +438,8 @@ LINK32_OBJS= \
 	"$(INTDIR)\swaption.obj" \
 	"$(INTDIR)\termstructures.obj" \
 	"$(INTDIR)\utilities.obj" \
-	"$(INTDIR)\cliquetoption.obj" \
+	"$(INTDIR)\forwardoption.obj" \
+	"$(INTDIR)\quantooption.obj" \
 	"..\lib\QuantLib-vc6-mt-sgd-0_3_7.lib"
 
 "$(OUTDIR)\testsuite.exe" : "$(OUTDIR)" $(DEF_FILE) $(LINK32_OBJS)
@@ -502,6 +518,8 @@ CLEAN :
 	-@erase "$(INTDIR)\europeanoption.sbr"
 	-@erase "$(INTDIR)\factorial.obj"
 	-@erase "$(INTDIR)\factorial.sbr"
+	-@erase "$(INTDIR)\forwardoption.obj"
+	-@erase "$(INTDIR)\forwardoption.sbr"
 	-@erase "$(INTDIR)\instruments.obj"
 	-@erase "$(INTDIR)\instruments.sbr"
 	-@erase "$(INTDIR)\integrals.obj"
@@ -524,6 +542,8 @@ CLEAN :
 	-@erase "$(INTDIR)\piecewiseflatforward.sbr"
 	-@erase "$(INTDIR)\quantlibtestsuite.obj"
 	-@erase "$(INTDIR)\quantlibtestsuite.sbr"
+	-@erase "$(INTDIR)\quantooption.obj"
+	-@erase "$(INTDIR)\quantooption.sbr"
 	-@erase "$(INTDIR)\quotes.obj"
 	-@erase "$(INTDIR)\quotes.sbr"
 	-@erase "$(INTDIR)\riskstats.obj"
@@ -559,6 +579,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\basketoption.sbr" \
 	"$(INTDIR)\calendars.sbr" \
 	"$(INTDIR)\capfloor.sbr" \
+	"$(INTDIR)\cliquetoption.sbr" \
 	"$(INTDIR)\compoundforward.sbr" \
 	"$(INTDIR)\covariance.sbr" \
 	"$(INTDIR)\dates.sbr" \
@@ -587,7 +608,8 @@ BSC32_SBRS= \
 	"$(INTDIR)\swaption.sbr" \
 	"$(INTDIR)\termstructures.sbr" \
 	"$(INTDIR)\utilities.sbr" \
-	"$(INTDIR)\cliquetoption.sbr"
+	"$(INTDIR)\forwardoption.sbr" \
+	"$(INTDIR)\quantooption.sbr"
 
 "$(OUTDIR)\testsuite.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -603,6 +625,7 @@ LINK32_OBJS= \
 	"$(INTDIR)\basketoption.obj" \
 	"$(INTDIR)\calendars.obj" \
 	"$(INTDIR)\capfloor.obj" \
+	"$(INTDIR)\cliquetoption.obj" \
 	"$(INTDIR)\compoundforward.obj" \
 	"$(INTDIR)\covariance.obj" \
 	"$(INTDIR)\dates.obj" \
@@ -631,7 +654,8 @@ LINK32_OBJS= \
 	"$(INTDIR)\swaption.obj" \
 	"$(INTDIR)\termstructures.obj" \
 	"$(INTDIR)\utilities.obj" \
-	"$(INTDIR)\cliquetoption.obj" \
+	"$(INTDIR)\forwardoption.obj" \
+	"$(INTDIR)\quantooption.obj" \
 	"..\lib\QuantLib-vc6-mt-0_3_7.lib"
 
 "$(OUTDIR)\testsuite.exe" : "$(OUTDIR)" $(DEF_FILE) $(LINK32_OBJS)
@@ -710,6 +734,8 @@ CLEAN :
 	-@erase "$(INTDIR)\europeanoption.sbr"
 	-@erase "$(INTDIR)\factorial.obj"
 	-@erase "$(INTDIR)\factorial.sbr"
+	-@erase "$(INTDIR)\forwardoption.obj"
+	-@erase "$(INTDIR)\forwardoption.sbr"
 	-@erase "$(INTDIR)\instruments.obj"
 	-@erase "$(INTDIR)\instruments.sbr"
 	-@erase "$(INTDIR)\integrals.obj"
@@ -732,6 +758,8 @@ CLEAN :
 	-@erase "$(INTDIR)\piecewiseflatforward.sbr"
 	-@erase "$(INTDIR)\quantlibtestsuite.obj"
 	-@erase "$(INTDIR)\quantlibtestsuite.sbr"
+	-@erase "$(INTDIR)\quantooption.obj"
+	-@erase "$(INTDIR)\quantooption.sbr"
 	-@erase "$(INTDIR)\quotes.obj"
 	-@erase "$(INTDIR)\quotes.sbr"
 	-@erase "$(INTDIR)\riskstats.obj"
@@ -768,6 +796,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\basketoption.sbr" \
 	"$(INTDIR)\calendars.sbr" \
 	"$(INTDIR)\capfloor.sbr" \
+	"$(INTDIR)\cliquetoption.sbr" \
 	"$(INTDIR)\compoundforward.sbr" \
 	"$(INTDIR)\covariance.sbr" \
 	"$(INTDIR)\dates.sbr" \
@@ -796,7 +825,8 @@ BSC32_SBRS= \
 	"$(INTDIR)\swaption.sbr" \
 	"$(INTDIR)\termstructures.sbr" \
 	"$(INTDIR)\utilities.sbr" \
-	"$(INTDIR)\cliquetoption.sbr"
+	"$(INTDIR)\forwardoption.sbr" \
+	"$(INTDIR)\quantooption.sbr"
 
 "$(OUTDIR)\testsuite.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -812,6 +842,7 @@ LINK32_OBJS= \
 	"$(INTDIR)\basketoption.obj" \
 	"$(INTDIR)\calendars.obj" \
 	"$(INTDIR)\capfloor.obj" \
+	"$(INTDIR)\cliquetoption.obj" \
 	"$(INTDIR)\compoundforward.obj" \
 	"$(INTDIR)\covariance.obj" \
 	"$(INTDIR)\dates.obj" \
@@ -840,7 +871,8 @@ LINK32_OBJS= \
 	"$(INTDIR)\swaption.obj" \
 	"$(INTDIR)\termstructures.obj" \
 	"$(INTDIR)\utilities.obj" \
-	"$(INTDIR)\cliquetoption.obj" \
+	"$(INTDIR)\forwardoption.obj" \
+	"$(INTDIR)\quantooption.obj" \
 	"..\lib\QuantLib-vc6-mt-gd-0_3_7.lib"
 
 "$(OUTDIR)\testsuite.exe" : "$(OUTDIR)" $(DEF_FILE) $(LINK32_OBJS)
@@ -919,6 +951,8 @@ CLEAN :
 	-@erase "$(INTDIR)\europeanoption.sbr"
 	-@erase "$(INTDIR)\factorial.obj"
 	-@erase "$(INTDIR)\factorial.sbr"
+	-@erase "$(INTDIR)\forwardoption.obj"
+	-@erase "$(INTDIR)\forwardoption.sbr"
 	-@erase "$(INTDIR)\instruments.obj"
 	-@erase "$(INTDIR)\instruments.sbr"
 	-@erase "$(INTDIR)\integrals.obj"
@@ -941,6 +975,8 @@ CLEAN :
 	-@erase "$(INTDIR)\piecewiseflatforward.sbr"
 	-@erase "$(INTDIR)\quantlibtestsuite.obj"
 	-@erase "$(INTDIR)\quantlibtestsuite.sbr"
+	-@erase "$(INTDIR)\quantooption.obj"
+	-@erase "$(INTDIR)\quantooption.sbr"
 	-@erase "$(INTDIR)\quotes.obj"
 	-@erase "$(INTDIR)\quotes.sbr"
 	-@erase "$(INTDIR)\riskstats.obj"
@@ -974,6 +1010,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\basketoption.sbr" \
 	"$(INTDIR)\calendars.sbr" \
 	"$(INTDIR)\capfloor.sbr" \
+	"$(INTDIR)\cliquetoption.sbr" \
 	"$(INTDIR)\compoundforward.sbr" \
 	"$(INTDIR)\covariance.sbr" \
 	"$(INTDIR)\dates.sbr" \
@@ -1002,7 +1039,8 @@ BSC32_SBRS= \
 	"$(INTDIR)\swaption.sbr" \
 	"$(INTDIR)\termstructures.sbr" \
 	"$(INTDIR)\utilities.sbr" \
-	"$(INTDIR)\cliquetoption.sbr"
+	"$(INTDIR)\forwardoption.sbr" \
+	"$(INTDIR)\quantooption.sbr"
 
 "$(OUTDIR)\testsuite.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -1018,6 +1056,7 @@ LINK32_OBJS= \
 	"$(INTDIR)\basketoption.obj" \
 	"$(INTDIR)\calendars.obj" \
 	"$(INTDIR)\capfloor.obj" \
+	"$(INTDIR)\cliquetoption.obj" \
 	"$(INTDIR)\compoundforward.obj" \
 	"$(INTDIR)\covariance.obj" \
 	"$(INTDIR)\dates.obj" \
@@ -1046,7 +1085,8 @@ LINK32_OBJS= \
 	"$(INTDIR)\swaption.obj" \
 	"$(INTDIR)\termstructures.obj" \
 	"$(INTDIR)\utilities.obj" \
-	"$(INTDIR)\cliquetoption.obj" \
+	"$(INTDIR)\forwardoption.obj" \
+	"$(INTDIR)\quantooption.obj" \
 	"..\lib\QuantLib-vc6-s-0_3_7.lib"
 
 "$(OUTDIR)\testsuite.exe" : "$(OUTDIR)" $(DEF_FILE) $(LINK32_OBJS)
@@ -1125,6 +1165,8 @@ CLEAN :
 	-@erase "$(INTDIR)\europeanoption.sbr"
 	-@erase "$(INTDIR)\factorial.obj"
 	-@erase "$(INTDIR)\factorial.sbr"
+	-@erase "$(INTDIR)\forwardoption.obj"
+	-@erase "$(INTDIR)\forwardoption.sbr"
 	-@erase "$(INTDIR)\instruments.obj"
 	-@erase "$(INTDIR)\instruments.sbr"
 	-@erase "$(INTDIR)\integrals.obj"
@@ -1147,6 +1189,8 @@ CLEAN :
 	-@erase "$(INTDIR)\piecewiseflatforward.sbr"
 	-@erase "$(INTDIR)\quantlibtestsuite.obj"
 	-@erase "$(INTDIR)\quantlibtestsuite.sbr"
+	-@erase "$(INTDIR)\quantooption.obj"
+	-@erase "$(INTDIR)\quantooption.sbr"
 	-@erase "$(INTDIR)\quotes.obj"
 	-@erase "$(INTDIR)\quotes.sbr"
 	-@erase "$(INTDIR)\riskstats.obj"
@@ -1183,6 +1227,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\basketoption.sbr" \
 	"$(INTDIR)\calendars.sbr" \
 	"$(INTDIR)\capfloor.sbr" \
+	"$(INTDIR)\cliquetoption.sbr" \
 	"$(INTDIR)\compoundforward.sbr" \
 	"$(INTDIR)\covariance.sbr" \
 	"$(INTDIR)\dates.sbr" \
@@ -1211,7 +1256,8 @@ BSC32_SBRS= \
 	"$(INTDIR)\swaption.sbr" \
 	"$(INTDIR)\termstructures.sbr" \
 	"$(INTDIR)\utilities.sbr" \
-	"$(INTDIR)\cliquetoption.sbr"
+	"$(INTDIR)\forwardoption.sbr" \
+	"$(INTDIR)\quantooption.sbr"
 
 "$(OUTDIR)\testsuite.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -1227,6 +1273,7 @@ LINK32_OBJS= \
 	"$(INTDIR)\basketoption.obj" \
 	"$(INTDIR)\calendars.obj" \
 	"$(INTDIR)\capfloor.obj" \
+	"$(INTDIR)\cliquetoption.obj" \
 	"$(INTDIR)\compoundforward.obj" \
 	"$(INTDIR)\covariance.obj" \
 	"$(INTDIR)\dates.obj" \
@@ -1255,7 +1302,8 @@ LINK32_OBJS= \
 	"$(INTDIR)\swaption.obj" \
 	"$(INTDIR)\termstructures.obj" \
 	"$(INTDIR)\utilities.obj" \
-	"$(INTDIR)\cliquetoption.obj" \
+	"$(INTDIR)\forwardoption.obj" \
+	"$(INTDIR)\quantooption.obj" \
 	"..\lib\QuantLib-vc6-sgd-0_3_7.lib"
 
 "$(OUTDIR)\testsuite.exe" : "$(OUTDIR)" $(DEF_FILE) $(LINK32_OBJS)
@@ -1402,6 +1450,11 @@ SOURCE=.\factorial.cpp
 "$(INTDIR)\factorial.obj"	"$(INTDIR)\factorial.sbr" : $(SOURCE) "$(INTDIR)"
 
 
+SOURCE=.\forwardoption.cpp
+
+"$(INTDIR)\forwardoption.obj"	"$(INTDIR)\forwardoption.sbr" : $(SOURCE) "$(INTDIR)"
+
+
 SOURCE=.\instruments.cpp
 
 "$(INTDIR)\instruments.obj"	"$(INTDIR)\instruments.sbr" : $(SOURCE) "$(INTDIR)"
@@ -1457,6 +1510,11 @@ SOURCE=.\quantlibtestsuite.cpp
 "$(INTDIR)\quantlibtestsuite.obj"	"$(INTDIR)\quantlibtestsuite.sbr" : $(SOURCE) "$(INTDIR)"
 
 
+SOURCE=.\quantooption.cpp
+
+"$(INTDIR)\quantooption.obj"	"$(INTDIR)\quantooption.sbr" : $(SOURCE) "$(INTDIR)"
+
+
 SOURCE=.\quotes.cpp
 
 "$(INTDIR)\quotes.obj"	"$(INTDIR)\quotes.sbr" : $(SOURCE) "$(INTDIR)"
@@ -1500,72 +1558,72 @@ SOURCE=.\utilities.cpp
 !IF  "$(CFG)" == "testsuite - Win32 Release"
 
 "QuantLib - Win32 Release" : 
-   cd "\Projects\QuantLib\Trunk\QuantLib"
+   cd "\Projects\QuantLib"
    $(MAKE) /$(MAKEFLAGS) /F .\QuantLib.mak CFG="QuantLib - Win32 Release" 
    cd ".\test-suite"
 
 "QuantLib - Win32 ReleaseCLEAN" : 
-   cd "\Projects\QuantLib\Trunk\QuantLib"
+   cd "\Projects\QuantLib"
    $(MAKE) /$(MAKEFLAGS) /F .\QuantLib.mak CFG="QuantLib - Win32 Release" RECURSE=1 CLEAN 
    cd ".\test-suite"
 
 !ELSEIF  "$(CFG)" == "testsuite - Win32 Debug"
 
 "QuantLib - Win32 Debug" : 
-   cd "\Projects\QuantLib\Trunk\QuantLib"
+   cd "\Projects\QuantLib"
    $(MAKE) /$(MAKEFLAGS) /F .\QuantLib.mak CFG="QuantLib - Win32 Debug" 
    cd ".\test-suite"
 
 "QuantLib - Win32 DebugCLEAN" : 
-   cd "\Projects\QuantLib\Trunk\QuantLib"
+   cd "\Projects\QuantLib"
    $(MAKE) /$(MAKEFLAGS) /F .\QuantLib.mak CFG="QuantLib - Win32 Debug" RECURSE=1 CLEAN 
    cd ".\test-suite"
 
 !ELSEIF  "$(CFG)" == "testsuite - Win32 Release MTDLL"
 
 "QuantLib - Win32 Release MTDLL" : 
-   cd "\Projects\QuantLib\Trunk\QuantLib"
+   cd "\Projects\QuantLib"
    $(MAKE) /$(MAKEFLAGS) /F .\QuantLib.mak CFG="QuantLib - Win32 Release MTDLL" 
    cd ".\test-suite"
 
 "QuantLib - Win32 Release MTDLLCLEAN" : 
-   cd "\Projects\QuantLib\Trunk\QuantLib"
+   cd "\Projects\QuantLib"
    $(MAKE) /$(MAKEFLAGS) /F .\QuantLib.mak CFG="QuantLib - Win32 Release MTDLL" RECURSE=1 CLEAN 
    cd ".\test-suite"
 
 !ELSEIF  "$(CFG)" == "testsuite - Win32 Debug MTDLL"
 
 "QuantLib - Win32 Debug MTDLL" : 
-   cd "\Projects\QuantLib\Trunk\QuantLib"
+   cd "\Projects\QuantLib"
    $(MAKE) /$(MAKEFLAGS) /F .\QuantLib.mak CFG="QuantLib - Win32 Debug MTDLL" 
    cd ".\test-suite"
 
 "QuantLib - Win32 Debug MTDLLCLEAN" : 
-   cd "\Projects\QuantLib\Trunk\QuantLib"
+   cd "\Projects\QuantLib"
    $(MAKE) /$(MAKEFLAGS) /F .\QuantLib.mak CFG="QuantLib - Win32 Debug MTDLL" RECURSE=1 CLEAN 
    cd ".\test-suite"
 
 !ELSEIF  "$(CFG)" == "testsuite - Win32 Release SingleThread"
 
 "QuantLib - Win32 Release SingleThread" : 
-   cd "\Projects\QuantLib\Trunk\QuantLib"
+   cd "\Projects\QuantLib"
    $(MAKE) /$(MAKEFLAGS) /F .\QuantLib.mak CFG="QuantLib - Win32 Release SingleThread" 
    cd ".\test-suite"
 
 "QuantLib - Win32 Release SingleThreadCLEAN" : 
-   cd "\Projects\QuantLib\Trunk\QuantLib"
+   cd "\Projects\QuantLib"
    $(MAKE) /$(MAKEFLAGS) /F .\QuantLib.mak CFG="QuantLib - Win32 Release SingleThread" RECURSE=1 CLEAN 
    cd ".\test-suite"
 
 !ELSEIF  "$(CFG)" == "testsuite - Win32 Debug SingleThread"
 
 "QuantLib - Win32 Debug SingleThread" : 
-   cd "\Projects\QuantLib\Trunk\QuantLib"
+   cd "\Projects\QuantLib"
    $(MAKE) /$(MAKEFLAGS) /F .\QuantLib.mak CFG="QuantLib - Win32 Debug SingleThread" 
    cd ".\test-suite"
 
 "QuantLib - Win32 Debug SingleThreadCLEAN" : 
-   cd "\Projects\QuantLib\Trunk\QuantLib"
+   cd "\Projects\QuantLib"
    $(MAKE) /$(MAKEFLAGS) /F .\QuantLib.mak CFG="QuantLib - Win32 Debug SingleThread" RECURSE=1 CLEAN 
    cd ".\test-suite"
 

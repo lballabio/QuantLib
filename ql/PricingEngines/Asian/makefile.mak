@@ -24,7 +24,8 @@ INCLUDE_DIR    = ..\..\..
 
 # Object files
 OBJS = \
-    "analyticasianengine.obj$(_mt)$(_D)"
+    "analyticcontinuousasianengine.obj$(_mt)$(_D)" \
+    "analyticdiscreteasianengine.obj$(_mt)$(_D)"
 
 # Tools to be used
 CC        = bcc32

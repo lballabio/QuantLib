@@ -28,6 +28,7 @@ OBJS = \
     "barrieroption.obj$(_mt)$(_D)" \
     "basketoption.obj$(_mt)$(_D)" \
     "capfloor.obj$(_mt)$(_D)" \
+    "cliquetoption.obj$(_mt)$(_D)" \
     "dividendvanillaoption.obj$(_mt)$(_D)" \
     "europeanoption.obj$(_mt)$(_D)" \
     "forwardvanillaoption.obj$(_mt)$(_D)" \

@@ -32,6 +32,7 @@ QL_TESTS = \
     "basketoption.obj$(_mt)$(_D)" \
     "calendars.obj$(_mt)$(_D)" \
     "capfloor.obj$(_mt)$(_D)" \
+    "cliquetoption.obj$(_mt)$(_D)" \
     "compoundforward.obj$(_mt)$(_D)" \
     "covariance.obj$(_mt)$(_D)" \
     "dates.obj$(_mt)$(_D)" \
@@ -41,6 +42,7 @@ QL_TESTS = \
     "dividendeuropeanoption.obj$(_mt)$(_D)" \
     "europeanoption.obj$(_mt)$(_D)" \
     "factorial.obj$(_mt)$(_D)" \
+    "forwardoption.obj$(_mt)$(_D)" \
     "instruments.obj$(_mt)$(_D)" \
     "integrals.obj$(_mt)$(_D)" \
     "interpolations.obj$(_mt)$(_D)" \
@@ -52,6 +54,7 @@ QL_TESTS = \
     "operators.obj$(_mt)$(_D)" \
     "piecewiseflatforward.obj$(_mt)$(_D)" \
     "quantlibtestsuite.obj$(_mt)$(_D)" \
+    "quantooption.obj$(_mt)$(_D)" \
     "quotes.obj$(_mt)$(_D)" \
     "riskstats.obj$(_mt)$(_D)" \
     "solvers.obj$(_mt)$(_D)" \

@@ -1315,6 +1315,9 @@
 				</FileConfiguration>
 			</File>
 			<File
+				RelativePath=".\forwardoption.cpp">
+			</File>
+			<File
 				RelativePath="instruments.cpp">
 				<FileConfiguration
 					Name="Debug|Win32">
@@ -1975,6 +1978,9 @@
 				</FileConfiguration>
 			</File>
 			<File
+				RelativePath=".\quantooption.cpp">
+			</File>
+			<File
 				RelativePath="quotes.cpp">
 				<FileConfiguration
 					Name="Debug|Win32">
@@ -2504,6 +2510,9 @@
 				RelativePath="factorial.hpp">
 			</File>
 			<File
+				RelativePath=".\forwardoption.hpp">
+			</File>
+			<File
 				RelativePath="instruments.hpp">
 			</File>
 			<File
@@ -2532,6 +2541,9 @@
 			</File>
 			<File
 				RelativePath="piecewiseflatforward.hpp">
+			</File>
+			<File
+				RelativePath=".\quantooption.hpp">
 			</File>
 			<File
 				RelativePath="quotes.hpp">

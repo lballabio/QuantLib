@@ -23,24 +23,31 @@ INCLUDE_DIR    = ..\..
 
 # Object files
 OBJS = \
+    "beijing.obj$(_mt)$(_D)" \
     "budapest.obj$(_mt)$(_D)" \
     "copenhagen.obj$(_mt)$(_D)" \
     "frankfurt.obj$(_mt)$(_D)" \
     "helsinki.obj$(_mt)$(_D)" \
+    "hongkong.obj$(_mt)$(_D)" \
     "johannesburg.obj$(_mt)$(_D)" \
     "jointcalendar.obj$(_mt)$(_D)" \
     "london.obj$(_mt)$(_D)" \
     "milan.obj$(_mt)$(_D)" \
     "newyork.obj$(_mt)$(_D)" \
     "oslo.obj$(_mt)$(_D)" \
+    "riyadh.obj$(_mt)$(_D)" \
+    "seoul.obj$(_mt)$(_D)" \
+    "singapore.obj$(_mt)$(_D)" \
+    "stockholm.obj$(_mt)$(_D)" \
+    "sydney.obj$(_mt)$(_D)" \
+    "taiwan.obj$(_mt)$(_D)" \
     "target.obj$(_mt)$(_D)" \
     "tokyo.obj$(_mt)$(_D)" \
     "toronto.obj$(_mt)$(_D)" \
-    "stockholm.obj$(_mt)$(_D)" \
-    "sydney.obj$(_mt)$(_D)" \
     "warsaw.obj$(_mt)$(_D)" \
     "wellington.obj$(_mt)$(_D)" \
     "zurich.obj$(_mt)$(_D)"
+
 
 # Tools to be used
 CC        = bcc32

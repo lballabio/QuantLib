@@ -40,21 +40,10 @@ INTDIR=.\build\Release
 OutDir=.\build\Release
 # End Custom Macros
 
-!IF "$(RECURSE)" == "0" 
-
 ALL : ".\lib\QuantLib-vc6-mt-s-0_3_7.lib" "$(OUTDIR)\QuantLib.bsc"
 
-!ELSE 
 
-ALL : "QuantLibFunctions - Win32 Release" ".\lib\QuantLib-vc6-mt-s-0_3_7.lib" "$(OUTDIR)\QuantLib.bsc"
-
-!ENDIF 
-
-!IF "$(RECURSE)" == "1" 
-CLEAN :"QuantLibFunctions - Win32 ReleaseCLEAN" 
-!ELSE 
 CLEAN :
-!ENDIF 
 	-@erase "$(INTDIR)\actualactual.obj"
 	-@erase "$(INTDIR)\actualactual.sbr"
 	-@erase "$(INTDIR)\affinetermstructure.obj"
@@ -255,6 +244,8 @@ CLEAN :
 	-@erase "$(INTDIR)\mcbasket.sbr"
 	-@erase "$(INTDIR)\mcbasketengine.obj"
 	-@erase "$(INTDIR)\mcbasketengine.sbr"
+	-@erase "$(INTDIR)\mccliquetengine.obj"
+	-@erase "$(INTDIR)\mccliquetengine.sbr"
 	-@erase "$(INTDIR)\mccliquetoption.obj"
 	-@erase "$(INTDIR)\mccliquetoption.sbr"
 	-@erase "$(INTDIR)\mcdigitalengine.obj"
@@ -410,18 +401,24 @@ CPP_PROJ=/nologo /MT /W3 /Gi /GR /GX /O2 /Ob2 /I "." /D "NDEBUG" /D "WIN32" /D "
 BSC32=bscmake.exe
 BSC32_FLAGS=/nologo /o"$(OUTDIR)\QuantLib.bsc" 
 BSC32_SBRS= \
+	"$(INTDIR)\beijing.sbr" \
 	"$(INTDIR)\budapest.sbr" \
 	"$(INTDIR)\copenhagen.sbr" \
 	"$(INTDIR)\frankfurt.sbr" \
 	"$(INTDIR)\helsinki.sbr" \
+	"$(INTDIR)\hongkong.sbr" \
 	"$(INTDIR)\johannesburg.sbr" \
 	"$(INTDIR)\jointcalendar.sbr" \
 	"$(INTDIR)\london.sbr" \
 	"$(INTDIR)\milan.sbr" \
 	"$(INTDIR)\newyork.sbr" \
 	"$(INTDIR)\oslo.sbr" \
+	"$(INTDIR)\riyadh.sbr" \
+	"$(INTDIR)\seoul.sbr" \
+	"$(INTDIR)\singapore.sbr" \
 	"$(INTDIR)\stockholm.sbr" \
 	"$(INTDIR)\sydney.sbr" \
+	"$(INTDIR)\taiwan.sbr" \
 	"$(INTDIR)\target.sbr" \
 	"$(INTDIR)\tokyo.sbr" \
 	"$(INTDIR)\toronto.sbr" \
@@ -447,6 +444,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\barrieroption.sbr" \
 	"$(INTDIR)\basketoption.sbr" \
 	"$(INTDIR)\capfloor.sbr" \
+	"$(INTDIR)\cliquetoption.sbr" \
 	"$(INTDIR)\dividendvanillaoption.sbr" \
 	"$(INTDIR)\europeanoption.sbr" \
 	"$(INTDIR)\forwardvanillaoption.sbr" \
@@ -485,7 +483,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\conjugategradient.sbr" \
 	"$(INTDIR)\simplex.sbr" \
 	"$(INTDIR)\steepestdescent.sbr" \
-	"$(INTDIR)\cliquetoption.sbr" \
+	"$(INTDIR)\cliquetoptionpricer.sbr" \
 	"$(INTDIR)\discretegeometricapo.sbr" \
 	"$(INTDIR)\discretegeometricaso.sbr" \
 	"$(INTDIR)\dividendeuropeanoption.sbr" \
@@ -508,6 +506,8 @@ BSC32_SBRS= \
 	"$(INTDIR)\mcperformanceoption.sbr" \
 	"$(INTDIR)\performanceoption.sbr" \
 	"$(INTDIR)\singleassetoption.sbr" \
+	"$(INTDIR)\analyticcontinuousasianengine.sbr" \
+	"$(INTDIR)\analyticdiscreteasianengine.sbr" \
 	"$(INTDIR)\analyticbarrierengine.sbr" \
 	"$(INTDIR)\mcbarrierengine.sbr" \
 	"$(INTDIR)\mcamericanbasketengine.sbr" \
@@ -530,6 +530,8 @@ BSC32_SBRS= \
 	"$(INTDIR)\jamshidianswaption.sbr" \
 	"$(INTDIR)\swaptionpricer.sbr" \
 	"$(INTDIR)\treeswaption.sbr" \
+	"$(INTDIR)\analyticcliquetengine.sbr" \
+	"$(INTDIR)\analyticperformanceengine.sbr" \
 	"$(INTDIR)\blackformula.sbr" \
 	"$(INTDIR)\haltonrsg.sbr" \
 	"$(INTDIR)\knuthuniformrng.sbr" \
@@ -569,19 +571,9 @@ BSC32_SBRS= \
 	"$(INTDIR)\exercise.sbr" \
 	"$(INTDIR)\grid.sbr" \
 	"$(INTDIR)\scheduler.sbr" \
-	"$(INTDIR)\voltermstructure.sbr" \
 	"$(INTDIR)\stochasticprocess.sbr" \
-	"$(INTDIR)\analyticcontinuousasianengine.sbr" \
-	"$(INTDIR)\analyticdiscreteasianengine.sbr" \
-	"$(INTDIR)\cliquetoptionpricer.sbr" \
-	"$(INTDIR)\analyticcliquetengine.sbr" \
-	"$(INTDIR)\analyticperformanceengine.sbr" \
-	"$(INTDIR)\beijing.sbr" \
-	"$(INTDIR)\hongkong.sbr" \
-	"$(INTDIR)\riyadh.sbr" \
-	"$(INTDIR)\seoul.sbr" \
-	"$(INTDIR)\singapore.sbr" \
-	"$(INTDIR)\taiwan.sbr"
+	"$(INTDIR)\voltermstructure.sbr" \
+	"$(INTDIR)\mccliquetengine.sbr"
 
 "$(OUTDIR)\QuantLib.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -591,18 +583,24 @@ BSC32_SBRS= \
 LIB32=link.exe -lib
 LIB32_FLAGS=/nologo /out:".\lib\QuantLib-vc6-mt-s-0_3_7.lib" 
 LIB32_OBJS= \
+	"$(INTDIR)\beijing.obj" \
 	"$(INTDIR)\budapest.obj" \
 	"$(INTDIR)\copenhagen.obj" \
 	"$(INTDIR)\frankfurt.obj" \
 	"$(INTDIR)\helsinki.obj" \
+	"$(INTDIR)\hongkong.obj" \
 	"$(INTDIR)\johannesburg.obj" \
 	"$(INTDIR)\jointcalendar.obj" \
 	"$(INTDIR)\london.obj" \
 	"$(INTDIR)\milan.obj" \
 	"$(INTDIR)\newyork.obj" \
 	"$(INTDIR)\oslo.obj" \
+	"$(INTDIR)\riyadh.obj" \
+	"$(INTDIR)\seoul.obj" \
+	"$(INTDIR)\singapore.obj" \
 	"$(INTDIR)\stockholm.obj" \
 	"$(INTDIR)\sydney.obj" \
+	"$(INTDIR)\taiwan.obj" \
 	"$(INTDIR)\target.obj" \
 	"$(INTDIR)\tokyo.obj" \
 	"$(INTDIR)\toronto.obj" \
@@ -628,6 +626,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\barrieroption.obj" \
 	"$(INTDIR)\basketoption.obj" \
 	"$(INTDIR)\capfloor.obj" \
+	"$(INTDIR)\cliquetoption.obj" \
 	"$(INTDIR)\dividendvanillaoption.obj" \
 	"$(INTDIR)\europeanoption.obj" \
 	"$(INTDIR)\forwardvanillaoption.obj" \
@@ -666,7 +665,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\conjugategradient.obj" \
 	"$(INTDIR)\simplex.obj" \
 	"$(INTDIR)\steepestdescent.obj" \
-	"$(INTDIR)\cliquetoption.obj" \
+	"$(INTDIR)\cliquetoptionpricer.obj" \
 	"$(INTDIR)\discretegeometricapo.obj" \
 	"$(INTDIR)\discretegeometricaso.obj" \
 	"$(INTDIR)\dividendeuropeanoption.obj" \
@@ -689,6 +688,8 @@ LIB32_OBJS= \
 	"$(INTDIR)\mcperformanceoption.obj" \
 	"$(INTDIR)\performanceoption.obj" \
 	"$(INTDIR)\singleassetoption.obj" \
+	"$(INTDIR)\analyticcontinuousasianengine.obj" \
+	"$(INTDIR)\analyticdiscreteasianengine.obj" \
 	"$(INTDIR)\analyticbarrierengine.obj" \
 	"$(INTDIR)\mcbarrierengine.obj" \
 	"$(INTDIR)\mcamericanbasketengine.obj" \
@@ -711,6 +712,8 @@ LIB32_OBJS= \
 	"$(INTDIR)\jamshidianswaption.obj" \
 	"$(INTDIR)\swaptionpricer.obj" \
 	"$(INTDIR)\treeswaption.obj" \
+	"$(INTDIR)\analyticcliquetengine.obj" \
+	"$(INTDIR)\analyticperformanceengine.obj" \
 	"$(INTDIR)\blackformula.obj" \
 	"$(INTDIR)\haltonrsg.obj" \
 	"$(INTDIR)\knuthuniformrng.obj" \
@@ -750,20 +753,9 @@ LIB32_OBJS= \
 	"$(INTDIR)\exercise.obj" \
 	"$(INTDIR)\grid.obj" \
 	"$(INTDIR)\scheduler.obj" \
-	"$(INTDIR)\voltermstructure.obj" \
 	"$(INTDIR)\stochasticprocess.obj" \
-	"$(INTDIR)\analyticcontinuousasianengine.obj" \
-	"$(INTDIR)\analyticdiscreteasianengine.obj" \
-	"$(INTDIR)\cliquetoptionpricer.obj" \
-	"$(INTDIR)\analyticcliquetengine.obj" \
-	"$(INTDIR)\analyticperformanceengine.obj" \
-	"$(INTDIR)\beijing.obj" \
-	"$(INTDIR)\hongkong.obj" \
-	"$(INTDIR)\riyadh.obj" \
-	"$(INTDIR)\seoul.obj" \
-	"$(INTDIR)\singapore.obj" \
-	"$(INTDIR)\taiwan.obj" \
-	".\lib\QuantLibFunctions-vc6-mt-s-0_3_7.lib"
+	"$(INTDIR)\voltermstructure.obj" \
+	"$(INTDIR)\mccliquetengine.obj"
 
 ".\lib\QuantLib-vc6-mt-s-0_3_7.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
    if not exist lib mkdir lib
@@ -781,21 +773,10 @@ INTDIR=.\build\Debug
 OutDir=.\build\Debug
 # End Custom Macros
 
-!IF "$(RECURSE)" == "0" 
-
 ALL : ".\lib\QuantLib-vc6-mt-sgd-0_3_7.lib" "$(OUTDIR)\QuantLib.bsc"
 
-!ELSE 
 
-ALL : "QuantLibFunctions - Win32 Debug" ".\lib\QuantLib-vc6-mt-sgd-0_3_7.lib" "$(OUTDIR)\QuantLib.bsc"
-
-!ENDIF 
-
-!IF "$(RECURSE)" == "1" 
-CLEAN :"QuantLibFunctions - Win32 DebugCLEAN" 
-!ELSE 
 CLEAN :
-!ENDIF 
 	-@erase "$(INTDIR)\actualactual.obj"
 	-@erase "$(INTDIR)\actualactual.sbr"
 	-@erase "$(INTDIR)\affinetermstructure.obj"
@@ -996,6 +977,8 @@ CLEAN :
 	-@erase "$(INTDIR)\mcbasket.sbr"
 	-@erase "$(INTDIR)\mcbasketengine.obj"
 	-@erase "$(INTDIR)\mcbasketengine.sbr"
+	-@erase "$(INTDIR)\mccliquetengine.obj"
+	-@erase "$(INTDIR)\mccliquetengine.sbr"
 	-@erase "$(INTDIR)\mccliquetoption.obj"
 	-@erase "$(INTDIR)\mccliquetoption.sbr"
 	-@erase "$(INTDIR)\mcdigitalengine.obj"
@@ -1152,18 +1135,24 @@ CPP_PROJ=/nologo /MTd /W3 /Gm /Gi /GR /GX /ZI /Od /I "." /D "_DEBUG" /D "WIN32" 
 BSC32=bscmake.exe
 BSC32_FLAGS=/nologo /o"$(OUTDIR)\QuantLib.bsc" 
 BSC32_SBRS= \
+	"$(INTDIR)\beijing.sbr" \
 	"$(INTDIR)\budapest.sbr" \
 	"$(INTDIR)\copenhagen.sbr" \
 	"$(INTDIR)\frankfurt.sbr" \
 	"$(INTDIR)\helsinki.sbr" \
+	"$(INTDIR)\hongkong.sbr" \
 	"$(INTDIR)\johannesburg.sbr" \
 	"$(INTDIR)\jointcalendar.sbr" \
 	"$(INTDIR)\london.sbr" \
 	"$(INTDIR)\milan.sbr" \
 	"$(INTDIR)\newyork.sbr" \
 	"$(INTDIR)\oslo.sbr" \
+	"$(INTDIR)\riyadh.sbr" \
+	"$(INTDIR)\seoul.sbr" \
+	"$(INTDIR)\singapore.sbr" \
 	"$(INTDIR)\stockholm.sbr" \
 	"$(INTDIR)\sydney.sbr" \
+	"$(INTDIR)\taiwan.sbr" \
 	"$(INTDIR)\target.sbr" \
 	"$(INTDIR)\tokyo.sbr" \
 	"$(INTDIR)\toronto.sbr" \
@@ -1189,6 +1178,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\barrieroption.sbr" \
 	"$(INTDIR)\basketoption.sbr" \
 	"$(INTDIR)\capfloor.sbr" \
+	"$(INTDIR)\cliquetoption.sbr" \
 	"$(INTDIR)\dividendvanillaoption.sbr" \
 	"$(INTDIR)\europeanoption.sbr" \
 	"$(INTDIR)\forwardvanillaoption.sbr" \
@@ -1227,7 +1217,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\conjugategradient.sbr" \
 	"$(INTDIR)\simplex.sbr" \
 	"$(INTDIR)\steepestdescent.sbr" \
-	"$(INTDIR)\cliquetoption.sbr" \
+	"$(INTDIR)\cliquetoptionpricer.sbr" \
 	"$(INTDIR)\discretegeometricapo.sbr" \
 	"$(INTDIR)\discretegeometricaso.sbr" \
 	"$(INTDIR)\dividendeuropeanoption.sbr" \
@@ -1250,6 +1240,8 @@ BSC32_SBRS= \
 	"$(INTDIR)\mcperformanceoption.sbr" \
 	"$(INTDIR)\performanceoption.sbr" \
 	"$(INTDIR)\singleassetoption.sbr" \
+	"$(INTDIR)\analyticcontinuousasianengine.sbr" \
+	"$(INTDIR)\analyticdiscreteasianengine.sbr" \
 	"$(INTDIR)\analyticbarrierengine.sbr" \
 	"$(INTDIR)\mcbarrierengine.sbr" \
 	"$(INTDIR)\mcamericanbasketengine.sbr" \
@@ -1272,6 +1264,8 @@ BSC32_SBRS= \
 	"$(INTDIR)\jamshidianswaption.sbr" \
 	"$(INTDIR)\swaptionpricer.sbr" \
 	"$(INTDIR)\treeswaption.sbr" \
+	"$(INTDIR)\analyticcliquetengine.sbr" \
+	"$(INTDIR)\analyticperformanceengine.sbr" \
 	"$(INTDIR)\blackformula.sbr" \
 	"$(INTDIR)\haltonrsg.sbr" \
 	"$(INTDIR)\knuthuniformrng.sbr" \
@@ -1311,19 +1305,9 @@ BSC32_SBRS= \
 	"$(INTDIR)\exercise.sbr" \
 	"$(INTDIR)\grid.sbr" \
 	"$(INTDIR)\scheduler.sbr" \
-	"$(INTDIR)\voltermstructure.sbr" \
 	"$(INTDIR)\stochasticprocess.sbr" \
-	"$(INTDIR)\analyticcontinuousasianengine.sbr" \
-	"$(INTDIR)\analyticdiscreteasianengine.sbr" \
-	"$(INTDIR)\cliquetoptionpricer.sbr" \
-	"$(INTDIR)\analyticcliquetengine.sbr" \
-	"$(INTDIR)\analyticperformanceengine.sbr" \
-	"$(INTDIR)\beijing.sbr" \
-	"$(INTDIR)\hongkong.sbr" \
-	"$(INTDIR)\riyadh.sbr" \
-	"$(INTDIR)\seoul.sbr" \
-	"$(INTDIR)\singapore.sbr" \
-	"$(INTDIR)\taiwan.sbr"
+	"$(INTDIR)\voltermstructure.sbr" \
+	"$(INTDIR)\mccliquetengine.sbr"
 
 "$(OUTDIR)\QuantLib.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -1333,18 +1317,24 @@ BSC32_SBRS= \
 LIB32=link.exe -lib
 LIB32_FLAGS=/nologo /out:".\lib\QuantLib-vc6-mt-sgd-0_3_7.lib" 
 LIB32_OBJS= \
+	"$(INTDIR)\beijing.obj" \
 	"$(INTDIR)\budapest.obj" \
 	"$(INTDIR)\copenhagen.obj" \
 	"$(INTDIR)\frankfurt.obj" \
 	"$(INTDIR)\helsinki.obj" \
+	"$(INTDIR)\hongkong.obj" \
 	"$(INTDIR)\johannesburg.obj" \
 	"$(INTDIR)\jointcalendar.obj" \
 	"$(INTDIR)\london.obj" \
 	"$(INTDIR)\milan.obj" \
 	"$(INTDIR)\newyork.obj" \
 	"$(INTDIR)\oslo.obj" \
+	"$(INTDIR)\riyadh.obj" \
+	"$(INTDIR)\seoul.obj" \
+	"$(INTDIR)\singapore.obj" \
 	"$(INTDIR)\stockholm.obj" \
 	"$(INTDIR)\sydney.obj" \
+	"$(INTDIR)\taiwan.obj" \
 	"$(INTDIR)\target.obj" \
 	"$(INTDIR)\tokyo.obj" \
 	"$(INTDIR)\toronto.obj" \
@@ -1370,6 +1360,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\barrieroption.obj" \
 	"$(INTDIR)\basketoption.obj" \
 	"$(INTDIR)\capfloor.obj" \
+	"$(INTDIR)\cliquetoption.obj" \
 	"$(INTDIR)\dividendvanillaoption.obj" \
 	"$(INTDIR)\europeanoption.obj" \
 	"$(INTDIR)\forwardvanillaoption.obj" \
@@ -1408,7 +1399,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\conjugategradient.obj" \
 	"$(INTDIR)\simplex.obj" \
 	"$(INTDIR)\steepestdescent.obj" \
-	"$(INTDIR)\cliquetoption.obj" \
+	"$(INTDIR)\cliquetoptionpricer.obj" \
 	"$(INTDIR)\discretegeometricapo.obj" \
 	"$(INTDIR)\discretegeometricaso.obj" \
 	"$(INTDIR)\dividendeuropeanoption.obj" \
@@ -1431,6 +1422,8 @@ LIB32_OBJS= \
 	"$(INTDIR)\mcperformanceoption.obj" \
 	"$(INTDIR)\performanceoption.obj" \
 	"$(INTDIR)\singleassetoption.obj" \
+	"$(INTDIR)\analyticcontinuousasianengine.obj" \
+	"$(INTDIR)\analyticdiscreteasianengine.obj" \
 	"$(INTDIR)\analyticbarrierengine.obj" \
 	"$(INTDIR)\mcbarrierengine.obj" \
 	"$(INTDIR)\mcamericanbasketengine.obj" \
@@ -1453,6 +1446,8 @@ LIB32_OBJS= \
 	"$(INTDIR)\jamshidianswaption.obj" \
 	"$(INTDIR)\swaptionpricer.obj" \
 	"$(INTDIR)\treeswaption.obj" \
+	"$(INTDIR)\analyticcliquetengine.obj" \
+	"$(INTDIR)\analyticperformanceengine.obj" \
 	"$(INTDIR)\blackformula.obj" \
 	"$(INTDIR)\haltonrsg.obj" \
 	"$(INTDIR)\knuthuniformrng.obj" \
@@ -1492,20 +1487,9 @@ LIB32_OBJS= \
 	"$(INTDIR)\exercise.obj" \
 	"$(INTDIR)\grid.obj" \
 	"$(INTDIR)\scheduler.obj" \
-	"$(INTDIR)\voltermstructure.obj" \
 	"$(INTDIR)\stochasticprocess.obj" \
-	"$(INTDIR)\analyticcontinuousasianengine.obj" \
-	"$(INTDIR)\analyticdiscreteasianengine.obj" \
-	"$(INTDIR)\cliquetoptionpricer.obj" \
-	"$(INTDIR)\analyticcliquetengine.obj" \
-	"$(INTDIR)\analyticperformanceengine.obj" \
-	"$(INTDIR)\beijing.obj" \
-	"$(INTDIR)\hongkong.obj" \
-	"$(INTDIR)\riyadh.obj" \
-	"$(INTDIR)\seoul.obj" \
-	"$(INTDIR)\singapore.obj" \
-	"$(INTDIR)\taiwan.obj" \
-	".\lib\QuantLibFunctions-vc6-mt-sgd-0_3_7.lib"
+	"$(INTDIR)\voltermstructure.obj" \
+	"$(INTDIR)\mccliquetengine.obj"
 
 ".\lib\QuantLib-vc6-mt-sgd-0_3_7.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
    if not exist lib mkdir lib
@@ -1523,21 +1507,10 @@ INTDIR=.\build\ReleaseMTDLL
 OutDir=.\build\ReleaseMTDLL
 # End Custom Macros
 
-!IF "$(RECURSE)" == "0" 
-
 ALL : ".\lib\QuantLib-vc6-mt-0_3_7.lib" "$(OUTDIR)\QuantLib.bsc"
 
-!ELSE 
 
-ALL : "QuantLibFunctions - Win32 Release MTDLL" ".\lib\QuantLib-vc6-mt-0_3_7.lib" "$(OUTDIR)\QuantLib.bsc"
-
-!ENDIF 
-
-!IF "$(RECURSE)" == "1" 
-CLEAN :"QuantLibFunctions - Win32 Release MTDLLCLEAN" 
-!ELSE 
 CLEAN :
-!ENDIF 
 	-@erase "$(INTDIR)\actualactual.obj"
 	-@erase "$(INTDIR)\actualactual.sbr"
 	-@erase "$(INTDIR)\affinetermstructure.obj"
@@ -1738,6 +1711,8 @@ CLEAN :
 	-@erase "$(INTDIR)\mcbasket.sbr"
 	-@erase "$(INTDIR)\mcbasketengine.obj"
 	-@erase "$(INTDIR)\mcbasketengine.sbr"
+	-@erase "$(INTDIR)\mccliquetengine.obj"
+	-@erase "$(INTDIR)\mccliquetengine.sbr"
 	-@erase "$(INTDIR)\mccliquetoption.obj"
 	-@erase "$(INTDIR)\mccliquetoption.sbr"
 	-@erase "$(INTDIR)\mcdigitalengine.obj"
@@ -1893,18 +1868,24 @@ CPP_PROJ=/nologo /MD /W3 /Gi /GR /GX /O2 /Ob2 /I "." /D "NDEBUG" /D "WIN32" /D "
 BSC32=bscmake.exe
 BSC32_FLAGS=/nologo /o"$(OUTDIR)\QuantLib.bsc" 
 BSC32_SBRS= \
+	"$(INTDIR)\beijing.sbr" \
 	"$(INTDIR)\budapest.sbr" \
 	"$(INTDIR)\copenhagen.sbr" \
 	"$(INTDIR)\frankfurt.sbr" \
 	"$(INTDIR)\helsinki.sbr" \
+	"$(INTDIR)\hongkong.sbr" \
 	"$(INTDIR)\johannesburg.sbr" \
 	"$(INTDIR)\jointcalendar.sbr" \
 	"$(INTDIR)\london.sbr" \
 	"$(INTDIR)\milan.sbr" \
 	"$(INTDIR)\newyork.sbr" \
 	"$(INTDIR)\oslo.sbr" \
+	"$(INTDIR)\riyadh.sbr" \
+	"$(INTDIR)\seoul.sbr" \
+	"$(INTDIR)\singapore.sbr" \
 	"$(INTDIR)\stockholm.sbr" \
 	"$(INTDIR)\sydney.sbr" \
+	"$(INTDIR)\taiwan.sbr" \
 	"$(INTDIR)\target.sbr" \
 	"$(INTDIR)\tokyo.sbr" \
 	"$(INTDIR)\toronto.sbr" \
@@ -1930,6 +1911,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\barrieroption.sbr" \
 	"$(INTDIR)\basketoption.sbr" \
 	"$(INTDIR)\capfloor.sbr" \
+	"$(INTDIR)\cliquetoption.sbr" \
 	"$(INTDIR)\dividendvanillaoption.sbr" \
 	"$(INTDIR)\europeanoption.sbr" \
 	"$(INTDIR)\forwardvanillaoption.sbr" \
@@ -1968,7 +1950,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\conjugategradient.sbr" \
 	"$(INTDIR)\simplex.sbr" \
 	"$(INTDIR)\steepestdescent.sbr" \
-	"$(INTDIR)\cliquetoption.sbr" \
+	"$(INTDIR)\cliquetoptionpricer.sbr" \
 	"$(INTDIR)\discretegeometricapo.sbr" \
 	"$(INTDIR)\discretegeometricaso.sbr" \
 	"$(INTDIR)\dividendeuropeanoption.sbr" \
@@ -1991,6 +1973,8 @@ BSC32_SBRS= \
 	"$(INTDIR)\mcperformanceoption.sbr" \
 	"$(INTDIR)\performanceoption.sbr" \
 	"$(INTDIR)\singleassetoption.sbr" \
+	"$(INTDIR)\analyticcontinuousasianengine.sbr" \
+	"$(INTDIR)\analyticdiscreteasianengine.sbr" \
 	"$(INTDIR)\analyticbarrierengine.sbr" \
 	"$(INTDIR)\mcbarrierengine.sbr" \
 	"$(INTDIR)\mcamericanbasketengine.sbr" \
@@ -2013,6 +1997,8 @@ BSC32_SBRS= \
 	"$(INTDIR)\jamshidianswaption.sbr" \
 	"$(INTDIR)\swaptionpricer.sbr" \
 	"$(INTDIR)\treeswaption.sbr" \
+	"$(INTDIR)\analyticcliquetengine.sbr" \
+	"$(INTDIR)\analyticperformanceengine.sbr" \
 	"$(INTDIR)\blackformula.sbr" \
 	"$(INTDIR)\haltonrsg.sbr" \
 	"$(INTDIR)\knuthuniformrng.sbr" \
@@ -2052,19 +2038,9 @@ BSC32_SBRS= \
 	"$(INTDIR)\exercise.sbr" \
 	"$(INTDIR)\grid.sbr" \
 	"$(INTDIR)\scheduler.sbr" \
-	"$(INTDIR)\voltermstructure.sbr" \
 	"$(INTDIR)\stochasticprocess.sbr" \
-	"$(INTDIR)\analyticcontinuousasianengine.sbr" \
-	"$(INTDIR)\analyticdiscreteasianengine.sbr" \
-	"$(INTDIR)\cliquetoptionpricer.sbr" \
-	"$(INTDIR)\analyticcliquetengine.sbr" \
-	"$(INTDIR)\analyticperformanceengine.sbr" \
-	"$(INTDIR)\beijing.sbr" \
-	"$(INTDIR)\hongkong.sbr" \
-	"$(INTDIR)\riyadh.sbr" \
-	"$(INTDIR)\seoul.sbr" \
-	"$(INTDIR)\singapore.sbr" \
-	"$(INTDIR)\taiwan.sbr"
+	"$(INTDIR)\voltermstructure.sbr" \
+	"$(INTDIR)\mccliquetengine.sbr"
 
 "$(OUTDIR)\QuantLib.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -2074,18 +2050,24 @@ BSC32_SBRS= \
 LIB32=link.exe -lib
 LIB32_FLAGS=/nologo /out:".\lib\QuantLib-vc6-mt-0_3_7.lib" 
 LIB32_OBJS= \
+	"$(INTDIR)\beijing.obj" \
 	"$(INTDIR)\budapest.obj" \
 	"$(INTDIR)\copenhagen.obj" \
 	"$(INTDIR)\frankfurt.obj" \
 	"$(INTDIR)\helsinki.obj" \
+	"$(INTDIR)\hongkong.obj" \
 	"$(INTDIR)\johannesburg.obj" \
 	"$(INTDIR)\jointcalendar.obj" \
 	"$(INTDIR)\london.obj" \
 	"$(INTDIR)\milan.obj" \
 	"$(INTDIR)\newyork.obj" \
 	"$(INTDIR)\oslo.obj" \
+	"$(INTDIR)\riyadh.obj" \
+	"$(INTDIR)\seoul.obj" \
+	"$(INTDIR)\singapore.obj" \
 	"$(INTDIR)\stockholm.obj" \
 	"$(INTDIR)\sydney.obj" \
+	"$(INTDIR)\taiwan.obj" \
 	"$(INTDIR)\target.obj" \
 	"$(INTDIR)\tokyo.obj" \
 	"$(INTDIR)\toronto.obj" \
@@ -2111,6 +2093,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\barrieroption.obj" \
 	"$(INTDIR)\basketoption.obj" \
 	"$(INTDIR)\capfloor.obj" \
+	"$(INTDIR)\cliquetoption.obj" \
 	"$(INTDIR)\dividendvanillaoption.obj" \
 	"$(INTDIR)\europeanoption.obj" \
 	"$(INTDIR)\forwardvanillaoption.obj" \
@@ -2149,7 +2132,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\conjugategradient.obj" \
 	"$(INTDIR)\simplex.obj" \
 	"$(INTDIR)\steepestdescent.obj" \
-	"$(INTDIR)\cliquetoption.obj" \
+	"$(INTDIR)\cliquetoptionpricer.obj" \
 	"$(INTDIR)\discretegeometricapo.obj" \
 	"$(INTDIR)\discretegeometricaso.obj" \
 	"$(INTDIR)\dividendeuropeanoption.obj" \
@@ -2172,6 +2155,8 @@ LIB32_OBJS= \
 	"$(INTDIR)\mcperformanceoption.obj" \
 	"$(INTDIR)\performanceoption.obj" \
 	"$(INTDIR)\singleassetoption.obj" \
+	"$(INTDIR)\analyticcontinuousasianengine.obj" \
+	"$(INTDIR)\analyticdiscreteasianengine.obj" \
 	"$(INTDIR)\analyticbarrierengine.obj" \
 	"$(INTDIR)\mcbarrierengine.obj" \
 	"$(INTDIR)\mcamericanbasketengine.obj" \
@@ -2194,6 +2179,8 @@ LIB32_OBJS= \
 	"$(INTDIR)\jamshidianswaption.obj" \
 	"$(INTDIR)\swaptionpricer.obj" \
 	"$(INTDIR)\treeswaption.obj" \
+	"$(INTDIR)\analyticcliquetengine.obj" \
+	"$(INTDIR)\analyticperformanceengine.obj" \
 	"$(INTDIR)\blackformula.obj" \
 	"$(INTDIR)\haltonrsg.obj" \
 	"$(INTDIR)\knuthuniformrng.obj" \
@@ -2233,20 +2220,9 @@ LIB32_OBJS= \
 	"$(INTDIR)\exercise.obj" \
 	"$(INTDIR)\grid.obj" \
 	"$(INTDIR)\scheduler.obj" \
-	"$(INTDIR)\voltermstructure.obj" \
 	"$(INTDIR)\stochasticprocess.obj" \
-	"$(INTDIR)\analyticcontinuousasianengine.obj" \
-	"$(INTDIR)\analyticdiscreteasianengine.obj" \
-	"$(INTDIR)\cliquetoptionpricer.obj" \
-	"$(INTDIR)\analyticcliquetengine.obj" \
-	"$(INTDIR)\analyticperformanceengine.obj" \
-	"$(INTDIR)\beijing.obj" \
-	"$(INTDIR)\hongkong.obj" \
-	"$(INTDIR)\riyadh.obj" \
-	"$(INTDIR)\seoul.obj" \
-	"$(INTDIR)\singapore.obj" \
-	"$(INTDIR)\taiwan.obj" \
-	".\lib\QuantLibFunctions-vc6-mt-0_3_7.lib"
+	"$(INTDIR)\voltermstructure.obj" \
+	"$(INTDIR)\mccliquetengine.obj"
 
 ".\lib\QuantLib-vc6-mt-0_3_7.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
    if not exist lib mkdir lib
@@ -2264,21 +2240,10 @@ INTDIR=.\build\DebugMTDLL
 OutDir=.\build\DebugMTDLL
 # End Custom Macros
 
-!IF "$(RECURSE)" == "0" 
-
 ALL : ".\lib\QuantLib-vc6-mt-gd-0_3_7.lib" "$(OUTDIR)\QuantLib.bsc"
 
-!ELSE 
 
-ALL : "QuantLibFunctions - Win32 Debug MTDLL" ".\lib\QuantLib-vc6-mt-gd-0_3_7.lib" "$(OUTDIR)\QuantLib.bsc"
-
-!ENDIF 
-
-!IF "$(RECURSE)" == "1" 
-CLEAN :"QuantLibFunctions - Win32 Debug MTDLLCLEAN" 
-!ELSE 
 CLEAN :
-!ENDIF 
 	-@erase "$(INTDIR)\actualactual.obj"
 	-@erase "$(INTDIR)\actualactual.sbr"
 	-@erase "$(INTDIR)\affinetermstructure.obj"
@@ -2479,6 +2444,8 @@ CLEAN :
 	-@erase "$(INTDIR)\mcbasket.sbr"
 	-@erase "$(INTDIR)\mcbasketengine.obj"
 	-@erase "$(INTDIR)\mcbasketengine.sbr"
+	-@erase "$(INTDIR)\mccliquetengine.obj"
+	-@erase "$(INTDIR)\mccliquetengine.sbr"
 	-@erase "$(INTDIR)\mccliquetoption.obj"
 	-@erase "$(INTDIR)\mccliquetoption.sbr"
 	-@erase "$(INTDIR)\mcdigitalengine.obj"
@@ -2635,18 +2602,24 @@ CPP_PROJ=/nologo /MDd /W3 /Gm /Gi /GR /GX /ZI /Od /I "." /D "_DEBUG" /D "WIN32" 
 BSC32=bscmake.exe
 BSC32_FLAGS=/nologo /o"$(OUTDIR)\QuantLib.bsc" 
 BSC32_SBRS= \
+	"$(INTDIR)\beijing.sbr" \
 	"$(INTDIR)\budapest.sbr" \
 	"$(INTDIR)\copenhagen.sbr" \
 	"$(INTDIR)\frankfurt.sbr" \
 	"$(INTDIR)\helsinki.sbr" \
+	"$(INTDIR)\hongkong.sbr" \
 	"$(INTDIR)\johannesburg.sbr" \
 	"$(INTDIR)\jointcalendar.sbr" \
 	"$(INTDIR)\london.sbr" \
 	"$(INTDIR)\milan.sbr" \
 	"$(INTDIR)\newyork.sbr" \
 	"$(INTDIR)\oslo.sbr" \
+	"$(INTDIR)\riyadh.sbr" \
+	"$(INTDIR)\seoul.sbr" \
+	"$(INTDIR)\singapore.sbr" \
 	"$(INTDIR)\stockholm.sbr" \
 	"$(INTDIR)\sydney.sbr" \
+	"$(INTDIR)\taiwan.sbr" \
 	"$(INTDIR)\target.sbr" \
 	"$(INTDIR)\tokyo.sbr" \
 	"$(INTDIR)\toronto.sbr" \
@@ -2672,6 +2645,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\barrieroption.sbr" \
 	"$(INTDIR)\basketoption.sbr" \
 	"$(INTDIR)\capfloor.sbr" \
+	"$(INTDIR)\cliquetoption.sbr" \
 	"$(INTDIR)\dividendvanillaoption.sbr" \
 	"$(INTDIR)\europeanoption.sbr" \
 	"$(INTDIR)\forwardvanillaoption.sbr" \
@@ -2710,7 +2684,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\conjugategradient.sbr" \
 	"$(INTDIR)\simplex.sbr" \
 	"$(INTDIR)\steepestdescent.sbr" \
-	"$(INTDIR)\cliquetoption.sbr" \
+	"$(INTDIR)\cliquetoptionpricer.sbr" \
 	"$(INTDIR)\discretegeometricapo.sbr" \
 	"$(INTDIR)\discretegeometricaso.sbr" \
 	"$(INTDIR)\dividendeuropeanoption.sbr" \
@@ -2733,6 +2707,8 @@ BSC32_SBRS= \
 	"$(INTDIR)\mcperformanceoption.sbr" \
 	"$(INTDIR)\performanceoption.sbr" \
 	"$(INTDIR)\singleassetoption.sbr" \
+	"$(INTDIR)\analyticcontinuousasianengine.sbr" \
+	"$(INTDIR)\analyticdiscreteasianengine.sbr" \
 	"$(INTDIR)\analyticbarrierengine.sbr" \
 	"$(INTDIR)\mcbarrierengine.sbr" \
 	"$(INTDIR)\mcamericanbasketengine.sbr" \
@@ -2755,6 +2731,8 @@ BSC32_SBRS= \
 	"$(INTDIR)\jamshidianswaption.sbr" \
 	"$(INTDIR)\swaptionpricer.sbr" \
 	"$(INTDIR)\treeswaption.sbr" \
+	"$(INTDIR)\analyticcliquetengine.sbr" \
+	"$(INTDIR)\analyticperformanceengine.sbr" \
 	"$(INTDIR)\blackformula.sbr" \
 	"$(INTDIR)\haltonrsg.sbr" \
 	"$(INTDIR)\knuthuniformrng.sbr" \
@@ -2794,19 +2772,9 @@ BSC32_SBRS= \
 	"$(INTDIR)\exercise.sbr" \
 	"$(INTDIR)\grid.sbr" \
 	"$(INTDIR)\scheduler.sbr" \
-	"$(INTDIR)\voltermstructure.sbr" \
 	"$(INTDIR)\stochasticprocess.sbr" \
-	"$(INTDIR)\analyticcontinuousasianengine.sbr" \
-	"$(INTDIR)\analyticdiscreteasianengine.sbr" \
-	"$(INTDIR)\cliquetoptionpricer.sbr" \
-	"$(INTDIR)\analyticcliquetengine.sbr" \
-	"$(INTDIR)\analyticperformanceengine.sbr" \
-	"$(INTDIR)\beijing.sbr" \
-	"$(INTDIR)\hongkong.sbr" \
-	"$(INTDIR)\riyadh.sbr" \
-	"$(INTDIR)\seoul.sbr" \
-	"$(INTDIR)\singapore.sbr" \
-	"$(INTDIR)\taiwan.sbr"
+	"$(INTDIR)\voltermstructure.sbr" \
+	"$(INTDIR)\mccliquetengine.sbr"
 
 "$(OUTDIR)\QuantLib.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -2816,18 +2784,24 @@ BSC32_SBRS= \
 LIB32=link.exe -lib
 LIB32_FLAGS=/nologo /out:".\lib\QuantLib-vc6-mt-gd-0_3_7.lib" 
 LIB32_OBJS= \
+	"$(INTDIR)\beijing.obj" \
 	"$(INTDIR)\budapest.obj" \
 	"$(INTDIR)\copenhagen.obj" \
 	"$(INTDIR)\frankfurt.obj" \
 	"$(INTDIR)\helsinki.obj" \
+	"$(INTDIR)\hongkong.obj" \
 	"$(INTDIR)\johannesburg.obj" \
 	"$(INTDIR)\jointcalendar.obj" \
 	"$(INTDIR)\london.obj" \
 	"$(INTDIR)\milan.obj" \
 	"$(INTDIR)\newyork.obj" \
 	"$(INTDIR)\oslo.obj" \
+	"$(INTDIR)\riyadh.obj" \
+	"$(INTDIR)\seoul.obj" \
+	"$(INTDIR)\singapore.obj" \
 	"$(INTDIR)\stockholm.obj" \
 	"$(INTDIR)\sydney.obj" \
+	"$(INTDIR)\taiwan.obj" \
 	"$(INTDIR)\target.obj" \
 	"$(INTDIR)\tokyo.obj" \
 	"$(INTDIR)\toronto.obj" \
@@ -2853,6 +2827,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\barrieroption.obj" \
 	"$(INTDIR)\basketoption.obj" \
 	"$(INTDIR)\capfloor.obj" \
+	"$(INTDIR)\cliquetoption.obj" \
 	"$(INTDIR)\dividendvanillaoption.obj" \
 	"$(INTDIR)\europeanoption.obj" \
 	"$(INTDIR)\forwardvanillaoption.obj" \
@@ -2891,7 +2866,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\conjugategradient.obj" \
 	"$(INTDIR)\simplex.obj" \
 	"$(INTDIR)\steepestdescent.obj" \
-	"$(INTDIR)\cliquetoption.obj" \
+	"$(INTDIR)\cliquetoptionpricer.obj" \
 	"$(INTDIR)\discretegeometricapo.obj" \
 	"$(INTDIR)\discretegeometricaso.obj" \
 	"$(INTDIR)\dividendeuropeanoption.obj" \
@@ -2914,6 +2889,8 @@ LIB32_OBJS= \
 	"$(INTDIR)\mcperformanceoption.obj" \
 	"$(INTDIR)\performanceoption.obj" \
 	"$(INTDIR)\singleassetoption.obj" \
+	"$(INTDIR)\analyticcontinuousasianengine.obj" \
+	"$(INTDIR)\analyticdiscreteasianengine.obj" \
 	"$(INTDIR)\analyticbarrierengine.obj" \
 	"$(INTDIR)\mcbarrierengine.obj" \
 	"$(INTDIR)\mcamericanbasketengine.obj" \
@@ -2936,6 +2913,8 @@ LIB32_OBJS= \
 	"$(INTDIR)\jamshidianswaption.obj" \
 	"$(INTDIR)\swaptionpricer.obj" \
 	"$(INTDIR)\treeswaption.obj" \
+	"$(INTDIR)\analyticcliquetengine.obj" \
+	"$(INTDIR)\analyticperformanceengine.obj" \
 	"$(INTDIR)\blackformula.obj" \
 	"$(INTDIR)\haltonrsg.obj" \
 	"$(INTDIR)\knuthuniformrng.obj" \
@@ -2975,20 +2954,9 @@ LIB32_OBJS= \
 	"$(INTDIR)\exercise.obj" \
 	"$(INTDIR)\grid.obj" \
 	"$(INTDIR)\scheduler.obj" \
-	"$(INTDIR)\voltermstructure.obj" \
 	"$(INTDIR)\stochasticprocess.obj" \
-	"$(INTDIR)\analyticcontinuousasianengine.obj" \
-	"$(INTDIR)\analyticdiscreteasianengine.obj" \
-	"$(INTDIR)\cliquetoptionpricer.obj" \
-	"$(INTDIR)\analyticcliquetengine.obj" \
-	"$(INTDIR)\analyticperformanceengine.obj" \
-	"$(INTDIR)\beijing.obj" \
-	"$(INTDIR)\hongkong.obj" \
-	"$(INTDIR)\riyadh.obj" \
-	"$(INTDIR)\seoul.obj" \
-	"$(INTDIR)\singapore.obj" \
-	"$(INTDIR)\taiwan.obj" \
-	".\lib\QuantLibFunctions-vc6-mt-gd-0_3_7.lib"
+	"$(INTDIR)\voltermstructure.obj" \
+	"$(INTDIR)\mccliquetengine.obj"
 
 ".\lib\QuantLib-vc6-mt-gd-0_3_7.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
    if not exist lib mkdir lib
@@ -3006,21 +2974,10 @@ INTDIR=.\build\ReleaseST
 OutDir=.\build\ReleaseST
 # End Custom Macros
 
-!IF "$(RECURSE)" == "0" 
-
 ALL : ".\lib\QuantLib-vc6-s-0_3_7.lib" "$(OUTDIR)\QuantLib.bsc"
 
-!ELSE 
 
-ALL : "QuantLibFunctions - Win32 Release SingleThread" ".\lib\QuantLib-vc6-s-0_3_7.lib" "$(OUTDIR)\QuantLib.bsc"
-
-!ENDIF 
-
-!IF "$(RECURSE)" == "1" 
-CLEAN :"QuantLibFunctions - Win32 Release SingleThreadCLEAN" 
-!ELSE 
 CLEAN :
-!ENDIF 
 	-@erase "$(INTDIR)\actualactual.obj"
 	-@erase "$(INTDIR)\actualactual.sbr"
 	-@erase "$(INTDIR)\affinetermstructure.obj"
@@ -3221,6 +3178,8 @@ CLEAN :
 	-@erase "$(INTDIR)\mcbasket.sbr"
 	-@erase "$(INTDIR)\mcbasketengine.obj"
 	-@erase "$(INTDIR)\mcbasketengine.sbr"
+	-@erase "$(INTDIR)\mccliquetengine.obj"
+	-@erase "$(INTDIR)\mccliquetengine.sbr"
 	-@erase "$(INTDIR)\mccliquetoption.obj"
 	-@erase "$(INTDIR)\mccliquetoption.sbr"
 	-@erase "$(INTDIR)\mcdigitalengine.obj"
@@ -3376,18 +3335,24 @@ CPP_PROJ=/nologo /ML /W3 /Gi /GR /GX /O2 /Ob2 /I "." /D "NDEBUG" /D "WIN32" /D "
 BSC32=bscmake.exe
 BSC32_FLAGS=/nologo /o"$(OUTDIR)\QuantLib.bsc" 
 BSC32_SBRS= \
+	"$(INTDIR)\beijing.sbr" \
 	"$(INTDIR)\budapest.sbr" \
 	"$(INTDIR)\copenhagen.sbr" \
 	"$(INTDIR)\frankfurt.sbr" \
 	"$(INTDIR)\helsinki.sbr" \
+	"$(INTDIR)\hongkong.sbr" \
 	"$(INTDIR)\johannesburg.sbr" \
 	"$(INTDIR)\jointcalendar.sbr" \
 	"$(INTDIR)\london.sbr" \
 	"$(INTDIR)\milan.sbr" \
 	"$(INTDIR)\newyork.sbr" \
 	"$(INTDIR)\oslo.sbr" \
+	"$(INTDIR)\riyadh.sbr" \
+	"$(INTDIR)\seoul.sbr" \
+	"$(INTDIR)\singapore.sbr" \
 	"$(INTDIR)\stockholm.sbr" \
 	"$(INTDIR)\sydney.sbr" \
+	"$(INTDIR)\taiwan.sbr" \
 	"$(INTDIR)\target.sbr" \
 	"$(INTDIR)\tokyo.sbr" \
 	"$(INTDIR)\toronto.sbr" \
@@ -3413,6 +3378,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\barrieroption.sbr" \
 	"$(INTDIR)\basketoption.sbr" \
 	"$(INTDIR)\capfloor.sbr" \
+	"$(INTDIR)\cliquetoption.sbr" \
 	"$(INTDIR)\dividendvanillaoption.sbr" \
 	"$(INTDIR)\europeanoption.sbr" \
 	"$(INTDIR)\forwardvanillaoption.sbr" \
@@ -3451,7 +3417,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\conjugategradient.sbr" \
 	"$(INTDIR)\simplex.sbr" \
 	"$(INTDIR)\steepestdescent.sbr" \
-	"$(INTDIR)\cliquetoption.sbr" \
+	"$(INTDIR)\cliquetoptionpricer.sbr" \
 	"$(INTDIR)\discretegeometricapo.sbr" \
 	"$(INTDIR)\discretegeometricaso.sbr" \
 	"$(INTDIR)\dividendeuropeanoption.sbr" \
@@ -3474,6 +3440,8 @@ BSC32_SBRS= \
 	"$(INTDIR)\mcperformanceoption.sbr" \
 	"$(INTDIR)\performanceoption.sbr" \
 	"$(INTDIR)\singleassetoption.sbr" \
+	"$(INTDIR)\analyticcontinuousasianengine.sbr" \
+	"$(INTDIR)\analyticdiscreteasianengine.sbr" \
 	"$(INTDIR)\analyticbarrierengine.sbr" \
 	"$(INTDIR)\mcbarrierengine.sbr" \
 	"$(INTDIR)\mcamericanbasketengine.sbr" \
@@ -3496,6 +3464,8 @@ BSC32_SBRS= \
 	"$(INTDIR)\jamshidianswaption.sbr" \
 	"$(INTDIR)\swaptionpricer.sbr" \
 	"$(INTDIR)\treeswaption.sbr" \
+	"$(INTDIR)\analyticcliquetengine.sbr" \
+	"$(INTDIR)\analyticperformanceengine.sbr" \
 	"$(INTDIR)\blackformula.sbr" \
 	"$(INTDIR)\haltonrsg.sbr" \
 	"$(INTDIR)\knuthuniformrng.sbr" \
@@ -3535,19 +3505,9 @@ BSC32_SBRS= \
 	"$(INTDIR)\exercise.sbr" \
 	"$(INTDIR)\grid.sbr" \
 	"$(INTDIR)\scheduler.sbr" \
-	"$(INTDIR)\voltermstructure.sbr" \
 	"$(INTDIR)\stochasticprocess.sbr" \
-	"$(INTDIR)\analyticcontinuousasianengine.sbr" \
-	"$(INTDIR)\analyticdiscreteasianengine.sbr" \
-	"$(INTDIR)\cliquetoptionpricer.sbr" \
-	"$(INTDIR)\analyticcliquetengine.sbr" \
-	"$(INTDIR)\analyticperformanceengine.sbr" \
-	"$(INTDIR)\beijing.sbr" \
-	"$(INTDIR)\hongkong.sbr" \
-	"$(INTDIR)\riyadh.sbr" \
-	"$(INTDIR)\seoul.sbr" \
-	"$(INTDIR)\singapore.sbr" \
-	"$(INTDIR)\taiwan.sbr"
+	"$(INTDIR)\voltermstructure.sbr" \
+	"$(INTDIR)\mccliquetengine.sbr"
 
 "$(OUTDIR)\QuantLib.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -3557,18 +3517,24 @@ BSC32_SBRS= \
 LIB32=link.exe -lib
 LIB32_FLAGS=/nologo /out:".\lib\QuantLib-vc6-s-0_3_7.lib" 
 LIB32_OBJS= \
+	"$(INTDIR)\beijing.obj" \
 	"$(INTDIR)\budapest.obj" \
 	"$(INTDIR)\copenhagen.obj" \
 	"$(INTDIR)\frankfurt.obj" \
 	"$(INTDIR)\helsinki.obj" \
+	"$(INTDIR)\hongkong.obj" \
 	"$(INTDIR)\johannesburg.obj" \
 	"$(INTDIR)\jointcalendar.obj" \
 	"$(INTDIR)\london.obj" \
 	"$(INTDIR)\milan.obj" \
 	"$(INTDIR)\newyork.obj" \
 	"$(INTDIR)\oslo.obj" \
+	"$(INTDIR)\riyadh.obj" \
+	"$(INTDIR)\seoul.obj" \
+	"$(INTDIR)\singapore.obj" \
 	"$(INTDIR)\stockholm.obj" \
 	"$(INTDIR)\sydney.obj" \
+	"$(INTDIR)\taiwan.obj" \
 	"$(INTDIR)\target.obj" \
 	"$(INTDIR)\tokyo.obj" \
 	"$(INTDIR)\toronto.obj" \
@@ -3594,6 +3560,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\barrieroption.obj" \
 	"$(INTDIR)\basketoption.obj" \
 	"$(INTDIR)\capfloor.obj" \
+	"$(INTDIR)\cliquetoption.obj" \
 	"$(INTDIR)\dividendvanillaoption.obj" \
 	"$(INTDIR)\europeanoption.obj" \
 	"$(INTDIR)\forwardvanillaoption.obj" \
@@ -3632,7 +3599,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\conjugategradient.obj" \
 	"$(INTDIR)\simplex.obj" \
 	"$(INTDIR)\steepestdescent.obj" \
-	"$(INTDIR)\cliquetoption.obj" \
+	"$(INTDIR)\cliquetoptionpricer.obj" \
 	"$(INTDIR)\discretegeometricapo.obj" \
 	"$(INTDIR)\discretegeometricaso.obj" \
 	"$(INTDIR)\dividendeuropeanoption.obj" \
@@ -3655,6 +3622,8 @@ LIB32_OBJS= \
 	"$(INTDIR)\mcperformanceoption.obj" \
 	"$(INTDIR)\performanceoption.obj" \
 	"$(INTDIR)\singleassetoption.obj" \
+	"$(INTDIR)\analyticcontinuousasianengine.obj" \
+	"$(INTDIR)\analyticdiscreteasianengine.obj" \
 	"$(INTDIR)\analyticbarrierengine.obj" \
 	"$(INTDIR)\mcbarrierengine.obj" \
 	"$(INTDIR)\mcamericanbasketengine.obj" \
@@ -3677,6 +3646,8 @@ LIB32_OBJS= \
 	"$(INTDIR)\jamshidianswaption.obj" \
 	"$(INTDIR)\swaptionpricer.obj" \
 	"$(INTDIR)\treeswaption.obj" \
+	"$(INTDIR)\analyticcliquetengine.obj" \
+	"$(INTDIR)\analyticperformanceengine.obj" \
 	"$(INTDIR)\blackformula.obj" \
 	"$(INTDIR)\haltonrsg.obj" \
 	"$(INTDIR)\knuthuniformrng.obj" \
@@ -3716,20 +3687,9 @@ LIB32_OBJS= \
 	"$(INTDIR)\exercise.obj" \
 	"$(INTDIR)\grid.obj" \
 	"$(INTDIR)\scheduler.obj" \
-	"$(INTDIR)\voltermstructure.obj" \
 	"$(INTDIR)\stochasticprocess.obj" \
-	"$(INTDIR)\analyticcontinuousasianengine.obj" \
-	"$(INTDIR)\analyticdiscreteasianengine.obj" \
-	"$(INTDIR)\cliquetoptionpricer.obj" \
-	"$(INTDIR)\analyticcliquetengine.obj" \
-	"$(INTDIR)\analyticperformanceengine.obj" \
-	"$(INTDIR)\beijing.obj" \
-	"$(INTDIR)\hongkong.obj" \
-	"$(INTDIR)\riyadh.obj" \
-	"$(INTDIR)\seoul.obj" \
-	"$(INTDIR)\singapore.obj" \
-	"$(INTDIR)\taiwan.obj" \
-	".\lib\QuantLibFunctions-vc6-s-0_3_7.lib"
+	"$(INTDIR)\voltermstructure.obj" \
+	"$(INTDIR)\mccliquetengine.obj"
 
 ".\lib\QuantLib-vc6-s-0_3_7.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
    if not exist lib mkdir lib
@@ -3747,21 +3707,10 @@ INTDIR=.\build\DebugST
 OutDir=.\build\DebugST
 # End Custom Macros
 
-!IF "$(RECURSE)" == "0" 
-
 ALL : ".\lib\QuantLib-vc6-sgd-0_3_7.lib" "$(OUTDIR)\QuantLib.bsc"
 
-!ELSE 
 
-ALL : "QuantLibFunctions - Win32 Debug SingleThread" ".\lib\QuantLib-vc6-sgd-0_3_7.lib" "$(OUTDIR)\QuantLib.bsc"
-
-!ENDIF 
-
-!IF "$(RECURSE)" == "1" 
-CLEAN :"QuantLibFunctions - Win32 Debug SingleThreadCLEAN" 
-!ELSE 
 CLEAN :
-!ENDIF 
 	-@erase "$(INTDIR)\actualactual.obj"
 	-@erase "$(INTDIR)\actualactual.sbr"
 	-@erase "$(INTDIR)\affinetermstructure.obj"
@@ -3962,6 +3911,8 @@ CLEAN :
 	-@erase "$(INTDIR)\mcbasket.sbr"
 	-@erase "$(INTDIR)\mcbasketengine.obj"
 	-@erase "$(INTDIR)\mcbasketengine.sbr"
+	-@erase "$(INTDIR)\mccliquetengine.obj"
+	-@erase "$(INTDIR)\mccliquetengine.sbr"
 	-@erase "$(INTDIR)\mccliquetoption.obj"
 	-@erase "$(INTDIR)\mccliquetoption.sbr"
 	-@erase "$(INTDIR)\mcdigitalengine.obj"
@@ -4118,18 +4069,24 @@ CPP_PROJ=/nologo /MLd /W3 /Gm /Gi /GR /GX /ZI /Od /I "." /D "_DEBUG" /D "WIN32" 
 BSC32=bscmake.exe
 BSC32_FLAGS=/nologo /o"$(OUTDIR)\QuantLib.bsc" 
 BSC32_SBRS= \
+	"$(INTDIR)\beijing.sbr" \
 	"$(INTDIR)\budapest.sbr" \
 	"$(INTDIR)\copenhagen.sbr" \
 	"$(INTDIR)\frankfurt.sbr" \
 	"$(INTDIR)\helsinki.sbr" \
+	"$(INTDIR)\hongkong.sbr" \
 	"$(INTDIR)\johannesburg.sbr" \
 	"$(INTDIR)\jointcalendar.sbr" \
 	"$(INTDIR)\london.sbr" \
 	"$(INTDIR)\milan.sbr" \
 	"$(INTDIR)\newyork.sbr" \
 	"$(INTDIR)\oslo.sbr" \
+	"$(INTDIR)\riyadh.sbr" \
+	"$(INTDIR)\seoul.sbr" \
+	"$(INTDIR)\singapore.sbr" \
 	"$(INTDIR)\stockholm.sbr" \
 	"$(INTDIR)\sydney.sbr" \
+	"$(INTDIR)\taiwan.sbr" \
 	"$(INTDIR)\target.sbr" \
 	"$(INTDIR)\tokyo.sbr" \
 	"$(INTDIR)\toronto.sbr" \
@@ -4155,6 +4112,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\barrieroption.sbr" \
 	"$(INTDIR)\basketoption.sbr" \
 	"$(INTDIR)\capfloor.sbr" \
+	"$(INTDIR)\cliquetoption.sbr" \
 	"$(INTDIR)\dividendvanillaoption.sbr" \
 	"$(INTDIR)\europeanoption.sbr" \
 	"$(INTDIR)\forwardvanillaoption.sbr" \
@@ -4193,7 +4151,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\conjugategradient.sbr" \
 	"$(INTDIR)\simplex.sbr" \
 	"$(INTDIR)\steepestdescent.sbr" \
-	"$(INTDIR)\cliquetoption.sbr" \
+	"$(INTDIR)\cliquetoptionpricer.sbr" \
 	"$(INTDIR)\discretegeometricapo.sbr" \
 	"$(INTDIR)\discretegeometricaso.sbr" \
 	"$(INTDIR)\dividendeuropeanoption.sbr" \
@@ -4216,6 +4174,8 @@ BSC32_SBRS= \
 	"$(INTDIR)\mcperformanceoption.sbr" \
 	"$(INTDIR)\performanceoption.sbr" \
 	"$(INTDIR)\singleassetoption.sbr" \
+	"$(INTDIR)\analyticcontinuousasianengine.sbr" \
+	"$(INTDIR)\analyticdiscreteasianengine.sbr" \
 	"$(INTDIR)\analyticbarrierengine.sbr" \
 	"$(INTDIR)\mcbarrierengine.sbr" \
 	"$(INTDIR)\mcamericanbasketengine.sbr" \
@@ -4238,6 +4198,8 @@ BSC32_SBRS= \
 	"$(INTDIR)\jamshidianswaption.sbr" \
 	"$(INTDIR)\swaptionpricer.sbr" \
 	"$(INTDIR)\treeswaption.sbr" \
+	"$(INTDIR)\analyticcliquetengine.sbr" \
+	"$(INTDIR)\analyticperformanceengine.sbr" \
 	"$(INTDIR)\blackformula.sbr" \
 	"$(INTDIR)\haltonrsg.sbr" \
 	"$(INTDIR)\knuthuniformrng.sbr" \
@@ -4277,19 +4239,9 @@ BSC32_SBRS= \
 	"$(INTDIR)\exercise.sbr" \
 	"$(INTDIR)\grid.sbr" \
 	"$(INTDIR)\scheduler.sbr" \
-	"$(INTDIR)\voltermstructure.sbr" \
 	"$(INTDIR)\stochasticprocess.sbr" \
-	"$(INTDIR)\analyticcontinuousasianengine.sbr" \
-	"$(INTDIR)\analyticdiscreteasianengine.sbr" \
-	"$(INTDIR)\cliquetoptionpricer.sbr" \
-	"$(INTDIR)\analyticcliquetengine.sbr" \
-	"$(INTDIR)\analyticperformanceengine.sbr" \
-	"$(INTDIR)\beijing.sbr" \
-	"$(INTDIR)\hongkong.sbr" \
-	"$(INTDIR)\riyadh.sbr" \
-	"$(INTDIR)\seoul.sbr" \
-	"$(INTDIR)\singapore.sbr" \
-	"$(INTDIR)\taiwan.sbr"
+	"$(INTDIR)\voltermstructure.sbr" \
+	"$(INTDIR)\mccliquetengine.sbr"
 
 "$(OUTDIR)\QuantLib.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -4299,18 +4251,24 @@ BSC32_SBRS= \
 LIB32=link.exe -lib
 LIB32_FLAGS=/nologo /out:".\lib\QuantLib-vc6-sgd-0_3_7.lib" 
 LIB32_OBJS= \
+	"$(INTDIR)\beijing.obj" \
 	"$(INTDIR)\budapest.obj" \
 	"$(INTDIR)\copenhagen.obj" \
 	"$(INTDIR)\frankfurt.obj" \
 	"$(INTDIR)\helsinki.obj" \
+	"$(INTDIR)\hongkong.obj" \
 	"$(INTDIR)\johannesburg.obj" \
 	"$(INTDIR)\jointcalendar.obj" \
 	"$(INTDIR)\london.obj" \
 	"$(INTDIR)\milan.obj" \
 	"$(INTDIR)\newyork.obj" \
 	"$(INTDIR)\oslo.obj" \
+	"$(INTDIR)\riyadh.obj" \
+	"$(INTDIR)\seoul.obj" \
+	"$(INTDIR)\singapore.obj" \
 	"$(INTDIR)\stockholm.obj" \
 	"$(INTDIR)\sydney.obj" \
+	"$(INTDIR)\taiwan.obj" \
 	"$(INTDIR)\target.obj" \
 	"$(INTDIR)\tokyo.obj" \
 	"$(INTDIR)\toronto.obj" \
@@ -4336,6 +4294,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\barrieroption.obj" \
 	"$(INTDIR)\basketoption.obj" \
 	"$(INTDIR)\capfloor.obj" \
+	"$(INTDIR)\cliquetoption.obj" \
 	"$(INTDIR)\dividendvanillaoption.obj" \
 	"$(INTDIR)\europeanoption.obj" \
 	"$(INTDIR)\forwardvanillaoption.obj" \
@@ -4374,7 +4333,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\conjugategradient.obj" \
 	"$(INTDIR)\simplex.obj" \
 	"$(INTDIR)\steepestdescent.obj" \
-	"$(INTDIR)\cliquetoption.obj" \
+	"$(INTDIR)\cliquetoptionpricer.obj" \
 	"$(INTDIR)\discretegeometricapo.obj" \
 	"$(INTDIR)\discretegeometricaso.obj" \
 	"$(INTDIR)\dividendeuropeanoption.obj" \
@@ -4397,6 +4356,8 @@ LIB32_OBJS= \
 	"$(INTDIR)\mcperformanceoption.obj" \
 	"$(INTDIR)\performanceoption.obj" \
 	"$(INTDIR)\singleassetoption.obj" \
+	"$(INTDIR)\analyticcontinuousasianengine.obj" \
+	"$(INTDIR)\analyticdiscreteasianengine.obj" \
 	"$(INTDIR)\analyticbarrierengine.obj" \
 	"$(INTDIR)\mcbarrierengine.obj" \
 	"$(INTDIR)\mcamericanbasketengine.obj" \
@@ -4419,6 +4380,8 @@ LIB32_OBJS= \
 	"$(INTDIR)\jamshidianswaption.obj" \
 	"$(INTDIR)\swaptionpricer.obj" \
 	"$(INTDIR)\treeswaption.obj" \
+	"$(INTDIR)\analyticcliquetengine.obj" \
+	"$(INTDIR)\analyticperformanceengine.obj" \
 	"$(INTDIR)\blackformula.obj" \
 	"$(INTDIR)\haltonrsg.obj" \
 	"$(INTDIR)\knuthuniformrng.obj" \
@@ -4458,20 +4421,9 @@ LIB32_OBJS= \
 	"$(INTDIR)\exercise.obj" \
 	"$(INTDIR)\grid.obj" \
 	"$(INTDIR)\scheduler.obj" \
-	"$(INTDIR)\voltermstructure.obj" \
 	"$(INTDIR)\stochasticprocess.obj" \
-	"$(INTDIR)\analyticcontinuousasianengine.obj" \
-	"$(INTDIR)\analyticdiscreteasianengine.obj" \
-	"$(INTDIR)\cliquetoptionpricer.obj" \
-	"$(INTDIR)\analyticcliquetengine.obj" \
-	"$(INTDIR)\analyticperformanceengine.obj" \
-	"$(INTDIR)\beijing.obj" \
-	"$(INTDIR)\hongkong.obj" \
-	"$(INTDIR)\riyadh.obj" \
-	"$(INTDIR)\seoul.obj" \
-	"$(INTDIR)\singapore.obj" \
-	"$(INTDIR)\taiwan.obj" \
-	".\lib\QuantLibFunctions-vc6-sgd-0_3_7.lib"
+	"$(INTDIR)\voltermstructure.obj" \
+	"$(INTDIR)\mccliquetengine.obj"
 
 ".\lib\QuantLib-vc6-sgd-0_3_7.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
    if not exist lib mkdir lib
@@ -5368,6 +5320,12 @@ SOURCE=.\ql\PricingEngines\Cliquet\analyticperformanceengine.cpp
 	$(CPP) $(CPP_PROJ) $(SOURCE)
 
 
+SOURCE=.\ql\PricingEngines\Cliquet\mccliquetengine.cpp
+
+"$(INTDIR)\mccliquetengine.obj"	"$(INTDIR)\mccliquetengine.sbr" : $(SOURCE) "$(INTDIR)"
+	$(CPP) $(CPP_PROJ) $(SOURCE)
+
+
 SOURCE=.\ql\PricingEngines\blackformula.cpp
 
 "$(INTDIR)\blackformula.obj"	"$(INTDIR)\blackformula.sbr" : $(SOURCE) "$(INTDIR)"
@@ -5541,80 +5499,6 @@ SOURCE=.\ql\Volatilities\localvolsurface.cpp
 "$(INTDIR)\localvolsurface.obj"	"$(INTDIR)\localvolsurface.sbr" : $(SOURCE) "$(INTDIR)"
 	$(CPP) $(CPP_PROJ) $(SOURCE)
 
-
-!IF  "$(CFG)" == "QuantLib - Win32 Release"
-
-"QuantLibFunctions - Win32 Release" : 
-   cd ".\FUNCTIONS\QL\FUNCTIONS"
-   $(MAKE) /$(MAKEFLAGS) /F .\QuantLibFunctions.mak CFG="QuantLibFunctions - Win32 Release" 
-   cd "..\..\.."
-
-"QuantLibFunctions - Win32 ReleaseCLEAN" : 
-   cd ".\FUNCTIONS\QL\FUNCTIONS"
-   $(MAKE) /$(MAKEFLAGS) /F .\QuantLibFunctions.mak CFG="QuantLibFunctions - Win32 Release" RECURSE=1 CLEAN 
-   cd "..\..\.."
-
-!ELSEIF  "$(CFG)" == "QuantLib - Win32 Debug"
-
-"QuantLibFunctions - Win32 Debug" : 
-   cd ".\FUNCTIONS\QL\FUNCTIONS"
-   $(MAKE) /$(MAKEFLAGS) /F .\QuantLibFunctions.mak CFG="QuantLibFunctions - Win32 Debug" 
-   cd "..\..\.."
-
-"QuantLibFunctions - Win32 DebugCLEAN" : 
-   cd ".\FUNCTIONS\QL\FUNCTIONS"
-   $(MAKE) /$(MAKEFLAGS) /F .\QuantLibFunctions.mak CFG="QuantLibFunctions - Win32 Debug" RECURSE=1 CLEAN 
-   cd "..\..\.."
-
-!ELSEIF  "$(CFG)" == "QuantLib - Win32 Release MTDLL"
-
-"QuantLibFunctions - Win32 Release MTDLL" : 
-   cd ".\FUNCTIONS\QL\FUNCTIONS"
-   $(MAKE) /$(MAKEFLAGS) /F .\QuantLibFunctions.mak CFG="QuantLibFunctions - Win32 Release MTDLL" 
-   cd "..\..\.."
-
-"QuantLibFunctions - Win32 Release MTDLLCLEAN" : 
-   cd ".\FUNCTIONS\QL\FUNCTIONS"
-   $(MAKE) /$(MAKEFLAGS) /F .\QuantLibFunctions.mak CFG="QuantLibFunctions - Win32 Release MTDLL" RECURSE=1 CLEAN 
-   cd "..\..\.."
-
-!ELSEIF  "$(CFG)" == "QuantLib - Win32 Debug MTDLL"
-
-"QuantLibFunctions - Win32 Debug MTDLL" : 
-   cd ".\FUNCTIONS\QL\FUNCTIONS"
-   $(MAKE) /$(MAKEFLAGS) /F .\QuantLibFunctions.mak CFG="QuantLibFunctions - Win32 Debug MTDLL" 
-   cd "..\..\.."
-
-"QuantLibFunctions - Win32 Debug MTDLLCLEAN" : 
-   cd ".\FUNCTIONS\QL\FUNCTIONS"
-   $(MAKE) /$(MAKEFLAGS) /F .\QuantLibFunctions.mak CFG="QuantLibFunctions - Win32 Debug MTDLL" RECURSE=1 CLEAN 
-   cd "..\..\.."
-
-!ELSEIF  "$(CFG)" == "QuantLib - Win32 Release SingleThread"
-
-"QuantLibFunctions - Win32 Release SingleThread" : 
-   cd ".\FUNCTIONS\QL\FUNCTIONS"
-   $(MAKE) /$(MAKEFLAGS) /F .\QuantLibFunctions.mak CFG="QuantLibFunctions - Win32 Release SingleThread" 
-   cd "..\..\.."
-
-"QuantLibFunctions - Win32 Release SingleThreadCLEAN" : 
-   cd ".\FUNCTIONS\QL\FUNCTIONS"
-   $(MAKE) /$(MAKEFLAGS) /F .\QuantLibFunctions.mak CFG="QuantLibFunctions - Win32 Release SingleThread" RECURSE=1 CLEAN 
-   cd "..\..\.."
-
-!ELSEIF  "$(CFG)" == "QuantLib - Win32 Debug SingleThread"
-
-"QuantLibFunctions - Win32 Debug SingleThread" : 
-   cd ".\FUNCTIONS\QL\FUNCTIONS"
-   $(MAKE) /$(MAKEFLAGS) /F .\QuantLibFunctions.mak CFG="QuantLibFunctions - Win32 Debug SingleThread" 
-   cd "..\..\.."
-
-"QuantLibFunctions - Win32 Debug SingleThreadCLEAN" : 
-   cd ".\FUNCTIONS\QL\FUNCTIONS"
-   $(MAKE) /$(MAKEFLAGS) /F .\QuantLibFunctions.mak CFG="QuantLibFunctions - Win32 Debug SingleThread" RECURSE=1 CLEAN 
-   cd "..\..\.."
-
-!ENDIF 
 
 SOURCE=.\ql\basicdataformatters.cpp
 

@@ -36,13 +36,24 @@ SectionIn 1 2
 # this directory must be created first, or the CreateShortCut will not work
     CreateDirectory "$SMPROGRAMS\QuantLib"
     SetOutPath $INSTDIR
+
+    # these MUST be present
+    File "README.txt"
+    File "LICENSE.txt"
+    File "News.txt"
+    File "QuantLib.dsw"
+    File "QuantLib.sln"
+    File "Examples.dsw"
+    File "Examples.sln"
+
     File "*.txt"
+    File "*.TXT"
     File "*.mak"
     File "*.dsw"
-    File "*.dsp"
-    File "*.nsi"
     File "*.sln"
+    File "*.dsp"
     File "*.vcproj"
+    File "*.nsi"
 
     SetOutPath  $INSTDIR\ql
     File /r "ql\*.hpp"
