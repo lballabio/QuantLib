@@ -63,7 +63,7 @@ namespace QuantLib {
             /*! \warning Options with a gamma that changes sign have values
                 that are <b>not</b> monotonic in the volatility, e.g binary
                 options. In these cases impliedVolatility can fail and in
-                any case is meaningless.
+                any case it is almost meaningless.
                 Another possible source of failure is to have a
                 targetValue that is not attainable with any volatility, e.g.
                 a targetValue lower than the intrinsic value in the case of
