@@ -22,7 +22,7 @@
 #ifndef quantlib_cap_volatility_structures_hpp
 #define quantlib_cap_volatility_structures_hpp
 
-#include <ql/basetermstructure.hpp>
+#include <ql/termstructure.hpp>
 
 namespace QuantLib {
 
@@ -30,10 +30,10 @@ namespace QuantLib {
     /*! This class is purely abstract and defines the interface of concrete
         structures which will be derived from this one.
     */
-    class CapVolatilityStructure : public BaseTermStructure {
+    class CapVolatilityStructure : public TermStructure {
       public:
         /*! \name Constructors
-            See the BaseTermStructure documentation for issues regarding
+            See the TermStructure documentation for issues regarding
             constructors.
         */
         //@{
@@ -66,10 +66,10 @@ namespace QuantLib {
     /*! This class is purely abstract and defines the interface of
         concrete structures which will be derived from this one.
     */
-    class CapletVolatilityStructure : public BaseTermStructure {
+    class CapletVolatilityStructure : public TermStructure {
       public:
         /*! \name Constructors
-            See the BaseTermStructure documentation for issues regarding
+            See the TermStructure documentation for issues regarding
             constructors.
         */
         //@{
@@ -104,11 +104,11 @@ namespace QuantLib {
 
     inline CapVolatilityStructure::CapVolatilityStructure(
                                                    const Date& referenceDate)
-    : BaseTermStructure(referenceDate) {}
+    : TermStructure(referenceDate) {}
 
     inline CapVolatilityStructure::CapVolatilityStructure(
                              Integer settlementDays, const Calendar& calendar)
-    : BaseTermStructure(settlementDays,calendar) {}
+    : TermStructure(settlementDays,calendar) {}
 
     inline Volatility CapVolatilityStructure::volatility(const Date& end,
                                                          Rate strike) const {
@@ -132,11 +132,11 @@ namespace QuantLib {
 
     inline CapletVolatilityStructure::CapletVolatilityStructure(
                                                    const Date& referenceDate)
-    : BaseTermStructure(referenceDate) {}
+    : TermStructure(referenceDate) {}
 
     inline CapletVolatilityStructure::CapletVolatilityStructure(
                              Integer settlementDays, const Calendar& calendar)
-    : BaseTermStructure(settlementDays,calendar) {}
+    : TermStructure(settlementDays,calendar) {}
 
     inline Volatility CapletVolatilityStructure::volatility(
                                                         const Date& start,

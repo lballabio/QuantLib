@@ -19,7 +19,7 @@
 #include <ql/CashFlows/fixedratecoupon.hpp>
 #include <ql/CashFlows/shortfloatingcoupon.hpp>
 #include <ql/CashFlows/upfrontindexedcoupon.hpp>
-#include <ql/CashFlows/indexcashflowvectors.hpp>
+#include <ql/CashFlows/indexedcashflowvectors.hpp>
 
 namespace QuantLib {
 

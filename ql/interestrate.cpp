@@ -16,7 +16,7 @@
 */
 
 #include <ql/interestrate.hpp>
-#include <ql/null.hpp>
+#include <ql/Utilities/null.hpp>
 #include <ql/Utilities/dataformatters.hpp>
 #include <sstream>
 #include <iomanip>

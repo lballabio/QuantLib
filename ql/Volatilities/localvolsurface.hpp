@@ -23,7 +23,7 @@
 #define quantlib_localvolsurface_hpp
 
 #include <ql/voltermstructure.hpp>
-#include <ql/termstructure.hpp>
+#include <ql/yieldtermstructure.hpp>
 
 namespace QuantLib {
 

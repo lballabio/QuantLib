@@ -15,7 +15,7 @@
 */
 
 #include <ql/Instruments/floatingratebond.hpp>
-#include <ql/CashFlows/indexcashflowvectors.hpp>
+#include <ql/CashFlows/indexedcashflowvectors.hpp>
 #include <ql/CashFlows/upfrontindexedcoupon.hpp>
 #include <ql/CashFlows/simplecashflow.hpp>
 

@@ -23,7 +23,7 @@
 #define quantlib_floating_rate_coupon_hpp
 
 #include <ql/CashFlows/coupon.hpp>
-#include <ql/null.hpp>
+#include <ql/Utilities/null.hpp>
 
 namespace QuantLib {
 

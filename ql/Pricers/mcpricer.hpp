@@ -22,7 +22,6 @@
 #ifndef quantlib_montecarlo_pricer_hpp
 #define quantlib_montecarlo_pricer_hpp
 
-#include <ql/basicdataformatters.hpp>
 #include <ql/MonteCarlo/montecarlomodel.hpp>
 
 namespace QuantLib {

@@ -19,7 +19,7 @@
 #include <ql/DayCounters/actualactual.hpp>
 #include <ql/DayCounters/one.hpp>
 #include <ql/DayCounters/simpledaycounter.hpp>
-#include <ql/basicdataformatters.hpp>
+#include <iomanip>
 
 using namespace QuantLib;
 using namespace boost::unit_test_framework;

@@ -15,12 +15,12 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file relinkablehandle.hpp
+/*! \file handle.hpp
     \brief Globally accessible relinkable pointer
 */
 
-#ifndef quantlib_relinkable_handle_hpp
-#define quantlib_relinkable_handle_hpp
+#ifndef quantlib_handle_hpp
+#define quantlib_handle_hpp
 
 #include <ql/Patterns/observable.hpp>
 

@@ -26,7 +26,7 @@
 #include <ql/CashFlows/fixedratecoupon.hpp>
 #include <ql/CashFlows/floatingratecoupon.hpp>
 #include <ql/CashFlows/inarrearindexedcoupon.hpp>
-#include <ql/CashFlows/indexcashflowvectors.hpp>
+#include <ql/CashFlows/indexedcashflowvectors.hpp>
 #include <ql/CashFlows/indexedcoupon.hpp>
 #include <ql/CashFlows/parcoupon.hpp>
 #include <ql/CashFlows/shortfloatingcoupon.hpp>

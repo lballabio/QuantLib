@@ -23,7 +23,7 @@
 #define quantlib_quote_hpp
 
 #include <ql/types.hpp>
-#include <ql/relinkablehandle.hpp>
+#include <ql/handle.hpp>
 
 namespace QuantLib {
 

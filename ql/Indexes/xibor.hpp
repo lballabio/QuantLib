@@ -23,7 +23,7 @@
 #define quantlib_xibor_hpp
 
 #include <ql/index.hpp>
-#include <ql/termstructure.hpp>
+#include <ql/yieldtermstructure.hpp>
 
 namespace QuantLib {
 

@@ -22,8 +22,8 @@
 #ifndef quantlib_history_hpp
 #define quantlib_history_hpp
 
-#include <ql/null.hpp>
 #include <ql/date.hpp>
+#include <ql/Utilities/null.hpp>
 #include <boost/iterator/filter_iterator.hpp>
 #include <vector>
 

@@ -18,7 +18,7 @@
 
 #include "interpolations.hpp"
 #include "utilities.hpp"
-#include <ql/null.hpp>
+#include <ql/Utilities/null.hpp>
 #include <ql/Math/cubicspline.hpp>
 #ifndef QL_PATCH_BORLAND
 #include <ql/Math/multicubicspline.hpp>

@@ -21,6 +21,9 @@
 #include <ql/qldefines.hpp>
 
 #include <ql/Utilities/dataformatters.hpp>
+#include <ql/Utilities/dataparsers.hpp>
+#include <ql/Utilities/disposable.hpp>
+#include <ql/Utilities/null.hpp>
 #include <ql/Utilities/tracing.hpp>
 #include <ql/Utilities/steppingiterator.hpp>
 #include <ql/Utilities/strings.hpp>

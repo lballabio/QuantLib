@@ -24,7 +24,7 @@
 #include <ql/Indexes/euribor.hpp>
 #include <ql/PricingEngines/CapFloor/blackcapfloorengine.hpp>
 #ifdef QL_USE_INDEXED_COUPON
-#include <ql/CashFlows/indexcashflowvectors.hpp>
+#include <ql/CashFlows/indexedcashflowvectors.hpp>
 #include <ql/CashFlows/upfrontindexedcoupon.hpp>
 #endif
 #include <ql/Utilities/dataformatters.hpp>

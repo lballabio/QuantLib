@@ -19,6 +19,7 @@
 #include "utilities.hpp"
 #include <ql/Math/rounding.hpp>
 #include <ql/Math/comparison.hpp>
+#include <iomanip>
 
 using namespace QuantLib;
 using namespace boost::unit_test_framework;

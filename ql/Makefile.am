@@ -36,28 +36,25 @@ EXTRA_DIST= \
 include_HEADERS = \
 	core.hpp \
 	argsandresults.hpp \
-	basetermstructure.hpp \
 	basicdataformatters.hpp \
 	calendar.hpp \
 	capvolstructures.hpp \
 	cashflow.hpp \
 	config.hpp \
 	currency.hpp \
-	dataparsers.hpp \
 	date.hpp \
 	daycounter.hpp \
 	discretizedasset.hpp \
-	disposable.hpp \
 	errors.hpp \
 	exchangerate.hpp \
 	exercise.hpp \
 	grid.hpp \
+	handle.hpp \
 	history.hpp \
 	index.hpp \
 	instrument.hpp \
     interestrate.hpp \
 	money.hpp \
-	null.hpp \
 	numericalmethod.hpp \
 	option.hpp \
 	payoff.hpp \
@@ -65,7 +62,6 @@ include_HEADERS = \
 	qldefines.hpp \
 	quantlib.hpp \
 	quote.hpp \
-	relinkablehandle.hpp \
 	schedule.hpp \
 	settings.hpp \
 	solver1d.hpp \
@@ -73,7 +69,8 @@ include_HEADERS = \
 	swaptionvolstructure.hpp \
 	termstructure.hpp \
 	types.hpp \
-	voltermstructure.hpp
+	voltermstructure.hpp \
+	yieldtermstructure.hpp
 
 
 install-data-hook:
@@ -113,7 +110,6 @@ libQuantLib_la_SOURCES = \
     basicdataformatters.cpp \
     calendar.cpp \
     currency.cpp \
-    dataparsers.cpp \
     date.cpp \
 	discretizedasset.cpp \
 	errors.cpp \

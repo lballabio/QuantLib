@@ -26,7 +26,6 @@
 #include <ql/Calendars/tokyo.hpp>
 #include <ql/Calendars/jointcalendar.hpp>
 #include <ql/Functions/calendars.hpp>
-#include <ql/basicdataformatters.hpp>
 #include <fstream>
 
 using namespace QuantLib;

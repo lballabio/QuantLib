@@ -23,7 +23,6 @@
 #ifndef quantlib_normal_distribution_hpp
 #define quantlib_normal_distribution_hpp
 
-#include <ql/basicdataformatters.hpp>
 #include <ql/Math/errorfunction.hpp>
 #include <ql/errors.hpp>
 

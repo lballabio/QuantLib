@@ -23,7 +23,7 @@
 #ifndef quantlib_incremental_statistics_hpp
 #define quantlib_incremental_statistics_hpp
 
-#include <ql/null.hpp>
+#include <ql/Utilities/null.hpp>
 #include <ql/errors.hpp>
 
 namespace QuantLib {

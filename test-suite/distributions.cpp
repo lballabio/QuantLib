@@ -22,6 +22,7 @@
 #include <ql/Math/bivariatenormaldistribution.hpp>
 #include <ql/Math/poissondistribution.hpp>
 #include <ql/Math/comparison.hpp>
+#include <iomanip>
 
 using namespace QuantLib;
 using namespace boost::unit_test_framework;

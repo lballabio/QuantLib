@@ -26,7 +26,7 @@
 
 #include <ql/Math/interpolation.hpp>
 #include <ql/FiniteDifferences/tridiagonaloperator.hpp>
-#include <ql/null.hpp>
+#include <ql/Utilities/null.hpp>
 #include <vector>
 
 namespace QuantLib {

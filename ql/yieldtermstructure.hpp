@@ -1,7 +1,7 @@
 
 /*
  Copyright (C) 2004 Ferdinando Ametrano
- Copyright (C) 2000-2004 StatPro Italia srl
+ Copyright (C) 2000-2005 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -16,17 +16,16 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file termstructure.hpp
-    \brief Term structure
+/*! \file yieldtermstructure.hpp
+    \brief Interest-rate term structure
 */
 
 #ifndef quantlib_yield_term_structure_hpp
 #define quantlib_yield_term_structure_hpp
 
-#include <ql/basetermstructure.hpp>
-#include <ql/basicdataformatters.hpp>
+#include <ql/termstructure.hpp>
 #include <ql/interestrate.hpp>
-#include <ql/relinkablehandle.hpp>
+#include <ql/handle.hpp>
 #include <ql/Math/extrapolation.hpp>
 
 namespace QuantLib {
@@ -44,11 +43,11 @@ namespace QuantLib {
 
         \test observability against evaluation date changes is checked.
     */
-    class YieldTermStructure : public BaseTermStructure,
+    class YieldTermStructure : public TermStructure,
                                public Extrapolator {
       public:
         /*! \name Constructors
-            See the BaseTermStructure documentation for issues regarding
+            See the TermStructure documentation for issues regarding
             constructors.
         */
         //@{
@@ -210,11 +209,11 @@ namespace QuantLib {
     inline YieldTermStructure::YieldTermStructure() {}
 
     inline YieldTermStructure::YieldTermStructure(const Date& referenceDate)
-    : BaseTermStructure(referenceDate) {}
+    : TermStructure(referenceDate) {}
 
     inline YieldTermStructure::YieldTermStructure(Integer settlementDays,
                                                   const Calendar& calendar)
-    : BaseTermStructure(settlementDays, calendar) {}
+    : TermStructure(settlementDays, calendar) {}
 
     inline void YieldTermStructure::checkRange(Time t,
                                                bool extrapolate) const {

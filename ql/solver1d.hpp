@@ -22,8 +22,7 @@
 #ifndef quantlib_solver1d_hpp
 #define quantlib_solver1d_hpp
 
-#include <ql/null.hpp>
-#include <ql/basicdataformatters.hpp>
+#include <ql/Utilities/null.hpp>
 #include <ql/Patterns/curiouslyrecurring.hpp>
 #include <iomanip>
 

@@ -23,7 +23,6 @@
 #ifndef quantlib_poisson_distribution_hpp
 #define quantlib_poisson_distribution_hpp
 
-#include <ql/basicdataformatters.hpp>
 #include <ql/Math/factorial.hpp>
 #include <ql/Math/incompletegamma.hpp>
 

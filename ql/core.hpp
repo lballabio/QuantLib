@@ -21,32 +21,28 @@
 #include <ql/qldefines.hpp>
 
 #include <ql/argsandresults.hpp>
-#include <ql/basetermstructure.hpp>
 #include <ql/basicdataformatters.hpp>
 #include <ql/calendar.hpp>
 #include <ql/capvolstructures.hpp>
 #include <ql/cashflow.hpp>
 #include <ql/currency.hpp>
-#include <ql/dataparsers.hpp>
 #include <ql/date.hpp>
 #include <ql/daycounter.hpp>
 #include <ql/discretizedasset.hpp>
-#include <ql/disposable.hpp>
 #include <ql/errors.hpp>
 #include <ql/exchangerate.hpp>
 #include <ql/exercise.hpp>
 #include <ql/grid.hpp>
+#include <ql/handle.hpp>
 #include <ql/history.hpp>
 #include <ql/index.hpp>
 #include <ql/instrument.hpp>
 #include <ql/money.hpp>
-#include <ql/null.hpp>
 #include <ql/numericalmethod.hpp>
 #include <ql/option.hpp>
 #include <ql/payoff.hpp>
 #include <ql/pricingengine.hpp>
 #include <ql/quote.hpp>
-#include <ql/relinkablehandle.hpp>
 #include <ql/schedule.hpp>
 #include <ql/settings.hpp>
 #include <ql/solver1d.hpp>
@@ -55,6 +51,7 @@
 #include <ql/termstructure.hpp>
 #include <ql/types.hpp>
 #include <ql/voltermstructure.hpp>
+#include <ql/yieldtermstructure.hpp>
 
 
 #endif

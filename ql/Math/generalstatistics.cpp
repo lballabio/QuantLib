@@ -18,7 +18,6 @@
 
 #include <ql/Math/generalstatistics.hpp>
 #include <ql/Math/functional.hpp>
-#include <ql/basicdataformatters.hpp>
 
 namespace QuantLib {
 

@@ -18,7 +18,6 @@
 
 #include "dates.hpp"
 #include <ql/date.hpp>
-#include <ql/basicdataformatters.hpp>
 
 using namespace QuantLib;
 using namespace boost::unit_test_framework;

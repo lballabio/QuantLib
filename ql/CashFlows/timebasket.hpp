@@ -24,7 +24,7 @@
 #define quantlib_time_basket_hpp
 
 #include <ql/date.hpp>
-#include <ql/null.hpp>
+#include <ql/Utilities/null.hpp>
 #include <vector>
 #include <map>
 

@@ -42,7 +42,7 @@ namespace QuantLib {
         CapletConstantVolatility(Integer settlementDays, const Calendar&,
                                  const Handle<Quote>& volatility,
                                  const DayCounter& dayCounter);
-        //! \name BaseTermStructure interface
+        //! \name TermStructure interface
         //@{
         DayCounter dayCounter() const { return dayCounter_; }
         //@}

@@ -26,9 +26,10 @@
 #include <ql/Indexes/euribor.hpp>
 #include <ql/CashFlows/inarrearindexedcoupon.hpp>
 #include <ql/CashFlows/cashflowvectors.hpp>
-#include <ql/CashFlows/indexcashflowvectors.hpp>
+#include <ql/CashFlows/indexedcashflowvectors.hpp>
 #include <ql/Volatilities/capletconstantvol.hpp>
 #include <ql/Utilities/dataformatters.hpp>
+#include <iomanip>
 
 using namespace QuantLib;
 using namespace boost::unit_test_framework;

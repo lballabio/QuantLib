@@ -17,7 +17,6 @@
 */
 
 #include <ql/Math/incrementalstatistics.hpp>
-#include <ql/basicdataformatters.hpp>
 #include <iomanip>
 
 namespace QuantLib {

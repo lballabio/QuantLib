@@ -20,7 +20,7 @@
 
 #include <ql/Instruments/payoffs.hpp>
 #include <ql/exercise.hpp>
-#include <ql/termstructure.hpp>
+#include <ql/yieldtermstructure.hpp>
 #include <ql/voltermstructure.hpp>
 #include <ql/Patterns/observable.hpp>
 #include <ql/DayCounters/actual365fixed.hpp>

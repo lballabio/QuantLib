@@ -18,7 +18,6 @@
 #include <ql/RandomNumbers/sobolrsg.hpp>
 #include <ql/RandomNumbers/primitivepolynomials.h>
 #include <ql/RandomNumbers/mt19937uniformrng.hpp>
-#include <ql/basicdataformatters.hpp>
 
 namespace QuantLib {
 

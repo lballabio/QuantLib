@@ -19,10 +19,10 @@
     \brief Base classes for generic arguments and results
 */
 
-#ifndef quantlib_args_and_results_h
-#define quantlib_args_and_results_h
+#ifndef quantlib_args_and_results_hpp
+#define quantlib_args_and_results_hpp
 
-#include <ql/null.hpp>
+#include <ql/qldefines.hpp>
 
 #define QL_MIN_VOLATILITY 1.0e-7
 #define QL_MIN_DIVYIELD 1.0e-7

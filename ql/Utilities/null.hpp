@@ -19,8 +19,8 @@
     \brief null values
 */
 
-#ifndef quantlib_null_h
-#define quantlib_null_h
+#ifndef quantlib_null_hpp
+#define quantlib_null_hpp
 
 #include <ql/types.hpp>
 

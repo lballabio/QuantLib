@@ -23,7 +23,7 @@
 #define quantlib_swap_hpp
 
 #include <ql/instrument.hpp>
-#include <ql/termstructure.hpp>
+#include <ql/yieldtermstructure.hpp>
 #include <ql/cashflow.hpp>
 #include <ql/CashFlows/timebasket.hpp>
 

@@ -23,7 +23,7 @@
 #define quantlib_schedule_hpp
 
 #include <ql/calendar.hpp>
-#include <ql/null.hpp>
+#include <ql/Utilities/null.hpp>
 #include <vector>
 
 namespace QuantLib {
@@ -80,29 +80,29 @@ namespace QuantLib {
       public:
         MakeSchedule(const Calendar& calendar,
                      const Date& startDate, const Date& endDate,
-                     Frequency frequency, 
+                     Frequency frequency,
                      BusinessDayConvention convention)
         : calendar_(calendar), startDate_(startDate), endDate_(endDate),
           frequency_(frequency), convention_(convention),
           stubDate_(Date()), startFromEnd_(false), longFinal_(false) {}
         MakeSchedule& withStubDate(const Date& d) {
-            stubDate_ = d; 
+            stubDate_ = d;
             return *this;
         }
         MakeSchedule& backwards(bool flag=true) {
-            startFromEnd_ = flag; 
+            startFromEnd_ = flag;
             return *this;
         }
         MakeSchedule& forwards(bool flag=true) {
-            startFromEnd_ = !flag; 
+            startFromEnd_ = !flag;
             return *this;
         }
         MakeSchedule& longFinalPeriod(bool flag=true) {
-            longFinal_ = flag; 
+            longFinal_ = flag;
             return *this;
         }
         MakeSchedule& shortFinalPeriod(bool flag=true) {
-            longFinal_ = !flag; 
+            longFinal_ = !flag;
             return *this;
         }
         operator Schedule() {
@@ -124,7 +124,7 @@ namespace QuantLib {
     // inline definitions
 
     inline Schedule::Schedule(const std::vector<Date>& dates,
-                              const Calendar& calendar, 
+                              const Calendar& calendar,
                               BusinessDayConvention convention)
     : calendar_(calendar), frequency_(Frequency(-1)), convention_(convention),
       startFromEnd_(false), longFinal_(false), finalIsRegular_(true),

@@ -24,7 +24,6 @@
 #define quantlib_kronrod_integral_hpp
 
 #include <ql/errors.hpp>
-#include <ql/basicdataformatters.hpp>
 
 namespace QuantLib {
 

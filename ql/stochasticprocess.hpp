@@ -24,7 +24,7 @@
 #ifndef quantlib_stochastic_process_hpp
 #define quantlib_stochastic_process_hpp
 
-#include <ql/termstructure.hpp>
+#include <ql/yieldtermstructure.hpp>
 #include <ql/voltermstructure.hpp>
 
 namespace QuantLib {

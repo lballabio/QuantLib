@@ -25,7 +25,7 @@
 #include <ql/numericalmethod.hpp>
 #include <ql/instrument.hpp>
 #include <ql/cashflow.hpp>
-#include <ql/termstructure.hpp>
+#include <ql/yieldtermstructure.hpp>
 #include <ql/quote.hpp>
 
 namespace QuantLib {

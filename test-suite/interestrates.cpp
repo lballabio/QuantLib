@@ -22,6 +22,7 @@
 #include <ql/Math/comparison.hpp>
 #include <ql/DayCounters/actual360.hpp>
 #include <ql/Utilities/dataformatters.hpp>
+#include <iomanip>
 
 using namespace QuantLib;
 using namespace boost::unit_test_framework;

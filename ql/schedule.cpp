@@ -16,7 +16,6 @@
 */
 
 #include <ql/schedule.hpp>
-#include <ql/basicdataformatters.hpp>
 
 namespace QuantLib {
 

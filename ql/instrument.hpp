@@ -19,12 +19,13 @@
     \brief Abstract instrument class
 */
 
-#ifndef quantlib_instrument_h
-#define quantlib_instrument_h
+#ifndef quantlib_instrument_hpp
+#define quantlib_instrument_hpp
 
 #include <ql/Patterns/lazyobject.hpp>
 #include <ql/pricingengine.hpp>
 #include <ql/errors.hpp>
+#include <ql/Utilities/null.hpp>
 
 namespace QuantLib {
 

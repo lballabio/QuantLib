@@ -23,7 +23,7 @@
 #ifndef quantlib_discount_curve_hpp
 #define quantlib_discount_curve_hpp
 
-#include <ql/termstructure.hpp>
+#include <ql/yieldtermstructure.hpp>
 #include <ql/Math/interpolationtraits.hpp>
 #include <vector>
 

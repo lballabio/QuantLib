@@ -21,15 +21,16 @@
     \brief 1-D array used in linear algebra.
 */
 
-#ifndef quantlib_array_h
-#define quantlib_array_h
+#ifndef quantlib_array_hpp
+#define quantlib_array_hpp
 
+#include <ql/types.hpp>
 #include <ql/errors.hpp>
-#include <ql/disposable.hpp>
-#include <ql/basicdataformatters.hpp>
+#include <ql/Utilities/disposable.hpp>
 #include <boost/iterator/reverse_iterator.hpp>
 #include <functional>
 #include <numeric>
+#include <iomanip>
 
 namespace QuantLib {
 

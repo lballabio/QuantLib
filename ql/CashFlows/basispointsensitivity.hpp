@@ -23,7 +23,7 @@
 #ifndef quantlib_bps_calculator_hpp
 #define quantlib_bps_calculator_hpp
 
-#include <ql/termstructure.hpp>
+#include <ql/yieldtermstructure.hpp>
 #include <ql/CashFlows/fixedratecoupon.hpp>
 #include <ql/CashFlows/timebasket.hpp>
 

@@ -22,7 +22,6 @@
 #ifndef quantlib_randomized_lds_hpp
 #define quantlib_randomized_lds_hpp
 
-#include <ql/basicdataformatters.hpp>
 #include <ql/RandomNumbers/randomsequencegenerator.hpp>
 
 namespace QuantLib {

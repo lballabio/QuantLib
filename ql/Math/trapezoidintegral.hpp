@@ -23,7 +23,7 @@
 #ifndef quantlib_trapezoid_integral_hpp
 #define quantlib_trapezoid_integral_hpp
 
-#include <ql/null.hpp>
+#include <ql/Utilities/null.hpp>
 
 namespace QuantLib {
 

@@ -22,7 +22,7 @@
 #ifndef quantlib_data_formatters_hpp
 #define quantlib_data_formatters_hpp
 
-#include <ql/null.hpp>
+#include <ql/Utilities/null.hpp>
 #include <ostream>
 
 namespace QuantLib {

@@ -19,8 +19,8 @@
     \brief generic disposable object with move semantics
 */
 
-#ifndef quantlib_disposable_h
-#define quantlib_disposable_h
+#ifndef quantlib_disposable_hpp
+#define quantlib_disposable_hpp
 
 #include <ql/qldefines.hpp>
 
@@ -40,9 +40,9 @@ namespace QuantLib {
         \endcode
 
         \warning In order to avoid copies in code such as shown above,
-                 the conversion from <tt>T</tt> to <tt>Disposable\<T\></tt> 
-                 is destructive, i.e., it does <b>not</b> preserve the 
-                 state of the original object. Therefore, it is necessary 
+                 the conversion from <tt>T</tt> to <tt>Disposable\<T\></tt>
+                 is destructive, i.e., it does <b>not</b> preserve the
+                 state of the original object. Therefore, it is necessary
                  for the developer to avoid code such as
         \code
         Disposable<Foo> bar(Foo& f) {

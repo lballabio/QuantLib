@@ -15,9 +15,9 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include <ql/dataparsers.hpp>
+#include <ql/Utilities/dataparsers.hpp>
 #include <ql/Utilities/strings.hpp>
-#include <ql/null.hpp>
+#include <ql/Utilities/null.hpp>
 
 namespace QuantLib {
 

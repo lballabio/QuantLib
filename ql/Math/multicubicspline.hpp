@@ -23,7 +23,6 @@
 #define quantlib_multi_cubic_spline_hpp
 
 #include <ql/errors.hpp>
-#include <ql/basicdataformatters.hpp>
 #include <functional>
 #include <vector>
 

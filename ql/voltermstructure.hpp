@@ -23,9 +23,8 @@
 #ifndef quantlib_vol_term_structures_hpp
 #define quantlib_vol_term_structures_hpp
 
-#include <ql/basetermstructure.hpp>
+#include <ql/termstructure.hpp>
 #include <ql/quote.hpp>
-#include <ql/basicdataformatters.hpp>
 #include <ql/Math/extrapolation.hpp>
 #include <ql/Patterns/visitor.hpp>
 #include <vector>
@@ -39,11 +38,11 @@ namespace QuantLib {
 
         Volatilities are assumed to be expressed on an annual basis.
     */
-    class BlackVolTermStructure : public BaseTermStructure,
+    class BlackVolTermStructure : public TermStructure,
                                   public Extrapolator {
       public:
         /*! \name Constructors
-            See the BaseTermStructure documentation for issues regarding
+            See the TermStructure documentation for issues regarding
             constructors.
         */
         //@{
@@ -145,7 +144,7 @@ namespace QuantLib {
     class BlackVolatilityTermStructure : public BlackVolTermStructure {
       public:
         /*! \name Constructors
-            See the BaseTermStructure documentation for issues regarding
+            See the TermStructure documentation for issues regarding
             constructors.
         */
         //@{
@@ -183,7 +182,7 @@ namespace QuantLib {
     class BlackVarianceTermStructure : public BlackVolTermStructure {
       public:
         /*! \name Constructors
-            See the BaseTermStructure documentation for issues regarding
+            See the TermStructure documentation for issues regarding
             constructors.
         */
         //@{
@@ -216,11 +215,11 @@ namespace QuantLib {
 
         Volatilities are assumed to be expressed on an annual basis.
     */
-    class LocalVolTermStructure : public BaseTermStructure,
+    class LocalVolTermStructure : public TermStructure,
                                   public Extrapolator {
       public:
         /*! \name Constructors
-            See the BaseTermStructure documentation for issues regarding
+            See the TermStructure documentation for issues regarding
             constructors.
         */
         //@{
@@ -285,11 +284,11 @@ namespace QuantLib {
 
     inline BlackVolTermStructure::BlackVolTermStructure(
                                                    const Date& referenceDate)
-    : BaseTermStructure(referenceDate) {}
+    : TermStructure(referenceDate) {}
 
     inline BlackVolTermStructure::BlackVolTermStructure(
                              Integer settlementDays, const Calendar& calendar)
-    : BaseTermStructure(settlementDays,calendar) {}
+    : TermStructure(settlementDays,calendar) {}
 
 	inline Time BlackVolTermStructure::maxTime() const {
         return timeFromReference(maxDate());
@@ -415,11 +414,11 @@ namespace QuantLib {
 
     inline LocalVolTermStructure::LocalVolTermStructure(
                                                    const Date& referenceDate)
-    : BaseTermStructure(referenceDate) {}
+    : TermStructure(referenceDate) {}
 
     inline LocalVolTermStructure::LocalVolTermStructure(
                              Integer settlementDays, const Calendar& calendar)
-    : BaseTermStructure(settlementDays,calendar) {}
+    : TermStructure(settlementDays,calendar) {}
 
     inline Time LocalVolTermStructure::maxTime() const {
         return timeFromReference(maxDate());

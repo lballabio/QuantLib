@@ -19,11 +19,11 @@
     \brief Model parameter classes
 */
 
-#ifndef quantlib_interest_rate_modelling_parameter_h
-#define quantlib_interest_rate_modelling_parameter_h
+#ifndef quantlib_interest_rate_modelling_parameter_hpp
+#define quantlib_interest_rate_modelling_parameter_hpp
 
 #include <ql/qldefines.hpp>
-#include <ql/termstructure.hpp>
+#include <ql/yieldtermstructure.hpp>
 #include <ql/Optimization/constraint.hpp>
 
 namespace QuantLib {

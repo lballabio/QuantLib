@@ -22,7 +22,7 @@
 #ifndef quantlib_zero_yield_structure_hpp
 #define quantlib_zero_yield_structure_hpp
 
-#include <ql/termstructure.hpp>
+#include <ql/yieldtermstructure.hpp>
 
 namespace QuantLib {
 
@@ -39,7 +39,7 @@ namespace QuantLib {
     class ZeroYieldStructure : public YieldTermStructure {
       public:
         /*! \name Constructors
-            See the BaseTermStructure documentation for issues regarding
+            See the TermStructure documentation for issues regarding
             constructors.
         */
         //@{

@@ -28,7 +28,7 @@
 #include <ql/calendar.hpp>
 #include <ql/daycounter.hpp>
 #include <ql/interestrate.hpp>
-#include <ql/termstructure.hpp>
+#include <ql/yieldtermstructure.hpp>
 #include <vector>
 
 namespace QuantLib {

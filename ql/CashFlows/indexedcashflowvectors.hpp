@@ -16,12 +16,12 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file indexcashflowvectors.hpp
-    \brief Index Cash flow vector builders
+/*! \file indexedcashflowvectors.hpp
+    \brief Indexed cash-flow vector builders
 */
 
-#ifndef quantlib_index_cash_flow_vectors_hpp
-#define quantlib_index_cash_flow_vectors_hpp
+#ifndef quantlib_indexed_cash_flow_vectors_hpp
+#define quantlib_indexed_cash_flow_vectors_hpp
 
 #include <ql/CashFlows/shortindexedcoupon.hpp>
 #include <ql/schedule.hpp>

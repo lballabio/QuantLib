@@ -22,7 +22,7 @@
 #ifndef quantlib_swaption_volatility_structure_hpp
 #define quantlib_swaption_volatility_structure_hpp
 
-#include <ql/basetermstructure.hpp>
+#include <ql/termstructure.hpp>
 
 namespace QuantLib {
 
@@ -30,10 +30,10 @@ namespace QuantLib {
     /*! This class is purely abstract and defines the interface of concrete
         swaption volatility structures which will be derived from this one.
     */
-    class SwaptionVolatilityStructure : public BaseTermStructure {
+    class SwaptionVolatilityStructure : public TermStructure {
       public:
         /*! \name Constructors
-            See the BaseTermStructure documentation for issues regarding
+            See the TermStructure documentation for issues regarding
             constructors.
         */
         //@{
@@ -73,11 +73,11 @@ namespace QuantLib {
 
     inline SwaptionVolatilityStructure::SwaptionVolatilityStructure(
                                                    const Date& referenceDate)
-    : BaseTermStructure(referenceDate) {}
+    : TermStructure(referenceDate) {}
 
     inline SwaptionVolatilityStructure::SwaptionVolatilityStructure(
                              Integer settlementDays, const Calendar& calendar)
-    : BaseTermStructure(settlementDays,calendar) {}
+    : TermStructure(settlementDays,calendar) {}
 
     inline Volatility SwaptionVolatilityStructure::volatility(
                                                         const Date& start,

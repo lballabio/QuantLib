@@ -22,7 +22,7 @@
 #ifndef quantlib_black_model_hpp
 #define quantlib_black_model_hpp
 
-#include <ql/termstructure.hpp>
+#include <ql/yieldtermstructure.hpp>
 #include <ql/quote.hpp>
 #include <ql/Math/normaldistribution.hpp>
 

@@ -19,10 +19,10 @@
     \brief flat forward rate term structure
 */
 
-#ifndef quantlib_flat_forward_curve_h
-#define quantlib_flat_forward_curve_h
+#ifndef quantlib_flat_forward_curve_hpp
+#define quantlib_flat_forward_curve_hpp
 
-#include <ql/termstructure.hpp>
+#include <ql/yieldtermstructure.hpp>
 #include <ql/quote.hpp>
 
 namespace QuantLib {

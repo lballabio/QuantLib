@@ -18,7 +18,6 @@
 #include <ql/Math/pseudosqrt.hpp>
 #include <ql/Math/choleskydecomposition.hpp>
 #include <ql/Math/symmetricschurdecomposition.hpp>
-#include <ql/basicdataformatters.hpp>
 
 namespace QuantLib {
 
