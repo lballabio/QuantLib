@@ -1,6 +1,6 @@
 
 /*
- Copyright (C) 2002, 2003 Andre Louw.
+ Copyright (C) 2002, 2003 Decillion Pty(Ltd).
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -21,121 +21,99 @@
 
 #ifndef quantlib_compoundforward_curve_h
 #define quantlib_compoundforward_curve_h
-
+ 
 #include <ql/termstructure.hpp>
+#include <ql/TermStructures/discountcurve.hpp>
+#include <ql/calendar.hpp>
 #include <ql/Math/loglinearinterpolation.hpp>
 
-namespace QuantLib {
+namespace QuantLib
+{
+   namespace TermStructures
+   {
 
-    namespace TermStructures {
+      class CompoundForward : public ForwardRateStructure,
+			      public Patterns::Observer {
+       public:
+         // constructor
+         CompoundForward(const Date & todaysDate,
+			 const Date & referenceDate,
+			 const std::vector<Date> &dates,
+                         const std::vector<Rate> &forwards,
+                         const Calendar & calendar,
+                         const RollingConvention roll,
+                         const int compounding,
+			 const DayCounter & dayCounter);
+	 Date todaysDate() const { return todaysDate_; }
+         Date referenceDate() const { return referenceDate_; };
+         Calendar calendar() const { return calendar_; };
+         RollingConvention roll() const { return roll_; };
+         DayCounter dayCounter() const { return dayCounter_; };
+         int compounding() const { return compounding_; };
+         Date maxDate() const;
+         Time maxTime() const;
+         const std::vector<Time>& times() const;
+         const std::vector<Date>& dates() const;
+	 const std::vector<Rate>& forwards() const;
+	 Handle<TermStructure> discountCurve() const;
+	 //! \name Observer interface
+	 //@{
+	 void update();
+	 //@}
+       protected:
+         // methods
+	 void calibrateNodes() const;
+         Handle<TermStructure> bootstrap() const;
+	 Rate zeroYieldImpl(Time, bool extrapolate = false) const;
+         DiscountFactor discountImpl(Time, bool extrapolate = false) const;
+         int referenceNode(Time, bool extrapolate = false) const;
+	 Rate forwardImpl(Time, bool extrapolate = false) const;
+	 Rate compoundForwardImpl(Time, int, bool extrapolate = false) const;
+       private:
+         // data members
+         Date todaysDate_;
+         Date referenceDate_;
+         DayCounter dayCounter_;
+         Calendar calendar_;
+         RollingConvention roll_;
+         int compounding_;
+         mutable bool needsBootstrap_;
+         mutable std::vector<Date> dates_;
+         mutable std::vector<Rate> forwards_;
+         mutable std::vector<Time> times_;
+         typedef Math::LinearInterpolation <
+            std::vector < Time >::const_iterator,
+            std::vector < Rate >::const_iterator > FwdInterpolation;
+         mutable Handle<FwdInterpolation> fwdinterp_;
+	 mutable Handle<TermStructure> discountCurve_;
+      };
 
-        class CompoundForward : public DiscountStructure {
-          public:
-          // constructor
-            CompoundForward(const Date& todaysDate,
-                            const Date& referenceDate,
-                            const Calendar& calendar,
-                            const std::vector<Date>& inpDates,
-                            const std::vector<Rate>& inpFwdRates,
-                            const RollingConvention roll,
-                            const int compoundFrequency,
-                            const DayCounter& dayCounter);
+      // inline definitions
 
-            CompoundForward(const Date& todaysDate,
-                            const Date& referenceDate,
-                            const Calendar& calendar,
-                            const std::vector<std::string>& inpPeriods,
-                            const std::vector<Rate>& inpFwdRates,
-                            const RollingConvention roll,
-                            const int compoundFrequency,
-                            const DayCounter& dayCounter);
-
-            CompoundForward(const Date& todaysDate,
-                            const Date& referenceDate,
-                            const Calendar& calendar,
-                            const std::vector<Period>& inpPeriods,
-                            const std::vector<Rate>& inpFwdRates,
-                            const RollingConvention roll,
-                            const int compoundFrequency,
-                            const DayCounter& dayCounter);
-
-            DayCounter dayCounter() const;
-            Calendar calendar() const;
-            Date todaysDate() const {return todaysDate_; }
-            Date referenceDate() const;
-            RollingConvention roll() const;
-            int compoundFrequency() const;
-            const std::vector<Date>& dates() const;
-            Date maxDate() const;
-            const std::vector<Time>& times() const;
-            Time maxTime() const;
-          protected:
-            void validateInputs() const;
-            DiscountFactor discountImpl(Time, bool extrapolate = false) const;
-          private:
-            // methods
-            int referenceNode(Time t, bool extrapolate) const;
-            void bootstrap() const;
-            // data members
-            Date todaysDate_, referenceDate_;
-            Calendar calendar_;
-            int settlementDays_;
-            RollingConvention roll_;
-            int compoundFrequency_;
-            DayCounter dayCounter_;
-            mutable bool needsBootstrap_;
-            mutable std::vector<Date> inputDates_;
-            mutable std::vector<Date> dates_;
-            mutable std::vector<Rate> forwards_;
-            mutable std::vector<Time> times_;
-            mutable std::vector<DiscountFactor> discounts_;
-            typedef Math::LinearInterpolation<
-                std::vector<Time>::const_iterator,
-                std::vector<Rate>::const_iterator> FwdInterpolation;
-            typedef Math::LogLinearInterpolation<
-                std::vector<Time>::const_iterator,
-                std::vector<DiscountFactor>::const_iterator> DfInterpolation;
-            mutable Handle<FwdInterpolation> fwdinterp_;
-            mutable Handle<DfInterpolation>dfinterp_;
-        };
-
-        // inline definitions
-
-        inline DayCounter CompoundForward::dayCounter() const {
-            return dayCounter_;
-        }
-
-        inline Calendar CompoundForward::calendar() const {
-            return calendar_;
-        }
-
-        inline Date CompoundForward::referenceDate() const {
-            return referenceDate_;
-        }
-
-        inline RollingConvention CompoundForward::roll() const {
-            return roll_;
-        }
-
-        inline int CompoundForward::compoundFrequency() const {
-            return compoundFrequency_;
-        }
-
-        inline const std::vector<Date>& CompoundForward::dates() const {
-            return inputDates_;
-        }
-
-        inline Date CompoundForward::maxDate() const {
-            return dates_.back();
-        }
-
-        inline const std::vector<Time>& CompoundForward::times() const {
-            return times_;
-        }
-
-        inline Time CompoundForward::maxTime() const {
-            return times_.back();
-        }
+      inline Date CompoundForward::maxDate() const {
+         return dates_.back();
+      }
+      
+      inline Time CompoundForward::maxTime() const {
+         return times_.back();
+      }
+      
+      inline const std::vector<Time>& CompoundForward::times() const {
+         return times_;
+      }
+      
+      inline const std::vector<Date>& CompoundForward::dates() const {
+         return dates_;
+      }
+      
+      inline const std::vector<Rate>& CompoundForward::forwards() const {
+         return forwards_;
+      }
+      
+      inline void CompoundForward::update() {
+	 needsBootstrap_ = true;
+	 notifyObservers();
+      }
 
     }
 
