@@ -67,29 +67,31 @@ namespace QuantLib {
 
         Time from = asset->time();
 
-        QL_REQUIRE(from >= to,
+        if (close(from,to))
+            return;
+
+        QL_REQUIRE(from > to,
                    "cannot roll the asset back to" +
                    DecimalFormatter::toString(to) +
                    " (it is already at t = " +
                    DecimalFormatter::toString(from) + ")");
 
-        if (from > to) {
-            Integer iFrom = Integer(t_.findIndex(from));
-            Integer iTo = Integer(t_.findIndex(to));
+        Integer iFrom = Integer(t_.findIndex(from));
+        Integer iTo = Integer(t_.findIndex(to));
 
-            for (Integer i=iFrom-1; i>=iTo; i--) {
-                Array newValues(size(i));
-                stepback(i, asset->values(), newValues);
-                asset->time() = t_[i];
-                asset->values() = newValues;
-                // skip the very last post-adjustment
-                if (i != iTo)
-                    asset->adjustValues();
-                else
-                    asset->preAdjustValues();
-            }
+        for (Integer i=iFrom-1; i>=iTo; i--) {
+            Array newValues(size(i));
+            stepback(i, asset->values(), newValues);
+            asset->time() = t_[i];
+            asset->values() = newValues;
+            // skip the very last post-adjustment
+            if (i != iTo)
+                asset->adjustValues();
+            else
+                asset->preAdjustValues();
         }
     }
+
 
     void Lattice::stepback(Size i, const Array& values,
                            Array& newValues) const {
