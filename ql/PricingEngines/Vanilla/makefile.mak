@@ -19,6 +19,7 @@ OBJS = \
     analyticamericanengine.obj$(_D) \
     analyticeuropeanengine.obj$(_D) \
     baroneadesiwhaleyengine.obj$(_D) \
+    bjerksundstenslandengine.obj$(_D) \
     discretizedvanillaoption.obj$(_D) \
     integralengines.obj$(_D)
 

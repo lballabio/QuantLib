@@ -45,6 +45,8 @@ namespace QuantLib {
 
     /*! Pricing engine for American vanilla options with digital payoff
         using analytic formulae
+
+        \todo add more greeks (as of now only delta and rho available)
     */
     class AnalyticAmericanEngine : public VanillaEngine {
       public:
@@ -55,6 +57,14 @@ namespace QuantLib {
         Barone-Adesi and Whaley approximation (1987)
     */
     class BaroneAdesiWhaleyApproximationEngine : public VanillaEngine {
+      public:
+        void calculate() const;
+    };
+
+    /*! Pricing engine for American vanilla options with 
+        Bjerksund and Stensland approximation (1993)
+    */
+    class BjerksundStenslandApproximationEngine : public VanillaEngine {
       public:
         void calculate() const;
     };
