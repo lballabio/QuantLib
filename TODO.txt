@@ -6,7 +6,6 @@ config.h is installed?
 make bootstrap work under cygwin
 make Parities to work
 
-chck installed html documentation
 add examples to documentation
 cash flow stream for IRR, duration
 documentation of path (where it is? continously compounded)
@@ -20,7 +19,7 @@ DISTRIBUTING
 COMPILING
     borland compiler build tree indipendent from source tree
     gnu compiler (make) build tree indipendent from source tree
-    understand why updateproject.sh does not work under cygwin
+    understand why bootstrap does not work under cygwin
     *** check compile success/failure on other platforms/compilers
 
 LIBRARY
@@ -53,6 +52,5 @@ DOCUMENTATION ***
     add CVS reference to DoxyGen
     add Coding standards reference to DoxyGen
     add status.html content into DoxyGen documentation
-    add Debian package mention to DoxyGen
     insert QuantLib-site\tobeincludedindoxygen.txt into DoxyGen documentation
     add mailing list reference to DoxyGen

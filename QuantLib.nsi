@@ -1,9 +1,13 @@
 
+# to be used with NSIS 1.44 and up
+#
+# usage: makensis /DLIGHT QuantLib.nsi
+# OR
+# usage: makensis QuantLib.nsi
+
+
 # $Id$
 
-#############################
-# to be used with NSIS 1.44 #
-#############################
 
 # HEADER CONFIGURATION COMMANDS
 !ifdef LIGHT
