@@ -22,8 +22,19 @@ quantlib::
 
 # QuantLib library
 install::
+    !if "$(QL_DIR)" == ""
+    !message Either set the QL_DIR environment variable to the absolute
+    !message path of your QuantLib installation or pass it to $(MAKE) as in
+    !message
+    !message $(MAKE) -DQL_DIR="your\QuantLib\path".
+    !message
+    !error terminated
+    !endif
+    rmdir /S /Q %QL_DIR%\Include\ql
     xcopy Include\ql\*.hpp %QL_DIR%\Include\ql /S /I
+    rmdir /S /Q %QL_DIR%\lib\Win32\VisualStudio
     xcopy lib\Win32\VisualStudio\*.lib %QL_DIR%\lib\Win32\VisualStudio /S /I
+    rmdir /S /Q %QL_DIR%\lib\Win32\Borland
     xcopy lib\Win32\Borland\*.lib %QL_DIR%\lib\Win32\Borland /S /I
 
 # Python module

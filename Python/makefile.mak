@@ -167,6 +167,7 @@ clean::
 
 # Install Python module
 install::
+    del "$(PYTHON_HOME)"\QuantLib*.*
     copy QuantLib.py     "$(PYTHON_HOME)"\QuantLib.py
     copy $(QUANTLIB_DLL) "$(PYTHON_HOME)"\$(QUANTLIB_DLL)
 
