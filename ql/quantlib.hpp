@@ -265,6 +265,7 @@
 #include <ql/RandomNumbers/randomarraygenerator.hpp>
 #include <ql/RandomNumbers/randomsequencegenerator.hpp>
 #include <ql/RandomNumbers/rngtypedefs.hpp>
+#include <ql/RandomNumbers/sobolrsg.hpp>
 
 #include <ql/ShortRateModels/CalibrationHelpers/caphelper.hpp>
 #include <ql/ShortRateModels/CalibrationHelpers/swaptionhelper.hpp>

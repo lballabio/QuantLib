@@ -15,7 +15,8 @@ include_HEADERS = \
 	mt19937uniformrng.hpp \
 	randomarraygenerator.hpp \
 	randomsequencegenerator.hpp \
-	rngtypedefs.hpp
+	rngtypedefs.hpp \
+	sobolrsg.hpp
 
 EXTRA_DIST=makefile.mak
 
@@ -23,6 +24,7 @@ libRandomNumbers_la_SOURCES = \
 	haltonrsg.cpp \
 	knuthuniformrng.cpp \
 	lecuyeruniformrng.cpp \
-	mt19937uniformrng.cpp
+	mt19937uniformrng.cpp \
+	sobolrsg.cpp
 
 noinst_LTLIBRARIES = libRandomNumbers.la

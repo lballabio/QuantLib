@@ -16,9 +16,9 @@
 # QuantLib library
 quantlib::
     cd ql
-    $(MAKE)
+    $(MAKE) -DPPMT_DIR="..\..\..\PrimitivePolynomialsModuloTwo"
     #    cd ..\test-suite
-    #    $(MAKE) -DQL_DIR=".."
+    #    $(MAKE) -DQL_DIR=".." -DPPMT_DIR="..\..\..\PrimitivePolynomialsModuloTwo"
     cd ..\Examples
     $(MAKE) -DQL_DIR="..\.." -DPPMT_DIR="..\..\..\PrimitivePolynomialsModuloTwo"
     cd ..
