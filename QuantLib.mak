@@ -487,13 +487,13 @@ BSC32_SBRS= \
 	"$(INTDIR)\dataformatters.sbr" \
 	"$(INTDIR)\dataparsers.sbr" \
 	"$(INTDIR)\date.sbr" \
+	"$(INTDIR)\diffusionprocess.sbr" \
 	"$(INTDIR)\exercise.sbr" \
 	"$(INTDIR)\grid.sbr" \
 	"$(INTDIR)\option.sbr" \
 	"$(INTDIR)\scheduler.sbr" \
 	"$(INTDIR)\solver1d.sbr" \
-	"$(INTDIR)\voltermstructure.sbr" \
-	"$(INTDIR)\diffusionprocess.sbr"
+	"$(INTDIR)\voltermstructure.sbr"
 
 "$(OUTDIR)\QuantLib.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -643,13 +643,13 @@ LIB32_OBJS= \
 	"$(INTDIR)\dataformatters.obj" \
 	"$(INTDIR)\dataparsers.obj" \
 	"$(INTDIR)\date.obj" \
+	"$(INTDIR)\diffusionprocess.obj" \
 	"$(INTDIR)\exercise.obj" \
 	"$(INTDIR)\grid.obj" \
 	"$(INTDIR)\option.obj" \
 	"$(INTDIR)\scheduler.obj" \
 	"$(INTDIR)\solver1d.obj" \
-	"$(INTDIR)\voltermstructure.obj" \
-	"$(INTDIR)\diffusionprocess.obj"
+	"$(INTDIR)\voltermstructure.obj"
 
 ".\lib\Win32\VisualStudio\QuantLib.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
     $(LIB32) @<<
@@ -1114,13 +1114,13 @@ BSC32_SBRS= \
 	"$(INTDIR)\dataformatters.sbr" \
 	"$(INTDIR)\dataparsers.sbr" \
 	"$(INTDIR)\date.sbr" \
+	"$(INTDIR)\diffusionprocess.sbr" \
 	"$(INTDIR)\exercise.sbr" \
 	"$(INTDIR)\grid.sbr" \
 	"$(INTDIR)\option.sbr" \
 	"$(INTDIR)\scheduler.sbr" \
 	"$(INTDIR)\solver1d.sbr" \
-	"$(INTDIR)\voltermstructure.sbr" \
-	"$(INTDIR)\diffusionprocess.sbr"
+	"$(INTDIR)\voltermstructure.sbr"
 
 "$(OUTDIR)\QuantLib.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -1270,13 +1270,13 @@ LIB32_OBJS= \
 	"$(INTDIR)\dataformatters.obj" \
 	"$(INTDIR)\dataparsers.obj" \
 	"$(INTDIR)\date.obj" \
+	"$(INTDIR)\diffusionprocess.obj" \
 	"$(INTDIR)\exercise.obj" \
 	"$(INTDIR)\grid.obj" \
 	"$(INTDIR)\option.obj" \
 	"$(INTDIR)\scheduler.obj" \
 	"$(INTDIR)\solver1d.obj" \
-	"$(INTDIR)\voltermstructure.obj" \
-	"$(INTDIR)\diffusionprocess.obj"
+	"$(INTDIR)\voltermstructure.obj"
 
 ".\lib\Win32\VisualStudio\QuantLib_d.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
     $(LIB32) @<<
@@ -1740,13 +1740,13 @@ BSC32_SBRS= \
 	"$(INTDIR)\dataformatters.sbr" \
 	"$(INTDIR)\dataparsers.sbr" \
 	"$(INTDIR)\date.sbr" \
+	"$(INTDIR)\diffusionprocess.sbr" \
 	"$(INTDIR)\exercise.sbr" \
 	"$(INTDIR)\grid.sbr" \
 	"$(INTDIR)\option.sbr" \
 	"$(INTDIR)\scheduler.sbr" \
 	"$(INTDIR)\solver1d.sbr" \
-	"$(INTDIR)\voltermstructure.sbr" \
-	"$(INTDIR)\diffusionprocess.sbr"
+	"$(INTDIR)\voltermstructure.sbr"
 
 "$(OUTDIR)\QuantLib.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -1896,13 +1896,13 @@ LIB32_OBJS= \
 	"$(INTDIR)\dataformatters.obj" \
 	"$(INTDIR)\dataparsers.obj" \
 	"$(INTDIR)\date.obj" \
+	"$(INTDIR)\diffusionprocess.obj" \
 	"$(INTDIR)\exercise.obj" \
 	"$(INTDIR)\grid.obj" \
 	"$(INTDIR)\option.obj" \
 	"$(INTDIR)\scheduler.obj" \
 	"$(INTDIR)\solver1d.obj" \
-	"$(INTDIR)\voltermstructure.obj" \
-	"$(INTDIR)\diffusionprocess.obj"
+	"$(INTDIR)\voltermstructure.obj"
 
 ".\lib\Win32\VisualStudio\QuantLib.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
     $(LIB32) @<<
@@ -2367,13 +2367,13 @@ BSC32_SBRS= \
 	"$(INTDIR)\dataformatters.sbr" \
 	"$(INTDIR)\dataparsers.sbr" \
 	"$(INTDIR)\date.sbr" \
+	"$(INTDIR)\diffusionprocess.sbr" \
 	"$(INTDIR)\exercise.sbr" \
 	"$(INTDIR)\grid.sbr" \
 	"$(INTDIR)\option.sbr" \
 	"$(INTDIR)\scheduler.sbr" \
 	"$(INTDIR)\solver1d.sbr" \
-	"$(INTDIR)\voltermstructure.sbr" \
-	"$(INTDIR)\diffusionprocess.sbr"
+	"$(INTDIR)\voltermstructure.sbr"
 
 "$(OUTDIR)\QuantLib.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -2523,13 +2523,13 @@ LIB32_OBJS= \
 	"$(INTDIR)\dataformatters.obj" \
 	"$(INTDIR)\dataparsers.obj" \
 	"$(INTDIR)\date.obj" \
+	"$(INTDIR)\diffusionprocess.obj" \
 	"$(INTDIR)\exercise.obj" \
 	"$(INTDIR)\grid.obj" \
 	"$(INTDIR)\option.obj" \
 	"$(INTDIR)\scheduler.obj" \
 	"$(INTDIR)\solver1d.obj" \
-	"$(INTDIR)\voltermstructure.obj" \
-	"$(INTDIR)\diffusionprocess.obj"
+	"$(INTDIR)\voltermstructure.obj"
 
 ".\lib\Win32\VisualStudio\QuantLib_d.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
     $(LIB32) @<<

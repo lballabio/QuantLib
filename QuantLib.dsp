@@ -671,6 +671,10 @@ SOURCE=.\ql\Lattices\trinomialtree.hpp
 # PROP Default_Filter ""
 # Begin Source File
 
+SOURCE=.\ql\Math\bicubicsplineinterpolation.hpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\ql\Math\bilinearinterpolation.hpp
 # End Source File
 # Begin Source File
