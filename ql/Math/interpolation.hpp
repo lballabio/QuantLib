@@ -42,9 +42,8 @@ namespace QuantLib {
         template <class RandomAccessIterator1, class RandomAccessIterator2>
         class Interpolation {
           public:
-            /*  these typedefs are here because Borland C++ won't inherit
-                them from unary_function - they shouldn't hurt, though.
-            */
+            // We do not inherit from std::unary_function because we wouldn't 
+            // inherit these typedefs anyway (see 14.6.2.3 of the standard)
             typedef
               typename QL_ITERATOR_TRAITS<RandomAccessIterator1>::value_type
                 argument_type;
