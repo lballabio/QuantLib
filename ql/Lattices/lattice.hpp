@@ -60,19 +60,18 @@ namespace QuantLib {
 
             const Array& statePrices(Size i);
 
-          protected:
-            void computeStatePrices(Size until);
-
-            virtual void stepback(Size i, 
-                                  const Array& values, 
-                                  Array& newValues) const;
-
             //! Tree properties
             virtual Size descendant(Size i, Size index, Size branch) const = 0;
             virtual double probability(Size i, 
                                        Size index, 
                                        Size branch) const = 0;
 
+          protected:
+            void computeStatePrices(Size until);
+
+            virtual void stepback(Size i, 
+                                  const Array& values, 
+                                  Array& newValues) const;
 
             // Arrow-Debrew state prices
             std::vector<Array> statePrices_;
