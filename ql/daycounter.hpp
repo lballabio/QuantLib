@@ -51,10 +51,6 @@ namespace QuantLib {
       public:
         //! \name DayCounter interface
         //@{
-        //! Enumeration of day counting conventions for switch-on-type code.
-		  enum Type { Actual365, Actual360, ActActEuro, Thirty360,
-			ThirtyE360, ThirtyEplus360, ActActBond, ActActISDA,
-			Thirty360ISDA, ThirtyE360ISDA };
         //! Returns the name of the day counter.
         /*! \warning This method is used for output and comparison between
                 day counters. It is <b>not</b> meant to be used for writing
