@@ -4,8 +4,10 @@
 *.la
 Makefile.in
 Makefile
+Makefile.win
 QuantLibFunctions.dep
 QuantLibFunctions.plg
 build
 .deps
 .libs
+QuantLibFunctions.layout

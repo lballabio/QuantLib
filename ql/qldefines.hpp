@@ -63,14 +63,16 @@
 //! version string for output lib name
 #define QL_LIB_VERSION "0_3_8"
 
-#if   defined(__BORLANDC__)     // Borland C++ 5.5
+#if   defined(HAVE_CONFIG_H)    // Dynamically created by configure
+    #include <ql/config.hpp>
+#elif defined(__BORLANDC__)     // Borland C++ 5.5
     #include <ql/config.bcc.hpp>
 #elif defined(__MWERKS__)       // Metrowerks CodeWarrior
     #include <ql/config.mwcw.hpp>
 #elif defined(_MSC_VER)         // Microsoft Visual C++
     #include <ql/config.msvc.hpp>
-#elif defined(HAVE_CONFIG_H)    // Dynamically created by configure
-    #include <ql/config.hpp>
+#elif defined(__MINGW32__)      // Minimalistic GNU for Windows
+    #include <ql/config.mingw.hpp>
 #else                           // We hope that the compiler follows ANSI
     #include <ql/config.ansi.hpp>
 #endif

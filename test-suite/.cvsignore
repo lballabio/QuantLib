@@ -1,6 +1,7 @@
 *.obj*
 Makefile.in
 Makefile
+Makefile.win
 testsuite.dep
 testsuite.plg
 test-suite.tds
@@ -9,3 +10,5 @@ quantlib-test-suite
 build
 .deps
 .libs
+quantlib-test-suite.exe
+QuantLib-test-suite.layout

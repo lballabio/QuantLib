@@ -1,5 +1,6 @@
 Makefile.in
 Makefile
+Makefile.win
 QuantLib*.ncb
 QuantLib*.opt
 QuantLib.dep
@@ -17,3 +18,5 @@ elc-stamp
 lib
 quantlib-config
 build
+QuantLib_private.*
+QuantLib.layout
