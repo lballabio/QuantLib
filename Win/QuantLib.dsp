@@ -453,6 +453,14 @@ SOURCE=..\Include\MonteCarlo\geometricasianpathpricer.h
 # End Source File
 # Begin Source File
 
+SOURCE=..\Sources\MonteCarlo\getcovariance.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\Include\MonteCarlo\getcovariance.h
+# End Source File
+# Begin Source File
+
 SOURCE=..\Sources\MonteCarlo\himalayapathpricer.cpp
 # End Source File
 # Begin Source File
