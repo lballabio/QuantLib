@@ -1,6 +1,5 @@
-
 /*
- Copyright (C) 2000, 2001, 2002, 2003 RiskMap srl
+ Copyright (C) 2005 Joseph Wang srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -15,36 +14,30 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file stepcondition.hpp
-    \brief conditions to be applied at every time step
+/*! \file operatortraits.hpp
+    \brief Differential operator traits
 */
 
-#ifndef quantlib_step_condition_hpp
-#define quantlib_step_condition_hpp
+#ifndef quantlib_operator_traits_hpp
+#define quantlib_operator_traits_hpp
 
-#include <ql/types.hpp>
+#include <ql/FiniteDifferences/boundarycondition.hpp>
+#include <ql/FiniteDifferences/stepcondition.hpp>
 
 namespace QuantLib {
 
-    //! condition to be applied at every time step
-    /*! \ingroup findiff */
-    template <class array_type>
-    class StepCondition {
+    template <class Operator>
+    class OperatorTraits {
       public:
-        virtual ~StepCondition() {}
-        virtual void applyTo(array_type& a, Time t) const = 0;
-    };
-
-
-    //! null step condition
-    /*! \ingroup findiff */
-    template <class array_type>
-    class NullCondition : public StepCondition<array_type> {
-      public:
-        void applyTo(array_type &a, Time t) const {}
+        typedef Operator operator_type;
+        typedef typename Operator::array_type array_type;
+        typedef BoundaryCondition<operator_type> bc_type;
+        typedef std::vector<boost::shared_ptr<bc_type> > bc_set;
+        typedef StepCondition<array_type> condition_type;
     };
 
 }
 
 
 #endif
+

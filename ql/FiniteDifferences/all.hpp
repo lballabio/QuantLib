@@ -31,6 +31,7 @@
 #include <ql/FiniteDifferences/expliciteuler.hpp>
 #include <ql/FiniteDifferences/impliciteuler.hpp>
 #include <ql/FiniteDifferences/onefactoroperator.hpp>
+#include <ql/FiniteDifferences/parallelevolver.hpp>
 #include <ql/FiniteDifferences/shoutcondition.hpp>
 #include <ql/FiniteDifferences/valueatcenter.hpp>
 

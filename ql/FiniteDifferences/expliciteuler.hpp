@@ -19,8 +19,8 @@
     \brief explicit Euler scheme for finite difference methods
 */
 
-#ifndef quantlib_forward_euler_h
-#define quantlib_forward_euler_h
+#ifndef quantlib_explicit_euler_hpp
+#define quantlib_explicit_euler_hpp
 
 #include <ql/FiniteDifferences/mixedscheme.hpp>
 
@@ -34,7 +34,7 @@ namespace QuantLib {
         Also, it must implement at least the following interface:
 
         \code
-        typedef ... arrayType;
+        typedef ... array_type;
 
         // copy constructor/assignment
         // (these will be provided by the compiler if none is defined)
@@ -48,7 +48,7 @@ namespace QuantLib {
         void setTime(Time t);
 
         // operator interface
-        arrayType applyTo(const arrayType&);
+        array_type applyTo(const array_type&);
         static Operator identity(Size size);
 
         // operator algebra
@@ -62,15 +62,17 @@ namespace QuantLib {
     */
     template <class Operator>
     class ExplicitEuler : public MixedScheme<Operator> {
-        friend class FiniteDifferenceModel<ExplicitEuler<Operator> >;
-      private:
+      public:
         // typedefs
-        typedef typename Operator::arrayType arrayType;
-        typedef Operator operatorType;
-        typedef BoundaryCondition<Operator> bcType;
+        typedef OperatorTraits<Operator> traits;
+        typedef typename traits::operator_type operator_type;
+        typedef typename traits::array_type array_type;
+        typedef typename traits::bc_type bc_type;
+        typedef typename traits::bc_set bc_set;
+        typedef typename traits::condition_type condition_type;
         // constructors
-        ExplicitEuler(const Operator& L,
-                      const std::vector<boost::shared_ptr<bcType> >& bcs)
+        ExplicitEuler(const operator_type& L,
+                      const std::vector<boost::shared_ptr<bc_type> >& bcs)
         : MixedScheme<Operator>(L, 0.0, bcs) {}
     };
 

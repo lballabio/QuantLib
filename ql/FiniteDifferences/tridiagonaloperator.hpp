@@ -57,7 +57,7 @@ namespace QuantLib {
         operator/(const TridiagonalOperator&,
                   Real);
       public:
-        typedef Array arrayType;
+        typedef Array array_type;
         // constructors
         TridiagonalOperator(Size size = 0);
         TridiagonalOperator(const Array& low, const Array& mid,

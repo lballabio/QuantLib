@@ -110,18 +110,18 @@ namespace QuantLib {
             else
                 endDate = dt;
 
-            model_ -> rollback(prices_, beginDate, endDate,
-                               timeStepPerPeriod_, stepCondition_);
+            model_->rollback(prices_, beginDate, endDate,
+                             timeStepPerPeriod_, *stepCondition_);
 
-            model_ -> rollback(controlPrices_, beginDate, endDate,
-                               timeStepPerPeriod_);
+            model_->rollback(controlPrices_, beginDate, endDate,
+                             timeStepPerPeriod_);
 
             if (j >= 0)
                 executeIntermediateStep(j);
 
         } while (--j >= firstIndex_);
 
-        model_ -> rollback(prices_,        dt, 0, 1, stepCondition_);
+        model_ -> rollback(prices_,        dt, 0, 1, *stepCondition_);
         model_ -> rollback(controlPrices_, dt, 0, 1);
 
         if(firstDateIsZero_)

@@ -19,31 +19,29 @@
     \brief generic finite difference model
 */
 
-#ifndef quantlib_finite_difference_model_h
-#define quantlib_finite_difference_model_h
+#ifndef quantlib_finite_difference_model_hpp
+#define quantlib_finite_difference_model_hpp
 
 #include <ql/FiniteDifferences/stepcondition.hpp>
 #include <ql/FiniteDifferences/boundarycondition.hpp>
+#include <ql/FiniteDifferences/operatortraits.hpp>
 
 namespace QuantLib {
 
     //! Generic finite difference model
-    /*! See sect. \ref findiff
-
-        \ingroup findiff
-    */
+    /*! \ingroup findiff */
     template<class Evolver>
     class FiniteDifferenceModel {
       public:
-        typedef typename Evolver::arrayType arrayType;
-        typedef typename Evolver::operatorType operatorType;
-        typedef typename Evolver::bcType bcType;
-        typedef typename Evolver::conditionType conditionType;
+        typedef typename Evolver::traits traits;
+        typedef typename traits::operator_type operator_type;
+        typedef typename traits::array_type array_type;
+        typedef typename traits::bc_set bc_set;
+        typedef typename traits::condition_type condition_type;
         // constructors
-        FiniteDifferenceModel(
-                           const operatorType& L,
-                           const std::vector<boost::shared_ptr<bcType> >& bcs,
-                           const std::vector<Time>& stoppingTimes =
+        FiniteDifferenceModel(const operator_type& L,
+                              const bc_set& bcs,
+                              const std::vector<Time>& stoppingTimes =
                                                           std::vector<Time>())
         : evolver_(L,bcs), stoppingTimes_(stoppingTimes) {
             std::sort(stoppingTimes_.begin(), stoppingTimes_.end());
@@ -61,19 +59,36 @@ namespace QuantLib {
             stoppingTimes_.erase(last, stoppingTimes_.end());
         }
         // methods
-        // arrayType grid() const { return evolver.xGrid(); }
+        // array_type grid() const { return evolver.xGrid(); }
         const Evolver& evolver() const{ return evolver_; }
-        /*! solves the problem between the given times, possibly
-          applying a condition at every step.
-          \warning being this a rollback, <tt>from</tt> must be a later
-          time than <tt>to</tt>.
+        /*! solves the problem between the given times.
+            \warning being this a rollback, <tt>from</tt> must be a later
+                     time than <tt>to</tt>.
         */
-        void rollback(arrayType& a,
+        void rollback(array_type& a,
+                      Time from,
+                      Time to,
+                      Size steps) {
+            rollbackImpl(a,from,to,steps,(const condition_type*) 0);
+        }
+        /*! solves the problem between the given times,
+            applying a condition at every step.
+            \warning being this a rollback, <tt>from</tt> must be a later
+                     time than <tt>to</tt>.
+        */
+        void rollback(array_type& a,
                       Time from,
                       Time to,
                       Size steps,
-                      const boost::shared_ptr<conditionType>& condition =
-                                         boost::shared_ptr<conditionType>()) {
+                      const condition_type& condition) {
+            rollbackImpl(a,from,to,steps,&condition);
+        }
+      private:
+        void rollbackImpl(array_type& a,
+                          Time from,
+                          Time to,
+                          Size steps,
+                          const condition_type* condition) {
 
             QL_REQUIRE(from >= to,
                        "trying to roll back from " << from << " to " << to);
@@ -120,7 +135,6 @@ namespace QuantLib {
                 }
             }
         }
-      private:
         Evolver evolver_;
         std::vector<Time> stoppingTimes_;
     };

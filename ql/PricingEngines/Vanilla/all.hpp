@@ -26,7 +26,10 @@
 #include <ql/PricingEngines/Vanilla/binomialengine.hpp>
 #include <ql/PricingEngines/Vanilla/bjerksundstenslandengine.hpp>
 #include <ql/PricingEngines/Vanilla/discretizedvanillaoption.hpp>
+#include <ql/PricingEngines/Vanilla/fdamericanengine.hpp>
 #include <ql/PricingEngines/Vanilla/fdeuropeanengine.hpp>
+#include <ql/PricingEngines/Vanilla/fdshoutengine.hpp>
+#include <ql/PricingEngines/Vanilla/fdstepconditionengine.hpp>
 #include <ql/PricingEngines/Vanilla/fdvanillaengine.hpp>
 #include <ql/PricingEngines/Vanilla/integralengine.hpp>
 #include <ql/PricingEngines/Vanilla/mcdigitalengine.hpp>

@@ -15,31 +15,35 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file fdeuropeanengine.hpp
-    \brief Finite-difference European engine
+/*! \file fdamericanengine.hpp
+    \brief Finite-differences American option engine
 */
 
-#ifndef quantlib_fd_european_engine_hpp
-#define quantlib_fd_european_engine_hpp
+#ifndef quantlib_fd_american_engine_hpp
+#define quantlib_fd_american_engine_hpp
 
-#include <ql/PricingEngines/Vanilla/fdvanillaengine.hpp>
+#include <ql/PricingEngines/Vanilla/fdstepconditionengine.hpp>
+#include <ql/FiniteDifferences/fdtypedefs.hpp>
+#include <ql/FiniteDifferences/americancondition.hpp>
 
 namespace QuantLib {
 
-    //! Pricing engine for European vanilla options using finite-differences
+    //! Finite-differences pricing engine for American vanilla options
     /*! \ingroup vanillaengines
 
         \test the correctness of the returned value is tested by
-              checking it against analytic results.
+              reproducing results available in literature.
     */
-    class FDEuropeanEngine : public FDVanillaEngine {
+    class FDAmericanEngine : public FDStepConditionEngine {
       public:
-        FDEuropeanEngine(Size timeSteps=100, Size gridPoints=100,
+        FDAmericanEngine(Size timeSteps=100, Size gridPoints=100,
                          bool timeDependent = false)
-        : FDVanillaEngine(timeSteps, gridPoints, timeDependent) {}
+        : FDStepConditionEngine(timeSteps, gridPoints, timeDependent) {}
       private:
-        mutable Array euroPrices_;
-        void calculate() const;
+        void initializeStepCondition() const {
+            stepCondition_ = boost::shared_ptr<StandardStepCondition>(
+                                     new AmericanCondition(intrinsicValues_));
+        }
     };
 
 }

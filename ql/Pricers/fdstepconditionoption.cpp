@@ -60,7 +60,7 @@ namespace QuantLib {
         // 3) Rollback
         model.rollback(europeanPrices, residualTime_, 0.0, timeSteps_);
         model.rollback(americanPrices, residualTime_, 0.0, timeSteps_,
-                       stepCondition_);
+                       *stepCondition_);
 
         /* 4) Numerically calculate option value and greeks using
            the European option as control variate                */

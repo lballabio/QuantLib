@@ -19,10 +19,11 @@
     \brief default choices for template instantiations
 */
 
-#ifndef quantlib_fd_typedefs_h
-#define quantlib_fd_typedefs_h
+#ifndef quantlib_fd_typedefs_hpp
+#define quantlib_fd_typedefs_hpp
 
 #include <ql/FiniteDifferences/cranknicolson.hpp>
+#include <ql/FiniteDifferences/parallelevolver.hpp>
 
 namespace QuantLib {
 
@@ -30,6 +31,11 @@ namespace QuantLib {
     typedef FiniteDifferenceModel<
                     CrankNicolson<TridiagonalOperator>  >
                                   StandardFiniteDifferenceModel;
+
+    //! default choice for parallel finite-difference model
+    typedef FiniteDifferenceModel<ParallelEvolver<
+                    CrankNicolson<TridiagonalOperator> > >
+                                  StandardSystemFiniteDifferenceModel;
 
     //! default choice for step condition
     typedef StepCondition<Array> StandardStepCondition;

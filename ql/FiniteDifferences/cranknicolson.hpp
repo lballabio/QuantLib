@@ -19,22 +19,20 @@
     \brief Crank-Nicolson scheme for finite difference methods
 */
 
-#ifndef quantlib_crank_nicolson_h
-#define quantlib_crank_nicolson_h
+#ifndef quantlib_crank_nicolson_hpp
+#define quantlib_crank_nicolson_hpp
 
 #include <ql/FiniteDifferences/mixedscheme.hpp>
 
 namespace QuantLib {
 
     //! Crank-Nicolson scheme for finite difference methods
-    /*! See sect. \ref findiff for details on the method.
-
-        In this implementation, the passed operator must be derived
+    /*! In this implementation, the passed operator must be derived
         from either TimeConstantOperator or TimeDependentOperator.
         Also, it must implement at least the following interface:
 
         \code
-        typedef ... arrayType;
+        typedef ... array_type;
 
         // copy constructor/assignment
         // (these will be provided by the compiler if none is defined)
@@ -48,8 +46,8 @@ namespace QuantLib {
         void setTime(Time t);
 
         // operator interface
-        arrayType applyTo(const arrayType&);
-        arrayType solveFor(const arrayType&);
+        array_type applyTo(const array_type&);
+        array_type solveFor(const array_type&);
         static Operator identity(Size size);
 
         // operator algebra
@@ -65,15 +63,16 @@ namespace QuantLib {
     */
     template <class Operator>
     class CrankNicolson : public MixedScheme<Operator> {
-        friend class FiniteDifferenceModel<CrankNicolson<Operator> >;
-      private:
+      public:
         // typedefs
-        typedef typename Operator::arrayType arrayType;
-        typedef Operator operatorType;
-        typedef BoundaryCondition<Operator> bcType;
+        typedef OperatorTraits<Operator> traits;
+        typedef typename traits::operator_type operator_type;
+        typedef typename traits::array_type array_type;
+        typedef typename traits::bc_set bc_set;
+        typedef typename traits::condition_type condition_type;
         // constructors
-        CrankNicolson(const Operator& L,
-                      const std::vector<boost::shared_ptr<bcType> >& bcs)
+        CrankNicolson(const operator_type& L,
+                      const bc_set& bcs)
         : MixedScheme<Operator>(L, 0.5, bcs) {}
     };
 

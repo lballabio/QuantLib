@@ -22,6 +22,7 @@
 #include <ql/FiniteDifferences/boundarycondition.hpp>
 #include <ql/FiniteDifferences/fdtypedefs.hpp>
 #include <ql/FiniteDifferences/finitedifferencemodel.hpp>
+#include <ql/FiniteDifferences/operatortraits.hpp>
 #include <ql/FiniteDifferences/stepcondition.hpp>
 #include <ql/FiniteDifferences/tridiagonaloperator.hpp>
 

@@ -20,22 +20,20 @@
     \brief Mixed (explicit/implicit) scheme for finite difference methods
 */
 
-#ifndef quantlib_mixed_scheme_h
-#define quantlib_mixed_scheme_h
+#ifndef quantlib_mixed_scheme_hpp
+#define quantlib_mixed_scheme_hpp
 
 #include <ql/FiniteDifferences/finitedifferencemodel.hpp>
 
 namespace QuantLib {
 
     //! Mixed (explicit/implicit) scheme for finite difference methods
-    /*! See sect. \ref findiff for details on the method.
-
-        In this implementation, the passed operator must be derived
+    /*! In this implementation, the passed operator must be derived
         from either TimeConstantOperator or TimeDependentOperator.
         Also, it must implement at least the following interface:
 
         \code
-        typedef ... arrayType;
+        typedef ... array_type;
 
         // copy constructor/assignment
         // (these will be provided by the compiler if none is defined)
@@ -49,8 +47,8 @@ namespace QuantLib {
         void setTime(Time t);
 
         // operator interface
-        arrayType applyTo(const arrayType&);
-        arrayType solveFor(const arrayType&);
+        array_type applyTo(const array_type&);
+        array_type solveFor(const array_type&);
         static Operator identity(Size size);
 
         // operator algebra
@@ -70,20 +68,20 @@ namespace QuantLib {
     */
     template <class Operator>
     class MixedScheme  {
-        friend class FiniteDifferenceModel<MixedScheme<Operator> >;
-      protected:
+      public:
         // typedefs
-        typedef typename Operator::arrayType arrayType;
-        typedef Operator operatorType;
-        typedef BoundaryCondition<Operator> bcType;
-        typedef StepCondition<arrayType> conditionType;
+        typedef OperatorTraits<Operator> traits;
+        typedef typename traits::operator_type operator_type;
+        typedef typename traits::array_type array_type;
+        typedef typename traits::bc_set bc_set;
+        typedef typename traits::condition_type condition_type;
         // constructors
-        MixedScheme(const Operator& L,
+        MixedScheme(const operator_type& L,
                     Real theta,
-                    const std::vector<boost::shared_ptr<bcType> >& bcs)
-        : L_(L), I_(Operator::identity(L.size())),
+                    const bc_set& bcs)
+        : L_(L), I_(operator_type::identity(L.size())),
           dt_(0.0), theta_(theta) , bcs_(bcs) {}
-        void step(arrayType& a,
+        void step(array_type& a,
                   Time t);
         void setStep(Time dt) {
             dt_ = dt;
@@ -92,17 +90,18 @@ namespace QuantLib {
             if (theta_!=0.0) // there is an implicit part
                 implicitPart_ = I_+(theta_ * dt_)*L_;
         }
-        Operator L_, I_, explicitPart_, implicitPart_;
+      protected:
+        operator_type L_, I_, explicitPart_, implicitPart_;
         Time dt_;
         Real theta_;
-        std::vector<boost::shared_ptr<bcType> > bcs_;
+        bc_set bcs_;
     };
 
 
     // inline definitions
 
     template <class Operator>
-    inline void MixedScheme<Operator>::step(arrayType& a, Time t) {
+    inline void MixedScheme<Operator>::step(array_type& a, Time t) {
         Size i;
         for (i=0; i<bcs_.size(); i++)
             bcs_[i]->setTime(t);

@@ -125,7 +125,7 @@ test_suite* init_unit_test_suite(int, char* []) {
     test->add(BOOST_TEST_CASE(startTimer));
 
     test->add(AmericanOptionTest::suite());
-    test->add(AsianOptionTest::suite());
+    /*test->add(AsianOptionTest::suite());
     test->add(BarrierOptionTest::suite());
     test->add(BasketOptionTest::suite());
     test->add(BondTest::suite());
@@ -168,7 +168,7 @@ test_suite* init_unit_test_suite(int, char* []) {
     test->add(TracingTest::suite());
 
     // tests for deprecated (or generally old-style) classes
-    test->add(OldPricerTest::suite());
+    test->add(OldPricerTest::suite());*/
 
     test->add(BOOST_TEST_CASE(stopTimer));
 

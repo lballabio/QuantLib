@@ -33,30 +33,30 @@ namespace QuantLib {
     class BoundaryCondition {
       public:
         // types and enumerations
-        typedef Operator operatorType;
-        typedef typename Operator::arrayType arrayType;
+        typedef Operator operator_type;
+        typedef typename Operator::array_type array_type;
         //! \todo Generalize for n-dimensional conditions
         enum Side { None, Upper, Lower };
         // destructor
         virtual ~BoundaryCondition() {}
         // interface
         /*! This method modifies an operator \f$ L \f$ before it is
-          applied to an array \f$ u \f$ so that \f$ v = Lu \f$ will
-          satisfy the given condition. */
-        virtual void applyBeforeApplying(operatorType&) const = 0;
+            applied to an array \f$ u \f$ so that \f$ v = Lu \f$ will
+            satisfy the given condition. */
+        virtual void applyBeforeApplying(operator_type&) const = 0;
         /*! This method modifies an array \f$ u \f$ so that it satisfies
-          the given condition. */
-        virtual void applyAfterApplying(arrayType&) const = 0;
+            the given condition. */
+        virtual void applyAfterApplying(array_type&) const = 0;
         /*! This method modifies an operator \f$ L \f$ before the linear
-          system \f$ Lu' = u \f$ is solved so that \f$ u' \f$ will
-          satisfy the given condition. */
-        virtual void applyBeforeSolving(operatorType&,
-                                        arrayType& rhs) const = 0;
+            system \f$ Lu' = u \f$ is solved so that \f$ u' \f$ will
+            satisfy the given condition. */
+        virtual void applyBeforeSolving(operator_type&,
+                                        array_type& rhs) const = 0;
         /*! This method modifies an array \f$ u \f$ so that it satisfies
-          the given condition. */
-        virtual void applyAfterSolving(arrayType&) const = 0;
+            the given condition. */
+        virtual void applyAfterSolving(array_type&) const = 0;
         /*! This method sets the current time for time-dependent
-          boundary conditions. */
+            boundary conditions. */
         virtual void setTime(Time t) = 0;
     };
 

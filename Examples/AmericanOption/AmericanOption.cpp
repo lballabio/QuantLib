@@ -70,8 +70,12 @@ int main(int, char* [])
         std::cout << std::endl ;
 
         // write column headings
-        std::cout << "Method\t\t\t\t  Value\t\tDiscrepancy"
-            "\tRel. Discr." << std::endl;
+        Size widths[] = { 35, 14, 14, 14 };
+        std::cout << std::setw(widths[0]) << std::left << "Method"
+                  << std::setw(widths[1]) << std::left << "Value"
+                  << std::setw(widths[2]) << std::left << "Discrepancy"
+                  << std::setw(widths[3]) << std::left << "Rel. Discr."
+                  << std::endl;
 
         Date midlifeDate(19, November, 1998);
         std::vector<Date> exDates(2);
@@ -140,103 +144,163 @@ int main(int, char* [])
             boost::shared_ptr<PricingEngine>(new AnalyticEuropeanEngine()));
 
         // method: Black Scholes Engine
-        method = "equivalent European option       ";
+        method = "equivalent European option";
         value = euroOption.NPV();
-        std::cout << method << " "
-                  << value << "\t" << "N/A\t\t" << "N/A\t\t" << std::endl;
+        std::cout << std::setw(widths[0]) << std::left << method
+                  << std::fixed
+                  << std::setw(widths[1]) << std::left << value
+                  << std::setw(widths[2]) << std::left << "N/A"
+                  << std::setw(widths[3]) << std::left << "N/A"
+                  << std::endl;
 
         // American option
         VanillaOption option(stochasticProcess, payoff, amExercise);
 
+        // target value
+        method = "reference value";
+        std::cout << std::setw(widths[0]) << std::left << method
+                  << std::fixed
+                  << std::setw(widths[1]) << std::left << rightValue
+                  << std::setw(widths[2]) << std::left << "N/A"
+                  << std::setw(widths[3]) << std::left << "N/A"
+                  << std::endl;
+
         Size timeSteps = 801;
 
+        // Finite differences
+        method = "Finite differences";
+        option.setPricingEngine(boost::shared_ptr<PricingEngine>(
+            new FDAmericanEngine(timeSteps,timeSteps-1)));
+        value = option.NPV();
+        discrepancy = std::fabs(value-rightValue);
+        relativeDiscrepancy = discrepancy/rightValue;
+        std::cout << std::setw(widths[0]) << std::left << method
+                  << std::fixed
+                  << std::setw(widths[1]) << std::left << value
+                  << std::setw(widths[2]) << std::left << discrepancy
+                  << std::scientific
+                  << std::setw(widths[3]) << std::left << relativeDiscrepancy
+                  << std::endl;
+
         // Binomial Method (JR)
-        method = "Binomial Jarrow-Rudd             ";
+        method = "Binomial Jarrow-Rudd";
         option.setPricingEngine(boost::shared_ptr<PricingEngine>(
             new BinomialVanillaEngine<JarrowRudd>(timeSteps)));
         value = option.NPV();
         discrepancy = std::fabs(value-rightValue);
         relativeDiscrepancy = discrepancy/rightValue;
-        std::cout << method << " "
-                  << value << "\t" << discrepancy << "\t"
-                  << relativeDiscrepancy << std::endl;
+        std::cout << std::setw(widths[0]) << std::left << method
+                  << std::fixed
+                  << std::setw(widths[1]) << std::left << value
+                  << std::setw(widths[2]) << std::left << discrepancy
+                  << std::scientific
+                  << std::setw(widths[3]) << std::left << relativeDiscrepancy
+                  << std::endl;
 
         // Binomial Method (CRR)
-        method = "Binomial Cox-Ross-Rubinstein     ";
+        method = "Binomial Cox-Ross-Rubinstein";
         option.setPricingEngine(boost::shared_ptr<PricingEngine>(
             new BinomialVanillaEngine<CoxRossRubinstein>(timeSteps)));
         value = option.NPV();
         discrepancy = std::fabs(value-rightValue);
         relativeDiscrepancy = discrepancy/rightValue;
-        std::cout << method << " "
-                  << value << "\t" << discrepancy << "\t"
-                  << relativeDiscrepancy << std::endl;
+        std::cout << std::setw(widths[0]) << std::left << method
+                  << std::fixed
+                  << std::setw(widths[1]) << std::left << value
+                  << std::setw(widths[2]) << std::left << discrepancy
+                  << std::scientific
+                  << std::setw(widths[3]) << std::left << relativeDiscrepancy
+                  << std::endl;
 
         // Equal Probability Additive Binomial Tree (EQP)
-        method = "Additive equiprobabilities       ";
+        method = "Additive equiprobabilities";
         option.setPricingEngine(boost::shared_ptr<PricingEngine>(
             new BinomialVanillaEngine<AdditiveEQPBinomialTree>(timeSteps)));
         value = option.NPV();
         discrepancy = std::fabs(value-rightValue);
         relativeDiscrepancy = discrepancy/rightValue;
-        std::cout << method << " "
-                  << value << "\t" << discrepancy << "\t"
-                  << relativeDiscrepancy << std::endl;
+        std::cout << std::setw(widths[0]) << std::left << method
+                  << std::fixed
+                  << std::setw(widths[1]) << std::left << value
+                  << std::setw(widths[2]) << std::left << discrepancy
+                  << std::scientific
+                  << std::setw(widths[3]) << std::left << relativeDiscrepancy
+                  << std::endl;
 
         // Equal Jumps Additive Binomial Tree (Trigeorgis)
-        method = "Binomial Trigeorgis              ";
+        method = "Binomial Trigeorgis";
         option.setPricingEngine(boost::shared_ptr<PricingEngine>(
             new BinomialVanillaEngine<Trigeorgis>(timeSteps)));
         value = option.NPV();
         discrepancy = std::fabs(value-rightValue);
         relativeDiscrepancy = discrepancy/rightValue;
-        std::cout << method << " "
-                  << value << "\t" << discrepancy << "\t"
-                  << relativeDiscrepancy << std::endl;
+        std::cout << std::setw(widths[0]) << std::left << method
+                  << std::fixed
+                  << std::setw(widths[1]) << std::left << value
+                  << std::setw(widths[2]) << std::left << discrepancy
+                  << std::scientific
+                  << std::setw(widths[3]) << std::left << relativeDiscrepancy
+                  << std::endl;
 
         // Tian Binomial Tree (third moment matching)
-        method = "Binomial Tian                    ";
+        method = "Binomial Tian";
         option.setPricingEngine(boost::shared_ptr<PricingEngine>(
             new BinomialVanillaEngine<Tian>(timeSteps)));
         value = option.NPV();
         discrepancy = std::fabs(value-rightValue);
         relativeDiscrepancy = discrepancy/rightValue;
-        std::cout << method << " "
-                  << value << "\t" << discrepancy << "\t"
-                  << relativeDiscrepancy << std::endl;
+        std::cout << std::setw(widths[0]) << std::left << method
+                  << std::fixed
+                  << std::setw(widths[1]) << std::left << value
+                  << std::setw(widths[2]) << std::left << discrepancy
+                  << std::scientific
+                  << std::setw(widths[3]) << std::left << relativeDiscrepancy
+                  << std::endl;
 
         // Leisen-Reimer Binomial Tree
-        method = "Binomial Leisen-Reimer           ";
+        method = "Binomial Leisen-Reimer";
         option.setPricingEngine(boost::shared_ptr<PricingEngine>(
             new BinomialVanillaEngine<LeisenReimer>(timeSteps)));
         value = option.NPV();
         discrepancy = std::fabs(value-rightValue);
         relativeDiscrepancy = discrepancy/rightValue;
-        std::cout << method << " "
-                  << value << "\t" << discrepancy << "\t"
-                  << relativeDiscrepancy << std::endl;
+        std::cout << std::setw(widths[0]) << std::left << method
+                  << std::fixed
+                  << std::setw(widths[1]) << std::left << value
+                  << std::setw(widths[2]) << std::left << discrepancy
+                  << std::scientific
+                  << std::setw(widths[3]) << std::left << relativeDiscrepancy
+                  << std::endl;
 
         // Barone-Adesi and Whaley approximation
-        method = "Barone-Adesi and Whaley approx.  ";
+        method = "Barone-Adesi and Whaley approx.";
         option.setPricingEngine(boost::shared_ptr<PricingEngine>(
             new BaroneAdesiWhaleyApproximationEngine));
         value = option.NPV();
         discrepancy = std::fabs(value-rightValue);
         relativeDiscrepancy = discrepancy/rightValue;
-        std::cout << method << " "
-                  << value << "\t" << discrepancy << "\t"
-                  << relativeDiscrepancy << std::endl;
+        std::cout << std::setw(widths[0]) << std::left << method
+                  << std::fixed
+                  << std::setw(widths[1]) << std::left << value
+                  << std::setw(widths[2]) << std::left << discrepancy
+                  << std::scientific
+                  << std::setw(widths[3]) << std::left << relativeDiscrepancy
+                  << std::endl;
 
         // Bjerksund and Stensland approximation
-        method = "Bjerksund and Stensland approx.  ";
+        method = "Bjerksund and Stensland approx.";
         option.setPricingEngine(boost::shared_ptr<PricingEngine>(
             new BjerksundStenslandApproximationEngine));
         value = option.NPV();
         discrepancy = std::fabs(value-rightValue);
         relativeDiscrepancy = discrepancy/rightValue;
-        std::cout << method << " "
-                  << value << "\t" << discrepancy << "\t"
-                  << relativeDiscrepancy << std::endl;
+        std::cout << std::setw(widths[0]) << std::left << method
+                  << std::fixed
+                  << std::setw(widths[1]) << std::left << value
+                  << std::setw(widths[2]) << std::left << discrepancy
+                  << std::scientific
+                  << std::setw(widths[3]) << std::left << relativeDiscrepancy
+                  << std::endl;
 
         return 0;
     } catch (std::exception& e) {
