@@ -31,7 +31,7 @@
 #include "ql/quantlib.hpp"
 
 // Rate and Time are just double, but having their own types allows for
-// a stonger check at compile time
+// a stronger check at compile time
 using QuantLib::Rate;
 using QuantLib::Time;
 
@@ -53,7 +53,6 @@ using QuantLib::MonteCarlo::PathPricer;
 
 // the path generators
 using QuantLib::MonteCarlo::GaussianPathGenerator;
-using QuantLib::MonteCarlo::AntitheticPathGenerator;
 
 // the pricing model for option on a single asset
 using QuantLib::MonteCarlo::OneFactorMonteCarloOption;
@@ -140,11 +139,16 @@ int main(int argc, char* argv[])
         Rate riskFreeRate = 0.05; // 5%
         Time maturity = 1.0;      // 1 year
         double volatility = 0.20; // 20%
-        std::cout << "Time to maturity = "        << maturity     << std::endl;
-        std::cout << "Underlying price = "        << underlying   << std::endl;
-	    std::cout << "Strike = "                  << strike       << std::endl;
-        std::cout << "Risk-free interest rate = " << riskFreeRate << std::endl;
-	    std::cout << "Volatility = "              << volatility   << std::endl;
+        std::cout << "Time to maturity = "        << maturity     
+                  << std::endl;
+        std::cout << "Underlying price = "        << underlying   
+                  << std::endl;
+	    std::cout << "Strike = "                  << strike       
+	              << std::endl;
+        std::cout << "Risk-free interest rate = " << riskFreeRate 
+                  << std::endl;
+	    std::cout << "Volatility = "              << volatility   
+	              << std::endl;
         std::cout << std::endl;
 
         // write column headings
@@ -164,7 +168,8 @@ int main(int argc, char* argv[])
              << DoubleFormatter::toString(value, 4) << "\t"
              << DoubleFormatter::toString(estimatedError, 4) << "\t\t"
              << DoubleFormatter::toString(discrepancy, 6) << "\t"
-             << DoubleFormatter::toString(relativeDiscrepancy, 6) << std::endl;
+             << DoubleFormatter::toString(relativeDiscrepancy, 6)
+             << std::endl;
 
 
         // store the Black Scholes value as the correct one
@@ -185,7 +190,8 @@ int main(int argc, char* argv[])
              << DoubleFormatter::toString(value, 4) << "\t"
              << "N/A\t\t"
              << discrepancy << "\t"
-             << DoubleFormatter::toString(relativeDiscrepancy, 6) << std::endl;
+             << DoubleFormatter::toString(relativeDiscrepancy, 6)
+             << std::endl;
 
 
         // third method: Integral
@@ -204,7 +210,8 @@ int main(int argc, char* argv[])
              << DoubleFormatter::toString(value, 4) << "\t"
              << "N/A\t\t"
              << DoubleFormatter::toString(discrepancy, 6) << "\t"
-             << DoubleFormatter::toString(relativeDiscrepancy, 6) << std::endl;
+             << DoubleFormatter::toString(relativeDiscrepancy, 6)
+             << std::endl;
 
 
 
@@ -220,31 +227,31 @@ int main(int argc, char* argv[])
              << DoubleFormatter::toString(value, 4) << "\t"
              << "N/A\t\t"
              << DoubleFormatter::toString(discrepancy, 6) << "\t"
-             << DoubleFormatter::toString(relativeDiscrepancy, 6) << std::endl;
+             << DoubleFormatter::toString(relativeDiscrepancy, 6)
+             << std::endl;
 
 
 
 
         // Monte Carlo methods
-        // for plain vanilla european option the number of steps is not significant
-        // let's go for the fastest way: just one step
+        // for plain vanilla european option the number of steps is not
+        // significant. Let's go for the fastest way: just one step
         int nTimeSteps = 1;
-        int nSamples = 100;
+        int nSamples = 100000;
         long seed = 100000*UniformRandomGenerator().next();
-	    double tau = maturity/nTimeSteps;
-	    double sigma = volatility* sqrt(tau);
-	    double drift = riskFreeRate * tau - 0.5*sigma*sigma;
-        // The European path pricer
-        Handle<PathPricer> myEuropeanPathPricer =
-            Handle<PathPricer>(new EuropeanPathPricer(Option::Call,
-            underlying, strike, exp(-riskFreeRate*maturity)));
+	    double drift = riskFreeRate - 0.5*volatility*volatility;
         Statistics samples;
+        Handle<GaussianPathGenerator> myPathGenerator(
+            new GaussianPathGenerator(drift, volatility*volatility, 
+                maturity, nTimeSteps, seed));
 
 
         // fifth method:  MonteCarlo
         method ="Monte Carlo";
-        Handle<GaussianPathGenerator> myPathGenerator(
-            new GaussianPathGenerator(nTimeSteps, drift, sigma*sigma, seed));
+        // The European path pricer
+        Handle<PathPricer> myEuropeanPathPricer =
+            Handle<PathPricer>(new EuropeanPathPricer(Option::Call,
+            underlying, strike, exp(-riskFreeRate*maturity)));
         // The OneFactorMontecarloModel generates paths using myPathGenerator
         // each path is priced using myPathPricer
         // prices will be accumulated into samples
@@ -262,40 +269,8 @@ int main(int argc, char* argv[])
              << DoubleFormatter::toString(value, 4) << "\t"
              << DoubleFormatter::toString(estimatedError, 4) << "\t\t"
              << DoubleFormatter::toString(discrepancy, 6) << "\t"
-             << DoubleFormatter::toString(relativeDiscrepancy, 6) << std::endl;
-
-
-        // sixth method:  MonteCarlo with antithetic variance reduction
-        method ="MC antithetic";
-        // reset the statistic object
-	    samples.reset();
-        typedef AntitheticPathGenerator<GaussianPathGenerator>
-            ImprovedPathGenerator;
-        Handle<ImprovedPathGenerator> myImprovedPathGenerator(
-            new ImprovedPathGenerator(drift,
-                GaussianPathGenerator(nTimeSteps, 0.0, sigma*sigma, seed)));
-        // This time MontecarloModel generates paths using
-        // myImprovedPathGenerator.
-	    MonteCarloModel<Statistics, ImprovedPathGenerator, PathPricer>
-            improvedMC(myImprovedPathGenerator, myEuropeanPathPricer, samples);
-        // the model simulates nSamples paths
-        improvedMC.addSamples(nSamples);
-        // the sampleAccumulator method of MonteCarloModel
-        // gives access to all the methods of statisticAccumulator
-        value = improvedMC.sampleAccumulator().mean();
-        estimatedError = improvedMC.sampleAccumulator().errorEstimate();
-        discrepancy = QL_FABS(value-rightValue);
-        relativeDiscrepancy = discrepancy/rightValue;
-        std::cout << method << "\t"
-             << DoubleFormatter::toString(value, 4) << "\t"
-             << DoubleFormatter::toString(estimatedError, 4) << "\t\t"
-             << DoubleFormatter::toString(discrepancy, 6) << "\t"
-             << DoubleFormatter::toString(relativeDiscrepancy, 6) << std::endl;
-
-
-
-
-
+             << DoubleFormatter::toString(relativeDiscrepancy, 6)
+             << std::endl;
 
         //
         //  Option calculus analogy to energy conservation in heat diffusion
@@ -313,16 +288,17 @@ int main(int argc, char* argv[])
 
         double integral = optionSurplusIntegral(maturity, strike, underlying,
             volatility, riskFreeRate);
-        std::cout<<"\nOption surplus integral: \n";
-        std::cout<<"Integral value: "<<integral<<"\t Theoretical value: "<<theory;
+        std::cout << "\nOption surplus integral: \n";
+        std::cout << "Integral value: " << integral
+                  << "\t Theoretical value: " << theory;
         double err = QL_FABS(integral - theory);
-        std::cout<<"\t Error: "<<err;
-        std::cout<<"\t Relative error: ";
+        std::cout << "\t Error: " << err;
+        std::cout << "\t Relative error: ";
         if(QL_FABS(theory)>1e-16)
-            std::cout<<err/theory;
+            std::cout << err/theory;
         else
-            std::cout<<"not computed";
-        std::cout<<"\n";
+            std::cout << "not computed";
+        std::cout << "\n";
 
 
 	    return 0;

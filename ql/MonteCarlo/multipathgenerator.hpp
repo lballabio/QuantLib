@@ -21,50 +21,15 @@
  * The members of the QuantLib Group are listed in the Authors.txt file, also
  * available at http://quantlib.org/group.html
 */
-/*! \file multipathgenerator.hpp
 
-    \fullpath
-    Include/ql/MonteCarlo/%multipathgenerator.hpp
+/*! \file multipathgenerator.hpp
     \brief Generates a multi path from a random-point generator
 
+    \fullpath
+    ql/MonteCarlo/%multipathgenerator.hpp
 */
 
 // $Id$
-// $Log$
-// Revision 1.1  2001/09/03 13:56:11  nando
-// source (*.hpp and *.cpp) moved under topdir/ql
-//
-// Revision 1.14  2001/08/31 15:23:46  sigmud
-// refining fullpath entries for doxygen documentation
-//
-// Revision 1.13  2001/08/22 11:18:06  nando
-// removed unused default constructor
-// added a few typedef for argument type and value type
-//
-// Revision 1.12  2001/08/09 14:59:46  sigmud
-// header modification
-//
-// Revision 1.11  2001/08/08 11:07:49  sigmud
-// inserting \fullpath for doxygen
-//
-// Revision 1.10  2001/08/07 11:25:54  sigmud
-// copyright header maintenance
-//
-// Revision 1.9  2001/07/25 15:47:28  sigmud
-// Change from quantlib.sourceforge.net to quantlib.org
-//
-// Revision 1.8  2001/07/13 14:29:08  sigmud
-// removed a few gcc compile warnings
-//
-// Revision 1.7  2001/06/22 16:38:15  lballabio
-// Improved documentation
-//
-// Revision 1.6  2001/05/25 09:29:40  nando
-// smoothing #include xx.hpp and cutting old Log messages
-//
-// Revision 1.5  2001/05/24 15:38:08  nando
-// smoothing #include xx.hpp and cutting old Log messages
-//
 
 #ifndef quantlib_montecarlo_multi_path_generator_h
 #define quantlib_montecarlo_multi_path_generator_h
@@ -76,7 +41,8 @@ namespace QuantLib {
     namespace MonteCarlo {
 
         //! Generates a multipath from a random number generator
-        /*! MultiPathGenerator<RAG> is a class that returns a random multi path.
+        /*! MultiPathGenerator<RAG> is a class that returns a random 
+            multi path.
             RAG is a sample generator which returns an array, must have the
             minimal interface,
             \code
@@ -121,7 +87,7 @@ namespace QuantLib {
             timeDelays_(timeDimension, 1.0),
             numAssets_(covariance.rows()),
             average_(covariance.rows(),0.0),
-            rndArray_(covariance, seed){
+            rndArray_(0.0, covariance, seed){
 
             QL_REQUIRE(timeDimension_ > 0,
                 "Time dimension("+
@@ -147,7 +113,7 @@ namespace QuantLib {
             timeDelays_(dates.size()),
             numAssets_(covariance.rows()),
             average_(covariance.rows(), 0.0),
-            rndArray_(covariance, seed){
+            rndArray_(0.0, covariance, seed){
 
             if(average.size() != 0){
                 QL_REQUIRE(average.size() == average_.size(),

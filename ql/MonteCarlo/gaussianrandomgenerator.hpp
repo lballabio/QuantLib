@@ -23,43 +23,13 @@
 */
 
 /*! \file gaussianrandomgenerator.hpp
-
-    \fullpath
-    Include/ql/MonteCarlo/%gaussianrandomgenerator.hpp
     \brief Default choice for Gaussian random number generator
 
+    \fullpath
+    ql/MonteCarlo/%gaussianrandomgenerator.hpp
 */
 
 // $Id$
-// $Log$
-// Revision 1.1  2001/09/03 13:56:11  nando
-// source (*.hpp and *.cpp) moved under topdir/ql
-//
-// Revision 1.14  2001/08/31 15:23:45  sigmud
-// refining fullpath entries for doxygen documentation
-//
-// Revision 1.13  2001/08/28 14:23:00  aleppo
-// removed redundant inclusion
-//
-// Revision 1.12  2001/08/09 14:59:46  sigmud
-// header modification
-//
-// Revision 1.11  2001/08/08 11:07:49  sigmud
-// inserting \fullpath for doxygen
-//
-// Revision 1.10  2001/08/07 17:33:03  nando
-// 1) StandardPathGenerator now is GaussianPathGenerator;
-// 2) StandardMultiPathGenerator now is GaussianMultiPathGenerator;
-// 3) PathMonteCarlo now is MonteCarloModel;
-// 4) added ICGaussian, a Gaussian distribution that use
-//    QuantLib::Math::InvCumulativeNormalDistribution to convert uniform
-//    distribution extractions into gaussian distribution extractions;
-// 5) added a few trailing underscore to private members
-// 6) style enforced here and there ....
-//
-// Revision 1.9  2001/08/07 13:54:16  marmar
-// Remarks by Nando
-//
 
 #ifndef ql_gaussian_random_generator_h
 #define ql_gaussian_random_generator_h
@@ -74,13 +44,18 @@ namespace QuantLib {
     namespace MonteCarlo {
 
         /*! \typedef GaussianRandomGenerator
-            Box-Muller algorithm is the default choice for the gaussian random number
-            generator.
+            Box-Muller algorithm is the default choice for the gaussian 
+            random number generator.
             It could have been
-                typedef CLGaussian<UniformRandomGenerator> GaussianRandomGenerator;
+            \code
+        typedef CLGaussian<UniformRandomGenerator> GaussianRandomGenerator;
+            \endcode
             or even
-                typedef ICGaussian<UniformRandomGenerator> GaussianRandomGenerator;
-            that is, respectively, central-limit or inverse-cumulative algorithms.
+            \code
+        typedef ICGaussian<UniformRandomGenerator> GaussianRandomGenerator;
+            \endcode
+            that is, respectively, central-limit or inverse-cumulative 
+            algorithms.
         */
 
         typedef BoxMuller<UniformRandomGenerator> GaussianRandomGenerator;

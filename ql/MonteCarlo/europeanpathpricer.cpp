@@ -32,6 +32,9 @@
 
 // $Id$
 // $Log$
+// Revision 1.2  2001/09/10 10:24:27  lballabio
+// Path revamped
+//
 // Revision 1.1  2001/09/03 13:56:11  nando
 // source (*.hpp and *.cpp) moved under topdir/ql
 //
@@ -84,9 +87,10 @@ namespace QuantLib {
     namespace MonteCarlo {
 
         EuropeanPathPricer::EuropeanPathPricer(Option::Type type,
-          double underlying, double strike, double discount)
+          double underlying, double strike, double discount,
+          bool antitheticVariance)
         : type_(type),underlying_(underlying), strike_(strike),
-          discount_(discount) {
+          discount_(discount), antitheticVariance_(antitheticVariance) {
             QL_REQUIRE(strike_ > 0.0,
                 "SinglePathEuropeanPricer: strike must be positive");
             QL_REQUIRE(underlying_ > 0.0,
@@ -100,12 +104,25 @@ namespace QuantLib {
             QL_REQUIRE(n>0,
                 "SinglePathEuropeanPricer: the path cannot be empty");
 
-            double log_price = 0.0;
-            for(int i = 0; i < n; i++)
-                log_price += path[i];
+            double log_drift = 0.0, log_random = 0.0;
+            for (unsigned int i = 0; i < n; i++) {
+                log_drift += path.drift()[i];
+                log_random += path.randomComponent()[i];
+            }
 
-            return ExercisePayoff(type_, underlying_*QL_EXP(log_price),
-                strike_)*discount_;
+            if (antitheticVariance_)
+                return (
+                    ExercisePayoff(type_, underlying_ * 
+                        QL_EXP(log_drift+log_random), strike_) +
+                    ExercisePayoff(type_, underlying_ * 
+                        QL_EXP(log_drift-log_random), strike_)) * 
+                    discount_/2.0;
+            else
+                return ExercisePayoff(type_, underlying_ * 
+                        QL_EXP(log_drift+log_random), strike_) * 
+                    discount_;
+            
+                
         }
 
     }

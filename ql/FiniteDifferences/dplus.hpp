@@ -31,8 +31,8 @@
 
 // $Id$
 
-#ifndef QUANTLIB_D_PLUS_H
-#define QUANTLIB_D_PLUS_H
+#ifndef quantlib_d_plus_h
+#define quantlib_d_plus_h
 
 #include "ql/FiniteDifferences/tridiagonaloperator.hpp"
 
@@ -49,7 +49,6 @@ namespace QuantLib {
         */
         class DPlus : public TridiagonalOperator {
           public:
-            DPlus() {}
             DPlus(unsigned int gridPoints, double h);
         };
 

@@ -22,58 +22,81 @@
  * available at http://quantlib.org/group.html
 */
 /*! \file path.hpp
-
-    \fullpath
-    Include/ql/MonteCarlo/%path.hpp
     \brief Monte Carlo path
 
+    \fullpath
+    ql/MonteCarlo/%path.hpp
 */
 
 // $Id$
-// $Log$
-// Revision 1.1  2001/09/03 13:56:11  nando
-// source (*.hpp and *.cpp) moved under topdir/ql
-//
-// Revision 1.10  2001/08/31 15:23:46  sigmud
-// refining fullpath entries for doxygen documentation
-//
-// Revision 1.9  2001/08/09 14:59:46  sigmud
-// header modification
-//
-// Revision 1.8  2001/08/08 11:07:49  sigmud
-// inserting \fullpath for doxygen
-//
-// Revision 1.7  2001/08/07 11:25:54  sigmud
-// copyright header maintenance
-//
-// Revision 1.6  2001/07/25 15:47:28  sigmud
-// Change from quantlib.sourceforge.net to quantlib.org
-//
-// Revision 1.5  2001/05/24 15:38:08  nando
-// smoothing #include xx.hpp and cutting old Log messages
-//
 
 #ifndef quantlib_montecarlo_path_h
 #define quantlib_montecarlo_path_h
 
 #include "ql/array.hpp"
+#include "ql/handle.hpp"
 
 namespace QuantLib {
 
     namespace MonteCarlo {
 
-        /*!
-        For the time being Path is equivalent to Array.    In the future this
-        could change and Path might contain more information.
-        As of today, Path contains the list of continuously-compounded
-        variations,
-        \f[
-            \log \frac{Y_{i+1}}{Y_i} \mathrm{for} i = 0, \ldots, n-1
-        \f]
-        where \f$ Y_i \f$ is the value of the underlying at discretized time
-        \f$ t_i \f$.
-        */
-        typedef Array Path;
+        //! single random walk
+        class Path {
+          public:
+            Path(unsigned int size);
+            Path(const Array& drift, const Array& randomComponent);
+            //! \name inspectors
+            //@{
+            double operator[](int i) const;
+            unsigned int size() const;
+            //@}
+            //! \name read/write access to components
+            //@{
+            const Array& drift() const;
+            Array& drift();
+            const Array& randomComponent() const;
+            Array& randomComponent();
+            //@}
+          private:
+            Array drift_;
+            Array randomComponent_;
+        };
+
+        // inline definitions
+
+        inline Path::Path(unsigned int size)
+        : drift_(size), randomComponent_(size) {}
+        
+        inline Path::Path(const Array& drift, const Array& randomComponent)
+        : drift_(drift), randomComponent_(randomComponent) {
+            QL_REQUIRE(drift_.size() == randomComponent_.size(),
+                "Path: drift and random components have different size");
+        }
+
+        inline double Path::operator[](int i) const { 
+            return drift_[i] + randomComponent_[i]; 
+        }
+        
+        inline unsigned int Path::size() const {
+            return drift_.size(); 
+        }
+
+        inline const Array& Path::drift() const { 
+            return drift_; 
+        }
+
+        inline Array& Path::drift() { 
+            return drift_; 
+        }
+
+        inline const Array& Path::randomComponent() const {
+            return randomComponent_; 
+        }
+        
+        inline Array& Path::randomComponent() {
+            return randomComponent_; 
+        }
+        
     }
 
 }

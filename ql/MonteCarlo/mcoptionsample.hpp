@@ -22,52 +22,13 @@
  * available at http://quantlib.org/group.html
 */
 /*! \file mcoptionsample.hpp
+    \brief create a sample generator from a path generator and a path pricer
 
     \fullpath
-    Include/ql/MonteCarlo/%mcoptionsample.hpp
-    \brief Create a sample generator from a path generator and a path pricer
-
+    ql/MonteCarlo/%mcoptionsample.hpp
 */
 
 // $Id$
-// $Log$
-// Revision 1.1  2001/09/03 13:56:11  nando
-// source (*.hpp and *.cpp) moved under topdir/ql
-//
-// Revision 1.15  2001/08/31 15:23:46  sigmud
-// refining fullpath entries for doxygen documentation
-//
-// Revision 1.14  2001/08/22 11:18:06  nando
-// removed unused default constructor
-// added a few typedef for argument type and value type
-//
-// Revision 1.13  2001/08/09 14:59:46  sigmud
-// header modification
-//
-// Revision 1.12  2001/08/08 11:07:49  sigmud
-// inserting \fullpath for doxygen
-//
-// Revision 1.11  2001/08/07 11:25:54  sigmud
-// copyright header maintenance
-//
-// Revision 1.10  2001/07/25 15:47:28  sigmud
-// Change from quantlib.sourceforge.net to quantlib.org
-//
-// Revision 1.9  2001/07/20 13:06:57  marmar
-// Monte Carlo interfaces imporved
-//
-// Revision 1.8  2001/07/19 16:40:10  lballabio
-// Improved docs a bit
-//
-// Revision 1.7  2001/07/13 14:29:08  sigmud
-// removed a few gcc compile warnings
-//
-// Revision 1.6  2001/06/22 16:38:15  lballabio
-// Improved documentation
-//
-// Revision 1.5  2001/05/24 15:38:08  nando
-// smoothing #include xx.hpp and cutting old Log messages
-//
 
 #ifndef quantlib_montecarlo_option_sample_h
 #define quantlib_montecarlo_option_sample_h
@@ -98,7 +59,8 @@ namespace QuantLib {
                 ValueType value(PathType &) const;
             };
             \endcode
-            Also, PG::SampleType must be equal or convertible into PP::PathType.
+            Also, PG::SampleType must be equal or convertible into 
+            PP::PathType.
         */
         template<class PG, class PP>
         class OptionSample {
@@ -123,7 +85,8 @@ namespace QuantLib {
                pathPricer_(pathPricer), weight_(0){}
 
         template<class PG, class PP>
-        inline OptionSample<PG, PP>::SampleType OptionSample<PG, PP>::next() const {
+        inline OptionSample<PG, PP>::SampleType 
+        OptionSample<PG, PP>::next() const {
             typename PG::SampleType a = samplePath_->next();
             double price = pathPricer_->value(a);
             weight_ = samplePath_->weight();

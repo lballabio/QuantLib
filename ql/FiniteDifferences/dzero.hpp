@@ -31,8 +31,8 @@
 
 // $Id$
 
-#ifndef QUANTLIB_D_ZERO_H
-#define QUANTLIB_D_ZERO_H
+#ifndef quantlib_d_zero_h
+#define quantlib_d_zero_h
 
 #include "ql/FiniteDifferences/tridiagonaloperator.hpp"
 
@@ -49,7 +49,6 @@ namespace QuantLib {
         */
         class DZero : public TridiagonalOperator {
           public:
-            DZero() {}
             DZero(unsigned int gridPoints, double h);
         };
 

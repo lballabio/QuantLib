@@ -26,7 +26,7 @@
     \brief act/act historical day count convention
 
     \fullpath
-    Sources/DayCounters/%actualactualhistorical.cpp
+    DayCounters/%actualactualhistorical.cpp
 */
 
 // $Id$
@@ -37,9 +37,9 @@ namespace QuantLib {
 
     namespace DayCounters {
 
-        Time ActualActualHistorical::yearFraction(const Date& d1,
-            const Date& d2, const Date& refPeriodStart,
-            const Date& refPeriodEnd) const {
+        Time ActualActualHistorical::yearFraction(
+          const Date& d1, const Date& d2, 
+          const Date&, const Date&) const {
             QL_REQUIRE(d2>=d1,
                 "Invalid reference period");
 
@@ -54,8 +54,9 @@ namespace QuantLib {
 	        sum += dayCount(Date(1,(Month)1,y2),d2)/dib2;
 
 	        return sum;
-        } // Time ActualActualHistorical::yearFraction
+        }
 
-    } // namespace DayCounters
+    }
 
-} // namespace QuantLib
+}
+

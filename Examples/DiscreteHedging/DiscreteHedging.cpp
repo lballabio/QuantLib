@@ -31,20 +31,22 @@
     (http://www.gs.com/qs/doc/when_you_cannot_hedge.pdf)
 
     Suppose an option hedger sells an European option and receives the
-    Black-Scholes value as the options premium. Then he follows a Black-Scholes
-    hedging strategy, rehedging at discrete, evenly spaced time intervals as the
-    underlying stock changes. At expiration, the hedger delivers the option
-    payoff to the option holder, and unwinds the hedge. We are interested in
-    understanding the final profit or loss of this strategy.
+    Black-Scholes value as the options premium. 
+    Then he follows a Black-Scholes hedging strategy, rehedging at discrete, 
+    evenly spaced time intervals as the underlying stock changes. At 
+    expiration, the hedger delivers the option payoff to the option holder, 
+    and unwinds the hedge. We are interested in understanding the final 
+    profit or loss of this strategy.
 
     If the hedger had followed the exact Black-Scholes replication strategy,
     re-hedging continuously as the underlying stock evolved towards its final
-    value at expiration, then, no matter what path the stock took, the final P&L
-    would be exactly zero. When the replication strategy deviates from the exact
-    Black-Scholes method, the final P&L may deviate from zero. This deviation is
-    called the replication error. When the hedger rebalances at discrete rather
-    than continuous intervals, the hedge is imperfect and the replication is
-    inexact. The more often hedging occurs, the smaller the replication error.
+    value at expiration, then, no matter what path the stock took, the final 
+    P&L would be exactly zero. When the replication strategy deviates from 
+    the exact Black-Scholes method, the final P&L may deviate from zero. This 
+    deviation is called the replication error. When the hedger rebalances at 
+    discrete rather than continuous intervals, the hedge is imperfect and the 
+    replication is inexact. The more often hedging occurs, the smaller the 
+    replication error.
 
     We examine the range of possibilities, computing the replication error.
 
@@ -62,7 +64,7 @@
 // introducing the players ....
 
 // Rate and Time are just double, but having their own types allows for
-// a stonger check at compile time
+// a stronger check at compile time
 using QuantLib::Rate;
 using QuantLib::Time;
 
@@ -110,8 +112,8 @@ public:
                      double s0,
                      double sigma,
                      Rate r)
-    : type_(type), maturity_(maturity), strike_(strike), s0_(s0), sigma_(sigma),
-      r_(r) {
+    : type_(type), maturity_(maturity), strike_(strike), s0_(s0), 
+      sigma_(sigma), r_(r) {
 
         // value of the option
         EuropeanOption option = EuropeanOption(type_, s0_, strike_, 0.0, r_,
@@ -122,10 +124,12 @@ public:
         vega_ = option.vega();
 
         std::cout << std::endl;
-        std::cout << "        |        | P&L  \t|  P&L    | Derman&Kamal | P&L"
+        std::cout << 
+            "        |        | P&L  \t|  P&L    | Derman&Kamal | P&L"
             "      \t| P&L" << std::endl;
 
-        std::cout << "samples | trades | Mean \t| Std Dev | Formula      |"
+        std::cout << 
+            "samples | trades | Mean \t| Std Dev | Formula      |"
             " skewness \t| kurt." << std::endl;
 
         std::cout << "---------------------------------"
@@ -162,11 +166,13 @@ class ReplicationPathPricer : public PathPricer
             "ReplicationPathPricer: strike must be positive");
         QL_REQUIRE(underlying_ > 0.0,
             "ReplicationPathPricer: underlying must be positive");
-        QL_REQUIRE(r_ >= 0.0, "ReplicationPathPricer: risk free rate (r) must"
+        QL_REQUIRE(r_ >= 0.0, 
+            "ReplicationPathPricer: risk free rate (r) must"
             " be positive or zero");
         QL_REQUIRE(maturity_ > 0.0,
             "ReplicationPathPricer: maturity must be positive");
-        QL_REQUIRE(sigma_ >= 0.0, "ReplicationPathPricer: volatility (sigma)"
+        QL_REQUIRE(sigma_ >= 0.0, 
+            "ReplicationPathPricer: volatility (sigma)"
             " must be positive or zero");
 
     }
@@ -217,7 +223,8 @@ int main(int argc, char* argv[])
 /* The actual computation of the Profit&Loss for each single path.
 
    In each scenario N rehedging trades spaced evenly in time over
-   the life of the option are carried out, using the Black-Scholes hedge ratio.
+   the life of the option are carried out, using the Black-Scholes 
+   hedge ratio.
 */
 double ReplicationPathPricer::value(const Path & path) const
 {
@@ -317,16 +324,18 @@ void ReplicationError::compute(int nTimeSteps, int nSamples)
         "ReplicationError::compute : the number of steps must be > 0");
 
     // hedging interval
-    double tau = maturity_ / nTimeSteps;
+    // double tau = maturity_ / nTimeSteps;
 
-    /* Black-Scholes framework: the underlying stock price evolves lognormally
-       with a fixed known volatility that stays constant throughout time.
+    /* Black-Scholes framework: the underlying stock price evolves 
+       lognormally with a fixed known volatility that stays constant 
+       throughout time.
     */
     // stock variance
-    double sigma = sigma_* sqrt(tau);
+    // double sigma = sigma_* sqrt(tau);
     // stock growth
     // r_ is used for semplicity, it can be whatever value
-    double drift = r_ * tau - 0.5*sigma*sigma;
+    // double drift = r_ * tau - 0.5*sigma*sigma;
+    double drift = r_ - 0.5*sigma_*sigma_;
     // std::cout << drift << std::endl;
     // drift = 0.1 * tau - 0.5*sigma*sigma;
 
@@ -334,13 +343,15 @@ void ReplicationError::compute(int nTimeSteps, int nSamples)
     // at each step the log of the stock
     // will have drift and sigma^2 variance
     Handle<GaussianPathGenerator> myPathGenerator(
-        new GaussianPathGenerator(nTimeSteps, drift, sigma*sigma));
+        new GaussianPathGenerator(drift, sigma_*sigma_, 
+            maturity_, nTimeSteps));
 
-    // The replication strategy's Profit&Loss is computed for each path of the
-    // stock. The path pricer knows how to price a path using its value() method
+    // The replication strategy's Profit&Loss is computed for each path 
+    // of the stock. The path pricer knows how to price a path using its 
+    // value() method
     Handle<PathPricer> myPathPricer =
         Handle<PathPricer>(new ReplicationPathPricer(type_, s0_, strike_, r_,
-        maturity_, sigma_));
+            maturity_, sigma_));
 
     // a statistic accumulator for the path-dependant Profit&Loss values
     Statistics statisticAccumulator;

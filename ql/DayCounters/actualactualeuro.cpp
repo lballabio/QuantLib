@@ -26,7 +26,7 @@
     \brief act/act euro day count convention
 
     \fullpath
-    Sources/DayCounters/%actualactualeuro.cpp
+    DayCounters/%actualactualeuro.cpp
 */
 
 // $Id$
@@ -38,7 +38,7 @@ namespace QuantLib {
     namespace DayCounters {
 
         Time ActualActualEuro::yearFraction(const Date& d1, const Date& d2,
-            const Date& refPeriodStart, const Date& refPeriodEnd) const {
+            const Date&, const Date&) const {
 
             QL_REQUIRE(d1<=d2,
                 "Invalid reference period");

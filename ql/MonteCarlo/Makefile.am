@@ -5,7 +5,6 @@ INCLUDES= -I${top_srcdir} -I${top_builddir}
 includedir = $(prefix)/include/ql/MonteCarlo
 
 include_HEADERS = \
-	antitheticpathgenerator.hpp \
 	avgpriceasianpathpricer.hpp \
 	avgstrikeasianpathpricer.hpp \
 	basketpathpricer.hpp \
@@ -35,6 +34,7 @@ include_HEADERS = \
 	onefactormontecarlooption.hpp \
 	pagodapathpricer.hpp \
 	path.hpp \
+	pathgenerator.hpp \
 	pathpricer.hpp \
 	randomarraygenerator.hpp \
 	uniformrandomgenerator.hpp

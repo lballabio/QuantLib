@@ -21,9 +21,6 @@
  * available at http://quantlib.org/group.html
 */
 
-/*
-*/
-
 // $Id$
 
 #ifndef quantlib_h
@@ -125,7 +122,6 @@
 #include "ql/Math/symmetriceigenvalues.hpp"
 #include "ql/Math/symmetricschurdecomposition.hpp"
 
-#include "ql/MonteCarlo/antitheticpathgenerator.hpp"
 #include "ql/MonteCarlo/avgpriceasianpathpricer.hpp"
 #include "ql/MonteCarlo/avgstrikeasianpathpricer.hpp"
 #include "ql/MonteCarlo/basketpathpricer.hpp"
@@ -155,6 +151,7 @@
 #include "ql/MonteCarlo/onefactormontecarlooption.hpp"
 #include "ql/MonteCarlo/pagodapathpricer.hpp"
 #include "ql/MonteCarlo/path.hpp"
+#include "ql/MonteCarlo/pathgenerator.hpp"
 #include "ql/MonteCarlo/pathpricer.hpp"
 #include "ql/MonteCarlo/randomarraygenerator.hpp"
 #include "ql/MonteCarlo/uniformrandomgenerator.hpp"

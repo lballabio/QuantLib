@@ -7,11 +7,11 @@
     http://sourceforge.net/mail/?group_id=12740.
 
     \subsection download Download
-    Source code, documentation, modules, etc. of current and previous %QuantLib
-    releases are downloadable from
+    Source code, documentation, modules, etc. of current and previous 
+    %QuantLib releases are downloadable from
     http://sourceforge.net/project/showfiles.php?group_id=12740
 
-    QuantLib Debian packages are available from:
+    %QuantLib Debian packages are available from:
 
     http://ftp.us.debian.org/debian/pool/main/q/quantlib
     http://ftp.us.debian.org/debian/pool/main/q/quantlib-refman

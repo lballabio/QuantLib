@@ -21,32 +21,15 @@
  * The members of the QuantLib Group are listed in the Authors.txt file, also
  * available at http://quantlib.org/group.html
 */
-/*! \file randomarraygenerator.hpp
 
-    \fullpath
-    Include/ql/MonteCarlo/%randomarraygenerator.hpp
+/*! \file randomarraygenerator.hpp
     \brief Generates random arrays from a random number generator
 
+    \fullpath
+    ql/MonteCarlo/%randomarraygenerator.hpp
 */
 
 // $Id$
-// $Log$
-// Revision 1.3  2001/09/05 14:52:15  lballabio
-// readdition
-//
-// Revision 1.1  2001/09/03 13:56:11  nando
-// source (*.hpp and *.cpp) moved under topdir/ql
-//
-// Revision 1.20  2001/08/31 15:23:46  sigmud
-// refining fullpath entries for doxygen documentation
-//
-// Revision 1.19  2001/08/22 11:18:06  nando
-// removed unused default constructor
-// added a few typedef for argument type and value type
-//
-// Revision 1.18  2001/08/22 11:02:09  nando
-// removed unused default constructor
-//
 
 #ifndef quantlib_montecarlo_random_array_generator_h
 #define quantlib_montecarlo_random_array_generator_h
@@ -59,155 +42,151 @@ namespace QuantLib {
     namespace MonteCarlo {
 
         //! Generates random arrays from a random number generator
-        template <class RP>
+        template <class RNG>
         class RandomArrayGenerator {
           public:
             typedef Array SampleType;
 
-            RandomArrayGenerator(int dimension,
-                                 double average = 0.0,
-                                 double variance = 1.0,
-                                 long seed=0);
-            RandomArrayGenerator(const std::vector<Time> & dates,
-                                 double average = 0.0,
-                                 double variance = 1.0,
-                                 long seed=0);
-            RandomArrayGenerator(const Math::Matrix &covariance,
-                                 long seed=0);
-            RandomArrayGenerator(const Array &average,
-                                 const Math::Matrix &covariance,
-                                 long seed=0);
-            Array next() const;
-            double weight() const{return weight_;}
-            int size() const{ return size_; }
+            // equal average, equal variance, no covariance
+            RandomArrayGenerator(unsigned int dimension,
+                                 double average,
+                                 double variance,
+                                 long seed = 0);
+            // different averages, equal variance, no covariance
+            RandomArrayGenerator(const Array& average,
+                                 double variance,
+                                 long seed = 0);
+            // equal average, different variances, no covariance
+            RandomArrayGenerator(double average,
+                                 const Array& variance,
+                                 long seed = 0);
+            // different averages, different variances, no covariance
+            RandomArrayGenerator(const Array& average,
+                                 const Array& variance,
+                                 long seed = 0);
+            // equal average, different variances, covariance
+            RandomArrayGenerator(double average,
+                                 const Math::Matrix& covariance,
+                                 long seed = 0);
+            // different averages, different variances, covariance
+            RandomArrayGenerator(const Array& average,
+                                 const Math::Matrix& covariance,
+                                 long seed = 0);
+            const Array& next() const;
+            double weight() const { return weight_; }
+            int size() const { return average_.size(); }
           private:
-            int size_;
-            std::vector<Time> timeDelays_;
+            mutable Array next_;
             mutable double weight_;
-            double average_, sqrtVariance_;
-            RP rndPoint_;
-            mutable Array averageArray_;
-            mutable Math::Matrix sqrtCovariance_;
+            RNG generator_;
+            Array average_, sqrtVariance_;
+            Math::Matrix sqrtCovariance_;
         };
 
-        template <class RP>
-        inline RandomArrayGenerator<RP >::RandomArrayGenerator(int dimension,
-                double average, double variance, long seed):
-                size_(dimension),
-                timeDelays_(dimension, 1.0),
-                average_(average), rndPoint_(seed),
-                averageArray_(0),sqrtCovariance_(0,0){
+        template <class RNG>
+        inline RandomArrayGenerator<RNG>::RandomArrayGenerator(
+            unsigned int dimension, double average, double variance, 
+            long seed) 
+        : next_(dimension), generator_(seed), average_(dimension,average) {
             QL_REQUIRE(variance >= 0,
-                    "RandomArrayGenerator: variance is negative!");
-            sqrtVariance_ = QL_SQRT(variance);
+                "RandomArrayGenerator: negative variance");
+            sqrtVariance_ = Array(dimension, QL_SQRT(variance));
         }
 
-        template <class RP>
-        inline RandomArrayGenerator<RP>::RandomArrayGenerator(
-            const std::vector<Time> & dates,
-            double average,
-            double variance,
-            long seed)
-        :size_(dates.size()), timeDelays_(dates.size()),average_(average),
-         rndPoint_(seed), averageArray_(0),sqrtCovariance_(0,0) {
-
+        template <class RNG>
+        inline RandomArrayGenerator<RNG>::RandomArrayGenerator(
+            const Array& average, double variance, long seed) 
+        : next_(average.size()), generator_(seed), average_(average) {
             QL_REQUIRE(variance >= 0,
-                    "RandomArrayGenerator: variance is negative!");
-            sqrtVariance_ = QL_SQRT(variance);
+                "RandomArrayGenerator: negative variance");
+            sqrtVariance_ = Array(average_.size(), QL_SQRT(variance));
+        }
 
-            if( size_ > 0){
-                QL_REQUIRE(dates[0] >= 0,
-                     "MultiPathGenerator: first date(" +
-                    DoubleFormatter::toString(dates[0])+
-                    ") must be positive");
-                timeDelays_[0] = dates[0];
-            }
-
-            if(size_ > 1){
-                for(int i = 1; i < size_; i++){
-                    QL_REQUIRE(dates[i] >= dates[i-1],
-                        "MultiPathGenerator: date(" +
-                        IntegerFormatter::toString(i-1)+")="+
-                        DoubleFormatter::toString(dates[i-1])+
-                        " is later than date("+
-                        IntegerFormatter::toString(i)+")="+
-                        DoubleFormatter::toString(dates[i]));
-                    timeDelays_[i] = dates[i] - dates[i-1];
-                }
+        template <class RNG>
+        inline RandomArrayGenerator<RNG>::RandomArrayGenerator(
+            double average, const Array& variance, long seed) 
+        : next_(variance.size()), generator_(seed), 
+          average_(variance.size(),average), 
+          sqrtVariance_(variance.size()) {
+            for (unsigned int i=0; i<variance.size(); i++) {
+                QL_REQUIRE(variance[i] >= 0,
+                    "RandomArrayGenerator: negative variance"
+                    + DoubleFormatter::toString(variance[i])
+                    + "in position " 
+                    + IntegerFormatter::toString(i));
+                sqrtVariance_[i] = QL_SQRT(variance[i]);
             }
         }
 
-        template <class RP>
-        inline RandomArrayGenerator<RP >::RandomArrayGenerator(
-            const Math::Matrix &covariance, long seed):
-            size_(covariance.rows()), rndPoint_(seed),
-	    averageArray_(covariance.rows(),0),
-            sqrtCovariance_(covariance.rows(),covariance.rows()){
+        template <class RNG>
+        inline RandomArrayGenerator<RNG>::RandomArrayGenerator(
+            const Array& average, const Array& variance, long seed) 
+        : next_(average.size()), generator_(seed), average_(average),
+          sqrtVariance_(variance.size()) {
+            for (unsigned int i=0; i<variance.size(); i++) {
+                QL_REQUIRE(variance[i] >= 0,
+                    "RandomArrayGenerator: negative variance"
+                    + DoubleFormatter::toString(variance[i])
+                    + "in position " 
+                    + IntegerFormatter::toString(i));
+                sqrtVariance_[i] = QL_SQRT(variance[i]);
+            }
+        }
 
+        template <class RNG>
+        inline RandomArrayGenerator<RNG>::RandomArrayGenerator(
+            double average, const Math::Matrix& covariance, long seed)
+        : next_(covariance.rows()), generator_(seed), 
+          average_(covariance.rows(),average) {
             QL_REQUIRE(covariance.rows() == covariance.columns(),
-                "Covariance matrix must be square ("+
-                DoubleFormatter::toString(covariance.rows())+ ", "+
-                DoubleFormatter::toString(covariance.columns())+ ")");
-
-            QL_REQUIRE(size_ > 0,
-                "Number of indepente variables("+
-                DoubleFormatter::toString(size_)+
-                ") too small");
-
+                "Covariance matrix must be square (is "+
+                IntegerFormatter::toString(covariance.rows())+ " x "+
+                IntegerFormatter::toString(covariance.columns())+ ")");
+            QL_REQUIRE(covariance.rows() > 0, 
+                "Null covariance matrix given");
             sqrtCovariance_ = Math::matrixSqrt(covariance);
         }
 
-        template <class RP>
-        inline RandomArrayGenerator<RP >::RandomArrayGenerator(
-            const Array &average, const Math::Matrix &covariance, long seed)
-	  : size_(covariance.rows()), rndPoint_(seed),
-	    averageArray_(average),
-            sqrtCovariance_(covariance.rows(),covariance.rows()){
-
+        template <class RNG>
+        inline RandomArrayGenerator<RNG>::RandomArrayGenerator(
+            const Array& average, const Math::Matrix &covariance, long seed)
+        : next_(average.size()), generator_(seed), average_(average) {
             QL_REQUIRE(covariance.rows() == covariance.columns(),
-                "Covariance matrix must be square ("+
-                DoubleFormatter::toString(covariance.rows())+ ", "+
-                DoubleFormatter::toString(covariance.columns())+ ")");
-
-            QL_REQUIRE(size_ > 0,
-                "Number of indepente variables("+
-                DoubleFormatter::toString(size_)+
-                ") too small");
-
-            QL_REQUIRE(averageArray_.size() == size_,
+                "Covariance matrix must be square (is "+
+                IntegerFormatter::toString(covariance.rows())+ " x "+
+                IntegerFormatter::toString(covariance.columns())+ ")");
+            QL_REQUIRE(covariance.rows() > 0, 
+                "Null covariance matrix given");
+            QL_REQUIRE(average_.size() == covariance.rows(),
                 "average-vector size ("+
-                DoubleFormatter::toString(averageArray_.size())+ ") "+
+                IntegerFormatter::toString(average_.size())+ ") "+
                 "does not match covariance matrix size("+
-                DoubleFormatter::toString(covariance.columns())+ ")");
-
+                IntegerFormatter::toString(covariance.columns())+ ")");
             sqrtCovariance_ = Math::matrixSqrt(covariance);
         }
 
-        template <class RP>
-        inline Array RandomArrayGenerator<RP >::next() const{
 
-            Array nextArray(size_);
-
+        template <class RNG>
+        inline const Array& RandomArrayGenerator<RNG>::next() const{
+            // starting point for product
             weight_ = 1.0;
 
-            if(averageArray_.size() == 0){
-                for(int j = 0; j < size_; j++){
-                    nextArray[j] = average_ * timeDelays_[j]
-                                + rndPoint_.next() * sqrtVariance_ *
-                                                     QL_SQRT(timeDelays_[j]);
-                    weight_ *= rndPoint_.weight();
+            if (sqrtCovariance_.rows() != 0) {  // general case
+                for (unsigned int j=0; j<next_.size(); j++) {
+                    next_[j] = generator_.next();
+                    weight_ *= generator_.weight();
+                }
+                next_ = average_ + sqrtCovariance_ * next_;
+
+            } else {                            // degenerate case
+                for (unsigned int j=0; j<next_.size(); j++){
+                    next_[j] = average_[j] +
+                               generator_.next() * sqrtVariance_[j];
+                    weight_ *= generator_.weight();
                 }
             }
-            else{
-                for(int j = 0; j < size_; j++){
-                    nextArray[j] = rndPoint_.next();
-                    weight_ *= rndPoint_.weight();
-                }
-                nextArray = averageArray_ + sqrtCovariance_ * nextArray;
 
-            }
-
-            return nextArray;
+            return next_;
         }
 
     }
