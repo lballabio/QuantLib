@@ -40,9 +40,6 @@ namespace QuantLib {
         \todo add derived class ParSwapTermStructure similar to
               ZeroYieldTermStructure, DiscountStructure, ForwardRateStructure
 
-        \todo allow for different compounding rules and compounding
-              frequencies
-
         \ingroup yieldtermstructures
 
         \test observability against evaluation date changes is checked.
@@ -185,15 +182,24 @@ namespace QuantLib {
             of year from the reference date.
         */
         //@{
-        //! instantaneous forward rate at a given compounding frequency
-        Rate compoundForward(const Date&,
-                             Integer,
-                             bool extrapolate = false) const;
-        //! instantaneous forward rate at a given compounding frequency
-        Rate compoundForward(Time,
-                             Integer,
-                             bool extrapolate = false) const;
         #ifndef QL_DISABLE_DEPRECATED
+        //! instantaneous forward rate at a given compounding frequency
+        /*! \deprecated use forwardRate(const Date& d1, const Date& d1,
+                                        const DayCounter& dc,
+                                        SimpleThenCompounded, Frequency f, bool extrapolate)
+                        instead
+        */
+        Rate compoundForward(const Date& d1,
+                             Integer f,
+                             bool extrapolate = false) const;
+        //! instantaneous forward rate at a given compounding frequency
+        /*! \deprecated use forwardRate(Time t1, Time t1,
+                                        SimpleThenCompounded, Frequency f, bool extrapolate)
+                        instead
+        */
+        Rate compoundForward(Time t1,
+                             Integer f,
+                             bool extrapolate = false) const;
         //! instantaneous forward rate
         /*! \deprecated use forwardRate(const Date& d1, const Date& d1,
                                         const DayCounter& dc,
@@ -227,11 +233,11 @@ namespace QuantLib {
                      Time,
                      bool extrapolate = false) const;
 
+        #endif
         //! forward Rate
         /*! returns the implied forward Rate between two dates
             The resulting Rate has the required daycounting rule.
         */
-        #endif
         Rate forwardRate(const Date& d1,
                          const Date& d2,
                          const DayCounter& resultDayCounter,
@@ -297,8 +303,10 @@ namespace QuantLib {
         virtual DiscountFactor discountImpl(Time) const = 0;
         //! instantaneous forward-rate calculation
         virtual Rate forwardImpl(Time) const = 0;
+        #ifndef QL_DISABLE_DEPRECATED
         //! compound forward-rate calculation
         virtual Rate compoundForwardImpl(Time, Integer) const = 0;
+        #endif
         //@}
       private:
         void checkRange(const Date& d,
@@ -316,12 +324,6 @@ namespace QuantLib {
 
 
     // inline definitions
-
-    #ifndef QL_DISABLE_DEPRECATED
-    inline YieldTermStructure::YieldTermStructure(const Date& todaysDate,
-                                                  const Date& referenceDate)
-    : BaseTermStructure(todaysDate, referenceDate) {}
-    #endif
 
     inline YieldTermStructure::YieldTermStructure() {}
 
@@ -481,7 +483,32 @@ namespace QuantLib {
     }
 
 
+
+    // inline discount definitions
+
+    inline DiscountFactor YieldTermStructure::discount(const Date& d,
+                                                       bool extrapolate)
+                                                                       const {
+        checkRange(d, extrapolate);
+        return discountImpl(timeFromReference(d));
+    }
+
+    inline DiscountFactor YieldTermStructure::discount(Time t,
+                                                       bool extrapolate)
+                                                                       const {
+        checkRange(t, extrapolate);
+        return discountImpl(t);
+    }
+
+
+    // inline deprecated definitions
+
     #ifndef QL_DISABLE_DEPRECATED
+
+    inline YieldTermStructure::YieldTermStructure(const Date& todaysDate,
+                                                  const Date& referenceDate)
+    : BaseTermStructure(todaysDate, referenceDate) {}
+
     inline Rate YieldTermStructure::forward(const Date& d1, const Date& d2,
                                             bool extrapolate) const {
         QL_REQUIRE(d1 <= d2,
@@ -519,33 +546,6 @@ namespace QuantLib {
         checkRange(t, extrapolate);
         return forwardImpl(t);
     }
-    #endif
-
-                                            
-
-
-
-
-
-    // inline discount definitions
-
-    inline DiscountFactor YieldTermStructure::discount(const Date& d,
-                                                       bool extrapolate)
-                                                                       const {
-        checkRange(d, extrapolate);
-        return discountImpl(timeFromReference(d));
-    }
-
-    inline DiscountFactor YieldTermStructure::discount(Time t,
-                                                       bool extrapolate)
-                                                                       const {
-        checkRange(t, extrapolate);
-        return discountImpl(t);
-    }
-
-
-    // inline deprecated (or to be deprecated) definitions
-
 
 
     inline Rate YieldTermStructure::compoundForward(const Date& d, Integer f,
@@ -560,7 +560,6 @@ namespace QuantLib {
         return compoundForwardImpl(t,f);
     }
 
-    #ifndef QL_DISABLE_DEPRECATED
     inline Rate YieldTermStructure::zeroYield(const Date& d,
                                               bool extrapolate) const {
         checkRange(d, extrapolate);

@@ -209,7 +209,8 @@ namespace QuantLib {
             return forwardImpl(t);
         if (needsBootstrap_)
             bootstrap();
-        return discountCurve()->compoundForward(t,f,true);
+        return discountCurve()->forwardRate(t, t,
+            SimpleThenCompounded, Frequency(f), true);
     }
 
     boost::shared_ptr<YieldTermStructure>

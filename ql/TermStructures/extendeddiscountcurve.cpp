@@ -129,8 +129,8 @@ namespace QuantLib {
                                                                       const {
         if (compounding == 0)
             return DiscountCurve::compoundForwardImpl(t, compounding);
-        return forwardCurve(compounding)->compoundForward(t, compounding,
-                                                          true);
+        return forwardCurve(compounding)->forwardRate(t, t,
+            SimpleThenCompounded, Frequency(compounding), true);
     }
 
     boost::shared_ptr<YieldTermStructure>
