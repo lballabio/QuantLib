@@ -254,18 +254,20 @@ namespace QuantLib {
                 Handle<BasisFunction> legendre_3(new Polynomial 
                     (0.5, Handle<BasisFunction> (new Linear(0, -3)), 
                             Handle<BasisFunction> (new Cube(0, 5))));
-
-                Handle<std::vector<Handle<BasisFunction> > > basis4;
-                basis4->push_back(Handle<BasisFunction> (new Constant(3)));
-                basis4->push_back(Handle<BasisFunction> (new Square(0, -30)));
-                basis4->push_back(Handle<BasisFunction> (new BasisPower(0, 4, 35)));
+                
+                Handle<std::vector<Handle<BasisFunction> > > basis4(new
+                    std::vector<Handle<BasisFunction> > (3) );
+                basis4->at(0) = Handle<BasisFunction> (new Constant(3));
+                basis4->at(1) = Handle<BasisFunction> (new Square(0, -30));
+                basis4->at(2) = Handle<BasisFunction> (new BasisPower(0, 4, 35));
                 Handle<BasisFunction> legendre_4(
                         new MyPolynomial(0.125, basis4));
 
-                Handle<std::vector<Handle<BasisFunction> > > basis5;
-                basis5->push_back(Handle<BasisFunction> (new Linear(0,15)));
-                basis5->push_back(Handle<BasisFunction> (new Cube(0, -70)));
-                basis5->push_back(Handle<BasisFunction> (new BasisPower(0, 5, 63)));
+                Handle<std::vector<Handle<BasisFunction> > > basis5(new
+                    std::vector<Handle<BasisFunction> > (3) );                
+                basis5->at(0) = Handle<BasisFunction> (new Linear(0,15));
+                basis5->at(1) = Handle<BasisFunction> (new Cube(0, -70));
+                basis5->at(2) = Handle<BasisFunction> (new BasisPower(0, 5, 63));
                 Handle<BasisFunction> legendre_5(
                         new MyPolynomial(0.125, basis5));
 
@@ -283,19 +285,20 @@ namespace QuantLib {
                     (1, Handle<BasisFunction> (new Constant(1)), 
                         Handle<BasisFunction> (new Linear(0, -1))));
 
-                Handle<std::vector<Handle<BasisFunction> > > basis2;
-                basis2->push_back(Handle<BasisFunction> (new Constant(2)));
-                basis2->push_back(Handle<BasisFunction> (new Linear(0, -4)));
-                basis2->push_back(Handle<BasisFunction> (new Square(0, 1)));
+                Handle<std::vector<Handle<BasisFunction> > > basis2(new
+                    std::vector<Handle<BasisFunction> > (3) );
+                basis2->at(0) = Handle<BasisFunction> (new Constant(2));
+                basis2->at(1) = Handle<BasisFunction> (new Linear(0, -4));
+                basis2->at(2) = Handle<BasisFunction> (new Square(0, 1));
                 Handle<BasisFunction> laguerre_2(
                     new MyPolynomial(0.5, basis2));
 
-
-                Handle<std::vector<Handle<BasisFunction> > > basis3;
-                basis3->push_back(Handle<BasisFunction> (new Constant(6)));
-                basis3->push_back(Handle<BasisFunction> (new Linear(0, -18)));
-                basis3->push_back(Handle<BasisFunction> (new Square(0, 9)));
-                basis3->push_back(Handle<BasisFunction> (new Cube(0, -1)));
+                Handle<std::vector<Handle<BasisFunction> > > basis3(new
+                    std::vector<Handle<BasisFunction> > (4) );
+                basis3->at(0) = Handle<BasisFunction> (new Constant(6));
+                basis3->at(1) = Handle<BasisFunction> (new Linear(0, -18));
+                basis3->at(2) = Handle<BasisFunction> (new Square(0, 9));
+                basis3->at(3) = Handle<BasisFunction> (new Cube(0, -1));
                 Handle<BasisFunction> laguerre_3(
                     new MyPolynomial(1.0/6.0, basis3));
 
@@ -575,6 +578,11 @@ namespace QuantLib {
                     }
                 }
                 Array b = V*temp_1;
+
+                // uncomment if you want to cut and paste
+                // basis function coeffs and singular values
+                // to Excel
+                //std::cout << "\nb=" << b << "s=" << s ;
 
                 // store the basisCoeffs for later
                 basisCoeffs[timeStep] = b;
