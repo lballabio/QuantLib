@@ -35,10 +35,21 @@ INTDIR=.\build\Release
 OutDir=.\build\Release
 # End Custom Macros
 
+!IF "$(RECURSE)" == "0" 
+
 ALL : ".\lib\Win32\VisualStudio\QuantLib.lib" "$(OUTDIR)\QuantLib.bsc"
 
+!ELSE 
 
+ALL : ".\lib\Win32\VisualStudio\QuantLib.lib" "$(OUTDIR)\QuantLib.bsc"
+
+!ENDIF 
+
+!IF "$(RECURSE)" == "1" 
 CLEAN :
+!ELSE 
+CLEAN :
+!ENDIF 
 	-@erase "$(INTDIR)\actualactual.obj"
 	-@erase "$(INTDIR)\actualactual.sbr"
 	-@erase "$(INTDIR)\affinetermstructure.obj"
@@ -686,10 +697,21 @@ INTDIR=.\build\Debug
 OutDir=.\build\Debug
 # End Custom Macros
 
+!IF "$(RECURSE)" == "0" 
+
 ALL : ".\lib\Win32\VisualStudio\QuantLib_d.lib" "$(OUTDIR)\QuantLib.bsc"
 
+!ELSE 
 
+ALL : "QuantLibXLL - Win32 Debug" ".\lib\Win32\VisualStudio\QuantLib_d.lib" "$(OUTDIR)\QuantLib.bsc"
+
+!ENDIF 
+
+!IF "$(RECURSE)" == "1" 
+CLEAN :"QuantLibXLL - Win32 DebugCLEAN" 
+!ELSE 
 CLEAN :
+!ENDIF 
 	-@erase "$(INTDIR)\actualactual.obj"
 	-@erase "$(INTDIR)\actualactual.sbr"
 	-@erase "$(INTDIR)\affinetermstructure.obj"
@@ -1323,7 +1345,8 @@ LIB32_OBJS= \
 	"$(INTDIR)\option.obj" \
 	"$(INTDIR)\scheduler.obj" \
 	"$(INTDIR)\solver1d.obj" \
-	"$(INTDIR)\voltermstructure.obj"
+	"$(INTDIR)\voltermstructure.obj" \
+	"..\QuantLibXLL\Debug\QuantLibXLL.lib"
 
 ".\lib\Win32\VisualStudio\QuantLib_d.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
     $(LIB32) @<<
@@ -1338,10 +1361,21 @@ INTDIR=.\build\OnTheEdgeRelease
 OutDir=.\build\OnTheEdgeRelease
 # End Custom Macros
 
+!IF "$(RECURSE)" == "0" 
+
 ALL : ".\lib\Win32\VisualStudio\QuantLib.lib" "$(OUTDIR)\QuantLib.bsc"
 
+!ELSE 
 
+ALL : ".\lib\Win32\VisualStudio\QuantLib.lib" "$(OUTDIR)\QuantLib.bsc"
+
+!ENDIF 
+
+!IF "$(RECURSE)" == "1" 
 CLEAN :
+!ELSE 
+CLEAN :
+!ENDIF 
 	-@erase "$(INTDIR)\actualactual.obj"
 	-@erase "$(INTDIR)\actualactual.sbr"
 	-@erase "$(INTDIR)\affinetermstructure.obj"
@@ -1989,10 +2023,21 @@ INTDIR=.\build\OnTheEdgeDebug
 OutDir=.\build\OnTheEdgeDebug
 # End Custom Macros
 
+!IF "$(RECURSE)" == "0" 
+
 ALL : ".\lib\Win32\VisualStudio\QuantLib_d.lib" "$(OUTDIR)\QuantLib.bsc"
 
+!ELSE 
 
+ALL : ".\lib\Win32\VisualStudio\QuantLib_d.lib" "$(OUTDIR)\QuantLib.bsc"
+
+!ENDIF 
+
+!IF "$(RECURSE)" == "1" 
 CLEAN :
+!ELSE 
+CLEAN :
+!ENDIF 
 	-@erase "$(INTDIR)\actualactual.obj"
 	-@erase "$(INTDIR)\actualactual.sbr"
 	-@erase "$(INTDIR)\affinetermstructure.obj"
@@ -3461,6 +3506,26 @@ SOURCE=.\ql\PricingEngines\fdvanillaengine.cpp
 "$(INTDIR)\fdvanillaengine.obj"	"$(INTDIR)\fdvanillaengine.sbr" : $(SOURCE) "$(INTDIR)"
 	$(CPP) $(CPP_PROJ) $(SOURCE)
 
+
+!IF  "$(CFG)" == "QuantLib - Win32 Release"
+
+!ELSEIF  "$(CFG)" == "QuantLib - Win32 Debug"
+
+"QuantLibXLL - Win32 Debug" : 
+   cd "\Projects\QuantLibXLL"
+   $(MAKE) /$(MAKEFLAGS) /F .\QuantLibXLL.mak CFG="QuantLibXLL - Win32 Debug" 
+   cd "..\QuantLib"
+
+"QuantLibXLL - Win32 DebugCLEAN" : 
+   cd "\Projects\QuantLibXLL"
+   $(MAKE) /$(MAKEFLAGS) /F .\QuantLibXLL.mak CFG="QuantLibXLL - Win32 Debug" RECURSE=1 CLEAN 
+   cd "..\QuantLib"
+
+!ELSEIF  "$(CFG)" == "QuantLib - Win32 OnTheEdgeRelease"
+
+!ELSEIF  "$(CFG)" == "QuantLib - Win32 OnTheEdgeDebug"
+
+!ENDIF 
 
 SOURCE=.\ql\calendar.cpp
 

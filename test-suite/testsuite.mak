@@ -35,10 +35,21 @@ INTDIR=.\build\Release
 OutDir=.\build\Release
 # End Custom Macros
 
+!IF "$(RECURSE)" == "0" 
+
 ALL : "$(OUTDIR)\testsuite.exe"
 
+!ELSE 
 
+ALL : "QuantLib - Win32 Release" "$(OUTDIR)\testsuite.exe"
+
+!ENDIF 
+
+!IF "$(RECURSE)" == "1" 
+CLEAN :"QuantLib - Win32 ReleaseCLEAN" 
+!ELSE 
 CLEAN :
+!ENDIF 
 	-@erase "$(INTDIR)\calendars.obj"
 	-@erase "$(INTDIR)\capfloor.obj"
 	-@erase "$(INTDIR)\covariance.obj"
@@ -127,7 +138,8 @@ LINK32_OBJS= \
 	"$(INTDIR)\stats.obj" \
 	"$(INTDIR)\swap.obj" \
 	"$(INTDIR)\swaption.obj" \
-	"$(INTDIR)\termstructures.obj"
+	"$(INTDIR)\termstructures.obj" \
+	"..\lib\Win32\VisualStudio\QuantLib.lib"
 
 "$(OUTDIR)\testsuite.exe" : "$(OUTDIR)" $(DEF_FILE) $(LINK32_OBJS)
     $(LINK32) @<<
@@ -142,10 +154,21 @@ INTDIR=.\build\Debug
 OutDir=.\build\Debug
 # End Custom Macros
 
+!IF "$(RECURSE)" == "0" 
+
 ALL : "$(OUTDIR)\testsuite.exe"
 
+!ELSE 
 
+ALL : "QuantLib - Win32 Debug" "$(OUTDIR)\testsuite.exe"
+
+!ENDIF 
+
+!IF "$(RECURSE)" == "1" 
+CLEAN :"QuantLib - Win32 DebugCLEAN" 
+!ELSE 
 CLEAN :
+!ENDIF 
 	-@erase "$(INTDIR)\calendars.obj"
 	-@erase "$(INTDIR)\capfloor.obj"
 	-@erase "$(INTDIR)\covariance.obj"
@@ -237,7 +260,8 @@ LINK32_OBJS= \
 	"$(INTDIR)\stats.obj" \
 	"$(INTDIR)\swap.obj" \
 	"$(INTDIR)\swaption.obj" \
-	"$(INTDIR)\termstructures.obj"
+	"$(INTDIR)\termstructures.obj" \
+	"..\lib\Win32\VisualStudio\QuantLib_d.lib"
 
 "$(OUTDIR)\testsuite.exe" : "$(OUTDIR)" $(DEF_FILE) $(LINK32_OBJS)
     $(LINK32) @<<
@@ -252,10 +276,21 @@ INTDIR=.\build\OnTheEdgeDebug
 OutDir=.\build\OnTheEdgeDebug
 # End Custom Macros
 
+!IF "$(RECURSE)" == "0" 
+
 ALL : "$(OUTDIR)\testsuite.exe"
 
+!ELSE 
 
+ALL : "QuantLib - Win32 OnTheEdgeDebug" "$(OUTDIR)\testsuite.exe"
+
+!ENDIF 
+
+!IF "$(RECURSE)" == "1" 
+CLEAN :"QuantLib - Win32 OnTheEdgeDebugCLEAN" 
+!ELSE 
 CLEAN :
+!ENDIF 
 	-@erase "$(INTDIR)\calendars.obj"
 	-@erase "$(INTDIR)\capfloor.obj"
 	-@erase "$(INTDIR)\covariance.obj"
@@ -347,7 +382,8 @@ LINK32_OBJS= \
 	"$(INTDIR)\stats.obj" \
 	"$(INTDIR)\swap.obj" \
 	"$(INTDIR)\swaption.obj" \
-	"$(INTDIR)\termstructures.obj"
+	"$(INTDIR)\termstructures.obj" \
+	"..\lib\Win32\VisualStudio\QuantLib_d.lib"
 
 "$(OUTDIR)\testsuite.exe" : "$(OUTDIR)" $(DEF_FILE) $(LINK32_OBJS)
     $(LINK32) @<<
@@ -362,10 +398,21 @@ INTDIR=.\build\OnTheEdgeRelease
 OutDir=.\build\OnTheEdgeRelease
 # End Custom Macros
 
+!IF "$(RECURSE)" == "0" 
+
 ALL : "$(OUTDIR)\testsuite.exe"
 
+!ELSE 
 
+ALL : "QuantLib - Win32 OnTheEdgeRelease" "$(OUTDIR)\testsuite.exe"
+
+!ENDIF 
+
+!IF "$(RECURSE)" == "1" 
+CLEAN :"QuantLib - Win32 OnTheEdgeReleaseCLEAN" 
+!ELSE 
 CLEAN :
+!ENDIF 
 	-@erase "$(INTDIR)\calendars.obj"
 	-@erase "$(INTDIR)\capfloor.obj"
 	-@erase "$(INTDIR)\covariance.obj"
@@ -454,7 +501,8 @@ LINK32_OBJS= \
 	"$(INTDIR)\stats.obj" \
 	"$(INTDIR)\swap.obj" \
 	"$(INTDIR)\swaption.obj" \
-	"$(INTDIR)\termstructures.obj"
+	"$(INTDIR)\termstructures.obj" \
+	"..\lib\Win32\VisualStudio\QuantLib.lib"
 
 "$(OUTDIR)\testsuite.exe" : "$(OUTDIR)" $(DEF_FILE) $(LINK32_OBJS)
     $(LINK32) @<<
@@ -578,6 +626,56 @@ SOURCE=.\termstructures.cpp
 
 "$(INTDIR)\termstructures.obj" : $(SOURCE) "$(INTDIR)"
 
+
+!IF  "$(CFG)" == "testsuite - Win32 Release"
+
+"QuantLib - Win32 Release" : 
+   cd "\Projects\QuantLib"
+   $(MAKE) /$(MAKEFLAGS) /F .\QuantLib.mak CFG="QuantLib - Win32 Release" 
+   cd ".\test-suite"
+
+"QuantLib - Win32 ReleaseCLEAN" : 
+   cd "\Projects\QuantLib"
+   $(MAKE) /$(MAKEFLAGS) /F .\QuantLib.mak CFG="QuantLib - Win32 Release" RECURSE=1 CLEAN 
+   cd ".\test-suite"
+
+!ELSEIF  "$(CFG)" == "testsuite - Win32 Debug"
+
+"QuantLib - Win32 Debug" : 
+   cd "\Projects\QuantLib"
+   $(MAKE) /$(MAKEFLAGS) /F .\QuantLib.mak CFG="QuantLib - Win32 Debug" 
+   cd ".\test-suite"
+
+"QuantLib - Win32 DebugCLEAN" : 
+   cd "\Projects\QuantLib"
+   $(MAKE) /$(MAKEFLAGS) /F .\QuantLib.mak CFG="QuantLib - Win32 Debug" RECURSE=1 CLEAN 
+   cd ".\test-suite"
+
+!ELSEIF  "$(CFG)" == "testsuite - Win32 OnTheEdgeDebug"
+
+"QuantLib - Win32 OnTheEdgeDebug" : 
+   cd "\Projects\QuantLib"
+   $(MAKE) /$(MAKEFLAGS) /F .\QuantLib.mak CFG="QuantLib - Win32 OnTheEdgeDebug" 
+   cd ".\test-suite"
+
+"QuantLib - Win32 OnTheEdgeDebugCLEAN" : 
+   cd "\Projects\QuantLib"
+   $(MAKE) /$(MAKEFLAGS) /F .\QuantLib.mak CFG="QuantLib - Win32 OnTheEdgeDebug" RECURSE=1 CLEAN 
+   cd ".\test-suite"
+
+!ELSEIF  "$(CFG)" == "testsuite - Win32 OnTheEdgeRelease"
+
+"QuantLib - Win32 OnTheEdgeRelease" : 
+   cd "\Projects\QuantLib"
+   $(MAKE) /$(MAKEFLAGS) /F .\QuantLib.mak CFG="QuantLib - Win32 OnTheEdgeRelease" 
+   cd ".\test-suite"
+
+"QuantLib - Win32 OnTheEdgeReleaseCLEAN" : 
+   cd "\Projects\QuantLib"
+   $(MAKE) /$(MAKEFLAGS) /F .\QuantLib.mak CFG="QuantLib - Win32 OnTheEdgeRelease" RECURSE=1 CLEAN 
+   cd ".\test-suite"
+
+!ENDIF 
 
 
 !ENDIF 
