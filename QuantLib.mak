@@ -25,9 +25,6 @@ NULL=
 NULL=nul
 !ENDIF 
 
-CPP=cl.exe
-RSC=rc.exe
-
 !IF  "$(CFG)" == "QuantLib - Win32 Release"
 
 OUTDIR=.\Release
@@ -73,6 +70,7 @@ CLEAN :
 	-@erase "$(INTDIR)\himalaya.obj"
 	-@erase "$(INTDIR)\himalayapathpricer.obj"
 	-@erase "$(INTDIR)\lecuyerrandomgenerator.obj"
+	-@erase "$(INTDIR)\libormanager.obj"
 	-@erase "$(INTDIR)\london.obj"
 	-@erase "$(INTDIR)\matrix.obj"
 	-@erase "$(INTDIR)\mceuropeanpricer.obj"
@@ -86,8 +84,9 @@ CLEAN :
 	-@erase "$(INTDIR)\pagodaoption.obj"
 	-@erase "$(INTDIR)\pagodapathpricer.obj"
 	-@erase "$(INTDIR)\piecewiseconstantforwards.obj"
+	-@erase "$(INTDIR)\piecewiseflatforward.obj"
 	-@erase "$(INTDIR)\plainbasketoption.obj"
-	-@erase "$(INTDIR)\ratehelper.obj"
+	-@erase "$(INTDIR)\ratehelpers.obj"
 	-@erase "$(INTDIR)\ridder.obj"
 	-@erase "$(INTDIR)\secant.obj"
 	-@erase "$(INTDIR)\solver1d.obj"
@@ -102,13 +101,47 @@ CLEAN :
 	-@erase "$(INTDIR)\vc60.idb"
 	-@erase "$(INTDIR)\wellington.obj"
 	-@erase "$(INTDIR)\westerncalendar.obj"
+	-@erase "$(INTDIR)\xibor.obj"
 	-@erase "$(INTDIR)\zurich.obj"
 	-@erase ".\lib\Win32\VisualStudio\QuantLib.lib"
 
 "$(OUTDIR)" :
     if not exist "$(OUTDIR)/$(NULL)" mkdir "$(OUTDIR)"
 
+CPP=cl.exe
 CPP_PROJ=/nologo /MD /W3 /GR /GX /Od /Ob2 /I "Include" /D "WIN32" /D "NDEBUG" /D "_MBCS" /D "_LIB" /Fp"$(INTDIR)\QuantLib.pch" /YX /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\\" /FD /c 
+
+.c{$(INTDIR)}.obj::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.cpp{$(INTDIR)}.obj::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.cxx{$(INTDIR)}.obj::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.c{$(INTDIR)}.sbr::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.cpp{$(INTDIR)}.sbr::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.cxx{$(INTDIR)}.sbr::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+RSC=rc.exe
 BSC32=bscmake.exe
 BSC32_FLAGS=/nologo /o"$(OUTDIR)\QuantLib.bsc" 
 BSC32_SBRS= \
@@ -176,10 +209,13 @@ LIB32_OBJS= \
 	"$(INTDIR)\ridder.obj" \
 	"$(INTDIR)\secant.obj" \
 	"$(INTDIR)\piecewiseconstantforwards.obj" \
+	"$(INTDIR)\piecewiseflatforward.obj" \
+	"$(INTDIR)\ratehelpers.obj" \
+	"$(INTDIR)\libormanager.obj" \
+	"$(INTDIR)\xibor.obj" \
 	"$(INTDIR)\calendar.obj" \
 	"$(INTDIR)\dataformatters.obj" \
 	"$(INTDIR)\date.obj" \
-	"$(INTDIR)\ratehelper.obj" \
 	"$(INTDIR)\solver1d.obj"
 
 ".\lib\Win32\VisualStudio\QuantLib.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
@@ -232,6 +268,7 @@ CLEAN :
 	-@erase "$(INTDIR)\himalaya.obj"
 	-@erase "$(INTDIR)\himalayapathpricer.obj"
 	-@erase "$(INTDIR)\lecuyerrandomgenerator.obj"
+	-@erase "$(INTDIR)\libormanager.obj"
 	-@erase "$(INTDIR)\london.obj"
 	-@erase "$(INTDIR)\matrix.obj"
 	-@erase "$(INTDIR)\mceuropeanpricer.obj"
@@ -245,8 +282,9 @@ CLEAN :
 	-@erase "$(INTDIR)\pagodaoption.obj"
 	-@erase "$(INTDIR)\pagodapathpricer.obj"
 	-@erase "$(INTDIR)\piecewiseconstantforwards.obj"
+	-@erase "$(INTDIR)\piecewiseflatforward.obj"
 	-@erase "$(INTDIR)\plainbasketoption.obj"
-	-@erase "$(INTDIR)\ratehelper.obj"
+	-@erase "$(INTDIR)\ratehelpers.obj"
 	-@erase "$(INTDIR)\ridder.obj"
 	-@erase "$(INTDIR)\secant.obj"
 	-@erase "$(INTDIR)\solver1d.obj"
@@ -262,13 +300,47 @@ CLEAN :
 	-@erase "$(INTDIR)\vc60.pdb"
 	-@erase "$(INTDIR)\wellington.obj"
 	-@erase "$(INTDIR)\westerncalendar.obj"
+	-@erase "$(INTDIR)\xibor.obj"
 	-@erase "$(INTDIR)\zurich.obj"
 	-@erase ".\lib\Win32\VisualStudio\QuantLib_d.lib"
 
 "$(OUTDIR)" :
     if not exist "$(OUTDIR)/$(NULL)" mkdir "$(OUTDIR)"
 
+CPP=cl.exe
 CPP_PROJ=/nologo /MDd /W3 /GR /GX /ZI /Od /I "Include" /I "Include\Pricers" /D "WIN32" /D "_DEBUG" /D "_MBCS" /D "_LIB" /D "QL_DEBUG" /Fp"$(INTDIR)\QuantLib.pch" /YX /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\\" /FD /GZ /c 
+
+.c{$(INTDIR)}.obj::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.cpp{$(INTDIR)}.obj::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.cxx{$(INTDIR)}.obj::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.c{$(INTDIR)}.sbr::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.cpp{$(INTDIR)}.sbr::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.cxx{$(INTDIR)}.sbr::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+RSC=rc.exe
 BSC32=bscmake.exe
 BSC32_FLAGS=/nologo /o"$(OUTDIR)\QuantLib.bsc" 
 BSC32_SBRS= \
@@ -336,10 +408,13 @@ LIB32_OBJS= \
 	"$(INTDIR)\ridder.obj" \
 	"$(INTDIR)\secant.obj" \
 	"$(INTDIR)\piecewiseconstantforwards.obj" \
+	"$(INTDIR)\piecewiseflatforward.obj" \
+	"$(INTDIR)\ratehelpers.obj" \
+	"$(INTDIR)\libormanager.obj" \
+	"$(INTDIR)\xibor.obj" \
 	"$(INTDIR)\calendar.obj" \
 	"$(INTDIR)\dataformatters.obj" \
 	"$(INTDIR)\date.obj" \
-	"$(INTDIR)\ratehelper.obj" \
 	"$(INTDIR)\solver1d.obj"
 
 ".\lib\Win32\VisualStudio\QuantLib_d.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
@@ -348,36 +423,6 @@ LIB32_OBJS= \
 <<
 
 !ENDIF 
-
-.c{$(INTDIR)}.obj::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-.cpp{$(INTDIR)}.obj::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-.cxx{$(INTDIR)}.obj::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-.c{$(INTDIR)}.sbr::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-.cpp{$(INTDIR)}.sbr::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-.cxx{$(INTDIR)}.sbr::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
 
 
 !IF "$(NO_EXTERNAL_DEPS)" != "1"
@@ -750,6 +795,30 @@ SOURCE=.\Sources\TermStructures\piecewiseconstantforwards.cpp
 	$(CPP) $(CPP_PROJ) $(SOURCE)
 
 
+SOURCE=.\Sources\TermStructures\piecewiseflatforward.cpp
+
+"$(INTDIR)\piecewiseflatforward.obj" : $(SOURCE) "$(INTDIR)"
+	$(CPP) $(CPP_PROJ) $(SOURCE)
+
+
+SOURCE=.\Sources\TermStructures\ratehelpers.cpp
+
+"$(INTDIR)\ratehelpers.obj" : $(SOURCE) "$(INTDIR)"
+	$(CPP) $(CPP_PROJ) $(SOURCE)
+
+
+SOURCE=.\Sources\Indexes\libormanager.cpp
+
+"$(INTDIR)\libormanager.obj" : $(SOURCE) "$(INTDIR)"
+	$(CPP) $(CPP_PROJ) $(SOURCE)
+
+
+SOURCE=.\Sources\Indexes\xibor.cpp
+
+"$(INTDIR)\xibor.obj" : $(SOURCE) "$(INTDIR)"
+	$(CPP) $(CPP_PROJ) $(SOURCE)
+
+
 SOURCE=.\Sources\calendar.cpp
 
 "$(INTDIR)\calendar.obj" : $(SOURCE) "$(INTDIR)"
@@ -765,12 +834,6 @@ SOURCE=.\Sources\dataformatters.cpp
 SOURCE=.\Sources\date.cpp
 
 "$(INTDIR)\date.obj" : $(SOURCE) "$(INTDIR)"
-	$(CPP) $(CPP_PROJ) $(SOURCE)
-
-
-SOURCE=.\Sources\ratehelper.cpp
-
-"$(INTDIR)\ratehelper.obj" : $(SOURCE) "$(INTDIR)"
 	$(CPP) $(CPP_PROJ) $(SOURCE)
 
 
