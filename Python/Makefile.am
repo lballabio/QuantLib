@@ -8,7 +8,6 @@ EXTRA_DIST=	makefile.mak \
     PyQuantLib.dsp \
     PyQuantLib.dsw \
     PyQuantLib.mak \
-    PyWrap.bat \
     QuantLib.py \
     quantlib_wrap.cpp \
     QuantLibc.def \
