@@ -14,6 +14,7 @@ Changes since Release 0.2.1:
       Black-Derman-Toy, Black-Karasinski
     - Bermuda swaption finite difference pricer
     - cap/floor and swaption calibration helpers
+    - discount factor accuracy in the yield curve bootstrapping is now given as input
 
     OPTIMIZATION FRAMEWORK
     - added conjugate gradient, etc
@@ -23,6 +24,10 @@ Changes since Release 0.2.1:
     VARIOUS
     - Handle is now castable to an Handle of a compatible type
     - better spline interpolation algorithm
+    - kustosis() and skewness() now handles the case of stddev == 0 and/or variance == 0
+    - richer QL_VERSION variable
+    - enforced MS VC compilation settings
+
 
 2001-12-03 Release 0.2.1
 
