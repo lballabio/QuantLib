@@ -91,7 +91,14 @@ namespace QuantLib {
         SobolRsg(Size dimensionality,
                  unsigned long seed = 0,
                  DirectionIntegers directionIntegers = Jaeckel);
-        const sample_type& nextSequence() const;
+        const std::vector<unsigned long>& nextInt32Sequence() const;
+        const SobolRsg::sample_type& SobolRsg::nextSequence() const {
+            // normalize to get a double in (0,1)
+            for (Size k=0; k<dimensionality_; k++)
+                sequence_.value[k] = nextInt32Sequence()[k] *
+                    normalizationFactor_;
+            return sequence_;
+        }
         const sample_type& lastSequence() const { return sequence_; }
         Size dimension() const { return dimensionality_; }
       private:

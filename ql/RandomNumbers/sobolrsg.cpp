@@ -1254,8 +1254,8 @@ namespace QuantLib {
     : dimensionality_(dimensionality), sequenceCounter_(0), firstDraw_(true),
       sequence_(Array(dimensionality), 1.0),
       integerSequence_(dimensionality, 0),
-      directionIntegers_(dimensionality,std::vector<unsigned long>(bits_))
-    {
+      directionIntegers_(dimensionality,std::vector<unsigned long>(bits_)) {
+
         QL_REQUIRE(dimensionality<=PPMT_MAX_DIM,
                    "dimensionality "
                    + SizeFormatter::toString(dimensionality) +
@@ -1423,19 +1423,18 @@ namespace QuantLib {
         */
 
         // initialize the Sobol integer/double vectors
+        // first draw
         for (k=0; k<dimensionality_; k++) {
             integerSequence_[k]=directionIntegers_[k][0];
-            // first draw
-            sequence_.value[k] = integerSequence_[k]*normalizationFactor_;
         }
     }
 
 
-    const SobolRsg::sample_type& SobolRsg::nextSequence() const {
+    const std::vector<unsigned long>& SobolRsg::nextInt32Sequence() const {
         if (firstDraw_) {
             // it was precomputed in the constructor
             firstDraw_ = false;
-            return sequence_;
+            return integerSequence_;
         }
         // increment the counter
         sequenceCounter_++;
@@ -1454,10 +1453,8 @@ namespace QuantLib {
             // the integer sequence to obtain a new Sobol integer for that
             // component
             integerSequence_[k] ^= directionIntegers_[k][j];
-            // normalize to get a double in (0,1)
-            sequence_.value[k] = integerSequence_[k]*normalizationFactor_;
         }
-        return sequence_;
+        return integerSequence_;
     }
 
 }
