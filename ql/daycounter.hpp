@@ -1,5 +1,4 @@
 
-
 /*
  Copyright (C) 2000, 2001, 2002 RiskMap srl
 
@@ -28,8 +27,7 @@
 #define quantlib_day_counter_h
 
 #include <ql/date.hpp>
-#include <ql/handle.hpp>
-#include <ql/null.hpp>
+#include <ql/Patterns/bridge.hpp>
 
 /*! \namespace QuantLib::DayCounters
     \brief Specialized DayCounter classes
@@ -39,15 +37,26 @@
 
 namespace QuantLib {
 
+    //! abstract base class for day counter implementations
+    class DayCounterImpl {
+      public:
+        virtual ~DayCounterImpl() {}
+        virtual std::string name() const = 0;
+        virtual int dayCount(const Date&, const Date&) const = 0;
+        virtual Time yearFraction(const Date&, const Date&,
+                                  const Date& refPeriodStart,
+                                  const Date& refPeriodEnd) const = 0;
+    };
+
     //! day counter class
     /*! This class provides methods for determining the length of a time
         period according to given market convention, both as a number
         of days and as a year fraction.
 
-        The Strategy pattern is used to provide the base behavior of the
+        The Bridge pattern is used to provide the base behavior of the
         day counter.
     */
-    class DayCounter {
+    class DayCounter : public Patterns::Bridge<DayCounter,DayCounterImpl> {
       public:
         //! \name DayCounter interface
         //@{
@@ -61,25 +70,13 @@ namespace QuantLib {
         int dayCount(const Date&, const Date&) const;
         //! Returns the period between two dates as a fraction of year.
         Time yearFraction(const Date&, const Date&,
-          const Date& refPeriodStart = Date(),
-          const Date& refPeriodEnd = Date()) const;
+                          const Date& refPeriodStart = Date(),
+                          const Date& refPeriodEnd = Date()) const;
         //@}
 
-        //! abstract base class for day counter implementations
-        class DayCounterImpl {
-          public:
-            virtual std::string name() const = 0;
-            virtual int dayCount(const Date&, const Date&) const = 0;
-            virtual Time yearFraction(const Date&, const Date&,
-                const Date& refPeriodStart,
-                const Date& refPeriodEnd) const = 0;
-        };
       protected:
-        /*! this protected constructor will only be invoked by derived
-            classes which define a given Calendar implementation */
-        DayCounter(const Handle<DayCounterImpl>& impl) : impl_(impl) {}
-      private:
-        Handle<DayCounterImpl> impl_;
+        DayCounter(const Handle<DayCounter::Impl>& impl) 
+        : Patterns::Bridge<DayCounter,DayCounterImpl>(impl) {}
     };
 
     // comparison based on name

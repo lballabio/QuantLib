@@ -60,6 +60,7 @@ namespace QuantLib {
     //! abstract base class for calendar implementations
     class CalendarImpl {
       public:
+        virtual ~CalendarImpl() {}
         virtual std::string name() const = 0;
         virtual bool isBusinessDay(const Date&) const = 0;
     };

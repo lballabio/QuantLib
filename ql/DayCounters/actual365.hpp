@@ -1,5 +1,4 @@
 
-
 /*
  Copyright (C) 2000, 2001, 2002 RiskMap srl
 
@@ -15,6 +14,7 @@
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
+
 /*! \file actual365.hpp
     \brief act/365 day counter
 
@@ -36,19 +36,20 @@ namespace QuantLib {
         //! Actual/365 day count convention
         class Actual365 : public DayCounter {
           private:
-            class Act365Impl : public DayCounter::DayCounterImpl {
+            class Impl : public DayCounter::Impl {
               public:
                 std::string name() const { return std::string("act/365"); }
                 int dayCount(const Date& d1, const Date& d2) const {
-                    return (d2-d1); }
+                    return (d2-d1); 
+                }
                 Time yearFraction(const Date& d1, const Date& d2,
-                    const Date&, const Date&) const {
-                        return dayCount(d1,d2)/365.0;
+                                  const Date&, const Date&) const {
+                    return dayCount(d1,d2)/365.0;
                 }
             };
           public:
             Actual365()
-            : DayCounter(Handle<DayCounterImpl>(new Act365Impl)) {}
+            : DayCounter(Handle<DayCounter::Impl>(new Actual365::Impl)) {}
         };
 
     }

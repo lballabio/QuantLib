@@ -1,5 +1,4 @@
 
-
 /*
  Copyright (C) 2000, 2001, 2002 RiskMap srl
 
@@ -15,6 +14,7 @@
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
+
 /*! \file thirty360.cpp
     \brief 30/360 day counters
 
@@ -30,22 +30,22 @@ namespace QuantLib {
 
     namespace DayCounters {
 
-        Handle<DayCounter::DayCounterImpl>
+        Handle<DayCounter::Impl>
         Thirty360::implementation(Thirty360::Convention c) {
             switch (c) {
               case USA:
-                return Handle<DayCounterImpl>(new Thirty360USImpl);
+                return Handle<DayCounter::Impl>(new US_Impl);
               case European:
-                return Handle<DayCounterImpl>(new Thirty360EuImpl);
+                return Handle<DayCounter::Impl>(new EU_Impl);
               case Italian:
-                return Handle<DayCounterImpl>(new Thirty360ItImpl);
+                return Handle<DayCounter::Impl>(new IT_Impl);
               default:
                 throw Error("Unknown 30/360 convention");
             }
         }
 
 
-        int Thirty360::Thirty360USImpl::dayCount(
+        int Thirty360::US_Impl::dayCount(
             const Date& d1, const Date& d2) const {
                 int dd1 = d1.dayOfMonth(), dd2 = d2.dayOfMonth();
                 int mm1 = d1.month(), mm2 = d2.month();
@@ -57,7 +57,7 @@ namespace QuantLib {
                        QL_MAX(0,30-dd1) + QL_MIN(30,dd2);
         }
 
-        int Thirty360::Thirty360EuImpl::dayCount(
+        int Thirty360::EU_Impl::dayCount(
             const Date& d1, const Date& d2) const {
                 int dd1 = d1.dayOfMonth(), dd2 = d2.dayOfMonth();
                 int mm1 = d1.month(), mm2 = d2.month();
@@ -67,7 +67,7 @@ namespace QuantLib {
                        QL_MAX(0,30-dd1) + QL_MIN(30,dd2);
         }
 
-        int Thirty360::Thirty360ItImpl::dayCount(
+        int Thirty360::IT_Impl::dayCount(
             const Date& d1, const Date& d2) const {
                 int dd1 = d1.dayOfMonth(), dd2 = d2.dayOfMonth();
                 int mm1 = d1.month(), mm2 = d2.month();

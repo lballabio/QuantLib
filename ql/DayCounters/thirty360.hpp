@@ -1,5 +1,4 @@
 
-
 /*
  Copyright (C) 2000, 2001, 2002 RiskMap srl
 
@@ -15,6 +14,7 @@
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
+
 /*! \file thirty360.hpp
     \brief 30/360 day counters
 
@@ -56,31 +56,31 @@ namespace QuantLib {
           public:
             enum Convention { USA, European, Italian };
           private:
-            class Thirty360USImpl : public DayCounter::DayCounterImpl {
+            class US_Impl : public DayCounter::Impl {
               public:
                 std::string name() const { return std::string("30/360");}
                 int dayCount(const Date& d1, const Date& d2) const;
                 Time yearFraction(const Date& d1, const Date& d2,
-                    const Date&, const Date&) const {
+                                  const Date&, const Date&) const {
                         return dayCount(d1,d2)/360.0; }
             };
-            class Thirty360EuImpl : public DayCounter::DayCounterImpl {
+            class EU_Impl : public DayCounter::Impl {
               public:
                 std::string name() const { return std::string("30/360eu");}
                 int dayCount(const Date& d1, const Date& d2) const;
                 Time yearFraction(const Date& d1, const Date& d2,
-                    const Date&, const Date&) const {
+                                  const Date&, const Date&) const {
                         return dayCount(d1,d2)/360.0; }
             };
-            class Thirty360ItImpl : public DayCounter::DayCounterImpl {
+            class IT_Impl : public DayCounter::Impl {
               public:
                 std::string name() const { return std::string("30/360it");}
                 int dayCount(const Date& d1, const Date& d2) const;
                 Time yearFraction(const Date& d1, const Date& d2,
-                    const Date&, const Date&) const {
+                                  const Date&, const Date&) const {
                         return dayCount(d1,d2)/360.0; }
             };
-            static Handle<DayCounterImpl> implementation(Convention c);
+            static Handle<DayCounter::Impl> implementation(Convention c);
           public:
             Thirty360(Convention c = Thirty360::USA)
             : DayCounter(implementation(c)) {}

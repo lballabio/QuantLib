@@ -1,5 +1,4 @@
 
-
 /*
  Copyright (C) 2000, 2001, 2002 RiskMap srl
 
@@ -15,6 +14,7 @@
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
+
 /*! \file actualactual.cpp
     \brief act/act day counters
 
@@ -31,25 +31,25 @@ namespace QuantLib {
 
     namespace DayCounters {
 
-        Handle<DayCounter::DayCounterImpl>
+        Handle<DayCounter::Impl>
         ActualActual::implementation(ActualActual::Convention c) {
             switch (c) {
               case ISMA:
               case Bond:
-                return Handle<DayCounterImpl>(new ActActISMAImpl);
+                return Handle<DayCounter::Impl>(new ISMA_Impl);
               case ISDA:
               case Historical:
-                return Handle<DayCounterImpl>(new ActActISDAImpl);
+                return Handle<DayCounter::Impl>(new ISDA_Impl);
               case AFB:
               case Euro:
-                return Handle<DayCounterImpl>(new ActActAFBImpl);
+                return Handle<DayCounter::Impl>(new AFB_Impl);
               default:
                 throw Error("Unknown act/act convention");
             }
         }
 
 
-        Time ActualActual::ActActISMAImpl::yearFraction(
+        Time ActualActual::ISMA_Impl::yearFraction(
           const Date& d1, const Date& d2,
           const Date& d3, const Date& d4) const {
 
@@ -139,7 +139,7 @@ namespace QuantLib {
             }
         }
 
-        Time ActualActual::ActActISDAImpl::yearFraction(
+        Time ActualActual::ISDA_Impl::yearFraction(
           const Date& d1, const Date& d2, const Date&, const Date&) const {
             QL_REQUIRE(d2>=d1, "Invalid reference period");
 
@@ -156,7 +156,7 @@ namespace QuantLib {
             return sum;
         }
 
-        Time ActualActual::ActActAFBImpl::yearFraction(
+        Time ActualActual::AFB_Impl::yearFraction(
           const Date& d1, const Date& d2, const Date&, const Date&) const {
             QL_REQUIRE(d1<=d2, "Invalid reference period");
 

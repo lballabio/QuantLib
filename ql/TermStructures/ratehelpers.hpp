@@ -28,6 +28,7 @@
 #define quantlib_ratehelper_h
 
 #include <ql/Instruments/simpleswap.hpp>
+#include <ql/null.hpp>
 
 namespace QuantLib {
 
