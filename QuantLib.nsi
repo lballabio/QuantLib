@@ -41,6 +41,8 @@ SectionIn 1 2
     File "*.dsw"
     File "*.dsp"
     File "*.nsi"
+    File "*.sln"
+    File "*.vcproj"
 
     SetOutPath  $INSTDIR\ql
     File /r "ql\*.hpp"
@@ -55,6 +57,7 @@ SectionIn 1 2
     File /r "test-suite\*.cpp"
     File /r "test-suite\*.hpp"
     File /r "test-suite\*.dsp"
+    File /r "test-suite\*.vcproj"
     File /r "test-suite\CPPUNIT-COPYING"
 
     SetOutPath $INSTDIR\Examples
@@ -63,6 +66,8 @@ SectionIn 1 2
     File /r "Examples\*.txt"
     File /r "Examples\*.mak"
     File /r "Examples\*.dsw"
+    File /r "Examples\*.sln"
+    File /r "Examples\*.vcproj"
 
     SetOutPath $INSTDIR\Docs
     File /r "Docs\*.pdf"
@@ -103,11 +108,17 @@ SectionIn 1 2
     CreateShortCut "$SMPROGRAMS\QuantLib\What's new.lnk" \
                    "$INSTDIR\News.txt"
 
-    CreateShortCut "$SMPROGRAMS\QuantLib\Examples workspace.lnk" \
+    CreateShortCut "$SMPROGRAMS\QuantLib\Examples VC 6 workspace.lnk" \
                    "$INSTDIR\Examples\Examples.dsw"
 
-    CreateShortCut "$SMPROGRAMS\QuantLib\QuantLib project workspace.lnk" \
+    CreateShortCut "$SMPROGRAMS\QuantLib\Examples VC 7 workspace.lnk" \
+                   "$INSTDIR\Examples\Examples.sln"
+
+    CreateShortCut "$SMPROGRAMS\QuantLib\QuantLib VC 6 project workspace.lnk" \
                    "$INSTDIR\QuantLib.dsw"
+
+    CreateShortCut "$SMPROGRAMS\QuantLib\QuantLib VC 7 project workspace.lnk" \
+                   "$INSTDIR\QuantLib.sln"
 
     WriteUninstaller "QuantLibUninstall.exe"
 

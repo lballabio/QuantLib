@@ -52,6 +52,7 @@ EXTRA_DIST = \
     README.txt \
     CPPUNIT-COPYING \
     testsuite.dsp \
+    testsuite.vcproj \
     makefile.mak
 
 endif

@@ -13,6 +13,7 @@ BermudanSwaption_LDADD = ../../ql/libQuantLib.la
 EXTRA_DIST = \
     BermudanSwaption.dsp \
     BermudanSwaption.mak \
+    BermudanSwaption.vcproj \
     makefile.mak \
     ReadMe.txt
 

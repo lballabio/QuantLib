@@ -13,6 +13,7 @@ AmericanOption_LDADD = ../../ql/libQuantLib.la
 EXTRA_DIST = \
     AmericanOption.dsp \
     AmericanOption.mak \
+    AmericanOption.vcproj \
     makefile.mak \
     ReadMe.txt
 

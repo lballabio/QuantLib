@@ -10,6 +10,7 @@ SUBDIRS =  \
 
 EXTRA_DIST = \
     Examples.dsw \
+    Examples.sln \
     makefile.mak \
     README.txt
 

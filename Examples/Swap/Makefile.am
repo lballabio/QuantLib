@@ -13,6 +13,7 @@ SwapValuation_LDADD = ../../ql/libQuantLib.la
 EXTRA_DIST = \
     Swap.dsp \
     Swap.mak \
+    Swap.vcproj \
     makefile.mak \
     README.txt
 
