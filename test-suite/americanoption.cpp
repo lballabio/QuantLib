@@ -36,7 +36,7 @@ using namespace boost::unit_test_framework;
 
 #define REPORT_FAILURE(greekName, payoff, exercise, s, q, r, today, \
                        v, expected, calculated, error, tolerance) \
-    BOOST_FAIL(exerciseTypeToString(exercise) << " " \
+    BOOST_ERROR(exerciseTypeToString(exercise) << " " \
                << payoff->optionType() << " option with " \
                << payoffTypeToString(payoff) << " payoff:\n" \
                <<"    spot value:        " << s << "\n" \
@@ -424,6 +424,7 @@ namespace {
         std::map<std::string,Real> calculated, expected, tolerance;
         tolerance["delta"]  = 7.0e-4;
         tolerance["gamma"]  = 2.0e-4;
+        //tolerance["theta"]  = 1.0e-4;
 
         Option::Type types[] = { Option::Call, Option::Put };
         Real strikes[] = { 50.0, 99.5, 100.0, 100.5, 150.0 };
@@ -478,6 +479,7 @@ namespace {
                         Real value = option.NPV();
                         calculated["delta"]  = option.delta();
                         calculated["gamma"]  = option.gamma();
+                        //calculated["theta"]  = option.theta();
 
                         if (value > spot->value()*1.0e-5) {
                             // perturb spot and get delta and gamma
@@ -491,6 +493,17 @@ namespace {
                             spot->setValue(u);
                             expected["delta"] = (value_p - value_m)/(2*du);
                             expected["gamma"] = (delta_p - delta_m)/(2*du);
+
+                            /*
+                            // perturb date and get theta
+                            Time dT = dc.yearFraction(today-1, today+1);
+                            Settings::instance().setEvaluationDate(today-1);
+                            value_m = option.NPV();
+                            Settings::instance().setEvaluationDate(today+1);
+                            value_p = option.NPV();
+                            Settings::instance().setEvaluationDate(today);
+                            expected["theta"] = (value_p - value_m)/dT;
+                            */
 
                             // compare
                             std::map<std::string,Real>::iterator it;

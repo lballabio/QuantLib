@@ -1,6 +1,6 @@
 
 /*
- Copyright (C) 2003 StatPro Italia srl
+ Copyright (C) 2005 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -15,16 +15,25 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#ifndef quantlib_pricing_engines_core_hpp
-#define quantlib_pricing_engines_core_hpp
+/*! \file greeks.hpp
+    \brief default greek calculations
+*/
 
-#include <ql/qldefines.hpp>
+#ifndef quantlib_greeks_hpp
+#define quantlib_greeks_hpp
 
-#include <ql/PricingEngines/blackformula.hpp>
-#include <ql/PricingEngines/blackmodel.hpp>
-#include <ql/PricingEngines/genericmodelengine.hpp>
-#include <ql/PricingEngines/latticeshortratemodelengine.hpp>
-#include <ql/PricingEngines/mcsimulation.hpp>
+#include <ql/stochasticprocess.hpp>
+
+namespace QuantLib {
+
+    //! default theta calculation for Black-Scholes options
+    Real blackScholesTheta(const boost::shared_ptr<StochasticProcess>&,
+                           Real value, Real delta, Real gamma);
+
+    //! default theta-per-day calculation
+    Real defaultThetaPerDay(Real theta);
+
+}
 
 
 #endif

@@ -16,6 +16,7 @@
 */
 
 #include <ql/PricingEngines/Vanilla/fdeuropeanengine.hpp>
+#include <ql/PricingEngines/greeks.hpp>
 #include <ql/FiniteDifferences/fdtypedefs.hpp>
 #include <ql/FiniteDifferences/valueatcenter.hpp>
 
@@ -37,6 +38,10 @@ namespace QuantLib {
         results_.value = valueAtCenter(euroPrices_);
         results_.delta = firstDerivativeAtCenter(euroPrices_, grid_);
         results_.gamma = secondDerivativeAtCenter(euroPrices_, grid_);
+        results_.theta = blackScholesTheta(arguments_.stochasticProcess,
+                                           results_.value,
+                                           results_.delta,
+                                           results_.gamma);
     }
 
 }

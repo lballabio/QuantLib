@@ -17,6 +17,7 @@
 
 #include <ql/PricingEngines/Asian/analytic_discr_geom_av_price.hpp>
 #include <ql/PricingEngines/blackformula.hpp>
+#include <ql/PricingEngines/greeks.hpp>
 #include <ql/Processes/blackscholesprocess.hpp>
 #include <numeric>
 
@@ -128,6 +129,10 @@ namespace QuantLib {
 
         results_.strikeSensitivity = black.strikeSensitivity();
 
+        results_.theta = blackScholesTheta(arguments_.stochasticProcess,
+                                           results_.value,
+                                           results_.delta,
+                                           results_.gamma);
     }
 
 }

@@ -30,9 +30,6 @@ namespace QuantLib {
                                                 arguments_.stochasticProcess);
         QL_REQUIRE(process, "Black-Scholes process required");
 
-        QL_REQUIRE(arguments_.exercise->type() == Exercise::American,
-                   "not an American Option");
-
         boost::shared_ptr<AmericanExercise> ex =
             boost::dynamic_pointer_cast<AmericanExercise>(arguments_.exercise);
         QL_REQUIRE(ex, "non-American exercise given");

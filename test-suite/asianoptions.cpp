@@ -624,7 +624,7 @@ void AsianOptionTest::testAnalyticDiscreteGeometricAveragePriceGreeks() {
     std::map<std::string,Real> calculated, expected, tolerance;
     tolerance["delta"]  = 1.0e-5;
     tolerance["gamma"]  = 1.0e-5;
-    // tolerance["theta"]  = 1.0e-5;
+    tolerance["theta"]  = 1.0e-5;
     // tolerance["rho"]    = 1.0e-5;
     // tolerance["divRho"] = 1.0e-5;
     // tolerance["vega"]   = 1.0e-5;
@@ -697,7 +697,7 @@ void AsianOptionTest::testAnalyticDiscreteGeometricAveragePriceGreeks() {
                       Real value = option.NPV();
                       calculated["delta"]  = option.delta();
                       calculated["gamma"]  = option.gamma();
-                      // calculated["theta"]  = option.theta();
+                      calculated["theta"]  = option.theta();
                       // calculated["rho"]    = option.rho();
                       // calculated["divRho"] = option.dividendRho();
                       // calculated["vega"]   = option.vega();
@@ -741,6 +741,7 @@ void AsianOptionTest::testAnalyticDiscreteGeometricAveragePriceGreeks() {
                           value_m = option.NPV();
                           vol->setValue(v);
                           expected["vega"] = (value_p - value_m)/(2*dv);
+                          */
 
                           // perturb date and get theta
                           Time dT = dc.yearFraction(today-1, today+1);
@@ -750,7 +751,6 @@ void AsianOptionTest::testAnalyticDiscreteGeometricAveragePriceGreeks() {
                           value_p = option.NPV();
                           Settings::instance().setEvaluationDate(today);
                           expected["theta"] = (value_p - value_m)/dT;
-                          */
 
                           // compare
                           std::map<std::string,Real>::iterator it;

@@ -501,10 +501,10 @@ void DigitalOptionTest::testCashAtHitOrNothingAmericanGreeks() {
     std::map<std::string,Real> calculated, expected, tolerance;
     tolerance["delta"]  = 5.0e-5;
     tolerance["gamma"]  = 5.0e-5;
-    tolerance["theta"]  = 5.0e-5;
+    // tolerance["theta"]  = 5.0e-5;
     tolerance["rho"]    = 5.0e-5;
-    tolerance["divRho"] = 5.0e-5;
-    tolerance["vega"]   = 5.0e-5;
+    // tolerance["divRho"] = 5.0e-5;
+    // tolerance["vega"]   = 5.0e-5;
 
     Option::Type types[] = { Option::Call, Option::Put };
     Real strikes[] = { 50.0, 99.5, 100.5, 150.0 };
@@ -567,16 +567,17 @@ void DigitalOptionTest::testCashAtHitOrNothingAmericanGreeks() {
                   rRate->setValue(r);
                   vol->setValue(v);
 
-                  // just delta and rho are available for digital option with
-                  // american exercise. Greeks of digital options with european
-                  // payoff are tested in the europeanoption.cpp test
+                  // theta, dividend rho and vega are not available for
+                  // digital option with american exercise. Greeks of
+                  // digital options with european payoff are tested
+                  // in the europeanoption.cpp test
                   Real value = opt.NPV();
                   calculated["delta"]  = opt.delta();
                   calculated["gamma"]  = opt.gamma();
-                  //calculated["theta"]  = opt.theta();
+                  // calculated["theta"]  = opt.theta();
                   calculated["rho"]    = opt.rho();
-                  //calculated["divRho"] = opt.dividendRho();
-                  //calculated["vega"]   = opt.vega();
+                  // calculated["divRho"] = opt.dividendRho();
+                  // calculated["vega"]   = opt.vega();
 
                   if (value > 1.0e-6) {
                       // perturb spot and get delta and gamma
@@ -600,6 +601,7 @@ void DigitalOptionTest::testCashAtHitOrNothingAmericanGreeks() {
                       rRate->setValue(r);
                       expected["rho"] = (value_p - value_m)/(2*dr);
 
+                      /*
                       Spread dq = q*1.0e-4;
                       qRate->setValue(q+dq);
                       value_p = opt.NPV();
@@ -625,6 +627,7 @@ void DigitalOptionTest::testCashAtHitOrNothingAmericanGreeks() {
                       value_p = opt.NPV();
                       Settings::instance().setEvaluationDate(today);
                       expected["theta"] = (value_p - value_m)/dT;
+                      */
 
                       // check
                       std::map<std::string,Real>::iterator it;
@@ -737,6 +740,8 @@ test_suite* DigitalOptionTest::suite() {
     suite->add(BOOST_TEST_CASE(&DigitalOptionTest::testGapEuropeanValues));
     suite->add(BOOST_TEST_CASE(
                &DigitalOptionTest::testCashAtHitOrNothingAmericanValues));
+    suite->add(BOOST_TEST_CASE(
+               &DigitalOptionTest::testCashAtHitOrNothingAmericanGreeks));
     suite->add(BOOST_TEST_CASE(
                &DigitalOptionTest::testAssetAtHitOrNothingAmericanValues));
     suite->add(BOOST_TEST_CASE(

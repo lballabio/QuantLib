@@ -21,6 +21,10 @@
 #include <ql/qldefines.hpp>
 #include <ql/PricingEngines/core.hpp>
 
+#include <ql/PricingEngines/americanpayoffatexpiry.hpp>
+#include <ql/PricingEngines/americanpayoffathit.hpp>
+#include <ql/PricingEngines/greeks.hpp>
+
 #include <ql/PricingEngines/Asian/all.hpp>
 #include <ql/PricingEngines/Barrier/all.hpp>
 #include <ql/PricingEngines/Basket/all.hpp>

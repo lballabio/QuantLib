@@ -13,6 +13,7 @@ include_HEADERS = \
     blackmodel.hpp \
     core.hpp \
     genericmodelengine.hpp \
+    greeks.hpp \
     latticeshortratemodelengine.hpp \
     mcsimulation.hpp
 
@@ -21,7 +22,8 @@ EXTRA_DIST=makefile.mak
 libPricingEngines_la_SOURCES = \
 	americanpayoffatexpiry.cpp \
 	americanpayoffathit.cpp \
-	blackformula.cpp
+	blackformula.cpp \
+	greeks.cpp
 
 noinst_LTLIBRARIES = libPricingEngines.la
 
