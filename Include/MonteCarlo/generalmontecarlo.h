@@ -26,6 +26,9 @@
     $Source$
     $Name$
     $Log$
+    Revision 1.2  2001/01/30 09:21:48  marmar
+    Documentation updated
+
     Revision 1.1  2001/01/30 09:03:38  marmar
     GeneralMonteCarlo contains the basic ideas of any Monte Carlo
     simulation: sample from a "sample generator" and accumulate
@@ -42,15 +45,12 @@ namespace QuantLib {
 
     namespace MonteCarlo {
     /*!
-    Given a sample accumulator class SA, together with an instance 
-    "statisticAccumulator", and a sample generator SG, again with an 
-    instance "sampleGenerator", a class GeneralMonteCarlo<SA, SG> 
-    
-     returns repeatedky loops over the generator
-    at each next a value
-    for the option price.
+    Given a sample accumulator class SA and a sample generator SG a class 
+    GeneralMonteCarlo<SA, SG> is constructed. An instance of this class can 
+    be used to loop over the generator, store the results in the accumulator
+    that can be returned upon request.
 
-    Minimal interfaces for SA and SG:
+    These are the minimal interfaces that SA and SG should implements:
 
     class SA{
         SAMPLE_TYPE next() const;
@@ -58,7 +58,7 @@ namespace QuantLib {
     };
 
     class SG{
-        double add(SAMPLE_TYPE sample, double weight) const;    
+        void add(SAMPLE_TYPE sample, double weight) const;    
     };
     */
 
