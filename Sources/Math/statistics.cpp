@@ -21,25 +21,28 @@
  * QuantLib license is also available at http://quantlib.sourceforge.net/LICENSE.TXT
 */
 
-#include "statistics.h"
+#include "mathtools.h"
 #include <limits>
-
 
 namespace QuantLib {
 
-	Statistics::Statistics() {
-	  reset();
-	}
-	
-	void Statistics::reset() {
-	  theMin = std::numeric_limits<double>::max();
-	  theMax = std::numeric_limits<double>::min();
-	  theSampleNumber = 0;
-	  theSampleWeight = 0.0;
-	  theSum = 0.0;
-	  theQuadraticSum = 0.0;
-	  theCubicSum = 0.0;
-	  theFourthPowerSum = 0.0;
+	namespace Math {
+		
+		Statistics::Statistics() {
+			reset();
+		}
+		
+		void Statistics::reset() {
+			theMin = std::numeric_limits<double>::max();
+			theMax = std::numeric_limits<double>::min();
+			theSampleNumber = 0;
+			theSampleWeight = 0.0;
+			theSum = 0.0;
+			theQuadraticSum = 0.0;
+			theCubicSum = 0.0;
+			theFourthPowerSum = 0.0;
+		}
+
 	}
 
 }
