@@ -63,7 +63,12 @@ LINK_OPTS	= -q -x -L$(BCC_LIBS)
     @$(CC) $(CC_OPTS) $<
 
 # Primary target:
+# QuantLib library
+QuantLib: $(OUTPUT_DIR)\QuantLib.lib
+
 # Python module
+Python: $(PYTHON_DIR)\QuantLibc.dll
+
 $(PYTHON_DIR)\QuantLibc.dll:: $(OUTPUT_DIR) $(OUTPUT_DIR)\quantlib_wrap.obj $(OUTPUT_DIR)\QuantLib.lib $(PYTHON_BCC_LIB)
 	@echo Linking Python module...
 	@$(LINK) $(LINK_OPTS) -Tpd $(OUTPUT_DIR)\quantlib_wrap.obj $(WIN_OBJS),$(PYTHON_DIR)\QuantLibc.dll,, $(OUTPUT_DIR)\QuantLib.lib $(PYTHON_BCC_LIB) $(WIN_LIBS), QuantLibc.def
@@ -99,9 +104,6 @@ $(PYTHON_DIR)\quantlib_wrap.cpp:: $(SWIG_DIR)\QuantLib.i $(SWIG_DIR)\Date.i $(SW
 $(OUTPUT_DIR)\QuantLib.lib:: Core Calendars DayCounters FiniteDifferences Math Pricers Solvers1D TermStructures
 	@if exist $(OUTPUT_DIR)\QuantLib.lib del $(OUTPUT_DIR)\QuantLib.lib
 	@tlib $(OUTPUT_DIR)\QuantLib.lib /a $(QUANTLIB_OBJS)
-
-# Alias
-QuantLib: $(OUTPUT_DIR)\QuantLib.lib
 
 # Core
 Core: $(OUTPUT_DIR) $(CORE_OBJS)
