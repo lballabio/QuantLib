@@ -20,6 +20,17 @@
  * QuantLib license is also available at http://quantlib.sourceforge.net/LICENSE.TXT
 */
 
+/*! \file boxmullergaussian.h
+	\brief Box-Muller Gaussian random number generator
+	
+	$Source$
+	$Name$
+	$Log$
+	Revision 1.2  2000/12/18 18:31:17  lballabio
+	Added CVS tags
+
+*/
+
 #ifndef quantlib_box_muller_transformation_h
 #define quantlib_box_muller_transformation_h
 

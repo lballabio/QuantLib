@@ -20,6 +20,17 @@
  * QuantLib license is also available at http://quantlib.sourceforge.net/LICENSE.TXT
 */
 
+/*! \file centrallimitgaussian.h
+	\brief Central limit Gaussian random number generator
+	
+	$Source$
+	$Name$
+	$Log$
+	Revision 1.2  2000/12/18 18:31:17  lballabio
+	Added CVS tags
+
+*/
+
 #ifndef quantlib_central_limit_gaussian_transformation_h
 #define quantlib_central_limit_gaussian_transformation_h
 

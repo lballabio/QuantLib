@@ -21,6 +21,17 @@
  * QuantLib license is also available at http://quantlib.sourceforge.net/LICENSE.TXT
 */
 
+/*! \file randomgenerator.cpp
+	\brief Uniform random number generator
+	
+	$Source$
+	$Name$
+	$Log$
+	Revision 1.2  2000/12/18 18:32:47  lballabio
+	Added CVS tags
+
+*/
+
 
 #include "randomgenerator.h"
 #include <limits>

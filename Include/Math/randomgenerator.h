@@ -21,6 +21,17 @@
  * QuantLib license is also available at http://quantlib.sourceforge.net/LICENSE.TXT
 */
 
+/*! \file randomgenerator.h
+	\brief Uniform random number generator
+	
+	$Source$
+	$Name$
+	$Log$
+	Revision 1.2  2000/12/18 18:31:17  lballabio
+	Added CVS tags
+
+*/
+
 
 #ifndef ql_random_generator_h
 #define ql_random_generator_h
@@ -32,6 +43,7 @@
 #include <vector>
 
 namespace QuantLib {
+	
 	namespace Math {
 		
 	/*  Random number generator of L'Ecuyer with added Bays-Durham shuffle.
@@ -46,8 +58,8 @@ namespace QuantLib {
 			double next() const;
 		  private:
 			mutable long temp1, temp2;
-			mutable long iy;
-			mutable std::vector<double> iv;
+			mutable long y;
+			mutable std::vector<double> buffer;
 			static const long m1, a1, q1, r1;
 			static const long m2;
 			static const long a2;
@@ -58,7 +70,7 @@ namespace QuantLib {
 			static const long double maxRandom;
 		};
 
-		inline RandomGenerator::RandomGenerator(long seed) : iv(RandomGenerator::bufferSize) {
+		inline RandomGenerator::RandomGenerator(long seed) : buffer(RandomGenerator::bufferSize) {
 			temp2 = temp1 = (seed != 0 ? seed : long(QL_CLOCK()));
 			for (int j=bufferSize+7; j>=0; j--) {
 				long k = temp1/q1;
@@ -66,9 +78,9 @@ namespace QuantLib {
 				if (temp1 < 0)
 					temp1 += m1;
 				if (j < bufferSize) 
-					iv[j] = temp1;
+					buffer[j] = temp1;
 			}
-			iy = iv[0];
+			y = buffer[0];
 		}
 
 		inline double RandomGenerator::next() const {
@@ -80,15 +92,18 @@ namespace QuantLib {
 			temp2 = a2*(temp2-k*q2)-k*r2;
 			if (temp2 < 0) 
 				temp2 += m2;
-			int j = iy/bufferNormalizer;
-			iy = iv[j]-temp2;
-			iv[j] = temp1;
-			if (iy < 1) 
-				iy += m1-1;
-			double result = iy/double(m1);
+			int j = y/bufferNormalizer;
+			y = buffer[j]-temp2;
+			buffer[j] = temp1;
+			if (y < 1) 
+				y += m1-1;
+			double result = y/double(m1);
 			return (result > maxRandom ? maxRandom : result);
 		}
+	
 	}
+
 }
+
 
 #endif
