@@ -36,14 +36,14 @@ namespace QuantLib {
         void update() { notifyObservers(); }
 
         //Returns the Black volatility
-        double volatility() const;
+        Volatility volatility() const;
 
         const RelinkableHandle<TermStructure>& termStructure() const;
 
         //! General Black formula
-        static double formula(double f, double k, double v, double w);
+        static Real formula(Real f, Real k, Real v, Real w);
         //! In-the-money cash probability
-        static double itmProbability(double f, double k, double v, double w);
+        static Real itmProbability(Real f, Real k, Real v, Real w);
       private:
         RelinkableHandle<Quote> volatility_;
         RelinkableHandle<TermStructure> termStructure_;
@@ -59,7 +59,7 @@ namespace QuantLib {
         registerWith(termStructure_);
     }
 
-    inline double BlackModel::volatility() const {
+    inline Volatility BlackModel::volatility() const {
         return volatility_->value();
     }
 
@@ -81,13 +81,13 @@ namespace QuantLib {
             d_2(f,k,v) = d_1(f,k,v) - v.
         \f]
     */
-    inline double BlackModel::formula(double f, double k, double v, double w) {
+    inline Real BlackModel::formula(Real f, Real k, Real v, Real w) {
         if (QL_FABS(v) < QL_EPSILON)
             return QL_MAX(f*w - k*w, 0.0);
-        double d1 = QL_LOG(f/k)/v + 0.5*v;
-        double d2 = d1 - v;
+        Real d1 = QL_LOG(f/k)/v + 0.5*v;
+        Real d2 = d1 - v;
         CumulativeNormalDistribution phi;
-        double result = w*(f*phi(w*d1) - k*phi(w*d2));
+        Real result = w*(f*phi(w*d1) - k*phi(w*d2));
         // numerical inaccuracies can yield a negative answer
         return QL_MAX(0.0, result);
     }
@@ -105,12 +105,11 @@ namespace QuantLib {
             d_2(f,k,v) = d_1(f,k,v) - v.
         \f]
     */
-    inline double BlackModel::itmProbability(double f, double k, 
-                                             double v, double w) {
+    inline Real BlackModel::itmProbability(Real f, Real k, Real v, Real w) {
         if (QL_FABS(v) < QL_EPSILON)
             return (f*w > k*w ? 1.0 : 0.0);
-        double d1 = QL_LOG(f/k)/v + 0.5*v;
-        double d2 = d1 - v;
+        Real d1 = QL_LOG(f/k)/v + 0.5*v;
+        Real d2 = d1 - v;
         CumulativeNormalDistribution phi;
         return phi(w*d2);
     }

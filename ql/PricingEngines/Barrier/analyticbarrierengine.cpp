@@ -129,11 +129,11 @@ namespace QuantLib {
     }
 
 
-    double AnalyticBarrierEngine::underlying() const {
+    Real AnalyticBarrierEngine::underlying() const {
         return arguments_.blackScholesProcess->stateVariable()->value();
     }
 
-    double AnalyticBarrierEngine::strike() const {
+    Real AnalyticBarrierEngine::strike() const {
         boost::shared_ptr<PlainVanillaPayoff> payoff = 
             boost::dynamic_pointer_cast<PlainVanillaPayoff>(arguments_.payoff);
         QL_REQUIRE(payoff, "non-plain payoff given");
@@ -147,20 +147,20 @@ namespace QuantLib {
               arguments_.exercise->lastDate());
     }
 
-    double AnalyticBarrierEngine::volatility() const {
+    Volatility AnalyticBarrierEngine::volatility() const {
         return arguments_.blackScholesProcess->blackVolatility()->blackVol(
                                                     residualTime(), strike());
     }
 
-    double AnalyticBarrierEngine::stdDeviation() const {
+    Real AnalyticBarrierEngine::stdDeviation() const {
         return volatility() * QL_SQRT(residualTime());
     }
 
-    double AnalyticBarrierEngine::barrier() const {
+    Real AnalyticBarrierEngine::barrier() const {
         return arguments_.barrier;
     }
 
-    double AnalyticBarrierEngine::rebate() const {
+    Real AnalyticBarrierEngine::rebate() const {
         return arguments_.rebate;
     }
 
@@ -184,87 +184,87 @@ namespace QuantLib {
                                                               residualTime());
     }
 
-    double AnalyticBarrierEngine::mu() const {
-        double vol = volatility();
+    Rate AnalyticBarrierEngine::mu() const {
+        Volatility vol = volatility();
         return (riskFreeRate() - dividendYield())/(vol * vol) - 0.5;
     }
 
-    double AnalyticBarrierEngine::muSigma() const {
+    Real AnalyticBarrierEngine::muSigma() const {
         return (1 + mu()) * stdDeviation();
     }
 
-    double AnalyticBarrierEngine::A(double phi) const {
-        double x1 = 
+    Real AnalyticBarrierEngine::A(Real phi) const {
+        Real x1 = 
             QL_LOG(underlying()/strike())/stdDeviation() + muSigma();
-        double N1 = f_(phi*x1);
-        double N2 = f_(phi*(x1-stdDeviation()));
+        Real N1 = f_(phi*x1);
+        Real N2 = f_(phi*(x1-stdDeviation()));
         return phi*(underlying() * dividendDiscount() * N1
                     - strike() * riskFreeDiscount() * N2);
     }
 
-    double AnalyticBarrierEngine::B(double phi) const {
-        double x2 = 
+    Real AnalyticBarrierEngine::B(Real phi) const {
+        Real x2 = 
             QL_LOG(underlying()/barrier())/stdDeviation() + muSigma();
-        double N1 = f_(phi*x2);
-        double N2 = f_(phi*(x2-stdDeviation()));
+        Real N1 = f_(phi*x2);
+        Real N2 = f_(phi*(x2-stdDeviation()));
         return phi*(underlying() * dividendDiscount() * N1
                     - strike() * riskFreeDiscount() * N2);
     }
 
-    double AnalyticBarrierEngine::C(double eta, double phi) const {
-        double HS = barrier()/underlying();
-        double powHS0 = QL_POW(HS, 2 * mu());
-        double powHS1 = powHS0 * HS * HS;
-        double y1 = 
+    Real AnalyticBarrierEngine::C(Real eta, Real phi) const {
+        Real HS = barrier()/underlying();
+        Real powHS0 = QL_POW(HS, 2 * mu());
+        Real powHS1 = powHS0 * HS * HS;
+        Real y1 = 
             QL_LOG(barrier()*HS/strike())/stdDeviation() + muSigma();
-        double N1 = f_(eta*y1);
-        double N2 = f_(eta*(y1-stdDeviation()));
+        Real N1 = f_(eta*y1);
+        Real N2 = f_(eta*(y1-stdDeviation()));
         return phi*(underlying() * dividendDiscount() * powHS1 * N1
                     - strike() * riskFreeDiscount() * powHS0 * N2);
     }
 
-    double AnalyticBarrierEngine::D(double eta, double phi) const {
-        double HS = barrier()/underlying();
-        double powHS0 = QL_POW(HS, 2 * mu());
-        double powHS1 = powHS0 * HS * HS;
-        double y2 = 
+    Real AnalyticBarrierEngine::D(Real eta, Real phi) const {
+        Real HS = barrier()/underlying();
+        Real powHS0 = QL_POW(HS, 2 * mu());
+        Real powHS1 = powHS0 * HS * HS;
+        Real y2 = 
             QL_LOG(barrier()/underlying())/stdDeviation() + muSigma();
-        double N1 = f_(eta*y2);
-        double N2 = f_(eta*(y2-stdDeviation()));
+        Real N1 = f_(eta*y2);
+        Real N2 = f_(eta*(y2-stdDeviation()));
         return phi*(underlying() * dividendDiscount() * powHS1 * N1
                     - strike() * riskFreeDiscount() * powHS0 * N2);
     }
 
-    double AnalyticBarrierEngine::E(double eta) const {
+    Real AnalyticBarrierEngine::E(Real eta) const {
         if (rebate() > 0) {
-            double powHS0 = QL_POW(barrier()/underlying(), 2 * mu());
-            double x2 = 
+            Real powHS0 = QL_POW(barrier()/underlying(), 2 * mu());
+            Real x2 = 
                 QL_LOG(underlying()/barrier())/stdDeviation() + muSigma();
-            double y2 = 
+            Real y2 = 
                 QL_LOG(barrier()/underlying())/stdDeviation() + muSigma();
-            double N1 = f_(eta*(x2 - stdDeviation()));
-            double N2 = f_(eta*(y2 - stdDeviation()));
+            Real N1 = f_(eta*(x2 - stdDeviation()));
+            Real N2 = f_(eta*(y2 - stdDeviation()));
             return rebate() * riskFreeDiscount() * (N1 - powHS0 * N2);
         } else {
             return 0.0;
         }
     }
 
-    double AnalyticBarrierEngine::F(double eta) const {
+    Real AnalyticBarrierEngine::F(Real eta) const {
         if (rebate() > 0) {
-            double m = mu();
-            double vol = volatility();
-            double lambda = QL_SQRT(m*m + 2.0*riskFreeRate()/(vol * vol));
-            double HS = barrier()/underlying();
-            double powHSplus = QL_POW(HS, m + lambda);
-            double powHSminus = QL_POW(HS, m - lambda);
+            Rate m = mu();
+            Volatility vol = volatility();
+            Real lambda = QL_SQRT(m*m + 2.0*riskFreeRate()/(vol * vol));
+            Real HS = barrier()/underlying();
+            Real powHSplus = QL_POW(HS, m + lambda);
+            Real powHSminus = QL_POW(HS, m - lambda);
 
-            double sigmaSqrtT = stdDeviation();
-            double z = QL_LOG(barrier()/underlying())/sigmaSqrtT
+            Real sigmaSqrtT = stdDeviation();
+            Real z = QL_LOG(barrier()/underlying())/sigmaSqrtT
                 + lambda * sigmaSqrtT;
 
-            double N1 = f_(eta * z);
-            double N2 = f_(eta * (z - 2.0 * lambda * sigmaSqrtT));
+            Real N1 = f_(eta * z);
+            Real N2 = f_(eta * (z - 2.0 * lambda * sigmaSqrtT));
             return rebate() * (powHSplus * N1 + powHSminus * N2);
         } else {
             return 0.0;

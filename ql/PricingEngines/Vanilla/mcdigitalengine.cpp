@@ -24,7 +24,7 @@ namespace QuantLib {
     DigitalPathPricer::DigitalPathPricer(
         const boost::shared_ptr<CashOrNothingPayoff>& payoff,
         const boost::shared_ptr<AmericanExercise>& exercise,
-        double underlying,
+        Real underlying,
         const RelinkableHandle<TermStructure>& discountTS,
         const boost::shared_ptr<StochasticProcess>& diffProcess,
         const PseudoRandom::ursg_type& sequenceGen)
@@ -36,17 +36,17 @@ namespace QuantLib {
                    "underlying less/equal zero not allowed");
     }
 
-    double DigitalPathPricer::operator()(const Path& path) const {
+    Real DigitalPathPricer::operator()(const Path& path) const {
         Size i, n = path.size();
         QL_REQUIRE(n>0, "the path cannot be empty");
 
-        double log_asset_price = QL_LOG(underlying_);
-        double x, y;
-        double vol;
+        Real log_asset_price = QL_LOG(underlying_);
+        Real x, y;
+        Volatility vol;
         TimeGrid timeGrid = path.timeGrid();
         Time dt;
         Array u = sequenceGen_.nextSequence().value;
-        double log_strike = QL_LOG(payoff_->strike());
+        Real log_strike = QL_LOG(payoff_->strike());
 
         switch (payoff_->optionType()) {
           case Option::Call:

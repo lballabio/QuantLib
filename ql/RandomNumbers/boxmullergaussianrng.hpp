@@ -41,7 +41,7 @@ namespace QuantLib {
     template <class RNG>
     class BoxMullerGaussianRng {
       public:
-        typedef Sample<double> sample_type;
+        typedef Sample<Real> sample_type;
         typedef RNG urng_type;
         explicit BoxMullerGaussianRng(const RNG& uniformGenerator);
         //! returns a sample from a Gaussian distribution
@@ -49,9 +49,9 @@ namespace QuantLib {
       private:
         RNG uniformGenerator_;
         mutable bool returnFirst_;
-        mutable double firstValue_,secondValue_;
-        mutable double firstWeight_,secondWeight_;
-        mutable double weight_;
+        mutable Real firstValue_,secondValue_;
+        mutable Real firstWeight_,secondWeight_;
+        mutable Real weight_;
     };
 
     template <class RNG>
@@ -64,7 +64,7 @@ namespace QuantLib {
     inline typename BoxMullerGaussianRng<RNG>::sample_type
     BoxMullerGaussianRng<RNG>::next() const {
         if (returnFirst_) {
-            double x1,x2,r,ratio;
+            Real x1,x2,r,ratio;
             do {
                 typename RNG::sample_type s1 = uniformGenerator_.next();
                 x1 = s1.value*2.0-1.0;

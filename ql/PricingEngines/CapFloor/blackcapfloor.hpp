@@ -40,10 +40,10 @@ namespace QuantLib {
                              CapFloor::results>(model) {}
         void calculate() const;
       private:
-        double capletValue(Time start, Rate forward,
-                           Rate strike, double vol) const;
-        double floorletValue(Time start, Rate forward,
-                             Rate strike, double vol) const;
+        Real capletValue(Time start, Rate forward,
+                         Rate strike, Volatility vol) const;
+        Real floorletValue(Time start, Rate forward,
+                           Rate strike, Volatility vol) const;
     };
 
 }

@@ -24,16 +24,17 @@ namespace QuantLib {
     namespace {
 
         // critical commodity price
-        double Kc(const boost::shared_ptr<StrikedTypePayoff>& payoff,
-                  double riskFreeDiscount, double dividendDiscount,
-                  double variance, double tolerance = 1e-6) {
+        Real Kc(const boost::shared_ptr<StrikedTypePayoff>& payoff,
+                DiscountFactor riskFreeDiscount, 
+                DiscountFactor dividendDiscount,
+                Real variance, Real tolerance = 1e-6) {
 
             // Calculation of seed value, Si
-            double n= 2.0*QL_LOG(dividendDiscount/riskFreeDiscount)/(variance);
-            double m=-2.0*QL_LOG(riskFreeDiscount)/(variance);
-            double bT = QL_LOG(dividendDiscount/riskFreeDiscount);
+            Real n= 2.0*QL_LOG(dividendDiscount/riskFreeDiscount)/(variance);
+            Real m=-2.0*QL_LOG(riskFreeDiscount)/(variance);
+            Real bT = QL_LOG(dividendDiscount/riskFreeDiscount);
 
-            double qu, Su, h, Si;
+            Real qu, Su, h, Si;
             switch (payoff->optionType()) {
               case Option::Call:
                 qu = (-(n-1.0) + QL_SQRT(((n-1.0)*(n-1.0)) + 4.0*m))/2.0;
@@ -56,12 +57,12 @@ namespace QuantLib {
 
 
             // Newton Raphson algorithm for finding critical price Si
-            double Q, LHS, RHS, bi;
-            double forwardSi = Si * dividendDiscount / riskFreeDiscount;
-            double d1 = (QL_LOG(forwardSi/payoff->strike()) + 0.5*variance) /
+            Real Q, LHS, RHS, bi;
+            Real forwardSi = Si * dividendDiscount / riskFreeDiscount;
+            Real d1 = (QL_LOG(forwardSi/payoff->strike()) + 0.5*variance) /
                 QL_SQRT(variance);
             CumulativeNormalDistribution cumNormalDist;
-            double K = -2.0*QL_LOG(riskFreeDiscount)/
+            Real K = -2.0*QL_LOG(riskFreeDiscount)/
                 (variance*(1.0-riskFreeDiscount));
             switch (payoff->optionType()) {
                 case Option::Call:
@@ -135,7 +136,7 @@ namespace QuantLib {
             boost::dynamic_pointer_cast<StrikedTypePayoff>(arguments_.payoff);
         QL_REQUIRE(payoff, "non-striked payoff given");
 
-        double variance = 
+        Real variance = 
             arguments_.blackScholesProcess->blackVolatility()->blackVariance(
                                             ex->lastDate(), payoff->strike());
         DiscountFactor dividendDiscount =
@@ -144,8 +145,8 @@ namespace QuantLib {
         DiscountFactor riskFreeDiscount =
             arguments_.blackScholesProcess->riskFreeRate()->discount(
                                                               ex->lastDate());
-        double spot = arguments_.blackScholesProcess->stateVariable()->value();
-        double forwardPrice = spot * dividendDiscount / riskFreeDiscount;
+        Real spot = arguments_.blackScholesProcess->stateVariable()->value();
+        Real forwardPrice = spot * dividendDiscount / riskFreeDiscount;
         BlackFormula black(forwardPrice, riskFreeDiscount, variance, payoff);
 
         if (dividendDiscount>=1.0 && payoff->optionType()==Option::Call) {
@@ -182,16 +183,16 @@ namespace QuantLib {
         } else {
             // early exercise can be optimal 
             CumulativeNormalDistribution cumNormalDist;
-            double tolerance = 1e-6;
-            double Sk = Kc(payoff, riskFreeDiscount, dividendDiscount,
+            Real tolerance = 1e-6;
+            Real Sk = Kc(payoff, riskFreeDiscount, dividendDiscount,
                 variance, tolerance);
-            double forwardSk = Sk * dividendDiscount / riskFreeDiscount;
-            double d1 = (QL_LOG(forwardSk/payoff->strike()) + 0.5*variance)
+            Real forwardSk = Sk * dividendDiscount / riskFreeDiscount;
+            Real d1 = (QL_LOG(forwardSk/payoff->strike()) + 0.5*variance)
                 /QL_SQRT(variance);
-            double n = 2.0*QL_LOG(dividendDiscount/riskFreeDiscount)/variance;
-            double K = -2.0*QL_LOG(riskFreeDiscount)/
+            Real n = 2.0*QL_LOG(dividendDiscount/riskFreeDiscount)/variance;
+            Real K = -2.0*QL_LOG(riskFreeDiscount)/
                 (variance*(1.0-riskFreeDiscount));
-            double Q, a;
+            Real Q, a;
             switch (payoff->optionType()) {
                 case Option::Call:
                     Q = (-(n-1.0) + QL_SQRT(((n-1.0)*(n-1.0))+4.0*K))/2.0;

@@ -22,22 +22,24 @@ namespace QuantLib {
 
     namespace {
 
-        class Integrand : std::unary_function<double,double> {
+        class Integrand : std::unary_function<Real,Real> {
           public:
             Integrand(const boost::shared_ptr<Payoff>& payoff,
-                      double s0,
-                      double drift,
-                      double variance)
+                      Real s0,
+                      Rate drift,
+                      Real variance)
            : payoff_(payoff), s0_(s0), drift_(drift), variance_(variance) {}
-            double operator()(double x) const {
-                double temp = s0_ * QL_EXP(x);
-                double result = (*payoff_)(temp);
+            Real operator()(Real x) const {
+                Real temp = s0_ * QL_EXP(x);
+                Real result = (*payoff_)(temp);
                 return result *
                     QL_EXP(-(x - drift_)*(x -drift_)/(2.0*variance_)) ;
             }
           private:
             boost::shared_ptr<Payoff> payoff_;
-            double s0_, drift_, variance_;
+            Real s0_;
+            Rate drift_;
+            Real variance_;
         };
     }
 
@@ -50,24 +52,24 @@ namespace QuantLib {
             boost::dynamic_pointer_cast<StrikedTypePayoff>(arguments_.payoff);
         QL_REQUIRE(payoff, "non-striked payoff given");
 
-        double variance = 
+        Real variance = 
             arguments_.blackScholesProcess->blackVolatility()->blackVariance(
                            arguments_.exercise->lastDate(), payoff->strike());
 
-        double dividendDiscount = 
+        DiscountFactor dividendDiscount = 
             arguments_.blackScholesProcess->dividendYield()->discount(
                                              arguments_.exercise->lastDate());
-        double riskFreeDiscount = 
+        DiscountFactor riskFreeDiscount = 
             arguments_.blackScholesProcess->riskFreeRate()->discount(
                                              arguments_.exercise->lastDate());
-        double drift = QL_LOG(dividendDiscount/riskFreeDiscount)-0.5*variance;
+        Rate drift = QL_LOG(dividendDiscount/riskFreeDiscount)-0.5*variance;
 
         Integrand f(arguments_.payoff, 
                     arguments_.blackScholesProcess->stateVariable()->value(), 
                     drift, variance);
         SegmentIntegral integrator(5000);
 
-        double infinity = 10.0*QL_SQRT(variance);
+        Real infinity = 10.0*QL_SQRT(variance);
         results_.value =
             arguments_.blackScholesProcess->riskFreeRate()->discount(
                                             arguments_.exercise->lastDate()) /

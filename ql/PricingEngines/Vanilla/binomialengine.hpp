@@ -49,9 +49,10 @@ namespace QuantLib {
     template <class T>
     void BinomialVanillaEngine<T>::calculate() const {
 
-        double s0 = arguments_.blackScholesProcess->stateVariable()->value();
-        double v = arguments_.blackScholesProcess->blackVolatility()->blackVol(
-            arguments_.exercise->lastDate(), s0);
+        Real s0 = arguments_.blackScholesProcess->stateVariable()->value();
+        Volatility v = 
+            arguments_.blackScholesProcess->blackVolatility()->blackVol(
+                                         arguments_.exercise->lastDate(), s0);
         Date maturityDate = arguments_.exercise->lastDate();
         Rate r = arguments_.blackScholesProcess->riskFreeRate()
             ->zeroYield(maturityDate);

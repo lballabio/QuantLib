@@ -24,7 +24,7 @@ namespace QuantLib {
     EuropeanMultiPathPricer::EuropeanMultiPathPricer(
                 BasketOption::BasketType basketType,
                 Option::Type type,
-                double strike,
+                Real strike,
                 Array underlying, 
                 const RelinkableHandle<TermStructure>& discountTS)
     : PathPricer<MultiPath>(discountTS), basketType_(basketType), 
@@ -39,7 +39,7 @@ namespace QuantLib {
                    "strike less than zero not allowed");
     }
 
-    double EuropeanMultiPathPricer::operator()(const MultiPath& multiPath) 
+    Real EuropeanMultiPathPricer::operator()(const MultiPath& multiPath) 
                                                                       const {
 
         Size n = multiPath.pathSize();
@@ -66,7 +66,7 @@ namespace QuantLib {
         }
 
         // this should be a basket payoff        
-        double basketPrice = finalPrice[0];
+        Real basketPrice = finalPrice[0];
         switch (basketType_) {
           case BasketOption::Max:
             for (j = 1; j < numAssets; j++) {

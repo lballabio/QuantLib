@@ -47,7 +47,7 @@ namespace QuantLib {
                          Size requiredSamples = Null<Size>(),
                          Real requiredTolerance = Null<Real>(),
                          Size maxSamples = Null<Size>(),
-                         long seed = 0);
+                         BigInteger seed = 0);
       protected:
         TimeGrid timeGrid() const;
         boost::shared_ptr<path_pricer_type> pathPricer() const;
@@ -62,9 +62,9 @@ namespace QuantLib {
         // named parameters
         MakeMCEuropeanEngine& withStepsPerYear(Size maxSteps);
         MakeMCEuropeanEngine& withSamples(Size samples);
-        MakeMCEuropeanEngine& withTolerance(double tolerance);
+        MakeMCEuropeanEngine& withTolerance(Real tolerance);
         MakeMCEuropeanEngine& withMaxSamples(Size samples);
-        MakeMCEuropeanEngine& withSeed(long seed);
+        MakeMCEuropeanEngine& withSeed(BigInteger seed);
         MakeMCEuropeanEngine& withAntitheticVariate();
         MakeMCEuropeanEngine& withControlVariate();
         // conversion to pricing engine
@@ -72,20 +72,20 @@ namespace QuantLib {
       private:
         bool antithetic_, controlVariate_;
         Size steps_, samples_, maxSamples_;
-        double tolerance_;
-        long seed_;
+        Real tolerance_;
+        BigInteger seed_;
     };
     #endif
 
     class EuropeanPathPricer : public PathPricer<Path> {
       public:
         EuropeanPathPricer(Option::Type type,
-                           double underlying,
-                           double strike,
+                           Real underlying,
+                           Real strike,
                            const RelinkableHandle<TermStructure>& discountTS);
-        double operator()(const Path& path) const;
+        Real operator()(const Path& path) const;
       private:
-        double underlying_;
+        Real underlying_;
         PlainVanillaPayoff payoff_;
     };
 
@@ -98,9 +98,9 @@ namespace QuantLib {
                                               bool antitheticVariate,
                                               bool controlVariate,
                                               Size requiredSamples,
-                                              double requiredTolerance,
+                                              Real requiredTolerance,
                                               Size maxSamples,
-                                              long seed)
+                                              BigInteger seed)
     : MCVanillaEngine<RNG,S>(maxTimeStepPerYear,
                              antitheticVariate,
                              controlVariate,
@@ -199,7 +199,7 @@ namespace QuantLib {
 
     template <class RNG, class S>
     inline MakeMCEuropeanEngine<RNG,S>&
-    MakeMCEuropeanEngine<RNG,S>::withTolerance(double tolerance) {
+    MakeMCEuropeanEngine<RNG,S>::withTolerance(Real tolerance) {
         QL_REQUIRE(samples_ == Null<Size>(),
                    "number of samples already set");
         QL_REQUIRE(RNG::allowsErrorEstimate,
@@ -218,7 +218,7 @@ namespace QuantLib {
 
     template <class RNG, class S>
     inline MakeMCEuropeanEngine<RNG,S>&
-    MakeMCEuropeanEngine<RNG,S>::withSeed(long seed) {
+    MakeMCEuropeanEngine<RNG,S>::withSeed(BigInteger seed) {
         seed_ = seed;
         return *this;
     }
@@ -255,7 +255,7 @@ namespace QuantLib {
 
     inline EuropeanPathPricer::EuropeanPathPricer(
                             Option::Type type,
-                            double underlying, double strike,
+                            Real underlying, Real strike,
                             const RelinkableHandle<TermStructure>& discountTS)
     : PathPricer<Path>(discountTS), underlying_(underlying),
       payoff_(type, strike) {
@@ -265,11 +265,11 @@ namespace QuantLib {
                    "strike less than zero not allowed");
     }
 
-    inline double EuropeanPathPricer::operator()(const Path& path) const {
+    inline Real EuropeanPathPricer::operator()(const Path& path) const {
         Size n = path.size();
         QL_REQUIRE(n>0, "the path cannot be empty");
 
-        double log_variation = 0.0;
+        Real log_variation = 0.0;
         for (Size i = 0; i < n; i++)
             log_variation += path[i];
 

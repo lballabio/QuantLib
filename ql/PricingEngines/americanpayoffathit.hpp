@@ -34,34 +34,37 @@ namespace QuantLib {
     class AmericanPayoffAtHit {
     public:
         AmericanPayoffAtHit(
-                          double spot,
-                          double discount,
-                          double dividendDiscount,
-                          double variance,
+                          Real spot,
+                          DiscountFactor discount,
+                          DiscountFactor dividendDiscount,
+                          Real variance,
                           const boost::shared_ptr<StrikedTypePayoff>& payoff);
-        double value() const;
-        double delta() const;
-        double gamma() const;
-        double rho(double maturity) const;
+        Real value() const;
+        Real delta() const;
+        Real gamma() const;
+        Real rho(Time maturity) const;
     private:
-        double spot_, discount_, dividendDiscount_, variance_, stdDev_;
+        Real spot_;
+        DiscountFactor discount_, dividendDiscount_;
+        Real variance_;
+        Volatility stdDev_;
 
-        double strike_, K_, DKDstrike_;
+        Real strike_, K_, DKDstrike_;
 
-        double mu_, lambda_, muPlusLambda_, muMinusLambda_, log_H_S_;
+        Real mu_, lambda_, muPlusLambda_, muMinusLambda_, log_H_S_;
 
-        double D1_, D2_, cum_d1_, cum_d2_;
+        Real D1_, D2_, cum_d1_, cum_d2_;
 
-        double alpha_, beta_, DalphaDd1_, DbetaDd2_;
+        Real alpha_, beta_, DalphaDd1_, DbetaDd2_;
 
         bool inTheMoney_;
-        double forward_, X_, DXDstrike_;
+        Real forward_, X_, DXDstrike_;
     };
 
 
-    inline AmericanPayoffAtHit::AmericanPayoffAtHit(double spot,
-        double discount, double dividendDiscount, double variance,
-        const boost::shared_ptr<StrikedTypePayoff>& payoff)
+    inline AmericanPayoffAtHit::AmericanPayoffAtHit(
+         Real spot, DiscountFactor discount, DiscountFactor dividendDiscount, 
+         Real variance, const boost::shared_ptr<StrikedTypePayoff>& payoff)
     : spot_(spot), discount_(discount), dividendDiscount_(dividendDiscount),
       variance_(variance) {
 
@@ -85,8 +88,8 @@ namespace QuantLib {
 
         log_H_S_ = QL_LOG (strike_/spot_);
 
-        double n_d1, n_d2;
-        double cum_d1_, cum_d2_;
+        Real n_d1, n_d2;
+        Real cum_d1_, cum_d2_;
         if (variance_>=QL_EPSILON) {
             if (discount_==0.0 && dividendDiscount_==0.0) {
                 mu_     = - 0.5;
@@ -206,16 +209,16 @@ namespace QuantLib {
     }
 
    
-    inline double AmericanPayoffAtHit::value() const {
+    inline Real AmericanPayoffAtHit::value() const {
         return K_ * (forward_ * alpha_ + X_ * beta_);
     }
 
-    inline double AmericanPayoffAtHit::delta() const {
-        double tempDelta = - spot_ * stdDev_;
-        double DalphaDs = DalphaDd1_/tempDelta;
-        double DbetaDs  = DbetaDd2_/tempDelta;
+    inline Real AmericanPayoffAtHit::delta() const {
+        Real tempDelta = - spot_ * stdDev_;
+        Real DalphaDs = DalphaDd1_/tempDelta;
+        Real DbetaDs  = DbetaDd2_/tempDelta;
 
-        double DforwardDs, DXDs;
+        Real DforwardDs, DXDs;
         if (inTheMoney_) {
             DforwardDs = 0.0;
             DXDs       = 0.0;
@@ -230,14 +233,14 @@ namespace QuantLib {
             );
     }
 
-    inline double AmericanPayoffAtHit::gamma() const {
-        double tempDelta = - spot_ * stdDev_;
-        double DalphaDs = DalphaDd1_/tempDelta;
-        double DbetaDs  = DbetaDd2_/tempDelta;
-        double D2alphaDs2 = -DalphaDs/spot_*(1-D1_/stdDev_);
-        double D2betaDs2  = -DbetaDs /spot_*(1-D2_/stdDev_);
+    inline Real AmericanPayoffAtHit::gamma() const {
+        Real tempDelta = - spot_ * stdDev_;
+        Real DalphaDs = DalphaDd1_/tempDelta;
+        Real DbetaDs  = DbetaDd2_/tempDelta;
+        Real D2alphaDs2 = -DalphaDs/spot_*(1-D1_/stdDev_);
+        Real D2betaDs2  = -DbetaDs /spot_*(1-D2_/stdDev_);
 
-        double DforwardDs, DXDs, D2forwardDs2, D2XDs2;
+        Real DforwardDs, DXDs, D2forwardDs2, D2XDs2;
         if (inTheMoney_) {
             DforwardDs = 0.0;
             DXDs       = 0.0;
@@ -259,14 +262,14 @@ namespace QuantLib {
 
     }
 
-    inline double AmericanPayoffAtHit::rho(double maturity) const {
+    inline Real AmericanPayoffAtHit::rho(Time maturity) const {
         QL_REQUIRE(maturity>=0.0,
                    "negative maturity not allowed");
 
         // actually D.Dr / T
-        double DalphaDr = -DalphaDd1_/(lambda_*stdDev_) * (1.0 + mu_);
-        double DbetaDr  =  DbetaDd2_ /(lambda_*stdDev_) * (1.0 + mu_);
-        double DforwardDr, DXDr;
+        Real DalphaDr = -DalphaDd1_/(lambda_*stdDev_) * (1.0 + mu_);
+        Real DbetaDr  =  DbetaDd2_ /(lambda_*stdDev_) * (1.0 + mu_);
+        Real DforwardDr, DXDr;
         if (inTheMoney_) {
             DforwardDr = 0.0;
             DXDr       = 0.0;

@@ -34,7 +34,7 @@ namespace QuantLib {
         ForwardOptionArguments() : moneyness(Null<Real>()),
                                    resetDate(Null<Date>()) {}
         void validate() const;
-        double moneyness;
+        Real moneyness;
         Date resetDate;
     };
 
@@ -163,7 +163,7 @@ namespace QuantLib {
         Time resetTime = process->riskFreeRate()->dayCounter().yearFraction(
                                     process->riskFreeRate()->referenceDate(), 
                                     arguments_.resetDate);
-        double discQ = process->dividendYield()->discount(
+        DiscountFactor discQ = process->dividendYield()->discount(
                                                         arguments_.resetDate);
 
         results_.value = discQ * originalResults_->value;

@@ -38,25 +38,25 @@ namespace QuantLib {
     class MCAmericanBasketEngine : public BasketOption::engine {
       public:
         MCAmericanBasketEngine(Size requiredSamples,
-                                Size timeSteps,
-                                long seed = 0)
+                               Size timeSteps,
+                               BigInteger seed = 0)
         : requiredSamples_(requiredSamples), timeSteps_(timeSteps),
           seed_(seed) {}
         void calculate() const;
       private:
         Size requiredSamples_;
         Size timeSteps_;
-        long seed_;
+        BigInteger seed_;
     };
 
 
     // put all the asset prices into a vector.
     // s0 is not included in the vector
-    std::vector<double> getAssetSequence(double s0, const Path& path);
+    std::vector<Real> getAssetSequence(Real s0, const Path& path);
 
     // put all the antithetic asset prices into a vector.
     // s0 is not included in the vector
-    std::vector<double> getAntiAssetSequence(double s0, const Path& path);
+    std::vector<Real> getAntiAssetSequence(Real s0, const Path& path);
 
 
 }

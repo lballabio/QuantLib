@@ -21,8 +21,8 @@
 namespace QuantLib {
 
     BlackFormula::BlackFormula(
-                           double forward, double discount,
-                           double variance, 
+                           Real forward, DiscountFactor discount,
+                           Real variance, 
                            const boost::shared_ptr<StrikedTypePayoff>& payoff)
     : forward_(forward), discount_(discount), variance_(variance) {
 
@@ -44,7 +44,7 @@ namespace QuantLib {
         stdDev_ = QL_SQRT(variance);
         strike_ = payoff->strike();
 
-        double n_d1, n_d2;
+        Real n_d1, n_d2;
         if (variance>=QL_EPSILON) {
             if (strike_==0.0) {
                 n_d1 = 0.0;
@@ -190,44 +190,44 @@ namespace QuantLib {
         }
     }
 
-    double BlackFormula::value() const {
-        double result = discount_ * (forward_ * alpha_ + X_ * beta_);
+    Real BlackFormula::value() const {
+        Real result = discount_ * (forward_ * alpha_ + X_ * beta_);
         // numerical inaccuracies can yield a negative answer
         if (result<0.0 && -1e-16 < result)
             result = 0.0;
         return result;
     }
 
-    double BlackFormula::delta(double spot) const {
+    Real BlackFormula::delta(Real spot) const {
 
         QL_REQUIRE(spot > 0.0,
                    "positive spot value required");
 
-        double DforwardDs = forward_ / spot;
+        Real DforwardDs = forward_ / spot;
 
-        double temp = stdDev_*spot;
-        double DalphaDs = DalphaDd1_/temp;
-        double DbetaDs  = DbetaDd2_/temp;
-        double temp2 = DalphaDs * forward_ + alpha_ * DforwardDs
+        Real temp = stdDev_*spot;
+        Real DalphaDs = DalphaDd1_/temp;
+        Real DbetaDs  = DbetaDd2_/temp;
+        Real temp2 = DalphaDs * forward_ + alpha_ * DforwardDs
                       +DbetaDs  * X_       + beta_  * DXDs_;
 
         return discount_ * temp2;
     }
 
-    double BlackFormula::deltaForward() const {
+    Real BlackFormula::deltaForward() const {
 
-        double temp = stdDev_*forward_;
-        double DalphaDforward = DalphaDd1_/temp;
-        double DbetaDforward  = DbetaDd2_/temp;
-        double temp2 = DalphaDforward * forward_ + alpha_
+        Real temp = stdDev_*forward_;
+        Real DalphaDforward = DalphaDd1_/temp;
+        Real DbetaDforward  = DbetaDd2_/temp;
+        Real temp2 = DalphaDforward * forward_ + alpha_
                       +DbetaDforward  * X_; // DXDforward = 0.0
 
         return discount_ * temp2;
     }
 
-    double BlackFormula::elasticity(double spot) const {
-        double val = value();
-        double del = delta(spot);
+    Real BlackFormula::elasticity(Real spot) const {
+        Real val = value();
+        Real del = delta(spot);
         if (val>QL_EPSILON)
             return del/val*spot;
         else if (QL_FABS(del)<QL_EPSILON)
@@ -238,9 +238,9 @@ namespace QuantLib {
             return QL_MIN_DOUBLE;
     }
 
-    double BlackFormula::elasticityForward() const {
-        double val = value();
-        double del = deltaForward();
+    Real BlackFormula::elasticityForward() const {
+        Real val = value();
+        Real del = deltaForward();
         if (val>QL_EPSILON)
             return del/val*forward_;
         else if (QL_FABS(del)<QL_EPSILON)
@@ -251,42 +251,42 @@ namespace QuantLib {
             return QL_MIN_DOUBLE;
     }
 
-    double BlackFormula::gamma(double spot) const {
+    Real BlackFormula::gamma(Real spot) const {
 
         QL_REQUIRE(spot>0.0,
                    "positive spot value required");
 
-        double DforwardDs = forward_ / spot;
+        Real DforwardDs = forward_ / spot;
 
-        double temp = stdDev_*spot;
-        double DalphaDs = DalphaDd1_/temp;
-        double DbetaDs  = DbetaDd2_/temp;
+        Real temp = stdDev_*spot;
+        Real DalphaDs = DalphaDd1_/temp;
+        Real DbetaDs  = DbetaDd2_/temp;
 
-        double D2alphaDs2 = - DalphaDs/spot*(1+D1_/stdDev_);
-        double D2betaDs2  = - DbetaDs /spot*(1+D2_/stdDev_);
+        Real D2alphaDs2 = - DalphaDs/spot*(1+D1_/stdDev_);
+        Real D2betaDs2  = - DbetaDs /spot*(1+D2_/stdDev_);
 
-        double temp2 = D2alphaDs2 * forward_ + 2.0 * DalphaDs * DforwardDs
+        Real temp2 = D2alphaDs2 * forward_ + 2.0 * DalphaDs * DforwardDs
                       +D2betaDs2  * X_       + 2.0 * DbetaDs  * DXDs_;
 
         return  discount_ * temp2;
     }
 
-    double BlackFormula::gammaForward() const {
+    Real BlackFormula::gammaForward() const {
 
-        double temp = stdDev_*forward_;
-        double DalphaDforward = DalphaDd1_/temp;
-        double DbetaDforward  = DbetaDd2_/temp;
+        Real temp = stdDev_*forward_;
+        Real DalphaDforward = DalphaDd1_/temp;
+        Real DbetaDforward  = DbetaDd2_/temp;
 
-        double D2alphaDforward2 = - DalphaDforward/forward_*(1+D1_/stdDev_);
-        double D2betaDforward2  = - DbetaDforward /forward_*(1+D2_/stdDev_);
+        Real D2alphaDforward2 = - DalphaDforward/forward_*(1+D1_/stdDev_);
+        Real D2betaDforward2  = - DbetaDforward /forward_*(1+D2_/stdDev_);
 
-        double temp2 = D2alphaDforward2 * forward_ + 2.0 * DalphaDforward
+        Real temp2 = D2alphaDforward2 * forward_ + 2.0 * DalphaDforward
                       +D2betaDforward2  * X_; // DXDforward = 0.0
 
         return discount_ * temp2;
     }
 
-    double BlackFormula::theta(double spot, double maturity) const {
+    Real BlackFormula::theta(Real spot, Time maturity) const {
 
         if (maturity>0.0) {
 //            vol = stdDev_ / QL_SQRT(maturity);
@@ -306,53 +306,53 @@ namespace QuantLib {
         }
     }
 
-    double BlackFormula::rho(double maturity) const {
+    Real BlackFormula::rho(Time maturity) const {
         QL_REQUIRE(maturity>=0.0,
                    "negative maturity not allowed");
 
         // actually DalphaDr / T
-        double DalphaDr = DalphaDd1_/stdDev_;
-        double DbetaDr  = DbetaDd2_/stdDev_;
-        double temp = DalphaDr * forward_ + alpha_ * forward_ + DbetaDr * X_;
+        Real DalphaDr = DalphaDd1_/stdDev_;
+        Real DbetaDr  = DbetaDd2_/stdDev_;
+        Real temp = DalphaDr * forward_ + alpha_ * forward_ + DbetaDr * X_;
 
         return maturity * (discount_ * temp - value());
     }
 
-    double BlackFormula::dividendRho(double maturity) const {
+    Real BlackFormula::dividendRho(Time maturity) const {
         QL_REQUIRE(maturity>=0.0,
                    "negative maturity not allowed");
 
         // actually DalphaDq / T
-        double DalphaDq = -DalphaDd1_/stdDev_;
-        double DbetaDq  = -DbetaDd2_/stdDev_;
+        Real DalphaDq = -DalphaDd1_/stdDev_;
+        Real DbetaDq  = -DbetaDd2_/stdDev_;
 
-        double temp = DalphaDq * forward_ - alpha_ * forward_ + DbetaDq * X_;
+        Real temp = DalphaDq * forward_ - alpha_ * forward_ + DbetaDq * X_;
 
         return maturity * discount_ * temp;
     }
 
-    double BlackFormula::vega(double maturity) const {
+    Real BlackFormula::vega(Time maturity) const {
         QL_REQUIRE(maturity>=0.0,
                    "negative maturity not allowed");
 
-        double temp = QL_LOG(strike_/forward_)/variance_;
+        Real temp = QL_LOG(strike_/forward_)/variance_;
         // actually DalphaDsigma / SQRT(T)
-        double DalphaDsigma = DalphaDd1_*(temp+0.5);
-        double DbetaDsigma  = DbetaDd2_ *(temp-0.5);
+        Real DalphaDsigma = DalphaDd1_*(temp+0.5);
+        Real DbetaDsigma  = DbetaDd2_ *(temp-0.5);
 
-        double temp2 = DalphaDsigma * forward_ + DbetaDsigma * X_;
+        Real temp2 = DalphaDsigma * forward_ + DbetaDsigma * X_;
 
         return discount_ * QL_SQRT(maturity) * temp2;
 
     }
 
-    double BlackFormula::strikeSensitivity() const {
+    Real BlackFormula::strikeSensitivity() const {
 
-        double temp = stdDev_*strike_;
-        double DalphaDstrike = -DalphaDd1_/temp;
-        double DbetaDstrike  = -DbetaDd2_/temp;
+        Real temp = stdDev_*strike_;
+        Real DalphaDstrike = -DalphaDd1_/temp;
+        Real DbetaDstrike  = -DbetaDd2_/temp;
 
-        double temp2 =
+        Real temp2 =
             DalphaDstrike * forward_ + DbetaDstrike * X_ + beta_ * DXDstrike_;
 
         return discount_ * temp2;

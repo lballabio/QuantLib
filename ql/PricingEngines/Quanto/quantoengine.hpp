@@ -33,7 +33,7 @@ namespace QuantLib {
       public:
         QuantoOptionArguments() : correlation(Null<Real>()) {}
         void validate() const;
-        double correlation;
+        Real correlation;
         RelinkableHandle<TermStructure> foreignRiskFreeTS;
         RelinkableHandle<BlackVolTermStructure> exchRateVolTS;
     };
@@ -47,9 +47,9 @@ namespace QuantLib {
             ResultsType::reset();
             qvega = qrho = qlambda = Null<Real>();
         }
-        double qvega;
-        double qrho;
-        double qlambda;
+        Real qvega;
+        Real qrho;
+        Real qlambda;
     };
 
 
@@ -111,7 +111,7 @@ namespace QuantLib {
     void QuantoEngine<ArgumentsType, ResultsType>::calculate() const {
 
         // ATM exchangeRate level needed here
-        double exchangeRateATMlevel = 1.0;
+        Real exchangeRateATMlevel = 1.0;
 
         originalEngine_->reset();
 
@@ -119,7 +119,7 @@ namespace QuantLib {
         boost::shared_ptr<StrikedTypePayoff> payoff =
             boost::dynamic_pointer_cast<StrikedTypePayoff>(arguments_.payoff);
         QL_REQUIRE(payoff, "non-striked payoff given");
-        double strike = payoff->strike();
+        Real strike = payoff->strike();
 
         originalArguments_->payoff = arguments_.payoff;
 
@@ -158,7 +158,7 @@ namespace QuantLib {
         results_.rho = originalResults_->rho +
             originalResults_->dividendRho;
         results_.dividendRho = originalResults_->dividendRho;
-        double exchangeRateFlatVol = arguments_.exchRateVolTS->blackVol(
+        Volatility exchangeRateFlatVol = arguments_.exchRateVolTS->blackVol(
             arguments_.exercise->lastDate(),
             exchangeRateATMlevel);
         results_.vega = originalResults_->vega +
@@ -166,7 +166,7 @@ namespace QuantLib {
             originalResults_->dividendRho;
 
 
-        double volatility = process->blackVolatility()->blackVol(
+        Volatility volatility = process->blackVolatility()->blackVol(
                                            arguments_.exercise->lastDate(),
                                            process->stateVariable()->value());
         results_.qvega = + arguments_.correlation

@@ -28,64 +28,63 @@ namespace QuantLib {
 
     class BlackFormula {
       public:
-        BlackFormula(double forward,
-                     double discount,
-                     double variance,
+        BlackFormula(Real forward,
+                     DiscountFactor discount,
+                     Real variance,
                      const boost::shared_ptr<StrikedTypePayoff>& payoff);
-        double value() const;
-        double delta(double spot) const;
+        Real value() const;
+        Real delta(Real spot) const;
         //! Sensitivity in percent to a percent movement in the underlying.
-        double elasticity(double spot) const;
-        double gamma(double spot) const;
-        double deltaForward() const;
+        Real elasticity(Real spot) const;
+        Real gamma(Real spot) const;
+        Real deltaForward() const;
         //! Sensitivity in percent to a percent movement in the forward price.
-        double elasticityForward() const;
-        double gammaForward() const;
-        double theta(double spot, double maturity) const;
-        double thetaPerDay(double spot, double maturity) const;
-        double vega(double maturity) const;
-        double rho(double maturity) const;
-        double dividendRho(double maturity) const;
+        Real elasticityForward() const;
+        Real gammaForward() const;
+        Real theta(Real spot, Time maturity) const;
+        Real thetaPerDay(Real spot, Time maturity) const;
+        Real vega(Time maturity) const;
+        Real rho(Time maturity) const;
+        Real dividendRho(Time maturity) const;
         /*! Probability of being in the money in the bond martingale measure.
             It is a risk-neutral probability, not the real world probability.
         */
-        double itmCashProbability() const;
+        Real itmCashProbability() const;
         /*! Probability of being in the money in the asset martingale measure.
             It is a risk-neutral probability, not the real world probability.
         */
-        double itmAssetProbability() const;
-        double strikeSensitivity() const;
-        double alpha() const;
-        double beta() const;
+        Real itmAssetProbability() const;
+        Real strikeSensitivity() const;
+        Real alpha() const;
+        Real beta() const;
       private:
-        double forward_, discount_, variance_;
-        double stdDev_, strike_;
-        double D1_, D2_, alpha_, beta_, DalphaDd1_, DbetaDd2_;
-        double cum_d1_, cum_d2_;
-        double X_, DXDs_, DXDstrike_;
+        Real forward_, discount_, variance_;
+        Real stdDev_, strike_;
+        Real D1_, D2_, alpha_, beta_, DalphaDd1_, DbetaDd2_;
+        Real cum_d1_, cum_d2_;
+        Real X_, DXDs_, DXDstrike_;
     };
 
 
     // inline definitions
 
-    inline double BlackFormula::thetaPerDay(double spot, 
-                                            double maturity) const {
+    inline Real BlackFormula::thetaPerDay(Real spot, Time maturity) const {
         return theta(spot, maturity)/365.0;
     }
 
-    inline double BlackFormula::itmCashProbability() const {
+    inline Real BlackFormula::itmCashProbability() const {
         return cum_d2_;
     }
 
-    inline double BlackFormula::itmAssetProbability() const {
+    inline Real BlackFormula::itmAssetProbability() const {
         return cum_d1_;
     }
 
-    inline double BlackFormula::alpha() const {
+    inline Real BlackFormula::alpha() const {
         return alpha_;
     }
 
-    inline double BlackFormula::beta() const {
+    inline Real BlackFormula::beta() const {
         return beta_;
     }
 

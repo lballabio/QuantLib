@@ -21,7 +21,7 @@ namespace QuantLib {
 
     void BlackSwaption::calculate() const {
         Time exercise = arguments_.stoppingTimes[0];
-        double w = arguments_.payFixed ? 1.0 : -1.0;
+        Real w = arguments_.payFixed ? 1.0 : -1.0;
         results_.value =  arguments_.fixedBPS * 
             BlackModel::formula(arguments_.fairRate,
                                 arguments_.fixedRate, 

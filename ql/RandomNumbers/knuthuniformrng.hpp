@@ -41,9 +41,9 @@ namespace QuantLib {
     */
     class KnuthUniformRng {
       public:
-        typedef Sample<double> sample_type;
+        typedef Sample<Real> sample_type;
         /*! if the given seed is 0, a random seed will be chosen
-          based on clock() */
+            based on clock() */
         explicit KnuthUniformRng(long seed = 0);
         /*! returns a sample with weight 1.0 containing a random number
           uniformly chosen from (0.0,1.0) */

@@ -32,7 +32,7 @@ namespace QuantLib {
         const boost::shared_ptr<BlackScholesProcess>& process =
             arguments_.blackScholesProcess;
 
-        double variance = 
+        Real variance = 
             process->blackVolatility()->blackVariance(
                                               arguments_.exercise->lastDate(),
                                               payoff->strike());
@@ -41,8 +41,8 @@ namespace QuantLib {
                                              arguments_.exercise->lastDate());
         DiscountFactor riskFreeDiscount =
             process->riskFreeRate()->discount(arguments_.exercise->lastDate());
-        double spot = process->stateVariable()->value();
-        double forwardPrice = spot * dividendDiscount / riskFreeDiscount;
+        Real spot = process->stateVariable()->value();
+        Real forwardPrice = spot * dividendDiscount / riskFreeDiscount;
 
         BlackFormula black(forwardPrice, riskFreeDiscount, variance, payoff);
 

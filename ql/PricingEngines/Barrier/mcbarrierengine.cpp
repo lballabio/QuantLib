@@ -23,11 +23,11 @@ namespace QuantLib {
 
     BarrierPathPricer::BarrierPathPricer(
                        Barrier::Type barrierType, 
-                       double barrier, 
-                       double rebate, 
+                       Real barrier, 
+                       Real rebate, 
                        Option::Type type,
-                       double underlying, 
-                       double strike,
+                       Real underlying, 
+                       Real strike,
                        const RelinkableHandle<TermStructure>& discountTS,
                        const boost::shared_ptr<StochasticProcess>& diffProcess,
                        const PseudoRandom::ursg_type& sequenceGen)
@@ -44,17 +44,18 @@ namespace QuantLib {
     }
 
 
-    double BarrierPathPricer::operator()(const Path& path) const {
+    Real BarrierPathPricer::operator()(const Path& path) const {
         Size n = path.size();
         QL_REQUIRE(n>0, "the path cannot be empty");
 
         bool isOptionActive = false;
-        double asset_price = underlying_;
-        double new_asset_price;
-        double x, y, vol;
+        Real asset_price = underlying_;
+        Real new_asset_price;
+        Real x, y;
+        Volatility vol;
         TimeGrid timeGrid = path.timeGrid();
         Time dt;
-        double log_drift, log_random;
+        Real log_drift, log_random;
         Array u = sequenceGen_.nextSequence().value;
         Size i;
 
@@ -150,11 +151,11 @@ namespace QuantLib {
 
     BiasedBarrierPathPricer::BiasedBarrierPathPricer(
                             Barrier::Type barrierType, 
-                            double barrier, 
-                            double rebate, 
+                            Real barrier, 
+                            Real rebate, 
                             Option::Type type,
-                            double underlying, 
-                            double strike,
+                            Real underlying, 
+                            Real strike,
                             const RelinkableHandle<TermStructure>& discountTS)
     : PathPricer<Path>(discountTS), underlying_(underlying),
       barrierType_(barrierType), barrier_(barrier), 
@@ -168,13 +169,13 @@ namespace QuantLib {
     }
 
 
-    double BiasedBarrierPathPricer::operator()(const Path& path) const {
+    Real BiasedBarrierPathPricer::operator()(const Path& path) const {
         Size n = path.size();
         QL_REQUIRE(n>0, "the path cannot be empty");
 
         bool isOptionActive = false;
-        double asset_price = underlying_;
-        double log_drift, log_random;
+        Real asset_price = underlying_;
+        Real log_drift, log_random;
         Size i;
 
         switch (barrierType_) {

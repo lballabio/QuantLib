@@ -48,35 +48,34 @@ namespace QuantLib {
 
         Size pastFixings = arguments_.pastFixings;
         Size remainingFixings = fixingTimes.size();
-        double N = pastFixings + remainingFixings;
+        Real N = Real(pastFixings + remainingFixings);
 
-        double pastWeight   = pastFixings/N;
-        double futureWeight = 1.0-pastWeight;
-
-
-        double timeSum = std::accumulate(fixingTimes.begin(),
-                                         fixingTimes.end(), 0.0);
+        Real pastWeight   = pastFixings/N;
+        Real futureWeight = 1.0-pastWeight;
 
 
-        double vola = process->blackVolatility()->blackVol(
+        Time timeSum = std::accumulate(fixingTimes.begin(),
+                                       fixingTimes.end(), 0.0);
+
+
+        Volatility vola = process->blackVolatility()->blackVol(
                                               arguments_.exercise->lastDate(),
                                               payoff->strike());
-        double temp = 0.0;
+        Real temp = 0.0;
         for (i=pastFixings+1; i<N; i++)
             temp += fixingTimes[i-pastFixings-1]*(N-i);
-        double variance = vola*vola /N/N * 
-            (timeSum+ 2.0*temp);
+        Real variance = vola*vola /N/N * (timeSum+ 2.0*temp);
 
         Rate dividendRate = process->dividendYield()->zeroYield(
                                              arguments_.exercise->lastDate());
         Rate riskFreeRate = process->riskFreeRate()->zeroYield(
                                              arguments_.exercise->lastDate());
-        double nu = riskFreeRate - dividendRate - 0.5*vola*vola;
-        double runningLog = QL_LOG(arguments_.runningProduct);
-        double muG = pastWeight * runningLog +
+        Rate nu = riskFreeRate - dividendRate - 0.5*vola*vola;
+        Real runningLog = QL_LOG(arguments_.runningProduct);
+        Real muG = pastWeight * runningLog +
             futureWeight * QL_LOG(process->stateVariable()->value()) +
             nu*timeSum/N;
-        double forwardPrice = QL_EXP(muG + variance / 2.0);
+        Real forwardPrice = QL_EXP(muG + variance / 2.0);
 
         DiscountFactor riskFreeDiscount = process->riskFreeRate()->discount(
                                              arguments_.exercise->lastDate());

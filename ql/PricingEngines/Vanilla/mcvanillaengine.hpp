@@ -49,14 +49,14 @@ namespace QuantLib {
                         Size requiredSamples = Null<Size>(),
                         Real requiredTolerance = Null<Real>(),
                         Size maxSamples = Null<Size>(),
-                        long seed = 0);
+                        BigInteger seed = 0);
         // McSimulation implementation
         boost::shared_ptr<path_generator_type> pathGenerator() const;
         // data members
         Size maxTimeStepsPerYear_;
         Size requiredSamples_, maxSamples_;
-        double requiredTolerance_;
-        long seed_;
+        Real requiredTolerance_;
+        BigInteger seed_;
     };
 
 
@@ -67,9 +67,9 @@ namespace QuantLib {
                                                    bool antitheticVariate,
                                                    bool controlVariate,
                                                    Size requiredSamples,
-                                                   double requiredTolerance,
+                                                   Real requiredTolerance,
                                                    Size maxSamples,
-                                                   long seed)
+                                                   BigInteger seed)
     : McSimulation<SingleAsset<RNG>,S>(antitheticVariate, controlVariate),
       maxTimeStepsPerYear_(maxTimeStepsPerYear),
       requiredSamples_(requiredSamples), maxSamples_(maxSamples),
@@ -126,7 +126,7 @@ namespace QuantLib {
             const VanillaOption::results* controlResults =
                 dynamic_cast<const VanillaOption::results*>(
                     controlPE->results());
-            double controlVariateValue = controlResults->value;
+            Real controlVariateValue = controlResults->value;
 
             mcModel_ =
                 boost::shared_ptr<MonteCarloModel<SingleAsset<RNG>, S> >(

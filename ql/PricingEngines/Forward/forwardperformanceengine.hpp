@@ -67,11 +67,12 @@ namespace QuantLib {
         Time resetTime = process->riskFreeRate()->dayCounter().yearFraction(
                                     process->riskFreeRate()->referenceDate(), 
                                     arguments_.resetDate);
-        double discR = process->riskFreeRate()->discount(arguments_.resetDate);
+        DiscountFactor discR = 
+            process->riskFreeRate()->discount(arguments_.resetDate);
         // it's a performance option
         discR /= process->stateVariable()->value();
 
-        double temp = originalResults_->value;
+        Real temp = originalResults_->value;
         results_.value = discR * temp;
         results_.delta = 0.0;
         results_.gamma = 0.0;

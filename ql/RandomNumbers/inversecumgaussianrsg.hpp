@@ -48,7 +48,7 @@ namespace QuantLib {
         Class I must implement the following interface:
         \code
             I::I();
-            double I::operator() const;
+            Real I::operator() const;
         \endcode
     */
     template <class USG, class I>

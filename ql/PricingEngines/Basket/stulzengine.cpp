@@ -26,24 +26,24 @@ namespace QuantLib {
     namespace {
 
         // calculate the value of euro min basket call
-        double euroTwoAssetMinBasketCall(double forward1, double forward2, 
-                                         double strike,
-                                         DiscountFactor riskFreeDiscount, 
-                                         double variance1, double variance2, 
-                                         double rho) {
+        Real euroTwoAssetMinBasketCall(Real forward1, Real forward2, 
+                                       Real strike,
+                                       DiscountFactor riskFreeDiscount, 
+                                       Real variance1, Real variance2, 
+                                       Real rho) {
 
-            double stdDev1 = QL_SQRT(variance1);
-            double stdDev2 = QL_SQRT(variance2);
+            Real stdDev1 = QL_SQRT(variance1);
+            Real stdDev2 = QL_SQRT(variance2);
 
-            double variance = variance1 + variance2 - 2 * rho * stdDev1 * stdDev2;
-            double stdDev = QL_SQRT(variance);
+            Real variance = variance1 + variance2 - 2 * rho * stdDev1 * stdDev2;
+            Real stdDev = QL_SQRT(variance);
 
-            double modRho1 = (rho * stdDev2 - stdDev1) / stdDev;
-            double modRho2 = (rho * stdDev1 - stdDev2) / stdDev;
+            Real modRho1 = (rho * stdDev2 - stdDev1) / stdDev;
+            Real modRho2 = (rho * stdDev1 - stdDev2) / stdDev;
 
-            double D1 = (QL_LOG(forward1 / forward2) + 0.5 * variance) / stdDev;
+            Real D1 = (QL_LOG(forward1 / forward2) + 0.5 * variance) / stdDev;
 
-            double alfa, beta, gamma;
+            Real alfa, beta, gamma;
             if (strike != 0.0) {
                 BivariateCumulativeNormalDistribution bivCNorm = 
                     BivariateCumulativeNormalDistribution(rho);
@@ -52,8 +52,8 @@ namespace QuantLib {
                 BivariateCumulativeNormalDistribution bivCNormMod1 = 
                     BivariateCumulativeNormalDistribution(modRho1);
 
-                double D1_1 = (QL_LOG(forward1/strike) + 0.5 * variance1) / stdDev1;
-                double D1_2 = (QL_LOG(forward2/strike) + 0.5 * variance2) / stdDev2;
+                Real D1_1 = (QL_LOG(forward1/strike) + 0.5 * variance1) / stdDev1;
+                Real D1_2 = (QL_LOG(forward2/strike) + 0.5 * variance2) / stdDev2;
                 alfa = bivCNormMod1(D1_1, -D1);
                 beta = bivCNormMod2(D1_2, D1 - stdDev);
                 gamma = bivCNorm(D1_1 - stdDev1, D1_2 - stdDev2);
@@ -70,11 +70,11 @@ namespace QuantLib {
         }
 
         // calculate the value of euro max basket call
-        double euroTwoAssetMaxBasketCall(double forward1, double forward2, 
-                                         double strike, 
-                                         Rate riskFreeDiscount,
-                                         double variance1, double variance2, 
-                                         double rho) {
+        Real euroTwoAssetMaxBasketCall(Real forward1, Real forward2, 
+                                       Real strike, 
+                                       DiscountFactor riskFreeDiscount,
+                                       Real variance1, Real variance2, 
+                                       Real rho) {
 
             boost::shared_ptr<StrikedTypePayoff> payoff(new
                 PlainVanillaPayoff(Option::Call, strike));
@@ -110,14 +110,14 @@ namespace QuantLib {
             boost::dynamic_pointer_cast<PlainVanillaPayoff>(arguments_.payoff);
         QL_REQUIRE(payoff, "non-plain payoff given");
 
-        double strike = payoff->strike();
+        Real strike = payoff->strike();
 
-        double variance1 = procs[0]->blackVolatility()->blackVariance(
+        Real variance1 = procs[0]->blackVolatility()->blackVariance(
                                                 exercise->lastDate(), strike);
-        double variance2 = procs[1]->blackVolatility()->blackVariance(
+        Real variance2 = procs[1]->blackVolatility()->blackVariance(
                                                 exercise->lastDate(), strike);
 
-        double rho = arguments_.correlation[1][0];
+        Real rho = arguments_.correlation[1][0];
 
         DiscountFactor riskFreeDiscount =
             procs[0]->riskFreeRate()->discount(exercise->lastDate());
@@ -130,9 +130,9 @@ namespace QuantLib {
 
         BasketOption::BasketType basketType = arguments_.basketType;
 
-        double forward1 = procs[0]->stateVariable()->value() * 
+        Real forward1 = procs[0]->stateVariable()->value() * 
             dividendDiscount1 / riskFreeDiscount;
-        double forward2 = procs[1]->stateVariable()->value() * 
+        Real forward2 = procs[1]->stateVariable()->value() * 
             dividendDiscount2 / riskFreeDiscount;
 
         switch (basketType) {

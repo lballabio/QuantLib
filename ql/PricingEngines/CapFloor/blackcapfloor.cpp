@@ -20,7 +20,7 @@
 namespace QuantLib {
 
     void BlackCapFloor::calculate() const {
-        double value = 0.0;
+        Real value = 0.0;
         CapFloor::Type type = arguments_.type;
 
         for (Size i=0; i<arguments_.startTimes.size(); i++) {
@@ -28,7 +28,7 @@ namespace QuantLib {
                 end = arguments_.endTimes[i],
                 accrualTime = arguments_.accrualTimes[i];
             if (end > 0.0) {    // discard expired caplets
-                double nominal = arguments_.nominals[i];
+                Real nominal = arguments_.nominals[i];
                 DiscountFactor q = model_->termStructure()->discount(end);
                 Rate forward = arguments_.forwards[i];
                 // try and factorize the code below
@@ -41,7 +41,7 @@ namespace QuantLib {
                 }
                 if ((type == CapFloor::Floor) ||
                     (type == CapFloor::Collar)) {
-                    double temp = q * accrualTime * nominal *
+                    Real temp = q * accrualTime * nominal *
                         floorletValue(fixing,forward,
                                       arguments_.floorRates[i],
                                       model_->volatility());
@@ -57,8 +57,8 @@ namespace QuantLib {
 
     }
 
-    double BlackCapFloor::capletValue(Time start, Rate forward,
-                                      Rate strike, double vol) const {
+    Real BlackCapFloor::capletValue(Time start, Rate forward,
+                                    Rate strike, Volatility vol) const {
         if (start <= 0.0) {
             // the rate was fixed
             return QL_MAX(forward-strike,0.0);
@@ -69,8 +69,8 @@ namespace QuantLib {
         }
     }
 
-    double BlackCapFloor::floorletValue(Time start, Rate forward,
-                                        Rate strike, double vol) const {
+    Real BlackCapFloor::floorletValue(Time start, Rate forward,
+                                      Rate strike, Volatility vol) const {
         if (start <= 0.0) {
             // the rate was fixed
             return QL_MAX(strike-forward,0.0);

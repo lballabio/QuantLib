@@ -26,18 +26,18 @@ namespace QuantLib {
 
     namespace {
 
-        class BasisFunction : std::unary_function<std::vector<double>,double> {
+        class BasisFunction : std::unary_function<std::vector<Real>,Real> {
           public:
             virtual ~BasisFunction() {}
-            virtual double calculate(const std::vector<double>& x) const = 0;
+            virtual Real calculate(const std::vector<Real>& x) const = 0;
         };
 
         class Constant : public BasisFunction {
           private:
-            double constant_;
+            Real constant_;
           public:
-            Constant(double constant) : constant_(constant) {}
-            double calculate(const std::vector<double>&) const {
+            Constant(Real constant) : constant_(constant) {}
+            Real calculate(const std::vector<Real>&) const {
                 return constant_;
             }
         };
@@ -45,11 +45,11 @@ namespace QuantLib {
         class Linear : public BasisFunction {
           private:
             Size index_;
-            double coeff_;
+            Real coeff_;
           public:
             Linear(Size index) : index_(index), coeff_(1.0) {}
-            Linear(Size index, double coeff) : index_(index), coeff_(coeff) {} 
-            double calculate(const std::vector<double>& x) const {
+            Linear(Size index, Real coeff) : index_(index), coeff_(coeff) {} 
+            Real calculate(const std::vector<Real>& x) const {
                 return coeff_*x[index_];
             }
         };
@@ -57,11 +57,11 @@ namespace QuantLib {
         class Square : public BasisFunction {
           private:
             Size index_;
-            double coeff_;
+            Real coeff_;
           public:
             Square(Size index) : index_(index), coeff_(1.0) {}
-            Square(Size index, double coeff) : index_(index), coeff_(coeff) {} 
-            double calculate(const std::vector<double>& x) const {
+            Square(Size index, Real coeff) : index_(index), coeff_(coeff) {} 
+            Real calculate(const std::vector<Real>& x) const {
                 return coeff_*x[index_]*x[index_];
             }
         };
@@ -69,11 +69,11 @@ namespace QuantLib {
         class Cube : public BasisFunction {
           private:
             Size index_;
-            double coeff_;
+            Real coeff_;
           public:
             Cube(Size index) : index_(index), coeff_(1.0) {}
-            Cube(Size index, double coeff) : index_(index), coeff_(coeff) {}
-            double calculate(const std::vector<double>& x) const {
+            Cube(Size index, Real coeff) : index_(index), coeff_(coeff) {}
+            Real calculate(const std::vector<Real>& x) const {
                 return coeff_*x[index_]*x[index_]*x[index_];
             }
         };
@@ -81,14 +81,14 @@ namespace QuantLib {
         class BasisPower : public BasisFunction {
           private:
             Size index_;
-            double power_;
-            double coeff_;
+            Real power_;
+            Real coeff_;
           public:
-            BasisPower(Size index, double power) : 
+            BasisPower(Size index, Real power) : 
                         index_(index), power_(power), coeff_(1.0) {}
-            BasisPower(Size index, double power, double coeff) : 
+            BasisPower(Size index, Real power, Real coeff) : 
                         index_(index), power_(power), coeff_(coeff) {}
-            double calculate(const std::vector<double>& x) const {
+            Real calculate(const std::vector<Real>& x) const {
                 return coeff_*QL_POW(x[index_], power_);
             }
         };
@@ -99,7 +99,7 @@ namespace QuantLib {
           public:
             LinearCombination(Size index1, Size index2) 
             : index1_(index1), index2_(index2) {}
-            double calculate(const std::vector<double>& x) const {
+            Real calculate(const std::vector<Real>& x) const {
                 return x[index1_]*x[index2_];
             }
         };
@@ -111,49 +111,49 @@ namespace QuantLib {
             LinearCombo(const boost::shared_ptr<BasisFunction>& bf1, 
                         const boost::shared_ptr<BasisFunction>& bf2) 
             : bf1_(bf1), bf2_(bf2) {}
-            double calculate(const std::vector<double>& x) const {
+            Real calculate(const std::vector<Real>& x) const {
                 return bf1_->calculate(x)*bf2_->calculate(x);
             }
         };
 
         class Polynomial : public BasisFunction {
           private:
-            double factor_;
+            Real factor_;
             boost::shared_ptr<BasisFunction> bf1_, bf2_;
           public:
-            Polynomial(double factor, 
+            Polynomial(Real factor, 
                        const boost::shared_ptr<BasisFunction>& bf1, 
                        const boost::shared_ptr<BasisFunction>& bf2) 
             : factor_(factor), bf1_(bf1), bf2_(bf2) {}
-            double calculate(const std::vector<double>& x) const {
+            Real calculate(const std::vector<Real>& x) const {
                 return factor_*(bf1_->calculate(x) + bf2_->calculate(x));
             }
         };
 
         class MyPolynomial : public BasisFunction {
           private:
-            double factor_;
+            Real factor_;
             std::vector<boost::shared_ptr<BasisFunction> > basisFunctions_;
           public:
-            MyPolynomial(double factor, 
+            MyPolynomial(Real factor, 
                          const std::vector<boost::shared_ptr<BasisFunction> >& 
                                                            basisFunctions)
             : factor_(factor), basisFunctions_(basisFunctions) {}
-            double calculate(const std::vector<double>& x) const;
+            Real calculate(const std::vector<Real>& x) const;
         };
 
-        double MyPolynomial::calculate(const std::vector<double>& x) const {
-            double result = 0.0;
+        Real MyPolynomial::calculate(const std::vector<Real>& x) const {
+            Real result = 0.0;
             for (Size j = 0; j<basisFunctions_.size(); j++) {
                 result =+ (basisFunctions_[j])->calculate(x);
             }
             return factor_*result;
         }
 
-        double basketPayoff(BasketOption::BasketType basketType, 
-                            const std::vector<double>& assetPrices) {
+        Real basketPayoff(BasketOption::BasketType basketType, 
+                          const std::vector<Real>& assetPrices) {
 
-            double basketPrice = assetPrices[0];
+            Real basketPrice = assetPrices[0];
             Size numAssets = assetPrices.size();
             Size j;
 
@@ -186,7 +186,7 @@ namespace QuantLib {
             boost::dynamic_pointer_cast<PlainVanillaPayoff>(arguments_.payoff);
         QL_REQUIRE(payoff_handle, "non-plain payoff given");
 
-        double strike = payoff_handle->strike();
+        Real strike = payoff_handle->strike();
         PlainVanillaPayoff payoff(payoff_handle->optionType(), strike);
 
         Size numAssets = arguments_.blackScholesProcesses.size();
@@ -414,7 +414,7 @@ namespace QuantLib {
                 numAssets*(grid.size()-1),seed_);
 
         // set up the diffuction processes
-        std::vector<double> initialPrices(numAssets);
+        std::vector<Real> initialPrices(numAssets);
         std::vector<boost::shared_ptr<StochasticProcess> > procs(numAssets);
         for (j = 0; j < numAssets; j++) {
             initialPrices[j] = arguments_.blackScholesProcesses[j]
@@ -457,12 +457,11 @@ namespace QuantLib {
         }
 
         // get the asset values into an easy container
-        std::vector<double> assetPath = getAssetSequence(
+        std::vector<Real> assetPath = getAssetSequence(
                         initialPrices[0], (multipaths[0])[0]); 
-        // int assetPathLength = assetPath.size();
-        std::vector< std::vector<double> >  temp_asset(numAssets, assetPath);
+        std::vector< std::vector<Real> >  temp_asset(numAssets, assetPath);
 
-        std::vector<std::vector<std::vector<double> > > 
+        std::vector<std::vector<std::vector<Real> > > 
                 multiAssetPaths(N, temp_asset);
         for (i=0; i<N/2; i++) {
             multipath = multipaths[i];
@@ -475,9 +474,9 @@ namespace QuantLib {
         }
 
         // initialise rollback vector with payoff        
-        std::vector<double> normalizedContinuationValue(N);
+        std::vector<Real> normalizedContinuationValue(N);
         for (i=0; i<N; i++) {
-            std::vector<double> finalPrices(numAssets);
+            std::vector<Real> finalPrices(numAssets);
             for (j=0; j<numAssets; j++) {
                 finalPrices[j] = multiAssetPaths[i][j][timeSteps_-1];
             }
@@ -488,12 +487,12 @@ namespace QuantLib {
         Array temp_coeffs(numBasisFunctions,1.0);
         std::vector<Array> basisCoeffs(timeSteps_-1, temp_coeffs);
 
-        std::vector<double> assetPrices(numAssets);
-        std::vector<double> normalizedAssetPrices(numAssets);
+        std::vector<Real> assetPrices(numAssets);
+        std::vector<Real> normalizedAssetPrices(numAssets);
 
         // LOOP   
-        long timeLoop;
-        for (timeLoop = long(timeSteps_)-2; timeLoop>=0; timeLoop--) {
+        BigInteger timeLoop;
+        for (timeLoop = BigInteger(timeSteps_)-2; timeLoop>=0; timeLoop--) {
             timeStep = timeLoop;
 
             // rollback all paths
@@ -512,7 +511,7 @@ namespace QuantLib {
 
             // select in the money paths            
             std::vector<Size> itmPaths;
-            std::vector<double> y(N);
+            std::vector<Real> y(N);
             for (i=0; i<N; i++) {
                 for (j=0; j<numAssets; j++) {
                     assetPrices[j] = multiAssetPaths[i][j][timeStep];
@@ -530,7 +529,7 @@ namespace QuantLib {
             if (num_itmPaths > 0) {
 
                 // for itm paths   
-                std::vector<double> y_exercise(num_itmPaths);
+                std::vector<Real> y_exercise(num_itmPaths);
                 Array y_temp(num_itmPaths);
                 for (i=0; i<num_itmPaths; i++) {
                     // get the immediate exercise value                
@@ -629,14 +628,14 @@ namespace QuantLib {
 
     // put all the asset prices into a vector.
     // s0 is not included in the vector
-    std::vector<double> getAssetSequence(double s0, const Path& path) {
+    std::vector<Real> getAssetSequence(Real s0, const Path& path) {
         Size n = path.size();
         QL_REQUIRE(n>0, "the path cannot be empty");
 
-        std::vector<double> asset(n);
+        std::vector<Real> asset(n);
         asset[0] = s0;
 
-        double log_drift, log_random;
+        Real log_drift, log_random;
         log_drift = path.drift()[0];
         log_random = path.diffusion()[0];
         asset[0] = s0*QL_EXP(log_drift + log_random);
@@ -652,14 +651,14 @@ namespace QuantLib {
 
     // put all the antithetic asset prices into a vector.
     // s0 is not included in the vector
-    std::vector<double> getAntiAssetSequence(double s0, const Path& path) {
+    std::vector<Real> getAntiAssetSequence(Real s0, const Path& path) {
         Size n = path.size();
         QL_REQUIRE(n>0, "the path cannot be empty");
 
-        std::vector<double> asset(n);
+        std::vector<Real> asset(n);
         asset[0] = s0;
 
-        double log_drift, log_random;
+        Real log_drift, log_random;
         log_drift = path.drift()[0];
         log_random = path.diffusion()[0];
         asset[0] = s0*QL_EXP(log_drift - log_random);

@@ -33,14 +33,14 @@ namespace QuantLib {
             arguments_.blackScholesProcess;
 
         Date settlementDate = process->riskFreeRate()->referenceDate();
-        double riskless = 0.0;
+        Real riskless = 0.0;
         Size i;
         for (i=0; i<arguments_.dividends.size(); i++)
             if (arguments_.dividendDates[i] >= settlementDate)
                 riskless += arguments_.dividends[i] * 
                     process->riskFreeRate()
                     ->discount(arguments_.dividendDates[i]);
-        double spot = process->stateVariable()->value() - riskless;
+        Real spot = process->stateVariable()->value() - riskless;
 
         DiscountFactor dividendDiscount =
             process->dividendYield()->discount(
@@ -48,9 +48,9 @@ namespace QuantLib {
         DiscountFactor riskFreeDiscount =
             process->riskFreeRate()->discount(
                                             arguments_.exercise->lastDate());
-        double forwardPrice = spot * dividendDiscount / riskFreeDiscount;
+        Real forwardPrice = spot * dividendDiscount / riskFreeDiscount;
 
-        double variance = 
+        Real variance = 
             process->blackVolatility()->blackVariance(
                                               arguments_.exercise->lastDate(),
                                               payoff->strike());
@@ -66,7 +66,7 @@ namespace QuantLib {
                                   arguments_.exercise->lastDate());
         results_.vega = black.vega(t);
 
-        double delta_theta = 0.0, delta_rho = 0.0;
+        Real delta_theta = 0.0, delta_rho = 0.0;
         for (i = 0; i < arguments_.dividends.size(); i++) {
             Date d = arguments_.dividendDates[i];
             Time t = process->riskFreeRate()->dayCounter().yearFraction(

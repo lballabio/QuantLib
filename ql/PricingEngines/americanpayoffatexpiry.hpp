@@ -34,32 +34,36 @@ namespace QuantLib {
     class AmericanPayoffAtExpiry {
     public:
         AmericanPayoffAtExpiry(
-                          double spot,
-                          double discount,
-                          double dividendDiscount,
-                          double variance,
+                          Real spot,
+                          DiscountFactor discount,
+                          DiscountFactor dividendDiscount,
+                          Real variance,
                           const boost::shared_ptr<StrikedTypePayoff>& payoff);
-        double value() const;
+        Real value() const;
     private:
-        double spot_, discount_, dividendDiscount_, variance_;
-        double forward_, stdDev_;
+        Real spot_;
+        DiscountFactor discount_, dividendDiscount_;
+        Real variance_;
 
-        double strike_, K_, DKDstrike_;
+        Real forward_;
+        Volatility stdDev_;
 
-        double mu_, log_H_S_;
+        Real strike_, K_, DKDstrike_;
 
-        double D1_, D2_, cum_d1_, cum_d2_;
+        Real mu_, log_H_S_;
 
-        double alpha_, beta_, DalphaDd1_, DbetaDd2_;
+        Real D1_, D2_, cum_d1_, cum_d2_;
+
+        Real alpha_, beta_, DalphaDd1_, DbetaDd2_;
 
         bool inTheMoney_;
-        double Y_, DYDstrike_, X_, DXDstrike_;
+        Real Y_, DYDstrike_, X_, DXDstrike_;
     };
 
 
-    inline AmericanPayoffAtExpiry::AmericanPayoffAtExpiry(double spot,
-        double discount, double dividendDiscount, double variance,
-        const boost::shared_ptr<StrikedTypePayoff>& payoff)
+    inline AmericanPayoffAtExpiry::AmericanPayoffAtExpiry(
+         Real spot, DiscountFactor discount, DiscountFactor dividendDiscount, 
+         Real variance, const boost::shared_ptr<StrikedTypePayoff>& payoff)
     : spot_(spot), discount_(discount), dividendDiscount_(dividendDiscount),
       variance_(variance) {
 
@@ -105,8 +109,8 @@ namespace QuantLib {
 
         log_H_S_ = QL_LOG (strike_/spot_);
 
-        double n_d1, n_d2;
-        double cum_d1_, cum_d2_;
+        Real n_d1, n_d2;
+        Real cum_d1_, cum_d2_;
         if (variance_>=QL_EPSILON) {
             D1_ = log_H_S_/stdDev_ + mu_*stdDev_;
             D2_ = D1_ - 2.0*mu_*stdDev_; 
@@ -187,7 +191,7 @@ namespace QuantLib {
     }
 
 
-    inline double AmericanPayoffAtExpiry::value() const {
+    inline Real AmericanPayoffAtExpiry::value() const {
         return discount_ * K_ * (Y_ * alpha_ + X_ * beta_);
     }
 

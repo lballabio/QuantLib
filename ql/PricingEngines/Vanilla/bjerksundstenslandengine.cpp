@@ -25,41 +25,40 @@ namespace QuantLib {
 
         CumulativeNormalDistribution cumNormalDist;
 
-        double phi(double S, double gamma, double H, double I,
-            double rT, double bT, double variance) {
+        Real phi(Real S, Real gamma, Real H, Real I,
+                 Real rT, Real bT, Real variance) {
 
-            double lambda = (-rT + gamma * bT + 0.5 * gamma * (gamma - 1.0)
+            Real lambda = (-rT + gamma * bT + 0.5 * gamma * (gamma - 1.0)
                 * variance);
-            double d = -(QL_LOG(S / H) + (bT + (gamma - 0.5) * variance) )
+            Real d = -(QL_LOG(S / H) + (bT + (gamma - 0.5) * variance) )
                 / QL_SQRT(variance);
-            double kappa = 2.0 * bT / variance + (2.0 * gamma - 1.0);
+            Real kappa = 2.0 * bT / variance + (2.0 * gamma - 1.0);
             return QL_EXP(lambda) * QL_POW(S, gamma) * (cumNormalDist(d)
                 - QL_POW((I / S), kappa) *
                 cumNormalDist(d - 2.0 * QL_LOG(I / S) / QL_SQRT(variance)));
         }
 
 
-        double americanCallApproximation(double S, double X,
-            double rfD, double dD, double variance) {
+        Real americanCallApproximation(Real S, Real X,
+                                       Real rfD, Real dD, Real variance) {
 
-            double bT = QL_LOG(dD/rfD);
-            double rT = QL_LOG(1.0/rfD);
+            Real bT = QL_LOG(dD/rfD);
+            Real rT = QL_LOG(1.0/rfD);
 
-            double Beta = (0.5 - bT/variance) +
+            Real Beta = (0.5 - bT/variance) +
                 QL_SQRT(QL_POW((bT/variance - 0.5), 2.0) + 2.0 * rT/variance);
-            double BInfinity = Beta / (Beta - 1.0) * X;
-            // double B0 = QL_MAX(X, QL_LOG(rfD) / QL_LOG(dD) * X);
-            double B0 = QL_MAX(X, rT / (rT - bT) * X);
-            double ht = -(bT + 2.0 * QL_SQRT(variance)) * B0 /
-                (BInfinity - B0);
+            Real BInfinity = Beta / (Beta - 1.0) * X;
+            // Real B0 = QL_MAX(X, QL_LOG(rfD) / QL_LOG(dD) * X);
+            Real B0 = QL_MAX(X, rT / (rT - bT) * X);
+            Real ht = -(bT + 2.0 * QL_SQRT(variance)) * B0 / (BInfinity - B0);
 
             // investigate what happen to I for dD->0.0
-            double I = B0 + (BInfinity - B0) * (1 - QL_EXP(ht));
+            Real I = B0 + (BInfinity - B0) * (1 - QL_EXP(ht));
             if (S >= I)
                 return S - X;
             else {
                 // investigate what happen to alpha for dD->0.0
-                double alpha = (I - X) * QL_POW(I, (-Beta));
+                Real alpha = (I - X) * QL_POW(I, (-Beta));
                 return alpha * QL_POW(S, Beta)
                     - alpha * phi(S, Beta, I, I, rT, bT, variance)
                     +         phi(S,  1.0, I, I, rT, bT, variance)
@@ -85,7 +84,7 @@ namespace QuantLib {
             boost::dynamic_pointer_cast<StrikedTypePayoff>(arguments_.payoff);
         QL_REQUIRE(payoff, "non-striked payoff given");
 
-        double variance = 
+        Real variance = 
             arguments_.blackScholesProcess->blackVolatility()->blackVariance(
                                             ex->lastDate(), payoff->strike());
         DiscountFactor dividendDiscount =
@@ -94,9 +93,8 @@ namespace QuantLib {
         DiscountFactor riskFreeDiscount =
             arguments_.blackScholesProcess->riskFreeRate()->discount(
                                                               ex->lastDate());
-        double spot = arguments_.blackScholesProcess->stateVariable()->value();
-        double forwardPrice = spot *
-            dividendDiscount / riskFreeDiscount;
+        Real spot = arguments_.blackScholesProcess->stateVariable()->value();
+        Real forwardPrice = spot * dividendDiscount / riskFreeDiscount;
         BlackFormula black(forwardPrice, riskFreeDiscount, variance, payoff);
 
         if (dividendDiscount>=1.0 && payoff->optionType()==Option::Call) {

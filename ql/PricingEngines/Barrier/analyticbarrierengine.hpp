@@ -42,25 +42,25 @@ namespace QuantLib {
       private:
         CumulativeNormalDistribution f_;
         // helper methods
-        double underlying() const;
-        double strike() const;
+        Real underlying() const;
+        Real strike() const;
         Time residualTime() const;
-        double volatility() const;
-        double barrier() const;
-        double rebate() const;
-        double stdDeviation() const;
+        Volatility volatility() const;
+        Real barrier() const;
+        Real rebate() const;
+        Real stdDeviation() const;
         Rate riskFreeRate() const;
         DiscountFactor riskFreeDiscount() const;
         Rate dividendYield() const;
         DiscountFactor dividendDiscount() const;
-        double mu() const;
-        double muSigma() const;
-        double A(double phi) const;
-        double B(double phi) const;
-        double C(double eta, double phi) const;
-        double D(double eta, double phi) const;
-        double E(double eta) const;
-        double F(double eta) const;
+        Rate mu() const;
+        Real muSigma() const;
+        Real A(Real phi) const;
+        Real B(Real phi) const;
+        Real C(Real eta, Real phi) const;
+        Real D(Real eta, Real phi) const;
+        Real E(Real eta) const;
+        Real F(Real eta) const;
     };
 
 }

@@ -42,8 +42,8 @@ namespace QuantLib {
         const boost::shared_ptr<BlackScholesProcess>& process = 
             arguments_.blackScholesProcess;
 
-        double spot = process->stateVariable()->value();
-        double variance = 
+        Real spot = process->stateVariable()->value();
+        Real variance = 
             process->blackVolatility()->blackVariance(ex->lastDate(), 
                                                  payoff->strike());
         Rate dividendDiscount = 

@@ -45,7 +45,7 @@ namespace QuantLib {
         std::vector<Date> resetDates = arguments_.resetDates;
         resetDates.push_back(arguments_.exercise->lastDate());
 
-        double underlying = process->stateVariable()->value();
+        Real underlying = process->stateVariable()->value();
 
         boost::shared_ptr<StrikedTypePayoff> payoff(
                         new PlainVanillaPayoff(moneyness->optionType(), 1.0));
@@ -66,8 +66,8 @@ namespace QuantLib {
             DiscountFactor qDiscount = 
                 process->dividendYield()->discount(resetDates[i]) /
                 process->dividendYield()->discount(resetDates[i-1]);
-            double forward = (1.0/moneyness->strike())*qDiscount/rDiscount;
-            double variance = 
+            Real forward = (1.0/moneyness->strike())*qDiscount/rDiscount;
+            Real variance = 
                 process->blackVolatility()->blackForwardVariance(
                                         resetDates[i-1],resetDates[i],
                                         underlying * moneyness->strike());

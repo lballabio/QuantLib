@@ -24,7 +24,7 @@ namespace QuantLib {
 
     JumpDiffusionEngine::JumpDiffusionEngine(
         const boost::shared_ptr<VanillaOption::engine>& baseEngine,
-        double relativeAccuracy,
+        Real relativeAccuracy,
         Size maxIterations)
     : baseEngine_(baseEngine), relativeAccuracy_(relativeAccuracy),
       maxIterations_(maxIterations) {
@@ -39,16 +39,16 @@ namespace QuantLib {
                                               arguments_.blackScholesProcess);
         QL_REQUIRE(jdProcess, "not a jump diffusion process");
 
-        double jumpSquareVol = jdProcess->logJumpVolatility()->value()
+        Real jumpSquareVol = jdProcess->logJumpVolatility()->value()
             * jdProcess->logJumpVolatility()->value();
-        double muPlusHalfSquareVol = jdProcess->logMeanJump()->value()
+        Real muPlusHalfSquareVol = jdProcess->logMeanJump()->value()
             + 0.5*jumpSquareVol;
         // mean jump size
-        double k = QL_EXP(muPlusHalfSquareVol) - 1.0;
-        double lambda = (k+1.0) * jdProcess->jumpIntensity()->value();
+        Real k = QL_EXP(muPlusHalfSquareVol) - 1.0;
+        Real lambda = (k+1.0) * jdProcess->jumpIntensity()->value();
 
         // dummy strike
-        double variance = jdProcess->blackVolatility()->blackVariance(
+        Real variance = jdProcess->blackVolatility()->blackVariance(
                                         arguments_.exercise->lastDate(), 1.0);
         DayCounter dc = jdProcess->blackVolatility()->dayCounter();
         Date volRefDate = jdProcess->blackVolatility()->referenceDate();
@@ -89,7 +89,7 @@ namespace QuantLib {
         results_.rho         = 0.0;
         results_.dividendRho = 0.0;
 
-        double r, v, weight, lastContribution = 1.0;
+        Real r, v, weight, lastContribution = 1.0;
         Size i;
         // Haug arbitrary criterium is:
         //for (i=0; i<11; i++) {
@@ -110,7 +110,7 @@ namespace QuantLib {
             baseEngine_->calculate();
 
 
-            weight = p((unsigned long)(i));
+            weight = p(Size(i));
             results_.value       += weight * baseResults->value;
             results_.delta       += weight * baseResults->delta;
             results_.gamma       += weight * baseResults->gamma;

@@ -35,7 +35,7 @@ namespace QuantLib {
     */
     class MersenneTwisterUniformRng {
       public:
-        typedef Sample<double> sample_type;
+        typedef Sample<Real> sample_type;
         /*! if the given seed is 0, a random seed will be chosen
             based on clock() */
         explicit MersenneTwisterUniformRng(unsigned long seed = 0);
@@ -45,7 +45,7 @@ namespace QuantLib {
             on (0.0, 1.0)-real-interval  */
         sample_type next() const {
             // divide by 2^32
-            double result = (double(nextInt32())+ 0.5)/4294967296.0;
+            Real result = (Real(nextInt32()) + 0.5)/4294967296.0;
             return sample_type(result,1.0);
         }
         //! return  a random number on [0,0xffffffff]-interval 

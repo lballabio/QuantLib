@@ -46,13 +46,13 @@ namespace QuantLib {
         Class I must implement the following interface:
         \code
             I::I();
-            double I::operator() const;
+            Real I::operator() const;
         \endcode
     */
     template <class RNG, class I>
     class ICGaussianRng {
       public:
-        typedef Sample<double> sample_type;
+        typedef Sample<Real> sample_type;
         typedef RNG urng_type;
         explicit ICGaussianRng(const RNG& uniformGenerator);
         //! returns a sample from a Gaussian distribution

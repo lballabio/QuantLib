@@ -40,7 +40,7 @@ namespace QuantLib {
                        Real requiredTolerance = Null<Real>(),
                        Size maxSamples = Null<Size>(),
                        bool brownianBridge = false,
-                       long seed = 0);
+                       BigInteger seed = 0);
 
         typedef typename McSimulation<MultiAsset<RNG>,S>::path_generator_type
             path_generator_type;
@@ -60,9 +60,9 @@ namespace QuantLib {
         Size maxTimeStepsPerYear_;
         Size requiredSamples_;
         Size maxSamples_;
-        double requiredTolerance_;
+        Real requiredTolerance_;
         bool brownianBridge_;
-        long seed_;
+        BigInteger seed_;
     };
 
     class EuropeanMultiPathPricer : public PathPricer<MultiPath> {
@@ -70,10 +70,10 @@ namespace QuantLib {
         EuropeanMultiPathPricer(
                 BasketOption::BasketType basketType,
                 Option::Type type,
-                double strike,
+                Real strike,
                 Array underlying,
                 const RelinkableHandle<TermStructure>& discountTS);
-        double operator()(const MultiPath& multiPath) const;
+        Real operator()(const MultiPath& multiPath) const;
       private:
         BasketOption::BasketType basketType_;
         Array underlying_;
@@ -88,10 +88,10 @@ namespace QuantLib {
                                                    bool antitheticVariate,
                                                    bool controlVariate,
                                                    Size requiredSamples,
-                                                   double requiredTolerance,
+                                                   Real requiredTolerance,
                                                    Size maxSamples,
                                                    bool brownianBridge,
-                                                   long seed)
+                                                   BigInteger seed)
     : McSimulation<MultiAsset<RNG>,S>(antitheticVariate, controlVariate),
       maxTimeStepsPerYear_(maxTimeStepsPerYear),
       requiredSamples_(requiredSamples), 
@@ -203,7 +203,7 @@ namespace QuantLib {
             const BasketOption::results* controlResults =
                 dynamic_cast<const BasketOption::results*>(
                     controlPE->results());
-            double controlVariateValue = controlResults->value;
+            Real controlVariateValue = controlResults->value;
 
             mcModel_ =
                 boost::shared_ptr<MonteCarloModel<MultiAsset<RNG>, S> >(

@@ -70,7 +70,7 @@ namespace QuantLib {
                         Size requiredSamples = Null<Size>(),
                         Real requiredTolerance = Null<Real>(),
                         Size maxSamples = Null<Size>(),
-                        long seed = 0);
+                        BigInteger seed = 0);
 
         void calculate() const;
       protected:
@@ -84,8 +84,8 @@ namespace QuantLib {
         //my_sequence_type uniformGenerator_;
 //        Size maxTimeStepsPerYear_;
 //        Size requiredSamples_, maxSamples_;
-//        double requiredTolerance_;
-//        long seed_;
+//        Real requiredTolerance_;
+//        BigInteger seed_;
     };
 
     class DigitalPathPricer : public PathPricer<Path> {
@@ -93,15 +93,15 @@ namespace QuantLib {
         DigitalPathPricer(
                        const boost::shared_ptr<CashOrNothingPayoff>& payoff,
                        const boost::shared_ptr<AmericanExercise>& exercise,
-                       double underlying,
+                       Real underlying,
                        const RelinkableHandle<TermStructure>& discountTS,
                        const boost::shared_ptr<StochasticProcess>& diffProcess,
                        const PseudoRandom::ursg_type& sequenceGen);
-        double operator()(const Path& path) const;
+        Real operator()(const Path& path) const;
       private:
         boost::shared_ptr<CashOrNothingPayoff> payoff_;
         boost::shared_ptr<AmericanExercise> exercise_;
-        double underlying_;
+        Real underlying_;
         boost::shared_ptr<StochasticProcess> diffProcess_;
         PseudoRandom::ursg_type sequenceGen_;
     };
@@ -115,9 +115,9 @@ namespace QuantLib {
                                           bool antitheticVariate,
                                           bool controlVariate,
                                           Size requiredSamples,
-                                          double requiredTolerance,
+                                          Real requiredTolerance,
                                           Size maxSamples,
-                                          long seed)
+                                          BigInteger seed)
     : MCVanillaEngine<RNG,S>(maxTimeStepsPerYear,
                              antitheticVariate,
                              controlVariate,

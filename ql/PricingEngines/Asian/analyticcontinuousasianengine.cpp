@@ -37,9 +37,9 @@ namespace QuantLib {
             arguments_.blackScholesProcess;
 
 
-        double volatility = 
+        Volatility volatility = 
             process->blackVolatility()->blackVol(exercise, payoff->strike());
-        double variance = 
+        Real variance = 
             process->blackVolatility()->blackVariance(exercise,
                                                       payoff->strike());
         DiscountFactor riskFreeDiscount =
@@ -54,8 +54,8 @@ namespace QuantLib {
                          process->dividendYield()->referenceDate(), exercise);
         DiscountFactor dividendDiscount = QL_EXP(-dividendYield*t_q);
 
-        double spot = process->stateVariable()->value();
-        double forward = spot * dividendDiscount / riskFreeDiscount;
+        Real spot = process->stateVariable()->value();
+        Real forward = spot * dividendDiscount / riskFreeDiscount;
 
         BlackFormula black(forward, riskFreeDiscount, variance/3.0, payoff);
 

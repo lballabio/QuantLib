@@ -24,26 +24,26 @@ namespace QuantLib {
       public:
         rStarFinder(const Swaption::arguments &params,
                     const boost::shared_ptr<OneFactorAffineModel>& model,
-                    const std::vector<double>& amounts)
+                    const std::vector<Real>& amounts)
         : strike_(params.nominal), maturity_(params.stoppingTimes[0]),
           times_(params.fixedPayTimes), amounts_(amounts), model_(model) {
         }
 
-        double operator()(double x) const {
-            double value = strike_;
+        Real operator()(Rate x) const {
+            Real value = strike_;
             Size size = times_.size();
             for (Size i=0; i<size; i++) {
-                double dbValue =
+                Real dbValue =
                     model_->discountBond(maturity_, times_[i], x);
                 value -= amounts_[i]*dbValue;
             }
             return value;
         }
       private:
-        double strike_;
+        Real strike_;
         Time maturity_;
         const std::vector<Time>& times_;
-        const std::vector<double>& amounts_;
+        const std::vector<Real>& amounts_;
         const boost::shared_ptr<OneFactorAffineModel>& model_;
     };
 
@@ -55,28 +55,28 @@ namespace QuantLib {
         QL_REQUIRE(maturity==arguments_.floatingResetTimes[0],
                    "maturity must be equal to first reset date");
 
-        std::vector<double> amounts(arguments_.fixedCoupons);
+        std::vector<Real> amounts(arguments_.fixedCoupons);
         amounts.back() += arguments_.nominal;
 
         rStarFinder finder(arguments_, model_, amounts);
         Brent s1d;
-        double minStrike = -10.0;
-        double maxStrike = 10.0;
+        Rate minStrike = -10.0;
+        Rate maxStrike = 10.0;
         s1d.setMaxEvaluations(10000);
         s1d.setLowerBound(minStrike);
         s1d.setUpperBound(maxStrike);
-        double rStar = s1d.solve(finder, 1e-8, 0.05, minStrike, maxStrike);
+        Rate rStar = s1d.solve(finder, 1e-8, 0.05, minStrike, maxStrike);
 
         Option::Type type = arguments_.payFixed?Option::Put:Option::Call;
         Size size = arguments_.fixedCoupons.size();
-        double value = 0.0;
+        Real value = 0.0;
         for (Size i=0; i<size; i++) {
-            double strike = model_->discountBond(maturity,
-                                                 arguments_.fixedPayTimes[i], 
-                                                 rStar);
-            double dboValue = model_->discountBondOption(
-                                                 type, strike, maturity, 
-                                                 arguments_.fixedPayTimes[i]);
+            Real strike = model_->discountBond(maturity,
+                                               arguments_.fixedPayTimes[i], 
+                                               rStar);
+            Real dboValue = model_->discountBondOption(
+                                               type, strike, maturity, 
+                                               arguments_.fixedPayTimes[i]);
             value += amounts[i]*dboValue;
         }
         results_.value = value;

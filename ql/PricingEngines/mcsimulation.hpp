@@ -48,12 +48,12 @@ namespace QuantLib {
 
         virtual ~McSimulation() {}
         //! add samples until the required tolerance is reached
-        double value(double tolerance,
-                     Size maxSample = QL_MAX_INT) const;
+        Real value(Real tolerance,
+                   Size maxSample = QL_MAX_INT) const;
         //! simulate a fixed number of samples
-        double valueWithSamples(Size samples) const;
+        Real valueWithSamples(Size samples) const;
         //! error estimated using the samples simulated so far
-        double errorEstimate() const;
+        Real errorEstimate() const;
         //! access to the sample accumulator for richer statistics
         const stats_type& sampleAccumulator(void) const;
       protected:
@@ -82,8 +82,8 @@ namespace QuantLib {
 
     // inline definitions
     template<class MC, class S>
-    inline double McSimulation<MC,S>::value(double tolerance,
-                                            Size maxSamples) const {
+    inline Real McSimulation<MC,S>::value(Real tolerance,
+                                          Size maxSamples) const {
         Size sampleNumber =
             mcModel_->sampleAccumulator().samples();
         if (sampleNumber<minSample_) {
@@ -92,9 +92,9 @@ namespace QuantLib {
         }
 
         Size nextBatch;
-        double order, accuracy;
-        double result = mcModel_->sampleAccumulator().mean();
-        double error = mcModel_->sampleAccumulator().errorEstimate();
+        Real order, accuracy;
+        Real result = mcModel_->sampleAccumulator().mean();
+        Real error = mcModel_->sampleAccumulator().errorEstimate();
         if (result==0.0) {
             if (error==0.0) { // deep OTM option
                 accuracy = 0.99*tolerance; // this way it will exit
@@ -108,7 +108,7 @@ namespace QuantLib {
             // conservative estimate of how many samples are needed
             order = accuracy*accuracy/tolerance/tolerance;
             nextBatch = Size(QL_MAX(sampleNumber*order*0.8-sampleNumber,
-                                    double(minSample_)));
+                                    Real(minSample_)));
 
             // do not exceed maxSamples
             nextBatch = QL_MIN(nextBatch, maxSamples-sampleNumber);
@@ -127,7 +127,7 @@ namespace QuantLib {
 
 
     template<class MC, class S>
-    inline double McSimulation<MC,S>::valueWithSamples(Size samples) const {
+    inline Real McSimulation<MC,S>::valueWithSamples(Size samples) const {
 
         QL_REQUIRE(samples>=minSample_,
                    "number of requested samples ("
@@ -152,7 +152,7 @@ namespace QuantLib {
 
 
     template<class MC, class S>
-    inline double McSimulation<MC,S>::errorEstimate() const {
+    inline Real McSimulation<MC,S>::errorEstimate() const {
 
         Size sampleNumber = mcModel_->sampleAccumulator().samples();
 

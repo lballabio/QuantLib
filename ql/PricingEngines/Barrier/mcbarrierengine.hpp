@@ -56,7 +56,7 @@ namespace QuantLib {
                         Real requiredTolerance = Null<Real>(),
                         Size maxSamples = Null<Size>(),
                         bool isBiased = false,
-                        long seed = 0);
+                        BigInteger seed = 0);
 
         void calculate() const;
       protected:
@@ -75,9 +75,9 @@ namespace QuantLib {
         // data members
         Size maxTimeStepsPerYear_;
         Size requiredSamples_, maxSamples_;
-        double requiredTolerance_;
+        Real requiredTolerance_;
         bool isBiased_;
-        long seed_;
+        BigInteger seed_;
     };
 
 
@@ -85,20 +85,20 @@ namespace QuantLib {
       public:
         BarrierPathPricer(
                       Barrier::Type barrierType, 
-                      double barrier, 
-                      double rebate, 
+                      Real barrier, 
+                      Real rebate, 
                       Option::Type type,
-                      double underlying,
-                      double strike,
+                      Real underlying,
+                      Real strike,
                       const RelinkableHandle<TermStructure>& discountTS,
                       const boost::shared_ptr<StochasticProcess>& diffProcess,
                       const PseudoRandom::ursg_type& sequenceGen);
-        double operator()(const Path& path) const;
+        Real operator()(const Path& path) const;
       private:
-        double underlying_;
+        Real underlying_;
         Barrier::Type barrierType_;
-        double barrier_;
-        double rebate_;
+        Real barrier_;
+        Real rebate_;
         boost::shared_ptr<StochasticProcess> diffProcess_;
         PseudoRandom::ursg_type sequenceGen_;
         PlainVanillaPayoff payoff_;
@@ -109,18 +109,18 @@ namespace QuantLib {
       public:
         BiasedBarrierPathPricer(
                            Barrier::Type barrierType, 
-                           double barrier, 
-                           double rebate, 
+                           Real barrier, 
+                           Real rebate, 
                            Option::Type type,
-                           double underlying,
-                           double strike,
+                           Real underlying,
+                           Real strike,
                            const RelinkableHandle<TermStructure>& discountTS);
-        double operator()(const Path& path) const;
+        Real operator()(const Path& path) const;
       private:
-        double underlying_;
+        Real underlying_;
         Barrier::Type barrierType_;
-        double barrier_;
-        double rebate_;
+        Real barrier_;
+        Real rebate_;
         PlainVanillaPayoff payoff_;
     };
 
@@ -132,10 +132,10 @@ namespace QuantLib {
                                                    bool antitheticVariate,
                                                    bool controlVariate,
                                                    Size requiredSamples,
-                                                   double requiredTolerance,
+                                                   Real requiredTolerance,
                                                    Size maxSamples,
                                                    bool isBiased,
-                                                   long seed)
+                                                   BigInteger seed)
     : McSimulation<SingleAsset<RNG>,S>(antitheticVariate,
                                        controlVariate),
       maxTimeStepsPerYear_(maxTimeStepsPerYear),
@@ -255,7 +255,7 @@ namespace QuantLib {
             const BarrierOption::results* controlResults =
                 dynamic_cast<const BarrierOption::results*>(
                     controlPE->results());
-            double controlVariateValue = controlResults->value;
+            Real controlVariateValue = controlResults->value;
 
             mcModel_ =
                 boost::shared_ptr<MonteCarloModel<SingleAsset<RNG>, S> >(

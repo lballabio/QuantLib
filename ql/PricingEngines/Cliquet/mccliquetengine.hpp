@@ -57,21 +57,21 @@ namespace QuantLib {
       public:
         CliquetOptionPathPricer(
                            Option::Type type,
-                           double underlying,
-                           double moneyness,
-                           double accruedCoupon,
-                           double lastFixing,
-                           double localCap,
-                           double localFloor,
-                           double globalCap,
-                           double globalFloor,
+                           Real underlying,
+                           Real moneyness,
+                           Real accruedCoupon,
+                           Real lastFixing,
+                           Real localCap,
+                           Real localFloor,
+                           Real globalCap,
+                           Real globalFloor,
                            bool redemptionOnly,
                            const RelinkableHandle<TermStructure>& riskFreeTS);
-        double operator()(const Path& path) const;
+        Real operator()(const Path& path) const;
       private:
         Option::Type type_;
-        double underlying_, moneyness_, accruedCoupon_;
-        double lastFixing_, localCap_, localFloor_, globalCap_, globalFloor_;
+        Real underlying_, moneyness_, accruedCoupon_;
+        Real lastFixing_, localCap_, localFloor_, globalCap_, globalFloor_;
         bool redemptionOnly_;
         RelinkableHandle<TermStructure> riskFreeTS_;
     };
@@ -163,7 +163,7 @@ namespace QuantLib {
             const VanillaOption::results* controlResults =
                 dynamic_cast<const VanillaOption::results*>(
                                                         controlPE->results());
-            double controlVariateValue = controlResults->value;
+            Real controlVariateValue = controlResults->value;
 
             mcModel_ = 
                 boost::shared_ptr<MonteCarloModel<S, PG, PathPricer<Path> > >(

@@ -22,9 +22,9 @@ namespace QuantLib {
 
     CliquetOptionPathPricer::CliquetOptionPathPricer(
         Option::Type type,
-        double underlying, double moneyness, double accruedCoupon,
-        double lastFixing, double localCap, double localFloor,
-        double globalCap, double globalFloor,
+        Real underlying, Real moneyness, Real accruedCoupon,
+        Real lastFixing, Real localCap, Real localFloor,
+        Real globalCap, Real globalFloor,
         bool redemptionOnly,
         const RelinkableHandle<TermStructure>& riskFreeTS)
     : PathPricer<Path>(riskFreeTS), type_(type),
@@ -68,11 +68,11 @@ namespace QuantLib {
         }
     }
 
-    double CliquetOptionPathPricer::operator()(const Path& path) const {
+    Real CliquetOptionPathPricer::operator()(const Path& path) const {
 
-        double payoff, result;
-        double lastFixing = lastFixing_;
-        double underlying = underlying_;
+        Real payoff, result;
+        Real lastFixing = lastFixing_;
+        Real underlying = underlying_;
         const TimeGrid& pathTimes = path.timeGrid();
         // fixingTimes.last() must be the maturity == payment date
         const std::vector<Time>& fixingTimes = pathTimes.mandatoryTimes();
@@ -104,7 +104,7 @@ namespace QuantLib {
                 riskFreeTS_->discount(pathTimes.back());
             return result;
         } else {
-            double couponNominal = accruedCoupon_;
+            Real couponNominal = accruedCoupon_;
             result = 0.0;
             Size k = 0;
             for (Size i=0; i<fixingTimes.size(); i++) {

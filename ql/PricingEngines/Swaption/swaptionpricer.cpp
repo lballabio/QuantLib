@@ -31,9 +31,9 @@ namespace QuantLib {
                                      arguments_.fixedPayTimes[i]);
                 method()->rollback(bond,time_);
 
-                double fixedCoupon = arguments_.fixedCoupons[i];
+                Real fixedCoupon = arguments_.fixedCoupons[i];
                 for (Size j=0; j<values_.size(); j++) {
-                    double coupon = fixedCoupon*bond->values()[j];
+                    Real coupon = fixedCoupon*bond->values()[j];
                     if (arguments_.payFixed)
                         values_[j] -= coupon;
                     else
@@ -51,9 +51,9 @@ namespace QuantLib {
                                      arguments_.floatingPayTimes[i]);
                 method()->rollback(bond,time_);
 
-                double nominal = arguments_.nominal;
+                Real nominal = arguments_.nominal;
                 for (Size j=0; j<values_.size(); j++) {
-                    double coupon = nominal*(1.0 - bond->values()[j]);
+                    Real coupon = nominal*(1.0 - bond->values()[j]);
                     if (arguments_.payFixed)
                         values_[j] += coupon;
                     else

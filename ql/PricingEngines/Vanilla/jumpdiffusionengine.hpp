@@ -31,12 +31,12 @@ namespace QuantLib {
     class JumpDiffusionEngine : public VanillaOption::engine {
       public:
         JumpDiffusionEngine(const boost::shared_ptr<VanillaOption::engine>&,
-                            double relativeAccuracy_ = 1e-4,
+                            Real relativeAccuracy_ = 1e-4,
                             Size maxIterations = 100);
         void calculate() const;
       private:
         boost::shared_ptr<VanillaOption::engine> baseEngine_;
-        double relativeAccuracy_;
+        Real relativeAccuracy_;
         Size maxIterations_;
     };
 

@@ -41,7 +41,7 @@ namespace QuantLib {
     template <class RNG>
     class CLGaussianRng {
       public:
-        typedef Sample<double> sample_type;
+        typedef Sample<Real> sample_type;
         typedef RNG urng_type;
         explicit CLGaussianRng(const RNG& uniformGenerator);
         //! returns a sample from a Gaussian distribution
@@ -57,8 +57,8 @@ namespace QuantLib {
     template <class RNG>
     inline typename CLGaussianRng<RNG>::sample_type
     CLGaussianRng<RNG>::next() const {
-        double gaussPoint = -6.0, gaussWeight = 1.0;
-        for(int i=1;i<=12;i++){
+        Real gaussPoint = -6.0, gaussWeight = 1.0;
+        for (Integer i=1;i<=12;i++) {
             typename RNG::sample_type sample = uniformGenerator_.next();
             gaussPoint  += sample.value;
             gaussWeight *= sample.weight;
