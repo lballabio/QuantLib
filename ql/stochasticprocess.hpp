@@ -28,52 +28,51 @@
 namespace QuantLib {
 
     //! Base stochastic process class
-    /*! Base stochastic process class
-    
-        Just an arguments placeholder for the time being.
+    /*! Just an arguments placeholder for the time being.
         To be merged/refactored with DiffusionProcess
     */
     class StochasticProcess {
-        public:
-            ~StochasticProcess() {}
+      public:
+        virtual ~StochasticProcess() {}
     };
 
     class OneFactorStochasticProcess : public StochasticProcess {
-        public:
-            OneFactorStochasticProcess(
-                const RelinkableHandle<Quote>& stateVariable)
-            : StochasticProcess(), stateVariable(stateVariable) {}
+      public:
+        OneFactorStochasticProcess(
+                                 const RelinkableHandle<Quote>& stateVariable)
+        : stateVariable(stateVariable) {}
 
-            RelinkableHandle<Quote> stateVariable;
+        RelinkableHandle<Quote> stateVariable;
     };
 
     class BlackScholesStochasticProcess : public OneFactorStochasticProcess {
-        public:
-            BlackScholesStochasticProcess(
-                const RelinkableHandle<Quote>& stateVariable,
-                const RelinkableHandle<TermStructure>& dividendTS,
-                const RelinkableHandle<TermStructure>& riskFreeTS,
-                const RelinkableHandle<BlackVolTermStructure>& volTS)
-            : OneFactorStochasticProcess(stateVariable), dividendTS(dividendTS),
-              riskFreeTS(riskFreeTS), volTS(volTS) {}
+      public:
+        BlackScholesStochasticProcess(
+                         const RelinkableHandle<Quote>& stateVariable,
+                         const RelinkableHandle<TermStructure>& dividendTS,
+                         const RelinkableHandle<TermStructure>& riskFreeTS,
+                         const RelinkableHandle<BlackVolTermStructure>& volTS)
+        : OneFactorStochasticProcess(stateVariable), dividendTS(dividendTS),
+          riskFreeTS(riskFreeTS), volTS(volTS) {}
 
-            RelinkableHandle<TermStructure> dividendTS, riskFreeTS;
-            RelinkableHandle<BlackVolTermStructure> volTS;
+        RelinkableHandle<TermStructure> dividendTS, riskFreeTS;
+        RelinkableHandle<BlackVolTermStructure> volTS;
     };
 
     class Merton76StochasticProcess : public BlackScholesStochasticProcess {
-        public:
-            Merton76StochasticProcess(
-                const RelinkableHandle<Quote>& stateVariable,
-                const RelinkableHandle<TermStructure>& dividendTS,
-                const RelinkableHandle<TermStructure>& riskFreeTS,
-                const RelinkableHandle<BlackVolTermStructure>& volTS,
-                double jumpIntensity,
-                double meanLogJump)
-            : BlackScholesStochasticProcess(stateVariable, dividendTS, riskFreeTS,
-              volTS), jumpIntensity(jumpIntensity), meanLogJump(meanLogJump) {}
+      public:
+        Merton76StochasticProcess(
+                         const RelinkableHandle<Quote>& stateVariable,
+                         const RelinkableHandle<TermStructure>& dividendTS,
+                         const RelinkableHandle<TermStructure>& riskFreeTS,
+                         const RelinkableHandle<BlackVolTermStructure>& volTS,
+                         double jumpIntensity,
+                         double meanLogJump)
+        : BlackScholesStochasticProcess(stateVariable, dividendTS, riskFreeTS,
+                                        volTS), 
+          jumpIntensity(jumpIntensity), meanLogJump(meanLogJump) {}
 
-            double jumpIntensity, meanLogJump;
+        double jumpIntensity, meanLogJump;
     };
 
 }
