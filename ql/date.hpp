@@ -213,7 +213,7 @@ namespace QuantLib {
         /*! \deprecated use date + n*Years instead */
         Date plusYears(Integer n) const;
         /*! \deprecated use date + n*units instead */
-        Date plus(Integer units, TimeUnit units) const;
+        Date plus(Integer n, TimeUnit units) const;
         /*! \deprecated use date + period instead */
         Date plus(const Period&) const;
         //@}
