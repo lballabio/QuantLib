@@ -1,6 +1,6 @@
 
 /*
- Copyright (C) 2000, 2001, 2002, 2003 RiskMap srl
+ Copyright (C) 2004 FIMAT Group
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -15,47 +15,51 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file london.hpp
-    \brief London calendar
+/*! \file taiwan.hpp
+    \brief Taiwan calendar
 */
 
-#ifndef quantlib_london_calendar_h
-#define quantlib_london_calendar_h
+#ifndef quantlib_taiwan_calendar_h
+#define quantlib_taiwan_calendar_h
 
 #include <ql/calendar.hpp>
 
 namespace QuantLib {
 
-    //! %London calendar
+    //! %Taiwan calendar
     /*! Holidays:
         <ul>
         <li>Saturdays</li>
         <li>Sundays</li>
-        <li>New Year's Day, January 1st (possibly moved to Monday)</li>
-        <li>Good Friday</li>
-        <li>Easter Monday</li>
-        <li>Early May Bank Holiday, first Monday of May</li>
-        <li>Spring Bank Holiday, last Monday of May</li>
-        <li>Summer Bank Holiday, last Monday of August</li>
-        <li>Christmas, December 25th (possibly moved to Monday or Tuesday)</li>
-        <li>Boxing Day, December 26th (possibly moved to Monday or
-            Tuesday)</li>
+        <li>New Year's Day, January 1st</li>
+        <li>Peace Day, February 28th</li>           
+        <li>Labor Day, May 1st</li>
+        <li>National Day, October 10th</li>
         </ul>
 
-        Data from http://www.dti.gov.uk/er/bankhol.htm
+        Other holidays for which no rule is given 
+        (data available for 2004-2006 only:)
+        <ul>
+        <li>Lunar New Year</li>
+        <li>Tomb Sweeping Day</li>
+        <li>Dragon Boat Day</li>
+        <li>Mid-Autumn Festival</li>
+        </ul>
+
+        Data from http://www.taifex.com.tw
 
         \ingroup calendars
     */
-    class London : public Calendar {
+    class Taiwan : public Calendar {
       private:
-        class Impl : public Calendar::WesternImpl {
+        class Impl : public Calendar::Impl {
           public:
-            std::string name() const { return "London"; }
+            std::string name() const { return "Taiwan"; }
             bool isBusinessDay(const Date&) const;
         };
       public:
-        London()
-        : Calendar(boost::shared_ptr<Calendar::Impl>(new London::Impl)) {}
+        Taiwan()
+        : Calendar(Handle<Calendar::Impl>(new Taiwan::Impl)) {}
     };
 
 }

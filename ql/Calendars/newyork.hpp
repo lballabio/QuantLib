@@ -44,6 +44,7 @@ namespace QuantLib {
         <li>Christmas, December 25th (moved to Monday if Sunday or Friday
             if Saturday)</li>
         </ul>
+
         Data from http://www.nyse.com
 
         \ingroup calendars

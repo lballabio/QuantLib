@@ -24,6 +24,7 @@
 #include <ql/Calendars/copenhagen.hpp>
 #include <ql/Calendars/frankfurt.hpp>
 #include <ql/Calendars/helsinki.hpp>
+#include <ql/Calendars/hongkong.hpp>
 #include <ql/Calendars/johannesburg.hpp>
 #include <ql/Calendars/jointcalendar.hpp>
 #include <ql/Calendars/london.hpp>
@@ -31,8 +32,10 @@
 #include <ql/Calendars/newyork.hpp>
 #include <ql/Calendars/nullcalendar.hpp>
 #include <ql/Calendars/oslo.hpp>
+#include <ql/Calendars/seoul.hpp>
 #include <ql/Calendars/stockholm.hpp>
 #include <ql/Calendars/sydney.hpp>
+#include <ql/Calendars/taiwan.hpp>
 #include <ql/Calendars/target.hpp>
 #include <ql/Calendars/tokyo.hpp>
 #include <ql/Calendars/toronto.hpp>

@@ -1,6 +1,6 @@
 
 /*
- Copyright (C) 2000, 2001, 2002, 2003 RiskMap srl
+ Copyright (C) 2004 FIMAT Group
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -15,47 +15,59 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file london.hpp
-    \brief London calendar
+/*! \file hongkong.hpp
+    \brief Hong Kong calendar
 */
 
-#ifndef quantlib_london_calendar_h
-#define quantlib_london_calendar_h
+#ifndef quantlib_hongkong_calendar_h
+#define quantlib_hongkong_calendar_h
 
 #include <ql/calendar.hpp>
 
 namespace QuantLib {
 
-    //! %London calendar
+    //! Hong Kong calendar
     /*! Holidays:
         <ul>
         <li>Saturdays</li>
         <li>Sundays</li>
-        <li>New Year's Day, January 1st (possibly moved to Monday)</li>
+        <li>New Year's Day, January 1st</li>
+        <li>Ching Ming Festival, April 5th </li>
         <li>Good Friday</li>
         <li>Easter Monday</li>
-        <li>Early May Bank Holiday, first Monday of May</li>
-        <li>Spring Bank Holiday, last Monday of May</li>
-        <li>Summer Bank Holiday, last Monday of August</li>
-        <li>Christmas, December 25th (possibly moved to Monday or Tuesday)</li>
-        <li>Boxing Day, December 26th (possibly moved to Monday or
-            Tuesday)</li>
+        <li>Labor Day, May 1st</li>
+        <li>SAR Establishment Day, July 1st </li>
+        <li>National Day, October 1st </li>
+        <li>Christmas, December 25th </li>
+        <li>Boxing Day, December 26th </li>
+        <li>Christmas Holiday, December 27th </li>
         </ul>
 
-        Data from http://www.dti.gov.uk/er/bankhol.htm
+        Other holidays for which no rule is given 
+        (data available for 2004/2005 only:)
+        <ul>
+        <li>Lunar New Year</li>
+        <li>Chinese New Year</li>
+        <li>Buddha's birthday</li>
+        <li>Tuen NG Festival</li>
+        <li>Mid-autumn fest</li>
+        <li>Chung Yeung fest</li>
+        </ul>
+
+        Data from http://www.hkex.com.hk
 
         \ingroup calendars
     */
-    class London : public Calendar {
+    class HongKong : public Calendar {
       private:
         class Impl : public Calendar::WesternImpl {
           public:
-            std::string name() const { return "London"; }
+            std::string name() const { return "HongKong"; }
             bool isBusinessDay(const Date&) const;
         };
       public:
-        London()
-        : Calendar(boost::shared_ptr<Calendar::Impl>(new London::Impl)) {}
+        HongKong()
+        : Calendar(Handle<Calendar::Impl>(new HongKong::Impl)) {}
     };
 
 }
