@@ -59,7 +59,6 @@ namespace QuantLib {
         class SwaptionParameters : public virtual Arguments {
           public:
             SwaptionParameters() : payFixed(false),
-                                   isVanilla(false),
                                    fairRate(0.0),
                                    fixedRate(0.0),
                                    fixedPayTimes(0),
@@ -70,7 +69,6 @@ namespace QuantLib {
                                    exerciseType(Exercise::Type(-1)),
                                    exerciseTimes(0) {}
             bool payFixed;
-            bool isVanilla;
             Rate fairRate;
             Rate fixedRate;
             std::vector<Time> fixedPayTimes;

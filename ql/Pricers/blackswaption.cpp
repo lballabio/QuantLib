@@ -31,7 +31,6 @@ namespace QuantLib {
         using InterestRateModelling::BlackModel;
 
         void BlackSwaption::calculate() const {
-            QL_REQUIRE(parameters_.isVanilla, "Not a vanilla swaption!");
             const std::vector<Time>& times = parameters_.floatingPayTimes;
             double p = 0.0;
             for (Size i=0; i<times.size(); i++) {

@@ -52,17 +52,12 @@ namespace QuantLib {
             DayCounter counter = termStructure_->dayCounter();
             Size i;
 
-            const std::vector<Handle<CashFlow> >& fixedLeg = swap_->fixedLeg();
             parameters->payFixed = swap_->payFixedRate();
+            parameters->fixedRate = swap_->fixedRate();
+            parameters->fairRate = swap_->fairRate();
 
-            Handle<SimpleSwap> vanilla(swap_);
-            if (!vanilla.isNull()) {
-                parameters->isVanilla = true;
-                parameters->fixedRate = vanilla->fixedRate();
-                parameters->fairRate = vanilla->fairRate();
-            } else {
-                parameters->isVanilla = false;
-            }
+            const std::vector<Handle<CashFlow> >& fixedLeg = swap_->fixedLeg();
+
             parameters->fixedPayTimes.clear();
             parameters->fixedCoupons.clear();
             for (i=0; i<fixedLeg.size(); i++) {
