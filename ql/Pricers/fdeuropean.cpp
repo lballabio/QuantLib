@@ -42,7 +42,7 @@ namespace QuantLib {
         using FiniteDifferences::firstDerivativeAtCenter;
         using FiniteDifferences::secondDerivativeAtCenter;
 
-        FiniteDifferenceEuropean::FiniteDifferenceEuropean(Option::Type type,
+        FdEuropean::FdEuropean(Option::Type type,
             double underlying, double strike, Spread dividendYield,
             Rate riskFreeRate, Time residualTime, double volatility,
             size_t timeSteps, size_t gridPoints)
@@ -52,7 +52,7 @@ namespace QuantLib {
             timeSteps_(timeSteps), euroPrices_(gridPoints_){}
 
 
-        void FiniteDifferenceEuropean::calculate() const {
+        void FdEuropean::calculate() const {
             setGridLimits(underlying_, residualTime_);
             initializeGrid();
             initializeInitialCondition();

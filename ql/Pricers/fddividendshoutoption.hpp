@@ -42,10 +42,10 @@ namespace QuantLib {
     namespace Pricers {
 
         //! Shout option with dividends
-        class FdDividendFdShoutOption : public FdDividendOption {
+        class FdDividendShoutOption : public FdDividendOption {
           public:
             // constructor
-            FdDividendFdShoutOption(Option::Type type, double underlying,
+            FdDividendShoutOption(Option::Type type, double underlying,
                 double strike, Spread dividendYield, Rate riskFreeRate,
                 Time residualTime, double volatility,
                 const std::vector<double>& dividends = std::vector<double>(),

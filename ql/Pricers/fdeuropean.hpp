@@ -42,9 +42,9 @@ namespace QuantLib {
     namespace Pricers {
 
         //! Example of European option calculated using finite differences
-        class FiniteDifferenceEuropean : public FdBsmOption {
+        class FdEuropean : public FdBsmOption {
           public:
-            FiniteDifferenceEuropean(Option::Type type,
+            FdEuropean(Option::Type type,
                                      double underlying,
                                      double strike,
                                      Spread dividendYield,
@@ -56,7 +56,7 @@ namespace QuantLib {
                    Array getPrices() const;
             Handle<SingleAssetOption> clone() const{
                 return Handle<SingleAssetOption>(
-                    new FiniteDifferenceEuropean(*this));
+                    new FdEuropean(*this));
             }
           protected:
             void calculate() const;
@@ -67,7 +67,7 @@ namespace QuantLib {
 
         // inline definitions
 
-        inline Array  FiniteDifferenceEuropean::getPrices() const{
+        inline Array  FdEuropean::getPrices() const{
             value();
             return euroPrices_;
         }

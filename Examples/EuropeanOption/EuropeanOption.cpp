@@ -29,7 +29,7 @@ using namespace QuantLib;
 
 using QuantLib::Pricers::EuropeanOption;
 using QuantLib::Pricers::McEuropean;
-using QuantLib::Pricers::FiniteDifferenceEuropean;
+using QuantLib::Pricers::FdEuropean;
 
 // helper function for option payoff: MAX((stike-underlying),0), etc.
 using QuantLib::Pricers::ExercisePayoff;
@@ -153,7 +153,7 @@ int main(int argc, char* argv[])
         // fourth method: Finite Differences
         method ="Finite Diff.";
         size_t grid = 100;
-        value = FiniteDifferenceEuropean(Option::Call, underlying, strike,
+        value = FdEuropean(Option::Call, underlying, strike,
             dividendYield, riskFreeRate, maturity, volatility, grid).value();
         discrepancy = QL_FABS(value-rightValue);
         relativeDiscrepancy = discrepancy/rightValue;

@@ -37,7 +37,7 @@ namespace QuantLib {
 
     namespace Pricers {
 
-        FdDividendFdShoutOption::FdDividendFdShoutOption(Option::Type type,
+        FdDividendShoutOption::FdDividendShoutOption(Option::Type type,
                 double underlying, double strike, Spread dividendYield,
                 Rate riskFreeRate, Time residualTime, double volatility,
                 const std::vector<double>& dividends,
@@ -47,14 +47,14 @@ namespace QuantLib {
                         riskFreeRate, residualTime, volatility,
                         dividends, exdivdates, timeSteps, gridPoints){}
 
-        void FdDividendFdShoutOption::initializeStepCondition() const {
+        void FdDividendShoutOption::initializeStepCondition() const {
             stepCondition_ = Handle<FiniteDifferences::StandardStepCondition>(
                              new ShoutCondition(initialPrices_, residualTime_,
                                                 riskFreeRate_));
         }
 
-        Handle<SingleAssetOption> FdDividendFdShoutOption::clone() const {
-            return Handle<SingleAssetOption>(new FdDividendFdShoutOption(*this));
+        Handle<SingleAssetOption> FdDividendShoutOption::clone() const {
+            return Handle<SingleAssetOption>(new FdDividendShoutOption(*this));
         }
 
     }
