@@ -32,6 +32,10 @@ CC_OPTS = $(CC_OPTS) -v -DQL_DEBUG
 DiscreteHedging$(_D).exe: DiscreteHedging.cpp
     bcc32 $(CC_OPTS) -L$(QL_LIB_DIR) -oDiscreteHedging$(_D).obj -eDiscreteHedging$(_D).exe DiscreteHedging.cpp QuantLib$(_D).lib
 
+# Check
+check:: DiscreteHedging$(_D).exe
+    DiscreteHedging$(_D).exe
+
 # Clean up
 clean::
     if exist *.obj   del /q *.obj

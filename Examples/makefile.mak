@@ -23,6 +23,16 @@ examples::
     $(MAKE)
     cd ..
 
+# Check
+check::
+    cd DiscreteHedging
+    $(MAKE) check
+    cd ..\EuropeanOption
+    $(MAKE) check
+    cd ..\Swap
+    $(MAKE) check
+    cd ..
+
 # Clean up
 clean::
     cd DiscreteHedging

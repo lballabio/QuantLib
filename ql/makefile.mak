@@ -116,7 +116,9 @@ SubLibraries:
     $(MAKE)
     cd ..\OneFactorModels
     $(MAKE)
-    cd ..\..\Math
+    cd ..\..\Lattices
+    $(MAKE)
+    cd ..\Math
     $(MAKE)
     cd ..\MonteCarlo
     $(MAKE)
@@ -153,7 +155,9 @@ clean::
     $(MAKE) clean
     cd ..\OneFactorModels
     $(MAKE) clean
-    cd ..\..\Math
+    cd ..\..\Lattices
+    $(MAKE) clean
+    cd ..\Math
     $(MAKE) clean
     cd ..\MonteCarlo
     $(MAKE) clean
