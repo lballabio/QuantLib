@@ -7,7 +7,7 @@ rename HedgingError
 rename updateproject.sh to bootstrap
 make bootstrap work under cygwin
 
-compile with gcc 3.0
+compile with gcc 3.0.1
 
 chck installer html documentation
 add examples to documentation
