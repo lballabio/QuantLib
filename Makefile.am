@@ -2,6 +2,9 @@
 # $Id$
 # $Source$
 # $Log$
+# Revision 1.31  2001/06/25 11:22:11  enri
+# dist target fixed
+#
 # Revision 1.30  2001/06/05 10:56:08  lballabio
 # Added docs-clean target
 #
@@ -39,7 +42,8 @@ dist-hook:
 	cp -p $(srcdir)/lib/README.txt $(distdir)/lib/README.txt
 	cp -p $(srcdir)/lib/Win32/Borland/README.txt $(distdir)/lib/Win32/Borland/README.txt
 	cp -p $(srcdir)/lib/Win32/VisualStudio/README.txt $(distdir)/lib/Win32/VisualStudio/README.txt
-
+	mkdir $(distdir)/Docs/Examples
+	cp  $(srcdir)/Docs/Examples/*.cpp $(distdir)/Docs/Examples/
 
 if DOXYGEN_FOUND
 docs-html:
