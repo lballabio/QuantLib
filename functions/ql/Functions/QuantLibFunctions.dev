@@ -27,7 +27,7 @@ CustomMakefile=
 IncludeVersionInfo=1
 SupportXPThemes=0
 CompilerSet=0
-CompilerSettings=0000001001010000000000
+CompilerSettings=0000001001001000000000
 
 [Unit1]
 FileName=vols.cpp

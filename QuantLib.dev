@@ -27,7 +27,7 @@ CustomMakefile=
 IncludeVersionInfo=1
 SupportXPThemes=0
 CompilerSet=0
-CompilerSettings=0000001001010000000100
+CompilerSettings=0000001001001000000100
 
 [Unit1]
 FileName=ql\voltermstructure.cpp
