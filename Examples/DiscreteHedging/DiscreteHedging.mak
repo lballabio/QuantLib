@@ -256,10 +256,10 @@ LINK32_OBJS= \
 
 !ELSEIF  "$(CFG)" == "DiscreteHedging - Win32 Release SingleThread"
 
-OUTDIR=.\DiscreteHedging___Win32_Release_SingleThread
-INTDIR=.\DiscreteHedging___Win32_Release_SingleThread
+OUTDIR=.\build\ReleaseST
+INTDIR=.\build\ReleaseST
 # Begin Custom Macros
-OutDir=.\DiscreteHedging___Win32_Release_SingleThread
+OutDir=.\build\ReleaseST
 # End Custom Macros
 
 !IF "$(RECURSE)" == "0" 
@@ -310,10 +310,10 @@ LINK32_OBJS= \
 
 !ELSEIF  "$(CFG)" == "DiscreteHedging - Win32 Debug SingleThread"
 
-OUTDIR=.\DiscreteHedging___Win32_Debug_SingleThread
-INTDIR=.\DiscreteHedging___Win32_Debug_SingleThread
+OUTDIR=.\build\DebugST
+INTDIR=.\build\DebugST
 # Begin Custom Macros
-OutDir=.\DiscreteHedging___Win32_Debug_SingleThread
+OutDir=.\build\DebugST
 # End Custom Macros
 
 !IF "$(RECURSE)" == "0" 

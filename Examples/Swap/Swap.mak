@@ -256,19 +256,19 @@ LINK32_OBJS= \
 
 !ELSEIF  "$(CFG)" == "Swap - Win32 Release SingleThread"
 
-OUTDIR=.\Swap___Win32_Release_SingleThread
-INTDIR=.\Swap___Win32_Release_SingleThread
+OUTDIR=.\build\ReleaseST
+INTDIR=.\build\ReleaseST
 # Begin Custom Macros
-OutDir=.\Swap___Win32_Release_SingleThread
+OutDir=.\build\ReleaseST
 # End Custom Macros
 
 !IF "$(RECURSE)" == "0" 
 
-ALL : ".\build\Release\SwapValuation.exe" "$(OUTDIR)\Swap.bsc"
+ALL : "$(OUTDIR)\SwapValuation.exe" "$(OUTDIR)\Swap.bsc"
 
 !ELSE 
 
-ALL : "QuantLib - Win32 Release SingleThread" ".\build\Release\SwapValuation.exe" "$(OUTDIR)\Swap.bsc"
+ALL : "QuantLib - Win32 Release SingleThread" "$(OUTDIR)\SwapValuation.exe" "$(OUTDIR)\Swap.bsc"
 
 !ENDIF 
 
@@ -281,7 +281,7 @@ CLEAN :
 	-@erase "$(INTDIR)\swapvaluation.sbr"
 	-@erase "$(INTDIR)\vc60.idb"
 	-@erase "$(OUTDIR)\Swap.bsc"
-	-@erase ".\build\Release\SwapValuation.exe"
+	-@erase "$(OUTDIR)\SwapValuation.exe"
 
 "$(OUTDIR)" :
     if not exist "$(OUTDIR)/$(NULL)" mkdir "$(OUTDIR)"
@@ -298,31 +298,31 @@ BSC32_SBRS= \
 <<
 
 LINK32=link.exe
-LINK32_FLAGS=kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:console /incremental:no /pdb:"$(OUTDIR)\SwapValuation.pdb" /machine:I386 /out:"build\Release/SwapValuation.exe" /libpath:"..\..\lib" 
+LINK32_FLAGS=kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:console /incremental:no /pdb:"$(OUTDIR)\SwapValuation.pdb" /machine:I386 /out:"$(OUTDIR)\SwapValuation.exe" /libpath:"..\..\lib" 
 LINK32_OBJS= \
 	"$(INTDIR)\swapvaluation.obj" \
 	"..\..\lib\QuantLib-vc6-s-0_3_6.lib"
 
-".\build\Release\SwapValuation.exe" : "$(OUTDIR)" $(DEF_FILE) $(LINK32_OBJS)
+"$(OUTDIR)\SwapValuation.exe" : "$(OUTDIR)" $(DEF_FILE) $(LINK32_OBJS)
     $(LINK32) @<<
   $(LINK32_FLAGS) $(LINK32_OBJS)
 <<
 
 !ELSEIF  "$(CFG)" == "Swap - Win32 Debug SingleThread"
 
-OUTDIR=.\Swap___Win32_Debug_SingleThread
-INTDIR=.\Swap___Win32_Debug_SingleThread
+OUTDIR=.\build\DebugST
+INTDIR=.\build\DebugST
 # Begin Custom Macros
-OutDir=.\Swap___Win32_Debug_SingleThread
+OutDir=.\build\DebugST
 # End Custom Macros
 
 !IF "$(RECURSE)" == "0" 
 
-ALL : ".\build\Debug\SwapValuation.exe" "$(OUTDIR)\Swap.bsc"
+ALL : "$(OUTDIR)\SwapValuation.exe" "$(OUTDIR)\Swap.bsc"
 
 !ELSE 
 
-ALL : "QuantLib - Win32 Debug SingleThread" ".\build\Debug\SwapValuation.exe" "$(OUTDIR)\Swap.bsc"
+ALL : "QuantLib - Win32 Debug SingleThread" "$(OUTDIR)\SwapValuation.exe" "$(OUTDIR)\Swap.bsc"
 
 !ENDIF 
 
@@ -336,9 +336,9 @@ CLEAN :
 	-@erase "$(INTDIR)\vc60.idb"
 	-@erase "$(INTDIR)\vc60.pdb"
 	-@erase "$(OUTDIR)\Swap.bsc"
+	-@erase "$(OUTDIR)\SwapValuation.exe"
+	-@erase "$(OUTDIR)\SwapValuation.ilk"
 	-@erase "$(OUTDIR)\SwapValuation.pdb"
-	-@erase ".\build\Debug\SwapValuation.exe"
-	-@erase ".\build\Debug\SwapValuation.ilk"
 
 "$(OUTDIR)" :
     if not exist "$(OUTDIR)/$(NULL)" mkdir "$(OUTDIR)"
@@ -355,12 +355,12 @@ BSC32_SBRS= \
 <<
 
 LINK32=link.exe
-LINK32_FLAGS=kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:console /incremental:yes /pdb:"$(OUTDIR)\SwapValuation.pdb" /debug /machine:I386 /out:"build\Debug/SwapValuation.exe" /pdbtype:sept /libpath:"..\..\lib" 
+LINK32_FLAGS=kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:console /incremental:yes /pdb:"$(OUTDIR)\SwapValuation.pdb" /debug /machine:I386 /out:"$(OUTDIR)\SwapValuation.exe" /pdbtype:sept /libpath:"..\..\lib" 
 LINK32_OBJS= \
 	"$(INTDIR)\swapvaluation.obj" \
 	"..\..\lib\QuantLib-vc6-sgd-0_3_6.lib"
 
-".\build\Debug\SwapValuation.exe" : "$(OUTDIR)" $(DEF_FILE) $(LINK32_OBJS)
+"$(OUTDIR)\SwapValuation.exe" : "$(OUTDIR)" $(DEF_FILE) $(LINK32_OBJS)
     $(LINK32) @<<
   $(LINK32_FLAGS) $(LINK32_OBJS)
 <<

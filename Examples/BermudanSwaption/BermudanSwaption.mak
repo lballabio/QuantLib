@@ -256,10 +256,10 @@ LINK32_OBJS= \
 
 !ELSEIF  "$(CFG)" == "BermudanSwaption - Win32 Release SingleThread"
 
-OUTDIR=.\BermudanSwaption___Win32_Release_SingleThread
-INTDIR=.\BermudanSwaption___Win32_Release_SingleThread
+OUTDIR=.\build\ReleaseST
+INTDIR=.\build\ReleaseST
 # Begin Custom Macros
-OutDir=.\BermudanSwaption___Win32_Release_SingleThread
+OutDir=.\build\ReleaseST
 # End Custom Macros
 
 !IF "$(RECURSE)" == "0" 
@@ -310,10 +310,10 @@ LINK32_OBJS= \
 
 !ELSEIF  "$(CFG)" == "BermudanSwaption - Win32 Debug SingleThread"
 
-OUTDIR=.\BermudanSwaption___Win32_Debug_SingleThread
-INTDIR=.\BermudanSwaption___Win32_Debug_SingleThread
+OUTDIR=.\build\DebugST
+INTDIR=.\build\DebugST
 # Begin Custom Macros
-OutDir=.\BermudanSwaption___Win32_Debug_SingleThread
+OutDir=.\build\DebugST
 # End Custom Macros
 
 !IF "$(RECURSE)" == "0" 

@@ -146,8 +146,8 @@ LINK32=link.exe
 # PROP BASE Target_Dir ""
 # PROP Use_MFC 0
 # PROP Use_Debug_Libraries 0
-# PROP Output_Dir "EuropeanOption___Win32_Release_SingleThread"
-# PROP Intermediate_Dir "EuropeanOption___Win32_Release_SingleThread"
+# PROP Output_Dir "build\ReleaseST"
+# PROP Intermediate_Dir "build\ReleaseST"
 # PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /MT /W3 /Gi /GR /GX /O2 /Ob2 /I "..\.." /D "NDEBUG" /D "WIN32" /D "_CONSOLE" /D "_MBCS" /D "NOMINMAX" /Fr /YX"quantlib.hpp" /FD /c
@@ -173,8 +173,8 @@ LINK32=link.exe
 # PROP BASE Target_Dir ""
 # PROP Use_MFC 0
 # PROP Use_Debug_Libraries 1
-# PROP Output_Dir "EuropeanOption___Win32_Debug_SingleThread"
-# PROP Intermediate_Dir "EuropeanOption___Win32_Debug_SingleThread"
+# PROP Output_Dir "build\DebugST"
+# PROP Intermediate_Dir "build\DebugST"
 # PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /MTd /W3 /Gm /Gi /GR /GX /ZI /Od /I "..\.." /D "_DEBUG" /D "WIN32" /D "_CONSOLE" /D "_MBCS" /D "NOMINMAX" /Fr /YX"quantlib.hpp" /FD /GZ /c

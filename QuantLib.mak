@@ -1238,7 +1238,7 @@ BSC32_SBRS= \
 <<
 
 LIB32=link.exe -lib
-LIB32_FLAGS=/nologo /out:"lib\QuantLib-vc6-mt-sgd-0_3_6.lib" 
+LIB32_FLAGS=/nologo /out:".\lib\QuantLib-vc6-mt-sgd-0_3_6.lib" 
 LIB32_OBJS= \
 	"$(INTDIR)\budapest.obj" \
 	"$(INTDIR)\copenhagen.obj" \
@@ -2617,7 +2617,7 @@ BSC32_SBRS= \
 <<
 
 LIB32=link.exe -lib
-LIB32_FLAGS=/nologo /out:"lib\QuantLib-vc6-mt-gd-0_3_6.lib" 
+LIB32_FLAGS=/nologo /out:".\lib\QuantLib-vc6-mt-gd-0_3_6.lib" 
 LIB32_OBJS= \
 	"$(INTDIR)\budapest.obj" \
 	"$(INTDIR)\copenhagen.obj" \
@@ -3996,7 +3996,7 @@ BSC32_SBRS= \
 <<
 
 LIB32=link.exe -lib
-LIB32_FLAGS=/nologo /out:"lib\QuantLib-vc6-sgd-0_3_6.lib" 
+LIB32_FLAGS=/nologo /out:".\lib\QuantLib-vc6-sgd-0_3_6.lib" 
 LIB32_OBJS= \
 	"$(INTDIR)\budapest.obj" \
 	"$(INTDIR)\copenhagen.obj" \
