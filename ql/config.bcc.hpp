@@ -64,6 +64,18 @@
 #define QL_MODF      std::modf
 #define QL_FLOOR     std::floor
 
+/* Useful constants missing in Borland math.h  */
+#define M_IVLN10    0.434294481903251827651 /* 1 / log(10) */
+#define M_LOG2_E    0.693147180559945309417
+#define M_TWOPI     (M_PI * 2.0)
+#define M_3PI_4     2.3561944901923448370E0
+#define M_SQRTPI    1.77245385090551602792981
+#define M_SQRT1_2   0.7071067811865475244008443621048490392848359376887
+#define M_LN2LO     1.9082149292705877000E-10
+#define M_LN2HI     6.9314718036912381649E-1
+#define M_SQRT3     1.73205080756887719000
+#define M_INVLN2    1.4426950408889633870E0  /* 1 / log(2) */
+
 #define HAVE_LIMITS  1
 
 #define HAVE_CTIME   1
