@@ -52,23 +52,28 @@ namespace QuantLib {
         double GeometricAPOPathPricer::operator()(const Path& path) const {
 
             int n = path.size();
-            QL_REQUIRE(n>0,"the path cannot be empty");
+            QL_REQUIRE(n>0,"GeometricAPOPathPricer: the path cannot be empty");
 
-            int i;
-            double growth1 = 0.0;
-            for (i=0; i<n; i++)
-                growth1 += (n-i)*(path.drift()[i]+path.diffusion()[i]);
-            double average1 = underlying_*QL_EXP(growth1/n);
+            double geoLogDrift = 0.0, geoLogDiffusion = 0.0;
+            size_t i;
+            for (i=0; i<n; i++) {
+                geoLogDrift += (n-i)*path.drift()[i];
+                geoLogDiffusion += (n-i)*path.diffusion()[i];
+            }
+            double averagePrice1 = underlying_*
+                QL_EXP((geoLogDrift+geoLogDiffusion)/n);
 
             if (antitheticVariance_) {
-                double growth2 = 0.0;
-                for (i=0; i<n; i++)
-                    growth2 += (n-i)*(path.drift()[i]-path.diffusion()[i]);
-                double average2 = underlying_*QL_EXP(growth2/n);
-                return discount_/2.0*(ExercisePayoff(type_, average1, strike_)
-                    +ExercisePayoff(type_, average2, strike_));
-            } else
-                return discount_*ExercisePayoff(type_, average1, strike_);
+                double averagePrice2 = underlying_*
+                    QL_EXP((geoLogDrift-geoLogDiffusion)/n);
+                return discount_/2.0*(
+                    ExercisePayoff(type_, averagePrice1, strike_)
+                    +ExercisePayoff(type_, averagePrice2, strike_));
+            } else {
+                return discount_*
+                    ExercisePayoff(type_, averagePrice1, strike_);
+            }
+
         }
 
     }

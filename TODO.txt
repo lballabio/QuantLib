@@ -10,6 +10,7 @@ COMPILING
 LIBRARY
     *****
     check FRA mXn definition
+    term structure bootstrapping example with real data
     check fraction in McPagoda
 
     ASIAN:
@@ -17,7 +18,6 @@ LIBRARY
         continuous geometric ASO
         discrete geometric ASO
         handle mid-life asian
-http://www.iisec.com/
     example of european Martingale control variate
 
     ******
@@ -70,6 +70,7 @@ DOCUMENTATION ***
     add MS-Windows Help
     complete MC documentation
     ******
+    http://www.iisec.com/
     use tidy (if available) on the HTML documentation
     enforce fulpath&classesinclude DoxyGen requirements
     add/update FAQ material in QuantLib-site TOD.txt
