@@ -240,6 +240,9 @@ namespace QuantLib {
       protected:
         //! returns the spreaded zero yield rate
         Rate zeroYieldImpl(Time, bool extrapolate = false) const;
+        //! returns the spreaded forward rate
+        /*! \warning This method must disappear should the spread become a curve */
+        Rate forwardImpl(Time, bool extrapolate = false) const;
       private:
         RelinkableHandle<TermStructure> originalCurve_;
         RelinkableHandle<MarketElement> spread_;
@@ -276,8 +279,11 @@ namespace QuantLib {
         void update();
         //@}
       protected:
-        //! returns the spreaded zero yield rate
+        //! returns the spreaded forward rate
         Rate forwardImpl(Time, bool extrapolate = false) const;
+        //! returns the spreaded zero yield rate
+        /*! \warning This method must disappear should the spread become a curve */
+        Rate zeroYieldImpl(Time, bool extrapolate = false) const;
       private:
         RelinkableHandle<TermStructure> originalCurve_;
         RelinkableHandle<MarketElement> spread_;
@@ -324,15 +330,15 @@ namespace QuantLib {
 
     inline DiscountFactor ZeroYieldStructure::discountImpl(Time t,
         bool extrapolate) const {
-            Rate r = zeroYield(t, extrapolate);
+            Rate r = zeroYieldImpl(t, extrapolate);
             return DiscountFactor(QL_EXP(-r*t));
     }
 
     inline Rate ZeroYieldStructure::forwardImpl(Time t,
         bool extrapolate) const {
             Time dt = 0.001;
-            Rate r1 = zeroYield(t, extrapolate),
-                 r2 = zeroYield(t+dt, true);
+            Rate r1 = zeroYieldImpl(t, extrapolate),
+                 r2 = zeroYieldImpl(t+dt, true);
             return r1+t*(r2-r1)/dt;
     }
 
@@ -341,15 +347,15 @@ namespace QuantLib {
 
     inline Rate DiscountStructure::zeroYieldImpl(Time t,
         bool extrapolate) const {
-            DiscountFactor f = discount(t, extrapolate);
+            DiscountFactor f = discountImpl(t, extrapolate);
             return Rate(-QL_LOG(f)/t);
     }
 
     inline Rate DiscountStructure::forwardImpl(Time t,
         bool extrapolate) const {
             Time dt = 0.001;
-            DiscountFactor f1 = discount(t, extrapolate),
-                           f2 = discount(t+dt, true);
+            DiscountFactor f1 = discountImpl(t, extrapolate),
+                           f2 = discountImpl(t+dt, true);
             return Rate(QL_LOG(f1/f2)/dt);
     }
 
@@ -359,19 +365,19 @@ namespace QuantLib {
     inline Rate ForwardRateStructure::zeroYieldImpl(Time t,
         bool extrapolate) const {
             if (t == 0.0)
-                return forward(0.0);
-            double sum = 0.5*forward(0.0);
+                return forwardImpl(0.0);
+            double sum = 0.5*forwardImpl(0.0);
             size_t N = 1000;
             double dt = t/N;
-            for (Time i=t+dt; i<t; i+=dt)
-                sum += forward(i, extrapolate);
-            sum += 0.5*forward(t, extrapolate);
+            for (Time i=dt; i<t; i+=dt)
+                sum += forwardImpl(i, extrapolate);
+            sum += 0.5*forwardImpl(t, extrapolate);
             return Rate(sum*dt/t);
     }
 
     inline DiscountFactor ForwardRateStructure::discountImpl(Time t,
         bool extrapolate) const {
-            Rate r = zeroYield(t, extrapolate);
+            Rate r = zeroYieldImpl(t, extrapolate);
             return DiscountFactor(QL_EXP(-r*t));
     }
 
@@ -514,6 +520,11 @@ namespace QuantLib {
             return originalCurve_->zeroYield(t, extrapolate) + spread_->value();
     }
 
+    inline Rate ZeroSpreadedTermStructure::forwardImpl(Time t,
+        bool extrapolate) const {
+            return originalCurve_->forward(t, extrapolate) + spread_->value();
+    }
+
 
     // forward spreaded curves
     inline ForwardSpreadedTermStructure::ForwardSpreadedTermStructure(
@@ -576,6 +587,11 @@ namespace QuantLib {
     inline Rate ForwardSpreadedTermStructure::forwardImpl(Time t,
         bool extrapolate) const {
             return originalCurve_->forward(t, extrapolate) + spread_->value();
+    }
+
+    inline Rate ForwardSpreadedTermStructure::zeroYieldImpl(Time t,
+        bool extrapolate) const {
+            return originalCurve_->zeroYield(t, extrapolate) + spread_->value();
     }
 
 }
