@@ -25,6 +25,9 @@
     $Source$
     $Name$
     $Log$
+    Revision 1.2  2001/01/10 16:34:32  nando
+    unsigned int < int turned into int < int to avoid warning
+
     Revision 1.1  2001/01/05 11:42:38  lballabio
     Renamed SinglePathEuropeanPricer to EuropeanPathPricer
 
@@ -65,7 +68,7 @@ namespace QuantLib {
                 "SinglePathEuropeanPricer: the path cannot be empty");
 
             double price = underlying_;
-            for(unsigned int i = 0; i < n; i++)
+            for(int i = 0; i < n; i++)
                 price *= QL_EXP(path[i]);
             
             return computePlainVanilla(type_, price, strike_, discount_);

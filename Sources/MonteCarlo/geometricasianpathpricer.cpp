@@ -25,9 +25,12 @@
 	$Source$
 	$Name$
 	$Log$
+	Revision 1.3  2001/01/10 16:34:32  nando
+	unsigned int < int turned into int < int to avoid warning
+
 	Revision 1.2  2001/01/05 11:42:38  lballabio
 	Renamed SinglePathEuropeanPricer to EuropeanPathPricer
-
+	
 	Revision 1.1  2001/01/05 11:18:04  lballabio
 	Renamed SinglePathGeometricAsianPricer to GeometricAsianPathPricer
 	
@@ -58,7 +61,7 @@ namespace QuantLib {
 			double price = underlying_;
 			double average = 0.0;
 
-			for (unsigned int i=0; i<n; i++) {
+			for (int i=0; i<n; i++) {
 				price *= QL_EXP(path[i]);
 				average += QL_LOG(price);
 			}
