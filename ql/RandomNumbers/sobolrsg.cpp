@@ -237,11 +237,25 @@ namespace QuantLib {
             for (k=1; k<dimensionality_; k++) {
                 unsigned int gk = degree[k];
                 for (int l=gk; l<bits_; l++) {
+                    // eq. 8.19 "Monte Carlo Methods in Finance" by P. Jäckel
                     unsigned long n = (directionIntegers_[k][l-gk]>>gk);
+                    // a[k][j] are the coefficients of the monomials in ppmt[k]
+                    // The highest order coefficient a[k][0] is not actually
+                    // used in the recurrence relation, and the lowest order
+                    // coefficient a[k][gk] is always set: this is the reason
+                    // why the highest and lowest coefficient of
+                    // the polynomial ppmt[k] is not included in its encoding,
+                    // provided that its degree is known.
+                    // That is: a[k][j] = ppmt[k] >> (gk-j-1)
                     for (Size j=1; j<gk; j++) {
+                        // XORed with a selection of (unshifted) direction
+                        // integers if a[k][j] is not null
                         if ((ppmt[k] >> (gk-j-1)) & 1UL)
                             n ^= directionIntegers_[k][l-j];
                     }
+                    // since the lowest order coefficient a[k][gk]
+                    // is always set, the directionIntegers_[k][l-gk]
+                    // will always enter
                     n ^= directionIntegers_[k][l-gk];
                     directionIntegers_[k][l]=n;
                 }
