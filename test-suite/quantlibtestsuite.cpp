@@ -22,6 +22,7 @@
 #include <string>
 #include "qltestlistener.hpp"
 #include "barrieroption.hpp"
+#include "binaryoption.hpp"
 #include "calendars.hpp"
 #include "capfloor.hpp"
 #include "compoundforward.hpp"
@@ -52,6 +53,7 @@ int main() {
     runner.eventManager().addListener(&qlListener);
 
     runner.addTest(BarrierOptionTest::suite());
+    runner.addTest(BinaryOptionTest::suite());
     runner.addTest(new CalendarTest);
     runner.addTest(CapFloorTest::suite());
     runner.addTest(CompoundForwardTest::suite());
