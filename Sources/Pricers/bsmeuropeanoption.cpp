@@ -29,7 +29,6 @@ BSMEuropeanOption::BSMEuropeanOption(Option::Type type, double underlying, doubl
 
 double BSMEuropeanOption::value() const {
 	if (!hasBeenCalculated) {
-
 		// calculate grid limits
 		double prefactor = 1.0+0.05/theVolatility;			// correction for small volatilities
 		double minMaxFactor = QL_EXP(4.0*prefactor*theVolatility*QL_SQRT(theResidualTime));
@@ -40,7 +39,7 @@ double BSMEuropeanOption::value() const {
 		double safetyZoneFactor = 1.1;						// to insure strike is included in the grid
 		if(sMin > theStrike/safetyZoneFactor){
 			sMin = theStrike/safetyZoneFactor;  
-			sMax = theUnderlying*(theUnderlying/sMin);		// to enforce central placement of the underlying
+			sMax = theUnderlying/(sMin/theUnderlying);		// to enforce central placement of the underlying
 		}
 		if(sMax < theStrike*safetyZoneFactor){
 			sMax = theStrike*safetyZoneFactor;
@@ -55,6 +54,7 @@ double BSMEuropeanOption::value() const {
 		int j;
 		for (j=1; j<theGridPoints; j++)
 			thePrices[j] = thePrices[j-1]*edx;
+
 		switch (theType) {
 		  case Option::Call:
 			for(j=0; j<theGridPoints; j++)
@@ -73,11 +73,11 @@ double BSMEuropeanOption::value() const {
 		}
 
 		// build evolution operator
-		BSMOperator D(theGridPoints, dx, theRiskFreeRate, theUnderlyingGrowthRate, theVolatility);
-		D.setLowerBC(BoundaryCondition(BoundaryCondition::Neumann,thePrices[theGridPoints-1]-thePrices[theGridPoints-2]));
-		D.setHigherBC(BoundaryCondition(BoundaryCondition::Neumann,thePrices[1]-thePrices[0]));
+		BSMOperator bsmOperat(theGridPoints, dx, theRiskFreeRate, theUnderlyingGrowthRate, theVolatility);
+		bsmOperat.setLowerBC(BoundaryCondition(BoundaryCondition::Neumann,(thePrices[theGridPoints-1]-thePrices[theGridPoints-2])));
+		bsmOperat.setHigherBC(BoundaryCondition(BoundaryCondition::Neumann,(thePrices[1]-thePrices[0])));
 		// rollback
-		FiniteDifferenceModel<CrankNicolson<TridiagonalOperator> > model(D);
+		FiniteDifferenceModel<CrankNicolson<TridiagonalOperator> > model(bsmOperat);
 		model.rollback(thePrices,theResidualTime,0.0,theTimeSteps);
 		int midPoint = theGridPoints/2;
 		if (theGridPoints % 2 == 1)
