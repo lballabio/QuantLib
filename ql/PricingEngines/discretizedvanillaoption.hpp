@@ -47,11 +47,11 @@ namespace QuantLib {
             void addTimes(std::list<Time>& times) const {
                 Date referenceDate = arguments_.riskFreeTS->referenceDate();
                 // which daycounter should be used here?
-                Time residualTime = 
-                    arguments_.riskFreeTS->dayCounter().yearFraction(
-                        referenceDate, arguments_.exercise.lastDate());
-                // shouldn't we add all exercise dates here?
-                times.push_back(residualTime);
+                for (Size i=0; i<arguments_.exercise.dates().size(); i++)
+                    times.push_back(
+                        arguments_.riskFreeTS->dayCounter().yearFraction(
+                            referenceDate,
+                            arguments_.exercise.date(i)));
             }
 
           private:
