@@ -555,27 +555,11 @@ SOURCE=.\ql\MonteCarlo\lecuyerrandomgenerator.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\ql\MonteCarlo\mccontrolvariatepricer.hpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\ql\MonteCarlo\mcpricer.hpp
-# End Source File
-# Begin Source File
-
 SOURCE=.\ql\MonteCarlo\mctypedefs.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\ql\MonteCarlo\montecarlocontrolvariatemodel.hpp
-# End Source File
-# Begin Source File
-
 SOURCE=.\ql\MonteCarlo\montecarlomodel.hpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\ql\MonteCarlo\multifactorpricer.hpp
 # End Source File
 # Begin Source File
 
@@ -780,6 +764,14 @@ SOURCE=.\ql\Pricers\mceuropeanpricer.cpp
 # Begin Source File
 
 SOURCE=.\ql\Pricers\mceuropeanpricer.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\Pricers\mcmultifactorpricer.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\Pricers\mcpricer.hpp
 # End Source File
 # Begin Source File
 

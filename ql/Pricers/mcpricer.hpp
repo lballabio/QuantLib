@@ -22,18 +22,17 @@
  * available at http://quantlib.org/group.html
 */
 
-/*! \file multifactorpricer.hpp
-    \brief base class for multi-factor Monte Carlo pricers
-
+/*! \file mcpricer.hpp
+    \brief base class for one-factor Monte Carlo pricers
+     
     \fullpath
-    ql/MonteCarlo/%multifactorpricer.hpp
-
+    ql/Pricers/%mcpricer.hpp
 */
 
 // $Id$
 
-#ifndef quantlib_montecarlo_multi_factor_pricer_h
-#define quantlib_montecarlo_multi_factor_pricer_h
+#ifndef quantlib_montecarlo_pricer_h
+#define quantlib_montecarlo_pricer_h
 
 #include "ql/MonteCarlo/mctypedefs.hpp"
 
@@ -41,42 +40,39 @@ namespace QuantLib {
 
     namespace Pricers {
 
-        //! base class for multi-factor Monte Carlo pricers
+        //! base class for one-factor Monte Carlo pricers
         /*! Eventually this class might be linked to the general tree of 
-            pricers, in order to have tools like impliedVolatility available. 
-            Also, it will, eventually, implement the calculation of greeks in 
-            Monte Carlo methods.
-            Deriving a class from MultiFactorPricer gives an easy way to 
-            write a multi-factor Monte Carlo Pricer.
-            See PlainBasketOption for an example.
+            pricers, in order to have tools like impliedVolatility available.
+            Also, it will, eventually, implement the calculation of greeks
+            in Monte Carlo methods.
+            Deriving a class from McPricer gives an easy way to write
+            a one-factor Monte Carlo Pricer.
+            See McEuropeanPricer as an example.
         */
-        class MultiFactorPricer {
+        class McPricer {
           public:
-            MultiFactorPricer() {}
-            virtual ~MultiFactorPricer(){}
+            virtual ~McPricer() {}
             virtual double value() const;
             virtual double errorEstimate() const;
           protected:
-            MultiFactorPricer(unsigned int samples,
-                              long seed=0);
+            McPricer(long samples, long seed=0);
+            mutable long samples_;
             long seed_;
-            mutable unsigned int samples_;
-            mutable Handle<MonteCarlo::MultiFactorMonteCarloOption>
-                montecarloPricer_;
+            mutable Handle<MonteCarlo::OneFactorMonteCarloOption> montecarloPricer_;
         };
+
 
         // inline definitions
         
-        inline MultiFactorPricer::MultiFactorPricer(unsigned int samples,
-            long seed)
-        : seed_(seed), samples_(samples) {}
+        inline McPricer::McPricer(long samples, long seed):
+                    samples_(samples), seed_(seed) {}
 
-        inline double MultiFactorPricer::value() const{
+        inline double McPricer::value() const{
             montecarloPricer_->addSamples(samples_);
             return montecarloPricer_->sampleAccumulator().mean();
         }
 
-        inline double MultiFactorPricer::errorEstimate() const {
+        inline double McPricer::errorEstimate() const {
             return montecarloPricer_->sampleAccumulator().errorEstimate();
         }
 

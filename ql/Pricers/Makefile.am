@@ -25,6 +25,8 @@ include_HEADERS = \
     geometricasianoption.hpp \
     himalaya.hpp \
     mceuropeanpricer.hpp \
+    mcmultifactorpricer.hpp \
+    mcpricer.hpp \
     multiperiodoption.hpp \
     pagodaoption.hpp \
     plainbasketoption.hpp \
