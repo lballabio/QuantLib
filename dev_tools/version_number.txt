@@ -10,7 +10,7 @@ n  is an ordinal number; 0 is only allowed when l equals f
 e.g. R000300a2 stands for Release 0.3.1a2
 e.g. R000301f0 stands for Release 0.3.1
 
-The current version number is 0.3.4a1 - 000304a1
+The current version number is 0.3.4 - 000304
 
 This version number is in:
     QuantLib/dev_tools/version_number.txt,
@@ -22,8 +22,8 @@ This version number is in:
     QuantLib-SWIG/SWIG/ql.i
     QuantLib-SWIG/Python/setup.py
     QuantLib-SWIG/Ruby/setup.rb
-    QuantLib-SWIG/Scheme/MzScheme/setup.scm
-    QuantLib-SWIG/Scheme/Guile/setup.scm
+    QuantLib-SWIG/MzScheme/setup.scm
+    QuantLib-SWIG/Guile/setup.scm
 
     QuantLib-Excel/QuantLibXL.nsi
     QuantLib-Excel/qlxl/qlxl.hpp

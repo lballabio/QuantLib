@@ -40,13 +40,13 @@
 #endif
 
 //! version hexadecimal number
-#define QL_HEX_VERSION 0x000304a1
+#define QL_HEX_VERSION 0x000304f0
 
 //! version string
 #ifdef QL_DEBUG
-    #define QL_VERSION "0.3.4a1-debug"
+    #define QL_VERSION "0.3.4-debug"
 #else
-    #define QL_VERSION "0.3.4a1"
+    #define QL_VERSION "0.3.4"
 #endif
 
 //! specific per-compiler definitions
