@@ -1,3 +1,7 @@
+2002-12-16 11:34  Ferdinando Ametrano <ferdinando@ametrano.net>
+
+	* ChangeLog.txt (1.27): updated
+
 2002-12-16 09:45  Luigi Ballabio <luigi.ballabio@riskmap.net>
 
 	* Makefile.am (1.73): [no log message]
