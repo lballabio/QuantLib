@@ -92,13 +92,11 @@ namespace {
 
 test_suite* init_unit_test_suite(int, char* []) {
 
-    std::string header = "Testing QuantLib " QL_VERSION " (deprecated code "
-                         #ifndef QL_DISABLE_DEPRECATED
-                         "enabled"
-                         #else
-                         "disabled"
+    std::string header = "Testing QuantLib " QL_VERSION
+                         #ifdef QL_DISABLE_DEPRECATED
+                          " (deprecated code disabled)"
                          #endif
-                         ")";
+                         ;
     std::string rule = std::string(header.length(),'=');
 
     BOOST_MESSAGE(rule);
