@@ -65,7 +65,8 @@ namespace QuantLib {
                 const DayCounter& fixedDayCount, 
                 // floating leg
                 int floatingFrequency, 
-                const Handle<Indexes::Xibor>& index, 
+                const Handle<Indexes::Xibor>& index,
+                int indexFixingDays,
                 const std::vector<Spread>& spreads, 
                 // hook to term structure
                 const RelinkableHandle<TermStructure>& termStructure, 

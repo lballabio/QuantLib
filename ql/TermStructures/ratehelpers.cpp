@@ -211,7 +211,7 @@ namespace QuantLib {
                     fixedFrequency_, 
                     std::vector<Rate>(1,0.0),       // coupon rate
                     fixedIsAdjusted_, fixedDayCount_, 
-                    floatingFrequency_, dummyIndex, 
+                    floatingFrequency_, dummyIndex, 0,
                     std::vector<Spread>(),       // null spread
                     termStructureHandle_));
         }

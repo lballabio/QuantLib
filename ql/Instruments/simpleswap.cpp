@@ -55,6 +55,7 @@ namespace QuantLib {
           const DayCounter& fixedDayCount, 
           int floatingFrequency, 
           const Handle<Xibor>& index, 
+          int indexFixingDays,
           const std::vector<Spread>& spreads, 
           const RelinkableHandle<TermStructure>& termStructure, 
           const std::string& isinCode, const std::string& description)
@@ -72,12 +73,12 @@ namespace QuantLib {
                 secondLeg_ = FloatingRateCouponVector(nominals, 
                     startDate, maturity_, floatingFrequency, 
                     calendar, rollingConvention, termStructure,
-                    index, spreads);
+                    index, indexFixingDays, spreads);
             } else {
                 firstLeg_ = FloatingRateCouponVector(nominals, 
                     startDate, maturity_, floatingFrequency, 
                     calendar, rollingConvention, termStructure,
-                    index, spreads);
+                    index, indexFixingDays, spreads);
                 secondLeg_ = FixedRateCouponVector(nominals, 
                     couponRates, startDate, maturity_, 
                     fixedFrequency, calendar, rollingConvention, 
