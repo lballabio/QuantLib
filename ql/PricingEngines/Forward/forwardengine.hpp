@@ -96,15 +96,16 @@ namespace QuantLib {
                                                                         const {
 
         boost::shared_ptr<StrikedTypePayoff> argumentsPayoff =
-            boost::dynamic_pointer_cast<StrikedTypePayoff>(arguments_.payoff);
+            boost::dynamic_pointer_cast<StrikedTypePayoff>(
+                this->arguments_.payoff);
         QL_REQUIRE(argumentsPayoff, "wrong payoff given");
 
         const boost::shared_ptr<BlackScholesProcess>& process =
-            arguments_.blackScholesProcess;
+            this->arguments_.blackScholesProcess;
 
         boost::shared_ptr<StrikedTypePayoff> payoff(
                    new PlainVanillaPayoff(argumentsPayoff->optionType(),
-                                          arguments_.moneyness * 
+                                          this->arguments_.moneyness * 
                                           process->stateVariable()->value()));
         originalArguments_->payoff = payoff;
 
@@ -116,14 +117,14 @@ namespace QuantLib {
             boost::shared_ptr<TermStructure>(
                new ImpliedTermStructure(
                              Handle<TermStructure>(process->dividendYield()), 
-                             arguments_.resetDate,
-                             arguments_.resetDate)));
+                             this->arguments_.resetDate,
+                             this->arguments_.resetDate)));
         Handle<TermStructure> riskFreeRate(
             boost::shared_ptr<TermStructure>(
                new ImpliedTermStructure(
                               Handle<TermStructure>(process->riskFreeRate()), 
-                              arguments_.resetDate,
-                              arguments_.resetDate)));
+                              this->arguments_.resetDate,
+                              this->arguments_.resetDate)));
         // The following approach is ok if the vol is at most
         // time dependant. It is plain wrong if it is asset dependant.
         // In the latter case the right solution would be stochastic
@@ -131,10 +132,9 @@ namespace QuantLib {
         // implies an unrealistic time-decreasing smile)
         Handle<BlackVolTermStructure> blackVolatility(
             boost::shared_ptr<BlackVolTermStructure>(
-               new ImpliedVolTermStructure(
-                                  Handle<BlackVolTermStructure>(
-                                                  process->blackVolatility()),
-                                  arguments_.resetDate)));
+                new ImpliedVolTermStructure(
+                    Handle<BlackVolTermStructure>(process->blackVolatility()),
+                        this->arguments_.resetDate)));
 
         originalArguments_->blackScholesProcess =
             boost::shared_ptr<BlackScholesProcess>(
