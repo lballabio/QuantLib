@@ -99,6 +99,7 @@ LINK32_OBJS= \
 	"$(INTDIR)\instruments.obj" \
 	"$(INTDIR)\integrals.obj" \
 	"$(INTDIR)\marketelements.obj" \
+	"$(INTDIR)\mersennetwister.obj" \
 	"$(INTDIR)\old_pricers.obj" \
 	"$(INTDIR)\operators.obj" \
 	"$(INTDIR)\piecewiseflatforward.obj" \
@@ -110,7 +111,6 @@ LINK32_OBJS= \
 	"$(INTDIR)\swap.obj" \
 	"$(INTDIR)\swaption.obj" \
 	"$(INTDIR)\termstructures.obj" \
-	"$(INTDIR)\mersennetwister.obj" \
 	"..\lib\Win32\VisualStudio\QuantLib.lib"
 
 "$(OUTDIR)\testsuite.exe" : "$(OUTDIR)" $(DEF_FILE) $(LINK32_OBJS)
@@ -172,7 +172,7 @@ CLEAN :
 "$(OUTDIR)" :
     if not exist "$(OUTDIR)/$(NULL)" mkdir "$(OUTDIR)"
 
-CPP_PROJ=/nologo /MDd /W3 /Gm /GR /GX /ZI /Od /I "$(QL_DIR)" /D "_DEBUG" /D "WIN32" /D "_CONSOLE" /D "_MBCS" /D "NOMINMAX" /Fp"$(INTDIR)\testsuite.pch" /YX /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\\" /FD /GZ /c 
+CPP_PROJ=/nologo /MDd /W3 /Gm /GR /GX /ZI /Od /I "$(QL_DIR)" /D "_DEBUG" /D "QL_DEBUG" /D "WIN32" /D "_CONSOLE" /D "_MBCS" /D "NOMINMAX" /Fp"$(INTDIR)\testsuite.pch" /YX /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\\" /FD /GZ /c 
 BSC32=bscmake.exe
 BSC32_FLAGS=/nologo /o"$(OUTDIR)\testsuite.bsc" 
 BSC32_SBRS= \
@@ -190,6 +190,7 @@ LINK32_OBJS= \
 	"$(INTDIR)\instruments.obj" \
 	"$(INTDIR)\integrals.obj" \
 	"$(INTDIR)\marketelements.obj" \
+	"$(INTDIR)\mersennetwister.obj" \
 	"$(INTDIR)\old_pricers.obj" \
 	"$(INTDIR)\operators.obj" \
 	"$(INTDIR)\piecewiseflatforward.obj" \
@@ -201,7 +202,6 @@ LINK32_OBJS= \
 	"$(INTDIR)\swap.obj" \
 	"$(INTDIR)\swaption.obj" \
 	"$(INTDIR)\termstructures.obj" \
-	"$(INTDIR)\mersennetwister.obj" \
 	"..\lib\Win32\VisualStudio\QuantLib_d.lib"
 
 "$(OUTDIR)\testsuite.exe" : "$(OUTDIR)" $(DEF_FILE) $(LINK32_OBJS)
@@ -263,7 +263,7 @@ CLEAN :
 "$(OUTDIR)" :
     if not exist "$(OUTDIR)/$(NULL)" mkdir "$(OUTDIR)"
 
-CPP_PROJ=/nologo /MDd /W3 /Gm /GR /GX /ZI /Od /I "..\\" /D "_DEBUG" /D "WIN32" /D "_CONSOLE" /D "_MBCS" /D "NOMINMAX" /Fp"$(INTDIR)\testsuite.pch" /YX /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\\" /FD /GZ /c 
+CPP_PROJ=/nologo /MDd /W3 /Gm /GR /GX /ZI /Od /I "..\\" /D "_DEBUG" /D "QL_DEBUG" /D "WIN32" /D "_CONSOLE" /D "_MBCS" /D "NOMINMAX" /Fp"$(INTDIR)\testsuite.pch" /YX /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\\" /FD /GZ /c 
 BSC32=bscmake.exe
 BSC32_FLAGS=/nologo /o"$(OUTDIR)\testsuite.bsc" 
 BSC32_SBRS= \
@@ -281,6 +281,7 @@ LINK32_OBJS= \
 	"$(INTDIR)\instruments.obj" \
 	"$(INTDIR)\integrals.obj" \
 	"$(INTDIR)\marketelements.obj" \
+	"$(INTDIR)\mersennetwister.obj" \
 	"$(INTDIR)\old_pricers.obj" \
 	"$(INTDIR)\operators.obj" \
 	"$(INTDIR)\piecewiseflatforward.obj" \
@@ -292,7 +293,6 @@ LINK32_OBJS= \
 	"$(INTDIR)\swap.obj" \
 	"$(INTDIR)\swaption.obj" \
 	"$(INTDIR)\termstructures.obj" \
-	"$(INTDIR)\mersennetwister.obj" \
 	"..\lib\Win32\VisualStudio\QuantLib_d.lib"
 
 "$(OUTDIR)\testsuite.exe" : "$(OUTDIR)" $(DEF_FILE) $(LINK32_OBJS)
@@ -369,6 +369,7 @@ LINK32_OBJS= \
 	"$(INTDIR)\instruments.obj" \
 	"$(INTDIR)\integrals.obj" \
 	"$(INTDIR)\marketelements.obj" \
+	"$(INTDIR)\mersennetwister.obj" \
 	"$(INTDIR)\old_pricers.obj" \
 	"$(INTDIR)\operators.obj" \
 	"$(INTDIR)\piecewiseflatforward.obj" \
@@ -380,7 +381,6 @@ LINK32_OBJS= \
 	"$(INTDIR)\swap.obj" \
 	"$(INTDIR)\swaption.obj" \
 	"$(INTDIR)\termstructures.obj" \
-	"$(INTDIR)\mersennetwister.obj" \
 	"..\lib\Win32\VisualStudio\QuantLib.lib"
 
 "$(OUTDIR)\testsuite.exe" : "$(OUTDIR)" $(DEF_FILE) $(LINK32_OBJS)
