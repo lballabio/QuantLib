@@ -25,6 +25,7 @@
 #include <ql/MonteCarlo/path.hpp>
 #include <ql/RandomNumbers/randomarraygenerator.hpp>
 #include <ql/diffusionprocess.hpp>
+#include <ql/grid.hpp>
 
 namespace QuantLib {
 
@@ -165,6 +166,112 @@ namespace QuantLib {
             next_.value.diffusion() = sample.value;
             return next_;
         }
+
+
+
+
+
+
+        //! Generates random paths using a random number generator
+        /*! Generates random paths with drift(S,t) and variance(S,t)
+            using a random number generator
+        */
+        template <class RNG>
+        class PathGenerator2 {
+          public:
+            typedef Sample<Path> sample_type;
+            // constructors
+            PathGenerator2(const Handle<DiffusionProcess>& diffProcess,
+                           Time length,
+                           Size timeSteps,
+                           const Handle<RNG>& generator);
+            PathGenerator2(const Handle<DiffusionProcess>& diffProcess,
+                           const Handle<TimeGrid>& times,
+                           const Handle<RNG>& generator);
+            //! \name inspectors
+            //@{
+            const sample_type& next() const;
+            const sample_type& antithetic() const;
+            Size size() const { return next_.size(); }
+            //@}
+          private:
+            mutable Sample<Path> next_;
+            mutable std::vector<double> randomExtractions_;
+            mutable double asset_;
+            Handle<DiffusionProcess> diffProcess_;
+            Handle<RNG> generator_;
+            Handle<TimeGrid> times_;
+        };
+
+        template <class RNG>
+        PathGenerator2<RNG>::PathGenerator2(
+            const Handle<DiffusionProcess>& diffProcess,
+            Time length, Size timeSteps, const Handle<RNG>& generator)
+        : next_(Path(timeSteps),1.0), randomExtractions_(timeSteps),
+          diffProcess_(diffProcess), generator_(generator) {
+            times_ = Handle<TimeGrid>(new TimeGrid(length, timeSteps));
+        }
+
+        template <class RNG>
+        PathGenerator2<RNG>::PathGenerator2(
+            const Handle<DiffusionProcess>& diffProcess,
+            const Handle<TimeGrid>& times, const Handle<RNG>& generator)
+        : next_(Path(times.size())-1,1.0), randomExtractions_(times.size()-1),
+          diffProcess_(diffProcess), generator_(generator), times_(times) {}
+    
+        template <class RNG>
+        inline const typename PathGenerator2<RNG>::sample_type&
+        PathGenerator2<RNG>::next() const {
+            // starting point for product
+            next_.weight = 1.0;
+
+            // starting point for asset value
+            asset_ = 0.0;
+            double dt;
+            Time t;
+            for (Size i=0; i<next_.value.size(); i++) {
+                t = (*times_)[i+1];
+                dt = times_->dt(i);
+                next_.value.drift()[i] = dt;
+                next_.value.drift()[i] *= 
+                    diffProcess_->drift(t, asset_);
+                typename RNG::sample_type sample = generator_->next();
+                randomExtractions_[i] = sample.value;
+                double diff = QL_SQRT(diffProcess_->variance(t, asset_, dt));
+                next_.value.diffusion()[i] = randomExtractions_[i] *
+                    diff;
+                next_.weight *= sample.weight;
+                asset_ += next_.value.drift()[i] + next_.value.diffusion()[i];
+            }
+
+            return next_;
+        }
+
+        template <class RNG>
+        inline const typename PathGenerator2<RNG>::sample_type&
+        PathGenerator2<RNG>::antithetic() const {
+
+            // starting point for asset value
+            asset_ = 0.0;
+            double dt;
+            Time t;
+            for (Size i=0; i<next_.value.size(); i++) {
+                t = (*times_)[i+1];
+                dt = times_->dt(i);
+                next_.value.drift()[i] =
+                    diffProcess_->drift(t, asset_) * dt;
+                next_.value.diffusion()[i] = - randomExtractions_[i] *
+                    QL_SQRT(diffProcess_->variance(t, asset_, dt));
+                asset_ += next_.value.drift()[i] + next_.value.diffusion()[i];
+            }
+
+            return next_;
+        }
+
+
+
+
+
 
     }
 
