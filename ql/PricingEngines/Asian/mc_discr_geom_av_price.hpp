@@ -47,35 +47,10 @@ namespace QuantLib {
                             Size requiredSamples = Null<Size>(),
                             Real requiredTolerance = Null<Real>(),
                             Size maxSamples = Null<Size>(),
-                            BigNatural seed = 0);
+                            BigNatural seed = 0) {}
       protected:
         boost::shared_ptr<path_pricer_type> pathPricer() const;
     };
-
-
-    // inline definitions
-
-    template <class RNG, class S>
-    inline
-    MCDiscreteGeometricAPEngine<RNG,S>::MCDiscreteGeometricAPEngine(Size maxTimeStepPerYear,
-                                              bool antitheticVariate,
-                                              bool controlVariate,
-                                              Size requiredSamples,
-                                              Real requiredTolerance,
-                                              Size maxSamples,
-                                              BigNatural seed)
-    : MCDiscreteAveragingAsianEngine<RNG,S>(maxTimeStepPerYear,
-                             antitheticVariate,
-                             controlVariate,
-                             requiredSamples,
-                             requiredTolerance,
-                             maxSamples,
-                             seed) {
-         /*
-         QL_REQUIRE(arguments_.exercise->type() == Exercise::European,
-             "not an European Option");
-         */
-    }
 
 
 
@@ -104,6 +79,8 @@ namespace QuantLib {
         DiscountFactor discount_;
     };
 
+
+    // inline definitions
 
     template <class RNG, class S>
     inline

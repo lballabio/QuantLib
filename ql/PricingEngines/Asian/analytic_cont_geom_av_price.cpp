@@ -27,6 +27,7 @@ namespace QuantLib {
 
         QL_REQUIRE(arguments_.exercise->type() == Exercise::European,
                    "not an European Option");
+
         Date exercise = arguments_.exercise->lastDate();
 
         boost::shared_ptr<PlainVanillaPayoff> payoff =
