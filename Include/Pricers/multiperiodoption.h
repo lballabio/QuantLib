@@ -27,6 +27,10 @@
     
     $Source$
     $Log$
+    Revision 1.3  2001/03/21 11:33:02  marmar
+    Main loop transfered from method value to method calculate.
+    Methods vega and rho moved from BSMNumericalOption to BSMOption
+
     Revision 1.2  2001/03/21 09:56:47  marmar
     virtual method added
 
@@ -57,8 +61,6 @@ namespace QuantLib {
                 Time residualTime, double volatility, 
                 const std::vector<Time>& dates, 
                 int timeSteps, int gridPoints);
-            // accessors
-            double value() const;
             protected:
             int timeStepPerPeriod_, dateNumber_;
             std::vector<Time> dates_;
@@ -68,6 +70,7 @@ namespace QuantLib {
                                                             stepCondition_;
             mutable Handle<FiniteDifferences::StandardFiniteDifferenceModel> 
                                                             model_;
+            void calculate() const;
             virtual void initializeModel() const;
             virtual void initializeStepCondition() const;
             virtual void executeIntermediateStep(int step) const = 0;

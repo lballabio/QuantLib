@@ -27,6 +27,10 @@
     $Source$
     $Name$
     $Log$
+    Revision 1.16  2001/03/21 11:33:02  marmar
+    Main loop transfered from method value to method calculate.
+    Methods vega and rho moved from BSMNumericalOption to BSMOption
+
     Revision 1.15  2001/03/21 10:49:27  marmar
     valueAtCenter, firstDerivativeAtCenter, secondDerivativeAtCenter,
     are no longer methods of BSMNumericalOption but separate
@@ -82,11 +86,11 @@ namespace QuantLib {
                     Rate dividendYield, Rate riskFreeRate, Time residualTime, 
                     double volatility, int gridPoints);
                 // accessors
+                virtual void calculate() const = 0;
+                double value() const;
                 double delta() const;
                 double gamma() const;
                 double theta() const;
-                double rho()   const;
-                double vega()  const;
                 Array getGrid() const{return grid_;}
 
           protected:
@@ -98,9 +102,7 @@ namespace QuantLib {
             // input data
             int gridPoints_;
             // results
-            mutable bool rhoComputed_, vegaComputed_;
             mutable double delta_, gamma_, theta_;
-            mutable double  rho_, vega_;
 
             mutable Array grid_;
             mutable FiniteDifferences::BSMOperator finiteDifferenceOperator_;
@@ -110,7 +112,6 @@ namespace QuantLib {
           private:
             // temporaries
             mutable double gridLogSpacing_;
-            const static double dVolMultiplier_, dRMultiplier_;
             int safeGridPoints(int gridPoints, Time residualTime);
         };
 

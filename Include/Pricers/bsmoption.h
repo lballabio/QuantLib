@@ -28,6 +28,10 @@
     $Source$
     $Name$
     $Log$
+    Revision 1.14  2001/03/21 11:33:02  marmar
+    Main loop transfered from method value to method calculate.
+    Methods vega and rho moved from BSMNumericalOption to BSMOption
+
     Revision 1.13  2001/02/20 11:11:13  marmar
     BarrierOption implements the analytical barrier option
 
@@ -97,8 +101,8 @@ namespace QuantLib {
             virtual double delta() const = 0;
             virtual double gamma() const = 0;
             virtual double theta() const = 0;
-            virtual double vega() const = 0;
-            virtual double rho() const = 0;
+            virtual double vega() const;
+            virtual double rho() const;
             double impliedVolatility(double targetValue, 
                 double accuracy = 1e-4, int maxEvaluations = 100,
                 double minVol = QL_MIN_VOLATILITY, 
@@ -115,6 +119,9 @@ namespace QuantLib {
             // declared as mutable to preserve the logical
             mutable bool hasBeenCalculated_;    
             mutable double value_;
+            mutable double  rho_, vega_;
+            mutable bool rhoComputed_, vegaComputed_;
+            const static double dVolMultiplier_, dRMultiplier_;
           private:
             class BSMFunction;
             friend class BSMFunction;

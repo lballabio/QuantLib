@@ -26,6 +26,10 @@
 
     $Source$
     $Log$
+    Revision 1.3  2001/03/21 11:33:02  marmar
+    Main loop transfered from method value to method calculate.
+    Methods vega and rho moved from BSMNumericalOption to BSMOption
+
     Revision 1.2  2001/03/12 13:10:45  marmar
     Public method getPrices added
 
@@ -51,11 +55,12 @@ namespace QuantLib {
                  Rate dividendYield, Rate riskFreeRate, 
                  Time residualTime, double volatility, 
                  int timeSteps = 200, int gridPoints = 800);            
-            double value() const;     
            	Array getPrices() const;
             Handle<BSMOption> clone() const{    
                 return Handle<BSMOption>(new FiniteDifferenceEuropean(*this));
             }
+          protected:
+            void calculate() const;     
           private:
             int timeSteps_;
             mutable Array euroPrices_;

@@ -26,6 +26,10 @@
   
   $Source$
   $Log$
+  Revision 1.3  2001/03/21 11:33:02  marmar
+  Main loop transfered from method value to method calculate.
+  Methods vega and rho moved from BSMNumericalOption to BSMOption
+
   Revision 1.2  2001/03/02 13:49:42  marmar
   Purely virtual method initializeStepCondition()
   introduced in the design of StepConditionOption
@@ -53,14 +57,13 @@
 namespace QuantLib {
     namespace Pricers {
         class StepConditionOption : public BSMNumericalOption {
-        public:
-            double value() const;
         protected:
             // constructor
             StepConditionOption(Type type, double underlying, double strike, 
                                 Rate dividendYield, Rate riskFreeRate, 
                                 Time residualTime, double volatility, 
                                 int timeSteps, int gridPoints);
+            void calculate() const;
             virtual void initializeStepCondition() const = 0;                                
             mutable Handle<FiniteDifferences::StandardStepCondition > 
                                                             stepCondition_;
