@@ -92,6 +92,9 @@ SectionIn 1 2 3
     SetOutPath  $INSTDIR\ql\InterestRateModelling\OneFactorModels
     File /r "ql\InterestRateModelling\OneFactorModels\*.hpp"
 
+    SetOutPath  $INSTDIR\ql\InterestRateModelling\TwoFactorModels
+    File /r "ql\InterestRateModelling\TwoFactorModels\*.hpp"
+
     SetOutPath  $INSTDIR\ql\Lattices
     File /r "ql\Lattices\*.hpp"
 
@@ -231,6 +234,10 @@ SectionIn 1
   SetOutPath  $INSTDIR\ql\InterestRateModelling\OneFactorModels
   File /r "ql\InterestRateModelling\OneFactorModels\*.cpp"
   File /r "ql\InterestRateModelling\OneFactorModels\makefile.mak"
+
+  SetOutPath  $INSTDIR\ql\InterestRateModelling\TwoFactorModels
+  File /r "ql\InterestRateModelling\TwoFactorModels\*.cpp"
+  File /r "ql\InterestRateModelling\TwoFactorModels\makefile.mak"
 
   SetOutPath  $INSTDIR\ql\Lattices
   File /r "ql\Lattices\*.cpp"
