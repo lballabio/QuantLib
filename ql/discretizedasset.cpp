@@ -28,6 +28,7 @@ namespace QuantLib {
         */
         underlying_->partialRollback(time());
         underlying_->preAdjustValues();
+        Size i;
         switch (exerciseType_) {
           case Exercise::American:
             if (time_ >= exerciseTimes_[0] && time_ <= exerciseTimes_[1])
@@ -35,7 +36,7 @@ namespace QuantLib {
             break;
           case Exercise::Bermudan:
           case Exercise::European:
-            for (Size i=0; i<exerciseTimes_.size(); i++) {
+            for (i=0; i<exerciseTimes_.size(); i++) {
                 Time t = exerciseTimes_[i];
                 if (t >= 0.0 && isOnTime(t))
                     applyExerciseCondition();
