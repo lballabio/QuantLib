@@ -30,6 +30,9 @@
 
 // $Id$
 // $Log$
+// Revision 1.14  2001/08/13 15:06:17  nando
+// added dividendRho method
+//
 // Revision 1.13  2001/08/09 14:59:47  sigmud
 // header modification
 //
@@ -80,6 +83,9 @@ namespace QuantLib {
             double theta() const;
             double rho() const;
             Handle<SingleAssetOption> clone() const;
+            double dividendRho() const {
+                throw Error("DividendOption::dividendRho not implemented yet");
+            }
           private:
             std::vector<double> dividends_;
             std::vector<Time> exDivDates_;

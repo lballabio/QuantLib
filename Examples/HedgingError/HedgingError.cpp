@@ -359,6 +359,7 @@ void ReplicationError::compute(int nTimeSteps, int nSamples)
     // Derman and Kamal's formula
     double theorStD = QL_SQRT(3.1415926535/4/nTimeSteps)*vega_*sigma_;
 
+
     std::cout << nSamples << "\t| "
         << nTimeSteps << "\t | "
         << DoubleFormatter::toString(PLMean,   3) << " \t| "

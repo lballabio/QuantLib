@@ -30,6 +30,9 @@
 
 // $Id$
 // $Log$
+// Revision 1.15  2001/08/13 15:06:17  nando
+// added dividendRho method
+//
 // Revision 1.14  2001/08/09 14:59:47  sigmud
 // header modification
 //
@@ -107,10 +110,10 @@ namespace QuantLib {
         //! This is a safety check to be sure we have enough grid points.
         #define QL_NUM_OPT_GRID_POINTS_PER_YEAR        50
 
-            // The following is a safety check to be sure we have enough grid
-            // points.
+        // The following is a safety check to be sure we have enough grid
+        // points.
         inline int BSMNumericalOption::safeGridPoints(int gridPoints,
-                                                        Time residualTime){
+                                                      Time residualTime) {
             return QL_MAX(gridPoints,
               residualTime>1.0 ? int(QL_NUM_OPT_MIN_GRID_POINTS +
               (residualTime-1.0)*QL_NUM_OPT_GRID_POINTS_PER_YEAR) :

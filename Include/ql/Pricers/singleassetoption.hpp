@@ -31,6 +31,9 @@
 
 // $Id$
 // $Log$
+// Revision 1.4  2001/08/13 15:06:17  nando
+// added dividendRho method
+//
 // Revision 1.3  2001/08/09 14:59:47  sigmud
 // header modification
 //
@@ -42,15 +45,6 @@
 //
 // Revision 1.15  2001/07/26 13:56:23  nando
 // straddle barrier option handled
-//
-// Revision 1.14  2001/07/25 15:47:28  sigmud
-// Change from quantlib.sourceforge.net to quantlib.org
-//
-// Revision 1.13  2001/07/19 16:40:11  lballabio
-// Improved docs a bit
-//
-// Revision 1.12  2001/07/13 14:29:08  sigmud
-// removed a few gcc compile warnings
 
 #ifndef BSM_option_pricer_h
 #define BSM_option_pricer_h
@@ -80,6 +74,7 @@ namespace QuantLib {
             // modifiers
             void setVolatility(double newVolatility) ;
             void setRiskFreeRate(Rate newRate) ;
+            void setDividendYield(Rate newDividendYield) ;
             // accessors
             virtual double value() const = 0;
             virtual double delta() const = 0;
@@ -87,6 +82,7 @@ namespace QuantLib {
             virtual double theta() const = 0;
             virtual double vega() const;
             virtual double rho() const;
+            virtual double dividendRho() const;
             double impliedVolatility(double targetValue,
                 double accuracy = 1e-4, int maxEvaluations = 100,
                 double minVol = QL_MIN_VOLATILITY,
@@ -100,11 +96,11 @@ namespace QuantLib {
             Rate dividendYield_;
             Time residualTime_;
             mutable bool hasBeenCalculated_;
-            mutable bool rhoComputed_, vegaComputed_;
+            mutable bool rhoComputed_, dividendRhoComputed_, vegaComputed_;
             double volatility_;
-	    Rate riskFreeRate_;
+            Rate riskFreeRate_;
             mutable double value_;
-            mutable double  rho_, vega_;
+            mutable double rho_, dividendRho_, vega_;
             const static double dVolMultiplier_;
             const static double dRMultiplier_;
           private:

@@ -30,6 +30,9 @@
 
 // $Id$
 // $Log$
+// Revision 1.5  2001/08/13 15:06:17  nando
+// added dividendRho method
+//
 // Revision 1.4  2001/08/09 14:59:48  sigmud
 // header modification
 //
@@ -42,13 +45,6 @@
 // Revision 1.1  2001/08/06 15:43:34  nando
 // BSMOption now is SingleAssetOption
 // BSMEuropeanOption now is EuropeanOption
-//
-// Revision 1.29  2001/07/25 15:47:29  sigmud
-// Change from quantlib.sourceforge.net to quantlib.org
-//
-// Revision 1.28  2001/05/24 15:40:10  nando
-// smoothing #include xx.hpp and cutting old Log messages
-//
 
 #include "ql/Pricers/europeanoption.hpp"
 #include "ql/Math/normaldistribution.hpp"
@@ -124,6 +120,13 @@ namespace QuantLib {
             value();
 
             return residualTime_*riskFreeDiscount_*strike_*beta_;
+        }
+
+        double EuropeanOption::dividendRho() const {
+          if(!hasBeenCalculated_)
+            value();
+
+            return -residualTime_*dividendDiscount_*underlying_*alpha_;
         }
 
         double EuropeanOption::vega() const {

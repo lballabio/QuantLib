@@ -30,6 +30,9 @@
 
 // $Id$
 // $Log$
+// Revision 1.10  2001/08/13 15:06:17  nando
+// added dividendRho method
+//
 // Revision 1.9  2001/08/09 14:59:47  sigmud
 // header modification
 //
@@ -75,6 +78,7 @@ namespace QuantLib  {
             double theta() const;
             double vega() const;
             double rho() const;
+            double dividendRho() const;
             Handle<SingleAssetOption> clone() const;
         private:
             double cashPayoff_;

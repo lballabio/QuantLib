@@ -30,6 +30,9 @@
 
 // $Id$
 // $Log$
+// Revision 1.5  2001/08/13 15:06:17  nando
+// added dividendRho method
+//
 // Revision 1.4  2001/08/09 14:59:48  sigmud
 // header modification
 //
@@ -81,13 +84,14 @@ namespace QuantLib {
         const double SingleAssetOption::dVolMultiplier_ = 0.0001;
         const double SingleAssetOption::dRMultiplier_ = 0.0001;
 
-        SingleAssetOption::SingleAssetOption(Type type, double underlying, double strike,
-            Rate dividendYield, Rate riskFreeRate, Time residualTime,
-            double volatility)
+        SingleAssetOption::SingleAssetOption(Type type, double underlying,
+            double strike, Rate dividendYield, Rate riskFreeRate,
+            Time residualTime, double volatility)
 	    : type_(type), underlying_(underlying),
             strike_(strike), dividendYield_(dividendYield),
             residualTime_(residualTime), hasBeenCalculated_(false),
-            rhoComputed_(false), vegaComputed_(false) {
+            rhoComputed_(false), dividendRhoComputed_(false),
+            vegaComputed_(false) {
             QL_REQUIRE(strike > 0.0,
                 "SingleAssetOption::SingleAssetOption : strike must be positive");
             QL_REQUIRE(underlying > 0.0,
@@ -117,6 +121,11 @@ namespace QuantLib {
             hasBeenCalculated_ = false;
         }
 
+        void SingleAssetOption::setDividendYield(Rate newDividendYield) {
+            dividendYield_ = newDividendYield;
+            hasBeenCalculated_ = false;
+        }
+
         double SingleAssetOption::vega() const {
 
             if(!vegaComputed_){
@@ -133,6 +142,23 @@ namespace QuantLib {
                 vegaComputed_ = true;
             }
             return vega_;
+        }
+
+        double SingleAssetOption::dividendRho() const {
+
+            if(!dividendRhoComputed_){
+                double valuePlus = value();
+
+                Handle<SingleAssetOption> brandNewFD = clone();
+                Rate dMinus = dividendYield_ * (1.0 - dRMultiplier_);
+                brandNewFD -> setDividendYield(dMinus);
+                double valueMinus = brandNewFD -> value();
+
+                dividendRho_=(valuePlus - valueMinus) /
+                    (dividendYield_ * dRMultiplier_);
+                dividendRhoComputed_ = true;
+            }
+            return dividendRho_;
         }
 
         double SingleAssetOption::rho() const {

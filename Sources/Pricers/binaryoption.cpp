@@ -30,6 +30,9 @@
 
 // $Id$
 // $Log$
+// Revision 1.13  2001/08/13 15:06:17  nando
+// added dividendRho method
+//
 // Revision 1.12  2001/08/09 14:59:48  sigmud
 // header modification
 //
@@ -166,6 +169,17 @@ namespace QuantLib
             else {
                 double D2IT = residualTime_/volSqrtTime_;
                 return cashPayoff_*discount_*optionSign_*(D2IT*NID2_-residualTime_*beta_);
+            }
+        }
+
+        double BinaryOption::dividendRho() const {
+//            QL_REQUIRE(hasBeenInitialized, "BinaryOption must be initialized");
+
+            if(type_ == Option::Straddle)
+                return 0.0;
+            else {
+                double D2IT = residualTime_/volSqrtTime_;
+                return -cashPayoff_*discount_*optionSign_*(D2IT*NID2_);
             }
         }
 

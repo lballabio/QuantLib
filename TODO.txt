@@ -24,7 +24,13 @@ LIBRARY
     clean up accuracy definition in solver1D (x or f(x) accuracy ?)
     implement currency as per OMG definition
     implement round as per OMG enumeration/definition
+    add one-touch option (american binary)
+    GuassianPathGenerator, etc: allow for more general random walks
     add futures (and convexity adjustment) to the bootstrapping method
+    allow for negative dividendYield (that is cost of carry)
+    implement dividendRho for dividendOption
+    add payoff class for integral (Green) option pricing, step condition, etc
+    what about barrier or FD with dividends ???
     revisite model/slice interface
     add historicalvolatility to RiskMeasures
     handle library versioning to allow multiple installed versions
