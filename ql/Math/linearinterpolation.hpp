@@ -1,5 +1,4 @@
 
-
 /*
  Copyright (C) 2000, 2001, 2002 RiskMap srl
 
@@ -28,6 +27,7 @@
 #define quantlib_linear_interpolation_h
 
 #include <ql/Math/interpolation.hpp>
+#include <algorithm>
 
 namespace QuantLib {
 
@@ -68,7 +68,7 @@ namespace QuantLib {
                 else if (x > *(xEnd_-1))
                     i = xEnd_-2;
                 else
-                    i = Location(xBegin_,xEnd_,x);
+                    i = std::upper_bound(xBegin_,xEnd_-1,x)-1;
                 I2 j = yBegin_+(i-xBegin_);
                 return *j + (x-*i)*double(*(j+1)-*j)/double(*(i+1)-*i);
         }

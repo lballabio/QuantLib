@@ -1,5 +1,4 @@
 
-
 /*
  Copyright (C) 2002 Ferdinando Ametrano
 
@@ -29,6 +28,7 @@
 
 #include <ql/Math/interpolation2D.hpp>
 #include <ql/Math/matrix.hpp>
+#include <algorithm>
 
 namespace QuantLib {
 
@@ -68,14 +68,14 @@ namespace QuantLib {
                 else if (x > *(xBegin_+dataMatrix_.columns()-1))
                     i = xBegin_+dataMatrix_.columns()-2;
                 else
-                    i = Location(xBegin_,xBegin_+dataMatrix_.columns()-1,x);
-                I1 j; // row
+                    i = std::upper_bound(xBegin_,xBegin_+dataMatrix_.columns()-1,x)-1;
+                I2 j; // row
                 if (y < *yBegin_)
                     j = yBegin_;
                 else if (y > *(yBegin_+dataMatrix_.rows()-1))
                     j = yBegin_+dataMatrix_.rows()-2;
                 else
-                    j = Location(yBegin_,yBegin_+dataMatrix_.rows()-1,y);
+                    j = std::upper_bound(yBegin_,yBegin_+dataMatrix_.rows()-1,y)-1;
 
 
 

@@ -29,6 +29,7 @@
 
 #include <ql/date.hpp>
 #include <ql/handle.hpp>
+#include <ql/Patterns/observable.hpp>
 
 namespace QuantLib {
 
@@ -36,7 +37,7 @@ namespace QuantLib {
     /*! This class is purely abstract and defines the interface of concrete
         swaption volatility structures which will be derived from this one.
     */
-    class SwaptionVolatilitySurface {
+    class SwaptionVolatilitySurface : public Patterns::Observable {
       public:
         virtual ~SwaptionVolatilitySurface() {}
         //! returns the volatility for a given starting date and length

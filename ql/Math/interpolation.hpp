@@ -66,22 +66,6 @@ namespace QuantLib {
             RandomAccessIterator2 yBegin_;
         };
 
-        //! Helper function to find the values between which to interpolate
-        /*! It returns either an iterator <tt>i</tt> such that
-            <tt>*i <= x <= *(i+1)</tt> or <tt>xEnd</tt> if no such iterator
-            exists.
-
-            \pre The sequence of values must have been sorted for the
-                result to make sense.
-        */
-        template <class RandomAccessIterator>
-        RandomAccessIterator Location(
-            const RandomAccessIterator& begin,
-            const RandomAccessIterator& end,
-            const typename
-            QL_ITERATOR_TRAITS<RandomAccessIterator>::value_type& x);
-
-
         // inline definitions
 
         template <class I1, class I2>
@@ -92,26 +76,6 @@ namespace QuantLib {
                 QL_REQUIRE(xEnd_-xBegin_ >= 2,
                     "not enough points to interpolate");
             #endif
-        }
-
-        // template definitions
-
-        template <class I>
-        I Location(const I& begin, const I& end,
-            const typename QL_ITERATOR_TRAITS<I>::value_type& x) {
-            I i = begin, j = end-1;
-               if (x < *i || x > *j)
-                return end;
-            while (j-i > 1) {
-                I k = i+(j-i)/2;
-                if (x == *k)
-                    return k;
-                else if (x < *k)
-                    j = k;
-                else
-                    i = k;
-            }
-            return i;
         }
 
     }

@@ -29,6 +29,7 @@
 
 #include <ql/Math/interpolation.hpp>
 #include <ql/FiniteDifferences/tridiagonaloperator.hpp>
+#include <algorithm>
 #include <vector>
 
 namespace QuantLib {
@@ -127,7 +128,7 @@ namespace QuantLib {
                 else if (x > *(xEnd_-1))
                     i = xEnd_-2;
                 else
-                    i = Location(xBegin_,xEnd_,x);
+                    i = std::upper_bound(xBegin_,xEnd_-1,x)-1;
 
                 Size j = i-xBegin_;
                 argument_type dx = x-xBegin_[j];

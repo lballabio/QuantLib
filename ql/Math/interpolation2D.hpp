@@ -27,7 +27,6 @@
 #ifndef quantlib_interpolation2D_h
 #define quantlib_interpolation2D_h
 
-#include <ql/Math/interpolation.hpp>
 #include <ql/Math/matrix.hpp>
 
 namespace QuantLib {
