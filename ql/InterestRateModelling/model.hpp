@@ -75,12 +75,12 @@ namespace QuantLib {
 
           private:
             Array params() {
-                Size size = 0;
-                for (Size i=0; i<parameters_.size(); i++)
+                Size size = 0, i;
+                for (i=0; i<parameters_.size(); i++)
                     size += parameters_[i].size();
                 Array params(size);
                 Size k = 0;
-                for (Size i=0; i<parameters_.size(); i++) {
+                for (i=0; i<parameters_.size(); i++) {
                     for (Size j=0; j<parameters_[i].size(); j++, k++) {
                         params[k] = parameters_[i].params()[j];
                     }
