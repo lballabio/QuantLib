@@ -49,9 +49,22 @@ namespace QuantLib {
                 const Date& refPeriodEnd = Date())
 			 : IndexedCoupon(nominal, paymentDate, index, startDate, endDate,
 			   fixingDays, spread, refPeriodStart, refPeriodEnd) {}
+			//! \name FloatingRateCoupon interface
+            //@{
 			Date fixingDate() const;
+            //@}
+            //! \name Visitability
+            //@{
+            virtual void accept(Patterns::Visitor&);
+            class Visitor {
+              public:
+                virtual void visit(InArrearIndexedCoupon&) = 0;
+            };
+            //@}
         };
 
+
+        // inline definitions
 
         inline Date InArrearIndexedCoupon::fixingDate() const {
 			// fix at the end of period
@@ -59,6 +72,16 @@ namespace QuantLib {
                 accrualEndDate_, -fixingDays_, Days,
                 Preceding);
 		}
+
+        inline void InArrearIndexedCoupon::accept(Patterns::Visitor& v) {
+            InArrearIndexedCoupon::Visitor* v1 =
+                dynamic_cast<InArrearIndexedCoupon::Visitor*>(&v);
+            if (v1 != 0)
+                v1->visit(*this);
+            else
+                IndexedCoupon::accept(v);
+        }
+
     }
 
 }
