@@ -23,7 +23,6 @@ OUTPUT_DIR     = ..\lib\Win32\Borland
 CORE_OBJS        = calendar.obj$(_D) \
                    dataformatters.obj$(_D) \
                    date.obj$(_D) \
-                   ratehelper.obj$(_D) \
                    solver1d.obj$(_D)
 
 CALENDAR_LIB     = Calendars\Calendars$(_D).lib

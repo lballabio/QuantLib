@@ -898,10 +898,6 @@ SOURCE=.\Sources\date.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\Sources\ratehelper.cpp
-# End Source File
-# Begin Source File
-
 SOURCE=.\Sources\solver1d.cpp
 # End Source File
 # End Target

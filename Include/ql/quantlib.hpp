@@ -26,6 +26,9 @@
     $Id$
     $Source$
     $Log$
+    Revision 1.4  2001/05/14 10:10:17  lballabio
+    *** empty log message ***
+
     Revision 1.3  2001/04/24 08:48:37  lballabio
     *** empty log message ***
 
@@ -63,7 +66,6 @@
 #include "ql/qldefines.hpp"
 #include "ql/qlerrors.hpp"
 #include "ql/rate.hpp"
-#include "ql/ratehelper.hpp"
 #include "ql/riskstatistics.hpp"
 #include "ql/solver1d.hpp"
 #include "ql/spread.hpp"

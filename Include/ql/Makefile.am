@@ -31,7 +31,6 @@ include_HEADERS = \
 	qlerrors.hpp \
 	quantlib.hpp \
 	rate.hpp \
-	ratehelper.hpp \
 	riskstatistics.hpp \
 	solver1d.hpp spread.hpp \
 	swaptionvolsurface.hpp \
