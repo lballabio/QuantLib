@@ -1,5 +1,5 @@
 #
-# Tentative makefile for QuantLib under Borland C++
+# makefile for QuantLib under Borland C++
 #
 
 .autodepend
