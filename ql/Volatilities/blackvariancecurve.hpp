@@ -35,15 +35,15 @@ namespace QuantLib {
 
         //! Black volatility curve modelled as variance curve
         /*! This class calculates time dependant Black volatilities
-            using a matrix of Black volatilities observed in the market as
-            input.
+            using  as input a vector of (ATM) Black volatilities
+            observed in the market.
 
             The calculation is performed interpolating on the variance curve.
 
             For strike dependance see BlackVarianceSurface
         */
         template<class Interpolator1D>
-        class BlackVarianceCurve : public VarianceTermStructure,
+        class BlackVarianceCurve : public BlackVarianceTermStructure,
                                    public Patterns::Observer {
           public:
             BlackVarianceCurve(const Date& referenceDate,

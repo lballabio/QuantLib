@@ -34,20 +34,21 @@ namespace QuantLib {
 
     namespace VolTermStructures {
 
-        //! Black constant volatility, no time dependence, no strike dependence
-        /*! This class implements the VolTermStructure for
+        //! Constant Black volatility, no time-strike dependence
+        /*! This class implements the BlackVolatilityTermStructure
+            interface for
             a constant Black volatility (no time/strike dependence).
         */
-        class ConstantVol : public VolatilityTermStructure,
-                            public Patterns::Observer {
+        class BlackConstantVol : public BlackVolatilityTermStructure,
+                                 public Patterns::Observer {
           public:
             // constructors
-            ConstantVol(const Date& referenceDate,
-                        double volatility,
-                        const DayCounter& dayCounter=DayCounters::Actual365());
-            ConstantVol(const Date& referenceDate,
-                        const RelinkableHandle<MarketElement>& volatility,
-                        const DayCounter& dayCounter=DayCounters::Actual365());
+            BlackConstantVol(const Date& referenceDate,
+                    double volatility,
+                    const DayCounter& dayCounter=DayCounters::Actual365());
+            BlackConstantVol(const Date& referenceDate,
+                    const RelinkableHandle<MarketElement>& volatility,
+                    const DayCounter& dayCounter=DayCounters::Actual365());
             // inspectors
             Date referenceDate() const;
             DayCounter dayCounter() const;
@@ -65,7 +66,7 @@ namespace QuantLib {
 
         // inline definitions
 
-        inline ConstantVol::ConstantVol(const Date& referenceDate,
+        inline BlackConstantVol::BlackConstantVol(const Date& referenceDate,
             double volatility, const DayCounter& dayCounter)
         : referenceDate_(referenceDate), dayCounter_(dayCounter) {
             volatility_.linkTo(Handle<MarketElement>(new
@@ -73,7 +74,7 @@ namespace QuantLib {
             registerWith(volatility_);
         }
 
-        inline ConstantVol::ConstantVol(const Date& referenceDate,
+        inline BlackConstantVol::BlackConstantVol(const Date& referenceDate,
             const RelinkableHandle<MarketElement>& volatility,
             const DayCounter& dayCounter)
         : referenceDate_(referenceDate), volatility_(volatility), 
@@ -81,23 +82,24 @@ namespace QuantLib {
             registerWith(volatility_);
         }
 
-        inline DayCounter ConstantVol::dayCounter() const {
+        inline DayCounter BlackConstantVol::dayCounter() const {
             return dayCounter_;
         }
 
-        inline Date ConstantVol::referenceDate() const {
+        inline Date BlackConstantVol::referenceDate() const {
             return referenceDate_;
         }
 
-        inline Date ConstantVol::maxDate() const {
+        inline Date BlackConstantVol::maxDate() const {
             return Date::maxDate();
         }
 
-        inline void ConstantVol::update() {
+        inline void BlackConstantVol::update() {
             notifyObservers();
         }
 
-        inline double ConstantVol::blackVolImpl(Time t, double, bool) const {
+        inline double BlackConstantVol::blackVolImpl(Time t, double,
+            bool) const {
             QL_REQUIRE(t >= 0.0,
                 "ConstantVol::blackVolImpl: "
                 "negative time (" + DoubleFormatter::toString(t) +

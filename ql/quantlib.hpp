@@ -273,9 +273,9 @@
 #include <ql/Utilities/processingiterator.hpp>
 #include <ql/Utilities/steppingiterator.hpp>
 
+#include <ql/Volatilities/blackconstantvol.hpp>
 #include <ql/Volatilities/blackvariancecurve.hpp>
 #include <ql/Volatilities/blackvariancesurface.hpp>
-#include <ql/Volatilities/constantvol.hpp>
 #include <ql/Volatilities/capflatvolvector.hpp>
 #include <ql/Volatilities/swaptionvolmatrix.hpp>
 

@@ -36,13 +36,13 @@ namespace QuantLib {
 
         //! Black volatility surface modelled as variance surface
         /*! This class calculates time/strike dependant Black volatilities
-            using a matrix of Black volatilities observed in the market as
-            input.
+            using as input a matrix of Black volatilities
+            observed in the market.
 
             The calculation is performed interpolating on the variance surface.
         */
         template<class Interpolator2D>
-        class BlackVarianceSurface : public VarianceTermStructure,
+        class BlackVarianceSurface : public BlackVarianceTermStructure,
                                      public Patterns::Observer {
           public:
             BlackVarianceSurface(const Date& referenceDate,

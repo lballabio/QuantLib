@@ -15,7 +15,7 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 /*! \file voltermstructure.hpp
-    \brief Volatility term structure
+    \brief Volatility term structures
 
     \fullpath
     ql/%voltermstructure.hpp
@@ -32,21 +32,21 @@
 #include <vector>
 
 /*! \namespace QuantLib::VolTermStructures
-    \brief Concrete implementations of the VolTermStructure interface
+    \brief Concrete implementations of Volatility Term Structures
 
 */
 
 namespace QuantLib {
 
-    //! Volatility Term structure
+    //! Black Volatility Term structure
     /*! This abstract class defines the interface of concrete
-        volatility term structures which will be derived from this one.
+        Black volatility term structures which will be derived from this one.
 
-        Volatility are assumed to be expressed on an annual basis
+        Volatilities are assumed to be expressed on an annual basis
     */
-    class VolTermStructure : public Patterns::Observable {
+    class BlackVolTermStructure : public Patterns::Observable {
       public:
-        virtual ~VolTermStructure() {}
+        virtual ~BlackVolTermStructure() {}
         //! \name Black Volatility
         //@{
         //! Black present (a.k.a spot) volatility
@@ -107,38 +107,38 @@ namespace QuantLib {
     };
 
 
-    inline double VolTermStructure::maxTime() const {
+    inline double BlackVolTermStructure::maxTime() const {
         return dayCounter().yearFraction(referenceDate(), maxDate());
     }
 
-    inline double VolTermStructure::blackVol(const Date& maturity,
+    inline double BlackVolTermStructure::blackVol(const Date& maturity,
         double strike, bool extrapolate) const {
 
         Time t = dayCounter().yearFraction(referenceDate(), maturity);
         return blackVolImpl(t, strike, extrapolate);
     }
 
-    inline double VolTermStructure::blackVol(Time maturity,
+    inline double BlackVolTermStructure::blackVol(Time maturity,
         double strike, bool extrapolate) const {
 
         return blackVolImpl(maturity, strike, extrapolate);
     }
 
-    inline double VolTermStructure::blackVariance(const Date& maturity,
+    inline double BlackVolTermStructure::blackVariance(const Date& maturity,
         double strike, bool extrapolate) const {
 
         Time t = dayCounter().yearFraction(referenceDate(), maturity);
         return blackVarianceImpl(t, strike, extrapolate);
     }
 
-    inline double VolTermStructure::blackVariance(Time maturity,
+    inline double BlackVolTermStructure::blackVariance(Time maturity,
         double strike, bool extrapolate) const {
 
         return blackVarianceImpl(maturity, strike, extrapolate);
     }
 
 
-    inline double VolTermStructure::blackForwardVol(const Date& date1,
+    inline double BlackVolTermStructure::blackForwardVol(const Date& date1,
         const Date& date2, double strike, bool extrapolate) const {
 
         Time time1 = dayCounter().yearFraction(referenceDate(), date1);
@@ -147,7 +147,7 @@ namespace QuantLib {
     }
 
 
-    inline double VolTermStructure::blackForwardVol(Time time1, Time time2,
+    inline double BlackVolTermStructure::blackForwardVol(Time time1, Time time2,
         double strike, bool extrapolate) const {
 
         QL_REQUIRE(time2>=time1,
@@ -169,7 +169,7 @@ namespace QuantLib {
     }
 
 
-    inline double VolTermStructure::blackForwardVariance(const Date& date1,
+    inline double BlackVolTermStructure::blackForwardVariance(const Date& date1,
         const Date& date2, double strike, bool extrapolate) const {
 
         Time time1 = dayCounter().yearFraction(referenceDate(), date1);
@@ -178,7 +178,7 @@ namespace QuantLib {
     }
 
 
-    inline double VolTermStructure::blackForwardVariance(Time time1,
+    inline double BlackVolTermStructure::blackForwardVariance(Time time1,
         Time time2, double strike, bool extrapolate) const {
 
         QL_REQUIRE(time2>time1,
@@ -189,16 +189,16 @@ namespace QuantLib {
         return (v2-v1);
     }
 
-    //! Volatility term structure
-    /*! This abstract class acts as an adapter to VolTermStructure allowing the
+    //! Black Volatility term structure
+    /*! This abstract class acts as an adapter to BlackVolTermStructure allowing the
         programmer to implement only the
         <tt>blackVolImpl(Time, double, bool)</tt> method in derived classes.
 
         Volatility are assumed to be expressed on an annual basis
     */
-    class VolatilityTermStructure : public VolTermStructure {
+    class BlackVolatilityTermStructure : public BlackVolTermStructure {
       public:
-        virtual ~VolatilityTermStructure() {}
+        virtual ~BlackVolatilityTermStructure() {}
       protected:
         /*! Returns the variance for the given strike and date calculating it
             from the volatility.
@@ -207,14 +207,14 @@ namespace QuantLib {
             bool extrapolate = false) const;
     };
 
-    inline double VolatilityTermStructure ::blackVarianceImpl(Time maturity,
+    inline double BlackVolatilityTermStructure ::blackVarianceImpl(Time maturity,
         double strike, bool extrapolate) const {
 
         double vol = blackVolImpl(maturity, strike, extrapolate);
         return vol*vol*maturity;
     }
 
-    //! Variance term structure
+    //! Black Variance term structure
     /*! This abstract class acts as an adapter to VolTermStructure allowing the
         programmer to implement only the
         <tt>blackVarianceImpl(Time, double, bool)</tt> method in derived
@@ -222,9 +222,9 @@ namespace QuantLib {
 
         Volatility are assumed to be expressed on an annual basis
     */
-    class VarianceTermStructure : public VolTermStructure {
+    class BlackVarianceTermStructure : public BlackVolTermStructure {
       public:
-        virtual ~VarianceTermStructure() {}
+        virtual ~BlackVarianceTermStructure() {}
       protected:
         /*! Returns the volatility for the given strike and date calculating it
             from the variance.
@@ -233,13 +233,163 @@ namespace QuantLib {
             bool extrapolate = false) const;
     };
 
-    inline double VarianceTermStructure ::blackVolImpl(Time maturity,
+    inline double BlackVarianceTermStructure ::blackVolImpl(Time maturity,
         double strike, bool extrapolate) const {
 
         Time nonZeroMaturity = (maturity==0.0 ? 0.00001 : maturity);
         double var = blackVarianceImpl(nonZeroMaturity, strike, extrapolate);
         return QL_SQRT(var/nonZeroMaturity);
     }
+
+
+
+
+    //! Local Volatility Term structure
+    /*! This abstract class defines the interface of concrete
+        local volatility term structures which will be derived from this one.
+
+        Volatilities are assumed to be expressed on an annual basis
+    */
+    class LocalVolTermStructure : public Patterns::Observable {
+      public:
+        virtual ~LocalVolTermStructure() {}
+        //! \name Local Volatility
+        //@{
+        //! Local volatility
+        double localVol(const Date& date1,
+                        const Date& date2,
+                        double underlyingLevel,
+                        bool extrapolate = false) const;
+        //! Local volatility
+        double localVol(Time time1,
+                        Time time2,
+                        double underlyingLevel,
+                        bool extrapolate = false) const;
+        //! Local variance
+        double localVariance(const Date& date1,
+                             const Date& date2,
+                             double underlyingLevel,
+                             bool extrapolate = false) const;
+        //! Local variance
+        double localVariance(Time time1,
+                             Time time2,
+                             double underlyingLevel,
+                             bool extrapolate = false) const;
+        //@}
+        //! \name Dates
+        //@{
+        //! returns the reference date for which t=0
+        virtual Date referenceDate() const = 0;
+        //! returns the day counter
+        virtual DayCounter dayCounter() const = 0;
+        //! the latest date for which the term structure can return vols
+        virtual Date maxDate() const = 0;
+        //! the latest time for which the term structure can return vols
+        Time maxTime() const;
+        //@}
+      protected:
+        //! implements the actual local variance calculation in derived classes
+        virtual double localVarianceImpl(Time t1, Time t2, double strike,
+            bool extrapolate = false) const = 0;
+        //! implements the actual local vol calculation in derived classes
+        virtual double localVolImpl(Time t1, Time t2, double strike,
+            bool extrapolate = false) const = 0;
+    };
+
+
+
+
+    inline double LocalVolTermStructure::maxTime() const {
+        return dayCounter().yearFraction(referenceDate(), maxDate());
+    }
+
+    inline double LocalVolTermStructure::localVol(const Date& date1,
+        const Date& date2, double underlyingLevel, bool extrapolate) const {
+
+        Time t1 = dayCounter().yearFraction(referenceDate(), date1);
+        Time t2 = dayCounter().yearFraction(referenceDate(), date2);
+        return localVolImpl(t1, t2, underlyingLevel, extrapolate);
+    }
+
+    inline double LocalVolTermStructure::localVol(Time t1, Time t2,
+        double underlyingLevel, bool extrapolate) const {
+
+        return localVolImpl(t1, t2, underlyingLevel, extrapolate);
+    }
+
+    inline double LocalVolTermStructure::localVariance(const Date& date1,
+        const Date& date2, double underlyingLevel, bool extrapolate) const {
+
+        Time t1 = dayCounter().yearFraction(referenceDate(), date1);
+        Time t2 = dayCounter().yearFraction(referenceDate(), date2);
+        return localVarianceImpl(t1, t2, underlyingLevel, extrapolate);
+    }
+
+    inline double LocalVolTermStructure::localVariance(Time t1, Time t2,
+        double underlyingLevel, bool extrapolate) const {
+
+        return localVarianceImpl(t1, t2, underlyingLevel, extrapolate);
+    }
+
+
+    //! Local Volatility term structure
+    /*! This abstract class acts as an adapter to LocalVolTermStructure allowing the
+        programmer to implement only the
+        <tt>localVolImpl(Time, Time, double, bool)</tt> method in derived classes.
+
+        Volatility are assumed to be expressed on an annual basis
+    */
+    class LocalVolatilityTermStructure : public LocalVolTermStructure {
+      public:
+        virtual ~LocalVolatilityTermStructure() {}
+      protected:
+        /*! Returns the local variance for the given
+		    underlying's level and dates calculating it from
+			the volatility.
+        */
+        double localVarianceImpl(Time t1, Time t2, double underlyingLevel,
+            bool extrapolate = false) const;
+    };
+
+    inline double LocalVolatilityTermStructure ::localVarianceImpl(Time t1, Time t2,
+		double underlyingLevel, bool extrapolate) const {
+
+        double vol = localVolImpl(t1, t2, underlyingLevel, extrapolate);
+        return vol*vol*(t2-t1);
+    }
+
+    //! Local Variance term structure
+    /*! This abstract class acts as an adapter to LocalVolTermStructure allowing the
+        programmer to implement only the
+        <tt>localVarianceImpl(Time, Time, double, bool)</tt> method in derived
+        classes.
+
+        Volatility are assumed to be expressed on an annual basis
+    */
+    class LocalVarianceTermStructure : public LocalVolTermStructure {
+      public:
+        virtual ~LocalVarianceTermStructure() {}
+      protected:
+        /*! Returns the local volatility for the given
+		    underlying's level and dates calculating it from
+			the variance.
+        */
+        double localVolImpl(Time t1, Time t2, double underlyingLevel,
+            bool extrapolate = false) const;
+    };
+
+    inline double LocalVarianceTermStructure ::localVolImpl(Time t1, Time t2,
+		double underlyingLevel, bool extrapolate) const {
+
+        double var = localVarianceImpl(t1, t2, underlyingLevel, extrapolate);
+        return QL_SQRT(var/(t2-t1));
+    }
+
+
+
+
+
+
 
 }
 
