@@ -1,6 +1,7 @@
 
 
 /*
+ Copyright (C) 2002 Ferdinando Ametrano
  Copyright (C) 2000, 2001, 2002 RiskMap srl
 
  This file is part of QuantLib, a free-software/open-source library
@@ -32,28 +33,30 @@ namespace QuantLib
     {
         CliquetOption::CliquetOption(Option::Type type,
                                      double underlying,
+                                     double moneyness,
                                      Spread dividendYield,
                                      Rate riskFreeRate,
-                                     const std::vector<Time> &dates,
+                                     const std::vector<Time> &times,
                                      double volatility)
         : SingleAssetOption(type, underlying, underlying, dividendYield,
-                    riskFreeRate, dates[dates.size()-1], volatility),
-        numPeriods_(dates.size()-1),
+                    riskFreeRate, times[times.size()-1], volatility),
+        moneyness_(moneyness), riskFreeRate_(riskFreeRate),
+        times_(times), numPeriods_(times.size()-1),
         optionlet_(numPeriods_),
-        weight_(numPeriods_){
+        weight_(numPeriods_) {
 
             QL_REQUIRE(numPeriods_ >= 1,
                        "At least two dates are required for cliquet options");
 
             for(int i = 0; i < numPeriods_; i++){
-                weight_[i] = QL_EXP(dividendYield * dates[i]);
+                weight_[i] = QL_EXP(-dividendYield * times[i]);
                 optionlet_[i] = Handle<EuropeanOption>(
                     new EuropeanOption(type,
                                           underlying,
                                           underlying,
                                           dividendYield,
                                           riskFreeRate,
-                                          dates[i+1] - dates[i],
+                                          times[i+1] - times[i],
                                           volatility));
             }
 
@@ -73,21 +76,22 @@ namespace QuantLib
         double CliquetOption::delta() const {
             double optDelta = 0.0;
             for(int i = 0; i < numPeriods_; i++)
-                optDelta += weight_[i] * optionlet_[i] -> delta();
+                optDelta += weight_[i] * (optionlet_[i] -> delta() -
+                    moneyness_ *
+                    QL_EXP(-riskFreeRate_ * (times_[i] - times_[i-1]))
+                    * optionlet_[i] -> beta());
             return optDelta;
         }
 
         double CliquetOption::gamma() const {
-            double optGamma = 0.0;
-            for(int i = 0; i < numPeriods_; i++)
-                optGamma += weight_[i] * optionlet_[i] -> gamma();
-            return optGamma;
+            return 0.0;
         }
 
         double CliquetOption::theta() const {
             double optTheta = 0.0;
             for(int i = 0; i < numPeriods_; i++)
-                optTheta += weight_[i] * optionlet_[i] -> theta();
+                optTheta += dividendYield_ *
+                    weight_[i] * optionlet_[i] -> value();
             return optTheta;
         }
 
@@ -95,6 +99,15 @@ namespace QuantLib
             double optRho = 0.0;
             for(int i = 0; i < numPeriods_; i++)
                 optRho += weight_[i] * optionlet_[i] -> rho();
+            return optRho;
+        }
+
+        double CliquetOption::dividendRho() const {
+            double optRho = 0.0;
+            for(int i = 0; i < numPeriods_; i++)
+                optRho += weight_[i] *
+                    (optionlet_[i] -> dividendRho()
+                     - times_[i-1] * optionlet_[i] -> value());
             return optRho;
         }
 

@@ -1,6 +1,7 @@
 
 
 /*
+ Copyright (C) 2002 Ferdinando Ametrano
  Copyright (C) 2000, 2001, 2002 RiskMap srl
 
  This file is part of QuantLib, a free-software/open-source library
@@ -48,9 +49,10 @@ namespace QuantLib {
           public:
             CliquetOption(Option::Type type,
                           double underlying,
+                          double moneyness,
                           Spread dividendYield,
                           Rate riskFreeRate,
-                          const std::vector<Time> &dates,
+                          const std::vector<Time>& times,
                           double volatility);
             double value() const;
             double delta() const;
@@ -58,8 +60,12 @@ namespace QuantLib {
             double theta() const;
             double vega() const;
             double rho() const;
+            double dividendRho() const;
             Handle<SingleAssetOption> clone() const;
           private:
+            double moneyness_;
+            Rate riskFreeRate_;
+            std::vector<Time> times_;
             int numPeriods_;
             std::vector<Handle<EuropeanOption> > optionlet_;
             std::vector<double> weight_;
