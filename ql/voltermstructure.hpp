@@ -75,11 +75,13 @@ namespace QuantLib {
         //! future (a.k.a. forward) variance
         double blackForwardVariance(const Date& date1,
                                     const Date& date2,
-                                    double strike) const;
+                                    double strike,
+                                    bool extrapolate = false) const;
         //! future (a.k.a. forward) variance
         double blackForwardVariance(Time time1,
                                     Time time2,
-                                    double strike) const;
+                                    double strike,
+                                    bool extrapolate = false) const;
         //@}
         //! \name Dates
         //@{
