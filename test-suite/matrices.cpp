@@ -18,80 +18,97 @@
 #include "matrices.hpp"
 #include <ql/Math/matrix.hpp>
 #include <ql/Math/symmetricschurdecomposition.hpp>
-#include <vector>
+#include <ql/dataformatters.hpp>
+#include <cppunit/TestSuite.h>
+#include <cppunit/TestCaller.h>
 
 using namespace QuantLib;
 
-void MatricesTest::runTest() {
+#define LENGTH(a) (sizeof(a)/sizeof(a[0]))
 
-    // numerical example from "Monte Carlo Methods in Finance",
-    // by Peter Jäckel, Section 6.4
+namespace {
 
-    Matrix good(3,3,1.0);
-    good[0][1] = good[1][0] = 0.9;
-    good[0][2] = good[2][0] = 0.7;
-    good[1][2] = good[2][1] = 0.4;
-    Matrix bad(good);
-    bad[1][2] = bad[2][1] = 0.3;
-    Matrix identity(3, 3, 0.0);
-    identity[0][0] = good[1][1] = good[2][2] = 1.0;
+    Size N;
+    Matrix M1, M2, I;
 
-    Matrix eigenVectors, pseudoSqrtMatrix, null;
-    std::vector<double> errorVector;
-    double error = 0.0;
-
-    eigenVectors = SymmetricSchurDecomposition(good).eigenvectors();
-    null = (eigenVectors * transpose(eigenVectors)) - identity;
-    errorVector = std::vector<double>(null.end()-null.begin());
-    std::transform(null.begin(), null.end(), null.begin(), errorVector.begin(),
-                   std::multiplies<double>());
-    std::accumulate(errorVector.begin(), errorVector.end(), error);
-    if (error > 1.0e-29) {
-        char s[10];
-        QL_SPRINTF(s,"%5.2e", error);
-        CPPUNIT_FAIL("Matrices test failed at eigenvector test: "
-            "\n error: " + std::string(s));
+    double norm(const Array& v) {
+        return QL_SQRT(DotProduct(v,v));
     }
 
-    pseudoSqrtMatrix = pseudoSqrt(good);
-    null = (pseudoSqrtMatrix * transpose(pseudoSqrtMatrix)) - good;
-    errorVector = std::vector<double>(null.end()-null.begin());
-    std::transform(null.begin(), null.end(), null.begin(), errorVector.begin(),
-                   std::multiplies<double>());
-    std::accumulate(errorVector.begin(), errorVector.end(), error);
-    if (error > 1.0e-29) {
-        char s[10];
-        QL_SPRINTF(s,"%5.2e", error);
-        CPPUNIT_FAIL("Matrices test failed at eigenvector test: "
-            "\n error: " + std::string(s));
+    double norm(const Matrix& m) {
+        double sum = 0.0;
+        for (Size i=0; i<m.rows(); i++)
+            for (Size j=0; j<m.columns(); j++)
+                sum += m[i][j];
+        return QL_SQRT(sum);
     }
 
+}
 
-    eigenVectors = SymmetricSchurDecomposition(bad).eigenvectors();
-    null = (eigenVectors * transpose(eigenVectors)) - identity;
-    errorVector = std::vector<double>(null.end()-null.begin());
-    std::transform(null.begin(), null.end(), null.begin(), errorVector.begin(),
-                   std::multiplies<double>());
-    std::accumulate(errorVector.begin(), errorVector.end(), error);
-    if (error > 1.0e-29) {
-        char s[10];
-        QL_SPRINTF(s,"%5.2e", error);
-        CPPUNIT_FAIL("Matrices test failed at eigenvector test: "
-            "\n error: " + std::string(s));
+void MatricesTest::setUp() {
+
+    N = 3;
+    M1 = M2 = I = Matrix(N,N);
+
+    M1[0][0] = 1.0;  M1[0][1] = 0.9;  M1[0][2] = 0.7;
+    M1[1][0] = 0.9;  M1[1][1] = 1.0;  M1[1][2] = 0.4;
+    M1[2][0] = 0.7;  M1[2][1] = 0.4;  M1[2][2] = 1.0;
+
+    M2[0][0] = 1.0;  M2[0][1] = 0.9;  M2[0][2] = 0.7;
+    M2[1][0] = 0.9;  M2[1][1] = 1.0;  M2[1][2] = 0.3;
+    M2[2][0] = 0.7;  M2[2][1] = 0.3;  M2[2][2] = 1.0;
+
+    I[0][0] = 1.0;  I[0][1] = 0.0;  I[0][2] = 0.0;
+    I[1][0] = 0.0;  I[1][1] = 1.0;  I[1][2] = 0.0;
+    I[2][0] = 0.0;  I[2][1] = 0.0;  I[2][2] = 1.0;
+}
+
+void MatricesTest::testEigenvectors() {
+
+    Matrix testMatrices[] = { M1, M2 };
+
+    for (Size k=0; k<LENGTH(testMatrices); k++) {
+
+        Matrix& M = testMatrices[k];
+        SymmetricSchurDecomposition dec(M);
+        Array eigenValues = dec.eigenvalues();
+        Matrix eigenVectors = dec.eigenvectors();
+
+        for (Size i=0; i<N; i++) {
+            Array v(N);
+            for (Size j=0; j<N; j++)
+                v[j] = eigenVectors[j][i];
+            // check definition
+            Array a = M*v;
+            Array b = eigenValues[i]*v;
+            if (norm(a-b) > 1.0e-15)
+                CPPUNIT_FAIL("Eigenvector definition not satisfied");
+        }
+
+        // check normalization
+        Matrix m = eigenVectors * transpose(eigenVectors);
+        if (norm(m-I) > 1.0e-7)
+            CPPUNIT_FAIL("Eigenvector not normalized");
     }
+}
 
-    pseudoSqrtMatrix = pseudoSqrt(bad, Spectral);
-    null = (pseudoSqrtMatrix * transpose(pseudoSqrtMatrix)) - bad;
-    errorVector = std::vector<double>(null.end()-null.begin());
-    std::transform(null.begin(), null.end(), null.begin(), errorVector.begin(),
-                   std::multiplies<double>());
-    std::accumulate(errorVector.begin(), errorVector.end(), error);
-    if (error > 1.01e-4) {
-        char s[10];
-        QL_SPRINTF(s,"%5.2e", error);
-        CPPUNIT_FAIL("Matrices test failed at eigenvector test: "
-            "\n error: " + std::string(s));
-    }
+void MatricesTest::testSqrt() {
 
+    Matrix m = pseudoSqrt(M1);
+    if (norm(m*m - M1) > 1.0e-20)
+        CPPUNIT_FAIL("Matrix square root calculation failed");
+
+}
+
+
+CppUnit::Test* MatricesTest::suite() {
+    CppUnit::TestSuite* tests = new CppUnit::TestSuite("Matrix tests");
+    tests->addTest(new CppUnit::TestCaller<MatricesTest>
+                   ("Testing eigenvalues and eigenvectors calculation",
+                    &MatricesTest::testEigenvectors));
+    tests->addTest(new CppUnit::TestCaller<MatricesTest>
+                   ("Testing matricial square root",
+                    &MatricesTest::testSqrt));
+    return tests;
 }
 

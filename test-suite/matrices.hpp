@@ -19,11 +19,14 @@
 #define quantlib_test_matrices_hpp
 
 #include <cppunit/TestCase.h>
+#include <cppunit/TestFixture.h>
 
-class MatricesTest : public CppUnit::TestCase {
+class MatricesTest : public CppUnit::TestFixture {
   public:
-    MatricesTest() : CppUnit::TestCase("Testing matrices") {}
-    void runTest();
+    void setUp();
+    void testEigenvectors();
+    void testSqrt();
+    static CppUnit::Test* suite();
 };
 
 

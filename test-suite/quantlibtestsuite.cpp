@@ -66,7 +66,7 @@ int main() {
     runner.addTest(IntegralTest::suite());
     runner.addTest(LDSTest::suite());
     runner.addTest(MarketElementTest::suite());
-    runner.addTest(new MatricesTest());
+    runner.addTest(MatricesTest::suite());
     runner.addTest(new MersenneTwisterTest());
     runner.addTest(new OperatorTest);
     runner.addTest(PiecewiseFlatForwardTest::suite());
