@@ -21,7 +21,7 @@
  * QuantLib license is also available at http://quantlib.sourceforge.net/LICENSE.TXT
 */
 
-#include "normaldistribution.h"
+#include "mathtools.h"
 
 namespace QuantLib {
 

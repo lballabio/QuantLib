@@ -23,8 +23,6 @@
 
 /*! \file currencies.h
 	\brief Global include file for currency classes.
-	
-	This file includes the header files of all concrete currencies.
 */
 
 #include "qldefines.h"

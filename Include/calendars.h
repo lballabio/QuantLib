@@ -23,8 +23,6 @@
 
 /*! \file calendars.h
 	\brief Global include file for calendar classes.
-	
-	This file includes the header files of all concrete calendars.
 */
 
 #include "qldefines.h"

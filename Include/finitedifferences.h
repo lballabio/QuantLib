@@ -23,8 +23,6 @@
 
 /*! \file finitedifferences.h
 	\brief Global include file for the package on finite difference methods.
-	
-	This file includes the header files of all classes belonging to the package.
 */
 
 #include "qldefines.h"

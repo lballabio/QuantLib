@@ -22,7 +22,7 @@
 */
 
 #include "pricers.h"
-#include "normaldistribution.h"
+#include "mathtools.h"
 
 namespace QuantLib {
 

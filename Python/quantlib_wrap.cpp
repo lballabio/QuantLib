@@ -666,8 +666,7 @@ TermStructureHandle NewSpreadedTermStructure(TermStructureHandle curve, Spread s
 	return Handle<TermStructure>(new SpreadedTermStructure(curve,spread));
 }
 
-#include "piecewiseconstantforwards.h"
-
+#include "termstructures.h"
 using QuantLib::TermStructures::PiecewiseConstantForwards;
 using QuantLib::Deposit;
 
@@ -694,7 +693,7 @@ std::string Representation(const Handle<Instrument>& i) {
 	return (isin+" ("+desc+")");
 }
 
-#include "stock.h"
+#include "instruments.h"
 using QuantLib::Instruments::Stock;
 
 InstrumentHandle NewStock(char* isinCode, char* description) {
@@ -762,8 +761,8 @@ using QuantLib::Solvers1D::NewtonSafe;
 using QuantLib::Solvers1D::Ridder;
 using QuantLib::Solvers1D::Secant;
 
-#include "statistics.h"
-using QuantLib::Statistics;
+#include "mathtools.h"
+using QuantLib::Math::Statistics;
 #ifdef __cplusplus
 extern "C" {
 #endif

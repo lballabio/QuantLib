@@ -134,8 +134,7 @@ TermStructureHandle NewSpreadedTermStructure(TermStructureHandle curve, Spread s
 // piecewise constant forward curve on deposits
 
 %{
-#include "piecewiseconstantforwards.h"
-
+#include "termstructures.h"
 using QuantLib::TermStructures::PiecewiseConstantForwards;
 using QuantLib::Deposit;
 %}

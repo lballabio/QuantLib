@@ -21,7 +21,7 @@
  * QuantLib license is also available at http://quantlib.sourceforge.net/LICENSE.TXT
 */
 
-#include "piecewiseconstantforwards.h"
+#include "termstructures.h"
 
 namespace QuantLib {
 

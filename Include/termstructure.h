@@ -36,7 +36,7 @@
 #include "discountfactor.h"
 #include "currency.h"
 #include "handle.h"
-#include "observable.h"
+#include "patterns.h"
 #include <vector>
 
 namespace QuantLib {

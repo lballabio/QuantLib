@@ -32,7 +32,7 @@
 #include "date.h"
 #include "rate.h"
 #include "handle.h"
-#include "observable.h"
+#include "patterns.h"
 
 namespace QuantLib {
 

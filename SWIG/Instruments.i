@@ -114,7 +114,7 @@ std::string Representation(const Handle<Instrument>& i) {
 // actual instruments
 
 %{
-#include "stock.h"
+#include "instruments.h"
 using QuantLib::Instruments::Stock;
 
 InstrumentHandle NewStock(char* isinCode, char* description) {

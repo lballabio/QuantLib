@@ -23,8 +23,6 @@
 
 /*! \file daycounters.h
 	\brief Global include file for day counter classes.
-	
-	This file includes the header files of all concrete day counters.
 */
 
 #include "qldefines.h"

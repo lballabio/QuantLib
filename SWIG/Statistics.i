@@ -37,8 +37,8 @@
 %include Vectors.i
 
 %{
-#include "statistics.h"
-using QuantLib::Statistics;
+#include "mathtools.h"
+using QuantLib::Math::Statistics;
 %}
 
 class Statistics {

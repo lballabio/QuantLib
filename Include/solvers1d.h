@@ -23,8 +23,6 @@
 
 /*! \file solvers1d.h
 	\brief Global include file for 1-D solver classes.
-	
-	This file includes the header files of all concrete 1-D solvers.
 */
 
 #include "qldefines.h"

@@ -14,10 +14,10 @@ BCC_INCLUDE		= "D:\Program Files\Borland\Bcc55\include"
 BCC_LIBS		= "D:\Program Files\Borland\Bcc55\lib"
 
 # Object files
-CORE_OBJS		= $(OUTPUT_DIR)\calendar.obj $(OUTPUT_DIR)\date.obj $(OUTPUT_DIR)\solver1d.obj $(OUTPUT_DIR)\statistics.obj $(OUTPUT_DIR)\dataformatters.obj
+CORE_OBJS		= $(OUTPUT_DIR)\calendar.obj $(OUTPUT_DIR)\date.obj $(OUTPUT_DIR)\solver1d.obj $(OUTPUT_DIR)\dataformatters.obj
 CALENDAR_OBJS	= $(OUTPUT_DIR)\westerncalendar.obj $(OUTPUT_DIR)\frankfurt.obj $(OUTPUT_DIR)\london.obj $(OUTPUT_DIR)\milan.obj $(OUTPUT_DIR)\newyork.obj $(OUTPUT_DIR)\target.obj 
 DAYCOUNT_OBJS	= $(OUTPUT_DIR)\actualactual.obj $(OUTPUT_DIR)\thirty360.obj $(OUTPUT_DIR)\thirty360italian.obj
-MATH_OBJS		= $(OUTPUT_DIR)\normaldistribution.obj 
+MATH_OBJS		= $(OUTPUT_DIR)\normaldistribution.obj $(OUTPUT_DIR)\statistics.obj
 FDM_OBJS		= $(OUTPUT_DIR)\tridiagonaloperator.obj $(OUTPUT_DIR)\bsmoperator.obj
 PRICER_OBJS		= $(OUTPUT_DIR)\bsmoption.obj $(OUTPUT_DIR)\bsmnumericaloption.obj $(OUTPUT_DIR)\bsmeuropeanoption.obj $(OUTPUT_DIR)\bsmamericanoption.obj
 SOLVER1D_OBJS	= $(OUTPUT_DIR)\bisection.obj $(OUTPUT_DIR)\brent.obj $(OUTPUT_DIR)\falseposition.obj $(OUTPUT_DIR)\newton.obj $(OUTPUT_DIR)\newtonsafe.obj $(OUTPUT_DIR)\ridder.obj $(OUTPUT_DIR)\secant.obj
@@ -86,7 +86,7 @@ $(SWIG_DIR)\Financial.i: $(INCLUDE_DIR)\rate.h $(INCLUDE_DIR)\spread.h $(INCLUDE
 	@touch $<
 $(SWIG_DIR)\Options.i: $(INCLUDE_DIR)\options.h $(INCLUDE_DIR)\dataformatters.h
 	@touch $<
-$(SWIG_DIR)\Instruments.i: $(SWIG_DIR)\Financial.i $(SWIG_DIR)\TermStructures.i $(INCLUDE_DIR)\instrument.h $(INCLUDE_DIR)\stock.h
+$(SWIG_DIR)\Instruments.i: $(SWIG_DIR)\Financial.i $(SWIG_DIR)\TermStructures.i $(INCLUDE_DIR)\instrument.h $(INCLUDE_DIR)\instruments.h
 	@touch $<
 $(SWIG_DIR)\Operators.i: $(SWIG_DIR)\Vectors.i $(SWIG_DIR)\BoundaryConditions.i $(INCLUDE_DIR)\finitedifferences.h
 	@touch $<
@@ -94,13 +94,13 @@ $(SWIG_DIR)\Pricers.i: $(SWIG_DIR)\Date.i $(SWIG_DIR)\Options.i $(SWIG_DIR)\Fina
 	@touch $<
 $(SWIG_DIR)\Solvers1D.i: $(INCLUDE_DIR)\solver1d.h $(INCLUDE_DIR)\solvers1d.h
 	@touch $<
-$(SWIG_DIR)\TermStructures.i: $(SWIG_DIR)\Date.i $(SWIG_DIR)\Calendars.i $(SWIG_DIR)\DayCounters.i $(SWIG_DIR)\Financial.i $(SWIG_DIR)\Currencies.i $(INCLUDE_DIR)\termstructure.h $(INCLUDE_DIR)\handle.h $(INCLUDE_DIR)\piecewiseconstantforwards.h 
+$(SWIG_DIR)\TermStructures.i: $(SWIG_DIR)\Date.i $(SWIG_DIR)\Calendars.i $(SWIG_DIR)\DayCounters.i $(SWIG_DIR)\Financial.i $(SWIG_DIR)\Currencies.i $(INCLUDE_DIR)\termstructure.h $(INCLUDE_DIR)\handle.h $(INCLUDE_DIR)\termstructures.h 
 	@touch $<
 $(SWIG_DIR)\Vectors.i: $(INCLUDE_DIR)\array.h
 	@touch $<
 $(SWIG_DIR)\BoundaryConditions.i: $(INCLUDE_DIR)\finitedifferences.h $(INCLUDE_DIR)\dataformatters.h
 	@touch $<
-$(SWIG_DIR)\Statistics.i: $(SWIG_DIR)\Vectors.i $(INCLUDE_DIR)\statistics.h
+$(SWIG_DIR)\Statistics.i: $(SWIG_DIR)\Vectors.i $(INCLUDE_DIR)\mathtools.h
 	@touch $<
 
 # QuantLib files
@@ -112,7 +112,6 @@ $(OUTPUT_DIR)\calendar.obj: $(SOURCES_DIR)\calendar.cpp
 $(OUTPUT_DIR)\dataformatters.obj: $(SOURCES_DIR)\dataformatters.cpp
 $(OUTPUT_DIR)\date.obj: $(SOURCES_DIR)\date.cpp
 $(OUTPUT_DIR)\solver1d.obj: $(SOURCES_DIR)\solver1d.cpp
-$(OUTPUT_DIR)\statistics.obj: $(SOURCES_DIR)\statistics.cpp
 
 $(SOURCES_DIR)\calendar.cpp: $(INCLUDE_DIR)\calendar.h
 	@touch $<
@@ -121,8 +120,6 @@ $(SOURCES_DIR)\dataformatters.cpp: $(INCLUDE_DIR)\dataformatters.h
 $(SOURCES_DIR)\date.cpp: $(INCLUDE_DIR)\date.h
 	@touch $<
 $(SOURCES_DIR)\solver1d.cpp: $(INCLUDE_DIR)\solver1d.h
-	@touch $<
-$(SOURCES_DIR)\statistics.cpp: $(INCLUDE_DIR)\statistics.h
 	@touch $<
 
 $(INCLUDE_DIR)\array.h: $(INCLUDE_DIR)\qldefines.h $(INCLUDE_DIR)\expressiontemplates.h
@@ -141,7 +138,7 @@ $(INCLUDE_DIR)\discountfactor.h: $(INCLUDE_DIR)\qldefines.h $(INCLUDE_DIR)\qlerr
 	@touch $<
 $(INCLUDE_DIR)\expressiontemplates.h: $(INCLUDE_DIR)\qldefines.h
 	@touch $<
-$(INCLUDE_DIR)\forwardvolsurface.h: $(INCLUDE_DIR)\qldefines.h $(INCLUDE_DIR)\date.h $(INCLUDE_DIR)\rate.h $(INCLUDE_DIR)\handle.h $(INCLUDE_DIR)\observable.h
+$(INCLUDE_DIR)\forwardvolsurface.h: $(INCLUDE_DIR)\qldefines.h $(INCLUDE_DIR)\date.h $(INCLUDE_DIR)\rate.h $(INCLUDE_DIR)\handle.h $(INCLUDE_DIR)\patterns.h
 	@touch $<
 $(INCLUDE_DIR)\handle.h: $(INCLUDE_DIR)\qldefines.h
 	@touch $<
@@ -157,11 +154,9 @@ $(INCLUDE_DIR)\solver1d.h: $(INCLUDE_DIR)\qldefines.h $(INCLUDE_DIR)\null.h $(IN
 	@touch $<
 $(INCLUDE_DIR)\spread.h: $(INCLUDE_DIR)\qldefines.h $(INCLUDE_DIR)\qlerrors.h $(INCLUDE_DIR)\dataformatters.h 
 	@touch $<
-$(INCLUDE_DIR)\statistics.h: $(INCLUDE_DIR)\qldefines.h $(INCLUDE_DIR)\null.h $(INCLUDE_DIR)\qlerrors.h
+$(INCLUDE_DIR)\swaptionvolsurface.h: $(INCLUDE_DIR)\qldefines.h $(INCLUDE_DIR)\date.h $(INCLUDE_DIR)\rate.h $(INCLUDE_DIR)\handle.h $(INCLUDE_DIR)\patterns.h
 	@touch $<
-$(INCLUDE_DIR)\swaptionvolsurface.h: $(INCLUDE_DIR)\qldefines.h $(INCLUDE_DIR)\date.h $(INCLUDE_DIR)\rate.h $(INCLUDE_DIR)\handle.h $(INCLUDE_DIR)\observable.h
-	@touch $<
-$(INCLUDE_DIR)\termstructure.h: $(INCLUDE_DIR)\qldefines.h $(INCLUDE_DIR)\date.h $(INCLUDE_DIR)\calendar.h $(INCLUDE_DIR)\rate.h $(INCLUDE_DIR)\spread.h $(INCLUDE_DIR)\discountfactor.h  $(INCLUDE_DIR)\currency.h $(INCLUDE_DIR)\handle.h $(INCLUDE_DIR)\observable.h
+$(INCLUDE_DIR)\termstructure.h: $(INCLUDE_DIR)\qldefines.h $(INCLUDE_DIR)\date.h $(INCLUDE_DIR)\calendar.h $(INCLUDE_DIR)\rate.h $(INCLUDE_DIR)\spread.h $(INCLUDE_DIR)\discountfactor.h  $(INCLUDE_DIR)\currency.h $(INCLUDE_DIR)\handle.h $(INCLUDE_DIR)\patterns.h
 	@touch $<
 $(INCLUDE_DIR)\rate.h: $(INCLUDE_DIR)\qldefines.h $(INCLUDE_DIR)\qlerrors.h $(INCLUDE_DIR)\spread.h $(INCLUDE_DIR)\dataformatters.h 
 	@touch $<
@@ -285,23 +280,34 @@ $(INCLUDE_DIR)\FiniteDifferences\tridiagonaloperator.h: $(INCLUDE_DIR)\qldefines
 
 
 # Instruments
-$(INCLUDE_DIR)\stock.h: $(INCLUDE_DIR)\qldefines.h $(INCLUDE_DIR)\instrument.h
+$(INCLUDE_DIR)\instruments.h: $(INCLUDE_DIR)\qldefines.h $(INCLUDE_DIR)\Instruments\stock.h
+	@touch $<
+$(INCLUDE_DIR)\Instruments\stock.h: $(INCLUDE_DIR)\qldefines.h $(INCLUDE_DIR)\instrument.h
 	@touch $<
 
 
 # Math
 Math: $(MATH_OBJS)
 $(OUTPUT_DIR)\normaldistribution.obj: $(SOURCES_DIR)\Math\normaldistribution.cpp
+$(OUTPUT_DIR)\statistics.obj: $(SOURCES_DIR)\Math\statistics.cpp
 
-$(SOURCES_DIR)\Math\normaldistribution.cpp: $(INCLUDE_DIR)\normaldistribution.h
+$(SOURCES_DIR)\Math\normaldistribution.cpp: $(INCLUDE_DIR)\mathtools.h
+	@touch $<
+$(SOURCES_DIR)\Math\statistics.cpp: $(INCLUDE_DIR)\mathtools.h
 	@touch $<
 
-$(INCLUDE_DIR)\normaldistribution.h: $(INCLUDE_DIR)\qldefines.h
+$(INCLUDE_DIR)\mathtools.h: $(INCLUDE_DIR)\qldefines.h $(INCLUDE_DIR)\Math\normaldistribution.h $(INCLUDE_DIR)\Math\statistics.h
+	@touch $<
+$(INCLUDE_DIR)\Math\normaldistribution.h: $(INCLUDE_DIR)\qldefines.h
+	@touch $<
+$(INCLUDE_DIR)\Math\statistics.h: $(INCLUDE_DIR)\qldefines.h $(INCLUDE_DIR)\null.h $(INCLUDE_DIR)\qlerrors.h
 	@touch $<
 
 
 # Patterns
-$(INCLUDE_DIR)\observable.h: $(INCLUDE_DIR)\qldefines.h
+$(INCLUDE_DIR)\patterns.h: $(INCLUDE_DIR)\qldefines.h $(INCLUDE_DIR)\Patterns\observable.h
+	@touch $<
+$(INCLUDE_DIR)\Patterns\observable.h: $(INCLUDE_DIR)\qldefines.h
 	@touch $<
 
 
@@ -316,7 +322,7 @@ $(SOURCES_DIR)\Pricers\bsmoption.cpp: $(INCLUDE_DIR)\Pricers\bsmoption.h $(INCLU
 	@touch $<
 $(SOURCES_DIR)\Pricers\bsmnumericaloption.cpp: $(INCLUDE_DIR)\Pricers\bsmnumericaloption.h $(INCLUDE_DIR)\qlerrors.h
 	@touch $<
-$(SOURCES_DIR)\Pricers\bsmeuropeanoption.cpp: $(INCLUDE_DIR)\discountfactor.h $(INCLUDE_DIR)\normaldistribution.h $(INCLUDE_DIR)\Pricers\bsmeuropeanoption.h
+$(SOURCES_DIR)\Pricers\bsmeuropeanoption.cpp: $(INCLUDE_DIR)\discountfactor.h $(INCLUDE_DIR)\mathtools.h $(INCLUDE_DIR)\Pricers\bsmeuropeanoption.h
 	@touch $<
 $(SOURCES_DIR)\Pricers\bsmamericanoption.cpp: $(INCLUDE_DIR)\finitedifferences.h $(INCLUDE_DIR)\Pricers\americancondition.h $(INCLUDE_DIR)\Pricers\bsmamericanoption.h $(INCLUDE_DIR)\Pricers\bsmeuropeanoption.h 
 	@touch $<
@@ -380,10 +386,12 @@ $(INCLUDE_DIR)\Solvers1D\secant.h: $(INCLUDE_DIR)\qldefines.h $(INCLUDE_DIR)\sol
 TermStructures: $(TERMSTRUC_OBJS)
 $(OUTPUT_DIR)\piecewiseconstantforwards.obj: $(SOURCES_DIR)\TermStructures\piecewiseconstantforwards.cpp
 
-$(SOURCES_DIR)\TermStructures\piecewiseconstantforwards.cpp: $(INCLUDE_DIR)\piecewiseconstantforwards.h
+$(SOURCES_DIR)\TermStructures\piecewiseconstantforwards.cpp: $(INCLUDE_DIR)\termstructures.h
 	@touch $<
 
+$(INCLUDE_DIR)\termstructures.h: $(INCLUDE_DIR)\qldefines.h $(INCLUDE_DIR)\TermStructures\piecewiseconstantforwards.h
+	@touch $<
 $(INCLUDE_DIR)\deposit.h: $(INCLUDE_DIR)\qldefines.h $(INCLUDE_DIR)\calendar.h $(INCLUDE_DIR)\date.h $(INCLUDE_DIR)\daycounter.h $(INCLUDE_DIR)\rate.h
 	@touch $<
-$(INCLUDE_DIR)\piecewiseconstantforwards.h: $(INCLUDE_DIR)\qldefines.h $(INCLUDE_DIR)\termstructure.h $(INCLUDE_DIR)\deposit.h
+$(INCLUDE_DIR)\TermStructures\piecewiseconstantforwards.h: $(INCLUDE_DIR)\qldefines.h $(INCLUDE_DIR)\termstructure.h $(INCLUDE_DIR)\deposit.h
 	@touch $<

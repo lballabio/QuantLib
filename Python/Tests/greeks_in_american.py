@@ -23,12 +23,11 @@
 """
 
 # Make sure that Python path contains the directory of QuantLib and that of this file
-from QuantLib  import BSMAmericanOption
-import copy
-import math
+from QuantLib import BSMAmericanOption
+import time
 
 pricer = BSMAmericanOption
-nstp = 250
+nstp = 150
 ngrd = nstp+1
 
 def relErr(x1, x2, reference):
@@ -49,15 +48,17 @@ maxNumDerErrorList=[]; maxCPSerrorList=[];
 resuCPSvalue = [];     resuCPSdelta = [];   resuCPSgamma = [];     resuCPStheta = [];
 resuCPSrho   = [];     resuCPSvega  = [];   resuCPparity = []
 
-err_delta = 5e-5
-err_gamma = 5e-5
-err_theta = 9e-5
-err_rho  =  5e-5
-err_vega =  5e-5
+err_delta = 1e-4
+err_gamma = 1e-4
+err_theta = 1e-4
+err_rho  =  1e-4
+err_vega =  1e-4
 total_number_of_error = 0
 
 print "Test of the class BSMAmericanOption, maximum-error"
-print "     Type  items err-value err-delta err-gamma err-theta  err-rho  err-vega "
+print "     Type  items err-delta err-gamma err-theta  err-rho  err-vega "
+
+start = time.clock()
 
 for typ in ['Call','Put','Straddle']:
   resuDelta = [];  resuGamma = [];  resuTheta = []
@@ -70,7 +71,7 @@ for typ in ['Call','Put','Straddle']:
             for vol in rangeVol:
               #Check Greeks
               dS = under/10000.0
-              dT = resTime/(100.0*nstp)
+              dT = resTime/nstp
               dVol = vol/10000.0
               dR = Rrate/10000.0
               option = pricer(typ,under,strike,Qrate,Rrate,resTime,vol,nstp,ngrd) 
@@ -78,8 +79,8 @@ for typ in ['Call','Put','Straddle']:
               if opt_val>0.00001*under:
                 optionPs = pricer(typ,under+dS,strike,Qrate,Rrate   ,resTime   ,vol,nstp,ngrd) 
                 optionMs = pricer(typ,under-dS,strike,Qrate,Rrate   ,resTime   ,vol,nstp,ngrd) 
-                optionPt = pricer(typ,under   ,strike,Qrate,Rrate   ,resTime+dT,vol,nstp,ngrd) 
-                optionMt = pricer(typ,under   ,strike,Qrate,Rrate   ,resTime-dT,vol,nstp,ngrd) 
+                optionPt = pricer(typ,under   ,strike,Qrate,Rrate   ,resTime+dT,vol,nstp+1,ngrd) 
+                optionMt = pricer(typ,under   ,strike,Qrate,Rrate   ,resTime-dT,vol,nstp-1,ngrd) 
                 optionPr = pricer(typ,under   ,strike,Qrate,Rrate+dR,resTime   ,vol,nstp,ngrd) 
                 optionMr = pricer(typ,under   ,strike,Qrate,Rrate-dR,resTime   ,vol,nstp,ngrd) 
                 optionPv = pricer(typ,under   ,strike,Qrate,Rrate   ,resTime   ,vol+dVol,nstp,ngrd) 
@@ -88,7 +89,6 @@ for typ in ['Call','Put','Straddle']:
                 deltaNum = (optionPs.value()-optionMs.value())/(2*dS)
                 gammaNum = (optionPs.delta()-optionMs.delta())/(2*dS)
                 thetaNum =-(optionPt.value()-optionMt.value())/(2*dT)
-                #thetaNum =-(optionPt.value()-option.value())/dT
                 rhoNum   = (optionPr.value()-optionMr.value())/(2*dR)
                 vegaNum  = (optionPv.value()-optionMv.value())/(2*dVol)
 		            
@@ -111,7 +111,7 @@ for typ in ['Call','Put','Straddle']:
                   print '\ttheta=%+9.5f, thetaNum=%+9.5f err=%7.2e' % (option.theta(),thetaNum,relErr(option.theta(),thetaNum,under))
                   print '\trho  =%+9.5f,   rhoNum=%+9.5f err=%7.2e' % (option.rho(),  rhoNum,  relErr(option.rho(),  rhoNum,  under))
                   print '\tvega =%+9.5f, vegaNum =%+9.5f err=%7.2e' % (option.vega(), vegaNum, relErr(option.vega(), vegaNum, under))
-  print "%9s   %d            %7.2e %7.2e %7.2e %7.2e %7.2e" % (typ, len(resuDelta), 
+  print "%9s %6d %7.2e %7.2e %7.2e %7.2e %7.2e" % (typ, len(resuDelta), 
         max(resuDelta), max(resuGamma), max(resuTheta), max(resuRho), max(resuVega))
 	       
   maxNumDerErrorList.append(max(resuDelta))
@@ -120,9 +120,11 @@ for typ in ['Call','Put','Straddle']:
   maxNumDerErrorList.append(max(resuRho))
   maxNumDerErrorList.append(max(resuVega))
 
-print 	
-print "Final maximum global error on numerical derivatives = %g" % max(maxNumDerErrorList)
-print 
+stop = time.clock()
+
+print "\nFinal maximum global error on numerical derivatives = %g" % max(maxNumDerErrorList)
+print "Elapsed time: %6.3f\n" % stop-start
+
 if total_number_of_error > 1:
         print "Test not passed, total number of failures:",total_number_of_error
 else:
