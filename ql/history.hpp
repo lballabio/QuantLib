@@ -62,8 +62,10 @@ namespace QuantLib {
         , values_(begin,end) {
         #else
         {
-            while (begin != end)
-                values_.push_back(*(begin++));
+            while (begin != end) {
+                values_.push_back(*begin);
+                ++begin;
+            }
         #endif
             QL_REQUIRE(lastDate >= firstDate,
                 "invalid date range for history");
