@@ -23,6 +23,9 @@
 
 /* $Source$
    $Log$
+   Revision 1.33  2001/04/06 11:14:13  lballabio
+   Added string-based constructor to Currency and DayCounter in Python and Ruby modules
+
    Revision 1.32  2001/04/04 11:07:24  nando
    Headers policy part 1:
    Headers should have a .hpp (lowercase) filename extension
@@ -101,37 +104,23 @@ using QuantLib::IndexError;
     }
 }
 
-#if defined(SWIGRUBY)
+#if defined(SWIGPYTHON) || defined(SWIGRUBY)
 %include Calendars.i
+%include Currencies.i
 %include Date.i
+%include DayCounters.i
 %include Distributions.i
 %include RandomGenerators.i
 %include Statistics.i
 %include Solvers1D.i
 %include String.i
 %include Vectors.i
-#else
-// PLEASE ADD ANY NEW *.i FILE AT THE BOTTOM, NOT HERE
-// the following files have no problem with SWIG in debug mode
+#endif
+
+#if defined(SWIGPYTHON)
 %include Barrier.i
-%include Financial.i
-%include Options.i
-%include RandomGenerators.i
-%include String.i
-
-// PLEASE ADD ANY NEW *.i FILE AT THE BOTTOM, NOT HERE
-// the following files break SWIG in debug mode
 %include BoundaryConditions.i
-%include Distributions.i
-%include Date.i
-%include QLArray.i
-%include Vectors.i
-
-// PLEASE ADD ANY NEW *.i FILE AT THE BOTTOM, NOT HERE
-// the following files depends on files that break SWIG in debug mode
-%include Calendars.i
-%include Currencies.i
-%include DayCounters.i
+%include Financial.i
 %include History.i
 %include Instruments.i
 %include Interpolation.i
@@ -139,15 +128,11 @@ using QuantLib::IndexError;
 %include MontecarloPricers.i
 %include MontecarloTools.i
 %include Operators.i
+%include Options.i
 %include Pricers.i
+%include QLArray.i
 %include RiskStatistics.i
-%include Solvers1D.i
-%include Statistics.i
 %include TermStructures.i
-
-// PLEASE ADD ANY NEW *.i FILE HERE
-
-
 #endif
 
 

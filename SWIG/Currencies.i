@@ -24,6 +24,9 @@
 
 /* $Source$
    $Log$
+   Revision 1.18  2001/04/06 11:14:13  lballabio
+   Added string-based constructor to Currency and DayCounter in Python and Ruby modules
+
    Revision 1.17  2001/03/12 17:35:11  lballabio
    Removed global IsNull function - could have caused very vicious loops
 
@@ -46,45 +49,6 @@
 using QuantLib::Currency;
 using QuantLib::Handle;
 typedef Handle<Currency> CurrencyHandle;
-%}
-
-// export Handle<Currency>
-%name(Currency) class CurrencyHandle {
-  public:
-    // no constructor - forbid explicit construction
-    ~CurrencyHandle();
-};
-
-// replicate the Currency interface
-%addmethods CurrencyHandle {
-    CalendarHandle settlementCalendar() {
-        return (*self)->settlementCalendar();
-    }
-    int settlementDays() {
-        return (*self)->settlementDays();
-    }
-    Date settlementDate(const Date& d) {
-        return (*self)->settlementDate(d);
-    }
-    #if defined (SWIGPYTHON)
-    String __str__() {
-        if (!self->isNull())
-            return (*self)->name()+" currency";
-        else
-            return "Null currency";
-    }
-    int __cmp__(const CurrencyHandle& other) {
-        return ((*self) == other ? 0 : 1);
-    }
-    int __nonzero__() {
-        return (self->isNull() ? 0 : 1);
-    }
-    #endif
-}
-
-// actual currencies
-
-%{
 using QuantLib::Currencies::EUR;
 using QuantLib::Currencies::USD;
 using QuantLib::Currencies::GBP;
@@ -96,7 +60,65 @@ using QuantLib::Currencies::CHF;
 using QuantLib::Currencies::DKK;
 using QuantLib::Currencies::JPY;
 using QuantLib::Currencies::SEK;
+%}
 
+// export Handle<Currency>
+%name(Currency) class CurrencyHandle {
+  public:
+    // constructor redefined below as string-based factory
+    ~CurrencyHandle();
+};
+
+// replicate the Currency interface
+%addmethods CurrencyHandle {
+    #if defined(SWIGRUBY)
+    void crash() {}
+    #endif
+    CurrencyHandle(const String& name) {
+        String s = StringFormatter::toUppercase(name);
+        if (s == "EUR")      return new CurrencyHandle(new EUR);
+        else if (s == "USD") return new CurrencyHandle(new USD);
+        else if (s == "GBP") return new CurrencyHandle(new GBP);
+        else if (s == "DEM") return new CurrencyHandle(new DEM);
+        else if (s == "ITL") return new CurrencyHandle(new ITL);
+        else if (s == "AUD") return new CurrencyHandle(new AUD);
+        else if (s == "CAD") return new CurrencyHandle(new CAD);
+        else if (s == "CHF") return new CurrencyHandle(new CHF);
+        else if (s == "JPY") return new CurrencyHandle(new JPY);
+        else if (s == "DKK") return new CurrencyHandle(new DKK);
+        else if (s == "SEK") return new CurrencyHandle(new SEK);
+        else                 throw Error("Unknown currency");
+        QL_DUMMY_RETURN(new CurrencyHandle)
+    }
+    CalendarHandle settlementCalendar() {
+        return (*self)->settlementCalendar();
+    }
+    int settlementDays() {
+        return (*self)->settlementDays();
+    }
+    Date settlementDate(const Date& d) {
+        return (*self)->settlementDate(d);
+    }
+    #if defined (SWIGPYTHON) || defined (SWIGRUBY)
+    String __str__() {
+        if (!self->isNull())
+            return (*self)->name()+" currency";
+        else
+            return "Null currency";
+    }
+    int __cmp__(const CurrencyHandle& other) {
+        return ((*self) == other ? 0 : 1);
+    }
+    #endif
+    #if defined (SWIGPYTHON)
+    int __nonzero__() {
+        return (self->isNull() ? 0 : 1);
+    }
+    #endif
+}
+
+#if defined (SWIGPYTHON)
+%{
 CurrencyHandle NewEUR()        { return CurrencyHandle(new EUR); }
 CurrencyHandle NewUSD()        { return CurrencyHandle(new USD); }
 CurrencyHandle NewGBP()        { return CurrencyHandle(new GBP); }
@@ -121,30 +143,9 @@ CurrencyHandle NewSEK()        { return CurrencyHandle(new SEK); }
 %name(DKK)    CurrencyHandle NewDKK();
 %name(JPY)    CurrencyHandle NewJPY();
 %name(SEK)    CurrencyHandle NewSEK();
+#endif
 
-// string-based factory 
-
-%inline %{
-    CurrencyHandle makeCurrency(const String& name) {
-        String s = StringFormatter::toUppercase(name);
-        if (s == "EUR")      return CurrencyHandle(new EUR);
-        else if (s == "USD") return CurrencyHandle(new USD);
-        else if (s == "GBP") return CurrencyHandle(new GBP);
-        else if (s == "DEM") return CurrencyHandle(new DEM);
-        else if (s == "ITL") return CurrencyHandle(new ITL);
-        else if (s == "AUD") return CurrencyHandle(new AUD);
-        else if (s == "CAD") return CurrencyHandle(new CAD);
-        else if (s == "CHF") return CurrencyHandle(new CHF);
-        else if (s == "JPY") return CurrencyHandle(new JPY);
-        else if (s == "DKK") return CurrencyHandle(new DKK);
-        else if (s == "SEK") return CurrencyHandle(new SEK);
-        else                 throw Error("Unknown currency");
-        QL_DUMMY_RETURN(CurrencyHandle())
-    }
-%}
-
-
-// typemap Python list of currency handles to std::vector<Handle<Currency> >
+// typemap Python sequence of currencies to std::vector<Handle<Currency> >
 
 %{
 typedef std::vector<Handle<Currency> > CurrencyHandleVector;

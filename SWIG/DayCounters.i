@@ -24,6 +24,9 @@
 
 /* $Source$
    $Log$
+   Revision 1.16  2001/04/06 11:14:13  lballabio
+   Added string-based constructor to Currency and DayCounter in Python and Ruby modules
+
    Revision 1.15  2001/03/12 17:35:11  lballabio
    Removed global IsNull function - could have caused very vicious loops
 
@@ -45,24 +48,48 @@
 using QuantLib::DayCounter;
 using QuantLib::Handle;
 typedef Handle<DayCounter> DayCounterHandle;
+using QuantLib::DayCounters::Actual360;
+using QuantLib::DayCounters::Actual365;
+using QuantLib::DayCounters::Thirty360;
+using QuantLib::DayCounters::Thirty360European;
+using QuantLib::DayCounters::Thirty360Italian;
 %}
 
 // export Handle<DayCounter>
 %name(DayCounter) class DayCounterHandle {
   public:
-    // no constructor - forbid explicit construction
+    // constructor redefined below as string-based factory
     ~DayCounterHandle();
 };
 
 // replicate the DayCounter interface
 %addmethods DayCounterHandle {
+    #if defined(SWIGRUBY)
+    void crash() {}
+    #endif
+    DayCounterHandle(const String& name) {
+        String s = StringFormatter::toLowercase(name);
+        if (s == "act360" || s == "act/360")
+            return new DayCounterHandle(new Actual360);
+        else if (s == "act365" || s == "act/365")
+            return new DayCounterHandle(new Actual365);
+        else if (s == "30/360")
+            return new DayCounterHandle(new Thirty360);
+        else if (s == "30/360e" || s == "30/360eu")
+            return new DayCounterHandle(new Thirty360European);
+        else if (s == "30/360i" || s == "30/360it")
+            return new DayCounterHandle(new Thirty360Italian);
+        else
+            throw Error("Unknown currency");
+        QL_DUMMY_RETURN(new DayCounterHandle)
+    }
     int dayCount(const Date& d1, const Date& d2) {
         return (*self)->dayCount(d1,d2);
     }
     Time yearFraction(const Date& d1, const Date& d2) {
         return (*self)->yearFraction(d1,d2);
     }
-    #if defined (SWIGPYTHON)
+    #if defined (SWIGPYTHON) || defined(SWIGRUBY)
     String __str__() {
         if (!self->isNull())
             return (*self)->name()+" day counter";
@@ -72,21 +99,16 @@ typedef Handle<DayCounter> DayCounterHandle;
     int __cmp__(const DayCounterHandle& other) {
         return ((*self) == other ? 0 : 1);
     }
+    #endif
+    #if defined (SWIGPYTHON)
     int __nonzero__() {
         return (self->isNull() ? 0 : 1);
     }
     #endif
 }
 
-// actual day counters
-
+#if defined (SWIGPYTHON)
 %{
-using QuantLib::DayCounters::Actual360;
-using QuantLib::DayCounters::Actual365;
-using QuantLib::DayCounters::Thirty360;
-using QuantLib::DayCounters::Thirty360European;
-using QuantLib::DayCounters::Thirty360Italian;
-
 DayCounterHandle NewActual360() {
     return DayCounterHandle(new Actual360); }
 DayCounterHandle NewActual365() { 
@@ -104,28 +126,8 @@ DayCounterHandle NewThirty360Italian() {
 %name(Thirty360)            DayCounterHandle NewThirty360();
 %name(Thirty360European)    DayCounterHandle NewThirty360European();
 %name(Thirty360Italian)     DayCounterHandle NewThirty360Italian();
-
-
-// string-based factory 
-
-%inline %{
-    DayCounterHandle makeDayCounter(const String& name) {
-        String s = StringFormatter::toLowercase(name);
-        if (s == "act360" || s == "act/360")
-            return DayCounterHandle(new Actual360);
-        else if (s == "act365" || s == "act/365")
-            return DayCounterHandle(new Actual365);
-        else if (s == "30/360")
-            return DayCounterHandle(new Thirty360);
-        else if (s == "30/360e" || s == "30/360eu")
-            return DayCounterHandle(new Thirty360European);
-        else if (s == "30/360i" || s == "30/360it")
-            return DayCounterHandle(new Thirty360Italian);
-        else
-            throw Error("Unknown currency");
-        QL_DUMMY_RETURN(DayCounterHandle())
-    }
-%}
+#endif
 
 
 #endif
+
