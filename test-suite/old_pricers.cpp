@@ -38,6 +38,8 @@ using namespace boost::unit_test_framework;
 
 void OldPricerTest::testFdEuropeanPricer() {
 
+    #ifndef QL_DISABLE_DEPRECATED
+
     BOOST_MESSAGE("Testing old-style finite-difference European pricer...");
 
     QL_TEST_START_TIMING
@@ -90,6 +92,8 @@ void OldPricerTest::testFdEuropeanPricer() {
                            << "    expected:         " << anValue);
         }
     }
+
+    #endif
 }
 
 namespace {

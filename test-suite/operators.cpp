@@ -92,7 +92,7 @@ void OperatorTest::testBSMOperatorConsistency() {
         grid[i] = price;
         price *= factor;
     }
-    Real dx = QL_LOG(factor);
+    Real dx = std::log(factor);
     Rate r = 0.05;
     Rate q = 0.01;
     Volatility sigma = 0.5;

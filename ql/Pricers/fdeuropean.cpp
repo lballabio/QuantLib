@@ -20,9 +20,11 @@
 
 namespace QuantLib {
 
-    FdEuropean::FdEuropean(Option::Type type, Real underlying, 
+    #ifndef QL_DISABLE_DEPRECATED
+
+    FdEuropean::FdEuropean(Option::Type type, Real underlying,
                            Real strike, Spread dividendYield,
-                           Rate riskFreeRate, Time residualTime, 
+                           Rate riskFreeRate, Time residualTime,
                            Volatility volatility,
                            Size timeSteps, Size gridPoints)
     : FdBsmOption(type, underlying, strike, dividendYield,
@@ -50,5 +52,7 @@ namespace QuantLib {
 
         hasBeenCalculated_ = true;
     }
+
+    #endif
 
 }

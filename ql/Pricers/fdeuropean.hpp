@@ -27,7 +27,10 @@
 
 namespace QuantLib {
 
+    #ifndef QL_DISABLE_DEPRECATED
+
     //! Example of European option calculated using finite differences
+    /*! \deprecated use EuropeanOption with FDEuropeanEngine instead */
     class FdEuropean : public FdBsmOption {
       public:
         FdEuropean(Option::Type type,
@@ -57,6 +60,8 @@ namespace QuantLib {
         value();
         return euroPrices_;
     }
+
+    #endif
 
 }
 
