@@ -25,6 +25,9 @@
 """
     $Source$
     $Log$
+    Revision 1.2  2001/03/15 10:29:10  lballabio
+    Removed 1M list construction
+
     Revision 1.1  2001/02/22 14:43:36  lballabio
     Renamed test script to follow a single naming scheme
 
@@ -47,9 +50,8 @@ from TestUnit import TestUnit
 
 class RNGTest(TestUnit):
     def doTest(self):
-        tol = 1e-9
         seed = 576919
-        numIte = 1000000
+        samples = 1000000
         self.printDetails(
             "Generator                          "
             "mean    sigma    skew    kurt   min   max"
@@ -57,7 +59,7 @@ class RNGTest(TestUnit):
         for RNG in [UniformRandomGenerator, GaussianRandomGenerator]:
             rn = RNG(seed=seed)
             s = Statistics()
-            for ite in range(numIte):
+            while s.samples() < samples:
                 s.add(rn.next())
             self.printDetails(
                 "%32s %+8.4f %7.4f %7.3f %7.3f %5.2f %5.2f " % 
