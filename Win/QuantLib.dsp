@@ -633,6 +633,14 @@ SOURCE=..\Include\Pricers\everestoption.h
 # End Source File
 # Begin Source File
 
+SOURCE=..\Sources\Pricers\finitedifferenceeuropean.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\Include\Pricers\finitedifferenceeuropean.h
+# End Source File
+# Begin Source File
+
 SOURCE=..\Include\Pricers\geometricasianoption.h
 # End Source File
 # Begin Source File
