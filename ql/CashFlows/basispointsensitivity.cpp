@@ -70,7 +70,7 @@ namespace QuantLib {
             }
             if (accrualEnd >= today) {
                 double bps = -sensfactor(accrualEnd);
-                DiscountFactor dfs = 1.0, dfe = 1.0;
+                DiscountFactor dfs = 1.0, dfe;
                 if (accrualStart > today)
                     dfs = termStructure_->discount(accrualStart);
                 dfe = termStructure_->discount(accrualEnd);

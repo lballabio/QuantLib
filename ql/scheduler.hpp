@@ -155,7 +155,7 @@ namespace QuantLib {
 
     inline const Date& Schedule::operator[] (Size i) const {
         #if defined(QL_DEBUG)
-        QL_REQUIRE(i >= 0 && i <= int(dates_.size()),
+        QL_REQUIRE(i <= dates_.size(),
                    "date index out of bounds");
         #endif
         return dates_[i];
