@@ -1,6 +1,6 @@
 
 /*
- * Copyright (C) 2000
+ * Copyright (C) 2000, 2001
  * Ferdinando Ametrano, Luigi Ballabio, Adolfo Benin, Marco Marchioro
  *
  * This file is part of QuantLib.
@@ -28,6 +28,9 @@
     $Source$
     $Name$
     $Log$
+    Revision 1.11  2001/02/19 12:16:48  marmar
+    Vega is not required for implied volatility calculations
+
     Revision 1.10  2001/02/15 15:58:03  marmar
     Defined QL_MIN_VOLATILITY 0.0005 and
     QL_MAX_VOLATILITY 3.0
@@ -97,55 +100,38 @@ namespace QuantLib {
             virtual Handle<BSMOption> clone() const = 0;
           protected:
             // input data
-            Type theType;
-            double theUnderlying, theStrike;
-            Rate dividendYield_, theRiskFreeRate;
-            Time theResidualTime;
-            double theVolatility;
+            Type type_;
+            double underlying_, strike_;
+            Rate dividendYield_, riskFreeRate_;
+            Time residualTime_;
+            double volatility_;
             // results
             // declared as mutable to preserve the logical
-            mutable bool hasBeenCalculated;    
-            mutable double theValue;
+            mutable bool hasBeenCalculated_;    
+            mutable double value_;
           private:
             class BSMFunction;
             friend class BSMFunction;
-            class BSMFunction : public ObjectiveFunction {
-              public:
-                BSMFunction(const Handle<BSMOption>& tempBSM, double price) {
-                    bsm = tempBSM;
-                    thePrice = price;
-                }
-                double value(double x) const {
-                    bsm -> setVolatility(x);
-                    return (bsm -> value() - thePrice);
-                }
-                double derivative(double x) const {
-        // assuming that derivative(x) is always called after value(x)
-        // so that setVolatility unnecessary
-                    return bsm -> vega();
-                }
-              private:
-                mutable Handle<BSMOption> bsm;
-                double thePrice;
-            };
         };
 
-        inline void BSMOption::setVolatility(double volatility) {
-            QL_REQUIRE(volatility >= QL_MIN_VOLATILITY,
-                 "BSMOption::setVolatility : Volatility to small");
+        class BSMOption::BSMFunction : public ObjectiveFunction {
+          public:
+            BSMFunction(const Handle<BSMOption>& tempBSM, double price);
+            double value(double x) const;
+          private:
+            mutable Handle<BSMOption> bsm;
+            double thePrice;
+        };
 
-            QL_REQUIRE(volatility <= QL_MAX_VOLATILITY, 
-                "BSMOption::setVolatility : Volatility to high "
-                "for a meaningful result");
-
- 
-            theVolatility = volatility;
-            hasBeenCalculated=false;
+        BSMOption::BSMFunction::BSMFunction(
+                const Handle<BSMOption>& tempBSM, double price) {
+            bsm = tempBSM;
+            thePrice = price;
         }
-
-        inline void BSMOption::setRiskFreeRate(Rate newRiskFreeRate) {
-            theRiskFreeRate = newRiskFreeRate;
-            hasBeenCalculated = false;
+        
+        inline double BSMOption::BSMFunction::value(double x) const {
+            bsm -> setVolatility(x);
+            return (bsm -> value() - thePrice);
         }
 
     }
