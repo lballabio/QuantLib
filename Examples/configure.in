@@ -1,0 +1,71 @@
+dnl
+dnl $Id$
+dnl
+dnl This is QuantLib's configure.in
+dnl Process this file with autoconf to produce a configure script.
+dnl
+
+AC_INIT(Parities/Parities.cpp)
+
+AC_CONFIG_AUX_DIR(config)
+
+AM_INIT_AUTOMAKE(QuantLib-Examples, 0.2)
+
+dnl Check for programs
+
+CXXFLAGS=-Wall
+AC_PROG_INSTALL
+AC_PROG_CC
+AC_PROG_CXX
+AC_LANG_CPLUSPLUS
+
+AC_MSG_CHECKING(if C++ compiler supports namespaces (required))
+AC_TRY_COMPILE(
+[
+namespace Foo { struct A {}; }
+using namespace Foo;
+],[
+A a;
+],[
+ac_namespaces=yes
+],[
+config_errors=yes
+ac_namespaces=no
+])
+AC_MSG_RESULT([$ac_namespaces])
+AC_MSG_CHECKING(if C++ environment has working string class (required))
+AC_TRY_LINK(
+[
+#include <string>
+namespace std{}
+using namespace std;
+  class foo {
+  public:
+    void f(const string &s);
+  };
+  void foo::f(const string &s) {
+    f(s.c_str());
+  }
+],[
+   foo f1;
+   f1.f("test");
+],[
+  ql_string_ok=yes
+],[
+  ql_string_ok=no
+  config_error=yes
+  AC_ERROR(C++ compilers string support does not work)
+])
+AC_MSG_RESULT([$ql_string_ok])
+AC_SUBST(INCLUDES)
+AC_CHECK_HEADERS(math.h cmath ctype.h cctype ctime time.h)
+AC_CHECK_HEADERS(limits climits limits.h float.h)
+
+dnl Check for QuantLib
+AM_PATH_QUANTLIB(0.2.0, [AC_DEFINE(HAVE_QUANTLIB)])
+
+AC_OUTPUT(Makefile \
+    Parities/Makefile \
+    DiscreteHedging/Makefile
+    )
+

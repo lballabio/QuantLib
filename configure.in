@@ -21,6 +21,8 @@ AC_PROG_CXX
 AC_LANG_CPLUSPLUS
 AM_PROG_LIBTOOL
 
+AC_PATH_PROG(SED, sed, notfound)
+AM_CONDITIONAL(SED_FOUND, test x$SED != xnotfound)
 AC_MSG_CHECKING(if C++ compiler supports namespaces (required))
 AC_TRY_COMPILE(
 [
@@ -108,6 +110,10 @@ QL_CHECK_TEMPLATE_CLASS([iterator],[std::input_iterator_tag,double],\
     [iterator],[])
 QL_CHECK_TEMPLATE_CLASS([iterator_traits],[int*],[iterator],[])
 
+QUANTLIB_LIBS="../../ql/libQuantLib.la"
+QUANTLIB_CXXFLAGS=""
+AC_SUBST(QUANTLIB_LIBS)
+AC_SUBST(QUANTLIB_CXXFLAGS)
 
 AC_OUTPUT(Makefile \
     ql/Makefile \
