@@ -30,6 +30,9 @@
 
 // $Id$
 // $Log$
+// Revision 1.15  2001/08/28 12:16:38  nando
+// unsigned int size() instead of int size()
+//
 // Revision 1.14  2001/08/28 10:22:01  nando
 // added trailing underscore to private members
 //
@@ -87,13 +90,13 @@ namespace QuantLib {
         //! \name Constructors, destructor, and assignment
         //@{
         //! creates the array with the given dimension
-        explicit Array(int size = 0);
+        explicit Array(unsigned int size = 0);
         //! creates the array and fills it with <tt>value</tt>
-        Array(int size, double value);
+        Array(unsigned int size, double value);
         /*! \brief creates the array and fills it according to 
             \f$ a_{0} = value, a_{i}=a_{i-1}+increment \f$
         */
-        Array(int size, double value, double increment);
+        Array(unsigned int size, double value, double increment);
         Array(const Array& from);
         #if QL_EXPRESSION_TEMPLATES_WORK
         template <class Iter> Array(const VectorialExpression<Iter>& e)
@@ -178,14 +181,14 @@ namespace QuantLib {
         //! \name Element access
         //@{
         //! read-only
-        double operator[](int) const;
+        double operator[](unsigned int ) const;
         //! read-write
-        double& operator[](int);
+        double& operator[](unsigned int );
         //@}
         //! \name Inspectors
         //@{
         //! dimension of the array
-        int size() const;
+        unsigned int size() const;
         //@}
         typedef double* iterator;
         typedef const double* const_iterator;
@@ -204,8 +207,8 @@ namespace QuantLib {
         reverse_iterator rend();
         //@}
       private:
-        void allocate_(int size);
-        void resize_(int size);
+        void allocate_(unsigned int size);
+        void resize_(unsigned int size);
         void copy_(const Array& from) {
             std::copy(from.begin(),from.end(),begin());
         }
@@ -220,7 +223,7 @@ namespace QuantLib {
         }
         #endif
         double* pointer_;
-        int n_, bufferSize_;
+        unsigned int n_, bufferSize_;
     };
 
     /*! \relates Array */
@@ -521,20 +524,20 @@ namespace QuantLib {
 
     // inline definitions
 
-    inline Array::Array(int size)
+    inline Array::Array(unsigned int size)
     : pointer_(0), n_(0), bufferSize_(0) {
         if (size > 0)
             allocate_(size);
     }
 
-    inline Array::Array(int size, double value)
+    inline Array::Array(unsigned int size, double value)
     : pointer_(0), n_(0), bufferSize_(0) {
         if (size > 0)
             allocate_(size);
         std::fill(begin(),end(),value);
     }
 
-    inline Array::Array(int size, double value, double increment)
+    inline Array::Array(unsigned int size, double value, double increment)
     : pointer_(0), n_(0), bufferSize_(0) {
         if (size > 0)
             allocate_(size);
@@ -626,27 +629,27 @@ namespace QuantLib {
         return *this;
     }
 
-    inline double Array::operator[](int i) const {
+    inline double Array::operator[](unsigned int i) const {
         #ifdef QL_DEBUG
-            QL_REQUIRE(i>=0 && i<n_,
+            QL_REQUIRE(i<n_,
                 "array cannot be accessed out of range");
         #endif
         return pointer_[i];
     }
 
-    inline double& Array::operator[](int i) {
+    inline double& Array::operator[](unsigned int i) {
         #ifdef QL_DEBUG
-            QL_REQUIRE(i>=0 && i<n_,
+            QL_REQUIRE(i<n_,
                 "array cannot be accessed out of range");
         #endif
         return pointer_[i];
     }
 
-    inline int Array::size() const {
+    inline unsigned int Array::size() const {
         return n_;
     }
 
-    inline void Array::resize_(int size) {
+    inline void Array::resize_(unsigned int size) {
         if (size != n_) {
             if (size <= bufferSize_) {
                 n_ = size;
@@ -691,7 +694,7 @@ namespace QuantLib {
         return reverse_iterator(begin());
     }
 
-    inline void Array::allocate_(int size) {
+    inline void Array::allocate_(unsigned int size) {
         if (pointer_ != 0 && bufferSize_ != 0)
             delete[] pointer_;
         if (size <= 0) {
