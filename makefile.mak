@@ -16,7 +16,7 @@
 # Primary target:
 # QuantLib library
 quantlib::
-    cd Win
+    cd Sources
     $(MAKE) 
     cd ..
 
@@ -62,7 +62,7 @@ docs-ps:
 
 # Clean up
 clean::
-    cd Win
+    cd Sources
     $(MAKE) clean
     cd ..
     cd Python

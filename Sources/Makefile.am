@@ -5,6 +5,8 @@ INCLUDES = -I$(top_srcdir)/Include \
 SUBDIRS = FiniteDifferences Calendars Solvers1D TermStructures \
 	DayCounters Math Pricers MonteCarlo
 
+EXTRA_DIST=makefile.mak
+
 libQuantLib_la_LIBADD = ./Calendars/libCalendars.la \
 	DayCounters/libDayCounters.la \
 	FiniteDifferences/libFiniteDifferences.la \

@@ -8,6 +8,11 @@
 .autodepend
 .silent
 
+# Debug versions
+!ifdef DEBUG
+    _D = _d
+!endif
+
 # Directories
 SWIG_DIR       = ..\Swig
 INCLUDE_DIR    = ..\Include
@@ -26,21 +31,15 @@ PYTHON_INCLUDE = "$(PYTHON_HOME)"\include
 PYTHON_LIBS    = "$(PYTHON_HOME)"\libs
 
 # Object files
-!ifdef DEBUG
-    WRAPPER_OBJ = quantlib_wrap_d.obj
-!else
-    WRAPPER_OBJ = quantlib_wrap.obj
-!endif
 WIN_OBJS        = c0d32.obj
 
 # Libraries
 !ifdef DEBUG
-    QUANTLIB_LIB = ..\Win\Debug\QuantLib.lib
-    QUANTLIB_DLL = QuantLibc_d.dll
+    QUANTLIB_LIB = ..\Sources\Debug\QuantLib.lib
 !else
-    QUANTLIB_LIB = ..\Win\Release\QuantLib.lib
-    QUANTLIB_DLL = QuantLibc.dll
+    QUANTLIB_LIB = ..\Sources\Release\QuantLib.lib
 !endif
+QUANTLIB_DLL     = QuantLibc$(_D).dll
 WIN_LIBS         = import32.lib cw32mt.lib
 PYTHON_BCC_LIB   = bccpython.lib
 
@@ -88,32 +87,31 @@ LINK_OPTS    = $(LINK_OPTS) -v
 # Python module
 python: $(QUANTLIB_DLL)
 
-$(QUANTLIB_DLL):: $(WRAPPER_OBJ) $(QUANTLIB_LIB) $(PYTHON_BCC_LIB)
+$(QUANTLIB_DLL):: quantlib_wrap$(_D).obj $(QUANTLIB_LIB) $(PYTHON_BCC_LIB)
     echo Linking Python module...
     $(LINK) $(LINK_OPTS) \
-        $(WRAPPER_OBJ) $(WIN_OBJS), \
+        quantlib_wrap$(_D).obj $(WIN_OBJS), \
         $(QUANTLIB_DLL),, \
         $(QUANTLIB_LIB) $(PYTHON_BCC_LIB) $(WIN_LIBS), \
         QuantLibc.def
-    if exist QuantLibc.ilc      del QuantLibc.ilc
-    if exist QuantLibc_d.ilc    del QuantLibc_d.ilc
-    if exist QuantLibc.ild      del QuantLibc.ild
-    if exist QuantLibc_d.ild    del QuantLibc_d.ild
-    if exist QuantLibc.ilf      del QuantLibc.ilf
-    if exist QuantLibc_d.ilf    del QuantLibc_d.ilf
-    if exist QuantLibc.ils      del QuantLibc.ils
-    if exist QuantLibc_d.ils    del QuantLibc_d.ils
+    del QuantLibc$(_D).ilc
+    del QuantLibc$(_D).ild
+    del QuantLibc$(_D).ilf
+    del QuantLibc$(_D).ils
+    if exist QuantLibc.tds del QuantLibc.tds
     echo Build completed
 
 # Python lib in OMF format
 $(PYTHON_BCC_LIB):
-    if exist $(PYTHON_LIBS)\python15.lib $(COFF2OMF) -q $(PYTHON_LIBS)\python15.lib $(PYTHON_BCC_LIB)
-    if exist $(PYTHON_LIBS)\python20.lib $(COFF2OMF) -q $(PYTHON_LIBS)\python20.lib $(PYTHON_BCC_LIB)
+    if exist $(PYTHON_LIBS)\python15.lib \
+        $(COFF2OMF) -q $(PYTHON_LIBS)\python15.lib $(PYTHON_BCC_LIB)
+    if exist $(PYTHON_LIBS)\python20.lib \
+        $(COFF2OMF) -q $(PYTHON_LIBS)\python20.lib $(PYTHON_BCC_LIB)
 
 # Wrapper functions
-$(WRAPPER_OBJ):: quantlib_wrap.cpp
+quantlib_wrap$(_D).obj:: quantlib_wrap.cpp
     echo Compiling wrappers...
-    $(CC) $(CC_OPTS) -o$(WRAPPER_OBJ) quantlib_wrap.cpp
+    $(CC) $(CC_OPTS) -oquantlib_wrap$(_D).obj quantlib_wrap.cpp
 
 quantlib_wrap.cpp:: \
     $(SWIG_DIR)\QuantLib.i \

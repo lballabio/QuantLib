@@ -14,7 +14,6 @@
 !else
     OUTPUT_DIR = .\Release
 !endif
-SOURCES_DIR    = ..\Sources
 INCLUDE_DIR    = ..\Include
 BCC_INCLUDE    = $(MAKEDIR)\..\include
 BCC_LIBS       = $(MAKEDIR)\..\lib
@@ -105,11 +104,6 @@ QUANTLIB_OBJS    = $(CORE_OBJS) \
                    $(SOLVER1D_OBJS) \
                    $(TERMSTRUC_OBJS)
 
-WIN_OBJS         = c0d32.obj
-
-# Libraries
-WIN_LIBS         = import32.lib cw32mt.lib
-
 # Tools to be used
 CC        = bcc32
 TLIB      = tlib
@@ -160,142 +154,135 @@ $(OUTPUT_DIR)\QuantLib.lib:: Core Calendars DayCounters FiniteDifferences Math M
 
 # Core
 Core: $(OUTPUT_DIR) $(CORE_OBJS)
-$(OUTPUT_DIR)\calendar.obj: $(SOURCES_DIR)\calendar.cpp
-$(OUTPUT_DIR)\dataformatters.obj: $(SOURCES_DIR)\dataformatters.cpp
-$(OUTPUT_DIR)\date.obj: $(SOURCES_DIR)\date.cpp
-$(OUTPUT_DIR)\ratehelper.obj: $(SOURCES_DIR)\ratehelper.cpp
-$(OUTPUT_DIR)\solver1d.obj: $(SOURCES_DIR)\solver1d.cpp
+$(OUTPUT_DIR)\calendar.obj:       calendar.cpp
+$(OUTPUT_DIR)\dataformatters.obj: dataformatters.cpp
+$(OUTPUT_DIR)\date.obj:           date.cpp
+$(OUTPUT_DIR)\ratehelper.obj:     ratehelper.cpp
+$(OUTPUT_DIR)\solver1d.obj:       solver1d.cpp
 
 
 # Calendars
 Calendars: $(OUTPUT_DIR) $(CALENDAR_OBJS)
-$(OUTPUT_DIR)\westerncalendar.obj: $(SOURCES_DIR)\Calendars\westerncalendar.cpp
-$(OUTPUT_DIR)\frankfurt.obj: $(SOURCES_DIR)\Calendars\frankfurt.cpp
-$(OUTPUT_DIR)\helsinki.obj: $(SOURCES_DIR)\Calendars\helsinki.cpp
-$(OUTPUT_DIR)\london.obj: $(SOURCES_DIR)\Calendars\london.cpp
-$(OUTPUT_DIR)\milan.obj: $(SOURCES_DIR)\Calendars\milan.cpp
-$(OUTPUT_DIR)\newyork.obj: $(SOURCES_DIR)\Calendars\newyork.cpp
-$(OUTPUT_DIR)\target.obj: $(SOURCES_DIR)\Calendars\target.cpp
-$(OUTPUT_DIR)\wellington.obj: $(SOURCES_DIR)\Calendars\wellington.cpp
-$(OUTPUT_DIR)\zurich.obj: $(SOURCES_DIR)\Calendars\zurich.cpp
+$(OUTPUT_DIR)\westerncalendar.obj: Calendars\westerncalendar.cpp
+$(OUTPUT_DIR)\frankfurt.obj:       Calendars\frankfurt.cpp
+$(OUTPUT_DIR)\helsinki.obj:        Calendars\helsinki.cpp
+$(OUTPUT_DIR)\london.obj:          Calendars\london.cpp
+$(OUTPUT_DIR)\milan.obj:           Calendars\milan.cpp
+$(OUTPUT_DIR)\newyork.obj:         Calendars\newyork.cpp
+$(OUTPUT_DIR)\target.obj:          Calendars\target.cpp
+$(OUTPUT_DIR)\wellington.obj:      Calendars\wellington.cpp
+$(OUTPUT_DIR)\zurich.obj:          Calendars\zurich.cpp
 
 
 # Day counters
 DayCounters: $(OUTPUT_DIR) $(DAYCOUNT_OBJS)
-$(OUTPUT_DIR)\actualactual.obj: $(SOURCES_DIR)\DayCounters\actualactual.cpp
-$(OUTPUT_DIR)\thirty360.obj: $(SOURCES_DIR)\DayCounters\thirty360.cpp
-$(OUTPUT_DIR)\thirty360italian.obj: $(SOURCES_DIR)\DayCounters\thirty360italian.cpp
+$(OUTPUT_DIR)\actualactual.obj:     DayCounters\actualactual.cpp
+$(OUTPUT_DIR)\thirty360.obj:        DayCounters\thirty360.cpp
+$(OUTPUT_DIR)\thirty360italian.obj: DayCounters\thirty360italian.cpp
 
 
 # Finite difference methods
 FiniteDifferences: $(OUTPUT_DIR) $(FDM_OBJS)
-$(OUTPUT_DIR)\tridiagonaloperator.obj: \
-        $(SOURCES_DIR)\FiniteDifferences\tridiagonaloperator.cpp
-$(OUTPUT_DIR)\bsmoperator.obj: \
-        $(SOURCES_DIR)\FiniteDifferences\bsmoperator.cpp
-$(OUTPUT_DIR)\valueatcenter.obj: \
-        $(SOURCES_DIR)\FiniteDifferences\valueatcenter.cpp
+$(OUTPUT_DIR)\tridiagonaloperator.obj: FiniteDifferences\tridiagonaloperator.cpp
+$(OUTPUT_DIR)\bsmoperator.obj:         FiniteDifferences\bsmoperator.cpp
+$(OUTPUT_DIR)\valueatcenter.obj:       FiniteDifferences\valueatcenter.cpp
 
 
 # Math
 Math: $(OUTPUT_DIR) $(MATH_OBJS)
 $(OUTPUT_DIR)\symmetricschurdecomposition.obj: \
-    $(SOURCES_DIR)\Math\symmetricschurdecomposition.cpp
-$(OUTPUT_DIR)\matrix.obj: \
-    $(SOURCES_DIR)\Math\matrix.cpp
-$(OUTPUT_DIR)\normaldistribution.obj: \
-    $(SOURCES_DIR)\Math\normaldistribution.cpp
-$(OUTPUT_DIR)\statistics.obj: \
-    $(SOURCES_DIR)\Math\statistics.cpp
-$(OUTPUT_DIR)\multivariateaccumulator.obj: \
-    $(SOURCES_DIR)\Math\multivariateaccumulator.cpp
+                                           Math\symmetricschurdecomposition.cpp
+$(OUTPUT_DIR)\matrix.obj:                  Math\matrix.cpp
+$(OUTPUT_DIR)\normaldistribution.obj:      Math\normaldistribution.cpp
+$(OUTPUT_DIR)\statistics.obj:              Math\statistics.cpp
+$(OUTPUT_DIR)\multivariateaccumulator.obj: Math\multivariateaccumulator.cpp
 
 # Monte Carlo
 MonteCarlo: $(OUTPUT_DIR) $(MONTECARLO_OBJS)
 $(OUTPUT_DIR)\avgpriceasianpathpricer.obj: \
-    $(SOURCES_DIR)\MonteCarlo\avgpriceasianpathpricer.cpp
+    MonteCarlo\avgpriceasianpathpricer.cpp
 $(OUTPUT_DIR)\avgstrikeasianpathpricer.obj: \
-    $(SOURCES_DIR)\MonteCarlo\avgstrikeasianpathpricer.cpp
+    MonteCarlo\avgstrikeasianpathpricer.cpp
 $(OUTPUT_DIR)\basketpathpricer.obj: \
-    $(SOURCES_DIR)\MonteCarlo\basketpathpricer.cpp
+    MonteCarlo\basketpathpricer.cpp
 $(OUTPUT_DIR)\controlvariatedpathpricer.obj: \
-    $(SOURCES_DIR)\MonteCarlo\controlvariatedpathpricer.cpp
+    MonteCarlo\controlvariatedpathpricer.cpp
 $(OUTPUT_DIR)\europeanpathpricer.obj: \
-    $(SOURCES_DIR)\MonteCarlo\europeanpathpricer.cpp
+    MonteCarlo\europeanpathpricer.cpp
 $(OUTPUT_DIR)\everestpathpricer.obj: \
-    $(SOURCES_DIR)\MonteCarlo\everestpathpricer.cpp
+    MonteCarlo\everestpathpricer.cpp
 $(OUTPUT_DIR)\geometricasianpathpricer.obj: \
-    $(SOURCES_DIR)\MonteCarlo\geometricasianpathpricer.cpp
+    MonteCarlo\geometricasianpathpricer.cpp
 $(OUTPUT_DIR)\getcovariance.obj: \
-    $(SOURCES_DIR)\MonteCarlo\getcovariance.cpp
+    MonteCarlo\getcovariance.cpp
 $(OUTPUT_DIR)\himalayapathpricer.obj: \
-    $(SOURCES_DIR)\MonteCarlo\himalayapathpricer.cpp
+    MonteCarlo\himalayapathpricer.cpp
 $(OUTPUT_DIR)\lecuyerrandomgenerator.obj: \
-    $(SOURCES_DIR)\MonteCarlo\lecuyerrandomgenerator.cpp
+    MonteCarlo\lecuyerrandomgenerator.cpp
 $(OUTPUT_DIR)\pagodapathpricer.obj: \
-    $(SOURCES_DIR)\MonteCarlo\pagodapathpricer.cpp
+    MonteCarlo\pagodapathpricer.cpp
 
 
 # Pricers
 Pricers: $(OUTPUT_DIR) $(PRICER_OBJS)
-$(OUTPUT_DIR)\bsmoption.obj: $(SOURCES_DIR)\Pricers\bsmoption.cpp
+$(OUTPUT_DIR)\bsmoption.obj: Pricers\bsmoption.cpp
 $(OUTPUT_DIR)\averagepriceasian.obj: \
-                $(SOURCES_DIR)\Pricers\averagepriceasian.cpp
+                Pricers\averagepriceasian.cpp
 $(OUTPUT_DIR)\averagestrikeasian.obj: \
-                $(SOURCES_DIR)\Pricers\averagestrikeasian.cpp
+                Pricers\averagestrikeasian.cpp
 $(OUTPUT_DIR)\barrieroption.obj: \
-                $(SOURCES_DIR)\Pricers\barrieroption.cpp
+                Pricers\barrieroption.cpp
 $(OUTPUT_DIR)\bermudanoption.obj: \
-                $(SOURCES_DIR)\Pricers\bermudanoption.cpp
+                Pricers\bermudanoption.cpp
 $(OUTPUT_DIR)\binaryoption.obj: \
-                $(SOURCES_DIR)\Pricers\binaryoption.cpp
+                Pricers\binaryoption.cpp
 $(OUTPUT_DIR)\bsmnumericaloption.obj: \
-                $(SOURCES_DIR)\Pricers\bsmnumericaloption.cpp
+                Pricers\bsmnumericaloption.cpp
 $(OUTPUT_DIR)\bsmeuropeanoption.obj:  \
-                $(SOURCES_DIR)\Pricers\bsmeuropeanoption.cpp
+                Pricers\bsmeuropeanoption.cpp
 $(OUTPUT_DIR)\dividendoption.obj : \
-                $(SOURCES_DIR)\Pricers\dividendoption.cpp           
+                Pricers\dividendoption.cpp           
 $(OUTPUT_DIR)\dividendshoutoption.obj : \
-                $(SOURCES_DIR)\Pricers\dividendshoutoption.cpp           
+                Pricers\dividendshoutoption.cpp           
 $(OUTPUT_DIR)\dividendamericanoption.obj: \
-                $(SOURCES_DIR)\Pricers\dividendamericanoption.cpp
+                Pricers\dividendamericanoption.cpp
 $(OUTPUT_DIR)\dividendeuropeanoption.obj: \
-                $(SOURCES_DIR)\Pricers\dividendeuropeanoption.cpp
+                Pricers\dividendeuropeanoption.cpp
 $(OUTPUT_DIR)\everestoption.obj: \
-                $(SOURCES_DIR)\Pricers\everestoption.cpp
+                Pricers\everestoption.cpp
 $(OUTPUT_DIR)\finitedifferenceeuropean.obj: \
-                $(SOURCES_DIR)\Pricers\finitedifferenceeuropean.cpp
+                Pricers\finitedifferenceeuropean.cpp
 $(OUTPUT_DIR)\himalaya.obj: \
-                $(SOURCES_DIR)\Pricers\himalaya.cpp
+                Pricers\himalaya.cpp
 $(OUTPUT_DIR)\mceuropeanpricer.obj: \
-                $(SOURCES_DIR)\Pricers\mceuropeanpricer.cpp                
+                Pricers\mceuropeanpricer.cpp                
 $(OUTPUT_DIR)\multiperiodoption.obj: \
-                $(SOURCES_DIR)\Pricers\multiperiodoption.cpp
+                Pricers\multiperiodoption.cpp
 $(OUTPUT_DIR)\plainbasketoption.obj: \
-                $(SOURCES_DIR)\Pricers\plainbasketoption.cpp
+                Pricers\plainbasketoption.cpp
 $(OUTPUT_DIR)\pagodaoption.obj: \
-                $(SOURCES_DIR)\Pricers\pagodaoption.cpp                
+                Pricers\pagodaoption.cpp                
 $(OUTPUT_DIR)\stepconditionoption.obj: \
-                $(SOURCES_DIR)\Pricers\stepconditionoption.cpp
+                Pricers\stepconditionoption.cpp
 
 
 
 
 # 1D solvers
 Solvers1D: $(OUTPUT_DIR) $(SOLVER1D_OBJS)
-$(OUTPUT_DIR)\bisection.obj: $(SOURCES_DIR)\Solvers1D\bisection.cpp
-$(OUTPUT_DIR)\brent.obj: $(SOURCES_DIR)\Solvers1D\brent.cpp
-$(OUTPUT_DIR)\falseposition.obj: $(SOURCES_DIR)\Solvers1D\falseposition.cpp
-$(OUTPUT_DIR)\newton.obj: $(SOURCES_DIR)\Solvers1D\newton.cpp
-$(OUTPUT_DIR)\newtonsafe.obj: $(SOURCES_DIR)\Solvers1D\newtonsafe.cpp
-$(OUTPUT_DIR)\ridder.obj: $(SOURCES_DIR)\Solvers1D\ridder.cpp
-$(OUTPUT_DIR)\secant.obj: $(SOURCES_DIR)\Solvers1D\secant.cpp
+$(OUTPUT_DIR)\bisection.obj:     Solvers1D\bisection.cpp
+$(OUTPUT_DIR)\brent.obj:         Solvers1D\brent.cpp
+$(OUTPUT_DIR)\falseposition.obj: Solvers1D\falseposition.cpp
+$(OUTPUT_DIR)\newton.obj:        Solvers1D\newton.cpp
+$(OUTPUT_DIR)\newtonsafe.obj:    Solvers1D\newtonsafe.cpp
+$(OUTPUT_DIR)\ridder.obj:        Solvers1D\ridder.cpp
+$(OUTPUT_DIR)\secant.obj:        Solvers1D\secant.cpp
 
 
 # Term structures
 TermStructures: $(OUTPUT_DIR) $(TERMSTRUC_OBJS)
 $(OUTPUT_DIR)\piecewiseconstantforwards.obj: \
-                $(SOURCES_DIR)\TermStructures\piecewiseconstantforwards.cpp
+                TermStructures\piecewiseconstantforwards.cpp
 
 
 # Clean up
