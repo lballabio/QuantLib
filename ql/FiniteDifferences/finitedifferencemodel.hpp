@@ -63,6 +63,7 @@ namespace QuantLib {
                           Size steps,
                           Handle<StepCondition<arrayType> > condition =
                                      Handle<StepCondition<arrayType> >());
+            const Evolver& evolver() const{return evolver_;};
           private:
             Evolver evolver_;
             std::vector<Time> stoppingTimes_;
