@@ -17,6 +17,8 @@ BCC_LIBS       = $(MAKEDIR)\..\lib
 # Object files
 OBJS = \
        barrieroption.obj$(_D) \
+       blackcapfloor.obj$(_D) \
+       blackswaption.obj$(_D) \
        fdbermudanoption.obj$(_D) \
        binaryoption.obj$(_D) \
        cliquetoption.obj$(_D) \

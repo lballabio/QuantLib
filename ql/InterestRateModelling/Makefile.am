@@ -6,6 +6,7 @@ includedir = $(prefix)/include/ql/InterestRateModelling
 SUBDIRS = CalibrationHelpers OneFactorModels TwoFactorModels
 
 include_HEADERS = \
+    blackmodel.hpp \
     calibrationhelper.hpp \
     model.hpp \
     onefactormodel.hpp \
