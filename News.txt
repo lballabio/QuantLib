@@ -27,3 +27,14 @@ Changes since release 0.3.8:
 
 - Added backward- and forward-flat interpolations
 
+- Added generic piecewise yield term structure. Client code can choose
+  what to interpolate (discounts, zero yields, forwards) and how (linear,
+  log-linear, flat) by instantiating types such as:
+
+  PiecewiseYieldCurve<Discount,LogLinear>
+  PiecewiseYieldCurve<ZeroYield,Linear>
+  PiecewiseYieldCurve<ForwardRate,Linear>
+
+  Global interpolations such as cubic splines are not yet supported.
+
+

@@ -24,6 +24,7 @@
 
 #include <ql/TermStructures/discountcurve.hpp>
 #include <ql/TermStructures/zerocurve.hpp>
+#include <ql/TermStructures/forwardcurve.hpp>
 
 namespace QuantLib {
 
@@ -43,7 +44,11 @@ namespace QuantLib {
                                     const Date& d) {
             return curve->discount(d,true);
         }
-        // possible constraint based on previous values
+        // possible constraints based on previous values
+        static DiscountFactor minValueAfter(Size,
+                                            const std::vector<Real>&) {
+            return QL_EPSILON;
+        }
         static DiscountFactor maxValueAfter(Size i,
                                             const std::vector<Real>& data) {
             #if defined(QL_NEGATIVE_RATES)
@@ -81,9 +86,17 @@ namespace QuantLib {
             return curve->zeroRate(d,curve->dayCounter(),
                                    Continuous,Annual,true);
         }
-        // possible constraint based on previous values
-        static DiscountFactor maxValueAfter(Size i,
-                                            const std::vector<Real>& data) {
+        // possible constraints based on previous values
+        static Rate minValueAfter(Size, const std::vector<Real>&) {
+            #if defined(QL_NEGATIVE_RATES)
+            // no constraints.
+            // We choose as min a value very unlikely to be exceeded.
+            return -3.0;
+            #else
+            return QL_EPSILON;
+            #endif
+        }
+        static Rate maxValueAfter(Size, const std::vector<Real>&) {
             // no constraints.
             // We choose as max a value very unlikely to be exceeded.
             return 3.0;
@@ -95,6 +108,48 @@ namespace QuantLib {
             data[i] = rate;
             if (i == 1)
                 data[0] = rate; // first point is updated as well
+        }
+    };
+
+    //! Forward-curve traits
+    struct ForwardRate {
+        // interpolated curve type
+        template <class Interpolator>
+        struct curve {
+            typedef InterpolatedForwardCurve<Interpolator> type;
+        };
+        // (dummy) value at reference
+        static Rate initialValue() { return 0.02; }
+        // initial guess
+        static Rate initialGuess() { return 0.02; }
+        // further guesses
+        static Rate guess(const YieldTermStructure* curve,
+                          const Date& d) {
+            return curve->forwardRate(d,d,curve->dayCounter(),
+                                      Continuous,Annual,true);
+        }
+        // possible constraints based on previous values
+        static Rate minValueAfter(Size, const std::vector<Real>&) {
+            #if defined(QL_NEGATIVE_RATES)
+            // no constraints.
+            // We choose as min a value very unlikely to be exceeded.
+            return -3.0;
+            #else
+            return QL_EPSILON;
+            #endif
+        }
+        static Rate maxValueAfter(Size, const std::vector<Real>&) {
+            // no constraints.
+            // We choose as max a value very unlikely to be exceeded.
+            return 3.0;
+        }
+        // update with new guess
+        static void updateGuess(std::vector<Rate>& data,
+                                Rate forward,
+                                Size i) {
+            data[i] = forward;
+            if (i == 1)
+                data[0] = forward; // first point is updated as well
         }
     };
 

@@ -201,7 +201,6 @@ namespace {
 }
 
 void PiecewiseYieldCurveTest::testLogLinearDiscountConsistency() {
-
     BOOST_MESSAGE(
         "Testing consistency of piecewise-log-linear discount curve...");
 
@@ -214,7 +213,6 @@ void PiecewiseYieldCurveTest::testLogLinearDiscountConsistency() {
 }
 
 void PiecewiseYieldCurveTest::testLinearDiscountConsistency() {
-
     BOOST_MESSAGE(
         "Testing consistency of piecewise-linear discount curve...");
 
@@ -227,7 +225,6 @@ void PiecewiseYieldCurveTest::testLinearDiscountConsistency() {
 }
 
 void PiecewiseYieldCurveTest::testLogLinearZeroConsistency() {
-
     BOOST_MESSAGE(
         "Testing consistency of piecewise-log-linear zero-yield curve...");
 
@@ -240,7 +237,6 @@ void PiecewiseYieldCurveTest::testLogLinearZeroConsistency() {
 }
 
 void PiecewiseYieldCurveTest::testLinearZeroConsistency() {
-
     BOOST_MESSAGE(
         "Testing consistency of piecewise-linear zero-yield curve...");
 
@@ -248,6 +244,30 @@ void PiecewiseYieldCurveTest::testLinearZeroConsistency() {
     QL_TEST_SETUP
 
     testCurveConsistency(ZeroYield(), Linear());
+
+    QL_TEST_TEARDOWN
+}
+
+void PiecewiseYieldCurveTest::testLinearForwardConsistency() {
+    BOOST_MESSAGE(
+        "Testing consistency of piecewise-linear forward-rate curve...");
+
+    QL_TEST_BEGIN
+    QL_TEST_SETUP
+
+    testCurveConsistency(ForwardRate(), Linear());
+
+    QL_TEST_TEARDOWN
+}
+
+void PiecewiseYieldCurveTest::testFlatForwardConsistency() {
+    BOOST_MESSAGE(
+        "Testing consistency of piecewise-flat forward-rate curve...");
+
+    QL_TEST_BEGIN
+    QL_TEST_SETUP
+
+    testCurveConsistency(ForwardRate(), BackwardFlat());
 
     QL_TEST_TEARDOWN
 }
@@ -292,6 +312,10 @@ test_suite* PiecewiseYieldCurveTest::suite() {
                  &PiecewiseYieldCurveTest::testLogLinearZeroConsistency));
     suite->add(BOOST_TEST_CASE(
                  &PiecewiseYieldCurveTest::testLinearZeroConsistency));
+    suite->add(BOOST_TEST_CASE(
+                 &PiecewiseYieldCurveTest::testLinearForwardConsistency));
+    suite->add(BOOST_TEST_CASE(
+                 &PiecewiseYieldCurveTest::testFlatForwardConsistency));
     suite->add(BOOST_TEST_CASE(&PiecewiseYieldCurveTest::testObservability));
     return suite;
 }

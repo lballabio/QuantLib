@@ -226,7 +226,7 @@ namespace QuantLib {
                 guess = C::initialGuess();
             }
             // bracket
-            Real min = accuracy_*1.0e-3;
+            Real min = C::minValueAfter(i, data_);
             Real max = C::maxValueAfter(i, data_);
             solver.solve(ObjectiveFunction(this,instrument,i),
                          accuracy_,guess,min,max);
