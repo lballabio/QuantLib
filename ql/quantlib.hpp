@@ -130,6 +130,7 @@
 #include <ql/Indexes/zarlibor.hpp>
 
 #include <ql/Instruments/barrieroption.hpp>
+#include <ql/Instruments/binaryoption.hpp>
 #include <ql/Instruments/capfloor.hpp>
 #include <ql/Instruments/forwardvanillaoption.hpp>
 #include <ql/Instruments/quantoforwardvanillaoption.hpp>
@@ -182,6 +183,7 @@
 #include <ql/MonteCarlo/barrierpathpricer.hpp>
 #include <ql/MonteCarlo/basketpathpricer.hpp>
 #include <ql/MonteCarlo/biasedbarrierpathpricer.hpp>
+#include <ql/MonteCarlo/binarypathpricer.hpp>
 #include <ql/MonteCarlo/brownianbridge.hpp>
 #include <ql/MonteCarlo/cliquetoptionpathpricer.hpp>
 #include <ql/MonteCarlo/europeanpathpricer.hpp>
@@ -259,6 +261,7 @@
 
 #include <ql/PricingEngines/americanmcengines.hpp>
 #include <ql/PricingEngines/barrierengines.hpp>
+#include <ql/PricingEngines/binaryengines.hpp>
 #include <ql/PricingEngines/cliquetengines.hpp>
 #include <ql/PricingEngines/discretizedvanillaoption.hpp>
 #include <ql/PricingEngines/forwardengines.hpp>
