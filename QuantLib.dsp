@@ -7,23 +7,23 @@
 CFG=QuantLib - Win32 Debug SingleThread
 !MESSAGE This is not a valid makefile. To build this project using NMAKE,
 !MESSAGE use the Export Makefile command and run
-!MESSAGE
+!MESSAGE 
 !MESSAGE NMAKE /f "QuantLib.mak".
-!MESSAGE
+!MESSAGE 
 !MESSAGE You can specify a configuration when running NMAKE
 !MESSAGE by defining the macro CFG on the command line. For example:
-!MESSAGE
+!MESSAGE 
 !MESSAGE NMAKE /f "QuantLib.mak" CFG="QuantLib - Win32 Debug SingleThread"
-!MESSAGE
+!MESSAGE 
 !MESSAGE Possible choices for configuration are:
-!MESSAGE
+!MESSAGE 
 !MESSAGE "QuantLib - Win32 Release" (based on "Win32 (x86) Static Library")
 !MESSAGE "QuantLib - Win32 Debug" (based on "Win32 (x86) Static Library")
 !MESSAGE "QuantLib - Win32 Release MTDLL" (based on "Win32 (x86) Static Library")
 !MESSAGE "QuantLib - Win32 Debug MTDLL" (based on "Win32 (x86) Static Library")
 !MESSAGE "QuantLib - Win32 Release SingleThread" (based on "Win32 (x86) Static Library")
 !MESSAGE "QuantLib - Win32 Debug SingleThread" (based on "Win32 (x86) Static Library")
-!MESSAGE
+!MESSAGE 
 
 # Begin Project
 # PROP AllowPerConfigDependencies 0
@@ -200,7 +200,7 @@ PreLink_Desc=Make build directory
 PreLink_Cmds=if not exist lib mkdir lib
 # End Special Build Tool
 
-!ENDIF
+!ENDIF 
 
 # Begin Target
 
@@ -1243,11 +1243,11 @@ SOURCE=.\ql\Pricers\discretegeometricaso.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\ql\Pricers\europeanoption.cpp
+SOURCE=.\ql\Pricers\dividendeuropeanoption.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\ql\Pricers\europeanoption.hpp
+SOURCE=.\ql\Pricers\dividendeuropeanoption.hpp
 # End Source File
 # Begin Source File
 
@@ -1276,14 +1276,6 @@ SOURCE=.\ql\Pricers\fddividendamericanoption.cpp
 # Begin Source File
 
 SOURCE=.\ql\Pricers\fddividendamericanoption.hpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\ql\Pricers\fddividendeuropeanoption.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\ql\Pricers\fddividendeuropeanoption.hpp
 # End Source File
 # Begin Source File
 
@@ -1353,7 +1345,7 @@ SOURCE=.\ql\Pricers\mcbasket.cpp
 
 !ELSEIF  "$(CFG)" == "QuantLib - Win32 Debug SingleThread"
 
-!ENDIF
+!ENDIF 
 
 # End Source File
 # Begin Source File
@@ -2112,6 +2104,14 @@ SOURCE=.\ql\Volatilities\swaptionvolmatrix.hpp
 # Begin Source File
 
 SOURCE=.\ql\argsandresults.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\basicdataformatters.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\basicdataformatters.hpp
 # End Source File
 # Begin Source File
 

@@ -66,6 +66,8 @@ CLEAN :
 	-@erase "$(INTDIR)\baroneadesiwhaleyengine.sbr"
 	-@erase "$(INTDIR)\barrieroption.obj"
 	-@erase "$(INTDIR)\barrieroption.sbr"
+	-@erase "$(INTDIR)\basicdataformatters.obj"
+	-@erase "$(INTDIR)\basicdataformatters.sbr"
 	-@erase "$(INTDIR)\basispointsensitivity.obj"
 	-@erase "$(INTDIR)\basispointsensitivity.sbr"
 	-@erase "$(INTDIR)\basketoption.obj"
@@ -146,12 +148,12 @@ CLEAN :
 	-@erase "$(INTDIR)\discretizedasset.sbr"
 	-@erase "$(INTDIR)\discretizedvanillaoption.obj"
 	-@erase "$(INTDIR)\discretizedvanillaoption.sbr"
+	-@erase "$(INTDIR)\dividendeuropeanoption.obj"
+	-@erase "$(INTDIR)\dividendeuropeanoption.sbr"
 	-@erase "$(INTDIR)\errorfunction.obj"
 	-@erase "$(INTDIR)\errorfunction.sbr"
 	-@erase "$(INTDIR)\errors.obj"
 	-@erase "$(INTDIR)\errors.sbr"
-	-@erase "$(INTDIR)\europeanoption.obj"
-	-@erase "$(INTDIR)\europeanoption.sbr"
 	-@erase "$(INTDIR)\exercise.obj"
 	-@erase "$(INTDIR)\exercise.sbr"
 	-@erase "$(INTDIR)\extendedcoxingersollross.obj"
@@ -166,8 +168,6 @@ CLEAN :
 	-@erase "$(INTDIR)\fdbsmoption.sbr"
 	-@erase "$(INTDIR)\fddividendamericanoption.obj"
 	-@erase "$(INTDIR)\fddividendamericanoption.sbr"
-	-@erase "$(INTDIR)\fddividendeuropeanoption.obj"
-	-@erase "$(INTDIR)\fddividendeuropeanoption.sbr"
 	-@erase "$(INTDIR)\fddividendoption.obj"
 	-@erase "$(INTDIR)\fddividendoption.sbr"
 	-@erase "$(INTDIR)\fddividendshoutoption.obj"
@@ -458,11 +458,10 @@ BSC32_SBRS= \
 	"$(INTDIR)\cliquetoption.sbr" \
 	"$(INTDIR)\discretegeometricapo.sbr" \
 	"$(INTDIR)\discretegeometricaso.sbr" \
-	"$(INTDIR)\europeanoption.sbr" \
+	"$(INTDIR)\dividendeuropeanoption.sbr" \
 	"$(INTDIR)\fdbermudanoption.sbr" \
 	"$(INTDIR)\fdbsmoption.sbr" \
 	"$(INTDIR)\fddividendamericanoption.sbr" \
-	"$(INTDIR)\fddividendeuropeanoption.sbr" \
 	"$(INTDIR)\fddividendoption.sbr" \
 	"$(INTDIR)\fddividendshoutoption.sbr" \
 	"$(INTDIR)\fdeuropean.sbr" \
@@ -540,7 +539,8 @@ BSC32_SBRS= \
 	"$(INTDIR)\exercise.sbr" \
 	"$(INTDIR)\grid.sbr" \
 	"$(INTDIR)\scheduler.sbr" \
-	"$(INTDIR)\voltermstructure.sbr"
+	"$(INTDIR)\voltermstructure.sbr" \
+	"$(INTDIR)\basicdataformatters.sbr"
 
 "$(OUTDIR)\QuantLib.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -629,11 +629,10 @@ LIB32_OBJS= \
 	"$(INTDIR)\cliquetoption.obj" \
 	"$(INTDIR)\discretegeometricapo.obj" \
 	"$(INTDIR)\discretegeometricaso.obj" \
-	"$(INTDIR)\europeanoption.obj" \
+	"$(INTDIR)\dividendeuropeanoption.obj" \
 	"$(INTDIR)\fdbermudanoption.obj" \
 	"$(INTDIR)\fdbsmoption.obj" \
 	"$(INTDIR)\fddividendamericanoption.obj" \
-	"$(INTDIR)\fddividendeuropeanoption.obj" \
 	"$(INTDIR)\fddividendoption.obj" \
 	"$(INTDIR)\fddividendshoutoption.obj" \
 	"$(INTDIR)\fdeuropean.obj" \
@@ -711,10 +710,11 @@ LIB32_OBJS= \
 	"$(INTDIR)\exercise.obj" \
 	"$(INTDIR)\grid.obj" \
 	"$(INTDIR)\scheduler.obj" \
-	"$(INTDIR)\voltermstructure.obj"
+	"$(INTDIR)\voltermstructure.obj" \
+	"$(INTDIR)\basicdataformatters.obj"
 
 ".\lib\QuantLib-vc6-mt-s-0_3_6.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
-   if not exist lib\Win32\VisualStudio mkdir lib\Win32\VisualStudio
+   if not exist lib mkdir lib
 	 $(LIB32) @<<
   $(LIB32_FLAGS) $(DEF_FLAGS) $(LIB32_OBJS)
 <<
@@ -755,6 +755,8 @@ CLEAN :
 	-@erase "$(INTDIR)\baroneadesiwhaleyengine.sbr"
 	-@erase "$(INTDIR)\barrieroption.obj"
 	-@erase "$(INTDIR)\barrieroption.sbr"
+	-@erase "$(INTDIR)\basicdataformatters.obj"
+	-@erase "$(INTDIR)\basicdataformatters.sbr"
 	-@erase "$(INTDIR)\basispointsensitivity.obj"
 	-@erase "$(INTDIR)\basispointsensitivity.sbr"
 	-@erase "$(INTDIR)\basketoption.obj"
@@ -835,12 +837,12 @@ CLEAN :
 	-@erase "$(INTDIR)\discretizedasset.sbr"
 	-@erase "$(INTDIR)\discretizedvanillaoption.obj"
 	-@erase "$(INTDIR)\discretizedvanillaoption.sbr"
+	-@erase "$(INTDIR)\dividendeuropeanoption.obj"
+	-@erase "$(INTDIR)\dividendeuropeanoption.sbr"
 	-@erase "$(INTDIR)\errorfunction.obj"
 	-@erase "$(INTDIR)\errorfunction.sbr"
 	-@erase "$(INTDIR)\errors.obj"
 	-@erase "$(INTDIR)\errors.sbr"
-	-@erase "$(INTDIR)\europeanoption.obj"
-	-@erase "$(INTDIR)\europeanoption.sbr"
 	-@erase "$(INTDIR)\exercise.obj"
 	-@erase "$(INTDIR)\exercise.sbr"
 	-@erase "$(INTDIR)\extendedcoxingersollross.obj"
@@ -855,8 +857,6 @@ CLEAN :
 	-@erase "$(INTDIR)\fdbsmoption.sbr"
 	-@erase "$(INTDIR)\fddividendamericanoption.obj"
 	-@erase "$(INTDIR)\fddividendamericanoption.sbr"
-	-@erase "$(INTDIR)\fddividendeuropeanoption.obj"
-	-@erase "$(INTDIR)\fddividendeuropeanoption.sbr"
 	-@erase "$(INTDIR)\fddividendoption.obj"
 	-@erase "$(INTDIR)\fddividendoption.sbr"
 	-@erase "$(INTDIR)\fddividendshoutoption.obj"
@@ -1058,14 +1058,14 @@ CLEAN :
 	-@erase "$(INTDIR)\zurich.obj"
 	-@erase "$(INTDIR)\zurich.sbr"
 	-@erase "$(OUTDIR)\QuantLib.bsc"
+	-@erase ".\lib\QuantLib-vc6-mt-sgd-0_3_6.idb"
 	-@erase ".\lib\QuantLib-vc6-mt-sgd-0_3_6.lib"
-	-@erase ".\lib\Win32\VisualStudio\QuantLib.idb"
-	-@erase ".\lib\Win32\VisualStudio\QuantLib.pdb"
+	-@erase ".\lib\QuantLib-vc6-mt-sgd-0_3_6.pdb"
 
 "$(OUTDIR)" :
     if not exist "$(OUTDIR)/$(NULL)" mkdir "$(OUTDIR)"
 
-CPP_PROJ=/nologo /MTd /W3 /Gm /Gi /GR /GX /ZI /Od /I "." /D "_DEBUG" /D "WIN32" /D "_MBCS" /D "_LIB" /D "NOMINMAX" /Fr"$(INTDIR)\\" /Fp"$(INTDIR)\QuantLib.pch" /YX /Fo"$(INTDIR)\\" /Fd"lib\Win32\VisualStudio\QuantLib" /FD /GZ /c 
+CPP_PROJ=/nologo /MTd /W3 /Gm /Gi /GR /GX /ZI /Od /I "." /D "_DEBUG" /D "WIN32" /D "_MBCS" /D "_LIB" /D "NOMINMAX" /Fr"$(INTDIR)\\" /Fp"$(INTDIR)\QuantLib.pch" /YX /Fo"$(INTDIR)\\" /Fd".\lib\QuantLib-vc6-mt-sgd-0_3_6" /FD /GZ /c 
 BSC32=bscmake.exe
 BSC32_FLAGS=/nologo /o"$(OUTDIR)\QuantLib.bsc" 
 BSC32_SBRS= \
@@ -1148,11 +1148,10 @@ BSC32_SBRS= \
 	"$(INTDIR)\cliquetoption.sbr" \
 	"$(INTDIR)\discretegeometricapo.sbr" \
 	"$(INTDIR)\discretegeometricaso.sbr" \
-	"$(INTDIR)\europeanoption.sbr" \
+	"$(INTDIR)\dividendeuropeanoption.sbr" \
 	"$(INTDIR)\fdbermudanoption.sbr" \
 	"$(INTDIR)\fdbsmoption.sbr" \
 	"$(INTDIR)\fddividendamericanoption.sbr" \
-	"$(INTDIR)\fddividendeuropeanoption.sbr" \
 	"$(INTDIR)\fddividendoption.sbr" \
 	"$(INTDIR)\fddividendshoutoption.sbr" \
 	"$(INTDIR)\fdeuropean.sbr" \
@@ -1230,7 +1229,8 @@ BSC32_SBRS= \
 	"$(INTDIR)\exercise.sbr" \
 	"$(INTDIR)\grid.sbr" \
 	"$(INTDIR)\scheduler.sbr" \
-	"$(INTDIR)\voltermstructure.sbr"
+	"$(INTDIR)\voltermstructure.sbr" \
+	"$(INTDIR)\basicdataformatters.sbr"
 
 "$(OUTDIR)\QuantLib.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -1319,11 +1319,10 @@ LIB32_OBJS= \
 	"$(INTDIR)\cliquetoption.obj" \
 	"$(INTDIR)\discretegeometricapo.obj" \
 	"$(INTDIR)\discretegeometricaso.obj" \
-	"$(INTDIR)\europeanoption.obj" \
+	"$(INTDIR)\dividendeuropeanoption.obj" \
 	"$(INTDIR)\fdbermudanoption.obj" \
 	"$(INTDIR)\fdbsmoption.obj" \
 	"$(INTDIR)\fddividendamericanoption.obj" \
-	"$(INTDIR)\fddividendeuropeanoption.obj" \
 	"$(INTDIR)\fddividendoption.obj" \
 	"$(INTDIR)\fddividendshoutoption.obj" \
 	"$(INTDIR)\fdeuropean.obj" \
@@ -1401,10 +1400,11 @@ LIB32_OBJS= \
 	"$(INTDIR)\exercise.obj" \
 	"$(INTDIR)\grid.obj" \
 	"$(INTDIR)\scheduler.obj" \
-	"$(INTDIR)\voltermstructure.obj"
+	"$(INTDIR)\voltermstructure.obj" \
+	"$(INTDIR)\basicdataformatters.obj"
 
 ".\lib\QuantLib-vc6-mt-sgd-0_3_6.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
-   if not exist lib\Win32\VisualStudio mkdir lib\Win32\VisualStudio
+   if not exist lib mkdir lib
 	 $(LIB32) @<<
   $(LIB32_FLAGS) $(DEF_FLAGS) $(LIB32_OBJS)
 <<
@@ -1445,6 +1445,8 @@ CLEAN :
 	-@erase "$(INTDIR)\baroneadesiwhaleyengine.sbr"
 	-@erase "$(INTDIR)\barrieroption.obj"
 	-@erase "$(INTDIR)\barrieroption.sbr"
+	-@erase "$(INTDIR)\basicdataformatters.obj"
+	-@erase "$(INTDIR)\basicdataformatters.sbr"
 	-@erase "$(INTDIR)\basispointsensitivity.obj"
 	-@erase "$(INTDIR)\basispointsensitivity.sbr"
 	-@erase "$(INTDIR)\basketoption.obj"
@@ -1525,12 +1527,12 @@ CLEAN :
 	-@erase "$(INTDIR)\discretizedasset.sbr"
 	-@erase "$(INTDIR)\discretizedvanillaoption.obj"
 	-@erase "$(INTDIR)\discretizedvanillaoption.sbr"
+	-@erase "$(INTDIR)\dividendeuropeanoption.obj"
+	-@erase "$(INTDIR)\dividendeuropeanoption.sbr"
 	-@erase "$(INTDIR)\errorfunction.obj"
 	-@erase "$(INTDIR)\errorfunction.sbr"
 	-@erase "$(INTDIR)\errors.obj"
 	-@erase "$(INTDIR)\errors.sbr"
-	-@erase "$(INTDIR)\europeanoption.obj"
-	-@erase "$(INTDIR)\europeanoption.sbr"
 	-@erase "$(INTDIR)\exercise.obj"
 	-@erase "$(INTDIR)\exercise.sbr"
 	-@erase "$(INTDIR)\extendedcoxingersollross.obj"
@@ -1545,8 +1547,6 @@ CLEAN :
 	-@erase "$(INTDIR)\fdbsmoption.sbr"
 	-@erase "$(INTDIR)\fddividendamericanoption.obj"
 	-@erase "$(INTDIR)\fddividendamericanoption.sbr"
-	-@erase "$(INTDIR)\fddividendeuropeanoption.obj"
-	-@erase "$(INTDIR)\fddividendeuropeanoption.sbr"
 	-@erase "$(INTDIR)\fddividendoption.obj"
 	-@erase "$(INTDIR)\fddividendoption.sbr"
 	-@erase "$(INTDIR)\fddividendshoutoption.obj"
@@ -1837,11 +1837,10 @@ BSC32_SBRS= \
 	"$(INTDIR)\cliquetoption.sbr" \
 	"$(INTDIR)\discretegeometricapo.sbr" \
 	"$(INTDIR)\discretegeometricaso.sbr" \
-	"$(INTDIR)\europeanoption.sbr" \
+	"$(INTDIR)\dividendeuropeanoption.sbr" \
 	"$(INTDIR)\fdbermudanoption.sbr" \
 	"$(INTDIR)\fdbsmoption.sbr" \
 	"$(INTDIR)\fddividendamericanoption.sbr" \
-	"$(INTDIR)\fddividendeuropeanoption.sbr" \
 	"$(INTDIR)\fddividendoption.sbr" \
 	"$(INTDIR)\fddividendshoutoption.sbr" \
 	"$(INTDIR)\fdeuropean.sbr" \
@@ -1919,7 +1918,8 @@ BSC32_SBRS= \
 	"$(INTDIR)\exercise.sbr" \
 	"$(INTDIR)\grid.sbr" \
 	"$(INTDIR)\scheduler.sbr" \
-	"$(INTDIR)\voltermstructure.sbr"
+	"$(INTDIR)\voltermstructure.sbr" \
+	"$(INTDIR)\basicdataformatters.sbr"
 
 "$(OUTDIR)\QuantLib.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -2008,11 +2008,10 @@ LIB32_OBJS= \
 	"$(INTDIR)\cliquetoption.obj" \
 	"$(INTDIR)\discretegeometricapo.obj" \
 	"$(INTDIR)\discretegeometricaso.obj" \
-	"$(INTDIR)\europeanoption.obj" \
+	"$(INTDIR)\dividendeuropeanoption.obj" \
 	"$(INTDIR)\fdbermudanoption.obj" \
 	"$(INTDIR)\fdbsmoption.obj" \
 	"$(INTDIR)\fddividendamericanoption.obj" \
-	"$(INTDIR)\fddividendeuropeanoption.obj" \
 	"$(INTDIR)\fddividendoption.obj" \
 	"$(INTDIR)\fddividendshoutoption.obj" \
 	"$(INTDIR)\fdeuropean.obj" \
@@ -2090,10 +2089,11 @@ LIB32_OBJS= \
 	"$(INTDIR)\exercise.obj" \
 	"$(INTDIR)\grid.obj" \
 	"$(INTDIR)\scheduler.obj" \
-	"$(INTDIR)\voltermstructure.obj"
+	"$(INTDIR)\voltermstructure.obj" \
+	"$(INTDIR)\basicdataformatters.obj"
 
 ".\lib\QuantLib-vc6-mt-0_3_6.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
-   if not exist lib\Win32\VisualStudio mkdir lib\Win32\VisualStudio
+   if not exist lib mkdir lib
 	 $(LIB32) @<<
   $(LIB32_FLAGS) $(DEF_FLAGS) $(LIB32_OBJS)
 <<
@@ -2134,6 +2134,8 @@ CLEAN :
 	-@erase "$(INTDIR)\baroneadesiwhaleyengine.sbr"
 	-@erase "$(INTDIR)\barrieroption.obj"
 	-@erase "$(INTDIR)\barrieroption.sbr"
+	-@erase "$(INTDIR)\basicdataformatters.obj"
+	-@erase "$(INTDIR)\basicdataformatters.sbr"
 	-@erase "$(INTDIR)\basispointsensitivity.obj"
 	-@erase "$(INTDIR)\basispointsensitivity.sbr"
 	-@erase "$(INTDIR)\basketoption.obj"
@@ -2214,12 +2216,12 @@ CLEAN :
 	-@erase "$(INTDIR)\discretizedasset.sbr"
 	-@erase "$(INTDIR)\discretizedvanillaoption.obj"
 	-@erase "$(INTDIR)\discretizedvanillaoption.sbr"
+	-@erase "$(INTDIR)\dividendeuropeanoption.obj"
+	-@erase "$(INTDIR)\dividendeuropeanoption.sbr"
 	-@erase "$(INTDIR)\errorfunction.obj"
 	-@erase "$(INTDIR)\errorfunction.sbr"
 	-@erase "$(INTDIR)\errors.obj"
 	-@erase "$(INTDIR)\errors.sbr"
-	-@erase "$(INTDIR)\europeanoption.obj"
-	-@erase "$(INTDIR)\europeanoption.sbr"
 	-@erase "$(INTDIR)\exercise.obj"
 	-@erase "$(INTDIR)\exercise.sbr"
 	-@erase "$(INTDIR)\extendedcoxingersollross.obj"
@@ -2234,8 +2236,6 @@ CLEAN :
 	-@erase "$(INTDIR)\fdbsmoption.sbr"
 	-@erase "$(INTDIR)\fddividendamericanoption.obj"
 	-@erase "$(INTDIR)\fddividendamericanoption.sbr"
-	-@erase "$(INTDIR)\fddividendeuropeanoption.obj"
-	-@erase "$(INTDIR)\fddividendeuropeanoption.sbr"
 	-@erase "$(INTDIR)\fddividendoption.obj"
 	-@erase "$(INTDIR)\fddividendoption.sbr"
 	-@erase "$(INTDIR)\fddividendshoutoption.obj"
@@ -2437,14 +2437,14 @@ CLEAN :
 	-@erase "$(INTDIR)\zurich.obj"
 	-@erase "$(INTDIR)\zurich.sbr"
 	-@erase "$(OUTDIR)\QuantLib.bsc"
+	-@erase ".\lib\QuantLib-vc6-mt-gd-0_3_6.idb"
 	-@erase ".\lib\QuantLib-vc6-mt-gd-0_3_6.lib"
-	-@erase ".\lib\Win32\VisualStudio\QuantLib.idb"
-	-@erase ".\lib\Win32\VisualStudio\QuantLib.pdb"
+	-@erase ".\lib\QuantLib-vc6-mt-gd-0_3_6.pdb"
 
 "$(OUTDIR)" :
     if not exist "$(OUTDIR)/$(NULL)" mkdir "$(OUTDIR)"
 
-CPP_PROJ=/nologo /MDd /W3 /Gm /Gi /GR /GX /ZI /Od /I "." /D "_DEBUG" /D "WIN32" /D "_MBCS" /D "_LIB" /D "NOMINMAX" /Fr"$(INTDIR)\\" /Fp"$(INTDIR)\QuantLib.pch" /YX /Fo"$(INTDIR)\\" /Fd"lib\Win32\VisualStudio\QuantLib" /FD /GZ /c 
+CPP_PROJ=/nologo /MDd /W3 /Gm /Gi /GR /GX /ZI /Od /I "." /D "_DEBUG" /D "WIN32" /D "_MBCS" /D "_LIB" /D "NOMINMAX" /Fr"$(INTDIR)\\" /Fp"$(INTDIR)\QuantLib.pch" /YX /Fo"$(INTDIR)\\" /Fd".\lib\QuantLib-vc6-mt-gd-0_3_6" /FD /GZ /c 
 BSC32=bscmake.exe
 BSC32_FLAGS=/nologo /o"$(OUTDIR)\QuantLib.bsc" 
 BSC32_SBRS= \
@@ -2527,11 +2527,10 @@ BSC32_SBRS= \
 	"$(INTDIR)\cliquetoption.sbr" \
 	"$(INTDIR)\discretegeometricapo.sbr" \
 	"$(INTDIR)\discretegeometricaso.sbr" \
-	"$(INTDIR)\europeanoption.sbr" \
+	"$(INTDIR)\dividendeuropeanoption.sbr" \
 	"$(INTDIR)\fdbermudanoption.sbr" \
 	"$(INTDIR)\fdbsmoption.sbr" \
 	"$(INTDIR)\fddividendamericanoption.sbr" \
-	"$(INTDIR)\fddividendeuropeanoption.sbr" \
 	"$(INTDIR)\fddividendoption.sbr" \
 	"$(INTDIR)\fddividendshoutoption.sbr" \
 	"$(INTDIR)\fdeuropean.sbr" \
@@ -2609,7 +2608,8 @@ BSC32_SBRS= \
 	"$(INTDIR)\exercise.sbr" \
 	"$(INTDIR)\grid.sbr" \
 	"$(INTDIR)\scheduler.sbr" \
-	"$(INTDIR)\voltermstructure.sbr"
+	"$(INTDIR)\voltermstructure.sbr" \
+	"$(INTDIR)\basicdataformatters.sbr"
 
 "$(OUTDIR)\QuantLib.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -2698,11 +2698,10 @@ LIB32_OBJS= \
 	"$(INTDIR)\cliquetoption.obj" \
 	"$(INTDIR)\discretegeometricapo.obj" \
 	"$(INTDIR)\discretegeometricaso.obj" \
-	"$(INTDIR)\europeanoption.obj" \
+	"$(INTDIR)\dividendeuropeanoption.obj" \
 	"$(INTDIR)\fdbermudanoption.obj" \
 	"$(INTDIR)\fdbsmoption.obj" \
 	"$(INTDIR)\fddividendamericanoption.obj" \
-	"$(INTDIR)\fddividendeuropeanoption.obj" \
 	"$(INTDIR)\fddividendoption.obj" \
 	"$(INTDIR)\fddividendshoutoption.obj" \
 	"$(INTDIR)\fdeuropean.obj" \
@@ -2780,10 +2779,11 @@ LIB32_OBJS= \
 	"$(INTDIR)\exercise.obj" \
 	"$(INTDIR)\grid.obj" \
 	"$(INTDIR)\scheduler.obj" \
-	"$(INTDIR)\voltermstructure.obj"
+	"$(INTDIR)\voltermstructure.obj" \
+	"$(INTDIR)\basicdataformatters.obj"
 
 ".\lib\QuantLib-vc6-mt-gd-0_3_6.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
-   if not exist lib\Win32\VisualStudio mkdir lib\Win32\VisualStudio
+   if not exist lib mkdir lib
 	 $(LIB32) @<<
   $(LIB32_FLAGS) $(DEF_FLAGS) $(LIB32_OBJS)
 <<
@@ -2824,6 +2824,8 @@ CLEAN :
 	-@erase "$(INTDIR)\baroneadesiwhaleyengine.sbr"
 	-@erase "$(INTDIR)\barrieroption.obj"
 	-@erase "$(INTDIR)\barrieroption.sbr"
+	-@erase "$(INTDIR)\basicdataformatters.obj"
+	-@erase "$(INTDIR)\basicdataformatters.sbr"
 	-@erase "$(INTDIR)\basispointsensitivity.obj"
 	-@erase "$(INTDIR)\basispointsensitivity.sbr"
 	-@erase "$(INTDIR)\basketoption.obj"
@@ -2904,12 +2906,12 @@ CLEAN :
 	-@erase "$(INTDIR)\discretizedasset.sbr"
 	-@erase "$(INTDIR)\discretizedvanillaoption.obj"
 	-@erase "$(INTDIR)\discretizedvanillaoption.sbr"
+	-@erase "$(INTDIR)\dividendeuropeanoption.obj"
+	-@erase "$(INTDIR)\dividendeuropeanoption.sbr"
 	-@erase "$(INTDIR)\errorfunction.obj"
 	-@erase "$(INTDIR)\errorfunction.sbr"
 	-@erase "$(INTDIR)\errors.obj"
 	-@erase "$(INTDIR)\errors.sbr"
-	-@erase "$(INTDIR)\europeanoption.obj"
-	-@erase "$(INTDIR)\europeanoption.sbr"
 	-@erase "$(INTDIR)\exercise.obj"
 	-@erase "$(INTDIR)\exercise.sbr"
 	-@erase "$(INTDIR)\extendedcoxingersollross.obj"
@@ -2924,8 +2926,6 @@ CLEAN :
 	-@erase "$(INTDIR)\fdbsmoption.sbr"
 	-@erase "$(INTDIR)\fddividendamericanoption.obj"
 	-@erase "$(INTDIR)\fddividendamericanoption.sbr"
-	-@erase "$(INTDIR)\fddividendeuropeanoption.obj"
-	-@erase "$(INTDIR)\fddividendeuropeanoption.sbr"
 	-@erase "$(INTDIR)\fddividendoption.obj"
 	-@erase "$(INTDIR)\fddividendoption.sbr"
 	-@erase "$(INTDIR)\fddividendshoutoption.obj"
@@ -3216,11 +3216,10 @@ BSC32_SBRS= \
 	"$(INTDIR)\cliquetoption.sbr" \
 	"$(INTDIR)\discretegeometricapo.sbr" \
 	"$(INTDIR)\discretegeometricaso.sbr" \
-	"$(INTDIR)\europeanoption.sbr" \
+	"$(INTDIR)\dividendeuropeanoption.sbr" \
 	"$(INTDIR)\fdbermudanoption.sbr" \
 	"$(INTDIR)\fdbsmoption.sbr" \
 	"$(INTDIR)\fddividendamericanoption.sbr" \
-	"$(INTDIR)\fddividendeuropeanoption.sbr" \
 	"$(INTDIR)\fddividendoption.sbr" \
 	"$(INTDIR)\fddividendshoutoption.sbr" \
 	"$(INTDIR)\fdeuropean.sbr" \
@@ -3298,7 +3297,8 @@ BSC32_SBRS= \
 	"$(INTDIR)\exercise.sbr" \
 	"$(INTDIR)\grid.sbr" \
 	"$(INTDIR)\scheduler.sbr" \
-	"$(INTDIR)\voltermstructure.sbr"
+	"$(INTDIR)\voltermstructure.sbr" \
+	"$(INTDIR)\basicdataformatters.sbr"
 
 "$(OUTDIR)\QuantLib.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -3387,11 +3387,10 @@ LIB32_OBJS= \
 	"$(INTDIR)\cliquetoption.obj" \
 	"$(INTDIR)\discretegeometricapo.obj" \
 	"$(INTDIR)\discretegeometricaso.obj" \
-	"$(INTDIR)\europeanoption.obj" \
+	"$(INTDIR)\dividendeuropeanoption.obj" \
 	"$(INTDIR)\fdbermudanoption.obj" \
 	"$(INTDIR)\fdbsmoption.obj" \
 	"$(INTDIR)\fddividendamericanoption.obj" \
-	"$(INTDIR)\fddividendeuropeanoption.obj" \
 	"$(INTDIR)\fddividendoption.obj" \
 	"$(INTDIR)\fddividendshoutoption.obj" \
 	"$(INTDIR)\fdeuropean.obj" \
@@ -3469,10 +3468,11 @@ LIB32_OBJS= \
 	"$(INTDIR)\exercise.obj" \
 	"$(INTDIR)\grid.obj" \
 	"$(INTDIR)\scheduler.obj" \
-	"$(INTDIR)\voltermstructure.obj"
+	"$(INTDIR)\voltermstructure.obj" \
+	"$(INTDIR)\basicdataformatters.obj"
 
 ".\lib\QuantLib-vc6-s-0_3_6.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
-   if not exist lib\Win32\VisualStudio mkdir lib\Win32\VisualStudio
+   if not exist lib mkdir lib
 	 $(LIB32) @<<
   $(LIB32_FLAGS) $(DEF_FLAGS) $(LIB32_OBJS)
 <<
@@ -3513,6 +3513,8 @@ CLEAN :
 	-@erase "$(INTDIR)\baroneadesiwhaleyengine.sbr"
 	-@erase "$(INTDIR)\barrieroption.obj"
 	-@erase "$(INTDIR)\barrieroption.sbr"
+	-@erase "$(INTDIR)\basicdataformatters.obj"
+	-@erase "$(INTDIR)\basicdataformatters.sbr"
 	-@erase "$(INTDIR)\basispointsensitivity.obj"
 	-@erase "$(INTDIR)\basispointsensitivity.sbr"
 	-@erase "$(INTDIR)\basketoption.obj"
@@ -3593,12 +3595,12 @@ CLEAN :
 	-@erase "$(INTDIR)\discretizedasset.sbr"
 	-@erase "$(INTDIR)\discretizedvanillaoption.obj"
 	-@erase "$(INTDIR)\discretizedvanillaoption.sbr"
+	-@erase "$(INTDIR)\dividendeuropeanoption.obj"
+	-@erase "$(INTDIR)\dividendeuropeanoption.sbr"
 	-@erase "$(INTDIR)\errorfunction.obj"
 	-@erase "$(INTDIR)\errorfunction.sbr"
 	-@erase "$(INTDIR)\errors.obj"
 	-@erase "$(INTDIR)\errors.sbr"
-	-@erase "$(INTDIR)\europeanoption.obj"
-	-@erase "$(INTDIR)\europeanoption.sbr"
 	-@erase "$(INTDIR)\exercise.obj"
 	-@erase "$(INTDIR)\exercise.sbr"
 	-@erase "$(INTDIR)\extendedcoxingersollross.obj"
@@ -3613,8 +3615,6 @@ CLEAN :
 	-@erase "$(INTDIR)\fdbsmoption.sbr"
 	-@erase "$(INTDIR)\fddividendamericanoption.obj"
 	-@erase "$(INTDIR)\fddividendamericanoption.sbr"
-	-@erase "$(INTDIR)\fddividendeuropeanoption.obj"
-	-@erase "$(INTDIR)\fddividendeuropeanoption.sbr"
 	-@erase "$(INTDIR)\fddividendoption.obj"
 	-@erase "$(INTDIR)\fddividendoption.sbr"
 	-@erase "$(INTDIR)\fddividendshoutoption.obj"
@@ -3816,14 +3816,14 @@ CLEAN :
 	-@erase "$(INTDIR)\zurich.obj"
 	-@erase "$(INTDIR)\zurich.sbr"
 	-@erase "$(OUTDIR)\QuantLib.bsc"
+	-@erase ".\lib\QuantLib-vc6-sgd-0_3_6.idb"
 	-@erase ".\lib\QuantLib-vc6-sgd-0_3_6.lib"
-	-@erase ".\lib\Win32\VisualStudio\QuantLib.idb"
-	-@erase ".\lib\Win32\VisualStudio\QuantLib.pdb"
+	-@erase ".\lib\QuantLib-vc6-sgd-0_3_6.pdb"
 
 "$(OUTDIR)" :
     if not exist "$(OUTDIR)/$(NULL)" mkdir "$(OUTDIR)"
 
-CPP_PROJ=/nologo /MLd /W3 /Gm /Gi /GR /GX /ZI /Od /I "." /D "_DEBUG" /D "WIN32" /D "_MBCS" /D "_LIB" /D "NOMINMAX" /Fr"$(INTDIR)\\" /Fp"$(INTDIR)\QuantLib.pch" /YX /Fo"$(INTDIR)\\" /Fd"lib\Win32\VisualStudio\QuantLib" /FD /GZ /c 
+CPP_PROJ=/nologo /MLd /W3 /Gm /Gi /GR /GX /ZI /Od /I "." /D "_DEBUG" /D "WIN32" /D "_MBCS" /D "_LIB" /D "NOMINMAX" /Fr"$(INTDIR)\\" /Fp"$(INTDIR)\QuantLib.pch" /YX /Fo"$(INTDIR)\\" /Fd".\lib\QuantLib-vc6-sgd-0_3_6" /FD /GZ /c 
 BSC32=bscmake.exe
 BSC32_FLAGS=/nologo /o"$(OUTDIR)\QuantLib.bsc" 
 BSC32_SBRS= \
@@ -3906,11 +3906,10 @@ BSC32_SBRS= \
 	"$(INTDIR)\cliquetoption.sbr" \
 	"$(INTDIR)\discretegeometricapo.sbr" \
 	"$(INTDIR)\discretegeometricaso.sbr" \
-	"$(INTDIR)\europeanoption.sbr" \
+	"$(INTDIR)\dividendeuropeanoption.sbr" \
 	"$(INTDIR)\fdbermudanoption.sbr" \
 	"$(INTDIR)\fdbsmoption.sbr" \
 	"$(INTDIR)\fddividendamericanoption.sbr" \
-	"$(INTDIR)\fddividendeuropeanoption.sbr" \
 	"$(INTDIR)\fddividendoption.sbr" \
 	"$(INTDIR)\fddividendshoutoption.sbr" \
 	"$(INTDIR)\fdeuropean.sbr" \
@@ -3988,7 +3987,8 @@ BSC32_SBRS= \
 	"$(INTDIR)\exercise.sbr" \
 	"$(INTDIR)\grid.sbr" \
 	"$(INTDIR)\scheduler.sbr" \
-	"$(INTDIR)\voltermstructure.sbr"
+	"$(INTDIR)\voltermstructure.sbr" \
+	"$(INTDIR)\basicdataformatters.sbr"
 
 "$(OUTDIR)\QuantLib.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -4077,11 +4077,10 @@ LIB32_OBJS= \
 	"$(INTDIR)\cliquetoption.obj" \
 	"$(INTDIR)\discretegeometricapo.obj" \
 	"$(INTDIR)\discretegeometricaso.obj" \
-	"$(INTDIR)\europeanoption.obj" \
+	"$(INTDIR)\dividendeuropeanoption.obj" \
 	"$(INTDIR)\fdbermudanoption.obj" \
 	"$(INTDIR)\fdbsmoption.obj" \
 	"$(INTDIR)\fddividendamericanoption.obj" \
-	"$(INTDIR)\fddividendeuropeanoption.obj" \
 	"$(INTDIR)\fddividendoption.obj" \
 	"$(INTDIR)\fddividendshoutoption.obj" \
 	"$(INTDIR)\fdeuropean.obj" \
@@ -4159,10 +4158,11 @@ LIB32_OBJS= \
 	"$(INTDIR)\exercise.obj" \
 	"$(INTDIR)\grid.obj" \
 	"$(INTDIR)\scheduler.obj" \
-	"$(INTDIR)\voltermstructure.obj"
+	"$(INTDIR)\voltermstructure.obj" \
+	"$(INTDIR)\basicdataformatters.obj"
 
 ".\lib\QuantLib-vc6-sgd-0_3_6.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
-   if not exist lib\Win32\VisualStudio mkdir lib\Win32\VisualStudio
+   if not exist lib mkdir lib
 	 $(LIB32) @<<
   $(LIB32_FLAGS) $(DEF_FLAGS) $(LIB32_OBJS)
 <<
@@ -4686,9 +4686,9 @@ SOURCE=.\ql\Pricers\discretegeometricaso.cpp
 	$(CPP) $(CPP_PROJ) $(SOURCE)
 
 
-SOURCE=.\ql\Pricers\europeanoption.cpp
+SOURCE=.\ql\Pricers\dividendeuropeanoption.cpp
 
-"$(INTDIR)\europeanoption.obj"	"$(INTDIR)\europeanoption.sbr" : $(SOURCE) "$(INTDIR)"
+"$(INTDIR)\dividendeuropeanoption.obj"	"$(INTDIR)\dividendeuropeanoption.sbr" : $(SOURCE) "$(INTDIR)"
 	$(CPP) $(CPP_PROJ) $(SOURCE)
 
 
@@ -4707,12 +4707,6 @@ SOURCE=.\ql\Pricers\fdbsmoption.cpp
 SOURCE=.\ql\Pricers\fddividendamericanoption.cpp
 
 "$(INTDIR)\fddividendamericanoption.obj"	"$(INTDIR)\fddividendamericanoption.sbr" : $(SOURCE) "$(INTDIR)"
-	$(CPP) $(CPP_PROJ) $(SOURCE)
-
-
-SOURCE=.\ql\Pricers\fddividendeuropeanoption.cpp
-
-"$(INTDIR)\fddividendeuropeanoption.obj"	"$(INTDIR)\fddividendeuropeanoption.sbr" : $(SOURCE) "$(INTDIR)"
 	$(CPP) $(CPP_PROJ) $(SOURCE)
 
 
@@ -4760,7 +4754,7 @@ CPP_SWITCHES=/nologo /MT /W3 /Gi /GR /GX /O2 /Ob2 /I "." /D "NDEBUG" /D "WIN32" 
 
 !ELSEIF  "$(CFG)" == "QuantLib - Win32 Debug"
 
-CPP_SWITCHES=/nologo /MTd /W3 /Gm /Gi /GR /GX /ZI /Od /I "." /D "_DEBUG" /D "WIN32" /D "_MBCS" /D "_LIB" /D "NOMINMAX" /Fr"$(INTDIR)\\" /Fp"$(INTDIR)\QuantLib.pch" /YX /Fo"$(INTDIR)\\" /Fd"lib\Win32\VisualStudio\QuantLib" /FD /GZ /c 
+CPP_SWITCHES=/nologo /MTd /W3 /Gm /Gi /GR /GX /ZI /Od /I "." /D "_DEBUG" /D "WIN32" /D "_MBCS" /D "_LIB" /D "NOMINMAX" /Fr"$(INTDIR)\\" /Fp"$(INTDIR)\QuantLib.pch" /YX /Fo"$(INTDIR)\\" /Fd".\lib\QuantLib-vc6-mt-sgd-0_3_6" /FD /GZ /c 
 
 "$(INTDIR)\mcbasket.obj"	"$(INTDIR)\mcbasket.sbr" : $(SOURCE) "$(INTDIR)"
 	$(CPP) @<<
@@ -4780,7 +4774,7 @@ CPP_SWITCHES=/nologo /MD /W3 /Gi /GR /GX /O2 /Ob2 /I "." /D "NDEBUG" /D "WIN32" 
 
 !ELSEIF  "$(CFG)" == "QuantLib - Win32 Debug MTDLL"
 
-CPP_SWITCHES=/nologo /MDd /W3 /Gm /Gi /GR /GX /ZI /Od /I "." /D "_DEBUG" /D "WIN32" /D "_MBCS" /D "_LIB" /D "NOMINMAX" /Fr"$(INTDIR)\\" /Fp"$(INTDIR)\QuantLib.pch" /YX /Fo"$(INTDIR)\\" /Fd"lib\Win32\VisualStudio\QuantLib" /FD /GZ /c 
+CPP_SWITCHES=/nologo /MDd /W3 /Gm /Gi /GR /GX /ZI /Od /I "." /D "_DEBUG" /D "WIN32" /D "_MBCS" /D "_LIB" /D "NOMINMAX" /Fr"$(INTDIR)\\" /Fp"$(INTDIR)\QuantLib.pch" /YX /Fo"$(INTDIR)\\" /Fd".\lib\QuantLib-vc6-mt-gd-0_3_6" /FD /GZ /c 
 
 "$(INTDIR)\mcbasket.obj"	"$(INTDIR)\mcbasket.sbr" : $(SOURCE) "$(INTDIR)"
 	$(CPP) @<<
@@ -4800,7 +4794,7 @@ CPP_SWITCHES=/nologo /ML /W3 /Gi /GR /GX /O2 /Ob2 /I "." /D "NDEBUG" /D "WIN32" 
 
 !ELSEIF  "$(CFG)" == "QuantLib - Win32 Debug SingleThread"
 
-CPP_SWITCHES=/nologo /MLd /W3 /Gm /Gi /GR /GX /ZI /Od /I "." /D "_DEBUG" /D "WIN32" /D "_MBCS" /D "_LIB" /D "NOMINMAX" /Fr"$(INTDIR)\\" /Fp"$(INTDIR)\QuantLib.pch" /YX /Fo"$(INTDIR)\\" /Fd"lib\Win32\VisualStudio\QuantLib" /FD /GZ /c 
+CPP_SWITCHES=/nologo /MLd /W3 /Gm /Gi /GR /GX /ZI /Od /I "." /D "_DEBUG" /D "WIN32" /D "_MBCS" /D "_LIB" /D "NOMINMAX" /Fr"$(INTDIR)\\" /Fp"$(INTDIR)\QuantLib.pch" /YX /Fo"$(INTDIR)\\" /Fd".\lib\QuantLib-vc6-sgd-0_3_6" /FD /GZ /c 
 
 "$(INTDIR)\mcbasket.obj"	"$(INTDIR)\mcbasket.sbr" : $(SOURCE) "$(INTDIR)"
 	$(CPP) @<<
@@ -5173,6 +5167,12 @@ SOURCE=.\ql\Volatilities\blackvariancesurface.cpp
 SOURCE=.\ql\Volatilities\localvolsurface.cpp
 
 "$(INTDIR)\localvolsurface.obj"	"$(INTDIR)\localvolsurface.sbr" : $(SOURCE) "$(INTDIR)"
+	$(CPP) $(CPP_PROJ) $(SOURCE)
+
+
+SOURCE=.\ql\basicdataformatters.cpp
+
+"$(INTDIR)\basicdataformatters.obj"	"$(INTDIR)\basicdataformatters.sbr" : $(SOURCE) "$(INTDIR)"
 	$(CPP) $(CPP_PROJ) $(SOURCE)
 
 
