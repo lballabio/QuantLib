@@ -86,6 +86,7 @@ tex-files:: html
            -e "/include{license}/d" \
            -e "/include{math}/d" \
            -e "/include{mcarlo}/d" \
+           -e "/include{fixedincome}/d" \
            -e "/include{overview}/d" \
            -e "/include{patterns}/d" \
            -e "/include{platforms}/d" \
