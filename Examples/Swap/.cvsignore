@@ -1,7 +1,6 @@
-SwapValuation.tds
-Swap.plg
-SwapValuation.exe
-Swap.dep
-SwapValuation.obj
+*.tds
+*.plg
+*.exe
+*.dep
+*.obj
 build
-

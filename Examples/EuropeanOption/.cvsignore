@@ -1,7 +1,6 @@
-EuropeanOption.tds
-EuropeanOption.plg
-EuropeanOption.exe
-EuropeanOption.dep
-EuropeanOption.obj
+*.tds
+*.plg
+*.exe
+*.dep
+*.obj
 build
-

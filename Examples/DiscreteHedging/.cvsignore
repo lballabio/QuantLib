@@ -1,6 +1,6 @@
-DiscreteHedging.tds
-DiscreteHedging.plg
-DiscreteHedging.exe
-DiscreteHedging.dep
-DiscreteHedging.obj
+*.tds
+*.plg
+*.exe
+*.dep
+*.obj
 build

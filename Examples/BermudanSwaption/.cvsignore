@@ -1,6 +1,6 @@
-BermudanSwaption.tds
-BermudanSwaption.plg
-BermudanSwaption.exe
-BermudanSwaption.dep
-BermudanSwaption.obj
+*.tds
+*.plg
+*.exe
+*.dep
+*.obj
 build

@@ -4,3 +4,4 @@ stamp-h
 stamp-h.in
 .qldefines.hpp
 *.lib
+*.obj_d
