@@ -121,6 +121,7 @@
 #include <ql/Indexes/xibormanager.hpp>
 
 #include <ql/Instruments/capfloor.hpp>
+#include <ql/Instruments/forwardvanillaoption.hpp>
 #include <ql/Instruments/quantovanillaoption.hpp>
 #include <ql/Instruments/simpleswap.hpp>
 #include <ql/Instruments/stock.hpp>
@@ -230,6 +231,7 @@
 #include <ql/PricingEngines/discretizedvanillaoption.hpp>
 #include <ql/PricingEngines/forwardengines.hpp>
 #include <ql/PricingEngines/genericengine.hpp>
+#include <ql/PricingEngines/latticeshortratemodelengine.hpp>
 #include <ql/PricingEngines/quantoengines.hpp>
 #include <ql/PricingEngines/vanillaengines.hpp>
 
