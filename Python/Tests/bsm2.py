@@ -1,6 +1,25 @@
+"""
+/*
+ * Copyright (C) 2000
+ * Ferdinando Ametrano, Luigi Ballabio, Adolfo Benin, Marco Marchioro
+ * 
+ * This file is part of the QuantLib
+ * QuantLib is a C++ open source library for financial quantitative
+ * analysts and developers --- http://quantlib.sourceforge.net/
+ *
+ * QuantLib is free software and you are allowed to use, copy, modify, merge,
+ * publish, distribute, and/or sell copies of it under the conditions stated 
+ * in the QuantLib License: see the file LICENSE.TXT for details.
+ * Contact ferdinando@ametrano.net if LICENSE.TXT was not distributed with this file.
+ * LICENCE.TXT is also available at http://quantlib.sourceforge.net/LICENSE.TXT
+*/
+"""
+
+# this file tests the method impliedVolatility
+# (actually it really tests the Brent 1D solver that's used in impliedVolatility)
+
 import math, time
-#import QuantLib
-import shaft
+from QuantLib import BSMEuropeanOption
 
 typRange = ['Call']
 typRange = ['Call', 'Put', 'Straddle']
@@ -33,13 +52,11 @@ for typ in typRange:
         for rRate in rRateRange:
           for resTime in resTimeRange:
             for vol in volRange:
-              #bsm = QuantLib.BSMEuropeanOption(typ, under, strike, qRate, rRate, resTime, vol)
-              bsm = shaft.BSMEuropeanOption(typ, under, strike, qRate, rRate, resTime, vol)
+              bsm = BSMEuropeanOption(typ, under, strike, qRate, rRate, resTime, vol)
               bsmValue = bsm.value()
               for dVol in dVolRange:
                 vol2 = vol*dVol
-                #bsm2 = QuantLib.BSMEuropeanOption(typ, under, strike, qRate, rRate, resTime, vol2)
-                bsm2 = shaft.BSMEuropeanOption(typ, under, strike, qRate, rRate, resTime, vol2)
+                bsm2 = BSMEuropeanOption(typ, under, strike, qRate, rRate, resTime, vol2)
                 try:
                   for i in range(dummyiterations):
                     implVol = bsm2.impliedVolatility(bsmValue, tol, maxEval)
@@ -53,8 +70,7 @@ for typ in typRange:
                   raise e
                 err = abs(implVol-vol)
                 if err > tol :
-                  #bsm3 = QuantLib.BSMEuropeanOption(typ, under, strike, qRate, rRate, resTime, implVol)
-                  bsm3 = shaft.BSMEuropeanOption(typ, under, strike, qRate, rRate, resTime, implVol)
+                  bsm3 = BSMEuropeanOption(typ, under, strike, qRate, rRate, resTime, implVol)
                   bsm3Value = bsm3.value()
                   if (abs(bsm3Value-bsmValue)/under>1e-3):
                     bsm2Value = bsm2.value()
