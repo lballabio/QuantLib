@@ -51,13 +51,11 @@ int main() {
     runner.eventManager().addListener(&qlListener);
 
     runner.addTest(new CalendarTest);
-    runner.addTest(CapFloorTest::suite());
     runner.addTest(CompoundForwardTest::suite());
     runner.addTest(CovarianceTest::suite());
     runner.addTest(new DateTest);
     runner.addTest(new DayCounterTest);
     runner.addTest(new DistributionTest);
-    runner.addTest(EuropeanOptionTest::suite());
     runner.addTest(InstrumentTest::suite());
     runner.addTest(new IntegralTest);
     runner.addTest(LDSTest::suite());
@@ -65,22 +63,27 @@ int main() {
     runner.addTest(new MatricesTest());
     runner.addTest(new MersenneTwisterTest());
     runner.addTest(new OperatorTest);
-    runner.addTest(PiecewiseFlatForwardTest::suite());
     runner.addTest(new RiskStatisticsTest);
     runner.addTest(new Solver1DTest);
-    runner.addTest(SimpleSwapTest::suite());
     runner.addTest(new StatisticsTest);
     runner.addTest(SwaptionTest::suite());
-    runner.addTest(TermStructureTest::suite());
 
     // to be deprecated
     runner.addTest(OldPricerTest::suite());
+
+    // don't work under Borland
+    runner.addTest(TermStructureTest::suite());
+    runner.addTest(PiecewiseFlatForwardTest::suite());
+    runner.addTest(SimpleSwapTest::suite());
+    runner.addTest(CapFloorTest::suite());
+    runner.addTest(EuropeanOptionTest::suite());
+
 
     std::string quote = "\n"
         "                    Testing can never demonstrate the absence   \n"
         "                    of errors in software, only their presence. \n"
         "                                           -- W.E. Dijkstra \n";
-    std::string header = "Testing QuantLib " QL_VERSION ;
+    std::string header = "Testing QuantLib " QL_VERSION " using CppUnit " CPPUNIT_VERSION;
 
     std::cerr << quote << std::endl;
     std::cerr << std::string(header.length(),'=') << std::endl;
