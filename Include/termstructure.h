@@ -28,6 +28,10 @@
     $Source$
     $Name$
     $Log$
+    Revision 1.12  2001/01/18 14:36:13  nando
+    80 columns enforced
+    private members with trailing underscore
+
     Revision 1.11  2001/01/18 13:18:11  nando
     now term structure allows extrapolation
 
@@ -185,8 +189,8 @@ namespace QuantLib {
         //! unregisters with the original structure as well
         void unregisterAll();
       private:
-        Handle<TermStructure> theOriginalCurve;
-        Date theEvaluationDate;
+        Handle<TermStructure> originalCurve_;
+        Date evaluationDate_;
     };
 
     //! Term structure with an added spread on the zero yield rate
@@ -212,8 +216,8 @@ namespace QuantLib {
         //! unregisters with the original structure as well
         void unregisterAll();
       private:
-        Handle<TermStructure> theOriginalCurve;
-        Spread theSpread;
+        Handle<TermStructure> originalCurve_;
+        Spread spread_;
     };
 
 
@@ -313,9 +317,9 @@ namespace QuantLib {
 
     inline ImpliedTermStructure::ImpliedTermStructure(
         const Handle<TermStructure>& h, const Date& evaluationDate)
-    : theOriginalCurve(h), theEvaluationDate(evaluationDate) {
+    : originalCurve_(h), evaluationDate_(evaluationDate) {
 
-        QL_REQUIRE(evaluationDate<=theOriginalCurve->maxDate(),
+        QL_REQUIRE(evaluationDate<=originalCurve_->maxDate(),
             "ImpliedTermStructure::ImpliedTermStructure : "
             "the evaluation date "
             "can't be greater than the original curve max date");
@@ -323,23 +327,23 @@ namespace QuantLib {
     }
 
     inline Handle<Currency> ImpliedTermStructure::currency() const {
-        return theOriginalCurve->currency();
+        return originalCurve_->currency();
     }
 
     inline Date ImpliedTermStructure::todaysDate() const {
-        return theEvaluationDate;
+        return evaluationDate_;
     }
 
     inline Date ImpliedTermStructure::settlementDate() const {
-        return theOriginalCurve->currency()->settlementDate(theEvaluationDate);
+        return originalCurve_->currency()->settlementDate(evaluationDate_);
     }
 
     inline Handle<Calendar> ImpliedTermStructure::calendar() const {
-        return theOriginalCurve->calendar();
+        return originalCurve_->calendar();
     }
 
     inline Date ImpliedTermStructure::maxDate() const {
-        return theOriginalCurve->maxDate();
+        return originalCurve_->maxDate();
     }
 
     inline Date ImpliedTermStructure::minDate() const {
@@ -349,31 +353,31 @@ namespace QuantLib {
     inline DiscountFactor ImpliedTermStructure::discount(
                                                     const Date& d,
                                                     bool extrapolate) const {
-        // theEvaluationDate cannot be an extrapolation
-        return theOriginalCurve->discount(d, extrapolate) /
-            theOriginalCurve->discount(theEvaluationDate, false);
+        // evaluationDate cannot be an extrapolation
+        return originalCurve_->discount(d, extrapolate) /
+            originalCurve_->discount(evaluationDate_, false);
     }
 
     inline Handle<TermStructure> ImpliedTermStructure::clone() const {
         return Handle<TermStructure>(new ImpliedTermStructure(
-            theOriginalCurve->clone(),theEvaluationDate));
+            originalCurve_->clone(),evaluationDate_));
     }
 
     inline void ImpliedTermStructure::registerObserver(Patterns::Observer* o) {
         TermStructure::registerObserver(o);
-        theOriginalCurve->registerObserver(o);
+        originalCurve_->registerObserver(o);
     }
 
     inline void ImpliedTermStructure::unregisterObserver(
       Patterns::Observer* o) {
         TermStructure::unregisterObserver(o);
-        theOriginalCurve->unregisterObserver(o);
+        originalCurve_->unregisterObserver(o);
     }
 
     inline void ImpliedTermStructure::unregisterAll() {
         for (std::set<Patterns::Observer*>::iterator i = observers().begin();
           i!=observers().end(); ++i)
-            theOriginalCurve->unregisterObserver(*i);
+            originalCurve_->unregisterObserver(*i);
         TermStructure::unregisterAll();
     }
 
@@ -382,57 +386,57 @@ namespace QuantLib {
 
     inline SpreadedTermStructure::SpreadedTermStructure(
         const Handle<TermStructure>& h, Spread spread)
-    : theOriginalCurve(h), theSpread(spread) {}
+    : originalCurve_(h), spread_(spread) {}
 
     inline Handle<Currency> SpreadedTermStructure::currency() const {
-        return theOriginalCurve->currency();
+        return originalCurve_->currency();
     }
 
     inline Date SpreadedTermStructure::todaysDate() const {
-        return theOriginalCurve->todaysDate();
+        return originalCurve_->todaysDate();
     }
 
     inline Date SpreadedTermStructure::settlementDate() const {
-        return theOriginalCurve->settlementDate();
+        return originalCurve_->settlementDate();
     }
 
     inline Handle<Calendar> SpreadedTermStructure::calendar() const {
-        return theOriginalCurve->calendar();
+        return originalCurve_->calendar();
     }
 
     inline Date SpreadedTermStructure::maxDate() const {
-        return theOriginalCurve->maxDate();
+        return originalCurve_->maxDate();
     }
 
     inline Date SpreadedTermStructure::minDate() const {
-        return theOriginalCurve->minDate();
+        return originalCurve_->minDate();
     }
 
     inline Rate SpreadedTermStructure::zeroYield(const Date& d,
                                                  bool extrapolate) const {
-        return theOriginalCurve->zeroYield(d, extrapolate)+theSpread;
+        return originalCurve_->zeroYield(d, extrapolate)+spread_;
     }
 
     inline Handle<TermStructure> SpreadedTermStructure::clone() const {
         return Handle<TermStructure>(new SpreadedTermStructure(
-            theOriginalCurve->clone(),theSpread));
+            originalCurve_->clone(),spread_));
     }
 
     inline void SpreadedTermStructure::registerObserver(Patterns::Observer* o) {
         TermStructure::registerObserver(o);
-        theOriginalCurve->registerObserver(o);
+        originalCurve_->registerObserver(o);
     }
 
     inline void SpreadedTermStructure::unregisterObserver(
       Patterns::Observer* o) {
         TermStructure::unregisterObserver(o);
-        theOriginalCurve->unregisterObserver(o);
+        originalCurve_->unregisterObserver(o);
     }
 
     inline void SpreadedTermStructure::unregisterAll() {
         for (std::set<Patterns::Observer*>::iterator i = observers().begin();
           i!=observers().end(); ++i)
-            theOriginalCurve->unregisterObserver(*i);
+            originalCurve_->unregisterObserver(*i);
         TermStructure::unregisterAll();
     }
 

@@ -18,7 +18,8 @@
  * You should have received a copy of the license along with this file;
  * if not, contact ferdinando@ametrano.net
  *
- * QuantLib license is also available at http://quantlib.sourceforge.net/LICENSE.TXT
+ * QuantLib license is also available at
+ * http://quantlib.sourceforge.net/LICENSE.TXT
 */
 
 /*! \file piecewiseconstantforwards.h
@@ -27,6 +28,10 @@
     $Source$
     $Name$
     $Log$
+    Revision 1.7  2001/01/18 14:36:30  nando
+    80 columns enforced
+    private members with trailing underscore
+
     Revision 1.6  2001/01/18 13:18:50  nando
     now term structure allows extrapolation
 
@@ -76,51 +81,53 @@ namespace QuantLib {
             Rate forward(const Date&, bool extrapolate = false) const;
           private:
             // methods
-            int nextNode(const Date& d, bool extrapolate) const;
+            int nextNode_(const Date& d, bool extrapolate) const;
             // data members
-            Handle<Currency> theCurrency;
-            Handle<DayCounter> theDayCounter;
-            Date today;
+            Handle<Currency> currency_;
+            Handle<DayCounter> dayCounter_;
+            Date today_;
             int nodesNumber_;
-            std::vector<Date> theNodes;
-            std::vector<Time> theTimes;
-            std::vector<DiscountFactor> theDiscounts;
-            std::vector<Rate> theForwards, theZeroYields;
-            std::vector<Deposit> theDeposits;
+            std::vector<Date> nodes_;
+            std::vector<Time> times_;
+            std::vector<DiscountFactor> discounts_;
+            std::vector<Rate> forwards_, zeroYields_;
+            // here to be used in the clone method
+            // to be replaced by an observable pattern
+            std::vector<Deposit> deposits_;
         };
 
         // inline definitions
 
         inline Handle<TermStructure> PiecewiseConstantForwards::clone() const {
             return Handle<TermStructure>(new PiecewiseConstantForwards(
-                                                                 theCurrency,
-                                                                 theDayCounter,
-                                                                 today,
-                                                                 theDeposits));
+                                                                 currency_,
+                                                                 dayCounter_,
+                                                                 today_,
+                                                                 deposits_));
         }
 
         inline Handle<Currency> PiecewiseConstantForwards::currency() const {
-            return theCurrency;
+            return currency_;
         }
 
         inline Handle<DayCounter> PiecewiseConstantForwards::dayCounter() const{
-            return theDayCounter;
+            return dayCounter_;
         }
 
         inline Date PiecewiseConstantForwards::todaysDate() const {
-            return today;
+            return today_;
         }
 
         inline Date PiecewiseConstantForwards::settlementDate() const {
-            return theCurrency->settlementDate(today);
+            return currency_->settlementDate(today_);
         }
 
         inline Handle<Calendar> PiecewiseConstantForwards::calendar() const {
-            return theCurrency->settlementCalendar();
+            return currency_->settlementCalendar();
         }
 
         inline Date PiecewiseConstantForwards::maxDate() const {
-            return theNodes.back();
+            return nodes_.back();
         }
 
         inline Date PiecewiseConstantForwards::minDate() const {

@@ -27,6 +27,10 @@
     $Source$
     $Name$
     $Log$
+    Revision 1.7  2001/01/18 14:36:30  nando
+    80 columns enforced
+    private members with trailing underscore
+
     Revision 1.6  2001/01/18 13:18:50  nando
     now term structure allows extrapolation
 
@@ -54,8 +58,10 @@ namespace QuantLib {
         class FlatForward : public TermStructure {
           public:
             // constructor
-            FlatForward(const Handle<Currency>& currency, const Handle<DayCounter>& dayCounter,
-              const Date& today, Rate forward);
+            FlatForward(const Handle<Currency>& currency,
+                        const Handle<DayCounter>& dayCounter,
+                        const Date& today,
+                        Rate forward);
             // clone
             Handle<TermStructure> clone() const;
             // inspectors
@@ -69,44 +75,51 @@ namespace QuantLib {
             // zero yield
             Rate zeroYield(const Date&, bool extrapolate = false) const;
             // discount
-            DiscountFactor discount(const Date&, bool extrapolate = false) const;
+            DiscountFactor discount(const Date&,
+                                    bool extrapolate = false) const;
             // forward (instantaneous)
             Rate forward(const Date&, bool extrapolate = false) const;
           private:
-            Handle<Currency> theCurrency;
-            Handle<DayCounter> theDayCounter;
-            Date today;
-            Rate theForward;
+            Handle<Currency> currency_;
+            Handle<DayCounter> dayCounter_;
+            Date today_;
+            Rate forward_;
         };
 
         // inline definitions
 
-        inline FlatForward::FlatForward(const Handle<Currency>& currency, const Handle<DayCounter>& dayCounter,
-          const Date& today, Rate forward)
-        : theCurrency(currency), theDayCounter(dayCounter), today(today), theForward(forward) {}
+        inline FlatForward::FlatForward(const Handle<Currency>& currency,
+                                        const Handle<DayCounter>& dayCounter,
+                                        const Date& today,
+                                        Rate forward)
+        : currency_(currency), dayCounter_(dayCounter), today_(today),
+          forward_(forward) {}
 
         inline Handle<TermStructure> FlatForward::clone() const {
-            return Handle<TermStructure>(new FlatForward(theCurrency,theDayCounter,today,theForward));
+            return Handle<TermStructure>(new FlatForward(currency_,
+                                                         dayCounter_,
+                                                         today_,
+                                                         forward_));
         }
 
         inline Handle<Currency> FlatForward::currency() const {
-            return theCurrency;
+            return currency_;
         }
 
         inline Handle<DayCounter> FlatForward::dayCounter() const {
-            return theDayCounter;
+            return dayCounter_;
         }
 
         inline Date FlatForward::todaysDate() const {
-            return today;
+            return today_;
         }
 
         inline Date FlatForward::settlementDate() const {
-            return theCurrency->settlementDate(today);
+            return currency_->settlementDate(today_);
         }
 
         inline Handle<Calendar> FlatForward::calendar() const {
-            return theCurrency->settlementCalendar();
+            return currency_->settlementCalendar();
         }
 
         inline Date FlatForward::maxDate() const {
@@ -117,26 +130,32 @@ namespace QuantLib {
             return settlementDate();
         }
 
-        /*! \pre the given date must be in the range of definition of the term structure */
-        inline Rate FlatForward::zeroYield(const Date& d, bool extrapolate) const {
+        /*! \pre the given date must be in the range of definition
+        of the term structure */
+        inline Rate FlatForward::zeroYield(const Date& d,
+                                           bool extrapolate) const {
             QL_REQUIRE(d>=minDate() && (d<=maxDate() || extrapolate),
                 "date outside curve definition");
-            return theForward;
+            return forward_;
         }
 
-        /*! \pre the given date must be in the range of definition of the term structure */
-        inline DiscountFactor FlatForward::discount(const Date& d, bool extrapolate) const {
+        /*! \pre the given date must be in the range of definition
+        of the term structure */
+        inline DiscountFactor FlatForward::discount(const Date& d,
+                                                    bool extrapolate) const {
             QL_REQUIRE(d>=minDate() && (d<=maxDate() || extrapolate),
                 "date outside curve definition");
-            double t = theDayCounter->yearFraction(settlementDate(),d);
-            return DiscountFactor(QL_EXP(-theForward*t));
+            double t = dayCounter_->yearFraction(settlementDate(),d);
+            return DiscountFactor(QL_EXP(-forward_*t));
         }
 
-        /*! \pre the given date must be in the range of definition of the term structure */
-        inline Rate FlatForward::forward(const Date& d, bool extrapolate) const {
+        /*! \pre the given date must be in the range of definition
+        of the term structure */
+        inline Rate FlatForward::forward(const Date& d,
+                                         bool extrapolate) const {
             QL_REQUIRE(d>=minDate() && (d<=maxDate() || extrapolate),
                 "date outside curve definition");
-            return theForward;
+            return forward_;
         }
 
     }
