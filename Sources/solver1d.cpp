@@ -27,6 +27,9 @@
     $Source$
     $Name$
     $Log$
+    Revision 1.14  2001/03/02 14:01:36  aleppo
+    Bug Fixed
+
     Revision 1.13  2001/02/16 07:57:41  marmar
     The condition "fxMax_ == 0.0" became "if (QL_FABS(fxMax_) <= xAccuracy",
     and other minor changes
@@ -118,11 +121,11 @@ namespace QuantLib {
     double Solver1D::solve(const ObjectiveFunction& f,
                            double xAccuracy,
                            double guess,
-                           double xMin_,
-                           double xMax_) const {
+                           double xMin,
+                           double xMax) const {
 
-        xMin_ = xMin_;
-        xMax_ = xMax_;
+        xMin_ = xMin;
+        xMax_ = xMax;
         QL_REQUIRE(xMin_ < xMax_, "invalid range: xMin_ (" +
                 DoubleFormatter::toString(xMin_) +
                 ") >= xMax_ (" + DoubleFormatter::toString(xMax_) + ")");
