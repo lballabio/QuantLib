@@ -18,6 +18,7 @@
 #ifndef quantlib_test_old_pricers_hpp
 #define quantlib_test_old_pricers_hpp
 
+#include <ql/qldefines.hpp>  // needed for QL_DEPRECATED_DISABLED
 #include <boost/test/unit_test.hpp>
 
 class OldPricerTest {

@@ -201,7 +201,7 @@ void OldPricerTest::testFdEuropeanPricer() {
     double tolerance = 1.0e-2;
     Size totCases = 200;
 
-    UniformRandomGenerator rng(56789012);
+    PseudoRandom::urng_type rng(56789012);
 
     Option::Type types[] = { Option::Call, Option::Put, Option::Straddle };
 
@@ -870,7 +870,9 @@ void OldPricerTest::testMcMultiFactorPricers() {
 test_suite* OldPricerTest::suite() {
     test_suite* suite = BOOST_TEST_SUITE("Old-style pricer tests");
     suite->add(BOOST_TEST_CASE(&OldPricerTest::testCliquetPricer));
+#ifndef QL_DEPRECATED_DISABLED
     suite->add(BOOST_TEST_CASE(&OldPricerTest::testDividendEuropeanPricer));
+#endif
     suite->add(BOOST_TEST_CASE(&OldPricerTest::testFdEuropeanPricer));
     suite->add(BOOST_TEST_CASE(&OldPricerTest::testAmericanPricers));
     suite->add(BOOST_TEST_CASE(&OldPricerTest::testMcSingleFactorPricers));
