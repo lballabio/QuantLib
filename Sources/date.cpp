@@ -27,6 +27,9 @@
 
     $Source$
     $Log$
+    Revision 1.16  2001/04/06 15:08:27  marmar
+    Bug fixed
+
     Revision 1.15  2001/04/04 11:07:24  nando
     Headers policy part 1:
     Headers should have a .hpp (lowercase) filename extension
@@ -194,7 +197,7 @@ namespace QuantLib {
     Date::Date(int serialNumber)
     : serialNumber_(serialNumber) {
         #ifdef QL_DEBUG
-            QL_REQUIRE(*this >= minDate() && *this <= maxDate(),
+            QL_REQUIRE(serialNumber >= minimumSerialNumber && serialNumber <= maximumSerialNumber,
                 "Date " + IntegerFormatter::toString(serialNumber) +
                 "outside allowed range [" +
                 DateFormatter::toString(minDate()) + "-" +
