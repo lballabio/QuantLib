@@ -24,8 +24,8 @@ using namespace QuantLib;
 Size numRows = 5;
 Size numCols = 10;
 
-unsigned int swaptionLengths[] = {1,2,3,4,5,7,10,15,20,25,30};
-double swaptionVols[] = {
+Integer swaptionLengths[] = {1,2,3,4,5,7,10,15,20,25,30};
+Volatility swaptionVols[] = {
     23.92, 22.80, 19.8, 18.1, 16.0, 14.26, 13.56, 12.79, 12.3, 11.09,
     21.85, 21.50, 19.5, 17.2, 14.7, 13.23, 12.59, 12.29, 11.1, 10.30,
     19.46, 19.40, 17.9, 15.9, 13.9, 12.69, 12.15, 11.83, 10.8, 10.00,
@@ -41,7 +41,7 @@ double swaptionVols[] = {
 void calibrateModel(const boost::shared_ptr<ShortRateModel>& model,
                     const std::vector<boost::shared_ptr<CalibrationHelper> >&
                                                                       helpers,
-                    double lambda) {
+                    Real lambda) {
 
     Simplex om(lambda, 1e-9);
     om.setEndCriteria(EndCriteria(10000, 1e-7));
@@ -58,13 +58,13 @@ void calibrateModel(const boost::shared_ptr<ShortRateModel>& model,
         std::cout << IntegerFormatter::toString(swaptionLengths[i],2) << "y|";
         for (Size j=0; j<numCols; j++) {
             Size k = i*numCols + j;
-            double npv = helpers[k]->modelValue();
-            double implied = helpers[k]->impliedVolatility(npv, 1e-4,
+            Real npv = helpers[k]->modelValue();
+            Volatility implied = helpers[k]->impliedVolatility(npv, 1e-4,
                 1000, 0.05, 0.50)*100.0;
-            std::cout << DoubleFormatter::toString(implied,1,4) << " (";
+            std::cout << DecimalFormatter::toString(implied,1,4) << " (";
             k = i*10 + j;
-            double diff = implied - swaptionVols[k];
-            std::cout << DoubleFormatter::toString(diff,1,4)
+            Volatility diff = implied - swaptionVols[k];
+            std::cout << DecimalFormatter::toString(diff,1,4)
                       << ")|";
         }
         std::cout << std::endl;
@@ -88,7 +88,7 @@ int main(int, char* [])
 
         //Deposit rates
         DayCounter depositDayCounter = Thirty360();
-        int settlementDays = 2;
+        Integer settlementDays = 2;
 
         Rate weekRates[3] = {3.295, 3.3, 3.3};
         Size i;
@@ -119,12 +119,12 @@ int main(int, char* [])
         Rate swapRates[13] = {
             3.6425, 4.0875, 4.38, 4.5815, 4.74325, 4.87375,
             4.9775, 5.07, 5.13, 5.1825, 5.36, 5.45125, 5.43875};
-        int swapYears[13] = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 15, 20, 30};
+        Integer swapYears[13] = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 15, 20, 30};
 
-        int swFixedLegFrequency = 1;
+        Frequency swFixedLegFrequency = Annual;
         bool swFixedLegIsAdjusted = false;
         DayCounter swFixedLegDayCounter = Thirty360(Thirty360::European);
-        int swFloatingLegFrequency = 2;
+        Frequency swFloatingLegFrequency = Semiannual;
 
         for (i=0; i<13; i++) {
             boost::shared_ptr<Quote> swapRate(
@@ -149,13 +149,13 @@ int main(int, char* [])
         rhTermStructure.linkTo(myTermStructure);
 
         //Define the ATM/OTM/ITM swaps
-        int fixedLegFrequency = 1;
+        Frequency fixedLegFrequency = Annual;
         bool fixedLegIsAdjusted = false;
         RollingConvention roll = ModifiedFollowing;
         DayCounter fixedLegDayCounter = Thirty360(Thirty360::European);
-        int floatingLegFrequency = 2;
+        Frequency floatingLegFrequency = Semiannual;
         bool payFixedRate = true;
-        int fixingDays = 2;
+        Integer fixingDays = 2;
         Rate dummyFixedRate = 0.03;
         boost::shared_ptr<Xibor> indexSixMonths(
                                      new Euribor(6, Months, rhTermStructure));
@@ -201,8 +201,8 @@ int main(int, char* [])
         std::list<Time> times;
 
         for (i=0; i<numRows; i++) {
-            for (unsigned int j=0; j<numCols; j++) {
-                unsigned int k = i*10 + j;
+            for (Size j=0; j<numCols; j++) {
+                Size k = i*10 + j;
                 boost::shared_ptr<Quote> vol(
                                        new SimpleQuote(swaptionVols[k]*0.01));
                 swaptions.push_back(boost::shared_ptr<CalibrationHelper>(

@@ -39,31 +39,31 @@ int main(int, char* [])
         Date settlementDate(8, November, 2001);
 
         // deposits
-        double d1wQuote=0.0382;
-        double d1mQuote=0.0372;
-        double d3mQuote=0.0363;
-        double d6mQuote=0.0353;
-        double d9mQuote=0.0348;
-        double d1yQuote=0.0345;
+        Rate d1wQuote=0.0382;
+        Rate d1mQuote=0.0372;
+        Rate d3mQuote=0.0363;
+        Rate d6mQuote=0.0353;
+        Rate d9mQuote=0.0348;
+        Rate d1yQuote=0.0345;
         // FRAs
-        double fra3x6Quote=0.037125;
-        double fra6x9Quote=0.037125;
-        double fra6x12Quote=0.037125;
+        Rate fra3x6Quote=0.037125;
+        Rate fra6x9Quote=0.037125;
+        Rate fra6x12Quote=0.037125;
         // futures
-        double fut1Quote=96.2875;
-        double fut2Quote=96.7875;
-        double fut3Quote=96.9875;
-        double fut4Quote=96.6875;
-        double fut5Quote=96.4875;
-        double fut6Quote=96.3875;
-        double fut7Quote=96.2875;
-        double fut8Quote=96.0875;
+        Real fut1Quote=96.2875;
+        Real fut2Quote=96.7875;
+        Real fut3Quote=96.9875;
+        Real fut4Quote=96.6875;
+        Real fut5Quote=96.4875;
+        Real fut6Quote=96.3875;
+        Real fut7Quote=96.2875;
+        Real fut8Quote=96.0875;
         // swaps
-        double s2yQuote=0.037125;
-        double s3yQuote=0.0398;
-        double s5yQuote=0.0443;
-        double s10yQuote=0.05165;
-        double s15yQuote=0.055175;
+        Rate s2yQuote=0.037125;
+        Rate s3yQuote=0.0398;
+        Rate s5yQuote=0.0443;
+        Rate s10yQuote=0.05165;
+        Rate s15yQuote=0.055175;
 
 
         /********************
@@ -113,7 +113,7 @@ int main(int, char* [])
 
         // deposits
         DayCounter depositDayCounter = Actual360();
-        int settlementDays = 2;
+        Integer settlementDays = 2;
 
         boost::shared_ptr<RateHelper> d1w(new DepositRateHelper(
             RelinkableHandle<Quote>(d1wRate), 
@@ -157,7 +157,7 @@ int main(int, char* [])
 
 
         // setup futures
-        int futMonths = 3;
+        Integer futMonths = 3;
         boost::shared_ptr<RateHelper> fut1(new FuturesRateHelper(
             RelinkableHandle<Quote>(fut1Price),
             Date(19, December, 2001),
@@ -201,10 +201,10 @@ int main(int, char* [])
 
 
         // setup swaps
-        int swFixedLegFrequency = 1;
+        Frequency swFixedLegFrequency = Annual;
         bool swFixedLegIsAdjusted = false;
         DayCounter swFixedLegDayCounter = Thirty360(Thirty360::European);
-        int swFloatingLegFrequency = 2;
+        Frequency swFloatingLegFrequency = Semiannual;
 
         boost::shared_ptr<RateHelper> s2y(new SwapRateHelper(
             RelinkableHandle<Quote>(s2yRate), 
@@ -317,22 +317,22 @@ int main(int, char* [])
         **********************/
 
         // constant nominal 1,000,000 Euro
-        double nominal = 1000000.0;
+        Real nominal = 1000000.0;
         // fixed leg
-        int fixedLegFrequency = 1; // annual
+        Frequency fixedLegFrequency = Annual;
         bool fixedLegIsAdjusted = false;
         RollingConvention roll = ModifiedFollowing;
         DayCounter fixedLegDayCounter = Thirty360(Thirty360::European);
-        int fixingDays = 2;
+        Integer fixingDays = 2;
         Rate fixedRate = 0.04;
 
         // floating leg
-        int floatingLegFrequency = 2;
+        Frequency floatingLegFrequency = Semiannual;
         boost::shared_ptr<Xibor> euriborIndex(new Euribor(6, Months,
             forecastingTermStructure)); // using the forecasting curve
         Spread spread = 0.0;
 
-        int lenghtInYears = 5;
+        Integer lenghtInYears = 5;
         bool payFixedRate = true;
         SimpleSwap spot5YearSwap(payFixedRate, settlementDate, lenghtInYears,
             Years, calendar, roll, nominal, fixedLegFrequency, fixedRate,
@@ -381,7 +381,7 @@ int main(int, char* [])
                   << headers[3] << separator << std::endl;
         std::cout << rule << std::endl;
 
-        double NPV;
+        Real NPV;
         Rate fairRate;
         Spread fairSpread;
 
@@ -396,7 +396,7 @@ int main(int, char* [])
         std::cout << std::setw(headers[0].size()) 
                   << "depo-swap" << separator;
         std::cout << std::setw(headers[1].size()) 
-                  << DoubleFormatter::toString(NPV,2) << separator;
+                  << DecimalFormatter::toString(NPV,2) << separator;
         std::cout << std::setw(headers[2].size()) 
                   << RateFormatter::toString(fairSpread,4) << separator;
         std::cout << std::setw(headers[3].size()) 
@@ -419,7 +419,7 @@ int main(int, char* [])
         std::cout << std::setw(headers[0].size()) 
                   << "depo-fut-swap" << separator;
         std::cout << std::setw(headers[1].size()) 
-                  << DoubleFormatter::toString(NPV,2) << separator;
+                  << DecimalFormatter::toString(NPV,2) << separator;
         std::cout << std::setw(headers[2].size()) 
                   << RateFormatter::toString(fairSpread,4) << separator;
         std::cout << std::setw(headers[3].size()) 
@@ -440,7 +440,7 @@ int main(int, char* [])
         std::cout << std::setw(headers[0].size()) 
                   << "depo-FRA-swap" << separator;
         std::cout << std::setw(headers[1].size()) 
-                  << DoubleFormatter::toString(NPV,2) << separator;
+                  << DecimalFormatter::toString(NPV,2) << separator;
         std::cout << std::setw(headers[2].size()) 
                   << RateFormatter::toString(fairSpread,4) << separator;
         std::cout << std::setw(headers[3].size()) 
@@ -474,7 +474,7 @@ int main(int, char* [])
         std::cout << std::setw(headers[0].size()) 
                   << "depo-swap" << separator;
         std::cout << std::setw(headers[1].size()) 
-                  << DoubleFormatter::toString(NPV,2) << separator;
+                  << DecimalFormatter::toString(NPV,2) << separator;
         std::cout << std::setw(headers[2].size()) 
                   << RateFormatter::toString(fairSpread,4) << separator;
         std::cout << std::setw(headers[3].size()) 
@@ -492,7 +492,7 @@ int main(int, char* [])
         std::cout << std::setw(headers[0].size()) 
                   << "depo-fut-swap" << separator;
         std::cout << std::setw(headers[1].size()) 
-                  << DoubleFormatter::toString(NPV,2) << separator;
+                  << DecimalFormatter::toString(NPV,2) << separator;
         std::cout << std::setw(headers[2].size()) 
                   << RateFormatter::toString(fairSpread,4) << separator;
         std::cout << std::setw(headers[3].size()) 
@@ -510,7 +510,7 @@ int main(int, char* [])
         std::cout << std::setw(headers[0].size()) 
                   << "depo-FRA-swap" << separator;
         std::cout << std::setw(headers[1].size()) 
-                  << DoubleFormatter::toString(NPV,2) << separator;
+                  << DecimalFormatter::toString(NPV,2) << separator;
         std::cout << std::setw(headers[2].size()) 
                   << RateFormatter::toString(fairSpread,4) << separator;
         std::cout << std::setw(headers[3].size()) 
@@ -555,7 +555,7 @@ int main(int, char* [])
         std::cout << std::setw(headers[0].size()) 
                   << "depo-swap" << separator;
         std::cout << std::setw(headers[1].size()) 
-                  << DoubleFormatter::toString(NPV,2) << separator;
+                  << DecimalFormatter::toString(NPV,2) << separator;
         std::cout << std::setw(headers[2].size()) 
                   << RateFormatter::toString(fairSpread,4) << separator;
         std::cout << std::setw(headers[3].size()) 
@@ -576,7 +576,7 @@ int main(int, char* [])
         std::cout << std::setw(headers[0].size()) 
                   << "depo-fut-swap" << separator;
         std::cout << std::setw(headers[1].size()) 
-                  << DoubleFormatter::toString(NPV,2) << separator;
+                  << DecimalFormatter::toString(NPV,2) << separator;
         std::cout << std::setw(headers[2].size()) 
                   << RateFormatter::toString(fairSpread,4) << separator;
         std::cout << std::setw(headers[3].size()) 
@@ -597,7 +597,7 @@ int main(int, char* [])
         std::cout << std::setw(headers[0].size()) 
                   << "depo-FRA-swap" << separator;
         std::cout << std::setw(headers[1].size()) 
-                  << DoubleFormatter::toString(NPV,2) << separator;
+                  << DecimalFormatter::toString(NPV,2) << separator;
         std::cout << std::setw(headers[2].size()) 
                   << RateFormatter::toString(fairSpread,4) << separator;
         std::cout << std::setw(headers[3].size()) 
@@ -630,7 +630,7 @@ int main(int, char* [])
         std::cout << std::setw(headers[0].size()) 
                   << "depo-swap" << separator;
         std::cout << std::setw(headers[1].size()) 
-                  << DoubleFormatter::toString(NPV,2) << separator;
+                  << DecimalFormatter::toString(NPV,2) << separator;
         std::cout << std::setw(headers[2].size()) 
                   << RateFormatter::toString(fairSpread,4) << separator;
         std::cout << std::setw(headers[3].size()) 
@@ -648,7 +648,7 @@ int main(int, char* [])
         std::cout << std::setw(headers[0].size()) 
                   << "depo-fut-swap" << separator;
         std::cout << std::setw(headers[1].size()) 
-                  << DoubleFormatter::toString(NPV,2) << separator;
+                  << DecimalFormatter::toString(NPV,2) << separator;
         std::cout << std::setw(headers[2].size()) 
                   << RateFormatter::toString(fairSpread,4) << separator;
         std::cout << std::setw(headers[3].size()) 
@@ -666,7 +666,7 @@ int main(int, char* [])
         std::cout << std::setw(headers[0].size()) 
                   << "depo-FRA-swap" << separator;
         std::cout << std::setw(headers[1].size()) 
-                  << DoubleFormatter::toString(NPV,2) << separator;
+                  << DecimalFormatter::toString(NPV,2) << separator;
         std::cout << std::setw(headers[2].size()) 
                   << RateFormatter::toString(fairSpread,4) << separator;
         std::cout << std::setw(headers[3].size()) 

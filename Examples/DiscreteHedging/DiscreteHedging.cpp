@@ -56,18 +56,18 @@ class ReplicationError
 public:
     ReplicationError(Option::Type type,
                      Time maturity,
-                     double strike,
-                     double s0,
-                     double sigma,
+                     Real strike,
+                     Real s0,
+                     Volatility sigma,
                      Rate r)
     : maturity_(maturity), payoff_(type, strike), s0_(s0),
       sigma_(sigma), r_(r) {
 
         // value of the option
-        double rDiscount = QL_EXP(-r_*maturity_);
-        double qDiscount = 1.0;
-        double forward = s0_*qDiscount/rDiscount;
-        double variance = sigma_*sigma_*maturity_;
+        DiscountFactor rDiscount = QL_EXP(-r_*maturity_);
+        DiscountFactor qDiscount = 1.0;
+        Real forward = s0_*qDiscount/rDiscount;
+        Real variance = sigma_*sigma_*maturity_;
         boost::shared_ptr<StrikedTypePayoff> payoff(
                                              new PlainVanillaPayoff(payoff_));
         BlackFormula black(forward,rDiscount,variance,payoff);
@@ -90,14 +90,14 @@ public:
     }
 
     // the actual replication error computation
-    void compute(int nTimeSteps, int nSamples);
+    void compute(Size nTimeSteps, Size nSamples);
 private:
     Time maturity_;
     PlainVanillaPayoff payoff_;
-    double s0_;
-    double sigma_;
+    Real s0_;
+    Volatility sigma_;
     Rate r_;
-    double vega_;
+    Real vega_;
 };
 
 // The key for the MonteCarlo simulation is to have a PathPricer that
@@ -108,11 +108,11 @@ class ReplicationPathPricer : public PathPricer<Path>
   public:
     // real constructor
     ReplicationPathPricer(Option::Type type,
-                          double underlying,
-                          double strike,
+                          Real underlying,
+                          Real strike,
                           Rate r,
                           Time maturity,
-                          double sigma)
+                          Volatility sigma)
     : type_(type), underlying_(underlying),
       strike_(strike), r_(r), maturity_(maturity), sigma_(sigma) {
         QL_REQUIRE(strike_ > 0.0, "strike must be positive");
@@ -125,14 +125,14 @@ class ReplicationPathPricer : public PathPricer<Path>
 
     }
     // The value() method encapsulates the pricing code
-    double operator()(const Path& path) const;
+    Real operator()(const Path& path) const;
 
   private:
     Option::Type type_;
-    double underlying_, strike_;
+    Real underlying_, strike_;
     Rate r_;
     Time maturity_;
-    double sigma_;
+    Volatility sigma_;
 };
 
 
@@ -143,15 +143,15 @@ int main(int, char* [])
         QL_IO_INIT
 
         Time maturity = 1./12.;   // 1 month
-        double strike = 100;
-        double underlying = 100;
-        double volatility = 0.20; // 20%
+        Real strike = 100;
+        Real underlying = 100;
+        Volatility volatility = 0.20; // 20%
         Rate riskFreeRate = 0.05; // 5%
         ReplicationError rp(Option::Call, maturity, strike, underlying,
                 volatility, riskFreeRate);
 
-        int scenarios = 50000;
-        int hedgesNum;
+        Size scenarios = 50000;
+        Size hedgesNum;
 
         hedgesNum = 21;
         rp.compute(hedgesNum, scenarios);
@@ -176,54 +176,54 @@ int main(int, char* [])
    the life of the option are carried out, using the Black-Scholes
    hedge ratio.
 */
-double ReplicationPathPricer::operator()(const Path& path) const
+Real ReplicationPathPricer::operator()(const Path& path) const
 {
 
     // path is an instance of QuantLib::Path
     // It contains the list of variations.
     // It can be used as an array: it has a size() method
-    int n = path.size();
+    Size n = path.size();
     QL_REQUIRE(n>0, "the path cannot be empty");
 
     // discrete hedging interval
     Time dt = maturity_/n;
 
     // For simplicity, we assume the stock pays no dividends.
-    double stockDividendYield = 0.0;
+    Rate stockDividendYield = 0.0;
 
     // let's start
     Time t = 0;
 
     // stock value at t=0
-    double stock = underlying_;
-    double stockLogGrowth = 0.0;
+    Real stock = underlying_;
+    Real stockLogGrowth = 0.0;
 
     // money account at t=0
-    double money_account = 0.0;
+    Real money_account = 0.0;
 
     /************************/
     /*** the initial deal ***/
     /************************/
     // option fair price (Black-Scholes) at t=0
-    double rDiscount = QL_EXP(-r_*maturity_);
-    double qDiscount = QL_EXP(-stockDividendYield*maturity_);
-    double forward = stock*qDiscount/rDiscount;
-    double variance = sigma_*sigma_*maturity_;
+    DiscountFactor rDiscount = QL_EXP(-r_*maturity_);
+    DiscountFactor qDiscount = QL_EXP(-stockDividendYield*maturity_);
+    Real forward = stock*qDiscount/rDiscount;
+    Real variance = sigma_*sigma_*maturity_;
     boost::shared_ptr<StrikedTypePayoff> payoff(
                                        new PlainVanillaPayoff(type_,strike_));
     BlackFormula black(forward,rDiscount,variance,payoff);
     // sell the option, cash in its premium
     money_account += black.value();
     // compute delta
-    double delta = black.delta(stock);
+    Real delta = black.delta(stock);
     // delta-hedge the option buying stock
-    double stockAmount = delta;
+    Real stockAmount = delta;
     money_account -= stockAmount*stock;
 
     /**********************************/
     /*** hedging during option life ***/
     /**********************************/
-    for(int step = 0; step < n-1; step++){
+    for (Size step = 0; step < n-1; step++){
 
         // time flows
         t += dt;
@@ -263,7 +263,7 @@ double ReplicationPathPricer::operator()(const Path& path) const
     stock = underlying_*QL_EXP(stockLogGrowth);
 
     // the hedger delivers the option payoff to the option holder
-    double optionPayoff = PlainVanillaPayoff(type_, strike_)(stock);
+    Real optionPayoff = PlainVanillaPayoff(type_, strike_)(stock);
     money_account -= optionPayoff;
 
     // and unwinds the hedge selling his stock position
@@ -275,12 +275,12 @@ double ReplicationPathPricer::operator()(const Path& path) const
 
 
 // The computation over nSamples paths of the P&L distribution
-void ReplicationError::compute(int nTimeSteps, int nSamples)
+void ReplicationError::compute(Size nTimeSteps, Size nSamples)
 {
     QL_REQUIRE(nTimeSteps>0, "the number of steps must be > 0");
 
     // hedging interval
-    // double tau = maturity_ / nTimeSteps;
+    // Time tau = maturity_ / nTimeSteps;
 
     /* Black-Scholes framework: the underlying stock price evolves
        lognormally with a fixed known volatility that stays constant
@@ -336,20 +336,20 @@ void ReplicationError::compute(int nTimeSteps, int nSamples)
 
     // the sampleAccumulator method of OneFactorMonteCarloOption_old
     // gives access to all the methods of statisticsAccumulator
-    double PLMean  = MCSimulation.sampleAccumulator().mean();
-    double PLStDev = MCSimulation.sampleAccumulator().standardDeviation();
-    double PLSkew  = MCSimulation.sampleAccumulator().skewness();
-    double PLKurt  = MCSimulation.sampleAccumulator().kurtosis();
+    Real PLMean  = MCSimulation.sampleAccumulator().mean();
+    Real PLStDev = MCSimulation.sampleAccumulator().standardDeviation();
+    Real PLSkew  = MCSimulation.sampleAccumulator().skewness();
+    Real PLKurt  = MCSimulation.sampleAccumulator().kurtosis();
 
     // Derman and Kamal's formula
-    double theorStD = QL_SQRT(M_PI/4/nTimeSteps)*vega_*sigma_;
+    Real theorStD = QL_SQRT(M_PI/4/nTimeSteps)*vega_*sigma_;
 
 
     std::cout << nSamples << "\t| "
         << nTimeSteps << "\t | "
-        << DoubleFormatter::toString(PLMean,   3) << " \t| "
-        << DoubleFormatter::toString(PLStDev,  2) << " \t  | "
-        << DoubleFormatter::toString(theorStD, 2) << " \t | "
-        << DoubleFormatter::toString(PLSkew,   2) << " \t| "
-        << DoubleFormatter::toString(PLKurt,   2) << std::endl;
+        << DecimalFormatter::toString(PLMean,   3) << " \t| "
+        << DecimalFormatter::toString(PLStDev,  2) << " \t  | "
+        << DecimalFormatter::toString(theorStD, 2) << " \t | "
+        << DecimalFormatter::toString(PLSkew,   2) << " \t| "
+        << DecimalFormatter::toString(PLKurt,   2) << std::endl;
 }

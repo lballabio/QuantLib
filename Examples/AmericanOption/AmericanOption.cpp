@@ -31,11 +31,11 @@ int main(int, char* [])
 
         // our option
         Option::Type type(Option::Put);
-        double underlying = 36;
-        double strike = 40;
+        Real underlying = 36;
+        Real strike = 40;
         Spread dividendYield = 0.00;
         Rate riskFreeRate = 0.06;
-        double volatility = 0.20;
+        Volatility volatility = 0.20;
 
         Date todaysDate(15, May, 1998);
         Date settlementDate(17, May, 1998);
@@ -62,7 +62,7 @@ int main(int, char* [])
 
         std::string method;
 
-        double value, discrepancy, rightValue, relativeDiscrepancy;
+        Real value, discrepancy, rightValue, relativeDiscrepancy;
         rightValue = (type == Option::Put ? 4.48667344 : 2.17372645);
 
         std::cout << std::endl ;
@@ -105,7 +105,7 @@ int main(int, char* [])
         dates[1] = exerciseDate;
         dates[2] = exerciseDate.plusMonths(6);
         dates[3] = exerciseDate.plusMonths(12);
-        std::vector<double> strikes(4);
+        std::vector<Real> strikes(4);
         strikes[0] = underlying*0.9;
         strikes[1] = underlying;
         strikes[2] = underlying*1.1;
@@ -143,7 +143,7 @@ int main(int, char* [])
         method = "equivalent European option       ";
         value = euroOption.NPV();
         std::cout << method << " "
-             << DoubleFormatter::toString(value, 6) << "\t"
+             << DecimalFormatter::toString(value, 6) << "\t"
              << "N/A\t\t"
              << "N/A\t\t"
              << std::endl;
@@ -161,9 +161,9 @@ int main(int, char* [])
         discrepancy = QL_FABS(value-rightValue);
         relativeDiscrepancy = discrepancy/rightValue;
         std::cout << method << " "
-             << DoubleFormatter::toString(value, 6) << "\t"
-             << DoubleFormatter::toString(discrepancy, 6) << "\t"
-             << DoubleFormatter::toString(relativeDiscrepancy, 6)
+             << DecimalFormatter::toString(value, 6) << "\t"
+             << DecimalFormatter::toString(discrepancy, 6) << "\t"
+             << DecimalFormatter::toString(relativeDiscrepancy, 6)
              << std::endl;
 
         // Binomial Method (CRR)
@@ -174,9 +174,9 @@ int main(int, char* [])
         discrepancy = QL_FABS(value-rightValue);
         relativeDiscrepancy = discrepancy/rightValue;
         std::cout << method << " "
-             << DoubleFormatter::toString(value, 6) << "\t"
-             << DoubleFormatter::toString(discrepancy, 6) << "\t"
-             << DoubleFormatter::toString(relativeDiscrepancy, 6)
+             << DecimalFormatter::toString(value, 6) << "\t"
+             << DecimalFormatter::toString(discrepancy, 6) << "\t"
+             << DecimalFormatter::toString(relativeDiscrepancy, 6)
              << std::endl;
 
         // Equal Probability Additive Binomial Tree (EQP)
@@ -187,9 +187,9 @@ int main(int, char* [])
         discrepancy = QL_FABS(value-rightValue);
         relativeDiscrepancy = discrepancy/rightValue;
         std::cout << method << " "
-             << DoubleFormatter::toString(value, 6) << "\t"
-             << DoubleFormatter::toString(discrepancy, 6) << "\t"
-             << DoubleFormatter::toString(relativeDiscrepancy, 6)
+             << DecimalFormatter::toString(value, 6) << "\t"
+             << DecimalFormatter::toString(discrepancy, 6) << "\t"
+             << DecimalFormatter::toString(relativeDiscrepancy, 6)
              << std::endl;
 
         // Equal Jumps Additive Binomial Tree (Trigeorgis)
@@ -200,9 +200,9 @@ int main(int, char* [])
         discrepancy = QL_FABS(value-rightValue);
         relativeDiscrepancy = discrepancy/rightValue;
         std::cout << method << " "
-             << DoubleFormatter::toString(value, 6) << "\t"
-             << DoubleFormatter::toString(discrepancy, 6) << "\t"
-             << DoubleFormatter::toString(relativeDiscrepancy, 6)
+             << DecimalFormatter::toString(value, 6) << "\t"
+             << DecimalFormatter::toString(discrepancy, 6) << "\t"
+             << DecimalFormatter::toString(relativeDiscrepancy, 6)
              << std::endl;
 
         // Tian Binomial Tree (third moment matching)
@@ -213,9 +213,9 @@ int main(int, char* [])
         discrepancy = QL_FABS(value-rightValue);
         relativeDiscrepancy = discrepancy/rightValue;
         std::cout << method << " "
-             << DoubleFormatter::toString(value, 6) << "\t"
-             << DoubleFormatter::toString(discrepancy, 6) << "\t"
-             << DoubleFormatter::toString(relativeDiscrepancy, 6)
+             << DecimalFormatter::toString(value, 6) << "\t"
+             << DecimalFormatter::toString(discrepancy, 6) << "\t"
+             << DecimalFormatter::toString(relativeDiscrepancy, 6)
              << std::endl;
 
         // Leisen-Reimer Binomial Tree
@@ -226,9 +226,9 @@ int main(int, char* [])
         discrepancy = QL_FABS(value-rightValue);
         relativeDiscrepancy = discrepancy/rightValue;
         std::cout << method << " "
-             << DoubleFormatter::toString(value, 6) << "\t"
-             << DoubleFormatter::toString(discrepancy, 6) << "\t"
-             << DoubleFormatter::toString(relativeDiscrepancy, 6)
+             << DecimalFormatter::toString(value, 6) << "\t"
+             << DecimalFormatter::toString(discrepancy, 6) << "\t"
+             << DecimalFormatter::toString(relativeDiscrepancy, 6)
              << std::endl;
 
         // Barone-Adesi and Whaley approximation
@@ -239,9 +239,9 @@ int main(int, char* [])
         discrepancy = QL_FABS(value-rightValue);
         relativeDiscrepancy = discrepancy/rightValue;
         std::cout << method << " "
-             << DoubleFormatter::toString(value, 6) << "\t"
-             << DoubleFormatter::toString(discrepancy, 6) << "\t"
-             << DoubleFormatter::toString(relativeDiscrepancy, 6)
+             << DecimalFormatter::toString(value, 6) << "\t"
+             << DecimalFormatter::toString(discrepancy, 6) << "\t"
+             << DecimalFormatter::toString(relativeDiscrepancy, 6)
              << std::endl;
 
         // Bjerksund and Stensland approximation
@@ -252,9 +252,9 @@ int main(int, char* [])
         discrepancy = QL_FABS(value-rightValue);
         relativeDiscrepancy = discrepancy/rightValue;
         std::cout << method << " "
-             << DoubleFormatter::toString(value, 6) << "\t"
-             << DoubleFormatter::toString(discrepancy, 6) << "\t"
-             << DoubleFormatter::toString(relativeDiscrepancy, 6)
+             << DecimalFormatter::toString(value, 6) << "\t"
+             << DecimalFormatter::toString(discrepancy, 6) << "\t"
+             << DecimalFormatter::toString(relativeDiscrepancy, 6)
              << std::endl;
 
         return 0;
