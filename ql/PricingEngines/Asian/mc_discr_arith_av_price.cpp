@@ -1,6 +1,7 @@
 
 /*
- Copyright (C) 2004 StatPro Italia srl
+ Copyright (C) 2003, 2004 Ferdinando Ametrano
+ Copyright (C) 2000, 2001, 2002, 2003 RiskMap srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -15,15 +16,18 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#ifndef quantlib_pricing_engines_asian_all_hpp
-#define quantlib_pricing_engines_asian_all_hpp
-
-#include <ql/qldefines.hpp>
-
-#include <ql/PricingEngines/Asian/analytic_cont_geom_av_price.hpp>
-#include <ql/PricingEngines/Asian/analytic_discr_geom_av_price.hpp>
-#include <ql/PricingEngines/Asian/mc_discr_arith_av_price.hpp>
 #include <ql/PricingEngines/Asian/mc_discr_geom_av_price.hpp>
+#include <ql/PricingEngines/Asian/mc_discr_arith_av_price.hpp>
 
+namespace QuantLib {
 
-#endif
+    ArithmeticAPOPathPricer::ArithmeticAPOPathPricer(Option::Type type,
+        Real underlying, Real strike, DiscountFactor discount)
+    : underlying_(underlying), payoff_(type, strike), discount_(discount) {
+        QL_REQUIRE(underlying>0.0,
+            "underlying less/equal zero not allowed");
+        QL_REQUIRE(strike>=0.0,
+            "strike less than zero not allowed");
+    }
+
+}
