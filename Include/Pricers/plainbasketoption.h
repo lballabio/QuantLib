@@ -25,6 +25,10 @@
     $Source$
     $Name$
     $Log$
+    Revision 1.2  2001/02/13 10:02:17  marmar
+    Ambiguous variable name underlyingGrowthRate changed in
+    unambiguos dividendYield
+
     Revision 1.1  2001/02/02 10:59:51  marmar
     Example of Monte Carlo pricer on mutiple assets
 
@@ -45,7 +49,7 @@ namespace QuantLib {
         class PlainBasketOption: public MultiFactorPricer {
         public:
             PlainBasketOption(const Array &underlying, const Array 
-            &underlyingGrowthRate, const Math::Matrix &covariance, 
+            &dividendYield, const Math::Matrix &covariance, 
             Rate riskFreeRate,  double residualTime, 
             int timesteps, long samples, long seed=0);
         };

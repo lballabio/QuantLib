@@ -27,6 +27,10 @@
     $Source$
     $Name$
     $Log$
+    Revision 1.20  2001/02/13 10:02:57  marmar
+    Ambiguous variable name underlyingGrowthRate changed in
+    unambiguos dividendYield
+
     Revision 1.19  2001/01/17 14:37:57  nando
     tabs removed
 
@@ -44,12 +48,13 @@ namespace QuantLib {
 
         double BSMEuropeanOption::value() const {
           if(!hasBeenCalculated) {
-            growthDiscount = (QL_EXP(-theUnderlyingGrowthRate*theResidualTime));
+            growthDiscount = (QL_EXP(-dividendYield_*theResidualTime));
             riskFreeDiscount = (QL_EXP(-theRiskFreeRate*theResidualTime));
               standardDeviation = theVolatility*QL_SQRT(theResidualTime);
               Math::CumulativeNormalDistribution f;
-              double D1 = QL_LOG(theUnderlying/theStrike)/standardDeviation + standardDeviation/2.0
-                  + (theRiskFreeRate-theUnderlyingGrowthRate)*theResidualTime/standardDeviation;
+              double D1 = QL_LOG(theUnderlying/theStrike)/standardDeviation + 
+                    standardDeviation/2.0 + (theRiskFreeRate - dividendYield_)* 
+                                            theResidualTime/standardDeviation;
               double D2 = D1 - standardDeviation;
               double fD1 = f(D1), fD2 = f(D2);
               switch (theType) {
@@ -69,10 +74,12 @@ namespace QuantLib {
                   NID1 = 2.0*f.derivative(D1);
                   break;
                   default:
-                  throw IllegalArgumentError("BSMEuropeanOption: invalid option type");
+                  throw IllegalArgumentError(
+                    "BSMEuropeanOption: invalid option type");
             }
             hasBeenCalculated = true;
-            theValue = theUnderlying*growthDiscount*alpha - theStrike*riskFreeDiscount*beta;
+            theValue = theUnderlying * growthDiscount * alpha - 
+                                    theStrike * riskFreeDiscount * beta;
           }
             return theValue;
         }
@@ -95,8 +102,10 @@ namespace QuantLib {
           if(!hasBeenCalculated)
             value();
 
-            return -theUnderlying*NID1*theVolatility*growthDiscount/(2.0*QL_SQRT(theResidualTime)) +
-                  theUnderlyingGrowthRate*theUnderlying*alpha*growthDiscount - theRiskFreeRate*theStrike*riskFreeDiscount*beta;
+            return -theUnderlying * NID1 * theVolatility * 
+                growthDiscount/(2.0*QL_SQRT(theResidualTime)) +
+                  dividendYield_*theUnderlying*alpha*growthDiscount - 
+                        theRiskFreeRate*theStrike*riskFreeDiscount*beta;
         }
 
         double BSMEuropeanOption::rho() const {

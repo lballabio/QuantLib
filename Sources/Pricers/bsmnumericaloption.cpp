@@ -27,6 +27,10 @@
     $Source$
     $Name$
     $Log$
+    Revision 1.23  2001/02/13 10:02:57  marmar
+    Ambiguous variable name underlyingGrowthRate changed in
+    unambiguos dividendYield
+
     Revision 1.22  2001/01/19 08:52:07  marmar
     Small bug fixed. Initialization of grid vectors is now after
      the determination of their size
@@ -58,10 +62,10 @@ namespace QuantLib {
         double BSMNumericalOption::dRMultiplier = 0.0001; 
         
         BSMNumericalOption::BSMNumericalOption(BSMNumericalOption::Type type,
-            double underlying, double strike, Rate underlyingGrowthRate, 
+            double underlying, double strike, Rate dividendYield, 
             Rate riskFreeRate, Time residualTime, double volatility, 
             int gridPoints)
-        : BSMOption(type,underlying,strike,underlyingGrowthRate,riskFreeRate,
+        : BSMOption(type,underlying,strike,dividendYield,riskFreeRate,
             residualTime,volatility),rhoComputed(false), vegaComputed(false){
             theGridPoints=gridPoints;
             // The following is a safety check to be sure we have enough grid 
@@ -179,7 +183,7 @@ namespace QuantLib {
         
         void BSMNumericalOption::initializeOperator() const {
             theOperator = BSMOperator(theGridPoints, theGridLogSpacing, 
-                theRiskFreeRate, theUnderlyingGrowthRate, theVolatility);
+                theRiskFreeRate, dividendYield_, theVolatility);
             theOperator.setLowerBC(
                 BoundaryCondition(BoundaryCondition::Neumann,
                     theInitialPrices[1]-theInitialPrices[0]));

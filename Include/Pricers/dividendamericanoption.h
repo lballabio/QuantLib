@@ -1,6 +1,6 @@
      
 /*
- * Copyright (C) 2000
+ * Copyright (C) 2000, 2001
  * Ferdinando Ametrano, Luigi Ballabio, Adolfo Benin, Marco Marchioro
  * 
  * This file is part of QuantLib.
@@ -18,7 +18,8 @@
  * You should have received a copy of the license along with this file;
  * if not, contact ferdinando@ametrano.net
  *
- * QuantLib license is also available at http://quantlib.sourceforge.net/LICENSE.TXT
+ * QuantLib license is also available at 
+ *      http://quantlib.sourceforge.net/LICENSE.TXT
 */
 
 /*! \file dividendamericanoption.h
@@ -27,6 +28,10 @@
     $Source$
     $Name$
     $Log$
+    Revision 1.10  2001/02/13 10:02:17  marmar
+    Ambiguous variable name underlyingGrowthRate changed in
+    unambiguos dividendYield
+
     Revision 1.9  2001/01/10 16:35:35  nando
     timeStepPerDiv was double now it is int
 
@@ -68,7 +73,7 @@ namespace QuantLib {
           public:
             // constructor
             DividendAmericanOption(Type type, double underlying, 
-                double strike, Rate underlyingGrowthRate, Rate riskFreeRate, 
+                double strike, Rate dividendYield, Rate riskFreeRate, 
                 Time residualTime, double volatility, 
                 const std::vector<double>& dividends, 
                 const std::vector<Time>& exdivdates, int timeSteps, 

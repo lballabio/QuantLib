@@ -25,6 +25,10 @@
 """ 
     $Source$
     $Log$
+    Revision 1.5  2001/02/13 10:04:25  marmar
+    Ambiguous variable name underlyingGrowthRate changed in
+    unambiguos dividendYield
+
     Revision 1.4  2001/02/05 16:57:14  marmar
     McAsianPricer replaced by AveragePriceAsian and AverageStrikeAsian
 
@@ -47,7 +51,7 @@ def main():
    type = "Call"
    underlying = 100
    strike = 100
-   underlyingGrowthRate = 0.0
+   dividendYield = 0.0
    riskFreeRate = 0.05
    residualTime = 1.0
    volatility = 0.3
@@ -59,7 +63,7 @@ def main():
    for pricer in [QuantLib.McEuropeanPricer,
                   QuantLib.AverageStrikeAsian,
                   QuantLib.AveragePriceAsian]:
-     p = pricer(type, underlying, strike, underlyingGrowthRate, riskFreeRate,
+     p = pricer(type, underlying, strike, dividendYield, riskFreeRate,
                 residualTime, volatility, timesteps, numIte, seed=seed)
      print "%30s: %7i %12.6f %12.6f" %(pricer, numIte, p.value(), p.errorEstimate())
 

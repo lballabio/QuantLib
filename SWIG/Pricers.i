@@ -53,7 +53,7 @@ using QuantLib::Pricers::DividendEuropeanOption;
 class BSMEuropeanOption {
   public:
 	BSMEuropeanOption(OptionType type, double underlying, double strike, 
-	  Rate underlyingGrowthRate, Rate riskFreeRate, Time residualTime, 
+	  Rate dividendYield, Rate riskFreeRate, Time residualTime, 
 	  double volatility);
 	~BSMEuropeanOption();
 	void setVolatility(double newVolatility) ;
@@ -71,7 +71,7 @@ class BSMEuropeanOption {
 class BSMAmericanOption {
   public:
 	BSMAmericanOption(OptionType type, double underlying, double strike, 
-	  Rate underlyingGrowthRate, Rate riskFreeRate, Time residualTime,
+	  Rate dividendYield, Rate riskFreeRate, Time residualTime,
 	  double volatility, int timeSteps = 100, int gridPoints = 100);
     ~BSMAmericanOption();
 	void setVolatility(double newVolatility) ;
@@ -89,7 +89,7 @@ class BSMAmericanOption {
 class DividendAmericanOption{
   public:
 	DividendAmericanOption(OptionType type, double underlying, double strike, 
-	  Rate underlyingGrowthRate, Rate riskFreeRate, Time residualTime,
+	  Rate dividendYield, Rate riskFreeRate, Time residualTime,
 	  double volatility, DoubleVector dividends, DoubleVector exdivdates,
 	  int timeSteps = 100, int gridPoints = 100);
 	~DividendAmericanOption();
@@ -106,7 +106,7 @@ class DividendAmericanOption{
 class DividendEuropeanOption{
   public:
 	DividendEuropeanOption(OptionType type, double underlying, double strike, 
-	  Rate underlyingGrowthRate, Rate riskFreeRate, Time residualTime,
+	  Rate dividendYield, Rate riskFreeRate, Time residualTime,
 	  double volatility, DoubleVector dividends, DoubleVector exdivdates);
 	~DividendEuropeanOption();
 	double value() const;

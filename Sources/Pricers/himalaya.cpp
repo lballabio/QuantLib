@@ -25,6 +25,10 @@
     
     $Source$
     $Log$
+    Revision 1.2  2001/02/13 10:02:57  marmar
+    Ambiguous variable name underlyingGrowthRate changed in
+    unambiguos dividendYield
+
     Revision 1.1  2001/02/07 10:15:09  marmar
     Himalaya-type option pricer
 
@@ -44,7 +48,7 @@ namespace QuantLib {
         using MonteCarlo::MultiFactorMonteCarloOption;
 
         Himalaya::Himalaya(const Array &underlying, const Array 
-            &underlyingGrowthRate, const Math::Matrix &covariance, 
+            &dividendYield, const Math::Matrix &covariance, 
             Rate riskFreeRate, double strike,
             const std::vector<Time> &timeDelays, long samples, long seed)
         : MultiFactorPricer(samples, seed){
@@ -54,14 +58,14 @@ namespace QuantLib {
             QL_REQUIRE(underlying.size() == n,
                 "Himalaya: underlying size does not match that of"
                 " covariance matrix");
-            QL_REQUIRE(underlyingGrowthRate.size() == n,
-                "Himalaya: underlyingGrowthRate size does not match"
+            QL_REQUIRE(dividendYield.size() == n,
+                "Himalaya: dividendYield size does not match"
                 " that of covariance matrix");
             QL_REQUIRE(timeDelays.size() == n,
                 "Himalaya: size of time-stpes diffrent form that of assets");
                 
             //! Initialize the path generator
-            Array mu(riskFreeRate - underlyingGrowthRate
+            Array mu(riskFreeRate - dividendYield
                                     - 0.5 * covariance.diagonal());
 
             Handle<StandardMultiPathGenerator> pathGenerator(

@@ -27,6 +27,10 @@
     $Source$
     $Name$
     $Log$
+    Revision 1.6  2001/02/13 10:02:17  marmar
+    Ambiguous variable name underlyingGrowthRate changed in
+    unambiguos dividendYield
+
     Revision 1.5  2001/01/17 14:37:56  nando
     tabs removed
 
@@ -51,9 +55,9 @@ namespace QuantLib {
         class BSMAmericanOption : public BSMNumericalOption {
           public:
             // constructor
-            BSMAmericanOption(Type type, double underlying, double strike, Rate underlyingGrowthRate,
+            BSMAmericanOption(Type type, double underlying, double strike, Rate dividendYield,
               Rate riskFreeRate, Time residualTime, double volatility, int timeSteps, int gridPoints)
-            : BSMNumericalOption(type,underlying,strike,underlyingGrowthRate,riskFreeRate,residualTime,volatility,
+            : BSMNumericalOption(type,underlying,strike,dividendYield,riskFreeRate,residualTime,volatility,
               gridPoints), theTimeSteps(timeSteps) {}
             // accessors
             double value() const;

@@ -27,6 +27,10 @@
     $Source$
     $Name$
     $Log$
+    Revision 1.20  2001/02/13 10:02:57  marmar
+    Ambiguous variable name underlyingGrowthRate changed in
+    unambiguos dividendYield
+
     Revision 1.19  2001/01/17 13:56:30  nando
     80 columns enforced
     tabs removed
@@ -71,7 +75,7 @@ namespace QuantLib {
 
                 // 1) calculate value/greeks of the European option analytically
                 BSMEuropeanOption analyticEuro(theType, theUnderlying,
-                            theStrike, theUnderlyingGrowthRate,
+                            theStrike, dividendYield_,
                             theRiskFreeRate, theResidualTime, theVolatility);
                 double analyticEuroValue = analyticEuro.value();
                 double analyticEuroDelta = analyticEuro.delta();

@@ -1,24 +1,26 @@
 
+     
 /*
- * Copyright (C) 2000
- * Ferdinando Ametrano,    Luigi Ballabio,    Adolfo Benin, Marco    Marchioro
+ * Copyright (C) 2000, 2001
+ * Ferdinando Ametrano, Luigi Ballabio, Adolfo Benin, Marco Marchioro
+ * 
+ * This file is part of QuantLib.
+ * QuantLib is a C++ open source library for financial quantitative
+ * analysts and developers --- http://quantlib.sourceforge.net/
  *
- * This    file is    part of    QuantLib.
- * QuantLib    is a C++ open source library for financial quantitative
- * analysts    and    developers --- http://quantlib.sourceforge.net/
- *
- * QuantLib    is free    software and you are allowed to    use, copy, modify, merge,
- * publish,    distribute,    and/or sell    copies of it under the conditions stated
+ * QuantLib is free software and you are allowed to use, copy, modify, merge,
+ * publish, distribute, and/or sell copies of it under the conditions stated 
  * in the QuantLib License.
  *
- * This    program    is distributed in the hope that    it will    be useful, but
+ * This program is distributed in the hope that it will be useful, but 
  * WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
- * or FITNESS FOR A    PARTICULAR PURPOSE.    See    the    license    for    more details.
+ * or FITNESS FOR A PARTICULAR PURPOSE. See the license for more details.
  *
- * You should have received    a copy of the license along    with this file;
+ * You should have received a copy of the license along with this file;
  * if not, contact ferdinando@ametrano.net
  *
- * QuantLib    license    is also    available at http://quantlib.sourceforge.net/LICENSE.TXT
+ * QuantLib license is also available at 
+ *      http://quantlib.sourceforge.net/LICENSE.TXT
 */
 
 /*! \file dividendeuropeanoption.h
@@ -27,6 +29,10 @@
     $Source$
     $Name$
     $Log$
+    Revision 1.9  2001/02/13 10:02:17  marmar
+    Ambiguous variable name underlyingGrowthRate changed in
+    unambiguos dividendYield
+
     Revision 1.8  2001/01/17 14:37:56  nando
     tabs removed
 
@@ -51,44 +57,69 @@ namespace QuantLib {
     namespace Pricers {
 
         class DividendEuropeanOption : public BSMEuropeanOption    {
-            public:
-              DividendEuropeanOption(Type    type, double underlying, double    strike,    Rate underlyingGrowthRate,
-                    Rate riskFreeRate, Time    residualTime, double volatility, const std::vector<double>&    dividends,
-                    const std::vector<Time>& exdivdates): theDividends(dividends),theExDivDates(exdivdates),
-                    BSMEuropeanOption(type, underlying - riskless(riskFreeRate, residualTime,dividends,exdivdates),
-                    strike, underlyingGrowthRate,riskFreeRate,residualTime,volatility){
-
-                    QL_REQUIRE(theDividends.size()==theExDivDates.size(),"the number of dividends is different from that of dates");
-                    for(unsigned int j=0; j<theDividends.size();j++){
-                        QL_REQUIRE(theExDivDates[j]>0, "The "    + IntegerFormatter::toString(j)    + "-th"    +
-                            "dividend date is not positive"    + "(" +    DoubleFormatter::toString(theExDivDates[j]) + ")");
-                        QL_REQUIRE(theExDivDates[j]<residualTime,"The " + IntegerFormatter::toString(j) + "-th" +
-                            "dividend date is greater than residual    time" +    "("    +
-                            DoubleFormatter::toString(theExDivDates[j]) + ">" + DoubleFormatter::toString(residualTime)    + ")");
-                        QL_REQUIRE(theDividends[j]>=0,"The    " +    IntegerFormatter::toString(j) +    "-th" +
-                            "dividend is negative" + "(" + DoubleFormatter::toString(theDividends[j]) +    ")");
-                    }
-                }
-                Handle<BSMOption> clone() const{
-                    return Handle<BSMOption>(new DividendEuropeanOption(*this));
-                }
-                double rho() const{
-                    double tmp_rho = BSMEuropeanOption::rho();
-                    double delta_rho = 0.0;
-                    for(unsigned int j=0; j<theDividends.size();j++)
-                        delta_rho += theExDivDates[j]*theDividends[j]*QL_EXP(-theRiskFreeRate*theExDivDates[j]);
-                    return tmp_rho + delta_rho*BSMEuropeanOption::delta();
-                }
+        public:
+            DividendEuropeanOption(Type type, double underlying, double strike, 
+                Rate dividendYield, Rate riskFreeRate, Time residualTime, 
+                double volatility, const std::vector<double>& dividends,
+                const std::vector<Time>& exdivdates);
+            double rho() const;
+            Handle<BSMOption> clone() const{
+                return Handle<BSMOption>(new DividendEuropeanOption(*this));
+            }
             private:
               std::vector<double> theDividends;
               std::vector<Time> theExDivDates;
-              double riskless(Rate r,    Time t,    std::vector<double>    divs,std::vector<Time> divDates){
-                double tmp_rho = 0.0;
-                for(unsigned int j=0; j<divs.size();j++)
-                    tmp_rho += divs[j]*QL_EXP(-r*divDates[j]);
-                return tmp_rho;
-            }
+              double riskless(Rate r, Time t, 
+              std::vector<double> divs,std::vector<Time> divDates);
         };
+
+        inline DividendEuropeanOption::DividendEuropeanOption(
+            Type type, double underlying, double strike, Rate dividendYield, 
+            Rate riskFreeRate, Time residualTime, double volatility, 
+            const std::vector<double>& dividends,
+            const std::vector<Time>& exdivdates): 
+            theDividends(dividends),theExDivDates(exdivdates),
+            BSMEuropeanOption(type, underlying - riskless(riskFreeRate, 
+            residualTime,dividends,exdivdates), strike, dividendYield, 
+            riskFreeRate, residualTime, volatility){
+                
+                QL_REQUIRE(theDividends.size()==theExDivDates.size(),
+                    "the number of dividends is different from that of dates");
+                    for(unsigned int j=0; j<theDividends.size();j++){
+                QL_REQUIRE(theExDivDates[j]>0, "The "+
+                     IntegerFormatter::toString(j)+ "-th" +
+                    "dividend date is not positive"    + "(" + 
+                    DoubleFormatter::toString(theExDivDates[j]) + ")");
+                QL_REQUIRE(theExDivDates[j]<residualTime,"The " + 
+                    IntegerFormatter::toString(j) + "-th" +
+                    "dividend date is greater than residual time" + "(" +
+                    DoubleFormatter::toString(theExDivDates[j]) + ">" + 
+                    DoubleFormatter::toString(residualTime)    + ")");
+                QL_REQUIRE(theDividends[j]>=0,"The " + 
+                    IntegerFormatter::toString(j) +"-th" + 
+                    "dividend is negative" + "(" + 
+                    DoubleFormatter::toString(theDividends[j]) +")");
+                    }
+            }
+
+        inline double DividendEuropeanOption::rho() const{
+        
+            double tmp_rho = BSMEuropeanOption::rho();
+            double delta_rho = 0.0;
+            for(unsigned int j=0; j<theDividends.size();j++)
+                delta_rho += theExDivDates[j]*theDividends[j]*
+                            QL_EXP(-theRiskFreeRate*theExDivDates[j]);
+            return tmp_rho + delta_rho*BSMEuropeanOption::delta();
+        }
+        
+        inline double DividendEuropeanOption::riskless(Rate r, Time t,
+            std::vector<double> divs,std::vector<Time> divDates){
+                
+            double tmp_rho = 0.0;
+            for(unsigned int j=0; j<divs.size();j++)
+                tmp_rho += divs[j]*QL_EXP(-r*divDates[j]);
+            return tmp_rho;
+        }
 
     }
 

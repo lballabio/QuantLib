@@ -26,6 +26,10 @@
     $Source$
     $Name$
     $Log$
+    Revision 1.2  2001/02/13 10:02:57  marmar
+    Ambiguous variable name underlyingGrowthRate changed in
+    unambiguos dividendYield
+
     Revision 1.1  2001/02/02 11:00:16  marmar
     Example of Monte Carlo pricer on mutiple assets
 
@@ -46,7 +50,7 @@ namespace QuantLib {
         using MonteCarlo::MultiFactorMonteCarloOption;
 
         PlainBasketOption::PlainBasketOption(const Array &underlying, 
-            const Array &underlyingGrowthRate, const Math::Matrix &covariance, 
+            const Array &dividendYield, const Math::Matrix &covariance, 
             Rate riskFreeRate,  double residualTime, int timesteps, 
             long samples, long seed)
         : MultiFactorPricer(samples, seed){
@@ -55,8 +59,8 @@ namespace QuantLib {
             QL_REQUIRE(covariance.rows() == underlying.size(),
                 "PlainBasketOption: underlying size does not match that of"
                 " covariance matrix");
-            QL_REQUIRE(covariance.rows() == underlyingGrowthRate.size(),
-                "PlainBasketOption: underlyingGrowthRate size does not match"
+            QL_REQUIRE(covariance.rows() == dividendYield.size(),
+                "PlainBasketOption: dividendYield size does not match"
                 " that of covariance matrix");
             QL_REQUIRE(residualTime > 0,
                 "PlainBasketOption: residual time must be positive");
@@ -65,7 +69,7 @@ namespace QuantLib {
                 
             //! Initialize the path generator
             double deltaT = residualTime/timesteps;
-            Array mu(deltaT * (riskFreeRate - underlyingGrowthRate
+            Array mu(deltaT * (riskFreeRate - dividendYield
                                     - 0.5 * covariance.diagonal()));
 
             Handle<StandardMultiPathGenerator> pathGenerator(

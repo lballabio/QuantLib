@@ -7656,7 +7656,7 @@ static PyObject *_wrap_new_McEuropeanPricer(PyObject *self, PyObject *args, PyOb
     long arg9 ;
     PyObject * obj0  = 0 ;
     char *kwnames[] = {
-        "type","underlying","strike","underlyingGrowthRate","riskFreeRate","residualTime","volatility","timesteps","confnumber","seed", NULL 
+        "type","underlying","strike","dividendYield","riskFreeRate","residualTime","volatility","timesteps","confnumber","seed", NULL 
     };
     McEuropeanPricer *result ;
     
@@ -7763,7 +7763,7 @@ static PyObject *_wrap_new_GeometricAsianOption(PyObject *self, PyObject *args, 
     double arg6 ;
     PyObject * obj0  = 0 ;
     char *kwnames[] = {
-        "type","underlying","strike","underlyingGrowthRate","exerciseRate","residualTime","volatility", NULL 
+        "type","underlying","strike","dividendYield","exerciseRate","residualTime","volatility", NULL 
     };
     GeometricAsianOption *result ;
     
@@ -7846,7 +7846,7 @@ static PyObject *_wrap_new_AveragePriceAsian(PyObject *self, PyObject *args, PyO
     long arg9 ;
     PyObject * obj0  = 0 ;
     char *kwnames[] = {
-        "type","underlying","strike","underlyingGrowthRate","riskFreeRate","residualTime","volatility","timesteps","confnumber","seed", NULL 
+        "type","underlying","strike","dividendYield","riskFreeRate","residualTime","volatility","timesteps","confnumber","seed", NULL 
     };
     AveragePriceAsian *result ;
     
@@ -7956,7 +7956,7 @@ static PyObject *_wrap_new_AverageStrikeAsian(PyObject *self, PyObject *args, Py
     long arg9 ;
     PyObject * obj0  = 0 ;
     char *kwnames[] = {
-        "type","underlying","strike","underlyingGrowthRate","riskFreeRate","residualTime","volatility","timesteps","confnumber","seed", NULL 
+        "type","underlying","strike","dividendYield","riskFreeRate","residualTime","volatility","timesteps","confnumber","seed", NULL 
     };
     AverageStrikeAsian *result ;
     
@@ -8066,7 +8066,7 @@ static PyObject *_wrap_new_PlainBasketOption(PyObject *self, PyObject *args, PyO
     PyObject * obj1  = 0 ;
     PyObject * argo2 =0 ;
     char *kwnames[] = {
-        "underlying","underlyingGrowthRate","covariance","riskFreeRate","residualTime","timesteps","samples","seed", NULL 
+        "underlying","dividendYield","covariance","riskFreeRate","residualTime","timesteps","samples","seed", NULL 
     };
     PlainBasketOption *result ;
     
@@ -8243,7 +8243,7 @@ static PyObject *_wrap_new_Himalaya(PyObject *self, PyObject *args, PyObject *kw
     PyObject * argo2 =0 ;
     PyObject * obj5  = 0 ;
     char *kwnames[] = {
-        "underlying","underlyingGrowthRate","covariance","riskFreeRate","strike","timeDelays","samples","seed", NULL 
+        "underlying","dividendYield","covariance","riskFreeRate","strike","timeDelays","samples","seed", NULL 
     };
     Himalaya *result ;
     
@@ -8583,18 +8583,59 @@ static PyObject *_wrap_GaussianArrayGenerator_weight(PyObject *self, PyObject *a
 
 static PyObject *_wrap_new_StandardMultiPathGenerator(PyObject *self, PyObject *args, PyObject *kwargs) {
     PyObject *resultobj;
-    int arg0 ;
+    DoubleVector *arg0 ;
     PyArray *arg1 ;
     Matrix *arg2 ;
     long arg3 = 0 ;
+    PyObject * obj0  = 0 ;
     PyObject * obj1  = 0 ;
     PyObject * argo2 =0 ;
     char *kwnames[] = {
-        "timeDimension","average","covariance","seed", NULL 
+        "timeDelays","average","covariance","seed", NULL 
     };
     StandardMultiPathGenerator *result ;
     
-    if(!PyArg_ParseTupleAndKeywords(args,kwargs,"iOO|l:new_StandardMultiPathGenerator",kwnames,&arg0,&obj1,&argo2,&arg3)) return NULL;
+    if(!PyArg_ParseTupleAndKeywords(args,kwargs,"OOO|l:new_StandardMultiPathGenerator",kwnames,&obj0,&obj1,&argo2,&arg3)) return NULL;
+    {
+        if (PyTuple_Check(obj0)) {
+            int size = PyTuple_Size(obj0);
+            arg0 = new DoubleVector(size);
+            for (int i=0; i<size; i++) {
+                PyObject* o = PyTuple_GetItem(obj0,i);
+                if (PyFloat_Check(o)) {
+                    (*arg0)[i] = PyFloat_AsDouble(o);
+                }else if (PyInt_Check(o)) {
+                    (*arg0)[i] = double(PyInt_AsLong(o));
+                }else if (o == Py_None) {
+                    (*arg0)[i] = Null<double>();
+                }else {
+                    PyErr_SetString(PyExc_TypeError,"tuple must contain doubles");
+                    delete arg0;
+                    return NULL;
+                }
+            }
+        }else if (PyList_Check(obj0)) {
+            int size = PyList_Size(obj0);
+            arg0 = new DoubleVector(size);
+            for (int i=0; i<size; i++) {
+                PyObject* o = PyList_GetItem(obj0,i);
+                if (PyFloat_Check(o)) {
+                    (*arg0)[i] = PyFloat_AsDouble(o);
+                }else if (PyInt_Check(o)) {
+                    (*arg0)[i] = double(PyInt_AsLong(o));
+                }else if (o == Py_None) {
+                    (*arg0)[i] = Null<double>();
+                }else {
+                    PyErr_SetString(PyExc_TypeError,"list must contain doubles");
+                    delete arg0;
+                    return NULL;
+                }
+            }
+        }else {
+            PyErr_SetString(PyExc_TypeError,"not a sequence");
+            return NULL;
+        }
+    }
     {
         if (PyTuple_Check(obj1)) {
             int size = PyTuple_Size(obj1);
@@ -8638,7 +8679,7 @@ static PyObject *_wrap_new_StandardMultiPathGenerator(PyObject *self, PyObject *
     if ((SWIG_ConvertPtr(argo2,(void **) &arg2,SWIGTYPE_p_Matrix,1)) == -1) return NULL;
     {
         try {
-            result = (StandardMultiPathGenerator *)new StandardMultiPathGenerator(arg0,(PyArray const &)*arg1,(Matrix const &)*arg2,arg3);
+            result = (StandardMultiPathGenerator *)new StandardMultiPathGenerator((DoubleVector const &)*arg0,(PyArray const &)*arg1,(Matrix const &)*arg2,arg3);
             
         }catch (std::exception& e) {
             PyErr_SetString(PyExc_Exception,e.what());
@@ -8648,6 +8689,9 @@ static PyObject *_wrap_new_StandardMultiPathGenerator(PyObject *self, PyObject *
             return NULL;
         }
     }resultobj = SWIG_NewPointerObj((void *) result, SWIGTYPE_p_StandardMultiPathGenerator);
+    {
+        delete arg0;
+    }
     {
         delete arg1;
     }
@@ -9653,7 +9697,7 @@ static PyObject *_wrap_new_BSMEuropeanOption(PyObject *self, PyObject *args, PyO
     double arg6 ;
     PyObject * obj0  = 0 ;
     char *kwnames[] = {
-        "type","underlying","strike","underlyingGrowthRate","riskFreeRate","residualTime","volatility", NULL 
+        "type","underlying","strike","dividendYield","riskFreeRate","residualTime","volatility", NULL 
     };
     BSMEuropeanOption *result ;
     
@@ -9983,7 +10027,7 @@ static PyObject *_wrap_new_BSMAmericanOption(PyObject *self, PyObject *args, PyO
     int arg8 = 100 ;
     PyObject * obj0  = 0 ;
     char *kwnames[] = {
-        "type","underlying","strike","underlyingGrowthRate","riskFreeRate","residualTime","volatility","timeSteps","gridPoints", NULL 
+        "type","underlying","strike","dividendYield","riskFreeRate","residualTime","volatility","timeSteps","gridPoints", NULL 
     };
     BSMAmericanOption *result ;
     
@@ -10317,7 +10361,7 @@ static PyObject *_wrap_new_DividendAmericanOption(PyObject *self, PyObject *args
     PyObject * obj7  = 0 ;
     PyObject * obj8  = 0 ;
     char *kwnames[] = {
-        "type","underlying","strike","underlyingGrowthRate","riskFreeRate","residualTime","volatility","dividends","exdivdates","timeSteps","gridPoints", NULL 
+        "type","underlying","strike","dividendYield","riskFreeRate","residualTime","volatility","dividends","exdivdates","timeSteps","gridPoints", NULL 
     };
     DividendAmericanOption *result ;
     
@@ -10679,7 +10723,7 @@ static PyObject *_wrap_new_DividendEuropeanOption(PyObject *self, PyObject *args
     PyObject * obj7  = 0 ;
     PyObject * obj8  = 0 ;
     char *kwnames[] = {
-        "type","underlying","strike","underlyingGrowthRate","riskFreeRate","residualTime","volatility","dividends","exdivdates", NULL 
+        "type","underlying","strike","dividendYield","riskFreeRate","residualTime","volatility","dividends","exdivdates", NULL 
     };
     DividendEuropeanOption *result ;
     

@@ -27,6 +27,10 @@
     $Source$
     $Name$
     $Log$
+    Revision 1.14  2001/02/13 10:02:57  marmar
+    Ambiguous variable name underlyingGrowthRate changed in
+    unambiguos dividendYield
+
     Revision 1.13  2001/01/15 13:38:33  lballabio
     Using new cubic spline
 
@@ -65,13 +69,13 @@ namespace QuantLib {
 
         DividendAmericanOption::DividendAmericanOption(
         DividendAmericanOption::Type type, double underlying, double strike,
-            Rate underlyingGrowthRate, Rate riskFreeRate, Time residualTime, 
+            Rate dividendYield, Rate riskFreeRate, Time residualTime, 
             double volatility, const std::vector<double>& dividends, 
             const std::vector<Time>& exdivdates, int timeSteps, int gridPoints)
         : theDividends(dividends), theExDivDates(exdivdates), 
           theNumberOfDivs(dividends.size()), timeStepPerDiv(timeSteps),
           BSMNumericalOption(type, underlying-addElements(dividends), 
-          strike, underlyingGrowthRate, riskFreeRate, residualTime, volatility, 
+          strike, dividendYield, riskFreeRate, residualTime, volatility, 
           gridPoints) {
 
             QL_REQUIRE(theNumberOfDivs==theExDivDates.size(),
@@ -157,7 +161,7 @@ namespace QuantLib {
                       
                         DividendEuropeanOption analitic(theType, 
                             theUnderlying+addElements(theDividends), theStrike, 
-                            theUnderlyingGrowthRate, theRiskFreeRate, 
+                            dividendYield_, theRiskFreeRate, 
                             theResidualTime, theVolatility, theDividends, 
                             theExDivDates);
                         theValue = valueAtCenter(prices) - 

@@ -17,7 +17,8 @@
  * You should have received a copy of the license along with this file;
  * if not, contact ferdinando@ametrano.net
  *
- * QuantLib license is also available at http://quantlib.sourceforge.net/LICENSE.TXT
+ * QuantLib license is also available at
+ *   http://quantlib.sourceforge.net/LICENSE.TXT
 */
 
 /*! \file mceuropeanpricer.h
@@ -25,6 +26,10 @@
     $Source$
     $Name$
     $Log$
+    Revision 1.6  2001/02/13 10:02:17  marmar
+    Ambiguous variable name underlyingGrowthRate changed in
+    unambiguos dividendYield
+
     Revision 1.5  2001/01/30 15:57:15  marmar
     Now using OneFactorMonteCarloOption
 
@@ -60,7 +65,7 @@ namespace QuantLib {
         class McEuropeanPricer: public McPricer {
         public:
             McEuropeanPricer(Option::Type type, double underlying, 
-            double strike, Rate underlyingGrowthRate, Rate riskFreeRate, 
+            double strike, Rate dividendYield, Rate riskFreeRate, 
             double residualTime, double volatility, int timesteps, 
             long samples, long seed=0);
         };

@@ -27,6 +27,10 @@
     $Source$
     $Name$
     $Log$
+    Revision 1.6  2001/02/13 10:02:17  marmar
+    Ambiguous variable name underlyingGrowthRate changed in
+    unambiguos dividendYield
+
     Revision 1.5  2001/01/16 11:23:27  nando
     removed tabs and enforced 80 columns
 
@@ -50,9 +54,9 @@ namespace QuantLib {
           public:
               // constructor
               BSMEuropeanOption(Type type, double underlying, double strike,
-                        Rate underlyingGrowthRate, Rate riskFreeRate,
+                        Rate dividendYield, Rate riskFreeRate,
                         Time residualTime, double volatility)
-              : BSMOption(type, underlying, strike, underlyingGrowthRate,
+              : BSMOption(type, underlying, strike, dividendYield,
                             riskFreeRate, residualTime, volatility) {}
               // accessors
               double value() const;

@@ -18,7 +18,8 @@
  * You should have received a copy of the license along with this file;
  * if not, contact ferdinando@ametrano.net
  *
- * QuantLib license is also available at http://quantlib.sourceforge.net/LICENSE.TXT
+ * QuantLib license is also available at
+ * http://quantlib.sourceforge.net/LICENSE.TXT
 */
 
 /*! \file bsmoption.h
@@ -27,6 +28,10 @@
     $Source$
     $Name$
     $Log$
+    Revision 1.6  2001/02/13 10:02:17  marmar
+    Ambiguous variable name underlyingGrowthRate changed in
+    unambiguos dividendYield
+
     Revision 1.5  2001/01/17 14:37:56  nando
     tabs removed
 
@@ -54,15 +59,21 @@ namespace QuantLib {
 
         class BSMOption : public Option {
           public:
-            BSMOption(Type type, double underlying, double strike, Rate underlyingGrowthRate,
-              Rate riskFreeRate, Time residualTime, double volatility)
-            : theType(type), theUnderlying(underlying), theStrike(strike), theUnderlyingGrowthRate(underlyingGrowthRate),
-              theRiskFreeRate(riskFreeRate), theResidualTime(residualTime), theVolatility(volatility),
-              hasBeenCalculated(false) {
-                QL_REQUIRE(strike > 0.0, "BSMOption::BSMOption : strike must be positive");
-                QL_REQUIRE(underlying > 0.0, "BSMOption::BSMOption : underlying must be positive");
-                QL_REQUIRE(residualTime > 0.0, "BSMOption::BSMOption : residual time must be positive");
-                QL_REQUIRE(volatility > 0.0, "BSMOption::BSMOption : volatility must be positive");
+            BSMOption(Type type, double underlying, double strike, 
+                Rate dividendYield, Rate riskFreeRate, Time residualTime, 
+                double volatility)
+            : theType(type), theUnderlying(underlying), theStrike(strike), 
+                dividendYield_(dividendYield),
+              theRiskFreeRate(riskFreeRate), theResidualTime(residualTime), 
+                theVolatility(volatility), hasBeenCalculated(false) {
+                QL_REQUIRE(strike > 0.0, 
+                    "BSMOption::BSMOption : strike must be positive");
+                QL_REQUIRE(underlying > 0.0, 
+                    "BSMOption::BSMOption : underlying must be positive");
+                QL_REQUIRE(residualTime > 0.0, 
+                    "BSMOption::BSMOption : residual time must be positive");
+                QL_REQUIRE(volatility > 0.0, 
+                    "BSMOption::BSMOption : volatility must be positive");
             }
             virtual ~BSMOption() {}    // just in case
             // modifiers
@@ -75,18 +86,20 @@ namespace QuantLib {
             virtual double theta() const = 0;
             virtual double vega() const = 0;
             virtual double rho() const = 0;
-            double impliedVolatility(double targetValue, double accuracy = 1e-4, int maxEvaluations = 100) const ;
+            double impliedVolatility(double targetValue, 
+                double accuracy = 1e-4, int maxEvaluations = 100) const ;
             virtual Handle<BSMOption> clone() const = 0;
           protected:
             // input data
             Type theType;
             double theUnderlying, theStrike;
-            Rate theUnderlyingGrowthRate, theRiskFreeRate;
+            Rate dividendYield_, theRiskFreeRate;
             Time theResidualTime;
             double theVolatility;
             // results
-            mutable bool hasBeenCalculated;    // declared as mutable to preserve the logical
-            mutable double theValue;                // constness (does this word exist?) of value()
+            // declared as mutable to preserve the logical
+            mutable bool hasBeenCalculated;    
+            mutable double theValue;
           private:
             class BSMFunction;
             friend class BSMFunction;
@@ -101,8 +114,8 @@ namespace QuantLib {
                     return (bsm->value()-thePrice);
                 }
                 double derivative(double x) const {
-                    // assuming that derivative(x) is always called after value(x)
-                    // so that setVolatility unnecessary
+        // assuming that derivative(x) is always called after value(x)
+        // so that setVolatility unnecessary
                     return bsm->vega();
                 }
               private:
@@ -112,7 +125,8 @@ namespace QuantLib {
         };
 
         inline void BSMOption::setVolatility(double volatility) {
-            QL_REQUIRE(volatility>=0.0,"BSMOption::setVolatility : Volatility must be positive");
+            QL_REQUIRE(volatility>=0.0,
+                 "BSMOption::setVolatility : Volatility must be positive");
             theVolatility = volatility;
             hasBeenCalculated=false;
         }

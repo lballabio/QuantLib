@@ -25,6 +25,10 @@
     $Source$
     $Name$
     $Log$
+    Revision 1.2  2001/02/13 10:02:17  marmar
+    Ambiguous variable name underlyingGrowthRate changed in
+    unambiguos dividendYield
+
     Revision 1.1  2001/02/05 16:53:38  marmar
     McAsianPricer replaced by AveragePriceAsian and AverageStrikeAsian
 
@@ -64,7 +68,7 @@ namespace QuantLib {
         class AveragePriceAsian: public McPricer {
         public:
             AveragePriceAsian(Option::Type type, double underlying, 
-                double strike, Rate underlyingGrowthRate,   Rate riskFreeRate, 
+                double strike, Rate dividendYield,   Rate riskFreeRate, 
                 double residualTime, double volatility, int timesteps, 
                 long samples, long seed=0);
         };

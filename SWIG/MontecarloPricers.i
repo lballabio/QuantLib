@@ -25,9 +25,13 @@
 	$Source$
 	$Name$
 	$Log$
+	Revision 1.6  2001/02/13 10:06:50  marmar
+	Ambiguous variable name underlyingGrowthRate changed in
+	unambiguos dividendYield
+
 	Revision 1.5  2001/02/07 10:15:57  marmar
 	Interface for Himalaya-type option pricer
-
+	
 	Revision 1.4  2001/02/05 16:55:12  marmar
 	McAsianPricer replaced by AveragePriceAsian and AverageStrikeAsian
 	
@@ -75,7 +79,7 @@ using QuantLib::Pricers::McEuropeanPricer;
 class McEuropeanPricer{
     public:
 	McEuropeanPricer(OptionType type, double underlying, double strike, 
-		 Rate underlyingGrowthRate,   Rate riskFreeRate, double residualTime, 
+		 Rate dividendYield,   Rate riskFreeRate, double residualTime, 
 		 double volatility,	int timesteps, int confnumber, long seed);
 	double value() const;
 	double errorEstimate() const;
@@ -89,7 +93,7 @@ using QuantLib::Pricers::GeometricAsianOption;
 class GeometricAsianOption {
   public:
 	GeometricAsianOption(OptionType type, double underlying, double strike, 
-		Rate underlyingGrowthRate, Rate exerciseRate,
+		Rate dividendYield, Rate exerciseRate,
 		double residualTime, double volatility);
 	double value() const;
 };
@@ -102,7 +106,7 @@ using QuantLib::Pricers::AveragePriceAsian;
 class AveragePriceAsian{
     public:
 	AveragePriceAsian(OptionType type, double underlying, double strike, 
-		 Rate underlyingGrowthRate,   Rate riskFreeRate, double residualTime, 
+		 Rate dividendYield,   Rate riskFreeRate, double residualTime, 
 		 double volatility,	int timesteps, int confnumber, long seed);
 	double value() const;
 	double errorEstimate() const;
@@ -115,7 +119,7 @@ using QuantLib::Pricers::AverageStrikeAsian;
 class AverageStrikeAsian{
     public:
 	AverageStrikeAsian(OptionType type, double underlying, double strike, 
-		 Rate underlyingGrowthRate,   Rate riskFreeRate, double residualTime, 
+		 Rate dividendYield,   Rate riskFreeRate, double residualTime, 
 		 double volatility,	int timesteps, int confnumber, long seed);
 	double value() const;
 	double errorEstimate() const;
@@ -133,7 +137,7 @@ using QuantLib::Pricers::PlainBasketOption;
 class PlainBasketOption{
     public:
     PlainBasketOption(const PyArray &underlying, 
-        const PyArray &underlyingGrowthRate, const Matrix &covariance, 
+        const PyArray &dividendYield, const Matrix &covariance, 
         Rate riskFreeRate,  double residualTime, 
         int timesteps, long samples, long seed = 0);
 	double value() const;
@@ -150,7 +154,7 @@ using QuantLib::Pricers::Himalaya;
 
 class Himalaya{
     public:
-    Himalaya(const PyArray &underlying, const PyArray  &underlyingGrowthRate, 
+    Himalaya(const PyArray &underlying, const PyArray  &dividendYield, 
         const Matrix &covariance, Rate riskFreeRate, double strike, 
         const DoubleVector &timeDelays, long samples, long seed=0);
 	double value() const;

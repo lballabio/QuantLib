@@ -24,6 +24,10 @@
     
     $Source$
     $Log$
+    Revision 1.2  2001/02/13 10:02:17  marmar
+    Ambiguous variable name underlyingGrowthRate changed in
+    unambiguos dividendYield
+
     Revision 1.1  2001/02/07 10:14:43  marmar
     Himalaya-type option pricer
 
@@ -53,7 +57,7 @@ namespace QuantLib {
         class Himalaya: public MultiFactorPricer {
         public:
             Himalaya(const Array &underlying, 
-                const Array &underlyingGrowthRate, 
+                const Array &dividendYield, 
                 const Math::Matrix &covariance, 
                 Rate riskFreeRate, double strike, 
                 const std::vector<Time> &timeDelays, 

@@ -25,6 +25,10 @@
     $Source$
     $Name$
     $Log$
+    Revision 1.2  2001/02/13 10:02:57  marmar
+    Ambiguous variable name underlyingGrowthRate changed in
+    unambiguos dividendYield
+
     Revision 1.1  2001/02/05 16:54:06  marmar
     McAsianPricer replaced by AveragePriceAsian and AverageStrikeAsian
 
@@ -75,13 +79,13 @@ namespace QuantLib {
         using MonteCarlo::GeometricAsianPathPricer;
 
         AveragePriceAsian::AveragePriceAsian(Option::Type type, double underlying, 
-          double strike, Rate underlyingGrowthRate, Rate riskFreeRate, 
+          double strike, Rate dividendYield, Rate riskFreeRate, 
           double residualTime, double volatility, int timesteps, long samples,
           long seed)
         : McPricer(samples, seed) {
             //! Initialize the path generator
             double deltaT = residualTime/timesteps;
-            double mu = deltaT * (riskFreeRate - underlyingGrowthRate
+            double mu = deltaT * (riskFreeRate - dividendYield
                                     - 0.5 * volatility * volatility);
             double variance = volatility*volatility*deltaT;
 
@@ -98,7 +102,7 @@ namespace QuantLib {
                     QL_EXP(-riskFreeRate*residualTime)));
 
             double controlVariatePrice = GeometricAsianOption(type, underlying,
-                strike, underlyingGrowthRate, riskFreeRate, residualTime, 
+                strike, dividendYield, riskFreeRate, residualTime, 
                 volatility).value(); 
 
             Handle<PathPricer> controlVariatedPricer(
