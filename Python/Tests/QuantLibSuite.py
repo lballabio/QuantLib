@@ -27,6 +27,10 @@
     $Id$
     $Source$
     $Log$
+    Revision 1.5  2001/04/18 09:03:22  nando
+    added/removed final
+    raw_input('press any key to continue')
+
     Revision 1.4  2001/04/17 09:11:27  nando
     minor smoothing
 
@@ -37,51 +41,68 @@
 
 import sys
 import unittest
-from american_option import AmericanOptionTest
-from barrier_option import BarrierOptionTest
-from binary_option import BinaryOptionTest
-from cliquet_option import CliquetOptionTest
-from date import DateTest
-from distributions import DistributionTest
-from european_option import EuropeanOptionTest
-from european_with_dividends import DividendEuropeanOptionTest
-from everest_option import EverestOptionTest
-from finite_difference_european import FDEuropeanOptionTest
-from get_covariance import CovarianceTest
-from himalaya_option import HimalayaOptionTest
-from implied_volatility import ImpliedVolatilityTest
-from montecarlo_pricers import MonteCarloPricerTest
-from pagoda_option import PagodaOptionTest
-from plain_basket_option import PlainBasketOptionTest
-from random_generators import RNGTest
-from risk_statistics import RiskStatisticsTest
-from statistics import StatisticsTest
-from term_structures import TermStructureTest
-
 suite = unittest.TestSuite()
+
+from american_option import AmericanOptionTest
 suite.addTest(AmericanOptionTest())
+
+from barrier_option import BarrierOptionTest
 suite.addTest(BarrierOptionTest())
+
+from binary_option import BinaryOptionTest
 suite.addTest(BinaryOptionTest())
+
+from cliquet_option import CliquetOptionTest
 suite.addTest(CliquetOptionTest())
-suite.addTest(CovarianceTest())
+
+from date import DateTest
 suite.addTest(DateTest())
+
+from distributions import DistributionTest
 suite.addTest(DistributionTest())
+
+from european_option import EuropeanOptionTest
 suite.addTest(EuropeanOptionTest())
+
+from european_with_dividends import DividendEuropeanOptionTest
 suite.addTest(DividendEuropeanOptionTest())
+
+from everest_option import EverestOptionTest
 suite.addTest(EverestOptionTest())
+
+from finite_difference_european import FDEuropeanOptionTest
 suite.addTest(FDEuropeanOptionTest())
+
+from get_covariance import CovarianceTest
+suite.addTest(CovarianceTest())
+
+from himalaya_option import HimalayaOptionTest
 suite.addTest(HimalayaOptionTest())
+
+from implied_volatility import ImpliedVolatilityTest
 suite.addTest(ImpliedVolatilityTest())
+
+from montecarlo_pricers import MonteCarloPricerTest
 suite.addTest(MonteCarloPricerTest())
+
+from pagoda_option import PagodaOptionTest
 suite.addTest(PagodaOptionTest())
+
+from plain_basket_option import PlainBasketOptionTest
 suite.addTest(PlainBasketOptionTest())
+
+from random_generators import RNGTest
 suite.addTest(RNGTest())
+
+from risk_statistics import RiskStatisticsTest
 suite.addTest(RiskStatisticsTest())
+
+from statistics import StatisticsTest
 suite.addTest(StatisticsTest())
+
+from term_structures import TermStructureTest
 suite.addTest(TermStructureTest())
 
 result = unittest.TextTestRunner().run(suite)
 if not result.wasSuccessful:
     sys.exit(1)
-
-raw_input('press any key to continue')

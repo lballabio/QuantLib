@@ -25,6 +25,10 @@
     $Id$
     $Source$
     $Log$
+    Revision 1.10  2001/04/18 09:03:22  nando
+    added/removed final
+    raw_input('press any key to continue')
+
     Revision 1.9  2001/04/12 14:21:23  lballabio
     Corrected dividend dates for theta check
 
@@ -106,10 +110,10 @@ class DividendEuropeanOptionTest(unittest.TestCase):
                         optMs = pricer(typ, under-dS, strike, Qrate,
                           Rrate   , resTime   , vol,      div, dates)
                         optPt = pricer(typ, under   , strike, Qrate,
-                          Rrate   , resTime+dT, vol,      div, 
+                          Rrate   , resTime+dT, vol,      div,
                           map(lambda t,dT=dT:t+dT, dates))
                         optMt = pricer(typ, under   , strike, Qrate,
-                          Rrate   , resTime-dT, vol,      div, 
+                          Rrate   , resTime-dT, vol,      div,
                           map(lambda t,dT=dT:t-dT, dates))
                         optPr = pricer(typ, under   , strike, Qrate,
                           Rrate+dR, resTime   , vol,      div, dates)
@@ -155,5 +159,6 @@ if __name__ == '__main__':
     suite = unittest.TestSuite()
     suite.addTest(DividendEuropeanOptionTest())
     unittest.TextTestRunner().run(suite)
+    raw_input('press any key to continue')
 
 

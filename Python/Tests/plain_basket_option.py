@@ -25,6 +25,10 @@
     $Id$
     $Source$
     $Log$
+    Revision 1.6  2001/04/18 09:03:22  nando
+    added/removed final
+    raw_input('press any key to continue')
+
     Revision 1.5  2001/04/09 11:28:17  nando
     updated copyright notice header and improved CVS tags
 
@@ -88,5 +92,6 @@ if __name__ == '__main__':
     suite = unittest.TestSuite()
     suite.addTest(PlainBasketOptionTest())
     unittest.TextTestRunner().run(suite)
+    raw_input('press any key to continue')
 
 
