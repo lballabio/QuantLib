@@ -2,27 +2,11 @@
 # $Id$
 # $Source$
 # $Log$
+# Revision 1.35  2001/07/25 07:36:08  nando
+# updated
+#
 # Revision 1.34  2001/07/24 16:59:33  nando
 # documentation revised
-#
-# Revision 1.33  2001/07/19 16:40:10  lballabio
-# Improved docs a bit
-#
-# Revision 1.32  2001/07/18 17:30:55  nando
-# to do list
-#
-# Revision 1.31  2001/06/25 11:22:11  enri
-# dist target fixed
-#
-# Revision 1.30  2001/06/05 10:56:08  lballabio
-# Added docs-clean target
-#
-# Revision 1.29  2001/05/28 14:57:54  lballabio
-# Removed files removed from distribution list also
-#
-# Revision 1.28  2001/05/24 12:52:01  nando
-# smoothing #include xx.hpp
-#
 
 AUTOMAKE_OPTIONS=foreign
 
@@ -39,8 +23,6 @@ EXTRA_DIST=Authors.txt \
 	QuantLib.mak \
 	QuantLib.nsi \
 	Readme.txt \
-	README-win.txt \
-	README-mac.txt \
 	TODO.txt \
 	updateproject.sh
 
