@@ -56,6 +56,10 @@ namespace QuantLib {
         Real errorEstimate() const;
         //! access to the sample accumulator for richer statistics
         const stats_type& sampleAccumulator(void) const;
+        //! basic calculate method provided to inherited pricing engines
+        void calculate(Real requiredTolerance,
+                       Size requiredSamples,
+                       Size maxSamples) const;
       protected:
         McSimulation(bool antitheticVariate,
                      bool controlVariate)
@@ -71,6 +75,7 @@ namespace QuantLib {
         virtual boost::shared_ptr<path_generator_type> pathGenerator() 
                                                                    const = 0;
         virtual TimeGrid timeGrid() const = 0;
+        virtual Real controlVariateValue() const = 0;
         mutable boost::shared_ptr<MonteCarloModel<MC,S> > mcModel_;
         static const Size minSample_;
         bool antitheticVariate_, controlVariate_;
@@ -150,6 +155,52 @@ namespace QuantLib {
         return mcModel_->sampleAccumulator().mean();
     }
 
+
+    template<class MC, class S>
+    inline void McSimulation<MC,S>::calculate(Real requiredTolerance,
+                                              Size requiredSamples,
+                                              Size maxSamples) const {
+
+        QL_REQUIRE(requiredTolerance != Null<Real>() ||
+                   requiredSamples != Null<Size>(),
+                   "neither tolerance nor number of samples set");
+
+        //! Initialize the one-factor Monte Carlo
+        if (this->controlVariate_) {
+
+            Real controlVariateValue = this->controlVariateValue();
+
+            boost::shared_ptr<path_pricer_type> controlPP =
+                this->controlPathPricer();
+            QL_REQUIRE(controlPP,
+                       "engine does not provide "
+                       "control variation path pricer");
+
+            this->mcModel_ =
+                boost::shared_ptr<MonteCarloModel<MC, S> >(
+                    new MonteCarloModel<MC, S>(
+                           pathGenerator(), this->pathPricer(), stats_type(),
+                           this->antitheticVariate_, controlPP,
+                           controlVariateValue));
+
+        } else {
+            this->mcModel_ =
+                boost::shared_ptr<MonteCarloModel<MC, S> >(
+                    new MonteCarloModel<MC, S>(
+                           pathGenerator(), this->pathPricer(), S(),
+                           this->antitheticVariate_));
+        }
+
+        if (requiredTolerance != Null<Real>()) {
+            if (maxSamples != Null<Size>())
+                this->value(requiredTolerance, maxSamples);
+            else
+                this->value(requiredTolerance);
+        } else {
+            this->valueWithSamples(requiredSamples);
+        }
+
+    }
 
     template<class MC, class S>
     inline Real McSimulation<MC,S>::errorEstimate() const {
