@@ -460,7 +460,7 @@ namespace {
         1.21e-003, 6.37e-004, 3.40e-004, 1.75e-004,
         9.21e-005, 4.79e-005, 2.56e-005
     };
-    const Real dim3DiscrSobLev_Sobol[] = {
+    const Real dim003DiscrSobLev_Sobol[] = {
         1.21e-003, 6.37e-004, 3.40e-004, 1.75e-004,
         9.21e-005, 4.79e-005, 2.56e-005
     };
