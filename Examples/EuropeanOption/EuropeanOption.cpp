@@ -23,7 +23,7 @@
 
 //! $Id$
 
-#include "ql/quantlib.hpp"
+#include <ql/quantlib.hpp>
 
 // Rate and Time are just double, but having their own types allows for
 // a stronger check at compile time

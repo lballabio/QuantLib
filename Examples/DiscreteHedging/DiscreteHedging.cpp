@@ -51,7 +51,7 @@
 */
 
 // the only header you need to use QuantLib
-#include "ql/quantlib.hpp"
+#include <ql/quantlib.hpp>
 
 
 // introducing the players ....
