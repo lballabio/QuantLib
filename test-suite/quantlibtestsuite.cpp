@@ -55,6 +55,7 @@
 #include "distributions.hpp"
 #include "dividendeuropeanoption.hpp"
 #include "europeanoption.hpp"
+#include "exchangerate.hpp"
 #include "factorial.hpp"
 #include "forwardoption.hpp"
 #include "instruments.hpp"
@@ -64,6 +65,7 @@
 #include "lowdiscrepancysequences.hpp"
 #include "matrices.hpp"
 #include "mersennetwister.hpp"
+#include "money.hpp"
 #include "operators.hpp"
 #include "piecewiseflatforward.hpp"
 #include "quantooption.hpp"
@@ -106,6 +108,7 @@ test_suite* init_unit_test_suite(int, char* []) {
     test->add(DistributionTest::suite());
     test->add(DividendEuropeanOptionTest::suite());
     test->add(EuropeanOptionTest::suite());
+    test->add(ExchangeRateTest::suite());
     test->add(FactorialTest::suite());
     test->add(ForwardOptionTest::suite());
     test->add(InstrumentTest::suite());
@@ -115,6 +118,7 @@ test_suite* init_unit_test_suite(int, char* []) {
     test->add(LowDiscrepancyTest::suite());
     test->add(MatricesTest::suite());
     test->add(MersenneTwisterTest::suite());
+    test->add(MoneyTest::suite());
     test->add(OperatorTest::suite());
     test->add(PiecewiseFlatForwardTest::suite());
     test->add(QuantoOptionTest::suite());

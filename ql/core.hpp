@@ -32,11 +32,13 @@
 #include <ql/discretizedasset.hpp>
 #include <ql/disposable.hpp>
 #include <ql/errors.hpp>
+#include <ql/exchangerate.hpp>
 #include <ql/exercise.hpp>
 #include <ql/grid.hpp>
 #include <ql/history.hpp>
 #include <ql/index.hpp>
 #include <ql/instrument.hpp>
+#include <ql/money.hpp>
 #include <ql/null.hpp>
 #include <ql/numericalmethod.hpp>
 #include <ql/option.hpp>

@@ -48,11 +48,13 @@ include_HEADERS = \
 	discretizedasset.hpp \
 	disposable.hpp \
 	errors.hpp \
+	exchangerate.hpp \
 	exercise.hpp \
 	grid.hpp \
 	history.hpp \
 	index.hpp \
 	instrument.hpp \
+	money.hpp \
 	null.hpp \
 	numericalmethod.hpp \
 	option.hpp \
@@ -87,6 +89,7 @@ libQuantLib_la_LDFLAGS = -release $(PACKAGE_VERSION)
 libQuantLib_la_LIBADD = \
     Calendars/libCalendars.la \
     CashFlows/libCashFlows.la \
+    Currencies/libCurrencies.la \
     DayCounters/libDayCounters.la \
     FiniteDifferences/libFiniteDifferences.la \
     Indexes/libIndexes.la \
@@ -110,8 +113,10 @@ libQuantLib_la_SOURCES = \
     date.cpp \
 	discretizedasset.cpp \
 	errors.cpp \
+	exchangerate.cpp \
 	exercise.cpp \
     grid.cpp \
+    money.cpp \
     schedule.cpp \
 	stochasticprocess.cpp \
     voltermstructure.cpp

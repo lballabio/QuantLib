@@ -16,6 +16,7 @@ QL_TESTS = \
 	distributions.hpp distributions.cpp \
 	dividendeuropeanoption.hpp dividendeuropeanoption.cpp \
 	europeanoption.hpp europeanoption.cpp \
+	exchangerate.hpp exchangerate.cpp \
 	factorial.hpp factorial.cpp \
 	forwardoption.hpp forwardoption.cpp \
 	instruments.hpp instruments.cpp \
@@ -25,6 +26,7 @@ QL_TESTS = \
 	lowdiscrepancysequences.hpp lowdiscrepancysequences.cpp \
 	matrices.hpp matrices.cpp \
 	mersennetwister.hpp mersennetwister.cpp \
+	money.hpp money.cpp \
 	operators.hpp operators.cpp \
 	piecewiseflatforward.hpp piecewiseflatforward.cpp \
 	quantooption.hpp quantooption.cpp \
