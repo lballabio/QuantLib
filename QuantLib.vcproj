@@ -11059,6 +11059,9 @@
 			RelativePath="ql\solver1d.hpp">
 		</File>
 		<File
+			RelativePath=".\ql\stochasticprocess.cpp">
+		</File>
+		<File
 			RelativePath="ql\stochasticprocess.hpp">
 		</File>
 		<File

@@ -775,6 +775,9 @@
 				</FileConfiguration>
 			</File>
 			<File
+				RelativePath=".\cliquetoption.cpp">
+			</File>
+			<File
 				RelativePath="compoundforward.cpp">
 				<FileConfiguration
 					Name="Debug|Win32">
@@ -1978,6 +1981,9 @@
 				</FileConfiguration>
 			</File>
 			<File
+				RelativePath=".\quantoforwardoptions.cpp">
+			</File>
+			<File
 				RelativePath=".\quantooption.cpp">
 			</File>
 			<File
@@ -2483,6 +2489,9 @@
 				RelativePath="capfloor.hpp">
 			</File>
 			<File
+				RelativePath=".\cliquetoption.hpp">
+			</File>
+			<File
 				RelativePath="compoundforward.hpp">
 			</File>
 			<File
@@ -2541,6 +2550,9 @@
 			</File>
 			<File
 				RelativePath="piecewiseflatforward.hpp">
+			</File>
+			<File
+				RelativePath=".\quantoforwardoptions.hpp">
 			</File>
 			<File
 				RelativePath=".\quantooption.hpp">

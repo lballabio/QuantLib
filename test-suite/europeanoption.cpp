@@ -391,7 +391,7 @@ void EuropeanOptionTest::testGreekValues() {
     error = QL_FABS(calculated-values[i].result);
     if (error>tolerance)
         REPORT_FAILURE("delta", payoff, exercise, values[i].s,
-                       values[i].q, values[i].r, today, 
+                       values[i].q, values[i].r, today,
                        values[i].v, values[i].result, calculated,
                        error, tolerance);
 
@@ -410,7 +410,7 @@ void EuropeanOptionTest::testGreekValues() {
     error = QL_FABS(calculated-values[i].result);
     if (error>tolerance)
         REPORT_FAILURE("elasticity", payoff, exercise, values[i].s,
-                       values[i].q, values[i].r, today, 
+                       values[i].q, values[i].r, today,
                        values[i].v, values[i].result, calculated,
                        error, tolerance);
 
@@ -430,7 +430,7 @@ void EuropeanOptionTest::testGreekValues() {
     error = QL_FABS(calculated-values[i].result);
     if (error>tolerance)
         REPORT_FAILURE("gamma", payoff, exercise, values[i].s,
-                       values[i].q, values[i].r, today, 
+                       values[i].q, values[i].r, today,
                        values[i].v, values[i].result, calculated,
                        error, tolerance);
 
@@ -449,7 +449,7 @@ void EuropeanOptionTest::testGreekValues() {
     error = QL_FABS(calculated-values[i].result);
     if (error>tolerance)
         REPORT_FAILURE("gamma", payoff, exercise, values[i].s,
-                       values[i].q, values[i].r, today, 
+                       values[i].q, values[i].r, today,
                        values[i].v, values[i].result, calculated,
                        error, tolerance);
 
@@ -469,7 +469,7 @@ void EuropeanOptionTest::testGreekValues() {
     error = QL_FABS(calculated-values[i].result);
     if (error>tolerance)
         REPORT_FAILURE("vega", payoff, exercise, values[i].s,
-                       values[i].q, values[i].r, today, 
+                       values[i].q, values[i].r, today,
                        values[i].v, values[i].result, calculated,
                        error, tolerance);
 
@@ -489,7 +489,7 @@ void EuropeanOptionTest::testGreekValues() {
     error = QL_FABS(calculated-values[i].result);
     if (error>tolerance)
         REPORT_FAILURE("vega", payoff, exercise, values[i].s,
-                       values[i].q, values[i].r, today, 
+                       values[i].q, values[i].r, today,
                        values[i].v, values[i].result, calculated,
                        error, tolerance);
 
@@ -509,7 +509,7 @@ void EuropeanOptionTest::testGreekValues() {
     error = QL_FABS(calculated-values[i].result);
     if (error>tolerance)
         REPORT_FAILURE("theta", payoff, exercise, values[i].s,
-                       values[i].q, values[i].r, today, 
+                       values[i].q, values[i].r, today,
                        values[i].v, values[i].result, calculated,
                        error, tolerance);
 
@@ -529,7 +529,7 @@ void EuropeanOptionTest::testGreekValues() {
     error = QL_FABS(calculated-values[i].result);
     if (error>tolerance)
         REPORT_FAILURE("thetaPerDay", payoff, exercise, values[i].s,
-                       values[i].q, values[i].r, today, 
+                       values[i].q, values[i].r, today,
                        values[i].v, values[i].result, calculated,
                        error, tolerance);
 
@@ -549,7 +549,7 @@ void EuropeanOptionTest::testGreekValues() {
     error = QL_FABS(calculated-values[i].result);
     if (error>tolerance)
         REPORT_FAILURE("rho", payoff, exercise, values[i].s,
-                       values[i].q, values[i].r, today, 
+                       values[i].q, values[i].r, today,
                        values[i].v, values[i].result, calculated,
                        error, tolerance);
 
@@ -569,7 +569,7 @@ void EuropeanOptionTest::testGreekValues() {
     error = QL_FABS(calculated-values[i].result);
     if (error>tolerance)
         REPORT_FAILURE("dividendRho", payoff, exercise, values[i].s,
-                       values[i].q, values[i].r, today, 
+                       values[i].q, values[i].r, today,
                        values[i].v, values[i].result, calculated,
                        error, tolerance);
 
@@ -721,8 +721,8 @@ void EuropeanOptionTest::testGreeks() {
                                      tol   = tolerance [greek];
                               double error = relativeError(expct,calcl,u);
                               if (error>tol) {
-                                  REPORT_FAILURE(greek, payoff, exercise, 
-                                                 u, q, r, today, v, 
+                                  REPORT_FAILURE(greek, payoff, exercise,
+                                                 u, q, r, today, v,
                                                  expct, calcl, error, tol);
                               }
                           }
@@ -907,6 +907,7 @@ void EuropeanOptionTest::testImpliedVolContainment() {
     double impliedVol = option1->impliedVolatility(refValue*1.5,
                                                    tolerance,
                                                    maxEvaluations);
+    impliedVol; // borland warning avoided
 
     if (f.isUp())
         BOOST_FAIL("implied volatility calculation triggered a change "
@@ -919,7 +920,7 @@ void EuropeanOptionTest::testImpliedVolContainment() {
                    "previous value: " +
                    DoubleFormatter::toString(refValue,8) + "\n"
                    "current value:  " +
-                   DoubleFormatter::toString(option2->NPV(),8)); 
+                   DoubleFormatter::toString(option2->NPV(),8));
 
     vol->setValue(0.30);
 
@@ -927,7 +928,7 @@ void EuropeanOptionTest::testImpliedVolContainment() {
         BOOST_FAIL("volatility change not notified");
 
     if (QL_FABS(option2->NPV() - refValue) <= 1.0e-8)
-        BOOST_FAIL("volatility change did not cause the value to change"); 
+        BOOST_FAIL("volatility change did not cause the value to change");
 
 }
 
