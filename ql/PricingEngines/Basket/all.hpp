@@ -19,6 +19,7 @@
 #define quantlib_pricing_engines_basket_all_hpp
 
 #include <ql/qldefines.hpp>
+#include <ql/PricingEngines/Basket/mcamericanbasketengine.hpp>
 #include <ql/PricingEngines/Basket/mcbasketengine.hpp>
 #include <ql/PricingEngines/Basket/stulzengine.hpp>
 

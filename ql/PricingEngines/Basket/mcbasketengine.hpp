@@ -43,6 +43,7 @@ namespace QuantLib {
                         Size requiredSamples = Null<int>(),
                         double requiredTolerance = Null<double>(),
                         Size maxSamples = Null<int>(),
+                        bool brownianBridge = false,
                         long seed = 0);
 
         typedef typename McSimulation<MultiAsset<RNG>,S>::path_generator_type
@@ -64,6 +65,7 @@ namespace QuantLib {
         Size requiredSamples_;
         Size maxSamples_;
         double requiredTolerance_;
+        bool brownianBridge_;
         long seed_;
     };
 
@@ -76,12 +78,14 @@ namespace QuantLib {
                                                    Size requiredSamples,
                                                    double requiredTolerance,
                                                    Size maxSamples,
+                                                   bool brownianBridge,
                                                    long seed)
     : McSimulation<MultiAsset<RNG>,S>(antitheticVariate, controlVariate),
       maxTimeStepsPerYear_(maxTimeStepsPerYear),
       requiredSamples_(requiredSamples), 
       maxSamples_(maxSamples),
       requiredTolerance_(requiredTolerance), 
+      brownianBridge_(brownianBridge),
       seed_(seed) {}
 
     //  MCSimulation interface implementation of 
@@ -100,13 +104,7 @@ namespace QuantLib {
         #endif
 
         Size numAssets = arguments_.blackScholesProcesses.size();
-
-        Array drifts(numAssets);
-        for (Size i=0; i<numAssets; i++) {
-            drifts[i] = arguments_.blackScholesProcesses[i]->riskFreeTS
-                        ->zeroYield(arguments_.exercise->lastDate());
-        }        
-
+        
         TimeGrid grid = timeGrid();
         typename RNG::rsg_type gen =
             RNG::make_sequence_generator(numAssets*(grid.size()-1),seed_);
@@ -123,8 +121,8 @@ namespace QuantLib {
         }
 
         return Handle<path_generator_type>(new
-            path_generator_type(diffusionProcs, drifts, 
-                                arguments_.correlation, grid, gen));
+            path_generator_type(diffusionProcs, arguments_.correlation, 
+                                    grid, gen, brownianBridge_));
 
     }
 
@@ -184,11 +182,11 @@ namespace QuantLib {
                    int(requiredSamples_) != Null<int>(),
                    "MCBasketEngine::calculate: "
                    "neither tolerance nor number of samples set");
-
+/*
         QL_REQUIRE(arguments_.exercise->type() == Exercise::European,
                    "MCBasketEngine::calculate() : "
                    "not an European Option");
-
+*/
         //! Initialize the multi-factor Monte Carlo
         if (controlVariate_) {
 
