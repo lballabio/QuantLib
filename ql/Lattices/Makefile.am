@@ -6,6 +6,7 @@ includedir = $(prefix)/include/ql/Lattices
 
 include_HEADERS = \
     binomialtree.hpp \
+    node.hpp \
     tree.hpp \
     trinomialtree.hpp
 
