@@ -24,10 +24,17 @@
 
 #include <ql/instrument.hpp>
 #include <ql/cashflow.hpp>
+#include <ql/CashFlows/coupon.hpp>
+#include <ql/CashFlows/floatingratecoupon.hpp>
 #include <ql/termstructure.hpp>
+#include <ql/CashFlows/basispointsensitivity.hpp>
 
 namespace QuantLib {
 
+    using CashFlows::Coupon;
+    using CashFlows::FloatingRateCoupon;
+    using QuantLib::CashFlows::TimeBasket;
+   
     namespace Instruments {
 
         //! Interest rate swap
@@ -43,13 +50,16 @@ namespace QuantLib {
             // added interface
             double firstLegBPS() const;
             double secondLegBPS() const;
+            Rate fairRate() const;
+	    const Handle<TimeBasket>& sensitivity() const;
           protected:
             // methods
             void performCalculations() const;
             // data members
             std::vector<Handle<CashFlow> > firstLeg_, secondLeg_;
-            RelinkableHandle<TermStructure> termStructure_;
-            mutable double firstLegBPS_, secondLegBPS_;
+	    RelinkableHandle<TermStructure> termStructure_;
+            mutable double firstLegBPS_, secondLegBPS_, fairRate_;
+	    mutable Handle<TimeBasket> sensitivity_;
         };
 
         // inline definitions
@@ -64,6 +74,16 @@ namespace QuantLib {
             return secondLegBPS_;
         }
 					    
+        inline double Swap::fairRate() const {
+	    calculate();
+	    return fairRate_;
+        }
+
+        inline const Handle<TimeBasket>& Swap::sensitivity() const {
+            calculate();
+            return sensitivity_;
+        }
+       
     }
 
 }

@@ -42,6 +42,7 @@ namespace QuantLib {
 
     using CashFlows::Coupon;
     using CashFlows::BPSCalculator;
+    using CashFlows::BPSBasketCalculator;
 
     namespace Instruments {
 
@@ -67,8 +68,11 @@ namespace QuantLib {
             NPV_ = 0.0;
             firstLegBPS_ = 0.0;
             secondLegBPS_ = 0.0;
+	    double firstLegNPV_ = 0.0;
+	    double secondLegNPV_ = 0.0;
             isExpired_ = true;
 
+            BPSBasketCalculator basketbps(termStructure_,2);
             // subtract first leg cash flows and BPS
             BPSCalculator bps1(termStructure_);
             for (Size i=0; i<firstLeg_.size(); i++) {
@@ -81,9 +85,10 @@ namespace QuantLib {
                     isExpired_ = false;  // keeping track of whether this
                                          // was already set isn't worth the
                                          // effort
-                    NPV_ -= firstLeg_[i]->amount() *
-                        termStructure_->discount(cashFlowDate);
+                    firstLegNPV_ -= firstLeg_[i]->amount() *
+		       termStructure_->discount(cashFlowDate);
                     firstLeg_[i]->accept(bps1);
+                    firstLeg_[i]->accept(basketbps);
                 }
             }
             firstLegBPS_ = -bps1.result();
@@ -98,12 +103,16 @@ namespace QuantLib {
                 if (cashFlowDate > settlement) {
                 #endif
                     isExpired_ = false;
-                    NPV_ += secondLeg_[j]->amount() *
-                        termStructure_->discount(cashFlowDate);
+                    secondLegNPV_ += secondLeg_[j]->amount() *
+		       termStructure_->discount(cashFlowDate);
                     secondLeg_[j]->accept(bps2);
+                    secondLeg_[j]->accept(basketbps);
                 }
             }
+	    NPV_ = firstLegNPV_ + secondLegNPV_;
+	    fairRate_ = secondLegNPV_/QL_FABS(firstLegBPS_);
             secondLegBPS_ = bps2.result();
+            sensitivity_ = basketbps.result();
         }
 
     }
