@@ -3,7 +3,7 @@
 
 SetCompressor lzma
 
-!define VER_NUMBER "0.3.5"
+!define VER_NUMBER "0.3.6"
 
 # HEADER CONFIGURATION COMMANDS
 Name "QuantLib"
@@ -63,6 +63,23 @@ SectionIn 1 2
     File /r "Examples\*.txt"
     File /r "Examples\*.mak"
     File /r "Examples\*.dsw"
+
+    SetOutPath $INSTDIR\Docs
+    File /r "Docs\*.pdf"
+    File /r "Docs\*.am"
+    File /r "Docs\*.bmp"
+    File /r "Docs\*.css"
+    File /r "Docs\*.cpp"
+    File /r "Docs\*.docs"
+    File /r "Docs\*.doxy"
+    File /r "Docs\*.html"
+    File /r "Docs\*.in"
+    File /r "Docs\*.jpg"
+    File /r "Docs\*.mak"
+    File /r "Docs\*.png"
+    File /r "Docs\*.eps"
+    File /r "Docs\*.tex"
+    File /r "Docs\*.txt"
 
     WriteRegStr HKEY_LOCAL_MACHINE \
                 "Software\Microsoft\Windows\CurrentVersion\Uninstall\QuantLib" \
