@@ -60,7 +60,7 @@ namespace QuantLib {
             const RelinkableHandle<TermStructure>& termStructure,
             const Handle<Indexes::Xibor>& index,
             int fixingDays,
-            const std::vector<Spread>& spreads = std::vector<Spread>(),
+            const std::vector<Spread>& spreads, 
             const Date& stubDate = Date());
 
     }
