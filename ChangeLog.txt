@@ -1,3 +1,28 @@
+2001-12-05 14:45  'Ferdinando Ametrano <ferdinando@ametrano.net>'
+
+	* Authors.txt (1.7), Contributors.txt (1.14),
+	Docs/pages/authors.docs (1.3), ql/InterestRateModelling/model.hpp
+	(1.7), ql/InterestRateModelling/onefactormodel.hpp (1.3),
+	ql/InterestRateModelling/OneFactorModels/blackkarasinski.hpp (1.5),
+	ql/InterestRateModelling/OneFactorModels/hullandwhite.hpp (1.5),
+	ql/Pricers/couponbondoption.hpp (1.5): style and overdue fixes
+
+2001-12-05 12:24  'Sadruddin Rejeb <sad.rejeb@riskmap.it>'
+
+	* ql/InterestRateModelling/OneFactorModels/: blackdermanandtoy.cpp
+	(1.7), blackdermanandtoy.hpp (1.3), blackkarasinski.cpp (1.5),
+	blackkarasinski.hpp (1.4), hoandlee.cpp (1.4), hoandlee.hpp (1.3),
+	hullandwhite.cpp (1.4), hullandwhite.hpp (1.4): update
+
+2001-12-05 12:19  'Sadruddin Rejeb <sad.rejeb@riskmap.it>'
+
+	* ql/InterestRateModelling/: onefactormodel.cpp (1.4), model.hpp
+	(1.6): small fix
+
+2001-12-05 09:54  'Ferdinando Ametrano <ferdinando@ametrano.net>'
+
+	* ChangeLog.txt (1.6): updated
+
 2001-12-04 16:32  'Ferdinando Ametrano <ferdinando@ametrano.net>'
 
 	* Docs/pages/mcarlo.docs (1.3), Docs/pages/platforms.docs (1.3),

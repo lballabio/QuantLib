@@ -1,4 +1,25 @@
 
+2002-XX-XX Release 0.3.0
+
+Changes since Release 0.2.1:
+- Library:
+    MONTE CARLO FRAMEWORK
+
+    FINITE DIFFERENCE FRAMEWORK
+
+    YIELD TERM STRUCTURE AND FIXED INCOME
+    - added single factor interest rate model (Ho-Lee, Hull-White,
+      Black-Derman-Toy, Black-Karasinski
+    - Bermuda swaption finite difference pricer
+    - cap/floor and swaption calibration helpers
+
+    OPTIMIZATION FRAMEWORK
+    - added conjugate gradient, etc
+
+    PATTERNS
+
+    VARIOUS
+    - Handle is now castable to an Handle of a compatible type
 
 2001-12-03 Release 0.2.1
 
