@@ -34,8 +34,8 @@ namespace QuantLib {
         BasketPathPricer_old::BasketPathPricer_old(Option::Type type,
             const std::vector<double>& underlying, double strike,
             DiscountFactor discount, bool useAntitheticVariance)
-        : PathPricer_old<MultiPath>(discount, useAntitheticVariance), type_(type),
-          underlying_(underlying), strike_(strike) {
+        : PathPricer_old<MultiPath>(discount, useAntitheticVariance),
+          underlying_(underlying), payoff_(type, strike) {
             for (Size j=0; j<underlying_.size(); j++) {
                 QL_REQUIRE(underlying_[j]>0.0,
                     "BasketPathPricer_old: "
@@ -78,11 +78,10 @@ namespace QuantLib {
                     basketPrice2 += underlying_[j]*
                         QL_EXP(log_drift[j]-log_diffusion[j]);
                 }
-                return discount_*0.5*
-                    (ExercisePayoff(type_, basketPrice, strike_)+
-                    ExercisePayoff(type_, basketPrice2, strike_));
+                return discount_ * 0.5 *
+                    (payoff_(basketPrice) + payoff_(basketPrice2));
             } else {
-                return discount_*ExercisePayoff(type_, basketPrice, strike_);
+                return discount_ * payoff_(basketPrice);
             }
 
         }

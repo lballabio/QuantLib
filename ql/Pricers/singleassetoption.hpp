@@ -84,9 +84,8 @@ namespace QuantLib {
                                      double maxVol = QL_MAX_DIVYIELD) const;
             virtual Handle<SingleAssetOption> clone() const = 0;
           protected:
-            Option::Type type_;
             double underlying_;
-            double strike_;
+            Payoff payoff_;
             Spread dividendYield_;
             Rate riskFreeRate_;
             Time residualTime_;

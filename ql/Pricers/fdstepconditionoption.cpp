@@ -61,7 +61,7 @@ namespace QuantLib {
 
             // Control-variate variance reduction:
             // 1) calculate value/greeks of the European option analytically
-            EuropeanOption analyticEuro(type_, underlying_, strike_,
+            EuropeanOption analyticEuro(payoff_.optionType(), underlying_, payoff_.strike(),
                 dividendYield_, riskFreeRate_, residualTime_, volatility_);
 
             // 2) Initialize prices on the grid

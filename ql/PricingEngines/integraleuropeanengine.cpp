@@ -25,43 +25,25 @@
 // $Id$
 
 #include <ql/PricingEngines/vanillaengines.hpp>
-#include <ql/solver1d.hpp>
 #include <ql/Math/segmentintegral.hpp>
 
 namespace QuantLib {
 
     namespace {
-        class Payoff : public ObjectiveFunction {
+        class WeightedPayoff : std::unary_function<double,double> {
         public:
-            Payoff(Option::Type type,
-                   Time maturity,
-                   double strike,
+            WeightedPayoff(Payoff payoff,
                    double s0,
-                   double sigma,
-                   Rate r,
-                   Rate q)
-           : type_(type), maturity_(maturity), strike_(strike), s0_(s0),
-             sigma_(sigma), r_(r), q_(q),
-             riskFreeDiscount_(QL_EXP(-r*maturity)),
-             drift_((r- q-0.5*sigma*sigma)*maturity),
-             variance_(sigma*sigma*maturity) { }
-
+                   double drift,
+                   double variance)
+           : payoff_(payoff), s0_(s0), drift_(drift), variance_(variance) {}
             double operator()(double x) const {
-
-                return riskFreeDiscount_ *
-                    ExercisePayoff(type_, s0_*QL_EXP(x), strike_) *
-                    QL_EXP(-(x - drift_)*(x -drift_)/(2.0*variance_)) /
-                    QL_SQRT(2.0*M_PI*variance_);
+                return payoff_(s0_*QL_EXP(x)) *
+                    QL_EXP(-(x - drift_)*(x -drift_)/(2.0*variance_)) ;
             }
-            double drift() { return drift_;}
         private:
-            Option::Type type_;
-            Time maturity_;
-            double strike_;
+            Payoff payoff_;
             double s0_;
-            double sigma_;
-            DiscountFactor riskFreeDiscount_;
-            Rate r_, q_;
             double drift_, variance_;
         };
     }
@@ -74,20 +56,25 @@ namespace QuantLib {
                 "IntegralEuropeanEngine::calculate() : "
                 "not an European Option");
 
-            double vol = arguments_.volTS->blackVol(
-                arguments_.maturity, arguments_.strike);
+            double variance = arguments_.volTS->blackVariance(
+                arguments_.maturity, arguments_.payoff.strike());
+
             Rate dividendRate =
                 arguments_.dividendTS->zeroYield(arguments_.maturity);
             Rate riskFreeRate =
                 arguments_.riskFreeTS->zeroYield(arguments_.maturity);
+            double drift = (riskFreeRate - dividendRate) * arguments_.maturity
+                - 0.5 * variance;
 
-            Payoff po(arguments_.type, arguments_.maturity, arguments_.strike,
-                arguments_.underlying, vol, riskFreeRate,
-                dividendRate);
+            WeightedPayoff po(arguments_.payoff, arguments_.underlying,
+                drift, variance);
             QuantLib::Math::SegmentIntegral integrator(5000);
-            double drift = po.drift();
-            double infinity = 10.0*vol*QL_SQRT(arguments_.maturity);
-            results_.value = integrator(po, drift-infinity, drift+infinity);
+
+            double infinity = 10.0*QL_SQRT(variance);
+            results_.value =
+                arguments_.riskFreeTS->discount(arguments_.maturity) /
+                QL_SQRT(2.0*M_PI*variance) *
+                integrator(po, drift-infinity, drift+infinity);
         }
 
     }

@@ -79,7 +79,7 @@ namespace QuantLib {
 
         inline double EuropeanOption::alpha() const {
             if (alpha_==Null<double>()) {
-                switch (type_) {
+                switch (payoff_.optionType()) {
                     case Option::Call:
                         alpha_ = f_(D1());
                         break;
@@ -99,7 +99,7 @@ namespace QuantLib {
 
         inline double EuropeanOption::beta() const {
             if (beta_==Null<double>()) {
-                switch (type_) {
+                switch (payoff_.optionType()) {
                     case Option::Call:
                         beta_ = f_(D2());
                         break;
@@ -125,7 +125,7 @@ namespace QuantLib {
 
         inline double EuropeanOption::D1() const {
             if (D1_==Null<double>())
-                D1_ = QL_LOG(underlying_/strike_)/standardDeviation() +
+                D1_ = QL_LOG(underlying_/payoff_.strike())/standardDeviation() +
                     standardDeviation()/2.0 +
                     (riskFreeRate_ - dividendYield_) *
                     residualTime_/standardDeviation();
@@ -140,7 +140,7 @@ namespace QuantLib {
 
         inline double EuropeanOption::NID1() const {
             if (NID1_==Null<double>()) {
-                switch (type_) {
+                switch (payoff_.optionType()) {
                     case Option::Call:
                     case Option::Put:
                         NID1_ = f_.derivative(D1());

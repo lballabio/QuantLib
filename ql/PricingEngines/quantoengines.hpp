@@ -110,9 +110,8 @@ namespace QuantLib {
 
             originalEngine_->reset();
 
-            originalArguments_->type          = arguments_.type;
+            originalArguments_->payoff        = arguments_.payoff;
             originalArguments_->underlying    = arguments_.underlying;
-            originalArguments_->strike        = arguments_.strike;
             originalArguments_->dividendTS    = 
                 RelinkableHandle<TermStructure>(
                     Handle<TermStructure>(
@@ -120,7 +119,7 @@ namespace QuantLib {
                         arguments_.dividendTS,
                         arguments_.riskFreeTS, 
                         arguments_.foreignRiskFreeTS,
-                        arguments_.volTS, arguments_.strike,
+                        arguments_.volTS, arguments_.payoff.strike(),
                         arguments_.exchRateVolTS, exchangeRateATMlevel,
                         arguments_.correlation)));
             originalArguments_->riskFreeTS    = arguments_.riskFreeTS;

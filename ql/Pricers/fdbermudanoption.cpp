@@ -54,8 +54,8 @@ namespace QuantLib {
         }
 
         Handle<SingleAssetOption> FdBermudanOption::clone() const {
-            return Handle<SingleAssetOption>(new FdBermudanOption(type_,
-                underlying_, strike_, dividendYield_, riskFreeRate_,
+            return Handle<SingleAssetOption>(new FdBermudanOption(payoff_.optionType(),
+                underlying_, payoff_.strike(), dividendYield_, riskFreeRate_,
                 residualTime_, volatility_, dates_, timeStepPerPeriod_,
                 gridPoints_));
         }

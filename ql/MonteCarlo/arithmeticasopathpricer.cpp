@@ -70,10 +70,10 @@ namespace QuantLib {
                     averageStrike2 += price2;
                 }
                 averageStrike2 = averageStrike2/fixings;
-                return discount_/2.0*(ExercisePayoff(type_, price1, averageStrike1)
-                    +ExercisePayoff(type_, price2, averageStrike2));
+                return discount_/2.0*(Payoff(type_, averageStrike1)(price1)
+                    +Payoff(type_, averageStrike2)(price2));
             } else
-                return discount_*ExercisePayoff(type_, price1, averageStrike1);
+                return discount_ * Payoff(type_, averageStrike1)(price1);
         }
 
     }

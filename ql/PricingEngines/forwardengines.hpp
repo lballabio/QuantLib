@@ -105,13 +105,12 @@ namespace QuantLib {
         template<class ArgumentsType, class ResultsType>
         void ForwardEngine<ArgumentsType, ResultsType>::setOriginalArguments() const {
 
-            originalArguments_->type = arguments_.type;
+            originalArguments_->payoff = Payoff(arguments_.payoff.optionType(),
+                arguments_.moneyness * arguments_.underlying);
             // maybe the forward value is "better", in some fashion
             // the right level is needed in order to interpolate
             // the vol 
             originalArguments_->underlying = arguments_.underlying;
-            originalArguments_->strike = arguments_.moneyness *
-                                            arguments_.underlying;
             originalArguments_->dividendTS = RelinkableHandle<TermStructure>(
                 Handle<TermStructure>(new
                     TermStructures::ImpliedTermStructure(

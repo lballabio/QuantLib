@@ -36,8 +36,8 @@ namespace QuantLib {
             double underlying, double moneyness,
             const std::vector<DiscountFactor>& discounts,
             bool useAntitheticVariance)
-        : PathPricer_old<Path>(1.0, useAntitheticVariance), type_(type),
-          underlying_(underlying), moneyness_(moneyness),
+        : PathPricer_old<Path>(1.0, useAntitheticVariance),
+          underlying_(underlying), payoff_(type, moneyness),
           discounts_(discounts) {
             QL_REQUIRE(underlying>0.0,
                 "PerformanceOptionPathPricer_old: "
@@ -68,32 +68,26 @@ namespace QuantLib {
                 std::vector<double> assetValue2(n);
                 assetValue2[0] = underlying_ * QL_EXP(log_drift-log_random);
                 // removing first option, it should be 0.5
-                result[0] = 0.0 * discounts_[0] * (
-                    ExercisePayoff(type_, assetValue [0]/dummyStrike, 1.0) +
-                    ExercisePayoff(type_, assetValue2[0]/dummyStrike, 1.0));
+                result[0] = 0.0;
                 for (Size i = 1 ; i < n; i++) {
                     log_drift  += path.drift()[i];
                     log_random += path.diffusion()[i];
                     assetValue[i] =underlying_*QL_EXP(log_drift+log_random);
                     assetValue2[i]=underlying_*QL_EXP(log_drift-log_random);
-                    result[i] = 0.5 * discounts_[i] * (ExercisePayoff(type_,
-                        assetValue [i]/assetValue [i-1], moneyness_) +
-                        ExercisePayoff(type_,
-                        assetValue2[i]/assetValue2[i-1], moneyness_)
-                        );
+                    result[i] = 0.5 * discounts_[i] *
+                        (payoff_(assetValue [i]/assetValue [i-1])
+                        +payoff_(assetValue2[i]/assetValue2[i-1]));
                 }
             } else {
                 // removing first option
-                result[0] = 0.0 * discounts_[0] *
-                    ExercisePayoff(type_,assetValue [0]/dummyStrike, 1.0);
+                result[0] = 0.0;
                 for (Size i = 1 ; i < n; i++) {
                     log_drift  += path.drift()[i];
                     log_random += path.diffusion()[i];
                     assetValue[i]  = underlying_ *
                         QL_EXP(log_drift+log_random);
                     result[i] = discounts_[i] *
-                        ExercisePayoff(type_,
-                        assetValue [i]/assetValue [i-1], moneyness_);
+                        payoff_(assetValue[i]/assetValue [i-1]);
                 }
             }
 

@@ -30,9 +30,9 @@ using namespace QuantLib::TermStructures;
 using namespace QuantLib::VolTermStructures;
 
 // This will be included in the library after a bit of redesign
-class Payoff : public QL::ObjectiveFunction{
+class WeightedPayoff : public QL::ObjectiveFunction{
     public:
-        Payoff(Option::Type type,
+        WeightedPayoff(Option::Type type,
                Time maturity,
                double strike,
                double s0,
@@ -47,7 +47,7 @@ class Payoff : public QL::ObjectiveFunction{
         double operator()(double x) const {
            double nuT = (r_-q_-0.5*sigma_*sigma_)*maturity_;
            return QL_EXP(-r_*maturity_)
-               *ExercisePayoff(type_, s0_*QL_EXP(x), strike_)
+               *Payoff(type_, strike_)(s0_*QL_EXP(x))
                *QL_EXP(-(x - nuT)*(x -nuT)/(2*sigma_*sigma_*maturity_))
                /QL_SQRT(2.0*M_PI*sigma_*sigma_*maturity_);
         }
@@ -154,7 +154,7 @@ int main(int argc, char* argv[])
         // third method: Integral
         method ="Integral";
         using QuantLib::Math::SegmentIntegral;
-        Payoff po(type, maturity, strike, underlying, volatility, riskFreeRate,
+        WeightedPayoff po(type, maturity, strike, underlying, volatility, riskFreeRate,
             dividendYield);
         SegmentIntegral integrator(5000);
 

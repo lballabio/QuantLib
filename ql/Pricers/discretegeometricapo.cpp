@@ -67,19 +67,19 @@ namespace QuantLib {
                 2.0*temp
                 );
 
-            double x1 = (muG-QL_LOG(strike_)+sigmaG_2)/QL_SQRT(sigmaG_2);
+            double x1 = (muG-QL_LOG(payoff_.strike())+sigmaG_2)/QL_SQRT(sigmaG_2);
             double x2 = x1-QL_SQRT(sigmaG_2);
 
             double result;
-            switch (type_) {
+            switch (payoff_.optionType()) {
                 case Option::Call:
                     result = QL_EXP(-riskFreeRate_*residualTime_)*
                 (QL_EXP(muG + sigmaG_2 / 2.0) * f_(x1) -
-                strike_ * f_(x2));
+                payoff_.strike() * f_(x2));
                     break;
                 case Option::Put:
                     result = QL_EXP(-riskFreeRate_*residualTime_)*
-                        (strike_ * f_(-x2) -
+                        (payoff_.strike() * f_(-x2) -
                         QL_EXP(muG + sigmaG_2 / 2.0) * f_(-x1)
                         );
                     break;

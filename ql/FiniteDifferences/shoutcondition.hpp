@@ -55,15 +55,14 @@ namespace QuantLib {
             void applyTo(Handle<DiscretizedAsset> asset) const;
           private:
             Array intrinsicValues_;
-            Option::Type type_;
-            double strike_;
+            Payoff payoff_;
             Time resTime_;
             Rate rate_;
         };
 
         inline ShoutCondition::ShoutCondition(Option::Type type,
             double strike, Time resTime, Rate rate)
-            : type_(type), strike_(strike), resTime_(resTime), rate_(rate) {}
+            : payoff_(type, strike), resTime_(resTime), rate_(rate) {}
 
         inline ShoutCondition::ShoutCondition(
             const Array& intrinsicValues, Time resTime, Rate rate)
@@ -83,7 +82,7 @@ namespace QuantLib {
             } else {
                 for (Size i = 0; i < a.size(); i++)
                     a[i] = QL_MAX(a[i],
-                        ExercisePayoff(type_, a[i], strike_) * disc);
+                        payoff_(a[i]) * disc);
             }
         }
 
@@ -101,8 +100,7 @@ namespace QuantLib {
             } else {
                 for (Size i = 0; i < asset->values().size(); i++)
                     asset->values()[i] = QL_MAX(asset->values()[i],
-                        ExercisePayoff(type_, asset->values()[i], strike_)
-                            * disc);
+                        payoff_(asset->values()[i]) * disc);
             }
 
         }

@@ -81,7 +81,7 @@ namespace QuantLib {
             double y2=y1-QL_SQRT(sigmaSum_2);
 
             double result;
-            switch (type_) {
+            switch (payoff_.optionType()) {
                 case Option::Call:
                     result = underlying_*QL_EXP(-dividendYield_*residualTime_)
                         *f_(y1)-

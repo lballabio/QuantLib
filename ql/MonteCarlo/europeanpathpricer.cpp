@@ -36,8 +36,8 @@ namespace QuantLib {
         EuropeanPathPricer::EuropeanPathPricer(Option::Type type,
             double underlying, double strike,
             const RelinkableHandle<TermStructure>& riskFreeTS)
-        : PathPricer<Path>(riskFreeTS), type_(type), underlying_(underlying),
-          strike_(strike) {
+        : PathPricer<Path>(riskFreeTS), underlying_(underlying),
+          payoff_(type, strike) {
             QL_REQUIRE(underlying>0.0,
                 "EuropeanPathPricer: "
                 "underlying less/equal zero not allowed");
@@ -57,8 +57,7 @@ namespace QuantLib {
                 log_random += path.diffusion()[i];
             }
 
-            return ExercisePayoff(type_, underlying_ *
-                    QL_EXP(log_drift+log_random), strike_) *
+            return payoff_(underlying_ * QL_EXP(log_drift+log_random)) *
                 riskFreeTS_->discount(path.timeGrid().back());
         }
 
@@ -70,8 +69,8 @@ namespace QuantLib {
         EuropeanPathPricer_old::EuropeanPathPricer_old(Option::Type type,
           double underlying, double strike, DiscountFactor discount,
           bool useAntitheticVariance)
-        : PathPricer_old<Path>(discount, useAntitheticVariance), type_(type),
-          underlying_(underlying), strike_(strike) {
+        : PathPricer_old<Path>(discount, useAntitheticVariance),
+          underlying_(underlying), payoff_(type, strike) {
             QL_REQUIRE(underlying>0.0,
                 "EuropeanPathPricer_old: "
                 "underlying less/equal zero not allowed");
@@ -92,16 +91,12 @@ namespace QuantLib {
             }
 
             if (useAntitheticVariance_)
-                return (
-                    ExercisePayoff(type_, underlying_ *
-                        QL_EXP(log_drift+log_random), strike_) +
-                    ExercisePayoff(type_, underlying_ *
-                        QL_EXP(log_drift-log_random), strike_)) *
-                    discount_/2.0;
+                return discount_ * 0.5 *
+                    (payoff_(underlying_ * QL_EXP(log_drift+log_random)) +
+                     payoff_(underlying_ * QL_EXP(log_drift-log_random)));
             else
-                return ExercisePayoff(type_, underlying_ *
-                        QL_EXP(log_drift+log_random), strike_) *
-                    discount_;
+                return discount_ * 
+                     payoff_(underlying_ * QL_EXP(log_drift+log_random));
 
 
         }

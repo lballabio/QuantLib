@@ -79,13 +79,13 @@ namespace QuantLib {
             sMax_ = center_*minMaxFactor;  // underlying grid max value
             // insure strike is included in the grid
             double safetyZoneFactor = 1.1;
-            if(sMin_ > strike_/safetyZoneFactor){
-                sMin_ = strike_/safetyZoneFactor;
+            if(sMin_ > payoff_.strike()/safetyZoneFactor){
+                sMin_ = payoff_.strike()/safetyZoneFactor;
                 // enforce central placement of the underlying
                 sMax_ = center_/(sMin_/center_);
             }
-            if(sMax_ < strike_*safetyZoneFactor){
-                sMax_ = strike_*safetyZoneFactor;
+            if(sMax_ < payoff_.strike()*safetyZoneFactor){
+                sMax_ = payoff_.strike()*safetyZoneFactor;
                 // enforce central placement of the underlying
                 sMin_ = center_/(sMax_/center_);
             }
@@ -103,7 +103,7 @@ namespace QuantLib {
         void FdBsmOption::initializeInitialCondition() const {
             Size j;
             for(j = 0; j < gridPoints_; j++)
-                intrinsicValues_[j] = ExercisePayoff(type_, grid_[j], strike_);
+                intrinsicValues_[j] = payoff_(grid_[j]);
         }
 
         void FdBsmOption::initializeOperator() const {

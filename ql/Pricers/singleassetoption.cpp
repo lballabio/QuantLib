@@ -38,8 +38,8 @@ namespace QuantLib {
         SingleAssetOption::SingleAssetOption(Option::Type type,
             double underlying, double strike, Spread dividendYield,
             Rate riskFreeRate, Time residualTime, double volatility)
-            : type_(type), underlying_(underlying),
-            strike_(strike), dividendYield_(dividendYield),
+            : underlying_(underlying),
+            payoff_(type, strike), dividendYield_(dividendYield),
             residualTime_(residualTime), hasBeenCalculated_(false),
             rhoComputed_(false), dividendRhoComputed_(false),
             vegaComputed_(false), thetaComputed_(false) {

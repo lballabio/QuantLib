@@ -29,6 +29,7 @@
 
 #include <ql/MonteCarlo/pathpricer.hpp>
 #include <ql/MonteCarlo/multipath.hpp>
+#include <ql/exercise.hpp>
 
 namespace QuantLib {
 
@@ -47,9 +48,8 @@ namespace QuantLib {
                              bool useAntitheticVariance);
             double operator()(const MultiPath& multiPath) const;
           private:
-            Option::Type type_;
             std::vector<double> underlying_;
-            double strike_;
+            Payoff payoff_;
         };
 
     }

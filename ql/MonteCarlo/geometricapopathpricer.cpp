@@ -34,8 +34,8 @@ namespace QuantLib {
         GeometricAPOPathPricer_old::GeometricAPOPathPricer_old(Option::Type type,
             double underlying, double strike,
             DiscountFactor discount, bool useAntitheticVariance)
-        : PathPricer_old<Path>(discount, useAntitheticVariance), type_(type),
-          underlying_(underlying), strike_(strike) {
+        : PathPricer_old<Path>(discount, useAntitheticVariance),
+          underlying_(underlying), payoff_(type, strike) {
             QL_REQUIRE(underlying>0.0,
                 "GeometricAPOPathPricer_old: "
                 "underlying less/equal zero not allowed");
@@ -65,12 +65,10 @@ namespace QuantLib {
             if (useAntitheticVariance_) {
                 double averagePrice2 = underlying_*
                     QL_EXP((geoLogDrift-geoLogDiffusion)/fixings);
-                return discount_/2.0*(
-                    ExercisePayoff(type_, averagePrice1, strike_)
-                    +ExercisePayoff(type_, averagePrice2, strike_));
+                return discount_ * 0.5 *
+                    (payoff_(averagePrice1) +payoff_(averagePrice2));
             } else {
-                return discount_*
-                    ExercisePayoff(type_, averagePrice1, strike_);
+                return discount_* payoff_(averagePrice1);
             }
 
         }

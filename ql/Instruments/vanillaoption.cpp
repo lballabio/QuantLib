@@ -45,9 +45,9 @@ namespace QuantLib {
             const RelinkableHandle<BlackVolTermStructure>& volTS,
             const Handle<PricingEngine>& engine,
             const std::string& isinCode, const std::string& description)
-        : Option(engine, isinCode, description), type_(type),
+        : Option(engine, isinCode, description),
           underlying_(underlying),
-          strike_(strike), dividendTS_(dividendTS), riskFreeTS_(riskFreeTS),
+          payoff_(type, strike), dividendTS_(dividendTS), riskFreeTS_(riskFreeTS),
           exercise_(exercise), volTS_(volTS) {
             QL_REQUIRE(!engine.isNull(),
                 "VanillaOption::VanillaOption : "
@@ -131,14 +131,12 @@ namespace QuantLib {
                        "VanillaOption::setupEngine : "
                        "pricing engine does not supply needed arguments");
 
-            arguments->type = type_;
+            arguments->payoff = payoff_;
 
             QL_REQUIRE(!underlying_.isNull(),
                        "VanillaOption::setupEngine : "
                        "null underlying price given");
             arguments->underlying = underlying_->value();
-
-            arguments->strike = strike_;
 
             // should I require !IsNull(TS) ???
             arguments->dividendTS = dividendTS_;

@@ -64,9 +64,9 @@ namespace QuantLib {
 
         void FdDividendOption::initializeControlVariate() const{
             analytic_ = Handle<SingleAssetOption> (new
-                            FdDividendEuropeanOption (type_,
+                            FdDividendEuropeanOption (payoff_.optionType(),
                                 underlying_ + addElements(dividends_),
-                                strike_,
+                                payoff_.strike(),
                                 dividendYield_,
                                 riskFreeRate_,
                                 residualTime_,

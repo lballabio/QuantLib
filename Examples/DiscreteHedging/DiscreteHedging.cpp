@@ -56,7 +56,7 @@ using QuantLib::Rate;
 using QuantLib::Time;
 
 // ExercisePayoff is a helper function that calculates option payoff
-using QuantLib::ExercisePayoff;
+using QuantLib::Payoff;
 
 // Option is a helper class that holds the enumeration {Call, Put, Straddle}
 using QuantLib::Option;
@@ -99,11 +99,11 @@ public:
                      double s0,
                      double sigma,
                      Rate r)
-    : type_(type), maturity_(maturity), strike_(strike), s0_(s0),
+    : maturity_(maturity), payoff_(type, strike), s0_(s0),
       sigma_(sigma), r_(r) {
 
         // value of the option
-        EuropeanOption option = EuropeanOption(type_, s0_, strike_, 0.0, r_,
+        EuropeanOption option = EuropeanOption(type, s0_, strike, 0.0, r_,
             maturity_, sigma_);
         std::cout << "Option value: " << option.value() << std::endl;
 
@@ -126,9 +126,9 @@ public:
     // the actual replication error computation
     void compute(int nTimeSteps, int nSamples);
 private:
-    Option::Type type_;
     Time maturity_;
-    double strike_, s0_;
+    Payoff payoff_;
+    double s0_;
     double sigma_;
     Rate r_;
     double vega_;
@@ -295,7 +295,7 @@ double ReplicationPathPricer::operator()(const Path& path) const
     stock = underlying_*QL_EXP(stockLogGrowth);
 
     // the hedger delivers the option payoff to the option holder
-    double optionPayoff = ExercisePayoff(type_, stock, strike_);
+    double optionPayoff = Payoff(type_, strike_)(stock);
     money_account -= optionPayoff;
 
     // and unwinds the hedge selling his stock position
@@ -332,8 +332,9 @@ void ReplicationError::compute(int nTimeSteps, int nSamples)
     // of the stock. The path pricer knows how to price a path using its
     // value() method
     Handle<PathPricer_old<Path> > myPathPricer =
-        Handle<PathPricer_old<Path> >(new ReplicationPathPricer(type_, s0_, strike_, r_,
-            maturity_, sigma_));
+        Handle<PathPricer_old<Path> >(new
+            ReplicationPathPricer(payoff_.optionType(), s0_,
+                payoff_.strike(), r_, maturity_, sigma_));
 
     // a statistic accumulator for the path-dependant Profit&Loss values
     Statistics statisticAccumulator;

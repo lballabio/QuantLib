@@ -42,13 +42,12 @@ namespace QuantLib {
         //! arguments for vanilla option calculation
         class VanillaOptionArguments : public virtual Arguments {
           public:
-            VanillaOptionArguments() : type(Option::Type(-1)),
-                                       underlying(Null<double>()),
-                                       strike(Null<double>()),
+            VanillaOptionArguments() : underlying(Null<double>()),
+                                       payoff(),
                                        maturity(Null<double>()) {}
             void validate() const;
-            Option::Type type;
-            double underlying, strike;
+            double underlying;
+            Payoff payoff;
             RelinkableHandle<TermStructure> riskFreeTS, dividendTS;
             RelinkableHandle<BlackVolTermStructure> volTS;
             // we need to calculate option at times that are not
@@ -60,7 +59,7 @@ namespace QuantLib {
         };
 
         inline void VanillaOptionArguments::validate() const {
-            QL_REQUIRE(type != Option::Type(-1),
+            QL_REQUIRE(payoff.optionType() != Option::Type(-1),
                        "VanillaOptionArguments::validate() : "
                        "no option type given");
             QL_REQUIRE(underlying != Null<double>(),
@@ -69,10 +68,10 @@ namespace QuantLib {
             QL_REQUIRE(underlying > 0.0,
                        "VanillaOptionArguments::validate() : "
                        "negative or zero underlying given");
-            QL_REQUIRE(strike != Null<double>(),
+            QL_REQUIRE(payoff.strike() != Null<double>(),
                        "VanillaOptionArguments::validate() : "
                        "no strike given");
-            QL_REQUIRE(strike >= 0.0,
+            QL_REQUIRE(payoff.strike() >= 0.0,
                        "VanillaOptionArguments::validate() : "
                        "negative strike given");
             QL_REQUIRE(!dividendTS.isNull(),

@@ -65,7 +65,7 @@ namespace QuantLib {
 
         double EuropeanOption::value() const {
             return  underlying_ * dividendDiscount() * alpha() -
-                                    strike_ * riskFreeDiscount() * beta();
+                                    payoff_.strike() * riskFreeDiscount() * beta();
         }
 
         double EuropeanOption::delta() const {
@@ -80,11 +80,11 @@ namespace QuantLib {
             return -underlying_ * NID1() * volatility_ *
                 dividendDiscount()/(2.0*QL_SQRT(residualTime_)) +
                   dividendYield_*underlying_*alpha()*dividendDiscount() -
-                        riskFreeRate_*strike_*riskFreeDiscount()*beta();
+                        riskFreeRate_*payoff_.strike()*riskFreeDiscount()*beta();
         }
 
         double EuropeanOption::rho() const {
-            return residualTime_*riskFreeDiscount()*strike_*beta();
+            return residualTime_*riskFreeDiscount()*payoff_.strike()*beta();
         }
 
         double EuropeanOption::dividendRho() const {

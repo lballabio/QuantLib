@@ -65,13 +65,14 @@ namespace QuantLib {
             if (useAntitheticVariance_) {
                 double averageStrike2 = underlying_*
                     QL_EXP((geoLogDrift-geoLogDiffusion)/fixings);
-                return discount_/2.0*(ExercisePayoff(type_, underlying_ *
-                        QL_EXP(logDrift+logDiffusion), averageStrike1)
-                    +ExercisePayoff(type_, underlying_ *
-                        QL_EXP(logDrift-logDiffusion), averageStrike2));
+                return discount_* 0.5 *
+                    (Payoff(type_, averageStrike1)(underlying_ *
+                                            QL_EXP(logDrift+logDiffusion))
+                    +Payoff(type_, averageStrike2)(underlying_ *
+                                            QL_EXP(logDrift-logDiffusion)));
             } else
-                return discount_*ExercisePayoff(type_, underlying_ *
-                        QL_EXP(logDrift+logDiffusion), averageStrike1);
+                return discount_*Payoff(type_, averageStrike1)(underlying_ *
+                                            QL_EXP(logDrift+logDiffusion));
         }
 
     }

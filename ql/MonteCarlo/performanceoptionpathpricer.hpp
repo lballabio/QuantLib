@@ -28,6 +28,7 @@
 
 #include <ql/MonteCarlo/pathpricer.hpp>
 #include <ql/MonteCarlo/path.hpp>
+#include <ql/exercise.hpp>
 
 namespace QuantLib {
 
@@ -43,9 +44,9 @@ namespace QuantLib {
                                bool useAntitheticVariance);
             double operator()(const Path& path) const;
           private:
-            Option::Type type_;
-            double underlying_, moneyness_;
+            double underlying_;
             std::vector<DiscountFactor> discounts_;
+            Payoff payoff_;
         };
 
     }

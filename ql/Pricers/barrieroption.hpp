@@ -85,11 +85,11 @@ namespace QuantLib {
         // inline definitions
 
         inline double BarrierOption::A_(double eta, double phi) const {
-            double x1 = QL_LOG(underlying_/strike_)/sigmaSqrtT_ + muSigma_;
+            double x1 = QL_LOG(underlying_/payoff_.strike())/sigmaSqrtT_ + muSigma_;
             double N1 = f_(phi*x1);
             double N2 = f_(phi*(x1-sigmaSqrtT_));
             return phi*(underlying_ * dividendDiscount_ * N1
-                        - strike_ * riskFreeDiscount_ * N2);
+                        - payoff_.strike() * riskFreeDiscount_ * N2);
         }
 
         inline double BarrierOption::B_(double eta, double phi) const {
@@ -97,18 +97,18 @@ namespace QuantLib {
             double N1 = f_(phi*x2);
             double N2 = f_(phi*(x2-sigmaSqrtT_));
             return phi*(underlying_ * dividendDiscount_ * N1
-                      - strike_ * riskFreeDiscount_ * N2);
+                      - payoff_.strike() * riskFreeDiscount_ * N2);
         }
 
         inline double BarrierOption::C_(double eta, double phi) const {
             double HS = barrier_/underlying_;
             double powHS0 = QL_POW(HS, 2 * mu_);
             double powHS1 = powHS0 * HS * HS;
-            double y1 = QL_LOG(barrier_*HS/strike_)/sigmaSqrtT_ + muSigma_;
+            double y1 = QL_LOG(barrier_*HS/payoff_.strike())/sigmaSqrtT_ + muSigma_;
             double N1 = f_(eta*y1);
             double N2 = f_(eta*(y1-sigmaSqrtT_));
             return phi*(underlying_ * dividendDiscount_ * powHS1 * N1
-                          - strike_ * riskFreeDiscount_ * powHS0 * N2);
+                          - payoff_.strike() * riskFreeDiscount_ * powHS0 * N2);
         }
 
         inline double BarrierOption::D_(double eta, double phi) const {
@@ -119,7 +119,7 @@ namespace QuantLib {
             double N1 = f_(eta*y2);
             double N2 = f_(eta*(y2-sigmaSqrtT_));
             return phi*(underlying_ * dividendDiscount_ * powHS1 * N1
-                          - strike_ * riskFreeDiscount_ * powHS0 * N2);
+                          - payoff_.strike() * riskFreeDiscount_ * powHS0 * N2);
         }
 
         inline double BarrierOption::E_(double eta, double phi) const {

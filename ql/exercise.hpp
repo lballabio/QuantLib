@@ -29,11 +29,36 @@
 #include <ql/calendar.hpp>
 #include <ql/option.hpp>
 #include <vector>
+#include <functional>
 
 namespace QuantLib {
 
-    //! Exercise payoff function
-    double ExercisePayoff(Option::Type type, double price, double strike);
+    //! Option payoff function
+    class Payoff : std::unary_function<double,double> {
+    public:
+        Payoff() : type_(Option::Type(-1)), strike_(Null<double>()) {}
+        Payoff(Option::Type type,
+               double strike)
+        : type_(type), strike_(strike) {}
+        double operator()(double price) const;
+        double strike() const { return strike_; };
+        Option::Type optionType() const { return type_; };
+    private:
+        Option::Type type_;
+        double strike_;
+    };
+
+    inline double Payoff::operator()(double price) const {
+        switch (type_) {
+          case Option::Call:
+            return QL_MAX(price-strike_,0.0);
+          case Option::Put:
+            return QL_MAX(strike_-price,0.0);
+          case Option::Straddle:
+            return QL_FABS(strike_-price);
+        }
+        throw Error("Unknown option type");
+    }
 
     //! Exercise class (American, Bermudan or European)
     /*! \warning the input dates must be effective (adjusted) exercise dates.

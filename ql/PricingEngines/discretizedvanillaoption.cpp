@@ -67,14 +67,10 @@ namespace QuantLib {
             Handle<Lattices::BlackScholesLattice> lattice = method();
             Handle<Lattices::Tree> tree(lattice->tree());
             Size i = tree->nColumns() - 1;
-            double strike = arguments_.strike;
 
-            double underlying, payoff;
             for (Size j=0; j<values_.size(); j++) {
-                underlying = tree->underlying(i, j);
-                payoff = ExercisePayoff(arguments_.type,
-                    underlying, strike);
-                values_[j] = QL_MAX(values_[j], payoff);
+                values_[j] = QL_MAX(values_[j],
+                                    arguments_.payoff(tree->underlying(i, j)));
             }
         }
 

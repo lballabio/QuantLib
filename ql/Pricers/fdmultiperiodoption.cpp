@@ -165,7 +165,7 @@ namespace QuantLib {
 
         void FdMultiPeriodOption::initializeControlVariate() const{
             analytic_ = Handle<SingleAssetOption> (new EuropeanOption (
-                            type_, underlying_, strike_, dividendYield_,
+                            payoff_.optionType(), underlying_, payoff_.strike(), dividendYield_,
                             riskFreeRate_, residualTime_, volatility_));
         }
 

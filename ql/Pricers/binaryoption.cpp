@@ -42,7 +42,7 @@ namespace QuantLib
             discount_ = QL_EXP(-riskFreeRate_ * residualTime_);
             volSqrtTime_ = volatility_ * QL_SQRT(residualTime_);
 
-            D1_ = QL_LOG(underlying_ / strike_) / volSqrtTime_
+            D1_ = QL_LOG(underlying_ / payoff_.strike()) / volSqrtTime_
                 + (riskFreeRate_ - dividendYield_) * residualTime_ / volSqrtTime_
                 + volSqrtTime_/2.0;
             D2_ = D1_ - volSqrtTime_;
@@ -51,7 +51,7 @@ namespace QuantLib
 
             ND2_ = f(D2_);
 
-            switch (type_) {
+            switch (payoff_.optionType()) {
             case Option::Call:
                 optionSign_ = 1.0;
                 beta_ = ND2_;
@@ -84,7 +84,7 @@ namespace QuantLib
 //            QL_REQUIRE(hasBeenInitialized,
 //                       "BinaryOption::value() : BinaryOption must be initialized");
             double inTheMoneyProbability;
-            switch (type_) {
+            switch (payoff_.optionType()) {
             case Option::Call:
                 inTheMoneyProbability = ND2_;
                 break;
@@ -116,10 +116,10 @@ namespace QuantLib
         double BinaryOption::theta() const {
 //            QL_REQUIRE(hasBeenInitialized, "BinaryOption must be initialized");
 
-            if(type_ == Option::Straddle) {
+            if(payoff_.optionType() == Option::Straddle) {
                 return cashPayoff_*discount_*riskFreeRate_;
             } else {
-                double D2IT = (-QL_LOG(underlying_ / strike_) / volSqrtTime_
+                double D2IT = (-QL_LOG(underlying_ / payoff_.strike()) / volSqrtTime_
                                + (riskFreeRate_ - dividendYield_) *
                                residualTime_ / volSqrtTime_
                                - volSqrtTime_ / 2.0)/(2.0 * residualTime_);
@@ -131,7 +131,7 @@ namespace QuantLib
         double BinaryOption::rho() const {
 //            QL_REQUIRE(hasBeenInitialized, "BinaryOption must be initialized");
 
-            if(type_ == Option::Straddle)
+            if(payoff_.optionType() == Option::Straddle)
                 return -cashPayoff_*residualTime_*discount_;
             else {
                 double D2IT = residualTime_/volSqrtTime_;
@@ -142,7 +142,7 @@ namespace QuantLib
         double BinaryOption::dividendRho() const {
 //            QL_REQUIRE(hasBeenInitialized, "BinaryOption must be initialized");
 
-            if(type_ == Option::Straddle)
+            if(payoff_.optionType() == Option::Straddle)
                 return 0.0;
             else {
                 double D2IT = residualTime_/volSqrtTime_;
