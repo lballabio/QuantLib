@@ -1,6 +1,7 @@
 
 
 /*
+ Copyright (C) 2002 Ferdinando Ametrano
  Copyright (C) 2000, 2001, 2002 RiskMap srl
 
  This file is part of QuantLib, a free-software/open-source library
@@ -32,10 +33,6 @@ namespace QuantLib {
 
         const double NormalDistribution::pi_ = 3.14159265358979323846;
 
-        // For the following formula see M. Abramowitz and I. Stegun,
-        // Handbook of Mathematical Functions,
-        // Dover Publications, New York (1972)
-
         const double CumulativeNormalDistribution::a1_ =  0.319381530;
         const double CumulativeNormalDistribution::a2_ = -0.356563782;
         const double CumulativeNormalDistribution::a3_ =  1.781477937;
@@ -63,15 +60,20 @@ namespace QuantLib {
 
 
 
-        const double InvCumulativeNormalDistribution::p0_ = 2.515517;
-        const double InvCumulativeNormalDistribution::p1_ = 0.802853;
-        const double InvCumulativeNormalDistribution::p2_ = 0.010328;
-        const double InvCumulativeNormalDistribution::q1_ = 1.432788;
-        const double InvCumulativeNormalDistribution::q2_ = 0.189269;
-        const double InvCumulativeNormalDistribution::q3_ = 0.001308;
+        // Anyone able to identify the following algorithm?
+        // It might be Hill and Davis (1973), or
+	    // Odeh and Evans (1974), or
+	    // Beasley and Springer (1977)
 
-        double InvCumulativeNormalDistribution::operator()(double x) const {
-            QL_REQUIRE(x>0.0 && x<1.0, "InvCumulativeNormalDistribution(" +
+        const double InvCumulativeNormalDistribution2::p0_ = 2.515517;
+        const double InvCumulativeNormalDistribution2::p1_ = 0.802853;
+        const double InvCumulativeNormalDistribution2::p2_ = 0.010328;
+        const double InvCumulativeNormalDistribution2::q1_ = 1.432788;
+        const double InvCumulativeNormalDistribution2::q2_ = 0.189269;
+        const double InvCumulativeNormalDistribution2::q3_ = 0.001308;
+
+        double InvCumulativeNormalDistribution2::operator()(double x) const {
+            QL_REQUIRE(x>0.0 && x<1.0, "InvCumulativeNormalDistribution2(" +
                 DoubleFormatter::toString(x) + ") undefined: must be 0<x<1");
 
             if (x <= 0.5) {
@@ -85,6 +87,57 @@ namespace QuantLib {
             }
         }
 
-    }
+
+
+        const double InvCumulativeNormalDistribution::a0_ =  2.50662823884;
+        const double InvCumulativeNormalDistribution::a1_ =-18.61500062529;
+        const double InvCumulativeNormalDistribution::a2_ = 41.39119773534;
+        const double InvCumulativeNormalDistribution::a3_ =-25.44106049637;
+
+        const double InvCumulativeNormalDistribution::b0_ = -8.47351093090;
+        const double InvCumulativeNormalDistribution::b1_ = 23.08336743743;
+        const double InvCumulativeNormalDistribution::b2_ =-21.06224101826;
+        const double InvCumulativeNormalDistribution::b3_ =  3.13082909833;
+
+        const double InvCumulativeNormalDistribution::c0_ = 0.3374754822726147;
+        const double InvCumulativeNormalDistribution::c1_ = 0.9761690190917186;
+        const double InvCumulativeNormalDistribution::c2_ = 0.1607979714918209;
+        const double InvCumulativeNormalDistribution::c3_ = 0.0276438810333863;
+        const double InvCumulativeNormalDistribution::c4_ = 0.0038405729373609;
+        const double InvCumulativeNormalDistribution::c5_ = 0.0003951896511919;
+        const double InvCumulativeNormalDistribution::c6_ = 0.0000321767881768;
+        const double InvCumulativeNormalDistribution::c7_ = 0.0000002888167364;
+        const double InvCumulativeNormalDistribution::c8_ = 0.0000003960315187;
+
+        double InvCumulativeNormalDistribution::operator()(double x) const {
+            QL_REQUIRE(x>0.0 && x<1.0, "InvCumulativeNormalDistribution(" +
+                DoubleFormatter::toString(x) + ") undefined: must be 0<x<1");
+
+            double result;
+            double temp=x-0.5;
+
+            if (QL_FABS(temp) < 0.42) {
+                result=temp*temp;
+                result=temp*
+                    (((a3_+result+a2_)*result+a1_)*result+a0_) /
+                    ((((b3_+result+b2_)*result+b1_)*result+b0_)*result+1.0);
+            } else {
+                if (x<0.5)
+                    result = x;
+                else
+                    result=1.0-x;
+                result = QL_LOG(-QL_LOG(result));
+                result = c0_+result*(c1_+result*(c2_+result*(c3_+result*
+                            (c4_+result*(c5_+result*(c6_+result*
+                            (c7_+result*c8_)))))));
+                if (x<0.5)
+                    result=-result;
+            }
+
+            return average_ + result*sigma_;
+        }
+
+
+}
 
 }

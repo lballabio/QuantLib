@@ -48,8 +48,16 @@ namespace QuantLib {
                 U::U(long seed);
                 U::sample_type U::next() const;
             \endcode
+
+            The inverse cumulative normal distribution is supplied by I.
+
+            Class I must implement the following interface:
+            \code
+                I::I();
+                double I::operator() const;
+            \endcode
         */
-        template <class U>
+        template <class U, class I>
         class ICGaussianRng {
           public:
             typedef MonteCarlo::Sample<double> sample_type;
@@ -58,15 +66,15 @@ namespace QuantLib {
             sample_type next() const;
           private:
             U basicGenerator_;
-            QuantLib::Math::InvCumulativeNormalDistribution ICND_;
+            I ICND_;
         };
 
-        template <class U>
-        ICGaussianRng<U>::ICGaussianRng(long seed)
+        template <class U, class I>
+        ICGaussianRng<U, I>::ICGaussianRng(long seed)
         : basicGenerator_(seed) {}
 
-        template <class U>
-        inline ICGaussianRng<U>::sample_type ICGaussianRng<U>::next() const {
+        template <class U, class I>
+        inline ICGaussianRng<U, I>::sample_type ICGaussianRng<U, I>::next() const {
             typename U::sample_type sample = basicGenerator_.next();
             return sample_type(ICND_(sample.value),sample.weight);
         }

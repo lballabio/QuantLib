@@ -1,6 +1,7 @@
 
 
 /*
+ Copyright (C) 2002 Ferdinando Ametrano
  Copyright (C) 2000, 2001, 2002 RiskMap srl
 
  This file is part of QuantLib, a free-software/open-source library
@@ -28,27 +29,69 @@
 #define quantlib_rng_typedefs_h
 
 #include <ql/RandomNumbers/lecuyeruniformrng.hpp>
+#include <ql/RandomNumbers/knuthuniformrng.hpp>
 #include <ql/RandomNumbers/boxmullergaussianrng.hpp>
+#include <ql/RandomNumbers/centrallimitgaussianrng.hpp>
+#include <ql/RandomNumbers/inversecumgaussianrng.hpp>
 #include <ql/RandomNumbers/randomarraygenerator.hpp>
 
 namespace QuantLib {
 
     namespace RandomNumbers {
 
+        // Gaussian random number generators based on
+        // Lecuyer uniform random number generator
+        typedef BoxMullerGaussianRng<LecuyerUniformRng>
+			BoxMullerLecuyerGaussianRng;
+        typedef CLGaussianRng<LecuyerUniformRng>
+			CentralLimitLecuyerGaussianRng;
+        typedef ICGaussianRng<LecuyerUniformRng,
+            QuantLib::Math::InvCumulativeNormalDistribution>
+			InvCumulativeLecuyerGaussianRng;
+        typedef ICGaussianRng<LecuyerUniformRng,
+            QuantLib::Math::InvCumulativeNormalDistribution2>
+			InvCumulative2LecuyerGaussianRng;
+
+        // Gaussian random number generators based on
+        // Knuth uniform random number generator
+        typedef BoxMullerGaussianRng<KnuthUniformRng>
+			BoxMullerKnuthGaussianRng;
+        typedef CLGaussianRng<KnuthUniformRng>
+			CentralLimitKnuthGaussianRng;
+        typedef ICGaussianRng<KnuthUniformRng,
+            QuantLib::Math::InvCumulativeNormalDistribution>
+			InvCumulativeKnuthGaussianRng;
+        typedef ICGaussianRng<KnuthUniformRng,
+            QuantLib::Math::InvCumulativeNormalDistribution2>
+			InvCumulative2KnuthGaussianRng;
+
+/*      // looking forward to low-discrepancy sequences
+
+        // default choice for Gaussian low discrepancy sequence generator.
+        typedef ICGaussianRng<SobolUniformLds,
+            QuantLib::Math::InvCumulativeNormalDistribution>
+			InvCumulativeSobolGaussianLds;
+*/
+
         //! default choice for uniform random number generator.
         typedef LecuyerUniformRng UniformRandomGenerator;
 
         //! default choice for Gaussian random number generator.
-        typedef BoxMullerGaussianRng<UniformRandomGenerator> GaussianRandomGenerator;
+        typedef BoxMullerGaussianRng<UniformRandomGenerator>
+			GaussianRandomGenerator;
+        // It might be substitued by InvCumulativeLecuyerGaussianRng
 
         //! default choice for Gaussian array generator.
-        typedef RandomArrayGenerator<GaussianRandomGenerator> GaussianArrayGenerator;
+        typedef RandomArrayGenerator<GaussianRandomGenerator>
+			GaussianArrayGenerator;
 
-        // default choice for uniform low discepancy sequence generator.
-        // typedef BrodaSobolUniformLds UniformLowDiscrepancy;
+/*      //looking forward to low-discrepancy sequences
 
-        // default choice for Gaussian low discepancy sequence generator.
-	// typedef BoxMullerGaussianRng<UniformLowDiscrepancy> GaussianLowDiscrepancy;
+        // default choice for uniform low discrepancy sequence generator.
+        typedef SobolUniformLds UniformLowDiscrepancy;
+*/
+
+
     }
 
 }
