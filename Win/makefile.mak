@@ -8,26 +8,26 @@ PYTHON_DIR		= ..\Python
 SWIG_DIR		= ..\Swig
 SOURCES_DIR		= ..\Sources
 INCLUDE_DIR		= ..\Include
-PYTHON_INCLUDE	= "C:\Program Files\Python\include"
-PYTHON_LIBS		= "C:\Program Files\Python\libs"
-BCC_INCLUDE		= "D:\Program Files\Borland\Bcc55\include"
-BCC_LIBS		= "D:\Program Files\Borland\Bcc55\lib"
+PYTHON_INCLUDE		= "E:\Program Files\Python20\include"
+PYTHON_LIBS		= "E:\Program Files\Python20\libs"
+BCC_INCLUDE		= "E:\Program Files\Borland\Bcc55\include"
+BCC_LIBS		= "E:\Program Files\Borland\Bcc55\lib"
 
 # Object files
-CORE_OBJS		= $(OUTPUT_DIR)\calendar.obj $(OUTPUT_DIR)\date.obj $(OUTPUT_DIR)\solver1d.obj $(OUTPUT_DIR)\dataformatters.obj
+CORE_OBJS	= $(OUTPUT_DIR)\calendar.obj $(OUTPUT_DIR)\date.obj $(OUTPUT_DIR)\solver1d.obj $(OUTPUT_DIR)\dataformatters.obj
 CALENDAR_OBJS	= $(OUTPUT_DIR)\westerncalendar.obj $(OUTPUT_DIR)\frankfurt.obj $(OUTPUT_DIR)\london.obj $(OUTPUT_DIR)\milan.obj $(OUTPUT_DIR)\newyork.obj $(OUTPUT_DIR)\target.obj 
 DAYCOUNT_OBJS	= $(OUTPUT_DIR)\actualactual.obj $(OUTPUT_DIR)\thirty360.obj $(OUTPUT_DIR)\thirty360italian.obj
-MATH_OBJS		= $(OUTPUT_DIR)\normaldistribution.obj $(OUTPUT_DIR)\statistics.obj
-FDM_OBJS		= $(OUTPUT_DIR)\tridiagonaloperator.obj $(OUTPUT_DIR)\bsmoperator.obj
-PRICER_OBJS		= $(OUTPUT_DIR)\bsmoption.obj $(OUTPUT_DIR)\bsmnumericaloption.obj $(OUTPUT_DIR)\bsmeuropeanoption.obj $(OUTPUT_DIR)\bsmamericanoption.obj
+MATH_OBJS	= $(OUTPUT_DIR)\normaldistribution.obj $(OUTPUT_DIR)\statistics.obj  $(OUTPUT_DIR)\newcubicspline.obj
+FDM_OBJS	= $(OUTPUT_DIR)\tridiagonaloperator.obj $(OUTPUT_DIR)\bsmoperator.obj
+PRICER_OBJS	= $(OUTPUT_DIR)\bsmoption.obj $(OUTPUT_DIR)\bsmnumericaloption.obj $(OUTPUT_DIR)\bsmeuropeanoption.obj $(OUTPUT_DIR)\bsmamericanoption.obj $(OUTPUT_DIR)\dividendamericanoption.obj 
 SOLVER1D_OBJS	= $(OUTPUT_DIR)\bisection.obj $(OUTPUT_DIR)\brent.obj $(OUTPUT_DIR)\falseposition.obj $(OUTPUT_DIR)\newton.obj $(OUTPUT_DIR)\newtonsafe.obj $(OUTPUT_DIR)\ridder.obj $(OUTPUT_DIR)\secant.obj
 TERMSTRUC_OBJS	= $(OUTPUT_DIR)\piecewiseconstantforwards.obj 
 QUANTLIB_OBJS	= $(CORE_OBJS) $(CALENDAR_OBJS) $(DAYCOUNT_OBJS) $(MATH_OBJS) $(FDM_OBJS) $(PRICER_OBJS) $(SOLVER1D_OBJS) $(TERMSTRUC_OBJS) 
-WIN_OBJS		= c0d32.obj 
+WIN_OBJS	= c0d32.obj 
 
 # Libraries
 WIN_LIBS 		= import32.lib cw32mt.lib
-PYTHON_LIB		= $(PYTHON_LIBS)\python15.lib
+PYTHON_LIB		= $(PYTHON_LIBS)\python20.lib
 PYTHON_BCC_LIB	= bccpython.lib
 
 # Tools to be used
@@ -111,7 +111,7 @@ $(SWIG_DIR)\Statistics.i: $(SWIG_DIR)\Vectors.i $(INCLUDE_DIR)\mathtools.h
 QuantLib: Core Calendars DayCounters FiniteDifferences Math Pricers Solvers1D TermStructures
 
 # Core
-Core: $(CORE_OBJS)
+Core: $(OUTPUT_DIR) $(CORE_OBJS)
 $(OUTPUT_DIR)\calendar.obj: $(SOURCES_DIR)\calendar.cpp
 $(OUTPUT_DIR)\dataformatters.obj: $(SOURCES_DIR)\dataformatters.cpp
 $(OUTPUT_DIR)\date.obj: $(SOURCES_DIR)\date.cpp
@@ -167,7 +167,7 @@ $(INCLUDE_DIR)\rate.h: $(INCLUDE_DIR)\qldefines.h $(INCLUDE_DIR)\qlerrors.h $(IN
 
 
 # Calendars
-Calendars: $(CALENDAR_OBJS)
+Calendars: $(OUTPUT_DIR) $(CALENDAR_OBJS)
 $(OUTPUT_DIR)\westerncalendar.obj: $(SOURCES_DIR)\Calendars\westerncalendar.cpp
 $(OUTPUT_DIR)\frankfurt.obj: $(SOURCES_DIR)\Calendars\frankfurt.cpp
 $(OUTPUT_DIR)\london.obj: $(SOURCES_DIR)\Calendars\london.cpp
@@ -220,7 +220,7 @@ $(INCLUDE_DIR)\Currencies\usd.h: $(INCLUDE_DIR)\qldefines.h $(INCLUDE_DIR)\curre
 
 
 # Day counters
-DayCounters: $(DAYCOUNT_OBJS)
+DayCounters: $(OUTPUT_DIR) $(DAYCOUNT_OBJS)
 $(OUTPUT_DIR)\actualactual.obj: $(SOURCES_DIR)\DayCounters\actualactual.cpp
 $(OUTPUT_DIR)\thirty360.obj: $(SOURCES_DIR)\DayCounters\thirty360.cpp
 $(OUTPUT_DIR)\thirty360italian.obj: $(SOURCES_DIR)\DayCounters\thirty360italian.cpp
@@ -249,7 +249,7 @@ $(INCLUDE_DIR)\DayCounters\thirty360italian.h: $(INCLUDE_DIR)\qldefines.h $(INCL
 
 
 # Finite difference methods
-FiniteDifferences: $(FDM_OBJS)
+FiniteDifferences: $(OUTPUT_DIR) $(FDM_OBJS)
 $(OUTPUT_DIR)\tridiagonaloperator.obj: $(SOURCES_DIR)\FiniteDifferences\tridiagonaloperator.cpp
 $(OUTPUT_DIR)\bsmoperator.obj: $(SOURCES_DIR)\FiniteDifferences\bsmoperator.cpp
 
@@ -291,21 +291,26 @@ $(INCLUDE_DIR)\Instruments\stock.h: $(INCLUDE_DIR)\qldefines.h $(INCLUDE_DIR)\in
 
 
 # Math
-Math: $(MATH_OBJS)
+Math: $(OUTPUT_DIR) $(MATH_OBJS)
 $(OUTPUT_DIR)\normaldistribution.obj: $(SOURCES_DIR)\Math\normaldistribution.cpp
 $(OUTPUT_DIR)\statistics.obj: $(SOURCES_DIR)\Math\statistics.cpp
+$(OUTPUT_DIR)\newcubicspline.obj: $(SOURCES_DIR)\Math\newcubicspline.cpp
 
 $(SOURCES_DIR)\Math\normaldistribution.cpp: $(INCLUDE_DIR)\mathtools.h
 	@touch $<
 $(SOURCES_DIR)\Math\statistics.cpp: $(INCLUDE_DIR)\mathtools.h
 	@touch $<
+$(SOURCES_DIR)\Math\newcubicspline.cpp: $(INCLUDE_DIR)\mathtools.h
+	@touch $<
 
-$(INCLUDE_DIR)\mathtools.h: $(INCLUDE_DIR)\qldefines.h $(INCLUDE_DIR)\Math\normaldistribution.h $(INCLUDE_DIR)\Math\statistics.h
+$(INCLUDE_DIR)\mathtools.h: $(INCLUDE_DIR)\qldefines.h $(INCLUDE_DIR)\Math\normaldistribution.h $(INCLUDE_DIR)\Math\statistics.h $(INCLUDE_DIR)\Math\newcubicspline.h $(INCLUDE_DIR)\Math\location.h
 	@touch $<
 $(INCLUDE_DIR)\Math\normaldistribution.h: $(INCLUDE_DIR)\qldefines.h
 	@touch $<
 $(INCLUDE_DIR)\Math\statistics.h: $(INCLUDE_DIR)\qldefines.h $(INCLUDE_DIR)\null.h $(INCLUDE_DIR)\qlerrors.h
 	@touch $<
+$(INCLUDE_DIR)\Math\newcubicspline.h: $(INCLUDE_DIR)\Math\location.h
+		@touch $<
 
 
 # Patterns
@@ -316,19 +321,22 @@ $(INCLUDE_DIR)\Patterns\observable.h: $(INCLUDE_DIR)\qldefines.h
 
 
 # Pricers
-Pricers: $(PRICER_OBJS)
+Pricers: $(OUTPUT_DIR) $(PRICER_OBJS)
 $(OUTPUT_DIR)\bsmoption.obj: $(SOURCES_DIR)\Pricers\bsmoption.cpp
 $(OUTPUT_DIR)\bsmnumericaloption.obj: $(SOURCES_DIR)\Pricers\bsmnumericaloption.cpp
 $(OUTPUT_DIR)\bsmeuropeanoption.obj: $(SOURCES_DIR)\Pricers\bsmeuropeanoption.cpp
 $(OUTPUT_DIR)\bsmamericanoption.obj: $(SOURCES_DIR)\Pricers\bsmamericanoption.cpp
+$(OUTPUT_DIR)\dividendamericanoption.obj: $(SOURCES_DIR)\Pricers\dividendamericanoption.cpp
 
-$(SOURCES_DIR)\Pricers\bsmoption.cpp: $(INCLUDE_DIR)\Pricers\bsmoption.h $(INCLUDE_DIR)\qlerrors.h $(INCLUDE_DIR)\solvers1d.h
+$(SOURCES_DIR)\Pricers\bsmoption.cpp: $(INCLUDE_DIR)\pricers.h $(INCLUDE_DIR)\qlerrors.h $(INCLUDE_DIR)\solvers1d.h
 	@touch $<
-$(SOURCES_DIR)\Pricers\bsmnumericaloption.cpp: $(INCLUDE_DIR)\Pricers\bsmnumericaloption.h $(INCLUDE_DIR)\qlerrors.h
+$(SOURCES_DIR)\Pricers\bsmnumericaloption.cpp: $(INCLUDE_DIR)\pricers.h $(INCLUDE_DIR)\qlerrors.h
 	@touch $<
-$(SOURCES_DIR)\Pricers\bsmeuropeanoption.cpp: $(INCLUDE_DIR)\discountfactor.h $(INCLUDE_DIR)\mathtools.h $(INCLUDE_DIR)\Pricers\bsmeuropeanoption.h
+$(SOURCES_DIR)\Pricers\bsmeuropeanoption.cpp: $(INCLUDE_DIR)\discountfactor.h $(INCLUDE_DIR)\mathtools.h $(INCLUDE_DIR)\pricers.h
 	@touch $<
-$(SOURCES_DIR)\Pricers\bsmamericanoption.cpp: $(INCLUDE_DIR)\finitedifferences.h $(INCLUDE_DIR)\Pricers\americancondition.h $(INCLUDE_DIR)\Pricers\bsmamericanoption.h $(INCLUDE_DIR)\Pricers\bsmeuropeanoption.h 
+$(SOURCES_DIR)\Pricers\bsmamericanoption.cpp: $(INCLUDE_DIR)\finitedifferences.h $(INCLUDE_DIR)\pricers.h
+	@touch $<
+$(SOURCES_DIR)\Pricers\dividendamericanoption.cpp: $(INCLUDE_DIR)\pricers.h
 	@touch $<
 
 $(INCLUDE_DIR)\pricers.h: $(INCLUDE_DIR)\Pricers\bsmoption.h $(INCLUDE_DIR)\Pricers\bsmnumericaloption.h $(INCLUDE_DIR)\Pricers\bsmeuropeanoption.h $(INCLUDE_DIR)\Pricers\bsmamericanoption.h
@@ -342,9 +350,13 @@ $(INCLUDE_DIR)\Pricers\bsmeuropeanoption.h: $(INCLUDE_DIR)\qldefines.h $(INCLUDE
 	@touch $<
 $(INCLUDE_DIR)\Pricers\bsmamericanoption.h: $(INCLUDE_DIR)\qldefines.h $(INCLUDE_DIR)\Pricers\bsmnumericaloption.h $(INCLUDE_DIR)\finitedifferences.h $(INCLUDE_DIR)\Pricers\americancondition.h
 	@touch $<
+$(INCLUDE_DIR)\Pricers\dividendeuropeanoption.h: $(INCLUDE_DIR)\qldefines.h $(INCLUDE_DIR)\Pricers\bsmeuropeanoption.h
+	@touch $<
+$(INCLUDE_DIR)\Pricers\dividendamericanoption.h: $(INCLUDE_DIR)\qldefines.h $(INCLUDE_DIR)\Pricers\bsmnumericaloption.h  $(INCLUDE_DIR)\Pricers\americancondition.h $(INCLUDE_DIR)\Pricers\dividendeuropeanoption.h
+	@touch $<
 
 # 1D solvers
-Solvers1D: $(SOLVER1D_OBJS)
+Solvers1D: $(OUTPUT_DIR) $(SOLVER1D_OBJS)
 $(OUTPUT_DIR)\bisection.obj: $(SOURCES_DIR)\Solvers1D\bisection.cpp
 $(OUTPUT_DIR)\brent.obj: $(SOURCES_DIR)\Solvers1D\brent.cpp
 $(OUTPUT_DIR)\falseposition.obj: $(SOURCES_DIR)\Solvers1D\falseposition.cpp
@@ -387,7 +399,7 @@ $(INCLUDE_DIR)\Solvers1D\secant.h: $(INCLUDE_DIR)\qldefines.h $(INCLUDE_DIR)\sol
 
 
 # Term structures
-TermStructures: $(TERMSTRUC_OBJS)
+TermStructures: $(OUTPUT_DIR) $(TERMSTRUC_OBJS)
 $(OUTPUT_DIR)\piecewiseconstantforwards.obj: $(SOURCES_DIR)\TermStructures\piecewiseconstantforwards.cpp
 
 $(SOURCES_DIR)\TermStructures\piecewiseconstantforwards.cpp: $(INCLUDE_DIR)\termstructures.h
