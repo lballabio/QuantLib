@@ -85,18 +85,6 @@ SectionIn 1 2 3
     SetOutPath  $INSTDIR\ql\Instruments
     File /r "ql\Instruments\*.hpp"
 
-    SetOutPath  $INSTDIR\ql\ShortRateModels
-    File /r "ql\ShortRateModels\*.hpp"
-
-    SetOutPath  $INSTDIR\ql\ShortRateModels\CalibrationHelpers
-    File /r "ql\ShortRateModels\CalibrationHelpers\*.hpp"
-
-    SetOutPath  $INSTDIR\ql\ShortRateModels\OneFactorModels
-    File /r "ql\ShortRateModels\OneFactorModels\*.hpp"
-
-    SetOutPath  $INSTDIR\ql\ShortRateModels\TwoFactorModels
-    File /r "ql\ShortRateModels\TwoFactorModels\*.hpp"
-
     SetOutPath  $INSTDIR\ql\Lattices
     File /r "ql\Lattices\*.hpp"
 
@@ -120,6 +108,18 @@ SectionIn 1 2 3
 
     SetOutPath  $INSTDIR\ql\RandomNumbers
     File /r "ql\RandomNumbers\*.hpp"
+
+    SetOutPath  $INSTDIR\ql\ShortRateModels
+    File /r "ql\ShortRateModels\*.hpp"
+
+    SetOutPath  $INSTDIR\ql\ShortRateModels\CalibrationHelpers
+    File /r "ql\ShortRateModels\CalibrationHelpers\*.hpp"
+
+    SetOutPath  $INSTDIR\ql\ShortRateModels\OneFactorModels
+    File /r "ql\ShortRateModels\OneFactorModels\*.hpp"
+
+    SetOutPath  $INSTDIR\ql\ShortRateModels\TwoFactorModels
+    File /r "ql\ShortRateModels\TwoFactorModels\*.hpp"
 
     SetOutPath  $INSTDIR\ql\Solvers1D
     File /r "ql\Solvers1D\*.hpp"
@@ -219,22 +219,6 @@ SectionIn 1
   File /r "ql\Instruments\*.cpp"
   File /r "ql\Instruments\makefile.mak"
 
-  SetOutPath  $INSTDIR\ql\ShortRateModels
-  File /r "ql\ShortRateModels\*.cpp"
-  File /r "ql\ShortRateModels\makefile.mak"
-
-  SetOutPath  $INSTDIR\ql\ShortRateModels\CalibrationHelpers
-  File /r "ql\ShortRateModels\CalibrationHelpers\*.cpp"
-  File /r "ql\ShortRateModels\CalibrationHelpers\makefile.mak"
-
-  SetOutPath  $INSTDIR\ql\ShortRateModels\OneFactorModels
-  File /r "ql\ShortRateModels\OneFactorModels\*.cpp"
-  File /r "ql\ShortRateModels\OneFactorModels\makefile.mak"
-
-  SetOutPath  $INSTDIR\ql\ShortRateModels\TwoFactorModels
-  File /r "ql\ShortRateModels\TwoFactorModels\*.cpp"
-  File /r "ql\ShortRateModels\TwoFactorModels\makefile.mak"
-
   SetOutPath  $INSTDIR\ql\Lattices
   File /r "ql\Lattices\*.cpp"
   File /r "ql\Lattices\makefile.mak"
@@ -262,6 +246,22 @@ SectionIn 1
   SetOutPath  $INSTDIR\ql\RandomNumbers
   File /r "ql\RandomNumbers\*.cpp"
   File /r "ql\RandomNumbers\makefile.mak"
+
+  SetOutPath  $INSTDIR\ql\ShortRateModels
+  File /r "ql\ShortRateModels\*.cpp"
+  File /r "ql\ShortRateModels\makefile.mak"
+
+  SetOutPath  $INSTDIR\ql\ShortRateModels\CalibrationHelpers
+  File /r "ql\ShortRateModels\CalibrationHelpers\*.cpp"
+  File /r "ql\ShortRateModels\CalibrationHelpers\makefile.mak"
+
+  SetOutPath  $INSTDIR\ql\ShortRateModels\OneFactorModels
+  File /r "ql\ShortRateModels\OneFactorModels\*.cpp"
+  File /r "ql\ShortRateModels\OneFactorModels\makefile.mak"
+
+  SetOutPath  $INSTDIR\ql\ShortRateModels\TwoFactorModels
+  File /r "ql\ShortRateModels\TwoFactorModels\*.cpp"
+  File /r "ql\ShortRateModels\TwoFactorModels\makefile.mak"
 
   SetOutPath  $INSTDIR\ql\Solvers1D
   File /r "ql\Solvers1D\*.cpp"

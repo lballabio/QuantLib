@@ -5,7 +5,7 @@ get in touch with Gnumeric team
 
 revise interpolation allowExtrapolation
 
-Louw copyright and cygwin compilation
+Louw copyright
 
 add solver's target value (now the target value is 0.0)
 check american with discrete dividends
