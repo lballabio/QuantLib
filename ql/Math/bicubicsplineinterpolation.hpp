@@ -61,32 +61,32 @@ namespace QuantLib {
                 bool allowExtrapolation = false) const;
           private:
               Size rows_;
-              std::vector<CubicSpline<RandomAccessIteratorX,
-                  std::vector<result_type>::const_iterator> > splines_;
+              std::vector<
+                  CubicSpline<RandomAccessIteratorX,
+                              typename MatricialData::const_row_iterator> > 
+              splines_;
         };
 
 
         // inline definitions
         template <class I1, class I2, class M>
         BicubicSplineInterpolation<I1,I2,M>::BicubicSplineInterpolation(
-            const RandomAccessIteratorX& xBegin,
-            const RandomAccessIteratorX& xEnd,
-            const RandomAccessIteratorY& yBegin,
-            const RandomAccessIteratorY& yEnd,
-            const MatricialData& data)
-        : Interpolation2D<RandomAccessIteratorX, RandomAccessIteratorY,
-          MatricialData>(xBegin,xEnd,yBegin,yEnd,data), rows_(data_.rows()) {
-                for (Size i = 0; i< rows_; i++)
-                    splines_.push_back(CubicSpline<RandomAccessIteratorX,
-                        std::vector<result_type>::const_iterator>(
-                        xBegin, xEnd, data_.row_begin(i)));
+            const I1& xBegin, const I1& xEnd,
+            const I2& yBegin, const I2& yEnd,
+            const M& data)
+        : Interpolation2D<I1,I2, M>(xBegin,xEnd,yBegin,yEnd,data), 
+          rows_(data_.rows()) {
+            for (Size i = 0; i< rows_; i++)
+                splines_.push_back(CubicSpline<I1,
+                                   typename M::const_row_iterator>(
+                    xBegin, xEnd, data_.row_begin(i)));
 
         }
 
         template <class I1, class I2, class M>
         double BicubicSplineInterpolation<I1,I2,M>::operator()(
-            const BilinearInterpolation<I1,I2,M>::first_argument_type& x,
-            const BilinearInterpolation<I1,I2,M>::second_argument_type& y,
+            const BicubicSplineInterpolation<I1,I2,M>::first_argument_type& x,
+            const BicubicSplineInterpolation<I1,I2,M>::second_argument_type& y,
             bool allowExtrapolation) const {
 
             std::vector<result_type> newColumn(rows_);
@@ -94,8 +94,8 @@ namespace QuantLib {
                 newColumn[i]=splines_[i](x, allowExtrapolation);
             }
                 
-            CubicSpline<RandomAccessIteratorY,
-              std::vector<result_type>::const_iterator> columnSpline(
+            CubicSpline<I2,
+                std::vector<result_type>::const_iterator> columnSpline(
               yBegin_, yEnd_, newColumn.begin());
 
             return columnSpline(y, allowExtrapolation);
