@@ -16,52 +16,35 @@
 */
 
 #include <ql/Pricers/mceverest.hpp>
+#include <ql/TermStructures/flatforward.hpp>
 
 namespace QuantLib {
 
     namespace {
 
-        class EverestPathPricer_old : public PathPricer_old<MultiPath> {
+        class EverestPathPricer : public PathPricer<MultiPath> {
           public:
-            EverestPathPricer_old(DiscountFactor discount,
-                                  bool useAntitheticVariance)
-            : PathPricer_old<MultiPath>(discount, useAntitheticVariance) {}
+            EverestPathPricer(const RelinkableHandle<TermStructure>& 
+                                                                discountTS)
+            : PathPricer<MultiPath>(discountTS) {}
 
             double operator()(const MultiPath& multiPath) const {
                 Size numAssets = multiPath.assetNumber();
                 Size numSteps = multiPath.pathSize();
 
-                double log_drift, log_diffusion;
+                double log_variation;
                 Size i,j;
-                if (useAntitheticVariance_) {
-                    double minPrice = QL_MAX_DOUBLE, minPrice2 = QL_MAX_DOUBLE;
-                    for( j = 0; j < numAssets; j++) {
-                        log_drift = log_diffusion = 0.0;
-                        for( i = 0; i < numSteps; i++) {
-                            log_drift += multiPath[j].drift()[i];
-                            log_diffusion += multiPath[j].diffusion()[i];
-                        }
-                        minPrice  = QL_MIN(minPrice,
-                                           QL_EXP(log_drift+log_diffusion));
-                        minPrice2 = QL_MIN(minPrice2, 
-                                           QL_EXP(log_drift-log_diffusion));
-                    }
-
-                    return discount_ * 0.5 * (minPrice+minPrice2);
-                } else {
-                    double minPrice = QL_MAX_DOUBLE;
-                    for( j = 0; j < numAssets; j++) {
-                        log_drift = log_diffusion = 0.0;
-                        for( i = 0; i < numSteps; i++) {
-                            log_drift += multiPath[j].drift()[i];
-                            log_diffusion += multiPath[j].diffusion()[i];
-                        }
-                        minPrice = QL_MIN(minPrice, 
-                                          QL_EXP(log_drift+log_diffusion));
-                    }
-
-                    return discount_ * minPrice;
+                double minPrice = QL_MAX_DOUBLE;
+                for( j = 0; j < numAssets; j++) {
+                    log_variation = 0.0;
+                    for( i = 0; i < numSteps; i++)
+                        log_variation += multiPath[j][i];
+                    minPrice = QL_MIN(minPrice, 
+                                      QL_EXP(log_variation));
                 }
+
+                return discountTS_->discount(multiPath[0].timeGrid().back())
+                    * minPrice;
             }
         };
 
@@ -70,7 +53,7 @@ namespace QuantLib {
     McEverest::McEverest(const Array& dividendYield,
                          const Matrix& covariance,
                          Rate riskFreeRate, Time residualTime,
-                         bool antitheticVariance, long seed) {
+                         long seed) {
 
         Size  n = covariance.rows();
         QL_REQUIRE(covariance.columns() == n,
@@ -89,10 +72,14 @@ namespace QuantLib {
             new GaussianMultiPathGenerator(mu, covariance,
                                            TimeGrid(residualTime, 1), seed));
 
-        // initialize the pricer on the path pricer
-        boost::shared_ptr<PathPricer_old<MultiPath> > pathPricer(
-            new EverestPathPricer_old(QL_EXP(-riskFreeRate*residualTime),
-            antitheticVariance));
+        RelinkableHandle<TermStructure> discount(
+                  Handle<TermStructure>(
+                      new FlatForward(Date::todaysDate(), Date::todaysDate(), 
+                                      riskFreeRate)));
+
+        // initialize the path pricer
+        boost::shared_ptr<PathPricer<MultiPath> > pathPricer(
+            new EverestPathPricer(discount));
 
         // initialize the multi-factor Monte Carlo
         mcModel_ = boost::shared_ptr<MonteCarloModel<MultiAsset_old<

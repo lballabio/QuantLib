@@ -17,25 +17,26 @@
 
 #include <ql/MonteCarlo/mctypedefs.hpp>
 #include <ql/Pricers/mchimalaya.hpp>
+#include <ql/TermStructures/flatforward.hpp>
 
 namespace QuantLib {
 
     namespace {
 
-        class HimalayaPathPricer_old : public PathPricer_old<MultiPath> {
+        class HimalayaPathPricer : public PathPricer<MultiPath> {
           public:
-            HimalayaPathPricer_old(const std::vector<double>& underlying,
-                                   double strike,
-                                   DiscountFactor discount,
-                                   bool useAntitheticVariance)
-            : PathPricer_old<MultiPath>(discount, useAntitheticVariance),
+            HimalayaPathPricer(const std::vector<double>& underlying,
+                               double strike,
+                               const RelinkableHandle<TermStructure>& 
+                                                                discountTS)
+            : PathPricer<MultiPath>(discountTS),
               underlying_(underlying), strike_(strike) {
                 for (Size j=0; j<underlying_.size(); j++) {
                     QL_REQUIRE(underlying_[j]>0.0,
-                               "HimalayaPathPricer_old: "
+                               "HimalayaPathPricer: "
                                "underlying less/equal zero not allowed");
                     QL_REQUIRE(strike>=0.0,
-                               "HimalayaPathPricer_old: "
+                               "HimalayaPathPricer: "
                                "strike less than zero not allowed");
                 }
             }
@@ -44,12 +45,12 @@ namespace QuantLib {
                 Size numAssets = multiPath.assetNumber();
                 Size numSteps = multiPath.pathSize();
                 QL_REQUIRE(underlying_.size() == numAssets,
-                           "HimalayaPathPricer_old: "
+                           "HimalayaPathPricer: "
                            "the multi-path must contain "
                            + IntegerFormatter::toString(underlying_.size()) + 
                            " assets");
                 QL_REQUIRE(numAssets>0,
-                           "HimalayaPathPricer_old: no asset given");
+                           "HimalayaPathPricer: no asset given");
 
                 std::vector<double> prices(underlying_);
                 double averagePrice = 0;
@@ -77,8 +78,7 @@ namespace QuantLib {
                     removeAsset=0;
                     for (j = 0; j < numAssets; j++) {
                         if (remainingAssets[j]) {
-                            prices[j] *= QL_EXP(multiPath[j].drift()[i]+
-                                                multiPath[j].diffusion()[i]);
+                            prices[j] *= QL_EXP(multiPath[j][i]);
                             if (prices[j] >= bestPrice) {
                                 bestPrice = prices[j];
                                 removeAsset = j;
@@ -91,48 +91,8 @@ namespace QuantLib {
                 averagePrice /= QL_MIN(fixings, numAssets);
                 double optPrice = QL_MAX(averagePrice - strike_, 0.0);
 
-                if (useAntitheticVariance_) {
-                    prices = underlying_;
-                    averagePrice = 0;
-                    remainingAssets = std::vector<bool>(numAssets, true);
-                    if (multiPath[0].timeGrid().mandatoryTimes()[0] == 0.0) {
-                        bestPrice = 0.0;
-                        // dummy assignement to avoid compiler warning
-                        removeAsset=0;
-                        for (j = 0; j < numAssets; j++) {
-                            if (prices[j] >= bestPrice) {
-                                bestPrice = prices[j];
-                                removeAsset = j;
-                            }
-                        }
-                        remainingAssets[removeAsset] = false;
-                        averagePrice += bestPrice;
-                    }
-                    for (i = 0; i < numSteps; i++) {
-                        bestPrice = 0.0;
-                        // dummy assignement to avoid compiler warning
-                        removeAsset=0;
-                        for (j = 0; j < numAssets; j++) {
-                            if (remainingAssets[j]) {
-                                prices[j] *= 
-                                    QL_EXP(multiPath[j].drift()[i] -
-                                           multiPath[j].diffusion()[i]);
-                                if (prices[j] >= bestPrice) {
-                                    bestPrice = prices[j];
-                                    removeAsset = j;
-                                }
-                            }
-                        }
-                        remainingAssets[removeAsset] = false;
-                        averagePrice += bestPrice;
-                    }
-                    averagePrice /= QL_MIN(fixings, numAssets);
-                    double optPrice2 = QL_MAX(averagePrice - strike_, 0.0);
-
-                    return discount_ * 0.5 * (optPrice+optPrice2);
-                } else {
-                    return discount_ * optPrice;
-                }
+                return discountTS_->discount(multiPath[0].timeGrid().back())
+                    * optPrice;
             }
 
           private:
@@ -148,7 +108,7 @@ namespace QuantLib {
                            const Matrix& covariance,
                            Rate riskFreeRate, double strike,
                            const std::vector<Time>& times,
-                           bool antitheticVariance, long seed) {
+                           long seed) {
 
         Size  n = covariance.rows();
         QL_REQUIRE(covariance.columns() == n,
@@ -173,11 +133,14 @@ namespace QuantLib {
                 seed));
         double residualTime = times[times.size()-1];
 
-        // initialize the pricer on the path pricer
-        boost::shared_ptr<PathPricer_old<MultiPath> > pathPricer(
-            new HimalayaPathPricer_old(
-                underlying, strike, QL_EXP(-riskFreeRate*residualTime),
-                antitheticVariance));
+        RelinkableHandle<TermStructure> discount(
+                  Handle<TermStructure>(
+                      new FlatForward(Date::todaysDate(), Date::todaysDate(), 
+                                      riskFreeRate)));
+
+        // initialize the path pricer
+        boost::shared_ptr<PathPricer<MultiPath> > pathPricer(
+            new HimalayaPathPricer(underlying, strike, discount));
 
         // initialize the multi-factor Monte Carlo
         mcModel_ = boost::shared_ptr<MonteCarloModel<MultiAsset_old<

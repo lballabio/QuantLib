@@ -43,7 +43,6 @@ namespace QuantLib {
                  const Matrix& covariance,
                  Rate riskFreeRate,
                  const std::vector<Time>& times,
-                 bool antithetic,
                  long seed = 0);
     };
 

@@ -47,7 +47,6 @@ namespace QuantLib {
                         double globalCap,
                         double globalFloor,
                         bool redemptionOnly,
-                        bool antitheticVariance,
                         long seed = 0);
     };
 

@@ -16,21 +16,22 @@
 */
 
 #include <ql/Pricers/mcmaxbasket.hpp>
+#include <ql/TermStructures/flatforward.hpp>
 
 namespace QuantLib {
 
     namespace {
 
-        class MaxBasketPathPricer_old : public PathPricer_old<MultiPath> {
+        class MaxBasketPathPricer : public PathPricer<MultiPath> {
           public:
-            MaxBasketPathPricer_old(const std::vector<double>& underlying,
-                                    DiscountFactor discount,
-                                    bool useAntitheticVariance)
-            : PathPricer_old<MultiPath>(discount, useAntitheticVariance),
+            MaxBasketPathPricer(const std::vector<double>& underlying,
+                                const RelinkableHandle<TermStructure>& 
+                                                                discountTS)
+            : PathPricer<MultiPath>(discountTS),
               underlying_(underlying) {
                 for (Size i=0; i<underlying_.size(); i++) {
                     QL_REQUIRE(underlying_[i]>0.0,
-                               "MaxBasketPathPricer_old: "
+                               "MaxBasketPathPricer: "
                                "underlying less/equal zero not allowed");
                 }
             }
@@ -39,45 +40,23 @@ namespace QuantLib {
                 Size numAssets = multiPath.assetNumber();
                 Size numSteps = multiPath.pathSize();
                 QL_REQUIRE(underlying_.size() == numAssets,
-                           "MaxBasketPathPricer_old: "
+                           "MaxBasketPathPricer: "
                            "the multi-path must contain "
                            + IntegerFormatter::toString(underlying_.size()) + 
                            " assets");
 
-                double log_drift, log_diffusion;
+                double log_variation;
                 Size i,j;
-                if (useAntitheticVariance_) {
-                    double maxPrice = -QL_MAX_DOUBLE, 
-                           maxPrice2 = -QL_MAX_DOUBLE;
-                    for(j = 0; j < numAssets; j++) {
-                        log_drift = log_diffusion = 0.0;
-                        for(i = 0; i < numSteps; i++) {
-                            log_drift += multiPath[j].drift()[i];
-                            log_diffusion += multiPath[j].diffusion()[i];
-                        }
-                        maxPrice = QL_MAX(maxPrice,
-                                          underlying_[j]*QL_EXP(log_drift + 
-                                                                log_diffusion));
-                        maxPrice2 = QL_MAX(maxPrice2,
-                                           underlying_[j]*QL_EXP(log_drift - 
-                                                                 log_diffusion));
-                    }
-                    return discount_*0.5*(maxPrice+maxPrice2);
-                } else {
-                    double maxPrice = -QL_MAX_DOUBLE;
-                    for(j = 0; j < numAssets; j++) {
-                        log_drift = log_diffusion = 0.0;
-                        for(i = 0; i < numSteps; i++) {
-                            log_drift += multiPath[j].drift()[i];
-                            log_diffusion += multiPath[j].diffusion()[i];
-                        }
-                        maxPrice = QL_MAX(maxPrice,
-                                          underlying_[j]*QL_EXP(log_drift + 
-                                                                log_diffusion));
-                    }
-                    return discount_*maxPrice;
+                double maxPrice = -QL_MAX_DOUBLE;
+                for(j = 0; j < numAssets; j++) {
+                    log_variation = 0.0;
+                    for(i = 0; i < numSteps; i++)
+                        log_variation += multiPath[j][i];
+                    maxPrice = QL_MAX(maxPrice,
+                                      underlying_[j]*QL_EXP(log_variation));
                 }
-
+                return discountTS_->discount(multiPath[0].timeGrid().back())
+                    * maxPrice;
             }
 
           private:
@@ -91,7 +70,7 @@ namespace QuantLib {
                              const Array& dividendYield, 
                              const Matrix& covariance,
                              Rate riskFreeRate,  double residualTime,
-                             bool antitheticVariance, long seed) {
+                             long seed) {
 
         QL_REQUIRE(covariance.rows() == covariance.columns(),
                    "McMaxBasket: covariance matrix not square");
@@ -112,11 +91,14 @@ namespace QuantLib {
             new GaussianMultiPathGenerator(mu, covariance,
             TimeGrid(residualTime, 1), seed));
 
-        // initialize the pricer on the path pricer
-        boost::shared_ptr<PathPricer_old<MultiPath> > pathPricer(
-            new MaxBasketPathPricer_old(
-            underlying, QL_EXP(-riskFreeRate*residualTime),
-            antitheticVariance));
+        RelinkableHandle<TermStructure> discount(
+                  Handle<TermStructure>(
+                      new FlatForward(Date::todaysDate(), Date::todaysDate(), 
+                                      riskFreeRate)));
+
+        // initialize the path pricer
+        boost::shared_ptr<PathPricer<MultiPath> > pathPricer(
+            new MaxBasketPathPricer(underlying, discount));
 
         // initialize the multi-factor Monte Carlo
         mcModel_ = boost::shared_ptr<MonteCarloModel<MultiAsset_old<

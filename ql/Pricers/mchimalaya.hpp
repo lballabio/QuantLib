@@ -43,7 +43,6 @@ namespace QuantLib {
                    Rate riskFreeRate,
                    double strike,
                    const std::vector<Time>& times,
-                   bool antitheticVariance,
                    long seed = 0);
     };
 

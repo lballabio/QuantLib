@@ -18,26 +18,26 @@
 #include <ql/handle.hpp>
 #include <ql/Pricers/mcbasket.hpp>
 #include <ql/Instruments/payoffs.hpp>
+#include <ql/TermStructures/flatforward.hpp>
 
 namespace QuantLib {
 
     namespace {
 
-        class BasketPathPricer_old : public PathPricer_old<MultiPath> {
+        class BasketPathPricer : public PathPricer<MultiPath> {
           public:
-            BasketPathPricer_old(Option::Type type,
-                                 const std::vector<double>& underlying,
-                                 double strike,
-                                 DiscountFactor discount,
-                                 bool useAntitheticVariance)
-            : PathPricer_old<MultiPath>(discount, useAntitheticVariance),
+            BasketPathPricer(Option::Type type,
+                             const std::vector<double>& underlying,
+                             double strike,
+                             const RelinkableHandle<TermStructure>& discountTS)
+            : PathPricer<MultiPath>(discountTS),
               underlying_(underlying), payoff_(type, strike) {
                 for (Size j=0; j<underlying_.size(); j++) {
                     QL_REQUIRE(underlying_[j]>0.0,
-                               "BasketPathPricer_old: "
+                               "BasketPathPricer: "
                                "underlying less/equal zero not allowed");
                     QL_REQUIRE(strike>=0.0,
-                               "BasketPathPricer_old: "
+                               "BasketPathPricer: "
                                "strike less than zero not allowed");
                 }
             }
@@ -47,39 +47,26 @@ namespace QuantLib {
                 Size numSteps = multiPath.pathSize();
                 Size numAssets = multiPath.assetNumber();
                 QL_REQUIRE(underlying_.size() == numAssets,
-                           "BasketPathPricer_old: the multi-path must contain "
+                           "BasketPathPricer: the multi-path must contain "
                            + IntegerFormatter::toString(underlying_.size()) 
                            + " assets");
 
                 QL_REQUIRE(numSteps>0,
-                           "BasketPathPricer_old: the path cannot be empty");
+                           "BasketPathPricer: the path cannot be empty");
 
                 // start the simulation
-                std::vector<double> log_drift(numAssets, 0.0);
-                std::vector<double> log_diffusion(numAssets, 0.0);
+                std::vector<double> log_variation(numAssets, 0.0);
                 Size i,j;
                 double basketPrice = 0.0;
                 for (j = 0; j < numAssets; j++) {
-                    log_drift[j] = log_diffusion[j] = 0.0;
-                    for (i = 0; i < numSteps; i++) {
-                        log_drift[j] += multiPath[j].drift()[i];
-                        log_diffusion[j] += multiPath[j].diffusion()[i];
-                    }
+                    log_variation[j] = 0.0;
+                    for (i = 0; i < numSteps; i++)
+                        log_variation[j] += multiPath[j][i];
                     basketPrice += underlying_[j]*
-                        QL_EXP(log_drift[j]+log_diffusion[j]);
+                        QL_EXP(log_variation[j]);
                 }
-                if (useAntitheticVariance_) {
-                    double basketPrice2 = 0.0;
-                    for(j = 0; j < numAssets; j++) {
-                        basketPrice2 += underlying_[j]*
-                            QL_EXP(log_drift[j]-log_diffusion[j]);
-                    }
-                    return discount_ * 0.5 *
-                        (payoff_(basketPrice) + payoff_(basketPrice2));
-                } else {
-                    return discount_ * payoff_(basketPrice);
-                }
-
+                return discountTS_->discount(multiPath[0].timeGrid().back())
+                    * payoff_(basketPrice);
             }
 
           private:
@@ -95,7 +82,7 @@ namespace QuantLib {
                        double strike, const Array& dividendYield,
                        const Matrix& covariance,
                        Rate riskFreeRate,  double residualTime,
-                       bool antitheticVariance, long seed) {
+                       long seed) {
 
         QL_REQUIRE(covariance.rows() == covariance.columns(),
                    "McBasket: covariance matrix not square");
@@ -116,11 +103,14 @@ namespace QuantLib {
             new GaussianMultiPathGenerator(mu, covariance,
                                            TimeGrid(residualTime, 1), seed));
 
-        // initialize the pricer on the path pricer
-        boost::shared_ptr<PathPricer_old<MultiPath> > pathPricer(
-            new BasketPathPricer_old(type, underlying, strike,
-                                     QL_EXP(-riskFreeRate*residualTime),
-                                     antitheticVariance));
+        RelinkableHandle<TermStructure> discount(
+                  Handle<TermStructure>(
+                      new FlatForward(Date::todaysDate(), Date::todaysDate(), 
+                                      riskFreeRate)));
+
+        // initialize the path pricer
+        boost::shared_ptr<PathPricer<MultiPath> > pathPricer(
+            new BasketPathPricer(type, underlying, strike, discount));
 
         // initialize the multi-factor Monte Carlo
         mcModel_ = boost::shared_ptr<MonteCarloModel

@@ -48,33 +48,6 @@ namespace QuantLib {
                             const RelinkableHandle<TermStructure>& discountTS)
     : discountTS_(discountTS) {}
 
-
-
-    //! base class for path pricers
-    /*! Given a path the value of an option is returned on that path.
-        \deprecated use PathPricer instead
-    */
-    template<class PathType, class ValueType=double>
-    class PathPricer_old : public std::unary_function<PathType, ValueType> {
-      public:
-        PathPricer_old(DiscountFactor discount,
-                       bool useAntitheticVariance);
-        virtual ~PathPricer_old() {}
-        virtual ValueType operator()(const PathType& path) const=0;
-      protected:
-        DiscountFactor discount_;
-        bool useAntitheticVariance_;
-    };
-
-    template<class P,class V>
-    PathPricer_old<P,V>::PathPricer_old(DiscountFactor discount,
-                                        bool useAntitheticVariance)
-    : discount_(discount),
-      useAntitheticVariance_(useAntitheticVariance) {
-        QL_REQUIRE(discount_ <= 1.0 && discount_ > 0.0,
-                   "PathPricer_old: discount must be positive");
-    }
-
 }
 
 

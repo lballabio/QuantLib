@@ -40,7 +40,6 @@ namespace QuantLib {
                                 Rate riskFreeRate,
                                 const std::vector<Time>& times,
                                 double volatility,
-                                bool antitheticVariance,
                                 bool controlVariate,
                                 long seed = 0);
     };

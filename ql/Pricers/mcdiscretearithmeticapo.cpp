@@ -17,25 +17,26 @@
 
 #include <ql/Pricers/mcdiscretearithmeticapo.hpp>
 #include <ql/Pricers/discretegeometricapo.hpp>
+#include <ql/TermStructures/flatforward.hpp>
 
 namespace QuantLib {
 
     namespace {
 
-        class ArithmeticAPOPathPricer_old : public PathPricer_old<Path> {
+        class ArithmeticAPOPathPricer : public PathPricer<Path> {
           public:
-            ArithmeticAPOPathPricer_old(Option::Type type,
-                                        double underlying,
-                                        double strike,
-                                        DiscountFactor discount,
-                                        bool useAntitheticVariance)
-            : PathPricer_old<Path>(discount, useAntitheticVariance),
+            ArithmeticAPOPathPricer(Option::Type type,
+                                    double underlying,
+                                    double strike,
+                                    const RelinkableHandle<TermStructure>&
+                                                                   discountTS)
+            : PathPricer<Path>(discountTS),
               underlying_(underlying), payoff_(type, strike) {
                 QL_REQUIRE(underlying>0.0,
-                           "ArithmeticAPOPathPricer_old: "
+                           "ArithmeticAPOPathPricer: "
                            "underlying less/equal zero not allowed");
                 QL_REQUIRE(strike>=0.0,
-                           "ArithmeticAPOPathPricer_old: "
+                           "ArithmeticAPOPathPricer: "
                            "strike less than zero not allowed");
             }
 
@@ -43,7 +44,7 @@ namespace QuantLib {
 
                 Size n = path.size();
                 QL_REQUIRE(n>0,
-                           "ArithmeticAPOPathPricer_old: "
+                           "ArithmeticAPOPathPricer: "
                            "the path cannot be empty");
 
                 double price1 = underlying_;
@@ -55,26 +56,13 @@ namespace QuantLib {
                 }
                 Size i;
                 for (i=0; i<n; i++) {
-                    price1 *= QL_EXP(path.drift()[i]+path.diffusion()[i]);
+                    price1 *= QL_EXP(path[i]);
                     averagePrice1 += price1;
                 }
                 averagePrice1 = averagePrice1/fixings;
 
-                if (useAntitheticVariance_) {
-                    double price2 = underlying_;
-                    double averagePrice2 = 0.0;
-
-                    if (path.timeGrid().mandatoryTimes()[0]==0.0)
-                        averagePrice2 = price2;
-                    for (i=0; i<n; i++) {
-                        price2 *= QL_EXP(path.drift()[i]-path.diffusion()[i]);
-                        averagePrice2 += price2;
-                    }
-                    averagePrice2 = averagePrice2/fixings;
-                    return discount_/2.0 *
-                        (payoff_(averagePrice1)+payoff_(averagePrice2));
-                } else
-                    return discount_ * payoff_(averagePrice1);
+                return discountTS_->discount(path.timeGrid().back())
+                    * payoff_(averagePrice1);
             }
 
           private:
@@ -82,50 +70,41 @@ namespace QuantLib {
             PlainVanillaPayoff payoff_;
         };
 
-        class GeometricAPOPathPricer_old : public PathPricer_old<Path> {
+        class GeometricAPOPathPricer : public PathPricer<Path> {
           public:
-            GeometricAPOPathPricer_old(Option::Type type,
-                                       double underlying,
-                                       double strike,
-                                       DiscountFactor discount,
-                                       bool useAntitheticVariance)
-            : PathPricer_old<Path>(discount, useAntitheticVariance),
+            GeometricAPOPathPricer(Option::Type type,
+                                   double underlying,
+                                   double strike,
+                                   const RelinkableHandle<TermStructure>&
+                                                                   discountTS)
+            : PathPricer<Path>(discountTS),
               underlying_(underlying), payoff_(type, strike) {
                 QL_REQUIRE(underlying>0.0,
-                           "GeometricAPOPathPricer_old: "
+                           "GeometricAPOPathPricer: "
                            "underlying less/equal zero not allowed");
                 QL_REQUIRE(strike>=0.0,
-                           "GeometricAPOPathPricer_old: "
+                           "GeometricAPOPathPricer: "
                            "strike less than zero not allowed");
             }
 
             double operator()(const Path& path) const {
                 Size n = path.size();
                 QL_REQUIRE(n>0,
-                           "GeometricAPOPathPricer_old: "
+                           "GeometricAPOPathPricer: "
                            "the path cannot be empty");
 
-                double geoLogDrift = 0.0, geoLogDiffusion = 0.0;
+                double geoLogVariation = 0.0;
                 Size i;
-                for (i=0; i<n; i++) {
-                    geoLogDrift += (n-i)*path.drift()[i];
-                    geoLogDiffusion += (n-i)*path.diffusion()[i];
-                }
+                for (i=0; i<n; i++)
+                    geoLogVariation += (n-i)*path[i];
                 Size fixings = n;
-                if (path.timeGrid().mandatoryTimes()[0]==0.0) {
+                if (path.timeGrid().mandatoryTimes()[0]==0.0)
                     fixings = n+1;
-                }
                 double averagePrice1 = underlying_*
-                    QL_EXP((geoLogDrift+geoLogDiffusion)/fixings);
+                    QL_EXP(geoLogVariation/fixings);
 
-                if (useAntitheticVariance_) {
-                    double averagePrice2 = underlying_*
-                        QL_EXP((geoLogDrift-geoLogDiffusion)/fixings);
-                    return discount_ * 0.5 *
-                        (payoff_(averagePrice1) +payoff_(averagePrice2));
-                } else {
-                    return discount_* payoff_(averagePrice1);
-                }
+                return discountTS_->discount(path.timeGrid().back())
+                    * payoff_(averagePrice1);
             }
 
           private:
@@ -140,7 +119,7 @@ namespace QuantLib {
         double underlying, double strike,
         Spread dividendYield, Rate riskFreeRate,
         const std::vector<Time>& times, double volatility,
-        bool antitheticVariance, bool controlVariate, long seed) {
+        bool controlVariate, long seed) {
 
         QL_REQUIRE(times.size() >= 2,
                    "McDiscreteArithmeticAPO: "
@@ -155,17 +134,18 @@ namespace QuantLib {
                 TimeGrid(times.begin(), times.end()),
                 seed));
 
+        RelinkableHandle<TermStructure> discount(
+                  Handle<TermStructure>(
+                      new FlatForward(Date::todaysDate(), Date::todaysDate(), 
+                                      riskFreeRate)));
 
         // initialize the Path Pricer
-        boost::shared_ptr<PathPricer_old<Path> > spPricer(
-            new ArithmeticAPOPathPricer_old(type, underlying, strike,
-                QL_EXP(-riskFreeRate*times.back()), antitheticVariance));
-
+        boost::shared_ptr<PathPricer<Path> > spPricer(
+             new ArithmeticAPOPathPricer(type, underlying, strike, discount));
 
         if (controlVariate) {
-            boost::shared_ptr<PathPricer_old<Path> > controlVariateSpPricer(
-                new GeometricAPOPathPricer_old(type, underlying, strike,
-                    QL_EXP(-riskFreeRate*times.back()), antitheticVariance));
+            boost::shared_ptr<PathPricer<Path> > controlVariateSpPricer(
+              new GeometricAPOPathPricer(type, underlying, strike, discount));
 
             double controlVariatePrice = DiscreteGeometricAPO(type,
                 underlying, strike, dividendYield, riskFreeRate,

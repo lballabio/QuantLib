@@ -17,75 +17,53 @@
 
 #include <ql/Pricers/mcperformanceoption.hpp>
 #include <ql/Instruments/payoffs.hpp>
+#include <ql/TermStructures/flatforward.hpp>
 
 namespace QuantLib {
 
     namespace {
 
-        class PerformanceOptionPathPricer_old : public PathPricer_old<Path> {
+        class PerformanceOptionPathPricer : public PathPricer<Path> {
           public:
-            PerformanceOptionPathPricer_old(
+            PerformanceOptionPathPricer(
                                  Option::Type type,
                                  double underlying,
                                  double moneyness,
-                                 const std::vector<DiscountFactor>& discounts,
-                                 bool useAntitheticVariance)
-            : PathPricer_old<Path>(1.0, useAntitheticVariance),
-              underlying_(underlying), discounts_(discounts), 
+                                 const std::vector<DiscountFactor>& discounts)
+            : underlying_(underlying), discounts_(discounts), 
               payoff_(type, moneyness) {
                 QL_REQUIRE(underlying>0.0,
-                           "PerformanceOptionPathPricer_old: "
+                           "PerformanceOptionPathPricer: "
                            "underlying less/equal zero not allowed");
                 QL_REQUIRE(moneyness>0.0,
-                           "PerformanceOptionPathPricer_old: "
+                           "PerformanceOptionPathPricer: "
                            "moneyness less/equal zero not allowed");
             }
 
             double operator()(const Path& path) const {
                 Size n = path.size();
                 QL_REQUIRE(n>0,
-                           "PerformanceOptionPathPricer_old: "
+                           "PerformanceOptionPathPricer: "
                            "at least one option is required");
                 QL_REQUIRE(n==2,
-                           "PerformanceOptionPathPricer_old: "
+                           "PerformanceOptionPathPricer: "
                            "only one option for the time being");
                 QL_REQUIRE(n==discounts_.size(),
-                           "PerformanceOptionPathPricer_old: "
+                           "PerformanceOptionPathPricer: "
                            "discounts/options mismatch");
 
                 std::vector<double> result(n);
                 std::vector<double> assetValue(n);
-                double log_drift = path.drift()[0];
-                double log_random = path.diffusion()[0];
-                assetValue[0]  = underlying_ * QL_EXP(log_drift+log_random);
+                double log_variation = path[0];
+                assetValue[0]  = underlying_ * QL_EXP(log_variation);
 
-                if (useAntitheticVariance_) {
-                    std::vector<double> assetValue2(n);
-                    assetValue2[0] = underlying_*QL_EXP(log_drift-log_random);
-                    // removing first option, it should be 0.5
-                    result[0] = 0.0;
-                    for (Size i = 1 ; i < n; i++) {
-                        log_drift  += path.drift()[i];
-                        log_random += path.diffusion()[i];
-                        assetValue[i] =
-                            underlying_*QL_EXP(log_drift+log_random);
-                        assetValue2[i]=
-                            underlying_*QL_EXP(log_drift-log_random);
-                        result[i] = 0.5 * discounts_[i] *
-                            (payoff_(assetValue [i]/assetValue [i-1])
-                             +payoff_(assetValue2[i]/assetValue2[i-1]));
-                    }
-                } else {
-                    // removing first option
-                    result[0] = 0.0;
-                    for (Size i = 1 ; i < n; i++) {
-                        log_drift  += path.drift()[i];
-                        log_random += path.diffusion()[i];
-                        assetValue[i]  = underlying_ *
-                            QL_EXP(log_drift+log_random);
-                        result[i] = discounts_[i] *
-                            payoff_(assetValue[i]/assetValue [i-1]);
-                    }
+                // removing first option
+                result[0] = 0.0;
+                for (Size i = 1 ; i < n; i++) {
+                    log_variation  += path[i];
+                    assetValue[i]  = underlying_ * QL_EXP(log_variation);
+                    result[i] = discounts_[i] *
+                        payoff_(assetValue[i]/assetValue[i-1]);
                 }
 
                 return result[1];
@@ -105,7 +83,7 @@ namespace QuantLib {
                        const std::vector<Rate>& riskFreeRate,
                        const std::vector<Time>& times,
                        const std::vector<double>& volatility,
-                       bool antitheticVariance, long seed) {
+                       long seed) {
 
         Size dimension = times.size();
         QL_REQUIRE(dividendYield.size()==dimension,
@@ -137,10 +115,9 @@ namespace QuantLib {
                 seed));
 
         // Initialize the pricer on the single Path
-        boost::shared_ptr<PathPricer_old<Path> > performancePathPricer(
-            new PerformanceOptionPathPricer_old(type,
-            underlying, moneyness, discounts,
-            antitheticVariance));
+        boost::shared_ptr<PathPricer<Path> > performancePathPricer(
+            new PerformanceOptionPathPricer(type,
+            underlying, moneyness, discounts));
 
         // Initialize the one-factor Monte Carlo
         mcModel_ = boost::shared_ptr<MonteCarloModel<SingleAsset_old<

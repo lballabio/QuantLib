@@ -22,9 +22,9 @@ namespace QuantLib {
 
     namespace {
 
-        class CliquetOptionPathPricer_old : public PathPricer_old<Path> {
+        class CliquetOptionPathPricer : public PathPricer<Path> {
           public:
-            CliquetOptionPathPricer_old(
+            CliquetOptionPathPricer(
                                  Option::Type type,
                                  double underlying,
                                  double moneyness,
@@ -35,10 +35,8 @@ namespace QuantLib {
                                  double globalCap,
                                  double globalFloor,
                                  const std::vector<DiscountFactor>& discounts,
-                                 bool redemptionOnly,
-                                 bool useAntitheticVariance)
-            : PathPricer_old<Path>(1.0, useAntitheticVariance), type_(type),
-              underlying_(underlying), moneyness_(moneyness),
+                                 bool redemptionOnly)
+            : type_(type), underlying_(underlying), moneyness_(moneyness),
               accruedCoupon_(accruedCoupon), lastFixing_(lastFixing),
               localCap_(localCap), localFloor_(localFloor),
               globalCap_(globalCap), globalFloor_(globalFloor), 
@@ -108,46 +106,10 @@ namespace QuantLib {
                     result = QL_MIN(result, globalCap_);
                 }
 
-                if (useAntitheticVariance_) {
-                    // start the antothetic simulation
-                    lastFixing = lastFixing_;
-                    underlying = underlying_;
-                    if (redemptionOnly_)
-                        result2 = accruedCoupon_;
-                    else
-                        result2 = 0.0;
-
-                    for (i=0; i<n; i++) {
-                        underlying *= QL_EXP(path[i]);
-                        // incorporate payoff
-                        if (lastFixing != Null<double>()) {
-                            payoff =
-                                PlainVanillaPayoff(type_,
-                                                   moneyness_*lastFixing)
-                                (underlying) / lastFixing;
-                            payoff = QL_MAX(payoff, localFloor_);
-                            payoff = QL_MIN(payoff, localCap_);
-                            if (redemptionOnly_)
-                                result2 += payoff;
-                            else
-                                result2 += payoff * discounts_[i];
-                        }
-                        // new fixing
-                        lastFixing = underlying;
-                    }
-                    if (redemptionOnly_) {
-                        result2 = QL_MAX(result2, globalFloor_);
-                        result2 = QL_MIN(result2, globalCap_);
-                        return discounts_.back()*(result+result2)/2.0;
-                    } else {
-                        return (result+result2)/2.0;
-                    }
+                if (redemptionOnly_) {
+                    return discounts_.back()*result;
                 } else {
-                    if (redemptionOnly_) {
-                        return discounts_.back()*result;
-                    } else {
-                        return result;
-                    }
+                    return result;
                 }
             }
 
@@ -172,7 +134,7 @@ namespace QuantLib {
                                      double localCap, double localFloor, 
                                      double globalCap, double globalFloor, 
                                      bool redemptionOnly, 
-                                     bool antitheticVariance, long seed) {
+                                     long seed) {
 
         Size dimension = times.size();
         QL_REQUIRE(dividendYield.size()==dimension,
@@ -204,13 +166,12 @@ namespace QuantLib {
                                           seed));
 
         // initialize the pricer on the single Path
-        boost::shared_ptr<PathPricer_old<Path> > cliquetPathPricer(
-            new CliquetOptionPathPricer_old(type, underlying, moneyness, 
-                                            accruedCoupon, lastFixing,
-                                            localCap, localFloor, 
-                                            globalCap, globalFloor,
-                                            discounts, redemptionOnly, 
-                                            antitheticVariance));
+        boost::shared_ptr<PathPricer<Path> > cliquetPathPricer(
+            new CliquetOptionPathPricer(type, underlying, moneyness, 
+                                        accruedCoupon, lastFixing,
+                                        localCap, localFloor, 
+                                        globalCap, globalFloor,
+                                        discounts, redemptionOnly));
 
         // initialize the one-factor Monte Carlo
         mcModel_ = 

@@ -95,10 +95,10 @@ private:
     double vega_;
 };
 
-// The key for the MonteCarlo simulation is to have a PathPricer_old that
+// The key for the MonteCarlo simulation is to have a PathPricer that
 // implements a value(const Path& path) method.
 // This method prices the portfolio for each Path of the random variable
-class ReplicationPathPricer : public PathPricer_old<Path>
+class ReplicationPathPricer : public PathPricer<Path>
 {
   public:
     // real constructor
@@ -108,7 +108,7 @@ class ReplicationPathPricer : public PathPricer_old<Path>
                           Rate r,
                           Time maturity,
                           double sigma)
-    : PathPricer_old<Path>(1.0, false), type_(type), underlying_(underlying),
+    : type_(type), underlying_(underlying),
       strike_(strike), r_(r), maturity_(maturity), sigma_(sigma) {
         QL_REQUIRE(strike_ > 0.0,
             "ReplicationPathPricer: strike must be positive");
@@ -292,7 +292,7 @@ void ReplicationError::compute(int nTimeSteps, int nSamples)
     // The replication strategy's Profit&Loss is computed for each path
     // of the stock. The path pricer knows how to price a path using its
     // value() method
-    boost::shared_ptr<PathPricer_old<Path> > myPathPricer(new
+    boost::shared_ptr<PathPricer<Path> > myPathPricer(new
         ReplicationPathPricer(payoff_.optionType(), s0_,
             payoff_.strike(), r_, maturity_, sigma_));
 

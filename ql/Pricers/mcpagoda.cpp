@@ -17,61 +17,42 @@
 
 #include <ql/handle.hpp>
 #include <ql/Pricers/mcpagoda.hpp>
+#include <ql/TermStructures/flatforward.hpp>
 
 namespace QuantLib {
 
     namespace {
 
-        class PagodaPathPricer_old : public PathPricer_old<MultiPath> {
+        class PagodaPathPricer : public PathPricer<MultiPath> {
           public:
-            PagodaPathPricer_old(const std::vector<double>& underlying,
-                                 double roof,
-                                 DiscountFactor discount,
-                                 bool useAntitheticVariance)
-            : PathPricer_old<MultiPath>(discount, useAntitheticVariance),
-              underlying_(underlying), roof_(roof) {}
+            PagodaPathPricer(const std::vector<double>& underlying,
+                             double roof, double fraction,
+                             const RelinkableHandle<TermStructure>& discountTS)
+            : PathPricer<MultiPath>(discountTS),
+              underlying_(underlying), roof_(roof), fraction_(fraction) {}
 
             double operator()(const MultiPath& multiPath) const {
                 Size numAssets = multiPath.assetNumber();
                 Size numSteps = multiPath.pathSize();
                 QL_REQUIRE(underlying_.size() == numAssets,
-                           "PagodaPathPricer_old: the multi-path must contain "
+                           "PagodaPathPricer: the multi-path must contain "
                            + IntegerFormatter::toString(underlying_.size()) +
                            " assets");
 
                 Size i,j;
-                if (useAntitheticVariance_) {
-                    double averageGain = 0.0, averageGain2 = 0.0;
-                    for(i = 0; i < numSteps; i++)
-                        for(j = 0; j < numAssets; j++) {
-                            averageGain += underlying_[j] *
-                                (QL_EXP(multiPath[j].drift()[i]+
-                                        multiPath[j].diffusion()[i])
-                                 -1.0);
-                            averageGain2 += underlying_[j] *
-                                (QL_EXP(multiPath[j].drift()[i]-
-                                        multiPath[j].diffusion()[i])
-                                 -1.0);
-                        }
-                    return discount_ * 0.5 *
-                        (QL_MAX(0.0, QL_MIN(roof_, averageGain))+
-                         QL_MAX(0.0, QL_MIN(roof_, averageGain2)));
-                } else {
-                    double averageGain = 0.0;
-                    for(i = 0; i < numSteps; i++)
-                        for(j = 0; j < numAssets; j++) {
-                            averageGain += underlying_[j] *
-                                (QL_EXP(multiPath[j].drift()[i]+
-                                        multiPath[j].diffusion()[i])
-                                 -1.0);
-                        }
-                    return discount_ * QL_MAX(0.0, QL_MIN(roof_, averageGain));
-                }
+                double averageGain = 0.0;
+                for (i = 0; i < numSteps; i++)
+                    for (j = 0; j < numAssets; j++) {
+                        averageGain += underlying_[j] *
+                            (QL_EXP(multiPath[j][i]) -1.0);
+                    }
+                return discountTS_->discount(multiPath[0].timeGrid().back())
+                    * fraction_ * QL_MAX(0.0, QL_MIN(roof_, averageGain));
             }
 
           private:
             std::vector<double> underlying_;
-            double roof_;
+            double roof_, fraction_;
         };
 
     }
@@ -80,7 +61,7 @@ namespace QuantLib {
                        double roof, const Array& dividendYield, 
                        const Matrix& covariance,
                        Rate riskFreeRate, const std::vector<Time>& times,
-                       bool antitheticVariance, long seed) {
+                       long seed) {
 
         QL_REQUIRE(covariance.rows() == covariance.columns(),
                    "McPagoda: covariance matrix not square");
@@ -106,13 +87,15 @@ namespace QuantLib {
                 mu, covariance,
                 TimeGrid(times.begin(), times.end()),
                 seed));
-        double residualTime = times[times.size()-1];
+
+        RelinkableHandle<TermStructure> discount(
+                  Handle<TermStructure>(
+                      new FlatForward(Date::todaysDate(), Date::todaysDate(), 
+                                      riskFreeRate)));
 
         // initialize the pricer on the path pricer
-        boost::shared_ptr<PathPricer_old<MultiPath> > pathPricer(
-            new PagodaPathPricer_old(portfolio, roof,
-                    fraction * QL_EXP(-riskFreeRate*residualTime),
-                    antitheticVariance));
+        boost::shared_ptr<PathPricer<MultiPath> > pathPricer(
+            new PagodaPathPricer(portfolio, roof, fraction, discount));
 
          // initialize the multi-factor Monte Carlo
         mcModel_ = boost::shared_ptr<MonteCarloModel<MultiAsset_old<
