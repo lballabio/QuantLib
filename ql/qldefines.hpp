@@ -140,34 +140,30 @@
 */
 #if defined HAVE_LIMITS
     #include <limits>
-    #define QL_MIN_INT      std::numeric_limits<int>::min()
-    #define QL_MAX_INT      std::numeric_limits<int>::max()
-    #define QL_MIN_DOUBLE  -std::numeric_limits<double>::max()
-    #define QL_MAX_DOUBLE   std::numeric_limits<double>::max()
-    #define QL_EPSILON      std::numeric_limits<double>::epsilon()
-    #define QL_MIN_POSITIVE_DOUBLE  std::numeric_limits<double>::min()
+    #define QL_MIN_INT      (int)(std::numeric_limits<int>::min)()
+    #define QL_MAX_INT      (int)(std::numeric_limits<int>::max)()
+    #define QL_MIN_DOUBLE  -(double)(std::numeric_limits<double>::max)()
+    #define QL_MAX_DOUBLE   (double)(std::numeric_limits<double>::max)()
+    #define QL_EPSILON      (double)(std::numeric_limits<double>::epsilon)()
+    #define QL_MIN_POSITIVE_DOUBLE \
+        (double)(std::numeric_limits<double>::min)()
 #elif defined HAVE_FLOAT_H
+    #include <float.h>
     #if defined HAVE_CLIMITS
         #include <climits>
-        #include <float.h>
-        #define QL_MIN_INT              INT_MIN
-        #define QL_MAX_INT              INT_MAX
-        #define QL_MIN_DOUBLE          -DBL_MAX
-        #define QL_MAX_DOUBLE           DBL_MAX
-        #define QL_EPSILON              DBL_EPSILON
-        #define QL_MIN_POSITIVE_DOUBLE  DBL_EPSILON
     #elif defined HAVE_LIMITS_H
         #include <limits.h>
-        #include <float.h>
-        #define QL_MIN_INT              INT_MIN
-        #define QL_MAX_INT              INT_MAX
-        #define QL_MIN_DOUBLE          -DBL_MAX
-        #define QL_MAX_DOUBLE           DBL_MAX
-        #define QL_EPSILON              DBL_EPSILON
-        #define QL_MIN_POSITIVE_DOUBLE  DBL_EPSILON
+    #else
+        #error Neither <limits>, <climits> nor <limits.h> found
     #endif
+    #define QL_MIN_INT              INT_MIN
+    #define QL_MAX_INT              INT_MAX
+    #define QL_MIN_DOUBLE          -DBL_MAX
+    #define QL_MAX_DOUBLE           DBL_MAX
+    #define QL_EPSILON              DBL_EPSILON
+    #define QL_MIN_POSITIVE_DOUBLE  DBL_EPSILON
 #else
-    #error Neither <limits>, <climits> nor <limits.h> found
+    #error Neither <limits> nor <float.h> found
 #endif
 /*! @} */
 
