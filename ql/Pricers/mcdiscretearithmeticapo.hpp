@@ -36,9 +36,8 @@
 
 #include <ql/option.hpp>
 #include <ql/types.hpp>
-#include <ql/MonteCarlo/mctypedefs.hpp>
 #include <ql/Pricers/mcpricer.hpp>
-#include <vector>
+#include <ql/MonteCarlo/mctypedefs.hpp>
 
 namespace QuantLib {
 

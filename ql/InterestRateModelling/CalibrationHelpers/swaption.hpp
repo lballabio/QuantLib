@@ -26,7 +26,7 @@
     \brief Swaption calibration helper
 
     \fullpath
-    ql/Instruments/%swaption.hpp
+    ql/InterestRateModelling/CalibrationHelpers/%swaption.hpp
 */
 
 // $Id$
@@ -34,8 +34,6 @@
 #ifndef quantlib_interest_rate_modelling_calibration_helpers_cap_h
 #define quantlib_interest_rate_modelling_calibration_helpers_cap_h
 
-#include <vector>
-#include "ql/instrument.hpp"
 #include "ql/Instruments/europeanswaption.hpp"
 #include "ql/InterestRateModelling/onefactormodel.hpp"
 
@@ -47,7 +45,7 @@ namespace QuantLib {
 
             class Swaption : public CalibrationHelper {
               public:
-                Swaption( 
+                Swaption(
                     const Period& tenorPeriod,
                     const Period& swapPeriod,
                     const Handle<Indexes::Xibor>& index,

@@ -34,16 +34,12 @@
 #ifndef quantlib_interest_rate_modelling_model_h
 #define quantlib_interest_rate_modelling_model_h
 
-#include <vector>
 #include "ql/array.hpp"
 #include "ql/minimizer.hpp"
 #include "ql/option.hpp"
 #include "ql/termstructure.hpp"
-#include "ql/types.hpp"
 
 #include <iostream>
-using std::cout;
-using std::endl;
 
 namespace QuantLib {
 
@@ -53,14 +49,14 @@ namespace QuantLib {
 
         class Model {
           public:
-            Model(unsigned nParams, 
-                const RelinkableHandle<TermStructure>& termStructure) 
+            Model(unsigned nParams,
+                const RelinkableHandle<TermStructure>& termStructure)
             : nParams_(nParams), termStructure_(termStructure) {}
             virtual ~Model() {}
             virtual void setParameters(const Array& params) = 0;
 
-            virtual double discountBond(Time now, Time maturity, Rate r) const 
-            { 
+            virtual double discountBond(Time now, Time maturity, Rate r) const
+            {
                 return Null<double>();
             }
 
@@ -70,11 +66,11 @@ namespace QuantLib {
             }
 
             void calibrate(const Handle<Minimizer>& minimizer,
-                std::vector<Handle<CalibrationHelper> > instruments, 
+                std::vector<Handle<CalibrationHelper> > instruments,
                 std::vector<double> volatilities);
 
-            const RelinkableHandle<TermStructure>& termStructure() const { 
-                return termStructure_; 
+            const RelinkableHandle<TermStructure>& termStructure() const {
+                return termStructure_;
             }
 
           protected:

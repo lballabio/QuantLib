@@ -35,19 +35,17 @@
 #define quantlib_pricers_swaption_condition_h
 
 #include "ql/FiniteDifferences/fdtypedefs.hpp"
-#include "ql/Instruments/simpleswap.hpp"
-#include "ql/InterestRateModelling/model.hpp"
 #include "ql/InterestRateModelling/swapfuturevalue.hpp"
 
 namespace QuantLib {
 
     namespace Pricers {
 
-        class SwaptionCondition 
+        class SwaptionCondition
         : public FiniteDifferences::StandardStepCondition {
           public:
             SwaptionCondition(const Handle<InterestRateModelling::Model>& model,
-                const Handle<Instruments::SimpleSwap>& swap, 
+                const Handle<Instruments::SimpleSwap>& swap,
                 const std::vector<double>& rates);
             void applyTo(Array& a, Time t) const;
           private:
@@ -58,17 +56,17 @@ namespace QuantLib {
 
 
         // inline definitions
-        
+
         inline SwaptionCondition::SwaptionCondition(
-            const Handle<InterestRateModelling::Model>& model, 
-            const Handle<Instruments::SimpleSwap>& swap, 
+            const Handle<InterestRateModelling::Model>& model,
+            const Handle<Instruments::SimpleSwap>& swap,
             const std::vector<double>& rates)
         : model_(model), swap_(swap), rates_(rates) {}
 
         inline void SwaptionCondition::applyTo(Array& a, Time t) const {
             for (unsigned int i = 0; i < a.size(); i++)
-                a[i] = QL_MAX(a[i], 
-                    QL_MAX(0.0, 
+                a[i] = QL_MAX(a[i],
+                    QL_MAX(0.0,
                     InterestRateModelling::swapFutureValue(swap_, model_, rates_[i], t)));
         }
 

@@ -32,8 +32,6 @@
 #ifndef quantlib_optimization_line_search_h_
 #define quantlib_optimization_line_search_h_
 
-#include <iostream>
-
 #include "ql/Optimization/optimizer.hpp"
 
 /*!
@@ -47,7 +45,7 @@ namespace QuantLib {
         class LineSearch {
           public:
             typedef double value_type;
-            
+
             //! Default constructor
             LineSearch (double eps = 1e-8):too_small_ (eps), too_big_ (1. / eps),
             maxLoop_ (100), qt_ (0.), qpt_ (0.), succeed_ (true) {}
@@ -89,7 +87,7 @@ namespace QuantLib {
             double qt_, qpt_;
             //! flag to know if linesearch succeed
             bool succeed_;
- 
+
         };
 
     }

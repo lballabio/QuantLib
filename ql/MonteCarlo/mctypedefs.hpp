@@ -35,7 +35,6 @@
 #define quantlib_mc_typedefs_h
 
 #include <ql/RandomNumbers/rngtypedefs.hpp>
-#include <ql/MonteCarlo/path.hpp>
 #include <ql/MonteCarlo/pathgenerator.hpp>
 #include <ql/MonteCarlo/multipathgenerator.hpp>
 #include <ql/MonteCarlo/pathpricer.hpp>

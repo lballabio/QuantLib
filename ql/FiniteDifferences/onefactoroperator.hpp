@@ -34,7 +34,6 @@
 #ifndef quantlib_one_factor_operator_h
 #define quantlib_one_factor_operator_h
 
-#include "ql/handle.hpp"
 #include "ql/stochasticprocess.hpp"
 #include "ql/FiniteDifferences/tridiagonaloperator.hpp"
 
@@ -49,10 +48,10 @@ namespace QuantLib {
             OneFactorOperator(const Array& grid,
                 const Handle<StochasticProcess>& process);
             virtual ~OneFactorOperator() {}
-            
+
             class SpecificTimeSetter : public TridiagonalOperator::TimeSetter{
               public:
-                SpecificTimeSetter(double x0, double dx, 
+                SpecificTimeSetter(double x0, double dx,
                     const Handle<StochasticProcess>& process);
                 virtual ~SpecificTimeSetter() {}
                 virtual void setTime(Time t, TridiagonalOperator& L) const;

@@ -32,10 +32,8 @@
 #ifndef quantlib_optimization_leastsquare_h__
 #define quantlib_optimization_leastsquare_h__
 
-#include "ql/array.hpp"
 #include "ql/Math/matrix.hpp"
 #include "ql/Optimization/conjugategradient.hpp"
-#include "ql/Optimization/optimizer.hpp"
 
 /*!
   Base class for least square problem
@@ -58,12 +56,12 @@ namespace QuantLib {
         };
 
         /*!
-           Design a least square function as a cost function using 
+           Design a least square function as a cost function using
            the interface provided by LeastSquareProblem class.
-           Array vector class requires function DotProduct() that computes dot product 
+           Array vector class requires function DotProduct() that computes dot product
            and - operator
            M matrix class requires function transpose() that computes transpose
-           and * operator with vector class  
+           and * operator with vector class
          */
         class LeastSquareFunction:public CostFunction {
           public:
@@ -74,8 +72,8 @@ namespace QuantLib {
               LeastSquareProblem &lsp_;
           public:
             //! Default constructor
-            
-            
+
+
             LeastSquareFunction (LeastSquareProblem& lsp) : lsp_(lsp) {}
             //! Destructor
             virtual ~LeastSquareFunction () {}
@@ -100,7 +98,7 @@ namespace QuantLib {
             Array target (lsp_.size ()), fct2fit (lsp_.size ());
             // compute its values
             lsp_.targetAndValue (x, target, fct2fit);
-            // do the difference 
+            // do the difference
             Array diff = target - fct2fit;
             // and compute the scalar product (square of the norm)
             return DotProduct (diff, diff);
@@ -114,7 +112,7 @@ namespace QuantLib {
             Math::Matrix grad_fct2fit (lsp_.size (), x.size ());
             // compute its values
               lsp_.targetValueAndfirstDerivative (x, grad_fct2fit, target, fct2fit);
-            // do the difference 
+            // do the difference
             Array diff = target - fct2fit;
             // compute derivative
             grad_f = -2. * (Math::transpose(grad_fct2fit) * diff);
@@ -130,7 +128,7 @@ namespace QuantLib {
             // compute its values
             lsp_.targetValueAndfirstDerivative (x, grad_fct2fit, target,
                             fct2fit);
-            // do the difference 
+            // do the difference
             Array diff = target - fct2fit;
             // compute derivative
             grad_f = -2. * (Math::transpose (grad_fct2fit) * diff);
@@ -139,18 +137,18 @@ namespace QuantLib {
         }
 
         /*!
-           Default least square method using a given 
+           Default least square method using a given
            optimization algorithm (default is conjugate gradient).
 
-           min { r(x) : x in R^n } 
+           min { r(x) : x in R^n }
 
            where r(x) = ||f(x)||^2 the euclidian norm of f(x)
            for some vector-valued function f from R^n to R^m
            f = (f1, ..., fm) with fi(x) = bi - phi(x,ti)
-           where bi is the vector of target data and phi 
+           where bi is the vector of target data and phi
            is a scalar function.
 
-           Assuming the differentiability of f, the gradient of r 
+           Assuming the differentiability of f, the gradient of r
            is define by
            grad r(x) = f'(x)^t.f(x)
 
@@ -243,14 +241,14 @@ namespace QuantLib {
 
 
         inline NonLinearLeastSquare::NonLinearLeastSquare (double accuracy,
-          int maxiter):					      
+          int maxiter):
         exitFlag_(-1), accuracy_ (accuracy), maxIterations_ (maxiter),
             om_ (Handle<OptimizationMethod>(new ConjugateGradient()))
         {}
 
         inline NonLinearLeastSquare::NonLinearLeastSquare (double accuracy,
             int maxiter, Handle<OptimizationMethod> om)
-        : exitFlag_(-1), accuracy_ (accuracy), maxIterations_ (maxiter), 
+        : exitFlag_(-1), accuracy_ (accuracy), maxIterations_ (maxiter),
           om_ (om) {}
 
     }

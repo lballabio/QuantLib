@@ -37,7 +37,6 @@
 #include "ql/instrument.hpp"
 #include "ql/Instruments/simpleswap.hpp"
 #include "ql/InterestRateModelling/model.hpp"
-#include <vector>
 
 namespace QuantLib {
 
@@ -72,7 +71,7 @@ namespace QuantLib {
           public:
             EuropeanCap(const Handle<SimpleSwap>& swap,
                 std::vector<Rate> exerciseRates,
-                RelinkableHandle<TermStructure> termStructure) 
+                RelinkableHandle<TermStructure> termStructure)
             : EuropeanCapFloor( Cap, swap, exerciseRates, termStructure) {}
         };
 
@@ -80,7 +79,7 @@ namespace QuantLib {
           public:
             EuropeanFloor(const Handle<SimpleSwap>& swap,
                 std::vector<Rate> exerciseRates,
-                RelinkableHandle<TermStructure> termStructure) 
+                RelinkableHandle<TermStructure> termStructure)
             : EuropeanCapFloor( Floor, swap, exerciseRates, termStructure) {}
         };
 

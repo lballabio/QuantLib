@@ -32,16 +32,11 @@
 #ifndef quantlib_optimization_optimizer_h
 #define quantlib_optimization_optimizer_h
 
-#include <iostream>
-#include <iomanip>
-
 #include "ql/array.hpp"
 #include "ql/handle.hpp"
 
 #include "ql/Optimization/costfunction.hpp"
 #include "ql/Optimization/criteria.hpp"
-
-using std::setw;
 
 namespace QuantLib {
 
@@ -49,7 +44,7 @@ namespace QuantLib {
 
         class OptimizationMethod;
         class OptimizationProblem;
-        /*! 
+        /*!
           Optimization Method abstract class for unconstrained optimization pb
         */
         class OptimizationMethod {
@@ -140,7 +135,7 @@ namespace QuantLib {
                 <<
                 "| iter | function value   |     gradient norm     |  line-search step     |  fen  |  gen  |"
                 << std::
-                
+
                 endl <<
                 "|------|------------------|-----------------------|-----------------------|-------|-------|"
                 << std::endl;
@@ -169,7 +164,7 @@ namespace QuantLib {
             }
         };
 
-        /*! 
+        /*!
           Unconstrained optimization pb
         */
         class OptimizationProblem {

@@ -2,6 +2,8 @@
 #include "ql/Math/matrix.hpp"
 #include "ql/InterestRateModelling/model.hpp"
 #include "ql/Optimization/leastsquare.hpp"
+using std::cout;
+using std::endl;
 
 namespace QuantLib {
 

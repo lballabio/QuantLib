@@ -34,7 +34,6 @@
 #ifndef quantlib_instruments_european_swaption_h
 #define quantlib_instruments_european_swaption_h
 
-#include <vector>
 #include "ql/instrument.hpp"
 #include "ql/Instruments/simpleswap.hpp"
 #include "ql/InterestRateModelling/model.hpp"
@@ -46,7 +45,7 @@ namespace QuantLib {
 
         class EuropeanSwaption : public Instrument{
           public:
-            EuropeanSwaption( 
+            EuropeanSwaption(
                 const Handle<SimpleSwap>& swap,
                 Date maturity,
                 RelinkableHandle<TermStructure> termStructure);

@@ -39,7 +39,6 @@
 #include "ql/InterestRateModelling/onefactormodel.hpp"
 #include "ql/Pricers/swaptioncondition.hpp"
 #include "ql/FiniteDifferences/onefactoroperator.hpp"
-#include "ql/Instruments/simpleswap.hpp"
 
 namespace QuantLib {
 
@@ -48,11 +47,11 @@ namespace QuantLib {
         //! Discount Bond calculated using finite differences
         class FDEuropeanSwaption {
           public:
-            FDEuropeanSwaption( 
+            FDEuropeanSwaption(
               const Handle<Instruments::SimpleSwap>& swap,
               Time maturity,
               const Handle<InterestRateModelling::Model>& model);
-            double value(Rate rate, 
+            double value(Rate rate,
               unsigned int timeSteps, unsigned int gridPoints);
           private:
             void fixInitialCondition(Array& prices);

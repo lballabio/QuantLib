@@ -34,7 +34,6 @@
 #ifndef quantlib_one_factor_models_hull_and_white_h
 #define quantlib_one_factor_models_hull_and_white_h
 
-#include "ql/InterestRateModelling/onefactormodel.hpp"
 #include "ql/InterestRateModelling/OneFactorModels/hoandlee.hpp"
 
 namespace QuantLib {
@@ -45,15 +44,15 @@ namespace QuantLib {
           public:
             HullAndWhite(const RelinkableHandle<TermStructure>& termStructure);
             virtual ~HullAndWhite() {}
-            
+
             virtual void setParameters(const Array& params) {
-                QL_REQUIRE(params.size()==2, 
+                QL_REQUIRE(params.size()==2,
                     "Incorrect number of parameters for HW calibration");
                 alpha_ = params[0];
                 sigma_ = params[1];
             }
             virtual double theta(Time t) const;
-            
+
             virtual double stateVariable(Rate r) const {
                 return r;
             }
@@ -75,7 +74,7 @@ namespace QuantLib {
             double lnA(Time T, Time s) const;
             class Process;
             friend class Process;
-                
+
             double alpha_, sigma_;
             std::vector<double> theta_;
             double dt_;

@@ -34,7 +34,6 @@
 #ifndef quantlib_minimizer_h
 #define quantlib_minimizer_h
 
-#include <vector>
 #include "ql/constraint.hpp"
 #include "ql/handle.hpp"
 
@@ -74,7 +73,7 @@ namespace QuantLib {
       public:
         Minimizer() {}
         virtual Array solve(
-          const Handle<CostFunction>& f, 
+          const Handle<CostFunction>& f,
           const Handle<Constraint>& constraint) = 0;
       protected:
       private:

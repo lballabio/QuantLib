@@ -35,7 +35,6 @@
 #include "ql/Pricers/fdeuropeanswaption.hpp"
 #include "ql/FiniteDifferences/boundarycondition.hpp"
 #include "ql/InterestRateModelling/grid.hpp"
-#include "ql/InterestRateModelling/onefactormodel.hpp"
 #include "ql/InterestRateModelling/swapfuturevalue.hpp"
 
 namespace QuantLib {
@@ -50,18 +49,18 @@ namespace QuantLib {
         FDEuropeanSwaption::FDEuropeanSwaption(
             const Handle<SimpleSwap>& swap,
             Time maturity,
-            const Handle<Model>& model) 
+            const Handle<Model>& model)
         : swap_(swap), maturity_(maturity), model_(model) {}
 
-        double FDEuropeanSwaption::value(Rate rate, 
+        double FDEuropeanSwaption::value(Rate rate,
           unsigned int timeSteps, unsigned int gridPoints) {
 
             Handle<OneFactorModel> model = model_;
-            QL_REQUIRE(!model.isNull(), 
+            QL_REQUIRE(!model.isNull(),
                 "This pricer requires a single-factor model!");
             double dt = maturity_/timeSteps;
             double initialCenter = model->stateVariable(rate);
-            Grid grid(gridPoints, initialCenter, initialCenter, 
+            Grid grid(gridPoints, initialCenter, initialCenter,
                 maturity_, dt, model);
 
             unsigned int size = grid.size();
@@ -70,20 +69,20 @@ namespace QuantLib {
                 rateGrid[i] = model->getRateFrom(grid[i]);
 
             OneFactorOperator op(grid, model->process());
-            op.setLowerBC( BoundaryCondition(BoundaryCondition::Neumann, 
+            op.setLowerBC( BoundaryCondition(BoundaryCondition::Neumann,
                 grid[1] - grid[0]));
-            op.setUpperBC( BoundaryCondition(BoundaryCondition::Neumann, 
+            op.setUpperBC( BoundaryCondition(BoundaryCondition::Neumann,
                 grid[size-1] - grid[size-2]));
             FiniteDifferences::StandardFiniteDifferenceModel
                                 finiteDifferenceModel(op);
 
             Array prices(size);
             for(unsigned j = 0; j < size; j++) {
-                prices[j] = QL_MAX(swapFutureValue(swap_, model_, 
+                prices[j] = QL_MAX(swapFutureValue(swap_, model_,
                     rateGrid[j], maturity_), 0.0);
             }
 
-            finiteDifferenceModel.rollback(prices, maturity_, 0.0, 
+            finiteDifferenceModel.rollback(prices, maturity_, 0.0,
                 timeSteps);
             return prices[grid.index()];
         }

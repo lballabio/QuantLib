@@ -33,7 +33,6 @@
 
 #include <ql/Pricers/mcdiscretearithmeticapo.hpp>
 #include <ql/Pricers/discretegeometricapo.hpp>
-#include <ql/MonteCarlo/mctypedefs.hpp>
 #include <ql/MonteCarlo/arithmeticapopathpricer.hpp>
 #include <ql/MonteCarlo/geometricapopathpricer.hpp>
 

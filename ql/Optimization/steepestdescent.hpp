@@ -32,16 +32,8 @@
 #ifndef quantlib_optimization_steepest_descent_h
 #define quantlib_optimization_steepest_descent_h
 
-#include <iostream>
-#include <iomanip>
 #include <cmath>
 
-#include "ql/array.hpp"
-#include "ql/handle.hpp"
-
-#include "ql/Optimization/optimizer.hpp"
-#include "ql/Optimization/linesearch.hpp"
-#include "ql/Optimization/criteria.hpp"
 #include "ql/Optimization/armijo.hpp"
 
 namespace QuantLib {
@@ -61,22 +53,22 @@ namespace QuantLib {
           public:
             //! default default constructor (msvc bug)
             SteepestDescent()
-            : OptimizationMethod (),
+            : OptimizationMethod(),
               lineSearch_(Handle<LineSearch>(new ArmijoLineSearch ())) {}
 
             //! default constructor
             SteepestDescent(Handle<LineSearch>& lineSearch)	// Reference to a line search method
-            : OptimizationMethod(), lineSearch_ (lineSearch) {}
+            : OptimizationMethod(), lineSearch_(lineSearch) {}
             //! destructor
-            virtual ~SteepestDescent () {}
+            virtual ~SteepestDescent() {}
 
             //! minimize the optimization problem P
-            virtual void Minimize (OptimizationProblem &P);
+            virtual void Minimize(OptimizationProblem& P);
         };
 
     }
 
 }
 
- 
+
 #endif

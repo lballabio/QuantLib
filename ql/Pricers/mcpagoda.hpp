@@ -33,10 +33,10 @@
 #ifndef quantlib_pagoda_pricer_h
 #define quantlib_pagoda_pricer_h
 
-#include <ql/MonteCarlo/mctypedefs.hpp>
 #include <ql/Pricers/mcpricer.hpp>
 #include <ql/Math/matrix.hpp>
-#include <vector>
+#include <ql/Math/statistics.hpp>
+#include <ql/MonteCarlo/mctypedefs.hpp>
 
 namespace QuantLib {
 

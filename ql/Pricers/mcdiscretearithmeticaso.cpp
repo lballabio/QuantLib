@@ -33,7 +33,6 @@
 
 #include <ql/Pricers/mcdiscretearithmeticaso.hpp>
 #include <ql/Pricers/discretegeometricaso.hpp>
-#include <ql/MonteCarlo/mctypedefs.hpp>
 #include <ql/MonteCarlo/arithmeticasopathpricer.hpp>
 #include <ql/MonteCarlo/geometricasopathpricer.hpp>
 
@@ -48,7 +47,7 @@ namespace QuantLib {
         using MonteCarlo::MonteCarloModel;
         using MonteCarlo::ArithmeticASOPathPricer;
         using MonteCarlo::GeometricASOPathPricer;
-        
+
         McDiscreteArithmeticASO::McDiscreteArithmeticASO(Option::Type type,
           double underlying,
           Spread dividendYield, Rate riskFreeRate,

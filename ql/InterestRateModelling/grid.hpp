@@ -36,7 +36,6 @@
 #define quantlib_grid_h
 
 #include <cmath>
-#include "ql/array.hpp"
 #include "ql/InterestRateModelling/onefactormodel.hpp"
 
 //! This is a safety check to be sure we have enough grid points.
@@ -50,39 +49,39 @@ namespace QuantLib {
 
         class Grid : public Array {
           public:
-            Grid(unsigned int gridPoints, 
-                 double initialCenter, 
+            Grid(unsigned int gridPoints,
+                 double initialCenter,
                  double strikeCenter,
-                 Time residualTime, 
-                 Time timeDelay, 
-                 const Handle<OneFactorModel>& model) 
+                 Time residualTime,
+                 Time timeDelay,
+                 const Handle<OneFactorModel>& model)
             : Array(safeGridPoints(gridPoints, residualTime)) {
                 initialize(gridPoints, initialCenter, strikeCenter,
                     residualTime, timeDelay, model);
             }
-            Grid(unsigned int gridPoints, 
-                 double initialCenter, 
+            Grid(unsigned int gridPoints,
+                 double initialCenter,
                  double strikeCenter,
-                 Time residualTime, 
-                 Time timeDelay, 
-                 OneFactorModel* model) 
+                 Time residualTime,
+                 Time timeDelay,
+                 OneFactorModel* model)
             : Array(safeGridPoints(gridPoints, residualTime)) {
                 initialize(gridPoints, initialCenter, strikeCenter,
-                    residualTime, timeDelay, 
+                    residualTime, timeDelay,
                     Handle<OneFactorModel>(model,false));
             }
             double xMin() {return (*this)[0];}
             double xMax() {return (*this)[size()-1];}
             double dx() { return dx_;}
             unsigned int index() const {return index_;}
-            unsigned int safeGridPoints(unsigned int gridPoints, 
+            unsigned int safeGridPoints(unsigned int gridPoints,
               Time residualTime) const;
           private:
-            void initialize(unsigned int gridPoints, 
-                 double initialCenter, 
+            void initialize(unsigned int gridPoints,
+                 double initialCenter,
                  double strikeCenter,
-                 Time residualTime, 
-                 Time timeDelay, 
+                 Time residualTime,
+                 Time timeDelay,
                  const Handle<OneFactorModel>& model);
             double dx_;
             unsigned int index_;
@@ -90,23 +89,23 @@ namespace QuantLib {
         };
 
 
-        inline void Grid::initialize(unsigned int gridPoints, 
+        inline void Grid::initialize(unsigned int gridPoints,
           double initialCenter, double strikeCenter,
-          Time residualTime, Time timeDelay, 
+          Time residualTime, Time timeDelay,
           const Handle<OneFactorModel>& model) {
             double maxCenter = QL_MAX(initialCenter, strikeCenter);
             double minCenter = QL_MIN(initialCenter, strikeCenter);
             double yMax = model->stateVariable(0.5);
             double volatility = QL_MAX(
-              model->process()->diffusion(initialCenter, 0.0), 
+              model->process()->diffusion(initialCenter, 0.0),
               model->process()->diffusion(yMax, 0));
             //double volSqrtTime = volatility*QL_SQRT(timeDelay);
             //double minMaxFactor = 4.0*volSqrtTime + 0.08;
             double volSqrtTime = volatility*QL_SQRT(residualTime);
-            double minMaxFactor = volSqrtTime + 
+            double minMaxFactor = volSqrtTime +
                 model->stateVariable(0.08);
             double xMin = minCenter - minMaxFactor;
-            double xMax = maxCenter + minMaxFactor; 
+            double xMax = maxCenter + minMaxFactor;
             if (xMin<model->minStateVariable())
                 xMin = model->minStateVariable();
             if (xMax>model->maxStateVariable())

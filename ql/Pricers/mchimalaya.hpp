@@ -35,7 +35,6 @@
 
 #include <ql/Pricers/mcpricer.hpp>
 #include <ql/Math/matrix.hpp>
-#include <vector>
 
 namespace QuantLib {
 

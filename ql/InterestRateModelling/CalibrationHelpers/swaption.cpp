@@ -26,7 +26,7 @@
     \brief European cap and floor class
 
     \fullpath
-    ql/Instruments/%capfloor.cpp
+    ql/InterestRateModelling/CalibrationHelpers/%swaption.cpp
 */
 
 // $Id$
@@ -45,7 +45,7 @@ namespace QuantLib {
             using Instruments::EuropeanSwaption;
             using Instruments::SimpleSwap;
 
-            Swaption::Swaption( 
+            Swaption::Swaption(
                 const Period& tenorPeriod,
                 const Period& swapPeriod,
                 const Handle<Indexes::Xibor>& index,
@@ -66,7 +66,7 @@ namespace QuantLib {
                     tenorPeriod.length(),
                     tenorPeriod.units());
                 swap_ = Handle<SimpleSwap>(new SimpleSwap(
-                  false, 
+                  false,
                   startDate,
                   swapPeriod.length(),
                   swapPeriod.units(),
@@ -87,7 +87,7 @@ namespace QuantLib {
                   startDate,
                   termStructure));
 
-                std::vector<Handle<CashFlow> > floatingLeg = 
+                std::vector<Handle<CashFlow> > floatingLeg =
                     swap_->floatingLeg();
                 std::vector<Handle<CashFlow> >::const_iterator begin, end;
                 begin = floatingLeg.begin();
@@ -97,7 +97,7 @@ namespace QuantLib {
                 unsigned int i=0;
                 for (; begin != end; ++begin) {
                     Handle<FloatingRateCoupon> coupon = *begin;
-                    QL_ENSURE(!coupon.isNull(), 
+                    QL_ENSURE(!coupon.isNull(),
                         "not a floating rate coupon");
                     Date beginDate = coupon->accrualStartDate();
                     Date endDate = coupon->date();

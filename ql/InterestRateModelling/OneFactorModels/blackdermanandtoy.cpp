@@ -33,6 +33,8 @@
 
 #include "ql/InterestRateModelling/OneFactorModels/blackdermanandtoy.hpp"
 #include "ql/Solvers1D/brent.hpp"
+using std::cout;
+using std::endl;
 
 namespace QuantLib {
 
