@@ -27,6 +27,9 @@
     $Source$
     $Name$
     $Log$
+    Revision 1.9  2001/02/28 12:44:45  lballabio
+    Fixed typo in error messages
+
     Revision 1.8  2001/01/16 11:22:17  nando
     fixed typo in error message
 
@@ -110,9 +113,8 @@ namespace QuantLib {
         : average_(average), sigma_(sigma) {
 
             QL_REQUIRE(sigma_>0.0,
-                "NormalDistribution::NormalDistribution"
-                ": sigma must be greater than 0.0 ("
-                + DoubleFormatter::toString(sigma_) + " not allowed");
+                "NormalDistribution: sigma must be greater than 0.0 (" +
+                    DoubleFormatter::toString(sigma_) + " not allowed)");
 
             normalizationFactor_ = 1.0/(sigma_*QL_SQRT(2.0*pi_));
             denominator_ = 2.0*sigma_*sigma_;
@@ -132,9 +134,9 @@ namespace QuantLib {
         : average_(average), sigma_(sigma) {
 
             QL_REQUIRE(sigma_>0.0,
-                "CumulativeNormalDistribution::CumulativeNormalDistribution"
-                ": sigma must be greater than 0.0 ("
-                + DoubleFormatter::toString(sigma_) + " not allowed");
+                "CumulativeNormalDistribution: "
+                    "sigma must be greater than 0.0 (" +
+                    DoubleFormatter::toString(sigma_) + " not allowed)");
         }
 
         inline double CumulativeNormalDistribution::derivative(double x) const {
@@ -147,9 +149,9 @@ namespace QuantLib {
         : average_(average), sigma_(sigma) {
 
             QL_REQUIRE(sigma_>0.0,
-              "InvCumulativeNormalDistribution::InvCumulativeNormalDistribution"
-                ": sigma must be greater than 0.0 ("
-                + DoubleFormatter::toString(sigma_) + " not allowed");
+              "InvCumulativeNormalDistribution: "
+                "sigma must be greater than 0.0 (" +
+                DoubleFormatter::toString(sigma_) + " not allowed)");
         }
 
     }
