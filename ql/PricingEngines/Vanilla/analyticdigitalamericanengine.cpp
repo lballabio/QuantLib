@@ -28,29 +28,19 @@ namespace QuantLib {
                    "AnalyticAmericanEngine::calculate() : "
                    "not an American Option");
 
-        #if defined(HAVE_BOOST)
         Handle<AmericanExercise> ex = 
             boost::dynamic_pointer_cast<AmericanExercise>(arguments_.exercise);
         QL_REQUIRE(ex, "AnalyticDigitalAmericanEngine: "
                    "non-American exercise given");
-        #else
-        Handle<AmericanExercise> ex = arguments_.exercise;
-        #endif
-
         QL_REQUIRE(ex->dates()[0]<=
             arguments_.blackScholesProcess->volTS->referenceDate(),
                    "AnalyticDigitalAmericanEngine::calculate() : "
                    "American option with window exercise not handled yet");
 
-
-        #if defined(HAVE_BOOST)
         Handle<StrikedTypePayoff> payoff =
             boost::dynamic_pointer_cast<StrikedTypePayoff>(arguments_.payoff);
         QL_REQUIRE(payoff,
                    "AnalyticDigitalEuropeanEngine: non-striked payoff given");
-        #else
-        Handle<StrikedTypePayoff> payoff = arguments_.payoff;
-        #endif
 
         const Handle<BlackScholesStochasticProcess>& process = 
             arguments_.blackScholesProcess;

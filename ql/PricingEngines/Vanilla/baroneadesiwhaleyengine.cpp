@@ -124,27 +124,19 @@ namespace QuantLib {
                    "BaroneAdesiWhaleyApproximationEngine::calculate() : "
                    "not an American Option");
 
-        #if defined(HAVE_BOOST)
         Handle<AmericanExercise> ex = 
             boost::dynamic_pointer_cast<AmericanExercise>(arguments_.exercise);
         QL_REQUIRE(ex,
                    "BaroneAdesiWhaleyApproximationEngine: "
                    "non-American exercise given");
-        #else
-        Handle<AmericanExercise> ex = arguments_.exercise;
-        #endif
         QL_REQUIRE(!ex->payoffAtExpiry(),
                    "BaroneAdesiWhaleyApproximationEngine::calculate() : "
                    "payoff at expiry not handled");
 
-        #if defined(HAVE_BOOST)
         Handle<StrikedTypePayoff> payoff =
             boost::dynamic_pointer_cast<StrikedTypePayoff>(arguments_.payoff);
         QL_REQUIRE(payoff,
                    "AnalyticEuropeanEngine: non-striked payoff given");
-        #else
-        Handle<StrikedTypePayoff> payoff = arguments_.payoff;
-        #endif
 
         double variance = arguments_.blackScholesProcess->volTS->blackVariance(
             ex->lastDate(), payoff->strike());

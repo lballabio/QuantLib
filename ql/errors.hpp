@@ -25,9 +25,7 @@
 #include <ql/qldefines.hpp>
 #include <exception>
 #include <string>
-#if defined(HAVE_BOOST)
 #include <boost/assert.hpp>
-#endif
 
 namespace QuantLib {
 

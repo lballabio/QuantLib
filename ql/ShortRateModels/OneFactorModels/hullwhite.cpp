@@ -43,12 +43,8 @@ namespace QuantLib {
                          new ShortRateTree(trinomial, numericDynamics, grid));
 
         typedef TermStructureFittingParameter::NumericalImpl NumericalImpl;
-        #if defined(HAVE_BOOST)
         Handle<NumericalImpl> impl = 
             boost::dynamic_pointer_cast<NumericalImpl>(phi.implementation());
-        #else
-        Handle<NumericalImpl> impl = phi.implementation();
-        #endif
         impl->reset();
         for (Size i=0; i<(grid.size() - 1); i++) {
             double discountBond = termStructure()->discount(grid[i+1]);

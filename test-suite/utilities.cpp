@@ -21,20 +21,11 @@
 #include <ql/Volatilities/blackconstantvol.hpp>
 #include <cppunit/TestCaller.h>
 
-#if defined(HAVE_BOOST)
 #define CHECK_DOWNCAST(Derived,Description) { \
     Handle<Derived> hd = boost::dynamic_pointer_cast<Derived>(h); \
     if (hd) \
         return Description; \
 }
-#else
-#define CHECK_DOWNCAST(Derived,Description) { \
-    try { \
-        Handle<Derived> hd = h; \
-        return Description; \
-    } catch (...) {} \
-}
-#endif
 
 namespace QuantLib {
 

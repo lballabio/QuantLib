@@ -19,15 +19,9 @@
 
 namespace QuantLib {
 
-    #if defined(HAVE_BOOST)
     namespace {
         void no_deletion(TermStructure*) {}
     }
-    #else
-    namespace {
-        bool no_deletion = false;
-    }
-    #endif
 
     RateHelper::RateHelper(const RelinkableHandle<Quote>& quote)
     : quote_(quote), termStructure_(0) {

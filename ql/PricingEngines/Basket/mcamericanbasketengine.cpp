@@ -182,14 +182,10 @@ namespace QuantLib {
     // calculate
     void MCAmericanBasketEngine::calculate() const {
 
-        #if defined(HAVE_BOOST)
         Handle<PlainVanillaPayoff> payoff_handle =
             boost::dynamic_pointer_cast<PlainVanillaPayoff>(arguments_.payoff);
         QL_REQUIRE(payoff_handle,
                    "MCAmericanBasketEngine: non-plain payoff given");
-        #else
-        Handle<PlainVanillaPayoff> payoff_handle = arguments_.payoff;
-        #endif
 
         double strike = payoff_handle->strike();
         PlainVanillaPayoff payoff(payoff_handle->optionType(), strike);

@@ -104,26 +104,17 @@ namespace QuantLib {
                    "StulzEngine::calculate() : "
                    "not a basket of two stocks");
 
-        #if defined(HAVE_BOOST)
         Handle<EuropeanExercise> exercise = 
             boost::dynamic_pointer_cast<EuropeanExercise>(arguments_.exercise);
         QL_REQUIRE(exercise,
                    "StulzEngine::calculate() : "
                    "not an European Option");
-        #else
-        Handle<EuropeanExercise> exercise = arguments_.exercise;
-        #endif
 
-        #if defined(HAVE_BOOST)
         Handle<PlainVanillaPayoff> payoff =
             boost::dynamic_pointer_cast<PlainVanillaPayoff>(arguments_.payoff);
         QL_REQUIRE(payoff,
                    "StulzEngine: "
                    "non-plain payoff given");
-        #else
-        Handle<PlainVanillaPayoff> payoff = arguments_.payoff;
-        #endif
-
 
         double strike = payoff->strike();
 

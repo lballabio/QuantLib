@@ -88,32 +88,18 @@ namespace QuantLib {
 
         mu_ = QL_LOG(dividendDiscount_/discount_)/variance_ - 0.5;
 
-        // Binary Cash-Or-Nothing payoff?
-        Handle<CashOrNothingPayoff> coo;
-        #if defined(HAVE_BOOST)
-        coo = boost::dynamic_pointer_cast<CashOrNothingPayoff>(payoff);
-        #else
-        try {
-            coo = payoff;
-        } catch (...) {}
-        #endif
+        // binary cash-or-nothing payoff?
+        Handle<CashOrNothingPayoff> coo =
+            boost::dynamic_pointer_cast<CashOrNothingPayoff>(payoff);
         if (!IsNull(coo)) {
             K_ = coo->cashPayoff();
             DKDstrike_ = 0.0;
         }
 
-        // Binary Asset-Or-Nothing payoff?
-        Handle<AssetOrNothingPayoff> aoo;
-        #if defined(HAVE_BOOST)
-        aoo = boost::dynamic_pointer_cast<AssetOrNothingPayoff>(payoff);
-        #else
-        try {
-            aoo = payoff;
-        } catch (...) {}
-        #endif
+        // binary asset-or-nothing payoff?
+        Handle<AssetOrNothingPayoff> aoo =
+            boost::dynamic_pointer_cast<AssetOrNothingPayoff>(payoff);
         if (!IsNull(aoo)) {
-//            K_ = aoo->strike_();
-//            DKDstrike_ = 1.0;
             K_ = forward_;
             DKDstrike_ = 0.0;
             mu_ += 1.0;

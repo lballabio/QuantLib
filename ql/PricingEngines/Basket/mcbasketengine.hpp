@@ -104,14 +104,10 @@ namespace QuantLib {
     inline Handle<QL_TYPENAME MCBasketEngine<RNG,S>::path_generator_type>
     MCBasketEngine<RNG,S>::pathGenerator() const {
 
-        #if defined(HAVE_BOOST)
         Handle<PlainVanillaPayoff> payoff =
             boost::dynamic_pointer_cast<PlainVanillaPayoff>(arguments_.payoff);
         QL_REQUIRE(payoff,
                    "MCBasketEngineEngine: non-plain payoff given");
-        #else
-        Handle<PlainVanillaPayoff> payoff = arguments_.payoff;
-        #endif
 
         Size numAssets = arguments_.blackScholesProcesses.size();
 
@@ -142,14 +138,10 @@ namespace QuantLib {
     Handle<QL_TYPENAME MCBasketEngine<RNG,S>::path_pricer_type>
     MCBasketEngine<RNG,S>::pathPricer() const {
 
-        #if defined(HAVE_BOOST)
         Handle<PlainVanillaPayoff> payoff =
             boost::dynamic_pointer_cast<PlainVanillaPayoff>(arguments_.payoff);
         QL_REQUIRE(payoff,
                    "MCBasketEngine: non-plain payoff given");
-        #else
-        Handle<PlainVanillaPayoff> payoff = arguments_.payoff;
-        #endif
 
         Size numAssets = arguments_.blackScholesProcesses.size();
         Array underlying(numAssets, 0.0);

@@ -19,15 +19,9 @@
 
 namespace QuantLib {
 
-    #if defined(HAVE_BOOST)
     namespace {
         void no_deletion(ShortRateModel*) {}
     }
-    #else
-    namespace {
-        bool no_deletion = false;
-    }
-    #endif
 
     ShortRateModel::ShortRateModel(Size nArguments) 
     : arguments_(nArguments),

@@ -30,15 +30,11 @@ namespace QuantLib {
                    "AnalyticDiscreteAveragingAsianEngine::calculate() : "
                    "not an European Option");
 
-        #if defined(HAVE_BOOST)
         Handle<PlainVanillaPayoff> payoff =
             boost::dynamic_pointer_cast<PlainVanillaPayoff>(arguments_.payoff);
         QL_REQUIRE(payoff,
                    "AnalyticDiscreteAveragingAsianEngine: "
                    "non-plain payoff given");
-        #else
-        Handle<PlainVanillaPayoff> payoff = arguments_.payoff;
-        #endif
 
         Handle<BlackScholesStochasticProcess> process =
             arguments_.blackScholesProcess;

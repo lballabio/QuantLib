@@ -39,12 +39,8 @@ namespace QuantLib {
                    new TrinomialTree(numericDynamics->process(), grid, true));
 
         typedef TermStructureFittingParameter::NumericalImpl NumericalImpl;
-        #if defined(HAVE_BOOST)
         Handle<NumericalImpl> impl = 
             boost::dynamic_pointer_cast<NumericalImpl>(phi.implementation());
-        #else
-        Handle<NumericalImpl> impl = phi.implementation();
-        #endif
 
         return Handle<Lattice>(new ShortRateTree(trinomial, numericDynamics, 
                                                  impl, grid));

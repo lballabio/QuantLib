@@ -22,7 +22,7 @@ AC_DEFUN([QL_CHECK_HEADER],
          AC_DEFINE(QL_TO_UPPER(have_$1_h),1,
                    [Define to 1 if you have the <$1.h> header file.])
         ],
-        [AC_MSG_WARN([$1 not found])])
+        [AC_MSG_ERROR([$1 not found])])
     ])
 ])
 
@@ -55,7 +55,7 @@ AC_DEFUN([QL_CHECK_FUNC],
                    [$1 function with full namespace specification])
         ],
         [AC_MSG_RESULT([no])
-         AC_MSG_WARN([$1 not found])
+         AC_MSG_ERROR([$1 not found])
         ])
     ])
 ])
@@ -84,7 +84,7 @@ AC_DEFUN([QL_CHECK_TYPE],
                    [$1 type with full namespace specification])
         ],
         [AC_MSG_RESULT([no])
-         AC_MSG_WARN([$1 not found])
+         AC_MSG_ERROR([$1 not found])
         ])
     ])
 ])
@@ -113,7 +113,7 @@ AC_DEFUN([QL_CHECK_TEMPLATE_TYPE],
                    [$1 type with full namespace specification])
         ],
         [AC_MSG_RESULT([no])
-         AC_MSG_WARN([$1 not found])
+         AC_MSG_ERROR([$1 not found])
         ])
     ])
 ])
@@ -146,7 +146,7 @@ AC_DEFUN([QL_CHECK_NAMESPACES],
     [A a;],
     [AC_MSG_RESULT([yes])],
     [AC_MSG_RESULT([no])
-     AC_MSG_WARN([namespaces not supported])
+     AC_MSG_ERROR([namespaces not supported])
     ])
 ])
 
@@ -171,7 +171,7 @@ AC_DEFUN([QL_CHECK_STRING],
     ],
     [AC_MSG_RESULT([yes])],
     [AC_MSG_RESULT([no])
-     AC_MSG_WARN([string not correctly supported])
+     AC_MSG_ERROR([string not correctly supported])
     ])
 ])
 
@@ -203,7 +203,7 @@ AC_DEFUN([QL_CHECK_GMTIME],
                    [gmtime function with full namespace specification])
         ],
         [AC_MSG_RESULT([no])
-         AC_MSG_WARN([gmtime not found])
+         AC_MSG_ERROR([gmtime not found])
         ])
     ])
 ])
@@ -211,14 +211,11 @@ AC_DEFUN([QL_CHECK_GMTIME],
 # QL_CHECK_BOOST
 # -----------------------
 # Check whether the Boost libraries are available.
-# It defines HAVE_BOOST.
 AC_DEFUN([QL_CHECK_BOOST],
 [AC_CHECK_HEADER(
     [boost/shared_ptr.hpp],
-    [AC_DEFINE(QL_TO_UPPER([have_boost]),[1],
-               [Define this if the Boost library is available.])
-    ],
-    [AC_MSG_WARN([Boost not found])
+    [],
+    [AC_MSG_ERROR([Boost not found])
     ])
 ])
 

@@ -16,9 +16,6 @@
 */
 
 #include <ql/errors.hpp>
-
-#if defined(HAVE_BOOST)
-
 #include <sstream>
 #include <stdexcept>
 
@@ -35,6 +32,4 @@ namespace boost {
     }
 
 }
-
-#endif
 

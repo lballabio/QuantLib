@@ -95,34 +95,16 @@ namespace QuantLib {
         Date d = Date::maxDate();
         Size i;
         for (i=0; i<firstLeg_.size(); i++) {
-            #if defined(HAVE_BOOST)
             Handle<Coupon> c = 
                 boost::dynamic_pointer_cast<Coupon>(firstLeg_[i]);
             if (!IsNull(c))
                 d = QL_MIN(d, c->accrualStartDate());
-            #else
-            try {
-                Handle<Coupon> c = firstLeg_[i];
-                d = QL_MIN(d, c->accrualStartDate());
-            } catch (...) {
-                continue;
-            }
-            #endif
         }
         for (i=0; i<secondLeg_.size(); i++) {
-            #if defined(HAVE_BOOST)
             Handle<Coupon> c = 
                 boost::dynamic_pointer_cast<Coupon>(secondLeg_[i]);
             if (!IsNull(c))
                 d = QL_MIN(d, c->accrualStartDate());
-            #else
-            try {
-                Handle<Coupon> c = secondLeg_[i];
-                d = QL_MIN(d, c->accrualStartDate());
-            } catch (...) {
-                continue;
-            }
-            #endif
         }
         QL_REQUIRE(d != Date::maxDate(),
                    "Swap::startDate : not enough information available");

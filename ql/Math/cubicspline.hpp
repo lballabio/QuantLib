@@ -283,11 +283,7 @@ namespace QuantLib {
                                           leftCondition, leftConditionValue,
                                           rightCondition, rightConditionValue,
                                           monotonicityConstraint));
-            #if defined(HAVE_BOOST)
             coeffs_ = boost::dynamic_pointer_cast<CoefficientHolder>(impl_);
-            #else
-            coeffs_ = impl_;
-            #endif
         }
         const std::vector<double>& aCoefficients() const {
             return coeffs_->a_;

@@ -527,12 +527,8 @@ int main(int argc, char* argv[])
         // value contained in the Quote triggers a new bootstrapping
         // of the curve and a repricing of the swap.
 
-        #if defined(HAVE_BOOST)
         Handle<SimpleQuote> fiveYearsRate = 
             boost::dynamic_pointer_cast<SimpleQuote>(s5yRate);
-        #else
-        Handle<SimpleQuote> fiveYearsRate = s5yRate;
-        #endif
         fiveYearsRate->setValue(0.0460);
 
         std::cout << dblrule << std::endl;

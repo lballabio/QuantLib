@@ -74,14 +74,10 @@ namespace QuantLib {
             Handle<BlackVolTermStructure>(
                 new BlackConstantVol(referenceDate, v, dc)));
 
-        #if defined(HAVE_BOOST)
         Handle<PlainVanillaPayoff> payoff =
             boost::dynamic_pointer_cast<PlainVanillaPayoff>(arguments_.payoff);
         QL_REQUIRE(payoff,
                    "AnalyticEuropeanEngine: non-plain payoff given");
-        #else
-        Handle<PlainVanillaPayoff> payoff = arguments_.payoff;
-        #endif
 
         Time maturity = arguments_.blackScholesProcess->riskFreeTS
             ->dayCounter().yearFraction(referenceDate, maturityDate);

@@ -66,30 +66,10 @@ namespace QuantLib {
     void ForwardEngine<ArgumentsType, ResultsType>::setOriginalArguments()
                                                                         const {
 
-/*
-        #if defined(HAVE_BOOST)
-        Handle<TypePayoff> argumentsPayoff =
-            boost::dynamic_pointer_cast<TypePayoff>(arguments_.payoff);
-        QL_REQUIRE(argumentsPayoff,
-                   "ForwardEngine: wrong payoff given");
-        #else
-        Handle<TypePayoff> argumentsPayoff = arguments_.payoff;
-        #endif
-
-        originalArguments_->payoff = Handle<StrikedTypePayoff>(
-            new StrikedTypePayoff(
-                argumentsPayoff->optionType(),
-                arguments_.moneyness * arguments_.blackScholesProcess->stateVariable->value()));
-*/
-
-        #if defined(HAVE_BOOST)
         Handle<StrikedTypePayoff> argumentsPayoff =
             boost::dynamic_pointer_cast<StrikedTypePayoff>(arguments_.payoff);
         QL_REQUIRE(argumentsPayoff,
                    "ForwardEngine: wrong payoff given");
-        #else
-        Handle<StrikedTypePayoff> argumentsPayoff = arguments_.payoff;
-        #endif
 
         argumentsPayoff->setStrike(arguments_.moneyness*
             arguments_.blackScholesProcess->stateVariable->value());

@@ -57,15 +57,14 @@
 #endif
 
 
-#if defined(HAVE_BOOST)
-    #include <boost/version.hpp>
-    #if BOOST_VERSION < 103002
-        #error using an old version of Boost, please update.
-    #endif
-    #if !defined(BOOST_ENABLE_ASSERT_HANDLER)
-    #define BOOST_ENABLE_ASSERT_HANDLER
-    #endif
+#include <boost/version.hpp>
+#if BOOST_VERSION < 103002
+    #error using an old version of Boost, please update.
 #endif
+#if !defined(BOOST_ENABLE_ASSERT_HANDLER)
+    #define BOOST_ENABLE_ASSERT_HANDLER
+#endif
+
 
 /*! \def QL_DUMMY_RETURN
     \brief Is a dummy return statement required?

@@ -114,14 +114,10 @@ namespace QuantLib {
     Handle<QL_TYPENAME MCEuropeanEngine<RNG,S>::path_pricer_type>
     MCEuropeanEngine<RNG,S>::pathPricer() const {
 
-        #if defined(HAVE_BOOST)
         Handle<PlainVanillaPayoff> payoff =
             boost::dynamic_pointer_cast<PlainVanillaPayoff>(arguments_.payoff);
         QL_REQUIRE(payoff,
                    "AnalyticAmericanBinaryEngine: non-plain payoff given");
-        #else
-        Handle<PlainVanillaPayoff> payoff = arguments_.payoff;
-        #endif
 
         return Handle<MCEuropeanEngine<RNG,S>::path_pricer_type>(
             new EuropeanPathPricer(

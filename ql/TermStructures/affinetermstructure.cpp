@@ -65,12 +65,8 @@ namespace QuantLib {
     }
 
     void AffineTermStructure::calibrate() const {
-        #if defined(HAVE_BOOST)
         Handle<ShortRateModel> model = 
             boost::dynamic_pointer_cast<ShortRateModel>(model_);
-        #else
-        Handle<ShortRateModel> model = model_;
-        #endif
         CalibrationFunction f(model, instruments_);
 
         method_->setInitialValue(model->params());

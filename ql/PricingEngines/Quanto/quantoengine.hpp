@@ -67,14 +67,10 @@ namespace QuantLib {
         originalEngine_->reset();
 
         // determine strike from payoff
-        #if defined(HAVE_BOOST)
         Handle<StrikedTypePayoff> payoff =
             boost::dynamic_pointer_cast<StrikedTypePayoff>(arguments_.payoff);
         QL_REQUIRE(payoff,
                    "QuantoEngine: non-striked payoff given");
-        #else
-        Handle<StrikedTypePayoff> payoff = arguments_.payoff;
-        #endif
         double strike = payoff->strike();
 
         originalArguments_->payoff = arguments_.payoff;

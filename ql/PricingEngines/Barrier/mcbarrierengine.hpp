@@ -167,19 +167,15 @@ namespace QuantLib {
     template <class RNG, class S>
     inline Handle<QL_TYPENAME MCBarrierEngine<RNG,S>::path_pricer_type>
     MCBarrierEngine<RNG,S>::pathPricer() const {
-        #if defined(HAVE_BOOST)
         Handle<PlainVanillaPayoff> payoff =
             boost::dynamic_pointer_cast<PlainVanillaPayoff>(arguments_.payoff);
         QL_REQUIRE(payoff,
                    "MCBarrierEngine: non-plain payoff given");
-        #else
-        Handle<PlainVanillaPayoff> payoff = arguments_.payoff;
-        #endif
 
         Handle<BlackScholesStochasticProcess> process =
             arguments_.blackScholesProcess;
 
-        // do this with Template Parameters?
+        // do this with template parameters?
         if (isBiased_) {
             return Handle<MCBarrierEngine<RNG,S>::path_pricer_type>(
                 new BiasedBarrierPathPricer(

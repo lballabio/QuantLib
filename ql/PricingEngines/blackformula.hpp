@@ -64,30 +64,30 @@ namespace QuantLib {
 
 
     inline BlackFormula::BlackFormula(double forward, double discount,
-        double variance, const Handle<StrikedTypePayoff>& payoff)
+                                      double variance, 
+                                      const Handle<StrikedTypePayoff>& payoff)
     : forward_(forward), discount_(discount), variance_(variance) {
 
         QL_REQUIRE(forward>0.0,
-            "BlackFormula::BlackFormula : "
-            "positive forward value required: " +
-            DoubleFormatter::toString(forward) +
-            " not allowed");
+                   "BlackFormula::BlackFormula : "
+                   "positive forward value required: " +
+                   DoubleFormatter::toString(forward) +
+                   " not allowed");
 
         QL_REQUIRE(discount>0.0,
-            "BlackFormula::BlackFormula : "
-            "positive discount required " +
-            DoubleFormatter::toString(discount) +
-            " not allowed");
+                   "BlackFormula::BlackFormula : "
+                   "positive discount required " +
+                   DoubleFormatter::toString(discount) +
+                   " not allowed");
 
         QL_REQUIRE(variance>=0.0,
-            "BlackFormula::BlackFormula : "
-            "non-negative variance required " +
-            DoubleFormatter::toString(variance) +
-            " not allowed");
+                   "BlackFormula::BlackFormula : "
+                   "non-negative variance required " +
+                   DoubleFormatter::toString(variance) +
+                   " not allowed");
 
         stdDev_ = QL_SQRT(variance);
         strike_ = payoff->strike();
-
 
         double n_d1, n_d2;
         if (variance>=QL_EPSILON) {
@@ -126,123 +126,99 @@ namespace QuantLib {
 
         // Plain Vanilla Payoff
         switch (payoff->optionType()) {
-            case Option::Call:
-                alpha_     =  cum_d1_;//  N(d1)
-                DalphaDd1_ =    n_d1; //  n(d1)
-                beta_      = -cum_d2_;// -N(d2)
-                DbetaDd2_  = -  n_d2; // -n(d2)
-                break;
-            case Option::Put:
-                alpha_     = -1.0+cum_d1_;// -N(-d1)
-                DalphaDd1_ =        n_d1; //  n( d1)
-                beta_      =  1.0-cum_d2_;//  N(-d2)
-                DbetaDd2_  =     -  n_d2; // -n( d2)
-                break;
-            case Option::Straddle:
-                // incorporating the linear effect of call + put
-                alpha_     = -1.0 + 2.0*cum_d1_;//  N(d1) - N(-d1)
-                DalphaDd1_ =        2.0*  n_d1; //  n(d1) + n( d1)
-                beta_      =  1.0 - 2.0*cum_d2_;// -N(d2) + N(-d2)
-                DbetaDd2_  =      - 2.0*  n_d2; // -n(d2) - n( d2)
-                break;
-            default:
-                QL_FAIL("BlackFormula::BlackFormula : "
-                        "invalid option type");
+          case Option::Call:
+            alpha_     =  cum_d1_;//  N(d1)
+            DalphaDd1_ =    n_d1; //  n(d1)
+            beta_      = -cum_d2_;// -N(d2)
+            DbetaDd2_  = -  n_d2; // -n(d2)
+            break;
+          case Option::Put:
+            alpha_     = -1.0+cum_d1_;// -N(-d1)
+            DalphaDd1_ =        n_d1; //  n( d1)
+            beta_      =  1.0-cum_d2_;//  N(-d2)
+            DbetaDd2_  =     -  n_d2; // -n( d2)
+            break;
+          case Option::Straddle:
+            // incorporating the linear effect of call + put
+            alpha_     = -1.0 + 2.0*cum_d1_;//  N(d1) - N(-d1)
+            DalphaDd1_ =        2.0*  n_d1; //  n(d1) + n( d1)
+            beta_      =  1.0 - 2.0*cum_d2_;// -N(d2) + N(-d2)
+            DbetaDd2_  =      - 2.0*  n_d2; // -n(d2) - n( d2)
+            break;
+          default:
+            QL_FAIL("BlackFormula::BlackFormula : "
+                    "invalid option type");
         }
 
-        // Binary Cash-Or-Nothing payoff?
-        Handle<CashOrNothingPayoff> coo;
-        #if defined(HAVE_BOOST)
-        coo = boost::dynamic_pointer_cast<CashOrNothingPayoff>(payoff);
-        #else
-        try {
-            coo = payoff;
-        } catch (...) {}
-        #endif
+        // binary cash-or-nothing payoff?
+        Handle<CashOrNothingPayoff> coo =
+            boost::dynamic_pointer_cast<CashOrNothingPayoff>(payoff);
         if (!IsNull(coo)) {
-            // ok, the payoff is Binary Cash-Or-Nothing
+            // ok, the payoff is binary cash-or-nothing
             alpha_ = DalphaDd1_ = 0.0;
             X_ = coo->cashPayoff();
             DXDstrike_ = 0.0;
             switch (payoff->optionType()) {
-                case Option::Call:
-                    beta_     = cum_d2_;// N(d2)
-                    DbetaDd2_ =   n_d2; // n(d2)
-                    break;
-                case Option::Put:
-                    beta_     = 1.0-cum_d2_;//  N(-d2)
-                    DbetaDd2_ =    -  n_d2; // -n( d2)
-                    break;
-                case Option::Straddle:
-                    // incorporating the linear effect of call + put
-                    beta_     = 1.0; // N(d2) + N(-d2) = 1.0
-                    DbetaDd2_ = 0.0; // n(d2) - n( d2) = 0.0
-                    break;
-                default:
-                    QL_FAIL("BlackFormula::BlackFormula : "
-                            "invalid option type");
+              case Option::Call:
+                beta_     = cum_d2_;// N(d2)
+                DbetaDd2_ =   n_d2; // n(d2)
+                break;
+              case Option::Put:
+                beta_     = 1.0-cum_d2_;//  N(-d2)
+                DbetaDd2_ =    -  n_d2; // -n( d2)
+                break;
+              case Option::Straddle:
+                // incorporating the linear effect of call + put
+                beta_     = 1.0; // N(d2) + N(-d2) = 1.0
+                DbetaDd2_ = 0.0; // n(d2) - n( d2) = 0.0
+                break;
+              default:
+                QL_FAIL("BlackFormula::BlackFormula : "
+                        "invalid option type");
             }
         }
 
-        // Binary Asset-Or-Nothing payoff?
-        Handle<AssetOrNothingPayoff> aoo;
-        #if defined(HAVE_BOOST)
-        aoo = boost::dynamic_pointer_cast<AssetOrNothingPayoff>(payoff);
-        #else
-        try {
-            aoo = payoff;
-        } catch (...) {}
-        #endif
+        // binary asset-or-nothing payoff?
+        Handle<AssetOrNothingPayoff> aoo =
+            boost::dynamic_pointer_cast<AssetOrNothingPayoff>(payoff);
         if (!IsNull(aoo)) {
-            // ok, the payoff is Binary Asset-Or-Nothing
+            // ok, the payoff is binary asset-or-nothing
             beta_ = DbetaDd2_ = 0.0;
             switch (payoff->optionType()) {
-                case Option::Call:
-                    alpha_     =  cum_d1_;//  N(d1)
-                    DalphaDd1_ =    n_d1; //  n(d1)
-                    break;
-                case Option::Put:
-                    alpha_     = 1.0-cum_d1_;//  N(-d1)
-                    DalphaDd1_ =    -  n_d1; // -n( d1)
-                    break;
-                case Option::Straddle:
-                    // incorporating the linear effect of call + put
-                    alpha_     = 1.0; //  N(d1) + N(-d1) = 1.0
-                    DalphaDd1_ = 0.0; //  n(d1) - n( d1) = 0.0
-                    break;
-                default:
-                    QL_FAIL("BlackFormula::BlackFormula : "
-                            "invalid option type");
+              case Option::Call:
+                alpha_     =  cum_d1_;//  N(d1)
+                DalphaDd1_ =    n_d1; //  n(d1)
+                break;
+              case Option::Put:
+                alpha_     = 1.0-cum_d1_;//  N(-d1)
+                DalphaDd1_ =    -  n_d1; // -n( d1)
+                break;
+              case Option::Straddle:
+                // incorporating the linear effect of call + put
+                alpha_     = 1.0; //  N(d1) + N(-d1) = 1.0
+                DalphaDd1_ = 0.0; //  n(d1) - n( d1) = 0.0
+                break;
+              default:
+                QL_FAIL("BlackFormula::BlackFormula : "
+                        "invalid option type");
             }
         }
 
-        // Binary Gap payoff?
-        Handle<GapPayoff> gap;
-        #if defined(HAVE_BOOST)
-        gap = boost::dynamic_pointer_cast<GapPayoff>(payoff);
-        #else
-        try {
-            gap = payoff;
-        } catch (...) {}
-        #endif
+        // binary gap payoff?
+        Handle<GapPayoff> gap =
+            boost::dynamic_pointer_cast<GapPayoff>(payoff);
         if (!IsNull(gap)) {
-            // ok, the payoff is Binary Gap
+            // ok, the payoff is binary gap
             X_ = gap->strikePayoff();
             DXDstrike_ = 0.0;
         }
 
-        // Binary Super-Share payoff?
-        Handle<SuperSharePayoff> ss;
-        #if defined(HAVE_BOOST)
-        ss = boost::dynamic_pointer_cast<SuperSharePayoff>(payoff);
-        #else
-        try {
-            ss = payoff;
-        } catch (...) {}
-        #endif
+        // binary super-share payoff?
+        Handle<SuperSharePayoff> ss =
+            boost::dynamic_pointer_cast<SuperSharePayoff>(payoff);
         if (!IsNull(ss)) {
-            // ok, the payoff is Binary Super-Share
-            QL_FAIL("Binary Super-Share payoff not handled yet");
+            // ok, the payoff is binary super-share
+            QL_FAIL("Binary super-share payoff not handled yet");
         }
     }
 

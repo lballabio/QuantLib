@@ -141,12 +141,8 @@ namespace QuantLib {
         arguments->fixedCoupons = std::vector<double>(fixedCoupons.size());
 
         for (i=0; i<fixedCoupons.size(); i++) {
-            #if defined(HAVE_BOOST)
             Handle<FixedRateCoupon> coupon = 
                 boost::dynamic_pointer_cast<FixedRateCoupon>(fixedCoupons[i]);
-            #else
-            Handle<FixedRateCoupon> coupon = fixedCoupons[i];
-            #endif
 
             Time time = counter.yearFraction(settlement, coupon->date());
             arguments->fixedPayTimes[i] = time;
@@ -166,13 +162,9 @@ namespace QuantLib {
             std::vector<Spread>(floatingCoupons.size());
 
         for (i=0; i<floatingCoupons.size(); i++) {
-            #if defined(HAVE_BOOST)
             Handle<FloatingRateCoupon> coupon = 
                 boost::dynamic_pointer_cast<FloatingRateCoupon>(
                                                           floatingCoupons[i]);
-            #else
-            Handle<FloatingRateCoupon> coupon = floatingCoupons[i];
-            #endif
 
             Date resetDate = coupon->accrualStartDate(); // already rolled
             Time time = counter.yearFraction(settlement, resetDate);

@@ -78,15 +78,11 @@ namespace QuantLib {
         DayCounter counter = termStructure_->dayCounter();
 
         for (Size i=0; i<floatingLeg_.size(); i++) {
-            #if defined(HAVE_BOOST)
             Handle<FloatingRateCoupon> coupon = 
                 boost::dynamic_pointer_cast<FloatingRateCoupon>(
                                                              floatingLeg_[i]);
             QL_REQUIRE(coupon,
                        "CapFloor: non-floating coupon given");
-            #else
-            Handle<FloatingRateCoupon> coupon = floatingLeg_[i];
-            #endif
             Date beginDate = coupon->accrualStartDate();
             Time time = counter.yearFraction(settlement, beginDate);
             arguments->startTimes.push_back(time);

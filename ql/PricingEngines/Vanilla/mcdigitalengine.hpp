@@ -150,23 +150,15 @@ namespace QuantLib {
     Handle<QL_TYPENAME MCDigitalEngine<RNG,S>::path_pricer_type>
     MCDigitalEngine<RNG,S>::pathPricer() const {
 
-        #if defined(HAVE_BOOST)
         Handle<CashOrNothingPayoff> payoff =
             boost::dynamic_pointer_cast<CashOrNothingPayoff>(arguments_.payoff);
         QL_REQUIRE(payoff,
                    "MCDigitalEngine: wrong payoff given");
-        #else
-        Handle<CashOrNothingPayoff> payoff = arguments_.payoff;
-        #endif
 
-        #if defined(HAVE_BOOST)
         Handle<AmericanExercise> exercise =
             boost::dynamic_pointer_cast<AmericanExercise>(arguments_.exercise);
         QL_REQUIRE(exercise,
                    "MCDigitalEngine: wrong exercise given");
-        #else
-        Handle<AmericanExercise> exercise = arguments_.exercise;
-        #endif
 
         TimeGrid grid = timeGrid();
         PseudoRandom::ursg_type sequenceGen(grid.size()-1, 

@@ -258,12 +258,8 @@ int main(int argc, char* argv[])
         std::vector<Date> bermudanDates;
         const std::vector<Handle<CashFlow> >& leg = swap->floatingLeg();
         for (i=0; i<leg.size(); i++) {
-            #if defined(HAVE_BOOST)
             Handle<Coupon> coupon =
                 boost::dynamic_pointer_cast<Coupon>(leg[i]);
-            #else
-            Handle<Coupon> coupon = leg[i];
-            #endif
             bermudanDates.push_back(coupon->accrualStartDate());
         }
 

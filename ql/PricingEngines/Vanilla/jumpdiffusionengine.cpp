@@ -35,15 +35,9 @@ namespace QuantLib {
 
     void JumpDiffusionEngine::calculate() const {
 
-        Handle<Merton76StochasticProcess> jdProcess;
-        #if defined(HAVE_BOOST)
-        jdProcess = boost::dynamic_pointer_cast<Merton76StochasticProcess>(
-            arguments_.blackScholesProcess);
-        #else
-        try {
-            jdProcess = arguments_.blackScholesProcess;
-        } catch (...) {}
-        #endif
+        Handle<Merton76StochasticProcess> jdProcess =
+            boost::dynamic_pointer_cast<Merton76StochasticProcess>(
+                                              arguments_.blackScholesProcess);
         QL_REQUIRE(!IsNull(jdProcess),"not a jump diffusion process");
 
         double jumpSquareVol = jdProcess->logJumpVolatility->value()

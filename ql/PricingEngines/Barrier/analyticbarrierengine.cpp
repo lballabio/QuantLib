@@ -24,15 +24,10 @@ namespace QuantLib {
 
     void AnalyticBarrierEngine::calculate() const {
 
-        #if defined(HAVE_BOOST)
         Handle<PlainVanillaPayoff> payoff = 
             boost::dynamic_pointer_cast<PlainVanillaPayoff>(arguments_.payoff);
         QL_REQUIRE(payoff,
                    "AnalyticAmericanBinaryEngine: non-plain payoff given");
-        #else
-        Handle<PlainVanillaPayoff> payoff = arguments_.payoff;
-        #endif
-
         QL_REQUIRE(payoff->strike()>0.0,
             "AnalyticBarrierEngine::calculate() : "
             "strike must be positive");
@@ -141,14 +136,10 @@ namespace QuantLib {
     }
 
     double AnalyticBarrierEngine::strike() const {
-        #if defined(HAVE_BOOST)
         Handle<PlainVanillaPayoff> payoff = 
             boost::dynamic_pointer_cast<PlainVanillaPayoff>(arguments_.payoff);
         QL_REQUIRE(payoff,
                    "AnalyticAmericanBinaryEngine: non-plain payoff given");
-        #else
-        Handle<PlainVanillaPayoff> payoff = arguments_.payoff;
-        #endif
         return payoff->strike();
     }
 
