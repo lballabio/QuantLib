@@ -180,14 +180,19 @@ namespace QuantLib {
 
     Date::Date(Day d, Month m, Year y) {
         QL_REQUIRE(int(y) > 1900 && int(y) < 2100,
-            "Year outside allowed range 1901-2099");
+            "Date::Date : year " + IntegerFormatter::toString(int(y)) +
+            " out of bound. It must be in [1901,2099]");
         QL_REQUIRE(int(m) > 0 && int(m) < 13,
-            "Month outside January-December range");
+            "Date::Date : month " + IntegerFormatter::toString(int(m)) +
+            " outside January-December range [1,12]");
 
         bool leap = isLeap(y);
         Day len = monthLength(m,leap), offset = monthOffset(m,leap);
         QL_REQUIRE(int(d) <= len && int(d) > 0,
-            "day greater than last day in month");
+            "Date::Date : day outside month (" +
+            IntegerFormatter::toString(int(m)) + ") day-range "
+            "Date::Date : month " + IntegerFormatter::toString(int(m)) +
+            "[1," + IntegerFormatter::toString(int(len)) + "]");
 
         serialNumber_ = d + offset + yearOffset(y);
         #ifdef QL_DEBUG
@@ -299,7 +304,8 @@ namespace QuantLib {
         }
 
         QL_ENSURE(y >= 1900 && y <= 2099, "Date::plusMonths() : "
-                "result must be between Jan. 1st, 1901 and Dec. 31, 2099");
+            "year " + IntegerFormatter::toString(y) +
+            " out of bound. It must be in [1901,2099]");
 
         int length = monthLength(Month(m), isLeap(y));
         if (d > length)
@@ -312,8 +318,9 @@ namespace QuantLib {
         Month m = month();
         Year y = year()+years;
 
-        QL_ENSURE(y >= 1900 && y <= 2099, "Date::plusYears() : "
-                "result must be between Jan. 1st, 1901 and Dec. 31, 2099");
+        QL_ENSURE(y >= 1900 && y <= 2099, "Date::plusMonths() : "
+            "year " + IntegerFormatter::toString(y) +
+            " out of bound. It must be in [1901,2099]");
 
         if (d == 29 && m == February && !isLeap(y))
             d = 28;
