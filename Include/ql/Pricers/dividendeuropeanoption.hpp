@@ -28,6 +28,9 @@
     $Source$
     $Name$
     $Log$
+    Revision 1.2  2001/04/12 12:17:21  marmar
+    Theta is now consistent with DividendAmerican
+
     Revision 1.1  2001/04/09 14:05:49  nando
     all the *.hpp moved below the Include/ql level
 
@@ -65,8 +68,8 @@
 #define BSM_dividend_european_option_pricer_h
 
 #include "ql/qldefines.hpp"
-#include "ql/Pricers/bsmeuropeanoption.hpp"
 #include "ql/dataformatters.hpp"
+#include "ql/Pricers/bsmeuropeanoption.hpp"
 #include <vector>
 
 namespace QuantLib {
@@ -79,15 +82,15 @@ namespace QuantLib {
                 Rate dividendYield, Rate riskFreeRate, Time residualTime,
                 double volatility, const std::vector<double>& dividends,
                 const std::vector<Time>& exdivdates);
+            double theta() const;
             double rho() const;
-            Handle<BSMOption> clone() const{
-                return Handle<BSMOption>(new DividendEuropeanOption(*this));
-            }
+            Handle<BSMOption> clone() const;
+
             private:
-              std::vector<double> theDividends;
-              std::vector<Time> theExDivDates;
+              std::vector<double> dividends_;
+              std::vector<Time> exDivDates_;
               double riskless(Rate r, std::vector<double> divs,
-                                      std::vector<Time> divDates) const;
+                              std::vector<Time> divDates) const;
         };
 
         inline double DividendEuropeanOption::riskless(Rate r,

@@ -27,6 +27,9 @@
 
     $Source$
     $Log$
+    Revision 1.7  2001/04/12 12:17:07  marmar
+    Theta is now consistent with DividendAmerican
+
     Revision 1.6  2001/04/09 14:13:34  nando
     all the *.hpp moved below the Include/ql level
 
@@ -64,36 +67,51 @@ namespace QuantLib {
             Rate riskFreeRate, Time residualTime, double volatility,
             const std::vector<double>& dividends,
             const std::vector<Time>& exdivdates):
-            theDividends(dividends),theExDivDates(exdivdates),
+            dividends_(dividends),exDivDates_(exdivdates),
             BSMEuropeanOption(type, underlying - riskless(riskFreeRate,
                 dividends, exdivdates), strike, dividendYield,
                 riskFreeRate, residualTime, volatility){
 
-                QL_REQUIRE(theDividends.size()==theExDivDates.size(),
+                QL_REQUIRE(dividends_.size() == exDivDates_.size(),
                     "the number of dividends is different from that of dates");
-                for(int j = 0; j < theDividends.size(); j++){
+                for(int j = 0; j < dividends_.size(); j++){
 
-                    QL_REQUIRE(theExDivDates[j] > 0, "The "+
+                    QL_REQUIRE(exDivDates_[j] >= 0, "The "+
                          IntegerFormatter::toString(j)+ "-th" +
-                        "dividend date is not positive"    + "(" +
-                        DoubleFormatter::toString(theExDivDates[j]) + ")");
+                        "dividend date is negative"    + "(" +
+                        DoubleFormatter::toString(exDivDates_[j]) + ")");
 
-                    QL_REQUIRE(theExDivDates[j] < residualTime,"The " +
+                    QL_REQUIRE(exDivDates_[j] <= residualTime,"The " +
                         IntegerFormatter::toString(j) + "-th" +
                         "dividend date is greater than residual time" + "(" +
-                        DoubleFormatter::toString(theExDivDates[j]) + ">" +
+                        DoubleFormatter::toString(exDivDates_[j]) + ">" +
                         DoubleFormatter::toString(residualTime)    + ")");
                 }
+
             }
+
+        Handle<BSMOption> DividendEuropeanOption::clone() const{
+            return Handle<BSMOption>(new DividendEuropeanOption(*this));
+        }
+
+        double DividendEuropeanOption::theta() const{
+
+            double tmp_theta = BSMEuropeanOption::theta();
+            double delta_theta = 0.0;
+            for(int j = 0; j < dividends_.size(); j++)
+                delta_theta -= dividends_[j] * riskFreeRate_ *
+                               QL_EXP(-riskFreeRate_ * exDivDates_[j]);
+            return tmp_theta + delta_theta * BSMEuropeanOption::delta();
+        }
 
         double DividendEuropeanOption::rho() const{
 
             double tmp_rho = BSMEuropeanOption::rho();
             double delta_rho = 0.0;
-            for(int j = 0; j < theDividends.size();j++)
-                delta_rho += theExDivDates[j]*theDividends[j]*
-                            QL_EXP(-riskFreeRate_*theExDivDates[j]);
-            return tmp_rho + delta_rho*BSMEuropeanOption::delta();
+            for(int j = 0; j < dividends_.size(); j++)
+                delta_rho += dividends_[j] * exDivDates_[j] *
+                             QL_EXP(-riskFreeRate_ * exDivDates_[j]);
+            return tmp_rho + delta_rho * BSMEuropeanOption::delta();
         }
 
     }
