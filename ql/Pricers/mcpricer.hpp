@@ -35,6 +35,7 @@
 #define quantlib_montecarlo_pricer_h
 
 #include <ql/MonteCarlo/montecarlomodel.hpp>
+#include <iostream>
 
 namespace QuantLib {
 
@@ -89,11 +90,15 @@ namespace QuantLib {
             double accuracy = mcModel_->sampleAccumulator().errorEstimate()/
                 result;
             while (accuracy > tolerance) {
+                // conservative estimate of how many samples are needed 
                 order = accuracy*accuracy/tolerance/tolerance;
-                nextBatch = size_t(sampleNumber*order-sampleNumber+10);
-                sampleNumber += nextBatch;
-                QL_REQUIRE(sampleNumber<maxSamples,
+                nextBatch = size_t(
+                    QL_MAX(sampleNumber*order/2.0-sampleNumber, 100.0));
+                // do not exceed maxSamples
+                nextBatch = QL_MIN(nextBatch, maxSamples-sampleNumber);
+                QL_REQUIRE(nextBatch>0,
                     "max number of samples exceeded");
+                sampleNumber += nextBatch;
                 mcModel_->addSamples(nextBatch);
                 result = mcModel_->sampleAccumulator().mean();
                 accuracy = mcModel_->sampleAccumulator().errorEstimate()/
@@ -128,6 +133,7 @@ namespace QuantLib {
 
             size_t sampleNumber =
                 mcModel_->sampleAccumulator().samples();
+            std::cout << sampleNumber << std::endl;
 
             QL_REQUIRE(sampleNumber>=minSample_,
                 "number of simulated samples lower than minSample_");

@@ -46,11 +46,13 @@ namespace QuantLib {
     namespace MonteCarlo {
 
         //! default choice for Gaussian path generator.
-        typedef PathGenerator<RandomNumbers::GaussianRandomGenerator> GaussianPathGenerator;
+        typedef PathGenerator<RandomNumbers::GaussianRandomGenerator>
+            GaussianPathGenerator;
 
         //! default choice for Gaussian multi-path generator.
         typedef
-        MultiPathGenerator<RandomNumbers::RandomArrayGenerator<RandomNumbers::GaussianRandomGenerator> >
+        MultiPathGenerator<RandomNumbers::RandomArrayGenerator<
+            RandomNumbers::GaussianRandomGenerator> >
             GaussianMultiPathGenerator;
 
         //! default choice for one-factor Monte Carlo model.
