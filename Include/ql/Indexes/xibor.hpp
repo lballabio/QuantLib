@@ -30,6 +30,9 @@
 
 // $Source$
 // $Log$
+// Revision 1.8  2001/06/18 11:52:37  lballabio
+// Fixed name used for history lookup
+//
 // Revision 1.7  2001/06/18 08:05:59  lballabio
 // Reworked indexes and floating rate coupon
 //
@@ -59,14 +62,15 @@ namespace QuantLib {
         //! base class for libor indexes
         class Xibor : public Index {
           public:
-            Xibor(const std::string& name, 
+            Xibor(const std::string& familyName, 
                 int n, TimeUnit units, Currency currency, 
                 const Handle<Calendar>& calendar, bool isAdjusted, 
                 RollingConvention rollingConvention,
                 const Handle<DayCounter>& dayCounter,
                 const RelinkableHandle<TermStructure>& h)
-            : name_(name), n_(n), units_(units), currency_(currency), 
-              calendar_(calendar), isAdjusted_(isAdjusted), 
+            : familyName_(familyName), n_(n), units_(units), 
+              currency_(currency), calendar_(calendar), 
+              isAdjusted_(isAdjusted), 
               rollingConvention_(rollingConvention), 
               dayCounter_(dayCounter), termStructure_(h) {}
             //! \name Index interface
@@ -85,7 +89,7 @@ namespace QuantLib {
             Handle<DayCounter> dayCounter() const { return dayCounter_; }
             //@}
           private:
-            std::string name_;
+            std::string familyName_;
             int n_;
             TimeUnit units_;
             Currency currency_;

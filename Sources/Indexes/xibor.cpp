@@ -30,6 +30,9 @@
 
 // $Source$
 // $Log$
+// Revision 1.9  2001/06/18 11:53:42  lballabio
+// Fixed name used for history lookup
+//
 // Revision 1.8  2001/06/15 13:52:07  lballabio
 // Reworked indexes
 //
@@ -59,19 +62,19 @@ namespace QuantLib {
         std::string Xibor::name() const {
             switch (units_) {
               case Days:
-                return name_+IntegerFormatter::toString(n_)+"d";
+                return familyName_+IntegerFormatter::toString(n_)+"d";
               case Weeks:
-                return name_+IntegerFormatter::toString(n_)+"w";
+                return familyName_+IntegerFormatter::toString(n_)+"w";
               case Months:
-                return name_+IntegerFormatter::toString(n_)+"m";
+                return familyName_+IntegerFormatter::toString(n_)+"m";
               case Years:
-                return name_+IntegerFormatter::toString(n_)+"y";
+                return familyName_+IntegerFormatter::toString(n_)+"y";
               default:
                 throw Error("invalid time unit");
             }
             QL_DUMMY_RETURN(std::string());
         }
-                    
+        
         Rate Xibor::fixing(const Date& fixingDate) const {
             QL_REQUIRE(!termStructure_.isNull(),
                 "null term structure set");
@@ -79,9 +82,9 @@ namespace QuantLib {
             if (fixingDate < settlementDate) {
                 // must have been fixed
                 Rate pastFixing =
-                    XiborManager::getHistory(name_)[fixingDate];
+                    XiborManager::getHistory(name())[fixingDate];
                 QL_REQUIRE(pastFixing != Null<double>(),
-                    "Missing " + name_ + " fixing for " +
+                    "Missing " + name() + " fixing for " +
                         DateFormatter::toString(fixingDate));
                 return pastFixing;
             }
@@ -89,7 +92,7 @@ namespace QuantLib {
                 // might have been fixed
                 try {
                     Rate pastFixing =
-                        XiborManager::getHistory(name_)[fixingDate];
+                        XiborManager::getHistory(name())[fixingDate];
                     if (pastFixing != Null<double>())
                         return pastFixing;
                     else
