@@ -256,7 +256,7 @@ namespace QuantLib {
                    "/" + IntegerFormatter::toString(v.size()) +
                    ")");
 
-        std::vector<Size> map(dimension_);
+        std::vector<Size> map(dimension_, 0);
         // map is used to indicate which points are already constructed.
         // If map[i] is zero, path point i is yet unconstructed.
         // map[i]-1 is the index of the variate that constructs
@@ -284,9 +284,23 @@ namespace QuantLib {
             bridgeIndex_[i] = l;
             leftIndex_[i]   = j;
             rightIndex_[i]  = k;
-            leftWeight_[i]  = (v[k]-v[l])  /(v[k]-v[j-1]);
-            rightWeight_[i] = (v[l]-v[j-1])/(v[k]-v[j-1]);
-            stdDev_[i] = QL_SQRT(((v[l]-v[j-1])*(v[k]-v[l]))/(v[k]-v[j-1]));
+            if (j) {
+                leftWeight_[i]  = (v[k]-v[l])  /(v[k]-v[j-1]);
+                rightWeight_[i] = (v[l]-v[j-1])/(v[k]-v[j-1]);
+                stdDev_[i] = QL_SQRT(((v[l]-v[j-1])*(v[k]-v[l]))/(v[k]-v[j-1]));
+            } else {
+                leftWeight_[i]  = (v[k]-v[l])  /v[k];
+                rightWeight_[i] =  v[l]        /v[k];
+                stdDev_[i] = QL_SQRT(v[l]*(v[k]-v[l])/v[k]);
+            }
+/*
+            std::cout << std::endl
+                << "i: " << i << "\tbridge: " << bridgeIndex_[i] + 1
+                << "\tleft: "   <<  (j ? leftIndex_[i] : 0)
+                << "\tright: "  << rightIndex_[i] + 1 
+                << "\tleftW: "  <<  DoubleFormatter::toString(leftWeight_[i], 2)
+                << " rightW: "  << DoubleFormatter::toString(rightWeight_[i], 2);
+*/            
             j=k+1;
             if (j>=dimension_) j=0;	//	Wrap around.
         }
