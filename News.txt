@@ -2,19 +2,21 @@
 March 2005 - Release 0.3.9
 Changes since release 0.3.8:
 
-- QL_SQRT, QL_MIN etc. deprecated in favor of std::sqrt, std::min...
+GLOBAL FEATURES
 
-- Interpolated discount, zero-yield and forward-rate curves can now be
-  set any interpolation.
+- QL_SQRT, QL_MIN etc. deprecated in favor of std::sqrt, std::min...
 
 - Added a tentative tracing facility to ease debugging.
 
 - Formatters deprecated in favor of output manipulators. A number of
   data types can now be sent directly to output streams. 
+
 - Stream-based implementation of QL_REQUIRE, QL_TRACE and similar macros.
   Together with manipulators, this allows one to write simpler error
   messages, as in:
   QL_FAIL("forward at date " << d << " is " << io::rate(f));
+
+INSTRUMENTS
 
 - Improved Bond class
   - yield-related calculation can be performed with either compounded or
@@ -23,9 +25,25 @@ Changes since release 0.3.8:
   - fixed-rate coupon bonds can define different rates for each coupon;
   - added zero-coupon and floating-rate bonds (thanks to StatPro.)
 
-- FlatForward can now take rates with compounding other than continuous.
+- Option instruments now take a generic StochasticProcess; however, most
+  pricing engines still require a BlackScholesProcess. They should be
+  checked to see whether the requirement can be relaxed.  Following this
+  change, Merton76Process no longer inherits from BlackScholesProcess.
+  This avoids erroneous upcasts.
 
-- Added backward- and forward-flat interpolations.
+- Partial fix for Bermudan swaptions with exercise lag (thanks to
+  Luca Berardi for the report and discussion.)
+
+CALENDARS
+
+- Added Bratislava and Prague calendars.
+
+FINITE_DIFFERENCES FRAMEWORK
+
+- Migrated finite-difference pricers to pricing-engine framework (thanks
+  to Joseph Wang.)
+
+YIELD TERM STRUCTURES
 
 - Added generic piecewise yield term structure. Client code can choose
   what to interpolate (discounts, zero yields, forwards) and how (linear,
@@ -35,20 +53,15 @@ Changes since release 0.3.8:
   PiecewiseYieldCurve<ZeroYield,Linear>
   PiecewiseYieldCurve<ForwardRate,Linear>
 
-- Added Bratislava and Prague calendars.
+- Interpolated discount, zero-yield and forward-rate curves can now be
+  set any interpolation.
 
-- Migrated finite-difference pricers to pricing-engine framework (thanks
-  to Joseph Wang.)
-
-- Option instruments now take a generic StochasticProcess; however, most
-  pricing engines still require a BlackScholesProcess. They should be
-  checked to see whether the requirement can be relaxed.  Following this
-  change, Merton76Process no longer inherits from BlackScholesProcess.
-  This avoids erroneous upcasts.
+- FlatForward can now take rates with compounding other than continuous.
   
 - Fix for extrapolation in zero-spreaded and forward-spreaded yield
   term structure (thanks to Adjriou Belak for the report.)
 
-- Partial fix for Bermudan swaptions with exercise lag (thanks to
-  Luca Berardi for the report and discussion.)
+MATH
+
+- Added backward- and forward-flat interpolations.
 
