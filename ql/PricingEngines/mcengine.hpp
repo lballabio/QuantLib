@@ -48,9 +48,9 @@ namespace QuantLib {
         */
 
         template<class S, class PG, class PP>
-        class McEngine {
+        class McSimulation {
           public:
-            virtual ~McEngine() {}
+            virtual ~McSimulation() {}
             //! add samples until the required tolerance is reached
             double value(double tolerance,
                          Size maxSample = QL_MAX_INT) const;
@@ -61,7 +61,10 @@ namespace QuantLib {
             //! access to the sample accumulator for richer statistics
             const S& sampleAccumulator(void) const;
           protected:
-            McEngine() {}
+            McSimulation(bool antitheticVariate,
+                         bool controlVariate)
+            : antitheticVariate_(antitheticVariate),
+              controlVariate_(controlVariate) {}
             virtual Handle<PP> pathPricer() const = 0;
             virtual Handle<PP> controlPathPricer() const { 
                 return Handle<PP>(); 
@@ -70,17 +73,19 @@ namespace QuantLib {
                 return Handle<PricingEngine>(); 
             }
             virtual Handle<PG> pathGenerator() const = 0;
+            virtual TimeGrid timeGrid() const = 0;
             mutable Handle<MonteCarlo::MonteCarloModel<S, PG, PP> > mcModel_;
             static const Size minSample_;
+            bool antitheticVariate_, controlVariate_;
         };
 
 
         template<class S, class PG, class PP>
-        const Size McEngine<S, PG, PP>::minSample_ = 100;
+        const Size McSimulation<S, PG, PP>::minSample_ = 100;
 
         // inline definitions
         template<class S, class PG, class PP>
-        inline double McEngine<S, PG, PP>::value(double tolerance,
+        inline double McSimulation<S, PG, PP>::value(double tolerance,
                                                  Size maxSamples) const {
             Size sampleNumber =
                 mcModel_->sampleAccumulator().samples();
@@ -104,7 +109,7 @@ namespace QuantLib {
                 // do not exceed maxSamples
                 nextBatch = QL_MIN(nextBatch, maxSamples-sampleNumber);
                 QL_REQUIRE(nextBatch>0,
-                    "McEngine::value : "
+                    "McSimulation::value : "
                     "max number of samples exceeded");
 
                 sampleNumber += nextBatch;
@@ -119,11 +124,11 @@ namespace QuantLib {
 
 
         template<class S, class PG, class PP>
-        inline double McEngine<S, PG, PP>::valueWithSamples(Size samples)
+        inline double McSimulation<S, PG, PP>::valueWithSamples(Size samples)
             const {
 
             QL_REQUIRE(samples>=minSample_,
-                "McEngine::valueWithSamples : "
+                "McSimulation::valueWithSamples : "
                 "number of requested samples ("
                 + IntegerFormatter::toString(samples) +
                 ") lower than minSample_ ("
@@ -134,7 +139,7 @@ namespace QuantLib {
                 mcModel_->sampleAccumulator().samples();
 
             QL_REQUIRE(samples>=sampleNumber,
-                "McEngine::valueWithSamples : "
+                "McSimulation::valueWithSamples : "
                 "number of already simulated samples ("
                 + IntegerFormatter::toString(sampleNumber) +
                 ") greater than"
@@ -149,20 +154,20 @@ namespace QuantLib {
 
 
         template<class S, class PG, class PP>
-        inline double McEngine<S, PG, PP>::errorEstimate() const {
+        inline double McSimulation<S, PG, PP>::errorEstimate() const {
 
             Size sampleNumber =
                 mcModel_->sampleAccumulator().samples();
 
             QL_REQUIRE(sampleNumber>=minSample_,
-                "McEngine::errorEstimate : "
+                "McSimulation::errorEstimate : "
                 "number of simulated samples lower than minSample_");
 
             return mcModel_->sampleAccumulator().errorEstimate();
         }
 
         template<class S, class PG, class PP>
-        inline const S& McEngine<S, PG, PP>::sampleAccumulator() const {
+        inline const S& McSimulation<S, PG, PP>::sampleAccumulator() const {
 
             return mcModel_->sampleAccumulator();
         }
@@ -172,21 +177,19 @@ namespace QuantLib {
         //! Base class for Monte Carlo vanilla option engines
         template<class S, class SG, class PG, class PP>
         class MCVanillaEngine : public VanillaEngine,
-                                public McEngine<S, PG, PP> {
+                                public McSimulation<S, PG, PP> {
           public:
             void calculate() const;
           protected:
-            MCVanillaEngine(bool antitheticVariance,
+            MCVanillaEngine(bool antitheticVariate,
                             bool controlVariate,
-                            const TimeGrid& timeGrid,
+                            Size maxTimeStepsPerYear,
                             SG sequenceGenerator) 
-            : antitheticVariance_(antitheticVariance),
-              controlVariate_(controlVariate), timeGrid_(timeGrid),
+            : McSimulation<S, PG, PP>(antitheticVariate,controlVariate),
+              maxTimeStepsPerYear_(maxTimeStepsPerYear),
               sequenceGenerator_(sequenceGenerator) {}
             Handle<PG> pathGenerator() const;
-            bool antitheticVariance_, controlVariate_;
-          private:
-            TimeGrid timeGrid_;
+            Size maxTimeStepsPerYear_;
             SG sequenceGenerator_;
         };
 
@@ -203,7 +206,7 @@ namespace QuantLib {
                                     arguments_.volTS, 
                                     arguments_.underlying));
 
-            return Handle<PG>(new PG(bs, timeGrid_, sequenceGenerator_));
+            return Handle<PG>(new PG(bs, timeGrid(), sequenceGenerator_));
 
         }
 
@@ -236,6 +239,7 @@ namespace QuantLib {
                         controlPE->arguments());
                 *controlArguments = arguments_;
                 controlPE->calculate();
+
                 const VanillaOptionResults* controlResults =
                     dynamic_cast<const VanillaOptionResults*>(
                         controlPE->results());
@@ -243,16 +247,16 @@ namespace QuantLib {
 
                 mcModel_ = Handle<MonteCarlo::MonteCarloModel<S, PG, PP> >(
                     new MonteCarlo::MonteCarloModel<S, PG, PP>(
-                        pathGenerator(), pathPricer(), S(),
+                        pathGenerator(), pathPricer(), S(), antitheticVariate_,
                         controlPP, controlVariateValue));
            
             } else {
                 mcModel_ = Handle<MonteCarlo::MonteCarloModel<S, PG, PP> >(
                     new MonteCarlo::MonteCarloModel<S, PG, PP>(
-                        pathGenerator(), pathPricer(), S()));
+                        pathGenerator(), pathPricer(), S(), antitheticVariate_));
             }
 
-            value(0.02);
+            value(0.01);
 
             results_.value = mcModel_->sampleAccumulator().mean();
             results_.errorEstimate = 
@@ -261,28 +265,45 @@ namespace QuantLib {
 
 
         //! European Vanilla option pricing engine using Monte Carlo simulation
-        template<class S, class SG, class PG, class PP>
-        class MCEuropeanEngine : public MCVanillaEngine<S, SG, PG, PP> {
+        template<class S, class SG, class PG>
+        class MCEuropeanEngine
+            : public MCVanillaEngine<S, SG, PG,
+                                     MonteCarlo::PathPricer<
+                                        MonteCarlo::Path> > {
           public:
-            MCEuropeanEngine(
-                bool antitheticVariance,
-                bool controlVariate,
-                const TimeGrid timeGrid,
-                SG sequenceGenerator) 
-            : MCVanillaEngine<S, SG, PG, PP>(antitheticVariance,
-              controlVariate, timeGrid, sequenceGenerator) {}
+            MCEuropeanEngine(bool antitheticVariate,
+                             bool controlVariate,
+                             Size maxTimeStepPerYear,
+                             SG sequenceGenerator) 
+            : MCVanillaEngine<S, SG,PG, MonteCarlo::PathPricer<
+                                        MonteCarlo::Path> >(antitheticVariate,
+              controlVariate, maxTimeStepPerYear, sequenceGenerator) {}
           protected:
-            Handle<PP> pathPricer() const;
+            TimeGrid timeGrid() const;
+            Handle<MonteCarlo::PathPricer<MonteCarlo::Path> > pathPricer() const;
         };
 
-        template<class S, class SG, class PG, class PP>
+        template<class S, class SG, class PG>
         inline 
-        Handle<PP> MCEuropeanEngine<S, SG, PG, PP>::pathPricer() const {
+        Handle<MonteCarlo::PathPricer<MonteCarlo::Path> >
+        MCEuropeanEngine<S, SG, PG>::pathPricer() const {
             //! Initialize the path pricer
             return Handle<MonteCarlo::PathPricer<MonteCarlo::Path> >(
                 new MonteCarlo::EuropeanPathPricer(arguments_.type,
                 arguments_.underlying, arguments_.strike,
                 arguments_.riskFreeTS));
+        }
+
+        template<class S, class SG, class PG>
+        inline TimeGrid MCEuropeanEngine<S, SG, PG>::timeGrid() const {
+            try {
+                Handle<VolTermStructures::BlackConstantVol> constVolTS = 
+                    (*(arguments_.volTS)).currentLink();
+                return TimeGrid(arguments_.maturity, 1);
+            } catch (...) {
+                return TimeGrid(arguments_.maturity, 
+                                Size(arguments_.maturity*maxTimeStepsPerYear_));
+            }
         }
 
     }
