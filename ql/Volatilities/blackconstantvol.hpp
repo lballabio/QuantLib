@@ -53,6 +53,10 @@ namespace QuantLib {
             Date referenceDate() const;
             DayCounter dayCounter() const;
             Date maxDate() const;
+            double blackForwardVol(Time t1,
+                                   Time t2,
+                                   double,
+                                   bool) const;
             // Observer interface
             void update();
           protected:
@@ -110,7 +114,7 @@ namespace QuantLib {
         //! overload base class method in order to avoid numerical round-off
         inline double BlackConstantVol::blackForwardVol(Time t1, Time t2,
             double, bool) const {
-            QL_REQUIRE(time2>=time1,
+            QL_REQUIRE(t2>=t1,
                 "BlackConstantVol::blackForwardVol : "
                 "time2<time1");
             return volatility_->value();
