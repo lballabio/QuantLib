@@ -21,12 +21,14 @@
  * http://quantlib.sourceforge.net/LICENSE.TXT
 */
 
-/*! \file bsmamericanoption.cpp
+/*! \file americanoption.cpp
     \brief american option
 
     $Source$
-    $Name$
     $Log$
+    Revision 1.2  2001/03/02 08:39:19  enri
+    comments slightly changed
+
     Revision 1.1  2001/03/02 08:36:45  enri
     Shout options added:
     	* BSMAmericanOption is now AmericanOption, same interface
@@ -34,33 +36,6 @@
     	* both ShoutOption and AmericanOption inherit from
     	  StepConditionOption
     offline.doxy.linux added.
-
-    Revision 1.23  2001/03/01 14:20:36  marmar
-    Private-member syntax changed
-
-    Revision 1.22  2001/03/01 13:53:40  marmar
-    Standard step condition and finite-difference model introduced
-
-    Revision 1.21  2001/02/19 12:19:29  marmar
-    Added trailing _ to protected and private members
-
-    Revision 1.20  2001/02/13 10:02:57  marmar
-    Ambiguous variable name underlyingGrowthRate changed in
-    unambiguos dividendYield
-
-    Revision 1.19  2001/01/17 13:56:30  nando
-    80 columns enforced
-    tabs removed
-
-    Revision 1.18  2001/01/08 11:44:18  lballabio
-    Array back into QuantLib namespace - Math namespace broke expression templates, go figure
-
-    Revision 1.17  2001/01/08 10:28:17  lballabio
-    Moved Array to Math namespace
-
-    Revision 1.16  2000/12/14 12:32:31  lballabio
-    Added CVS tags in Doxygen file documentation blocks
-
 */
 
 #include "bsmamericanoption.h"
