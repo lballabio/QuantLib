@@ -216,7 +216,7 @@ namespace QuantLib {
 
             //! Initialize the one-factor Monte Carlo
             if (controlVariate_) {
-/*
+
                 Handle<PP> controlPP = controlPathPricer();
                 QL_REQUIRE(!controlPP.isNull(),
                     "MCVanillaEngine::calculate() : "
@@ -230,23 +230,23 @@ namespace QuantLib {
 
 
                 VanillaOptionArguments* controlArguments =
-                    dynamic_cast<VanillaOptionArguments>(
+                    dynamic_cast<VanillaOptionArguments*>(
                         controlPE->arguments());
-                controlArguments = arguments_;
+                *controlArguments = arguments_;
                 controlPE->calculate();
-                VanillaOptionResults* controlResults =
-                    dynamic_cast<VanillaOptionResults>(
+                const VanillaOptionResults* controlResults =
+                    dynamic_cast<const VanillaOptionResults*>(
                         controlPE->results());
-                double controlVariateValue = controlResults.value;
+                double controlVariateValue = controlResults->value;
 
                 mcModel_ = Handle<MonteCarlo::MonteCarloModel<S, PG, PP> >(
                     new MonteCarlo::MonteCarloModel<S, PG, PP>(
                         pathGenerator(), pathPricer(), S(),
                         controlPP, controlVariateValue));
-*/
-                mcModel_ = Handle<MonteCarlo::MonteCarloModel<S, PG, PP> >(
-                    new MonteCarlo::MonteCarloModel<S, PG, PP>(
-                        pathGenerator(), pathPricer(), S()));
+
+//                mcModel_ = Handle<MonteCarlo::MonteCarloModel<S, PG, PP> >(
+//                    new MonteCarlo::MonteCarloModel<S, PG, PP>(
+//                        pathGenerator(), pathPricer(), S()));
 
             
             } else {

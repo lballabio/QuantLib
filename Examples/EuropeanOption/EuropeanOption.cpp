@@ -317,7 +317,7 @@ int main(int argc, char* argv[])
         method = "Monte Carlo";
         option.setPricingEngine(Handle<PricingEngine>(
             new MCEuropeanVanillaEngine<Statistics, GaussianPathGenerator,
-                PathPricer<Path> >(true, true)));
+                PathPricer<Path> >(true, false)));
         value = option.NPV();
         discrepancy = QL_FABS(value-rightValue);
         relativeDiscrepancy = discrepancy/rightValue;
