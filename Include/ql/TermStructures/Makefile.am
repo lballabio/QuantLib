@@ -5,6 +5,6 @@
 includedir = $(prefix)/include/ql/TermStructures
 include_HEADERS = \
     flatforward.hpp \
-	piecewiseflatforwards.hpp \
+	piecewiseflatforward.hpp \
 	ratehelpers.hpp \
 	piecewiseconstantforwards.hpp
