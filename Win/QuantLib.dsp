@@ -425,6 +425,14 @@ SOURCE=..\Include\MonteCarlo\europeanpathpricer.h
 # End Source File
 # Begin Source File
 
+SOURCE=..\Sources\MonteCarlo\everestpathpricer.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\Include\MonteCarlo\everestpathpricer.h
+# End Source File
+# Begin Source File
+
 SOURCE=..\Include\MonteCarlo\gaussianarraygenerator.h
 # End Source File
 # Begin Source File
@@ -537,6 +545,10 @@ SOURCE=..\Include\Pricers\americancondition.h
 # End Source File
 # Begin Source File
 
+SOURCE=..\Include\Pricers\americanoption.h
+# End Source File
+# Begin Source File
+
 SOURCE=..\Sources\Pricers\averagepriceasian.cpp
 # End Source File
 # Begin Source File
@@ -561,7 +573,11 @@ SOURCE=..\Include\Pricers\barrieroption.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\Sources\Pricers\bsmamericanoption.cpp
+SOURCE=..\Sources\Pricers\binaryoption.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\Include\Pricers\binaryoption.h
 # End Source File
 # Begin Source File
 
@@ -609,6 +625,14 @@ SOURCE=..\Include\Pricers\dividendeuropeanoption.h
 # End Source File
 # Begin Source File
 
+SOURCE=..\Sources\Pricers\everestoption.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\Include\Pricers\everestoption.h
+# End Source File
+# Begin Source File
+
 SOURCE=..\Include\Pricers\geometricasianoption.h
 # End Source File
 # Begin Source File
@@ -634,6 +658,22 @@ SOURCE=..\Sources\Pricers\plainbasketoption.cpp
 # Begin Source File
 
 SOURCE=..\Include\Pricers\plainbasketoption.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\Include\Pricers\shoutcondition.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\Include\Pricers\shoutoption.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\Sources\Pricers\stepconditionoption.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\Include\Pricers\stepconditionoption.h
 # End Source File
 # End Group
 # Begin Group "Solvers 1D"
@@ -831,6 +871,14 @@ SOURCE=..\Include\quantlib.h
 # Begin Source File
 
 SOURCE=..\Include\rate.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\Sources\ratehelper.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\Include\ratehelper.h
 # End Source File
 # Begin Source File
 

@@ -24,6 +24,7 @@ include_HEADERS = \
 	qlerrors.h \
 	quantlib.h \
 	rate.h \
+	ratehelper.h \
 	riskstatistics.h \
 	solver1d.h spread.h \
 	swaptionvolsurface.h \

@@ -26,9 +26,10 @@ PYTHON_LIBS    = "$(PYTHON_HOME)"\libs
 
 # Object files
 CORE_OBJS        = $(OUTPUT_DIR)\calendar.obj \
+                   $(OUTPUT_DIR)\dataformatters.obj \
                    $(OUTPUT_DIR)\date.obj \
-                   $(OUTPUT_DIR)\solver1d.obj \
-                   $(OUTPUT_DIR)\dataformatters.obj
+                   $(OUTPUT_DIR)\ratehelper.obj \
+                   $(OUTPUT_DIR)\solver1d.obj
 
 CALENDAR_OBJS    = $(OUTPUT_DIR)\westerncalendar.obj \
                    $(OUTPUT_DIR)\frankfurt.obj \
@@ -48,7 +49,7 @@ MATH_OBJS        = $(OUTPUT_DIR)\matrix.obj      \
                    $(OUTPUT_DIR)\normaldistribution.obj \
                    $(OUTPUT_DIR)\statistics.obj
 
-MONTECARLO_OBJS  = $(OUTPUT_DIR)\avgpriceasianpathpricer.obj \ 
+MONTECARLO_OBJS  = $(OUTPUT_DIR)\avgpriceasianpathpricer.obj \
                    $(OUTPUT_DIR)\avgstrikeasianpathpricer.obj \
                    $(OUTPUT_DIR)\basketpathpricer.obj       \
                    $(OUTPUT_DIR)\controlvariatedpathpricer.obj \
@@ -56,7 +57,7 @@ MONTECARLO_OBJS  = $(OUTPUT_DIR)\avgpriceasianpathpricer.obj \
                    $(OUTPUT_DIR)\everestpathpricer.obj        \
                    $(OUTPUT_DIR)\geometricasianpathpricer.obj  \
                    $(OUTPUT_DIR)\himalayapathpricer.obj  \
-                   $(OUTPUT_DIR)\lecuyerrandomgenerator.obj                    
+                   $(OUTPUT_DIR)\lecuyerrandomgenerator.obj
 
 FDM_OBJS         = $(OUTPUT_DIR)\tridiagonaloperator.obj \
                    $(OUTPUT_DIR)\bsmoperator.obj
@@ -64,9 +65,9 @@ FDM_OBJS         = $(OUTPUT_DIR)\tridiagonaloperator.obj \
 
 PRICER_OBJS      = $(OUTPUT_DIR)\bsmoption.obj \
                    $(OUTPUT_DIR)\averagestrikeasian.obj \
-                   $(OUTPUT_DIR)\averagepriceasian.obj \ 
-                   $(OUTPUT_DIR)\barrieroption.obj \ 
-                   $(OUTPUT_DIR)\binaryoption.obj \ 
+                   $(OUTPUT_DIR)\averagepriceasian.obj \
+                   $(OUTPUT_DIR)\barrieroption.obj \
+                   $(OUTPUT_DIR)\binaryoption.obj \
                    $(OUTPUT_DIR)\bsmnumericaloption.obj \
                    $(OUTPUT_DIR)\bsmeuropeanoption.obj \
                    $(OUTPUT_DIR)\dividendamericanoption.obj \
@@ -75,7 +76,7 @@ PRICER_OBJS      = $(OUTPUT_DIR)\bsmoption.obj \
                    $(OUTPUT_DIR)\himalaya.obj \
                    $(OUTPUT_DIR)\mceuropeanpricer.obj \
                    $(OUTPUT_DIR)\plainbasketoption.obj \
-                   $(OUTPUT_DIR)\stepconditionoption.obj 
+                   $(OUTPUT_DIR)\stepconditionoption.obj
 
 
 SOLVER1D_OBJS    = $(OUTPUT_DIR)\bisection.obj \
@@ -234,6 +235,7 @@ Core: $(OUTPUT_DIR) $(CORE_OBJS)
 $(OUTPUT_DIR)\calendar.obj: $(SOURCES_DIR)\calendar.cpp
 $(OUTPUT_DIR)\dataformatters.obj: $(SOURCES_DIR)\dataformatters.cpp
 $(OUTPUT_DIR)\date.obj: $(SOURCES_DIR)\date.cpp
+$(OUTPUT_DIR)\ratehelper.obj: $(SOURCES_DIR)\ratehelper.cpp
 $(OUTPUT_DIR)\solver1d.obj: $(SOURCES_DIR)\solver1d.cpp
 
 
@@ -281,7 +283,7 @@ $(OUTPUT_DIR)\avgpriceasianpathpricer.obj: \
 $(OUTPUT_DIR)\avgstrikeasianpathpricer.obj: \
     $(SOURCES_DIR)\MonteCarlo\avgstrikeasianpathpricer.cpp
 $(OUTPUT_DIR)\basketpathpricer.obj: \
-    $(SOURCES_DIR)\MonteCarlo\basketpathpricer.cpp    
+    $(SOURCES_DIR)\MonteCarlo\basketpathpricer.cpp
 $(OUTPUT_DIR)\controlvariatedpathpricer.obj: \
     $(SOURCES_DIR)\MonteCarlo\controlvariatedpathpricer.cpp
 $(OUTPUT_DIR)\europeanpathpricer.obj: \
@@ -301,11 +303,11 @@ Pricers: $(OUTPUT_DIR) $(PRICER_OBJS)
 $(OUTPUT_DIR)\bsmoption.obj: $(SOURCES_DIR)\Pricers\bsmoption.cpp
 $(OUTPUT_DIR)\averagepriceasian.obj: \
                 $(SOURCES_DIR)\Pricers\averagepriceasian.cpp
-$(OUTPUT_DIR)\averagestrikeasian.obj: \ 
+$(OUTPUT_DIR)\averagestrikeasian.obj: \
                 $(SOURCES_DIR)\Pricers\averagestrikeasian.cpp
-$(OUTPUT_DIR)\barrieroption.obj: \ 
+$(OUTPUT_DIR)\barrieroption.obj: \
                 $(SOURCES_DIR)\Pricers\barrieroption.cpp
-$(OUTPUT_DIR)\binaryoption.obj: \ 
+$(OUTPUT_DIR)\binaryoption.obj: \
                 $(SOURCES_DIR)\Pricers\binaryoption.cpp
 $(OUTPUT_DIR)\bsmnumericaloption.obj: \
                 $(SOURCES_DIR)\Pricers\bsmnumericaloption.cpp
@@ -325,9 +327,9 @@ $(OUTPUT_DIR)\plainbasketoption.obj: \
                 $(SOURCES_DIR)\Pricers\plainbasketoption.cpp
 $(OUTPUT_DIR)\stepconditionoption.obj: \
                 $(SOURCES_DIR)\Pricers\stepconditionoption.cpp
-                
-                
-                
+
+
+
 
 # 1D solvers
 Solvers1D: $(OUTPUT_DIR) $(SOLVER1D_OBJS)

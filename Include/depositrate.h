@@ -25,8 +25,12 @@
     \brief Deposit rate
 
     $Source$
-    $Name$
     $Log$
+    Revision 1.2  2001/03/07 10:34:25  nando
+    added ratehelper.cpp and ratehelper.h.
+    Borland, Linux and Visual C++ updated
+    Also added some missing files to Visual C++
+
     Revision 1.1  2001/01/18 16:22:05  nando
     deposit file and class renamed to DepositRate
 
@@ -54,8 +58,8 @@ namespace QuantLib {
       public:
         DepositRate() {}
         DepositRate(const Date& maturity,
-                Rate rate,
-                const Handle<DayCounter>& dayCounter)
+                    Rate rate,
+                    const Handle<DayCounter>& dayCounter)
         : maturity_(maturity), rate_(rate), dayCounter_(dayCounter) {}
         //! \name Inspectors
         //@{
