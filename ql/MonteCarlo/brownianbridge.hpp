@@ -206,7 +206,7 @@ namespace QuantLib {
         std::vector<double> variances(dimension_);
         for (Size i=0; i<dimension_; i++) {
             // problems here if the blackVol is asset dependant
-            variances[i]=blackVol->blackVariance(timeGrid_[i], 1.0);
+            variances[i]=blackVol->blackVariance(timeGrid_[i+1], 1.0);
         }
         initialize(variances);
     }
@@ -241,13 +241,20 @@ namespace QuantLib {
             // problems here if the blackVol is asset dependant
             // dummy asset level is used
             variances[i] =
-                diffProcess->variance(timeGrid_[i], 1.0, timeGrid_.dt(i));
+                diffProcess->variance(0.0, 1.0, timeGrid_[i+1]);
         }
         initialize(variances);
     }
 
     template <class GSG>
     void BrownianBridge<GSG>::initialize(const std::vector<double>& v) {
+
+        QL_REQUIRE(v.size()==dimension_,
+                   "BrownianBridge::initialize : "
+                   "GSG/variance vector dimension mismatch"
+                   "(" + IntegerFormatter::toString(dimension_) +
+                   "/" + IntegerFormatter::toString(v.size()) +
+                   ")");
 
         std::vector<Size> map(dimension_);
         // map is used to indicate which points are already constructed.
