@@ -4,7 +4,7 @@
 # General configuration options
 #---------------------------------------------------------------------------
 PROJECT_NAME           = QuantLib
-PROJECT_NUMBER         = 0.2
+PROJECT_NUMBER         = 0.2.0
 OUTPUT_DIRECTORY       =
 OUTPUT_LANGUAGE        = English
 EXTRACT_ALL            = NO
@@ -84,7 +84,7 @@ GENERATE_HTML          = YES
 HTML_OUTPUT            = html
 HTML_HEADER            = quantlibheader.html
 HTML_FOOTER            = quantlibfooter.html
-HTML_STYLESHEET        = quantlib.css
+HTML_STYLESHEET        =
 HTML_ALIGN_MEMBERS     = YES
 GENERATE_HTMLHELP      = YES
 GENERATE_CHI           = NO
