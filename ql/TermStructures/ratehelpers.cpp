@@ -266,7 +266,7 @@ namespace QuantLib {
             QL_REQUIRE(termStructure_ != 0, "term structure not set");
             // we didn't register as observers - force calculation
             swap_->recalculate();
-            return -swap_->NPV()/swap_->fixedLegBPS();
+            return swap_->fairRate();
         }
 
     }
