@@ -8,6 +8,7 @@ include_HEADERS = \
     capfloor.hpp \
     cliquetoption.hpp \
     forwardvanillaoption.hpp \
+    payoffs.hpp \
     quantoforwardvanillaoption.hpp \
     quantovanillaoption.hpp \
     simpleswap.hpp \
