@@ -71,7 +71,7 @@ namespace QuantLib {
       protected:
         double nominal_;
         Date paymentDate_, accrualStartDate_, accrualEndDate_, 
-            refPeriodStart_, refPeriodEnd_;
+             refPeriodStart_, refPeriodEnd_;
     };
 
 
@@ -85,7 +85,12 @@ namespace QuantLib {
                           const Date& refPeriodEnd)
     : nominal_(nominal), paymentDate_(paymentDate), 
       accrualStartDate_(accrualStartDate), accrualEndDate_(accrualEndDate),
-      refPeriodStart_(refPeriodStart), refPeriodEnd_(refPeriodEnd) {}
+      refPeriodStart_(refPeriodStart), refPeriodEnd_(refPeriodEnd) {
+        if (refPeriodStart_ == Date())
+            refPeriodStart_ = accrualStartDate_;
+        if (refPeriodEnd_ == Date())
+            refPeriodEnd_ = accrualEndDate_;
+    }
 
     inline Date Coupon::date() const {
         return paymentDate_;
