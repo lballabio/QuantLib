@@ -8,6 +8,7 @@ include_HEADERS = \
 	budapest.hpp \
 	copenhagen.hpp \
 	frankfurt.hpp \
+	germany.hpp \
 	helsinki.hpp \
 	hongkong.hpp \
 	italy.hpp \
@@ -57,7 +58,6 @@ libCalendars_la_SOURCES = \
 	toronto.cpp \
 	unitedkingdom.cpp \
 	unitedstates.cpp \
-	xetra.cpp \
 	warsaw.cpp \
 	wellington.cpp \
 	zurich.cpp

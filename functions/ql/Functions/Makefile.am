@@ -3,6 +3,7 @@ AM_CPPFLAGS = -I${top_srcdir} -I${top_builddir} -I${top_srcdir}/functions
 includedir = $(prefix)/include/ql/Functions
 
 include_HEADERS = \
+	calendars.hpp \
 	daycounters.hpp \
 	mathf.hpp \
 	qlfunctions.hpp \
@@ -14,6 +15,7 @@ lib_LTLIBRARIES = libQuantLibFunctions.la
 libQuantLibFunctions_la_LDFLAGS = -release $(PACKAGE_VERSION)
 
 libQuantLibFunctions_la_SOURCES = \
+    calendars.cpp \
     daycounters.cpp \
     mathf.cpp \
 	vols.cpp

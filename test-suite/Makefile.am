@@ -39,12 +39,14 @@ QL_TESTS = \
 	old_pricers.hpp old_pricers.cpp \
 	utilities.hpp utilities.cpp
 
-AM_CPPFLAGS = -I${top_srcdir} -I${top_builddir}
+AM_CPPFLAGS = -I${top_srcdir} -I${top_srcdir}/functions -I${top_builddir}
 
 bin_PROGRAMS = quantlib-test-suite
 
 quantlib_test_suite_SOURCES = ${QL_TESTS}
-quantlib_test_suite_LDADD = ../ql/libQuantLib.la
+quantlib_test_suite_LDADD = \
+	${top_builddir}/ql/libQuantLib.la \
+	${top_builddir}/functions/ql/Functions/libQuantLibFunctions.la
 quantlib_test_suite_LDFLAGS = -lboost_unit_test_framework
 
 TESTS = quantlib-test-suite
