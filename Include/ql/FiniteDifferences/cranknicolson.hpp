@@ -30,29 +30,8 @@
 
 // $Id$
 // $Log$
-// Revision 1.10  2001/08/09 14:59:46  sigmud
-// header modification
-//
-// Revision 1.9  2001/08/08 11:07:48  sigmud
-// inserting \fullpath for doxygen
-//
-// Revision 1.8  2001/08/07 11:25:53  sigmud
-// copyright header maintenance
-//
-// Revision 1.7  2001/07/25 15:47:27  sigmud
-// Change from quantlib.sourceforge.net to quantlib.org
-//
-// Revision 1.6  2001/07/09 16:29:27  lballabio
-// Some documentation and market element
-//
-// Revision 1.5  2001/06/22 16:38:15  lballabio
-// Improved documentation
-//
-// Revision 1.4  2001/06/18 10:20:25  nando
-// 80 colums enforced
-//
-// Revision 1.3  2001/05/24 15:38:08  nando
-// smoothing #include xx.hpp and cutting old Log messages
+// Revision 1.11  2001/08/28 17:23:30  nando
+// unsigned int instead of int
 //
 
 #ifndef quantlib_crank_nicolson_h

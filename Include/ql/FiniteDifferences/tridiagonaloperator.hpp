@@ -30,6 +30,9 @@
 
 // $Id$
 // $Log$
+// Revision 1.10  2001/08/28 17:23:30  nando
+// unsigned int instead of int
+//
 // Revision 1.9  2001/08/28 13:37:35  nando
 // unsigned int instead of int
 //
@@ -76,7 +79,7 @@ namespace QuantLib {
             Array solveFor(const Array& rhs) const;
             Array applyTo(const Array& v) const;
             // inspectors
-            unsigned int size() const { return diagonal.size(); }
+            unsigned int size() const { return diagonal_.size(); }
             // modifiers
             void setLowerBC(const BoundaryCondition& bc);
             void setHigherBC(const BoundaryCondition& bc);
@@ -88,8 +91,8 @@ namespace QuantLib {
                 void setTime(Time t) {}
             #endif
           protected:
-            Array diagonal, belowDiagonal, aboveDiagonal;
-            BoundaryCondition theLowerBC, theHigherBC;
+            Array diagonal_, belowDiagonal_, aboveDiagonal_;
+            BoundaryCondition lowerBC_, higherBC_;
         };
 
         // derived classes
@@ -131,17 +134,17 @@ namespace QuantLib {
                _not_ to be defined for other compilers which are able to
                generate correct ones.   */
                 TridiagonalOperator(const TridiagonalOperator& op)
-                : TridiagonalOperatorCommon(op.belowDiagonal, op.diagonal,
-                    op.aboveDiagonal) {
-                        theLowerBC = op.theLowerBC;
-                        theHigherBC = op.theHigherBC;
+                : TridiagonalOperatorCommon(op.belowDiagonal_, op.diagonal_,
+                    op.aboveDiagonal_) {
+                        lowerBC_  = op.lowerBC_;
+                        higherBC_ = op.higherBC_;
                 }
                 TridiagonalOperator& operator=(const TridiagonalOperator& op) {
-                    belowDiagonal = op.belowDiagonal;
-                    diagonal = op.diagonal;
-                    aboveDiagonal = op.aboveDiagonal;
-                    theLowerBC = op.theLowerBC;
-                    theHigherBC = op.theHigherBC;
+                    belowDiagonal_ = op.belowDiagonal_;
+                    diagonal_      = op.diagonal_;
+                    aboveDiagonal_ = op.aboveDiagonal_;
+                    lowerBC_       = op.lowerBC_;
+                    higherBC_      = op.higherBC_;
                     return *this;
                 }
             #endif
@@ -165,32 +168,32 @@ namespace QuantLib {
 
         inline void TridiagonalOperatorCommon::setFirstRow(double valB,
           double valC) {
-            diagonal[0]      = valB;
-            aboveDiagonal[0] = valC;
+            diagonal_[0]      = valB;
+            aboveDiagonal_[0] = valC;
         }
 
         inline void TridiagonalOperatorCommon::setMidRow(unsigned int i, double valA,
           double valB, double valC) {
             QL_REQUIRE(i>=1 && i<=size()-2,
                 "out of range in TridiagonalSystem::setMidRow");
-            belowDiagonal[i-1] = valA;
-            diagonal[i]        = valB;
-            aboveDiagonal[i]   = valC;
+            belowDiagonal_[i-1] = valA;
+            diagonal_[i]        = valB;
+            aboveDiagonal_[i]   = valC;
         }
 
         inline void TridiagonalOperatorCommon::setMidRows(double valA,
           double valB, double valC){
             for (unsigned int i=1; i<=size()-2; i++) {
-                belowDiagonal[i-1] = valA;
-                diagonal[i]        = valB;
-                aboveDiagonal[i]   = valC;
+                belowDiagonal_[i-1] = valA;
+                diagonal_[i]        = valB;
+                aboveDiagonal_[i]   = valC;
             }
         }
 
         inline void TridiagonalOperatorCommon::setLastRow(double valA,
           double valB) {
-            belowDiagonal[size()-2] = valA;
-            diagonal[size()-1]      = valB;
+            belowDiagonal_[size()-2] = valA;
+            diagonal_[size()-1]      = valB;
         }
 
         // time-constant algebra
@@ -200,96 +203,96 @@ namespace QuantLib {
         }
 
         inline TridiagonalOperator operator-(const TridiagonalOperator& D) {
-            Array low = -D.belowDiagonal, mid = -D.diagonal,
-                high = -D.aboveDiagonal;
+            Array low = -D.belowDiagonal_, mid = -D.diagonal_,
+                high = -D.aboveDiagonal_;
             TridiagonalOperator result(low,mid,high);
-            result.setLowerBC(D.theLowerBC);
-            result.setHigherBC(D.theHigherBC);
+            result.setLowerBC(D.lowerBC_);
+            result.setHigherBC(D.higherBC_);
             return result;
         }
 
         inline TridiagonalOperator operator*(double a,
           const TridiagonalOperator& D) {
-            Array low = D.belowDiagonal*a, mid = D.diagonal*a,
-                high = D.aboveDiagonal*a;
+            Array low = D.belowDiagonal_*a, mid = D.diagonal_*a,
+                high = D.aboveDiagonal_*a;
             TridiagonalOperator result(low,mid,high);
-            result.setLowerBC(D.theLowerBC);
-            result.setHigherBC(D.theHigherBC);
+            result.setLowerBC(D.lowerBC_);
+            result.setHigherBC(D.higherBC_);
             return result;
         }
 
         inline TridiagonalOperator operator*(const TridiagonalOperator& D,
           double a) {
-            Array low = D.belowDiagonal*a, mid = D.diagonal*a,
-                high = D.aboveDiagonal*a;
+            Array low = D.belowDiagonal_*a, mid = D.diagonal_*a,
+                high = D.aboveDiagonal_*a;
             TridiagonalOperator result(low,mid,high);
-            result.setLowerBC(D.theLowerBC);
-            result.setHigherBC(D.theHigherBC);
+            result.setLowerBC(D.lowerBC_);
+            result.setHigherBC(D.higherBC_);
             return result;
         }
 
         inline TridiagonalOperator operator/(const TridiagonalOperator& D,
           double a) {
-            Array low = D.belowDiagonal/a, mid = D.diagonal/a,
-                high = D.aboveDiagonal/a;
+            Array low = D.belowDiagonal_/a, mid = D.diagonal_/a,
+                high = D.aboveDiagonal_/a;
             TridiagonalOperator result(low,mid,high);
-            result.setLowerBC(D.theLowerBC);
-            result.setHigherBC(D.theHigherBC);
+            result.setLowerBC(D.lowerBC_);
+            result.setHigherBC(D.higherBC_);
             return result;
         }
 
         inline TridiagonalOperator operator+(const TridiagonalOperator& D1,
           const TridiagonalOperator& D2) {
             // to do: check boundary conditions
-            Array low = D1.belowDiagonal+D2.belowDiagonal,
-                mid = D1.diagonal+D2.diagonal,
-                high = D1.aboveDiagonal+D2.aboveDiagonal;
+            Array low = D1.belowDiagonal_+D2.belowDiagonal_,
+                mid = D1.diagonal_+D2.diagonal_,
+                high = D1.aboveDiagonal_+D2.aboveDiagonal_;
             return TridiagonalOperator(low,mid,high);
         }
 
         inline TridiagonalOperator operator-(const TridiagonalOperator& D1,
           const TridiagonalOperator& D2) {
             // to do: check boundary conditions
-            Array low = D1.belowDiagonal-D2.belowDiagonal,
-                mid = D1.diagonal-D2.diagonal,
-                high = D1.aboveDiagonal-D2.aboveDiagonal;
+            Array low = D1.belowDiagonal_-D2.belowDiagonal_,
+                mid = D1.diagonal_-D2.diagonal_,
+                high = D1.aboveDiagonal_-D2.aboveDiagonal_;
             return TridiagonalOperator(low,mid,high);
         }
 
         inline TridiagonalOperator operator+(const TridiagonalOperator& D,
           const Identity<Array>& I) {
-            Array mid = D.diagonal+1.0;
-            TridiagonalOperator result(D.belowDiagonal,mid,D.aboveDiagonal);
-            result.setLowerBC(D.theLowerBC);
-            result.setHigherBC(D.theHigherBC);
+            Array mid = D.diagonal_+1.0;
+            TridiagonalOperator result(D.belowDiagonal_,mid,D.aboveDiagonal_);
+            result.setLowerBC(D.lowerBC_);
+            result.setHigherBC(D.higherBC_);
             return result;
         }
 
         inline TridiagonalOperator operator+(const Identity<Array>& I,
           const TridiagonalOperator& D) {
-            Array mid = D.diagonal+1.0;
-            TridiagonalOperator result(D.belowDiagonal,mid,D.aboveDiagonal);
-            result.setLowerBC(D.theLowerBC);
-            result.setHigherBC(D.theHigherBC);
+            Array mid = D.diagonal_+1.0;
+            TridiagonalOperator result(D.belowDiagonal_,mid,D.aboveDiagonal_);
+            result.setLowerBC(D.lowerBC_);
+            result.setHigherBC(D.higherBC_);
             return result;
         }
 
         inline TridiagonalOperator operator-(const TridiagonalOperator& D,
           const Identity<Array>& I) {
-            Array mid = D.diagonal-1.0;
-            TridiagonalOperator result(D.belowDiagonal,mid,D.aboveDiagonal);
-            result.setLowerBC(D.theLowerBC);
-            result.setHigherBC(D.theHigherBC);
+            Array mid = D.diagonal_-1.0;
+            TridiagonalOperator result(D.belowDiagonal_,mid,D.aboveDiagonal_);
+            result.setLowerBC(D.lowerBC_);
+            result.setHigherBC(D.higherBC_);
             return result;
         }
 
         inline TridiagonalOperator operator-(const Identity<Array>& I,
           const TridiagonalOperator& D) {
-            Array low = -D.belowDiagonal, mid = 1.0-D.diagonal,
-                high = -D.aboveDiagonal;
+            Array low = -D.belowDiagonal_, mid = 1.0-D.diagonal_,
+                high = -D.aboveDiagonal_;
             TridiagonalOperator result(low,mid,high);
-            result.setLowerBC(D.theLowerBC);
-            result.setHigherBC(D.theHigherBC);
+            result.setLowerBC(D.lowerBC_);
+            result.setHigherBC(D.higherBC_);
             return result;
         }
 

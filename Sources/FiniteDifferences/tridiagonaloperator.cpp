@@ -30,6 +30,9 @@
 
 // $Id$
 // $Log$
+// Revision 1.23  2001/08/28 17:23:30  nando
+// unsigned int instead of int
+//
 // Revision 1.22  2001/08/28 13:37:35  nando
 // unsigned int instead of int
 //
@@ -60,15 +63,25 @@ namespace QuantLib {
 
     namespace FiniteDifferences {
 
-        TridiagonalOperatorCommon::TridiagonalOperatorCommon(unsigned int size)
-        : diagonal(size), belowDiagonal(size-1), aboveDiagonal(size-1) {
-            QL_ENSURE(diagonal.size() >= 3 || diagonal.size() == 0,
-                "invalid size for tridiagonal operator (must be >= 3)");
+        TridiagonalOperatorCommon::TridiagonalOperatorCommon(
+            unsigned int size) {
+
+            if (size>=3) {
+                diagonal_      = Array(size);
+                belowDiagonal_ = Array(size-1);
+                aboveDiagonal_ = Array(size-1);
+            } else if (size==0) {
+                diagonal_      = Array(0);
+                belowDiagonal_ = Array(0);
+                aboveDiagonal_ = Array(0);
+            } else {
+                throw Error("invalid size for tridiagonal operator (must be >= 3)");
+            }
         }
 
         TridiagonalOperatorCommon::TridiagonalOperatorCommon(
             const Array& low, const Array& mid, const Array& high)
-        : diagonal(mid), belowDiagonal(low), aboveDiagonal(high) {
+        : diagonal_(mid), belowDiagonal_(low), aboveDiagonal_(high) {
             QL_ENSURE(low.size() == mid.size()-1,
                 "wrong size for lower diagonal vector");
             QL_ENSURE(high.size() == mid.size()-1,
@@ -77,8 +90,8 @@ namespace QuantLib {
 
         void TridiagonalOperatorCommon::setLowerBC(
           const BoundaryCondition& bc) {
-            theLowerBC = bc;
-            switch (theLowerBC.type()) {
+            lowerBC_ = bc;
+            switch (lowerBC_.type()) {
               case BoundaryCondition::None:
                 // does nothing
                 break;
@@ -93,8 +106,8 @@ namespace QuantLib {
 
         void TridiagonalOperatorCommon::setHigherBC(
           const BoundaryCondition& bc) {
-            theHigherBC = bc;
-            switch (theHigherBC.type()) {
+            higherBC_ = bc;
+            switch (higherBC_.type()) {
               case BoundaryCondition::None:
                 // does nothing
                 break;
@@ -117,36 +130,36 @@ namespace QuantLib {
             Array result(size());
 
             // matricial product
-            result[0] = diagonal[0]*v[0] + aboveDiagonal[0]*v[1];
+            result[0] = diagonal_[0]*v[0] + aboveDiagonal_[0]*v[1];
             for (unsigned int j=1;j<=size()-2;j++)
-                result[j] = belowDiagonal[j-1]*v[j-1]+ diagonal[j]*v[j] +
-                    aboveDiagonal[j]*v[j+1];
-            result[size()-1] = belowDiagonal[size()-2]*v[size()-2] +
-                diagonal[size()-1]*v[size()-1];
+                result[j] = belowDiagonal_[j-1]*v[j-1]+ diagonal_[j]*v[j] +
+                    aboveDiagonal_[j]*v[j+1];
+            result[size()-1] = belowDiagonal_[size()-2]*v[size()-2] +
+                diagonal_[size()-1]*v[size()-1];
 
             // apply lower boundary condition
-            switch (theLowerBC.type()) {
+            switch (lowerBC_.type()) {
               case BoundaryCondition::None:
                 // does nothing
                 break;
               case BoundaryCondition::Neumann:
-                result[0] = result[1] + theLowerBC.value();
+                result[0] = result[1] + lowerBC_.value();
                 break;
               case BoundaryCondition::Dirichlet:
-                result[0] = theLowerBC.value();
+                result[0] = lowerBC_.value();
                 break;
             }
 
             // apply higher boundary condition
-            switch (theHigherBC.type()) {
+            switch (higherBC_.type()) {
               case BoundaryCondition::None:
                 // does nothing
                 break;
               case BoundaryCondition::Neumann:
-                result[size()-1] = result[size()-2] + theHigherBC.value();
+                result[size()-1] = result[size()-2] + higherBC_.value();
                 break;
               case BoundaryCondition::Dirichlet:
-                result[size()-1] = theHigherBC.value();
+                result[size()-1] = higherBC_.value();
                 break;
             }
 
@@ -160,44 +173,46 @@ namespace QuantLib {
             Array bcRhs = rhs;
 
             // apply lower boundary condition
-            switch (theLowerBC.type()) {
+            switch (lowerBC_.type()) {
               case BoundaryCondition::None:
                 // does nothing
                 break;
               case BoundaryCondition::Neumann:
               case BoundaryCondition::Dirichlet:
-                bcRhs[0] = theLowerBC.value();
+                bcRhs[0] = lowerBC_.value();
                 break;
             }
 
             // apply higher boundary condition
-            switch (theHigherBC.type()) {
+            switch (higherBC_.type()) {
               case BoundaryCondition::None:
                 // does nothing
                 break;
               case BoundaryCondition::Neumann:
               case BoundaryCondition::Dirichlet:
-                bcRhs[size()-1] = theHigherBC.value();
+                bcRhs[size()-1] = higherBC_.value();
                 break;
             }
 
             // solve tridiagonal system
             Array result(size()), tmp(size());
 
-            double bet=diagonal[0];
+            double bet=diagonal_[0];
             QL_REQUIRE(bet != 0.0,
                 "TridiagonalOperator::solveFor: division by zero");
             result[0] = bcRhs[0]/bet;
             unsigned int j;
             for (j=1;j<=size()-1;j++){
-                tmp[j]=aboveDiagonal[j-1]/bet;
-                bet=diagonal[j]-belowDiagonal[j-1]*tmp[j];
+                tmp[j]=aboveDiagonal_[j-1]/bet;
+                bet=diagonal_[j]-belowDiagonal_[j-1]*tmp[j];
                 QL_ENSURE(bet != 0.0,
                     "TridiagonalOperator::solveFor: division by zero");
-                result[j] = (bcRhs[j]-belowDiagonal[j-1]*result[j-1])/bet;
+                result[j] = (bcRhs[j]-belowDiagonal_[j-1]*result[j-1])/bet;
             }
-            for (j=size()-2;j>=0;j--)
+// cannot be j>=0 with unsigned int j
+            for (j=size()-2;j>0;j--)
                 result[j] -= tmp[j+1]*result[j+1];
+            result[0] -= tmp[1]*result[1];
 
             return result;
         }
