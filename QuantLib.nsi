@@ -58,47 +58,47 @@ SectionIn 1 2 3
     SetOutPath $INSTDIR\lib\Win32\Borland
     File "lib\Win32\Borland\QuantLib.lib"
 
-    SetOutPath  $INSTDIR\Include\ql
-    File /r "Include\ql\*.hpp"
+    SetOutPath  $INSTDIR\ql
+    File /r "ql\*.hpp"
 
-    SetOutPath  $INSTDIR\Include\ql\Calendars
-    File /r "Include\ql\Calendars\*.hpp"
+    SetOutPath  $INSTDIR\ql\Calendars
+    File /r "ql\Calendars\*.hpp"
 
-    SetOutPath  $INSTDIR\Include\ql\CashFlows
-    File /r "Include\ql\CashFlows\*.hpp"
+    SetOutPath  $INSTDIR\ql\CashFlows
+    File /r "ql\CashFlows\*.hpp"
 
-    SetOutPath  $INSTDIR\Include\ql\DayCounters
-    File /r "Include\ql\DayCounters\*.hpp"
+    SetOutPath  $INSTDIR\ql\DayCounters
+    File /r "ql\DayCounters\*.hpp"
 
-    SetOutPath  $INSTDIR\Include\ql\FiniteDifferences
-    File /r "Include\ql\FiniteDifferences\*.hpp"
+    SetOutPath  $INSTDIR\ql\FiniteDifferences
+    File /r "ql\FiniteDifferences\*.hpp"
 
-    SetOutPath  $INSTDIR\Include\ql\Indexes
-    File /r "Include\ql\Indexes\*.hpp"
+    SetOutPath  $INSTDIR\ql\Indexes
+    File /r "ql\Indexes\*.hpp"
 
-    SetOutPath  $INSTDIR\Include\ql\Instruments
-    File /r "Include\ql\Instruments\*.hpp"
+    SetOutPath  $INSTDIR\ql\Instruments
+    File /r "ql\Instruments\*.hpp"
 
-    SetOutPath  $INSTDIR\Include\ql\Math
-    File /r "Include\ql\Math\*.hpp"
+    SetOutPath  $INSTDIR\ql\Math
+    File /r "ql\Math\*.hpp"
 
-    SetOutPath  $INSTDIR\Include\ql\MonteCarlo
-    File /r "Include\ql\MonteCarlo\*.hpp"
+    SetOutPath  $INSTDIR\ql\MonteCarlo
+    File /r "ql\MonteCarlo\*.hpp"
 
-    SetOutPath  $INSTDIR\Include\ql\Patterns
-    File /r "Include\ql\Patterns\*.hpp"
+    SetOutPath  $INSTDIR\ql\Patterns
+    File /r "ql\Patterns\*.hpp"
 
-    SetOutPath  $INSTDIR\Include\ql\Pricers
-    File /r "Include\ql\Pricers\*.hpp"
+    SetOutPath  $INSTDIR\ql\Pricers
+    File /r "ql\Pricers\*.hpp"
 
-    SetOutPath  $INSTDIR\Include\ql\Solvers1D
-    File /r "Include\ql\Solvers1D\*.hpp"
+    SetOutPath  $INSTDIR\ql\Solvers1D
+    File /r "ql\Solvers1D\*.hpp"
 
-    SetOutPath  $INSTDIR\Include\ql\TermStructures
-    File /r "Include\ql\TermStructures\*.hpp"
+    SetOutPath  $INSTDIR\ql\TermStructures
+    File /r "ql\TermStructures\*.hpp"
 
-    SetOutPath  $INSTDIR\Include\ql\Utilities
-    File /r "Include\ql\Utilities\*.hpp"
+    SetOutPath  $INSTDIR\ql\Utilities
+    File /r "ql\Utilities\*.hpp"
 
     WriteRegStr HKEY_LOCAL_MACHINE \
                 "Software\Microsoft\Windows\CurrentVersion\Uninstall\QuantLib" \
@@ -150,53 +150,53 @@ SectionIn 1
   File QuantLib.mak
   File QuantLib.nsi
 
-  SetOutPath  $INSTDIR\Sources
-  File /r "Sources\*.cpp"
-  File /r "Sources\makefile.mak"
+  SetOutPath  $INSTDIR\ql
+  File /r "ql\*.cpp"
+  File /r "ql\makefile.mak"
 
-  SetOutPath  $INSTDIR\Sources\Calendars
-  File /r "Sources\Calendars\*.cpp"
-  File /r "Sources\Calendars\makefile.mak"
+  SetOutPath  $INSTDIR\ql\Calendars
+  File /r "ql\Calendars\*.cpp"
+  File /r "ql\Calendars\makefile.mak"
 
-  SetOutPath  $INSTDIR\Sources\CashFlows
-  File /r "Sources\CashFlows\*.cpp"
-  File /r "Sources\CashFlows\makefile.mak"
+  SetOutPath  $INSTDIR\ql\CashFlows
+  File /r "ql\CashFlows\*.cpp"
+  File /r "ql\CashFlows\makefile.mak"
 
-  SetOutPath  $INSTDIR\Sources\DayCounters
-  File /r "Sources\DayCounters\*.cpp"
-  File /r "Sources\DayCounters\makefile.mak"
+  SetOutPath  $INSTDIR\ql\DayCounters
+  File /r "ql\DayCounters\*.cpp"
+  File /r "ql\DayCounters\makefile.mak"
 
-  SetOutPath  $INSTDIR\Sources\FiniteDifferences
-  File /r "Sources\FiniteDifferences\*.cpp"
-  File /r "Sources\FiniteDifferences\makefile.mak"
+  SetOutPath  $INSTDIR\ql\FiniteDifferences
+  File /r "ql\FiniteDifferences\*.cpp"
+  File /r "ql\FiniteDifferences\makefile.mak"
 
-  SetOutPath  $INSTDIR\Sources\Indexes
-  File /r "Sources\Indexes\*.cpp"
-  File /r "Sources\Indexes\makefile.mak"
+  SetOutPath  $INSTDIR\ql\Indexes
+  File /r "ql\Indexes\*.cpp"
+  File /r "ql\Indexes\makefile.mak"
 
-  SetOutPath  $INSTDIR\Sources\Instruments
-  File /r "Sources\Instruments\*.cpp"
-  File /r "Sources\Instruments\makefile.mak"
+  SetOutPath  $INSTDIR\ql\Instruments
+  File /r "ql\Instruments\*.cpp"
+  File /r "ql\Instruments\makefile.mak"
 
-  SetOutPath  $INSTDIR\Sources\Math
-  File /r "Sources\Math\*.cpp"
-  File /r "Sources\Math\makefile.mak"
+  SetOutPath  $INSTDIR\ql\Math
+  File /r "ql\Math\*.cpp"
+  File /r "ql\Math\makefile.mak"
 
-  SetOutPath  $INSTDIR\Sources\MonteCarlo
-  File /r "Sources\MonteCarlo\*.cpp"
-  File /r "Sources\MonteCarlo\makefile.mak"
+  SetOutPath  $INSTDIR\ql\MonteCarlo
+  File /r "ql\MonteCarlo\*.cpp"
+  File /r "ql\MonteCarlo\makefile.mak"
 
-  SetOutPath  $INSTDIR\Sources\Pricers
-  File /r "Sources\Pricers\*.cpp"
-  File /r "Sources\Pricers\makefile.mak"
+  SetOutPath  $INSTDIR\ql\Pricers
+  File /r "ql\Pricers\*.cpp"
+  File /r "ql\Pricers\makefile.mak"
 
-  SetOutPath  $INSTDIR\Sources\Solvers1D
-  File /r "Sources\Solvers1D\*.cpp"
-  File /r "Sources\Solvers1D\makefile.mak"
+  SetOutPath  $INSTDIR\ql\Solvers1D
+  File /r "ql\Solvers1D\*.cpp"
+  File /r "ql\Solvers1D\makefile.mak"
 
-  SetOutPath  $INSTDIR\Sources\TermStructures
-  File /r "Sources\TermStructures\*.cpp"
-  File /r "Sources\TermStructures\makefile.mak"
+  SetOutPath  $INSTDIR\ql\TermStructures
+  File /r "ql\TermStructures\*.cpp"
+  File /r "ql\TermStructures\makefile.mak"
 
   CreateShortCut "$SMPROGRAMS\QuantLib\README.txt.lnk" \
                  "$INSTDIR\README.txt"
@@ -291,9 +291,8 @@ Section "Uninstall"
     Delete "$SMPROGRAMS\QuantLib\*.*"
     RMDir "$SMPROGRAMS\QuantLib"
     RMDir /r "$INSTDIR\Examples"
-    RMDir /r "$INSTDIR\Sources"
     RMDir /r "$INSTDIR\Docs"
-    RMDir /r "$INSTDIR\Include"
+    RMDir /r "$INSTDIR\ql"
     RMDir /r "$INSTDIR\lib"
     RMDir /r "$INSTDIR"
 SectionEnd
