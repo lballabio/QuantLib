@@ -46,24 +46,12 @@ namespace QuantLib {
     class AnalyticEuropeanBinaryEngine : public BinaryEngine {
       public:
         void calculate() const;
-      private:
-        #if defined(QL_PATCH_SOLARIS)
-        CumulativeNormalDistribution f_;
-        #else
-        static const CumulativeNormalDistribution f_;
-        #endif
     };
 
     //! Pricing engine for American binary options using analytic formulae
     class AnalyticAmericanBinaryEngine : public BinaryEngine {
       public:
         void calculate() const;
-      private:
-        #if defined(QL_PATCH_SOLARIS)
-        CumulativeNormalDistribution f_;
-        #else
-        static const CumulativeNormalDistribution f_;
-        #endif
     };
 
     //! Pricing engine for Binary options using Monte Carlo

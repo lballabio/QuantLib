@@ -23,10 +23,6 @@
 
 namespace QuantLib {
 
-    #if !defined(QL_PATCH_SOLARIS)
-    const CumulativeNormalDistribution AnalyticAmericanBinaryEngine::f_;
-    #endif
-
     void AnalyticAmericanBinaryEngine::calculate() const {
 
         QL_REQUIRE(arguments_.exerciseType == Exercise::American,
@@ -80,10 +76,12 @@ namespace QuantLib {
         double pow_plus = QL_POW (barrier/underlying, l_plus);
         double pow_minus = QL_POW (barrier/underlying, l_minus);
 
+        CumulativeNormalDistribution f;
+
         // up option, or call
         if (arguments_.underlying < arguments_.barrier) {
-            double f_minus_z = f_(-z);
-            double f_minus_zbar = f_(-zbar);
+            double f_minus_z = f(-z);
+            double f_minus_zbar = f(-zbar);
             double mod_exp_z2 = QL_EXP(-z*z/2);
             double mod_exp_zbar2 = QL_EXP(-zbar*zbar/2); 
             double denom_delta = underlying * root_tau * vol * root_two_pi;
@@ -109,8 +107,8 @@ namespace QuantLib {
 
             // down option, or put
         } else {
-            double f_z = f_(z);
-            double f_zbar = f_(zbar);
+            double f_z = f(z);
+            double f_zbar = f(zbar);
             double mod_exp_z2 = QL_EXP(-z*z/2);
             double mod_exp_zbar2 = QL_EXP(-zbar*zbar/2);
             double denom_delta = underlying*root_tau*vol*root_two_pi;

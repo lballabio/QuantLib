@@ -26,10 +26,6 @@
 
 namespace QuantLib {
 
-    #if !defined(QL_PATCH_SOLARIS)
-    const CumulativeNormalDistribution AnalyticEuropeanBinaryEngine::f_;
-     #endif
-
     void AnalyticEuropeanBinaryEngine::calculate() const {
 
         QL_REQUIRE(arguments_.exerciseType == Exercise::European,
@@ -62,12 +58,14 @@ namespace QuantLib {
 
         double volSqrtT = vol * QL_SQRT(T);
 
+        CumulativeNormalDistribution f;
+
         double D1 = QL_LOG(u/k) / volSqrtT
             + (r - q) * T / volSqrtT
             + volSqrtT / 2.0;
         double D2 = D1 - volSqrtT;
 
-        double ND2 = f_(D2);
+        double ND2 = f(D2);
 
         double sign, beta, NID2;
         double inTheMoneyProbability;
@@ -75,19 +73,19 @@ namespace QuantLib {
           case Option::Call:
             sign = 1.0;
             beta = ND2;
-            NID2 = f_.derivative(D2);
+            NID2 = f.derivative(D2);
             inTheMoneyProbability = ND2;
             break;
           case Option::Put:
             sign = -1.0;
             beta = ND2 - 1.0;
-            NID2 = f_.derivative(D2);
+            NID2 = f.derivative(D2);
             inTheMoneyProbability = 1.0 - ND2;
             break;
           case Option::Straddle:
             sign = 0.0;
             beta = 2.0 * ND2 - 1.0;
-            NID2 = 2.0 * f_.derivative(D2);
+            NID2 = 2.0 * f.derivative(D2);
             inTheMoneyProbability = 1.0;
             break;
           default:
