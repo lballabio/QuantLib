@@ -21,8 +21,8 @@
     \brief Vasicek model class
 */
 
-#ifndef quantlib_one_factor_models_vasicek_h
-#define quantlib_one_factor_models_vasicek_h
+#ifndef quantlib_one_factor_models_vasicek_hpp
+#define quantlib_one_factor_models_vasicek_hpp
 
 #include <ql/ShortRateModels/onefactormodel.hpp>
 #include <ql/Processes/ornsteinuhlenbeckprocess.hpp>
@@ -34,15 +34,16 @@ namespace QuantLib {
         \f[
             dr_t = a(b - r_t)dt + \sigma dW_t ,
         \f]
-        where \f$ a \f$, \f$ b \f$ and \f$ \sigma \f$ are constants.
+        where \f$ a \f$, \f$ b \f$ and \f$ \sigma \f$ are constants;
+        a risk premium \f$ \lambda \f$ can also be specified.
 
         \ingroup shortrate
     */
     class Vasicek : public OneFactorAffineModel {
       public:
         Vasicek(Rate r0 = 0.05,
-                Real a = 0.1, Real b = 0.05, Real sigma = 0.01);
-
+                Real a = 0.1, Real b = 0.05, Real sigma = 0.01,
+                Real lambda = 0.0);
         virtual Real discountBondOption(Option::Type type,
                                         Real strike,
                                         Time maturity,
@@ -56,15 +57,17 @@ namespace QuantLib {
 
         Real a() const { return a_(0.0); }
         Real b() const { return b_(0.0); }
+        Real lambda() const { return lambda_(0.0); }
         Real sigma() const { return sigma_(0.0); }
-
-      private:
-        class Dynamics;
 
         Real r0_;
         Parameter& a_;
         Parameter& b_;
         Parameter& sigma_;
+        Parameter& lambda_;
+      private:
+        class Dynamics;
+
     };
 
     //! Short-rate dynamics in the %Vasicek model

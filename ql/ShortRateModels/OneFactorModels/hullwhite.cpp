@@ -26,9 +26,10 @@ namespace QuantLib {
     HullWhite::HullWhite(const Handle<YieldTermStructure>& termStructure,
                          Real a, Real sigma)
     : Vasicek(termStructure->forwardRate(0.0, 0.0, Continuous, NoFrequency),
-                                         a, 0.0, sigma),
+                                         a, 0.0, sigma, 0.0),
       TermStructureConsistentModel(termStructure) {
-        arguments_[1] = NullParameter();
+        b_ = NullParameter();
+        lambda_ = NullParameter();
         generateArguments();
     }
 

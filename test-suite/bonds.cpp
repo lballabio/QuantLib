@@ -142,7 +142,7 @@ void BondTest::testTheoretical() {
     Integer settlementDays = 3;
     Real coupons[] = { 0.02, 0.05, 0.08 };
     Frequency frequencies[] = { Semiannual, Annual };
-    DayCounter bondDayCount = Thirty360();
+    DayCounter bondDayCount = Actual360();
     BusinessDayConvention convention = ModifiedFollowing;
     Real redemption = 100.0;
 

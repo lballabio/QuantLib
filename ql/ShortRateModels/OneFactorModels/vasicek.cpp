@@ -22,19 +22,22 @@
 
 namespace QuantLib {
 
-    Vasicek::Vasicek(Rate r0, Real a, Real b, Real sigma)
-    : OneFactorAffineModel(3), r0_(r0),
-      a_(arguments_[0]), b_(arguments_[1]), sigma_(arguments_[2]) {
+    Vasicek::Vasicek(Rate r0, Real a, Real b, Real sigma, Real lambda)
+    : OneFactorAffineModel(4), r0_(r0),
+      a_(arguments_[0]), b_(arguments_[1]), sigma_(arguments_[2]),
+      lambda_(arguments_[3]) {
         a_ = ConstantParameter(a, PositiveConstraint());
         b_ = ConstantParameter(b, NoConstraint());
         sigma_ = ConstantParameter(sigma, PositiveConstraint());
+        lambda_ = ConstantParameter(lambda, NoConstraint());
     }
 
     Real Vasicek::A(Time t, Time T) const {
         Real sigma2 = sigma()*sigma();
         Real bt = B(t, T);
-        return std::exp((b() - 0.5*sigma2/(a()*a()))*(bt - (T - t)) -
-                        0.25*sigma2*bt*bt/a());
+        return std::exp((b() + lambda()*sigma()/a()
+                         - 0.5*sigma2/(a()*a()))*(bt - (T - t))
+                        - 0.25*sigma2*bt*bt/a());
     }
 
     Real Vasicek::B(Time t, Time T) const {
