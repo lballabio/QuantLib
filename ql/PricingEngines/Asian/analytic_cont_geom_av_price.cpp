@@ -46,11 +46,6 @@ namespace QuantLib {
         DiscountFactor riskFreeDiscount =
             process->riskFreeRate()->discount(exercise);
 
-        Spread dividendYield =
-            0.5 * (process->riskFreeRate()->zeroYield(exercise) +
-                   process->dividendYield()->zeroYield(exercise) +
-                   volatility*volatility/6.0);
-
         #ifndef QL_DISABLE_DEPRECATED
         DayCounter rfdc  = process->riskFreeRate()->dayCounter();
         DayCounter divdc = process->dividendYield()->dayCounter();
@@ -60,6 +55,14 @@ namespace QuantLib {
         DayCounter divdc = Settings::instance().dayCounter();
         DayCounter voldc = Settings::instance().dayCounter();
         #endif
+
+        Spread dividendYield = 0.5 * (
+            // process->riskFreeRate()->zeroYield(exercise) +
+            process->riskFreeRate()->zeroRate(exercise, rfdc, Continuous, Annual) +
+            // process->dividendYield()->zeroYield(exercise) +
+            process->dividendYield()->zeroRate(exercise, divdc, Continuous, Annual) +
+            volatility*volatility/6.0);
+
         Time t_q = divdc.yearFraction(
             process->dividendYield()->referenceDate(), exercise);
         DiscountFactor dividendDiscount = QL_EXP(-dividendYield*t_q);

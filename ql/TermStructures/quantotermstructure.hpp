@@ -38,16 +38,14 @@ namespace QuantLib {
     class QuantoTermStructure : public ZeroYieldStructure {
       public:
         QuantoTermStructure(
-                       const Handle<YieldTermStructure>& underlyingDividendTS,
-                       const Handle<YieldTermStructure>& riskFreeTS,
-                       const Handle<YieldTermStructure>& foreignRiskFreeTS,
-                       const Handle<BlackVolTermStructure>&
-                                                         underlyingBlackVolTS,
-                       Real strike,
-                       const Handle<BlackVolTermStructure>&
-                                                           exchRateBlackVolTS,
-                       Real exchRateATMlevel,
-                       Real underlyingExchRateCorrelation);
+                    const Handle<YieldTermStructure>& underlyingDividendTS,
+                    const Handle<YieldTermStructure>& riskFreeTS,
+                    const Handle<YieldTermStructure>& foreignRiskFreeTS,
+                    const Handle<BlackVolTermStructure>& underlyingBlackVolTS,
+                    Real strike,
+                    const Handle<BlackVolTermStructure>& exchRateBlackVolTS,
+                    Real exchRateATMlevel,
+                    Real underlyingExchRateCorrelation);
         //! \name YieldTermStructure interface
         //@{
         #ifndef QL_DISABLE_DEPRECATED
@@ -78,15 +76,14 @@ namespace QuantLib {
     // inline definitions
 
     inline QuantoTermStructure::QuantoTermStructure(
-                       const Handle<YieldTermStructure>& underlyingDividendTS,
-                       const Handle<YieldTermStructure>& riskFreeTS,
-                       const Handle<YieldTermStructure>& foreignRiskFreeTS,
-                       const Handle<BlackVolTermStructure>&
-                                                         underlyingBlackVolTS,
-                       Real strike,
-                       const Handle<BlackVolTermStructure>& exchRateBlackVolTS,
-                       Real exchRateATMlevel,
-                       Real underlyingExchRateCorrelation)
+                    const Handle<YieldTermStructure>& underlyingDividendTS,
+                    const Handle<YieldTermStructure>& riskFreeTS,
+                    const Handle<YieldTermStructure>& foreignRiskFreeTS,
+                    const Handle<BlackVolTermStructure>& underlyingBlackVolTS,
+                    Real strike,
+                    const Handle<BlackVolTermStructure>& exchRateBlackVolTS,
+                    Real exchRateATMlevel,
+                    Real underlyingExchRateCorrelation)
     : underlyingDividendTS_(underlyingDividendTS),
       riskFreeTS_(riskFreeTS), foreignRiskFreeTS_(foreignRiskFreeTS),
       underlyingBlackVolTS_(underlyingBlackVolTS),
@@ -124,9 +121,9 @@ namespace QuantLib {
     inline Rate QuantoTermStructure::zeroYieldImpl(Time t) const {
         // warning: here it is assumed that all TS have the same daycount.
         //          It should be QL_REQUIREd
-        return underlyingDividendTS_->zeroYield(t, true)
-            +            riskFreeTS_->zeroYield(t, true)
-            -     foreignRiskFreeTS_->zeroYield(t, true)
+        return underlyingDividendTS_->zeroRate(t, Continuous, Annual, true)
+            +            riskFreeTS_->zeroRate(t, Continuous, Annual, true)
+            -     foreignRiskFreeTS_->zeroRate(t, Continuous, Annual, true)
             + underlyingExchRateCorrelation_
             * underlyingBlackVolTS_->blackVol(t, strike_, true)
             *   exchRateBlackVolTS_->blackVol(t, exchRateATMlevel_, true);

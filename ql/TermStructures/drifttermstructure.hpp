@@ -50,7 +50,7 @@ namespace QuantLib {
         const Date& todaysDate() const;
         #endif
         const Date& referenceDate() const;
-        Date maxDate() const;
+        Date maxDate() const { return maxDate_; }
         //@}
       protected:
         //! returns the discount factor as seen from the evaluation date
@@ -92,18 +92,18 @@ namespace QuantLib {
     #endif
 
     inline const Date& DriftTermStructure::referenceDate() const {
+        // warning: here it is assumed that all TS have the same referenceDate
+        //          It should be QL_REQUIREd
         return riskFreeTS_->referenceDate();
     }
 
-    inline Date DriftTermStructure::maxDate() const {
-        return maxDate_;
-    }
-
     inline Rate DriftTermStructure::zeroYieldImpl(Time t) const {
-        // warning: here it is assumed that all TS have the same daycount.
+        // warning: here it is assumed that
+        //          a) all TS have the same daycount.
+        //          b) all TS have the same referenceDate
         //          It should be QL_REQUIREd
-        return riskFreeTS_->zeroYield(referenceDate(),true)
-             - dividendTS_->zeroYield(t, true)
+        return riskFreeTS_->zeroRate(t, Continuous, Annual, true)
+             - dividendTS_->zeroRate(t, Continuous, Annual, true)
              - 0.5 * blackVolTS_->blackVol(t, underlyingLevel_, true)
                    * blackVolTS_->blackVol(t, underlyingLevel_, true);
     }

@@ -87,8 +87,9 @@ namespace QuantLib {
         this->results_.value = discR * temp;
         this->results_.delta = 0.0;
         this->results_.gamma = 0.0;
-        this->results_.theta = process->riskFreeRate()->zeroYield(
-            this->arguments_.resetDate) * this->results_.value;
+        this->results_.theta = process->riskFreeRate()->
+            zeroRate(this->arguments_.resetDate, rfdc, Continuous, Annual)
+            * this->results_.value;
         this->results_.vega = discR * this->originalResults_->vega;
         this->results_.rho = - resetTime * this->results_.value +
             discR * this->originalResults_->rho;

@@ -56,18 +56,23 @@ namespace QuantLib {
         const boost::shared_ptr<BlackScholesProcess>& process =
             this->arguments_.blackScholesProcess;
 
+        #ifndef QL_DISABLE_DEPRECATED
+        DayCounter rfdc  = process->riskFreeRate()->dayCounter();
+        DayCounter divdc = process->dividendYield()->dayCounter();
+        #else
+        DayCounter rfdc  = Settings::instance().dayCounter();
+        DayCounter divdc = Settings::instance().dayCounter();
+        #endif
+
         Real s0 = process->stateVariable()->value();
         Volatility v = process->blackVolatility()->blackVol(
             arguments_.exercise->lastDate(), s0);
         Date maturityDate = arguments_.exercise->lastDate();
-        Rate r = process->riskFreeRate()->zeroYield(maturityDate);
-        Rate q = process->dividendYield()->zeroYield(maturityDate);
+        Rate r = process->riskFreeRate()->zeroRate(maturityDate,
+            rfdc, Continuous, Annual);
+        Rate q = process->dividendYield()->zeroRate(maturityDate,
+            divdc, Continuous, Annual);
         Date referenceDate = process->riskFreeRate()->referenceDate();
-        #ifndef QL_DISABLE_DEPRECATED
-        DayCounter rfdc = process->riskFreeRate()->dayCounter();
-        #else
-        DayCounter rfdc = Settings::instance().dayCounter();
-        #endif
 
         // binomial trees with constant coefficient
         Handle<YieldTermStructure> flatRiskFree(
@@ -75,7 +80,7 @@ namespace QuantLib {
                 new FlatForward(referenceDate, r, rfdc)));
         Handle<YieldTermStructure> flatDividends(
             boost::shared_ptr<YieldTermStructure>(
-                new FlatForward(referenceDate, q, rfdc)));
+                new FlatForward(referenceDate, q, divdc)));
         Handle<BlackVolTermStructure> flatVol(
             boost::shared_ptr<BlackVolTermStructure>(
                 new BlackConstantVol(referenceDate, v)));

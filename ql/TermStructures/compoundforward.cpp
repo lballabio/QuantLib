@@ -163,7 +163,8 @@ namespace QuantLib {
             return ForwardRateStructure::zeroYieldImpl(t);
         if (needsBootstrap_)
             bootstrap();
-        return discountCurve()->zeroYield(t,true);
+        //return discountCurve()->zeroYield(t,true);
+        return discountCurve()->zeroRate(t, Continuous, Annual, true);
     }
 
     DiscountFactor CompoundForward::discountImpl(Time t) const {

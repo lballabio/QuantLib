@@ -167,8 +167,10 @@ namespace QuantLib {
 
         #ifndef QL_DISABLE_DEPRECATED
         DayCounter rfdc = process->riskFreeRate()->dayCounter();
+        DayCounter divdc = process->dividendYield()->dayCounter();
         #else
         DayCounter rfdc = Settings::instance().dayCounter();
+        DayCounter divdc = Settings::instance().dayCounter();
         #endif
         Time resetTime = rfdc.yearFraction(
             process->riskFreeRate()->referenceDate(),
@@ -181,8 +183,9 @@ namespace QuantLib {
         this->results_.delta = discQ * (originalResults_->delta +
             this->arguments_.moneyness * originalResults_->strikeSensitivity);
         this->results_.gamma = 0.0;
-        this->results_.theta = process->dividendYield()->zeroYield(
-            this->arguments_.resetDate) * this->results_.value;
+        this->results_.theta = process->dividendYield()->
+            zeroRate(this->arguments_.resetDate, divdc, Continuous, Annual)
+            * this->results_.value;
         this->results_.vega  = discQ * originalResults_->vega;
         this->results_.rho   = discQ *  originalResults_->rho;
         this->results_.dividendRho = - resetTime * this->results_.value

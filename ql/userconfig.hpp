@@ -44,7 +44,7 @@
 // #define QL_TODAYS_PAYMENTS 1
 
 /* Define this if you want to disable deprecated code. */
-#define QL_DISABLE_DEPRECATED
+// #define QL_DISABLE_DEPRECATED
 
 /* Define this to use indexed coupons instead of par coupons in floating
    legs. */

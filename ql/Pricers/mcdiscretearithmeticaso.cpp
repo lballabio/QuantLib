@@ -146,8 +146,8 @@ namespace QuantLib {
 
             // Not sure whether this work when curves are not flat...
             Time exercise = times.back();
-            Rate r = riskFreeRate->zeroYield(exercise);
-            Rate q = dividendYield->zeroYield(exercise);
+            Rate r = riskFreeRate->zeroRate(exercise, Continuous, Annual);
+            Rate q = dividendYield->zeroRate(exercise, Continuous, Annual);
             Volatility sigma = volatility->blackVol(exercise,underlying);
 
             Real controlVariatePrice = DiscreteGeometricASO(type,

@@ -91,10 +91,13 @@ namespace QuantLib {
             temp += fixingTimes[i-pastFixings-1]*(N-i);
         Real variance = vola*vola /N/N * (timeSum+ 2.0*temp);
 
-        Rate dividendRate = process->dividendYield()->zeroYield(
-                                             arguments_.exercise->lastDate());
-        Rate riskFreeRate = process->riskFreeRate()->zeroYield(
-                                             arguments_.exercise->lastDate());
+        Date exDate = arguments_.exercise->lastDate();
+        Rate dividendRate = process->dividendYield()->
+            //zeroYield(exDate);
+            zeroRate(exDate, divdc, Continuous, Annual);
+        Rate riskFreeRate = process->riskFreeRate()->
+            //zeroYield(exDate);
+            zeroRate(exDate, rfdc, Continuous, Annual);
         Rate nu = riskFreeRate - dividendRate - 0.5*vola*vola;
         Real muG = pastWeight * runningLog +
             futureWeight * QL_LOG(process->stateVariable()->value()) +

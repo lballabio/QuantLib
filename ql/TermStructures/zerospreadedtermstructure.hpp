@@ -100,7 +100,9 @@ namespace QuantLib {
     }
 
     inline Rate ZeroSpreadedTermStructure::zeroYieldImpl(Time t) const {
-        return originalCurve_->zeroYield(t, true) + spread_->value();
+        // return originalCurve_->zeroYield(t, true) + spread_->value();
+        return originalCurve_->zeroRate(t, Continuous, Annual) +
+            spread_->value();
     }
 
     inline Rate ZeroSpreadedTermStructure::forwardImpl(Time t) const {

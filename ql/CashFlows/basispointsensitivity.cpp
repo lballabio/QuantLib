@@ -85,7 +85,9 @@ namespace QuantLib {
                                          const DayCounter& dc) const {
         Time t = dc.yearFraction(termStructure_->referenceDate(),date);
         // Based on 1st derivative of zero coupon rate
-        Rate r = termStructure_->zeroCoupon(date,basis_);
+        // Rate r = termStructure_->zeroCoupon(date,basis_);
+        Rate r = termStructure_->zeroRate(date, dc,
+            SimpleThenCompounded, Frequency(basis_));
         return -QL_POW(1.0+r/basis_,-1.0-t*basis_)*t;
     }
 

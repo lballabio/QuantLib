@@ -254,8 +254,13 @@ void TermStructureTest::testZSpreaded() {
         new ZeroSpreadedTermStructure(
             Handle<YieldTermStructure>(termStructure_),mh));
     Date testDate = termStructure_->referenceDate() + 5*Years;
-    Rate zero = termStructure_->zeroYield(testDate);
-    Rate spreadedZero = spreaded->zeroYield(testDate);
+    #ifndef QL_DISABLE_DEPRECATED
+    DayCounter rfdc  = termStructure_->dayCounter();
+    #else
+    DayCounter rfdc  = Settings::instance().dayCounter();
+    #endif
+    Rate zero = termStructure_->zeroRate(testDate, rfdc, Continuous, Annual);
+    Rate spreadedZero = spreaded->zeroRate(testDate, rfdc, Continuous, Annual);
     if (QL_FABS(zero - (spreadedZero-me->value())) > tolerance)
         BOOST_FAIL(
             "unable to reproduce zero yield from spreaded curve\n"

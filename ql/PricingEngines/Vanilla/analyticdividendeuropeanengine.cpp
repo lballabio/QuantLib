@@ -76,12 +76,12 @@ namespace QuantLib {
         Real delta_theta = 0.0, delta_rho = 0.0;
         for (i = 0; i < arguments_.dividends.size(); i++) {
             Date d = arguments_.dividendDates[i];
-            Time t = rfdc.yearFraction(
-                process->riskFreeRate()->referenceDate(), d);
             if (d >= settlementDate) {
                 delta_theta -= arguments_.dividends[i] * 
-                               process->riskFreeRate()->zeroYield(d) * 
-                               process->riskFreeRate()->discount(d);
+                  process->riskFreeRate()->zeroRate(d,rfdc,Continuous,Annual)*
+                  process->riskFreeRate()->discount(d);
+                Time t = rfdc.yearFraction(
+                    process->riskFreeRate()->referenceDate(), d);
                 delta_rho += arguments_.dividends[i] * t * 
                              process->riskFreeRate()->discount(t);
             }

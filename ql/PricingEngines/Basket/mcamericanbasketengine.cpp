@@ -193,9 +193,15 @@ namespace QuantLib {
 
         bool brownianBridge = false;
 
-        Rate r = 
-            arguments_.blackScholesProcesses[0]->riskFreeRate()->zeroYield(
-                                             arguments_.exercise->lastDate());
+        const boost::shared_ptr<BlackScholesProcess>& process =
+            arguments_.blackScholesProcesses[0];
+        #ifndef QL_DISABLE_DEPRECATED
+        DayCounter rfdc  = process->riskFreeRate()->dayCounter();
+        #else
+        DayCounter rfdc  = Settings::instance().dayCounter();
+        #endif
+        Rate r = process->riskFreeRate()->
+            zeroRate(arguments_.exercise->lastDate(), rfdc, Continuous, Annual);
 
         // counters
         Size i; // for paths
@@ -397,13 +403,6 @@ namespace QuantLib {
         Size numBasisFunctions = basisFunctions.size();
 
         // create the time grid
-        const boost::shared_ptr<BlackScholesProcess>& process =
-            arguments_.blackScholesProcesses[0];
-        #ifndef QL_DISABLE_DEPRECATED
-        DayCounter rfdc = process->riskFreeRate()->dayCounter();
-        #else
-        DayCounter rfdc = Settings::instance().dayCounter();
-        #endif
         Time T = rfdc.yearFraction(process->riskFreeRate()->referenceDate(),
                                    arguments_.exercise->lastDate());
         TimeGrid grid(T, timeSteps_);
