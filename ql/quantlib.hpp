@@ -295,6 +295,7 @@ namespace QLMTH = QuantLib::Math;
 namespace QLMNT = QuantLib::MonteCarlo;
 namespace QLPAT = QuantLib::Patterns;
 namespace QLPRC = QuantLib::Pricers;
+namespace QLPRE = QuantLib::PricingEngines;
 namespace QLRNG = QuantLib::RandomNumbers;
 namespace QLSRM = QuantLib::ShortRateModels;
 namespace QLS1D = QuantLib::Solvers1D;
