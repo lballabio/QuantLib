@@ -27,6 +27,9 @@
 
     $Source$
     $Log$
+    Revision 1.9  2001/04/06 16:12:18  marmar
+    Bug fixed in multi-period option
+
     Revision 1.8  2001/04/06 07:36:04  marmar
     Code simplified and cleand
 
@@ -62,6 +65,7 @@
 
 */
 
+#include "Pricers/bsmeuropeanoption.hpp"
 #include "Pricers/americancondition.hpp"
 #include "Pricers/multiperiodoption.hpp"
 #include "FiniteDifferences/valueatcenter.hpp"
@@ -101,6 +105,7 @@ namespace QuantLib {
         void MultiPeriodOption::calculate() const {
 
             Time beginDate, endDate;
+            initializeControlVariate();
             setGridLimits();
             initializeGrid();
             initializeInitialCondition();
@@ -148,15 +153,15 @@ namespace QuantLib {
             // Option price and greeks are computed
             value_ =   valueAtCenter(prices_) 
                      - valueAtCenter(controlPrices_) 
-                     + analitic_ -> value();
+                     + analytic_ -> value();
 
             delta_ =   firstDerivativeAtCenter(prices_, grid_) 
                      - firstDerivativeAtCenter(controlPrices_, grid_) 
-                     + analitic_ -> delta();
+                     + analytic_ -> delta();
 
             gamma_ =   secondDerivativeAtCenter(prices_, grid_) 
                      - secondDerivativeAtCenter(controlPrices_, grid_) 
-                     + analitic_ -> gamma();
+                     + analytic_ -> gamma();
 
             // calculating theta_
             model_ -> rollback(prices_,        0, -dt, 1, stepCondition_);
@@ -164,11 +169,17 @@ namespace QuantLib {
 
             theta_=  (pricePlusDt - valueAtCenter(prices_))/(2.0*dt)
                     -(controlPlusDt - valueAtCenter(controlPrices_))/(2.0*dt)
-                    + analitic_ -> theta();
+                    + analytic_ -> theta();
 
             hasBeenCalculated_ = true;
         }
 
+        void MultiPeriodOption::initializeControlVariate() const{
+            analytic_ = Handle<BSMOption> (new BSMEuropeanOption (
+                            type_, underlying_, strike_, dividendYield_,
+                            riskFreeRate_, residualTime_, volatility_));
+        }
+        
         using FiniteDifferences::StandardStepCondition;
 
         void MultiPeriodOption::initializeStepCondition() const{

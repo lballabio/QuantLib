@@ -27,6 +27,9 @@
 
     $Source$
     $Log$
+    Revision 1.29  2001/04/06 16:12:18  marmar
+    Bug fixed in multi-period option
+
     Revision 1.28  2001/04/05 07:57:46  marmar
     One bug fixed in bermudan option, theta, rho, and vega  still not working
 
@@ -131,11 +134,16 @@ namespace QuantLib {
         double BSMOption::vega() const {
         
             if(!vegaComputed_){
+
+                double valuePlus = value();
+
                 Handle<BSMOption> brandNewFD = clone();
                 double volMinus = volatility_ * (1.0 - dVolMultiplier_);
                 brandNewFD -> setVolatility(volMinus);        
-                vega_ = (value() - brandNewFD -> value()) / 
-                    (volatility_ * dVolMultiplier_);          
+                double valueMinus = brandNewFD -> value();
+
+                vega_ = (valuePlus - valueMinus )/ 
+                        (volatility_ * dVolMultiplier_);          
                 vegaComputed_ = true;
             }
             return vega_;
@@ -144,10 +152,14 @@ namespace QuantLib {
         double BSMOption::rho() const {
         
             if(!rhoComputed_){
+                double valuePlus = value();
+
                 Handle<BSMOption> brandNewFD = clone();
                 Rate rMinus=riskFreeRate_ * (1.0 - dRMultiplier_);        
                 brandNewFD -> setRiskFreeRate(rMinus);
-                rho_=(value() - brandNewFD -> value()) / 
+                double valueMinus = brandNewFD -> value();
+
+                rho_=(valuePlus - valueMinus) / 
                     (riskFreeRate_ * dRMultiplier_);
                 rhoComputed_  = true;
             }

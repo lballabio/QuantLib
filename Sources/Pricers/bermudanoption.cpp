@@ -27,6 +27,9 @@
 
     $Source$
     $Log$
+    Revision 1.7  2001/04/06 16:12:18  marmar
+    Bug fixed in multi-period option
+
     Revision 1.6  2001/04/06 07:36:05  marmar
     Code simplified and cleand
 
@@ -67,12 +70,7 @@ namespace QuantLib {
             int timeSteps, int gridPoints)
         : MultiPeriodOption(type, underlying, strike, dividendYield,
           riskFreeRate, residualTime, volatility, dates, timeSteps,
-          gridPoints) {
-
-            analitic_ = Handle<BSMOption> (new BSMEuropeanOption (
-                            type_, underlying_, strike_, dividendYield_,
-                            riskFreeRate_, residualTime_, volatility_));
-        }
+          gridPoints) {}
 
         using FiniteDifferences::StandardStepCondition;
 
@@ -90,7 +88,9 @@ namespace QuantLib {
         }
 
         Handle<BSMOption> BermudanOption::clone() const { 
-            return Handle<BSMOption>(new BermudanOption(*this));
+            return Handle<BSMOption>(new BermudanOption(type_, underlying_, 
+                strike_, dividendYield_, riskFreeRate_, residualTime_, 
+                volatility_, dates_, timeStepPerPeriod_, gridPoints_));
         }
 
     }

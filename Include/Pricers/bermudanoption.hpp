@@ -27,6 +27,9 @@
     
     $Source$
     $Log$
+    Revision 1.3  2001/04/06 16:11:54  marmar
+    Bug fixed in multi-period option
+
     Revision 1.2  2001/04/06 07:35:43  marmar
     Code simplified and cleand
 
@@ -60,6 +63,7 @@ namespace QuantLib {
                 int timeSteps = 100, int gridPoints = 100);
             Handle<BSMOption> clone() const;            
           protected:
+            double extraTermInBermudan ;
             void initializeStepCondition() const;
             void executeIntermediateStep(int) const;
         };

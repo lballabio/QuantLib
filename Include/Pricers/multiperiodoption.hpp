@@ -27,6 +27,9 @@
     
     $Source$
     $Log$
+    Revision 1.4  2001/04/06 16:11:54  marmar
+    Bug fixed in multi-period option
+
     Revision 1.3  2001/04/06 07:35:43  marmar
     Code simplified and cleand
 
@@ -79,7 +82,7 @@ namespace QuantLib {
             // Protected attributes         
             int timeStepPerPeriod_, dateNumber_;
             std::vector<Time> dates_;
-            Handle<BSMOption> analitic_;
+            mutable Handle<BSMOption> analytic_;
             mutable Array prices_, controlPrices_;
             mutable Handle<FiniteDifferences::StandardStepCondition> 
                                                             stepCondition_;
@@ -87,6 +90,7 @@ namespace QuantLib {
                                                             model_;
             // Methods
             void calculate() const;
+            virtual void initializeControlVariate() const;
             virtual void initializeModel() const;
             virtual void initializeStepCondition() const;
             virtual void executeIntermediateStep(int step) const = 0;

@@ -26,6 +26,9 @@
 
     $Source$
     $Log$
+    Revision 1.5  2001/04/06 16:12:18  marmar
+    Bug fixed in multi-period option
+
     Revision 1.4  2001/04/04 12:13:24  nando
     Headers policy part 2:
     The Include directory is added to the compiler's include search path.
@@ -79,8 +82,10 @@ namespace QuantLib {
 
             QL_REQUIRE(underlying - addElements(dividends)>0,
                 "Dividends cannot exceed underlying");                
-                
-            analitic_ = Handle<BSMOption> (new DividendEuropeanOption (type_,
+        }
+
+        void DividendOption::initializeControlVariate() const{
+            analytic_ = Handle<BSMOption> (new DividendEuropeanOption (type_,
                 underlying_ + addElements(dividends_), strike_,
                 dividendYield_, riskFreeRate_, residualTime_,
                 volatility_, dividends_, dates_));

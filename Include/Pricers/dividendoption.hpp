@@ -26,6 +26,9 @@
     
     $Source$
     $Log$
+    Revision 1.2  2001/04/06 16:11:54  marmar
+    Bug fixed in multi-period option
+
     Revision 1.1  2001/04/04 11:07:23  nando
     Headers policy part 1:
     Headers should have a .hpp (lowercase) filename extension
@@ -59,6 +62,8 @@ namespace QuantLib {
                 const std::vector<double>& dividends = std::vector<double>(), 
                 const std::vector<Time>& exdivdates = std::vector<Time>(), 
                 int timeSteps = 100, int gridPoints = 100);
+            protected:
+            void initializeControlVariate() const;
             private:
             std::vector<double> dividends_;
             
@@ -66,7 +71,6 @@ namespace QuantLib {
             
             void movePricesBeforeExDiv(double Div, const Array& newGrid, 
                 Array& prices, const Array& oldGrid) const;
-
             double addElements(const std::vector<double>& A) const{
                 return std::accumulate(A.begin(), A.end(), 0.0);   
             }
