@@ -27,6 +27,9 @@
 
 // $Source$
 // $Log$
+// Revision 1.10  2001/08/08 12:07:12  marmar
+// Modifications after changes in Monte Carlo interface
+//
 // Revision 1.9  2001/08/07 17:33:03  nando
 // 1) StandardPathGenerator now is GaussianPathGenerator;
 // 2) StandardMultiPathGenerator now is GaussianMultiPathGenerator;
@@ -146,7 +149,7 @@ protected:
 		double mean = r_ * tau - 0.5*sigma*sigma;
 		Math::Statistics samples;
 
-		return OneFactorMonteCarloOption(
+		OneFactorMonteCarloOption mc(
 					Handle<GaussianPathGenerator>(
 					    new GaussianPathGenerator(nTimeSteps,
 					                              mean,
@@ -155,7 +158,9 @@ protected:
 						Option::Type::Call,
 						s0_, strike_, exp(-r_*maturity_))),
 					samples
-					).sampleAccumulator(nSamples).mean();
+					);
+        mc.addSamples(nSamples);
+        return mc.sampleAccumulator().mean();
 
 
 	}
