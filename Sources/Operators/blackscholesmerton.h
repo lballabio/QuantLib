@@ -17,6 +17,7 @@ QL_BEGIN_NAMESPACE(Operators)
 
 class BSMOperator : public TridiagonalOperator {
   public:
+	BSMOperator() : TridiagonalOperator() {}
 	BSMOperator(int size, double dx, double r, double q, double sigma);
 };
 
