@@ -1,5 +1,6 @@
 
 /*!
+ Copyright (C) 2003 Ferdinando Ametrano
  Copyright (C) 2000, 2001, 2002, 2003 RiskMap srl
 
  This file is part of QuantLib, a free-software/open-source library
@@ -218,6 +219,8 @@ int main(int argc, char* argv[])
         // New option pricing framework 
         std::cout << "\nNew Pricing engine framework" << std::endl;
 
+        EuropeanExercise exercise(exerciseDate);
+
 
         // bootstrap the yield/dividend/vol curves
         Handle<TermStructure> flatTermStructure(new
@@ -236,7 +239,7 @@ int main(int argc, char* argv[])
             strike,
             flatDividendTS,
             flatTermStructure,
-            exerciseDate,
+            exercise,
             flatVolTS,
             Handle<PricingEngine>(new PricingEngines::EuropeanAnalyticalEngine())
             );
@@ -296,7 +299,7 @@ int main(int argc, char* argv[])
             strike,
             flatDividendTS,
             flatTermStructure,
-            exerciseDate,
+            exercise,
             flatVolTS,
             quantoEngine,
             flatTermStructure,

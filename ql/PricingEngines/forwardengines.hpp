@@ -55,7 +55,7 @@ namespace QuantLib {
             QL_REQUIRE(resetDate != Null<Date>(),
                        "ForwardOptionArguments::validate() : "
                        "null reset date given");
-            QL_REQUIRE(exerciseDate >= resetDate,
+            QL_REQUIRE(exercise.date() >= resetDate,
                        "ForwardOptionArguments::validate() : "
                        "reset date greater than exercise time");
         }

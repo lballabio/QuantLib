@@ -1,4 +1,5 @@
 /*
+ Copyright (C) 2003 Ferdinando Ametrano
  Copyright (C) 2001, 2002, 2003 Sadruddin Rejeb
 
  This file is part of QuantLib, a free-software/open-source library
@@ -37,17 +38,15 @@ namespace QuantLib {
       public:
         enum Type { American, Bermudan, European };
 
-        Exercise(Type type, const std::vector<Date>& dates);
-
+        Exercise() {type_ = Type(-1); }
+        bool isNull() const {return type_==Type(-1); }
         Type type() const;
-
         Date date(Size index = 0) const;
         const std::vector<Date>& dates() const;
+        Date lastDate() const {return dates_[dates_.size()-1];};
 
       protected:
         std::vector<Date> dates_;
-
-      private:
         Type type_;
     };
 
@@ -78,9 +77,6 @@ namespace QuantLib {
 
     // inline definitions
 
-    inline Exercise::Exercise(Type type, const std::vector<Date>& dates)
-    : dates_(dates), type_(type) {}
-
     inline Exercise::Type Exercise::type() const {
         return type_;
     }
@@ -94,16 +90,32 @@ namespace QuantLib {
     }
 
     inline AmericanExercise::AmericanExercise(Date earliest, Date latest)
-    : Exercise(American, std::vector<Date>(2)) {
+    : Exercise() {
+        type_ = American;
+        dates_ = std::vector<Date>(2);
         dates_[0] = earliest;
         dates_[1] = latest;
     }
 
     inline BermudanExercise::BermudanExercise(const std::vector<Date>& dates)
-    : Exercise(Bermudan, dates) {}
+    : Exercise() {
+
+        QL_REQUIRE(dates.size()>0,
+            "BermudanExercise::BermudanExercise : "
+            "no dates given");
+        dates_ = dates;
+
+        // if the following approach is not viable
+        // we should require that dates.size()>1 above
+        if (dates.size()==1) type_=European;
+        else type_ = Bermudan;
+    }
 
     inline EuropeanExercise::EuropeanExercise(Date date)
-    : Exercise(European, std::vector<Date>(1,date)) {}
+    : Exercise() {
+        type_ = European;
+        dates_ = std::vector<Date>(1,date);
+    }
 
 }
 

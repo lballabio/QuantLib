@@ -40,7 +40,7 @@ namespace QuantLib {
             double strike,
             const RelinkableHandle<TermStructure>& dividendTS,
             const RelinkableHandle<TermStructure>& riskFreeTS,
-            const Date& exerciseDate,
+            const Exercise& exercise,
             const RelinkableHandle<BlackVolTermStructure>& volTS,
 //            const Handle<PricingEngines::QuantoVanillaEngine>& engine,
             const Handle<PricingEngine>& engine,
@@ -50,7 +50,7 @@ namespace QuantLib {
             const std::string& isinCode,
             const std::string& description)
         : VanillaOption(type, underlying, strike, dividendTS, riskFreeTS,
-          exerciseDate, volTS, engine, isinCode, description),
+          exercise, volTS, engine, isinCode, description),
           foreignRiskFreeTS_(foreignRiskFreeTS),
           exchRateVolTS_(exchRateVolTS),
           correlation_(correlation) {
@@ -109,7 +109,8 @@ namespace QuantLib {
         }
 
         void QuantoVanillaOption::performCalculations() const {
-            if (exerciseDate_ <= riskFreeTS_->referenceDate()) {
+            // when == it should provide an answer
+            if (exercise_.lastDate() < riskFreeTS_->referenceDate()) {
                 isExpired_ = true;
                 NPV_ = delta_ = gamma_ = theta_ =
                     vega_ = rho_ = dividendRho_ =

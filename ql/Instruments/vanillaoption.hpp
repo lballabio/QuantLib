@@ -1,6 +1,7 @@
 
 
 /*
+ Copyright (C) 2003 Ferdinando Ametrano
  Copyright (C) 2000, 2001, 2002, 2003 RiskMap srl
 
  This file is part of QuantLib, a free-software/open-source library
@@ -44,7 +45,7 @@ namespace QuantLib {
                           double strike,
                           const RelinkableHandle<TermStructure>& dividendTS,
                           const RelinkableHandle<TermStructure>& riskFreeTS,
-                          const Date& exerciseDate,
+                          const Exercise& exerciseDate,
                           const RelinkableHandle<BlackVolTermStructure>& volTS,
                           const Handle<PricingEngine>& engine,
                           const std::string& isinCode = "",
@@ -80,7 +81,7 @@ namespace QuantLib {
             Option::Type type_;
             RelinkableHandle<MarketElement> underlying_;
             double strike_;
-            Date exerciseDate_;
+            Exercise exercise_;
             RelinkableHandle<TermStructure> riskFreeTS_, dividendTS_;
             RelinkableHandle<BlackVolTermStructure> volTS_;
           private:

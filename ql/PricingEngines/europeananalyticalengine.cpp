@@ -1,5 +1,6 @@
 
 /*
+ Copyright (C) 2003 Ferdinando Ametrano
  Copyright (C) 2000, 2001, 2002, 2003 RiskMap srl
 
  This file is part of QuantLib, a free-software/open-source library
@@ -32,19 +33,25 @@ namespace QuantLib {
 
         void EuropeanAnalyticalEngine::calculate() const {
 
+            QL_REQUIRE(arguments_.exercise.type() == Exercise::European,
+                "EuropeanAnalyticalEngine::calculate() : "
+                "not an European Option");
+
+            Date exerciseDate = arguments_.exercise.date();
+
             double variance = arguments_.volTS->blackVariance(
-                arguments_.exerciseDate, arguments_.strike);
+                exerciseDate, arguments_.strike);
             double stdDev = QL_SQRT(variance);
             double vol = arguments_.volTS->blackVol(
-                arguments_.exerciseDate, arguments_.strike);
+                exerciseDate, arguments_.strike);
             Time residualTime = variance/(vol*vol);
 
             DiscountFactor dividendDiscount =
-                arguments_.dividendTS->discount(arguments_.exerciseDate);
+                arguments_.dividendTS->discount(exerciseDate);
             Rate dividendRate = -QL_LOG(dividendDiscount)/residualTime;
 
             DiscountFactor riskFreeDiscount =
-                arguments_.riskFreeTS->discount(arguments_.exerciseDate);
+                arguments_.riskFreeTS->discount(exerciseDate);
             Rate riskFreeRate = -QL_LOG(riskFreeDiscount)/residualTime;
 
             double forwardPrice = arguments_.underlying *

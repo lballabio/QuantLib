@@ -29,6 +29,7 @@
 #define quantlib_vanilla_engines_h
 
 #include <ql/PricingEngines/genericengine.hpp>
+#include <ql/exercise.hpp>
 #include <ql/termstructure.hpp>
 #include <ql/voltermstructure.hpp>
 
@@ -41,14 +42,14 @@ namespace QuantLib {
           public:
             VanillaOptionArguments() : type(Option::Type(-1)),
                                        underlying(Null<double>()),
-                                       strike(Null<double>()),
-                                       exerciseDate(Null<Date>()) {}
+                                       strike(Null<double>()) {}
             void validate() const;
             Option::Type type;
             double underlying, strike;
             RelinkableHandle<TermStructure> riskFreeTS, dividendTS;
             RelinkableHandle<BlackVolTermStructure> volTS;
-            Date exerciseDate;
+            // ??
+            Exercise exercise;
         };
 
         inline void VanillaOptionArguments::validate() const {
@@ -66,8 +67,8 @@ namespace QuantLib {
                        "VanillaOptionArguments::validate() : null dividend term structure");
             QL_REQUIRE(!riskFreeTS.isNull(),
                        "VanillaOptionArguments::validate() : null risk free term structure");
-            QL_REQUIRE(exerciseDate != Null<Date>(),
-                       "VanillaOptionArguments::validate() : null exercise date given");
+            QL_REQUIRE(!exercise.isNull(),
+                       "VanillaOptionArguments::validate() : null exercise data");
             QL_REQUIRE(!volTS.isNull(),
                        "VanillaOptionArguments::validate() : null vol term structure");
         }

@@ -55,10 +55,10 @@ namespace QuantLib {
             originalArguments_->volTS = Handle<BlackVolTermStructure>(new
                 BlackConstantVol(arguments_.resetDate,
                 arguments_.volTS->blackForwardVol(arguments_.resetDate,
-                arguments_.exerciseDate,
+                arguments_.exercise.date(),
                 arguments_.moneyness* arguments_.underlying)));
 
-            originalArguments_->exerciseDate = arguments_.exerciseDate;
+            originalArguments_->exercise = arguments_.exercise;
 
             originalArguments_->validate();
             originalEngine_->calculate();

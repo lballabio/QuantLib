@@ -1,5 +1,6 @@
 
 /*
+ Copyright (C) 2003 Ferdinando Ametrano
  Copyright (C) 2000, 2001, 2002, 2003 RiskMap srl
 
  This file is part of QuantLib, a free-software/open-source library
@@ -40,14 +41,14 @@ namespace QuantLib {
             double strike,
             const RelinkableHandle<TermStructure>& dividendTS,
             const RelinkableHandle<TermStructure>& riskFreeTS,
-            const Date& exerciseDate,
+            const Exercise& exercise,
             const RelinkableHandle<BlackVolTermStructure>& volTS,
             const Handle<PricingEngine>& engine,
             const std::string& isinCode, const std::string& description)
         : Option(engine, isinCode, description), type_(type),
           underlying_(underlying),
           strike_(strike), dividendTS_(dividendTS), riskFreeTS_(riskFreeTS),
-          exerciseDate_(exerciseDate), volTS_(volTS) {
+          exercise_(exercise), volTS_(volTS) {
             QL_REQUIRE(!engine.isNull(),
                 "VanillaOption::VanillaOption : "
                 "null engine or wrong engine type");
@@ -112,7 +113,7 @@ namespace QuantLib {
                 "VanillaOption::impliedVolatility : "
                 "option expired");
 
-            double guess = volTS_->blackVol(exerciseDate_,
+            double guess = volTS_->blackVol(exercise_.lastDate(),
                 underlying_->value());
 
             ImpliedVolHelper f(engine_,targetValue);
@@ -142,14 +143,14 @@ namespace QuantLib {
             arguments->dividendTS = dividendTS_;
             arguments->riskFreeTS = riskFreeTS_;
 
-            arguments->exerciseDate = exerciseDate_;
+            arguments->exercise = exercise_;
 
             arguments->volTS = volTS_;
         }
 
         void VanillaOption::performCalculations() const {
             // when == it should provide an answer
-            if (exerciseDate_ < riskFreeTS_->referenceDate()) {
+            if (exercise_.lastDate() < riskFreeTS_->referenceDate()) {
                 isExpired_ = true;
                 NPV_ = delta_ = gamma_ = theta_ =
                     vega_ = rho_ = dividendRho_ = 0.0;

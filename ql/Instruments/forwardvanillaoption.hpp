@@ -41,7 +41,7 @@ namespace QuantLib {
                 const RelinkableHandle<MarketElement>& underlying,
                 const RelinkableHandle<TermStructure>& dividendTS,
                 const RelinkableHandle<TermStructure>& riskFreeTS,
-                const Date& exerciseDate,
+                const Exercise& exercise,
                 const RelinkableHandle<BlackVolTermStructure>& volTS,
 //                const Handle<PricingEngines::ForwardEngine>& engine,
                 const Handle<PricingEngine>& engine,

@@ -39,7 +39,7 @@ namespace QuantLib {
             Rate r = arguments_.riskFreeTS->zeroYield(referenceDate);
             Rate q = arguments_.dividendTS->zeroYield(referenceDate);
             Time t = arguments_.volTS->dayCounter().yearFraction(
-                referenceDate, arguments_.exerciseDate);
+                referenceDate, arguments_.exercise.date());
 
             Handle<Lattices::Tree> tree;
             switch(type_) {

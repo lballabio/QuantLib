@@ -44,7 +44,7 @@ namespace QuantLib {
                 arguments_.correlation));
             originalArguments_->riskFreeTS = arguments_.riskFreeTS;
             originalArguments_->volTS = arguments_.volTS;
-            originalArguments_->exerciseDate = arguments_.exerciseDate;
+            originalArguments_->exercise = arguments_.exercise;
 
             originalArguments_->validate();
             originalEngine_->calculate();
@@ -58,16 +58,17 @@ namespace QuantLib {
             results_.dividendRho = originalResults_->dividendRho;
             // exchangeRtae level needed here!!!!!
             double exchangeRateFlatVol = arguments_.exchRateVolTS->blackVol(
-                arguments_.exerciseDate, arguments_.underlying);
+                arguments_.exercise.date(), arguments_.underlying);
             results_.vega = originalResults_->vega +
                 arguments_.correlation * exchangeRateFlatVol *
                 originalResults_->dividendRho;
 
 
             double volatility = arguments_.volTS->blackVol(
-                arguments_.exerciseDate, arguments_.underlying);
+                arguments_.exercise.date(), arguments_.underlying);
             results_.qvega = + arguments_.correlation
-                * arguments_.volTS->blackVol(arguments_.exerciseDate, arguments_.underlying) *
+                * arguments_.volTS->blackVol(arguments_.exercise.date(),
+                arguments_.underlying) *
                 originalResults_->dividendRho;
             results_.qrho = - originalResults_->dividendRho;
             results_.qlambda = exchangeRateFlatVol *

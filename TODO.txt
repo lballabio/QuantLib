@@ -23,7 +23,6 @@ COMPILING
 LIBRARY
 
     PRICING ENGINE FRAMEWORK
-        use Exercise class
         make forward/forward performance engine run
         make combined quanto/forward engine run
         create vanilla FD example
