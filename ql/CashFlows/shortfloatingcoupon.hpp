@@ -54,9 +54,14 @@ namespace QuantLib {
             //@{
             double amount() const;
             //@}
+            //! \name Coupon interface
+            //@{
+            double accruedAmount(const Date&) const;
+            //@}
             //! \name Inspectors
             //@{
             const Handle<Indexes::Xibor>& index() const;
+            Rate fixing() const;
             Spread spread() const;
             //@}
             //! \name Observer interface
@@ -82,6 +87,10 @@ namespace QuantLib {
             return index_;
         }
 
+        inline Rate ShortFloatingRateCoupon::fixing() const {
+            return amount()/(nominal()*accrualPeriod());
+        }
+
         inline Spread ShortFloatingRateCoupon::spread() const {
             return spread_;
         }
@@ -90,6 +99,17 @@ namespace QuantLib {
             notifyObservers();
         }
 
+        inline 
+        double ShortFloatingRateCoupon::accruedAmount(const Date& d) const {
+            if (d <= startDate_ || d >= endDate_) {
+                return 0.0;
+            } else {
+                return nominal()*fixing()*
+                    dayCounter_.yearFraction(startDate_,d,
+                        refPeriodStart_,refPeriodEnd_);
+            }
+        }
+        
     }
 
 }

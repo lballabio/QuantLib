@@ -64,6 +64,8 @@ namespace QuantLib {
             double accrualPeriod() const;
             //! accrual period in days
             int accrualDays() const;
+            //! accrued amount at the given date
+            virtual double accruedAmount(const Date&) const = 0;
             //@}
           protected:
             double nominal_;

@@ -1,5 +1,4 @@
 
-
 /*
  Copyright (C) 2000, 2001, 2002 RiskMap srl
 
@@ -50,6 +49,10 @@ namespace QuantLib {
             //@{
             double amount() const;
             //@}
+            //! \name Coupon interface
+            //@{
+            double accruedAmount(const Date&) const;
+            //@}
             //! \name Inspectors
             //@{
             Rate rate() const;
@@ -69,6 +72,15 @@ namespace QuantLib {
             return rate_;
         }
 
+        inline double FixedRateCoupon::accruedAmount(const Date& d) const {
+            if (d <= startDate_ || d >= endDate_) {
+                return 0.0;
+            } else {
+                return nominal()*rate_*dayCounter_.yearFraction(startDate_,d,
+                    refPeriodStart_,refPeriodEnd_);
+            }
+        }
+        
     }
 
 }
