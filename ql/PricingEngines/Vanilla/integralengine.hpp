@@ -1,6 +1,7 @@
 
 /*
- Copyright (C) 2003, 2004 StatPro Italia srl
+ Copyright (C) 2002, 2003, 2004 Ferdinando Ametrano
+ Copyright (C) 2002, 2003, 2004 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -15,18 +16,24 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#ifndef quantlib_pricing_engines_all_hpp
-#define quantlib_pricing_engines_all_hpp
+/*! \file integralengine.hpp
+    \brief Integral option engine
+*/
 
-#include <ql/qldefines.hpp>
-#include <ql/PricingEngines/core.hpp>
+#ifndef quantlib_integral_engine_hpp
+#define quantlib_integral_engine_hpp
 
-#include <ql/PricingEngines/Asian/all.hpp>
-#include <ql/PricingEngines/Barrier/all.hpp>
-#include <ql/PricingEngines/Cliquet/all.hpp>
-#include <ql/PricingEngines/Forward/all.hpp>
-#include <ql/PricingEngines/Quanto/all.hpp>
-#include <ql/PricingEngines/Vanilla/all.hpp>
+#include <ql/Instruments/vanillaoption.hpp>
+
+namespace QuantLib {
+
+    //! Pricing engine for European vanilla options using integral approach
+    class IntegralEngine : public VanillaEngine {
+      public:
+        void calculate() const;
+    };
+
+}
 
 
 #endif

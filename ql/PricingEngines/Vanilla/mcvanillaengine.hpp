@@ -24,7 +24,7 @@
 #define quantlib_mcvanilla_engine_h
 
 #include <ql/PricingEngines/mcsimulation.hpp>
-#include <ql/PricingEngines/Vanilla/vanillaengines.hpp>
+#include <ql/Instruments/vanillaoption.hpp>
 
 namespace QuantLib {
 

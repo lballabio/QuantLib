@@ -1,6 +1,6 @@
 
 /*
- Copyright (C) 2002, 2003 Ferdinando Ametrano
+ Copyright (C) 2002, 2003, 2004 Ferdinando Ametrano
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -15,12 +15,12 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file forwardengines.hpp
-    \brief Forward (strike-resetting) option engines
+/*! \file forwardengine.hpp
+    \brief Forward (strike-resetting) option engine
 */
 
-#ifndef quantlib_forward_engines_h
-#define quantlib_forward_engines_h
+#ifndef quantlib_forward_engine_hpp
+#define quantlib_forward_engine_hpp
 
 #include <ql/Instruments/forwardvanillaoption.hpp>
 #include <ql/Volatilities/impliedvoltermstructure.hpp>
@@ -45,6 +45,9 @@ namespace QuantLib {
         const ResultsType* originalResults_;
     };
 
+
+    // template definitions
+
     template<class ArgumentsType, class ResultsType>
     ForwardEngine<ArgumentsType, ResultsType>::ForwardEngine(
         const Handle<GenericEngine<ArgumentsType, ResultsType> >&
@@ -62,7 +65,6 @@ namespace QuantLib {
     template<class ArgumentsType, class ResultsType>
     void ForwardEngine<ArgumentsType, ResultsType>::setOriginalArguments()
                                                                         const {
-
 
 /*
         #if defined(HAVE_BOOST)
@@ -97,16 +99,21 @@ namespace QuantLib {
         // maybe the forward value is "better", in some fashion
         // the right level is needed in order to interpolate
         // the vol
-        originalArguments_->blackScholesProcess->stateVariable = arguments_.blackScholesProcess->stateVariable;
-        originalArguments_->blackScholesProcess->dividendTS = RelinkableHandle<TermStructure>(
-            Handle<TermStructure>(new
-                ImpliedTermStructure(
-                        arguments_.blackScholesProcess->dividendTS, arguments_.resetDate,
+        originalArguments_->blackScholesProcess->stateVariable = 
+            arguments_.blackScholesProcess->stateVariable;
+        originalArguments_->blackScholesProcess->dividendTS = 
+            RelinkableHandle<TermStructure>(
+                Handle<TermStructure>(
+                    new ImpliedTermStructure(
+                        arguments_.blackScholesProcess->dividendTS, 
+                        arguments_.resetDate,
                         arguments_.resetDate)));
-        originalArguments_->blackScholesProcess->riskFreeTS = RelinkableHandle<TermStructure>(
-            Handle<TermStructure>(new
-                ImpliedTermStructure(
-                        arguments_.blackScholesProcess->riskFreeTS, arguments_.resetDate,
+        originalArguments_->blackScholesProcess->riskFreeTS = 
+            RelinkableHandle<TermStructure>(
+                Handle<TermStructure>(
+                    new ImpliedTermStructure(
+                        arguments_.blackScholesProcess->riskFreeTS, 
+                        arguments_.resetDate,
                         arguments_.resetDate)));
 
         // The following approach is ok if the vol is at most
@@ -116,16 +123,15 @@ namespace QuantLib {
         // implies an unrealistic time-decreasing smile)
         originalArguments_->blackScholesProcess->volTS =
             RelinkableHandle<BlackVolTermStructure>(
-                Handle<BlackVolTermStructure>(new
-                    ImpliedVolTermStructure(arguments_.blackScholesProcess->volTS,
-                                            arguments_.resetDate)));
+                Handle<BlackVolTermStructure>(
+                    new ImpliedVolTermStructure(
+                        arguments_.blackScholesProcess->volTS,
+                        arguments_.resetDate)));
 
-        originalArguments_->exercise  = arguments_.exercise;
+        originalArguments_->exercise = arguments_.exercise;
 
         originalArguments_->validate();
     }
-
-
 
     template<class ArgumentsType, class ResultsType>
     void ForwardEngine<ArgumentsType, ResultsType>::calculate() const {
@@ -139,9 +145,12 @@ namespace QuantLib {
     void ForwardEngine<ArgumentsType, ResultsType>::getOriginalResults()
                                                                       const {
 
-        Time resetTime = arguments_.blackScholesProcess->riskFreeTS->dayCounter().yearFraction(
-                arguments_.blackScholesProcess->riskFreeTS->referenceDate(), arguments_.resetDate);
-        double discQ = arguments_.blackScholesProcess->dividendTS->discount(arguments_.resetDate);
+        Time resetTime = arguments_.blackScholesProcess->riskFreeTS
+            ->dayCounter().yearFraction(
+                arguments_.blackScholesProcess->riskFreeTS->referenceDate(), 
+                arguments_.resetDate);
+        double discQ = arguments_.blackScholesProcess->dividendTS
+            ->discount(arguments_.resetDate);
 
         results_.value = discQ * originalResults_->value;
         // I need the strike derivative here ...
@@ -154,56 +163,6 @@ namespace QuantLib {
         results_.rho   = discQ *  originalResults_->rho;
         results_.dividendRho = - resetTime * results_.value
             + discQ * originalResults_->dividendRho;
-
-    }
-
-
-
-
-    //! Forward Performance engine base class
-    template<class ArgumentsType, class ResultsType>
-    class ForwardPerformanceEngine
-        : public ForwardEngine<ArgumentsType, ResultsType> {
-      public:
-        ForwardPerformanceEngine(
-                    const Handle<GenericEngine<ArgumentsType,ResultsType> >&);
-        void calculate() const;
-        void getOriginalResults() const;
-    };
-
-    template<class ArgumentsType, class ResultsType>
-    ForwardPerformanceEngine<ArgumentsType, ResultsType>::ForwardPerformanceEngine(
-        const Handle<GenericEngine<ArgumentsType, ResultsType> >&
-            originalEngine)
-    : ForwardEngine<ArgumentsType, ResultsType>(originalEngine) {}
-
-    template<class ArgumentsType, class ResultsType>
-    void ForwardPerformanceEngine<ArgumentsType, ResultsType>::calculate() const {
-
-        setOriginalArguments();
-        originalEngine_->calculate();
-        getOriginalResults();
-    }
-
-    template<class ArgumentsType, class ResultsType>
-    void ForwardPerformanceEngine<ArgumentsType, ResultsType>::getOriginalResults() const {
-
-        Time resetTime = arguments_.blackScholesProcess->riskFreeTS->dayCounter().yearFraction(
-                arguments_.blackScholesProcess->riskFreeTS->referenceDate(), arguments_.resetDate);
-        double discR = arguments_.blackScholesProcess->riskFreeTS->discount(arguments_.resetDate);
-        // it's a performance option
-        discR /= arguments_.blackScholesProcess->stateVariable->value();
-
-        double temp = originalResults_->value;
-        results_.value = discR * temp;
-        results_.delta = 0.0;
-        results_.gamma = 0.0;
-        results_.theta = arguments_.blackScholesProcess->riskFreeTS->zeroYield(
-                arguments_.resetDate) * results_.value;
-        results_.vega = discR * originalResults_->vega;
-        results_.rho = - resetTime * results_.value +
-            discR * originalResults_->rho;
-        results_.dividendRho = discR * originalResults_->dividendRho;
 
     }
 

@@ -1,6 +1,6 @@
 
 /*
- Copyright (C) 2003 Ferdinando Ametrano
+ Copyright (C) 2003, 2004 Ferdinando Ametrano
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -15,21 +15,17 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file cliquetengines.hpp
-    \brief Cliquet option engines
+/*! \file mccliquetengine.hpp
+    \brief Monte Carlo Cliquet option engine
 */
 
-#ifndef quantlib_cliquet_engines_h
-#define quantlib_cliquet_engines_h
+#ifndef quantlib_mc_cliquet_engine_hpp
+#define quantlib_mc_cliquet_engine_hpp
 
 #include <ql/Instruments/cliquetoption.hpp>
 #include <ql/PricingEngines/mcsimulation.hpp>
 
 namespace QuantLib {
-
-    //! Cliquet engine base class
-    class CliquetEngine : public GenericEngine<CliquetOption::arguments,
-                                               VanillaOption::results> {};
 
     /*
         //! Monte Carlo cliquet engine
@@ -163,5 +159,6 @@ namespace QuantLib {
     */
 
 }
+
 
 #endif

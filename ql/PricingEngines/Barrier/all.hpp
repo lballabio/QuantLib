@@ -1,6 +1,6 @@
 
 /*
- Copyright (C) 2003, 2004 StatPro Italia srl
+ Copyright (C) 2004 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -15,18 +15,15 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#ifndef quantlib_pricing_engines_all_hpp
-#define quantlib_pricing_engines_all_hpp
+#ifndef quantlib_pricing_engines_barrier_all_hpp
+#define quantlib_pricing_engines_barrier_all_hpp
 
 #include <ql/qldefines.hpp>
-#include <ql/PricingEngines/core.hpp>
-
-#include <ql/PricingEngines/Asian/all.hpp>
-#include <ql/PricingEngines/Barrier/all.hpp>
-#include <ql/PricingEngines/Cliquet/all.hpp>
-#include <ql/PricingEngines/Forward/all.hpp>
-#include <ql/PricingEngines/Quanto/all.hpp>
-#include <ql/PricingEngines/Vanilla/all.hpp>
+#include <ql/PricingEngines/Barrier/analyticamericanbinarybarrierengine.hpp>
+#include <ql/PricingEngines/Barrier/analyticbarrierengine.hpp>
+#include <ql/PricingEngines/Barrier/analyticeuropeanbinarybarrierengine.hpp>
+#include <ql/PricingEngines/Barrier/mcbarrierengine.hpp>
+#include <ql/PricingEngines/Barrier/mcbinarybarrierengine.hpp>
 
 
 #endif

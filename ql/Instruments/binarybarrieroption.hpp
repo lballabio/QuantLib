@@ -1,8 +1,8 @@
 
 /*
- Copyright (C) 2003 Neil Firth
- Copyright (C) 2003 Ferdinando Ametrano
- Copyright (C) 2000, 2001, 2002, 2003 RiskMap srl
+ Copyright (C) 2003, 2004 Neil Firth
+ Copyright (C) 2003, 2004 Ferdinando Ametrano
+ Copyright (C) 2003, 2004 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -45,8 +45,10 @@ namespace QuantLib {
         void performCalculations() const;
     };
 
-    //! %results from binary barrier option calculation
-//    class BinaryBarrierOption::results : public virtual OneAssetOption::results {};
+    //! Binary engine base class
+    class BinaryBarrierEngine
+        : public GenericEngine<BinaryBarrierOption::arguments,
+                               BinaryBarrierOption::results> {};
 
 }
 

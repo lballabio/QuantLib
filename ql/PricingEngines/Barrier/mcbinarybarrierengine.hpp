@@ -1,9 +1,8 @@
 
 /*
- Copyright (C) 2003 Neil Firth
- Copyright (C) 2002, 2003 Ferdinando Ametrano
- Copyright (C) 2002, 2003 Sad Rejeb
- Copyright (C) 2000, 2001, 2002, 2003 RiskMap srl
+ Copyright (C) 2003, 2004 Neil Firth
+ Copyright (C) 2003, 2004 Ferdinando Ametrano
+ Copyright (C) 2003, 2004 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -18,46 +17,23 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file binarybarrierengines.hpp
-    \brief binary barrier option engines
-
-    Based on the Vanilla Engine pattern
+/*! \file mcbinarybarrierengines.hpp
+    \brief Monte Carlo binary barrier option engine
 */
 
-#ifndef quantlib_binarybarrier_engines_h
-#define quantlib_binarybarrier_engines_h
+#ifndef quantlib_mc_binarybarrier_engines_hpp
+#define quantlib_mc_binarybarrier_engines_hpp
 
-#include <ql/exercise.hpp>
-#include <ql/handle.hpp>
-#include <ql/termstructure.hpp>
-#include <ql/voltermstructure.hpp>
 #include <ql/MonteCarlo/binarybarrierpathpricer.hpp>
 #include <ql/MonteCarlo/mctraits.hpp>
-#include <ql/PricingEngines/Vanilla/mcvanillaengine.hpp>
+#include <ql/PricingEngines/mcsimulation.hpp>
 
 namespace QuantLib {
-
-    //! Binary engine base class
-    class BinaryBarrierEngine
-        : public GenericEngine<BinaryBarrierOption::arguments,
-                               BinaryBarrierOption::results> {};
-
-    //! Analytic pricing engine for European binary barrier options
-    class AnalyticEuropeanBinaryBarrierEngine : public BinaryBarrierEngine {
-      public:
-        void calculate() const;
-    };
-
-    //! Analytic pricing engine for American binary barrier options formulae
-    class AnalyticAmericanBinaryBarrierEngine : public BinaryBarrierEngine {
-      public:
-        void calculate() const;
-    };
 
     //! Pricing engine for binary barrier options using Monte Carlo simulation
     template<class RNG = PseudoRandom, class S = Statistics>
     class MCBinaryBarrierEngine : public BinaryBarrierEngine,
-                           public McSimulation<SingleAsset<RNG>, S> {
+                                  public McSimulation<SingleAsset<RNG>, S> {
       public:
         // constructor
         MCBinaryBarrierEngine(Size maxTimeStepsPerYear,
@@ -182,10 +158,10 @@ namespace QuantLib {
     template <class RNG, class S>
     inline
     TimeGrid MCBinaryBarrierEngine<RNG,S>::timeGrid() const {
-        Time t =
-          arguments_.blackScholesProcess->riskFreeTS->dayCounter().yearFraction(
-          arguments_.blackScholesProcess->riskFreeTS->referenceDate(),
-          arguments_.exercise->lastDate());
+        Time t = arguments_.blackScholesProcess->riskFreeTS
+            ->dayCounter().yearFraction(
+                arguments_.blackScholesProcess->riskFreeTS->referenceDate(),
+                arguments_.exercise->lastDate());
         return TimeGrid(t, Size(QL_MAX(t * maxTimeStepsPerYear_, 1.0)));
     }
 

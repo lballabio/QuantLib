@@ -1,9 +1,8 @@
 
 /*
- Copyright (C) 2003 Neil Firth
- Copyright (C) 2002, 2003 Ferdinando Ametrano
- Copyright (C) 2002, 2003 Sad Rejeb
- Copyright (C) 2000, 2001, 2002, 2003 RiskMap srl
+ Copyright (C) 2003, 2004 Neil Firth
+ Copyright (C) 2003, 2004 Ferdinando Ametrano
+ Copyright (C) 2003, 2004 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -22,7 +21,8 @@
     \brief European binary barrier option engine
 */
 
-#include <ql/PricingEngines/Barrier/binarybarrierengines.hpp>
+#include <ql/PricingEngines/Barrier/analyticeuropeanbinarybarrierengine.hpp>
+#include <ql/Math/normaldistribution.hpp>
 
 namespace QuantLib {
 
@@ -51,15 +51,17 @@ namespace QuantLib {
         double vol = arguments_.blackScholesProcess->volTS->blackVol(
             arguments_.exercise->lastDate(), k);
 
-        DiscountFactor discount = arguments_.blackScholesProcess->riskFreeTS->discount(
-            arguments_.exercise->lastDate());
+        DiscountFactor discount = 
+            arguments_.blackScholesProcess->riskFreeTS->discount(
+                arguments_.exercise->lastDate());
         Rate r = arguments_.blackScholesProcess->riskFreeTS->zeroYield(
             arguments_.exercise->lastDate());
         Rate q = arguments_.blackScholesProcess->dividendTS->zeroYield(
             arguments_.exercise->lastDate());
 
-        double volSqrtT = QL_SQRT(arguments_.blackScholesProcess->volTS->blackVariance(
-            arguments_.exercise->lastDate(), k));
+        double volSqrtT = 
+            QL_SQRT(arguments_.blackScholesProcess->volTS->blackVariance(
+                arguments_.exercise->lastDate(), k));
 
         double T = volSqrtT*volSqrtT/(vol*vol);
 
@@ -118,7 +120,8 @@ namespace QuantLib {
         if (type == Option::Straddle) {
             results_.rho = - cashPayoff * T * discount;
         } else {
-            results_.rho = cashPayoff * discount * sign * T* (NID2/volSqrtT-beta);
+            results_.rho = 
+                cashPayoff * discount * sign * T* (NID2/volSqrtT-beta);
         }
 
         if (type == Option::Straddle) {

@@ -1,5 +1,6 @@
 
 /*
+ Copyright (C) 2003, 2004 Ferdinando Ametrano
  Copyright (C) 2003, 2004 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
@@ -15,18 +16,28 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#ifndef quantlib_pricing_engines_all_hpp
-#define quantlib_pricing_engines_all_hpp
+/*! \file analyticamericanengine.hpp
+    \brief analytic American option engine
+*/
 
-#include <ql/qldefines.hpp>
-#include <ql/PricingEngines/core.hpp>
+#ifndef quantlib_analytic_american_engine_hpp
+#define quantlib_analytic_american_engine_hpp
 
-#include <ql/PricingEngines/Asian/all.hpp>
-#include <ql/PricingEngines/Barrier/all.hpp>
-#include <ql/PricingEngines/Cliquet/all.hpp>
-#include <ql/PricingEngines/Forward/all.hpp>
-#include <ql/PricingEngines/Quanto/all.hpp>
-#include <ql/PricingEngines/Vanilla/all.hpp>
+#include <ql/Instruments/vanillaoption.hpp>
+
+namespace QuantLib {
+
+    /*! Pricing engine for American vanilla options with digital payoff
+        using analytic formulae
+
+        \todo add more greeks (as of now only delta and rho available)
+    */
+    class AnalyticAmericanEngine : public VanillaEngine {
+      public:
+        void calculate() const;
+    };
+
+}
 
 
 #endif

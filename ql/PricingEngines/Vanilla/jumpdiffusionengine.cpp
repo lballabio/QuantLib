@@ -21,6 +21,8 @@
 
 #include <ql/PricingEngines/Vanilla/jumpdiffusionengine.hpp>
 #include <ql/Math/poissondistribution.hpp>
+#include <ql/TermStructures/flatforward.hpp>
+#include <ql/Volatilities/blackconstantvol.hpp>
 
 namespace QuantLib {
 

@@ -1,6 +1,6 @@
 
 /*
- Copyright (C) 2003 Riskmap srl
+ Copyright (C) 2003, 2004 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -30,7 +30,7 @@ namespace QuantLib {
     class CliquetOption {
       public:
         class arguments;
-        class results;
+        // class results;
     };
 
     //! arguments for cliquet option calculation
@@ -50,6 +50,12 @@ namespace QuantLib {
         std::vector<Date> resetDates;
     };
 
+    //! Cliquet engine base class
+    class CliquetEngine : public GenericEngine<CliquetOption::arguments,
+                                               VanillaOption::results> {};
+
+
+    // inline definitions
 
     inline void CliquetOption::arguments::validate() const {
         #if defined(QL_PATCH_MICROSOFT)

@@ -20,6 +20,8 @@
 #include "digitaloption.hpp"
 #include <ql/DayCounters/actual360.hpp>
 #include <ql/Instruments/vanillaoption.hpp>
+#include <ql/PricingEngines/Vanilla/analyticeuropeanengine.hpp>
+#include <ql/PricingEngines/Vanilla/analyticamericanengine.hpp>
 #include <ql/PricingEngines/Vanilla/mcdigitalengine.hpp>
 #include <ql/TermStructures/flatforward.hpp>
 #include <ql/Volatilities/blackconstantvol.hpp>

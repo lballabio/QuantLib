@@ -18,7 +18,7 @@
 #include "asianoptions.hpp"
 #include <ql/DayCounters/actual360.hpp>
 #include <ql/Instruments/asianoption.hpp>
-#include <ql/PricingEngines/Asian/asianengines.hpp>
+#include <ql/PricingEngines/Asian/analyticasianengine.hpp>
 #include <ql/TermStructures/flatforward.hpp>
 #include <ql/Volatilities/blackconstantvol.hpp>
 

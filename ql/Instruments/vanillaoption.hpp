@@ -41,6 +41,10 @@ namespace QuantLib {
         void performCalculations() const;
     };
 
+    //! Vanilla option engine base class
+    class VanillaEngine : public GenericEngine<VanillaOption::arguments,
+                                               VanillaOption::results> {};
+
 }
 
 

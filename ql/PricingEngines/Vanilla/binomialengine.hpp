@@ -1,8 +1,7 @@
 
 /*
- Copyright (C) 2002, 2003 Ferdinando Ametrano
- Copyright (C) 2002, 2003 Sad Rejeb
- Copyright (C) 2000, 2001, 2002, 2003 RiskMap srl
+ Copyright (C) 2002, 2003, 2004 Ferdinando Ametrano
+ Copyright (C) 2002, 2003, 2004 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -17,12 +16,12 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file vanillaengines.hpp
-    \brief Vanilla option engines
+/*! \file binomialengine.hpp
+    \brief Binomial option engine
 */
 
-#ifndef quantlib_vanilla_engines_h
-#define quantlib_vanilla_engines_h
+#ifndef quantlib_binomial_engine_hpp
+#define quantlib_binomial_engine_hpp
 
 #include <ql/Instruments/vanillaoption.hpp>
 #include <ql/Lattices/binomialtree.hpp>
@@ -32,49 +31,6 @@
 #include <ql/Volatilities/blackconstantvol.hpp>
 
 namespace QuantLib {
-
-    //! Vanilla option engine base class
-    class VanillaEngine : public GenericEngine<VanillaOption::arguments,
-                                               VanillaOption::results> {};
-
-    //! Pricing engine for European vanilla options using analytical formulae
-    class AnalyticEuropeanEngine : public VanillaEngine {
-      public:
-        void calculate() const;
-    };
-
-    /*! Pricing engine for American vanilla options with digital payoff
-        using analytic formulae
-
-        \todo add more greeks (as of now only delta and rho available)
-    */
-    class AnalyticAmericanEngine : public VanillaEngine {
-      public:
-        void calculate() const;
-    };
-
-    /*! Pricing engine for American vanilla options with 
-        Barone-Adesi and Whaley approximation (1987)
-    */
-    class BaroneAdesiWhaleyApproximationEngine : public VanillaEngine {
-      public:
-        void calculate() const;
-    };
-
-    /*! Pricing engine for American vanilla options with 
-        Bjerksund and Stensland approximation (1993)
-    */
-    class BjerksundStenslandApproximationEngine : public VanillaEngine {
-      public:
-        void calculate() const;
-    };
-
-    //! Pricing engine for European vanilla options using integral approach
-    class IntegralEngine : public VanillaEngine {
-      public:
-        void calculate() const;
-    };
-
 
     //! Pricing engine for vanilla options using binomial trees
     template <class TreeType>
@@ -97,11 +53,16 @@ namespace QuantLib {
         double v = arguments_.blackScholesProcess->volTS->blackVol(
             arguments_.exercise->lastDate(), s0);
         Date maturityDate = arguments_.exercise->lastDate();
-        Rate r = arguments_.blackScholesProcess->riskFreeTS->zeroYield(maturityDate);
-        Rate q = arguments_.blackScholesProcess->dividendTS->zeroYield(maturityDate);
-        Date referenceDate = arguments_.blackScholesProcess->riskFreeTS->referenceDate();
-        Date todaysDate    = arguments_.blackScholesProcess->riskFreeTS->todaysDate();
-        DayCounter dc      = arguments_.blackScholesProcess->riskFreeTS->dayCounter();
+        Rate r = arguments_.blackScholesProcess->riskFreeTS
+            ->zeroYield(maturityDate);
+        Rate q = arguments_.blackScholesProcess->dividendTS
+            ->zeroYield(maturityDate);
+        Date referenceDate = 
+            arguments_.blackScholesProcess->riskFreeTS->referenceDate();
+        Date todaysDate = 
+            arguments_.blackScholesProcess->riskFreeTS->todaysDate();
+        DayCounter dc = 
+            arguments_.blackScholesProcess->riskFreeTS->dayCounter();
 
         // binomial trees with constant coefficient
         RelinkableHandle<TermStructure> flatRiskFree(
@@ -123,8 +84,8 @@ namespace QuantLib {
         Handle<PlainVanillaPayoff> payoff = arguments_.payoff;
         #endif
 
-        Time maturity = arguments_.blackScholesProcess->riskFreeTS->dayCounter().yearFraction(
-            referenceDate, maturityDate);;
+        Time maturity = arguments_.blackScholesProcess->riskFreeTS
+            ->dayCounter().yearFraction(referenceDate, maturityDate);
 
         Handle<DiffusionProcess> bs(
             new BlackScholesProcess(flatRiskFree, flatDividends, flatVol,s0));

@@ -1,6 +1,6 @@
 
 /*
- Copyright (C) 2003 Ferdinando Ametrano
+ Copyright (C) 2003, 2004 Ferdinando Ametrano
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -15,11 +15,11 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file integralengines.cpp
-    \brief Option engines using the integral approach
+/*! \file integralengine.cpp
+    \brief Option engine using the integral approach
 */
 
-#include <ql/PricingEngines/Vanilla/vanillaengines.hpp>
+#include <ql/PricingEngines/Vanilla/integralengine.hpp>
 #include <ql/Math/segmentintegral.hpp>
 
 namespace QuantLib {
@@ -60,22 +60,27 @@ namespace QuantLib {
         Handle<StrikedTypePayoff> payoff = arguments_.payoff;
         #endif
 
-        double variance = arguments_.blackScholesProcess->volTS->blackVariance(
-                                       arguments_.exercise->lastDate(), payoff->strike());
+        double variance = 
+            arguments_.blackScholesProcess->volTS->blackVariance(
+                           arguments_.exercise->lastDate(), payoff->strike());
 
-        double dividendDiscount = arguments_.blackScholesProcess->dividendTS->discount(
-            arguments_.exercise->lastDate());
-        double riskFreeDiscount = arguments_.blackScholesProcess->riskFreeTS->discount(
-            arguments_.exercise->lastDate());
-        double drift = QL_LOG(dividendDiscount/riskFreeDiscount) - 0.5*variance;
+        double dividendDiscount = 
+            arguments_.blackScholesProcess->dividendTS->discount(
+                arguments_.exercise->lastDate());
+        double riskFreeDiscount = 
+            arguments_.blackScholesProcess->riskFreeTS->discount(
+                arguments_.exercise->lastDate());
+        double drift = QL_LOG(dividendDiscount/riskFreeDiscount)-0.5*variance;
 
-        Integrand f(arguments_.payoff, arguments_.blackScholesProcess->stateVariable->value(), 
+        Integrand f(arguments_.payoff, 
+                    arguments_.blackScholesProcess->stateVariable->value(), 
                     drift, variance);
         SegmentIntegral integrator(5000);
 
         double infinity = 10.0*QL_SQRT(variance);
         results_.value =
-            arguments_.blackScholesProcess->riskFreeTS->discount(arguments_.exercise->lastDate()) /
+            arguments_.blackScholesProcess->riskFreeTS
+                ->discount(arguments_.exercise->lastDate()) /
             QL_SQRT(2.0*M_PI*variance) *
             integrator(f, drift-infinity, drift+infinity);
     }

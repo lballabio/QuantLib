@@ -1,6 +1,6 @@
 
 /*
- Copyright (C) 2002, 2003 Ferdinando Ametrano
+ Copyright (C) 2002, 2003, 2004 Ferdinando Ametrano
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -15,12 +15,12 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file quantoengines.hpp
-    \brief Quanto option engines
+/*! \file quantoengine.hpp
+    \brief Quanto option engine
 */
 
-#ifndef quantlib_quanto_engines_h
-#define quantlib_quanto_engines_h
+#ifndef quantlib_quanto_engine_hpp
+#define quantlib_quanto_engine_hpp
 
 #include <ql/Instruments/quantovanillaoption.hpp>
 #include <ql/TermStructures/quantotermstructure.hpp>
@@ -41,6 +41,9 @@ namespace QuantLib {
         ArgumentsType* originalArguments_;
         const ResultsType* originalResults_;
     };
+
+
+    // template definitions
 
     template<class ArgumentsType, class ResultsType>
     QuantoEngine<ArgumentsType, ResultsType>::QuantoEngine(
@@ -116,8 +119,10 @@ namespace QuantLib {
                 arguments_.exercise->lastDate(),
                 arguments_.blackScholesProcess->stateVariable->value());
         results_.qvega = + arguments_.correlation
-            * arguments_.blackScholesProcess->volTS->blackVol(arguments_.exercise->lastDate(),
-                                         arguments_.blackScholesProcess->stateVariable->value()) *
+            * arguments_.blackScholesProcess->volTS
+                ->blackVol(
+                    arguments_.exercise->lastDate(),
+                    arguments_.blackScholesProcess->stateVariable->value()) *
             originalResults_->dividendRho;
         results_.qrho = - originalResults_->dividendRho;
         results_.qlambda = exchangeRateFlatVol *

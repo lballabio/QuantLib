@@ -20,8 +20,10 @@
 
 #include <ql/DayCounters/actual360.hpp>
 #include <ql/Instruments/vanillaoption.hpp>
-#include <ql/PricingEngines/Vanilla/vanillaengines.hpp>
-
+#include <ql/PricingEngines/Vanilla/baroneadesiwhaleyengine.hpp>
+#include <ql/PricingEngines/Vanilla/bjerksundstenslandengine.hpp>
+#include <ql/TermStructures/flatforward.hpp>
+#include <ql/Volatilities/blackconstantvol.hpp>
 #include <cppunit/TestSuite.h>
 #include <cppunit/TestCaller.h>
 #include <map>

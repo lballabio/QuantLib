@@ -22,8 +22,8 @@
 */
 
 #include <ql/Instruments/binarybarrieroption.hpp>
-//#include <ql/Volatilities/blackconstantvol.hpp>
-#include <ql/PricingEngines/Barrier/binarybarrierengines.hpp>
+#include <ql/PricingEngines/Barrier/analyticamericanbinarybarrierengine.hpp>
+#include <ql/PricingEngines/Barrier/analyticeuropeanbinarybarrierengine.hpp>
 
 namespace QuantLib {
 

@@ -22,7 +22,7 @@
 #ifndef quantlib_jumpdiffusionengine_h
 #define quantlib_jumpdiffusionengine_h
 
-#include <ql/PricingEngines/Vanilla/vanillaengines.hpp>
+#include <ql/Instruments/vanillaoption.hpp>
 
 namespace QuantLib {
 

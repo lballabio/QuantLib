@@ -19,7 +19,7 @@
     \brief American option engine using Barone-Adesi and Whaley approximation
 */
 
-#include <ql/PricingEngines/Vanilla/vanillaengines.hpp>
+#include <ql/PricingEngines/Vanilla/baroneadesiwhaleyengine.hpp>
 #include <ql/PricingEngines/blackformula.hpp>
 
 namespace QuantLib {

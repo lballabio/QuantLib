@@ -18,6 +18,7 @@
 #include "jumpdiffusion.hpp"
 #include <ql/DayCounters/actual360.hpp>
 #include <ql/Instruments/vanillaoption.hpp>
+#include <ql/PricingEngines/Vanilla/analyticeuropeanengine.hpp>
 #include <ql/PricingEngines/Vanilla/jumpdiffusionengine.hpp>
 #include <ql/TermStructures/flatforward.hpp>
 #include <ql/Volatilities/blackconstantvol.hpp>

@@ -19,7 +19,8 @@
     \brief American binary strike option engine using analytic formulas
 */
 
-#include <ql/PricingEngines/Barrier/binarybarrierengines.hpp>
+#include <ql/PricingEngines/Barrier/analyticamericanbinarybarrierengine.hpp>
+#include <ql/Math/normaldistribution.hpp>
 
 namespace QuantLib {
 
@@ -33,7 +34,8 @@ namespace QuantLib {
         Handle<AmericanExercise> ex = 
             boost::dynamic_pointer_cast<AmericanExercise>(arguments_.exercise);
         QL_REQUIRE(ex,
-                   "AnalyticAmericanBinaryBarrierEngine: wrong exercise given");
+                   "AnalyticAmericanBinaryBarrierEngine: "
+                   "wrong exercise given");
         #else
         Handle<AmericanExercise> ex = arguments_.exercise;
         #endif
@@ -52,17 +54,20 @@ namespace QuantLib {
 
         double cashPayoff = payoff->cashPayoff();
 
-        double underlying = arguments_.blackScholesProcess->stateVariable->value();
+        double underlying = 
+            arguments_.blackScholesProcess->stateVariable->value();
 
         double strike = payoff->strike();
         double vol = arguments_.blackScholesProcess->volTS->blackVol(
             ex->lastDate(), strike);
 
         Rate dividendRate =
-            arguments_.blackScholesProcess->dividendTS->zeroYield(ex->lastDate());
+            arguments_.blackScholesProcess->dividendTS
+                ->zeroYield(ex->lastDate());
 
         Rate riskFreeRate =
-            arguments_.blackScholesProcess->riskFreeTS->zeroYield(ex->lastDate());
+            arguments_.blackScholesProcess->riskFreeTS
+                ->zeroYield(ex->lastDate());
 
         double vol2 = vol*vol;
         double b_temp = riskFreeRate - dividendRate - 0.5*vol2;
@@ -72,9 +77,10 @@ namespace QuantLib {
         double lambda = QL_SQRT(mu*mu+2*(riskFreeRate-dividendRate)/vol2);
         double l_plus = mu + lambda;
         double l_minus = mu - lambda;
-        Time maturity = arguments_.blackScholesProcess->riskFreeTS->dayCounter().yearFraction(
-            arguments_.blackScholesProcess->riskFreeTS->referenceDate(),
-            ex->lastDate());
+        Time maturity = arguments_.blackScholesProcess->riskFreeTS
+            ->dayCounter().yearFraction(
+                arguments_.blackScholesProcess->riskFreeTS->referenceDate(),
+                ex->lastDate());
         double root_tau = QL_SQRT (maturity);
         double root_two_pi = M_SQRT2 * M_SQRTPI;
         double log_H_S = QL_LOG (strike/underlying);

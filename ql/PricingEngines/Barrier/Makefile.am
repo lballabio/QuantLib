@@ -3,8 +3,12 @@ AM_CPPFLAGS = -I${top_srcdir} -I${top_builddir}
 includedir = $(prefix)/include/ql/PricingEngines/Barrier
 
 include_HEADERS = \
-    barrierengines.hpp \
-    binarybarrierengines.hpp
+	all.hpp \
+    analyticamericanbinarybarrierengine.hpp \
+    analyticbarrierengine.hpp \
+    analyticeuropeanbinarybarrierengine.hpp \
+    mcbarrierengine.hpp \
+    mcbinarybarrierengine.hpp
 
 EXTRA_DIST=makefile.mak
 

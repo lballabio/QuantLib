@@ -1,6 +1,7 @@
 
 /*
- Copyright (C) 2003 Ferdinando Ametrano
+ Copyright (C) 2003, 2004 Ferdinando Ametrano
+ Copyright (C) 2004 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -62,7 +63,8 @@ namespace QuantLib {
     };
 
     //! extra arguments for single asset asian option calculation
-    class DiscreteAveragingAsianOption::arguments : public OneAssetStrikedOption::arguments {
+    class DiscreteAveragingAsianOption::arguments 
+        : public OneAssetStrikedOption::arguments {
       public:
         void validate() const;
         Average::Type averageType;
@@ -71,6 +73,10 @@ namespace QuantLib {
         std::vector<Date> fixingDates;
     };
 
+    //! Discrete averaging asian engine base class
+    class DiscreteAveragingAsianEngine 
+        : public GenericEngine<DiscreteAveragingAsianOption::arguments, 
+                               DiscreteAveragingAsianOption::results> {};
 
 
 }

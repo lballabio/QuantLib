@@ -1,9 +1,8 @@
 
 /*
- Copyright (C) 2003 Neil Firth
- Copyright (C) 2002, 2003 Ferdinando Ametrano
- Copyright (C) 2002, 2003 Sad Rejeb
- Copyright (C) 2000, 2001, 2002, 2003 RiskMap srl
+ Copyright (C) 2003, 2004 Neil Firth
+ Copyright (C) 2003, 2004 Ferdinando Ametrano
+ Copyright (C) 2003, 2004 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -18,12 +17,12 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file barrierengines.hpp
-    \brief Barrier option engines
+/*! \file mcbarrierengine.hpp
+    \brief Monte Carlo barrier option engines
 */
 
-#ifndef quantlib_barrier_engines_h
-#define quantlib_barrier_engines_h
+#ifndef quantlib_mc_barrier_engines_hpp
+#define quantlib_mc_barrier_engines_hpp
 
 #include <ql/Instruments/barrieroption.hpp>
 #include <ql/PricingEngines/mcsimulation.hpp>
@@ -31,41 +30,6 @@
 #include <ql/MonteCarlo/biasedbarrierpathpricer.hpp>
 
 namespace QuantLib {
-
-    //! Barrier engine base class
-    class BarrierEngine : public GenericEngine<BarrierOption::arguments,
-                                               BarrierOption::results> {};
-
-    //! Pricing engine for Barrier options using analytical formulae
-    /*! The formulas are taken from "Option pricing formulas",
-         E.G. Haug, McGraw-Hill, p.69 and following.
-    */
-    class AnalyticBarrierEngine : public BarrierEngine {
-      public:
-        void calculate() const;
-      private:
-        CumulativeNormalDistribution f_;
-        // helper methods
-        double underlying() const;
-        double strike() const;
-        Time residualTime() const;
-        double volatility() const;
-        double barrier() const;
-        double rebate() const;
-        double stdDeviation() const;
-        Rate riskFreeRate() const;
-        DiscountFactor riskFreeDiscount() const;
-        Rate dividendYield() const;
-        DiscountFactor dividendDiscount() const;
-        double mu() const;
-        double muSigma() const;
-        double A(double phi) const;
-        double B(double phi) const;
-        double C(double eta, double phi) const;
-        double D(double eta, double phi) const;
-        double E(double eta) const;
-        double F(double eta) const;
-    };
 
     //! Pricing engine for Barrier options using Monte Carlo
     template<class RNG = PseudoRandom, class S = Statistics>
@@ -158,6 +122,9 @@ namespace QuantLib {
         Handle<PlainVanillaPayoff> payoff = arguments_.payoff;
         #endif
 
+        Handle<BlackScholesStochasticProcess> process =
+            arguments_.blackScholesProcess;
+
         // do this with Template Parameters?
         if (isBiased_) {
             return Handle<MCBarrierEngine<RNG,S>::path_pricer_type>(
@@ -167,8 +134,8 @@ namespace QuantLib {
                     arguments_.rebate,
                     payoff->optionType(),
                     payoff->strike(),
-                    arguments_.blackScholesProcess->stateVariable->value(),
-                    arguments_.blackScholesProcess->riskFreeTS));
+                    process->stateVariable->value(),
+                    process->riskFreeTS));
         } else {
             TimeGrid grid = timeGrid();
             UniformRandomSequenceGenerator
@@ -181,14 +148,14 @@ namespace QuantLib {
                     arguments_.rebate,
                     payoff->optionType(),
                     payoff->strike(),
-                    arguments_.blackScholesProcess->stateVariable->value(),
-                    arguments_.blackScholesProcess->riskFreeTS,
-                    Handle<DiffusionProcess>(new
-                        BlackScholesProcess(
-                            arguments_.blackScholesProcess->riskFreeTS,
-                            arguments_.blackScholesProcess->dividendTS,
-                            arguments_.blackScholesProcess->volTS,
-                            arguments_.blackScholesProcess->stateVariable->value())),
+                    process->stateVariable->value(),
+                    process->riskFreeTS,
+                    Handle<DiffusionProcess>(
+                        new BlackScholesProcess(
+                            process->riskFreeTS,
+                            process->dividendTS,
+                            process->volTS,
+                            process->stateVariable->value())),
                     sequenceGen));
         }
     }
@@ -197,9 +164,10 @@ namespace QuantLib {
     template <class RNG, class S>
     inline TimeGrid MCBarrierEngine<RNG,S>::timeGrid() const {
 
-        Time t = arguments_.blackScholesProcess->riskFreeTS->dayCounter().yearFraction(
-            arguments_.blackScholesProcess->riskFreeTS->referenceDate(),
-            arguments_.exercise->lastDate());
+        Time t = arguments_.blackScholesProcess->riskFreeTS
+            ->dayCounter().yearFraction(
+                arguments_.blackScholesProcess->riskFreeTS->referenceDate(),
+                arguments_.exercise->lastDate());
 
         return TimeGrid(t, Size(QL_MAX(t * maxTimeStepsPerYear_, 1.0)));
     }

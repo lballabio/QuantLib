@@ -20,7 +20,9 @@
 #include <ql/Calendars/nullcalendar.hpp>
 #include <ql/DayCounters/simpledaycounter.hpp>
 #include <ql/Instruments/binarybarrieroption.hpp>
-#include <ql/PricingEngines/Barrier/binarybarrierengines.hpp>
+#include <ql/PricingEngines/Barrier/analyticamericanbinarybarrierengine.hpp>
+#include <ql/PricingEngines/Barrier/analyticeuropeanbinarybarrierengine.hpp>
+#include <ql/PricingEngines/Barrier/mcbinarybarrierengine.hpp>
 #include <ql/TermStructures/flatforward.hpp>
 #include <ql/Volatilities/blackconstantvol.hpp>
 

@@ -1,6 +1,9 @@
 
 /*
- Copyright (C) 2003, 2004 StatPro Italia srl
+ Copyright (C) 2003 Neil Firth
+ Copyright (C) 2002, 2003 Ferdinando Ametrano
+ Copyright (C) 2002, 2003 Sad Rejeb
+ Copyright (C) 2000, 2001, 2002, 2003 RiskMap srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -15,18 +18,24 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#ifndef quantlib_pricing_engines_all_hpp
-#define quantlib_pricing_engines_all_hpp
+/*! \file analyticamericanbinarybarrierengine.hpp
+    \brief analytic American binary barrier option engines
+*/
 
-#include <ql/qldefines.hpp>
-#include <ql/PricingEngines/core.hpp>
+#ifndef quantlib_analytic_american_binarybarrier_engines_hpp
+#define quantlib_analytic_american_binarybarrier_engines_hpp
 
-#include <ql/PricingEngines/Asian/all.hpp>
-#include <ql/PricingEngines/Barrier/all.hpp>
-#include <ql/PricingEngines/Cliquet/all.hpp>
-#include <ql/PricingEngines/Forward/all.hpp>
-#include <ql/PricingEngines/Quanto/all.hpp>
-#include <ql/PricingEngines/Vanilla/all.hpp>
+#include <ql/Instruments/binarybarrieroption.hpp>
+
+namespace QuantLib {
+
+    //! Analytic pricing engine for American binary barrier options formulae
+    class AnalyticAmericanBinaryBarrierEngine : public BinaryBarrierEngine {
+      public:
+        void calculate() const;
+    };
+
+}
 
 
 #endif

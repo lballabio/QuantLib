@@ -19,7 +19,7 @@
     \brief American option engine using Bjerksund and Stensland approximation
 */
 
-#include <ql/PricingEngines/Vanilla/vanillaengines.hpp>
+#include <ql/PricingEngines/Vanilla/bjerksundstenslandengine.hpp>
 #include <ql/PricingEngines/blackformula.hpp>
 
 namespace QuantLib {

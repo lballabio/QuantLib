@@ -21,9 +21,9 @@
     \brief Barrier option on a single asset
 */
 
-#include <ql/Volatilities/blackconstantvol.hpp>
 #include <ql/Instruments/barrieroption.hpp>
-#include <ql/PricingEngines/Barrier/barrierengines.hpp>
+#include <ql/PricingEngines/Barrier/analyticbarrierengine.hpp>
+#include <ql/Volatilities/blackconstantvol.hpp>
 
 namespace QuantLib {
 

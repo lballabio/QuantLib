@@ -19,6 +19,8 @@
 #include "europeanoption.hpp"
 #include <ql/DayCounters/actual360.hpp>
 #include <ql/Instruments/vanillaoption.hpp>
+#include <ql/PricingEngines/Vanilla/analyticeuropeanengine.hpp>
+#include <ql/PricingEngines/Vanilla/binomialengine.hpp>
 #include <ql/PricingEngines/Vanilla/mceuropeanengine.hpp>
 #include <ql/TermStructures/flatforward.hpp>
 #include <ql/Volatilities/blackconstantvol.hpp>

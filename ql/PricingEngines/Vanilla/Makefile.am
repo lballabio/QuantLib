@@ -4,12 +4,17 @@ includedir = $(prefix)/include/ql/PricingEngines/Vanilla
 
 include_HEADERS = \
     americanmcengines.hpp \
+    analyticamericanengine.hpp \
+    analyticeuropeanengine.hpp \
+    baroneadesiwhaleyengine.hpp \
+    binomialengine.hpp \
+    bjerksundstenslandengine.hpp \
     discretizedvanillaoption.hpp \
+    integralengine.hpp \
     jumpdiffusionengine.hpp \
     mcdigitalengine.hpp \
     mceuropeanengine.hpp \
-    mcvanillaengine.hpp \
-    vanillaengines.hpp
+    mcvanillaengine.hpp
 
 EXTRA_DIST=makefile.mak
 
@@ -20,7 +25,7 @@ libVanillaEngines_la_SOURCES = \
     baroneadesiwhaleyengine.cpp \
     bjerksundstenslandengine.cpp \
     discretizedvanillaoption.cpp \
-    integralengines.cpp \
+    integralengine.cpp \
     jumpdiffusionengine.cpp
 
 noinst_LTLIBRARIES = libVanillaEngines.la

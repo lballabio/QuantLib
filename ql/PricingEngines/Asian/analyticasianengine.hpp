@@ -1,6 +1,6 @@
 
 /*
- Copyright (C) 2003 Ferdinando Ametrano
+ Copyright (C) 2003, 2004 Ferdinando Ametrano
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -15,21 +15,16 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file asianengines.hpp
-    \brief Asian option engines
+/*! \file analyticasianengine.hpp
+    \brief Analytic Asian option engine
 */
 
-#ifndef quantlib_asian_engines_h
-#define quantlib_asian_engines_h
+#ifndef quantlib_analytic_asian_engines_hpp
+#define quantlib_analytic_asian_engines_hpp
 
 #include <ql/Instruments/asianoption.hpp>
-#include <ql/Instruments/vanillaoption.hpp>
 
 namespace QuantLib {
-
-    //! Discrete averaging asian engine base class
-    class DiscreteAveragingAsianEngine : public GenericEngine<
-        DiscreteAveragingAsianOption::arguments, VanillaOption::results> {};
 
     //! Pricing engine for European Discrete Geometric Average Asian Option
     /*! This class implements a discrete geometric average price asian
@@ -38,11 +33,11 @@ namespace QuantLib {
         Art", edited by L. Clewlow, C. Strickland, pag 65-97
 
     */
-    class AnalyticDiscreteAveragingAsianEngine : public DiscreteAveragingAsianEngine {
+    class AnalyticDiscreteAveragingAsianEngine 
+        : public DiscreteAveragingAsianEngine {
       public:
         void calculate() const;
     };
-
 
 }
 

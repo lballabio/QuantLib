@@ -20,7 +20,7 @@
     \brief Digital payoff American option engine using analytic formulas
 */
 
-#include <ql/PricingEngines/Vanilla/vanillaengines.hpp>
+#include <ql/PricingEngines/Vanilla/analyticamericanengine.hpp>
 #include <ql/PricingEngines/americanpayoffathit.hpp>
 #include <ql/PricingEngines/americanpayoffatexpiry.hpp>
 
