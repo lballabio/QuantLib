@@ -27,9 +27,12 @@
 	$Source$
 	$Name$
 	$Log$
+	Revision 1.9  2000/12/18 18:26:39  lballabio
+	Corrected Doxygen grouping
+
 	Revision 1.8  2000/12/14 12:32:28  lballabio
 	Added CVS tags in Doxygen file documentation blocks
-
+	
 */
 
 #ifndef quantlib_array_h
@@ -148,12 +151,12 @@ namespace QuantLib {
 		//! dimension of the array
 		int size() const;
 		//@}
-		//! \name Iterator access
-		//@{
 		typedef double* iterator;
 		typedef const double* const_iterator;
 		typedef QL_REVERSE_ITERATOR(iterator,double) reverse_iterator;
 		typedef QL_REVERSE_ITERATOR(const_iterator,double) const_reverse_iterator;
+		//! \name Iterator access
+		//@{
 		const_iterator begin() const;
 		iterator begin();
 		const_iterator end() const;
