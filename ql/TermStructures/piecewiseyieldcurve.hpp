@@ -276,6 +276,8 @@ namespace QuantLib {
         }
     }
 
+    #ifndef __DOXYGEN__
+
     template <class C, class I>
     PiecewiseYieldCurve<C,I>::ObjectiveFunction::ObjectiveFunction(
                               const PiecewiseYieldCurve<C,I>* curve,
@@ -290,6 +292,8 @@ namespace QuantLib {
         curve_->interpolation_.update();
         return rateHelper_->quoteError();
     }
+
+    #endif
 
 }
 
