@@ -1,6 +1,8 @@
 
 # $Id$
 
+INCLUDES= -I${top_srcdir} -I${top_builddir}
+
 includedir = $(prefix)/include/ql/Instruments
 include_HEADERS = stock.hpp \
                   simpleswap.hpp \

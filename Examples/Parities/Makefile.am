@@ -1,5 +1,5 @@
 CXXFLAGS = -g -O2 -Wall
-INCLUDES = -I../..
+INCLUDES = -I${top_srcdir} -I${top_builddir}
 
 bin_PROGRAMS = Parities
 Parities_SOURCES = Parities.cpp
