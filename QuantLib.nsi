@@ -295,6 +295,7 @@ SectionIn 1
                  "$INSTDIR\Docs\refman.ps"
 SectionEnd
 
+SectionDivider
 
 Section "Start Menu Group"
 SectionIn 1 2 3
