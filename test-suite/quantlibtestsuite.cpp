@@ -74,9 +74,7 @@
 
 using namespace boost::unit_test_framework;
 
-#if defined(QL_DISPLAY_TEST_TIME)
 static boost::progress_timer t;  // start timing
-#endif
 
 test_suite* init_unit_test_suite(int, char* []) {
 
@@ -126,6 +124,7 @@ test_suite* init_unit_test_suite(int, char* []) {
     test->add(SwaptionTest::suite());
     test->add(TermStructureTest::suite());
     // tests for deprecated (or generally old-style) classes
+
     test->add(OldPricerTest::suite());
 
     return test;
