@@ -57,6 +57,9 @@ namespace QuantLib {
                 for (i=0; i<arguments_.exerciseTimes.size(); i++)
                     times.push_back(arguments_.exerciseTimes[i]);
 
+                for (i=0; i<arguments_.fixedResetTimes.size(); i++)
+                    times.push_back(arguments_.fixedResetTimes[i]);
+
                 for (i=0; i<arguments_.fixedPayTimes.size(); i++)
                     times.push_back(arguments_.fixedPayTimes[i]);
 

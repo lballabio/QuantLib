@@ -23,6 +23,7 @@
 // $Id$
 
 #include <ql/Instruments/swaption.hpp>
+#include <ql/CashFlows/fixedratecoupon.hpp>
 #include <ql/CashFlows/floatingratecoupon.hpp>
 #include <ql/Solvers1D/brent.hpp>
 
@@ -30,6 +31,7 @@ namespace QuantLib {
 
     namespace Instruments {
 
+        using CashFlows::FixedRateCoupon;
         using CashFlows::FloatingRateCoupon;
 
         Swaption::Swaption(
@@ -72,13 +74,19 @@ namespace QuantLib {
 
             const std::vector<Handle<CashFlow> >& fixedLeg = swap_->fixedLeg();
 
+            arguments->fixedResetTimes.clear();
             arguments->fixedPayTimes.clear();
             arguments->fixedCoupons.clear();
             for (i=0; i<fixedLeg.size(); i++) {
-                Time time = counter.yearFraction(settlement, 
-                    fixedLeg[i]->date());
+                Handle<FixedRateCoupon> coupon = fixedLeg[i];
+                QL_ENSURE(!coupon.isNull(), "not a fixed rate coupon");
+
+                Time time = counter.yearFraction(settlement, coupon->date());
                 arguments->fixedPayTimes.push_back(time);
-                arguments->fixedCoupons.push_back(fixedLeg[i]->amount());
+                time = counter.yearFraction(settlement, 
+                                            coupon->accrualStartDate());
+                arguments->fixedResetTimes.push_back(time);
+                arguments->fixedCoupons.push_back(coupon->amount());
             }
 
             arguments->floatingResetTimes.clear();
@@ -103,8 +111,9 @@ namespace QuantLib {
                     index->rollingConvention());*/
                 Date resetDate =  index->calendar().roll(
                     coupon->accrualStartDate(), index->rollingConvention());
-                
+
                 Time time = counter.yearFraction(settlement, resetDate);
+
                 arguments->floatingResetTimes.push_back(time);
 /*
                 Date payDate = index->calendar().advance(

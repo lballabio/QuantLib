@@ -87,8 +87,10 @@ namespace QuantLib {
             }
           private:
             void applySpecificCondition() {
+//                std::cout << "Before: " << values_ << std::endl;
                 for (Size i=0; i<values_.size(); i++)
                     values_[i] = QL_MAX(swap_->values()[i], values_[i]);
+////                std::cout << "After:  " << values_ << std::endl;
             }
 
             Instruments::SwaptionArguments arguments_;

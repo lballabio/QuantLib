@@ -31,12 +31,22 @@ namespace QuantLib {
         void DiscretizedSwap::adjustValues() {
             Size i;
 
-            for (i=0; i<arguments_.fixedPayTimes.size(); i++) {
-                if (isOnTime(arguments_.fixedPayTimes[i])) {
-                    if (arguments_.payFixed)
-                        values_ -= arguments_.fixedCoupons[i];
-                    else
-                        values_ += arguments_.fixedCoupons[i];
+            for (i=0; i<arguments_.fixedResetTimes.size(); i++) {
+                if (isOnTime(arguments_.fixedResetTimes[i])) {
+                    Handle<DiscretizedAsset> bond(new
+                        DiscretizedDiscountBond(method()));
+                    method()->initialize(bond,
+                        arguments_.fixedPayTimes[i]);
+                    method()->rollback(bond,time_);
+
+                    double fixedCoupon = arguments_.fixedCoupons[i];
+                    for (Size j=0; j<values_.size(); j++) {
+                        double coupon = fixedCoupon*bond->values()[j];
+                        if (arguments_.payFixed)
+                            values_[j] -= coupon;
+                        else
+                            values_[j] += coupon;
+                    }
                 }
             }
 

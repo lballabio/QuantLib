@@ -60,6 +60,7 @@ namespace QuantLib {
                                    fairRate(0.0),
                                    fixedRate(0.0),
                                    fixedBPS(0.0),
+                                   fixedResetTimes(0),
                                    fixedPayTimes(0),
                                    fixedCoupons(0),
                                    floatingAccrualTimes(0),
@@ -72,6 +73,7 @@ namespace QuantLib {
             Rate fairRate;
             Rate fixedRate;
             double fixedBPS;
+            std::vector<Time> fixedResetTimes;
             std::vector<Time> fixedPayTimes;
             std::vector<double> fixedCoupons;
             std::vector<Time> floatingAccrualTimes;
