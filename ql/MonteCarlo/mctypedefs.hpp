@@ -47,11 +47,11 @@ namespace QuantLib {
             GaussianMultiPathGenerator;
 
         //! default choice for one-factor Monte Carlo model.
-        typedef MonteCarloModel<SingleAsset_old, PseudoRandom_old>
+        typedef MonteCarloModel<SingleAsset_old<PseudoRandom_old> >
                                     OneFactorMonteCarloOption_old;
 
         //! default choice for multi-factor Monte Carlo model.
-        typedef MonteCarloModel<MultiAsset_old, PseudoRandomSequence_old>
+        typedef MonteCarloModel<MultiAsset_old<PseudoRandomSequence_old> >
                                     MultiFactorMonteCarloOption;
 
     }

@@ -1224,6 +1224,19 @@ SOURCE=.\ql\Pricers\jamshidianswaption.hpp
 # Begin Source File
 
 SOURCE=.\ql\Pricers\mcbasket.cpp
+
+!IF  "$(CFG)" == "QuantLib - Win32 Release"
+
+# ADD CPP /O2
+
+!ELSEIF  "$(CFG)" == "QuantLib - Win32 Debug"
+
+!ELSEIF  "$(CFG)" == "QuantLib - Win32 OnTheEdgeRelease"
+
+!ELSEIF  "$(CFG)" == "QuantLib - Win32 OnTheEdgeDebug"
+
+!ENDIF 
+
 # End Source File
 # Begin Source File
 

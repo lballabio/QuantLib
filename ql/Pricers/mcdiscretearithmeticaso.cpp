@@ -66,18 +66,16 @@ namespace QuantLib {
                     times, volatility).value();
 
                 //! Initialize the one-dimensional Monte Carlo
-                mcModel_ = Handle<MonteCarloModel<SingleAsset_old,
-                                                  PseudoRandom_old> > (
-                    new MonteCarloModel<SingleAsset_old,
-                                        PseudoRandom_old>(
+                mcModel_ = Handle<MonteCarloModel<SingleAsset_old<
+                                                  PseudoRandom_old> > > (
+                    new MonteCarloModel<SingleAsset_old<PseudoRandom_old> >(
                         pathGenerator, spPricer, Statistics(), false,
                         controlVariateSpPricer, controlVariatePrice));
             } else {
                 //! Initialize the one-dimensional Monte Carlo
-                mcModel_ = Handle<MonteCarloModel<SingleAsset_old,
-                                                  PseudoRandom_old> > (
-                    new MonteCarloModel<SingleAsset_old,
-                                        PseudoRandom_old>(
+                mcModel_ = Handle<MonteCarloModel<SingleAsset_old<
+                                                  PseudoRandom_old> > > (
+                    new MonteCarloModel<SingleAsset_old<PseudoRandom_old> >(
                         pathGenerator, spPricer, Statistics(), false));
             }
 

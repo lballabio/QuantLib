@@ -35,8 +35,9 @@ namespace QuantLib {
 
         //! simple example of Monte Carlo pricer
         /*! \deprecated use VanillaOption with McEuropeanEngine */
-        class McEuropean : public McPricer<MonteCarlo::SingleAsset_old,
-                                           MonteCarlo::PseudoRandom_old> {
+        class McEuropean 
+        : public McPricer<MonteCarlo::SingleAsset_old<
+                              MonteCarlo::PseudoRandom_old> >{
           public:
             McEuropean(Option::Type type,
                        double underlying,

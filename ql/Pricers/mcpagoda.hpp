@@ -41,8 +41,8 @@ namespace QuantLib {
             is null.
         */
         class McPagoda 
-        : public McPricer<MonteCarlo::MultiAsset_old,
-                          MonteCarlo::PseudoRandomSequence_old> {
+        : public McPricer<MonteCarlo::MultiAsset_old<
+                    MonteCarlo::PseudoRandomSequence_old> > {
           public:
             McPagoda(const std::vector<double>& portfolio,
                      double fraction,

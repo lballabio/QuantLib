@@ -72,13 +72,13 @@ namespace QuantLib {
                 antitheticVariance));
 
              //! Initialize the multi-factor Monte Carlo
-            mcModel_ = Handle<MonteCarloModel<MultiAsset_old,
-                                              PseudoRandomSequence_old> > (
-                new MonteCarloModel<MultiAsset_old,
-                                    PseudoRandomSequence_old> (pathGenerator,
-                                                               pathPricer, 
-                                                               Statistics(), 
-                                                               false));
+            mcModel_ = Handle<MonteCarloModel<MultiAsset_old<
+                           PseudoRandomSequence_old> > >(
+                new MonteCarloModel<MultiAsset_old<
+                                    PseudoRandomSequence_old> >(pathGenerator,
+                                                                pathPricer, 
+                                                                Statistics(), 
+                                                                false));
 
         }
 

@@ -452,10 +452,10 @@ int main(int argc, char* argv[])
         timeSteps = 365;
         TimeGrid timeGrid(maturity, timeSteps);
         method = "MC (crude)";
-        Handle<PricingEngine> mcengine1 =
+        Handle<PricingEngine> mcengine1(
             MakeMCEuropeanEngine<PseudoRandom>().withStepsPerYear(timeSteps)
                                                 .withTolerance(0.02)
-                                                .withSeed(mcSeed);
+                                                .withSeed(mcSeed));
         option.setPricingEngine(mcengine1);
         
         value = option.NPV();
@@ -471,9 +471,9 @@ int main(int argc, char* argv[])
 
         method = "MC (Sobol)";
 
-        Handle<PricingEngine> mcengine2 =
+        Handle<PricingEngine> mcengine2(
             MakeMCEuropeanEngine<LowDiscrepancy>().withStepsPerYear(timeSteps)
-                                                  .withSamples(nSamples);
+                                                  .withSamples(nSamples));
         option.setPricingEngine(mcengine2);
         
         value = option.NPV();

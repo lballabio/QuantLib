@@ -40,25 +40,6 @@ namespace QuantLib {
 
     namespace MonteCarlo {
 
-        // path generation and pricing traits
-
-        struct SingleAsset {
-            typedef Path path_type;
-            typedef PathPricer<Path> path_pricer_type;
-            template <class RSG> struct path_generator {
-                typedef PathGenerator<RSG> type;
-            };
-        };
-
-        struct MultiAsset {
-            typedef MultiPath path_type;
-            typedef PathPricer<MultiPath> path_pricer_type;
-            template <class RSG> struct path_generator {
-                typedef MultiPathGenerator<RSG> type;
-            };
-        };
-
-
         // random number traits
 
         template <class RNG, class IC>
@@ -101,23 +82,27 @@ namespace QuantLib {
         };
 
 
-        // support for migration --- born deprecated 
+        // path generation and pricing traits
 
-        struct SingleAsset_old {
+        template <class rng_traits = PseudoRandom>
+        struct SingleAsset {
             typedef Path path_type;
-            typedef PathPricer_old<Path> path_pricer_type;
-            template <class RNG> struct path_generator {
-                typedef PathGenerator_old<RNG> type;
-            };
+            typedef PathPricer<Path> path_pricer_type;
+            typedef typename rng_traits::rsg_type rsg_type;
+            typedef PathGenerator<rsg_type> path_generator_type;
         };
 
-        struct MultiAsset_old {
+        template <class rng_traits = PseudoRandom>
+        struct MultiAsset {
             typedef MultiPath path_type;
-            typedef PathPricer_old<MultiPath> path_pricer_type;
-            template <class RNG> struct path_generator {
-                typedef MultiPathGenerator_old<RNG> type;
-            };
+            typedef PathPricer<MultiPath> path_pricer_type;
+            typedef typename rng_traits::rsg_type rsg_type;
+            typedef MultiPathGenerator<rsg_type> path_generator_type;
         };
+
+
+
+        // support for migration --- born deprecated 
 
         struct PseudoRandom_old {
             typedef RandomNumbers::MersenneTwisterUniformRng urng_type;
@@ -130,6 +115,23 @@ namespace QuantLib {
             typedef Math::InverseCumulativeNormal ic_type;
             typedef RandomNumbers::ICGaussianRng<urng_type,ic_type> rng_type;
             typedef RandomNumbers::RandomArrayGenerator<rng_type> rsg_type;
+        };
+
+
+        template <class rng_traits = PseudoRandom_old>
+        struct SingleAsset_old {
+            typedef Path path_type;
+            typedef PathPricer_old<Path> path_pricer_type;
+            typedef typename rng_traits::rsg_type rsg_type;
+            typedef PathGenerator_old<rsg_type> path_generator_type;
+        };
+
+        template <class rng_traits = PseudoRandomSequence_old>
+        struct MultiAsset_old {
+            typedef MultiPath path_type;
+            typedef PathPricer_old<MultiPath> path_pricer_type;
+            typedef typename rng_traits::rsg_type rsg_type;
+            typedef MultiPathGenerator_old<rsg_type> path_generator_type;
         };
 
     }

@@ -52,10 +52,9 @@ namespace QuantLib {
                 antitheticVariance));
 
             //! Initialize the one-factor Monte Carlo
-            mcModel_ = Handle<MonteCarloModel<SingleAsset_old,
-                                              PseudoRandom_old> > (
-                new MonteCarloModel<SingleAsset_old,
-                                    PseudoRandom_old> (
+            mcModel_ = Handle<MonteCarloModel<SingleAsset_old<
+                                              PseudoRandom_old> > > (
+                new MonteCarloModel<SingleAsset_old<PseudoRandom_old> > (
                 pathGenerator, euroPathPricer,
                 Statistics(), false));
 

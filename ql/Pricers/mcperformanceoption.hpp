@@ -40,8 +40,8 @@ namespace QuantLib {
 
         */
         class McPerformanceOption 
-        : public McPricer<MonteCarlo::SingleAsset_old,
-                          MonteCarlo::PseudoRandom_old> {
+        : public McPricer<MonteCarlo::SingleAsset_old<
+                              MonteCarlo::PseudoRandom_old> >{
           public:
             McPerformanceOption(Option::Type type,
                        double underlying,

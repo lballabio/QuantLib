@@ -42,7 +42,6 @@ namespace QuantLib {
         */
 
         template <class MC,
-                  class RNG = MonteCarlo::PseudoRandom,
                   class S = Math::Statistics>
         class McPricer {
           public:
@@ -58,17 +57,17 @@ namespace QuantLib {
             const S& sampleAccumulator(void) const;
           protected:
             McPricer() {}
-            mutable Handle<MonteCarlo::MonteCarloModel<MC,RNG,S> > mcModel_;
+            mutable Handle<MonteCarlo::MonteCarloModel<MC,S> > mcModel_;
             static const Size minSample_;
         };
 
 
-        template<class MC, class RNG, class S>
-        const Size McPricer<MC, RNG, S>::minSample_ = 100;
+        template<class MC, class S>
+        const Size McPricer<MC,S>::minSample_ = 100;
 
         // inline definitions
-        template<class MC, class RNG, class S>
-        inline double McPricer<MC, RNG, S>::value(double tolerance,
+        template<class MC, class S>
+        inline double McPricer<MC,S>::value(double tolerance,
             Size maxSamples) const {
 
             Size sampleNumber =
@@ -106,8 +105,8 @@ namespace QuantLib {
         }
 
 
-        template<class MC, class RNG, class S>
-        inline double McPricer<MC, RNG, S>::valueWithSamples(Size samples)
+        template<class MC, class S>
+        inline double McPricer<MC,S>::valueWithSamples(Size samples)
             const {
 
             QL_REQUIRE(samples>=minSample_,
@@ -134,8 +133,8 @@ namespace QuantLib {
         }
 
 
-        template<class MC, class RNG, class S>
-        inline double McPricer<MC, RNG, S>::errorEstimate() const {
+        template<class MC, class S>
+        inline double McPricer<MC,S>::errorEstimate() const {
 
             Size sampleNumber =
                 mcModel_->sampleAccumulator().samples();
@@ -146,9 +145,8 @@ namespace QuantLib {
             return mcModel_->sampleAccumulator().errorEstimate();
         }
 
-        template<class MC, class RNG, class S>
-        inline const S& McPricer<MC, RNG, S>::sampleAccumulator() const {
-
+        template<class MC, class S>
+        inline const S& McPricer<MC,S>::sampleAccumulator() const {
             return mcModel_->sampleAccumulator();
         }
 

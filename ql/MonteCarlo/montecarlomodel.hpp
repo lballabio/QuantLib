@@ -51,13 +51,12 @@ namespace QuantLib {
 
         */
         template <class mc_traits,
-                  class rng_traits = PseudoRandom,
                   class stats_traits = Math::Statistics>
         class MonteCarloModel {
           public:
             // extract traits
-            typedef typename rng_traits::rsg_type rsg_type;
-            typedef typename mc_traits::path_generator<rsg_type>::type
+            typedef typename mc_traits::rsg_type rsg_type;
+            typedef typename mc_traits::path_generator_type 
                 path_generator_type;
             typedef typename mc_traits::path_pricer_type path_pricer_type;
             typedef typename path_generator_type::sample_type sample_type;
@@ -84,17 +83,17 @@ namespace QuantLib {
         };
 
         // inline definitions
-        template<class MC, class RNG, class S>
-        inline MonteCarloModel<MC,RNG,S>::MonteCarloModel(
-            const Handle<MonteCarloModel<MC,RNG,S>::path_generator_type>& 
+        template<class MC, class S>
+        inline MonteCarloModel<MC,S>::MonteCarloModel(
+            const Handle<MonteCarloModel<MC,S>::path_generator_type>& 
                 pathGenerator,
-            const Handle<MonteCarloModel<MC,RNG,S>::path_pricer_type>& 
+            const Handle<MonteCarloModel<MC,S>::path_pricer_type>& 
                 pathPricer, 
-            const MonteCarloModel<MC,RNG,S>::stats_type& sampleAccumulator,
+            const MonteCarloModel<MC,S>::stats_type& sampleAccumulator,
             bool antitheticVariate,
-            const Handle<MonteCarloModel<MC,RNG,S>::path_pricer_type>& 
+            const Handle<MonteCarloModel<MC,S>::path_pricer_type>& 
                 cvPathPricer, 
-            MonteCarloModel<MC,RNG,S>::result_type cvOptionValue)
+            MonteCarloModel<MC,S>::result_type cvOptionValue)
         : pathGenerator_(pathGenerator), pathPricer_(pathPricer),
           sampleAccumulator_(sampleAccumulator),
           isAntitheticVariate_(antitheticVariate),
@@ -105,8 +104,8 @@ namespace QuantLib {
                 isControlVariate_=true;
         }
 
-        template<class MC, class RNG, class S>
-        inline void MonteCarloModel<MC,RNG,S>::addSamples(Size samples) {
+        template<class MC, class S>
+        inline void MonteCarloModel<MC,S>::addSamples(Size samples) {
             for(Size j = 1; j <= samples; j++) {
 
                 sample_type path = pathGenerator_->next();
@@ -127,9 +126,9 @@ namespace QuantLib {
             }
         }
 
-        template<class MC, class RNG, class S>
-        inline const typename MonteCarloModel<MC,RNG,S>::stats_type& 
-        MonteCarloModel<MC,RNG,S>::sampleAccumulator() const {
+        template<class MC, class S>
+        inline const typename MonteCarloModel<MC,S>::stats_type& 
+        MonteCarloModel<MC,S>::sampleAccumulator() const {
             return sampleAccumulator_;
         }
 

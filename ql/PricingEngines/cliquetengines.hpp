@@ -89,6 +89,7 @@ namespace QuantLib {
         class CliquetEngine : public GenericEngine<CliquetOptionArguments,
                                                    VanillaOptionResults> {};
 
+        /*
         //! Monte Carlo cliquet engine
         template<class S, class SG, class PG>
         class McCliquetEngine : public CliquetEngine,
@@ -223,7 +224,7 @@ namespace QuantLib {
             results_.errorEstimate = 
                 mcModel_->sampleAccumulator().errorEstimate();
         }
-
+        */
 
     }
 

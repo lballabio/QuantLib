@@ -45,18 +45,17 @@ namespace QuantLib {
         */
 
         template <class MC,
-                  class RNG = MonteCarlo::PseudoRandom,
                   class S = Math::Statistics>
         class McSimulation {
           public:
             typedef 
-            typename MonteCarlo::MonteCarloModel<MC,RNG,S>::path_generator_type
+            typename MonteCarlo::MonteCarloModel<MC,S>::path_generator_type
                 path_generator_type;
             typedef 
-            typename MonteCarlo::MonteCarloModel<MC,RNG,S>::path_pricer_type
+            typename MonteCarlo::MonteCarloModel<MC,S>::path_pricer_type
                 path_pricer_type;
             typedef 
-            typename MonteCarlo::MonteCarloModel<MC,RNG,S>::stats_type
+            typename MonteCarlo::MonteCarloModel<MC,S>::stats_type
                 stats_type;
 
             virtual ~McSimulation() {}
@@ -83,19 +82,19 @@ namespace QuantLib {
             }
             virtual Handle<path_generator_type> pathGenerator() const = 0;
             virtual TimeGrid timeGrid() const = 0;
-            mutable Handle<MonteCarlo::MonteCarloModel<MC,RNG,S> > mcModel_;
+            mutable Handle<MonteCarlo::MonteCarloModel<MC,S> > mcModel_;
             static const Size minSample_;
             bool antitheticVariate_, controlVariate_;
         };
 
 
-        template<class MC, class RNG, class S>
-        const Size McSimulation<MC,RNG,S>::minSample_ = 100;
+        template<class MC, class S>
+        const Size McSimulation<MC,S>::minSample_ = 100;
 
         // inline definitions
-        template<class MC, class RNG, class S>
-        inline double McSimulation<MC,RNG,S>::value(double tolerance,
-                                                    Size maxSamples) const {
+        template<class MC, class S>
+        inline double McSimulation<MC,S>::value(double tolerance,
+                                                Size maxSamples) const {
             Size sampleNumber =
                 mcModel_->sampleAccumulator().samples();
             if (sampleNumber<minSample_) {
@@ -132,8 +131,8 @@ namespace QuantLib {
         }
 
 
-        template<class MC, class RNG, class S>
-        inline double McSimulation<MC,RNG,S>::valueWithSamples(Size samples)
+        template<class MC, class S>
+        inline double McSimulation<MC,S>::valueWithSamples(Size samples)
             const {
 
             QL_REQUIRE(samples>=minSample_,
@@ -162,8 +161,8 @@ namespace QuantLib {
         }
 
 
-        template<class MC, class RNG, class S>
-        inline double McSimulation<MC,RNG,S>::errorEstimate() const {
+        template<class MC, class S>
+        inline double McSimulation<MC,S>::errorEstimate() const {
 
             Size sampleNumber =
                 mcModel_->sampleAccumulator().samples();
@@ -175,9 +174,9 @@ namespace QuantLib {
             return mcModel_->sampleAccumulator().errorEstimate();
         }
 
-        template<class MC, class RNG, class S>
-        inline const typename McSimulation<MC,RNG,S>::stats_type& 
-        McSimulation<MC,RNG,S>::sampleAccumulator() const {
+        template<class MC, class S>
+        inline const typename McSimulation<MC,S>::stats_type& 
+        McSimulation<MC,S>::sampleAccumulator() const {
             return mcModel_->sampleAccumulator();
         }
 
@@ -186,20 +185,20 @@ namespace QuantLib {
         //! Base class for Monte Carlo vanilla option engines
         template<class RNG = MonteCarlo::PseudoRandom, 
                  class S = Math::Statistics>
-        class MCVanillaEngine : public VanillaEngine,
-                                public McSimulation<MonteCarlo::SingleAsset, 
-                                                    RNG, S> {
+        class MCVanillaEngine 
+        : public VanillaEngine,
+          public McSimulation<MonteCarlo::SingleAsset<RNG>, S> {
           public:
             void calculate() const;
           protected:
             typedef typename
-            McSimulation<MonteCarlo::SingleAsset,RNG,S>::path_generator_type
+            McSimulation<MonteCarlo::SingleAsset<RNG>,S>::path_generator_type
                 path_generator_type;
             typedef typename
-            McSimulation<MonteCarlo::SingleAsset,RNG,S>::path_pricer_type
+            McSimulation<MonteCarlo::SingleAsset<RNG>,S>::path_pricer_type
                 path_pricer_type;
             typedef typename
-            McSimulation<MonteCarlo::SingleAsset,RNG,S>::stats_type
+            McSimulation<MonteCarlo::SingleAsset<RNG>,S>::stats_type
                 stats_type;
             // constructor
             MCVanillaEngine(Size maxTimeStepsPerYear,
@@ -230,8 +229,8 @@ namespace QuantLib {
                                                 double requiredTolerance,
                                                 Size maxSamples,
                                                 long seed)
-        : McSimulation<MonteCarlo::SingleAsset,RNG,S>(antitheticVariate,
-                                                      controlVariate),
+        : McSimulation<MonteCarlo::SingleAsset<RNG>,S>(antitheticVariate,
+                                                       controlVariate),
           maxTimeStepsPerYear_(maxTimeStepsPerYear), 
           requiredSamples_(requiredSamples),
           maxSamples_(maxSamples),
@@ -241,7 +240,7 @@ namespace QuantLib {
         // template definitions
 
         template<class RNG, class S>
-        inline Handle<typename MCVanillaEngine<RNG,S>::path_generator_type> 
+        inline Handle<QL_TYPENAME MCVanillaEngine<RNG,S>::path_generator_type> 
         MCVanillaEngine<RNG,S>::pathGenerator() const
         {
             Handle<DiffusionProcess> bs(new
@@ -298,20 +297,20 @@ namespace QuantLib {
                 double controlVariateValue = controlResults->value;
 
                 mcModel_ = 
-                    Handle<MonteCarlo::MonteCarloModel<MonteCarlo::SingleAsset,
-                                                       RNG, S> >(
-                       new MonteCarlo::MonteCarloModel<MonteCarlo::SingleAsset,
-                                                       RNG, S>(
+                    Handle<MonteCarlo::MonteCarloModel<
+                               MonteCarlo::SingleAsset<RNG>, S> >(
+                       new MonteCarlo::MonteCarloModel<
+                               MonteCarlo::SingleAsset<RNG>, S>(
                            pathGenerator(), pathPricer(), stats_type(), 
                            antitheticVariate_, controlPP, 
                            controlVariateValue));
            
             } else {
                 mcModel_ = 
-                    Handle<MonteCarlo::MonteCarloModel<MonteCarlo::SingleAsset,
-                                                       RNG, S> >(
-                       new MonteCarlo::MonteCarloModel<MonteCarlo::SingleAsset,
-                                                       RNG, S>(
+                    Handle<MonteCarlo::MonteCarloModel<
+                               MonteCarlo::SingleAsset<RNG>, S> >(
+                       new MonteCarlo::MonteCarloModel<
+                               MonteCarlo::SingleAsset<RNG>, S>(
                            pathGenerator(), pathPricer(), S(), 
                            antitheticVariate_));
             }
@@ -370,7 +369,7 @@ namespace QuantLib {
             MakeMCEuropeanEngine& withAntitheticVariate();
             MakeMCEuropeanEngine& withControlVariate();
             // conversion to pricing engine
-            operator Handle<PricingEngine>() const;
+            operator PricingEngine*() const;
           private:
             bool antithetic_, controlVariate_;
             Size steps_, samples_, maxSamples_;
@@ -400,7 +399,7 @@ namespace QuantLib {
 
         template <class RNG, class S>
         inline 
-        Handle<typename MCEuropeanEngine<RNG,S>::path_pricer_type>
+        Handle<QL_TYPENAME MCEuropeanEngine<RNG,S>::path_pricer_type>
         MCEuropeanEngine<RNG,S>::pathPricer() const {
             //! Initialize the path pricer
             return Handle<MCEuropeanEngine<RNG,S>::path_pricer_type>(
@@ -491,15 +490,14 @@ namespace QuantLib {
 
         template <class RNG, class S>
         inline 
-        MakeMCEuropeanEngine<RNG,S>::operator Handle<PricingEngine>() const {
+        MakeMCEuropeanEngine<RNG,S>::operator PricingEngine*() const {
             QL_REQUIRE(steps_ != Size(Null<int>()),
                        "MakeMCEuropeanEngine<RNG,S>: "
                        "max number of steps per year not given");
-            return Handle<PricingEngine>(
-                new MCEuropeanEngine<RNG,S>(steps_, antithetic_, 
-                                            controlVariate_, 
-                                            samples_, tolerance_, 
-                                            maxSamples_, seed_));
+            return new MCEuropeanEngine<RNG,S>(steps_, antithetic_, 
+                                               controlVariate_, 
+                                               samples_, tolerance_, 
+                                               maxSamples_, seed_);
         }
 
     }

@@ -39,8 +39,9 @@ namespace QuantLib {
             N periods the option pays the max between the strike and the
             average of the best performers.
         */
-        class McHimalaya : public McPricer<MonteCarlo::MultiAsset_old,
-                                           MonteCarlo::PseudoRandomSequence_old> {
+        class McHimalaya 
+        : public McPricer<MonteCarlo::MultiAsset_old<
+                    MonteCarlo::PseudoRandomSequence_old> > {
         public:
             McHimalaya(const std::vector<double>& underlying,
                        const Array& dividendYield,
