@@ -29,6 +29,10 @@ namespace QuantLib {
     namespace VolTermStructures {
 
         //! Local volatility surface derived from a Black vol surface
+        /*! For details about this implementation refers to
+            "Stochastic Volatility and Local Volatility", by Jim Gatheral
+            www.math.nyu.edu/fellows_fin_math/gatheral/Lecture1_Fall02.pdf
+        */
         class LocalVolSurface : public LocalVolTermStructure,
                                 public Patterns::Observer {
           public:

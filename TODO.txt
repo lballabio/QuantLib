@@ -1,6 +1,5 @@
 Sobol template rngtypedefs + python
-verify drop in polinomils' files
-make unit tests out of examples
+verify drop in polinomials' files
 cliquet move forward
 optimize PathPricer
 MultiPath and MultiPathPricer
@@ -8,15 +7,17 @@ MultiPath and MultiPathPricer
 UNIT TEST SUITE
 -*add covariance/correlation test for SequenceStatistics
 -*make unit test to work under Borland
--*add quanto, forward and performance forward to test suite
+- add Gauss-Kronrod test
+- add single factor calibration test
+- add bermudan (single factor) pricing test
+- add quanto, forward and performance forward to test suite
 
 PRICING ENGINE FRAMEWORK
 -*create vanilla FD example
 -*create vanilla MC example (make it work)
 -*add new engines to test-suite
--*fix quantotermstructure/drifttermstructure problem
+- fix quantotermstructure/drifttermstructure problem
 -*MC with tolerance in the constructor
-- add integral engine
 - create Arguments class not including strike and use it in forward options
 - deprecate old pricers
 
@@ -24,7 +25,6 @@ MONTE CARLO FRAMEWORK
 -*revise multidimensional MonteCarlo
 -*revise extrapolation in diffusion process
 - predictor-corrector scheme
--*quasi-random number generator (Faure, Sobol)
 -*replace all instance of seed with a random generator
 -*settle on interface (tolerance, number of samples)
 -*number of samples as (n#batches, batch_size)
@@ -40,6 +40,7 @@ MONTE CARLO FRAMEWORK
 
 INTEGRAL PRICING ENGINE FRAMEWORK
 - use Gauss-Kronrod algorythm
+- tolerance interface
 
 FINITE DIFFERENCE FRAMEWORK
 -*use DicretisedAsset instead of array
@@ -66,7 +67,7 @@ VOLATILITY
 - blackSurface: check time extrapolation
 
 MATH
-- fix cubic spline
+-*fix cubic spline
 - have Interpolator to check for sorted arrays
 
 MISCELLANEA
