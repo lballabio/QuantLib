@@ -28,6 +28,10 @@
     $Source$
     $Name$
     $Log$
+    Revision 1.4  2001/03/21 09:57:39  marmar
+    added line:
+    #include <vector>
+
     Revision 1.3  2001/02/16 15:32:22  lballabio
     Used QL_ITERATOR_TRAITS macro
 
@@ -45,6 +49,7 @@
 #include "qldefines.h"
 #include "qlerrors.h"
 #include "interpolation.h"
+#include <vector>
 
 namespace QuantLib {
 
