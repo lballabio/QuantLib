@@ -188,7 +188,11 @@
 #endif
 
 #ifndef _CPPRTTI
-    #error Check the 'C/C++ | C++ Language | Use RTTI' option
+#   if (_MSC_VER >= 1300) // VC++ 7.0 (.Net) and later
+#       error Enable Run-Time Type Info (Property Pages | C/C++ | Language)
+#   else
+#       error Enable Run-Time Type Information (Project Settings | C/C++ | C++ Language)
+#   endif
 #endif
 
 #endif
