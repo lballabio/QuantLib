@@ -44,9 +44,9 @@ namespace QuantLib {
 
         class DiscountBondOptionAsset : public Asset {
           public:
-            DiscountBondOptionAsset(Option::Type type, 
-                                    Time maturity, 
-                                    double strike) 
+            DiscountBondOptionAsset(Option::Type type,
+                                    Time maturity,
+                                    double strike)
             : type_(type), maturity_(maturity), strike_(strike) {}
             void reset(Size size) {
                 values_ = Array(size, 1.0);
@@ -63,6 +63,13 @@ namespace QuantLib {
                         for (i=0; i<newValues_.size(); i++)
                           newValues_[i] = QL_MAX(strike_ - newValues_[i], 0.0);
                         break;
+                      case Option::Straddle:
+                          throw IllegalArgumentError(
+                              "DiscountBondOptionAsset: straddle not handled");
+                          break;
+                      default:
+                          throw IllegalArgumentError(
+                              "DiscountBondOptionAsset: invalid option type");
                     }
                 }
                 values_ = newValues_;
