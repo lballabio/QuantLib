@@ -1,6 +1,6 @@
 
 /*
- Copyright (C) 2003 Ferdinando Ametrano
+ Copyright (C) 2003, 2004 Ferdinando Ametrano
  Copyright (C) 2000, 2001, 2002, 2003 RiskMap srl
 
  This file is part of QuantLib, a free-software/open-source library
@@ -40,7 +40,8 @@ namespace QuantLib {
     template<class DataIterator>
     Disposable<Matrix> getCovariance(DataIterator volBegin,
                                      DataIterator volEnd,
-                                     const Matrix& corr){
+                                     const Matrix& corr,
+                                     Real tolerance = 1.0e-12){
         Size size = std::distance(volBegin, volEnd);
         QL_REQUIRE(corr.rows() == size,
                    "volatilities and correlations "
@@ -53,7 +54,7 @@ namespace QuantLib {
         DataIterator iIt, jIt;
         for (i=0, iIt=volBegin; i<size; i++, iIt++){
             for (j=0, jIt=volBegin; j<i; j++, jIt++){
-                QL_REQUIRE(QL_FABS(corr[i][j]-corr[j][i]) <= 1.0e-12,
+                QL_REQUIRE(QL_FABS(corr[i][j]-corr[j][i]) <= tolerance,
                            "invalid correlation matrix:"
                            "\nc[" + SizeFormatter::toString(i) +
                            ", "   + SizeFormatter::toString(j) +
@@ -66,7 +67,7 @@ namespace QuantLib {
                     0.5 * (corr[i][j] + corr[j][i]);
                 covariance[j][i] = covariance[i][j];
             }
-            QL_REQUIRE(QL_FABS(corr[i][i]-1.0) <= 1.0e-12,
+            QL_REQUIRE(QL_FABS(corr[i][i]-1.0) <= tolerance,
                        "invalid correlation matrix, diagonal element of the "
                        + SizeFormatter::toOrdinal(i) +
                        " row is "
@@ -76,6 +77,30 @@ namespace QuantLib {
         }
         return covariance;
     }
+
+    /*! Extracts the correlation matrix and the vector of volatilities
+        out of the input covariance matrix.
+
+        Note that only the lower symmetric part of the covariance matrix is
+        used.
+
+        \pre The covariance matrix must be symmetric.
+    */
+    class CovarianceDecomposition {
+      public:
+        /*! \pre covarianceMatrix must be symmetric */
+        CovarianceDecomposition(const Matrix& covarianceMatrix,
+                                Real tolerance = 1.0e-12);
+        /*! returns the variances Array */
+        const Array& variances() const { return variances_; }
+        /*! returns the standard deviations Array */
+        const Array& standardDeviations() const {return standardDeviations_; }
+        /*! returns the correlation matrix */
+        const Matrix& correlationMatrix() const { return correlationMatrix_; }
+      private:
+        Array variances_, standardDeviations_;
+        Matrix correlationMatrix_;
+    };
 
 }
 

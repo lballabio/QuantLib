@@ -95,7 +95,7 @@ void CovarianceTest::testSalvagingCorrelation() {
 
 void CovarianceTest::testCovariance() {
 
-    BOOST_MESSAGE("Testing covariance calculation...");
+    BOOST_MESSAGE("Testing covariance and correlation calculations...");
 
     Real data00[] = { 3.0,  9.0 };
     Real data01[] = { 2.0,  7.0 };
@@ -178,6 +178,43 @@ void CovarianceTest::testCovariance() {
             }
         }
     }
+
+
+
+
+    CovarianceDecomposition covDecomposition(expCov);
+    calcCor = covDecomposition.correlationMatrix();
+    Array calcStd = covDecomposition.standardDeviations();
+
+    for (i=0; i<n; i++) {
+        calculated = calcStd[i];
+        expected   = std[i];
+        if (QL_FABS(calculated-expected) > 1.0e-16) {
+            BOOST_FAIL("CovarianceDecomposition "
+                        "standardDev[" + SizeFormatter::toString(i) + "]"
+                        ":\n"
+                        "    calculated: "
+                        + DecimalFormatter::toExponential(calculated, 16)+"\n"
+                        "    expected:   "
+                        + DecimalFormatter::toExponential(expected, 16));
+        }
+        for (j=0; j<n; j++) {
+            calculated = calcCor[i][j];
+            expected   = expCor[i][j];
+            if (QL_FABS(calculated-expected) > 1.0e-14) {
+                BOOST_FAIL("\nCovarianceDecomposition "
+                           "corr[" + SizeFormatter::toString(i) + "]"
+                           "[" + SizeFormatter::toString(j) + "]:\n"
+                           "    calculated: "
+                           + DecimalFormatter::toExponential(calculated, 16) + "\n"
+                           "    expected:   "
+                           + DecimalFormatter::toExponential(expected, 16));
+            }
+        }
+    }
+
+
+
 }
 
 

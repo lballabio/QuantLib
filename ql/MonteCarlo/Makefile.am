@@ -1,4 +1,5 @@
 
+AM_CPPFLAGS = -I${top_srcdir} -I${top_builddir}
 includedir = $(prefix)/include/ql/MonteCarlo
 
 include_HEADERS = \
@@ -16,3 +17,9 @@ include_HEADERS = \
 	pathpricer.hpp \
 	sample.hpp
 
+EXTRA_DIST=makefile.mak
+
+libMonteCarlo_la_SOURCES = \
+	getcovariance.cpp
+
+noinst_LTLIBRARIES = libMonteCarlo.la

@@ -49,6 +49,7 @@ INDEXES_LIB          = "Indexes\Indexes$(_mt)$(_D).lib"
 INSTRUMENTS_LIB      = "Instruments\Instruments$(_mt)$(_D).lib"
 LATTICES_LIB         = "Lattices\Lattices$(_mt)$(_D).lib"
 MATH_LIB             = "Math\Math$(_mt)$(_D).lib"
+MONTECARLO_LIB       = "MonteCarlo\MonteCarlo$(_mt)$(_D).lib"
 OPTIMIZATION_LIB     = "Optimization\Optimization$(_mt)$(_D).lib"
 PRICER_LIB           = "Pricers\Pricers$(_mt)$(_D).lib"
 PRICING_ENGINES_LIB  = "PricingEngines\PricingEngines$(_mt)$(_D).lib"
@@ -83,6 +84,7 @@ QUANTLIB_OBJS = \
     $(SHORTRATEMODELS_LIB) \
     $(LATTICES_LIB) \
     $(MATH_LIB) \
+    $(MONTECARLO_LIB) \
     $(ONEFACTOR_LIB) \
     $(OPTIMIZATION_LIB) \
     $(PRICER_LIB) \
@@ -180,6 +182,8 @@ SubLibraries:
     cd ..\Instruments
     $(MAKE)
     cd ..\Math
+    $(MAKE)
+    cd ..\MonteCarlo
     $(MAKE)
     cd ..\Optimization
     $(MAKE)

@@ -4961,6 +4961,9 @@
 				RelativePath="ql\MonteCarlo\brownianbridge.hpp">
 			</File>
 			<File
+				RelativePath=".\ql\MonteCarlo\getcovariance.cpp">
+			</File>
+			<File
 				RelativePath="ql\MonteCarlo\getcovariance.hpp">
 			</File>
 			<File
