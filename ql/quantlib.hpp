@@ -65,6 +65,7 @@
 #include <ql/Calendars/london.hpp>
 #include <ql/Calendars/milan.hpp>
 #include <ql/Calendars/newyork.hpp>
+#include <ql/Calendars/nullcalendar.hpp>
 #include <ql/Calendars/oslo.hpp>
 #include <ql/Calendars/stockholm.hpp>
 #include <ql/Calendars/sydney.hpp>
@@ -92,6 +93,7 @@
 #include <ql/DayCounters/actual360.hpp>
 #include <ql/DayCounters/actual365.hpp>
 #include <ql/DayCounters/actualactual.hpp>
+#include <ql/DayCounters/simpledaycounter.hpp>
 #include <ql/DayCounters/thirty360.hpp>
 
 #include <ql/FiniteDifferences/americancondition.hpp>

@@ -54,7 +54,7 @@ int main() {
     runner.addTest(CompoundForwardTest::suite());
     runner.addTest(CovarianceTest::suite());
     runner.addTest(new DateTest);
-    runner.addTest(new DayCounterTest);
+    runner.addTest(DayCounterTest::suite());
     runner.addTest(new DistributionTest);
     runner.addTest(InstrumentTest::suite());
     runner.addTest(new IntegralTest);
@@ -87,3 +87,4 @@ int main() {
     bool succeeded = runner.run();
     return succeeded ? 0 : 1;
 }
+

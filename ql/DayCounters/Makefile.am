@@ -6,12 +6,14 @@ include_HEADERS = \
 	actual360.hpp \
 	actual365.hpp \
 	actualactual.hpp \
+	simpledaycounter.hpp \
 	thirty360.hpp
 
 EXTRA_DIST=makefile.mak
 
 libDayCounters_la_SOURCES = \
     actualactual.cpp \
+	simpledaycounter.cpp \
     thirty360.cpp
 
 noinst_LTLIBRARIES = libDayCounters.la

@@ -16,6 +16,7 @@ OBJDIR         = "..\..\build\Borland"
 # Object files
 OBJS = \
     $(OBJDIR)\actualactual.obj$(_D) \
+    $(OBJDIR)\simpledaycounter.obj$(_D) \
     $(OBJDIR)\thirty360.obj$(_D)
 
 # Tools to be used
