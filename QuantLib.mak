@@ -230,6 +230,8 @@ CLEAN :
 	-@erase "$(INTDIR)\milan.sbr"
 	-@erase "$(INTDIR)\model.obj"
 	-@erase "$(INTDIR)\model.sbr"
+	-@erase "$(INTDIR)\mt19937uniformrng.obj"
+	-@erase "$(INTDIR)\mt19937uniformrng.sbr"
 	-@erase "$(INTDIR)\multivariateaccumulator.obj"
 	-@erase "$(INTDIR)\multivariateaccumulator.sbr"
 	-@erase "$(INTDIR)\newton.obj"
@@ -460,6 +462,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\swaptionpricer.sbr" \
 	"$(INTDIR)\treecapfloor.sbr" \
 	"$(INTDIR)\treeswaption.sbr" \
+	"$(INTDIR)\analyticeuropeanengine.sbr" \
 	"$(INTDIR)\binomialvanillaengine.sbr" \
 	"$(INTDIR)\discretizedvanillaoption.sbr" \
 	"$(INTDIR)\fdvanillaengine.sbr" \
@@ -502,7 +505,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\scheduler.sbr" \
 	"$(INTDIR)\solver1d.sbr" \
 	"$(INTDIR)\voltermstructure.sbr" \
-	"$(INTDIR)\analyticeuropeanengine.sbr"
+	"$(INTDIR)\mt19937uniformrng.sbr"
 
 "$(OUTDIR)\QuantLib.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -619,6 +622,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\swaptionpricer.obj" \
 	"$(INTDIR)\treecapfloor.obj" \
 	"$(INTDIR)\treeswaption.obj" \
+	"$(INTDIR)\analyticeuropeanengine.obj" \
 	"$(INTDIR)\binomialvanillaengine.obj" \
 	"$(INTDIR)\discretizedvanillaoption.obj" \
 	"$(INTDIR)\fdvanillaengine.obj" \
@@ -661,7 +665,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\scheduler.obj" \
 	"$(INTDIR)\solver1d.obj" \
 	"$(INTDIR)\voltermstructure.obj" \
-	"$(INTDIR)\analyticeuropeanengine.obj"
+	"$(INTDIR)\mt19937uniformrng.obj"
 
 ".\lib\Win32\VisualStudio\QuantLib.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
     $(LIB32) @<<
@@ -868,6 +872,8 @@ CLEAN :
 	-@erase "$(INTDIR)\milan.sbr"
 	-@erase "$(INTDIR)\model.obj"
 	-@erase "$(INTDIR)\model.sbr"
+	-@erase "$(INTDIR)\mt19937uniformrng.obj"
+	-@erase "$(INTDIR)\mt19937uniformrng.sbr"
 	-@erase "$(INTDIR)\multivariateaccumulator.obj"
 	-@erase "$(INTDIR)\multivariateaccumulator.sbr"
 	-@erase "$(INTDIR)\newton.obj"
@@ -1099,6 +1105,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\swaptionpricer.sbr" \
 	"$(INTDIR)\treecapfloor.sbr" \
 	"$(INTDIR)\treeswaption.sbr" \
+	"$(INTDIR)\analyticeuropeanengine.sbr" \
 	"$(INTDIR)\binomialvanillaengine.sbr" \
 	"$(INTDIR)\discretizedvanillaoption.sbr" \
 	"$(INTDIR)\fdvanillaengine.sbr" \
@@ -1141,7 +1148,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\scheduler.sbr" \
 	"$(INTDIR)\solver1d.sbr" \
 	"$(INTDIR)\voltermstructure.sbr" \
-	"$(INTDIR)\analyticeuropeanengine.sbr"
+	"$(INTDIR)\mt19937uniformrng.sbr"
 
 "$(OUTDIR)\QuantLib.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -1258,6 +1265,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\swaptionpricer.obj" \
 	"$(INTDIR)\treecapfloor.obj" \
 	"$(INTDIR)\treeswaption.obj" \
+	"$(INTDIR)\analyticeuropeanengine.obj" \
 	"$(INTDIR)\binomialvanillaengine.obj" \
 	"$(INTDIR)\discretizedvanillaoption.obj" \
 	"$(INTDIR)\fdvanillaengine.obj" \
@@ -1300,7 +1308,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\scheduler.obj" \
 	"$(INTDIR)\solver1d.obj" \
 	"$(INTDIR)\voltermstructure.obj" \
-	"$(INTDIR)\analyticeuropeanengine.obj"
+	"$(INTDIR)\mt19937uniformrng.obj"
 
 ".\lib\Win32\VisualStudio\QuantLib_d.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
     $(LIB32) @<<
@@ -1507,6 +1515,8 @@ CLEAN :
 	-@erase "$(INTDIR)\milan.sbr"
 	-@erase "$(INTDIR)\model.obj"
 	-@erase "$(INTDIR)\model.sbr"
+	-@erase "$(INTDIR)\mt19937uniformrng.obj"
+	-@erase "$(INTDIR)\mt19937uniformrng.sbr"
 	-@erase "$(INTDIR)\multivariateaccumulator.obj"
 	-@erase "$(INTDIR)\multivariateaccumulator.sbr"
 	-@erase "$(INTDIR)\newton.obj"
@@ -1737,6 +1747,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\swaptionpricer.sbr" \
 	"$(INTDIR)\treecapfloor.sbr" \
 	"$(INTDIR)\treeswaption.sbr" \
+	"$(INTDIR)\analyticeuropeanengine.sbr" \
 	"$(INTDIR)\binomialvanillaengine.sbr" \
 	"$(INTDIR)\discretizedvanillaoption.sbr" \
 	"$(INTDIR)\fdvanillaengine.sbr" \
@@ -1779,7 +1790,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\scheduler.sbr" \
 	"$(INTDIR)\solver1d.sbr" \
 	"$(INTDIR)\voltermstructure.sbr" \
-	"$(INTDIR)\analyticeuropeanengine.sbr"
+	"$(INTDIR)\mt19937uniformrng.sbr"
 
 "$(OUTDIR)\QuantLib.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -1896,6 +1907,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\swaptionpricer.obj" \
 	"$(INTDIR)\treecapfloor.obj" \
 	"$(INTDIR)\treeswaption.obj" \
+	"$(INTDIR)\analyticeuropeanengine.obj" \
 	"$(INTDIR)\binomialvanillaengine.obj" \
 	"$(INTDIR)\discretizedvanillaoption.obj" \
 	"$(INTDIR)\fdvanillaengine.obj" \
@@ -1938,7 +1950,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\scheduler.obj" \
 	"$(INTDIR)\solver1d.obj" \
 	"$(INTDIR)\voltermstructure.obj" \
-	"$(INTDIR)\analyticeuropeanengine.obj"
+	"$(INTDIR)\mt19937uniformrng.obj"
 
 ".\lib\Win32\VisualStudio\QuantLib.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
     $(LIB32) @<<
@@ -2145,6 +2157,8 @@ CLEAN :
 	-@erase "$(INTDIR)\milan.sbr"
 	-@erase "$(INTDIR)\model.obj"
 	-@erase "$(INTDIR)\model.sbr"
+	-@erase "$(INTDIR)\mt19937uniformrng.obj"
+	-@erase "$(INTDIR)\mt19937uniformrng.sbr"
 	-@erase "$(INTDIR)\multivariateaccumulator.obj"
 	-@erase "$(INTDIR)\multivariateaccumulator.sbr"
 	-@erase "$(INTDIR)\newton.obj"
@@ -2376,6 +2390,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\swaptionpricer.sbr" \
 	"$(INTDIR)\treecapfloor.sbr" \
 	"$(INTDIR)\treeswaption.sbr" \
+	"$(INTDIR)\analyticeuropeanengine.sbr" \
 	"$(INTDIR)\binomialvanillaengine.sbr" \
 	"$(INTDIR)\discretizedvanillaoption.sbr" \
 	"$(INTDIR)\fdvanillaengine.sbr" \
@@ -2418,7 +2433,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\scheduler.sbr" \
 	"$(INTDIR)\solver1d.sbr" \
 	"$(INTDIR)\voltermstructure.sbr" \
-	"$(INTDIR)\analyticeuropeanengine.sbr"
+	"$(INTDIR)\mt19937uniformrng.sbr"
 
 "$(OUTDIR)\QuantLib.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -2535,6 +2550,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\swaptionpricer.obj" \
 	"$(INTDIR)\treecapfloor.obj" \
 	"$(INTDIR)\treeswaption.obj" \
+	"$(INTDIR)\analyticeuropeanengine.obj" \
 	"$(INTDIR)\binomialvanillaengine.obj" \
 	"$(INTDIR)\discretizedvanillaoption.obj" \
 	"$(INTDIR)\fdvanillaengine.obj" \
@@ -2577,7 +2593,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\scheduler.obj" \
 	"$(INTDIR)\solver1d.obj" \
 	"$(INTDIR)\voltermstructure.obj" \
-	"$(INTDIR)\analyticeuropeanengine.obj"
+	"$(INTDIR)\mt19937uniformrng.obj"
 
 ".\lib\Win32\VisualStudio\QuantLib_d.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
     $(LIB32) @<<
@@ -3308,6 +3324,12 @@ SOURCE=.\ql\RandomNumbers\knuthuniformrng.cpp
 SOURCE=.\ql\RandomNumbers\lecuyeruniformrng.cpp
 
 "$(INTDIR)\lecuyeruniformrng.obj"	"$(INTDIR)\lecuyeruniformrng.sbr" : $(SOURCE) "$(INTDIR)"
+	$(CPP) $(CPP_PROJ) $(SOURCE)
+
+
+SOURCE=.\ql\RandomNumbers\mt19937uniformrng.cpp
+
+"$(INTDIR)\mt19937uniformrng.obj"	"$(INTDIR)\mt19937uniformrng.sbr" : $(SOURCE) "$(INTDIR)"
 	$(CPP) $(CPP_PROJ) $(SOURCE)
 
 

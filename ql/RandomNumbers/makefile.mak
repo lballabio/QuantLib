@@ -17,7 +17,8 @@ BCC_INCLUDE    = $(MAKEDIR)\..\include
 OBJS = \
     haltonrsg.obj$(_D) \
     knuthuniformrng.obj$(_D) \
-    lecuyeruniformrng.obj$(_D)
+    lecuyeruniformrng.obj$(_D) \
+    mt19937uniformrng.obj$(_D)
 
 # Tools to be used
 CC        = bcc32

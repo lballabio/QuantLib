@@ -1,5 +1,6 @@
 
 /*
+ Copyright (C) 2002, 2003 Ferdinando Ametrano
  Copyright (C) 2000, 2001, 2002, 2003 RiskMap srl
 
  This file is part of QuantLib, a free-software/open-source library
@@ -258,6 +259,7 @@
 #include <ql/RandomNumbers/inversecumgaussianrsg.hpp>
 #include <ql/RandomNumbers/knuthuniformrng.hpp>
 #include <ql/RandomNumbers/lecuyeruniformrng.hpp>
+#include <ql/RandomNumbers/mt19937uniformrng.hpp>
 #include <ql/RandomNumbers/randomarraygenerator.hpp>
 #include <ql/RandomNumbers/randomsequencegenerator.hpp>
 #include <ql/RandomNumbers/rngtypedefs.hpp>

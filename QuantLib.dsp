@@ -1407,6 +1407,14 @@ SOURCE=.\ql\RandomNumbers\lecuyeruniformrng.hpp
 # End Source File
 # Begin Source File
 
+SOURCE=.\ql\RandomNumbers\mt19937uniformrng.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\RandomNumbers\mt19937uniformrng.hpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\ql\RandomNumbers\randomarraygenerator.hpp
 # End Source File
 # Begin Source File

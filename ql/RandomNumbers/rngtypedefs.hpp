@@ -1,5 +1,4 @@
 
-
 /*
  Copyright (C) 2002, 2003 Ferdinando Ametrano
  Copyright (C) 2000, 2001, 2002, 2003 RiskMap srl
@@ -30,6 +29,7 @@
 
 #include <ql/RandomNumbers/lecuyeruniformrng.hpp>
 #include <ql/RandomNumbers/knuthuniformrng.hpp>
+#include <ql/RandomNumbers/mt19937uniformrng.hpp>
 
 #include <ql/RandomNumbers/boxmullergaussianrng.hpp>
 #include <ql/RandomNumbers/centrallimitgaussianrng.hpp>
@@ -50,11 +50,13 @@ namespace QuantLib {
 
         // no low discrepancy, since they are sequence generators.
 
-        // There are Lecuyer and Knuth uniform number generators, plus:
+        // There are Lecuyer, Knuth and MersenneTwister19937 uniform number
+        // generators, plus:
 
         //! default choice for uniform random number generator.
         typedef LecuyerUniformRng UniformRandomGenerator;
-        // should be Marsenne Twister as soon as it is available in QuantLib
+        // should be:
+//        typedef MersenneTwisterUniformRng UniformRandomGenerator;
 
 
 /************* Gaussian number generators *************/
@@ -101,7 +103,7 @@ namespace QuantLib {
         // it should be the following typedef, which use
         // a better uniform->guassian algo, but
         // the change will happen when UniformRandomGenerator
-        // will be the Marsenne Twister, so that we have to updated
+        // will be the Mersenne Twister, so that we have to updated
         // the calculated values in the test suite only once
         //typedef ICGaussianRng<UniformRandomGenerator,
         //    QuantLib::Math::InverseCumulativeNormal>
@@ -121,7 +123,7 @@ namespace QuantLib {
 
         //! default choice for uniform random sequence generator.
         typedef LecuyerUniformRsg UniformRandomSequenceGenerator;
-        // should be Marsenne Twister as soon as it is available in QuantLib
+        // should be Mersenne Twister as soon as it is available in QuantLib
 
         //! default choice for uniform low discrepancy sequence generator
         typedef HaltonRsg UniformLowDiscrepancySequenceGenerator;
@@ -166,7 +168,7 @@ namespace QuantLib {
 
         //! default choice for gaussian random sequence generator.
         typedef InvCumulativeLecuyerGaussianRsg GaussianRandomSequenceGenerator;
-        // should be Marsenne Twister as soon as it is available in QuantLib
+        // should be Mersenne Twister as soon as it is available in QuantLib
 
         //! default choice for gaussian low discrepancy sequence generator
         typedef InvCumulativeHaltonGaussianRsg GaussianLowDiscrepancySequenceGenerator;
