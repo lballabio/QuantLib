@@ -602,11 +602,11 @@ BSC32_SBRS= \
 	"$(INTDIR)\exchangerate.sbr" \
 	"$(INTDIR)\exercise.sbr" \
 	"$(INTDIR)\grid.sbr" \
+	"$(INTDIR)\interestrate.sbr" \
 	"$(INTDIR)\money.sbr" \
 	"$(INTDIR)\schedule.sbr" \
 	"$(INTDIR)\stochasticprocess.sbr" \
-	"$(INTDIR)\voltermstructure.sbr" \
-	"$(INTDIR)\interestrate.sbr"
+	"$(INTDIR)\voltermstructure.sbr"
 
 "$(OUTDIR)\QuantLib.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -795,11 +795,11 @@ LIB32_OBJS= \
 	"$(INTDIR)\exchangerate.obj" \
 	"$(INTDIR)\exercise.obj" \
 	"$(INTDIR)\grid.obj" \
+	"$(INTDIR)\interestrate.obj" \
 	"$(INTDIR)\money.obj" \
 	"$(INTDIR)\schedule.obj" \
 	"$(INTDIR)\stochasticprocess.obj" \
-	"$(INTDIR)\voltermstructure.obj" \
-	"$(INTDIR)\interestrate.obj"
+	"$(INTDIR)\voltermstructure.obj"
 
 ".\lib\QuantLib-vc6-mt-s-0_3_8.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
    if not exist lib mkdir lib
@@ -1380,11 +1380,11 @@ BSC32_SBRS= \
 	"$(INTDIR)\exchangerate.sbr" \
 	"$(INTDIR)\exercise.sbr" \
 	"$(INTDIR)\grid.sbr" \
+	"$(INTDIR)\interestrate.sbr" \
 	"$(INTDIR)\money.sbr" \
 	"$(INTDIR)\schedule.sbr" \
 	"$(INTDIR)\stochasticprocess.sbr" \
-	"$(INTDIR)\voltermstructure.sbr" \
-	"$(INTDIR)\interestrate.sbr"
+	"$(INTDIR)\voltermstructure.sbr"
 
 "$(OUTDIR)\QuantLib.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -1573,11 +1573,11 @@ LIB32_OBJS= \
 	"$(INTDIR)\exchangerate.obj" \
 	"$(INTDIR)\exercise.obj" \
 	"$(INTDIR)\grid.obj" \
+	"$(INTDIR)\interestrate.obj" \
 	"$(INTDIR)\money.obj" \
 	"$(INTDIR)\schedule.obj" \
 	"$(INTDIR)\stochasticprocess.obj" \
-	"$(INTDIR)\voltermstructure.obj" \
-	"$(INTDIR)\interestrate.obj"
+	"$(INTDIR)\voltermstructure.obj"
 
 ".\lib\QuantLib-vc6-mt-sgd-0_3_8.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
    if not exist lib mkdir lib
@@ -2157,11 +2157,11 @@ BSC32_SBRS= \
 	"$(INTDIR)\exchangerate.sbr" \
 	"$(INTDIR)\exercise.sbr" \
 	"$(INTDIR)\grid.sbr" \
+	"$(INTDIR)\interestrate.sbr" \
 	"$(INTDIR)\money.sbr" \
 	"$(INTDIR)\schedule.sbr" \
 	"$(INTDIR)\stochasticprocess.sbr" \
-	"$(INTDIR)\voltermstructure.sbr" \
-	"$(INTDIR)\interestrate.sbr"
+	"$(INTDIR)\voltermstructure.sbr"
 
 "$(OUTDIR)\QuantLib.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -2350,11 +2350,11 @@ LIB32_OBJS= \
 	"$(INTDIR)\exchangerate.obj" \
 	"$(INTDIR)\exercise.obj" \
 	"$(INTDIR)\grid.obj" \
+	"$(INTDIR)\interestrate.obj" \
 	"$(INTDIR)\money.obj" \
 	"$(INTDIR)\schedule.obj" \
 	"$(INTDIR)\stochasticprocess.obj" \
-	"$(INTDIR)\voltermstructure.obj" \
-	"$(INTDIR)\interestrate.obj"
+	"$(INTDIR)\voltermstructure.obj"
 
 ".\lib\QuantLib-vc6-mt-0_3_8.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
    if not exist lib mkdir lib
@@ -2935,11 +2935,11 @@ BSC32_SBRS= \
 	"$(INTDIR)\exchangerate.sbr" \
 	"$(INTDIR)\exercise.sbr" \
 	"$(INTDIR)\grid.sbr" \
+	"$(INTDIR)\interestrate.sbr" \
 	"$(INTDIR)\money.sbr" \
 	"$(INTDIR)\schedule.sbr" \
 	"$(INTDIR)\stochasticprocess.sbr" \
-	"$(INTDIR)\voltermstructure.sbr" \
-	"$(INTDIR)\interestrate.sbr"
+	"$(INTDIR)\voltermstructure.sbr"
 
 "$(OUTDIR)\QuantLib.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -3128,11 +3128,11 @@ LIB32_OBJS= \
 	"$(INTDIR)\exchangerate.obj" \
 	"$(INTDIR)\exercise.obj" \
 	"$(INTDIR)\grid.obj" \
+	"$(INTDIR)\interestrate.obj" \
 	"$(INTDIR)\money.obj" \
 	"$(INTDIR)\schedule.obj" \
 	"$(INTDIR)\stochasticprocess.obj" \
-	"$(INTDIR)\voltermstructure.obj" \
-	"$(INTDIR)\interestrate.obj"
+	"$(INTDIR)\voltermstructure.obj"
 
 ".\lib\QuantLib-vc6-mt-gd-0_3_8.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
    if not exist lib mkdir lib
@@ -3712,11 +3712,11 @@ BSC32_SBRS= \
 	"$(INTDIR)\exchangerate.sbr" \
 	"$(INTDIR)\exercise.sbr" \
 	"$(INTDIR)\grid.sbr" \
+	"$(INTDIR)\interestrate.sbr" \
 	"$(INTDIR)\money.sbr" \
 	"$(INTDIR)\schedule.sbr" \
 	"$(INTDIR)\stochasticprocess.sbr" \
-	"$(INTDIR)\voltermstructure.sbr" \
-	"$(INTDIR)\interestrate.sbr"
+	"$(INTDIR)\voltermstructure.sbr"
 
 "$(OUTDIR)\QuantLib.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -3905,11 +3905,11 @@ LIB32_OBJS= \
 	"$(INTDIR)\exchangerate.obj" \
 	"$(INTDIR)\exercise.obj" \
 	"$(INTDIR)\grid.obj" \
+	"$(INTDIR)\interestrate.obj" \
 	"$(INTDIR)\money.obj" \
 	"$(INTDIR)\schedule.obj" \
 	"$(INTDIR)\stochasticprocess.obj" \
-	"$(INTDIR)\voltermstructure.obj" \
-	"$(INTDIR)\interestrate.obj"
+	"$(INTDIR)\voltermstructure.obj"
 
 ".\lib\QuantLib-vc6-s-0_3_8.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
    if not exist lib mkdir lib
@@ -4490,11 +4490,11 @@ BSC32_SBRS= \
 	"$(INTDIR)\exchangerate.sbr" \
 	"$(INTDIR)\exercise.sbr" \
 	"$(INTDIR)\grid.sbr" \
+	"$(INTDIR)\interestrate.sbr" \
 	"$(INTDIR)\money.sbr" \
 	"$(INTDIR)\schedule.sbr" \
 	"$(INTDIR)\stochasticprocess.sbr" \
-	"$(INTDIR)\voltermstructure.sbr" \
-	"$(INTDIR)\interestrate.sbr"
+	"$(INTDIR)\voltermstructure.sbr"
 
 "$(OUTDIR)\QuantLib.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -4683,11 +4683,11 @@ LIB32_OBJS= \
 	"$(INTDIR)\exchangerate.obj" \
 	"$(INTDIR)\exercise.obj" \
 	"$(INTDIR)\grid.obj" \
+	"$(INTDIR)\interestrate.obj" \
 	"$(INTDIR)\money.obj" \
 	"$(INTDIR)\schedule.obj" \
 	"$(INTDIR)\stochasticprocess.obj" \
-	"$(INTDIR)\voltermstructure.obj" \
-	"$(INTDIR)\interestrate.obj"
+	"$(INTDIR)\voltermstructure.obj"
 
 ".\lib\QuantLib-vc6-sgd-0_3_8.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
    if not exist lib mkdir lib

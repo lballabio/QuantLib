@@ -541,6 +541,10 @@ SOURCE=.\riskstats.hpp
 # End Source File
 # Begin Source File
 
+SOURCE=.\rngtraits.hpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\rounding.hpp
 # End Source File
 # Begin Source File

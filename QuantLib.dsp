@@ -1951,6 +1951,14 @@ SOURCE=.\ql\RandomNumbers\inversecumgaussianrsg.hpp
 # End Source File
 # Begin Source File
 
+SOURCE=.\ql\RandomNumbers\inversecumulativerng.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\RandomNumbers\inversecumulativersg.hpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\ql\RandomNumbers\knuthuniformrng.cpp
 # End Source File
 # Begin Source File
@@ -2187,6 +2195,10 @@ SOURCE=.\ql\TermStructures\discountcurve.hpp
 # End Source File
 # Begin Source File
 
+SOURCE=.\ql\TermStructures\discountstructure.hpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\ql\TermStructures\drifttermstructure.hpp
 # End Source File
 # Begin Source File
@@ -2204,6 +2216,10 @@ SOURCE=.\ql\TermStructures\flatforward.hpp
 # Begin Source File
 
 SOURCE=.\ql\TermStructures\forwardspreadedtermstructure.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\TermStructures\forwardstructure.hpp
 # End Source File
 # Begin Source File
 
@@ -2240,6 +2256,10 @@ SOURCE=.\ql\TermStructures\zerocurve.hpp
 # Begin Source File
 
 SOURCE=.\ql\TermStructures\zerospreadedtermstructure.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\TermStructures\zeroyieldstructure.hpp
 # End Source File
 # End Group
 # Begin Group "Utilities"
@@ -2401,6 +2421,10 @@ SOURCE=.\ql\config.ansi.hpp
 # Begin Source File
 
 SOURCE=.\ql\config.bcc.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\config.mingw.hpp
 # End Source File
 # Begin Source File
 
