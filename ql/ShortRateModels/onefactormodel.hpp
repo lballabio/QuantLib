@@ -105,14 +105,20 @@ namespace QuantLib {
 
         //! Single-factor affine base class
         /*! Single-factor models with an analytical formula for discount bonds
-            should inherit from this class. They must then implement 
-            \f$ P(t, T, r_t) \f$.
+            should inherit from this class. They must then implement the 
+            functions \f$ A(t,T) \f$ and \f$ B(t,T) \f$ such that
+            \f[
+                P(t, T, r_t) = A(t,T)e^{ -B(t,T) r_t}.
+            \f]
         */
         class OneFactorAffineModel : public AffineModel {
           public:
-            virtual double discountBond(Time now, 
-                                        Time maturity, 
-                                        Rate rate) const = 0;
+            double discountBond(Time now, Time maturity, Rate rate) const {
+                return A(now, maturity)*QL_EXP(-B(now, maturity)*rate);
+            }
+          protected:
+            virtual double A(Time t, Time T) const = 0;
+            virtual double B(Time t, Time T) const = 0;
         };
 
     }

@@ -227,9 +227,7 @@ int main(int argc, char* argv[])
 
         Handle<Model> modelHW(new HullWhite(rhTermStructure));
         Handle<Model> modelHW2(new HullWhite(rhTermStructure));
-        Handle<Model> modelCIR(new ExtendedCoxIngersollRoss(rhTermStructure));
         Handle<Model> modelBK(new BlackKarasinski(rhTermStructure));
-        Handle<Model> modelG2(new G2(rhTermStructure));
 
         std::cout << "Calibrating to swaptions" << std::endl;
 
@@ -263,13 +261,7 @@ int main(int argc, char* argv[])
                   << ArrayFormatter::toString(modelBK->params())
                   << std::endl
                   << std::endl;
-/*
-        std::cout << "Cox-Ingersoll-Ross: " << std::endl;
-        swaptions.setPricingEngine(
-            Handle<OptionPricingEngine>(new TreeSwaption(modelCIR, grid)));
-        calibrateModel(modelCIR, swaptions, 0.25);
-        std::cout << "calibrated to " << modelCIR->params() << std::endl;
-*/
+
         std::cout << "Pricing an ATM bermudan swaption" << std::endl;
 
         //Define the bermudan swaption
@@ -296,11 +288,7 @@ int main(int argc, char* argv[])
         bermudanSwaption.setPricingEngine(
             Handle<OptionPricingEngine>(new TreeSwaption(modelBK, 100)));
         std::cout << "BK:       " << bermudanSwaption.NPV() << std::endl;
-/*
-        bermudanSwaption.setPricingEngine(
-            Handle<OptionPricingEngine>(new TreeSwaption(modelCIR, 100)));
-        std::cout << "CIR:      " << bermudanSwaption.NPV() << std::endl;
-*/
+
         std::cout << "Pricing an OTM bermudan swaption" << std::endl;
 
         Instruments::Swaption otmBermudanSwaption(otmSwap,
@@ -319,11 +307,7 @@ int main(int argc, char* argv[])
         otmBermudanSwaption.setPricingEngine(
             Handle<OptionPricingEngine>(new TreeSwaption(modelBK, 100)));
         std::cout << "BK:       " << otmBermudanSwaption.NPV() << std::endl;
-/*
-        otmBermudanSwaption.setPricingEngine(
-            Handle<OptionPricingEngine>(new TreeSwaption(modelCIR, 100)));
-        std::cout << "CIR:      " << otmBermudanSwaption.NPV() << std::endl;
-*/
+
         std::cout << "Pricing an ITM bermudan swaption" << std::endl;
 
         Instruments::Swaption itmBermudanSwaption(itmSwap,
@@ -340,11 +324,6 @@ int main(int argc, char* argv[])
         itmBermudanSwaption.setPricingEngine(
             Handle<OptionPricingEngine>(new TreeSwaption(modelBK, 100)));
         std::cout << "BK:       " << itmBermudanSwaption.NPV() << std::endl;
-/*
-        itmBermudanSwaption.setPricingEngine(
-            Handle<OptionPricingEngine>(new TreeSwaption(modelCIR, 100)));
-        std::cout << "CIR:     " << itmBermudanSwaption.NPV() << std::endl;
-*/
 
         return 0;
     } catch (std::exception& e) {

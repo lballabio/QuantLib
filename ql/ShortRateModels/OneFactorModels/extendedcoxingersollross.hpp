@@ -50,22 +50,20 @@ namespace QuantLib {
 
             Handle<Lattices::Tree> tree(const TimeGrid& grid) const;
 
-            //Handle<ShortRateDynamics> dynamics() const;
+            Handle<ShortRateDynamics> dynamics() const;
 
-            double discountBond(Time T, Time s, Rate r) const;
             double discountBondOption(Option::Type type,
                                       double strike,
                                       Time maturity,
                                       Time bondMaturity) const;
 
           protected:
-            //void generateParameters();
+            void generateParameters();
+            double A(Time t, Time T) const;
 
           private:
             class Dynamics;
             class FittingParameter;
-
-            double C(Time t, Time T) const;
 
             Parameter phi_;
         };
@@ -141,6 +139,19 @@ namespace QuantLib {
             : TermStructureFittingParameter(Handle<ParameterImpl>(
                 new CIRImpl(termStructure, theta, k, sigma, x0))) {}
         };
+
+        // inline definitions
+
+        inline Handle<OneFactorModel::ShortRateDynamics> 
+        ExtendedCoxIngersollRoss::dynamics() const {
+            return Handle<ShortRateDynamics>(
+                new Dynamics(phi_, theta(), k() , sigma(), x0()));
+        }
+
+        inline void ExtendedCoxIngersollRoss::generateParameters() {
+            phi_ = FittingParameter(termStructure(), theta(), k(), sigma(), 
+                                    x0());
+        }
 
     }
 

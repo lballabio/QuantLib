@@ -48,12 +48,6 @@ namespace QuantLib {
 
             Handle<ShortRateDynamics> dynamics() const;
 
-            /*! Analytical formula for discount bonds:
-                \f[
-                    P(t, T, r_t) = A(t,T)e^{-B(t,T) r_t}.
-                \f]
-            */
-            double discountBond(Time t, Time T, Rate r) const;
             double discountBondOption(Option::Type type,
                                       double strike,
                                       Time maturity,
@@ -63,9 +57,6 @@ namespace QuantLib {
             void generateParameters();
 
             double A(Time t, Time T) const;
-            // remove the warning
-            double A(Time t) const { return Vasicek::A(t); } 
-            double B(Time t) const;
 
           private:
             class Dynamics;

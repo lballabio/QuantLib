@@ -43,7 +43,6 @@ namespace QuantLib {
             CoxIngersollRoss(double theta = 0.1, double k = 0.1, 
                              double sigma = 0.1, double r0 = 0.05);
 
-            virtual double discountBond(Time t, Time T, Rate r) const;
             virtual double discountBondOption(Option::Type type,
                                               double strike,
                                               Time maturity,
@@ -58,8 +57,8 @@ namespace QuantLib {
 
             class Dynamics;
           protected:
-            double A(Time t) const;
-            double B(Time t) const;
+            double A(Time t, Time T) const;
+            double B(Time t, Time T) const;
 
             double theta() const { return theta_(0.0); }
             double k() const { return k_(0.0); }

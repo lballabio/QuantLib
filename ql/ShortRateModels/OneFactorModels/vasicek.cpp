@@ -40,19 +40,15 @@ namespace QuantLib {
             sigma_ = ConstantParameter(sigma, PositiveConstraint());
         }
 
-        double Vasicek::A(Time t) const {
+        double Vasicek::A(Time t, Time T) const {
             double sigma2 = sigma()*sigma();
-            double bt = B(t);
-            return QL_EXP((b() - 0.5*sigma2/(a()*a()))*(bt - t) -
+            double bt = B(t, T);
+            return QL_EXP((b() - 0.5*sigma2/(a()*a()))*(bt - (T - t)) -
                           0.25*sigma2*bt*bt/a());
         }
 
-        double Vasicek::B(Time t) const {
-                return (1.0 - QL_EXP(-a()*t))/a();
-        }
-
-        double Vasicek::discountBond(Time t, Time T, Rate r) const {
-            return A(T-t)*QL_EXP(- B(T-t)*r);
+        double Vasicek::B(Time t, Time T) const {
+                return (1.0 - QL_EXP(-a()*(T - t)))/a();
         }
 
         double Vasicek::discountBondOption(Option::Type type,
@@ -62,7 +58,7 @@ namespace QuantLib {
             if (QL_FABS(maturity) < QL_EPSILON) {
                 v = 0.0;
             } else {
-                v = sigma()*B(bondMaturity - maturity)*
+                v = sigma()*B(maturity, bondMaturity)*
                     QL_SQRT(0.5*(1.0 - QL_EXP(-2.0*a()*maturity))/a());
             }
             double f = discountBond(0.0, bondMaturity, r0_);

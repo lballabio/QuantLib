@@ -76,28 +76,20 @@ namespace QuantLib {
             double discount1 = termStructure()->discount(t);
             double discount2 = termStructure()->discount(T);
             double forward = termStructure()->forward(t);
-            double temp = sigma()*B(T-t);
-            double value = B(T-t)*forward - 0.5*temp*temp*B(2.0*t);
+            double temp = sigma()*B(t,T);
+            double value = B(t,T)*forward - 0.5*temp*temp*B(0.0,2.0*t);
             return QL_EXP(value)*discount2/discount1;
-        }
-
-        double HullWhite::B(Time t) const {
-            return (1.0 - QL_EXP(-a()*t))/a();
         }
 
         void HullWhite::generateParameters() {
             phi_ = FittingParameter(termStructure(), a(), sigma());
         }
 
-        double HullWhite::discountBond(Time t, Time T, Rate r) const {
-            return A(t,T)*QL_EXP( - B(T-t)*r);
-        }
-
         double HullWhite::discountBondOption(
             Option::Type type, double strike, 
             Time maturity, Time bondMaturity) const {
 
-            double v = sigma()*B(bondMaturity - maturity)*
+            double v = sigma()*B(maturity, bondMaturity)*
                        QL_SQRT(0.5*(1.0 - QL_EXP(-2.0*a()*maturity))/a());
             double f = termStructure()->discount(bondMaturity);
             double k = termStructure()->discount(maturity)*strike;

@@ -43,7 +43,6 @@ namespace QuantLib {
             Vasicek(Rate r0 = 0.05, 
                     double a = 0.1, double b = 0.05, double sigma = 0.01);
 
-            virtual double discountBond(Time T, Time s, Rate r) const;
             virtual double discountBondOption(Option::Type type,
                                       double strike,
                                       Time maturity,
@@ -52,8 +51,8 @@ namespace QuantLib {
             virtual Handle<ShortRateDynamics> dynamics() const;
 
           protected:
-            virtual double A(Time t) const;
-            virtual double B(Time t) const;
+            virtual double A(Time t, Time T) const;
+            virtual double B(Time t, Time T) const;
 
             double a() const { return a_(0.0); }
             double b() const { return b_(0.0); }

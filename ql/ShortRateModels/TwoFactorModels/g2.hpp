@@ -74,7 +74,6 @@ namespace QuantLib {
 
           private:
             class Dynamics;
-
             class FittingParameter;
 
             double sigmaP(Time t, Time s) const;
@@ -99,6 +98,33 @@ namespace QuantLib {
             friend class SwaptionPricingFunction;
         };
 
+        class G2::Dynamics : public TwoFactorModel::ShortRateDynamics {
+          public:
+            Dynamics(const Parameter& fitting, 
+                     double a, double sigma, double b, double eta, double rho)
+            : ShortRateDynamics(Handle<DiffusionProcess>(
+                                   new OrnsteinUhlenbeckProcess(a, sigma)),
+                               Handle<DiffusionProcess>(
+                                   new OrnsteinUhlenbeckProcess(b, eta)),
+                               rho), 
+              fitting_(fitting) {}
+            virtual Rate shortRate(Time t, double x, double y) const {
+                return fitting_(t) + x + y;
+            }
+          private:
+            Parameter fitting_;
+        };
+
+        //! Analytical term-structure fitting parameter \f$ \varphi(t) \f$.
+        /*! \f$ \varphi(t) \f$ is analytically defined by
+            \f[
+                \varphi(t) = f(t) + 
+                     \frac{1}{2}(\frac{\sigma(1-e^{-at})}{a})^2 + 
+                     \frac{1}{2}(\frac{\eta(1-e^{-bt})}{b})^2 + 
+                     \rho\frac{\sigma(1-e^{-at})}{a}\frac{\eta(1-e^{-bt})}{b},
+            \f]
+            where \f$ f(t) \f$ is the instantaneous forward rate at \f$ t \f$.
+        */
         class G2::FittingParameter : public TermStructureFittingParameter {
           public:
             class G2Impl : public Parameter::ParameterImpl {
@@ -129,24 +155,6 @@ namespace QuantLib {
                 double a, double sigma, double b, double eta, double rho)
             : TermStructureFittingParameter(Handle<ParameterImpl>(
                 new G2Impl(termStructure, a, sigma, b, eta, rho))) {}
-        };
-
-
-        class G2::Dynamics : public TwoFactorModel::ShortRateDynamics {
-          public:
-            Dynamics(const Parameter& fitting, 
-                     double a, double sigma, double b, double eta, double rho)
-            : ShortRateDynamics(Handle<DiffusionProcess>(
-                                   new OrnsteinUhlenbeckProcess(a, sigma)),
-                               Handle<DiffusionProcess>(
-                                   new OrnsteinUhlenbeckProcess(b, eta)),
-                               rho), 
-              fitting_(fitting) {}
-            virtual Rate shortRate(Time t, double x, double y) const {
-                return fitting_(t) + x + y;
-            }
-          private:
-            Parameter fitting_;
         };
 
     }

@@ -73,28 +73,23 @@ namespace QuantLib {
                 new Dynamics(theta(), k() , sigma(), x0()));
         }
 
-        double CoxIngersollRoss::A(Time t) const {
+        double CoxIngersollRoss::A(Time t, Time T) const {
             double sigma2 = sigma()*sigma();
             double h = QL_SQRT(k()*k() + 2.0*sigma2);
-            double numerator = 2.0*h*QL_EXP(0.5*(k()+h)*t);
-            double denominator = 2.0*h + (k()+h)*(QL_EXP(t*h) - 1.0);
+            double numerator = 2.0*h*QL_EXP(0.5*(k()+h)*(T-t));
+            double denominator = 2.0*h + (k()+h)*(QL_EXP((T-t)*h) - 1.0);
             double value = QL_LOG(numerator/denominator)*
                 2.0*k()*theta()/sigma2;
             return QL_EXP(value);
         }
 
-        double CoxIngersollRoss::B(Time t) const {
+        double CoxIngersollRoss::B(Time t, Time T) const {
             double h = QL_SQRT(k()*k() + 2.0*sigma()*sigma());
-            double temp = QL_EXP(t*h) - 1.0;
+            double temp = QL_EXP((T-t)*h) - 1.0;
             double numerator = 2.0*temp;
             double denominator = 2.0*h + (k()+h)*temp;
             double value = numerator/denominator;
             return value;
-        }
-
-        double CoxIngersollRoss::discountBond(
-            Time t, Time s, Rate r) const {
-            return  A(s-t)*QL_EXP(-B(s-t)*r);
         }
 
         double CoxIngersollRoss::discountBondOption(
@@ -113,7 +108,7 @@ namespace QuantLib {
 
             double sigma2 = sigma()*sigma();
             double h = QL_SQRT(k()*k() + 2.0*sigma2);
-            double b = B(s-t);
+            double b = B(t,s);
 
             double rho = 2.0*h/(sigma2*(QL_EXP(h*t) - 1.0));
             double psi = (k() + h)/sigma2;
@@ -125,10 +120,10 @@ namespace QuantLib {
             Math::NonCentralChiSquareDistribution chis(df, ncps);
             Math::NonCentralChiSquareDistribution chit(df, ncpt);
 
-            double k = strike*(discountT*A(s)*QL_EXP(-B(s)*x0()))/
-                              (discountS*A(t)*QL_EXP(-B(t)*x0()));
+            double k = strike*(discountT*A(0.0,s)*QL_EXP(-B(0.0,s)*x0()))/
+                              (discountS*A(0.0,t)*QL_EXP(-B(0.0,t)*x0()));
 
-            double r = QL_LOG(A(s-t)/k)/b; 
+            double r = QL_LOG(A(t,s)/k)/b; 
             double call = discountS*chis(2.0*r*(rho+psi+b)) -
                         k*discountT*chit(2.0*r*(rho+psi));
             if (type == Option::Call)

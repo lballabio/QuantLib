@@ -77,8 +77,8 @@ namespace QuantLib {
 
             theta->reset();
             double value = 1.0;
-            double vMin = -50.0;
-            double vMax = 50.0;
+            double vMin = -100.0;
+            double vMax = 100.0;
             for (Size i=0; i<(timeGrid.size() - 1); i++) {
                 columns_[i].setDiscounting(Handle<Discounting>(new 
                     ShortRateDiscounting(dynamics, column(i).branching(), 
@@ -88,7 +88,6 @@ namespace QuantLib {
                 Solvers1D::Brent s1d = Solvers1D::Brent();
                 s1d.setMaxEvaluations(1000);
                 value = s1d.solve(finder, 1e-7, value, vMin, vMax);
-                std::cout << value << std::endl;
 //                vMin = value - 1.0;
 //                vMax = value + 1.0;
                 theta->change(value);

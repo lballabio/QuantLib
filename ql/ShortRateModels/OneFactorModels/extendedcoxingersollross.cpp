@@ -47,18 +47,12 @@ namespace QuantLib {
                                      grid, true));
         }
 
-        double ExtendedCoxIngersollRoss::C(Time t, Time s) const {
+        double ExtendedCoxIngersollRoss::A(Time t, Time s) const {
             double pt = termStructure()->discount(t);
             double ps = termStructure()->discount(s);
-            double value = A(s-t)*QL_EXP(B(s-t)*phi_(t))*
-                (ps*A(t)*QL_EXP(-B(t)*x0()))/
-                (pt*A(s)*QL_EXP(-B(s)*x0()));
-            return value;
-        }
-
-        double ExtendedCoxIngersollRoss::discountBond(
-            Time t, Time s, Rate r) const {
-            double value =  C(t,s)*QL_EXP(-B(s-t)*r);
+            double value = CoxIngersollRoss::A(t,s)*QL_EXP(B(t,s)*phi_(t))*
+                (ps*CoxIngersollRoss::A(0.0,t)*QL_EXP(-B(0.0,t)*x0()))/
+                (pt*CoxIngersollRoss::A(0.0,s)*QL_EXP(-B(0.0,s)*x0()));
             return value;
         }
 
@@ -78,7 +72,7 @@ namespace QuantLib {
             double sigma2 = sigma()*sigma();
             double h = QL_SQRT(k()*k() + 2.0*sigma2);
             double r0 = termStructure()->forward(0.0);
-            double b = B(s-t);
+            double b = B(t,s);
 
             double rho = 2.0*h/(sigma2*(QL_EXP(h*t) - 1.0));
             double psi = (k() + h)/sigma2;
@@ -91,10 +85,10 @@ namespace QuantLib {
             Math::NonCentralChiSquareDistribution chit(df, ncpt);
 
             double k = strike*
-                (discountT*A(s)*QL_EXP(-B(s)*x0()))/
-                (discountS*A(t)*QL_EXP(-B(t)*x0()));
+                (discountT*CoxIngersollRoss::A(0.0,s)*QL_EXP(-B(0.0,s)*x0()))/
+                (discountS*CoxIngersollRoss::A(0.0,t)*QL_EXP(-B(0.0,t)*x0()));
 
-            double r = QL_LOG(A(s-t)/k)/b; 
+            double r = QL_LOG(CoxIngersollRoss::A(t,s)/k)/b; 
             std::cout << r << std::endl;
             double call = discountS*chis(2.0*r*(rho+psi+b)) -
                 k*discountT*chit(2.0*r*(rho+psi));

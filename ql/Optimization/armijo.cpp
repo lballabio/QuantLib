@@ -55,7 +55,6 @@ namespace QuantLib {
             // Enter in the loop if the criterion is not satisfied
             if ((qt_-q0) > -alpha_*t*qpt_) {
                 do {
-                    std::cout << "Line iteration for t " << t << std::endl;
                     loopNumber++;
                     // Decrease step
                     t *= beta_;
