@@ -40,7 +40,6 @@ namespace QuantLib {
             const RelinkableHandle<TermStructure>& riskFreeTS,
             const Exercise& exercise,
             const RelinkableHandle<BlackVolTermStructure>& volTS,
-//            const Handle<PricingEngines::ForwardEngine>& engine,
             const Handle<PricingEngine>& engine,
             double moneyness,
             Date resetDate,
