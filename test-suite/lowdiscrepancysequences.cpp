@@ -88,7 +88,7 @@ void LDSTest::testSobol() {
                          " a sequence of wrong dimensionality: " +
                          IntegerFormatter::toString(point.size())
                          + " instead of  " +
-                         IntegerFormatter::toString(PPMT_MAX_DIM));
+                         IntegerFormatter::toString(dimensionality));
         }
     }
 
@@ -103,7 +103,7 @@ void LDSTest::testSobol() {
                      " a sequence of wrong dimensionality: " +
                      IntegerFormatter::toString(point.size())
                      + " instead of  " +
-                     IntegerFormatter::toString(PPMT_MAX_DIM));
+                     IntegerFormatter::toString(dimensionality));
     }
     for (i=1; i<points; i++) {
         point = rsg.nextSequence().value;
@@ -125,7 +125,8 @@ void LDSTest::testSobol() {
     
     dimensionality = 1;
     rsg = SobolRsg(dimensionality);
-    points = sizeof(vanderCorputSequenceModuloTwo)/sizeof(double);
+//    points = sizeof(vanderCorputSequenceModuloTwo)/sizeof(double);
+    points = QL_POW(2, 5)-1; // five cycle
     for (i=0; i<points; i++) {
         point = rsg .nextSequence().value;
         if (point[0]!=vanderCorputSequenceModuloTwo[i]) {
@@ -157,7 +158,7 @@ void LDSTest::testHalton() {
                          " a sequence of wrong dimensionality: " +
                          IntegerFormatter::toString(point.size())
                          + " instead of  " +
-                         IntegerFormatter::toString(PPMT_MAX_DIM));
+                         IntegerFormatter::toString(dimensionality));
         }
     }
 
@@ -173,7 +174,7 @@ void LDSTest::testHalton() {
                      " a sequence of wrong dimensionality: " +
                      IntegerFormatter::toString(point.size())
                      + " instead of  " +
-                     IntegerFormatter::toString(PPMT_MAX_DIM));
+                     IntegerFormatter::toString(dimensionality));
     }
     for (i=1; i<points; i++) {
         point = rsg.nextSequence().value;
@@ -196,7 +197,8 @@ void LDSTest::testHalton() {
 
     dimensionality = 1;
     rsg = HaltonRsg(dimensionality);
-    points = sizeof(vanderCorputSequenceModuloTwo)/sizeof(double);
+//    points = sizeof(vanderCorputSequenceModuloTwo)/sizeof(double);
+    points = QL_POW(2, 5)-1;  // five cycle
     for (i=0; i<points; i++) {
         point = rsg .nextSequence().value;
         if (point[0]!=vanderCorputSequenceModuloTwo[i]) {
@@ -224,7 +226,8 @@ void LDSTest::testHalton() {
 
     dimensionality = 2;
     rsg = HaltonRsg(dimensionality);
-    points = sizeof(vanderCorputSequenceModuloThree)/sizeof(double);
+//    points = sizeof(vanderCorputSequenceModuloThree)/sizeof(double);
+    points = QL_POW(3, 3)-1;  // three cycle of the higher dimension
     for (i=0; i<points; i++) {
         point = rsg .nextSequence().value;
         if (point[0]!=vanderCorputSequenceModuloTwo[i]) {
