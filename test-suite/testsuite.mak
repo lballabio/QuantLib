@@ -155,14 +155,14 @@ BSC32_SBRS= \
 	"$(INTDIR)\operators.sbr" \
 	"$(INTDIR)\piecewiseflatforward.sbr" \
 	"$(INTDIR)\quantlibtestsuite.sbr" \
+	"$(INTDIR)\quotes.sbr" \
 	"$(INTDIR)\riskstats.sbr" \
 	"$(INTDIR)\solvers.sbr" \
 	"$(INTDIR)\stats.sbr" \
 	"$(INTDIR)\swap.sbr" \
 	"$(INTDIR)\swaption.sbr" \
 	"$(INTDIR)\termstructures.sbr" \
-	"$(INTDIR)\utilities.sbr" \
-	"$(INTDIR)\quotes.sbr"
+	"$(INTDIR)\utilities.sbr"
 
 "$(OUTDIR)\testsuite.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -170,7 +170,7 @@ BSC32_SBRS= \
 <<
 
 LINK32=link.exe
-LINK32_FLAGS=libboost_unit_test_framework-vc6-mt-s.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:console /incremental:no /pdb:"$(OUTDIR)\testsuite.pdb" /machine:I386 /out:"$(OUTDIR)\testsuite.exe" /libpath:"..\lib\Win32\VisualStudio\\" 
+LINK32_FLAGS=kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:console /incremental:no /pdb:"$(OUTDIR)\testsuite.pdb" /machine:I386 /out:"$(OUTDIR)\testsuite.exe" /libpath:"..\lib\Win32\VisualStudio\\" 
 LINK32_OBJS= \
 	"$(INTDIR)\americanoption.obj" \
 	"$(INTDIR)\asianoptions.obj" \
@@ -197,6 +197,7 @@ LINK32_OBJS= \
 	"$(INTDIR)\operators.obj" \
 	"$(INTDIR)\piecewiseflatforward.obj" \
 	"$(INTDIR)\quantlibtestsuite.obj" \
+	"$(INTDIR)\quotes.obj" \
 	"$(INTDIR)\riskstats.obj" \
 	"$(INTDIR)\solvers.obj" \
 	"$(INTDIR)\stats.obj" \
@@ -204,7 +205,6 @@ LINK32_OBJS= \
 	"$(INTDIR)\swaption.obj" \
 	"$(INTDIR)\termstructures.obj" \
 	"$(INTDIR)\utilities.obj" \
-	"$(INTDIR)\quotes.obj" \
 	"..\lib\Win32\VisualStudio\QuantLib.lib"
 
 "$(OUTDIR)\testsuite.exe" : "$(OUTDIR)" $(DEF_FILE) $(LINK32_OBJS)
@@ -340,14 +340,14 @@ BSC32_SBRS= \
 	"$(INTDIR)\operators.sbr" \
 	"$(INTDIR)\piecewiseflatforward.sbr" \
 	"$(INTDIR)\quantlibtestsuite.sbr" \
+	"$(INTDIR)\quotes.sbr" \
 	"$(INTDIR)\riskstats.sbr" \
 	"$(INTDIR)\solvers.sbr" \
 	"$(INTDIR)\stats.sbr" \
 	"$(INTDIR)\swap.sbr" \
 	"$(INTDIR)\swaption.sbr" \
 	"$(INTDIR)\termstructures.sbr" \
-	"$(INTDIR)\utilities.sbr" \
-	"$(INTDIR)\quotes.sbr"
+	"$(INTDIR)\utilities.sbr"
 
 "$(OUTDIR)\testsuite.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -355,7 +355,7 @@ BSC32_SBRS= \
 <<
 
 LINK32=link.exe
-LINK32_FLAGS=libboost_unit_test_framework-vc6-mt-sgd.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:console /incremental:yes /pdb:"$(OUTDIR)\testsuite.pdb" /debug /machine:I386 /out:"$(OUTDIR)\testsuite.exe" /pdbtype:sept /libpath:"..\lib\Win32\VisualStudio\\" 
+LINK32_FLAGS=kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:console /incremental:yes /pdb:"$(OUTDIR)\testsuite.pdb" /debug /machine:I386 /out:"$(OUTDIR)\testsuite.exe" /pdbtype:sept /libpath:"..\lib\Win32\VisualStudio\\" 
 LINK32_OBJS= \
 	"$(INTDIR)\americanoption.obj" \
 	"$(INTDIR)\asianoptions.obj" \
@@ -382,6 +382,7 @@ LINK32_OBJS= \
 	"$(INTDIR)\operators.obj" \
 	"$(INTDIR)\piecewiseflatforward.obj" \
 	"$(INTDIR)\quantlibtestsuite.obj" \
+	"$(INTDIR)\quotes.obj" \
 	"$(INTDIR)\riskstats.obj" \
 	"$(INTDIR)\solvers.obj" \
 	"$(INTDIR)\stats.obj" \
@@ -389,7 +390,6 @@ LINK32_OBJS= \
 	"$(INTDIR)\swaption.obj" \
 	"$(INTDIR)\termstructures.obj" \
 	"$(INTDIR)\utilities.obj" \
-	"$(INTDIR)\quotes.obj" \
 	"..\lib\Win32\VisualStudio\QuantLib_d.lib"
 
 "$(OUTDIR)\testsuite.exe" : "$(OUTDIR)" $(DEF_FILE) $(LINK32_OBJS)
@@ -522,14 +522,14 @@ BSC32_SBRS= \
 	"$(INTDIR)\operators.sbr" \
 	"$(INTDIR)\piecewiseflatforward.sbr" \
 	"$(INTDIR)\quantlibtestsuite.sbr" \
+	"$(INTDIR)\quotes.sbr" \
 	"$(INTDIR)\riskstats.sbr" \
 	"$(INTDIR)\solvers.sbr" \
 	"$(INTDIR)\stats.sbr" \
 	"$(INTDIR)\swap.sbr" \
 	"$(INTDIR)\swaption.sbr" \
 	"$(INTDIR)\termstructures.sbr" \
-	"$(INTDIR)\utilities.sbr" \
-	"$(INTDIR)\quotes.sbr"
+	"$(INTDIR)\utilities.sbr"
 
 "$(OUTDIR)\testsuite.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -537,7 +537,7 @@ BSC32_SBRS= \
 <<
 
 LINK32=link.exe
-LINK32_FLAGS=libboost_unit_test_framework-vc6-mt.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:console /incremental:no /pdb:"$(OUTDIR)\testsuite.pdb" /machine:I386 /out:"$(OUTDIR)\testsuite.exe" /libpath:"..\lib\Win32\VisualStudio\\" 
+LINK32_FLAGS=kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:console /incremental:no /pdb:"$(OUTDIR)\testsuite.pdb" /machine:I386 /out:"$(OUTDIR)\testsuite.exe" /libpath:"..\lib\Win32\VisualStudio\\" 
 LINK32_OBJS= \
 	"$(INTDIR)\americanoption.obj" \
 	"$(INTDIR)\asianoptions.obj" \
@@ -564,6 +564,7 @@ LINK32_OBJS= \
 	"$(INTDIR)\operators.obj" \
 	"$(INTDIR)\piecewiseflatforward.obj" \
 	"$(INTDIR)\quantlibtestsuite.obj" \
+	"$(INTDIR)\quotes.obj" \
 	"$(INTDIR)\riskstats.obj" \
 	"$(INTDIR)\solvers.obj" \
 	"$(INTDIR)\stats.obj" \
@@ -571,7 +572,6 @@ LINK32_OBJS= \
 	"$(INTDIR)\swaption.obj" \
 	"$(INTDIR)\termstructures.obj" \
 	"$(INTDIR)\utilities.obj" \
-	"$(INTDIR)\quotes.obj" \
 	"..\lib\Win32\VisualStudio\QuantLib_MTDLL.lib"
 
 "$(OUTDIR)\testsuite.exe" : "$(OUTDIR)" $(DEF_FILE) $(LINK32_OBJS)
@@ -707,14 +707,14 @@ BSC32_SBRS= \
 	"$(INTDIR)\operators.sbr" \
 	"$(INTDIR)\piecewiseflatforward.sbr" \
 	"$(INTDIR)\quantlibtestsuite.sbr" \
+	"$(INTDIR)\quotes.sbr" \
 	"$(INTDIR)\riskstats.sbr" \
 	"$(INTDIR)\solvers.sbr" \
 	"$(INTDIR)\stats.sbr" \
 	"$(INTDIR)\swap.sbr" \
 	"$(INTDIR)\swaption.sbr" \
 	"$(INTDIR)\termstructures.sbr" \
-	"$(INTDIR)\utilities.sbr" \
-	"$(INTDIR)\quotes.sbr"
+	"$(INTDIR)\utilities.sbr"
 
 "$(OUTDIR)\testsuite.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -722,7 +722,7 @@ BSC32_SBRS= \
 <<
 
 LINK32=link.exe
-LINK32_FLAGS=libboost_unit_test_framework-vc6-mt-gd.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:console /incremental:yes /pdb:"$(OUTDIR)\testsuite.pdb" /debug /machine:I386 /out:"$(OUTDIR)\testsuite.exe" /pdbtype:sept /libpath:"..\lib\Win32\VisualStudio\\" 
+LINK32_FLAGS=kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:console /incremental:yes /pdb:"$(OUTDIR)\testsuite.pdb" /debug /machine:I386 /out:"$(OUTDIR)\testsuite.exe" /pdbtype:sept /libpath:"..\lib\Win32\VisualStudio\\" 
 LINK32_OBJS= \
 	"$(INTDIR)\americanoption.obj" \
 	"$(INTDIR)\asianoptions.obj" \
@@ -749,6 +749,7 @@ LINK32_OBJS= \
 	"$(INTDIR)\operators.obj" \
 	"$(INTDIR)\piecewiseflatforward.obj" \
 	"$(INTDIR)\quantlibtestsuite.obj" \
+	"$(INTDIR)\quotes.obj" \
 	"$(INTDIR)\riskstats.obj" \
 	"$(INTDIR)\solvers.obj" \
 	"$(INTDIR)\stats.obj" \
@@ -756,7 +757,6 @@ LINK32_OBJS= \
 	"$(INTDIR)\swaption.obj" \
 	"$(INTDIR)\termstructures.obj" \
 	"$(INTDIR)\utilities.obj" \
-	"$(INTDIR)\quotes.obj" \
 	"..\lib\Win32\VisualStudio\QuantLib_MTDLL_d.lib"
 
 "$(OUTDIR)\testsuite.exe" : "$(OUTDIR)" $(DEF_FILE) $(LINK32_OBJS)
@@ -975,48 +975,48 @@ SOURCE=.\utilities.cpp
 !IF  "$(CFG)" == "testsuite - Win32 Release"
 
 "QuantLib - Win32 Release" : 
-   cd "\Projects\QuantLib\Trunk\QuantLib"
+   cd "\Projects\QuantLib"
    $(MAKE) /$(MAKEFLAGS) /F .\QuantLib.mak CFG="QuantLib - Win32 Release" 
    cd ".\test-suite"
 
 "QuantLib - Win32 ReleaseCLEAN" : 
-   cd "\Projects\QuantLib\Trunk\QuantLib"
+   cd "\Projects\QuantLib"
    $(MAKE) /$(MAKEFLAGS) /F .\QuantLib.mak CFG="QuantLib - Win32 Release" RECURSE=1 CLEAN 
    cd ".\test-suite"
 
 !ELSEIF  "$(CFG)" == "testsuite - Win32 Debug"
 
 "QuantLib - Win32 Debug" : 
-   cd "\Projects\QuantLib\Trunk\QuantLib"
+   cd "\Projects\QuantLib"
    $(MAKE) /$(MAKEFLAGS) /F .\QuantLib.mak CFG="QuantLib - Win32 Debug" 
    cd ".\test-suite"
 
 "QuantLib - Win32 DebugCLEAN" : 
-   cd "\Projects\QuantLib\Trunk\QuantLib"
+   cd "\Projects\QuantLib"
    $(MAKE) /$(MAKEFLAGS) /F .\QuantLib.mak CFG="QuantLib - Win32 Debug" RECURSE=1 CLEAN 
    cd ".\test-suite"
 
 !ELSEIF  "$(CFG)" == "testsuite - Win32 Release MTDLL"
 
 "QuantLib - Win32 Release MTDLL" : 
-   cd "\Projects\QuantLib\Trunk\QuantLib"
+   cd "\Projects\QuantLib"
    $(MAKE) /$(MAKEFLAGS) /F .\QuantLib.mak CFG="QuantLib - Win32 Release MTDLL" 
    cd ".\test-suite"
 
 "QuantLib - Win32 Release MTDLLCLEAN" : 
-   cd "\Projects\QuantLib\Trunk\QuantLib"
+   cd "\Projects\QuantLib"
    $(MAKE) /$(MAKEFLAGS) /F .\QuantLib.mak CFG="QuantLib - Win32 Release MTDLL" RECURSE=1 CLEAN 
    cd ".\test-suite"
 
 !ELSEIF  "$(CFG)" == "testsuite - Win32 Debug MTDLL"
 
 "QuantLib - Win32 Debug MTDLL" : 
-   cd "\Projects\QuantLib\Trunk\QuantLib"
+   cd "\Projects\QuantLib"
    $(MAKE) /$(MAKEFLAGS) /F .\QuantLib.mak CFG="QuantLib - Win32 Debug MTDLL" 
    cd ".\test-suite"
 
 "QuantLib - Win32 Debug MTDLLCLEAN" : 
-   cd "\Projects\QuantLib\Trunk\QuantLib"
+   cd "\Projects\QuantLib"
    $(MAKE) /$(MAKEFLAGS) /F .\QuantLib.mak CFG="QuantLib - Win32 Debug MTDLL" RECURSE=1 CLEAN 
    cd ".\test-suite"
 

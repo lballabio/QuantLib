@@ -18,6 +18,10 @@
 #include <ql/qldefines.hpp>
 #include <boost/test/unit_test.hpp>
 
+#define BOOST_LIB_NAME "boost_unit_test_framework"
+#include <boost/config/auto_link.hpp>
+#undef BOOST_LIB_NAME
+
 #include "americanoption.hpp"
 #include "asianoptions.hpp"
 #include "barrieroption.hpp"
