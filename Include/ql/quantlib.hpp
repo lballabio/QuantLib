@@ -26,6 +26,9 @@
     $Id$
     $Source$
     $Log$
+    Revision 1.6  2001/05/17 14:23:32  lballabio
+    Removed phony currencies before adding methods to interface
+
     Revision 1.5  2001/05/16 09:57:27  lballabio
     Added indexes and piecewise flat forward curve
 
@@ -85,16 +88,11 @@
 #include "ql/Calendars/westerncalendar.hpp"
 #include "ql/Calendars/zurich.hpp"
 
-#include "ql/Currencies/aud.hpp"
-#include "ql/Currencies/cad.hpp"
 #include "ql/Currencies/chf.hpp"
 #include "ql/Currencies/dem.hpp"
-#include "ql/Currencies/dkk.hpp"
 #include "ql/Currencies/eur.hpp"
 #include "ql/Currencies/gbp.hpp"
 #include "ql/Currencies/itl.hpp"
-#include "ql/Currencies/jpy.hpp"
-#include "ql/Currencies/sek.hpp"
 #include "ql/Currencies/usd.hpp"
 
 #include "ql/DayCounters/actual360.hpp"

@@ -161,23 +161,11 @@ SOURCE=.\Include\ql\Calendars\zurich.hpp
 # PROP Default_Filter ""
 # Begin Source File
 
-SOURCE=.\Include\ql\Currencies\aud.hpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\Include\ql\Currencies\cad.hpp
-# End Source File
-# Begin Source File
-
 SOURCE=.\Include\ql\Currencies\chf.hpp
 # End Source File
 # Begin Source File
 
 SOURCE=.\Include\ql\Currencies\dem.hpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\Include\ql\Currencies\dkk.hpp
 # End Source File
 # Begin Source File
 
@@ -190,14 +178,6 @@ SOURCE=.\Include\ql\Currencies\gbp.hpp
 # Begin Source File
 
 SOURCE=.\Include\ql\Currencies\itl.hpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\Include\ql\Currencies\jpy.hpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\Include\ql\Currencies\sek.hpp
 # End Source File
 # Begin Source File
 

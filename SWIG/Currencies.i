@@ -26,6 +26,9 @@
     $Id$
     $Source$
     $Log$
+    Revision 1.22  2001/05/17 14:23:32  lballabio
+    Removed phony currencies before adding methods to interface
+
     Revision 1.21  2001/04/10 07:54:33  lballabio
     Ruby histories (the Ruby way)
 
@@ -50,12 +53,7 @@ using QuantLib::Currencies::USD;
 using QuantLib::Currencies::GBP;
 using QuantLib::Currencies::DEM;
 using QuantLib::Currencies::ITL;
-using QuantLib::Currencies::AUD;
-using QuantLib::Currencies::CAD;
 using QuantLib::Currencies::CHF;
-using QuantLib::Currencies::DKK;
-using QuantLib::Currencies::JPY;
-using QuantLib::Currencies::SEK;
 %}
 
 // export Handle<Currency>
@@ -78,12 +76,7 @@ using QuantLib::Currencies::SEK;
         else if (s == "GBP") return new CurrencyHandle(new GBP);
         else if (s == "DEM") return new CurrencyHandle(new DEM);
         else if (s == "ITL") return new CurrencyHandle(new ITL);
-        else if (s == "AUD") return new CurrencyHandle(new AUD);
-        else if (s == "CAD") return new CurrencyHandle(new CAD);
         else if (s == "CHF") return new CurrencyHandle(new CHF);
-        else if (s == "JPY") return new CurrencyHandle(new JPY);
-        else if (s == "DKK") return new CurrencyHandle(new DKK);
-        else if (s == "SEK") return new CurrencyHandle(new SEK);
         else                 throw Error("Unknown currency");
         QL_DUMMY_RETURN(new CurrencyHandle)
     }
@@ -121,12 +114,7 @@ CurrencyHandle NewUSD()        { return CurrencyHandle(new USD); }
 CurrencyHandle NewGBP()        { return CurrencyHandle(new GBP); }
 CurrencyHandle NewDEM()        { return CurrencyHandle(new DEM); }
 CurrencyHandle NewITL()        { return CurrencyHandle(new ITL); }
-CurrencyHandle NewAUD()        { return CurrencyHandle(new AUD); }
-CurrencyHandle NewCAD()        { return CurrencyHandle(new CAD); }
 CurrencyHandle NewCHF()        { return CurrencyHandle(new CHF); }
-CurrencyHandle NewDKK()        { return CurrencyHandle(new DKK); }
-CurrencyHandle NewJPY()        { return CurrencyHandle(new JPY); }
-CurrencyHandle NewSEK()        { return CurrencyHandle(new SEK); }
 %}
 
 %name(EUR)    CurrencyHandle NewEUR();
@@ -134,12 +122,7 @@ CurrencyHandle NewSEK()        { return CurrencyHandle(new SEK); }
 %name(GBP)    CurrencyHandle NewGBP();
 %name(DEM)    CurrencyHandle NewDEM();
 %name(ITL)    CurrencyHandle NewITL();
-%name(AUD)    CurrencyHandle NewAUD();
-%name(CAD)    CurrencyHandle NewCAD();
 %name(CHF)    CurrencyHandle NewCHF();
-%name(DKK)    CurrencyHandle NewDKK();
-%name(JPY)    CurrencyHandle NewJPY();
-%name(SEK)    CurrencyHandle NewSEK();
 #endif
 
 // typemap Python sequence of currencies to std::vector<Handle<Currency> >

@@ -3,14 +3,10 @@
 # $Source$
 
 includedir = $(prefix)/include/ql/Currencies
-include_HEADERS = aud.hpp \
-	cad.hpp \
+include_HEADERS = \
 	chf.hpp \
 	dem.hpp \
-	dkk.hpp \
 	eur.hpp \
 	gbp.hpp \
 	itl.hpp \
-	jpy.hpp \
-	sek.hpp \
 	usd.hpp
