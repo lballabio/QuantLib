@@ -90,7 +90,8 @@ namespace QuantLib {
     };
 
 
-    BinomialDistribution::BinomialDistribution(double p, unsigned long n)
+    inline BinomialDistribution::BinomialDistribution(double p, 
+                                                      unsigned long n)
     : n_(n) {
 
         QL_REQUIRE(n>=0,
@@ -116,6 +117,7 @@ namespace QuantLib {
     }
 
 
+    inline 
     CumulativeBinomialDistribution::CumulativeBinomialDistribution(double p,
         unsigned long n)
     : n_(n), p_(p) {
