@@ -31,7 +31,7 @@ namespace QuantLib {
             adjustValues();
         }
 
-        void DiscretizedVanillaOption::adjustValues() {
+        void DiscretizedVanillaOption::postAdjustValues() {
 
             Time now = time();
             Size i;
@@ -53,7 +53,7 @@ namespace QuantLib {
                     break;
                 default:
                     throw IllegalArgumentError(
-                        "DiscretizedVanillaOption::adjustValues() : "
+                        "DiscretizedVanillaOption::postAdjustValues() : "
                         "invalid option type");
             }
 

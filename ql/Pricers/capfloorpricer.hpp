@@ -41,7 +41,7 @@ namespace QuantLib {
                 adjustValues();
             }
 
-            virtual void adjustValues();
+            void preAdjustValues();
 
             void addTimesTo(std::list<Time>& times) const {
                 for (Size i=0; i<arguments_.startTimes.size(); i++) {

@@ -41,7 +41,7 @@ namespace QuantLib {
                 adjustValues();
             }
 
-            void adjustValues();
+            void preAdjustValues();
 
             void addTimesTo(std::list<Time>& times) const {
                 Time t;
@@ -74,7 +74,6 @@ namespace QuantLib {
             : DiscretizedOption(swap,
                                 params.exerciseType,
                                 params.exerciseTimes) {}
-            void adjustValues();
         };
 
     }

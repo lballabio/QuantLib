@@ -44,7 +44,25 @@ namespace QuantLib {
 
         const Handle<NumericalMethod>& method() const { return method_; }
 
-        virtual void adjustValues() {}
+        /*! This method will be invoked after rollback and before any
+            other asset (i.e., an option on this one) has any chance to 
+            look at the values. For instance, payments happening at times 
+            already spanned by the rollback will be added here.
+        */
+        virtual void preAdjustValues() {}
+        /*! This method will be invoked after rollback and after any
+            other asset had their chance to look at the values. For 
+            instance, payments happening at the present time (and therefore 
+            not included in an option to be exercised at this time) will be 
+            added here.
+        */
+        virtual void postAdjustValues() {}
+
+        void adjustValues() {
+            preAdjustValues();
+            postAdjustValues();
+        }
+
         virtual void addTimesTo(std::list<Time>& times) const {}
       protected:
         bool isOnTime(Time t) const;
@@ -77,7 +95,7 @@ namespace QuantLib {
           underlying_(underlying), exerciseType_(exerciseType),
           exerciseTimes_(exerciseTimes) {}
         void reset(Size size);
-        void adjustValues();
+        void postAdjustValues();
         void addTimesTo(std::list<Time>& times) const;
       protected:
         void applyExerciseCondition();

@@ -27,7 +27,7 @@ namespace QuantLib {
 
         using Instruments::VanillaCapFloor;
 
-        void DiscretizedCapFloor::adjustValues() {
+        void DiscretizedCapFloor::preAdjustValues() {
             for (Size i=0; i<arguments_.startTimes.size(); i++) {
                 if (isOnTime(arguments_.startTimes[i])) {
                     Time end = arguments_.endTimes[i];

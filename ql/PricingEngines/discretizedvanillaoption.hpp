@@ -39,7 +39,7 @@ namespace QuantLib {
 
             void reset(Size size);
 
-            void adjustValues();
+            void postAdjustValues();
 
             void addTimesTo(std::list<Time>& times) const {
                 for (Size i=0; i<arguments_.stoppingTimes.size(); i++)
