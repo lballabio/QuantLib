@@ -27,9 +27,12 @@
 
 	$Source$
 	$Log$
+	Revision 1.13  2001/03/26 09:13:05  lballabio
+	big fixed
+
 	Revision 1.12  2001/03/26 08:51:49  lballabio
 	really fixed line wrappings
-
+	
 	Revision 1.11  2001/03/26 08:47:00  lballabio
 	Fixed line wrappings
 	
@@ -59,7 +62,7 @@ namespace QuantLib {
 				// Good Friday
 				|| (dd == easterMonday[y-1900]-3)
 				// Easter Monday
-				|| (d == easterMonday[y-1900])
+				|| (dd == easterMonday[y-1900])
 				// first Monday of May (Bank Holiday)
 				|| (d <= 7 && w == Monday && m == May)
 				// last Monday of May or August (Bank Holidays)
