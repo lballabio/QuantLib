@@ -334,6 +334,7 @@ clean::
     if exist $(PYTHON_BCC_LIB)            del $(PYTHON_BCC_LIB)
     if exist $(PYTHON_DIR)\QuantLib.pyc   del $(PYTHON_DIR)\QuantLib.pyc
     if exist $(PYTHON_DIR)\QuantLibc.dll  del $(PYTHON_DIR)\QuantLibc.dll
+    if exist $(PYTHON_DIR)\QuantLibc.tds  del $(PYTHON_DIR)\QuantLibc.tds
     if exist $(OUTPUT_DIR) rd /s /q $(OUTPUT_DIR)
 
 
