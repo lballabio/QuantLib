@@ -18,26 +18,19 @@
  * You should have received a copy of the license along with this file;
  * if not, contact ferdinando@ametrano.net
  *
- * QuantLib license is also available at http://quantlib.sourceforge.net/LICENSE.TXT
+ * QuantLib license is also available at 
+ * http://quantlib.sourceforge.net/LICENSE.TXT
+*/
+
+/* $Source$
+   $Log$
+   Revision 1.15  2001/03/09 12:40:41  lballabio
+   Spring cleaning for SWIG interfaces
+
 */
 
 #ifndef quantlib_currencies_i
 #define quantlib_currencies_i
-
-%module Currencies
-
-%{
-#include "quantlib.h"
-%}
-
-#if !defined(SWIGPYTHON)
-#if !defined(PYTHON_WARNING_ISSUED)
-#define PYTHON_WARNING_ISSUED
-%echo "Warning: Currencies is a Python module!!"
-%echo "Exporting it to any other language is not advised"
-%echo "as it could lead to unpredicted results."
-#endif
-#endif
 
 %include Date.i
 %include Calendars.i
@@ -125,19 +118,19 @@ CurrencyHandle NewSEK()        { return CurrencyHandle(new SEK); }
 %inline %{
     CurrencyHandle makeCurrency(const String& name) {
         String s = StringFormatter::toUppercase(name);
-        if (s == "EUR")      return Handle<Currency>(new EUR);
-        else if (s == "USD") return Handle<Currency>(new USD);
-        else if (s == "GBP") return Handle<Currency>(new GBP);
-        else if (s == "DEM") return Handle<Currency>(new DEM);
-        else if (s == "ITL") return Handle<Currency>(new ITL);
-        else if (s == "AUD") return Handle<Currency>(new AUD);
-        else if (s == "CAD") return Handle<Currency>(new CAD);
-        else if (s == "CHF") return Handle<Currency>(new CHF);
-        else if (s == "JPY") return Handle<Currency>(new JPY);
-        else if (s == "DKK") return Handle<Currency>(new DKK);
-        else if (s == "SEK") return Handle<Currency>(new SEK);
-        else                 throw QuantLib::Error("Unknown currency");
-        QL_DUMMY_RETURN(Handle<Currency>())
+        if (s == "EUR")      return CurrencyHandle(new EUR);
+        else if (s == "USD") return CurrencyHandle(new USD);
+        else if (s == "GBP") return CurrencyHandle(new GBP);
+        else if (s == "DEM") return CurrencyHandle(new DEM);
+        else if (s == "ITL") return CurrencyHandle(new ITL);
+        else if (s == "AUD") return CurrencyHandle(new AUD);
+        else if (s == "CAD") return CurrencyHandle(new CAD);
+        else if (s == "CHF") return CurrencyHandle(new CHF);
+        else if (s == "JPY") return CurrencyHandle(new JPY);
+        else if (s == "DKK") return CurrencyHandle(new DKK);
+        else if (s == "SEK") return CurrencyHandle(new SEK);
+        else                 throw Error("Unknown currency");
+        QL_DUMMY_RETURN(CurrencyHandle())
     }
 %}
 

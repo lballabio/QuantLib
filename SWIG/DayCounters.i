@@ -18,26 +18,19 @@
  * You should have received a copy of the license along with this file;
  * if not, contact ferdinando@ametrano.net
  *
- * QuantLib license is also available at http://quantlib.sourceforge.net/LICENSE.TXT
+ * QuantLib license is also available at 
+ * http://quantlib.sourceforge.net/LICENSE.TXT
+*/
+
+/* $Source$
+   $Log$
+   Revision 1.13  2001/03/09 12:40:41  lballabio
+   Spring cleaning for SWIG interfaces
+
 */
 
 #ifndef quantlib_day_counters_i
 #define quantlib_day_counters_i
-
-%module DayCounters
-
-%{
-#include "quantlib.h"
-%}
-
-#if !defined(SWIGPYTHON)
-#if !defined(PYTHON_WARNING_ISSUED)
-#define PYTHON_WARNING_ISSUED
-%echo "Warning: DayCounters is a Python module!!"
-%echo "Exporting it to any other language is not advised"
-%echo "as it could lead to unpredicted results."
-#endif
-#endif
 
 %include Date.i
 %include String.i
@@ -110,18 +103,18 @@ DayCounterHandle NewThirty360Italian() {
     DayCounterHandle makeDayCounter(const String& name) {
         String s = StringFormatter::toLowercase(name);
         if (s == "act360" || s == "act/360")
-            return Handle<DayCounter>(new Actual360);
+            return DayCounterHandle(new Actual360);
         else if (s == "act365" || s == "act/365")
-            return Handle<DayCounter>(new Actual365);
+            return DayCounterHandle(new Actual365);
         else if (s == "30/360")
-            return Handle<DayCounter>(new Thirty360);
+            return DayCounterHandle(new Thirty360);
         else if (s == "30/360e" || s == "30/360eu")
-            return Handle<DayCounter>(new Thirty360European);
+            return DayCounterHandle(new Thirty360European);
         else if (s == "30/360i" || s == "30/360it")
-            return Handle<DayCounter>(new Thirty360Italian);
+            return DayCounterHandle(new Thirty360Italian);
         else
-            throw QuantLib::Error("Unknown currency");
-        QL_DUMMY_RETURN(Handle<DayCounter>())
+            throw Error("Unknown currency");
+        QL_DUMMY_RETURN(DayCounterHandle())
     }
 %}
 

@@ -22,24 +22,15 @@
  *   http://quantlib.sourceforge.net/LICENSE.TXT
 */
 
+/* $Source$
+   $Log$
+   Revision 1.22  2001/03/09 12:40:41  lballabio
+   Spring cleaning for SWIG interfaces
+
+*/
+
 #ifndef quantlib_pricers_i
 #define quantlib_pricers_i
-
-%module Pricers
-
-%{
-#include "quantlib.h"
-/* #include "binaryoption.h" */
-%}
-
-#if !defined(SWIGPYTHON)
-#if !defined(PYTHON_WARNING_ISSUED)
-#define PYTHON_WARNING_ISSUED
-%echo "Warning: Pricers is a Python module!!"
-%echo "Exporting it to any other language is not advised"
-%echo "as it could lead to unpredicted results."
-#endif
-#endif
 
 %include Date.i
 %include Options.i
@@ -135,7 +126,7 @@ class ShoutOption {
                              int maxEvaluations = 100) const ;
 };
 
-class DividendAmericanOption{
+class DividendAmericanOption {
   public:
 	DividendAmericanOption(OptionType type, double underlying, double strike, 
 	  Rate dividendYield, Rate riskFreeRate, Time residualTime,
@@ -152,7 +143,7 @@ class DividendAmericanOption{
 	  int maxEvaluations = 100) const ;
 };
 
-class DividendEuropeanOption{
+class DividendEuropeanOption {
   public:
 	DividendEuropeanOption(OptionType type, double underlying, double strike, 
 	  Rate dividendYield, Rate riskFreeRate, Time residualTime,
@@ -175,14 +166,14 @@ using QuantLib::Pricers::BarrierOption;
 %}
 
 
-class BarrierOption{
-    public:
-        BarrierOption(BarrierType barrType, OptionType type, double underlying, 
-            double strike, Rate dividendYield, Rate riskFreeRate,
-            Time residualTime, double volatility, double barrier, 
-            double rebate = 0.0);
-        ~BarrierOption();
-        double value() const;
+class BarrierOption {
+  public:
+    BarrierOption(BarrierType barrType, OptionType type, double underlying, 
+        double strike, Rate dividendYield, Rate riskFreeRate,
+        Time residualTime, double volatility, double barrier, 
+        double rebate = 0.0);
+    ~BarrierOption();
+    double value() const;
 };
 
 

@@ -20,46 +20,31 @@
  * QuantLib license is also available at 
  * http://quantlib.sourceforge.net/LICENSE.TXT
 */
-/*! \file MontecarloTools.i
-	
-	$Source$
-	$Name$
-	$Log$
+
+/* $Source$
+   $Log$
+   Revision 1.5  2001/03/09 12:40:41  lballabio
+   Spring cleaning for SWIG interfaces
+
 	Revision 1.4  2001/03/06 17:00:36  marmar
 	First, simplified version, of everest option introduced
-
-	Revision 1.3  2001/02/26 17:05:30  lballabio
-	Ultimate Array interface and typemap for SWIG
-	
-	Revision 1.2  2001/02/13 10:08:58  marmar
-	Changed interface to StandardMultiPathGenerator
-	
-	Revision 1.1  2001/02/02 10:57:34  marmar
-	Basic swig interface for Monte Carlo tools
 	
 */
 
 #ifndef shaft_Montecarlo_Tools_i
 #define shaft_Montecarlo_Tools_i
 
-%module MontecarloTools
-
-%{
-#include "quantlib.h"
-%}
-
 %include QLArray.i
 %include Vectors.i
 
-#if defined(SWIGPYTHON)
 %{
 using QuantLib::MonteCarlo::GaussianArrayGenerator;
 using QuantLib::MonteCarlo::StandardPathGenerator;
 using QuantLib::MonteCarlo::StandardMultiPathGenerator;
 %}
 
-class GaussianArrayGenerator{
-    public:
+class GaussianArrayGenerator {
+  public:
 	GaussianArrayGenerator(const Array& average,
                            const Matrix& covariance, 
                            long seed=0);
@@ -69,8 +54,8 @@ class GaussianArrayGenerator{
 };
 
 
-class StandardPathGenerator{
-    public:
+class StandardPathGenerator {
+  public:
 	StandardPathGenerator(int dimension, long seed=0);
 	~StandardPathGenerator();
 	Array next() const; // Note that currently Path and Array are equivalent
@@ -78,8 +63,8 @@ class StandardPathGenerator{
 };
 
 
-class StandardMultiPathGenerator{
-    public:
+class StandardMultiPathGenerator {
+  public:
 	StandardMultiPathGenerator(const DoubleVector& timeDelays, 
 	                           const Array& average, 
                                const Matrix& covariance,
@@ -89,8 +74,5 @@ class StandardMultiPathGenerator{
 	double weight() const;
 };
 
-#elif defined(SWIGJAVA)
-// export relevant functions
-#endif
 
 #endif

@@ -18,26 +18,19 @@
  * You should have received a copy of the license along with this file;
  * if not, contact ferdinando@ametrano.net
  *
- * QuantLib license is also available at http://quantlib.sourceforge.net/LICENSE.TXT
+ * QuantLib license is also available at 
+ * http://quantlib.sourceforge.net/LICENSE.TXT
+*/
+
+/* $Source$
+   $Log$
+   Revision 1.12  2001/03/09 12:40:41  lballabio
+   Spring cleaning for SWIG interfaces
+
 */
 
 #ifndef quantlib_solver1d_i
 #define quantlib_solver1d_i
-
-%module Solvers1D
-
-%{
-#include "quantlib.h"
-%}
-
-#if !defined(SWIGPYTHON)
-#if !defined(PYTHON_WARNING_ISSUED)
-#define PYTHON_WARNING_ISSUED
-%echo "Warning: Solvers1D is a Python module!!"
-%echo "Exporting it to any other language is not advised"
-%echo "as it could lead to unpredicted results."
-#endif
-#endif
 
 // Function to find root of
 

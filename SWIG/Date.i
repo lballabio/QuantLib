@@ -21,23 +21,15 @@
  * http://quantlib.sourceforge.net/LICENSE.TXT
 */
 
+/* $Source$
+   $Log$
+   Revision 1.20  2001/03/09 12:40:41  lballabio
+   Spring cleaning for SWIG interfaces
+
+*/
+
 #ifndef quantlib_date_i
 #define quantlib_date_i
-
-%module Date
-
-%{
-#include "quantlib.h"
-%}
-
-#if !defined(SWIGPYTHON)
-#if !defined(PYTHON_WARNING_ISSUED)
-#define PYTHON_WARNING_ISSUED
-%echo "Warning: Date is a Python module!!"
-%echo "Exporting it to any other language is not advised"
-%echo "as it could lead to unpredicted results."
-#endif
-#endif
 
 %include String.i
 
@@ -105,13 +97,13 @@ using QuantLib::DateFormatter;
 
 %typemap(python,out) Weekday, const Weekday & {
     switch (*$source) {
-      case Sunday:        $target = PyString_FromString("Sunday");    break;
-      case Monday:        $target = PyString_FromString("Monday");    break;
-      case Tuesday:        $target = PyString_FromString("Tuesday");    break;
-      case Wednesday:    $target = PyString_FromString("Wednesday");    break;
-      case Thursday:    $target = PyString_FromString("Thursday");    break;
-      case Friday:        $target = PyString_FromString("Friday");    break;
-      case Saturday:    $target = PyString_FromString("Saturday");    break;
+      case Sunday:      $target = PyString_FromString("Sunday");     break;
+      case Monday:      $target = PyString_FromString("Monday");     break;
+      case Tuesday:     $target = PyString_FromString("Tuesday");    break;
+      case Wednesday:   $target = PyString_FromString("Wednesday");  break;
+      case Thursday:    $target = PyString_FromString("Thursday");   break;
+      case Friday:      $target = PyString_FromString("Friday");     break;
+      case Saturday:    $target = PyString_FromString("Saturday");   break;
     }
 };
 
@@ -190,18 +182,18 @@ using QuantLib::December;
 
 %typemap(python,out) Month, const Month & {
     switch (*$source) {
-      case January:        $target = PyString_FromString("January");    break;
-      case February:    $target = PyString_FromString("February");    break;
-      case March:        $target = PyString_FromString("March");        break;
-      case April:        $target = PyString_FromString("April");        break;
-      case May:            $target = PyString_FromString("May");        break;
-      case June:        $target = PyString_FromString("June");        break;
-      case July:        $target = PyString_FromString("July");        break;
-      case August:        $target = PyString_FromString("August");    break;
-      case September:    $target = PyString_FromString("September");    break;
-      case October:        $target = PyString_FromString("October");    break;
-      case November:    $target = PyString_FromString("November");    break;
-      case December:    $target = PyString_FromString("December");    break;
+      case January:     $target = PyString_FromString("January");    break;
+      case February:    $target = PyString_FromString("February");   break;
+      case March:       $target = PyString_FromString("March");      break;
+      case April:       $target = PyString_FromString("April");      break;
+      case May:         $target = PyString_FromString("May");        break;
+      case June:        $target = PyString_FromString("June");       break;
+      case July:        $target = PyString_FromString("July");       break;
+      case August:      $target = PyString_FromString("August");     break;
+      case September:   $target = PyString_FromString("September");  break;
+      case October:     $target = PyString_FromString("October");    break;
+      case November:    $target = PyString_FromString("November");   break;
+      case December:    $target = PyString_FromString("December");   break;
     }
 };
 
@@ -248,14 +240,10 @@ using QuantLib::Years;
 
 %typemap(python,out) TimeUnit, const TimeUnit & {
     switch (*$source) {
-      case Days:
-        $target = PyString_FromString("days"); break;
-      case Weeks:
-        $target = PyString_FromString("weeks"); break;
-      case Months:
-        $target = PyString_FromString("months"); break;
-      case Years:
-        $target = PyString_FromString("years"); break;
+      case Days:    $target = PyString_FromString("days");   break;
+      case Weeks:   $target = PyString_FromString("weeks");  break;
+      case Months:  $target = PyString_FromString("months"); break;
+      case Years:   $target = PyString_FromString("years");  break;
     }
 };
 
@@ -297,11 +285,8 @@ class Date {
     int weekdayNumber() {
         return int(self->weekday());
     }
-}
-    
-#if defined(SWIGPYTHON)
 
-%addmethods Date {
+    #if defined(SWIGPYTHON)
     Date __add__(int days) {
         return self->plusDays(days);
     }
@@ -321,6 +306,7 @@ class Date {
     int __nonzero__() {
         return (IsNull(*self) ? 0 : 1);
     }
+    #endif
 }
 
 // typemap None to null Date
@@ -358,6 +344,8 @@ class DateVector {
         return new DateVector(v);
     }
 
+    #if defined(SWIGPYTHON)
+
     int __len__() {
         return self->size();
     }
@@ -368,7 +356,7 @@ class DateVector {
         } else if (i<0 && -i<=self->size()) {
             return (*self)[self->size()+i];
         } else {
-            throw QuantLib::IndexError("DateVector index out of range");
+            throw IndexError("DateVector index out of range");
         }
     }
 
@@ -378,7 +366,7 @@ class DateVector {
         } else if (i<0 && -i<=self->size()) {
             (*self)[self->size()+i] = x;
         } else {
-            throw QuantLib::IndexError("DateVector index out of range");
+            throw IndexError("DateVector index out of range");
         }
     }
 
@@ -424,6 +412,8 @@ class DateVector {
         return (self->size() == 0 ? 0 : 1);
     }
 
+    #endif
+
 }; 
 
 %typemap(python,in) DateVector (DateVector temp), 
@@ -457,10 +447,6 @@ class DateVector {
         return NULL;
     }
 };
-
-
-#endif
-
 
 %inline %{
     Date DateFromSerialNumber(int serialNumber) {

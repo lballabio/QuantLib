@@ -21,23 +21,15 @@
  * http://quantlib.sourceforge.net/LICENSE.TXT
 */
 
+/* $Source$
+   $Log$
+   Revision 1.19  2001/03/09 12:40:41  lballabio
+   Spring cleaning for SWIG interfaces
+
+*/
+
 #ifndef quantlib_vectors_i
 #define quantlib_vectors_i
-
-%module Vectors
-
-%{
-#include "quantlib.h"
-%}
-
-#if !defined(SWIGPYTHON)
-#if !defined(PYTHON_WARNING_ISSUED)
-#define PYTHON_WARNING_ISSUED
-%echo "Warning: Vectors is a Python module!!"
-%echo "Exporting it to any other language is not advised"
-%echo "as it could lead to unpredicted results."
-#endif
-#endif
 
 %include String.i
 
@@ -62,15 +54,13 @@ class IntVector {
 };
 
 %addmethods IntVector {
-
     IntVector(const IntVector& v) {
         return new IntVector(v);
     }
-
+    #if defined(SWIGPYTHON)
     int __len__() {
         return self->size();
     }
-
     int __getitem__(int i) {
         if (i>=0 && i<self->size()) {
             return (*self)[i];
@@ -80,7 +70,6 @@ class IntVector {
             throw IndexError("IntVector index out of range");
         }
     }
-
     void __setitem__(int i, int x) {
         if (i>=0 && i<self->size()) {
             (*self)[i] = x;
@@ -90,7 +79,6 @@ class IntVector {
             throw IndexError("IntVector index out of range");
         }
     }
-
     IntVector __getslice__(int i, int j) {
         if (i<0)
             i = self->size()+i;
@@ -104,7 +92,6 @@ class IntVector {
         std::copy(self->begin()+i,self->begin()+j,tmp.begin());
         return tmp;
     }
-
     void __setslice__(int i, int j, const IntVector& rhs) {
         if (i<0)
             i = self->size()+i;
@@ -117,7 +104,6 @@ class IntVector {
         QL_ENSURE(rhs.size() == j-i, "IntVectors are not resizable");
         std::copy(rhs.begin(),rhs.end(),self->begin()+i);
     }
-
     String __repr__() {
         String s = "(";
         for (int i=0; i<self->size(); i++) {
@@ -128,11 +114,10 @@ class IntVector {
         s += ")";
         return s;
     }
-
     int __nonzero__() {
         return (self->size() == 0 ? 0 : 1);
     }
-
+    #endif
 }; 
 
 %typemap(python,in) IntVector (IntVector temp), IntVector * (IntVector temp), 
@@ -177,35 +162,31 @@ class DoubleVector {
 };
 
 %addmethods DoubleVector {
-
     DoubleVector(const DoubleVector& v) {
         return new DoubleVector(v);
     }
-
+    #if defined(SWIGPYTHON)
     int __len__() {
         return self->size();
     }
-
     double __getitem__(int i) {
         if (i>=0 && i<self->size()) {
             return (*self)[i];
         } else if (i<0 && -i<=self->size()) {
             return (*self)[self->size()+i];
         } else {
-            throw QuantLib::IndexError("DoubleVector index out of range");
+            throw IndexError("DoubleVector index out of range");
         }
     }
-
     void __setitem__(int i, double x) {
         if (i>=0 && i<self->size()) {
             (*self)[i] = x;
         } else if (i<0 && -i<=self->size()) {
             (*self)[self->size()+i] = x;
         } else {
-            throw QuantLib::IndexError("DoubleVector index out of range");
+            throw IndexError("DoubleVector index out of range");
         }
     }
-
     DoubleVector __getslice__(int i, int j) {
         if (i<0)
             i = self->size()+i;
@@ -219,7 +200,6 @@ class DoubleVector {
         std::copy(self->begin()+i,self->begin()+j,tmp.begin());
         return tmp;
     }
-
     void __setslice__(int i, int j, const DoubleVector& rhs) {
         if (i<0)
             i = self->size()+i;
@@ -232,7 +212,6 @@ class DoubleVector {
         QL_ENSURE(rhs.size() == j-i, "DoubleVectors are not resizable");
         std::copy(rhs.begin(),rhs.end(),self->begin()+i);
     }
-
     String __repr__() {
         String s = "(";
         for (int i=0; i<self->size(); i++) {
@@ -243,11 +222,10 @@ class DoubleVector {
         s += ")";
         return s;
     }
-
     int __nonzero__() {
         return (self->size() == 0 ? 0 : 1);
     }
-
+    #endif
 }; 
 
 %typemap(python,in) DoubleVector (DoubleVector temp), 

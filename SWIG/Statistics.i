@@ -1,3 +1,4 @@
+
 /*
  * Copyright (C) 2000, 2001
  * Ferdinando Ametrano, Luigi Ballabio, Adolfo Benin, Marco Marchioro
@@ -21,23 +22,15 @@
  * http://quantlib.sourceforge.net/LICENSE.TXT
 */
 
+/* $Source$
+   $Log$
+   Revision 1.14  2001/03/09 12:40:41  lballabio
+   Spring cleaning for SWIG interfaces
+
+*/
+
 #ifndef quantlib_statistics_i
 #define quantlib_statistics_i
-
-%module Statistics
-
-%{
-#include "quantlib.h"
-%}
-
-#if !defined(SWIGPYTHON)
-#if !defined(PYTHON_WARNING_ISSUED)
-#define PYTHON_WARNING_ISSUED
-%echo "Warning: Statistics is a Python module!!"
-%echo "Exporting it to any other language is not advised"
-%echo "as it could lead to unpredicted results."
-#endif
-#endif
 
 %include QLArray.i
 
@@ -81,7 +74,7 @@ using QuantLib::Math::MultivariateAccumulator;
 %}
 
 class MultivariateAccumulator {
-public:
+  public:
     MultivariateAccumulator();
     int size() const;
     double samples() const;

@@ -20,55 +20,29 @@
  * QuantLib license is also available at 
  * http://quantlib.sourceforge.net/LICENSE.TXT
 */
-/*! \file MontecarloPricers.i
-	
-	$Source$
-	$Name$
-	$Log$
+
+/* $Source$
+   $Log$
+   Revision 1.10  2001/03/09 12:40:41  lballabio
+   Spring cleaning for SWIG interfaces
+
 	Revision 1.9  2001/03/07 09:35:14  marmar
 	EverestOption interface changed
-
+	
 	Revision 1.8  2001/03/06 17:00:37  marmar
 	First, simplified version, of everest option introduced
 	
 	Revision 1.7  2001/02/26 17:05:30  lballabio
 	Ultimate Array interface and typemap for SWIG
 	
-	Revision 1.6  2001/02/13 10:06:50  marmar
-	Ambiguous variable name underlyingGrowthRate changed in
-	unambiguos dividendYield
-	
-	Revision 1.5  2001/02/07 10:15:57  marmar
-	Interface for Himalaya-type option pricer
-	
-	Revision 1.4  2001/02/05 16:55:12  marmar
-	McAsianPricer replaced by AveragePriceAsian and AverageStrikeAsian
-	
-	Revision 1.3  2001/02/02 10:58:39  marmar
-	MonteCarloTools.i added
-	
-	Revision 1.2  2001/01/15 13:43:20  lballabio
-	Using PyArray typemap
-	
-	Revision 1.1  2001/01/04 17:31:23  marmar
-	Alpha version of the Monte Carlo tools.
-	
 */
 
 #ifndef quantlib_Montecarlo_Pricers_i
 #define quantlib_Montecarlo_Pricers_i
 
-%module MontecarloPricers
-
-%{
-#include "quantlib.h"
-%}
-
 %include QLArray.i
 %include Vectors.i
 %include Matrix.i
-
-#if defined(SWIGPYTHON)
 
 %{
 using QuantLib::Pricers::McEuropeanPricer;
@@ -80,9 +54,8 @@ using QuantLib::Pricers::Himalaya;
 using QuantLib::Pricers::EverestOption;
 %}
 
-
-class McEuropeanPricer{
-    public:
+class McEuropeanPricer {
+  public:
 	McEuropeanPricer(OptionType type, double underlying, double strike, 
 		 Rate dividendYield,   Rate riskFreeRate, double residualTime, 
 		 double volatility,	int timesteps, int confnumber, long seed);
@@ -101,8 +74,8 @@ class GeometricAsianOption {
 };
 
 
-class AveragePriceAsian{
-    public:
+class AveragePriceAsian {
+  public:
 	AveragePriceAsian(OptionType type, double underlying, double strike, 
 		 Rate dividendYield,   Rate riskFreeRate, double residualTime, 
 		 double volatility,	int timesteps, int confnumber, long seed);
@@ -112,8 +85,8 @@ class AveragePriceAsian{
 };
 
 
-class AverageStrikeAsian{
-    public:
+class AverageStrikeAsian {
+  public:
 	AverageStrikeAsian(OptionType type, double underlying, double strike, 
 		 Rate dividendYield,   Rate riskFreeRate, double residualTime, 
 		 double volatility,	int timesteps, int confnumber, long seed);
@@ -123,8 +96,8 @@ class AverageStrikeAsian{
 };
 
 
-class PlainBasketOption{
-    public:
+class PlainBasketOption {
+  public:
     PlainBasketOption(const Array &underlying, 
         const Array &dividendYield, const Matrix &covariance, 
         Rate riskFreeRate,  double residualTime, 
@@ -135,8 +108,8 @@ class PlainBasketOption{
 };
 
 
-class Himalaya{
-    public:
+class Himalaya {
+  public:
     Himalaya(const Array& underlying, const Array& dividendYield, 
         const Matrix &covariance, Rate riskFreeRate, double strike, 
         const DoubleVector &timeDelays, long samples, long seed=0);
@@ -146,8 +119,8 @@ class Himalaya{
 };
 
 
-class EverestOption{
-    public:
+class EverestOption {
+  public:
     EverestOption(const Array& dividendYield, const Matrix &covariance, 
                   Rate riskFreeRate, Time residualTime,
                   long samples, long seed=0);
@@ -156,9 +129,5 @@ class EverestOption{
 	double errorEstimate() const;
 };
 
-
-#elif defined(SWIGJAVA)
-// export relevant functions
-#endif
 
 #endif

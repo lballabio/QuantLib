@@ -21,23 +21,15 @@
  * http://quantlib.sourceforge.net/LICENSE.TXT
 */
 
+/* $Source$
+   $Log$
+   Revision 1.6  2001/03/09 12:40:41  lballabio
+   Spring cleaning for SWIG interfaces
+
+*/
+
 #ifndef quantlib_array_i
 #define quantlib_array_i
-
-%module Array
-
-%{
-#include "quantlib.h"
-%}
-
-#if !defined(SWIGPYTHON)
-#if !defined(PYTHON_WARNING_ISSUED)
-#define PYTHON_WARNING_ISSUED
-%echo "Warning: QLArray is a Python module!!"
-%echo "Exporting it to any other language is not advised"
-%echo "as it could lead to unpredicted results."
-#endif
-#endif
 
 %include String.i
 
@@ -61,6 +53,7 @@ class Array {
     Array(const Array& a) {
         return new Array(a);
     }
+    #if defined(SWIGPYTHON)
     // sequence methods
     int __len__() {
         return self->size();
@@ -71,7 +64,7 @@ class Array {
         } else if (i<0 && -i<=self->size()) {
             return (*self)[self->size()+i];
         } else {
-            throw QuantLib::IndexError("Array index out of range");
+            throw IndexError("Array index out of range");
         }
     }
     void __setitem__(int i, double x) {
@@ -80,7 +73,7 @@ class Array {
         } else if (i<0 && -i<=self->size()) {
             (*self)[self->size()+i] = x;
         } else {
-            throw QuantLib::IndexError("Array index out of range");
+            throw IndexError("Array index out of range");
         }
     }
     Array __getslice__(int i, int j) {
@@ -117,6 +110,7 @@ class Array {
     int __nonzero__() {
         return (self->size() == 0 ? 0 : 1);
     }
+    #endif
 }; 
 
 
@@ -175,6 +169,7 @@ class ArrayLexicographicalViewColumn {
 };
 
 %addmethods ArrayLexicographicalView {
+    #if defined(SWIGPYTHON)
     ArrayLexicographicalViewColumn __getitem__(int i) {
         return (*self)[i];
     }
@@ -191,15 +186,18 @@ class ArrayLexicographicalViewColumn {
         s += "\n";
         return s;
     }
+    #endif
 };
 
 %addmethods ArrayLexicographicalViewColumn {
+    #if defined(SWIGPYTHON)
     double __getitem__(int i) {
         return (*self)[i];
     }
     void __setitem__(int i, double x) {
         (*self)[i] = x;
     }
+    #endif
 };
 
 

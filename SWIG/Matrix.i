@@ -18,26 +18,19 @@
  * You should have received a copy of the license along with this file;
  * if not, contact ferdinando@ametrano.net
  *
- * QuantLib license is also available at http://quantlib.sourceforge.net/LICENSE.TXT
+ * QuantLib license is also available at 
+ * http://quantlib.sourceforge.net/LICENSE.TXT
+*/
+
+/* $Source$
+   $Log$
+   Revision 1.6  2001/03/09 12:40:41  lballabio
+   Spring cleaning for SWIG interfaces
+
 */
 
 #ifndef quantlib_matrix_i
 #define quantlib_matrix_i
-
-%module Matrix
-
-%{
-#include "quantlib.h"
-%}
-
-#if !defined(SWIGPYTHON)
-#if !defined(PYTHON_WARNING_ISSUED)
-#define PYTHON_WARNING_ISSUED
-%echo "Warning: Matrix is a Python module!!"
-%echo "Exporting it to any other language is not advised"
-%echo "as it could lead to unpredicted results."
-#endif
-#endif
 
 %include String.i
 %include QLArray.i
@@ -64,6 +57,7 @@ class MatrixRow {
 };
 
 %addmethods Matrix {
+    #if defined(SWIGPYTHON)
     MatrixRow __getitem__(int i) {
         return (*self)[i];
     }
@@ -92,15 +86,18 @@ class MatrixRow {
         s += "\n";
         return s;
     }
+    #endif
 };
 
 %addmethods MatrixRow {
+    #if defined(SWIGPYTHON)
     double __getitem__(int i) {
         return (*self)[i];
     }
     void __setitem__(int i, double x) {
         (*self)[i] = x;
     }
+    #endif
 };
 
 // functions

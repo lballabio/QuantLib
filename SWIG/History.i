@@ -18,26 +18,19 @@
  * You should have received a copy of the license along with this file;
  * if not, contact ferdinando@ametrano.net
  *
- * QuantLib license is also available at http://quantlib.sourceforge.net/LICENSE.TXT
+ * QuantLib license is also available at 
+ * http://quantlib.sourceforge.net/LICENSE.TXT
+*/
+
+/* $Source$
+   $Log$
+   Revision 1.8  2001/03/09 12:40:41  lballabio
+   Spring cleaning for SWIG interfaces
+
 */
 
 #ifndef quantlib_history_i
 #define quantlib_history_i
-
-%module History
-
-%{
-#include "quantlib.h"
-%}
-
-#if !defined(SWIGPYTHON)
-#if !defined(PYTHON_WARNING_ISSUED)
-#define PYTHON_WARNING_ISSUED
-%echo "Warning: History is a Python module!!"
-%echo "Exporting it to any other language is not advised"
-%echo "as it could lead to unpredicted results."
-#endif
-#endif
 
 %include Date.i
 %include Vectors.i
@@ -101,10 +94,8 @@ class History {
 };
 
 
-#if defined(SWIGPYTHON)
-
 %addmethods History {
-    // element access
+    #if defined(SWIGPYTHON)
     double __getitem__(Date d) {
         return (*self)[d];
     }
@@ -113,6 +104,7 @@ class History {
             DateFormatter::toString(self->firstDate()) +
             " to " + DateFormatter::toString(self->lastDate());
     }
+    #endif
 }
 
 %addmethods HistoryIterator {
@@ -125,6 +117,7 @@ class History {
     void advance() {
         (*self)++;
     }
+    #if defined(SWIGPYTHON)
     int __cmp__(const HistoryIterator& other) {
         return (*self == other ? 0 : -1);
     }
@@ -133,6 +126,7 @@ class History {
         "\t" + (IsNull((*self)->value()) ? String("Null") : 
         DoubleFormatter::toString((*self)->value()));
     }
+    #endif
 }
 
 %addmethods HistoryValidIterator {
@@ -145,6 +139,7 @@ class History {
     void advance() {
         (*self)++;
     }
+    #if defined(SWIGPYTHON)
     int __cmp__(const HistoryValidIterator& other) {
         return (*self == other ? 0 : -1);
     }
@@ -153,14 +148,16 @@ class History {
         "\t" + (IsNull((*self)->value()) ? String("Null") : 
         DoubleFormatter::toString((*self)->value()));
     }
+    #endif
 }
 
 %addmethods HistoryDataIterator {
-    double __float__() {
-        return **self;
-    }
     void advance() {
         (*self)++;
+    }
+    #if defined(SWIGPYTHON)
+    double __float__() {
+        return **self;
     }
     int __cmp__(const HistoryDataIterator& other) {
         return (*self == other ? 0 : -1);
@@ -169,14 +166,16 @@ class History {
         return (IsNull(**self) ? String("Null") : 
         DoubleFormatter::toString(**self));
     }
+    #endif
 }
     
 %addmethods HistoryValidDataIterator {
-    double __float__() {
-        return **self;
-    }
     void advance() {
         (*self)++;
+    }
+    #if defined(SWIGPYTHON)
+    double __float__() {
+        return **self;
     }
     int __cmp__(const HistoryValidDataIterator& other) {
         return (*self == other ? 0 : -1);
@@ -185,9 +184,8 @@ class History {
         return (IsNull(**self) ? String("Null") : 
         DoubleFormatter::toString(**self));
     }
+    #endif
 }
-
-#endif
 
 
 #endif

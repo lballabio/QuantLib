@@ -351,8 +351,8 @@ class HistoryDataIteratorPtr(HistoryDataIterator):
         self.__class__ = HistoryDataIterator
 
 
-HistoryDataIterator.__float__ = new.instancemethod(QuantLibc.HistoryDataIterator___float__, None, HistoryDataIterator)
 HistoryDataIterator.advance = new.instancemethod(QuantLibc.HistoryDataIterator_advance, None, HistoryDataIterator)
+HistoryDataIterator.__float__ = new.instancemethod(QuantLibc.HistoryDataIterator___float__, None, HistoryDataIterator)
 HistoryDataIterator.__cmp__ = new.instancemethod(QuantLibc.HistoryDataIterator___cmp__, None, HistoryDataIterator)
 HistoryDataIterator.__repr__ = new.instancemethod(QuantLibc.HistoryDataIterator___repr__, None, HistoryDataIterator)
 
@@ -370,8 +370,8 @@ class HistoryValidDataIteratorPtr(HistoryValidDataIterator):
         self.__class__ = HistoryValidDataIterator
 
 
-HistoryValidDataIterator.__float__ = new.instancemethod(QuantLibc.HistoryValidDataIterator___float__, None, HistoryValidDataIterator)
 HistoryValidDataIterator.advance = new.instancemethod(QuantLibc.HistoryValidDataIterator_advance, None, HistoryValidDataIterator)
+HistoryValidDataIterator.__float__ = new.instancemethod(QuantLibc.HistoryValidDataIterator___float__, None, HistoryValidDataIterator)
 HistoryValidDataIterator.__cmp__ = new.instancemethod(QuantLibc.HistoryValidDataIterator___cmp__, None, HistoryValidDataIterator)
 HistoryValidDataIterator.__repr__ = new.instancemethod(QuantLibc.HistoryValidDataIterator___repr__, None, HistoryValidDataIterator)
 

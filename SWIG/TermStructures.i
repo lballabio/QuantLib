@@ -22,23 +22,15 @@
  * http://quantlib.sourceforge.net/LICENSE.TXT
 */
 
+/* $Source$
+   $Log$
+   Revision 1.19  2001/03/09 12:40:41  lballabio
+   Spring cleaning for SWIG interfaces
+
+*/
+
 #ifndef quantlib_term_structures_i
 #define quantlib_term_structures_i
-
-%module TermStructures
-
-%{
-#include "quantlib.h"
-%}
-
-#if !defined(SWIGPYTHON)
-#if !defined(PYTHON_WARNING_ISSUED)
-#define PYTHON_WARNING_ISSUED
-%echo "Warning: TermStructures is a Python module!!"
-%echo "Exporting it to any other language is not advised"
-%echo "as it could lead to unpredicted results."
-#endif
-#endif
 
 %include Date.i
 %include Calendars.i
@@ -171,7 +163,7 @@ typedef std::vector<DepositRate> DepositList;
 %typemap(python,in) DepositList, DepositList *, const DepositList & {
 	if (PyTuple_Check($source)) {
 		int size = PyTuple_Size($source);
-		$target = new std::vector<DepositRate>(size);
+		$target = new DepositList(size);
 		for (int i=0; i<size; i++) {
 			DepositRate* d;
 			PyObject* o = PyTuple_GetItem($source,i);
@@ -186,7 +178,7 @@ typedef std::vector<DepositRate> DepositList;
 		}
 	} else if (PyList_Check($source)) {
 		int size = PyList_Size($source);
-		$target = new std::vector<DepositRate>(size);
+		$target = new DepositList(size);
 		for (int i=0; i<size; i++) {
 			DepositRate* d;
 			PyObject* o = PyList_GetItem($source,i);

@@ -22,24 +22,15 @@
  * http://quantlib.sourceforge.net/LICENSE.TXT
 */
 
-#ifndef quantlib_riskstatistics_i
-#define quantlib_riskstatistics_i
+/* $Source$
+   $Log$
+   Revision 1.7  2001/03/09 12:40:41  lballabio
+   Spring cleaning for SWIG interfaces
 
-%module RiskStatistics
+*/
 
-%{
-#include "quantlib.h"
-#include "riskstatistics.h"
-%}
-
-#if !defined(SWIGPYTHON)
-#if !defined(PYTHON_WARNING_ISSUED)
-#define PYTHON_WARNING_ISSUED
-%echo "Warning: RiskStatistics is a Python module!!"
-%echo "Exporting it to any other language is not advised"
-%echo "as it could lead to unpredicted results."
-#endif
-#endif
+#ifndef quantlib_risk_statistics_i
+#define quantlib_risk_statistics_i
 
 %include Vectors.i
 

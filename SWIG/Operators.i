@@ -18,26 +18,19 @@
  * You should have received a copy of the license along with this file;
  * if not, contact ferdinando@ametrano.net
  *
- * QuantLib license is also available at http://quantlib.sourceforge.net/LICENSE.TXT
+ * QuantLib license is also available at 
+ * http://quantlib.sourceforge.net/LICENSE.TXT
+*/
+
+/* $Source$
+   $Log$
+   Revision 1.12  2001/03/09 12:40:41  lballabio
+   Spring cleaning for SWIG interfaces
+
 */
 
 #ifndef quantlib_operators_i
 #define quantlib_operators_i
-
-%module Operators
-
-%{
-#include "quantlib.h"
-%}
-
-#if !defined(SWIGPYTHON)
-#if !defined(PYTHON_WARNING_ISSUED)
-#define PYTHON_WARNING_ISSUED
-%echo "Warning: Operators is a Python module!!"
-%echo "Exporting it to any other language is not advised"
-%echo "as it could lead to unpredicted results."
-#endif
-#endif
 
 %include QLArray.i
 %include BoundaryConditions.i
@@ -66,6 +59,7 @@ class TridiagonalOperator {
 };
 
 %addmethods TridiagonalOperator {
+    #if defined(SWIGPYTHON)
     TridiagonalOperator __add__(const TridiagonalOperator& O) {
         return *self+O;
     }
@@ -81,6 +75,7 @@ class TridiagonalOperator {
     TridiagonalOperator __div__(double a) {
         return *self/a;
     }
+    #endif
 };
 
 %{

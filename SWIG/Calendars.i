@@ -18,26 +18,19 @@
  * You should have received a copy of the license along with this file;
  * if not, contact ferdinando@ametrano.net
  *
- * QuantLib license is also available at http://quantlib.sourceforge.net/LICENSE.TXT
+ * QuantLib license is also available at 
+ * http://quantlib.sourceforge.net/LICENSE.TXT
+*/
+
+/*  $Source$
+	$Log$
+	Revision 1.14  2001/03/09 12:40:41  lballabio
+	Spring cleaning for SWIG interfaces
+
 */
 
 #ifndef quantlib_calendar_i
 #define quantlib_calendar_i
-
-%module Calendars
-
-%{
-#include "quantlib.h"
-%}
-
-#if !defined(SWIGPYTHON)
-#if !defined(PYTHON_WARNING_ISSUED)
-#define PYTHON_WARNING_ISSUED
-%echo "Warning: Calendars is a Python module!!"
-%echo "Exporting it to any other language is not advised"
-%echo "as it could lead to unpredicted results."
-#endif
-#endif
 
 %include Date.i
 %include String.i
@@ -115,20 +108,20 @@ CalendarHandle NewZurich()    { return CalendarHandle(new Zurich); }
     CalendarHandle makeCalendar(const String& name) {
         String s = StringFormatter::toLowercase(name);
         if (s == "target" || s == "euro" || s == "eur")
-            return Handle<Calendar>(new TARGET);
+            return CalendarHandle(new TARGET);
         else if (s == "newyork" || s == "ny" || s == "nyc")
-            return Handle<Calendar>(new NewYork);
+            return CalendarHandle(new NewYork);
         else if (s == "london" || s == "lon")
-            return Handle<Calendar>(new London);
+            return CalendarHandle(new London);
         else if (s == "milan" || s == "mil")
-            return Handle<Calendar>(new Milan);
+            return CalendarHandle(new Milan);
         else if (s == "frankfurt" || s == "fft")
-            return Handle<Calendar>(new Frankfurt);
+            return CalendarHandle(new Frankfurt);
         else if (s == "zurich" || s == "zur")
-            return Handle<Calendar>(new Zurich);
+            return CalendarHandle(new Zurich);
         else
-            throw QuantLib::Error("Unknown calendar");
-        QL_DUMMY_RETURN(Handle<Calendar>())
+            throw Error("Unknown calendar");
+        QL_DUMMY_RETURN(CalendarHandle())
     }
 %}
 

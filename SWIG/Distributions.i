@@ -18,26 +18,19 @@
  * You should have received a copy of the license along with this file;
  * if not, contact ferdinando@ametrano.net
  *
- * QuantLib license is also available at http://quantlib.sourceforge.net/LICENSE.TXT
+ * QuantLib license is also available at 
+ * http://quantlib.sourceforge.net/LICENSE.TXT
+*/
+
+/* $Source$
+   $Log$
+   Revision 1.5  2001/03/09 12:40:41  lballabio
+   Spring cleaning for SWIG interfaces
+
 */
 
 #ifndef quantlib_distributions_i
 #define quantlib_distributions_i
-
-%module Distributions
-
-%{
-#include "quantlib.h"
-%}
-
-#if !defined(SWIGPYTHON)
-#if !defined(PYTHON_WARNING_ISSUED)
-#define PYTHON_WARNING_ISSUED
-%echo "Warning: Distributions is a Python module!!"
-%echo "Exporting it to any other language is not advised"
-%echo "as it could lead to unpredicted results."
-#endif
-#endif
 
 %{
 using QuantLib::Math::NormalDistribution;
@@ -46,42 +39,47 @@ using QuantLib::Math::InvCumulativeNormalDistribution;
 %}
 
 class NormalDistribution {
-    public:
-        NormalDistribution(double average = 0.0, double sigma = 1.0);
-        ~NormalDistribution();
-        double derivative(double x);
+  public:
+    NormalDistribution(double average = 0.0, double sigma = 1.0);
+    ~NormalDistribution();
+    double derivative(double x);
 };
 
 %addmethods NormalDistribution {
+    #if defined(SWIGPYTHON)
     double __call__(double x) {
         return (*self)(x);
     }
+    #endif
 }
 
 class CumulativeNormalDistribution {
-    public:
-        CumulativeNormalDistribution(double average = 0.0, double sigma = 1.0);
-        ~CumulativeNormalDistribution();
-        double derivative(double x);
+  public:
+     CumulativeNormalDistribution(double average = 0.0, double sigma = 1.0);
+     ~CumulativeNormalDistribution();
+     double derivative(double x);
 };
 
 %addmethods CumulativeNormalDistribution {
+    #if defined(SWIGPYTHON)
     double __call__(double x) {
         return (*self)(x);
     }
+    #endif
 }
 
 class InvCumulativeNormalDistribution {
-    public:
-        InvCumulativeNormalDistribution(double average = 0.0,
-                                            double sigma = 1.0);
-        ~InvCumulativeNormalDistribution();
+  public:
+    InvCumulativeNormalDistribution(double average = 0.0,  double sigma = 1.0);
+    ~InvCumulativeNormalDistribution();
 };
 
 %addmethods InvCumulativeNormalDistribution {
+    #if defined(SWIGPYTHON)
     double __call__(double x) {
         return (*self)(x);
     }
+    #endif
 }
 
 

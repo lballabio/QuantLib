@@ -22,14 +22,15 @@
  * http://quantlib.sourceforge.net/LICENSE.TXT
 */
 
+/* $Source$
+   $Log$
+   Revision 1.10  2001/03/09 12:40:41  lballabio
+   Spring cleaning for SWIG interfaces
+
+*/
+
 #ifndef quantlib_financial_i
 #define quantlib_financial_i
-
-%module Financial
-
-%{
-#include "quantlib.h"
-%}
 
 %{
 using QuantLib::Rate;

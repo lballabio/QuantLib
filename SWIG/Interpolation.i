@@ -18,26 +18,19 @@
  * You should have received a copy of the license along with this file;
  * if not, contact ferdinando@ametrano.net
  *
- * QuantLib license is also available at http://quantlib.sourceforge.net/LICENSE.TXT
+ * QuantLib license is also available at 
+ * http://quantlib.sourceforge.net/LICENSE.TXT
+*/
+
+/*  $Source$
+	$Log$
+	Revision 1.4  2001/03/09 12:40:41  lballabio
+	Spring cleaning for SWIG interfaces
+
 */
 
 #ifndef quantlib_interpolation_i
 #define quantlib_interpolation_i
-
-%module Interpolation
-
-%{
-#include "quantlib.h"
-%}
-
-#if !defined(SWIGPYTHON)
-#if !defined(PYTHON_WARNING_ISSUED)
-#define PYTHON_WARNING_ISSUED
-%echo "Warning: Interpolation is a Python module!!"
-%echo "Exporting it to any other language is not advised"
-%echo "as it could lead to unpredicted results."
-#endif
-#endif
 
 %include QLArray.i
 
@@ -58,13 +51,16 @@ using QuantLib::IsNull;
 
 // replicate the Interpolation interface
 %addmethods InterpolationHandle {
+    #if defined(SWIGPYTHON)
 	double __call__(double x) {
 		return (**self)(x);
 	}
 	int __nonzero__() {
 		return (IsNull(*self) ? 0 : 1);
 	}
+    #endif
 };
+
 
 // actual interpolations
 

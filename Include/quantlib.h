@@ -26,6 +26,9 @@
     $Source$
     $Name$
     $Log$
+    Revision 1.27  2001/03/09 12:40:39  lballabio
+    Spring cleaning for SWIG interfaces
+
     Revision 1.26  2001/03/07 17:18:29  marmar
     Example of european option using finite differences
 
@@ -141,6 +144,11 @@
 
 #include "swaptionvolsurface.h"
 #include "forwardvolsurface.h"
+
+
+/*** risk functions ***/
+
+#include "riskstatistics.h"
 
 
 /*** math ***/
