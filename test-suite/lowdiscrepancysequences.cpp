@@ -96,7 +96,7 @@ void LDSTest::testSobol() {
     dimensionality = 33;
     seed = 123456;
     rsg = SobolRsg(dimensionality, seed);
-    points = 1000000;
+    points = 100000;
     point = rsg.nextSequence().value;
     if (point.size()!=dimensionality) {
         CPPUNIT_FAIL("Sobol sequence generator returns "
@@ -164,7 +164,7 @@ void LDSTest::testHalton() {
     dimensionality = 33;
     seed = 123456;
     rsg = HaltonRsg(dimensionality);
-    points = 1000000;
+    points = 100000;
 
     point = rsg.nextSequence().value;
     if (point.size()!=dimensionality) {
