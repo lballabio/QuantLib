@@ -60,10 +60,10 @@ namespace QuantLib {
         
         inline GeometricAsianOption::GeometricAsianOption(Option::Type type,
             double underlying, double strike, Rate dividendYield,
-            Rate riskFreeRate, Time residualTime, double volatility):
-            EuropeanOption(type, underlying, strike, dividendYield/2,
-            riskFreeRate/2-volatility*volatility/12, residualTime,
-            volatility/QL_SQRT(3)){}
+            Rate riskFreeRate, Time residualTime, double volatility)
+        : EuropeanOption(type, underlying, strike,
+            (riskFreeRate+dividendYield+volatility*volatility/6.0)/2.0,
+            riskFreeRate, residualTime, volatility/QL_SQRT(3)) {}
 
         inline double GeometricAsianOption::rho() const{
             return EuropeanOption::rho()/2.0;

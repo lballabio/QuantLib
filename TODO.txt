@@ -10,7 +10,6 @@ COMPILING
     Borland projects
 
 LIBRARY
-    check our geometric asioan with results in Haug pag 96
     Nicolas spline contribution
     Maxim integral
     introduce size_t where appropriate
