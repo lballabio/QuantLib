@@ -31,27 +31,21 @@ namespace QuantLib {
 
 		template <class IndexedCouponType>
 		std::vector<Handle<CashFlow> > 
-        IndexedCouponVector(const std::vector<double>& nominals,
-                            const Date& startDate, const Date& endDate,
-                            int frequency, const Calendar& calendar,
-                            RollingConvention rollingConvention,
+        IndexedCouponVector(const Schedule& schedule, 
+                            const std::vector<double>& nominals,
                             const Handle<Indexes::Xibor>& index,
                             int fixingDays,
                             const std::vector<Spread>& spreads,
-                            #if defined(QL_PATCH_MICROSOFT)
-                            const Date& stubDate,
-                            #else
-                            const Date& stubDate = Date(),
-                            #endif
-                            const DayCounter& dayCounter = DayCounter())
-		{
-			QL_REQUIRE(nominals.size() != 0, "unspecified nominals");
+                            const DayCounter& dayCounter = DayCounter()) {
+
+            QL_REQUIRE(nominals.size() != 0, "unspecified nominals");
 
             std::vector<Handle<CashFlow> > leg;
-            Scheduler scheduler(calendar, startDate, endDate, frequency,
-                                rollingConvention, true, stubDate);
             // first period might be short or long
-            Date start = scheduler.date(0), end = scheduler.date(1);
+            Date start = schedule.date(0), end = schedule.date(1);
+            Calendar calendar = schedule.calendar();
+            RollingConvention rollingConvention = 
+                schedule.rollingConvention();
             Date paymentDate = calendar.roll(end,rollingConvention);
             Spread spread;
             if (spreads.size() > 0)
@@ -59,13 +53,13 @@ namespace QuantLib {
             else
                 spread = 0.0;
             double nominal = nominals[0];
-            if (scheduler.isRegular(1)) {
+            if (schedule.isRegular(1)) {
                 leg.push_back(Handle<CashFlow>(
                     new IndexedCouponType(nominal, paymentDate, index, 
                                           start, end, fixingDays, spread, 
                                           start, end, dayCounter)));
             } else {
-                Date reference = end.plusMonths(-12/frequency);
+                Date reference = end.plusMonths(-12/schedule.frequency());
                 reference = calendar.roll(reference,rollingConvention);
 				typedef Short<IndexedCouponType> ShortIndexedCouponType;
                 leg.push_back(Handle<CashFlow>(
@@ -74,8 +68,8 @@ namespace QuantLib {
                                                reference, end, dayCounter)));
             }
             // regular periods
-            for (Size i=2; i<scheduler.size()-1; i++) {
-                start = end; end = scheduler.date(i);
+            for (Size i=2; i<schedule.size()-1; i++) {
+                start = end; end = schedule.date(i);
                 paymentDate = calendar.roll(end,rollingConvention);
                 if ((i-1) < spreads.size())
                     spread = spreads[i-1];
@@ -92,10 +86,10 @@ namespace QuantLib {
                                           start, end, fixingDays, spread, 
                                           start, end, dayCounter)));
             }
-            if (scheduler.size() > 2) {
+            if (schedule.size() > 2) {
                 // last period might be short or long
-                Size N = scheduler.size();
-                start = end; end = scheduler.date(N-1);
+                Size N = schedule.size();
+                start = end; end = schedule.date(N-1);
                 paymentDate = calendar.roll(end,rollingConvention);
                 if ((N-2) < spreads.size())
                     spread = spreads[N-2];
@@ -107,13 +101,14 @@ namespace QuantLib {
                     nominal = nominals[N-2];
                 else
                     nominal = nominals.back();
-                if (scheduler.isRegular(N-1)) {
+                if (schedule.isRegular(N-1)) {
                     leg.push_back(Handle<CashFlow>(
                         new IndexedCouponType(nominal, paymentDate, index, 
                                               start, end, fixingDays, spread, 
                                               start, end, dayCounter)));
                 } else {
-                    Date reference = start.plusMonths(12/frequency);
+                    Date reference = 
+                        start.plusMonths(12/schedule.frequency());
                     reference = calendar.roll(reference,rollingConvention);
 					typedef Short<IndexedCouponType> ShortIndexedCouponType;
                     leg.push_back(Handle<CashFlow>(
@@ -125,6 +120,32 @@ namespace QuantLib {
             }
             return leg;
 		}
+
+
+        //! helper function building a sequence of indexed coupons
+        /*! \deprecated use the version taking a Schedule instead */
+		template <class IndexedCouponType>
+		std::vector<Handle<CashFlow> > 
+        IndexedCouponVector(const std::vector<double>& nominals,
+                            const Date& startDate, const Date& endDate,
+                            int frequency, const Calendar& calendar,
+                            RollingConvention rollingConvention,
+                            const Handle<Indexes::Xibor>& index,
+                            int fixingDays,
+                            const std::vector<Spread>& spreads,
+                            #if defined(QL_PATCH_MICROSOFT)
+                            const Date& stubDate,
+                            #else
+                            const Date& stubDate = Date(),
+                            #endif
+                            const DayCounter& dayCounter = DayCounter()) {
+
+            Schedule schedule(calendar, startDate, endDate, frequency,
+                              rollingConvention, true, stubDate);
+            return IndexedCouponVector<IndexedCouponType>(
+                schedule, nominals, index, fixingDays, spreads,
+                dayCounter);
+        }
 
     }
 
