@@ -32,29 +32,25 @@ namespace QuantLib {
 
         void AnalyticalVanillaEngine::calculate() const {
 
-            QL_REQUIRE(arguments_.exercise.type() == Exercise::European,
+            QL_REQUIRE(arguments_.exerciseType == Exercise::European,
                 "AnalyticalVanillaEngine::calculate() : "
                 "not an European Option");
 
-            Date exerciseDate = arguments_.exercise.lastDate();
-
             double variance = arguments_.volTS->blackVariance(
-                exerciseDate,arguments_.strike);
+                arguments_.maturity, arguments_.strike);
             double stdDev = QL_SQRT(variance);
             double vol = arguments_.volTS->blackVol(
-                exerciseDate, arguments_.strike);
-            Time residualTime = arguments_.volTS->dayCounter().yearFraction(
-                arguments_.volTS->referenceDate(), exerciseDate);
+                arguments_.maturity, arguments_.strike);
 
             DiscountFactor dividendDiscount =
-                arguments_.dividendTS->discount(exerciseDate);
+                arguments_.dividendTS->discount(arguments_.maturity);
             Rate dividendRate =
-                arguments_.dividendTS->zeroYield(exerciseDate);
+                arguments_.dividendTS->zeroYield(arguments_.maturity);
 
             DiscountFactor riskFreeDiscount =
-                arguments_.riskFreeTS->discount(exerciseDate);
+                arguments_.riskFreeTS->discount(arguments_.maturity);
             Rate riskFreeRate =
-                arguments_.riskFreeTS->zeroYield(exerciseDate);
+                arguments_.riskFreeTS->zeroYield(arguments_.maturity);
             double forwardPrice = arguments_.underlying *
                 dividendDiscount / riskFreeDiscount;
 
@@ -114,12 +110,12 @@ namespace QuantLib {
                 * arguments_.underlying * results_.delta
                 - 0.5 * vol * vol * arguments_.underlying 
                 * arguments_.underlying * results_.gamma;
-            results_.rho = residualTime * riskFreeDiscount *
+            results_.rho = arguments_.maturity * riskFreeDiscount *
                 arguments_.strike * beta;
-            results_.dividendRho = - residualTime *
+            results_.dividendRho = - arguments_.maturity *
                 dividendDiscount * arguments_.underlying * alpha;
             results_.vega = arguments_.underlying * NID1 *
-                dividendDiscount * QL_SQRT(residualTime);
+                dividendDiscount * QL_SQRT(arguments_.maturity);
 
             results_.strikeSensitivity = - riskFreeDiscount * beta;
         }

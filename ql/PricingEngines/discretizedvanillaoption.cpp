@@ -38,27 +38,20 @@ namespace QuantLib {
 
         void DiscretizedVanillaOption::adjustValues() {
 
-            Date refDate = arguments_.riskFreeTS->referenceDate();
-            Size exerciseNumber = arguments_.exercise.dates().size();
-            std::vector<Time> t(exerciseNumber);
-            Size i;
-            for (i = 0; i<exerciseNumber; i++) {
-                t[i] = arguments_.riskFreeTS->dayCounter().yearFraction(
-                    refDate, arguments_.exercise.date(i));
-            }
             Time now = time();
-            switch(arguments_.exercise.type()) {
+            Size i;
+            switch(arguments_.exerciseType) {
                 case Exercise::American:
-                    if ((now<=t[1]) & (now>=t[0]))
+                    if ((now<=arguments_.stoppingTimes[1]) & (now>=arguments_.stoppingTimes[0]))
                         applySpecificCondition();
                     break;
                 case Exercise::European:
-                    if (isOnTime(t[0]))
+                    if (isOnTime(arguments_.stoppingTimes[0]))
                         applySpecificCondition();
                     break;
                 case Exercise::Bermudan:
-                    for (i = 0; i<exerciseNumber; i++) {
-                        if (isOnTime(t[i]))
+                    for (i = 0; i<arguments_.stoppingTimes.size(); i++) {
+                        if (isOnTime(arguments_.stoppingTimes[i]))
                             applySpecificCondition();
                     }
                     break;

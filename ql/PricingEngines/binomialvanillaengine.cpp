@@ -40,10 +40,9 @@ namespace QuantLib {
 
         void BinomialVanillaEngine::calculate() const {
             double s0 = arguments_.underlying;
-            Date exerciseDate = arguments_.exercise.lastDate();
-            double v = arguments_.volTS->blackVol(exerciseDate, s0);
-            Rate r = arguments_.riskFreeTS->zeroYield(exerciseDate);
-            Rate q = arguments_.dividendTS->zeroYield(exerciseDate);
+            double v = arguments_.volTS->blackVol(arguments_.maturity, s0);
+            Rate r = arguments_.riskFreeTS->zeroYield(arguments_.maturity);
+            Rate q = arguments_.dividendTS->zeroYield(arguments_.maturity);
             Date referenceDate = arguments_.riskFreeTS->referenceDate();
             Date todaysDate    = arguments_.riskFreeTS->todaysDate();
             DayCounter dc      = arguments_.riskFreeTS->dayCounter();
@@ -62,32 +61,29 @@ namespace QuantLib {
 
             
             
-            Time t = arguments_.riskFreeTS->dayCounter().yearFraction(
-                referenceDate, exerciseDate);
-
             Handle<Lattices::Tree> tree;
             Handle<DiffusionProcess> bs(new
                 BlackScholesProcess(flatRiskFree, flatDividends, flatVol,s0));
             switch(type_) {
                 case CoxRossRubinstein:
                     tree = Handle<Tree>(new
-                        Lattices::CoxRossRubinstein(bs, t, steps_));
+                        Lattices::CoxRossRubinstein(bs, arguments_.maturity, steps_));
                     break;
                 case JarrowRudd:
                     tree = Handle<Tree>(new
-                        Lattices::JarrowRudd(bs, t, steps_));
+                        Lattices::JarrowRudd(bs, arguments_.maturity, steps_));
                     break;
                 case EQP:
                     tree = Handle<Tree>(new
-                        Lattices::AdditiveEQPBinomialTree(bs, t, steps_));
+                        Lattices::AdditiveEQPBinomialTree(bs, arguments_.maturity, steps_));
                     break;
                 case Trigeorgis:
                     tree = Handle<Tree>(new
-                        Lattices::Trigeorgis(bs, t, steps_));
+                        Lattices::Trigeorgis(bs, arguments_.maturity, steps_));
                     break;
                 case Tian:
                     tree = Handle<Tree>(new
-                        Lattices::Tian(bs, t, steps_));
+                        Lattices::Tian(bs, arguments_.maturity, steps_));
                     break;
                 default:
                     throw IllegalArgumentError(
@@ -96,12 +92,12 @@ namespace QuantLib {
             }
 
             Handle<Lattice> lattice(new
-                BlackScholesLattice(tree, r, t, steps_));
+                BlackScholesLattice(tree, r, arguments_.maturity, steps_));
 
             Handle<DiscretizedAsset> option(
                 new DiscretizedVanillaOption(lattice,arguments_));
 
-            lattice->initialize(option, t);
+            lattice->initialize(option, arguments_.maturity);
             lattice->rollback(option, 0.0);
             results_.value = lattice->presentValue(option);
         }

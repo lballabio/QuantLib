@@ -186,10 +186,6 @@ namespace QuantLib {
 
         template<class S, class PG, class PP>
         inline Handle<PG> MCVanillaEngine<S, PG, PP>::pathGenerator() const {
-            Date referenceDate = arguments_.riskFreeTS->referenceDate();
-            Date exerciseDate = arguments_.exercise.lastDate();
-            Time residualTime = arguments_.riskFreeTS->dayCounter().yearFraction(
-                referenceDate, exerciseDate);
 
             Handle<DiffusionProcess> bs(new
                 BlackScholesProcess(arguments_.riskFreeTS, arguments_.dividendTS,
@@ -202,7 +198,7 @@ namespace QuantLib {
 
             return Handle<MonteCarlo::PathGenerator2<RandomNumbers::GaussianRandomGenerator> >(
                 new MonteCarlo::PathGenerator2<RandomNumbers::GaussianRandomGenerator>(bs,
-                    residualTime, 1, rng_));
+                    arguments_.maturity, 1, rng_));
 
         }
 
@@ -210,7 +206,7 @@ namespace QuantLib {
         template<class S, class PG, class PP>
         inline void MCVanillaEngine<S, PG, PP>::calculate() const {
 
-            QL_REQUIRE(arguments_.exercise.type() == Exercise::European,
+            QL_REQUIRE(arguments_.exerciseType == Exercise::European,
                 "MCVanillaEngine::calculate() : "
                 "not an European Option");
 
@@ -289,7 +285,7 @@ namespace QuantLib {
             return Handle<MonteCarlo::PathPricer<MonteCarlo::Path> >(
                 new MonteCarlo::EuropeanPathPricer(arguments_.type,
                 arguments_.underlying, arguments_.strike,
-                arguments_.riskFreeTS->discount(arguments_.exercise.lastDate()),
+                arguments_.riskFreeTS->discount(arguments_.maturity),
                 antitheticVariance_));
         }
 

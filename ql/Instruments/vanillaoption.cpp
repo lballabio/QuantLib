@@ -143,7 +143,15 @@ namespace QuantLib {
             arguments->dividendTS = dividendTS_;
             arguments->riskFreeTS = riskFreeTS_;
 
-            arguments->exercise = exercise_;
+            arguments->maturity = riskFreeTS_->dayCounter().yearFraction(
+                riskFreeTS_->referenceDate(), exercise_.lastDate());
+            arguments->exerciseType = exercise_.type();
+            arguments->stoppingTimes = std::vector<Time>(exercise_.dates().size());
+            for (Size i=0; i<exercise_.dates().size(); i++) {
+                arguments->stoppingTimes[i] = riskFreeTS_->dayCounter().yearFraction(
+                riskFreeTS_->referenceDate(), exercise_.date(i));
+            }
+
 
             arguments->volTS = volTS_;
         }

@@ -105,10 +105,10 @@ namespace QuantLib {
             // ATM exchangeRate level needed here
             double exchangeRateATMlevel = 1.0;
 
-            originalArguments_->type = arguments_.type;
-            originalArguments_->underlying = arguments_.underlying;
-            originalArguments_->strike = arguments_.strike;
-            originalArguments_->dividendTS = 
+            originalArguments_->type          = arguments_.type;
+            originalArguments_->underlying    = arguments_.underlying;
+            originalArguments_->strike        = arguments_.strike;
+            originalArguments_->dividendTS    = 
                 RelinkableHandle<TermStructure>(
                     Handle<TermStructure>(
                     new TermStructures::QuantoTermStructure(
@@ -118,9 +118,11 @@ namespace QuantLib {
                         arguments_.volTS, arguments_.strike,
                         arguments_.exchRateVolTS, exchangeRateATMlevel,
                         arguments_.correlation)));
-            originalArguments_->riskFreeTS = arguments_.riskFreeTS;
-            originalArguments_->volTS = arguments_.volTS;
-            originalArguments_->exercise = arguments_.exercise;
+            originalArguments_->riskFreeTS    = arguments_.riskFreeTS;
+            originalArguments_->volTS         = arguments_.volTS;
+            originalArguments_->maturity      = arguments_.maturity;
+            originalArguments_->stoppingTimes = arguments_.stoppingTimes;
+            originalArguments_->exerciseType  = arguments_.exerciseType;
 
             originalArguments_->validate();
             originalEngine_->calculate();
@@ -133,16 +135,16 @@ namespace QuantLib {
                 originalResults_->dividendRho;
             results_.dividendRho = originalResults_->dividendRho;
             double exchangeRateFlatVol = arguments_.exchRateVolTS->blackVol(
-                arguments_.exercise.lastDate(), exchangeRateATMlevel);
+                arguments_.maturity, exchangeRateATMlevel);
             results_.vega = originalResults_->vega +
                 arguments_.correlation * exchangeRateFlatVol *
                 originalResults_->dividendRho;
 
 
             double volatility = arguments_.volTS->blackVol(
-                arguments_.exercise.lastDate(), arguments_.underlying);
+                arguments_.maturity, arguments_.underlying);
             results_.qvega = + arguments_.correlation
-                * arguments_.volTS->blackVol(arguments_.exercise.lastDate(),
+                * arguments_.volTS->blackVol(arguments_.maturity,
                 arguments_.underlying) *
                 originalResults_->dividendRho;
             results_.qrho = - originalResults_->dividendRho;

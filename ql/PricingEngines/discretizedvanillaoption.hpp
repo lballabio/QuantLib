@@ -45,13 +45,8 @@ namespace QuantLib {
             void adjustValues();
 
             void addTimes(std::list<Time>& times) const {
-                Date referenceDate = arguments_.riskFreeTS->referenceDate();
-                // which daycounter should be used here?
-                for (Size i=0; i<arguments_.exercise.dates().size(); i++)
-                    times.push_back(
-                        arguments_.riskFreeTS->dayCounter().yearFraction(
-                            referenceDate,
-                            arguments_.exercise.date(i)));
+                for (Size i=0; i<arguments_.stoppingTimes.size(); i++)
+                    times.push_back(arguments_.stoppingTimes[i]);
             }
 
           private:

@@ -58,9 +58,14 @@ namespace QuantLib {
             QL_REQUIRE(resetDate != Null<Date>(),
                        "ForwardOptionArguments::validate() : "
                        "null reset date given");
-            QL_REQUIRE(exercise.lastDate() >= resetDate,
+            Time resetTime = riskFreeTS->dayCounter().yearFraction(
+                riskFreeTS->referenceDate(), resetDate);
+            QL_REQUIRE(resetTime >=0,
                        "ForwardOptionArguments::validate() : "
-                       "reset date greater than exercise time");
+                       "negative reset time given");
+            QL_REQUIRE(maturity >= resetTime,
+                       "ForwardOptionArguments::validate() : "
+                       "reset time greater than maturity");
         }
 
         //! Forward engine base class
@@ -129,7 +134,9 @@ namespace QuantLib {
                         VolTermStructures::ImpliedVolTermStructure(
                             arguments_.volTS, arguments_.resetDate)));
 
-            originalArguments_->exercise = arguments_.exercise;
+            originalArguments_->exerciseType  = arguments_.exerciseType;
+            originalArguments_->stoppingTimes = arguments_.stoppingTimes;
+            originalArguments_->maturity      = arguments_.maturity;
 
 
             originalArguments_->validate();
