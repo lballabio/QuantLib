@@ -47,6 +47,9 @@ namespace QuantLib {
               sequence_(Array(dimensionality), 1.0) {}
 
             const sample_type& nextSequence() const;
+            const sample_type& lastSequence() const {
+                return sequence_;
+            }
             Size dimension() const {return dimensionality_;}
           private:
             Size dimensionality_;

@@ -65,6 +65,9 @@ namespace QuantLib {
             explicit ICGaussianRsg(const USG& uniformSequenceGenerator);
             //! returns next sample from the Gaussian distribution
             const sample_type& nextSequence() const;
+            const sample_type& lastSequence() const {
+                return sequence_;
+            }
             Size dimension() const {return dimension_;}
           private:
             USG uniformSequenceGenerator_;
