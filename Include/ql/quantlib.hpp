@@ -26,6 +26,9 @@
     $Id$
     $Source$
     $Log$
+    Revision 1.2  2001/04/12 14:32:13  marmar
+    QL, QLMTH, and such converted into official namespace nicknames
+
     Revision 1.1  2001/04/09 14:03:54  nando
     all the *.hpp moved below the Include/ql level
 
@@ -221,6 +224,7 @@
 
 /*** shortcuts for the full namespaces
      - just to get us up and running quickly ***/
+/*
 #define QL    QuantLib::
 #define QLCAL QuantLib::Calendars::
 #define QLCUR QuantLib::Currencies::
@@ -234,6 +238,20 @@
 #define QLS1D QuantLib::Solvers1D::
 #define QLTST QuantLib::TermStructures::
 #define QLUTL QuantLib::Utilities::
+/*/
 
+namespace QL    = QuantLib;
+namespace QLCAL = QuantLib::Calendars;
+namespace QLCUR = QuantLib::Currencies;
+namespace QLDCO = QuantLib::DayCounters;
+namespace QLINS = QuantLib::Instruments;
+namespace QLFDM = QuantLib::FiniteDifferences;
+namespace QLMTH = QuantLib::Math;
+namespace QLMNT = QuantLib::MonteCarlo;
+namespace QLPAT = QuantLib::Patterns;
+namespace QLPRC = QuantLib::Pricers;
+namespace QLS1D = QuantLib::Solvers1D;
+namespace QLTST = QuantLib::TermStructures;
+namespace QLUTL = QuantLib::Utilities;
 
 #endif
