@@ -29,8 +29,8 @@ class BSMEuropeanOption : public BSMOption {
 	  double theta() const;
 	  double vega() const;
 	  double rho() const;
-	  //double impliedVolatility(double targetValue, double xacc = 1e-4, int maxEvaluations = 100) const;
-	  //Handle<BSMOption> clone() const = 0;
+	  double impliedVolatility(double targetValue, double accuracy = 1e-4, int maxEvaluations = 100) const;
+    Handle<BSMOption> clone() const {	return Handle<BSMOption>(new BSMEuropeanOption(*this)); }
   private:
     // declared as mutable to preserve
     // the logical constness (does this word exist?) of value()
