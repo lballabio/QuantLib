@@ -18,6 +18,7 @@ QL_TESTS = quantlibtestsuite.cpp \
            swap.hpp swap.cpp \
            swaption.hpp swaption.cpp \
            termstructures.hpp termstructures.cpp \
+           old_pricers.hpp old_pricers.cpp \
            utilities.hpp
 
 if CPPUNIT_FOUND
