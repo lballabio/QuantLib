@@ -3,7 +3,7 @@
 
 Changes since Release 0.1.1:
 - Library:
-  - Style guidelines introduced (see http://quantlib.sourceforge.net/xxx.html)
+  - Style guidelines introduced (see http://quantlib.sourceforge.net/style.html)
     and partially enforced
   - full support for Microsoft Visual Studio
   - full support for Linux/gcc

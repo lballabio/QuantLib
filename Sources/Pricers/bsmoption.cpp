@@ -30,8 +30,8 @@
 
 // $Source$
 // $Log$
-// Revision 1.35  2001/05/24 15:40:10  nando
-// smoothing #include xx.hpp and cutting old Log messages
+// Revision 1.36  2001/06/05 12:45:27  nando
+// R019-branch-merge4 merged into trunk
 //
 
 #include "ql/Pricers/bsmoption.hpp"
@@ -119,6 +119,9 @@ namespace QuantLib {
             // check option targetValue boundary condition
             QL_REQUIRE(targetValue > 0.0,
              "BSMOption::impliedVol : targetValue must be positive");
+            double optionValue = value();
+            if (optionValue == targetValue)
+                return volatility_;
             // clone used for root finding
             Handle<BSMOption> tempBSM = clone();
             // objective function

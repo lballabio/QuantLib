@@ -30,6 +30,9 @@
 
 // $Source$
 // $Log$
+// Revision 1.7  2001/06/05 12:45:27  nando
+// R019-branch-merge4 merged into trunk
+//
 // Revision 1.6  2001/06/01 16:50:16  lballabio
 // Term structure on deposits and swaps
 //
@@ -43,7 +46,7 @@
 /*! \mainpage
 
     \section copyright Copyright
-    Copyright (C) 2000 --- The %QuantLib Group
+    Copyright (C) 2000-2001 --- The %QuantLib Group
 
     \section introduction Introduction
     %QuantLib is a C++ open source library for financial quantitative
@@ -296,8 +299,8 @@
     Handle<Type1> h1(whatever);
     h2 = h1.downcast<Type2>();
     \endcode
-    
-    For compatibility, a workaround should be implemented (which of course will 
+
+    For compatibility, a workaround should be implemented (which of course will
     be less solid or more comples - as I said, blame Microsoft...)
 */
 #if !defined(BROKEN_TEMPLATE_METHOD_CALLS)

@@ -30,12 +30,10 @@
 
 // $Source$
 // $Log$
-// Revision 1.5  2001/06/01 16:50:16  lballabio
-// Term structure on deposits and swaps
+// Revision 1.6  2001/06/05 12:45:27  nando
+// R019-branch-merge4 merged into trunk
 //
-// Revision 1.4  2001/05/24 15:38:08  nando
-// smoothing #include xx.hpp and cutting old Log messages
-//
+
 
 #ifndef quantlib_dividend_american_option_pricer_h
 #define quantlib_dividend_american_option_pricer_h

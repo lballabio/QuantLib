@@ -2,14 +2,9 @@
 # $Id$
 # $Source$
 # $Log$
-# Revision 1.14  2001/05/31 09:00:58  lballabio
-# Cash flows, scheduler, and generic swap added - the latter should be specialized and tested
+# Revision 1.15  2001/06/05 12:45:26  nando
+# R019-branch-merge4 merged into trunk
 #
-# Revision 1.13  2001/05/30 14:50:09  nando
-# debug libraries removed from installer
-#
-# Revision 1.12  2001/05/28 19:25:56  nando
-# removed docs from binary installer
 
 
 #############################
