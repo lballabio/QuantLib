@@ -46,11 +46,18 @@
     -# you won't have to explicitly link your application to the QuantLib
     library. This is done automatically by compiler directives embedded
     in the sources.
+    -# You have to define the NOMINMAX macro.
     -# Your project must be compiled with the same options that were used in
-    compiling the %QuantLib library, in particular with regard to the
-    settings under project settings, "C/C++" tab, "Code Generation".
-    You'll have to check the "Use RTTI" option under the "C++ Language"
-    category, too. Finally, you have to define the NOMINMAX macro.
+    compiling the %QuantLib library you're linking with.
+    For VC6 please
+    a) select the appropriate run-time library under project settings,
+    "C/C++" tab, "Code Generation",
+    b) check the "Use RTTI" option under the "C++ Language" category.
+    For VC7 (.NET) under
+    a) Property Pages -> C/C++ -> Code Generation -> Runtime Library:
+    please select the appropriate run-time library.
+    b) Property Pages -> C/C++ -> Code Generation -> Basic Runtime Checks:
+    please select "Both (/RTC1, equiv. to /RTCsu)".
 
 */
 
