@@ -50,6 +50,7 @@ Indexes$(_D).lib:: $(OBJS)
 
 # Clean up
 clean::
-    if exist *.obj   del /q *.obj
+    if exist *.obj         del /q *.obj
+    if exist *.obj$(_D)    del /q *.obj
     if exist *.lib   del /q *.lib
 

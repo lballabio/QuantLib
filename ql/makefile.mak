@@ -191,7 +191,7 @@ clean::
     cd ..\TermStructures
     $(MAKE) clean
     cd ..
-    if exist *.obj      del /q *.obj
+    if exist *.obj         del /q *.obj
     if exist *.obj$(_D)    del /q *.obj
     if exist $(OUTPUT_DIR)\*.lib  del /q $(OUTPUT_DIR)\*.lib
 
