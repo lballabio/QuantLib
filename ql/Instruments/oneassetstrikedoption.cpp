@@ -44,7 +44,6 @@ namespace QuantLib {
     }
 
     void OneAssetStrikedOption::setupArguments(Arguments* args) const {
-
         OneAssetStrikedOption::arguments* moreArgs =
             dynamic_cast<OneAssetStrikedOption::arguments*>(args);
         QL_REQUIRE(moreArgs != 0,
@@ -52,13 +51,7 @@ namespace QuantLib {
                    "wrong argument type");
         moreArgs->payoff = payoff_;
 
-        OneAssetOption::arguments* arguments =
-            dynamic_cast<OneAssetOption::arguments*>(args);
-        QL_REQUIRE(arguments != 0,
-                   "OneAssetStrikedOption::setupArguments : "
-                   "wrong argument type");
-        OneAssetOption::setupArguments(arguments);
-
+        OneAssetOption::setupArguments(args);
     }
 
 
