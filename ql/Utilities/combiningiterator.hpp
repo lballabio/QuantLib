@@ -116,7 +116,8 @@ namespace QuantLib {
         template <class Iterator, class Function>
         inline combining_iterator<Iterator,Function>&
         combining_iterator<Iterator,Function>::operator++() {
-            std::vector<Iterator>::iterator it = iteratorVector_.begin();
+            typename std::vector<Iterator>::iterator it = 
+                iteratorVector_.begin();
             while (it != iteratorVector_.end()) { ++*it; ++it; }
             return *this;
         }
@@ -132,7 +133,8 @@ namespace QuantLib {
         template <class Iterator, class Function>
         inline combining_iterator<Iterator,Function>&
         combining_iterator<Iterator,Function>::operator--() {
-            std::vector<Iterator>::iterator it = iteratorVector_.begin();
+            typename std::vector<Iterator>::iterator it = 
+                iteratorVector_.begin();
             while (it != iteratorVector_.end()){ --*it; ++it; }
             return *this;
         }
@@ -149,7 +151,8 @@ namespace QuantLib {
         inline combining_iterator<Iterator,Function>&
         combining_iterator<Iterator,Function>::operator+=(
          combining_iterator<Iterator,Function>::difference_type n) {
-            std::vector<Iterator>::iterator it = iteratorVector_.begin();
+            typename std::vector<Iterator>::iterator it = 
+                iteratorVector_.begin();
             while ( it != iteratorVector_.end()){ *it +=n ; ++it ; }
             return *this;
         }
@@ -157,7 +160,8 @@ namespace QuantLib {
         inline combining_iterator<Iterator,Function>&
         combining_iterator<Iterator,Function>::operator-=(
          combining_iterator<Iterator,Function>::difference_type n) {
-            std::vector<Iterator>::iterator it = iteratorVector_.begin();
+            typename std::vector<Iterator>::iterator it = 
+                iteratorVector_.begin();
             while ( it != iteratorVector_.end()){ *it -=n ; ++it ; }
             return *this;
         }
