@@ -8,6 +8,7 @@
 !endif
 
 # Directories
+BOOST_INCLUDE_DIR   = "$(BOOST_DIR)"
 INCLUDE_DIR    = ..
 BCC_INCLUDE    = $(MAKEDIR)\..\include
 OUTPUT_DIR     = ..\lib\Win32\Borland
@@ -84,6 +85,7 @@ TLIB      = tlib
 
 # Options
 CC_OPTS = -vi- -q -c -tWM \
+    -I$(BOOST_INCLUDE_DIR) \
     -I$(INCLUDE_DIR) \
     -I$(BCC_INCLUDE)
 !ifdef DEBUG
@@ -116,7 +118,7 @@ $(OUTPUT_DIR):
     if not exist ..\lib md ..\lib
     if not exist ..\lib\Win32 md ..\lib\Win32
     if not exist ..\lib\Win32\Borland md ..\lib\Win32\Borland
-    
+
 SubLibraries:
     cd Calendars
     $(MAKE)

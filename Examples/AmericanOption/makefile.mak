@@ -10,15 +10,17 @@
 !endif
 
 # Directories
-QL_INCLUDE_DIR   = "$(QL_DIR)"
-QL_LIB_DIR       = "$(QL_DIR)\lib\Win32\Borland"
-BCC_INCLUDE      = $(MAKEDIR)\..\include
-BCC_LIBS         = $(MAKEDIR)\..\lib
+BOOST_INCLUDE_DIR   = "$(BOOST_DIR)"
+QL_INCLUDE_DIR      = "$(QL_DIR)"
+QL_LIB_DIR          = "$(QL_DIR)\lib\Win32\Borland"
+BCC_INCLUDE         = $(MAKEDIR)\..\include
+BCC_LIBS            = $(MAKEDIR)\..\lib
 
 #Warning W8057 : Parameter 'argc' is never used in function main(int,char * *)
 
 # Options
 CC_OPTS = -vi- -w-8057 \
+    -I$(BOOST_INCLUDE_DIR) \
     -I$(QL_INCLUDE_DIR) \
     -I$(BCC_INCLUDE)
 

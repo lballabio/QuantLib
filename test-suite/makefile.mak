@@ -13,6 +13,7 @@
 # Directories
 CPPUNIT_INCLUDE_DIR = "$(CPPUNIT_DIR)\include"
 CPPUNIT_LIB_DIR     = "$(CPPUNIT_DIR)\lib"
+BOOST_INCLUDE_DIR   = "$(BOOST_DIR)"
 QL_INCLUDE_DIR      = "$(QL_DIR)"
 QL_LIB_DIR          = "$(QL_DIR)\lib\Win32\Borland"
 BCC_INCLUDE         = $(MAKEDIR)\..\include
@@ -53,6 +54,7 @@ CC        = bcc32
 
 # Options
 CC_OPTS = -vi- \
+    -I$(BOOST_INCLUDE_DIR) \
     -I$(QL_INCLUDE_DIR) \
     -I$(CPPUNIT_INCLUDE_DIR) \
     -I$(BCC_INCLUDE)

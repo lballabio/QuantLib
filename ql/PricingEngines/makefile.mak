@@ -8,6 +8,7 @@
 !endif
 
 # Directories
+BOOST_INCLUDE_DIR   = "$(BOOST_DIR)"
 INCLUDE_DIR    = ..\..
 BCC_INCLUDE    = $(MAKEDIR)\..\include
 
@@ -31,6 +32,7 @@ TLIB      = tlib
 
 # Options
 CC_OPTS        = -vi- -q -c -tWM \
+    -I$(BOOST_INCLUDE_DIR) \
     -I$(INCLUDE_DIR) \
     -I$(BCC_INCLUDE)
 

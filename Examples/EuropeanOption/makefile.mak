@@ -11,6 +11,7 @@
 
 
 # Directories
+BOOST_INCLUDE_DIR   = "$(BOOST_DIR)"
 QL_INCLUDE_DIR   = "$(QL_DIR)"
 QL_LIB_DIR       = "$(QL_DIR)\lib\Win32\Borland"
 BCC_INCLUDE      = $(MAKEDIR)\..\include
@@ -20,6 +21,7 @@ BCC_LIBS         = $(MAKEDIR)\..\lib
 
 # Options
 CC_OPTS = -vi- -w-8057 \
+    -I$(BOOST_INCLUDE_DIR) \
     -I$(QL_INCLUDE_DIR) \
     -I$(BCC_INCLUDE)
 
