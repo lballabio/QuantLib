@@ -4,6 +4,9 @@
 #
 # $Id$
 # $Log$
+# Revision 1.3  2001/08/23 09:42:08  nando
+# improved Borland examples makefiles
+#
 # Revision 1.2  2001/08/23 09:41:13  nando
 # improved Borland examples makefiles
 #
@@ -13,7 +16,7 @@
 #
 
 .autodepend
-#.silent
+.silent
 
 # Debug version
 !ifdef DEBUG
