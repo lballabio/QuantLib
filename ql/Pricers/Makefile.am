@@ -9,7 +9,6 @@ include_HEADERS = \
     binaryoption.hpp \
     cliquetoption.hpp \
     continuousgeometricapo.hpp \
-    couponbondoption.hpp \
     discretegeometricapo.hpp \
     discretegeometricaso.hpp \
     europeanengine.hpp \
@@ -22,7 +21,6 @@ include_HEADERS = \
     fddividendoption.hpp \
     fddividendshoutoption.hpp \
     fdeuropean.hpp \
-    fdeuropeanswaption.hpp \
     fdmultiperiodoption.hpp \
     fdshoutoption.hpp \
     fdstepconditionoption.hpp \
@@ -35,7 +33,8 @@ include_HEADERS = \
     mcmaxbasket.hpp \
     mcpagoda.hpp \
     mcpricer.hpp \
-    singleassetoption.hpp
+    singleassetoption.hpp \
+    treeswaption.hpp
 
 EXTRA_DIST=makefile.mak
 
@@ -44,7 +43,6 @@ libPricers_la_SOURCES = \
     fdbermudanoption.cpp \
     binaryoption.cpp \
     cliquetoption.cpp \
-    couponbondoption.cpp \
     discretegeometricapo.cpp \
     discretegeometricaso.cpp \
     fddividendshoutoption.cpp \
@@ -55,7 +53,6 @@ libPricers_la_SOURCES = \
     fddividendeuropeanoption.cpp \
     fddividendoption.cpp \
     fdeuropean.cpp \
-    fdeuropeanswaption.cpp \
     fdmultiperiodoption.cpp \
     fdstepconditionoption.cpp \
     mcbasket.cpp \
@@ -66,6 +63,7 @@ libPricers_la_SOURCES = \
     mchimalaya.cpp \
     mcmaxbasket.cpp \
     mcpagoda.cpp \
-    singleassetoption.cpp
+    singleassetoption.cpp \
+    treeswaption.cpp
 
 noinst_LTLIBRARIES = libPricers.la
