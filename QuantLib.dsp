@@ -297,6 +297,10 @@ SOURCE=.\Include\ql\Instruments\simpleswap.hpp
 # End Source File
 # Begin Source File
 
+SOURCE=.\Sources\Instruments\stock.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\Include\ql\Instruments\stock.hpp
 # End Source File
 # Begin Source File

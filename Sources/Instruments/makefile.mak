@@ -2,6 +2,9 @@
 # $Id$
 # $Source$
 # $Log$
+# Revision 1.3  2001/06/26 09:20:30  marmar
+# Method set price added to class stock
+#
 # Revision 1.2  2001/05/31 13:17:36  lballabio
 # Added SimpleSwap
 #
@@ -27,7 +30,8 @@ BCC_LIBS       = $(MAKEDIR)\..\lib
 
 # Object files
 OBJS = swap.obj$(_D) \
-       simpleswap.obj$(_D)
+       simpleswap.obj$(_D) \
+       stock.obj$(_D) 
 
 # Tools to be used
 CC        = bcc32

@@ -22,7 +22,7 @@
  * available at http://quantlib.sourceforge.net/Authors.txt
 */
 
-/*! \file stock.hpp
+/*! \file stock.cpp
     \brief concrete stock class
 
     $Id$
@@ -30,41 +30,29 @@
 
 // $Source$
 // $Log$
-// Revision 1.7  2001/06/26 09:20:30  marmar
+// Revision 1.1  2001/06/26 09:20:30  marmar
 // Method set price added to class stock
 //
-// Revision 1.6  2001/06/22 16:38:15  lballabio
-// Improved documentation
-//
-// Revision 1.5  2001/05/28 12:52:58  lballabio
-// Simplified Instrument interface
-//
-// Revision 1.4  2001/05/24 15:38:08  nando
-// smoothing #include xx.hpp and cutting old Log messages
-//
 
-#ifndef quantlib_stock_hpp
-#define quantlib_stock_hpp
 
-#include "ql/instrument.hpp"
+#include "ql/Instruments/stock.hpp"
 
 namespace QuantLib {
 
     namespace Instruments {
 
-        //! Simple stock class
-        class Stock : public Instrument {
-          public:
-            Stock(double price, const std::string& isinCode, 
-                  const std::string& description);
-			void setPrice(double newPrice);
-          protected:
-            // NPV already set during construction
-            void performCalculations() const {}
-        };
-
+        Stock::Stock(double price, const std::string& isinCode, 
+                   const std::string& description)
+            : Instrument(isinCode,description) { 
+            NPV_ = price;
+            isExpired_ = false;
+        }
+		void Stock::setPrice(double newPrice){
+			NPV_ = newPrice;
+			notifyObservers();
+		}
     }
 
 }
 
-#endif
+
