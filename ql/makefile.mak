@@ -90,9 +90,9 @@ CC_OPTS = $(CC_OPTS) -v -DQL_DEBUG
 CC_OPTS = $(CC_OPTS) -DSAFE_CHECKS
 !endif
 
-TLIB_OPTS    = /P256
-!ifdef DEBUG
 TLIB_OPTS    = /P512
+!ifdef DEBUG
+TLIB_OPTS    = /P1024
 !endif
 
 # Generic rules
