@@ -1,6 +1,6 @@
 
 /*
- Copyright (C) 2000, 2001, 2002, 2003 RiskMap srl
+ Copyright (C) 2000-2005 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -19,10 +19,11 @@
     \brief differential operator for Black-Scholes-Merton equation
 */
 
-#ifndef quantlib_bsm_operator_h
-#define quantlib_bsm_operator_h
+#ifndef quantlib_bsm_operator_hpp
+#define quantlib_bsm_operator_hpp
 
 #include <ql/FiniteDifferences/tridiagonaloperator.hpp>
+#include <ql/stochasticprocess.hpp>
 
 namespace QuantLib {
 
@@ -32,6 +33,9 @@ namespace QuantLib {
       public:
         BSMOperator() {}
         BSMOperator(Size size, Real dx, Rate r, Rate q, Volatility sigma);
+        BSMOperator(const Array& grid,
+                    const boost::shared_ptr<BlackScholesProcess>&,
+                    Time residualTime);
     };
 
 }

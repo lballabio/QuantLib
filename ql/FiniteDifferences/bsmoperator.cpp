@@ -1,6 +1,6 @@
 
 /*
- Copyright (C) 2000, 2001, 2002, 2003 RiskMap srl
+ Copyright (C) 2000-2005 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -28,6 +28,29 @@ namespace QuantLib {
         Real pu = -(sigma2/dx+nu)/(2*dx);
         Real pm = sigma2/(dx*dx)+r;
         setMidRows(pd,pm,pu);
+    }
+
+    BSMOperator::BSMOperator(
+                        const Array& grid,
+                        const boost::shared_ptr<BlackScholesProcess>& process,
+                        Time residualTime)
+    : TridiagonalOperator(grid.size()) {
+        Real u = process->stateVariable()->value();
+        Volatility sigma =
+            process->blackVolatility()->blackVol(residualTime,u);
+        Rate r = process->riskFreeRate()->zeroRate(residualTime,Continuous);
+        Rate q = process->dividendYield()->zeroRate(residualTime,Continuous);
+        Array logGrid = Log(grid);
+        Real sigma2 = sigma * sigma;
+        Real nu = r-q-sigma2/2;
+        for (Size i=1; i < logGrid.size()-1; i++) {
+            Real dxm = logGrid[i] - logGrid[i-1];
+            Real dxp = logGrid[i+1] - logGrid[i];
+            Real pd = -(sigma2/dxm-nu)/(dxm+dxp);
+            Real pu = -(sigma2/dxp+nu)/(dxm+dxp);
+            Real pm = sigma2/(dxm*dxp)+r;
+            setMidRow(i, pd,pm,pu);
+        }
     }
 
 }

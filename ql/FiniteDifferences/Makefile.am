@@ -8,6 +8,7 @@ include_HEADERS = \
 	americancondition.hpp \
 	boundarycondition.hpp \
 	bsmoperator.hpp \
+	bsmtermoperator.hpp \
 	cranknicolson.hpp \
 	dminus.hpp \
 	dplus.hpp \
@@ -29,6 +30,7 @@ EXTRA_DIST=makefile.mak
 libFiniteDifferences_la_SOURCES = \
     boundarycondition.cpp \
     bsmoperator.cpp \
+    bsmtermoperator.cpp \
     onefactoroperator.cpp \
     tridiagonaloperator.cpp \
     valueatcenter.cpp
