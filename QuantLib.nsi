@@ -2,13 +2,9 @@
 # $Id$
 # $Source$
 # $Log$
-# Revision 1.22  2001/08/27 12:43:16  nando
-# 2 Win32 binaries installer: full and light
+# Revision 1.23  2001/08/27 13:16:57  nando
+# typos fixed
 #
-# Revision 1.21  2001/08/27 11:23:45  nando
-# improved installer
-#
-
 
 #############################
 # to be used with NSIS 1.44 #
@@ -47,8 +43,6 @@ InstallDirRegKey HKEY_LOCAL_MACHINE SOFTWARE\QuantLib "Install_Dir"
 AutoCloseWindow false
 ShowInstDetails hide
 SetDateSave on
-
-
 
 # INSTALLATION EXECUTION COMMANDS
 Section "-QuantLib"
@@ -232,7 +226,7 @@ SectionIn 1 2
   SetOutPath "$INSTDIR\Docs\html"
   File "Docs\html\*.*"
   CreateShortCut "$INSTDIR\Docs\refman.html.lnk" "$INSTDIR\Docs\html\index.html"
-  CreateShortCut "$SMPROGRAMS\QuantLib\QuantLib Documentation (HTML).lnk" \
+  CreateShortCut "$SMPROGRAMS\QuantLib\Documentation (HTML).lnk" \
                  "$INSTDIR\Docs\html\index.htm"
 SectionEnd
 
@@ -240,7 +234,7 @@ Section "PDF documentation"
 SectionIn 2
   SetOutPath "$INSTDIR\Docs"
   File "Docs\latex\*refman.pdf"
-  CreateShortCut "$SMPROGRAMS\QuantLib\QuantLib Documentation (PDF).lnk" \
+  CreateShortCut "$SMPROGRAMS\QuantLib\Documentation (PDF).lnk" \
                  "$INSTDIR\Docs\refman.pdf"
 SectionEnd
 
@@ -248,7 +242,7 @@ Section "PS documentation"
 SectionIn 2
   SetOutPath "$INSTDIR\Docs"
   File "Docs\latex\*refman.ps"
-  CreateShortCut "$SMPROGRAMS\QuantLib\QuantLib Documentation (PS).lnk" \
+  CreateShortCut "$SMPROGRAMS\QuantLib\Documentation (PS).lnk" \
                  "$INSTDIR\Docs\refman.ps"
 SectionEnd
 
