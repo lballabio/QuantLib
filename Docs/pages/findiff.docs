@@ -22,6 +22,11 @@
 */
 
 /*! \defgroup findiff Finite-differences framework
+
+    <b>Warning: this section of the documentation is currently outdated.</b>
+    You will need to compare the information on this page with the present
+    code for working pricers, such as FdAmericanOption.
+
     This framework (corresponding to the ql/FiniteDifferences directory)
     contains basic building blocks for the numerical solution of a generic
     differential equation
