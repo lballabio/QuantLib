@@ -42,24 +42,24 @@ namespace QuantLib {
 
         //! Forward Euler scheme for finite difference methods
         /*! See sect. \ref findiff for details on the method.
-            
-            In this implementation, the passed operator must be derived 
+
+            In this implementation, the passed operator must be derived
             from either TimeConstantOperator or TimeDependentOperator.
             Also, it must implement at least the following interface:
 
             \code
             typedef ... arrayType;
-            
+
             // copy constructor/assignment
             // (these will be provided by the compiler if none is defined)
             Operator(const Operator&);
             Operator& operator=(const Operator&);
 
             // inspectors
-            size_t size(); 
+            size_t size();
 
             // modifiers
-            void setTime(Time t); 
+            void setTime(Time t);
 
             // operator interface
             arrayType applyTo(const arrayType&);
@@ -71,14 +71,14 @@ namespace QuantLib {
             \endcode
         */
         template <class Operator>
-        class ForwardEuler {
-            friend class FiniteDifferenceModel<ForwardEuler<Operator> >;
+        class ExplicitEuler {
+            friend class FiniteDifferenceModel<ExplicitEuler<Operator> >;
           private:
             // typedefs
             typedef typename Operator::arrayType arrayType;
             typedef Operator operatorType;
             // constructors
-            ForwardEuler(const Operator& L) 
+            ExplicitEuler(const Operator& L)
             : L_(L), I_(Operator::identity(L.size())), dt_(0.0) {}
             void step(arrayType& a, Time t);
             void setStep(Time dt) {
@@ -94,7 +94,7 @@ namespace QuantLib {
         // inline definitions
 
         template <class Operator>
-        inline void ForwardEuler<Operator>::step(arrayType& a, Time t) {
+        inline void ExplicitEuler<Operator>::step(arrayType& a, Time t) {
             if (L_.isTimeDependent()) {
                 L_.setTime(t);
                 explicitPart_ = I_-dt_*L_;

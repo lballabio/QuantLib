@@ -42,21 +42,21 @@ namespace QuantLib {
 
         //! Backward Euler scheme for finite difference methods
         /*! See sect. \ref findiff for details on the method.
-            
-            In this implementation, the passed operator must be derived 
+
+            In this implementation, the passed operator must be derived
             from either TimeConstantOperator or TimeDependentOperator.
             Also, it must implement at least the following interface:
 
             \code
             typedef ... arrayType;
-            
+
             // copy constructor/assignment
             // (these will be provided by the compiler if none is defined)
             Operator(const Operator&);
             Operator& operator=(const Operator&);
 
             // inspectors
-            size_t size(); 
+            size_t size();
 
             // modifiers
             void setTime(Time t);
@@ -64,21 +64,21 @@ namespace QuantLib {
             // operator interface
             arrayType solveFor(const arrayType&);
             static Operator identity(size_t size);
-            
+
             // operator algebra
             Operator operator*(double, const Operator&);
             Operator operator+(const Operator&, const Operator&);
             \endcode
         */
         template <class Operator>
-        class BackwardEuler {
-            friend class FiniteDifferenceModel<BackwardEuler<Operator> >;
+        class ImplicitEuler {
+            friend class FiniteDifferenceModel<ImplicitEuler<Operator> >;
           private:
             // typedefs
             typedef typename Operator::arrayType arrayType;
             typedef Operator operatorType;
             // constructors
-            BackwardEuler(const Operator& L)
+            ImplicitEuler(const Operator& L)
             : L_(L), I_(Operator::identity(L.size())), dt_(0.0) {}
             void step(arrayType& a, Time t);
             void setStep(Time dt) {
@@ -94,7 +94,7 @@ namespace QuantLib {
         // inline definitions
 
         template <class Operator>
-        inline void BackwardEuler<Operator>::step(arrayType& a, Time t) {
+        inline void ImplicitEuler<Operator>::step(arrayType& a, Time t) {
             if (L_.isTimeDependent()) {
                 L_.setTime(t-dt_);
                 implicitPart_ = I_+dt_*L_;

@@ -11,7 +11,6 @@ LIBRARY
     *****
     check FRA mXn definition
     implement swap discountGuess()
-    explicitEuler/implicitEuler instead of BackwardEuler, ForwardEuler
     use pragma in config.msvc.hpp for MS VC++ requirement
     asian continuous and/or discrete
     check geometric continuous and/or discrete

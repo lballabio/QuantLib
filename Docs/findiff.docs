@@ -95,13 +95,13 @@
     A number of evolvers are currently provided in the library which
     implement well-known schemes, namely,
 
-    the forward Euler scheme in which the equation is discretized as
+    the forward Euler explicit scheme in which the equation is discretized as
     \f[ \frac{u^{(k)}-u^{(k-1)}}{\Delta t} = Lu^{(k)} \f]
     hence
     \f[ u^{(k-1)} = \left( I - \Delta t L \right) u^{(k)} \f]
     from which \f$ u^{(k-1)} \f$ can be obtained directly;
 
-    the backward Euler scheme in which the equation is discretized as
+    the backward Euler implicit scheme in which the equation is discretized as
     \f[ \frac{u^{(k)}-u^{(k-1)}}{\Delta t} = Lu^{(k-1)} \f]
     hence
     \f[ \left( I + \Delta t L \right) u^{(k-1)} = u^{(k)} \f]
@@ -117,7 +117,7 @@
 
     Each of the above evolvers forces a set of interface requirements upon
     the differential operator which are detailed in the documentation of the
-    corresponding class, namely, ForwardEuler, BackwardEuler, and
+    corresponding class, namely, ExplicitEuler, ImplicitEuler, and
     CrankNicolson, respectively.
 
     A programmer could implement its own evolver, which does not need to

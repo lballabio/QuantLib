@@ -61,7 +61,7 @@ namespace QuantLib {
             initializeOperator();
             initializeStepCondition();
             /* StandardFiniteDifferenceModel is Crank-Nicolson.
-               Alternatively, BackwardEuler or ForwardEuler
+               Alternatively, ImplicitEuler or ExplicitEuler
                could have been used instead*/
             StandardFiniteDifferenceModel model(finiteDifferenceOperator_);
 

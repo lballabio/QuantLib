@@ -7,21 +7,21 @@
 CFG=QuantLib - Win32 OnTheEdgeDebug
 !MESSAGE This is not a valid makefile. To build this project using NMAKE,
 !MESSAGE use the Export Makefile command and run
-!MESSAGE 
+!MESSAGE
 !MESSAGE NMAKE /f "QuantLib.mak".
-!MESSAGE 
+!MESSAGE
 !MESSAGE You can specify a configuration when running NMAKE
 !MESSAGE by defining the macro CFG on the command line. For example:
-!MESSAGE 
+!MESSAGE
 !MESSAGE NMAKE /f "QuantLib.mak" CFG="QuantLib - Win32 OnTheEdgeDebug"
-!MESSAGE 
+!MESSAGE
 !MESSAGE Possible choices for configuration are:
-!MESSAGE 
+!MESSAGE
 !MESSAGE "QuantLib - Win32 Release" (based on "Win32 (x86) Static Library")
 !MESSAGE "QuantLib - Win32 Debug" (based on "Win32 (x86) Static Library")
 !MESSAGE "QuantLib - Win32 OnTheEdgeRelease" (based on "Win32 (x86) Static Library")
 !MESSAGE "QuantLib - Win32 OnTheEdgeDebug" (based on "Win32 (x86) Static Library")
-!MESSAGE 
+!MESSAGE
 
 # Begin Project
 # PROP AllowPerConfigDependencies 0
@@ -122,7 +122,7 @@ LIB32=link.exe -lib
 # ADD BASE LIB32 /nologo /out:"lib\Win32\VisualStudio\QuantLib_d.lib"
 # ADD LIB32 /nologo /out:"lib\Win32\VisualStudio\QuantLib_d.lib"
 
-!ENDIF 
+!ENDIF
 
 # Begin Target
 
@@ -259,7 +259,7 @@ SOURCE=.\ql\DayCounters\thirty360.hpp
 # PROP Default_Filter ""
 # Begin Source File
 
-SOURCE=.\ql\FiniteDifferences\backwardeuler.hpp
+SOURCE=.\ql\FiniteDifferences\expliciteuler.hpp
 # End Source File
 # Begin Source File
 
@@ -303,7 +303,7 @@ SOURCE=.\ql\FiniteDifferences\finitedifferencemodel.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\ql\FiniteDifferences\forwardeuler.hpp
+SOURCE=.\ql\FiniteDifferences\impliciteuler.hpp
 # End Source File
 # Begin Source File
 

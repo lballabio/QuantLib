@@ -4,7 +4,7 @@
 INCLUDES= -I${top_srcdir} -I${top_builddir}
 includedir = $(prefix)/include/ql/FiniteDifferences
 include_HEADERS = \
-	backwardeuler.hpp \
+	impliciteuler.hpp \
 	boundarycondition.hpp \
 	bsmoperator.hpp \
 	cranknicolson.hpp \
@@ -14,7 +14,7 @@ include_HEADERS = \
 	dzero.hpp \
 	fdtypedefs.hpp \
 	finitedifferencemodel.hpp \
-	forwardeuler.hpp \
+	expliciteuler.hpp \
 	stepcondition.hpp \
 	tridiagonaloperator.hpp \
 	valueatcenter.hpp
