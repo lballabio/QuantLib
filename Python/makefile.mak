@@ -20,7 +20,7 @@ BCC_INCLUDE    = $(MAKEDIR)\..\include
 BCC_LIBS       = $(MAKEDIR)\..\lib
 
 !if "$(PYTHON_HOME)" == ""
-!message Either set the PYTHON_HOME environment variable to the absolute 
+!message Either set the PYTHON_HOME environment variable to the absolute
 !message path of your Python installation or pass it to $(MAKE) as in
 !message
 !message $(MAKE) -DPYTHON_HOME="your\Python\path".
@@ -34,7 +34,7 @@ PYTHON_LIBS    = "$(PYTHON_HOME)"\libs
 WIN_OBJS        = c0d32.obj
 
 # Libraries
-QUANTLIB_LIB     = ..\lib\QuantLib$(_D).lib
+QUANTLIB_LIB     = ..\lib\Win32\Borland\QuantLib$(_D).lib
 QUANTLIB_DLL     = QuantLibc$(_D).dll
 WIN_LIBS         = import32.lib cw32mt.lib
 PYTHON_BCC_LIB   = bccpython.lib

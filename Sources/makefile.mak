@@ -1,6 +1,6 @@
 
+# $Id$
 # $Source$
-
 #
 # makefile for QuantLib static library under Borland C++
 #
@@ -73,9 +73,9 @@ TLIB_OPTS    = /P128
 
 # Primary target:
 # QuantLib library
-..\lib\QuantLib$(_D).lib:: $(CORE_OBJS) SubLibraries
-    if exist ..\lib\QuantLib$(_D).lib del ..\lib\QuantLib$(_D).lib
-    $(TLIB) $(TLIB_OPTS) ..\lib\QuantLib$(_D).lib /a $(QUANTLIB_OBJS)
+..\lib\Win32\Borland\QuantLib$(_D).lib:: $(CORE_OBJS) SubLibraries
+    if exist ..\lib\Win32\Borland\QuantLib$(_D).lib del ..\lib\Win32\Borland\QuantLib$(_D).lib
+    $(TLIB) $(TLIB_OPTS) ..\lib\Win32\Borland\QuantLib$(_D).lib /a $(QUANTLIB_OBJS)
 
 SubLibraries:
     cd Calendars

@@ -1,6 +1,6 @@
 
+# $Id$
 # $Source$
-
 #
 # main makefile for QuantLib under Borland C++
 #
@@ -17,7 +17,7 @@
 # QuantLib library
 quantlib::
     cd Sources
-    $(MAKE) 
+    $(MAKE)
     cd ..
 
 # Python module
