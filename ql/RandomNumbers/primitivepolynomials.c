@@ -1,6 +1,6 @@
 
 // This file contains 21200 polinomials, that is all primitive polynomials
-// modulo two up to degree 17. Another version does contain
+// modulo two up to degree 18. Another version does contain
 // 8129334 polinomials, that is all primitive polynomials
 // modulo two up to degree 27. Both are slightly edited versions of
 // PrimitivePolynomialsModuloTwoUpToDegree27.c
