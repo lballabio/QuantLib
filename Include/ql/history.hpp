@@ -30,6 +30,9 @@
 
 // $Source$
 // $Log$
+// Revision 1.10  2001/07/10 09:28:39  sigmud
+// no message
+//
 // Revision 1.9  2001/07/09 16:29:27  lballabio
 // Some documentation and market element
 //
@@ -93,7 +96,7 @@ namespace QuantLib {
             Iterator begin, Iterator end)
         : firstDate_(firstDate), lastDate_(lastDate), values_(begin,end) {
             QL_REQUIRE(lastDate >= firstDate, "invalid date range for history");
-            QL_ENSURE(values_.size() == unsigned int(lastDate-firstDate+1),
+            QL_ENSURE(values_.size() == static_cast <unsigned int>(lastDate-firstDate+1),
                 "history size incompatible with date range");
         }
         History(const Date& firstDate, const std::vector<double>& values) 
