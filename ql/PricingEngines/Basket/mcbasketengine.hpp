@@ -100,27 +100,18 @@ namespace QuantLib {
         #endif
         double strike = payoff->strike();
 
-        Array drifts(2);
-        drifts[0] = arguments_.blackScholesProcesses[0]->riskFreeTS
-                        ->zeroYield(arguments_.exercise->lastDate());
-        drifts[1] = arguments_.blackScholesProcesses[0]->riskFreeTS
-                        ->zeroYield(arguments_.exercise->lastDate());
+        Size numAssets = arguments_.blackScholesProcesses.size();
 
-        double variance1 = arguments_.blackScholesProcesses[0]->volTS
-                    ->blackVariance(arguments_.exercise->lastDate(), strike);
-        double variance2 = arguments_.blackScholesProcesses[1]->volTS
-                    ->blackVariance(arguments_.exercise->lastDate(), strike);
-        Size numAssets = 2;
-        Matrix covariance(2,2);
-        covariance[0][0] = variance1;
-        covariance[1][1] = variance2;
-        covariance[0][1] = arguments_.correlation * 
-            QL_SQRT(variance1) * QL_SQRT(variance2);
-        covariance[1][0] = covariance[0][1];
+        Array drifts(numAssets);
+        for (Size i=0; i<numAssets; i++) {
+            drifts[i] = arguments_.blackScholesProcesses[i]->riskFreeTS
+                        ->zeroYield(arguments_.exercise->lastDate());
+        }        
+
         TimeGrid grid = timeGrid();
         typename RNG::rsg_type gen =
             RNG::make_sequence_generator(numAssets*(grid.size()-1),seed_);
-
+        
         std::vector<Handle<DiffusionProcess> > diffusionProcs;
         for (Size j = 0; j < numAssets; j++) { 
             Handle<DiffusionProcess> bs(new
@@ -134,7 +125,8 @@ namespace QuantLib {
 
         return Handle<path_generator_type>(new
             path_generator_type(diffusionProcs, drifts, 
-                                covariance, grid, gen));
+                                arguments_.correlation, grid, gen));
+
     }
 
     //  MCSimulation interface implementation of 
@@ -153,7 +145,7 @@ namespace QuantLib {
         Handle<PlainVanillaPayoff> payoff = arguments_.payoff;
         #endif
 
-        Size numAssets = 2;
+        Size numAssets = arguments_.blackScholesProcesses.size();
         Array underlying(numAssets, 0.0);
         for (Size i = 0; i < numAssets; i++) {
             underlying[i] = arguments_.blackScholesProcesses[i]
