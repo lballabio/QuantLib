@@ -29,6 +29,7 @@ OBJS = \
     "lecuyeruniformrng.obj$(_mt)$(_D)" \
     "mt19937uniformrng.obj$(_mt)$(_D)" \
     "primitivepolynomials.obj$(_mt)$(_D)" \
+    "seedgenerator.obj$(_mt)$(_D)" \
     "sobolrsg.obj$(_mt)$(_D)"
 
 # Tools to be used

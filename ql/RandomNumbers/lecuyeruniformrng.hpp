@@ -23,6 +23,7 @@
 #define quantlib_lecuyer_uniform_rng_h
 
 #include <ql/MonteCarlo/sample.hpp>
+#include <ql/RandomNumbers/seedgenerator.hpp>
 #include <iostream>
 #include <string>
 #include <vector>
@@ -66,7 +67,7 @@ namespace QuantLib {
     inline LecuyerUniformRng::LecuyerUniformRng(long seed)
     : buffer(LecuyerUniformRng::bufferSize) {
         // Need to prevent seed=0, so use seed=0 to have a "random" seed
-        temp2 = temp1 = (seed != 0 ? seed : long(QL_TIME(0)));
+        temp2 = temp1 = (seed != 0 ? seed : SeedGenerator::get());
         // Load the shuffle table (after 8 warm-ups)
         for (int j=bufferSize+7; j>=0; j--) {
             long k = temp1/q1;

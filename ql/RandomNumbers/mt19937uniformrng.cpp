@@ -63,7 +63,7 @@
 */
 
 
-
+#include <ql/RandomNumbers/seedgenerator.hpp>
 #include <ql/RandomNumbers/mt19937uniformrng.hpp>
 
 namespace QuantLib {
@@ -88,7 +88,7 @@ namespace QuantLib {
 
     void MersenneTwisterUniformRng::seedInitialization(unsigned long seed) {
         /* initializes mt with a seed */
-        unsigned long s = (seed != 0 ? seed : long(QL_TIME(0)));
+        unsigned long s = (seed != 0 ? seed : SeedGenerator::get());
         mt[0]= s & 0xffffffffUL;
         for (mti=1; mti<N; mti++) {
             mt[mti] =

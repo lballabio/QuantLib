@@ -16,6 +16,7 @@
 */
 
 #include <ql/RandomNumbers/knuthuniformrng.hpp>
+#include <ql/RandomNumbers/seedgenerator.hpp>
 
 namespace QuantLib {
 
@@ -27,7 +28,7 @@ namespace QuantLib {
     KnuthUniformRng::KnuthUniformRng(long seed)
     : ranf_arr_buf(QUALITY), ran_u(QUALITY) {
         ranf_arr_ptr = ranf_arr_sentinel = ranf_arr_buf.end();
-        ranf_start(seed != 0 ? seed : long(QL_TIME(0)));
+        ranf_start(seed != 0 ? seed : SeedGenerator::get());
     }
 
     void KnuthUniformRng::ranf_start(long seed) {

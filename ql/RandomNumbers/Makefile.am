@@ -17,6 +17,7 @@ include_HEADERS = \
 	primitivepolynomials.h \
 	randomsequencegenerator.hpp \
 	rngtraits.hpp \
+	seedgenerator.hpp \
 	sobolrsg.hpp
 
 EXTRA_DIST=makefile.mak
@@ -28,6 +29,7 @@ libRandomNumbers_la_SOURCES = \
 	lecuyeruniformrng.cpp \
 	mt19937uniformrng.cpp \
 	primitivepolynomials.c \
+	seedgenerator.cpp \
 	sobolrsg.cpp
 
 noinst_LTLIBRARIES = libRandomNumbers.la
