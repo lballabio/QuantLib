@@ -29,7 +29,7 @@
 
 namespace QuantLib {
 
-    //! Pricing engine for barrier options using Monte Carlo
+    //! Pricing engine for barrier options using Monte Carlo simulation
     /*! Uses the Brownian-bridge correction for the barrier found in
         <i>
         Going to Extremes: Correcting Simulation Bias in Exotic
@@ -52,7 +52,15 @@ namespace QuantLib {
     class MCBarrierEngine : public BarrierOption::engine,
                             public McSimulation<SingleAsset<RNG>, S> {
       public:
+        typedef typename McSimulation<SingleAsset<RNG>,S>::path_generator_type
+            path_generator_type;
+        typedef typename McSimulation<SingleAsset<RNG>,S>::path_pricer_type
+            path_pricer_type;
+        typedef typename McSimulation<SingleAsset<RNG>,S>::stats_type
+            stats_type;
+        // constructor
         MCBarrierEngine(Size maxTimeStepsPerYear,
+                        bool brownianBridge,
                         bool antitheticVariate = false,
                         bool controlVariate = false,
                         Size requiredSamples = Null<Size>(),
@@ -60,26 +68,27 @@ namespace QuantLib {
                         Size maxSamples = Null<Size>(),
                         bool isBiased = false,
                         BigNatural seed = 0);
-
-        void calculate() const;
+        void calculate() const {
+            McSimulation<SingleAsset<RNG>,S>::calculate(requiredTolerance_,
+                                                        requiredSamples_,
+                                                        maxSamples_);
+            results_.value = this->mcModel_->sampleAccumulator().mean();
+            if (RNG::allowsErrorEstimate)
+            results_.errorEstimate =
+                this->mcModel_->sampleAccumulator().errorEstimate();
+        }
       protected:
-        typedef typename McSimulation<SingleAsset<RNG>,S>::path_generator_type
-            path_generator_type;
-        typedef typename McSimulation<SingleAsset<RNG>,S>::path_pricer_type
-            path_pricer_type;
-        typedef typename McSimulation<SingleAsset<RNG>,S>::stats_type
-            stats_type;
-
         // McSimulation implementation
-        boost::shared_ptr<path_generator_type> pathGenerator() const;
         TimeGrid timeGrid() const;
+        boost::shared_ptr<path_generator_type> pathGenerator() const;
         boost::shared_ptr<path_pricer_type> pathPricer() const;
-
+        Real controlVariateValue() const;
         // data members
         Size maxTimeStepsPerYear_;
         Size requiredSamples_, maxSamples_;
         Real requiredTolerance_;
         bool isBiased_;
+        bool brownianBridge_;
         BigNatural seed_;
     };
 
@@ -133,6 +142,7 @@ namespace QuantLib {
 
     template <class RNG, class S>
     inline MCBarrierEngine<RNG,S>::MCBarrierEngine(Size maxTimeStepsPerYear,
+                                                   bool brownianBridge,
                                                    bool antitheticVariate,
                                                    bool controlVariate,
                                                    Size requiredSamples,
@@ -140,15 +150,23 @@ namespace QuantLib {
                                                    Size maxSamples,
                                                    bool isBiased,
                                                    BigNatural seed)
-    : McSimulation<SingleAsset<RNG>,S>(antitheticVariate,
-                                       controlVariate),
+    : McSimulation<SingleAsset<RNG>,S>(antitheticVariate, controlVariate),
       maxTimeStepsPerYear_(maxTimeStepsPerYear),
-      requiredSamples_(requiredSamples),
-      maxSamples_(maxSamples),
+      requiredSamples_(requiredSamples), maxSamples_(maxSamples),
       requiredTolerance_(requiredTolerance),
       isBiased_(isBiased),
-      seed_(seed) {}
+      brownianBridge_(brownianBridge), seed_(seed) {}
 
+    template <class RNG, class S>
+    inline TimeGrid MCBarrierEngine<RNG,S>::timeGrid() const {
+
+        Time t = arguments_.blackScholesProcess->riskFreeRate()
+            ->dayCounter().yearFraction(
+              arguments_.blackScholesProcess->riskFreeRate()->referenceDate(),
+              arguments_.exercise->lastDate());
+
+        return TimeGrid(t, Size(QL_MAX<Real>(t * maxTimeStepsPerYear_, 1.0)));
+    }
 
     template <class RNG, class S>
     inline
@@ -158,10 +176,9 @@ namespace QuantLib {
         TimeGrid grid = timeGrid();
         typename RNG::rsg_type gen =
             RNG::make_sequence_generator(grid.size()-1,seed_);
-        // BB here
         return boost::shared_ptr<path_generator_type>(new
             path_generator_type(arguments_.blackScholesProcess,
-                                grid, gen, true));
+                                grid, gen, brownianBridge_));
     }
 
 
@@ -209,45 +226,16 @@ namespace QuantLib {
     }
 
 
-    template <class RNG, class S>
-    inline TimeGrid MCBarrierEngine<RNG,S>::timeGrid() const {
+    template<class RNG, class S>
+    inline
+    Real MCBarrierEngine<RNG,S>::controlVariateValue() const {
 
-        Time t = arguments_.blackScholesProcess->riskFreeRate()
-            ->dayCounter().yearFraction(
-              arguments_.blackScholesProcess->riskFreeRate()->referenceDate(),
-              arguments_.exercise->lastDate());
-
-        return TimeGrid(t, Size(QL_MAX<Real>(t * maxTimeStepsPerYear_, 1.0)));
-    }
-
-
-    template <class RNG, class S>
-    void MCBarrierEngine<RNG,S>::calculate() const {
-
-        QL_REQUIRE(requiredTolerance_ != Null<Real>() ||
-                   requiredSamples_ != Null<Size>(),
-                   "neither tolerance nor number of samples set");
-
-        // what exercise type is a barrier option?
-        QL_REQUIRE(arguments_.exercise->type() == Exercise::European,
-                   "not an European Option");
-
-        //! Initialize the one-factor Monte Carlo
-        if (this->controlVariate_) {
-
-            boost::shared_ptr<path_pricer_type> controlPP =
-                this->controlPathPricer();
-            QL_REQUIRE(controlPP,
-                       "engine does not provide "
-                       "control variation path pricer");
-
-            boost::shared_ptr<PricingEngine> controlPE =
+        boost::shared_ptr<PricingEngine> controlPE =
                 this->controlPricingEngine();
-
             QL_REQUIRE(controlPE,
                        "engine does not provide "
                        "control variation pricing engine");
-            /*
+
             BarrierOption::arguments* controlArguments =
                 dynamic_cast<BarrierOption::arguments*>(
                     controlPE->arguments());
@@ -257,36 +245,8 @@ namespace QuantLib {
             const BarrierOption::results* controlResults =
                 dynamic_cast<const BarrierOption::results*>(
                     controlPE->results());
-            Real controlVariateValue = controlResults->value;
 
-            this->mcModel_ =
-                boost::shared_ptr<MonteCarloModel<SingleAsset<RNG>, S> >(
-                    new MonteCarloModel<SingleAsset<RNG>, S>(
-                        pathGenerator(), pathPricer(), stats_type(),
-                        this->antitheticVariate_, controlPP,
-                        controlVariateValue));
-            */
-        } else {
-            this->mcModel_ =
-                boost::shared_ptr<MonteCarloModel<SingleAsset<RNG>, S> >(
-                    new MonteCarloModel<SingleAsset<RNG>, S>(
-                        pathGenerator(), pathPricer(), S(),
-                        this->antitheticVariate_));
-        }
-
-        if (requiredTolerance_ != Null<Real>()) {
-            if (maxSamples_ != Null<Size>())
-                this->value(requiredTolerance_, maxSamples_);
-            else
-                this->value(requiredTolerance_);
-        } else {
-            this->valueWithSamples(requiredSamples_);
-        }
-
-        results_.value = this->mcModel_->sampleAccumulator().mean();
-        if (RNG::allowsErrorEstimate)
-            results_.errorEstimate =
-                this->mcModel_->sampleAccumulator().errorEstimate();
+            return controlResults->value;
     }
 
 }

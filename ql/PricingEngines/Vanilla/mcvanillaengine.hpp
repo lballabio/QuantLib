@@ -28,13 +28,21 @@
 
 namespace QuantLib {
 
-    //! Pricing engine for vanilla option using Monte Carlo simulation
+    //! Pricing engine for vanilla options using Monte Carlo simulation
     /*! \ingroup vanillaengines */
     template<class RNG = PseudoRandom, class S = Statistics>
     class MCVanillaEngine : public VanillaOption::engine,
                             public McSimulation<SingleAsset<RNG>, S> {
       public:
-        void calculate() const;
+        void calculate() const {
+            McSimulation<SingleAsset<RNG>,S>::calculate(requiredTolerance_,
+                                                        requiredSamples_,
+                                                        maxSamples_);
+            results_.value = this->mcModel_->sampleAccumulator().mean();
+            if (RNG::allowsErrorEstimate)
+            results_.errorEstimate =
+                this->mcModel_->sampleAccumulator().errorEstimate();
+        }
       protected:
         typedef typename McSimulation<SingleAsset<RNG>,S>::path_generator_type
             path_generator_type;
@@ -44,6 +52,7 @@ namespace QuantLib {
             stats_type;
         // constructor
         MCVanillaEngine(Size maxTimeStepsPerYear,
+                        bool brownianBridge,
                         bool antitheticVariate = false,
                         bool controlVariate = false,
                         Size requiredSamples = Null<Size>(),
@@ -52,18 +61,21 @@ namespace QuantLib {
                         BigNatural seed = 0);
         // McSimulation implementation
         boost::shared_ptr<path_generator_type> pathGenerator() const;
+        Real controlVariateValue() const;
         // data members
         Size maxTimeStepsPerYear_;
         Size requiredSamples_, maxSamples_;
         Real requiredTolerance_;
+        bool brownianBridge_;
         BigNatural seed_;
     };
 
 
-    // inline definitions
+    // template definitions
 
     template<class RNG, class S>
     inline MCVanillaEngine<RNG,S>::MCVanillaEngine(Size maxTimeStepsPerYear,
+                                                   bool brownianBridge,
                                                    bool antitheticVariate,
                                                    bool controlVariate,
                                                    Size requiredSamples,
@@ -73,48 +85,14 @@ namespace QuantLib {
     : McSimulation<SingleAsset<RNG>,S>(antitheticVariate, controlVariate),
       maxTimeStepsPerYear_(maxTimeStepsPerYear),
       requiredSamples_(requiredSamples), maxSamples_(maxSamples),
-      requiredTolerance_(requiredTolerance), seed_(seed) {}
-
-    // template definitions
+      requiredTolerance_(requiredTolerance),
+      brownianBridge_(brownianBridge), seed_(seed) {}
 
     template<class RNG, class S>
     inline
-    boost::shared_ptr<QL_TYPENAME MCVanillaEngine<RNG,S>::path_generator_type>
-    MCVanillaEngine<RNG,S>::pathGenerator() const {
+    Real MCVanillaEngine<RNG,S>::controlVariateValue() const {
 
-        TimeGrid grid = this->timeGrid();
-        typename RNG::rsg_type gen =
-            RNG::make_sequence_generator(grid.size()-1,seed_);
-        // BB here
-        return boost::shared_ptr<path_generator_type>(
-                      new path_generator_type(arguments_.blackScholesProcess,
-                                              grid, gen, true));
-    }
-
-
-    template<class RNG, class S>
-    inline void MCVanillaEngine<RNG,S>::calculate() const {
-
-        QL_REQUIRE(requiredTolerance_ != Null<Real>() ||
-                   requiredSamples_ != Null<Size>(),
-                   "neither tolerance nor number of samples set");
-
-        // a vanilla option is not necessarily european
-        /*
-        QL_REQUIRE(arguments_.exercise->type() == Exercise::European,
-                   "not an European Option");
-       */
-
-        //! Initialize the one-factor Monte Carlo
-        if (this->controlVariate_) {
-
-            boost::shared_ptr<path_pricer_type> controlPP =
-                this->controlPathPricer();
-            QL_REQUIRE(controlPP,
-                       "engine does not provide "
-                       "control variation path pricer");
-
-            boost::shared_ptr<PricingEngine> controlPE =
+        boost::shared_ptr<PricingEngine> controlPE =
                 this->controlPricingEngine();
             QL_REQUIRE(controlPE,
                        "engine does not provide "
@@ -129,37 +107,25 @@ namespace QuantLib {
             const VanillaOption::results* controlResults =
                 dynamic_cast<const VanillaOption::results*>(
                     controlPE->results());
-            Real controlVariateValue = controlResults->value;
 
-            this->mcModel_ =
-                boost::shared_ptr<MonteCarloModel<SingleAsset<RNG>, S> >(
-                    new MonteCarloModel<SingleAsset<RNG>, S>(
-                           pathGenerator(), this->pathPricer(), stats_type(),
-                           this->antitheticVariate_, controlPP,
-                           controlVariateValue));
-
-        } else {
-            this->mcModel_ =
-                boost::shared_ptr<MonteCarloModel<SingleAsset<RNG>, S> >(
-                    new MonteCarloModel<SingleAsset<RNG>, S>(
-                           pathGenerator(), this->pathPricer(), S(),
-                           this->antitheticVariate_));
-        }
-
-        if (requiredTolerance_ != Null<Real>()) {
-            if (maxSamples_ != Null<Size>())
-                this->value(requiredTolerance_, maxSamples_);
-            else
-                this->value(requiredTolerance_);
-        } else {
-            this->valueWithSamples(requiredSamples_);
-        }
-
-        results_.value = this->mcModel_->sampleAccumulator().mean();
-        if (RNG::allowsErrorEstimate)
-            results_.errorEstimate =
-                this->mcModel_->sampleAccumulator().errorEstimate();
+            return controlResults->value;
     }
+
+
+    template<class RNG, class S>
+    inline
+    boost::shared_ptr<QL_TYPENAME MCVanillaEngine<RNG,S>::path_generator_type>
+    MCVanillaEngine<RNG,S>::pathGenerator() const {
+
+        TimeGrid grid = this->timeGrid();
+        typename RNG::rsg_type gen =
+            RNG::make_sequence_generator(grid.size()-1,seed_);
+        return boost::shared_ptr<path_generator_type>(new
+            path_generator_type(arguments_.blackScholesProcess,
+                                grid, gen, brownianBridge_));
+    }
+
+
 
 }
 

@@ -27,7 +27,7 @@
 
 namespace QuantLib {
 
-    //! MC pricing engine for European baskets
+    //! Pricing engine for basket options using Monte Carlo simulation
     /*! \ingroup basketengines
 
         \test the correctness of the returned value is tested by
@@ -37,29 +37,36 @@ namespace QuantLib {
     class MCBasketEngine  : public BasketOption::engine,
                             public McSimulation<MultiAsset<RNG>, S> {
       public:
-        MCBasketEngine(Size maxTimeStepsPerYear,
-                       bool antitheticVariate = false,
-                       bool controlVariate = false,
-                       Size requiredSamples = Null<Size>(),
-                       Real requiredTolerance = Null<Real>(),
-                       Size maxSamples = Null<Size>(),
-                       bool brownianBridge = false,
-                       BigNatural seed = 0);
-
         typedef typename McSimulation<MultiAsset<RNG>,S>::path_generator_type
             path_generator_type;
         typedef typename McSimulation<MultiAsset<RNG>,S>::path_pricer_type
             path_pricer_type;
         typedef typename McSimulation<MultiAsset<RNG>,S>::stats_type
             stats_type;
-
-        void calculate() const;
-
+        // constructor
+        MCBasketEngine(Size maxTimeStepsPerYear,
+                       bool brownianBridge,
+                       bool antitheticVariate = false,
+                       bool controlVariate = false,
+                       Size requiredSamples = Null<Size>(),
+                       Real requiredTolerance = Null<Real>(),
+                       Size maxSamples = Null<Size>(),
+                       BigNatural seed = 0);
+        void calculate() const {
+            McSimulation<MultiAsset<RNG>,S>::calculate(requiredTolerance_,
+                                                       requiredSamples_,
+                                                       maxSamples_);
+            results_.value = this->mcModel_->sampleAccumulator().mean();
+            if (RNG::allowsErrorEstimate)
+            results_.errorEstimate =
+                this->mcModel_->sampleAccumulator().errorEstimate();
+        }
       protected:
         // McSimulation implementation
-        boost::shared_ptr<path_generator_type> pathGenerator() const;
         TimeGrid timeGrid() const;
+        boost::shared_ptr<path_generator_type> pathGenerator() const;
         boost::shared_ptr<path_pricer_type> pathPricer() const;
+        Real controlVariateValue() const;
         // data members
         Size maxTimeStepsPerYear_;
         Size requiredSamples_;
@@ -89,21 +96,30 @@ namespace QuantLib {
 
     template<class RNG, class S>
     inline MCBasketEngine<RNG,S>::MCBasketEngine(Size maxTimeStepsPerYear,
+                                                 bool brownianBridge,
                                                  bool antitheticVariate,
                                                  bool controlVariate,
                                                  Size requiredSamples,
                                                  Real requiredTolerance,
                                                  Size maxSamples,
-                                                 bool brownianBridge,
                                                  BigNatural seed)
     : McSimulation<MultiAsset<RNG>,S>(antitheticVariate, controlVariate),
       maxTimeStepsPerYear_(maxTimeStepsPerYear),
-      requiredSamples_(requiredSamples),
-      maxSamples_(maxSamples),
+      requiredSamples_(requiredSamples), maxSamples_(maxSamples),
       requiredTolerance_(requiredTolerance),
-      brownianBridge_(brownianBridge),
-      seed_(seed) {}
+      brownianBridge_(brownianBridge), seed_(seed) {}
 
+    template <class RNG, class S>
+    inline TimeGrid MCBasketEngine<RNG,S>::timeGrid() const {
+
+        Time t = arguments_.blackScholesProcesses[0]->riskFreeRate()
+            ->dayCounter().yearFraction(
+                arguments_.blackScholesProcesses[0]
+                    ->riskFreeRate()->referenceDate(),
+                arguments_.exercise->lastDate());
+
+        return TimeGrid(t, maxTimeStepsPerYear_);
+    }
 
     template<class RNG, class S>
     inline
@@ -128,9 +144,7 @@ namespace QuantLib {
         return boost::shared_ptr<path_generator_type>(new
             path_generator_type(diffusionProcs, arguments_.correlation,
                                 grid, gen, brownianBridge_));
-
     }
-
 
     template <class RNG, class S>
     inline
@@ -159,85 +173,28 @@ namespace QuantLib {
                                 ->discount(arguments_.exercise->lastDate())));
     }
 
-
-    template <class RNG, class S>
-    inline TimeGrid MCBasketEngine<RNG,S>::timeGrid() const {
-
-        Time t = arguments_.blackScholesProcesses[0]->riskFreeRate()
-            ->dayCounter().yearFraction(
-                arguments_.blackScholesProcesses[0]
-                    ->riskFreeRate()->referenceDate(),
-                arguments_.exercise->lastDate());
-
-        return TimeGrid(t, maxTimeStepsPerYear_);
-    }
-
-
     template<class RNG, class S>
-    inline void MCBasketEngine<RNG,S>::calculate() const {
+    inline
+    Real MCBasketEngine<RNG,S>::controlVariateValue() const {
 
-        QL_REQUIRE(requiredTolerance_ != Null<Real>() ||
-                   requiredSamples_ != Null<Size>(),
-                   "neither tolerance nor number of samples set");
-/*
-        QL_REQUIRE(arguments_.exercise->type() == Exercise::European,
-                   "not an European Option");
-*/
-        //! Initialize the multi-factor Monte Carlo
-        if (this->controlVariate_) {
+        boost::shared_ptr<PricingEngine> controlPE =
+            this->controlPricingEngine();
 
-            boost::shared_ptr<path_pricer_type> controlPP =
-                this->controlPathPricer();
-            QL_REQUIRE(controlPP,
-                       "engine does not provide "
-                       "control variation path pricer");
+        QL_REQUIRE(controlPE,
+                    "engine does not provide "
+                    "control variation pricing engine");
 
-            boost::shared_ptr<PricingEngine> controlPE =
-                this->controlPricingEngine();
+        BasketOption::arguments* controlArguments =
+            dynamic_cast<BasketOption::arguments*>(
+                controlPE->arguments());
+        *controlArguments = arguments_;
+        controlPE->calculate();
 
-            QL_REQUIRE(controlPE,
-                       "engine does not provide "
-                       "control variation pricing engine");
+        const BasketOption::results* controlResults =
+            dynamic_cast<const BasketOption::results*>(
+                controlPE->results());
 
-            BasketOption::arguments* controlArguments =
-                dynamic_cast<BasketOption::arguments*>(
-                    controlPE->arguments());
-            *controlArguments = arguments_;
-            controlPE->calculate();
-
-            const BasketOption::results* controlResults =
-                dynamic_cast<const BasketOption::results*>(
-                    controlPE->results());
-            Real controlVariateValue = controlResults->value;
-
-            this->mcModel_ =
-                boost::shared_ptr<MonteCarloModel<MultiAsset<RNG>, S> >(
-                    new MonteCarloModel<MultiAsset<RNG>, S>(
-                           pathGenerator(), pathPricer(), stats_type(),
-                           this->antitheticVariate_, controlPP,
-                           controlVariateValue));
-
-        } else {
-            this->mcModel_ =
-                boost::shared_ptr<MonteCarloModel<MultiAsset<RNG>, S> >(
-                    new MonteCarloModel<MultiAsset<RNG>, S>(
-                           pathGenerator(), pathPricer(), S(),
-                           this->antitheticVariate_));
-        }
-
-        if (requiredTolerance_ != Null<Real>()) {
-            if (maxSamples_ != Null<Size>())
-                this->value(requiredTolerance_, maxSamples_);
-            else
-                this->value(requiredTolerance_);
-        } else {
-            this->valueWithSamples(requiredSamples_);
-        }
-
-        results_.value = this->mcModel_->sampleAccumulator().mean();
-        if (RNG::allowsErrorEstimate)
-            results_.errorEstimate =
-                this->mcModel_->sampleAccumulator().errorEstimate();
+        return controlResults->value;
     }
 
 }

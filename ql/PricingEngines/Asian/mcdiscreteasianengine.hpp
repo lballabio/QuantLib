@@ -28,15 +28,13 @@
 
 namespace QuantLib {
 
-    //! Monte Carlo pricing engine for discrete average Asians
+    //! Pricing engine for discrete average Asians using Monte Carlo simulation
     /*! \ingroup asianengines */
     template<class RNG = PseudoRandom, class S = Statistics>
     class MCDiscreteAveragingAsianEngine :
                                 public DiscreteAveragingAsianOption::engine,
                                 public McSimulation<SingleAsset<RNG>, S> {
       public:
-        void calculate() const;
-      protected:
         typedef typename McSimulation<SingleAsset<RNG>,S>::path_generator_type
             path_generator_type;
         typedef typename McSimulation<SingleAsset<RNG>,S>::path_pricer_type
@@ -45,123 +43,57 @@ namespace QuantLib {
             stats_type;
         // constructor
         MCDiscreteAveragingAsianEngine(Size maxTimeStepsPerYear,
-                      bool antitheticVariate = false,
-                      bool controlVariate = false,
-                      Size requiredSamples = Null<Size>(),
-                      Real requiredTolerance = Null<Real>(),
-                      Size maxSamples = Null<Size>(),
-                      BigNatural seed = 0);
+                                       bool brownianBridge,
+                                       bool antitheticVariate = false,
+                                       bool controlVariate = false,
+                                       Size requiredSamples = Null<Size>(),
+                                       Real requiredTolerance = Null<Real>(),
+                                       Size maxSamples = Null<Size>(),
+                                       BigNatural seed = 0);
+        void calculate() const {
+            McSimulation<SingleAsset<RNG>,S>::calculate(requiredTolerance_,
+                                                        requiredSamples_,
+                                                        maxSamples_);
+            results_.value = this->mcModel_->sampleAccumulator().mean();
+            if (RNG::allowsErrorEstimate)
+            results_.errorEstimate =
+                this->mcModel_->sampleAccumulator().errorEstimate();
+        }
+      protected:
         // McSimulation implementation
-        boost::shared_ptr<path_generator_type> pathGenerator() const;
         TimeGrid timeGrid() const;
+        boost::shared_ptr<path_generator_type> pathGenerator() const;
+        Real controlVariateValue() const;
         // data members
         Size maxTimeStepsPerYear_;
         Size requiredSamples_, maxSamples_;
         Real requiredTolerance_;
+        bool brownianBridge_;
         BigNatural seed_;
     };
 
-
-    // inline definitions
-
-    template<class RNG, class S>
-    inline
-    MCDiscreteAveragingAsianEngine<RNG,S>::MCDiscreteAveragingAsianEngine(
-        Size maxTimeStepsPerYear,
-        bool antitheticVariate,
-        bool controlVariate,
-        Size requiredSamples,
-        Real requiredTolerance,
-        Size maxSamples,
-        BigNatural seed)
-    : McSimulation<SingleAsset<RNG>,S>(antitheticVariate, controlVariate),
-      maxTimeStepsPerYear_(maxTimeStepsPerYear),
-      requiredSamples_(requiredSamples), maxSamples_(maxSamples),
-      requiredTolerance_(requiredTolerance), seed_(seed) {}
 
     // template definitions
 
     template<class RNG, class S>
     inline
-    boost::shared_ptr<QL_TYPENAME MCDiscreteAveragingAsianEngine<RNG,S>::path_generator_type>
-    MCDiscreteAveragingAsianEngine<RNG,S>::pathGenerator() const {
-
-        TimeGrid grid = this->timeGrid();
-        typename RNG::rsg_type gen =
-            RNG::make_sequence_generator(grid.size()-1,seed_);
-        // BB here
-        return boost::shared_ptr<path_generator_type>(
-                      new path_generator_type(arguments_.blackScholesProcess,
-                                              grid, gen, true));
-    }
-
-
-    template<class RNG, class S>
-    inline void MCDiscreteAveragingAsianEngine<RNG,S>::calculate() const {
-
-        QL_REQUIRE(requiredTolerance_ != Null<Real>() ||
-                   requiredSamples_ != Null<Size>(),
-                   "neither tolerance nor number of samples set");
-
-        //! Initialize the one-factor Monte Carlo
-        if (this->controlVariate_) {
-
-            boost::shared_ptr<path_pricer_type> controlPP =
-                this->controlPathPricer();
-            QL_REQUIRE(controlPP,
-                       "engine does not provide "
-                       "control variation path pricer");
-
-            boost::shared_ptr<PricingEngine> controlPE =
-                this->controlPricingEngine();
-            QL_REQUIRE(controlPE,
-                       "engine does not provide "
-                       "control variation pricing engine");
-
-            DiscreteAveragingAsianOption::arguments* controlArguments =
-                dynamic_cast<DiscreteAveragingAsianOption::arguments*>(
-                    controlPE->arguments());
-            *controlArguments = arguments_;
-            controlPE->calculate();
-
-            const DiscreteAveragingAsianOption::results* controlResults =
-                dynamic_cast<const DiscreteAveragingAsianOption::results*>(
-                    controlPE->results());
-            Real controlVariateValue = controlResults->value;
-
-            this->mcModel_ =
-                boost::shared_ptr<MonteCarloModel<SingleAsset<RNG>, S> >(
-                    new MonteCarloModel<SingleAsset<RNG>, S>(
-                           pathGenerator(), this->pathPricer(), stats_type(),
-                           this->antitheticVariate_, controlPP,
-                           controlVariateValue));
-
-        } else {
-            this->mcModel_ =
-                boost::shared_ptr<MonteCarloModel<SingleAsset<RNG>, S> >(
-                    new MonteCarloModel<SingleAsset<RNG>, S>(
-                           pathGenerator(), this->pathPricer(), S(),
-                           this->antitheticVariate_));
-        }
-
-        if (requiredTolerance_ != Null<Real>()) {
-            if (maxSamples_ != Null<Size>())
-                this->value(requiredTolerance_, maxSamples_);
-            else
-                this->value(requiredTolerance_);
-        } else {
-            this->valueWithSamples(requiredSamples_);
-        }
-
-        results_.value = this->mcModel_->sampleAccumulator().mean();
-        if (RNG::allowsErrorEstimate)
-            results_.errorEstimate =
-                this->mcModel_->sampleAccumulator().errorEstimate();
-    }
+    MCDiscreteAveragingAsianEngine<RNG,S>::MCDiscreteAveragingAsianEngine(
+                                                    Size maxTimeStepsPerYear,
+                                                    bool brownianBridge,
+                                                    bool antitheticVariate,
+                                                    bool controlVariate,
+                                                    Size requiredSamples,
+                                                    Real requiredTolerance,
+                                                    Size maxSamples,
+                                                    BigNatural seed)
+    : McSimulation<SingleAsset<RNG>,S>(antitheticVariate, controlVariate),
+      maxTimeStepsPerYear_(maxTimeStepsPerYear),
+      requiredSamples_(requiredSamples), maxSamples_(maxSamples),
+      requiredTolerance_(requiredTolerance),
+      brownianBridge_(brownianBridge), seed_(seed) {}
 
     template <class RNG, class S>
-    inline
-    TimeGrid MCDiscreteAveragingAsianEngine<RNG,S>::timeGrid() const {
+    inline TimeGrid MCDiscreteAveragingAsianEngine<RNG,S>::timeGrid() const {
 
         boost::shared_ptr<BlackScholesProcess> process =
             arguments_.blackScholesProcess;
@@ -181,6 +113,41 @@ namespace QuantLib {
         return TimeGrid(fixingTimes.begin(), fixingTimes.end());
     }
 
+    template<class RNG, class S>
+    inline
+    boost::shared_ptr<QL_TYPENAME MCDiscreteAveragingAsianEngine<RNG,S>::path_generator_type>
+    MCDiscreteAveragingAsianEngine<RNG,S>::pathGenerator() const {
+
+        TimeGrid grid = this->timeGrid();
+        typename RNG::rsg_type gen =
+            RNG::make_sequence_generator(grid.size()-1,seed_);
+        return boost::shared_ptr<path_generator_type>(new
+            path_generator_type(arguments_.blackScholesProcess,
+                                grid, gen, brownianBridge_));
+    }
+
+    template<class RNG, class S>
+    inline
+    Real MCDiscreteAveragingAsianEngine<RNG,S>::controlVariateValue() const {
+
+        boost::shared_ptr<PricingEngine> controlPE =
+                this->controlPricingEngine();
+            QL_REQUIRE(controlPE,
+                       "engine does not provide "
+                       "control variation pricing engine");
+
+            DiscreteAveragingAsianOption::arguments* controlArguments =
+                dynamic_cast<DiscreteAveragingAsianOption::arguments*>(
+                    controlPE->arguments());
+            *controlArguments = arguments_;
+            controlPE->calculate();
+
+            const DiscreteAveragingAsianOption::results* controlResults =
+                dynamic_cast<const DiscreteAveragingAsianOption::results*>(
+                    controlPE->results());
+
+            return controlResults->value;
+    }
 
 }
 

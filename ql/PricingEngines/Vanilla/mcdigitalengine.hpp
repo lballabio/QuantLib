@@ -62,33 +62,19 @@ namespace QuantLib {
             path_pricer_type;
         typedef typename MCVanillaEngine<RNG,S>::stats_type
             stats_type;
-        // the uniform generator to use in path generation and
-        // path correction
-//        typedef typename RNG::ursg_type my_sequence_type;
-
         // constructor
         MCDigitalEngine(Size maxTimeStepsPerYear,
+                        bool brownianBridge,
                         bool antitheticVariate = false,
                         bool controlVariate = false,
                         Size requiredSamples = Null<Size>(),
                         Real requiredTolerance = Null<Real>(),
                         Size maxSamples = Null<Size>(),
                         BigNatural seed = 0);
-
-//        void calculate() const;
       protected:
-
         // McSimulation implementation
         TimeGrid timeGrid() const;
-//        boost::shared_ptr<path_generator_type> pathGenerator() const;
         boost::shared_ptr<path_pricer_type> pathPricer() const;
-
-        // data members
-        //my_sequence_type uniformGenerator_;
-//        Size maxTimeStepsPerYear_;
-//        Size requiredSamples_, maxSamples_;
-//        Real requiredTolerance_;
-//        BigNatural seed_;
     };
 
     class DigitalPathPricer : public PathPricer<Path> {
@@ -116,6 +102,7 @@ namespace QuantLib {
 
     template<class RNG, class S>
     MCDigitalEngine<RNG,S>::MCDigitalEngine(Size maxTimeStepsPerYear,
+                                            bool brownianBridge,
                                             bool antitheticVariate,
                                             bool controlVariate,
                                             Size requiredSamples,
@@ -123,35 +110,13 @@ namespace QuantLib {
                                             Size maxSamples,
                                             BigNatural seed)
     : MCVanillaEngine<RNG,S>(maxTimeStepsPerYear,
+                             brownianBridge,
                              antitheticVariate,
                              controlVariate,
                              requiredSamples,
                              requiredTolerance,
                              maxSamples,
                              seed) {}
-
-/*
-    template<class RNG, class S>
-    boost::shared_ptr<QL_TYPENAME MCDigitalEngine<RNG,S>::path_generator_type>
-    MCDigitalEngine<RNG,S>::pathGenerator() const {
-
-        boost::shared_ptr<StochasticProcess> bs(new
-            BlackScholesProcess(
-                arguments_.blackScholesProcess->riskFreeTS,
-                arguments_.blackScholesProcess->dividendTS,
-                arguments_.blackScholesProcess->volTS,
-                arguments_.blackScholesProcess->underlying));
-
-        TimeGrid grid = timeGrid();
-
-        typename RNG::rsg_type gen =
-            RNG::make_sequence_generator(grid.size()-1, seed_);
-
-        return boost::shared_ptr<path_generator_type>(
-            new path_generator_type(bs, grid, gen));
-
-    }
-*/
 
     template <class RNG, class S>
     inline

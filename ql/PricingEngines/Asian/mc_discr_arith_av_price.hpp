@@ -55,12 +55,13 @@ namespace QuantLib {
             stats_type;
         // constructor
         MCDiscreteArithmeticAPEngine(Size maxTimeStepPerYear,
-                            bool antitheticVariate = false,
-                            bool controlVariate = false,
-                            Size requiredSamples = Null<Size>(),
-                            Real requiredTolerance = Null<Real>(),
-                            Size maxSamples = Null<Size>(),
-                            BigNatural seed = 0);
+                                     bool brownianBridge,
+                                     bool antitheticVariate = false,
+                                     bool controlVariate = false,
+                                     Size requiredSamples = Null<Size>(),
+                                     Real requiredTolerance = Null<Real>(),
+                                     Size maxSamples = Null<Size>(),
+                                     BigNatural seed = 0);
       protected:
         boost::shared_ptr<path_pricer_type> pathPricer() const;
         boost::shared_ptr<path_pricer_type> controlPathPricer() const;
@@ -111,6 +112,7 @@ namespace QuantLib {
     inline
     MCDiscreteArithmeticAPEngine<RNG,S>::MCDiscreteArithmeticAPEngine(
                                                     Size maxTimeStepPerYear,
+                                                    bool brownianBridge,
                                                     bool antitheticVariate,
                                                     bool controlVariate,
                                                     Size requiredSamples,
@@ -118,12 +120,13 @@ namespace QuantLib {
                                                     Size maxSamples,
                                                     BigNatural seed)
     : MCDiscreteAveragingAsianEngine<RNG,S>(maxTimeStepPerYear,
-                             antitheticVariate,
-                             controlVariate,
-                             requiredSamples,
-                             requiredTolerance,
-                             maxSamples,
-                             seed) {}
+                                            brownianBridge,
+                                            antitheticVariate,
+                                            controlVariate,
+                                            requiredSamples,
+                                            requiredTolerance,
+                                            maxSamples,
+                                            seed) {}
 
     template <class RNG, class S>
     inline
@@ -184,18 +187,20 @@ namespace QuantLib {
         MakeMCDiscreteArithmeticAPEngine();
         // named parameters
         MakeMCDiscreteArithmeticAPEngine& withStepsPerYear(Size maxSteps);
+        MakeMCDiscreteArithmeticAPEngine& withBrownianBridge(bool b = true);
         MakeMCDiscreteArithmeticAPEngine& withSamples(Size samples);
         MakeMCDiscreteArithmeticAPEngine& withTolerance(Real tolerance);
         MakeMCDiscreteArithmeticAPEngine& withMaxSamples(Size samples);
         MakeMCDiscreteArithmeticAPEngine& withSeed(BigNatural seed);
-        MakeMCDiscreteArithmeticAPEngine& withAntitheticVariate();
-        MakeMCDiscreteArithmeticAPEngine& withControlVariate();
+        MakeMCDiscreteArithmeticAPEngine& withAntitheticVariate(bool b = true);
+        MakeMCDiscreteArithmeticAPEngine& withControlVariate(bool b = true);
         // conversion to pricing engine
         operator boost::shared_ptr<PricingEngine>() const;
       private:
         bool antithetic_, controlVariate_;
         Size steps_, samples_, maxSamples_;
         Real tolerance_;
+        bool brownianBridge_;
         BigNatural seed_;
     };
 
@@ -203,7 +208,7 @@ namespace QuantLib {
     inline MakeMCDiscreteArithmeticAPEngine<RNG,S>::MakeMCDiscreteArithmeticAPEngine()
     : antithetic_(false), controlVariate_(false),
       steps_(Null<Size>()), samples_(Null<Size>()), maxSamples_(Null<Size>()),
-      tolerance_(Null<Real>()), seed_(0) {}
+      tolerance_(Null<Real>()), brownianBridge_(true), seed_(0) {}
 
     template <class RNG, class S>
     inline MakeMCDiscreteArithmeticAPEngine<RNG,S>&
@@ -249,15 +254,22 @@ namespace QuantLib {
 
     template <class RNG, class S>
     inline MakeMCDiscreteArithmeticAPEngine<RNG,S>&
-    MakeMCDiscreteArithmeticAPEngine<RNG,S>::withAntitheticVariate() {
-        antithetic_ = true;
+    MakeMCDiscreteArithmeticAPEngine<RNG,S>::withBrownianBridge(bool b) {
+        brownianBridge_ = b;
         return *this;
     }
 
     template <class RNG, class S>
     inline MakeMCDiscreteArithmeticAPEngine<RNG,S>&
-    MakeMCDiscreteArithmeticAPEngine<RNG,S>::withControlVariate() {
-        controlVariate_ = true;
+    MakeMCDiscreteArithmeticAPEngine<RNG,S>::withAntitheticVariate(bool b) {
+        antithetic_ = b;
+        return *this;
+    }
+
+    template <class RNG, class S>
+    inline MakeMCDiscreteArithmeticAPEngine<RNG,S>&
+    MakeMCDiscreteArithmeticAPEngine<RNG,S>::withControlVariate(bool b) {
+        controlVariate_ = b;
         return *this;
     }
 
@@ -267,11 +279,13 @@ namespace QuantLib {
                                                                       const {
         QL_REQUIRE(steps_ != Null<Size>(),
                    "max number of steps per year not given");
-        return boost::shared_ptr<PricingEngine>(
-                             new MCDiscreteArithmeticAPEngine<RNG,S>(steps_, antithetic_,
-                                                         controlVariate_,
-                                                         samples_, tolerance_,
-                                                         maxSamples_, seed_));
+        return boost::shared_ptr<PricingEngine>(new
+            MCDiscreteArithmeticAPEngine<RNG,S>(steps_,
+                                                brownianBridge_,
+                                                antithetic_, controlVariate_,
+                                                samples_, tolerance_,
+                                                maxSamples_,
+                                                seed_));
     }
 
 

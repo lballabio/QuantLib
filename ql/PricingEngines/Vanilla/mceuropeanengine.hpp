@@ -46,6 +46,7 @@ namespace QuantLib {
             stats_type;
         // constructor
         MCEuropeanEngine(Size maxTimeStepPerYear,
+                         bool brownianBridge,
                          bool antitheticVariate = false,
                          bool controlVariate = false,
                          Size requiredSamples = Null<Size>(),
@@ -63,18 +64,20 @@ namespace QuantLib {
         MakeMCEuropeanEngine();
         // named parameters
         MakeMCEuropeanEngine& withStepsPerYear(Size maxSteps);
+        MakeMCEuropeanEngine& withBrownianBridge(bool b = true);
         MakeMCEuropeanEngine& withSamples(Size samples);
         MakeMCEuropeanEngine& withTolerance(Real tolerance);
         MakeMCEuropeanEngine& withMaxSamples(Size samples);
         MakeMCEuropeanEngine& withSeed(BigNatural seed);
-        MakeMCEuropeanEngine& withAntitheticVariate();
-        MakeMCEuropeanEngine& withControlVariate();
+        MakeMCEuropeanEngine& withAntitheticVariate(bool b = true);
+        MakeMCEuropeanEngine& withControlVariate(bool b = true);
         // conversion to pricing engine
         operator boost::shared_ptr<PricingEngine>() const;
       private:
         bool antithetic_, controlVariate_;
         Size steps_, samples_, maxSamples_;
         Real tolerance_;
+        bool brownianBridge_;
         BigNatural seed_;
     };
 
@@ -97,6 +100,7 @@ namespace QuantLib {
     template <class RNG, class S>
     inline
     MCEuropeanEngine<RNG,S>::MCEuropeanEngine(Size maxTimeStepPerYear,
+                                              bool brownianBridge,
                                               bool antitheticVariate,
                                               bool controlVariate,
                                               Size requiredSamples,
@@ -104,6 +108,7 @@ namespace QuantLib {
                                               Size maxSamples,
                                               BigNatural seed)
     : MCVanillaEngine<RNG,S>(maxTimeStepPerYear,
+                             brownianBridge,
                              antitheticVariate,
                              controlVariate,
                              requiredSamples,
@@ -184,7 +189,7 @@ namespace QuantLib {
     inline MakeMCEuropeanEngine<RNG,S>::MakeMCEuropeanEngine()
     : antithetic_(false), controlVariate_(false),
       steps_(Null<Size>()), samples_(Null<Size>()), maxSamples_(Null<Size>()),
-      tolerance_(Null<Real>()), seed_(0) {}
+      tolerance_(Null<Real>()), brownianBridge_(true), seed_(0) {}
 
     template <class RNG, class S>
     inline MakeMCEuropeanEngine<RNG,S>&
@@ -230,15 +235,23 @@ namespace QuantLib {
 
     template <class RNG, class S>
     inline MakeMCEuropeanEngine<RNG,S>&
-    MakeMCEuropeanEngine<RNG,S>::withAntitheticVariate() {
-        antithetic_ = true;
+    MakeMCEuropeanEngine<RNG,S>::withBrownianBridge(
+        bool brownianBridge) {
+        brownianBridge_ = brownianBridge;
         return *this;
     }
 
     template <class RNG, class S>
     inline MakeMCEuropeanEngine<RNG,S>&
-    MakeMCEuropeanEngine<RNG,S>::withControlVariate() {
-        controlVariate_ = true;
+    MakeMCEuropeanEngine<RNG,S>::withAntitheticVariate(bool b) {
+        antithetic_ = b;
+        return *this;
+    }
+
+    template <class RNG, class S>
+    inline MakeMCEuropeanEngine<RNG,S>&
+    MakeMCEuropeanEngine<RNG,S>::withControlVariate(bool b) {
+        controlVariate_ = b;
         return *this;
     }
 
@@ -248,11 +261,14 @@ namespace QuantLib {
                                                                       const {
         QL_REQUIRE(steps_ != Null<Size>(),
                    "max number of steps per year not given");
-        return boost::shared_ptr<PricingEngine>(
-                             new MCEuropeanEngine<RNG,S>(steps_, antithetic_,
-                                                         controlVariate_,
-                                                         samples_, tolerance_,
-                                                         maxSamples_, seed_));
+        return boost::shared_ptr<PricingEngine>(new
+            MCEuropeanEngine<RNG,S>(steps_,
+                                    brownianBridge_,
+                                    antithetic_,
+                                    controlVariate_,
+                                    samples_, tolerance_,
+                                    maxSamples_,
+                                    seed_));
     }
 
 

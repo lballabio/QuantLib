@@ -46,12 +46,13 @@ namespace QuantLib {
             stats_type;
         // constructor
         MCDiscreteGeometricAPEngine(Size maxTimeStepPerYear,
-                            bool antitheticVariate = false,
-                            bool controlVariate = false,
-                            Size requiredSamples = Null<Size>(),
-                            Real requiredTolerance = Null<Real>(),
-                            Size maxSamples = Null<Size>(),
-                            BigNatural seed = 0);
+                                    bool brownianBridge,
+                                    bool antitheticVariate = false,
+                                    bool controlVariate = false,
+                                    Size requiredSamples = Null<Size>(),
+                                    Real requiredTolerance = Null<Real>(),
+                                    Size maxSamples = Null<Size>(),
+                                    BigNatural seed = 0);
       protected:
         boost::shared_ptr<path_pricer_type> pathPricer() const;
     };
@@ -98,6 +99,7 @@ namespace QuantLib {
     inline
     MCDiscreteGeometricAPEngine<RNG,S>::MCDiscreteGeometricAPEngine(
                                                     Size maxTimeStepPerYear,
+                                                    bool brownianBridge,
                                                     bool antitheticVariate,
                                                     bool controlVariate,
                                                     Size requiredSamples,
@@ -105,12 +107,13 @@ namespace QuantLib {
                                                     Size maxSamples,
                                                     BigNatural seed)
     : MCDiscreteAveragingAsianEngine<RNG,S>(maxTimeStepPerYear,
-                             antitheticVariate,
-                             controlVariate,
-                             requiredSamples,
-                             requiredTolerance,
-                             maxSamples,
-                             seed) {}
+                                            brownianBridge,
+                                            antitheticVariate,
+                                            controlVariate,
+                                            requiredSamples,
+                                            requiredTolerance,
+                                            maxSamples,
+                                            seed) {}
 
 
 
@@ -146,18 +149,20 @@ namespace QuantLib {
         MakeMCDiscreteGeometricAPEngine();
         // named parameters
         MakeMCDiscreteGeometricAPEngine& withStepsPerYear(Size maxSteps);
+        MakeMCDiscreteGeometricAPEngine& withBrownianBridge(bool b = true);
         MakeMCDiscreteGeometricAPEngine& withSamples(Size samples);
         MakeMCDiscreteGeometricAPEngine& withTolerance(Real tolerance);
         MakeMCDiscreteGeometricAPEngine& withMaxSamples(Size samples);
         MakeMCDiscreteGeometricAPEngine& withSeed(BigNatural seed);
-        MakeMCDiscreteGeometricAPEngine& withAntitheticVariate();
-        MakeMCDiscreteGeometricAPEngine& withControlVariate();
+        MakeMCDiscreteGeometricAPEngine& withAntitheticVariate(bool b = true);
+        MakeMCDiscreteGeometricAPEngine& withControlVariate(bool b = true);
         // conversion to pricing engine
         operator boost::shared_ptr<PricingEngine>() const;
       private:
         bool antithetic_, controlVariate_;
         Size steps_, samples_, maxSamples_;
         Real tolerance_;
+        bool brownianBridge_;
         BigNatural seed_;
     };
 
@@ -165,7 +170,7 @@ namespace QuantLib {
     inline MakeMCDiscreteGeometricAPEngine<RNG,S>::MakeMCDiscreteGeometricAPEngine()
     : antithetic_(false), controlVariate_(false),
       steps_(Null<Size>()), samples_(Null<Size>()), maxSamples_(Null<Size>()),
-      tolerance_(Null<Real>()), seed_(0) {}
+      tolerance_(Null<Real>()), brownianBridge_(true), seed_(0) {}
 
     template <class RNG, class S>
     inline MakeMCDiscreteGeometricAPEngine<RNG,S>&
@@ -211,15 +216,22 @@ namespace QuantLib {
 
     template <class RNG, class S>
     inline MakeMCDiscreteGeometricAPEngine<RNG,S>&
-    MakeMCDiscreteGeometricAPEngine<RNG,S>::withAntitheticVariate() {
-        antithetic_ = true;
+    MakeMCDiscreteGeometricAPEngine<RNG,S>::withBrownianBridge(bool b) {
+        brownianBridge_ = b;
         return *this;
     }
 
     template <class RNG, class S>
     inline MakeMCDiscreteGeometricAPEngine<RNG,S>&
-    MakeMCDiscreteGeometricAPEngine<RNG,S>::withControlVariate() {
-        controlVariate_ = true;
+    MakeMCDiscreteGeometricAPEngine<RNG,S>::withAntitheticVariate(bool b) {
+        antithetic_ = b;
+        return *this;
+    }
+
+    template <class RNG, class S>
+    inline MakeMCDiscreteGeometricAPEngine<RNG,S>&
+    MakeMCDiscreteGeometricAPEngine<RNG,S>::withControlVariate(bool b) {
+        controlVariate_ = b;
         return *this;
     }
 
@@ -229,11 +241,13 @@ namespace QuantLib {
                                                                       const {
         QL_REQUIRE(steps_ != Null<Size>(),
                    "max number of steps per year not given");
-        return boost::shared_ptr<PricingEngine>(
-                             new MCDiscreteGeometricAPEngine<RNG,S>(steps_, antithetic_,
-                                                         controlVariate_,
-                                                         samples_, tolerance_,
-                                                         maxSamples_, seed_));
+        return boost::shared_ptr<PricingEngine>(new
+            MCDiscreteGeometricAPEngine<RNG,S>(steps_,
+                                               brownianBridge_,
+                                               antithetic_, controlVariate_,
+                                               samples_, tolerance_,
+                                               maxSamples_,
+                                               seed_));
     }
 
 
