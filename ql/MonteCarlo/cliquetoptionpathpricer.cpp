@@ -33,25 +33,54 @@ namespace QuantLib {
 
         CliquetOptionPathPricer::CliquetOptionPathPricer(Option::Type type,
           double underlying, double moneyness, double accruedCoupon,
-          double localCap, double localFloor, double globalCap,
-          double globalFloor,
+          double lastFixing, double localCap, double localFloor,
+          double globalCap, double globalFloor,
           const RelinkableHandle<TermStructure>& riskFreeTS)
         : PathPricer<Path>(riskFreeTS), type_(type),
           underlying_(underlying), moneyness_(moneyness),
-          accruedCoupon_(accruedCoupon), localCap_(localCap),
-          localFloor_(localFloor), globalCap_(globalCap),
-          globalFloor_(globalFloor) {
-            QL_REQUIRE(underlying_>0.0,
-                "CliquetOptionPathPricer: "
-                "underlying less/equal zero not allowed");
-            QL_REQUIRE(moneyness_>0.0,
-                "CliquetOptionPathPricer: "
-                "moneyness less/equal zero not allowed");
+          accruedCoupon_(accruedCoupon), lastFixing_(lastFixing),
+          localCap_(localCap), localFloor_(localFloor),
+          globalCap_(globalCap), globalFloor_(globalFloor) {
+            if (accruedCoupon == Null<double>())
+                accruedCoupon = 0.0;
+
+            if (localCap == Null<double>())
+                localCap = QL_MAX_DOUBLE;
+
+            if (localFloor == Null<double>())
+                localFloor = 0.0;
+
+            if (globalCap == Null<double>())
+                globalCap = QL_MAX_DOUBLE;
+
+            if (globalFloor == Null<double>())
+                globalFloor = 0.0;
         }
 
         double CliquetOptionPathPricer::operator()(const Path& path) const {
             double result = accruedCoupon_;
-            return result * riskFreeTS_->discount(path.timeGrid().back());
+            double lastFixing = lastFixing_;
+            double underlying = underlying_;
+            const TimeGrid& pathTimes = path.timeGrid();
+            const std::vector<Time>& fixingTimes = pathTimes.mandatoryTimes();
+            Size k = 0;
+            for (Size i=0; i<fixingTimes.size(); i++) {
+                double logIncrement = 0.0;
+                while (pathTimes[k]<fixingTimes[i]) {
+                    underlying *= QL_EXP(path[k]);
+                    k++;
+                }
+                // new fixing
+                double payoff = ExercisePayoff(type_, underlying,
+                    moneyness_*lastFixing)/lastFixing;
+                payoff = QL_MAX(payoff, localFloor_);
+                payoff = QL_MIN(payoff, localCap_);
+                result += payoff;
+                lastFixing = underlying;
+            }
+            result = QL_MAX(result, globalFloor_);
+            result = QL_MIN(result, globalCap_);
+            return result * riskFreeTS_->discount(pathTimes.back());
         }
 
 

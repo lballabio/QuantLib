@@ -41,6 +41,7 @@ namespace QuantLib {
                 double underlying,
                 double moneyness,
                 double accruedCoupon,
+                double lastFixing,
                 double localCap,
                 double localFloor,
                 double globalCap,
@@ -50,7 +51,7 @@ namespace QuantLib {
           private:
             Option::Type type_;
             double underlying_, moneyness_, accruedCoupon_;
-            double localCap_, localFloor_, globalCap_, globalFloor_;
+            double lastFixing_, localCap_, localFloor_, globalCap_, globalFloor_;
             RelinkableHandle<TermStructure> riskFreeTS_;
         };
 
