@@ -220,6 +220,8 @@ int main(int argc, char* argv[])
         const std::vector<Time> termTimes = myTermStructure->times();
         for (i=0; i<termTimes.size(); i++)
             times.push_back(termTimes[i]);
+		// please add a comment here
+		// wouldn't be safer to have the sort unique in the TimeGrid constructor
         times.sort();
         times.unique();
         //Building time-grid
