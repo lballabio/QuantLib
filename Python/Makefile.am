@@ -1,17 +1,8 @@
-EXTRA_DIST = README.txt
 
-#INCLUDES = -I$(top_srcdir)/Include -I/usr/include/python1.5 \
-#	-I$(top_srcdir)/Include/Calendars \
-#	-I$(top_srcdir)/Include/Currencies \
-#	-I$(top_srcdir)/Include/DayCounters \
-#	-I$(top_srcdir)/Include/FiniteDifferences \
-#	-I$(top_srcdir)/Include/Instruments \
-#	-I$(top_srcdir)/Include/Math \
-#	-I$(top_srcdir)/Include/Patterns \
-#	-I$(top_srcdir)/Include/Pricers \
-#	-I$(top_srcdir)/Include/Solvers1D \
-#	-I$(top_srcdir)/Include/TermStructures \
-#	-I$(top_srcdir)/Include/MonteCarlo 
+SUBDIRS=Tests COM
+
+EXTRA_DIST=QuantLib.py quantlib_wrap.cpp QuantLibc.def \
+	README.txt setup.py makefile.mak
 
 SWIG_INCLUDEDIR = ../SWIG
 

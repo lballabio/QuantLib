@@ -23,6 +23,9 @@
 
 /* $Source$
    $Log$
+   Revision 1.28  2001/03/27 17:39:39  lballabio
+   Making sure dist target is complete (and added distributions to Ruby module)
+
    Revision 1.27  2001/03/26 12:41:23  lballabio
    Added ruby, ruby-install and ruby-test targets to makefile (and added calendars to Ruby module in the meantime)
 
@@ -85,8 +88,9 @@ using QuantLib::IndexError;
 }
 
 #if defined(SWIGRUBY)
-%include Date.i
 %include Calendars.i
+%include Date.i
+%include Distributions.i
 %include String.i
 #else
 // PLEASE ADD ANY NEW *.i FILE AT THE BOTTOM, NOT HERE

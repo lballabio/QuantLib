@@ -1,42 +1,13 @@
 AUTOMAKE_OPTIONS=foreign
 
-SUBDIRS=Sources Include SWIG Python
+SUBDIRS=Sources Include Docs SWIG Python Examples
 
-EXTRA_DIST=News.txt Contributors.txt History.txt LICENSE.TXT \
-	Readme.txt Mac/README.txt Python/README.txt \
-	Win/README.txt SWIG/README.txt \
-	Python/Tests/TestUnit.py \
-	Python/Tests/american_option.py \
-	Python/Tests/barrier_option.py \
-	Python/Tests/date.py \
-	Python/Tests/distributions.py \
-	Python/Tests/european_option.py \
-	Python/Tests/european_with_dividends.py \
-	Python/Tests/himalaya_option.py \
-	Python/Tests/implied_volatility.py \
-	Python/Tests/montecarlo_pricers.py \
-	Python/Tests/plain_basket_option.py \
-	Python/Tests/random_generators.py \
-	Python/Tests/risk_statistics.py \
-	Python/Tests/statistics.py \
-	Python/Tests/term_structures.py \
-	Python/Makefile.am \
-	Python/Makefile.in \
-	Python/setup.py \
-	Mac/QuantLib.prj \
-	Mac/QuantLib.prj.exp \
-	Mac/README.txt \
-	Win/QuantLib.dsw \
-	Win/QuantLib.dsp \
-	Win/PyQuantLib.dsp \
-	Win/PyWrap.bat \
-	Win/QuantLibc.def \
-	Win/README.txt \
-	Win/makefile.mak \
-	Docs/README.txt \
-	Docs/quantlib.doxy \
-	Docs/footer.html \
-	Examples/history_iterators.cpp
+EXTRA_DIST=News.txt Authors.txt Contributors.txt \
+	History.txt LICENSE.TXT Readme.txt \
+	updateproject.sh makefile.mak
+	Ruby/extconf.rb \
+	Mac/README.txt Mac/QuantLib.prj Mac/QuantLib.prj.exp \
+	Win/README.txt Win/makefile.mak Win/QuantLib.dsw Win/QuantLib.dsp
 
 if PYTHON_FOUND
 if SWIG_FOUND 

@@ -24,6 +24,9 @@
 
 /* $Source$
    $Log$
+   Revision 1.6  2001/03/27 17:39:39  lballabio
+   Making sure dist target is complete (and added distributions to Ruby module)
+
    Revision 1.5  2001/03/09 12:40:41  lballabio
    Spring cleaning for SWIG interfaces
 
@@ -46,7 +49,10 @@ class NormalDistribution {
 };
 
 %addmethods NormalDistribution {
-    #if defined(SWIGPYTHON)
+    #if defined(SWIGRUBY)
+    void crash() {}
+    #endif
+    #if defined(SWIGPYTHON) || defined(SWIGRUBY)
     double __call__(double x) {
         return (*self)(x);
     }
@@ -61,7 +67,10 @@ class CumulativeNormalDistribution {
 };
 
 %addmethods CumulativeNormalDistribution {
-    #if defined(SWIGPYTHON)
+    #if defined(SWIGRUBY)
+    void crash() {}
+    #endif
+    #if defined(SWIGPYTHON) || defined(SWIGRUBY)
     double __call__(double x) {
         return (*self)(x);
     }
@@ -75,7 +84,10 @@ class InvCumulativeNormalDistribution {
 };
 
 %addmethods InvCumulativeNormalDistribution {
-    #if defined(SWIGPYTHON)
+    #if defined(SWIGRUBY)
+    void crash() {}
+    #endif
+    #if defined(SWIGPYTHON) || defined(SWIGRUBY)
     double __call__(double x) {
         return (*self)(x);
     }
@@ -85,3 +97,4 @@ class InvCumulativeNormalDistribution {
 
 
 #endif
+

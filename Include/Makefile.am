@@ -2,6 +2,9 @@ SUBDIRS = Calendars Currencies DayCounters FiniteDifferences Instruments \
 	Math Patterns Pricers Solvers1D TermStructures MonteCarlo \
 	Utilities
 
+EXTRA_DIST=config.ansi.h config.bcc.h config.decc.h \
+	config.msvc.h config.mwcw.h
+
 includedir = $(prefix)/include/QuantLib
 include_HEADERS = \
 	array.h \
