@@ -29,6 +29,9 @@
 
 // $Source$
 // $Log$
+// Revision 1.14  2001/07/27 14:45:23  marmar
+// Method  void ddSamples(long n) added to GeneralMonteCarlo
+//
 // Revision 1.13  2001/07/25 15:47:28  sigmud
 // Change from quantlib.sourceforge.net to quantlib.org
 //
@@ -117,15 +120,20 @@ namespace QuantLib {
         template<class SA, class SG>
         class GeneralMonteCarlo {
           public:
-            GeneralMonteCarlo() : isInitialized_(false) {}
+            GeneralMonteCarlo();
             GeneralMonteCarlo(const SA &statisticAccumulator,
                               const SG &sampleGenerator);
-            const SA& sampleAccumulator(long iterations = 0) const;
+            void addSamples(long iterations);
+            const SA& sampleAccumulator(void) const;
           private:
-            mutable SA sampleAccumulator_;
-            mutable SG sampleGenerator_;
-            mutable bool isInitialized_;
+            SA sampleAccumulator_;
+            SG sampleGenerator_;
+            bool isInitialized_;
         };
+
+        template<class SA, class SG>
+        inline GeneralMonteCarlo<SA, SG>::GeneralMonteCarlo()
+                : isInitialized_(false) {}
 
         template<class SA, class SG>
         inline GeneralMonteCarlo<SA, SG>::GeneralMonteCarlo(
@@ -136,13 +144,17 @@ namespace QuantLib {
                 isInitialized_(true){}
 
         template<class SA, class SG>
-        inline const SA& GeneralMonteCarlo<SA, SG>::sampleAccumulator(long iterations) const{
+        void GeneralMonteCarlo<SA, SG>::addSamples(long iterations) {
             QL_REQUIRE(isInitialized_ == true,
                        "GeneralMonteCarlo must be initialized");
             for(long j = 1; j <= iterations; j++){
                 sampleAccumulator_.add(sampleGenerator_.next(),
-                                          sampleGenerator_.weight());
+                                       sampleGenerator_.weight());
             }
+        }
+
+        template<class SA, class SG>
+        inline const SA& GeneralMonteCarlo<SA, SG>::sampleAccumulator(void) const{
             return sampleAccumulator_;
         }
 

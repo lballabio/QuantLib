@@ -30,6 +30,9 @@
 
 // $Source$
 // $Log$
+// Revision 1.13  2001/07/27 14:45:23  marmar
+// Method  void ddSamples(long n) added to GeneralMonteCarlo
+//
 // Revision 1.12  2001/07/25 15:47:28  sigmud
 // Change from quantlib.sourceforge.net to quantlib.org
 //
@@ -94,7 +97,8 @@ namespace QuantLib {
         inline double McPricer::value() const{
             QL_REQUIRE(isInitialized_,
                 "McPricer::value has not been initialized");
-            return montecarloPricer_.sampleAccumulator(samples_).mean();
+            montecarloPricer_.addSamples(samples_);
+            return montecarloPricer_.sampleAccumulator().mean();
         }
 
         inline double McPricer::errorEstimate() const {

@@ -29,6 +29,9 @@
 
 // $Source$
 // $Log$
+// Revision 1.12  2001/07/27 14:45:23  marmar
+// Method  void ddSamples(long n) added to GeneralMonteCarlo
+//
 // Revision 1.11  2001/07/25 15:47:28  sigmud
 // Change from quantlib.sourceforge.net to quantlib.org
 //
@@ -92,19 +95,24 @@ namespace QuantLib {
         template<class S, class PG, class PP>
         class PathMonteCarlo {
           public:
-            PathMonteCarlo() : isInitialized_(false) {}
+            PathMonteCarlo();
             PathMonteCarlo(Handle<PG> pathGenerator, 
                            Handle<PP> pathPricer,
                            S sampleAccumulator);
-            const S& sampleAccumulator(long samples = 0) const;
+            void addSamples(long samples);
+            const S& sampleAccumulator(void) const;
           private:
             S sampleAccumulator_;
             OptionSample<PG,PP> optionSample_;
             GeneralMonteCarlo<S, OptionSample<PG,PP> > monteCarlo_;
-            mutable bool isInitialized_;
+            bool isInitialized_;
         };
 
         // inline definitions
+        template<class S, class PG, class PP>
+        inline PathMonteCarlo<S, PG, PP>::PathMonteCarlo() 
+            : isInitialized_(false) {}
+ 
         template<class S, class PG, class PP>
         inline PathMonteCarlo<S, PG, PP>::PathMonteCarlo(
                 Handle<PG> pathGenerator,
@@ -116,11 +124,17 @@ namespace QuantLib {
                 isInitialized_(true){}
 
         template<class S, class PG, class PP>
-        inline const S& PathMonteCarlo<S, PG, PP>::
-                    sampleAccumulator(long samples) const{
+        inline void PathMonteCarlo<S, PG, PP>::
+                    addSamples(long samples){
             QL_REQUIRE(isInitialized_ == true,
                        "PathMonteCarlo must be initialized");
-            return monteCarlo_.sampleAccumulator(samples);
+            monteCarlo_.addSamples(samples);
+        }
+
+        template<class S, class PG, class PP>
+        inline const S& PathMonteCarlo<S, PG, PP>::
+                    sampleAccumulator() const{
+            return monteCarlo_.sampleAccumulator();
         }
 
     }
