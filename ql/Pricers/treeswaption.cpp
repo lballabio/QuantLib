@@ -61,12 +61,16 @@ namespace QuantLib {
                 Size i;
                 for (i=0; i<arguments_.exerciseTimes.size(); i++)
                     times.push_back(arguments_.exerciseTimes[i]);
+
                 for (i=0; i<arguments_.fixedPayTimes.size(); i++)
                     times.push_back(arguments_.fixedPayTimes[i]);
+
                 for (i=0; i<arguments_.floatingResetTimes.size(); i++)
                     times.push_back(arguments_.floatingResetTimes[i]);
+
                 for (i=0; i<arguments_.floatingPayTimes.size(); i++)
                     times.push_back(arguments_.floatingPayTimes[i]);
+
                 times.sort();
                 times.unique();
 

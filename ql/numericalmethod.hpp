@@ -56,24 +56,25 @@ namespace QuantLib {
         : method_(method) {}
         virtual ~DiscretizedAsset() {}
 
+        virtual void reset(Size size) = 0;
+
         Time time() const { return time_; }
+        void setTime(Time t) { time_ = t; }
 
         double value(Size i) const { return values_[i]; }
         Array& values() { return values_; }
+        void setValues(const Array& values) { values_ = values; }
 
         const Handle<NumericalMethod>& method() const { return method_; }
 
-        virtual void reset(Size size) = 0;
-        void setTime(Time t) { time_ = t; }
-        void setValues(const Array& values) { values_ = values; }
 
         virtual void adjustValues() {}
         virtual void addTimes(std::list<Time>& times) const {}
       protected:
         bool isOnTime(Time t) const;
 
-        Array values_;
         Time time_;
+        Array values_;
 
       private:
         Handle<NumericalMethod> method_;

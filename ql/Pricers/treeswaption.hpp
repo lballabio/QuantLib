@@ -41,7 +41,6 @@ namespace QuantLib {
 
             TreeSwaption(const Handle<ShortRateModels::Model>& model,
                          const TimeGrid& timeGrid) ;
-
             void update();
             void calculate() const;
           private:
