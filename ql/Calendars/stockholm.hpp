@@ -26,42 +26,39 @@
 
 namespace QuantLib {
 
-    namespace Calendars {
-
-        //! %Stockholm calendar
-        /*! Holidays:
-            <ul>
-            <li>Saturdays</li>
-            <li>Sundays</li>
-            <li>Good Friday</li>
-            <li>Easter Monday</li>
-            <li>Ascension</li>
-            <li>Whit(Pentecost) Monday </li>
-            <li>Midsummer Eve (Friday between June 18-24)</li>            
-            <li>New Year's Day, January 1st</li>
-            <li>Epiphany, January 6th</li>
-            <li>May Day, May 1st</li>
-            <li>National Day, June 6th</li>
-            <li>Christmas Eve, December 24th</li>
-            <li>Christmas Day, December 25th</li>
-            <li>Boxing Day, December 26th</li>
-            <li>New Year's Eve, December 31th</li>
-            </ul>
-        */
-        class Stockholm : public Calendar {
-          private:
-            class Impl : public Calendar::WesternImpl {
-              public:
-                std::string name() const { return "Stockholm"; }
-                bool isBusinessDay(const Date&) const;
-            };
+    //! %Stockholm calendar
+    /*! Holidays:
+      <ul>
+      <li>Saturdays</li>
+      <li>Sundays</li>
+      <li>Good Friday</li>
+      <li>Easter Monday</li>
+      <li>Ascension</li>
+      <li>Whit(Pentecost) Monday </li>
+      <li>Midsummer Eve (Friday between June 18-24)</li>            
+      <li>New Year's Day, January 1st</li>
+      <li>Epiphany, January 6th</li>
+      <li>May Day, May 1st</li>
+      <li>National Day, June 6th</li>
+      <li>Christmas Eve, December 24th</li>
+      <li>Christmas Day, December 25th</li>
+      <li>Boxing Day, December 26th</li>
+      <li>New Year's Eve, December 31th</li>
+      </ul>
+    */
+    class Stockholm : public Calendar {
+      private:
+        class Impl : public Calendar::WesternImpl {
           public:
-            Stockholm()
-            : Calendar(Handle<Calendar::Impl>(new Stockholm::Impl)) {}
+            std::string name() const { return "Stockholm"; }
+            bool isBusinessDay(const Date&) const;
         };
-
-    }
+      public:
+        Stockholm()
+        : Calendar(Handle<Calendar::Impl>(new Stockholm::Impl)) {}
+    };
 
 }
+
 
 #endif

@@ -26,41 +26,35 @@
 
 namespace QuantLib {
 
-    namespace Calendars {
-
-        //! %Toronto calendar
-        /*! Holidays:
-            <ul>
-            <li>Saturdays</li>
-            <li>Sundays</li>
-            <li>New Year's Day, January 1st (possibly moved to Monday)</li>
-            <li>Good Friday</li>
-            <li>Easter Monday</li>
-            <li>Victoria Day, The Monday on or preceding 24 May</li>
-            <li>Canada Day, July 1st (possibly moved to Monday)</li>
-            <li>Provincial Holiday, first Monday of August</li>
-            <li>Labour Day, first Monday of September</li>
-            <li>Thanksgiving Day, second Monday of October</li>
-            <li>Remembrance Day, November 11th</li>
-            <li>Christmas, December 25th (possibly moved to Monday or
-                Tuesday)</li>
-            <li>Boxing Day, December 26th (possibly moved to Monday or
-                Tuesday)</li>
-            </ul>
-        */
-        class Toronto : public Calendar {
-          private:
-            class Impl : public Calendar::WesternImpl {
-              public:
-                std::string name() const { return "Toronto"; }
-                bool isBusinessDay(const Date&) const;
-            };
+    //! %Toronto calendar
+    /*! Holidays:
+      <ul>
+      <li>Saturdays</li>
+      <li>Sundays</li>
+      <li>New Year's Day, January 1st (possibly moved to Monday)</li>
+      <li>Good Friday</li>
+      <li>Easter Monday</li>
+      <li>Victoria Day, The Monday on or preceding 24 May</li>
+      <li>Canada Day, July 1st (possibly moved to Monday)</li>
+      <li>Provincial Holiday, first Monday of August</li>
+      <li>Labour Day, first Monday of September</li>
+      <li>Thanksgiving Day, second Monday of October</li>
+      <li>Remembrance Day, November 11th</li>
+      <li>Christmas, December 25th (possibly moved to Monday or Tuesday)</li>
+      <li>Boxing Day, December 26th (possibly moved to Monday or Tuesday)</li>
+      </ul>
+    */
+    class Toronto : public Calendar {
+      private:
+        class Impl : public Calendar::WesternImpl {
           public:
-            Toronto()
-            : Calendar(Handle<Calendar::Impl>(new Toronto::Impl)) {}
+            std::string name() const { return "Toronto"; }
+            bool isBusinessDay(const Date&) const;
         };
-
-    }
+      public:
+        Toronto()
+        : Calendar(Handle<Calendar::Impl>(new Toronto::Impl)) {}
+    };
 
 }
 

@@ -23,48 +23,44 @@
 
 namespace QuantLib {
 
-    namespace Calendars {
-
-        bool Stockholm::Impl::isBusinessDay(const Date& date) const {
-            Weekday w = date.weekday();
-            Day d = date.dayOfMonth(), dd = date.dayOfYear();
-            Month m = date.month();
-            Year y = date.year();
-            Day em = easterMonday(y);
-            if ((w == Saturday || w == Sunday)
-                // Good Friday
-                || (dd == em-3)
-                // Easter Monday
-                || (dd == em)
-                // Ascension Thursday
-                || (dd == em+38)
-                // Whit Monday
-                || (dd == em+49)
-                // New Year's Day
-                || (d == 1  && m == January)
-                // Epiphany
-                || (d == 6  && m == January)
-                // May Day
-                || (d == 1  && m == May)
-                // June 6 id National Day but is not a holiday.
-                // It has been debated wheter or not this day should be
-                // declared as a holiday.
-                // As of 2002 the Stockholmborsen is open that day
-                // || (d == 6  && m == June)
-                // Midsummer Eve (Friday between June 18-24)
-                || (w == Friday && (d >= 18 && d <= 24) && m == June)
-                // Christmas Eve
-                || (d == 24 && m == December)
-                // Christmas Day
-                || (d == 25 && m == December)
-                // Boxing Day
-                || (d == 26 && m == December)
-                // New Year's Eve
-                || (d == 31 && m == December))
-                    return false;
-            return true;
-        }
-
+    bool Stockholm::Impl::isBusinessDay(const Date& date) const {
+        Weekday w = date.weekday();
+        Day d = date.dayOfMonth(), dd = date.dayOfYear();
+        Month m = date.month();
+        Year y = date.year();
+        Day em = easterMonday(y);
+        if ((w == Saturday || w == Sunday)
+            // Good Friday
+            || (dd == em-3)
+            // Easter Monday
+            || (dd == em)
+            // Ascension Thursday
+            || (dd == em+38)
+            // Whit Monday
+            || (dd == em+49)
+            // New Year's Day
+            || (d == 1  && m == January)
+            // Epiphany
+            || (d == 6  && m == January)
+            // May Day
+            || (d == 1  && m == May)
+            // June 6 id National Day but is not a holiday.
+            // It has been debated wheter or not this day should be
+            // declared as a holiday.
+            // As of 2002 the Stockholmborsen is open that day
+            // || (d == 6  && m == June)
+            // Midsummer Eve (Friday between June 18-24)
+            || (w == Friday && (d >= 18 && d <= 24) && m == June)
+            // Christmas Eve
+            || (d == 24 && m == December)
+            // Christmas Day
+            || (d == 25 && m == December)
+            // Boxing Day
+            || (d == 26 && m == December)
+            // New Year's Eve
+            || (d == 31 && m == December))
+            return false;
+        return true;
     }
 
 }

@@ -86,7 +86,7 @@ int main(int argc, char* argv[])
         QL_IO_INIT
 
         Date todaysDate(15, February, 2002);
-        Calendar calendar = Calendars::TARGET();
+        Calendar calendar = TARGET();
 
         // Date settlementDate = calendar.advance(todaysDate, 
         //                                        settlementDays, Days);

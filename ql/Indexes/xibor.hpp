@@ -34,12 +34,12 @@ namespace QuantLib {
                       public Patterns::Observer {
           public:
             Xibor(const std::string& familyName,
-                int n, TimeUnit units, int settlementDays,
-                Currency currency,
-                const Calendar& calendar, bool isAdjusted,
-                RollingConvention rollingConvention,
-                const DayCounter& dayCounter, 
-                const RelinkableHandle<TermStructure>& h)
+                  int n, TimeUnit units, int settlementDays,
+                  Currency currency,
+                  const Calendar& calendar, bool isAdjusted,
+                  RollingConvention rollingConvention,
+                  const DayCounter& dayCounter, 
+                  const RelinkableHandle<TermStructure>& h)
             : familyName_(familyName), n_(n), units_(units),
               settlementDays_(settlementDays),
               currency_(currency), calendar_(calendar),

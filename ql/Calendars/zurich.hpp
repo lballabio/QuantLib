@@ -26,38 +26,34 @@
 
 namespace QuantLib {
 
-    namespace Calendars {
-
-        //! %Zurich calendar
-        /*! Holidays:
-            <ul>
-            <li>Saturdays</li>
-            <li>Sundays</li>
-            <li>New Year's Day, January 1st</li>
-            <li>Berchtoldstag, January 2nd</li>
-            <li>Good Friday</li>
-            <li>Easter Monday</li>
-            <li>Ascension Day</li>
-            <li>Whit Monday</li>
-            <li>Labour Day, May 1st</li>
-            <li>National Day, August 1st</li>
-            <li>Christmas, December 25th</li>
-            <li>St. Stephen's Day, December 26th</li>
-            </ul>
-        */
-        class Zurich : public Calendar {
-          private:
-            class Impl : public Calendar::WesternImpl {
-              public:
-                std::string name() const { return "Zurich"; }
-                bool isBusinessDay(const Date&) const;
-            };
+    //! %Zurich calendar
+    /*! Holidays:
+      <ul>
+      <li>Saturdays</li>
+      <li>Sundays</li>
+      <li>New Year's Day, January 1st</li>
+      <li>Berchtoldstag, January 2nd</li>
+      <li>Good Friday</li>
+      <li>Easter Monday</li>
+      <li>Ascension Day</li>
+      <li>Whit Monday</li>
+      <li>Labour Day, May 1st</li>
+      <li>National Day, August 1st</li>
+      <li>Christmas, December 25th</li>
+      <li>St. Stephen's Day, December 26th</li>
+      </ul>
+    */
+    class Zurich : public Calendar {
+      private:
+        class Impl : public Calendar::WesternImpl {
           public:
-            Zurich()
-            : Calendar(Handle<Calendar::Impl>(new Zurich::Impl)) {}
+            std::string name() const { return "Zurich"; }
+            bool isBusinessDay(const Date&) const;
         };
-
-    }
+      public:
+        Zurich()
+        : Calendar(Handle<Calendar::Impl>(new Zurich::Impl)) {}
+    };
 
 }
 

@@ -25,13 +25,10 @@
 #include <ql/date.hpp>
 #include <ql/Patterns/bridge.hpp>
 
-/*! \namespace QuantLib::Calendars
-    \brief Specialized Calendar classes
-
-    See sect. \ref calendars
-*/
-
 namespace QuantLib {
+
+    //! \deprecated inner namespace aliases will be removed in next release
+    namespace Calendars = ::QuantLib;
 
     //! Rolling conventions
     /*! These conventions specify the algorithm used to find the business day

@@ -26,42 +26,38 @@
 
 namespace QuantLib {
 
-    namespace Calendars {
-
-        //! New York calendar
-        /*! Holidays:
-            <ul>
-            <li>Saturdays</li>
-            <li>Sundays</li>
-            <li>New Year's Day, January 1st (possibly moved to Monday if
-                actually on Sunday, or to Friday if on Saturday)</li>
-            <li>Martin Luther King's birthday, third Monday in January</li>
-            <li>Washington's birthday, third Monday in February</li>
-            <li>Memorial Day, last Monday in May</li>
-            <li>Independence Day, July 4th (moved to Monday if Sunday or
-                Friday if Saturday)</li>
-            <li>Labor Day, first Monday in September</li>
-            <li>Columbus Day, second Monday in October</li>
-            <li>Veteran's Day, November 11th (moved to Monday if Sunday or
-                Friday if Saturday)</li>
-            <li>Thanksgiving Day, fourth Thursday in November</li>
-            <li>Christmas, December 25th (moved to Monday if Sunday or Friday
-                if Saturday)</li>
-            </ul>
-        */
-        class NewYork : public Calendar {
-          private:
-            class Impl : public Calendar::WesternImpl {
-              public:
-                std::string name() const { return "NewYork"; }
-                bool isBusinessDay(const Date&) const;
-            };
+    //! New York calendar
+    /*! Holidays:
+      <ul>
+      <li>Saturdays</li>
+      <li>Sundays</li>
+      <li>New Year's Day, January 1st (possibly moved to Monday if
+          actually on Sunday, or to Friday if on Saturday)</li>
+      <li>Martin Luther King's birthday, third Monday in January</li>
+      <li>Washington's birthday, third Monday in February</li>
+      <li>Memorial Day, last Monday in May</li>
+      <li>Independence Day, July 4th (moved to Monday if Sunday or
+          Friday if Saturday)</li>
+      <li>Labor Day, first Monday in September</li>
+      <li>Columbus Day, second Monday in October</li>
+      <li>Veteran's Day, November 11th (moved to Monday if Sunday or
+          Friday if Saturday)</li>
+      <li>Thanksgiving Day, fourth Thursday in November</li>
+      <li>Christmas, December 25th (moved to Monday if Sunday or Friday
+          if Saturday)</li>
+      </ul>
+    */
+    class NewYork : public Calendar {
+      private:
+        class Impl : public Calendar::WesternImpl {
           public:
-            NewYork()
-            : Calendar(Handle<Calendar::Impl>(new NewYork::Impl)) {}
+            std::string name() const { return "NewYork"; }
+            bool isBusinessDay(const Date&) const;
         };
-
-    }
+      public:
+        NewYork()
+        : Calendar(Handle<Calendar::Impl>(new NewYork::Impl)) {}
+    };
 
 }
 

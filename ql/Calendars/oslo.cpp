@@ -23,39 +23,35 @@
 
 namespace QuantLib {
 
-    namespace Calendars {
-
-        bool Oslo::Impl::isBusinessDay(const Date& date) const {
-            Weekday w = date.weekday();
-            Day d = date.dayOfMonth(), dd = date.dayOfYear();
-            Month m = date.month();
-            Year y = date.year();
-            Day em = easterMonday(y);
-            if ((w == Saturday || w == Sunday)
-                // Holy Thursday
-                || (dd == em-4)
-                // Good Friday
-                || (dd == em-3)
-                // Easter Monday
-                || (dd == em)
-                // Ascension Thursday
-                || (dd == em+38)
-                // Whit Monday
-                || (dd == em+49)
-                // New Year's Day
-                || (d == 1  && m == January)
-                // May Day
-                || (d == 1  && m == May)
-                // National Independence Day
-                || (d == 17  && m == May)
-                // Christmas
-                || (d == 25 && m == December)
-                // Boxing Day
-                || (d == 26 && m == December))
-                    return false;
-            return true;
-        }
-
+    bool Oslo::Impl::isBusinessDay(const Date& date) const {
+        Weekday w = date.weekday();
+        Day d = date.dayOfMonth(), dd = date.dayOfYear();
+        Month m = date.month();
+        Year y = date.year();
+        Day em = easterMonday(y);
+        if ((w == Saturday || w == Sunday)
+            // Holy Thursday
+            || (dd == em-4)
+            // Good Friday
+            || (dd == em-3)
+            // Easter Monday
+            || (dd == em)
+            // Ascension Thursday
+            || (dd == em+38)
+            // Whit Monday
+            || (dd == em+49)
+            // New Year's Day
+            || (d == 1  && m == January)
+            // May Day
+            || (d == 1  && m == May)
+            // National Independence Day
+            || (d == 17  && m == May)
+            // Christmas
+            || (d == 25 && m == December)
+            // Boxing Day
+            || (d == 26 && m == December))
+            return false;
+        return true;
     }
 
 }

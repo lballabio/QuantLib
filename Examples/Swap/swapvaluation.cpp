@@ -24,7 +24,6 @@
 
 
 using namespace QuantLib;
-using Calendars::TARGET;
 using DayCounters::ActualActual;
 using DayCounters::Actual360;
 using DayCounters::Thirty360;

@@ -37,7 +37,6 @@ using namespace QuantLib::Instruments;
 using namespace QuantLib::TermStructures;
 using namespace QuantLib::VolTermStructures;
 using namespace QuantLib::DayCounters;
-using namespace QuantLib::Calendars;
 
 namespace {
 

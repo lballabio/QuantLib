@@ -25,7 +25,6 @@
 #include <ql/dataformatters.hpp>
 
 using namespace QuantLib;
-using namespace QuantLib::Calendars;
 
 void CalendarTest::runTest() {
 

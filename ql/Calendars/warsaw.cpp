@@ -23,39 +23,35 @@
 
 namespace QuantLib {
 
-    namespace Calendars {
-
-        bool Warsaw::Impl::isBusinessDay(const Date& date) const {
-            Weekday w = date.weekday();
-            Day d = date.dayOfMonth(), dd = date.dayOfYear();
-            Month m = date.month();
-            Year y = date.year();
-            Day em = easterMonday(y);
-            if ((w == Saturday || w == Sunday)
-                // Easter Monday
-                || (dd == em)
-                // Corpus Christi
-                || (dd == em+59)
-                // New Year's Day
-                || (d == 1  && m == January)
-                // May Day
-                || (d == 1  && m == May)
-                // Constitution Day
-                || (d == 3  && m == May)
-                // Assumption of the Blessed Virgin Mary
-                || (d == 15  && m == August)
-                // All Saints Day
-                || (d == 1  && m == November)
-                // Independence Day
-                || (d ==11  && m == November)
-                // Christmas
-                || (d == 25 && m == December)
-                // 2nd Day of Christmas
-                || (d == 26 && m == December))
-                    return false;
-            return true;
-        }
-
+    bool Warsaw::Impl::isBusinessDay(const Date& date) const {
+        Weekday w = date.weekday();
+        Day d = date.dayOfMonth(), dd = date.dayOfYear();
+        Month m = date.month();
+        Year y = date.year();
+        Day em = easterMonday(y);
+        if ((w == Saturday || w == Sunday)
+            // Easter Monday
+            || (dd == em)
+            // Corpus Christi
+            || (dd == em+59)
+            // New Year's Day
+            || (d == 1  && m == January)
+            // May Day
+            || (d == 1  && m == May)
+            // Constitution Day
+            || (d == 3  && m == May)
+            // Assumption of the Blessed Virgin Mary
+            || (d == 15  && m == August)
+            // All Saints Day
+            || (d == 1  && m == November)
+            // Independence Day
+            || (d ==11  && m == November)
+            // Christmas
+            || (d == 25 && m == December)
+            // 2nd Day of Christmas
+            || (d == 26 && m == December))
+            return false;
+        return true;
     }
 
 }

@@ -26,39 +26,36 @@
 
 namespace QuantLib {
 
-    namespace Calendars {
-
-        //! %Budapest calendar
-        /*! Holidays:
-            <ul>
-            <li>Saturdays</li>
-            <li>Sundays</li>
-            <li>Easter Monday</li>
-            <li>Whit(Pentecost) Monday </li>
-            <li>New Year's Day, January 1st</li>
-            <li>National Day, March 15th</li>
-            <li>Labour Day, May 1st</li>
-            <li>Constitution Day, August 20th</li>
-            <li>Republic Day, October 23rd</li>
-            <li>All Saints Day, November 1st</li>
-            <li>Christmas, December 25th</li>
-            <li>2nd Day of Christmas, December 26th</li>
-            </ul>
-        */
-        class Budapest : public Calendar {
-          private:
-            class Impl : public Calendar::WesternImpl {
-              public:
-                std::string name() const { return "Budapest"; }
-                bool isBusinessDay(const Date&) const;
-            };
+    //! %Budapest calendar
+    /*! Holidays:
+        <ul>
+        <li>Saturdays</li>
+        <li>Sundays</li>
+        <li>Easter Monday</li>
+        <li>Whit(Pentecost) Monday </li>
+        <li>New Year's Day, January 1st</li>
+        <li>National Day, March 15th</li>
+        <li>Labour Day, May 1st</li>
+        <li>Constitution Day, August 20th</li>
+        <li>Republic Day, October 23rd</li>
+        <li>All Saints Day, November 1st</li>
+        <li>Christmas, December 25th</li>
+        <li>2nd Day of Christmas, December 26th</li>
+        </ul>
+    */
+    class Budapest : public Calendar {
+      private:
+        class Impl : public Calendar::WesternImpl {
           public:
-            Budapest()
-            : Calendar(Handle<Calendar::Impl>(new Budapest::Impl)) {}
+            std::string name() const { return "Budapest"; }
+            bool isBusinessDay(const Date&) const;
         };
-
-    }
+      public:
+        Budapest()
+        : Calendar(Handle<Calendar::Impl>(new Budapest::Impl)) {}
+    };
 
 }
+
 
 #endif

@@ -339,6 +339,7 @@
 /*** shortcuts for the full namespaces ***/
 
 namespace QL    = QuantLib;
+//! \deprecated inner namespace aliases will be removed in next release
 namespace QLCAL = QuantLib::Calendars;
 namespace QLCFL = QuantLib::CashFlows;
 namespace QLDCO = QuantLib::DayCounters;
@@ -356,5 +357,6 @@ namespace QLS1D = QuantLib::Solvers1D;
 namespace QLTST = QuantLib::TermStructures;
 namespace QLUTL = QuantLib::Utilities;
 namespace QLVOL = QuantLib::Volatilities;
+
 
 #endif

@@ -26,42 +26,38 @@
 
 namespace QuantLib {
 
-    namespace Calendars {
-
-        //! %Johannesburg calendar
-        /*! Holidays:
-            <ul>
-            <li>Saturdays</li>
-            <li>Sundays</li>
-            <li>New Year's Day, January 1st (possibly moved to Monday)</li>
-            <li>Good Friday</li>
-            <li>Family Day, Easter Monday</li>
-            <li>Human Rights Day, March 21st (possibly moved to Monday)</li>
-            <li>Freedom Day, April 27th (possibly moved to Monday)</li>
-            <li>Workers Day, May 1st (possibly moved to Monday)</li>
-            <li>Youth Day, June 16th (possibly moved to Monday)</li>
-            <li>National Women's Day, August 9th
-                (possibly moved to Monday)</li>
-            <li>Heritage Day, September 24th (possibly moved to Monday)</li>
-            <li>Day of Reconciliation, December 16th
-                (possibly moved to Monday)</li>
-            <li>Christmas December 25th </li>
-            <li>Day of Goodwill December 26th (possibly moved to Monday)</li>
-            </ul>
-        */
-        class Johannesburg : public Calendar {
-          private:
-            class Impl : public Calendar::WesternImpl {
-              public:
-                std::string name() const { return "Johannesburg"; }
-                bool isBusinessDay(const Date&) const;
-            };
+    //! %Johannesburg calendar
+    /*! Holidays:
+        <ul>
+        <li>Saturdays</li>
+        <li>Sundays</li>
+        <li>New Year's Day, January 1st (possibly moved to Monday)</li>
+        <li>Good Friday</li>
+        <li>Family Day, Easter Monday</li>
+        <li>Human Rights Day, March 21st (possibly moved to Monday)</li>
+        <li>Freedom Day, April 27th (possibly moved to Monday)</li>
+        <li>Workers Day, May 1st (possibly moved to Monday)</li>
+        <li>Youth Day, June 16th (possibly moved to Monday)</li>
+        <li>National Women's Day, August 9th
+        (possibly moved to Monday)</li>
+        <li>Heritage Day, September 24th (possibly moved to Monday)</li>
+        <li>Day of Reconciliation, December 16th
+        (possibly moved to Monday)</li>
+        <li>Christmas December 25th </li>
+        <li>Day of Goodwill December 26th (possibly moved to Monday)</li>
+        </ul>
+    */
+    class Johannesburg : public Calendar {
+      private:
+        class Impl : public Calendar::WesternImpl {
           public:
-            Johannesburg()
-            : Calendar(Handle<Calendar::Impl>(new Johannesburg::Impl)) {}
+            std::string name() const { return "Johannesburg"; }
+            bool isBusinessDay(const Date&) const;
         };
-
-    }
+      public:
+        Johannesburg()
+        : Calendar(Handle<Calendar::Impl>(new Johannesburg::Impl)) {}
+    };
 
 }
 

@@ -26,7 +26,6 @@
 
 using namespace QuantLib;
 using namespace QuantLib::TermStructures;
-using namespace QuantLib::Calendars;
 using namespace QuantLib::DayCounters;
 using namespace QuantLib::Indexes;
 using namespace QuantLib::Instruments;

@@ -28,7 +28,6 @@
 #include <cppunit/TestCaller.h>
 
 using namespace QuantLib;
-using namespace QuantLib::Calendars;
 using namespace QuantLib::DayCounters;
 using namespace QuantLib::TermStructures;
 

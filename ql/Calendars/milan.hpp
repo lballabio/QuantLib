@@ -26,39 +26,35 @@
 
 namespace QuantLib {
 
-    namespace Calendars {
-
-        //! %Milan calendar
-        /*! Holidays:
-            <ul>
-            <li>Saturdays</li>
-            <li>Sundays</li>
-            <li>New Year's Day, January 1st</li>
-            <li>Epiphany, January 6th</li>
-            <li>Easter Monday</li>
-            <li>Liberation Day, April 25th</li>
-            <li>Labour Day, May 1st</li>
-            <li>Republic Day, June 2nd (since 2000)</li>
-            <li>Assumption, August 15th</li>
-            <li>All Saint's Day, November 1st</li>
-            <li>Immaculate Conception, December 8th</li>
-            <li>Christmas, December 25th</li>
-            <li>St. Stephen, December 26th</li>
-            </ul>
-        */
-        class Milan : public Calendar {
-          private:
-            class Impl : public Calendar::WesternImpl {
-              public:
-                std::string name() const { return "Milan"; }
-                bool isBusinessDay(const Date&) const;
-            };
+    //! %Milan calendar
+    /*! Holidays:
+      <ul>
+      <li>Saturdays</li>
+      <li>Sundays</li>
+      <li>New Year's Day, January 1st</li>
+      <li>Epiphany, January 6th</li>
+      <li>Easter Monday</li>
+      <li>Liberation Day, April 25th</li>
+      <li>Labour Day, May 1st</li>
+      <li>Republic Day, June 2nd (since 2000)</li>
+      <li>Assumption, August 15th</li>
+      <li>All Saint's Day, November 1st</li>
+      <li>Immaculate Conception, December 8th</li>
+      <li>Christmas, December 25th</li>
+      <li>St. Stephen, December 26th</li>
+      </ul>
+    */
+    class Milan : public Calendar {
+      private:
+        class Impl : public Calendar::WesternImpl {
           public:
-            Milan()
-            : Calendar(Handle<Calendar::Impl>(new Milan::Impl)) {}
+            std::string name() const { return "Milan"; }
+            bool isBusinessDay(const Date&) const;
         };
-
-    }
+      public:
+        Milan()
+        : Calendar(Handle<Calendar::Impl>(new Milan::Impl)) {}
+    };
 
 }
 

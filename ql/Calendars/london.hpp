@@ -26,38 +26,33 @@
 
 namespace QuantLib {
 
-    namespace Calendars {
-
-        //! %London calendar
-        /*! Holidays:
-            <ul>
-            <li>Saturdays</li>
-            <li>Sundays</li>
-            <li>New Year's Day, January 1st (possibly moved to Monday)</li>
-            <li>Good Friday</li>
-            <li>Easter Monday</li>
-            <li>Early May Bank Holiday, first Monday of May</li>
-            <li>Spring Bank Holiday, last Monday of May</li>
-            <li>Summer Bank Holiday, last Monday of August</li>
-            <li>Christmas, December 25th (possibly moved to Monday or
-                Tuesday)</li>
-            <li>Boxing Day, December 26th (possibly moved to Monday or
-                Tuesday)</li>
-            </ul>
-        */
-        class London : public Calendar {
-          private:
-            class Impl : public Calendar::WesternImpl {
-              public:
-                std::string name() const { return "London"; }
-                bool isBusinessDay(const Date&) const;
-            };
+    //! %London calendar
+    /*! Holidays:
+        <ul>
+        <li>Saturdays</li>
+        <li>Sundays</li>
+        <li>New Year's Day, January 1st (possibly moved to Monday)</li>
+        <li>Good Friday</li>
+        <li>Easter Monday</li>
+        <li>Early May Bank Holiday, first Monday of May</li>
+        <li>Spring Bank Holiday, last Monday of May</li>
+        <li>Summer Bank Holiday, last Monday of August</li>
+        <li>Christmas, December 25th (possibly moved to Monday or Tuesday)</li>
+        <li>Boxing Day, December 26th (possibly moved to Monday or
+            Tuesday)</li>
+        </ul>
+    */
+    class London : public Calendar {
+      private:
+        class Impl : public Calendar::WesternImpl {
           public:
-            London()
-            : Calendar(Handle<Calendar::Impl>(new London::Impl)) {}
+            std::string name() const { return "London"; }
+            bool isBusinessDay(const Date&) const;
         };
-
-    }
+      public:
+        London()
+        : Calendar(Handle<Calendar::Impl>(new London::Impl)) {}
+    };
 
 }
 

@@ -23,44 +23,40 @@
 
 namespace QuantLib {
 
-    namespace Calendars {
-
-        bool Toronto::Impl::isBusinessDay(const Date& date) const {
-            Weekday w = date.weekday();
-            Day d = date.dayOfMonth(), dd = date.dayOfYear();
-            Month m = date.month();
-            Year y = date.year();
-            Day em = easterMonday(y);
-            if ((w == Saturday || w == Sunday)
-                // New Year's Day (possibly moved to Monday)
-                || ((d == 1 || (d == 2 && w == Monday)) && m == January)
-                // Good Friday
-                || (dd == em-3)
-                // Easter Monday
-                || (dd == em)
-                // The Monday on or preceding 24 May (Victoria Day)
-                || (d > 17 && d <= 24 && w == Monday && m == May)
-                // July 1st, possibly moved to Monday (Canada Day)
-                || ((d == 1 || ((d == 2 || d == 3) && w == Monday)) && m==July)
-                // first Monday of August (Provincial Holiday)
-                || (d <= 7 && w == Monday && m == August)
-                // first Monday of September (Labor Day)
-                || (d <= 7 && w == Monday && m == September)
-                // second Monday of October (Thanksgiving Day)
-                || (d > 7 && d <= 14 && w == Monday && m == October)
-                // November 11th
-                || (d == 11 && m == November)
-                // Christmas (possibly moved to Monday or Tuesday)
-                || ((d == 25 || (d == 27 && (w == Monday || w == Tuesday)))
-                    && m == December)
-                // Boxing Day (possibly moved to Monday or Tuesday)
-                || ((d == 26 || (d == 28 && (w == Monday || w == Tuesday)))
-                    && m == December)
-                    )
-                    return false;
-            return true;
-        }
-
+    bool Toronto::Impl::isBusinessDay(const Date& date) const {
+        Weekday w = date.weekday();
+        Day d = date.dayOfMonth(), dd = date.dayOfYear();
+        Month m = date.month();
+        Year y = date.year();
+        Day em = easterMonday(y);
+        if ((w == Saturday || w == Sunday)
+            // New Year's Day (possibly moved to Monday)
+            || ((d == 1 || (d == 2 && w == Monday)) && m == January)
+            // Good Friday
+            || (dd == em-3)
+            // Easter Monday
+            || (dd == em)
+            // The Monday on or preceding 24 May (Victoria Day)
+            || (d > 17 && d <= 24 && w == Monday && m == May)
+            // July 1st, possibly moved to Monday (Canada Day)
+            || ((d == 1 || ((d == 2 || d == 3) && w == Monday)) && m==July)
+            // first Monday of August (Provincial Holiday)
+            || (d <= 7 && w == Monday && m == August)
+            // first Monday of September (Labor Day)
+            || (d <= 7 && w == Monday && m == September)
+            // second Monday of October (Thanksgiving Day)
+            || (d > 7 && d <= 14 && w == Monday && m == October)
+            // November 11th
+            || (d == 11 && m == November)
+            // Christmas (possibly moved to Monday or Tuesday)
+            || ((d == 25 || (d == 27 && (w == Monday || w == Tuesday)))
+                && m == December)
+            // Boxing Day (possibly moved to Monday or Tuesday)
+            || ((d == 26 || (d == 28 && (w == Monday || w == Tuesday)))
+                && m == December)
+            )
+            return false;
+        return true;
     }
 
 }

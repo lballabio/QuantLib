@@ -23,43 +23,39 @@
 
 namespace QuantLib {
 
-    namespace Calendars {
-
-        bool Frankfurt::Impl::isBusinessDay(const Date& date) const {
-            Weekday w = date.weekday();
-            Day d = date.dayOfMonth(), dd = date.dayOfYear();
-            Month m = date.month();
-            Year y = date.year();
-            Day em = easterMonday(y);
-            if ((w == Saturday || w == Sunday)
-                // New Year's Day
-                || (d == 1 && m == January)
-                // Good Friday
-                || (dd == em-3)
-                // Easter Monday
-                || (dd == em)
-                // Ascension Thursday
-                || (dd == em+38)
-                // Whit Monday
-                || (dd == em+49)
-                // Corpus Christi
-                || (dd == em+59)
-                // Labour Day
-                || (d == 1 && m == May)
-                // National Day
-                || (d == 3 && m == October)
-                // Christmas Eve
-                || (d == 24 && m == December)
-                // Christmas
-                || (d == 25 && m == December)
-                // Boxing Day
-                || (d == 26 && m == December)
-                // New Year's Eve
-                || (d == 31 && m == December))
-                    return false;
-            return true;
-        }
-
+    bool Frankfurt::Impl::isBusinessDay(const Date& date) const {
+        Weekday w = date.weekday();
+        Day d = date.dayOfMonth(), dd = date.dayOfYear();
+        Month m = date.month();
+        Year y = date.year();
+        Day em = easterMonday(y);
+        if ((w == Saturday || w == Sunday)
+            // New Year's Day
+            || (d == 1 && m == January)
+            // Good Friday
+            || (dd == em-3)
+            // Easter Monday
+            || (dd == em)
+            // Ascension Thursday
+            || (dd == em+38)
+            // Whit Monday
+            || (dd == em+49)
+            // Corpus Christi
+            || (dd == em+59)
+            // Labour Day
+            || (d == 1 && m == May)
+            // National Day
+            || (d == 3 && m == October)
+            // Christmas Eve
+            || (d == 24 && m == December)
+            // Christmas
+            || (d == 25 && m == December)
+            // Boxing Day
+            || (d == 26 && m == December)
+            // New Year's Eve
+            || (d == 31 && m == December))
+            return false;
+        return true;
     }
 
 }

@@ -38,8 +38,7 @@ namespace QuantLib {
                      const RelinkableHandle<TermStructure>& h,
                      const DayCounter& dc = DayCounters::Actual365())
             : Xibor("ZARLibor", n, units, 0, ZAR,
-                Calendar(Calendars::Johannesburg()), true, 
-                ModifiedFollowing, dc, h) {}
+                    Johannesburg(), true, ModifiedFollowing, dc, h) {}
         };
 
     }

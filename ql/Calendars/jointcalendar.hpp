@@ -27,55 +27,51 @@
 
 namespace QuantLib {
 
-    namespace Calendars {
+    //! rules for joining calendars
+    enum JointCalendarRule { JoinHolidays,    /*!< A date is a holiday
+                                                   for the joint calendar
+                                                   if it is a holiday
+                                                   for any of the given
+                                                   calendars */
+                             JoinBusinessDays /*!< A date is a business day
+                                                   for the joint calendar
+                                                   if it is a business day
+                                                   for any of the given
+                                                   calendars */
+    };
 
-        //! rules for joining calendars
-        enum JointCalendarRule { JoinHolidays,    /*!< A date is a holiday
-                                                       for the joint calendar
-                                                       if it is a holiday
-                                                       for any of the given
-                                                       calendars */
-                                 JoinBusinessDays /*!< A date is a business day
-                                                       for the joint calendar
-                                                       if it is a business day
-                                                       for any of the given
-                                                       calendars */
-        };
-
-        //! Joint calendar
-        /*! Depending on the chosen rule, this calendar has a set of
-            business days given by either the union or the intersection
-            of the sets of business days of the given calendars.
-        */
-        class JointCalendar : public Calendar {
-          private:
-            class Impl : public Calendar::Impl {
-              public:
-                Impl(const Calendar&, const Calendar&,
-                     JointCalendarRule);
-                Impl(const Calendar&, const Calendar&,
-                     const Calendar&, JointCalendarRule);
-                Impl(const Calendar&, const Calendar&,
-                     const Calendar&, const Calendar&,
-                     JointCalendarRule);
-                std::string name() const;
-                bool isBusinessDay(const Date&) const;
-              private:
-                JointCalendarRule rule_;
-                std::vector<Calendar> calendars_;
-            };
+    //! Joint calendar
+    /*! Depending on the chosen rule, this calendar has a set of
+      business days given by either the union or the intersection
+      of the sets of business days of the given calendars.
+    */
+    class JointCalendar : public Calendar {
+      private:
+        class Impl : public Calendar::Impl {
           public:
-            JointCalendar(const Calendar&, const Calendar&,
-                          JointCalendarRule = JoinHolidays);
-            JointCalendar(const Calendar&, const Calendar&,
-                          const Calendar&, 
-                          JointCalendarRule = JoinHolidays);
-            JointCalendar(const Calendar&, const Calendar&,
-                          const Calendar&, const Calendar&,
-                          JointCalendarRule = JoinHolidays);
+            Impl(const Calendar&, const Calendar&,
+                 JointCalendarRule);
+            Impl(const Calendar&, const Calendar&,
+                 const Calendar&, JointCalendarRule);
+            Impl(const Calendar&, const Calendar&,
+                 const Calendar&, const Calendar&,
+                 JointCalendarRule);
+            std::string name() const;
+            bool isBusinessDay(const Date&) const;
+          private:
+            JointCalendarRule rule_;
+            std::vector<Calendar> calendars_;
         };
-
-    }
+      public:
+        JointCalendar(const Calendar&, const Calendar&,
+                      JointCalendarRule = JoinHolidays);
+        JointCalendar(const Calendar&, const Calendar&,
+                      const Calendar&, 
+                      JointCalendarRule = JoinHolidays);
+        JointCalendar(const Calendar&, const Calendar&,
+                      const Calendar&, const Calendar&,
+                      JointCalendarRule = JoinHolidays);
+    };
 
 }
 

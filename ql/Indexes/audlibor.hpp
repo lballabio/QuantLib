@@ -34,11 +34,10 @@ namespace QuantLib {
         class AUDLibor : public Xibor {
           public:
             AUDLibor(int n, TimeUnit units,
-                const RelinkableHandle<TermStructure>& h,
-                const DayCounter& dc = DayCounters::Actual365())
+                     const RelinkableHandle<TermStructure>& h,
+                     const DayCounter& dc = DayCounters::Actual365())
             : Xibor("AUDLibor", n, units, 2, AUD,
-                Calendar(Calendars::Sydney()), true, 
-                ModifiedFollowing, dc, h) {}
+                    Sydney(), true, ModifiedFollowing, dc, h) {}
         };
 
     }

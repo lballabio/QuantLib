@@ -26,35 +26,31 @@
 
 namespace QuantLib {
 
-    namespace Calendars {
-
-        //! %TARGET calendar
-        /*! Holidays:
-            <ul>
-            <li>Saturdays</li>
-            <li>Sundays</li>
-            <li>New Year's Day, January 1st</li>
-            <li>Good Friday (since 2000)</li>
-            <li>Easter Monday (since 2000)</li>
-            <li>Labour Day, May 1st (since 2000)</li>
-            <li>Christmas, December 25th</li>
-            <li>Day of Goodwill, December 26th (since 2000)</li>
-            <li>December 31st (1998, 1999, and 2001)</li>
-            </ul>
-        */
-        class TARGET : public Calendar {
-          private:
-            class Impl : public Calendar::WesternImpl {
-              public:
-                std::string name() const { return "TARGET"; }
-                bool isBusinessDay(const Date&) const;
-            };
+    //! %TARGET calendar
+    /*! Holidays:
+      <ul>
+      <li>Saturdays</li>
+      <li>Sundays</li>
+      <li>New Year's Day, January 1st</li>
+      <li>Good Friday (since 2000)</li>
+      <li>Easter Monday (since 2000)</li>
+      <li>Labour Day, May 1st (since 2000)</li>
+      <li>Christmas, December 25th</li>
+      <li>Day of Goodwill, December 26th (since 2000)</li>
+      <li>December 31st (1998, 1999, and 2001)</li>
+      </ul>
+    */
+    class TARGET : public Calendar {
+      private:
+        class Impl : public Calendar::WesternImpl {
           public:
-            TARGET()
-            : Calendar(Handle<Calendar::Impl>(new TARGET::Impl)) {}
+            std::string name() const { return "TARGET"; }
+            bool isBusinessDay(const Date&) const;
         };
-
-    }
+      public:
+        TARGET()
+        : Calendar(Handle<Calendar::Impl>(new TARGET::Impl)) {}
+    };
 
 }
 

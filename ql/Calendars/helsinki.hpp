@@ -26,39 +26,35 @@
 
 namespace QuantLib {
 
-    namespace Calendars {
-
-        //! %Helsinki calendar
-        /*! Holidays:
-            <ul>
-            <li>Saturdays</li>
-            <li>Sundays</li>
-            <li>New Year's Day, January 1st</li>
-            <li>Epiphany, January 6th</li>
-            <li>Good Friday</li>
-            <li>Easter Monday</li>
-            <li>Ascension Thursday</li>
-            <li>Labour Day, May 1st</li>
-            <li>Midsummer Eve (Friday between June 18-24)</li>
-            <li>Independence Day, December 6th</li>
-            <li>Christmas Eve, December 24th</li>
-            <li>Christmas, December 25th</li>
-            <li>Boxing Day, December 26th</li>
-            </ul>
-        */
-        class Helsinki : public Calendar {
-          private:
-            class Impl : public Calendar::WesternImpl {
-              public:
-                std::string name() const { return "Helsinki"; }
-                bool isBusinessDay(const Date&) const;
-            };
+    //! %Helsinki calendar
+    /*! Holidays:
+        <ul>
+        <li>Saturdays</li>
+        <li>Sundays</li>
+        <li>New Year's Day, January 1st</li>
+        <li>Epiphany, January 6th</li>
+        <li>Good Friday</li>
+        <li>Easter Monday</li>
+        <li>Ascension Thursday</li>
+        <li>Labour Day, May 1st</li>
+        <li>Midsummer Eve (Friday between June 18-24)</li>
+        <li>Independence Day, December 6th</li>
+        <li>Christmas Eve, December 24th</li>
+        <li>Christmas, December 25th</li>
+        <li>Boxing Day, December 26th</li>
+        </ul>
+    */
+    class Helsinki : public Calendar {
+      private:
+        class Impl : public Calendar::WesternImpl {
           public:
-            Helsinki()
-            : Calendar(Handle<Calendar::Impl>(new Helsinki::Impl)) {}
+            std::string name() const { return "Helsinki"; }
+            bool isBusinessDay(const Date&) const;
         };
-
-    }
+      public:
+        Helsinki()
+        : Calendar(Handle<Calendar::Impl>(new Helsinki::Impl)) {}
+    };
 
 }
 

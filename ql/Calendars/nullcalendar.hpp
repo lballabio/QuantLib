@@ -26,25 +26,21 @@
 
 namespace QuantLib {
 
-     namespace Calendars {
-
-         //! Calendar for reproducing theoretical calculations.
-         /*! This calendar has no holidays. It ensures that dates at
-             whole-month distances have the same day of month.
-         */
-         class NullCalendar : public Calendar {
-           private:
-             class Impl : public Calendar::Impl {
-               public:
-                 std::string name() const { return "Null"; }
-                 bool isBusinessDay(const Date&) const { return true; }
-             };
-           public:
-             NullCalendar()
-             : Calendar(Handle<Calendar::Impl>(new NullCalendar::Impl)) {}
-         };
-
-     }
+    //! Calendar for reproducing theoretical calculations.
+    /*! This calendar has no holidays. It ensures that dates at
+        whole-month distances have the same day of month.
+    */
+    class NullCalendar : public Calendar {
+      private:
+        class Impl : public Calendar::Impl {
+          public:
+            std::string name() const { return "Null"; }
+            bool isBusinessDay(const Date&) const { return true; }
+        };
+      public:
+        NullCalendar()
+        : Calendar(Handle<Calendar::Impl>(new NullCalendar::Impl)) {}
+    };
 
 }
 

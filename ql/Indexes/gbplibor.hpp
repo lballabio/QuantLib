@@ -34,11 +34,10 @@ namespace QuantLib {
         class GBPLibor : public Xibor {
           public:
             GBPLibor(int n, TimeUnit units,
-                const RelinkableHandle<TermStructure>& h,
-                const DayCounter& dc = DayCounters::Actual365())
+                     const RelinkableHandle<TermStructure>& h,
+                     const DayCounter& dc = DayCounters::Actual365())
             : Xibor("GBPLibor", n, units, 0, GBP,
-                Calendar(Calendars::London()), true, 
-                ModifiedFollowing, dc, h) {}
+                    London(), true, ModifiedFollowing, dc, h) {}
         };
 
     }
