@@ -17,7 +17,7 @@
     alert Dirk, our Debian packager
 fill in the files' size on the download page
 upload new version of quantlib.org
-unhide new release
+unhide new release, send a notice to the SF users monitoring the packages
 news on sourceforge.net
 email quantlib-users, quantlib-announce
 update freshmeat
