@@ -24,6 +24,9 @@
 
 /* $Source$
    $Log$
+   Revision 1.8  2001/03/14 16:20:49  lballabio
+   Added augmented assignment operators for Python 2.0
+
    Revision 1.7  2001/03/12 12:59:01  marmar
    __str__ now represents the object while __repr__ is unchanged
 
@@ -67,13 +70,28 @@ class MatrixRow {
     Matrix __add__(const Matrix& m) {
         return *self+m;
     }
+    Matrix __iadd__(const Matrix& m) {
+        return *self+m;
+    }
     Matrix __sub__(const Matrix& m) {
+        return *self-m;
+    }
+    Matrix __isub__(const Matrix& m) {
         return *self-m;
     }
     Matrix __mul__(double x) {
         return *self*x;
     }
+    Matrix __imul__(double x) {
+        return *self*x;
+    }
+    Matrix __rmul__(double x) {
+        return *self*x;
+    }
     Matrix __div__(double x) {
+        return *self/x;
+    }
+    Matrix __idiv__(double x) {
         return *self/x;
     }
     String __str__() {

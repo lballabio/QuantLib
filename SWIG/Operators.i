@@ -24,6 +24,9 @@
 
 /* $Source$
    $Log$
+   Revision 1.13  2001/03/14 16:20:49  lballabio
+   Added augmented assignment operators for Python 2.0
+
    Revision 1.12  2001/03/09 12:40:41  lballabio
    Spring cleaning for SWIG interfaces
 
@@ -63,16 +66,28 @@ class TridiagonalOperator {
     TridiagonalOperator __add__(const TridiagonalOperator& O) {
         return *self+O;
     }
+    TridiagonalOperator __iadd__(const TridiagonalOperator& O) {
+        return *self+O;
+    }
     TridiagonalOperator __sub__(const TridiagonalOperator& O) {
         return *self-O;
     }
+    TridiagonalOperator __isub__(const TridiagonalOperator& O) {
+        return *self-O;
+    }
     TridiagonalOperator __mul__(double a) {
+        return *self*a;
+    }
+    TridiagonalOperator __imul__(double a) {
         return *self*a;
     }
     TridiagonalOperator __rmul__(double a) {
         return *self*a;
     }
     TridiagonalOperator __div__(double a) {
+        return *self/a;
+    }
+    TridiagonalOperator __idiv__(double a) {
         return *self/a;
     }
     #endif

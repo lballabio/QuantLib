@@ -24,6 +24,9 @@
 
 /* $Source$
    $Log$
+   Revision 1.23  2001/03/14 16:20:49  lballabio
+   Added augmented assignment operators for Python 2.0
+
    Revision 1.22  2001/03/12 17:35:11  lballabio
    Removed global IsNull function - could have caused very vicious loops
 
@@ -297,7 +300,13 @@ class Date {
     Date __add__(int days) {
         return self->plusDays(days);
     }
+    Date __iadd__(int days) {
+        return self->plusDays(days);
+    }
     Date __sub__(int days) {
+        return self->plusDays(-days);
+    }
+    Date __isub__(int days) {
         return self->plusDays(-days);
     }
     int __cmp__(const Date& other) {
