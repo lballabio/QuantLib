@@ -55,7 +55,8 @@ namespace QuantLib {
 
             Handle<GaussianPathGenerator_old> pathGenerator(
                 new GaussianPathGenerator_old(mu, volatility*volatility,
-                    times, seed));
+                    TimeGrid(times.begin(), times.end()),
+                    seed));
 
             //! Initialize the Path Pricer
             Handle<PathPricer_old<Path> > spPricer(

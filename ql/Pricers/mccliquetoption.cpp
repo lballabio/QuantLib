@@ -1,5 +1,4 @@
 
-
 /*
  Copyright (C) 2002, 2003 Ferdinando Ametrano
 
@@ -72,7 +71,8 @@ namespace QuantLib {
 
             Handle<GaussianPathGenerator_old> pathGenerator(
                 new GaussianPathGenerator_old(mu, diffusion,
-                    times, seed));
+                    TimeGrid(times.begin(), times.end()),
+                    seed));
 
             //! Initialize the pricer on the single Path
             Handle<PathPricer_old<Path> > cliquetPathPricer(

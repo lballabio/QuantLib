@@ -72,7 +72,8 @@ namespace QuantLib {
 
             Handle<GaussianPathGenerator_old> pathGenerator(
                 new GaussianPathGenerator_old(mu, diffusion,
-                    times, seed));
+                    TimeGrid(times.begin(), times.end()),
+                    seed));
 
             //! Initialize the pricer on the single Path
             Handle<PathPricer_old<Path> > performancePathPricer(

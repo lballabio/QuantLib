@@ -63,7 +63,7 @@ namespace QuantLib {
 
             Handle<GaussianMultiPathGenerator> pathGenerator(
                 new GaussianMultiPathGenerator(mu, covariance,
-                std::vector<Time>(1, residualTime), seed));
+                TimeGrid(residualTime, 1), seed));
 
             //! Initialize the pricer on the path pricer
             Handle<PathPricer_old<MultiPath> > pathPricer(new BasketPathPricer_old(

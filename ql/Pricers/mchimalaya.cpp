@@ -64,10 +64,10 @@ namespace QuantLib {
                                     - 0.5 * covariance.diagonal());
 
             Handle<GaussianMultiPathGenerator> pathGenerator(
-                new GaussianMultiPathGenerator(mu,
-                                               covariance,
-                                               times,
-                                               seed));
+                new GaussianMultiPathGenerator(
+                    mu, covariance,
+                    TimeGrid(times.begin(), times.end()),
+                    seed));
             double residualTime = times[times.size()-1];
 
             //! Initialize the pricer on the path pricer
