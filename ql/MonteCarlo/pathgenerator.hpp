@@ -79,7 +79,6 @@ namespace QuantLib {
                 ") must be greater than zero");
             QL_REQUIRE(length > 0, "PathGenerator: length must be > 0");
             Time dt = length/timeSteps;
-            // timeDelays_ = std::vector<Time>(timeSteps, dt);
             for (size_t i=0; i<timeSteps; i++) {
                 next_.value.times()[i] = (i+1)*dt;
             }
@@ -96,11 +95,15 @@ namespace QuantLib {
         PathGenerator<RNG>::PathGenerator(double drift, double variance,
             const std::vector<Time>& times, long seed)
         : next_(Path(times.size()),1.0) {
+            QL_REQUIRE(variance >= 0.0, "PathGenerator: negative variance");
             QL_REQUIRE(times.size() > 0, "PathGenerator: no times given");
             QL_REQUIRE(times[0] >= 0.0, "PathGenerator: first time(" +
                  DoubleFormatter::toString(times[0]) + ") must be non negative");
-            size_t i;
-            for(i = 1; i < times.size(); i++) {
+            Array variancePerTime(times.size());
+            Time dt = times[0];
+            next_.value.drift()[0] = drift*dt;
+            variancePerTime[0] = variance*dt;
+            for(size_t i = 1; i < times.size(); i++) {
                 QL_REQUIRE(times[i] >= times[i-1],
                     "MultiPathGenerator: time(" +
                     IntegerFormatter::toString(i-1)+")=" +
@@ -108,29 +111,15 @@ namespace QuantLib {
                     " is later than time(" +
                     IntegerFormatter::toString(i) + ")=" +
                     DoubleFormatter::toString(times[i]));
+                dt = times[i] - times[i-1];
+                next_.value.drift()[i] = drift*dt;
+                variancePerTime[i] = variance*dt;
             }
             next_.value.times() = times;
 
-            Time dt = times[0];
-            next_.value.drift()[0] = drift*dt;
-            for (i=1; i<times.size(); i++) {
-                dt = times[i] - times[i-1];
-                next_.value.drift()[i] = drift*dt;
-            }
-
-
-            Array vrnc(times.size());
-            dt = times[0];
-            next_.value.drift()[0] = drift*dt;
-            QL_REQUIRE(variance >= 0.0, "PathGenerator: negative variance");
-            vrnc[0] = variance*dt;
-            for (i=1; i<times.size(); i++) {
-                dt = times[i] - times[i-1];
-                vrnc[i] = variance*dt;
-            }
-
             generator_ = Handle<RandomNumbers::RandomArrayGenerator<RNG> >(
-                new RandomNumbers::RandomArrayGenerator<RNG>(vrnc,seed));
+                new RandomNumbers::RandomArrayGenerator<RNG>(variancePerTime,
+                seed));
         }
 
         template <class RNG>

@@ -47,10 +47,6 @@ namespace QuantLib {
         class RandomArrayGenerator {
           public:
             typedef MonteCarlo::Sample<Array> sample_type;
-            // equal average, equal variance, no covariance
-            RandomArrayGenerator(size_t dimension,
-                                 double variance,
-                                 long seed = 0);
             // equal average, different variances, no covariance
             RandomArrayGenerator(const Array& variance,
                                  long seed = 0);
@@ -66,15 +62,6 @@ namespace QuantLib {
             Math::Matrix sqrtCovariance_;
         };
 
-        template <class RNG>
-        inline RandomArrayGenerator<RNG>::RandomArrayGenerator(
-            size_t dimension, double variance,
-            long seed)
-        : next_(Array(dimension),1.0), generator_(seed) {
-            QL_REQUIRE(variance >= 0,
-                "RandomArrayGenerator: negative variance");
-            sqrtVariance_ = Array(dimension, QL_SQRT(variance));
-        }
 
         template <class RNG>
         inline RandomArrayGenerator<RNG>::RandomArrayGenerator(
