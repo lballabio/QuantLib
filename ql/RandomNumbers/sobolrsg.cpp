@@ -192,7 +192,7 @@ namespace QuantLib {
             1UL, 3UL, 1UL, 9UL, 5UL, 21UL, 119UL, 0UL };
         const unsigned long dim28SLinitializers[] = {
             1UL, 1UL, 3UL, 1UL, 23UL, 13UL, 75UL, 0UL };
-        const unsigned long dim28SLinitializers[] = {
+        const unsigned long dim29SLinitializers[] = {
             1UL, 3UL, 3UL, 11UL, 27UL, 31UL, 73UL, 0UL };
         const unsigned long dim30SLinitializers[] = {
             1UL, 1UL, 7UL, 7UL, 19UL, 25UL, 105UL, 0UL };
@@ -248,7 +248,7 @@ namespace QuantLib {
             dim29SLinitializers,
             dim30SLinitializers,
             dim31SLinitializers,
-            dim32SLinitializers
+            dim32SLinitializers,
             dim33SLinitializers,
             dim34SLinitializers,
             dim35SLinitializers,
