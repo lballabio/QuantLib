@@ -51,15 +51,6 @@ namespace QuantLib {
           public:
             enum Convention { ISMA, Bond, ISDA, Historical, AFB, Euro };
           private:
-            class ActActFactory : public DayCounter::factory {
-              public:
-                ActActFactory(Convention c) : convention_(c) {}
-                DayCounter create() const {
-                    return ActualActual(convention_);
-                }
-              private:
-                Convention convention_;
-            };
             class ActActISMAImpl : public DayCounter::DayCounterImpl {
               public:
                 std::string name() const { return std::string("act/act(b)");}
@@ -88,10 +79,6 @@ namespace QuantLib {
           public:
             ActualActual(Convention c = ActualActual::ISMA)
             : DayCounter(implementation(c)) {}
-            //! returns a factory of actual/actual day counters
-            Handle<factory> getFactory(Convention c) const {
-                return Handle<factory>(new ActActFactory(c));
-            }
         };
 
     }

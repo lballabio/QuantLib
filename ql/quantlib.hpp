@@ -173,7 +173,6 @@
 #include <ql/Optimization/optimizer.hpp>
 #include <ql/Optimization/steepestdescent.hpp>
 
-#include <ql/Patterns/factory.hpp>
 #include <ql/Patterns/observable.hpp>
 
 #include <ql/Pricers/analyticalcapfloor.hpp>

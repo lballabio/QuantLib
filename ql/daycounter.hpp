@@ -70,13 +70,6 @@ namespace QuantLib {
           const Date& refPeriodEnd = Date()) const;
         //@}
 
-        //! abstract base class for calendar factories
-        class DayCounterFactory {
-          public:
-            virtual DayCounter create() const = 0;
-        };
-        typedef DayCounterFactory factory;
-
         //! abstract base class for day counter implementations
         class DayCounterImpl {
           public:

@@ -46,15 +46,6 @@ namespace QuantLib {
           public:
             enum Convention { USA, European, Italian };
           private:
-            class Thirty360Factory : public DayCounter::factory {
-              public:
-                Thirty360Factory(Convention c) : convention_(c) {}
-                DayCounter create() const {
-                    return Thirty360(convention_);
-                }
-              private:
-                Convention convention_;
-            };
             class Thirty360USImpl : public DayCounter::DayCounterImpl {
               public:
                 std::string name() const { return std::string("30/360");}
@@ -83,10 +74,6 @@ namespace QuantLib {
           public:
             Thirty360(Convention c = Thirty360::USA)
             : DayCounter(implementation(c)) {}
-            //! returns a factory of 30/360 day counters
-            Handle<factory> getFactory(Convention c) const {
-                return Handle<factory>(new Thirty360Factory(c));
-            }
         };
 
     }

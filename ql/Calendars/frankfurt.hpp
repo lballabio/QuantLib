@@ -59,10 +59,6 @@ namespace QuantLib {
         */
         class Frankfurt : public Calendar {
           private:
-            class FFTCalendarFactory : public Calendar::factory {
-              public:
-                Calendar create() const { return Frankfurt(); }
-            };
             class FFTCalendarImpl : public Calendar::WesternCalendarImpl {
               public:
                 std::string name() const { return "Frankfurt"; }
@@ -71,10 +67,6 @@ namespace QuantLib {
           public:
             Frankfurt()
             : Calendar(Handle<CalendarImpl>(new FFTCalendarImpl)) {}
-            //! returns a factory of %Frankfurt calendars
-            Handle<factory> getFactory() const {
-                return Handle<factory>(new FFTCalendarFactory);
-            }
         };
 
     }

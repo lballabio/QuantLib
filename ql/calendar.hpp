@@ -102,13 +102,6 @@ namespace QuantLib {
                      RollingConvention convention = Following) const;
         //@}
 
-        //! abstract base class for calendar factories
-        class CalendarFactory {
-          public:
-            virtual Calendar create() const = 0;
-        };
-        typedef CalendarFactory factory;
-
         //! abstract base class for calendar implementations
         class CalendarImpl {
           public:

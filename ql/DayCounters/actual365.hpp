@@ -41,10 +41,6 @@ namespace QuantLib {
         //! Actual/365 day count convention
         class Actual365 : public DayCounter {
           private:
-            class Act365Factory : public DayCounter::factory {
-              public:
-                DayCounter create() const { return Actual365(); }
-            };
             class Act365Impl : public DayCounter::DayCounterImpl {
               public:
                 std::string name() const { return std::string("act/365"); }
@@ -58,10 +54,6 @@ namespace QuantLib {
           public:
             Actual365()
             : DayCounter(Handle<DayCounterImpl>(new Act365Impl)) {}
-            //! returns a factory of actual/365 day counters
-            Handle<factory> getFactory() const {
-                return Handle<factory>(new Act365Factory);
-            }
         };
 
     }
