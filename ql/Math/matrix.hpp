@@ -1,6 +1,6 @@
 
-
 /*
+ Copyright (C) 2003 Ferdinando Ametrano
  Copyright (C) 2000, 2001, 2002, 2003 RiskMap srl
 
  This file is part of QuantLib, a free-software/open-source library
@@ -37,7 +37,7 @@ namespace QuantLib {
     namespace Math {
 
         //! %matrix used in linear algebra.
-        /*! This class implements the concept of vector as used in linear
+        /*! This class implements the concept of Matrix as used in linear
             algebra. As such, it is <b>not</b> meant to be used as a
             container.
         */
@@ -164,9 +164,34 @@ namespace QuantLib {
         Matrix transpose(const Matrix&);
         /*! \relates Matrix */
         Matrix outerProduct(const Array &v1, const Array &v2);
-        //! returns the square root of a real symmetric matrix
-        /*! \relates Matrix */
-        Matrix matrixSqrt(const Matrix &realSymmetricMatrix);
+
+        enum SalvagingAlgorithm {None, Spectral, Hypersphere};
+        //! returns the pseudo square root of a real symmetric matrix
+        /*! returns the pseudo square root of a real symmetric matrix.
+            If the matrix is not positive semi definite, it can
+            returns an approximation of the pseudo square root
+            using a (user selected) salvaging algorithm
+
+            For more information see: "The most general methodology to create
+            a valid correlation matrix for risk management and option pricing
+            purposes", by R. Rebonato and P. Jäckel.
+            The Journal of Risk, 2(2), Winter 1999/2000
+            http://www.rebonato.com/correlationmatrix.pdf
+
+            Revised and extended in "Monte Carlo Methods in Finance",
+            by Peter Jäckel, Chapter 6
+                    
+            \relates Matrix */
+        Matrix pseudoSqrt(const Matrix &realSymmetricMatrix,
+                          SalvagingAlgorithm sa = None);
+        //! returns the pseudo square root of a real symmetric matrix
+        /*! returns the pseudo square root of a real symmetric matrix.
+            
+            \deprecate use pseudoSqrt instead
+            \relates Matrix */
+        inline Matrix matrixSqrt(const Matrix &realSymmetricMatrix) {
+            return pseudoSqrt(realSymmetricMatrix, None);
+        }
 
 
         // inline definitions
