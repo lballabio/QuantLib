@@ -17,14 +17,18 @@
  * You should have received a copy of the license along with this file;
  * if not, contact ferdinando@ametrano.net
  *
- * QuantLib license is also available at http://quantlib.sourceforge.net/LICENSE.TXT
+ * QuantLib license is also available at 
+ * http://quantlib.sourceforge.net/LICENSE.TXT
 */
 /*! \file mcoptionsample.h
-    \brief Create a sample generator from a path generator and a single-path pricer
+    \brief Create a sample generator from a path generator and a path pricer
 
     $Source$
     $Name$
     $Log$
+    Revision 1.5  2001/01/30 15:48:51  marmar
+    Documentation revised
+
     Revision 1.4  2001/01/29 15:00:49  marmar
     Modified to accomodate code-sharing with
     multi-dimensional Monte Carlo
@@ -50,54 +54,53 @@ namespace QuantLib {
 
     namespace MonteCarlo {
     /*!
-    To be fixed!!!
-    
-    Given a path generator class PG, together with an instance "samplepath",
-    and a single-path pricer SPP, again with an instance singlepathpricer,
-    a sample generator OptionSample<PG, SPP> returns at each next a value
-    for the option price.
+    Given a path generator class PG, together with an instance "samplePath",
+    and a path pricer PP, again with an instance "pathpricer", a sample 
+    generator OptionSample<PG, PP> returns, at each next(), a value for the 
+    option price.
 
-    Minimal interfaces for PG and SPP:
+    Minimal interfaces for PG and PP:
 
     class PG{
         PATH_TYPE next() const;
         double weight() const;
     };
 
-    class SPP{
-        double value(PATH_TYPE &) const;    // this will eventually evolve into
-                                            // SPP::ValueType value() const;
+    class PP{
+            // The value() method will eventually evolve into
+            // PP::ValueType value() const;        
+        double value(PATH_TYPE &) const;                                                
     };
     */
 
-        template<class PG, class SPP>
+        template<class PG, class PP>
         class OptionSample {
         public:
             OptionSample(){}
-            OptionSample(Handle<PG> samplepath, Handle<SPP> singlePathPricer);
+            OptionSample(Handle<PG> samplePath, Handle<PP> pathPricer);
             double next() const; // this will eventually evolve into
-                                 // SPP::ValueType next() const;
+                                 // PP::ValueType next() const;
             double weight() const;
         private:
-            mutable Handle<PG> samplePath_;
             mutable double weight_;
-            Handle<SPP> singlePathPricer_;
+            mutable Handle<PG> samplePath_;
+            Handle<PP> pathPricer_;
         };
 
-        template<class PG, class SPP>
-        inline OptionSample<PG, SPP>::OptionSample(Handle<PG> samplePath,
-               Handle<SPP> singlePathPricer): samplePath_(samplePath),
-               singlePathPricer_(singlePathPricer), weight_(0){}
+        template<class PG, class PP>
+        inline OptionSample<PG, PP>::OptionSample(Handle<PG> samplePath,
+               Handle<PP> pathPricer): samplePath_(samplePath),
+               pathPricer_(pathPricer), weight_(0){}
 
-        template<class PG, class SPP>
-        inline double OptionSample<PG, SPP>::next() const{
-            double price = singlePathPricer_ -> value(samplePath_ -> next());
+        template<class PG, class PP>
+        inline double OptionSample<PG, PP>::next() const{
+            double price = pathPricer_ -> value(samplePath_ -> next());
             weight_ = samplePath_ -> weight();
             return price;
         }
 
-        template<class PG, class SPP>
-        inline double OptionSample<PG, SPP>::weight() const{
+        template<class PG, class PP>
+        inline double OptionSample<PG, PP>::weight() const{
             return weight_;
         }
 
