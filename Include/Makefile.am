@@ -3,9 +3,10 @@ SUBDIRS = Calendars Currencies DayCounters FiniteDifferences Instruments \
 	Utilities
 
 includedir = $(prefix)/include/QuantLib
-include_HEADERS = calendar.h \
-	config.h \
+include_HEADERS = \
 	array.h \
+	calendar.h \
+	config.h \
 	currency.h \
 	dataformatters.h \
 	date.h \
@@ -15,11 +16,15 @@ include_HEADERS = calendar.h \
 	expressiontemplates.h \
 	forwardvolsurface.h \
 	handle.h \
-	history.h instrument.h \
+	history.h \
+	instrument.h \
 	null.h \
-	options.h qldefines.h \
-	qlerrors.h quantlib.h \
-	rate.h riskstatistics.h \
+	options.h \
+	qldefines.h \
+	qlerrors.h \
+	quantlib.h \
+	rate.h \
+	riskstatistics.h \
 	solver1d.h spread.h \
 	swaptionvolsurface.h \
 	termstructure.h

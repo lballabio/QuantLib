@@ -31,7 +31,7 @@ EXTRA_DIST=News.txt Contributors.txt History.txt LICENSE.TXT \
 	Docs/online.doxy \
 	Docs/onlinefooter.html \
 	Examples/history_iterators.cpp
-	 
+ 
 
 if SWIG_FOUND
 python:

@@ -31,6 +31,9 @@
     $Source$
     $Name$
     $Log$
+    Revision 1.25  2001/02/05 14:49:11  enri
+    added some files to Makefile.am files
+
     Revision 1.24  2001/01/17 16:33:40  nando
     bug fix.
     It was
@@ -452,6 +455,12 @@
 # error no limits, climits or limits.h!
 #endif
 
+#if defined HAVE_CTIME
+#include <ctime>
+#elif defined HAVE_TIME_H
+#include <time.h>
+#endif 
+	    
 #include <algorithm>
 #define QL_GARBLED_REVERSE_ITERATORS      0
 #define QL_GARBLED_PTR_CONST              0
