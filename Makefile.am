@@ -7,11 +7,11 @@ AUTOMAKE_OPTIONS=foreign
 SUBDIRS=Sources Include Docs SWIG Python Ruby Examples
 
 EXTRA_DIST=Authors.txt \
-    Contributors.txt \
+	Contributors.txt \
 	History.txt \
 	LICENSE.TXT \
 	makefile.mak \
-    News.txt \
+	News.txt \
 	QuantLib.dsp \
 	QuantLib.dsw \
 	QuantLib.mak \
@@ -43,7 +43,7 @@ endif
 python-install:
 	$(MAKE) -C Python python-install
 python-test:
-	$(MAKE) -C Python/Tests python-test
+	$(MAKE) -C Python python-test
 else
 python:
 	echo You need to install python in order to build this module

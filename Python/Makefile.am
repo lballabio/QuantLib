@@ -23,6 +23,9 @@ python: quantlib_wrap.cpp
 python-install:
 	$(PYTHON) setup.py install
 
+python-test:
+	$(PYTHON) setup.py test
+
 QuantLib.py: quantlib_wrap.cpp
 
 quantlib_wrap.cpp:  $(SWIG_INCLUDEDIR)/QuantLib.i \

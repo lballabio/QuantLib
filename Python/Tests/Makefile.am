@@ -13,6 +13,3 @@ EXTRA_DIST=QuantLibSuite.py \
 	plain_basket_option.py random_generators.py \
 	risk_statistics.py statistics.py term_structures.py
 
-python-test:
-	python QuantLibSuite.py
-
