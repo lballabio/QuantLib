@@ -1,6 +1,6 @@
-**********************
-***  Borland user  ***
-**********************
+***********************
+***  Borland users  ***
+***********************
 
 The makefile is to be used with the free Borland C++ Compiler available at
 http://www.borland.com/bcppbuilder/freecompiler/
@@ -8,20 +8,20 @@ http://www.borland.com/bcppbuilder/freecompiler/
 The command 'Make' build the library.
 
 To compile the Python extension you need to set the environment variable PYTHON_HOME to your Python installation dir (e.g. C:\Python20).
-'Make Python' build the extension (SWIG wrap files are automatically generated if needed).
+'Make Python' builds the extension (SWIG wrap files are automatically generated if needed).
 'Make install' copies the *.py and *.dll files into your Python installation.
-'Make test' run the Python test (QuantLib\Python\Tests)
+'Make test' runs the Python test (QuantLib\Python\Tests)
 
 To produce documentation see QuantLib  \Docs\README.txt.
 Win32 direction follows.
-You need DoxyGen: download it from http://www.stack.nl/~dimitri/doxygen/download.html#latestsrc and copy the binaries in a directory in your PATH.
+You need Doxygen: download it from http://www.stack.nl/~dimitri/doxygen/download.html#latestsrc and copy the binaries in a directory in your PATH.
 You also need Graphviz (http://www.research.att.com/sw/tools/graphviz/gviz15.exe) and Aladdin Ghostscript (ftp://ftp.cs.wisc.edu/ghost/aladdin/gs650/gs650w32.exe).
 Install them.
 'Make HTML' produce HTML documentation
 
-*************************
-***  Visual C++ user  ***
-*************************
+**************************
+***  Visual C++ users  ***
+**************************
 
 Visual C++ 6.0 projects files are supplied.
 
