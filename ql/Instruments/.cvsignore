@@ -1,3 +1,4 @@
+*.obj
 *.lib
 *.obj_d
 

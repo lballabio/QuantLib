@@ -1,3 +1,4 @@
+*.obj
 config.hpp
 config.hpp.in
 stamp-h1

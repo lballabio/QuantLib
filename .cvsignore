@@ -3,3 +3,5 @@ quantlib-config
 build
 QuantLib.plg
 QuantLib.dep
+QuantLib*.ncb
+QuantLib*.opt

@@ -1,2 +1,5 @@
+*.obj
+*.dep
+*.plg
 quantlib-test-suite
 build
