@@ -100,7 +100,63 @@ SOURCE=..\Python\quantlib_wrap.cpp
 # PROP Default_Filter ".i"
 # Begin Source File
 
+SOURCE=..\SWIG\BoundaryConditions.i
+# End Source File
+# Begin Source File
+
+SOURCE=..\SWIG\Calendars.i
+# End Source File
+# Begin Source File
+
+SOURCE=..\SWIG\Currencies.i
+# End Source File
+# Begin Source File
+
+SOURCE=..\SWIG\Date.i
+# End Source File
+# Begin Source File
+
+SOURCE=..\SWIG\DayCounters.i
+# End Source File
+# Begin Source File
+
+SOURCE=..\SWIG\Financial.i
+# End Source File
+# Begin Source File
+
+SOURCE=..\SWIG\Instruments.i
+# End Source File
+# Begin Source File
+
+SOURCE=..\SWIG\Operators.i
+# End Source File
+# Begin Source File
+
+SOURCE=..\SWIG\Options.i
+# End Source File
+# Begin Source File
+
+SOURCE=..\SWIG\Pricers.i
+# End Source File
+# Begin Source File
+
 SOURCE=..\SWIG\QuantLib.i
+# End Source File
+# Begin Source File
+
+SOURCE=..\SWIG\Solvers1D.i
+# End Source File
+# Begin Source File
+
+SOURCE=..\SWIG\Statistics.i
+# End Source File
+# Begin Source File
+
+SOURCE=..\SWIG\TermStructures.i
+# End Source File
+# Begin Source File
+
+SOURCE=..\SWIG\Vectors.i
 # End Source File
 # End Group
 # End Target
