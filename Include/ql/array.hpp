@@ -30,6 +30,9 @@
 
 // $Id$
 // $Log$
+// Revision 1.13  2001/08/22 13:58:37  nando
+// typo fixed
+//
 // Revision 1.12  2001/08/09 14:59:45  sigmud
 // header modification
 //
@@ -926,7 +929,7 @@ namespace QuantLib {
         operator-(const Array& v1, const Array& v2) {
             #ifdef QL_DEBUG
                 QL_REQUIRE(v1.size() == v2.size(),
-                    "adding arrays with different sizes");
+                    "subtracting arrays with different sizes");
             #endif
             typedef BinaryVectorialExpression<
             Array::const_iterator,Array::const_iterator,Subtract>
@@ -960,7 +963,7 @@ namespace QuantLib {
         operator-(const Array& v1, const VectorialExpression<Iter2>& e2) {
             #ifdef QL_DEBUG
                 QL_REQUIRE(v1.size() == e2.size(),
-                    "adding arrays with different sizes");
+                    "subtracting arrays with different sizes");
             #endif
             typedef BinaryVectorialExpression<
                 Array::const_iterator,VectorialExpression<Iter2>,Subtract>
@@ -976,7 +979,7 @@ namespace QuantLib {
         operator-(const VectorialExpression<Iter1>& e1, const Array& v2) {
             #ifdef QL_DEBUG
                 QL_REQUIRE(e1.size() == v2.size(),
-                    "adding arrays with different sizes");
+                    "subtracting arrays with different sizes");
             #endif
             typedef BinaryVectorialExpression<
                 VectorialExpression<Iter1>,Array::const_iterator,Subtract>
@@ -993,7 +996,7 @@ namespace QuantLib {
             const VectorialExpression<Iter2>& e2) {
             #ifdef QL_DEBUG
                 QL_REQUIRE(e1.size() == e2.size(),
-                    "adding arrays with different sizes");
+                    "subtracting arrays with different sizes");
             #endif
             typedef BinaryVectorialExpression<
                 VectorialExpression<Iter1>,VectorialExpression<Iter2>,Subtract>
@@ -1061,7 +1064,7 @@ namespace QuantLib {
         operator*(const Array& v1, const Array& v2) {
             #ifdef QL_DEBUG
                 QL_REQUIRE(v1.size() == v2.size(),
-                    "adding arrays with different sizes");
+                    "multiplying arrays with different sizes");
             #endif
             typedef BinaryVectorialExpression<
             Array::const_iterator,Array::const_iterator,Multiply>
@@ -1095,7 +1098,7 @@ namespace QuantLib {
         operator*(const Array& v1, const VectorialExpression<Iter2>& e2) {
             #ifdef QL_DEBUG
                 QL_REQUIRE(v1.size() == e2.size(),
-                    "adding arrays with different sizes");
+                    "multiplying arrays with different sizes");
             #endif
             typedef BinaryVectorialExpression<
                 Array::const_iterator,VectorialExpression<Iter2>,Multiply>
@@ -1111,7 +1114,7 @@ namespace QuantLib {
         operator*(const VectorialExpression<Iter1>& e1, const Array& v2) {
             #ifdef QL_DEBUG
                 QL_REQUIRE(e1.size() == v2.size(),
-                    "adding arrays with different sizes");
+                    "multiplying arrays with different sizes");
             #endif
             typedef BinaryVectorialExpression<
                 VectorialExpression<Iter1>,Array::const_iterator,Multiply>
@@ -1128,7 +1131,7 @@ namespace QuantLib {
             const VectorialExpression<Iter2>& e2) {
             #ifdef QL_DEBUG
                 QL_REQUIRE(e1.size() == e2.size(),
-                    "adding arrays with different sizes");
+                    "multiplying arrays with different sizes");
             #endif
             typedef BinaryVectorialExpression<
                 VectorialExpression<Iter1>,VectorialExpression<Iter2>,Multiply>
@@ -1196,7 +1199,7 @@ namespace QuantLib {
         operator/(const Array& v1, const Array& v2) {
             #ifdef QL_DEBUG
                 QL_REQUIRE(v1.size() == v2.size(),
-                    "adding arrays with different sizes");
+                    "dividing arrays with different sizes");
             #endif
             typedef BinaryVectorialExpression<
                 Array::const_iterator,Array::const_iterator,Divide>
@@ -1230,7 +1233,7 @@ namespace QuantLib {
         operator/(const Array& v1, const VectorialExpression<Iter2>& e2) {
             #ifdef QL_DEBUG
                 QL_REQUIRE(v1.size() == e2.size(),
-                    "adding arrays with different sizes");
+                    "dividing arrays with different sizes");
             #endif
             typedef BinaryVectorialExpression<
                 Array::const_iterator,VectorialExpression<Iter2>,Divide>
@@ -1246,7 +1249,7 @@ namespace QuantLib {
         operator/(const VectorialExpression<Iter1>& e1, const Array& v2) {
             #ifdef QL_DEBUG
                     QL_REQUIRE(e1.size() == v2.size(),
-                        "adding arrays with different sizes");
+                        "dividing arrays with different sizes");
             #endif
             typedef BinaryVectorialExpression<
                 VectorialExpression<Iter1>,Array::const_iterator,Divide>
@@ -1263,7 +1266,7 @@ namespace QuantLib {
             const VectorialExpression<Iter2>& e2) {
             #ifdef QL_DEBUG
                 QL_REQUIRE(e1.size() == e2.size(),
-                    "adding arrays with different sizes");
+                    "dividing arrays with different sizes");
             #endif
             typedef BinaryVectorialExpression<
                 VectorialExpression<Iter1>,VectorialExpression<Iter2>,Divide>
