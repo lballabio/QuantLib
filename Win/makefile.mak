@@ -388,17 +388,18 @@ install::
 # Test PyQuantLib
 test::
     cd ..\Python\Tests
-    python barrieroption.py
-    python american_option.py
-    python date.py
-    python distributions.py
-    python european_option.py
-    python european_with_dividends.py
-    python impliedVol.py
-    python mcpricers.py
-    python RiskStatistics.py
-    python statistics_test.py
-    python TermStructure.py
-    python testRNGs.py
+    python american_option.py -b
+    python barrieroption.py -b
+    python date.py -b
+    python distributions.py -b
+    python european_option.py -b
+    python european_with_dividends.py -b
+    python himalaya.py -b
+    python impliedVol.py -b
+    python mcpricers.py -b
+    python RiskStatistics.py -b
+    python statistics_test.py -b
+    python TermStructure.py -b
+    python testRNGs.py -b
     cd ..\..\Win
 
