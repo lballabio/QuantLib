@@ -26,7 +26,7 @@ namespace QuantLib {
 
     namespace Optimization {
 
-        void SteepestDescent::minimize(Problem& P) {
+        void SteepestDescent::minimize(const Problem& P) const {
             bool end;
 
             // function and squared norm of gradient values;

@@ -37,7 +37,7 @@ namespace QuantLib {
         //! Optimization Method abstract class for constrained optimization pb
         class Method {
           public:
-            explicit Method()
+            Method()
             : iterationNumber_(0), functionEvaluation_(0),
               gradientEvaluation_(0), functionValue_(1), squaredNorm_(1) {}
             virtual ~Method() {}
@@ -49,44 +49,44 @@ namespace QuantLib {
             void setEndCriteria(const EndCriteria& endCriteria);
 
             //! current iteration number
-            inline int& iterationNumber() { return iterationNumber_; }
+            int& iterationNumber() const { return iterationNumber_; }
 
             //! optimization end criteria
-            inline EndCriteria& endCriteria() { return endCriteria_; }
+            EndCriteria& endCriteria() const { return endCriteria_; }
 
             //! number of evaluation of cost function
-            inline int& functionEvaluation() { return functionEvaluation_; }
+            int& functionEvaluation() const { return functionEvaluation_; }
 
             //! number of evaluation of cost function gradient
-            inline int& gradientEvaluation() { return gradientEvaluation_; }
+            int& gradientEvaluation() const { return gradientEvaluation_; }
 
             //! value of cost function
-            inline double& functionValue() { return functionValue_; }
+            double& functionValue() const { return functionValue_; }
 
             //! value of cost function gradient norm
-            inline double& gradientNormValue() { return squaredNorm_; }
+            double& gradientNormValue() const { return squaredNorm_; }
 
             //! current value of the local minimum
-            Array& x() { return x_; }
+            Array& x() const { return x_; }
 
             //! current value of the search direction
-            Array& searchDirection() { return searchDirection_; }
+            Array& searchDirection() const { return searchDirection_; }
 
             //! minimize the optimization problem P
-            virtual void minimize(Problem& P) = 0;
+            virtual void minimize(const Problem& P) const = 0;
           protected:
             //! initial value of unknowns
             Array initialValue_;
             //! current iteration step in the Optimization process
-            int iterationNumber_;
+            mutable int iterationNumber_;
             //! optimization end criteria
-            EndCriteria endCriteria_;
+            mutable EndCriteria endCriteria_;
             //! number of evaluation of cost function and its gradient
-            int functionEvaluation_, gradientEvaluation_;
+            mutable int functionEvaluation_, gradientEvaluation_;
             //! function and gradient norm values of the last step
-            double functionValue_, squaredNorm_;
+            mutable double functionValue_, squaredNorm_;
             //! current values of the local minimum and the search direction
-            Array x_, searchDirection_;
+            mutable Array x_, searchDirection_;
         };
 
         // inline definitions

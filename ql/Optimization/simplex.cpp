@@ -32,9 +32,9 @@ namespace QuantLib {
     namespace Optimization {
 
         double Simplex::extrapolate(
-            Problem& P,
+            const Problem& P,
             Size iHighest,
-            double &factor) {
+            double &factor) const {
 
             Array pTry;
             do {
@@ -54,7 +54,7 @@ namespace QuantLib {
             return vTry;
 
         }
-        void Simplex::minimize(Problem& P) {
+        void Simplex::minimize(const Problem& P) const {
             bool end = false;
 
             Array& X = x();

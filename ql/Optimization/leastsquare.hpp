@@ -60,12 +60,12 @@ namespace QuantLib {
             virtual ~LeastSquareFunction () {}
 
             //! compute value of the least square function
-            virtual double value (const Array& x);
+            virtual double value (const Array& x) const;
             //! compute vector of derivatives of the least square function
-            virtual void gradient (Array& grad_f, const Array& x);
+            virtual void gradient (Array& grad_f, const Array& x) const;
             //! compute value and gradient of the least square function
             virtual double valueAndGradient (Array& grad_f,
-                                const Array& x);
+                                             const Array& x) const;
           protected:
             //! least square problem
               LeastSquareProblem &lsp_;
@@ -145,7 +145,7 @@ namespace QuantLib {
 
         // inline definitions
 
-        inline double LeastSquareFunction::value (const Array & x) {
+        inline double LeastSquareFunction::value (const Array & x) const {
             // size of target and function to fit vectors
             Array target(lsp_.size()), fct2fit(lsp_.size());
             // compute its values
@@ -157,7 +157,7 @@ namespace QuantLib {
         }
 
         inline void LeastSquareFunction::gradient (Array& grad_f,
-           const Array& x) {
+                                                   const Array& x) const {
             // size of target and function to fit vectors
             Array target (lsp_.size ()), fct2fit (lsp_.size ());
             // size of gradient matrix
@@ -171,7 +171,7 @@ namespace QuantLib {
         }
 
         inline double LeastSquareFunction::valueAndGradient(
-            Array& grad_f, const Array& x) {
+                        Array& grad_f, const Array& x) const {
             // size of target and function to fit vectors
             Array target(lsp_.size()), fct2fit(lsp_.size());
             // size of gradient matrix

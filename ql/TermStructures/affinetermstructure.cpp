@@ -38,7 +38,7 @@ namespace QuantLib {
             : model_(model), instruments_(instruments) {}
             virtual ~CalibrationFunction() {}
 
-            virtual double value(const Array& params) {
+            virtual double value(const Array& params) const {
                 model_->setParams(params);
 
                 double value = 0.0;
@@ -48,7 +48,7 @@ namespace QuantLib {
                 }
                 return value;
             }
-            virtual double finiteDifferenceEpsilon() { return 1e-7; }
+            virtual double finiteDifferenceEpsilon() const { return 1e-7; }
           private:
             Handle<ShortRateModels::Model> model_;
             const std::vector<Handle<RateHelper> >& instruments_;

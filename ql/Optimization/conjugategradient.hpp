@@ -50,7 +50,7 @@ namespace QuantLib {
             virtual ~ConjugateGradient() {}
 
             //! minimize the optimization problem P
-            virtual void minimize(Problem& P);
+            virtual void minimize(const Problem& P) const;
           private:
             //! line search
             Handle<LineSearch> lineSearch_;

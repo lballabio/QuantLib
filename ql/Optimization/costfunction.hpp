@@ -33,11 +33,11 @@ namespace QuantLib {
         class CostFunction {
           public:
             //! method to overload to compute the cost functon value in x
-            virtual double value(const Array& x) = 0;
+            virtual double value(const Array& x) const = 0;
 
             //! method to overload to compute grad_f, the first derivative of
             //  the cost function with respect to x
-            virtual void gradient(Array& grad, const Array& x) {
+            virtual void gradient(Array& grad, const Array& x) const {
                 double eps = finiteDifferenceEpsilon(), fp, fm;
                 Array xx(x);
 
@@ -53,13 +53,14 @@ namespace QuantLib {
 
             //! method to overload to compute grad_f, the first derivative of
             //  the cost function with respect to x and also the cost function
-            virtual double valueAndGradient(Array& grad, const Array& x) {
+            virtual double valueAndGradient(Array& grad, 
+                                            const Array& x) const {
                 gradient(grad, x);
                 return value(x);
             }
 
             //! Default epsilon for finite difference method :
-            virtual double finiteDifferenceEpsilon() { return 1e-8; }
+            virtual double finiteDifferenceEpsilon() const { return 1e-8; }
         };
 
     }

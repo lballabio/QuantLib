@@ -29,7 +29,7 @@ namespace QuantLib {
 
     namespace Optimization {
 
-        //! Multi-dimensionnal Steepest Descend class
+        //! Multi-dimensional steepest-descent class
         /*! User has to provide line-search method and
             optimization end criteria
 
@@ -49,7 +49,7 @@ namespace QuantLib {
             virtual ~SteepestDescent() {}
 
             //! minimize the optimization problem P
-            virtual void minimize(Problem& P);
+            virtual void minimize(const Problem& P) const;
           private:
             //! line search
             Handle<LineSearch> lineSearch_;

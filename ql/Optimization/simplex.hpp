@@ -46,15 +46,14 @@ namespace QuantLib {
             : Method(), lambda_(lambda), tol_(tol) {}
             virtual ~Simplex() {}
 
-            virtual void minimize(Problem& P);
+            virtual void minimize(const Problem& P) const;
           private:
-            double extrapolate(Problem& P, Size iHighest, 
-                               double& factor);
+            double extrapolate(const Problem& P, Size iHighest, 
+                               double& factor) const;
             double lambda_;
             double tol_;
-            std::vector<Array> vertices_;
-            Array values_;
-            Array sum_;
+            mutable std::vector<Array> vertices_;
+            mutable Array values_, sum_;
         };
 
     }

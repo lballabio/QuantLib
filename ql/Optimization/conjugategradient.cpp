@@ -26,7 +26,7 @@ namespace QuantLib {
 
     namespace Optimization {
 
-        void ConjugateGradient::minimize(Problem &P) {
+        void ConjugateGradient::minimize(const Problem &P) const {
             bool end;
 
             // function and squared norm of gradient values;

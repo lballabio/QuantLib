@@ -27,7 +27,7 @@ namespace QuantLib {
     namespace Optimization {
 
         double ArmijoLineSearch::operator()(
-            Problem &P, // Optimization problem
+            const Problem& P,       // Optimization problem
             double t_ini)           // initial value of line-search step
         {
             Method& method = P.method();

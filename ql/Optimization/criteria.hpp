@@ -29,8 +29,8 @@ namespace QuantLib {
 
         /*!
           class to gather criteria to end optimization process :
-          - stationnary point
-          - stationnary gradient
+          - stationary point
+          - stationary gradient
           - maximum number of iterations
           ....
         */
@@ -39,28 +39,28 @@ namespace QuantLib {
             enum Type { maxIter = 1, statPt = 2, statGd = 3 };
 
             //! default constructor
-            inline EndCriteria ();
+            EndCriteria ();
             //! initialization constructor
-            inline EndCriteria (int maxIteration, double epsilon);
+            EndCriteria (int maxIteration, double epsilon);
             //! copy constructor
-            inline EndCriteria (const EndCriteria& oec);
+            EndCriteria (const EndCriteria& oec);
             //! destructor
-            inline ~EndCriteria () {}
+            ~EndCriteria () {}
 
             //! assignement operator
-            inline EndCriteria& operator=(const EndCriteria& oec);
+            EndCriteria& operator=(const EndCriteria& oec);
 
-            inline void setPositiveOptimization() {
+            void setPositiveOptimization() {
                 positiveOptimization_ = true;
             }
 
-            inline bool checkIterationNumber (int iteration) {
+            bool checkIterationNumber (int iteration) {
                 bool test = (iteration >= maxIteration_);
                 if (test)
                     endCriteria_ = maxIter;
                 return test;
             }
-            inline bool checkStationnaryValue(double fold, double fnew) {
+            bool checkStationaryValue(double fold, double fnew) {
                 bool test = (QL_FABS (fold - fnew) < functionEpsilon_);
                 if (test) {
                     statState_++;
@@ -74,7 +74,7 @@ namespace QuantLib {
                 return (test && (statState_ > maxIterStatPt_));
             }
 
-            inline bool checkAccuracyValue(double f) {
+            bool checkAccuracyValue(double f) {
                 bool test = ((f < functionEpsilon_) && positiveOptimization_);
                 if (test) {
                     endCriteria_ = statPt;
@@ -82,13 +82,13 @@ namespace QuantLib {
                 return test;
             }
 
-            inline bool checkStationnaryGradientNorm (double normDiff) {
+            bool checkStationaryGradientNorm (double normDiff) {
                 bool test = (normDiff < gradientEpsilon_);
                 if (test)
                     endCriteria_ = statGd;
                 return test;
             }
-            inline bool checkAccuracyGradientNorm (double norm) {
+            bool checkAccuracyGradientNorm (double norm) {
                 bool test = (norm < gradientEpsilon_);
                 if (test)
                     endCriteria_ = statGd;
@@ -96,16 +96,16 @@ namespace QuantLib {
             }
 
             //! test if the number of iteration is not too big and if we don't
-            //  raise a stationnary point
-            inline bool operator()(int iteration,
-                                   double fold,
-                                   double normgold,
-                                   double fnew,
-                                   double normgnew,
-                                   double normdiff);
+            //  raise a stationary point
+            bool operator()(int iteration,
+                            double fold,
+                            double normgold,
+                            double fnew,
+                            double normgnew,
+                            double normdiff);
 
             //! return the end criteria type
-            inline int criteria () const {
+            int criteria () const {
                 return endCriteria_;
             }
 
@@ -114,7 +114,7 @@ namespace QuantLib {
             int maxIteration_;
             //! function and gradient epsilons
             double functionEpsilon_, gradientEpsilon_;
-            //! Maximun number of iterations in stationnary state
+            //! Maximun number of iterations in stationary state
             int maxIterStatPt_, statState_;
             int endCriteria_;
             bool positiveOptimization_;
@@ -156,7 +156,7 @@ namespace QuantLib {
             double fnew, double normgnew, double normdiff) {
             return (
                 checkIterationNumber(iteration) ||
-                checkStationnaryValue(fold, fnew) ||
+                checkStationaryValue(fold, fnew) ||
                 checkAccuracyValue(fnew) ||
                 checkAccuracyValue(fold) ||
                 checkAccuracyGradientNorm(normgnew) ||

@@ -50,7 +50,7 @@ namespace QuantLib {
             bool succeed() { return succeed_; }
 
             //! Perform line search
-            virtual double operator()(Problem &P, double t_ini) = 0;
+            virtual double operator()(const Problem& P, double t_ini) = 0;
 
             double update(Array& params, 
                           const Array& direction,

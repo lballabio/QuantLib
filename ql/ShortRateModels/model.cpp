@@ -40,8 +40,7 @@ namespace QuantLib {
             : model_(model, false), instruments_(instruments) {}
             virtual ~CalibrationFunction() {}
             
-            virtual double value(
-                const Array& params) {
+            virtual double value(const Array& params) const {
                 model_->setParams(params);
 
                 double value = 0.0;
@@ -52,7 +51,7 @@ namespace QuantLib {
 
                 return QL_SQRT(value);
             }
-            virtual double finiteDifferenceEpsilon() { return 1e-6; }
+            virtual double finiteDifferenceEpsilon() const { return 1e-6; }
           private:
             Handle<Model> model_;
             CalibrationSet& instruments_;
