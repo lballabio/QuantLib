@@ -28,6 +28,9 @@
     $Source$
     $Name$
     $Log$
+    Revision 1.12  2001/01/24 09:19:05  marmar
+    Documentation revised
+
     Revision 1.11  2001/01/15 16:57:07  lballabio
     Documentation fixed
 
@@ -70,7 +73,7 @@ namespace QuantLib {
             Statistics();
             //! \name Inspectors
             //@{
-            //! size of data set
+            //! number of samples collected
             double samples() const;
             //! sum of data weights
             double weightSum() const;
@@ -178,7 +181,6 @@ namespace QuantLib {
             "Stat::variance() : sampleWeight_=0, unsufficient");
           QL_REQUIRE(sampleNumber_>1, 
             "Stat::variance() : sample number <=1, unsufficient");
-          double m = mean();
         
           return (sampleNumber_/(sampleNumber_-1.0))*
             (quadraticSum_ - sum_*sum_/sampleWeight_)/sampleWeight_;
