@@ -273,6 +273,13 @@ class Date {
 	Date __sub__(int days) {
 		return self->plusDays(-days);
 	}
+	int __cmp__(const Date& other) {
+		if (*self < other)
+			return -1;
+		if (*self == other)
+			return 0;
+		return 1;
+	}
 	char* __str__() {
 		static char temp[256];
 		strcpy(temp,DateFormatter::toString(*self).c_str());
