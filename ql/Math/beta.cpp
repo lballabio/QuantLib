@@ -70,17 +70,27 @@ namespace QuantLib {
     double incompleteBetaFunction(double a, double b, double x, double accuracy,
         int maxIteration) {
 
-    	QL_REQUIRE(x >= 0.0 && x <= 1.0,
+    	QL_REQUIRE(a > 0.0,
     	    "betaIncompleteFunction : "
-    	    "x must be in [0,1]");
+    	    "a must be greater than zero");
 
-    	double result;
-    	if (x == 0.0 || x == 1.0)
-    	    result = 0.0;
+    	QL_REQUIRE(b > 0.0,
+    	    "betaIncompleteFunction : "
+    	    "b must be greater than zero");
+
+
+    	if (x == 0.0)
+    	    return 0.0;
+    	else if (x == 1.0)
+    	    return 1.0;
     	else
-    		result = QL_EXP(GammaFunction().logValue(a+b) -
-    		    GammaFunction().logValue(a) - GammaFunction().logValue(b) +
-    		    a*QL_LOG(x) + b*QL_LOG(1.0-x));
+    	    QL_REQUIRE(x>0.0 && x<1.0,
+                "betaIncompleteFunction : "
+    	        "x must be in [0,1]");
+
+    	double result = QL_EXP(GammaFunction().logValue(a+b) -
+    		GammaFunction().logValue(a) - GammaFunction().logValue(b) +
+    		a*QL_LOG(x) + b*QL_LOG(1.0-x));
 
     	if (x < (a+1.0)/(a+b+2.0))
     		return result *

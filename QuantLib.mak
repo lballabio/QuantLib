@@ -72,6 +72,8 @@ CLEAN :
 	-@erase "$(INTDIR)\basispointsensitivity.sbr"
 	-@erase "$(INTDIR)\basketpathpricer.obj"
 	-@erase "$(INTDIR)\basketpathpricer.sbr"
+	-@erase "$(INTDIR)\beta.obj"
+	-@erase "$(INTDIR)\beta.sbr"
 	-@erase "$(INTDIR)\biasedbarrierpathpricer.obj"
 	-@erase "$(INTDIR)\biasedbarrierpathpricer.sbr"
 	-@erase "$(INTDIR)\binaryoption.obj"
@@ -427,6 +429,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\lattice.sbr" \
 	"$(INTDIR)\lattice2d.sbr" \
 	"$(INTDIR)\trinomialtree.sbr" \
+	"$(INTDIR)\beta.sbr" \
 	"$(INTDIR)\chisquaredistribution.sbr" \
 	"$(INTDIR)\discrepancystatistics.sbr" \
 	"$(INTDIR)\errorfunction.sbr" \
@@ -597,6 +600,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\lattice.obj" \
 	"$(INTDIR)\lattice2d.obj" \
 	"$(INTDIR)\trinomialtree.obj" \
+	"$(INTDIR)\beta.obj" \
 	"$(INTDIR)\chisquaredistribution.obj" \
 	"$(INTDIR)\discrepancystatistics.obj" \
 	"$(INTDIR)\errorfunction.obj" \
@@ -757,6 +761,8 @@ CLEAN :
 	-@erase "$(INTDIR)\basispointsensitivity.sbr"
 	-@erase "$(INTDIR)\basketpathpricer.obj"
 	-@erase "$(INTDIR)\basketpathpricer.sbr"
+	-@erase "$(INTDIR)\beta.obj"
+	-@erase "$(INTDIR)\beta.sbr"
 	-@erase "$(INTDIR)\biasedbarrierpathpricer.obj"
 	-@erase "$(INTDIR)\biasedbarrierpathpricer.sbr"
 	-@erase "$(INTDIR)\binaryoption.obj"
@@ -1113,6 +1119,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\lattice.sbr" \
 	"$(INTDIR)\lattice2d.sbr" \
 	"$(INTDIR)\trinomialtree.sbr" \
+	"$(INTDIR)\beta.sbr" \
 	"$(INTDIR)\chisquaredistribution.sbr" \
 	"$(INTDIR)\discrepancystatistics.sbr" \
 	"$(INTDIR)\errorfunction.sbr" \
@@ -1283,6 +1290,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\lattice.obj" \
 	"$(INTDIR)\lattice2d.obj" \
 	"$(INTDIR)\trinomialtree.obj" \
+	"$(INTDIR)\beta.obj" \
 	"$(INTDIR)\chisquaredistribution.obj" \
 	"$(INTDIR)\discrepancystatistics.obj" \
 	"$(INTDIR)\errorfunction.obj" \
@@ -1443,6 +1451,8 @@ CLEAN :
 	-@erase "$(INTDIR)\basispointsensitivity.sbr"
 	-@erase "$(INTDIR)\basketpathpricer.obj"
 	-@erase "$(INTDIR)\basketpathpricer.sbr"
+	-@erase "$(INTDIR)\beta.obj"
+	-@erase "$(INTDIR)\beta.sbr"
 	-@erase "$(INTDIR)\biasedbarrierpathpricer.obj"
 	-@erase "$(INTDIR)\biasedbarrierpathpricer.sbr"
 	-@erase "$(INTDIR)\binaryoption.obj"
@@ -1798,6 +1808,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\lattice.sbr" \
 	"$(INTDIR)\lattice2d.sbr" \
 	"$(INTDIR)\trinomialtree.sbr" \
+	"$(INTDIR)\beta.sbr" \
 	"$(INTDIR)\chisquaredistribution.sbr" \
 	"$(INTDIR)\discrepancystatistics.sbr" \
 	"$(INTDIR)\errorfunction.sbr" \
@@ -1968,6 +1979,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\lattice.obj" \
 	"$(INTDIR)\lattice2d.obj" \
 	"$(INTDIR)\trinomialtree.obj" \
+	"$(INTDIR)\beta.obj" \
 	"$(INTDIR)\chisquaredistribution.obj" \
 	"$(INTDIR)\discrepancystatistics.obj" \
 	"$(INTDIR)\errorfunction.obj" \
@@ -2128,6 +2140,8 @@ CLEAN :
 	-@erase "$(INTDIR)\basispointsensitivity.sbr"
 	-@erase "$(INTDIR)\basketpathpricer.obj"
 	-@erase "$(INTDIR)\basketpathpricer.sbr"
+	-@erase "$(INTDIR)\beta.obj"
+	-@erase "$(INTDIR)\beta.sbr"
 	-@erase "$(INTDIR)\biasedbarrierpathpricer.obj"
 	-@erase "$(INTDIR)\biasedbarrierpathpricer.sbr"
 	-@erase "$(INTDIR)\binaryoption.obj"
@@ -2484,6 +2498,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\lattice.sbr" \
 	"$(INTDIR)\lattice2d.sbr" \
 	"$(INTDIR)\trinomialtree.sbr" \
+	"$(INTDIR)\beta.sbr" \
 	"$(INTDIR)\chisquaredistribution.sbr" \
 	"$(INTDIR)\discrepancystatistics.sbr" \
 	"$(INTDIR)\errorfunction.sbr" \
@@ -2654,6 +2669,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\lattice.obj" \
 	"$(INTDIR)\lattice2d.obj" \
 	"$(INTDIR)\trinomialtree.obj" \
+	"$(INTDIR)\beta.obj" \
 	"$(INTDIR)\chisquaredistribution.obj" \
 	"$(INTDIR)\discrepancystatistics.obj" \
 	"$(INTDIR)\errorfunction.obj" \
@@ -3124,6 +3140,12 @@ SOURCE=.\ql\Lattices\lattice2d.cpp
 SOURCE=.\ql\Lattices\trinomialtree.cpp
 
 "$(INTDIR)\trinomialtree.obj"	"$(INTDIR)\trinomialtree.sbr" : $(SOURCE) "$(INTDIR)"
+	$(CPP) $(CPP_PROJ) $(SOURCE)
+
+
+SOURCE=.\ql\Math\beta.cpp
+
+"$(INTDIR)\beta.obj"	"$(INTDIR)\beta.sbr" : $(SOURCE) "$(INTDIR)"
 	$(CPP) $(CPP_PROJ) $(SOURCE)
 
 

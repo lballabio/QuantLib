@@ -6,6 +6,7 @@ include_HEADERS = \
 	beta.hpp \
 	bicubicsplineinterpolation.hpp \
 	bilinearinterpolation.hpp \
+	binomialdistribution.hpp \
 	chisquaredistribution.hpp \
 	comparison.hpp \
 	cubicspline.hpp \

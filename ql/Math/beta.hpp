@@ -26,7 +26,7 @@
 
 namespace QuantLib {
 
-    double betaFunction(double z,
+    inline double betaFunction(double z,
                         double w) {
     	return QL_EXP(GammaFunction().logValue(z) +
                       GammaFunction().logValue(w) -
@@ -51,30 +51,6 @@ namespace QuantLib {
                                   double x,
                                   double accuracy = 1e-16,
                                   int maxIteration = 100);
-
-
-// to be moved to poisson and binomial respectively
-
-    double cumulativePoisson(double p,
-                             unsigned long n,
-                             unsigned long k) {
-        return 1.0 - incompleteBetaFunction(k, n-k, p);
-    }
-
-    double PeizerPrattMethod2Inversion(double z, unsigned long nn) {
-        // return p such that:
-        // 1 - CumulativeBinomialDistribution((n-1)/2, n, p) =
-        //                            CumulativeNormalDistribution(z)
-
-        // n must be odd
-        double n = nn + ((nn+1)%2);
-
-        double result = (z/(n+1.0/3.0+0.1/(n+1.0)));
-        result *= result;
-        result = QL_EXP(-result*(n+1.0/6.0));
-        result = 0.5 + (z>0 ? 1 : -1) * QL_SQRT((0.25 * (1.0-result)));
-        return result;
-    }
 
 }
 #endif
