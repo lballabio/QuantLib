@@ -20,6 +20,32 @@
 #ifndef quantlib_config_msvc_h
 #define quantlib_config_msvc_h
 
+/*************************************************************
+   User configuration section:
+   modify the following definitions to suit your preferences.
+ *************************************************************/
+
+/* Define this if payments occurring today should not enter the NPV of an
+   instrument. */
+// #define QL_EARLY_PAYMENTS
+
+/* Define this if payments occurring today should not enter the NPV of a swap.
+   */
+// #define QL_EARLY_SWAP_PAYMENTS
+
+/* Define this if payments occurring today should enter the NPV of an
+   instrument. */
+// #define QL_LATE_PAYMENTS
+
+/* Define this if payments occurring today should enter the NPV of a swap. */
+// #define QL_LATE_SWAP_PAYMENTS
+
+
+/*******************************************
+   System configuration section:
+   do not modify the following definitions.
+ *******************************************/
+
 // disable useless warning
 // 'identifier' : decorated name length exceeded,
 //                name was truncated in debug info
