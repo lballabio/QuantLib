@@ -30,6 +30,11 @@
 //                name was truncated in debug info
 #pragma warning(disable: 4786)
 
+// force undefining min and max macros
+#ifndef NOMINMAX
+    #error Add NOMINMAX to preprocessor definitions
+#endif
+
 #define REQUIRES_DUMMY_RETURN
 
 #define HAVE_CSTDLIB
