@@ -3,10 +3,10 @@ $Id$
 
 The documentation is automatically extracted from the source code using
 DoxyGen (http://www.stack.nl/~dimitri/doxygen/).
-The current version we're using is 1.2.11.1
+The current version we're using is 1.2.14
 
 The basic requirement to produce html documentation are:
-1) DoxyGen (latest release at
+1) Doxygen (latest release at
    http://www.stack.nl/~dimitri/doxygen/download.html#latestsrc)
 2) Graphviz (http://www.research.att.com/sw/tools/graphviz/)
 3) Aladdin Ghostscript (http://www.ghostscript.com/)
