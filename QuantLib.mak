@@ -224,8 +224,8 @@ CLEAN :
 	-@erase "$(INTDIR)\incompletegamma.sbr"
 	-@erase "$(INTDIR)\incrementalstatistics.obj"
 	-@erase "$(INTDIR)\incrementalstatistics.sbr"
-	-@erase "$(INTDIR)\integralengines.obj"
-	-@erase "$(INTDIR)\integralengines.sbr"
+	-@erase "$(INTDIR)\integralengine.obj"
+	-@erase "$(INTDIR)\integralengine.sbr"
 	-@erase "$(INTDIR)\jamshidianswaption.obj"
 	-@erase "$(INTDIR)\jamshidianswaption.sbr"
 	-@erase "$(INTDIR)\johannesburg.obj"
@@ -529,7 +529,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\baroneadesiwhaleyengine.sbr" \
 	"$(INTDIR)\bjerksundstenslandengine.sbr" \
 	"$(INTDIR)\discretizedvanillaoption.sbr" \
-	"$(INTDIR)\integralengines.sbr" \
+	"$(INTDIR)\integralengine.sbr" \
 	"$(INTDIR)\jumpdiffusionengine.sbr" \
 	"$(INTDIR)\haltonrsg.sbr" \
 	"$(INTDIR)\knuthuniformrng.sbr" \
@@ -710,7 +710,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\baroneadesiwhaleyengine.obj" \
 	"$(INTDIR)\bjerksundstenslandengine.obj" \
 	"$(INTDIR)\discretizedvanillaoption.obj" \
-	"$(INTDIR)\integralengines.obj" \
+	"$(INTDIR)\integralengine.obj" \
 	"$(INTDIR)\jumpdiffusionengine.obj" \
 	"$(INTDIR)\haltonrsg.obj" \
 	"$(INTDIR)\knuthuniformrng.obj" \
@@ -953,8 +953,8 @@ CLEAN :
 	-@erase "$(INTDIR)\incompletegamma.sbr"
 	-@erase "$(INTDIR)\incrementalstatistics.obj"
 	-@erase "$(INTDIR)\incrementalstatistics.sbr"
-	-@erase "$(INTDIR)\integralengines.obj"
-	-@erase "$(INTDIR)\integralengines.sbr"
+	-@erase "$(INTDIR)\integralengine.obj"
+	-@erase "$(INTDIR)\integralengine.sbr"
 	-@erase "$(INTDIR)\jamshidianswaption.obj"
 	-@erase "$(INTDIR)\jamshidianswaption.sbr"
 	-@erase "$(INTDIR)\johannesburg.obj"
@@ -1259,7 +1259,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\baroneadesiwhaleyengine.sbr" \
 	"$(INTDIR)\bjerksundstenslandengine.sbr" \
 	"$(INTDIR)\discretizedvanillaoption.sbr" \
-	"$(INTDIR)\integralengines.sbr" \
+	"$(INTDIR)\integralengine.sbr" \
 	"$(INTDIR)\jumpdiffusionengine.sbr" \
 	"$(INTDIR)\haltonrsg.sbr" \
 	"$(INTDIR)\knuthuniformrng.sbr" \
@@ -1440,7 +1440,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\baroneadesiwhaleyengine.obj" \
 	"$(INTDIR)\bjerksundstenslandengine.obj" \
 	"$(INTDIR)\discretizedvanillaoption.obj" \
-	"$(INTDIR)\integralengines.obj" \
+	"$(INTDIR)\integralengine.obj" \
 	"$(INTDIR)\jumpdiffusionengine.obj" \
 	"$(INTDIR)\haltonrsg.obj" \
 	"$(INTDIR)\knuthuniformrng.obj" \
@@ -1683,8 +1683,8 @@ CLEAN :
 	-@erase "$(INTDIR)\incompletegamma.sbr"
 	-@erase "$(INTDIR)\incrementalstatistics.obj"
 	-@erase "$(INTDIR)\incrementalstatistics.sbr"
-	-@erase "$(INTDIR)\integralengines.obj"
-	-@erase "$(INTDIR)\integralengines.sbr"
+	-@erase "$(INTDIR)\integralengine.obj"
+	-@erase "$(INTDIR)\integralengine.sbr"
 	-@erase "$(INTDIR)\jamshidianswaption.obj"
 	-@erase "$(INTDIR)\jamshidianswaption.sbr"
 	-@erase "$(INTDIR)\johannesburg.obj"
@@ -1988,7 +1988,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\baroneadesiwhaleyengine.sbr" \
 	"$(INTDIR)\bjerksundstenslandengine.sbr" \
 	"$(INTDIR)\discretizedvanillaoption.sbr" \
-	"$(INTDIR)\integralengines.sbr" \
+	"$(INTDIR)\integralengine.sbr" \
 	"$(INTDIR)\jumpdiffusionengine.sbr" \
 	"$(INTDIR)\haltonrsg.sbr" \
 	"$(INTDIR)\knuthuniformrng.sbr" \
@@ -2169,7 +2169,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\baroneadesiwhaleyengine.obj" \
 	"$(INTDIR)\bjerksundstenslandengine.obj" \
 	"$(INTDIR)\discretizedvanillaoption.obj" \
-	"$(INTDIR)\integralengines.obj" \
+	"$(INTDIR)\integralengine.obj" \
 	"$(INTDIR)\jumpdiffusionengine.obj" \
 	"$(INTDIR)\haltonrsg.obj" \
 	"$(INTDIR)\knuthuniformrng.obj" \
@@ -2412,8 +2412,8 @@ CLEAN :
 	-@erase "$(INTDIR)\incompletegamma.sbr"
 	-@erase "$(INTDIR)\incrementalstatistics.obj"
 	-@erase "$(INTDIR)\incrementalstatistics.sbr"
-	-@erase "$(INTDIR)\integralengines.obj"
-	-@erase "$(INTDIR)\integralengines.sbr"
+	-@erase "$(INTDIR)\integralengine.obj"
+	-@erase "$(INTDIR)\integralengine.sbr"
 	-@erase "$(INTDIR)\jamshidianswaption.obj"
 	-@erase "$(INTDIR)\jamshidianswaption.sbr"
 	-@erase "$(INTDIR)\johannesburg.obj"
@@ -2718,7 +2718,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\baroneadesiwhaleyengine.sbr" \
 	"$(INTDIR)\bjerksundstenslandengine.sbr" \
 	"$(INTDIR)\discretizedvanillaoption.sbr" \
-	"$(INTDIR)\integralengines.sbr" \
+	"$(INTDIR)\integralengine.sbr" \
 	"$(INTDIR)\jumpdiffusionengine.sbr" \
 	"$(INTDIR)\haltonrsg.sbr" \
 	"$(INTDIR)\knuthuniformrng.sbr" \
@@ -2899,7 +2899,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\baroneadesiwhaleyengine.obj" \
 	"$(INTDIR)\bjerksundstenslandengine.obj" \
 	"$(INTDIR)\discretizedvanillaoption.obj" \
-	"$(INTDIR)\integralengines.obj" \
+	"$(INTDIR)\integralengine.obj" \
 	"$(INTDIR)\jumpdiffusionengine.obj" \
 	"$(INTDIR)\haltonrsg.obj" \
 	"$(INTDIR)\knuthuniformrng.obj" \
@@ -3821,9 +3821,9 @@ SOURCE=.\ql\PricingEngines\Vanilla\discretizedvanillaoption.cpp
 	$(CPP) $(CPP_PROJ) $(SOURCE)
 
 
-SOURCE=.\ql\PricingEngines\Vanilla\integralengines.cpp
+SOURCE=.\ql\PricingEngines\Vanilla\integralengine.cpp
 
-"$(INTDIR)\integralengines.obj"	"$(INTDIR)\integralengines.sbr" : $(SOURCE) "$(INTDIR)"
+"$(INTDIR)\integralengine.obj"	"$(INTDIR)\integralengine.sbr" : $(SOURCE) "$(INTDIR)"
 	$(CPP) $(CPP_PROJ) $(SOURCE)
 
 

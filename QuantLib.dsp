@@ -1622,6 +1622,10 @@ SOURCE=.\ql\PricingEngines\Quanto\quantoengines.hpp
 # PROP Default_Filter ""
 # Begin Source File
 
+SOURCE=.\ql\PricingEngines\Vanilla\all.hpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\ql\PricingEngines\Vanilla\americanmcengines.cpp
 # End Source File
 # Begin Source File
@@ -1634,7 +1638,15 @@ SOURCE=.\ql\PricingEngines\Vanilla\analyticamericanengine.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=.\ql\PricingEngines\Vanilla\analyticamericanengine.hpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\ql\PricingEngines\Vanilla\analyticeuropeanengine.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\PricingEngines\Vanilla\analyticeuropeanengine.hpp
 # End Source File
 # Begin Source File
 
@@ -1642,7 +1654,19 @@ SOURCE=.\ql\PricingEngines\Vanilla\baroneadesiwhaleyengine.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=.\ql\PricingEngines\Vanilla\baroneadesiwhaleyengine.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\PricingEngines\Vanilla\binomialengine.hpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\ql\PricingEngines\Vanilla\bjerksundstenslandengine.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\PricingEngines\Vanilla\bjerksundstenslandengine.hpp
 # End Source File
 # Begin Source File
 
@@ -1654,7 +1678,11 @@ SOURCE=.\ql\PricingEngines\Vanilla\discretizedvanillaoption.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\ql\PricingEngines\Vanilla\integralengines.cpp
+SOURCE=.\ql\PricingEngines\Vanilla\integralengine.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\PricingEngines\Vanilla\integralengine.hpp
 # End Source File
 # Begin Source File
 
@@ -1675,10 +1703,6 @@ SOURCE=.\ql\PricingEngines\Vanilla\mceuropeanengine.hpp
 # Begin Source File
 
 SOURCE=.\ql\PricingEngines\Vanilla\mcvanillaengine.hpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\ql\PricingEngines\Vanilla\vanillaengines.hpp
 # End Source File
 # End Group
 # Begin Source File

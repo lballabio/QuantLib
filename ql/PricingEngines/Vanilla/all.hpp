@@ -30,7 +30,5 @@
 #include <ql/PricingEngines/Vanilla/mcdigitalengine.hpp>
 #include <ql/PricingEngines/Vanilla/mceuropeanengine.hpp>
 #include <ql/PricingEngines/Vanilla/mcvanillaengine.hpp>
-#include <ql/PricingEngines/Vanilla/vanillaengines.hpp>
-
 
 #endif
