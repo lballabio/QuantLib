@@ -30,6 +30,9 @@
 
 // $Id$
 // $Log$
+// Revision 1.13  2001/08/28 14:23:00  aleppo
+// removed redundant inclusion
+//
 // Revision 1.12  2001/08/09 14:59:46  sigmud
 // header modification
 //
@@ -54,7 +57,6 @@
 #define ql_gaussian_random_generator_h
 
 #include "ql/MonteCarlo/uniformrandomgenerator.hpp"
-#include "ql/MonteCarlo/boxmuller.hpp"
 #include "ql/MonteCarlo/boxmuller.hpp"
 #include "ql/MonteCarlo/centrallimitgaussian.hpp"
 #include "ql/MonteCarlo/inversecumulativegaussian.hpp"
