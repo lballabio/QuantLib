@@ -93,7 +93,7 @@ namespace QuantLib {
             QL_REQUIRE(length > 0, "MultiPathGenerator: length must be > 0");
             Time dt = length/timeSteps;
             timeDelays_ = std::vector<Time>(timeSteps, dt);
-            double variances = covariance.diagonal();
+            Array variances = covariance.diagonal();
             for (size_t j=0; j<numAssets_; j++) {
                 QL_REQUIRE(vols[j]>=0, "MultiPathGenerator: negative variance");
                 for (size_t i=0; i<timeSteps; i++) {
