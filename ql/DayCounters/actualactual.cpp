@@ -25,6 +25,7 @@
 // $Id$
 
 #include <ql/DayCounters/actualactual.hpp>
+#include <ql/dataformatters.hpp>
 
 namespace QuantLib {
 
@@ -51,7 +52,9 @@ namespace QuantLib {
         Time ActualActual::ActActISMAImpl::yearFraction(
           const Date& d1, const Date& d2,
           const Date& refPeriodStart, const Date& refPeriodEnd) const {
-            QL_REQUIRE(d1<=d2, "invalid dates");
+            QL_REQUIRE(d1<=d2, 
+                "invalid dates: start = " + DateFormatter::toString(d1) +
+                ", end = " + DateFormatter::toString(d2));
             QL_REQUIRE(refPeriodStart != Date() && refPeriodEnd != Date() &&
                 refPeriodEnd > refPeriodStart && refPeriodEnd > d1,
                 "Invalid reference period");
