@@ -146,6 +146,10 @@ namespace QuantLib {
         }
 
         double HStatistics::percentile(double percentile) const{
+            QL_REQUIRE(percentile>0.0,
+                       "HStatistics::percentile() : "
+                       "percentile must be greater than zero");
+
             double sampleWeight = weightSum();
             QL_REQUIRE(sampleWeight>0.0,
                        "HStatistics::percentile() : "
@@ -155,21 +159,30 @@ namespace QuantLib {
 
             std::vector<std::pair<double,double> >::const_iterator k =
                                             samples_.begin()-1;
-            double lowIntegral = 1.0;
-            while (lowIntegral > percentile) {
+
+            double hiIntegral = 0.0, perc=percentile*sampleWeight;
+            while (hiIntegral < perc) {
                 ++k;
-                lowIntegral -= k->second/sampleWeight;
+                hiIntegral += k->second;
             }
 
+            // just in case there are more samples at value k->first
+            double lastAddedWeight = k->second;
+            std::vector<std::pair<double,double> >::const_iterator kk = k+1;
+            while (kk!= samples_.end() && kk->first==k->first) {
+                lastAddedWeight += kk->second;
+                hiIntegral      += kk->second;
+            }
+
+            bool interpolate = false;
             double result;
-            // interpolating ... if possible
-            if (k==samples_.begin())
+            // interpolating ... if possible and required
+            if (k==samples_.begin() || (!interpolate))
                 result = k->first;
             else {
-                double lambda = (percentile - lowIntegral) /
-                  (k->second/sampleWeight);
+                double lambda = (hiIntegral - perc) / (k->second);
                 result = (1.0-lambda) * (k->first) + lambda * ((k-1)->first);
-           }
+            }
 
            return result;
         }
