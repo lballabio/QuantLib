@@ -28,114 +28,113 @@
 #include <ql/termstructure.hpp>
 
 namespace QuantLib {
+    namespace TermStructures {
 
-    //! Implied term structure at a given date in the future
-    /*! The given date will be the implied today's date.
-        \note This term structure will remain linked to the original
-            structure, i.e., any changes in the latter will be reflected in
-            this structure as well.
-    */
-    class ImpliedTermStructure : public DiscountStructure,
-                                 public Patterns::Observer {
-      public:
-        ImpliedTermStructure(const RelinkableHandle<TermStructure>&,
-            const Date& todaysDate);
-        //! \name TermStructure interface
-        //@{
-        Currency currency() const;
-        Date todaysDate() const;
-        int settlementDays() const;
-        Calendar calendar() const;
-        DayCounter dayCounter() const;
-        Date settlementDate() const;
-        Date maxDate() const;
-        Date minDate() const;
-        Time maxTime() const;
-        Time minTime() const;
-        //@}
-        //! \name Observer interface
-        //@{
-        void update();
-        //@}
-      protected:
-        //! returns the discount factor as seen from the evaluation date
-        DiscountFactor discountImpl(Time, bool extrapolate = false) const;
-      private:
-        RelinkableHandle<TermStructure> originalCurve_;
-        Date todaysDate_;
-    };
+        //! Implied term structure at a given date in the future
+        /*! The given date will be the implied today's date.
+            \note This term structure will remain linked to the original
+                structure, i.e., any changes in the latter will be reflected in
+                this structure as well.
+        */
+        class ImpliedTermStructure : public DiscountStructure,
+                                     public Patterns::Observer {
+          public:
+            ImpliedTermStructure(const RelinkableHandle<TermStructure>&,
+                const Date& todaysDate);
+            //! \name TermStructure interface
+            //@{
+            Currency currency() const;
+            Date todaysDate() const;
+            int settlementDays() const;
+            Calendar calendar() const;
+            DayCounter dayCounter() const;
+            Date settlementDate() const;
+            Date maxDate() const;
+            Date minDate() const;
+            Time maxTime() const;
+            Time minTime() const;
+            //@}
+            //! \name Observer interface
+            //@{
+            void update();
+            //@}
+          protected:
+            //! returns the discount factor as seen from the evaluation date
+            DiscountFactor discountImpl(Time, bool extrapolate = false) const;
+          private:
+            RelinkableHandle<TermStructure> originalCurve_;
+            Date todaysDate_;
+        };
 
 
 
-    inline ImpliedTermStructure::ImpliedTermStructure(
-        const RelinkableHandle<TermStructure>& h, const Date& todaysDate)
-    : originalCurve_(h), todaysDate_(todaysDate) {
-        registerWith(originalCurve_);
+        inline ImpliedTermStructure::ImpliedTermStructure(
+            const RelinkableHandle<TermStructure>& h, const Date& todaysDate)
+        : originalCurve_(h), todaysDate_(todaysDate) {
+            registerWith(originalCurve_);
+        }
+
+        inline Currency ImpliedTermStructure::currency() const {
+            return originalCurve_->currency();
+        }
+
+        inline Date ImpliedTermStructure::todaysDate() const {
+            return todaysDate_;
+        }
+
+        inline int ImpliedTermStructure::settlementDays() const {
+            return originalCurve_->settlementDays();
+        }
+
+        inline Calendar ImpliedTermStructure::calendar() const {
+            return originalCurve_->calendar();
+        }
+
+        inline DayCounter ImpliedTermStructure::dayCounter() const {
+            return originalCurve_->dayCounter();
+        }
+
+        inline Date ImpliedTermStructure::settlementDate() const {
+            return calendar().advance(
+                todaysDate_,settlementDays(),Days);
+        }
+
+        inline Date ImpliedTermStructure::maxDate() const {
+            return originalCurve_->maxDate();
+        }
+
+        inline Date ImpliedTermStructure::minDate() const {
+            return settlementDate();
+        }
+
+        inline Time ImpliedTermStructure::maxTime() const {
+            return dayCounter().yearFraction(
+                settlementDate(),originalCurve_->maxDate());
+        }
+
+        inline Time ImpliedTermStructure::minTime() const {
+            return 0.0;
+        }
+
+        inline void ImpliedTermStructure::update() {
+            notifyObservers();
+        }
+
+        inline DiscountFactor ImpliedTermStructure::discountImpl(Time t,
+            bool extrapolate) const {
+                /* t is relative to the current settlement date
+                   and needs to be converted to the time relative
+                   to the settlement date of the original curve */
+                Time originalTime = t + dayCounter().yearFraction(
+                    originalCurve_->settlementDate(),settlementDate());
+                // evaluationDate cannot be an extrapolation
+                /* discount at evaluation date cannot be cached
+                   since the original curve could change between
+                   invocations of this method */
+                return originalCurve_->discount(originalTime, extrapolate) /
+                       originalCurve_->discount(settlementDate(),false);
+        }
     }
-
-    inline Currency ImpliedTermStructure::currency() const {
-        return originalCurve_->currency();
-    }
-
-    inline Date ImpliedTermStructure::todaysDate() const {
-        return todaysDate_;
-    }
-
-    inline int ImpliedTermStructure::settlementDays() const {
-        return originalCurve_->settlementDays();
-    }
-
-    inline Calendar ImpliedTermStructure::calendar() const {
-        return originalCurve_->calendar();
-    }
-
-    inline DayCounter ImpliedTermStructure::dayCounter() const {
-        return originalCurve_->dayCounter();
-    }
-
-    inline Date ImpliedTermStructure::settlementDate() const {
-        return calendar().advance(
-            todaysDate_,settlementDays(),Days);
-    }
-
-    inline Date ImpliedTermStructure::maxDate() const {
-        return originalCurve_->maxDate();
-    }
-
-    inline Date ImpliedTermStructure::minDate() const {
-        return settlementDate();
-    }
-
-    inline Time ImpliedTermStructure::maxTime() const {
-        return dayCounter().yearFraction(
-            settlementDate(),originalCurve_->maxDate());
-    }
-
-    inline Time ImpliedTermStructure::minTime() const {
-        return 0.0;
-    }
-
-    inline void ImpliedTermStructure::update() {
-        notifyObservers();
-    }
-
-    inline DiscountFactor ImpliedTermStructure::discountImpl(Time t,
-        bool extrapolate) const {
-            /* t is relative to the current settlement date
-               and needs to be converted to the time relative
-               to the settlement date of the original curve */
-            Time originalTime = t + dayCounter().yearFraction(
-                originalCurve_->settlementDate(),settlementDate());
-            // evaluationDate cannot be an extrapolation
-            /* discount at evaluation date cannot be cached
-               since the original curve could change between
-               invocations of this method */
-            return originalCurve_->discount(originalTime, extrapolate) /
-                   originalCurve_->discount(settlementDate(),false);
-    }
-
-
-
 }
 
 #endif
