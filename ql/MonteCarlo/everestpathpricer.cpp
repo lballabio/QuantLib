@@ -57,7 +57,7 @@ namespace QuantLib {
             double log_drift, log_diffusion;
             if (antitheticVariance_) {
                 double minPrice = QL_MAX_DOUBLE, minPrice2 = QL_MAX_DOUBLE;
-                for(int j = 0; j < numAssets; j++) {
+                for(unsigned int j = 0; j < numAssets; j++) {
                     log_drift = log_diffusion = 0.0;
                     for(unsigned int i = 0; i < numSteps; i++) {
                         log_drift += multiPath[j].drift()[i];
@@ -70,7 +70,7 @@ namespace QuantLib {
                 return discount_ * 0.5 * (minPrice+minPrice2);
             } else {
                 double minPrice = QL_MAX_DOUBLE;
-                for(int j = 0; j < numAssets; j++) {
+                for(unsigned int j = 0; j < numAssets; j++) {
                     log_drift = log_diffusion = 0.0;
                     for(unsigned int i = 0; i < numSteps; i++) {
                         log_drift += multiPath[j].drift()[i];
