@@ -35,7 +35,7 @@ namespace QuantLib {
             www.math.nyu.edu/fellows_fin_math/gatheral/Lecture1_Fall02.pdf
         */
         class LocalVolSurface : public LocalVolTermStructure,
-                                public Patterns::Observer {
+                                public Observer {
           public:
             LocalVolSurface(
                 const RelinkableHandle<BlackVolTermStructure>& blackTS,
@@ -63,7 +63,7 @@ namespace QuantLib {
             //@}
             //! \name Visitability
             //@{
-            virtual void accept(Patterns::AcyclicVisitor&);
+            virtual void accept(AcyclicVisitor&);
             //@}
           protected:
             double localVolImpl(Time, double, bool extrapolate) const;

@@ -27,8 +27,6 @@ namespace QuantLib {
 
     namespace ShortRateModels {
 
-        using namespace Lattices;
-
         using Optimization::Constraint;
         using Optimization::PositiveConstraint;
 

@@ -27,28 +27,25 @@
 
 namespace QuantLib {
 
-    namespace Pricers {
+    //! Shout option with dividends
+    class FdDividendShoutOption : public FdDividendOption {
+      public:
+        // constructor
+        FdDividendShoutOption(
+                 Option::Type type, double underlying,
+                 double strike, Spread dividendYield, Rate riskFreeRate,
+                 Time residualTime, double volatility,
+                 const std::vector<double>& dividends = std::vector<double>(),
+                 const std::vector<Time>& exdivdates = std::vector<Time>(),
+                 int timeSteps = 100, int gridPoints = 100);
 
-        //! Shout option with dividends
-        class FdDividendShoutOption : public FdDividendOption {
-          public:
-            // constructor
-            FdDividendShoutOption(Option::Type type, double underlying,
-                double strike, Spread dividendYield, Rate riskFreeRate,
-                Time residualTime, double volatility,
-                const std::vector<double>& dividends = std::vector<double>(),
-                const std::vector<Time>& exdivdates = std::vector<Time>(),
-                int timeSteps = 100, int gridPoints = 100);
-
-            Handle<SingleAssetOption> clone() const;
-            double dividendRho() const {
-                throw Error("FdDividendOption::dividendRho not implemented yet");
-            }
-          protected:
-            void initializeStepCondition() const;
-        };
-
-    }
+        Handle<SingleAssetOption> clone() const;
+        double dividendRho() const {
+            throw Error("FdDividendOption::dividendRho not implemented yet");
+        }
+      protected:
+        void initializeStepCondition() const;
+    };
 
 }
 

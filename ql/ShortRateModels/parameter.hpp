@@ -38,7 +38,7 @@ namespace QuantLib {
         };
 
         //! Base class for model arguments
-        class Parameter : public Patterns::Bridge<Parameter,ParameterImpl> {
+        class Parameter : public Bridge<Parameter,ParameterImpl> {
           public:
             Parameter()
             : constraint_(Optimization::NoConstraint()) {}
@@ -56,7 +56,7 @@ namespace QuantLib {
             Parameter(Size size,
                       const Handle<ParameterImpl>& impl,
                       const Optimization::Constraint& constraint)
-            : Patterns::Bridge<Parameter,ParameterImpl>(impl),
+            : Bridge<Parameter,ParameterImpl>(impl),
               params_(size), constraint_(constraint) {}
             Array params_;
             Optimization::Constraint constraint_;

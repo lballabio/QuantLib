@@ -24,38 +24,35 @@
 
 namespace QuantLib {
 
-    namespace Pricers {
+    FdEuropean::FdEuropean(Option::Type type, double underlying, 
+                           double strike, Spread dividendYield,
+                           Rate riskFreeRate, Time residualTime, 
+                           double volatility,
+                           Size timeSteps, Size gridPoints)
+    : FdBsmOption(type, underlying, strike, dividendYield,
+                  riskFreeRate, residualTime, volatility,
+                  gridPoints),
+      timeSteps_(timeSteps), euroPrices_(gridPoints_){}
 
-        FdEuropean::FdEuropean(Option::Type type,
-            double underlying, double strike, Spread dividendYield,
-            Rate riskFreeRate, Time residualTime, double volatility,
-            Size timeSteps, Size gridPoints)
-            : FdBsmOption(type, underlying, strike, dividendYield,
-                                 riskFreeRate, residualTime, volatility,
-                                 gridPoints),
-            timeSteps_(timeSteps), euroPrices_(gridPoints_){}
 
+    void FdEuropean::calculate() const {
+        setGridLimits(underlying_, residualTime_);
+        initializeGrid();
+        initializeInitialCondition();
+        initializeOperator();
 
-        void FdEuropean::calculate() const {
-            setGridLimits(underlying_, residualTime_);
-            initializeGrid();
-            initializeInitialCondition();
-            initializeOperator();
+        StandardFiniteDifferenceModel model(finiteDifferenceOperator_,
+                                            BCs_);
 
-            StandardFiniteDifferenceModel model(finiteDifferenceOperator_,
-                                                BCs_);
+        euroPrices_ = intrinsicValues_;
 
-            euroPrices_ = intrinsicValues_;
+        model.rollback(euroPrices_, residualTime_, 0, timeSteps_);
 
-            model.rollback(euroPrices_, residualTime_, 0, timeSteps_);
+        value_ = valueAtCenter(euroPrices_);
+        delta_ = firstDerivativeAtCenter(euroPrices_, grid_);
+        gamma_ = secondDerivativeAtCenter(euroPrices_, grid_);
 
-            value_ = valueAtCenter(euroPrices_);
-            delta_ = firstDerivativeAtCenter(euroPrices_, grid_);
-            gamma_ = secondDerivativeAtCenter(euroPrices_, grid_);
-
-            hasBeenCalculated_ = true;
-        }
-
+        hasBeenCalculated_ = true;
     }
 
 }

@@ -39,7 +39,7 @@ namespace QuantLib {
                      are time dependant only
         */
         class ImpliedVolTermStructure : public BlackVarianceTermStructure,
-                                        public Patterns::Observer {
+                                        public Observer {
           public:
             ImpliedVolTermStructure(
                 const RelinkableHandle<BlackVolTermStructure>& originalTS,
@@ -58,7 +58,7 @@ namespace QuantLib {
             //@}
             //! \name Visitability
             //@{
-            virtual void accept(Patterns::AcyclicVisitor&);
+            virtual void accept(AcyclicVisitor&);
             //@}
           protected:
             virtual double blackVarianceImpl(Time t, double strike,
@@ -90,8 +90,7 @@ namespace QuantLib {
         }
 
         inline 
-        void ImpliedVolTermStructure::accept(Patterns::AcyclicVisitor& v) {
-            using namespace Patterns;
+        void ImpliedVolTermStructure::accept(AcyclicVisitor& v) {
             Visitor<ImpliedVolTermStructure>* v1 = 
                 dynamic_cast<Visitor<ImpliedVolTermStructure>*>(&v);
             if (v1 != 0)

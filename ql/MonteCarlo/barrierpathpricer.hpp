@@ -33,51 +33,45 @@
 
 namespace QuantLib {
 
-    namespace MonteCarlo {
-        
-        //! %path pricer for Barrier options
-        /* %Path pricer for Barrier options
-            
-            Uses the Brownian Bridge correction for the barrier found in
+    //! %path pricer for Barrier options
+    /*! Uses the Brownian Bridge correction for the barrier found in
+        <i>
+        Going to Extremes: Correcting Simulation Bias in Exotic
+        Option Valuation - D.R. Beaglehole, P.H. Dybvig and G. Zhou
+        Financial Analysts Journal; Jan/Feb 1997; 53, 1. pg. 62-68
+        </i>
+        and
+        <i>
+        Simulating path-dependent options: A new approach - 
+        M. El Babsiri and G. Noel
+        Journal of Derivatives; Winter 1998; 6, 2; pg. 65-83
+        </i>
+    */
+    class BarrierPathPricer : public PathPricer<Path> {
+      public:
+        BarrierPathPricer(Barrier::Type barrierType, 
+                          double barrier, 
+                          double rebate, 
+                          Option::Type type,
+                          double underlying,
+                          double strike,
+                          const RelinkableHandle<TermStructure>& riskFreeTS,
+                          const Handle<DiffusionProcess>& diffProcess,
+                          RandomNumbers::UniformRandomSequenceGenerator sequenceGen);
+        double operator()(const Path& path) const;
+      private:
+        double underlying_;
+        Barrier::Type barrierType_;
+        double barrier_;
+        double rebate_;
+        Handle<DiffusionProcess> diffProcess_;
+        RandomNumbers::UniformRandomSequenceGenerator sequenceGen_;
 
-            Going to Extremes: Correcting Simulation Bias in Exotic
-              Option Valuation - D.R. Beaglehole, P.H. Dybvig and G. Zhou
-                Financial Analysts Journal; Jan/Feb 1997; 53, 1. pg. 62-68
-
-            and
-
-            Simulating path-dependent options: A new approach - 
-              M. El Babsiri and G. Noel
-                Journal of Derivatives; Winter 1998; 6, 2; pg. 65-83
-
-        */
-        class BarrierPathPricer : public PathPricer<Path> {
-          public:
-            BarrierPathPricer(
-                Barrier::Type barrierType, 
-                double barrier, 
-                double rebate, 
-                Option::Type type,
-                double underlying,
-                double strike,
-                const RelinkableHandle<TermStructure>& riskFreeTS,
-                const Handle<DiffusionProcess>& diffProcess,
-                RandomNumbers::UniformRandomSequenceGenerator sequenceGen);
-            double operator()(const Path& path) const;
-          private:
-            double underlying_;
-            Barrier::Type barrierType_;
-            double barrier_;
-            double rebate_;           
-            Handle<DiffusionProcess> diffProcess_;
-            RandomNumbers::UniformRandomSequenceGenerator sequenceGen_;
-
-            // it would be easy to generalize to more exotic payoffs
-            PlainVanillaPayoff payoff_;
-        };
-    
-    }
+        // it would be easy to generalize to more exotic payoffs
+        PlainVanillaPayoff payoff_;
+    };
 
 }
+
 
 #endif

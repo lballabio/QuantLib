@@ -20,14 +20,12 @@
 */
 
 #include <ql/ShortRateModels/OneFactorModels/extendedcoxingersollross.hpp>
-#include "ql/Lattices/trinomialtree.hpp"
+#include <ql/Lattices/trinomialtree.hpp>
 #include <ql/Math/chisquaredistribution.hpp>
 
 namespace QuantLib {
 
     namespace ShortRateModels {
-
-        using namespace Lattices;
 
         ExtendedCoxIngersollRoss::ExtendedCoxIngersollRoss(
             const RelinkableHandle<TermStructure>& termStructure,

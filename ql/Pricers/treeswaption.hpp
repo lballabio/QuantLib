@@ -27,23 +27,18 @@
 
 namespace QuantLib {
 
-    namespace Pricers {
+    //! Swaption priced on a lattice
+    class TreeSwaption 
+    : public LatticeShortRateModelEngine<Swaption::arguments,
+                                         Swaption::results> {
+      public:
+        TreeSwaption(const Handle<ShortRateModels::Model>& model,
+                     Size timeSteps);
 
-        //! Swaption priced on a lattice
-        class TreeSwaption : public
-            PricingEngines::LatticeShortRateModelEngine<
-                                                        Swaption::arguments,
-                                                        Swaption::results> {
-          public:
-            TreeSwaption(const Handle<ShortRateModels::Model>& model,
-                         Size timeSteps);
-
-            TreeSwaption(const Handle<ShortRateModels::Model>& model,
-                         const TimeGrid& timeGrid) ;
-            void calculate() const;
-        };
-
-    }
+        TreeSwaption(const Handle<ShortRateModels::Model>& model,
+                     const TimeGrid& timeGrid) ;
+        void calculate() const;
+    };
 
 }
 

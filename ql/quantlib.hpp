@@ -353,9 +353,13 @@ namespace QLIDX = QuantLib::Indexes;
 namespace QLINS = QuantLib::Instruments;
 //! \deprecated inner namespace aliases will be removed in next release
 namespace QLMTH = QuantLib::Math;
+//! \deprecated inner namespace aliases will be removed in next release
 namespace QLMNT = QuantLib::MonteCarlo;
+//! \deprecated inner namespace aliases will be removed in next release
 namespace QLPAT = QuantLib::Patterns;
+//! \deprecated inner namespace aliases will be removed in next release
 namespace QLPRC = QuantLib::Pricers;
+//! \deprecated inner namespace aliases will be removed in next release
 namespace QLPRE = QuantLib::PricingEngines;
 namespace QLRNG = QuantLib::RandomNumbers;
 namespace QLSRM = QuantLib::ShortRateModels;

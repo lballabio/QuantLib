@@ -39,27 +39,25 @@ namespace QuantLib {
         */
 
         //! default choice for uniform random number generator.
-        typedef MonteCarlo::PseudoRandom::urng_type UniformRandomGenerator;
+        typedef PseudoRandom::urng_type UniformRandomGenerator;
 
         //! default choice for Gaussian random number generator.
-        typedef MonteCarlo::PseudoRandom::rng_type GaussianRandomGenerator;
+        typedef PseudoRandom::rng_type GaussianRandomGenerator;
 
         //! default choice for Gaussian array generator.
         typedef RandomArrayGenerator<GaussianRandomGenerator>
 			GaussianArrayGenerator;
 
         //! default choice for uniform random sequence generator.
-        typedef MonteCarlo::PseudoRandom::ursg_type 
-            UniformRandomSequenceGenerator;
+        typedef PseudoRandom::ursg_type UniformRandomSequenceGenerator;
 
         //! default choice for Gaussian random sequence generator.
-        typedef MonteCarlo::PseudoRandom::rsg_type 
-            GaussianRandomSequenceGenerator;
+        typedef PseudoRandom::rsg_type GaussianRandomSequenceGenerator;
 
-        typedef MonteCarlo::LowDiscrepancy::ursg_type
+        typedef LowDiscrepancy::ursg_type
             UniformLowDiscrepancySequenceGenerator;
 
-        typedef MonteCarlo::LowDiscrepancy::rsg_type 
+        typedef LowDiscrepancy::rsg_type 
             GaussianLowDiscrepancySequenceGenerator;
 
     }

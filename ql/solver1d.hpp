@@ -60,7 +60,7 @@ namespace QuantLib {
         of the above.
     */
     template <class Impl>
-    class Solver1D : public Patterns::CuriouslyRecurringTemplate<Impl> {
+    class Solver1D : public CuriouslyRecurringTemplate<Impl> {
       public:
         Solver1D()
         : maxEvaluations_(MAX_FUNCTION_EVALUATIONS),

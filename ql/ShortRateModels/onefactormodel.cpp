@@ -19,15 +19,13 @@
     \brief Abstract one-factor interest rate model class
 */
 
-#include "ql/ShortRateModels/onefactormodel.hpp"
-#include "ql/Lattices/trinomialtree.hpp"
-#include "ql/Solvers1D/brent.hpp"
+#include <ql/ShortRateModels/onefactormodel.hpp>
+#include <ql/Lattices/trinomialtree.hpp>
+#include <ql/Solvers1D/brent.hpp>
 
 namespace QuantLib {
 
     namespace ShortRateModels {
-
-        using namespace Lattices;
 
         //Private function used by solver to determine time-dependent parameter
         class OneFactorModel::ShortRateTree::Helper {

@@ -19,56 +19,50 @@
     \brief Cap/Floor calculated using a tree
 */
 
-#include "ql/Pricers/treecapfloor.hpp"
-#include "ql/ShortRateModels/onefactormodel.hpp"
+#include <ql/Pricers/treecapfloor.hpp>
+#include <ql/ShortRateModels/onefactormodel.hpp>
 #include <ql/Pricers/capfloorpricer.hpp>
 
 namespace QuantLib {
 
-    namespace Pricers {
+    using namespace ShortRateModels;
 
-        using namespace ShortRateModels;
-        using namespace Lattices;
-        using namespace PricingEngines;
+    TreeCapFloor::TreeCapFloor(const Handle<Model>& model, Size timeSteps) 
+    : LatticeShortRateModelEngine<CapFloor::arguments, 
+                                  CapFloor::results >(model,timeSteps){}
 
-        TreeCapFloor::TreeCapFloor(const Handle<Model>& model, Size timeSteps) 
-        : LatticeShortRateModelEngine<CapFloor::arguments, 
-                                      CapFloor::results >(model,timeSteps){}
+    TreeCapFloor::TreeCapFloor(const Handle<Model>& model,
+                               const TimeGrid& timeGrid) 
+    : LatticeShortRateModelEngine<CapFloor::arguments, 
+                                  CapFloor::results>(model,timeGrid) {}
 
-        TreeCapFloor::TreeCapFloor(const Handle<Model>& model,
-                                   const TimeGrid& timeGrid) 
-        : LatticeShortRateModelEngine<CapFloor::arguments, 
-                                      CapFloor::results>(model,timeGrid) {}
+    void TreeCapFloor::calculate() const {
 
-        void TreeCapFloor::calculate() const {
+        QL_REQUIRE(!model_.isNull(), "TreeCapFloor: No model specified");
+        Handle<Lattice> lattice;
 
-            QL_REQUIRE(!model_.isNull(), "TreeCapFloor: No model specified");
-            Handle<Lattice> lattice;
-
-            if (lattice_.isNull()) {
-                std::list<Time> times(0);
-                Size nPeriods = arguments_.startTimes.size();
-                Size i;
-                for (i=0; i<nPeriods; i++) {
-                    times.push_back(arguments_.startTimes[i]);
-                    times.push_back(arguments_.endTimes[i]);
-                }
-
-                TimeGrid timeGrid(times.begin(), times.end(), timeSteps_);
-                lattice = model_->tree(timeGrid);
-            } else {
-                lattice = lattice_;
+        if (lattice_.isNull()) {
+            std::list<Time> times(0);
+            Size nPeriods = arguments_.startTimes.size();
+            Size i;
+            for (i=0; i<nPeriods; i++) {
+                times.push_back(arguments_.startTimes[i]);
+                times.push_back(arguments_.endTimes[i]);
             }
 
-            Handle<DiscretizedAsset> capfloor(
-                new DiscretizedCapFloor(lattice,arguments_));
-
-            lattice->initialize(capfloor, arguments_.endTimes.back());
-            lattice->rollback(capfloor, arguments_.startTimes.front());
-
-            results_.value = lattice->presentValue(capfloor);
+            TimeGrid timeGrid(times.begin(), times.end(), timeSteps_);
+            lattice = model_->tree(timeGrid);
+        } else {
+            lattice = lattice_;
         }
 
+        Handle<DiscretizedAsset> capfloor(
+                                 new DiscretizedCapFloor(lattice,arguments_));
+
+        lattice->initialize(capfloor, arguments_.endTimes.back());
+        lattice->rollback(capfloor, arguments_.startTimes.front());
+
+        results_.value = lattice->presentValue(capfloor);
     }
 
 }

@@ -36,7 +36,7 @@ namespace QuantLib {
             Rates are assumed to be annual continuos compounding.
         */
         class ExtendedDiscountCurve : public DiscountCurve,
-                                      public Patterns::Observer {
+                                      public Observer {
           public:
             // constructor
             ExtendedDiscountCurve(const Date &todaysDate,

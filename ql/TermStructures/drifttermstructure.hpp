@@ -36,7 +36,7 @@ namespace QuantLib {
                 this structure as well.
         */
         class DriftTermStructure : public ZeroYieldStructure,
-                                   public Patterns::Observer {
+                                   public Observer {
           public:
               DriftTermStructure(
                   const RelinkableHandle<TermStructure>& riskFreeTS,

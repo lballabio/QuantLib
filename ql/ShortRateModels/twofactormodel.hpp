@@ -42,7 +42,7 @@ namespace QuantLib {
             virtual Handle<ShortRateDynamics> dynamics() const = 0;
 
             //! Returns a two-dimensional trinomial tree
-            virtual Handle<Lattices::Lattice> tree(const TimeGrid& grid) const;
+            virtual Handle<Lattice> tree(const TimeGrid& grid) const;
 
         };
 
@@ -99,12 +99,12 @@ namespace QuantLib {
         };
 
         //! Recombining two-dimensional tree discretizing the state variable
-        class TwoFactorModel::ShortRateTree : public Lattices::Lattice2D {
+        class TwoFactorModel::ShortRateTree : public Lattice2D {
           public:
             //! Plain tree build-up from short-rate dynamics
             ShortRateTree(
-                const Handle<Lattices::TrinomialTree>& tree1,
-                const Handle<Lattices::TrinomialTree>& tree2,
+                const Handle<TrinomialTree>& tree1,
+                const Handle<TrinomialTree>& tree2,
                 const Handle<ShortRateDynamics>& dynamics);
 
             DiscountFactor discount(Size i, Size index) const {

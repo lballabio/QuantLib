@@ -25,55 +25,50 @@
 
 namespace QuantLib {
 
-    namespace Pricers {
+    McPagoda::McPagoda(const std::vector<double>& portfolio, double fraction,
+                       double roof, const Array& dividendYield, 
+                       const Matrix& covariance,
+                       Rate riskFreeRate, const std::vector<Time>& times,
+                       bool antitheticVariance, long seed) {
 
-        using namespace MonteCarlo;
+        QL_REQUIRE(covariance.rows() == covariance.columns(),
+                   "McPagoda: covariance matrix not square");
+        QL_REQUIRE(covariance.rows() == portfolio.size(),
+                   "McPagoda: underlying size does not match that of"
+                   " covariance matrix");
+        QL_REQUIRE(covariance.rows() == dividendYield.size(),
+                   "McPagoda: dividendYield size does not match"
+                   " that of covariance matrix");
+        QL_REQUIRE(fraction > 0,
+                   "McPagoda: option fraction must be positive");
+        QL_REQUIRE(roof > 0,
+                   "McPagoda: roof must be positive");
+        QL_REQUIRE(times.size() >= 1,
+                   "McPagoda: you must have at least one time-step");
 
-        McPagoda::McPagoda(const std::vector<double>& portfolio, double fraction,
-            double roof, const Array& dividendYield, const Matrix& covariance,
-            Rate riskFreeRate, const std::vector<Time>& times,
-            bool antitheticVariance, long seed) {
+        //! Initialize the path generator
+        Array mu(riskFreeRate - dividendYield
+                 - 0.5 * covariance.diagonal());
 
-            QL_REQUIRE(covariance.rows() == covariance.columns(),
-                "McPagoda: covariance matrix not square");
-            QL_REQUIRE(covariance.rows() == portfolio.size(),
-                "McPagoda: underlying size does not match that of"
-                " covariance matrix");
-            QL_REQUIRE(covariance.rows() == dividendYield.size(),
-                "McPagoda: dividendYield size does not match"
-                " that of covariance matrix");
-            QL_REQUIRE(fraction > 0,
-                "McPagoda: option fraction must be positive");
-            QL_REQUIRE(roof > 0,
-                "McPagoda: roof must be positive");
-            QL_REQUIRE(times.size() >= 1,
-                "McPagoda: you must have at least one time-step");
+        Handle<GaussianMultiPathGenerator> pathGenerator(
+            new GaussianMultiPathGenerator(
+                mu, covariance,
+                TimeGrid(times.begin(), times.end()),
+                seed));
+        double residualTime = times[times.size()-1];
 
-            //! Initialize the path generator
-            Array mu(riskFreeRate - dividendYield
-                            - 0.5 * covariance.diagonal());
+        //! Initialize the pricer on the path pricer
+        Handle<PathPricer_old<MultiPath> > pathPricer(
+            new PagodaPathPricer_old(portfolio, roof,
+                    fraction * QL_EXP(-riskFreeRate*residualTime),
+                    antitheticVariance));
 
-            Handle<GaussianMultiPathGenerator> pathGenerator(
-                new GaussianMultiPathGenerator(
-                    mu, covariance,
-                    TimeGrid(times.begin(), times.end()),
-                    seed));
-            double residualTime = times[times.size()-1];
-
-            //! Initialize the pricer on the path pricer
-            Handle<PathPricer_old<MultiPath> > pathPricer(
-                new PagodaPathPricer_old(portfolio, roof,
-                        fraction * QL_EXP(-riskFreeRate*residualTime),
-                        antitheticVariance));
-
-             //! Initialize the multi-factor Monte Carlo
-            mcModel_ = Handle<MonteCarloModel<MultiAsset_old<
-                                              PseudoRandomSequence_old> > > (
-                new MonteCarloModel<MultiAsset_old<
-                                    PseudoRandomSequence_old> > (
-                    pathGenerator, pathPricer, Statistics(), false));
-
-        }
+         //! Initialize the multi-factor Monte Carlo
+        mcModel_ = Handle<MonteCarloModel<MultiAsset_old<
+                                          PseudoRandomSequence_old> > > (
+            new MonteCarloModel<MultiAsset_old<
+                                PseudoRandomSequence_old> > (
+                pathGenerator, pathPricer, Statistics(), false));
 
     }
 

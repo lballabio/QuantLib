@@ -25,61 +25,59 @@
 
 namespace QuantLib {
 
-    namespace Pricers {
+    FdStepConditionOption::FdStepConditionOption(
+                         Option::Type type, double underlying, double strike, 
+                         Spread dividendYield, Rate riskFreeRate, 
+                         Time residualTime, double volatility,
+                         int timeSteps, int gridPoints)
+    : FdBsmOption(type, underlying, strike, dividendYield,
+                  riskFreeRate, residualTime, volatility, gridPoints),
+      timeSteps_(timeSteps) {}
 
-        FdStepConditionOption::FdStepConditionOption(Option::Type type,
-            double underlying, double strike, Spread dividendYield,
-            Rate riskFreeRate, Time residualTime, double volatility,
-            int timeSteps, int gridPoints)
-        : FdBsmOption(type, underlying, strike, dividendYield,
-            riskFreeRate, residualTime, volatility, gridPoints),
-            timeSteps_(timeSteps) {}
+    void FdStepConditionOption::calculate() const {
 
-        void FdStepConditionOption::calculate() const {
+        setGridLimits(underlying_, residualTime_);
+        initializeGrid();
+        initializeInitialCondition();
+        initializeOperator();
+        initializeStepCondition();
+        /* StandardFiniteDifferenceModel is Crank-Nicolson.
+           Alternatively, ImplicitEuler or ExplicitEuler
+           could have been used instead*/
+        StandardFiniteDifferenceModel model(finiteDifferenceOperator_,
+                                            BCs_);
 
-            setGridLimits(underlying_, residualTime_);
-            initializeGrid();
-            initializeInitialCondition();
-            initializeOperator();
-            initializeStepCondition();
-            /* StandardFiniteDifferenceModel is Crank-Nicolson.
-               Alternatively, ImplicitEuler or ExplicitEuler
-               could have been used instead*/
-            StandardFiniteDifferenceModel model(finiteDifferenceOperator_,
-                                                BCs_);
+        // Control-variate variance reduction:
+        // 1) calculate value/greeks of the European option analytically
+        EuropeanOption analyticEuro(payoff_.optionType(), underlying_, 
+                                    payoff_.strike(), dividendYield_, 
+                                    riskFreeRate_, residualTime_, volatility_);
 
-            // Control-variate variance reduction:
-            // 1) calculate value/greeks of the European option analytically
-            EuropeanOption analyticEuro(payoff_.optionType(), underlying_, payoff_.strike(),
-                dividendYield_, riskFreeRate_, residualTime_, volatility_);
+        // 2) Initialize prices on the grid
+        Array europeanPrices = intrinsicValues_;
+        Array americanPrices = intrinsicValues_;
 
-            // 2) Initialize prices on the grid
-            Array europeanPrices = intrinsicValues_;
-            Array americanPrices = intrinsicValues_;
+        // 3) Rollback
+        model.rollback(europeanPrices, residualTime_, 0.0, timeSteps_);
+        model.rollback(americanPrices, residualTime_, 0.0, timeSteps_,
+                       stepCondition_);
 
-            // 3) Rollback
-            model.rollback(europeanPrices, residualTime_, 0.0, timeSteps_);
-            model.rollback(americanPrices, residualTime_, 0.0, timeSteps_,
-                           stepCondition_);
+        /* 4) Numerically calculate option value and greeks using
+           the european option as control variate                */
 
-            /* 4) Numerically calculate option value and greeks using
-                  the european option as control variate                */
+        value_ =  valueAtCenter(americanPrices)
+            - valueAtCenter(europeanPrices)
+            + analyticEuro.value();
 
-            value_ =  valueAtCenter(americanPrices)
-                    - valueAtCenter(europeanPrices)
-                    + analyticEuro.value();
+        delta_ =   firstDerivativeAtCenter(americanPrices, grid_)
+            - firstDerivativeAtCenter(europeanPrices, grid_)
+            + analyticEuro.delta();
 
-            delta_ =   firstDerivativeAtCenter(americanPrices, grid_)
-                     - firstDerivativeAtCenter(europeanPrices, grid_)
-                     + analyticEuro.delta();
+        gamma_ =   secondDerivativeAtCenter(americanPrices, grid_)
+            - secondDerivativeAtCenter(europeanPrices, grid_)
+            + analyticEuro.gamma();
 
-            gamma_ =   secondDerivativeAtCenter(americanPrices, grid_)
-                     - secondDerivativeAtCenter(europeanPrices, grid_)
-                     + analyticEuro.gamma();
-
-            hasBeenCalculated_ = true;
-        }
-
+        hasBeenCalculated_ = true;
     }
 
 }

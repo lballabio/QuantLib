@@ -25,8 +25,6 @@ namespace QuantLib {
 
     namespace ShortRateModels {
 
-        using namespace Lattices;
-
         TwoFactorModel::TwoFactorModel(Size nArguments) : Model(nArguments) {}
 
         Handle<Lattice> TwoFactorModel::tree(const TimeGrid& grid) const {

@@ -27,27 +27,22 @@
 
 namespace QuantLib {
 
-    namespace Pricers {
-
-        //! CapFloor priced by the Black formula
-        class BlackCapFloor 
-        : public PricingEngines::GenericModelEngine<BlackModel, 
+    //! CapFloor priced by the Black formula
+    class BlackCapFloor : public GenericModelEngine<BlackModel, 
                                                     CapFloor::arguments,
                                                     CapFloor::results> {
-          public:
-            BlackCapFloor(const Handle<BlackModel>& mod)
-            : PricingEngines::GenericModelEngine<BlackModel, 
-                                                 CapFloor::arguments,
-                                                 CapFloor::results>(mod) {}
-            void calculate() const;
-          private:
-            double capletValue(Time start, Rate forward,
-                               Rate strike, double vol) const;
-            double floorletValue(Time start, Rate forward,
-                                 Rate strike, double vol) const;
-        };
-
-    }
+      public:
+        BlackCapFloor(const Handle<BlackModel>& mod)
+        : GenericModelEngine<BlackModel, 
+                             CapFloor::arguments,
+                             CapFloor::results>(mod) {}
+        void calculate() const;
+      private:
+        double capletValue(Time start, Rate forward,
+                           Rate strike, double vol) const;
+        double floorletValue(Time start, Rate forward,
+                             Rate strike, double vol) const;
+    };
 
 }
 

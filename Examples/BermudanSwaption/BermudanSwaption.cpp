@@ -18,7 +18,6 @@
 #include <ql/quantlib.hpp>
 
 using namespace QuantLib;
-using namespace QuantLib::Pricers;
 using namespace QuantLib::ShortRateModels;
 using namespace QuantLib::TermStructures;
 

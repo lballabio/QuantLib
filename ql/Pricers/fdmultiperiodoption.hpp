@@ -27,42 +27,39 @@
 
 namespace QuantLib {
 
-    namespace Pricers {
-
-        class FdMultiPeriodOption : public FdBsmOption {
-          public:
-            double controlVariateCorrection() const;
-          protected:
-            // constructor
-            FdMultiPeriodOption(Option::Type type, double underlying,
-                double strike, Spread dividendYield, Rate riskFreeRate,
-                Time residualTime, double volatility, int gridPoints,
-                const std::vector<Time>& dates,
-                int timeSteps);
-            // Protected attributes
-            std::vector<Time> dates_;
-            Size dateNumber_;
-            int timeStepPerPeriod_;
-            bool lastDateIsResTime_;
-            int lastIndex_;
-            bool firstDateIsZero_;
-            double firstNonZeroDate_;
-            int firstIndex_;
-            mutable Handle<SingleAssetOption> analytic_;
-            mutable Array prices_, controlPrices_;
-            mutable Handle<StandardStepCondition> stepCondition_;
-            mutable Handle<StandardFiniteDifferenceModel> model_;
-            // Methods
-            void calculate() const;
-            virtual void initializeControlVariate() const;
-            virtual void initializeModel() const;
-            virtual void initializeStepCondition() const;
-            virtual void executeIntermediateStep(int step) const = 0;
-          private:
-            mutable double controlVariateCorrection_;
-        };
-
-    }
+    class FdMultiPeriodOption : public FdBsmOption {
+      public:
+        double controlVariateCorrection() const;
+      protected:
+        // constructor
+        FdMultiPeriodOption(Option::Type type, double underlying, 
+                            double strike, Spread dividendYield, 
+                            Rate riskFreeRate, Time residualTime, 
+                            double volatility, int gridPoints,
+                            const std::vector<Time>& dates,
+                            int timeSteps);
+        // Protected attributes
+        std::vector<Time> dates_;
+        Size dateNumber_;
+        int timeStepPerPeriod_;
+        bool lastDateIsResTime_;
+        int lastIndex_;
+        bool firstDateIsZero_;
+        double firstNonZeroDate_;
+        int firstIndex_;
+        mutable Handle<SingleAssetOption> analytic_;
+        mutable Array prices_, controlPrices_;
+        mutable Handle<StandardStepCondition> stepCondition_;
+        mutable Handle<StandardFiniteDifferenceModel> model_;
+        // Methods
+        void calculate() const;
+        virtual void initializeControlVariate() const;
+        virtual void initializeModel() const;
+        virtual void initializeStepCondition() const;
+        virtual void executeIntermediateStep(int step) const = 0;
+      private:
+        mutable double controlVariateCorrection_;
+    };
 
 }
 

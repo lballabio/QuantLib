@@ -28,111 +28,106 @@
 
 namespace QuantLib {
 
-    namespace Lattices {
-
-        //! Binomial tree base class
-        class BinomialTree : public Tree {
-          public:
-            BinomialTree(const Handle<DiffusionProcess>& process,
-                         Time end,
-                         Size steps);
-            Size size(Size i) const {
-                return i+1;
-            }
-            Size descendant(Size i, Size index, Size branch) const {
-                return index + branch;
-            }
-            virtual double underlying(Size i, Size index) const = 0;
-            virtual double probability(Size i, Size index, Size branch) const = 0;
-          protected:
-            double x0_, driftPerStep_;
-            Time dt_;
-        };
+    //! Binomial tree base class
+    class BinomialTree : public Tree {
+      public:
+        BinomialTree(const Handle<DiffusionProcess>& process,
+                     Time end,
+                     Size steps);
+        Size size(Size i) const {
+            return i+1;
+        }
+        Size descendant(Size i, Size index, Size branch) const {
+            return index + branch;
+        }
+        virtual double underlying(Size i, Size index) const = 0;
+        virtual double probability(Size i, Size index, Size branch) const = 0;
+      protected:
+        double x0_, driftPerStep_;
+        Time dt_;
+    };
 
 
-        
-        
-        //! base class for equal probabilities binomial tree
-        class EqualProbabilitiesBinomialTree : public BinomialTree {
-          public:
-            EqualProbabilitiesBinomialTree(
-                const Handle<DiffusionProcess>& process,
-                Time end,
-                Size steps)
-            : BinomialTree(process, end, steps) {}
-            double underlying(Size i, Size index) const;
-            double probability(Size, Size, Size) const {return 0.5 ; }
-          protected:
-            double up_;
-        };
-
-        
-
-        //! base class for equal jumps binomial tree
-        class EqualJumpsBinomialTree : public BinomialTree {
-          public:
-            EqualJumpsBinomialTree(const Handle<DiffusionProcess>& process,
-                                   Time end,
-                                   Size steps)
-            : BinomialTree(process, end, steps) {}
-            double underlying(Size i, Size index) const;
-            double probability(Size, Size, Size branch) const;
-          protected:
-            double dx_, pu_, pd_;
-        };
-
-        
-        
-        //! Jarrow-Rudd (multiplicative) equal probabilities binomial tree
-        class JarrowRudd : public EqualProbabilitiesBinomialTree {
-          public:
-            JarrowRudd(const Handle<DiffusionProcess>& process,
-                       Time end,
-                       Size steps);
-        };
-
-        //! Cox-Ross-Rubinstein (multiplicative) equal jumps binomial tree
-        class CoxRossRubinstein : public EqualJumpsBinomialTree {
-          public:
-            CoxRossRubinstein(const Handle<DiffusionProcess>& process,
-                              Time end,
-                              Size steps);
-        };
 
 
-        //! Additive equal probabilities binomial tree
-        class AdditiveEQPBinomialTree : public EqualProbabilitiesBinomialTree {
-          public:
-            AdditiveEQPBinomialTree(const Handle<DiffusionProcess>& process,
-                                    Time end,
-                                    Size steps);
-        };
-
-        //! Trigeorgis (additive equal jumps) binomial tree
-        class Trigeorgis : public EqualJumpsBinomialTree {
-          public:
-            Trigeorgis(const Handle<DiffusionProcess>& process,
-                       Time end,
-                       Size steps);
-        };
+    //! base class for equal probabilities binomial tree
+    class EqualProbabilitiesBinomialTree : public BinomialTree {
+      public:
+        EqualProbabilitiesBinomialTree(const Handle<DiffusionProcess>& process,
+                                       Time end,
+                                       Size steps)
+        : BinomialTree(process, end, steps) {}
+        double underlying(Size i, Size index) const;
+        double probability(Size, Size, Size) const {return 0.5 ; }
+      protected:
+        double up_;
+    };
 
 
-        //! Tian tree: third moment matching, multiplicative approach
-        class Tian : public BinomialTree {
-          public:
-            Tian(const Handle<DiffusionProcess>& process,
-                 Time end,
-                 Size steps);
-            double underlying(Size i, Size index) const;
-            double probability(Size, Size, Size) const;
-          protected:
-            double up_, down_, pu_, pd_;
-//            double treeCentering_;
-        };
+
+    //! base class for equal jumps binomial tree
+    class EqualJumpsBinomialTree : public BinomialTree {
+      public:
+        EqualJumpsBinomialTree(const Handle<DiffusionProcess>& process,
+                               Time end,
+                               Size steps)
+        : BinomialTree(process, end, steps) {}
+        double underlying(Size i, Size index) const;
+        double probability(Size, Size, Size branch) const;
+      protected:
+        double dx_, pu_, pd_;
+    };
 
 
-    }
+
+    //! Jarrow-Rudd (multiplicative) equal probabilities binomial tree
+    class JarrowRudd : public EqualProbabilitiesBinomialTree {
+      public:
+        JarrowRudd(const Handle<DiffusionProcess>& process,
+                   Time end,
+                   Size steps);
+    };
+
+    //! Cox-Ross-Rubinstein (multiplicative) equal jumps binomial tree
+    class CoxRossRubinstein : public EqualJumpsBinomialTree {
+      public:
+        CoxRossRubinstein(const Handle<DiffusionProcess>& process,
+                          Time end,
+                          Size steps);
+    };
+
+
+    //! Additive equal probabilities binomial tree
+    class AdditiveEQPBinomialTree : public EqualProbabilitiesBinomialTree {
+      public:
+        AdditiveEQPBinomialTree(const Handle<DiffusionProcess>& process,
+                                Time end,
+                                Size steps);
+    };
+
+    //! Trigeorgis (additive equal jumps) binomial tree
+    class Trigeorgis : public EqualJumpsBinomialTree {
+      public:
+        Trigeorgis(const Handle<DiffusionProcess>& process,
+                   Time end,
+                   Size steps);
+    };
+
+
+    //! Tian tree: third moment matching, multiplicative approach
+    class Tian : public BinomialTree {
+      public:
+        Tian(const Handle<DiffusionProcess>& process,
+             Time end,
+             Size steps);
+        double underlying(Size i, Size index) const;
+        double probability(Size, Size, Size) const;
+      protected:
+        double up_, down_, pu_, pd_;
+        // double treeCentering_;
+    };
 
 }
+
 
 #endif

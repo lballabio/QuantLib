@@ -27,22 +27,17 @@
 
 namespace QuantLib {
 
-    namespace Pricers {
-
-        //! Swaption priced by the Black formula
-        class BlackSwaption 
-        : public PricingEngines::GenericModelEngine<BlackModel, 
+    //! Swaption priced by the Black formula
+    class BlackSwaption : public GenericModelEngine<BlackModel, 
                                                     Swaption::arguments,
                                                     Swaption::results> {
-          public:
-            BlackSwaption(const Handle<BlackModel>& mod)
-            : PricingEngines::GenericModelEngine<BlackModel, 
-                                                 Swaption::arguments,
-                                                 Swaption::results>(mod) {}
-            void calculate() const;
-        };
-
-    }
+      public:
+        BlackSwaption(const Handle<BlackModel>& mod)
+        : GenericModelEngine<BlackModel, 
+                             Swaption::arguments,
+                             Swaption::results>(mod) {}
+        void calculate() const;
+    };
 
 }
 

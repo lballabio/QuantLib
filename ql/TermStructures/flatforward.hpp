@@ -29,8 +29,7 @@ namespace QuantLib {
 
     namespace TermStructures {
 
-        class FlatForward : public TermStructure,
-                            public Patterns::Observer {
+        class FlatForward : public TermStructure, public Observer {
           public:
             // constructors
             FlatForward(const Date& todaysDate,

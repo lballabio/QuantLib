@@ -24,35 +24,32 @@
 
 namespace QuantLib {
 
-    namespace Pricers {
+    FdBermudanOption::FdBermudanOption(Option::Type type, double underlying,
+                                       double strike, Spread dividendYield, 
+                                       Rate riskFreeRate, Time residualTime, 
+                                       double volatility,
+                                       const std::vector<Time>& dates,
+                                       int timeSteps, int gridPoints)
+    : FdMultiPeriodOption(type, underlying, strike, dividendYield,
+                          riskFreeRate, residualTime, volatility, 
+                          gridPoints, dates, timeSteps) {}
 
-        FdBermudanOption::FdBermudanOption(Option::Type type, double underlying,
-            double strike, Spread dividendYield, Rate riskFreeRate,
-            Time residualTime, double volatility,
-            const std::vector<Time>& dates,
-            int timeSteps, int gridPoints)
-        : FdMultiPeriodOption(type, underlying, strike, dividendYield,
-          riskFreeRate, residualTime, volatility, gridPoints, dates,
-          timeSteps) {}
+    void FdBermudanOption::initializeStepCondition() const{
+        stepCondition_ = Handle<StandardStepCondition> ();
+    }
 
-        void FdBermudanOption::initializeStepCondition() const{
-            stepCondition_ = Handle<StandardStepCondition> ();
-        }
+    void FdBermudanOption::executeIntermediateStep(int ) const{
 
-        void FdBermudanOption::executeIntermediateStep(int ) const{
+        int size = intrinsicValues_.size();
+        for(int j = 0; j < size; j++)
+            prices_[j] = QL_MAX(prices_[j], intrinsicValues_[j]);
+    }
 
-            int size = intrinsicValues_.size();
-            for(int j = 0; j < size; j++)
-                prices_[j] = QL_MAX(prices_[j], intrinsicValues_[j]);
-        }
-
-        Handle<SingleAssetOption> FdBermudanOption::clone() const {
-            return Handle<SingleAssetOption>(new FdBermudanOption(payoff_.optionType(),
-                underlying_, payoff_.strike(), dividendYield_, riskFreeRate_,
-                residualTime_, volatility_, dates_, timeStepPerPeriod_,
-                gridPoints_));
-        }
-
+    Handle<SingleAssetOption> FdBermudanOption::clone() const {
+        return Handle<SingleAssetOption>(new FdBermudanOption(
+                       payoff_.optionType(), underlying_, payoff_.strike(), 
+                       dividendYield_, riskFreeRate_, residualTime_, 
+                       volatility_, dates_, timeStepPerPeriod_, gridPoints_));
     }
 
 }

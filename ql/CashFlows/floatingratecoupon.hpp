@@ -51,7 +51,7 @@ namespace QuantLib {
         //@}
         //! \name Visitability
         //@{
-        virtual void accept(Patterns::AcyclicVisitor&);
+        virtual void accept(AcyclicVisitor&);
         //@}
       protected:
         int fixingDays_;
@@ -90,8 +90,7 @@ namespace QuantLib {
         }
     }
 
-    inline void FloatingRateCoupon::accept(Patterns::AcyclicVisitor& v) {
-        using namespace Patterns;
+    inline void FloatingRateCoupon::accept(AcyclicVisitor& v) {
         Visitor<FloatingRateCoupon>* v1 = 
             dynamic_cast<Visitor<FloatingRateCoupon>*>(&v);
         if (v1 != 0)

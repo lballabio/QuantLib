@@ -56,7 +56,7 @@ namespace QuantLib {
         */
         class SobolRsg {
           public:
-            typedef MonteCarlo::Sample<Array> sample_type;
+            typedef Sample<Array> sample_type;
             // dimensionality must be <= PPMT_MAX_DIM
             SobolRsg(Size dimensionality,
                      unsigned long seed = 0,

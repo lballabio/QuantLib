@@ -34,7 +34,7 @@ namespace QuantLib {
                 this structure as well.
         */
         class ImpliedTermStructure : public DiscountStructure,
-                                     public Patterns::Observer {
+                                     public Observer {
           public:
             ImpliedTermStructure(const RelinkableHandle<TermStructure>&,
                                  const Date& newTodaysDate,

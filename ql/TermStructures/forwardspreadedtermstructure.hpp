@@ -33,7 +33,7 @@ namespace QuantLib {
                 this structure as well.
         */
         class ForwardSpreadedTermStructure : public ForwardRateStructure,
-                                             public Patterns::Observer {
+                                             public Observer {
           public:
             ForwardSpreadedTermStructure(
                 const RelinkableHandle<TermStructure>&,

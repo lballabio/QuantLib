@@ -27,25 +27,20 @@
 
 namespace QuantLib {
 
-    namespace Pricers {
-
-        //! Everest-type option pricer
-        /*! The payoff of an Everest option is simply given by the
-            final price / initial price ratio of the worst performer
-        */
-        class McEverest 
-        : public McPricer<MonteCarlo::MultiAsset_old<
-                    MonteCarlo::PseudoRandomSequence_old> > {
-          public:
-            McEverest(const Array& dividendYield,
-                      const Matrix& covariance,
-                      Rate riskFreeRate,
-                      Time residualTime,
-                      bool antitheticVariance,
-                      long seed = 0);
-        };
-
-    }
+    //! Everest-type option pricer
+    /*! The payoff of an Everest option is simply given by the
+        final price / initial price ratio of the worst performer
+    */
+    class McEverest 
+        : public McPricer<MultiAsset_old<PseudoRandomSequence_old> > {
+      public:
+        McEverest(const Array& dividendYield,
+                  const Matrix& covariance,
+                  Rate riskFreeRate,
+                  Time residualTime,
+                  bool antitheticVariance,
+                  long seed = 0);
+    };
 
 }
 

@@ -28,53 +28,51 @@
 
 namespace QuantLib {
 
-    namespace PricingEngines {
+    //! Quanto engine base class
+    template<class ArgumentsType, class ResultsType>
+    class QuantoEngine 
+        : public GenericEngine<QuantoOptionArguments<ArgumentsType>,
+                               QuantoOptionResults<ResultsType> > {
+      public:
+        QuantoEngine(const Handle<GenericEngine<ArgumentsType,
+                                                ResultsType> >&);
+        void calculate() const;
+      protected:
+        Handle<GenericEngine<ArgumentsType, ResultsType> > originalEngine_;
+        ArgumentsType* originalArguments_;
+        const ResultsType* originalResults_;
+    };
 
-        //! Quanto engine base class
-        template<class ArgumentsType, class ResultsType>
-        class QuantoEngine : public
-            GenericEngine<QuantoOptionArguments<ArgumentsType>,
-                          QuantoOptionResults<ResultsType> > {
-          public:
-            QuantoEngine(const Handle<GenericEngine<ArgumentsType,
-                                                    ResultsType> >&);
-            void calculate() const;
-          protected:
-            Handle<GenericEngine<ArgumentsType, ResultsType> > originalEngine_;
-            ArgumentsType* originalArguments_;
-            const ResultsType* originalResults_;
-        };
-
-        template<class ArgumentsType, class ResultsType>
-        QuantoEngine<ArgumentsType, ResultsType>::QuantoEngine(
-            const Handle<GenericEngine<ArgumentsType, ResultsType> >&
+    template<class ArgumentsType, class ResultsType>
+    QuantoEngine<ArgumentsType, ResultsType>::QuantoEngine(
+        const Handle<GenericEngine<ArgumentsType, ResultsType> >&
             originalEngine)
-        : originalEngine_(originalEngine) {
-            QL_REQUIRE(!originalEngine_.isNull(),
-                "QuantoEngine::QuantoEngine : "
-                "null engine or wrong engine type");
-            originalResults_ = dynamic_cast<const ResultsType*>(
-                originalEngine_->results());
-            originalArguments_ = dynamic_cast<ArgumentsType*>(
-                originalEngine_->arguments());
-        }
+    : originalEngine_(originalEngine) {
+        QL_REQUIRE(!originalEngine_.isNull(),
+                   "QuantoEngine::QuantoEngine : "
+                   "null engine or wrong engine type");
+        originalResults_ = dynamic_cast<const ResultsType*>(
+            originalEngine_->results());
+        originalArguments_ = dynamic_cast<ArgumentsType*>(
+            originalEngine_->arguments());
+    }
 
-        template<class ArgumentsType, class ResultsType>
-        void QuantoEngine<ArgumentsType, ResultsType>::calculate() const {
+    template<class ArgumentsType, class ResultsType>
+    void QuantoEngine<ArgumentsType, ResultsType>::calculate() const {
 
-            // ATM exchangeRate level needed here
-            double exchangeRateATMlevel = 1.0;
+        // ATM exchangeRate level needed here
+        double exchangeRateATMlevel = 1.0;
 
-            originalEngine_->reset();
-            // determine strike from payoff
-            Handle<StrikedTypePayoff> payoff(arguments_.payoff);
-            double strike = payoff->strike();
+        originalEngine_->reset();
+        // determine strike from payoff
+        Handle<StrikedTypePayoff> payoff(arguments_.payoff);
+        double strike = payoff->strike();
 
-            originalArguments_->payoff = arguments_.payoff;
-            originalArguments_->underlying    = arguments_.underlying;
-            originalArguments_->dividendTS    = 
-                RelinkableHandle<TermStructure>(
-                    Handle<TermStructure>(
+        originalArguments_->payoff = arguments_.payoff;
+        originalArguments_->underlying    = arguments_.underlying;
+        originalArguments_->dividendTS    = 
+            RelinkableHandle<TermStructure>(
+                Handle<TermStructure>(
                     new TermStructures::QuantoTermStructure(
                         arguments_.dividendTS,
                         arguments_.riskFreeTS, 
@@ -82,40 +80,40 @@ namespace QuantLib {
                         arguments_.volTS, strike,
                         arguments_.exchRateVolTS, exchangeRateATMlevel,
                         arguments_.correlation)));
-            originalArguments_->riskFreeTS    = arguments_.riskFreeTS;
-            originalArguments_->volTS         = arguments_.volTS;
-            originalArguments_->maturity      = arguments_.maturity;
-            originalArguments_->stoppingTimes = arguments_.stoppingTimes;
-            originalArguments_->exerciseType  = arguments_.exerciseType;
+        originalArguments_->riskFreeTS    = arguments_.riskFreeTS;
+        originalArguments_->volTS         = arguments_.volTS;
+        originalArguments_->maturity      = arguments_.maturity;
+        originalArguments_->stoppingTimes = arguments_.stoppingTimes;
+        originalArguments_->exerciseType  = arguments_.exerciseType;
 
-            originalArguments_->validate();
-            originalEngine_->calculate();
+        originalArguments_->validate();
+        originalEngine_->calculate();
 
-            results_.value = originalResults_->value;
-            results_.delta = originalResults_->delta;
-            results_.gamma = originalResults_->gamma;
-            results_.theta = originalResults_->theta;
-            results_.rho = originalResults_->rho +
-                originalResults_->dividendRho;
-            results_.dividendRho = originalResults_->dividendRho;
-            double exchangeRateFlatVol = arguments_.exchRateVolTS->blackVol(
-                arguments_.maturity, exchangeRateATMlevel);
-            results_.vega = originalResults_->vega +
-                arguments_.correlation * exchangeRateFlatVol *
-                originalResults_->dividendRho;
+        results_.value = originalResults_->value;
+        results_.delta = originalResults_->delta;
+        results_.gamma = originalResults_->gamma;
+        results_.theta = originalResults_->theta;
+        results_.rho = originalResults_->rho +
+            originalResults_->dividendRho;
+        results_.dividendRho = originalResults_->dividendRho;
+        double exchangeRateFlatVol = 
+            arguments_.exchRateVolTS->blackVol(arguments_.maturity, 
+                                               exchangeRateATMlevel);
+        results_.vega = originalResults_->vega +
+            arguments_.correlation * exchangeRateFlatVol *
+            originalResults_->dividendRho;
 
 
-            double volatility = arguments_.volTS->blackVol(
-                arguments_.maturity, arguments_.underlying);
-            results_.qvega = + arguments_.correlation
-                * arguments_.volTS->blackVol(arguments_.maturity,
-                arguments_.underlying) *
-                originalResults_->dividendRho;
-            results_.qrho = - originalResults_->dividendRho;
-            results_.qlambda = exchangeRateFlatVol *
-                volatility * originalResults_->dividendRho;
-        }
-
+        double volatility = 
+            arguments_.volTS->blackVol(arguments_.maturity, 
+                                       arguments_.underlying);
+        results_.qvega = + arguments_.correlation
+            * arguments_.volTS->blackVol(arguments_.maturity,
+                                         arguments_.underlying) *
+            originalResults_->dividendRho;
+        results_.qrho = - originalResults_->dividendRho;
+        results_.qlambda = exchangeRateFlatVol *
+            volatility * originalResults_->dividendRho;
     }
 
 }

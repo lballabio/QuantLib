@@ -39,8 +39,7 @@ namespace QuantLib {
             Swap instrument for the time being.
         */
 
-        class RateHelper : public Patterns::Observer,
-                           public Patterns::Observable {
+        class RateHelper : public Observer, public Observable {
           public:
             RateHelper(const RelinkableHandle<MarketElement>& quote);
             RateHelper(double quote);

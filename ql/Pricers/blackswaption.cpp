@@ -19,21 +19,17 @@
     \brief European swaption calculated using Black formula
 */
 
-#include "ql/Pricers/blackswaption.hpp"
+#include <ql/Pricers/blackswaption.hpp>
 
 namespace QuantLib {
 
-    namespace Pricers {
-
-        void BlackSwaption::calculate() const {
-            Time exercise = arguments_.exerciseTimes[0];
-            double w = arguments_.payFixed ? 1.0 : -1.0;
-            results_.value =  arguments_.fixedBPS * 
-                BlackModel::formula(arguments_.fairRate,
-                                    arguments_.fixedRate, 
-                                    model_->volatility()*QL_SQRT(exercise), w);
-        }
-
+    void BlackSwaption::calculate() const {
+        Time exercise = arguments_.exerciseTimes[0];
+        double w = arguments_.payFixed ? 1.0 : -1.0;
+        results_.value =  arguments_.fixedBPS * 
+            BlackModel::formula(arguments_.fairRate,
+                                arguments_.fixedRate, 
+                                model_->volatility()*QL_SQRT(exercise), w);
     }
 
 }

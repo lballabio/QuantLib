@@ -26,31 +26,26 @@
 
 namespace QuantLib {
 
-    namespace Patterns {
-
-        //! The Bridge pattern made explicit. 
-        /*!
-            The typical use of this class is:
-            \code
-            class FooImpl;
-            class Foo : public Bridge<Foo,FooImpl> {
-                ...
-            };
-            \endcode
-            which makes it possible to pass instances of class Foo
-            by value while retaining polymorphic behavior.
-        */
-        template <class T, class T_impl>
-        class Bridge {
-          public:
-            typedef T_impl Impl;
-            bool isNull() const { return impl_.isNull(); }
-          protected:
-            Bridge(const Handle<Impl>& impl = Handle<Impl>()) : impl_(impl) {}
-            Handle<Impl> impl_;
+    //! The Bridge pattern made explicit. 
+    /*! The typical use of this class is:
+        \code
+        class FooImpl;
+        class Foo : public Bridge<Foo,FooImpl> {
+            ...
         };
-        
-    }
+        \endcode
+        which makes it possible to pass instances of class Foo
+        by value while retaining polymorphic behavior.
+    */
+    template <class T, class T_impl>
+    class Bridge {
+      public:
+        typedef T_impl Impl;
+        bool isNull() const { return impl_.isNull(); }
+      protected:
+        Bridge(const Handle<Impl>& impl = Handle<Impl>()) : impl_(impl) {}
+        Handle<Impl> impl_;
+    };
 
 }
 

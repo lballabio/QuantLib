@@ -41,7 +41,7 @@ namespace QuantLib {
             which the model is based.
         */
         class AffineTermStructure : public DiscountStructure,
-                                    public Patterns::Observer {
+                                    public Observer {
           public:
             //! constructor using a fixed model
             AffineTermStructure(

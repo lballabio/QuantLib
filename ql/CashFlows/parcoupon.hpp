@@ -33,7 +33,7 @@ namespace QuantLib {
       should be already rolled to a business day.
     */
     class ParCoupon : public FloatingRateCoupon,
-                      public Patterns::Observer {
+                      public Observer {
       public:
         ParCoupon(double nominal, const Date& paymentDate,
                   const Handle<Xibor>& index,
@@ -64,7 +64,7 @@ namespace QuantLib {
         //@}
         //! \name Visitability
         //@{
-        virtual void accept(Patterns::AcyclicVisitor&);
+        virtual void accept(AcyclicVisitor&);
         //@}
       private:
         Handle<Xibor> index_;
@@ -95,8 +95,7 @@ namespace QuantLib {
         notifyObservers();
     }
 
-    inline void ParCoupon::accept(Patterns::AcyclicVisitor& v) {
-        using namespace Patterns;
+    inline void ParCoupon::accept(AcyclicVisitor& v) {
         Visitor<ParCoupon>* v1 = dynamic_cast<Visitor<ParCoupon>*>(&v);
         if (v1 != 0)
             v1->visit(*this);

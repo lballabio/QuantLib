@@ -48,7 +48,7 @@ namespace QuantLib {
         \todo allow for different compounding rules and compounding
               frequencies
     */
-    class TermStructure : public virtual Patterns::Observable {
+    class TermStructure : public virtual Observable {
       public:
         virtual ~TermStructure() {}
         /*! \name Rates and discount

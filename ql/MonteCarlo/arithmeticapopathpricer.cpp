@@ -24,58 +24,54 @@
 
 namespace QuantLib {
 
-    namespace MonteCarlo {
+    ArithmeticAPOPathPricer_old::ArithmeticAPOPathPricer_old(
+                          Option::Type type, double underlying, double strike,
+                          DiscountFactor discount, bool useAntitheticVariance)
+    : PathPricer_old<Path>(discount, useAntitheticVariance),
+      underlying_(underlying), payoff_(type, strike) {
+        QL_REQUIRE(underlying>0.0,
+                   "ArithmeticAPOPathPricer_old: "
+                   "underlying less/equal zero not allowed");
+        QL_REQUIRE(strike>0.0,
+                   "ArithmeticAPOPathPricer_old: "
+                   "strike less/equal zero not allowed");
+    }
 
-        ArithmeticAPOPathPricer_old::ArithmeticAPOPathPricer_old(
-          Option::Type type, double underlying, double strike,
-          DiscountFactor discount, bool useAntitheticVariance)
-        : PathPricer_old<Path>(discount, useAntitheticVariance),
-          underlying_(underlying), payoff_(type, strike) {
-            QL_REQUIRE(underlying>0.0,
-                "ArithmeticAPOPathPricer_old: "
-                "underlying less/equal zero not allowed");
-            QL_REQUIRE(strike>0.0,
-                "ArithmeticAPOPathPricer_old: "
-                "strike less/equal zero not allowed");
+    double ArithmeticAPOPathPricer_old::operator()(const Path& path) const {
+
+        Size n = path.size();
+        QL_REQUIRE(n>0,
+                   "ArithmeticAPOPathPricer_old: the path cannot be empty");
+
+        double price1 = underlying_;
+        double averagePrice1 = 0.0;
+        Size fixings = n;
+        if (path.timeGrid().mandatoryTimes()[0]==0.0) {
+            averagePrice1 = price1;
+            fixings = n+1;
         }
+        Size i;
+        for (i=0; i<n; i++) {
+            price1 *= QL_EXP(path.drift()[i]+path.diffusion()[i]);
+            averagePrice1 += price1;
+        }
+        averagePrice1 = averagePrice1/fixings;
 
-        double ArithmeticAPOPathPricer_old::operator()(const Path& path) const {
+        if (useAntitheticVariance_) {
+            double price2 = underlying_;
+            double averagePrice2 = 0.0;
 
-            Size n = path.size();
-            QL_REQUIRE(n>0,
-                "ArithmeticAPOPathPricer_old: the path cannot be empty");
-
-            double price1 = underlying_;
-            double averagePrice1 = 0.0;
-            Size fixings = n;
-            if (path.timeGrid().mandatoryTimes()[0]==0.0) {
-                averagePrice1 = price1;
-                fixings = n+1;
-            }
-            Size i;
+            if (path.timeGrid().mandatoryTimes()[0]==0.0)
+                averagePrice2 = price2;
             for (i=0; i<n; i++) {
-                price1 *= QL_EXP(path.drift()[i]+path.diffusion()[i]);
-                averagePrice1 += price1;
+                price2 *= QL_EXP(path.drift()[i]-path.diffusion()[i]);
+                averagePrice2 += price2;
             }
-            averagePrice1 = averagePrice1/fixings;
-
-            if (useAntitheticVariance_) {
-                double price2 = underlying_;
-                double averagePrice2 = 0.0;
-
-                if (path.timeGrid().mandatoryTimes()[0]==0.0)
-                    averagePrice2 = price2;
-                for (i=0; i<n; i++) {
-                    price2 *= QL_EXP(path.drift()[i]-path.diffusion()[i]);
-                    averagePrice2 += price2;
-                }
-                averagePrice2 = averagePrice2/fixings;
-                return discount_/2.0 *
-                    (payoff_(averagePrice1)+payoff_(averagePrice2));
-            } else
-                return discount_ * payoff_(averagePrice1);
-        }
-
+            averagePrice2 = averagePrice2/fixings;
+            return discount_/2.0 *
+                (payoff_(averagePrice1)+payoff_(averagePrice2));
+        } else
+            return discount_ * payoff_(averagePrice1);
     }
 
 }

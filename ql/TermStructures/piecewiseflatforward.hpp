@@ -51,7 +51,7 @@ namespace QuantLib {
            rewriting all of forward, discount and zeroYield to take advantage
            of its own internal structure. */
         class PiecewiseFlatForward : public TermStructure,
-                                     public Patterns::LazyObject {
+                                     public LazyObject {
           public:
             // constructor
             PiecewiseFlatForward(

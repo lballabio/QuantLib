@@ -40,9 +40,7 @@
 #define LENGTH(a) (sizeof(a)/sizeof(a[0]))
 
 using namespace QuantLib;
-using namespace QuantLib::Pricers;
 using namespace QuantLib::RandomNumbers;
-using namespace QuantLib::MonteCarlo;
 
 namespace {
 
@@ -104,8 +102,8 @@ void OldPricerTest::testCliquetPricer() {
     dates[0] = 0.25; dates[1] = 1.00;
     std::vector<double> vol(2);
     vol[0] = 0.30; vol[1] = 0.30;
-    CliquetOption cliquet(Option::Call, spot, moneyness,
-                          divYield, rRate, dates, vol);
+    CliquetOptionPricer cliquet(Option::Call, spot, moneyness,
+                                divYield, rRate, dates, vol);
     double calculated = cliquet.value();
     double expected = 4.4064; // Haug, p.37
     if (QL_FABS(calculated-expected) > 1.0e-4)

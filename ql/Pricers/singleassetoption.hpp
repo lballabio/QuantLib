@@ -32,120 +32,119 @@
 
 namespace QuantLib {
 
-    //! Pricing models for options
-    /*! See sect. \ref pricers */
-    namespace Pricers {
+    //! \deprecated inner namespace aliases will be removed in next release
+    namespace Pricers = ::QuantLib;
 
-        //! Black-Scholes-Merton option
-        class SingleAssetOption {
-          public:
-            SingleAssetOption(Option::Type type,
-                              double underlying,
-                              double strike,
-                              Spread dividendYield,
-                              Rate riskFreeRate,
-                              Time residualTime,
-                              double volatility);
-            virtual ~SingleAssetOption() {}
-            // modifiers
-            virtual void setVolatility(double newVolatility);
-            virtual void setRiskFreeRate(Rate newRate);
-            virtual void setDividendYield(Rate newDividendYield);
-            // accessors
-            virtual double value() const = 0;
-            virtual double delta() const = 0;
-            virtual double gamma() const = 0;
-            virtual double theta() const;
-            virtual double vega() const;
-            virtual double rho() const;
-            virtual double dividendRho() const;
-            /*! \warning Options with a gamma that changes sign have values
-                that are <b>not</b> monotonic in the volatility, e.g binary
-                options. In these cases impliedVolatility can fail and in
-                any case is meaningless.
-                Another possible source of failure is to have a
-                targetValue that is not attainable with any volatility, e.g.
-                a targetValue lower than the intrinsic value in the case of
-                American options. */
-            double impliedVolatility(double targetValue,
-                                     double accuracy = 1e-4,
-                                     Size maxEvaluations = 100,
-                                     double minVol = QL_MIN_VOLATILITY,
-                                     double maxVol = QL_MAX_VOLATILITY) const;
-            double impliedDivYield(double targetValue,
-                                     double accuracy = 1e-4,
-                                     Size maxEvaluations = 100,
-                                     double minVol = QL_MIN_DIVYIELD,
-                                     double maxVol = QL_MAX_DIVYIELD) const;
-            virtual Handle<SingleAssetOption> clone() const = 0;
-          protected:
-            double underlying_;
-            PlainVanillaPayoff payoff_;
-            Spread dividendYield_;
-            Rate riskFreeRate_;
-            Time residualTime_;
-            double volatility_;
-            mutable bool hasBeenCalculated_;
-            mutable double rho_, dividendRho_, vega_, theta_;
-            mutable bool rhoComputed_, dividendRhoComputed_, vegaComputed_,
-                thetaComputed_;
-            const static double dVolMultiplier_;
-            const static double dRMultiplier_;
-          private:
-            class VolatilityFunction;
-            friend class VolatilityFunction;
-            class DivYieldFunction;
-            friend class DivYieldFunction;
-        };
+    //! Black-Scholes-Merton option
+    class SingleAssetOption {
+      public:
+        SingleAssetOption(Option::Type type,
+                          double underlying,
+                          double strike,
+                          Spread dividendYield,
+                          Rate riskFreeRate,
+                          Time residualTime,
+                          double volatility);
+        virtual ~SingleAssetOption() {}
+        // modifiers
+        virtual void setVolatility(double newVolatility);
+        virtual void setRiskFreeRate(Rate newRate);
+        virtual void setDividendYield(Rate newDividendYield);
+        // accessors
+        virtual double value() const = 0;
+        virtual double delta() const = 0;
+        virtual double gamma() const = 0;
+        virtual double theta() const;
+        virtual double vega() const;
+        virtual double rho() const;
+        virtual double dividendRho() const;
+        /*! \warning Options with a gamma that changes sign have
+                     values that are <b>not</b> monotonic in the
+                     volatility, e.g binary options. In these cases
+                     impliedVolatility can fail and in any case is
+                     meaningless.  Another possible source of failure
+                     is to have a targetValue that is not attainable
+                     with any volatility, e.g.  a targetValue lower
+                     than the intrinsic value in the case of American
+                     options. 
+        */
+        double impliedVolatility(double targetValue,
+                                 double accuracy = 1e-4,
+                                 Size maxEvaluations = 100,
+                                 double minVol = QL_MIN_VOLATILITY,
+                                 double maxVol = QL_MAX_VOLATILITY) const;
+        double impliedDivYield(double targetValue,
+                               double accuracy = 1e-4,
+                               Size maxEvaluations = 100,
+                               double minVol = QL_MIN_DIVYIELD,
+                               double maxVol = QL_MAX_DIVYIELD) const;
+        virtual Handle<SingleAssetOption> clone() const = 0;
+      protected:
+        double underlying_;
+        PlainVanillaPayoff payoff_;
+        Spread dividendYield_;
+        Rate riskFreeRate_;
+        Time residualTime_;
+        double volatility_;
+        mutable bool hasBeenCalculated_;
+        mutable double rho_, dividendRho_, vega_, theta_;
+        mutable bool rhoComputed_, dividendRhoComputed_, vegaComputed_,
+            thetaComputed_;
+        const static double dVolMultiplier_;
+        const static double dRMultiplier_;
+      private:
+        class VolatilityFunction;
+        friend class VolatilityFunction;
+        class DivYieldFunction;
+        friend class DivYieldFunction;
+    };
 
-        class SingleAssetOption::VolatilityFunction {
-          public:
-            VolatilityFunction(const Handle<SingleAssetOption>& tempBSM,
-                               double targetPrice);
-            double operator()(double x) const;
-          private:
-            mutable Handle<SingleAssetOption> bsm;
-            double targetPrice_;
-        };
+    class SingleAssetOption::VolatilityFunction {
+      public:
+        VolatilityFunction(const Handle<SingleAssetOption>& tempBSM,
+                           double targetPrice);
+        double operator()(double x) const;
+      private:
+        mutable Handle<SingleAssetOption> bsm;
+        double targetPrice_;
+    };
 
-        class SingleAssetOption::DivYieldFunction {
-          public:
-           DivYieldFunction(const Handle<SingleAssetOption>& tempBSM,
-                            double targetPrice);
-            double operator()(double x) const;
-          private:
-            mutable Handle<SingleAssetOption> bsm;
-            double targetPrice_;
-        };
-
-
-        inline SingleAssetOption::VolatilityFunction::VolatilityFunction(
-                const Handle<SingleAssetOption>& tempBSM,
-                double targetPrice) {
-            bsm = tempBSM;
-            targetPrice_ = targetPrice;
-        }
-
-        inline double 
-        SingleAssetOption::VolatilityFunction::operator()(double x) const {
-            bsm -> setVolatility(x);
-            return (bsm -> value() - targetPrice_);
-        }
+    class SingleAssetOption::DivYieldFunction {
+      public:
+        DivYieldFunction(const Handle<SingleAssetOption>& tempBSM,
+                         double targetPrice);
+        double operator()(double x) const;
+      private:
+        mutable Handle<SingleAssetOption> bsm;
+        double targetPrice_;
+    };
 
 
-        inline SingleAssetOption::DivYieldFunction::DivYieldFunction(
-                const Handle<SingleAssetOption>& tempBSM,
-                double targetPrice) {
-            bsm = tempBSM;
-            targetPrice_ = targetPrice;
-        }
+    inline SingleAssetOption::VolatilityFunction::VolatilityFunction(
+                                     const Handle<SingleAssetOption>& tempBSM,
+                                     double targetPrice) {
+        bsm = tempBSM;
+        targetPrice_ = targetPrice;
+    }
 
-        inline double 
-        SingleAssetOption::DivYieldFunction::operator()(double x) const {
-            bsm -> setDividendYield(x);
-            return (bsm -> value() - targetPrice_);
-        }
+    inline double 
+    SingleAssetOption::VolatilityFunction::operator()(double x) const {
+        bsm -> setVolatility(x);
+        return (bsm -> value() - targetPrice_);
+    }
 
+
+    inline SingleAssetOption::DivYieldFunction::DivYieldFunction(
+                                     const Handle<SingleAssetOption>& tempBSM,
+                                     double targetPrice) {
+        bsm = tempBSM;
+        targetPrice_ = targetPrice;
+    }
+
+    inline double 
+    SingleAssetOption::DivYieldFunction::operator()(double x) const {
+        bsm -> setDividendYield(x);
+        return (bsm -> value() - targetPrice_);
     }
 
 }

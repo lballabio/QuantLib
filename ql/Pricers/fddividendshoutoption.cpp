@@ -23,28 +23,25 @@
 
 namespace QuantLib {
 
-    namespace Pricers {
+    FdDividendShoutOption::FdDividendShoutOption(
+                         Option::Type type, double underlying, double strike, 
+                         Spread dividendYield, Rate riskFreeRate, 
+                         Time residualTime, double volatility,
+                         const std::vector<double>& dividends,
+                         const std::vector<Time>& exdivdates,
+                         int timeSteps, int gridPoints)
+    : FdDividendOption(type, underlying, strike, dividendYield,
+                       riskFreeRate, residualTime, volatility,
+                       dividends, exdivdates, timeSteps, gridPoints){}
 
-        FdDividendShoutOption::FdDividendShoutOption(Option::Type type,
-                double underlying, double strike, Spread dividendYield,
-                Rate riskFreeRate, Time residualTime, double volatility,
-                const std::vector<double>& dividends,
-                const std::vector<Time>& exdivdates,
-                int timeSteps, int gridPoints)
-       : FdDividendOption(type, underlying, strike, dividendYield,
-                        riskFreeRate, residualTime, volatility,
-                        dividends, exdivdates, timeSteps, gridPoints){}
+    void FdDividendShoutOption::initializeStepCondition() const {
+        stepCondition_ = Handle<StandardStepCondition>(
+                          new ShoutCondition(intrinsicValues_, residualTime_, 
+                                             riskFreeRate_));
+    }
 
-        void FdDividendShoutOption::initializeStepCondition() const {
-            stepCondition_ = Handle<StandardStepCondition>(
-                new ShoutCondition(intrinsicValues_, residualTime_, 
-                                   riskFreeRate_));
-        }
-
-        Handle<SingleAssetOption> FdDividendShoutOption::clone() const {
-            return Handle<SingleAssetOption>(new FdDividendShoutOption(*this));
-        }
-
+    Handle<SingleAssetOption> FdDividendShoutOption::clone() const {
+        return Handle<SingleAssetOption>(new FdDividendShoutOption(*this));
     }
 
 }

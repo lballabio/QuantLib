@@ -27,126 +27,119 @@
 
 namespace QuantLib {
 
-    namespace Pricers {
+    //! base class for Monte Carlo pricers
+    /*! Eventually this class might be linked to the general tree of
+        pricers, in order to have tools like impliedVolatility
+        available.  Also, it could, eventually, offer greeks methods.
+        Deriving a class from McPricer gives an easy way to write a
+        Monte Carlo Pricer.  See McEuropean as example of one factor
+        pricer, Basket as example of multi factor pricer.
+    */
 
-        //! base class for Monte Carlo pricers
-        /*! Eventually this class might be linked to the general tree of
-            pricers, in order to have tools like impliedVolatility available.
-            Also, it could, eventually, offer greeks methods.
-            Deriving a class from McPricer gives an easy way to write
-            a Monte Carlo Pricer.
-            See McEuropean as example of one factor pricer,
-            Basket as example of multi factor pricer.
-        */
-
-        template <class MC, class S = Statistics>
-        class McPricer {
-          public:
-            virtual ~McPricer() {}
-            //! add samples until the required tolerance is reached
-            double value(double tolerance,
-                         Size maxSample = QL_MAX_INT) const;
-            //! simulate a fixed number of samples
-            double valueWithSamples(Size samples) const;
-            //! error Estimated of the samples simulated so far
-            double errorEstimate() const;
-            //! access to the sample accumulator for more statistics
-            const S& sampleAccumulator(void) const;
-          protected:
-            McPricer() {}
-            mutable Handle<MonteCarlo::MonteCarloModel<MC,S> > mcModel_;
-            static const Size minSample_;
-        };
+    template <class MC, class S = Statistics>
+    class McPricer {
+      public:
+        virtual ~McPricer() {}
+        //! add samples until the required tolerance is reached
+        double value(double tolerance,
+                     Size maxSample = QL_MAX_INT) const;
+        //! simulate a fixed number of samples
+        double valueWithSamples(Size samples) const;
+        //! error Estimated of the samples simulated so far
+        double errorEstimate() const;
+        //! access to the sample accumulator for more statistics
+        const S& sampleAccumulator(void) const;
+      protected:
+        McPricer() {}
+        mutable Handle<MonteCarloModel<MC,S> > mcModel_;
+        static const Size minSample_;
+    };
 
 
-        template<class MC, class S>
-        const Size McPricer<MC,S>::minSample_ = 1023;
+    template<class MC, class S>
+    const Size McPricer<MC,S>::minSample_ = 1023;
 
-        // inline definitions
-        template<class MC, class S>
-        inline double McPricer<MC,S>::value(double tolerance,
-            Size maxSamples) const {
+    // inline definitions
+    template<class MC, class S>
+    inline double McPricer<MC,S>::value(double tolerance,
+                                        Size maxSamples) const {
 
-            Size sampleNumber =
-                mcModel_->sampleAccumulator().samples();
-            if (sampleNumber<minSample_) {
-                mcModel_->addSamples(minSample_-sampleNumber);
-                sampleNumber = mcModel_->sampleAccumulator().samples();
-            }
+        Size sampleNumber =
+            mcModel_->sampleAccumulator().samples();
+        if (sampleNumber<minSample_) {
+            mcModel_->addSamples(minSample_-sampleNumber);
+            sampleNumber = mcModel_->sampleAccumulator().samples();
+        }
 
-            Size nextBatch;
-            double order;
-            double result = mcModel_->sampleAccumulator().mean();
-            double accuracy = mcModel_->sampleAccumulator().errorEstimate()/
+        Size nextBatch;
+        double order;
+        double result = mcModel_->sampleAccumulator().mean();
+        double accuracy = mcModel_->sampleAccumulator().errorEstimate()/
+            result;
+        while (accuracy > tolerance) {
+            // conservative estimate of how many samples are needed 
+            order = accuracy*accuracy/tolerance/tolerance;
+
+            nextBatch = Size(
+                             QL_MAX(sampleNumber*order*0.8-sampleNumber,
+                                    double(minSample_)));
+            // do not exceed maxSamples
+            nextBatch = QL_MIN(nextBatch, maxSamples-sampleNumber);
+            QL_REQUIRE(nextBatch>0,
+                       "max number of samples exceeded");
+
+            sampleNumber += nextBatch;
+            mcModel_->addSamples(nextBatch);
+            result = mcModel_->sampleAccumulator().mean();
+            accuracy = mcModel_->sampleAccumulator().errorEstimate()/
                 result;
-            while (accuracy > tolerance) {
-                // conservative estimate of how many samples are needed 
-                order = accuracy*accuracy/tolerance/tolerance;
-                
-                nextBatch = Size(
-                    QL_MAX(sampleNumber*order*0.8-sampleNumber,
-                    double(minSample_)));
-                // do not exceed maxSamples
-                nextBatch = QL_MIN(nextBatch, maxSamples-sampleNumber);
-                QL_REQUIRE(nextBatch>0,
-                    "max number of samples exceeded");
-
-                sampleNumber += nextBatch;
-                mcModel_->addSamples(nextBatch);
-                result = mcModel_->sampleAccumulator().mean();
-                accuracy = mcModel_->sampleAccumulator().errorEstimate()/
-                    result;
-            }
-
-            return result;
         }
 
-
-        template<class MC, class S>
-        inline double McPricer<MC,S>::valueWithSamples(Size samples)
-            const {
-
-            QL_REQUIRE(samples>=minSample_,
-                "number of requested samples ("
-                + IntegerFormatter::toString(samples) +
-                ") lower than minSample_ ("
-                + IntegerFormatter::toString(minSample_) +
-                ")");
-
-            Size sampleNumber =
-                mcModel_->sampleAccumulator().samples();
-
-            QL_REQUIRE(samples>=sampleNumber,
-                "number of already simulated samples ("
-                + IntegerFormatter::toString(sampleNumber) +
-                ") greater than"
-                "requested samples ("
-                + IntegerFormatter::toString(samples) +
-                ")");
-
-            mcModel_->addSamples(samples-sampleNumber);
-
-            return mcModel_->sampleAccumulator().mean();
-        }
+        return result;
+    }
 
 
-        template<class MC, class S>
-        inline double McPricer<MC,S>::errorEstimate() const {
+    template<class MC, class S>
+    inline double McPricer<MC,S>::valueWithSamples(Size samples) const {
 
-            Size sampleNumber =
-                mcModel_->sampleAccumulator().samples();
+        QL_REQUIRE(samples>=minSample_,
+                   "number of requested samples ("
+                   + IntegerFormatter::toString(samples) +
+                   ") lower than minSample_ ("
+                   + IntegerFormatter::toString(minSample_) +
+                   ")");
 
-            QL_REQUIRE(sampleNumber>=minSample_,
-                "number of simulated samples lower than minSample_");
+        Size sampleNumber =
+            mcModel_->sampleAccumulator().samples();
 
-            return mcModel_->sampleAccumulator().errorEstimate();
-        }
+        QL_REQUIRE(samples>=sampleNumber,
+                   "number of already simulated samples ("
+                   + IntegerFormatter::toString(sampleNumber) +
+                   ") greater than"
+                   "requested samples ("
+                   + IntegerFormatter::toString(samples) +
+                   ")");
 
-        template<class MC, class S>
-        inline const S& McPricer<MC,S>::sampleAccumulator() const {
-            return mcModel_->sampleAccumulator();
-        }
+        mcModel_->addSamples(samples-sampleNumber);
 
+        return mcModel_->sampleAccumulator().mean();
+    }
+
+
+    template<class MC, class S>
+    inline double McPricer<MC,S>::errorEstimate() const {
+
+        Size sampleNumber = mcModel_->sampleAccumulator().samples();
+
+        QL_REQUIRE(sampleNumber>=minSample_,
+                   "number of simulated samples lower than minSample_");
+
+        return mcModel_->sampleAccumulator().errorEstimate();
+    }
+
+    template<class MC, class S>
+    inline const S& McPricer<MC,S>::sampleAccumulator() const {
+        return mcModel_->sampleAccumulator();
     }
 
 }

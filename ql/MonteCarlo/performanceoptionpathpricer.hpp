@@ -28,25 +28,22 @@
 
 namespace QuantLib {
 
-    namespace MonteCarlo {
-
-        //! %path pricer for performance options
-        class PerformanceOptionPathPricer_old : public PathPricer_old<Path> {
-          public:
-            PerformanceOptionPathPricer_old(Option::Type type,
-                               double underlying,
-                               double moneyness,
-                               const std::vector<DiscountFactor>& discounts,
-                               bool useAntitheticVariance);
-            double operator()(const Path& path) const;
-          private:
-            double underlying_;
-            std::vector<DiscountFactor> discounts_;
-            // it would be easy to generalize to more exotic payoffs
-            PlainVanillaPayoff payoff_;
-        };
-
-    }
+    //! %path pricer for performance options
+    class PerformanceOptionPathPricer_old : public PathPricer_old<Path> {
+      public:
+        PerformanceOptionPathPricer_old(
+                                 Option::Type type,
+                                 double underlying,
+                                 double moneyness,
+                                 const std::vector<DiscountFactor>& discounts,
+                                 bool useAntitheticVariance);
+        double operator()(const Path& path) const;
+      private:
+        double underlying_;
+        std::vector<DiscountFactor> discounts_;
+        // it would be easy to generalize to more exotic payoffs
+        PlainVanillaPayoff payoff_;
+    };
 
 }
 

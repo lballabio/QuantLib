@@ -23,48 +23,44 @@
 
 namespace QuantLib {
 
-    namespace MonteCarlo {
-
-        EverestPathPricer_old::EverestPathPricer_old(DiscountFactor discount,
-            bool useAntitheticVariance)
-        : PathPricer_old<MultiPath>(discount, useAntitheticVariance) {}
+    EverestPathPricer_old::EverestPathPricer_old(DiscountFactor discount,
+                                                 bool useAntitheticVariance)
+    : PathPricer_old<MultiPath>(discount, useAntitheticVariance) {}
 
 
-        double EverestPathPricer_old::operator()(const MultiPath& multiPath) const {
-            Size numAssets = multiPath.assetNumber();
-            Size numSteps = multiPath.pathSize();
+    double EverestPathPricer_old::operator()(const MultiPath& multiPath) 
+                                                                       const {
+        Size numAssets = multiPath.assetNumber();
+        Size numSteps = multiPath.pathSize();
 
-            double log_drift, log_diffusion;
-            Size i,j;
-            if (useAntitheticVariance_) {
-                double minPrice = QL_MAX_DOUBLE, minPrice2 = QL_MAX_DOUBLE;
-                for( j = 0; j < numAssets; j++) {
-                    log_drift = log_diffusion = 0.0;
-                    for( i = 0; i < numSteps; i++) {
-                        log_drift += multiPath[j].drift()[i];
-                        log_diffusion += multiPath[j].diffusion()[i];
-                    }
-                    minPrice  = QL_MIN(minPrice,  QL_EXP(log_drift+log_diffusion));
-                    minPrice2 = QL_MIN(minPrice2, QL_EXP(log_drift-log_diffusion));
+        double log_drift, log_diffusion;
+        Size i,j;
+        if (useAntitheticVariance_) {
+            double minPrice = QL_MAX_DOUBLE, minPrice2 = QL_MAX_DOUBLE;
+            for( j = 0; j < numAssets; j++) {
+                log_drift = log_diffusion = 0.0;
+                for( i = 0; i < numSteps; i++) {
+                    log_drift += multiPath[j].drift()[i];
+                    log_diffusion += multiPath[j].diffusion()[i];
                 }
-
-                return discount_ * 0.5 * (minPrice+minPrice2);
-            } else {
-                double minPrice = QL_MAX_DOUBLE;
-                for( j = 0; j < numAssets; j++) {
-                    log_drift = log_diffusion = 0.0;
-                    for( i = 0; i < numSteps; i++) {
-                        log_drift += multiPath[j].drift()[i];
-                        log_diffusion += multiPath[j].diffusion()[i];
-                    }
-                    minPrice = QL_MIN(minPrice, QL_EXP(log_drift+log_diffusion));
-                }
-
-                return discount_ * minPrice;
+                minPrice  = QL_MIN(minPrice,  QL_EXP(log_drift+log_diffusion));
+                minPrice2 = QL_MIN(minPrice2, QL_EXP(log_drift-log_diffusion));
             }
 
-        }
+            return discount_ * 0.5 * (minPrice+minPrice2);
+        } else {
+            double minPrice = QL_MAX_DOUBLE;
+            for( j = 0; j < numAssets; j++) {
+                log_drift = log_diffusion = 0.0;
+                for( i = 0; i < numSteps; i++) {
+                    log_drift += multiPath[j].drift()[i];
+                    log_diffusion += multiPath[j].diffusion()[i];
+                }
+                minPrice = QL_MIN(minPrice, QL_EXP(log_drift+log_diffusion));
+            }
 
+            return discount_ * minPrice;
+        }
     }
 
 }

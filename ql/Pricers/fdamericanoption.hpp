@@ -27,46 +27,43 @@
 
 namespace QuantLib {
 
-    namespace Pricers {
+    //! American option
+    //! \todo make american call with no dividends = european
+    class FdAmericanOption : public FdStepConditionOption {
+      public:
+        // constructor
+        FdAmericanOption(Option::Type type,
+                         double underlying,
+                         double strike,
+                         Spread dividendYield,
+                         Rate riskFreeRate,
+                         Time residualTime,
+                         double volatility,
+                         int timeSteps,
+                         int gridPoints);
+        void initializeStepCondition() const;
 
-        //! American option
-        //! \todo make american call with no dividends = european
-        class FdAmericanOption : public FdStepConditionOption {
-          public:
-            // constructor
-            FdAmericanOption(Option::Type type,
-                             double underlying,
-                             double strike,
-                             Spread dividendYield,
-                             Rate riskFreeRate,
-                             Time residualTime,
-                             double volatility,
-                             int timeSteps,
-                             int gridPoints);
-                void initializeStepCondition() const;
-
-            // This method must be implemented to imply volatilities
-            Handle<SingleAssetOption> clone() const{
-                return Handle<SingleAssetOption>(new FdAmericanOption(*this));
-            }
-        };
-
-
-        // inline definitions
-
-        inline FdAmericanOption::FdAmericanOption(Option::Type type,
-            double underlying, double strike, Spread dividendYield,
-            Rate riskFreeRate, Time residualTime, double volatility,
-            int timeSteps, int gridPoints)
-        : FdStepConditionOption(type, underlying, strike, dividendYield,
-            riskFreeRate, residualTime, volatility, timeSteps,
-            gridPoints) {}
-
-        inline void FdAmericanOption::initializeStepCondition() const {
-            stepCondition_ = Handle<StandardStepCondition>(
-                new AmericanCondition(intrinsicValues_));
+        // This method must be implemented to imply volatilities
+        Handle<SingleAssetOption> clone() const{
+            return Handle<SingleAssetOption>(new FdAmericanOption(*this));
         }
+    };
 
+
+    // inline definitions
+
+    inline FdAmericanOption::FdAmericanOption(
+                         Option::Type type, double underlying, double strike, 
+                         Spread dividendYield, Rate riskFreeRate, 
+                         Time residualTime, double volatility,
+                         int timeSteps, int gridPoints)
+    : FdStepConditionOption(type, underlying, strike, dividendYield,
+                            riskFreeRate, residualTime, volatility, timeSteps,
+                            gridPoints) {}
+
+    inline void FdAmericanOption::initializeStepCondition() const {
+        stepCondition_ = Handle<StandardStepCondition>(
+                                     new AmericanCondition(intrinsicValues_));
     }
 
 }

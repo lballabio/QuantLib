@@ -25,45 +25,40 @@
 #include <ql/Volatilities/localvolcurve.hpp>
 #include <ql/Volatilities/blackvariancesurface.hpp>
 
-using QuantLib::Date;
-using QuantLib::VolTermStructures::BlackVarianceSurface;
-
 namespace QuantLib {
 
-    namespace Functions {
+    using namespace VolTermStructures;
 
-		double blackVol(const Date& refDate,
-                        const DayCounter& dc,
-                        const std::vector<Date>& dates,
-                        const std::vector<double>& strikes,
-                        const Matrix& blackVolSurface,
-                        const Date& date1,
-                        const Date& date2,
-                        double strike,
-                        int interpolation2DType,
-                        bool allowExtrapolation) {
+    double blackVol(const Date& refDate,
+                    const DayCounter& dc,
+                    const std::vector<Date>& dates,
+                    const std::vector<double>& strikes,
+                    const Matrix& blackVolSurface,
+                    const Date& date1,
+                    const Date& date2,
+                    double strike,
+                    int interpolation2DType,
+                    bool allowExtrapolation) {
 
-            typedef BlackVarianceSurface surface_t;
+        typedef BlackVarianceSurface surface_t;
 
-            double result = 0.0;
+        double result = 0.0;
 
-            switch (interpolation2DType) {
-                case 1:
-                    result = surface_t(refDate, dates, strikes,
-                        blackVolSurface,
-                        surface_t::InterpolatorDefaultExtrapolation,
-                        surface_t::InterpolatorDefaultExtrapolation,
-                        dc).blackForwardVol(date1, date2,
-                        strike, allowExtrapolation);
-                    break;
-                default:
-                    throw IllegalArgumentError(
+        switch (interpolation2DType) {
+          case 1:
+            result = surface_t(refDate, dates, strikes,
+                               blackVolSurface,
+                               surface_t::InterpolatorDefaultExtrapolation,
+                               surface_t::InterpolatorDefaultExtrapolation,
+                               dc).blackForwardVol(date1, date2,
+                                                   strike, allowExtrapolation);
+            break;
+          default:
+            throw IllegalArgumentError(
                         "interpolate2D: invalid interpolation type");
-            }
-
-            return result;
         }
 
+        return result;
     }
 
 }

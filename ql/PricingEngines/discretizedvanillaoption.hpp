@@ -25,34 +25,29 @@
 #include <ql/discretizedasset.hpp>
 #include <ql/Lattices/bsmlattice.hpp>
 #include <ql/Pricers/singleassetoption.hpp>
-#include <ql/PricingEngines/vanillaengines.hpp>
+#include <ql/Instruments/vanillaoption.hpp>
 
 namespace QuantLib {
 
-    namespace PricingEngines {
+    class DiscretizedVanillaOption : public DiscretizedAsset {
+      public:
+        DiscretizedVanillaOption(const Handle<NumericalMethod>& method,
+                                 const VanillaOption::arguments& arguments)
+        : DiscretizedAsset(method), arguments_(arguments) {}
 
-        class DiscretizedVanillaOption : public DiscretizedAsset {
-          public:
-            DiscretizedVanillaOption(
-                const Handle<NumericalMethod>& method,
-                const VanillaOption::arguments& arguments)
-            : DiscretizedAsset(method), arguments_(arguments) {}
+        void reset(Size size);
 
-            void reset(Size size);
+        void postAdjustValues();
 
-            void postAdjustValues();
+        void addTimesTo(std::list<Time>& times) const {
+            for (Size i=0; i<arguments_.stoppingTimes.size(); i++)
+                times.push_back(arguments_.stoppingTimes[i]);
+        }
 
-            void addTimesTo(std::list<Time>& times) const {
-                for (Size i=0; i<arguments_.stoppingTimes.size(); i++)
-                    times.push_back(arguments_.stoppingTimes[i]);
-            }
-
-          private:
-            void applySpecificCondition();
-            VanillaOption::arguments arguments_;
-        };
-
-    }
+      private:
+        void applySpecificCondition();
+        VanillaOption::arguments arguments_;
+    };
 
 }
 

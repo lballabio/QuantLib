@@ -28,44 +28,37 @@
 
 namespace QuantLib {
 
-    namespace Pricers {
+    //! Discrete Geometric Average Price Asian Option (European style)
+    /*! This class implements a discrete geometric average price asian
+        option, with european exercise.  The formula is from "Asian
+        Option", E. Levy (1997) in "Exotic Options: The State of the
+        Art", edited by L. Clewlow, C. Strickland, pag65-97
 
-        //! Discrete Geometric Average Price Asian Option (European style)
-        /*! This class implements a discrete geometric average price asian
-            option, with european exercise.
-            The formula is from "Asian Option", E. Levy (1997)
-            in "Exotic Options: The State of the Art",
-            edited by L. Clewlow, C. Strickland, pag65-97
-
-            \todo add analytical greeks
-        */
-        class DiscreteGeometricAPO : public SingleAssetOption    {
-           public:
-            DiscreteGeometricAPO(Option::Type type,
-                                 double underlying,
-                                 double strike,
-                                 Spread dividendYield,
-                                 Rate riskFreeRate,
-                                 const std::vector<Time>& times,
-                                 double volatility);
-            double value() const;
-            double delta() const {return 0.0;}
-            double gamma() const {return 0.0;}
-            double theta() const {return 0.0;}
-            Handle<SingleAssetOption> clone() const;
-           private:
-            static const CumulativeNormalDistribution f_;
-            std::vector<Time> times_;
-        };
+        \todo add analytical greeks
+    */
+    class DiscreteGeometricAPO : public SingleAssetOption    {
+      public:
+        DiscreteGeometricAPO(Option::Type type,
+                             double underlying,
+                             double strike,
+                             Spread dividendYield,
+                             Rate riskFreeRate,
+                             const std::vector<Time>& times,
+                             double volatility);
+        double value() const;
+        double delta() const {return 0.0;}
+        double gamma() const {return 0.0;}
+        double theta() const {return 0.0;}
+        Handle<SingleAssetOption> clone() const;
+      private:
+        static const CumulativeNormalDistribution f_;
+        std::vector<Time> times_;
+    };
 
 
-        // inline definitions
-        inline Handle<SingleAssetOption> DiscreteGeometricAPO::clone()
-          const {
-            return Handle<SingleAssetOption>(
-                new DiscreteGeometricAPO(*this));
-        }
-
+    // inline definitions
+    inline Handle<SingleAssetOption> DiscreteGeometricAPO::clone() const {
+        return Handle<SingleAssetOption>(new DiscreteGeometricAPO(*this));
     }
 
 }

@@ -69,7 +69,7 @@ namespace QuantLib {
         The Bridge pattern is used to provide the base behavior of the
         calendar, namely, to determine whether a date is a business day.
     */
-    class Calendar : public Patterns::Bridge<Calendar,CalendarImpl> {
+    class Calendar : public Bridge<Calendar,CalendarImpl> {
       public:
         //! \name Calendar interface
         //@{
@@ -127,7 +127,7 @@ namespace QuantLib {
         /*! This protected constructor will only be invoked by derived
             classes which define a given Calendar implementation */
         Calendar(const Handle<CalendarImpl>& impl) 
-        : Patterns::Bridge<Calendar,CalendarImpl>(impl) {}
+        : Bridge<Calendar,CalendarImpl>(impl) {}
     };
 
     /*! Returns <tt>true</tt> iff the two calendars belong to the same

@@ -26,25 +26,22 @@
 
 namespace QuantLib {
 
-    namespace Pricers {
-
-        //! Bermudan option
-        class FdBermudanOption : public FdMultiPeriodOption {
-          public:
-            // constructor
-            FdBermudanOption(Option::Type type, double underlying,
-                double strike, Spread dividendYield, Rate riskFreeRate,
-                Time residualTime, double volatility,
-                const std::vector<Time>& dates = std::vector<Time>(),
-                int timeSteps = 100, int gridPoints = 100);
-            Handle<SingleAssetOption> clone() const;
-          protected:
-            double extraTermInBermudan ;
-            void initializeStepCondition() const;
-            void executeIntermediateStep(int ) const;
-        };
-
-    }
+    //! Bermudan option
+    class FdBermudanOption : public FdMultiPeriodOption {
+      public:
+        // constructor
+        FdBermudanOption(Option::Type type, double underlying,
+                         double strike, Spread dividendYield, 
+                         Rate riskFreeRate, Time residualTime, 
+                         double volatility,
+                         const std::vector<Time>& dates = std::vector<Time>(),
+                         int timeSteps = 100, int gridPoints = 100);
+        Handle<SingleAssetOption> clone() const;
+      protected:
+        double extraTermInBermudan ;
+        void initializeStepCondition() const;
+        void executeIntermediateStep(int ) const;
+    };
 
 }
 

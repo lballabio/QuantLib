@@ -38,217 +38,205 @@
 
 namespace QuantLib {
 
-    namespace PricingEngines {
+    //! Binary engine base class
+    class BinaryEngine : public GenericEngine<BinaryOption::arguments,
+                                              BinaryOption::results> {};
 
-        //! Binary engine base class
-        class BinaryEngine 
-            : public GenericEngine<BinaryOption::arguments,
-                                   BinaryOption::results> {};
+    //! Pricing engine for European binary options using analytic formulae
+    class AnalyticEuropeanBinaryEngine : public BinaryEngine {
+      public:
+        void calculate() const;
+      private:
+        #if defined(QL_PATCH_SOLARIS)
+        CumulativeNormalDistribution f_;
+        #else
+        static const CumulativeNormalDistribution f_;
+        #endif
+    };
 
-        //! Pricing engine for European binary options using analytic formulae
-        class AnalyticEuropeanBinaryEngine : public BinaryEngine {
-          public:
-            void calculate() const;
-          private:
-            #if defined(QL_PATCH_SOLARIS)
-            CumulativeNormalDistribution f_;
-            #else
-            static const CumulativeNormalDistribution f_;
-            #endif
-        };
+    //! Pricing engine for American binary options using analytic formulae
+    class AnalyticAmericanBinaryEngine : public BinaryEngine {
+      public:
+        void calculate() const;
+      private:
+        #if defined(QL_PATCH_SOLARIS)
+        CumulativeNormalDistribution f_;
+        #else
+        static const CumulativeNormalDistribution f_;
+        #endif
+    };
 
-        //! Pricing engine for American binary options using analytic formulae
-        class AnalyticAmericanBinaryEngine : public BinaryEngine {
-          public:
-            void calculate() const;
-          private:
-            #if defined(QL_PATCH_SOLARIS)
-            CumulativeNormalDistribution f_;
-            #else
-            static const CumulativeNormalDistribution f_;
-            #endif
-        };
+    //! Pricing engine for Binary options using Monte Carlo
+    template<class RNG = PseudoRandom, class S = Statistics>
+    class MCBinaryEngine : public BinaryEngine,
+                           public McSimulation<SingleAsset<RNG>, S> {
+      public:
+        // constructor
+        MCBinaryEngine(Size maxTimeStepsPerYear,
+                       bool antitheticVariate = false,
+                       bool controlVariate = false,
+                       Size requiredSamples = Null<int>(),
+                       double requiredTolerance = Null<double>(),
+                       Size maxSamples = Null<int>(),
+                       bool isBiased = false,
+                       long seed = 0);
 
-        //! Pricing engine for Binary options using Monte Carlo
-        template<class RNG = MonteCarlo::PseudoRandom, 
-                 class S = Statistics>
-        class MCBinaryEngine 
-        : public BinaryEngine,
-          public McSimulation<MonteCarlo::SingleAsset<RNG>, S> {
-          public:
-            // constructor
-            MCBinaryEngine(Size maxTimeStepsPerYear,
-                            bool antitheticVariate = false,
-                            bool controlVariate = false,
-                            Size requiredSamples = Null<int>(),
-                            double requiredTolerance = Null<double>(),
-                            Size maxSamples = Null<int>(),
-                            bool isBiased = false,
-                            long seed = 0);
+        void calculate() const;
+      protected:
+        typedef typename McSimulation<SingleAsset<RNG>,S>::path_generator_type
+            path_generator_type;
+        typedef typename McSimulation<SingleAsset<RNG>,S>::path_pricer_type
+            path_pricer_type;
+        typedef typename McSimulation<SingleAsset<RNG>,S>::stats_type
+            stats_type;
 
-            void calculate() const;
-          protected:
-            typedef typename
-            McSimulation<MonteCarlo::SingleAsset<RNG>,S>::path_generator_type
-                path_generator_type;
-            typedef typename
-            McSimulation<MonteCarlo::SingleAsset<RNG>,S>::path_pricer_type
-                path_pricer_type;
-            typedef typename
-            McSimulation<MonteCarlo::SingleAsset<RNG>,S>::stats_type
-                stats_type;
+        // the uniform generator to use in path generation and
+        // path correction
+        //typedef typename RNG::ursg_type ursg_type;
+        typedef typename RNG::ursg_type my_sequence_type;
 
-            // the uniform generator to use in path generation and
-            // path correction
-            //typedef typename RNG::ursg_type ursg_type;
-            typedef typename RNG::ursg_type my_sequence_type;
+        // McSimulation implementation
+        Handle<path_generator_type> pathGenerator() const;
+        TimeGrid timeGrid() const;
+        Handle<path_pricer_type> pathPricer() const;
 
-            // McSimulation implementation
-            Handle<path_generator_type> pathGenerator() const;
-            TimeGrid timeGrid() const;
-            Handle<path_pricer_type> pathPricer() const;
-
-            // data members            
-            //my_sequence_type uniformGenerator_;
-            Size maxTimeStepsPerYear_;
-            Size requiredSamples_, maxSamples_;
-            double requiredTolerance_;
-            bool isBiased_;
-            long seed_;
-        };
+        // data members            
+        //my_sequence_type uniformGenerator_;
+        Size maxTimeStepsPerYear_;
+        Size requiredSamples_, maxSamples_;
+        double requiredTolerance_;
+        bool isBiased_;
+        long seed_;
+    };
 
 
-        template<class RNG, class S>
-        MCBinaryEngine<RNG,S>::MCBinaryEngine(Size maxTimeStepsPerYear,
-                                                  bool antitheticVariate,
-                                                  bool controlVariate,
-                                                  Size requiredSamples,
-                                                  double requiredTolerance,
-                                                  Size maxSamples,
-                                                  bool isBiased,
-                                                  long seed)
-        : McSimulation<MonteCarlo::SingleAsset<RNG>,S>(antitheticVariate,
-                                                       controlVariate),
-          maxTimeStepsPerYear_(maxTimeStepsPerYear), 
-          requiredSamples_(requiredSamples),
-          maxSamples_(maxSamples),
-          requiredTolerance_(requiredTolerance),
-          isBiased_(isBiased),
-          seed_(seed) {}
+    template<class RNG, class S>
+    MCBinaryEngine<RNG,S>::MCBinaryEngine(Size maxTimeStepsPerYear,
+                                          bool antitheticVariate,
+                                          bool controlVariate,
+                                          Size requiredSamples,
+                                          double requiredTolerance,
+                                          Size maxSamples,
+                                          bool isBiased,
+                                          long seed)
+    : McSimulation<SingleAsset<RNG>,S>(antitheticVariate,
+                                       controlVariate),
+      maxTimeStepsPerYear_(maxTimeStepsPerYear), 
+      requiredSamples_(requiredSamples),
+      maxSamples_(maxSamples),
+      requiredTolerance_(requiredTolerance),
+      isBiased_(isBiased),
+      seed_(seed) {}
 
 
-        template<class RNG, class S>
-        Handle<QL_TYPENAME MCBinaryEngine<RNG,S>::path_generator_type> 
-        MCBinaryEngine<RNG,S>::pathGenerator() const
-        {
-            Handle<DiffusionProcess> bs(new
-                BlackScholesProcess(arguments_.riskFreeTS, 
-                                    arguments_.dividendTS,
-                                    arguments_.volTS, 
-                                    arguments_.underlying));
+    template<class RNG, class S>
+    Handle<QL_TYPENAME MCBinaryEngine<RNG,S>::path_generator_type> 
+    MCBinaryEngine<RNG,S>::pathGenerator() const {
 
-            TimeGrid grid = timeGrid();
+        Handle<DiffusionProcess> bs(new
+            BlackScholesProcess(arguments_.riskFreeTS, 
+                                arguments_.dividendTS,
+                                arguments_.volTS, 
+                                arguments_.underlying));
 
-            typename RNG::rsg_type gen =
-                RNG::make_sequence_generator(grid.size()-1, seed_);
+        TimeGrid grid = timeGrid();
 
-            return Handle<path_generator_type>(
-                new path_generator_type(bs, grid, gen));
+        typename RNG::rsg_type gen =
+            RNG::make_sequence_generator(grid.size()-1, seed_);
 
-        }
+        return Handle<path_generator_type>(
+            new path_generator_type(bs, grid, gen));
+
+    }
 
 
-        template <class RNG, class S>
-        Handle<QL_TYPENAME MCBinaryEngine<RNG,S>::path_pricer_type>
-        MCBinaryEngine<RNG,S>::pathPricer() const {
-            Handle<PlainVanillaPayoff> payoff = arguments_.payoff;
-            // do this with Template Parameters?
-            /*if (isBiased_) {
-                return Handle<MCBinaryEngine<RNG,S>::path_pricer_type>(
-                    new MonteCarlo::BiasedBinaryPathPricer(                
+    template <class RNG, class S>
+    Handle<QL_TYPENAME MCBinaryEngine<RNG,S>::path_pricer_type>
+    MCBinaryEngine<RNG,S>::pathPricer() const {
+
+        Handle<PlainVanillaPayoff> payoff = arguments_.payoff;
+        // do this with Template Parameters?
+        /*if (isBiased_) {
+            return Handle<MCBinaryEngine<RNG,S>::path_pricer_type>(
+                new BiasedBinaryPathPricer(                
                         arguments_.barrierType, arguments_.barrier, 
                         arguments_.rebate, payoff->optionType(), 
                         payoff->strike(), arguments_.underlying, 
                         arguments_.riskFreeTS));
-            } else {                   
-            */
-                TimeGrid grid = timeGrid();
-                RandomNumbers::UniformRandomSequenceGenerator 
-                sequenceGen(grid.size()-1, 
-                            RandomNumbers::UniformRandomGenerator(76));
+        } else {                   
+        */
+        TimeGrid grid = timeGrid();
+        RandomNumbers::UniformRandomSequenceGenerator 
+            sequenceGen(grid.size()-1, 
+                        RandomNumbers::UniformRandomGenerator(76));
 
-                return Handle<MCBinaryEngine<RNG,S>::path_pricer_type>(
-                    new MonteCarlo::BinaryPathPricer(
-                        arguments_.binaryType, arguments_.barrier, 
-                        arguments_.cashPayoff, payoff->optionType(), 
-                        arguments_.underlying, arguments_.riskFreeTS,
-                        Handle<DiffusionProcess> (new BlackScholesProcess(
+        return Handle<MCBinaryEngine<RNG,S>::path_pricer_type>(
+            new BinaryPathPricer(
+                    arguments_.binaryType, arguments_.barrier, 
+                    arguments_.cashPayoff, payoff->optionType(), 
+                    arguments_.underlying, arguments_.riskFreeTS,
+                    Handle<DiffusionProcess> (new BlackScholesProcess(
                                     arguments_.riskFreeTS, 
                                     arguments_.dividendTS,
                                     arguments_.volTS, 
                                     arguments_.underlying)),
-                        sequenceGen));
-//            }
+                    sequenceGen));
+//        }
 
-        }
+    }
 
 
-        template <class RNG, class S>
-        inline
-        TimeGrid MCBinaryEngine<RNG,S>::timeGrid() const {
-            return TimeGrid(arguments_.maturity, 
-                            Size(arguments_.maturity * 
-                                 maxTimeStepsPerYear_));
-        }
+    template <class RNG, class S>
+    inline
+    TimeGrid MCBinaryEngine<RNG,S>::timeGrid() const {
+        return TimeGrid(arguments_.maturity, 
+                        Size(arguments_.maturity * maxTimeStepsPerYear_));
+    }
 
-        template<class RNG, class S>
-        void MCBinaryEngine<RNG,S>::calculate() const {
+    template<class RNG, class S>
+    void MCBinaryEngine<RNG,S>::calculate() const {
 
-            QL_REQUIRE(requiredTolerance_ != Null<double>() ||
-                    int(requiredSamples_) != Null<int>(),
-                    "MCBinaryEngine::calculate: "
-                    "neither tolerance nor number of samples set");
+        QL_REQUIRE(requiredTolerance_ != Null<double>() ||
+                   int(requiredSamples_) != Null<int>(),
+                   "MCBinaryEngine::calculate: "
+                   "neither tolerance nor number of samples set");
 
-            //! Initialize the one-factor Monte Carlo
-            if (controlVariate_) {
+        //! Initialize the one-factor Monte Carlo
+        if (controlVariate_) {
 
-                Handle<path_pricer_type> controlPP = controlPathPricer();
-                QL_REQUIRE(!controlPP.isNull(),
-                        "MCBinaryEngine::calculate() : "
-                        "engine does not provide "
-                        "control variation path pricer");
+            Handle<path_pricer_type> controlPP = controlPathPricer();
+            QL_REQUIRE(!controlPP.isNull(),
+                       "MCBinaryEngine::calculate() : "
+                       "engine does not provide "
+                       "control variation path pricer");
 
-                Handle<PricingEngine> controlPE = controlPricingEngine();
+            Handle<PricingEngine> controlPE = controlPricingEngine();
 
-                QL_REQUIRE(!controlPE.isNull(),
-                        "MCBinaryEngine::calculate() : "
-                        "engine does not provide "
-                        "control variation pricing engine");
-            } else {
-                mcModel_ = 
-                    Handle<MonteCarlo::MonteCarloModel<
-                            MonteCarlo::SingleAsset<RNG>, S> >(
-                    new MonteCarlo::MonteCarloModel<
-                            MonteCarlo::SingleAsset<RNG>, S>(
+            QL_REQUIRE(!controlPE.isNull(),
+                       "MCBinaryEngine::calculate() : "
+                       "engine does not provide "
+                       "control variation pricing engine");
+        } else {
+            mcModel_ = 
+                Handle<MonteCarloModel<SingleAsset<RNG>, S> >(
+                    new MonteCarloModel<SingleAsset<RNG>, S>(
                         pathGenerator(), pathPricer(), S(), 
                         antitheticVariate_));
-            }
-
-            if (requiredTolerance_ != Null<double>()) {
-                if (int(maxSamples_) != Null<int>())
-                    value(requiredTolerance_, maxSamples_);
-                else
-                    value(requiredTolerance_);
-            } else {
-                valueWithSamples(requiredSamples_);
-            }
-
-            results_.value = mcModel_->sampleAccumulator().mean();
-            if (RNG::allowsErrorEstimate)
-                results_.errorEstimate = 
-                    mcModel_->sampleAccumulator().errorEstimate();
         }
 
+        if (requiredTolerance_ != Null<double>()) {
+            if (int(maxSamples_) != Null<int>())
+                value(requiredTolerance_, maxSamples_);
+            else
+                value(requiredTolerance_);
+        } else {
+            valueWithSamples(requiredSamples_);
+        }
+
+        results_.value = mcModel_->sampleAccumulator().mean();
+        if (RNG::allowsErrorEstimate)
+            results_.errorEstimate = 
+                mcModel_->sampleAccumulator().errorEstimate();
     }
 
 }

@@ -37,7 +37,7 @@ namespace QuantLib {
             a constant Black volatility (no time/strike dependence).
         */
         class BlackConstantVol : public BlackVolatilityTermStructure,
-                                 public Patterns::Observer {
+                                 public Observer {
           public:
             BlackConstantVol(const Date& referenceDate,
                              double volatility,
@@ -59,7 +59,7 @@ namespace QuantLib {
             //@}
             //! \name Visitability
             //@{
-            virtual void accept(Patterns::AcyclicVisitor&);
+            virtual void accept(AcyclicVisitor&);
             //@}
           protected:
             virtual double blackVolImpl(Time t, double,
@@ -105,8 +105,7 @@ namespace QuantLib {
             notifyObservers();
         }
 
-        inline void BlackConstantVol::accept(Patterns::AcyclicVisitor& v) {
-            using namespace Patterns;
+        inline void BlackConstantVol::accept(AcyclicVisitor& v) {
             Visitor<BlackConstantVol>* v1 = 
                 dynamic_cast<Visitor<BlackConstantVol>*>(&v);
             if (v1 != 0)

@@ -26,158 +26,154 @@
 
 namespace QuantLib {
 
-    namespace Pricers {
+    FdMultiPeriodOption::FdMultiPeriodOption(
+                       Option::Type type, double underlying, double strike, 
+                       Spread dividendYield, Rate riskFreeRate, 
+                       Time residualTime, double volatility,
+                       int gridPoints, const std::vector<Time>& dates,
+                       int timeSteps)
+    : FdBsmOption(type, underlying, strike,
+                  dividendYield, riskFreeRate,
+                  residualTime, volatility,
+                  gridPoints),
+      dates_(dates),
+      dateNumber_(dates.size()),
+      timeStepPerPeriod_(timeSteps),
+      lastDateIsResTime_(false),
+      lastIndex_(dateNumber_ - 1),
+      firstDateIsZero_(false),
+      firstNonZeroDate_(residualTime),
+      firstIndex_(-1) {
 
-        FdMultiPeriodOption::FdMultiPeriodOption(Option::Type type,
-            double underlying, double strike, Spread dividendYield,
-            Rate riskFreeRate, Time residualTime, double volatility,
-            int gridPoints, const std::vector<Time>& dates,
-            int timeSteps)
-        : FdBsmOption(type, underlying, strike,
-                             dividendYield, riskFreeRate,
-                             residualTime, volatility,
-                             gridPoints),
-          dates_(dates),
-          dateNumber_(dates.size()),
-          timeStepPerPeriod_(timeSteps),
-          lastDateIsResTime_(false),
-          lastIndex_(dateNumber_ - 1),
-          firstDateIsZero_(false),
-          firstNonZeroDate_(residualTime),
-          firstIndex_(-1) {
+        double dateTollerance = 1e-6;
 
-            double dateTollerance = 1e-6;
-
-            if (dateNumber_ > 0){
-                QL_REQUIRE(dates_[0] >= 0,
-                          "First date " +
-                          DoubleFormatter::toString(dates_[0]) +
-                          " cannot be negative");
-                if(dates_[0] < residualTime * dateTollerance ){
-                    firstDateIsZero_ = true;
-                    firstIndex_ = 0;
-                    if(dateNumber_ >= 2)
-                        firstNonZeroDate_ = dates_[1];
-                }
-
-                if(QL_FABS(dates_[lastIndex_] - residualTime) < dateTollerance){
-                    lastDateIsResTime_ = true;
-                    lastIndex_ =dateNumber_ - 2;
-                 }
-
-                QL_REQUIRE(dates_[dateNumber_-1] <= residualTime,
-                    "Last date, " +
-                    DoubleFormatter::toString(dates_[dateNumber_-1]) +
-                    ", must be within the residual time of " +
-                    DoubleFormatter::toString(residualTime) );
-
-                if (dateNumber_ >= 2){
-                    if (!firstDateIsZero_)
-                        firstNonZeroDate_ = dates_[0];
-                    for (Size j = 1; j < dateNumber_; j++)
-                        QL_REQUIRE(dates_[j-1] < dates_[j],
-                            "Dates must be in increasing order:" +
-                            DoubleFormatter::toString(dates_[j-1]) +
-                            " is not strictly smaller than " +
-                            DoubleFormatter::toString(dates_[j]) );
-                }
+        if (dateNumber_ > 0){
+            QL_REQUIRE(dates_[0] >= 0,
+                       "First date " +
+                       DoubleFormatter::toString(dates_[0]) +
+                       " cannot be negative");
+            if(dates_[0] < residualTime * dateTollerance ){
+                firstDateIsZero_ = true;
+                firstIndex_ = 0;
+                if(dateNumber_ >= 2)
+                    firstNonZeroDate_ = dates_[1];
             }
 
+            if(QL_FABS(dates_[lastIndex_] - residualTime) < dateTollerance){
+                lastDateIsResTime_ = true;
+                lastIndex_ =dateNumber_ - 2;
+            }
+
+            QL_REQUIRE(dates_[dateNumber_-1] <= residualTime,
+                       "Last date, " +
+                       DoubleFormatter::toString(dates_[dateNumber_-1]) +
+                       ", must be within the residual time of " +
+                       DoubleFormatter::toString(residualTime) );
+
+            if (dateNumber_ >= 2){
+                if (!firstDateIsZero_)
+                    firstNonZeroDate_ = dates_[0];
+                for (Size j = 1; j < dateNumber_; j++)
+                    QL_REQUIRE(dates_[j-1] < dates_[j],
+                               "Dates must be in increasing order:" +
+                               DoubleFormatter::toString(dates_[j-1]) +
+                               " is not strictly smaller than " +
+                               DoubleFormatter::toString(dates_[j]) );
+            }
         }
 
-        void FdMultiPeriodOption::calculate() const {
+    }
 
-            Time beginDate, endDate;
-            initializeControlVariate();
-            setGridLimits(underlying_, residualTime_);
-            initializeGrid();
-            initializeInitialCondition();
-            initializeOperator();
-            initializeModel();
-            initializeStepCondition();
-            prices_ = intrinsicValues_;
-            controlPrices_ = intrinsicValues_;
+    void FdMultiPeriodOption::calculate() const {
 
-            if(lastDateIsResTime_)
-                executeIntermediateStep(dateNumber_ - 1);
+        Time beginDate, endDate;
+        initializeControlVariate();
+        setGridLimits(underlying_, residualTime_);
+        initializeGrid();
+        initializeInitialCondition();
+        initializeOperator();
+        initializeModel();
+        initializeStepCondition();
+        prices_ = intrinsicValues_;
+        controlPrices_ = intrinsicValues_;
 
-            double dt = residualTime_/(timeStepPerPeriod_*(dateNumber_+1));
+        if(lastDateIsResTime_)
+            executeIntermediateStep(dateNumber_ - 1);
 
-            // Ensure that dt is always smaller than the first non-zero date
-            if (firstNonZeroDate_ <= dt)
-                dt = firstNonZeroDate_/2.0;
+        double dt = residualTime_/(timeStepPerPeriod_*(dateNumber_+1));
 
-            int j = lastIndex_;
-            do{
-                if (j == int(dateNumber_) - 1)
-                    beginDate = residualTime_;
-                else
-                    beginDate = dates_[j+1];
+        // Ensure that dt is always smaller than the first non-zero date
+        if (firstNonZeroDate_ <= dt)
+            dt = firstNonZeroDate_/2.0;
 
-                if (j >= 0)
-                    endDate = dates_[j];
-                else
-                    endDate = dt;
+        int j = lastIndex_;
+        do{
+            if (j == int(dateNumber_) - 1)
+                beginDate = residualTime_;
+            else
+                beginDate = dates_[j+1];
 
-                model_ -> rollback(prices_, beginDate, endDate,
-                                   timeStepPerPeriod_, stepCondition_);
+            if (j >= 0)
+                endDate = dates_[j];
+            else
+                endDate = dt;
 
-                model_ -> rollback(controlPrices_, beginDate, endDate,
-                                   timeStepPerPeriod_);
+            model_ -> rollback(prices_, beginDate, endDate,
+                               timeStepPerPeriod_, stepCondition_);
 
-                if (j >= 0)
-                    executeIntermediateStep(j);
+            model_ -> rollback(controlPrices_, beginDate, endDate,
+                               timeStepPerPeriod_);
 
-            } while (--j >= firstIndex_);
+            if (j >= 0)
+                executeIntermediateStep(j);
 
-            model_ -> rollback(prices_,        dt, 0, 1, stepCondition_);
-            model_ -> rollback(controlPrices_, dt, 0, 1);
+        } while (--j >= firstIndex_);
 
-            if(firstDateIsZero_)
-                executeIntermediateStep(0);
+        model_ -> rollback(prices_,        dt, 0, 1, stepCondition_);
+        model_ -> rollback(controlPrices_, dt, 0, 1);
 
-            // Option price and greeks are computed
-            controlVariateCorrection_ =
-                analytic_ -> value() - valueAtCenter(controlPrices_);
+        if(firstDateIsZero_)
+            executeIntermediateStep(0);
 
-            value_ =   valueAtCenter(prices_)
-                     - valueAtCenter(controlPrices_)
-                     + analytic_ -> value();
+        // Option price and greeks are computed
+        controlVariateCorrection_ =
+            analytic_ -> value() - valueAtCenter(controlPrices_);
 
-            delta_ =   firstDerivativeAtCenter(prices_, grid_)
-                     - firstDerivativeAtCenter(controlPrices_, grid_)
-                     + analytic_ -> delta();
+        value_ =   valueAtCenter(prices_)
+            - valueAtCenter(controlPrices_)
+            + analytic_ -> value();
 
-            gamma_ =   secondDerivativeAtCenter(prices_, grid_)
-                     - secondDerivativeAtCenter(controlPrices_, grid_)
-                     + analytic_ -> gamma();
+        delta_ =   firstDerivativeAtCenter(prices_, grid_)
+            - firstDerivativeAtCenter(controlPrices_, grid_)
+            + analytic_ -> delta();
 
-            hasBeenCalculated_ = true;
-        }
+        gamma_ =   secondDerivativeAtCenter(prices_, grid_)
+            - secondDerivativeAtCenter(controlPrices_, grid_)
+            + analytic_ -> gamma();
 
-        void FdMultiPeriodOption::initializeControlVariate() const{
-            analytic_ = Handle<SingleAssetOption> (new EuropeanOption (
-                            payoff_.optionType(), underlying_, payoff_.strike(), dividendYield_,
-                            riskFreeRate_, residualTime_, volatility_));
-        }
+        hasBeenCalculated_ = true;
+    }
 
-        void FdMultiPeriodOption::initializeStepCondition() const{
-            stepCondition_ = Handle<StandardStepCondition> (
-                new AmericanCondition(intrinsicValues_));
-        }
+    void FdMultiPeriodOption::initializeControlVariate() const{
+        analytic_ = Handle<SingleAssetOption>(new EuropeanOption(
+                 payoff_.optionType(), underlying_, payoff_.strike(), 
+                 dividendYield_, riskFreeRate_, residualTime_, volatility_));
+    }
 
-        void FdMultiPeriodOption::initializeModel() const{
-            model_ = Handle<StandardFiniteDifferenceModel> (
-                     new StandardFiniteDifferenceModel
-                            (finiteDifferenceOperator_,BCs_));
-        }
+    void FdMultiPeriodOption::initializeStepCondition() const{
+        stepCondition_ = Handle<StandardStepCondition> (
+                                     new AmericanCondition(intrinsicValues_));
+    }
 
-        double FdMultiPeriodOption::controlVariateCorrection() const{
-            if(!hasBeenCalculated_)
-                calculate();
-            return controlVariateCorrection_;
-        }
+    void FdMultiPeriodOption::initializeModel() const{
+        model_ = Handle<StandardFiniteDifferenceModel>(
+            new StandardFiniteDifferenceModel(finiteDifferenceOperator_,BCs_));
+    }
 
+    double FdMultiPeriodOption::controlVariateCorrection() const{
+        if(!hasBeenCalculated_)
+            calculate();
+        return controlVariateCorrection_;
     }
 
 }

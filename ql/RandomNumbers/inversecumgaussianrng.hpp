@@ -54,7 +54,7 @@ namespace QuantLib {
         template <class RNG, class I>
         class ICGaussianRng {
           public:
-            typedef MonteCarlo::Sample<double> sample_type;
+            typedef Sample<double> sample_type;
             explicit ICGaussianRng(const RNG& uniformGenerator);
             /*! \deprecated initialize with a random number
                             generator instead.

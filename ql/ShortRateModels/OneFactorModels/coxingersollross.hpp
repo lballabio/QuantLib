@@ -51,8 +51,7 @@ namespace QuantLib {
 
             virtual Handle<ShortRateDynamics> dynamics() const;
 
-            virtual Handle<Lattices::Lattice> tree(
-                const TimeGrid& grid) const;
+            virtual Handle<Lattice> tree(const TimeGrid& grid) const;
 
             class Dynamics;
           protected:

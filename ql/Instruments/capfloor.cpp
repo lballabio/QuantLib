@@ -25,8 +25,6 @@
 
 namespace QuantLib {
 
-    using Pricers::BlackCapFloor;
-
     CapFloor::CapFloor(CapFloor::Type type,
                        const std::vector<Handle<CashFlow> >& floatingLeg,
                        const std::vector<Rate>& capRates,

@@ -26,25 +26,22 @@
 
 namespace QuantLib {
 
-    namespace Lattices {
+    //! Tree approximating a single-factor diffusion
+    class Tree {
+      public:
+        Tree(Size nColumns) : nColumns_(nColumns) {}
+        virtual ~Tree() {}
+        virtual double underlying(Size i, Size index) const = 0;
+        virtual Size size(Size i) const = 0;
+        virtual Size descendant(Size i, Size index, Size branch) const = 0;
+        virtual double probability(Size i, Size index, Size branch) const = 0;
 
-        //! Tree approximating a single-factor diffusion
-        class Tree {
-          public:
-            Tree(Size nColumns) : nColumns_(nColumns) {}
-            virtual ~Tree() {}
-            virtual double underlying(Size i, Size index) const = 0;
-            virtual Size size(Size i) const = 0;
-            virtual Size descendant(Size i, Size index, Size branch) const = 0;
-            virtual double probability(Size i, Size index, Size branch) const = 0;
-
-            Size nColumns() const { return nColumns_; }
-          private:
-            Size nColumns_;
-        };
-
-    }
+        Size nColumns() const { return nColumns_; }
+      private:
+        Size nColumns_;
+    };
 
 }
+
 
 #endif

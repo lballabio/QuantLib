@@ -37,7 +37,7 @@ namespace QuantLib {
                   reflected in this structure as well.
         */
         class QuantoTermStructure : public ZeroYieldStructure,
-                                    public Patterns::Observer {
+                                    public Observer {
           public:
               QuantoTermStructure(
                   const RelinkableHandle<TermStructure>& underlyingDividendTS,

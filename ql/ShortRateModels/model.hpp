@@ -68,8 +68,7 @@ namespace QuantLib {
         };
 
         //! Abstract short-rate model class
-        class Model : public Patterns::Observer, 
-                      public Patterns::Observable {
+        class Model : public Observer, public Observable {
           public:
             Model(Size nArguments);
 
@@ -78,8 +77,7 @@ namespace QuantLib {
                 notifyObservers(); 
             }
 
-            virtual Handle<Lattices::Lattice> tree(
-                const TimeGrid& grid) const = 0;
+            virtual Handle<Lattice> tree(const TimeGrid& grid) const = 0;
 
             //! Calibrate to a set of market instruments (caps/swaptions)
             /*! An additional constraint can be passed which must be 

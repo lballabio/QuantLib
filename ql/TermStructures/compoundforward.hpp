@@ -31,7 +31,7 @@ namespace QuantLib
    {
 
       class CompoundForward : public ForwardRateStructure,
-			      public Patterns::Observer {
+                              public Observer {
        public:
          // constructor
          CompoundForward(const Date & todaysDate,

@@ -28,8 +28,7 @@
 namespace QuantLib {
 
     //! Black-model for vanilla interest-rate derivatives
-    class BlackModel : public Patterns::Observable,
-                       public Patterns::Observer {
+    class BlackModel : public Observable, public Observer {
       public:
         BlackModel(const RelinkableHandle<MarketElement>& volatility,
                    const RelinkableHandle<TermStructure>& termStructure);

@@ -24,36 +24,33 @@
 
 namespace QuantLib {
 
-    namespace MonteCarlo {
+    EuropeanPathPricer::EuropeanPathPricer(
+                            Option::Type type,
+                            double underlying, double strike,
+                            const RelinkableHandle<TermStructure>& riskFreeTS)
+    : PathPricer<Path>(riskFreeTS), underlying_(underlying),
+      payoff_(type, strike) {
+        QL_REQUIRE(underlying>0.0,
+                   "EuropeanPathPricer: "
+                   "underlying less/equal zero not allowed");
+        QL_REQUIRE(strike>0.0,
+                   "EuropeanPathPricer: "
+                   "strike less/equal zero not allowed");
+    }
 
-        EuropeanPathPricer::EuropeanPathPricer(Option::Type type,
-            double underlying, double strike,
-            const RelinkableHandle<TermStructure>& riskFreeTS)
-        : PathPricer<Path>(riskFreeTS), underlying_(underlying),
-          payoff_(type, strike) {
-            QL_REQUIRE(underlying>0.0,
-                "EuropeanPathPricer: "
-                "underlying less/equal zero not allowed");
-            QL_REQUIRE(strike>0.0,
-                "EuropeanPathPricer: "
-                "strike less/equal zero not allowed");
+    double EuropeanPathPricer::operator()(const Path& path) const {
+        Size n = path.size();
+        QL_REQUIRE(n>0,
+                   "EuropeanPathPricer: the path cannot be empty");
+
+        double log_drift = 0.0, log_random = 0.0;
+        for (Size i = 0; i < n; i++) {
+            log_drift += path.drift()[i];
+            log_random += path.diffusion()[i];
         }
 
-        double EuropeanPathPricer::operator()(const Path& path) const {
-            Size n = path.size();
-            QL_REQUIRE(n>0,
-                "EuropeanPathPricer: the path cannot be empty");
-
-            double log_drift = 0.0, log_random = 0.0;
-            for (Size i = 0; i < n; i++) {
-                log_drift += path.drift()[i];
-                log_random += path.diffusion()[i];
-            }
-
-            return payoff_(underlying_ * QL_EXP(log_drift+log_random)) *
-                riskFreeTS_->discount(path.timeGrid().back());
-        }
-
+        return payoff_(underlying_ * QL_EXP(log_drift+log_random)) *
+            riskFreeTS_->discount(path.timeGrid().back());
     }
 
 }

@@ -27,29 +27,26 @@
 
 namespace QuantLib {
 
-    namespace MonteCarlo {
-
-        //! %multipath pricer for pagoda options
-        /*! A pagoda option is a multi-asset asian option with a cap
-            (the pagoda "roof").
-            Given a portfolio of assets the payoff is the
-            arithmetic average of the portfolio performance,
-            with a maximum cap given by the roof.
-        */
-        class PagodaPathPricer_old : public PathPricer_old<MultiPath> {
-          public:
-            PagodaPathPricer_old(const std::vector<double>& underlying,
+    //! %multipath pricer for pagoda options
+    /*! A pagoda option is a multi-asset asian option with a cap
+        (the pagoda "roof").
+        Given a portfolio of assets the payoff is the
+        arithmetic average of the portfolio performance,
+        with a maximum cap given by the roof.
+    */
+    class PagodaPathPricer_old : public PathPricer_old<MultiPath> {
+      public:
+        PagodaPathPricer_old(const std::vector<double>& underlying,
                              double roof,
                              DiscountFactor discount,
                              bool useAntitheticVariance);
-            double operator()(const MultiPath& path) const;
-          private:
-            std::vector<double> underlying_;
-            double roof_;
-        };
-
-    }
+        double operator()(const MultiPath& path) const;
+      private:
+        std::vector<double> underlying_;
+        double roof_;
+    };
 
 }
+
 
 #endif

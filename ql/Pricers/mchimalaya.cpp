@@ -25,52 +25,48 @@
 
 namespace QuantLib {
 
-    namespace Pricers {
+    McHimalaya::McHimalaya(const std::vector<double>& underlying,
+                           const Array& dividendYield, 
+                           const Matrix& covariance,
+                           Rate riskFreeRate, double strike,
+                           const std::vector<Time>& times,
+                           bool antitheticVariance, long seed) {
 
-        using namespace MonteCarlo;
+        Size  n = covariance.rows();
+        QL_REQUIRE(covariance.columns() == n,
+                   "McHimalaya: covariance matrix not square");
+        QL_REQUIRE(underlying.size() == n,
+                   "McHimalaya: underlying size does not match that of"
+                   " covariance matrix");
+        QL_REQUIRE(dividendYield.size() == n,
+                   "McHimalaya: dividendYield size does not match"
+                   " that of covariance matrix");
+        QL_REQUIRE(times.size() >= 1,
+                   "McHimalaya: you must have at least one time-step");
 
-        McHimalaya::McHimalaya(const std::vector<double>& underlying,
-            const Array& dividendYield, const Matrix& covariance,
-            Rate riskFreeRate, double strike,
-            const std::vector<Time>& times,
-            bool antitheticVariance, long seed) {
+        //! Initialize the path generator
+        Array mu(riskFreeRate - dividendYield
+                 - 0.5 * covariance.diagonal());
 
-            Size  n = covariance.rows();
-            QL_REQUIRE(covariance.columns() == n,
-                "McHimalaya: covariance matrix not square");
-            QL_REQUIRE(underlying.size() == n,
-                "McHimalaya: underlying size does not match that of"
-                " covariance matrix");
-            QL_REQUIRE(dividendYield.size() == n,
-                "McHimalaya: dividendYield size does not match"
-                " that of covariance matrix");
-            QL_REQUIRE(times.size() >= 1,
-                "McHimalaya: you must have at least one time-step");
+        Handle<GaussianMultiPathGenerator> pathGenerator(
+            new GaussianMultiPathGenerator(
+                mu, covariance,
+                TimeGrid(times.begin(), times.end()),
+                seed));
+        double residualTime = times[times.size()-1];
 
-            //! Initialize the path generator
-            Array mu(riskFreeRate - dividendYield
-                                    - 0.5 * covariance.diagonal());
-
-            Handle<GaussianMultiPathGenerator> pathGenerator(
-                new GaussianMultiPathGenerator(
-                    mu, covariance,
-                    TimeGrid(times.begin(), times.end()),
-                    seed));
-            double residualTime = times[times.size()-1];
-
-            //! Initialize the pricer on the path pricer
-            Handle<PathPricer_old<MultiPath> > pathPricer(new HimalayaPathPricer_old(
+        //! Initialize the pricer on the path pricer
+        Handle<PathPricer_old<MultiPath> > pathPricer(
+            new HimalayaPathPricer_old(
                 underlying, strike, QL_EXP(-riskFreeRate*residualTime),
                 antitheticVariance));
 
-             //! Initialize the multi-factor Monte Carlo
-            mcModel_ = Handle<MonteCarloModel<MultiAsset_old<
-                                              PseudoRandomSequence_old> > > (
-                new MonteCarloModel<MultiAsset_old<
-                                    PseudoRandomSequence_old> > (
-                pathGenerator, pathPricer, Statistics(), false));
-
-        }
+         //! Initialize the multi-factor Monte Carlo
+        mcModel_ = Handle<MonteCarloModel<MultiAsset_old<
+                                          PseudoRandomSequence_old> > > (
+            new MonteCarloModel<MultiAsset_old<
+                                PseudoRandomSequence_old> > (
+            pathGenerator, pathPricer, Statistics(), false));
 
     }
 

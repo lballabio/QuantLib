@@ -23,43 +23,39 @@
 
 namespace QuantLib {
 
-    namespace Pricers {
+    void DiscretizedCapFloor::preAdjustValues() {
+        for (Size i=0; i<arguments_.startTimes.size(); i++) {
+            if (isOnTime(arguments_.startTimes[i])) {
+                Time end = arguments_.endTimes[i];
+                Time tenor = arguments_.accrualTimes[i];
+                Handle<DiscretizedAsset> bond(
+                                       new DiscretizedDiscountBond(method()));
+                method()->initialize(bond, end);
+                method()->rollback(bond,time_);
 
-        void DiscretizedCapFloor::preAdjustValues() {
-            for (Size i=0; i<arguments_.startTimes.size(); i++) {
-                if (isOnTime(arguments_.startTimes[i])) {
-                    Time end = arguments_.endTimes[i];
-                    Time tenor = arguments_.accrualTimes[i];
-                    Handle<DiscretizedAsset> bond(new 
-                        DiscretizedDiscountBond(method()));
-                    method()->initialize(bond, end);
-                    method()->rollback(bond,time_);
+                CapFloor::Type type = arguments_.type;
 
-                    CapFloor::Type type = arguments_.type;
-
-                    if ( (type == CapFloor::Cap) ||
-                         (type == CapFloor::Collar)) {
-                        double accrual = 1.0 + arguments_.capRates[i]*tenor;
-                        double strike = 1.0/accrual;
-                        for (Size j=0; j<values_.size(); j++)
-                            values_[j] += arguments_.nominals[i]*accrual*
-                                QL_MAX(strike - bond->values()[j], 0.0);
-                    }
-
-                    if ( (type == CapFloor::Floor) ||
-                         (type == CapFloor::Collar)) {
-                        double accrual = 1.0 + arguments_.floorRates[i]*tenor;
-                        double strike = 1.0/accrual;
-                        double mult = (type == CapFloor::Floor)?1.0:-1.0;
-                        for (Size j=0; j<values_.size(); j++)
-                            values_[j] += arguments_.nominals[i]*accrual*mult*
-                                QL_MAX(bond->values()[j] - strike, 0.0);
-                    }
-
+                if ( (type == CapFloor::Cap) ||
+                     (type == CapFloor::Collar)) {
+                    double accrual = 1.0 + arguments_.capRates[i]*tenor;
+                    double strike = 1.0/accrual;
+                    for (Size j=0; j<values_.size(); j++)
+                        values_[j] += arguments_.nominals[i]*accrual*
+                            QL_MAX(strike - bond->values()[j], 0.0);
                 }
+
+                if ( (type == CapFloor::Floor) ||
+                     (type == CapFloor::Collar)) {
+                    double accrual = 1.0 + arguments_.floorRates[i]*tenor;
+                    double strike = 1.0/accrual;
+                    double mult = (type == CapFloor::Floor)?1.0:-1.0;
+                    for (Size j=0; j<values_.size(); j++)
+                        values_[j] += arguments_.nominals[i]*accrual*mult*
+                            QL_MAX(bond->values()[j] - strike, 0.0);
+                }
+
             }
         }
-    
     }
 
 }

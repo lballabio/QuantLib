@@ -27,118 +27,107 @@
 #include <ql/Math/primenumbers.hpp>
 #include <ql/RandomNumbers/mt19937uniformrng.hpp>
 
-using namespace QuantLib;
-using QuantLib::RandomNumbers::MersenneTwisterUniformRng;
-
 namespace QuantLib {
 
-    namespace Functions {
+    using namespace RandomNumbers;
 
-		double interpolate(
-		    const std::vector<double>& x_values,
-            const std::vector<double>& y_values, double x,
-            int interpolationType,
-            bool allowExtrapolation) {
+    double interpolate(const std::vector<double>& x_values,
+                       const std::vector<double>& y_values, double x,
+                       int interpolationType,
+                       bool allowExtrapolation) {
 
-            double result = 0.0;
+        double result = 0.0;
 
-
-            switch (interpolationType) {
-                case 1:
-                    result = LinearInterpolation<
+        switch (interpolationType) {
+          case 1:
+            result = LinearInterpolation<
                         std::vector<double>::const_iterator,
 			            std::vector<double>::const_iterator>(
-                        x_values.begin(), x_values.end(),
-                        y_values.begin())(x, allowExtrapolation);
-                    break;
-                case 2:
-                    result = CubicSplineInterpolation<
+                    x_values.begin(), x_values.end(),
+                    y_values.begin())(x, allowExtrapolation);
+            break;
+          case 2:
+            result = CubicSplineInterpolation<
                         std::vector<double>::const_iterator,
 			            std::vector<double>::const_iterator>(
-                        x_values.begin(), x_values.end(),
-                        y_values.begin())(x, allowExtrapolation);
-                    break;
-                case 3:
-                    result = LogLinearInterpolation<
+                    x_values.begin(), x_values.end(),
+                    y_values.begin())(x, allowExtrapolation);
+            break;
+          case 3:
+            result = LogLinearInterpolation<
                         std::vector<double>::const_iterator,
 			            std::vector<double>::const_iterator>(
-                        x_values.begin(), x_values.end(),
-                        y_values.begin())(x, allowExtrapolation);
-                    break;
-                default:
-                    throw IllegalArgumentError(
+                    x_values.begin(), x_values.end(),
+                    y_values.begin())(x, allowExtrapolation);
+            break;
+          default:
+            throw IllegalArgumentError(
                         "interpolate: invalid interpolation type");
-            }
-
-			return result;
         }
 
-		double interpolate2D(const std::vector<double>& x_values,
-            const std::vector<double>& y_values, const Matrix& dataMatrix,
-            double x, double y, int interpolation2DType,
-            bool allowExtrapolation) {
+        return result;
+    }
 
-            double result = 0.0;
+    double interpolate2D(const std::vector<double>& x_values,
+                         const std::vector<double>& y_values, 
+                         const Matrix& dataMatrix,
+                         double x, double y, int interpolation2DType,
+                         bool allowExtrapolation) {
 
-            switch (interpolation2DType) {
-                case 1:
-                    result = BilinearInterpolation<
+        double result = 0.0;
+
+        switch (interpolation2DType) {
+          case 1:
+            result = BilinearInterpolation<
                         std::vector<double>::const_iterator,
 			            std::vector<double>::const_iterator,
                         Matrix>(x_values.begin(), x_values.end(),
                         y_values.begin(), y_values.end(), dataMatrix)(x,y,
                         allowExtrapolation);
-                    break;
-                case 2:
-                    result = BicubicSplineInterpolation<
+            break;
+          case 2:
+            result = BicubicSplineInterpolation<
                         std::vector<double>::const_iterator,
 			            std::vector<double>::const_iterator,
                         Matrix>(x_values.begin(), x_values.end(),
                         y_values.begin(), y_values.end(), dataMatrix)(x,y,
                         allowExtrapolation);
-                    break;
-                default:
-                    throw IllegalArgumentError(
+            break;
+          default:
+            throw IllegalArgumentError(
                         "interpolate2D: invalid interpolation type");
-            }
-
-            return result;
         }
 
+        return result;
+    }
 
-
-		double normDist(double x, double mean, double standard_dev,
-            bool cumulative) {
-
-            if (cumulative) {
-                return CumulativeNormalDistribution(mean, standard_dev)(x);
-            } else {
-                return NormalDistribution(mean, standard_dev)(x);
-            }
+    double normDist(double x, double mean, double standard_dev,
+                    bool cumulative) {
+        if (cumulative) {
+            return CumulativeNormalDistribution(mean, standard_dev)(x);
+        } else {
+            return NormalDistribution(mean, standard_dev)(x);
         }
+    }
 
 
-		double normInv(double probability, double mean, double standard_dev) {
+    double normInv(double probability, double mean, double standard_dev) {
+        return InverseCumulativeNormal(mean, standard_dev)
+            (probability);
+    }
 
-            return InverseCumulativeNormal(mean, standard_dev)
-                (probability);
-        }
-
-        Size primeNumbers(Size absoluteIndex) {
-            return PrimeNumbers::get(absoluteIndex);
-        }
-
-
-        static MersenneTwisterUniformRng rng;
-
-        double rand() {
-            return rng.next().value;
-        }
-        void randomize(unsigned long seed) {
-            rng = MersenneTwisterUniformRng(seed);
-        }
+    Size primeNumbers(Size absoluteIndex) {
+        return PrimeNumbers::get(absoluteIndex);
+    }
 
 
+    static MersenneTwisterUniformRng rng;
+
+    double rand() {
+        return rng.next().value;
+    }
+    void randomize(unsigned long seed) {
+        rng = MersenneTwisterUniformRng(seed);
     }
 
 }

@@ -26,21 +26,19 @@
 
 namespace QuantLib {
 
-    namespace Pricers {
-
-        class FdDividendAmericanOption : public FdDividendOption {
-          public:
-            // constructor
-            FdDividendAmericanOption(Option::Type type, double underlying,
-                double strike, Spread dividendYield, Rate riskFreeRate,
-                Time residualTime, double volatility,
-                const std::vector<double>& dividends = std::vector<double>(),
-                const std::vector<Time>& exdivdates = std::vector<Time>(),
-                int timeSteps = 100, int gridPoints = 100);
-            Handle<SingleAssetOption> clone() const;
-        };
-
-    }
+    class FdDividendAmericanOption : public FdDividendOption {
+      public:
+        // constructor
+        FdDividendAmericanOption(
+                 Option::Type type, double underlying,
+                 double strike, Spread dividendYield, 
+                 Rate riskFreeRate, Time residualTime, 
+                 double volatility,
+                 const std::vector<double>& dividends = std::vector<double>(),
+                 const std::vector<Time>& exdivdates = std::vector<Time>(),
+                 int timeSteps = 100, int gridPoints = 100);
+        Handle<SingleAssetOption> clone() const;
+    };
 
 }
 

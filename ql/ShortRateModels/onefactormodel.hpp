@@ -42,7 +42,7 @@ namespace QuantLib {
             virtual Handle<ShortRateDynamics> dynamics() const = 0;
 
             //! Return by default a trinomial recombining tree
-            virtual Handle<Lattices::Lattice> tree(const TimeGrid& grid) const;
+            virtual Handle<Lattice> tree(const TimeGrid& grid) const;
 
           protected:
             class ShortRateTree;
@@ -68,16 +68,16 @@ namespace QuantLib {
         };
 
         //! Recombining trinomial tree discretizing the state variable
-        class OneFactorModel::ShortRateTree : public Lattices::Lattice {
+        class OneFactorModel::ShortRateTree : public Lattice {
           public:
             //! Plain tree build-up from short-rate dynamics
             ShortRateTree(
-                const Handle<Lattices::Tree>& tree,
+                const Handle<Tree>& tree,
                 const Handle<ShortRateDynamics>& dynamics,
                 const TimeGrid& timeGrid);
             //! Tree build-up + numerical fitting to term-structure
             ShortRateTree(
-                const Handle<Lattices::Tree>& tree,
+                const Handle<Tree>& tree,
                 const Handle<ShortRateDynamics>& dynamics,
                 const Handle<TermStructureFittingParameter::NumericalImpl>& phi,
                 const TimeGrid& timeGrid);
@@ -98,7 +98,7 @@ namespace QuantLib {
                 return tree_->probability(i, index, branch);
             }
           private:
-            Handle<Lattices::Tree> tree_;
+            Handle<Tree> tree_;
             Handle<ShortRateDynamics> dynamics_;
             class Helper;
         };

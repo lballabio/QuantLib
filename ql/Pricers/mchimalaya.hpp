@@ -26,31 +26,26 @@
 
 namespace QuantLib {
 
-    namespace Pricers {
-
-        //! Himalayan-type option pricer
-        /*! The payoff of a Himalaya option is computed in the following way:
-            Given a basket of N assets, and N time periods, at end of
-            each period the option who performed the best is added to the
-            average and then discarded from the basket. At the end of the
-            N periods the option pays the max between the strike and the
-            average of the best performers.
-        */
-        class McHimalaya 
-        : public McPricer<MonteCarlo::MultiAsset_old<
-                    MonteCarlo::PseudoRandomSequence_old> > {
-        public:
-            McHimalaya(const std::vector<double>& underlying,
-                       const Array& dividendYield,
-                       const Matrix& covariance,
-                       Rate riskFreeRate,
-                       double strike,
-                       const std::vector<Time>& times,
-                       bool antitheticVariance,
-                       long seed = 0);
-        };
-
-    }
+    //! Himalayan-type option pricer
+    /*! The payoff of a Himalaya option is computed in the following
+        way: Given a basket of N assets, and N time periods, at end of
+        each period the option who performed the best is added to the
+        average and then discarded from the basket. At the end of the
+        N periods the option pays the max between the strike and the
+        average of the best performers.
+    */
+    class McHimalaya 
+        : public McPricer<MultiAsset_old<PseudoRandomSequence_old> > {
+      public:
+        McHimalaya(const std::vector<double>& underlying,
+                   const Array& dividendYield,
+                   const Matrix& covariance,
+                   Rate riskFreeRate,
+                   double strike,
+                   const std::vector<Time>& times,
+                   bool antitheticVariance,
+                   long seed = 0);
+    };
 
 }
 

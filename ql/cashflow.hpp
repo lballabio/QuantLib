@@ -35,7 +35,7 @@ namespace QuantLib {
     /*! This class is purely virtual and acts as a base class for the actual
         cash flow implementations.
     */
-    class CashFlow : public Patterns::Observable {
+    class CashFlow : public Observable {
       public:
         virtual ~CashFlow() {}
         //! \name CashFlow interface
@@ -50,15 +50,14 @@ namespace QuantLib {
         //@}
         //! \name Visitability
         //@{
-        virtual void accept(Patterns::AcyclicVisitor&);
+        virtual void accept(AcyclicVisitor&);
         //@}
     };
 
 
     // inline definitions
 
-    inline void CashFlow::accept(Patterns::AcyclicVisitor& v) {
-        using namespace Patterns;
+    inline void CashFlow::accept(AcyclicVisitor& v) {
         Visitor<CashFlow>* v1 = dynamic_cast<Visitor<CashFlow>*>(&v);
         if (v1 != 0)
             v1->visit(*this);

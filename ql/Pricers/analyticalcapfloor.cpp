@@ -19,44 +19,40 @@
     \brief Analytical pricer for caps/floors
 */
 
-#include "ql/Pricers/analyticalcapfloor.hpp"
+#include <ql/Pricers/analyticalcapfloor.hpp>
 
 namespace QuantLib {
 
-    namespace Pricers {
+    void AnalyticalCapFloor::calculate() const {
+        QL_REQUIRE(!model_.isNull(), 
+                   "AnalyticalCapFloor: cannot price without model!");
 
-        void AnalyticalCapFloor::calculate() const {
-            QL_REQUIRE(!model_.isNull(), 
-                       "AnalyticalCapFloor: cannot price without model!");
+        double value = 0.0;
+        CapFloor::Type type = arguments_.type;
+        Size nPeriods = arguments_.endTimes.size();
+        for (Size i=0; i<nPeriods; i++) {
+            Time maturity = arguments_.startTimes[i];
+            Time bond = arguments_.endTimes[i];
+            Time tenor = arguments_.accrualTimes[i];
 
-            double value = 0.0;
-            CapFloor::Type type = arguments_.type;
-            Size nPeriods = arguments_.endTimes.size();
-            for (Size i=0; i<nPeriods; i++) {
-                Time maturity = arguments_.startTimes[i];
-                Time bond = arguments_.endTimes[i];
-                Time tenor = arguments_.accrualTimes[i];
-
-                if ((type == CapFloor::Cap) ||
-                    (type == CapFloor::Collar)) {
-                    double temp = 1.0+arguments_.capRates[i]*tenor;
-                    value += arguments_.nominals[i]*temp*
-                        model_->discountBondOption(Option::Put, 1.0/temp, 
-                                                   maturity, bond);
-                }
-                if ((type == CapFloor::Floor) ||
-                    (type == CapFloor::Collar)) {
-                    double temp = 1.0+arguments_.floorRates[i]*tenor;
-                    double mult = (type == CapFloor::Floor) ? 1.0 : -1.0;
-                    value += arguments_.nominals[i]*temp*mult*
-                        model_->discountBondOption(Option::Call, 1.0/temp, 
-                                                   maturity, bond);
-                }
-
+            if ((type == CapFloor::Cap) ||
+                (type == CapFloor::Collar)) {
+                double temp = 1.0+arguments_.capRates[i]*tenor;
+                value += arguments_.nominals[i]*temp*
+                    model_->discountBondOption(Option::Put, 1.0/temp, 
+                                               maturity, bond);
             }
-            results_.value = value;
-        }
+            if ((type == CapFloor::Floor) ||
+                (type == CapFloor::Collar)) {
+                double temp = 1.0+arguments_.floorRates[i]*tenor;
+                double mult = (type == CapFloor::Floor) ? 1.0 : -1.0;
+                value += arguments_.nominals[i]*temp*mult*
+                    model_->discountBondOption(Option::Call, 1.0/temp, 
+                                               maturity, bond);
+            }
 
+        }
+        results_.value = value;
     }
 
 }

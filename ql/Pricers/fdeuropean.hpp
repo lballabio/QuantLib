@@ -27,39 +27,35 @@
 
 namespace QuantLib {
 
-    namespace Pricers {
-
-        //! Example of European option calculated using finite differences
-        class FdEuropean : public FdBsmOption {
-          public:
-            FdEuropean(Option::Type type,
-                       double underlying,
-                       double strike,
-                       Spread dividendYield,
-                       Rate riskFreeRate,
-                       Time residualTime,
-                       double volatility,
-                       Size timeSteps = 200,
-                       Size gridPoints = 800);
-            const Array& getPrices() const;
-            Handle<SingleAssetOption> clone() const{
-                return Handle<SingleAssetOption>(
-                    new FdEuropean(*this));
-            }
-          protected:
-            void calculate() const;
-          private:
-            Size timeSteps_;
-            mutable Array euroPrices_;
-        };
-
-        // inline definitions
-
-        inline const Array& FdEuropean::getPrices() const{
-            value();
-            return euroPrices_;
+    //! Example of European option calculated using finite differences
+    class FdEuropean : public FdBsmOption {
+      public:
+        FdEuropean(Option::Type type,
+                   double underlying,
+                   double strike,
+                   Spread dividendYield,
+                   Rate riskFreeRate,
+                   Time residualTime,
+                   double volatility,
+                   Size timeSteps = 200,
+                   Size gridPoints = 800);
+        const Array& getPrices() const;
+        Handle<SingleAssetOption> clone() const{
+            return Handle<SingleAssetOption>(
+                                             new FdEuropean(*this));
         }
+      protected:
+        void calculate() const;
+      private:
+        Size timeSteps_;
+        mutable Array euroPrices_;
+    };
 
+    // inline definitions
+
+    inline const Array& FdEuropean::getPrices() const{
+        value();
+        return euroPrices_;
     }
 
 }

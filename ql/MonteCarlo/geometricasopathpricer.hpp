@@ -27,22 +27,18 @@
 
 namespace QuantLib {
 
-    namespace MonteCarlo {
-
-        //! %path pricer for geometric average strike option
-        class GeometricASOPathPricer_old : public PathPricer_old<Path> {
-          public:
-            GeometricASOPathPricer_old(Option::Type type,
+    //! %path pricer for geometric average strike option
+    class GeometricASOPathPricer_old : public PathPricer_old<Path> {
+      public:
+        GeometricASOPathPricer_old(Option::Type type,
                                    double underlying,
                                    DiscountFactor discount,
                                    bool useAntitheticVariance);
-            double operator()(const Path& path) const;
-          private:
-            Option::Type type_;
-            double underlying_;
-        };
-
-    }
+        double operator()(const Path& path) const;
+      private:
+        Option::Type type_;
+        double underlying_;
+    };
 
 }
 

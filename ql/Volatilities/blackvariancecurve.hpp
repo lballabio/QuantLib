@@ -43,7 +43,7 @@ namespace QuantLib {
             For strike dependence, see BlackVarianceSurface.
         */
         class BlackVarianceCurve : public BlackVarianceTermStructure,
-                                   public Patterns::Observer {
+                                   public Observer {
           public:
             BlackVarianceCurve(const Date& referenceDate,
                                const std::vector<Date>& dates,
@@ -75,7 +75,7 @@ namespace QuantLib {
             //@}
             //! \name Visitability
             //@{
-            virtual void accept(Patterns::AcyclicVisitor&);
+            virtual void accept(AcyclicVisitor&);
             //@}
           protected:
             virtual double blackVarianceImpl(Time t, double,
@@ -112,8 +112,7 @@ namespace QuantLib {
         }
 
         inline 
-        void BlackVarianceCurve::accept(Patterns::AcyclicVisitor& v) {
-            using namespace Patterns;
+        void BlackVarianceCurve::accept(AcyclicVisitor& v) {
             Visitor<BlackVarianceCurve>* v1 = 
                 dynamic_cast<Visitor<BlackVarianceCurve>*>(&v);
             if (v1 != 0)

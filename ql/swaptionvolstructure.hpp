@@ -31,7 +31,7 @@ namespace QuantLib {
     /*! This class is purely abstract and defines the interface of concrete
         swaption volatility structures which will be derived from this one.
     */
-    class SwaptionVolatilityStructure : public Patterns::Observable {
+    class SwaptionVolatilityStructure : public Observable {
       public:
         virtual ~SwaptionVolatilityStructure() {}
         //! returns today's date

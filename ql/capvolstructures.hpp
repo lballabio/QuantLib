@@ -31,7 +31,7 @@ namespace QuantLib {
     /*! This class is purely abstract and defines the interface of concrete
         structures which will be derived from this one.
     */
-    class CapFlatVolatilityStructure : public Patterns::Observable {
+    class CapFlatVolatilityStructure : public Observable {
       public:
         virtual ~CapFlatVolatilityStructure() {}
         //! returns today's date
@@ -55,7 +55,7 @@ namespace QuantLib {
     /*! This class is purely abstract and defines the interface of concrete
         structures which will be derived from this one.
     */
-    class CapletForwardVolatilityStructure : public Patterns::Observable {
+    class CapletForwardVolatilityStructure : public Observable {
       public:
         virtual ~CapletForwardVolatilityStructure() {}
         //! returns today's date
@@ -74,7 +74,7 @@ namespace QuantLib {
     };
 
     // inline definitions
-    
+
     inline double CapFlatVolatilityStructure::volatility(const Date& end, 
                                                          Rate strike) const {
         Date start = settlementDate();
@@ -109,7 +109,7 @@ namespace QuantLib {
                                                         Rate strike) const {
         return volatilityImpl(t,strike);
     }
-    
+
 }
 
 

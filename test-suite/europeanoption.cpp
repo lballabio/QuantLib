@@ -29,17 +29,15 @@
 #define LENGTH(a) (sizeof(a)/sizeof(a[0]))
 
 using namespace QuantLib;
-using namespace QuantLib::PricingEngines;
 using namespace QuantLib::TermStructures;
 using namespace QuantLib::VolTermStructures;
-using namespace QuantLib::MonteCarlo;
 
 namespace {
 
     // utilities
 
     enum EngineType { Analytic, 
-                      JR, CRR, EQP, Trigeorgis, Tian, 
+                      JR, CRR, EQP, TGEO, TIAN, 
                       PseudoMonteCarlo, QuasiMonteCarlo };
 
     double relativeError(double x1, double x2, double reference) {
@@ -65,27 +63,22 @@ namespace {
             break;
           case JR:
             engine = Handle<PricingEngine>(
-                new BinomialVanillaEngine(
-                    BinomialVanillaEngine::JarrowRudd, 800));
+                new BinomialVanillaEngine<JarrowRudd>(800));
             break;
           case CRR:
             engine = Handle<PricingEngine>(
-                new BinomialVanillaEngine(
-                    BinomialVanillaEngine::CoxRossRubinstein, 800));
+                new BinomialVanillaEngine<CoxRossRubinstein>(800));
           case EQP:
             engine = Handle<PricingEngine>(
-                new BinomialVanillaEngine(
-                    BinomialVanillaEngine::EQP, 800));
+                new BinomialVanillaEngine<AdditiveEQPBinomialTree>(800));
             break;
-          case Trigeorgis:
+          case TGEO:
             engine = Handle<PricingEngine>(
-                new BinomialVanillaEngine(
-                    BinomialVanillaEngine::Trigeorgis, 800));
+                new BinomialVanillaEngine<Trigeorgis>(800));
             break;
-          case Tian:
+          case TIAN:
             engine = Handle<PricingEngine>(
-                new BinomialVanillaEngine(
-                    BinomialVanillaEngine::Tian, 800));
+                new BinomialVanillaEngine<Tian>(800));
             break;
           case PseudoMonteCarlo:
             engine = Handle<PricingEngine>(
@@ -157,9 +150,9 @@ namespace {
             return "Cox-Ross-Rubinstein";
           case EQP:
             return "EQP";
-          case Trigeorgis:
+          case TGEO:
             return "Trigeorgis";
-          case Tian:
+          case TIAN:
             return "Tian";
           case PseudoMonteCarlo:
             return "MonteCarlo";
@@ -535,7 +528,7 @@ namespace {
 }
 
 void EuropeanOptionTest::testBinomialEngines() {
-    EngineType engines[] = { JR, CRR, EQP, Trigeorgis, Tian };
+    EngineType engines[] = { JR, CRR, EQP, TGEO, TIAN };
     testEngines(engines,LENGTH(engines));
 }
 

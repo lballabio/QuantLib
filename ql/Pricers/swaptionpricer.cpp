@@ -23,52 +23,48 @@
 
 namespace QuantLib {
 
-    namespace Pricers {
+    void DiscretizedSwap::preAdjustValues() {
+        Size i;
 
-        void DiscretizedSwap::preAdjustValues() {
-            Size i;
+        for (i=0; i<arguments_.fixedResetTimes.size(); i++) {
+            Time t = arguments_.fixedResetTimes[i];
+            if (t >= 0.0 && isOnTime(t)) {
+                Handle<DiscretizedAsset> bond(
+                                       new DiscretizedDiscountBond(method()));
+                method()->initialize(bond,
+                                     arguments_.fixedPayTimes[i]);
+                method()->rollback(bond,time_);
 
-            for (i=0; i<arguments_.fixedResetTimes.size(); i++) {
-                Time t = arguments_.fixedResetTimes[i];
-                if (t >= 0.0 && isOnTime(t)) {
-                    Handle<DiscretizedAsset> bond(new
-                        DiscretizedDiscountBond(method()));
-                    method()->initialize(bond,
-                        arguments_.fixedPayTimes[i]);
-                    method()->rollback(bond,time_);
-
-                    double fixedCoupon = arguments_.fixedCoupons[i];
-                    for (Size j=0; j<values_.size(); j++) {
-                        double coupon = fixedCoupon*bond->values()[j];
-                        if (arguments_.payFixed)
-                            values_[j] -= coupon;
-                        else
-                            values_[j] += coupon;
-                    }
-                }
-            }
-
-            for (i=0; i<arguments_.floatingResetTimes.size(); i++) {
-                Time t = arguments_.floatingResetTimes[i];
-                if (t >= 0.0 && isOnTime(t)) {
-                    Handle<DiscretizedAsset> bond(new 
-                        DiscretizedDiscountBond(method()));
-                    method()->initialize(bond, 
-                        arguments_.floatingPayTimes[i]);
-                    method()->rollback(bond,time_);
-
-                    double nominal = arguments_.nominal;
-                    for (Size j=0; j<values_.size(); j++) {
-                        double coupon = nominal*(1.0 - bond->values()[j]);
-                        if (arguments_.payFixed)
-                            values_[j] += coupon;
-                        else
-                            values_[j] -= coupon;
-                    }
+                double fixedCoupon = arguments_.fixedCoupons[i];
+                for (Size j=0; j<values_.size(); j++) {
+                    double coupon = fixedCoupon*bond->values()[j];
+                    if (arguments_.payFixed)
+                        values_[j] -= coupon;
+                    else
+                        values_[j] += coupon;
                 }
             }
         }
 
+        for (i=0; i<arguments_.floatingResetTimes.size(); i++) {
+            Time t = arguments_.floatingResetTimes[i];
+            if (t >= 0.0 && isOnTime(t)) {
+                Handle<DiscretizedAsset> bond(
+                                       new DiscretizedDiscountBond(method()));
+                method()->initialize(bond, 
+                                     arguments_.floatingPayTimes[i]);
+                method()->rollback(bond,time_);
+
+                double nominal = arguments_.nominal;
+                for (Size j=0; j<values_.size(); j++) {
+                    double coupon = nominal*(1.0 - bond->values()[j]);
+                    if (arguments_.payFixed)
+                        values_[j] += coupon;
+                    else
+                        values_[j] -= coupon;
+                }
+            }
+        }
     }
-    
+
 }

@@ -19,29 +19,23 @@
     \brief Binomial trees under the BSM model
 */
 
-#include "ql/Lattices/bsmlattice.hpp"
+#include <ql/Lattices/bsmlattice.hpp>
 
 namespace QuantLib {
 
-    namespace Lattices {
+    BlackScholesLattice::BlackScholesLattice(
+                                  const Handle<Tree>& tree, Rate riskFreeRate,
+                                  Time end, Size steps)
+    : Lattice(TimeGrid(end, steps), 2), 
+      tree_(tree), discount_(QL_EXP(-riskFreeRate*(end/steps))) {
+        pd_ = tree->probability(0,0,0);
+        pu_ = tree->probability(0,0,1);
+    }
 
-        BlackScholesLattice::BlackScholesLattice(
-            const Handle<Tree>& tree, Rate riskFreeRate,
-            Time end, Size steps)
-        : Lattice(TimeGrid(end, steps), 2), 
-          tree_(tree), discount_(QL_EXP(-riskFreeRate*(end/steps))) {
-            pd_ = tree->probability(0,0,0);
-            pu_ = tree->probability(0,0,1);
-        }
-
-        void BlackScholesLattice::stepback(
-            Size i, const Array& values, Array& newValues) const {
-
-            for (Size j=0; j<size(i); j++)
-                newValues[j] = (pd_*values[j] + pu_*values[j+1])*discount_;
-
-        }
-
+    void BlackScholesLattice::stepback(Size i, const Array& values, 
+                                       Array& newValues) const {
+        for (Size j=0; j<size(i); j++)
+            newValues[j] = (pd_*values[j] + pu_*values[j+1])*discount_;
     }
 
 }

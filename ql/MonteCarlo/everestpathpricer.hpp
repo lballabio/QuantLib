@@ -27,20 +27,16 @@
 
 namespace QuantLib {
 
-    namespace MonteCarlo {
-
-        //! %path pricer for European-type Everest option
-        /*! The payoff of an Everest option is given by the
-            final-price initial-price ratio of the worst performer.
-        */
-        class EverestPathPricer_old : public PathPricer_old<MultiPath> {
-          public:
-            EverestPathPricer_old(DiscountFactor discount,
+    //! %path pricer for European-type Everest option
+    /*! The payoff of an Everest option is given by the
+        final-price initial-price ratio of the worst performer.
+    */
+    class EverestPathPricer_old : public PathPricer_old<MultiPath> {
+      public:
+        EverestPathPricer_old(DiscountFactor discount,
                               bool useAntitheticVariance);
-            double operator()(const MultiPath& multiPath) const;
-        };
-
-    }
+        double operator()(const MultiPath& multiPath) const;
+    };
 
 }
 

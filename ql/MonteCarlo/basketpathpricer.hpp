@@ -28,27 +28,23 @@
 
 namespace QuantLib {
 
-    namespace MonteCarlo {
-
-        //! multipath pricer for European-type basket option
-        /*! The value of the option at expiration is given by the value
-            of the underlying which has best performed.
-        */
-        class BasketPathPricer_old : public PathPricer_old<MultiPath> {
-          public:
-            BasketPathPricer_old(Option::Type type,
+    //! multipath pricer for European-type basket option
+    /*! The value of the option at expiration is given by the value
+        of the underlying which has best performed.
+    */
+    class BasketPathPricer_old : public PathPricer_old<MultiPath> {
+      public:
+        BasketPathPricer_old(Option::Type type,
                              const std::vector<double>& underlying,
                              double strike,
                              DiscountFactor discount,
                              bool useAntitheticVariance);
-            double operator()(const MultiPath& multiPath) const;
-          private:
-            std::vector<double> underlying_;
-            // it would be easy to generalize to more exotic payoffs
-            PlainVanillaPayoff payoff_;
-        };
-
-    }
+        double operator()(const MultiPath& multiPath) const;
+      private:
+        std::vector<double> underlying_;
+        // it would be easy to generalize to more exotic payoffs
+        PlainVanillaPayoff payoff_;
+    };
 
 }
 

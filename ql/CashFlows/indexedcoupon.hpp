@@ -33,7 +33,7 @@ namespace QuantLib {
                  should be already rolled to a business day.
     */
     class IndexedCoupon : public FloatingRateCoupon,
-                          public Patterns::Observer {
+                          public Observer {
       public:
         IndexedCoupon(double nominal,
                       const Date& paymentDate,
@@ -67,7 +67,7 @@ namespace QuantLib {
         //@}
         //! \name Visitability
         //@{
-        virtual void accept(Patterns::AcyclicVisitor&);
+        virtual void accept(AcyclicVisitor&);
         //@}
       private:
         Handle<Xibor> index_;
@@ -115,8 +115,7 @@ namespace QuantLib {
         notifyObservers();
     }
 
-    inline void IndexedCoupon::accept(Patterns::AcyclicVisitor& v) {
-        using namespace Patterns;
+    inline void IndexedCoupon::accept(AcyclicVisitor& v) {
         Visitor<IndexedCoupon>* v1 =
             dynamic_cast<Visitor<IndexedCoupon>*>(&v);
         if (v1 != 0)

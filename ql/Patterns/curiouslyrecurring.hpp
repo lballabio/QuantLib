@@ -26,29 +26,25 @@
 
 namespace QuantLib {
 
-    namespace Patterns {
-
-        //! Support for the curiously recurring template pattern
-        /*! See James O. Coplien. A Curiously Recurring Template Pattern. 
-            In Stanley B. Lippman, editor, C++ Gems, 135-144. 
-            Cambridge University Press, New York, New York, 1996.
-        */
-        template <class Impl>
-        class CuriouslyRecurringTemplate {
-          protected:
-            // not meant to be instantiated as such
-            CuriouslyRecurringTemplate() {}
-            ~CuriouslyRecurringTemplate() {}
-            // support for the curiously recurring template pattern
-            Impl& impl() { 
-                return static_cast<Impl&>(*this); 
-            }
-            const Impl& impl() const { 
-                return static_cast<const Impl&>(*this); 
-            }
-        };
-
-    }
+    //! Support for the curiously recurring template pattern
+    /*! See James O. Coplien. A Curiously Recurring Template Pattern. 
+        In Stanley B. Lippman, editor, C++ Gems, 135-144. 
+        Cambridge University Press, New York, New York, 1996.
+    */
+    template <class Impl>
+    class CuriouslyRecurringTemplate {
+      protected:
+        // not meant to be instantiated as such
+        CuriouslyRecurringTemplate() {}
+        ~CuriouslyRecurringTemplate() {}
+        // support for the curiously recurring template pattern
+        Impl& impl() { 
+            return static_cast<Impl&>(*this); 
+        }
+        const Impl& impl() const { 
+            return static_cast<const Impl&>(*this); 
+        }
+    };
 
 }
 

@@ -29,30 +29,24 @@
 
 namespace QuantLib {
 
-    namespace Pricers {
-
-        //! Performance option computed using Monte Carlo simulation
-        /*! A performance option is a variant of a cliquet option:
-            the payoff of each forward-starting (a.k.a. deferred
-            strike) options is \$ max(S/X- 1) \$.
-
-        */
-        class McPerformanceOption 
-        : public McPricer<MonteCarlo::SingleAsset_old<
-                              MonteCarlo::PseudoRandom_old> >{
-          public:
-            McPerformanceOption(Option::Type type,
-                       double underlying,
-                       double moneyness,
-                       const std::vector<Spread>& dividendYield,
-                       const std::vector<Rate>& riskFreeRate,
-                       const std::vector<Time>& times,
-                       const std::vector<double>& volatility,
-                       bool antitheticVariance,
-                       long seed=0);
-        };
-
-    }
+    //! Performance option computed using Monte Carlo simulation
+    /*! A performance option is a variant of a cliquet option:
+        the payoff of each forward-starting (a.k.a. deferred
+        strike) options is \$ max(S/X- 1) \$.
+    */
+    class McPerformanceOption 
+        : public McPricer<SingleAsset_old<PseudoRandom_old> >{
+      public:
+        McPerformanceOption(Option::Type type,
+                            double underlying,
+                            double moneyness,
+                            const std::vector<Spread>& dividendYield,
+                            const std::vector<Rate>& riskFreeRate,
+                            const std::vector<Time>& times,
+                            const std::vector<double>& volatility,
+                            bool antitheticVariance,
+                            long seed=0);
+    };
 
 }
 

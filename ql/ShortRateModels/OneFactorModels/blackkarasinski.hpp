@@ -46,7 +46,7 @@ namespace QuantLib {
                 throw Error("No defined process for Black-Karasinski");
             }
 
-            Handle<Lattices::Lattice> tree(const TimeGrid& grid) const;
+            Handle<Lattice> tree(const TimeGrid& grid) const;
 
           private:
             class Dynamics;

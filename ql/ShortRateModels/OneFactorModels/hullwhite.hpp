@@ -41,7 +41,7 @@ namespace QuantLib {
             HullWhite(const RelinkableHandle<TermStructure>& termStructure, 
                       double a = 0.1, double sigma = 0.01);
 
-            Handle<Lattices::Lattice> tree(const TimeGrid& grid) const;
+            Handle<Lattice> tree(const TimeGrid& grid) const;
 
             Handle<ShortRateDynamics> dynamics() const;
 

@@ -34,7 +34,7 @@ namespace QuantLib {
         template <class RNG>
         class RandomArrayGenerator {
           public:
-            typedef MonteCarlo::Sample<Array> sample_type;
+            typedef Sample<Array> sample_type;
             // equal average, different variances, no covariance
             RandomArrayGenerator(const Array& variance,
                                  long seed = 0);

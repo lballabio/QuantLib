@@ -42,7 +42,7 @@ namespace QuantLib {
             by the setInterpolation() method.
         */
         class BlackVarianceSurface : public BlackVarianceTermStructure,
-                                     public Patterns::Observer {
+                                     public Observer {
           public:
             enum Extrapolation { ConstantExtrapolation,
                                  InterpolatorDefaultExtrapolation };
@@ -91,7 +91,7 @@ namespace QuantLib {
             //@}
             //! \name Visitability
             //@{
-            virtual void accept(Patterns::AcyclicVisitor&);
+            virtual void accept(AcyclicVisitor&);
             //@}
           protected:
             virtual double blackVarianceImpl(Time t,
@@ -114,8 +114,7 @@ namespace QuantLib {
 
         // inline definitions
 
-        inline void BlackVarianceSurface::accept(Patterns::AcyclicVisitor& v) {
-            using namespace Patterns;
+        inline void BlackVarianceSurface::accept(AcyclicVisitor& v) {
             Visitor<BlackVarianceSurface>* v1 = 
                 dynamic_cast<Visitor<BlackVarianceSurface>*>(&v);
             if (v1 != 0)

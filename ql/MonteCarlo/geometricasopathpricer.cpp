@@ -24,52 +24,49 @@
 
 namespace QuantLib {
 
-    namespace MonteCarlo {
+    GeometricASOPathPricer_old::GeometricASOPathPricer_old(
+                          Option::Type type, double underlying,
+                          DiscountFactor discount, bool useAntitheticVariance)
+    : PathPricer_old<Path>(discount, useAntitheticVariance), type_(type),
+      underlying_(underlying) {
+        QL_REQUIRE(underlying>0.0,
+                   "GeometricASOPathPricer_old: "
+                   "underlying less/equal zero not allowed");
+    }
 
-        GeometricASOPathPricer_old::GeometricASOPathPricer_old(Option::Type type,
-            double underlying,
-            DiscountFactor discount, bool useAntitheticVariance)
-        : PathPricer_old<Path>(discount, useAntitheticVariance), type_(type),
-          underlying_(underlying) {
-            QL_REQUIRE(underlying>0.0,
-                "GeometricASOPathPricer_old: "
-                "underlying less/equal zero not allowed");
+    double GeometricASOPathPricer_old::operator()(const Path& path) const {
+
+        Size n = path.size();
+        QL_REQUIRE(n>0,"GeometricASOPathPricer_old: the path cannot be empty");
+
+        double logDrift = 0.0, logDiffusion = 0.0;
+        double geoLogDrift = 0.0, geoLogDiffusion = 0.0;
+        Size i;
+        for (i=0; i<n; i++) {
+            logDrift += path.drift()[i];
+            logDiffusion += path.diffusion()[i];
+            geoLogDrift += (n-i)*path.drift()[i];
+            geoLogDiffusion += (n-i)*path.diffusion()[i];
         }
-        
-        double GeometricASOPathPricer_old::operator()(const Path& path) const {
-
-            Size n = path.size();
-            QL_REQUIRE(n>0,"GeometricASOPathPricer_old: the path cannot be empty");
-
-            double logDrift = 0.0, logDiffusion = 0.0;
-            double geoLogDrift = 0.0, geoLogDiffusion = 0.0;
-            Size i;
-            for (i=0; i<n; i++) {
-                logDrift += path.drift()[i];
-                logDiffusion += path.diffusion()[i];
-                geoLogDrift += (n-i)*path.drift()[i];
-                geoLogDiffusion += (n-i)*path.diffusion()[i];
-            }
-            Size fixings = n;
-            if (path.timeGrid().mandatoryTimes()[0]==0.0) {
-                fixings = n+1;
-            }
-            double averageStrike1 = underlying_*
-                QL_EXP((geoLogDrift+geoLogDiffusion)/fixings);
-
-            if (useAntitheticVariance_) {
-                double averageStrike2 = underlying_*
-                    QL_EXP((geoLogDrift-geoLogDiffusion)/fixings);
-                return discount_* 0.5 *
-                    (PlainVanillaPayoff(type_, averageStrike1)(underlying_ *
-                                            QL_EXP(logDrift+logDiffusion))
-                    +PlainVanillaPayoff(type_, averageStrike2)(underlying_ *
-                                            QL_EXP(logDrift-logDiffusion)));
-            } else
-                return discount_*PlainVanillaPayoff(type_, averageStrike1)(underlying_ *
-                                            QL_EXP(logDrift+logDiffusion));
+        Size fixings = n;
+        if (path.timeGrid().mandatoryTimes()[0]==0.0) {
+            fixings = n+1;
         }
+        double averageStrike1 = underlying_*
+            QL_EXP((geoLogDrift+geoLogDiffusion)/fixings);
 
+        if (useAntitheticVariance_) {
+            double averageStrike2 = underlying_*
+                QL_EXP((geoLogDrift-geoLogDiffusion)/fixings);
+            return discount_* 0.5 *
+                (PlainVanillaPayoff(type_, averageStrike1)(
+                                 underlying_ * QL_EXP(logDrift+logDiffusion))
+                 + PlainVanillaPayoff(type_, averageStrike2)(
+                                underlying_ * QL_EXP(logDrift-logDiffusion)));
+        } else {
+            return discount_ * PlainVanillaPayoff(type_, averageStrike1)(
+                                 underlying_ * QL_EXP(logDrift+logDiffusion));
+        }
     }
 
 }

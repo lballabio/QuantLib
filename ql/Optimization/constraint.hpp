@@ -38,7 +38,7 @@ namespace QuantLib {
         };
 
         //! Base constraint class
-        class Constraint : public Patterns::Bridge<Constraint,ConstraintImpl> {
+        class Constraint : public Bridge<Constraint,ConstraintImpl> {
           public:
             bool test(const Array& p) const { return impl_->test(p); }
             double update(Array& p, const Array& direction, double beta);
@@ -121,11 +121,11 @@ namespace QuantLib {
                 new CompositeConstraint::Impl(c1,c2))) {}
         };
 
-                         
+
         // inline definitions
 
         inline Constraint::Constraint(const Handle<Constraint::Impl>& impl)
-        : Patterns::Bridge<Constraint,ConstraintImpl>(impl) {}
+        : Bridge<Constraint,ConstraintImpl>(impl) {}
 
         inline double Constraint::update(
             Array& params, const Array& direction, double beta) {
@@ -139,7 +139,7 @@ namespace QuantLib {
                     throw Error("Can't update parameter vector");
                 diff *= 0.5;
                 icount ++;
-        
+
                 newParams = params + diff*direction;
                 valid = test(newParams);
             }

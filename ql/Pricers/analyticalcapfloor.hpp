@@ -27,26 +27,19 @@
 
 namespace QuantLib {
 
-    namespace Pricers {
-
-        //! Analytical pricer for cap/floor
-        class AnalyticalCapFloor 
-        : public PricingEngines::GenericModelEngine<
-                ShortRateModels::AffineModel, 
-                CapFloor::arguments,
-                CapFloor::results > {
-          public:
-            AnalyticalCapFloor(
-                const Handle<ShortRateModels::AffineModel>& model) 
-            : PricingEngines::GenericModelEngine<
-                ShortRateModels::AffineModel, 
-                CapFloor::arguments,
-                CapFloor::results >(model) 
-            {}
-            void calculate() const;
-        };
-
-    }
+    //! Analytical pricer for cap/floor
+    class AnalyticalCapFloor 
+        : public GenericModelEngine<ShortRateModels::AffineModel, 
+                                    CapFloor::arguments,
+                                    CapFloor::results > {
+      public:
+        AnalyticalCapFloor(const Handle<ShortRateModels::AffineModel>& model) 
+        : GenericModelEngine<ShortRateModels::AffineModel, 
+                             CapFloor::arguments,
+                             CapFloor::results >(model) 
+        {}
+        void calculate() const;
+    };
 
 }
 

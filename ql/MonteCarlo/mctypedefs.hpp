@@ -28,30 +28,26 @@
 
 namespace QuantLib {
 
-    namespace MonteCarlo {
+    //! default choice for Gaussian path generator.
+    typedef PathGenerator_old<RandomNumbers::GaussianRandomGenerator>
+                                                   GaussianPathGenerator_old;
 
-        //! default choice for Gaussian path generator.
-        typedef PathGenerator_old<RandomNumbers::GaussianRandomGenerator>
-            GaussianPathGenerator_old;
+    typedef PathGenerator<RandomNumbers::GaussianRandomSequenceGenerator>
+                                                   GaussianPathGenerator;
 
-        typedef PathGenerator<RandomNumbers::GaussianRandomSequenceGenerator>
-            GaussianPathGenerator;
+    //! default choice for Gaussian multi-path generator.
+    typedef
+    MultiPathGenerator_old<RandomNumbers::RandomArrayGenerator<
+        RandomNumbers::GaussianRandomGenerator> >
+                                                   GaussianMultiPathGenerator;
 
-        //! default choice for Gaussian multi-path generator.
-        typedef
-        MultiPathGenerator_old<RandomNumbers::RandomArrayGenerator<
-            RandomNumbers::GaussianRandomGenerator> >
-            GaussianMultiPathGenerator;
+    //! default choice for one-factor Monte Carlo model.
+    typedef MonteCarloModel<SingleAsset_old<PseudoRandom_old> >
+                                                OneFactorMonteCarloOption_old;
 
-        //! default choice for one-factor Monte Carlo model.
-        typedef MonteCarloModel<SingleAsset_old<PseudoRandom_old> >
-                                    OneFactorMonteCarloOption_old;
-
-        //! default choice for multi-factor Monte Carlo model.
-        typedef MonteCarloModel<MultiAsset_old<PseudoRandomSequence_old> >
-                                    MultiFactorMonteCarloOption;
-
-    }
+    //! default choice for multi-factor Monte Carlo model.
+    typedef MonteCarloModel<MultiAsset_old<PseudoRandomSequence_old> >
+                                                  MultiFactorMonteCarloOption;
 
 }
 

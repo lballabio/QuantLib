@@ -28,7 +28,7 @@
 namespace QuantLib {
 
     //! base class for libor indexes
-    class Xibor : public Index, public Patterns::Observer {
+    class Xibor : public Index, public Observer {
       public:
         Xibor(const std::string& familyName,
               int n, TimeUnit units, int settlementDays,

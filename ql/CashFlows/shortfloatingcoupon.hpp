@@ -45,7 +45,7 @@ namespace QuantLib {
         double amount() const;
         //! \name Visitability
         //@{
-        virtual void accept(Patterns::AcyclicVisitor&);
+        virtual void accept(AcyclicVisitor&);
         //@}
     };
 
@@ -53,8 +53,7 @@ namespace QuantLib {
     // inline definitions
 
     inline 
-    void ShortFloatingRateCoupon::accept(Patterns::AcyclicVisitor& v) {
-        using namespace Patterns;
+    void ShortFloatingRateCoupon::accept(AcyclicVisitor& v) {
         Visitor<ShortFloatingRateCoupon>* v1 = 
             dynamic_cast<Visitor<ShortFloatingRateCoupon>*>(&v);
         if (v1 != 0)

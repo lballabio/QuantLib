@@ -37,7 +37,7 @@ namespace QuantLib {
             basically a proxy for BlackVolatilityTermStructure.
         */
         class LocalConstantVol : public LocalVolTermStructure,
-                                 public Patterns::Observer {
+                                 public Observer {
           public:
             LocalConstantVol(
                 const Date& referenceDate,
@@ -59,7 +59,7 @@ namespace QuantLib {
             //@}
             //! \name Visitability
             //@{
-            virtual void accept(Patterns::AcyclicVisitor&);
+            virtual void accept(AcyclicVisitor&);
             //@}
           private:
             double localVolImpl(Time,double,bool extrapolate) const;
@@ -76,7 +76,7 @@ namespace QuantLib {
             volatility_.linkTo(
                 Handle<MarketElement>(new SimpleMarketElement(volatility)));
         }
-            
+
         inline LocalConstantVol::LocalConstantVol(const Date& referenceDate, 
             const RelinkableHandle<MarketElement>& volatility, 
             const DayCounter& dayCounter)
@@ -89,9 +89,7 @@ namespace QuantLib {
             notifyObservers();
         }
 
-        inline 
-        void LocalConstantVol::accept(Patterns::AcyclicVisitor& v) {
-            using namespace Patterns;
+        inline void LocalConstantVol::accept(AcyclicVisitor& v) {
             Visitor<LocalConstantVol>* v1 = 
                 dynamic_cast<Visitor<LocalConstantVol>*>(&v);
             if (v1 != 0)

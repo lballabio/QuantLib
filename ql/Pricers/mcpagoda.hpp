@@ -27,31 +27,25 @@
 
 namespace QuantLib {
 
-    namespace Pricers {
-
-        //! roofed Asian option
-        /*! Given a certain portfolio of assets at the end of the period
-            it is returned the minimum of a given roof and a certain fraction
-            of the positive portfolio performance.
-            If the performance of the portfolio is below then the payoff
-            is null.
-        */
-        class McPagoda 
-        : public McPricer<MonteCarlo::MultiAsset_old<
-                    MonteCarlo::PseudoRandomSequence_old> > {
-          public:
-            McPagoda(const std::vector<double>& portfolio,
-                     double fraction,
-                     double roof,
-                     const Array& dividendYield,
-                     const Matrix& covariance,
-                     Rate riskFreeRate,
-                     const std::vector<Time>& times,
-                     bool antithetic,
-                     long seed = 0);
-        };
-
-    }
+    //! roofed Asian option
+    /*! Given a certain portfolio of assets at the end of the period
+        it is returned the minimum of a given roof and a certain
+        fraction of the positive portfolio performance.  If the
+        performance of the portfolio is below then the payoff is null.
+    */
+    class McPagoda 
+        : public McPricer<MultiAsset_old<PseudoRandomSequence_old> > {
+      public:
+        McPagoda(const std::vector<double>& portfolio,
+                 double fraction,
+                 double roof,
+                 const Array& dividendYield,
+                 const Matrix& covariance,
+                 Rate riskFreeRate,
+                 const std::vector<Time>& times,
+                 bool antithetic,
+                 long seed = 0);
+    };
 
 }
 

@@ -56,7 +56,7 @@ namespace QuantLib {
         template <class USG, class I>
         class ICGaussianRsg {
           public:
-            typedef MonteCarlo::Sample<Array> sample_type;
+            typedef Sample<Array> sample_type;
             explicit ICGaussianRsg(const USG& uniformSequenceGenerator);
             //! returns next sample from the Gaussian distribution
             const sample_type& nextSequence() const;

@@ -28,64 +28,57 @@
 
 namespace QuantLib {
 
-    namespace Pricers {
+    //! Black-Scholes-Merton option priced numerically
+    class FdBsmOption : public SingleAssetOption {
+      public:
+        FdBsmOption(Option::Type type, double underlying,
+                    double strike, Spread dividendYield, Rate riskFreeRate,
+                    Time residualTime, double volatility, Size gridPoints);
+        // accessors
+        virtual void calculate() const = 0;
+        double value() const;
+        double delta() const;
+        double gamma() const;
+        const Array& getGrid() const{ return grid_; }
+      protected:
+        // methods
+        virtual void setGridLimits(double center,
+                                   double timeDelay) const;
+        virtual void initializeGrid() const;
+        virtual void initializeInitialCondition() const;
+        virtual void initializeOperator() const;
+        // input data
+        Size gridPoints_;
+        // results
+        mutable double value_, delta_, gamma_;
+        mutable Array grid_;
+        mutable BSMOperator finiteDifferenceOperator_;
+        mutable Array intrinsicValues_;
+        typedef BoundaryCondition<TridiagonalOperator> BoundaryCondition;
+        mutable std::vector<Handle<BoundaryCondition> > BCs_;
+        // temporaries
+        mutable double sMin_, center_, sMax_;
+      private:
+        // temporaries
+        mutable double gridLogSpacing_;
+        Size safeGridPoints(Size gridPoints,
+                            Time residualTime);
+    };
 
-        //! Black-Scholes-Merton option priced numerically
-        class FdBsmOption : public SingleAssetOption {
-          public:
-            FdBsmOption(Option::Type type, double underlying,
-                double strike, Spread dividendYield, Rate riskFreeRate,
-                Time residualTime, double volatility, Size gridPoints);
-            // accessors
-            virtual void calculate() const = 0;
-            double value() const;
-            double delta() const;
-            double gamma() const;
-            const Array& getGrid() const{ return grid_; }
+    //! This is a safety check to be sure we have enough grid points.
+    #define QL_NUM_OPT_MIN_GRID_POINTS            10
+    //! This is a safety check to be sure we have enough grid points.
+    #define QL_NUM_OPT_GRID_POINTS_PER_YEAR        2
 
-          protected:
-            // methods
-            virtual void setGridLimits(double center,
-                                       double timeDelay) const;
-            virtual void initializeGrid() const;
-            virtual void initializeInitialCondition() const;
-            virtual void initializeOperator() const;
-            // input data
-            Size gridPoints_;
-            // results
-            mutable double value_, delta_, gamma_;
-
-            mutable Array grid_;
-            mutable BSMOperator finiteDifferenceOperator_;
-            mutable Array intrinsicValues_;
-            typedef BoundaryCondition<TridiagonalOperator> BoundaryCondition;
-            mutable std::vector<Handle<BoundaryCondition> > BCs_;
-            // temporaries
-            mutable double sMin_, center_, sMax_;
-          private:
-            // temporaries
-            mutable double gridLogSpacing_;
-            Size safeGridPoints(Size gridPoints,
-                                Time residualTime);
-        };
-
-        //! This is a safety check to be sure we have enough grid points.
-        #define QL_NUM_OPT_MIN_GRID_POINTS            10
-        //! This is a safety check to be sure we have enough grid points.
-        #define QL_NUM_OPT_GRID_POINTS_PER_YEAR        2
-
-        // The following is a safety check to be sure we have enough grid
-        // points.
-        inline Size FdBsmOption::safeGridPoints(
-            Size gridPoints, Time residualTime) {
-            return QL_MAX(gridPoints, residualTime>1.0 ?
-                static_cast<Size>(
-                    (QL_NUM_OPT_MIN_GRID_POINTS +
-                    (residualTime-1.0) *
-                    QL_NUM_OPT_GRID_POINTS_PER_YEAR))
-                : QL_NUM_OPT_MIN_GRID_POINTS);
-        }
-
+    // The following is a safety check to be sure we have enough grid
+    // points.
+    inline Size FdBsmOption::safeGridPoints(Size gridPoints, 
+                                            Time residualTime) {
+        return QL_MAX(gridPoints, residualTime>1.0 ?
+                      static_cast<Size>((QL_NUM_OPT_MIN_GRID_POINTS +
+                                         (residualTime-1.0) *
+                                         QL_NUM_OPT_GRID_POINTS_PER_YEAR))
+                      : QL_NUM_OPT_MIN_GRID_POINTS);
     }
 
 }

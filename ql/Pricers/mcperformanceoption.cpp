@@ -24,63 +24,56 @@
 
 namespace QuantLib {
 
-    namespace Pricers {
+    McPerformanceOption::McPerformanceOption(
+                       Option::Type type, double underlying, double moneyness,
+                       const std::vector<Spread>& dividendYield,
+                       const std::vector<Rate>& riskFreeRate,
+                       const std::vector<Time>& times,
+                       const std::vector<double>& volatility,
+                       bool antitheticVariance, long seed) {
 
-        using namespace MonteCarlo;
+        Size dimension = times.size();
+        QL_REQUIRE(dividendYield.size()==dimension,
+                   "McPerformanceOption: dividendYield vector of wrong size");
+        QL_REQUIRE(riskFreeRate.size()==dimension,
+                   "McPerformanceOption: riskFreeRate vector of wrong size");
+        QL_REQUIRE(volatility.size()==dimension,
+                   "McPerformanceOption: volatility vector of wrong size");
 
-        McPerformanceOption::McPerformanceOption(Option::Type type,
-          double underlying, double moneyness,
-          const std::vector<Spread>& dividendYield,
-          const std::vector<Rate>& riskFreeRate,
-          const std::vector<Time>& times,
-          const std::vector<double>& volatility,
-          bool antitheticVariance, long seed) {
-
-            Size dimension = times.size();
-            QL_REQUIRE(dividendYield.size()==dimension,
-                "McPerformanceOption: dividendYield vector of wrong size");
-            QL_REQUIRE(riskFreeRate.size()==dimension,
-                "McPerformanceOption: riskFreeRate vector of wrong size");
-            QL_REQUIRE(volatility.size()==dimension,
-                "McPerformanceOption: volatility vector of wrong size");
-
-            //! Initialize the path generator
-            std::vector<double> mu(dimension);
-            std::vector<double> diffusion(dimension);
-            std::vector<double> discounts(dimension);
-            for (Size i = 0; i<dimension; i++) {
-                mu[i]= riskFreeRate[i] - dividendYield[i] -
-                    0.5 * volatility[i] * volatility[i];
-                diffusion[i]= volatility[i] * volatility[i];
-                if (i==0)
-                    discounts[i] = QL_EXP(-riskFreeRate[i]*times[i]);
-                else
-                    discounts[i] = discounts[i-1]*
-                        QL_EXP(-riskFreeRate[i]*(times[i]-times[i-1]));
-            }
-
-
-            Handle<GaussianPathGenerator_old> pathGenerator(
-                new GaussianPathGenerator_old(mu, diffusion,
-                    TimeGrid(times.begin(), times.end()),
-                    seed));
-
-            //! Initialize the pricer on the single Path
-            Handle<PathPricer_old<Path> > performancePathPricer(
-                new PerformanceOptionPathPricer_old(type,
-                underlying, moneyness, discounts,
-                antitheticVariance));
-
-            //! Initialize the one-factor Monte Carlo
-            mcModel_ = Handle<MonteCarloModel<SingleAsset_old<
-                                              PseudoRandom_old> > > (
-                new MonteCarloModel<SingleAsset_old<
-                                    PseudoRandom_old> > (
-                pathGenerator, performancePathPricer,
-                Statistics(), false));
-
+        //! Initialize the path generator
+        std::vector<double> mu(dimension);
+        std::vector<double> diffusion(dimension);
+        std::vector<double> discounts(dimension);
+        for (Size i = 0; i<dimension; i++) {
+            mu[i]= riskFreeRate[i] - dividendYield[i] -
+                0.5 * volatility[i] * volatility[i];
+            diffusion[i]= volatility[i] * volatility[i];
+            if (i==0)
+                discounts[i] = QL_EXP(-riskFreeRate[i]*times[i]);
+            else
+                discounts[i] = discounts[i-1]*
+                    QL_EXP(-riskFreeRate[i]*(times[i]-times[i-1]));
         }
 
+
+        Handle<GaussianPathGenerator_old> pathGenerator(
+            new GaussianPathGenerator_old(mu, diffusion,
+                TimeGrid(times.begin(), times.end()),
+                seed));
+
+        //! Initialize the pricer on the single Path
+        Handle<PathPricer_old<Path> > performancePathPricer(
+            new PerformanceOptionPathPricer_old(type,
+            underlying, moneyness, discounts,
+            antitheticVariance));
+
+        //! Initialize the one-factor Monte Carlo
+        mcModel_ = Handle<MonteCarloModel<SingleAsset_old<
+                                          PseudoRandom_old> > > (
+            new MonteCarloModel<SingleAsset_old<
+                                PseudoRandom_old> > (
+                pathGenerator, performancePathPricer,
+                Statistics(), false));
     }
 
 }

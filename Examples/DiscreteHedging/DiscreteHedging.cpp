@@ -47,22 +47,6 @@
 
 using namespace QuantLib;
 
-// the classic Black Scholes analytic solution for European Option
-using QuantLib::Pricers::EuropeanOption;
-
-// single Path of a random variable
-// It contains the list of variations
-using QuantLib::MonteCarlo::Path;
-
-// the pricer computes final portfolio's value for each random variable path
-using QuantLib::MonteCarlo::PathPricer_old;
-
-// the path generator
-using QuantLib::MonteCarlo::GaussianPathGenerator_old;
-
-// the Montecarlo pricing model for option on a single asset
-using QuantLib::MonteCarlo::OneFactorMonteCarloOption_old;
-
 /* The ReplicationError class carries out Monte Carlo simulations to evaluate
    the outcome (the replication error) of the discrete hedging strategy over
    different, randomly generated scenarios of future stock price evolution.
@@ -195,7 +179,7 @@ int main(int argc, char* argv[])
 double ReplicationPathPricer::operator()(const Path& path) const
 {
 
-    // path is an instance of QuantLib::MonteCarlo::Path
+    // path is an instance of QuantLib::Path
     // It contains the list of variations.
     // It can be used as an array: it has a size() method
     int n = path.size();

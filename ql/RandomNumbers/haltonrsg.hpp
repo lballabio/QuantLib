@@ -36,7 +36,7 @@ namespace QuantLib {
         */
         class HaltonRsg {
           public:
-            typedef MonteCarlo::Sample<Array> sample_type;
+            typedef Sample<Array> sample_type;
             HaltonRsg(Size dimensionality,
                       unsigned long seed = 0,
                       bool randomStart = true,

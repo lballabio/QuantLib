@@ -49,7 +49,7 @@ namespace QuantLib {
         The Bridge pattern is used to provide the base behavior of the
         day counter.
     */
-    class DayCounter : public Patterns::Bridge<DayCounter,DayCounterImpl> {
+    class DayCounter : public Bridge<DayCounter,DayCounterImpl> {
       public:
         //! \name DayCounter interface
         //@{
@@ -75,7 +75,7 @@ namespace QuantLib {
         /*! This protected constructor will only be invoked by derived
             classes which define a given DayCounter implementation */
         DayCounter(const Handle<DayCounterImpl>& impl) 
-        : Patterns::Bridge<DayCounter,DayCounterImpl>(impl) {}
+        : Bridge<DayCounter,DayCounterImpl>(impl) {}
     };
 
     // comparison based on name

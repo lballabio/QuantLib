@@ -23,40 +23,76 @@
 
 namespace QuantLib {
 
-    namespace MonteCarlo {
-
-        HimalayaPathPricer_old::HimalayaPathPricer_old(const std::vector<double>& underlying,
-            double strike,
-            DiscountFactor discount, bool useAntitheticVariance)
-        : PathPricer_old<MultiPath>(discount, useAntitheticVariance),
-          underlying_(underlying), strike_(strike) {
-            for (Size j=0; j<underlying_.size(); j++) {
-                QL_REQUIRE(underlying_[j]>0.0,
-                    "HimalayaPathPricer_old: "
-                    "underlying less/equal zero not allowed");
+    HimalayaPathPricer_old::HimalayaPathPricer_old(
+                          const std::vector<double>& underlying, double strike,
+                          DiscountFactor discount, bool useAntitheticVariance)
+    : PathPricer_old<MultiPath>(discount, useAntitheticVariance),
+      underlying_(underlying), strike_(strike) {
+        for (Size j=0; j<underlying_.size(); j++) {
+            QL_REQUIRE(underlying_[j]>0.0,
+                       "HimalayaPathPricer_old: "
+                       "underlying less/equal zero not allowed");
             QL_REQUIRE(strike>0.0,
-                "HimalayaPathPricer_old: "
-                "strike less/equal zero not allowed");
-            }
+                       "HimalayaPathPricer_old: "
+                       "strike less/equal zero not allowed");
         }
+    }
 
-        double HimalayaPathPricer_old::operator()(const MultiPath& multiPath)
-          const {
-            Size numAssets = multiPath.assetNumber();
-            Size numSteps = multiPath.pathSize();
-            QL_REQUIRE(underlying_.size() == numAssets,
-                "HimalayaPathPricer_old: the multi-path must contain "
-                + IntegerFormatter::toString(underlying_.size()) +" assets");
-            QL_REQUIRE(numAssets>0,
-                "HimalayaPathPricer_old: no asset given");
+    double HimalayaPathPricer_old::operator()(const MultiPath& multiPath)
+        const {
+        Size numAssets = multiPath.assetNumber();
+        Size numSteps = multiPath.pathSize();
+        QL_REQUIRE(underlying_.size() == numAssets,
+                   "HimalayaPathPricer_old: the multi-path must contain "
+                   + IntegerFormatter::toString(underlying_.size()) + 
+                   " assets");
+        QL_REQUIRE(numAssets>0,
+                   "HimalayaPathPricer_old: no asset given");
 
+        std::vector<double> prices(underlying_);
+        double averagePrice = 0;
+        std::vector<bool> remainingAssets(numAssets, true);
+        double bestPrice;
+        Size removeAsset, i, j;
+        Size fixings = numSteps;
+        if (multiPath[0].timeGrid().mandatoryTimes()[0] == 0.0) {
+            bestPrice = 0.0;
+            // dummy assignement to avoid compiler warning
+            removeAsset=0;
+            for(j = 0; j < numAssets; j++) {
+                if(prices[j] >= bestPrice) {
+                    bestPrice = prices[j];
+                    removeAsset = j;
+                }
+            }
+            remainingAssets[removeAsset] = false;
+            averagePrice += bestPrice;
+            fixings = numSteps+1;
+        }
+        for(i = 0; i < numSteps; i++) {
+            bestPrice = 0.0;
+            // dummy assignement to avoid compiler warning
+            removeAsset=0;
+            for(j = 0; j < numAssets; j++) {
+                if(remainingAssets[j]) {
+                    prices[j] *= QL_EXP(multiPath[j].drift()[i]+
+                                        multiPath[j].diffusion()[i]);
+                    if(prices[j] >= bestPrice) {
+                        bestPrice = prices[j];
+                        removeAsset = j;
+                    }
+                }
+            }
+            remainingAssets[removeAsset] = false;
+            averagePrice += bestPrice;
+        }
+        averagePrice /= QL_MIN(fixings, numAssets);
+        double optPrice = QL_MAX(averagePrice - strike_, 0.0);
 
-            std::vector<double> prices(underlying_);
-            double averagePrice = 0;
-            std::vector<bool> remainingAssets(numAssets, true);
-            double bestPrice;
-            Size removeAsset, i, j;
-            Size fixings = numSteps;
+        if (useAntitheticVariance_) {
+            prices = underlying_;
+            averagePrice = 0;
+            remainingAssets = std::vector<bool>(numAssets, true);
             if (multiPath[0].timeGrid().mandatoryTimes()[0] == 0.0) {
                 bestPrice = 0.0;
                 // dummy assignement to avoid compiler warning
@@ -69,7 +105,6 @@ namespace QuantLib {
                 }
                 remainingAssets[removeAsset] = false;
                 averagePrice += bestPrice;
-                fixings = numSteps+1;
             }
             for(i = 0; i < numSteps; i++) {
                 bestPrice = 0.0;
@@ -77,8 +112,8 @@ namespace QuantLib {
                 removeAsset=0;
                 for(j = 0; j < numAssets; j++) {
                     if(remainingAssets[j]) {
-                        prices[j] *= QL_EXP(multiPath[j].drift()[i]+
-                            multiPath[j].diffusion()[i]);
+                        prices[j] *= QL_EXP(multiPath[j].drift()[i]-
+                                            multiPath[j].diffusion()[i]);
                         if(prices[j] >= bestPrice) {
                             bestPrice = prices[j];
                             removeAsset = j;
@@ -89,50 +124,11 @@ namespace QuantLib {
                 averagePrice += bestPrice;
             }
             averagePrice /= QL_MIN(fixings, numAssets);
-            double optPrice = QL_MAX(averagePrice - strike_, 0.0);
+            double optPrice2 = QL_MAX(averagePrice - strike_, 0.0);
 
-            if (useAntitheticVariance_) {
-                prices = underlying_;
-                averagePrice = 0;
-                remainingAssets = std::vector<bool>(numAssets, true);
-                if (multiPath[0].timeGrid().mandatoryTimes()[0] == 0.0) {
-                    bestPrice = 0.0;
-                    // dummy assignement to avoid compiler warning
-                    removeAsset=0;
-                    for(j = 0; j < numAssets; j++) {
-                        if(prices[j] >= bestPrice) {
-                            bestPrice = prices[j];
-                            removeAsset = j;
-                        }
-                    }
-                    remainingAssets[removeAsset] = false;
-                    averagePrice += bestPrice;
-                }
-                for(i = 0; i < numSteps; i++) {
-                    bestPrice = 0.0;
-                    // dummy assignement to avoid compiler warning
-                    removeAsset=0;
-                    for(j = 0; j < numAssets; j++) {
-                        if(remainingAssets[j]) {
-                            prices[j] *= QL_EXP(multiPath[j].drift()[i]-
-                                multiPath[j].diffusion()[i]);
-                            if(prices[j] >= bestPrice) {
-                                bestPrice = prices[j];
-                                removeAsset = j;
-                            }
-                        }
-                    }
-                    remainingAssets[removeAsset] = false;
-                    averagePrice += bestPrice;
-                }
-                averagePrice /= QL_MIN(fixings, numAssets);
-                double optPrice2 = QL_MAX(averagePrice - strike_, 0.0);
-
-                return discount_ * 0.5 * (optPrice+optPrice2);
-            } else {
-                return discount_ * optPrice;
-            }
-
+            return discount_ * 0.5 * (optPrice+optPrice2);
+        } else {
+            return discount_ * optPrice;
         }
 
     }

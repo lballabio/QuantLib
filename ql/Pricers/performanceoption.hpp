@@ -26,41 +26,35 @@
 
 namespace QuantLib {
 
-    namespace Pricers {
-
-        //! Performance option
-        /*! A performance option is a variant of a cliquet option:
-            the payoff of each forward-starting (a.k.a. deferred
-            strike) options is \$ max(S/X- 1) \$.
-
-        */
-        class PerformanceOption {
-          public:
-            PerformanceOption(Option::Type type,
+    //! Performance option
+    /*! A performance option is a variant of a cliquet option: the
+        payoff of each forward-starting (a.k.a. deferred strike)
+        options is \$ max(S/X- 1) \$.
+    */
+    class PerformanceOption {
+      public:
+        PerformanceOption(Option::Type type,
                           double underlying,
                           double moneyness,
                           const std::vector<Spread>& dividendYield,
                           const std::vector<Rate>& riskFreeRate,
                           const std::vector<Time>& times,
                           const std::vector<double>& volatility);
-            double value() const;
-            double delta() const;
-            double gamma() const;
-            double theta() const;
-            double vega() const;
-            double rho() const;
-            double dividendRho() const;
-//            Handle<SingleAssetOption> clone() const;
-          private:
-            double moneyness_;
-            std::vector<Rate> riskFreeRate_;
-            std::vector<Time> times_;
-            Size numOptions_;
-            std::vector<Handle<EuropeanOption> > optionlet_;
-            std::vector<DiscountFactor> discounts_;
-        };
-
-    }
+        double value() const;
+        double delta() const;
+        double gamma() const;
+        double theta() const;
+        double vega() const;
+        double rho() const;
+        double dividendRho() const;
+      private:
+        double moneyness_;
+        std::vector<Rate> riskFreeRate_;
+        std::vector<Time> times_;
+        Size numOptions_;
+        std::vector<Handle<EuropeanOption> > optionlet_;
+        std::vector<DiscountFactor> discounts_;
+    };
 
 }
 

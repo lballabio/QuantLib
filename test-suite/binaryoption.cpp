@@ -32,7 +32,6 @@
 #define LENGTH(a) (sizeof(a)/sizeof(a[0]))
 
 using namespace QuantLib;
-using namespace QuantLib::PricingEngines;
 using namespace QuantLib::TermStructures;
 using namespace QuantLib::VolTermStructures;
 
@@ -276,10 +275,10 @@ void BinaryOptionTest::testSelfConsistency() {
     Exercise exercises[] = { exercise, amExercise };
 
     Handle<PricingEngine> euroEngine = Handle<PricingEngine>(
-        new PricingEngines::AnalyticEuropeanBinaryEngine());
+        new AnalyticEuropeanBinaryEngine());
 
     Handle<PricingEngine> amEngine = Handle<PricingEngine>(
-        new PricingEngines::AnalyticAmericanBinaryEngine());
+        new AnalyticAmericanBinaryEngine());
 
     Handle<PricingEngine> engines[] = { euroEngine, amEngine };
 
@@ -474,14 +473,13 @@ void BinaryOptionTest::testEngineConsistency() {
     Exercise exercises[] = {amExercise};
 
     Handle<PricingEngine> euroEngine = Handle<PricingEngine>(
-        new PricingEngines::AnalyticEuropeanBinaryEngine());
+        new AnalyticEuropeanBinaryEngine());
 
     Handle<PricingEngine> amEngine = Handle<PricingEngine>(
-        new PricingEngines::AnalyticAmericanBinaryEngine());
+        new AnalyticAmericanBinaryEngine());
 
     Handle<PricingEngine> mcEngine = Handle<PricingEngine>(
-        new PricingEngines::MCBinaryEngine
-            <MonteCarlo::PseudoRandom, Statistics>
+        new MCBinaryEngine<PseudoRandom, Statistics>
                   (maxTimeStepsPerYear, antitheticVariate, controlVariate,
                   requiredSamples, requiredTolerance,
                   maxSamples, isBiased, seed));

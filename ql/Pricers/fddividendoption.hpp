@@ -26,36 +26,31 @@
 
 namespace QuantLib {
 
-    namespace Pricers {
-
-        class FdDividendOption : public FdMultiPeriodOption {
-          public:
-            // constructor
-            FdDividendOption(Option::Type type, double underlying,
-                double strike, Spread dividendYield, Rate riskFreeRate,
-                Time residualTime, double volatility,
-                const std::vector<double>& dividends = std::vector<double>(),
-                const std::vector<Time>& exdivdates = std::vector<Time>(),
-                int timeSteps = 100, int gridPoints = 100);
-            double dividendRho() const {
-                throw Error("FdDividendOption::dividendRho not implemented yet");
-            }
-            protected:
-            void initializeControlVariate() const;
-            private:
-            std::vector<double> dividends_;
-
-            void executeIntermediateStep(int step) const;
-
-            void movePricesBeforeExDiv(Array& prices,
-                                       const Array& newGrid,
-                                       const Array& oldGrid) const;
-            double addElements(const std::vector<double>& A) const{
-                return std::accumulate(A.begin(), A.end(), 0.0);
-            }
-        };
-
-    }
+    class FdDividendOption : public FdMultiPeriodOption {
+      public:
+        // constructor
+        FdDividendOption(
+                 Option::Type type, double underlying,
+                 double strike, Spread dividendYield, Rate riskFreeRate,
+                 Time residualTime, double volatility,
+                 const std::vector<double>& dividends = std::vector<double>(),
+                 const std::vector<Time>& exdivdates = std::vector<Time>(),
+                 int timeSteps = 100, int gridPoints = 100);
+        double dividendRho() const {
+            throw Error("FdDividendOption::dividendRho not implemented yet");
+        }
+      protected:
+        void initializeControlVariate() const;
+      private:
+        std::vector<double> dividends_;
+        void executeIntermediateStep(int step) const;
+        void movePricesBeforeExDiv(Array& prices,
+                                   const Array& newGrid,
+                                   const Array& oldGrid) const;
+        double addElements(const std::vector<double>& A) const{
+            return std::accumulate(A.begin(), A.end(), 0.0);
+        }
+    };
 
 }
 

@@ -28,55 +28,51 @@
 
 namespace QuantLib {
 
-    namespace Pricers {
+    class DiscretizedSwap : public DiscretizedAsset {
+      public:
+        DiscretizedSwap(const Handle<NumericalMethod>& method,
+                        const SimpleSwap::arguments& params)
+        : DiscretizedAsset(method), arguments_(params) {}
 
-        class DiscretizedSwap : public DiscretizedAsset {
-          public:
-            DiscretizedSwap(const Handle<NumericalMethod>& method,
-                            const SimpleSwap::arguments& params)
-            : DiscretizedAsset(method), arguments_(params) {}
+        void reset(Size size) {
+            values_ = Array(size, 0.0);
+            adjustValues();
+        }
 
-            void reset(Size size) {
-                values_ = Array(size, 0.0);
-                adjustValues();
+        void preAdjustValues();
+
+        void addTimesTo(std::list<Time>& times) const {
+            Time t;
+            Size i;
+            for (i=0; i<arguments_.fixedPayTimes.size(); i++) {
+                t = arguments_.fixedPayTimes[i];
+                if (t >= 0.0)
+                    times.push_back(t);
             }
-
-            void preAdjustValues();
-
-            void addTimesTo(std::list<Time>& times) const {
-                Time t;
-                Size i;
-                for (i=0; i<arguments_.fixedPayTimes.size(); i++) {
-                    t = arguments_.fixedPayTimes[i];
-                    if (t >= 0.0)
-                        times.push_back(t);
-                }
-                for (i=0; i<arguments_.floatingResetTimes.size(); i++) {
-                    t = arguments_.floatingResetTimes[i];
-                    if (t >= 0.0)
-                        times.push_back(t);
-                }
-                for (i=0; i<arguments_.floatingPayTimes.size(); i++) {
-                    t = arguments_.floatingPayTimes[i];
-                    if (t >= 0.0)
-                        times.push_back(t);
-                }
+            for (i=0; i<arguments_.floatingResetTimes.size(); i++) {
+                t = arguments_.floatingResetTimes[i];
+                if (t >= 0.0)
+                    times.push_back(t);
             }
-          private:
-            SimpleSwap::arguments arguments_;
-        };
+            for (i=0; i<arguments_.floatingPayTimes.size(); i++) {
+                t = arguments_.floatingPayTimes[i];
+                if (t >= 0.0)
+                    times.push_back(t);
+            }
+        }
+      private:
+        SimpleSwap::arguments arguments_;
+    };
 
-        class DiscretizedSwaption : public DiscretizedOption {
-          public:
-            DiscretizedSwaption(
-                const Handle<DiscretizedSwap>& swap,
-                const Swaption::arguments& params)
-            : DiscretizedOption(swap,
-                                params.exerciseType,
-                                params.exerciseTimes) {}
-        };
-
-    }
+    class DiscretizedSwaption : public DiscretizedOption {
+      public:
+        DiscretizedSwaption(
+                            const Handle<DiscretizedSwap>& swap,
+                            const Swaption::arguments& params)
+        : DiscretizedOption(swap,
+                            params.exerciseType,
+                            params.exerciseTimes) {}
+    };
 
 }
 

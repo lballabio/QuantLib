@@ -26,42 +26,39 @@
 
 namespace QuantLib {
 
-    namespace Pricers {
-
-        //! European option with dividends
-        class FdDividendEuropeanOption : public EuropeanOption    {
-          public:
-            FdDividendEuropeanOption(Option::Type type, double underlying,
-                double strike, Spread dividendYield, Rate riskFreeRate,
-                Time residualTime, double volatility,
-                const std::vector<double>& dividends,
-                const std::vector<Time>& exdivdates);
-            double theta() const;
-            double rho() const;
-            double dividendRho() const {
-                throw Error("FdDividendEuropeanOption::dividendRho not"
-                    "implemented yet");
-            }
-            Handle<SingleAssetOption> clone() const;
-            double riskless(Rate r, std::vector<double> divs,
-                            std::vector<Time> divDates) const;
-          private:
-            std::vector<double> dividends_;
-            std::vector<Time> exDivDates_;
-        };
-
-
-        // inline definitions
-
-        inline double FdDividendEuropeanOption::riskless(Rate r,
-            std::vector<double> divs, std::vector<Time> divDates) const{
-
-            double tmp_riskless = 0.0;
-            for(Size j = 0; j < divs.size(); j++)
-                tmp_riskless += divs[j]*QL_EXP(-r*divDates[j]);
-            return tmp_riskless;
+    //! European option with dividends
+    class FdDividendEuropeanOption : public EuropeanOption    {
+      public:
+        FdDividendEuropeanOption(Option::Type type, double underlying,
+                                 double strike, Spread dividendYield, 
+                                 Rate riskFreeRate, Time residualTime, 
+                                 double volatility,
+                                 const std::vector<double>& dividends,
+                                 const std::vector<Time>& exdivdates);
+        double theta() const;
+        double rho() const;
+        double dividendRho() const {
+            throw Error("FdDividendEuropeanOption::dividendRho not"
+                        "implemented yet");
         }
+        Handle<SingleAssetOption> clone() const;
+        double riskless(Rate r, std::vector<double> divs,
+                        std::vector<Time> divDates) const;
+      private:
+        std::vector<double> dividends_;
+        std::vector<Time> exDivDates_;
+    };
 
+
+    // inline definitions
+
+    inline double FdDividendEuropeanOption::riskless(
+                                            Rate r, std::vector<double> divs, 
+                                            std::vector<Time> divDates) const {
+        double tmp_riskless = 0.0;
+        for(Size j = 0; j < divs.size(); j++)
+            tmp_riskless += divs[j]*QL_EXP(-r*divDates[j]);
+        return tmp_riskless;
     }
 
 }

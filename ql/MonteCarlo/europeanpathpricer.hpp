@@ -29,24 +29,19 @@
 
 namespace QuantLib {
 
-    namespace MonteCarlo {
-
-        //! %path pricer for European options
-        class EuropeanPathPricer : public PathPricer<Path> {
-          public:
-            EuropeanPathPricer(
-                Option::Type type,
-                double underlying,
-                double strike,
-                const RelinkableHandle<TermStructure>& riskFreeTS);
-            double operator()(const Path& path) const;
-          private:
-            double underlying_;
-            // it would be easy to generalize to more exotic payoffs
-            PlainVanillaPayoff payoff_;
-        };
-
-    }
+    //! %path pricer for European options
+    class EuropeanPathPricer : public PathPricer<Path> {
+      public:
+        EuropeanPathPricer(Option::Type type,
+                           double underlying,
+                           double strike,
+                           const RelinkableHandle<TermStructure>& riskFreeTS);
+        double operator()(const Path& path) const;
+      private:
+        double underlying_;
+        // it would be easy to generalize to more exotic payoffs
+        PlainVanillaPayoff payoff_;
+    };
 
 }
 

@@ -27,60 +27,52 @@
 
 namespace QuantLib {
 
-    namespace PricingEngines {
+    //! Engine for a short-rate model specialized on a lattice
+    /*! Derived engines only need to implement the <tt>calculate()</tt>
+        method
+    */
+    template <class Arguments, class Results>
+    class LatticeShortRateModelEngine 
+        : public GenericModelEngine<ShortRateModels::Model, 
+                                    Arguments, Results > {
+      public:
+        LatticeShortRateModelEngine(const Handle<ShortRateModels::Model>& model,
+                                    Size timeSteps);
 
-        //! Engine for a short-rate model specialized on a lattice
-        /*! Derived engines only need to implement the <tt>calculate()</tt>
-            method
-        */
-        template <class Arguments, class Results>
-        class LatticeShortRateModelEngine : public
-            PricingEngines::GenericModelEngine<
-                ShortRateModels::Model, Arguments, Results > {
-          public:
-            LatticeShortRateModelEngine(const Handle<ShortRateModels::Model>& model,
-                                        Size timeSteps);
+        LatticeShortRateModelEngine(const Handle<ShortRateModels::Model>& model,
+                                    const TimeGrid& timeGrid);
+        void update();
+      protected:
+        TimeGrid timeGrid_;
+        Size timeSteps_;
+        Handle<Lattice> lattice_;
+    };
 
-            LatticeShortRateModelEngine(const Handle<ShortRateModels::Model>& model,
-                                        const TimeGrid& timeGrid);
-            void update();
-          protected:
-            TimeGrid timeGrid_;
-            Size timeSteps_;
-            Handle<Lattices::Lattice> lattice_;
-        };
+    template <class Arguments, class Results>
+    LatticeShortRateModelEngine<Arguments, Results>::LatticeShortRateModelEngine(
+            const Handle<ShortRateModels::Model>& model, 
+            Size timeSteps) 
+    : GenericModelEngine<ShortRateModels::Model, Arguments, Results >(model), 
+      timeSteps_(timeSteps) {}
 
-        template <class Arguments, class Results>
-        LatticeShortRateModelEngine<Arguments, Results>::LatticeShortRateModelEngine(
-                const Handle<ShortRateModels::Model>& model, 
-                Size timeSteps) 
-        : PricingEngines::GenericModelEngine<
-                ShortRateModels::Model, Arguments, Results >(model), 
-          timeSteps_(timeSteps) 
-        {
-        }
+    template <class Arguments, class Results>
+    LatticeShortRateModelEngine<Arguments, Results>::LatticeShortRateModelEngine(
+            const Handle<ShortRateModels::Model>& model,
+            const TimeGrid& timeGrid) 
+    : GenericModelEngine<ShortRateModels::Model, Arguments, Results >(model), 
+      timeGrid_(timeGrid), timeSteps_(0) {
+        lattice_ = model_->tree(timeGrid);
+    }
 
-        template <class Arguments, class Results>
-        LatticeShortRateModelEngine<Arguments, Results>::LatticeShortRateModelEngine(
-                const Handle<ShortRateModels::Model>& model,
-                const TimeGrid& timeGrid) 
-        : PricingEngines::GenericModelEngine<
-                ShortRateModels::Model, Arguments, Results >(model), 
-            timeGrid_(timeGrid), timeSteps_(0) 
-        {
-            lattice_ = model_->tree(timeGrid);
-        }
-
-        template <class Arguments, class Results>
-        void LatticeShortRateModelEngine<Arguments, Results>::update() 
-        {
-            if (timeGrid_.size() > 0)
-                lattice_ = model_->tree(timeGrid_);
-            notifyObservers();
-        }
-
+    template <class Arguments, class Results>
+    void LatticeShortRateModelEngine<Arguments, Results>::update() 
+    {
+        if (timeGrid_.size() > 0)
+            lattice_ = model_->tree(timeGrid_);
+        notifyObservers();
     }
 
 }
+
 
 #endif

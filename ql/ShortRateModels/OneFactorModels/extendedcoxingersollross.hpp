@@ -48,7 +48,7 @@ namespace QuantLib {
                 double sigma = 0.1,
                 double x0 = 0.05);
 
-            Handle<Lattices::Lattice> tree(const TimeGrid& grid) const;
+            Handle<Lattice> tree(const TimeGrid& grid) const;
 
             Handle<ShortRateDynamics> dynamics() const;
 

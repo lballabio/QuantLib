@@ -30,7 +30,7 @@ namespace QuantLib {
 
         //! Local volatility curve derived from a Black curve
         class LocalVolCurve : public LocalVolTermStructure,
-                              public Patterns::Observer {
+                              public Observer {
           public:
             LocalVolCurve(const RelinkableHandle<BlackVarianceCurve>& curve)
             : blackVarianceCurve_(curve) {
@@ -56,7 +56,7 @@ namespace QuantLib {
             //@}
             //! \name Visitability
             //@{
-            virtual void accept(Patterns::AcyclicVisitor&);
+            virtual void accept(AcyclicVisitor&);
             //@}
           protected:
             double localVolImpl(Time, double, bool extrapolate) const;
@@ -68,9 +68,7 @@ namespace QuantLib {
 
         // inline definitions
 
-        inline 
-        void LocalVolCurve::accept(Patterns::AcyclicVisitor& v) {
-            using namespace Patterns;
+        inline void LocalVolCurve::accept(AcyclicVisitor& v) {
             Visitor<LocalVolCurve>* v1 = 
                 dynamic_cast<Visitor<LocalVolCurve>*>(&v);
             if (v1 != 0)

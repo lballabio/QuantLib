@@ -66,7 +66,7 @@ namespace QuantLib {
         //@}
         //! \name Visitability
         //@{
-        virtual void accept(Patterns::AcyclicVisitor&);
+        virtual void accept(AcyclicVisitor&);
         //@}
       protected:
         double nominal_;
@@ -115,8 +115,7 @@ namespace QuantLib {
                                      accrualEndDate_);
     }
 
-    inline void Coupon::accept(Patterns::AcyclicVisitor& v) {
-        using namespace Patterns;
+    inline void Coupon::accept(AcyclicVisitor& v) {
         Visitor<Coupon>* v1 = dynamic_cast<Visitor<Coupon>*>(&v);
         if (v1 != 0)
             v1->visit(*this);

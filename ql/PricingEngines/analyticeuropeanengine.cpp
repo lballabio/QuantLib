@@ -23,104 +23,98 @@
 
 namespace QuantLib {
 
-    namespace PricingEngines {
+    #if !defined(QL_PATCH_SOLARIS)
+    const CumulativeNormalDistribution AnalyticEuropeanEngine::f_;
+    #endif
 
-        #if !defined(QL_PATCH_SOLARIS)
-        const CumulativeNormalDistribution AnalyticEuropeanEngine::f_;
-        #endif
+    void AnalyticEuropeanEngine::calculate() const {
 
-        void AnalyticEuropeanEngine::calculate() const {
+        QL_REQUIRE(arguments_.exerciseType == Exercise::European,
+                   "AnalyticEuropeanEngine::calculate() : "
+                   "not an European Option");
 
-            QL_REQUIRE(arguments_.exerciseType == Exercise::European,
-                "AnalyticEuropeanEngine::calculate() : "
-                "not an European Option");
+        Handle<PlainVanillaPayoff> payoff = arguments_.payoff;
 
-            Handle<PlainVanillaPayoff> payoff = arguments_.payoff;
+        double strike = payoff->strike();
+        double variance = arguments_.volTS->blackVariance(arguments_.maturity, 
+                                                          strike);
+        double stdDev = QL_SQRT(variance);
+        double vol = arguments_.volTS->blackVol(arguments_.maturity, strike);
 
-            double strike = payoff->strike();
-            double variance = arguments_.volTS->blackVariance(
-                arguments_.maturity, strike);
-            double stdDev = QL_SQRT(variance);
-            double vol = arguments_.volTS->blackVol(
-                arguments_.maturity, strike);
+        DiscountFactor dividendDiscount =
+            arguments_.dividendTS->discount(arguments_.maturity);
+        Rate dividendRate =
+            arguments_.dividendTS->zeroYield(arguments_.maturity);
 
-            DiscountFactor dividendDiscount =
-                arguments_.dividendTS->discount(arguments_.maturity);
-            Rate dividendRate =
-                arguments_.dividendTS->zeroYield(arguments_.maturity);
+        DiscountFactor riskFreeDiscount =
+            arguments_.riskFreeTS->discount(arguments_.maturity);
+        Rate riskFreeRate =
+            arguments_.riskFreeTS->zeroYield(arguments_.maturity);
+        double forwardPrice = arguments_.underlying *
+            dividendDiscount / riskFreeDiscount;
 
-            DiscountFactor riskFreeDiscount =
-                arguments_.riskFreeTS->discount(arguments_.maturity);
-            Rate riskFreeRate =
-                arguments_.riskFreeTS->zeroYield(arguments_.maturity);
-            double forwardPrice = arguments_.underlying *
-                dividendDiscount / riskFreeDiscount;
-
-            double fD1, fD2, fderD1;
-            if (variance>0.0) {
-                double D1 = (QL_LOG(forwardPrice/strike) +
-                             0.5 * variance) / stdDev;
-                double D2 = D1-stdDev;
-                fD1 = f_(D1);
-                fD2 = f_(D2);
-                fderD1 = f_.derivative(D1);
+        double fD1, fD2, fderD1;
+        if (variance>0.0) {
+            double D1 = (QL_LOG(forwardPrice/strike) +
+                         0.5 * variance) / stdDev;
+            double D2 = D1-stdDev;
+            fD1 = f_(D1);
+            fD2 = f_(D2);
+            fderD1 = f_.derivative(D1);
+        } else {
+            stdDev = QL_EPSILON;
+            fderD1 = 0.0;
+            if (forwardPrice>strike) {
+                fD1 = 1.0;
+                fD2 = 1.0;
             } else {
-                stdDev = QL_EPSILON;
-                fderD1 = 0.0;
-                if (forwardPrice>strike) {
-                    fD1 = 1.0;
-                    fD2 = 1.0;
-                } else {
-                    fD1 = 0.0;
-                    fD2 = 0.0;
-                }
+                fD1 = 0.0;
+                fD2 = 0.0;
             }
-
-            double alpha, beta, NID1;
-            switch (payoff->optionType()) {
-              case Option::Call:
-                alpha = fD1;
-                beta  = fD2;
-                NID1  = fderD1;
-                break;
-              case Option::Put:
-                alpha = fD1-1.0;
-                beta  = fD2-1.0;
-                NID1  = fderD1;
-                break;
-              case Option::Straddle:
-                alpha = 2.0*fD1-1.0;
-                beta  = 2.0*fD2-1.0;
-                NID1  = 2.0*fderD1;
-                break;
-              default:
-                throw IllegalArgumentError(
-                    "AnalyticEuropeanEngine::calculate() : "
-                    "invalid option type");
-            }
-
-
-            results_.value = riskFreeDiscount *
-                (forwardPrice * alpha - strike *  beta);
-            results_.delta = dividendDiscount * alpha;
-            // results_.deltaForward = riskFreeDiscount * alpha;
-            results_.gamma = NID1 * dividendDiscount /
-                (arguments_.underlying * stdDev);
-            results_.theta = riskFreeRate * results_.value
-                -(riskFreeRate - dividendRate) 
-                * arguments_.underlying * results_.delta
-                - 0.5 * vol * vol * arguments_.underlying 
-                * arguments_.underlying * results_.gamma;
-            results_.rho = arguments_.maturity * riskFreeDiscount *
-                strike * beta;
-            results_.dividendRho = - arguments_.maturity *
-                dividendDiscount * arguments_.underlying * alpha;
-            results_.vega = arguments_.underlying * NID1 *
-                dividendDiscount * QL_SQRT(arguments_.maturity);
-
-            results_.strikeSensitivity = - riskFreeDiscount * beta;
         }
 
+        double alpha, beta, NID1;
+        switch (payoff->optionType()) {
+          case Option::Call:
+            alpha = fD1;
+            beta  = fD2;
+            NID1  = fderD1;
+            break;
+          case Option::Put:
+            alpha = fD1-1.0;
+            beta  = fD2-1.0;
+            NID1  = fderD1;
+            break;
+          case Option::Straddle:
+            alpha = 2.0*fD1-1.0;
+            beta  = 2.0*fD2-1.0;
+            NID1  = 2.0*fderD1;
+            break;
+          default:
+            throw IllegalArgumentError("AnalyticEuropeanEngine::calculate() : "
+                                       "invalid option type");
+        }
+
+
+        results_.value = riskFreeDiscount *
+            (forwardPrice * alpha - strike *  beta);
+        results_.delta = dividendDiscount * alpha;
+        // results_.deltaForward = riskFreeDiscount * alpha;
+        results_.gamma = NID1 * dividendDiscount /
+            (arguments_.underlying * stdDev);
+        results_.theta = riskFreeRate * results_.value
+            -(riskFreeRate - dividendRate) 
+            * arguments_.underlying * results_.delta
+            - 0.5 * vol * vol * arguments_.underlying 
+            * arguments_.underlying * results_.gamma;
+        results_.rho = arguments_.maturity * riskFreeDiscount *
+            strike * beta;
+        results_.dividendRho = - arguments_.maturity *
+            dividendDiscount * arguments_.underlying * alpha;
+        results_.vega = arguments_.underlying * NID1 *
+            dividendDiscount * QL_SQRT(arguments_.maturity);
+
+        results_.strikeSensitivity = - riskFreeDiscount * beta;
     }
 
 }

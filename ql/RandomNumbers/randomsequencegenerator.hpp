@@ -42,7 +42,7 @@ namespace QuantLib {
         template<class RNG>
         class RandomSequenceGenerator {
           public:
-            typedef MonteCarlo::Sample<Array> sample_type;
+            typedef Sample<Array> sample_type;
             RandomSequenceGenerator(Size dimensionality,
                                     const RNG& rng)
             : dimensionality_(dimensionality), rng_(rng),

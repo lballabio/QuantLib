@@ -27,41 +27,37 @@
 
 namespace QuantLib {
 
-    namespace Pricers {
+    class FdShoutOption : public FdStepConditionOption {
+      public:
+        // constructor
+        FdShoutOption(Option::Type type, double underlying, double strike,
+                      Spread dividendYield, Rate riskFreeRate,
+                      Time residualTime, double volatility,
+                      int timeSteps, int gridPoints);
+        void initializeStepCondition() const;
 
-        class FdShoutOption : public FdStepConditionOption {
-          public:
-            // constructor
-            FdShoutOption(Option::Type type, double underlying, double strike,
-                           Spread dividendYield, Rate riskFreeRate,
-                           Time residualTime, double volatility,
-                           int timeSteps, int gridPoints);
-                void initializeStepCondition() const;
-
-            // This method must be implemented to imply volatilities
-            Handle<SingleAssetOption> clone() const{
-                return Handle<SingleAssetOption>(new FdShoutOption(*this));
-            }
-        };
-
-
-        // inline definitions
-
-        inline FdShoutOption::FdShoutOption(
-            Option::Type type, double underlying,
-            double strike, Spread dividendYield, Rate riskFreeRate,
-            Time residualTime, double volatility, int timeSteps,
-            int gridPoints)
-        : FdStepConditionOption(type, underlying, strike, dividendYield,
-                             riskFreeRate, residualTime, volatility,
-                             timeSteps, gridPoints){}
-
-        inline void FdShoutOption::initializeStepCondition() const {
-            stepCondition_ = Handle<StandardStepCondition>(
-                new ShoutCondition(intrinsicValues_, residualTime_, 
-                                   riskFreeRate_));
+        // This method must be implemented to imply volatilities
+        Handle<SingleAssetOption> clone() const{
+            return Handle<SingleAssetOption>(new FdShoutOption(*this));
         }
+    };
 
+
+    // inline definitions
+
+    inline FdShoutOption::FdShoutOption(
+                       Option::Type type, double underlying,
+                       double strike, Spread dividendYield, Rate riskFreeRate,
+                       Time residualTime, double volatility, int timeSteps,
+                       int gridPoints)
+    : FdStepConditionOption(type, underlying, strike, dividendYield,
+                            riskFreeRate, residualTime, volatility,
+                            timeSteps, gridPoints){}
+
+    inline void FdShoutOption::initializeStepCondition() const {
+        stepCondition_ = Handle<StandardStepCondition>(
+                          new ShoutCondition(intrinsicValues_, residualTime_, 
+                                             riskFreeRate_));
     }
 
 }

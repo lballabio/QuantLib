@@ -45,7 +45,7 @@ namespace QuantLib {
         */
         class KnuthUniformRng {
           public:
-            typedef MonteCarlo::Sample<double> sample_type;
+            typedef Sample<double> sample_type;
             /*! if the given seed is 0, a random seed will be chosen
                 based on clock() */
             explicit KnuthUniformRng(long seed = 0);

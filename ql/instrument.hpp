@@ -34,7 +34,7 @@ namespace QuantLib {
     /*! This class is purely abstract and defines the interface of concrete
         instruments which will be derived from this one.
     */
-    class Instrument : public Patterns::LazyObject {
+    class Instrument : public LazyObject {
       public:
         Instrument(const std::string& isinCode = "",
                    const std::string& description = "");
@@ -147,11 +147,7 @@ namespace QuantLib {
             setupExpired();
             calculated_ = true;
         } else {
-            #if defined(QL_PATCH_MICROSOFT)
             LazyObject::calculate();
-            #else
-            Patterns::LazyObject::calculate();
-            #endif
         }
     }
 

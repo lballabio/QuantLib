@@ -22,17 +22,12 @@
 #ifndef quantlib_functions_daycounters_h
 #define quantlib_functions_daycounters_h
 
-#include <ql/DayCounters/actual360.hpp>
-#include <ql/DayCounters/actual365.hpp>
-#include <ql/DayCounters/actualactual.hpp>
-#include <ql/DayCounters/thirty360.hpp>
+#include <ql/daycounter.hpp>
 
 namespace QuantLib {
 
-    namespace Functions {
-		int accrualDays(DayCounter dc, Date d1, Date d2);
-		double accrualFactor(DayCounter dc, Date d1, Date d2, Date d3, Date d4);
-    }
+    int accrualDays(DayCounter dc, Date d1, Date d2);
+    double accrualFactor(DayCounter dc, Date d1, Date d2, Date d3, Date d4);
 
 }
 

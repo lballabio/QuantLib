@@ -26,57 +26,53 @@
 
 namespace QuantLib {
 
-    namespace Pricers {
+    McDiscreteArithmeticAPO::McDiscreteArithmeticAPO(Option::Type type,
+        double underlying, double strike,
+        Spread dividendYield, Rate riskFreeRate,
+        const std::vector<Time>& times, double volatility,
+        bool antitheticVariance, bool controlVariate, long seed) {
 
-        using namespace MonteCarlo;
+        QL_REQUIRE(times.size() >= 2,
+                   "McDiscreteArithmeticAPO: "
+                   "you must have at least 2 time-steps");
 
-        McDiscreteArithmeticAPO::McDiscreteArithmeticAPO(Option::Type type,
-            double underlying, double strike,
-            Spread dividendYield, Rate riskFreeRate,
-            const std::vector<Time>& times, double volatility,
-            bool antitheticVariance, bool controlVariate, long seed) {
+        //! Initialize the path generator
+        double mu = riskFreeRate - dividendYield
+                                 - 0.5 * volatility * volatility;
 
-            QL_REQUIRE(times.size() >= 2,
-                "McDiscreteArithmeticAPO: you must have at least 2 time-steps");
-            //! Initialize the path generator
-            double mu = riskFreeRate - dividendYield
-                                     - 0.5 * volatility * volatility;
-
-            Handle<GaussianPathGenerator_old> pathGenerator(
-                new GaussianPathGenerator_old(mu, volatility*volatility,
-                    TimeGrid(times.begin(), times.end()),
-                    seed));
+        Handle<GaussianPathGenerator_old> pathGenerator(
+            new GaussianPathGenerator_old(mu, volatility*volatility,
+                TimeGrid(times.begin(), times.end()),
+                seed));
 
 
-            //! Initialize the Path Pricer
-            Handle<PathPricer_old<Path> > spPricer(
-                new ArithmeticAPOPathPricer_old(type, underlying, strike,
+        //! Initialize the Path Pricer
+        Handle<PathPricer_old<Path> > spPricer(
+            new ArithmeticAPOPathPricer_old(type, underlying, strike,
+                QL_EXP(-riskFreeRate*times.back()), antitheticVariance));
+
+
+        if (controlVariate) {
+            Handle<PathPricer_old<Path> > controlVariateSpPricer(
+                new GeometricAPOPathPricer_old(type, underlying, strike,
                     QL_EXP(-riskFreeRate*times.back()), antitheticVariance));
 
+            double controlVariatePrice = DiscreteGeometricAPO(type,
+                underlying, strike, dividendYield, riskFreeRate,
+                times, volatility).value();
 
-            if (controlVariate) {
-                Handle<PathPricer_old<Path> > controlVariateSpPricer(
-                    new GeometricAPOPathPricer_old(type, underlying, strike,
-                        QL_EXP(-riskFreeRate*times.back()), antitheticVariance));
-
-                double controlVariatePrice = DiscreteGeometricAPO(type,
-                    underlying, strike, dividendYield, riskFreeRate,
-                    times, volatility).value();
-
-                //! Initialize the Monte Carlo model
-                mcModel_ = Handle<MonteCarloModel<SingleAsset_old<
-                                                  PseudoRandom_old> > >(
-                    new MonteCarloModel<SingleAsset_old<PseudoRandom_old> >(
-                        pathGenerator, spPricer, Statistics(), false,
-                        controlVariateSpPricer, controlVariatePrice));
-            } else {
-                //! Initialize the Monte Carlo model
-                mcModel_ = Handle<MonteCarloModel<SingleAsset_old<
-                                                  PseudoRandom_old> > > (
-                    new MonteCarloModel<SingleAsset_old<PseudoRandom_old> >(
-                        pathGenerator, spPricer, Statistics(), false));
-            }
-
+            //! Initialize the Monte Carlo model
+            mcModel_ = Handle<MonteCarloModel<SingleAsset_old<
+                                              PseudoRandom_old> > >(
+                new MonteCarloModel<SingleAsset_old<PseudoRandom_old> >(
+                    pathGenerator, spPricer, Statistics(), false,
+                    controlVariateSpPricer, controlVariatePrice));
+        } else {
+            //! Initialize the Monte Carlo model
+            mcModel_ = Handle<MonteCarloModel<SingleAsset_old<
+                                              PseudoRandom_old> > > (
+                new MonteCarloModel<SingleAsset_old<PseudoRandom_old> >(
+                    pathGenerator, spPricer, Statistics(), false));
         }
 
     }

@@ -24,7 +24,6 @@ libPricingEngines_la_SOURCES = \
     analyticbarrierengine.cpp \
     analyticeuropeanbinaryengine.cpp \
     analyticeuropeanengine.cpp \
-    binomialvanillaengine.cpp \
     discretizedvanillaoption.cpp \
     integralengines.cpp
 

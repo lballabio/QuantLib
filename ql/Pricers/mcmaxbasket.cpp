@@ -24,48 +24,43 @@
 
 namespace QuantLib {
 
-    namespace Pricers {
+    McMaxBasket::McMaxBasket(const std::vector<double>& underlying,
+                             const Array& dividendYield, 
+                             const Matrix& covariance,
+                             Rate riskFreeRate,  double residualTime,
+                             bool antitheticVariance, long seed) {
 
-        using namespace MonteCarlo;
+        QL_REQUIRE(covariance.rows() == covariance.columns(),
+                   "McMaxBasket: covariance matrix not square");
+        QL_REQUIRE(covariance.rows() == underlying.size(),
+                   "McMaxBasket: underlying size does not match that of"
+                   " covariance matrix");
+        QL_REQUIRE(covariance.rows() == dividendYield.size(),
+                   "McMaxBasket: dividendYield size does not match"
+                   " that of covariance matrix");
+        QL_REQUIRE(residualTime > 0,
+                   "McMaxBasket: residual time must be positive");
 
-        McMaxBasket::McMaxBasket(const std::vector<double>& underlying,
-            const Array& dividendYield, const Matrix& covariance,
-            Rate riskFreeRate,  double residualTime,
-            bool antitheticVariance, long seed) {
+        //! Initialize the path generator
+        Array mu(riskFreeRate - dividendYield
+                 - 0.5 * covariance.diagonal());
 
-            QL_REQUIRE(covariance.rows() == covariance.columns(),
-                "McMaxBasket: covariance matrix not square");
-            QL_REQUIRE(covariance.rows() == underlying.size(),
-                "McMaxBasket: underlying size does not match that of"
-                " covariance matrix");
-            QL_REQUIRE(covariance.rows() == dividendYield.size(),
-                "McMaxBasket: dividendYield size does not match"
-                " that of covariance matrix");
-            QL_REQUIRE(residualTime > 0,
-                "McMaxBasket: residual time must be positive");
+        Handle<GaussianMultiPathGenerator> pathGenerator(
+            new GaussianMultiPathGenerator(mu, covariance,
+            TimeGrid(residualTime, 1), seed));
 
-            //! Initialize the path generator
-            Array mu(riskFreeRate - dividendYield
-                - 0.5 * covariance.diagonal());
+        //! Initialize the pricer on the path pricer
+        Handle<PathPricer_old<MultiPath> > pathPricer(
+            new MaxBasketPathPricer_old(
+            underlying, QL_EXP(-riskFreeRate*residualTime),
+            antitheticVariance));
 
-            Handle<GaussianMultiPathGenerator> pathGenerator(
-                new GaussianMultiPathGenerator(mu, covariance,
-                TimeGrid(residualTime, 1), seed));
-
-            //! Initialize the pricer on the path pricer
-            Handle<PathPricer_old<MultiPath> > pathPricer(
-                new MaxBasketPathPricer_old(
-                underlying, QL_EXP(-riskFreeRate*residualTime),
-                antitheticVariance));
-
-             //! Initialize the multi-factor Monte Carlo
-            mcModel_ = Handle<MonteCarloModel<MultiAsset_old<
-                                              PseudoRandomSequence_old> > > (
-                new MonteCarloModel<MultiAsset_old<
-                                    PseudoRandomSequence_old> > (pathGenerator,
-                pathPricer, Statistics(), false));
-
-        }
+         //! Initialize the multi-factor Monte Carlo
+        mcModel_ = Handle<MonteCarloModel<MultiAsset_old<
+                                          PseudoRandomSequence_old> > > (
+            new MonteCarloModel<MultiAsset_old<
+                                PseudoRandomSequence_old> > (pathGenerator,
+            pathPricer, Statistics(), false));
 
     }
 

@@ -28,20 +28,16 @@
 
 namespace QuantLib {
 
-    namespace Functions {
-
-        double blackVol(const Date& refDate,
-                        const DayCounter& dc,
-                        const std::vector<Date>& dates,
-                        const std::vector<double>& strikes,
-                        const Matrix& blackVolSurface,
-                        const Date& date1,
-                        const Date& date2,
-                        double strike,
-                        int interpolation2DType,
-                        bool allowExtrapolation);
-
-    }
+    double blackVol(const Date& refDate,
+                    const DayCounter& dc,
+                    const std::vector<Date>& dates,
+                    const std::vector<double>& strikes,
+                    const Matrix& blackVolSurface,
+                    const Date& date1,
+                    const Date& date2,
+                    double strike,
+                    int interpolation2DType,
+                    bool allowExtrapolation);
 
 }
 

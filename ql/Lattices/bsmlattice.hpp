@@ -27,37 +27,34 @@
 
 namespace QuantLib {
 
-    namespace Lattices {
+    //! Simple binomial lattice approximating the Black-Scholes model
+    class BlackScholesLattice : public Lattice {
+      public:
+        BlackScholesLattice(const Handle<Tree>& tree, 
+                            Rate riskFreeRate, 
+                            Time end, 
+                            Size steps);
 
-        //! Simple binomial lattice approximating the Black-Scholes model
-        class BlackScholesLattice : public Lattice {
-          public:
-            BlackScholesLattice(const Handle<Tree>& tree, 
-                                Rate riskFreeRate, 
-                                Time end, 
-                                Size steps);
+        Size size(Size i) const { return tree_->size(i); }
+        DiscountFactor discount(Size i, Size j) const { return discount_; }
 
-            Size size(Size i) const { return tree_->size(i); }
-            DiscountFactor discount(Size i, Size j) const { return discount_; }
+        const Handle<Tree>& tree() const { return tree_; }
+      protected:
+        void stepback(Size i, const Array& values, Array& newValues) const;
 
-            const Handle<Tree>& tree() const { return tree_; }
-          protected:
-            void stepback(Size i, const Array& values, Array& newValues) const;
-
-            Size descendant(Size i, Size index, Size branch) const {
-                return tree_->descendant(i, index, branch);
-            }
-            double probability(Size i, Size index, Size branch) const {
-                return tree_->probability(i, index, branch);
-            }
-          private:
-            Handle<Tree> tree_;
-            DiscountFactor discount_;
-            double pd_, pu_;
-        };
-
-    }
+        Size descendant(Size i, Size index, Size branch) const {
+            return tree_->descendant(i, index, branch);
+        }
+        double probability(Size i, Size index, Size branch) const {
+            return tree_->probability(i, index, branch);
+        }
+      private:
+        Handle<Tree> tree_;
+        DiscountFactor discount_;
+        double pd_, pu_;
+    };
 
 }
+
 
 #endif

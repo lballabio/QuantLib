@@ -26,7 +26,6 @@
 #include <ql/PricingEngines/binaryengines.hpp>
 
 using QuantLib::VolTermStructures::BlackConstantVol;
-using namespace QuantLib::PricingEngines;
 
 namespace QuantLib {
 

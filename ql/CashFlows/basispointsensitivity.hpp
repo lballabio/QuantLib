@@ -34,9 +34,9 @@ namespace QuantLib {
         cash flow they visit, returning the sum through their
         result() method.
     */
-    class BPSCalculator : public Patterns::AcyclicVisitor,
-                          public Patterns::Visitor<CashFlow>,
-                          public Patterns::Visitor<Coupon> {
+    class BPSCalculator : public AcyclicVisitor,
+                          public Visitor<CashFlow>,
+                          public Visitor<Coupon> {
       public:
         BPSCalculator(const RelinkableHandle<TermStructure>& ts) 
         : termStructure_(ts), result_(0.0) {}
@@ -56,10 +56,10 @@ namespace QuantLib {
                                  const RelinkableHandle<TermStructure>&);
 
 
-    class BPSBasketCalculator : public Patterns::AcyclicVisitor,
-                                public Patterns::Visitor<CashFlow>,
-                                public Patterns::Visitor<Coupon>,
-                                public Patterns::Visitor<FixedRateCoupon> {
+    class BPSBasketCalculator : public AcyclicVisitor,
+                                public Visitor<CashFlow>,
+                                public Visitor<Coupon>,
+                                public Visitor<FixedRateCoupon> {
       public:
         BPSBasketCalculator(const RelinkableHandle<TermStructure>& ts,
                             int basis)

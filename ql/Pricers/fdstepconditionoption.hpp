@@ -27,28 +27,24 @@
 
 namespace QuantLib {
 
-    namespace Pricers {
-
-        //! %option executing additional code at each time step
-        class FdStepConditionOption : public FdBsmOption {
-          protected:
-            // constructor
-            FdStepConditionOption(Option::Type type,
-                                  double underlying,
-                                  double strike,
-                                  Spread dividendYield,
-                                  Rate riskFreeRate,
-                                  Time residualTime,
-                                  double volatility,
-                                  int timeSteps,
-                                  int gridPoints);
-            void calculate() const;
-            virtual void initializeStepCondition() const = 0;
-            mutable Handle<StandardStepCondition > stepCondition_;
-            int timeSteps_;
-        };
-
-    }
+    //! %option executing additional code at each time step
+    class FdStepConditionOption : public FdBsmOption {
+      protected:
+        // constructor
+        FdStepConditionOption(Option::Type type,
+                              double underlying,
+                              double strike,
+                              Spread dividendYield,
+                              Rate riskFreeRate,
+                              Time residualTime,
+                              double volatility,
+                              int timeSteps,
+                              int gridPoints);
+        void calculate() const;
+        virtual void initializeStepCondition() const = 0;
+        mutable Handle<StandardStepCondition > stepCondition_;
+        int timeSteps_;
+    };
 
 }
 

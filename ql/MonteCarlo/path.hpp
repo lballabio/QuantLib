@@ -28,92 +28,84 @@
 
 namespace QuantLib {
 
-    namespace MonteCarlo {
+    //! single factor random walk
+    class Path {
+      public:
+        Path(const TimeGrid& timeGrid,
+             const Array& drift = Array(),
+             const Array& diffusion = Array());
+        //! \name inspectors
+        //@{
+        double operator[](int i) const;
+        Size size() const;
+        //@}
+        //! \name read/write access to components
+        //@{
+        const TimeGrid& timeGrid() const;
+        TimeGrid& timeGrid();
+        const Array& drift() const;
+        Array& drift();
+        const Array& diffusion() const;
+        Array& diffusion();
+        //@}
+      private:
+        TimeGrid timeGrid_;
+        Array drift_;
+        Array diffusion_;
+    };
 
-        //! single factor random walk
-        class Path {
-          public:
-            Path(const TimeGrid& timeGrid,
-                 const Array& drift = Array(),
-                 const Array& diffusion = Array());
-            //! \name inspectors
-            //@{
-            double operator[](int i) const;
-            Size size() const;
-            //@}
-            //! \name read/write access to components
-            //@{
-            const TimeGrid& timeGrid() const;
-            TimeGrid& timeGrid();
-            const Array& drift() const;
-            Array& drift();
-            const Array& diffusion() const;
-            Array& diffusion();
-            //@}
-          private:
-            TimeGrid timeGrid_;
-            Array drift_;
-            Array diffusion_;
-        };
 
-        // inline definitions
+    // inline definitions
 
-        inline Path::Path(const TimeGrid& timeGrid, const Array& drift,
-            const Array& diffusion)
-        : timeGrid_(timeGrid), drift_(drift), diffusion_(diffusion) {
-            if (drift_.size()==0) {
-                if (timeGrid_.size() > 0)
-                    drift_ = Array(timeGrid_.size()-1);
-            } else {
-                QL_REQUIRE(drift_.size() == timeGrid_.size()-1,
-                    "Path: drift and times have different size");
-            }
-            if (diffusion_.size()==0) {
-                if (timeGrid_.size() > 0)
-                    diffusion_ = Array(timeGrid_.size()-1);
-            } else {
-                QL_REQUIRE(diffusion_.size() == timeGrid_.size()-1,
-                    "Path: diffusion and times have different size");
-            }
-
+    inline Path::Path(const TimeGrid& timeGrid, const Array& drift,
+                      const Array& diffusion)
+    : timeGrid_(timeGrid), drift_(drift), diffusion_(diffusion) {
+        if (drift_.size()==0) {
+            if (timeGrid_.size() > 0)
+                drift_ = Array(timeGrid_.size()-1);
+        } else {
+            QL_REQUIRE(drift_.size() == timeGrid_.size()-1,
+                       "Path: drift and times have different size");
         }
-
-        inline double Path::operator[](int i) const {
-            return drift_[i] + diffusion_[i];
+        if (diffusion_.size()==0) {
+            if (timeGrid_.size() > 0)
+                diffusion_ = Array(timeGrid_.size()-1);
+        } else {
+            QL_REQUIRE(diffusion_.size() == timeGrid_.size()-1,
+                       "Path: diffusion and times have different size");
         }
+    }
 
-        inline Size Path::size() const {
-            return drift_.size();
-        }
+    inline double Path::operator[](int i) const {
+        return drift_[i] + diffusion_[i];
+    }
 
-        inline const TimeGrid& Path::timeGrid() const {
-            return timeGrid_;
-        }
+    inline Size Path::size() const {
+        return drift_.size();
+    }
 
-        inline TimeGrid& Path::timeGrid() {
-            return timeGrid_;
-        }
+    inline const TimeGrid& Path::timeGrid() const {
+        return timeGrid_;
+    }
 
-        inline const Array& Path::drift() const {
-            return drift_;
-        }
+    inline TimeGrid& Path::timeGrid() {
+        return timeGrid_;
+    }
 
-        inline Array& Path::drift() {
-            return drift_;
-        }
+    inline const Array& Path::drift() const {
+        return drift_;
+    }
 
-        inline const Array& Path::diffusion() const {
-            return diffusion_;
-        }
+    inline Array& Path::drift() {
+        return drift_;
+    }
 
-        inline Array& Path::diffusion() {
-            return diffusion_;
-        }
+    inline const Array& Path::diffusion() const {
+        return diffusion_;
+    }
 
-
-
-
-
+    inline Array& Path::diffusion() {
+        return diffusion_;
     }
 
 }

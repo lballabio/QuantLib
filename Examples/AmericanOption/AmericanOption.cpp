@@ -19,10 +19,7 @@
 #include <ql/quantlib.hpp>
 
 using namespace QuantLib;
-using namespace QuantLib::PricingEngines;
-using namespace QuantLib::MonteCarlo;
 using namespace QuantLib::RandomNumbers;
-using namespace QuantLib::Pricers;
 using namespace QuantLib::TermStructures;
 using namespace QuantLib::VolTermStructures;
 
@@ -162,8 +159,7 @@ int main(int argc, char* argv[])
         // Binomial Method (JR)
         method = "Binomial (JR)";
         option.setPricingEngine(Handle<PricingEngine>(
-            new BinomialVanillaEngine(
-                BinomialVanillaEngine::JarrowRudd, timeSteps)));
+            new BinomialVanillaEngine<JarrowRudd>(timeSteps)));
         value = option.NPV();
         discrepancy = QL_FABS(value-rightValue);
         relativeDiscrepancy = discrepancy/rightValue;
@@ -178,8 +174,7 @@ int main(int argc, char* argv[])
         // Binomial Method (CRR)
         method = "Binomial (CRR)";
         option.setPricingEngine(Handle<PricingEngine>(
-            new BinomialVanillaEngine(
-                BinomialVanillaEngine::CoxRossRubinstein, timeSteps)));
+            new BinomialVanillaEngine<CoxRossRubinstein>(timeSteps)));
         value = option.NPV();
         discrepancy = QL_FABS(value-rightValue);
         relativeDiscrepancy = discrepancy/rightValue;
@@ -193,8 +188,7 @@ int main(int argc, char* argv[])
         // Equal Probability Additive Binomial Tree (EQP)
         method = "Additive (EQP)";
         option.setPricingEngine(Handle<PricingEngine>(
-            new BinomialVanillaEngine(
-                BinomialVanillaEngine::EQP, timeSteps)));
+            new BinomialVanillaEngine<AdditiveEQPBinomialTree>(timeSteps)));
         value = option.NPV();
         discrepancy = QL_FABS(value-rightValue);
         relativeDiscrepancy = discrepancy/rightValue;
@@ -208,8 +202,7 @@ int main(int argc, char* argv[])
         // Equal Jumps Additive Binomial Tree (Trigeorgis)
         method = "Bin. Trigeorgis";
         option.setPricingEngine(Handle<PricingEngine>(
-            new BinomialVanillaEngine(
-                BinomialVanillaEngine::Trigeorgis, timeSteps)));
+            new BinomialVanillaEngine<Trigeorgis>(timeSteps)));
         value = option.NPV();
         discrepancy = QL_FABS(value-rightValue);
         relativeDiscrepancy = discrepancy/rightValue;
@@ -223,8 +216,7 @@ int main(int argc, char* argv[])
         // Tian Binomial Tree (third moment matching)
         method = "Binomial Tian";
         option.setPricingEngine(Handle<PricingEngine>(
-            new BinomialVanillaEngine(
-                BinomialVanillaEngine::Tian, timeSteps)));
+            new BinomialVanillaEngine<Tian>(timeSteps)));
         value = option.NPV();
         discrepancy = QL_FABS(value-rightValue);
         relativeDiscrepancy = discrepancy/rightValue;

@@ -19,15 +19,13 @@
     \brief Hull & White model
 */
 
-#include "ql/ShortRateModels/OneFactorModels/hullwhite.hpp"
-#include "ql/Lattices/trinomialtree.hpp"
-#include "ql/blackmodel.hpp"
+#include <ql/ShortRateModels/OneFactorModels/hullwhite.hpp>
+#include <ql/Lattices/trinomialtree.hpp>
+#include <ql/blackmodel.hpp>
 
 namespace QuantLib {
 
     namespace ShortRateModels {
-
-        using namespace Lattices;
 
         HullWhite::HullWhite(
             const RelinkableHandle<TermStructure>& termStructure, 

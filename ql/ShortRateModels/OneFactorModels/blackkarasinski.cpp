@@ -19,15 +19,13 @@
     \brief Black-Karasinski model
 */
 
-#include "ql/ShortRateModels/OneFactorModels/blackkarasinski.hpp"
-#include "ql/Lattices/trinomialtree.hpp"
-#include "ql/Solvers1D/brent.hpp"
+#include <ql/ShortRateModels/OneFactorModels/blackkarasinski.hpp>
+#include <ql/Lattices/trinomialtree.hpp>
+#include <ql/Solvers1D/brent.hpp>
 
 namespace QuantLib {
 
     namespace ShortRateModels {
-
-        using namespace Lattices;
 
         //Private function used by solver to determine time-dependent parameter
         class BlackKarasinski::Helper {

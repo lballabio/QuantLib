@@ -31,8 +31,7 @@ namespace QuantLib {
     namespace ShortRateModels {
 
         //! liquid market instrument used during calibration
-        class CalibrationHelper : public Patterns::Observer, 
-                                  public Patterns::Observable {
+        class CalibrationHelper : public Observer, public Observable {
           public:
             CalibrationHelper(
                 const RelinkableHandle<MarketElement>& volatility,

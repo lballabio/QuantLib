@@ -24,92 +24,87 @@
 
 namespace QuantLib {
 
-    namespace Lattices {
-
-        void Lattice::computeStatePrices(Size until) {
-            for (Size i=statePricesLimit_; i<until; i++) {
-                statePrices_.push_back(Array(size(i+1), 0.0));
-                for (Size j=0; j<size(i); j++) {
-                    DiscountFactor disc = discount(i,j);
-                    double statePrice = statePrices_[i][j];
-                    for (Size l=0; l<n_; l++) {
-                        statePrices_[i+1][descendant(i,j,l)] +=
-                            statePrice*disc*probability(i,j,l);
-                    }
-                }
-            }
-            statePricesLimit_ = until;
-        }
-
-        const Array& Lattice::statePrices(Size i) {
-            if (i>statePricesLimit_)
-                computeStatePrices(i);
-            return statePrices_[i];
-        }
-
-        double Lattice::presentValue(
-            const Handle<DiscretizedAsset>& asset) {
-            Size i = t_.findIndex(asset->time());
-            if (i>statePricesLimit_)
-                computeStatePrices(i);
-            return DotProduct(asset->values(), statePrices_[i]);
-        }
-
-        void Lattice::initialize(const Handle<DiscretizedAsset>& asset, 
-                                 Time t) const {
-
-            Size i = t_.findIndex(t);
-            asset->time() = t;
-            asset->reset(size(i));
-        }
-
-        void Lattice::rollback(const Handle<DiscretizedAsset>& asset, 
-                               Time to) const {
-            rollAlmostBack(asset,to);
-            asset->postAdjustValues();
-        }
-
-        void Lattice::rollAlmostBack(const Handle<DiscretizedAsset>& asset, 
-                                     Time to) const {
-
-            Time from = asset->time();
-
-            QL_REQUIRE(from >= to, 
-                       "Lattice: cannot roll the asset back to" +
-                       DoubleFormatter::toString(to) +
-                       " (it is already at t = " +
-                       DoubleFormatter::toString(from) + ")");
-
-            if (from > to) {
-                int iFrom = t_.findIndex(from);
-                int iTo = t_.findIndex(to);
-
-                for (int i=iFrom-1; i>=iTo; i--) {
-                    Array newValues(size(i));
-                    stepback(i, asset->values(), newValues);
-                    asset->time() = t_[i];
-                    asset->values() = newValues;
-                    // skip the very last post-adjustment
-                    if (i != iTo)
-                        asset->adjustValues();
-                    else
-                        asset->preAdjustValues();
-                }
-            }
-        }
-
-        void Lattice::stepback(
-            Size i, const Array& values, Array& newValues) const {
+    void Lattice::computeStatePrices(Size until) {
+        for (Size i=statePricesLimit_; i<until; i++) {
+            statePrices_.push_back(Array(size(i+1), 0.0));
             for (Size j=0; j<size(i); j++) {
-                double value = 0.0;
+                DiscountFactor disc = discount(i,j);
+                double statePrice = statePrices_[i][j];
                 for (Size l=0; l<n_; l++) {
-                    value += probability(i,j,l)*values[descendant(i,j,l)];
+                    statePrices_[i+1][descendant(i,j,l)] +=
+                        statePrice*disc*probability(i,j,l);
                 }
-                value *= discount(i,j);
-                newValues[j] = value;
             }
         }
+        statePricesLimit_ = until;
+    }
 
+    const Array& Lattice::statePrices(Size i) {
+        if (i>statePricesLimit_)
+            computeStatePrices(i);
+        return statePrices_[i];
+    }
+
+    double Lattice::presentValue(const Handle<DiscretizedAsset>& asset) {
+        Size i = t_.findIndex(asset->time());
+        if (i>statePricesLimit_)
+            computeStatePrices(i);
+        return DotProduct(asset->values(), statePrices_[i]);
+    }
+
+    void Lattice::initialize(const Handle<DiscretizedAsset>& asset, 
+                             Time t) const {
+
+        Size i = t_.findIndex(t);
+        asset->time() = t;
+        asset->reset(size(i));
+    }
+
+    void Lattice::rollback(const Handle<DiscretizedAsset>& asset, 
+                           Time to) const {
+        rollAlmostBack(asset,to);
+        asset->postAdjustValues();
+    }
+
+    void Lattice::rollAlmostBack(const Handle<DiscretizedAsset>& asset, 
+                                 Time to) const {
+
+        Time from = asset->time();
+
+        QL_REQUIRE(from >= to, 
+                   "Lattice: cannot roll the asset back to" +
+                   DoubleFormatter::toString(to) +
+                   " (it is already at t = " +
+                   DoubleFormatter::toString(from) + ")");
+
+        if (from > to) {
+            int iFrom = t_.findIndex(from);
+            int iTo = t_.findIndex(to);
+
+            for (int i=iFrom-1; i>=iTo; i--) {
+                Array newValues(size(i));
+                stepback(i, asset->values(), newValues);
+                asset->time() = t_[i];
+                asset->values() = newValues;
+                // skip the very last post-adjustment
+                if (i != iTo)
+                    asset->adjustValues();
+                else
+                    asset->preAdjustValues();
+            }
+        }
+    }
+
+    void Lattice::stepback(Size i, const Array& values, 
+                           Array& newValues) const {
+        for (Size j=0; j<size(i); j++) {
+            double value = 0.0;
+            for (Size l=0; l<n_; l++) {
+                value += probability(i,j,l)*values[descendant(i,j,l)];
+            }
+            value *= discount(i,j);
+            newValues[j] = value;
+        }
     }
 
 }

@@ -22,48 +22,41 @@
 #include <ql/MonteCarlo/everestpathpricer.hpp>
 #include <ql/Pricers/mceverest.hpp>
 
-
 namespace QuantLib {
 
-    namespace Pricers {
+    McEverest::McEverest(const Array& dividendYield,
+                         const Matrix& covariance,
+                         Rate riskFreeRate, Time residualTime,
+                         bool antitheticVariance, long seed) {
 
-        using namespace MonteCarlo;
+        Size  n = covariance.rows();
+        QL_REQUIRE(covariance.columns() == n,
+                   "McEverest: covariance matrix not square");
+        QL_REQUIRE(dividendYield.size() == n,
+                   "McEverest: dividendYield size does not match"
+                   " that of covariance matrix");
+        QL_REQUIRE(residualTime > 0,
+                   "McEverest: residualTime must be positive");
 
-        McEverest::McEverest(const Array& dividendYield,
-            const Matrix& covariance,
-            Rate riskFreeRate, Time residualTime,
-            bool antitheticVariance, long seed) {
+        //! Initialize the path generator
+        Array mu(riskFreeRate - dividendYield
+                 - 0.5 * covariance.diagonal());
 
-            Size  n = covariance.rows();
-            QL_REQUIRE(covariance.columns() == n,
-                "McEverest: covariance matrix not square");
-            QL_REQUIRE(dividendYield.size() == n,
-                "McEverest: dividendYield size does not match"
-                " that of covariance matrix");
-            QL_REQUIRE(residualTime > 0,
-                "McEverest: residualTime must be positive");
+        Handle<GaussianMultiPathGenerator> pathGenerator(
+            new GaussianMultiPathGenerator(mu, covariance,
+                                           TimeGrid(residualTime, 1), seed));
 
-            //! Initialize the path generator
-            Array mu(riskFreeRate - dividendYield
-                                    - 0.5 * covariance.diagonal());
+        //! Initialize the pricer on the path pricer
+        Handle<PathPricer_old<MultiPath> > pathPricer(
+            new EverestPathPricer_old(QL_EXP(-riskFreeRate*residualTime),
+            antitheticVariance));
 
-            Handle<GaussianMultiPathGenerator> pathGenerator(
-                new GaussianMultiPathGenerator(mu, covariance,
-                TimeGrid(residualTime, 1), seed));
-
-            //! Initialize the pricer on the path pricer
-            Handle<PathPricer_old<MultiPath> > pathPricer(
-                new EverestPathPricer_old(QL_EXP(-riskFreeRate*residualTime),
-                antitheticVariance));
-
-             //! Initialize the multi-factor Monte Carlo
-            mcModel_ = Handle<MonteCarloModel<MultiAsset_old<
-                                              PseudoRandomSequence_old> > > (
-                new MonteCarloModel<MultiAsset_old<
-                                    PseudoRandomSequence_old> > (
-                pathGenerator, pathPricer, Statistics(), false));
-
-        }
+         //! Initialize the multi-factor Monte Carlo
+        mcModel_ = Handle<MonteCarloModel<MultiAsset_old<
+                                          PseudoRandomSequence_old> > > (
+            new MonteCarloModel<MultiAsset_old<
+                                PseudoRandomSequence_old> > (
+            pathGenerator, pathPricer, Statistics(), false));
 
     }
 

@@ -25,101 +25,96 @@
 
 namespace QuantLib {
 
-    namespace MonteCarlo {
+    // constructor
+    BiasedBarrierPathPricer::BiasedBarrierPathPricer(
+                            Barrier::Type barrierType, 
+                            double barrier, 
+                            double rebate, 
+                            Option::Type type,
+                            double underlying, 
+                            double strike,
+                            const RelinkableHandle<TermStructure>& riskFreeTS)
+    : PathPricer<Path>(riskFreeTS), underlying_(underlying),
+      payoff_(type, strike), barrierType_(barrierType),
+      barrier_(barrier), rebate_(rebate) {
+        QL_REQUIRE(underlying>0.0,
+                   "BiasedBarrierPathPricer: "
+                   "underlying less/equal zero not allowed");
+        QL_REQUIRE(strike>0.0,
+                   "BiasedBarrierPathPricer: "
+                   "strike less/equal zero not allowed");
+        QL_REQUIRE(barrier>0.0,
+                   "BiasedBarrierPathPricer: "
+                   "barrier less/equal zero not allowed");
+    }
 
-        
-        // constructor
-        BiasedBarrierPathPricer::BiasedBarrierPathPricer(
-            Barrier::Type barrierType, 
-            double barrier, 
-            double rebate, 
-            Option::Type type,
-            double underlying, 
-            double strike,
-            const RelinkableHandle<TermStructure>& riskFreeTS)
-        : PathPricer<Path>(riskFreeTS), underlying_(underlying),
-          payoff_(type, strike), barrierType_(barrierType),
-          barrier_(barrier), rebate_(rebate) {
-            QL_REQUIRE(underlying>0.0,
-                "BiasedBarrierPathPricer: "
-                "underlying less/equal zero not allowed");
-            QL_REQUIRE(strike>0.0,
-                "BiasedBarrierPathPricer: "
-                "strike less/equal zero not allowed");
-            QL_REQUIRE(barrier>0.0,
-                "BiasedBarrierPathPricer: "
-                "barrier less/equal zero not allowed");
-        }
 
-        
-        // price a path
-        double BiasedBarrierPathPricer::operator()(const Path& path) const {
-            Size n = path.size();
-            QL_REQUIRE(n>0,
-                "BiasedBarrierPathPricer: the path cannot be empty");
-           
-            bool isOptionActive = false;
-            double asset_price = underlying_;
-            double log_drift, log_random;
-            Size i;
+    // price a path
+    double BiasedBarrierPathPricer::operator()(const Path& path) const {
+        Size n = path.size();
+        QL_REQUIRE(n>0,
+                   "BiasedBarrierPathPricer: the path cannot be empty");
 
-            switch (barrierType_) {
-              case Barrier::DownIn:
-                isOptionActive = false;
-                for (i = 0; i < n; i++) {
-                    log_drift = path.drift()[i];
-                    log_random = path.diffusion()[i];
-                    asset_price = asset_price * QL_EXP(log_drift+log_random);
-                    if (asset_price <= barrier_) {
-                        isOptionActive = true;                        
-                    }   
-                }   
-                break;
-              case Barrier::UpIn:
-                isOptionActive = false;
-                for (i = 0; i < n; i++) {
-                    log_drift = path.drift()[i];
-                    log_random = path.diffusion()[i];
-                    asset_price = asset_price * QL_EXP(log_drift+log_random);
-                    if (asset_price >= barrier_) {
-                        isOptionActive = true;                        
-                    }   
-                }                   
-                break;
-              case Barrier::DownOut:
-                isOptionActive = true;
-                for (i = 0; i < n; i++) {
-                    log_drift = path.drift()[i];
-                    log_random = path.diffusion()[i];
-                    asset_price = asset_price * QL_EXP(log_drift+log_random);
-                    if (asset_price <= barrier_) {
-                        isOptionActive = false;                        
-                    }   
-                }   
-                break;
-              case Barrier::UpOut:
-                isOptionActive = true;
-                for (i = 0; i < n; i++) {
-                    log_drift = path.drift()[i];
-                    log_random = path.diffusion()[i];
-                    asset_price = asset_price * QL_EXP(log_drift+log_random);
-                    if (asset_price >= barrier_) {
-                        isOptionActive = false;                        
-                    }   
-                }                   
-                break;
-              default:
-                throw Error("BiasedBarrierPathPricer: unknown BarrierType");
-            }            
+        bool isOptionActive = false;
+        double asset_price = underlying_;
+        double log_drift, log_random;
+        Size i;
 
-            if (isOptionActive) {
-                return payoff_(asset_price) *
-                    riskFreeTS_->discount(path.timeGrid().back());
-            } else {
-                return 0.0;
+        switch (barrierType_) {
+          case Barrier::DownIn:
+            isOptionActive = false;
+            for (i = 0; i < n; i++) {
+                log_drift = path.drift()[i];
+                log_random = path.diffusion()[i];
+                asset_price = asset_price * QL_EXP(log_drift+log_random);
+                if (asset_price <= barrier_) {
+                    isOptionActive = true;
+                }
             }
+            break;
+          case Barrier::UpIn:
+            isOptionActive = false;
+            for (i = 0; i < n; i++) {
+                log_drift = path.drift()[i];
+                log_random = path.diffusion()[i];
+                asset_price = asset_price * QL_EXP(log_drift+log_random);
+                if (asset_price >= barrier_) {
+                    isOptionActive = true;
+                }
+            }
+            break;
+          case Barrier::DownOut:
+            isOptionActive = true;
+            for (i = 0; i < n; i++) {
+                log_drift = path.drift()[i];
+                log_random = path.diffusion()[i];
+                asset_price = asset_price * QL_EXP(log_drift+log_random);
+                if (asset_price <= barrier_) {
+                    isOptionActive = false;
+                }
+            }
+            break;
+          case Barrier::UpOut:
+            isOptionActive = true;
+            for (i = 0; i < n; i++) {
+                log_drift = path.drift()[i];
+                log_random = path.diffusion()[i];
+                asset_price = asset_price * QL_EXP(log_drift+log_random);
+                if (asset_price >= barrier_) {
+                    isOptionActive = false;
+                }
+            }
+            break;
+          default:
+            throw Error("BiasedBarrierPathPricer: unknown BarrierType");
         }
 
+        if (isOptionActive) {
+            return payoff_(asset_price) *
+                riskFreeTS_->discount(path.timeGrid().back());
+        } else {
+            return 0.0;
+        }
     }
 
 }

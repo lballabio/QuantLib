@@ -29,32 +29,27 @@
 
 namespace QuantLib {
 
-    namespace Pricers {
-
-        //! simple example of Monte Carlo pricer
-        class McCliquetOption 
-        : public McPricer<MonteCarlo::SingleAsset_old<
-                              MonteCarlo::PseudoRandom_old> >{
-          public:
-            McCliquetOption(Option::Type type,
-                       double underlying,
-                       double moneyness,
-                       const std::vector<Spread>& dividendYield,
-                       const std::vector<Rate>& riskFreeRate,
-                       const std::vector<Time>& times,
-                       const std::vector<double>& volatility,
-                       double accruedCoupon,
-                       double lastFixing,
-                       double localCap,
-                       double localFloor,
-                       double globalCap,
-                       double globalFloor,
-                       bool redemptionOnly,
-                       bool antitheticVariance,
-                       long seed = 0);
-        };
-
-    }
+    //! simple example of Monte Carlo pricer
+    class McCliquetOption 
+        : public McPricer<SingleAsset_old<PseudoRandom_old> >{
+      public:
+        McCliquetOption(Option::Type type,
+                        double underlying,
+                        double moneyness,
+                        const std::vector<Spread>& dividendYield,
+                        const std::vector<Rate>& riskFreeRate,
+                        const std::vector<Time>& times,
+                        const std::vector<double>& volatility,
+                        double accruedCoupon,
+                        double lastFixing,
+                        double localCap,
+                        double localFloor,
+                        double globalCap,
+                        double globalFloor,
+                        bool redemptionOnly,
+                        bool antitheticVariance,
+                        long seed = 0);
+    };
 
 }
 

@@ -33,7 +33,7 @@ namespace QuantLib {
     namespace Indexes = ::QuantLib;
 
     //! purely virtual base class for indexes
-    class Index : public Patterns::Observable {
+    class Index : public Observable {
       public:
         virtual ~Index() {}
         //! Returns the name of the index.

@@ -30,10 +30,8 @@
 #define LENGTH(a) (sizeof(a)/sizeof(a[0]))
 
 using namespace QuantLib;
-using namespace QuantLib::PricingEngines;
 using namespace QuantLib::TermStructures;
 using namespace QuantLib::VolTermStructures;
-using namespace QuantLib::MonteCarlo;
 
 namespace {
 

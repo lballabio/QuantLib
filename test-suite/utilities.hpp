@@ -22,7 +22,7 @@
 #include <vector>
 #include <numeric>
 
-class Flag : public QuantLib::Patterns::Observer {
+class Flag : public QuantLib::Observer {
   private:
     bool up_;
   public:

@@ -23,73 +23,70 @@
 
 namespace QuantLib {
 
-    namespace Pricers {
+    #if !defined(QL_PATCH_SOLARIS)
+    const CumulativeNormalDistribution EuropeanOption::f_;
+    #endif
 
-        #if !defined(QL_PATCH_SOLARIS)
-        const CumulativeNormalDistribution EuropeanOption::f_;
-        #endif
+    EuropeanOption::EuropeanOption(Option::Type type, double underlying,
+                                   double strike, Spread dividendYield, 
+                                   Rate riskFreeRate, Time residualTime, 
+                                   double volatility)
+    : SingleAssetOption(type, underlying, strike, dividendYield,
+                        riskFreeRate, residualTime, volatility),
+      alpha_(Null<double>()), beta_(Null<double>()),
+      standardDeviation_(Null<double>()), D1_(Null<double>()),
+      D2_(Null<double>()), NID1_(Null<double>()),
+      dividendDiscount_(Null<DiscountFactor>()),
+      riskFreeDiscount_(Null<DiscountFactor>()) {}
 
-        EuropeanOption::EuropeanOption(Option::Type type, double underlying,
-            double strike, Spread dividendYield, Rate riskFreeRate,
-            Time residualTime, double volatility)
-        : SingleAssetOption(type, underlying, strike, dividendYield,
-                            riskFreeRate, residualTime, volatility),
-          alpha_(Null<double>()), beta_(Null<double>()),
-          standardDeviation_(Null<double>()), D1_(Null<double>()),
-          D2_(Null<double>()), NID1_(Null<double>()),
-          dividendDiscount_(Null<DiscountFactor>()),
-          riskFreeDiscount_(Null<DiscountFactor>()) {}
+    void EuropeanOption::setVolatility(double newVolatility) {
+        SingleAssetOption::setVolatility(newVolatility);
+        D1_ = D2_ = alpha_ = beta_ = NID1_ = Null<double>();
+        standardDeviation_ = Null<double>();
+    }
 
-        void EuropeanOption::setVolatility(double newVolatility) {
-            SingleAssetOption::setVolatility(newVolatility);
-            D1_ = D2_ = alpha_ = beta_ = NID1_ = Null<double>();
-            standardDeviation_ = Null<double>();
-        }
+    void EuropeanOption::setRiskFreeRate(Rate newRate) {
+        SingleAssetOption::setRiskFreeRate(newRate);
+        D1_ = D2_ = alpha_ = beta_ = NID1_ = Null<double>();
+        riskFreeDiscount_ = Null<DiscountFactor>();
+    }
 
-        void EuropeanOption::setRiskFreeRate(Rate newRate) {
-            SingleAssetOption::setRiskFreeRate(newRate);
-            D1_ = D2_ = alpha_ = beta_ = NID1_ = Null<double>();
-            riskFreeDiscount_ = Null<DiscountFactor>();
-        }
+    void EuropeanOption::setDividendYield(Rate newDividendYield) {
+        SingleAssetOption::setDividendYield(newDividendYield);
+        D1_ = D2_ = alpha_ = beta_ = NID1_ = Null<double>();
+        dividendDiscount_ = Null<DiscountFactor>();
+    }
 
-        void EuropeanOption::setDividendYield(Rate newDividendYield) {
-            SingleAssetOption::setDividendYield(newDividendYield);
-            D1_ = D2_ = alpha_ = beta_ = NID1_ = Null<double>();
-            dividendDiscount_ = Null<DiscountFactor>();
-        }
+    double EuropeanOption::value() const {
+        return  underlying_ * dividendDiscount() * alpha() -
+            payoff_.strike() * riskFreeDiscount() * beta();
+    }
 
-        double EuropeanOption::value() const {
-            return  underlying_ * dividendDiscount() * alpha() -
-                                    payoff_.strike() * riskFreeDiscount() * beta();
-        }
+    double EuropeanOption::delta() const {
+        return dividendDiscount()*alpha();
+    }
 
-        double EuropeanOption::delta() const {
-            return dividendDiscount()*alpha();
-        }
+    double EuropeanOption::gamma() const {
+        return NID1()*dividendDiscount()/(underlying_*standardDeviation());
+    }
 
-        double EuropeanOption::gamma() const {
-            return NID1()*dividendDiscount()/(underlying_*standardDeviation());
-        }
+    double EuropeanOption::theta() const {
+        return -underlying_ * NID1() * volatility_ *
+            dividendDiscount()/(2.0*QL_SQRT(residualTime_)) +
+            dividendYield_*underlying_*alpha()*dividendDiscount() -
+            riskFreeRate_*payoff_.strike()*riskFreeDiscount()*beta();
+    }
 
-        double EuropeanOption::theta() const {
-            return -underlying_ * NID1() * volatility_ *
-                dividendDiscount()/(2.0*QL_SQRT(residualTime_)) +
-                  dividendYield_*underlying_*alpha()*dividendDiscount() -
-                        riskFreeRate_*payoff_.strike()*riskFreeDiscount()*beta();
-        }
+    double EuropeanOption::rho() const {
+        return residualTime_*riskFreeDiscount()*payoff_.strike()*beta();
+    }
 
-        double EuropeanOption::rho() const {
-            return residualTime_*riskFreeDiscount()*payoff_.strike()*beta();
-        }
+    double EuropeanOption::dividendRho() const {
+        return -residualTime_*dividendDiscount()*underlying_*alpha();
+    }
 
-        double EuropeanOption::dividendRho() const {
-            return -residualTime_*dividendDiscount()*underlying_*alpha();
-        }
-
-        double EuropeanOption::vega() const {
-            return underlying_*NID1()*dividendDiscount()*QL_SQRT(residualTime_);
-        }
-
+    double EuropeanOption::vega() const {
+        return underlying_*NID1()*dividendDiscount()*QL_SQRT(residualTime_);
     }
 
 }

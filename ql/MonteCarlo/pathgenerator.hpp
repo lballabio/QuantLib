@@ -29,234 +29,233 @@
 
 namespace QuantLib {
 
-    namespace MonteCarlo {
+    //! Generates random paths using a sequence generator
+    /*! Generates random paths with drift(S,t) and variance(S,t)
+        using a sequence generator
+    */
+    template <class SG>
+    class PathGenerator {
+      public:
+        typedef Sample<Path> sample_type;
+        // constructors
+        PathGenerator(const Handle<DiffusionProcess>& diffProcess,
+                      Time length,
+                      Size timeSteps,
+                      const SG& generator);
+        PathGenerator(const Handle<DiffusionProcess>& diffProcess,
+                      const TimeGrid& timeGrid,
+                      const SG& generator);
+        //! \name inspectors
+        //@{
+        const sample_type& next() const;
+        const sample_type& antithetic() const;
+        Size size() const { return dimension_; }
+        const TimeGrid& timeGrid() const { return timeGrid_; }
+        //@}
+      private:
+        SG generator_;
+        Size dimension_;
+        TimeGrid timeGrid_;
+        Handle<DiffusionProcess> diffProcess_;
+        mutable sample_type next_;
+        mutable double asset_;
+    };
 
-        //! Generates random paths using a sequence generator
-        /*! Generates random paths with drift(S,t) and variance(S,t)
-            using a sequence generator
-        */
-        template <class SG>
-        class PathGenerator {
-          public:
-            typedef Sample<Path> sample_type;
-            // constructors
-            PathGenerator(const Handle<DiffusionProcess>& diffProcess,
-                          Time length,
-                          Size timeSteps,
-                          const SG& generator);
-            PathGenerator(const Handle<DiffusionProcess>& diffProcess,
-                          const TimeGrid& timeGrid,
-                          const SG& generator);
-            //! \name inspectors
-            //@{
-            const sample_type& next() const;
-            const sample_type& antithetic() const;
-            Size size() const { return dimension_; }
-            const TimeGrid& timeGrid() const { return timeGrid_; }
-            //@}
-          private:
-            SG generator_;
-            Size dimension_;
-            TimeGrid timeGrid_;
-            Handle<DiffusionProcess> diffProcess_;
-            mutable sample_type next_;
-            mutable double asset_;
-        };
+    template <class SG>
+    PathGenerator<SG>::PathGenerator(
+                             const Handle<DiffusionProcess>& diffProcess,
+                             Time length, Size timeSteps, const SG& generator)
+    : generator_(generator), dimension_(generator_.dimension()),
+      timeGrid_(length, timeSteps), diffProcess_(diffProcess),
+      next_(Path(timeGrid_),1.0) {
+        QL_REQUIRE(dimension_==timeSteps,
+                   "PathGenerator::PathGenerator :"
+                   "sequence generator dimensionality ("
+                   + IntegerFormatter::toString(dimension_) +
+                   ") != timeSteps ("
+                   + IntegerFormatter::toString(timeSteps) +
+                   ")");
+    }
 
-        template <class SG>
-        PathGenerator<SG>::PathGenerator(
-            const Handle<DiffusionProcess>& diffProcess,
-            Time length, Size timeSteps, const SG& generator)
-        : generator_(generator), dimension_(generator_.dimension()),
-          timeGrid_(length, timeSteps), diffProcess_(diffProcess),
-          next_(Path(timeGrid_),1.0) {
-            QL_REQUIRE(dimension_==timeSteps,
-                "PathGenerator::PathGenerator :"
-                "sequence generator dimensionality ("
-                + IntegerFormatter::toString(dimension_) +
-                ") != timeSteps ("
-                + IntegerFormatter::toString(timeSteps) +
-                ")");
+    template <class SG>
+    PathGenerator<SG>::PathGenerator(
+                                const Handle<DiffusionProcess>& diffProcess,
+                                const TimeGrid& timeGrid, const SG& generator)
+    : generator_(generator), dimension_(generator_.dimension()),
+      timeGrid_(timeGrid), diffProcess_(diffProcess),
+      next_(Path(timeGrid_),1.0) {
+        QL_REQUIRE(dimension_==timeGrid_.size()-1,
+                   "PathGenerator::PathGenerator :"
+                   "sequence generator dimensionality ("
+                   + IntegerFormatter::toString(dimension_) +
+                   ") != timeSteps ("
+                   + IntegerFormatter::toString(timeGrid_.size()-1) +
+                   ")");
+    }
+
+    template <class SG>
+    inline const typename PathGenerator<SG>::sample_type&
+    PathGenerator<SG>::next() const {
+
+        typedef typename SG::sample_type sequence_type;
+        const sequence_type& sequence_ = generator_.nextSequence();
+
+        next_.weight = sequence_.weight;
+
+        // starting point for asset value
+        asset_ = diffProcess_->x0();
+        double dt;
+        Time t;
+        for (Size i=0; i<next_.value.size(); i++) {
+            t = timeGrid_[i+1];
+            dt = timeGrid_.dt(i);
+            next_.value.drift()[i] = dt * 
+                diffProcess_->drift(t, asset_);
+            next_.value.diffusion()[i] = sequence_.value[i] *
+                QL_SQRT(diffProcess_->variance(t, asset_, dt));
+            asset_ *= QL_EXP(next_.value.drift()[i] + 
+                             next_.value.diffusion()[i]);
         }
 
-        template <class SG>
-        PathGenerator<SG>::PathGenerator(
-            const Handle<DiffusionProcess>& diffProcess,
-            const TimeGrid& timeGrid, const SG& generator)
-        : generator_(generator), dimension_(generator_.dimension()),
-          timeGrid_(timeGrid), diffProcess_(diffProcess),
-          next_(Path(timeGrid_),1.0) {
-            QL_REQUIRE(dimension_==timeGrid_.size()-1,
-                "PathGenerator::PathGenerator :"
-                "sequence generator dimensionality ("
-                + IntegerFormatter::toString(dimension_) +
-                ") != timeSteps ("
-                + IntegerFormatter::toString(timeGrid_.size()-1) +
-                ")");
-        }
-    
-        template <class SG>
-        inline const typename PathGenerator<SG>::sample_type&
-        PathGenerator<SG>::next() const {
-            
-            typedef typename SG::sample_type sequence_type;
-            const sequence_type& sequence_ = generator_.nextSequence();
+        return next_;
+    }
 
-            next_.weight = sequence_.weight;
+    template <class SG>
+    inline const typename PathGenerator<SG>::sample_type&
+    PathGenerator<SG>::antithetic() const {
 
-            // starting point for asset value
-            asset_ = diffProcess_->x0();
-            double dt;
-            Time t;
-            for (Size i=0; i<next_.value.size(); i++) {
-                t = timeGrid_[i+1];
-                dt = timeGrid_.dt(i);
-                next_.value.drift()[i] = dt * 
-                    diffProcess_->drift(t, asset_);
-                next_.value.diffusion()[i] = sequence_.value[i] *
-                    QL_SQRT(diffProcess_->variance(t, asset_, dt));
-                asset_ *= QL_EXP(next_.value.drift()[i] + 
-                                 next_.value.diffusion()[i]);
-            }
+        typedef typename SG::sample_type sequence_type;
+        const sequence_type& sequence_ = generator_.lastSequence();
 
-            return next_;
+        next_.weight = sequence_.weight;
+
+        // starting point for asset value
+        asset_ = diffProcess_->x0();
+        double dt;
+        Time t;
+        for (Size i=0; i<next_.value.size(); i++) {
+            t = timeGrid_[i+1];
+            dt = timeGrid_.dt(i);
+            next_.value.drift()[i] = dt * 
+                diffProcess_->drift(t, asset_);
+            next_.value.diffusion()[i] = - sequence_.value[i] *
+                QL_SQRT(diffProcess_->variance(t, asset_, dt));
+            asset_ *= QL_EXP(next_.value.drift()[i] + 
+                             next_.value.diffusion()[i]);
         }
 
-        template <class SG>
-        inline const typename PathGenerator<SG>::sample_type&
-        PathGenerator<SG>::antithetic() const {
-
-            typedef typename SG::sample_type sequence_type;
-            const sequence_type& sequence_ = generator_.lastSequence();
-
-            next_.weight = sequence_.weight;
-
-            // starting point for asset value
-            asset_ = diffProcess_->x0();
-            double dt;
-            Time t;
-            for (Size i=0; i<next_.value.size(); i++) {
-                t = timeGrid_[i+1];
-                dt = timeGrid_.dt(i);
-                next_.value.drift()[i] = dt * 
-                    diffProcess_->drift(t, asset_);
-                next_.value.diffusion()[i] = - sequence_.value[i] *
-                    QL_SQRT(diffProcess_->variance(t, asset_, dt));
-                asset_ *= QL_EXP(next_.value.drift()[i] + 
-                                 next_.value.diffusion()[i]);
-            }
-
-            return next_;
-        }
+        return next_;
+    }
 
 
 
-        //! Generates random paths from a random number generator
-        /*! \deprecated use PathGenerator instead */
-        template <class RNG>
-        class PathGenerator_old {
-          public:
-            typedef Sample<Path> sample_type;
-            // constructors
-            PathGenerator_old(double drift,
+    //! Generates random paths from a random number generator
+    /*! \deprecated use PathGenerator instead */
+    template <class RNG>
+    class PathGenerator_old {
+      public:
+        typedef Sample<Path> sample_type;
+        // constructors
+        PathGenerator_old(double drift,
                           double variance,
                           Time length,
                           Size timeSteps,
                           long seed = 0);
-            /*! \warning the initial time is assumed to be zero
-                and must <b>not</b> be included in the passed vector */
-            PathGenerator_old(double drift,
+        /*! \warning the initial time is assumed to be zero
+          and must <b>not</b> be included in the passed vector */
+        PathGenerator_old(double drift,
                           double variance,
                           const TimeGrid& times,
                           long seed = 0);
-            PathGenerator_old(const std::vector<double>& drift,
+        PathGenerator_old(const std::vector<double>& drift,
                           const std::vector<double>& variance,
                           const TimeGrid& times,
                           long seed = 0);
-            //! \name inspectors
-            //@{
-            const sample_type& next() const;
-            const sample_type& antithetic() const {
-                throw Error("old framework doesn't support antithetic here");}
-            Size size() const { return next_.value.size(); }
-            //@}
-          private:
-            mutable Sample<Path> next_;
-            Handle<RandomNumbers::RandomArrayGenerator<RNG> > generator_;
-        };
+        //! \name inspectors
+        //@{
+        const sample_type& next() const;
+        const sample_type& antithetic() const {
+            throw Error("old framework doesn't support antithetic here");}
+        Size size() const { return next_.value.size(); }
+        //@}
+      private:
+        mutable Sample<Path> next_;
+        Handle<RandomNumbers::RandomArrayGenerator<RNG> > generator_;
+    };
 
-        template <class RNG>
-        PathGenerator_old<RNG>::PathGenerator_old(double drift, 
-            double variance, Time length, Size timeSteps, long seed)
-        : next_(Path(TimeGrid(length, timeSteps)),1.0) {
-            QL_REQUIRE(timeSteps > 0, "PathGenerator_old: Time steps(" +
-                       IntegerFormatter::toString(timeSteps) +
-                       ") must be greater than zero");
-            QL_REQUIRE(length > 0, "PathGenerator_old: length must be > 0");
-            Time dt = length/timeSteps;
+    template <class RNG>
+    PathGenerator_old<RNG>::PathGenerator_old(double drift, 
+                                              double variance, Time length, 
+                                              Size timeSteps, long seed)
+    : next_(Path(TimeGrid(length, timeSteps)),1.0) {
+        QL_REQUIRE(timeSteps > 0, "PathGenerator_old: Time steps(" +
+                   IntegerFormatter::toString(timeSteps) +
+                   ") must be greater than zero");
+        QL_REQUIRE(length > 0, "PathGenerator_old: length must be > 0");
+        Time dt = length/timeSteps;
 
-            next_.value.drift() = Array(timeSteps, drift*dt);
+        next_.value.drift() = Array(timeSteps, drift*dt);
 
-            QL_REQUIRE(variance >= 0.0, 
+        QL_REQUIRE(variance >= 0.0, 
+                   "PathGenerator_old: negative variance");
+        generator_ = Handle<RandomNumbers::RandomArrayGenerator<RNG> >(
+                         new RandomNumbers::RandomArrayGenerator<RNG>(
+                                        Array(timeSteps, variance*dt), seed));
+    }
+
+    template <class RNG>
+    PathGenerator_old<RNG>::PathGenerator_old(double drift, 
+                                              double variance, 
+                                              const TimeGrid& times, long seed)
+    : next_(Path(times),1.0) {
+        QL_REQUIRE(variance >= 0.0, 
+                   "PathGenerator_old: negative variance");
+        QL_REQUIRE(times.size() > 1, "PathGenerator_old: no times given");
+        Array variancePerTime(times.size()-1);
+        for(Size i = 0; i < times.size()-1; i++) {
+            next_.value.drift()[i] = drift*times.dt(i);
+            variancePerTime[i] = variance*times.dt(i);
+        }
+
+        generator_ = Handle<RandomNumbers::RandomArrayGenerator<RNG> >(
+                         new RandomNumbers::RandomArrayGenerator<RNG>(
+                                                      variancePerTime, seed));
+    }
+
+    template <class RNG>
+    PathGenerator_old<RNG>::PathGenerator_old(
+                                          const std::vector<double>& drift,
+                                          const std::vector<double>& variance,
+                                          const TimeGrid& times, long seed)
+    : next_(Path(times),1.0) {
+        QL_REQUIRE(times.size() > 1, "PathGenerator_old: no times given");
+        QL_REQUIRE(variance.size()==times.size()-1,
+                   "PathGenerator_old: "
+                   "mismatch between variance and time arrays");
+        QL_REQUIRE(drift.size()==times.size()-1,
+                   "PathGenerator_old: mismatch between "
+                   "drift and time arrays");
+
+        Array variancePerTime(times.size()-1);
+        for(Size i = 0; i < times.size()-1; i++) {
+            next_.value.drift()[i] = drift[i]*times.dt(i);
+            QL_REQUIRE(variance[i] >= 0.0, 
                        "PathGenerator_old: negative variance");
-            generator_ = Handle<RandomNumbers::RandomArrayGenerator<RNG> >(
-                new RandomNumbers::RandomArrayGenerator<RNG>(
-                    Array(timeSteps, variance*dt), seed));
+            variancePerTime[i] = variance[i]*times.dt(i);
         }
 
-        template <class RNG>
-        PathGenerator_old<RNG>::PathGenerator_old(double drift, 
-            double variance, const TimeGrid& times, long seed)
-        : next_(Path(times),1.0) {
-            QL_REQUIRE(variance >= 0.0, 
-                       "PathGenerator_old: negative variance");
-            QL_REQUIRE(times.size() > 1, "PathGenerator_old: no times given");
-            Array variancePerTime(times.size()-1);
-            for(Size i = 0; i < times.size()-1; i++) {
-                next_.value.drift()[i] = drift*times.dt(i);
-                variancePerTime[i] = variance*times.dt(i);
-            }
+        generator_ = Handle<RandomNumbers::RandomArrayGenerator<RNG> >(
+                         new RandomNumbers::RandomArrayGenerator<RNG>(
+                                                      variancePerTime, seed));
+    }
 
-            generator_ = Handle<RandomNumbers::RandomArrayGenerator<RNG> >(
-                new RandomNumbers::RandomArrayGenerator<RNG>(variancePerTime,
-                seed));
-        }
-
-        template <class RNG>
-        PathGenerator_old<RNG>::PathGenerator_old(
-            const std::vector<double>& drift,
-            const std::vector<double>& variance,
-            const TimeGrid& times, long seed)
-        : next_(Path(times),1.0) {
-            QL_REQUIRE(times.size() > 1, "PathGenerator_old: no times given");
-            QL_REQUIRE(variance.size()==times.size()-1,
-                       "PathGenerator_old: "
-                       "mismatch between variance and time arrays");
-            QL_REQUIRE(drift.size()==times.size()-1,
-                "PathGenerator_old: mismatch between drift and time arrays");
-            
-            Array variancePerTime(times.size()-1);
-            for(Size i = 0; i < times.size()-1; i++) {
-                next_.value.drift()[i] = drift[i]*times.dt(i);
-                QL_REQUIRE(variance[i] >= 0.0, 
-                           "PathGenerator_old: negative variance");
-                variancePerTime[i] = variance[i]*times.dt(i);
-            }
-
-            generator_ = Handle<RandomNumbers::RandomArrayGenerator<RNG> >(
-                new RandomNumbers::RandomArrayGenerator<RNG>(variancePerTime,
-                seed));
-        }
-    
-        template <class RNG>
-        inline const typename PathGenerator_old<RNG>::sample_type&
-        PathGenerator_old<RNG>::next() const {
-            const Sample<Array>& sample = generator_->next();
-            next_.weight = sample.weight;
-            next_.value.diffusion() = sample.value;
-            return next_;
-        }
-
+    template <class RNG>
+    inline const typename PathGenerator_old<RNG>::sample_type&
+    PathGenerator_old<RNG>::next() const {
+        const Sample<Array>& sample = generator_->next();
+        next_.weight = sample.weight;
+        next_.value.diffusion() = sample.value;
+        return next_;
     }
 
 }

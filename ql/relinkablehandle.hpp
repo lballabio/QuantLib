@@ -29,8 +29,7 @@ namespace QuantLib {
     //! Relinkable access to a Handle
     /*! \pre Class "Type" must inherit from Observable */
     template <class Type>
-    class Link : public Patterns::Observable,
-                 public Patterns::Observer {
+    class Link : public Observable, public Observer {
       public:
         /*! \warning see the documentation of the <tt>linkTo</tt> method
                 for issues relatives to <tt>registerAsObserver</tt>.

@@ -32,51 +32,42 @@
 
 namespace QuantLib {
 
-    namespace MonteCarlo {
-        
-        //! %path pricer for Binary options
-        /* %Path pricer for Binary options
-            
-            Uses the Brownian Bridge correction for the barrier found in
-
-            Going to Extremes: Correcting Simulation Bias in Exotic
-              Option Valuation - D.R. Beaglehole, P.H. Dybvig and G. Zhou
-                Financial Analysts Journal; Jan/Feb 1997; 53, 1. pg. 62-68
-
-            and
-
-            Simulating path-dependent options: A new approach - 
-              M. El Babsiri and G. Noel
-                Journal of Derivatives; Winter 1998; 6, 2; pg. 65-83
-
-        */
-        class BinaryPathPricer : public PathPricer<Path> {
-          public:
-            BinaryPathPricer(
-                Binary::Type binaryType, 
-                double barrier,                 
-                double cashPayoff,
-                Option::Type type,
-                double underlying,                
-                const RelinkableHandle<TermStructure>& riskFreeTS,
-                const Handle<DiffusionProcess>& diffProcess,
-                RandomNumbers::UniformRandomSequenceGenerator sequenceGen);
-            double operator()(const Path& path) const;
-          private:
-            
-            Binary::Type binaryType_;
-            double barrier_;               
-            double cashPayoff_;
-            Option::Type type_;
-            double underlying_;
-            Handle<DiffusionProcess> diffProcess_;
-            RandomNumbers::UniformRandomSequenceGenerator sequenceGen_;
-
-            
-        };
-    
-    }
+    //! %path pricer for Binary options
+    /*! Uses the Brownian Bridge correction for the barrier found in
+        <i>
+        Going to Extremes: Correcting Simulation Bias in Exotic
+        Option Valuation - D.R. Beaglehole, P.H. Dybvig and G. Zhou
+        Financial Analysts Journal; Jan/Feb 1997; 53, 1. pg. 62-68
+        </i>
+        and
+        <i>
+        Simulating path-dependent options: A new approach - 
+        M. El Babsiri and G. Noel
+        Journal of Derivatives; Winter 1998; 6, 2; pg. 65-83
+        </i>
+    */
+    class BinaryPathPricer : public PathPricer<Path> {
+      public:
+        BinaryPathPricer(Binary::Type binaryType, 
+                         double barrier,
+                         double cashPayoff,
+                         Option::Type type,
+                         double underlying,
+                         const RelinkableHandle<TermStructure>& riskFreeTS,
+                         const Handle<DiffusionProcess>& diffProcess,
+                         RandomNumbers::UniformRandomSequenceGenerator sequenceGen);
+        double operator()(const Path& path) const;
+      private:
+        Binary::Type binaryType_;
+        double barrier_;
+        double cashPayoff_;
+        Option::Type type_;
+        double underlying_;
+        Handle<DiffusionProcess> diffProcess_;
+        RandomNumbers::UniformRandomSequenceGenerator sequenceGen_;
+    };
 
 }
+
 
 #endif

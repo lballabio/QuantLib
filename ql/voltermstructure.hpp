@@ -42,7 +42,7 @@ namespace QuantLib {
 
         Volatilities are assumed to be expressed on an annual basis
     */
-    class BlackVolTermStructure : public Patterns::Observable {
+    class BlackVolTermStructure : public Observable {
       public:
         virtual ~BlackVolTermStructure() {}
         //! \name Black Volatility
@@ -97,7 +97,7 @@ namespace QuantLib {
         //@}
         //! \name Visitability
         //@{
-        virtual void accept(Patterns::AcyclicVisitor&);
+        virtual void accept(AcyclicVisitor&);
         //@}
       protected:
         //! implements the actual Black variance calculation in derived classes
@@ -123,7 +123,7 @@ namespace QuantLib {
       public:
         //! \name Visitability
         //@{
-        virtual void accept(Patterns::AcyclicVisitor&);
+        virtual void accept(AcyclicVisitor&);
         //@}
       protected:
         /*! Returns the variance for the given strike and date calculating it
@@ -146,7 +146,7 @@ namespace QuantLib {
       public:
         //! \name Visitability
         //@{
-        virtual void accept(Patterns::AcyclicVisitor&);
+        virtual void accept(AcyclicVisitor&);
         //@}
       protected:
         /*! Returns the volatility for the given strike and date calculating it
@@ -163,7 +163,7 @@ namespace QuantLib {
 
         Volatilities are assumed to be expressed on an annual basis.
     */
-    class LocalVolTermStructure : public Patterns::Observable {
+    class LocalVolTermStructure : public Observable {
       public:
         virtual ~LocalVolTermStructure() {}
         //! \name Local Volatility
@@ -186,7 +186,7 @@ namespace QuantLib {
         //@}
         //! \name Visitability
         //@{
-        virtual void accept(Patterns::AcyclicVisitor&);
+        virtual void accept(AcyclicVisitor&);
         //@}
       protected:
         //! implements the actual local vol calculation in derived classes
@@ -198,8 +198,7 @@ namespace QuantLib {
 
     // inline definitions
 
-    inline void BlackVolTermStructure::accept(Patterns::AcyclicVisitor& v) {
-        using namespace Patterns;
+    inline void BlackVolTermStructure::accept(AcyclicVisitor& v) {
         Visitor<BlackVolTermStructure>* v1 = 
             dynamic_cast<Visitor<BlackVolTermStructure>*>(&v);
         if (v1 != 0)
@@ -208,9 +207,7 @@ namespace QuantLib {
             throw Error("Not a Black-volatility term structure visitor");
     }
 
-    inline 
-    void BlackVolatilityTermStructure::accept(Patterns::AcyclicVisitor& v) {
-        using namespace Patterns;
+    inline void BlackVolatilityTermStructure::accept(AcyclicVisitor& v) {
         Visitor<BlackVolatilityTermStructure>* v1 = 
             dynamic_cast<Visitor<BlackVolatilityTermStructure>*>(&v);
         if (v1 != 0)
@@ -219,9 +216,7 @@ namespace QuantLib {
             BlackVolTermStructure::accept(v);
     }
 
-    inline 
-    void BlackVarianceTermStructure::accept(Patterns::AcyclicVisitor& v) {
-        using namespace Patterns;
+    inline void BlackVarianceTermStructure::accept(AcyclicVisitor& v) {
         Visitor<BlackVarianceTermStructure>* v1 = 
             dynamic_cast<Visitor<BlackVarianceTermStructure>*>(&v);
         if (v1 != 0)
@@ -230,8 +225,7 @@ namespace QuantLib {
             BlackVolTermStructure::accept(v);
     }
 
-    inline void LocalVolTermStructure::accept(Patterns::AcyclicVisitor& v) {
-        using namespace Patterns;
+    inline void LocalVolTermStructure::accept(AcyclicVisitor& v) {
         Visitor<LocalVolTermStructure>* v1 = 
             dynamic_cast<Visitor<LocalVolTermStructure>*>(&v);
         if (v1 != 0)

@@ -33,30 +33,26 @@
 
 namespace QuantLib {
 
-    namespace MonteCarlo {
-
-        //! %Biased, but simple, path pricer for Barrier options
-        class BiasedBarrierPathPricer : public PathPricer<Path> {
-          public:
-            BiasedBarrierPathPricer(
-                Barrier::Type barrierType, 
-                double barrier, 
-                double rebate, 
-                Option::Type type,
-                double underlying,
-                double strike,
-                const RelinkableHandle<TermStructure>& riskFreeTS);
-            double operator()(const Path& path) const;
-          private:
-            double underlying_;
-            Barrier::Type barrierType_;
-            double barrier_;
-            double rebate_;           
-            // it would be easy to generalize to more exotic payoffs
-            PlainVanillaPayoff payoff_;
-        };
-
-    }
+    //! %Biased, but simple, path pricer for Barrier options
+    class BiasedBarrierPathPricer : public PathPricer<Path> {
+      public:
+        BiasedBarrierPathPricer(
+                           Barrier::Type barrierType, 
+                           double barrier, 
+                           double rebate, 
+                           Option::Type type,
+                           double underlying,
+                           double strike,
+                           const RelinkableHandle<TermStructure>& riskFreeTS);
+        double operator()(const Path& path) const;
+      private:
+        double underlying_;
+        Barrier::Type barrierType_;
+        double barrier_;
+        double rebate_;
+        // it would be easy to generalize to more exotic payoffs
+        PlainVanillaPayoff payoff_;
+    };
 
 }
 

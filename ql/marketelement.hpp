@@ -27,7 +27,7 @@
 namespace QuantLib {
 
     //! purely virtual base class for market observables
-    class MarketElement : public Patterns::Observable {
+    class MarketElement : public Observable {
       public:
         virtual ~MarketElement() {}
         //! returns the current value
@@ -53,7 +53,7 @@ namespace QuantLib {
     //! market element whose value depends on another market element
     template <class UnaryFunction>
     class DerivedMarketElement : public MarketElement,
-                                 public Patterns::Observer {
+                                 public Observer {
       public:
         DerivedMarketElement(const RelinkableHandle<MarketElement>& element,
                              const UnaryFunction& f);
@@ -73,7 +73,7 @@ namespace QuantLib {
     //! market element whose value depends on two other market element
     template <class BinaryFunction>
     class CompositeMarketElement : public MarketElement,
-                                   public Patterns::Observer {
+                                   public Observer {
       public:
         CompositeMarketElement(
             const RelinkableHandle<MarketElement>& element1,

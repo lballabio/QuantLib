@@ -26,22 +26,18 @@
 
 namespace QuantLib {
 
-    namespace Patterns {
+    //! degenerate base class for the Acyclic Visitor pattern
+    class AcyclicVisitor {
+      public:
+        virtual ~AcyclicVisitor() {}
+    };
 
-        //! degenerate base class for the Acyclic Visitor pattern
-        class AcyclicVisitor {
-          public:
-            virtual ~AcyclicVisitor() {}
-        };
-
-        //! visitor for a specific class
-        template <class T>
-        class Visitor {
-          public:
-            virtual void visit(T&) = 0;
-        };
-
-    }
+    //! visitor for a specific class
+    template <class T>
+    class Visitor {
+      public:
+        virtual void visit(T&) = 0;
+    };
 
 }
 

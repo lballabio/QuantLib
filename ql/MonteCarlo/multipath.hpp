@@ -26,12 +26,8 @@
 
 namespace QuantLib {
 
-    namespace MonteCarlo {
-
-        //! Correlated multiple asset paths
-        /*!
-
-        MultiPath contains the list of variations for each asset,
+    //! Correlated multiple asset paths
+    /*! MultiPath contains the list of variations for each asset,
         \f[
             \log \frac{Y^j_{i+1}}{Y^j_i} \mathrm{for} i = 0, \ldots, n-1
             \qquad \mathrm{and} \qquad j = 0, \ldots, m-1
@@ -39,44 +35,41 @@ namespace QuantLib {
         where \f$ Y^j_i \f$ is the value of the underlying \f$ j \f$
         at discretized time \f$ t_i \f$. The first index refers to the
         underlying, the second to the time position MultiPath[j,i]
-
+        
         \todo make it time-aware
+    */
 
-        */
-
-        //! single random walk
-        class MultiPath {
-          public:
-            MultiPath(Size nAsset,
-                      const TimeGrid& timeGrid);
-            MultiPath(const std::vector<Path>& multiPath);
-            //! \name inspectors
-            //@{
-            Size assetNumber() const {return multiPath_.size(); }
-            Size pathSize() const {return multiPath_[0].size(); }
-            //@}
-            //! \name read/write access to components
-            //@{
-            const Path& operator[](Size j) const {return multiPath_[j]; }
-            Path& operator[](Size j) {return multiPath_[j]; }
-            //@}
-          private:
-            std::vector<Path> multiPath_;
-        };
-
-        // inline definitions
-
-        inline MultiPath::MultiPath(Size nAsset, const TimeGrid& timeGrid)
-            : multiPath_(nAsset,Path(timeGrid)) {
-            QL_REQUIRE(nAsset > 0,
-                "MultiPath: number of asset must be > zero");
-        }
-
-        inline MultiPath::MultiPath(const std::vector<Path>& multiPath)
-            : multiPath_(multiPath) {}
+    //! multiple random walk
+    class MultiPath {
+      public:
+        MultiPath(Size nAsset,
+                  const TimeGrid& timeGrid);
+        MultiPath(const std::vector<Path>& multiPath);
+        //! \name inspectors
+        //@{
+        Size assetNumber() const { return multiPath_.size(); }
+        Size pathSize() const { return multiPath_[0].size(); }
+        //@}
+        //! \name read/write access to components
+        //@{
+        const Path& operator[](Size j) const {return multiPath_[j]; }
+        Path& operator[](Size j) {return multiPath_[j]; }
+        //@}
+      private:
+        std::vector<Path> multiPath_;
+    };
 
 
+    // inline definitions
+
+    inline MultiPath::MultiPath(Size nAsset, const TimeGrid& timeGrid)
+    : multiPath_(nAsset,Path(timeGrid)) {
+        QL_REQUIRE(nAsset > 0,
+                   "MultiPath: number of asset must be > zero");
     }
+
+    inline MultiPath::MultiPath(const std::vector<Path>& multiPath)
+    : multiPath_(multiPath) {}
 
 }
 

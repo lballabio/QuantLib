@@ -28,31 +28,28 @@
 
 namespace QuantLib {
 
-    namespace Lattices {
+    //! Two-dimensional lattice.
+    /*! This lattice is based on two trinomial trees and primarly used
+      for the G2 short-rate model.
+    */
+    class Lattice2D : public Lattice {
+      public:
+        Lattice2D(const Handle<TrinomialTree>& tree1,
+                  const Handle<TrinomialTree>& tree2,
+                  double correlation);
 
-        //! Two-dimensional lattice.
-        /*! This lattice is based on two trinomial trees and primarly used
-            for the G2 short-rate model.
-        */
-        class Lattice2D : public Lattice {
-          public:
-            Lattice2D(const Handle<TrinomialTree>& tree1,
-                      const Handle<TrinomialTree>& tree2,
-                      double correlation);
+        Size size(Size i) const { return tree1_->size(i)*tree2_->size(i); }
+      protected:
+        Size descendant(Size i, Size index, Size branch) const;
+        double probability(Size i, Size index, Size branch) const;
 
-            Size size(Size i) const { return tree1_->size(i)*tree2_->size(i); }
-          protected:
-            Size descendant(Size i, Size index, Size branch) const;
-            double probability(Size i, Size index, Size branch) const;
-
-            Handle<Tree> tree1_, tree2_;
-          private:
-            Matrix m_;
-            double rho_;
-        };
-
-    }
+        Handle<Tree> tree1_, tree2_;
+      private:
+        Matrix m_;
+        double rho_;
+    };
 
 }
+
 
 #endif

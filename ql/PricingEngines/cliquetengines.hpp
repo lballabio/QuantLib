@@ -27,26 +27,21 @@
 
 namespace QuantLib {
 
-    namespace PricingEngines {
+    //! Cliquet engine base class
+    class CliquetEngine : public GenericEngine<CliquetOption::arguments,
+                                               VanillaOption::results> {};
 
-        //! Cliquet engine base class
-        class CliquetEngine 
-        : public GenericEngine<CliquetOption::arguments,
-                               VanillaOption::results> {};
-
-        /*
+    /*
         //! Monte Carlo cliquet engine
         template<class S, class SG, class PG>
         class McCliquetEngine : public CliquetEngine,
-                                public McSimulation<S, PG,
-                                                    MonteCarlo::PathPricer<
-                                                        MonteCarlo::Path> > {
+                                public McSimulation<S, PG, PathPricer<Path> > {
           public:
             McCliquetEngine(bool antitheticVariate,
                             bool controlVariate,
                             Size maxTimeStepPerYear,
                             SG sequenceGenerator)
-            : McSimulation<S, PG, MonteCarlo::PathPricer<MonteCarlo::Path> >(
+            : McSimulation<S, PG, PathPricer<Path> >(
                   antitheticVariate,controlVariate), 
               maxTimeStepPerYear_(maxTimeStepPerYear),
               sequenceGenerator_(sequenceGenerator) {}
@@ -54,7 +49,7 @@ namespace QuantLib {
           protected:
             TimeGrid timeGrid() const;
             Handle<PG> pathGenerator() const;
-            Handle<MonteCarlo::PathPricer<MonteCarlo::Path> > 
+            Handle<PathPricer<Path> > 
             pathPricer() const;
           private:
             Size maxTimeStepPerYear_;
@@ -98,11 +93,11 @@ namespace QuantLib {
 
         template<class S, class SG, class PG>
         inline
-        Handle<MonteCarlo::PathPricer<MonteCarlo::Path> >
+        Handle<PathPricer<Path> >
         McCliquetEngine<S, SG, PG>::pathPricer() const {
             //! Initialize the path pricer
-            return Handle<MonteCarlo::PathPricer<MonteCarlo::Path> >(new
-                MonteCarlo::CliquetOptionPathPricer(arguments_.type,
+            return Handle<PathPricer<Path> >(new
+                CliquetOptionPathPricer(arguments_.type,
                     arguments_.underlying, arguments_.moneyness,
                     arguments_.accruedCoupon, arguments_.lastFixing,
                     arguments_.localCap, arguments_.localFloor,
@@ -122,7 +117,7 @@ namespace QuantLib {
             //! Initialize the one-factor Monte Carlo
             if (controlVariate_) {
 
-                Handle<MonteCarlo::PathPricer<MonteCarlo::Path> >
+                Handle<PathPricer<Path> >
                     controlPP = controlPathPricer();
                 QL_REQUIRE(!controlPP.isNull(),
                            "MCCliquetEngine::calculate() : "
@@ -147,18 +142,14 @@ namespace QuantLib {
                         controlPE->results());
                 double controlVariateValue = controlResults->value;
 
-                mcModel_ = Handle<MonteCarlo::MonteCarloModel<S, PG,
-                    MonteCarlo::PathPricer<MonteCarlo::Path> > >(
-                    new MonteCarlo::MonteCarloModel<S, PG,
-                        MonteCarlo::PathPricer<MonteCarlo::Path> >(
+                mcModel_ = Handle<MonteCarloModel<S, PG, PathPricer<Path> > >(
+                    new MonteCarloModel<S, PG, PathPricer<Path> >(
                         pathGenerator(), pathPricer(), S(), antitheticVariate_,
                         controlPP, controlVariateValue));
            
             } else {
-                mcModel_ = Handle<MonteCarlo::MonteCarloModel<S, PG,
-                    MonteCarlo::PathPricer<MonteCarlo::Path> > >(
-                    new MonteCarlo::MonteCarloModel<S, PG,
-                        MonteCarlo::PathPricer<MonteCarlo::Path> >(
+                mcModel_ = Handle<MonteCarloModel<S, PG, PathPricer<Path> > >(
+                    new MonteCarloModel<S, PG, PathPricer<Path> >(
                         pathGenerator(), pathPricer(), S(), 
                         antitheticVariate_));
             }
@@ -169,9 +160,7 @@ namespace QuantLib {
             results_.errorEstimate = 
                 mcModel_->sampleAccumulator().errorEstimate();
         }
-        */
-
-    }
+    */
 
 }
 

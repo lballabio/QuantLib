@@ -28,33 +28,29 @@
 
 namespace QuantLib {
 
-    namespace Pricers {
+    class DiscretizedCapFloor : public DiscretizedAsset {
+      public:
+        DiscretizedCapFloor(const Handle<NumericalMethod>& method,
+                            const CapFloor::arguments& params)
+        : DiscretizedAsset(method), arguments_(params) {}
 
-        class DiscretizedCapFloor : public DiscretizedAsset {
-          public:
-            DiscretizedCapFloor(const Handle<NumericalMethod>& method,
-                                const CapFloor::arguments& params)
-            : DiscretizedAsset(method), arguments_(params) {}
+        void reset(Size size) {
+            values_ = Array(size, 0.0);
+            adjustValues();
+        }
 
-            void reset(Size size) {
-                values_ = Array(size, 0.0);
-                adjustValues();
+        void preAdjustValues();
+
+        void addTimesTo(std::list<Time>& times) const {
+            for (Size i=0; i<arguments_.startTimes.size(); i++) {
+                times.push_back(arguments_.startTimes[i]);
+                times.push_back(arguments_.endTimes[i]);
             }
+        }
 
-            void preAdjustValues();
-
-            void addTimesTo(std::list<Time>& times) const {
-                for (Size i=0; i<arguments_.startTimes.size(); i++) {
-                    times.push_back(arguments_.startTimes[i]);
-                    times.push_back(arguments_.endTimes[i]);
-                }
-            }
-
-          private:
-            CapFloor::arguments arguments_;
-        };
-
-    }
+      private:
+        CapFloor::arguments arguments_;
+    };
 
 }
 

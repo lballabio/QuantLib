@@ -51,7 +51,7 @@ namespace QuantLib {
         //@}
         //! \name Visitability
         //@{
-        virtual void accept(Patterns::AcyclicVisitor&);
+        virtual void accept(AcyclicVisitor&);
         //@}
     };
 
@@ -66,8 +66,7 @@ namespace QuantLib {
     }
 
     inline 
-    void InArrearIndexedCoupon::accept(Patterns::AcyclicVisitor& v) {
-        using namespace Patterns;
+    void InArrearIndexedCoupon::accept(AcyclicVisitor& v) {
         Visitor<InArrearIndexedCoupon>* v1 =
             dynamic_cast<Visitor<InArrearIndexedCoupon>*>(&v);
         if (v1 != 0)

@@ -28,56 +28,52 @@
 
 namespace QuantLib {
 
-    namespace PricingEngines {
+    //! template base class for option pricing engines
+    /*! Derived engines only need to implement the <tt>calculate()</tt>
+      method the inherit from PricingEngine
+    */
+    template<class ArgumentsType, class ResultsType>
+    class GenericEngine : public PricingEngine {
+      public:
+        Arguments* arguments() const { return &arguments_; }
+        const Results* results() const { return &results_; }
+        void reset() const { results_.reset(); }
+      protected:
+        mutable ArgumentsType arguments_;
+        mutable ResultsType results_;
+    };
 
-        //! template base class for option pricing engines
-        /*! Derived engines only need to implement the <tt>calculate()</tt>
-            method the inherit from PricingEngine
-        */
-        template<class ArgumentsType, class ResultsType>
-        class GenericEngine : public PricingEngine {
-          public:
-            Arguments* arguments() const { return &arguments_; }
-            const Results* results() const { return &results_; }
-            void reset() const { results_.reset(); }
-          protected:
-            mutable ArgumentsType arguments_;
-            mutable ResultsType results_;
-        };
+    //! Base class for some pricing engine on a particular model
+    /*! Derived engines only need to implement the <tt>calculate()</tt>
+      method
+    */
+    template<class ModelType, class ArgumentsType, class ResultsType>
+    class GenericModelEngine 
+        : public GenericEngine<ArgumentsType, ResultsType>,
+          public Observer,
+          public Observable {
+      public:
+        GenericModelEngine() {}
+        GenericModelEngine(const Handle<ModelType>& model)
+        : model_(model) {
+            registerWith(model_);
+        }
+        void validateArguments() const { arguments_.validate(); }
 
-        //! Base class for some pricing engine on a particular model
-        /*! Derived engines only need to implement the <tt>calculate()</tt>
-            method
-        */
-        template<class ModelType, class ArgumentsType, class ResultsType>
-        class GenericModelEngine :
-            public GenericEngine<ArgumentsType, ResultsType>,
-            public Patterns::Observer,
-            public Patterns::Observable {
-          public:
-            GenericModelEngine() {}
-            GenericModelEngine(const Handle<ModelType>& model)
-            : model_(model) {
-                registerWith(model_);
-            }
-            void validateArguments() const { arguments_.validate(); }
-
-            void setModel(const Handle<ModelType>& model) {
-                unregisterWith(model_);
-                model_ = model;
-                QL_REQUIRE(!model_.isNull(),
-                           "GenericModelEngine: Not an adequate model given");
-                registerWith(model_);
-                update();
-            }
-            virtual void update() {
-                notifyObservers();
-            }
-          protected:
-            Handle<ModelType> model_;
-        };
-
-    }
+        void setModel(const Handle<ModelType>& model) {
+            unregisterWith(model_);
+            model_ = model;
+            QL_REQUIRE(!model_.isNull(),
+                       "GenericModelEngine: Not an adequate model given");
+            registerWith(model_);
+            update();
+        }
+        virtual void update() {
+            notifyObservers();
+        }
+      protected:
+        Handle<ModelType> model_;
+    };
 
 }
 

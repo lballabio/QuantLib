@@ -42,7 +42,7 @@ namespace QuantLib {
         template <class RNG>
         class BoxMullerGaussianRng {
           public:
-            typedef MonteCarlo::Sample<double> sample_type;
+            typedef Sample<double> sample_type;
             explicit BoxMullerGaussianRng(const RNG& uniformGenerator);
             /*! \deprecated initialize with a random number
                             generator instead.

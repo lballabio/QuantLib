@@ -24,53 +24,48 @@
 
 namespace QuantLib {
 
-    namespace PricingEngines {
+    void DiscretizedVanillaOption::reset(Size size) {
+        values_ = Array(size, 0.0);
+        adjustValues();
+    }
 
-        void DiscretizedVanillaOption::reset(Size size) {
-            values_ = Array(size, 0.0);
-            adjustValues();
-        }
+    void DiscretizedVanillaOption::postAdjustValues() {
 
-        void DiscretizedVanillaOption::postAdjustValues() {
-
-            Time now = time();
-            Size i;
-            switch(arguments_.exerciseType) {
-                case Exercise::American:
-                    if (now <= arguments_.stoppingTimes[1] && 
-                        now >= arguments_.stoppingTimes[0])
-                        applySpecificCondition();
-                    break;
-                case Exercise::European:
-                    if (isOnTime(arguments_.stoppingTimes[0]))
-                        applySpecificCondition();
-                    break;
-                case Exercise::Bermudan:
-                    for (i = 0; i<arguments_.stoppingTimes.size(); i++) {
-                        if (isOnTime(arguments_.stoppingTimes[i]))
-                            applySpecificCondition();
-                    }
-                    break;
-                default:
-                    throw IllegalArgumentError(
-                        "DiscretizedVanillaOption::postAdjustValues() : "
-                        "invalid option type");
+        Time now = time();
+        Size i;
+        switch(arguments_.exerciseType) {
+          case Exercise::American:
+            if (now <= arguments_.stoppingTimes[1] && 
+                now >= arguments_.stoppingTimes[0])
+                applySpecificCondition();
+            break;
+          case Exercise::European:
+            if (isOnTime(arguments_.stoppingTimes[0]))
+                applySpecificCondition();
+            break;
+          case Exercise::Bermudan:
+            for (i = 0; i<arguments_.stoppingTimes.size(); i++) {
+                if (isOnTime(arguments_.stoppingTimes[i]))
+                    applySpecificCondition();
             }
-
+            break;
+          default:
+            throw IllegalArgumentError(
+                           "DiscretizedVanillaOption::postAdjustValues() : "
+                           "invalid option type");
         }
+    }
 
-        void DiscretizedVanillaOption::applySpecificCondition() {
-            Handle<Lattices::BlackScholesLattice> lattice = method();
-            Handle<Lattices::Tree> tree(lattice->tree());
-            Size i = method()->timeGrid().findIndex(time());
+    void DiscretizedVanillaOption::applySpecificCondition() {
+        Handle<BlackScholesLattice> lattice = method();
+        Handle<Tree> tree(lattice->tree());
+        Size i = method()->timeGrid().findIndex(time());
 
-            for (Size j=0; j<values_.size(); j++) {
-                values_[j] = 
-                    QL_MAX(values_[j],
-                           (*arguments_.payoff)(tree->underlying(i, j)));
-            }
+        for (Size j=0; j<values_.size(); j++) {
+            values_[j] = 
+                QL_MAX(values_[j],
+                       (*arguments_.payoff)(tree->underlying(i, j)));
         }
-
     }
 
 }

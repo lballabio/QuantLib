@@ -32,7 +32,7 @@ namespace QuantLib {
                 this structure as well.
         */
         class ZeroSpreadedTermStructure : public ZeroYieldStructure,
-                                          public Patterns::Observer {
+                                          public Observer {
           public:
             ZeroSpreadedTermStructure(const RelinkableHandle<TermStructure>&,
                 const RelinkableHandle<MarketElement>& spread);
