@@ -3,3 +3,5 @@ config.hpp
 config.hpp.in
 stamp-h1
 .qldefines.hpp
+*.obj
+*.lib

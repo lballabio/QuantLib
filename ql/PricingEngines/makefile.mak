@@ -15,12 +15,12 @@ OBJDIR         = "..\..\build\Borland"
 
 # Object files
 OBJS = \
-    $(OBJDIR)\americanmcengines.obj$(_D) \
-    $(OBJDIR)\analyticeuropeanengine.obj$(_D) \
-    $(OBJDIR)\binomialvanillaengine.obj$(_D) \
-    $(OBJDIR)\discretizedvanillaoption.obj$(_D) \
-    $(OBJDIR)\integralengines.obj$(_D) \
-    $(OBJDIR)\mcbarrierengine.obj$(_D)
+    americanmcengines.obj$(_D) \
+    analyticeuropeanengine.obj$(_D) \
+    binomialvanillaengine.obj$(_D) \
+    discretizedvanillaoption.obj$(_D) \
+    integralengines.obj$(_D) \
+    mcbarrierengine.obj$(_D)
 
 
 # Tools to be used
@@ -55,9 +55,9 @@ TLIB_OPTS    = /P128
 
 # Primary target:
 # static library
-$(OBJDIR)\PricingEngines$(_D).lib:: $(OBJDIR) $(OBJS)
-    if exist $(OBJDIR)\PricingEngines$(_D).lib     del $(OBJDIR)\PricingEngines$(_D).lib
-    $(TLIB) $(TLIB_OPTS) $(OBJDIR)\PricingEngines$(_D).lib /a $(OBJS)
+PricingEngines$(_D).lib:: $(OBJDIR) $(OBJS)
+    if exist PricingEngines$(_D).lib     del PricingEngines$(_D).lib
+    $(TLIB) $(TLIB_OPTS) PricingEngines$(_D).lib /a $(OBJS)
 
 #create build dir
 $(OBJDIR):
@@ -65,6 +65,6 @@ $(OBJDIR):
 
 # Clean up
 clean::
-    if exist $(OBJDIR)\*.obj         del /q $(OBJDIR)\*.obj
-    if exist $(OBJDIR)\*.obj$(_D)    del /q $(OBJDIR)\*.obj
-    if exist $(OBJDIR)\*.lib         del /q $(OBJDIR)\*.lib
+    if exist *.obj         del /q *.obj
+    if exist *.obj$(_D)    del /q *.obj
+    if exist *.lib         del /q *.lib
