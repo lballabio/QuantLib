@@ -19,7 +19,7 @@
     \brief compounded forward term structure
 
     \fullpath
-    ql/TermStructures/%compoundedforward.hpp
+    ql/TermStructures/%compoundforward.hpp
 */
 
 // $Id$

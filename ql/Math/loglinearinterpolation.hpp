@@ -14,11 +14,11 @@
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
-/*! \file linearinterpolation.hpp
-    \brief linear interpolation between discrete points
+/*! \file loglinearinterpolation.hpp
+    \brief log-linear interpolation between discrete points
 
     \fullpath
-    ql/Math/%linearinterpolation.hpp
+    ql/Math/%loglinearinterpolation.hpp
 */
 
 // $Id$
@@ -33,7 +33,7 @@ namespace QuantLib {
 
     namespace Math {
 
-        //! linear interpolation between discrete points
+        //! log linear interpolation between discrete points
         template <class RandomAccessIterator1, class RandomAccessIterator2>
         class LogLinearInterpolation
         : public Interpolation<RandomAccessIterator1,RandomAccessIterator2> {

@@ -15,7 +15,7 @@
   FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 /*! \file discountcurve.hpp
-  \brief pre-bootstrapped discountfactor structure
+  \brief pre-bootstrapped discount factor structure
 
   \fullpath
   ql/TermStructures/%discountcurve.hpp
