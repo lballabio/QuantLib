@@ -77,7 +77,7 @@ namespace QuantLib {
             QL_ENSURE(sampleNumber_ > oldSamples,
                 "MultivariateAccumulator::add : "
       	        "maximum number of samples reached");
-            
+
             sampleWeight_ += weight;
 
             Array weighedValue = weight*value;

@@ -22,17 +22,17 @@
  * available at http://quantlib.org/group.html
 */
 
-/*! \file avgpriceasianpathpricer.hpp
-    \brief path pricer for average price Asian option
+/*! \file arithmeticasopathpricer.hpp
+    \brief arithmetic average strike option path pricer
 
     \fullpath
-    ql/MonteCarlo/%avgpriceasianpathpricer.hpp
+    ql/MonteCarlo/%arithmeticasopathpricer.hpp
 */
 
 // $Id$
 
-#ifndef quantlib_montecarlo_average_price_asian_path_pricer_h
-#define quantlib_montecarlo_average_price_asian_path_pricer_h
+#ifndef quantlib_montecarlo_arithmetic_average_strike_option_path_pricer_h
+#define quantlib_montecarlo_arithmetic_average_strike_option_path_pricer_h
 
 #include "ql/MonteCarlo/singleassetpathpricer.hpp"
 
@@ -40,14 +40,13 @@ namespace QuantLib {
 
     namespace MonteCarlo {
 
-        //! %path pricer for average price Asian option
-        class AveragePriceAsianPathPricer : public SingleAssetPathPricer {
+        //! %path pricer for average strike Asian options
+        class ArithmeticASOPathPricer : public SingleAssetPathPricer {
           public:
-            AveragePriceAsianPathPricer(Option::Type type,
-                                        double underlying,
-                                        double strike,
-                                        double discount,
-                                        bool antitheticVariance);
+            ArithmeticASOPathPricer(Option::Type type,
+                                    double underlying,
+                                    double discount,
+                                    bool antitheticVariance);
             virtual double operator()(const Path &path) const;
         };
 

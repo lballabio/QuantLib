@@ -5,13 +5,14 @@ INCLUDES= -I${top_srcdir} -I${top_builddir}
 includedir = $(prefix)/include/ql/MonteCarlo
 
 include_HEADERS = \
-	avgpriceasianpathpricer.hpp \
-	avgstrikeasianpathpricer.hpp \
+    arithmeticapopathpricer.hpp \
+    arithmeticasopathpricer.hpp \
 	basketpathpricer.hpp \
 	controlvariatedpathpricer.hpp \
 	europeanpathpricer.hpp \
 	everestpathpricer.hpp \
-	geometricasianpathpricer.hpp \
+	geometricapopathpricer.hpp \
+	geometricasopathpricer.hpp \
 	getcovariance.hpp \
 	himalayapathpricer.hpp \
 	mctypedefs.hpp \
@@ -29,13 +30,14 @@ include_HEADERS = \
 EXTRA_DIST=makefile.mak
 
 libMonteCarlo_la_SOURCES = \
-	avgpriceasianpathpricer.cpp \
-	avgstrikeasianpathpricer.cpp \
+    arithmeticapopathpricer.cpp \
+    arithmeticasopathpricer.cpp \
 	basketpathpricer.cpp    \
 	controlvariatedpathpricer.cpp \
 	europeanpathpricer.cpp \
 	everestpathpricer.cpp \
-	geometricasianpathpricer.cpp \
+	geometricapopathpricer.cpp \
+	geometricasopathpricer.cpp \
 	getcovariance.cpp \
 	himalayapathpricer.cpp \
 	pagodapathpricer.cpp \

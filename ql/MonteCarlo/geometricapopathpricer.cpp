@@ -22,17 +22,17 @@
  * available at http://quantlib.org/group.html
 */
 
-/*! \file geometricasianpathpricer.cpp
-    \brief path pricer for geometric Asian options
+/*! \file geometricapopathpricer.cpp
+    \brief path pricer for geometric average price option
 
     \fullpath
-    ql/MonteCarlo/%geometricasianpathpricer.cpp
+    ql/MonteCarlo/%geometricapopathpricer.cpp
 
 */
 
 // $Id$
 
-#include "ql/MonteCarlo/geometricasianpathpricer.hpp"
+#include "ql/MonteCarlo/geometricapopathpricer.hpp"
 #include "ql/Pricers/singleassetoption.hpp"
 
 
@@ -43,13 +43,13 @@ namespace QuantLib {
 
     namespace MonteCarlo {
 
-        GeometricAsianPathPricer::GeometricAsianPathPricer(Option::Type type,
+        GeometricAPOPathPricer::GeometricAPOPathPricer(Option::Type type,
             double underlying, double strike, double discount,
             bool antitheticVariance)
         : SingleAssetPathPricer(type, underlying, strike, discount,
           antitheticVariance) {}
 
-        double GeometricAsianPathPricer::operator()(const Path& path) const {
+        double GeometricAPOPathPricer::operator()(const Path& path) const {
 
             int n = path.size();
             QL_REQUIRE(n>0,"the path cannot be empty");

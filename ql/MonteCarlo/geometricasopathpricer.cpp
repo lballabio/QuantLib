@@ -22,17 +22,17 @@
  * available at http://quantlib.org/group.html
 */
 
-/*! \file avgpriceasianpathpricer.cpp
-    \brief path pricer for average price Asian option
+/*! \file geometricasopathpricer.cpp
+    \brief path pricer for geometric average strike option
 
     \fullpath
-    ql/MonteCarlo/%avgpriceasianpathpricer.cpp
+    ql/MonteCarlo/%geometricasopathpricer.cpp
 
 */
 
 // $Id$
 
-#include "ql/MonteCarlo/avgpriceasianpathpricer.hpp"
+#include "ql/MonteCarlo/geometricasopathpricer.hpp"
 #include "ql/Pricers/singleassetoption.hpp"
 
 
@@ -43,40 +43,38 @@ namespace QuantLib {
 
     namespace MonteCarlo {
 
-        AveragePriceAsianPathPricer::AveragePriceAsianPathPricer(
-          Option::Type type, double underlying, double strike, double discount,
-          bool antitheticVariance)
-        : SingleAssetPathPricer(type, underlying, strike, discount,
+        GeometricASOPathPricer::GeometricASOPathPricer(Option::Type type,
+            double underlying, double discount, bool antitheticVariance)
+        : SingleAssetPathPricer(type, underlying, underlying, discount,
           antitheticVariance) {}
 
-        double AveragePriceAsianPathPricer::operator()(const Path& path) const {
+        double GeometricASOPathPricer::operator()(const Path& path) const {
 
             int n = path.size();
-            QL_REQUIRE(n>0,
-                "AveragePriceAsianPathPricer: the path cannot be empty");
+            QL_REQUIRE(n>0,"GeometricASOPathPricer: the path cannot be empty");
 
             double price1 = underlying_;
-            double averagePrice1 = 0.0;
+            double averageStrike1 = 1.0;
             int i;
             for (i=0; i<n; i++) {
                 price1 *= QL_EXP(path.drift()[i]+path.diffusion()[i]);
-                averagePrice1 += price1;
+                averageStrike1 *= price1;
             }
-            averagePrice1 = averagePrice1/n;
+            averageStrike1 = QL_POW(averageStrike1, 1.0/n);
 
             if (antitheticVariance_) {
                 double price2 = underlying_;
-                double averagePrice2 = 0.0;
+                double averageStrike2 = 1.0;
 
                 for (i=0; i<n; i++) {
                     price2 *= QL_EXP(path.drift()[i]-path.diffusion()[i]);
-                    averagePrice2 += price2;
+                    averageStrike2 *= price2;
                 }
-                averagePrice2 = averagePrice2/n;
-                return discount_/2.0*(ExercisePayoff(type_, averagePrice1, strike_)
-                    +ExercisePayoff(type_, averagePrice2, strike_));
+                averageStrike2 = QL_POW(averageStrike2, 1.0/n);
+                return discount_/2.0*(ExercisePayoff(type_, price1, averageStrike1)
+                    +ExercisePayoff(type_, price2, averageStrike2));
             } else
-                return discount_*ExercisePayoff(type_, averagePrice1, strike_);
+                return discount_*ExercisePayoff(type_, price1, averageStrike1);
         }
 
     }

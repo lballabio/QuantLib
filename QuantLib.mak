@@ -27,6 +27,9 @@ NULL=
 NULL=nul
 !ENDIF 
 
+CPP=cl.exe
+RSC=rc.exe
+
 !IF  "$(CFG)" == "QuantLib - Win32 Release"
 
 OUTDIR=.\build\Release
@@ -41,10 +44,10 @@ ALL : ".\lib\Win32\VisualStudio\QuantLib.lib" "$(OUTDIR)\QuantLib.bsc"
 CLEAN :
 	-@erase "$(INTDIR)\actualactual.obj"
 	-@erase "$(INTDIR)\actualactual.sbr"
-	-@erase "$(INTDIR)\avgpriceasianpathpricer.obj"
-	-@erase "$(INTDIR)\avgpriceasianpathpricer.sbr"
-	-@erase "$(INTDIR)\avgstrikeasianpathpricer.obj"
-	-@erase "$(INTDIR)\avgstrikeasianpathpricer.sbr"
+	-@erase "$(INTDIR)\arithmeticapopathpricer.obj"
+	-@erase "$(INTDIR)\arithmeticapopathpricer.sbr"
+	-@erase "$(INTDIR)\arithmeticasopathpricer.obj"
+	-@erase "$(INTDIR)\arithmeticasopathpricer.sbr"
 	-@erase "$(INTDIR)\barrieroption.obj"
 	-@erase "$(INTDIR)\barrieroption.sbr"
 	-@erase "$(INTDIR)\basketpathpricer.obj"
@@ -73,6 +76,10 @@ CLEAN :
 	-@erase "$(INTDIR)\dataformatters.sbr"
 	-@erase "$(INTDIR)\date.obj"
 	-@erase "$(INTDIR)\date.sbr"
+	-@erase "$(INTDIR)\discretegeometricapo.obj"
+	-@erase "$(INTDIR)\discretegeometricapo.sbr"
+	-@erase "$(INTDIR)\discretegeometricaso.obj"
+	-@erase "$(INTDIR)\discretegeometricaso.sbr"
 	-@erase "$(INTDIR)\dividendamericanoption.obj"
 	-@erase "$(INTDIR)\dividendamericanoption.sbr"
 	-@erase "$(INTDIR)\dividendeuropeanoption.obj"
@@ -97,8 +104,10 @@ CLEAN :
 	-@erase "$(INTDIR)\floatingratecoupon.sbr"
 	-@erase "$(INTDIR)\frankfurt.obj"
 	-@erase "$(INTDIR)\frankfurt.sbr"
-	-@erase "$(INTDIR)\geometricasianpathpricer.obj"
-	-@erase "$(INTDIR)\geometricasianpathpricer.sbr"
+	-@erase "$(INTDIR)\geometricapopathpricer.obj"
+	-@erase "$(INTDIR)\geometricapopathpricer.sbr"
+	-@erase "$(INTDIR)\geometricasopathpricer.obj"
+	-@erase "$(INTDIR)\geometricasopathpricer.sbr"
 	-@erase "$(INTDIR)\getcovariance.obj"
 	-@erase "$(INTDIR)\getcovariance.sbr"
 	-@erase "$(INTDIR)\helsinki.obj"
@@ -113,12 +122,12 @@ CLEAN :
 	-@erase "$(INTDIR)\london.sbr"
 	-@erase "$(INTDIR)\matrix.obj"
 	-@erase "$(INTDIR)\matrix.sbr"
-	-@erase "$(INTDIR)\mcaveragepriceasian.obj"
-	-@erase "$(INTDIR)\mcaveragepriceasian.sbr"
-	-@erase "$(INTDIR)\mcaveragestrikeasian.obj"
-	-@erase "$(INTDIR)\mcaveragestrikeasian.sbr"
 	-@erase "$(INTDIR)\mcbasket.obj"
 	-@erase "$(INTDIR)\mcbasket.sbr"
+	-@erase "$(INTDIR)\mcdiscretearithmeticapo.obj"
+	-@erase "$(INTDIR)\mcdiscretearithmeticapo.sbr"
+	-@erase "$(INTDIR)\mcdiscretearithmeticaso.obj"
+	-@erase "$(INTDIR)\mcdiscretearithmeticaso.sbr"
 	-@erase "$(INTDIR)\mceuropean.obj"
 	-@erase "$(INTDIR)\mceuropean.sbr"
 	-@erase "$(INTDIR)\mceverest.obj"
@@ -200,40 +209,7 @@ CLEAN :
 "$(OUTDIR)" :
     if not exist "$(OUTDIR)/$(NULL)" mkdir "$(OUTDIR)"
 
-CPP=cl.exe
 CPP_PROJ=/nologo /MD /W3 /Gi /GR /GX /Od /Ob2 /I ".\\" /D "WIN32" /D "NDEBUG" /D "_MBCS" /D "_LIB" /FR"$(INTDIR)\\" /Fp"$(INTDIR)\QuantLib.pch" /YX /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\\" /FD /c 
-
-.c{$(INTDIR)}.obj::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-.cpp{$(INTDIR)}.obj::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-.cxx{$(INTDIR)}.obj::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-.c{$(INTDIR)}.sbr::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-.cpp{$(INTDIR)}.sbr::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-.cxx{$(INTDIR)}.sbr::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-RSC=rc.exe
 BSC32=bscmake.exe
 BSC32_FLAGS=/nologo /o"$(OUTDIR)\QuantLib.bsc" 
 BSC32_SBRS= \
@@ -264,13 +240,10 @@ BSC32_SBRS= \
 	"$(INTDIR)\segmentintegral.sbr" \
 	"$(INTDIR)\statistics.sbr" \
 	"$(INTDIR)\symmetricschurdecomposition.sbr" \
-	"$(INTDIR)\avgpriceasianpathpricer.sbr" \
-	"$(INTDIR)\avgstrikeasianpathpricer.sbr" \
 	"$(INTDIR)\basketpathpricer.sbr" \
 	"$(INTDIR)\controlvariatedpathpricer.sbr" \
 	"$(INTDIR)\europeanpathpricer.sbr" \
 	"$(INTDIR)\everestpathpricer.sbr" \
-	"$(INTDIR)\geometricasianpathpricer.sbr" \
 	"$(INTDIR)\getcovariance.sbr" \
 	"$(INTDIR)\himalayapathpricer.sbr" \
 	"$(INTDIR)\pagodapathpricer.sbr" \
@@ -287,8 +260,6 @@ BSC32_SBRS= \
 	"$(INTDIR)\europeanengine.sbr" \
 	"$(INTDIR)\europeanoption.sbr" \
 	"$(INTDIR)\finitedifferenceeuropean.sbr" \
-	"$(INTDIR)\mcaveragepriceasian.sbr" \
-	"$(INTDIR)\mcaveragestrikeasian.sbr" \
 	"$(INTDIR)\mcbasket.sbr" \
 	"$(INTDIR)\mceuropean.sbr" \
 	"$(INTDIR)\mceverest.sbr" \
@@ -313,7 +284,15 @@ BSC32_SBRS= \
 	"$(INTDIR)\date.sbr" \
 	"$(INTDIR)\option.sbr" \
 	"$(INTDIR)\scheduler.sbr" \
-	"$(INTDIR)\solver1d.sbr"
+	"$(INTDIR)\solver1d.sbr" \
+	"$(INTDIR)\discretegeometricaso.sbr" \
+	"$(INTDIR)\discretegeometricapo.sbr" \
+	"$(INTDIR)\mcdiscretearithmeticapo.sbr" \
+	"$(INTDIR)\mcdiscretearithmeticaso.sbr" \
+	"$(INTDIR)\geometricasopathpricer.sbr" \
+	"$(INTDIR)\geometricapopathpricer.sbr" \
+	"$(INTDIR)\arithmeticasopathpricer.sbr" \
+	"$(INTDIR)\arithmeticapopathpricer.sbr"
 
 "$(OUTDIR)\QuantLib.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -350,13 +329,10 @@ LIB32_OBJS= \
 	"$(INTDIR)\segmentintegral.obj" \
 	"$(INTDIR)\statistics.obj" \
 	"$(INTDIR)\symmetricschurdecomposition.obj" \
-	"$(INTDIR)\avgpriceasianpathpricer.obj" \
-	"$(INTDIR)\avgstrikeasianpathpricer.obj" \
 	"$(INTDIR)\basketpathpricer.obj" \
 	"$(INTDIR)\controlvariatedpathpricer.obj" \
 	"$(INTDIR)\europeanpathpricer.obj" \
 	"$(INTDIR)\everestpathpricer.obj" \
-	"$(INTDIR)\geometricasianpathpricer.obj" \
 	"$(INTDIR)\getcovariance.obj" \
 	"$(INTDIR)\himalayapathpricer.obj" \
 	"$(INTDIR)\pagodapathpricer.obj" \
@@ -373,8 +349,6 @@ LIB32_OBJS= \
 	"$(INTDIR)\europeanengine.obj" \
 	"$(INTDIR)\europeanoption.obj" \
 	"$(INTDIR)\finitedifferenceeuropean.obj" \
-	"$(INTDIR)\mcaveragepriceasian.obj" \
-	"$(INTDIR)\mcaveragestrikeasian.obj" \
 	"$(INTDIR)\mcbasket.obj" \
 	"$(INTDIR)\mceuropean.obj" \
 	"$(INTDIR)\mceverest.obj" \
@@ -399,7 +373,15 @@ LIB32_OBJS= \
 	"$(INTDIR)\date.obj" \
 	"$(INTDIR)\option.obj" \
 	"$(INTDIR)\scheduler.obj" \
-	"$(INTDIR)\solver1d.obj"
+	"$(INTDIR)\solver1d.obj" \
+	"$(INTDIR)\discretegeometricaso.obj" \
+	"$(INTDIR)\discretegeometricapo.obj" \
+	"$(INTDIR)\mcdiscretearithmeticapo.obj" \
+	"$(INTDIR)\mcdiscretearithmeticaso.obj" \
+	"$(INTDIR)\geometricasopathpricer.obj" \
+	"$(INTDIR)\geometricapopathpricer.obj" \
+	"$(INTDIR)\arithmeticasopathpricer.obj" \
+	"$(INTDIR)\arithmeticapopathpricer.obj"
 
 ".\lib\Win32\VisualStudio\QuantLib.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
     $(LIB32) @<<
@@ -420,10 +402,10 @@ ALL : ".\lib\Win32\VisualStudio\QuantLib_d.lib" "$(OUTDIR)\QuantLib.bsc"
 CLEAN :
 	-@erase "$(INTDIR)\actualactual.obj"
 	-@erase "$(INTDIR)\actualactual.sbr"
-	-@erase "$(INTDIR)\avgpriceasianpathpricer.obj"
-	-@erase "$(INTDIR)\avgpriceasianpathpricer.sbr"
-	-@erase "$(INTDIR)\avgstrikeasianpathpricer.obj"
-	-@erase "$(INTDIR)\avgstrikeasianpathpricer.sbr"
+	-@erase "$(INTDIR)\arithmeticapopathpricer.obj"
+	-@erase "$(INTDIR)\arithmeticapopathpricer.sbr"
+	-@erase "$(INTDIR)\arithmeticasopathpricer.obj"
+	-@erase "$(INTDIR)\arithmeticasopathpricer.sbr"
 	-@erase "$(INTDIR)\barrieroption.obj"
 	-@erase "$(INTDIR)\barrieroption.sbr"
 	-@erase "$(INTDIR)\basketpathpricer.obj"
@@ -452,6 +434,10 @@ CLEAN :
 	-@erase "$(INTDIR)\dataformatters.sbr"
 	-@erase "$(INTDIR)\date.obj"
 	-@erase "$(INTDIR)\date.sbr"
+	-@erase "$(INTDIR)\discretegeometricapo.obj"
+	-@erase "$(INTDIR)\discretegeometricapo.sbr"
+	-@erase "$(INTDIR)\discretegeometricaso.obj"
+	-@erase "$(INTDIR)\discretegeometricaso.sbr"
 	-@erase "$(INTDIR)\dividendamericanoption.obj"
 	-@erase "$(INTDIR)\dividendamericanoption.sbr"
 	-@erase "$(INTDIR)\dividendeuropeanoption.obj"
@@ -476,8 +462,10 @@ CLEAN :
 	-@erase "$(INTDIR)\floatingratecoupon.sbr"
 	-@erase "$(INTDIR)\frankfurt.obj"
 	-@erase "$(INTDIR)\frankfurt.sbr"
-	-@erase "$(INTDIR)\geometricasianpathpricer.obj"
-	-@erase "$(INTDIR)\geometricasianpathpricer.sbr"
+	-@erase "$(INTDIR)\geometricapopathpricer.obj"
+	-@erase "$(INTDIR)\geometricapopathpricer.sbr"
+	-@erase "$(INTDIR)\geometricasopathpricer.obj"
+	-@erase "$(INTDIR)\geometricasopathpricer.sbr"
 	-@erase "$(INTDIR)\getcovariance.obj"
 	-@erase "$(INTDIR)\getcovariance.sbr"
 	-@erase "$(INTDIR)\helsinki.obj"
@@ -492,12 +480,12 @@ CLEAN :
 	-@erase "$(INTDIR)\london.sbr"
 	-@erase "$(INTDIR)\matrix.obj"
 	-@erase "$(INTDIR)\matrix.sbr"
-	-@erase "$(INTDIR)\mcaveragepriceasian.obj"
-	-@erase "$(INTDIR)\mcaveragepriceasian.sbr"
-	-@erase "$(INTDIR)\mcaveragestrikeasian.obj"
-	-@erase "$(INTDIR)\mcaveragestrikeasian.sbr"
 	-@erase "$(INTDIR)\mcbasket.obj"
 	-@erase "$(INTDIR)\mcbasket.sbr"
+	-@erase "$(INTDIR)\mcdiscretearithmeticapo.obj"
+	-@erase "$(INTDIR)\mcdiscretearithmeticapo.sbr"
+	-@erase "$(INTDIR)\mcdiscretearithmeticaso.obj"
+	-@erase "$(INTDIR)\mcdiscretearithmeticaso.sbr"
 	-@erase "$(INTDIR)\mceuropean.obj"
 	-@erase "$(INTDIR)\mceuropean.sbr"
 	-@erase "$(INTDIR)\mceverest.obj"
@@ -580,40 +568,7 @@ CLEAN :
 "$(OUTDIR)" :
     if not exist "$(OUTDIR)/$(NULL)" mkdir "$(OUTDIR)"
 
-CPP=cl.exe
 CPP_PROJ=/nologo /MDd /W3 /Gi /GR /GX /ZI /Od /I ".\\" /D "WIN32" /D "_DEBUG" /D "_MBCS" /D "_LIB" /D "QL_DEBUG" /FR"$(INTDIR)\\" /Fp"$(INTDIR)\QuantLib.pch" /YX /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\\" /FD /GZ /c 
-
-.c{$(INTDIR)}.obj::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-.cpp{$(INTDIR)}.obj::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-.cxx{$(INTDIR)}.obj::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-.c{$(INTDIR)}.sbr::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-.cpp{$(INTDIR)}.sbr::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-.cxx{$(INTDIR)}.sbr::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-RSC=rc.exe
 BSC32=bscmake.exe
 BSC32_FLAGS=/nologo /o"$(OUTDIR)\QuantLib.bsc" 
 BSC32_SBRS= \
@@ -644,13 +599,10 @@ BSC32_SBRS= \
 	"$(INTDIR)\segmentintegral.sbr" \
 	"$(INTDIR)\statistics.sbr" \
 	"$(INTDIR)\symmetricschurdecomposition.sbr" \
-	"$(INTDIR)\avgpriceasianpathpricer.sbr" \
-	"$(INTDIR)\avgstrikeasianpathpricer.sbr" \
 	"$(INTDIR)\basketpathpricer.sbr" \
 	"$(INTDIR)\controlvariatedpathpricer.sbr" \
 	"$(INTDIR)\europeanpathpricer.sbr" \
 	"$(INTDIR)\everestpathpricer.sbr" \
-	"$(INTDIR)\geometricasianpathpricer.sbr" \
 	"$(INTDIR)\getcovariance.sbr" \
 	"$(INTDIR)\himalayapathpricer.sbr" \
 	"$(INTDIR)\pagodapathpricer.sbr" \
@@ -667,8 +619,6 @@ BSC32_SBRS= \
 	"$(INTDIR)\europeanengine.sbr" \
 	"$(INTDIR)\europeanoption.sbr" \
 	"$(INTDIR)\finitedifferenceeuropean.sbr" \
-	"$(INTDIR)\mcaveragepriceasian.sbr" \
-	"$(INTDIR)\mcaveragestrikeasian.sbr" \
 	"$(INTDIR)\mcbasket.sbr" \
 	"$(INTDIR)\mceuropean.sbr" \
 	"$(INTDIR)\mceverest.sbr" \
@@ -693,7 +643,15 @@ BSC32_SBRS= \
 	"$(INTDIR)\date.sbr" \
 	"$(INTDIR)\option.sbr" \
 	"$(INTDIR)\scheduler.sbr" \
-	"$(INTDIR)\solver1d.sbr"
+	"$(INTDIR)\solver1d.sbr" \
+	"$(INTDIR)\discretegeometricaso.sbr" \
+	"$(INTDIR)\discretegeometricapo.sbr" \
+	"$(INTDIR)\mcdiscretearithmeticapo.sbr" \
+	"$(INTDIR)\mcdiscretearithmeticaso.sbr" \
+	"$(INTDIR)\geometricasopathpricer.sbr" \
+	"$(INTDIR)\geometricapopathpricer.sbr" \
+	"$(INTDIR)\arithmeticasopathpricer.sbr" \
+	"$(INTDIR)\arithmeticapopathpricer.sbr"
 
 "$(OUTDIR)\QuantLib.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -730,13 +688,10 @@ LIB32_OBJS= \
 	"$(INTDIR)\segmentintegral.obj" \
 	"$(INTDIR)\statistics.obj" \
 	"$(INTDIR)\symmetricschurdecomposition.obj" \
-	"$(INTDIR)\avgpriceasianpathpricer.obj" \
-	"$(INTDIR)\avgstrikeasianpathpricer.obj" \
 	"$(INTDIR)\basketpathpricer.obj" \
 	"$(INTDIR)\controlvariatedpathpricer.obj" \
 	"$(INTDIR)\europeanpathpricer.obj" \
 	"$(INTDIR)\everestpathpricer.obj" \
-	"$(INTDIR)\geometricasianpathpricer.obj" \
 	"$(INTDIR)\getcovariance.obj" \
 	"$(INTDIR)\himalayapathpricer.obj" \
 	"$(INTDIR)\pagodapathpricer.obj" \
@@ -753,8 +708,6 @@ LIB32_OBJS= \
 	"$(INTDIR)\europeanengine.obj" \
 	"$(INTDIR)\europeanoption.obj" \
 	"$(INTDIR)\finitedifferenceeuropean.obj" \
-	"$(INTDIR)\mcaveragepriceasian.obj" \
-	"$(INTDIR)\mcaveragestrikeasian.obj" \
 	"$(INTDIR)\mcbasket.obj" \
 	"$(INTDIR)\mceuropean.obj" \
 	"$(INTDIR)\mceverest.obj" \
@@ -779,7 +732,15 @@ LIB32_OBJS= \
 	"$(INTDIR)\date.obj" \
 	"$(INTDIR)\option.obj" \
 	"$(INTDIR)\scheduler.obj" \
-	"$(INTDIR)\solver1d.obj"
+	"$(INTDIR)\solver1d.obj" \
+	"$(INTDIR)\discretegeometricaso.obj" \
+	"$(INTDIR)\discretegeometricapo.obj" \
+	"$(INTDIR)\mcdiscretearithmeticapo.obj" \
+	"$(INTDIR)\mcdiscretearithmeticaso.obj" \
+	"$(INTDIR)\geometricasopathpricer.obj" \
+	"$(INTDIR)\geometricapopathpricer.obj" \
+	"$(INTDIR)\arithmeticasopathpricer.obj" \
+	"$(INTDIR)\arithmeticapopathpricer.obj"
 
 ".\lib\Win32\VisualStudio\QuantLib_d.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
     $(LIB32) @<<
@@ -800,10 +761,10 @@ ALL : ".\lib\Win32\VisualStudio\QuantLib.lib" "$(OUTDIR)\QuantLib.bsc"
 CLEAN :
 	-@erase "$(INTDIR)\actualactual.obj"
 	-@erase "$(INTDIR)\actualactual.sbr"
-	-@erase "$(INTDIR)\avgpriceasianpathpricer.obj"
-	-@erase "$(INTDIR)\avgpriceasianpathpricer.sbr"
-	-@erase "$(INTDIR)\avgstrikeasianpathpricer.obj"
-	-@erase "$(INTDIR)\avgstrikeasianpathpricer.sbr"
+	-@erase "$(INTDIR)\arithmeticapopathpricer.obj"
+	-@erase "$(INTDIR)\arithmeticapopathpricer.sbr"
+	-@erase "$(INTDIR)\arithmeticasopathpricer.obj"
+	-@erase "$(INTDIR)\arithmeticasopathpricer.sbr"
 	-@erase "$(INTDIR)\barrieroption.obj"
 	-@erase "$(INTDIR)\barrieroption.sbr"
 	-@erase "$(INTDIR)\basketpathpricer.obj"
@@ -832,6 +793,10 @@ CLEAN :
 	-@erase "$(INTDIR)\dataformatters.sbr"
 	-@erase "$(INTDIR)\date.obj"
 	-@erase "$(INTDIR)\date.sbr"
+	-@erase "$(INTDIR)\discretegeometricapo.obj"
+	-@erase "$(INTDIR)\discretegeometricapo.sbr"
+	-@erase "$(INTDIR)\discretegeometricaso.obj"
+	-@erase "$(INTDIR)\discretegeometricaso.sbr"
 	-@erase "$(INTDIR)\dividendamericanoption.obj"
 	-@erase "$(INTDIR)\dividendamericanoption.sbr"
 	-@erase "$(INTDIR)\dividendeuropeanoption.obj"
@@ -856,8 +821,10 @@ CLEAN :
 	-@erase "$(INTDIR)\floatingratecoupon.sbr"
 	-@erase "$(INTDIR)\frankfurt.obj"
 	-@erase "$(INTDIR)\frankfurt.sbr"
-	-@erase "$(INTDIR)\geometricasianpathpricer.obj"
-	-@erase "$(INTDIR)\geometricasianpathpricer.sbr"
+	-@erase "$(INTDIR)\geometricapopathpricer.obj"
+	-@erase "$(INTDIR)\geometricapopathpricer.sbr"
+	-@erase "$(INTDIR)\geometricasopathpricer.obj"
+	-@erase "$(INTDIR)\geometricasopathpricer.sbr"
 	-@erase "$(INTDIR)\getcovariance.obj"
 	-@erase "$(INTDIR)\getcovariance.sbr"
 	-@erase "$(INTDIR)\helsinki.obj"
@@ -872,12 +839,12 @@ CLEAN :
 	-@erase "$(INTDIR)\london.sbr"
 	-@erase "$(INTDIR)\matrix.obj"
 	-@erase "$(INTDIR)\matrix.sbr"
-	-@erase "$(INTDIR)\mcaveragepriceasian.obj"
-	-@erase "$(INTDIR)\mcaveragepriceasian.sbr"
-	-@erase "$(INTDIR)\mcaveragestrikeasian.obj"
-	-@erase "$(INTDIR)\mcaveragestrikeasian.sbr"
 	-@erase "$(INTDIR)\mcbasket.obj"
 	-@erase "$(INTDIR)\mcbasket.sbr"
+	-@erase "$(INTDIR)\mcdiscretearithmeticapo.obj"
+	-@erase "$(INTDIR)\mcdiscretearithmeticapo.sbr"
+	-@erase "$(INTDIR)\mcdiscretearithmeticaso.obj"
+	-@erase "$(INTDIR)\mcdiscretearithmeticaso.sbr"
 	-@erase "$(INTDIR)\mceuropean.obj"
 	-@erase "$(INTDIR)\mceuropean.sbr"
 	-@erase "$(INTDIR)\mceverest.obj"
@@ -959,40 +926,7 @@ CLEAN :
 "$(OUTDIR)" :
     if not exist "$(OUTDIR)/$(NULL)" mkdir "$(OUTDIR)"
 
-CPP=cl.exe
 CPP_PROJ=/nologo /MD /W3 /Gi /GR /GX /Od /Ob2 /I ".\\" /D "WIN32" /D "NDEBUG" /D "_MBCS" /D "_LIB" /FR"$(INTDIR)\\" /Fp"$(INTDIR)\QuantLib.pch" /YX /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\\" /FD /c 
-
-.c{$(INTDIR)}.obj::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-.cpp{$(INTDIR)}.obj::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-.cxx{$(INTDIR)}.obj::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-.c{$(INTDIR)}.sbr::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-.cpp{$(INTDIR)}.sbr::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-.cxx{$(INTDIR)}.sbr::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-RSC=rc.exe
 BSC32=bscmake.exe
 BSC32_FLAGS=/nologo /o"$(OUTDIR)\QuantLib.bsc" 
 BSC32_SBRS= \
@@ -1023,13 +957,10 @@ BSC32_SBRS= \
 	"$(INTDIR)\segmentintegral.sbr" \
 	"$(INTDIR)\statistics.sbr" \
 	"$(INTDIR)\symmetricschurdecomposition.sbr" \
-	"$(INTDIR)\avgpriceasianpathpricer.sbr" \
-	"$(INTDIR)\avgstrikeasianpathpricer.sbr" \
 	"$(INTDIR)\basketpathpricer.sbr" \
 	"$(INTDIR)\controlvariatedpathpricer.sbr" \
 	"$(INTDIR)\europeanpathpricer.sbr" \
 	"$(INTDIR)\everestpathpricer.sbr" \
-	"$(INTDIR)\geometricasianpathpricer.sbr" \
 	"$(INTDIR)\getcovariance.sbr" \
 	"$(INTDIR)\himalayapathpricer.sbr" \
 	"$(INTDIR)\pagodapathpricer.sbr" \
@@ -1046,8 +977,6 @@ BSC32_SBRS= \
 	"$(INTDIR)\europeanengine.sbr" \
 	"$(INTDIR)\europeanoption.sbr" \
 	"$(INTDIR)\finitedifferenceeuropean.sbr" \
-	"$(INTDIR)\mcaveragepriceasian.sbr" \
-	"$(INTDIR)\mcaveragestrikeasian.sbr" \
 	"$(INTDIR)\mcbasket.sbr" \
 	"$(INTDIR)\mceuropean.sbr" \
 	"$(INTDIR)\mceverest.sbr" \
@@ -1072,7 +1001,15 @@ BSC32_SBRS= \
 	"$(INTDIR)\date.sbr" \
 	"$(INTDIR)\option.sbr" \
 	"$(INTDIR)\scheduler.sbr" \
-	"$(INTDIR)\solver1d.sbr"
+	"$(INTDIR)\solver1d.sbr" \
+	"$(INTDIR)\discretegeometricaso.sbr" \
+	"$(INTDIR)\discretegeometricapo.sbr" \
+	"$(INTDIR)\mcdiscretearithmeticapo.sbr" \
+	"$(INTDIR)\mcdiscretearithmeticaso.sbr" \
+	"$(INTDIR)\geometricasopathpricer.sbr" \
+	"$(INTDIR)\geometricapopathpricer.sbr" \
+	"$(INTDIR)\arithmeticasopathpricer.sbr" \
+	"$(INTDIR)\arithmeticapopathpricer.sbr"
 
 "$(OUTDIR)\QuantLib.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -1109,13 +1046,10 @@ LIB32_OBJS= \
 	"$(INTDIR)\segmentintegral.obj" \
 	"$(INTDIR)\statistics.obj" \
 	"$(INTDIR)\symmetricschurdecomposition.obj" \
-	"$(INTDIR)\avgpriceasianpathpricer.obj" \
-	"$(INTDIR)\avgstrikeasianpathpricer.obj" \
 	"$(INTDIR)\basketpathpricer.obj" \
 	"$(INTDIR)\controlvariatedpathpricer.obj" \
 	"$(INTDIR)\europeanpathpricer.obj" \
 	"$(INTDIR)\everestpathpricer.obj" \
-	"$(INTDIR)\geometricasianpathpricer.obj" \
 	"$(INTDIR)\getcovariance.obj" \
 	"$(INTDIR)\himalayapathpricer.obj" \
 	"$(INTDIR)\pagodapathpricer.obj" \
@@ -1132,8 +1066,6 @@ LIB32_OBJS= \
 	"$(INTDIR)\europeanengine.obj" \
 	"$(INTDIR)\europeanoption.obj" \
 	"$(INTDIR)\finitedifferenceeuropean.obj" \
-	"$(INTDIR)\mcaveragepriceasian.obj" \
-	"$(INTDIR)\mcaveragestrikeasian.obj" \
 	"$(INTDIR)\mcbasket.obj" \
 	"$(INTDIR)\mceuropean.obj" \
 	"$(INTDIR)\mceverest.obj" \
@@ -1158,7 +1090,15 @@ LIB32_OBJS= \
 	"$(INTDIR)\date.obj" \
 	"$(INTDIR)\option.obj" \
 	"$(INTDIR)\scheduler.obj" \
-	"$(INTDIR)\solver1d.obj"
+	"$(INTDIR)\solver1d.obj" \
+	"$(INTDIR)\discretegeometricaso.obj" \
+	"$(INTDIR)\discretegeometricapo.obj" \
+	"$(INTDIR)\mcdiscretearithmeticapo.obj" \
+	"$(INTDIR)\mcdiscretearithmeticaso.obj" \
+	"$(INTDIR)\geometricasopathpricer.obj" \
+	"$(INTDIR)\geometricapopathpricer.obj" \
+	"$(INTDIR)\arithmeticasopathpricer.obj" \
+	"$(INTDIR)\arithmeticapopathpricer.obj"
 
 ".\lib\Win32\VisualStudio\QuantLib.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
     $(LIB32) @<<
@@ -1179,10 +1119,10 @@ ALL : ".\lib\Win32\VisualStudio\QuantLib_d.lib" "$(OUTDIR)\QuantLib.bsc"
 CLEAN :
 	-@erase "$(INTDIR)\actualactual.obj"
 	-@erase "$(INTDIR)\actualactual.sbr"
-	-@erase "$(INTDIR)\avgpriceasianpathpricer.obj"
-	-@erase "$(INTDIR)\avgpriceasianpathpricer.sbr"
-	-@erase "$(INTDIR)\avgstrikeasianpathpricer.obj"
-	-@erase "$(INTDIR)\avgstrikeasianpathpricer.sbr"
+	-@erase "$(INTDIR)\arithmeticapopathpricer.obj"
+	-@erase "$(INTDIR)\arithmeticapopathpricer.sbr"
+	-@erase "$(INTDIR)\arithmeticasopathpricer.obj"
+	-@erase "$(INTDIR)\arithmeticasopathpricer.sbr"
 	-@erase "$(INTDIR)\barrieroption.obj"
 	-@erase "$(INTDIR)\barrieroption.sbr"
 	-@erase "$(INTDIR)\basketpathpricer.obj"
@@ -1211,6 +1151,10 @@ CLEAN :
 	-@erase "$(INTDIR)\dataformatters.sbr"
 	-@erase "$(INTDIR)\date.obj"
 	-@erase "$(INTDIR)\date.sbr"
+	-@erase "$(INTDIR)\discretegeometricapo.obj"
+	-@erase "$(INTDIR)\discretegeometricapo.sbr"
+	-@erase "$(INTDIR)\discretegeometricaso.obj"
+	-@erase "$(INTDIR)\discretegeometricaso.sbr"
 	-@erase "$(INTDIR)\dividendamericanoption.obj"
 	-@erase "$(INTDIR)\dividendamericanoption.sbr"
 	-@erase "$(INTDIR)\dividendeuropeanoption.obj"
@@ -1235,8 +1179,10 @@ CLEAN :
 	-@erase "$(INTDIR)\floatingratecoupon.sbr"
 	-@erase "$(INTDIR)\frankfurt.obj"
 	-@erase "$(INTDIR)\frankfurt.sbr"
-	-@erase "$(INTDIR)\geometricasianpathpricer.obj"
-	-@erase "$(INTDIR)\geometricasianpathpricer.sbr"
+	-@erase "$(INTDIR)\geometricapopathpricer.obj"
+	-@erase "$(INTDIR)\geometricapopathpricer.sbr"
+	-@erase "$(INTDIR)\geometricasopathpricer.obj"
+	-@erase "$(INTDIR)\geometricasopathpricer.sbr"
 	-@erase "$(INTDIR)\getcovariance.obj"
 	-@erase "$(INTDIR)\getcovariance.sbr"
 	-@erase "$(INTDIR)\helsinki.obj"
@@ -1251,12 +1197,12 @@ CLEAN :
 	-@erase "$(INTDIR)\london.sbr"
 	-@erase "$(INTDIR)\matrix.obj"
 	-@erase "$(INTDIR)\matrix.sbr"
-	-@erase "$(INTDIR)\mcaveragepriceasian.obj"
-	-@erase "$(INTDIR)\mcaveragepriceasian.sbr"
-	-@erase "$(INTDIR)\mcaveragestrikeasian.obj"
-	-@erase "$(INTDIR)\mcaveragestrikeasian.sbr"
 	-@erase "$(INTDIR)\mcbasket.obj"
 	-@erase "$(INTDIR)\mcbasket.sbr"
+	-@erase "$(INTDIR)\mcdiscretearithmeticapo.obj"
+	-@erase "$(INTDIR)\mcdiscretearithmeticapo.sbr"
+	-@erase "$(INTDIR)\mcdiscretearithmeticaso.obj"
+	-@erase "$(INTDIR)\mcdiscretearithmeticaso.sbr"
 	-@erase "$(INTDIR)\mceuropean.obj"
 	-@erase "$(INTDIR)\mceuropean.sbr"
 	-@erase "$(INTDIR)\mceverest.obj"
@@ -1339,40 +1285,7 @@ CLEAN :
 "$(OUTDIR)" :
     if not exist "$(OUTDIR)/$(NULL)" mkdir "$(OUTDIR)"
 
-CPP=cl.exe
 CPP_PROJ=/nologo /MDd /W3 /Gi /GR /GX /ZI /Od /I ".\\" /D "WIN32" /D "_DEBUG" /D "_MBCS" /D "_LIB" /D "QL_DEBUG" /FR"$(INTDIR)\\" /Fp"$(INTDIR)\QuantLib.pch" /YX /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\\" /FD /GZ /c 
-
-.c{$(INTDIR)}.obj::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-.cpp{$(INTDIR)}.obj::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-.cxx{$(INTDIR)}.obj::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-.c{$(INTDIR)}.sbr::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-.cpp{$(INTDIR)}.sbr::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-.cxx{$(INTDIR)}.sbr::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-RSC=rc.exe
 BSC32=bscmake.exe
 BSC32_FLAGS=/nologo /o"$(OUTDIR)\QuantLib.bsc" 
 BSC32_SBRS= \
@@ -1403,13 +1316,10 @@ BSC32_SBRS= \
 	"$(INTDIR)\segmentintegral.sbr" \
 	"$(INTDIR)\statistics.sbr" \
 	"$(INTDIR)\symmetricschurdecomposition.sbr" \
-	"$(INTDIR)\avgpriceasianpathpricer.sbr" \
-	"$(INTDIR)\avgstrikeasianpathpricer.sbr" \
 	"$(INTDIR)\basketpathpricer.sbr" \
 	"$(INTDIR)\controlvariatedpathpricer.sbr" \
 	"$(INTDIR)\europeanpathpricer.sbr" \
 	"$(INTDIR)\everestpathpricer.sbr" \
-	"$(INTDIR)\geometricasianpathpricer.sbr" \
 	"$(INTDIR)\getcovariance.sbr" \
 	"$(INTDIR)\himalayapathpricer.sbr" \
 	"$(INTDIR)\pagodapathpricer.sbr" \
@@ -1426,8 +1336,6 @@ BSC32_SBRS= \
 	"$(INTDIR)\europeanengine.sbr" \
 	"$(INTDIR)\europeanoption.sbr" \
 	"$(INTDIR)\finitedifferenceeuropean.sbr" \
-	"$(INTDIR)\mcaveragepriceasian.sbr" \
-	"$(INTDIR)\mcaveragestrikeasian.sbr" \
 	"$(INTDIR)\mcbasket.sbr" \
 	"$(INTDIR)\mceuropean.sbr" \
 	"$(INTDIR)\mceverest.sbr" \
@@ -1452,7 +1360,15 @@ BSC32_SBRS= \
 	"$(INTDIR)\date.sbr" \
 	"$(INTDIR)\option.sbr" \
 	"$(INTDIR)\scheduler.sbr" \
-	"$(INTDIR)\solver1d.sbr"
+	"$(INTDIR)\solver1d.sbr" \
+	"$(INTDIR)\discretegeometricaso.sbr" \
+	"$(INTDIR)\discretegeometricapo.sbr" \
+	"$(INTDIR)\mcdiscretearithmeticapo.sbr" \
+	"$(INTDIR)\mcdiscretearithmeticaso.sbr" \
+	"$(INTDIR)\geometricasopathpricer.sbr" \
+	"$(INTDIR)\geometricapopathpricer.sbr" \
+	"$(INTDIR)\arithmeticasopathpricer.sbr" \
+	"$(INTDIR)\arithmeticapopathpricer.sbr"
 
 "$(OUTDIR)\QuantLib.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -1489,13 +1405,10 @@ LIB32_OBJS= \
 	"$(INTDIR)\segmentintegral.obj" \
 	"$(INTDIR)\statistics.obj" \
 	"$(INTDIR)\symmetricschurdecomposition.obj" \
-	"$(INTDIR)\avgpriceasianpathpricer.obj" \
-	"$(INTDIR)\avgstrikeasianpathpricer.obj" \
 	"$(INTDIR)\basketpathpricer.obj" \
 	"$(INTDIR)\controlvariatedpathpricer.obj" \
 	"$(INTDIR)\europeanpathpricer.obj" \
 	"$(INTDIR)\everestpathpricer.obj" \
-	"$(INTDIR)\geometricasianpathpricer.obj" \
 	"$(INTDIR)\getcovariance.obj" \
 	"$(INTDIR)\himalayapathpricer.obj" \
 	"$(INTDIR)\pagodapathpricer.obj" \
@@ -1512,8 +1425,6 @@ LIB32_OBJS= \
 	"$(INTDIR)\europeanengine.obj" \
 	"$(INTDIR)\europeanoption.obj" \
 	"$(INTDIR)\finitedifferenceeuropean.obj" \
-	"$(INTDIR)\mcaveragepriceasian.obj" \
-	"$(INTDIR)\mcaveragestrikeasian.obj" \
 	"$(INTDIR)\mcbasket.obj" \
 	"$(INTDIR)\mceuropean.obj" \
 	"$(INTDIR)\mceverest.obj" \
@@ -1538,7 +1449,15 @@ LIB32_OBJS= \
 	"$(INTDIR)\date.obj" \
 	"$(INTDIR)\option.obj" \
 	"$(INTDIR)\scheduler.obj" \
-	"$(INTDIR)\solver1d.obj"
+	"$(INTDIR)\solver1d.obj" \
+	"$(INTDIR)\discretegeometricaso.obj" \
+	"$(INTDIR)\discretegeometricapo.obj" \
+	"$(INTDIR)\mcdiscretearithmeticapo.obj" \
+	"$(INTDIR)\mcdiscretearithmeticaso.obj" \
+	"$(INTDIR)\geometricasopathpricer.obj" \
+	"$(INTDIR)\geometricapopathpricer.obj" \
+	"$(INTDIR)\arithmeticasopathpricer.obj" \
+	"$(INTDIR)\arithmeticapopathpricer.obj"
 
 ".\lib\Win32\VisualStudio\QuantLib_d.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
     $(LIB32) @<<
@@ -1546,6 +1465,36 @@ LIB32_OBJS= \
 <<
 
 !ENDIF 
+
+.c{$(INTDIR)}.obj::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.cpp{$(INTDIR)}.obj::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.cxx{$(INTDIR)}.obj::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.c{$(INTDIR)}.sbr::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.cpp{$(INTDIR)}.sbr::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.cxx{$(INTDIR)}.sbr::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
 
 
 !IF "$(NO_EXTERNAL_DEPS)" != "1"
@@ -1720,15 +1669,15 @@ SOURCE=.\ql\Math\symmetricschurdecomposition.cpp
 	$(CPP) $(CPP_PROJ) $(SOURCE)
 
 
-SOURCE=.\ql\MonteCarlo\avgpriceasianpathpricer.cpp
+SOURCE=.\ql\MonteCarlo\arithmeticapopathpricer.cpp
 
-"$(INTDIR)\avgpriceasianpathpricer.obj"	"$(INTDIR)\avgpriceasianpathpricer.sbr" : $(SOURCE) "$(INTDIR)"
+"$(INTDIR)\arithmeticapopathpricer.obj"	"$(INTDIR)\arithmeticapopathpricer.sbr" : $(SOURCE) "$(INTDIR)"
 	$(CPP) $(CPP_PROJ) $(SOURCE)
 
 
-SOURCE=.\ql\MonteCarlo\avgstrikeasianpathpricer.cpp
+SOURCE=.\ql\MonteCarlo\arithmeticasopathpricer.cpp
 
-"$(INTDIR)\avgstrikeasianpathpricer.obj"	"$(INTDIR)\avgstrikeasianpathpricer.sbr" : $(SOURCE) "$(INTDIR)"
+"$(INTDIR)\arithmeticasopathpricer.obj"	"$(INTDIR)\arithmeticasopathpricer.sbr" : $(SOURCE) "$(INTDIR)"
 	$(CPP) $(CPP_PROJ) $(SOURCE)
 
 
@@ -1756,9 +1705,15 @@ SOURCE=.\ql\MonteCarlo\everestpathpricer.cpp
 	$(CPP) $(CPP_PROJ) $(SOURCE)
 
 
-SOURCE=.\ql\MonteCarlo\geometricasianpathpricer.cpp
+SOURCE=.\ql\MonteCarlo\geometricapopathpricer.cpp
 
-"$(INTDIR)\geometricasianpathpricer.obj"	"$(INTDIR)\geometricasianpathpricer.sbr" : $(SOURCE) "$(INTDIR)"
+"$(INTDIR)\geometricapopathpricer.obj"	"$(INTDIR)\geometricapopathpricer.sbr" : $(SOURCE) "$(INTDIR)"
+	$(CPP) $(CPP_PROJ) $(SOURCE)
+
+
+SOURCE=.\ql\MonteCarlo\geometricasopathpricer.cpp
+
+"$(INTDIR)\geometricasopathpricer.obj"	"$(INTDIR)\geometricasopathpricer.sbr" : $(SOURCE) "$(INTDIR)"
 	$(CPP) $(CPP_PROJ) $(SOURCE)
 
 
@@ -1816,6 +1771,18 @@ SOURCE=.\ql\Pricers\cliquetoption.cpp
 	$(CPP) $(CPP_PROJ) $(SOURCE)
 
 
+SOURCE=.\ql\Pricers\discretegeometricapo.cpp
+
+"$(INTDIR)\discretegeometricapo.obj"	"$(INTDIR)\discretegeometricapo.sbr" : $(SOURCE) "$(INTDIR)"
+	$(CPP) $(CPP_PROJ) $(SOURCE)
+
+
+SOURCE=.\ql\Pricers\discretegeometricaso.cpp
+
+"$(INTDIR)\discretegeometricaso.obj"	"$(INTDIR)\discretegeometricaso.sbr" : $(SOURCE) "$(INTDIR)"
+	$(CPP) $(CPP_PROJ) $(SOURCE)
+
+
 SOURCE=.\ql\Pricers\dividendamericanoption.cpp
 
 "$(INTDIR)\dividendamericanoption.obj"	"$(INTDIR)\dividendamericanoption.sbr" : $(SOURCE) "$(INTDIR)"
@@ -1858,21 +1825,21 @@ SOURCE=.\ql\Pricers\finitedifferenceeuropean.cpp
 	$(CPP) $(CPP_PROJ) $(SOURCE)
 
 
-SOURCE=.\ql\Pricers\mcaveragepriceasian.cpp
-
-"$(INTDIR)\mcaveragepriceasian.obj"	"$(INTDIR)\mcaveragepriceasian.sbr" : $(SOURCE) "$(INTDIR)"
-	$(CPP) $(CPP_PROJ) $(SOURCE)
-
-
-SOURCE=.\ql\Pricers\mcaveragestrikeasian.cpp
-
-"$(INTDIR)\mcaveragestrikeasian.obj"	"$(INTDIR)\mcaveragestrikeasian.sbr" : $(SOURCE) "$(INTDIR)"
-	$(CPP) $(CPP_PROJ) $(SOURCE)
-
-
 SOURCE=.\ql\Pricers\mcbasket.cpp
 
 "$(INTDIR)\mcbasket.obj"	"$(INTDIR)\mcbasket.sbr" : $(SOURCE) "$(INTDIR)"
+	$(CPP) $(CPP_PROJ) $(SOURCE)
+
+
+SOURCE=.\ql\Pricers\mcdiscretearithmeticapo.cpp
+
+"$(INTDIR)\mcdiscretearithmeticapo.obj"	"$(INTDIR)\mcdiscretearithmeticapo.sbr" : $(SOURCE) "$(INTDIR)"
+	$(CPP) $(CPP_PROJ) $(SOURCE)
+
+
+SOURCE=.\ql\Pricers\mcdiscretearithmeticaso.cpp
+
+"$(INTDIR)\mcdiscretearithmeticaso.obj"	"$(INTDIR)\mcdiscretearithmeticaso.sbr" : $(SOURCE) "$(INTDIR)"
 	$(CPP) $(CPP_PROJ) $(SOURCE)
 
 

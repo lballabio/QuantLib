@@ -84,7 +84,7 @@ namespace QuantLib {
         : next_(Path(times.size()),1.0) {
             QL_REQUIRE(variance >= 0.0, "PathGenerator: negative variance");
             QL_REQUIRE(times.size() > 0, "PathGenerator: no times given");
-            QL_REQUIRE(times[0] > 0.0, "PathGenerator: negative time given");
+            QL_REQUIRE(times[0] >= 0.0, "PathGenerator: negative time given");
             Array vrnc(times.size());
             Time dt = times[0];
             next_.value.drift()[0] = drift*dt;

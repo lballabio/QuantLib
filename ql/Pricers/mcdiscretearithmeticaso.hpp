@@ -22,17 +22,17 @@
  * available at http://quantlib.org/group.html
 */
 
-/*! \file mcaveragepriceasian.hpp
-    \brief Average price Asian option (control variate Monte Carlo pricing)
+/*! \file mcdiscretearithmeticaso.hpp
+    \brief Discrete Arithmetic Average Strike Option
 
     \fullpath
-    ql/Pricers/%mcaveragepriceasian.hpp
+    ql/Pricers/%mcdiscretearithmeticaso.hpp
 */
 
 // $Id$
 
-#ifndef quantlib_pricers_average_price_asian_h
-#define quantlib_pricers_average_price_asian_h
+#ifndef quantlib_pricers_mc_discrete_arithmetic_average_strike_mcpricer_h
+#define quantlib_pricers_mc_discrete_arithmetic_average_strike_mcpricer_h
 
 #include "ql/option.hpp"
 #include "ql/types.hpp"
@@ -44,19 +44,20 @@ namespace QuantLib {
 
     namespace Pricers {
 
-        //! example of Monte Carlo pricer using a control variate
-        class McAveragePriceAsian : public McPricer<Math::Statistics,
+        //! example of Monte Carlo pricer using a control variate.
+        /*! \todo Continous Arithmetic Average Strike Option     */
+        class McDiscreteArithmeticASO : public McPricer<Math::Statistics,
             MonteCarlo::GaussianPathGenerator, MonteCarlo::PathPricer> {
           public:
-            McAveragePriceAsian(Option::Type type,
-                                double underlying,
-                                double strike,
-                                Spread dividendYield,
-                                Rate riskFreeRate,
-                                const std::vector<Time>& times,
-                                double volatility,
-                                bool antitheticVariance,
-                                long seed=0);
+            McDiscreteArithmeticASO(Option::Type type,
+                                    double underlying,
+                                    Spread dividendYield,
+                                    Rate riskFreeRate,
+                                    const std::vector<Time>& times,
+                                    double volatility,
+                                    bool antitheticVariance,
+                                    bool controlVariate,
+                                    long seed = 0);
         };
 
     }

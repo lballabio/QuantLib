@@ -12,11 +12,13 @@ LIBRARY
     check FRA mXn definition
     check fraction in McPagoda
 
-    asian continuous and/or discrete
-    check geometric continuous and/or discrete
+    ASIAN:
+        continuous geometric APO backward starting instead of forward starting
+        continuous geometric ASO
+        discrete geometric ASO
+
     example of european Martingale control variate
 
-    update sflogo for offline documentation
     ******
 
 
@@ -61,7 +63,7 @@ LIBRARY
 
 DOCUMENTATION ***
     ******
-    add MS-Windows Help and TeX DVI format.
+    add MS-Windows Help
     complete MC documentation
     ******
     use tidy (if available) on the HTML documentation

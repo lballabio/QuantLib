@@ -16,13 +16,14 @@ BCC_LIBS       = $(MAKEDIR)\..\lib
 
 # Object files
 OBJS = \
-    avgpriceasianpathpricer.obj$(_D) \
-    avgstrikeasianpathpricer.obj$(_D) \
+    arithmeticapopathpricer.obj$(_D) \
+    arithmeticasopathpricer.obj$(_D) \
     basketpathpricer.obj$(_D) \
     controlvariatedpathpricer.obj$(_D) \
     europeanpathpricer.obj$(_D) \
     everestpathpricer.obj$(_D) \
-    geometricasianpathpricer.obj$(_D) \
+    geometricapopathpricer.obj$(_D) \
+    geometricasopathpricer.obj$(_D) \
     getcovariance.obj$(_D) \
     himalayapathpricer.obj$(_D) \
     pagodapathpricer.obj$(_D) \

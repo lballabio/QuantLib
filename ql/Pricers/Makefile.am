@@ -12,6 +12,9 @@ include_HEADERS = \
     binaryoption.hpp \
     bsmnumericaloption.hpp \
     cliquetoption.hpp \
+    continuousgeometricapo.hpp \
+    discretegeometricaso.hpp \
+    discretegeometricapo.hpp \
     dividendamericanoption.hpp \
     dividendeuropeanoption.hpp \
     dividendoption.hpp \
@@ -20,9 +23,9 @@ include_HEADERS = \
     europeanoption.hpp \
     finitedifferenceeuropean.hpp \
     geometricasianoption.hpp \
-    mcaveragepriceasian.hpp \
-    mcaveragestrikeasian.hpp \
     mcbasket.hpp \
+    mcdiscretearithmeticapo.hpp \
+    mcdiscretearithmeticaso.hpp \
     mceuropean.hpp \
     mceverest.hpp \
     mchimalaya.hpp \

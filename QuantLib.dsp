@@ -7,21 +7,21 @@
 CFG=QuantLib - Win32 OnTheEdgeDebug
 !MESSAGE This is not a valid makefile. To build this project using NMAKE,
 !MESSAGE use the Export Makefile command and run
-!MESSAGE
+!MESSAGE 
 !MESSAGE NMAKE /f "QuantLib.mak".
-!MESSAGE
+!MESSAGE 
 !MESSAGE You can specify a configuration when running NMAKE
 !MESSAGE by defining the macro CFG on the command line. For example:
-!MESSAGE
+!MESSAGE 
 !MESSAGE NMAKE /f "QuantLib.mak" CFG="QuantLib - Win32 OnTheEdgeDebug"
-!MESSAGE
+!MESSAGE 
 !MESSAGE Possible choices for configuration are:
-!MESSAGE
+!MESSAGE 
 !MESSAGE "QuantLib - Win32 Release" (based on "Win32 (x86) Static Library")
 !MESSAGE "QuantLib - Win32 Debug" (based on "Win32 (x86) Static Library")
 !MESSAGE "QuantLib - Win32 OnTheEdgeRelease" (based on "Win32 (x86) Static Library")
 !MESSAGE "QuantLib - Win32 OnTheEdgeDebug" (based on "Win32 (x86) Static Library")
-!MESSAGE
+!MESSAGE 
 
 # Begin Project
 # PROP AllowPerConfigDependencies 0
@@ -122,7 +122,7 @@ LIB32=link.exe -lib
 # ADD BASE LIB32 /nologo /out:"lib\Win32\VisualStudio\QuantLib_d.lib"
 # ADD LIB32 /nologo /out:"lib\Win32\VisualStudio\QuantLib_d.lib"
 
-!ENDIF
+!ENDIF 
 
 # Begin Target
 
@@ -259,10 +259,6 @@ SOURCE=.\ql\DayCounters\thirty360.hpp
 # PROP Default_Filter ""
 # Begin Source File
 
-SOURCE=.\ql\FiniteDifferences\expliciteuler.hpp
-# End Source File
-# Begin Source File
-
 SOURCE=.\ql\FiniteDifferences\boundarycondition.hpp
 # End Source File
 # Begin Source File
@@ -292,6 +288,10 @@ SOURCE=.\ql\FiniteDifferences\dplusdminus.hpp
 # Begin Source File
 
 SOURCE=.\ql\FiniteDifferences\dzero.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\FiniteDifferences\expliciteuler.hpp
 # End Source File
 # Begin Source File
 
@@ -475,19 +475,19 @@ SOURCE=.\ql\Math\symmetricschurdecomposition.hpp
 # PROP Default_Filter ""
 # Begin Source File
 
-SOURCE=.\ql\MonteCarlo\avgpriceasianpathpricer.cpp
+SOURCE=.\ql\MonteCarlo\arithmeticapopathpricer.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\ql\MonteCarlo\avgpriceasianpathpricer.hpp
+SOURCE=.\ql\MonteCarlo\arithmeticapopathpricer.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\ql\MonteCarlo\avgstrikeasianpathpricer.cpp
+SOURCE=.\ql\MonteCarlo\arithmeticasopathpricer.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\ql\MonteCarlo\avgstrikeasianpathpricer.hpp
+SOURCE=.\ql\MonteCarlo\arithmeticasopathpricer.hpp
 # End Source File
 # Begin Source File
 
@@ -523,11 +523,19 @@ SOURCE=.\ql\MonteCarlo\everestpathpricer.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\ql\MonteCarlo\geometricasianpathpricer.cpp
+SOURCE=.\ql\MonteCarlo\geometricapopathpricer.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\ql\MonteCarlo\geometricasianpathpricer.hpp
+SOURCE=.\ql\MonteCarlo\geometricapopathpricer.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\MonteCarlo\geometricasopathpricer.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\MonteCarlo\geometricasopathpricer.hpp
 # End Source File
 # Begin Source File
 
@@ -584,6 +592,10 @@ SOURCE=.\ql\MonteCarlo\pathgenerator.hpp
 # Begin Source File
 
 SOURCE=.\ql\MonteCarlo\pathpricer.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\MonteCarlo\sample.hpp
 # End Source File
 # Begin Source File
 
@@ -655,6 +667,26 @@ SOURCE=.\ql\Pricers\cliquetoption.hpp
 # End Source File
 # Begin Source File
 
+SOURCE=.\ql\Pricers\continuousgeometricapo.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\Pricers\discretegeometricapo.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\Pricers\discretegeometricapo.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\Pricers\discretegeometricaso.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\Pricers\discretegeometricaso.hpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\ql\Pricers\dividendamericanoption.cpp
 # End Source File
 # Begin Source File
@@ -711,31 +743,27 @@ SOURCE=.\ql\Pricers\finitedifferenceeuropean.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\ql\Pricers\geometricasianoption.hpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\ql\Pricers\mcaveragepriceasian.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\ql\Pricers\mcaveragepriceasian.hpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\ql\Pricers\mcaveragestrikeasian.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\ql\Pricers\mcaveragestrikeasian.hpp
-# End Source File
-# Begin Source File
-
 SOURCE=.\ql\Pricers\mcbasket.cpp
 # End Source File
 # Begin Source File
 
 SOURCE=.\ql\Pricers\mcbasket.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\Pricers\mcdiscretearithmeticapo.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\Pricers\mcdiscretearithmeticapo.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\Pricers\mcdiscretearithmeticaso.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\Pricers\mcdiscretearithmeticaso.hpp
 # End Source File
 # Begin Source File
 

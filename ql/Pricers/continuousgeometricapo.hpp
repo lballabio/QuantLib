@@ -22,17 +22,17 @@
  * available at http://quantlib.org/group.html
 */
 
-/*! \file geometricasianoption.hpp
-    \brief geometric Asian option
+/*! \file continuousgeometricapo.hpp
+    \brief Continuous Geometric Average Price Option (European exercise)
 
     \fullpath
-    ql/Pricers/%geometricasianoption.hpp
+    ql/Pricers/%continuousgeometricapo.hpp
 */
 
 // $Id$
 
-#ifndef quantlib_geometric_asian_option_pricer_h
-#define quantlib_geometric_asian_option_pricer_h
+#ifndef quantlib_continous_geometric_average_price_option_h
+#define quantlib_continous_geometric_average_price_option_h
 
 #include "ql/Pricers/europeanoption.hpp"
 
@@ -40,16 +40,24 @@ namespace QuantLib {
 
     namespace Pricers {
 
-        //! geometric Asian option
-        class GeometricAsianOption : public EuropeanOption    {
+        //! Continuous Geometric Average Price Option (European exercise)
+        /*! This class implements a continuous geometric average price
+            asian option with european exercise.
+            The formula is from "Option Pricing Formulas", E. G. Haug (1997)
+            pag 96-97
+
+            \todo Continous Geometric Average Strike Option
+
+        */
+        class ContinuousGeometricAPO : public EuropeanOption    {
            public:
-            GeometricAsianOption(Option::Type type,
-                                 double underlying,
-                                 double strike,
-                                 Spread dividendYield,
-                                 Rate riskFreeRate,
-                                 Time residualTime,
-                                 double volatility);
+            ContinuousGeometricAPO(Option::Type type,
+                                   double underlying,
+                                   double strike,
+                                   Spread dividendYield,
+                                   Rate riskFreeRate,
+                                   Time residualTime,
+                                   double volatility);
             double vega() const;
             double rho() const;
             Handle<SingleAssetOption> clone() const;
@@ -58,24 +66,27 @@ namespace QuantLib {
 
         // inline definitions
         
-        inline GeometricAsianOption::GeometricAsianOption(Option::Type type,
-            double underlying, double strike, Spread dividendYield,
-            Rate riskFreeRate, Time residualTime, double volatility)
+        inline ContinuousGeometricAPO::ContinuousGeometricAPO(
+            Option::Type type, double underlying, double strike,
+            Spread dividendYield, Rate riskFreeRate, Time residualTime,
+            double volatility)
         : EuropeanOption(type, underlying, strike,
             (riskFreeRate+dividendYield+volatility*volatility/6.0)/2.0,
             riskFreeRate, residualTime, volatility/QL_SQRT(3)) {}
 
-        inline double GeometricAsianOption::rho() const{
+        inline double ContinuousGeometricAPO::rho() const{
             return EuropeanOption::rho()/2.0;
         }
 
-        inline double GeometricAsianOption::vega() const{
+        inline double ContinuousGeometricAPO::vega() const{
             return EuropeanOption::vega()/QL_SQRT(3.0)
                 -EuropeanOption::rho()*volatility_*volatility_/4;
         }
 
-        inline Handle<SingleAssetOption> GeometricAsianOption::clone() const{
-            return Handle<SingleAssetOption>(new GeometricAsianOption(*this));
+        inline Handle<SingleAssetOption> ContinuousGeometricAPO::clone()
+          const {
+            return Handle<SingleAssetOption>(
+                new ContinuousGeometricAPO(*this));
         }
 
     }

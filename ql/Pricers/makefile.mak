@@ -21,6 +21,8 @@ OBJS = \
        binaryoption.obj$(_D) \
        bsmnumericaloption.obj$(_D) \
        cliquetoption.obj$(_D) \
+       discretegeometricaso.obj$(_D) \
+       discretegeometricapo.obj$(_D) \
        dividendamericanoption.obj$(_D) \
        dividendeuropeanoption.obj$(_D) \
        dividendoption.obj$(_D) \
@@ -28,8 +30,8 @@ OBJS = \
        europeanengine.obj$(_D) \
        europeanoption.obj$(_D) \
        finitedifferenceeuropean.obj$(_D) \
-       mcaveragepriceasian.obj$(_D) \
-       mcaveragestrikeasian.obj$(_D) \
+       mcdiscretearithmeticapo.obj$(_D) \
+       mcdiscretearithmeticaso.obj$(_D) \
        mcbasket.obj$(_D) \
        mceuropean.obj$(_D) \
        mceverest.obj$(_D) \
