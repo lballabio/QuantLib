@@ -46,6 +46,7 @@ namespace QuantLib {
         engine_ = engine;
         // this will trigger recalculation and notify observers
         update();
+        setupEngine();
     }
 
     void Option::performCalculations() const {
