@@ -4,6 +4,9 @@
 # $Id$
 # $Source$
 # $Log$
+# Revision 1.20  2001/05/28 13:17:21  nando
+# I'm confused, but it seems like we don't need to mkdir
+#
 # Revision 1.19  2001/05/28 13:09:55  nando
 # R019-branch-merge3 merged into trunk
 #
@@ -28,15 +31,12 @@ quantlib::
 # QuantLib library
 install::
     if exist "$(QL_DIR)\Include\ql" rmdir /S /Q "$(QL_DIR)\Include\ql"
-    mkdir "$(QL_DIR)\Include\qk"
     xcopy Include\ql\*.hpp "$(QL_DIR)\Include\ql" /S /I
 
     if exist "$(QL_DIR)\lib\Win32\VisualStudio" rmdir /S /Q "$(QL_DIR)\lib\Win32\VisualStudio"
-    mkdir "$(QL_DIR)\lib\Win32\VisualStudio"
     xcopy lib\Win32\VisualStudio\*.lib "$(QL_DIR)\lib\Win32\VisualStudio" /S /I
 
     if exist "$(QL_DIR)\lib\Win32\Borland" rmdir /S /Q "$(QL_DIR)\lib\Win32\Borland"
-    mkdir "$(QL_DIR)\lib\Win32\Borland"
     xcopy lib\Win32\Borland\*.lib "$(QL_DIR)\lib\Win32\Borland" /S /I
 
 
