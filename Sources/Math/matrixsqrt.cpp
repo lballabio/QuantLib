@@ -25,13 +25,16 @@
     $Source$
     $Name$
     $Log$
+    Revision 1.2  2001/01/25 10:02:52  marmar
+    JacobiDecomposition renamed SymmetricSchurDecomposition
+
     Revision 1.1  2001/01/24 13:16:35  marmar
     sqrt for Matrix
 
 */
 
 #include "matrixsqrt.h"
-#include "jacobidecomposition.h"
+#include "symmetricschurdecomposition.h"
 #include "dataformatters.h"
 
 namespace QuantLib {
@@ -49,7 +52,7 @@ namespace QuantLib {
           QL_REQUIRE(size == inputMatrix.columns(),
               "sqrt input matrix must be square");
 
-          JacobiDecomposition jd(inputMatrix);
+          SymmetricSchurDecomposition jd(inputMatrix);
           Matrix evectors(jd.eigenvectors());
           Array evalues(jd.eigenvalues());
           

@@ -43,7 +43,7 @@ DAYCOUNT_OBJS    = $(OUTPUT_DIR)\actualactual.obj \
                    $(OUTPUT_DIR)\thirty360italian.obj
 
 MATH_OBJS        = $(OUTPUT_DIR)\matrixsqrt.obj      \
-                   $(OUTPUT_DIR)\jacobidecomposition.obj    \
+                   $(OUTPUT_DIR)\symmetricschurdecomposition.obj    \
                    $(OUTPUT_DIR)\multivariateaccumulator.obj\
                    $(OUTPUT_DIR)\normaldistribution.obj \                   
                    $(OUTPUT_DIR)\statistics.obj 
@@ -131,7 +131,7 @@ LINK_OPTS    = $(LINK_OPTS) -v
 
 TLIB_OPTS    = /P32
 !ifdef DEBUG
-TLIB_OPTS    = /P128
+TLIB_OPTS    = /P64
 !endif
 
 # Generic rules
@@ -238,7 +238,7 @@ $(OUTPUT_DIR)\bsmoperator.obj: $(SOURCES_DIR)\FiniteDifferences\bsmoperator.cpp
 
 # Math
 Math: $(OUTPUT_DIR) $(MATH_OBJS)
-$(OUTPUT_DIR)\jacobidecomposition.obj: $(SOURCES_DIR)\Math\jacobidecomposition.cpp
+$(OUTPUT_DIR)\symmetricschurdecomposition.obj: $(SOURCES_DIR)\Math\symmetricschurdecomposition.cpp
 $(OUTPUT_DIR)\matrixsqrt.obj:   $(SOURCES_DIR)\Math\matrixsqrt.cpp
 $(OUTPUT_DIR)\normaldistribution.obj:  $(SOURCES_DIR)\Math\normaldistribution.cpp
 $(OUTPUT_DIR)\statistics.obj:          $(SOURCES_DIR)\Math\statistics.cpp

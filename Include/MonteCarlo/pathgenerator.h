@@ -25,6 +25,9 @@
     $Source$
     $Name$
     $Log$
+    Revision 1.4  2001/01/25 10:03:55  marmar
+    JacobiDecomposition renamed SymmetricSchurDecomposition
+
     Revision 1.3  2001/01/17 14:37:56  nando
     tabs removed
 
@@ -72,9 +75,9 @@ namespace QuantLib {
 
         template <class RP>
         inline PathGenerator<RP >::PathGenerator(int dimension, double average,
-                            double stddev, long seed): theDimension(dimension),
-                            path_(dimension), average_(average), stddev_(stddev),
-                            rndPoint(seed){}
+                double stddev, long seed): theDimension(dimension), 
+                path_(dimension), average_(average), stddev_(stddev), 
+                rndPoint(seed){}
 
         template <class RP>
         inline const Path & PathGenerator<RP >::next() const{
