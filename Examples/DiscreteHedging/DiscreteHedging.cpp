@@ -177,7 +177,7 @@ class ReplicationPathPricer : public PathPricer
 
     }
     // The value() method encapsulates the pricing code
-    double value(const Path &path) const;
+    double operator()(const Path &path) const;
 
   private:
     Option::Type type_;
@@ -226,7 +226,7 @@ int main(int argc, char* argv[])
    the life of the option are carried out, using the Black-Scholes 
    hedge ratio.
 */
-double ReplicationPathPricer::value(const Path & path) const
+double ReplicationPathPricer::operator()(const Path & path) const
 {
 
     // path is an instance of QuantLib::MonteCarlo::Path
