@@ -21,7 +21,7 @@ namespace QuantLib {
 
     DiscreteAveragingAsianOption::DiscreteAveragingAsianOption(
         Average::Type averageType,
-        Real runningProduct,
+        Real runningAccumulator,
         Size pastFixings,
         std::vector<Date> fixingDates,
         const boost::shared_ptr<BlackScholesProcess>& stochProc,
@@ -29,7 +29,7 @@ namespace QuantLib {
         const boost::shared_ptr<Exercise>& exercise,
         const boost::shared_ptr<PricingEngine>& engine)
     : OneAssetStrikedOption(stochProc, payoff, exercise, engine),
-      averageType_(averageType), runningProduct_(runningProduct),
+      averageType_(averageType), runningAccumulator_(runningAccumulator),
       pastFixings_(pastFixings), fixingDates_(fixingDates) {
         std::sort(fixingDates_.begin(), fixingDates_.end());
     }
@@ -42,7 +42,7 @@ namespace QuantLib {
             dynamic_cast<DiscreteAveragingAsianOption::arguments*>(args);
         QL_REQUIRE(moreArgs != 0, "wrong argument type");
         moreArgs->averageType = averageType_;
-        moreArgs->runningProduct = runningProduct_;
+        moreArgs->runningAccumulator = runningAccumulator_;
         moreArgs->pastFixings = pastFixings_;
         moreArgs->fixingDates = fixingDates_;
     }
@@ -57,9 +57,24 @@ namespace QuantLib {
         #endif
 
         QL_REQUIRE(Integer(averageType) != -1, "unspecified average type");
-        QL_REQUIRE(runningProduct != Null<Real>(), "null running product");
-        QL_REQUIRE(runningProduct >= 0.0, "negative running product");
         QL_REQUIRE(pastFixings != Null<Size>(), "null past-fixing number");
+        QL_REQUIRE(runningAccumulator != Null<Real>(), "null running product");
+        switch (averageType) {
+            case Average::Arithmetic:
+                QL_REQUIRE(runningAccumulator >= 0.0,
+                    "non negative running sum required: "
+                    + DecimalFormatter::toString(runningAccumulator) +
+                    " not allowed");
+                break;
+            case Average::Geometric:
+                QL_REQUIRE(runningAccumulator > 0.0,
+                    "positive running product required: "
+                    + DecimalFormatter::toString(runningAccumulator) +
+                    " not allowed");
+                break;
+            default:
+                QL_FAIL("invalid average type");
+        }
 
         // check fixingTimes_ here
     }
