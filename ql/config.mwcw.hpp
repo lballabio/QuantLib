@@ -28,24 +28,9 @@
 #define REQUIRES_DUMMY_RETURN
 
 #define HAVE_CSTDLIB 1
-#define QL_SIZE_T    std::size_t
-#define QL_ATOI      std::atoi
-
 #define HAVE_CMATH   1
-
 #define HAVE_CTIME   1
-#define QL_TIME_T    std::time_t
-#define QL_TM        std::tm
-#define QL_CLOCK     std::clock
-#define QL_TIME      std::time
-#define QL_GMTIME    std::gmtime
-
 #define HAVE_CCTYPE  1
-#define QL_TOLOWER   std::tolower
-#define QL_TOUPPER   std::toupper
-
-#define HAVE_CSTRING 1
-#define QL_STRLEN    std::strlen
 
 #define QL_MIN       std::min
 #define QL_MAX       std::max

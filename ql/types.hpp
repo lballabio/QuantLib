@@ -51,7 +51,7 @@ namespace QuantLib {
 
     //! size of a container
     /*! \ingroup types */
-    typedef QL_SIZE_T Size;
+    typedef std::size_t Size;
 
     //! continuous quantity with 1-year units
     /*! \ingroup types */

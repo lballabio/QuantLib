@@ -28,12 +28,12 @@ namespace QuantLib {
         Size iPos = str.find_first_of("DdWwMmYy");
         if (iPos != str.length()-1)
             QL_FAIL("unknown units, input: '"+str+"'");
-        char abbr = QL_TOUPPER(str[iPos]);
+        char abbr = std::toupper(str[iPos]);
         if (abbr == 'D')      units = Days;
         else if (abbr == 'W') units = Weeks;
         else if (abbr == 'M') units = Months;
         else if (abbr == 'Y') units = Years;
-        return Period(QL_ATOI(str.c_str()), units);
+        return Period(std::atoi(str.c_str()), units);
     }
 
     std::vector<std::string> DateParser::split(const std::string& str,
@@ -63,11 +63,11 @@ namespace QuantLib {
         for (i=0;i<flist.size();i++) {
             std::string sub = flist[i];
             if (StringFormatter::toLowercase(sub) == "dd")
-                d = QL_ATOI(slist[i].c_str());
+                d = std::atoi(slist[i].c_str());
             else if (StringFormatter::toLowercase(sub) == "mm")
-                m = QL_ATOI(slist[i].c_str());
+                m = std::atoi(slist[i].c_str());
             else if (StringFormatter::toLowercase(sub) == "yyyy") {
-                y = QL_ATOI(slist[i].c_str());
+                y = std::atoi(slist[i].c_str());
                 if (y < 100)
                     y += 2000;
             }

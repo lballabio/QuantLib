@@ -200,11 +200,11 @@ namespace QuantLib {
     }
 
     Date Date::todaysDate() {
-        QL_TIME_T t;
+        std::time_t t;
 
-        if (QL_TIME(&t) == QL_TIME_T(-1)) // -1 means time() didn't work
+        if (std::time(&t) == std::time_t(-1)) // -1 means time() didn't work
             return Date();
-        QL_TM *gt = QL_GMTIME(&t);
+        std::tm *gt = std::gmtime(&t);
         return Date(Day(gt->tm_mday),
                     Month(gt->tm_mon+1),
                     Year(gt->tm_year+1900));

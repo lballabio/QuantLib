@@ -1,6 +1,6 @@
 
 /*
- Copyright (C) 2000, 2001, 2002, 2003 RiskMap srl
+ Copyright (C) 2000-2004 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -42,7 +42,7 @@
 
 /*! \defgroup macros QuantLib macros
 
-    Global definitions and quite a few macros which help porting the
+    Global definitions and a few macros which help porting the
     code to different compilers.
 
     @{
@@ -111,15 +111,6 @@
     #define QL_DUMMY_RETURN(x)
 #endif
 
-
-#if defined HAVE_CSTDLIB
-    #include <cstdlib>
-#elif defined HAVE_STDLIB_H
-    #include <stdlib.h>
-#else
-    #error Neither <cstdlib> nor <stdlib.h> found
-#endif
-
 /*! \def QL_IO_INIT
     \brief I/O initialization
 
@@ -141,6 +132,25 @@
     #define QL_IO_INIT
 #endif
 /*! @} */
+
+
+#if defined HAVE_CSTDLIB
+    #include <cstdlib>
+#elif defined HAVE_STDLIB_H
+    #include <stdlib.h>
+#else
+    #error Neither <cstdlib> nor <stdlib.h> found
+#endif
+#if defined(BOOST_NO_STDC_NAMESPACE)
+    namespace std { using ::atoi; }
+#endif
+#ifndef QL_DISABLE_DEPRECATED
+/*! \def QL_ATOI
+    \brief conversion from string to int
+    \deprecated use std::atoi instead
+*/
+#define QL_ATOI std::atoi
+#endif
 
 
 /*! \defgroup mathMacros Math functions
@@ -277,12 +287,6 @@
 
     @{
 */
-/*! \def QL_CLOCK
-    \brief clock value
-*/
-/*! \def QL_TIME
-    \brief time value
-*/
 #if defined HAVE_CTIME
     #include <ctime>
 #elif defined HAVE_TIME_H
@@ -290,24 +294,30 @@
 #else
     #error Neither <ctime> nor <time.h> found
 #endif
-/*! @} */
-
-
-/*! \defgroup strMacros String functions
-
-    Some compilers still define string functions in the global
-    namespace.  For the code to be portable these macros should be
-    used instead of the actual functions.
-
-    @{
+#if defined(BOOST_NO_STDC_NAMESPACE)
+    namespace std { using ::time; using ::time_t; using ::tm; using ::gmtime; }
+#endif
+#ifndef QL_DISABLE_DEPRECATED
+/*! \def QL_TIME
+    \brief time value
+    \deprecated use std::time instead
 */
-/*! \def QL_STRLEN  \brief string length */
-#if defined HAVE_CSTRING
-    #include <cstring>
-#elif defined HAVE_STRING_H
-    #include <string.h>
-#else
-    #error Neither <cstring> nor <string.h> found
+#define QL_TIME std::time
+/*! \def QL_TIME_T
+    \brief time_t type
+    \deprecated use std::time_t instead
+*/
+#define QL_TIME_T std::time_t
+/*! \def QL_TM
+    \brief tm type
+    \deprecated use std::tm instead
+*/
+#define QL_TM std::tm
+/*! \def QL_GMTIME
+    \brief gmtime function
+    \deprecated use std::gmtime instead
+*/
+#define QL_GMTIME std::gmtime
 #endif
 /*! @} */
 
@@ -320,14 +330,27 @@
 
     @{
 */
-/*! \def QL_TOUPPER \brief convert to uppercase */
-/*! \def QL_TOLOWER \brief convert to lowercase */
 #if defined HAVE_CCTYPE
     #include <cctype>
 #elif defined HAVE_CTYPE_H
     #include <ctype.h>
 #else
     #error Neither <cctype> nor <ctype.h> found
+#endif
+#if defined(BOOST_NO_STDC_NAMESPACE)
+    namespace std { using ::tolower; using ::toupper; }
+#endif
+#ifndef QL_DISABLE_DEPRECATED
+/*! \def QL_TOUPPER
+    \brief convert to uppercase
+    \deprecated use std::toupper instead
+*/
+#define QL_TOUPPER std::toupper
+/*! \def QL_TOLOWER
+    \brief convert to lowercase
+    \deprecated use std::tolower instead
+*/
+#define QL_TOLOWER std::tolower
 #endif
 /*! @} */
 

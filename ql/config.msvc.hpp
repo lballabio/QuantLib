@@ -62,9 +62,6 @@
 #endif
 
 #define HAVE_CSTDLIB 1
-#define QL_SIZE_T    size_t
-#define QL_ATOI      atoi
-
 #define HAVE_CMATH   1
 
 /* Useful constants missing in Visual C++ math.h  */
@@ -95,18 +92,7 @@
 
 
 #define HAVE_CTIME   1
-#define QL_TIME_T    time_t
-#define QL_TM        tm
-#define QL_CLOCK     clock
-#define QL_TIME      time
-#define QL_GMTIME    gmtime
-
 #define HAVE_CCTYPE  1
-#define QL_TOLOWER   tolower
-#define QL_TOUPPER   toupper
-
-#define HAVE_CSTRING 1
-#define QL_STRLEN    strlen
 
 #define QL_PATCH_MSVC  // more granularity below
 

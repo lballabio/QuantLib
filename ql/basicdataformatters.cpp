@@ -121,14 +121,14 @@ namespace QuantLib {
     std::string StringFormatter::toLowercase(const std::string& s) {
         std::string output = s;
         for (std::string::iterator i=output.begin(); i!=output.end(); i++)
-            *i = QL_TOLOWER(*i);
+            *i = std::tolower(*i);
         return output;
     }
 
     std::string StringFormatter::toUppercase(const std::string& s) {
         std::string output = s;
         for (std::string::iterator i=output.begin(); i!=output.end(); i++)
-            *i = QL_TOUPPER(*i);
+            *i = std::toupper(*i);
         return output;
     }
 

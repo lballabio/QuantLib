@@ -9,7 +9,7 @@ AC_CONFIG_HEADERS([ql/config.hpp])
 AM_INIT_AUTOMAKE([foreign])
 
 AC_COPYRIGHT([Copyright (C) 2004 Ferdinando Ametrano
-Copyright (C) 2000, 2001, 2002, 2003 RiskMap srl
+Copyright (C) 2000-2004 StatPro Italia srl
 
 This file is part of QuantLib, a free-software/open-source library
 for financial quantitative analysts and developers - http://quantlib.org/
@@ -65,11 +65,8 @@ AC_LANG([C++])
 QL_CHECK_NAMESPACES
 
 QL_CHECK_HEADER([stdlib])
-QL_CHECK_TYPE([size_t],[],[$ql_stdlib])
-QL_CHECK_FUNC([atoi],["1.0"],[$ql_stdlib])
 
 QL_CHECK_HEADER([math])
-
 QL_CHECK_CONSTANT([M_PI],[double],[$ql_math],
                   [3.141592653589793238462643383280],[pi])
 QL_CHECK_CONSTANT([M_SQRT_2],[double],[$ql_math],
@@ -79,19 +76,8 @@ QL_CHECK_CONSTANT([M_SQRTPI],[double],[$ql_math],
 QL_CHECK_CONSTANT([M_1_SQRTPI],[double],[$ql_math],
                   [0.564189583547756286948],[1/sqrt(pi)])
 
-QL_CHECK_HEADER([string])
-QL_CHECK_FUNC([strlen],["foo"],[$ql_string])
-
 QL_CHECK_HEADER([ctype])
-QL_CHECK_FUNC([tolower],['c'],[$ql_ctype])
-QL_CHECK_FUNC([toupper],['c'],[$ql_ctype])
-
 QL_CHECK_HEADER([time])
-QL_CHECK_TYPE([time_t],[],[$ql_time])
-QL_CHECK_TYPE([tm],[],[$ql_time])
-QL_CHECK_FUNC([clock],[],[$ql_time])
-QL_CHECK_FUNC([time],[0],[$ql_time])
-QL_CHECK_GMTIME
 
 AC_CHECK_HEADERS([algorithm],,[AC_MSG_WARN([<algorithm> not found])])
 QL_CHECK_FUNC([min],[1,2],[algorithm])
