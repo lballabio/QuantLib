@@ -16,7 +16,7 @@ Changes since Release 0.2.1:
     YIELD TERM STRUCTURE AND FIXED INCOME
     - added single factor interest rate model (Ho-Lee, Hull-White,
       Black-Derman-Toy, Black-Karasinski)
-    - Bermuda swaption finite difference pricer
+    - Bermudan swaption finite difference pricer
     - cap/floor and swaption calibration helpers
     - discount factor accuracy in the yield curve bootstrapping is an input
     - yield curves can be spreaded in term of zeros
@@ -27,7 +27,7 @@ Changes since Release 0.2.1:
 
     PATTERNS
 
-    VARIOUS
+    MISCELLANEA
     - Handle is now castable to an Handle of a compatible type
     - better spline interpolation algorithm
     - added downsideVariance to the Statistics class
@@ -35,7 +35,7 @@ Changes since Release 0.2.1:
       variance == 0
     - enforced MS VC compilation settings
     - added "-debug" to the QL_VERSION version string ifdef QL_DEBUG
-
+    - "make check" runs the example programs under Borland C++
 
 2001-12-03 Release 0.2.1
 
