@@ -118,14 +118,18 @@ namespace QuantLib {
 
             next_.weight = stdDev_.weight;
 
-            double dt;
-            Time t;
+            Time t = timeGrid_[1];
+            double dt= timeGrid_.dt(0);
+            next_.value.drift()[0] = dt * 
+                diffProcess_->drift(t, asset_);
+            next_.value.diffusion()[0] = stdDev_.value[0];
             for (Size i=0; i<next_.value.size(); i++) {
                 t = timeGrid_[i+1];
                 dt = timeGrid_.dt(i);
                 next_.value.drift()[i] = dt * 
                     diffProcess_->drift(t, asset_);
-                next_.value.diffusion()[i] = stdDev_.value[i];
+                next_.value.diffusion()[i] =
+                    stdDev_.value[i] - stdDev_.value[i-1];
             }
 
             return next_;
@@ -164,16 +168,19 @@ namespace QuantLib {
 
             next_.weight = stdDev_.weight;
 
-            double dt;
-            Time t;
+            Time t = timeGrid_[1];
+            double dt= timeGrid_.dt(0);
+            next_.value.drift()[0] = dt * 
+                diffProcess_->drift(t, asset_);
+            next_.value.diffusion()[0] = - stdDev_.value[0];
             for (Size i=0; i<next_.value.size(); i++) {
                 t = timeGrid_[i+1];
                 dt = timeGrid_.dt(i);
                 next_.value.drift()[i] = dt * 
                     diffProcess_->drift(t, asset_);
-                next_.value.diffusion()[i] = - stdDev_.value[i];
+                next_.value.diffusion()[i] =
+                    - stdDev_.value[i] + stdDev_.value[i-1];
             }
-
             return next_;
         } else {
             typedef typename GSG::sample_type sequence_type;
