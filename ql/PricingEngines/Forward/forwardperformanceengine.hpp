@@ -52,8 +52,8 @@ namespace QuantLib {
     void ForwardPerformanceEngine<ArgumentsType, ResultsType>::calculate() 
                                                                        const {
 
-        setOriginalArguments();
-        originalEngine_->calculate();
+        this->setOriginalArguments();
+        this->originalEngine_->calculate();
         getOriginalResults();
     }
 
