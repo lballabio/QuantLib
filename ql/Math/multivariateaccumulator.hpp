@@ -14,6 +14,7 @@
  This program is distributed in the hope that it will be useful, but WITHOUT
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  FOR A PARTICULAR PURPOSE.  See the license for more details.
+
 */
 /*! \file multivariateaccumulator.hpp
     \brief A simple accumulator for vector-type samples
@@ -59,6 +60,9 @@ namespace QuantLib {
             std::vector<double> meanVector() const;
             //! returns the covariance Matrix
             Matrix covariance() const;
+            //! returns the correlation Matrix
+            Matrix correlation() const;
+
             //@}
 
             //! \name Modifiers

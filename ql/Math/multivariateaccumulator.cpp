@@ -89,6 +89,43 @@ namespace QuantLib {
                 inv*(quadraticSum_ - inv*outerProduct(sum_,sum_) );
         }
 
+
+        Matrix MultivariateAccumulator::correlation() const {
+          Matrix correlation = covariance();
+          Array variances = correlation.diagonal();
+          size_t dimension = variances.size();
+          for (size_t i=0; i < dimension; ++i){
+              for (size_t j=0 ; j < dimension; ++j){
+                  if( i == j){
+                      if(variances[i] == 0.0){
+                      
+                          correlation[i][j] = 1.0;
+                      }
+                      else{
+                          
+                          correlation[i][j] *=1.0/QL_SQRT(variances[i]*variances[j]);
+                      }
+
+                  }
+                  else{
+
+                      if(variances[i] == 0.0 && variances[j] == 0){
+                          
+                          correlation[i][j] = 1.0 ;
+                      }
+                      else if(variances[i] != 0.0 || variances[j] != 0.0){
+                          
+                          correlation[i][j] = 0.0 ;   
+                      }  
+                      else{                            
+                           correlation[i][j] *= 1.0/QL_SQRT(variances[i]*variances[j]);   
+                      }
+                  }
+              }
+          }
+          return correlation;
+        }
+
         std::vector<double> MultivariateAccumulator::meanVector() const {
 
             Array ma(mean());
