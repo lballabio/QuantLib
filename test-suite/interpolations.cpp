@@ -781,7 +781,6 @@ void InterpolationTest::testNonRestrictiveHymanFilter() {
 
 test_suite* InterpolationTest::suite() {
     test_suite* suite = BOOST_TEST_SUITE("Interpolation tests");
-/*
     suite->add(BOOST_TEST_CASE(&InterpolationTest::testSplineOnGenericValues));
     suite->add(BOOST_TEST_CASE(
                         &InterpolationTest::testSimmetricEndConditions));
@@ -792,7 +791,6 @@ test_suite* InterpolationTest::suite() {
     suite->add(BOOST_TEST_CASE(&InterpolationTest::testSplineOnRPN15AValues));
     suite->add(BOOST_TEST_CASE(
                         &InterpolationTest::testSplineOnGaussianValues));
-*/
     suite->add(BOOST_TEST_CASE(
                         &InterpolationTest::testSplineErrorOnGaussianValues));
     return suite;
