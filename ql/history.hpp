@@ -73,7 +73,7 @@ namespace QuantLib {
                 "history size incompatible with date range");
         }
         History(const Date& firstDate, const std::vector<double>& values)
-        : firstDate_(firstDate), lastDate_(firstDate + values.size()),
+        : firstDate_(firstDate), lastDate_(firstDate + int(values.size())),
           values_(values) {}
         /*! This constructor initializes the history with the given set of
             values, corresponding to the date range between
