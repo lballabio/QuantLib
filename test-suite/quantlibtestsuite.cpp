@@ -16,7 +16,7 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include <ql/quantlib.hpp>
+#include <ql/qldefines.hpp>
 #include <boost/test/unit_test.hpp>
 
 /* auto_link was not available in Boost version 1.30.x.  Therefore, we
