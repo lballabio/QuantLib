@@ -14,6 +14,7 @@
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
+
 /*! \file piecewiseflatforward.hpp
     \brief piecewise flat forward term structure
 
@@ -64,7 +65,14 @@ namespace QuantLib {
                          const std::vector<Handle<RateHelper> >& instruments,
                          const DayCounter& dayCounter,
                          double accuracy=1.0e-12);
-           PiecewiseFlatForward(
+            /*! In this constructor, the first date must be the reference
+                date of the curve, the other dates are the nodes of the
+                term structure. The forward rate at index \f$i\f$ is used
+                in the period \f$t_{i-1} < t \le t_i\f$. Therefore,
+                forwards[0] is used only to compute the zero yield for 
+                \f$t = 0\f$.
+            */
+            PiecewiseFlatForward(
                          const Date& todaysDate,
                          const std::vector<Date>& dates,
                          const std::vector<Rate>& forwards,
@@ -72,7 +80,7 @@ namespace QuantLib {
             //! \name TermStructure interface
             //@{
             DayCounter dayCounter() const;
-            Date todaysDate() const {return todaysDate_; }
+            Date todaysDate() const { return todaysDate_; }
             Date referenceDate() const;
             const std::vector<Date>& dates() const;
             Date maxDate() const;
