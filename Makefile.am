@@ -16,7 +16,7 @@ EXTRA_DIST=Authors.txt \
 	Readme.txt \
 	README-win.txt \
 	README-mac.txt \
-	updateproject.sh 
+	updateproject.sh
 
 dist-hook:
 	mkdir $(distdir)/lib
@@ -90,5 +90,3 @@ docs-pdf:
 docs-man:
 	echo You need to install doxygen in order to generate documentation.
 endif
-
-

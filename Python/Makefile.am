@@ -10,15 +10,9 @@ EXTRA_DIST=	makefile.mak \
     quantlib_wrap.cpp \
     QuantLibc.def \
 	README.txt \
-	setup.py 
+	setup.py
 
 SWIG_INCLUDEDIR = ../SWIG
-
-#lib_LTLIBRARIES = libQuantLibc.la
-
-#LIBS = @LIBS@ @PYLIB@ -lQuantLib -L../Sources
-
-#libQuantLibc_la_SOURCES = quantlib_wrap.cpp
 
 python: quantlib_wrap.cpp
 	$(PYTHON) setup.py build

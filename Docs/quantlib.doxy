@@ -2,6 +2,9 @@
 #
 # $Source$
 # $Log$
+# Revision 1.6  2001/04/17 15:43:50  nando
+# smoothing ...
+#
 # Revision 1.5  2001/04/10 14:51:51  lballabio
 # Added Microsoft Help format to Doxygen output
 #
@@ -99,7 +102,7 @@ IGNORE_PREFIX          =
 GENERATE_HTML          = YES
 HTML_OUTPUT            = html
 HTML_HEADER            =
-HTML_FOOTER            = footer.html
+HTML_FOOTER            = quantlibfooter.html
 HTML_STYLESHEET        =
 HTML_ALIGN_MEMBERS     = YES
 GENERATE_HTMLHELP      = YES
