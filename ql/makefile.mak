@@ -26,19 +26,23 @@ OUTPUT_DIR     = ..\lib
 CORE_OBJS = \
     "basicdataformatters.obj$(_mt)$(_D)" \
     "calendar.obj$(_mt)$(_D)" \
+    "currency.obj$(_mt)$(_D)" \
     "dataformatters.obj$(_mt)$(_D)" \
     "dataparsers.obj$(_mt)$(_D)" \
     "date.obj$(_mt)$(_D)" \
     "discretizedasset.obj$(_mt)$(_D)" \
     "errors.obj$(_mt)$(_D)" \
+    "exchangerate.obj$(_mt)$(_D)" \
     "exercise.obj$(_mt)$(_D)" \
     "grid.obj$(_mt)$(_D)" \
+    "money.obj$(_mt)$(_D)" \
     "schedule.obj$(_mt)$(_D)" \
     "stochasticprocess.obj$(_mt)$(_D)" \
     "voltermstructure.obj$(_mt)$(_D)"
 
 CALENDAR_LIB         = "Calendars\Calendars$(_mt)$(_D).lib"
 CASHFLOWS_LIB        = "CashFlows\CashFlows$(_mt)$(_D).lib"
+CURRENCIES_LIB       = "Currencies\Currencies$(_mt)$(_D).lib"
 DAYCOUNTER_LIB       = "DayCounters\DayCounters$(_mt)$(_D).lib"
 FDM_LIB              = "FiniteDifferences\FiniteDifferences$(_mt)$(_D).lib"
 INDEXES_LIB          = "Indexes\Indexes$(_mt)$(_D).lib"
@@ -70,6 +74,7 @@ QUANTLIB_OBJS = \
     $(CALENDAR_LIB) \
     $(CALIBRATION_LIB) \
     $(CASHFLOWS_LIB) \
+    $(CURRENCIES_LIB) \
     $(CORE_OBJS) \
     $(DAYCOUNTER_LIB) \
     $(FDM_LIB) \
@@ -164,6 +169,8 @@ SubLibraries:
     $(MAKE)
     cd ..\CashFlows
     $(MAKE)
+    cd ..\Currencies
+    $(MAKE)
     cd ..\DayCounters
     $(MAKE)
     cd ..\FiniteDifferences
@@ -219,6 +226,8 @@ clean::
     cd Calendars
     $(MAKE) clean
     cd ..\CashFlows
+    $(MAKE) clean
+    cd ..\Currencies
     $(MAKE) clean
     cd ..\DayCounters
     $(MAKE) clean

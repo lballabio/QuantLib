@@ -23,9 +23,7 @@ INCLUDE_DIR    = ..\..
 
 # Object files
 OBJS = \
-    "indexmanager.obj$(_mt)$(_D)" \
-    "xibor.obj$(_mt)$(_D)" \
-    "xibormanager.obj$(_mt)$(_D)"
+    "exchangeratemanager.obj$(_mt)$(_D)"
 
 # Tools to be used
 CC        = bcc32
@@ -67,9 +65,9 @@ TLIB_OPTS    = /P128
 
 # Primary target:
 # static library
-Indexes$(_mt)$(_D).lib:: $(OBJS)
-    if exist Indexes$(_mt)$(_D).lib     del Indexes$(_mt)$(_D).lib
-    $(TLIB) $(TLIB_OPTS) "Indexes$(_mt)$(_D).lib" /a $(OBJS)
+Currencies$(_mt)$(_D).lib:: $(OBJS)
+    if exist Currencies$(_mt)$(_D).lib     del Currencies$(_mt)$(_D).lib
+    $(TLIB) $(TLIB_OPTS) "Currencies$(_mt)$(_D).lib" /a $(OBJS)
 
 
 

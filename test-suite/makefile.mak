@@ -42,6 +42,7 @@ QL_TESTS = \
     "distributions.obj$(_mt)$(_D)" \
     "dividendeuropeanoption.obj$(_mt)$(_D)" \
     "europeanoption.obj$(_mt)$(_D)" \
+    "exchangerate.obj$(_mt)$(_D)" \
     "factorial.obj$(_mt)$(_D)" \
     "forwardoption.obj$(_mt)$(_D)" \
     "instruments.obj$(_mt)$(_D)" \
@@ -51,6 +52,7 @@ QL_TESTS = \
     "lowdiscrepancysequences.obj$(_mt)$(_D)" \
     "matrices.obj$(_mt)$(_D)" \
     "mersennetwister.obj$(_mt)$(_D)" \
+    "money.obj$(_mt)$(_D)" \
     "old_pricers.obj$(_mt)$(_D)" \
     "operators.obj$(_mt)$(_D)" \
     "piecewiseflatforward.obj$(_mt)$(_D)" \
