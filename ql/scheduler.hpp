@@ -33,13 +33,27 @@ namespace QuantLib {
       public:
         Schedule(const Calendar& calendar,
                  const Date& startDate, const Date& endDate,
-                 Frequency frequency, BusinessDayConvention rollingConvention,
-                 bool isAdjusted, const Date& stubDate = Date(),
+                 Frequency frequency, BusinessDayConvention convention,
+                 const Date& stubDate = Date(),
                  bool startFromEnd = false, bool longFinal = false);
         Schedule(const std::vector<Date>&,
-                 const Calendar& calendar, 
-                 BusinessDayConvention rollingConvention,
+                 const Calendar& calendar, BusinessDayConvention convention);
+#ifndef QL_DISABLE_DEPRECATED
+        /*! \deprecated Use the constructor without the isAdjusted argument;
+                        pass convention = Unadjusted for isAdjusted = false.
+        */
+        Schedule(const Calendar& calendar,
+                 const Date& startDate, const Date& endDate,
+                 Frequency frequency, BusinessDayConvention convention,
+                 bool isAdjusted, const Date& stubDate = Date(),
+                 bool startFromEnd = false, bool longFinal = false);
+        /*! \deprecated Use the constructor without the isAdjusted argument;
+                        pass convention = Unadjusted for isAdjusted = false.
+        */
+        Schedule(const std::vector<Date>&,
+                 const Calendar& calendar, BusinessDayConvention convention,
                  bool isAdjusted);
+#endif
         //! \name Date access
         //@{
         Size size() const { return dates_.size(); }
@@ -53,8 +67,15 @@ namespace QuantLib {
         const Date& startDate() const;
         const Date& endDate() const;
         Frequency frequency() const;
+        BusinessDayConvention businessDayConvention() const;
+#ifndef QL_DISABLE_DEPRECATED
+        //! \deprecated renamed to businessDayConvention()
         BusinessDayConvention rollingConvention() const;
+        /*! \deprecated if you really need it (which you shouldn't) check
+                        that <c>businessDayConvention() != Unadjusted</c>
+        */
         bool isAdjusted() const;
+#endif
         //@}
         //! \name Iterators
         //@{
@@ -65,8 +86,7 @@ namespace QuantLib {
       private:
         Calendar calendar_;
         Frequency frequency_;
-        BusinessDayConvention rollingConvention_;
-        bool isAdjusted_;
+        BusinessDayConvention convention_;
         Date stubDate_;
         bool startFromEnd_;
         bool longFinal_;
@@ -83,13 +103,26 @@ namespace QuantLib {
       public:
         MakeSchedule(const Calendar& calendar,
                      const Date& startDate, const Date& endDate,
-                     Frequency frequency, BusinessDayConvention rollingConvention,
+                     Frequency frequency, 
+                     BusinessDayConvention convention)
+        : calendar_(calendar), startDate_(startDate), endDate_(endDate),
+          frequency_(frequency), convention_(convention),
+          stubDate_(Date()), startFromEnd_(false), longFinal_(false) {}
+#ifndef QL_DISABLE_DEPRECATED
+        /*! \deprecated Use the constructor without the isAdjusted argument;
+                        pass convention = Unadjusted for isAdjusted = false.
+        */
+        MakeSchedule(const Calendar& calendar,
+                     const Date& startDate, const Date& endDate,
+                     Frequency frequency, 
+                     BusinessDayConvention convention,
                      bool isAdjusted)
         : calendar_(calendar), startDate_(startDate), endDate_(endDate),
-          frequency_(frequency), rollingConvention_(rollingConvention),
-          isAdjusted_(isAdjusted), stubDate_(Date()), 
-          startFromEnd_(false), longFinal_(false) {}
-
+          frequency_(frequency), stubDate_(Date()), 
+          startFromEnd_(false), longFinal_(false) {
+            convention_ = isAdjusted ? convention : Unadjusted;
+        }
+#endif
         MakeSchedule& withStubDate(const Date& d) {
             stubDate_ = d; 
             return *this;
@@ -112,15 +145,13 @@ namespace QuantLib {
         }
         operator Schedule() {
             return Schedule(calendar_,startDate_,endDate_,frequency_,
-                            rollingConvention_,isAdjusted_,stubDate_,
-                            startFromEnd_,longFinal_);
+                            convention_,stubDate_,startFromEnd_,longFinal_);
         }
       private:
         Calendar calendar_;
         Date startDate_, endDate_;
         Frequency frequency_;
-        BusinessDayConvention rollingConvention_;
-        bool isAdjusted_;
+        BusinessDayConvention convention_;
         Date stubDate_;
         bool startFromEnd_;
         bool longFinal_;
@@ -132,14 +163,22 @@ namespace QuantLib {
 
     inline Schedule::Schedule(const std::vector<Date>& dates,
                               const Calendar& calendar, 
-                              BusinessDayConvention rollingConvention,
-                              bool isAdjusted)
-    : calendar_(calendar), frequency_(Frequency(-1)), 
-      rollingConvention_(rollingConvention),
-      isAdjusted_(isAdjusted), startFromEnd_(false), 
-      longFinal_(false), finalIsRegular_(true),
+                              BusinessDayConvention convention)
+    : calendar_(calendar), frequency_(Frequency(-1)), convention_(convention),
+      startFromEnd_(false), longFinal_(false), finalIsRegular_(true),
       dates_(dates) {}
 
+#ifndef QL_DISABLE_DEPRECATED
+    inline Schedule::Schedule(const std::vector<Date>& dates,
+                              const Calendar& calendar, 
+                              BusinessDayConvention convention,
+                              bool isAdjusted)
+    : calendar_(calendar), frequency_(Frequency(-1)), 
+      startFromEnd_(false), longFinal_(false), finalIsRegular_(true),
+      dates_(dates) {
+        convention_ = isAdjusted? convention : Unadjusted;
+    }
+#endif
 
     inline const Date& Schedule::date(Size i) const {
         QL_REQUIRE(i <= dates_.size(),
@@ -173,13 +212,19 @@ namespace QuantLib {
         return frequency_;
     }
 
+    inline BusinessDayConvention Schedule::businessDayConvention() const {
+        return convention_;
+    }
+
+#ifndef QL_DISABLE_DEPRECATED
     inline BusinessDayConvention Schedule::rollingConvention() const {
-        return rollingConvention_;
+        return convention_;
     }
 
     inline bool Schedule::isAdjusted() const {
-        return isAdjusted_;
+        return (convention_ != Unadjusted);
     }
+#endif
 
 }
 

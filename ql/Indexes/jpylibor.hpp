@@ -36,7 +36,7 @@ namespace QuantLib {
                  const RelinkableHandle<TermStructure>& h,
                  const DayCounter& dc = Actual360())
         : Xibor("JPYLibor", n, units, 2, JPY,
-                Tokyo(), true, ModifiedFollowing, dc, h) {}
+                Tokyo(), ModifiedFollowing, dc, h) {}
     };
 
 }

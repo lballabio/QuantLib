@@ -35,7 +35,7 @@ namespace QuantLib {
                 const RelinkableHandle<TermStructure>& h,
                 const DayCounter& dc = Actual360())
         : Xibor("Euribor", n, units, 2, EUR,
-                TARGET(), true, ModifiedFollowing, dc, h) {}
+                TARGET(), ModifiedFollowing, dc, h) {}
     };
 
 }

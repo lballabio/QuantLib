@@ -130,11 +130,15 @@ void CompoundForwardTest::testSuppliedRates() {
     boost::shared_ptr<Xibor> index(
                                new ZARLibor(12/frequency,Months,liborHandle));
     for (i=0; i<swaps; i++) {
-        SimpleSwap swap(true,settlement,swapData[i].n,swapData[i].units,
-                        calendar,rollingConvention,100.0,
-                        frequency,0.0,true,
-                        dayCounter,frequency,index,
-                        fixingDays,0.0,liborHandle);
+        Date maturity = calendar.advance(settlement,
+                                         swapData[i].n,swapData[i].units,
+                                         rollingConvention);
+        Schedule schedule(calendar,settlement,maturity,
+                          frequency,rollingConvention);
+        SimpleSwap swap(true,100.0,
+                        schedule,0.0,dayCounter,
+                        schedule,index,fixingDays,0.0,
+                        liborHandle);
         Rate expectedRate = swapData[i].rate/100,
              estimatedRate = swap.fairRate();
         if (QL_FABS(expectedRate-estimatedRate) > 1.0e-9) {
@@ -164,14 +168,18 @@ void CompoundForwardTest::testConvertedRates() {
     boost::shared_ptr<Xibor> index(
                                new ZARLibor(12/frequency,Months,liborHandle));
     for (i=0; i<swaps; i++) {
-        SimpleSwap swap(true,settlement,swapData[i].n,swapData[i].units,
-                        calendar,rollingConvention,100.0,
-                        frequency,0.0,true,
-                        dayCounter,frequency,index,
-                        fixingDays,0.0,liborHandle);
+        Date maturity = calendar.advance(settlement,
+                                         swapData[i].n,swapData[i].units,
+                                         rollingConvention);
+        Schedule schedule(calendar,settlement,maturity,
+                          frequency,rollingConvention);
+        SimpleSwap swap(true,100.0,
+                        schedule,0.0,dayCounter,
+                        schedule,index,fixingDays,0.0,
+                        liborHandle);
         Rate expectedRate = termStructure->compoundForward(swap.maturity(),
                                                            frequency),
-               estimatedRate = swap.fairRate();
+             estimatedRate = swap.fairRate();
         if (QL_FABS(expectedRate-estimatedRate) > 1.0e-9) {
             BOOST_FAIL(
                 IntegerFormatter::toString(swapData[i].n) + " year(s) swap:\n"

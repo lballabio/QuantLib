@@ -20,18 +20,31 @@
 
 namespace QuantLib {
 
+#ifndef QL_DISABLE_DEPRECATED
     Schedule::Schedule(const Calendar& calendar,
                        const Date& startDate, const Date& endDate, 
                        Frequency frequency,
-                       BusinessDayConvention rollingConvention, 
+                       BusinessDayConvention convention, 
                        bool isAdjusted,
+                       const Date& stubDate, bool startFromEnd, 
+                       bool longFinal) {
+        convention = isAdjusted? convention : Unadjusted;
+        *this = Schedule(calendar, startDate, endDate, frequency,
+                         convention, stubDate, startFromEnd, longFinal);
+    }
+#endif
+
+    Schedule::Schedule(const Calendar& calendar,
+                       const Date& startDate, const Date& endDate, 
+                       Frequency frequency,
+                       BusinessDayConvention convention, 
                        const Date& stubDate, bool startFromEnd, 
                        bool longFinal)
     : calendar_(calendar), frequency_(Frequency(frequency)), 
-      rollingConvention_(rollingConvention),
-      isAdjusted_(isAdjusted), stubDate_(stubDate),
-      startFromEnd_(startFromEnd),longFinal_(longFinal),
+      convention_(convention), stubDate_(stubDate),
+      startFromEnd_(startFromEnd), longFinal_(longFinal),
       finalIsRegular_(true) {
+
         // sanity checks
         QL_REQUIRE(startDate != Date(), "null start date");
         QL_REQUIRE(endDate != Date(),   "null end date");
@@ -59,38 +72,27 @@ namespace QuantLib {
         if (frequency == 0) {
             QL_REQUIRE(stubDate == Date(),
                        "stub date incompatible with frequency 'once'");
-            dates_.push_back(isAdjusted ? 
-                             calendar.adjust(startDate,rollingConvention) : 
-                             startDate);
-            dates_.push_back(isAdjusted ? 
-                             calendar.adjust(endDate,rollingConvention) : 
-                             endDate);
+            dates_.push_back(calendar.adjust(startDate, convention));
+            dates_.push_back(calendar.adjust(endDate, convention));
         } else if (startFromEnd) {
             // calculations
             Date seed = endDate;
-            Date first = (isAdjusted ?
-                          calendar.adjust(startDate,rollingConvention) :
-                          startDate);
+            Date first = calendar.adjust(startDate, convention);
             // add end date
-            dates_.push_back(isAdjusted ? 
-                             calendar.adjust(endDate,rollingConvention) : 
-                             endDate);
+            dates_.push_back(calendar.adjust(endDate, convention));
 
             // add stub date if given
             if (stubDate != Date()) {
                 seed = stubDate;
                 dates_.insert(dates_.begin(),
-                              isAdjusted ? 
-                              calendar.adjust(stubDate,rollingConvention) : 
-                              stubDate);
+                              calendar.adjust(stubDate, convention));
             }
 
             // add subsequent dates
             Integer periods = 1, months = 12/frequency;
             while (true) {
-                Date temp = seed.plus(-periods*months,Months);
-                if (isAdjusted_)
-                    temp = calendar.adjust(temp,rollingConvention);
+                Date temp = calendar.advance(seed, -periods*months, Months,
+                                             convention);
                 dates_.insert(dates_.begin(),temp);
                 // check exit condition
                 if (temp <= first)
@@ -108,8 +110,8 @@ namespace QuantLib {
             }
 
             // possibly collapse first two dates
-            if (calendar.adjust(dates_[0],rollingConvention) ==
-                calendar.adjust(dates_[1],rollingConvention)) {
+            if (calendar.adjust(dates_[0], convention) ==
+                calendar.adjust(dates_[1], convention)) {
                 dates_[1] = dates_[0];
                 dates_.erase(dates_.begin());
                 finalIsRegular_ = true;
@@ -117,28 +119,21 @@ namespace QuantLib {
         } else {
             // calculations
             Date seed = startDate;
-            Date last = (isAdjusted_ ?
-                         calendar.adjust(endDate,rollingConvention) :
-                         endDate);
+            Date last = calendar.adjust(endDate, convention);
             // add start date
-            dates_.push_back(isAdjusted_ ?
-                             calendar.adjust(startDate,rollingConvention) :
-                             startDate);
+            dates_.push_back(calendar.adjust(startDate, convention));
 
             // add stub date if given
             if (stubDate != Date()) {
                 seed = stubDate;
-                dates_.push_back(isAdjusted ?
-                                 calendar.adjust(stubDate,rollingConvention) :
-                                 stubDate);
+                dates_.push_back(calendar.adjust(stubDate, convention));
             }
 
             // add subsequent dates
             Integer periods = 1, months = 12/frequency;
             while (true) {
-                Date temp = seed.plus(periods*months,Months);
-                if (isAdjusted)
-                    temp = calendar.adjust(temp,rollingConvention);
+                Date temp = calendar.advance(seed, periods*months, Months,
+                                             convention);
                 dates_.push_back(temp);
                 // check exit condition
                 if (temp >= last)
@@ -157,8 +152,8 @@ namespace QuantLib {
 
             // possibly collapse last two dates
             Size N = dates_.size();
-            if (calendar.adjust(dates_[N-2],rollingConvention) ==
-                calendar.adjust(dates_[N-1],rollingConvention)) {
+            if (calendar.adjust(dates_[N-2], convention) ==
+                calendar.adjust(dates_[N-1], convention)) {
                 dates_[N-2] = dates_[N-1];
                 dates_.pop_back();
                 finalIsRegular_ = true;

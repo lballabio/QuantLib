@@ -33,7 +33,7 @@ namespace {
 
     Date today_, settlement_;
     std::vector<Real> nominals_;
-    BusinessDayConvention rollingConvention_;
+    BusinessDayConvention convention_;
     Frequency frequency_;
     boost::shared_ptr<Xibor> index_;
     Calendar calendar_;
@@ -44,11 +44,10 @@ namespace {
 
     std::vector<boost::shared_ptr<CashFlow> > makeLeg(const Date& startDate,
                                                       Integer length) {
-        Date endDate = calendar_.advance(startDate,length,Years,
-                                         rollingConvention_);
-        Schedule schedule(calendar_,startDate,endDate,frequency_,
-                          rollingConvention_,true);
-        return FloatingRateCouponVector(schedule,nominals_,index_,fixingDays_);
+        Date endDate = calendar_.advance(startDate,length,Years,convention_);
+        Schedule schedule(calendar_,startDate,endDate,frequency_,convention_);
+        return FloatingRateCouponVector(schedule, convention_, nominals_,
+                                        index_, fixingDays_);
     }
 
     boost::shared_ptr<PricingEngine> makeEngine(Volatility volatility) {
@@ -100,7 +99,7 @@ namespace {
         index_ = boost::shared_ptr<Xibor>(
                             new Euribor(12/frequency_,Months,termStructure_));
         calendar_ = index_->calendar();
-        rollingConvention_ = ModifiedFollowing;
+        convention_ = ModifiedFollowing;
         today_ = calendar_.adjust(Date::todaysDate());
         settlementDays_ = 2;
         fixingDays_ = 2;
@@ -265,11 +264,13 @@ void CapFloorTest::testParity() {
             boost::shared_ptr<Instrument> floor = 
                 makeCapFloor(CapFloor::Floor,leg,
                              strikes[j],vols[k]);
-            SimpleSwap swap(true,startDate,lengths[i],Years,
-                            calendar_,rollingConvention_,
-                            nominals_[0],frequency_,strikes[j],
-                            index_->isAdjusted(),index_->dayCounter(),
-                            frequency_,index_,fixingDays_,0.0,
+            Date maturity = calendar_.advance(startDate,lengths[i],Years,
+                                              convention_);
+            Schedule schedule(calendar_,startDate,maturity,
+                              frequency_,convention_);
+            SimpleSwap swap(true,nominals_[0],
+                            schedule,strikes[j],index_->dayCounter(),
+                            schedule,index_,fixingDays_,0.0,
                             termStructure_);
             if (QL_FABS((cap->NPV()-floor->NPV()) - swap.NPV()) > 1.0e-10) {
                 BOOST_FAIL(

@@ -81,8 +81,8 @@ namespace {
                           new SwapRateHelper(swapData[i].rate/100,
                                              swapData[i].n, swapData[i].units,
                                              settlementDays_, calendar_,
-                                             ModifiedFollowing, Annual, false,
-                                             Thirty360(), Semiannual));
+                                             Annual, Unadjusted, Thirty360(),
+                                             Semiannual, ModifiedFollowing));
         }
         termStructure_ = boost::shared_ptr<TermStructure>(
           new PiecewiseFlatForward(today,settlement,instruments,Actual360()));

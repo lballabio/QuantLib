@@ -34,6 +34,8 @@ namespace QuantLib {
       public:
         class arguments;
         class results;
+#ifndef QL_DISABLE_DEPRECATED
+        //! \deprecated use the constructor taking two Schedules
         SimpleSwap(bool payFixedRate,
                    // dates
                    const Date& startDate, Integer n, TimeUnit units,
@@ -52,6 +54,7 @@ namespace QuantLib {
                    Spread spread,
                    // hook to term structure
                    const RelinkableHandle<TermStructure>& termStructure);
+#endif
         SimpleSwap(bool payFixedRate,
                    Real nominal,
                    const Schedule& fixedSchedule,

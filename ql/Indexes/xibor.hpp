@@ -1,6 +1,6 @@
 
 /*
- Copyright (C) 2000, 2001, 2002, 2003 RiskMap srl
+ Copyright (C) 2000-2004 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -33,18 +33,37 @@ namespace QuantLib {
         Xibor(const std::string& familyName,
               Integer n, TimeUnit units, Integer settlementDays,
               CurrencyTag currency,
-              const Calendar& calendar, bool isAdjusted,
-              BusinessDayConvention rollingConvention,
+              const Calendar& calendar,
+              BusinessDayConvention convention,
               const DayCounter& dayCounter, 
               const RelinkableHandle<TermStructure>& h)
         : familyName_(familyName), n_(n), units_(units),
           settlementDays_(settlementDays),
           currency_(currency), calendar_(calendar),
-          isAdjusted_(isAdjusted),
-          rollingConvention_(rollingConvention),
+          convention_(convention),
           dayCounter_(dayCounter), termStructure_(h) {
             registerWith(termStructure_);
         }
+#ifndef QL_DISABLE_DEPRECATED
+        /*! \deprecated use the constructor without isAdjusted argument;
+                        isAdjusted = false can be replicated with 
+                        convention = Unadjusted
+        */
+        Xibor(const std::string& familyName,
+              Integer n, TimeUnit units, Integer settlementDays,
+              CurrencyTag currency,
+              const Calendar& calendar, bool isAdjusted,
+              BusinessDayConvention convention,
+              const DayCounter& dayCounter, 
+              const RelinkableHandle<TermStructure>& h)
+        : familyName_(familyName), n_(n), units_(units),
+          settlementDays_(settlementDays),
+          currency_(currency), calendar_(calendar),
+          dayCounter_(dayCounter), termStructure_(h) {
+            registerWith(termStructure_);
+            convention_ = isAdjusted ? convention : Unadjusted;
+        }
+#endif
         //! \name Index interface
         //@{
         Rate fixing(const Date& fixingDate) const;
@@ -62,7 +81,11 @@ namespace QuantLib {
         CurrencyTag currency() const;
         Calendar calendar() const;
         bool isAdjusted() const;
+        BusinessDayConvention businessDayConvention() const;
+#ifndef QL_DISABLE_DEPRECATED
+        //! \deprecated renamed to businessDayConvention()
         BusinessDayConvention rollingConvention() const;
+#endif
         DayCounter dayCounter() const;
         boost::shared_ptr<TermStructure> termStructure() const;
         //@}
@@ -73,8 +96,7 @@ namespace QuantLib {
         Integer settlementDays_;
         CurrencyTag currency_;
         Calendar calendar_;
-        bool isAdjusted_;
-        BusinessDayConvention rollingConvention_;
+        BusinessDayConvention convention_;
         DayCounter dayCounter_;
         RelinkableHandle<TermStructure> termStructure_;
     };
@@ -103,12 +125,18 @@ namespace QuantLib {
     }
 
     inline bool Xibor::isAdjusted() const { 
-        return isAdjusted_; 
+        return (convention_ != Unadjusted); 
     }
 
-    inline BusinessDayConvention Xibor::rollingConvention() const {
-        return rollingConvention_; 
+    inline BusinessDayConvention Xibor::businessDayConvention() const {
+        return convention_; 
     }
+
+#ifndef QL_DISABLE_DEPRECATED
+    inline BusinessDayConvention Xibor::rollingConvention() const {
+        return convention_; 
+    }
+#endif
 
     inline DayCounter Xibor::dayCounter() const { 
         return dayCounter_; 

@@ -34,10 +34,9 @@ namespace {
     bool payFixed_;
     Real nominal_;
     Calendar calendar_;
-    BusinessDayConvention rollingConvention_;
+    BusinessDayConvention fixedConvention_, floatingConvention_;
     Frequency fixedFrequency_, floatingFrequency_;
     DayCounter fixedDayCount_;
-    bool fixedIsAdjusted_;
     boost::shared_ptr<Xibor> index_;
     Integer settlementDays_, fixingDays_;
     RelinkableHandle<TermStructure> termStructure_;
@@ -46,12 +45,17 @@ namespace {
 
     boost::shared_ptr<SimpleSwap> makeSwap(Integer length, Rate fixedRate,
                                            Spread floatingSpread) {
+        Date maturity = calendar_.advance(settlement_,length,Years,
+                                          floatingConvention_);
+        Schedule fixedSchedule(calendar_,settlement_,maturity,
+                               fixedFrequency_,fixedConvention_);
+        Schedule floatSchedule(calendar_,settlement_,maturity,
+                               floatingFrequency_,floatingConvention_);
         return boost::shared_ptr<SimpleSwap>(
-            new SimpleSwap(payFixed_,settlement_,length,Years,
-                           calendar_,rollingConvention_,nominal_,
-                           fixedFrequency_,fixedRate,fixedIsAdjusted_,
-                           fixedDayCount_,floatingFrequency_,index_,
-                           fixingDays_,floatingSpread,termStructure_));
+            new SimpleSwap(payFixed_,nominal_,
+                           fixedSchedule,fixedRate,fixedDayCount_,
+                           floatSchedule,index_,fixingDays_,floatingSpread,
+                           termStructure_));
     }
 
     void initialize() {
@@ -59,11 +63,11 @@ namespace {
         settlementDays_ = 2;
         fixingDays_ = 2;
         nominal_ = 100.0;
-        rollingConvention_ = ModifiedFollowing;
+        fixedConvention_ = Unadjusted;
+        floatingConvention_ = ModifiedFollowing;
         fixedFrequency_ = Annual;
         floatingFrequency_ = Semiannual;
         fixedDayCount_ = Thirty360();
-        fixedIsAdjusted_ = false;
         index_ = boost::shared_ptr<Xibor>(
                                      new Euribor(12/floatingFrequency_,Months,
                                                  termStructure_));

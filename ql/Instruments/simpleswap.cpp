@@ -22,6 +22,7 @@
 
 namespace QuantLib {
 
+#ifndef QL_DISABLE_DEPRECATED
     SimpleSwap::SimpleSwap(
                          bool payFixedRate,
                          const Date& startDate, Integer n, TimeUnit units,
@@ -44,7 +45,7 @@ namespace QuantLib {
       nominal_(nominal) {
 
         Date maturity = calendar.adjust(startDate.plus(n,units),
-                                      rollingConvention);
+                                        rollingConvention);
 
         Schedule fixedSchedule = 
             MakeSchedule(calendar,startDate,maturity,
@@ -52,16 +53,17 @@ namespace QuantLib {
                          fixedIsAdjusted);
         Schedule floatSchedule =
             MakeSchedule(calendar,startDate,maturity,
-                         floatingFrequency,rollingConvention,
-                         true);
+                         floatingFrequency,rollingConvention);
 
         std::vector<boost::shared_ptr<CashFlow> > fixedLeg =
-            FixedRateCouponVector(fixedSchedule, 
+            FixedRateCouponVector(fixedSchedule,
+                                  rollingConvention,
                                   std::vector<Real>(1,nominal), 
                                   std::vector<Rate>(1,fixedRate), 
                                   fixedDayCount);
         std::vector<boost::shared_ptr<CashFlow> > floatingLeg =
             FloatingRateCouponVector(floatSchedule,
+                                     rollingConvention,
                                      std::vector<Real>(1,nominal),
                                      index, indexFixingDays, 
                                      std::vector<Spread>(1,spread));
@@ -77,6 +79,7 @@ namespace QuantLib {
             secondLeg_ = fixedLeg;
         }
     }
+#endif
 
     SimpleSwap::SimpleSwap(
                          bool payFixedRate,
@@ -95,15 +98,19 @@ namespace QuantLib {
       payFixedRate_(payFixedRate), fixedRate_(fixedRate), spread_(spread), 
       nominal_(nominal) {
 
+        BusinessDayConvention rollingConvention =
+            floatSchedule.businessDayConvention();
         std::vector<boost::shared_ptr<CashFlow> > fixedLeg =
             FixedRateCouponVector(fixedSchedule,
-                                  std::vector<Real>(1,nominal), 
-                                  std::vector<Rate>(1,fixedRate), 
+                                  rollingConvention,
+                                  std::vector<Real>(1,nominal),
+                                  std::vector<Rate>(1,fixedRate),
                                   fixedDayCount);
         std::vector<boost::shared_ptr<CashFlow> > floatingLeg =
             FloatingRateCouponVector(floatSchedule,
+                                     rollingConvention,
                                      std::vector<Real>(1,nominal),
-                                     index, indexFixingDays, 
+                                     index, indexFixingDays,
                                      std::vector<Spread>(1,spread));
         std::vector<boost::shared_ptr<CashFlow> >::const_iterator i;
         for (i = floatingLeg.begin(); i < floatingLeg.end(); ++i)

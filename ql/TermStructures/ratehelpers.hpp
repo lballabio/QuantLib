@@ -191,6 +191,32 @@ namespace QuantLib {
                        Integer n, TimeUnit units,
                        Integer settlementDays,
                        const Calendar& calendar,
+                       // fixed leg
+                       Frequency fixedFrequency,
+                       BusinessDayConvention fixedConvention,
+                       const DayCounter& fixedDayCount,
+                       // floating leg
+                       Frequency floatingFrequency,
+                       BusinessDayConvention floatingConvention);
+        SwapRateHelper(Rate rate,
+                       Integer n, TimeUnit units,
+                       Integer settlementDays,
+                       const Calendar& calendar,
+                       // fixed leg
+                       Frequency fixedFrequency,
+                       BusinessDayConvention fixedConvention,
+                       const DayCounter& fixedDayCount,
+                       // floating leg
+                       Frequency floatingFrequency,
+                       BusinessDayConvention floatingConvention);
+#ifndef QL_DISABLE_DEPRECATED
+        /*! \deprecated use the version with two BusinessDayConvention 
+                        arguments
+        */
+        SwapRateHelper(const RelinkableHandle<Quote>& rate,
+                       Integer n, TimeUnit units,
+                       Integer settlementDays,
+                       const Calendar& calendar,
                        BusinessDayConvention convention,
                        // fixed leg
                        Frequency fixedFrequency,
@@ -198,6 +224,9 @@ namespace QuantLib {
                        const DayCounter& fixedDayCount,
                        // floating leg
                        Frequency floatingFrequency);
+        /*! \deprecated use the version with two BusinessDayConvention 
+                        arguments
+        */
         SwapRateHelper(Rate rate,
                        Integer n, TimeUnit units,
                        Integer settlementDays,
@@ -209,6 +238,7 @@ namespace QuantLib {
                        const DayCounter& fixedDayCount,
                        // floating leg
                        Frequency floatingFrequency);
+#endif
         Real impliedQuote() const;
         // implementing discountGuess() is not worthwhile,
         // and may not avoid the root-finding process
@@ -219,9 +249,8 @@ namespace QuantLib {
         TimeUnit units_;
         Integer settlementDays_;
         Calendar calendar_;
-        BusinessDayConvention convention_;
+        BusinessDayConvention fixedConvention_, floatingConvention_;
         Frequency fixedFrequency_, floatingFrequency_;
-        bool fixedIsAdjusted_;
         DayCounter fixedDayCount_;
         Date settlement_;
         boost::shared_ptr<SimpleSwap> swap_;

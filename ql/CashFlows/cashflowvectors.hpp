@@ -1,6 +1,6 @@
 
 /*
- Copyright (C) 2000, 2001, 2002, 2003 RiskMap srl
+ Copyright (C) 2000-2004 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -31,11 +31,25 @@ namespace QuantLib {
     //! helper function building a sequence of fixed rate coupons
     std::vector<boost::shared_ptr<CashFlow> > FixedRateCouponVector(
         const Schedule& schedule,
+        BusinessDayConvention paymentAdjustment,
         const std::vector<Real>& nominals,
         const std::vector<Rate>& couponRates,
-        const DayCounter& dayCount, 
+        const DayCounter& dayCount,
         const DayCounter& firstPeriodDayCount = DayCounter());
 
+#ifndef QL_DISABLE_DEPRECATED
+    //! helper function building a sequence of fixed rate coupons
+    /*! \deprecated use the version with a BusinessDayConvention as
+                    second argument instead
+    */
+    std::vector<boost::shared_ptr<CashFlow> > FixedRateCouponVector(
+        const Schedule& schedule,
+        const std::vector<Real>& nominals,
+        const std::vector<Rate>& couponRates,
+        const DayCounter& dayCount,
+        const DayCounter& firstPeriodDayCount = DayCounter(),
+        BusinessDayConvention paymentAdjustment = Following);
+#endif
 
     //! helper function building a sequence of par coupons
     /*! \warning The passing of a non-null stub date - i.e., the creation
@@ -46,9 +60,25 @@ namespace QuantLib {
     */
     std::vector<boost::shared_ptr<CashFlow> > FloatingRateCouponVector(
         const Schedule& schedule,
+        BusinessDayConvention paymentAdjustment,
         const std::vector<Real>& nominals,
         const boost::shared_ptr<Xibor>& index, Integer fixingDays,
         const std::vector<Spread>& spreads = std::vector<Spread>());
+
+#ifndef QL_DISABLE_DEPRECATED
+    //! helper function building a sequence of par coupons
+    /*! \warning The passing of a non-null stub date - i.e., the creation
+                 of a short/long first coupon - is currently disabled.
+        \deprecated use the version with a BusinessDayConvention as
+                    second argument instead
+    */
+    std::vector<boost::shared_ptr<CashFlow> > FloatingRateCouponVector(
+        const Schedule& schedule,
+        const std::vector<Real>& nominals,
+        const boost::shared_ptr<Xibor>& index, Integer fixingDays,
+        const std::vector<Spread>& spreads = std::vector<Spread>(),
+        BusinessDayConvention paymentAdjustment = Following);
+#endif
 
 }
 

@@ -68,9 +68,8 @@ namespace {
     Date today, settlement;
     BusinessDayConvention depoRollingConvention;
     DayCounter depoDayCounter;
-    BusinessDayConvention swapRollingConvention;
+    BusinessDayConvention fixedLegConvention, floatingLegConvention;
     Frequency fixedLegFrequency;
-    bool fixedLegIsAdjusted;
     DayCounter fixedLegDayCounter;
     Frequency floatingLegFrequency;
 
@@ -88,9 +87,9 @@ namespace {
         settlement = calendar.advance(today,settlementDays,Days);
         depoRollingConvention = ModifiedFollowing;
         depoDayCounter = Actual360();
-        swapRollingConvention = ModifiedFollowing;
+        fixedLegConvention = Unadjusted;
+        floatingLegConvention = ModifiedFollowing;
         fixedLegFrequency = Annual;
-        fixedLegIsAdjusted = false;
         fixedLegDayCounter = Thirty360();
         floatingLegFrequency = Semiannual;
 
@@ -124,9 +123,9 @@ namespace {
             instruments[i+deposits] = boost::shared_ptr<RateHelper>(
                 new SwapRateHelper(r, swapData[i].n, swapData[i].units,
                                    settlementDays, calendar,
-                                   swapRollingConvention,
-                                   fixedLegFrequency, fixedLegIsAdjusted,
-                                   fixedLegDayCounter, floatingLegFrequency));
+                                   fixedLegFrequency, fixedLegConvention,
+                                   fixedLegDayCounter, floatingLegFrequency,
+                                   floatingLegConvention));
         }
 
         // instantiate curve
@@ -169,11 +168,17 @@ void PiecewiseFlatForwardTest::testConsistency() {
     boost::shared_ptr<Xibor> index(new Euribor(12/floatingLegFrequency,Months,
                                                euriborHandle));
     for (i=0; i<swaps; i++) {
-        SimpleSwap swap(true,settlement,swapData[i].n,swapData[i].units,
-                        calendar,swapRollingConvention,100.0,
-                        fixedLegFrequency,0.0,fixedLegIsAdjusted,
-                        fixedLegDayCounter,floatingLegFrequency,index,
-                        fixingDays,0.0,euriborHandle);
+        Date maturity = calendar.advance(settlement,
+                                         swapData[i].n,swapData[i].units,
+                                         floatingLegConvention);
+        Schedule fixedSchedule(calendar,settlement,maturity,
+                               fixedLegFrequency,fixedLegConvention);
+        Schedule floatSchedule(calendar,settlement,maturity,
+                               floatingLegFrequency,floatingLegConvention);
+        SimpleSwap swap(true,100.0,
+                        fixedSchedule,0.0,fixedLegDayCounter,
+                        floatSchedule,index,fixingDays,0.0,
+                        euriborHandle);
         Rate expectedRate = swapData[i].rate/100,
              estimatedRate = swap.fairRate();
         if (QL_FABS(expectedRate-estimatedRate) > 1.0e-9) {

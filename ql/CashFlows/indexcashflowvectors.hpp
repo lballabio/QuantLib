@@ -1,6 +1,7 @@
 
 /*
  Copyright (C) 2003 Nicolas Di Césaré
+ Copyright (C) 2004 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -29,22 +30,24 @@ namespace QuantLib {
 
     template <class IndexedCouponType>
     std::vector<boost::shared_ptr<CashFlow> > 
-    IndexedCouponVector(const Schedule& schedule, 
+    IndexedCouponVector(const Schedule& schedule,
+                        BusinessDayConvention paymentAdjustment,
                         const std::vector<Real>& nominals,
-                        const boost::shared_ptr<Xibor>& index, 
+                        const boost::shared_ptr<Xibor>& index,
                         Integer fixingDays,
                         const std::vector<Spread>& spreads,
                         const DayCounter& dayCounter = DayCounter()) {
 
         QL_REQUIRE(nominals.size() != 0, "unspecified nominals");
+        QL_REQUIRE(paymentAdjustment != Unadjusted,
+                   "invalid business-day convention "
+                   "for payment-date adjustment");
 
         std::vector<boost::shared_ptr<CashFlow> > leg;
         // first period might be short or long
         Date start = schedule.date(0), end = schedule.date(1);
         Calendar calendar = schedule.calendar();
-        BusinessDayConvention rollingConvention = 
-            schedule.rollingConvention();
-        Date paymentDate = calendar.adjust(end,rollingConvention);
+        Date paymentDate = calendar.adjust(end,paymentAdjustment);
         Spread spread;
         if (spreads.size() > 0)
             spread = spreads[0];
@@ -58,7 +61,8 @@ namespace QuantLib {
                                       start, end, dayCounter)));
         } else {
             Date reference = end.plusMonths(-12/schedule.frequency());
-            reference = calendar.adjust(reference,rollingConvention);
+            reference = calendar.adjust(reference,
+                                        schedule.businessDayConvention());
             typedef Short<IndexedCouponType> ShortIndexedCouponType;
             leg.push_back(boost::shared_ptr<CashFlow>(
                 new ShortIndexedCouponType(nominal, paymentDate, index, 
@@ -68,7 +72,7 @@ namespace QuantLib {
         // regular periods
         for (Size i=2; i<schedule.size()-1; i++) {
             start = end; end = schedule.date(i);
-            paymentDate = calendar.adjust(end,rollingConvention);
+            paymentDate = calendar.adjust(end,paymentAdjustment);
             if ((i-1) < spreads.size())
                 spread = spreads[i-1];
             else if (spreads.size() > 0)
@@ -88,7 +92,7 @@ namespace QuantLib {
             // last period might be short or long
             Size N = schedule.size();
             start = end; end = schedule.date(N-1);
-            paymentDate = calendar.adjust(end,rollingConvention);
+            paymentDate = calendar.adjust(end,paymentAdjustment);
             if ((N-2) < spreads.size())
                 spread = spreads[N-2];
             else if (spreads.size() > 0)
@@ -107,7 +111,8 @@ namespace QuantLib {
             } else {
                 Date reference = 
                     start.plusMonths(12/schedule.frequency());
-                reference = calendar.adjust(reference,rollingConvention);
+                reference = calendar.adjust(reference,
+                                            schedule.businessDayConvention());
                 typedef Short<IndexedCouponType> ShortIndexedCouponType;
                 leg.push_back(boost::shared_ptr<CashFlow>(
                     new ShortIndexedCouponType(nominal, paymentDate, index,
@@ -118,6 +123,27 @@ namespace QuantLib {
         }
         return leg;
     }
+
+#ifndef QL_DISABLE_DEPRECATED
+    template <class IndexedCouponType>
+    std::vector<boost::shared_ptr<CashFlow> > 
+    IndexedCouponVector(const Schedule& schedule,
+                        const std::vector<Real>& nominals,
+                        const boost::shared_ptr<Xibor>& index,
+                        Integer fixingDays,
+                        const std::vector<Spread>& spreads,
+                        const DayCounter& dayCounter = DayCounter(),
+                        BusinessDayConvention paymentAdjustment = Unadjusted) {
+        BusinessDayConvention convention =
+            schedule.isAdjusted() ?
+                schedule.businessDayConvention():
+                paymentAdjustment;
+        return IndexedCouponVector<IndexedCouponType>(schedule, convention,
+                                                      nominals, index,
+                                                      fixingDays, spreads,
+                                                      dayCounter);
+    }
+#endif
 
 }
 
