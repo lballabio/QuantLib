@@ -45,11 +45,18 @@ namespace QuantLib {
         class BlackVarianceSurface : public BlackVarianceTermStructure,
                                      public Patterns::Observer {
           public:
+            enum Extrapolation { ConstantExtrapolation,
+                                 DefaultExtrapolation };
             BlackVarianceSurface(const Date& referenceDate,
                                  const std::vector<Date>& dates,
                                  const std::vector<double>& strikes,
                                  const QuantLib::Math::Matrix& blackVolMatrix,
-                                 const DayCounter& dayCounter = DayCounters::Actual365());
+                                 Extrapolation lowerExtrapolation =
+                                     DefaultExtrapolation,
+                                 Extrapolation upperExtrapolation =
+                                     DefaultExtrapolation,
+                                 const DayCounter& dayCounter = 
+                                     DayCounters::Actual365());
             Date referenceDate() const { return referenceDate_; }
             DayCounter dayCounter() const { return dayCounter_; }
             Date maxDate() const { return maxDate_; }
@@ -66,6 +73,7 @@ namespace QuantLib {
             std::vector<Time> times_;
             QuantLib::Math::Matrix variances_;
             Handle < Interpolator2D> varianceSurface_;
+            Extrapolation lowerExtrapolation_, upperExtrapolation_;
         };
 
 
@@ -75,9 +83,12 @@ namespace QuantLib {
             const std::vector<Date>& dates,
             const std::vector<double>& strikes,
             const QuantLib::Math::Matrix& blackVolMatrix,
+            BlackVarianceSurface<Interpolator2D>::Extrapolation lowerEx,
+            BlackVarianceSurface<Interpolator2D>::Extrapolation upperEx,
             const DayCounter& dayCounter)
         : referenceDate_(referenceDate), dayCounter_(dayCounter),
-          maxDate_(dates.back()), strikes_(strikes) {
+          maxDate_(dates.back()), strikes_(strikes),
+          lowerExtrapolation_(lowerEx), upperExtrapolation_(upperEx) {
 
             QL_REQUIRE(dates.size()==blackVolMatrix.columns(),
                 "mismatch between date vector and vol matrix colums");
@@ -104,7 +115,8 @@ namespace QuantLib {
             }
             varianceSurface_ = Handle<Interpolator2D> (new
                 Interpolator2D(times_.begin(), times_.end(),
-                strikes_.begin(), strikes_.end(), variances_));
+                               strikes_.begin(), strikes_.end(), 
+                               variances_));
         }
 
 
@@ -117,11 +129,20 @@ namespace QuantLib {
         double BlackVarianceSurface<Interpolator2D>::
             blackVarianceImpl(Time t, double strike, bool extrapolate) const {
 
+            // enforce constant extrapolation when required
+            if (strike < strikes_.front() 
+                && extrapolate
+                && lowerExtrapolation_ == ConstantExtrapolation)
+                strike = strikes_.front();
+            if (strike > strikes_.back() 
+                && extrapolate
+                && upperExtrapolation_ == ConstantExtrapolation)
+                strike = strikes_.back();
+
             QL_REQUIRE(t>=0.0,
                 "BlackVarianceSurface::blackVarianceImpl : "
                 "negative time (" + DoubleFormatter::toString(t) +
                 ") not allowed");
-
             if (t<=times_[0])
                 return (*varianceSurface_)(times_[0], strike, extrapolate)*
                     t/times_[0];
