@@ -32,7 +32,7 @@ dist-hook:
 	cp -p $(srcdir)/Examples/*.cpp $(distdir)/Examples
 	cp -p $(srcdir)/images/*.bmp $(srcdir)/images/*.eps \
 	      $(srcdir)/images/*.jpg $(srcdir)/images/*.png \
-	      $(srcdir)/images/*.pdf $(distdir)/images
+	      $(srcdir)/images/*.pdf $(srcdir)/images/*.ico $(distdir)/images
 
 docs-all: docs-html docs-ps docs-pdf docs-man
 docs-dist: docs-pdf-dist docs-ps-dist docs-html-dist docs-man-dist
@@ -41,6 +41,7 @@ docs-html: .time-stamp-html
 .time-stamp-html: .time-stamp
 	cp images/*.jpg html-offline
 	cp images/*.png html-offline
+	cp images/*.ico html-offline
 	touch .time-stamp-html
 
 docs-html-dist: docs-html
@@ -60,6 +61,7 @@ docs-online: .time-stamp-online
 	rm .quantlib.doxy
 	cp images/*.jpg html-online
 	cp images/*.png html-online
+	cp images/*.ico html-online
 	touch .time-stamp-online
 
 docs-pdf: .time-stamp-pdf
