@@ -27,6 +27,9 @@
     $Source$
     $Name$
     $Log$
+    Revision 1.15  2001/03/02 15:43:36  lballabio
+    Fixed a bug in advance() with a negative number of days
+
     Revision 1.14  2001/03/01 11:37:07  lballabio
     Fixed bug in advance(...,Days)
 
@@ -81,7 +84,7 @@ namespace QuantLib {
                     d1--;
                     while(isHoliday(d1))
                         d1--;
-                    n--;
+                    n++;
                 }
             }
             return d1;
