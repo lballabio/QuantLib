@@ -36,8 +36,8 @@ namespace QuantLib {
 
             double rootExpiry = QL_SQRT(expiry);
 
-            double gamma1 = 0;
-            double gamma2 = 0;
+            double gamma1;
+            double gamma2;
             if (strike != 0.0) {
                 gamma1 = (QL_LOG(s1_0 / strike) + (intRate - 0.5 * vol_s1 * vol_s1) * expiry) / (vol_s1 * rootExpiry);
                 gamma2 = (QL_LOG(s2_0 / strike) + (intRate - 0.5 * vol_s2 * vol_s2) * expiry) / (vol_s2 * rootExpiry);
@@ -147,8 +147,7 @@ namespace QuantLib {
         Time expiry = procs[0]->riskFreeTS->dayCounter().yearFraction(
                 procs[0]->riskFreeTS->referenceDate(),
                 exercise->lastDate());
-        double rootExpiry = QL_SQRT(expiry);
-        
+
         double intRate = procs[0]->riskFreeTS->zeroYield(exercise->lastDate());
 
         BasketOption::BasketType basketType = arguments_.basketType;        
