@@ -78,9 +78,6 @@ namespace QuantLib {
         UnaryFunction f_;
     };
 
-    //! \deprecated use DerivedQuote
-    typedef DerivedQuote DerivedMarketElement;
-
 
     //! market element whose value depends on two other market element
     template <class BinaryFunction>
@@ -102,9 +99,6 @@ namespace QuantLib {
         RelinkableHandle<Quote> element1_, element2_;
         BinaryFunction f_;
     };
-
-    //! \deprecated use CompositeQuote
-    typedef CompositeQuote CompositeMarketElement;
 
 
     // inline definitions
