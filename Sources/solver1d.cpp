@@ -27,9 +27,12 @@
 	$Source$
 	$Name$
 	$Log$
+	Revision 1.11  2000/12/27 14:53:50  lballabio
+	using QL_EPSILON macro
+
 	Revision 1.10  2000/12/27 14:05:57  lballabio
 	Turned Require and Ensure functions into QL_REQUIRE and QL_ENSURE macros
-
+	
 	Revision 1.9  2000/12/14 12:32:31  lballabio
 	Added CVS tags in Doxygen file documentation blocks
 	
@@ -68,7 +71,7 @@ namespace QuantLib {
 		    if (fxMin == 0.0)    return xMin;
 		    if (fxMax == 0.0)    return xMax;
 		    root = (xMax+xMin)/2.0;
-			return _solve(f, QL_MAX(QL_FABS(xAccuracy), std::numeric_limits<double>::epsilon()));
+			return _solve(f, QL_MAX(QL_FABS(xAccuracy), QL_EPSILON));
 		  }
 		  if (QL_FABS(fxMin) < QL_FABS(fxMax)) {
 		    xMin = enforceBounds(xMin+growthFactor*(xMin-xMax));
@@ -125,7 +128,7 @@ namespace QuantLib {
 		  ") > xMax (" + DoubleFormatter::toString(xMax) + ")");
 	  root = guess;
 	
-	  return _solve(f, QL_MAX(QL_FABS(xAccuracy), std::numeric_limits<double>::epsilon()));
+	  return _solve(f, QL_MAX(QL_FABS(xAccuracy), QL_EPSILON));
 	}
 
 }
