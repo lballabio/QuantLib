@@ -408,7 +408,7 @@ void BasketOptionTest::testBarraquandThreeValues() {
 */
         // Table 3
         // not working yet...
-        
+
    //     {BasketOption::Max, Option::Put,  35.0,  40.0,  40.0, 40.0, 0.05, 1.00, 0.20, 0.30, 0.50, 0.0, 0.00, 0.00},
    //     {BasketOption::Max, Option::Put,  40.0,  40.0,  40.0, 40.0, 0.05, 1.00, 0.20, 0.30, 0.50, 0.0, 0.13, 0.23},
         {BasketOption::Max, Option::Put,  45.0,  40.0,  40.0, 40.0, 0.05, 1.00, 0.20, 0.30, 0.50, 0.0, 2.26, 5.00},
@@ -417,7 +417,7 @@ void BasketOptionTest::testBarraquandThreeValues() {
         {BasketOption::Max, Option::Put,  45.0,  40.0,  40.0, 40.0, 0.05, 4.00, 0.20, 0.30, 0.50, 0.0, 1.55, 5.00},
       //  {BasketOption::Max, Option::Put,  35.0,  40.0,  40.0, 40.0, 0.05, 7.00, 0.20, 0.30, 0.50, 0.0, 0.03, 0.04},
      //   {BasketOption::Max, Option::Put,  40.0,  40.0,  40.0, 40.0, 0.05, 7.00, 0.20, 0.30, 0.50, 0.0, 0.31, 0.57},
-        {BasketOption::Max, Option::Put,  45.0,  40.0,  40.0, 40.0, 0.05, 7.00, 0.20, 0.30, 0.50, 0.0, 1.41, 5.00},        
+        {BasketOption::Max, Option::Put,  45.0,  40.0,  40.0, 40.0, 0.05, 7.00, 0.20, 0.30, 0.50, 0.0, 1.41, 5.00},
        /*
         {BasketOption::Max, Option::Put,  35.0,  40.0,  40.0, 40.0, 0.05, 1.00, 0.20, 0.30, 0.50, 0.5, 0.00, 0.00},
         {BasketOption::Max, Option::Put,  40.0,  40.0,  40.0, 40.0, 0.05, 1.00, 0.20, 0.30, 0.50, 0.5, 0.38, 0.48},
@@ -469,8 +469,8 @@ void BasketOptionTest::testBarraquandThreeValues() {
     // Think long and hard before moving to more than 1 timestep....
     Handle<PricingEngine> mcQuasiEngine(new MCBasketEngine<LowDiscrepancy, Statistics>
         (1, false, false, Null<int>(), 0.005, maxSamples, false, 42));
-    
-    Size requiredSamples = 20000;    
+
+    Size requiredSamples = 20000;
     Size timeSteps = 20;
     long seed = 1;
     Handle<PricingEngine> mcLSMCEngine(new MCAmericanBasketEngine(requiredSamples,
@@ -526,7 +526,7 @@ void BasketOptionTest::testBarraquandThreeValues() {
         for (int j=0; j < 3; j++) {
             correlation[j][j] = 1.0;
         }
-        
+
         BasketOption euroBasketOption(values[i].basketType, procs, payoff, 
                                   exercise, correlation, mcQuasiEngine);
 
@@ -545,7 +545,7 @@ void BasketOptionTest::testBarraquandThreeValues() {
         BasketOption amBasketOption(values[i].basketType, procs, payoff, 
                                   amExercise, correlation, mcLSMCEngine);
 
-        expected = values[i].amValue;        
+        expected = values[i].amValue;
         calculated = amBasketOption.NPV();
         //std::cout<<"\namerican " << calculated << "\n";
         relError = relativeError(calculated, expected, values[i].s1);
@@ -578,7 +578,7 @@ void BasketOptionTest::testTavellaValues() {
     Handle<SimpleQuote> spot2(new SimpleQuote(0.0));
     Handle<SimpleQuote> spot3(new SimpleQuote(0.0));
 
-    Handle<SimpleQuote> qRate(new SimpleQuote(0.1));    
+    Handle<SimpleQuote> qRate(new SimpleQuote(0.1));
     Handle<TermStructure> qTS = makeFlatCurve(qRate, dc);
 
     Handle<SimpleQuote> rRate(new SimpleQuote(0.05));
@@ -591,7 +591,7 @@ void BasketOptionTest::testTavellaValues() {
     Handle<SimpleQuote> vol3(new SimpleQuote(0.0));
     Handle<BlackVolTermStructure> volTS3 = makeFlatVolatility(vol3, dc);
 
-    double mcRelativeErrorTolerance = 0.01;    
+    double mcRelativeErrorTolerance = 0.01;
     Size requiredSamples = 10000;
     Size timeSteps = 20;
     long seed = 0;
@@ -610,7 +610,7 @@ void BasketOptionTest::testTavellaValues() {
 
     spot1 ->setValue(values[0].s1);
     spot2 ->setValue(values[0].s2);
-    spot3 ->setValue(values[0].s3);        
+    spot3 ->setValue(values[0].s3);
     vol1  ->setValue(values[0].v1);
     vol2  ->setValue(values[0].v2);
     vol3  ->setValue(values[0].v3);
@@ -645,19 +645,19 @@ void BasketOptionTest::testTavellaValues() {
     Matrix correlation(3,3, 0.0);
     for (int j=0; j < 3; j++) {
         correlation[j][j] = 1.0;
-    }    
+    }
     correlation[1][0] = -0.25;
     correlation[0][1] = -0.25;
     correlation[2][0] = 0.25;
     correlation[0][2] = 0.25;
     correlation[2][1] = 0.3;
     correlation[1][2] = 0.3;
-    
+
     BasketOption basketOption(values[0].basketType, procs, payoff, 
                                 exercise, correlation, mcLSMCEngine);
-                                
-    double calculated = basketOption.NPV();        
-    double expected = values[0].amValue;        
+
+    double calculated = basketOption.NPV();
+    double expected = values[0].amValue;
     double errorEstimate = basketOption.errorEstimate();
     double relError = relativeError(calculated, expected, values[0].s1);
     if (relError > mcRelativeErrorTolerance ) {
@@ -678,13 +678,13 @@ void BasketOptionTest::testOneDAmericanValues() {
         { Option::Put, 100.00,  80.00,   0.0, 0.06,   0.5, 0.4,  21.6059, 1e-2 },
         { Option::Put, 100.00,  85.00,   0.0, 0.06,   0.5, 0.4,  18.0374, 1e-2 },
         { Option::Put, 100.00,  90.00,   0.0, 0.06,   0.5, 0.4,  14.9187, 1e-2 },
-        { Option::Put, 100.00,  95.00,   0.0, 0.06,   0.5, 0.4,  12.2314, 1e-2 },        
+        { Option::Put, 100.00,  95.00,   0.0, 0.06,   0.5, 0.4,  12.2314, 1e-2 },
         { Option::Put, 100.00, 100.00,   0.0, 0.06,   0.5, 0.4,  9.9458, 1e-2 },
         { Option::Put, 100.00, 105.00,   0.0, 0.06,   0.5, 0.4,  8.0281, 1e-2 },
         { Option::Put, 100.00, 110.00,   0.0, 0.06,   0.5, 0.4,  6.4352, 1e-2 },
         { Option::Put, 100.00, 115.00,   0.0, 0.06,   0.5, 0.4,  5.1265, 1e-2 },
         { Option::Put, 100.00, 120.00,   0.0, 0.06,   0.5, 0.4,  4.0611, 1e-2 },
-        
+
         // Longstaff Schwartz 1D example
         // use constant and three Laguerre polynomials
         // 100,000 paths and 50 timesteps per year
@@ -717,8 +717,8 @@ void BasketOptionTest::testOneDAmericanValues() {
 
     DayCounter dc = Actual360();
     Handle<SimpleQuote> spot1(new SimpleQuote(0.0));
-    
-    Handle<SimpleQuote> qRate(new SimpleQuote(0.0));    
+
+    Handle<SimpleQuote> qRate(new SimpleQuote(0.0));
     Handle<TermStructure> qTS = makeFlatCurve(qRate, dc);
 
     Handle<SimpleQuote> rRate(new SimpleQuote(0.05));
@@ -726,15 +726,15 @@ void BasketOptionTest::testOneDAmericanValues() {
 
     Handle<SimpleQuote> vol1(new SimpleQuote(0.0));
     Handle<BlackVolTermStructure> volTS1 = makeFlatVolatility(vol1, dc);
-        
+
     Size requiredSamples = 10000;
     Size timeSteps = 52;
     long seed = 0;
     Handle<PricingEngine> mcLSMCEngine(new MCAmericanBasketEngine(requiredSamples,
                                 timeSteps, seed));
-    
+
     Date today = Date::todaysDate();
-    
+
     Handle<BlackScholesStochasticProcess> stochProcess1(new
         BlackScholesStochasticProcess(
             RelinkableHandle<Quote>(spot1),
@@ -742,13 +742,13 @@ void BasketOptionTest::testOneDAmericanValues() {
             RelinkableHandle<TermStructure>(rTS),
             RelinkableHandle<BlackVolTermStructure>(volTS1)));
 
-    
+
     std::vector<Handle<BlackScholesStochasticProcess> > procs =
         std::vector<Handle<BlackScholesStochasticProcess> >();
     procs.push_back(stochProcess1);
-    
+
     Matrix correlation(1, 1, 1.0);
-    
+
     Handle<PricingEngine> mcEngine(new MCBasketEngine<PseudoRandom, Statistics>
         (1, false, false, Null<int>(), 0.005, Null<int>(), false, 42));
 
@@ -758,27 +758,27 @@ void BasketOptionTest::testOneDAmericanValues() {
 
         Date exDate = today.plusDays(int(values[i].t*360+0.5));
             Handle<Exercise> exercise(new AmericanExercise(today, exDate));
-    
+
         spot1 ->setValue(values[i].s);
         vol1  ->setValue(values[i].v);
         rRate ->setValue(values[i].r);
         qRate ->setValue(values[i].q);
-            
+
         BasketOption basketOption(BasketOption::Max, procs, payoff, 
                                     exercise, correlation, mcLSMCEngine);
-                                    
-        double calculated = basketOption.NPV();        
-        double expected = values[i].result;            
+
+        double calculated = basketOption.NPV();
+        double expected = values[i].result;
         double errorEstimate = basketOption.errorEstimate();
         double relError = relativeError(calculated, expected, values[i].s);
         // double error = QL_FABS(calculated-expected);
-            
+
         if (relError > values[i].tol) {
             std::cout << "TEST FAILED" << "\n MC LSMC value " 
                 << calculated << " not " << values[i].result <<
                 " error " << errorEstimate
                 << std::endl;
-        }                
+        }
 
     }
 }
@@ -786,24 +786,21 @@ void BasketOptionTest::testOneDAmericanValues() {
 CppUnit::Test* BasketOptionTest::suite() {
     CppUnit::TestSuite* tests =
         new CppUnit::TestSuite("Basket option tests");
-    
     //fails with Visual C++ 6 when _controlfp(_EM_INEXACT, _MCW_EM) is enabled
     tests->addTest(new CppUnit::TestCaller<BasketOptionTest>
-                   ("Testing two asset European basket options",
+                   ("Testing two-asset European basket options",
                     &BasketOptionTest::testEuroTwoValues));
-
     tests->addTest(new CppUnit::TestCaller<BasketOptionTest>
-                   ("Testing three asset basket options against Barraquand values",
+                   ("Testing three-asset basket options "
+                    "against Barraquand values",
                     &BasketOptionTest::testBarraquandThreeValues));
-
     tests->addTest(new CppUnit::TestCaller<BasketOptionTest>
-                   ("Testing three asset American basket options against Tavella values",
+                   ("Testing three-asset American basket options "
+                    "against Tavella values",
                     &BasketOptionTest::testTavellaValues));
-
     tests->addTest(new CppUnit::TestCaller<BasketOptionTest>
                    ("Testing basket American options against 1D case",
                     &BasketOptionTest::testOneDAmericanValues));
-    
     return tests;
 }
 
