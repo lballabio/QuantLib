@@ -50,7 +50,7 @@ namespace QuantLib {
 
         // no low discrepancy, since they are sequence generators.
 
-        // Lecuyer and Knuth uniform number generators, plus:
+        // There are Lecuyer and Knuth uniform number generators, plus:
 
         //! default choice for uniform random number generator.
         typedef LecuyerUniformRng UniformRandomGenerator;
