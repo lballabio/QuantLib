@@ -1,22 +1,36 @@
-borland compiler build tree indipendent from source tree
-gnu compiler (make) build tree indipendent from source tree
-reduce compiler warnings as much as possible
-check compile success/failure on cygwin
-check compile success/failure on (SourceForge compile farm)
-check compile success/failure on other platforms/compilers
-QuantLib dynamic Win32 library (QuantLib.dll)
-write examples of QuantLib use
-develop C++ unit test suite (similar to the QuantLib-Python test suite)
-clean up accuracy definition in solver1D (x or f(x) accuracy ?)
-implement currency as per OMG definition
-implement round as per OMG enumeration/definition
-automated changelog update for each cvs commit
-improve documentation (using DoxyGen comments)
-undersatnd why updateproject.sh does not work under cygwin
-add futures (and convexity adjustment) to the bootstrapping method
-revisite model/slice interface
-add historicalvolatility to RiskMeasures
-handle library versioning to allow multiple installed versions
-rename all files/dirs to lowercase no spaces
-RPM package
-Examples: port to Linux and Borland
+
+COMPILING
+    borland compiler build tree indipendent from source tree
+    gnu compiler (make) build tree indipendent from source tree
+    reduce compiler warnings as much as possible
+    understand why updateproject.sh does not work under cygwin
+    check compile success/failure on cygwin
+    check compile success/failure on (SourceForge compile farm)
+    check compile success/failure on other platforms/compilers
+    RPM package
+
+LIBRARY
+    QuantLib dynamic Win32 library (QuantLib.dll)
+    write examples of QuantLib use
+    Examples: port to Linux and Borland, make a separate CVS module ?
+    develop C++ unit test suite based on ttp://sourceforge.net/projects/cppunit
+    clean up accuracy definition in solver1D (x or f(x) accuracy ?)
+    implement currency as per OMG definition
+    implement round as per OMG enumeration/definition
+    add futures (and convexity adjustment) to the bootstrapping method
+    revisite model/slice interface
+    add historicalvolatility to RiskMeasures
+    handle library versioning to allow multiple installed versions
+    rename all files/dirs to lowercase no spaces
+
+DOCUMENTATION
+    automated changelog update for each cvs commit
+    add ChangeLog or History to DoxyGen
+    add QuantLib Team and contributors to DoxyGen
+    add/update DoxyGen TODO with CVS TODO.txt file
+    add reference to FAQ to DoxyGen
+    add CVS reference to DoxyGen
+    add Coding standards reference to DoxyGen
+    add Debian mention to DoxyGen
+    insert QuantLib-site\tobeincludedindoxygen.txt into DoxyGen documentation
+    add mailing list reference to DoxyGen
