@@ -30,6 +30,9 @@
 
 // $Id$
 // $Log$
+// Revision 1.15  2001/08/28 12:17:20  nando
+// nothing relevant (spaces added)
+//
 // Revision 1.14  2001/08/09 14:59:45  sigmud
 // header modification
 //
@@ -203,7 +206,7 @@ namespace QuantLib {
                 entry_.date_++; entry_.value_++;
                 return *this;
             }
-            const_iterator operator++(int) {
+            const_iterator operator++(int ) {
                 const_iterator temp = *this;
                 entry_.date_++; entry_.value_++;
                 return temp;
@@ -212,7 +215,7 @@ namespace QuantLib {
                 entry_.date_--; entry_.value_--;
                 return *this;
             }
-            const_iterator operator--(int) {
+            const_iterator operator--(int ) {
                 const_iterator temp = *this;
                 entry_.date_--; entry_.value_--;
                 return temp;

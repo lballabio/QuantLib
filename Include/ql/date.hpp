@@ -30,6 +30,9 @@
 
 // $Id$
 // $Log$
+// Revision 1.11  2001/08/28 12:17:01  nando
+// nothing relevant (spaces added)
+//
 // Revision 1.10  2001/08/09 14:59:45  sigmud
 // header modification
 //
@@ -151,11 +154,11 @@ namespace QuantLib {
         //! 1-day pre-increment
         Date& operator++();
         //! 1-day post-increment
-        Date operator++(int);
+        Date operator++(int );
         //! 1-day pre-decrement
         Date& operator--();
         //! 1-day post-decrement
-        Date operator--(int);
+        Date operator--(int );
         //! returns a new incremented date
         Date operator+(int days) const;
         //! returns a new decremented date

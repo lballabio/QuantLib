@@ -30,6 +30,9 @@
 
 // $Id$
 // $Log$
+// Revision 1.27  2001/08/28 12:14:41  nando
+// nothing relevant (spaces added)
+//
 // Revision 1.26  2001/08/09 14:59:47  sigmud
 // header modification
 //
@@ -285,7 +288,7 @@ namespace QuantLib {
         return *this;
     }
 
-    Date Date::operator++(int) {
+    Date Date::operator++(int ) {
         Date temp = *this;
         serialNumber_++;
         return temp;
@@ -296,7 +299,7 @@ namespace QuantLib {
         return *this;
     }
 
-    Date Date::operator--(int) {
+    Date Date::operator--(int ) {
         Date temp = *this;
         serialNumber_--;
         return temp;

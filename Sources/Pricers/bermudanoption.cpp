@@ -30,6 +30,9 @@
 
 // $Id$
 // $Log$
+// Revision 1.20  2001/08/28 12:14:41  nando
+// nothing relevant (spaces added)
+//
 // Revision 1.19  2001/08/09 14:59:48  sigmud
 // header modification
 //
@@ -80,7 +83,7 @@ namespace QuantLib {
             stepCondition_ = Handle<StandardStepCondition> ();
         }
 
-        void BermudanOption::executeIntermediateStep(int) const{
+        void BermudanOption::executeIntermediateStep(int ) const{
 
             int size = initialPrices_.size();
             for(int j = 0; j < size; j++)
