@@ -27,6 +27,9 @@
     $Source$
     $Name$
     $Log$
+    Revision 1.3  2001/01/25 11:54:07  lballabio
+    Allocation bug fixed
+
     Revision 1.2  2001/01/24 09:20:24  marmar
     Function Matrix transpose(Matrix & m const); added
 
@@ -127,8 +130,8 @@ namespace QuantLib {
 
             //! \name Element access
             //@{
-            const_column_iterator operator[](int) const;
-            column_iterator operator[](int);
+            const_row_iterator operator[](int) const;
+            row_iterator operator[](int);
             //@}
 
             //! \name Inspectors
@@ -173,7 +176,11 @@ namespace QuantLib {
         
         /*! \relates Matrix */
         Matrix transpose(const Matrix&);
-        
+        /*! \relates Matrix */
+        Matrix outerProduct(const Array &v1, const Array &v2);
+        //! returns the square root of a real symmetric matrix
+        /*! \relates Matrix */
+        Matrix sqrt(const Matrix &realSymmetricMatrix);
 
 
         // inline definitions
@@ -220,7 +227,7 @@ namespace QuantLib {
                 return;
             if (pointer_ != 0 && rows_ != 0 && columns_ != 0)
                 delete[] pointer_;
-            if (rows_ == 0 || columns_ == 0) {
+            if (rows == 0 || columns == 0) {
                 pointer_ = 0;
                 rows_ = columns_ = 0;
             } else {
@@ -365,12 +372,12 @@ namespace QuantLib {
             return reverse_column_iterator(column_begin(i));
         }
 
-        inline Matrix::const_column_iterator Matrix::operator[](int i) const {
-            return const_column_iterator(pointer_+i,columns_);
+        inline Matrix::const_row_iterator Matrix::operator[](int i) const {
+            return row_begin(i);
         }
     
-        inline Matrix::column_iterator Matrix::operator[](int i) {
-            return column_iterator(pointer_+i,columns_);
+        inline Matrix::row_iterator Matrix::operator[](int i) {
+            return row_begin(i);
         }
     
         inline int Matrix::rows() const {
@@ -470,6 +477,16 @@ namespace QuantLib {
             Matrix result(m.columns(),m.rows());
             for (int i=0; i<m.rows(); i++)
                 std::copy(m.row_begin(i),m.row_end(i),result.column_begin(i));
+            return result;
+        }
+
+        inline Matrix outerProduct(const Array &v1, const Array &v2){
+            QL_REQUIRE(v1.size() > 0 && v2.size() > 0, 
+                    "outerProduct: vectors must have non-null dimension");
+            Matrix result(v1.size(),v2.size());
+            for(int i = 0; i < v1.size(); i++)
+                std::transform(v2.begin(),v2.end(),result.row_begin(i),
+                    std::bind1st(std::multiplies<double>(),v1[i]));
             return result;
         }
 
