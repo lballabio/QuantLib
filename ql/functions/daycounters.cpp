@@ -36,8 +36,8 @@ namespace QuantLib {
 		}
 
 
-		double accrualFactor(DayCounter dc, Date d1, Date d2) {
-            return dc.yearFraction(d1, d2);
+		double accrualFactor(DayCounter dc, Date d1, Date d2, Date d3, Date d4) {
+            return dc.yearFraction(d1, d2, d3, d4);
 		}
     }
 

@@ -36,7 +36,7 @@ namespace QuantLib {
 
     namespace Functions {
 		int accrualDays(DayCounter dc, Date d1, Date d2);
-		double accrualFactor(DayCounter dc, Date d1, Date d2);
+		double accrualFactor(DayCounter dc, Date d1, Date d2, Date d3, Date d4);
     }
 
 }
