@@ -64,7 +64,7 @@ namespace QuantLib {
             basicGenerator_(seed), returnFirst_(true), weight_(0.0){}
 
         template <class U>
-        inline BoxMullerGaussianRng<U>::sample_type
+        inline typename BoxMullerGaussianRng<U>::sample_type
         BoxMullerGaussianRng<U>::next() const {
             if(returnFirst_) {
                 double x1,x2,r,ratio;

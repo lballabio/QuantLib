@@ -163,21 +163,21 @@ namespace QuantLib {
         }
 
         template <class Iterator, class UnaryFunction>
-        inline processing_iterator<Iterator,UnaryFunction>::reference
+        inline typename processing_iterator<Iterator,UnaryFunction>::reference
         processing_iterator<Iterator,UnaryFunction>::operator*() const {
             x_ = f_(*it_);
             return x_;
         }
 
         template <class Iterator, class UnaryFunction>
-        inline processing_iterator<Iterator,UnaryFunction>::pointer
+        inline typename processing_iterator<Iterator,UnaryFunction>::pointer
         processing_iterator<Iterator,UnaryFunction>::operator->() const {
             x_ = f_(*it_);
             return &x_;
         }
 
         template <class Iterator, class UnaryFunction>
-        inline processing_iterator<Iterator,UnaryFunction>::value_type
+        inline typename processing_iterator<Iterator,UnaryFunction>::value_type
         processing_iterator<Iterator,UnaryFunction>::operator[](int i) const {
             return *(*this+i);
         }
@@ -197,7 +197,8 @@ namespace QuantLib {
         }
 
         template <class Iterator, class UnaryFunction>
-        inline processing_iterator<Iterator,UnaryFunction>::difference_type
+        inline 
+        typename processing_iterator<Iterator,UnaryFunction>::difference_type
         processing_iterator<Iterator,UnaryFunction>::operator-(
           const processing_iterator<Iterator,UnaryFunction>& i) {
             return (it_-i.it_);

@@ -86,7 +86,7 @@ namespace QuantLib {
 
 
         template <class RNG>
-        inline const RandomArrayGenerator<RNG>::sample_type&
+        inline const typename RandomArrayGenerator<RNG>::sample_type&
         RandomArrayGenerator<RNG>::next() const{
             // starting point for product
             next_.weight = 1.0;

@@ -61,7 +61,8 @@ namespace QuantLib {
         : basicGenerator_(seed) {}
 
         template <class U>
-        inline CLGaussianRng<U>::sample_type CLGaussianRng<U>::next() const {
+        inline typename CLGaussianRng<U>::sample_type 
+        CLGaussianRng<U>::next() const {
             double gaussPoint = -6.0, gaussWeight = 1.0;
             for(int i=1;i<=12;i++){
                 typename U::sample_type sample = basicGenerator_.next();

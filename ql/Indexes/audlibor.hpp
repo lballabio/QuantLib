@@ -35,7 +35,7 @@ namespace QuantLib {
 
     namespace Indexes {
 
-        //! %AUD %Libor index (Also known as TIBOR, check settlement days)
+        //! %AUD %Libor index (Also known as SIBOR, check settlement days)
         class AUDLibor : public Xibor {
           public:
             AUDLibor(int n, TimeUnit units,

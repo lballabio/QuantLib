@@ -168,21 +168,21 @@ namespace QuantLib {
 
 
         template <class Iterator, class Function>
-        inline combining_iterator<Iterator,Function>::reference
+        inline typename combining_iterator<Iterator,Function>::reference
         combining_iterator<Iterator,Function>::operator*() const {
             x_ = f_(iteratorVector_.begin(), iteratorVector_.end());
             return x_;
         }
 
         template <class Iterator, class Function>
-        inline combining_iterator<Iterator,Function>::pointer
+        inline typename combining_iterator<Iterator,Function>::pointer
         combining_iterator<Iterator,Function>::operator->() const {
             x_ = f_(iteratorVector_.begin(), iteratorVector_.end());
             return &x_;
         }
 
         template <class Iterator, class Function>
-        inline combining_iterator<Iterator,Function>::value_type
+        inline typename combining_iterator<Iterator,Function>::value_type
         combining_iterator<Iterator,Function>::operator[](
             difference_type n) const {
                 return *(*this+n) ;
@@ -207,7 +207,7 @@ namespace QuantLib {
         }
 
         template <class Iterator, class Function>
-        inline combining_iterator<Iterator,Function>::difference_type
+        inline typename combining_iterator<Iterator,Function>::difference_type
         combining_iterator<Iterator,Function>::operator-(
             const combining_iterator<Iterator,Function>& rhs) const {
                 if (iteratorVector_.size()>0 && rhs.iteratorVector_.size()>0)
@@ -233,7 +233,7 @@ namespace QuantLib {
         inline combining_iterator<
             typename QL_ITERATOR_TRAITS<It>::value_type, Function>
         make_combining_iterator(It it1, It it2, Function f) {
-            typedef QL_ITERATOR_TRAITS<It>::value_type Iterator;
+            typedef typename QL_ITERATOR_TRAITS<It>::value_type Iterator;
             return combining_iterator<Iterator,Function>(it1,it2,f);
         }
 

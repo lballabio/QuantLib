@@ -158,7 +158,7 @@ namespace QuantLib {
         }
     
         template <class RNG>
-        inline const PathGenerator<RNG>::sample_type&
+        inline const typename PathGenerator<RNG>::sample_type&
         PathGenerator<RNG>::next() const {
             const Sample<Array>& sample = generator_->next();
             next_.weight = sample.weight;

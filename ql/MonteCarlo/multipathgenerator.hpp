@@ -140,7 +140,7 @@ namespace QuantLib {
         }
 
         template <class RAG>
-        inline const MultiPathGenerator<RAG >::sample_type&
+        inline  const typename MultiPathGenerator<RAG >::sample_type&
         MultiPathGenerator<RAG >::next() const {
 
             Array randomExtraction(numAssets_);

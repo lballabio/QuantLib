@@ -105,55 +105,59 @@ namespace QuantLib {
         }
 
         template <class RandomAccessIterator>
-        inline LexicographicalView<RandomAccessIterator>::x_iterator
+        inline typename LexicographicalView<RandomAccessIterator>::x_iterator
         LexicographicalView<RandomAccessIterator>::xbegin(int j) {
             return begin_+j*xSize_;
         }
 
         template <class RandomAccessIterator>
-        inline LexicographicalView<RandomAccessIterator>::x_iterator
+        inline typename LexicographicalView<RandomAccessIterator>::x_iterator
         LexicographicalView<RandomAccessIterator>::xend(int j) {
             return begin_+(j+1)*xSize_;
         }
 
         template <class RandomAccessIterator>
-        inline LexicographicalView<RandomAccessIterator>::reverse_x_iterator
+        inline 
+        typename LexicographicalView<RandomAccessIterator>::reverse_x_iterator
         LexicographicalView<RandomAccessIterator>::rxbegin(int j) {
             return reverse_x_iterator(xend(j));
         }
 
         template <class RandomAccessIterator>
-        inline LexicographicalView<RandomAccessIterator>::reverse_x_iterator
+        inline 
+        typename LexicographicalView<RandomAccessIterator>::reverse_x_iterator
         LexicographicalView<RandomAccessIterator>::rxend(int j) {
             return reverse_x_iterator(xbegin(j));
         }
 
         template <class RandomAccessIterator>
-        inline LexicographicalView<RandomAccessIterator>::y_iterator
+        inline typename LexicographicalView<RandomAccessIterator>::y_iterator
         LexicographicalView<RandomAccessIterator>::ybegin(int i) {
             return y_iterator(begin_+i,xSize_);
         }
 
         template <class RandomAccessIterator>
-        inline LexicographicalView<RandomAccessIterator>::y_iterator
+        inline typename LexicographicalView<RandomAccessIterator>::y_iterator
         LexicographicalView<RandomAccessIterator>::yend(int i) {
             return y_iterator(begin_+i,xSize_)+ySize_;
         }
 
         template <class RandomAccessIterator>
-        inline LexicographicalView<RandomAccessIterator>::reverse_y_iterator
+        inline 
+        typename LexicographicalView<RandomAccessIterator>::reverse_y_iterator
         LexicographicalView<RandomAccessIterator>::rybegin(int i) {
             return reverse_y_iterator(yend(i));
         }
 
         template <class RandomAccessIterator>
-        inline LexicographicalView<RandomAccessIterator>::reverse_y_iterator
+        inline 
+        typename LexicographicalView<RandomAccessIterator>::reverse_y_iterator
         LexicographicalView<RandomAccessIterator>::ryend(int i) {
             return reverse_y_iterator(ybegin(i));
         }
 
         template <class RandomAccessIterator>
-        inline LexicographicalView<RandomAccessIterator>::y_iterator
+        inline typename LexicographicalView<RandomAccessIterator>::y_iterator
         LexicographicalView<RandomAccessIterator>::operator[](int i) {
             return y_iterator(begin_+i,xSize_);
         }

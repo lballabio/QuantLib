@@ -74,7 +74,8 @@ namespace QuantLib {
         : basicGenerator_(seed) {}
 
         template <class U, class I>
-        inline ICGaussianRng<U, I>::sample_type ICGaussianRng<U, I>::next() const {
+        inline typename ICGaussianRng<U, I>::sample_type 
+        ICGaussianRng<U, I>::next() const {
             typename U::sample_type sample = basicGenerator_.next();
             return sample_type(ICND_(sample.value),sample.weight);
         }
