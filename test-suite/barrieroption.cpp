@@ -319,12 +319,14 @@ void BarrierOptionTest::testBabsiriValues() {
     boost::shared_ptr<BlackVolTermStructure> volTS =
         flatVol(today, volatility, dc);
 
+    long seed = 5;
+
     boost::shared_ptr<PricingEngine> engine(new AnalyticBarrierEngine);
     boost::shared_ptr<PricingEngine> mcEngine(
         new MCBarrierEngine<PseudoRandom>(timeSteps, brownianBridge,
                                           antitheticVariate, controlVariate,
                                           requiredSamples, requiredTolerance,
-                                          maxSamples, isBiased, 5));
+                                          maxSamples, isBiased, seed));
 
     Calendar calendar = NullCalendar();
     Date exDate = calendar.advance(today,1,Years);
@@ -426,12 +428,14 @@ void BarrierOptionTest::testBeagleholeValues() {
     boost::shared_ptr<BlackVolTermStructure> volTS =
         flatVol(today, volatility, dc);
 
+    long seed = 10;
+
     boost::shared_ptr<PricingEngine> engine(new AnalyticBarrierEngine);
     boost::shared_ptr<PricingEngine> mcEngine(
         new MCBarrierEngine<PseudoRandom>(timeSteps, brownianBridge,
                                           antitheticVariate, controlVariate,
                                           requiredSamples, requiredTolerance,
-                                          maxSamples, isBiased, 10));
+                                          maxSamples, isBiased, seed));
 
     Calendar calendar = NullCalendar();
     Date exDate = calendar.advance(today,1,Years);
