@@ -29,19 +29,31 @@ namespace QuantLib {
 
     namespace detail {
 
-        template <typename T> struct null_checker { T value; };
+        template <typename T> struct null_checker {
+            null_checker(T value) : value(value) {}
+            T value;
+        };
         template <typename T>
         std::ostream& operator<<(std::ostream&, const null_checker<T>&);
 
-        struct ordinal_holder { Size n; };
+        struct ordinal_holder {
+            ordinal_holder(Size n) : n(n) {}
+            Size n;
+        };
         std::ostream& operator<<(std::ostream&, const ordinal_holder&);
 
-        template <typename T> struct power_of_two_holder { T n; };
+        template <typename T> struct power_of_two_holder {
+            power_of_two_holder(T n) : n(n) {}
+            T n;
+        };
         template <typename T>
         std::ostream& operator<<(std::ostream&,
                                  const power_of_two_holder<T>&);
 
-        struct percent_holder { Real value; };
+        struct percent_holder {
+            percent_holder(Real value) : value(value) {}
+            Real value;
+        };
         std::ostream& operator<<(std::ostream&, const percent_holder&);
 
     }
@@ -84,34 +96,28 @@ namespace QuantLib {
 
         template <typename T>
         inline detail::null_checker<T> checknull(T x) {
-            detail::null_checker<T> checker = { x };
-            return checker;
+            return detail::null_checker<T>(x);
         }
 
         inline detail::ordinal_holder ordinal(Size n) {
-            detail::ordinal_holder holder = { n };
-            return holder;
+            return detail::ordinal_holder(n);
         }
 
         template <typename T>
         inline detail::power_of_two_holder<T> power_of_two(T n) {
-            detail::power_of_two_holder<T> holder = { n };
-            return holder;
+            return detail::power_of_two_holder<T>(n);
         }
 
         inline detail::percent_holder percent(Real x) {
-            detail::percent_holder holder = { x };
-            return holder;
+            return detail::percent_holder(x);
         }
 
         inline detail::percent_holder rate(Rate r) {
-            detail::percent_holder holder = { r };
-            return holder;
+            return detail::percent_holder(r);
         }
 
         inline detail::percent_holder volatility(Volatility v) {
-            detail::percent_holder holder = { v };
-            return holder;
+            return detail::percent_holder(v);
         }
 
     }

@@ -511,18 +511,15 @@ namespace QuantLib {
     namespace io {
 
         detail::long_weekday_holder long_weekday(Weekday d) {
-            detail::long_weekday_holder holder = { d };
-            return holder;
+            return detail::long_weekday_holder(d);
         }
 
         detail::short_weekday_holder short_weekday(Weekday d) {
-            detail::short_weekday_holder holder = { d };
-            return holder;
+            return detail::short_weekday_holder(d);
         }
 
         detail::shortest_weekday_holder shortest_weekday(Weekday d) {
-            detail::shortest_weekday_holder holder = { d };
-            return holder;
+            return detail::shortest_weekday_holder(d);
         }
 
     }
@@ -647,18 +644,15 @@ namespace QuantLib {
     namespace io {
 
         detail::short_date_holder short_date(const Date& d) {
-            detail::short_date_holder holder = { d };
-            return holder;
+            return detail::short_date_holder(d);
         }
 
         detail::long_date_holder long_date(const Date& d) {
-            detail::long_date_holder holder = { d };
-            return holder;
+            return detail::long_date_holder(d);
         }
 
         detail::iso_date_holder iso_date(const Date& d) {
-            detail::iso_date_holder holder = { d };
-            return holder;
+            return detail::iso_date_holder(d);
         }
 
     }

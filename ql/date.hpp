@@ -61,13 +61,22 @@ namespace QuantLib {
 
     namespace detail {
 
-        struct long_weekday_holder { Weekday d; };
+        struct long_weekday_holder {
+            long_weekday_holder(Weekday d) : d(d) {}
+            Weekday d;
+        };
         std::ostream& operator<<(std::ostream&, const long_weekday_holder&);
 
-        struct short_weekday_holder { Weekday d; };
+        struct short_weekday_holder {
+            short_weekday_holder(Weekday d) : d(d) {}
+            Weekday d;
+        };
         std::ostream& operator<<(std::ostream&, const short_weekday_holder&);
 
-        struct shortest_weekday_holder { Weekday d; };
+        struct shortest_weekday_holder {
+            shortest_weekday_holder(Weekday d) : d(d) {}
+            Weekday d;
+        };
         std::ostream& operator<<(std::ostream&,
                                  const shortest_weekday_holder&);
 
@@ -322,13 +331,22 @@ namespace QuantLib {
 
     namespace detail {
 
-        struct short_date_holder { Date d; };
+        struct short_date_holder {
+            short_date_holder(const Date d) : d(d) {}
+            Date d;
+        };
         std::ostream& operator<<(std::ostream&, const short_date_holder&);
 
-        struct long_date_holder { Date d; };
+        struct long_date_holder {
+            long_date_holder(const Date& d) : d(d) {}
+            Date d;
+        };
         std::ostream& operator<<(std::ostream&, const long_date_holder&);
 
-        struct iso_date_holder { Date d; };
+        struct iso_date_holder {
+            iso_date_holder(const Date& d) : d(d) {}
+            Date d;
+        };
         std::ostream& operator<<(std::ostream&, const iso_date_holder&);
 
     }
