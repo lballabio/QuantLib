@@ -10,13 +10,11 @@ The basic requirement to produce html documentation are:
 
 If you want to produce PDF and/or PS documentation you will need also:
 4) TeX/LaTeX
-5) LaTeX Fancy Header (http://toocool.calpoly.edu/latex/fancy_header.html)
-6) LaTeX pxfonts (http://www.ctan.org/tex-archive/fonts/pxfonts/)
+5) LaTeX Fancy Header package
+6) LaTeX pxfonts 
 7) epstopdf. It's available as Perl script (you will also need Perl, of
    course), C source to be compiled or Windows executable.
-   http://www.tex.ac.uk/tex-archive/help/Catalogue/entries/epstopdf.html
-   or http://www.ctan.org/tex-archive/support/epstopdf/
-
+The above are available through the CTAN (http://www.ctan.org/)
 
 
 *********
