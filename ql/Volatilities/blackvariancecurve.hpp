@@ -124,12 +124,14 @@ namespace QuantLib {
                 "negative time (" + DoubleFormatter::toString(t) +
                 ") not allowed");
 
+            // for early times extrapolate with flat vol
             if (t<=times_[0])
                 return (*varianceSurface_)(times_[0], extrapolate)*
                     t/times_[0];
             else if (t<=times_.back())
                 return (*varianceSurface_)(t, extrapolate);
-            else // t>times_.back() || extrapolate
+            // for later times extrapolate with flat vol
+            else { // t>times_.back() || extrapolate
                 QL_REQUIRE(extrapolate,
                     "ConstantVol::blackVolImpl : "
                     "time (" + DoubleFormatter::toString(t) +
@@ -138,6 +140,7 @@ namespace QuantLib {
                     ")");
                 return (*varianceSurface_)(times_.back(), extrapolate)*
                     t/times_.back();
+            }
         }
 
     }
