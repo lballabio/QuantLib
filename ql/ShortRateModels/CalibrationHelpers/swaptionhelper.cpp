@@ -81,7 +81,6 @@ namespace QuantLib {
 
         swaption_ = Handle<Swaption>(new Swaption(
             swap_,
-            Handle<Payoff>(),
             Handle<Exercise>(new EuropeanExercise(exerciseDate)),
             termStructure,
             engine_));

@@ -27,11 +27,10 @@
 namespace QuantLib {
 
     Swaption::Swaption(const Handle<SimpleSwap>& swap, 
-                       const Handle<Payoff>& payoff,
                        const Handle<Exercise>& exercise,
                        const RelinkableHandle<TermStructure>& termStructure,
                        const Handle<PricingEngine>& engine)
-    : Option(payoff, exercise, engine), swap_(swap),
+    : Option(Handle<Payoff>(), exercise, engine), swap_(swap),
       termStructure_(termStructure) {
         registerWith(swap_);
         registerWith(termStructure_);

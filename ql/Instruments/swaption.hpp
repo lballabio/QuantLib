@@ -34,7 +34,6 @@ namespace QuantLib {
         class arguments;
         class results;
         Swaption(const Handle<SimpleSwap>& swap,
-                 const Handle<Payoff>& payoff,
                  const Handle<Exercise>& exercise,
                  const RelinkableHandle<TermStructure>& termStructure,
                  const Handle<PricingEngine>& engine);

@@ -71,7 +71,6 @@ namespace {
         Handle<PricingEngine> engine(new BlackSwaption(model));
         return Handle<Swaption>(new Swaption(
             swap,
-            Handle<Payoff>(),
             Handle<Exercise>(new EuropeanExercise(exercise)),
             termStructure_,engine));
     }
