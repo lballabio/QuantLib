@@ -19,6 +19,8 @@ include_HEADERS = \
 EXTRA_DIST=makefile.mak
 
 libPricingEngines_la_SOURCES = \
+	americanpayoffatexpiry.cpp \
+	americanpayoffathit.cpp \
 	blackformula.cpp
 
 noinst_LTLIBRARIES = libPricingEngines.la
