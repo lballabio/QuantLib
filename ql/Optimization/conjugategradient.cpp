@@ -49,7 +49,6 @@ namespace QuantLib {
 
             do {
                 // Linesearch
-                std::cout << "Doing line search on direction " << SearchDirection <<  std::endl;
                 t = (*lineSearch_)(P, t);
                 if (!lineSearch_->succeed())
                     throw Error("Conjugate gradient: line-search failed!");

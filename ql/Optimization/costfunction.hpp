@@ -50,7 +50,6 @@ namespace QuantLib {
                     grad[i] = 0.5*(fp - fm)/eps;
                     xx[i] = x[i];
                 }
-                std::cout << "Gradient at " << x << " = " << grad << std::endl;
             }
 
             //! method to overload to compute grad_f, the first derivative of
