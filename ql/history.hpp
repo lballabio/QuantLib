@@ -323,7 +323,7 @@ namespace QuantLib {
 
     /*! \example history_iterators.cpp
         This code exemplifies how to use History iterators to perform
-        statistic analyses on historical data.
+        statistics analyses on historical data.
     */
 
 

@@ -29,7 +29,7 @@ namespace QuantLib {
     namespace Pricers {
 
         //! simple example of multi-factor Monte Carlo pricer
-        class McBasket : public McPricer<Math::Statistic,
+        class McBasket : public McPricer<Math::Statistics,
             MonteCarlo::GaussianMultiPathGenerator,
             MonteCarlo::PathPricer_old<MonteCarlo::MultiPath> > {
           public:

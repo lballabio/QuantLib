@@ -16,15 +16,15 @@
 */
 // $Id$
 
-#ifndef quantlib_test_risk_statistics_hpp
-#define quantlib_test_risk_statistics_hpp
+#ifndef quantlib_test_risk_statisticss_hpp
+#define quantlib_test_risk_statisticss_hpp
 
 #include <ql/quantlib.hpp>
 #include <cppunit/TestCase.h>
 
-class RiskStatisticsTest : public CppUnit::TestCase {
+class RiskStatisticssTest : public CppUnit::TestCase {
   public:
-    RiskStatisticsTest() : CppUnit::TestCase("Testing Statistic's gaussian risk measure ") {}
+    RiskStatisticssTest() : CppUnit::TestCase("Testing Statistics's gaussian risk measure ") {}
     void runTest();
 };
 

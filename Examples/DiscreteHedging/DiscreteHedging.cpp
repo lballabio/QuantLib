@@ -67,8 +67,8 @@ using QuantLib::Handle;
 // the classic Black Scholes analytic solution for European Option
 using QuantLib::Pricers::EuropeanOption;
 
-// class for statistical analysis
-using QuantLib::Math::Statistic;
+// class for statisticsal analysis
+using QuantLib::Math::Statistics;
 
 // single Path of a random variable
 // It contains the list of variations
@@ -336,20 +336,20 @@ void ReplicationError::compute(int nTimeSteps, int nSamples)
             ReplicationPathPricer(payoff_.optionType(), s0_,
                 payoff_.strike(), r_, maturity_, sigma_));
 
-    // a statistic accumulator for the path-dependant Profit&Loss values
-    Statistic statisticAccumulator;
+    // a statistics accumulator for the path-dependant Profit&Loss values
+    Statistics statisticsAccumulator;
 
     // The OneFactorMontecarloModel generates paths using myPathGenerator
     // each path is priced using myPathPricer
-    // prices will be accumulated into statisticAccumulator
+    // prices will be accumulated into statisticsAccumulator
     OneFactorMonteCarloOption_old MCSimulation(myPathGenerator,
-        myPathPricer, statisticAccumulator, false);
+        myPathPricer, statisticsAccumulator, false);
 
     // the model simulates nSamples paths
     MCSimulation.addSamples(nSamples);
 
     // the sampleAccumulator method of OneFactorMonteCarloOption_old
-    // gives access to all the methods of statisticAccumulator
+    // gives access to all the methods of statisticsAccumulator
     double PLMean  = MCSimulation.sampleAccumulator().mean();
     double PLStDev = MCSimulation.sampleAccumulator().standardDeviation();
     double PLSkew  = MCSimulation.sampleAccumulator().skewness();

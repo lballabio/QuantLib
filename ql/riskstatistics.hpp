@@ -14,19 +14,19 @@
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
-/*! \file riskstatistics.hpp
+/*! \file riskstatisticss.hpp
     \brief Normal distribution risk analysis tool: VAR, (average) shortfall
 
     \fullpath
-    ql/%riskstatistics.hpp
+    ql/%riskstatisticss.hpp
 */
 
 // $Id$
 
-#ifndef quantlib_risk_statistics_h
-#define quantlib_risk_statistics_h
+#ifndef quantlib_risk_statisticss_h
+#define quantlib_risk_statisticss_h
 
-#include <ql/Math/statistic.hpp>
+#include <ql/Math/statistics.hpp>
 #include <ql/Math/riskmeasures.hpp>
 
 namespace QuantLib {
@@ -34,55 +34,55 @@ namespace QuantLib {
     //! Risk analysis tool
     /*! It can accumulate a set of data and return risk quantities
         as Value-At-Risk, Expected Shortfall,
-        Shortfall, Average Shortfall, plus statistic
+        Shortfall, Average Shortfall, plus statistics
         quantitities as mean, variance, std. deviation, skewness, kurtosis.
 
-        \deprecated use Statistic instead (or even take a look at
-                    HStatistics)
+        \deprecated use Statistics instead (or even take a look at
+                    HStatisticss)
     */
-    class RiskStatistics {
+    class RiskStatisticss {
       public:
         //! \name Inspectors
         //@{
-        // Statistic proxy methods
-        Size samples() const {return statistic_.samples(); }
-        double weightSum() const {return statistic_.weightSum(); }
-        double mean() const {return statistic_.mean(); }
-        double variance() const {return statistic_.variance(); }
+        // Statistics proxy methods
+        Size samples() const {return statistics_.samples(); }
+        double weightSum() const {return statistics_.weightSum(); }
+        double mean() const {return statistics_.mean(); }
+        double variance() const {return statistics_.variance(); }
         double standardDeviation() const {
-            return statistic_.standardDeviation(); }
+            return statistics_.standardDeviation(); }
         double errorEstimate() const {
-            return statistic_.errorEstimate(); }
-        double skewness() const {return statistic_.skewness(); }
-        double kurtosis() const {return statistic_.kurtosis(); }
-        double min() const {return statistic_.min(); }
-        double max() const {return statistic_.max(); }
+            return statistics_.errorEstimate(); }
+        double skewness() const {return statistics_.skewness(); }
+        double kurtosis() const {return statistics_.kurtosis(); }
+        double min() const {return statistics_.min(); }
+        double max() const {return statistics_.max(); }
 
         // RiskMeasures proxy methods
         //! returns the Potential-Upside at a given percentile
         double potentialUpside(double percentile) const {
             return riskMeasures_.potentialUpside(percentile,
-                statistic_.mean(), statistic_.standardDeviation());
+                statistics_.mean(), statistics_.standardDeviation());
         }
         //! returns the Value-At-Risk at a given percentile
         double valueAtRisk(double percentile) const {
             return riskMeasures_.valueAtRisk(percentile,
-                statistic_.mean(), statistic_.standardDeviation());
+                statistics_.mean(), statistics_.standardDeviation());
         }
         //! returns the Expected Shortfall at a given percentile
         double expectedShortfall(double percentile) const {
             return riskMeasures_.expectedShortfall(percentile,
-                statistic_.mean(), statistic_.standardDeviation());
+                statistics_.mean(), statistics_.standardDeviation());
         }
         //! returns the Shortfall (observations below target)
         double shortfall(double target) const {
             return riskMeasures_.shortfall(target,
-                statistic_.mean(), statistic_.standardDeviation());
+                statistics_.mean(), statistics_.standardDeviation());
         }
         //! returns the Average Shortfall (averaged shortfallness)
         double averageShortfall(double target) const  {
             return riskMeasures_.averageShortfall(target,
-                statistic_.mean(), statistic_.standardDeviation());
+                statistics_.mean(), statistics_.standardDeviation());
         }
         //@}
         //! \name Modifiers
@@ -104,19 +104,19 @@ namespace QuantLib {
 
         //@}
       private:
-        Math::Statistic statistic_;
+        Math::Statistics statistics_;
         Math::RiskMeasures riskMeasures_;
     };
 
     // inline definitions
 
     /*! \pre weights must be positive or null */
-    inline void RiskStatistics::add(double value, double weight) {
-        statistic_.add( value , weight );
+    inline void RiskStatisticss::add(double value, double weight) {
+        statistics_.add( value , weight );
     }
 
-    inline void RiskStatistics::reset() {
-        statistic_.reset();
+    inline void RiskStatisticss::reset() {
+        statistics_.reset();
     }
 
 }

@@ -15,20 +15,20 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file sequencestatistic.hpp
-    \brief Statistic tools for sequence (vector, list, array) samples
+/*! \file sequencestatistics.hpp
+    \brief Statistics tools for sequence (vector, list, array) samples
 
     \fullpath
-    ql/Math/%sequencestatistic.hpp
+    ql/Math/%sequencestatistics.hpp
 */
 
 // $Id$
 
-#ifndef quantlib_sequence_statistic_hpp
-#define quantlib_sequence_statistic_hpp
+#ifndef quantlib_sequence_statistics_hpp
+#define quantlib_sequence_statistics_hpp
 
-#include <ql/Math/hstatistic.hpp>
-#include <ql/Math/statistic.hpp>
+#include <ql/Math/hstatistics.hpp>
+#include <ql/Math/statistics.hpp>
 #include <algorithm>
 #include <vector>
 
@@ -36,34 +36,34 @@ namespace QuantLib {
 
     namespace Math {
 
-        //! Statistic analysis of N-dimensional (sequence) data
-        /*! It provides 1-dimensional statistic quantities as discrepancy plus
-            N-dimensional (sequence) statistic quantities (e.g. mean,
+        //! Statistics analysis of N-dimensional (sequence) data
+        /*! It provides 1-dimensional statistics quantities as discrepancy plus
+            N-dimensional (sequence) statistics quantities (e.g. mean,
             variance, skewness, kurtosis, etc.) with one component for each
             dimension of the sample space.
 
-            For most of the statistic quantities this class relies on
-            the StatisticsType underlying class to provide 1-D methods that
+            For most of the statistics quantities this class relies on
+            the StatisticssType underlying class to provide 1-D methods that
             will be iterated for all the components of the N-D data. These
             "inherited" methods are the union of all the methods that might be
-            requested to the 1-D underlying StatisticsType class, with the
+            requested to the 1-D underlying StatisticssType class, with the
             usual compile-time checks provided by the template approach.
         */
-        template <class SequenceType, class StatisticsType>
-        class SequenceStatistic {
+        template <class SequenceType, class StatisticssType>
+        class SequenceStatistics {
           public:
             // typedefs
             typedef SequenceType   sequence_type;
-            typedef StatisticsType statistics_type;
-            virtual ~SequenceStatistic() {}
+            typedef StatisticssType statisticss_type;
+            virtual ~SequenceStatistics() {}
             // constructor
-            SequenceStatistic(Size dimension) { reset(dimension); }
-            //! \name 1-D inspectors "inherited" by underlying statistic class
+            SequenceStatistics(Size dimension) { reset(dimension); }
+            //! \name 1-D inspectors "inherited" by underlying statistics class
             //@{
             Size samples() const;
             double weightSum() const;
             //@}
-            //! \name N-D inspectors "inherited" by underlying statistic class
+            //! \name N-D inspectors "inherited" by underlying statistics class
             //@{
             // void argument list
             sequence_type mean() const;
@@ -103,7 +103,7 @@ namespace QuantLib {
             //@}
           protected:
             Size dimension_;
-            std::vector<statistics_type> stats_;
+            std::vector<statisticss_type> stats_;
           private:
             mutable sequence_type results_;
         };
@@ -113,8 +113,8 @@ namespace QuantLib {
         // N-D methods' definition with void argument list
         #define DEFINE_SEQUENCE_STAT_CONST_METHOD_VOID(METHOD) \
         template <class Seq, class Stat> \
-        SequenceStatistic<Seq, Stat>::sequence_type \
-        SequenceStatistic<Seq, Stat>::METHOD() const { \
+        SequenceStatistics<Seq, Stat>::sequence_type \
+        SequenceStatistics<Seq, Stat>::METHOD() const { \
             for (Size i=0; i<dimension_; i++) \
                 results_[i] = stats_[i].METHOD(); \
             return results_; \
@@ -135,8 +135,8 @@ namespace QuantLib {
         // N-D methods' definition with single double argument list
         #define DEFINE_SEQUENCE_STAT_CONST_METHOD_DOUBLE(METHOD) \
         template <class Seq, class Stat> \
-        SequenceStatistic<Seq, Stat>::sequence_type \
-        SequenceStatistic<Seq, Stat>::METHOD(double x) const { \
+        SequenceStatistics<Seq, Stat>::sequence_type \
+        SequenceStatistics<Seq, Stat>::METHOD(double x) const { \
             for (Size i=0; i<dimension_; i++) \
                 results_[i] = stats_[i].METHOD(x); \
             return results_; \
@@ -158,33 +158,33 @@ namespace QuantLib {
 
 
         template <class Seq, class Stat>
-        void SequenceStatistic<Seq, Stat>::reset(Size dimension) {
+        void SequenceStatistics<Seq, Stat>::reset(Size dimension) {
             QL_REQUIRE(dimension > 0,
-                "SequenceStatistic::SequenceStatistic : "
-                "null dimension for sequence statistic");
+                "SequenceStatistics::SequenceStatistics : "
+                "null dimension for sequence statistics");
             dimension_ = dimension;
-            stats_ = std::vector<Stat>(dimension, statistics_type());
+            stats_ = std::vector<Stat>(dimension, statisticss_type());
             for (Size i=0; i<dimension_; i++)
                 stats_[i].reset();
             results_ = sequence_type(dimension);
         }
 
         template <class Seq, class Stat>
-        Size SequenceStatistic<Seq, Stat>::samples() const {
+        Size SequenceStatistics<Seq, Stat>::samples() const {
             return stats_[0].samples();
         }
 
         template <class Seq, class Stat>
-        double SequenceStatistic<Seq, Stat>::weightSum() const {
+        double SequenceStatistics<Seq, Stat>::weightSum() const {
             return stats_[0].weightSum();
         }
 
         template <class Seq, class Stat>
-        void SequenceStatistic<Seq, Stat>::add(
-          const SequenceStatistic<Seq, Stat>::sequence_type& sample,
+        void SequenceStatistics<Seq, Stat>::add(
+          const SequenceStatistics<Seq, Stat>::sequence_type& sample,
           double weight) {
             QL_REQUIRE(sample.size() == dimension_,
-                   "SequenceStatistic::add : "
+                   "SequenceStatistics::add : "
                    "sample size mismatch");
             Size k;
             for (k=0; k<dimension_; k++)
@@ -193,10 +193,10 @@ namespace QuantLib {
         }
 
 
-        typedef SequenceStatistic<std::vector<double>, Statistic> VectorStatistic;
-        typedef SequenceStatistic<Array, Statistic> ArrayStatistic;
-        typedef SequenceStatistic<std::vector<double>, HStatistic> VectorHStatistic;
-        typedef SequenceStatistic<Array, HStatistic> ArrayHStatistic;
+        typedef SequenceStatistics<std::vector<double>, Statistics> VectorStatistics;
+        typedef SequenceStatistics<Array, Statistics> ArrayStatistics;
+        typedef SequenceStatistics<std::vector<double>, HStatistics> VectorHStatistics;
+        typedef SequenceStatistics<Array, HStatistics> ArrayHStatistics;
     }
 
 }

@@ -55,7 +55,7 @@ namespace QuantLib {
             double valueWithSamples(Size samples) const;
             //! error Estimated of the samples simulated so far
             double errorEstimate() const;
-            //! access to the sample accumulator for more statistics
+            //! access to the sample accumulator for more statisticss
             const S& sampleAccumulator(void) const;
           protected:
             McPricer() {}

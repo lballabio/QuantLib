@@ -23,9 +23,9 @@ using namespace QuantLib::Math;
 
 #define LENGTH(a) (sizeof(a)/sizeof(a[0]))
 
-void RiskStatisticsTest::runTest() {
+void RiskStatisticssTest::runTest() {
 
-    Statistic s;
+    Statistics s;
 
     double averages[] = { -100.0, 0.0, 100.0 };
     double sigmas[] = { 0.1, 1.0, 10.0 };

@@ -50,8 +50,8 @@ int main() {
     runner.eventManager().addListener(&qlListener);
 
     runner.addTest(LDSTest::suite());
-    runner.addTest(new RiskStatisticsTest);
-    runner.addTest(new StatisticsTest);
+    runner.addTest(new RiskStatisticssTest);
+    runner.addTest(new StatisticssTest);
 
     runner.addTest(new CalendarTest);
     runner.addTest(CapFloorTest::suite());

@@ -15,37 +15,37 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file hstatistic.hpp
-    \brief historical distribution statistic tool with risk measures
+/*! \file hstatistics.hpp
+    \brief historical distribution statistics tool with risk measures
 
     \fullpath
-    ql/Math/%hstatistic.hpp
+    ql/Math/%hstatistics.hpp
 */
 
 // $Id$
 
-#ifndef quantlib_hstatistic_h
-#define quantlib_hstatistic_h
+#ifndef quantlib_hstatistics_h
+#define quantlib_hstatistics_h
 
-#include <ql/Math/statistic.hpp>
+#include <ql/Math/statistics.hpp>
 #include <vector>
 
 namespace QuantLib {
 
     namespace Math {
-        //! Historical distribution statistic tool with risk measures
-        /*! It can accumulate a set of data and return statistic quantities
+        //! Historical distribution statistics tool with risk measures
+        /*! It can accumulate a set of data and return statistics quantities
             (e.g: mean, variance, skewness, kurtosis, error estimation,
             percentile, etc.) plus risk measures (e.g.: value at risk,
             expected shortfall, etc.) with both gaussian assumption or
             using the historic (empiric) distribution.
 
-            It extends the class Statistic with the penalty of storing
+            It extends the class Statistics with the penalty of storing
             all samples
         */
-        class HStatistic : public Statistic {
+        class HStatistics : public Statistics {
           public:
-            HStatistic() { reset(); }
+            HStatistics() { reset(); }
             double percentile(double percentile) const;
             double potentialUpside(double percentile) const;
             double valueAtRisk(double percentile)  const;
@@ -73,21 +73,21 @@ namespace QuantLib {
         };
 
         /*! \pre weights must be positive or null */
-        inline void HStatistic::add(double value, double weight) {
+        inline void HStatistics::add(double value, double weight) {
           QL_REQUIRE(weight>=0.0,
-              "HStatistic::add : negative weight not allowed");
+              "HStatistics::add : negative weight not allowed");
           samples_.push_back(std::make_pair(value,weight));
-          Statistic::add(value,weight);
+          Statistics::add(value,weight);
         }
 
-        inline void HStatistic::reset() {
+        inline void HStatistics::reset() {
             samples_ = std::vector<std::pair<double,double> >();
-            Statistic::reset();
+            Statistics::reset();
         }
 
-        inline  double HStatistic::valueAtRisk(double y) const{
+        inline  double HStatistics::valueAtRisk(double y) const{
             QL_REQUIRE(y<1.0 && y>=0.9,
-                "HStatistic::valueAtRisk : percentile (" +
+                "HStatistics::valueAtRisk : percentile (" +
                 DoubleFormatter::toString(y) +
                 ") out of range 90%-100%");
 

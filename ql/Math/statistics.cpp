@@ -14,26 +14,26 @@
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
-/*! \file statistic.cpp
-    \brief statistic tools
+/*! \file statistics.cpp
+    \brief statistics tools
 
     \fullpath
-    ql/Math/%statistic.cpp
+    ql/Math/%statistics.cpp
 */
 
 // $Id$
 
-#include <ql/Math/statistic.hpp>
+#include <ql/Math/statistics.hpp>
 
 namespace QuantLib {
 
     namespace Math {
 
-        Statistic::Statistic() {
+        Statistics::Statistics() {
             reset();
         }
 
-        void Statistic::reset() {
+        void Statistics::reset() {
             min_ = QL_MAX_DOUBLE;
             max_ = QL_MIN_DOUBLE;
             sampleNumber_ = 0;

@@ -34,7 +34,7 @@ namespace QuantLib {
 
     namespace Pricers {
 
-        using Math::Statistic;
+        using Math::Statistics;
         using Math::Matrix;
         using MonteCarlo::MultiPath;
         using MonteCarlo::GaussianMultiPathGenerator;
@@ -70,11 +70,11 @@ namespace QuantLib {
                 antitheticVariance));
 
              //! Initialize the multi-factor Monte Carlo
-            mcModel_ = Handle<MonteCarloModel<Statistic,
+            mcModel_ = Handle<MonteCarloModel<Statistics,
                 GaussianMultiPathGenerator, PathPricer_old<MultiPath> > > (
-                new MonteCarloModel<Statistic,
+                new MonteCarloModel<Statistics,
                 GaussianMultiPathGenerator, PathPricer_old<MultiPath> > (
-                pathGenerator, pathPricer, Statistic(), false));
+                pathGenerator, pathPricer, Statistics(), false));
 
         }
 

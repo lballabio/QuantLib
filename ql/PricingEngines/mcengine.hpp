@@ -59,7 +59,7 @@ namespace QuantLib {
             double valueWithSamples(Size samples) const;
             //! error estimated using the samples simulated so far
             double errorEstimate() const;
-            //! access to the sample accumulator for richer statistics
+            //! access to the sample accumulator for richer statisticss
             const S& sampleAccumulator(void) const;
           protected:
             McSimulation(bool antitheticVariate,

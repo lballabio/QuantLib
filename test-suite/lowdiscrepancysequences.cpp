@@ -102,7 +102,7 @@ void LDSTest::testSobol() {
     dimensionality = 33;
     seed = 123456;
     rsg = SobolRsg(dimensionality, seed);
-    ArrayStatistic stat(dimensionality);
+    ArrayStatistics stat(dimensionality);
     Array mean, stdev, variance, skewness, kurtosis;
     Size k = 0;
     for (int j=1; j<5; j++) { // five cycle
@@ -260,7 +260,7 @@ void LDSTest::testHalton() {
     dimensionality = 33;
     seed = 123456;
     rsg = HaltonRsg(dimensionality);
-    ArrayStatistic stat(dimensionality);
+    ArrayStatistics stat(dimensionality);
     Array mean, stdev, variance, skewness, kurtosis;
     k = 0;
     for (int j=1; j<5; j++) { // five cycle
@@ -280,9 +280,9 @@ void LDSTest::testHalton() {
         }
     }
 
-    // reset generator and statistic
+    // reset generator and statistics
     rsg  = HaltonRsg(dimensionality);
-    stat = ArrayStatistic(dimensionality);
+    stat = ArrayStatistics(dimensionality);
     k = 0;
     for (j=1; j<3; j++) { // three cycle
         points = Size(QL_POW(3, j))-1; // base 3
@@ -317,9 +317,9 @@ void LDSTest::testDiscrepancy() {
         HaltonRsg                 hal(dim);
         SobolRsg                  sob(dim, seed);
 
-        DiscrepancyArrayStatistic merStat(dim);
-        DiscrepancyArrayStatistic halStat(dim);
-        DiscrepancyArrayStatistic sobStat(dim);
+        DiscrepancyArrayStatistics merStat(dim);
+        DiscrepancyArrayStatistics halStat(dim);
+        DiscrepancyArrayStatistics sobStat(dim);
         std::cout << "dim " << dim << std::endl;
 
         Size k = 0;

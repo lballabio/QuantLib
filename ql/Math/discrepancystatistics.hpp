@@ -15,43 +15,43 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file discrepancystatistic.hpp
+/*! \file discrepancystatistics.hpp
     \brief Statistic tool for sequences with discrepancy calculation
 
     \fullpath
-    ql/Math/%discrepancystatistic.hpp
+    ql/Math/%discrepancystatistics.hpp
 */
 
 // $Id$
 
-#ifndef quantlib_dicrepancy_statistic_hpp
-#define quantlib_dicrepancy_statistic_hpp
+#ifndef quantlib_dicrepancy_statistics_hpp
+#define quantlib_dicrepancy_statistics_hpp
 
-#include <ql/Math/sequencestatistic.hpp>
+#include <ql/Math/sequencestatistics.hpp>
 
 namespace QuantLib {
 
     namespace Math {
 
         //! Statistic tool for sequences with discrepancy calculation
-        /*! It inherit from SequenceStatistic<HStatistic> and adds
+        /*! It inherit from SequenceStatistics<HStatistics> and adds
             \f$ L^2 \f$ discrepancy calculation
         */
         template <class SequenceType>
-        class DiscrepancyStatistic : public SequenceStatistic<SequenceType,
-                                                              HStatistic> {
+        class DiscrepancyStatistics : public SequenceStatistics<SequenceType,
+                                                                HStatistics> {
           public:
             // typedefs
             typedef SequenceType   sequence_type;
             // constructor
-            DiscrepancyStatistic(Size dimension)
-            : SequenceStatistic<SequenceType, HStatistic>(dimension) {
+            DiscrepancyStatistics(Size dimension)
+            : SequenceStatistics<SequenceType, HStatistics>(dimension) {
                 reset(dimension); }
             //! \name 1-dimensional inspectors
             //@{
             double discrepancy() const;
             //@}
-            void add(const DiscrepancyStatistic<SequenceType>::sequence_type& sample,
+            void add(const DiscrepancyStatistics<SequenceType>::sequence_type& sample,
                      double weight = 1.0);
           void reset(Size dimension);
           private:
@@ -60,8 +60,8 @@ namespace QuantLib {
         };
 
         template <class Seq>
-        void DiscrepancyStatistic<Seq>::reset(Size dimension) {
-            SequenceStatistic<Seq, HStatistic>::reset(dimension);
+        void DiscrepancyStatistics<Seq>::reset(Size dimension) {
+            SequenceStatistics<Seq, HStatistics>::reset(dimension);
             adiscr_ = 0.0;
             bdiscr_ = 1.0/QL_POW(2, dimension-1);
             cdiscr_ = 0.0;
@@ -69,10 +69,10 @@ namespace QuantLib {
         }
 
         template <class Seq>
-        void DiscrepancyStatistic<Seq>::add(
-          const DiscrepancyStatistic<Seq>::sequence_type& sample,
+        void DiscrepancyStatistics<Seq>::add(
+          const DiscrepancyStatistics<Seq>::sequence_type& sample,
           double weight) {
-            SequenceStatistic<Seq, HStatistic>::add(sample, weight);
+            SequenceStatistics<Seq, HStatistics>::add(sample, weight);
 
             Size k, m, N = samples();
 
@@ -116,7 +116,7 @@ namespace QuantLib {
         }
 
         template <class Seq>
-        double DiscrepancyStatistic<Seq>::discrepancy() const {
+        double DiscrepancyStatistics<Seq>::discrepancy() const {
             Size N = samples();
 /*
             Size i;
@@ -147,8 +147,8 @@ namespace QuantLib {
             return QL_SQRT(adiscr_/(N*N)-bdiscr_/N*cdiscr_+ddiscr_);
         }
 
-        typedef DiscrepancyStatistic<std::vector<double> > DiscrepancyVectorStatistic;
-        typedef DiscrepancyStatistic<Array> DiscrepancyArrayStatistic;
+        typedef DiscrepancyStatistics<std::vector<double> > DiscrepancyVectorStatistics;
+        typedef DiscrepancyStatistics<Array> DiscrepancyArrayStatistics;
     }
 
 }

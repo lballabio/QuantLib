@@ -15,22 +15,22 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file hstatistics.hpp
-    \brief historical distribution statistic tool with risk measures
+/*! \file hstatisticss.hpp
+    \brief historical distribution statistics tool with risk measures
 
     \fullpath
-    ql/Math/%hstatistics.hpp
+    ql/Math/%hstatisticss.hpp
 */
 
 // $Id$
 
-#include "ql/math/hstatistic.hpp"
+#include "ql/math/hstatistics.hpp"
 
 namespace QuantLib {
 
     namespace Math {
 
-        double HStatistic::percentile(double percentile) const{
+        double HStatistics::percentile(double percentile) const{
             std::sort(samples_.begin(), samples_.end());
 
             std::vector<std::pair<double,double> >::const_iterator k =
@@ -54,14 +54,14 @@ namespace QuantLib {
            return result;
         }
 
-        double HStatistic::potentialUpside(double percentile) const{
+        double HStatistics::potentialUpside(double percentile) const{
            // to be implemented
            return 0.0;
         }
 
-        double HStatistic::expectedShortfall(double percentile) const{
+        double HStatistics::expectedShortfall(double percentile) const{
             QL_REQUIRE(percentile<1.0 && percentile>=0.9,
-                "HStatistic::expectedShortfall : percentile (" +
+                "HStatistics::expectedShortfall : percentile (" +
                 DoubleFormatter::toString(percentile) +
                 ") out of range 90%-100%");
 
@@ -87,10 +87,10 @@ namespace QuantLib {
         }
 
 
-        double HStatistic::shortfall(double target) const {
+        double HStatistics::shortfall(double target) const {
             Size sampleNumber = samples_.size();
             QL_REQUIRE(sampleWeight_ > 0,
-                "HStatistic::shortfall() : empty sample");
+                "HStatistics::shortfall() : empty sample");
 
             double undertarget = 0.0 ;
             for (Size k=0; k < sampleNumber ; ++k)
@@ -100,9 +100,9 @@ namespace QuantLib {
             return undertarget/sampleWeight_;
         }
 
-        double HStatistic::averageShortfall(double target) const {
+        double HStatistics::averageShortfall(double target) const {
             QL_REQUIRE(sampleWeight_ > 0,
-                "HStatistic::averageShortfall() : empty sample");
+                "HStatistics::averageShortfall() : empty sample");
 
             double weightedUndertarget = 0.0;
             Size sampleNumber = samples_.size();

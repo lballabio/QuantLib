@@ -691,7 +691,7 @@ SOURCE=.\ql\Math\cubicspline.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\ql\Math\discrepancystatistic.hpp
+SOURCE=.\ql\Math\discrepancystatistics.hpp
 # End Source File
 # Begin Source File
 
@@ -711,11 +711,11 @@ SOURCE=.\ql\Math\gammadistribution.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\ql\Math\hstatistic.cpp
+SOURCE=.\ql\Math\hstatistics.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\ql\Math\hstatistic.hpp
+SOURCE=.\ql\Math\hstatistics.hpp
 # End Source File
 # Begin Source File
 
@@ -779,15 +779,15 @@ SOURCE=.\ql\Math\segmentintegral.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\ql\Math\sequencestatistic.hpp
+SOURCE=.\ql\Math\sequencestatistics.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\ql\Math\statistic.cpp
+SOURCE=.\ql\Math\statistics.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\ql\Math\statistic.hpp
+SOURCE=.\ql\Math\statistics.hpp
 # End Source File
 # Begin Source File
 

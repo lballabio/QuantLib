@@ -87,7 +87,7 @@ namespace QuantLib {
             formula here ...
 
             It use Acklam's approximation:
-            by Peter J. Acklam, University of Oslo, Statistics Division.
+            by Peter J. Acklam, University of Oslo, Statisticss Division.
             URL: http://home.online.no/~pjacklam/notes/invnorm/index.html
 
             This class can also be used to generate a gaussian normal

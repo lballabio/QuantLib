@@ -16,17 +16,17 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file statistic.hpp
-    \brief statistic tool with gaussian risk measures
+/*! \file statistics.hpp
+    \brief statistics tool with gaussian risk measures
 
     \fullpath
-    ql/Math/%statistic.hpp
+    ql/Math/%statistics.hpp
 */
 
 // $Id$
 
-#ifndef quantlib_statistic_h
-#define quantlib_statistic_h
+#ifndef quantlib_statistics_h
+#define quantlib_statistics_h
 
 #include <ql/null.hpp>
 #include <ql/dataformatters.hpp>
@@ -37,16 +37,16 @@ namespace QuantLib {
 
     namespace Math {
 
-        //! Statistic tool with gaussian risk measures
-        /*! It can accumulate a set of data and return statistic quantities
+        //! Statistics tool with gaussian risk measures
+        /*! It can accumulate a set of data and return statistics quantities
             (e.g: mean, variance, skewness, kurtosis, error estimation,
             percentile, etc.) plus gaussian assumption risk measures
             (e.g.: value at risk, expected shortfall, etc.)
         */
-        class Statistic {
+        class Statistics {
           public:
-            Statistic();
-            virtual ~Statistic() {};
+            Statistics();
+            virtual ~Statistics() {};
             //! \name Inspectors
             //@{
             //! number of samples collected
@@ -180,15 +180,15 @@ namespace QuantLib {
         // inline definitions
 
         /*! \pre weights must be positive or null */
-        inline void Statistic::add(double value, double weight) {
+        inline void Statistics::add(double value, double weight) {
             QL_REQUIRE(weight>=0.0,
-                "Statistic::add : negative weight (" +
+                "Statistics::add : negative weight (" +
                 DoubleFormatter::toString(weight) + ") not allowed");
 
             Size oldSamples = sampleNumber_;
             sampleNumber_++;
             QL_ENSURE(sampleNumber_ > oldSamples,
-                      "Statistic::add : maximum number of samples reached");
+                      "Statistics::add : maximum number of samples reached");
 
             sampleWeight_ += weight;
 
@@ -205,21 +205,21 @@ namespace QuantLib {
             max_=QL_MAX(value, max_);
         }
 
-        inline Size Statistic::samples() const {
+        inline Size Statistics::samples() const {
             return sampleNumber_;
         }
 
-        inline double Statistic::weightSum() const {
+        inline double Statistics::weightSum() const {
             return sampleWeight_;
         }
 
-        inline double Statistic::mean() const {
+        inline double Statistics::mean() const {
             QL_REQUIRE(sampleWeight_>0.0,
                        "Stat::mean() : sampleWeight_=0, unsufficient");
             return sum_/sampleWeight_;
         }
 
-        inline double Statistic::variance() const {
+        inline double Statistics::variance() const {
             QL_REQUIRE(sampleWeight_>0.0,
                        "Stat::variance() : sampleWeight_=0, unsufficient");
             QL_REQUIRE(sampleNumber_>1,
@@ -232,17 +232,17 @@ namespace QuantLib {
                 v = 0.0;
 
             QL_ENSURE(v >= 0.0,
-                      "Statistic: negative variance (" +
+                      "Statistics: negative variance (" +
                       DoubleFormatter::toString(v,20) + ")");
 
             return v;
         }
 
-        inline double Statistic::standardDeviation() const {
+        inline double Statistics::standardDeviation() const {
             return QL_SQRT(variance());
         }
 
-        inline double Statistic::downsideVariance() const {
+        inline double Statistics::downsideVariance() const {
             QL_REQUIRE(sampleWeight_>0.0,
                        "Stat::variance() : sampleWeight_=0, unsufficient");
             QL_REQUIRE(sampleNumber_>1,
@@ -252,18 +252,18 @@ namespace QuantLib {
                 downsideQuadraticSum_ /sampleWeight_;
         }
 
-        inline double Statistic::downsideDeviation() const {
+        inline double Statistics::downsideDeviation() const {
             return QL_SQRT(downsideVariance());
         }
 
-        inline double Statistic::errorEstimate() const {
+        inline double Statistics::errorEstimate() const {
             double var = variance();
             QL_REQUIRE(samples() > 0,
-                       "Statistic: zero samples are not sufficient");
+                       "Statistics: zero samples are not sufficient");
             return QL_SQRT(var/samples());
         }
 
-        inline double Statistic::skewness() const {
+        inline double Statistics::skewness() const {
             QL_REQUIRE(sampleNumber_>2,
                        "Stat::skewness() : sample number <=2, unsufficient");
             double s = standardDeviation();
@@ -276,7 +276,7 @@ namespace QuantLib {
                 (cubicSum_-3.0*m*quadraticSum_+2.0*m*m*sum_)/sampleWeight_;
         }
 
-        inline double Statistic::kurtosis() const {
+        inline double Statistics::kurtosis() const {
             QL_REQUIRE(sampleNumber_>3,
                        "Stat::kurtosis() : sample number <=3, unsufficient");
 
@@ -296,20 +296,20 @@ namespace QuantLib {
                 ((sampleNumber_-2.0)*(sampleNumber_-3.0));
         }
 
-        inline double Statistic::min() const {
+        inline double Statistics::min() const {
             QL_REQUIRE(sampleNumber_>0, "Stat::min_() : empty sample");
             return min_;
         }
 
-        inline double Statistic::max() const {
+        inline double Statistics::max() const {
             QL_REQUIRE(sampleNumber_>0, "Stat::max_() : empty sample");
             return max_;
         }
 
-        inline double Statistic::gaussianPercentile(double y) const {
+        inline double Statistics::gaussianPercentile(double y) const {
 
             QL_REQUIRE(y<1.0 && y>0.0,
-                "Statistic::percentile : percentile (" +
+                "Statistics::percentile : percentile (" +
                 DoubleFormatter::toString(y) +
                 ") must be in (0%, 100%) extremes excluded");
 
