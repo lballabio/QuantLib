@@ -50,12 +50,15 @@ namespace QuantLib {
         */
         class Himalaya : public MultiFactorPricer {
         public:
-            Himalaya(const Array &underlying,
-                const Array &dividendYield,
-                const Math::Matrix &covariance,
-                Rate riskFreeRate, double strike,
-                const std::vector<Time> &timeDelays,
-                long samples, long seed = 0);
+            Himalaya(const Array& underlying,
+                     const Array& dividendYield,
+                     const Math::Matrix& covariance,
+                     Rate riskFreeRate,
+                     double strike,
+                     const std::vector<Time>& times,
+                     long samples,
+                     bool antitheticVariance,
+                     long seed = 0);
         };
 
     }

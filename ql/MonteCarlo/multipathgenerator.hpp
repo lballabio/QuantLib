@@ -58,83 +58,77 @@ namespace QuantLib {
         class MultiPathGenerator {
           public:
             typedef MultiPath sample_type;
-            MultiPathGenerator(unsigned int timeDimension,
-                               const Math::Matrix &covariance,
-                               const Array &average = Array(),
+            MultiPathGenerator(const Array& drifts,
+                               const Math::Matrix& covariance,
+                               unsigned int timeSteps,
                                long seed=0);
-            MultiPathGenerator(const std::vector<Time> &dates,
-                               const Math::Matrix &covariance,
-                               const Array &average = Array(),
+            MultiPathGenerator(const Array& drifts,
+                               const Math::Matrix& covariance,
+                               const std::vector<Time>& times,
                                long seed=0);
             MultiPath next() const;
-            double weight() const{return weight_;}
+            double weight() const {return weight_;}
         private:
-            unsigned int timeDimension_;
+            Array drifts_;
+            unsigned int timeSteps_;
             std::vector<Time> timeDelays_;
             unsigned int numAssets_;
-            mutable double weight_;
-            Array average_;
             RAG rndArray_;
+            mutable double weight_;
         };
 
         template <class RAG>
         inline MultiPathGenerator<RAG >::MultiPathGenerator(
-            unsigned int timeDimension,
-            const Math::Matrix &covariance, const Array &average, long seed)
-        : timeDimension_(timeDimension), timeDelays_(timeDimension, 1.0),
-        numAssets_(covariance.rows()), average_(covariance.rows(),0.0),
-        rndArray_(0.0, covariance, seed) {
+            const Array& drifts, const Math::Matrix& covariance,
+            unsigned int timeSteps, long seed)
+        : drifts_(covariance.rows(),0.0), timeSteps_(timeSteps),
+          timeDelays_(timeSteps, 1.0), numAssets_(covariance.rows()),
+          rndArray_(0.0, covariance, seed) {
 
-            QL_REQUIRE(timeDimension_ > 0,
-                "Time dimension("+
-                DoubleFormatter::toString(timeDimension_)+
-                ") too small");
+            QL_REQUIRE(timeSteps_ > 0, "Time steps(" +
+                IntegerFormatter::toString(timeSteps_) + ") too small");
 
-            if(average.size() != 0) {
-                QL_REQUIRE(average.size() == average_.size(),
+            if(drifts.size() != 0) {
+                QL_REQUIRE(drifts.size() == covariance.rows(),
                            "MultiPathGenerator covariance and average "
                            "do not have the same size");
-                std::copy(average.begin(),average.end(),average_.begin());
+                std::copy(drifts.begin(),drifts.end(), drifts_.begin());
             }
 
         }
 
         template <class RAG>
         inline MultiPathGenerator<RAG >::MultiPathGenerator(
-            const std::vector<Time> &dates, const Math::Matrix &covariance,
-            const Array &average, long seed)
-        : timeDimension_(dates.size()), timeDelays_(dates.size()),
-          numAssets_(covariance.rows()), average_(covariance.rows(), 0.0),
+            const Array& drifts, const Math::Matrix& covariance,
+            const std::vector<Time>& times, long seed)
+        : drifts_(covariance.rows(), 0.0), timeSteps_(times.size()),
+          timeDelays_(times.size()), numAssets_(covariance.rows()), 
           rndArray_(0.0, covariance, seed) {
 
-            if(average.size() != 0){
-                QL_REQUIRE(average.size() == average_.size(),
+            QL_REQUIRE(timeSteps_ > 0, "Time steps(" +
+                IntegerFormatter::toString(timeSteps_) + ") too small");
+
+            if(drifts.size() != 0){
+                QL_REQUIRE(drifts.size() == covariance.rows(),
                            "MultiPathGenerator covariance and average "
                            "do not have the same size");
-                std::copy(average.begin(),average.end(),average_.begin());
+                std::copy(drifts.begin(),drifts.end(), drifts_.begin());
             }
 
-            QL_REQUIRE(timeDimension_ > 0,
-                "Time dimension("+
-                IntegerFormatter::toString(timeDimension_)+
-                ") too small");
+            QL_REQUIRE(times[0] >= 0, "MultiPathGenerator: first time(" +
+                 DoubleFormatter::toString(times[0]) + ") must be positive");
+            timeDelays_[0] = times[0];
 
-             QL_REQUIRE(dates[0] >= 0,
-                 "MultiPathGenerator: first date(" +
-                 DoubleFormatter::toString(dates[0])+
-                 ") must be positive");
-            timeDelays_[0] = dates[0];
-
-            if(timeDimension_ > 1){
-                for(unsigned int i = 1; i < timeDimension_; i++){
-                    QL_REQUIRE(dates[i] >= dates[i-1],
-                        "MultiPathGenerator: date(" +
-                        IntegerFormatter::toString(i-1)+")="+
-                        DoubleFormatter::toString(dates[i-1])+
-                        " is later than date("+
-                        IntegerFormatter::toString(i)+")="+
-                        DoubleFormatter::toString(dates[i]));
-                    timeDelays_[i] = dates[i] - dates[i-1];
+            if(timeSteps_ > 1){
+                for(unsigned int i = 1; i < timeSteps_; i++){
+                    QL_REQUIRE(times[i] >= times[i-1],
+                        "MultiPathGenerator: time(" +
+                        IntegerFormatter::toString(i-1)+")=" +
+                        DoubleFormatter::toString(times[i-1]) +
+                        " is later than time(" +
+                        IntegerFormatter::toString(i) + ")=" +
+                        DoubleFormatter::toString(times[i]));
+                    timeDelays_[i] = times[i] - times[i-1];
                 }
             }
         }
@@ -144,23 +138,15 @@ namespace QuantLib {
 
             QL_REQUIRE(numAssets_ > 0,
                 "MultiPathGenerator: object declared but not initialized");
-            MultiPath multiPath(numAssets_, timeDimension_);
-//            Array nextArray(numAssets_);
-            Array drift(numAssets_);
-            Array diffusion(numAssets_);
+            MultiPath multiPath(numAssets_, timeSteps_);
+            Array randomExtraction(numAssets_);
             weight_ = 1.0;
-            for (unsigned int i = 0; i < timeDimension_; i++) {
-/*
-                nextArray = average_ * timeDelays_[i]
-                            + rndArray_.next()* QL_SQRT(timeDelays_[i]);
-                weight_ *= rndArray_.weight();
-*/
-                drift = average_ * timeDelays_[i];
-                diffusion = rndArray_.next()* QL_SQRT(timeDelays_[i]);
+            for (unsigned int i = 0; i < timeSteps_; i++) {
+                randomExtraction = rndArray_.next();
                 weight_ *= rndArray_.weight();
                 for (unsigned int j=0; j<numAssets_; j++) {
-                    multiPath[j].drift()[i] = drift[j];
-                    multiPath[j].diffusion()[i] = diffusion[j];
+                    multiPath[j].drift()[i] = drifts_[j] * timeDelays_[i];
+                    multiPath[j].diffusion()[i] = randomExtraction[j] * QL_SQRT(timeDelays_[i]);
                 }
             }
             return multiPath;

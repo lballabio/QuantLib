@@ -47,12 +47,15 @@ namespace QuantLib {
           public:
             typedef Path sample_type;
             // constructors
-            PathGenerator(double drift, double variance,
-                          Time length, unsigned int steps,
+            PathGenerator(double drift,
+                          double variance,
+                          Time length,
+                          unsigned int steps,
                           long seed = 0);
             /*! \warning the initial time is assumed to be zero 
                 and must <b>not</b> be included in the passed vector */
-            PathGenerator(double drift, double variance,
+            PathGenerator(double drift,
+                          double variance,
                           const std::vector<Time>& times,
                           long seed = 0);
             //! \name inspectors

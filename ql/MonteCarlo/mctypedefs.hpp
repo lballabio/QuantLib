@@ -63,13 +63,13 @@ namespace QuantLib {
 
         //! default choice for one-factor Monte Carlo model.
         typedef MonteCarloModel<Math::Statistics,
-                    GaussianPathGenerator, PathPricer> 
-                        OneFactorMonteCarloOption;
+                                GaussianPathGenerator,
+                                PathPricer> OneFactorMonteCarloOption;
 
         //! default choice for multi-factor Monte Carlo model.
         typedef MonteCarloModel<Math::Statistics,
-                    GaussianMultiPathGenerator, MultiPathPricer>
-                        MultiFactorMonteCarloOption;
+                                GaussianMultiPathGenerator,
+                                MultiPathPricer> MultiFactorMonteCarloOption;
 
     }
 

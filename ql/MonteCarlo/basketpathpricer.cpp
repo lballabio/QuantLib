@@ -57,9 +57,9 @@ namespace QuantLib {
                 "BasketPathPricer: the multi-path must contain "
                 + IntegerFormatter::toString(underlying_.size()) +" assets");
 
-            double maxPrice = -QL_MAX_DOUBLE;
             double log_drift, log_diffusion;
-            for(unsigned int j = 0; j < numAssets; j++){
+            double maxPrice = -QL_MAX_DOUBLE;
+            for(unsigned int j = 0; j < numAssets; j++) {
                 log_drift = log_diffusion = 0.0;
                 for(unsigned int i = 0; i < numSteps; i++) {
                     log_drift += multiPath[j].drift()[i];
@@ -67,8 +67,8 @@ namespace QuantLib {
                 }
                 if (antitheticVariance_) {
                     maxPrice = QL_MAX(maxPrice,
-                        (0.5*(underlying_[j]*QL_EXP(log_drift+log_diffusion)+
-                        underlying_[j]*QL_EXP(log_drift-log_diffusion))));
+                        (0.5*underlying_[j]*(QL_EXP(log_drift+log_diffusion)+
+                        QL_EXP(log_drift-log_diffusion))));
                 } else
                     maxPrice = QL_MAX(maxPrice,
                         underlying_[j]*QL_EXP(log_drift+log_diffusion));

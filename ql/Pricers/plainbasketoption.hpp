@@ -44,9 +44,13 @@ namespace QuantLib {
         class PlainBasketOption : public MultiFactorPricer {
           public:
             PlainBasketOption(const Array& underlying, 
-                const Array& dividendYield, const Math::Matrix &covariance,
-                Rate riskFreeRate,  double residualTime,
-                int timesteps, long samples, long seed=0);
+                              const Array& dividendYield,
+                              const Math::Matrix &covariance,
+                              Rate riskFreeRate,
+                              double residualTime,
+                              long samples,
+                              bool antitheticVariance,
+                              long seed=0);
         };
 
     }

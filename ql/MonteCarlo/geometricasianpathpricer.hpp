@@ -35,7 +35,7 @@
 #ifndef quantlib_montecarlo_geometric_asian_pricer_h
 #define quantlib_montecarlo_geometric_asian_pricer_h
 
-#include "ql/MonteCarlo/europeanpathpricer.hpp"
+#include "ql/MonteCarlo/singleassetpathpricer.hpp"
 
 namespace QuantLib {
 

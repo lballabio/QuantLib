@@ -34,7 +34,7 @@
 #ifndef quantlib_montecarlo_average_price_asian_path_pricer_h
 #define quantlib_montecarlo_average_price_asian_path_pricer_h
 
-#include "ql/MonteCarlo/europeanpathpricer.hpp"
+#include "ql/MonteCarlo/singleassetpathpricer.hpp"
 
 namespace QuantLib {
 

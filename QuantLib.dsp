@@ -599,10 +599,6 @@ SOURCE=.\ql\MonteCarlo\montecarlomodel.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\ql\MonteCarlo\multifactormontecarlooption.hpp
-# End Source File
-# Begin Source File
-
 SOURCE=.\ql\MonteCarlo\multifactorpricer.hpp
 # End Source File
 # Begin Source File

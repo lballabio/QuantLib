@@ -49,15 +49,15 @@ namespace QuantLib {
         */
         class PagodaOption : public MultiFactorPricer {
           public:
-            PagodaOption(const Array &portfolio,
+            PagodaOption(const Array& portfolio,
                          double fraction,
                          double roof,
-                         double residualTime,
-                         const Math::Matrix &covariance,
-                         const Array &dividendYield,
+                         const Array& dividendYield,
+                         const Math::Matrix& covariance,
                          Rate riskFreeRate,
-                         int timesteps,
+                         const std::vector<Time>& times,
                          long samples,
+                         bool antithetic,
                          long seed = 0);
         };
 

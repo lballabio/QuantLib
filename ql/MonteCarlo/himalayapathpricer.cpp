@@ -39,15 +39,17 @@ namespace QuantLib {
     namespace MonteCarlo {
 
         HimalayaPathPricer::HimalayaPathPricer(const Array &underlying,
-            double strike, double discount)
-            : underlying_(underlying), strike_(strike), discount_(discount) {
+            double strike, double discount, bool antitheticVariance)
+        : underlying_(underlying), strike_(strike), discount_(discount),
+          antitheticVariance_(antitheticVariance) {
             QL_REQUIRE(discount_ > 0.0,
                 "SinglePathEuropeanPricer: discount must be positive");
             isInitialized_ = true;
         }
 
-        double HimalayaPathPricer::operator()(const MultiPath & path) const {
-            unsigned int numAssets = path.assetNumber(), numSteps = path.pathSize();
+        double HimalayaPathPricer::operator()(const MultiPath& multiPath) const {
+            unsigned int numAssets = multiPath.assetNumber();
+            unsigned int numSteps = multiPath.pathSize();
             QL_REQUIRE(isInitialized_,
                 "HimalayaPathPricer: pricer not initialized");
             QL_REQUIRE(underlying_.size() == numAssets,
@@ -60,21 +62,33 @@ namespace QuantLib {
             Array prices(underlying_);
             double averagePrice = 0;
             std::vector<bool> remainingAssets(numAssets, true);
-
-            for(unsigned int j = 0; j < numSteps; j++) {
-                double bestPrice = 0.0;
+            double bestPrice;
+            unsigned int removeAsset;
+            for(unsigned int i = 0; i < numSteps; i++) {
+                bestPrice = 0.0;
                 // dummy assignement to avoid compiler warning
-                unsigned int removeAsset=0;
-                for(unsigned int i = 0; i < numAssets; i++) {
-                    if(remainingAssets[i]) {
-                        prices[i] *= QL_EXP(path[i][j]);
-                        if(prices[i] >= bestPrice) {
-                            bestPrice = prices[i];
-                            removeAsset = i;
+                removeAsset=0;
+                for(unsigned int j = 0; j < numAssets; j++) {
+                    if(remainingAssets[j]) {
+                        if (antitheticVariance_)
+                            prices[j] *= 0.5*
+                                (QL_EXP(multiPath[j].drift()[i]+
+                                        multiPath[j].diffusion()[i])+
+                                 QL_EXP(multiPath[j].drift()[i]-
+                                        multiPath[j].diffusion()[i]));
+                        else
+                            prices[j] *= QL_EXP(multiPath[j].drift()[i]+
+                                multiPath[j].diffusion()[i]);
+                        if(prices[j] >= bestPrice) {
+                            bestPrice = prices[j];
+                            removeAsset = j;
                         }
                     }
                 }
                 remainingAssets[removeAsset] = false;
+                // shouldn't be
+                // averagePrice += MAX(bestPrice-1.0, 0.0);
+                // ????
                 averagePrice += bestPrice;
             }
             averagePrice /= QL_MIN(numSteps, numAssets);

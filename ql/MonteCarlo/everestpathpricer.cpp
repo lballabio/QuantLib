@@ -39,22 +39,36 @@ namespace QuantLib {
 
     namespace MonteCarlo {
 
-        EverestPathPricer::EverestPathPricer(double discount):
-            discount_(discount) {
+        EverestPathPricer::EverestPathPricer(double discount,
+            bool antitheticVariance)
+        : discount_(discount), antitheticVariance_(antitheticVariance) {
             QL_REQUIRE(discount_ > 0.0,
                 "EverestPathPricer: discount must be positive");
             isInitialized_ = true;
         }
 
 
-        double EverestPathPricer::operator()(const MultiPath & path) const {
-            int numAssets = path.assetNumber();
+        double EverestPathPricer::operator()(const MultiPath& multiPath) const {
+            unsigned int numAssets = multiPath.assetNumber();
+            unsigned int numSteps = multiPath.pathSize();
             QL_REQUIRE(isInitialized_,
                 "EverestPathPricer: pricer not initialized");
 
+            double log_drift, log_diffusion;
             double minPrice = QL_MAX_DOUBLE;
-            for(int j = 0; j < numAssets; j++)
-                minPrice = QL_MIN(minPrice, QL_EXP(path[j][0]));
+            for(int j = 0; j < numAssets; j++) {
+                log_drift = log_diffusion = 0.0;
+                for(unsigned int i = 0; i < numSteps; i++) {
+                    log_drift += multiPath[j].drift()[i];
+                    log_diffusion += multiPath[j].diffusion()[i];
+                }
+                if (antitheticVariance_) {
+                    minPrice = QL_MIN(minPrice,
+                        (0.5*(QL_EXP(log_drift+log_diffusion)+
+                        QL_EXP(log_drift-log_diffusion))));
+                } else
+                    minPrice = QL_MIN(minPrice, QL_EXP(log_drift+log_diffusion));
+            }
 
             return discount_ * minPrice;
         }

@@ -45,8 +45,8 @@ namespace QuantLib {
 
         PlainBasketOption::PlainBasketOption(const Array &underlying,
             const Array &dividendYield, const Math::Matrix &covariance,
-            Rate riskFreeRate,  double residualTime, int timesteps,
-            long samples, long seed)
+            Rate riskFreeRate,  double residualTime,
+            long samples, bool antitheticVariance, long seed)
         : MultiFactorPricer(samples, seed){
             QL_REQUIRE(covariance.rows() == covariance.columns(),
                 "PlainBasketOption: covariance matrix not square");
@@ -58,23 +58,19 @@ namespace QuantLib {
                 " that of covariance matrix");
             QL_REQUIRE(residualTime > 0,
                 "PlainBasketOption: residual time must be positive");
-            QL_REQUIRE(timesteps > 0,
-                "PlainBasketOption: time steps must be positive");
 
             //! Initialize the path generator
-            double deltaT = residualTime/timesteps;
-            Array mu(deltaT * (riskFreeRate - dividendYield
-                                    - 0.5 * covariance.diagonal()));
+            Array mu(riskFreeRate - dividendYield
+                - 0.5 * covariance.diagonal());
 
             Handle<GaussianMultiPathGenerator> pathGenerator(
-                new GaussianMultiPathGenerator(timesteps,
-                                               covariance*deltaT,
-                                               mu,
-                                               seed));
+                new GaussianMultiPathGenerator(mu, covariance,
+                std::vector<Time>(1, residualTime), seed));
 
             //! Initialize the pricer on the path pricer
             Handle<MultiPathPricer> pathPricer(new BasketPathPricer(
-                underlying, QL_EXP(-riskFreeRate*residualTime)));
+                underlying, QL_EXP(-riskFreeRate*residualTime),
+                antitheticVariance));
 
              //! Initialize the multi-factor Monte Carlo
             montecarloPricer_ = Handle<MultiFactorMonteCarloOption>(

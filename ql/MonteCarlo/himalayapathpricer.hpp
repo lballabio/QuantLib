@@ -53,14 +53,17 @@ namespace QuantLib {
         */
         class HimalayaPathPricer : public MultiPathPricer {
           public:
-            HimalayaPathPricer():MultiPathPricer(){}
+//            HimalayaPathPricer() {}
             HimalayaPathPricer(const Array &underlying,
-                double strike, double discount);
-            double operator()(const MultiPath &path) const;
+                               double strike,
+                               double discount,
+                               bool antitheticVariance);
+            double operator()(const MultiPath& multiPath) const;
           protected:
             Array underlying_;
             double strike_;
             double discount_;
+            bool antitheticVariance_;
         };
 
     }

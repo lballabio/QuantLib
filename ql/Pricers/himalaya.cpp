@@ -44,10 +44,11 @@ namespace QuantLib {
         using MonteCarlo::HimalayaPathPricer;
         using MonteCarlo::MultiFactorMonteCarloOption;
 
-        Himalaya::Himalaya(const Array &underlying, const Array
-            &dividendYield, const Math::Matrix &covariance,
+        Himalaya::Himalaya(const Array& underlying,
+            const Array& dividendYield, const Math::Matrix &covariance,
             Rate riskFreeRate, double strike,
-            const std::vector<Time> &timeDelays, long samples, long seed)
+            const std::vector<Time>& times,
+            long samples, bool antitheticVariance, long seed)
         : MultiFactorPricer(samples, seed){
             unsigned int  n = covariance.rows();
             QL_REQUIRE(covariance.columns() == n,
@@ -58,7 +59,7 @@ namespace QuantLib {
             QL_REQUIRE(dividendYield.size() == n,
                 "Himalaya: dividendYield size does not match"
                 " that of covariance matrix");
-            QL_REQUIRE(timeDelays.size() >= 1,
+            QL_REQUIRE(times.size() >= 1,
                 "Himalaya: you must have at least one time-step");
 
             //! Initialize the path generator
@@ -66,15 +67,16 @@ namespace QuantLib {
                                     - 0.5 * covariance.diagonal());
 
             Handle<GaussianMultiPathGenerator> pathGenerator(
-                new GaussianMultiPathGenerator(timeDelays,
+                new GaussianMultiPathGenerator(mu,
                                                covariance,
-                                               mu,
+                                               times,
                                                seed));
-            double residualTime = timeDelays[timeDelays.size()-1];
+            double residualTime = times[times.size()-1];
 
             //! Initialize the pricer on the path pricer
             Handle<MultiPathPricer> pathPricer(new HimalayaPathPricer(
-                underlying, strike, QL_EXP(-riskFreeRate*residualTime)));
+                underlying, strike, QL_EXP(-riskFreeRate*residualTime),
+                antitheticVariance));
 
              //! Initialize the multi-factor Monte Carlo
             montecarloPricer_ = Handle<MultiFactorMonteCarloOption>(

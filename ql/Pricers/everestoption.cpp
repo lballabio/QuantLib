@@ -45,11 +45,10 @@ namespace QuantLib {
         using MonteCarlo::MultiFactorMonteCarloOption;
 
         EverestOption::EverestOption(const Array &dividendYield,
-                                     const Math::Matrix &covariance,
-                                     Rate riskFreeRate,
-                                     Time residualTime,
-                                     long samples, long seed)
-        : MultiFactorPricer(samples, seed){
+            const Math::Matrix &covariance, Rate riskFreeRate,
+            Time residualTime, long samples, bool antitheticVariance,
+            long seed)
+        : MultiFactorPricer(samples, seed) {
             unsigned int  n = covariance.rows();
             QL_REQUIRE(covariance.columns() == n,
                 "EverestOption: covariance matrix not square");
@@ -63,17 +62,14 @@ namespace QuantLib {
             Array mu(riskFreeRate - dividendYield
                                     - 0.5 * covariance.diagonal());
 
-            std::vector<Time> timeDisp(1);
-            timeDisp[0] = residualTime;
             Handle<GaussianMultiPathGenerator> pathGenerator(
-                    new GaussianMultiPathGenerator(timeDisp,
-                                                   covariance,
-                                                   mu,
-                                                   seed));
+                new GaussianMultiPathGenerator(mu, covariance,
+                std::vector<Time>(1, residualTime), seed));
 
             //! Initialize the pricer on the path pricer
             Handle<MultiPathPricer> pathPricer(
-                new EverestPathPricer(QL_EXP(-riskFreeRate*residualTime)));
+                new EverestPathPricer(QL_EXP(-riskFreeRate*residualTime),
+                antitheticVariance));
 
              //! Initialize the multi-factor Monte Carlo
             montecarloPricer_ = Handle<MultiFactorMonteCarloOption>(

@@ -48,9 +48,12 @@ namespace QuantLib {
         class EverestOption : public MultiFactorPricer {
           public:
             EverestOption(const Array &dividendYield,
-                const Math::Matrix &covariance,
-                Rate riskFreeRate, Time residualTime,
-                long samples, long seed = 0);
+                          const Math::Matrix &covariance,
+                          Rate riskFreeRate,
+                          Time residualTime,
+                          long samples,
+                          bool antitheticVariance,
+                          long seed = 0);
         };
 
     }

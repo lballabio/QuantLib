@@ -44,12 +44,13 @@ namespace QuantLib {
         using MonteCarlo::PagodaPathPricer;
         using MonteCarlo::MultiFactorMonteCarloOption;
 
-        PagodaOption::PagodaOption(
-            const Array &portfolio,  double fraction,
-            double roof, double residualTime,
-            const Math::Matrix &covariance,
-            const Array &dividendYield, Rate riskFreeRate,
-            int timesteps, long samples, long seed)
+        PagodaOption::PagodaOption(const Array& portfolio,
+            double fraction, double roof,
+            const Array& dividendYield,
+            const Math::Matrix& covariance,
+            Rate riskFreeRate,
+            const std::vector<Time>& times,
+            long samples, bool antithetic, long seed)
         : MultiFactorPricer(samples, seed){
             QL_REQUIRE(covariance.rows() == covariance.columns(),
                 "PagodaOption: covariance matrix not square");
@@ -59,30 +60,29 @@ namespace QuantLib {
             QL_REQUIRE(covariance.rows() == dividendYield.size(),
                 "PagodaOption: dividendYield size does not match"
                 " that of covariance matrix");
-            QL_REQUIRE(residualTime > 0,
-                "PagodaOption: residual time must be positive");
             QL_REQUIRE(fraction > 0,
                 "PagodaOption: option fraction must be positive");
             QL_REQUIRE(roof > 0,
                 "PagodaOption: roof must be positive");
-            QL_REQUIRE(timesteps > 0,
-                "PagodaOption: time steps must be positive");
+            QL_REQUIRE(times.size() >= 1,
+                "PagodaOption: you must have at least one time-step");
 
             //! Initialize the path generator
-            double deltaT = residualTime/timesteps;
-            Array mu(deltaT * (riskFreeRate - dividendYield
-                                    - 0.5 * covariance.diagonal()));
+            Array mu(riskFreeRate - dividendYield
+                            - 0.5 * covariance.diagonal());
 
             Handle<GaussianMultiPathGenerator> pathGenerator(
-                new GaussianMultiPathGenerator(timesteps,
-                                               covariance*deltaT,
-                                               mu,
+                new GaussianMultiPathGenerator(mu,
+                                               covariance,
+                                               times,
                                                seed));
+            double residualTime = times[times.size()-1];
 
             //! Initialize the pricer on the path pricer
             Handle<MultiPathPricer> pathPricer(
                 new PagodaPathPricer(portfolio, roof,
-                        fraction * QL_EXP(-riskFreeRate*residualTime)));
+                        fraction * QL_EXP(-riskFreeRate*residualTime),
+                        antithetic));
 
              //! Initialize the multi-factor Monte Carlo
             montecarloPricer_ = Handle<MultiFactorMonteCarloOption>(
