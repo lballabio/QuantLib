@@ -1,4 +1,4 @@
-QUANTLIB LICENSE 1.0
+The BSD License
 
 Copyright (c) 2000, 2001, 2002 Nicolas Di Césaré
 Copyright (c) 2000, 2001, 2002 Sadruddin Rejeb
