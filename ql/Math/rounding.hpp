@@ -26,96 +26,58 @@
 
 namespace QuantLib {
 
-    //! Type of rounding
-
-    enum RoundingType {
-	ROUND_UP,
-	ROUND_DOWN,
-	ROUND_FLOOR,
-	ROUND_CEILING,
-	DONT_ROUND
-    };
-
-    //! Basic rounding.
-    /*! Round up means first decimal place past precision will be rounded up
-      if greater than digit.
-      Round down means all decimal places past precision will be truncated.
-    */
-
+    //! basic rounding class
     class Rounding {
       public:
-	  Rounding() {}
-	  Rounding(Integer precision,
-               RoundingType type = ROUND_UP,
-               Integer digit = 5)
-	  : precision_(precision),type_(type),digit_(digit) {}
-	  Decimal round(const Decimal value) const;
-    private:
-	  Integer precision_;
-	  RoundingType type_;
-	  Integer digit_;
+        //! rounding methods
+        /*! The rounding methods follow the OMG specification available 
+            at ftp://ftp.omg.org/pub/docs/formal/00-06-29.pdf
+
+            \warning the names of the Floor and Ceiling methods might 
+                     be misleading
+        */
+        enum Type {
+            None,    /*!< do not round: return the number unmodified */
+            Up,      /*!< the first decimal place past the precision will be 
+                          rounded up if greater than the rounding digit */
+            Down,    /*!< all decimal places past the precision will be 
+                          truncated */
+            Floor,   /*!< positive numbers will be rounded up and negative
+                          numbers will be rounded down using the round up
+                          and round down rules */
+            Ceiling  /*!< positive numbers will be rounded down and negative
+                          numbers will be rounded up using the round up
+                          and round down rules */
+        };
+        Rounding(Integer precision,
+                 Type type = Up,
+                 Integer digit = 5)
+        : precision_(precision), type_(type), digit_(digit) {}
+        Decimal round(const Decimal value) const;
+      private:
+        Integer precision_;
+        Type type_;
+        Integer digit_;
     };
 
-    //! Ceiling truncation.
-    /*! Positive numbers will be rounded down, negative numbers will be
-      rounded up.
-    */
 
+    //! Ceiling truncation.
     class CeilingTruncation : public Rounding {
       public:
-    	CeilingTruncation(Integer precision,
-	                      Integer digit = 5)
-	    : Rounding(precision,ROUND_CEILING,digit) {}
+        CeilingTruncation(Integer precision,
+                          Integer digit = 5)
+        : Rounding(precision,Ceiling,digit) {}
     };
 
     //! Floor truncation.
-    /*! Positive numbers will be rounded up, negative numbers will be
-      rounded down.
-    */
-
     class FloorTruncation : public Rounding {
       public:
-	    FloorTruncation(Integer precision,
-	                    Integer digit = 5)
-        : Rounding(precision,ROUND_FLOOR,digit) {}
+        FloorTruncation(Integer precision,
+                        Integer digit = 5)
+        : Rounding(precision,Floor,digit) {}
     };
 
-    inline Decimal Rounding::round(const Decimal value) const {
-    	if (type_ == DONT_ROUND) return value;
-    	Decimal mult = pow(10.0,precision_);
-    	bool neg = (value < 0.0);
-    	Decimal lvalue = QL_FABS(value)*mult;
-    	Decimal integral = 0.0;
-    	Decimal modVal = QL_MODF(lvalue,&integral);
-    	switch (type_) {
-          case ROUND_UP:
-    		lvalue -= modVal;
-    		if (modVal >= (digit_/10.0))
-    		    lvalue += 1.0;
-    		break;
-          case ROUND_DOWN:
-    		lvalue -= modVal;
-    		break;
-          case ROUND_FLOOR:
-    		lvalue -= modVal;
-    		if (!neg) {
-    		    if (modVal >= (digit_/10.0))
-    			lvalue += 1.0;
-    		}
-    		break;
-          case ROUND_CEILING:
-    		lvalue -= modVal;
-    		if (neg) {
-    		    if (modVal >= (digit_/10.0))
-    			lvalue += 1.0;
-    		}
-    		break;
-          default:
-    		break;
-    	}
-    	return (neg) ? (lvalue/mult)*-1.0 : lvalue/mult;
-    }
-
 }
+
 
 #endif

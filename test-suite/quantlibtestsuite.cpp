@@ -69,6 +69,7 @@
 #include "quantooption.hpp"
 #include "quotes.hpp"
 #include "riskstats.hpp"
+#include "rounding.hpp"
 #include "solvers.hpp"
 #include "stats.hpp"
 #include "swap.hpp"
@@ -118,6 +119,7 @@ test_suite* init_unit_test_suite(int, char* []) {
     test->add(QuantoOptionTest::suite());
     test->add(QuoteTest::suite());
     test->add(RiskStatisticsTest::suite());
+    test->add(RoundingTest::suite());
     test->add(Solver1DTest::suite());
     test->add(StatisticsTest::suite());
     test->add(SwapTest::suite());

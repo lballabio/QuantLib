@@ -65,6 +65,7 @@ libMath_la_SOURCES = \
 	normaldistribution.cpp \
 	primenumbers.cpp \
 	pseudosqrt.cpp \
+	rounding.cpp \
 	svd.cpp \
 	symmetricschurdecomposition.cpp
 
