@@ -119,10 +119,10 @@ LINK32_OBJS= \
 
 !ELSEIF  "$(CFG)" == "Parities - Win32 OnTheEdgeRelease"
 
-OUTDIR=.\Parities___Win32_OnTheEdgeRelease
-INTDIR=.\Parities___Win32_OnTheEdgeRelease
+OUTDIR=.\OnTheEdgeRelease
+INTDIR=.\OnTheEdgeRelease
 # Begin Custom Macros
-OutDir=.\Parities___Win32_OnTheEdgeRelease
+OutDir=.\OnTheEdgeRelease
 # End Custom Macros
 
 ALL : "$(OUTDIR)\Parities.exe" "$(OUTDIR)\Parities.bsc"
@@ -161,10 +161,10 @@ LINK32_OBJS= \
 
 !ELSEIF  "$(CFG)" == "Parities - Win32 OnTheEdgeDebug"
 
-OUTDIR=.\Parities___Win32_OnTheEdgeDebug
-INTDIR=.\Parities___Win32_OnTheEdgeDebug
+OUTDIR=.\OnTheEdgeDebug
+INTDIR=.\OnTheEdgeDebug
 # Begin Custom Macros
-OutDir=.\Parities___Win32_OnTheEdgeDebug
+OutDir=.\OnTheEdgeDebug
 # End Custom Macros
 
 ALL : "$(OUTDIR)\Parities.exe" "$(OUTDIR)\Parities.bsc"

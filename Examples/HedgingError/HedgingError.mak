@@ -119,10 +119,10 @@ LINK32_OBJS= \
 
 !ELSEIF  "$(CFG)" == "HedgingError - Win32 OnTheEdgeRelease"
 
-OUTDIR=.\HedgingError___Win32_OnTheEdgeRelease
-INTDIR=.\HedgingError___Win32_OnTheEdgeRelease
+OUTDIR=.\OnTheEdgeRelease
+INTDIR=.\OnTheEdgeRelease
 # Begin Custom Macros
-OutDir=.\HedgingError___Win32_OnTheEdgeRelease
+OutDir=.\OnTheEdgeRelease
 # End Custom Macros
 
 ALL : "$(OUTDIR)\HedgingError.exe" "$(OUTDIR)\HedgingError.bsc"
@@ -161,10 +161,10 @@ LINK32_OBJS= \
 
 !ELSEIF  "$(CFG)" == "HedgingError - Win32 OnTheEdgeDebug"
 
-OUTDIR=.\HedgingError___Win32_OnTheEdgeDebug
-INTDIR=.\HedgingError___Win32_OnTheEdgeDebug
+OUTDIR=.\OnTheEdgeDebug
+INTDIR=.\OnTheEdgeDebug
 # Begin Custom Macros
-OutDir=.\HedgingError___Win32_OnTheEdgeDebug
+OutDir=.\OnTheEdgeDebug
 # End Custom Macros
 
 ALL : "$(OUTDIR)\HedgingError.exe" "$(OUTDIR)\HedgingError.bsc"

@@ -90,8 +90,8 @@ LINK32=link.exe
 # PROP BASE Target_Dir ""
 # PROP Use_MFC 0
 # PROP Use_Debug_Libraries 0
-# PROP Output_Dir "Parities___Win32_OnTheEdgeRelease"
-# PROP Intermediate_Dir "Parities___Win32_OnTheEdgeRelease"
+# PROP Output_Dir "OnTheEdgeRelease"
+# PROP Intermediate_Dir "OnTheEdgeRelease"
 # PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /MD /W3 /GR /GX /O2 /I "..\..\include" /D "WIN32" /D "NDEBUG" /D "_CONSOLE" /D "_MBCS" /FR /YX"quantlib.hpp" /FD /c
@@ -117,8 +117,8 @@ LINK32=link.exe
 # PROP BASE Target_Dir ""
 # PROP Use_MFC 0
 # PROP Use_Debug_Libraries 1
-# PROP Output_Dir "Parities___Win32_OnTheEdgeDebug"
-# PROP Intermediate_Dir "Parities___Win32_OnTheEdgeDebug"
+# PROP Output_Dir "OnTheEdgeDebug"
+# PROP Intermediate_Dir "OnTheEdgeDebug"
 # PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /MDd /W3 /Gm /GR /GX /ZI /Od /I "..\..\include" /D "WIN32" /D "_DEBUG" /D "_CONSOLE" /D "_MBCS" /D "QL_DEBUG" /FR /YX"quantlib.hpp" /FD /GZ /c
