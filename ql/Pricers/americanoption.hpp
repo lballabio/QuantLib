@@ -42,6 +42,7 @@ namespace QuantLib {
     namespace Pricers {
 
         //! American option
+        //! \todo make american call with no dividens = european
         class AmericanOption : public StepConditionOption {
           public:
             // constructor

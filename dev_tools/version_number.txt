@@ -5,6 +5,7 @@ the version number is in:
     QuantLib/Docs/quantlib.doxy,
     QuantLib/ql/qldefines.hpp,
     QuantLib-Python/setup.py
+    QuantLib-Ruby/makedist.rb
 
 Also update any script for automatic building with hard coded version number
 (e.g. release-job.sh, release-job.bat, night-job.bat)

@@ -26,11 +26,10 @@
     email math-finance newsletter
     email python-finance
     email quantitative finance
-update freshmeat
-email comp-finance
+    update freshmeat
+    email finance-and-physics
 email AllAboutDerivatives
-email finance-and-physics
 email ffts
+    merge into trunk any branch change
 wilmott
 press release
-merge into trunk any branch change
