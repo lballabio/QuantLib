@@ -15,8 +15,6 @@ BCC_INCLUDE    = $(MAKEDIR)\..\include
 # Object files
 OBJS = \
     analyticalcapfloor.obj$(_D) \
-    barrieroptionpricer.obj$(_D) \
-    binaryoptionpricer.obj$(_D) \
     blackcapfloor.obj$(_D) \
     blackswaption.obj$(_D) \
     capfloorpricer.obj$(_D) \
