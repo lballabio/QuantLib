@@ -1,11 +1,14 @@
 
 AM_CPPFLAGS = -I${top_srcdir} -I${top_builddir}
 
+if AUTO_EXAMPLES
+bin_PROGRAMS = BermudanSwaption
+else
 EXTRA_PROGRAMS = BermudanSwaption
+CLEANFILES = BermudanSwaption
+endif
 BermudanSwaption_SOURCES = BermudanSwaption.cpp
 BermudanSwaption_LDADD = ../../ql/libQuantLib.la
-
-CLEANFILES = BermudanSwaption
 
 EXTRA_DIST = \
     BermudanSwaption.dsp \

@@ -25,7 +25,6 @@
 
 #include <ql/date.hpp>
 #include <ql/currency.hpp>
-#include <ql/array.hpp>
 #include <ql/Math/matrix.hpp>
 
 namespace QuantLib {

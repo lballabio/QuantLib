@@ -30,7 +30,10 @@ all:: tex-files
 html: html-offline
 
 html-offline::
-    $(DOXYGEN) quantlib.doxy
+    $(SED) -e "s|ql_basepath|$(QL_DIR)\\\\|" \
+           quantlib.doxy > quantlib.doxy.temp
+    $(DOXYGEN) quantlib.doxy.temp
+    del /Q quantlib.doxy.temp
     copy images\*.jpg html
     copy images\*.png html
     copy images\*.pdf latex
@@ -38,6 +41,7 @@ html-offline::
 
 html-online::
     $(SED) -e "s/quantlibfooter.html/quantlibfooteronline.html/" \
+           -e "s|ql_basepath|$(QL_DIR)\\\\|" \
            quantlib.doxy > quantlib.doxy.temp
     $(DOXYGEN) quantlib.doxy.temp
     del /Q quantlib.doxy.temp
@@ -97,6 +101,12 @@ tex-files:: html
            -e "s/ple Documentation}/ple Documentation}\\\\label{exchap}/" \
            oldrefman.tex > refman.tex
     del oldrefman.tex
+	ren deprecated.tex olddeprecated.tex
+	$(SED) -e "s/section/chapter/" olddeprecated.tex > deprecated.tex
+	del olddeprecated.tex
+	ren unstable.tex oldunstable.tex
+	$(SED) -e "s/section/chapter/" oldunstable.tex > unstable.tex
+	rm -f oldunstable.tex
     cd ..
 
 # Clean up

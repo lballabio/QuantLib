@@ -20,7 +20,6 @@
 */
 
 #include <ql/Pricers/fdbsmoption.hpp>
-#include <ql/FiniteDifferences/boundarycondition.hpp>
 #include <ql/FiniteDifferences/valueatcenter.hpp>
 
 namespace QuantLib {

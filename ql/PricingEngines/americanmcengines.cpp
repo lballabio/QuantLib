@@ -15,12 +15,19 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
+/*! \file americanmcengines.cpp
+    \brief Least-square Monte Carlo engines
+*/
+
 #include <ql/PricingEngines/americanmcengines.hpp>
 
 namespace QuantLib {
 
     namespace PricingEngines {
       
+        using Math::Matrix;
+        using Math::SVD;
+
         // calculate
         void AmericanMCVanillaEngine::calculate() const {
             // get the parameters
@@ -30,7 +37,7 @@ namespace QuantLib {
             double          strike  = arg_payoff->strike();
             Time            T       = arguments_.maturity;
 //            double          vol     = arguments_.volTS->blackVol(T, s0);
-            Rate            r       = arguments_.riskFreeTS->zeroYield(T);            
+            Rate            r       = arguments_.riskFreeTS->zeroYield(T);
 //            Rate            q       = arguments_.dividendTS->zeroYield(T);
             //unsigned long   seed    = 1000L;
             PlainVanillaPayoff payoff(type, strike);
@@ -52,11 +59,9 @@ namespace QuantLib {
             payoff  = PlainPayoff(type, strike);
 */
 
-            // Number of exercise opportunities for calculation
-            Size timeSteps = 3;
             Size timeStep;
     
-            // simulate the paths          
+            // simulate the paths
             Handle<DiffusionProcess> bs(new
                 BlackScholesProcess(arguments_.riskFreeTS, 
                                     arguments_.dividendTS,
@@ -64,30 +69,31 @@ namespace QuantLib {
                                     s0));
 
             // Exercise dates
-            TimeGrid* grid = new TimeGrid (T, timeSteps);            
+            TimeGrid grid(T, timeSteps_);
 
             RandomNumbers::GaussianRandomSequenceGenerator gen = 
-                MonteCarlo::PseudoRandom::make_sequence_generator(grid->size()-1,seed_);
+                MonteCarlo::PseudoRandom::make_sequence_generator(
+                    grid.size()-1,seed_);
 
             Handle<MonteCarlo::GaussianPathGenerator> pathGenerator =
                 Handle<MonteCarlo::GaussianPathGenerator> (
-                    new MonteCarlo::GaussianPathGenerator(bs, *grid, gen));
+                    new MonteCarlo::GaussianPathGenerator(bs, grid, gen));
 
             MonteCarlo::GaussianPathGenerator::sample_type 
                 pathHolder = pathGenerator->next();
             
             MonteCarlo::Path p = pathHolder.value;
-            vector<MonteCarlo::Path> paths (N,p);
+            std::vector<MonteCarlo::Path> paths (N,p);
             for (i=0; i<N; i++) {   
                 pathHolder = pathGenerator->next();
                 paths[i] = pathHolder.value;
             }
             
             // get the asset values into an easy container
-            vector<double> asset = getAssetSequence(s0, paths[0]); 
-            //vector< vector<double> > assetPaths (N, asset);
+            std::vector<double> asset = getAssetSequence(s0, paths[0]); 
+            //std::vector<std::vector<double> > assetPaths (N, asset);
  
-            //std::cout << " time steps " << timeSteps << "\n";
+            //std::cout << " time steps " << timeSteps_ << "\n";
             //std::cout << " asset length " << asset.size() << "\n";
             
             AssetGrid assetPaths (N, asset);
@@ -98,18 +104,18 @@ namespace QuantLib {
 
             // change the generated asset prices for the Longstaff-Schwartz
             // example asset prices
-//            AssetGrid assetPaths (N, vector<double>(timeSteps));
-//            getLSAssetsExample(assetPaths, timeSteps);
+//            AssetGrid assetPaths (N, std::vector<double>(timeSteps_));
+//            getLSAssetsExample(assetPaths, timeSteps_);
             
 
 
             // Payoff matrix
             // can an existing lattice class be used here?
             // initialise with payoff
-            Size payoffGridSize = timeSteps;
-            PayoffGrid payoffMatrix (N, vector <double>(payoffGridSize)); 
+            Size payoffGridSize = timeSteps_;
+            PayoffGrid payoffMatrix (N, std::vector<double>(payoffGridSize)); 
             for (i=0; i<N; i++) {
-                vector<double> cashflows = payoffMatrix.at(i);
+                std::vector<double> cashflows = payoffMatrix.at(i);
                 for (j=0; j<cashflows.size()-1; j++) {
                     cashflows.at(j) = 0.0;
                 }
@@ -118,7 +124,8 @@ namespace QuantLib {
                 //std::cout << " asset has value " << temp1 << "\n";            
                 //std::cout << " payoff is " << ((strike - temp1) > 0 ? (strike - temp1) : 0) << "\n";  
                 //std::cout << " Calculated to be " << payoff((assetPaths[i])[2]) << "\n";            
-                payoffMatrix[i][cashflows.size()-1] = payoff(assetPaths[i][cashflows.size()-1]);
+                payoffMatrix[i][cashflows.size()-1] = 
+                    payoff(assetPaths[i][cashflows.size()-1]);
                 //std::cout << " Set slot " << cashflows.size()-1 << "\n";            
                 //double temp = cashflows[cashflows.size()-1];
 /*
@@ -138,7 +145,7 @@ namespace QuantLib {
 
             // LOOP
             int timeLoop;
-            for (timeLoop = timeSteps-2; timeLoop>=0; timeLoop--) {
+            for (timeLoop = timeSteps_-2; timeLoop>=0; timeLoop--) {
                 timeStep = timeLoop;
                 
 
@@ -149,8 +156,8 @@ namespace QuantLib {
                 //    type, s0, strike, arguments_.riskFreeTS);
 
                 // select in the money paths
-                vector<int> itmPaths;
-                vector<double> y(N);
+                std::vector<int> itmPaths;
+                std::vector<double> y(N);
                 for (i=0; i<N; i++) {                       
                     double s = assetPaths[i][timeStep];
                     double temp  = payoff(s);   
@@ -162,7 +169,7 @@ namespace QuantLib {
 
                 if (itmPaths.size() > 0) {
                     // get the immediate exercise value                
-                    vector<double> y_exercise(itmPaths.size());                
+                    std::vector<double> y_exercise(itmPaths.size());
                     for (i=0; i<itmPaths.size(); i++) {
                         y_exercise[i] = y[itmPaths[i]];
                     }
@@ -173,7 +180,8 @@ namespace QuantLib {
                     for (i=0; i<itmPaths.size(); i++) {   
                        
                         // find any payoffs
-                        vector<double> cashflows = payoffMatrix.at(itmPaths[i]);
+                        std::vector<double> cashflows = 
+                            payoffMatrix.at(itmPaths[i]);
 /*
                         std::cout << " cashflow for path " << itmPaths[i] << "[ ";
                         for (j=0; j<cashflows.size(); j++) {
@@ -183,7 +191,7 @@ namespace QuantLib {
 */
                         double cashflow = 0.0;
                         int cashflowTime = -1;                    
-                        for (j = timeStep; j<timeSteps; j++) {
+                        for (j = timeStep; j<timeSteps_; j++) {
                             if (cashflows[j] > 0.0) {
                                 cashflow = cashflows[j];
                                 cashflowTime = j;          
@@ -194,8 +202,8 @@ namespace QuantLib {
                         if (cashflowTime >= 0) {
                             // discount 
                             // +1 because the grid includes the start time
-                            Time from = (*grid)[timeStep+1];
-                            Time to = (*grid)[cashflowTime+1];
+                            Time from = grid[timeStep+1];
+                            Time to = grid[cashflowTime+1];
                             //Rate forward = arguments_.riskFreeTS_->forward(from, to);
                             
                             // store result in y vector
@@ -219,7 +227,8 @@ namespace QuantLib {
           //          std::cout << "A = ["; 
                     for (i=0; i<itmPaths.size(); i++) {
                         //for (j=0; j<numBasisFunctions; j++) {
-                            double assetPrice = (assetPaths[itmPaths[i]])[timeStep];
+                            double assetPrice = 
+                                (assetPaths[itmPaths[i]])[timeStep];
                             A[i][0] = 1;
                             A[i][1] = assetPrice;
                             A[i][2] = assetPrice*assetPrice;
@@ -262,7 +271,8 @@ namespace QuantLib {
                     // calculate continuation value
                     Array y_continue = A*b;  
 
-                    /*std::cout << " Continuation value " << y_continue << "\n";
+                    /*
+                    std::cout << " Continuation value " << y_continue << "\n";
                     std::cout << " Exercise value [";
                     for (i=0; i < y_exercise.size(); i++) {
                         std::cout << y_exercise[i] << " ";
@@ -273,11 +283,12 @@ namespace QuantLib {
                     // modify stopping rule
                     // ensure that only one cashflow on a path is non zero
                     for (i=0; i<itmPaths.size(); i++) {
-                        if (y_exercise[i] > y_continue[i]) {                                                    
+                        if (y_exercise[i] > y_continue[i]) {
                             for (j=0; j<payoffMatrix[i].size(); j++) {
                                 payoffMatrix[itmPaths[i]][j] = 0.0;
                             }
-                            payoffMatrix[itmPaths[i]][timeStep] = y_exercise[i];
+                            payoffMatrix[itmPaths[i]][timeStep] = 
+                                y_exercise[i];
                         }
                     }
             
@@ -304,7 +315,7 @@ namespace QuantLib {
 */
             double total = 0.0;
             // discount paths using stopping rule
-            for (timeLoop = timeSteps-1; timeLoop>=0; timeLoop--) {
+            for (timeLoop = timeSteps_-1; timeLoop>=0; timeLoop--) {
                 // sum column - may well be more efficient to 
                 // discount each path separately
                 for (j=0; j<N; j++) {                    
@@ -313,8 +324,8 @@ namespace QuantLib {
 
                 // discount
                 // could / should use rate term stucture
-                Time from = (*grid)[timeLoop];
-                Time to = (*grid)[timeLoop+1];
+                Time from = grid[timeLoop];
+                Time to = grid[timeLoop+1];
                 //Rate forward = arguments_.riskFreeTS_->forward(from, to);
                 total *= QL_EXP(-r * (to-from));
             }
@@ -324,12 +335,13 @@ namespace QuantLib {
 
         // put all the asset prices into a vector.
         // s0 is not included in the vector
-        vector<double> getAssetSequence (const double s0, const MonteCarlo::Path& path) {
+        std::vector<double> getAssetSequence (double s0, 
+                                              const MonteCarlo::Path& path) {
             Size n = path.size();
             QL_REQUIRE(n>0,
                 "AmericanMCEngine: the path cannot be empty");
 
-            vector<double> asset(n);
+            std::vector<double> asset(n);
             asset[0] = s0;
 
             double log_drift, log_random;
@@ -340,16 +352,17 @@ namespace QuantLib {
             for (Size i = 1; i < n; i++) {
                 log_drift = path.drift()[i];
                 log_random = path.diffusion()[i];
-                asset[i] = asset[i-1]*QL_EXP(log_drift + log_random);                
+                asset[i] = asset[i-1]*QL_EXP(log_drift + log_random);
             }
             
             return asset;
         }
 
-        void getLSAssetsExample (AssetGrid& assetPaths, const int timeSteps) {
+        void getLSAssetsExample(AssetGrid& assetPaths, int timeSteps) {
             Size n = assetPaths.size();
             QL_REQUIRE(n == 8,
-                "AmericanMCEngine: Longstaff Schwartz example must have 8 paths");
+                       "AmericanMCEngine: Longstaff Schwartz example "
+                       "must have 8 paths");
             
             QL_REQUIRE(timeSteps == 3,
                     "AmericanMCEngine: Longstaff Schwartz 3 time steps");
@@ -386,9 +399,9 @@ namespace QuantLib {
             assetPaths[7][1] = 1.22;
             assetPaths[7][2] = 1.34;
 
-
-
-
         }
+
     }
+
 }
+

@@ -301,6 +301,7 @@
 #include <ql/TermStructures/compoundforward.hpp>
 #include <ql/TermStructures/discountcurve.hpp>
 #include <ql/TermStructures/drifttermstructure.hpp>
+#include <ql/TermStructures/extendeddiscountcurve.hpp>
 #include <ql/TermStructures/flatforward.hpp>
 #include <ql/TermStructures/forwardspreadedtermstructure.hpp>
 #include <ql/TermStructures/impliedtermstructure.hpp>

@@ -50,19 +50,6 @@ namespace QuantLib {
 		       DateFormatter::toString(startDate_) +
 		       "), end date (" +
 		       DateFormatter::toString(endDate_) + "))");
-            QL_REQUIRE(!calendar_.isHoliday(stubDate_) ||
-                       !isEndOfMonth(stubDate_),
-                "stub date (" +
-                    DateFormatter::toString(stubDate_) +
-                    ") is holiday and end of month for " +
-                    calendar_.name() + " calendar");
-        } else {
-            QL_REQUIRE(!calendar_.isHoliday(startDate_) ||
-                       !isEndOfMonth(startDate_),
-                "start date (" +
-                    DateFormatter::toString(startDate_) +
-                    ") is holiday and end of month for " +
-                    calendar_.name() + " calendar");
         }
         QL_REQUIRE(12 % frequency_ == 0,
             "frequency (" +
@@ -81,8 +68,8 @@ namespace QuantLib {
 	   // add stub date if given
 	   if (stubDate_ != Date()) {
 	      seed = stubDate_;
-	      dates_.insert(dates_.begin(),isAdjusted_ ?
-			    calendar_.roll(stubDate_) : stubDate_);
+	      dates_.insert(dates_.begin(),
+                        isAdjusted_ ? calendar_.roll(stubDate_) : stubDate_);
 	   }
 	   
 	   // add subsequent dates
@@ -179,10 +166,6 @@ namespace QuantLib {
 	      return finalIsRegular_;
 	}
 	return true;
-    }
-
-    bool Scheduler::isEndOfMonth(const Date& d) const {
-        return (d.month() != calendar_.roll(d+1).month());
     }
 
 }

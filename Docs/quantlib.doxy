@@ -40,7 +40,7 @@ GENERATE_TODOLIST      = YES
 GENERATE_TESTLIST      = NO
 GENERATE_BUGLIST       = NO
 GENERATE_DEPRECATEDLIST= YES
-ALIASES                = 
+ALIASES    = "unstable=\xrefitem unstable \"Unstable\" \"Unstable features\""
 ENABLED_SECTIONS       = 
 MAX_INITIALIZER_LINES  = 30
 OPTIMIZE_OUTPUT_FOR_C  = NO
@@ -73,12 +73,9 @@ EXCLUDE                = ../ql/config.hpp \
 EXCLUDE_SYMLINKS       = NO
 EXCLUDE_PATTERNS       = 
 EXAMPLE_PATH           = Examples \
-                         ../Examples/BermudanSwaption \
-                         ../Examples/DiscreteHedging \
-                         ../Examples/EuropeanOption \
-                         ../Examples/Swap
+                         ../Examples
 EXAMPLE_PATTERNS       = *.cpp
-EXAMPLE_RECURSIVE      = NO
+EXAMPLE_RECURSIVE      = YES
 IMAGE_PATH             = 
 INPUT_FILTER           = 
 FILTER_SOURCE_FILES    = NO

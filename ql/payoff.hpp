@@ -35,13 +35,13 @@ namespace QuantLib {
     };
 
     /*! We need an intermediate class for all those payoff that have
-        both a strike and a type but are not neccesarely plain-vanilla
+        both a strike and a type but are not necessarily plain-vanilla
     */
 
     class StrikedTypePayoff : public Payoff {
       public:
         StrikedTypePayoff(Option::Type type,
-                    double strike)
+                          double strike)
         : type_(type), strike_(strike) {
             QL_REQUIRE(strike >= 0.0,
                        "StrikedTypePayoff: negative strike given");
@@ -58,8 +58,8 @@ namespace QuantLib {
     class PlainVanillaPayoff : public StrikedTypePayoff {
       public:
         PlainVanillaPayoff(Option::Type type,
-                    double strike)
-        : StrikedTypePayoff(type, strike){}
+                          double strike)
+        : StrikedTypePayoff(type, strike) {}
         double operator()(double price) const;
     };
 

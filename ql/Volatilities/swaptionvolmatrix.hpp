@@ -70,6 +70,8 @@ namespace QuantLib {
                 Math::Matrix> VolInterpolation;
             Handle<VolInterpolation> interpolation_;
             double volatilityImpl(Time start, Time length, Rate strike) const;
+            std::pair<Time,Time> convertDates(const Date& start, 
+                                              const Period& length) const;
         };
 
 
@@ -122,10 +124,21 @@ namespace QuantLib {
         }
 
         inline double SwaptionVolatilityMatrix::volatilityImpl(
-            Time start, Time length, Rate) const {
-                return (*interpolation_)(start,length,false);
+                Time start, Time length, Rate) const {
+            return (*interpolation_)(start,length,false);
         }
         
+        inline std::pair<Time,Time> SwaptionVolatilityMatrix::convertDates(
+                const Date& start, const Period& length) const {
+            Time exerciseTime = dayCounter_.yearFraction(todaysDate_,start,
+                                                         todaysDate_,start);
+            Date startDate = exerciseDates_[0]; // for consistency
+            Date endDate = startDate.plus(length);
+            Time timeLength = dayCounter_.yearFraction(startDate,endDate,
+                                                       startDate,endDate);
+            return std::pair<Time,Time>(exerciseTime,timeLength);
+        }
+
     }
 
 }

@@ -23,7 +23,6 @@
 #define quantlib_himalaya_h
 
 #include <ql/Pricers/mcpricer.hpp>
-#include <ql/Math/matrix.hpp>
 
 namespace QuantLib {
 

@@ -89,7 +89,7 @@ namespace QuantLib {
         /*! Returns <tt>true</tt> iff the date is last business day for the
             month in given market.
         */
-        bool isLastBusinessDayOfMonth(const Date& d) const;
+        bool isEndOfMonth(const Date& d) const;
         /*! Returns <tt>true</tt> iff the date is a holiday for the given
             market.
         */
@@ -153,9 +153,8 @@ namespace QuantLib {
         return impl_->isBusinessDay(d);
     }
 
-    inline bool Calendar::isLastBusinessDayOfMonth(const Date& d) const {
-       return (roll(Date(d.lastDayOfMonth(),d.month(),d.year()),
-		    Preceding) == d);
+    inline bool Calendar::isEndOfMonth(const Date& d) const {
+        return (d.month() != roll(d+1).month());
     }
 
     inline bool Calendar::isHoliday(const Date& d) const {

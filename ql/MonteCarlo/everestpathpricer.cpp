@@ -20,7 +20,6 @@
 */
 
 #include <ql/MonteCarlo/everestpathpricer.hpp>
-#include <ql/dataformatters.hpp>
 
 namespace QuantLib {
 

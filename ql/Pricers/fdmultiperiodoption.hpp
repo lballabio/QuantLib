@@ -24,7 +24,6 @@
 
 #include <ql/Pricers/fdbsmoption.hpp>
 #include <ql/FiniteDifferences/fdtypedefs.hpp>
-#include <vector>
 
 namespace QuantLib {
 

@@ -23,7 +23,6 @@
 #define quantlib_fd_american_condition_h
 
 #include <ql/FiniteDifferences/fdtypedefs.hpp>
-#include <ql/exercise.hpp>
 #include <ql/discretizedasset.hpp>
 
 namespace QuantLib {

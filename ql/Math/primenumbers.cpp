@@ -31,7 +31,6 @@
 */
 
 #include "ql/Math/primenumbers.hpp"
-#include <cmath>
 
 namespace QuantLib {
 

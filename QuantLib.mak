@@ -141,6 +141,8 @@ CLEAN :
 	-@erase "$(INTDIR)\exercise.sbr"
 	-@erase "$(INTDIR)\extendedcoxingersollross.obj"
 	-@erase "$(INTDIR)\extendedcoxingersollross.sbr"
+	-@erase "$(INTDIR)\extendeddiscountcurve.obj"
+	-@erase "$(INTDIR)\extendeddiscountcurve.sbr"
 	-@erase "$(INTDIR)\fdbermudanoption.obj"
 	-@erase "$(INTDIR)\fdbermudanoption.sbr"
 	-@erase "$(INTDIR)\fdbsmoption.obj"
@@ -408,6 +410,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\multivariateaccumulator.sbr" \
 	"$(INTDIR)\normaldistribution.sbr" \
 	"$(INTDIR)\primenumbers.sbr" \
+	"$(INTDIR)\svd.sbr" \
 	"$(INTDIR)\symmetricschurdecomposition.sbr" \
 	"$(INTDIR)\arithmeticapopathpricer.sbr" \
 	"$(INTDIR)\arithmeticasopathpricer.sbr" \
@@ -460,6 +463,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\swaptionpricer.sbr" \
 	"$(INTDIR)\treecapfloor.sbr" \
 	"$(INTDIR)\treeswaption.sbr" \
+	"$(INTDIR)\americanmcengines.sbr" \
 	"$(INTDIR)\analyticeuropeanengine.sbr" \
 	"$(INTDIR)\binomialvanillaengine.sbr" \
 	"$(INTDIR)\discretizedvanillaoption.sbr" \
@@ -499,8 +503,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\option.sbr" \
 	"$(INTDIR)\scheduler.sbr" \
 	"$(INTDIR)\voltermstructure.sbr" \
-	"$(INTDIR)\svd.sbr" \
-	"$(INTDIR)\americanmcengines.sbr"
+	"$(INTDIR)\extendeddiscountcurve.sbr"
 
 "$(OUTDIR)\QuantLib.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -566,6 +569,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\multivariateaccumulator.obj" \
 	"$(INTDIR)\normaldistribution.obj" \
 	"$(INTDIR)\primenumbers.obj" \
+	"$(INTDIR)\svd.obj" \
 	"$(INTDIR)\symmetricschurdecomposition.obj" \
 	"$(INTDIR)\arithmeticapopathpricer.obj" \
 	"$(INTDIR)\arithmeticasopathpricer.obj" \
@@ -618,6 +622,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\swaptionpricer.obj" \
 	"$(INTDIR)\treecapfloor.obj" \
 	"$(INTDIR)\treeswaption.obj" \
+	"$(INTDIR)\americanmcengines.obj" \
 	"$(INTDIR)\analyticeuropeanengine.obj" \
 	"$(INTDIR)\binomialvanillaengine.obj" \
 	"$(INTDIR)\discretizedvanillaoption.obj" \
@@ -657,8 +662,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\option.obj" \
 	"$(INTDIR)\scheduler.obj" \
 	"$(INTDIR)\voltermstructure.obj" \
-	"$(INTDIR)\svd.obj" \
-	"$(INTDIR)\americanmcengines.obj"
+	"$(INTDIR)\extendeddiscountcurve.obj"
 
 ".\lib\Win32\VisualStudio\QuantLib.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
     $(LIB32) @<<
@@ -775,6 +779,8 @@ CLEAN :
 	-@erase "$(INTDIR)\exercise.sbr"
 	-@erase "$(INTDIR)\extendedcoxingersollross.obj"
 	-@erase "$(INTDIR)\extendedcoxingersollross.sbr"
+	-@erase "$(INTDIR)\extendeddiscountcurve.obj"
+	-@erase "$(INTDIR)\extendeddiscountcurve.sbr"
 	-@erase "$(INTDIR)\fdbermudanoption.obj"
 	-@erase "$(INTDIR)\fdbermudanoption.sbr"
 	-@erase "$(INTDIR)\fdbsmoption.obj"
@@ -1043,6 +1049,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\multivariateaccumulator.sbr" \
 	"$(INTDIR)\normaldistribution.sbr" \
 	"$(INTDIR)\primenumbers.sbr" \
+	"$(INTDIR)\svd.sbr" \
 	"$(INTDIR)\symmetricschurdecomposition.sbr" \
 	"$(INTDIR)\arithmeticapopathpricer.sbr" \
 	"$(INTDIR)\arithmeticasopathpricer.sbr" \
@@ -1095,6 +1102,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\swaptionpricer.sbr" \
 	"$(INTDIR)\treecapfloor.sbr" \
 	"$(INTDIR)\treeswaption.sbr" \
+	"$(INTDIR)\americanmcengines.sbr" \
 	"$(INTDIR)\analyticeuropeanengine.sbr" \
 	"$(INTDIR)\binomialvanillaengine.sbr" \
 	"$(INTDIR)\discretizedvanillaoption.sbr" \
@@ -1134,8 +1142,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\option.sbr" \
 	"$(INTDIR)\scheduler.sbr" \
 	"$(INTDIR)\voltermstructure.sbr" \
-	"$(INTDIR)\svd.sbr" \
-	"$(INTDIR)\americanmcengines.sbr"
+	"$(INTDIR)\extendeddiscountcurve.sbr"
 
 "$(OUTDIR)\QuantLib.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -1201,6 +1208,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\multivariateaccumulator.obj" \
 	"$(INTDIR)\normaldistribution.obj" \
 	"$(INTDIR)\primenumbers.obj" \
+	"$(INTDIR)\svd.obj" \
 	"$(INTDIR)\symmetricschurdecomposition.obj" \
 	"$(INTDIR)\arithmeticapopathpricer.obj" \
 	"$(INTDIR)\arithmeticasopathpricer.obj" \
@@ -1253,6 +1261,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\swaptionpricer.obj" \
 	"$(INTDIR)\treecapfloor.obj" \
 	"$(INTDIR)\treeswaption.obj" \
+	"$(INTDIR)\americanmcengines.obj" \
 	"$(INTDIR)\analyticeuropeanengine.obj" \
 	"$(INTDIR)\binomialvanillaengine.obj" \
 	"$(INTDIR)\discretizedvanillaoption.obj" \
@@ -1292,8 +1301,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\option.obj" \
 	"$(INTDIR)\scheduler.obj" \
 	"$(INTDIR)\voltermstructure.obj" \
-	"$(INTDIR)\svd.obj" \
-	"$(INTDIR)\americanmcengines.obj"
+	"$(INTDIR)\extendeddiscountcurve.obj"
 
 ".\lib\Win32\VisualStudio\QuantLib_d.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
     $(LIB32) @<<
@@ -1410,6 +1418,8 @@ CLEAN :
 	-@erase "$(INTDIR)\exercise.sbr"
 	-@erase "$(INTDIR)\extendedcoxingersollross.obj"
 	-@erase "$(INTDIR)\extendedcoxingersollross.sbr"
+	-@erase "$(INTDIR)\extendeddiscountcurve.obj"
+	-@erase "$(INTDIR)\extendeddiscountcurve.sbr"
 	-@erase "$(INTDIR)\fdbermudanoption.obj"
 	-@erase "$(INTDIR)\fdbermudanoption.sbr"
 	-@erase "$(INTDIR)\fdbsmoption.obj"
@@ -1677,6 +1687,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\multivariateaccumulator.sbr" \
 	"$(INTDIR)\normaldistribution.sbr" \
 	"$(INTDIR)\primenumbers.sbr" \
+	"$(INTDIR)\svd.sbr" \
 	"$(INTDIR)\symmetricschurdecomposition.sbr" \
 	"$(INTDIR)\arithmeticapopathpricer.sbr" \
 	"$(INTDIR)\arithmeticasopathpricer.sbr" \
@@ -1729,6 +1740,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\swaptionpricer.sbr" \
 	"$(INTDIR)\treecapfloor.sbr" \
 	"$(INTDIR)\treeswaption.sbr" \
+	"$(INTDIR)\americanmcengines.sbr" \
 	"$(INTDIR)\analyticeuropeanengine.sbr" \
 	"$(INTDIR)\binomialvanillaengine.sbr" \
 	"$(INTDIR)\discretizedvanillaoption.sbr" \
@@ -1768,8 +1780,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\option.sbr" \
 	"$(INTDIR)\scheduler.sbr" \
 	"$(INTDIR)\voltermstructure.sbr" \
-	"$(INTDIR)\svd.sbr" \
-	"$(INTDIR)\americanmcengines.sbr"
+	"$(INTDIR)\extendeddiscountcurve.sbr"
 
 "$(OUTDIR)\QuantLib.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -1835,6 +1846,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\multivariateaccumulator.obj" \
 	"$(INTDIR)\normaldistribution.obj" \
 	"$(INTDIR)\primenumbers.obj" \
+	"$(INTDIR)\svd.obj" \
 	"$(INTDIR)\symmetricschurdecomposition.obj" \
 	"$(INTDIR)\arithmeticapopathpricer.obj" \
 	"$(INTDIR)\arithmeticasopathpricer.obj" \
@@ -1887,6 +1899,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\swaptionpricer.obj" \
 	"$(INTDIR)\treecapfloor.obj" \
 	"$(INTDIR)\treeswaption.obj" \
+	"$(INTDIR)\americanmcengines.obj" \
 	"$(INTDIR)\analyticeuropeanengine.obj" \
 	"$(INTDIR)\binomialvanillaengine.obj" \
 	"$(INTDIR)\discretizedvanillaoption.obj" \
@@ -1926,8 +1939,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\option.obj" \
 	"$(INTDIR)\scheduler.obj" \
 	"$(INTDIR)\voltermstructure.obj" \
-	"$(INTDIR)\svd.obj" \
-	"$(INTDIR)\americanmcengines.obj"
+	"$(INTDIR)\extendeddiscountcurve.obj"
 
 ".\lib\Win32\VisualStudio\QuantLib.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
     $(LIB32) @<<
@@ -2044,6 +2056,8 @@ CLEAN :
 	-@erase "$(INTDIR)\exercise.sbr"
 	-@erase "$(INTDIR)\extendedcoxingersollross.obj"
 	-@erase "$(INTDIR)\extendedcoxingersollross.sbr"
+	-@erase "$(INTDIR)\extendeddiscountcurve.obj"
+	-@erase "$(INTDIR)\extendeddiscountcurve.sbr"
 	-@erase "$(INTDIR)\fdbermudanoption.obj"
 	-@erase "$(INTDIR)\fdbermudanoption.sbr"
 	-@erase "$(INTDIR)\fdbsmoption.obj"
@@ -2312,6 +2326,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\multivariateaccumulator.sbr" \
 	"$(INTDIR)\normaldistribution.sbr" \
 	"$(INTDIR)\primenumbers.sbr" \
+	"$(INTDIR)\svd.sbr" \
 	"$(INTDIR)\symmetricschurdecomposition.sbr" \
 	"$(INTDIR)\arithmeticapopathpricer.sbr" \
 	"$(INTDIR)\arithmeticasopathpricer.sbr" \
@@ -2364,6 +2379,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\swaptionpricer.sbr" \
 	"$(INTDIR)\treecapfloor.sbr" \
 	"$(INTDIR)\treeswaption.sbr" \
+	"$(INTDIR)\americanmcengines.sbr" \
 	"$(INTDIR)\analyticeuropeanengine.sbr" \
 	"$(INTDIR)\binomialvanillaengine.sbr" \
 	"$(INTDIR)\discretizedvanillaoption.sbr" \
@@ -2403,8 +2419,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\option.sbr" \
 	"$(INTDIR)\scheduler.sbr" \
 	"$(INTDIR)\voltermstructure.sbr" \
-	"$(INTDIR)\svd.sbr" \
-	"$(INTDIR)\americanmcengines.sbr"
+	"$(INTDIR)\extendeddiscountcurve.sbr"
 
 "$(OUTDIR)\QuantLib.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -2470,6 +2485,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\multivariateaccumulator.obj" \
 	"$(INTDIR)\normaldistribution.obj" \
 	"$(INTDIR)\primenumbers.obj" \
+	"$(INTDIR)\svd.obj" \
 	"$(INTDIR)\symmetricschurdecomposition.obj" \
 	"$(INTDIR)\arithmeticapopathpricer.obj" \
 	"$(INTDIR)\arithmeticasopathpricer.obj" \
@@ -2522,6 +2538,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\swaptionpricer.obj" \
 	"$(INTDIR)\treecapfloor.obj" \
 	"$(INTDIR)\treeswaption.obj" \
+	"$(INTDIR)\americanmcengines.obj" \
 	"$(INTDIR)\analyticeuropeanengine.obj" \
 	"$(INTDIR)\binomialvanillaengine.obj" \
 	"$(INTDIR)\discretizedvanillaoption.obj" \
@@ -2561,8 +2578,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\option.obj" \
 	"$(INTDIR)\scheduler.obj" \
 	"$(INTDIR)\voltermstructure.obj" \
-	"$(INTDIR)\svd.obj" \
-	"$(INTDIR)\americanmcengines.obj"
+	"$(INTDIR)\extendeddiscountcurve.obj"
 
 ".\lib\Win32\VisualStudio\QuantLib_d.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
     $(LIB32) @<<
@@ -2679,6 +2695,8 @@ CLEAN :
 	-@erase "$(INTDIR)\exercise.sbr"
 	-@erase "$(INTDIR)\extendedcoxingersollross.obj"
 	-@erase "$(INTDIR)\extendedcoxingersollross.sbr"
+	-@erase "$(INTDIR)\extendeddiscountcurve.obj"
+	-@erase "$(INTDIR)\extendeddiscountcurve.sbr"
 	-@erase "$(INTDIR)\fdbermudanoption.obj"
 	-@erase "$(INTDIR)\fdbermudanoption.sbr"
 	-@erase "$(INTDIR)\fdbsmoption.obj"
@@ -2946,6 +2964,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\multivariateaccumulator.sbr" \
 	"$(INTDIR)\normaldistribution.sbr" \
 	"$(INTDIR)\primenumbers.sbr" \
+	"$(INTDIR)\svd.sbr" \
 	"$(INTDIR)\symmetricschurdecomposition.sbr" \
 	"$(INTDIR)\arithmeticapopathpricer.sbr" \
 	"$(INTDIR)\arithmeticasopathpricer.sbr" \
@@ -2998,6 +3017,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\swaptionpricer.sbr" \
 	"$(INTDIR)\treecapfloor.sbr" \
 	"$(INTDIR)\treeswaption.sbr" \
+	"$(INTDIR)\americanmcengines.sbr" \
 	"$(INTDIR)\analyticeuropeanengine.sbr" \
 	"$(INTDIR)\binomialvanillaengine.sbr" \
 	"$(INTDIR)\discretizedvanillaoption.sbr" \
@@ -3037,8 +3057,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\option.sbr" \
 	"$(INTDIR)\scheduler.sbr" \
 	"$(INTDIR)\voltermstructure.sbr" \
-	"$(INTDIR)\svd.sbr" \
-	"$(INTDIR)\americanmcengines.sbr"
+	"$(INTDIR)\extendeddiscountcurve.sbr"
 
 "$(OUTDIR)\QuantLib.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -3104,6 +3123,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\multivariateaccumulator.obj" \
 	"$(INTDIR)\normaldistribution.obj" \
 	"$(INTDIR)\primenumbers.obj" \
+	"$(INTDIR)\svd.obj" \
 	"$(INTDIR)\symmetricschurdecomposition.obj" \
 	"$(INTDIR)\arithmeticapopathpricer.obj" \
 	"$(INTDIR)\arithmeticasopathpricer.obj" \
@@ -3156,6 +3176,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\swaptionpricer.obj" \
 	"$(INTDIR)\treecapfloor.obj" \
 	"$(INTDIR)\treeswaption.obj" \
+	"$(INTDIR)\americanmcengines.obj" \
 	"$(INTDIR)\analyticeuropeanengine.obj" \
 	"$(INTDIR)\binomialvanillaengine.obj" \
 	"$(INTDIR)\discretizedvanillaoption.obj" \
@@ -3195,8 +3216,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\option.obj" \
 	"$(INTDIR)\scheduler.obj" \
 	"$(INTDIR)\voltermstructure.obj" \
-	"$(INTDIR)\svd.obj" \
-	"$(INTDIR)\americanmcengines.obj"
+	"$(INTDIR)\extendeddiscountcurve.obj"
 
 ".\lib\Win32\VisualStudio\QuantLib.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
     $(LIB32) @<<
@@ -4101,6 +4121,12 @@ SOURCE=.\ql\TermStructures\compoundforward.cpp
 SOURCE=.\ql\TermStructures\discountcurve.cpp
 
 "$(INTDIR)\discountcurve.obj"	"$(INTDIR)\discountcurve.sbr" : $(SOURCE) "$(INTDIR)"
+	$(CPP) $(CPP_PROJ) $(SOURCE)
+
+
+SOURCE=.\ql\TermStructures\extendeddiscountcurve.cpp
+
+"$(INTDIR)\extendeddiscountcurve.obj"	"$(INTDIR)\extendeddiscountcurve.sbr" : $(SOURCE) "$(INTDIR)"
 	$(CPP) $(CPP_PROJ) $(SOURCE)
 
 

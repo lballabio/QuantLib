@@ -34,6 +34,9 @@ namespace QuantLib {
             \f[ 
                 dr_t = (\theta(t) - \alpha r_t)dt + \sqrt{r_t}\sigma dW_t .
             \f]
+
+            \unstable This class was not tested enough to guarantee
+                      its functionality.
         */
         class ExtendedCoxIngersollRoss : public CoxIngersollRoss,
                                          public TermStructureConsistentModel {

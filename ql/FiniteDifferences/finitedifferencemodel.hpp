@@ -24,7 +24,6 @@
 
 #include <ql/FiniteDifferences/stepcondition.hpp>
 #include <ql/FiniteDifferences/boundarycondition.hpp>
-#include <vector>
 
 namespace QuantLib {
 

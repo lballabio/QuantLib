@@ -20,7 +20,6 @@
 */
 
 #include <ql/dataformatters.hpp>
-#include <ql/dataparsers.hpp>
 
 namespace QuantLib {
 
@@ -57,10 +56,6 @@ namespace QuantLib {
         serialNumber_ = d + offset + yearOffset(y);
     }
 
-    Date::Date(const std::string& str, const std::string& fmt) {
-       *this = DateParser::parse(str,fmt);
-    }
-   
     Month Date::month() const {
         Day d = dayOfYear(); // dayOfYear is 1 based
         int m = d/30 + 1;
@@ -363,12 +358,6 @@ namespace QuantLib {
 
     long Date::maximumSerialNumber() {
         return 73050;    // Dec 31st, 2099
-    }
-
-    // Period constructor
-    Period::Period(const std::string& pstring)
-       :length_(0),units_(Days) {
-       *this = PeriodParser::parse(pstring);
     }
 
 }

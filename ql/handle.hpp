@@ -23,7 +23,6 @@
 #define quantlib_handle_h
 
 #include <ql/errors.hpp>
-#include <string>
 #include <typeinfo>
 
 // The implementation of this class is taken from

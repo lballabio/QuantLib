@@ -22,9 +22,7 @@
 #ifndef quantlib_time_grid_h
 #define quantlib_time_grid_h
 
-#include <ql/array.hpp>
 #include <ql/dataformatters.hpp>
-#include <iterator>
 #include <list>
 #include <vector>
 

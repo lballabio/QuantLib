@@ -26,8 +26,8 @@
 #include <ql/relinkablehandle.hpp>
 #include <ql/null.hpp>
 #include <ql/CashFlows/simplecashflow.hpp>
-#include <ql/CashFlows/coupon.hpp>
 #include <ql/CashFlows/fixedratecoupon.hpp>
+#include <functional>
 
 namespace QuantLib {
 
@@ -76,6 +76,8 @@ namespace QuantLib {
 		   date_ = Date();
 		   value_ = 0.0;
 		}
+		Entry(const Date& date)
+		   : date_(date), value_(0.0) {}
 		Entry(const Date& date, const double value)
 		   : date_(date), value_(value) {}
 		const Date& date() const { return date_; }
@@ -100,50 +102,18 @@ namespace QuantLib {
 		bool operator==(const Entry& e1) const {
 		   return e1.date() == date_;
 		}
-		class equal : public std::unary_function<Entry,bool> {
-		public:
-		   explicit equal(const Date& date)
-		      : date_(date) {}
-		   bool operator()(const Entry& entry) const {
-		      return entry.date() == date_;
-		   }
-		private:
-		   const Date date_;
-		};
-		class less_equal : public std::unary_function<Entry,bool> {
-		public:
-		   explicit less_equal(const Date& date)
-		      : date_(date) {}
-		   bool operator()(const Entry& entry) const {
-		      return entry.date() <= date_;
-		   }
-		private:
-		   const Date date_;
-		};
-		class greater_equal : public std::unary_function<Entry,bool> {
-		public:
-		   explicit greater_equal(const Date& date)
-		      : date_(date) {}
-		   bool operator()(const Entry& entry) const {
-		      return entry.date() >= date_;
-		   }
-		private:
-		   const Date date_;
-		};
-		class ascending {
-		public:
-		   int operator()(const Entry& e1,
-				  const Entry& e2) const {
-		      return e1.date() < e2.date();
-		   }
-		};
-		class descending {
-		public:
-		   int operator()(const Entry& e1,
-				  const Entry& e2) const {
-		      return e1.date() > e2.date();
-		   }
-		};
+		bool operator<(const Entry& e1) const {
+		   return e1.date() < date_;
+		}
+		bool operator<=(const Entry& e1) const {
+		   return e1.date() <= date_;
+		}
+		bool operator>(const Entry& e1) const {
+		   return e1.date() > date_;
+		}
+		bool operator>=(const Entry& e1) const {
+		   return e1.date() >= date_;
+		}
 		
 	     private:
 		Date date_;
@@ -169,7 +139,7 @@ namespace QuantLib {
 	   void add(const Date&, double) const;
 	   void subtract(const Entry&) const;
 	   void subtract(const Date&, double) const;
-	   Entry operator[](int i) const;
+	   Entry operator[](Size i) const;
 	   Entry operator[](const Date&) const;
 	   TimeBasket& operator+=(const TimeBasket& other);
 	   TimeBasket& operator-=(const TimeBasket& other);
@@ -259,7 +229,7 @@ namespace QuantLib {
 	      entries_.push_back(Entry(dates[i],values[i]));
 	   std::sort(entries_.begin(),
 		     entries_.end(),
-		     Entry::ascending());
+		     std::less<Entry>());
 	}
       
         inline TimeBasket::TimeBasket(const Handle<TimeBasket>& original,
@@ -269,7 +239,7 @@ namespace QuantLib {
 	   std::vector<Date> sbuckets = buckets;
 	   std::sort(sbuckets.begin(),
 		     sbuckets.end(),
-		     Date::descending());
+		     std::greater<Date>());
 	   Size i;
 	   for (i = 0; i < sbuckets.size(); i++) {
 	      push(sbuckets[i],0.0);
@@ -280,7 +250,8 @@ namespace QuantLib {
 	      const std::vector<Date>::const_iterator bi =
 		 std::find_if(sbuckets.begin(),
 			      sbuckets.end(),
-			      Date::less_equal(entry.date()));
+			      std::bind2nd(std::less_equal<Date>(),
+					   entry.date()));
 	      if (bi == sbuckets.end())
 		 pDate = sbuckets.back();
 	      else {
@@ -324,7 +295,7 @@ namespace QuantLib {
 	   std::vector<Entry>::iterator ei =
 	      std::find_if(entries_.begin(),
 			   entries_.end(),
-			   Entry::greater_equal(entry.date()));
+			   std::bind2nd(std::greater_equal<Entry>(),entry));
 	   if (ei != entries_.end() && ei->date() == entry.date()) {
 	      ei->value(entry.value());
 	   }
@@ -344,7 +315,7 @@ namespace QuantLib {
 	   std::vector<Entry>::iterator ei =
 	      std::find_if(entries_.begin(),
 			   entries_.end(),
-			   Entry::greater_equal(entry.date()));
+			   std::bind2nd(std::greater_equal<Entry>(),entry));
 	   if (ei != entries_.end() && ei->date() == entry.date()) {
 	      *ei += entry;
 	   } else {
@@ -363,7 +334,7 @@ namespace QuantLib {
 	   std::vector<Entry>::iterator ei =
 	      std::find_if(entries_.begin(),
 			   entries_.end(),
-			   Entry::greater_equal(entry.date()));
+			   std::bind2nd(std::greater_equal<Entry>(),entry));
 	   if (ei != entries_.end() && ei->date() == entry.date()) {
 	      *ei -= entry;
 	   } else {
@@ -376,8 +347,8 @@ namespace QuantLib {
 	   subtract(Entry(date,value));
 	}
       
-        inline TimeBasket::Entry TimeBasket::operator[](int i) const {
-	   if (i >= 0 && i < entries_.size())
+        inline TimeBasket::Entry TimeBasket::operator[](Size i) const {
+	   if (i < entries_.size())
 	      return entries_[i];
 	   return Entry();
 	}
@@ -386,7 +357,7 @@ namespace QuantLib {
 	   std::vector<Entry>::iterator ei =
 	      std::find_if(entries_.begin(),
 			   entries_.end(),
-			   Entry::equal(date));
+			   std::bind2nd(std::equal_to<Entry>(),Entry(date)));
 	   if (ei == entries_.end())
 	      return Entry();
 	   return *ei;

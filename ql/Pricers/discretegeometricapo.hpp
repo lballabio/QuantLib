@@ -24,7 +24,6 @@
 
 #include <ql/Pricers/singleassetoption.hpp>
 #include <ql/Math/normaldistribution.hpp>
-#include <vector>
 
 
 namespace QuantLib {

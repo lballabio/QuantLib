@@ -62,7 +62,7 @@ namespace QuantLib {
         void DiscretizedVanillaOption::applySpecificCondition() {
             Handle<Lattices::BlackScholesLattice> lattice = method();
             Handle<Lattices::Tree> tree(lattice->tree());
-            Size i = tree->nColumns() - 1;
+            Size i = method()->timeGrid().findIndex(time());
 
             for (Size j=0; j<values_.size(); j++) {
                 values_[j] = 

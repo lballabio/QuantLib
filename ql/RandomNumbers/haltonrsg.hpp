@@ -24,7 +24,6 @@
 
 #include <ql/array.hpp>
 #include <ql/MonteCarlo/sample.hpp>
-#include <cmath>
 #include <vector>
 
 namespace QuantLib {

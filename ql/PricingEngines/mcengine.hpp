@@ -23,7 +23,6 @@
 #ifndef quantlib_montecarlo_engine_h
 #define quantlib_montecarlo_engine_h
 
-#include <ql/dataformatters.hpp>
 #include <ql/grid.hpp>
 #include <ql/MonteCarlo/montecarlomodel.hpp>
 #include <ql/MonteCarlo/europeanpathpricer.hpp>

@@ -55,6 +55,7 @@ CLEAN :
 !ENDIF 
 	-@erase "$(INTDIR)\calendars.obj"
 	-@erase "$(INTDIR)\capfloor.obj"
+	-@erase "$(INTDIR)\compoundforward.obj"
 	-@erase "$(INTDIR)\covariance.obj"
 	-@erase "$(INTDIR)\dates.obj"
 	-@erase "$(INTDIR)\daycounters.obj"
@@ -115,6 +116,7 @@ LINK32_OBJS= \
 	"$(INTDIR)\swap.obj" \
 	"$(INTDIR)\swaption.obj" \
 	"$(INTDIR)\termstructures.obj" \
+	"$(INTDIR)\compoundforward.obj" \
 	"..\lib\Win32\VisualStudio\QuantLib.lib"
 
 "$(OUTDIR)\testsuite.exe" : "$(OUTDIR)" $(DEF_FILE) $(LINK32_OBJS)
@@ -147,6 +149,7 @@ CLEAN :
 !ENDIF 
 	-@erase "$(INTDIR)\calendars.obj"
 	-@erase "$(INTDIR)\capfloor.obj"
+	-@erase "$(INTDIR)\compoundforward.obj"
 	-@erase "$(INTDIR)\covariance.obj"
 	-@erase "$(INTDIR)\dates.obj"
 	-@erase "$(INTDIR)\daycounters.obj"
@@ -210,6 +213,7 @@ LINK32_OBJS= \
 	"$(INTDIR)\swap.obj" \
 	"$(INTDIR)\swaption.obj" \
 	"$(INTDIR)\termstructures.obj" \
+	"$(INTDIR)\compoundforward.obj" \
 	"..\lib\Win32\VisualStudio\QuantLib_d.lib"
 
 "$(OUTDIR)\testsuite.exe" : "$(OUTDIR)" $(DEF_FILE) $(LINK32_OBJS)
@@ -242,6 +246,7 @@ CLEAN :
 !ENDIF 
 	-@erase "$(INTDIR)\calendars.obj"
 	-@erase "$(INTDIR)\capfloor.obj"
+	-@erase "$(INTDIR)\compoundforward.obj"
 	-@erase "$(INTDIR)\covariance.obj"
 	-@erase "$(INTDIR)\dates.obj"
 	-@erase "$(INTDIR)\daycounters.obj"
@@ -305,6 +310,7 @@ LINK32_OBJS= \
 	"$(INTDIR)\swap.obj" \
 	"$(INTDIR)\swaption.obj" \
 	"$(INTDIR)\termstructures.obj" \
+	"$(INTDIR)\compoundforward.obj" \
 	"..\lib\Win32\VisualStudio\QuantLib_d.lib"
 
 "$(OUTDIR)\testsuite.exe" : "$(OUTDIR)" $(DEF_FILE) $(LINK32_OBJS)
@@ -337,6 +343,7 @@ CLEAN :
 !ENDIF 
 	-@erase "$(INTDIR)\calendars.obj"
 	-@erase "$(INTDIR)\capfloor.obj"
+	-@erase "$(INTDIR)\compoundforward.obj"
 	-@erase "$(INTDIR)\covariance.obj"
 	-@erase "$(INTDIR)\dates.obj"
 	-@erase "$(INTDIR)\daycounters.obj"
@@ -397,6 +404,7 @@ LINK32_OBJS= \
 	"$(INTDIR)\swap.obj" \
 	"$(INTDIR)\swaption.obj" \
 	"$(INTDIR)\termstructures.obj" \
+	"$(INTDIR)\compoundforward.obj" \
 	"..\lib\Win32\VisualStudio\QuantLib.lib"
 
 "$(OUTDIR)\testsuite.exe" : "$(OUTDIR)" $(DEF_FILE) $(LINK32_OBJS)
@@ -455,6 +463,11 @@ SOURCE=.\calendars.cpp
 SOURCE=.\capfloor.cpp
 
 "$(INTDIR)\capfloor.obj" : $(SOURCE) "$(INTDIR)"
+
+
+SOURCE=.\compoundforward.cpp
+
+"$(INTDIR)\compoundforward.obj" : $(SOURCE) "$(INTDIR)"
 
 
 SOURCE=.\covariance.cpp

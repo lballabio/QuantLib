@@ -23,7 +23,6 @@
 #ifndef quantlib_mc_typedefs_h
 #define quantlib_mc_typedefs_h
 
-#include <ql/MonteCarlo/mctraits.hpp>
 #include <ql/RandomNumbers/rngtypedefs.hpp>
 #include <ql/MonteCarlo/montecarlomodel.hpp>
 

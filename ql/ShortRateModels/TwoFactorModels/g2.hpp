@@ -43,6 +43,9 @@ namespace QuantLib {
                 dy_t = -b y_t dt + \sigma dW^2_t, y_0 = 0
            \f]
             and \f$ dW^1_t dW^2_t = \rho dt \f$.
+
+            \unstable This class was not tested enough to guarantee
+                      its functionality.
         */
         class G2 : public TwoFactorModel, public AffineModel,
                    public TermStructureConsistentModel {

@@ -47,6 +47,9 @@ namespace QuantLib {
         //! implements the actual volatility calculation in derived classes
         virtual double volatilityImpl(Time start, Time length, 
                                       Rate strike) const = 0;
+        //! implements the conversion between dates and times
+        virtual std::pair<Time,Time> convertDates(const Date& start, 
+                                                  const Period& length) const;
     };
 
 
@@ -55,17 +58,24 @@ namespace QuantLib {
     inline double SwaptionVolatilityStructure::volatility(const Date& start, 
                                                           const Period& length, 
                                                           Rate strike) const {
-        Time startTime = dayCounter().yearFraction(todaysDate(),start,
-                                                   todaysDate(),start);
-        Date end = start.plus(length);
-        Time timeLength = dayCounter().yearFraction(start,end,start,end);
-        return volatilityImpl(startTime,timeLength,strike);
+        std::pair<Time,Time> times = convertDates(start,length);
+        return volatilityImpl(times.first,times.second,strike);
     }
 
     inline double SwaptionVolatilityStructure::volatility(Time start, 
                                                           Time length, 
                                                           Rate strike) const {
         return volatilityImpl(start,length,strike);
+    }
+
+    inline std::pair<Time,Time> 
+    SwaptionVolatilityStructure::convertDates(const Date& start, 
+                                              const Period& length) const {
+        Time startTime = dayCounter().yearFraction(todaysDate(),start,
+                                                   todaysDate(),start);
+        Date end = start.plus(length);
+        Time timeLength = dayCounter().yearFraction(start,end,start,end);
+        return std::pair<Time,Time>(startTime,timeLength);
     }
     
 }

@@ -89,4 +89,7 @@ tex-files: docs-html
 	mv latex/deprecated.tex .deprecated.tex
 	$(SED) -e "s/section/chapter/" .deprecated.tex > latex/deprecated.tex
 	rm -f .deprecated.tex
+	mv latex/unstable.tex .unstable.tex
+	$(SED) -e "s/section/chapter/" .unstable.tex > latex/unstable.tex
+	rm -f .unstable.tex
 

@@ -25,8 +25,6 @@
 #include <ql/Pricers/singleassetoption.hpp>
 #include <ql/FiniteDifferences/bsmoperator.hpp>
 #include <ql/FiniteDifferences/boundarycondition.hpp>
-#include <ql/FiniteDifferences/tridiagonaloperator.hpp>
-#include <vector>
 
 namespace QuantLib {
 

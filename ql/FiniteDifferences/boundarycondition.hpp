@@ -23,7 +23,6 @@
 #define quantlib_boundary_condition_h
 
 #include <ql/null.hpp>
-#include <ql/types.hpp>
 #include <ql/FiniteDifferences/tridiagonaloperator.hpp>
 
 namespace QuantLib {

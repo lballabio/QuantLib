@@ -20,6 +20,7 @@ BCC_LIBS            = $(MAKEDIR)\..\lib
 QL_TESTS = \
     calendars.obj$(_D) \
     capfloor.obj$(_D) \
+    compoundforward.obj$(_D) \
     covariance.obj$(_D) \
     dates.obj$(_D) \
     daycounters.obj$(_D) \

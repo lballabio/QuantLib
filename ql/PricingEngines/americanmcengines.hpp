@@ -15,70 +15,69 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file mcengine.hpp
-    \brief base class for Monte Carlo engines
+/*! \file americanmcengines.hpp
+    \brief Least-square Monte Carlo engines
 */
 
 #ifndef quantlib_american_montecarlo_engine_h
 #define quantlib_american_montecarlo_engine_h
 
-#include <ql/dataformatters.hpp>
 #include <ql/grid.hpp>
-#include <ql/payoff.hpp>
-#include <ql/Math/matrix.hpp>
 #include <ql/Math/svd.hpp>
-#include <ql/MonteCarlo/montecarlomodel.hpp>
 #include <ql/MonteCarlo/mctypedefs.hpp>
 #include <ql/MonteCarlo/europeanpathpricer.hpp>
-#include <ql/RandomNumbers/rngtypedefs.hpp>
 #include <ql/PricingEngines/vanillaengines.hpp>
 //#include <ql/Volatilities/blackconstantvol.hpp>
-
-//using MonteCarlo::GaussianPathGenerator;
-using std::vector;
-using QuantLib::Math::Matrix;
-using QuantLib::Math::SVD;
 
 namespace QuantLib {
 
     namespace PricingEngines {
 
         // asset grid
-        typedef vector< vector<double> > AssetGrid;
+        typedef std::vector<std::vector<double> > AssetGrid;
 
         // payoff grid
-        typedef vector< vector<double> > PayoffGrid;        
+        typedef std::vector<std::vector<double> > PayoffGrid;        
 
+        //! least-square Monte Carlo engine
+        /*! \unstable This engine is known not to work for
+                      deeply out-of-the-money options. 
+                      More problems might surface.
+        */
         class AmericanMCVanillaEngine : public VanillaEngine {
-            public:
-                //AmericanMCVanillaEngine() {}
-                AmericanMCVanillaEngine(Size requiredSamples = Null<int>(), 
-                                        long seed = 0);
-                void calculate() const;  
-            private:
-                Size requiredSamples_; 
-                //maxSamples_;
-                //double requiredTolerance_;
-                long seed_;
+          public:
+            //AmericanMCVanillaEngine() {}
+            AmericanMCVanillaEngine(Size requiredSamples,
+                                    Size timeSteps,
+                                    long seed = 0);
+            void calculate() const;  
+          private:
+            Size requiredSamples_;
+            Size timeSteps_;
+            //maxSamples_;
+            //double requiredTolerance_;
+            long seed_;
         };
 
         // constructor
         inline
-        AmericanMCVanillaEngine::AmericanMCVanillaEngine (Size requiredSamples,
-                                                          long seed) :
-            requiredSamples_(requiredSamples),
-            seed_(seed) {}
+        AmericanMCVanillaEngine::AmericanMCVanillaEngine(Size requiredSamples,
+                                                         Size timeSteps,
+                                                         long seed) 
+        : requiredSamples_(requiredSamples), timeSteps_(timeSteps),
+          seed_(seed) {}
 
         // put all the asset prices into a vector.
         // s0 is not included in the vector
-        vector<double> getAssetSequence (const double s0,
-                                         const MonteCarlo::Path& path);
+        std::vector<double> getAssetSequence(double s0,
+                                             const MonteCarlo::Path& path);
         
         // get the Longstaff-Schwartz exampe asset prices
         // s0 is not included in the vector
-        void getLSAssetsExample (AssetGrid& assetPaths,
-                                 const int timeSteps);
+        void getLSAssetsExample(AssetGrid& assetPaths,
+                                int timeSteps);
     }
+
 }
 
 

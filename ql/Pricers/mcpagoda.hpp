@@ -23,8 +23,6 @@
 #define quantlib_pagoda_pricer_h
 
 #include <ql/Pricers/mcpricer.hpp>
-#include <ql/Math/matrix.hpp>
-#include <ql/Math/gaussianstatistics.hpp>
 #include <ql/MonteCarlo/mctypedefs.hpp>
 
 namespace QuantLib {

@@ -26,6 +26,10 @@
 /* Define this if error messages should include file and line information. */
 // #define QL_ERROR_LINES
 
+/* Define this if negative yield rates should be allowed. This might not be
+   safe. */
+/* #undef QL_NEGATIVE_RATES */
+
 /* Define this if extra safety checks should be performed. This can degrade
    performance. */
 // #define QL_EXTRA_SAFETY_CHECKS

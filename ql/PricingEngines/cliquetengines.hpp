@@ -22,7 +22,6 @@
 #ifndef quantlib_cliquet_engines_h
 #define quantlib_cliquet_engines_h
 
-#include <ql/PricingEngines/vanillaengines.hpp>
 #include <ql/PricingEngines/mcengine.hpp>
 
 namespace QuantLib {

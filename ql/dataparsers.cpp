@@ -22,7 +22,6 @@
 #include <ql/dataparsers.hpp>
 #include <ql/dataformatters.hpp>
 #include <ql/null.hpp>
-#include <vector>
 
 namespace QuantLib {
 

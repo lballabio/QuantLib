@@ -31,15 +31,16 @@ namespace QuantLib {
 namespace Math {
 
     //! Integral of a 1-dimensional function using the Gauss-Kronrod method
-    /*! References:  Gauss-Kronrod Integration
+    /*! References:
+        Gauss-Kronrod Integration
         http://mathcssun1.emporia.edu/~oneilcat/ExperimentApplet3/ExperimentApplet3.html
         NMS - Numerical Analysis Library
-        <http://www.math.iastate.edu/burkardt/f_src/nms/nms.html>
+        http://www.math.iastate.edu/burkardt/f_src/nms/nms.html
     */
 
     class KronrodIntegral {
       public:
-        KronrodIntegral(double tolerance_, int maxRecursionDepth);
+        KronrodIntegral(double tolerance_, long maxFunctionEvaluations);
 
         template <class F>
         double operator()(const F& f, double a, double b) {
@@ -49,17 +50,17 @@ namespace Math {
                        "b="+DoubleFormatter::toString(b));
             functionEvaluations_ = 0;
 
-            return GaussKronrod(f, a, b, tolerance_, 0);
+            return GaussKronrod(f, a, b, tolerance_);
         }
 
-        int functionEvaluations() { return functionEvaluations_; }
+        long functionEvaluations() { return functionEvaluations_; }
 
       private:
 
         template <class F>
         double GaussKronrod(const F& f,
                             const double a, const double b,
-                            const double tolerance, int recursionDepth) {
+                            const double tolerance) {
             // weights for 7-point Gauss-Legendre integration
             // (only 4 values out of 7 are given as they are symmetric)
             static const double g7w[]= { 0.417959183673469,
@@ -107,35 +108,35 @@ namespace Math {
             g7 = halflength * g7;
             k15 = halflength * k15;
 
-            // 15 more function evaluations has been used
+            // 15 more function evaluations have been used
             functionEvaluations_ += 15;
 
             // error is <= k15 - g7
-            // if error is larger than tolerance then split in interval
+            // if error is larger than tolerance then split the interval
             // in two and integrate recursively
             if (QL_FABS(k15 - g7) < tolerance)
                 return k15;
             else {
-                  QL_REQUIRE (recursionDepth++ <= maxRecursionDepth_,
-                    "maxRecursionDepth of "
-                    + IntegerFormatter::toString(maxRecursionDepth_)
+                QL_REQUIRE(functionEvaluations_+30 <= maxFunctionEvaluations_,
+                    "maxFunctionEvaluations of "
+                    + IntegerFormatter::toString(maxFunctionEvaluations_)
                     + " exceeded");
-                return GaussKronrod(f, a, center,
-                           tolerance/2, recursionDepth + 1)
-                       + GaussKronrod(f, center, b,
-                           tolerance/2, recursionDepth + 1);
+                return GaussKronrod(f, a, center, tolerance/2)
+                       + GaussKronrod(f, center, b, tolerance/2);
             }
         }
 
         double tolerance_;
-        int maxRecursionDepth_;
-        int functionEvaluations_;
+        long functionEvaluations_;
+        long maxFunctionEvaluations_;
     };
 
-     inline KronrodIntegral::KronrodIntegral
-         (double tolerance, int maxRecursionDepth = 50)
-    : tolerance_(tolerance), maxRecursionDepth_(maxRecursionDepth) {
+    inline KronrodIntegral::KronrodIntegral
+        (double tolerance, long maxFunctionEvaluations = 500)
+    : tolerance_(tolerance), maxFunctionEvaluations_(maxFunctionEvaluations) {
         QL_REQUIRE(tolerance > QL_EPSILON, "tolerance must be > 0");
+        QL_REQUIRE(maxFunctionEvaluations >= 15,
+                   "maxFunctionEvaluations must be >= 15");
     }
 
 }

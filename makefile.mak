@@ -18,6 +18,12 @@ quantlib::
     #$(MAKE) -DQL_DIR=".."
     cd ..
 
+# tests
+tests::
+    cd test-suite
+    $(MAKE) -DQL_DIR=".."
+    cd ..
+
 # Examples
 examples::
     cd Examples

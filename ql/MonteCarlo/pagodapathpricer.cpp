@@ -20,7 +20,6 @@
 */
 
 #include <ql/MonteCarlo/pagodapathpricer.hpp>
-#include <ql/dataformatters.hpp>
 
 namespace QuantLib {
 

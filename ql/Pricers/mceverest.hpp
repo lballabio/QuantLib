@@ -23,8 +23,6 @@
 #define quantlib_pricers_everest_pricer_h
 
 #include <ql/Pricers/mcpricer.hpp>
-#include <ql/Math/matrix.hpp>
-#include <ql/Math/statistics.hpp>
 #include <ql/MonteCarlo/mctypedefs.hpp>
 
 namespace QuantLib {

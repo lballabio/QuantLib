@@ -96,10 +96,9 @@ QL_CHECK_NAMESPACES
 QL_CHECK_STRING
 
 AM_PATH_CPPUNIT(1.8.0)
-AM_CONDITIONAL(CPPUNIT_FOUND, test "x${CPPUNIT_LIBS}" != "x")
 
-AC_C_CONST
-AC_C_INLINE
+AM_CONDITIONAL(CPPUNIT_FOUND, test "x${CPPUNIT_LIBS}" != "x")
+AM_CONDITIONAL(EMACS_FOUND, test "${EMACS}" != "no")
 
 # site configuration
 AC_ARG_ENABLE([extra-safety-checks],
@@ -113,6 +112,20 @@ if test "$ql_belt_and_braces" = "yes" ; then
    AC_DEFINE([QL_EXTRA_SAFETY_CHECKS],[1],
              [Define this if extra safety checks should be performed.
               This can degrade performance.])
+fi
+
+AC_ARG_ENABLE([negative-rates],
+              AC_HELP_STRING([--enable-negative-rates],
+                             [If enabled, negative yield rates are allowed
+                              in a few places where they are currently
+                              forbidden. It is still not clear whether
+                              this is safe.]),
+              [ql_negative_rates=$enableval],
+              [ql_negative_rates=no])
+if test "$ql_negative_rates" = "yes" ; then
+   AC_DEFINE([QL_NEGATIVE_RATES],[1],
+             [Define this if negative yield rates should be allowed.
+              This might not be safe.])
 fi
 
 AC_ARG_ENABLE([error-lines],
@@ -164,6 +177,16 @@ if test "$ql_early_swap_payments" = "yes" ; then
               of a swap.])
 fi
 fi
+
+AC_ARG_ENABLE([examples],
+              AC_HELP_STRING([--enable-examples],
+                             [If enabled, examples are built and installed
+                              when "make" and "make install" are invoked.
+                              If disabled (the default) they are built
+                              with "make examples" and not installed.]),
+              [ql_install_examples=$enableval],
+              [ql_install_examples=no])
+AM_CONDITIONAL(AUTO_EXAMPLES, test "$ql_install_examples" != "no")
 
 
 # manual configurations for specific hosts

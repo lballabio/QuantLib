@@ -21,8 +21,6 @@
 
 #include <ql/Instruments/quantoforwardvanillaoption.hpp>
 #include <ql/PricingEngines/forwardengines.hpp>
-#include <ql/PricingEngines/quantoengines.hpp>
-#include <ql/PricingEngines/vanillaengines.hpp>
 
 namespace QuantLib {
 

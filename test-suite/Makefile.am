@@ -1,6 +1,7 @@
 
 QL_TESTS = calendars.hpp calendars.cpp \
            capfloor.hpp capfloor.cpp \
+	   compoundforward.hpp compoundforward.cpp \
            covariance.hpp covariance.cpp \
            dates.hpp dates.cpp \
            daycounters.hpp daycounters.cpp \
@@ -29,7 +30,7 @@ if CPPUNIT_FOUND
 
 AM_CPPFLAGS = -I${top_srcdir} -I${top_builddir} ${CPPUNIT_CFLAGS}
 AM_LDFLAGS = ${CPPUNIT_LIBS}
-noinst_PROGRAMS = quantlib-test-suite
+bin_PROGRAMS = quantlib-test-suite
 quantlib_test_suite_SOURCES = ${QL_TESTS}
 quantlib_test_suite_LDADD = ../ql/libQuantLib.la
 TESTS = quantlib-test-suite

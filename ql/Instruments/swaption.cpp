@@ -97,30 +97,13 @@ namespace QuantLib {
 
             for (; begin != end; ++begin) {
                 Handle<Coupon> coupon = *begin;
-                // const Handle<Indexes::Xibor>& index = coupon->index();
-/*                Date fixingDate = index->calendar().advance(
-                    coupon->accrualStartDate(), -coupon->fixingDays(), Days,
-                    index->rollingConvention());
-                Date fixingValueDate = index->calendar().advance(
-                    fixingDate, index->settlementDays(), Days,
-                    index->rollingConvention());*/
                 Date resetDate = coupon->accrualStartDate(); // already rolled
-                //index->calendar().roll(
-                //    coupon->accrualStartDate(), index->rollingConvention());
-
                 Time time = counter.yearFraction(settlement, resetDate);
-
                 arguments->floatingResetTimes.push_back(time);
-/*
-                Date payDate = index->calendar().advance(
-                    coupon->accrualEndDate(), 
-                    index->settlementDays()-coupon->fixingDays(), Days,
-                    index->rollingConvention());
-*/
                 time = counter.yearFraction(settlement, coupon->date());
                 arguments->floatingPayTimes.push_back(time);
-                arguments->floatingAccrualTimes.push_back(coupon->accrualPeriod());
-
+                arguments->floatingAccrualTimes.push_back(
+                                               coupon->accrualPeriod());
             }
             arguments->exerciseType = exercise_.type();
             arguments->exerciseTimes.clear();

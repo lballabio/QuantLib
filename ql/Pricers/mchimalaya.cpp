@@ -19,7 +19,6 @@
     \brief Himalayan-type option pricer
 */
 
-#include <ql/handle.hpp>
 #include <ql/MonteCarlo/himalayapathpricer.hpp>
 #include <ql/MonteCarlo/mctypedefs.hpp>
 #include <ql/Pricers/mchimalaya.hpp>

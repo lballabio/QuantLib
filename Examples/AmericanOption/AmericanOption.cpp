@@ -41,8 +41,6 @@ int main(int argc, char* argv[])
         double strike = 40;
         Spread dividendYield = 0.00;
         Rate riskFreeRate = 0.06;
-        Size mcSeed = 12345;
-        Size nSamples = 200000;
         double volatility = 0.20;
 
         Date todaysDate(15, May, 1998);
@@ -50,7 +48,7 @@ int main(int argc, char* argv[])
         Date exerciseDate(17, May, 1999);
         DayCounter rateDayCounter = DayCounters::Actual365();
         Time maturity = rateDayCounter.yearFraction(settlementDate,
-            exerciseDate);
+                                                    exerciseDate);
         
         std::cout << "Time to maturity = "        << maturity
                   << std::endl;
@@ -69,16 +67,13 @@ int main(int argc, char* argv[])
         std::string method;
 
         double value, discrepancy, rightValue, relativeDiscrepancy;
-        rightValue = 4.478;
+        rightValue = (type == Option::Put ? 4.4867 : 2.1737);
 
         std::cout << std::endl ;
 
         // write column headings
         std::cout << "Method\t\tValue\tEstimatedError\tDiscrepancy"
             "\tRel. Discr." << std::endl;
-
-        // New option pricing framework
-        //std::cout << "\nNew Pricing engine framework" << std::endl;
 
         Date midlifeDate(19, November, 1998);
         std::vector<Date> exDates(2);
@@ -118,10 +113,14 @@ int main(int argc, char* argv[])
         strikes[3] = underlying*1.2;
 
         Matrix vols(4,4);
-        vols[0][0] = volatility*1.1; vols[0][1] = volatility; vols[0][2] = volatility*0.9; vols[0][3] = volatility*0.8;
-        vols[1][0] = volatility*1.1; vols[1][1] = volatility; vols[1][2] = volatility*0.9; vols[1][3] = volatility*0.8;
-        vols[2][0] = volatility*1.1; vols[2][1] = volatility; vols[2][2] = volatility*0.9; vols[2][3] = volatility*0.8;
-        vols[3][0] = volatility*1.1; vols[3][1] = volatility; vols[3][2] = volatility*0.9; vols[3][3] = volatility*0.8;
+        vols[0][0] = volatility*1.1; vols[0][1] = volatility; 
+            vols[0][2] = volatility*0.9; vols[0][3] = volatility*0.8;
+        vols[1][0] = volatility*1.1; vols[1][1] = volatility; 
+            vols[1][2] = volatility*0.9; vols[1][3] = volatility*0.8;
+        vols[2][0] = volatility*1.1; vols[2][1] = volatility; 
+            vols[2][2] = volatility*0.9; vols[2][3] = volatility*0.8;
+        vols[3][0] = volatility*1.1; vols[3][1] = volatility; 
+            vols[3][2] = volatility*0.9; vols[3][3] = volatility*0.8;
         RelinkableHandle<BlackVolTermStructure> blackSurface(
             Handle<BlackVolTermStructure> (new
             VolTermStructures::BlackVarianceSurface<
@@ -130,7 +129,7 @@ int main(int argc, char* argv[])
 			std::vector<double>::const_iterator,
             Math::Matrix> >(settlementDate, dates, strikes, vols)));
 
-
+        // European option
         Instruments::VanillaOption euroOption(
             type,
             underlyingH,
@@ -139,14 +138,10 @@ int main(int argc, char* argv[])
             flatTermStructure,
             exercise,
             flatVolTS,
-//            blackSurface,
             Handle<PricingEngine>(new AnalyticEuropeanEngine()));
 
-        
         // method: Black Scholes Engine
-        method = "Black Scholes";
-        euroOption.setPricingEngine(Handle<PricingEngine>(
-            new AnalyticEuropeanEngine()));
+        method = "european ";
         value = euroOption.NPV();
         discrepancy = QL_FABS(value-rightValue);
         relativeDiscrepancy = discrepancy/rightValue;
@@ -157,6 +152,7 @@ int main(int argc, char* argv[])
              << DoubleFormatter::toString(relativeDiscrepancy, 6)
              << std::endl;
 
+        // American option
         Instruments::VanillaOption option(
             type,
             underlyingH,
@@ -164,26 +160,9 @@ int main(int argc, char* argv[])
             flatDividendTS,
             flatTermStructure,
             amExercise,
-            flatVolTS,
-//            blackSurface,
-            Handle<PricingEngine>(new AnalyticEuropeanEngine()));
-
-        // method: Barone-Adesi Whaley approximation
-        method = "BAW Approx";
-      /*  option.setPricingEngine(Handle<PricingEngine>(
-            new BAWAmericanEngine()));
-        value = option.NPV();
-        discrepancy = QL_FABS(value-rightValue);
-        relativeDiscrepancy = discrepancy/rightValue;
-        std::cout << method << "\t"
-             << DoubleFormatter::toString(value, 4) << "\t"
-             << "N/A\t\t"
-             << DoubleFormatter::toString(discrepancy, 6) << "\t"
-             << DoubleFormatter::toString(relativeDiscrepancy, 6)
-             << std::endl;
-*/
+            flatVolTS);
         
-        Size timeSteps=800;
+        Size timeSteps = 800;
 
         // Binomial Method (JR)
         method = "Binomial (JR)";
@@ -261,63 +240,13 @@ int main(int argc, char* argv[])
              << DoubleFormatter::toString(relativeDiscrepancy, 6)
              << std::endl;
 
-        // Finite Differences Method
- /*       method = "Finite Diff.";
-        option.setPricingEngine(Handle<PricingEngine>(
-            new FDVanillaEngine()));
-        value = option.NPV();
-        discrepancy = QL_FABS(value-rightValue);
-        relativeDiscrepancy = discrepancy/rightValue;
-        std::cout << method << "\t"
-             << DoubleFormatter::toString(value, 4) << "\t"
-             << "N/A\t\t"
-             << DoubleFormatter::toString(discrepancy, 6) << "\t"
-             << DoubleFormatter::toString(relativeDiscrepancy, 6)
-             << std::endl;
-*/
-
-        // Monte Carlo Method
-        timeSteps = 365;
-        TimeGrid timeGrid(maturity, timeSteps);
-  //      method = "MC (crude)";
-  /*      Handle<PricingEngine> mcengine1(
-            MakeMCEuropeanEngine<PseudoRandom>().withStepsPerYear(timeSteps)
-                                                .withTolerance(0.02)
-                                                .withSeed(mcSeed));
-        option.setPricingEngine(mcengine1);
-        
-        value = option.NPV();
-        double errorEstimate = option.errorEstimate();
-        discrepancy = QL_FABS(value-rightValue);
-        relativeDiscrepancy = discrepancy/rightValue;
-        std::cout << method << "\t"
-             << DoubleFormatter::toString(value, 4) << "\t"
-             << DoubleFormatter::toString(errorEstimate, 4) << "\t\t"
-             << DoubleFormatter::toString(discrepancy, 6) << "\t"
-             << DoubleFormatter::toString(relativeDiscrepancy, 6)
-             << std::endl;
-*/
-        //method = "MC (Sobol)";
-/*
-        Handle<PricingEngine> mcengine2(
-            MakeMCEuropeanEngine<LowDiscrepancy>().withStepsPerYear(timeSteps)
-                                                  .withSamples(nSamples));
-        option.setPricingEngine(mcengine2);
-        
-        value = option.NPV();
-        discrepancy = QL_FABS(value-rightValue);
-        relativeDiscrepancy = discrepancy/rightValue;
-        std::cout << method << "\t"
-             << DoubleFormatter::toString(value, 4) << "\t"
-             << "N/A\t\t"
-             << DoubleFormatter::toString(discrepancy, 6) << "\t"
-             << DoubleFormatter::toString(relativeDiscrepancy, 6)
-             << std::endl;
-*/
         // Least Squares Monte Carlo: Longstaff Schwartz
-        method = "LSMC (monomial)";        
-        option.setPricingEngine(Handle<PricingEngine>(            
-        new AmericanMCVanillaEngine(nSamples, mcSeed)));    
+        method = "LSMC (monomial)";
+        Size mcSeed = 12345;
+        Size nSamples = 5000;
+        timeSteps = 100;
+        option.setPricingEngine(Handle<PricingEngine>(
+            new AmericanMCVanillaEngine(nSamples, timeSteps, mcSeed)));
         value = option.NPV();
         discrepancy = QL_FABS(value-rightValue);
         relativeDiscrepancy = discrepancy/rightValue;
@@ -328,8 +257,6 @@ int main(int argc, char* argv[])
             << DoubleFormatter::toString(relativeDiscrepancy, 6)
             << std::endl;
 
-
-        
         return 0;
     } catch (std::exception& e) {
         std::cout << e.what() << std::endl;

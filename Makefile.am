@@ -3,10 +3,12 @@ SUBDIRS=config ql man lib Docs Examples test-suite
 
 bin_SCRIPTS = quantlib-config
 
-lisp_LISP = quantlib.el
+if EMACS_FOUND
+dist_lisp_LISP = quantlib.el
+endif
 
 m4datadir = $(datadir)/aclocal
-m4data_DATA = quantlib.m4
+dist_m4data_DATA = quantlib.m4
 
 EXTRA_DIST = \
 	Authors.txt \
@@ -23,8 +25,7 @@ EXTRA_DIST = \
 	Readme.txt \
 	TODO.txt \
 	bootstrap \
-	makefile.mak \
-	quantlib.m4
+	makefile.mak
 
 examples:
 	$(MAKE) -C Examples examples

@@ -22,7 +22,6 @@
 #ifndef quantlib_blackvariancesurface_hpp
 #define quantlib_blackvariancesurface_hpp
 
-#include <ql/Math/matrix.hpp>
 #include <ql/voltermstructure.hpp>
 #include <ql/dataformatters.hpp>
 

@@ -23,7 +23,6 @@
 #define BSM_dividend_european_option_pricer_h
 
 #include <ql/Pricers/europeanoption.hpp>
-#include <vector>
 
 namespace QuantLib {
 

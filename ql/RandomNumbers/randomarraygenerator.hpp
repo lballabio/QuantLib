@@ -22,7 +22,6 @@
 #ifndef quantlib_montecarlo_random_array_generator_h
 #define quantlib_montecarlo_random_array_generator_h
 
-#include <ql/Math/matrix.hpp>
 #include <ql/MonteCarlo/sample.hpp>
 #include <ql/dataformatters.hpp>
 

@@ -19,9 +19,7 @@
     \brief Max Basket Monte Carlo pricer
 */
 
-#include <ql/handle.hpp>
 #include <ql/MonteCarlo/maxbasketpathpricer.hpp>
-#include <ql/MonteCarlo/mctypedefs.hpp>
 #include <ql/Pricers/mcmaxbasket.hpp>
 
 namespace QuantLib {

@@ -20,8 +20,6 @@
 */
 
 #include <ql/Instruments/swap.hpp>
-#include <ql/CashFlows/coupon.hpp>
-#include <ql/CashFlows/basispointsensitivity.hpp>
 
 /* The following checks whether the user wants coupon payments with
    date corresponding to the evaluation date to be included in the NPV.
@@ -41,8 +39,10 @@
 namespace QuantLib {
 
     using CashFlows::Coupon;
+    using CashFlows::FloatingRateCoupon;
     using CashFlows::BPSCalculator;
     using CashFlows::BPSBasketCalculator;
+    using CashFlows::TimeBasket;
 
     namespace Instruments {
 
@@ -68,8 +68,8 @@ namespace QuantLib {
             NPV_ = 0.0;
             firstLegBPS_ = 0.0;
             secondLegBPS_ = 0.0;
-	    double firstLegNPV_ = 0.0;
-	    double secondLegNPV_ = 0.0;
+            double firstLegNPV_ = 0.0;
+            double secondLegNPV_ = 0.0;
             isExpired_ = true;
 
             BPSBasketCalculator basketbps(termStructure_,2);
@@ -86,7 +86,7 @@ namespace QuantLib {
                                          // was already set isn't worth the
                                          // effort
                     firstLegNPV_ -= firstLeg_[i]->amount() *
-		       termStructure_->discount(cashFlowDate);
+                        termStructure_->discount(cashFlowDate);
                     firstLeg_[i]->accept(bps1);
                     firstLeg_[i]->accept(basketbps);
                 }
@@ -104,13 +104,12 @@ namespace QuantLib {
                 #endif
                     isExpired_ = false;
                     secondLegNPV_ += secondLeg_[j]->amount() *
-		       termStructure_->discount(cashFlowDate);
+                        termStructure_->discount(cashFlowDate);
                     secondLeg_[j]->accept(bps2);
                     secondLeg_[j]->accept(basketbps);
                 }
             }
-	    NPV_ = firstLegNPV_ + secondLegNPV_;
-	    fairRate_ = secondLegNPV_/QL_FABS(firstLegBPS_);
+            NPV_ = firstLegNPV_ + secondLegNPV_;
             secondLegBPS_ = bps2.result();
             sensitivity_ = basketbps.result();
         }

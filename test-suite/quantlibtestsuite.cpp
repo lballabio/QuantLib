@@ -23,6 +23,7 @@
 #include "qltestlistener.hpp"
 #include "calendars.hpp"
 #include "capfloor.hpp"
+#include "compoundforward.hpp"
 #include "covariance.hpp"
 #include "dates.hpp"
 #include "daycounters.hpp"
@@ -51,6 +52,7 @@ int main() {
 
     runner.addTest(new CalendarTest);
     runner.addTest(CapFloorTest::suite());
+    runner.addTest(CompoundForwardTest::suite());
     runner.addTest(CovarianceTest::suite());
     runner.addTest(new DateTest);
     runner.addTest(new DayCounterTest);

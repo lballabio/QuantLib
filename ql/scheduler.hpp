@@ -31,11 +31,29 @@ namespace QuantLib {
     class Scheduler {
       public:
         Scheduler(const Calendar& calendar,
-	    const Date& startDate, const Date& endDate,
-	    int frequency, RollingConvention rollingConvention,
-	    bool isAdjusted, const Date& stubDate = Date(),
-	    bool startFromEnd = 0, bool longFinal = 0);
+                  const Date& startDate, const Date& endDate,
+                  int frequency, RollingConvention rollingConvention,
+                  bool isAdjusted, const Date& stubDate = Date(),
+                  bool startFromEnd = false, bool longFinal = false);
         // inspectors
+        const Calendar& calendar() const {
+	    return calendar_;
+	}
+        const Date& startDate() const {
+	    return startDate_;
+	}
+	const Date& endDate() const {
+	    return endDate_;
+	}
+        int frequency() const {
+	    return frequency_;
+	}
+        RollingConvention const rollingConvention() const {
+	    return rollingConvention_;
+	}
+        bool isAdjusted() const {
+	    return isAdjusted_;
+	}
         Size size() const { return dates_.size(); }
         const Date& date(int i) const;
         bool isRegular(Size i) const;
@@ -55,9 +73,7 @@ namespace QuantLib {
         bool longFinal_;
         bool finalIsRegular_;
         std::vector<Date> dates_;
-        bool isEndOfMonth(const Date&) const;
     };
-
 
     inline const Date& Scheduler::date(int i) const {
         QL_REQUIRE(i >= 0 && i <= int(dates_.size()),
@@ -73,6 +89,47 @@ namespace QuantLib {
         return dates_[i];
     }
 
+    class MakeScheduler {
+      public:
+	MakeScheduler(const Calendar& calendar,
+		      const Date& startDate, const Date& endDate,
+		      int frequency, RollingConvention rollingConvention,
+		      bool isAdjusted)
+	: calendar_(calendar), startDate_(startDate), endDate_(endDate),
+	  frequency_(frequency), rollingConvention_(rollingConvention),
+	  isAdjusted_(isAdjusted),
+	  stubDate_(Date()), startFromEnd_(false), longFinal_(false) {}
+	MakeScheduler& withStubDate(const Date& d) {
+	    stubDate_ = d; return *this;
+	}
+	MakeScheduler& backwards(bool flag=true) {
+	    startFromEnd_ = flag; return *this;
+	}
+	MakeScheduler& forwards(bool flag=true) {
+	    startFromEnd_ = !flag; return *this;
+	}
+	MakeScheduler& longFinalPeriod(bool flag=true) {
+	    longFinal_ = flag; return *this;
+	}
+	MakeScheduler& shortFinalPeriod(bool flag=true) {
+	    longFinal_ = !flag; return *this;
+	}
+	operator Scheduler() {
+	    return Scheduler(calendar_,startDate_,endDate_,frequency_,
+			     rollingConvention_,isAdjusted_,stubDate_,
+			     startFromEnd_,longFinal_);
+	}
+      private:
+        Calendar calendar_;
+        Date startDate_, endDate_;
+        int frequency_;
+        RollingConvention rollingConvention_;
+        bool isAdjusted_;
+        Date stubDate_;
+        bool startFromEnd_;
+        bool longFinal_;
+    };
+    
 }
 
 

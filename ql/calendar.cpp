@@ -37,8 +37,8 @@ namespace QuantLib {
 		  return roll(d,Preceding);
 	       }
 	       if (c == MonthEndReference && origin != Date()) {
-		  if (isLastBusinessDayOfMonth(origin) &&
-		      !isLastBusinessDayOfMonth(d1)) {
+		  if (isEndOfMonth(origin) &&
+		      !isEndOfMonth(d1)) {
 		     d1 = Date(d1.lastDayOfMonth(),d1.month(),d1.year());
 		     return roll(d1,Preceding);
 		  }

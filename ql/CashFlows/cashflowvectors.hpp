@@ -24,12 +24,14 @@
 
 #include <ql/cashflow.hpp>
 #include <ql/Indexes/xibor.hpp>
+#include <ql/scheduler.hpp>
 
 namespace QuantLib {
 
     namespace CashFlows {
 
         //! helper function building a sequence of fixed rate coupons
+        /*! \deprecated use the version taking a Scheduler instead */
         std::vector<Handle<CashFlow> > FixedRateCouponVector(
             const std::vector<double>& nominals,
             const std::vector<Rate>& couponRates,
@@ -38,23 +40,31 @@ namespace QuantLib {
             RollingConvention rollingConvention, bool isAdjusted,
             const DayCounter& dayCount,
             const DayCounter& firstPeriodDayCount,
-            const Date& stubDate = Date(),
-	    bool startFromEnd = 0,
-	    bool longFinal = 0);
+            const Date& stubDate = Date());
 
+        //! helper function building a sequence of fixed rate coupons
         std::vector<Handle<CashFlow> > FixedRateCouponVector(
-          const std::vector<double>& nominals,
-          const std::vector<Rate>& couponRates,
-	  const std::vector<Date>& dates,
-          const Calendar& calendar,
-          RollingConvention roll,
-          const DayCounter& dayCounter);
+            const std::vector<double>& nominals,
+            const std::vector<Rate>& couponRates,
+            const DayCounter& dayCount, const DayCounter& firstPeriodDayCount,
+            const Scheduler& scheduler);
+	
+        //! helper function building a sequence of fixed rate coupons
+        std::vector<Handle<CashFlow> > FixedRateCouponVector(
+            const std::vector<double>& nominals,
+            const std::vector<Rate>& couponRates,
+            const std::vector<Date>& dates,
+            const Calendar& calendar,
+            RollingConvention roll,
+            const DayCounter& dayCounter);
+
         //! helper function building a sequence of par coupons
         /*! \warning The passing of a non-null stub date - i.e., the creation
             of a short/long first coupon - is currently disabled.
             \todo A suitable algorithm should be implemented for the
             calculation of the interpolated index fixing for a
             short/long first coupon.
+            \deprecated use the version taking a Scheduler instead.
         */
         std::vector<Handle<CashFlow> > FloatingRateCouponVector(
             const std::vector<double>& nominals,
@@ -64,17 +74,23 @@ namespace QuantLib {
             const Handle<Indexes::Xibor>& index,
             int fixingDays,
             const std::vector<Spread>& spreads, 
-            const Date& stubDate = Date(),
-	    bool startFromEnd = 0,
-	    bool longFinal = 0);
+            const Date& stubDate = Date());
 
+        //! helper function building a sequence of par coupons
         std::vector<Handle<CashFlow> > FloatingRateCouponVector(
-          const std::vector<double>& nominals,
-          const std::vector<Spread>& spreads,
-	  const std::vector<Date>& dates,
-          const Handle<Indexes::Xibor>& index, int fixingDays,
-          const Calendar& calendar,
-          RollingConvention roll);
+            const std::vector<double>& nominals,
+            const Handle<Indexes::Xibor>& index, int fixingDays,
+            const std::vector<Spread>& spreads,
+            const Scheduler& scheduler);
+
+        //! helper function building a sequence of par coupons
+        std::vector<Handle<CashFlow> > FloatingRateCouponVector(
+            const std::vector<double>& nominals,
+            const std::vector<Spread>& spreads,
+            const std::vector<Date>& dates,
+            const Handle<Indexes::Xibor>& index, int fixingDays,
+            const Calendar& calendar,
+            RollingConvention roll);
        
     }
 

@@ -24,7 +24,6 @@
 #define quantlib_vanilla_option_h
 
 #include <ql/option.hpp>
-#include <ql/termstructure.hpp>
 #include <ql/PricingEngines/vanillaengines.hpp>
 
 namespace QuantLib {
@@ -41,7 +40,8 @@ namespace QuantLib {
                           const RelinkableHandle<TermStructure>& riskFreeTS,
                           const Exercise& exercise,
                           const RelinkableHandle<BlackVolTermStructure>& volTS,
-                          const Handle<PricingEngine>& engine,
+                          const Handle<PricingEngine>& engine =
+                                                   Handle<PricingEngine>(),
                           const std::string& isinCode = "",
                           const std::string& description = "");
             //! \name greeks

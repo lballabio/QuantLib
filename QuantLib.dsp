@@ -1719,6 +1719,14 @@ SOURCE=.\ql\TermStructures\drifttermstructure.hpp
 # End Source File
 # Begin Source File
 
+SOURCE=.\ql\TermStructures\extendeddiscountcurve.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\TermStructures\extendeddiscountcurve.hpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\ql\TermStructures\flatforward.hpp
 # End Source File
 # Begin Source File

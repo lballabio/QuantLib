@@ -21,7 +21,6 @@
 */
 
 #include <ql/diffusionprocess.hpp>
-#include <ql/Volatilities/blackconstantvol.hpp>
 #include <ql/Volatilities/localvolsurface.hpp>
 #include <ql/Volatilities/localconstantvol.hpp>
 

@@ -21,6 +21,10 @@
  The members of the QuantLib Group are listed in the QuantLib License
 */
 
+/*! \example AmericanOption.cpp
+    This example calculates American options using different methods
+*/
+
 /*! \example BermudanSwaption.cpp
     This is an example of using the %QuantLib short rate models.
 */
@@ -30,7 +34,7 @@
 */
 
 /*! \example EuropeanOption.cpp
-    This example calculates European call options using different methods
+    This example calculates European options using different methods
     while testing call-put parity.
 */
 

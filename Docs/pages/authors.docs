@@ -197,10 +197,10 @@
     </tr>
 
     <tr>
-    <td><em>Niels Elken Sønderby</em></td>
-    <td>Gauss-Kronrod algorithm</td>
-    <td>nielsx@bigfoot.com</td>
-    <td><a href="http://sourceforge.net/users/enri/">nielses</a></td>
+    <td><em><a href="http://www.nielses.dk/">Niels Elken Sønderby</a></em></td>
+    <td>Gauss-Kronrod integration</td>
+    <td>mail@nielses.dk</td>
+    <td><a href="http://sourceforge.net/users/nielses/">nielses</a></td>
     </tr>
 
     <tr>
@@ -250,7 +250,7 @@
         \item Peter Schmitteckert (quantlib@schmitteckert.com)
         \item Enrico Sirola (enrico.sirola@riskmap.net)
         \item Maxim Sokolov (maxim\_sokolov@rambler.ru): examples
-        \item Niels Elken Sønderby: Gauss-Kronrod algorithm (nielsx@bigfoot.com)
+        \item Niels Elken Sønderby: Gauss-Kronrod integration
         \item Tomoya Kawanishi: Japan holidays fix
         \item David Schwartz: fixes for VC7
         \item Bernd Johannes Wuebben

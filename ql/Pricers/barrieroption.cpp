@@ -216,7 +216,7 @@ namespace QuantLib {
             gamma_ = (barrierPlus.value()
                       + barrierMinus.value() - 2.0 * value())/
                        ((underPlus-underlying_)*(underlying_-underMinu));
-            theta_ = (barrierTimePlus.value() - value())/
+            theta_ = -(barrierTimePlus.value() - value())/
                             (timePlus - residualTime_);
             greeksCalculated_ = true;
         }

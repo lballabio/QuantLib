@@ -45,9 +45,6 @@ namespace QuantLib {
           strike_(strike), exercise_(exercise), 
           riskFreeTS_(riskFreeTS), dividendTS_(dividendTS),
           volTS_(volTS) {
-            QL_REQUIRE(!engine.isNull(),
-                "VanillaOption::VanillaOption : "
-                "null engine or wrong engine type");
             registerWith(underlying_);
             registerWith(dividendTS_);
             registerWith(riskFreeTS_);

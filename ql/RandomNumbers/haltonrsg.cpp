@@ -33,7 +33,6 @@
 #include <ql/RandomNumbers/haltonrsg.hpp>
 #include <ql/RandomNumbers/rngtypedefs.hpp>
 #include <ql/Math/primenumbers.hpp>
-#include <iostream>
 
 namespace QuantLib {
 

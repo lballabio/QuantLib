@@ -22,8 +22,6 @@
 #include <ql/PricingEngines/vanillaengines.hpp>
 #include <ql/Math/segmentintegral.hpp>
 
-#include <ql/handle.hpp>
-
 namespace QuantLib {
 
     namespace {

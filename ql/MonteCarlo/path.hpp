@@ -24,9 +24,7 @@
 #define quantlib_montecarlo_path_h
 
 #include <ql/grid.hpp>
-#include <ql/array.hpp>
 #include <ql/handle.hpp>
-#include <vector>
 
 namespace QuantLib {
 

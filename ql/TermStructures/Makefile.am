@@ -7,6 +7,7 @@ include_HEADERS = \
     compoundforward.hpp \
     discountcurve.hpp \
     drifttermstructure.hpp \
+    extendeddiscountcurve.hpp \
     flatforward.hpp \
     forwardspreadedtermstructure.hpp \
     impliedtermstructure.hpp \
@@ -22,6 +23,7 @@ libTermStructures_la_SOURCES = \
     affinetermstructure.cpp \
     compoundforward.cpp \
     discountcurve.cpp \
+    extendeddiscountcurve.cpp \
     piecewiseflatforward.cpp \
     ratehelpers.cpp \
     zerocurve.cpp

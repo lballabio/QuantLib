@@ -22,7 +22,6 @@
 #ifndef quantlib_instruments_capfloor_h
 #define quantlib_instruments_capfloor_h
 
-#include <ql/dataformatters.hpp>
 #include <ql/numericalmethod.hpp>
 #include <ql/option.hpp>
 #include <ql/CashFlows/cashflowvectors.hpp>
@@ -36,19 +35,21 @@ namespace QuantLib {
           public:
             enum Type { Cap, Floor, Collar };
             VanillaCapFloor(Type type,
-                const std::vector<Handle<CashFlow> >& floatingLeg,
-                const std::vector<Rate>& capRates,
-                const std::vector<Rate>& floorRates,
-                const RelinkableHandle<TermStructure>& termStructure,
-                const Handle<PricingEngine>& engine)
-            : Option(engine), type_(type), floatingLeg_(floatingLeg),
-              capRates_(capRates), floorRates_(floorRates),
-              termStructure_(termStructure) {
-                std::vector<Handle<CashFlow> >::const_iterator i;
-                for (i = floatingLeg_.begin(); i != floatingLeg_.end(); ++i)
-                    registerWith(*i);
-                registerWith(termStructure);
-                registerWith(engine);
+                            const std::vector<Handle<CashFlow> >& floatingLeg,
+                            const std::vector<Rate>& capRates,
+                            const std::vector<Rate>& floorRates,
+                            const RelinkableHandle<TermStructure>& 
+                                termStructure,
+                            const Handle<PricingEngine>& engine);
+            Type type() const { return type_; }
+            const std::vector<Handle<CashFlow> >& leg() const {
+                return floatingLeg_;
+            }
+            const std::vector<Rate>& capRates() const {
+                return capRates_;
+            }
+            const std::vector<Rate>& floorRates() const {
+                return floorRates_;
             }
           protected:
             void performCalculations() const;
@@ -70,7 +71,7 @@ namespace QuantLib {
                 const RelinkableHandle<TermStructure>& termStructure,
                 const Handle<PricingEngine>& engine)
             : VanillaCapFloor(Cap, floatingLeg, 
-                              exerciseRates, std::vector<Rate>(1, 0.0),
+                              exerciseRates, std::vector<Rate>(),
                               termStructure, engine)
             {}
         };
@@ -84,7 +85,7 @@ namespace QuantLib {
                 const RelinkableHandle<TermStructure>& termStructure,
                 const Handle<PricingEngine>& engine)
             : VanillaCapFloor(Floor, floatingLeg, 
-                              std::vector<Rate>(1, 0.0), exerciseRates,
+                              std::vector<Rate>(), exerciseRates,
                               termStructure, engine)
             {}
         };

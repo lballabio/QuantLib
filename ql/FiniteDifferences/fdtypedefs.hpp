@@ -23,7 +23,6 @@
 #define quantlib_fd_typedefs_h
 
 #include <ql/FiniteDifferences/cranknicolson.hpp>
-#include <ql/FiniteDifferences/tridiagonaloperator.hpp>
 
 namespace QuantLib {
 

@@ -24,7 +24,6 @@
 #define quantlib_matrix_h
 
 #include <ql/array.hpp>
-#include <ql/disposable.hpp>
 #include <ql/Utilities/steppingiterator.hpp>
 
 namespace QuantLib {

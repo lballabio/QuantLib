@@ -16,6 +16,7 @@ OBJS = \
     affinetermstructure.obj$(_D) \
     compoundforward.obj$(_D) \
     discountcurve.obj$(_D) \
+    extendeddiscountcurve.obj$(_D) \
     piecewiseflatforward.obj$(_D) \
     ratehelpers.obj$(_D) \
     zerocurve.obj$(_D)

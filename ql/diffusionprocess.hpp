@@ -23,7 +23,6 @@
 #ifndef quantlib_diffusion_process_h
 #define quantlib_diffusion_process_h
 
-#include <ql/types.hpp>
 #include <ql/termstructure.hpp>
 #include <ql/voltermstructure.hpp>
 

@@ -23,10 +23,6 @@
 #define quantlib_sequence_statistics_hpp
 
 #include <ql/Math/statistics.hpp>
-#include <ql/Math/matrix.hpp>
-#include <algorithm>
-#include <iterator>
-#include <vector>
 
 namespace QuantLib {
 

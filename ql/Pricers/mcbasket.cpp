@@ -21,8 +21,6 @@
 
 #include <ql/handle.hpp>
 #include <ql/MonteCarlo/basketpathpricer.hpp>
-#include <ql/MonteCarlo/mctypedefs.hpp>
-#include <ql/MonteCarlo/mctraits.hpp>
 #include <ql/Pricers/mcbasket.hpp>
 
 namespace QuantLib {

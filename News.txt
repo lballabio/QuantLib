@@ -1,6 +1,6 @@
 check /Oi-
 
-2003-09-xx Release 0.3.3 
+2003-09-03 Release 0.3.3 
 Release 0.3.2 skipped
 Changes since Release 0.3.1:
     MONTE CARLO FRAMEWORK
@@ -64,22 +64,6 @@ Changes since Release 0.3.1:
       month.
     - Added basic date generation starting from the end.
 
-    MISCELLANEA
-    - QuEP 9 "generic disposable objects" implemented.
-    - Added test suite.
-    - Dataformatters extended to format long integers, Ordinal numerals, 
-      power of two formatting.
-    - Exercise class adopted.
-    - Added user configuration section.
-    - Inhibited automatic conversion of Handle<T> to RelinkableHandle<T>.
-    - Diffusion process extended.
-    - Added strikeSensitivity to the Greeks.
-    - BS does handle t==0.0 and sigma==0.0.
-    - TimeGrid has been reworked.
-    - Added payoff file for Payoff classes.  Added Cash-Or-Nothing and 
-      Asset-Or-Nothing payoff classes.
-    - Upgraded to use Doxygen 1.3.
-
     MATH
     - Added Gauss-Kronrod integration algorithm.
     - Added primitive polynomial modulo 2 up to dimension 18 (available up 
@@ -106,6 +90,22 @@ Changes since Release 0.3.1:
     - Introduced semiVariance and regret.
     - Redefinition of average shorfall (normalization factor now is 
       cumulative(target) instead of 1.0)
+
+    MISCELLANEA
+    - QuEP 9 "generic disposable objects" implemented.
+    - Added test suite.
+    - Dataformatters extended to format long integers, Ordinal numerals, 
+      power of two formatting.
+    - Exercise class adopted.
+    - Added user configuration section.
+    - Inhibited automatic conversion of Handle<T> to RelinkableHandle<T>.
+    - Diffusion process extended.
+    - Added strikeSensitivity to the Greeks.
+    - BS does handle t==0.0 and sigma==0.0.
+    - TimeGrid has been reworked.
+    - Added payoff file for Payoff classes.  Added Cash-Or-Nothing and 
+      Asset-Or-Nothing payoff classes.
+    - Upgraded to use Doxygen 1.3.
 
 
 =====================================================

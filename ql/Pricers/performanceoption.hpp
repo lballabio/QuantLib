@@ -23,7 +23,6 @@
 #define quantlib_pricers_performance_option_h
 
 #include <ql/Pricers/europeanoption.hpp>
-#include <vector>
 
 namespace QuantLib {
 

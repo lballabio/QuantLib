@@ -23,7 +23,6 @@
 #define quantlib_risk_measures_h
 
 #include <ql/null.hpp>
-#include <ql/dataformatters.hpp>
 #include <ql/Math/normaldistribution.hpp>
 
 

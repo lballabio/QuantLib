@@ -23,8 +23,6 @@
 #ifndef quantlib_gaussian_statistics_h
 #define quantlib_gaussian_statistics_h
 
-#include <ql/null.hpp>
-#include <ql/dataformatters.hpp>
 #include <ql/Math/normaldistribution.hpp>
 
 namespace QuantLib {
