@@ -27,6 +27,9 @@
 
     $Source$
     $Log$
+    Revision 1.9  2001/04/11 11:52:30  marmar
+    Bug fixed in gamma(), (thanks to JH)
+
     Revision 1.8  2001/04/09 14:13:34  nando
     all the *.hpp moved below the Include/ql level
 
@@ -185,7 +188,7 @@ namespace QuantLib {
 
             gamma_ = (barrierPlus.value()
                       + barrierMinus.value() - 2.0 * value())/
-                                         (underPlus-underMinu);
+                       (underPlus-underlying_)*(underlying_-underMinu);
             theta_ = (barrierTimePlus.value() - value())/
                             (timePlus - residualTime_);
             greeksCalculated_ = true;
