@@ -1,3 +1,175 @@
+2001-12-18 16:26  'Ferdinando Ametrano <ferdinando@ametrano.net>'
+
+	* TODO.txt (1.73): updated
+
+2001-12-18 12:02  'Ferdinando Ametrano <ferdinando@ametrano.net>'
+
+	* QuantLib.dsp (1.67), QuantLib.mak (1.54): updated
+
+2001-12-18 12:00  'Marco Marchioro <marco.marchioro@riskmap.net>'
+
+	* ql/termstructure.hpp (1.14): Fixed forward-spreaded term
+	structure
+
+2001-12-18 11:58  'Ferdinando Ametrano <ferdinando@ametrano.net>'
+
+	* ql/: constraint.hpp (1.3), Instruments/capfloor.cpp (1.6),
+	Instruments/capfloor.hpp (1.6), InterestRateModelling/grid.hpp
+	(1.6), InterestRateModelling/model.hpp (1.8),
+	InterestRateModelling/onefactormodel.cpp (1.5),
+	InterestRateModelling/swapfuturevalue.cpp (1.5),
+	InterestRateModelling/CalibrationHelpers/cap.cpp (1.6),
+	InterestRateModelling/CalibrationHelpers/cap.hpp (1.5),
+	InterestRateModelling/CalibrationHelpers/swaption.cpp (1.7),
+	InterestRateModelling/CalibrationHelpers/swaption.hpp (1.4),
+	InterestRateModelling/OneFactorModels/blackdermanandtoy.cpp (1.8),
+	InterestRateModelling/OneFactorModels/blackdermanandtoy.hpp (1.4),
+	InterestRateModelling/OneFactorModels/blackkarasinski.cpp (1.6),
+	InterestRateModelling/OneFactorModels/blackkarasinski.hpp (1.6),
+	InterestRateModelling/OneFactorModels/node.hpp (1.3),
+	Optimization/leastsquare.hpp (1.7), Pricers/fdeuropeanswaption.cpp
+	(1.5), Pricers/fdeuropeanswaption.hpp (1.5): 'unsigned int'
+	replaced by size_t
+
+2001-12-18 11:48  'Ferdinando Ametrano <ferdinando@ametrano.net>'
+
+	* ql/: quantlib.hpp (1.30), FiniteDifferences/Makefile.am (1.10),
+	FiniteDifferences/americancondition.hpp (1.1),
+	FiniteDifferences/shoutcondition.hpp (1.1),
+	FiniteDifferences/swaptioncondition.hpp (1.1), Pricers/Makefile.am
+	(1.20), Pricers/americancondition.hpp (1.5),
+	Pricers/fdamericanoption.hpp (1.2),
+	Pricers/fddividendshoutoption.cpp (1.3),
+	Pricers/fddividendshoutoption.hpp (1.3),
+	Pricers/fdeuropeanswaption.hpp (1.4),
+	Pricers/fdmultiperiodoption.cpp (1.2), Pricers/fdshoutoption.hpp
+	(1.2), Pricers/shoutcondition.hpp (1.5),
+	Pricers/swaptioncondition.hpp (1.4): Finite Difference exercise
+	conditions are now in the FiniteDifferences folder/namespace
+	
+	Also added a couple of missing header files to quantlib.hpp
+
+2001-12-17 16:55  'Luigi Ballabio <luigi.ballabio@riskmap.net>'
+
+	* ql/Pricers/mcpricer.hpp (1.13): Unincluded iostream
+
+2001-12-17 16:27  'Ferdinando Ametrano <ferdinando@ametrano.net>'
+
+	* Examples/EuropeanOption/EuropeanOption.cpp (1.10),
+	ql/Pricers/fddividendshoutoption.cpp (1.2),
+	ql/Pricers/fddividendshoutoption.hpp (1.2),
+	ql/Pricers/fdeuropean.cpp (1.2), ql/Pricers/fdeuropean.hpp (1.2):
+	Finite Difference pricers now start with 'Fd' letters
+
+2001-12-17 16:10  'Ferdinando Ametrano <ferdinando@ametrano.net>'
+
+	* QuantLib.dsp (1.66), QuantLib.mak (1.53): Finite Difference
+	pricers now start with 'Fd' letters
+
+2001-12-17 16:01  'Ferdinando Ametrano <ferdinando@ametrano.net>'
+
+	* ql/: quantlib.hpp (1.29), FiniteDifferences/valueatcenter.cpp
+	(1.6), Pricers/Makefile.am (1.19), Pricers/americanoption.hpp
+	(1.7), Pricers/bermudanoption.cpp (1.6), Pricers/bermudanoption.hpp
+	(1.6), Pricers/bsmfdoption.cpp (1.2), Pricers/bsmfdoption.hpp
+	(1.2), Pricers/dividendamericanoption.cpp (1.6),
+	Pricers/dividendamericanoption.hpp (1.6),
+	Pricers/dividendeuropeanoption.cpp (1.7),
+	Pricers/dividendeuropeanoption.hpp (1.7),
+	Pricers/dividendoption.cpp (1.8), Pricers/dividendoption.hpp (1.6),
+	Pricers/dividendshoutoption.cpp (1.6),
+	Pricers/dividendshoutoption.hpp (1.6), Pricers/fdamericanoption.hpp
+	(1.1), Pricers/fdbermudanoption.cpp (1.1),
+	Pricers/fdbermudanoption.hpp (1.1), Pricers/fdbsmoption.cpp (1.1),
+	Pricers/fdbsmoption.hpp (1.1), Pricers/fddividendamericanoption.cpp
+	(1.1), Pricers/fddividendamericanoption.hpp (1.1),
+	Pricers/fddividendeuropeanoption.cpp (1.1),
+	Pricers/fddividendeuropeanoption.hpp (1.1),
+	Pricers/fddividendoption.cpp (1.1), Pricers/fddividendoption.hpp
+	(1.1), Pricers/fddividendshoutoption.cpp (1.1),
+	Pricers/fddividendshoutoption.hpp (1.1), Pricers/fdeuropean.cpp
+	(1.1), Pricers/fdeuropean.hpp (1.1),
+	Pricers/fdmultiperiodoption.cpp (1.1),
+	Pricers/fdmultiperiodoption.hpp (1.1), Pricers/fdshoutoption.hpp
+	(1.1), Pricers/fdstepconditionoption.cpp (1.1),
+	Pricers/fdstepconditionoption.hpp (1.1),
+	Pricers/finitedifferenceeuropean.cpp (1.8),
+	Pricers/finitedifferenceeuropean.hpp (1.10), Pricers/makefile.mak
+	(1.12), Pricers/multiperiodoption.cpp (1.8),
+	Pricers/multiperiodoption.hpp (1.11), Pricers/shoutoption.hpp
+	(1.6), Pricers/stepconditionoption.cpp (1.8),
+	Pricers/stepconditionoption.hpp (1.8): Finite Difference pricers
+	now start with 'Fd' letters
+
+2001-12-17 14:43  'Ferdinando Ametrano <ferdinando@ametrano.net>'
+
+	* News.txt (1.16), QuantLib.dsp (1.65), QuantLib.mak (1.52),
+	ql/quantlib.hpp (1.28), ql/FiniteDifferences/valueatcenter.cpp
+	(1.5), ql/Pricers/Makefile.am (1.18), ql/Pricers/bsmfdoption.cpp
+	(1.1), ql/Pricers/bsmfdoption.hpp (1.1),
+	ql/Pricers/bsmnumericaloption.cpp (1.8),
+	ql/Pricers/bsmnumericaloption.hpp (1.7),
+	ql/Pricers/finitedifferenceeuropean.cpp (1.7),
+	ql/Pricers/finitedifferenceeuropean.hpp (1.9),
+	ql/Pricers/makefile.mak (1.11), ql/Pricers/multiperiodoption.cpp
+	(1.7), ql/Pricers/multiperiodoption.hpp (1.10),
+	ql/Pricers/stepconditionoption.cpp (1.7),
+	ql/Pricers/stepconditionoption.hpp (1.7): BSMNumericalOption became
+	BsmFdOption
+
+2001-12-17 14:39  'Marco Marchioro <marco.marchioro@riskmap.net>'
+
+	* ql/termstructure.hpp (1.13): small bug fixed
+
+2001-12-17 12:38  'Marco Marchioro <marco.marchioro@riskmap.net>'
+
+	* ql/termstructure.hpp (1.12): introduced
+	ForwardSpreadedTermStructure
+
+2001-12-14 15:51  'Ferdinando Ametrano <ferdinando@ametrano.net>'
+
+	* ql/Math/statistics.hpp (1.8): added downsideVariance
+
+2001-12-14 13:44  'Ferdinando Ametrano <ferdinando@ametrano.net>'
+
+	* TODO.txt (1.72): updated
+
+2001-12-14 10:04  'Marco Marchioro <marco.marchioro@riskmap.net>'
+
+	* ql/TermStructures/piecewiseflatforward.hpp (1.13): default
+	accuracy set to 1e-12
+
+2001-12-14 09:52  'Ferdinando Ametrano <ferdinando@ametrano.net>'
+
+	* News.txt (1.15): added "-cvs-debug" to version string ifdef
+	QL_DEBUG
+
+2001-12-14 09:49  'Ferdinando Ametrano <ferdinando@ametrano.net>'
+
+	* ql/qldefines.hpp (1.25): added "-cvs-debug" to version string
+	ifdef QL_DEBUG
+
+2001-12-13 18:51  'Ferdinando Ametrano <ferdinando@ametrano.net>'
+
+	* ql/MonteCarlo/multipathgenerator.hpp (1.23): typo fixed
+
+2001-12-13 18:45  'Ferdinando Ametrano <ferdinando@ametrano.net>'
+
+	* ql/MonteCarlo/: multipathgenerator.hpp (1.21),
+	multipathgenerator.hpp (1.22): typo fixed
+
+2001-12-13 18:44  'Ferdinando Ametrano <ferdinando@ametrano.net>'
+
+	* TODO.txt (1.71): updated
+
+2001-12-13 18:37  'Ferdinando Ametrano <ferdinando@ametrano.net>'
+
+	* News.txt (1.14): updated
+
+2001-12-13 18:33  'Ferdinando Ametrano <ferdinando@ametrano.net>'
+
+	* ChangeLog.txt (1.9): updated
+
 2001-12-13 18:24  'Ferdinando Ametrano <ferdinando@ametrano.net>'
 
 	* News.txt (1.13), TODO.txt (1.70): updated
