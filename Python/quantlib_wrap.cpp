@@ -734,7 +734,7 @@ typedef Handle<TermStructure> TermStructureHandle;
 
 using QuantLib::ImpliedTermStructure;
 
-TermStructureHandle NewImpliedTermStructure(TermStructureHandle curve, 
+TermStructureHandle NewImpliedTermStructure(TermStructureHandle curve,
   Date evaluationDate) {
 	return Handle<TermStructure>(
 	  new ImpliedTermStructure(curve,evaluationDate));
@@ -742,14 +742,14 @@ TermStructureHandle NewImpliedTermStructure(TermStructureHandle curve,
 
 using QuantLib::SpreadedTermStructure;
 
-TermStructureHandle NewSpreadedTermStructure(TermStructureHandle curve, 
+TermStructureHandle NewSpreadedTermStructure(TermStructureHandle curve,
   Spread spread) {
 	return Handle<TermStructure>(new SpreadedTermStructure(curve,spread));
 }
 
 using QuantLib::TermStructures::FlatForward;
 
-TermStructureHandle NewFlatForward(CurrencyHandle currency, 
+TermStructureHandle NewFlatForward(CurrencyHandle currency,
   DayCounterHandle dayCounter, Date today, Rate forward) {
 	return Handle<TermStructure>(
 	  new FlatForward(currency,dayCounter,today,forward));
@@ -760,7 +760,7 @@ using QuantLib::Deposit;
 
 typedef std::vector<Deposit> DepositList;
 
-TermStructureHandle NewPiecewiseConstantForwards(CurrencyHandle currency, 
+TermStructureHandle NewPiecewiseConstantForwards(CurrencyHandle currency,
   DayCounterHandle dayCounter, Date today, DepositList deposits) {
 	return Handle<TermStructure>(
 	  new PiecewiseConstantForwards(currency,dayCounter,today,deposits));
@@ -5977,9 +5977,9 @@ static PyObject *_wrap_TermStructure_minDate(PyObject *self, PyObject *args, PyO
 }
 
 
-Rate  TermStructureHandle_zeroYield(TermStructureHandle *self,Date const &d) {
+Rate  TermStructureHandle_zeroYield(TermStructureHandle *self,Date const &d,bool extrapolate) {
     {
-        return (*self)->zeroYield(d);
+        return (*self)->zeroYield(d, extrapolate);
     }
 }
 
@@ -5988,19 +5988,22 @@ static PyObject *_wrap_TermStructure_zeroYield(PyObject *self, PyObject *args, P
     PyObject *resultobj;
     TermStructureHandle *arg0 ;
     Date *arg1 ;
+    bool arg2 = false ;
     PyObject * argo0 =0 ;
     PyObject * argo1 =0 ;
+    int tempbool2 = (int) false ;
     char *kwnames[] = {
-        "self","d", NULL 
+        "self","d","extrapolate", NULL 
     };
     Rate result ;
     
-    if(!PyArg_ParseTupleAndKeywords(args,kwargs,"OO:TermStructure_zeroYield",kwnames,&argo0,&argo1)) return NULL;
+    if(!PyArg_ParseTupleAndKeywords(args,kwargs,"OO|i:TermStructure_zeroYield",kwnames,&argo0,&argo1,&tempbool2)) return NULL;
     if ((SWIG_ConvertPtr(argo0,(void **) &arg0,SWIGTYPE_p_TermStructureHandle,1)) == -1) return NULL;
     if ((SWIG_ConvertPtr(argo1,(void **) &arg1,SWIGTYPE_p_Date,1)) == -1) return NULL;
+    arg2 = (bool ) tempbool2;
     {
         try {
-            result = (Rate )TermStructureHandle_zeroYield(arg0,(Date const &)*arg1);
+            result = (Rate )TermStructureHandle_zeroYield(arg0,(Date const &)*arg1,arg2);
             
         }catch (std::exception& e) {
             PyErr_SetString(PyExc_Exception,e.what());
@@ -6014,9 +6017,9 @@ static PyObject *_wrap_TermStructure_zeroYield(PyObject *self, PyObject *args, P
 }
 
 
-DiscountFactor  TermStructureHandle_discount(TermStructureHandle *self,Date const &d) {
+DiscountFactor  TermStructureHandle_discount(TermStructureHandle *self,Date const &d,bool extrapolate) {
     {
-        return (*self)->discount(d);
+        return (*self)->discount(d, extrapolate);
     }
 }
 
@@ -6025,19 +6028,22 @@ static PyObject *_wrap_TermStructure_discount(PyObject *self, PyObject *args, Py
     PyObject *resultobj;
     TermStructureHandle *arg0 ;
     Date *arg1 ;
+    bool arg2 = false ;
     PyObject * argo0 =0 ;
     PyObject * argo1 =0 ;
+    int tempbool2 = (int) false ;
     char *kwnames[] = {
-        "self","d", NULL 
+        "self","d","extrapolate", NULL 
     };
     DiscountFactor result ;
     
-    if(!PyArg_ParseTupleAndKeywords(args,kwargs,"OO:TermStructure_discount",kwnames,&argo0,&argo1)) return NULL;
+    if(!PyArg_ParseTupleAndKeywords(args,kwargs,"OO|i:TermStructure_discount",kwnames,&argo0,&argo1,&tempbool2)) return NULL;
     if ((SWIG_ConvertPtr(argo0,(void **) &arg0,SWIGTYPE_p_TermStructureHandle,1)) == -1) return NULL;
     if ((SWIG_ConvertPtr(argo1,(void **) &arg1,SWIGTYPE_p_Date,1)) == -1) return NULL;
+    arg2 = (bool ) tempbool2;
     {
         try {
-            result = (DiscountFactor )TermStructureHandle_discount(arg0,(Date const &)*arg1);
+            result = (DiscountFactor )TermStructureHandle_discount(arg0,(Date const &)*arg1,arg2);
             
         }catch (std::exception& e) {
             PyErr_SetString(PyExc_Exception,e.what());
@@ -6051,9 +6057,9 @@ static PyObject *_wrap_TermStructure_discount(PyObject *self, PyObject *args, Py
 }
 
 
-Rate  TermStructureHandle_forward(TermStructureHandle *self,Date const &d) {
+Rate  TermStructureHandle_forward(TermStructureHandle *self,Date const &d,bool extrapolate) {
     {
-        return (*self)->forward(d);
+        return (*self)->forward(d, extrapolate);
     }
 }
 
@@ -6062,19 +6068,22 @@ static PyObject *_wrap_TermStructure_forward(PyObject *self, PyObject *args, PyO
     PyObject *resultobj;
     TermStructureHandle *arg0 ;
     Date *arg1 ;
+    bool arg2 = false ;
     PyObject * argo0 =0 ;
     PyObject * argo1 =0 ;
+    int tempbool2 = (int) false ;
     char *kwnames[] = {
-        "self","d", NULL 
+        "self","d","extrapolate", NULL 
     };
     Rate result ;
     
-    if(!PyArg_ParseTupleAndKeywords(args,kwargs,"OO:TermStructure_forward",kwnames,&argo0,&argo1)) return NULL;
+    if(!PyArg_ParseTupleAndKeywords(args,kwargs,"OO|i:TermStructure_forward",kwnames,&argo0,&argo1,&tempbool2)) return NULL;
     if ((SWIG_ConvertPtr(argo0,(void **) &arg0,SWIGTYPE_p_TermStructureHandle,1)) == -1) return NULL;
     if ((SWIG_ConvertPtr(argo1,(void **) &arg1,SWIGTYPE_p_Date,1)) == -1) return NULL;
+    arg2 = (bool ) tempbool2;
     {
         try {
-            result = (Rate )TermStructureHandle_forward(arg0,(Date const &)*arg1);
+            result = (Rate )TermStructureHandle_forward(arg0,(Date const &)*arg1,arg2);
             
         }catch (std::exception& e) {
             PyErr_SetString(PyExc_Exception,e.what());
