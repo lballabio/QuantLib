@@ -19,7 +19,7 @@ OBJS = \
        binomialvanillaengine.obj$(_D) \
        discretizedvanillaoption.obj$(_D) \
        fdvanillaengine.obj$(_D) \
-       integraleuropeanengine.obj$(_D)
+       integralengines.obj$(_D)
 
 
 # Tools to be used

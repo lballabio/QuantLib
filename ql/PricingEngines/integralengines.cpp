@@ -15,11 +15,11 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file integraleuropeanengine.cpp
-    \brief European option engine using integral approach
+/*! \file integralengines.cpp
+    \brief Option engines using the integral approach
 
     \fullpath
-    ql/PricingEngines/%integraleuropeanengine.cpp
+    ql/PricingEngines/%integralengines.cpp
 */
 
 // $Id$
@@ -30,12 +30,12 @@
 namespace QuantLib {
 
     namespace {
-        class WeightedPayoff : std::unary_function<double,double> {
+        class Integrand : std::unary_function<double,double> {
         public:
-            WeightedPayoff(Payoff payoff,
-                   double s0,
-                   double drift,
-                   double variance)
+            Integrand(const Payoff& payoff,
+                      double s0,
+                      double drift,
+                      double variance)
            : payoff_(payoff), s0_(s0), drift_(drift), variance_(variance) {}
             double operator()(double x) const {
                 return payoff_(s0_*QL_EXP(x)) *
@@ -50,14 +50,14 @@ namespace QuantLib {
 
     namespace PricingEngines {
 
-        void IntegralEuropeanEngine::calculate() const {
+        void IntegralEngine::calculate() const {
 
             QL_REQUIRE(arguments_.exerciseType == Exercise::European,
                 "IntegralEuropeanEngine::calculate() : "
                 "not an European Option");
 
             double variance = arguments_.volTS->blackVariance(
-                arguments_.maturity, arguments_.payoff.strike());
+                arguments_.maturity, arguments_.strike);
 
             Rate dividendRate =
                 arguments_.dividendTS->zeroYield(arguments_.maturity);
@@ -66,15 +66,14 @@ namespace QuantLib {
             double drift = (riskFreeRate - dividendRate) * arguments_.maturity
                 - 0.5 * variance;
 
-            WeightedPayoff po(arguments_.payoff, arguments_.underlying,
-                drift, variance);
+            Integrand f(payoff(), arguments_.underlying, drift, variance);
             QuantLib::Math::SegmentIntegral integrator(5000);
 
             double infinity = 10.0*QL_SQRT(variance);
             results_.value =
                 arguments_.riskFreeTS->discount(arguments_.maturity) /
                 QL_SQRT(2.0*M_PI*variance) *
-                integrator(po, drift-infinity, drift+infinity);
+                integrator(f, drift-infinity, drift+infinity);
         }
 
     }

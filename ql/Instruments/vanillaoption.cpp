@@ -46,8 +46,8 @@ namespace QuantLib {
             const Handle<PricingEngine>& engine,
             const std::string& isinCode, const std::string& description)
         : Option(engine, isinCode, description),
-          underlying_(underlying),
-          payoff_(type, strike), dividendTS_(dividendTS), riskFreeTS_(riskFreeTS),
+          type_(type), underlying_(underlying),
+          strike_(strike), dividendTS_(dividendTS), riskFreeTS_(riskFreeTS),
           exercise_(exercise), volTS_(volTS) {
             QL_REQUIRE(!engine.isNull(),
                 "VanillaOption::VanillaOption : "
@@ -131,7 +131,8 @@ namespace QuantLib {
                        "VanillaOption::setupEngine : "
                        "pricing engine does not supply needed arguments");
 
-            arguments->payoff = payoff_;
+            arguments->strike = strike_;
+            arguments->type = type_;
 
             QL_REQUIRE(!underlying_.isNull(),
                        "VanillaOption::setupEngine : "

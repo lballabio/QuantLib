@@ -292,8 +292,8 @@ namespace QuantLib {
         MCEuropeanEngine<S, SG, PG>::pathPricer() const {
             //! Initialize the path pricer
             return Handle<MonteCarlo::PathPricer<MonteCarlo::Path> >(
-                new MonteCarlo::EuropeanPathPricer(arguments_.payoff.optionType(),
-                arguments_.underlying, arguments_.payoff.strike(),
+                new MonteCarlo::EuropeanPathPricer(arguments_.type,
+                arguments_.underlying, arguments_.strike,
                 arguments_.riskFreeTS));
         }
 
