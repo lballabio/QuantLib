@@ -1,7 +1,7 @@
 [Project]
 FileName=QuantLib.dev
 Name=QuantLib
-UnitCount=563
+UnitCount=567
 Type=2
 Ver=1
 ObjFiles=
@@ -5678,9 +5678,9 @@ OverrideBuildCmd=0
 BuildCmd=
 
 [Unit564]
-FileName=ql\numericalmethod.hpp
+FileName=ql\Instruments\fixedcouponbond.hpp
 CompileCpp=1
-Folder=QuantLib
+Folder=Instruments
 Compile=1
 Link=1
 Priority=1000
@@ -5688,9 +5688,9 @@ OverrideBuildCmd=0
 BuildCmd=
 
 [Unit565]
-FileName=ql\option.hpp
+FileName=ql\Instruments\bond.cpp
 CompileCpp=1
-Folder=QuantLib
+Folder=Instruments
 Compile=1
 Link=1
 Priority=1000
@@ -5698,9 +5698,9 @@ OverrideBuildCmd=0
 BuildCmd=
 
 [Unit566]
-FileName=ql\payoff.hpp
+FileName=ql\Instruments\bond.hpp
 CompileCpp=1
-Folder=QuantLib
+Folder=Instruments
 Compile=1
 Link=1
 Priority=1000
@@ -5708,9 +5708,9 @@ OverrideBuildCmd=0
 BuildCmd=
 
 [Unit567]
-FileName=ql\pricingengine.hpp
+FileName=ql\Instruments\fixedcouponbond.cpp
 CompileCpp=1
-Folder=QuantLib
+Folder=Instruments
 Compile=1
 Link=1
 Priority=1000

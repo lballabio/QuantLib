@@ -1,7 +1,7 @@
 [Project]
 FileName=QuantLib-test-suite.dev
 Name=QuantLib-test-suite
-UnitCount=83
+UnitCount=85
 Type=1
 Ver=1
 ObjFiles=
@@ -12,7 +12,7 @@ ResourceIncludes=
 MakeIncludes=
 Compiler=
 CppCompiler=
-Linker=../lib/libQuantLib-mgw-0_3_9.a_@@_../lib/libQuantLibFunctions-mgw-0_3_9.a_@@_-lboost_unit_test_framework-mgw-mt-1_31_@@_
+Linker=../lib/libQuantLib-mgw-0_3_9.a_@@_../lib/libQuantLibFunctions-mgw-0_3_9.a_@@_-lboost_unit_test_framework-mgw-mt_@@_
 IsCpp=1
 Icon=
 ExeOutput=./bin
@@ -869,6 +869,26 @@ BuildCmd=
 
 [Unit83]
 FileName=americanoption.hpp
+CompileCpp=1
+Folder=QuantLib-test-suite
+Compile=1
+Link=1
+Priority=1000
+OverrideBuildCmd=0
+BuildCmd=
+
+[Unit84]
+FileName=bonds.hpp
+CompileCpp=1
+Folder=QuantLib-test-suite
+Compile=1
+Link=1
+Priority=1000
+OverrideBuildCmd=0
+BuildCmd=
+
+[Unit85]
+FileName=bonds.cpp
 CompileCpp=1
 Folder=QuantLib-test-suite
 Compile=1
