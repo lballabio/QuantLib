@@ -1,5 +1,6 @@
 
 /*
+ Copyright (C) 2004 Ferdinando Ametrano
  Copyright (C) 2004 Neil Firth
 
  This file is part of QuantLib, a free-software/open-source library
@@ -31,43 +32,36 @@ namespace QuantLib {
     namespace {
 
         // calculate the value of euro min basket call
-        double euroTwoAssetMinBasketCall(double s1_0, double s2_0, 
-                                         double strike, 
+        double euroTwoAssetMinBasketCall(double forward1, double forward2, 
+                                         double strike,
                                          DiscountFactor riskFreeDiscount, 
-                                         Rate intRate, 
-                                         double vol_s1, double vol_s2, 
-                                         double rho, Time expiry) {
+                                         double variance1, double variance2, 
+                                         double rho) {
 
-            double rootExpiry = QL_SQRT(expiry);
+            double stdDev1 = QL_SQRT(variance1);
+            double stdDev2 = QL_SQRT(variance2);
 
-            double gamma1;
-            double gamma2;
+            double gamma1, a1;
+            double gamma2, a2;
             if (strike != 0.0) {
-                gamma1 = (QL_LOG(s1_0 / strike) + 
-                          (intRate - 0.5 * vol_s1 * vol_s1) * expiry) / 
-                    (vol_s1 * rootExpiry);
-                gamma2 = (QL_LOG(s2_0 / strike) + 
-                          (intRate - 0.5 * vol_s2 * vol_s2) * expiry) / 
-                    (vol_s2 * rootExpiry);
+                gamma1 = (QL_LOG(forward1/strike) - 0.5 * variance1) / stdDev1;
+                gamma2 = (QL_LOG(forward2/strike) - 0.5 * variance2) / stdDev2;
+                a1 = gamma1 + stdDev1;
+                a2 = gamma2 + stdDev2;
             } else {
                 gamma1 = 1000;
                 gamma2 = 1000;
+                a1 = gamma1 + stdDev1;
+                a2 = gamma2 + stdDev2;
             }
 
-            double sigma_squared = vol_s1 * vol_s1 + vol_s2 * vol_s2 - 
-                2 * rho * vol_s1 * vol_s2;
-            double sigma = QL_SQRT(sigma_squared);
+            double variance = variance1 + variance2 - 2 * rho * stdDev1 * stdDev2;
+            double stdDev = QL_SQRT(variance);
 
-            double a1 = gamma1 + vol_s1 * rootExpiry;
-            double b1 = (QL_LOG(s2_0 / s1_0) - 
-                         0.5 * sigma_squared * expiry) / 
-                (sigma * rootExpiry);
-            double a2 = gamma2 + vol_s2 * rootExpiry;
-            double b2 = (QL_LOG(s1_0 / s2_0) - 
-                         0.5 * sigma_squared * expiry) / 
-                (sigma * rootExpiry);
-            double modRho1 = (rho * vol_s2 - vol_s1) / sigma;
-            double modRho2 = (rho * vol_s1 - vol_s2) / sigma;
+            double b1 = (QL_LOG(forward2 / forward1) - 0.5 * variance) / stdDev;
+            double b2 = (QL_LOG(forward1 / forward2) - 0.5 * variance) / stdDev;
+            double modRho1 = (rho * stdDev2 - stdDev1) / stdDev;
+            double modRho2 = (rho * stdDev1 - stdDev2) / stdDev;
 
             BivariateCumulativeNormalDistribution bivCNorm = 
                 BivariateCumulativeNormalDistribution(rho);
@@ -76,36 +70,33 @@ namespace QuantLib {
             BivariateCumulativeNormalDistribution bivCNormMod1 = 
                 BivariateCumulativeNormalDistribution(modRho1);
 
-            return s1_0 * bivCNormMod1(a1, b1) + 
-                s2_0 * bivCNormMod2(a2, b2) - 
-                strike * riskFreeDiscount * bivCNorm(gamma1, gamma2);
+            return riskFreeDiscount * (
+                forward1 * bivCNormMod1(a1, b1) + 
+                forward2 * bivCNormMod2(a2, b2) - 
+                strike   * bivCNorm(gamma1, gamma2)
+                );
 
         }
 
         // calculate the value of euro max basket call
-        double euroTwoAssetMaxBasketCall(double s1_0, double s2_0, 
+        double euroTwoAssetMaxBasketCall(double forward1, double forward2, 
                                          double strike, 
-                                         Rate riskFreeDiscount, Rate intRate, 
-                                         double vol_s1, double vol_s2, 
-                                         double rho, Time expiry) {
-
-            double dividendDiscount = 1.0;
-
-            double forwardPrice1 = s1_0 * dividendDiscount / riskFreeDiscount;
-            double forwardPrice2 = s2_0 * dividendDiscount / riskFreeDiscount;
+                                         Rate riskFreeDiscount,
+                                         double variance1, double variance2, 
+                                         double rho) {
 
             Handle<StrikedTypePayoff> payoff(new
                 PlainVanillaPayoff(Option::Call, strike));
 
-            BlackFormula black1(forwardPrice1, riskFreeDiscount, 
-                                vol_s1*vol_s1, payoff);
-            BlackFormula black2(forwardPrice2, riskFreeDiscount, 
-                                vol_s2*vol_s2, payoff);
+            BlackFormula black1(forward1, riskFreeDiscount, 
+                                variance1, payoff);
+            BlackFormula black2(forward2, riskFreeDiscount, 
+                                variance2, payoff);
 
             return black1.value() + black2.value() - 
-                euroTwoAssetMinBasketCall(s1_0, s2_0, strike, 
-                                          riskFreeDiscount, intRate, 
-                                          vol_s1, vol_s2, rho, expiry);
+                euroTwoAssetMinBasketCall(forward1, forward2, strike,
+                                          riskFreeDiscount,
+                                          variance1, variance2, rho);
         }
     }
 
@@ -142,15 +133,13 @@ namespace QuantLib {
         Handle<PlainVanillaPayoff> payoff = arguments_.payoff;
         #endif
 
-        double s1_0 = procs[0]->stateVariable->value();
-        double s2_0 = procs[1]->stateVariable->value();
 
         double strike = payoff->strike();
 
-        double vol_s1 = 
-            procs[0]->volTS->blackVol(exercise->lastDate(), strike);
-        double vol_s2 = 
-            procs[1]->volTS->blackVol(exercise->lastDate(), strike);
+        double variance1 = 
+            procs[0]->volTS->blackVariance(exercise->lastDate(), strike);
+        double variance2 = 
+            procs[1]->volTS->blackVariance(exercise->lastDate(), strike);
 
         double rho = arguments_.correlation;
 
@@ -158,42 +147,36 @@ namespace QuantLib {
               procs[0]->riskFreeTS->discount(exercise->lastDate());
 
         // cannot handle non zero dividends, so don't believe this...
-        DiscountFactor dividendDiscount =
+        DiscountFactor dividendDiscount1 =
             procs[0]->dividendTS->discount(exercise->lastDate());
-
-        QL_REQUIRE(dividendDiscount == 1,
-                   "StulzEngine: "
-                   "Dividends should be zero");
-
-        Time expiry = procs[0]->riskFreeTS->dayCounter().yearFraction(
-                procs[0]->riskFreeTS->referenceDate(),
-                exercise->lastDate());
-
-        double intRate = procs[0]->riskFreeTS->zeroYield(exercise->lastDate());
+        DiscountFactor dividendDiscount2 =
+            procs[1]->dividendTS->discount(exercise->lastDate());
 
         BasketOption::BasketType basketType = arguments_.basketType;
+
+        double forward1 = procs[0]->stateVariable->value() * dividendDiscount1 / riskFreeDiscount;
+        double forward2 = procs[1]->stateVariable->value() * dividendDiscount2 / riskFreeDiscount;
 
         switch (basketType) {
           case BasketOption::Max:
             switch (payoff->optionType()) {
               // euro call on a two asset max basket 
               case Option::Call:
-                results_.value = euroTwoAssetMaxBasketCall(s1_0, s2_0, strike, 
+                results_.value = euroTwoAssetMaxBasketCall(forward1, forward2, strike, 
                                                            riskFreeDiscount, 
-                                                           intRate, 
-                                                           vol_s1, vol_s2, 
-                                                           rho, expiry);
+                                                           variance1, variance2, 
+                                                           rho);
 
                 break;
               // euro put on a two asset max basket 
               case Option::Put:
                 results_.value = strike * riskFreeDiscount -
-                    euroTwoAssetMaxBasketCall(s1_0, s2_0, 0.0,
-                                              riskFreeDiscount, intRate, 
-                                              vol_s1, vol_s2, rho, expiry) + 
-                    euroTwoAssetMaxBasketCall(s1_0, s2_0, strike, 
-                                              riskFreeDiscount, intRate, 
-                                              vol_s1, vol_s2, rho, expiry);
+                    euroTwoAssetMaxBasketCall(forward1, forward2, 0.0,
+                                              riskFreeDiscount, 
+                                              variance1, variance2, rho) + 
+                    euroTwoAssetMaxBasketCall(forward1, forward2, strike, 
+                                              riskFreeDiscount, 
+                                              variance1, variance2, rho);
                 break;
               case Option::Straddle:
                 throw Error("BasketOption: unsupported option type");
@@ -203,21 +186,20 @@ namespace QuantLib {
             switch (payoff->optionType()) {
               // euro call on a two asset min basket 
               case Option::Call:
-                results_.value = euroTwoAssetMinBasketCall(s1_0, s2_0, strike, 
+                results_.value = euroTwoAssetMinBasketCall(forward1, forward2, strike, 
                                                            riskFreeDiscount, 
-                                                           intRate, 
-                                                           vol_s1, vol_s2, 
-                                                           rho, expiry);
+                                                           variance1, variance2,  
+                                                           rho);
                 break;
               // euro put on a two asset min basket 
               case Option::Put:
                 results_.value = strike * riskFreeDiscount -
-                    euroTwoAssetMinBasketCall(s1_0, s2_0, 0.0, 
-                                              riskFreeDiscount, intRate, 
-                                              vol_s1, vol_s2, rho, expiry) +
-                    euroTwoAssetMinBasketCall(s1_0, s2_0, strike, 
-                                              riskFreeDiscount, intRate, 
-                                              vol_s1, vol_s2, rho, expiry);
+                    euroTwoAssetMinBasketCall(forward1, forward2, 0.0, 
+                                              riskFreeDiscount, 
+                                              variance1, variance2, rho) +
+                    euroTwoAssetMinBasketCall(forward1, forward2, strike, 
+                                              riskFreeDiscount, 
+                                              variance1, variance2, rho);
                 break;
               case Option::Straddle:
                 throw Error("BasketOption: unsupported option type");
