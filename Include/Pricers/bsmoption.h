@@ -28,6 +28,9 @@
     $Source$
     $Name$
     $Log$
+    Revision 1.12  2001/02/19 15:05:41  lballabio
+    Inlined function which was supposed to be
+
     Revision 1.11  2001/02/19 12:16:48  marmar
     Vega is not required for implied volatility calculations
 
@@ -123,7 +126,7 @@ namespace QuantLib {
             double thePrice;
         };
 
-        BSMOption::BSMFunction::BSMFunction(
+        inline BSMOption::BSMFunction::BSMFunction(
                 const Handle<BSMOption>& tempBSM, double price) {
             bsm = tempBSM;
             thePrice = price;
