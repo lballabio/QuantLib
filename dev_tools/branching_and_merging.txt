@@ -44,7 +44,7 @@ check carefully what you are going to merge into truck
 
 CHANGE BACK TO YOUR PROJECT FOLDER !!!!!!!!!!!!!!!!!!!!!
 In the folder of the trunk checked out version, (remote)tag the trunk
-    cvs rtag Before-R000201a2-branch-merge2 (in directory E:\Projects\moduleName)
+    cvs rtag Before-R000201a2-branch-merge2 moduleName (in directory E:\Projects\moduleName)
 
 refresh to trunk's tip
     cvs -q update -P -A -d (in directory E:\Projects\moduleName)
