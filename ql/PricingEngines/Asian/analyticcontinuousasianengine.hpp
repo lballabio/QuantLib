@@ -30,8 +30,6 @@ namespace QuantLib {
     /*! This class implements a continuous geometric average price
         asian option with european exercise.  The formula is from
         "Option Pricing Formulas", E. G. Haug (1997) pag 96-97
-
-        \bug calculated Greeks do not match numerical results
     */
     class AnalyticContinuousAveragingAsianEngine 
         : public ContinuousAveragingAsianOption::engine {

@@ -20,6 +20,7 @@
 #include <ql/DayCounters/actual365.hpp>
 #include <ql/DayCounters/simpledaycounter.hpp>
 #include <ql/Instruments/asianoption.hpp>
+#include <ql/Instruments/europeanoption.hpp>
 #include <ql/PricingEngines/Asian/analyticcontinuousasianengine.hpp>
 #include <ql/PricingEngines/Asian/analyticdiscreteasianengine.hpp>
 #include <ql/TermStructures/flatforward.hpp>
@@ -153,6 +154,8 @@ void AsianOptionTest::testGeometricContinuousAverage() {
 
 
 void AsianOptionTest::testGeometricContinuousGreeks() {
+
+    BOOST_MESSAGE("Testing continuous-averaging geometric Asian greeks...");
 
     std::map<std::string,double> calculated, expected, tolerance;
     tolerance["delta"]  = 1.0e-5;
@@ -374,6 +377,8 @@ void AsianOptionTest::testGeometricDiscreteAverage() {
 
 void AsianOptionTest::testGeometricDiscreteGreeks() {
 
+    BOOST_MESSAGE("Testing discrete-averaging geometric Asian greeks...");
+
     std::map<std::string,double> calculated, expected, tolerance;
     tolerance["delta"]  = 1.0e-5;
     tolerance["gamma"]  = 1.0e-5;
@@ -541,10 +546,10 @@ test_suite* AsianOptionTest::suite() {
     suite->add(
           BOOST_TEST_CASE(&AsianOptionTest::testGeometricContinuousAverage));
     suite->add(
-          BOOST_TEST_CASE(&AsianOptionTest::testGeometricDiscreteAverage));
-    /* Greeks are broken
-    suite->add(
           BOOST_TEST_CASE(&AsianOptionTest::testGeometricContinuousGreeks));
+    suite->add(
+          BOOST_TEST_CASE(&AsianOptionTest::testGeometricDiscreteAverage));
+    /* broken 
     suite->add(
           BOOST_TEST_CASE(&AsianOptionTest::testGeometricDiscreteGreeks));
     */

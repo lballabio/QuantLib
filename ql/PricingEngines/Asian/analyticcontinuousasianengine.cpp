@@ -50,9 +50,9 @@ namespace QuantLib {
                    process->dividendYield()->zeroYield(exercise) +
                    volatility*volatility/6.0);
 
-        Time t = process->dividendYield()->dayCounter().yearFraction(
+        Time t_q = process->dividendYield()->dayCounter().yearFraction(
                          process->dividendYield()->referenceDate(), exercise);
-        DiscountFactor dividendDiscount = QL_EXP(-dividendYield*t);
+        DiscountFactor dividendDiscount = QL_EXP(-dividendYield*t_q);
 
         double spot = process->stateVariable()->value();
         double forward = spot * dividendDiscount / riskFreeDiscount;
@@ -63,23 +63,20 @@ namespace QuantLib {
         results_.delta = black.delta(spot);
         results_.gamma = black.gamma(spot);
 
-        t = process->riskFreeRate()->dayCounter().yearFraction(
+        results_.dividendRho = black.dividendRho(t_q)/2.0;
+
+        Time t_r = process->riskFreeRate()->dayCounter().yearFraction(
                                      process->riskFreeRate()->referenceDate(),
                                      arguments_.exercise->lastDate());
-        results_.rho = black.rho(t)/2.0;
+        results_.rho = black.rho(t_r) + 0.5 * black.dividendRho(t_q);
 
-        t = process->dividendYield()->dayCounter().yearFraction(
-                                    process->dividendYield()->referenceDate(),
-                                    arguments_.exercise->lastDate());
-        results_.dividendRho = black.dividendRho(t)/2.0;
-
-        t = process->blackVolatility()->dayCounter().yearFraction(
+        Time t_v = process->blackVolatility()->dayCounter().yearFraction(
                                   process->blackVolatility()->referenceDate(),
                                   arguments_.exercise->lastDate());
-        results_.vega = black.vega(t)/QL_SQRT(3.0) -
-                        results_.rho*volatility*volatility/6.0;
+        results_.vega = black.vega(t_v)/QL_SQRT(3.0) +
+                        black.dividendRho(t_q)*volatility/6.0;
         try {
-            results_.theta = black.theta(spot, t);
+            results_.theta = black.theta(spot, t_v);
         } catch (Error&) {
             results_.theta = Null<double>();
         }
