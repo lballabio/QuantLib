@@ -25,6 +25,9 @@
 """
     $Source$
     $Log$
+    Revision 1.6  2001/02/22 14:27:26  lballabio
+    Implemented new test framework
+
     Revision 1.5  2001/02/15 11:57:34  nando
     no message
 
@@ -36,33 +39,30 @@
 
 """
 
+from QuantLib import Statistics, UniformRandomGenerator, GaussianRandomGenerator
+from TestUnit import TestUnit
+
+class RNGTest(TestUnit):
+    def doTest(self):
+        tol = 1e-9
+        seed = 576919
+        numIte = 1000000
+        self.printDetails(
+            "Generator                          "
+            "mean    sigma    skew    kurt   min   max"
+        )
+        for RNG in [UniformRandomGenerator, GaussianRandomGenerator]:
+            rn = RNG(seed=seed)
+            s = Statistics()
+            for ite in range(numIte):
+                s.add(rn.next())
+            self.printDetails(
+                "%32s %+8.4f %7.4f %7.3f %7.3f %5.2f %5.2f " % 
+                (RNG, s.mean(), s.standardDeviation(), s.skewness(), 
+                s.kurtosis(), s.min(), s.max())
+            )
 
 
-from QuantLib import Statistics
-from QuantLib import UniformRandomGenerator
-from QuantLib import GaussianRandomGenerator
+if __name__ == '__main__':
+    RNGTest().test('random number generators')
 
-import time
-startTime = time.time()
-
-print "Testing random number generators"
-
-
-
-tol = 1e-9
-seed = 576919
-numIte = 1000000
-print "Generator                          mean    sigma    skew    kurt" \
-                                                             "   min   max"
-for RNG in [UniformRandomGenerator, GaussianRandomGenerator]:
-  rn = RNG(seed=seed)
-  s = Statistics()
-  for ite in range(numIte):
-    s.add(rn.next())
-  print "%32s %+8.4f %7.4f %7.3f %7.3f %5.2f %5.2f " %  (RNG, s.mean(),
-    s.standardDeviation(), s.skewness(), s.kurtosis(), s.min(), s.max())
-
-print
-print 'Test passed (elapsed time', time.time() - startTime, ')'
-print 'Press return to end this test'
-raw_input()

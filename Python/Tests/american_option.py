@@ -25,6 +25,9 @@
 """ 
     $Source$
     $Log$
+    Revision 1.4  2001/02/22 14:27:26  lballabio
+    Implemented new test framework
+
     Revision 1.3  2001/01/08 16:19:29  nando
     more homogeneous format
 
@@ -38,108 +41,149 @@
 # and that of this file
 
 from QuantLib import BSMAmericanOption
-import time
-startTime = time.time()
+from TestUnit import TestUnit
 
-print "Testing class BSMAmericanOption, maximum-error"
-
-pricer = BSMAmericanOption
-nstp = 150
-ngrd = nstp+1
-
-def relErr(x1, x2, reference):
+def relErr(x1,x2,reference):
     if reference != 0.0:
         return abs(x1-x2)/reference
     else:
         return 10e10
-        
-rangeUnder = [100]
-rangeQrate = [0.05]
-rangeResTime = [1.0]
-#rangeStrike = [50, 99.5, 100, 100.5, 150]
-rangeStrike = [100]
-rangeVol = [ 0.11, 0.5, 1.2]
-rangeRrate = [ 0.01, 0.05, 0.15]
 
-maxNumDerErrorList=[]; maxCPSerrorList=[];
-resuCPSvalue = [];     resuCPSdelta = [];   resuCPSgamma = [];     resuCPStheta = [];
-resuCPSrho   = [];     resuCPSvega  = [];   resuCPparity = []
+class AmericanOptionTest(TestUnit):
+    def doTest(self):
+        pricer = BSMAmericanOption
+        nstp = 150
+        ngrd = nstp+1
+        # ranges
+        rangeUnder = [100]
+        rangeQrate = [0.05]
+        rangeResTime = [1.0]
+        #rangeStrike = [50, 99.5, 100, 100.5, 150]
+        rangeStrike = [100]
+        rangeVol = [ 0.11, 0.5, 1.2]
+        rangeRrate = [ 0.01, 0.05, 0.15]
+        maxNumDerErrorList=[]; maxCPSerrorList=[];
+        resuCPSvalue = []; resuCPSdelta = []; resuCPSgamma = [] 
+        resuCPStheta = []; resuCPSrho   = []; resuCPSvega  = []
+        resuCPparity = []
+        err_delta = 1e-4
+        err_gamma = 1e-4
+        err_theta = 1e-4
+        err_rho  =  1e-4
+        err_vega =  1e-4
+        total_number_of_error = 0
+        # table header
+        self.printDetails(
+          "     Type  items err-delta err-gamma err-theta  err-rho  err-vega ")
+        # test
+        for typ in ['Call','Put','Straddle']:
+          resuDelta = [];  resuGamma = [];  resuTheta = []
+          resuRho   = [];  resuVega  = []
+          for under in rangeUnder:
+            for Qrate in rangeQrate:
+              for resTime in rangeResTime:        
+                for Rrate in rangeRrate:
+                  for strike in rangeStrike:
+                    for vol in rangeVol:
+                      #Check Greeks
+                      dS = under/10000.0
+                      dT = resTime/nstp
+                      dVol = vol/10000.0
+                      dR = Rrate/10000.0
+                      opt = pricer(typ, under, strike, Qrate, Rrate, resTime, 
+                        vol, nstp, ngrd) 
+                      opt_val = opt.value()
+                      if opt_val>0.00001*under:
+                        optPs = pricer(typ, under+dS, strike, Qrate, Rrate, 
+                          resTime ,vol, nstp, ngrd) 
+                        optMs = pricer(typ, under-dS, strike, Qrate, Rrate, 
+                          resTime, vol, nstp, ngrd) 
+                        optPt = pricer(typ, under, strike, Qrate, Rrate, 
+                          resTime+dT, vol, nstp+1, ngrd) 
+                        optMt = pricer(typ, under, strike, Qrate, Rrate, 
+                          resTime-dT, vol, nstp-1, ngrd) 
+                        optPr = pricer(typ, under, strike, Qrate, Rrate+dR, 
+                          resTime, vol, nstp, ngrd) 
+                        optMr = pricer(typ, under, strike, Qrate, Rrate-dR, 
+                          resTime, vol, nstp, ngrd) 
+                        optPv = pricer(typ, under, strike, Qrate, Rrate, 
+                          resTime, vol+dVol, nstp, ngrd) 
+                        optMv = pricer(typ, under, strike, Qrate, Rrate, 
+                          resTime, vol-dVol, nstp, ngrd) 
+                        # numeric values
+                        deltaNum = (optPs.value()-optMs.value())/(2*dS)
+                        gammaNum = (optPs.delta()-optMs.delta())/(2*dS)
+                        thetaNum =-(optPt.value()-optMt.value())/(2*dT)
+                        rhoNum   = (optPr.value()-optMr.value())/(2*dR)
+                        vegaNum  = (optPv.value()-optMv.value())/(2*dVol)
+                        # store results
+                        resuDelta.append(relErr(opt.delta(),deltaNum,under))
+                        resuGamma.append(relErr(opt.gamma(),gammaNum,under))
+                        resuTheta.append(relErr(opt.theta(),thetaNum,under))
+                        resuRho.append(relErr(opt.rho(),rhoNum,under))
+                        resuVega.append(relErr(opt.vega(),vegaNum,under))
+                                           
+                        if(relErr(opt.delta(),deltaNum,under)>err_delta or
+                           relErr(opt.gamma(),gammaNum,under)>err_gamma or
+                           relErr(opt.theta(),thetaNum,under)>err_theta or
+                           relErr(opt.rho(),  rhoNum,  under)>err_rho   or
+                           relErr(opt.vega(), vegaNum, under)>err_vega):
+                          total_number_of_error = total_number_of_error + 1
+                          self.printDetails(
+                            'Attention required: %s %f %f %f %f %f %f' % 
+                            (typ,under,strike,Qrate,Rrate,resTime,vol)
+                          )
+                          self.printDetails('\tvalue=%+9.5f' % (opt_val))
+                          self.printDetails(
+                            '\tdelta=%+9.5f, deltaNum=%+9.5f err=%7.2e' % 
+                            (opt.delta(), deltaNum, 
+                            relErr(opt.delta(),deltaNum,under))
+                          )
+                          self.printDetails(
+                            '\tgamma=%+9.5f, gammaNum=%+9.5f err=%7.2e' % 
+                            (opt.gamma(), gammaNum, 
+                            relErr(opt.gamma(),gammaNum,under))
+                          )
+                          self.printDetails(
+                            '\ttheta=%+9.5f, thetaNum=%+9.5f err=%7.2e' % 
+                            (opt.theta(), thetaNum, 
+                            relErr(opt.theta(),thetaNum,under))
+                          )
+                          self.printDetails(
+                            '\trho  =%+9.5f,   rhoNum=%+9.5f err=%7.2e' % 
+                            (opt.rho(), rhoNum, 
+                            relErr(opt.rho(),rhoNum,under))
+                          )
+                          self.printDetails(
+                            '\tvega =%+9.5f, vegaNum =%+9.5f err=%7.2e' % 
+                            (opt.vega(), vegaNum, 
+                            relErr(opt.vega(),vegaNum,under))
+                          )
+          self.printDetails(
+            "%9s %6d %7.2e %7.2e %7.2e %7.2e %7.2e" % 
+            (typ, len(resuDelta), max(resuDelta), max(resuGamma), 
+            max(resuTheta), max(resuRho), max(resuVega))
+          )
+                   
+          maxNumDerErrorList.append(max(resuDelta))
+          maxNumDerErrorList.append(max(resuGamma))
+          maxNumDerErrorList.append(max(resuTheta))
+          maxNumDerErrorList.append(max(resuRho))
+          maxNumDerErrorList.append(max(resuVega))
 
-err_delta = 1e-4
-err_gamma = 1e-4
-err_theta = 1e-4
-err_rho  =  1e-4
-err_vega =  1e-4
-total_number_of_error = 0
+        self.printDetails(
+            "\nFinal maximum global error on numerical derivatives = %g\n" % 
+            max(maxNumDerErrorList)
+        )
 
-print "     Type  items err-delta err-gamma err-theta  err-rho  err-vega "
+        if total_number_of_error > 1:
+            self.printDetails("total number of failures: %d" % 
+                total_number_of_error)
+            return 1
+        else:
+            return 0
 
-for typ in ['Call','Put','Straddle']:
-  resuDelta = [];  resuGamma = [];  resuTheta = []
-  resuRho   = [];  resuVega  = []
-  for under in rangeUnder:
-    for Qrate in rangeQrate:
-      for resTime in rangeResTime:        
-        for Rrate in rangeRrate:
-          for strike in rangeStrike:
-            for vol in rangeVol:
-              #Check Greeks
-              dS = under/10000.0
-              dT = resTime/nstp
-              dVol = vol/10000.0
-              dR = Rrate/10000.0
-              option = pricer(typ,under,strike,Qrate,Rrate,resTime,vol,nstp,ngrd) 
-              opt_val = option.value()
-              if opt_val>0.00001*under:
-                optionPs = pricer(typ,under+dS,strike,Qrate,Rrate   ,resTime   ,vol,nstp,ngrd) 
-                optionMs = pricer(typ,under-dS,strike,Qrate,Rrate   ,resTime   ,vol,nstp,ngrd) 
-                optionPt = pricer(typ,under   ,strike,Qrate,Rrate   ,resTime+dT,vol,nstp+1,ngrd) 
-                optionMt = pricer(typ,under   ,strike,Qrate,Rrate   ,resTime-dT,vol,nstp-1,ngrd) 
-                optionPr = pricer(typ,under   ,strike,Qrate,Rrate+dR,resTime   ,vol,nstp,ngrd) 
-                optionMr = pricer(typ,under   ,strike,Qrate,Rrate-dR,resTime   ,vol,nstp,ngrd) 
-                optionPv = pricer(typ,under   ,strike,Qrate,Rrate   ,resTime   ,vol+dVol,nstp,ngrd) 
-                optionMv = pricer(typ,under   ,strike,Qrate,Rrate   ,resTime   ,vol-dVol,nstp,ngrd) 
-                
-                deltaNum = (optionPs.value()-optionMs.value())/(2*dS)
-                gammaNum = (optionPs.delta()-optionMs.delta())/(2*dS)
-                thetaNum =-(optionPt.value()-optionMt.value())/(2*dT)
-                rhoNum   = (optionPr.value()-optionMr.value())/(2*dR)
-                vegaNum  = (optionPv.value()-optionMv.value())/(2*dVol)
-                    
-                resuDelta.append(relErr(option.delta(), deltaNum, under))
-                resuGamma.append(relErr(option.gamma(), gammaNum, under))
-                resuTheta.append(relErr(option.theta(), thetaNum, under))
-                resuRho.append(  relErr(option.rho(),   rhoNum,   under))
-                resuVega.append( relErr(option.vega(),  vegaNum,  under))
-                                   
-                if(relErr(option.delta(),deltaNum,under) > err_delta or
-                   relErr(option.gamma(),gammaNum,under) > err_gamma or
-                   relErr(option.theta(),thetaNum,under) > err_theta or
-                   relErr(option.rho(),  rhoNum,  under) > err_rho   or
-                   relErr(option.vega(), vegaNum, under) > err_vega  ):
-                  total_number_of_error = total_number_of_error + 1
-                  print "Attention required ",typ,under,strike,Qrate,Rrate,resTime,vol
-                  print '\tvalue=%+9.5f' % (opt_val)
-                  print '\tdelta=%+9.5f, deltaNum=%+9.5f err=%7.2e' % (option.delta(),deltaNum,relErr(option.delta(),deltaNum,under))
-                  print '\tgamma=%+9.5f, gammaNum=%+9.5f err=%7.2e' % (option.gamma(),gammaNum,relErr(option.gamma(),gammaNum,under))
-                  print '\ttheta=%+9.5f, thetaNum=%+9.5f err=%7.2e' % (option.theta(),thetaNum,relErr(option.theta(),thetaNum,under))
-                  print '\trho  =%+9.5f,   rhoNum=%+9.5f err=%7.2e' % (option.rho(),  rhoNum,  relErr(option.rho(),  rhoNum,  under))
-                  print '\tvega =%+9.5f, vegaNum =%+9.5f err=%7.2e' % (option.vega(), vegaNum, relErr(option.vega(), vegaNum, under))
-  print "%9s %6d %7.2e %7.2e %7.2e %7.2e %7.2e" % (typ, len(resuDelta), 
-        max(resuDelta), max(resuGamma), max(resuTheta), max(resuRho), max(resuVega))
-           
-  maxNumDerErrorList.append(max(resuDelta))
-  maxNumDerErrorList.append(max(resuGamma))
-  maxNumDerErrorList.append(max(resuTheta))
-  maxNumDerErrorList.append(max(resuRho))
-  maxNumDerErrorList.append(max(resuVega))
 
-print "\nFinal maximum global error on numerical derivatives = %g\n" % max(maxNumDerErrorList)
+if __name__ == '__main__':
+    AmericanOptionTest().test('American option pricer')
 
-if total_number_of_error > 1:
-        print "Test not passed, total number of failures:",total_number_of_error
-else:
-        print 'Test passed (elapsed time', time.time() - startTime, ')'
-
-print 'Press return to end this test'
-raw_input()

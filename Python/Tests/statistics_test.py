@@ -25,6 +25,9 @@
 """ 
     $Source$
     $Log$
+    Revision 1.10  2001/02/22 14:27:26  lballabio
+    Implemented new test framework
+
     Revision 1.9  2001/01/08 16:19:29  nando
     more homogeneous format
 
@@ -34,79 +37,69 @@
 """
 
 from QuantLib import Statistics
-import time
-startTime = time.time()
-print 'Testing Statistics'
+from TestUnit import TestUnit
 
-tol = 1e-9
+class StatisticsTest(TestUnit):
+    def doTest(self):
+        tol = 1e-9
+        
+        data =    [  3,   4,   5,   2,   3,   4,   5,   6,   4,   7]
+        weights = [1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0]
+        
+        s = Statistics()
+        s.addWeightedSequence(data, weights)
+        
+        self.printDetails('samples:                    %d' % s.samples())
+        if s.samples()!=len(data):
+            self.printDetails('wrong')
+            return -1
+        
+        self.printDetails('sum of the weights:  %f' % s.weightSum())
+        if s.weightSum()!=reduce(lambda x,y:x+y, weights):
+            self.printDetails('wrong')
+            return -1
+        
+        self.printDetails('minimum value:        %f' % s.min())
+        if s.min()!=min(data):
+            self.printDetails('wrong')
+            return -1
+        
+        self.printDetails('maximum value:        %f' % s.max())
+        if s.max()!=max(data):
+            self.printDetails('wrong')
+            return -1
 
-data =    [  3,   4,   5,   2,   3,   4,   5,   6,   4,   7]
-weights = [1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0]
+        self.printDetails('mean value:           %f' % s.mean())
+        mean = reduce(lambda x,y:x+y, map(lambda x,y:x*y, data, weights)) \
+            / reduce(lambda x,y:x+y, weights)
+        if abs(s.mean()-mean)>tol:
+            self.printDetails('wrong')
+            return -1
+        
+        self.printDetails('variance:             %f' % s.variance())
+        if abs(s.variance()-2.23333333333)>tol:
+            self.printDetails('wrong')
+            return -1
+        
+        self.printDetails('standard deviation:   %f' % s.standardDeviation())
+        if abs(s.standardDeviation()-1.4944341181)>tol:
+            self.printDetails('wrong')
+            return -1
+        
+        self.printDetails('skewness:             %f' % s.skewness())
+        if abs(s.skewness()-0.359543071407)>tol:
+            self.printDetails('wrong')
+            return -1
+        
+        self.printDetails('excess kurtosis:     %f' % s.kurtosis())
+        if abs(s.kurtosis()+0.151799637209)>tol:
+            self.printDetails('wrong')
+            return -1
+        
+        self.printDetails(
+            'error estimate:       %f (not checked)' % s.errorEstimate()
+        )
 
-s = Statistics()
-s.addWeightedSequence(data, weights)
 
-print 'samples', s.samples(),
-if (s.samples()==10):
-  print 'OK'
-else:
-  print 'wrong'
-
-print 'Sum of the weights', s.weightSum(),
-if (s.weightSum()==10):
-  print 'OK'
-else:
-  print 'wrong'
-
-print 'min', s.min(),
-if (s.min()==2):
-  print 'OK'
-else:
-  print 'wrong'
-
-print 'max', s.max(),
-if (s.max()==7):
-  print 'OK'
-else:
-  print 'wrong'
-
-print 'mean', s.mean(),
-if (abs(s.mean()-4.3)<tol):
-  print 'OK'
-else:
-  print 'wrong'
-
-print 'variance', s.variance(),
-if (abs(s.variance()-2.23333333333)<tol):
-  print 'OK'
-else:
-  print 'wrong'
-
-print 'stdDev', s.standardDeviation(),
-if (abs(s.standardDeviation()-1.4944341181)<tol):
-  print 'OK'
-else:
-  print 'wrong'
-
-print 'skew', s.skewness(),
-if (abs(s.skewness()-0.359543071407)<tol):
-  print 'OK'
-else:
-  print 'wrong'
-
-print 'kurt', s.kurtosis(), 
-if (abs(s.kurtosis()+0.151799637209)<tol):
-  print 'OK'
-else:
-  print 'wrong'
-
-print 'error estimate', s.errorEstimate(), 'not checked' 
-#if (abs(s.kurtosis()+0.151799637209)<tol):
-#  print 'OK'
-#else:
-#  print 'wrong'
-
-print
-print 'Test passed (elapsed time', time.time() - startTime, ')'
-print 'Press return to end this test'
-raw_input()
+if __name__ == '__main__':
+    StatisticsTest().test('statistics')

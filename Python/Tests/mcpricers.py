@@ -25,6 +25,9 @@
 """ 
     $Source$
     $Log$
+    Revision 1.6  2001/02/22 14:27:26  lballabio
+    Implemented new test framework
+
     Revision 1.5  2001/02/13 10:04:25  marmar
     Ambiguous variable name underlyingGrowthRate changed in
     unambiguos dividendYield
@@ -40,36 +43,35 @@
 
 """
 
-import QuantLib
+from QuantLib import *
+from TestUnit import TestUnit
 
-def main():
-   import time
-   startTime = time.time()
-
-   print "Testing Monte Carlo pricers"
-
-   type = "Call"
-   underlying = 100
-   strike = 100
-   dividendYield = 0.0
-   riskFreeRate = 0.05
-   residualTime = 1.0
-   volatility = 0.3
-   timesteps = 100
-   numIte = 10000
-   seed = 3456789
-
-   print "Pricer                          iterations   Value     Error Estimate "
-   for pricer in [QuantLib.McEuropeanPricer,
-                  QuantLib.AverageStrikeAsian,
-                  QuantLib.AveragePriceAsian]:
-     p = pricer(type, underlying, strike, dividendYield, riskFreeRate,
+class MCPricerTest(TestUnit):
+    def doTest(self):
+        
+        type = "Call"
+        underlying = 100
+        strike = 100
+        dividendYield = 0.0
+        riskFreeRate = 0.05
+        residualTime = 1.0
+        volatility = 0.3
+        timesteps = 100
+        numIte = 10000
+        seed = 3456789
+        
+        self.printDetails(
+        "Pricer                          iterations   Value     Error Estimate "
+        )
+        for pricer in [McEuropeanPricer,AverageStrikeAsian,AveragePriceAsian]:
+            p = pricer(type, underlying, strike, dividendYield, riskFreeRate,
                 residualTime, volatility, timesteps, numIte, seed=seed)
-     print "%30s: %7i %12.6f %12.6f" %(pricer, numIte, p.value(), p.errorEstimate())
+            self.printDetails(
+                "%30s: %7i %12.6f %12.6f" %
+                (pricer, numIte, p.value(), p.errorEstimate())
+            )
 
-   print
-   print 'Test passed (elapsed time', time.time() - startTime, ')'
 
-main()
-print 'Press return to end this test'
-raw_input()
+
+if __name__ == '__main__':
+    MCPricerTest().test('MonteCarlo pricers')
