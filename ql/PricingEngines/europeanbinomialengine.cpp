@@ -35,12 +35,13 @@ namespace QuantLib {
 
         void EuropeanBinomialEngine::calculate() const {
             double s0 = arguments_.underlying;
+            Date exerciseDate = arguments_.exercise.date();
+            double v = arguments_.volTS->blackVol(exerciseDate, s0);
+            Rate r = arguments_.riskFreeTS->zeroYield(exerciseDate);
+            Rate q = arguments_.dividendTS->zeroYield(exerciseDate);
             Date referenceDate = arguments_.riskFreeTS->referenceDate();
-            double v = arguments_.volTS->blackVol(referenceDate, s0);
-            Rate r = arguments_.riskFreeTS->zeroYield(referenceDate);
-            Rate q = arguments_.dividendTS->zeroYield(referenceDate);
             Time t = arguments_.riskFreeTS->dayCounter().yearFraction(
-                referenceDate, arguments_.exercise.date());
+                referenceDate, exerciseDate);
 
             Handle<Lattices::Tree> tree;
             switch(type_) {
