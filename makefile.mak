@@ -22,14 +22,14 @@ quantlib::
     cd ..
 
 # Check
-check::
+check:: quantlib
     cd Examples
     $(MAKE) -DQL_DIR="..\.." check
     cd ..
 
 # the installation directive requires the QL_DIR environment variable to
 # point to the installed version of QuantLib
-inst::
+inst:: quantlib
     if exist "$(QL_DIR)\ql" rmdir /S /Q "$(QL_DIR)\ql"
     xcopy ql\*.hpp "$(QL_DIR)\ql" /S /I
 
