@@ -50,7 +50,7 @@ namespace QuantLib {
     class PlainVanillaPayoff : public StrikedTypePayoff {
       public:
         PlainVanillaPayoff(Option::Type type,
-                          double strike)
+                           double strike)
         : StrikedTypePayoff(type, strike) {}
         double operator()(double price) const;
     };

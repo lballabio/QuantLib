@@ -39,8 +39,8 @@ namespace QuantLib {
                          const std::string& isinCode,
                          const std::string& description)
     : Option(engine, isinCode, description),
-      type_(type), underlying_(underlying),
-      strike_(strike), exercise_(exercise),
+      payoff_(new PlainVanillaPayoff(type,strike)), underlying_(underlying),
+      exercise_(exercise),
       riskFreeTS_(riskFreeTS), dividendTS_(dividendTS),
       volTS_(volTS) {
         registerWith(underlying_);
@@ -133,8 +133,7 @@ namespace QuantLib {
                    "VanillaOption::setupArguments : "
                    "wrong argument type");
 
-        arguments->payoff = Handle<Payoff>(
-                                       new PlainVanillaPayoff(type_,strike_));
+        arguments->payoff = payoff_;
 
         QL_REQUIRE(!IsNull(underlying_),
                    "VanillaOption::setupArguments : "

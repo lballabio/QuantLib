@@ -81,9 +81,8 @@ namespace QuantLib {
         mutable double delta_, gamma_, theta_,
                        vega_, rho_, dividendRho_, strikeSensitivity_;
         // arguments
-        Option::Type type_;
+        Handle<Payoff> payoff_;
         RelinkableHandle<Quote> underlying_;
-        double strike_;
         Exercise exercise_;
         RelinkableHandle<TermStructure> riskFreeTS_, dividendTS_;
         RelinkableHandle<BlackVolTermStructure> volTS_;
