@@ -221,6 +221,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\bsmoperator.sbr" \
 	"$(INTDIR)\tridiagonaloperator.sbr" \
 	"$(INTDIR)\valueatcenter.sbr" \
+	"$(INTDIR)\plainoption.sbr" \
 	"$(INTDIR)\simpleswap.sbr" \
 	"$(INTDIR)\stock.sbr" \
 	"$(INTDIR)\swap.sbr" \
@@ -253,6 +254,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\dividendeuropeanoption.sbr" \
 	"$(INTDIR)\dividendoption.sbr" \
 	"$(INTDIR)\dividendshoutoption.sbr" \
+	"$(INTDIR)\europeanengine.sbr" \
 	"$(INTDIR)\europeanoption.sbr" \
 	"$(INTDIR)\everestoption.sbr" \
 	"$(INTDIR)\finitedifferenceeuropean.sbr" \
@@ -279,11 +281,9 @@ BSC32_SBRS= \
 	"$(INTDIR)\calendar.sbr" \
 	"$(INTDIR)\dataformatters.sbr" \
 	"$(INTDIR)\date.sbr" \
-	"$(INTDIR)\scheduler.sbr" \
-	"$(INTDIR)\solver1d.sbr" \
 	"$(INTDIR)\option.sbr" \
-	"$(INTDIR)\plainoption.sbr" \
-	"$(INTDIR)\europeanengine.sbr"
+	"$(INTDIR)\scheduler.sbr" \
+	"$(INTDIR)\solver1d.sbr"
 
 "$(OUTDIR)\QuantLib.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -307,6 +307,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\bsmoperator.obj" \
 	"$(INTDIR)\tridiagonaloperator.obj" \
 	"$(INTDIR)\valueatcenter.obj" \
+	"$(INTDIR)\plainoption.obj" \
 	"$(INTDIR)\simpleswap.obj" \
 	"$(INTDIR)\stock.obj" \
 	"$(INTDIR)\swap.obj" \
@@ -339,6 +340,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\dividendeuropeanoption.obj" \
 	"$(INTDIR)\dividendoption.obj" \
 	"$(INTDIR)\dividendshoutoption.obj" \
+	"$(INTDIR)\europeanengine.obj" \
 	"$(INTDIR)\europeanoption.obj" \
 	"$(INTDIR)\everestoption.obj" \
 	"$(INTDIR)\finitedifferenceeuropean.obj" \
@@ -365,11 +367,9 @@ LIB32_OBJS= \
 	"$(INTDIR)\calendar.obj" \
 	"$(INTDIR)\dataformatters.obj" \
 	"$(INTDIR)\date.obj" \
-	"$(INTDIR)\scheduler.obj" \
-	"$(INTDIR)\solver1d.obj" \
 	"$(INTDIR)\option.obj" \
-	"$(INTDIR)\plainoption.obj" \
-	"$(INTDIR)\europeanengine.obj"
+	"$(INTDIR)\scheduler.obj" \
+	"$(INTDIR)\solver1d.obj"
 
 ".\lib\Win32\VisualStudio\QuantLib.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
     $(LIB32) @<<
@@ -568,6 +568,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\bsmoperator.sbr" \
 	"$(INTDIR)\tridiagonaloperator.sbr" \
 	"$(INTDIR)\valueatcenter.sbr" \
+	"$(INTDIR)\plainoption.sbr" \
 	"$(INTDIR)\simpleswap.sbr" \
 	"$(INTDIR)\stock.sbr" \
 	"$(INTDIR)\swap.sbr" \
@@ -600,6 +601,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\dividendeuropeanoption.sbr" \
 	"$(INTDIR)\dividendoption.sbr" \
 	"$(INTDIR)\dividendshoutoption.sbr" \
+	"$(INTDIR)\europeanengine.sbr" \
 	"$(INTDIR)\europeanoption.sbr" \
 	"$(INTDIR)\everestoption.sbr" \
 	"$(INTDIR)\finitedifferenceeuropean.sbr" \
@@ -626,11 +628,9 @@ BSC32_SBRS= \
 	"$(INTDIR)\calendar.sbr" \
 	"$(INTDIR)\dataformatters.sbr" \
 	"$(INTDIR)\date.sbr" \
-	"$(INTDIR)\scheduler.sbr" \
-	"$(INTDIR)\solver1d.sbr" \
 	"$(INTDIR)\option.sbr" \
-	"$(INTDIR)\plainoption.sbr" \
-	"$(INTDIR)\europeanengine.sbr"
+	"$(INTDIR)\scheduler.sbr" \
+	"$(INTDIR)\solver1d.sbr"
 
 "$(OUTDIR)\QuantLib.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -654,6 +654,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\bsmoperator.obj" \
 	"$(INTDIR)\tridiagonaloperator.obj" \
 	"$(INTDIR)\valueatcenter.obj" \
+	"$(INTDIR)\plainoption.obj" \
 	"$(INTDIR)\simpleswap.obj" \
 	"$(INTDIR)\stock.obj" \
 	"$(INTDIR)\swap.obj" \
@@ -686,6 +687,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\dividendeuropeanoption.obj" \
 	"$(INTDIR)\dividendoption.obj" \
 	"$(INTDIR)\dividendshoutoption.obj" \
+	"$(INTDIR)\europeanengine.obj" \
 	"$(INTDIR)\europeanoption.obj" \
 	"$(INTDIR)\everestoption.obj" \
 	"$(INTDIR)\finitedifferenceeuropean.obj" \
@@ -712,11 +714,9 @@ LIB32_OBJS= \
 	"$(INTDIR)\calendar.obj" \
 	"$(INTDIR)\dataformatters.obj" \
 	"$(INTDIR)\date.obj" \
-	"$(INTDIR)\scheduler.obj" \
-	"$(INTDIR)\solver1d.obj" \
 	"$(INTDIR)\option.obj" \
-	"$(INTDIR)\plainoption.obj" \
-	"$(INTDIR)\europeanengine.obj"
+	"$(INTDIR)\scheduler.obj" \
+	"$(INTDIR)\solver1d.obj"
 
 ".\lib\Win32\VisualStudio\QuantLib_d.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
     $(LIB32) @<<
@@ -914,6 +914,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\bsmoperator.sbr" \
 	"$(INTDIR)\tridiagonaloperator.sbr" \
 	"$(INTDIR)\valueatcenter.sbr" \
+	"$(INTDIR)\plainoption.sbr" \
 	"$(INTDIR)\simpleswap.sbr" \
 	"$(INTDIR)\stock.sbr" \
 	"$(INTDIR)\swap.sbr" \
@@ -946,6 +947,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\dividendeuropeanoption.sbr" \
 	"$(INTDIR)\dividendoption.sbr" \
 	"$(INTDIR)\dividendshoutoption.sbr" \
+	"$(INTDIR)\europeanengine.sbr" \
 	"$(INTDIR)\europeanoption.sbr" \
 	"$(INTDIR)\everestoption.sbr" \
 	"$(INTDIR)\finitedifferenceeuropean.sbr" \
@@ -972,11 +974,9 @@ BSC32_SBRS= \
 	"$(INTDIR)\calendar.sbr" \
 	"$(INTDIR)\dataformatters.sbr" \
 	"$(INTDIR)\date.sbr" \
-	"$(INTDIR)\scheduler.sbr" \
-	"$(INTDIR)\solver1d.sbr" \
 	"$(INTDIR)\option.sbr" \
-	"$(INTDIR)\plainoption.sbr" \
-	"$(INTDIR)\europeanengine.sbr"
+	"$(INTDIR)\scheduler.sbr" \
+	"$(INTDIR)\solver1d.sbr"
 
 "$(OUTDIR)\QuantLib.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -1000,6 +1000,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\bsmoperator.obj" \
 	"$(INTDIR)\tridiagonaloperator.obj" \
 	"$(INTDIR)\valueatcenter.obj" \
+	"$(INTDIR)\plainoption.obj" \
 	"$(INTDIR)\simpleswap.obj" \
 	"$(INTDIR)\stock.obj" \
 	"$(INTDIR)\swap.obj" \
@@ -1032,6 +1033,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\dividendeuropeanoption.obj" \
 	"$(INTDIR)\dividendoption.obj" \
 	"$(INTDIR)\dividendshoutoption.obj" \
+	"$(INTDIR)\europeanengine.obj" \
 	"$(INTDIR)\europeanoption.obj" \
 	"$(INTDIR)\everestoption.obj" \
 	"$(INTDIR)\finitedifferenceeuropean.obj" \
@@ -1058,11 +1060,9 @@ LIB32_OBJS= \
 	"$(INTDIR)\calendar.obj" \
 	"$(INTDIR)\dataformatters.obj" \
 	"$(INTDIR)\date.obj" \
-	"$(INTDIR)\scheduler.obj" \
-	"$(INTDIR)\solver1d.obj" \
 	"$(INTDIR)\option.obj" \
-	"$(INTDIR)\plainoption.obj" \
-	"$(INTDIR)\europeanengine.obj"
+	"$(INTDIR)\scheduler.obj" \
+	"$(INTDIR)\solver1d.obj"
 
 ".\lib\Win32\VisualStudio\QuantLib.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
     $(LIB32) @<<
@@ -1261,6 +1261,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\bsmoperator.sbr" \
 	"$(INTDIR)\tridiagonaloperator.sbr" \
 	"$(INTDIR)\valueatcenter.sbr" \
+	"$(INTDIR)\plainoption.sbr" \
 	"$(INTDIR)\simpleswap.sbr" \
 	"$(INTDIR)\stock.sbr" \
 	"$(INTDIR)\swap.sbr" \
@@ -1293,6 +1294,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\dividendeuropeanoption.sbr" \
 	"$(INTDIR)\dividendoption.sbr" \
 	"$(INTDIR)\dividendshoutoption.sbr" \
+	"$(INTDIR)\europeanengine.sbr" \
 	"$(INTDIR)\europeanoption.sbr" \
 	"$(INTDIR)\everestoption.sbr" \
 	"$(INTDIR)\finitedifferenceeuropean.sbr" \
@@ -1319,11 +1321,9 @@ BSC32_SBRS= \
 	"$(INTDIR)\calendar.sbr" \
 	"$(INTDIR)\dataformatters.sbr" \
 	"$(INTDIR)\date.sbr" \
-	"$(INTDIR)\scheduler.sbr" \
-	"$(INTDIR)\solver1d.sbr" \
 	"$(INTDIR)\option.sbr" \
-	"$(INTDIR)\plainoption.sbr" \
-	"$(INTDIR)\europeanengine.sbr"
+	"$(INTDIR)\scheduler.sbr" \
+	"$(INTDIR)\solver1d.sbr"
 
 "$(OUTDIR)\QuantLib.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -1347,6 +1347,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\bsmoperator.obj" \
 	"$(INTDIR)\tridiagonaloperator.obj" \
 	"$(INTDIR)\valueatcenter.obj" \
+	"$(INTDIR)\plainoption.obj" \
 	"$(INTDIR)\simpleswap.obj" \
 	"$(INTDIR)\stock.obj" \
 	"$(INTDIR)\swap.obj" \
@@ -1379,6 +1380,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\dividendeuropeanoption.obj" \
 	"$(INTDIR)\dividendoption.obj" \
 	"$(INTDIR)\dividendshoutoption.obj" \
+	"$(INTDIR)\europeanengine.obj" \
 	"$(INTDIR)\europeanoption.obj" \
 	"$(INTDIR)\everestoption.obj" \
 	"$(INTDIR)\finitedifferenceeuropean.obj" \
@@ -1405,11 +1407,9 @@ LIB32_OBJS= \
 	"$(INTDIR)\calendar.obj" \
 	"$(INTDIR)\dataformatters.obj" \
 	"$(INTDIR)\date.obj" \
-	"$(INTDIR)\scheduler.obj" \
-	"$(INTDIR)\solver1d.obj" \
 	"$(INTDIR)\option.obj" \
-	"$(INTDIR)\plainoption.obj" \
-	"$(INTDIR)\europeanengine.obj"
+	"$(INTDIR)\scheduler.obj" \
+	"$(INTDIR)\solver1d.obj"
 
 ".\lib\Win32\VisualStudio\QuantLib_d.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
     $(LIB32) @<<
