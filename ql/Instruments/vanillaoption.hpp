@@ -36,7 +36,7 @@ namespace QuantLib {
 
     namespace Instruments {
 
-        //! Plain (no discrete dividends, no barriers) option on a single asset
+        //! Vanilla option (no discrete dividends, no barriers) on a single asset
         class VanillaOption : public Option {
           public:
             VanillaOption(Option::Type type,
