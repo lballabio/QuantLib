@@ -261,7 +261,7 @@ namespace QuantLib {
         inline void MCVanillaEngine<RNG,S>::calculate() const {
 
             QL_REQUIRE(requiredTolerance_ != Null<double>() ||
-                       requiredSamples_ != Null<int>(),
+                       int(requiredSamples_) != Null<int>(),
                        "MCVanillaEngine::calculate: "
                        "neither tolerance nor number of samples set");
 
@@ -316,7 +316,7 @@ namespace QuantLib {
             }
 
             if (requiredTolerance_ != Null<double>()) {
-                if (maxSamples_ != Null<int>())
+                if (int(maxSamples_) != Null<int>())
                     value(requiredTolerance_, maxSamples_);
                 else
                     value(requiredTolerance_);
