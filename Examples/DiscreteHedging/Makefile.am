@@ -1,5 +1,5 @@
 CXXFLAGS = -g -O2 -Wall
-INCLUDES = -I../../ql
+INCLUDES = -I../..
 
 bin_PROGRAMS = DiscreteHedging
 DiscreteHedging_SOURCES = DiscreteHedging.cpp

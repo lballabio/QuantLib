@@ -212,12 +212,12 @@ SectionIn 1 2
     File /r "Examples\*.mak"
     File /r "Examples\*.dsw"
 
-    SetOutPath $INSTDIR\Examples\HedgingError
-    File /r "Examples\HedgingError\*.cpp"
-    File /r "Examples\HedgingError\*.dep"
-    File /r "Examples\HedgingError\*.dsp"
-    File /r "Examples\HedgingError\*.txt"
-    File /r "Examples\HedgingError\*.mak"
+    SetOutPath $INSTDIR\Examples\DiscreteHedging
+    File /r "Examples\DiscreteHedging\*.cpp"
+    File /r "Examples\DiscreteHedging\*.dep"
+    File /r "Examples\DiscreteHedging\*.dsp"
+    File /r "Examples\DiscreteHedging\*.txt"
+    File /r "Examples\DiscreteHedging\*.mak"
 
     SetOutPath $INSTDIR\Examples\Parities
     File /r "Examples\Parities\*.cpp"
