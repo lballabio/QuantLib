@@ -32,6 +32,9 @@
 
 // $Id$
 // $Log$
+// Revision 1.2  2001/09/03 16:33:15  sadrejeb
+// gcc-3.0.1 fix (added destructor)
+//
 // Revision 1.1  2001/09/03 13:54:20  nando
 // source (*.hpp and *.cpp) moved under topdir/ql
 //
@@ -67,6 +70,7 @@ namespace QuantLib {
     class Error : public std::exception {
       public:
         explicit Error(const std::string& what = "") : message(what) {}
+	~Error() throw() {}
         //! returns the error message.
         const char* what() const throw () { return message.c_str(); }
       private:
