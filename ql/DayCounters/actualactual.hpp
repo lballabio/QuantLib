@@ -47,8 +47,6 @@ namespace QuantLib {
             For more detail please refer to:
             http://www.isda.org/c_and_a/pdf/mktc1198.pdf
 
-            \todo Actual/Actual day count following the ISDA and AFB 
-            conventions should be implemented.
         */
         class ActualActual : public DayCounter {
           public:
