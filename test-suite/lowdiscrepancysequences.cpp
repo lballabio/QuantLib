@@ -38,9 +38,9 @@ CppUnit::Test* LDSTest::suite() {
     tests->addTest(new CppUnit::TestCaller<LDSTest>
                    ("Testing Halton sequences",
                     &LDSTest::testHalton));
-//    tests->addTest(new CppUnit::TestCaller<LDSTest>
-//                   ("Testing sequences' discrepancy",
-//                    &LDSTest::testDiscrepancy));
+    tests->addTest(new CppUnit::TestCaller<LDSTest>
+                   ("Testing sequences' discrepancy",
+                    &LDSTest::testDiscrepancy));
     return tests;
 }
 
@@ -49,8 +49,8 @@ void LDSTest::testPolynomialsModuloTwo() {
 
     static const unsigned long jj[] = {
                  1,       1,       2,       2,       6,       6,      18,
-                16,      48,      60,     176,     144,     630,     756,    
-              1800,    2048,    7710,    7776,   27594,   24000,   84672,  
+                16,      48,      60,     176,     144,     630,     756,
+              1800,    2048,    7710,    7776,   27594,   24000,   84672,
             120032,  356960,  276480, 1296000, 1719900, 4202496
     };
 
@@ -106,6 +106,7 @@ void LDSTest::testSobol() {
     std::vector<double> mean, stdev, variance, skewness, kurtosis;
     Size k = 0;
     for (int j=1; j<5; j++) { // five cycle
+//        std::cout << j << ", " ;
         points = Size(QL_POW(2.0, j))-1; // base 2
         for (; k<points; k++) {
             point = rsg.nextSequence().value;
@@ -119,7 +120,7 @@ void LDSTest::testSobol() {
                              DoubleFormatter::toString(mean[i]) +
                              ") at the end of the " +
                              IntegerFormatter::toOrdinal(j+1) +
-                             " cycle in Sobol sequence is not " + 
+                             " cycle in Sobol sequence is not " +
                              DoubleFormatter::toString(0.5));
             }
         }
@@ -140,7 +141,7 @@ void LDSTest::testSobol() {
         0.09375, 0.59375, 0.84375, 0.34375, 0.46875, 0.96875, 0.71875, 0.21875,
         0.15625, 0.65625, 0.90625, 0.40625, 0.28125, 0.78125, 0.53125, 0.03125
     };
-    
+
     dimensionality = 1;
     rsg = SobolRsg(dimensionality);
     points = Size(QL_POW(2.0, 5))-1; // five cycles
@@ -152,7 +153,7 @@ void LDSTest::testSobol() {
                          DoubleFormatter::toString(point[0]) +
                          ") in 1-D Sobol sequence is not in the "
                          "van der Corput sequence modulo two: " +
-                         "it should have been " + 
+                         "it should have been " +
                          DoubleFormatter::toString(
                              vanderCorputSequenceModuloTwo[i]));
         }
@@ -194,7 +195,7 @@ void LDSTest::testHalton() {
         0.03125, 0.53125, 0.28125, 0.78125, 0.15625, 0.65625, 0.40625, 0.90625,
         0.09375, 0.59375, 0.34375, 0.84375, 0.21875, 0.71875, 0.46875, 0.96875,
     };
-    
+
 
     dimensionality = 1;
     rsg = HaltonRsg(dimensionality);
@@ -207,7 +208,7 @@ void LDSTest::testHalton() {
                          DoubleFormatter::toString(point[0]) +
                          ") in 1-D Halton sequence is not in the "
                          "van der Corput sequence modulo two: " +
-                         "it should have been " + 
+                         "it should have been " +
                          DoubleFormatter::toString(
                              vanderCorputSequenceModuloTwo[i]));
         }
@@ -236,7 +237,7 @@ void LDSTest::testHalton() {
                          DoubleFormatter::toString(point[0]) +
                          ") in 2-D Halton sequence is not in the "
                          "van der Corput sequence modulo two: " +
-                         "it should have been " + 
+                         "it should have been " +
                          DoubleFormatter::toString(
                              vanderCorputSequenceModuloTwo[i]));
         }
@@ -247,7 +248,7 @@ void LDSTest::testHalton() {
                          DoubleFormatter::toString(point[1]) +
                          ") in 2-D Halton sequence is not in the "
                          "van der Corput sequence modulo three: "
-                         "it should have been " + 
+                         "it should have been " +
                          DoubleFormatter::toString(
                              vanderCorputSequenceModuloThree[i]));
         }
@@ -276,7 +277,7 @@ void LDSTest::testHalton() {
                          DoubleFormatter::toString(mean[0]) +
                          ") at the end of the " +
                          IntegerFormatter::toOrdinal(j+1) +
-                         " cycle in Halton sequence is not " + 
+                         " cycle in Halton sequence is not " +
                          DoubleFormatter::toString(0.5));
         }
     }
@@ -297,7 +298,7 @@ void LDSTest::testHalton() {
                          DoubleFormatter::toString(mean[1]) +
                          ") at the end of the " +
                          IntegerFormatter::toOrdinal(j+1) +
-                         " cycle in Halton sequence is not " + 
+                         " cycle in Halton sequence is not " +
                          DoubleFormatter::toString(0.5));
         }
     }
@@ -310,21 +311,24 @@ void LDSTest::testDiscrepancy() {
     unsigned long dim, dimensionality[] = {2, 3, 5, 10, 15, 30, 50, 100 };
     unsigned long seed = 123456;
 
-    std::cout << std::endl;
+//    std::cout << std::endl;
 
     for (int i = 0; i<8; i++) {
         dim = dimensionality[i];
         MersenneTwisterUniformRsg mer(dim, seed);
         HaltonRsg                 hal(dim);
         SobolRsg                  sob(dim, seed);
+        SobolRsg                  unS(dim, seed, true);
 
         DiscrepancyStatistics merStat(dim);
         DiscrepancyStatistics halStat(dim);
         DiscrepancyStatistics sobStat(dim);
-        std::cout << "dim " << dim << std::endl;
+        DiscrepancyStatistics unSStat(dim);
+//        std::cout << "dim " << dim << std::endl;
 
         Size k = 0;
-        for (int j=10; j<17; j++) {
+//        for (int j=10; j<17; j++) {
+        for (int j=10; j<11; j++) {
             Size points = Size(QL_POW(2.0, j))-1;
             for (; k<points; k++) {
                 point = mer.nextSequence().value;
@@ -333,7 +337,10 @@ void LDSTest::testDiscrepancy() {
                 halStat.add(point);
                 point = sob.nextSequence().value;
                 sobStat.add(point);
+                point = unS.nextSequence().value;
+                unSStat.add(point);
             }
+/*
             std::cout << points << ": "
                 "r " << QL_SQRT((1.0/QL_POW(2.0, int(dim))
                                  -1.0/QL_POW(3.0, int(dim)))
@@ -341,7 +348,9 @@ void LDSTest::testDiscrepancy() {
                 ", Mers. " << merStat.discrepancy() <<
                 ", Halt. " << halStat.discrepancy() <<
                 ", Sobol " << sobStat.discrepancy() <<
+                ", UnitS " << unSStat.discrepancy() <<
                 std::endl;
+*/
         }
     }
 
