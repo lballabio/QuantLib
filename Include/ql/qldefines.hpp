@@ -30,6 +30,9 @@
 
 // $Source$
 // $Log$
+// Revision 1.5  2001/05/31 14:48:10  lballabio
+// Worked around Visual C++ deficiencies
+//
 // Revision 1.4  2001/05/24 15:38:07  nando
 // smoothing #include xx.hpp and cutting old Log messages
 //
@@ -280,6 +283,24 @@
 */
 #if !defined(BROKEN_TEMPLATE_SPECIALIZATION)
     #define QL_DECLARE_TEMPLATE_SPECIALIZATIONS
+#endif
+
+/*! \def QL_ALLOW_TEMPLATE_METHODS
+    \brief Blame Microsoft for this one...
+
+    Their compiler cannot cope with method calls such as
+    \code
+    Handle<Type1> h1(whatever);
+    h2 = h1.downcast<Type2>();
+    \endcode
+    
+    For compatibility, a workaround should be implemented (which of course will 
+    be less solid or more comples - as I said, blame Microsoft...)
+*/
+#if !defined(BROKEN_TEMPLATE_METHODS)
+    #define QL_ALLOW_TEMPLATE_METHODS   1
+#else
+    #define QL_ALLOW_TEMPLATE_METHODS   0
 #endif
 
 /*! \def QL_EXPRESSION_TEMPLATES_WORK

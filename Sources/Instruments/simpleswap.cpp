@@ -96,8 +96,13 @@ namespace QuantLib {
             for (; begin != end; ++begin) {
                 // the following should be safe as long as nobody 
                 // messed with the coupons
+                #if QL_ALLOW_TEMPLATE_METHODS
                 FixedRateCoupon* coupon = 
                     begin->downcast<FixedRateCoupon>();
+                #else
+                const FixedRateCoupon* coupon = 
+                    dynamic_cast<const FixedRateCoupon*>(begin->pointer());
+                #endif
                 // however, we will check that it succeeded
                 if (coupon != 0) {
                     BPS_ += coupon->accrualPeriod() * 

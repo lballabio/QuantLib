@@ -289,7 +289,23 @@ SOURCE=.\Include\ql\FiniteDifferences\valueatcenter.hpp
 # PROP Default_Filter ""
 # Begin Source File
 
+SOURCE=.\Sources\Instruments\simpleswap.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\Include\ql\Instruments\simpleswap.hpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\Include\ql\Instruments\stock.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\Sources\Instruments\swap.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\Include\ql\Instruments\swap.hpp
 # End Source File
 # End Group
 # Begin Group "Math"
@@ -888,6 +904,34 @@ SOURCE=.\Sources\Indexes\xibor.cpp
 SOURCE=.\Include\ql\Indexes\xibor.hpp
 # End Source File
 # End Group
+# Begin Group "CashFlows"
+
+# PROP Default_Filter ""
+# Begin Source File
+
+SOURCE=.\Include\ql\CashFlows\accruingcoupon.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\Sources\CashFlows\cashflowvectors.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\Include\ql\CashFlows\cashflowvectors.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\Include\ql\CashFlows\fixedratecoupon.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\Include\ql\CashFlows\indexlinkedcoupon.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\Include\ql\CashFlows\simplecashflow.hpp
+# End Source File
+# End Group
 # Begin Source File
 
 SOURCE=.\Include\ql\array.hpp
@@ -1003,6 +1047,14 @@ SOURCE=.\Include\ql\rate.hpp
 # Begin Source File
 
 SOURCE=.\Include\ql\riskstatistics.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\Sources\scheduler.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\Include\ql\scheduler.hpp
 # End Source File
 # Begin Source File
 

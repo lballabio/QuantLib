@@ -4,6 +4,9 @@
 
 // $Source$
 // $Log$
+// Revision 1.7  2001/05/31 14:48:10  lballabio
+// Worked around Visual C++ deficiencies
+//
 // Revision 1.6  2001/05/24 15:38:07  nando
 // smoothing #include xx.hpp and cutting old Log messages
 //
@@ -50,6 +53,7 @@
 #define QL_MAX      std::_cpp_max
 
 #define BROKEN_TEMPLATE_SPECIALIZATION
+#define BROKEN_TEMPLATE_METHODS
 #define HAVE_EXPRESSION_TEMPLATES
 #define HAVE_TEMPLATE_METAPROGRAMMING
 

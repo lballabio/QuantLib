@@ -30,6 +30,9 @@
 
 // $Source$
 // $Log$
+// Revision 1.10  2001/05/31 14:48:10  lballabio
+// Worked around Visual C++ deficiencies
+//
 // Revision 1.9  2001/05/31 13:54:29  lballabio
 // Rewritten Handle downcast to be gcc-compatible
 //
@@ -116,18 +119,25 @@ namespace QuantLib {
         /*! Returns a null pointer in case of failure.
             \warning The returned pointer is not guaranteed to remain 
             allocated and should be discarded immediately after being used */
+        #if QL_ALLOW_TEMPLATE_METHODS
         template <class Type2>
         Type2* downcast() const {
             return dynamic_cast<Type2*>(ptr_);
         }
+        #endif
         //@}
         
         //! \name Inspectors
         //@{
         //! Checks if the contained pointer is actually allocated
         bool isNull() const;
+        #if !QL_ALLOW_TEMPLATE_METHODS
+        /*! This is here only because MSVC won't compile downcast().
+            I know it is dangerous. Avoid using it if you can. 
+            Blame Microsoft if you can't. */
+        const Type* pointer() const { return ptr_; }
+        #endif
         //@}
-
       private:
         Type* ptr_;
         int* n_;
