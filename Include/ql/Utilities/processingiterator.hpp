@@ -30,6 +30,9 @@
 
 // $Id$
 // $Log$
+// Revision 1.8  2001/08/28 12:33:18  nando
+// nothing relevant (spaces added)
+//
 // Revision 1.7  2001/08/09 14:59:47  sigmud
 // header modification
 //
@@ -90,14 +93,14 @@ namespace QuantLib {
             //@}
             //! \name Random access
             //@{
-            value_type operator[](int) const;
+            value_type operator[](int ) const;
             //@}
             //! \name Increment and decrement
             //@{
             processing_iterator& operator++();
-            processing_iterator  operator++(int);
+            processing_iterator  operator++(int );
             processing_iterator& operator--();
-            processing_iterator  operator--(int);
+            processing_iterator  operator--(int );
             processing_iterator& operator+=(difference_type);
             processing_iterator& operator-=(difference_type);
             processing_iterator  operator+(difference_type);
@@ -147,7 +150,7 @@ namespace QuantLib {
 
         template <class Iterator, class UnaryFunction>
         inline processing_iterator<Iterator,UnaryFunction>
-        processing_iterator<Iterator,UnaryFunction>::operator++(int) {
+        processing_iterator<Iterator,UnaryFunction>::operator++(int ) {
             processing_iterator<Iterator,UnaryFunction> temp = *this;
             ++it_;
             return temp;
@@ -162,7 +165,7 @@ namespace QuantLib {
 
         template <class Iterator, class UnaryFunction>
         inline processing_iterator<Iterator,UnaryFunction>
-        processing_iterator<Iterator,UnaryFunction>::operator--(int) {
+        processing_iterator<Iterator,UnaryFunction>::operator--(int ) {
             processing_iterator<Iterator,UnaryFunction> temp = *this;
             --it_;
             return temp;

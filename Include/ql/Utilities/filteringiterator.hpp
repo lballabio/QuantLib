@@ -30,6 +30,9 @@
 
 // $Id$
 // $Log$
+// Revision 1.10  2001/08/28 12:33:41  nando
+// nothing relevant (spaces added)
+//
 // Revision 1.9  2001/08/09 14:59:47  sigmud
 // header modification
 //
@@ -100,9 +103,9 @@ namespace QuantLib {
             //! \name Increment and decrement
             //@{
             filtering_iterator& operator++();
-            filtering_iterator  operator++(int);
+            filtering_iterator  operator++(int );
             filtering_iterator& operator--();
-            filtering_iterator  operator--(int);
+            filtering_iterator  operator--(int );
             //@}
             //! \name Comparisons
             //@{
@@ -146,7 +149,7 @@ namespace QuantLib {
 
         template<class Iterator, class UnaryPredicate>
         inline filtering_iterator<Iterator,UnaryPredicate>
-        filtering_iterator<Iterator,UnaryPredicate>::operator++(int) {
+        filtering_iterator<Iterator,UnaryPredicate>::operator++(int ) {
             filtering_iterator<Iterator,UnaryPredicate> temp = *this;
             do
                 ++it_;
@@ -165,7 +168,7 @@ namespace QuantLib {
 
         template<class Iterator, class UnaryPredicate>
         inline filtering_iterator<Iterator,UnaryPredicate>
-        filtering_iterator<Iterator,UnaryPredicate>::operator--(int) {
+        filtering_iterator<Iterator,UnaryPredicate>::operator--(int ) {
             filtering_iterator<Iterator,UnaryPredicate> temp = *this;
             do
                 --it_;

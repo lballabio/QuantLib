@@ -30,6 +30,9 @@
 
 // $Id$
 // $Log$
+// Revision 1.8  2001/08/28 12:32:17  nando
+// nothing relevant (spaces added)
+//
 // Revision 1.7  2001/08/09 14:59:47  sigmud
 // header modification
 //
@@ -88,14 +91,14 @@ namespace QuantLib {
             //@}
             //! \name Random access
             //@{
-            reference operator[](int) const;
+            reference operator[](int ) const;
             //@}
             //! \name Increment and decrement
             //@{
             stepping_iterator& operator++();
-            stepping_iterator  operator++(int);
+            stepping_iterator  operator++(int );
             stepping_iterator& operator--();
-            stepping_iterator  operator--(int);
+            stepping_iterator  operator--(int );
             stepping_iterator& operator+=(difference_type);
             stepping_iterator& operator-=(difference_type);
             stepping_iterator<RandomAccessIterator> operator+(difference_type);
@@ -144,7 +147,7 @@ namespace QuantLib {
 
         template<class RandomAccessIterator>
         inline stepping_iterator<RandomAccessIterator>
-        stepping_iterator<RandomAccessIterator>::operator++(int) {
+        stepping_iterator<RandomAccessIterator>::operator++(int ) {
             stepping_iterator<RandomAccessIterator> temp = *this;
             it_ += dn_;
             return temp;
@@ -159,7 +162,7 @@ namespace QuantLib {
 
         template<class RandomAccessIterator>
         inline stepping_iterator<RandomAccessIterator>
-        stepping_iterator<RandomAccessIterator>::operator--(int) {
+        stepping_iterator<RandomAccessIterator>::operator--(int ) {
             stepping_iterator<RandomAccessIterator> temp = *this;
             it_ -= dn_;
             return temp;

@@ -30,6 +30,9 @@
 
 // $Id$
 // $Log$
+// Revision 1.10  2001/08/28 12:34:04  nando
+// nothing relevant (spaces added)
+//
 // Revision 1.9  2001/08/09 14:59:47  sigmud
 // header modification
 //
@@ -105,7 +108,7 @@ namespace QuantLib {
                 ++it1_; ++it2_;
                 return *this;
             }
-            coupling_iterator  operator++(int) {
+            coupling_iterator  operator++(int ) {
                 coupling_iterator tmp = *this;
                 ++it1_; ++it2_;
                 return tmp;
@@ -114,7 +117,7 @@ namespace QuantLib {
                 --it1_; --it2_;
                 return *this;
             }
-            coupling_iterator  operator--(int) {
+            coupling_iterator  operator--(int ) {
                 coupling_iterator tmp = *this;
                 --it1_; --it2_;
                 return tmp;

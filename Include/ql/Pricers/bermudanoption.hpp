@@ -30,6 +30,9 @@
 
 // $Id$
 // $Log$
+// Revision 1.14  2001/08/28 12:31:45  nando
+// nothing relevant (spaces added)
+//
 // Revision 1.13  2001/08/09 14:59:47  sigmud
 // header modification
 //
@@ -78,7 +81,7 @@ namespace QuantLib {
           protected:
             double extraTermInBermudan ;
             void initializeStepCondition() const;
-            void executeIntermediateStep(int) const;
+            void executeIntermediateStep(int ) const;
         };
 
     }

@@ -30,6 +30,9 @@
 
 // $Id$
 // $Log$
+// Revision 1.8  2001/08/28 12:34:04  nando
+// nothing relevant (spaces added)
+//
 // Revision 1.7  2001/08/09 14:59:47  sigmud
 // header modification
 //
@@ -98,9 +101,9 @@ namespace QuantLib {
             //! \name Increment and decrement
             //@{
             combining_iterator& operator++();
-            combining_iterator  operator++(int);
+            combining_iterator  operator++(int );
             combining_iterator& operator--();
-            combining_iterator  operator--(int);
+            combining_iterator  operator--(int );
             combining_iterator& operator+=(difference_type n);
             combining_iterator& operator-=(difference_type n);
             combining_iterator  operator+ (difference_type n) const;
@@ -145,7 +148,7 @@ namespace QuantLib {
 
         template <class Iterator, class Function>
         inline combining_iterator<Iterator,Function>
-        combining_iterator<Iterator,Function>::operator++(int) {
+        combining_iterator<Iterator,Function>::operator++(int ) {
             combining_iterator<Iterator,Function> tmp = *this;
             ++*this;
             return tmp;
@@ -161,7 +164,7 @@ namespace QuantLib {
 
         template <class Iterator, class Function>
         inline combining_iterator<Iterator,Function>
-        combining_iterator<Iterator,Function>::operator--(int) {
+        combining_iterator<Iterator,Function>::operator--(int ) {
             combining_iterator<Iterator,Function> temp = *this;
             --*this;
             return temp;
