@@ -27,6 +27,9 @@
     $Source$
     $Name$
     $Log$
+    Revision 1.9  2001/01/10 16:35:35  nando
+    timeStepPerDiv was double now it is int
+
     Revision 1.8  2001/01/08 11:44:17  lballabio
     Array back into QuantLib namespace - Math namespace broke expression templates, go figure
 
@@ -74,7 +77,7 @@ namespace QuantLib {
             double value() const;
             private:
             mutable bool theOptionIsAmerican;
-            double timeStepPerDiv;
+            int timeStepPerDiv;
             std::vector<double> theDividends;
             std::vector<Time> theExDivDates;
             unsigned int  theNumberOfDivs;
