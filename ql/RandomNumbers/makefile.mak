@@ -48,9 +48,11 @@ TLIB_OPTS    = /P256
 # Generic rules
 {$(SRCDIR)}.cpp{$(OBJDIR)}.obj:
     $(CC) $(CC_OPTS) $<
-.cpp.obj$(_D):
+{$(SRCDIR)}.cpp{$(OBJDIR)}.obj$(_D):
     $(CC) $(CC_OPTS) -o$@ $<
 {$(SRCDIR)}.c{$(OBJDIR)}.obj:
+    $(CC) $(CC_OPTS) -o$@ $<
+{$(SRCDIR)}.c{$(OBJDIR)}.obj$(_D):
     $(CC) $(CC_OPTS) -o$@ $<
 
 # Primary target:

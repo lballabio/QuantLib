@@ -9,13 +9,14 @@
     _D = _d
 !endif
 
+
 # Directories
 QL_INCLUDE_DIR   = "$(QL_DIR)"
 QL_LIB_DIR       = "$(QL_DIR)\lib\Win32\Borland"
 BCC_INCLUDE      = $(MAKEDIR)\..\include
 BCC_LIBS         = $(MAKEDIR)\..\lib
-SRCDIR              = "."
-OBJDIR              = ".\build\Borland"
+SRCDIR           = "."
+OBJDIR           = ".\build\Borland"
 
 #Warning W8057 : Parameter 'argc' is never used in function main(int,char * *)
 
@@ -34,7 +35,9 @@ CC_OPTS = $(CC_OPTS) -DQL_EXTRA_SAFETY_CHECKS
 
 # Primary target:
 EuropeanOption$(_D).exe: $(OBJDIR) EuropeanOption.cpp
-    bcc32 $(CC_OPTS) -L$(QL_LIB_DIR) -L$(BCC_LIBS) -o"$(OBJDIR)\EuropeanOption$(_D).obj" -eEuropeanOption$(_D).exe EuropeanOption.cpp QuantLib$(_D).lib
+    bcc32 $(CC_OPTS) -L$(QL_LIB_DIR) -L$(BCC_LIBS) \
+    -o"$(OBJDIR)\EuropeanOption$(_D).obj" -eEuropeanOption$(_D).exe \
+    EuropeanOption.cpp QuantLib$(_D).lib
 
 #create build dir
 $(OBJDIR):

@@ -1,7 +1,8 @@
+
 # makefile for test-suite.cpp under Borland C++
 
 .autodepend
-.silent
+#.silent
 
 # Debug version
 !ifdef DEBUG

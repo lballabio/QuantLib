@@ -71,13 +71,13 @@ CC_OPTS = $(CC_OPTS) -DQL_EXTRA_SAFETY_CHECKS
 
 TLIB_OPTS    = /P128
 !ifdef DEBUG
-TLIB_OPTS    = /P128
+TLIB_OPTS    = /P256
 !endif
 
 # Generic rules
 {$(SRCDIR)}.cpp{$(OBJDIR)}.obj:
     $(CC) $(CC_OPTS) $<
-.cpp.obj$(_D):
+{$(SRCDIR)}.cpp{$(OBJDIR)}.obj$(_D):
     $(CC) $(CC_OPTS) -o$@ $<
 
 # Primary target:
