@@ -43,7 +43,7 @@ namespace QuantLib {
             DiscountFactor discount, bool useAntitheticVariance)
         : PathPricer<MultiPath>(discount, useAntitheticVariance),
           underlying_(underlying), strike_(strike) {
-            for (size_t j=0; j<underlying_.size(); j++) {
+            for (Size j=0; j<underlying_.size(); j++) {
                 QL_REQUIRE(underlying_[j]>0.0,
                     "HimalayaPathPricer: "
                     "underlying less/equal zero not allowed");
@@ -55,8 +55,8 @@ namespace QuantLib {
 
         double HimalayaPathPricer::operator()(const MultiPath& multiPath)
           const {
-            size_t numAssets = multiPath.assetNumber();
-            size_t numSteps = multiPath.pathSize();
+            Size numAssets = multiPath.assetNumber();
+            Size numSteps = multiPath.pathSize();
             QL_REQUIRE(underlying_.size() == numAssets,
                 "HimalayaPathPricer: the multi-path must contain "
                 + IntegerFormatter::toString(underlying_.size()) +" assets");
@@ -68,7 +68,7 @@ namespace QuantLib {
             double averagePrice = 0;
             std::vector<bool> remainingAssets(numAssets, true);
             double bestPrice;
-            size_t removeAsset, i, j;
+            Size removeAsset, i, j;
             for(i = 0; i < numSteps; i++) {
                 bestPrice = 0.0;
                 // dummy assignement to avoid compiler warning

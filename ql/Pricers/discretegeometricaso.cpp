@@ -53,7 +53,7 @@ namespace QuantLib {
             std::vector<double> pastFixings(0, 0.0);
             double runningAverage = std::accumulate(pastFixings.begin(),
                 pastFixings.end(), 1.0, std::multiplies<double>());
-            size_t m = pastFixings.size();
+            Size m = pastFixings.size();
             double runningLogAverage = QL_LOG(runningAverage);
             QL_REQUIRE(runningLogAverage==0.0, "not zero");
 
@@ -68,7 +68,7 @@ namespace QuantLib {
                 futureWeight * QL_LOG(underlying_) +
                 nu/N*std::accumulate(times_.begin(), times_.end(), 0.0);
 
-            size_t i;
+            Size i;
             double temp = 0.0;
             for (i=m+1; i<N; i++)
                 temp += times_[i-m-1]*(N-i);

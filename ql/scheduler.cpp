@@ -125,7 +125,7 @@ namespace QuantLib {
         // done
     }
 
-    bool Scheduler::isRegular(size_t i) const {
+    bool Scheduler::isRegular(Size i) const {
         if (i == 1)
             return (stubDate_ == Date());
         else if (i == size()-1)

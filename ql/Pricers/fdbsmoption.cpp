@@ -47,7 +47,7 @@ namespace QuantLib {
         FdBsmOption::FdBsmOption(Option::Type type,
             double underlying, double strike, Spread dividendYield,
             Rate riskFreeRate, Time residualTime, double volatility,
-            size_t gridPoints)
+            Size gridPoints)
         : SingleAssetOption(type, underlying, strike, dividendYield,
             riskFreeRate, residualTime, volatility),
             gridPoints_(safeGridPoints(gridPoints, residualTime)),
@@ -107,13 +107,13 @@ namespace QuantLib {
             gridLogSpacing_ = (QL_LOG(sMax_)-QL_LOG(sMin_))/(gridPoints_-1);
             double edx = QL_EXP(gridLogSpacing_);
             grid_[0] = sMin_;
-            size_t j;
+            Size j;
             for (j=1; j<gridPoints_; j++)
                 grid_[j] = grid_[j-1]*edx;
         }
 
         void FdBsmOption::initializeInitialCondition() const {
-            size_t j;
+            Size j;
             switch (type_) {
               case Option::Call:
                 for(j = 0; j < gridPoints_; j++)

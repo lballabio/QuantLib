@@ -55,12 +55,12 @@ namespace QuantLib {
         }
 
         double EuropeanPathPricer::operator()(const Path& path) const {
-            size_t n = path.size();
+            Size n = path.size();
             QL_REQUIRE(n>0,
                 "EuropeanPathPricer: the path cannot be empty");
 
             double log_drift = 0.0, log_random = 0.0;
-            for (size_t i = 0; i < n; i++) {
+            for (Size i = 0; i < n; i++) {
                 log_drift += path.drift()[i];
                 log_random += path.diffusion()[i];
             }

@@ -66,7 +66,7 @@ namespace QuantLib {
           public:
             typedef Array arrayType;
             // constructors
-            TridiagonalOperator(size_t size = 0);
+            TridiagonalOperator(Size size = 0);
             TridiagonalOperator(const Array& low, const Array& mid,
                 const Array& high);
             #if defined(QL_PATCH_MICROSOFT_BUGS)
@@ -84,11 +84,11 @@ namespace QuantLib {
             //! solve linear system for a given right-hand side
             Array solveFor(const Array& rhs) const;
             //! identity instance
-            static TridiagonalOperator identity(size_t size);
+            static TridiagonalOperator identity(Size size);
             //@}
             //! \name Inspectors
             //@{
-            size_t size() const;
+            Size size() const;
             bool isTimeDependent();
             //@}
             //! \name Modifiers
@@ -96,7 +96,7 @@ namespace QuantLib {
             void setLowerBC(const BoundaryCondition& bc);
             void setUpperBC(const BoundaryCondition& bc);
             void setFirstRow(double, double);
-            void setMidRow(size_t, double, double, double);
+            void setMidRow(Size, double, double, double);
             void setMidRows(double, double, double);
             void setLastRow(double, double);
             void setTime(Time t);
@@ -139,7 +139,7 @@ namespace QuantLib {
             }
         #endif
 
-        inline size_t TridiagonalOperator::size() const {
+        inline Size TridiagonalOperator::size() const {
             return diagonal_.size();
         }
 
@@ -153,7 +153,7 @@ namespace QuantLib {
             aboveDiagonal_[0] = valC;
         }
 
-        inline void TridiagonalOperator::setMidRow(size_t i,
+        inline void TridiagonalOperator::setMidRow(Size i,
           double valA, double valB, double valC) {
             QL_REQUIRE(i>=1 && i<=size()-2,
                 "out of range in TridiagonalSystem::setMidRow");
@@ -164,7 +164,7 @@ namespace QuantLib {
 
         inline void TridiagonalOperator::setMidRows(double valA,
           double valB, double valC){
-            for (size_t i=1; i<=size()-2; i++) {
+            for (Size i=1; i<=size()-2; i++) {
                 belowDiagonal_[i-1] = valA;
                 diagonal_[i]        = valB;
                 aboveDiagonal_[i]   = valC;

@@ -152,7 +152,7 @@ int main(int argc, char* argv[])
 
         // fourth method: Finite Differences
         method ="Finite Diff.";
-        size_t grid = 100;
+        Size grid = 100;
         value = FdEuropean(Option::Call, underlying, strike,
             dividendYield, riskFreeRate, maturity, volatility, grid).value();
         discrepancy = QL_FABS(value-rightValue);
@@ -187,7 +187,7 @@ int main(int argc, char* argv[])
         // sixth method: Monte Carlo with antithetic variance reduction
         method ="MC (antithetic)";
         // let's use the same number of samples as in the crude Monte Carlo
-        size_t nSamples = mcEur.sampleAccumulator().samples();
+        Size nSamples = mcEur.sampleAccumulator().samples();
         antitheticVariance = true;
         McEuropean mcEur2(Option::Call, underlying, strike, dividendYield,
             riskFreeRate, maturity, volatility, antitheticVariance);

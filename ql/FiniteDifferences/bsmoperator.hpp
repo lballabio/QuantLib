@@ -44,7 +44,7 @@ namespace QuantLib {
         class BSMOperator : public TridiagonalOperator {
           public:
             BSMOperator() {}
-            BSMOperator(size_t size,
+            BSMOperator(Size size,
                         double dx,
                         double r,
                         double q,

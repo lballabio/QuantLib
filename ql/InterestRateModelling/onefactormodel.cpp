@@ -72,7 +72,7 @@ namespace QuantLib {
         };      
             
         inline double OneFactorModel::FitFunction::operator()(double x) const {
-            size_t index = grid_.index();
+            Size index = grid_.index();
             theta_[nit_ - 1] = x;
 
             Array prices(statePrices_);

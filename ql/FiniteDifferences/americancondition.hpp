@@ -58,7 +58,7 @@ namespace QuantLib {
             : initialPrices_(initialPrices) {}
 
         inline void AmericanCondition::applyTo(Array& a, Time t) const {
-            for (size_t i = 0; i < a.size(); i++)
+            for (Size i = 0; i < a.size(); i++)
                 a[i] = QL_MAX(a[i], initialPrices_[i]);
         }
 

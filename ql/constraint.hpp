@@ -1,8 +1,10 @@
+
 #ifndef quantlib_constraint_h
 #define quantlib_constraint_h
 
-#include <vector>
 #include "ql/errors.hpp"
+#include "ql/types.hpp"
+#include <vector>
 
 namespace QuantLib {
 
@@ -21,7 +23,7 @@ namespace QuantLib {
         }
 
         virtual bool operator()(const std::vector<double>& params) const {
-            size_t size(params.size());
+            Size size(params.size());
             QL_REQUIRE(size == minParams_.size(),
               "parameter vector is not of appropriate size");
             for (unsigned i=0; i<size; i++) {

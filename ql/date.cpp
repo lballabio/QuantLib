@@ -39,28 +39,28 @@ namespace QuantLib {
     namespace { // hide implementation in an anonymous namespace
 
         // valid date interval definition
-        const size_t MinimumSerialNumber = 367;       // Jan 1st, 1901
-        const size_t MaximumSerialNumber = 73050;    // Dec 31st, 2099
+        const Size MinimumSerialNumber = 367;       // Jan 1st, 1901
+        const Size MaximumSerialNumber = 73050;    // Dec 31st, 2099
         const Date MinimumDate = Date(MinimumSerialNumber);
         const Date MaximumDate = Date(MaximumSerialNumber);
 
-        const size_t MonthOffset[]     = {
+        const Size MonthOffset[]     = {
               0,  31,  59,  90, 120, 151,   // Jan - Jun
             181, 212, 243, 273, 304, 334,   // Jun - Dec
             365     // used in dayOfMonth to bracket day
         };
 
-        const size_t MonthLeapOffset[] = {
+        const Size MonthLeapOffset[] = {
               0,  31,  60,  91, 121, 152,   // Jan - Jun
             182, 213, 244, 274, 305, 335,   // Jun - Dec
             366     // used in dayOfMonth to bracket day
         };
 
-        const size_t MonthLength[]     = {
+        const Size MonthLength[]     = {
             31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31
         };
 
-        const size_t MonthLeapLength[] = {
+        const Size MonthLeapLength[] = {
             31, 29, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31
         };
 
@@ -68,7 +68,7 @@ namespace QuantLib {
 
         // the list of all December 31st in the preceding year
         // e.g. for 1901 yearOffset[1] is 366 that is December 31 1900
-        const size_t YearOffset[] = {
+        const Size YearOffset[] = {
             // 1900-1909
                 0,  366,  731, 1096, 1461, 1827, 2192, 2557, 2922, 3288,
             // 1910-1919
@@ -360,15 +360,15 @@ namespace QuantLib {
         return YearIsLeap[y-1900];
     }
 
-    size_t Date::monthLength(Month m, bool leapYear) {
+    Size Date::monthLength(Month m, bool leapYear) {
         return (leapYear? MonthLeapLength[m-1] : MonthLength[m-1]);
     }
 
-    size_t Date::monthOffset(Month m, bool leapYear) {
+    Size Date::monthOffset(Month m, bool leapYear) {
         return (leapYear? MonthLeapOffset[m-1] : MonthOffset[m-1]);
     }
 
-    size_t Date::yearOffset(Year y) {
+    Size Date::yearOffset(Year y) {
         return YearOffset[y-1900];
     }
 

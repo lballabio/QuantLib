@@ -70,7 +70,7 @@ namespace QuantLib {
             std::vector<double> divs, std::vector<Time> divDates) const{
 
             double tmp_riskless = 0.0;
-            for(size_t j = 0; j < divs.size(); j++)
+            for(Size j = 0; j < divs.size(); j++)
                 tmp_riskless += divs[j]*QL_EXP(-r*divDates[j]);
             return tmp_riskless;
         }

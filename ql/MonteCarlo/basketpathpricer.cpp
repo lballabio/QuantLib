@@ -47,7 +47,7 @@ namespace QuantLib {
             DiscountFactor discount, bool useAntitheticVariance)
         : PathPricer<MultiPath>(discount, useAntitheticVariance), type_(type),
           underlying_(underlying) {
-            for (size_t j=0; j<underlying_.size(); j++) {
+            for (Size j=0; j<underlying_.size(); j++) {
                 QL_REQUIRE(underlying_[j]>0.0,
                     "BasketPathPricer: "
                     "underlying less/equal zero not allowed");
@@ -59,14 +59,14 @@ namespace QuantLib {
 
         double BasketPathPricer::operator()(const MultiPath& multiPath)
           const {
-            size_t numAssets = multiPath.assetNumber();
-            size_t numSteps = multiPath.pathSize();
+            Size numAssets = multiPath.assetNumber();
+            Size numSteps = multiPath.pathSize();
             QL_REQUIRE(underlying_.size() == numAssets,
                 "BasketPathPricer: the multi-path must contain "
                 + IntegerFormatter::toString(underlying_.size()) +" assets");
 
             double log_drift=0.0, log_diffusion=0.0;
-            size_t i,j;
+            Size i,j;
             double basketPrice = 0.0;
             for(j = 0; j < numAssets; j++) {
                 log_drift = log_diffusion = 0.0;

@@ -74,7 +74,7 @@ namespace QuantLib {
             virtual double dividendRho() const;
             double impliedVolatility(double targetValue,
                                      double accuracy = 1e-4,
-                                     size_t maxEvaluations = 100,
+                                     Size maxEvaluations = 100,
                                      double minVol = QL_MIN_VOLATILITY,
                                      double maxVol = QL_MAX_VOLATILITY) const ;
             virtual Handle<SingleAssetOption> clone() const = 0;

@@ -11,6 +11,9 @@
 #ifndef quantlib_config_ansi_h
 #define quantlib_config_ansi_h
 
+#define HAVE_CSTDLIB
+#define QL_SIZE_T std::size_t
+
 #define HAVE_CMATH
 #define QL_SQRT   std::sqrt
 #define QL_FABS   std::fabs
@@ -31,6 +34,9 @@
 #define QL_STRLEN   std::strlen
 #define QL_TOLOWER  std::tolower
 #define QL_TOUPPER  std::toupper
+
+#define HAVE_CSTDIO
+#define QL_SPRINTF  std::sprintf
 
 #define QL_MIN      std::min
 #define QL_MAX      std::max

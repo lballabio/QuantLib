@@ -44,7 +44,7 @@ namespace QuantLib {
           const double tolerance = 1e-15;
 
           Matrix inputMatrix(realSymmMatrix);
-          size_t size = inputMatrix.rows();
+          Size size = inputMatrix.rows();
 
           QL_REQUIRE(size == inputMatrix.columns(),
               "sqrt input matrix must be square");
@@ -54,7 +54,7 @@ namespace QuantLib {
           Array evalues(jd.eigenvalues());
 
           double maxEv=0;
-          size_t i;
+          Size i;
           for(i = 0; i < size;i++)
               if(evalues[i] >= maxEv)
                   maxEv = evalues[i];

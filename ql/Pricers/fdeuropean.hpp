@@ -51,8 +51,8 @@ namespace QuantLib {
                                      Rate riskFreeRate,
                                      Time residualTime,
                                      double volatility,
-                                     size_t timeSteps = 200,
-                                     size_t gridPoints = 800);
+                                     Size timeSteps = 200,
+                                     Size gridPoints = 800);
                    Array getPrices() const;
             Handle<SingleAssetOption> clone() const{
                 return Handle<SingleAssetOption>(
@@ -61,7 +61,7 @@ namespace QuantLib {
           protected:
             void calculate() const;
           private:
-            size_t timeSteps_;
+            Size timeSteps_;
             mutable Array euroPrices_;
         };
 

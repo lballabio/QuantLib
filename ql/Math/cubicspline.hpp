@@ -74,7 +74,7 @@ namespace QuantLib {
             const I2& yBegin)
         : Interpolation<I1,I2>(xBegin,xEnd,yBegin), a_(xEnd-xBegin-1),
           b_(xEnd-xBegin-1), c_(xEnd-xBegin-1) {
-            size_t n = xEnd_-xBegin_;
+            Size n = xEnd_-xBegin_;
             #ifdef QL_DEBUG
                 QL_REQUIRE(n >= 4,
                     "not enough points for cubic spline interpolation");
@@ -92,7 +92,7 @@ namespace QuantLib {
             tmp[0] = ((dx01+2.0*dx02)*dx12*dy01/dx01 + 
                        dx01*dx01*dy12/dx12)/dx02;
             
-            size_t i;
+            Size i;
             for (i=1; i<n-1; i++) {
                 argument_type dxp = xBegin_[i+1] - xBegin_[i],
                               dxm = xBegin_[i]   - xBegin_[i-1];
@@ -136,7 +136,7 @@ namespace QuantLib {
                 else
                     i = Location(xBegin_,xEnd_,x);
 
-                size_t j = i-xBegin_;
+                Size j = i-xBegin_;
                 argument_type dx = x-xBegin_[j];
                 return yBegin_[j] + dx*(a_[j] + dx*(b_[j] + dx*c_[j]));
         }

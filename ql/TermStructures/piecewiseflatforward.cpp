@@ -53,7 +53,7 @@ namespace QuantLib {
             settlementDate_ = calendar_.advance(
                 todaysDate_,settlementDays_,Days);
             // sort risk helpers
-            size_t i;
+            Size i;
             for (i=0; i<instruments_.size(); i++)
                 instruments_[i]->setTermStructure(this);
             std::sort(instruments_.begin(),instruments_.end(),
@@ -71,7 +71,7 @@ namespace QuantLib {
         }
 
         PiecewiseFlatForward::~PiecewiseFlatForward() {
-            for (size_t i=0; i<instruments_.size(); i++)
+            for (Size i=0; i<instruments_.size(); i++)
                 instruments_[i]->unregisterObserver(this);
         }
 
@@ -91,7 +91,7 @@ namespace QuantLib {
                 Brent solver;
 
                 // bootstrapping loop
-                for (size_t i=1; i<instruments_.size()+1; i++) {
+                for (Size i=1; i<instruments_.size()+1; i++) {
                     Handle<RateHelper> instrument = instruments_[i-1];
                     // don't try this at home!
                     instrument->setTermStructure(
@@ -112,22 +112,22 @@ namespace QuantLib {
                             accuracy_,guess,min,max);
                     } catch (std::exception& e) {
 
-                        size_t k = i-1; // only outputs the last results
-                        // size_t k = 0; // outputs all results
+                        Size k = i-1; // only outputs the last results
+                        // Size k = 0; // outputs all results
                         std::string forward_string;
-                        for(size_t j1 = k; j1 < i; j1++){
+                        for(Size j1 = k; j1 < i; j1++){
                             forward_string += 
                                 DoubleFormatter::toString(forwards_[j1],3) + " ";
                         }
 
                         std::string discount_string;
-                        for(size_t j2 = k; j2 < i; j2++){
+                        for(Size j2 = k; j2 < i; j2++){
                             discount_string += " " +
                                 DoubleFormatter::toString(discounts_[j2],10) + " ";
                         }
 
                         std::string zeroYield_string;
-                        for(size_t j3 = k; j3 < i; j3++){
+                        for(Size j3 = k; j3 < i; j3++){
                             zeroYield_string += " " +
                                 DoubleFormatter::toString(zeroYields_[j3],3) + " ";
                         }

@@ -45,11 +45,11 @@ namespace QuantLib {
 
 
         double EverestPathPricer::operator()(const MultiPath& multiPath) const {
-            size_t numAssets = multiPath.assetNumber();
-            size_t numSteps = multiPath.pathSize();
+            Size numAssets = multiPath.assetNumber();
+            Size numSteps = multiPath.pathSize();
 
             double log_drift, log_diffusion;
-            size_t i,j;
+            Size i,j;
             if (useAntitheticVariance_) {
                 double minPrice = QL_MAX_DOUBLE, minPrice2 = QL_MAX_DOUBLE;
                 for( j = 0; j < numAssets; j++) {

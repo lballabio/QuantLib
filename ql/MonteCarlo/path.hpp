@@ -46,14 +46,14 @@ namespace QuantLib {
         */
         class Path {
           public:
-            Path(size_t size);
+            Path(Size size);
             Path(const std::vector<Time>& times,
                  const Array& drift,
                  const Array& diffusion);
             //! \name inspectors
             //@{
             double operator[](int i) const;
-            size_t size() const;
+            Size size() const;
             //@}
             //! \name read/write access to components
             //@{
@@ -72,7 +72,7 @@ namespace QuantLib {
 
         // inline definitions
 
-        inline Path::Path(size_t size)
+        inline Path::Path(Size size)
         : times_(size), drift_(size), diffusion_(size) {}
 
         inline Path::Path(const std::vector<Time>& times, const Array& drift,
@@ -88,7 +88,7 @@ namespace QuantLib {
             return drift_[i] + diffusion_[i];
         }
 
-        inline size_t Path::size() const {
+        inline Size Path::size() const {
             return drift_.size();
         }
 

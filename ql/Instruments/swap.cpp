@@ -73,7 +73,7 @@ namespace QuantLib {
             secondLegBPS_ = 0.0;
             isExpired_ = true;
             // subtract first leg cash flows and BPS
-            for (size_t i=0; i<firstLeg_.size(); i++) {
+            for (Size i=0; i<firstLeg_.size(); i++) {
                 Date cashFlowDate = firstLeg_[i]->date();
                 if (cashFlowDate >= settlement) {
                     isExpired_ = false;  // keeping track of whether this
@@ -92,7 +92,7 @@ namespace QuantLib {
                 }
             }
             // add second leg cash flows and BPS
-            for (size_t j=0; j<secondLeg_.size(); j++) {
+            for (Size j=0; j<secondLeg_.size(); j++) {
                 Date cashFlowDate = secondLeg_[j]->date();
                 if (cashFlowDate >= settlement) {
                     isExpired_ = false;

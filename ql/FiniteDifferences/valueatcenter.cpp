@@ -38,7 +38,7 @@ namespace QuantLib {
     namespace FiniteDifferences {
 
         double valueAtCenter(const Array& a) {
-            size_t jmid = a.size()/2;
+            Size jmid = a.size()/2;
             if (a.size() % 2 == 1)
                 return a[jmid];
             else
@@ -52,7 +52,7 @@ namespace QuantLib {
             QL_REQUIRE(a.size()>=3,
                 "firstDerivativeAtCenter: "
                 "the size of the two vectors must be at least 3");
-            size_t jmid = a.size()/2;
+            Size jmid = a.size()/2;
             if(a.size() % 2 == 1)
                 return (a[jmid+1]-a[jmid-1])/(g[jmid+1]-g[jmid-1]);
             else
@@ -66,7 +66,7 @@ namespace QuantLib {
             QL_REQUIRE(a.size()>=4,
                 "secondDerivativeAtCenter: "
                 "the size of the two vectors must be at least 4");
-            size_t jmid = a.size()/2;
+            Size jmid = a.size()/2;
             if(a.size() % 2 == 1){
                 double deltaPlus = (a[jmid+1]-a[jmid])/(g[jmid+1]-g[jmid]);
                 double deltaMinus = (a[jmid]-a[jmid-1])/(g[jmid]-g[jmid-1]);

@@ -367,7 +367,7 @@ namespace QuantLib {
             if (t == 0.0)
                 return forwardImpl(0.0);
             double sum = 0.5*forwardImpl(0.0);
-            size_t N = 1000;
+            Size N = 1000;
             double dt = t/N;
             for (Time i=dt; i<t; i+=dt)
                 sum += forwardImpl(i, extrapolate);

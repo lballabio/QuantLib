@@ -45,7 +45,7 @@ namespace QuantLib {
         FdEuropean::FdEuropean(Option::Type type,
             double underlying, double strike, Spread dividendYield,
             Rate riskFreeRate, Time residualTime, double volatility,
-            size_t timeSteps, size_t gridPoints)
+            Size timeSteps, Size gridPoints)
             : FdBsmOption(type, underlying, strike, dividendYield,
                                  riskFreeRate, residualTime, volatility,
                                  gridPoints),

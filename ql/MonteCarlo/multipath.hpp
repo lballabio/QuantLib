@@ -59,18 +59,18 @@ namespace QuantLib {
         //! single random walk
         class MultiPath {
           public:
-            MultiPath(size_t nAsset,
-                      size_t pathSize);
+            MultiPath(Size nAsset,
+                      Size pathSize);
             MultiPath(const std::vector<Path>& multiPath);
             //! \name inspectors
             //@{
-            size_t assetNumber() const {return multiPath_.size(); }
-            size_t pathSize() const {return multiPath_[0].size(); }
+            Size assetNumber() const {return multiPath_.size(); }
+            Size pathSize() const {return multiPath_[0].size(); }
             //@}
             //! \name read/write access to components
             //@{
-            const Path& operator[](size_t j) const {return multiPath_[j]; }
-            Path& operator[](size_t j) {return multiPath_[j]; }
+            const Path& operator[](Size j) const {return multiPath_[j]; }
+            Path& operator[](Size j) {return multiPath_[j]; }
             //@}
           private:
             std::vector<Path> multiPath_;
@@ -78,7 +78,7 @@ namespace QuantLib {
 
         // inline definitions
 
-        inline MultiPath::MultiPath(size_t nAsset, size_t pathSize)
+        inline MultiPath::MultiPath(Size nAsset, Size pathSize)
             : multiPath_(nAsset,Path(pathSize)) {
             QL_REQUIRE(nAsset > 0,
                 "MultiPath: number of asset must be > zero");

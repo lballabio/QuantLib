@@ -44,7 +44,7 @@ namespace QuantLib {
           public:
             TimeGrid() : std::vector<Time>(0) {}
 
-            TimeGrid(const std::list<Time>& times, size_t steps) 
+            TimeGrid(const std::list<Time>& times, Size steps) 
             : std::vector<Time>(0) {
                 Time last = times.back();
                 double dtMax = last/steps;
@@ -64,7 +64,7 @@ namespace QuantLib {
             }
 
             unsigned int findIndex(Time t) const {
-                for (size_t i=0; i<size(); i++) {
+                for (Size i=0; i<size(); i++) {
                     if ((*this)[i] == t)
                         return i;
                 }

@@ -50,7 +50,7 @@ namespace QuantLib {
         //! \name Inspectors
         //@{
         // Statistics proxy methods
-        size_t samples() const {return statistics_.samples(); }
+        Size samples() const {return statistics_.samples(); }
         double weightSum() const {return statistics_.weightSum(); }
         double mean() const {return statistics_.mean(); }
         double variance() const {return statistics_.variance(); }

@@ -49,13 +49,13 @@ namespace QuantLib {
             const std::vector<Time>& payTimes,
             const std::vector<double>& coupons,
             double nominal,
-            size_t timeSteps)
+            Size timeSteps)
         : payFixed_(payFixed), exerciseType_(exerciseType), 
           maturities_(maturities), start_(start), payTimes_(payTimes), 
           coupons_(coupons), nominal_(nominal) {
             
             std::list<Time> times(0);
-            size_t i;
+            Size i;
             for (i=0; i<maturities.size(); i++)
                 times.push_back(maturities[i]);
             for (i=0; i<payTimes.size(); i++)

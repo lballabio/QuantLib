@@ -49,7 +49,7 @@ namespace QuantLib {
 
                 QL_REQUIRE(dividends_.size() == exDivDates_.size(),
                     "the number of dividends is different from that of dates");
-                for(size_t j = 0; j < dividends_.size(); j++){
+                for(Size j = 0; j < dividends_.size(); j++){
 
                     QL_REQUIRE(exDivDates_[j] >= 0, "The "+
                          IntegerFormatter::toString(j)+ "-th" +
@@ -73,7 +73,7 @@ namespace QuantLib {
 
             double tmp_theta = EuropeanOption::theta();
             double delta_theta = 0.0;
-            for(size_t j = 0; j < dividends_.size(); j++)
+            for(Size j = 0; j < dividends_.size(); j++)
                 delta_theta -= dividends_[j] * riskFreeRate_ *
                                QL_EXP(-riskFreeRate_ * exDivDates_[j]);
             return tmp_theta + delta_theta * EuropeanOption::delta();
@@ -83,7 +83,7 @@ namespace QuantLib {
 
             double tmp_rho = EuropeanOption::rho();
             double delta_rho = 0.0;
-            for(size_t j = 0; j < dividends_.size(); j++)
+            for(Size j = 0; j < dividends_.size(); j++)
                 delta_rho += dividends_[j] * exDivDates_[j] *
                              QL_EXP(-riskFreeRate_ * exDivDates_[j]);
             return tmp_rho + delta_rho * EuropeanOption::delta();

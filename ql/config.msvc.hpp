@@ -1,5 +1,3 @@
-/*
-*/
 
 // $Id$
 
@@ -13,6 +11,9 @@
 #pragma warning(disable: 4786)
 
 #define REQUIRES_DUMMY_RETURN
+
+#define HAVE_CSTDLIB
+#define QL_SIZE_T size_t
 
 #define HAVE_CMATH
 #define QL_SQRT   sqrt
@@ -34,6 +35,9 @@
 #define QL_STRLEN   strlen
 #define QL_TOLOWER  tolower
 #define QL_TOUPPER  toupper
+
+#define HAVE_CSTDIO
+#define QL_SPRINTF  sprintf
 
 #define QL_MIN      std::_cpp_min
 #define QL_MAX      std::_cpp_max

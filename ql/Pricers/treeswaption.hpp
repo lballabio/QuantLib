@@ -56,7 +56,7 @@ namespace QuantLib {
                 const std::vector<Time>& payTimes,
                 const std::vector<double>& coupons,
                 double nominal,
-                size_t timeSteps);
+                Size timeSteps);
             void useModel(
                 const Handle<InterestRateModelling::OneFactorModel>& model) {
                 model_ = model;

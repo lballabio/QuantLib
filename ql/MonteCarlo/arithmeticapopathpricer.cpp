@@ -56,13 +56,13 @@ namespace QuantLib {
 
         double ArithmeticAPOPathPricer::operator()(const Path& path) const {
 
-            size_t n = path.size();
+            Size n = path.size();
             QL_REQUIRE(n>0,
                 "ArithmeticAPOPathPricer: the path cannot be empty");
 
             double price1 = underlying_;
             double averagePrice1 = 0.0;
-            size_t i;
+            Size i;
             for (i=0; i<n; i++) {
                 price1 *= QL_EXP(path.drift()[i]+path.diffusion()[i]);
                 averagePrice1 += price1;

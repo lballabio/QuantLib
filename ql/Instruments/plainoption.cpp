@@ -107,7 +107,7 @@ namespace QuantLib {
     }
 
         double PlainOption::impliedVolatility(double targetValue,
-          double accuracy, size_t maxEvaluations,
+          double accuracy, Size maxEvaluations,
           double minVol, double maxVol) const {
         double value = NPV(), vol = volatility_->value();
         QL_REQUIRE(!isExpired_, "option expired");

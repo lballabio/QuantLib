@@ -10,7 +10,7 @@ AC_INIT(ql/qldefines.hpp)
 AC_CONFIG_AUX_DIR(config)
 
 AM_CONFIG_HEADER(ql/config.hpp)
-AM_INIT_AUTOMAKE(QuantLib, 0.3.0a3)
+AM_INIT_AUTOMAKE(QuantLib, 0.3.0a5)
 
 dnl Check for programs
 
@@ -71,6 +71,16 @@ INCLUDES="-I`pwd`"
 AC_SUBST(INCLUDES)
 AC_CHECK_HEADERS(math.h cmath ctype.h cctype ctime time.h)
 AC_CHECK_HEADERS(limits climits limits.h float.h)
+AC_CHECK_HEADERS(stdio.h cstdio stdlib.h cstdlib)
+
+if test $ac_cv_header_cstdlib = yes ; then
+  ql_stdlib=cstdlib
+elif test $ac_cv_header_stdlib_h = yes ; then
+  ql_stdlib=stdlib.h
+else
+  AC_ERROR(Could not find cstdlib nor stdlib.h)
+fi
+QL_CHECK_CLASS([size_t],[$ql_stdlib],[])
 
 if test $ac_cv_header_cmath = yes ; then
   ql_math=cmath
@@ -108,6 +118,15 @@ else
 fi
 QL_CHECK_FUNCTION([clock],[$ql_time],[])
 QL_CHECK_FUNCTION([time],[$ql_time],[0])
+
+if test $ac_cv_header_cstdio = yes ; then
+  ql_stdio=cstdio
+elif test $ac_cv_header_stdio_h = yes ; then
+  ql_stdio=stdio.h
+else
+  AC_ERROR(Could not find cstdio nor stdio.h)
+fi
+QL_CHECK_FUNCTION([sprintf],[$ql_stdio],["foo"])
 
 QL_CHECK_FUNCTION([max],[algorithm],[1,2])
 QL_CHECK_FUNCTION([min],[algorithm],[1,2])

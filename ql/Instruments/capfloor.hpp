@@ -63,7 +63,7 @@ namespace QuantLib {
             std::vector<Rate> exerciseRates_;
             RelinkableHandle<TermStructure> termStructure_;
             Handle<InterestRateModelling::Model> model_;
-            size_t nPeriods_;
+            Size nPeriods_;
             std::vector<Time> startTimes_;
             std::vector<Time> endTimes_;
             std::vector<Time> tenors_;

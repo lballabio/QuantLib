@@ -1,15 +1,11 @@
-/*
-*/
 
 // $Id$
-// $Log$
-// Revision 1.2  2001/09/14 08:38:49  lballabio
-// Polished files' headers
-//
-
 
 #ifndef quantlib_config_decc_h
 #define quantlib_config_decc_h
+
+#define HAVE_STDLIB_H
+#define QL_SIZE_T size_t
 
 #define HAVE_MATH_H
 #define QL_SQRT   sqrt
@@ -31,6 +27,9 @@
 #define QL_STRLEN   strlen
 #define QL_TOLOWER  tolower
 #define QL_TOUPPER  toupper
+
+#define HAVE_STDIO_H
+#define QL_SPRINTF  sprintf
 
 #define QL_ITERATOR         std::iterator
 #define QL_ITERATOR_TRAITS  std::iterator_traits

@@ -96,7 +96,7 @@ namespace QuantLib {
             int jMin_, jMax_;
             const vector<double>& statePrices_;
             double discountBondPrice_;
-            size_t nit_;
+            Size nit_;
         };      
            
         //Trinomial tree specific to the BK model

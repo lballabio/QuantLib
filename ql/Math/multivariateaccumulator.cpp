@@ -42,7 +42,7 @@ namespace QuantLib {
             reset();
         }
 
-        MultivariateAccumulator::MultivariateAccumulator(size_t size)
+        MultivariateAccumulator::MultivariateAccumulator(Size size)
         : size_(size){
             reset();
         }
@@ -71,7 +71,7 @@ namespace QuantLib {
                 "MultivariateAccumulator::add : negative weight (" +
                 DoubleFormatter::toString(weight) + ") not allowed");
 
-            size_t oldSamples = sampleNumber_;
+            Size oldSamples = sampleNumber_;
             sampleNumber_++;
             QL_ENSURE(sampleNumber_ > oldSamples,
                 "MultivariateAccumulator::add : "

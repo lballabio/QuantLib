@@ -56,11 +56,11 @@ namespace QuantLib {
 
         double GeometricAPOPathPricer::operator()(const Path& path) const {
 
-            size_t n = path.size();
+            Size n = path.size();
             QL_REQUIRE(n>0,"GeometricAPOPathPricer: the path cannot be empty");
 
             double geoLogDrift = 0.0, geoLogDiffusion = 0.0;
-            size_t i;
+            Size i;
             for (i=0; i<n; i++) {
                 geoLogDrift += (n-i)*path.drift()[i];
                 geoLogDiffusion += (n-i)*path.diffusion()[i];

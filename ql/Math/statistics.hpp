@@ -52,7 +52,7 @@ namespace QuantLib {
             //! \name Inspectors
             //@{
             //! number of samples collected
-            size_t samples() const;
+            Size samples() const;
             //! sum of data weights
             double weightSum() const;
             /*! returns the mean, defined as
@@ -123,7 +123,7 @@ namespace QuantLib {
             void reset();
             //@}
           private:
-            size_t sampleNumber_;
+            Size sampleNumber_;
             double sampleWeight_;
             double sum_, quadraticSum_, downsideQuadraticSum_,
                    cubicSum_, fourthPowerSum_;
@@ -138,7 +138,7 @@ namespace QuantLib {
                 "Statistics::add : negative weight (" +
                 DoubleFormatter::toString(weight) + ") not allowed");
 
-            size_t oldSamples = sampleNumber_;
+            Size oldSamples = sampleNumber_;
             sampleNumber_++;
             QL_ENSURE(sampleNumber_ > oldSamples,
                       "Statistics::add : maximum number of samples reached");
@@ -158,7 +158,7 @@ namespace QuantLib {
             max_=QL_MAX(value, max_);
         }
 
-        inline size_t Statistics::samples() const {
+        inline Size Statistics::samples() const {
             return sampleNumber_;
         }
 

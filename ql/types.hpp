@@ -45,7 +45,7 @@ namespace QuantLib {
     typedef double Real;
 
     //! size of a container
-    typedef size_t Size;
+    typedef QL_SIZE_T Size;
 
     //! continuous quantity with 1-year units
     typedef double Time;

@@ -52,7 +52,7 @@ namespace QuantLib {
             PathGenerator(double drift,
                           double variance,
                           Time length,
-                          size_t timeSteps,
+                          Size timeSteps,
                           long seed = 0);
             /*! \warning the initial time is assumed to be zero
                 and must <b>not</b> be included in the passed vector */
@@ -63,7 +63,7 @@ namespace QuantLib {
             //! \name inspectors
             //@{
             const sample_type& next() const;
-            size_t size() const { return next_.size(); }
+            Size size() const { return next_.size(); }
             //@}
           private:
             mutable Sample<Path> next_;
@@ -72,14 +72,14 @@ namespace QuantLib {
 
         template <class RNG>
         PathGenerator<RNG>::PathGenerator(double drift, double variance,
-            Time length, size_t timeSteps, long seed)
+            Time length, Size timeSteps, long seed)
         : next_(Path(timeSteps),1.0) {
             QL_REQUIRE(timeSteps > 0, "PathGenerator: Time steps(" +
                 IntegerFormatter::toString(timeSteps) +
                 ") must be greater than zero");
             QL_REQUIRE(length > 0, "PathGenerator: length must be > 0");
             Time dt = length/timeSteps;
-            for (size_t i=0; i<timeSteps; i++) {
+            for (Size i=0; i<timeSteps; i++) {
                 next_.value.times()[i] = (i+1)*dt;
             }
 
@@ -103,7 +103,7 @@ namespace QuantLib {
             Time dt = times[0];
             next_.value.drift()[0] = drift*dt;
             variancePerTime[0] = variance*dt;
-            for(size_t i = 1; i < times.size(); i++) {
+            for(Size i = 1; i < times.size(); i++) {
                 QL_REQUIRE(times[i] >= times[i-1],
                     "MultiPathGenerator: time(" +
                     IntegerFormatter::toString(i-1)+")=" +

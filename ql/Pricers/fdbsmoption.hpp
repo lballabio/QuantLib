@@ -46,7 +46,7 @@ namespace QuantLib {
           public:
             FdBsmOption(Option::Type type, double underlying,
                 double strike, Spread dividendYield, Rate riskFreeRate,
-                Time residualTime, double volatility, size_t gridPoints);
+                Time residualTime, double volatility, Size gridPoints);
             // accessors
             virtual void calculate() const = 0;
             double value() const;
@@ -63,7 +63,7 @@ namespace QuantLib {
             virtual void initializeInitialCondition() const;
             virtual void initializeOperator() const;
             // input data
-            size_t gridPoints_;
+            Size gridPoints_;
             // results
             mutable double value_, delta_, gamma_, theta_;
 
@@ -75,7 +75,7 @@ namespace QuantLib {
           private:
             // temporaries
             mutable double gridLogSpacing_;
-            size_t safeGridPoints(size_t gridPoints,
+            Size safeGridPoints(Size gridPoints,
             Time residualTime);
         };
 
@@ -86,10 +86,10 @@ namespace QuantLib {
 
         // The following is a safety check to be sure we have enough grid
         // points.
-        inline size_t FdBsmOption::safeGridPoints(
-            size_t gridPoints, Time residualTime) {
+        inline Size FdBsmOption::safeGridPoints(
+            Size gridPoints, Time residualTime) {
             return QL_MAX(gridPoints, residualTime>1.0 ?
-                static_cast<size_t>(
+                static_cast<Size>(
                     (QL_NUM_OPT_MIN_GRID_POINTS +
                     (residualTime-1.0) *
                     QL_NUM_OPT_GRID_POINTS_PER_YEAR))

@@ -37,7 +37,7 @@ namespace QuantLib {
 
     namespace Math {
 
-        SegmentIntegral::SegmentIntegral(size_t intervals)
+        SegmentIntegral::SegmentIntegral(Size intervals)
             :intervals_(intervals){
             QL_REQUIRE(intervals > 3,
                "at least 4 intervals needed, given only "+

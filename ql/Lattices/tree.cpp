@@ -31,8 +31,6 @@
 
 // $Id$
 
-#include <iostream>
-
 #include "ql/Lattices/tree.hpp"
 
 namespace QuantLib {

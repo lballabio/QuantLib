@@ -57,9 +57,9 @@ namespace QuantLib {
             virtual ~McPricer() {}
             //! add samples until the required tolerance is reached
             double value(double tolerance,
-                         size_t maxSample = QL_MAX_INT) const;
+                         Size maxSample = QL_MAX_INT) const;
             //! simulate a fixed number of samples
-            double valueWithSamples(size_t samples) const;
+            double valueWithSamples(Size samples) const;
             //! error Estimated of the samples simulated so far
             double errorEstimate() const;
             //! access to the sample accumulator for more statistics
@@ -67,26 +67,26 @@ namespace QuantLib {
           protected:
             McPricer() {}
             mutable Handle<MonteCarlo::MonteCarloModel<S, PG, PP> > mcModel_;
-            static const size_t minSample_;
+            static const Size minSample_;
         };
 
 
         template<class S, class PG, class PP>
-        const size_t McPricer<S, PG, PP>::minSample_ = 100;
+        const Size McPricer<S, PG, PP>::minSample_ = 100;
 
         // inline definitions
         template<class S, class PG, class PP>
         inline double McPricer<S, PG, PP>::value(double tolerance,
-            size_t maxSamples) const {
+            Size maxSamples) const {
 
-            size_t sampleNumber =
+            Size sampleNumber =
                 mcModel_->sampleAccumulator().samples();
             if (sampleNumber<minSample_) {
                 mcModel_->addSamples(minSample_-sampleNumber);
                 sampleNumber = mcModel_->sampleAccumulator().samples();
             }
 
-            size_t nextBatch;
+            Size nextBatch;
             double order;
             double result = mcModel_->sampleAccumulator().mean();
             double accuracy = mcModel_->sampleAccumulator().errorEstimate()/
@@ -95,7 +95,7 @@ namespace QuantLib {
                 // conservative estimate of how many samples are needed 
                 order = accuracy*accuracy/tolerance/tolerance;
                 
-                nextBatch = size_t(
+                nextBatch = Size(
                     QL_MAX(sampleNumber*order*0.8-sampleNumber,
                     double(minSample_)));
                 // do not exceed maxSamples
@@ -115,7 +115,7 @@ namespace QuantLib {
 
 
         template<class S, class PG, class PP>
-        inline double McPricer<S, PG, PP>::valueWithSamples(size_t samples)
+        inline double McPricer<S, PG, PP>::valueWithSamples(Size samples)
             const {
 
             QL_REQUIRE(samples>=minSample_,
@@ -125,7 +125,7 @@ namespace QuantLib {
                 + IntegerFormatter::toString(minSample_) +
                 ")");
 
-            size_t sampleNumber =
+            Size sampleNumber =
                 mcModel_->sampleAccumulator().samples();
 
             QL_REQUIRE(samples>=sampleNumber,
@@ -145,7 +145,7 @@ namespace QuantLib {
         template<class S, class PG, class PP>
         inline double McPricer<S, PG, PP>::errorEstimate() const {
 
-            size_t sampleNumber =
+            Size sampleNumber =
                 mcModel_->sampleAccumulator().samples();
 
             QL_REQUIRE(sampleNumber>=minSample_,

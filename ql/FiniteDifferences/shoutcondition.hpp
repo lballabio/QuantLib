@@ -59,7 +59,7 @@ namespace QuantLib {
             : initialPrices_(initialPrices), resTime_(resTime), rate_(rate) {}
 
         inline void ShoutCondition::applyTo(Array& a, Time t) const {
-            for (size_t i = 0; i < a.size(); i++)
+            for (Size i = 0; i < a.size(); i++)
                 a[i] = QL_MAX(a[i], QL_EXP(-rate_ * (t - resTime_)) *
                                            initialPrices_[i] );
         }

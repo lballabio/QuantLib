@@ -51,13 +51,13 @@ namespace QuantLib {
         class MultivariateAccumulator {
           public:
             MultivariateAccumulator();
-            MultivariateAccumulator(size_t size);
+            MultivariateAccumulator(Size size);
             //! \name Inspectors
             //@{
             //! size of each sample
-            size_t size() const;
+            Size size() const;
             //! number of samples collected
-            size_t samples() const;
+            Size samples() const;
             //! sum of data weights
             double weightSum() const;
             //! returns the mean as an Array
@@ -91,8 +91,8 @@ namespace QuantLib {
             void reset();
             //@}
           private:
-            size_t size_;
-            size_t sampleNumber_;
+            Size size_;
+            Size sampleNumber_;
             double sampleWeight_;
             Array sum_;
             Matrix quadraticSum_;
@@ -100,11 +100,11 @@ namespace QuantLib {
 
 
         // inline definitions
-        inline size_t MultivariateAccumulator::size() const {
+        inline Size MultivariateAccumulator::size() const {
             return size_;
         }
 
-        inline size_t MultivariateAccumulator::samples() const {
+        inline Size MultivariateAccumulator::samples() const {
             return sampleNumber_;
         }
 

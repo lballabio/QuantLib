@@ -94,6 +94,14 @@
 #endif
 
 
+#if defined HAVE_CSTDLIB
+    #include <cstdlib>
+#elif defined HAVE_STDLIB_H
+    #include <stdlib.h>
+#else
+    #error Neither <cstdlib> nor <stdlib.h> found
+#endif
+
 /*! \defgroup mathMacros Math functions
     Some compilers still define math functions them in the global namespace.
     For the code to be portable these macros should be used instead of
@@ -210,6 +218,23 @@
 /*! @} */
 
 
+/*! \defgroup stdioMacros Input/output functions
+    Some compilers still define i/o functions in the global namespace.
+    For the code to be portable these macros should be used instead of
+    the actual functions.
+    @{
+*/
+/*! \def QL_SPRINTF \brief print to string */
+#if defined HAVE_CSTDIO
+    #include <cstdio>
+#elif defined HAVE_STDIO_H
+    #include <stdio.h>
+#else
+    #error Neither <cstdio> nor <stdio.h> found
+#endif
+/*! @} */
+
+
 /*! \defgroup algoMacros Min and max functions
     Some compilers still do not define std::min and std::max. Moreover, Visual
     C++ defines them but for unfathomable reasons garble their names.
@@ -228,7 +253,7 @@
 #endif
 #if !defined(QL_MAX)
     template <class T> T __quantlib_max(const T& x, const T& y) {
-        return x < y ? x : y;
+        return x > y ? x : y;
     }
     #define QL_MAX  __quantlib_max
 #endif

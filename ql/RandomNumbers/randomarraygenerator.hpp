@@ -68,7 +68,7 @@ namespace QuantLib {
             const Array& variance, long seed)
         : next_(Array(variance.size()),1.0), generator_(seed),
           sqrtVariance_(variance.size()) {
-            for (size_t i=0; i<variance.size(); i++) {
+            for (Size i=0; i<variance.size(); i++) {
                 QL_REQUIRE(variance[i] >= 0,
                     "RandomArrayGenerator: negative variance"
                     + DoubleFormatter::toString(variance[i])
@@ -98,7 +98,7 @@ namespace QuantLib {
             // starting point for product
             next_.weight = 1.0;
 
-            for (size_t j=0; j<next_.value.size(); j++) {
+            for (Size j=0; j<next_.value.size(); j++) {
                 typename RNG::sample_type sample = generator_.next();
                 next_.value[j] = sample.value;
                 next_.weight *= sample.weight;
@@ -107,7 +107,7 @@ namespace QuantLib {
             if (sqrtCovariance_.rows() != 0) {  // general case
                 next_.value = sqrtCovariance_ * next_.value;
             } else {                            // degenerate case
-                for (size_t j=0; j<next_.value.size(); j++)
+                for (Size j=0; j<next_.value.size(); j++)
                     next_.value[j] *= sqrtVariance_[j];
             }
             return next_;

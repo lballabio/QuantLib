@@ -62,7 +62,7 @@ namespace QuantLib {
             MultiPathGenerator(const Array& drifts,
                                const Math::Matrix& covariance,
                                Time length,
-                               size_t timeSteps,
+                               Size timeSteps,
                                long seed);
             MultiPathGenerator(const Array& drifts,
                                const Math::Matrix& covariance,
@@ -70,7 +70,7 @@ namespace QuantLib {
                                long seed=0);
             const sample_type& next() const;
         private:
-            size_t numAssets_;
+            Size numAssets_;
             RAG rndArrayGen_;
             mutable sample_type next_;
             std::vector<Time> timeDelays_;
@@ -79,7 +79,7 @@ namespace QuantLib {
         template <class RAG>
         inline MultiPathGenerator<RAG >::MultiPathGenerator(
             const Array& drifts, const Math::Matrix& covariance,
-            Time length, size_t timeSteps, long seed)
+            Time length, Size timeSteps, long seed)
         : numAssets_(covariance.rows()),
           rndArrayGen_(covariance, seed),
           next_(MultiPath(covariance.rows(),timeSteps),1.0) {
@@ -94,9 +94,9 @@ namespace QuantLib {
             Time dt = length/timeSteps;
             timeDelays_ = std::vector<Time>(timeSteps, dt);
             Array variances = covariance.diagonal();
-            for (size_t j=0; j<numAssets_; j++) {
+            for (Size j=0; j<numAssets_; j++) {
                 QL_REQUIRE(variances[j]>=0, "MultiPathGenerator: negative variance");
-                for (size_t i=0; i<timeSteps; i++) {
+                for (Size i=0; i<timeSteps; i++) {
                     next_.value[j].times()[i] = (i+1)*dt;
                     next_.value[j].drift()[i]=drifts[j]*timeDelays_[i];
                 }
@@ -123,7 +123,7 @@ namespace QuantLib {
                  ") must be non negative");
             Array variances = covariance.diagonal();
             timeDelays_[0] = times[0];
-            for(size_t i = 1; i < times.size(); i++) {
+            for(Size i = 1; i < times.size(); i++) {
                 QL_REQUIRE(times[i] >= times[i-1],
                     "MultiPathGenerator: time(" +
                     IntegerFormatter::toString(i-1)+")=" +
@@ -135,10 +135,10 @@ namespace QuantLib {
             }
 
 
-            for (size_t j=0; j<numAssets_; j++) {
+            for (Size j=0; j<numAssets_; j++) {
                 next_.value[j].times() = times;
                 QL_REQUIRE(variances[j]>=0, "MultiPathGenerator: negative variance");
-                for (size_t i = 0; i< times.size(); i++) {
+                for (Size i = 0; i< times.size(); i++) {
                     next_.value[j].drift()[i] = drifts[j] * timeDelays_[i];
                 }
             }
@@ -152,10 +152,10 @@ namespace QuantLib {
 
             Array randomExtraction(numAssets_);
             next_.weight = 1.0;
-            for (size_t i = 0; i < next_.value[0].times().size(); i++) {
+            for (Size i = 0; i < next_.value[0].times().size(); i++) {
                 const Sample<Array>& randomExtraction = rndArrayGen_.next();
                 next_.weight *= randomExtraction.weight;
-                for (size_t j=0; j<numAssets_; j++) {
+                for (Size j=0; j<numAssets_; j++) {
                     next_.value[j].diffusion()[i] =
                         randomExtraction.value[j] * QL_SQRT(timeDelays_[i]);
                 }

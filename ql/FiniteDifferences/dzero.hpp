@@ -49,12 +49,12 @@ namespace QuantLib {
         */
         class DZero : public TridiagonalOperator {
           public:
-            DZero(size_t gridPoints, double h);
+            DZero(Size gridPoints, double h);
         };
 
         // inline definitions
 
-        inline DZero::DZero(size_t gridPoints, double h)
+        inline DZero::DZero(Size gridPoints, double h)
         : TridiagonalOperator(gridPoints) {
             setFirstRow(-1/h,1/h);                  // linear extrapolation
             setMidRows(-1/(2*h),0.0,1/(2*h));

@@ -187,7 +187,7 @@ namespace QuantLib {
             //adjust space intervals
             dx_.resize(t_.size());
             dx_[0] = 0.0; //Just one node
-            size_t i;
+            Size i;
             for (i=0; i<(dx_.size()-1); i++) {
                 //The diffusion term must be r-independant
                 double v = process->diffusion(t_[i], 0.0)*QL_SQRT(dt(i));
@@ -197,7 +197,7 @@ namespace QuantLib {
             node(0,0).setStatePrice(1.0);
 
             int jMin = 0, jMax = 0;
-            size_t nTimeSteps = t_.size() - 1;
+            Size nTimeSteps = t_.size() - 1;
 
             for (i=0; i<nTimeSteps; i++) {
 

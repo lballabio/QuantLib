@@ -47,14 +47,14 @@ namespace QuantLib {
           underlying_(underlying), roof_(roof) {}
 
         double PagodaPathPricer::operator()(const MultiPath& multiPath) const {
-            size_t numAssets = multiPath.assetNumber();
-            size_t numSteps = multiPath.pathSize();
+            Size numAssets = multiPath.assetNumber();
+            Size numSteps = multiPath.pathSize();
             QL_REQUIRE(underlying_.size() == numAssets,
                 "PagodaPathPricer: the multi-path must contain "
                 + IntegerFormatter::toString(underlying_.size()) +" assets");
 
 
-            size_t i,j;
+            Size i,j;
             if (useAntitheticVariance_) {
                 double averageGain = 0.0, averageGain2 = 0.0;
                 for(i = 0; i < numSteps; i++)

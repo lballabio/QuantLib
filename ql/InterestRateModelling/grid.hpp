@@ -49,7 +49,7 @@ namespace QuantLib {
 
         class Grid : public Array {
           public:
-            Grid(size_t gridPoints,
+            Grid(Size gridPoints,
                  double initialCenter,
                  double strikeCenter,
                  Time residualTime,
@@ -59,7 +59,7 @@ namespace QuantLib {
                 initialize(gridPoints, initialCenter, strikeCenter,
                     residualTime, timeDelay, model);
             }
-            Grid(size_t gridPoints,
+            Grid(Size gridPoints,
                  double initialCenter,
                  double strikeCenter,
                  Time residualTime,
@@ -73,23 +73,23 @@ namespace QuantLib {
             double xMin() {return (*this)[0];}
             double xMax() {return (*this)[size()-1];}
             double dx() { return dx_;}
-            size_t index() const {return index_;}
-            size_t safeGridPoints(unsigned int gridPoints,
+            Size index() const {return index_;}
+            Size safeGridPoints(unsigned int gridPoints,
               Time residualTime) const;
           private:
-            void initialize(size_t gridPoints,
+            void initialize(Size gridPoints,
                  double initialCenter,
                  double strikeCenter,
                  Time residualTime,
                  Time timeDelay,
                  const Handle<OneFactorModel>& model);
             double dx_;
-            size_t index_;
+            Size index_;
 
         };
 
 
-        inline void Grid::initialize(size_t gridPoints,
+        inline void Grid::initialize(Size gridPoints,
           double initialCenter, double strikeCenter,
           Time residualTime, Time timeDelay,
           const Handle<OneFactorModel>& model) {
@@ -113,13 +113,13 @@ namespace QuantLib {
             dx_ = (xMax - xMin)/(size()-1);
             for (unsigned j=0; j<size(); j++)
                 (*this)[j] = xMin + j*dx_;
-            index_ = size_t(((initialCenter - xMin)/dx_ + 0.5));
+            index_ = Size(((initialCenter - xMin)/dx_ + 0.5));
         }
 
-        inline size_t Grid::safeGridPoints(
-            size_t gridPoints, Time residualTime) const {
+        inline Size Grid::safeGridPoints(
+            Size gridPoints, Time residualTime) const {
             return QL_MAX(gridPoints, residualTime>1.0 ?
-                static_cast<size_t>(
+                static_cast<Size>(
                     (QL_NUM_OPT_MIN_GRID_POINTS +
                     (residualTime-1.0) *
                     QL_NUM_OPT_GRID_POINTS_PER_YEAR))
