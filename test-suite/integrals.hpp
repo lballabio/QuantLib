@@ -19,7 +19,6 @@
 #ifndef quantlib_test_integrals_hpp
 #define quantlib_test_integrals_hpp
 
-#include <ql/quantlib.hpp>
 #include <cppunit/TestCase.h>
 
 class IntegralTest : public CppUnit::TestCase {

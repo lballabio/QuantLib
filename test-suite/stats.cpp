@@ -18,6 +18,8 @@
 // $Id$
 
 #include "stats.hpp"
+#include <ql/Math/statistics.hpp>
+#include <ql/Math/sequencestatistics.hpp>
 
 using namespace QuantLib;
 using namespace QuantLib::Math;

@@ -18,12 +18,13 @@
 
 #include "operators.hpp"
 #include "utilities.hpp"
+#include <ql/Math/normaldistribution.hpp>
+#include <ql/FiniteDifferences/dzero.hpp>
+#include <ql/FiniteDifferences/dplusdminus.hpp>
 
 using namespace QuantLib;
-using QuantLib::Math::NormalDistribution;
-using QuantLib::Math::CumulativeNormalDistribution;
-using QuantLib::FiniteDifferences::DZero;
-using QuantLib::FiniteDifferences::DPlusDMinus;
+using namespace QuantLib::Math;
+using namespace QuantLib::FiniteDifferences;
 
 namespace {
 

@@ -19,7 +19,6 @@
 #ifndef quantlib_test_old_pricers_hpp
 #define quantlib_test_old_pricers_hpp
 
-#include <ql/quantlib.hpp>
 #include <cppunit/TestCase.h>
 #include <cppunit/TestFixture.h>
 

@@ -19,13 +19,12 @@
 #ifndef quantlib_test_day_counters_hpp
 #define quantlib_test_day_counters_hpp
 
-#include <ql/quantlib.hpp>
 #include <cppunit/TestCase.h>
 
 class DayCounterTest : public CppUnit::TestCase {
   public:
     DayCounterTest() 
-        : CppUnit::TestCase("Testing actual/actual day counters") {}
+    : CppUnit::TestCase("Testing actual/actual day counters") {}
     void runTest();
 };
 

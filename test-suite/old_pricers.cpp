@@ -17,37 +17,37 @@
 // $Id$
 
 #include "old_pricers.hpp"
+#include <ql/Pricers/barrieroption.hpp>
+#include <ql/Pricers/binaryoption.hpp>
+#include <ql/Pricers/cliquetoption.hpp>
+#include <ql/Pricers/fddividendeuropeanoption.hpp>
+#include <ql/Pricers/fdeuropean.hpp>
+#include <ql/Pricers/fdamericanoption.hpp>
+#include <ql/Pricers/fdshoutoption.hpp>
+#include <ql/Pricers/discretegeometricapo.hpp>
+#include <ql/Pricers/continuousgeometricapo.hpp>
+#include <ql/Pricers/mceuropean.hpp>
+#include <ql/Pricers/mcdiscretearithmeticapo.hpp>
+#include <ql/Pricers/mcdiscretearithmeticaso.hpp>
+#include <ql/Pricers/mceverest.hpp>
+#include <ql/Pricers/mcbasket.hpp>
+#include <ql/Pricers/mcmaxbasket.hpp>
+#include <ql/Pricers/mcpagoda.hpp>
+#include <ql/Pricers/mchimalaya.hpp>
+#include <ql/RandomNumbers/rngtypedefs.hpp>
+#include <ql/MonteCarlo/getcovariance.hpp>
 #include <cppunit/TestSuite.h>
 #include <cppunit/TestCaller.h>
-#include <vector>
 #include <map>
-#include <string>
 
 // This makes it easier to use array literals (alas, no std::vector literals)
 #define LENGTH(a) (sizeof(a)/sizeof(a[0]))
 
 using namespace QuantLib;
-using QuantLib::Pricers::BarrierOption;
-using QuantLib::Pricers::BinaryOption;
-using QuantLib::Pricers::CliquetOption;
-using QuantLib::Pricers::FdDividendEuropeanOption;
-using QuantLib::Pricers::EuropeanOption;
-using QuantLib::Pricers::FdEuropean;
-using QuantLib::Pricers::FdAmericanOption;
-using QuantLib::Pricers::FdShoutOption;
-using QuantLib::Pricers::DiscreteGeometricAPO;
-using QuantLib::Pricers::ContinuousGeometricAPO;
-using QuantLib::Pricers::McEuropean;
-using QuantLib::Pricers::McDiscreteArithmeticAPO;
-using QuantLib::Pricers::McDiscreteArithmeticASO;
-using QuantLib::Pricers::McEverest;
-using QuantLib::Pricers::McBasket;
-using QuantLib::Pricers::McMaxBasket;
-using QuantLib::Pricers::McPagoda;
-using QuantLib::Pricers::McHimalaya;
-using QuantLib::RandomNumbers::UniformRandomGenerator;
-using QuantLib::Math::Matrix;
-using QuantLib::MonteCarlo::getCovariance;
+using namespace QuantLib::Pricers;
+using namespace QuantLib::RandomNumbers;
+using namespace QuantLib::Math;
+using namespace QuantLib::MonteCarlo;
 
 
 namespace {

@@ -19,6 +19,7 @@
 
 #include "instruments.hpp"
 #include "utilities.hpp"
+#include <ql/Instruments/stock.hpp>
 #include <cppunit/TestSuite.h>
 #include <cppunit/TestCaller.h>
 

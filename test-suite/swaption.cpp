@@ -17,6 +17,12 @@
 // $Id$
 
 #include "swaption.hpp"
+#include <ql/Instruments/swaption.hpp>
+#include <ql/TermStructures/flatforward.hpp>
+#include <ql/Indexes/euribor.hpp>
+#include <ql/DayCounters/actual365.hpp>
+#include <ql/DayCounters/thirty360.hpp>
+#include <ql/Pricers/blackswaption.hpp>
 #include <cppunit/TestSuite.h>
 #include <cppunit/TestCaller.h>
 
@@ -24,26 +30,58 @@
 #define LENGTH(a) (sizeof(a)/sizeof(a[0]))
 
 using namespace QuantLib;
-using QuantLib::Indexes::Xibor;
-using QuantLib::Indexes::Euribor;
-using QuantLib::TermStructures::FlatForward;
-using QuantLib::Calendars::TARGET;
-using QuantLib::DayCounters::Actual365;
-using QuantLib::DayCounters::Thirty360;
-using QuantLib::Instruments::SimpleSwap;
-using QuantLib::Instruments::Swaption;
-using QuantLib::Pricers::BlackSwaption;
+using namespace QuantLib::Indexes;
+using namespace QuantLib::TermStructures;
+using namespace QuantLib::DayCounters;
+using namespace QuantLib::Instruments;
+using namespace QuantLib::Pricers;
 
 namespace {
+
+    // global data
 
     int exercises[] = { 1, 2, 3, 5, 7, 10 };
     int lengths[] = { 1, 2, 3, 5, 7, 10, 15, 20 };
     bool payFixed[] = { false, true };
 
+    Date today_, settlement_;
+    double nominal_;
+    Calendar calendar_;
+    RollingConvention rollingConvention_;
+    int fixedFrequency_, floatingFrequency_;
+    DayCounter fixedDayCount_ = Thirty360();
+    bool fixedIsAdjusted_;
+    Handle<Xibor> index_;
+    int settlementDays_, fixingDays_;
+    RelinkableHandle<TermStructure> termStructure_;
+
+    // utilities
+
+    Handle<SimpleSwap> makeSwap(const Date& start, int length, 
+                                Rate fixedRate, Spread floatingSpread, 
+                                bool payFixed) {
+        return Handle<SimpleSwap>(
+            new SimpleSwap(payFixed,start,length,Years,
+                           calendar_,rollingConvention_,nominal_,
+                           fixedFrequency_,fixedRate,fixedIsAdjusted_,
+                           fixedDayCount_,floatingFrequency_,index_,
+                           fixingDays_,floatingSpread,termStructure_));
+    }
+
+    Handle<Swaption> makeSwaption(const Handle<SimpleSwap>& swap,
+                                  const Date& exercise, 
+                                  double volatility) {
+        Handle<MarketElement> vol_me(new SimpleMarketElement(volatility));
+        RelinkableHandle<MarketElement> vol_rh(vol_me);
+        Handle<BlackModel> model(new BlackModel(vol_rh,termStructure_));
+        Handle<PricingEngine> engine(new BlackSwaption(model));
+        return Handle<Swaption>(new Swaption(swap,EuropeanExercise(exercise),
+                                             termStructure_,engine));
+    }
+
 }
 
-SwaptionTest::SwaptionTest() 
-: fixedDayCount_(Thirty360()) {}
+// tests
 
 void SwaptionTest::setUp() {
     today_ = Date::todaysDate();
@@ -62,29 +100,6 @@ void SwaptionTest::setUp() {
     termStructure_.linkTo(
         Handle<TermStructure>(new FlatForward(today_,settlement_,0.05,
                                               Actual365())));
-}
-
-Handle<SimpleSwap> SwaptionTest::makeSwap(const Date& start, int length, 
-                                          Rate fixedRate, 
-                                          Spread floatingSpread, 
-                                          bool payFixed) {
-    return Handle<SimpleSwap>(
-        new SimpleSwap(payFixed,start,length,Years,
-                       calendar_,rollingConvention_,nominal_,
-                       fixedFrequency_,fixedRate,fixedIsAdjusted_,
-                       fixedDayCount_,floatingFrequency_,index_,
-                       fixingDays_,floatingSpread,termStructure_));
-}
-
-Handle<Swaption> SwaptionTest::makeSwaption(const Handle<SimpleSwap>& swap,
-                                            const Date& exercise, 
-                                            double volatility) {
-    Handle<MarketElement> vol_me(new SimpleMarketElement(volatility));
-    RelinkableHandle<MarketElement> vol_rh(vol_me);
-    Handle<BlackModel> model(new BlackModel(vol_rh,termStructure_));
-    Handle<PricingEngine> engine(new BlackSwaption(model));
-    return Handle<Swaption>(new Swaption(swap,EuropeanExercise(exercise),
-                                         termStructure_,engine));
 }
 
 void SwaptionTest::testStrikeDependency() {

@@ -17,15 +17,16 @@
 // $Id$
 
 #include "calendars.hpp"
+#include <ql/calendar.hpp>
+#include <ql/Calendars/target.hpp>
+#include <ql/Calendars/london.hpp>
+#include <ql/Calendars/newyork.hpp>
+#include <ql/Calendars/tokyo.hpp>
+#include <ql/Calendars/jointcalendar.hpp>
+#include <ql/dataformatters.hpp>
 
 using namespace QuantLib;
-using QuantLib::Calendars::TARGET;
-using QuantLib::Calendars::London;
-using QuantLib::Calendars::NewYork;
-using QuantLib::Calendars::Tokyo;
-using QuantLib::Calendars::JointCalendar;
-using QuantLib::Calendars::JoinHolidays;
-using QuantLib::Calendars::JoinBusinessDays;
+using namespace QuantLib::Calendars;
 
 void CalendarTest::runTest() {
 

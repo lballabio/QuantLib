@@ -19,13 +19,12 @@
 #ifndef quantlib_test_calendars_hpp
 #define quantlib_test_calendars_hpp
 
-#include <ql/quantlib.hpp>
 #include <cppunit/TestCase.h>
 
 class CalendarTest : public CppUnit::TestCase {
   public:
     CalendarTest() 
-        : CppUnit::TestCase("Testing joint calendars") {}
+    : CppUnit::TestCase("Testing joint calendars") {}
     void runTest();
 };
 

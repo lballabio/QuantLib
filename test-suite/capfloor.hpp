@@ -19,7 +19,6 @@
 #ifndef quantlib_test_cap_floor_hpp
 #define quantlib_test_cap_floor_hpp
 
-#include <ql/quantlib.hpp>
 #include <cppunit/TestCase.h>
 #include <cppunit/TestFixture.h>
 
@@ -31,23 +30,6 @@ class CapFloorTest : public CppUnit::TestFixture {
     void testParity();
     void testCachedValue();
     static CppUnit::Test* suite();
-  private:
-    QL::Date today_, settlement_;
-    std::vector<double> nominals_;
-    QL::RollingConvention rollingConvention_;
-    int frequency_;
-    QL::Handle<QLIDX::Xibor> index_;
-    QL::Calendar calendar_;
-    int settlementDays_, fixingDays_;
-    QL::RelinkableHandle<QL::TermStructure> termStructure_;
-    std::vector<QL::Handle<QL::CashFlow> > makeLeg(const QL::Date& startDate,
-                                                   int lengthInYears);
-    QL::Handle<QL::Instrument> makeCapFloor(
-            QLINS::VanillaCapFloor::Type type,
-            const std::vector<QL::Handle<QL::CashFlow> >& leg,
-            QL::Rate strike, 
-            double volatility);
-    QL::Handle<QL::PricingEngine> makeEngine(double volatility);
 };
 
 

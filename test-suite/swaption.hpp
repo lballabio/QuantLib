@@ -19,38 +19,17 @@
 #ifndef quantlib_test_swaption_hpp
 #define quantlib_test_swaption_hpp
 
-#include <ql/quantlib.hpp>
 #include <cppunit/TestCase.h>
 #include <cppunit/TestFixture.h>
 
 class SwaptionTest : public CppUnit::TestFixture {
   public:
-    SwaptionTest();
     void setUp();
     void testStrikeDependency();
     void testSpreadDependency();
     void testSpreadTreatment();
     void testCachedValue();
     static CppUnit::Test* suite();
-  private:
-    QL::Handle<QLINS::SimpleSwap> makeSwap(const QL::Date& start, 
-                                           int length, QL::Rate fixedRate,
-                                           QL::Spread floatingSpread,
-                                           bool payFixed);
-    QL::Handle<QLINS::Swaption> makeSwaption(
-                                       const QL::Handle<QLINS::SimpleSwap>&,
-                                       const QL::Date& exercise,
-                                       double volatility);
-    QL::Date today_, settlement_;
-    double nominal_;
-    QL::Calendar calendar_;
-    QL::RollingConvention rollingConvention_;
-    int fixedFrequency_, floatingFrequency_;
-    QL::DayCounter fixedDayCount_;
-    bool fixedIsAdjusted_;
-    QL::Handle<QLIDX::Xibor> index_;
-    int settlementDays_, fixingDays_;
-    QL::RelinkableHandle<QL::TermStructure> termStructure_;
 };
 
 

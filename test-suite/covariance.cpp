@@ -18,6 +18,10 @@
 // $Id$
 
 #include "covariance.hpp"
+#include <ql/MonteCarlo/getcovariance.hpp>
+#include <ql/Math/symmetricschurdecomposition.hpp>
+#include <ql/Math/sequencestatistics.hpp>
+#include <ql/Math/multivariateaccumulator.hpp>
 #include <cppunit/TestSuite.h>
 #include <cppunit/TestCaller.h>
 
@@ -91,7 +95,8 @@ void CovarianceTest::testSalvagingCorrelation() {
             expected   =  expEigenVectors[i][j];
             if (QL_FABS(calculated-expected) > 1.0e-10)
                 CPPUNIT_FAIL("SymmetricSchurDecomposition "
-                             "eigenvector[" + IntegerFormatter::toString(i) + "]"
+                             "eigenvector[" + 
+                             IntegerFormatter::toString(i) + "]"
                              "[" + IntegerFormatter::toString(j) + "]:\n"
                              "    calculated: "
                              + DoubleFormatter::toString(calculated,16) + "\n"
@@ -99,10 +104,12 @@ void CovarianceTest::testSalvagingCorrelation() {
                              + DoubleFormatter::toString(expected,16));
             if (QL_FABS(nullMatrix[i][j]) > 1.0e-10)
                 CPPUNIT_FAIL("SymmetricSchurDecomposition "
-                             "nullMatrix[" + IntegerFormatter::toString(i) + "]"
+                             "nullMatrix[" + 
+                             IntegerFormatter::toString(i) + "]"
                              "[" + IntegerFormatter::toString(j) + "]:\n"
                              "    calculated: "
-                             + DoubleFormatter::toString(nullMatrix[i][j],16) + "\n"
+                             + DoubleFormatter::toString(nullMatrix[i][j],16) 
+                             + "\n"
                              "    expected:   "
                              + DoubleFormatter::toString(0.0,16));
         }
@@ -150,8 +157,6 @@ void CovarianceTest::testCovariance() {
     Matrix expCor(n, n);
     expCor[0][0] = 1.0000000000000000; expCor[0][1] = 0.9970544855015813;
     expCor[1][0] = 0.9970544855015813; expCor[1][1] = 1.0000000000000000;
-
-
 
     SequenceStatistics<> s(n);
     MultivariateAccumulator ma(n);

@@ -17,139 +17,145 @@
 // $Id$
 
 #include "europeanoption.hpp"
+#include <ql/Instruments/vanillaoption.hpp>
+#include <ql/TermStructures/flatforward.hpp>
+#include <ql/Volatilities/blackconstantvol.hpp>
+#include <ql/Calendars/target.hpp>
 #include <cppunit/TestSuite.h>
 #include <cppunit/TestCaller.h>
 #include <map>
-#include <string>
 
 // This makes it easier to use array literals (alas, no std::vector literals)
 #define LENGTH(a) (sizeof(a)/sizeof(a[0]))
 
 using namespace QuantLib;
-using QuantLib::PricingEngines::AnalyticEuropeanEngine;
-using QuantLib::PricingEngines::BinomialVanillaEngine;
-using QuantLib::Instruments::VanillaOption;
-using QuantLib::TermStructures::FlatForward;
-using QuantLib::VolTermStructures::BlackConstantVol;
-using QuantLib::DayCounters::Actual365;
-using QuantLib::Calendars::TARGET;
+using namespace QuantLib::PricingEngines;
+using namespace QuantLib::Instruments;
+using namespace QuantLib::TermStructures;
+using namespace QuantLib::VolTermStructures;
+using namespace QuantLib::DayCounters;
+using namespace QuantLib::Calendars;
 
-double EuropeanOptionTest::relativeError(double x1, double x2,
-                                         double reference) {
-    if (reference != 0.0)
-        return QL_FABS(x1-x2)/reference;
-    else
-        return 1.0e+10;
-}
+namespace {
 
-Handle<Instrument> EuropeanOptionTest::makeEuropeanOption(
-        Option::Type type,
-        const Handle<MarketElement>& underlying,
-        double strike,
-        const Handle<TermStructure>& divCurve,
-        const Handle<TermStructure>& rfCurve,
-        const Date& exDate,
-        const Handle<BlackVolTermStructure>& volatility,
-        EuropeanOptionTest::EngineType engineType) {
-    Handle<PricingEngine> engine;
-    switch (engineType) {
-      case Analytic:
-        engine = Handle<PricingEngine>(new AnalyticEuropeanEngine);
-        break;
-      case JR:
-        engine = Handle<PricingEngine>(
-            new BinomialVanillaEngine(
-                BinomialVanillaEngine::JarrowRudd, 800));
-        break;
-      case CRR:
-        engine = Handle<PricingEngine>(
-            new BinomialVanillaEngine(
-                BinomialVanillaEngine::CoxRossRubinstein, 800));
-      case EQP:
-        engine = Handle<PricingEngine>(
-            new BinomialVanillaEngine(
-                BinomialVanillaEngine::EQP, 800));
-        break;
-      case Trigeorgis:
-        engine = Handle<PricingEngine>(
-            new BinomialVanillaEngine(
-                BinomialVanillaEngine::Trigeorgis, 800));
-        break;
-      case Tian:
-        engine = Handle<PricingEngine>(
-            new BinomialVanillaEngine(
-                BinomialVanillaEngine::Tian, 800));
-        break;
-      default:
-        throw Error("Unknown engine type");
+    // utilities
+
+    enum EngineType { Analytic, JR, CRR, EQP, Trigeorgis, Tian};
+
+    double relativeError(double x1, double x2, double reference) {
+        if (reference != 0.0)
+            return QL_FABS(x1-x2)/reference;
+        else
+            return 1.0e+10;
     }
 
-    return Handle<Instrument>(
-        new VanillaOption(type,
-                          RelinkableHandle<MarketElement>(underlying),
-                          strike,
-                          RelinkableHandle<TermStructure>(divCurve),
-                          RelinkableHandle<TermStructure>(rfCurve),
-                          EuropeanExercise(exDate),
-                          RelinkableHandle<BlackVolTermStructure>(volatility),
-                          engine));
-}
+    Handle<Instrument> makeEuropeanOption(Option::Type type,
+                                          const Handle<MarketElement>& u,
+                                          double k,
+                                          const Handle<TermStructure>& q,
+                                          const Handle<TermStructure>& r,
+                                          const Date& exDate,
+                                          const Handle<BlackVolTermStructure>& 
+                                              vol,
+                                          EngineType engineType = Analytic) {
+        Handle<PricingEngine> engine;
+        switch (engineType) {
+          case Analytic:
+            engine = Handle<PricingEngine>(new AnalyticEuropeanEngine);
+            break;
+          case JR:
+            engine = Handle<PricingEngine>(
+                new BinomialVanillaEngine(
+                    BinomialVanillaEngine::JarrowRudd, 800));
+            break;
+          case CRR:
+            engine = Handle<PricingEngine>(
+                new BinomialVanillaEngine(
+                    BinomialVanillaEngine::CoxRossRubinstein, 800));
+          case EQP:
+            engine = Handle<PricingEngine>(
+                new BinomialVanillaEngine(
+                    BinomialVanillaEngine::EQP, 800));
+            break;
+          case Trigeorgis:
+            engine = Handle<PricingEngine>(
+                new BinomialVanillaEngine(
+                    BinomialVanillaEngine::Trigeorgis, 800));
+            break;
+          case Tian:
+            engine = Handle<PricingEngine>(
+                new BinomialVanillaEngine(
+                    BinomialVanillaEngine::Tian, 800));
+            break;
+          default:
+            throw Error("Unknown engine type");
+        }
 
-Handle<TermStructure> EuropeanOptionTest::makeFlatCurve(
-            const Handle<MarketElement>& forward) {
-    Date today = Date::todaysDate();
-    Calendar calendar = TARGET();
-    Date reference = calendar.advance(today,2,Days);
-    return Handle<TermStructure>(
-        new FlatForward(today,reference,
-                        RelinkableHandle<MarketElement>(forward),
-                        Actual365()));
-}
-
-Handle<BlackVolTermStructure> EuropeanOptionTest::makeFlatVolatility(
-            const Handle<MarketElement>& volatility) {
-    Date today = Date::todaysDate();
-    Calendar calendar = TARGET();
-    Date reference = calendar.advance(today,2,Days);
-    return Handle<BlackVolTermStructure>(
-        new BlackConstantVol(reference,
-                             RelinkableHandle<MarketElement>(volatility),
-                             Actual365()));
-}
-
-std::string EuropeanOptionTest::typeToString(Option::Type type) {
-    switch (type) {
-      case Option::Call:
-        return "call";
-      case Option::Put:
-        return "put";
-      case Option::Straddle:
-        return "straddle";
-      default:
-        throw Error("unknown option type");
+        return Handle<Instrument>(
+            new VanillaOption(type, RelinkableHandle<MarketElement>(u), k,
+                              RelinkableHandle<TermStructure>(q),
+                              RelinkableHandle<TermStructure>(r),
+                              EuropeanExercise(exDate),
+                              RelinkableHandle<BlackVolTermStructure>(vol),
+                              engine));
     }
-}
 
-std::string EuropeanOptionTest::engineTypeToString(
-        EuropeanOptionTest::EngineType type) {
-    switch (type) {
-      case Analytic:
-        return "analytic";
-      case JR:
-        return "Jarrow-Rudd";
-      case CRR:
-        return "Cox-Ross-Rubinstein";
-      case EQP:
-        return "EQP";
-      case Trigeorgis:
-        return "Trigeorgis";
-      case Tian:
-        return "Tian";
-      default:
-        throw Error("unknown engine type");
+    Handle<TermStructure> makeFlatCurve(const Handle<MarketElement>& forward) {
+        Date today = Date::todaysDate();
+        Calendar calendar = TARGET();
+        Date reference = calendar.advance(today,2,Days);
+        return Handle<TermStructure>(
+            new FlatForward(today,reference,
+                            RelinkableHandle<MarketElement>(forward),
+                            Actual365()));
     }
+
+    Handle<BlackVolTermStructure> makeFlatVolatility(
+                                     const Handle<MarketElement>& volatility) {
+        Date today = Date::todaysDate();
+        Calendar calendar = TARGET();
+        Date reference = calendar.advance(today,2,Days);
+        return Handle<BlackVolTermStructure>(
+            new BlackConstantVol(reference,
+                                 RelinkableHandle<MarketElement>(volatility),
+                                 Actual365()));
+    }
+
+    std::string typeToString(Option::Type type) {
+        switch (type) {
+          case Option::Call:
+            return "call";
+          case Option::Put:
+            return "put";
+          case Option::Straddle:
+            return "straddle";
+          default:
+            throw Error("unknown option type");
+        }
+    }
+
+    std::string engineTypeToString(EngineType type) {
+        switch (type) {
+          case Analytic:
+            return "analytic";
+          case JR:
+            return "Jarrow-Rudd";
+          case CRR:
+            return "Cox-Ross-Rubinstein";
+          case EQP:
+            return "EQP";
+          case Trigeorgis:
+            return "Trigeorgis";
+          case Tian:
+            return "Tian";
+          default:
+            throw Error("unknown engine type");
+        }
+    }
+
 }
 
+// tests
 
 void EuropeanOptionTest::testGreeks() {
 

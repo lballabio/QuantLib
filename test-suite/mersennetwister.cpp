@@ -18,6 +18,8 @@
 // $Id$
 
 #include "mersennetwister.hpp"
+#include <ql/RandomNumbers/mt19937uniformrng.hpp>
+#include <ql/dataformatters.hpp>
 
 using namespace QuantLib;
 using namespace QuantLib::RandomNumbers;
@@ -441,27 +443,21 @@ void MersenneTwisterTest::runTest() {
     MersenneTwisterUniformRng mt19937(init);
 
     for (i=0; i<1000; i++) {
-        double e = QL_FABS(referenceLongValues[i]-mt19937.nextInt32());
-        if (e > 1.0e-8) {
-            char s[10];
-            QL_SPRINTF(s,"%5.2e",e);
-            CPPUNIT_FAIL("Mersenne Twister test failed at index: "
-                + IntegerFormatter::toString(i) + "\n error: "
-                + std::string(s));
+        if (referenceLongValues[i] != mt19937.nextInt32()) {
+            CPPUNIT_FAIL("Mersenne Twister test failed at index "
+                         + IntegerFormatter::toString(i));
         }
     }
     for (i=0; i<1000; i++) {
-        double e = QL_FABS(referenceValues[i]-
-            mt19937.next().value);
+        double e = QL_FABS(referenceValues[i] -
+                           mt19937.next().value);
         if (e > 1.0e-8) {
-            char s[10];
-            QL_SPRINTF(s,"%5.2e",e);
             CPPUNIT_FAIL("Mersenne Twister test failed at index: "
-                + IntegerFormatter::toString(i) + "\n error: "
-                + std::string(s));
+                         + IntegerFormatter::toString(i) + "\n"
+                         "error: "
+                         + DoubleFormatter::toExponential(e,2));
         }
     }
-
 
 }
 

@@ -19,7 +19,6 @@
 #ifndef quantlib_test_dates_hpp
 #define quantlib_test_dates_hpp
 
-#include <ql/quantlib.hpp>
 #include <cppunit/TestCase.h>
 
 class DateTest : public CppUnit::TestCase {

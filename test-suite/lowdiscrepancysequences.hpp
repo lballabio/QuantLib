@@ -20,7 +20,6 @@
 #ifndef quantlib_test_lowdiscrepancysequences_hpp
 #define quantlib_test_lowdiscrepancysequences_hpp
 
-#include <ql/quantlib.hpp>
 #include <cppunit/TestCase.h>
 #include <cppunit/TestFixture.h>
 

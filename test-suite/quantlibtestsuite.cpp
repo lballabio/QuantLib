@@ -18,6 +18,7 @@
 
 #include <cppunit/ui/text/TestRunner.h>
 #include <cppunit/TestResult.h>
+#include <ql/qldefines.hpp>
 #include <iostream>
 #include <string>
 #include "qltestlistener.hpp"

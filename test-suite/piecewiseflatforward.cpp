@@ -17,18 +17,18 @@
 // $Id$
 
 #include "piecewiseflatforward.hpp"
+#include <ql/TermStructures/piecewiseflatforward.hpp>
+#include <ql/Calendars/target.hpp>
+#include <ql/DayCounters/actual360.hpp>
+#include <ql/DayCounters/thirty360.hpp>
+#include <ql/Indexes/euribor.hpp>
 
 using namespace QuantLib;
-using QuantLib::TermStructures::PiecewiseFlatForward;
-using QuantLib::TermStructures::RateHelper;
-using QuantLib::TermStructures::DepositRateHelper;
-using QuantLib::TermStructures::SwapRateHelper;
-using QuantLib::Calendars::TARGET;
-using QuantLib::DayCounters::Actual360;
-using QuantLib::DayCounters::Thirty360;
-using QuantLib::Indexes::Xibor;
-using QuantLib::Indexes::Euribor;
-using QuantLib::Instruments::SimpleSwap;
+using namespace QuantLib::TermStructures;
+using namespace QuantLib::Calendars;
+using namespace QuantLib::DayCounters;
+using namespace QuantLib::Indexes;
+using namespace QuantLib::Instruments;
 
 #define LENGTH(a) (sizeof(a)/sizeof(a[0]))
 

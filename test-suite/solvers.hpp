@@ -19,7 +19,6 @@
 #ifndef quantlib_test_solvers_hpp
 #define quantlib_test_solvers_hpp
 
-#include <ql/quantlib.hpp>
 #include <cppunit/TestCase.h>
 
 class Solver1DTest : public CppUnit::TestCase {

@@ -19,7 +19,6 @@
 #ifndef quantlib_test_mt19937_hpp
 #define quantlib_test_mt19937_hpp
 
-#include <ql/quantlib.hpp>
 #include <cppunit/TestCase.h>
 
 class MersenneTwisterTest : public CppUnit::TestCase {

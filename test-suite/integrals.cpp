@@ -17,6 +17,8 @@
 // $Id$
 
 #include "integrals.hpp"
+#include <ql/Math/segmentintegral.hpp>
+#include <ql/Math/normaldistribution.hpp>
 
 using namespace QuantLib;
 using QuantLib::Math::SegmentIntegral;

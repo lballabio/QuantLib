@@ -19,6 +19,8 @@
 
 #include "marketelements.hpp"
 #include "utilities.hpp"
+#include <ql/marketelement.hpp>
+#include <ql/dataformatters.hpp>
 #include <cppunit/TestSuite.h>
 #include <cppunit/TestCaller.h>
 

@@ -26,6 +26,7 @@
 
 #include <ql/types.hpp>
 #include <ql/errors.hpp>
+#include <ql/dataformatters.hpp>
 
 namespace QuantLib {
 

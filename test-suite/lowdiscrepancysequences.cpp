@@ -18,14 +18,24 @@
 // $Id$
 
 #include "lowdiscrepancysequences.hpp"
+#include <ql/RandomNumbers/mt19937uniformrng.hpp>
+#include <ql/RandomNumbers/sobolrsg.hpp>
+#include <ql/RandomNumbers/haltonrsg.hpp>
+#include <ql/RandomNumbers/randomsequencegenerator.hpp>
+#include <ql/RandomNumbers/primitivepolynomials.h>
+#include <ql/Math/sequencestatistics.hpp>
+#include <ql/Math/discrepancystatistics.hpp>
 #include <cppunit/TestSuite.h>
 #include <cppunit/TestCaller.h>
+
+// #define PRINT_ONLY
+#ifdef PRINT_ONLY
 #include <fstream>
+#endif
 
 using namespace QuantLib;
 using namespace QuantLib::Math;
 using namespace QuantLib::RandomNumbers;
-using namespace QuantLib::Math;
 
 CppUnit::Test* LDSTest::suite() {
     CppUnit::TestSuite* tests =
@@ -525,13 +535,12 @@ namespace {
     // take a few days ... too long for usual/frequent test running
     const Size minimumLoops = 1;
 
-    // set true if you want to print the discrepancies to file
-    const bool globalPrint = false;
-
     // let's add some generality here...
 
     class MersenneFactory {
       public:
+        typedef RandomSequenceGenerator<MersenneTwisterUniformRng>
+            MersenneTwisterUniformRsg;
         typedef MersenneTwisterUniformRsg generator_type;
         MersenneTwisterUniformRsg make(unsigned long dim,
                                        unsigned long seed) const {
@@ -589,58 +598,63 @@ namespace {
         unsigned long dim;
         unsigned long seed = 123456;
         double discr, tolerance = 1e-2;
-        bool printOnly = (false || globalPrint);
         // 7 loops would take too long for usual/frequent test running
         Size sampleLoops = Size(QL_MAX(1.0, double(minimumLoops)));
 
+        #ifdef PRINT_ONLY
         std::ofstream outStream(fileName.c_str());
+        #endif
         for (int i = 0; i<8; i++) {
-            if (printOnly)
-                outStream << std::endl;
+            #ifdef PRINT_ONLY
+            outStream << std::endl;
+            #endif
 
-        dim = dimensionality[i];
-        DiscrepancyStatistics stat(dim);
+            dim = dimensionality[i];
+            DiscrepancyStatistics stat(dim);
 
-        typename T::generator_type rsg = generatorFactory.make(dim, seed);
+            typename T::generator_type rsg = generatorFactory.make(dim, seed);
 
-        Size j, k=0, jMin=10;
-        stat.reset();
-        if (printOnly)
+            Size j, k=0, jMin=10;
+            stat.reset();
+            #ifdef PRINT_ONLY
             outStream << "static const double dim" << dim 
                       << arrayName << "[] = {" ;
-        for (j=jMin; j<jMin+sampleLoops; j++) {
-            Size points = Size(QL_POW(2.0, int(j)))-1;
-            for (; k<points; k++) {
-                point = rsg.nextSequence().value;
-                stat.add(point);
-            }
+            #endif
+            for (j=jMin; j<jMin+sampleLoops; j++) {
+                Size points = Size(QL_POW(2.0, int(j)))-1;
+                for (; k<points; k++) {
+                    point = rsg.nextSequence().value;
+                    stat.add(point);
+                }
             
-            discr = stat.discrepancy();
-            
-            if (printOnly) {
+                discr = stat.discrepancy();
+                
+                #ifdef PRINT_ONLY
                 if (j!=jMin)
                     outStream << ", ";
                 outStream << DoubleFormatter::toExponential(discr, 2);
-            } else {
-                if (QL_FABS(discr-discrepancy[i][j-jMin])>tolerance*discr) {
+                #else
+                if (QL_FABS(discr-discrepancy[i][j-jMin]) > tolerance*discr) {
                     CPPUNIT_FAIL(generatorFactory.name() +
                                  "discrepancy dimension " +
                                  IntegerFormatter::toString(
                                      dimensionality[i]) + " at " +
                                  IntegerFormatter::toString(points) + 
                                  " samples is " +
-                                 DoubleFormatter::toExponential(discr, 2) + 
+                                 DoubleFormatter::toExponential(discr,2) + 
                                  " instead of "+
                                  DoubleFormatter::toExponential(
                                      discrepancy[i][j-jMin], 2));
                 }
+                #endif
             }
-        }
-        if (printOnly)
+            #ifdef PRINT_ONLY
             outStream << "};" << std::endl;
+            #endif
         }
+        #ifdef PRINT_ONLY
         outStream.close();
-        
+        #endif
     }
 
 }
@@ -658,13 +672,15 @@ void LDSTest::testTrueRandomNumberDiscrepancy() {
     Array point;
     unsigned long dim;
     double trueRandomFactor, discr, tolerance=1e-2;
-    bool printOnly = (false || globalPrint);
     Size sampleLoops = Size(QL_MAX(7.0, double(minimumLoops)));
 
+    #ifdef PRINT_ONLY
     std::ofstream outStream("TrueRandomDiscrepancy.txt");
+    #endif
     for (int i = 0; i<8; i++) {
-        if (printOnly)
-            outStream << std::endl;
+        #ifdef PRINT_ONLY
+        outStream << std::endl;
+        #endif
 
         dim = dimensionality[i];
         DiscrepancyStatistics stat(dim);
@@ -676,33 +692,37 @@ void LDSTest::testTrueRandomNumberDiscrepancy() {
 
         // true random numbers
         stat.reset();
-        if (printOnly)
-            outStream << "static const double dim" << dim 
-                      << "Discr_True_Random" << "[] = {" ;
+        #ifdef PRINT_ONLY
+        outStream << "static const double dim" << dim 
+                  << "Discr_True_Random" << "[] = {" ;
+        #endif
         for (j=jMin; j<jMin+sampleLoops; j++) {
             Size points = Size(QL_POW(2.0, int(j)))-1;
 
             discr = QL_SQRT(trueRandomFactor/points);
 
-            if (printOnly) {
-                if (j!=jMin)
-                    outStream << ", ";
-                outStream << DoubleFormatter::toExponential(discr, 2);
-            } else {
-                if(QL_FABS(discr-discrepancy[i][j-jMin])>tolerance*discr) {
-                  CPPUNIT_FAIL("True random "
+            #ifdef PRINT_ONLY
+            if (j!=jMin)
+                outStream << ", ";
+            outStream << DoubleFormatter::toExponential(discr, 2);
+            #else
+            if(QL_FABS(discr-discrepancy[i][j-jMin])>tolerance*discr) {
+                CPPUNIT_FAIL("True random "
                     "discrepancy dimension " +
                     IntegerFormatter::toString(dimensionality[i]) + " at " +
                     IntegerFormatter::toString(points) + " samples is " +
                     DoubleFormatter::toExponential(discr, 2) + " instead of "+
                     DoubleFormatter::toExponential(discrepancy[i][j-jMin], 2));
-                }
             }
+            #endif
         }
-        if (printOnly)
-            outStream << "};" << std::endl;
+        #ifdef PRINT_ONLY
+        outStream << "};" << std::endl;
+        #endif
     }
+    #ifdef PRINT_ONLY
     outStream.close();
+    #endif
 }
 
 void LDSTest::testMersenneTwisterDiscrepancy() {

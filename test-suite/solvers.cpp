@@ -17,15 +17,16 @@
 // $Id$
 
 #include "solvers.hpp"
+#include <ql/Solvers1D/brent.hpp>
+#include <ql/Solvers1D/bisection.hpp>
+#include <ql/Solvers1D/falseposition.hpp>
+#include <ql/Solvers1D/ridder.hpp>
+#include <ql/Solvers1D/secant.hpp>
+#include <ql/Solvers1D/newton.hpp>
+#include <ql/Solvers1D/newtonsafe.hpp>
 
 using namespace QuantLib;
-using QuantLib::Solvers1D::Brent;
-using QuantLib::Solvers1D::Bisection;
-using QuantLib::Solvers1D::FalsePosition;
-using QuantLib::Solvers1D::Ridder;
-using QuantLib::Solvers1D::Secant;
-using QuantLib::Solvers1D::Newton;
-using QuantLib::Solvers1D::NewtonSafe;
+using namespace QuantLib::Solvers1D;
 
 #define LENGTH(a) (sizeof(a)/sizeof(a[0]))
 

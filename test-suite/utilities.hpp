@@ -19,7 +19,9 @@
 #ifndef quantlib_test_utilities_hpp
 #define quantlib_test_utilities_hpp
 
-#include <ql/quantlib.hpp>
+#include <ql/Patterns/observable.hpp>
+#include <vector>
+#include <numeric>
 
 class Flag : public QuantLib::Patterns::Observer {
   private:

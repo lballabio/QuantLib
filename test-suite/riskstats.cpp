@@ -18,6 +18,9 @@
 // $Id$
 
 #include "riskstats.hpp"
+#include <ql/Math/riskstatistics.hpp>
+#include <ql/Math/sequencestatistics.hpp>
+#include <ql/RandomNumbers/sobolrsg.hpp>
 
 using namespace QuantLib;
 using namespace QuantLib::Math;

@@ -19,7 +19,6 @@
 #ifndef quantlib_test_risk_statistics_hpp
 #define quantlib_test_risk_statistics_hpp
 
-#include <ql/quantlib.hpp>
 #include <cppunit/TestCase.h>
 
 class RiskStatisticsTest : public CppUnit::TestCase {

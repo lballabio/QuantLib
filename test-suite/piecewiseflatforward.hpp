@@ -19,13 +19,12 @@
 #ifndef quantlib_test_piecewise_flat_forward_hpp
 #define quantlib_test_piecewise_flat_forward_hpp
 
-#include <ql/quantlib.hpp>
 #include <cppunit/TestCase.h>
 
 class PiecewiseFlatForwardTest : public CppUnit::TestCase {
   public:
     PiecewiseFlatForwardTest() 
-        : CppUnit::TestCase("Testing piecewise flat forward curve") {}
+    : CppUnit::TestCase("Testing piecewise flat forward curve") {}
     void runTest();
 };
 

@@ -17,6 +17,8 @@
 // $Id$
 
 #include "dates.hpp"
+#include <ql/date.hpp>
+#include <ql/dataformatters.hpp>
 
 using namespace QuantLib;
 

@@ -19,13 +19,11 @@
 #ifndef quantlib_test_swap_hpp
 #define quantlib_test_swap_hpp
 
-#include <ql/quantlib.hpp>
 #include <cppunit/TestCase.h>
 #include <cppunit/TestFixture.h>
 
 class SimpleSwapTest : public CppUnit::TestFixture {
   public:
-    SimpleSwapTest();
     void setUp();
     void testFairRate();
     void testFairSpread();
@@ -33,20 +31,7 @@ class SimpleSwapTest : public CppUnit::TestFixture {
     void testSpreadDependency();
     void testCachedValue();
     static CppUnit::Test* suite();
-  private:
-    QL::Handle<QLINS::SimpleSwap> makeSwap(int length, QL::Rate fixedRate,
-                                           QL::Spread floatingSpread);
-    QL::Date today_, settlement_;
-    bool payFixed_;
-    double nominal_;
-    QL::Calendar calendar_;
-    QL::RollingConvention rollingConvention_;
-    int fixedFrequency_, floatingFrequency_;
-    QL::DayCounter fixedDayCount_;
-    bool fixedIsAdjusted_;
-    QL::Handle<QLIDX::Xibor> index_;
-    int settlementDays_, fixingDays_;
-    QL::RelinkableHandle<QL::TermStructure> termStructure_;
 };
+
 
 #endif

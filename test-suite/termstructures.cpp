@@ -19,24 +19,32 @@
 
 #include "termstructures.hpp"
 #include "utilities.hpp"
+#include <ql/TermStructures/piecewiseflatforward.hpp>
+#include <ql/TermStructures/impliedtermstructure.hpp>
+#include <ql/TermStructures/forwardspreadedtermstructure.hpp>
+#include <ql/TermStructures/zerospreadedtermstructure.hpp>
+#include <ql/Calendars/target.hpp>
+#include <ql/DayCounters/actual360.hpp>
+#include <ql/DayCounters/thirty360.hpp>
 #include <cppunit/TestSuite.h>
 #include <cppunit/TestCaller.h>
 
 using namespace QuantLib;
-using QuantLib::Calendars::TARGET;
-using QuantLib::DayCounters::Actual360;
-using QuantLib::DayCounters::Thirty360;
-using QuantLib::TermStructures::PiecewiseFlatForward;
-using QuantLib::TermStructures::ImpliedTermStructure;
-using QuantLib::TermStructures::ForwardSpreadedTermStructure;
-using QuantLib::TermStructures::ZeroSpreadedTermStructure;
-using QuantLib::TermStructures::RateHelper;
-using QuantLib::TermStructures::DepositRateHelper;
-using QuantLib::TermStructures::SwapRateHelper;
+using namespace QuantLib::Calendars;
+using namespace QuantLib::DayCounters;
+using namespace QuantLib::TermStructures;
 
 #define LENGTH(a) (sizeof(a)/sizeof(a[0]))
 
 namespace {
+
+    // global data
+
+    Calendar calendar_;
+    int settlementDays_;
+    Handle<TermStructure> termStructure_;
+
+    // utilities
 
     struct Datum {
         int n;

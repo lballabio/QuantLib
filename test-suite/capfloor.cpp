@@ -17,6 +17,11 @@
 // $Id$
 
 #include "capfloor.hpp"
+#include <ql/Instruments/capfloor.hpp>
+#include <ql/Instruments/simpleswap.hpp>
+#include <ql/TermStructures/flatforward.hpp>
+#include <ql/Indexes/euribor.hpp>
+#include <ql/Pricers/blackcapfloor.hpp>
 #include <cppunit/TestSuite.h>
 #include <cppunit/TestCaller.h>
 
@@ -24,18 +29,66 @@
 #define LENGTH(a) (sizeof(a)/sizeof(a[0]))
 
 using namespace QuantLib;
-using QuantLib::Indexes::Xibor;
-using QuantLib::Indexes::Euribor;
-using QuantLib::TermStructures::FlatForward;
-using QuantLib::Calendars::TARGET;
-using QuantLib::DayCounters::Actual360;
-using QuantLib::CashFlows::FloatingRateCouponVector;
-using QuantLib::Instruments::VanillaCapFloor;
-using QuantLib::Instruments::VanillaCap;
-using QuantLib::Instruments::VanillaFloor;
-using QuantLib::Instruments::VanillaCollar;
-using QuantLib::Instruments::SimpleSwap;
-using QuantLib::Pricers::BlackCapFloor;
+using namespace QuantLib::Indexes;
+using namespace QuantLib::TermStructures;
+using namespace QuantLib::Calendars;
+using namespace QuantLib::DayCounters;
+using namespace QuantLib::CashFlows;
+using namespace QuantLib::Instruments;
+using namespace QuantLib::Pricers;
+
+namespace {
+
+    // global data
+
+    Date today_, settlement_;
+    std::vector<double> nominals_;
+    RollingConvention rollingConvention_;
+    int frequency_;
+    Handle<Xibor> index_;
+    Calendar calendar_;
+    int settlementDays_, fixingDays_;
+    RelinkableHandle<TermStructure> termStructure_;
+
+    // utilities
+
+    std::vector<Handle<CashFlow> > makeLeg(const Date& startDate,
+                                           int length) {
+        Date endDate = calendar_.advance(startDate,length,Years,
+                                         rollingConvention_);
+        return FloatingRateCouponVector(nominals_,startDate,endDate,
+                                        frequency_,calendar_,
+                                        rollingConvention_, index_,
+                                        fixingDays_,std::vector<Spread>());
+    }
+
+    Handle<PricingEngine> makeEngine(double volatility) {
+        RelinkableHandle<MarketElement> vol(
+            Handle<MarketElement>(new SimpleMarketElement(volatility)));
+        Handle<BlackModel> model(new BlackModel(vol,termStructure_));
+        return Handle<PricingEngine>(new BlackCapFloor(model));
+    }
+
+    Handle<Instrument> makeCapFloor(VanillaCapFloor::Type type,
+                                    const std::vector<Handle<CashFlow> >& leg,
+                                    Rate strike, 
+                                    double volatility) {
+        switch (type) {
+          case VanillaCapFloor::Cap:
+            return Handle<Instrument>(
+               new VanillaCap(leg, std::vector<Rate>(1, strike),
+                              termStructure_, makeEngine(volatility)));
+          case VanillaCapFloor::Floor:
+            return Handle<Instrument>(
+                new VanillaFloor(leg, std::vector<Rate>(1, strike),
+                                 termStructure_, makeEngine(volatility)));
+          default:
+            throw Error("unknown cap/floor type");
+        }
+    }
+
+}
+
 
 void CapFloorTest::setUp() {
     nominals_ = std::vector<double>(1,100.0);
@@ -51,43 +104,6 @@ void CapFloorTest::setUp() {
         Handle<TermStructure>(new FlatForward(today_,settlement_,0.05,
                                               Actual360())));
 }
-
-std::vector<Handle<CashFlow> > CapFloorTest::makeLeg(const Date& startDate,
-                                                     int length) {
-    Date endDate = calendar_.advance(startDate,length,Years,
-                                     rollingConvention_);
-    return FloatingRateCouponVector(nominals_,startDate,endDate,
-                                    frequency_,calendar_,rollingConvention_,
-                                    index_,fixingDays_,std::vector<Spread>());
-}
-
-Handle<Instrument> CapFloorTest::makeCapFloor(
-        VanillaCapFloor::Type type,
-        const std::vector<Handle<CashFlow> >& leg,
-        Rate strike, double volatility) {
-    switch (type) {
-      case VanillaCapFloor::Cap:
-        return Handle<Instrument>(new VanillaCap(leg, 
-                                                 std::vector<Rate>(1,strike),
-                                                 termStructure_, 
-                                                 makeEngine(volatility)));
-      case VanillaCapFloor::Floor:
-        return Handle<Instrument>(new VanillaFloor(leg, 
-                                                   std::vector<Rate>(1,strike),
-                                                   termStructure_, 
-                                                   makeEngine(volatility)));
-      default:
-        throw Error("unknown cap/floor type");
-    }
-}
-
-Handle<PricingEngine> CapFloorTest::makeEngine(double volatility) {
-    RelinkableHandle<MarketElement> vol(
-        Handle<MarketElement>(new SimpleMarketElement(volatility)));
-    Handle<BlackModel> model(new BlackModel(vol,termStructure_));
-    return Handle<PricingEngine>(new BlackCapFloor(model));
-}
-
 
 void CapFloorTest::testStrikeDependency() {
 

@@ -17,6 +17,9 @@
 // $Id$
 
 #include "matrices.hpp"
+#include <ql/Math/matrix.hpp>
+#include <ql/Math/symmetricschurdecomposition.hpp>
+#include <vector>
 
 using namespace QuantLib;
 using namespace QuantLib::Math;

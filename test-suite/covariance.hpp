@@ -20,7 +20,6 @@
 #ifndef quantlib_test_covariance_hpp
 #define quantlib_test_covariance_hpp
 
-#include <ql/quantlib.hpp>
 #include <cppunit/TestCase.h>
 #include <cppunit/TestFixture.h>
 

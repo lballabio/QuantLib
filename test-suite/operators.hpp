@@ -19,7 +19,6 @@
 #ifndef quantlib_test_operators_hpp
 #define quantlib_test_operators_hpp
 
-#include <ql/quantlib.hpp>
 #include <cppunit/TestCase.h>
 
 class OperatorTest : public CppUnit::TestCase {

@@ -17,6 +17,8 @@
 // $Id$
 
 #include "daycounters.hpp"
+#include <ql/DayCounters/actualactual.hpp>
+#include <ql/dataformatters.hpp>
 
 using namespace QuantLib;
 using QuantLib::DayCounters::ActualActual;

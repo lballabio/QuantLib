@@ -19,7 +19,6 @@
 #ifndef quantlib_test_statistics_hpp
 #define quantlib_test_statistics_hpp
 
-#include <ql/quantlib.hpp>
 #include <cppunit/TestCase.h>
 
 class StatisticsTest : public CppUnit::TestCase {
