@@ -67,28 +67,31 @@ void InterestRateTest::testConversions() {
     Rounding roundingPrecision;
     Rate r3, r2;
     Date d1 = Date::todaysDate(), d2;
-    InterestRate ir;
-    Real accrual, error;
+    InterestRate ir, ir2, ir3, expectedIR;
+    Real compoundf, error;
     DiscountFactor disc;
 
 
     for (Size i=0; i<LENGTH(cases); i++) {
-        ir = InterestRate(cases[i].r, Actual360(),
+        ir = InterestRate(cases[i].r, Settings::instance().dayCounter(),
                           cases[i].comp, cases[i].freq);
 
         d2 = d1+Integer(Settings::instance().dayCounterBase()*cases[i].t+0.5)*Days;
-        accrual = ir.compoundingFactor(d1, d2);
+        // check that the compound factor is the inverse of the discount factor
+        compoundf = ir.compoundFactor(d1, d2);
         disc = ir.discountFactor(d1, d2);
-        error = QL_FABS(disc-1.0/accrual);
+        error = QL_FABS(disc-1.0/compoundf);
         if (error>1e-16)
             BOOST_FAIL("\n  " + InterestRateFormatter::toString(ir) +
-                       "\n  1.0/accrual: "
-                       + DecimalFormatter::toString(1.0/accrual,16) +
-                       "\n     discount: "
+                       "\n  1.0/compound_factor: "
+                       + DecimalFormatter::toString(1.0/compoundf,16) +
+                       "\n      discount_factor: "
                        + DecimalFormatter::toString(disc, 16) +
                        "\n        error: "
                        + DecimalFormatter::toExponential(error));
 
+        // check that the equivalent rate with *same* daycounter,
+        // compounding, and frequency is the *same* rate
         r2 = ir.equivalentRate(d1, d2, ir.dayCounter(),
                                        ir.compounding(),
                                        ir.frequency());
@@ -101,6 +104,40 @@ void InterestRateTest::testConversions() {
                        "\n            error: "
                        + DecimalFormatter::toExponential(error, 1));
 
+        // check that the equivalent InterestRate with *same* daycounter,
+        // compounding, and frequency is the *same* InterestRate
+        ir2 = ir.equivalentInterestRate(d1, d2, ir.dayCounter(),
+                                                ir.compounding(),
+                                                ir.frequency());
+        error = QL_FABS(ir.rate()-ir2.rate());
+        if (error>1e-15)
+            BOOST_FAIL("\n    original interest rate: "
+                       + InterestRateFormatter::toString(ir, 12) +
+                       "\n  equivalent interest rate: "
+                       + InterestRateFormatter::toString(ir2,12) +
+                       "\n                rate error: "
+                       + DecimalFormatter::toExponential(error, 1));
+        if (ir.dayCounter()!=ir2.dayCounter())
+            BOOST_FAIL("\n day counter error"
+                       "\n original interest rate:   "
+                       + InterestRateFormatter::toString(ir, 4) +
+                       "\n equivalent interest rate: "
+                       + InterestRateFormatter::toString(ir2,4));
+        if (ir.compounding()!=ir2.compounding())
+            BOOST_FAIL("\n compounding error"
+                       "\n original interest rate:   "
+                       + InterestRateFormatter::toString(ir, 4) +
+                       "\n equivalent interest rate: "
+                       + InterestRateFormatter::toString(ir2,4));
+        if (ir.frequency()!=ir2.frequency())
+            BOOST_FAIL("\n frequency error"
+                       "\n    original interest rate: "
+                       + InterestRateFormatter::toString(ir, 4) +
+                       "\n  equivalent interest rate: "
+                       + InterestRateFormatter::toString(ir2,4));
+
+        // check that the equivalent rate with *different*
+        // compounding, and frequency is the *expected* rate
         r3 = ir.equivalentRate(d1, d2, ir.dayCounter(),
                                cases[i].comp2, cases[i].freq2);
         roundingPrecision = Rounding(cases[i].precision);
@@ -114,6 +151,42 @@ void InterestRateTest::testConversions() {
                                                  cases[i].precision-2) +
                        "\n                       error: "
                        + DecimalFormatter::toExponential(error, 1));
+
+        // check that the equivalent InterestRate with *different*
+        // compounding, and frequency is the *expected* InterestRate
+        ir3 = ir.equivalentInterestRate(d1, d2, ir.dayCounter(),
+                                        cases[i].comp2, cases[i].freq2);
+        expectedIR = InterestRate(cases[i].expected, ir.dayCounter(),
+                                  cases[i].comp2, cases[i].freq2);
+        r3 = roundingPrecision(ir3.rate());
+        error = QL_FABS(r3-expectedIR.rate());
+        if (error>1.0e-17)
+            BOOST_FAIL("\n  calculated equivalent interest rate: "
+                       + InterestRateFormatter::toString(ir3,
+                                                         cases[i].precision-2) +
+                       "\n    expected equivalent interest rate: "
+                       + InterestRateFormatter::toString(expectedIR,
+                                                         cases[i].precision-2) +
+                       "\n                           rate error: "
+                       + DecimalFormatter::toExponential(error, 1));
+        if (ir3.dayCounter()!=expectedIR.dayCounter())
+            BOOST_FAIL("\n day counter error"
+                       "\n    original interest rate: "
+                       + InterestRateFormatter::toString(ir3, 4) +
+                       "\n  equivalent interest rate: "
+                       + InterestRateFormatter::toString(expectedIR,4));
+        if (ir3.compounding()!=expectedIR.compounding())
+            BOOST_FAIL("\n compounding error"
+                       "\n    original interest rate: "
+                       + InterestRateFormatter::toString(ir3, 4) +
+                       "\n  equivalent interest rate: "
+                       + InterestRateFormatter::toString(expectedIR,4));
+        if (ir3.frequency()!=expectedIR.frequency())
+            BOOST_FAIL("\n frequency error"
+                       "\n    original interest rate: "
+                       + InterestRateFormatter::toString(ir3, 4) +
+                       "\n  equivalent interest rate: "
+                       + InterestRateFormatter::toString(expectedIR,4));
 
     }
 }
