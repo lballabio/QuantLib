@@ -21,6 +21,7 @@
 #include <iostream>
 #include <string>
 #include "qltestlistener.hpp"
+#include "barrieroption.hpp"
 #include "calendars.hpp"
 #include "capfloor.hpp"
 #include "compoundforward.hpp"
@@ -50,6 +51,7 @@ int main() {
     QLTestListener qlListener;
     runner.eventManager().addListener(&qlListener);
 
+    runner.addTest(BarrierOptionTest::suite());
     runner.addTest(new CalendarTest);
     runner.addTest(CompoundForwardTest::suite());
     runner.addTest(CovarianceTest::suite());
