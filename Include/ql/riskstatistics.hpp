@@ -30,6 +30,10 @@
 
 // $Source$
 // $Log$
+// Revision 1.7  2001/06/11 16:00:23  nando
+// potentialUpFront is now potentialUpside.
+// Few typos fixed
+//
 // Revision 1.6  2001/06/11 13:51:16  aleppo
 // Potential  Up Front added
 //
@@ -78,8 +82,8 @@ namespace QuantLib {
 
         // RiskMeasures proxy methods
         //! returns the Potential-Up-Front at a given percentile
-        double potentialUpFront(double percentile) const {
-            return riskMeasures_.potentialUpFront(percentile,
+        double potentialUpside(double percentile) const {
+            return riskMeasures_.potentialUpside(percentile,
                                                statistics_.mean(),
                                                statistics_.standardDeviation());
         }

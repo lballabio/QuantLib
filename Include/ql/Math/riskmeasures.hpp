@@ -25,6 +25,10 @@
 /*! \file riskmeasures.hpp
     $Source$
     $Log$
+    Revision 1.4  2001/06/11 16:00:23  nando
+    potentialUpFront is now potentialUpside.
+    Few typos fixed
+
     Revision 1.3  2001/06/11 13:51:34  aleppo
     Potential  Up Front added
 
@@ -55,7 +59,7 @@ namespace QuantLib {
         class RiskMeasures {
           public:
             RiskMeasures() {}
-            double potentialUpFront(double percentile,
+            double potentialUpside(double percentile,
                                     double mean,
                                     double std) const ;
             double valueAtRisk(double percentile,
@@ -74,11 +78,11 @@ namespace QuantLib {
 
         // inline definitions
         /*! \pre percentile must be in range 90%-100% */
-        inline double RiskMeasures::potentialUpFront(double percentile,
+        inline double RiskMeasures::potentialUpside(double percentile,
                                                      double mean,
                                                      double std) const {
             QL_REQUIRE(percentile<1.0 && percentile>=0.9,
-                "RsikMeasures::valueAtRisk : percentile (" +
+                "RiskMeasures::potentialUpside : percentile (" +
                 DoubleFormatter::toString(percentile) +
                 ") out of range 90%-100%");
 
@@ -93,7 +97,7 @@ namespace QuantLib {
                                            double mean,
                                            double std) const {
             QL_REQUIRE(percentile<1.0 && percentile>=0.9,
-                "RsikMeasures::valueAtRisk : percentile (" +
+                "RiskMeasures::valueAtRisk : percentile (" +
                 DoubleFormatter::toString(percentile) +
                 ") out of range 90%-100%");
 
