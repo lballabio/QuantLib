@@ -27,7 +27,6 @@
 #include <ql/Optimization/method.hpp>
 #include <ql/TermStructures/ratehelpers.hpp>
 #include <ql/Patterns/lazyobject.hpp>
-#include <ql/TermStructures/discountstructure.hpp>
 
 namespace QuantLib {
 
@@ -43,22 +42,6 @@ namespace QuantLib {
     class AffineTermStructure : public YieldTermStructure,
                                 public LazyObject {
       public:
-        #ifndef QL_DISABLE_DEPRECATED
-        //! constructor using a fixed model
-        /*! \deprecated use the constructor without today's date. */
-        AffineTermStructure(const Date& todaysDate,
-                            const Date& referenceDate,
-                            const boost::shared_ptr<AffineModel>& model,
-                            const DayCounter& dayCounter);
-        //! constructor using a model that has to be calibrated
-        /*! \deprecated use the constructor without today's date. */
-        AffineTermStructure(const Date& todaysDate,
-                            const Date& referenceDate,
-                            const boost::shared_ptr<AffineModel>& model,
-                            const std::vector<boost::shared_ptr<RateHelper> >&,
-                            const boost::shared_ptr<OptimizationMethod>&,
-                            const DayCounter& dayCounter);
-        #endif
         //! constructor using a fixed model
         AffineTermStructure(const Date& referenceDate,
                             const boost::shared_ptr<AffineModel>& model,

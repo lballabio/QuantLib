@@ -20,29 +20,6 @@
 
 namespace QuantLib {
 
-    #ifndef QL_DISABLE_DEPRECATED
-    CompoundForward::CompoundForward(const Date & todaysDate,
-                                     const Date & referenceDate,
-                                     const std::vector<Date> &dates,
-                                     const std::vector<Rate> &forwards,
-                                     const Calendar & calendar,
-                                     const BusinessDayConvention conv,
-                                     const Integer compounding,
-                                     const DayCounter & dayCounter)
-    : ForwardRateStructure(todaysDate, referenceDate),
-      dayCounter_(dayCounter), calendar_(calendar), conv_(conv),
-      compounding_(compounding), needsBootstrap_(true),
-      dates_(dates), forwards_(forwards) {
-        QL_REQUIRE(dates_.size() > 0,
-                   "no input dates given");
-        QL_REQUIRE(forwards_.size() > 0,
-                   "no input rates given");
-        QL_REQUIRE(dates_.size() == forwards_.size(),
-                   "inconsistent number of dates/forward rates");
-        calibrateNodes();
-    }
-    #endif
-
     CompoundForward::CompoundForward(const Date & referenceDate,
                                      const std::vector<Date> &dates,
                                      const std::vector<Rate> &forwards,
@@ -145,7 +122,7 @@ namespace QuantLib {
                 }
                 discounts.push_back(df);
             }
-            discountCurve_ = boost::shared_ptr<DiscountCurve>(
+            discountCurve_ = boost::shared_ptr<ExtendedDiscountCurve>(
                      new ExtendedDiscountCurve(dates_, discounts,
                                                calendar_, conv_,
                                                dayCounter_));
@@ -205,20 +182,17 @@ namespace QuantLib {
         QL_DUMMY_RETURN(Rate());
     }
 
+    #ifndef QL_DISABLE_DEPRECATED
     Rate CompoundForward::compoundForwardImpl(Time t, Integer f) const {
         if (f == compounding_)
             return forwardImpl(t);
         if (needsBootstrap_)
             bootstrap();
-        #ifdef QL_DISABLE_DEPRECATED
-        return discountCurve()->forwardRate(t, t,
-            SimpleThenCompounded, Frequency(f), true);
-        #else
         return discountCurve()->compoundForward(t,f,true);
-        #endif
     }
+    #endif
 
-    boost::shared_ptr<YieldTermStructure>
+    boost::shared_ptr<ExtendedDiscountCurve>
     CompoundForward::discountCurve() const {
         QL_REQUIRE(compounding_ > 0,
                    "continuous compounding needs no bootstrap.");

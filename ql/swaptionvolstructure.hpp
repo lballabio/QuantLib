@@ -43,21 +43,12 @@ namespace QuantLib {
                      by overriding the referenceDate() method.
         */
         SwaptionVolatilityStructure();
-        #ifndef QL_DISABLE_DEPRECATED
-        //! initialize with a fixed reference date
-        SwaptionVolatilityStructure(const Date& today,
-                                    const Date& referenceDate);
-        #endif
         //! initialize with a fixed reference date
         SwaptionVolatilityStructure(const Date& referenceDate);
         //! calculate the reference date based on the global evaluation date
         SwaptionVolatilityStructure(Integer settlementDays, const Calendar&);
         //@}
         virtual ~SwaptionVolatilityStructure() {}
-        #ifdef QL_DISABLE_DEPRECATED
-        //! the day counter used for date/time conversion
-        virtual DayCounter dayCounter() const = 0;
-        #endif
         //! \name Volatility
         //@{
         //! returns the volatility for a given starting date and length
@@ -83,12 +74,6 @@ namespace QuantLib {
     inline SwaptionVolatilityStructure::SwaptionVolatilityStructure(
                                                    const Date& referenceDate)
     : BaseTermStructure(referenceDate) {}
-
-    #ifndef QL_DISABLE_DEPRECATED
-    inline SwaptionVolatilityStructure::SwaptionVolatilityStructure(
-                                 const Date& today, const Date& referenceDate)
-    : BaseTermStructure(today,referenceDate) {}
-    #endif
 
     inline SwaptionVolatilityStructure::SwaptionVolatilityStructure(
                              Integer settlementDays, const Calendar& calendar)

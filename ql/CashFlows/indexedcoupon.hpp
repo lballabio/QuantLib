@@ -57,9 +57,6 @@ namespace QuantLib {
         //! \name FloatingRateCoupon interface
         //@{
         Rate indexFixing() const;
-        #ifndef QL_DISABLE_DEPRECATED
-        Rate fixing() const;
-        #endif
         //@}
         //! \name Inspectors
         //@{
@@ -113,12 +110,6 @@ namespace QuantLib {
     inline Rate IndexedCoupon::indexFixing() const {
         return index_->fixing(fixingDate());
     }
-
-    #ifndef QL_DISABLE_DEPRECATED
-    inline Rate IndexedCoupon::fixing() const {
-        return index_->fixing(fixingDate()) + spread();
-    }
-    #endif
 
     inline Real IndexedCoupon::amount() const {
         return rate() * accrualPeriod() * nominal();

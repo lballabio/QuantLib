@@ -161,18 +161,6 @@ namespace QuantLib {
         Month month() const;
         Year year() const;
         BigInteger serialNumber() const;
-        /*! returns the 1st delivery date for next contract listed in the
-            International Money Market section of the Chicago Mercantile
-            Exchange.
-
-            \warning The result date is following or equal to the original date
-        */
-        #ifndef QL_DISABLE_DEPRECATED
-        /*! \deprecated use the static isEOM() method instead */
-        bool isEndOfMonth() const;
-        /*! \deprecated use the static endOfMonth() method instead */
-        Day lastDayOfMonth() const;
-        #endif
         //@}
 
         //! \name date algebra
@@ -202,24 +190,6 @@ namespace QuantLib {
         //! returns a new date decremented by the given period
         Date operator-(const Period&) const;
         //@}
-
-        #ifndef QL_DISABLE_DEPRECATED
-        //! \name other methods to increment/decrement dates
-        //@{
-        /*! \deprecated use date + n*Days instead */
-        Date plusDays(Integer n) const;
-        /*! \deprecated use date + n*Weeks instead */
-        Date plusWeeks(Integer n) const;
-        /*! \deprecated use date + n*Months instead */
-        Date plusMonths(Integer n) const;
-        /*! \deprecated use date + n*Years instead */
-        Date plusYears(Integer n) const;
-        /*! \deprecated use date + n*units instead */
-        Date plus(Integer n, TimeUnit units) const;
-        /*! \deprecated use date + period instead */
-        Date plus(const Period&) const;
-        //@}
-        #endif
 
         //! \name static methods
         //@{
@@ -252,6 +222,12 @@ namespace QuantLib {
         //! whether or not the given date is an IMM date
         static bool isIMMdate(const Date& d);
         //! next IMM date following (or equal to) the given date
+        /*! returns the 1st delivery date for next contract listed in the
+            International Money Market section of the Chicago Mercantile
+            Exchange.
+
+            \warning The result date is following or equal to the original date
+        */
         static Date nextIMMdate(const Date& d);
         //@}
       private:
@@ -359,16 +335,6 @@ namespace QuantLib {
         return serialNumber_;
     }
 
-    #ifndef QL_DISABLE_DEPRECATED
-    inline Day Date::lastDayOfMonth() const {
-        return endOfMonth(*this).dayOfMonth();
-    }
-
-    inline bool Date::isEndOfMonth() const {
-        return isEOM(*this);
-    }
-    #endif
-
     inline Date Date::operator+(BigInteger days) const {
         return Date(serialNumber_+days);
     }
@@ -384,31 +350,6 @@ namespace QuantLib {
     inline Date Date::operator-(const Period& p) const {
         return advance(*this,-p.length(),p.units());
     }
-
-    #ifndef QL_DISABLE_DEPRECATED
-    inline Date Date::plusDays(Integer days) const {
-        return advance(*this,days,Days);
-    }
-
-    inline Date Date::plusWeeks(Integer weeks) const {
-        return advance(*this,weeks,Weeks);
-    }
-
-    inline Date Date::plusMonths(Integer months) const {
-        return advance(*this,months,Months);
-    }
-
-    inline Date Date::plusYears(Integer years) const {
-        return advance(*this,years,Years);
-    }
-
-    inline Date Date::plus(Integer n, TimeUnit units) const {
-        return advance(*this,n,units);
-    }
-    inline Date Date::plus(const Period& p) const {
-        return advance(*this,p.length(),p.units());
-    }
-    #endif
 
     inline Date Date::endOfMonth(const Date& d) {
         Month m = d.month();

@@ -25,10 +25,6 @@
 #include <ql/RandomNumbers/centrallimitgaussianrng.hpp>
 #include <ql/RandomNumbers/faurersg.hpp>
 #include <ql/RandomNumbers/haltonrsg.hpp>
-#ifndef QL_DISABLE_DEPRECATED
-#include <ql/RandomNumbers/inversecumgaussianrng.hpp>
-#include <ql/RandomNumbers/inversecumgaussianrsg.hpp>
-#endif // QL_DISABLE_DEPRECATED
 #include <ql/RandomNumbers/inversecumulativerng.hpp>
 #include <ql/RandomNumbers/inversecumulativersg.hpp>
 #include <ql/RandomNumbers/knuthuniformrng.hpp>

@@ -5,7 +5,6 @@ includedir = $(prefix)/include/ql/Pricers
 include_HEADERS = \
     all.hpp \
     core.hpp \
-    discretegeometricapo.hpp \
     discretegeometricaso.hpp \
     fdamericanoption.hpp \
     fdbermudanoption.hpp \
@@ -18,7 +17,6 @@ include_HEADERS = \
     fdshoutoption.hpp \
     fdstepconditionoption.hpp \
     mccliquetoption.hpp \
-    mcdiscretearithmeticapo.hpp \
     mcdiscretearithmeticaso.hpp \
     mceverest.hpp \
     mchimalaya.hpp \
@@ -31,7 +29,6 @@ include_HEADERS = \
 EXTRA_DIST=makefile.mak
 
 libPricers_la_SOURCES = \
-    discretegeometricapo.cpp \
     discretegeometricaso.cpp \
     fdbermudanoption.cpp \
     fdbsmoption.cpp \
@@ -42,7 +39,6 @@ libPricers_la_SOURCES = \
     fdmultiperiodoption.cpp \
     fdstepconditionoption.cpp \
     mccliquetoption.cpp \
-    mcdiscretearithmeticapo.cpp \
     mcdiscretearithmeticaso.cpp \
     mceverest.cpp \
     mchimalaya.cpp \

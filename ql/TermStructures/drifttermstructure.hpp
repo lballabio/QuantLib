@@ -44,9 +44,6 @@ namespace QuantLib {
         //@{
         DayCounter dayCounter() const { return riskFreeTS_->dayCounter(); }
         Calendar calendar() const;
-        #ifndef QL_DISABLE_DEPRECATED
-        const Date& todaysDate() const;
-        #endif
         const Date& referenceDate() const;
         Date maxDate() const { return maxDate_; }
         //@}
@@ -82,12 +79,6 @@ namespace QuantLib {
     inline Calendar DriftTermStructure::calendar() const {
         return riskFreeTS_->calendar();
     }
-
-    #ifndef QL_DISABLE_DEPRECATED
-    inline const Date& DriftTermStructure::todaysDate() const {
-        return riskFreeTS_->todaysDate();
-    }
-    #endif
 
     inline const Date& DriftTermStructure::referenceDate() const {
         // warning: here it is assumed that all TS have the same referenceDate

@@ -43,12 +43,6 @@ namespace QuantLib {
             constructors.
         */
         //@{
-        #ifndef QL_DISABLE_DEPRECATED
-        /*! \deprecated use the constructor without today's date; set the
-                        evaluation date through Settings::instance().
-        */
-        ZeroYieldStructure(const Date& todaysDate, const Date& referenceDate);
-        #endif
         ZeroYieldStructure();
         ZeroYieldStructure(const Date& referenceDate);
         ZeroYieldStructure(Integer settlementDays, const Calendar&);
@@ -63,26 +57,10 @@ namespace QuantLib {
         DiscountFactor discountImpl(Time) const;
         //! zero-yield calculation
         virtual Rate zeroYieldImpl(Time) const = 0;
-        #ifndef QL_DISABLE_DEPRECATED
-        /*! Returns the instantaneous forward rate for the given date
-            calculating it from the zero yield.
-        */
-        Rate forwardImpl(Time) const;
-        /*! Returns the forward rate at a specified compound frequency
-	    for the given date calculating it from the zero yield.
-        */
-        Rate compoundForwardImpl(Time, Integer) const;
-        #endif
         //@}
     };
 
     // inline definitions
-
-    #ifndef QL_DISABLE_DEPRECATED
-    inline ZeroYieldStructure::ZeroYieldStructure(const Date& todaysDate,
-                                                  const Date& referenceDate)
-    : YieldTermStructure(todaysDate,referenceDate) {}
-    #endif
 
     inline ZeroYieldStructure::ZeroYieldStructure() {}
 
@@ -97,27 +75,6 @@ namespace QuantLib {
         Rate r = zeroYieldImpl(t);
         return DiscountFactor(QL_EXP(-r*t));
     }
-
-    #ifndef QL_DISABLE_DEPRECATED
-    inline Rate ZeroYieldStructure::forwardImpl(Time t) const {
-        // less than half day
-        Time dt = 0.001;
-        Rate r1 = zeroYieldImpl(t),
-             r2 = zeroYieldImpl(t+dt);
-        return r2+t*(r2-r1)/dt;
-    }
-
-    inline Rate ZeroYieldStructure::compoundForwardImpl(Time t,
-                                                        Integer f) const {
-        Rate zy = zeroYieldImpl(t);
-        if (f == 0)
-            return zy;
-        if (t <= 1.0/f)
-            return (QL_EXP(zy*t)-1.0)/t;
-        return (QL_EXP(zy*(1.0/f))-1.0)*f;
-    }
-    #endif
-
 
 }
 

@@ -19,34 +19,6 @@
 
 namespace QuantLib {
 
-    #ifndef QL_DISABLE_DEPRECATED
-    ZeroCurve::ZeroCurve(const Date &todaysDate,
-                         const std::vector < Date > &dates,
-                         const std::vector < Rate > &yields,
-                         const DayCounter & dayCounter)
-    : ZeroYieldStructure(todaysDate, dates[0]), dates_(dates),
-      yields_(yields), dayCounter_(dayCounter) {
-
-        QL_REQUIRE(dates_.size()>1, "too few dates");
-        QL_REQUIRE(yields_.size()==dates_.size(),
-                   "dates/yields mismatch");
-
-        times_.resize(dates_.size());
-        times_[0]=0.0;
-        for(Size i = 1; i < dates_.size(); i++) {
-            QL_REQUIRE(dates_[i]>dates_[i-1], "invalid date");
-            #if !defined(QL_NEGATIVE_RATES)
-            QL_REQUIRE(yields_[i] >= 0.0, "invalid yield");
-            #endif
-            times_[i] = dayCounter.yearFraction(dates_[0],
-                                                dates_[i]);
-        }
-
-        interpolation_ = LinearInterpolation(times_.begin(), times_.end(),
-                                             yields_.begin());
-    }
-    #endif
-
     ZeroCurve::ZeroCurve(const std::vector<Date>& dates,
                          const std::vector<Rate>& yields,
                          const DayCounter& dayCounter)

@@ -56,20 +56,6 @@ namespace QuantLib {
       public:
         //! \name Constructors
         //@{
-        #ifndef QL_DISABLE_DEPRECATED
-        /*! \deprecated use a constructor without today's date */
-        PiecewiseFlatForward(
-               const Date& todaysDate,
-               const Date& referenceDate,
-               const std::vector<boost::shared_ptr<RateHelper> >& instruments,
-               const DayCounter& dayCounter,
-               Real accuracy = 1.0e-12);
-        /*! \deprecated use the constructor without today's date */
-        PiecewiseFlatForward(const Date& todaysDate,
-                             const std::vector<Date>& dates,
-                             const std::vector<Rate>& forwards,
-                             const DayCounter& dayCounter);
-        #endif
         PiecewiseFlatForward(
                const Date& referenceDate,
                const std::vector<boost::shared_ptr<RateHelper> >& instruments,
@@ -110,9 +96,6 @@ namespace QuantLib {
         Rate zeroYieldImpl(Time) const;
         DiscountFactor discountImpl(Time) const;
         Rate forwardImpl(Time) const;
-#ifndef QL_DISABLE_DEPRECATED
-	    Rate compoundForwardImpl(Time t, Integer compFreq) const;
-#endif
       private:
         // helper class for bootstrapping
         class FFObjFunction;

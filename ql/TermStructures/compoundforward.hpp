@@ -23,6 +23,7 @@
 #define quantlib_compoundforward_curve_hpp
 
 #include <ql/TermStructures/forwardstructure.hpp>
+#include <ql/TermStructures/extendeddiscountcurve.hpp>
 #include <ql/Math/loglinearinterpolation.hpp>
 
 namespace QuantLib {
@@ -46,17 +47,6 @@ namespace QuantLib {
     class CompoundForward : public ForwardRateStructure {
       public:
         // constructor
-        #ifndef QL_DISABLE_DEPRECATED
-        /*! \deprecated use the constructor without today's date */
-        CompoundForward(const Date& todaysDate,
-                        const Date& referenceDate,
-                        const std::vector<Date>& dates,
-                        const std::vector<Rate>& forwards,
-                        const Calendar& calendar,
-                        const BusinessDayConvention conv,
-                        const Integer compounding,
-                        const DayCounter& dayCounter);
-        #endif
         CompoundForward(const Date& referenceDate,
                         const std::vector<Date>& dates,
                         const std::vector<Rate>& forwards,
@@ -73,7 +63,15 @@ namespace QuantLib {
         const std::vector<Time>& times() const;
         const std::vector<Date>& dates() const;
         const std::vector<Rate>& forwards() const;
-        boost::shared_ptr<YieldTermStructure> discountCurve() const;
+        boost::shared_ptr<ExtendedDiscountCurve> discountCurve() const;
+        #ifndef QL_DISABLE_DEPRECATED
+        Rate compoundForward(const Date& d1,
+                             Integer f,
+                             bool extrapolate = false) const;
+        Rate compoundForward(Time t1,
+                             Integer f,
+                             bool extrapolate = false) const;
+        #endif
       protected:
         // methods
         void calibrateNodes() const;
@@ -82,7 +80,9 @@ namespace QuantLib {
         DiscountFactor discountImpl(Time) const;
         Size referenceNode(Time) const;
         Rate forwardImpl(Time) const;
+        #ifndef QL_DISABLE_DEPRECATED
         Rate compoundForwardImpl(Time, Integer) const;
+        #endif
       private:
         // data members
         DayCounter dayCounter_;
@@ -94,7 +94,7 @@ namespace QuantLib {
         mutable std::vector<Rate> forwards_;
         mutable std::vector<Time> times_;
         mutable Interpolation fwdinterp_;
-        mutable boost::shared_ptr<YieldTermStructure> discountCurve_;
+        mutable boost::shared_ptr<ExtendedDiscountCurve> discountCurve_;
     };
 
     // inline definitions
@@ -118,6 +118,38 @@ namespace QuantLib {
     inline const std::vector<Rate>& CompoundForward::forwards() const {
         return forwards_;
     }
+
+    #ifndef QL_DISABLE_DEPRECATED
+    inline Rate CompoundForward::compoundForward(const Date& d,
+                                                 Integer f,
+                                                 bool extrapolate) const {
+        Time t = timeFromReference(d);
+        QL_REQUIRE(t >= 0.0,
+                   "negative time (" +
+                   DecimalFormatter::toString(t) +
+                   ") given");
+        QL_REQUIRE(extrapolate || allowsExtrapolation() || t <= maxTime(),
+                   "time (" +
+                   DecimalFormatter::toString(t) +
+                   ") is past max curve time (" +
+                   DecimalFormatter::toString(maxTime()) + ")");
+        return compoundForwardImpl(timeFromReference(d),f);
+    }
+
+    inline Rate CompoundForward::compoundForward(Time t, Integer f,
+                                                 bool extrapolate) const {
+        QL_REQUIRE(t >= 0.0,
+                   "negative time (" +
+                   DecimalFormatter::toString(t) +
+                   ") given");
+        QL_REQUIRE(extrapolate || allowsExtrapolation() || t <= maxTime(),
+                   "time (" +
+                   DecimalFormatter::toString(t) +
+                   ") is past max curve time (" +
+                   DecimalFormatter::toString(maxTime()) + ")");
+        return compoundForwardImpl(t,f);
+    }
+    #endif
 
 }
 

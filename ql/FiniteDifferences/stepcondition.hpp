@@ -32,12 +32,7 @@ namespace QuantLib {
     class StepCondition {
       public:
         virtual ~StepCondition() {}
-        virtual void applyTo(arrayType& a,
-                             Time t) const = 0;
-        #ifndef QL_DISABLE_DEPRECATED
-        /*! \deprecated use adjustValues() on the asset itself */
-        virtual void applyTo(boost::shared_ptr<DiscretizedAsset>) const = 0;
-        #endif
+        virtual void applyTo(arrayType& a, Time t) const = 0;
     };
 
 }

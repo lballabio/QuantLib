@@ -69,7 +69,7 @@ namespace {
     Size deposits, swaps;
     std::vector<Rate> rates;
     std::vector<Date> dates;
-    boost::shared_ptr<YieldTermStructure> termStructure;
+    boost::shared_ptr<CompoundForward> termStructure;
 
 
     void setup() {
@@ -107,7 +107,7 @@ namespace {
                                                  convention);
         }
 
-        termStructure = boost::shared_ptr<YieldTermStructure>(
+        termStructure = boost::shared_ptr<CompoundForward>(
                              new CompoundForward(settlement,dates,rates,
                                                  calendar,convention,
                                                  frequency,dayCounter));

@@ -21,9 +21,6 @@
 #include <ql/qldefines.hpp>
 
 #include <ql/DayCounters/actual360.hpp>
-#ifndef QL_DISABLE_DEPRECATED
-#   include <ql/DayCounters/actual365.hpp>
-#endif
 #include <ql/DayCounters/actual365fixed.hpp>
 #include <ql/DayCounters/actualactual.hpp>
 #include <ql/DayCounters/one.hpp>

@@ -27,6 +27,8 @@
 
 namespace QuantLib {
 
+    class CompoundForward;
+
     //! Term structure based on loglinear interpolation of discount factors
     /*! Loglinear interpolation guarantees piecewise constant forward rates.
 
@@ -35,15 +37,6 @@ namespace QuantLib {
     class ExtendedDiscountCurve : public DiscountCurve {
       public:
         // constructor
-        #ifndef QL_DISABLE_DEPRECATED
-        /*! \deprecated use the constructor without today's date */
-        ExtendedDiscountCurve(const Date& todaysDate,
-                              const std::vector<Date>& dates,
-                              const std::vector<DiscountFactor>& dfs,
-                              const Calendar& calendar,
-                              const BusinessDayConvention conv,
-                              const DayCounter& dayCounter);
-        #endif
         ExtendedDiscountCurve(const std::vector<Date>& dates,
                               const std::vector<DiscountFactor>& dfs,
                               const Calendar& calendar,
@@ -54,28 +47,70 @@ namespace QuantLib {
             return conv_;
         }
         void update();
+        #ifndef QL_DISABLE_DEPRECATED
+        Rate compoundForward(const Date& d1,
+                             Integer f,
+                             bool extrapolate = false) const;
+        Rate compoundForward(Time t1,
+                             Integer f,
+                             bool extrapolate = false) const;
+        #endif
       protected:
+        #ifndef QL_DISABLE_DEPRECATED
         /*! Returns the forward rate at a specified compound frequency
 	    for the given date calculating it from the zero yield.
         */
         Rate compoundForwardImpl(Time, Integer) const;
-        #ifdef QL_DISABLE_DEPRECATED
         /*! Returns the zero yield rate for the given date calculating it
             from the discount.
         */
         Rate zeroYieldImpl(Time) const;
         #endif
         void calibrateNodes() const;
-        boost::shared_ptr<YieldTermStructure> reversebootstrap(Integer) const;
-        boost::shared_ptr<YieldTermStructure> forwardCurve(Integer) const;
+        boost::shared_ptr<CompoundForward> reversebootstrap(Integer) const;
+        boost::shared_ptr<CompoundForward> forwardCurve(Integer) const;
       private:
         Calendar calendar_;
         BusinessDayConvention conv_;
-        mutable std::map<Integer,boost::shared_ptr<YieldTermStructure> >
+        mutable std::map<Integer,boost::shared_ptr<CompoundForward> >
                                                          forwardCurveMap_;
     };
 
     // inline definitions
+
+    #ifndef QL_DISABLE_DEPRECATED
+    inline Rate ExtendedDiscountCurve::compoundForward(const Date& d,
+                                                       Integer f,
+                                                       bool extrapolate)
+                                                                      const {
+        Time t = timeFromReference(d);
+        QL_REQUIRE(t >= 0.0,
+                   "negative time (" +
+                   DecimalFormatter::toString(t) +
+                   ") given");
+        QL_REQUIRE(extrapolate || allowsExtrapolation() || t <= maxTime(),
+                   "time (" +
+                   DecimalFormatter::toString(t) +
+                   ") is past max curve time (" +
+                   DecimalFormatter::toString(maxTime()) + ")");
+        return compoundForwardImpl(timeFromReference(d),f);
+    }
+
+    inline Rate ExtendedDiscountCurve::compoundForward(Time t, Integer f,
+                                                       bool extrapolate)
+                                                                      const {
+        QL_REQUIRE(t >= 0.0,
+                   "negative time (" +
+                   DecimalFormatter::toString(t) +
+                   ") given");
+        QL_REQUIRE(extrapolate || allowsExtrapolation() || t <= maxTime(),
+                   "time (" +
+                   DecimalFormatter::toString(t) +
+                   ") is past max curve time (" +
+                   DecimalFormatter::toString(maxTime()) + ")");
+        return compoundForwardImpl(t,f);
+    }
+    #endif
 
     inline void ExtendedDiscountCurve::update() {
         forwardCurveMap_.clear();

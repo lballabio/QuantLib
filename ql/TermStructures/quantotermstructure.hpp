@@ -52,9 +52,6 @@ namespace QuantLib {
             return underlyingDividendTS_->dayCounter();
         }
         Calendar calendar() const;
-        #ifndef QL_DISABLE_DEPRECATED
-        const Date& todaysDate() const;
-        #endif
         const Date& referenceDate() const;
         Date maxDate() const { return maxDate_; }
         //@}
@@ -105,12 +102,6 @@ namespace QuantLib {
     inline Calendar QuantoTermStructure::calendar() const {
         return underlyingDividendTS_->calendar();
     }
-
-    #ifndef QL_DISABLE_DEPRECATED
-    inline const Date& QuantoTermStructure::todaysDate() const {
-        return underlyingDividendTS_->todaysDate();
-    }
-    #endif
 
     inline const Date& QuantoTermStructure::referenceDate() const {
         return underlyingDividendTS_->referenceDate();

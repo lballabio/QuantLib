@@ -22,7 +22,7 @@
 #ifndef quantlib_implied_term_structure_hpp
 #define quantlib_implied_term_structure_hpp
 
-#include <ql/TermStructures/discountstructure.hpp>
+#include <ql/termstructure.hpp>
 
 namespace QuantLib {
 
@@ -41,21 +41,8 @@ namespace QuantLib {
         \test b) observability against changes in the underlying term
                  structure is checked.
     */
-    class ImpliedTermStructure
-    #ifdef QL_DISABLE_DEPRECATED
-        : public YieldTermStructure {
-    #else
-        : public DiscountStructure {
-    #endif
+    class ImpliedTermStructure : public YieldTermStructure {
       public:
-        #ifndef QL_DISABLE_DEPRECATED
-        /*! \deprecated use the constructor without today's date; set the
-                        evaluation date through Settings::instance().
-        */
-        ImpliedTermStructure(const Handle<YieldTermStructure>&,
-                             const Date& newTodaysDate,
-                             const Date& newReferenceDate);
-        #endif
         ImpliedTermStructure(const Handle<YieldTermStructure>&,
                              const Date& referenceDate);
         //! \name YieldTermStructure interface
@@ -74,26 +61,10 @@ namespace QuantLib {
 
     // inline definitions
 
-    #ifndef QL_DISABLE_DEPRECATED
-    inline ImpliedTermStructure::ImpliedTermStructure(
-                                          const Handle<YieldTermStructure>& h,
-                                          const Date& todaysDate,
-                                          const Date& referenceDate)
-    : DiscountStructure(todaysDate, referenceDate),
-      originalCurve_(h) {
-        registerWith(originalCurve_);
-    }
-    #endif
-
     inline ImpliedTermStructure::ImpliedTermStructure(
                                           const Handle<YieldTermStructure>& h,
                                           const Date& referenceDate)
-    #ifdef QL_DISABLE_DEPRECATED
-    : YieldTermStructure(referenceDate),
-    #else
-    : DiscountStructure(referenceDate),
-    #endif
-      originalCurve_(h) {
+    : YieldTermStructure(referenceDate), originalCurve_(h) {
         registerWith(originalCurve_);
     }
 

@@ -14,14 +14,12 @@ include_HEADERS = \
     jpylibor.hpp \
     zarlibor.hpp \
     xibor.hpp \
-    indexmanager.hpp \
-    xibormanager.hpp
+    indexmanager.hpp
 
 EXTRA_DIST=makefile.mak
 
 libIndexes_la_SOURCES = \
     xibor.cpp \
-    indexmanager.cpp \
-    xibormanager.cpp
+    indexmanager.cpp
 
 noinst_LTLIBRARIES = libIndexes.la

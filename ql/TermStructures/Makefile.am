@@ -7,7 +7,6 @@ include_HEADERS = \
     all.hpp \
     compoundforward.hpp \
     discountcurve.hpp \
-    discountstructure.hpp \
     drifttermstructure.hpp \
     extendeddiscountcurve.hpp \
     flatforward.hpp \

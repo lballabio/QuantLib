@@ -21,7 +21,6 @@
 #include <ql/qldefines.hpp>
 #include <ql/Indexes/indexmanager.hpp>
 #include <ql/Indexes/xibor.hpp>
-#include <ql/Indexes/xibormanager.hpp>
 
 
 #endif

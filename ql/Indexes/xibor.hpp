@@ -45,24 +45,6 @@ namespace QuantLib {
             registerWith(termStructure_);
             registerWith(Settings::instance().evaluationDateGuard());
         }
-        #ifndef QL_DISABLE_DEPRECATED
-        /*! \deprecated use the constructor taking a Currency instance */
-        Xibor(const std::string& familyName,
-              Integer n, TimeUnit units, Integer settlementDays,
-              CurrencyTag currency,
-              const Calendar& calendar,
-              BusinessDayConvention convention,
-              const DayCounter& dayCounter,
-              const Handle<YieldTermStructure>& h)
-        : familyName_(familyName), n_(n), units_(units),
-          settlementDays_(settlementDays),
-          currency_(make_currency(currency)), calendar_(calendar),
-          convention_(convention),
-          dayCounter_(dayCounter), termStructure_(h) {
-            registerWith(termStructure_);
-            registerWith(Settings::instance().evaluationDateGuard());
-        }
-        #endif
         //! \name Index interface
         //@{
         Rate fixing(const Date& fixingDate) const;

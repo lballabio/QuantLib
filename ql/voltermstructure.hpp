@@ -53,20 +53,12 @@ namespace QuantLib {
                      by overriding the referenceDate() method.
         */
         BlackVolTermStructure();
-        #ifndef QL_DISABLE_DEPRECATED
-        //! initialize with a fixed reference date
-        BlackVolTermStructure(const Date& today, const Date& referenceDate);
-        #endif
         //! initialize with a fixed reference date
         BlackVolTermStructure(const Date& referenceDate);
         //! calculate the reference date based on the global evaluation date
         BlackVolTermStructure(Integer settlementDays, const Calendar&);
         //@}
         virtual ~BlackVolTermStructure() {}
-        #ifndef QL_DISABLE_DEPRECATED
-        //! the day counter used for date/time conversion
-        virtual DayCounter dayCounter() const = 0;
-        #endif
         //! \name Black Volatility
         //@{
         //! present (a.k.a spot) volatility
@@ -163,11 +155,6 @@ namespace QuantLib {
                      by overriding the referenceDate() method.
         */
         BlackVolatilityTermStructure();
-        #ifndef QL_DISABLE_DEPRECATED
-        //! initialize with a fixed reference date
-        BlackVolatilityTermStructure(const Date& today,
-                                     const Date& referenceDate);
-        #endif
         //! initialize with a fixed reference date
         BlackVolatilityTermStructure(const Date& referenceDate);
         //! calculate the reference date based on the global evaluation date
@@ -206,11 +193,6 @@ namespace QuantLib {
                      by overriding the referenceDate() method.
         */
         BlackVarianceTermStructure();
-        #ifndef QL_DISABLE_DEPRECATED
-        //! initialize with a fixed reference date
-        BlackVarianceTermStructure(const Date& today,
-                                   const Date& referenceDate);
-        #endif
         //! initialize with a fixed reference date
         BlackVarianceTermStructure(const Date& referenceDate);
         //! calculate the reference date based on the global evaluation date
@@ -248,20 +230,12 @@ namespace QuantLib {
                      by overriding the referenceDate() method.
         */
         LocalVolTermStructure();
-        #ifndef QL_DISABLE_DEPRECATED
-        //! initialize with a fixed reference date
-        LocalVolTermStructure(const Date& today, const Date& referenceDate);
-        #endif
         //! initialize with a fixed reference date
         LocalVolTermStructure(const Date& referenceDate);
         //! calculate the reference date based on the global evaluation date
         LocalVolTermStructure(Integer settlementDays, const Calendar&);
         //@}
         virtual ~LocalVolTermStructure() {}
-        #ifndef QL_DISABLE_DEPRECATED
-        //! the day counter used for date/time conversion
-        virtual DayCounter dayCounter() const = 0;
-        #endif
         //! \name Local Volatility
         //@{
         Volatility localVol(const Date& d,
@@ -312,12 +286,6 @@ namespace QuantLib {
     inline BlackVolTermStructure::BlackVolTermStructure(
                                                    const Date& referenceDate)
     : BaseTermStructure(referenceDate) {}
-
-    #ifndef QL_DISABLE_DEPRECATED
-    inline BlackVolTermStructure::BlackVolTermStructure(
-                                 const Date& today, const Date& referenceDate)
-    : BaseTermStructure(today,referenceDate) {}
-    #endif
 
     inline BlackVolTermStructure::BlackVolTermStructure(
                              Integer settlementDays, const Calendar& calendar)
@@ -401,12 +369,6 @@ namespace QuantLib {
                                                    const Date& referenceDate)
     : BlackVolTermStructure(referenceDate) {}
 
-    #ifndef QL_DISABLE_DEPRECATED
-    inline BlackVolatilityTermStructure::BlackVolatilityTermStructure(
-                                 const Date& today, const Date& referenceDate)
-    : BlackVolTermStructure(today,referenceDate) {}
-    #endif
-
     inline BlackVolatilityTermStructure::BlackVolatilityTermStructure(
                              Integer settlementDays, const Calendar& calendar)
     : BlackVolTermStructure(settlementDays,calendar) {}
@@ -433,12 +395,6 @@ namespace QuantLib {
     inline BlackVarianceTermStructure::BlackVarianceTermStructure(
                                                    const Date& referenceDate)
     : BlackVolTermStructure(referenceDate) {}
-
-    #ifndef QL_DISABLE_DEPRECATED
-    inline BlackVarianceTermStructure::BlackVarianceTermStructure(
-                                 const Date& today, const Date& referenceDate)
-    : BlackVolTermStructure(today,referenceDate) {}
-    #endif
 
     inline BlackVarianceTermStructure::BlackVarianceTermStructure(
                              Integer settlementDays, const Calendar& calendar)
@@ -467,12 +423,6 @@ namespace QuantLib {
     inline LocalVolTermStructure::LocalVolTermStructure(
                                                    const Date& referenceDate)
     : BaseTermStructure(referenceDate) {}
-
-    #ifndef QL_DISABLE_DEPRECATED
-    inline LocalVolTermStructure::LocalVolTermStructure(
-                                 const Date& today, const Date& referenceDate)
-    : BaseTermStructure(today,referenceDate) {}
-    #endif
 
     inline LocalVolTermStructure::LocalVolTermStructure(
                              Integer settlementDays, const Calendar& calendar)

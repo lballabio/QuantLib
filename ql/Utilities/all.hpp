@@ -20,11 +20,6 @@
 
 #include <ql/qldefines.hpp>
 
-#include <ql/Utilities/combiningiterator.hpp>
-#include <ql/Utilities/couplingiterator.hpp>
-#include <ql/Utilities/filteringiterator.hpp>
-#include <ql/Utilities/iteratorcategories.hpp>
-#include <ql/Utilities/processingiterator.hpp>
 #include <ql/Utilities/steppingiterator.hpp>
 
 

@@ -44,29 +44,6 @@ namespace QuantLib {
         const std::vector<boost::shared_ptr<RateHelper> >& instruments_;
     };
 
-    #ifndef QL_DISABLE_DEPRECATED
-    AffineTermStructure::AffineTermStructure(
-                                  const Date& todaysDate,
-                                  const Date& referenceDate,
-                                  const boost::shared_ptr<AffineModel>& model,
-                                  const DayCounter& dayCounter)
-    : YieldTermStructure(todaysDate,referenceDate), dayCounter_(dayCounter),
-      model_(model) {}
-
-    AffineTermStructure::AffineTermStructure(
-               const Date& todaysDate,
-               const Date& referenceDate,
-               const boost::shared_ptr<AffineModel>& model,
-               const std::vector<boost::shared_ptr<RateHelper> >& instruments,
-               const boost::shared_ptr<OptimizationMethod>& method,
-               const DayCounter& dayCounter)
-    : YieldTermStructure(todaysDate,referenceDate), dayCounter_(dayCounter),
-      model_(model), instruments_(instruments), method_(method) {
-        for (Size i=0; i<instruments_.size(); i++)
-            registerWith(instruments_[i]);
-    }
-    #endif
-
     AffineTermStructure::AffineTermStructure(
                                   const Date& referenceDate,
                                   const boost::shared_ptr<AffineModel>& model,

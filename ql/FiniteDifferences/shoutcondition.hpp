@@ -46,10 +46,6 @@ namespace QuantLib {
                        Rate rate);
         void applyTo(Array& a,
                      Time t) const;
-        #ifndef QL_DISABLE_DEPRECATED
-        /*! \deprecated use adjustValues() on the asset itself */
-        void applyTo(boost::shared_ptr<DiscretizedAsset> asset) const;
-        #endif
       private:
         Array intrinsicValues_;
         boost::shared_ptr<Payoff> payoff_;
@@ -58,12 +54,12 @@ namespace QuantLib {
     };
 
     inline ShoutCondition::ShoutCondition(Option::Type type,
-                                          Real strike, Time resTime, 
+                                          Real strike, Time resTime,
                                           Rate rate)
-    : payoff_(new PlainVanillaPayoff(type, strike)), 
+    : payoff_(new PlainVanillaPayoff(type, strike)),
       resTime_(resTime), rate_(rate) {}
 
-    inline ShoutCondition::ShoutCondition(const Array& intrinsicValues, 
+    inline ShoutCondition::ShoutCondition(const Array& intrinsicValues,
                                           Time resTime, Rate rate)
     : intrinsicValues_(intrinsicValues), resTime_(resTime), rate_(rate) {}
 
@@ -83,26 +79,6 @@ namespace QuantLib {
                               (*payoff_)(a[i]) * disc);
         }
     }
-
-    #ifndef QL_DISABLE_DEPRECATED
-    inline void ShoutCondition::applyTo(
-                            boost::shared_ptr<DiscretizedAsset> asset) const {
-        DiscountFactor disc = QL_EXP(-rate_ * (asset->time() - resTime_));
-
-        if (intrinsicValues_.size()!=0) {
-            QL_REQUIRE(intrinsicValues_.size() == asset->values().size(),
-                       "size mismatch");
-            for (Size i = 0; i < asset->values().size(); i++)
-                asset->values()[i] = QL_MAX(asset->values()[i],
-                                            disc * intrinsicValues_[i] );
-        } else {
-            for (Size i = 0; i < asset->values().size(); i++)
-                asset->values()[i] = QL_MAX(asset->values()[i],
-                                            (*payoff_)(asset->values()[i]) * 
-                                            disc);
-        }
-    }
-    #endif
 
 }
 

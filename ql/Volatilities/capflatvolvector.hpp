@@ -42,15 +42,6 @@ namespace QuantLib {
     */
     class CapVolatilityVector : public CapVolatilityStructure {
       public:
-        #ifndef QL_DISABLE_DEPRECATED
-        /*! \deprecated use one of the other constructors */
-        CapVolatilityVector(const Date& todaysDate,
-                            const Calendar& calendar,
-                            Integer settlementDays,
-                            const std::vector<Period>& lengths,
-                            const std::vector<Volatility>& volatilities,
-                            const DayCounter& dayCounter);
-        #endif
         CapVolatilityVector(const Date& settlementDate,
                             const std::vector<Period>& lengths,
                             const std::vector<Volatility>& volatilities,
@@ -74,33 +65,8 @@ namespace QuantLib {
         Volatility volatilityImpl(Time length, Rate strike) const;
     };
 
-    #ifndef QL_DISABLE_DEPRECATED
-    /*! \deprecated renamed to CapVolatilityVector */
-    typedef CapVolatilityVector CapFlatVolatilityVector;
-    #endif
-
 
     // inline definitions
-
-    #ifndef QL_DISABLE_DEPRECATED
-    inline CapVolatilityVector::CapVolatilityVector(
-                            const Date& today,
-                            const Calendar& calendar, Integer settlementDays,
-                            const std::vector<Period>& lengths,
-                            const std::vector<Volatility>& vols,
-                            const DayCounter& dayCounter)
-    : CapVolatilityStructure(today,
-                             calendar.advance(today,settlementDays,Days)),
-      dayCounter_(dayCounter), lengths_(lengths),
-      timeLengths_(lengths.size()+1), volatilities_(vols.size()+1) {
-        QL_REQUIRE(lengths.size() == vols.size(),
-                   "mismatch between number of cap lengths "
-                   "and cap volatilities");
-        volatilities_[0] = vols[0];
-        std::copy(vols.begin(),vols.end(),volatilities_.begin()+1);
-        interpolate();
-    }
-    #endif
 
     inline CapVolatilityVector::CapVolatilityVector(
                                           const Date& settlementDate,

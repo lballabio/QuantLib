@@ -43,13 +43,6 @@ namespace QuantLib {
             constructors.
         */
         //@{
-        #ifndef QL_DISABLE_DEPRECATED
-        /*! \deprecated use the constructor without today's date; set the
-                        evaluation date through Settings::instance().
-        */
-        ForwardRateStructure(const Date& todaysDate,
-                             const Date& referenceDate);
-        #endif
         ForwardRateStructure();
         ForwardRateStructure(const Date& referenceDate);
         ForwardRateStructure(Integer settlementDays, const Calendar&);
@@ -72,24 +65,11 @@ namespace QuantLib {
                      classes should implement their own zeroYield method.
         */
         virtual Rate zeroYieldImpl(Time) const;
-#ifndef QL_DISABLE_DEPRECATED
-        /*! Returns the forward rate at a specified compound frequency
-	    for the given date calculating it from the zero yield.
-        */
-        Rate compoundForwardImpl(Time, Integer) const;
-#endif
         //@}
     };
 
 
     // inline definitions
-
-    #ifndef QL_DISABLE_DEPRECATED
-    inline ForwardRateStructure::ForwardRateStructure(
-                                                    const Date& todaysDate,
-                                                    const Date& referenceDate)
-    : YieldTermStructure(todaysDate,referenceDate) {}
-    #endif
 
     inline ForwardRateStructure::ForwardRateStructure() {}
 
@@ -118,18 +98,6 @@ namespace QuantLib {
         Rate r = zeroYieldImpl(t);
         return DiscountFactor(QL_EXP(-r*t));
     }
-
-    #ifndef QL_DISABLE_DEPRECATED
-    inline Rate ForwardRateStructure::compoundForwardImpl(Time t,
-                                                          Integer f) const {
-        Rate zy = zeroYieldImpl(t);
-        if (f == 0)
-            return zy;
-        if (t <= 1.0/f)
-            return (QL_EXP(zy*t)-1.0)/t;
-        return (QL_EXP(zy*(1.0/f))-1.0)*f;
-    }
-    #endif
 
 }
 

@@ -17,7 +17,6 @@
 
 #include <ql/Indexes/xibor.hpp>
 #include <ql/Indexes/indexmanager.hpp>
-#include <ql/Indexes/xibormanager.hpp>
 
 namespace QuantLib {
 
@@ -60,16 +59,6 @@ namespace QuantLib {
         Date today = Settings::instance().evaluationDate();
         if (fixingDate < today) {
             // must have been fixed
-            #ifndef QL_DISABLE_DEPRECATED
-            if (XiborManager::hasHistory(name())) {
-                Rate pastFixing =
-                    XiborManager::getHistory(name())[fixingDate];
-                QL_REQUIRE(pastFixing != Null<Real>(),
-                           "Missing " + name() + " fixing for " +
-                           DateFormatter::toString(fixingDate));
-                return pastFixing;
-            }
-            #endif
             Rate pastFixing =
                 IndexManager::instance().getHistory(name())[fixingDate];
             QL_REQUIRE(pastFixing != Null<Real>(),
@@ -79,18 +68,6 @@ namespace QuantLib {
         }
         if (fixingDate == today) {
             // might have been fixed
-            #ifndef QL_DISABLE_DEPRECATED
-            try {
-                Rate pastFixing =
-                    XiborManager::getHistory(name())[fixingDate];
-                if (pastFixing != Null<Real>())
-                    return pastFixing;
-                else
-                    ;   // fall through
-            } catch (Error&) {
-                ;       // fall through
-            }
-            #endif
             try {
                 Rate pastFixing =
                     IndexManager::instance().getHistory(name())[fixingDate];

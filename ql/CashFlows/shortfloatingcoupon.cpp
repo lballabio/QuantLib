@@ -16,7 +16,6 @@
 */
 
 #include <ql/CashFlows/shortfloatingcoupon.hpp>
-#include <ql/Indexes/xibormanager.hpp>
 
 namespace QuantLib {
 

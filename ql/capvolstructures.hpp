@@ -43,21 +43,12 @@ namespace QuantLib {
                      by overriding the referenceDate() method.
         */
         CapVolatilityStructure();
-        #ifndef QL_DISABLE_DEPRECATED
-        //! initialize with a fixed today and reference date
-        CapVolatilityStructure(const Date& today,
-                               const Date& referenceDate);
-        #endif
         //! initialize with a fixed reference date
         CapVolatilityStructure(const Date& referenceDate);
         //! calculate the reference date based on the global evaluation date
         CapVolatilityStructure(Integer settlementDays, const Calendar&);
         //@}
         virtual ~CapVolatilityStructure() {}
-        #ifndef QL_DISABLE_DEPRECATED
-        //! the day counter used for date/time conversion
-        virtual DayCounter dayCounter() const = 0;
-        #endif
         //! \name Volatility
         //@{
         Volatility volatility(const Date& end, Rate strike) const;
@@ -70,11 +61,6 @@ namespace QuantLib {
         //! implements the actual volatility calculation in derived classes
         virtual Volatility volatilityImpl(Time length, Rate strike) const = 0;
     };
-
-    #ifndef QL_DISABLE_DEPRECATED
-    /*! \deprecated renamed to CapVolatilityStructure */
-    typedef CapVolatilityStructure CapFlatVolatilityStructure;
-    #endif
 
     //! Caplet/floorlet forward-volatility structure
     /*! This class is purely abstract and defines the interface of
@@ -93,21 +79,12 @@ namespace QuantLib {
                      by overriding the referenceDate() method.
         */
         CapletVolatilityStructure();
-        #ifndef QL_DISABLE_DEPRECATED
-        //! initialize with a fixed today and reference date
-        CapletVolatilityStructure(const Date& today,
-                                  const Date& referenceDate);
-        #endif
         //! initialize with a fixed reference date
         CapletVolatilityStructure(const Date& referenceDate);
         //! calculate the reference date based on the global evaluation date
         CapletVolatilityStructure(Integer settlementDays, const Calendar&);
         //@}
         virtual ~CapletVolatilityStructure() {}
-        #ifndef QL_DISABLE_DEPRECATED
-        //! the day counter used for date/time conversion
-        virtual DayCounter dayCounter() const = 0;
-        #endif
         //! \name Volatility
         //@{
         //! returns the volatility for a given start date and strike rate
@@ -120,11 +97,6 @@ namespace QuantLib {
         virtual Volatility volatilityImpl(Time length, Rate strike) const = 0;
     };
 
-    #ifndef QL_DISABLE_DEPRECATED
-    /*! \deprecated renamed to CapletVolatilityStructure */
-    typedef CapletVolatilityStructure CapletForwardVolatilityStructure;
-    #endif
-
 
     // inline definitions
 
@@ -133,12 +105,6 @@ namespace QuantLib {
     inline CapVolatilityStructure::CapVolatilityStructure(
                                                    const Date& referenceDate)
     : BaseTermStructure(referenceDate) {}
-
-    #ifndef QL_DISABLE_DEPRECATED
-    inline CapVolatilityStructure::CapVolatilityStructure(
-                                 const Date& today, const Date& referenceDate)
-    : BaseTermStructure(today,referenceDate) {}
-    #endif
 
     inline CapVolatilityStructure::CapVolatilityStructure(
                              Integer settlementDays, const Calendar& calendar)
@@ -167,12 +133,6 @@ namespace QuantLib {
     inline CapletVolatilityStructure::CapletVolatilityStructure(
                                                    const Date& referenceDate)
     : BaseTermStructure(referenceDate) {}
-
-    #ifndef QL_DISABLE_DEPRECATED
-    inline CapletVolatilityStructure::CapletVolatilityStructure(
-                                 const Date& today, const Date& referenceDate)
-    : BaseTermStructure(today,referenceDate) {}
-    #endif
 
     inline CapletVolatilityStructure::CapletVolatilityStructure(
                              Integer settlementDays, const Calendar& calendar)

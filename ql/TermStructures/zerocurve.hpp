@@ -33,13 +33,6 @@ namespace QuantLib {
     class ZeroCurve : public ZeroYieldStructure {
       public:
         // constructor
-        #ifndef QL_DISABLE_DEPRECATED
-        /*! \deprecated use the constructor without today's date */
-        ZeroCurve(const Date& todaysDate,
-                  const std::vector<Date>& dates,
-                  const std::vector<Rate>& yields,
-                  const DayCounter& dayCounter);
-        #endif
         ZeroCurve(const std::vector<Date>& dates,
                   const std::vector<Rate>& yields,
                   const DayCounter& dayCounter);

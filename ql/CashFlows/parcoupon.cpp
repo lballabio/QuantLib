@@ -17,7 +17,6 @@
 
 #include <ql/CashFlows/parcoupon.hpp>
 #include <ql/Indexes/indexmanager.hpp>
-#include <ql/Indexes/xibormanager.hpp>
 
 namespace QuantLib {
 
@@ -44,16 +43,6 @@ namespace QuantLib {
         Date fixing_date = fixingDate();
         if (fixing_date < today) {
             // must have been fixed
-            #ifndef QL_DISABLE_DEPRECATED
-            if (XiborManager::hasHistory(index_->name())) {
-                Rate pastFixing = XiborManager::getHistory(
-                                                 index_->name())[fixing_date];
-                QL_REQUIRE(pastFixing != Null<Real>(),
-                           "Missing " + index_->name() + " fixing for " +
-                           DateFormatter::toString(fixing_date));
-                return (pastFixing+spread_)*accrualPeriod()*nominal();
-            }
-            #endif
             Rate pastFixing = IndexManager::instance().getHistory(
                                                  index_->name())[fixing_date];
             QL_REQUIRE(pastFixing != Null<Real>(),
@@ -63,18 +52,6 @@ namespace QuantLib {
         }
         if (fixing_date == today) {
             // might have been fixed
-            #ifndef QL_DISABLE_DEPRECATED
-            try {
-                Rate pastFixing = XiborManager::getHistory(
-                                                 index_->name())[fixing_date];
-                if (pastFixing != Null<Real>())
-                    return (pastFixing+spread_)*accrualPeriod()*nominal();
-                else
-                    ;   // fall through
-            } catch (Error&) {
-                ;       // fall through
-            }
-            #endif
             try {
                 Rate pastFixing = IndexManager::instance().getHistory(
                                                  index_->name())[fixing_date];

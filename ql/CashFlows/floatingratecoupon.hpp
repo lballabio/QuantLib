@@ -52,10 +52,6 @@ namespace QuantLib {
         virtual Spread spread() const;
         //! fixing of the underlying index
         virtual Rate indexFixing() const = 0;
-        #ifndef QL_DISABLE_DEPRECATED
-        /*! \deprecated use rate() instead */
-        virtual Rate fixing() const = 0;
-        #endif
         //! fixing date
         virtual Date fixingDate() const = 0;
         //@}

@@ -20,20 +20,6 @@
 
 namespace QuantLib {
 
-    #ifndef QL_DISABLE_DEPRECATED
-    ExtendedDiscountCurve::ExtendedDiscountCurve(
-                                 const Date &todaysDate,
-                                 const std::vector<Date>& dates,
-                                 const std::vector<DiscountFactor>& discounts,
-                                 const Calendar& calendar,
-                                 const BusinessDayConvention conv,
-                                 const DayCounter& dayCounter)
-    : DiscountCurve(todaysDate,dates,discounts,dayCounter),
-      calendar_(calendar), conv_(conv) {
-        calibrateNodes();
-    }
-    #endif
-
     ExtendedDiscountCurve::ExtendedDiscountCurve(
                                  const std::vector<Date>& dates,
                                  const std::vector<DiscountFactor>& discounts,
@@ -78,7 +64,7 @@ namespace QuantLib {
                                                 discounts_.begin());
     }
 
-    boost::shared_ptr<YieldTermStructure>
+    boost::shared_ptr<CompoundForward>
     ExtendedDiscountCurve::reversebootstrap(Integer compounding) const {
         std::vector<Rate> forwards;
         Date compoundDate = calendar_.advance(referenceDate(),
@@ -122,7 +108,26 @@ namespace QuantLib {
                                             dayCounter()));
     }
 
-    #ifdef QL_DISABLE_DEPRECATED
+    Rate ExtendedDiscountCurve::compoundForwardImpl(Time t,
+                                                    Integer f) const {
+        if (f == 0) {
+            Rate zy = zeroYieldImpl(t);
+            if (f == 0)
+                return zy;
+            if (t <= 1.0/f)
+                return (QL_EXP(zy*t)-1.0)/t;
+            return (QL_EXP(zy*(1.0/f))-1.0)*f;
+        }
+        #ifdef QL_DISABLE_DEPRECATED
+        return forwardCurve(f)->forwardRate(t, t,
+                                            SimpleThenCompounded,
+                                            Frequency(f), true);
+        #else
+        return forwardCurve(f)->compoundForward(t,f);
+        #endif
+    }
+
+    #ifndef QL_DISABLE_DEPRECATED
     Rate ExtendedDiscountCurve::zeroYieldImpl(Time t) const {
         DiscountFactor df;
         if (t==0.0) {
@@ -136,25 +141,7 @@ namespace QuantLib {
     }
     #endif
 
-    Rate ExtendedDiscountCurve::compoundForwardImpl(Time t,
-                                                    Integer f) const {
-        if (f == 0) {
-            Rate zy = zeroYieldImpl(t);
-            if (f == 0)
-                return zy;
-            if (t <= 1.0/f)
-                return (QL_EXP(zy*t)-1.0)/t;
-            return (QL_EXP(zy*(1.0/f))-1.0)*f;
-        }
-        #ifdef QL_DISABLE_DEPRECATED
-        return forwardCurve(f)->forwardRate(t, t,
-            SimpleThenCompounded, Frequency(f), true);
-        #else
-        return forwardCurve(f)->compoundForward(t,f);
-        #endif
-    }
-
-    boost::shared_ptr<YieldTermStructure>
+    boost::shared_ptr<CompoundForward>
     ExtendedDiscountCurve::forwardCurve(Integer compounding) const {
         if (forwardCurveMap_.find(compounding) == forwardCurveMap_.end())
             forwardCurveMap_[compounding] = reversebootstrap(compounding);

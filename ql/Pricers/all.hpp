@@ -21,7 +21,6 @@
 #include <ql/qldefines.hpp>
 #include <ql/Pricers/core.hpp>
 
-#include <ql/Pricers/discretegeometricapo.hpp>
 #include <ql/Pricers/discretegeometricaso.hpp>
 #include <ql/Pricers/fdamericanoption.hpp>
 #include <ql/Pricers/fdbermudanoption.hpp>
@@ -34,7 +33,6 @@
 #include <ql/Pricers/fdshoutoption.hpp>
 #include <ql/Pricers/fdstepconditionoption.hpp>
 #include <ql/Pricers/mccliquetoption.hpp>
-#include <ql/Pricers/mcdiscretearithmeticapo.hpp>
 #include <ql/Pricers/mcdiscretearithmeticaso.hpp>
 #include <ql/Pricers/mceverest.hpp>
 #include <ql/Pricers/mchimalaya.hpp>

@@ -54,13 +54,6 @@ namespace QuantLib {
             return the appropriate date.
         */
         //@{
-        #ifndef QL_DISABLE_DEPRECATED
-        //! initialize with a fixed today's date and reference date
-        /*! \deprecated use the constructor without today's date; set the
-                        evaluation date through Settings::instance().
-        */
-        BaseTermStructure(const Date& todaysDate, const Date& referenceDate);
-        #endif
         //! default constructor
         /*! \warning term structures initialized by means of this
                      constructor must manage their own reference date
@@ -75,11 +68,6 @@ namespace QuantLib {
         virtual ~BaseTermStructure() {}
         //! \name Dates
         //@{
-        #ifndef QL_DISABLE_DEPRECATED
-        //! today's date
-        /*! \deprecated use Settings::instance().evaluationDate(). */
-        virtual const Date& todaysDate() const;
-        #endif
         //! the reference date, i.e., the date at which discount = 1
         virtual const Date& referenceDate() const;
         //! the calendar used for reference date calculation
@@ -96,9 +84,6 @@ namespace QuantLib {
         //! date/time conversion
         Time timeFromReference(const Date& date) const;
       private:
-        #ifndef QL_DISABLE_DEPRECATED
-        Date todaysDate_;
-        #endif
         mutable Date referenceDate_;
         bool moving_;
         mutable bool updated_;
@@ -108,13 +93,6 @@ namespace QuantLib {
 
 
     // inline definitions
-
-    #ifndef QL_DISABLE_DEPRECATED
-    inline BaseTermStructure::BaseTermStructure(const Date& todaysDate,
-                                                const Date& referenceDate)
-    : todaysDate_(todaysDate), referenceDate_(referenceDate),
-      moving_(false), updated_(true), settlementDays_(Null<Integer>()) {}
-    #endif
 
     inline BaseTermStructure::BaseTermStructure()
     : moving_(false), updated_(true), settlementDays_(Null<Integer>()) {}
@@ -129,12 +107,6 @@ namespace QuantLib {
       calendar_(calendar) {
         registerWith(Settings::instance().evaluationDateGuard());
     }
-
-    #ifndef QL_DISABLE_DEPRECATED
-    inline const Date& BaseTermStructure::todaysDate() const {
-        return todaysDate_;
-    }
-    #endif
 
     inline const Date& BaseTermStructure::referenceDate() const {
         if (!updated_) {

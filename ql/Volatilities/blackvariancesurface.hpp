@@ -46,15 +46,6 @@ namespace QuantLib {
       public:
         enum Extrapolation { ConstantExtrapolation,
                              InterpolatorDefaultExtrapolation };
-        #ifndef QL_DISABLE_DEPRECATED
-        BlackVarianceSurface(const Date& referenceDate,
-                             const std::vector<Date>& dates,
-                             const std::vector<Real>& strikes,
-                             const Matrix& blackVolMatrix,
-                             Extrapolation lowerExtrapolation,
-                             Extrapolation upperExtrapolation,
-                             const DayCounter& dayCounter);
-        #endif
         BlackVarianceSurface(const Date& referenceDate,
                              const std::vector<Date>& dates,
                              const std::vector<Real>& strikes,

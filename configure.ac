@@ -112,12 +112,6 @@ AC_CHECK_HEADERS([algorithm],,[AC_MSG_WARN([<algorithm> not found])])
 QL_CHECK_FUNC([min],[1,2],[algorithm])
 QL_CHECK_FUNC([max],[1,2],[algorithm])
 
-AC_CHECK_HEADERS([iterator],,[AC_MSG_WARN([<iterator> not found])])
-QL_CHECK_TEMPLATE_TYPE([iterator],[std::input_iterator_tag,double],
-                       [],[iterator])
-QL_CHECK_TEMPLATE_TYPE([iterator_traits],[double*],
-                       [],[iterator])
-
 # Check for Boost components
 QL_CHECK_BOOST
 

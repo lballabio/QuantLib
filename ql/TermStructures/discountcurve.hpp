@@ -22,7 +22,7 @@
 #ifndef quantlib_discount_curve_hpp
 #define quantlib_discount_curve_hpp
 
-#include <ql/TermStructures/discountstructure.hpp>
+#include <ql/termstructure.hpp>
 #include <ql/DayCounters/actual365fixed.hpp>
 #include <ql/Math/loglinearinterpolation.hpp>
 
@@ -35,21 +35,9 @@ namespace QuantLib {
 
         \ingroup yieldtermstructures
     */
-    class DiscountCurve
-    #ifdef QL_DISABLE_DEPRECATED
-        : public YieldTermStructure {
-    #else
-        : public DiscountStructure {
-    #endif
+    class DiscountCurve : public YieldTermStructure {
       public:
         // constructor
-        #ifndef QL_DISABLE_DEPRECATED
-        /*! \deprecated use the constructor without today's date. */
-        DiscountCurve(const Date& todaysDate,
-                      const std::vector<Date>& dates,
-                      const std::vector<DiscountFactor>& dfs,
-                      const DayCounter& dayCounter);
-        #endif
         DiscountCurve(const std::vector<Date>& dates,
                       const std::vector<DiscountFactor>& dfs,
                       const DayCounter& dayCounter);

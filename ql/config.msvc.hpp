@@ -133,16 +133,12 @@
 #elif (_MSC_VER == 1200)
 // move inside here configs specific to VC++ 6.0
 #  define QL_PATCH_MSVC6
-#  define GARBLED_REVERSE_ITERATOR
 #  define CHOKES_ON_TYPENAME
 #  define HAVE_INCOMPLETE_ITERATOR_SUPPORT
 #  define REQUIRES_DUMMY_RETURN
 #  define QL_LIB_TOOLSET "vc6"
 #elif (_MSC_VER == 1300)
 // move inside here configs specific to VC++ 7.0 (.Net)
-#  define QL_ITERATOR         std::iterator
-#  define QL_ITERATOR_TRAITS  std::iterator_traits
-#  define SPECIALIZE_MS_ITERATOR_TRAITS // always new ways to surprise us...
 // not sure the following two are really needed
 #  define HAVE_INCOMPLETE_ITERATOR_SUPPORT
 #  define REQUIRES_DUMMY_RETURN

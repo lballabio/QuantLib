@@ -20,7 +20,6 @@
 
 #include <ql/qldefines.hpp>
 
-#include <ql/TermStructures/discountstructure.hpp>
 #include <ql/TermStructures/forwardstructure.hpp>
 #include <ql/TermStructures/zeroyieldstructure.hpp>
 

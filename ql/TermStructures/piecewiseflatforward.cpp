@@ -44,44 +44,6 @@ namespace QuantLib {
         Size segment_;
     };
 
-    #ifndef QL_DISABLE_DEPRECATED
-    PiecewiseFlatForward::PiecewiseFlatForward(
-               const Date& todaysDate,
-               const Date& referenceDate,
-               const std::vector<boost::shared_ptr<RateHelper> >& instruments,
-               const DayCounter& dayCounter, Real accuracy)
-    : YieldTermStructure(todaysDate,referenceDate), dayCounter_(dayCounter),
-      instruments_(instruments), accuracy_(accuracy) {
-        checkInstruments();
-    }
-
-    PiecewiseFlatForward::PiecewiseFlatForward(
-                                           const Date& todaysDate,
-                                           const std::vector<Date>& dates,
-                                           const std::vector<Rate>& forwards,
-                                           const DayCounter& dayCounter)
-    : YieldTermStructure(todaysDate, dates[0]), dayCounter_(dayCounter),
-      times_(dates.size()), dates_(dates), discounts_(dates.size()),
-      forwards_(forwards), zeroYields_(dates.size()) {
-
-        QL_REQUIRE(!dates_.empty(), "no dates given");
-        QL_REQUIRE(dates_.size()==forwards_.size(),
-                   "mismatch between dates and forwards");
-        times_[0]=0.0;
-        discounts_[0]=1.0;
-        zeroYields_[0]=forwards_[0];
-        for (Size i=1; i<dates_.size(); i++) {
-            times_[i] = dayCounter.yearFraction(referenceDate(),
-                                                 dates_[i]);
-            zeroYields_[i] = (forwards_[i]*(times_[i]-times_[i-1])+
-                              zeroYields_[i-1]*times_[i-1])/times_[i];
-            discounts_[i] = QL_EXP(-zeroYields_[i]*times_[i]);
-        }
-        // we don't want to launch the boostrapping process
-        freeze();
-    }
-    #endif
-
     PiecewiseFlatForward::PiecewiseFlatForward(
                const Date& referenceDate,
                const std::vector<boost::shared_ptr<RateHelper> >& instruments,
@@ -233,18 +195,6 @@ namespace QuantLib {
         }
         QL_DUMMY_RETURN(Rate());
     }
-
-    #ifndef QL_DISABLE_DEPRECATED
-    Rate PiecewiseFlatForward::compoundForwardImpl(Time t, Integer compFreq)
-                                                                      const {
-		Rate zy = zeroYieldImpl(t);
-		if (compFreq == 0)
-            return zy;
-		if (t <= 1.0/compFreq)
-            return (QL_EXP(zy*t)-1.0)/t;
-		return (QL_EXP(zy*(1.0/compFreq))-1.0)*compFreq;
-	}
-    #endif
 
     Size PiecewiseFlatForward::referenceNode(Time t) const {
         if (t>=times_.back())

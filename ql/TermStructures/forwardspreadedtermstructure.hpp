@@ -47,9 +47,6 @@ namespace QuantLib {
         //@{
         DayCounter dayCounter() const { return originalCurve_->dayCounter(); }
         Calendar calendar() const;
-        #ifndef QL_DISABLE_DEPRECATED
-        const Date& todaysDate() const;
-        #endif
         const Date& referenceDate() const;
         Date maxDate() const;
         Time maxTime() const;
@@ -78,12 +75,6 @@ namespace QuantLib {
     inline Calendar ForwardSpreadedTermStructure::calendar() const {
         return originalCurve_->calendar();
     }
-
-    #ifndef QL_DISABLE_DEPRECATED
-    inline const Date& ForwardSpreadedTermStructure::todaysDate() const {
-        return originalCurve_->todaysDate();
-    }
-    #endif
 
     inline const Date& ForwardSpreadedTermStructure::referenceDate() const {
         return originalCurve_->referenceDate();

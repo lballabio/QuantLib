@@ -110,81 +110,9 @@ namespace QuantLib {
     bool operator!=(const Currency&, const Currency&);
 
 
-    #ifndef QL_DISABLE_DEPRECATED
-    //! Tags for known currencies
-    /*! \deprecated use Currency instead
-        \ingroup currencies
-    */
-    enum CurrencyTag {
-        ARS,    //!< Argentinian Peso
-        ATS,    //!< Austrian Schillings
-        AUD,    //!< Australian Dollar
-        BDT,    //!< Bangladesh Taka
-        BEF,    //!< Belgian Franc
-        BGL,    //!< Bulgarian Lev
-        BRL,    //!< Brazilian Real
-        BYB,    //!< Belarusian Ruble
-        CAD,    //!< Canadian Dollar
-        CHF,    //!< Swiss Franc
-        CLP,    //!< Chilean Peso
-        CNY,    //!< Chinese Yuan
-        COP,    //!< Colombian Peso
-        CYP,    //!< Cyprus Pound
-        CZK,    //!< Czech Koruna
-        DEM,    //!< German Mark
-        DKK,    //!< Danish Krone
-        EEK,    //!< Estonian Kroon
-        EUR,    //!< Euro
-        GBP,    //!< British Pound
-        GRD,    //!< Greek Drachma
-        HKD,    //!< Hong Kong Dollar
-        HUF,    //!< Hungarian Forint
-        ILS,    //!< Israeli Shekel
-        INR,    //!< Indian Rupee
-        IQD,    //!< Iraqi Dinar
-        IRR,    //!< Iranian Rial
-        ISK,    //!< Iceland Krona
-        ITL,    //!< Italian Lira
-        JPY,    //!< Japanese Yen
-        KRW,    //!< South-Korean Won
-        KWD,    //!< Kuwaiti dinar
-        LTL,    //!< Lithuanian Litas
-        LVL,    //!< Latvian Lats
-        MTL,    //!< Maltese Lira
-        MXP,    //!< Mexican Peso
-        NOK,    //!< Norwegian Kroner
-        NPR,    //!< Nepal Rupee
-        NZD,    //!< New Zealand Dollar
-        PKR,    //!< Pakistani Rupee
-        PLN,    //!< New Polish Zloty
-        ROL,    //!< Romanian Leu
-        SAR,    //!< Saudi Riyal
-        SEK,    //!< Swedish Krona
-        SGD,    //!< Singapore Dollar
-        SIT,    //!< Slovenian Tolar
-        SKK,    //!< Slovak Koruna
-        THB,    //!< Thai Baht
-        TRL,    //!< Turkish Lira
-        TTD,    //!< Trinidad & Tobago dollar
-        TWD,    //!< Taiwan Dollar
-        USD,    //!< US Dollar
-        VEB,    //!< Venezuelan Bolivar
-        ZAR     //!< South African Rand
-    };
-
-    //! Converts currency tags to Currency instances
-    /*! \deprecated to be used while migrating away from CurrencyTag.
-                    Use Currency directly.
-    */
-    Currency make_currency(CurrencyTag);
-    #endif
-
     //! format currencies for output
     class CurrencyFormatter {
       public:
-        #ifndef QL_DISABLE_DEPRECATED
-        static std::string toString(CurrencyTag c);
-        #endif
         static std::string toString(const Currency& c);
     };
 

@@ -52,11 +52,6 @@ namespace QuantLib {
         //@}
     };
 
-    #ifndef QL_DISABLE_DEPRECATED
-    /*! \deprecated use Short<ParCoupon> instead */
-    typedef Short<ParCoupon> ShortFloatingRateCoupon;
-    #endif
-
 
     // inline definitions
 

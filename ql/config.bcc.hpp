@@ -74,9 +74,6 @@
 #define QL_MIN       std::min
 #define QL_MAX       std::max
 
-#define QL_ITERATOR         std::iterator
-#define QL_ITERATOR_TRAITS  std::iterator_traits
-
 #define QL_PATCH_BORLAND
 
 #ifndef QL_DEBUG

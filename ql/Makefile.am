@@ -43,7 +43,6 @@ include_HEADERS = \
 	cashflow.hpp \
 	config.hpp \
 	currency.hpp \
-	dataformatters.hpp \
 	dataparsers.hpp \
 	date.hpp \
 	daycounter.hpp \
@@ -113,7 +112,6 @@ libQuantLib_la_SOURCES = \
     basicdataformatters.cpp \
     calendar.cpp \
     currency.cpp \
-    dataformatters.cpp \
     dataparsers.cpp \
     date.cpp \
 	discretizedasset.cpp \

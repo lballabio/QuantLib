@@ -9,8 +9,6 @@ include_HEADERS = \
 	centrallimitgaussianrng.hpp \
 	faurersg.hpp \
 	haltonrsg.hpp \
-	inversecumgaussianrng.hpp \
-	inversecumgaussianrsg.hpp \
 	inversecumulativerng.hpp \
 	inversecumulativersg.hpp \
 	knuthuniformrng.hpp \

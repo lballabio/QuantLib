@@ -21,55 +21,6 @@
 
 namespace QuantLib {
 
-    #ifndef QL_DISABLE_DEPRECATED
-    BlackVarianceSurface::BlackVarianceSurface(
-        const Date& referenceDate,
-        const std::vector<Date>& dates,
-        const std::vector<Real>& strikes,
-        const Matrix& blackVolMatrix,
-        BlackVarianceSurface::Extrapolation lowerEx,
-        BlackVarianceSurface::Extrapolation upperEx,
-        const DayCounter& dayCounter)
-    : BlackVarianceTermStructure(referenceDate), dayCounter_(dayCounter),
-      maxDate_(dates.back()), strikes_(strikes),
-      lowerExtrapolation_(lowerEx), upperExtrapolation_(upperEx) {
-
-        QL_REQUIRE(dates.size()==blackVolMatrix.columns(),
-                   "mismatch between date vector and vol matrix colums");
-        QL_REQUIRE(strikes_.size()==blackVolMatrix.rows(),
-                   "mismatch between money-strike vector and vol matrix rows");
-
-        QL_REQUIRE(dates[0]>=referenceDate,
-                   "cannot have dates[0] <= referenceDate");
-
-        Size j, i;
-        times_ = std::vector<Time>(dates.size()+1);
-        times_[0] = 0.0;
-        variances_ = Matrix(strikes_.size(), dates.size()+1);
-        for (i=0; i<blackVolMatrix.rows(); i++) {
-            variances_[i][0] = 0.0;
-        }
-        for (j=1; j<=blackVolMatrix.columns(); j++) {
-            times_[j] = timeFromReference(dates[j-1]);
-            QL_REQUIRE(times_[j]>times_[j-1],
-                       "dates must be sorted unique!");
-            for (i=0; i<blackVolMatrix.rows(); i++) {
-                variances_[i][j] = times_[j] *
-                    blackVolMatrix[i][j-1]*blackVolMatrix[i][j-1];
-                QL_REQUIRE(variances_[i][j]>=variances_[i][j-1],
-                           "variance must be non-decreasing");
-            }
-        }
-        // default: bilinear interpolation
-        #if defined(QL_PATCH_MSVC6)
-        setInterpolation(Linear());
-        #else
-        setInterpolation<Linear>();
-        #endif
-    }
-    #endif
-
-
     BlackVarianceSurface::BlackVarianceSurface(
                                   const Date& referenceDate,
                                   const std::vector<Date>& dates,

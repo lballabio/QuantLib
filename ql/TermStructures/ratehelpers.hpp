@@ -69,11 +69,6 @@ namespace QuantLib {
             instrument.
         */
         virtual Date latestDate() const = 0;
-        #ifndef QL_DISABLE_DEPRECATED
-        //! maturity date
-        /*! \deprecated renamed to latestDate() */
-        Date maturity() const { return latestDate(); }
-        #endif
         //@}
         //! \name Observer interface
         //@{

@@ -56,11 +56,6 @@ namespace QuantLib {
                     bool registerAsObserver = true);
         //! Checks if the contained shared pointer points to anything
         bool empty() const { return !h_; }
-        #ifndef QL_DISABLE_DEPRECATED
-        //! Checks if the contained shared pointer points to anything
-        /*! \deprecated use empty() instead */
-        bool isNull() const { return !h_; }
-        #endif
         //! Returns the contained shared pointer
         const boost::shared_ptr<Type>& currentLink() const { return h_; }
         //! Observer interface
@@ -97,17 +92,7 @@ namespace QuantLib {
         const boost::shared_ptr<Type>& operator->() const;
         //! Checks if the contained shared pointer points to anything
         bool empty() const;
-        #ifndef QL_DISABLE_DEPRECATED
-        //! Checks if the contained shared pointer points to anything
-        /*! \deprecated use empty() instead */
-        bool isNull() const;
-        #endif
     };
-
-    #ifndef QL_DISABLE_DEPRECATED
-    /*! \deprecated renamed to Handle */
-    #define RelinkableHandle Handle
-    #endif
 
     // inline definitions
 
@@ -165,13 +150,6 @@ namespace QuantLib {
     inline bool Handle<Type>::empty() const {
         return (**this).empty();
     }
-
-    #ifndef QL_DISABLE_DEPRECATED
-    template <class Type>
-    inline bool Handle<Type>::isNull() const {
-        return (**this).isNull();
-    }
-    #endif
 
 }
 

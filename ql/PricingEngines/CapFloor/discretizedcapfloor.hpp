@@ -30,13 +30,6 @@ namespace QuantLib {
 
     class DiscretizedCapFloor : public DiscretizedAsset {
       public:
-        #ifndef QL_DISABLE_DEPRECATED
-        /*! \deprecated use the constructor with a single argument */
-        DiscretizedCapFloor(const boost::shared_ptr<NumericalMethod>& method,
-                            const CapFloor::arguments& args)
-        : DiscretizedAsset(method), arguments_(args) {}
-        #endif
-
         DiscretizedCapFloor(const CapFloor::arguments& args)
         : arguments_(args) {}
 
