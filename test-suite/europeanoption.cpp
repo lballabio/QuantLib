@@ -30,7 +30,9 @@ using QuantLib::PricingEngines::EuropeanAnalyticalEngine;
 using QuantLib::PricingEngines::EuropeanBinomialEngine;
 using QuantLib::Instruments::VanillaOption;
 using QuantLib::TermStructures::FlatForward;
+using QuantLib::VolTermStructures::BlackConstantVol;
 using QuantLib::DayCounters::Actual360;
+using QuantLib::DayCounters::Actual365;
 using QuantLib::Calendars::TARGET;
 
 double EuropeanOptionTest::relativeError(double x1, double x2, 
@@ -45,10 +47,10 @@ Handle<Instrument> EuropeanOptionTest::makeEuropeanOption(
         Option::Type type,
         const Handle<MarketElement>& underlying,
         double strike,
-        const RelinkableHandle<TermStructure>& divCurve,
-        const RelinkableHandle<TermStructure>& rfCurve,
+        const Handle<TermStructure>& divCurve,
+        const Handle<TermStructure>& rfCurve,
         const Date& exDate,
-        const Handle<MarketElement>& volatility,
+        const Handle<BlackVolTermStructure>& volatility,
         EuropeanOptionTest::EngineType engineType) {
     Handle<PricingEngine> engine;
     switch (engineType) {
@@ -66,13 +68,15 @@ Handle<Instrument> EuropeanOptionTest::makeEuropeanOption(
                 EuropeanBinomialEngine::CoxRossRubinstein, 800));
         break;
     }
+    
     return Handle<Instrument>(
         new VanillaOption(type,
                           RelinkableHandle<MarketElement>(underlying),
                           strike,
-                          divCurve, rfCurve,
-                          exDate,
-                          RelinkableHandle<MarketElement>(volatility),
+                          RelinkableHandle<TermStructure>(divCurve), 
+                          RelinkableHandle<TermStructure>(rfCurve),
+                          EuropeanExercise(exDate),
+                          RelinkableHandle<BlackVolTermStructure>(volatility),
                           engine));
 }
 
@@ -84,7 +88,18 @@ Handle<TermStructure> EuropeanOptionTest::makeFlatCurve(
     return Handle<TermStructure>(
         new FlatForward(today,reference,
                         RelinkableHandle<MarketElement>(forward),
-                        Actual360()));
+                        Actual365()));
+}
+
+Handle<BlackVolTermStructure> EuropeanOptionTest::makeFlatVolatility(
+            const Handle<MarketElement>& volatility) {
+    Date today = Date::todaysDate();
+    Calendar calendar = TARGET();
+    Date reference = calendar.advance(today,2,Days);
+    return Handle<BlackVolTermStructure>(
+        new BlackConstantVol(reference,
+                             RelinkableHandle<MarketElement>(volatility),
+                             Actual365()));
 }
 
 std::string EuropeanOptionTest::typeToString(Option::Type type) {
@@ -114,7 +129,7 @@ void EuropeanOptionTest::testGreeks() {
     // test options
     Option::Type types[] = { Option::Call, Option::Put, Option::Straddle };
     double strikes[] = { 50.0, 99.5, 100.0, 100.5, 150.0 };
-    int lengths[] = { 1 };
+    int lengths[] = { 2 };
     
     // test data
     double underlyings[] = { 100.0 };
@@ -124,6 +139,7 @@ void EuropeanOptionTest::testGreeks() {
 
     Handle<SimpleMarketElement> underlying(new SimpleMarketElement(0.0));
     Handle<SimpleMarketElement> volatility(new SimpleMarketElement(0.0));
+    Handle<BlackVolTermStructure> volCurve = makeFlatVolatility(volatility);
     Handle<SimpleMarketElement> qRate(new SimpleMarketElement(0.0));
     Handle<TermStructure> divCurve = makeFlatCurve(qRate);
     Handle<SimpleMarketElement> rRate(new SimpleMarketElement(0.0));
@@ -139,17 +155,17 @@ void EuropeanOptionTest::testGreeks() {
           Date exDate = calendar.advance(today,lengths[k],Years);
           Handle<VanillaOption> option = 
               makeEuropeanOption(types[i],underlying,strikes[j],
-                                 divCurve,rfCurve,exDate,volatility);
+                                 divCurve,rfCurve,exDate,volCurve);
           // time-shifted exercise dates and options
           Date exDateP = calendar.advance(exDate,1,Days),
                exDateM = calendar.advance(exDate,-1,Days);
           Time dT = (exDateP-exDateM)/365.0;
           Handle<VanillaOption> optionP = 
               makeEuropeanOption(types[i],underlying,strikes[j],
-                                 divCurve,rfCurve,exDateP,volatility);
+                                 divCurve,rfCurve,exDateP,volCurve);
           Handle<VanillaOption> optionM = 
               makeEuropeanOption(types[i],underlying,strikes[j],
-                                 divCurve,rfCurve,exDateM,volatility);
+                                 divCurve,rfCurve,exDateM,volCurve);
 
           for (int l=0; l<LENGTH(underlyings); l++) {
             for (int m=0; m<LENGTH(qRates); m++) {
@@ -270,6 +286,7 @@ void EuropeanOptionTest::testImpliedVol() {
     
     Handle<SimpleMarketElement> underlying(new SimpleMarketElement(0.0));
     Handle<SimpleMarketElement> volatility(new SimpleMarketElement(0.0));
+    Handle<BlackVolTermStructure> volCurve = makeFlatVolatility(volatility);
     Handle<SimpleMarketElement> qRate(new SimpleMarketElement(0.0));
     Handle<TermStructure> divCurve = makeFlatCurve(qRate);
     Handle<SimpleMarketElement> rRate(new SimpleMarketElement(0.0));
@@ -284,7 +301,7 @@ void EuropeanOptionTest::testImpliedVol() {
           Date exDate = today.plusDays(lengths[k]);
           Handle<VanillaOption> option = 
               makeEuropeanOption(types[i],underlying,strikes[j],
-                                 divCurve,rfCurve,exDate,volatility);
+                                 divCurve,rfCurve,exDate,volCurve);
           
           for (int l=0; l<LENGTH(underlyings); l++) {
             for (int m=0; m<LENGTH(qRates); m++) {
@@ -329,7 +346,7 @@ void EuropeanOptionTest::testImpliedVol() {
                           // the difference might not matter
                           volatility->setValue(implVol);
                           double value2 = option->NPV();
-                          if (relativeError(value,value2,u) > 1.0e-6) {
+                          if (relativeError(value,value2,u) > tolerance) {
                               CPPUNIT_FAIL(
                                   typeToString(types[i]) + " option :\n"
                                   "    underlying value: "
@@ -378,6 +395,7 @@ void EuropeanOptionTest::testBinomialEngines() {
     
     Handle<SimpleMarketElement> underlying(new SimpleMarketElement(0.0));
     Handle<SimpleMarketElement> volatility(new SimpleMarketElement(0.0));
+    Handle<BlackVolTermStructure> volCurve = makeFlatVolatility(volatility);
     Handle<SimpleMarketElement> qRate(new SimpleMarketElement(0.0));
     Handle<TermStructure> divCurve = makeFlatCurve(qRate);
     Handle<SimpleMarketElement> rRate(new SimpleMarketElement(0.0));
@@ -393,13 +411,13 @@ void EuropeanOptionTest::testBinomialEngines() {
           Date exDate = calendar.advance(today,lengths[k],Years);
           Handle<VanillaOption> option1 = 
               makeEuropeanOption(types[i],underlying,strikes[j],
-                                 divCurve,rfCurve,exDate,volatility);
+                                 divCurve,rfCurve,exDate,volCurve);
           Handle<VanillaOption> option2 = 
               makeEuropeanOption(types[i],underlying,strikes[j],
-                                 divCurve,rfCurve,exDate,volatility,JR);
+                                 divCurve,rfCurve,exDate,volCurve,JR);
           Handle<VanillaOption> option3 = 
               makeEuropeanOption(types[i],underlying,strikes[j],
-                                 divCurve,rfCurve,exDate,volatility,CRR);
+                                 divCurve,rfCurve,exDate,volCurve,CRR);
           
           for (int l=0; l<LENGTH(underlyings); l++) {
             for (int m=0; m<LENGTH(qRates); m++) {

@@ -36,13 +36,15 @@ class EuropeanOptionTest : public CppUnit::TestFixture {
         QL::Option::Type type,
         const QL::Handle<QL::MarketElement>& underlying,
         double strike,
-        const QL::RelinkableHandle<QL::TermStructure>& divCurve,
-        const QL::RelinkableHandle<QL::TermStructure>& rfCurve,
+        const QL::Handle<QL::TermStructure>& divCurve,
+        const QL::Handle<QL::TermStructure>& rfCurve,
         const QL::Date& exDate,
-        const QL::Handle<QL::MarketElement>& volatility,
+        const QL::Handle<QL::BlackVolTermStructure>& volatility,
         EngineType engineType = Analytic);
     QL::Handle<QL::TermStructure> makeFlatCurve(
         const QL::Handle<QL::MarketElement>& forward);
+    QL::Handle<QL::BlackVolTermStructure> makeFlatVolatility(
+        const QL::Handle<QL::MarketElement>& volatility);
     std::string typeToString(QL::Option::Type);
 };
 
