@@ -1,7 +1,6 @@
 
 /*
  Copyright (C) 2003, 2004 Ferdinando Ametrano
- Copyright (C) 2003, 2004 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -16,26 +15,20 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file analyticamericanengine.hpp
-    \brief analytic American option engine
+/*! \file choleskydecomposition.hpp
+    \brief Cholesky decomposition
 */
 
-#ifndef quantlib_analytic_american_engine_hpp
-#define quantlib_analytic_american_engine_hpp
+#ifndef quantlib_cholesky_decomposition_hpp
+#define quantlib_cholesky_decomposition_hpp
 
-#include <ql/Instruments/vanillaoption.hpp>
+#include <ql/Math/matrix.hpp>
 
 namespace QuantLib {
 
-    /*! Pricing engine for American vanilla options with digital payoff
-        using analytic formulae
-
-        \todo add more greeks (as of now only delta and rho available)
-    */
-    class AnalyticAmericanEngine : public VanillaEngine {
-      public:
-        void calculate() const;
-    };
+    /*! \relates Matrix */
+    const Disposable<Matrix> CholeskyDecomposition(const Matrix& m,
+                                                   bool flexible = false);
 
 }
 

@@ -19,7 +19,7 @@
 #include "covariance.hpp"
 #include "utilities.hpp"
 #include <ql/MonteCarlo/getcovariance.hpp>
-#include <ql/Math/symmetricschurdecomposition.hpp>
+#include <ql/Math/pseudosqrt.hpp>
 #include <ql/Math/sequencestatistics.hpp>
 #include <cppunit/TestSuite.h>
 #include <cppunit/TestCaller.h>
@@ -101,12 +101,10 @@ void CovarianceTest::testCovariance() {
         s.add(temp, weights[i]);
     }
 
-
     std::vector<double> m = s.mean();
     std::vector<double> std = s.standardDeviation();
     Matrix calcCov  =  s.covariance();
     Matrix calcCor  =  s.correlation();
-
 
     Matrix expCov(n, n);
     for (i=0; i<n; i++) {
@@ -140,11 +138,8 @@ void CovarianceTest::testCovariance() {
                              + DoubleFormatter::toString(calculated,16) + "\n"
                              "    expected:   "
                              + DoubleFormatter::toString(expected,16));
-        
         }
     }
-
-
 
     calcCov = getCovariance(std.begin(), std.end(), expCor);
 

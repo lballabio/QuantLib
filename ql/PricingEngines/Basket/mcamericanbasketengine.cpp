@@ -25,7 +25,6 @@
 #include <ql/PricingEngines/Basket/mcamericanbasketengine.hpp>
 #include <ql/PricingEngines/Vanilla/americanmcengines.hpp>
 
-
 namespace QuantLib {
 
     namespace {
@@ -138,20 +137,19 @@ namespace QuantLib {
         class MyPolynomial : public BasisFunction {
           private:
             double factor_;
-            Handle<std::vector<Handle<BasisFunction> > >
-                basisFunctions_;
+            std::vector<Handle<BasisFunction> > basisFunctions_;
           public:
             MyPolynomial(double factor, 
-                         const Handle<std::vector<Handle<BasisFunction> > >& 
-                                        basisFunctions)
+                         const std::vector<Handle<BasisFunction> >& 
+                                                           basisFunctions)
             : factor_(factor), basisFunctions_(basisFunctions) {}
             double calculate(const std::vector<double>& x) const;
         };
 
         double MyPolynomial::calculate(const std::vector<double>& x) const {
             double result = 0.0;
-            for (Size j = 0; j<basisFunctions_->size(); j++) {
-                result =+ (basisFunctions_->at(j))->calculate(x);
+            for (Size j = 0; j<basisFunctions_.size(); j++) {
+                result =+ (basisFunctions_[j])->calculate(x);
             }
             return factor_*result;
         }
@@ -254,20 +252,18 @@ namespace QuantLib {
                 Handle<BasisFunction> legendre_3(new Polynomial 
                     (0.5, Handle<BasisFunction> (new Linear(0, -3)), 
                             Handle<BasisFunction> (new Cube(0, 5))));
-                
-                Handle<std::vector<Handle<BasisFunction> > > basis4(new
-                    std::vector<Handle<BasisFunction> > (3) );
-                basis4->at(0) = Handle<BasisFunction> (new Constant(3));
-                basis4->at(1) = Handle<BasisFunction> (new Square(0, -30));
-                basis4->at(2) = Handle<BasisFunction> (new BasisPower(0, 4, 35));
+
+                std::vector<Handle<BasisFunction> > basis4(3);
+                basis4[0] = Handle<BasisFunction> (new Constant(3));
+                basis4[1] = Handle<BasisFunction> (new Square(0, -30));
+                basis4[2] = Handle<BasisFunction> (new BasisPower(0, 4, 35));
                 Handle<BasisFunction> legendre_4(
                         new MyPolynomial(0.125, basis4));
 
-                Handle<std::vector<Handle<BasisFunction> > > basis5(new
-                    std::vector<Handle<BasisFunction> > (3) );                
-                basis5->at(0) = Handle<BasisFunction> (new Linear(0,15));
-                basis5->at(1) = Handle<BasisFunction> (new Cube(0, -70));
-                basis5->at(2) = Handle<BasisFunction> (new BasisPower(0, 5, 63));
+                std::vector<Handle<BasisFunction> > basis5(3);
+                basis5[0] = Handle<BasisFunction> (new Linear(0,15));
+                basis5[1] = Handle<BasisFunction> (new Cube(0, -70));
+                basis5[2] = Handle<BasisFunction> (new BasisPower(0, 5, 63));
                 Handle<BasisFunction> legendre_5(
                         new MyPolynomial(0.125, basis5));
 
@@ -285,20 +281,18 @@ namespace QuantLib {
                     (1, Handle<BasisFunction> (new Constant(1)), 
                         Handle<BasisFunction> (new Linear(0, -1))));
 
-                Handle<std::vector<Handle<BasisFunction> > > basis2(new
-                    std::vector<Handle<BasisFunction> > (3) );
-                basis2->at(0) = Handle<BasisFunction> (new Constant(2));
-                basis2->at(1) = Handle<BasisFunction> (new Linear(0, -4));
-                basis2->at(2) = Handle<BasisFunction> (new Square(0, 1));
+                std::vector<Handle<BasisFunction> > basis2(3);
+                basis2[0] = Handle<BasisFunction> (new Constant(2));
+                basis2[1] = Handle<BasisFunction> (new Linear(0, -4));
+                basis2[2] = Handle<BasisFunction> (new Square(0, 1));
                 Handle<BasisFunction> laguerre_2(
                     new MyPolynomial(0.5, basis2));
 
-                Handle<std::vector<Handle<BasisFunction> > > basis3(new
-                    std::vector<Handle<BasisFunction> > (4) );
-                basis3->at(0) = Handle<BasisFunction> (new Constant(6));
-                basis3->at(1) = Handle<BasisFunction> (new Linear(0, -18));
-                basis3->at(2) = Handle<BasisFunction> (new Square(0, 9));
-                basis3->at(3) = Handle<BasisFunction> (new Cube(0, -1));
+                std::vector<Handle<BasisFunction> > basis3(4);
+                basis3[0] = Handle<BasisFunction> (new Constant(6));
+                basis3[1] = Handle<BasisFunction> (new Linear(0, -18));
+                basis3[2] = Handle<BasisFunction> (new Square(0, 9));
+                basis3[3] = Handle<BasisFunction> (new Cube(0, -1));
                 Handle<BasisFunction> laguerre_3(
                     new MyPolynomial(1.0/6.0, basis3));
 
@@ -624,12 +618,37 @@ namespace QuantLib {
         results_.errorEstimate = stats.errorEstimate();
     }
 
-    // put all the antithetic asset prices into a vector.
+
+    // put all the asset prices into a vector.
     // s0 is not included in the vector
-    std::vector<double> getAntiAssetSequence (double s0, const Path& path) {
+    std::vector<double> getAssetSequence(double s0, const Path& path) {
         Size n = path.size();
         QL_REQUIRE(n>0,
-                   "AmericanMCEngine: the path cannot be empty");
+                   "MCAmericanBasketEngine: the path cannot be empty");
+
+        std::vector<double> asset(n);
+        asset[0] = s0;
+
+        double log_drift, log_random;
+        log_drift = path.drift()[0];
+        log_random = path.diffusion()[0];
+        asset[0] = s0*QL_EXP(log_drift + log_random);
+
+        for (Size i = 1; i < n; i++) {
+            log_drift = path.drift()[i];
+            log_random = path.diffusion()[i];
+            asset[i] = asset[i-1]*QL_EXP(log_drift + log_random);
+        }
+
+        return asset;
+    }
+
+    // put all the antithetic asset prices into a vector.
+    // s0 is not included in the vector
+    std::vector<double> getAntiAssetSequence(double s0, const Path& path) {
+        Size n = path.size();
+        QL_REQUIRE(n>0,
+                   "MCAmericanBasketEngine: the path cannot be empty");
 
         std::vector<double> asset(n);
         asset[0] = s0;

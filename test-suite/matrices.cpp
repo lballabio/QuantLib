@@ -18,6 +18,7 @@
 #include "matrices.hpp"
 #include "utilities.hpp"
 #include <ql/Math/matrix.hpp>
+#include <ql/Math/pseudosqrt.hpp>
 #include <ql/Math/svd.hpp>
 #include <ql/Math/symmetricschurdecomposition.hpp>
 #include <ql/dataformatters.hpp>

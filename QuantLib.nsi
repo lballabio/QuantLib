@@ -3,7 +3,7 @@
 
 SetCompressor lzma
 
-!define VER_NUMBER "0.3.5a1"
+!define VER_NUMBER "0.3.5"
 
 # HEADER CONFIGURATION COMMANDS
 Name "QuantLib"

@@ -12,6 +12,7 @@ include_HEADERS = \
 	binomialdistribution.hpp \
 	bivariatenormaldistribution.hpp \
 	chisquaredistribution.hpp \
+	choleskydecomposition.hpp \
 	comparison.hpp \
 	cubicspline.hpp \
 	discrepancystatistics.hpp \
@@ -34,6 +35,7 @@ include_HEADERS = \
 	normaldistribution.hpp \
 	poissondistribution.hpp \
 	primenumbers.hpp \
+	pseudosqrt.hpp \
 	riskstatistics.hpp \
 	segmentintegral.hpp \
 	sequencestatistics.hpp \
@@ -50,6 +52,7 @@ libMath_la_SOURCES = \
 	beta.cpp \
 	bivariatenormaldistribution.cpp \
 	chisquaredistribution.cpp \
+	choleskydecomposition.cpp \
 	discrepancystatistics.cpp \
 	errorfunction.cpp \
 	factorial.cpp \
@@ -57,9 +60,9 @@ libMath_la_SOURCES = \
 	generalstatistics.cpp \
 	incompletegamma.cpp \
 	incrementalstatistics.cpp \
-	matrix.cpp \
 	normaldistribution.cpp \
 	primenumbers.cpp \
+	pseudosqrt.cpp \
 	svd.cpp \
 	symmetricschurdecomposition.cpp
 

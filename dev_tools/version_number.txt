@@ -10,7 +10,7 @@ n  is an ordinal number; 0 is only allowed when l equals f
 e.g. R000300a2 stands for Release 0.3.1a2
 e.g. R000301f0 stands for Release 0.3.1
 
-The current version number is 0.3.5a1- 000305a1
+The current version number is 0.3.5- 000305f0
 
 This version number is in:
     QuantLib/dev_tools/version_number.txt,

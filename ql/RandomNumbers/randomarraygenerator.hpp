@@ -23,6 +23,7 @@
 #define quantlib_montecarlo_random_array_generator_h
 
 #include <ql/MonteCarlo/sample.hpp>
+#include <ql/Math/pseudosqrt.hpp>
 #include <ql/dataformatters.hpp>
 
 namespace QuantLib {

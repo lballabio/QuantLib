@@ -235,23 +235,6 @@ int main(int argc, char* argv[])
              << DoubleFormatter::toString(relativeDiscrepancy, 6)
              << std::endl;
 
-        // Least Squares Monte Carlo: Longstaff Schwartz
-        method = "LSMC (monomial)";
-        Size mcSeed = 12345;
-        Size nSamples = 5000;
-        timeSteps = 100;
-        option.setPricingEngine(Handle<PricingEngine>(
-            new AmericanMCVanillaEngine(nSamples, timeSteps, mcSeed)));
-        value = option.NPV();
-        discrepancy = QL_FABS(value-rightValue);
-        relativeDiscrepancy = discrepancy/rightValue;
-        std::cout << method << "\t"
-            << DoubleFormatter::toString(value, 6) << "\t"
-            << "N/A\t\t"
-            << DoubleFormatter::toString(discrepancy, 6) << "\t"
-            << DoubleFormatter::toString(relativeDiscrepancy, 6)
-            << std::endl;
-
         return 0;
     } catch (std::exception& e) {
         std::cout << e.what() << std::endl;

@@ -16,17 +16,17 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file analyticamericanengine.cpp
-    \brief Digital payoff American option engine using analytic formulas
+/*! \file analyticdigitalamericanengine.cpp
+    \brief Digital-payoff American option engine using analytic formulas
 */
 
-#include <ql/PricingEngines/Vanilla/analyticamericanengine.hpp>
+#include <ql/PricingEngines/Vanilla/analyticdigitalamericanengine.hpp>
 #include <ql/PricingEngines/americanpayoffathit.hpp>
 #include <ql/PricingEngines/americanpayoffatexpiry.hpp>
 
 namespace QuantLib {
 
-    void AnalyticAmericanEngine::calculate() const {
+    void AnalyticDigitalAmericanEngine::calculate() const {
 
         QL_REQUIRE(arguments_.exercise->type() == Exercise::American,
                    "AnalyticAmericanEngine::calculate() : "
@@ -35,14 +35,15 @@ namespace QuantLib {
         #if defined(HAVE_BOOST)
         Handle<AmericanExercise> ex = 
             boost::dynamic_pointer_cast<AmericanExercise>(arguments_.exercise);
-        QL_REQUIRE(ex, "AnalyticAmericanEngine: non-American exercise given");
+        QL_REQUIRE(ex, "AnalyticDigitalAmericanEngine: "
+                   "non-American exercise given");
         #else
         Handle<AmericanExercise> ex = arguments_.exercise;
         #endif
 
         QL_REQUIRE(ex->dates()[0]<=
             arguments_.blackScholesProcess->volTS->referenceDate(),
-                   "AnalyticAmericanEngine::calculate() : "
+                   "AnalyticDigitalAmericanEngine::calculate() : "
                    "American option with window exercise not handled yet");
 
 
@@ -50,38 +51,36 @@ namespace QuantLib {
         Handle<StrikedTypePayoff> payoff =
             boost::dynamic_pointer_cast<StrikedTypePayoff>(arguments_.payoff);
         QL_REQUIRE(payoff,
-                   "AnalyticEuropeanEngine: non-striked payoff given");
+                   "AnalyticDigitalEuropeanEngine: non-striked payoff given");
         #else
         Handle<StrikedTypePayoff> payoff = arguments_.payoff;
         #endif
 
-        double spot = arguments_.blackScholesProcess->stateVariable->value();
-        double variance = arguments_.blackScholesProcess->volTS->blackVariance(
-            ex->lastDate(), payoff->strike());
-        Rate dividendDiscount = arguments_.blackScholesProcess->dividendTS->discount(
-            ex->lastDate());
-        Rate riskFreeDiscount = arguments_.blackScholesProcess->riskFreeTS->discount(
-            ex->lastDate());
+        const Handle<BlackScholesStochasticProcess>& process = 
+            arguments_.blackScholesProcess;
+
+        double spot = process->stateVariable->value();
+        double variance = process->volTS->blackVariance(ex->lastDate(), 
+                                                        payoff->strike());
+        Rate dividendDiscount = process->dividendTS->discount(ex->lastDate());
+        Rate riskFreeDiscount = process->riskFreeTS->discount(ex->lastDate());
 
         if(ex->payoffAtExpiry()) {
             AmericanPayoffAtExpiry pricer(spot, riskFreeDiscount,
-                dividendDiscount, variance, payoff);
-
+                                          dividendDiscount, variance, payoff);
             results_.value = pricer.value();
         } else {
             AmericanPayoffAtHit pricer(spot, riskFreeDiscount,
-                dividendDiscount, variance, payoff);
-
+                                       dividendDiscount, variance, payoff);
             results_.value = pricer.value();
             results_.delta = pricer.delta();
             results_.gamma = pricer.gamma();
 
-            Time t = arguments_.blackScholesProcess->riskFreeTS->dayCounter().yearFraction(
-                arguments_.blackScholesProcess->riskFreeTS->referenceDate(),
-                arguments_.exercise->lastDate());
+            Time t = process->riskFreeTS->dayCounter().yearFraction(
+                                         process->riskFreeTS->referenceDate(),
+                                         arguments_.exercise->lastDate());
             results_.rho = pricer.rho(t);
         }
-
     }
 
 }

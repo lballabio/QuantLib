@@ -19,8 +19,7 @@
 #define quantlib_pricing_engines_vanilla_all_hpp
 
 #include <ql/qldefines.hpp>
-#include <ql/PricingEngines/Vanilla/americanmcengines.hpp>
-#include <ql/PricingEngines/Vanilla/analyticamericanengine.hpp>
+#include <ql/PricingEngines/Vanilla/analyticdigitalamericanengine.hpp>
 #include <ql/PricingEngines/Vanilla/analyticeuropeanengine.hpp>
 #include <ql/PricingEngines/Vanilla/baroneadesiwhaleyengine.hpp>
 #include <ql/PricingEngines/Vanilla/binomialengine.hpp>
@@ -30,5 +29,6 @@
 #include <ql/PricingEngines/Vanilla/mcdigitalengine.hpp>
 #include <ql/PricingEngines/Vanilla/mceuropeanengine.hpp>
 #include <ql/PricingEngines/Vanilla/mcvanillaengine.hpp>
+
 
 #endif

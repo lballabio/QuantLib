@@ -31,16 +31,19 @@
 
 namespace QuantLib {
 
-    //typedef std::vector<std::vector<double> > AssetGrid;
-
-    //typedef std::vector<std::vector<double> > PayoffGrid;
-
     //! least-square Monte Carlo engine
+    /*! \warning This method is intrinsically weak for out-of-the-money
+                 options.
+        \bug This engine does not yet work for put options. More problems
+             might surface.
+    */
     class MCAmericanBasketEngine : public BasketEngine {
       public:
         MCAmericanBasketEngine(Size requiredSamples,
                                 Size timeSteps,
-                                long seed = 0);
+                                long seed = 0)
+        : requiredSamples_(requiredSamples), timeSteps_(timeSteps),
+          seed_(seed) {}
         void calculate() const;
       private:
         Size requiredSamples_;
@@ -48,18 +51,11 @@ namespace QuantLib {
         long seed_;
     };
 
-    // constructor
-    inline
-    MCAmericanBasketEngine::MCAmericanBasketEngine(Size requiredSamples,
-                                                     Size timeSteps,
-                                                     long seed) 
-    : requiredSamples_(requiredSamples), timeSteps_(timeSteps),
-      seed_(seed) {}
 
     // put all the asset prices into a vector.
     // s0 is not included in the vector
     std::vector<double> getAssetSequence(double s0, const Path& path);
-    
+
     // put all the antithetic asset prices into a vector.
     // s0 is not included in the vector
     std::vector<double> getAntiAssetSequence(double s0, const Path& path);

@@ -22,7 +22,7 @@
 #include <ql/DayCounters/actual360.hpp>
 #include <ql/Instruments/vanillaoption.hpp>
 #include <ql/PricingEngines/Vanilla/analyticeuropeanengine.hpp>
-#include <ql/PricingEngines/Vanilla/analyticamericanengine.hpp>
+#include <ql/PricingEngines/Vanilla/analyticdigitalamericanengine.hpp>
 #include <ql/PricingEngines/Vanilla/mcdigitalengine.hpp>
 #include <ql/TermStructures/flatforward.hpp>
 #include <ql/Volatilities/blackconstantvol.hpp>
@@ -215,7 +215,7 @@ void DigitalOptionTest::testCashAtHitOrNothingAmericanValues() {
     Handle<TermStructure> rTS = makeFlatCurve(rRate, dc);
     Handle<SimpleQuote> vol(new SimpleQuote(0.0));
     Handle<BlackVolTermStructure> volTS = makeFlatVolatility(vol, dc);
-    Handle<PricingEngine> engine(new AnalyticAmericanEngine);
+    Handle<PricingEngine> engine(new AnalyticDigitalAmericanEngine);
 
     Date today = Date::todaysDate();
 
@@ -277,7 +277,7 @@ void DigitalOptionTest::testAssetAtHitOrNothingAmericanValues() {
     Handle<TermStructure> rTS = makeFlatCurve(rRate, dc);
     Handle<SimpleQuote> vol(new SimpleQuote(0.25));
     Handle<BlackVolTermStructure> volTS = makeFlatVolatility(vol, dc);
-    Handle<PricingEngine> engine(new AnalyticAmericanEngine);
+    Handle<PricingEngine> engine(new AnalyticDigitalAmericanEngine);
 
     Date today = Date::todaysDate();
 
@@ -334,7 +334,7 @@ void DigitalOptionTest::testCashAtExpiryOrNothingAmericanValues() {
     Handle<TermStructure> rTS = makeFlatCurve(rRate, dc);
     Handle<SimpleQuote> vol(new SimpleQuote(0.25));
     Handle<BlackVolTermStructure> volTS = makeFlatVolatility(vol, dc);
-    Handle<PricingEngine> engine(new AnalyticAmericanEngine);
+    Handle<PricingEngine> engine(new AnalyticDigitalAmericanEngine);
 
     Date today = Date::todaysDate();
 
@@ -397,7 +397,7 @@ void DigitalOptionTest::testAssetAtExpiryOrNothingAmericanValues() {
     Handle<TermStructure> rTS = makeFlatCurve(rRate, dc);
     Handle<SimpleQuote> vol(new SimpleQuote(0.25));
     Handle<BlackVolTermStructure> volTS = makeFlatVolatility(vol, dc);
-    Handle<PricingEngine> engine(new AnalyticAmericanEngine);
+    Handle<PricingEngine> engine(new AnalyticDigitalAmericanEngine);
 
     Date today = Date::todaysDate();
 
@@ -484,7 +484,7 @@ void DigitalOptionTest::testCashAtHitOrNothingAmericanGreeks() {
         new AnalyticEuropeanEngine());
 
     Handle<PricingEngine> amEngine = Handle<PricingEngine>(
-        new AnalyticAmericanEngine());
+        new AnalyticDigitalAmericanEngine());
 
     Handle<PricingEngine> engines[] = { euroEngine, amEngine };
 
@@ -675,7 +675,7 @@ void DigitalOptionTest::testMCCashAtHit() {
         double calculatedLD = opt.NPV();
         std::cout << "\n MCLD: " << DoubleFormatter::toString(calculatedLD) << " with samples: " << requiredSamples;
 
-        Handle<PricingEngine> amEngine(new AnalyticAmericanEngine());
+        Handle<PricingEngine> amEngine(new AnalyticDigitalAmericanEngine());
         opt.setPricingEngine(amEngine);
         double calcAnalytic = opt.NPV();
         std::cout << "\n anal: " << DoubleFormatter::toString(calcAnalytic);

@@ -26,6 +26,7 @@
 #include <ql/Math/bilinearinterpolation.hpp>
 #include <ql/Math/binomialdistribution.hpp>
 #include <ql/Math/chisquaredistribution.hpp>
+#include <ql/Math/choleskydecomposition.hpp>
 #include <ql/Math/cubicspline.hpp>
 #include <ql/Math/discrepancystatistics.hpp>
 #include <ql/Math/errorfunction.hpp>
@@ -45,6 +46,7 @@
 #include <ql/Math/normaldistribution.hpp>
 #include <ql/Math/poissondistribution.hpp>
 #include <ql/Math/primenumbers.hpp>
+#include <ql/Math/pseudosqrt.hpp>
 #include <ql/Math/riskstatistics.hpp>
 #include <ql/Math/segmentintegral.hpp>
 #include <ql/Math/simpsonintegral.hpp>

@@ -4,7 +4,7 @@
 # Project related configuration options
 #---------------------------------------------------------------------------
 PROJECT_NAME           = QuantLib
-PROJECT_NUMBER         = 0.3.5a1
+PROJECT_NUMBER         = 0.3.5
 OUTPUT_DIRECTORY       = 
 OUTPUT_LANGUAGE        = English
 USE_WINDOWS_ENCODING   = NO

@@ -4,8 +4,7 @@ includedir = $(prefix)/include/ql/PricingEngines/Vanilla
 
 include_HEADERS = \
     all.hpp \
-    americanmcengines.hpp \
-    analyticamericanengine.hpp \
+    analyticdigitalamericanengine.hpp \
     analyticeuropeanengine.hpp \
     baroneadesiwhaleyengine.hpp \
     binomialengine.hpp \
@@ -20,8 +19,7 @@ include_HEADERS = \
 EXTRA_DIST=makefile.mak
 
 libVanillaEngines_la_SOURCES = \
-    americanmcengines.cpp \
-    analyticamericanengine.cpp \
+    analyticdigitalamericanengine.cpp \
     analyticeuropeanengine.cpp \
     baroneadesiwhaleyengine.cpp \
     bjerksundstenslandengine.cpp \

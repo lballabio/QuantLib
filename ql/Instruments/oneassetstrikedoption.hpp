@@ -36,9 +36,6 @@ namespace QuantLib {
             const Handle<StrikedTypePayoff>& payoff,
             const Handle<Exercise>& exercise,
             const Handle<PricingEngine>& engine = Handle<PricingEngine>());
-        //@{
-        class arguments;
-        //@}
         //! \name greeks
         //@{
         double strikeSensitivity() const;
@@ -49,14 +46,6 @@ namespace QuantLib {
         // results
         mutable double strikeSensitivity_;
     };
-
-
-    //! arguments for single asset option calculation
-    class OneAssetStrikedOption::arguments : public OneAssetOption::arguments {
-      public:
-        void validate() const;
-    };
-
 
 }
 

@@ -31,8 +31,8 @@
 
 namespace QuantLib {
 
-    /*! Cubic spline interpolation between discrete points.
-        It implements different type of end conditions: not-a-knot,
+    //! Cubic spline interpolation between discrete points.
+    /*! It implements different type of end conditions: not-a-knot,
         first derivative value, second derivative value.
         
         It also implements Hyman's monotonicity constraint filter

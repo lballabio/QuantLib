@@ -20,8 +20,8 @@
     \brief matrix used in linear algebra.
 */
 
-#ifndef quantlib_matrix_h
-#define quantlib_matrix_h
+#ifndef quantlib_matrix_hpp
+#define quantlib_matrix_hpp
 
 #include <ql/Math/array.hpp>
 #include <ql/Utilities/steppingiterator.hpp>
@@ -167,55 +167,7 @@ namespace QuantLib {
     const Disposable<Matrix> outerProduct(Iterator1 v1begin, Iterator1 v1end,
                                           Iterator2 v2begin, Iterator2 v2end);
 
-    struct SalvagingAlgorithm {
-        enum Type {None, Spectral, Hypersphere};
-    };
-
-    //! Returns the pseudo square root of a real symmetric matrix
-    /*! Given a matrix \f$ M \f$, the result \f$ S \f$ is defined 
-        as the matrix such that \f$ S S^T = M. \f$
-        If the matrix is not positive semi definite, it can
-        return an approximation of the pseudo square root
-        using a (user selected) salvaging algorithm.
-
-        For more information see: "The most general methodology to create
-        a valid correlation matrix for risk management and option pricing
-        purposes", by R. Rebonato and P. Jäckel.
-        The Journal of Risk, 2(2), Winter 1999/2000
-        http://www.rebonato.com/correlationmatrix.pdf
-
-        Revised and extended in "Monte Carlo Methods in Finance",
-        by Peter Jäckel, Chapter 6.
-
-        \pre the given matrix must be symmetric.
-
-        \relates Matrix
-    */
-    const Disposable<Matrix> pseudoSqrt(const Matrix&,
-                                        SalvagingAlgorithm::Type);
-
-    /*! \pre the given matrix must be symmetric.
-
-        \relates Matrix
-    */
-    const Disposable<Matrix> rankReducedSqrt(const Matrix&,
-                                             Size maxRank,
-                                             double componentRetainedPercentag,
-                                             SalvagingAlgorithm::Type);
-
-    /*! \relates Matrix */
-    const Disposable<Matrix> CholeskyDecomposition(const Matrix& m,
-                                                   bool flexible = false);
-
     // inline definitions
-
-    /*! \deprecated
-
-        use CholeskyDecompostion or pseudoSqrt instead
-    */
-    inline const Disposable<Matrix> matrixSqrt(const Matrix& m) {
-        return pseudoSqrt(m, SalvagingAlgorithm::None);
-    }
 
     inline Matrix::Matrix()
     : pointer_(0), rows_(0), columns_(0) {}
@@ -592,7 +544,6 @@ namespace QuantLib {
 
         return result;
     }
-
 
 }
 

@@ -51,7 +51,6 @@ namespace QuantLib {
         OneAssetOption::setupArguments(args);
     }
 
-
     void OneAssetStrikedOption::performCalculations() const {
         OneAssetOption::performCalculations();
         const MoreGreeks* results =
@@ -68,23 +67,7 @@ namespace QuantLib {
            the greeks methods when using these.
         */
         strikeSensitivity_ = results->strikeSensitivity;
-
     }
-
-
-
-    void OneAssetStrikedOption::arguments::validate() const {
-
-        #if defined(QL_PATCH_MICROSOFT)
-        OneAssetOption::arguments copy = *this;
-        copy.validate();
-        #else
-        OneAssetOption::arguments::validate();
-        #endif
-
-
-    }
-
 
 }
 
