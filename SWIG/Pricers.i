@@ -33,14 +33,30 @@ class BSMEuropeanOption {
   public:
 	BSMEuropeanOption(OptionType type, double underlying, double strike, Rate underlyingGrowthRate, 
 	  Rate riskFreeRate, Time residualTime, double volatility);
+	void setVolatility(double newVolatility) ;
+	void setRiskFreeRate(Rate newRate) ;
 	double value() const;
+	double delta() const;
+	double gamma() const;
+	double theta() const;
+	double vega() const;
+	double rho() const;
+	double impliedVolatility(double targetValue, double accuracy, int maxEvaluations) const ;
 };
 
 class BSMAmericanOption {
   public:
 	BSMAmericanOption(OptionType type, double underlying, double strike, Rate underlyingGrowthRate, 
 	  Rate riskFreeRate, Time residualTime, double volatility, int timeSteps, int gridPoints);
+	void setVolatility(double newVolatility) ;
+	void setRiskFreeRate(Rate newRate) ;
 	double value() const;
+	double delta() const;
+	double gamma() const;
+	double theta() const;
+	double vega() const;
+	double rho() const;
+	double impliedVolatility(double targetValue, double accuracy, int maxEvaluations) const ;
 };
 
 
