@@ -23,10 +23,11 @@ INCLUDE_DIR    = ..\..\..
 
 # Object files
 OBJS = \
-    "analyticalcapfloor.obj$(_mt)$(_D)" \
-    "blackcapfloor.obj$(_mt)$(_D)" \
-    "capfloorpricer.obj$(_mt)$(_D)" \
-    "treecapfloor.obj$(_mt)$(_D)"
+    "analyticcapfloorengine.obj$(_mt)$(_D)" \
+    "blackcapfloorengine.obj$(_mt)$(_D)" \
+    "discretizedcapfloor.obj$(_mt)$(_D)" \
+    "treecapfloorengine.obj$(_mt)$(_D)"
+
 
 
 # Tools to be used

@@ -7935,512 +7935,62 @@
 				Name="CapFloor"
 				Filter="">
 				<File
-					RelativePath="ql\PricingEngines\CapFloor\analyticalcapfloor.cpp">
-					<FileConfiguration
-						Name="Debug MTDLL|Win32">
-						<Tool
-							Name="VCCLCompilerTool"
-							Optimization="0"
-							AdditionalIncludeDirectories=""
-							PreprocessorDefinitions=""
-							BasicRuntimeChecks="3"
-							BrowseInformation="1"/>
-					</FileConfiguration>
-					<FileConfiguration
-						Name="Release SingleThread|Win32">
-						<Tool
-							Name="VCCLCompilerTool"
-							Optimization="2"
-							AdditionalIncludeDirectories=""
-							PreprocessorDefinitions=""
-							BrowseInformation="1"/>
-					</FileConfiguration>
-					<FileConfiguration
-						Name="Release|Win32">
-						<Tool
-							Name="VCCLCompilerTool"
-							Optimization="2"
-							AdditionalIncludeDirectories=""
-							PreprocessorDefinitions=""
-							BrowseInformation="1"/>
-					</FileConfiguration>
-					<FileConfiguration
-						Name="Release MTDLL|Win32">
-						<Tool
-							Name="VCCLCompilerTool"
-							Optimization="2"
-							AdditionalIncludeDirectories=""
-							PreprocessorDefinitions=""
-							BrowseInformation="1"/>
-					</FileConfiguration>
-					<FileConfiguration
-						Name="Debug|Win32">
-						<Tool
-							Name="VCCLCompilerTool"
-							Optimization="0"
-							AdditionalIncludeDirectories=""
-							PreprocessorDefinitions=""
-							BasicRuntimeChecks="3"
-							BrowseInformation="1"/>
-					</FileConfiguration>
-					<FileConfiguration
-						Name="Debug SingleThread|Win32">
-						<Tool
-							Name="VCCLCompilerTool"
-							Optimization="0"
-							AdditionalIncludeDirectories=""
-							PreprocessorDefinitions=""
-							BasicRuntimeChecks="3"
-							BrowseInformation="1"/>
-					</FileConfiguration>
+					RelativePath=".\ql\PricingEngines\CapFloor\all.hpp">
 				</File>
 				<File
-					RelativePath="ql\PricingEngines\CapFloor\analyticalcapfloor.hpp">
+					RelativePath=".\ql\PricingEngines\CapFloor\analyticcapfloorengine.cpp">
 				</File>
 				<File
-					RelativePath="ql\PricingEngines\CapFloor\blackcapfloor.cpp">
-					<FileConfiguration
-						Name="Debug MTDLL|Win32">
-						<Tool
-							Name="VCCLCompilerTool"
-							Optimization="0"
-							AdditionalIncludeDirectories=""
-							PreprocessorDefinitions=""
-							BasicRuntimeChecks="3"
-							BrowseInformation="1"/>
-					</FileConfiguration>
-					<FileConfiguration
-						Name="Release SingleThread|Win32">
-						<Tool
-							Name="VCCLCompilerTool"
-							Optimization="2"
-							AdditionalIncludeDirectories=""
-							PreprocessorDefinitions=""
-							BrowseInformation="1"/>
-					</FileConfiguration>
-					<FileConfiguration
-						Name="Release|Win32">
-						<Tool
-							Name="VCCLCompilerTool"
-							Optimization="2"
-							AdditionalIncludeDirectories=""
-							PreprocessorDefinitions=""
-							BrowseInformation="1"/>
-					</FileConfiguration>
-					<FileConfiguration
-						Name="Release MTDLL|Win32">
-						<Tool
-							Name="VCCLCompilerTool"
-							Optimization="2"
-							AdditionalIncludeDirectories=""
-							PreprocessorDefinitions=""
-							BrowseInformation="1"/>
-					</FileConfiguration>
-					<FileConfiguration
-						Name="Debug|Win32">
-						<Tool
-							Name="VCCLCompilerTool"
-							Optimization="0"
-							AdditionalIncludeDirectories=""
-							PreprocessorDefinitions=""
-							BasicRuntimeChecks="3"
-							BrowseInformation="1"/>
-					</FileConfiguration>
-					<FileConfiguration
-						Name="Debug SingleThread|Win32">
-						<Tool
-							Name="VCCLCompilerTool"
-							Optimization="0"
-							AdditionalIncludeDirectories=""
-							PreprocessorDefinitions=""
-							BasicRuntimeChecks="3"
-							BrowseInformation="1"/>
-					</FileConfiguration>
+					RelativePath=".\ql\PricingEngines\CapFloor\analyticcapfloorengine.hpp">
 				</File>
 				<File
-					RelativePath="ql\PricingEngines\CapFloor\blackcapfloor.hpp">
+					RelativePath=".\ql\PricingEngines\CapFloor\blackcapfloorengine.cpp">
 				</File>
 				<File
-					RelativePath="ql\PricingEngines\CapFloor\capfloorpricer.cpp">
-					<FileConfiguration
-						Name="Debug MTDLL|Win32">
-						<Tool
-							Name="VCCLCompilerTool"
-							Optimization="0"
-							AdditionalIncludeDirectories=""
-							PreprocessorDefinitions=""
-							BasicRuntimeChecks="3"
-							BrowseInformation="1"/>
-					</FileConfiguration>
-					<FileConfiguration
-						Name="Release SingleThread|Win32">
-						<Tool
-							Name="VCCLCompilerTool"
-							Optimization="2"
-							AdditionalIncludeDirectories=""
-							PreprocessorDefinitions=""
-							BrowseInformation="1"/>
-					</FileConfiguration>
-					<FileConfiguration
-						Name="Release|Win32">
-						<Tool
-							Name="VCCLCompilerTool"
-							Optimization="2"
-							AdditionalIncludeDirectories=""
-							PreprocessorDefinitions=""
-							BrowseInformation="1"/>
-					</FileConfiguration>
-					<FileConfiguration
-						Name="Release MTDLL|Win32">
-						<Tool
-							Name="VCCLCompilerTool"
-							Optimization="2"
-							AdditionalIncludeDirectories=""
-							PreprocessorDefinitions=""
-							BrowseInformation="1"/>
-					</FileConfiguration>
-					<FileConfiguration
-						Name="Debug|Win32">
-						<Tool
-							Name="VCCLCompilerTool"
-							Optimization="0"
-							AdditionalIncludeDirectories=""
-							PreprocessorDefinitions=""
-							BasicRuntimeChecks="3"
-							BrowseInformation="1"/>
-					</FileConfiguration>
-					<FileConfiguration
-						Name="Debug SingleThread|Win32">
-						<Tool
-							Name="VCCLCompilerTool"
-							Optimization="0"
-							AdditionalIncludeDirectories=""
-							PreprocessorDefinitions=""
-							BasicRuntimeChecks="3"
-							BrowseInformation="1"/>
-					</FileConfiguration>
+					RelativePath=".\ql\PricingEngines\CapFloor\blackcapfloorengine.hpp">
 				</File>
 				<File
-					RelativePath="ql\PricingEngines\CapFloor\capfloorpricer.hpp">
+					RelativePath=".\ql\PricingEngines\CapFloor\discretizedcapfloor.cpp">
 				</File>
 				<File
-					RelativePath="ql\PricingEngines\CapFloor\treecapfloor.cpp">
-					<FileConfiguration
-						Name="Debug MTDLL|Win32">
-						<Tool
-							Name="VCCLCompilerTool"
-							Optimization="0"
-							AdditionalIncludeDirectories=""
-							PreprocessorDefinitions=""
-							BasicRuntimeChecks="3"
-							BrowseInformation="1"/>
-					</FileConfiguration>
-					<FileConfiguration
-						Name="Release SingleThread|Win32">
-						<Tool
-							Name="VCCLCompilerTool"
-							Optimization="2"
-							AdditionalIncludeDirectories=""
-							PreprocessorDefinitions=""
-							BrowseInformation="1"/>
-					</FileConfiguration>
-					<FileConfiguration
-						Name="Release|Win32">
-						<Tool
-							Name="VCCLCompilerTool"
-							Optimization="2"
-							AdditionalIncludeDirectories=""
-							PreprocessorDefinitions=""
-							BrowseInformation="1"/>
-					</FileConfiguration>
-					<FileConfiguration
-						Name="Release MTDLL|Win32">
-						<Tool
-							Name="VCCLCompilerTool"
-							Optimization="2"
-							AdditionalIncludeDirectories=""
-							PreprocessorDefinitions=""
-							BrowseInformation="1"/>
-					</FileConfiguration>
-					<FileConfiguration
-						Name="Debug|Win32">
-						<Tool
-							Name="VCCLCompilerTool"
-							Optimization="0"
-							AdditionalIncludeDirectories=""
-							PreprocessorDefinitions=""
-							BasicRuntimeChecks="3"
-							BrowseInformation="1"/>
-					</FileConfiguration>
-					<FileConfiguration
-						Name="Debug SingleThread|Win32">
-						<Tool
-							Name="VCCLCompilerTool"
-							Optimization="0"
-							AdditionalIncludeDirectories=""
-							PreprocessorDefinitions=""
-							BasicRuntimeChecks="3"
-							BrowseInformation="1"/>
-					</FileConfiguration>
+					RelativePath=".\ql\PricingEngines\CapFloor\discretizedcapfloor.hpp">
 				</File>
 				<File
-					RelativePath="ql\PricingEngines\CapFloor\treecapfloor.hpp">
+					RelativePath=".\ql\PricingEngines\CapFloor\treecapfloorengine.cpp">
+				</File>
+				<File
+					RelativePath=".\ql\PricingEngines\CapFloor\treecapfloorengine.hpp">
 				</File>
 			</Filter>
 			<Filter
 				Name="Swaption"
 				Filter="">
 				<File
-					RelativePath="ql\PricingEngines\Swaption\blackswaption.cpp">
-					<FileConfiguration
-						Name="Debug MTDLL|Win32">
-						<Tool
-							Name="VCCLCompilerTool"
-							Optimization="0"
-							AdditionalIncludeDirectories=""
-							PreprocessorDefinitions=""
-							BasicRuntimeChecks="3"
-							BrowseInformation="1"/>
-					</FileConfiguration>
-					<FileConfiguration
-						Name="Release SingleThread|Win32">
-						<Tool
-							Name="VCCLCompilerTool"
-							Optimization="2"
-							AdditionalIncludeDirectories=""
-							PreprocessorDefinitions=""
-							BrowseInformation="1"/>
-					</FileConfiguration>
-					<FileConfiguration
-						Name="Release|Win32">
-						<Tool
-							Name="VCCLCompilerTool"
-							Optimization="2"
-							AdditionalIncludeDirectories=""
-							PreprocessorDefinitions=""
-							BrowseInformation="1"/>
-					</FileConfiguration>
-					<FileConfiguration
-						Name="Release MTDLL|Win32">
-						<Tool
-							Name="VCCLCompilerTool"
-							Optimization="2"
-							AdditionalIncludeDirectories=""
-							PreprocessorDefinitions=""
-							BrowseInformation="1"/>
-					</FileConfiguration>
-					<FileConfiguration
-						Name="Debug|Win32">
-						<Tool
-							Name="VCCLCompilerTool"
-							Optimization="0"
-							AdditionalIncludeDirectories=""
-							PreprocessorDefinitions=""
-							BasicRuntimeChecks="3"
-							BrowseInformation="1"/>
-					</FileConfiguration>
-					<FileConfiguration
-						Name="Debug SingleThread|Win32">
-						<Tool
-							Name="VCCLCompilerTool"
-							Optimization="0"
-							AdditionalIncludeDirectories=""
-							PreprocessorDefinitions=""
-							BasicRuntimeChecks="3"
-							BrowseInformation="1"/>
-					</FileConfiguration>
+					RelativePath=".\ql\PricingEngines\Swaption\all.hpp">
 				</File>
 				<File
-					RelativePath="ql\PricingEngines\Swaption\blackswaption.hpp">
+					RelativePath=".\ql\PricingEngines\Swaption\blackswaptionengine.cpp">
 				</File>
 				<File
-					RelativePath="ql\PricingEngines\Swaption\jamshidianswaption.cpp">
-					<FileConfiguration
-						Name="Debug MTDLL|Win32">
-						<Tool
-							Name="VCCLCompilerTool"
-							Optimization="0"
-							AdditionalIncludeDirectories=""
-							PreprocessorDefinitions=""
-							BasicRuntimeChecks="3"
-							BrowseInformation="1"/>
-					</FileConfiguration>
-					<FileConfiguration
-						Name="Release SingleThread|Win32">
-						<Tool
-							Name="VCCLCompilerTool"
-							Optimization="2"
-							AdditionalIncludeDirectories=""
-							PreprocessorDefinitions=""
-							BrowseInformation="1"/>
-					</FileConfiguration>
-					<FileConfiguration
-						Name="Release|Win32">
-						<Tool
-							Name="VCCLCompilerTool"
-							Optimization="2"
-							AdditionalIncludeDirectories=""
-							PreprocessorDefinitions=""
-							BrowseInformation="1"/>
-					</FileConfiguration>
-					<FileConfiguration
-						Name="Release MTDLL|Win32">
-						<Tool
-							Name="VCCLCompilerTool"
-							Optimization="2"
-							AdditionalIncludeDirectories=""
-							PreprocessorDefinitions=""
-							BrowseInformation="1"/>
-					</FileConfiguration>
-					<FileConfiguration
-						Name="Debug|Win32">
-						<Tool
-							Name="VCCLCompilerTool"
-							Optimization="0"
-							AdditionalIncludeDirectories=""
-							PreprocessorDefinitions=""
-							BasicRuntimeChecks="3"
-							BrowseInformation="1"/>
-					</FileConfiguration>
-					<FileConfiguration
-						Name="Debug SingleThread|Win32">
-						<Tool
-							Name="VCCLCompilerTool"
-							Optimization="0"
-							AdditionalIncludeDirectories=""
-							PreprocessorDefinitions=""
-							BasicRuntimeChecks="3"
-							BrowseInformation="1"/>
-					</FileConfiguration>
+					RelativePath=".\ql\PricingEngines\Swaption\blackswaptionengine.hpp">
 				</File>
 				<File
-					RelativePath="ql\PricingEngines\Swaption\jamshidianswaption.hpp">
+					RelativePath=".\ql\PricingEngines\Swaption\discretizedswaption.cpp">
 				</File>
 				<File
-					RelativePath="ql\PricingEngines\Swaption\swaptionpricer.cpp">
-					<FileConfiguration
-						Name="Debug MTDLL|Win32">
-						<Tool
-							Name="VCCLCompilerTool"
-							Optimization="0"
-							AdditionalIncludeDirectories=""
-							PreprocessorDefinitions=""
-							BasicRuntimeChecks="3"
-							BrowseInformation="1"/>
-					</FileConfiguration>
-					<FileConfiguration
-						Name="Release SingleThread|Win32">
-						<Tool
-							Name="VCCLCompilerTool"
-							Optimization="2"
-							AdditionalIncludeDirectories=""
-							PreprocessorDefinitions=""
-							BrowseInformation="1"/>
-					</FileConfiguration>
-					<FileConfiguration
-						Name="Release|Win32">
-						<Tool
-							Name="VCCLCompilerTool"
-							Optimization="2"
-							AdditionalIncludeDirectories=""
-							PreprocessorDefinitions=""
-							BrowseInformation="1"/>
-					</FileConfiguration>
-					<FileConfiguration
-						Name="Release MTDLL|Win32">
-						<Tool
-							Name="VCCLCompilerTool"
-							Optimization="2"
-							AdditionalIncludeDirectories=""
-							PreprocessorDefinitions=""
-							BrowseInformation="1"/>
-					</FileConfiguration>
-					<FileConfiguration
-						Name="Debug|Win32">
-						<Tool
-							Name="VCCLCompilerTool"
-							Optimization="0"
-							AdditionalIncludeDirectories=""
-							PreprocessorDefinitions=""
-							BasicRuntimeChecks="3"
-							BrowseInformation="1"/>
-					</FileConfiguration>
-					<FileConfiguration
-						Name="Debug SingleThread|Win32">
-						<Tool
-							Name="VCCLCompilerTool"
-							Optimization="0"
-							AdditionalIncludeDirectories=""
-							PreprocessorDefinitions=""
-							BasicRuntimeChecks="3"
-							BrowseInformation="1"/>
-					</FileConfiguration>
+					RelativePath=".\ql\PricingEngines\Swaption\discretizedswaption.hpp">
 				</File>
 				<File
-					RelativePath="ql\PricingEngines\Swaption\swaptionpricer.hpp">
+					RelativePath=".\ql\PricingEngines\Swaption\jamshidianswaptionengine.cpp">
 				</File>
 				<File
-					RelativePath="ql\PricingEngines\Swaption\treeswaption.cpp">
-					<FileConfiguration
-						Name="Debug MTDLL|Win32">
-						<Tool
-							Name="VCCLCompilerTool"
-							Optimization="0"
-							AdditionalIncludeDirectories=""
-							PreprocessorDefinitions=""
-							BasicRuntimeChecks="3"
-							BrowseInformation="1"/>
-					</FileConfiguration>
-					<FileConfiguration
-						Name="Release SingleThread|Win32">
-						<Tool
-							Name="VCCLCompilerTool"
-							Optimization="2"
-							AdditionalIncludeDirectories=""
-							PreprocessorDefinitions=""
-							BrowseInformation="1"/>
-					</FileConfiguration>
-					<FileConfiguration
-						Name="Release|Win32">
-						<Tool
-							Name="VCCLCompilerTool"
-							Optimization="2"
-							AdditionalIncludeDirectories=""
-							PreprocessorDefinitions=""
-							BrowseInformation="1"/>
-					</FileConfiguration>
-					<FileConfiguration
-						Name="Release MTDLL|Win32">
-						<Tool
-							Name="VCCLCompilerTool"
-							Optimization="2"
-							AdditionalIncludeDirectories=""
-							PreprocessorDefinitions=""
-							BrowseInformation="1"/>
-					</FileConfiguration>
-					<FileConfiguration
-						Name="Debug|Win32">
-						<Tool
-							Name="VCCLCompilerTool"
-							Optimization="0"
-							AdditionalIncludeDirectories=""
-							PreprocessorDefinitions=""
-							BasicRuntimeChecks="3"
-							BrowseInformation="1"/>
-					</FileConfiguration>
-					<FileConfiguration
-						Name="Debug SingleThread|Win32">
-						<Tool
-							Name="VCCLCompilerTool"
-							Optimization="0"
-							AdditionalIncludeDirectories=""
-							PreprocessorDefinitions=""
-							BasicRuntimeChecks="3"
-							BrowseInformation="1"/>
-					</FileConfiguration>
+					RelativePath=".\ql\PricingEngines\Swaption\jamshidianswaptionengine.hpp">
 				</File>
 				<File
-					RelativePath="ql\PricingEngines\Swaption\treeswaption.hpp">
+					RelativePath=".\ql\PricingEngines\Swaption\treeswaptionengine.cpp">
+				</File>
+				<File
+					RelativePath=".\ql\PricingEngines\Swaption\treeswaptionengine.hpp">
 				</File>
 			</Filter>
 			<Filter

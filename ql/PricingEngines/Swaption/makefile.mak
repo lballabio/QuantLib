@@ -23,10 +23,10 @@ INCLUDE_DIR    = ..\..\..
 
 # Object files
 OBJS = \
-    "blackswaption.obj$(_mt)$(_D)" \
-    "jamshidianswaption.obj$(_mt)$(_D)" \
-    "swaptionpricer.obj$(_mt)$(_D)" \
-    "treeswaption.obj$(_mt)$(_D)"
+    "blackswaptionengine.obj$(_mt)$(_D)" \
+    "discretizedswaption.obj$(_mt)$(_D)" \
+    "jamshidianswaptionengine.obj$(_mt)$(_D)" \
+    "treeswaptionengine.obj$(_mt)$(_D)"
 
 # Tools to be used
 CC        = bcc32
