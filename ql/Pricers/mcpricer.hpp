@@ -34,6 +34,7 @@
 #ifndef quantlib_montecarlo_pricer_h
 #define quantlib_montecarlo_pricer_h
 
+#include <ql/dataformatters.hpp>
 #include <ql/MonteCarlo/montecarlomodel.hpp>
 #include <iostream>
 
