@@ -2,13 +2,13 @@
 Makefile.in
 Makefile
 Makefile.win
-testsuite.dep
-testsuite.plg
-test-suite.tds
-test-suite.exe
+*.dep
+*.plg
 quantlib-test-suite
 build
+bin
 .deps
 .libs
 quantlib-test-suite.exe
 QuantLib-test-suite.layout
+QuantLib-test-suite_private.*

@@ -24,6 +24,7 @@
 QL_INCLUDE_DIR     = "$(QL_DIR)"
 QL_LIB_DIR         = "$(QL_DIR)\lib"
 QL_FUN_INCLUDE_DIR = "$(QL_DIR)\functions"
+EXE_DIR            = .\bin
 
 # Object files
 QL_TESTS = \
@@ -102,20 +103,25 @@ CC_OPTS = -vi- -I$(QL_INCLUDE_DIR) -I$(QL_FUN_INCLUDE_DIR)
 
 
 # Primary target:
-test-suite$(_mt)$(_D).exe: $(QL_TESTS)
+$(EXE_DIR)\QuantLib-test-suite-bcb-$(_mt)$(_D)-0_3_8.exe:: $(EXE_DIR) \
+                                                           $(QL_TESTS)
+    if exist $(EXE_DIR)\QuantLib-test-suite-bcb$(_mt)$(_D)-0_3_8.lib \
+         del $(EXE_DIR)\QuantLib-test-suite-bcb$(_mt)$(_D)-0_3_8.lib
     $(CC) $(CC_OPTS) -L$(QL_LIB_DIR) \
-    -e"test-suite$(_mt)$(_D).exe" $(QL_TESTS) \
+    -e"$(EXE_DIR)\QuantLib-test-suite-bcb-$(_mt)$(_D)-0_3_8.exe" $(QL_TESTS) \
     libboost_unit_test_framework-bcb$(_mt)$(_D)-1_31.lib
 
+$(EXE_DIR):
+    if not exist .\bin md .\bin
 
-check: test-suite$(_mt)$(_D).exe
-    test-suite$(_mt)$(_D) --log_level=messages --build_info=yes \
-                          --report_level=short
+check: $(EXE_DIR)\QuantLib-test-suite-bcb-$(_mt)$(_D)-0_3_8.exe
+    $(EXE_DIR)\QuantLib-test-suite-bcb-$(_mt)$(_D)-0_3_8.exe \
+                  --log_level=messages --build_info=yes --report_level=short
     cd ..
 
 
 # Clean up
 clean::
-    if exist *.obj*  del /q *.obj*
-    if exist *.tds   del /q *.tds
-    if exist *.exe   del /q *.exe
+    if exist *.obj*                   del /q *.obj*
+    if exist $(EXE_DIR)\*-bcb-*.tds   del /q $(EXE_DIR)\*-bcb-*.tds
+    if exist $(EXE_DIR)\*-bcb-*.exe   del /q $(EXE_DIR)\*-bcb-*.exe
