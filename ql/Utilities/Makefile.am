@@ -4,4 +4,5 @@ includedir = $(prefix)/include/ql/Utilities
 
 include_HEADERS = \
     all.hpp \
-    steppingiterator.hpp
+    steppingiterator.hpp \
+    tracing.hpp

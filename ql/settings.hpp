@@ -1,6 +1,6 @@
 
 /*
- Copyright (C) 2004 StatPro Italia srl
+ Copyright (C) 2004, 2005 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -25,6 +25,7 @@
 #include <ql/date.hpp>
 #include <ql/Patterns/singleton.hpp>
 #include <ql/Patterns/observable.hpp>
+#include <ql/Utilities/tracing.hpp>
 
 namespace QuantLib {
 
@@ -54,17 +55,20 @@ namespace QuantLib {
         */
         boost::shared_ptr<Observable> evaluationDateGuard() const;
         //@}
+        //! \name Tracing
+        //@{
+        Tracer& tracing();
+        //@}
       private:
+        // evaluation date
         Date evaluationDate_;
         boost::shared_ptr<Observable> evaluationDateGuard_;
+        // tracing
+        Tracer tracing_;
     };
 
 
     // inline definitions
-
-    inline Settings::Settings() {
-        evaluationDateGuard_ = boost::shared_ptr<Observable>(new Observable);
-    }
 
     inline Date Settings::evaluationDate() const {
         if (evaluationDate_ == Date())
@@ -81,6 +85,10 @@ namespace QuantLib {
     inline
     boost::shared_ptr<Observable> Settings::evaluationDateGuard() const {
         return evaluationDateGuard_;
+    }
+
+    inline Tracer& Settings::tracing() {
+        return tracing_;
     }
 
 }

@@ -31,6 +31,10 @@
 /* Define this if error messages should include file and line information. */
 #define QL_ERROR_LINES 1
 
+/* Define this if tracing messages should be allowed (whether they are
+   actually emitted will depend on run-time settings.) */
+// #define QL_ENABLE_TRACING 1
+
 /* Define this if negative yield rates should be allowed. This might not be
    safe. */
 // #define QL_NEGATIVE_RATES 1

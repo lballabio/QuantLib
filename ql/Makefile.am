@@ -122,5 +122,6 @@ libQuantLib_la_SOURCES = \
     interestrate.cpp \
     money.cpp \
     schedule.cpp \
+    settings.cpp \
 	stochasticprocess.cpp \
     voltermstructure.cpp

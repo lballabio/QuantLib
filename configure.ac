@@ -147,7 +147,7 @@ AC_PATH_PROG([DVIPS], [dvips])
 
 AC_ARG_ENABLE([error-lines],
               AC_HELP_STRING([--enable-error-lines],
-                             [If enabled (the default), file and line
+                             [If enabled (the default,) file and line
                               information is added to the error messages
                               thrown by the library.]),
               [ql_error_lines=$enableval],
@@ -158,11 +158,25 @@ if test "$ql_error_lines" = "yes" ; then
               information.])
 fi
 
+AC_ARG_ENABLE([tracing],
+              AC_HELP_STRING([--enable-tracing],
+                             [If enabled, tracing messages might be emitted
+                              by the library depending on run-time
+                              settings. Enabling this option can degrade
+                              performance.]),
+              [ql_tracing=$enableval],
+              [ql_tracing=no])
+if test "$ql_tracing" = "yes" ; then
+   AC_DEFINE([QL_ENABLE_TRACING],[1],
+             [Define this if tracing messages should allowed (whether they
+              are actually emitted will depend on run-time settings.)])
+fi
+
 AC_ARG_ENABLE([indexed-coupons],
               AC_HELP_STRING([--enable-indexed-coupons],
                              [If enabled, indexed coupons (see the
                               documentation) are used in floating legs.
-                              If disabled (the default), par coupons
+                              If disabled (the default,) par coupons
                               are used.]),
               [ql_indexed_coupon=$enableval],
               [ql_indexed_coupon=no])
@@ -201,7 +215,7 @@ fi
 
 AC_ARG_ENABLE([early-payments],
               AC_HELP_STRING([--enable-early-payments],
-                             [If enabled (the default), payments are
+                             [If enabled (the default,) payments are
                               considered to be settled at the beginning
                               of the day. Therefore, payments occurring
                               at today's date are not included in the NPV
@@ -216,7 +230,7 @@ fi
 
 AC_ARG_ENABLE([deprecated-code],
               AC_HELP_STRING([--enable-deprecated-code],
-                             [If enabled (the default), deprecated code
+                             [If enabled (the default,) deprecated code
                               will be included in the library.]),
               [ql_use_deprecated_code=$enableval],
               [ql_use_deprecated_code=yes])

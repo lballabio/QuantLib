@@ -6,3 +6,5 @@ Changes since release 0.3.8:
 
 - DiscountCurve can now be set an interpolation other than log-linear
 
+- Added a tentative tracing facility to ease debugging
+

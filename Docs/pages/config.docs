@@ -41,9 +41,16 @@
     the error messages thrown by the library.
 
     \code
+    #define QL_ENABLE_TRACING
+    \endcode
+
+    If enabled, tracing messages might be emitted by the library
+    depending on run-time settings. Enabling this option can degrade
+    performance. The default is to undefine the macro.
+
+    \code
     #define QL_NEGATIVE_RATES
     \endcode
-    
     If defined, negative yield rates are allowed in a few places where
     they are currently forbidden. It is still not clear whether this
     is safe. The default is to undefine the macro.

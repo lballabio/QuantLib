@@ -72,6 +72,7 @@
 #include "swap.hpp"
 #include "swaption.hpp"
 #include "termstructures.hpp"
+#include "tracing.hpp"
 // to be deprecated
 #include "old_pricers.hpp"
 
@@ -152,6 +153,7 @@ test_suite* init_unit_test_suite(int, char* []) {
     test->add(SwapTest::suite());
     test->add(SwaptionTest::suite());
     test->add(TermStructureTest::suite());
+    test->add(TracingTest::suite());
 
     // tests for deprecated (or generally old-style) classes
     test->add(OldPricerTest::suite());
