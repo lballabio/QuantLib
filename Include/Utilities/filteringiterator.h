@@ -28,9 +28,12 @@
 	$Source$
 	$Name$
 	$Log$
+	Revision 1.2  2001/01/09 14:35:17  lballabio
+	Fixed typo in (so far) not instantiated method
+
 	Revision 1.1  2001/01/09 11:51:10  lballabio
 	Added a couple of smart iterators
-
+	
 */
 
 #ifndef quantlib_filtering_iterator_h
@@ -109,7 +112,7 @@ namespace QuantLib {
 		FilteringIterator<Iterator,UnaryPredicate>::operator++() {
 		    do
 		        it_++;
-		    while (!p_(*it_) && it != end_);
+		    while (!p_(*it_) && it_ != end_);
 			return *this;
 		}
 		
@@ -128,7 +131,7 @@ namespace QuantLib {
 		FilteringIterator<Iterator,UnaryPredicate>::operator--() {
 		    do
 		        it_--;
-		    while (!p_(*it_) && it != beforeBegin_);
+		    while (!p_(*it_) && it_ != beforeBegin_);
 			return *this;
 		}
 		
@@ -138,7 +141,7 @@ namespace QuantLib {
 			FilteringIterator<Iterator,UnaryPredicate> temp = *this;
 		    do
 		        it_--;
-		    while (!p_(*it_) && it != beforeBegin_);
+		    while (!p_(*it_) && it_ != beforeBegin_);
 			return temp;
 		}
 		
