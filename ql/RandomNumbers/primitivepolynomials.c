@@ -1,56 +1,20 @@
 
 // $Id$
 
-// taken from
+// This file contains 21200 polinomials.
+// Anothyer version does contain 8129334 polinomials.
+// Both are slightly edited versions of
 // PrimitivePolynomialsModuloTwoUpToDegree27.c
 //
 // © 2002 "Monte Carlo Methods in Finance"
 //
 //
-// ============================================================================
+// ================================================================================
 // Copyright (C) 2002 "Monte Carlo Methods in Finance". All rights reserved.
 //
-// Permission to use, copy, modify, and distribute this software is freely
-// granted, provided that this notice is preserved.
-// ============================================================================
-//
-//
-//	PPMT : Primitive Polynomials Modulo Two
-//
-//
-// The encoding is as follows:
-//
-//  The coefficients of each primitive polynomial are the bits of the given
-//  integer.
-//  The leading and trailing coefficients, which are 1 for all of the
-//  polynomials, have been omitted.
-//
-//  Example: The polynomial
-//
-//      4    2
-//     x  + x  + 1
-//
-// is encoded as  2  in the array of polynomials of degree 4 because the binary
-// sequence of coefficients
-//
-//   10101
-//
-// becomes
-//
-//    0101
-//
-// after stripping off the top bit, and this is converted to
-//
-//     010
-//
-// by right-shifting and losing the rightmost bit. Similarly, we have
-//
-//   5    4    3
-//  x  + x  + x  + x + 1
-//
-// encoded as  13  [ (1)1101(1) ]  in the array for degree 5.
-//
-//
+// Permission to use, copy, modify, and distribute this software is freely granted,
+// provided that this notice is preserved.
+// ================================================================================
 
 #include "primitivepolynomials.h"
 
@@ -21344,6 +21308,10 @@ static const long PrimitivePolynomialDegree18[]={
 -1 };
 #endif
 
+// download the 8129334 polinomials version if you need higher dimensions
+#if PPMT_MAX_DIM > N_PRIMITIVES_UP_TO_DEGREE_18
+#error too many polynomials requested. not provided by this file
+#endif
 
 const long *const PrimitivePolynomials[N_MAX_DEGREE]={
    PrimitivePolynomialDegree01
