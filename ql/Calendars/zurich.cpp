@@ -41,9 +41,9 @@ namespace QuantLib {
             // Easter Monday
             || (dd == em)
             // Ascension Day
-            || (d == em+38)
+            || (dd == em+38)
             // Whit Monday
-            || (d == em+49)
+            || (dd == em+49)
             // Labour Day
             || (d == 1  && m == May)
             // National Day
