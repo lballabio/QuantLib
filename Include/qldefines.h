@@ -22,15 +22,10 @@
 */
 
 // $Source$
+
 // $Log$
-// Revision 1.15  2000/12/13 17:53:27  nando
-// CVS $Id$ and $Sources$ and $Log$ keywords added
-//
-// Revision 1.14  2000/12/13 17:52:01  nando
-// CVS $Id$ and $Sources$ and $Log$
-// CVS $Id$ and $Sources$ and Revision 1.15  2000/12/13 17:53:27  nando
-// CVS $Id$ and $Sources$ and CVS $Id$ and $Sources$ and $Log$ keywords added
-// CVS $Id$ and $Sources$ and keywords added
+// Revision 1.16  2000/12/13 17:57:19  nando
+// CVS keyword modified
 //
 
 
