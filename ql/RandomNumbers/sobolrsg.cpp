@@ -249,7 +249,7 @@ namespace QuantLib {
                     // That is: a[k][j] = ppmt[k] >> (gk-j-1)
                     for (Size j=1; j<gk; j++) {
                         // XORed with a selection of (unshifted) direction
-                        // integers if a[k][j] is not null
+                        // integers controlled by which of the a[k][j] are set
                         if ((ppmt[k] >> (gk-j-1)) & 1UL)
                             n ^= directionIntegers_[k][l-j];
                     }
