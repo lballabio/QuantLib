@@ -66,11 +66,7 @@ namespace QuantLib {
             //@}
             //! \name Visitability
             //@{
-            virtual void accept(Patterns::Visitor&);
-            class Visitor {
-              public:
-                virtual void visit(ParCoupon&) = 0;
-            };
+            virtual void accept(Patterns::AcyclicVisitor&);
             //@}
           private:
             Handle<Indexes::Xibor> index_;
@@ -101,15 +97,15 @@ namespace QuantLib {
             notifyObservers();
         }
 
-        inline void ParCoupon::accept(Patterns::Visitor& v) {
-            ParCoupon::Visitor* v1 = 
-                dynamic_cast<ParCoupon::Visitor*>(&v);
+        inline void ParCoupon::accept(Patterns::AcyclicVisitor& v) {
+            using namespace Patterns;
+            Visitor<ParCoupon>* v1 = dynamic_cast<Visitor<ParCoupon>*>(&v);
             if (v1 != 0)
                 v1->visit(*this);
             else
                 FloatingRateCoupon::accept(v);
         }
-        
+
     }
 
 }

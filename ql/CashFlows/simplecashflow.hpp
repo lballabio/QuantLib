@@ -41,11 +41,7 @@ namespace QuantLib {
             //@}
             //! \name Visitability
             //@{
-            virtual void accept(Patterns::Visitor&);
-            class Visitor {
-              public:
-                virtual void visit(SimpleCashFlow&) = 0;
-            };
+            virtual void accept(Patterns::AcyclicVisitor&);
             //@}
           private:
             double amount_;
@@ -55,9 +51,10 @@ namespace QuantLib {
 
         // inline definitions
 
-        inline void SimpleCashFlow::accept(Patterns::Visitor& v) {
-            SimpleCashFlow::Visitor* v1 = 
-                dynamic_cast<SimpleCashFlow::Visitor*>(&v);
+        inline void SimpleCashFlow::accept(Patterns::AcyclicVisitor& v) {
+            using namespace Patterns;
+            Visitor<SimpleCashFlow>* v1 = 
+                dynamic_cast<Visitor<SimpleCashFlow>*>(&v);
             if (v1 != 0)
                 v1->visit(*this);
             else

@@ -56,11 +56,7 @@ namespace QuantLib {
             //@}
             //! \name Visitability
             //@{
-            virtual void accept(Patterns::Visitor&);
-            class Visitor {
-              public:
-                virtual void visit(FixedRateCoupon&) = 0;
-            };
+            virtual void accept(Patterns::AcyclicVisitor&);
             //@}
           private:
             Rate rate_;
@@ -94,15 +90,16 @@ namespace QuantLib {
             }
         }
 
-        inline void FixedRateCoupon::accept(Patterns::Visitor& v) {
-            FixedRateCoupon::Visitor* v1 = 
-                dynamic_cast<FixedRateCoupon::Visitor*>(&v);
+        inline void FixedRateCoupon::accept(Patterns::AcyclicVisitor& v) {
+            using namespace Patterns;
+            Visitor<FixedRateCoupon>* v1 = 
+                dynamic_cast<Visitor<FixedRateCoupon>*>(&v);
             if (v1 != 0)
                 v1->visit(*this);
             else
                 Coupon::accept(v);
         }
-        
+
     }
 
 }
