@@ -30,6 +30,9 @@
 
 //  $Source$
 //  $Log$
+//  Revision 1.4  2001/07/16 16:07:42  lballabio
+//  Market elements and stuff
+//
 //  Revision 1.3  2001/07/13 14:23:11  sigmud
 //  removed a few gcc compile warnings
 //
@@ -53,10 +56,20 @@ namespace QuantLib {
         : Instrument(isinCode,description), firstLeg_(firstLeg), 
           secondLeg_(secondLeg), termStructure_(termStructure) {
             termStructure_.registerObserver(this);
+            std::vector<Handle<CashFlow> >::iterator i;
+            for (i = firstLeg_.begin(); i!= firstLeg_.end(); ++i)
+                (*i)->registerObserver(this);
+            for (i = secondLeg_.begin(); i!= secondLeg_.end(); ++i)
+                (*i)->registerObserver(this);
         }
 
         Swap::~Swap() {
             termStructure_.unregisterObserver(this);
+            std::vector<Handle<CashFlow> >::iterator i;
+            for (i = firstLeg_.begin(); i!= firstLeg_.end(); ++i)
+                (*i)->unregisterObserver(this);
+            for (i = secondLeg_.begin(); i!= secondLeg_.end(); ++i)
+                (*i)->unregisterObserver(this);
         }
 
         void Swap::performCalculations() const {

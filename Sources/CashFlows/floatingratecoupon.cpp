@@ -28,6 +28,9 @@
     $Id$
     $Source$
     $Log$
+    Revision 1.4  2001/07/16 16:07:42  lballabio
+    Market elements and stuff
+
     Revision 1.3  2001/07/02 12:36:18  sigmud
     pruned redundant header inclusions
 
@@ -58,6 +61,9 @@ namespace QuantLib {
           startDate_(startDate), endDate_(endDate), 
           refPeriodStart_(refPeriodStart), 
           refPeriodEnd_(refPeriodEnd), spread_(spread) {
+
+            termStructure_.registerObserver(this);
+
             if (!index.isNull()) {
                 #if QL_ALLOW_TEMPLATE_METHOD_CALLS
                 const Xibor* ptr = index.downcast<Xibor>();
@@ -69,6 +75,10 @@ namespace QuantLib {
             }
         }
 
+        FloatingRateCoupon::~FloatingRateCoupon() {
+            termStructure_.unregisterObserver(this);
+        }
+        
         double FloatingRateCoupon::amount() const {
             QL_REQUIRE(!termStructure_.isNull(),
                 "null term structure set to par coupon");
@@ -115,6 +125,10 @@ namespace QuantLib {
                 "null or non-libor index given");
             return index_->dayCounter()->yearFraction(
                 startDate_,endDate_,refPeriodStart_,refPeriodEnd_);
+        }
+
+        void FloatingRateCoupon::update() {
+            notifyObservers();
         }
 
     }

@@ -30,6 +30,9 @@
 
 // $Source$
 // $Log$
+// Revision 1.2  2001/07/16 16:07:42  lballabio
+// Market elements and stuff
+//
 // Revision 1.1  2001/06/26 09:20:30  marmar
 // Method set price added to class stock
 //
@@ -41,18 +44,24 @@ namespace QuantLib {
 
     namespace Instruments {
 
-        Stock::Stock(double price, const std::string& isinCode, 
-                   const std::string& description)
-            : Instrument(isinCode,description) { 
-            NPV_ = price;
-            isExpired_ = false;
+        Stock::Stock(const RelinkableHandle<MarketElement>& quote, 
+            const std::string& isinCode, const std::string& description)
+        : Instrument(isinCode,description), quote_(quote) {
+            quote_.registerObserver(this);
         }
-		void Stock::setPrice(double newPrice){
-			NPV_ = newPrice;
-			notifyObservers();
-		}
+
+        Stock::~Stock() {
+            quote_.unregisterObserver(this);
+        }
+        
+        void Stock::performCalculations() const {
+            QL_REQUIRE(!quote_.isNull(), 
+                "null quote set for "+isinCode()+" stock");
+            isExpired_ = false;
+            NPV_ = quote_->value();
+        }
+
     }
 
 }
-
 

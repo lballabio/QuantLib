@@ -2,6 +2,9 @@
 # $Id$
 # $Source$
 # $Log$
+# Revision 1.20  2001/07/16 16:07:42  lballabio
+# Market elements and stuff
+#
 # Revision 1.19  2001/07/06 18:24:17  nando
 # slight modifications to avoid VisualStudio warnings
 #
@@ -70,6 +73,7 @@ TLIB      = tlib
 
 # Options
 CC_OPTS        = -q -c -tWM \
+    -w-8026 -w-8027 -w-8012 \
     -I$(INCLUDE_DIR) \
     -I$(BCC_INCLUDE)
 !ifdef DEBUG

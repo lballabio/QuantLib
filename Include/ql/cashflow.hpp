@@ -30,6 +30,9 @@
 
 //  $Source$
 //  $Log$
+//  Revision 1.3  2001/07/16 16:07:42  lballabio
+//  Market elements and stuff
+//
 //  Revision 1.2  2001/06/15 13:52:06  lballabio
 //  Reworked indexes
 //
@@ -41,6 +44,7 @@
 #define quantlib_cash_flow_hpp
 
 #include "ql/date.hpp"
+#include "ql/Patterns/observable.hpp"
 
 namespace QuantLib {
 
@@ -48,7 +52,7 @@ namespace QuantLib {
     /*! This class is purely virtual and acts as a base class for the actual 
         cash flow implementations. 
     */
-    class CashFlow {
+    class CashFlow : public Patterns::Observable {
       public:
         virtual ~CashFlow() {}
         //! returns the amount of the cash flow

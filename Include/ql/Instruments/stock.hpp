@@ -30,6 +30,9 @@
 
 // $Source$
 // $Log$
+// Revision 1.8  2001/07/16 16:07:42  lballabio
+// Market elements and stuff
+//
 // Revision 1.7  2001/06/26 09:20:30  marmar
 // Method set price added to class stock
 //
@@ -47,6 +50,7 @@
 #define quantlib_stock_hpp
 
 #include "ql/instrument.hpp"
+#include "ql/marketelement.hpp"
 
 namespace QuantLib {
 
@@ -55,16 +59,18 @@ namespace QuantLib {
         //! Simple stock class
         class Stock : public Instrument {
           public:
-            Stock(double price, const std::string& isinCode, 
-                  const std::string& description);
-			void setPrice(double newPrice);
+            Stock(const RelinkableHandle<MarketElement>& quote, 
+                const std::string& isinCode, const std::string& description);
+            ~Stock();
           protected:
-            // NPV already set during construction
-            void performCalculations() const {}
+            void performCalculations() const;
+          private:
+            RelinkableHandle<MarketElement> quote_;
         };
 
     }
 
 }
+
 
 #endif

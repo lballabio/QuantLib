@@ -28,6 +28,9 @@
     $Id$
     $Source$
     $Log$
+    Revision 1.6  2001/07/16 16:07:42  lballabio
+    Market elements and stuff
+
     Revision 1.5  2001/07/02 12:36:18  sigmud
     pruned redundant header inclusions
 
@@ -61,7 +64,8 @@ namespace QuantLib {
             i.e., the start and end date passed upon construction
             should be already rolled to a business day.
 	    */
-        class FloatingRateCoupon : public CashFlow {
+        class FloatingRateCoupon : public CashFlow,
+                                   public Patterns::Observer {
           public:
             FloatingRateCoupon(double nominal,  
                 const RelinkableHandle<TermStructure>& termStructure,
@@ -70,10 +74,15 @@ namespace QuantLib {
                 const Date& refPeriodEnd = Date(),
                 const Handle<Index>& index = Handle<Index>(),
                 Spread spread = 0.0);
+            ~FloatingRateCoupon();
             //! \name CashFlow interface
             //@{
             Date date() const { return endDate_; }
             double amount() const;
+            //@}
+            //! \name Observer interface
+            //@{
+            void update();
             //@}
           private:
             double accrualPeriod() const;
