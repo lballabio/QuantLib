@@ -106,7 +106,7 @@ namespace QuantLib {
     //! Formats currencies for output
     class CurrencyFormatter {
       public:
-        static std::string toString(Currency c);
+        static std::string toString(CurrencyTag c);
     };
 
     //! Formats strings as lower- or uppercase

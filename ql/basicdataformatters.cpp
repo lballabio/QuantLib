@@ -197,7 +197,7 @@ namespace QuantLib {
         return stream << DateFormatter::toString(date, DateFormatter::Short);
     }
 
-    std::string CurrencyFormatter::toString(Currency c) {
+    std::string CurrencyFormatter::toString(CurrencyTag c) {
         switch (c) {
           case EUR: return "EUR";
           case GBP: return "GBP";

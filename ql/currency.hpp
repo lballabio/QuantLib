@@ -28,7 +28,7 @@ namespace QuantLib {
 
     //! Known currencies
     /*! \ingroup currencies */
-    enum Currency {
+    enum CurrencyTag {
         ARS,    //!< Argentinian Peso
         ATS,    //!< Austrian Schillings
         AUD,    //!< Australian Dollar
@@ -84,6 +84,11 @@ namespace QuantLib {
         VEB,    //!< Venezuelan Bolivar
         ZAR     //!< South African Rand
     };
+
+#ifndef QL_DISABLE_DEPRECATED
+    //! \deprecated renamed to CurrencyTag
+    typedef CurrencyTag Currency;
+#endif
 
 }
 
