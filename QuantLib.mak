@@ -164,6 +164,8 @@ CLEAN :
 	-@erase "$(INTDIR)\discretizedvanillaoption.sbr"
 	-@erase "$(INTDIR)\errorfunction.obj"
 	-@erase "$(INTDIR)\errorfunction.sbr"
+	-@erase "$(INTDIR)\errors.obj"
+	-@erase "$(INTDIR)\errors.sbr"
 	-@erase "$(INTDIR)\europeanoption.obj"
 	-@erase "$(INTDIR)\europeanoption.sbr"
 	-@erase "$(INTDIR)\europeanpathpricer.obj"
@@ -568,7 +570,8 @@ BSC32_SBRS= \
 	"$(INTDIR)\exercise.sbr" \
 	"$(INTDIR)\grid.sbr" \
 	"$(INTDIR)\scheduler.sbr" \
-	"$(INTDIR)\voltermstructure.sbr"
+	"$(INTDIR)\voltermstructure.sbr" \
+	"$(INTDIR)\errors.sbr"
 
 "$(OUTDIR)\QuantLib.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -749,7 +752,8 @@ LIB32_OBJS= \
 	"$(INTDIR)\exercise.obj" \
 	"$(INTDIR)\grid.obj" \
 	"$(INTDIR)\scheduler.obj" \
-	"$(INTDIR)\voltermstructure.obj"
+	"$(INTDIR)\voltermstructure.obj" \
+	"$(INTDIR)\errors.obj"
 
 ".\lib\Win32\VisualStudio\QuantLib.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
    if not exist lib\Win32\VisualStudio mkdir lib\Win32\VisualStudio
@@ -893,6 +897,8 @@ CLEAN :
 	-@erase "$(INTDIR)\discretizedvanillaoption.sbr"
 	-@erase "$(INTDIR)\errorfunction.obj"
 	-@erase "$(INTDIR)\errorfunction.sbr"
+	-@erase "$(INTDIR)\errors.obj"
+	-@erase "$(INTDIR)\errors.sbr"
 	-@erase "$(INTDIR)\europeanoption.obj"
 	-@erase "$(INTDIR)\europeanoption.sbr"
 	-@erase "$(INTDIR)\europeanpathpricer.obj"
@@ -1298,7 +1304,8 @@ BSC32_SBRS= \
 	"$(INTDIR)\exercise.sbr" \
 	"$(INTDIR)\grid.sbr" \
 	"$(INTDIR)\scheduler.sbr" \
-	"$(INTDIR)\voltermstructure.sbr"
+	"$(INTDIR)\voltermstructure.sbr" \
+	"$(INTDIR)\errors.sbr"
 
 "$(OUTDIR)\QuantLib.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -1479,7 +1486,8 @@ LIB32_OBJS= \
 	"$(INTDIR)\exercise.obj" \
 	"$(INTDIR)\grid.obj" \
 	"$(INTDIR)\scheduler.obj" \
-	"$(INTDIR)\voltermstructure.obj"
+	"$(INTDIR)\voltermstructure.obj" \
+	"$(INTDIR)\errors.obj"
 
 ".\lib\Win32\VisualStudio\QuantLib_d.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
    if not exist lib\Win32\VisualStudio mkdir lib\Win32\VisualStudio
@@ -1623,6 +1631,8 @@ CLEAN :
 	-@erase "$(INTDIR)\discretizedvanillaoption.sbr"
 	-@erase "$(INTDIR)\errorfunction.obj"
 	-@erase "$(INTDIR)\errorfunction.sbr"
+	-@erase "$(INTDIR)\errors.obj"
+	-@erase "$(INTDIR)\errors.sbr"
 	-@erase "$(INTDIR)\europeanoption.obj"
 	-@erase "$(INTDIR)\europeanoption.sbr"
 	-@erase "$(INTDIR)\europeanpathpricer.obj"
@@ -2027,7 +2037,8 @@ BSC32_SBRS= \
 	"$(INTDIR)\exercise.sbr" \
 	"$(INTDIR)\grid.sbr" \
 	"$(INTDIR)\scheduler.sbr" \
-	"$(INTDIR)\voltermstructure.sbr"
+	"$(INTDIR)\voltermstructure.sbr" \
+	"$(INTDIR)\errors.sbr"
 
 "$(OUTDIR)\QuantLib.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -2208,7 +2219,8 @@ LIB32_OBJS= \
 	"$(INTDIR)\exercise.obj" \
 	"$(INTDIR)\grid.obj" \
 	"$(INTDIR)\scheduler.obj" \
-	"$(INTDIR)\voltermstructure.obj"
+	"$(INTDIR)\voltermstructure.obj" \
+	"$(INTDIR)\errors.obj"
 
 ".\lib\Win32\VisualStudio\QuantLib_MTDLL.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
    if not exist lib\Win32\VisualStudio mkdir lib\Win32\VisualStudio
@@ -2352,6 +2364,8 @@ CLEAN :
 	-@erase "$(INTDIR)\discretizedvanillaoption.sbr"
 	-@erase "$(INTDIR)\errorfunction.obj"
 	-@erase "$(INTDIR)\errorfunction.sbr"
+	-@erase "$(INTDIR)\errors.obj"
+	-@erase "$(INTDIR)\errors.sbr"
 	-@erase "$(INTDIR)\europeanoption.obj"
 	-@erase "$(INTDIR)\europeanoption.sbr"
 	-@erase "$(INTDIR)\europeanpathpricer.obj"
@@ -2757,7 +2771,8 @@ BSC32_SBRS= \
 	"$(INTDIR)\exercise.sbr" \
 	"$(INTDIR)\grid.sbr" \
 	"$(INTDIR)\scheduler.sbr" \
-	"$(INTDIR)\voltermstructure.sbr"
+	"$(INTDIR)\voltermstructure.sbr" \
+	"$(INTDIR)\errors.sbr"
 
 "$(OUTDIR)\QuantLib.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -2938,7 +2953,8 @@ LIB32_OBJS= \
 	"$(INTDIR)\exercise.obj" \
 	"$(INTDIR)\grid.obj" \
 	"$(INTDIR)\scheduler.obj" \
-	"$(INTDIR)\voltermstructure.obj"
+	"$(INTDIR)\voltermstructure.obj" \
+	"$(INTDIR)\errors.obj"
 
 ".\lib\Win32\VisualStudio\QuantLib_MTDLL_d.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
    if not exist lib\Win32\VisualStudio mkdir lib\Win32\VisualStudio
@@ -4034,6 +4050,12 @@ SOURCE=.\ql\diffusionprocess.cpp
 SOURCE=.\ql\discretizedasset.cpp
 
 "$(INTDIR)\discretizedasset.obj"	"$(INTDIR)\discretizedasset.sbr" : $(SOURCE) "$(INTDIR)"
+	$(CPP) $(CPP_PROJ) $(SOURCE)
+
+
+SOURCE=.\ql\errors.cpp
+
+"$(INTDIR)\errors.obj"	"$(INTDIR)\errors.sbr" : $(SOURCE) "$(INTDIR)"
 	$(CPP) $(CPP_PROJ) $(SOURCE)
 
 

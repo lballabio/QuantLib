@@ -2224,6 +2224,10 @@ SOURCE=.\ql\disposable.hpp
 # End Source File
 # Begin Source File
 
+SOURCE=.\ql\errors.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\ql\errors.hpp
 # End Source File
 # Begin Source File
