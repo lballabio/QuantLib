@@ -200,9 +200,10 @@ void LowDiscrepancyTest::testFaure() {
         }
     }
 
-
-
-    // 2-dimension Faure (shuffled van der Corput sequence base 2)
+    // 2nd dimension of the 2-dimensional Faure sequence
+    // (shuffled van der Corput sequence base 2)
+    // checked with the code provided with "Economic generation of
+    // low-discrepancy sequences with a b-ary gray code", by E. Thiemard
     const Real FaureDimensionTwoOfTwo[] = {
         // first cycle (zero excluded)
         0.50000,
@@ -239,8 +240,9 @@ void LowDiscrepancyTest::testFaure() {
         }
     }
 
-    // 3-dimension Faure (shuffled van der Corput sequence base 3)
-    // see Glassermann...
+    // 3-dimension Faure sequence (shuffled van der Corput sequence base 3)
+    // see "Monte Carlo Methods in Financial Engineering,"
+    // by Paul Glasserman, 2004 Springer Verlag, pag. ??
     const Real FaureDimensionOneOfThree[] = {
         // first cycle (zero excluded)
         1.0/3,  2.0/3,

@@ -27,3 +27,5 @@ Changes since latest release:
   and past fixings.) When missing, it defaults to that of the term structure.
 
 - Added compilation flag to select default floating-coupon type
+
+- Added Faure low-discrepancy sequence
