@@ -29,8 +29,8 @@ namespace QuantLib {
     MultiAssetOption::MultiAssetOption(
         const std::vector<Handle<BlackScholesStochasticProcess> >& stochProcs,       
         const Handle<Payoff>& payoff,
-        const Handle<Exercise>& exercise,
-        const double correlation,
+        const Handle<Exercise>& exercise,        
+        const Matrix& correlation,
         const Handle<PricingEngine>& engine,
         const std::string& isinCode,
         const std::string& description)
@@ -122,7 +122,7 @@ namespace QuantLib {
 */
         
         arguments->blackScholesProcesses = blackScholesProcesses_;
-
+        
         arguments->correlation = correlation_;
 
         arguments->exercise = exercise_;

@@ -28,8 +28,8 @@ namespace QuantLib {
         const BasketType basketType,
         const std::vector<Handle<BlackScholesStochasticProcess> >& stochProcs,
         const Handle<PlainVanillaPayoff>& payoff,
-        const Handle<Exercise>& exercise,
-        const double correlation,
+        const Handle<Exercise>& exercise,        
+        const Matrix& correlation,
         const Handle<PricingEngine>& engine,
         const std::string& isinCode,
         const std::string& description)

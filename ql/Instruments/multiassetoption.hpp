@@ -33,8 +33,8 @@ namespace QuantLib {
       public:
         MultiAssetOption(const std::vector<Handle<BlackScholesStochasticProcess> >& stochProcs,            
                        const Handle<Payoff>& payoff,
-                       const Handle<Exercise>& exercise,
-                       const double correlation,
+                       const Handle<Exercise>& exercise,                       
+                       const Matrix& correlation,
                        const Handle<PricingEngine>& engine =
                                             Handle<PricingEngine>(),
                        const std::string& isinCode = "",
@@ -62,8 +62,8 @@ namespace QuantLib {
         mutable double delta_,  gamma_, theta_,
             vega_, rho_, dividendRho_;
         // arguments        
-        std::vector< Handle<BlackScholesStochasticProcess> > blackScholesProcesses_;
-        double correlation_;
+        std::vector< Handle<BlackScholesStochasticProcess> > blackScholesProcesses_;        
+        Matrix correlation_;
     };
 
     //! arguments for multi asset option calculation
@@ -71,8 +71,8 @@ namespace QuantLib {
       public:
         arguments() {}
         void validate() const;
-        std::vector< Handle<BlackScholesStochasticProcess> > blackScholesProcesses;  
-        double correlation;
+        std::vector< Handle<BlackScholesStochasticProcess> > blackScholesProcesses;          
+        Matrix correlation;
     };
 
     //! %results from multi asset option calculation
