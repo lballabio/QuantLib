@@ -47,13 +47,13 @@ namespace QuantLib {
 	
 		inline Spread::Spread(double s) {
 			Require(s >= -1.0 && s <= 1.0,
-				"invalid spread value ("+RateFormat(s)+"). Absolute value must be between 0 and 1");
+				"invalid spread value ("+RateFormatter::toString(s)+"). Absolute value must be between 0 and 1");
 			spread = s;
 		}
 	
 		inline Spread& Spread::operator=(double s) {
 			Require(s >= -1.0 && s <= 1.0,
-				"invalid spread value ("+RateFormat(s)+"). Absolute value must be between 0 and 1");
+				"invalid spread value ("+RateFormatter::toString(s)+"). Absolute value must be between 0 and 1");
 			spread = s;
 			return *this;
 		}

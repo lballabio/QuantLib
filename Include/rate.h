@@ -62,13 +62,13 @@ namespace QuantLib {
 	
 		inline Rate::Rate(double y) {
 			Require(y >= 0.0 && y <= 1.0,
-				"invalid yield value ("+RateFormat(y)+"). Value must be between 0 and 1");
+				"invalid yield value ("+RateFormatter::toString(y)+"). Value must be between 0 and 1");
 			yield = y;
 		}
 	
 		inline Rate& Rate::operator=(double y) {
 			Require(y >= 0.0 && y <= 1.0,
-				"invalid yield value ("+RateFormat(y)+"). Value must be between 0 and 1");
+				"invalid yield value ("+RateFormatter::toString(y)+"). Value must be between 0 and 1");
 			yield = y;
 			return *this;
 		}

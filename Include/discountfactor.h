@@ -39,12 +39,12 @@ namespace QuantLib {
 		// inline definitions
 	
 		inline DiscountFactor::DiscountFactor(double f) {
-			Require(f >= 0.0 && f <= 1.0,"invalid discount factor ("+DoubleFormat(f)+"). Value must be between 0 and 1");
+			Require(f >= 0.0 && f <= 1.0,"invalid discount factor ("+DoubleFormatter::toString(f)+"). Value must be between 0 and 1");
 			factor = f;
 		}
 	
 		inline DiscountFactor& DiscountFactor::operator=(double f) {
-			Require(f >= 0.0 && f <= 1.0,"invalid discount factor ("+DoubleFormat(f)+"). Value must be between 0 and 1");
+			Require(f >= 0.0 && f <= 1.0,"invalid discount factor ("+DoubleFormatter::toString(f)+"). Value must be between 0 and 1");
 			factor = f;
 			return *this;
 		}
