@@ -1,4 +1,3 @@
-
 /*
  * Copyright (C) 2000
  * Ferdinando Ametrano, Luigi Ballabio, Adolfo Benin, Marco Marchioro
@@ -18,7 +17,8 @@
  * You should have received a copy of the license along with this file;
  * if not, contact ferdinando@ametrano.net
  *
- * QuantLib license is also available at http://quantlib.sourceforge.net/LICENSE.TXT
+ * QuantLib license is also available at 
+ * http://quantlib.sourceforge.net/LICENSE.TXT
 */
 
 #ifndef quantlib_vectors_i
@@ -46,116 +46,255 @@
 typedef std::vector<int> IntVector;
 typedef std::vector<double> DoubleVector;
 using QuantLib::Null;
+using QuantLib::IntegerFormatter;
+using QuantLib::DoubleFormatter;
 %}
 
-// typemaps
+// typemap Python sequence of ints to std::vector<int>
 
-%typemap(python,in) IntVector, IntVector *, const IntVector & {
-    if (PyTuple_Check($source)) {
-        int size = PyTuple_Size($source);
-        $target = new IntVector(size);
+%{
+typedef std::vector<int> IntVector;
+%}
+
+class IntVector {
+  public:
+    // hide constructor - python sequences can be used
+    ~IntVector();
+};
+
+%addmethods IntVector {
+
+    int __len__() {
+        return self->size();
+    }
+
+    int __getitem__(int i) {
+        if (i>=0 && i<self->size()) {
+            return (*self)[i];
+        } else if (i<0 && -i<=self->size()) {
+            return (*self)[self->size()+i];
+        } else {
+            throw IndexError("IntVector index out of range");
+        }
+    }
+
+    void __setitem__(int i, int x) {
+        if (i>=0 && i<self->size()) {
+            (*self)[i] = x;
+        } else if (i<0 && -i<=self->size()) {
+            (*self)[self->size()+i] = x;
+        } else {
+            throw IndexError("IntVector index out of range");
+        }
+    }
+
+    IntVector __getslice__(int i, int j) {
+        if (i<0)
+            i = self->size()+i;
+        if (i<0)
+            i = 0;
+        if (j<0)
+            j = self->size()+j;
+        if (j > self->size())
+            j = self->size();
+        IntVector tmp(j-i);
+        std::copy(self->begin()+i,self->begin()+j,tmp.begin());
+        return tmp;
+    }
+
+    void __setslice__(int i, int j, const IntVector& rhs) {
+        if (i<0)
+            i = self->size()+i;
+        if (i<0)
+            i = 0;
+        if (j<0)
+            j = self->size()+j;
+        if (j > self->size())
+            j = self->size();
+        QL_ENSURE(rhs.size() == j-i, "IntVectors are not resizable");
+        std::copy(rhs.begin(),rhs.end(),self->begin()+i);
+    }
+
+    String __str__() {
+        String s = "(";
+        for (int i=0; i<self->size(); i++) {
+            if (i != 0)
+                s += ", ";
+            s += IntegerFormatter::toString((*self)[i]);
+        }
+        s += ")";
+        return s;
+    }
+    String __repr__() {
+        String s = "(";
+        for (int i=0; i<self->size(); i++) {
+            if (i != 0)
+                s += ", ";
+            s += IntegerFormatter::toString((*self)[i]);
+        }
+        s += ")";
+        return s;
+    }
+
+    int __nonzero__() {
+        return (self->size() == 0 ? 0 : 1);
+    }
+
+}; 
+
+%typemap(python,in) IntVector (IntVector temp), IntVector * (IntVector temp), 
+  const IntVector & (IntVector temp), IntVector & (IntVector temp) {
+    IntVector* v;
+    if (PyTuple_Check($source) || PyList_Check($source)) {
+        int size = (PyTuple_Check($source) ? 
+            PyTuple_Size($source) :
+            PyList_Size($source));
+        temp = IntVector(size);
+        $target = &temp;
         for (int i=0; i<size; i++) {
-            PyObject* o = PyTuple_GetItem($source,i);
-            if (PyInt_Check(o)) {
-                (*$target)[i] = int(PyInt_AsLong(o));
-            } else if (o == Py_None) {
+            PyObject* o = PySequence_GetItem($source,i);
+            if (o == Py_None) {
                 (*$target)[i] = Null<int>();
+            } else if (PyInt_Check(o)) {
+                (*$target)[i] = int(PyInt_AsLong(o));
             } else {
-                PyErr_SetString(PyExc_TypeError,"tuple must contain integers");
-                delete $target;
+                PyErr_SetString(PyExc_TypeError,"ints expected");
                 return NULL;
             }
         }
-    } else if (PyList_Check($source)) {
-        int size = PyList_Size($source);
-        $target = new IntVector(size);
-        for (int i=0; i<size; i++) {
-            PyObject* o = PyList_GetItem($source,i);
-            if (PyInt_Check(o)) {
-                (*$target)[i] = int(PyInt_AsLong(o));
-            } else if (o == Py_None) {
-                (*$target)[i] = Null<int>();
-            } else {
-                PyErr_SetString(PyExc_TypeError,"list must contain integers");
-                delete $target;
-                return NULL;
-            }
-        }
+    } else if ((SWIG_ConvertPtr($source,(void **) &v,
+      (swig_type_info *)SWIG_TypeQuery("IntVector *"),0)) != -1) {
+        $target = v;
     } else {
-        PyErr_SetString(PyExc_TypeError,"not a sequence");
+        PyErr_SetString(PyExc_TypeError,"IntVector expected");
         return NULL;
     }
 };
 
-%typemap(python,freearg) IntVector, IntVector *, const IntVector & {
-    delete $source;
+
+// typemap Python sequence of doubles to std::vector<double>
+
+%{
+typedef std::vector<double> DoubleVector;
+%}
+
+class DoubleVector {
+  public:
+    // hide constructor - python sequences can be used
+    ~DoubleVector();
 };
 
-%typemap(python,out) IntVector, IntVector *, const IntVector & {
-    $target = PyTuple_New($source->size());
-    for (int i=0; i<$source->size(); i++)
-        PyTuple_SetItem($target,i,PyInt_FromLong((*$source)[i]));
-};
+%addmethods DoubleVector {
 
-%typemap(python,ret) IntVector {
-    delete $source;
-}
+    int __len__() {
+        return self->size();
+    }
 
+    double __getitem__(int i) {
+        if (i>=0 && i<self->size()) {
+            return (*self)[i];
+        } else if (i<0 && -i<=self->size()) {
+            return (*self)[self->size()+i];
+        } else {
+            throw QuantLib::IndexError("DoubleVector index out of range");
+        }
+    }
 
-%typemap(python,in) DoubleVector, DoubleVector * ,const DoubleVector & {
-    if (PyTuple_Check($source)) {
-        int size = PyTuple_Size($source);
-        $target = new DoubleVector(size);
+    void __setitem__(int i, double x) {
+        if (i>=0 && i<self->size()) {
+            (*self)[i] = x;
+        } else if (i<0 && -i<=self->size()) {
+            (*self)[self->size()+i] = x;
+        } else {
+            throw QuantLib::IndexError("DoubleVector index out of range");
+        }
+    }
+
+    DoubleVector __getslice__(int i, int j) {
+        if (i<0)
+            i = self->size()+i;
+        if (i<0)
+            i = 0;
+        if (j<0)
+            j = self->size()+j;
+        if (j > self->size())
+            j = self->size();
+        DoubleVector tmp(j-i);
+        std::copy(self->begin()+i,self->begin()+j,tmp.begin());
+        return tmp;
+    }
+
+    void __setslice__(int i, int j, const DoubleVector& rhs) {
+        if (i<0)
+            i = self->size()+i;
+        if (i<0)
+            i = 0;
+        if (j<0)
+            j = self->size()+j;
+        if (j > self->size())
+            j = self->size();
+        QL_ENSURE(rhs.size() == j-i, "DoubleVectors are not resizable");
+        std::copy(rhs.begin(),rhs.end(),self->begin()+i);
+    }
+
+    String __str__() {
+        String s = "(";
+        for (int i=0; i<self->size(); i++) {
+            if (i != 0)
+                s += ", ";
+            s += DoubleFormatter::toString((*self)[i]);
+        }
+        s += ")";
+        return s;
+    }
+    String __repr__() {
+        String s = "(";
+        for (int i=0; i<self->size(); i++) {
+            if (i != 0)
+                s += ", ";
+            s += DoubleFormatter::toString((*self)[i]);
+        }
+        s += ")";
+        return s;
+    }
+
+    int __nonzero__() {
+        return (self->size() == 0 ? 0 : 1);
+    }
+
+}; 
+
+%typemap(python,in) DoubleVector (DoubleVector temp), 
+  DoubleVector * (DoubleVector temp), const DoubleVector & (DoubleVector temp), 
+  DoubleVector & (DoubleVector temp) {
+    DoubleVector* v;
+    if (PyTuple_Check($source) || PyList_Check($source)) {
+        int size = (PyTuple_Check($source) ? 
+            PyTuple_Size($source) :
+            PyList_Size($source));
+        temp = DoubleVector(size);
+        $target = &temp;
         for (int i=0; i<size; i++) {
-            PyObject* o = PyTuple_GetItem($source,i);
-            if (PyFloat_Check(o)) {
+            PyObject* o = PySequence_GetItem($source,i);
+            if (o == Py_None) {
+                (*$target)[i] = Null<double>();
+            } else if (PyFloat_Check(o)) {
                 (*$target)[i] = PyFloat_AsDouble(o);
             } else if (PyInt_Check(o)) {
                 (*$target)[i] = double(PyInt_AsLong(o));
-            } else if (o == Py_None) {
-                (*$target)[i] = Null<double>();
             } else {
-                PyErr_SetString(PyExc_TypeError,"tuple must contain doubles");
-                delete $target;
+                PyErr_SetString(PyExc_TypeError,"doubles expected");
                 return NULL;
             }
         }
-    } else if (PyList_Check($source)) {
-        int size = PyList_Size($source);
-        $target = new DoubleVector(size);
-        for (int i=0; i<size; i++) {
-            PyObject* o = PyList_GetItem($source,i);
-            if (PyFloat_Check(o)) {
-                (*$target)[i] = PyFloat_AsDouble(o);
-            } else if (PyInt_Check(o)) {
-                (*$target)[i] = double(PyInt_AsLong(o));
-            } else if (o == Py_None) {
-                (*$target)[i] = Null<double>();
-            } else {
-                PyErr_SetString(PyExc_TypeError,"list must contain doubles");
-                delete $target;
-                return NULL;
-            }
-        }
+    } else if ((SWIG_ConvertPtr($source,(void **) &v,
+      (swig_type_info *)SWIG_TypeQuery("DoubleVector *"),0)) != -1) {
+        $target = v;
     } else {
-        PyErr_SetString(PyExc_TypeError,"not a sequence");
+        PyErr_SetString(PyExc_TypeError,"DoubleVector expected");
         return NULL;
     }
 };
-
-%typemap(python,freearg) DoubleVector, DoubleVector *, const DoubleVector & {
-    delete $source;
-};
-
-%typemap(python,out) DoubleVector, DoubleVector *, const DoubleVector & {
-    $target = PyTuple_New($source->size());
-    for (int i=0; i<$source->size(); i++)
-        PyTuple_SetItem($target,i,PyFloat_FromDouble((*$source)[i]));
-};
-
-%typemap(python,ret) DoubleVector {
-    delete $source;
-}
 
 
 #endif

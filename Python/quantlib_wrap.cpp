@@ -505,11 +505,11 @@ SWIG_InstallConstants(PyObject *d, swig_const_info constants[]) {
 #define  SWIGTYPE_p_CurrencyHandle swig_types[15] 
 #define  SWIGTYPE_p_TermStructureHandle swig_types[16] 
 #define  SWIGTYPE_p_Date swig_types[17] 
-#define  SWIGTYPE_p_DateVector swig_types[18] 
-#define  SWIGTYPE_p_Newton swig_types[19] 
-#define  SWIGTYPE_p_ArrayLexicographicalViewColumn swig_types[20] 
-#define  SWIGTYPE_p_DPlus swig_types[21] 
-#define  SWIGTYPE_p_StandardMultiPathGenerator swig_types[22] 
+#define  SWIGTYPE_p_DoubleVector swig_types[18] 
+#define  SWIGTYPE_p_DateVector swig_types[19] 
+#define  SWIGTYPE_p_Newton swig_types[20] 
+#define  SWIGTYPE_p_ArrayLexicographicalViewColumn swig_types[21] 
+#define  SWIGTYPE_p_DPlus swig_types[22] 
 #define  SWIGTYPE_p_GaussianArrayGenerator swig_types[23] 
 #define  SWIGTYPE_p_StandardPathGenerator swig_types[24] 
 #define  SWIGTYPE_p_HistoryValidDataIterator swig_types[25] 
@@ -517,34 +517,36 @@ SWIG_InstallConstants(PyObject *d, swig_const_info constants[]) {
 #define  SWIGTYPE_p_HistoryValidIterator swig_types[27] 
 #define  SWIGTYPE_p_HistoryIterator swig_types[28] 
 #define  SWIGTYPE_p_TridiagonalOperator swig_types[29] 
-#define  SWIGTYPE_p_UniformRandomGenerator swig_types[30] 
-#define  SWIGTYPE_p_GaussianRandomGenerator swig_types[31] 
-#define  SWIGTYPE_p_MultivariateAccumulator swig_types[32] 
-#define  SWIGTYPE_p_InvCumulativeNormalDistribution swig_types[33] 
-#define  SWIGTYPE_p_NormalDistribution swig_types[34] 
-#define  SWIGTYPE_p_CumulativeNormalDistribution swig_types[35] 
-#define  SWIGTYPE_p_Himalaya swig_types[36] 
-#define  SWIGTYPE_p_RiskStatistics swig_types[37] 
-#define  SWIGTYPE_p_Statistics swig_types[38] 
-#define  SWIGTYPE_p_NewtonSafe swig_types[39] 
-#define  SWIGTYPE_p_VarTool swig_types[40] 
-#define  SWIGTYPE_p_History swig_types[41] 
-#define  SWIGTYPE_p_Solver1D swig_types[42] 
-#define  SWIGTYPE_p_Array swig_types[43] 
-#define  SWIGTYPE_p_ArrayLexicographicalView swig_types[44] 
-#define  SWIGTYPE_p_Ridder swig_types[45] 
-#define  SWIGTYPE_p_DepositRate swig_types[46] 
-#define  SWIGTYPE_p_MatrixRow swig_types[47] 
-#define  SWIGTYPE_p_ObjectiveFunction swig_types[48] 
-#define  SWIGTYPE_p_McEuropeanPricer swig_types[49] 
-#define  SWIGTYPE_p_CalendarHandle swig_types[50] 
-#define  SWIGTYPE_p_DayCounterHandle swig_types[51] 
-#define  SWIGTYPE_p_InstrumentHandle swig_types[52] 
-#define  SWIGTYPE_p_InterpolationHandle swig_types[53] 
-#define  SWIGTYPE_p_FalsePosition swig_types[54] 
-#define  SWIGTYPE_p_AverageStrikeAsian swig_types[55] 
-#define  SWIGTYPE_p_AveragePriceAsian swig_types[56] 
-static swig_type_info *swig_types[58];
+#define  SWIGTYPE_p_StandardMultiPathGenerator swig_types[30] 
+#define  SWIGTYPE_p_UniformRandomGenerator swig_types[31] 
+#define  SWIGTYPE_p_GaussianRandomGenerator swig_types[32] 
+#define  SWIGTYPE_p_MultivariateAccumulator swig_types[33] 
+#define  SWIGTYPE_p_InvCumulativeNormalDistribution swig_types[34] 
+#define  SWIGTYPE_p_NormalDistribution swig_types[35] 
+#define  SWIGTYPE_p_CumulativeNormalDistribution swig_types[36] 
+#define  SWIGTYPE_p_Himalaya swig_types[37] 
+#define  SWIGTYPE_p_RiskStatistics swig_types[38] 
+#define  SWIGTYPE_p_Statistics swig_types[39] 
+#define  SWIGTYPE_p_NewtonSafe swig_types[40] 
+#define  SWIGTYPE_p_VarTool swig_types[41] 
+#define  SWIGTYPE_p_History swig_types[42] 
+#define  SWIGTYPE_p_Solver1D swig_types[43] 
+#define  SWIGTYPE_p_Array swig_types[44] 
+#define  SWIGTYPE_p_ArrayLexicographicalView swig_types[45] 
+#define  SWIGTYPE_p_Ridder swig_types[46] 
+#define  SWIGTYPE_p_DepositRate swig_types[47] 
+#define  SWIGTYPE_p_MatrixRow swig_types[48] 
+#define  SWIGTYPE_p_ObjectiveFunction swig_types[49] 
+#define  SWIGTYPE_p_McEuropeanPricer swig_types[50] 
+#define  SWIGTYPE_p_CalendarHandle swig_types[51] 
+#define  SWIGTYPE_p_DayCounterHandle swig_types[52] 
+#define  SWIGTYPE_p_InstrumentHandle swig_types[53] 
+#define  SWIGTYPE_p_InterpolationHandle swig_types[54] 
+#define  SWIGTYPE_p_FalsePosition swig_types[55] 
+#define  SWIGTYPE_p_AverageStrikeAsian swig_types[56] 
+#define  SWIGTYPE_p_AveragePriceAsian swig_types[57] 
+#define  SWIGTYPE_p_IntVector swig_types[58] 
+static swig_type_info *swig_types[60];
 
 /* -------- TYPES TABLE (END) -------- */
 
@@ -557,6 +559,9 @@ static swig_type_info *swig_types[58];
 #define SWIG_name    "QuantLibc"
 
 #include "quantlib.h"
+
+using QuantLib::Error;
+using QuantLib::IndexError;
 
 #include "quantlib.h"
 
@@ -775,6 +780,12 @@ using QuantLib::DiscountFactor;
 typedef std::vector<int> IntVector;
 typedef std::vector<double> DoubleVector;
 using QuantLib::Null;
+using QuantLib::IntegerFormatter;
+using QuantLib::DoubleFormatter;
+
+typedef std::vector<int> IntVector;
+
+typedef std::vector<double> DoubleVector;
 
 #include "history.h"
 
@@ -1026,10 +1037,10 @@ static PyObject *_wrap_DateFromSerialNumber(PyObject *self, PyObject *args, PyOb
     {
         try {
             result = new Date (DateFromSerialNumber(arg0));
-        }catch (QuantLib::IndexError& e) {
+        }catch (IndexError& e) {
             PyErr_SetString(PyExc_IndexError,e.what());
             return NULL;
-        }catch (QuantLib::Error& e) {
+        }catch (Error& e) {
             PyErr_SetString(PyExc_Exception,e.what());
             return NULL;
         }catch (std::exception& e) {
@@ -1055,10 +1066,10 @@ static PyObject *_wrap_TARGET(PyObject *self, PyObject *args, PyObject *kwargs) 
     {
         try {
             result = new CalendarHandle (NewTARGET());
-        }catch (QuantLib::IndexError& e) {
+        }catch (IndexError& e) {
             PyErr_SetString(PyExc_IndexError,e.what());
             return NULL;
-        }catch (QuantLib::Error& e) {
+        }catch (Error& e) {
             PyErr_SetString(PyExc_Exception,e.what());
             return NULL;
         }catch (std::exception& e) {
@@ -1084,10 +1095,10 @@ static PyObject *_wrap_NewYork(PyObject *self, PyObject *args, PyObject *kwargs)
     {
         try {
             result = new CalendarHandle (NewNewYork());
-        }catch (QuantLib::IndexError& e) {
+        }catch (IndexError& e) {
             PyErr_SetString(PyExc_IndexError,e.what());
             return NULL;
-        }catch (QuantLib::Error& e) {
+        }catch (Error& e) {
             PyErr_SetString(PyExc_Exception,e.what());
             return NULL;
         }catch (std::exception& e) {
@@ -1113,10 +1124,10 @@ static PyObject *_wrap_London(PyObject *self, PyObject *args, PyObject *kwargs) 
     {
         try {
             result = new CalendarHandle (NewLondon());
-        }catch (QuantLib::IndexError& e) {
+        }catch (IndexError& e) {
             PyErr_SetString(PyExc_IndexError,e.what());
             return NULL;
-        }catch (QuantLib::Error& e) {
+        }catch (Error& e) {
             PyErr_SetString(PyExc_Exception,e.what());
             return NULL;
         }catch (std::exception& e) {
@@ -1142,10 +1153,10 @@ static PyObject *_wrap_Frankfurt(PyObject *self, PyObject *args, PyObject *kwarg
     {
         try {
             result = new CalendarHandle (NewFrankfurt());
-        }catch (QuantLib::IndexError& e) {
+        }catch (IndexError& e) {
             PyErr_SetString(PyExc_IndexError,e.what());
             return NULL;
-        }catch (QuantLib::Error& e) {
+        }catch (Error& e) {
             PyErr_SetString(PyExc_Exception,e.what());
             return NULL;
         }catch (std::exception& e) {
@@ -1171,10 +1182,10 @@ static PyObject *_wrap_Milan(PyObject *self, PyObject *args, PyObject *kwargs) {
     {
         try {
             result = new CalendarHandle (NewMilan());
-        }catch (QuantLib::IndexError& e) {
+        }catch (IndexError& e) {
             PyErr_SetString(PyExc_IndexError,e.what());
             return NULL;
-        }catch (QuantLib::Error& e) {
+        }catch (Error& e) {
             PyErr_SetString(PyExc_Exception,e.what());
             return NULL;
         }catch (std::exception& e) {
@@ -1200,10 +1211,10 @@ static PyObject *_wrap_Zurich(PyObject *self, PyObject *args, PyObject *kwargs) 
     {
         try {
             result = new CalendarHandle (NewZurich());
-        }catch (QuantLib::IndexError& e) {
+        }catch (IndexError& e) {
             PyErr_SetString(PyExc_IndexError,e.what());
             return NULL;
-        }catch (QuantLib::Error& e) {
+        }catch (Error& e) {
             PyErr_SetString(PyExc_Exception,e.what());
             return NULL;
         }catch (std::exception& e) {
@@ -1239,10 +1250,10 @@ static PyObject *_wrap_makeCalendar(PyObject *self, PyObject *args, PyObject *kw
     {
         try {
             result = new CalendarHandle (makeCalendar((String const &)*arg0));
-        }catch (QuantLib::IndexError& e) {
+        }catch (IndexError& e) {
             PyErr_SetString(PyExc_IndexError,e.what());
             return NULL;
-        }catch (QuantLib::Error& e) {
+        }catch (Error& e) {
             PyErr_SetString(PyExc_Exception,e.what());
             return NULL;
         }catch (std::exception& e) {
@@ -1271,10 +1282,10 @@ static PyObject *_wrap_EUR(PyObject *self, PyObject *args, PyObject *kwargs) {
     {
         try {
             result = new CurrencyHandle (NewEUR());
-        }catch (QuantLib::IndexError& e) {
+        }catch (IndexError& e) {
             PyErr_SetString(PyExc_IndexError,e.what());
             return NULL;
-        }catch (QuantLib::Error& e) {
+        }catch (Error& e) {
             PyErr_SetString(PyExc_Exception,e.what());
             return NULL;
         }catch (std::exception& e) {
@@ -1300,10 +1311,10 @@ static PyObject *_wrap_USD(PyObject *self, PyObject *args, PyObject *kwargs) {
     {
         try {
             result = new CurrencyHandle (NewUSD());
-        }catch (QuantLib::IndexError& e) {
+        }catch (IndexError& e) {
             PyErr_SetString(PyExc_IndexError,e.what());
             return NULL;
-        }catch (QuantLib::Error& e) {
+        }catch (Error& e) {
             PyErr_SetString(PyExc_Exception,e.what());
             return NULL;
         }catch (std::exception& e) {
@@ -1329,10 +1340,10 @@ static PyObject *_wrap_GBP(PyObject *self, PyObject *args, PyObject *kwargs) {
     {
         try {
             result = new CurrencyHandle (NewGBP());
-        }catch (QuantLib::IndexError& e) {
+        }catch (IndexError& e) {
             PyErr_SetString(PyExc_IndexError,e.what());
             return NULL;
-        }catch (QuantLib::Error& e) {
+        }catch (Error& e) {
             PyErr_SetString(PyExc_Exception,e.what());
             return NULL;
         }catch (std::exception& e) {
@@ -1358,10 +1369,10 @@ static PyObject *_wrap_DEM(PyObject *self, PyObject *args, PyObject *kwargs) {
     {
         try {
             result = new CurrencyHandle (NewDEM());
-        }catch (QuantLib::IndexError& e) {
+        }catch (IndexError& e) {
             PyErr_SetString(PyExc_IndexError,e.what());
             return NULL;
-        }catch (QuantLib::Error& e) {
+        }catch (Error& e) {
             PyErr_SetString(PyExc_Exception,e.what());
             return NULL;
         }catch (std::exception& e) {
@@ -1387,10 +1398,10 @@ static PyObject *_wrap_ITL(PyObject *self, PyObject *args, PyObject *kwargs) {
     {
         try {
             result = new CurrencyHandle (NewITL());
-        }catch (QuantLib::IndexError& e) {
+        }catch (IndexError& e) {
             PyErr_SetString(PyExc_IndexError,e.what());
             return NULL;
-        }catch (QuantLib::Error& e) {
+        }catch (Error& e) {
             PyErr_SetString(PyExc_Exception,e.what());
             return NULL;
         }catch (std::exception& e) {
@@ -1416,10 +1427,10 @@ static PyObject *_wrap_AUD(PyObject *self, PyObject *args, PyObject *kwargs) {
     {
         try {
             result = new CurrencyHandle (NewAUD());
-        }catch (QuantLib::IndexError& e) {
+        }catch (IndexError& e) {
             PyErr_SetString(PyExc_IndexError,e.what());
             return NULL;
-        }catch (QuantLib::Error& e) {
+        }catch (Error& e) {
             PyErr_SetString(PyExc_Exception,e.what());
             return NULL;
         }catch (std::exception& e) {
@@ -1445,10 +1456,10 @@ static PyObject *_wrap_CAD(PyObject *self, PyObject *args, PyObject *kwargs) {
     {
         try {
             result = new CurrencyHandle (NewCAD());
-        }catch (QuantLib::IndexError& e) {
+        }catch (IndexError& e) {
             PyErr_SetString(PyExc_IndexError,e.what());
             return NULL;
-        }catch (QuantLib::Error& e) {
+        }catch (Error& e) {
             PyErr_SetString(PyExc_Exception,e.what());
             return NULL;
         }catch (std::exception& e) {
@@ -1474,10 +1485,10 @@ static PyObject *_wrap_CHF(PyObject *self, PyObject *args, PyObject *kwargs) {
     {
         try {
             result = new CurrencyHandle (NewCHF());
-        }catch (QuantLib::IndexError& e) {
+        }catch (IndexError& e) {
             PyErr_SetString(PyExc_IndexError,e.what());
             return NULL;
-        }catch (QuantLib::Error& e) {
+        }catch (Error& e) {
             PyErr_SetString(PyExc_Exception,e.what());
             return NULL;
         }catch (std::exception& e) {
@@ -1503,10 +1514,10 @@ static PyObject *_wrap_DKK(PyObject *self, PyObject *args, PyObject *kwargs) {
     {
         try {
             result = new CurrencyHandle (NewDKK());
-        }catch (QuantLib::IndexError& e) {
+        }catch (IndexError& e) {
             PyErr_SetString(PyExc_IndexError,e.what());
             return NULL;
-        }catch (QuantLib::Error& e) {
+        }catch (Error& e) {
             PyErr_SetString(PyExc_Exception,e.what());
             return NULL;
         }catch (std::exception& e) {
@@ -1532,10 +1543,10 @@ static PyObject *_wrap_JPY(PyObject *self, PyObject *args, PyObject *kwargs) {
     {
         try {
             result = new CurrencyHandle (NewJPY());
-        }catch (QuantLib::IndexError& e) {
+        }catch (IndexError& e) {
             PyErr_SetString(PyExc_IndexError,e.what());
             return NULL;
-        }catch (QuantLib::Error& e) {
+        }catch (Error& e) {
             PyErr_SetString(PyExc_Exception,e.what());
             return NULL;
         }catch (std::exception& e) {
@@ -1561,10 +1572,10 @@ static PyObject *_wrap_SEK(PyObject *self, PyObject *args, PyObject *kwargs) {
     {
         try {
             result = new CurrencyHandle (NewSEK());
-        }catch (QuantLib::IndexError& e) {
+        }catch (IndexError& e) {
             PyErr_SetString(PyExc_IndexError,e.what());
             return NULL;
-        }catch (QuantLib::Error& e) {
+        }catch (Error& e) {
             PyErr_SetString(PyExc_Exception,e.what());
             return NULL;
         }catch (std::exception& e) {
@@ -1600,10 +1611,10 @@ static PyObject *_wrap_makeCurrency(PyObject *self, PyObject *args, PyObject *kw
     {
         try {
             result = new CurrencyHandle (makeCurrency((String const &)*arg0));
-        }catch (QuantLib::IndexError& e) {
+        }catch (IndexError& e) {
             PyErr_SetString(PyExc_IndexError,e.what());
             return NULL;
-        }catch (QuantLib::Error& e) {
+        }catch (Error& e) {
             PyErr_SetString(PyExc_Exception,e.what());
             return NULL;
         }catch (std::exception& e) {
@@ -1632,10 +1643,10 @@ static PyObject *_wrap_Actual360(PyObject *self, PyObject *args, PyObject *kwarg
     {
         try {
             result = new DayCounterHandle (NewActual360());
-        }catch (QuantLib::IndexError& e) {
+        }catch (IndexError& e) {
             PyErr_SetString(PyExc_IndexError,e.what());
             return NULL;
-        }catch (QuantLib::Error& e) {
+        }catch (Error& e) {
             PyErr_SetString(PyExc_Exception,e.what());
             return NULL;
         }catch (std::exception& e) {
@@ -1661,10 +1672,10 @@ static PyObject *_wrap_Actual365(PyObject *self, PyObject *args, PyObject *kwarg
     {
         try {
             result = new DayCounterHandle (NewActual365());
-        }catch (QuantLib::IndexError& e) {
+        }catch (IndexError& e) {
             PyErr_SetString(PyExc_IndexError,e.what());
             return NULL;
-        }catch (QuantLib::Error& e) {
+        }catch (Error& e) {
             PyErr_SetString(PyExc_Exception,e.what());
             return NULL;
         }catch (std::exception& e) {
@@ -1690,10 +1701,10 @@ static PyObject *_wrap_Thirty360(PyObject *self, PyObject *args, PyObject *kwarg
     {
         try {
             result = new DayCounterHandle (NewThirty360());
-        }catch (QuantLib::IndexError& e) {
+        }catch (IndexError& e) {
             PyErr_SetString(PyExc_IndexError,e.what());
             return NULL;
-        }catch (QuantLib::Error& e) {
+        }catch (Error& e) {
             PyErr_SetString(PyExc_Exception,e.what());
             return NULL;
         }catch (std::exception& e) {
@@ -1719,10 +1730,10 @@ static PyObject *_wrap_Thirty360European(PyObject *self, PyObject *args, PyObjec
     {
         try {
             result = new DayCounterHandle (NewThirty360European());
-        }catch (QuantLib::IndexError& e) {
+        }catch (IndexError& e) {
             PyErr_SetString(PyExc_IndexError,e.what());
             return NULL;
-        }catch (QuantLib::Error& e) {
+        }catch (Error& e) {
             PyErr_SetString(PyExc_Exception,e.what());
             return NULL;
         }catch (std::exception& e) {
@@ -1748,10 +1759,10 @@ static PyObject *_wrap_Thirty360Italian(PyObject *self, PyObject *args, PyObject
     {
         try {
             result = new DayCounterHandle (NewThirty360Italian());
-        }catch (QuantLib::IndexError& e) {
+        }catch (IndexError& e) {
             PyErr_SetString(PyExc_IndexError,e.what());
             return NULL;
-        }catch (QuantLib::Error& e) {
+        }catch (Error& e) {
             PyErr_SetString(PyExc_Exception,e.what());
             return NULL;
         }catch (std::exception& e) {
@@ -1787,10 +1798,10 @@ static PyObject *_wrap_makeDayCounter(PyObject *self, PyObject *args, PyObject *
     {
         try {
             result = new DayCounterHandle (makeDayCounter((String const &)*arg0));
-        }catch (QuantLib::IndexError& e) {
+        }catch (IndexError& e) {
             PyErr_SetString(PyExc_IndexError,e.what());
             return NULL;
-        }catch (QuantLib::Error& e) {
+        }catch (Error& e) {
             PyErr_SetString(PyExc_Exception,e.what());
             return NULL;
         }catch (std::exception& e) {
@@ -1838,10 +1849,10 @@ static PyObject *_wrap_ImpliedTermStructure(PyObject *self, PyObject *args, PyOb
     {
         try {
             result = new TermStructureHandle (NewImpliedTermStructure(*arg0,*arg1));
-        }catch (QuantLib::IndexError& e) {
+        }catch (IndexError& e) {
             PyErr_SetString(PyExc_IndexError,e.what());
             return NULL;
-        }catch (QuantLib::Error& e) {
+        }catch (Error& e) {
             PyErr_SetString(PyExc_Exception,e.what());
             return NULL;
         }catch (std::exception& e) {
@@ -1871,10 +1882,10 @@ static PyObject *_wrap_SpreadedTermStructure(PyObject *self, PyObject *args, PyO
     {
         try {
             result = new TermStructureHandle (NewSpreadedTermStructure(*arg0,arg1));
-        }catch (QuantLib::IndexError& e) {
+        }catch (IndexError& e) {
             PyErr_SetString(PyExc_IndexError,e.what());
             return NULL;
-        }catch (QuantLib::Error& e) {
+        }catch (Error& e) {
             PyErr_SetString(PyExc_Exception,e.what());
             return NULL;
         }catch (std::exception& e) {
@@ -1923,10 +1934,10 @@ static PyObject *_wrap_FlatForward(PyObject *self, PyObject *args, PyObject *kwa
     {
         try {
             result = new TermStructureHandle (NewFlatForward(*arg0,*arg1,*arg2,arg3));
-        }catch (QuantLib::IndexError& e) {
+        }catch (IndexError& e) {
             PyErr_SetString(PyExc_IndexError,e.what());
             return NULL;
-        }catch (QuantLib::Error& e) {
+        }catch (Error& e) {
             PyErr_SetString(PyExc_Exception,e.what());
             return NULL;
         }catch (std::exception& e) {
@@ -2012,10 +2023,10 @@ static PyObject *_wrap_PiecewiseConstantForwards(PyObject *self, PyObject *args,
     {
         try {
             result = new TermStructureHandle (NewPiecewiseConstantForwards(*arg0,*arg1,*arg2,*arg3));
-        }catch (QuantLib::IndexError& e) {
+        }catch (IndexError& e) {
             PyErr_SetString(PyExc_IndexError,e.what());
             return NULL;
-        }catch (QuantLib::Error& e) {
+        }catch (Error& e) {
             PyErr_SetString(PyExc_Exception,e.what());
             return NULL;
         }catch (std::exception& e) {
@@ -2066,10 +2077,10 @@ static PyObject *_wrap_Stock(PyObject *self, PyObject *args, PyObject *kwargs) {
     {
         try {
             result = new InstrumentHandle (NewStock(*arg0,*arg1));
-        }catch (QuantLib::IndexError& e) {
+        }catch (IndexError& e) {
             PyErr_SetString(PyExc_IndexError,e.what());
             return NULL;
-        }catch (QuantLib::Error& e) {
+        }catch (Error& e) {
             PyErr_SetString(PyExc_Exception,e.what());
             return NULL;
         }catch (std::exception& e) {
@@ -2133,10 +2144,10 @@ static PyObject *_wrap_LexicographicalView(PyObject *self, PyObject *args, PyObj
     {
         try {
             result = new ArrayLexicographicalView (CreateLexicographicView(*arg0,arg1));
-        }catch (QuantLib::IndexError& e) {
+        }catch (IndexError& e) {
             PyErr_SetString(PyExc_IndexError,e.what());
             return NULL;
-        }catch (QuantLib::Error& e) {
+        }catch (Error& e) {
             PyErr_SetString(PyExc_Exception,e.what());
             return NULL;
         }catch (std::exception& e) {
@@ -2224,10 +2235,10 @@ static PyObject *_wrap_LinearInterpolation(PyObject *self, PyObject *args, PyObj
     {
         try {
             result = new InterpolationHandle (NewLinearInterpolation((Array const &)*arg0,(Array const &)*arg1));
-        }catch (QuantLib::IndexError& e) {
+        }catch (IndexError& e) {
             PyErr_SetString(PyExc_IndexError,e.what());
             return NULL;
-        }catch (QuantLib::Error& e) {
+        }catch (Error& e) {
             PyErr_SetString(PyExc_Exception,e.what());
             return NULL;
         }catch (std::exception& e) {
@@ -2315,10 +2326,10 @@ static PyObject *_wrap_CubicSpline(PyObject *self, PyObject *args, PyObject *kwa
     {
         try {
             result = new InterpolationHandle (newCubicSpline((Array const &)*arg0,(Array const &)*arg1));
-        }catch (QuantLib::IndexError& e) {
+        }catch (IndexError& e) {
             PyErr_SetString(PyExc_IndexError,e.what());
             return NULL;
-        }catch (QuantLib::Error& e) {
+        }catch (Error& e) {
             PyErr_SetString(PyExc_Exception,e.what());
             return NULL;
         }catch (std::exception& e) {
@@ -2347,10 +2358,10 @@ static PyObject *_wrap_transpose(PyObject *self, PyObject *args, PyObject *kwarg
     {
         try {
             result = new Matrix (transpose((Matrix const &)*arg0));
-        }catch (QuantLib::IndexError& e) {
+        }catch (IndexError& e) {
             PyErr_SetString(PyExc_IndexError,e.what());
             return NULL;
-        }catch (QuantLib::Error& e) {
+        }catch (Error& e) {
             PyErr_SetString(PyExc_Exception,e.what());
             return NULL;
         }catch (std::exception& e) {
@@ -2438,10 +2449,10 @@ static PyObject *_wrap_outerProduct(PyObject *self, PyObject *args, PyObject *kw
     {
         try {
             result = new Matrix (outerProduct((Array const &)*arg0,(Array const &)*arg1));
-        }catch (QuantLib::IndexError& e) {
+        }catch (IndexError& e) {
             PyErr_SetString(PyExc_IndexError,e.what());
             return NULL;
-        }catch (QuantLib::Error& e) {
+        }catch (Error& e) {
             PyErr_SetString(PyExc_Exception,e.what());
             return NULL;
         }catch (std::exception& e) {
@@ -2473,10 +2484,10 @@ static PyObject *_wrap_matrixProduct(PyObject *self, PyObject *args, PyObject *k
     {
         try {
             result = new Matrix (matrixProduct((Matrix const &)*arg0,(Matrix const &)*arg1));
-        }catch (QuantLib::IndexError& e) {
+        }catch (IndexError& e) {
             PyErr_SetString(PyExc_IndexError,e.what());
             return NULL;
-        }catch (QuantLib::Error& e) {
+        }catch (Error& e) {
             PyErr_SetString(PyExc_Exception,e.what());
             return NULL;
         }catch (std::exception& e) {
@@ -2505,10 +2516,10 @@ static PyObject *_wrap_matrixSqrt(PyObject *self, PyObject *args, PyObject *kwar
     {
         try {
             result = new Matrix (matrixSqrt((Matrix const &)*arg0));
-        }catch (QuantLib::IndexError& e) {
+        }catch (IndexError& e) {
             PyErr_SetString(PyExc_IndexError,e.what());
             return NULL;
-        }catch (QuantLib::Error& e) {
+        }catch (Error& e) {
             PyErr_SetString(PyExc_Exception,e.what());
             return NULL;
         }catch (std::exception& e) {
@@ -2535,10 +2546,10 @@ static PyObject *_wrap_Identity(PyObject *self, PyObject *args, PyObject *kwargs
     {
         try {
             result = new TridiagonalOperator (TridiagonalIdentity(arg0));
-        }catch (QuantLib::IndexError& e) {
+        }catch (IndexError& e) {
             PyErr_SetString(PyExc_IndexError,e.what());
             return NULL;
-        }catch (QuantLib::Error& e) {
+        }catch (Error& e) {
             PyErr_SetString(PyExc_Exception,e.what());
             return NULL;
         }catch (std::exception& e) {
@@ -2587,10 +2598,10 @@ static PyObject *_wrap_new_BoundaryCondition(PyObject *self, PyObject *args, PyO
         try {
             result = (BoundaryCondition *)new BoundaryCondition(*arg0,arg1);
             
-        }catch (QuantLib::IndexError& e) {
+        }catch (IndexError& e) {
             PyErr_SetString(PyExc_IndexError,e.what());
             return NULL;
-        }catch (QuantLib::Error& e) {
+        }catch (Error& e) {
             PyErr_SetString(PyExc_Exception,e.what());
             return NULL;
         }catch (std::exception& e) {
@@ -2622,10 +2633,10 @@ static PyObject *_wrap_delete_BoundaryCondition(PyObject *self, PyObject *args, 
         try {
             delete arg0;
             
-        }catch (QuantLib::IndexError& e) {
+        }catch (IndexError& e) {
             PyErr_SetString(PyExc_IndexError,e.what());
             return NULL;
-        }catch (QuantLib::Error& e) {
+        }catch (Error& e) {
             PyErr_SetString(PyExc_Exception,e.what());
             return NULL;
         }catch (std::exception& e) {
@@ -2655,10 +2666,10 @@ static PyObject *_wrap_BoundaryCondition_type(PyObject *self, PyObject *args, Py
     {
         try {
             result = new BoundaryConditionType (arg0->type());
-        }catch (QuantLib::IndexError& e) {
+        }catch (IndexError& e) {
             PyErr_SetString(PyExc_IndexError,e.what());
             return NULL;
-        }catch (QuantLib::Error& e) {
+        }catch (Error& e) {
             PyErr_SetString(PyExc_Exception,e.what());
             return NULL;
         }catch (std::exception& e) {
@@ -2703,10 +2714,10 @@ static PyObject *_wrap_BoundaryCondition_value(PyObject *self, PyObject *args, P
         try {
             result = (double )arg0->value();
             
-        }catch (QuantLib::IndexError& e) {
+        }catch (IndexError& e) {
             PyErr_SetString(PyExc_IndexError,e.what());
             return NULL;
-        }catch (QuantLib::Error& e) {
+        }catch (Error& e) {
             PyErr_SetString(PyExc_Exception,e.what());
             return NULL;
         }catch (std::exception& e) {
@@ -2782,10 +2793,10 @@ static PyObject *_wrap_new_Date(PyObject *self, PyObject *args, PyObject *kwargs
         try {
             result = (Date *)new Date(arg0,*arg1,arg2);
             
-        }catch (QuantLib::IndexError& e) {
+        }catch (IndexError& e) {
             PyErr_SetString(PyExc_IndexError,e.what());
             return NULL;
-        }catch (QuantLib::Error& e) {
+        }catch (Error& e) {
             PyErr_SetString(PyExc_Exception,e.what());
             return NULL;
         }catch (std::exception& e) {
@@ -2830,10 +2841,10 @@ static PyObject *_wrap_delete_Date(PyObject *self, PyObject *args, PyObject *kwa
         try {
             delete arg0;
             
-        }catch (QuantLib::IndexError& e) {
+        }catch (IndexError& e) {
             PyErr_SetString(PyExc_IndexError,e.what());
             return NULL;
-        }catch (QuantLib::Error& e) {
+        }catch (Error& e) {
             PyErr_SetString(PyExc_Exception,e.what());
             return NULL;
         }catch (std::exception& e) {
@@ -2876,10 +2887,10 @@ static PyObject *_wrap_Date_weekday(PyObject *self, PyObject *args, PyObject *kw
     {
         try {
             result = new Weekday (arg0->weekday());
-        }catch (QuantLib::IndexError& e) {
+        }catch (IndexError& e) {
             PyErr_SetString(PyExc_IndexError,e.what());
             return NULL;
-        }catch (QuantLib::Error& e) {
+        }catch (Error& e) {
             PyErr_SetString(PyExc_Exception,e.what());
             return NULL;
         }catch (std::exception& e) {
@@ -2935,10 +2946,10 @@ static PyObject *_wrap_Date_dayOfMonth(PyObject *self, PyObject *args, PyObject 
         try {
             result = (Day )arg0->dayOfMonth();
             
-        }catch (QuantLib::IndexError& e) {
+        }catch (IndexError& e) {
             PyErr_SetString(PyExc_IndexError,e.what());
             return NULL;
-        }catch (QuantLib::Error& e) {
+        }catch (Error& e) {
             PyErr_SetString(PyExc_Exception,e.what());
             return NULL;
         }catch (std::exception& e) {
@@ -2981,10 +2992,10 @@ static PyObject *_wrap_Date_dayOfYear(PyObject *self, PyObject *args, PyObject *
         try {
             result = (Day )arg0->dayOfYear();
             
-        }catch (QuantLib::IndexError& e) {
+        }catch (IndexError& e) {
             PyErr_SetString(PyExc_IndexError,e.what());
             return NULL;
-        }catch (QuantLib::Error& e) {
+        }catch (Error& e) {
             PyErr_SetString(PyExc_Exception,e.what());
             return NULL;
         }catch (std::exception& e) {
@@ -3026,10 +3037,10 @@ static PyObject *_wrap_Date_month(PyObject *self, PyObject *args, PyObject *kwar
     {
         try {
             result = new Month (arg0->month());
-        }catch (QuantLib::IndexError& e) {
+        }catch (IndexError& e) {
             PyErr_SetString(PyExc_IndexError,e.what());
             return NULL;
-        }catch (QuantLib::Error& e) {
+        }catch (Error& e) {
             PyErr_SetString(PyExc_Exception,e.what());
             return NULL;
         }catch (std::exception& e) {
@@ -3090,10 +3101,10 @@ static PyObject *_wrap_Date_year(PyObject *self, PyObject *args, PyObject *kwarg
         try {
             result = (Year )arg0->year();
             
-        }catch (QuantLib::IndexError& e) {
+        }catch (IndexError& e) {
             PyErr_SetString(PyExc_IndexError,e.what());
             return NULL;
-        }catch (QuantLib::Error& e) {
+        }catch (Error& e) {
             PyErr_SetString(PyExc_Exception,e.what());
             return NULL;
         }catch (std::exception& e) {
@@ -3136,10 +3147,10 @@ static PyObject *_wrap_Date_serialNumber(PyObject *self, PyObject *args, PyObjec
         try {
             result = (int )arg0->serialNumber();
             
-        }catch (QuantLib::IndexError& e) {
+        }catch (IndexError& e) {
             PyErr_SetString(PyExc_IndexError,e.what());
             return NULL;
-        }catch (QuantLib::Error& e) {
+        }catch (Error& e) {
             PyErr_SetString(PyExc_Exception,e.what());
             return NULL;
         }catch (std::exception& e) {
@@ -3182,10 +3193,10 @@ static PyObject *_wrap_Date_plusDays(PyObject *self, PyObject *args, PyObject *k
     {
         try {
             result = new Date (arg0->plusDays(arg1));
-        }catch (QuantLib::IndexError& e) {
+        }catch (IndexError& e) {
             PyErr_SetString(PyExc_IndexError,e.what());
             return NULL;
-        }catch (QuantLib::Error& e) {
+        }catch (Error& e) {
             PyErr_SetString(PyExc_Exception,e.what());
             return NULL;
         }catch (std::exception& e) {
@@ -3228,10 +3239,10 @@ static PyObject *_wrap_Date_plusWeeks(PyObject *self, PyObject *args, PyObject *
     {
         try {
             result = new Date (arg0->plusWeeks(arg1));
-        }catch (QuantLib::IndexError& e) {
+        }catch (IndexError& e) {
             PyErr_SetString(PyExc_IndexError,e.what());
             return NULL;
-        }catch (QuantLib::Error& e) {
+        }catch (Error& e) {
             PyErr_SetString(PyExc_Exception,e.what());
             return NULL;
         }catch (std::exception& e) {
@@ -3274,10 +3285,10 @@ static PyObject *_wrap_Date_plusMonths(PyObject *self, PyObject *args, PyObject 
     {
         try {
             result = new Date (arg0->plusMonths(arg1));
-        }catch (QuantLib::IndexError& e) {
+        }catch (IndexError& e) {
             PyErr_SetString(PyExc_IndexError,e.what());
             return NULL;
-        }catch (QuantLib::Error& e) {
+        }catch (Error& e) {
             PyErr_SetString(PyExc_Exception,e.what());
             return NULL;
         }catch (std::exception& e) {
@@ -3320,10 +3331,10 @@ static PyObject *_wrap_Date_plusYears(PyObject *self, PyObject *args, PyObject *
     {
         try {
             result = new Date (arg0->plusYears(arg1));
-        }catch (QuantLib::IndexError& e) {
+        }catch (IndexError& e) {
             PyErr_SetString(PyExc_IndexError,e.what());
             return NULL;
-        }catch (QuantLib::Error& e) {
+        }catch (Error& e) {
             PyErr_SetString(PyExc_Exception,e.what());
             return NULL;
         }catch (std::exception& e) {
@@ -3389,10 +3400,10 @@ static PyObject *_wrap_Date_plus(PyObject *self, PyObject *args, PyObject *kwarg
     {
         try {
             result = new Date (arg0->plus(arg1,*arg2));
-        }catch (QuantLib::IndexError& e) {
+        }catch (IndexError& e) {
             PyErr_SetString(PyExc_IndexError,e.what());
             return NULL;
-        }catch (QuantLib::Error& e) {
+        }catch (Error& e) {
             PyErr_SetString(PyExc_Exception,e.what());
             return NULL;
         }catch (std::exception& e) {
@@ -3423,10 +3434,10 @@ static PyObject *_wrap_Date_isLeap(PyObject *self, PyObject *args, PyObject *kwa
         try {
             result = (bool )Date::isLeap(arg0);
             
-        }catch (QuantLib::IndexError& e) {
+        }catch (IndexError& e) {
             PyErr_SetString(PyExc_IndexError,e.what());
             return NULL;
-        }catch (QuantLib::Error& e) {
+        }catch (Error& e) {
             PyErr_SetString(PyExc_Exception,e.what());
             return NULL;
         }catch (std::exception& e) {
@@ -3452,10 +3463,10 @@ static PyObject *_wrap_Date_minDate(PyObject *self, PyObject *args, PyObject *kw
     {
         try {
             result = new Date (Date::minDate());
-        }catch (QuantLib::IndexError& e) {
+        }catch (IndexError& e) {
             PyErr_SetString(PyExc_IndexError,e.what());
             return NULL;
-        }catch (QuantLib::Error& e) {
+        }catch (Error& e) {
             PyErr_SetString(PyExc_Exception,e.what());
             return NULL;
         }catch (std::exception& e) {
@@ -3481,10 +3492,10 @@ static PyObject *_wrap_Date_maxDate(PyObject *self, PyObject *args, PyObject *kw
     {
         try {
             result = new Date (Date::maxDate());
-        }catch (QuantLib::IndexError& e) {
+        }catch (IndexError& e) {
             PyErr_SetString(PyExc_IndexError,e.what());
             return NULL;
-        }catch (QuantLib::Error& e) {
+        }catch (Error& e) {
             PyErr_SetString(PyExc_Exception,e.what());
             return NULL;
         }catch (std::exception& e) {
@@ -3534,10 +3545,10 @@ static PyObject *_wrap_Date_monthNumber(PyObject *self, PyObject *args, PyObject
         try {
             result = (int )Date_monthNumber(arg0);
             
-        }catch (QuantLib::IndexError& e) {
+        }catch (IndexError& e) {
             PyErr_SetString(PyExc_IndexError,e.what());
             return NULL;
-        }catch (QuantLib::Error& e) {
+        }catch (Error& e) {
             PyErr_SetString(PyExc_Exception,e.what());
             return NULL;
         }catch (std::exception& e) {
@@ -3587,10 +3598,10 @@ static PyObject *_wrap_Date_weekdayNumber(PyObject *self, PyObject *args, PyObje
         try {
             result = (int )Date_weekdayNumber(arg0);
             
-        }catch (QuantLib::IndexError& e) {
+        }catch (IndexError& e) {
             PyErr_SetString(PyExc_IndexError,e.what());
             return NULL;
-        }catch (QuantLib::Error& e) {
+        }catch (Error& e) {
             PyErr_SetString(PyExc_Exception,e.what());
             return NULL;
         }catch (std::exception& e) {
@@ -3640,10 +3651,10 @@ static PyObject *_wrap_Date___add__(PyObject *self, PyObject *args, PyObject *kw
     {
         try {
             result = new Date (Date___add__(arg0,arg1));
-        }catch (QuantLib::IndexError& e) {
+        }catch (IndexError& e) {
             PyErr_SetString(PyExc_IndexError,e.what());
             return NULL;
-        }catch (QuantLib::Error& e) {
+        }catch (Error& e) {
             PyErr_SetString(PyExc_Exception,e.what());
             return NULL;
         }catch (std::exception& e) {
@@ -3693,10 +3704,10 @@ static PyObject *_wrap_Date___sub__(PyObject *self, PyObject *args, PyObject *kw
     {
         try {
             result = new Date (Date___sub__(arg0,arg1));
-        }catch (QuantLib::IndexError& e) {
+        }catch (IndexError& e) {
             PyErr_SetString(PyExc_IndexError,e.what());
             return NULL;
-        }catch (QuantLib::Error& e) {
+        }catch (Error& e) {
             PyErr_SetString(PyExc_Exception,e.what());
             return NULL;
         }catch (std::exception& e) {
@@ -3766,10 +3777,10 @@ static PyObject *_wrap_Date___cmp__(PyObject *self, PyObject *args, PyObject *kw
         try {
             result = (int )Date___cmp__(arg0,(Date const &)*arg1);
             
-        }catch (QuantLib::IndexError& e) {
+        }catch (IndexError& e) {
             PyErr_SetString(PyExc_IndexError,e.what());
             return NULL;
-        }catch (QuantLib::Error& e) {
+        }catch (Error& e) {
             PyErr_SetString(PyExc_Exception,e.what());
             return NULL;
         }catch (std::exception& e) {
@@ -3818,10 +3829,10 @@ static PyObject *_wrap_Date___str__(PyObject *self, PyObject *args, PyObject *kw
     {
         try {
             result = new String (Date___str__(arg0));
-        }catch (QuantLib::IndexError& e) {
+        }catch (IndexError& e) {
             PyErr_SetString(PyExc_IndexError,e.what());
             return NULL;
-        }catch (QuantLib::Error& e) {
+        }catch (Error& e) {
             PyErr_SetString(PyExc_Exception,e.what());
             return NULL;
         }catch (std::exception& e) {
@@ -3875,10 +3886,10 @@ static PyObject *_wrap_Date___repr__(PyObject *self, PyObject *args, PyObject *k
     {
         try {
             result = new String (Date___repr__(arg0));
-        }catch (QuantLib::IndexError& e) {
+        }catch (IndexError& e) {
             PyErr_SetString(PyExc_IndexError,e.what());
             return NULL;
-        }catch (QuantLib::Error& e) {
+        }catch (Error& e) {
             PyErr_SetString(PyExc_Exception,e.what());
             return NULL;
         }catch (std::exception& e) {
@@ -3933,10 +3944,10 @@ static PyObject *_wrap_Date___nonzero__(PyObject *self, PyObject *args, PyObject
         try {
             result = (int )Date___nonzero__(arg0);
             
-        }catch (QuantLib::IndexError& e) {
+        }catch (IndexError& e) {
             PyErr_SetString(PyExc_IndexError,e.what());
             return NULL;
-        }catch (QuantLib::Error& e) {
+        }catch (Error& e) {
             PyErr_SetString(PyExc_Exception,e.what());
             return NULL;
         }catch (std::exception& e) {
@@ -3994,10 +4005,10 @@ static PyObject *_wrap_delete_DateVector(PyObject *self, PyObject *args, PyObjec
         try {
             delete arg0;
             
-        }catch (QuantLib::IndexError& e) {
+        }catch (IndexError& e) {
             PyErr_SetString(PyExc_IndexError,e.what());
             return NULL;
-        }catch (QuantLib::Error& e) {
+        }catch (Error& e) {
             PyErr_SetString(PyExc_Exception,e.what());
             return NULL;
         }catch (std::exception& e) {
@@ -4064,10 +4075,10 @@ static PyObject *_wrap_DateVector___len__(PyObject *self, PyObject *args, PyObje
         try {
             result = (int )DateVector___len__(arg0);
             
-        }catch (QuantLib::IndexError& e) {
+        }catch (IndexError& e) {
             PyErr_SetString(PyExc_IndexError,e.what());
             return NULL;
-        }catch (QuantLib::Error& e) {
+        }catch (Error& e) {
             PyErr_SetString(PyExc_Exception,e.what());
             return NULL;
         }catch (std::exception& e) {
@@ -4139,10 +4150,10 @@ static PyObject *_wrap_DateVector___getitem__(PyObject *self, PyObject *args, Py
     {
         try {
             result = new Date (DateVector___getitem__(arg0,arg1));
-        }catch (QuantLib::IndexError& e) {
+        }catch (IndexError& e) {
             PyErr_SetString(PyExc_IndexError,e.what());
             return NULL;
-        }catch (QuantLib::Error& e) {
+        }catch (Error& e) {
             PyErr_SetString(PyExc_Exception,e.what());
             return NULL;
         }catch (std::exception& e) {
@@ -4230,10 +4241,10 @@ static PyObject *_wrap_DateVector___setitem__(PyObject *self, PyObject *args, Py
         try {
             DateVector___setitem__(arg0,arg1,(Date const &)*arg2);
             
-        }catch (QuantLib::IndexError& e) {
+        }catch (IndexError& e) {
             PyErr_SetString(PyExc_IndexError,e.what());
             return NULL;
-        }catch (QuantLib::Error& e) {
+        }catch (Error& e) {
             PyErr_SetString(PyExc_Exception,e.what());
             return NULL;
         }catch (std::exception& e) {
@@ -4311,10 +4322,10 @@ static PyObject *_wrap_DateVector___getslice__(PyObject *self, PyObject *args, P
     {
         try {
             result = new DateVector (DateVector___getslice__(arg0,arg1,arg2));
-        }catch (QuantLib::IndexError& e) {
+        }catch (IndexError& e) {
             PyErr_SetString(PyExc_IndexError,e.what());
             return NULL;
-        }catch (QuantLib::Error& e) {
+        }catch (Error& e) {
             PyErr_SetString(PyExc_Exception,e.what());
             return NULL;
         }catch (std::exception& e) {
@@ -4422,10 +4433,10 @@ static PyObject *_wrap_DateVector___setslice__(PyObject *self, PyObject *args, P
         try {
             DateVector___setslice__(arg0,arg1,arg2,(DateVector const &)*arg3);
             
-        }catch (QuantLib::IndexError& e) {
+        }catch (IndexError& e) {
             PyErr_SetString(PyExc_IndexError,e.what());
             return NULL;
-        }catch (QuantLib::Error& e) {
+        }catch (Error& e) {
             PyErr_SetString(PyExc_Exception,e.what());
             return NULL;
         }catch (std::exception& e) {
@@ -4498,10 +4509,10 @@ static PyObject *_wrap_DateVector___str__(PyObject *self, PyObject *args, PyObje
     {
         try {
             result = new String (DateVector___str__(arg0));
-        }catch (QuantLib::IndexError& e) {
+        }catch (IndexError& e) {
             PyErr_SetString(PyExc_IndexError,e.what());
             return NULL;
-        }catch (QuantLib::Error& e) {
+        }catch (Error& e) {
             PyErr_SetString(PyExc_Exception,e.what());
             return NULL;
         }catch (std::exception& e) {
@@ -4578,10 +4589,10 @@ static PyObject *_wrap_DateVector___repr__(PyObject *self, PyObject *args, PyObj
     {
         try {
             result = new String (DateVector___repr__(arg0));
-        }catch (QuantLib::IndexError& e) {
+        }catch (IndexError& e) {
             PyErr_SetString(PyExc_IndexError,e.what());
             return NULL;
-        }catch (QuantLib::Error& e) {
+        }catch (Error& e) {
             PyErr_SetString(PyExc_Exception,e.what());
             return NULL;
         }catch (std::exception& e) {
@@ -4652,10 +4663,10 @@ static PyObject *_wrap_DateVector___nonzero__(PyObject *self, PyObject *args, Py
         try {
             result = (int )DateVector___nonzero__(arg0);
             
-        }catch (QuantLib::IndexError& e) {
+        }catch (IndexError& e) {
             PyErr_SetString(PyExc_IndexError,e.what());
             return NULL;
-        }catch (QuantLib::Error& e) {
+        }catch (Error& e) {
             PyErr_SetString(PyExc_Exception,e.what());
             return NULL;
         }catch (std::exception& e) {
@@ -4684,10 +4695,10 @@ static PyObject *_wrap_delete_Calendar(PyObject *self, PyObject *args, PyObject 
         try {
             delete arg0;
             
-        }catch (QuantLib::IndexError& e) {
+        }catch (IndexError& e) {
             PyErr_SetString(PyExc_IndexError,e.what());
             return NULL;
-        }catch (QuantLib::Error& e) {
+        }catch (Error& e) {
             PyErr_SetString(PyExc_Exception,e.what());
             return NULL;
         }catch (std::exception& e) {
@@ -4741,10 +4752,10 @@ static PyObject *_wrap_Calendar_isBusinessDay(PyObject *self, PyObject *args, Py
         try {
             result = (bool )CalendarHandle_isBusinessDay(arg0,(Date const &)*arg1);
             
-        }catch (QuantLib::IndexError& e) {
+        }catch (IndexError& e) {
             PyErr_SetString(PyExc_IndexError,e.what());
             return NULL;
-        }catch (QuantLib::Error& e) {
+        }catch (Error& e) {
             PyErr_SetString(PyExc_Exception,e.what());
             return NULL;
         }catch (std::exception& e) {
@@ -4797,10 +4808,10 @@ static PyObject *_wrap_Calendar_isHoliday(PyObject *self, PyObject *args, PyObje
         try {
             result = (bool )CalendarHandle_isHoliday(arg0,(Date const &)*arg1);
             
-        }catch (QuantLib::IndexError& e) {
+        }catch (IndexError& e) {
             PyErr_SetString(PyExc_IndexError,e.what());
             return NULL;
-        }catch (QuantLib::Error& e) {
+        }catch (Error& e) {
             PyErr_SetString(PyExc_Exception,e.what());
             return NULL;
         }catch (std::exception& e) {
@@ -4855,10 +4866,10 @@ static PyObject *_wrap_Calendar_roll(PyObject *self, PyObject *args, PyObject *k
     {
         try {
             result = new Date (CalendarHandle_roll(arg0,(Date const &)*arg1,arg2));
-        }catch (QuantLib::IndexError& e) {
+        }catch (IndexError& e) {
             PyErr_SetString(PyExc_IndexError,e.what());
             return NULL;
-        }catch (QuantLib::Error& e) {
+        }catch (Error& e) {
             PyErr_SetString(PyExc_Exception,e.what());
             return NULL;
         }catch (std::exception& e) {
@@ -4937,10 +4948,10 @@ static PyObject *_wrap_Calendar_advance(PyObject *self, PyObject *args, PyObject
     {
         try {
             result = new Date (CalendarHandle_advance(arg0,(Date const &)*arg1,arg2,*arg3,arg4));
-        }catch (QuantLib::IndexError& e) {
+        }catch (IndexError& e) {
             PyErr_SetString(PyExc_IndexError,e.what());
             return NULL;
-        }catch (QuantLib::Error& e) {
+        }catch (Error& e) {
             PyErr_SetString(PyExc_Exception,e.what());
             return NULL;
         }catch (std::exception& e) {
@@ -4979,10 +4990,10 @@ static PyObject *_wrap_Calendar___str__(PyObject *self, PyObject *args, PyObject
     {
         try {
             result = new String (CalendarHandle___str__(arg0));
-        }catch (QuantLib::IndexError& e) {
+        }catch (IndexError& e) {
             PyErr_SetString(PyExc_IndexError,e.what());
             return NULL;
-        }catch (QuantLib::Error& e) {
+        }catch (Error& e) {
             PyErr_SetString(PyExc_Exception,e.what());
             return NULL;
         }catch (std::exception& e) {
@@ -5023,10 +5034,10 @@ static PyObject *_wrap_Calendar___repr__(PyObject *self, PyObject *args, PyObjec
     {
         try {
             result = new String (CalendarHandle___repr__(arg0));
-        }catch (QuantLib::IndexError& e) {
+        }catch (IndexError& e) {
             PyErr_SetString(PyExc_IndexError,e.what());
             return NULL;
-        }catch (QuantLib::Error& e) {
+        }catch (Error& e) {
             PyErr_SetString(PyExc_Exception,e.what());
             return NULL;
         }catch (std::exception& e) {
@@ -5071,10 +5082,10 @@ static PyObject *_wrap_Calendar___cmp__(PyObject *self, PyObject *args, PyObject
         try {
             result = (int )CalendarHandle___cmp__(arg0,(CalendarHandle const &)*arg1);
             
-        }catch (QuantLib::IndexError& e) {
+        }catch (IndexError& e) {
             PyErr_SetString(PyExc_IndexError,e.what());
             return NULL;
-        }catch (QuantLib::Error& e) {
+        }catch (Error& e) {
             PyErr_SetString(PyExc_Exception,e.what());
             return NULL;
         }catch (std::exception& e) {
@@ -5111,10 +5122,10 @@ static PyObject *_wrap_Calendar___nonzero__(PyObject *self, PyObject *args, PyOb
         try {
             result = (int )CalendarHandle___nonzero__(arg0);
             
-        }catch (QuantLib::IndexError& e) {
+        }catch (IndexError& e) {
             PyErr_SetString(PyExc_IndexError,e.what());
             return NULL;
-        }catch (QuantLib::Error& e) {
+        }catch (Error& e) {
             PyErr_SetString(PyExc_Exception,e.what());
             return NULL;
         }catch (std::exception& e) {
@@ -5143,10 +5154,10 @@ static PyObject *_wrap_delete_Currency(PyObject *self, PyObject *args, PyObject 
         try {
             delete arg0;
             
-        }catch (QuantLib::IndexError& e) {
+        }catch (IndexError& e) {
             PyErr_SetString(PyExc_IndexError,e.what());
             return NULL;
-        }catch (QuantLib::Error& e) {
+        }catch (Error& e) {
             PyErr_SetString(PyExc_Exception,e.what());
             return NULL;
         }catch (std::exception& e) {
@@ -5183,10 +5194,10 @@ static PyObject *_wrap_Currency_settlementCalendar(PyObject *self, PyObject *arg
     {
         try {
             result = new CalendarHandle (CurrencyHandle_settlementCalendar(arg0));
-        }catch (QuantLib::IndexError& e) {
+        }catch (IndexError& e) {
             PyErr_SetString(PyExc_IndexError,e.what());
             return NULL;
-        }catch (QuantLib::Error& e) {
+        }catch (Error& e) {
             PyErr_SetString(PyExc_Exception,e.what());
             return NULL;
         }catch (std::exception& e) {
@@ -5223,10 +5234,10 @@ static PyObject *_wrap_Currency_settlementDays(PyObject *self, PyObject *args, P
         try {
             result = (int )CurrencyHandle_settlementDays(arg0);
             
-        }catch (QuantLib::IndexError& e) {
+        }catch (IndexError& e) {
             PyErr_SetString(PyExc_IndexError,e.what());
             return NULL;
-        }catch (QuantLib::Error& e) {
+        }catch (Error& e) {
             PyErr_SetString(PyExc_Exception,e.what());
             return NULL;
         }catch (std::exception& e) {
@@ -5278,10 +5289,10 @@ static PyObject *_wrap_Currency_settlementDate(PyObject *self, PyObject *args, P
     {
         try {
             result = new Date (CurrencyHandle_settlementDate(arg0,(Date const &)*arg1));
-        }catch (QuantLib::IndexError& e) {
+        }catch (IndexError& e) {
             PyErr_SetString(PyExc_IndexError,e.what());
             return NULL;
-        }catch (QuantLib::Error& e) {
+        }catch (Error& e) {
             PyErr_SetString(PyExc_Exception,e.what());
             return NULL;
         }catch (std::exception& e) {
@@ -5317,10 +5328,10 @@ static PyObject *_wrap_Currency___str__(PyObject *self, PyObject *args, PyObject
     {
         try {
             result = new String (CurrencyHandle___str__(arg0));
-        }catch (QuantLib::IndexError& e) {
+        }catch (IndexError& e) {
             PyErr_SetString(PyExc_IndexError,e.what());
             return NULL;
-        }catch (QuantLib::Error& e) {
+        }catch (Error& e) {
             PyErr_SetString(PyExc_Exception,e.what());
             return NULL;
         }catch (std::exception& e) {
@@ -5361,10 +5372,10 @@ static PyObject *_wrap_Currency___repr__(PyObject *self, PyObject *args, PyObjec
     {
         try {
             result = new String (CurrencyHandle___repr__(arg0));
-        }catch (QuantLib::IndexError& e) {
+        }catch (IndexError& e) {
             PyErr_SetString(PyExc_IndexError,e.what());
             return NULL;
-        }catch (QuantLib::Error& e) {
+        }catch (Error& e) {
             PyErr_SetString(PyExc_Exception,e.what());
             return NULL;
         }catch (std::exception& e) {
@@ -5409,10 +5420,10 @@ static PyObject *_wrap_Currency___cmp__(PyObject *self, PyObject *args, PyObject
         try {
             result = (int )CurrencyHandle___cmp__(arg0,(CurrencyHandle const &)*arg1);
             
-        }catch (QuantLib::IndexError& e) {
+        }catch (IndexError& e) {
             PyErr_SetString(PyExc_IndexError,e.what());
             return NULL;
-        }catch (QuantLib::Error& e) {
+        }catch (Error& e) {
             PyErr_SetString(PyExc_Exception,e.what());
             return NULL;
         }catch (std::exception& e) {
@@ -5449,10 +5460,10 @@ static PyObject *_wrap_Currency___nonzero__(PyObject *self, PyObject *args, PyOb
         try {
             result = (int )CurrencyHandle___nonzero__(arg0);
             
-        }catch (QuantLib::IndexError& e) {
+        }catch (IndexError& e) {
             PyErr_SetString(PyExc_IndexError,e.what());
             return NULL;
-        }catch (QuantLib::Error& e) {
+        }catch (Error& e) {
             PyErr_SetString(PyExc_Exception,e.what());
             return NULL;
         }catch (std::exception& e) {
@@ -5481,10 +5492,10 @@ static PyObject *_wrap_delete_DayCounter(PyObject *self, PyObject *args, PyObjec
         try {
             delete arg0;
             
-        }catch (QuantLib::IndexError& e) {
+        }catch (IndexError& e) {
             PyErr_SetString(PyExc_IndexError,e.what());
             return NULL;
-        }catch (QuantLib::Error& e) {
+        }catch (Error& e) {
             PyErr_SetString(PyExc_Exception,e.what());
             return NULL;
         }catch (std::exception& e) {
@@ -5554,10 +5565,10 @@ static PyObject *_wrap_DayCounter_dayCount(PyObject *self, PyObject *args, PyObj
         try {
             result = (int )DayCounterHandle_dayCount(arg0,(Date const &)*arg1,(Date const &)*arg2);
             
-        }catch (QuantLib::IndexError& e) {
+        }catch (IndexError& e) {
             PyErr_SetString(PyExc_IndexError,e.what());
             return NULL;
-        }catch (QuantLib::Error& e) {
+        }catch (Error& e) {
             PyErr_SetString(PyExc_Exception,e.what());
             return NULL;
         }catch (std::exception& e) {
@@ -5626,10 +5637,10 @@ static PyObject *_wrap_DayCounter_yearFraction(PyObject *self, PyObject *args, P
         try {
             result = (Time )DayCounterHandle_yearFraction(arg0,(Date const &)*arg1,(Date const &)*arg2);
             
-        }catch (QuantLib::IndexError& e) {
+        }catch (IndexError& e) {
             PyErr_SetString(PyExc_IndexError,e.what());
             return NULL;
-        }catch (QuantLib::Error& e) {
+        }catch (Error& e) {
             PyErr_SetString(PyExc_Exception,e.what());
             return NULL;
         }catch (std::exception& e) {
@@ -5665,10 +5676,10 @@ static PyObject *_wrap_DayCounter___str__(PyObject *self, PyObject *args, PyObje
     {
         try {
             result = new String (DayCounterHandle___str__(arg0));
-        }catch (QuantLib::IndexError& e) {
+        }catch (IndexError& e) {
             PyErr_SetString(PyExc_IndexError,e.what());
             return NULL;
-        }catch (QuantLib::Error& e) {
+        }catch (Error& e) {
             PyErr_SetString(PyExc_Exception,e.what());
             return NULL;
         }catch (std::exception& e) {
@@ -5709,10 +5720,10 @@ static PyObject *_wrap_DayCounter___repr__(PyObject *self, PyObject *args, PyObj
     {
         try {
             result = new String (DayCounterHandle___repr__(arg0));
-        }catch (QuantLib::IndexError& e) {
+        }catch (IndexError& e) {
             PyErr_SetString(PyExc_IndexError,e.what());
             return NULL;
-        }catch (QuantLib::Error& e) {
+        }catch (Error& e) {
             PyErr_SetString(PyExc_Exception,e.what());
             return NULL;
         }catch (std::exception& e) {
@@ -5757,10 +5768,10 @@ static PyObject *_wrap_DayCounter___cmp__(PyObject *self, PyObject *args, PyObje
         try {
             result = (int )DayCounterHandle___cmp__(arg0,(DayCounterHandle const &)*arg1);
             
-        }catch (QuantLib::IndexError& e) {
+        }catch (IndexError& e) {
             PyErr_SetString(PyExc_IndexError,e.what());
             return NULL;
-        }catch (QuantLib::Error& e) {
+        }catch (Error& e) {
             PyErr_SetString(PyExc_Exception,e.what());
             return NULL;
         }catch (std::exception& e) {
@@ -5797,10 +5808,10 @@ static PyObject *_wrap_DayCounter___nonzero__(PyObject *self, PyObject *args, Py
         try {
             result = (int )DayCounterHandle___nonzero__(arg0);
             
-        }catch (QuantLib::IndexError& e) {
+        }catch (IndexError& e) {
             PyErr_SetString(PyExc_IndexError,e.what());
             return NULL;
-        }catch (QuantLib::Error& e) {
+        }catch (Error& e) {
             PyErr_SetString(PyExc_Exception,e.what());
             return NULL;
         }catch (std::exception& e) {
@@ -5829,10 +5840,10 @@ static PyObject *_wrap_new_NormalDistribution(PyObject *self, PyObject *args, Py
         try {
             result = (NormalDistribution *)new NormalDistribution(arg0,arg1);
             
-        }catch (QuantLib::IndexError& e) {
+        }catch (IndexError& e) {
             PyErr_SetString(PyExc_IndexError,e.what());
             return NULL;
-        }catch (QuantLib::Error& e) {
+        }catch (Error& e) {
             PyErr_SetString(PyExc_Exception,e.what());
             return NULL;
         }catch (std::exception& e) {
@@ -5861,10 +5872,10 @@ static PyObject *_wrap_delete_NormalDistribution(PyObject *self, PyObject *args,
         try {
             delete arg0;
             
-        }catch (QuantLib::IndexError& e) {
+        }catch (IndexError& e) {
             PyErr_SetString(PyExc_IndexError,e.what());
             return NULL;
-        }catch (QuantLib::Error& e) {
+        }catch (Error& e) {
             PyErr_SetString(PyExc_Exception,e.what());
             return NULL;
         }catch (std::exception& e) {
@@ -5896,10 +5907,10 @@ static PyObject *_wrap_NormalDistribution_derivative(PyObject *self, PyObject *a
         try {
             result = (double )arg0->derivative(arg1);
             
-        }catch (QuantLib::IndexError& e) {
+        }catch (IndexError& e) {
             PyErr_SetString(PyExc_IndexError,e.what());
             return NULL;
-        }catch (QuantLib::Error& e) {
+        }catch (Error& e) {
             PyErr_SetString(PyExc_Exception,e.what());
             return NULL;
         }catch (std::exception& e) {
@@ -5937,10 +5948,10 @@ static PyObject *_wrap_NormalDistribution___call__(PyObject *self, PyObject *arg
         try {
             result = (double )NormalDistribution___call__(arg0,arg1);
             
-        }catch (QuantLib::IndexError& e) {
+        }catch (IndexError& e) {
             PyErr_SetString(PyExc_IndexError,e.what());
             return NULL;
-        }catch (QuantLib::Error& e) {
+        }catch (Error& e) {
             PyErr_SetString(PyExc_Exception,e.what());
             return NULL;
         }catch (std::exception& e) {
@@ -5969,10 +5980,10 @@ static PyObject *_wrap_new_CumulativeNormalDistribution(PyObject *self, PyObject
         try {
             result = (CumulativeNormalDistribution *)new CumulativeNormalDistribution(arg0,arg1);
             
-        }catch (QuantLib::IndexError& e) {
+        }catch (IndexError& e) {
             PyErr_SetString(PyExc_IndexError,e.what());
             return NULL;
-        }catch (QuantLib::Error& e) {
+        }catch (Error& e) {
             PyErr_SetString(PyExc_Exception,e.what());
             return NULL;
         }catch (std::exception& e) {
@@ -6001,10 +6012,10 @@ static PyObject *_wrap_delete_CumulativeNormalDistribution(PyObject *self, PyObj
         try {
             delete arg0;
             
-        }catch (QuantLib::IndexError& e) {
+        }catch (IndexError& e) {
             PyErr_SetString(PyExc_IndexError,e.what());
             return NULL;
-        }catch (QuantLib::Error& e) {
+        }catch (Error& e) {
             PyErr_SetString(PyExc_Exception,e.what());
             return NULL;
         }catch (std::exception& e) {
@@ -6036,10 +6047,10 @@ static PyObject *_wrap_CumulativeNormalDistribution_derivative(PyObject *self, P
         try {
             result = (double )arg0->derivative(arg1);
             
-        }catch (QuantLib::IndexError& e) {
+        }catch (IndexError& e) {
             PyErr_SetString(PyExc_IndexError,e.what());
             return NULL;
-        }catch (QuantLib::Error& e) {
+        }catch (Error& e) {
             PyErr_SetString(PyExc_Exception,e.what());
             return NULL;
         }catch (std::exception& e) {
@@ -6077,10 +6088,10 @@ static PyObject *_wrap_CumulativeNormalDistribution___call__(PyObject *self, PyO
         try {
             result = (double )CumulativeNormalDistribution___call__(arg0,arg1);
             
-        }catch (QuantLib::IndexError& e) {
+        }catch (IndexError& e) {
             PyErr_SetString(PyExc_IndexError,e.what());
             return NULL;
-        }catch (QuantLib::Error& e) {
+        }catch (Error& e) {
             PyErr_SetString(PyExc_Exception,e.what());
             return NULL;
         }catch (std::exception& e) {
@@ -6109,10 +6120,10 @@ static PyObject *_wrap_new_InvCumulativeNormalDistribution(PyObject *self, PyObj
         try {
             result = (InvCumulativeNormalDistribution *)new InvCumulativeNormalDistribution(arg0,arg1);
             
-        }catch (QuantLib::IndexError& e) {
+        }catch (IndexError& e) {
             PyErr_SetString(PyExc_IndexError,e.what());
             return NULL;
-        }catch (QuantLib::Error& e) {
+        }catch (Error& e) {
             PyErr_SetString(PyExc_Exception,e.what());
             return NULL;
         }catch (std::exception& e) {
@@ -6141,10 +6152,10 @@ static PyObject *_wrap_delete_InvCumulativeNormalDistribution(PyObject *self, Py
         try {
             delete arg0;
             
-        }catch (QuantLib::IndexError& e) {
+        }catch (IndexError& e) {
             PyErr_SetString(PyExc_IndexError,e.what());
             return NULL;
-        }catch (QuantLib::Error& e) {
+        }catch (Error& e) {
             PyErr_SetString(PyExc_Exception,e.what());
             return NULL;
         }catch (std::exception& e) {
@@ -6183,10 +6194,10 @@ static PyObject *_wrap_InvCumulativeNormalDistribution___call__(PyObject *self, 
         try {
             result = (double )InvCumulativeNormalDistribution___call__(arg0,arg1);
             
-        }catch (QuantLib::IndexError& e) {
+        }catch (IndexError& e) {
             PyErr_SetString(PyExc_IndexError,e.what());
             return NULL;
-        }catch (QuantLib::Error& e) {
+        }catch (Error& e) {
             PyErr_SetString(PyExc_Exception,e.what());
             return NULL;
         }catch (std::exception& e) {
@@ -6197,6 +6208,1396 @@ static PyObject *_wrap_InvCumulativeNormalDistribution___call__(PyObject *self, 
             return NULL;
         }
     }resultobj = PyFloat_FromDouble(result);
+    return resultobj;
+}
+
+
+static PyObject *_wrap_delete_IntVector(PyObject *self, PyObject *args, PyObject *kwargs) {
+    PyObject *resultobj;
+    IntVector *arg0 ;
+    IntVector temp ;
+    PyObject * obj0  = 0 ;
+    char *kwnames[] = {
+        "self", NULL 
+    };
+    
+    if(!PyArg_ParseTupleAndKeywords(args,kwargs,"O:delete_IntVector",kwnames,&obj0)) return NULL;
+    {
+        IntVector* v;
+        if (PyTuple_Check(obj0) || PyList_Check(obj0)) {
+            int size = (PyTuple_Check(obj0) ? 
+            PyTuple_Size(obj0) :
+            PyList_Size(obj0));
+            temp = IntVector(size);
+            arg0 = &temp;
+            for (int i=0; i<size; i++) {
+                PyObject* o = PySequence_GetItem(obj0,i);
+                if (o == Py_None) {
+                    (*arg0)[i] = Null<int>();
+                }else if (PyInt_Check(o)) {
+                    (*arg0)[i] = int(PyInt_AsLong(o));
+                }else {
+                    PyErr_SetString(PyExc_TypeError,"ints expected");
+                    return NULL;
+                }
+            }
+        }else if ((SWIG_ConvertPtr(obj0,(void **) &v,
+        (swig_type_info *)SWIG_TypeQuery("IntVector *"),0)) != -1) {
+            arg0 = v;
+        }else {
+            PyErr_SetString(PyExc_TypeError,"IntVector expected");
+            return NULL;
+        }
+    }
+    {
+        try {
+            delete arg0;
+            
+        }catch (IndexError& e) {
+            PyErr_SetString(PyExc_IndexError,e.what());
+            return NULL;
+        }catch (Error& e) {
+            PyErr_SetString(PyExc_Exception,e.what());
+            return NULL;
+        }catch (std::exception& e) {
+            PyErr_SetString(PyExc_Exception,e.what());
+            return NULL;
+        }catch (...) {
+            PyErr_SetString(PyExc_Exception,"unknown error");
+            return NULL;
+        }
+    }Py_INCREF(Py_None);
+    resultobj = Py_None;
+    return resultobj;
+}
+
+
+int  IntVector___len__(IntVector *self) {
+    {
+        return self->size();
+    }
+}
+
+
+static PyObject *_wrap_IntVector___len__(PyObject *self, PyObject *args, PyObject *kwargs) {
+    PyObject *resultobj;
+    IntVector *arg0 ;
+    IntVector temp ;
+    PyObject * obj0  = 0 ;
+    char *kwnames[] = {
+        "self", NULL 
+    };
+    int result ;
+    
+    if(!PyArg_ParseTupleAndKeywords(args,kwargs,"O:IntVector___len__",kwnames,&obj0)) return NULL;
+    {
+        IntVector* v;
+        if (PyTuple_Check(obj0) || PyList_Check(obj0)) {
+            int size = (PyTuple_Check(obj0) ? 
+            PyTuple_Size(obj0) :
+            PyList_Size(obj0));
+            temp = IntVector(size);
+            arg0 = &temp;
+            for (int i=0; i<size; i++) {
+                PyObject* o = PySequence_GetItem(obj0,i);
+                if (o == Py_None) {
+                    (*arg0)[i] = Null<int>();
+                }else if (PyInt_Check(o)) {
+                    (*arg0)[i] = int(PyInt_AsLong(o));
+                }else {
+                    PyErr_SetString(PyExc_TypeError,"ints expected");
+                    return NULL;
+                }
+            }
+        }else if ((SWIG_ConvertPtr(obj0,(void **) &v,
+        (swig_type_info *)SWIG_TypeQuery("IntVector *"),0)) != -1) {
+            arg0 = v;
+        }else {
+            PyErr_SetString(PyExc_TypeError,"IntVector expected");
+            return NULL;
+        }
+    }
+    {
+        try {
+            result = (int )IntVector___len__(arg0);
+            
+        }catch (IndexError& e) {
+            PyErr_SetString(PyExc_IndexError,e.what());
+            return NULL;
+        }catch (Error& e) {
+            PyErr_SetString(PyExc_Exception,e.what());
+            return NULL;
+        }catch (std::exception& e) {
+            PyErr_SetString(PyExc_Exception,e.what());
+            return NULL;
+        }catch (...) {
+            PyErr_SetString(PyExc_Exception,"unknown error");
+            return NULL;
+        }
+    }resultobj = PyInt_FromLong((long)result);
+    return resultobj;
+}
+
+
+int  IntVector___getitem__(IntVector *self,int i) {
+    {
+        if (i>=0 && i<self->size()) {
+            return (*self)[i];
+        }else if (i<0 && -i<=self->size()) {
+            return (*self)[self->size()+i];
+        }else {
+            throw IndexError("IntVector index out of range");
+        }
+    }
+}
+
+
+static PyObject *_wrap_IntVector___getitem__(PyObject *self, PyObject *args, PyObject *kwargs) {
+    PyObject *resultobj;
+    IntVector *arg0 ;
+    int arg1 ;
+    IntVector temp ;
+    PyObject * obj0  = 0 ;
+    char *kwnames[] = {
+        "self","i", NULL 
+    };
+    int result ;
+    
+    if(!PyArg_ParseTupleAndKeywords(args,kwargs,"Oi:IntVector___getitem__",kwnames,&obj0,&arg1)) return NULL;
+    {
+        IntVector* v;
+        if (PyTuple_Check(obj0) || PyList_Check(obj0)) {
+            int size = (PyTuple_Check(obj0) ? 
+            PyTuple_Size(obj0) :
+            PyList_Size(obj0));
+            temp = IntVector(size);
+            arg0 = &temp;
+            for (int i=0; i<size; i++) {
+                PyObject* o = PySequence_GetItem(obj0,i);
+                if (o == Py_None) {
+                    (*arg0)[i] = Null<int>();
+                }else if (PyInt_Check(o)) {
+                    (*arg0)[i] = int(PyInt_AsLong(o));
+                }else {
+                    PyErr_SetString(PyExc_TypeError,"ints expected");
+                    return NULL;
+                }
+            }
+        }else if ((SWIG_ConvertPtr(obj0,(void **) &v,
+        (swig_type_info *)SWIG_TypeQuery("IntVector *"),0)) != -1) {
+            arg0 = v;
+        }else {
+            PyErr_SetString(PyExc_TypeError,"IntVector expected");
+            return NULL;
+        }
+    }
+    {
+        try {
+            result = (int )IntVector___getitem__(arg0,arg1);
+            
+        }catch (IndexError& e) {
+            PyErr_SetString(PyExc_IndexError,e.what());
+            return NULL;
+        }catch (Error& e) {
+            PyErr_SetString(PyExc_Exception,e.what());
+            return NULL;
+        }catch (std::exception& e) {
+            PyErr_SetString(PyExc_Exception,e.what());
+            return NULL;
+        }catch (...) {
+            PyErr_SetString(PyExc_Exception,"unknown error");
+            return NULL;
+        }
+    }resultobj = PyInt_FromLong((long)result);
+    return resultobj;
+}
+
+
+void  IntVector___setitem__(IntVector *self,int i,int x) {
+    {
+        if (i>=0 && i<self->size()) {
+            (*self)[i] = x;
+        }else if (i<0 && -i<=self->size()) {
+            (*self)[self->size()+i] = x;
+        }else {
+            throw IndexError("IntVector index out of range");
+        }
+    }
+}
+
+
+static PyObject *_wrap_IntVector___setitem__(PyObject *self, PyObject *args, PyObject *kwargs) {
+    PyObject *resultobj;
+    IntVector *arg0 ;
+    int arg1 ;
+    int arg2 ;
+    IntVector temp ;
+    PyObject * obj0  = 0 ;
+    char *kwnames[] = {
+        "self","i","x", NULL 
+    };
+    
+    if(!PyArg_ParseTupleAndKeywords(args,kwargs,"Oii:IntVector___setitem__",kwnames,&obj0,&arg1,&arg2)) return NULL;
+    {
+        IntVector* v;
+        if (PyTuple_Check(obj0) || PyList_Check(obj0)) {
+            int size = (PyTuple_Check(obj0) ? 
+            PyTuple_Size(obj0) :
+            PyList_Size(obj0));
+            temp = IntVector(size);
+            arg0 = &temp;
+            for (int i=0; i<size; i++) {
+                PyObject* o = PySequence_GetItem(obj0,i);
+                if (o == Py_None) {
+                    (*arg0)[i] = Null<int>();
+                }else if (PyInt_Check(o)) {
+                    (*arg0)[i] = int(PyInt_AsLong(o));
+                }else {
+                    PyErr_SetString(PyExc_TypeError,"ints expected");
+                    return NULL;
+                }
+            }
+        }else if ((SWIG_ConvertPtr(obj0,(void **) &v,
+        (swig_type_info *)SWIG_TypeQuery("IntVector *"),0)) != -1) {
+            arg0 = v;
+        }else {
+            PyErr_SetString(PyExc_TypeError,"IntVector expected");
+            return NULL;
+        }
+    }
+    {
+        try {
+            IntVector___setitem__(arg0,arg1,arg2);
+            
+        }catch (IndexError& e) {
+            PyErr_SetString(PyExc_IndexError,e.what());
+            return NULL;
+        }catch (Error& e) {
+            PyErr_SetString(PyExc_Exception,e.what());
+            return NULL;
+        }catch (std::exception& e) {
+            PyErr_SetString(PyExc_Exception,e.what());
+            return NULL;
+        }catch (...) {
+            PyErr_SetString(PyExc_Exception,"unknown error");
+            return NULL;
+        }
+    }Py_INCREF(Py_None);
+    resultobj = Py_None;
+    return resultobj;
+}
+
+
+IntVector  IntVector___getslice__(IntVector *self,int i,int j) {
+    {
+        if (i<0)
+        i = self->size()+i;
+        if (i<0)
+        i = 0;
+        if (j<0)
+        j = self->size()+j;
+        if (j > self->size())
+        j = self->size();
+        IntVector tmp(j-i);
+        std::copy(self->begin()+i,self->begin()+j,tmp.begin());
+        return tmp;
+    }
+}
+
+
+static PyObject *_wrap_IntVector___getslice__(PyObject *self, PyObject *args, PyObject *kwargs) {
+    PyObject *resultobj;
+    IntVector *arg0 ;
+    int arg1 ;
+    int arg2 ;
+    IntVector temp ;
+    PyObject * obj0  = 0 ;
+    char *kwnames[] = {
+        "self","i","j", NULL 
+    };
+    IntVector *result ;
+    
+    if(!PyArg_ParseTupleAndKeywords(args,kwargs,"Oii:IntVector___getslice__",kwnames,&obj0,&arg1,&arg2)) return NULL;
+    {
+        IntVector* v;
+        if (PyTuple_Check(obj0) || PyList_Check(obj0)) {
+            int size = (PyTuple_Check(obj0) ? 
+            PyTuple_Size(obj0) :
+            PyList_Size(obj0));
+            temp = IntVector(size);
+            arg0 = &temp;
+            for (int i=0; i<size; i++) {
+                PyObject* o = PySequence_GetItem(obj0,i);
+                if (o == Py_None) {
+                    (*arg0)[i] = Null<int>();
+                }else if (PyInt_Check(o)) {
+                    (*arg0)[i] = int(PyInt_AsLong(o));
+                }else {
+                    PyErr_SetString(PyExc_TypeError,"ints expected");
+                    return NULL;
+                }
+            }
+        }else if ((SWIG_ConvertPtr(obj0,(void **) &v,
+        (swig_type_info *)SWIG_TypeQuery("IntVector *"),0)) != -1) {
+            arg0 = v;
+        }else {
+            PyErr_SetString(PyExc_TypeError,"IntVector expected");
+            return NULL;
+        }
+    }
+    {
+        try {
+            result = new IntVector (IntVector___getslice__(arg0,arg1,arg2));
+        }catch (IndexError& e) {
+            PyErr_SetString(PyExc_IndexError,e.what());
+            return NULL;
+        }catch (Error& e) {
+            PyErr_SetString(PyExc_Exception,e.what());
+            return NULL;
+        }catch (std::exception& e) {
+            PyErr_SetString(PyExc_Exception,e.what());
+            return NULL;
+        }catch (...) {
+            PyErr_SetString(PyExc_Exception,"unknown error");
+            return NULL;
+        }
+    }resultobj = SWIG_NewPointerObj((void *)result, SWIGTYPE_p_IntVector);
+    return resultobj;
+}
+
+
+void  IntVector___setslice__(IntVector *self,int i,int j,IntVector const &rhs) {
+    {
+        if (i<0)
+        i = self->size()+i;
+        if (i<0)
+        i = 0;
+        if (j<0)
+        j = self->size()+j;
+        if (j > self->size())
+        j = self->size();
+        QL_ENSURE(rhs.size() == j-i, "IntVectors are not resizable");
+        std::copy(rhs.begin(),rhs.end(),self->begin()+i);
+    }
+}
+
+
+static PyObject *_wrap_IntVector___setslice__(PyObject *self, PyObject *args, PyObject *kwargs) {
+    PyObject *resultobj;
+    IntVector *arg0 ;
+    int arg1 ;
+    int arg2 ;
+    IntVector *arg3 ;
+    IntVector temp ;
+    PyObject * obj0  = 0 ;
+    IntVector temp0 ;
+    PyObject * obj3  = 0 ;
+    char *kwnames[] = {
+        "self","i","j","rhs", NULL 
+    };
+    
+    if(!PyArg_ParseTupleAndKeywords(args,kwargs,"OiiO:IntVector___setslice__",kwnames,&obj0,&arg1,&arg2,&obj3)) return NULL;
+    {
+        IntVector* v;
+        if (PyTuple_Check(obj0) || PyList_Check(obj0)) {
+            int size = (PyTuple_Check(obj0) ? 
+            PyTuple_Size(obj0) :
+            PyList_Size(obj0));
+            temp = IntVector(size);
+            arg0 = &temp;
+            for (int i=0; i<size; i++) {
+                PyObject* o = PySequence_GetItem(obj0,i);
+                if (o == Py_None) {
+                    (*arg0)[i] = Null<int>();
+                }else if (PyInt_Check(o)) {
+                    (*arg0)[i] = int(PyInt_AsLong(o));
+                }else {
+                    PyErr_SetString(PyExc_TypeError,"ints expected");
+                    return NULL;
+                }
+            }
+        }else if ((SWIG_ConvertPtr(obj0,(void **) &v,
+        (swig_type_info *)SWIG_TypeQuery("IntVector *"),0)) != -1) {
+            arg0 = v;
+        }else {
+            PyErr_SetString(PyExc_TypeError,"IntVector expected");
+            return NULL;
+        }
+    }
+    {
+        IntVector* v;
+        if (PyTuple_Check(obj3) || PyList_Check(obj3)) {
+            int size = (PyTuple_Check(obj3) ? 
+            PyTuple_Size(obj3) :
+            PyList_Size(obj3));
+            temp0 = IntVector(size);
+            arg3 = &temp0;
+            for (int i=0; i<size; i++) {
+                PyObject* o = PySequence_GetItem(obj3,i);
+                if (o == Py_None) {
+                    (*arg3)[i] = Null<int>();
+                }else if (PyInt_Check(o)) {
+                    (*arg3)[i] = int(PyInt_AsLong(o));
+                }else {
+                    PyErr_SetString(PyExc_TypeError,"ints expected");
+                    return NULL;
+                }
+            }
+        }else if ((SWIG_ConvertPtr(obj3,(void **) &v,
+        (swig_type_info *)SWIG_TypeQuery("IntVector *"),0)) != -1) {
+            arg3 = v;
+        }else {
+            PyErr_SetString(PyExc_TypeError,"IntVector expected");
+            return NULL;
+        }
+    }
+    {
+        try {
+            IntVector___setslice__(arg0,arg1,arg2,(IntVector const &)*arg3);
+            
+        }catch (IndexError& e) {
+            PyErr_SetString(PyExc_IndexError,e.what());
+            return NULL;
+        }catch (Error& e) {
+            PyErr_SetString(PyExc_Exception,e.what());
+            return NULL;
+        }catch (std::exception& e) {
+            PyErr_SetString(PyExc_Exception,e.what());
+            return NULL;
+        }catch (...) {
+            PyErr_SetString(PyExc_Exception,"unknown error");
+            return NULL;
+        }
+    }Py_INCREF(Py_None);
+    resultobj = Py_None;
+    return resultobj;
+}
+
+
+String  IntVector___str__(IntVector *self) {
+    {
+        String s = "(";
+        for (int i=0; i<self->size(); i++) {
+            if (i != 0)
+            s += ", ";
+            s += IntegerFormatter::toString((*self)[i]);
+        }
+        s += ")";
+        return s;
+    }
+}
+
+
+static PyObject *_wrap_IntVector___str__(PyObject *self, PyObject *args, PyObject *kwargs) {
+    PyObject *resultobj;
+    IntVector *arg0 ;
+    IntVector temp ;
+    PyObject * obj0  = 0 ;
+    char *kwnames[] = {
+        "self", NULL 
+    };
+    String *result ;
+    
+    if(!PyArg_ParseTupleAndKeywords(args,kwargs,"O:IntVector___str__",kwnames,&obj0)) return NULL;
+    {
+        IntVector* v;
+        if (PyTuple_Check(obj0) || PyList_Check(obj0)) {
+            int size = (PyTuple_Check(obj0) ? 
+            PyTuple_Size(obj0) :
+            PyList_Size(obj0));
+            temp = IntVector(size);
+            arg0 = &temp;
+            for (int i=0; i<size; i++) {
+                PyObject* o = PySequence_GetItem(obj0,i);
+                if (o == Py_None) {
+                    (*arg0)[i] = Null<int>();
+                }else if (PyInt_Check(o)) {
+                    (*arg0)[i] = int(PyInt_AsLong(o));
+                }else {
+                    PyErr_SetString(PyExc_TypeError,"ints expected");
+                    return NULL;
+                }
+            }
+        }else if ((SWIG_ConvertPtr(obj0,(void **) &v,
+        (swig_type_info *)SWIG_TypeQuery("IntVector *"),0)) != -1) {
+            arg0 = v;
+        }else {
+            PyErr_SetString(PyExc_TypeError,"IntVector expected");
+            return NULL;
+        }
+    }
+    {
+        try {
+            result = new String (IntVector___str__(arg0));
+        }catch (IndexError& e) {
+            PyErr_SetString(PyExc_IndexError,e.what());
+            return NULL;
+        }catch (Error& e) {
+            PyErr_SetString(PyExc_Exception,e.what());
+            return NULL;
+        }catch (std::exception& e) {
+            PyErr_SetString(PyExc_Exception,e.what());
+            return NULL;
+        }catch (...) {
+            PyErr_SetString(PyExc_Exception,"unknown error");
+            return NULL;
+        }
+    }{
+        resultobj = PyString_FromString(result->c_str());
+    }
+    {
+        delete result;
+    }
+    return resultobj;
+}
+
+
+String  IntVector___repr__(IntVector *self) {
+    {
+        String s = "(";
+        for (int i=0; i<self->size(); i++) {
+            if (i != 0)
+            s += ", ";
+            s += IntegerFormatter::toString((*self)[i]);
+        }
+        s += ")";
+        return s;
+    }
+}
+
+
+static PyObject *_wrap_IntVector___repr__(PyObject *self, PyObject *args, PyObject *kwargs) {
+    PyObject *resultobj;
+    IntVector *arg0 ;
+    IntVector temp ;
+    PyObject * obj0  = 0 ;
+    char *kwnames[] = {
+        "self", NULL 
+    };
+    String *result ;
+    
+    if(!PyArg_ParseTupleAndKeywords(args,kwargs,"O:IntVector___repr__",kwnames,&obj0)) return NULL;
+    {
+        IntVector* v;
+        if (PyTuple_Check(obj0) || PyList_Check(obj0)) {
+            int size = (PyTuple_Check(obj0) ? 
+            PyTuple_Size(obj0) :
+            PyList_Size(obj0));
+            temp = IntVector(size);
+            arg0 = &temp;
+            for (int i=0; i<size; i++) {
+                PyObject* o = PySequence_GetItem(obj0,i);
+                if (o == Py_None) {
+                    (*arg0)[i] = Null<int>();
+                }else if (PyInt_Check(o)) {
+                    (*arg0)[i] = int(PyInt_AsLong(o));
+                }else {
+                    PyErr_SetString(PyExc_TypeError,"ints expected");
+                    return NULL;
+                }
+            }
+        }else if ((SWIG_ConvertPtr(obj0,(void **) &v,
+        (swig_type_info *)SWIG_TypeQuery("IntVector *"),0)) != -1) {
+            arg0 = v;
+        }else {
+            PyErr_SetString(PyExc_TypeError,"IntVector expected");
+            return NULL;
+        }
+    }
+    {
+        try {
+            result = new String (IntVector___repr__(arg0));
+        }catch (IndexError& e) {
+            PyErr_SetString(PyExc_IndexError,e.what());
+            return NULL;
+        }catch (Error& e) {
+            PyErr_SetString(PyExc_Exception,e.what());
+            return NULL;
+        }catch (std::exception& e) {
+            PyErr_SetString(PyExc_Exception,e.what());
+            return NULL;
+        }catch (...) {
+            PyErr_SetString(PyExc_Exception,"unknown error");
+            return NULL;
+        }
+    }{
+        resultobj = PyString_FromString(result->c_str());
+    }
+    {
+        delete result;
+    }
+    return resultobj;
+}
+
+
+int  IntVector___nonzero__(IntVector *self) {
+    {
+        return (self->size() == 0 ? 0 : 1);
+    }
+}
+
+
+static PyObject *_wrap_IntVector___nonzero__(PyObject *self, PyObject *args, PyObject *kwargs) {
+    PyObject *resultobj;
+    IntVector *arg0 ;
+    IntVector temp ;
+    PyObject * obj0  = 0 ;
+    char *kwnames[] = {
+        "self", NULL 
+    };
+    int result ;
+    
+    if(!PyArg_ParseTupleAndKeywords(args,kwargs,"O:IntVector___nonzero__",kwnames,&obj0)) return NULL;
+    {
+        IntVector* v;
+        if (PyTuple_Check(obj0) || PyList_Check(obj0)) {
+            int size = (PyTuple_Check(obj0) ? 
+            PyTuple_Size(obj0) :
+            PyList_Size(obj0));
+            temp = IntVector(size);
+            arg0 = &temp;
+            for (int i=0; i<size; i++) {
+                PyObject* o = PySequence_GetItem(obj0,i);
+                if (o == Py_None) {
+                    (*arg0)[i] = Null<int>();
+                }else if (PyInt_Check(o)) {
+                    (*arg0)[i] = int(PyInt_AsLong(o));
+                }else {
+                    PyErr_SetString(PyExc_TypeError,"ints expected");
+                    return NULL;
+                }
+            }
+        }else if ((SWIG_ConvertPtr(obj0,(void **) &v,
+        (swig_type_info *)SWIG_TypeQuery("IntVector *"),0)) != -1) {
+            arg0 = v;
+        }else {
+            PyErr_SetString(PyExc_TypeError,"IntVector expected");
+            return NULL;
+        }
+    }
+    {
+        try {
+            result = (int )IntVector___nonzero__(arg0);
+            
+        }catch (IndexError& e) {
+            PyErr_SetString(PyExc_IndexError,e.what());
+            return NULL;
+        }catch (Error& e) {
+            PyErr_SetString(PyExc_Exception,e.what());
+            return NULL;
+        }catch (std::exception& e) {
+            PyErr_SetString(PyExc_Exception,e.what());
+            return NULL;
+        }catch (...) {
+            PyErr_SetString(PyExc_Exception,"unknown error");
+            return NULL;
+        }
+    }resultobj = PyInt_FromLong((long)result);
+    return resultobj;
+}
+
+
+static PyObject *_wrap_delete_DoubleVector(PyObject *self, PyObject *args, PyObject *kwargs) {
+    PyObject *resultobj;
+    DoubleVector *arg0 ;
+    DoubleVector temp ;
+    PyObject * obj0  = 0 ;
+    char *kwnames[] = {
+        "self", NULL 
+    };
+    
+    if(!PyArg_ParseTupleAndKeywords(args,kwargs,"O:delete_DoubleVector",kwnames,&obj0)) return NULL;
+    {
+        DoubleVector* v;
+        if (PyTuple_Check(obj0) || PyList_Check(obj0)) {
+            int size = (PyTuple_Check(obj0) ? 
+            PyTuple_Size(obj0) :
+            PyList_Size(obj0));
+            temp = DoubleVector(size);
+            arg0 = &temp;
+            for (int i=0; i<size; i++) {
+                PyObject* o = PySequence_GetItem(obj0,i);
+                if (o == Py_None) {
+                    (*arg0)[i] = Null<double>();
+                }else if (PyFloat_Check(o)) {
+                    (*arg0)[i] = PyFloat_AsDouble(o);
+                }else if (PyInt_Check(o)) {
+                    (*arg0)[i] = double(PyInt_AsLong(o));
+                }else {
+                    PyErr_SetString(PyExc_TypeError,"doubles expected");
+                    return NULL;
+                }
+            }
+        }else if ((SWIG_ConvertPtr(obj0,(void **) &v,
+        (swig_type_info *)SWIG_TypeQuery("DoubleVector *"),0)) != -1) {
+            arg0 = v;
+        }else {
+            PyErr_SetString(PyExc_TypeError,"DoubleVector expected");
+            return NULL;
+        }
+    }
+    {
+        try {
+            delete arg0;
+            
+        }catch (IndexError& e) {
+            PyErr_SetString(PyExc_IndexError,e.what());
+            return NULL;
+        }catch (Error& e) {
+            PyErr_SetString(PyExc_Exception,e.what());
+            return NULL;
+        }catch (std::exception& e) {
+            PyErr_SetString(PyExc_Exception,e.what());
+            return NULL;
+        }catch (...) {
+            PyErr_SetString(PyExc_Exception,"unknown error");
+            return NULL;
+        }
+    }Py_INCREF(Py_None);
+    resultobj = Py_None;
+    return resultobj;
+}
+
+
+int  DoubleVector___len__(DoubleVector *self) {
+    {
+        return self->size();
+    }
+}
+
+
+static PyObject *_wrap_DoubleVector___len__(PyObject *self, PyObject *args, PyObject *kwargs) {
+    PyObject *resultobj;
+    DoubleVector *arg0 ;
+    DoubleVector temp ;
+    PyObject * obj0  = 0 ;
+    char *kwnames[] = {
+        "self", NULL 
+    };
+    int result ;
+    
+    if(!PyArg_ParseTupleAndKeywords(args,kwargs,"O:DoubleVector___len__",kwnames,&obj0)) return NULL;
+    {
+        DoubleVector* v;
+        if (PyTuple_Check(obj0) || PyList_Check(obj0)) {
+            int size = (PyTuple_Check(obj0) ? 
+            PyTuple_Size(obj0) :
+            PyList_Size(obj0));
+            temp = DoubleVector(size);
+            arg0 = &temp;
+            for (int i=0; i<size; i++) {
+                PyObject* o = PySequence_GetItem(obj0,i);
+                if (o == Py_None) {
+                    (*arg0)[i] = Null<double>();
+                }else if (PyFloat_Check(o)) {
+                    (*arg0)[i] = PyFloat_AsDouble(o);
+                }else if (PyInt_Check(o)) {
+                    (*arg0)[i] = double(PyInt_AsLong(o));
+                }else {
+                    PyErr_SetString(PyExc_TypeError,"doubles expected");
+                    return NULL;
+                }
+            }
+        }else if ((SWIG_ConvertPtr(obj0,(void **) &v,
+        (swig_type_info *)SWIG_TypeQuery("DoubleVector *"),0)) != -1) {
+            arg0 = v;
+        }else {
+            PyErr_SetString(PyExc_TypeError,"DoubleVector expected");
+            return NULL;
+        }
+    }
+    {
+        try {
+            result = (int )DoubleVector___len__(arg0);
+            
+        }catch (IndexError& e) {
+            PyErr_SetString(PyExc_IndexError,e.what());
+            return NULL;
+        }catch (Error& e) {
+            PyErr_SetString(PyExc_Exception,e.what());
+            return NULL;
+        }catch (std::exception& e) {
+            PyErr_SetString(PyExc_Exception,e.what());
+            return NULL;
+        }catch (...) {
+            PyErr_SetString(PyExc_Exception,"unknown error");
+            return NULL;
+        }
+    }resultobj = PyInt_FromLong((long)result);
+    return resultobj;
+}
+
+
+double  DoubleVector___getitem__(DoubleVector *self,int i) {
+    {
+        if (i>=0 && i<self->size()) {
+            return (*self)[i];
+        }else if (i<0 && -i<=self->size()) {
+            return (*self)[self->size()+i];
+        }else {
+            throw QuantLib::IndexError("DoubleVector index out of range");
+        }
+    }
+}
+
+
+static PyObject *_wrap_DoubleVector___getitem__(PyObject *self, PyObject *args, PyObject *kwargs) {
+    PyObject *resultobj;
+    DoubleVector *arg0 ;
+    int arg1 ;
+    DoubleVector temp ;
+    PyObject * obj0  = 0 ;
+    char *kwnames[] = {
+        "self","i", NULL 
+    };
+    double result ;
+    
+    if(!PyArg_ParseTupleAndKeywords(args,kwargs,"Oi:DoubleVector___getitem__",kwnames,&obj0,&arg1)) return NULL;
+    {
+        DoubleVector* v;
+        if (PyTuple_Check(obj0) || PyList_Check(obj0)) {
+            int size = (PyTuple_Check(obj0) ? 
+            PyTuple_Size(obj0) :
+            PyList_Size(obj0));
+            temp = DoubleVector(size);
+            arg0 = &temp;
+            for (int i=0; i<size; i++) {
+                PyObject* o = PySequence_GetItem(obj0,i);
+                if (o == Py_None) {
+                    (*arg0)[i] = Null<double>();
+                }else if (PyFloat_Check(o)) {
+                    (*arg0)[i] = PyFloat_AsDouble(o);
+                }else if (PyInt_Check(o)) {
+                    (*arg0)[i] = double(PyInt_AsLong(o));
+                }else {
+                    PyErr_SetString(PyExc_TypeError,"doubles expected");
+                    return NULL;
+                }
+            }
+        }else if ((SWIG_ConvertPtr(obj0,(void **) &v,
+        (swig_type_info *)SWIG_TypeQuery("DoubleVector *"),0)) != -1) {
+            arg0 = v;
+        }else {
+            PyErr_SetString(PyExc_TypeError,"DoubleVector expected");
+            return NULL;
+        }
+    }
+    {
+        try {
+            result = (double )DoubleVector___getitem__(arg0,arg1);
+            
+        }catch (IndexError& e) {
+            PyErr_SetString(PyExc_IndexError,e.what());
+            return NULL;
+        }catch (Error& e) {
+            PyErr_SetString(PyExc_Exception,e.what());
+            return NULL;
+        }catch (std::exception& e) {
+            PyErr_SetString(PyExc_Exception,e.what());
+            return NULL;
+        }catch (...) {
+            PyErr_SetString(PyExc_Exception,"unknown error");
+            return NULL;
+        }
+    }resultobj = PyFloat_FromDouble(result);
+    return resultobj;
+}
+
+
+void  DoubleVector___setitem__(DoubleVector *self,int i,double x) {
+    {
+        if (i>=0 && i<self->size()) {
+            (*self)[i] = x;
+        }else if (i<0 && -i<=self->size()) {
+            (*self)[self->size()+i] = x;
+        }else {
+            throw QuantLib::IndexError("DoubleVector index out of range");
+        }
+    }
+}
+
+
+static PyObject *_wrap_DoubleVector___setitem__(PyObject *self, PyObject *args, PyObject *kwargs) {
+    PyObject *resultobj;
+    DoubleVector *arg0 ;
+    int arg1 ;
+    double arg2 ;
+    DoubleVector temp ;
+    PyObject * obj0  = 0 ;
+    char *kwnames[] = {
+        "self","i","x", NULL 
+    };
+    
+    if(!PyArg_ParseTupleAndKeywords(args,kwargs,"Oid:DoubleVector___setitem__",kwnames,&obj0,&arg1,&arg2)) return NULL;
+    {
+        DoubleVector* v;
+        if (PyTuple_Check(obj0) || PyList_Check(obj0)) {
+            int size = (PyTuple_Check(obj0) ? 
+            PyTuple_Size(obj0) :
+            PyList_Size(obj0));
+            temp = DoubleVector(size);
+            arg0 = &temp;
+            for (int i=0; i<size; i++) {
+                PyObject* o = PySequence_GetItem(obj0,i);
+                if (o == Py_None) {
+                    (*arg0)[i] = Null<double>();
+                }else if (PyFloat_Check(o)) {
+                    (*arg0)[i] = PyFloat_AsDouble(o);
+                }else if (PyInt_Check(o)) {
+                    (*arg0)[i] = double(PyInt_AsLong(o));
+                }else {
+                    PyErr_SetString(PyExc_TypeError,"doubles expected");
+                    return NULL;
+                }
+            }
+        }else if ((SWIG_ConvertPtr(obj0,(void **) &v,
+        (swig_type_info *)SWIG_TypeQuery("DoubleVector *"),0)) != -1) {
+            arg0 = v;
+        }else {
+            PyErr_SetString(PyExc_TypeError,"DoubleVector expected");
+            return NULL;
+        }
+    }
+    {
+        try {
+            DoubleVector___setitem__(arg0,arg1,arg2);
+            
+        }catch (IndexError& e) {
+            PyErr_SetString(PyExc_IndexError,e.what());
+            return NULL;
+        }catch (Error& e) {
+            PyErr_SetString(PyExc_Exception,e.what());
+            return NULL;
+        }catch (std::exception& e) {
+            PyErr_SetString(PyExc_Exception,e.what());
+            return NULL;
+        }catch (...) {
+            PyErr_SetString(PyExc_Exception,"unknown error");
+            return NULL;
+        }
+    }Py_INCREF(Py_None);
+    resultobj = Py_None;
+    return resultobj;
+}
+
+
+DoubleVector  DoubleVector___getslice__(DoubleVector *self,int i,int j) {
+    {
+        if (i<0)
+        i = self->size()+i;
+        if (i<0)
+        i = 0;
+        if (j<0)
+        j = self->size()+j;
+        if (j > self->size())
+        j = self->size();
+        DoubleVector tmp(j-i);
+        std::copy(self->begin()+i,self->begin()+j,tmp.begin());
+        return tmp;
+    }
+}
+
+
+static PyObject *_wrap_DoubleVector___getslice__(PyObject *self, PyObject *args, PyObject *kwargs) {
+    PyObject *resultobj;
+    DoubleVector *arg0 ;
+    int arg1 ;
+    int arg2 ;
+    DoubleVector temp ;
+    PyObject * obj0  = 0 ;
+    char *kwnames[] = {
+        "self","i","j", NULL 
+    };
+    DoubleVector *result ;
+    
+    if(!PyArg_ParseTupleAndKeywords(args,kwargs,"Oii:DoubleVector___getslice__",kwnames,&obj0,&arg1,&arg2)) return NULL;
+    {
+        DoubleVector* v;
+        if (PyTuple_Check(obj0) || PyList_Check(obj0)) {
+            int size = (PyTuple_Check(obj0) ? 
+            PyTuple_Size(obj0) :
+            PyList_Size(obj0));
+            temp = DoubleVector(size);
+            arg0 = &temp;
+            for (int i=0; i<size; i++) {
+                PyObject* o = PySequence_GetItem(obj0,i);
+                if (o == Py_None) {
+                    (*arg0)[i] = Null<double>();
+                }else if (PyFloat_Check(o)) {
+                    (*arg0)[i] = PyFloat_AsDouble(o);
+                }else if (PyInt_Check(o)) {
+                    (*arg0)[i] = double(PyInt_AsLong(o));
+                }else {
+                    PyErr_SetString(PyExc_TypeError,"doubles expected");
+                    return NULL;
+                }
+            }
+        }else if ((SWIG_ConvertPtr(obj0,(void **) &v,
+        (swig_type_info *)SWIG_TypeQuery("DoubleVector *"),0)) != -1) {
+            arg0 = v;
+        }else {
+            PyErr_SetString(PyExc_TypeError,"DoubleVector expected");
+            return NULL;
+        }
+    }
+    {
+        try {
+            result = new DoubleVector (DoubleVector___getslice__(arg0,arg1,arg2));
+        }catch (IndexError& e) {
+            PyErr_SetString(PyExc_IndexError,e.what());
+            return NULL;
+        }catch (Error& e) {
+            PyErr_SetString(PyExc_Exception,e.what());
+            return NULL;
+        }catch (std::exception& e) {
+            PyErr_SetString(PyExc_Exception,e.what());
+            return NULL;
+        }catch (...) {
+            PyErr_SetString(PyExc_Exception,"unknown error");
+            return NULL;
+        }
+    }resultobj = SWIG_NewPointerObj((void *)result, SWIGTYPE_p_DoubleVector);
+    return resultobj;
+}
+
+
+void  DoubleVector___setslice__(DoubleVector *self,int i,int j,DoubleVector const &rhs) {
+    {
+        if (i<0)
+        i = self->size()+i;
+        if (i<0)
+        i = 0;
+        if (j<0)
+        j = self->size()+j;
+        if (j > self->size())
+        j = self->size();
+        QL_ENSURE(rhs.size() == j-i, "DoubleVectors are not resizable");
+        std::copy(rhs.begin(),rhs.end(),self->begin()+i);
+    }
+}
+
+
+static PyObject *_wrap_DoubleVector___setslice__(PyObject *self, PyObject *args, PyObject *kwargs) {
+    PyObject *resultobj;
+    DoubleVector *arg0 ;
+    int arg1 ;
+    int arg2 ;
+    DoubleVector *arg3 ;
+    DoubleVector temp ;
+    PyObject * obj0  = 0 ;
+    DoubleVector temp0 ;
+    PyObject * obj3  = 0 ;
+    char *kwnames[] = {
+        "self","i","j","rhs", NULL 
+    };
+    
+    if(!PyArg_ParseTupleAndKeywords(args,kwargs,"OiiO:DoubleVector___setslice__",kwnames,&obj0,&arg1,&arg2,&obj3)) return NULL;
+    {
+        DoubleVector* v;
+        if (PyTuple_Check(obj0) || PyList_Check(obj0)) {
+            int size = (PyTuple_Check(obj0) ? 
+            PyTuple_Size(obj0) :
+            PyList_Size(obj0));
+            temp = DoubleVector(size);
+            arg0 = &temp;
+            for (int i=0; i<size; i++) {
+                PyObject* o = PySequence_GetItem(obj0,i);
+                if (o == Py_None) {
+                    (*arg0)[i] = Null<double>();
+                }else if (PyFloat_Check(o)) {
+                    (*arg0)[i] = PyFloat_AsDouble(o);
+                }else if (PyInt_Check(o)) {
+                    (*arg0)[i] = double(PyInt_AsLong(o));
+                }else {
+                    PyErr_SetString(PyExc_TypeError,"doubles expected");
+                    return NULL;
+                }
+            }
+        }else if ((SWIG_ConvertPtr(obj0,(void **) &v,
+        (swig_type_info *)SWIG_TypeQuery("DoubleVector *"),0)) != -1) {
+            arg0 = v;
+        }else {
+            PyErr_SetString(PyExc_TypeError,"DoubleVector expected");
+            return NULL;
+        }
+    }
+    {
+        DoubleVector* v;
+        if (PyTuple_Check(obj3) || PyList_Check(obj3)) {
+            int size = (PyTuple_Check(obj3) ? 
+            PyTuple_Size(obj3) :
+            PyList_Size(obj3));
+            temp0 = DoubleVector(size);
+            arg3 = &temp0;
+            for (int i=0; i<size; i++) {
+                PyObject* o = PySequence_GetItem(obj3,i);
+                if (o == Py_None) {
+                    (*arg3)[i] = Null<double>();
+                }else if (PyFloat_Check(o)) {
+                    (*arg3)[i] = PyFloat_AsDouble(o);
+                }else if (PyInt_Check(o)) {
+                    (*arg3)[i] = double(PyInt_AsLong(o));
+                }else {
+                    PyErr_SetString(PyExc_TypeError,"doubles expected");
+                    return NULL;
+                }
+            }
+        }else if ((SWIG_ConvertPtr(obj3,(void **) &v,
+        (swig_type_info *)SWIG_TypeQuery("DoubleVector *"),0)) != -1) {
+            arg3 = v;
+        }else {
+            PyErr_SetString(PyExc_TypeError,"DoubleVector expected");
+            return NULL;
+        }
+    }
+    {
+        try {
+            DoubleVector___setslice__(arg0,arg1,arg2,(DoubleVector const &)*arg3);
+            
+        }catch (IndexError& e) {
+            PyErr_SetString(PyExc_IndexError,e.what());
+            return NULL;
+        }catch (Error& e) {
+            PyErr_SetString(PyExc_Exception,e.what());
+            return NULL;
+        }catch (std::exception& e) {
+            PyErr_SetString(PyExc_Exception,e.what());
+            return NULL;
+        }catch (...) {
+            PyErr_SetString(PyExc_Exception,"unknown error");
+            return NULL;
+        }
+    }Py_INCREF(Py_None);
+    resultobj = Py_None;
+    return resultobj;
+}
+
+
+String  DoubleVector___str__(DoubleVector *self) {
+    {
+        String s = "(";
+        for (int i=0; i<self->size(); i++) {
+            if (i != 0)
+            s += ", ";
+            s += DoubleFormatter::toString((*self)[i]);
+        }
+        s += ")";
+        return s;
+    }
+}
+
+
+static PyObject *_wrap_DoubleVector___str__(PyObject *self, PyObject *args, PyObject *kwargs) {
+    PyObject *resultobj;
+    DoubleVector *arg0 ;
+    DoubleVector temp ;
+    PyObject * obj0  = 0 ;
+    char *kwnames[] = {
+        "self", NULL 
+    };
+    String *result ;
+    
+    if(!PyArg_ParseTupleAndKeywords(args,kwargs,"O:DoubleVector___str__",kwnames,&obj0)) return NULL;
+    {
+        DoubleVector* v;
+        if (PyTuple_Check(obj0) || PyList_Check(obj0)) {
+            int size = (PyTuple_Check(obj0) ? 
+            PyTuple_Size(obj0) :
+            PyList_Size(obj0));
+            temp = DoubleVector(size);
+            arg0 = &temp;
+            for (int i=0; i<size; i++) {
+                PyObject* o = PySequence_GetItem(obj0,i);
+                if (o == Py_None) {
+                    (*arg0)[i] = Null<double>();
+                }else if (PyFloat_Check(o)) {
+                    (*arg0)[i] = PyFloat_AsDouble(o);
+                }else if (PyInt_Check(o)) {
+                    (*arg0)[i] = double(PyInt_AsLong(o));
+                }else {
+                    PyErr_SetString(PyExc_TypeError,"doubles expected");
+                    return NULL;
+                }
+            }
+        }else if ((SWIG_ConvertPtr(obj0,(void **) &v,
+        (swig_type_info *)SWIG_TypeQuery("DoubleVector *"),0)) != -1) {
+            arg0 = v;
+        }else {
+            PyErr_SetString(PyExc_TypeError,"DoubleVector expected");
+            return NULL;
+        }
+    }
+    {
+        try {
+            result = new String (DoubleVector___str__(arg0));
+        }catch (IndexError& e) {
+            PyErr_SetString(PyExc_IndexError,e.what());
+            return NULL;
+        }catch (Error& e) {
+            PyErr_SetString(PyExc_Exception,e.what());
+            return NULL;
+        }catch (std::exception& e) {
+            PyErr_SetString(PyExc_Exception,e.what());
+            return NULL;
+        }catch (...) {
+            PyErr_SetString(PyExc_Exception,"unknown error");
+            return NULL;
+        }
+    }{
+        resultobj = PyString_FromString(result->c_str());
+    }
+    {
+        delete result;
+    }
+    return resultobj;
+}
+
+
+String  DoubleVector___repr__(DoubleVector *self) {
+    {
+        String s = "(";
+        for (int i=0; i<self->size(); i++) {
+            if (i != 0)
+            s += ", ";
+            s += DoubleFormatter::toString((*self)[i]);
+        }
+        s += ")";
+        return s;
+    }
+}
+
+
+static PyObject *_wrap_DoubleVector___repr__(PyObject *self, PyObject *args, PyObject *kwargs) {
+    PyObject *resultobj;
+    DoubleVector *arg0 ;
+    DoubleVector temp ;
+    PyObject * obj0  = 0 ;
+    char *kwnames[] = {
+        "self", NULL 
+    };
+    String *result ;
+    
+    if(!PyArg_ParseTupleAndKeywords(args,kwargs,"O:DoubleVector___repr__",kwnames,&obj0)) return NULL;
+    {
+        DoubleVector* v;
+        if (PyTuple_Check(obj0) || PyList_Check(obj0)) {
+            int size = (PyTuple_Check(obj0) ? 
+            PyTuple_Size(obj0) :
+            PyList_Size(obj0));
+            temp = DoubleVector(size);
+            arg0 = &temp;
+            for (int i=0; i<size; i++) {
+                PyObject* o = PySequence_GetItem(obj0,i);
+                if (o == Py_None) {
+                    (*arg0)[i] = Null<double>();
+                }else if (PyFloat_Check(o)) {
+                    (*arg0)[i] = PyFloat_AsDouble(o);
+                }else if (PyInt_Check(o)) {
+                    (*arg0)[i] = double(PyInt_AsLong(o));
+                }else {
+                    PyErr_SetString(PyExc_TypeError,"doubles expected");
+                    return NULL;
+                }
+            }
+        }else if ((SWIG_ConvertPtr(obj0,(void **) &v,
+        (swig_type_info *)SWIG_TypeQuery("DoubleVector *"),0)) != -1) {
+            arg0 = v;
+        }else {
+            PyErr_SetString(PyExc_TypeError,"DoubleVector expected");
+            return NULL;
+        }
+    }
+    {
+        try {
+            result = new String (DoubleVector___repr__(arg0));
+        }catch (IndexError& e) {
+            PyErr_SetString(PyExc_IndexError,e.what());
+            return NULL;
+        }catch (Error& e) {
+            PyErr_SetString(PyExc_Exception,e.what());
+            return NULL;
+        }catch (std::exception& e) {
+            PyErr_SetString(PyExc_Exception,e.what());
+            return NULL;
+        }catch (...) {
+            PyErr_SetString(PyExc_Exception,"unknown error");
+            return NULL;
+        }
+    }{
+        resultobj = PyString_FromString(result->c_str());
+    }
+    {
+        delete result;
+    }
+    return resultobj;
+}
+
+
+int  DoubleVector___nonzero__(DoubleVector *self) {
+    {
+        return (self->size() == 0 ? 0 : 1);
+    }
+}
+
+
+static PyObject *_wrap_DoubleVector___nonzero__(PyObject *self, PyObject *args, PyObject *kwargs) {
+    PyObject *resultobj;
+    DoubleVector *arg0 ;
+    DoubleVector temp ;
+    PyObject * obj0  = 0 ;
+    char *kwnames[] = {
+        "self", NULL 
+    };
+    int result ;
+    
+    if(!PyArg_ParseTupleAndKeywords(args,kwargs,"O:DoubleVector___nonzero__",kwnames,&obj0)) return NULL;
+    {
+        DoubleVector* v;
+        if (PyTuple_Check(obj0) || PyList_Check(obj0)) {
+            int size = (PyTuple_Check(obj0) ? 
+            PyTuple_Size(obj0) :
+            PyList_Size(obj0));
+            temp = DoubleVector(size);
+            arg0 = &temp;
+            for (int i=0; i<size; i++) {
+                PyObject* o = PySequence_GetItem(obj0,i);
+                if (o == Py_None) {
+                    (*arg0)[i] = Null<double>();
+                }else if (PyFloat_Check(o)) {
+                    (*arg0)[i] = PyFloat_AsDouble(o);
+                }else if (PyInt_Check(o)) {
+                    (*arg0)[i] = double(PyInt_AsLong(o));
+                }else {
+                    PyErr_SetString(PyExc_TypeError,"doubles expected");
+                    return NULL;
+                }
+            }
+        }else if ((SWIG_ConvertPtr(obj0,(void **) &v,
+        (swig_type_info *)SWIG_TypeQuery("DoubleVector *"),0)) != -1) {
+            arg0 = v;
+        }else {
+            PyErr_SetString(PyExc_TypeError,"DoubleVector expected");
+            return NULL;
+        }
+    }
+    {
+        try {
+            result = (int )DoubleVector___nonzero__(arg0);
+            
+        }catch (IndexError& e) {
+            PyErr_SetString(PyExc_IndexError,e.what());
+            return NULL;
+        }catch (Error& e) {
+            PyErr_SetString(PyExc_Exception,e.what());
+            return NULL;
+        }catch (std::exception& e) {
+            PyErr_SetString(PyExc_Exception,e.what());
+            return NULL;
+        }catch (...) {
+            PyErr_SetString(PyExc_Exception,"unknown error");
+            return NULL;
+        }
+    }resultobj = PyInt_FromLong((long)result);
     return resultobj;
 }
 
@@ -6215,10 +7616,10 @@ static PyObject *_wrap_delete_HistoryIterator(PyObject *self, PyObject *args, Py
         try {
             delete arg0;
             
-        }catch (QuantLib::IndexError& e) {
+        }catch (IndexError& e) {
             PyErr_SetString(PyExc_IndexError,e.what());
             return NULL;
-        }catch (QuantLib::Error& e) {
+        }catch (Error& e) {
             PyErr_SetString(PyExc_Exception,e.what());
             return NULL;
         }catch (std::exception& e) {
@@ -6255,10 +7656,10 @@ static PyObject *_wrap_HistoryIterator_date(PyObject *self, PyObject *args, PyOb
     {
         try {
             result = new Date (HistoryIterator_date(arg0));
-        }catch (QuantLib::IndexError& e) {
+        }catch (IndexError& e) {
             PyErr_SetString(PyExc_IndexError,e.what());
             return NULL;
-        }catch (QuantLib::Error& e) {
+        }catch (Error& e) {
             PyErr_SetString(PyExc_Exception,e.what());
             return NULL;
         }catch (std::exception& e) {
@@ -6295,10 +7696,10 @@ static PyObject *_wrap_HistoryIterator_value(PyObject *self, PyObject *args, PyO
         try {
             result = (double )HistoryIterator_value(arg0);
             
-        }catch (QuantLib::IndexError& e) {
+        }catch (IndexError& e) {
             PyErr_SetString(PyExc_IndexError,e.what());
             return NULL;
-        }catch (QuantLib::Error& e) {
+        }catch (Error& e) {
             PyErr_SetString(PyExc_Exception,e.what());
             return NULL;
         }catch (std::exception& e) {
@@ -6334,10 +7735,10 @@ static PyObject *_wrap_HistoryIterator_advance(PyObject *self, PyObject *args, P
         try {
             HistoryIterator_advance(arg0);
             
-        }catch (QuantLib::IndexError& e) {
+        }catch (IndexError& e) {
             PyErr_SetString(PyExc_IndexError,e.what());
             return NULL;
-        }catch (QuantLib::Error& e) {
+        }catch (Error& e) {
             PyErr_SetString(PyExc_Exception,e.what());
             return NULL;
         }catch (std::exception& e) {
@@ -6378,10 +7779,10 @@ static PyObject *_wrap_HistoryIterator___cmp__(PyObject *self, PyObject *args, P
         try {
             result = (int )HistoryIterator___cmp__(arg0,(HistoryIterator const &)*arg1);
             
-        }catch (QuantLib::IndexError& e) {
+        }catch (IndexError& e) {
             PyErr_SetString(PyExc_IndexError,e.what());
             return NULL;
-        }catch (QuantLib::Error& e) {
+        }catch (Error& e) {
             PyErr_SetString(PyExc_Exception,e.what());
             return NULL;
         }catch (std::exception& e) {
@@ -6419,10 +7820,10 @@ static PyObject *_wrap_HistoryIterator___str__(PyObject *self, PyObject *args, P
     {
         try {
             result = new String (HistoryIterator___str__(arg0));
-        }catch (QuantLib::IndexError& e) {
+        }catch (IndexError& e) {
             PyErr_SetString(PyExc_IndexError,e.what());
             return NULL;
-        }catch (QuantLib::Error& e) {
+        }catch (Error& e) {
             PyErr_SetString(PyExc_Exception,e.what());
             return NULL;
         }catch (std::exception& e) {
@@ -6456,10 +7857,10 @@ static PyObject *_wrap_delete_HistoryValidIterator(PyObject *self, PyObject *arg
         try {
             delete arg0;
             
-        }catch (QuantLib::IndexError& e) {
+        }catch (IndexError& e) {
             PyErr_SetString(PyExc_IndexError,e.what());
             return NULL;
-        }catch (QuantLib::Error& e) {
+        }catch (Error& e) {
             PyErr_SetString(PyExc_Exception,e.what());
             return NULL;
         }catch (std::exception& e) {
@@ -6496,10 +7897,10 @@ static PyObject *_wrap_HistoryValidIterator_date(PyObject *self, PyObject *args,
     {
         try {
             result = new Date (HistoryValidIterator_date(arg0));
-        }catch (QuantLib::IndexError& e) {
+        }catch (IndexError& e) {
             PyErr_SetString(PyExc_IndexError,e.what());
             return NULL;
-        }catch (QuantLib::Error& e) {
+        }catch (Error& e) {
             PyErr_SetString(PyExc_Exception,e.what());
             return NULL;
         }catch (std::exception& e) {
@@ -6536,10 +7937,10 @@ static PyObject *_wrap_HistoryValidIterator_value(PyObject *self, PyObject *args
         try {
             result = (double )HistoryValidIterator_value(arg0);
             
-        }catch (QuantLib::IndexError& e) {
+        }catch (IndexError& e) {
             PyErr_SetString(PyExc_IndexError,e.what());
             return NULL;
-        }catch (QuantLib::Error& e) {
+        }catch (Error& e) {
             PyErr_SetString(PyExc_Exception,e.what());
             return NULL;
         }catch (std::exception& e) {
@@ -6575,10 +7976,10 @@ static PyObject *_wrap_HistoryValidIterator_advance(PyObject *self, PyObject *ar
         try {
             HistoryValidIterator_advance(arg0);
             
-        }catch (QuantLib::IndexError& e) {
+        }catch (IndexError& e) {
             PyErr_SetString(PyExc_IndexError,e.what());
             return NULL;
-        }catch (QuantLib::Error& e) {
+        }catch (Error& e) {
             PyErr_SetString(PyExc_Exception,e.what());
             return NULL;
         }catch (std::exception& e) {
@@ -6619,10 +8020,10 @@ static PyObject *_wrap_HistoryValidIterator___cmp__(PyObject *self, PyObject *ar
         try {
             result = (int )HistoryValidIterator___cmp__(arg0,(HistoryValidIterator const &)*arg1);
             
-        }catch (QuantLib::IndexError& e) {
+        }catch (IndexError& e) {
             PyErr_SetString(PyExc_IndexError,e.what());
             return NULL;
-        }catch (QuantLib::Error& e) {
+        }catch (Error& e) {
             PyErr_SetString(PyExc_Exception,e.what());
             return NULL;
         }catch (std::exception& e) {
@@ -6660,10 +8061,10 @@ static PyObject *_wrap_HistoryValidIterator___str__(PyObject *self, PyObject *ar
     {
         try {
             result = new String (HistoryValidIterator___str__(arg0));
-        }catch (QuantLib::IndexError& e) {
+        }catch (IndexError& e) {
             PyErr_SetString(PyExc_IndexError,e.what());
             return NULL;
-        }catch (QuantLib::Error& e) {
+        }catch (Error& e) {
             PyErr_SetString(PyExc_Exception,e.what());
             return NULL;
         }catch (std::exception& e) {
@@ -6697,10 +8098,10 @@ static PyObject *_wrap_delete_HistoryDataIterator(PyObject *self, PyObject *args
         try {
             delete arg0;
             
-        }catch (QuantLib::IndexError& e) {
+        }catch (IndexError& e) {
             PyErr_SetString(PyExc_IndexError,e.what());
             return NULL;
-        }catch (QuantLib::Error& e) {
+        }catch (Error& e) {
             PyErr_SetString(PyExc_Exception,e.what());
             return NULL;
         }catch (std::exception& e) {
@@ -6738,10 +8139,10 @@ static PyObject *_wrap_HistoryDataIterator___float__(PyObject *self, PyObject *a
         try {
             result = (double )HistoryDataIterator___float__(arg0);
             
-        }catch (QuantLib::IndexError& e) {
+        }catch (IndexError& e) {
             PyErr_SetString(PyExc_IndexError,e.what());
             return NULL;
-        }catch (QuantLib::Error& e) {
+        }catch (Error& e) {
             PyErr_SetString(PyExc_Exception,e.what());
             return NULL;
         }catch (std::exception& e) {
@@ -6777,10 +8178,10 @@ static PyObject *_wrap_HistoryDataIterator_advance(PyObject *self, PyObject *arg
         try {
             HistoryDataIterator_advance(arg0);
             
-        }catch (QuantLib::IndexError& e) {
+        }catch (IndexError& e) {
             PyErr_SetString(PyExc_IndexError,e.what());
             return NULL;
-        }catch (QuantLib::Error& e) {
+        }catch (Error& e) {
             PyErr_SetString(PyExc_Exception,e.what());
             return NULL;
         }catch (std::exception& e) {
@@ -6821,10 +8222,10 @@ static PyObject *_wrap_HistoryDataIterator___cmp__(PyObject *self, PyObject *arg
         try {
             result = (int )HistoryDataIterator___cmp__(arg0,(HistoryDataIterator const &)*arg1);
             
-        }catch (QuantLib::IndexError& e) {
+        }catch (IndexError& e) {
             PyErr_SetString(PyExc_IndexError,e.what());
             return NULL;
-        }catch (QuantLib::Error& e) {
+        }catch (Error& e) {
             PyErr_SetString(PyExc_Exception,e.what());
             return NULL;
         }catch (std::exception& e) {
@@ -6861,10 +8262,10 @@ static PyObject *_wrap_HistoryDataIterator___str__(PyObject *self, PyObject *arg
     {
         try {
             result = new String (HistoryDataIterator___str__(arg0));
-        }catch (QuantLib::IndexError& e) {
+        }catch (IndexError& e) {
             PyErr_SetString(PyExc_IndexError,e.what());
             return NULL;
-        }catch (QuantLib::Error& e) {
+        }catch (Error& e) {
             PyErr_SetString(PyExc_Exception,e.what());
             return NULL;
         }catch (std::exception& e) {
@@ -6898,10 +8299,10 @@ static PyObject *_wrap_delete_HistoryValidDataIterator(PyObject *self, PyObject 
         try {
             delete arg0;
             
-        }catch (QuantLib::IndexError& e) {
+        }catch (IndexError& e) {
             PyErr_SetString(PyExc_IndexError,e.what());
             return NULL;
-        }catch (QuantLib::Error& e) {
+        }catch (Error& e) {
             PyErr_SetString(PyExc_Exception,e.what());
             return NULL;
         }catch (std::exception& e) {
@@ -6939,10 +8340,10 @@ static PyObject *_wrap_HistoryValidDataIterator___float__(PyObject *self, PyObje
         try {
             result = (double )HistoryValidDataIterator___float__(arg0);
             
-        }catch (QuantLib::IndexError& e) {
+        }catch (IndexError& e) {
             PyErr_SetString(PyExc_IndexError,e.what());
             return NULL;
-        }catch (QuantLib::Error& e) {
+        }catch (Error& e) {
             PyErr_SetString(PyExc_Exception,e.what());
             return NULL;
         }catch (std::exception& e) {
@@ -6978,10 +8379,10 @@ static PyObject *_wrap_HistoryValidDataIterator_advance(PyObject *self, PyObject
         try {
             HistoryValidDataIterator_advance(arg0);
             
-        }catch (QuantLib::IndexError& e) {
+        }catch (IndexError& e) {
             PyErr_SetString(PyExc_IndexError,e.what());
             return NULL;
-        }catch (QuantLib::Error& e) {
+        }catch (Error& e) {
             PyErr_SetString(PyExc_Exception,e.what());
             return NULL;
         }catch (std::exception& e) {
@@ -7022,10 +8423,10 @@ static PyObject *_wrap_HistoryValidDataIterator___cmp__(PyObject *self, PyObject
         try {
             result = (int )HistoryValidDataIterator___cmp__(arg0,(HistoryValidDataIterator const &)*arg1);
             
-        }catch (QuantLib::IndexError& e) {
+        }catch (IndexError& e) {
             PyErr_SetString(PyExc_IndexError,e.what());
             return NULL;
-        }catch (QuantLib::Error& e) {
+        }catch (Error& e) {
             PyErr_SetString(PyExc_Exception,e.what());
             return NULL;
         }catch (std::exception& e) {
@@ -7062,10 +8463,10 @@ static PyObject *_wrap_HistoryValidDataIterator___str__(PyObject *self, PyObject
     {
         try {
             result = new String (HistoryValidDataIterator___str__(arg0));
-        }catch (QuantLib::IndexError& e) {
+        }catch (IndexError& e) {
             PyErr_SetString(PyExc_IndexError,e.what());
             return NULL;
-        }catch (QuantLib::Error& e) {
+        }catch (Error& e) {
             PyErr_SetString(PyExc_Exception,e.what());
             return NULL;
         }catch (std::exception& e) {
@@ -7091,6 +8492,7 @@ static PyObject *_wrap_new_History(PyObject *self, PyObject *args, PyObject *kwa
     DoubleVector *arg1 ;
     DateVector temp ;
     PyObject * obj0  = 0 ;
+    DoubleVector temp0 ;
     PyObject * obj1  = 0 ;
     char *kwnames[] = {
         "dates","values", NULL 
@@ -7128,42 +8530,31 @@ static PyObject *_wrap_new_History(PyObject *self, PyObject *args, PyObject *kwa
         }
     }
     {
-        if (PyTuple_Check(obj1)) {
-            int size = PyTuple_Size(obj1);
-            arg1 = new DoubleVector(size);
+        DoubleVector* v;
+        if (PyTuple_Check(obj1) || PyList_Check(obj1)) {
+            int size = (PyTuple_Check(obj1) ? 
+            PyTuple_Size(obj1) :
+            PyList_Size(obj1));
+            temp0 = DoubleVector(size);
+            arg1 = &temp0;
             for (int i=0; i<size; i++) {
-                PyObject* o = PyTuple_GetItem(obj1,i);
-                if (PyFloat_Check(o)) {
+                PyObject* o = PySequence_GetItem(obj1,i);
+                if (o == Py_None) {
+                    (*arg1)[i] = Null<double>();
+                }else if (PyFloat_Check(o)) {
                     (*arg1)[i] = PyFloat_AsDouble(o);
                 }else if (PyInt_Check(o)) {
                     (*arg1)[i] = double(PyInt_AsLong(o));
-                }else if (o == Py_None) {
-                    (*arg1)[i] = Null<double>();
                 }else {
-                    PyErr_SetString(PyExc_TypeError,"tuple must contain doubles");
-                    delete arg1;
+                    PyErr_SetString(PyExc_TypeError,"doubles expected");
                     return NULL;
                 }
             }
-        }else if (PyList_Check(obj1)) {
-            int size = PyList_Size(obj1);
-            arg1 = new DoubleVector(size);
-            for (int i=0; i<size; i++) {
-                PyObject* o = PyList_GetItem(obj1,i);
-                if (PyFloat_Check(o)) {
-                    (*arg1)[i] = PyFloat_AsDouble(o);
-                }else if (PyInt_Check(o)) {
-                    (*arg1)[i] = double(PyInt_AsLong(o));
-                }else if (o == Py_None) {
-                    (*arg1)[i] = Null<double>();
-                }else {
-                    PyErr_SetString(PyExc_TypeError,"list must contain doubles");
-                    delete arg1;
-                    return NULL;
-                }
-            }
+        }else if ((SWIG_ConvertPtr(obj1,(void **) &v,
+        (swig_type_info *)SWIG_TypeQuery("DoubleVector *"),0)) != -1) {
+            arg1 = v;
         }else {
-            PyErr_SetString(PyExc_TypeError,"not a sequence");
+            PyErr_SetString(PyExc_TypeError,"DoubleVector expected");
             return NULL;
         }
     }
@@ -7171,10 +8562,10 @@ static PyObject *_wrap_new_History(PyObject *self, PyObject *args, PyObject *kwa
         try {
             result = (History *)new History(*arg0,*arg1);
             
-        }catch (QuantLib::IndexError& e) {
+        }catch (IndexError& e) {
             PyErr_SetString(PyExc_IndexError,e.what());
             return NULL;
-        }catch (QuantLib::Error& e) {
+        }catch (Error& e) {
             PyErr_SetString(PyExc_Exception,e.what());
             return NULL;
         }catch (std::exception& e) {
@@ -7185,9 +8576,6 @@ static PyObject *_wrap_new_History(PyObject *self, PyObject *args, PyObject *kwa
             return NULL;
         }
     }resultobj = SWIG_NewPointerObj((void *) result, SWIGTYPE_p_History);
-    {
-        delete arg1;
-    }
     return resultobj;
 }
 
@@ -7206,10 +8594,10 @@ static PyObject *_wrap_delete_History(PyObject *self, PyObject *args, PyObject *
         try {
             delete arg0;
             
-        }catch (QuantLib::IndexError& e) {
+        }catch (IndexError& e) {
             PyErr_SetString(PyExc_IndexError,e.what());
             return NULL;
-        }catch (QuantLib::Error& e) {
+        }catch (Error& e) {
             PyErr_SetString(PyExc_Exception,e.what());
             return NULL;
         }catch (std::exception& e) {
@@ -7239,10 +8627,10 @@ static PyObject *_wrap_History_firstDate(PyObject *self, PyObject *args, PyObjec
     {
         try {
             result = new Date (arg0->firstDate());
-        }catch (QuantLib::IndexError& e) {
+        }catch (IndexError& e) {
             PyErr_SetString(PyExc_IndexError,e.what());
             return NULL;
-        }catch (QuantLib::Error& e) {
+        }catch (Error& e) {
             PyErr_SetString(PyExc_Exception,e.what());
             return NULL;
         }catch (std::exception& e) {
@@ -7271,10 +8659,10 @@ static PyObject *_wrap_History_lastDate(PyObject *self, PyObject *args, PyObject
     {
         try {
             result = new Date (arg0->lastDate());
-        }catch (QuantLib::IndexError& e) {
+        }catch (IndexError& e) {
             PyErr_SetString(PyExc_IndexError,e.what());
             return NULL;
-        }catch (QuantLib::Error& e) {
+        }catch (Error& e) {
             PyErr_SetString(PyExc_Exception,e.what());
             return NULL;
         }catch (std::exception& e) {
@@ -7304,10 +8692,10 @@ static PyObject *_wrap_History_size(PyObject *self, PyObject *args, PyObject *kw
         try {
             result = (int )arg0->size();
             
-        }catch (QuantLib::IndexError& e) {
+        }catch (IndexError& e) {
             PyErr_SetString(PyExc_IndexError,e.what());
             return NULL;
-        }catch (QuantLib::Error& e) {
+        }catch (Error& e) {
             PyErr_SetString(PyExc_Exception,e.what());
             return NULL;
         }catch (std::exception& e) {
@@ -7336,10 +8724,10 @@ static PyObject *_wrap_History_begin(PyObject *self, PyObject *args, PyObject *k
     {
         try {
             result = new HistoryIterator (arg0->begin());
-        }catch (QuantLib::IndexError& e) {
+        }catch (IndexError& e) {
             PyErr_SetString(PyExc_IndexError,e.what());
             return NULL;
-        }catch (QuantLib::Error& e) {
+        }catch (Error& e) {
             PyErr_SetString(PyExc_Exception,e.what());
             return NULL;
         }catch (std::exception& e) {
@@ -7368,10 +8756,10 @@ static PyObject *_wrap_History_end(PyObject *self, PyObject *args, PyObject *kwa
     {
         try {
             result = new HistoryIterator (arg0->end());
-        }catch (QuantLib::IndexError& e) {
+        }catch (IndexError& e) {
             PyErr_SetString(PyExc_IndexError,e.what());
             return NULL;
-        }catch (QuantLib::Error& e) {
+        }catch (Error& e) {
             PyErr_SetString(PyExc_Exception,e.what());
             return NULL;
         }catch (std::exception& e) {
@@ -7416,10 +8804,10 @@ static PyObject *_wrap_History_iterator(PyObject *self, PyObject *args, PyObject
     {
         try {
             result = new HistoryIterator (arg0->iterator(*arg1));
-        }catch (QuantLib::IndexError& e) {
+        }catch (IndexError& e) {
             PyErr_SetString(PyExc_IndexError,e.what());
             return NULL;
-        }catch (QuantLib::Error& e) {
+        }catch (Error& e) {
             PyErr_SetString(PyExc_Exception,e.what());
             return NULL;
         }catch (std::exception& e) {
@@ -7448,10 +8836,10 @@ static PyObject *_wrap_History_vbegin(PyObject *self, PyObject *args, PyObject *
     {
         try {
             result = new HistoryValidIterator (arg0->vbegin());
-        }catch (QuantLib::IndexError& e) {
+        }catch (IndexError& e) {
             PyErr_SetString(PyExc_IndexError,e.what());
             return NULL;
-        }catch (QuantLib::Error& e) {
+        }catch (Error& e) {
             PyErr_SetString(PyExc_Exception,e.what());
             return NULL;
         }catch (std::exception& e) {
@@ -7480,10 +8868,10 @@ static PyObject *_wrap_History_vend(PyObject *self, PyObject *args, PyObject *kw
     {
         try {
             result = new HistoryValidIterator (arg0->vend());
-        }catch (QuantLib::IndexError& e) {
+        }catch (IndexError& e) {
             PyErr_SetString(PyExc_IndexError,e.what());
             return NULL;
-        }catch (QuantLib::Error& e) {
+        }catch (Error& e) {
             PyErr_SetString(PyExc_Exception,e.what());
             return NULL;
         }catch (std::exception& e) {
@@ -7528,10 +8916,10 @@ static PyObject *_wrap_History_valid_iterator(PyObject *self, PyObject *args, Py
     {
         try {
             result = new HistoryValidIterator (arg0->valid_iterator(*arg1));
-        }catch (QuantLib::IndexError& e) {
+        }catch (IndexError& e) {
             PyErr_SetString(PyExc_IndexError,e.what());
             return NULL;
-        }catch (QuantLib::Error& e) {
+        }catch (Error& e) {
             PyErr_SetString(PyExc_Exception,e.what());
             return NULL;
         }catch (std::exception& e) {
@@ -7560,10 +8948,10 @@ static PyObject *_wrap_History_dbegin(PyObject *self, PyObject *args, PyObject *
     {
         try {
             result = new HistoryDataIterator (arg0->dbegin());
-        }catch (QuantLib::IndexError& e) {
+        }catch (IndexError& e) {
             PyErr_SetString(PyExc_IndexError,e.what());
             return NULL;
-        }catch (QuantLib::Error& e) {
+        }catch (Error& e) {
             PyErr_SetString(PyExc_Exception,e.what());
             return NULL;
         }catch (std::exception& e) {
@@ -7592,10 +8980,10 @@ static PyObject *_wrap_History_dend(PyObject *self, PyObject *args, PyObject *kw
     {
         try {
             result = new HistoryDataIterator (arg0->dend());
-        }catch (QuantLib::IndexError& e) {
+        }catch (IndexError& e) {
             PyErr_SetString(PyExc_IndexError,e.what());
             return NULL;
-        }catch (QuantLib::Error& e) {
+        }catch (Error& e) {
             PyErr_SetString(PyExc_Exception,e.what());
             return NULL;
         }catch (std::exception& e) {
@@ -7640,10 +9028,10 @@ static PyObject *_wrap_History_data_iterator(PyObject *self, PyObject *args, PyO
     {
         try {
             result = new HistoryDataIterator (arg0->data_iterator(*arg1));
-        }catch (QuantLib::IndexError& e) {
+        }catch (IndexError& e) {
             PyErr_SetString(PyExc_IndexError,e.what());
             return NULL;
-        }catch (QuantLib::Error& e) {
+        }catch (Error& e) {
             PyErr_SetString(PyExc_Exception,e.what());
             return NULL;
         }catch (std::exception& e) {
@@ -7672,10 +9060,10 @@ static PyObject *_wrap_History_vdbegin(PyObject *self, PyObject *args, PyObject 
     {
         try {
             result = new HistoryValidDataIterator (arg0->vdbegin());
-        }catch (QuantLib::IndexError& e) {
+        }catch (IndexError& e) {
             PyErr_SetString(PyExc_IndexError,e.what());
             return NULL;
-        }catch (QuantLib::Error& e) {
+        }catch (Error& e) {
             PyErr_SetString(PyExc_Exception,e.what());
             return NULL;
         }catch (std::exception& e) {
@@ -7704,10 +9092,10 @@ static PyObject *_wrap_History_vdend(PyObject *self, PyObject *args, PyObject *k
     {
         try {
             result = new HistoryValidDataIterator (arg0->vdend());
-        }catch (QuantLib::IndexError& e) {
+        }catch (IndexError& e) {
             PyErr_SetString(PyExc_IndexError,e.what());
             return NULL;
-        }catch (QuantLib::Error& e) {
+        }catch (Error& e) {
             PyErr_SetString(PyExc_Exception,e.what());
             return NULL;
         }catch (std::exception& e) {
@@ -7752,10 +9140,10 @@ static PyObject *_wrap_History_valid_data_iterator(PyObject *self, PyObject *arg
     {
         try {
             result = new HistoryValidDataIterator (arg0->valid_data_iterator(*arg1));
-        }catch (QuantLib::IndexError& e) {
+        }catch (IndexError& e) {
             PyErr_SetString(PyExc_IndexError,e.what());
             return NULL;
-        }catch (QuantLib::Error& e) {
+        }catch (Error& e) {
             PyErr_SetString(PyExc_Exception,e.what());
             return NULL;
         }catch (std::exception& e) {
@@ -7808,10 +9196,10 @@ static PyObject *_wrap_History___getitem__(PyObject *self, PyObject *args, PyObj
         try {
             result = (double )History___getitem__(arg0,*arg1);
             
-        }catch (QuantLib::IndexError& e) {
+        }catch (IndexError& e) {
             PyErr_SetString(PyExc_IndexError,e.what());
             return NULL;
-        }catch (QuantLib::Error& e) {
+        }catch (Error& e) {
             PyErr_SetString(PyExc_Exception,e.what());
             return NULL;
         }catch (std::exception& e) {
@@ -7849,10 +9237,10 @@ static PyObject *_wrap_History___str__(PyObject *self, PyObject *args, PyObject 
     {
         try {
             result = new String (History___str__(arg0));
-        }catch (QuantLib::IndexError& e) {
+        }catch (IndexError& e) {
             PyErr_SetString(PyExc_IndexError,e.what());
             return NULL;
-        }catch (QuantLib::Error& e) {
+        }catch (Error& e) {
             PyErr_SetString(PyExc_Exception,e.what());
             return NULL;
         }catch (std::exception& e) {
@@ -7895,10 +9283,10 @@ static PyObject *_wrap_History___repr__(PyObject *self, PyObject *args, PyObject
     {
         try {
             result = new String (History___repr__(arg0));
-        }catch (QuantLib::IndexError& e) {
+        }catch (IndexError& e) {
             PyErr_SetString(PyExc_IndexError,e.what());
             return NULL;
-        }catch (QuantLib::Error& e) {
+        }catch (Error& e) {
             PyErr_SetString(PyExc_Exception,e.what());
             return NULL;
         }catch (std::exception& e) {
@@ -7932,10 +9320,10 @@ static PyObject *_wrap_delete_TermStructure(PyObject *self, PyObject *args, PyOb
         try {
             delete arg0;
             
-        }catch (QuantLib::IndexError& e) {
+        }catch (IndexError& e) {
             PyErr_SetString(PyExc_IndexError,e.what());
             return NULL;
-        }catch (QuantLib::Error& e) {
+        }catch (Error& e) {
             PyErr_SetString(PyExc_Exception,e.what());
             return NULL;
         }catch (std::exception& e) {
@@ -7972,10 +9360,10 @@ static PyObject *_wrap_TermStructure_clone(PyObject *self, PyObject *args, PyObj
     {
         try {
             result = new TermStructureHandle (TermStructureHandle_clone(arg0));
-        }catch (QuantLib::IndexError& e) {
+        }catch (IndexError& e) {
             PyErr_SetString(PyExc_IndexError,e.what());
             return NULL;
-        }catch (QuantLib::Error& e) {
+        }catch (Error& e) {
             PyErr_SetString(PyExc_Exception,e.what());
             return NULL;
         }catch (std::exception& e) {
@@ -8011,10 +9399,10 @@ static PyObject *_wrap_TermStructure_currency(PyObject *self, PyObject *args, Py
     {
         try {
             result = new CurrencyHandle (TermStructureHandle_currency(arg0));
-        }catch (QuantLib::IndexError& e) {
+        }catch (IndexError& e) {
             PyErr_SetString(PyExc_IndexError,e.what());
             return NULL;
-        }catch (QuantLib::Error& e) {
+        }catch (Error& e) {
             PyErr_SetString(PyExc_Exception,e.what());
             return NULL;
         }catch (std::exception& e) {
@@ -8050,10 +9438,10 @@ static PyObject *_wrap_TermStructure_todaysDate(PyObject *self, PyObject *args, 
     {
         try {
             result = new Date (TermStructureHandle_todaysDate(arg0));
-        }catch (QuantLib::IndexError& e) {
+        }catch (IndexError& e) {
             PyErr_SetString(PyExc_IndexError,e.what());
             return NULL;
-        }catch (QuantLib::Error& e) {
+        }catch (Error& e) {
             PyErr_SetString(PyExc_Exception,e.what());
             return NULL;
         }catch (std::exception& e) {
@@ -8089,10 +9477,10 @@ static PyObject *_wrap_TermStructure_settlementDate(PyObject *self, PyObject *ar
     {
         try {
             result = new Date (TermStructureHandle_settlementDate(arg0));
-        }catch (QuantLib::IndexError& e) {
+        }catch (IndexError& e) {
             PyErr_SetString(PyExc_IndexError,e.what());
             return NULL;
-        }catch (QuantLib::Error& e) {
+        }catch (Error& e) {
             PyErr_SetString(PyExc_Exception,e.what());
             return NULL;
         }catch (std::exception& e) {
@@ -8128,10 +9516,10 @@ static PyObject *_wrap_TermStructure_calendar(PyObject *self, PyObject *args, Py
     {
         try {
             result = new CalendarHandle (TermStructureHandle_calendar(arg0));
-        }catch (QuantLib::IndexError& e) {
+        }catch (IndexError& e) {
             PyErr_SetString(PyExc_IndexError,e.what());
             return NULL;
-        }catch (QuantLib::Error& e) {
+        }catch (Error& e) {
             PyErr_SetString(PyExc_Exception,e.what());
             return NULL;
         }catch (std::exception& e) {
@@ -8167,10 +9555,10 @@ static PyObject *_wrap_TermStructure_maxDate(PyObject *self, PyObject *args, PyO
     {
         try {
             result = new Date (TermStructureHandle_maxDate(arg0));
-        }catch (QuantLib::IndexError& e) {
+        }catch (IndexError& e) {
             PyErr_SetString(PyExc_IndexError,e.what());
             return NULL;
-        }catch (QuantLib::Error& e) {
+        }catch (Error& e) {
             PyErr_SetString(PyExc_Exception,e.what());
             return NULL;
         }catch (std::exception& e) {
@@ -8206,10 +9594,10 @@ static PyObject *_wrap_TermStructure_minDate(PyObject *self, PyObject *args, PyO
     {
         try {
             result = new Date (TermStructureHandle_minDate(arg0));
-        }catch (QuantLib::IndexError& e) {
+        }catch (IndexError& e) {
             PyErr_SetString(PyExc_IndexError,e.what());
             return NULL;
-        }catch (QuantLib::Error& e) {
+        }catch (Error& e) {
             PyErr_SetString(PyExc_Exception,e.what());
             return NULL;
         }catch (std::exception& e) {
@@ -8265,10 +9653,10 @@ static PyObject *_wrap_TermStructure_zeroYield(PyObject *self, PyObject *args, P
         try {
             result = (Rate )TermStructureHandle_zeroYield(arg0,(Date const &)*arg1,arg2);
             
-        }catch (QuantLib::IndexError& e) {
+        }catch (IndexError& e) {
             PyErr_SetString(PyExc_IndexError,e.what());
             return NULL;
-        }catch (QuantLib::Error& e) {
+        }catch (Error& e) {
             PyErr_SetString(PyExc_Exception,e.what());
             return NULL;
         }catch (std::exception& e) {
@@ -8324,10 +9712,10 @@ static PyObject *_wrap_TermStructure_discount(PyObject *self, PyObject *args, Py
         try {
             result = (DiscountFactor )TermStructureHandle_discount(arg0,(Date const &)*arg1,arg2);
             
-        }catch (QuantLib::IndexError& e) {
+        }catch (IndexError& e) {
             PyErr_SetString(PyExc_IndexError,e.what());
             return NULL;
-        }catch (QuantLib::Error& e) {
+        }catch (Error& e) {
             PyErr_SetString(PyExc_Exception,e.what());
             return NULL;
         }catch (std::exception& e) {
@@ -8383,10 +9771,10 @@ static PyObject *_wrap_TermStructure_forward(PyObject *self, PyObject *args, PyO
         try {
             result = (Rate )TermStructureHandle_forward(arg0,(Date const &)*arg1,arg2);
             
-        }catch (QuantLib::IndexError& e) {
+        }catch (IndexError& e) {
             PyErr_SetString(PyExc_IndexError,e.what());
             return NULL;
-        }catch (QuantLib::Error& e) {
+        }catch (Error& e) {
             PyErr_SetString(PyExc_Exception,e.what());
             return NULL;
         }catch (std::exception& e) {
@@ -8423,10 +9811,10 @@ static PyObject *_wrap_TermStructure___nonzero__(PyObject *self, PyObject *args,
         try {
             result = (int )TermStructureHandle___nonzero__(arg0);
             
-        }catch (QuantLib::IndexError& e) {
+        }catch (IndexError& e) {
             PyErr_SetString(PyExc_IndexError,e.what());
             return NULL;
-        }catch (QuantLib::Error& e) {
+        }catch (Error& e) {
             PyErr_SetString(PyExc_Exception,e.what());
             return NULL;
         }catch (std::exception& e) {
@@ -8473,10 +9861,10 @@ static PyObject *_wrap_new_DepositRate(PyObject *self, PyObject *args, PyObject 
         try {
             result = (DepositRate *)new DepositRate(*arg0,arg1,*arg2);
             
-        }catch (QuantLib::IndexError& e) {
+        }catch (IndexError& e) {
             PyErr_SetString(PyExc_IndexError,e.what());
             return NULL;
-        }catch (QuantLib::Error& e) {
+        }catch (Error& e) {
             PyErr_SetString(PyExc_Exception,e.what());
             return NULL;
         }catch (std::exception& e) {
@@ -8505,10 +9893,10 @@ static PyObject *_wrap_delete_DepositRate(PyObject *self, PyObject *args, PyObje
         try {
             delete arg0;
             
-        }catch (QuantLib::IndexError& e) {
+        }catch (IndexError& e) {
             PyErr_SetString(PyExc_IndexError,e.what());
             return NULL;
-        }catch (QuantLib::Error& e) {
+        }catch (Error& e) {
             PyErr_SetString(PyExc_Exception,e.what());
             return NULL;
         }catch (std::exception& e) {
@@ -8538,10 +9926,10 @@ static PyObject *_wrap_DepositRate_maturity(PyObject *self, PyObject *args, PyOb
     {
         try {
             result = new Date (arg0->maturity());
-        }catch (QuantLib::IndexError& e) {
+        }catch (IndexError& e) {
             PyErr_SetString(PyExc_IndexError,e.what());
             return NULL;
-        }catch (QuantLib::Error& e) {
+        }catch (Error& e) {
             PyErr_SetString(PyExc_Exception,e.what());
             return NULL;
         }catch (std::exception& e) {
@@ -8571,10 +9959,10 @@ static PyObject *_wrap_DepositRate_rate(PyObject *self, PyObject *args, PyObject
         try {
             result = (Rate )arg0->rate();
             
-        }catch (QuantLib::IndexError& e) {
+        }catch (IndexError& e) {
             PyErr_SetString(PyExc_IndexError,e.what());
             return NULL;
-        }catch (QuantLib::Error& e) {
+        }catch (Error& e) {
             PyErr_SetString(PyExc_Exception,e.what());
             return NULL;
         }catch (std::exception& e) {
@@ -8603,10 +9991,10 @@ static PyObject *_wrap_DepositRate_dayCounter(PyObject *self, PyObject *args, Py
     {
         try {
             result = new DayCounterHandle (arg0->dayCounter());
-        }catch (QuantLib::IndexError& e) {
+        }catch (IndexError& e) {
             PyErr_SetString(PyExc_IndexError,e.what());
             return NULL;
-        }catch (QuantLib::Error& e) {
+        }catch (Error& e) {
             PyErr_SetString(PyExc_Exception,e.what());
             return NULL;
         }catch (std::exception& e) {
@@ -8635,10 +10023,10 @@ static PyObject *_wrap_delete_Instrument(PyObject *self, PyObject *args, PyObjec
         try {
             delete arg0;
             
-        }catch (QuantLib::IndexError& e) {
+        }catch (IndexError& e) {
             PyErr_SetString(PyExc_IndexError,e.what());
             return NULL;
-        }catch (QuantLib::Error& e) {
+        }catch (Error& e) {
             PyErr_SetString(PyExc_Exception,e.what());
             return NULL;
         }catch (std::exception& e) {
@@ -8676,10 +10064,10 @@ static PyObject *_wrap_Instrument_setPrice(PyObject *self, PyObject *args, PyObj
         try {
             InstrumentHandle_setPrice(arg0,arg1);
             
-        }catch (QuantLib::IndexError& e) {
+        }catch (IndexError& e) {
             PyErr_SetString(PyExc_IndexError,e.what());
             return NULL;
-        }catch (QuantLib::Error& e) {
+        }catch (Error& e) {
             PyErr_SetString(PyExc_Exception,e.what());
             return NULL;
         }catch (std::exception& e) {
@@ -8719,10 +10107,10 @@ static PyObject *_wrap_Instrument_setTermStructure(PyObject *self, PyObject *arg
         try {
             InstrumentHandle_setTermStructure(arg0,*arg1);
             
-        }catch (QuantLib::IndexError& e) {
+        }catch (IndexError& e) {
             PyErr_SetString(PyExc_IndexError,e.what());
             return NULL;
-        }catch (QuantLib::Error& e) {
+        }catch (Error& e) {
             PyErr_SetString(PyExc_Exception,e.what());
             return NULL;
         }catch (std::exception& e) {
@@ -8759,10 +10147,10 @@ static PyObject *_wrap_Instrument_isinCode(PyObject *self, PyObject *args, PyObj
     {
         try {
             result = new String (InstrumentHandle_isinCode(arg0));
-        }catch (QuantLib::IndexError& e) {
+        }catch (IndexError& e) {
             PyErr_SetString(PyExc_IndexError,e.what());
             return NULL;
-        }catch (QuantLib::Error& e) {
+        }catch (Error& e) {
             PyErr_SetString(PyExc_Exception,e.what());
             return NULL;
         }catch (std::exception& e) {
@@ -8803,10 +10191,10 @@ static PyObject *_wrap_Instrument_description(PyObject *self, PyObject *args, Py
     {
         try {
             result = new String (InstrumentHandle_description(arg0));
-        }catch (QuantLib::IndexError& e) {
+        }catch (IndexError& e) {
             PyErr_SetString(PyExc_IndexError,e.what());
             return NULL;
-        }catch (QuantLib::Error& e) {
+        }catch (Error& e) {
             PyErr_SetString(PyExc_Exception,e.what());
             return NULL;
         }catch (std::exception& e) {
@@ -8847,10 +10235,10 @@ static PyObject *_wrap_Instrument_termStructure(PyObject *self, PyObject *args, 
     {
         try {
             result = new TermStructureHandle (InstrumentHandle_termStructure(arg0));
-        }catch (QuantLib::IndexError& e) {
+        }catch (IndexError& e) {
             PyErr_SetString(PyExc_IndexError,e.what());
             return NULL;
-        }catch (QuantLib::Error& e) {
+        }catch (Error& e) {
             PyErr_SetString(PyExc_Exception,e.what());
             return NULL;
         }catch (std::exception& e) {
@@ -8887,10 +10275,10 @@ static PyObject *_wrap_Instrument_NPV(PyObject *self, PyObject *args, PyObject *
         try {
             result = (double )InstrumentHandle_NPV(arg0);
             
-        }catch (QuantLib::IndexError& e) {
+        }catch (IndexError& e) {
             PyErr_SetString(PyExc_IndexError,e.what());
             return NULL;
-        }catch (QuantLib::Error& e) {
+        }catch (Error& e) {
             PyErr_SetString(PyExc_Exception,e.what());
             return NULL;
         }catch (std::exception& e) {
@@ -8927,10 +10315,10 @@ static PyObject *_wrap_Instrument_price(PyObject *self, PyObject *args, PyObject
         try {
             result = (double )InstrumentHandle_price(arg0);
             
-        }catch (QuantLib::IndexError& e) {
+        }catch (IndexError& e) {
             PyErr_SetString(PyExc_IndexError,e.what());
             return NULL;
-        }catch (QuantLib::Error& e) {
+        }catch (Error& e) {
             PyErr_SetString(PyExc_Exception,e.what());
             return NULL;
         }catch (std::exception& e) {
@@ -8966,10 +10354,10 @@ static PyObject *_wrap_Instrument___str__(PyObject *self, PyObject *args, PyObje
     {
         try {
             result = new String (InstrumentHandle___str__(arg0));
-        }catch (QuantLib::IndexError& e) {
+        }catch (IndexError& e) {
             PyErr_SetString(PyExc_IndexError,e.what());
             return NULL;
-        }catch (QuantLib::Error& e) {
+        }catch (Error& e) {
             PyErr_SetString(PyExc_Exception,e.what());
             return NULL;
         }catch (std::exception& e) {
@@ -9010,10 +10398,10 @@ static PyObject *_wrap_Instrument___repr__(PyObject *self, PyObject *args, PyObj
     {
         try {
             result = new String (InstrumentHandle___repr__(arg0));
-        }catch (QuantLib::IndexError& e) {
+        }catch (IndexError& e) {
             PyErr_SetString(PyExc_IndexError,e.what());
             return NULL;
-        }catch (QuantLib::Error& e) {
+        }catch (Error& e) {
             PyErr_SetString(PyExc_Exception,e.what());
             return NULL;
         }catch (std::exception& e) {
@@ -9058,10 +10446,10 @@ static PyObject *_wrap_Instrument___cmp__(PyObject *self, PyObject *args, PyObje
         try {
             result = (int )InstrumentHandle___cmp__(arg0,(InstrumentHandle const &)*arg1);
             
-        }catch (QuantLib::IndexError& e) {
+        }catch (IndexError& e) {
             PyErr_SetString(PyExc_IndexError,e.what());
             return NULL;
-        }catch (QuantLib::Error& e) {
+        }catch (Error& e) {
             PyErr_SetString(PyExc_Exception,e.what());
             return NULL;
         }catch (std::exception& e) {
@@ -9098,10 +10486,10 @@ static PyObject *_wrap_Instrument___nonzero__(PyObject *self, PyObject *args, Py
         try {
             result = (int )InstrumentHandle___nonzero__(arg0);
             
-        }catch (QuantLib::IndexError& e) {
+        }catch (IndexError& e) {
             PyErr_SetString(PyExc_IndexError,e.what());
             return NULL;
-        }catch (QuantLib::Error& e) {
+        }catch (Error& e) {
             PyErr_SetString(PyExc_Exception,e.what());
             return NULL;
         }catch (std::exception& e) {
@@ -9158,10 +10546,10 @@ static PyObject *_wrap_delete_Array(PyObject *self, PyObject *args, PyObject *kw
         try {
             delete arg0;
             
-        }catch (QuantLib::IndexError& e) {
+        }catch (IndexError& e) {
             PyErr_SetString(PyExc_IndexError,e.what());
             return NULL;
-        }catch (QuantLib::Error& e) {
+        }catch (Error& e) {
             PyErr_SetString(PyExc_Exception,e.what());
             return NULL;
         }catch (std::exception& e) {
@@ -9227,10 +10615,10 @@ static PyObject *_wrap_Array___len__(PyObject *self, PyObject *args, PyObject *k
         try {
             result = (int )Array___len__(arg0);
             
-        }catch (QuantLib::IndexError& e) {
+        }catch (IndexError& e) {
             PyErr_SetString(PyExc_IndexError,e.what());
             return NULL;
-        }catch (QuantLib::Error& e) {
+        }catch (Error& e) {
             PyErr_SetString(PyExc_Exception,e.what());
             return NULL;
         }catch (std::exception& e) {
@@ -9302,10 +10690,10 @@ static PyObject *_wrap_Array___getitem__(PyObject *self, PyObject *args, PyObjec
         try {
             result = (double )Array___getitem__(arg0,arg1);
             
-        }catch (QuantLib::IndexError& e) {
+        }catch (IndexError& e) {
             PyErr_SetString(PyExc_IndexError,e.what());
             return NULL;
-        }catch (QuantLib::Error& e) {
+        }catch (Error& e) {
             PyErr_SetString(PyExc_Exception,e.what());
             return NULL;
         }catch (std::exception& e) {
@@ -9377,10 +10765,10 @@ static PyObject *_wrap_Array___setitem__(PyObject *self, PyObject *args, PyObjec
         try {
             Array___setitem__(arg0,arg1,arg2);
             
-        }catch (QuantLib::IndexError& e) {
+        }catch (IndexError& e) {
             PyErr_SetString(PyExc_IndexError,e.what());
             return NULL;
-        }catch (QuantLib::Error& e) {
+        }catch (Error& e) {
             PyErr_SetString(PyExc_Exception,e.what());
             return NULL;
         }catch (std::exception& e) {
@@ -9455,10 +10843,10 @@ static PyObject *_wrap_Array___getslice__(PyObject *self, PyObject *args, PyObje
     {
         try {
             result = new Array (Array___getslice__(arg0,arg1,arg2));
-        }catch (QuantLib::IndexError& e) {
+        }catch (IndexError& e) {
             PyErr_SetString(PyExc_IndexError,e.what());
             return NULL;
-        }catch (QuantLib::Error& e) {
+        }catch (Error& e) {
             PyErr_SetString(PyExc_Exception,e.what());
             return NULL;
         }catch (std::exception& e) {
@@ -9562,10 +10950,10 @@ static PyObject *_wrap_Array___setslice__(PyObject *self, PyObject *args, PyObje
         try {
             Array___setslice__(arg0,arg1,arg2,(Array const &)*arg3);
             
-        }catch (QuantLib::IndexError& e) {
+        }catch (IndexError& e) {
             PyErr_SetString(PyExc_IndexError,e.what());
             return NULL;
-        }catch (QuantLib::Error& e) {
+        }catch (Error& e) {
             PyErr_SetString(PyExc_Exception,e.what());
             return NULL;
         }catch (std::exception& e) {
@@ -9637,10 +11025,10 @@ static PyObject *_wrap_Array___str__(PyObject *self, PyObject *args, PyObject *k
     {
         try {
             result = new String (Array___str__(arg0));
-        }catch (QuantLib::IndexError& e) {
+        }catch (IndexError& e) {
             PyErr_SetString(PyExc_IndexError,e.what());
             return NULL;
-        }catch (QuantLib::Error& e) {
+        }catch (Error& e) {
             PyErr_SetString(PyExc_Exception,e.what());
             return NULL;
         }catch (std::exception& e) {
@@ -9716,10 +11104,10 @@ static PyObject *_wrap_Array___repr__(PyObject *self, PyObject *args, PyObject *
     {
         try {
             result = new String (Array___repr__(arg0));
-        }catch (QuantLib::IndexError& e) {
+        }catch (IndexError& e) {
             PyErr_SetString(PyExc_IndexError,e.what());
             return NULL;
-        }catch (QuantLib::Error& e) {
+        }catch (Error& e) {
             PyErr_SetString(PyExc_Exception,e.what());
             return NULL;
         }catch (std::exception& e) {
@@ -9789,10 +11177,10 @@ static PyObject *_wrap_Array___nonzero__(PyObject *self, PyObject *args, PyObjec
         try {
             result = (int )Array___nonzero__(arg0);
             
-        }catch (QuantLib::IndexError& e) {
+        }catch (IndexError& e) {
             PyErr_SetString(PyExc_IndexError,e.what());
             return NULL;
-        }catch (QuantLib::Error& e) {
+        }catch (Error& e) {
             PyErr_SetString(PyExc_Exception,e.what());
             return NULL;
         }catch (std::exception& e) {
@@ -9821,10 +11209,10 @@ static PyObject *_wrap_delete_ArrayLexicographicalView(PyObject *self, PyObject 
         try {
             delete arg0;
             
-        }catch (QuantLib::IndexError& e) {
+        }catch (IndexError& e) {
             PyErr_SetString(PyExc_IndexError,e.what());
             return NULL;
-        }catch (QuantLib::Error& e) {
+        }catch (Error& e) {
             PyErr_SetString(PyExc_Exception,e.what());
             return NULL;
         }catch (std::exception& e) {
@@ -9855,10 +11243,10 @@ static PyObject *_wrap_ArrayLexicographicalView_xSize(PyObject *self, PyObject *
         try {
             result = (int )arg0->xSize();
             
-        }catch (QuantLib::IndexError& e) {
+        }catch (IndexError& e) {
             PyErr_SetString(PyExc_IndexError,e.what());
             return NULL;
-        }catch (QuantLib::Error& e) {
+        }catch (Error& e) {
             PyErr_SetString(PyExc_Exception,e.what());
             return NULL;
         }catch (std::exception& e) {
@@ -9888,10 +11276,10 @@ static PyObject *_wrap_ArrayLexicographicalView_ySize(PyObject *self, PyObject *
         try {
             result = (int )arg0->ySize();
             
-        }catch (QuantLib::IndexError& e) {
+        }catch (IndexError& e) {
             PyErr_SetString(PyExc_IndexError,e.what());
             return NULL;
-        }catch (QuantLib::Error& e) {
+        }catch (Error& e) {
             PyErr_SetString(PyExc_Exception,e.what());
             return NULL;
         }catch (std::exception& e) {
@@ -9928,10 +11316,10 @@ static PyObject *_wrap_ArrayLexicographicalView___getitem__(PyObject *self, PyOb
     {
         try {
             result = new ArrayLexicographicalViewColumn (ArrayLexicographicalView___getitem__(arg0,arg1));
-        }catch (QuantLib::IndexError& e) {
+        }catch (IndexError& e) {
             PyErr_SetString(PyExc_IndexError,e.what());
             return NULL;
-        }catch (QuantLib::Error& e) {
+        }catch (Error& e) {
             PyErr_SetString(PyExc_Exception,e.what());
             return NULL;
         }catch (std::exception& e) {
@@ -9977,10 +11365,10 @@ static PyObject *_wrap_ArrayLexicographicalView___str__(PyObject *self, PyObject
     {
         try {
             result = new String (ArrayLexicographicalView___str__(arg0));
-        }catch (QuantLib::IndexError& e) {
+        }catch (IndexError& e) {
             PyErr_SetString(PyExc_IndexError,e.what());
             return NULL;
-        }catch (QuantLib::Error& e) {
+        }catch (Error& e) {
             PyErr_SetString(PyExc_Exception,e.what());
             return NULL;
         }catch (std::exception& e) {
@@ -10014,10 +11402,10 @@ static PyObject *_wrap_delete_ArrayLexicographicalViewColumn(PyObject *self, PyO
         try {
             delete arg0;
             
-        }catch (QuantLib::IndexError& e) {
+        }catch (IndexError& e) {
             PyErr_SetString(PyExc_IndexError,e.what());
             return NULL;
-        }catch (QuantLib::Error& e) {
+        }catch (Error& e) {
             PyErr_SetString(PyExc_Exception,e.what());
             return NULL;
         }catch (std::exception& e) {
@@ -10056,10 +11444,10 @@ static PyObject *_wrap_ArrayLexicographicalViewColumn___getitem__(PyObject *self
         try {
             result = (double )ArrayLexicographicalViewColumn___getitem__(arg0,arg1);
             
-        }catch (QuantLib::IndexError& e) {
+        }catch (IndexError& e) {
             PyErr_SetString(PyExc_IndexError,e.what());
             return NULL;
-        }catch (QuantLib::Error& e) {
+        }catch (Error& e) {
             PyErr_SetString(PyExc_Exception,e.what());
             return NULL;
         }catch (std::exception& e) {
@@ -10097,10 +11485,10 @@ static PyObject *_wrap_ArrayLexicographicalViewColumn___setitem__(PyObject *self
         try {
             ArrayLexicographicalViewColumn___setitem__(arg0,arg1,arg2);
             
-        }catch (QuantLib::IndexError& e) {
+        }catch (IndexError& e) {
             PyErr_SetString(PyExc_IndexError,e.what());
             return NULL;
-        }catch (QuantLib::Error& e) {
+        }catch (Error& e) {
             PyErr_SetString(PyExc_Exception,e.what());
             return NULL;
         }catch (std::exception& e) {
@@ -10130,10 +11518,10 @@ static PyObject *_wrap_delete_Interpolation(PyObject *self, PyObject *args, PyOb
         try {
             delete arg0;
             
-        }catch (QuantLib::IndexError& e) {
+        }catch (IndexError& e) {
             PyErr_SetString(PyExc_IndexError,e.what());
             return NULL;
-        }catch (QuantLib::Error& e) {
+        }catch (Error& e) {
             PyErr_SetString(PyExc_Exception,e.what());
             return NULL;
         }catch (std::exception& e) {
@@ -10172,10 +11560,10 @@ static PyObject *_wrap_Interpolation___call__(PyObject *self, PyObject *args, Py
         try {
             result = (double )InterpolationHandle___call__(arg0,arg1);
             
-        }catch (QuantLib::IndexError& e) {
+        }catch (IndexError& e) {
             PyErr_SetString(PyExc_IndexError,e.what());
             return NULL;
-        }catch (QuantLib::Error& e) {
+        }catch (Error& e) {
             PyErr_SetString(PyExc_Exception,e.what());
             return NULL;
         }catch (std::exception& e) {
@@ -10212,10 +11600,10 @@ static PyObject *_wrap_Interpolation___nonzero__(PyObject *self, PyObject *args,
         try {
             result = (int )InterpolationHandle___nonzero__(arg0);
             
-        }catch (QuantLib::IndexError& e) {
+        }catch (IndexError& e) {
             PyErr_SetString(PyExc_IndexError,e.what());
             return NULL;
-        }catch (QuantLib::Error& e) {
+        }catch (Error& e) {
             PyErr_SetString(PyExc_Exception,e.what());
             return NULL;
         }catch (std::exception& e) {
@@ -10245,10 +11633,10 @@ static PyObject *_wrap_new_Matrix(PyObject *self, PyObject *args, PyObject *kwar
         try {
             result = (Matrix *)new Matrix(arg0,arg1,arg2);
             
-        }catch (QuantLib::IndexError& e) {
+        }catch (IndexError& e) {
             PyErr_SetString(PyExc_IndexError,e.what());
             return NULL;
-        }catch (QuantLib::Error& e) {
+        }catch (Error& e) {
             PyErr_SetString(PyExc_Exception,e.what());
             return NULL;
         }catch (std::exception& e) {
@@ -10277,10 +11665,10 @@ static PyObject *_wrap_delete_Matrix(PyObject *self, PyObject *args, PyObject *k
         try {
             delete arg0;
             
-        }catch (QuantLib::IndexError& e) {
+        }catch (IndexError& e) {
             PyErr_SetString(PyExc_IndexError,e.what());
             return NULL;
-        }catch (QuantLib::Error& e) {
+        }catch (Error& e) {
             PyErr_SetString(PyExc_Exception,e.what());
             return NULL;
         }catch (std::exception& e) {
@@ -10311,10 +11699,10 @@ static PyObject *_wrap_Matrix_rows(PyObject *self, PyObject *args, PyObject *kwa
         try {
             result = (int )arg0->rows();
             
-        }catch (QuantLib::IndexError& e) {
+        }catch (IndexError& e) {
             PyErr_SetString(PyExc_IndexError,e.what());
             return NULL;
-        }catch (QuantLib::Error& e) {
+        }catch (Error& e) {
             PyErr_SetString(PyExc_Exception,e.what());
             return NULL;
         }catch (std::exception& e) {
@@ -10344,10 +11732,10 @@ static PyObject *_wrap_Matrix_columns(PyObject *self, PyObject *args, PyObject *
         try {
             result = (int )arg0->columns();
             
-        }catch (QuantLib::IndexError& e) {
+        }catch (IndexError& e) {
             PyErr_SetString(PyExc_IndexError,e.what());
             return NULL;
-        }catch (QuantLib::Error& e) {
+        }catch (Error& e) {
             PyErr_SetString(PyExc_Exception,e.what());
             return NULL;
         }catch (std::exception& e) {
@@ -10384,10 +11772,10 @@ static PyObject *_wrap_Matrix___getitem__(PyObject *self, PyObject *args, PyObje
     {
         try {
             result = new MatrixRow (Matrix___getitem__(arg0,arg1));
-        }catch (QuantLib::IndexError& e) {
+        }catch (IndexError& e) {
             PyErr_SetString(PyExc_IndexError,e.what());
             return NULL;
-        }catch (QuantLib::Error& e) {
+        }catch (Error& e) {
             PyErr_SetString(PyExc_Exception,e.what());
             return NULL;
         }catch (std::exception& e) {
@@ -10426,10 +11814,10 @@ static PyObject *_wrap_Matrix___add__(PyObject *self, PyObject *args, PyObject *
     {
         try {
             result = new Matrix (Matrix___add__(arg0,(Matrix const &)*arg1));
-        }catch (QuantLib::IndexError& e) {
+        }catch (IndexError& e) {
             PyErr_SetString(PyExc_IndexError,e.what());
             return NULL;
-        }catch (QuantLib::Error& e) {
+        }catch (Error& e) {
             PyErr_SetString(PyExc_Exception,e.what());
             return NULL;
         }catch (std::exception& e) {
@@ -10468,10 +11856,10 @@ static PyObject *_wrap_Matrix___sub__(PyObject *self, PyObject *args, PyObject *
     {
         try {
             result = new Matrix (Matrix___sub__(arg0,(Matrix const &)*arg1));
-        }catch (QuantLib::IndexError& e) {
+        }catch (IndexError& e) {
             PyErr_SetString(PyExc_IndexError,e.what());
             return NULL;
-        }catch (QuantLib::Error& e) {
+        }catch (Error& e) {
             PyErr_SetString(PyExc_Exception,e.what());
             return NULL;
         }catch (std::exception& e) {
@@ -10508,10 +11896,10 @@ static PyObject *_wrap_Matrix___mul__(PyObject *self, PyObject *args, PyObject *
     {
         try {
             result = new Matrix (Matrix___mul__(arg0,arg1));
-        }catch (QuantLib::IndexError& e) {
+        }catch (IndexError& e) {
             PyErr_SetString(PyExc_IndexError,e.what());
             return NULL;
-        }catch (QuantLib::Error& e) {
+        }catch (Error& e) {
             PyErr_SetString(PyExc_Exception,e.what());
             return NULL;
         }catch (std::exception& e) {
@@ -10548,10 +11936,10 @@ static PyObject *_wrap_Matrix___div__(PyObject *self, PyObject *args, PyObject *
     {
         try {
             result = new Matrix (Matrix___div__(arg0,arg1));
-        }catch (QuantLib::IndexError& e) {
+        }catch (IndexError& e) {
             PyErr_SetString(PyExc_IndexError,e.what());
             return NULL;
-        }catch (QuantLib::Error& e) {
+        }catch (Error& e) {
             PyErr_SetString(PyExc_Exception,e.what());
             return NULL;
         }catch (std::exception& e) {
@@ -10597,10 +11985,10 @@ static PyObject *_wrap_Matrix___str__(PyObject *self, PyObject *args, PyObject *
     {
         try {
             result = new String (Matrix___str__(arg0));
-        }catch (QuantLib::IndexError& e) {
+        }catch (IndexError& e) {
             PyErr_SetString(PyExc_IndexError,e.what());
             return NULL;
-        }catch (QuantLib::Error& e) {
+        }catch (Error& e) {
             PyErr_SetString(PyExc_Exception,e.what());
             return NULL;
         }catch (std::exception& e) {
@@ -10634,10 +12022,10 @@ static PyObject *_wrap_delete_MatrixRow(PyObject *self, PyObject *args, PyObject
         try {
             delete arg0;
             
-        }catch (QuantLib::IndexError& e) {
+        }catch (IndexError& e) {
             PyErr_SetString(PyExc_IndexError,e.what());
             return NULL;
-        }catch (QuantLib::Error& e) {
+        }catch (Error& e) {
             PyErr_SetString(PyExc_Exception,e.what());
             return NULL;
         }catch (std::exception& e) {
@@ -10676,10 +12064,10 @@ static PyObject *_wrap_MatrixRow___getitem__(PyObject *self, PyObject *args, PyO
         try {
             result = (double )MatrixRow___getitem__(arg0,arg1);
             
-        }catch (QuantLib::IndexError& e) {
+        }catch (IndexError& e) {
             PyErr_SetString(PyExc_IndexError,e.what());
             return NULL;
-        }catch (QuantLib::Error& e) {
+        }catch (Error& e) {
             PyErr_SetString(PyExc_Exception,e.what());
             return NULL;
         }catch (std::exception& e) {
@@ -10717,10 +12105,10 @@ static PyObject *_wrap_MatrixRow___setitem__(PyObject *self, PyObject *args, PyO
         try {
             MatrixRow___setitem__(arg0,arg1,arg2);
             
-        }catch (QuantLib::IndexError& e) {
+        }catch (IndexError& e) {
             PyErr_SetString(PyExc_IndexError,e.what());
             return NULL;
-        }catch (QuantLib::Error& e) {
+        }catch (Error& e) {
             PyErr_SetString(PyExc_Exception,e.what());
             return NULL;
         }catch (std::exception& e) {
@@ -10750,10 +12138,10 @@ static PyObject *_wrap_new_StandardPathGenerator(PyObject *self, PyObject *args,
         try {
             result = (StandardPathGenerator *)new StandardPathGenerator(arg0,arg1);
             
-        }catch (QuantLib::IndexError& e) {
+        }catch (IndexError& e) {
             PyErr_SetString(PyExc_IndexError,e.what());
             return NULL;
-        }catch (QuantLib::Error& e) {
+        }catch (Error& e) {
             PyErr_SetString(PyExc_Exception,e.what());
             return NULL;
         }catch (std::exception& e) {
@@ -10782,10 +12170,10 @@ static PyObject *_wrap_StandardPathGenerator_next(PyObject *self, PyObject *args
     {
         try {
             result = new Array (arg0->next());
-        }catch (QuantLib::IndexError& e) {
+        }catch (IndexError& e) {
             PyErr_SetString(PyExc_IndexError,e.what());
             return NULL;
-        }catch (QuantLib::Error& e) {
+        }catch (Error& e) {
             PyErr_SetString(PyExc_Exception,e.what());
             return NULL;
         }catch (std::exception& e) {
@@ -10815,10 +12203,10 @@ static PyObject *_wrap_StandardPathGenerator_weight(PyObject *self, PyObject *ar
         try {
             result = (double )arg0->weight();
             
-        }catch (QuantLib::IndexError& e) {
+        }catch (IndexError& e) {
             PyErr_SetString(PyExc_IndexError,e.what());
             return NULL;
-        }catch (QuantLib::Error& e) {
+        }catch (Error& e) {
             PyErr_SetString(PyExc_Exception,e.what());
             return NULL;
         }catch (std::exception& e) {
@@ -10874,10 +12262,10 @@ static PyObject *_wrap_new_McEuropeanPricer(PyObject *self, PyObject *args, PyOb
         try {
             result = (McEuropeanPricer *)new McEuropeanPricer(*arg0,arg1,arg2,arg3,arg4,arg5,arg6,arg7,arg8,arg9);
             
-        }catch (QuantLib::IndexError& e) {
+        }catch (IndexError& e) {
             PyErr_SetString(PyExc_IndexError,e.what());
             return NULL;
-        }catch (QuantLib::Error& e) {
+        }catch (Error& e) {
             PyErr_SetString(PyExc_Exception,e.what());
             return NULL;
         }catch (std::exception& e) {
@@ -10910,10 +12298,10 @@ static PyObject *_wrap_McEuropeanPricer_value(PyObject *self, PyObject *args, Py
         try {
             result = (double )arg0->value();
             
-        }catch (QuantLib::IndexError& e) {
+        }catch (IndexError& e) {
             PyErr_SetString(PyExc_IndexError,e.what());
             return NULL;
-        }catch (QuantLib::Error& e) {
+        }catch (Error& e) {
             PyErr_SetString(PyExc_Exception,e.what());
             return NULL;
         }catch (std::exception& e) {
@@ -10943,10 +12331,10 @@ static PyObject *_wrap_McEuropeanPricer_errorEstimate(PyObject *self, PyObject *
         try {
             result = (double )arg0->errorEstimate();
             
-        }catch (QuantLib::IndexError& e) {
+        }catch (IndexError& e) {
             PyErr_SetString(PyExc_IndexError,e.what());
             return NULL;
-        }catch (QuantLib::Error& e) {
+        }catch (Error& e) {
             PyErr_SetString(PyExc_Exception,e.what());
             return NULL;
         }catch (std::exception& e) {
@@ -10999,10 +12387,10 @@ static PyObject *_wrap_new_GeometricAsianOption(PyObject *self, PyObject *args, 
         try {
             result = (GeometricAsianOption *)new GeometricAsianOption(*arg0,arg1,arg2,arg3,arg4,arg5,arg6);
             
-        }catch (QuantLib::IndexError& e) {
+        }catch (IndexError& e) {
             PyErr_SetString(PyExc_IndexError,e.what());
             return NULL;
-        }catch (QuantLib::Error& e) {
+        }catch (Error& e) {
             PyErr_SetString(PyExc_Exception,e.what());
             return NULL;
         }catch (std::exception& e) {
@@ -11035,10 +12423,10 @@ static PyObject *_wrap_GeometricAsianOption_value(PyObject *self, PyObject *args
         try {
             result = (double )arg0->value();
             
-        }catch (QuantLib::IndexError& e) {
+        }catch (IndexError& e) {
             PyErr_SetString(PyExc_IndexError,e.what());
             return NULL;
-        }catch (QuantLib::Error& e) {
+        }catch (Error& e) {
             PyErr_SetString(PyExc_Exception,e.what());
             return NULL;
         }catch (std::exception& e) {
@@ -11094,10 +12482,10 @@ static PyObject *_wrap_new_AveragePriceAsian(PyObject *self, PyObject *args, PyO
         try {
             result = (AveragePriceAsian *)new AveragePriceAsian(*arg0,arg1,arg2,arg3,arg4,arg5,arg6,arg7,arg8,arg9);
             
-        }catch (QuantLib::IndexError& e) {
+        }catch (IndexError& e) {
             PyErr_SetString(PyExc_IndexError,e.what());
             return NULL;
-        }catch (QuantLib::Error& e) {
+        }catch (Error& e) {
             PyErr_SetString(PyExc_Exception,e.what());
             return NULL;
         }catch (std::exception& e) {
@@ -11130,10 +12518,10 @@ static PyObject *_wrap_AveragePriceAsian_value(PyObject *self, PyObject *args, P
         try {
             result = (double )arg0->value();
             
-        }catch (QuantLib::IndexError& e) {
+        }catch (IndexError& e) {
             PyErr_SetString(PyExc_IndexError,e.what());
             return NULL;
-        }catch (QuantLib::Error& e) {
+        }catch (Error& e) {
             PyErr_SetString(PyExc_Exception,e.what());
             return NULL;
         }catch (std::exception& e) {
@@ -11163,10 +12551,10 @@ static PyObject *_wrap_AveragePriceAsian_errorEstimate(PyObject *self, PyObject 
         try {
             result = (double )arg0->errorEstimate();
             
-        }catch (QuantLib::IndexError& e) {
+        }catch (IndexError& e) {
             PyErr_SetString(PyExc_IndexError,e.what());
             return NULL;
-        }catch (QuantLib::Error& e) {
+        }catch (Error& e) {
             PyErr_SetString(PyExc_Exception,e.what());
             return NULL;
         }catch (std::exception& e) {
@@ -11222,10 +12610,10 @@ static PyObject *_wrap_new_AverageStrikeAsian(PyObject *self, PyObject *args, Py
         try {
             result = (AverageStrikeAsian *)new AverageStrikeAsian(*arg0,arg1,arg2,arg3,arg4,arg5,arg6,arg7,arg8,arg9);
             
-        }catch (QuantLib::IndexError& e) {
+        }catch (IndexError& e) {
             PyErr_SetString(PyExc_IndexError,e.what());
             return NULL;
-        }catch (QuantLib::Error& e) {
+        }catch (Error& e) {
             PyErr_SetString(PyExc_Exception,e.what());
             return NULL;
         }catch (std::exception& e) {
@@ -11258,10 +12646,10 @@ static PyObject *_wrap_AverageStrikeAsian_value(PyObject *self, PyObject *args, 
         try {
             result = (double )arg0->value();
             
-        }catch (QuantLib::IndexError& e) {
+        }catch (IndexError& e) {
             PyErr_SetString(PyExc_IndexError,e.what());
             return NULL;
-        }catch (QuantLib::Error& e) {
+        }catch (Error& e) {
             PyErr_SetString(PyExc_Exception,e.what());
             return NULL;
         }catch (std::exception& e) {
@@ -11291,10 +12679,10 @@ static PyObject *_wrap_AverageStrikeAsian_errorEstimate(PyObject *self, PyObject
         try {
             result = (double )arg0->errorEstimate();
             
-        }catch (QuantLib::IndexError& e) {
+        }catch (IndexError& e) {
             PyErr_SetString(PyExc_IndexError,e.what());
             return NULL;
-        }catch (QuantLib::Error& e) {
+        }catch (Error& e) {
             PyErr_SetString(PyExc_Exception,e.what());
             return NULL;
         }catch (std::exception& e) {
@@ -11391,10 +12779,10 @@ static PyObject *_wrap_new_PlainBasketOption(PyObject *self, PyObject *args, PyO
         try {
             result = (PlainBasketOption *)new PlainBasketOption((Array const &)*arg0,(Array const &)*arg1,(Matrix const &)*arg2,arg3,arg4,arg5,arg6,arg7);
             
-        }catch (QuantLib::IndexError& e) {
+        }catch (IndexError& e) {
             PyErr_SetString(PyExc_IndexError,e.what());
             return NULL;
-        }catch (QuantLib::Error& e) {
+        }catch (Error& e) {
             PyErr_SetString(PyExc_Exception,e.what());
             return NULL;
         }catch (std::exception& e) {
@@ -11424,10 +12812,10 @@ static PyObject *_wrap_PlainBasketOption_value(PyObject *self, PyObject *args, P
         try {
             result = (double )arg0->value();
             
-        }catch (QuantLib::IndexError& e) {
+        }catch (IndexError& e) {
             PyErr_SetString(PyExc_IndexError,e.what());
             return NULL;
-        }catch (QuantLib::Error& e) {
+        }catch (Error& e) {
             PyErr_SetString(PyExc_Exception,e.what());
             return NULL;
         }catch (std::exception& e) {
@@ -11457,10 +12845,10 @@ static PyObject *_wrap_PlainBasketOption_errorEstimate(PyObject *self, PyObject 
         try {
             result = (double )arg0->errorEstimate();
             
-        }catch (QuantLib::IndexError& e) {
+        }catch (IndexError& e) {
             PyErr_SetString(PyExc_IndexError,e.what());
             return NULL;
-        }catch (QuantLib::Error& e) {
+        }catch (Error& e) {
             PyErr_SetString(PyExc_Exception,e.what());
             return NULL;
         }catch (std::exception& e) {
@@ -11490,6 +12878,7 @@ static PyObject *_wrap_new_Himalaya(PyObject *self, PyObject *args, PyObject *kw
     Array temp0 ;
     PyObject * obj1  = 0 ;
     PyObject * argo2 =0 ;
+    DoubleVector temp1 ;
     PyObject * obj5  = 0 ;
     char *kwnames[] = {
         "underlying","dividendYield","covariance","riskFreeRate","strike","timeDelays","samples","seed", NULL 
@@ -11555,42 +12944,31 @@ static PyObject *_wrap_new_Himalaya(PyObject *self, PyObject *args, PyObject *kw
     }
     if ((SWIG_ConvertPtr(argo2,(void **) &arg2,SWIGTYPE_p_Matrix,1)) == -1) return NULL;
     {
-        if (PyTuple_Check(obj5)) {
-            int size = PyTuple_Size(obj5);
-            arg5 = new DoubleVector(size);
+        DoubleVector* v;
+        if (PyTuple_Check(obj5) || PyList_Check(obj5)) {
+            int size = (PyTuple_Check(obj5) ? 
+            PyTuple_Size(obj5) :
+            PyList_Size(obj5));
+            temp1 = DoubleVector(size);
+            arg5 = &temp1;
             for (int i=0; i<size; i++) {
-                PyObject* o = PyTuple_GetItem(obj5,i);
-                if (PyFloat_Check(o)) {
+                PyObject* o = PySequence_GetItem(obj5,i);
+                if (o == Py_None) {
+                    (*arg5)[i] = Null<double>();
+                }else if (PyFloat_Check(o)) {
                     (*arg5)[i] = PyFloat_AsDouble(o);
                 }else if (PyInt_Check(o)) {
                     (*arg5)[i] = double(PyInt_AsLong(o));
-                }else if (o == Py_None) {
-                    (*arg5)[i] = Null<double>();
                 }else {
-                    PyErr_SetString(PyExc_TypeError,"tuple must contain doubles");
-                    delete arg5;
+                    PyErr_SetString(PyExc_TypeError,"doubles expected");
                     return NULL;
                 }
             }
-        }else if (PyList_Check(obj5)) {
-            int size = PyList_Size(obj5);
-            arg5 = new DoubleVector(size);
-            for (int i=0; i<size; i++) {
-                PyObject* o = PyList_GetItem(obj5,i);
-                if (PyFloat_Check(o)) {
-                    (*arg5)[i] = PyFloat_AsDouble(o);
-                }else if (PyInt_Check(o)) {
-                    (*arg5)[i] = double(PyInt_AsLong(o));
-                }else if (o == Py_None) {
-                    (*arg5)[i] = Null<double>();
-                }else {
-                    PyErr_SetString(PyExc_TypeError,"list must contain doubles");
-                    delete arg5;
-                    return NULL;
-                }
-            }
+        }else if ((SWIG_ConvertPtr(obj5,(void **) &v,
+        (swig_type_info *)SWIG_TypeQuery("DoubleVector *"),0)) != -1) {
+            arg5 = v;
         }else {
-            PyErr_SetString(PyExc_TypeError,"not a sequence");
+            PyErr_SetString(PyExc_TypeError,"DoubleVector expected");
             return NULL;
         }
     }
@@ -11598,10 +12976,10 @@ static PyObject *_wrap_new_Himalaya(PyObject *self, PyObject *args, PyObject *kw
         try {
             result = (Himalaya *)new Himalaya((Array const &)*arg0,(Array const &)*arg1,(Matrix const &)*arg2,arg3,arg4,(DoubleVector const &)*arg5,arg6,arg7);
             
-        }catch (QuantLib::IndexError& e) {
+        }catch (IndexError& e) {
             PyErr_SetString(PyExc_IndexError,e.what());
             return NULL;
-        }catch (QuantLib::Error& e) {
+        }catch (Error& e) {
             PyErr_SetString(PyExc_Exception,e.what());
             return NULL;
         }catch (std::exception& e) {
@@ -11612,9 +12990,6 @@ static PyObject *_wrap_new_Himalaya(PyObject *self, PyObject *args, PyObject *kw
             return NULL;
         }
     }resultobj = SWIG_NewPointerObj((void *) result, SWIGTYPE_p_Himalaya);
-    {
-        delete arg5;
-    }
     return resultobj;
 }
 
@@ -11634,10 +13009,10 @@ static PyObject *_wrap_Himalaya_value(PyObject *self, PyObject *args, PyObject *
         try {
             result = (double )arg0->value();
             
-        }catch (QuantLib::IndexError& e) {
+        }catch (IndexError& e) {
             PyErr_SetString(PyExc_IndexError,e.what());
             return NULL;
-        }catch (QuantLib::Error& e) {
+        }catch (Error& e) {
             PyErr_SetString(PyExc_Exception,e.what());
             return NULL;
         }catch (std::exception& e) {
@@ -11667,10 +13042,10 @@ static PyObject *_wrap_Himalaya_errorEstimate(PyObject *self, PyObject *args, Py
         try {
             result = (double )arg0->errorEstimate();
             
-        }catch (QuantLib::IndexError& e) {
+        }catch (IndexError& e) {
             PyErr_SetString(PyExc_IndexError,e.what());
             return NULL;
-        }catch (QuantLib::Error& e) {
+        }catch (Error& e) {
             PyErr_SetString(PyExc_Exception,e.what());
             return NULL;
         }catch (std::exception& e) {
@@ -11732,10 +13107,10 @@ static PyObject *_wrap_new_GaussianArrayGenerator(PyObject *self, PyObject *args
         try {
             result = (GaussianArrayGenerator *)new GaussianArrayGenerator((Array const &)*arg0,(Matrix const &)*arg1,arg2);
             
-        }catch (QuantLib::IndexError& e) {
+        }catch (IndexError& e) {
             PyErr_SetString(PyExc_IndexError,e.what());
             return NULL;
-        }catch (QuantLib::Error& e) {
+        }catch (Error& e) {
             PyErr_SetString(PyExc_Exception,e.what());
             return NULL;
         }catch (std::exception& e) {
@@ -11764,10 +13139,10 @@ static PyObject *_wrap_GaussianArrayGenerator_next(PyObject *self, PyObject *arg
     {
         try {
             result = new Array (arg0->next());
-        }catch (QuantLib::IndexError& e) {
+        }catch (IndexError& e) {
             PyErr_SetString(PyExc_IndexError,e.what());
             return NULL;
-        }catch (QuantLib::Error& e) {
+        }catch (Error& e) {
             PyErr_SetString(PyExc_Exception,e.what());
             return NULL;
         }catch (std::exception& e) {
@@ -11797,10 +13172,10 @@ static PyObject *_wrap_GaussianArrayGenerator_weight(PyObject *self, PyObject *a
         try {
             result = (double )arg0->weight();
             
-        }catch (QuantLib::IndexError& e) {
+        }catch (IndexError& e) {
             PyErr_SetString(PyExc_IndexError,e.what());
             return NULL;
-        }catch (QuantLib::Error& e) {
+        }catch (Error& e) {
             PyErr_SetString(PyExc_Exception,e.what());
             return NULL;
         }catch (std::exception& e) {
@@ -11821,8 +13196,9 @@ static PyObject *_wrap_new_StandardMultiPathGenerator(PyObject *self, PyObject *
     Array *arg1 ;
     Matrix *arg2 ;
     long arg3 = 0 ;
+    DoubleVector temp ;
     PyObject * obj0  = 0 ;
-    Array temp ;
+    Array temp0 ;
     PyObject * obj1  = 0 ;
     PyObject * argo2 =0 ;
     char *kwnames[] = {
@@ -11832,42 +13208,31 @@ static PyObject *_wrap_new_StandardMultiPathGenerator(PyObject *self, PyObject *
     
     if(!PyArg_ParseTupleAndKeywords(args,kwargs,"OOO|l:new_StandardMultiPathGenerator",kwnames,&obj0,&obj1,&argo2,&arg3)) return NULL;
     {
-        if (PyTuple_Check(obj0)) {
-            int size = PyTuple_Size(obj0);
-            arg0 = new DoubleVector(size);
+        DoubleVector* v;
+        if (PyTuple_Check(obj0) || PyList_Check(obj0)) {
+            int size = (PyTuple_Check(obj0) ? 
+            PyTuple_Size(obj0) :
+            PyList_Size(obj0));
+            temp = DoubleVector(size);
+            arg0 = &temp;
             for (int i=0; i<size; i++) {
-                PyObject* o = PyTuple_GetItem(obj0,i);
-                if (PyFloat_Check(o)) {
+                PyObject* o = PySequence_GetItem(obj0,i);
+                if (o == Py_None) {
+                    (*arg0)[i] = Null<double>();
+                }else if (PyFloat_Check(o)) {
                     (*arg0)[i] = PyFloat_AsDouble(o);
                 }else if (PyInt_Check(o)) {
                     (*arg0)[i] = double(PyInt_AsLong(o));
-                }else if (o == Py_None) {
-                    (*arg0)[i] = Null<double>();
                 }else {
-                    PyErr_SetString(PyExc_TypeError,"tuple must contain doubles");
-                    delete arg0;
+                    PyErr_SetString(PyExc_TypeError,"doubles expected");
                     return NULL;
                 }
             }
-        }else if (PyList_Check(obj0)) {
-            int size = PyList_Size(obj0);
-            arg0 = new DoubleVector(size);
-            for (int i=0; i<size; i++) {
-                PyObject* o = PyList_GetItem(obj0,i);
-                if (PyFloat_Check(o)) {
-                    (*arg0)[i] = PyFloat_AsDouble(o);
-                }else if (PyInt_Check(o)) {
-                    (*arg0)[i] = double(PyInt_AsLong(o));
-                }else if (o == Py_None) {
-                    (*arg0)[i] = Null<double>();
-                }else {
-                    PyErr_SetString(PyExc_TypeError,"list must contain doubles");
-                    delete arg0;
-                    return NULL;
-                }
-            }
+        }else if ((SWIG_ConvertPtr(obj0,(void **) &v,
+        (swig_type_info *)SWIG_TypeQuery("DoubleVector *"),0)) != -1) {
+            arg0 = v;
         }else {
-            PyErr_SetString(PyExc_TypeError,"not a sequence");
+            PyErr_SetString(PyExc_TypeError,"DoubleVector expected");
             return NULL;
         }
     }
@@ -11877,8 +13242,8 @@ static PyObject *_wrap_new_StandardMultiPathGenerator(PyObject *self, PyObject *
             int size = (PyTuple_Check(obj1) ? 
             PyTuple_Size(obj1) :
             PyList_Size(obj1));
-            temp = Array(size);
-            arg1 = &temp;
+            temp0 = Array(size);
+            arg1 = &temp0;
             for (int i=0; i<size; i++) {
                 PyObject* o = PySequence_GetItem(obj1,i);
                 if (PyFloat_Check(o)) {
@@ -11904,10 +13269,10 @@ static PyObject *_wrap_new_StandardMultiPathGenerator(PyObject *self, PyObject *
         try {
             result = (StandardMultiPathGenerator *)new StandardMultiPathGenerator((DoubleVector const &)*arg0,(Array const &)*arg1,(Matrix const &)*arg2,arg3);
             
-        }catch (QuantLib::IndexError& e) {
+        }catch (IndexError& e) {
             PyErr_SetString(PyExc_IndexError,e.what());
             return NULL;
-        }catch (QuantLib::Error& e) {
+        }catch (Error& e) {
             PyErr_SetString(PyExc_Exception,e.what());
             return NULL;
         }catch (std::exception& e) {
@@ -11918,9 +13283,6 @@ static PyObject *_wrap_new_StandardMultiPathGenerator(PyObject *self, PyObject *
             return NULL;
         }
     }resultobj = SWIG_NewPointerObj((void *) result, SWIGTYPE_p_StandardMultiPathGenerator);
-    {
-        delete arg0;
-    }
     return resultobj;
 }
 
@@ -11939,10 +13301,10 @@ static PyObject *_wrap_StandardMultiPathGenerator_next(PyObject *self, PyObject 
     {
         try {
             result = new Matrix (arg0->next());
-        }catch (QuantLib::IndexError& e) {
+        }catch (IndexError& e) {
             PyErr_SetString(PyExc_IndexError,e.what());
             return NULL;
-        }catch (QuantLib::Error& e) {
+        }catch (Error& e) {
             PyErr_SetString(PyExc_Exception,e.what());
             return NULL;
         }catch (std::exception& e) {
@@ -11972,10 +13334,10 @@ static PyObject *_wrap_StandardMultiPathGenerator_weight(PyObject *self, PyObjec
         try {
             result = (double )arg0->weight();
             
-        }catch (QuantLib::IndexError& e) {
+        }catch (IndexError& e) {
             PyErr_SetString(PyExc_IndexError,e.what());
             return NULL;
-        }catch (QuantLib::Error& e) {
+        }catch (Error& e) {
             PyErr_SetString(PyExc_Exception,e.what());
             return NULL;
         }catch (std::exception& e) {
@@ -12095,10 +13457,10 @@ static PyObject *_wrap_new_TridiagonalOperator(PyObject *self, PyObject *args, P
         try {
             result = (TridiagonalOperator *)new TridiagonalOperator(*arg0,*arg1,*arg2);
             
-        }catch (QuantLib::IndexError& e) {
+        }catch (IndexError& e) {
             PyErr_SetString(PyExc_IndexError,e.what());
             return NULL;
-        }catch (QuantLib::Error& e) {
+        }catch (Error& e) {
             PyErr_SetString(PyExc_Exception,e.what());
             return NULL;
         }catch (std::exception& e) {
@@ -12127,10 +13489,10 @@ static PyObject *_wrap_delete_TridiagonalOperator(PyObject *self, PyObject *args
         try {
             delete arg0;
             
-        }catch (QuantLib::IndexError& e) {
+        }catch (IndexError& e) {
             PyErr_SetString(PyExc_IndexError,e.what());
             return NULL;
-        }catch (QuantLib::Error& e) {
+        }catch (Error& e) {
             PyErr_SetString(PyExc_Exception,e.what());
             return NULL;
         }catch (std::exception& e) {
@@ -12191,10 +13553,10 @@ static PyObject *_wrap_TridiagonalOperator_solveFor(PyObject *self, PyObject *ar
     {
         try {
             result = new Array (arg0->solveFor((Array const &)*arg1));
-        }catch (QuantLib::IndexError& e) {
+        }catch (IndexError& e) {
             PyErr_SetString(PyExc_IndexError,e.what());
             return NULL;
-        }catch (QuantLib::Error& e) {
+        }catch (Error& e) {
             PyErr_SetString(PyExc_Exception,e.what());
             return NULL;
         }catch (std::exception& e) {
@@ -12254,10 +13616,10 @@ static PyObject *_wrap_TridiagonalOperator_applyTo(PyObject *self, PyObject *arg
     {
         try {
             result = new Array (arg0->applyTo((Array const &)*arg1));
-        }catch (QuantLib::IndexError& e) {
+        }catch (IndexError& e) {
             PyErr_SetString(PyExc_IndexError,e.what());
             return NULL;
-        }catch (QuantLib::Error& e) {
+        }catch (Error& e) {
             PyErr_SetString(PyExc_Exception,e.what());
             return NULL;
         }catch (std::exception& e) {
@@ -12287,10 +13649,10 @@ static PyObject *_wrap_TridiagonalOperator_size(PyObject *self, PyObject *args, 
         try {
             result = (int )arg0->size();
             
-        }catch (QuantLib::IndexError& e) {
+        }catch (IndexError& e) {
             PyErr_SetString(PyExc_IndexError,e.what());
             return NULL;
-        }catch (QuantLib::Error& e) {
+        }catch (Error& e) {
             PyErr_SetString(PyExc_Exception,e.what());
             return NULL;
         }catch (std::exception& e) {
@@ -12322,10 +13684,10 @@ static PyObject *_wrap_TridiagonalOperator_setLowerBC(PyObject *self, PyObject *
         try {
             arg0->setLowerBC(*arg1);
             
-        }catch (QuantLib::IndexError& e) {
+        }catch (IndexError& e) {
             PyErr_SetString(PyExc_IndexError,e.what());
             return NULL;
-        }catch (QuantLib::Error& e) {
+        }catch (Error& e) {
             PyErr_SetString(PyExc_Exception,e.what());
             return NULL;
         }catch (std::exception& e) {
@@ -12358,10 +13720,10 @@ static PyObject *_wrap_TridiagonalOperator_setHigherBC(PyObject *self, PyObject 
         try {
             arg0->setHigherBC(*arg1);
             
-        }catch (QuantLib::IndexError& e) {
+        }catch (IndexError& e) {
             PyErr_SetString(PyExc_IndexError,e.what());
             return NULL;
-        }catch (QuantLib::Error& e) {
+        }catch (Error& e) {
             PyErr_SetString(PyExc_Exception,e.what());
             return NULL;
         }catch (std::exception& e) {
@@ -12393,10 +13755,10 @@ static PyObject *_wrap_TridiagonalOperator_setFirstRow(PyObject *self, PyObject 
         try {
             arg0->setFirstRow(arg1,arg2);
             
-        }catch (QuantLib::IndexError& e) {
+        }catch (IndexError& e) {
             PyErr_SetString(PyExc_IndexError,e.what());
             return NULL;
-        }catch (QuantLib::Error& e) {
+        }catch (Error& e) {
             PyErr_SetString(PyExc_Exception,e.what());
             return NULL;
         }catch (std::exception& e) {
@@ -12430,10 +13792,10 @@ static PyObject *_wrap_TridiagonalOperator_setMidRow(PyObject *self, PyObject *a
         try {
             arg0->setMidRow(arg1,arg2,arg3,arg4);
             
-        }catch (QuantLib::IndexError& e) {
+        }catch (IndexError& e) {
             PyErr_SetString(PyExc_IndexError,e.what());
             return NULL;
-        }catch (QuantLib::Error& e) {
+        }catch (Error& e) {
             PyErr_SetString(PyExc_Exception,e.what());
             return NULL;
         }catch (std::exception& e) {
@@ -12466,10 +13828,10 @@ static PyObject *_wrap_TridiagonalOperator_setMidRows(PyObject *self, PyObject *
         try {
             arg0->setMidRows(arg1,arg2,arg3);
             
-        }catch (QuantLib::IndexError& e) {
+        }catch (IndexError& e) {
             PyErr_SetString(PyExc_IndexError,e.what());
             return NULL;
-        }catch (QuantLib::Error& e) {
+        }catch (Error& e) {
             PyErr_SetString(PyExc_Exception,e.what());
             return NULL;
         }catch (std::exception& e) {
@@ -12501,10 +13863,10 @@ static PyObject *_wrap_TridiagonalOperator_setLastRow(PyObject *self, PyObject *
         try {
             arg0->setLastRow(arg1,arg2);
             
-        }catch (QuantLib::IndexError& e) {
+        }catch (IndexError& e) {
             PyErr_SetString(PyExc_IndexError,e.what());
             return NULL;
-        }catch (QuantLib::Error& e) {
+        }catch (Error& e) {
             PyErr_SetString(PyExc_Exception,e.what());
             return NULL;
         }catch (std::exception& e) {
@@ -12544,10 +13906,10 @@ static PyObject *_wrap_TridiagonalOperator___add__(PyObject *self, PyObject *arg
     {
         try {
             result = new TridiagonalOperator (TridiagonalOperator___add__(arg0,(TridiagonalOperator const &)*arg1));
-        }catch (QuantLib::IndexError& e) {
+        }catch (IndexError& e) {
             PyErr_SetString(PyExc_IndexError,e.what());
             return NULL;
-        }catch (QuantLib::Error& e) {
+        }catch (Error& e) {
             PyErr_SetString(PyExc_Exception,e.what());
             return NULL;
         }catch (std::exception& e) {
@@ -12586,10 +13948,10 @@ static PyObject *_wrap_TridiagonalOperator___sub__(PyObject *self, PyObject *arg
     {
         try {
             result = new TridiagonalOperator (TridiagonalOperator___sub__(arg0,(TridiagonalOperator const &)*arg1));
-        }catch (QuantLib::IndexError& e) {
+        }catch (IndexError& e) {
             PyErr_SetString(PyExc_IndexError,e.what());
             return NULL;
-        }catch (QuantLib::Error& e) {
+        }catch (Error& e) {
             PyErr_SetString(PyExc_Exception,e.what());
             return NULL;
         }catch (std::exception& e) {
@@ -12626,10 +13988,10 @@ static PyObject *_wrap_TridiagonalOperator___mul__(PyObject *self, PyObject *arg
     {
         try {
             result = new TridiagonalOperator (TridiagonalOperator___mul__(arg0,arg1));
-        }catch (QuantLib::IndexError& e) {
+        }catch (IndexError& e) {
             PyErr_SetString(PyExc_IndexError,e.what());
             return NULL;
-        }catch (QuantLib::Error& e) {
+        }catch (Error& e) {
             PyErr_SetString(PyExc_Exception,e.what());
             return NULL;
         }catch (std::exception& e) {
@@ -12666,10 +14028,10 @@ static PyObject *_wrap_TridiagonalOperator___rmul__(PyObject *self, PyObject *ar
     {
         try {
             result = new TridiagonalOperator (TridiagonalOperator___rmul__(arg0,arg1));
-        }catch (QuantLib::IndexError& e) {
+        }catch (IndexError& e) {
             PyErr_SetString(PyExc_IndexError,e.what());
             return NULL;
-        }catch (QuantLib::Error& e) {
+        }catch (Error& e) {
             PyErr_SetString(PyExc_Exception,e.what());
             return NULL;
         }catch (std::exception& e) {
@@ -12706,10 +14068,10 @@ static PyObject *_wrap_TridiagonalOperator___div__(PyObject *self, PyObject *arg
     {
         try {
             result = new TridiagonalOperator (TridiagonalOperator___div__(arg0,arg1));
-        }catch (QuantLib::IndexError& e) {
+        }catch (IndexError& e) {
             PyErr_SetString(PyExc_IndexError,e.what());
             return NULL;
-        }catch (QuantLib::Error& e) {
+        }catch (Error& e) {
             PyErr_SetString(PyExc_Exception,e.what());
             return NULL;
         }catch (std::exception& e) {
@@ -12738,10 +14100,10 @@ static PyObject *_wrap_new_DPlus(PyObject *self, PyObject *args, PyObject *kwarg
         try {
             result = (DPlus *)new DPlus(arg0,arg1);
             
-        }catch (QuantLib::IndexError& e) {
+        }catch (IndexError& e) {
             PyErr_SetString(PyExc_IndexError,e.what());
             return NULL;
-        }catch (QuantLib::Error& e) {
+        }catch (Error& e) {
             PyErr_SetString(PyExc_Exception,e.what());
             return NULL;
         }catch (std::exception& e) {
@@ -12770,10 +14132,10 @@ static PyObject *_wrap_delete_DPlus(PyObject *self, PyObject *args, PyObject *kw
         try {
             delete arg0;
             
-        }catch (QuantLib::IndexError& e) {
+        }catch (IndexError& e) {
             PyErr_SetString(PyExc_IndexError,e.what());
             return NULL;
-        }catch (QuantLib::Error& e) {
+        }catch (Error& e) {
             PyErr_SetString(PyExc_Exception,e.what());
             return NULL;
         }catch (std::exception& e) {
@@ -12803,10 +14165,10 @@ static PyObject *_wrap_new_DMinus(PyObject *self, PyObject *args, PyObject *kwar
         try {
             result = (DMinus *)new DMinus(arg0,arg1);
             
-        }catch (QuantLib::IndexError& e) {
+        }catch (IndexError& e) {
             PyErr_SetString(PyExc_IndexError,e.what());
             return NULL;
-        }catch (QuantLib::Error& e) {
+        }catch (Error& e) {
             PyErr_SetString(PyExc_Exception,e.what());
             return NULL;
         }catch (std::exception& e) {
@@ -12835,10 +14197,10 @@ static PyObject *_wrap_delete_DMinus(PyObject *self, PyObject *args, PyObject *k
         try {
             delete arg0;
             
-        }catch (QuantLib::IndexError& e) {
+        }catch (IndexError& e) {
             PyErr_SetString(PyExc_IndexError,e.what());
             return NULL;
-        }catch (QuantLib::Error& e) {
+        }catch (Error& e) {
             PyErr_SetString(PyExc_Exception,e.what());
             return NULL;
         }catch (std::exception& e) {
@@ -12868,10 +14230,10 @@ static PyObject *_wrap_new_DZero(PyObject *self, PyObject *args, PyObject *kwarg
         try {
             result = (DZero *)new DZero(arg0,arg1);
             
-        }catch (QuantLib::IndexError& e) {
+        }catch (IndexError& e) {
             PyErr_SetString(PyExc_IndexError,e.what());
             return NULL;
-        }catch (QuantLib::Error& e) {
+        }catch (Error& e) {
             PyErr_SetString(PyExc_Exception,e.what());
             return NULL;
         }catch (std::exception& e) {
@@ -12900,10 +14262,10 @@ static PyObject *_wrap_delete_DZero(PyObject *self, PyObject *args, PyObject *kw
         try {
             delete arg0;
             
-        }catch (QuantLib::IndexError& e) {
+        }catch (IndexError& e) {
             PyErr_SetString(PyExc_IndexError,e.what());
             return NULL;
-        }catch (QuantLib::Error& e) {
+        }catch (Error& e) {
             PyErr_SetString(PyExc_Exception,e.what());
             return NULL;
         }catch (std::exception& e) {
@@ -12933,10 +14295,10 @@ static PyObject *_wrap_new_DPlusDMinus(PyObject *self, PyObject *args, PyObject 
         try {
             result = (DPlusDMinus *)new DPlusDMinus(arg0,arg1);
             
-        }catch (QuantLib::IndexError& e) {
+        }catch (IndexError& e) {
             PyErr_SetString(PyExc_IndexError,e.what());
             return NULL;
-        }catch (QuantLib::Error& e) {
+        }catch (Error& e) {
             PyErr_SetString(PyExc_Exception,e.what());
             return NULL;
         }catch (std::exception& e) {
@@ -12965,10 +14327,10 @@ static PyObject *_wrap_delete_DPlusDMinus(PyObject *self, PyObject *args, PyObje
         try {
             delete arg0;
             
-        }catch (QuantLib::IndexError& e) {
+        }catch (IndexError& e) {
             PyErr_SetString(PyExc_IndexError,e.what());
             return NULL;
-        }catch (QuantLib::Error& e) {
+        }catch (Error& e) {
             PyErr_SetString(PyExc_Exception,e.what());
             return NULL;
         }catch (std::exception& e) {
@@ -13022,10 +14384,10 @@ static PyObject *_wrap_new_BSMEuropeanOption(PyObject *self, PyObject *args, PyO
         try {
             result = (BSMEuropeanOption *)new BSMEuropeanOption(*arg0,arg1,arg2,arg3,arg4,arg5,arg6);
             
-        }catch (QuantLib::IndexError& e) {
+        }catch (IndexError& e) {
             PyErr_SetString(PyExc_IndexError,e.what());
             return NULL;
-        }catch (QuantLib::Error& e) {
+        }catch (Error& e) {
             PyErr_SetString(PyExc_Exception,e.what());
             return NULL;
         }catch (std::exception& e) {
@@ -13057,10 +14419,10 @@ static PyObject *_wrap_delete_BSMEuropeanOption(PyObject *self, PyObject *args, 
         try {
             delete arg0;
             
-        }catch (QuantLib::IndexError& e) {
+        }catch (IndexError& e) {
             PyErr_SetString(PyExc_IndexError,e.what());
             return NULL;
-        }catch (QuantLib::Error& e) {
+        }catch (Error& e) {
             PyErr_SetString(PyExc_Exception,e.what());
             return NULL;
         }catch (std::exception& e) {
@@ -13091,10 +14453,10 @@ static PyObject *_wrap_BSMEuropeanOption_setVolatility(PyObject *self, PyObject 
         try {
             arg0->setVolatility(arg1);
             
-        }catch (QuantLib::IndexError& e) {
+        }catch (IndexError& e) {
             PyErr_SetString(PyExc_IndexError,e.what());
             return NULL;
-        }catch (QuantLib::Error& e) {
+        }catch (Error& e) {
             PyErr_SetString(PyExc_Exception,e.what());
             return NULL;
         }catch (std::exception& e) {
@@ -13125,10 +14487,10 @@ static PyObject *_wrap_BSMEuropeanOption_setRiskFreeRate(PyObject *self, PyObjec
         try {
             arg0->setRiskFreeRate(arg1);
             
-        }catch (QuantLib::IndexError& e) {
+        }catch (IndexError& e) {
             PyErr_SetString(PyExc_IndexError,e.what());
             return NULL;
-        }catch (QuantLib::Error& e) {
+        }catch (Error& e) {
             PyErr_SetString(PyExc_Exception,e.what());
             return NULL;
         }catch (std::exception& e) {
@@ -13159,10 +14521,10 @@ static PyObject *_wrap_BSMEuropeanOption_value(PyObject *self, PyObject *args, P
         try {
             result = (double )arg0->value();
             
-        }catch (QuantLib::IndexError& e) {
+        }catch (IndexError& e) {
             PyErr_SetString(PyExc_IndexError,e.what());
             return NULL;
-        }catch (QuantLib::Error& e) {
+        }catch (Error& e) {
             PyErr_SetString(PyExc_Exception,e.what());
             return NULL;
         }catch (std::exception& e) {
@@ -13192,10 +14554,10 @@ static PyObject *_wrap_BSMEuropeanOption_delta(PyObject *self, PyObject *args, P
         try {
             result = (double )arg0->delta();
             
-        }catch (QuantLib::IndexError& e) {
+        }catch (IndexError& e) {
             PyErr_SetString(PyExc_IndexError,e.what());
             return NULL;
-        }catch (QuantLib::Error& e) {
+        }catch (Error& e) {
             PyErr_SetString(PyExc_Exception,e.what());
             return NULL;
         }catch (std::exception& e) {
@@ -13225,10 +14587,10 @@ static PyObject *_wrap_BSMEuropeanOption_gamma(PyObject *self, PyObject *args, P
         try {
             result = (double )arg0->gamma();
             
-        }catch (QuantLib::IndexError& e) {
+        }catch (IndexError& e) {
             PyErr_SetString(PyExc_IndexError,e.what());
             return NULL;
-        }catch (QuantLib::Error& e) {
+        }catch (Error& e) {
             PyErr_SetString(PyExc_Exception,e.what());
             return NULL;
         }catch (std::exception& e) {
@@ -13258,10 +14620,10 @@ static PyObject *_wrap_BSMEuropeanOption_theta(PyObject *self, PyObject *args, P
         try {
             result = (double )arg0->theta();
             
-        }catch (QuantLib::IndexError& e) {
+        }catch (IndexError& e) {
             PyErr_SetString(PyExc_IndexError,e.what());
             return NULL;
-        }catch (QuantLib::Error& e) {
+        }catch (Error& e) {
             PyErr_SetString(PyExc_Exception,e.what());
             return NULL;
         }catch (std::exception& e) {
@@ -13291,10 +14653,10 @@ static PyObject *_wrap_BSMEuropeanOption_vega(PyObject *self, PyObject *args, Py
         try {
             result = (double )arg0->vega();
             
-        }catch (QuantLib::IndexError& e) {
+        }catch (IndexError& e) {
             PyErr_SetString(PyExc_IndexError,e.what());
             return NULL;
-        }catch (QuantLib::Error& e) {
+        }catch (Error& e) {
             PyErr_SetString(PyExc_Exception,e.what());
             return NULL;
         }catch (std::exception& e) {
@@ -13324,10 +14686,10 @@ static PyObject *_wrap_BSMEuropeanOption_rho(PyObject *self, PyObject *args, PyO
         try {
             result = (double )arg0->rho();
             
-        }catch (QuantLib::IndexError& e) {
+        }catch (IndexError& e) {
             PyErr_SetString(PyExc_IndexError,e.what());
             return NULL;
-        }catch (QuantLib::Error& e) {
+        }catch (Error& e) {
             PyErr_SetString(PyExc_Exception,e.what());
             return NULL;
         }catch (std::exception& e) {
@@ -13360,10 +14722,10 @@ static PyObject *_wrap_BSMEuropeanOption_impliedVolatility(PyObject *self, PyObj
         try {
             result = (double )arg0->impliedVolatility(arg1,arg2,arg3);
             
-        }catch (QuantLib::IndexError& e) {
+        }catch (IndexError& e) {
             PyErr_SetString(PyExc_IndexError,e.what());
             return NULL;
-        }catch (QuantLib::Error& e) {
+        }catch (Error& e) {
             PyErr_SetString(PyExc_Exception,e.what());
             return NULL;
         }catch (std::exception& e) {
@@ -13418,10 +14780,10 @@ static PyObject *_wrap_new_BSMAmericanOption(PyObject *self, PyObject *args, PyO
         try {
             result = (BSMAmericanOption *)new BSMAmericanOption(*arg0,arg1,arg2,arg3,arg4,arg5,arg6,arg7,arg8);
             
-        }catch (QuantLib::IndexError& e) {
+        }catch (IndexError& e) {
             PyErr_SetString(PyExc_IndexError,e.what());
             return NULL;
-        }catch (QuantLib::Error& e) {
+        }catch (Error& e) {
             PyErr_SetString(PyExc_Exception,e.what());
             return NULL;
         }catch (std::exception& e) {
@@ -13453,10 +14815,10 @@ static PyObject *_wrap_delete_BSMAmericanOption(PyObject *self, PyObject *args, 
         try {
             delete arg0;
             
-        }catch (QuantLib::IndexError& e) {
+        }catch (IndexError& e) {
             PyErr_SetString(PyExc_IndexError,e.what());
             return NULL;
-        }catch (QuantLib::Error& e) {
+        }catch (Error& e) {
             PyErr_SetString(PyExc_Exception,e.what());
             return NULL;
         }catch (std::exception& e) {
@@ -13487,10 +14849,10 @@ static PyObject *_wrap_BSMAmericanOption_setVolatility(PyObject *self, PyObject 
         try {
             arg0->setVolatility(arg1);
             
-        }catch (QuantLib::IndexError& e) {
+        }catch (IndexError& e) {
             PyErr_SetString(PyExc_IndexError,e.what());
             return NULL;
-        }catch (QuantLib::Error& e) {
+        }catch (Error& e) {
             PyErr_SetString(PyExc_Exception,e.what());
             return NULL;
         }catch (std::exception& e) {
@@ -13521,10 +14883,10 @@ static PyObject *_wrap_BSMAmericanOption_setRiskFreeRate(PyObject *self, PyObjec
         try {
             arg0->setRiskFreeRate(arg1);
             
-        }catch (QuantLib::IndexError& e) {
+        }catch (IndexError& e) {
             PyErr_SetString(PyExc_IndexError,e.what());
             return NULL;
-        }catch (QuantLib::Error& e) {
+        }catch (Error& e) {
             PyErr_SetString(PyExc_Exception,e.what());
             return NULL;
         }catch (std::exception& e) {
@@ -13555,10 +14917,10 @@ static PyObject *_wrap_BSMAmericanOption_value(PyObject *self, PyObject *args, P
         try {
             result = (double )arg0->value();
             
-        }catch (QuantLib::IndexError& e) {
+        }catch (IndexError& e) {
             PyErr_SetString(PyExc_IndexError,e.what());
             return NULL;
-        }catch (QuantLib::Error& e) {
+        }catch (Error& e) {
             PyErr_SetString(PyExc_Exception,e.what());
             return NULL;
         }catch (std::exception& e) {
@@ -13588,10 +14950,10 @@ static PyObject *_wrap_BSMAmericanOption_delta(PyObject *self, PyObject *args, P
         try {
             result = (double )arg0->delta();
             
-        }catch (QuantLib::IndexError& e) {
+        }catch (IndexError& e) {
             PyErr_SetString(PyExc_IndexError,e.what());
             return NULL;
-        }catch (QuantLib::Error& e) {
+        }catch (Error& e) {
             PyErr_SetString(PyExc_Exception,e.what());
             return NULL;
         }catch (std::exception& e) {
@@ -13621,10 +14983,10 @@ static PyObject *_wrap_BSMAmericanOption_gamma(PyObject *self, PyObject *args, P
         try {
             result = (double )arg0->gamma();
             
-        }catch (QuantLib::IndexError& e) {
+        }catch (IndexError& e) {
             PyErr_SetString(PyExc_IndexError,e.what());
             return NULL;
-        }catch (QuantLib::Error& e) {
+        }catch (Error& e) {
             PyErr_SetString(PyExc_Exception,e.what());
             return NULL;
         }catch (std::exception& e) {
@@ -13654,10 +15016,10 @@ static PyObject *_wrap_BSMAmericanOption_theta(PyObject *self, PyObject *args, P
         try {
             result = (double )arg0->theta();
             
-        }catch (QuantLib::IndexError& e) {
+        }catch (IndexError& e) {
             PyErr_SetString(PyExc_IndexError,e.what());
             return NULL;
-        }catch (QuantLib::Error& e) {
+        }catch (Error& e) {
             PyErr_SetString(PyExc_Exception,e.what());
             return NULL;
         }catch (std::exception& e) {
@@ -13687,10 +15049,10 @@ static PyObject *_wrap_BSMAmericanOption_vega(PyObject *self, PyObject *args, Py
         try {
             result = (double )arg0->vega();
             
-        }catch (QuantLib::IndexError& e) {
+        }catch (IndexError& e) {
             PyErr_SetString(PyExc_IndexError,e.what());
             return NULL;
-        }catch (QuantLib::Error& e) {
+        }catch (Error& e) {
             PyErr_SetString(PyExc_Exception,e.what());
             return NULL;
         }catch (std::exception& e) {
@@ -13720,10 +15082,10 @@ static PyObject *_wrap_BSMAmericanOption_rho(PyObject *self, PyObject *args, PyO
         try {
             result = (double )arg0->rho();
             
-        }catch (QuantLib::IndexError& e) {
+        }catch (IndexError& e) {
             PyErr_SetString(PyExc_IndexError,e.what());
             return NULL;
-        }catch (QuantLib::Error& e) {
+        }catch (Error& e) {
             PyErr_SetString(PyExc_Exception,e.what());
             return NULL;
         }catch (std::exception& e) {
@@ -13756,10 +15118,10 @@ static PyObject *_wrap_BSMAmericanOption_impliedVolatility(PyObject *self, PyObj
         try {
             result = (double )arg0->impliedVolatility(arg1,arg2,arg3);
             
-        }catch (QuantLib::IndexError& e) {
+        }catch (IndexError& e) {
             PyErr_SetString(PyExc_IndexError,e.what());
             return NULL;
-        }catch (QuantLib::Error& e) {
+        }catch (Error& e) {
             PyErr_SetString(PyExc_Exception,e.what());
             return NULL;
         }catch (std::exception& e) {
@@ -13788,7 +15150,9 @@ static PyObject *_wrap_new_DividendAmericanOption(PyObject *self, PyObject *args
     int arg9 = 100 ;
     int arg10 = 100 ;
     PyObject * obj0  = 0 ;
+    DoubleVector temp ;
     PyObject * obj7  = 0 ;
+    DoubleVector temp0 ;
     PyObject * obj8  = 0 ;
     char *kwnames[] = {
         "type","underlying","strike","dividendYield","riskFreeRate","residualTime","volatility","dividends","exdivdates","timeSteps","gridPoints", NULL 
@@ -13815,82 +15179,60 @@ static PyObject *_wrap_new_DividendAmericanOption(PyObject *self, PyObject *args
         }
     }
     {
-        if (PyTuple_Check(obj7)) {
-            int size = PyTuple_Size(obj7);
-            arg7 = new DoubleVector(size);
+        DoubleVector* v;
+        if (PyTuple_Check(obj7) || PyList_Check(obj7)) {
+            int size = (PyTuple_Check(obj7) ? 
+            PyTuple_Size(obj7) :
+            PyList_Size(obj7));
+            temp = DoubleVector(size);
+            arg7 = &temp;
             for (int i=0; i<size; i++) {
-                PyObject* o = PyTuple_GetItem(obj7,i);
-                if (PyFloat_Check(o)) {
+                PyObject* o = PySequence_GetItem(obj7,i);
+                if (o == Py_None) {
+                    (*arg7)[i] = Null<double>();
+                }else if (PyFloat_Check(o)) {
                     (*arg7)[i] = PyFloat_AsDouble(o);
                 }else if (PyInt_Check(o)) {
                     (*arg7)[i] = double(PyInt_AsLong(o));
-                }else if (o == Py_None) {
-                    (*arg7)[i] = Null<double>();
                 }else {
-                    PyErr_SetString(PyExc_TypeError,"tuple must contain doubles");
-                    delete arg7;
+                    PyErr_SetString(PyExc_TypeError,"doubles expected");
                     return NULL;
                 }
             }
-        }else if (PyList_Check(obj7)) {
-            int size = PyList_Size(obj7);
-            arg7 = new DoubleVector(size);
-            for (int i=0; i<size; i++) {
-                PyObject* o = PyList_GetItem(obj7,i);
-                if (PyFloat_Check(o)) {
-                    (*arg7)[i] = PyFloat_AsDouble(o);
-                }else if (PyInt_Check(o)) {
-                    (*arg7)[i] = double(PyInt_AsLong(o));
-                }else if (o == Py_None) {
-                    (*arg7)[i] = Null<double>();
-                }else {
-                    PyErr_SetString(PyExc_TypeError,"list must contain doubles");
-                    delete arg7;
-                    return NULL;
-                }
-            }
+        }else if ((SWIG_ConvertPtr(obj7,(void **) &v,
+        (swig_type_info *)SWIG_TypeQuery("DoubleVector *"),0)) != -1) {
+            arg7 = v;
         }else {
-            PyErr_SetString(PyExc_TypeError,"not a sequence");
+            PyErr_SetString(PyExc_TypeError,"DoubleVector expected");
             return NULL;
         }
     }
     {
-        if (PyTuple_Check(obj8)) {
-            int size = PyTuple_Size(obj8);
-            arg8 = new DoubleVector(size);
+        DoubleVector* v;
+        if (PyTuple_Check(obj8) || PyList_Check(obj8)) {
+            int size = (PyTuple_Check(obj8) ? 
+            PyTuple_Size(obj8) :
+            PyList_Size(obj8));
+            temp0 = DoubleVector(size);
+            arg8 = &temp0;
             for (int i=0; i<size; i++) {
-                PyObject* o = PyTuple_GetItem(obj8,i);
-                if (PyFloat_Check(o)) {
+                PyObject* o = PySequence_GetItem(obj8,i);
+                if (o == Py_None) {
+                    (*arg8)[i] = Null<double>();
+                }else if (PyFloat_Check(o)) {
                     (*arg8)[i] = PyFloat_AsDouble(o);
                 }else if (PyInt_Check(o)) {
                     (*arg8)[i] = double(PyInt_AsLong(o));
-                }else if (o == Py_None) {
-                    (*arg8)[i] = Null<double>();
                 }else {
-                    PyErr_SetString(PyExc_TypeError,"tuple must contain doubles");
-                    delete arg8;
+                    PyErr_SetString(PyExc_TypeError,"doubles expected");
                     return NULL;
                 }
             }
-        }else if (PyList_Check(obj8)) {
-            int size = PyList_Size(obj8);
-            arg8 = new DoubleVector(size);
-            for (int i=0; i<size; i++) {
-                PyObject* o = PyList_GetItem(obj8,i);
-                if (PyFloat_Check(o)) {
-                    (*arg8)[i] = PyFloat_AsDouble(o);
-                }else if (PyInt_Check(o)) {
-                    (*arg8)[i] = double(PyInt_AsLong(o));
-                }else if (o == Py_None) {
-                    (*arg8)[i] = Null<double>();
-                }else {
-                    PyErr_SetString(PyExc_TypeError,"list must contain doubles");
-                    delete arg8;
-                    return NULL;
-                }
-            }
+        }else if ((SWIG_ConvertPtr(obj8,(void **) &v,
+        (swig_type_info *)SWIG_TypeQuery("DoubleVector *"),0)) != -1) {
+            arg8 = v;
         }else {
-            PyErr_SetString(PyExc_TypeError,"not a sequence");
+            PyErr_SetString(PyExc_TypeError,"DoubleVector expected");
             return NULL;
         }
     }
@@ -13898,10 +15240,10 @@ static PyObject *_wrap_new_DividendAmericanOption(PyObject *self, PyObject *args
         try {
             result = (DividendAmericanOption *)new DividendAmericanOption(*arg0,arg1,arg2,arg3,arg4,arg5,arg6,*arg7,*arg8,arg9,arg10);
             
-        }catch (QuantLib::IndexError& e) {
+        }catch (IndexError& e) {
             PyErr_SetString(PyExc_IndexError,e.what());
             return NULL;
-        }catch (QuantLib::Error& e) {
+        }catch (Error& e) {
             PyErr_SetString(PyExc_Exception,e.what());
             return NULL;
         }catch (std::exception& e) {
@@ -13914,12 +15256,6 @@ static PyObject *_wrap_new_DividendAmericanOption(PyObject *self, PyObject *args
     }resultobj = SWIG_NewPointerObj((void *) result, SWIGTYPE_p_DividendAmericanOption);
     {
         delete arg0;
-    }
-    {
-        delete arg7;
-    }
-    {
-        delete arg8;
     }
     return resultobj;
 }
@@ -13939,10 +15275,10 @@ static PyObject *_wrap_delete_DividendAmericanOption(PyObject *self, PyObject *a
         try {
             delete arg0;
             
-        }catch (QuantLib::IndexError& e) {
+        }catch (IndexError& e) {
             PyErr_SetString(PyExc_IndexError,e.what());
             return NULL;
-        }catch (QuantLib::Error& e) {
+        }catch (Error& e) {
             PyErr_SetString(PyExc_Exception,e.what());
             return NULL;
         }catch (std::exception& e) {
@@ -13973,10 +15309,10 @@ static PyObject *_wrap_DividendAmericanOption_value(PyObject *self, PyObject *ar
         try {
             result = (double )arg0->value();
             
-        }catch (QuantLib::IndexError& e) {
+        }catch (IndexError& e) {
             PyErr_SetString(PyExc_IndexError,e.what());
             return NULL;
-        }catch (QuantLib::Error& e) {
+        }catch (Error& e) {
             PyErr_SetString(PyExc_Exception,e.what());
             return NULL;
         }catch (std::exception& e) {
@@ -14006,10 +15342,10 @@ static PyObject *_wrap_DividendAmericanOption_delta(PyObject *self, PyObject *ar
         try {
             result = (double )arg0->delta();
             
-        }catch (QuantLib::IndexError& e) {
+        }catch (IndexError& e) {
             PyErr_SetString(PyExc_IndexError,e.what());
             return NULL;
-        }catch (QuantLib::Error& e) {
+        }catch (Error& e) {
             PyErr_SetString(PyExc_Exception,e.what());
             return NULL;
         }catch (std::exception& e) {
@@ -14039,10 +15375,10 @@ static PyObject *_wrap_DividendAmericanOption_gamma(PyObject *self, PyObject *ar
         try {
             result = (double )arg0->gamma();
             
-        }catch (QuantLib::IndexError& e) {
+        }catch (IndexError& e) {
             PyErr_SetString(PyExc_IndexError,e.what());
             return NULL;
-        }catch (QuantLib::Error& e) {
+        }catch (Error& e) {
             PyErr_SetString(PyExc_Exception,e.what());
             return NULL;
         }catch (std::exception& e) {
@@ -14072,10 +15408,10 @@ static PyObject *_wrap_DividendAmericanOption_theta(PyObject *self, PyObject *ar
         try {
             result = (double )arg0->theta();
             
-        }catch (QuantLib::IndexError& e) {
+        }catch (IndexError& e) {
             PyErr_SetString(PyExc_IndexError,e.what());
             return NULL;
-        }catch (QuantLib::Error& e) {
+        }catch (Error& e) {
             PyErr_SetString(PyExc_Exception,e.what());
             return NULL;
         }catch (std::exception& e) {
@@ -14105,10 +15441,10 @@ static PyObject *_wrap_DividendAmericanOption_vega(PyObject *self, PyObject *arg
         try {
             result = (double )arg0->vega();
             
-        }catch (QuantLib::IndexError& e) {
+        }catch (IndexError& e) {
             PyErr_SetString(PyExc_IndexError,e.what());
             return NULL;
-        }catch (QuantLib::Error& e) {
+        }catch (Error& e) {
             PyErr_SetString(PyExc_Exception,e.what());
             return NULL;
         }catch (std::exception& e) {
@@ -14138,10 +15474,10 @@ static PyObject *_wrap_DividendAmericanOption_rho(PyObject *self, PyObject *args
         try {
             result = (double )arg0->rho();
             
-        }catch (QuantLib::IndexError& e) {
+        }catch (IndexError& e) {
             PyErr_SetString(PyExc_IndexError,e.what());
             return NULL;
-        }catch (QuantLib::Error& e) {
+        }catch (Error& e) {
             PyErr_SetString(PyExc_Exception,e.what());
             return NULL;
         }catch (std::exception& e) {
@@ -14174,10 +15510,10 @@ static PyObject *_wrap_DividendAmericanOption_impliedVolatility(PyObject *self, 
         try {
             result = (double )arg0->impliedVolatility(arg1,arg2,arg3);
             
-        }catch (QuantLib::IndexError& e) {
+        }catch (IndexError& e) {
             PyErr_SetString(PyExc_IndexError,e.what());
             return NULL;
-        }catch (QuantLib::Error& e) {
+        }catch (Error& e) {
             PyErr_SetString(PyExc_Exception,e.what());
             return NULL;
         }catch (std::exception& e) {
@@ -14204,7 +15540,9 @@ static PyObject *_wrap_new_DividendEuropeanOption(PyObject *self, PyObject *args
     DoubleVector *arg7 ;
     DoubleVector *arg8 ;
     PyObject * obj0  = 0 ;
+    DoubleVector temp ;
     PyObject * obj7  = 0 ;
+    DoubleVector temp0 ;
     PyObject * obj8  = 0 ;
     char *kwnames[] = {
         "type","underlying","strike","dividendYield","riskFreeRate","residualTime","volatility","dividends","exdivdates", NULL 
@@ -14231,82 +15569,60 @@ static PyObject *_wrap_new_DividendEuropeanOption(PyObject *self, PyObject *args
         }
     }
     {
-        if (PyTuple_Check(obj7)) {
-            int size = PyTuple_Size(obj7);
-            arg7 = new DoubleVector(size);
+        DoubleVector* v;
+        if (PyTuple_Check(obj7) || PyList_Check(obj7)) {
+            int size = (PyTuple_Check(obj7) ? 
+            PyTuple_Size(obj7) :
+            PyList_Size(obj7));
+            temp = DoubleVector(size);
+            arg7 = &temp;
             for (int i=0; i<size; i++) {
-                PyObject* o = PyTuple_GetItem(obj7,i);
-                if (PyFloat_Check(o)) {
+                PyObject* o = PySequence_GetItem(obj7,i);
+                if (o == Py_None) {
+                    (*arg7)[i] = Null<double>();
+                }else if (PyFloat_Check(o)) {
                     (*arg7)[i] = PyFloat_AsDouble(o);
                 }else if (PyInt_Check(o)) {
                     (*arg7)[i] = double(PyInt_AsLong(o));
-                }else if (o == Py_None) {
-                    (*arg7)[i] = Null<double>();
                 }else {
-                    PyErr_SetString(PyExc_TypeError,"tuple must contain doubles");
-                    delete arg7;
+                    PyErr_SetString(PyExc_TypeError,"doubles expected");
                     return NULL;
                 }
             }
-        }else if (PyList_Check(obj7)) {
-            int size = PyList_Size(obj7);
-            arg7 = new DoubleVector(size);
-            for (int i=0; i<size; i++) {
-                PyObject* o = PyList_GetItem(obj7,i);
-                if (PyFloat_Check(o)) {
-                    (*arg7)[i] = PyFloat_AsDouble(o);
-                }else if (PyInt_Check(o)) {
-                    (*arg7)[i] = double(PyInt_AsLong(o));
-                }else if (o == Py_None) {
-                    (*arg7)[i] = Null<double>();
-                }else {
-                    PyErr_SetString(PyExc_TypeError,"list must contain doubles");
-                    delete arg7;
-                    return NULL;
-                }
-            }
+        }else if ((SWIG_ConvertPtr(obj7,(void **) &v,
+        (swig_type_info *)SWIG_TypeQuery("DoubleVector *"),0)) != -1) {
+            arg7 = v;
         }else {
-            PyErr_SetString(PyExc_TypeError,"not a sequence");
+            PyErr_SetString(PyExc_TypeError,"DoubleVector expected");
             return NULL;
         }
     }
     {
-        if (PyTuple_Check(obj8)) {
-            int size = PyTuple_Size(obj8);
-            arg8 = new DoubleVector(size);
+        DoubleVector* v;
+        if (PyTuple_Check(obj8) || PyList_Check(obj8)) {
+            int size = (PyTuple_Check(obj8) ? 
+            PyTuple_Size(obj8) :
+            PyList_Size(obj8));
+            temp0 = DoubleVector(size);
+            arg8 = &temp0;
             for (int i=0; i<size; i++) {
-                PyObject* o = PyTuple_GetItem(obj8,i);
-                if (PyFloat_Check(o)) {
+                PyObject* o = PySequence_GetItem(obj8,i);
+                if (o == Py_None) {
+                    (*arg8)[i] = Null<double>();
+                }else if (PyFloat_Check(o)) {
                     (*arg8)[i] = PyFloat_AsDouble(o);
                 }else if (PyInt_Check(o)) {
                     (*arg8)[i] = double(PyInt_AsLong(o));
-                }else if (o == Py_None) {
-                    (*arg8)[i] = Null<double>();
                 }else {
-                    PyErr_SetString(PyExc_TypeError,"tuple must contain doubles");
-                    delete arg8;
+                    PyErr_SetString(PyExc_TypeError,"doubles expected");
                     return NULL;
                 }
             }
-        }else if (PyList_Check(obj8)) {
-            int size = PyList_Size(obj8);
-            arg8 = new DoubleVector(size);
-            for (int i=0; i<size; i++) {
-                PyObject* o = PyList_GetItem(obj8,i);
-                if (PyFloat_Check(o)) {
-                    (*arg8)[i] = PyFloat_AsDouble(o);
-                }else if (PyInt_Check(o)) {
-                    (*arg8)[i] = double(PyInt_AsLong(o));
-                }else if (o == Py_None) {
-                    (*arg8)[i] = Null<double>();
-                }else {
-                    PyErr_SetString(PyExc_TypeError,"list must contain doubles");
-                    delete arg8;
-                    return NULL;
-                }
-            }
+        }else if ((SWIG_ConvertPtr(obj8,(void **) &v,
+        (swig_type_info *)SWIG_TypeQuery("DoubleVector *"),0)) != -1) {
+            arg8 = v;
         }else {
-            PyErr_SetString(PyExc_TypeError,"not a sequence");
+            PyErr_SetString(PyExc_TypeError,"DoubleVector expected");
             return NULL;
         }
     }
@@ -14314,10 +15630,10 @@ static PyObject *_wrap_new_DividendEuropeanOption(PyObject *self, PyObject *args
         try {
             result = (DividendEuropeanOption *)new DividendEuropeanOption(*arg0,arg1,arg2,arg3,arg4,arg5,arg6,*arg7,*arg8);
             
-        }catch (QuantLib::IndexError& e) {
+        }catch (IndexError& e) {
             PyErr_SetString(PyExc_IndexError,e.what());
             return NULL;
-        }catch (QuantLib::Error& e) {
+        }catch (Error& e) {
             PyErr_SetString(PyExc_Exception,e.what());
             return NULL;
         }catch (std::exception& e) {
@@ -14330,12 +15646,6 @@ static PyObject *_wrap_new_DividendEuropeanOption(PyObject *self, PyObject *args
     }resultobj = SWIG_NewPointerObj((void *) result, SWIGTYPE_p_DividendEuropeanOption);
     {
         delete arg0;
-    }
-    {
-        delete arg7;
-    }
-    {
-        delete arg8;
     }
     return resultobj;
 }
@@ -14355,10 +15665,10 @@ static PyObject *_wrap_delete_DividendEuropeanOption(PyObject *self, PyObject *a
         try {
             delete arg0;
             
-        }catch (QuantLib::IndexError& e) {
+        }catch (IndexError& e) {
             PyErr_SetString(PyExc_IndexError,e.what());
             return NULL;
-        }catch (QuantLib::Error& e) {
+        }catch (Error& e) {
             PyErr_SetString(PyExc_Exception,e.what());
             return NULL;
         }catch (std::exception& e) {
@@ -14389,10 +15699,10 @@ static PyObject *_wrap_DividendEuropeanOption_value(PyObject *self, PyObject *ar
         try {
             result = (double )arg0->value();
             
-        }catch (QuantLib::IndexError& e) {
+        }catch (IndexError& e) {
             PyErr_SetString(PyExc_IndexError,e.what());
             return NULL;
-        }catch (QuantLib::Error& e) {
+        }catch (Error& e) {
             PyErr_SetString(PyExc_Exception,e.what());
             return NULL;
         }catch (std::exception& e) {
@@ -14422,10 +15732,10 @@ static PyObject *_wrap_DividendEuropeanOption_delta(PyObject *self, PyObject *ar
         try {
             result = (double )arg0->delta();
             
-        }catch (QuantLib::IndexError& e) {
+        }catch (IndexError& e) {
             PyErr_SetString(PyExc_IndexError,e.what());
             return NULL;
-        }catch (QuantLib::Error& e) {
+        }catch (Error& e) {
             PyErr_SetString(PyExc_Exception,e.what());
             return NULL;
         }catch (std::exception& e) {
@@ -14455,10 +15765,10 @@ static PyObject *_wrap_DividendEuropeanOption_gamma(PyObject *self, PyObject *ar
         try {
             result = (double )arg0->gamma();
             
-        }catch (QuantLib::IndexError& e) {
+        }catch (IndexError& e) {
             PyErr_SetString(PyExc_IndexError,e.what());
             return NULL;
-        }catch (QuantLib::Error& e) {
+        }catch (Error& e) {
             PyErr_SetString(PyExc_Exception,e.what());
             return NULL;
         }catch (std::exception& e) {
@@ -14488,10 +15798,10 @@ static PyObject *_wrap_DividendEuropeanOption_theta(PyObject *self, PyObject *ar
         try {
             result = (double )arg0->theta();
             
-        }catch (QuantLib::IndexError& e) {
+        }catch (IndexError& e) {
             PyErr_SetString(PyExc_IndexError,e.what());
             return NULL;
-        }catch (QuantLib::Error& e) {
+        }catch (Error& e) {
             PyErr_SetString(PyExc_Exception,e.what());
             return NULL;
         }catch (std::exception& e) {
@@ -14521,10 +15831,10 @@ static PyObject *_wrap_DividendEuropeanOption_vega(PyObject *self, PyObject *arg
         try {
             result = (double )arg0->vega();
             
-        }catch (QuantLib::IndexError& e) {
+        }catch (IndexError& e) {
             PyErr_SetString(PyExc_IndexError,e.what());
             return NULL;
-        }catch (QuantLib::Error& e) {
+        }catch (Error& e) {
             PyErr_SetString(PyExc_Exception,e.what());
             return NULL;
         }catch (std::exception& e) {
@@ -14554,10 +15864,10 @@ static PyObject *_wrap_DividendEuropeanOption_rho(PyObject *self, PyObject *args
         try {
             result = (double )arg0->rho();
             
-        }catch (QuantLib::IndexError& e) {
+        }catch (IndexError& e) {
             PyErr_SetString(PyExc_IndexError,e.what());
             return NULL;
-        }catch (QuantLib::Error& e) {
+        }catch (Error& e) {
             PyErr_SetString(PyExc_Exception,e.what());
             return NULL;
         }catch (std::exception& e) {
@@ -14590,10 +15900,10 @@ static PyObject *_wrap_DividendEuropeanOption_impliedVolatility(PyObject *self, 
         try {
             result = (double )arg0->impliedVolatility(arg1,arg2,arg3);
             
-        }catch (QuantLib::IndexError& e) {
+        }catch (IndexError& e) {
             PyErr_SetString(PyExc_IndexError,e.what());
             return NULL;
-        }catch (QuantLib::Error& e) {
+        }catch (Error& e) {
             PyErr_SetString(PyExc_Exception,e.what());
             return NULL;
         }catch (std::exception& e) {
@@ -14669,10 +15979,10 @@ static PyObject *_wrap_new_BarrierOption(PyObject *self, PyObject *args, PyObjec
         try {
             result = (BarrierOption *)new BarrierOption(*arg0,*arg1,arg2,arg3,arg4,arg5,arg6,arg7,arg8,arg9);
             
-        }catch (QuantLib::IndexError& e) {
+        }catch (IndexError& e) {
             PyErr_SetString(PyExc_IndexError,e.what());
             return NULL;
-        }catch (QuantLib::Error& e) {
+        }catch (Error& e) {
             PyErr_SetString(PyExc_Exception,e.what());
             return NULL;
         }catch (std::exception& e) {
@@ -14707,10 +16017,10 @@ static PyObject *_wrap_delete_BarrierOption(PyObject *self, PyObject *args, PyOb
         try {
             delete arg0;
             
-        }catch (QuantLib::IndexError& e) {
+        }catch (IndexError& e) {
             PyErr_SetString(PyExc_IndexError,e.what());
             return NULL;
-        }catch (QuantLib::Error& e) {
+        }catch (Error& e) {
             PyErr_SetString(PyExc_Exception,e.what());
             return NULL;
         }catch (std::exception& e) {
@@ -14741,10 +16051,10 @@ static PyObject *_wrap_BarrierOption_value(PyObject *self, PyObject *args, PyObj
         try {
             result = (double )arg0->value();
             
-        }catch (QuantLib::IndexError& e) {
+        }catch (IndexError& e) {
             PyErr_SetString(PyExc_IndexError,e.what());
             return NULL;
-        }catch (QuantLib::Error& e) {
+        }catch (Error& e) {
             PyErr_SetString(PyExc_Exception,e.what());
             return NULL;
         }catch (std::exception& e) {
@@ -14772,10 +16082,10 @@ static PyObject *_wrap_new_UniformRandomGenerator(PyObject *self, PyObject *args
         try {
             result = (UniformRandomGenerator *)new UniformRandomGenerator(arg0);
             
-        }catch (QuantLib::IndexError& e) {
+        }catch (IndexError& e) {
             PyErr_SetString(PyExc_IndexError,e.what());
             return NULL;
-        }catch (QuantLib::Error& e) {
+        }catch (Error& e) {
             PyErr_SetString(PyExc_Exception,e.what());
             return NULL;
         }catch (std::exception& e) {
@@ -14804,10 +16114,10 @@ static PyObject *_wrap_delete_UniformRandomGenerator(PyObject *self, PyObject *a
         try {
             delete arg0;
             
-        }catch (QuantLib::IndexError& e) {
+        }catch (IndexError& e) {
             PyErr_SetString(PyExc_IndexError,e.what());
             return NULL;
-        }catch (QuantLib::Error& e) {
+        }catch (Error& e) {
             PyErr_SetString(PyExc_Exception,e.what());
             return NULL;
         }catch (std::exception& e) {
@@ -14838,10 +16148,10 @@ static PyObject *_wrap_UniformRandomGenerator_next(PyObject *self, PyObject *arg
         try {
             result = (double )arg0->next();
             
-        }catch (QuantLib::IndexError& e) {
+        }catch (IndexError& e) {
             PyErr_SetString(PyExc_IndexError,e.what());
             return NULL;
-        }catch (QuantLib::Error& e) {
+        }catch (Error& e) {
             PyErr_SetString(PyExc_Exception,e.what());
             return NULL;
         }catch (std::exception& e) {
@@ -14871,10 +16181,10 @@ static PyObject *_wrap_UniformRandomGenerator_weight(PyObject *self, PyObject *a
         try {
             result = (double )arg0->weight();
             
-        }catch (QuantLib::IndexError& e) {
+        }catch (IndexError& e) {
             PyErr_SetString(PyExc_IndexError,e.what());
             return NULL;
-        }catch (QuantLib::Error& e) {
+        }catch (Error& e) {
             PyErr_SetString(PyExc_Exception,e.what());
             return NULL;
         }catch (std::exception& e) {
@@ -14902,10 +16212,10 @@ static PyObject *_wrap_new_GaussianRandomGenerator(PyObject *self, PyObject *arg
         try {
             result = (GaussianRandomGenerator *)new GaussianRandomGenerator(arg0);
             
-        }catch (QuantLib::IndexError& e) {
+        }catch (IndexError& e) {
             PyErr_SetString(PyExc_IndexError,e.what());
             return NULL;
-        }catch (QuantLib::Error& e) {
+        }catch (Error& e) {
             PyErr_SetString(PyExc_Exception,e.what());
             return NULL;
         }catch (std::exception& e) {
@@ -14934,10 +16244,10 @@ static PyObject *_wrap_delete_GaussianRandomGenerator(PyObject *self, PyObject *
         try {
             delete arg0;
             
-        }catch (QuantLib::IndexError& e) {
+        }catch (IndexError& e) {
             PyErr_SetString(PyExc_IndexError,e.what());
             return NULL;
-        }catch (QuantLib::Error& e) {
+        }catch (Error& e) {
             PyErr_SetString(PyExc_Exception,e.what());
             return NULL;
         }catch (std::exception& e) {
@@ -14968,10 +16278,10 @@ static PyObject *_wrap_GaussianRandomGenerator_next(PyObject *self, PyObject *ar
         try {
             result = (double )arg0->next();
             
-        }catch (QuantLib::IndexError& e) {
+        }catch (IndexError& e) {
             PyErr_SetString(PyExc_IndexError,e.what());
             return NULL;
-        }catch (QuantLib::Error& e) {
+        }catch (Error& e) {
             PyErr_SetString(PyExc_Exception,e.what());
             return NULL;
         }catch (std::exception& e) {
@@ -15001,10 +16311,10 @@ static PyObject *_wrap_GaussianRandomGenerator_weight(PyObject *self, PyObject *
         try {
             result = (double )arg0->weight();
             
-        }catch (QuantLib::IndexError& e) {
+        }catch (IndexError& e) {
             PyErr_SetString(PyExc_IndexError,e.what());
             return NULL;
-        }catch (QuantLib::Error& e) {
+        }catch (Error& e) {
             PyErr_SetString(PyExc_Exception,e.what());
             return NULL;
         }catch (std::exception& e) {
@@ -15031,10 +16341,10 @@ static PyObject *_wrap_new_VarTool(PyObject *self, PyObject *args, PyObject *kwa
         try {
             result = (VarTool *)new VarTool();
             
-        }catch (QuantLib::IndexError& e) {
+        }catch (IndexError& e) {
             PyErr_SetString(PyExc_IndexError,e.what());
             return NULL;
-        }catch (QuantLib::Error& e) {
+        }catch (Error& e) {
             PyErr_SetString(PyExc_Exception,e.what());
             return NULL;
         }catch (std::exception& e) {
@@ -15067,10 +16377,10 @@ static PyObject *_wrap_VarTool_valueAtRisk(PyObject *self, PyObject *args, PyObj
         try {
             result = (double )arg0->valueAtRisk(arg1,arg2,arg3);
             
-        }catch (QuantLib::IndexError& e) {
+        }catch (IndexError& e) {
             PyErr_SetString(PyExc_IndexError,e.what());
             return NULL;
-        }catch (QuantLib::Error& e) {
+        }catch (Error& e) {
             PyErr_SetString(PyExc_Exception,e.what());
             return NULL;
         }catch (std::exception& e) {
@@ -15103,10 +16413,10 @@ static PyObject *_wrap_VarTool_shortfall(PyObject *self, PyObject *args, PyObjec
         try {
             result = (double )arg0->shortfall(arg1,arg2,arg3);
             
-        }catch (QuantLib::IndexError& e) {
+        }catch (IndexError& e) {
             PyErr_SetString(PyExc_IndexError,e.what());
             return NULL;
-        }catch (QuantLib::Error& e) {
+        }catch (Error& e) {
             PyErr_SetString(PyExc_Exception,e.what());
             return NULL;
         }catch (std::exception& e) {
@@ -15139,10 +16449,10 @@ static PyObject *_wrap_VarTool_averageShortfall(PyObject *self, PyObject *args, 
         try {
             result = (double )arg0->averageShortfall(arg1,arg2,arg3);
             
-        }catch (QuantLib::IndexError& e) {
+        }catch (IndexError& e) {
             PyErr_SetString(PyExc_IndexError,e.what());
             return NULL;
-        }catch (QuantLib::Error& e) {
+        }catch (Error& e) {
             PyErr_SetString(PyExc_Exception,e.what());
             return NULL;
         }catch (std::exception& e) {
@@ -15169,10 +16479,10 @@ static PyObject *_wrap_new_RiskStatistics(PyObject *self, PyObject *args, PyObje
         try {
             result = (RiskStatistics *)new RiskStatistics();
             
-        }catch (QuantLib::IndexError& e) {
+        }catch (IndexError& e) {
             PyErr_SetString(PyExc_IndexError,e.what());
             return NULL;
-        }catch (QuantLib::Error& e) {
+        }catch (Error& e) {
             PyErr_SetString(PyExc_Exception,e.what());
             return NULL;
         }catch (std::exception& e) {
@@ -15201,10 +16511,10 @@ static PyObject *_wrap_delete_RiskStatistics(PyObject *self, PyObject *args, PyO
         try {
             delete arg0;
             
-        }catch (QuantLib::IndexError& e) {
+        }catch (IndexError& e) {
             PyErr_SetString(PyExc_IndexError,e.what());
             return NULL;
-        }catch (QuantLib::Error& e) {
+        }catch (Error& e) {
             PyErr_SetString(PyExc_Exception,e.what());
             return NULL;
         }catch (std::exception& e) {
@@ -15235,10 +16545,10 @@ static PyObject *_wrap_RiskStatistics_samples(PyObject *self, PyObject *args, Py
         try {
             result = (int )arg0->samples();
             
-        }catch (QuantLib::IndexError& e) {
+        }catch (IndexError& e) {
             PyErr_SetString(PyExc_IndexError,e.what());
             return NULL;
-        }catch (QuantLib::Error& e) {
+        }catch (Error& e) {
             PyErr_SetString(PyExc_Exception,e.what());
             return NULL;
         }catch (std::exception& e) {
@@ -15268,10 +16578,10 @@ static PyObject *_wrap_RiskStatistics_weightSum(PyObject *self, PyObject *args, 
         try {
             result = (double )arg0->weightSum();
             
-        }catch (QuantLib::IndexError& e) {
+        }catch (IndexError& e) {
             PyErr_SetString(PyExc_IndexError,e.what());
             return NULL;
-        }catch (QuantLib::Error& e) {
+        }catch (Error& e) {
             PyErr_SetString(PyExc_Exception,e.what());
             return NULL;
         }catch (std::exception& e) {
@@ -15301,10 +16611,10 @@ static PyObject *_wrap_RiskStatistics_mean(PyObject *self, PyObject *args, PyObj
         try {
             result = (double )arg0->mean();
             
-        }catch (QuantLib::IndexError& e) {
+        }catch (IndexError& e) {
             PyErr_SetString(PyExc_IndexError,e.what());
             return NULL;
-        }catch (QuantLib::Error& e) {
+        }catch (Error& e) {
             PyErr_SetString(PyExc_Exception,e.what());
             return NULL;
         }catch (std::exception& e) {
@@ -15334,10 +16644,10 @@ static PyObject *_wrap_RiskStatistics_variance(PyObject *self, PyObject *args, P
         try {
             result = (double )arg0->variance();
             
-        }catch (QuantLib::IndexError& e) {
+        }catch (IndexError& e) {
             PyErr_SetString(PyExc_IndexError,e.what());
             return NULL;
-        }catch (QuantLib::Error& e) {
+        }catch (Error& e) {
             PyErr_SetString(PyExc_Exception,e.what());
             return NULL;
         }catch (std::exception& e) {
@@ -15367,10 +16677,10 @@ static PyObject *_wrap_RiskStatistics_standardDeviation(PyObject *self, PyObject
         try {
             result = (double )arg0->standardDeviation();
             
-        }catch (QuantLib::IndexError& e) {
+        }catch (IndexError& e) {
             PyErr_SetString(PyExc_IndexError,e.what());
             return NULL;
-        }catch (QuantLib::Error& e) {
+        }catch (Error& e) {
             PyErr_SetString(PyExc_Exception,e.what());
             return NULL;
         }catch (std::exception& e) {
@@ -15400,10 +16710,10 @@ static PyObject *_wrap_RiskStatistics_errorEstimate(PyObject *self, PyObject *ar
         try {
             result = (double )arg0->errorEstimate();
             
-        }catch (QuantLib::IndexError& e) {
+        }catch (IndexError& e) {
             PyErr_SetString(PyExc_IndexError,e.what());
             return NULL;
-        }catch (QuantLib::Error& e) {
+        }catch (Error& e) {
             PyErr_SetString(PyExc_Exception,e.what());
             return NULL;
         }catch (std::exception& e) {
@@ -15433,10 +16743,10 @@ static PyObject *_wrap_RiskStatistics_skewness(PyObject *self, PyObject *args, P
         try {
             result = (double )arg0->skewness();
             
-        }catch (QuantLib::IndexError& e) {
+        }catch (IndexError& e) {
             PyErr_SetString(PyExc_IndexError,e.what());
             return NULL;
-        }catch (QuantLib::Error& e) {
+        }catch (Error& e) {
             PyErr_SetString(PyExc_Exception,e.what());
             return NULL;
         }catch (std::exception& e) {
@@ -15466,10 +16776,10 @@ static PyObject *_wrap_RiskStatistics_kurtosis(PyObject *self, PyObject *args, P
         try {
             result = (double )arg0->kurtosis();
             
-        }catch (QuantLib::IndexError& e) {
+        }catch (IndexError& e) {
             PyErr_SetString(PyExc_IndexError,e.what());
             return NULL;
-        }catch (QuantLib::Error& e) {
+        }catch (Error& e) {
             PyErr_SetString(PyExc_Exception,e.what());
             return NULL;
         }catch (std::exception& e) {
@@ -15499,10 +16809,10 @@ static PyObject *_wrap_RiskStatistics_min(PyObject *self, PyObject *args, PyObje
         try {
             result = (double )arg0->min();
             
-        }catch (QuantLib::IndexError& e) {
+        }catch (IndexError& e) {
             PyErr_SetString(PyExc_IndexError,e.what());
             return NULL;
-        }catch (QuantLib::Error& e) {
+        }catch (Error& e) {
             PyErr_SetString(PyExc_Exception,e.what());
             return NULL;
         }catch (std::exception& e) {
@@ -15532,10 +16842,10 @@ static PyObject *_wrap_RiskStatistics_max(PyObject *self, PyObject *args, PyObje
         try {
             result = (double )arg0->max();
             
-        }catch (QuantLib::IndexError& e) {
+        }catch (IndexError& e) {
             PyErr_SetString(PyExc_IndexError,e.what());
             return NULL;
-        }catch (QuantLib::Error& e) {
+        }catch (Error& e) {
             PyErr_SetString(PyExc_Exception,e.what());
             return NULL;
         }catch (std::exception& e) {
@@ -15566,10 +16876,10 @@ static PyObject *_wrap_RiskStatistics_valueAtRisk(PyObject *self, PyObject *args
         try {
             result = (double )arg0->valueAtRisk(arg1);
             
-        }catch (QuantLib::IndexError& e) {
+        }catch (IndexError& e) {
             PyErr_SetString(PyExc_IndexError,e.what());
             return NULL;
-        }catch (QuantLib::Error& e) {
+        }catch (Error& e) {
             PyErr_SetString(PyExc_Exception,e.what());
             return NULL;
         }catch (std::exception& e) {
@@ -15600,10 +16910,10 @@ static PyObject *_wrap_RiskStatistics_shortfall(PyObject *self, PyObject *args, 
         try {
             result = (double )arg0->shortfall(arg1);
             
-        }catch (QuantLib::IndexError& e) {
+        }catch (IndexError& e) {
             PyErr_SetString(PyExc_IndexError,e.what());
             return NULL;
-        }catch (QuantLib::Error& e) {
+        }catch (Error& e) {
             PyErr_SetString(PyExc_Exception,e.what());
             return NULL;
         }catch (std::exception& e) {
@@ -15634,10 +16944,10 @@ static PyObject *_wrap_RiskStatistics_averageShortfall(PyObject *self, PyObject 
         try {
             result = (double )arg0->averageShortfall(arg1);
             
-        }catch (QuantLib::IndexError& e) {
+        }catch (IndexError& e) {
             PyErr_SetString(PyExc_IndexError,e.what());
             return NULL;
-        }catch (QuantLib::Error& e) {
+        }catch (Error& e) {
             PyErr_SetString(PyExc_Exception,e.what());
             return NULL;
         }catch (std::exception& e) {
@@ -15668,10 +16978,10 @@ static PyObject *_wrap_RiskStatistics_add(PyObject *self, PyObject *args, PyObje
         try {
             arg0->add(arg1,arg2);
             
-        }catch (QuantLib::IndexError& e) {
+        }catch (IndexError& e) {
             PyErr_SetString(PyExc_IndexError,e.what());
             return NULL;
-        }catch (QuantLib::Error& e) {
+        }catch (Error& e) {
             PyErr_SetString(PyExc_Exception,e.what());
             return NULL;
         }catch (std::exception& e) {
@@ -15701,10 +17011,10 @@ static PyObject *_wrap_RiskStatistics_reset(PyObject *self, PyObject *args, PyOb
         try {
             arg0->reset();
             
-        }catch (QuantLib::IndexError& e) {
+        }catch (IndexError& e) {
             PyErr_SetString(PyExc_IndexError,e.what());
             return NULL;
-        }catch (QuantLib::Error& e) {
+        }catch (Error& e) {
             PyErr_SetString(PyExc_Exception,e.what());
             return NULL;
         }catch (std::exception& e) {
@@ -15732,6 +17042,7 @@ static PyObject *_wrap_RiskStatistics_addSequence(PyObject *self, PyObject *args
     RiskStatistics *arg0 ;
     DoubleVector *arg1 ;
     PyObject * argo0 =0 ;
+    DoubleVector temp ;
     PyObject * obj1  = 0 ;
     char *kwnames[] = {
         "self","values", NULL 
@@ -15740,42 +17051,31 @@ static PyObject *_wrap_RiskStatistics_addSequence(PyObject *self, PyObject *args
     if(!PyArg_ParseTupleAndKeywords(args,kwargs,"OO:RiskStatistics_addSequence",kwnames,&argo0,&obj1)) return NULL;
     if ((SWIG_ConvertPtr(argo0,(void **) &arg0,SWIGTYPE_p_RiskStatistics,1)) == -1) return NULL;
     {
-        if (PyTuple_Check(obj1)) {
-            int size = PyTuple_Size(obj1);
-            arg1 = new DoubleVector(size);
+        DoubleVector* v;
+        if (PyTuple_Check(obj1) || PyList_Check(obj1)) {
+            int size = (PyTuple_Check(obj1) ? 
+            PyTuple_Size(obj1) :
+            PyList_Size(obj1));
+            temp = DoubleVector(size);
+            arg1 = &temp;
             for (int i=0; i<size; i++) {
-                PyObject* o = PyTuple_GetItem(obj1,i);
-                if (PyFloat_Check(o)) {
+                PyObject* o = PySequence_GetItem(obj1,i);
+                if (o == Py_None) {
+                    (*arg1)[i] = Null<double>();
+                }else if (PyFloat_Check(o)) {
                     (*arg1)[i] = PyFloat_AsDouble(o);
                 }else if (PyInt_Check(o)) {
                     (*arg1)[i] = double(PyInt_AsLong(o));
-                }else if (o == Py_None) {
-                    (*arg1)[i] = Null<double>();
                 }else {
-                    PyErr_SetString(PyExc_TypeError,"tuple must contain doubles");
-                    delete arg1;
+                    PyErr_SetString(PyExc_TypeError,"doubles expected");
                     return NULL;
                 }
             }
-        }else if (PyList_Check(obj1)) {
-            int size = PyList_Size(obj1);
-            arg1 = new DoubleVector(size);
-            for (int i=0; i<size; i++) {
-                PyObject* o = PyList_GetItem(obj1,i);
-                if (PyFloat_Check(o)) {
-                    (*arg1)[i] = PyFloat_AsDouble(o);
-                }else if (PyInt_Check(o)) {
-                    (*arg1)[i] = double(PyInt_AsLong(o));
-                }else if (o == Py_None) {
-                    (*arg1)[i] = Null<double>();
-                }else {
-                    PyErr_SetString(PyExc_TypeError,"list must contain doubles");
-                    delete arg1;
-                    return NULL;
-                }
-            }
+        }else if ((SWIG_ConvertPtr(obj1,(void **) &v,
+        (swig_type_info *)SWIG_TypeQuery("DoubleVector *"),0)) != -1) {
+            arg1 = v;
         }else {
-            PyErr_SetString(PyExc_TypeError,"not a sequence");
+            PyErr_SetString(PyExc_TypeError,"DoubleVector expected");
             return NULL;
         }
     }
@@ -15783,10 +17083,10 @@ static PyObject *_wrap_RiskStatistics_addSequence(PyObject *self, PyObject *args
         try {
             RiskStatistics_addSequence(arg0,*arg1);
             
-        }catch (QuantLib::IndexError& e) {
+        }catch (IndexError& e) {
             PyErr_SetString(PyExc_IndexError,e.what());
             return NULL;
-        }catch (QuantLib::Error& e) {
+        }catch (Error& e) {
             PyErr_SetString(PyExc_Exception,e.what());
             return NULL;
         }catch (std::exception& e) {
@@ -15798,9 +17098,6 @@ static PyObject *_wrap_RiskStatistics_addSequence(PyObject *self, PyObject *args
         }
     }Py_INCREF(Py_None);
     resultobj = Py_None;
-    {
-        delete arg1;
-    }
     return resultobj;
 }
 
@@ -15818,7 +17115,9 @@ static PyObject *_wrap_RiskStatistics_addWeightedSequence(PyObject *self, PyObje
     DoubleVector *arg1 ;
     DoubleVector *arg2 ;
     PyObject * argo0 =0 ;
+    DoubleVector temp ;
     PyObject * obj1  = 0 ;
+    DoubleVector temp0 ;
     PyObject * obj2  = 0 ;
     char *kwnames[] = {
         "self","values","weights", NULL 
@@ -15827,82 +17126,60 @@ static PyObject *_wrap_RiskStatistics_addWeightedSequence(PyObject *self, PyObje
     if(!PyArg_ParseTupleAndKeywords(args,kwargs,"OOO:RiskStatistics_addWeightedSequence",kwnames,&argo0,&obj1,&obj2)) return NULL;
     if ((SWIG_ConvertPtr(argo0,(void **) &arg0,SWIGTYPE_p_RiskStatistics,1)) == -1) return NULL;
     {
-        if (PyTuple_Check(obj1)) {
-            int size = PyTuple_Size(obj1);
-            arg1 = new DoubleVector(size);
+        DoubleVector* v;
+        if (PyTuple_Check(obj1) || PyList_Check(obj1)) {
+            int size = (PyTuple_Check(obj1) ? 
+            PyTuple_Size(obj1) :
+            PyList_Size(obj1));
+            temp = DoubleVector(size);
+            arg1 = &temp;
             for (int i=0; i<size; i++) {
-                PyObject* o = PyTuple_GetItem(obj1,i);
-                if (PyFloat_Check(o)) {
+                PyObject* o = PySequence_GetItem(obj1,i);
+                if (o == Py_None) {
+                    (*arg1)[i] = Null<double>();
+                }else if (PyFloat_Check(o)) {
                     (*arg1)[i] = PyFloat_AsDouble(o);
                 }else if (PyInt_Check(o)) {
                     (*arg1)[i] = double(PyInt_AsLong(o));
-                }else if (o == Py_None) {
-                    (*arg1)[i] = Null<double>();
                 }else {
-                    PyErr_SetString(PyExc_TypeError,"tuple must contain doubles");
-                    delete arg1;
+                    PyErr_SetString(PyExc_TypeError,"doubles expected");
                     return NULL;
                 }
             }
-        }else if (PyList_Check(obj1)) {
-            int size = PyList_Size(obj1);
-            arg1 = new DoubleVector(size);
-            for (int i=0; i<size; i++) {
-                PyObject* o = PyList_GetItem(obj1,i);
-                if (PyFloat_Check(o)) {
-                    (*arg1)[i] = PyFloat_AsDouble(o);
-                }else if (PyInt_Check(o)) {
-                    (*arg1)[i] = double(PyInt_AsLong(o));
-                }else if (o == Py_None) {
-                    (*arg1)[i] = Null<double>();
-                }else {
-                    PyErr_SetString(PyExc_TypeError,"list must contain doubles");
-                    delete arg1;
-                    return NULL;
-                }
-            }
+        }else if ((SWIG_ConvertPtr(obj1,(void **) &v,
+        (swig_type_info *)SWIG_TypeQuery("DoubleVector *"),0)) != -1) {
+            arg1 = v;
         }else {
-            PyErr_SetString(PyExc_TypeError,"not a sequence");
+            PyErr_SetString(PyExc_TypeError,"DoubleVector expected");
             return NULL;
         }
     }
     {
-        if (PyTuple_Check(obj2)) {
-            int size = PyTuple_Size(obj2);
-            arg2 = new DoubleVector(size);
+        DoubleVector* v;
+        if (PyTuple_Check(obj2) || PyList_Check(obj2)) {
+            int size = (PyTuple_Check(obj2) ? 
+            PyTuple_Size(obj2) :
+            PyList_Size(obj2));
+            temp0 = DoubleVector(size);
+            arg2 = &temp0;
             for (int i=0; i<size; i++) {
-                PyObject* o = PyTuple_GetItem(obj2,i);
-                if (PyFloat_Check(o)) {
+                PyObject* o = PySequence_GetItem(obj2,i);
+                if (o == Py_None) {
+                    (*arg2)[i] = Null<double>();
+                }else if (PyFloat_Check(o)) {
                     (*arg2)[i] = PyFloat_AsDouble(o);
                 }else if (PyInt_Check(o)) {
                     (*arg2)[i] = double(PyInt_AsLong(o));
-                }else if (o == Py_None) {
-                    (*arg2)[i] = Null<double>();
                 }else {
-                    PyErr_SetString(PyExc_TypeError,"tuple must contain doubles");
-                    delete arg2;
+                    PyErr_SetString(PyExc_TypeError,"doubles expected");
                     return NULL;
                 }
             }
-        }else if (PyList_Check(obj2)) {
-            int size = PyList_Size(obj2);
-            arg2 = new DoubleVector(size);
-            for (int i=0; i<size; i++) {
-                PyObject* o = PyList_GetItem(obj2,i);
-                if (PyFloat_Check(o)) {
-                    (*arg2)[i] = PyFloat_AsDouble(o);
-                }else if (PyInt_Check(o)) {
-                    (*arg2)[i] = double(PyInt_AsLong(o));
-                }else if (o == Py_None) {
-                    (*arg2)[i] = Null<double>();
-                }else {
-                    PyErr_SetString(PyExc_TypeError,"list must contain doubles");
-                    delete arg2;
-                    return NULL;
-                }
-            }
+        }else if ((SWIG_ConvertPtr(obj2,(void **) &v,
+        (swig_type_info *)SWIG_TypeQuery("DoubleVector *"),0)) != -1) {
+            arg2 = v;
         }else {
-            PyErr_SetString(PyExc_TypeError,"not a sequence");
+            PyErr_SetString(PyExc_TypeError,"DoubleVector expected");
             return NULL;
         }
     }
@@ -15910,10 +17187,10 @@ static PyObject *_wrap_RiskStatistics_addWeightedSequence(PyObject *self, PyObje
         try {
             RiskStatistics_addWeightedSequence(arg0,*arg1,*arg2);
             
-        }catch (QuantLib::IndexError& e) {
+        }catch (IndexError& e) {
             PyErr_SetString(PyExc_IndexError,e.what());
             return NULL;
-        }catch (QuantLib::Error& e) {
+        }catch (Error& e) {
             PyErr_SetString(PyExc_Exception,e.what());
             return NULL;
         }catch (std::exception& e) {
@@ -15925,12 +17202,6 @@ static PyObject *_wrap_RiskStatistics_addWeightedSequence(PyObject *self, PyObje
         }
     }Py_INCREF(Py_None);
     resultobj = Py_None;
-    {
-        delete arg1;
-    }
-    {
-        delete arg2;
-    }
     return resultobj;
 }
 
@@ -15951,10 +17222,10 @@ static PyObject *_wrap_ObjectiveFunction_value(PyObject *self, PyObject *args, P
         try {
             result = (double )arg0->value(arg1);
             
-        }catch (QuantLib::IndexError& e) {
+        }catch (IndexError& e) {
             PyErr_SetString(PyExc_IndexError,e.what());
             return NULL;
-        }catch (QuantLib::Error& e) {
+        }catch (Error& e) {
             PyErr_SetString(PyExc_Exception,e.what());
             return NULL;
         }catch (std::exception& e) {
@@ -15985,10 +17256,10 @@ static PyObject *_wrap_ObjectiveFunction_derivative(PyObject *self, PyObject *ar
         try {
             result = (double )arg0->derivative(arg1);
             
-        }catch (QuantLib::IndexError& e) {
+        }catch (IndexError& e) {
             PyErr_SetString(PyExc_IndexError,e.what());
             return NULL;
-        }catch (QuantLib::Error& e) {
+        }catch (Error& e) {
             PyErr_SetString(PyExc_Exception,e.what());
             return NULL;
         }catch (std::exception& e) {
@@ -16024,10 +17295,10 @@ static PyObject *_wrap_Solver1D_solve(PyObject *self, PyObject *args, PyObject *
         try {
             result = (double )arg0->solve((ObjectiveFunction const &)*arg1,arg2,arg3,arg4);
             
-        }catch (QuantLib::IndexError& e) {
+        }catch (IndexError& e) {
             PyErr_SetString(PyExc_IndexError,e.what());
             return NULL;
-        }catch (QuantLib::Error& e) {
+        }catch (Error& e) {
             PyErr_SetString(PyExc_Exception,e.what());
             return NULL;
         }catch (std::exception& e) {
@@ -16064,10 +17335,10 @@ static PyObject *_wrap_Solver1D_bracketedSolve(PyObject *self, PyObject *args, P
         try {
             result = (double )arg0->solve((ObjectiveFunction const &)*arg1,arg2,arg3,arg4,arg5);
             
-        }catch (QuantLib::IndexError& e) {
+        }catch (IndexError& e) {
             PyErr_SetString(PyExc_IndexError,e.what());
             return NULL;
-        }catch (QuantLib::Error& e) {
+        }catch (Error& e) {
             PyErr_SetString(PyExc_Exception,e.what());
             return NULL;
         }catch (std::exception& e) {
@@ -16097,10 +17368,10 @@ static PyObject *_wrap_Solver1D_setMaxEvaluations(PyObject *self, PyObject *args
         try {
             arg0->setMaxEvaluations(arg1);
             
-        }catch (QuantLib::IndexError& e) {
+        }catch (IndexError& e) {
             PyErr_SetString(PyExc_IndexError,e.what());
             return NULL;
-        }catch (QuantLib::Error& e) {
+        }catch (Error& e) {
             PyErr_SetString(PyExc_Exception,e.what());
             return NULL;
         }catch (std::exception& e) {
@@ -16147,10 +17418,10 @@ static PyObject *_wrap_Solver1D_pySolve(PyObject *self, PyObject *args, PyObject
         try {
             result = (double )Solver1D_pySolve(arg0,arg1,arg2,arg3,arg4);
             
-        }catch (QuantLib::IndexError& e) {
+        }catch (IndexError& e) {
             PyErr_SetString(PyExc_IndexError,e.what());
             return NULL;
-        }catch (QuantLib::Error& e) {
+        }catch (Error& e) {
             PyErr_SetString(PyExc_Exception,e.what());
             return NULL;
         }catch (std::exception& e) {
@@ -16197,10 +17468,10 @@ static PyObject *_wrap_Solver1D_pyBracketedSolve(PyObject *self, PyObject *args,
         try {
             result = (double )Solver1D_pyBracketedSolve(arg0,arg1,arg2,arg3,arg4,arg5);
             
-        }catch (QuantLib::IndexError& e) {
+        }catch (IndexError& e) {
             PyErr_SetString(PyExc_IndexError,e.what());
             return NULL;
-        }catch (QuantLib::Error& e) {
+        }catch (Error& e) {
             PyErr_SetString(PyExc_Exception,e.what());
             return NULL;
         }catch (std::exception& e) {
@@ -16227,10 +17498,10 @@ static PyObject *_wrap_new_Bisection(PyObject *self, PyObject *args, PyObject *k
         try {
             result = (Bisection *)new Bisection();
             
-        }catch (QuantLib::IndexError& e) {
+        }catch (IndexError& e) {
             PyErr_SetString(PyExc_IndexError,e.what());
             return NULL;
-        }catch (QuantLib::Error& e) {
+        }catch (Error& e) {
             PyErr_SetString(PyExc_Exception,e.what());
             return NULL;
         }catch (std::exception& e) {
@@ -16259,10 +17530,10 @@ static PyObject *_wrap_delete_Bisection(PyObject *self, PyObject *args, PyObject
         try {
             delete arg0;
             
-        }catch (QuantLib::IndexError& e) {
+        }catch (IndexError& e) {
             PyErr_SetString(PyExc_IndexError,e.what());
             return NULL;
-        }catch (QuantLib::Error& e) {
+        }catch (Error& e) {
             PyErr_SetString(PyExc_Exception,e.what());
             return NULL;
         }catch (std::exception& e) {
@@ -16290,10 +17561,10 @@ static PyObject *_wrap_new_Brent(PyObject *self, PyObject *args, PyObject *kwarg
         try {
             result = (Brent *)new Brent();
             
-        }catch (QuantLib::IndexError& e) {
+        }catch (IndexError& e) {
             PyErr_SetString(PyExc_IndexError,e.what());
             return NULL;
-        }catch (QuantLib::Error& e) {
+        }catch (Error& e) {
             PyErr_SetString(PyExc_Exception,e.what());
             return NULL;
         }catch (std::exception& e) {
@@ -16322,10 +17593,10 @@ static PyObject *_wrap_delete_Brent(PyObject *self, PyObject *args, PyObject *kw
         try {
             delete arg0;
             
-        }catch (QuantLib::IndexError& e) {
+        }catch (IndexError& e) {
             PyErr_SetString(PyExc_IndexError,e.what());
             return NULL;
-        }catch (QuantLib::Error& e) {
+        }catch (Error& e) {
             PyErr_SetString(PyExc_Exception,e.what());
             return NULL;
         }catch (std::exception& e) {
@@ -16353,10 +17624,10 @@ static PyObject *_wrap_new_FalsePosition(PyObject *self, PyObject *args, PyObjec
         try {
             result = (FalsePosition *)new FalsePosition();
             
-        }catch (QuantLib::IndexError& e) {
+        }catch (IndexError& e) {
             PyErr_SetString(PyExc_IndexError,e.what());
             return NULL;
-        }catch (QuantLib::Error& e) {
+        }catch (Error& e) {
             PyErr_SetString(PyExc_Exception,e.what());
             return NULL;
         }catch (std::exception& e) {
@@ -16385,10 +17656,10 @@ static PyObject *_wrap_delete_FalsePosition(PyObject *self, PyObject *args, PyOb
         try {
             delete arg0;
             
-        }catch (QuantLib::IndexError& e) {
+        }catch (IndexError& e) {
             PyErr_SetString(PyExc_IndexError,e.what());
             return NULL;
-        }catch (QuantLib::Error& e) {
+        }catch (Error& e) {
             PyErr_SetString(PyExc_Exception,e.what());
             return NULL;
         }catch (std::exception& e) {
@@ -16416,10 +17687,10 @@ static PyObject *_wrap_new_Newton(PyObject *self, PyObject *args, PyObject *kwar
         try {
             result = (Newton *)new Newton();
             
-        }catch (QuantLib::IndexError& e) {
+        }catch (IndexError& e) {
             PyErr_SetString(PyExc_IndexError,e.what());
             return NULL;
-        }catch (QuantLib::Error& e) {
+        }catch (Error& e) {
             PyErr_SetString(PyExc_Exception,e.what());
             return NULL;
         }catch (std::exception& e) {
@@ -16448,10 +17719,10 @@ static PyObject *_wrap_delete_Newton(PyObject *self, PyObject *args, PyObject *k
         try {
             delete arg0;
             
-        }catch (QuantLib::IndexError& e) {
+        }catch (IndexError& e) {
             PyErr_SetString(PyExc_IndexError,e.what());
             return NULL;
-        }catch (QuantLib::Error& e) {
+        }catch (Error& e) {
             PyErr_SetString(PyExc_Exception,e.what());
             return NULL;
         }catch (std::exception& e) {
@@ -16479,10 +17750,10 @@ static PyObject *_wrap_new_NewtonSafe(PyObject *self, PyObject *args, PyObject *
         try {
             result = (NewtonSafe *)new NewtonSafe();
             
-        }catch (QuantLib::IndexError& e) {
+        }catch (IndexError& e) {
             PyErr_SetString(PyExc_IndexError,e.what());
             return NULL;
-        }catch (QuantLib::Error& e) {
+        }catch (Error& e) {
             PyErr_SetString(PyExc_Exception,e.what());
             return NULL;
         }catch (std::exception& e) {
@@ -16511,10 +17782,10 @@ static PyObject *_wrap_delete_NewtonSafe(PyObject *self, PyObject *args, PyObjec
         try {
             delete arg0;
             
-        }catch (QuantLib::IndexError& e) {
+        }catch (IndexError& e) {
             PyErr_SetString(PyExc_IndexError,e.what());
             return NULL;
-        }catch (QuantLib::Error& e) {
+        }catch (Error& e) {
             PyErr_SetString(PyExc_Exception,e.what());
             return NULL;
         }catch (std::exception& e) {
@@ -16542,10 +17813,10 @@ static PyObject *_wrap_new_Ridder(PyObject *self, PyObject *args, PyObject *kwar
         try {
             result = (Ridder *)new Ridder();
             
-        }catch (QuantLib::IndexError& e) {
+        }catch (IndexError& e) {
             PyErr_SetString(PyExc_IndexError,e.what());
             return NULL;
-        }catch (QuantLib::Error& e) {
+        }catch (Error& e) {
             PyErr_SetString(PyExc_Exception,e.what());
             return NULL;
         }catch (std::exception& e) {
@@ -16574,10 +17845,10 @@ static PyObject *_wrap_delete_Ridder(PyObject *self, PyObject *args, PyObject *k
         try {
             delete arg0;
             
-        }catch (QuantLib::IndexError& e) {
+        }catch (IndexError& e) {
             PyErr_SetString(PyExc_IndexError,e.what());
             return NULL;
-        }catch (QuantLib::Error& e) {
+        }catch (Error& e) {
             PyErr_SetString(PyExc_Exception,e.what());
             return NULL;
         }catch (std::exception& e) {
@@ -16605,10 +17876,10 @@ static PyObject *_wrap_new_Secant(PyObject *self, PyObject *args, PyObject *kwar
         try {
             result = (Secant *)new Secant();
             
-        }catch (QuantLib::IndexError& e) {
+        }catch (IndexError& e) {
             PyErr_SetString(PyExc_IndexError,e.what());
             return NULL;
-        }catch (QuantLib::Error& e) {
+        }catch (Error& e) {
             PyErr_SetString(PyExc_Exception,e.what());
             return NULL;
         }catch (std::exception& e) {
@@ -16637,10 +17908,10 @@ static PyObject *_wrap_delete_Secant(PyObject *self, PyObject *args, PyObject *k
         try {
             delete arg0;
             
-        }catch (QuantLib::IndexError& e) {
+        }catch (IndexError& e) {
             PyErr_SetString(PyExc_IndexError,e.what());
             return NULL;
-        }catch (QuantLib::Error& e) {
+        }catch (Error& e) {
             PyErr_SetString(PyExc_Exception,e.what());
             return NULL;
         }catch (std::exception& e) {
@@ -16668,10 +17939,10 @@ static PyObject *_wrap_new_Statistics(PyObject *self, PyObject *args, PyObject *
         try {
             result = (Statistics *)new Statistics();
             
-        }catch (QuantLib::IndexError& e) {
+        }catch (IndexError& e) {
             PyErr_SetString(PyExc_IndexError,e.what());
             return NULL;
-        }catch (QuantLib::Error& e) {
+        }catch (Error& e) {
             PyErr_SetString(PyExc_Exception,e.what());
             return NULL;
         }catch (std::exception& e) {
@@ -16700,10 +17971,10 @@ static PyObject *_wrap_delete_Statistics(PyObject *self, PyObject *args, PyObjec
         try {
             delete arg0;
             
-        }catch (QuantLib::IndexError& e) {
+        }catch (IndexError& e) {
             PyErr_SetString(PyExc_IndexError,e.what());
             return NULL;
-        }catch (QuantLib::Error& e) {
+        }catch (Error& e) {
             PyErr_SetString(PyExc_Exception,e.what());
             return NULL;
         }catch (std::exception& e) {
@@ -16734,10 +18005,10 @@ static PyObject *_wrap_Statistics_samples(PyObject *self, PyObject *args, PyObje
         try {
             result = (int )arg0->samples();
             
-        }catch (QuantLib::IndexError& e) {
+        }catch (IndexError& e) {
             PyErr_SetString(PyExc_IndexError,e.what());
             return NULL;
-        }catch (QuantLib::Error& e) {
+        }catch (Error& e) {
             PyErr_SetString(PyExc_Exception,e.what());
             return NULL;
         }catch (std::exception& e) {
@@ -16767,10 +18038,10 @@ static PyObject *_wrap_Statistics_weightSum(PyObject *self, PyObject *args, PyOb
         try {
             result = (double )arg0->weightSum();
             
-        }catch (QuantLib::IndexError& e) {
+        }catch (IndexError& e) {
             PyErr_SetString(PyExc_IndexError,e.what());
             return NULL;
-        }catch (QuantLib::Error& e) {
+        }catch (Error& e) {
             PyErr_SetString(PyExc_Exception,e.what());
             return NULL;
         }catch (std::exception& e) {
@@ -16800,10 +18071,10 @@ static PyObject *_wrap_Statistics_mean(PyObject *self, PyObject *args, PyObject 
         try {
             result = (double )arg0->mean();
             
-        }catch (QuantLib::IndexError& e) {
+        }catch (IndexError& e) {
             PyErr_SetString(PyExc_IndexError,e.what());
             return NULL;
-        }catch (QuantLib::Error& e) {
+        }catch (Error& e) {
             PyErr_SetString(PyExc_Exception,e.what());
             return NULL;
         }catch (std::exception& e) {
@@ -16833,10 +18104,10 @@ static PyObject *_wrap_Statistics_variance(PyObject *self, PyObject *args, PyObj
         try {
             result = (double )arg0->variance();
             
-        }catch (QuantLib::IndexError& e) {
+        }catch (IndexError& e) {
             PyErr_SetString(PyExc_IndexError,e.what());
             return NULL;
-        }catch (QuantLib::Error& e) {
+        }catch (Error& e) {
             PyErr_SetString(PyExc_Exception,e.what());
             return NULL;
         }catch (std::exception& e) {
@@ -16866,10 +18137,10 @@ static PyObject *_wrap_Statistics_standardDeviation(PyObject *self, PyObject *ar
         try {
             result = (double )arg0->standardDeviation();
             
-        }catch (QuantLib::IndexError& e) {
+        }catch (IndexError& e) {
             PyErr_SetString(PyExc_IndexError,e.what());
             return NULL;
-        }catch (QuantLib::Error& e) {
+        }catch (Error& e) {
             PyErr_SetString(PyExc_Exception,e.what());
             return NULL;
         }catch (std::exception& e) {
@@ -16899,10 +18170,10 @@ static PyObject *_wrap_Statistics_errorEstimate(PyObject *self, PyObject *args, 
         try {
             result = (double )arg0->errorEstimate();
             
-        }catch (QuantLib::IndexError& e) {
+        }catch (IndexError& e) {
             PyErr_SetString(PyExc_IndexError,e.what());
             return NULL;
-        }catch (QuantLib::Error& e) {
+        }catch (Error& e) {
             PyErr_SetString(PyExc_Exception,e.what());
             return NULL;
         }catch (std::exception& e) {
@@ -16932,10 +18203,10 @@ static PyObject *_wrap_Statistics_skewness(PyObject *self, PyObject *args, PyObj
         try {
             result = (double )arg0->skewness();
             
-        }catch (QuantLib::IndexError& e) {
+        }catch (IndexError& e) {
             PyErr_SetString(PyExc_IndexError,e.what());
             return NULL;
-        }catch (QuantLib::Error& e) {
+        }catch (Error& e) {
             PyErr_SetString(PyExc_Exception,e.what());
             return NULL;
         }catch (std::exception& e) {
@@ -16965,10 +18236,10 @@ static PyObject *_wrap_Statistics_kurtosis(PyObject *self, PyObject *args, PyObj
         try {
             result = (double )arg0->kurtosis();
             
-        }catch (QuantLib::IndexError& e) {
+        }catch (IndexError& e) {
             PyErr_SetString(PyExc_IndexError,e.what());
             return NULL;
-        }catch (QuantLib::Error& e) {
+        }catch (Error& e) {
             PyErr_SetString(PyExc_Exception,e.what());
             return NULL;
         }catch (std::exception& e) {
@@ -16998,10 +18269,10 @@ static PyObject *_wrap_Statistics_min(PyObject *self, PyObject *args, PyObject *
         try {
             result = (double )arg0->min();
             
-        }catch (QuantLib::IndexError& e) {
+        }catch (IndexError& e) {
             PyErr_SetString(PyExc_IndexError,e.what());
             return NULL;
-        }catch (QuantLib::Error& e) {
+        }catch (Error& e) {
             PyErr_SetString(PyExc_Exception,e.what());
             return NULL;
         }catch (std::exception& e) {
@@ -17031,10 +18302,10 @@ static PyObject *_wrap_Statistics_max(PyObject *self, PyObject *args, PyObject *
         try {
             result = (double )arg0->max();
             
-        }catch (QuantLib::IndexError& e) {
+        }catch (IndexError& e) {
             PyErr_SetString(PyExc_IndexError,e.what());
             return NULL;
-        }catch (QuantLib::Error& e) {
+        }catch (Error& e) {
             PyErr_SetString(PyExc_Exception,e.what());
             return NULL;
         }catch (std::exception& e) {
@@ -17065,10 +18336,10 @@ static PyObject *_wrap_Statistics_add(PyObject *self, PyObject *args, PyObject *
         try {
             arg0->add(arg1,arg2);
             
-        }catch (QuantLib::IndexError& e) {
+        }catch (IndexError& e) {
             PyErr_SetString(PyExc_IndexError,e.what());
             return NULL;
-        }catch (QuantLib::Error& e) {
+        }catch (Error& e) {
             PyErr_SetString(PyExc_Exception,e.what());
             return NULL;
         }catch (std::exception& e) {
@@ -17098,10 +18369,10 @@ static PyObject *_wrap_Statistics_reset(PyObject *self, PyObject *args, PyObject
         try {
             arg0->reset();
             
-        }catch (QuantLib::IndexError& e) {
+        }catch (IndexError& e) {
             PyErr_SetString(PyExc_IndexError,e.what());
             return NULL;
-        }catch (QuantLib::Error& e) {
+        }catch (Error& e) {
             PyErr_SetString(PyExc_Exception,e.what());
             return NULL;
         }catch (std::exception& e) {
@@ -17129,6 +18400,7 @@ static PyObject *_wrap_Statistics_addSequence(PyObject *self, PyObject *args, Py
     Statistics *arg0 ;
     DoubleVector *arg1 ;
     PyObject * argo0 =0 ;
+    DoubleVector temp ;
     PyObject * obj1  = 0 ;
     char *kwnames[] = {
         "self","values", NULL 
@@ -17137,42 +18409,31 @@ static PyObject *_wrap_Statistics_addSequence(PyObject *self, PyObject *args, Py
     if(!PyArg_ParseTupleAndKeywords(args,kwargs,"OO:Statistics_addSequence",kwnames,&argo0,&obj1)) return NULL;
     if ((SWIG_ConvertPtr(argo0,(void **) &arg0,SWIGTYPE_p_Statistics,1)) == -1) return NULL;
     {
-        if (PyTuple_Check(obj1)) {
-            int size = PyTuple_Size(obj1);
-            arg1 = new DoubleVector(size);
+        DoubleVector* v;
+        if (PyTuple_Check(obj1) || PyList_Check(obj1)) {
+            int size = (PyTuple_Check(obj1) ? 
+            PyTuple_Size(obj1) :
+            PyList_Size(obj1));
+            temp = DoubleVector(size);
+            arg1 = &temp;
             for (int i=0; i<size; i++) {
-                PyObject* o = PyTuple_GetItem(obj1,i);
-                if (PyFloat_Check(o)) {
+                PyObject* o = PySequence_GetItem(obj1,i);
+                if (o == Py_None) {
+                    (*arg1)[i] = Null<double>();
+                }else if (PyFloat_Check(o)) {
                     (*arg1)[i] = PyFloat_AsDouble(o);
                 }else if (PyInt_Check(o)) {
                     (*arg1)[i] = double(PyInt_AsLong(o));
-                }else if (o == Py_None) {
-                    (*arg1)[i] = Null<double>();
                 }else {
-                    PyErr_SetString(PyExc_TypeError,"tuple must contain doubles");
-                    delete arg1;
+                    PyErr_SetString(PyExc_TypeError,"doubles expected");
                     return NULL;
                 }
             }
-        }else if (PyList_Check(obj1)) {
-            int size = PyList_Size(obj1);
-            arg1 = new DoubleVector(size);
-            for (int i=0; i<size; i++) {
-                PyObject* o = PyList_GetItem(obj1,i);
-                if (PyFloat_Check(o)) {
-                    (*arg1)[i] = PyFloat_AsDouble(o);
-                }else if (PyInt_Check(o)) {
-                    (*arg1)[i] = double(PyInt_AsLong(o));
-                }else if (o == Py_None) {
-                    (*arg1)[i] = Null<double>();
-                }else {
-                    PyErr_SetString(PyExc_TypeError,"list must contain doubles");
-                    delete arg1;
-                    return NULL;
-                }
-            }
+        }else if ((SWIG_ConvertPtr(obj1,(void **) &v,
+        (swig_type_info *)SWIG_TypeQuery("DoubleVector *"),0)) != -1) {
+            arg1 = v;
         }else {
-            PyErr_SetString(PyExc_TypeError,"not a sequence");
+            PyErr_SetString(PyExc_TypeError,"DoubleVector expected");
             return NULL;
         }
     }
@@ -17180,10 +18441,10 @@ static PyObject *_wrap_Statistics_addSequence(PyObject *self, PyObject *args, Py
         try {
             Statistics_addSequence(arg0,*arg1);
             
-        }catch (QuantLib::IndexError& e) {
+        }catch (IndexError& e) {
             PyErr_SetString(PyExc_IndexError,e.what());
             return NULL;
-        }catch (QuantLib::Error& e) {
+        }catch (Error& e) {
             PyErr_SetString(PyExc_Exception,e.what());
             return NULL;
         }catch (std::exception& e) {
@@ -17195,9 +18456,6 @@ static PyObject *_wrap_Statistics_addSequence(PyObject *self, PyObject *args, Py
         }
     }Py_INCREF(Py_None);
     resultobj = Py_None;
-    {
-        delete arg1;
-    }
     return resultobj;
 }
 
@@ -17215,7 +18473,9 @@ static PyObject *_wrap_Statistics_addWeightedSequence(PyObject *self, PyObject *
     DoubleVector *arg1 ;
     DoubleVector *arg2 ;
     PyObject * argo0 =0 ;
+    DoubleVector temp ;
     PyObject * obj1  = 0 ;
+    DoubleVector temp0 ;
     PyObject * obj2  = 0 ;
     char *kwnames[] = {
         "self","values","weights", NULL 
@@ -17224,82 +18484,60 @@ static PyObject *_wrap_Statistics_addWeightedSequence(PyObject *self, PyObject *
     if(!PyArg_ParseTupleAndKeywords(args,kwargs,"OOO:Statistics_addWeightedSequence",kwnames,&argo0,&obj1,&obj2)) return NULL;
     if ((SWIG_ConvertPtr(argo0,(void **) &arg0,SWIGTYPE_p_Statistics,1)) == -1) return NULL;
     {
-        if (PyTuple_Check(obj1)) {
-            int size = PyTuple_Size(obj1);
-            arg1 = new DoubleVector(size);
+        DoubleVector* v;
+        if (PyTuple_Check(obj1) || PyList_Check(obj1)) {
+            int size = (PyTuple_Check(obj1) ? 
+            PyTuple_Size(obj1) :
+            PyList_Size(obj1));
+            temp = DoubleVector(size);
+            arg1 = &temp;
             for (int i=0; i<size; i++) {
-                PyObject* o = PyTuple_GetItem(obj1,i);
-                if (PyFloat_Check(o)) {
+                PyObject* o = PySequence_GetItem(obj1,i);
+                if (o == Py_None) {
+                    (*arg1)[i] = Null<double>();
+                }else if (PyFloat_Check(o)) {
                     (*arg1)[i] = PyFloat_AsDouble(o);
                 }else if (PyInt_Check(o)) {
                     (*arg1)[i] = double(PyInt_AsLong(o));
-                }else if (o == Py_None) {
-                    (*arg1)[i] = Null<double>();
                 }else {
-                    PyErr_SetString(PyExc_TypeError,"tuple must contain doubles");
-                    delete arg1;
+                    PyErr_SetString(PyExc_TypeError,"doubles expected");
                     return NULL;
                 }
             }
-        }else if (PyList_Check(obj1)) {
-            int size = PyList_Size(obj1);
-            arg1 = new DoubleVector(size);
-            for (int i=0; i<size; i++) {
-                PyObject* o = PyList_GetItem(obj1,i);
-                if (PyFloat_Check(o)) {
-                    (*arg1)[i] = PyFloat_AsDouble(o);
-                }else if (PyInt_Check(o)) {
-                    (*arg1)[i] = double(PyInt_AsLong(o));
-                }else if (o == Py_None) {
-                    (*arg1)[i] = Null<double>();
-                }else {
-                    PyErr_SetString(PyExc_TypeError,"list must contain doubles");
-                    delete arg1;
-                    return NULL;
-                }
-            }
+        }else if ((SWIG_ConvertPtr(obj1,(void **) &v,
+        (swig_type_info *)SWIG_TypeQuery("DoubleVector *"),0)) != -1) {
+            arg1 = v;
         }else {
-            PyErr_SetString(PyExc_TypeError,"not a sequence");
+            PyErr_SetString(PyExc_TypeError,"DoubleVector expected");
             return NULL;
         }
     }
     {
-        if (PyTuple_Check(obj2)) {
-            int size = PyTuple_Size(obj2);
-            arg2 = new DoubleVector(size);
+        DoubleVector* v;
+        if (PyTuple_Check(obj2) || PyList_Check(obj2)) {
+            int size = (PyTuple_Check(obj2) ? 
+            PyTuple_Size(obj2) :
+            PyList_Size(obj2));
+            temp0 = DoubleVector(size);
+            arg2 = &temp0;
             for (int i=0; i<size; i++) {
-                PyObject* o = PyTuple_GetItem(obj2,i);
-                if (PyFloat_Check(o)) {
+                PyObject* o = PySequence_GetItem(obj2,i);
+                if (o == Py_None) {
+                    (*arg2)[i] = Null<double>();
+                }else if (PyFloat_Check(o)) {
                     (*arg2)[i] = PyFloat_AsDouble(o);
                 }else if (PyInt_Check(o)) {
                     (*arg2)[i] = double(PyInt_AsLong(o));
-                }else if (o == Py_None) {
-                    (*arg2)[i] = Null<double>();
                 }else {
-                    PyErr_SetString(PyExc_TypeError,"tuple must contain doubles");
-                    delete arg2;
+                    PyErr_SetString(PyExc_TypeError,"doubles expected");
                     return NULL;
                 }
             }
-        }else if (PyList_Check(obj2)) {
-            int size = PyList_Size(obj2);
-            arg2 = new DoubleVector(size);
-            for (int i=0; i<size; i++) {
-                PyObject* o = PyList_GetItem(obj2,i);
-                if (PyFloat_Check(o)) {
-                    (*arg2)[i] = PyFloat_AsDouble(o);
-                }else if (PyInt_Check(o)) {
-                    (*arg2)[i] = double(PyInt_AsLong(o));
-                }else if (o == Py_None) {
-                    (*arg2)[i] = Null<double>();
-                }else {
-                    PyErr_SetString(PyExc_TypeError,"list must contain doubles");
-                    delete arg2;
-                    return NULL;
-                }
-            }
+        }else if ((SWIG_ConvertPtr(obj2,(void **) &v,
+        (swig_type_info *)SWIG_TypeQuery("DoubleVector *"),0)) != -1) {
+            arg2 = v;
         }else {
-            PyErr_SetString(PyExc_TypeError,"not a sequence");
+            PyErr_SetString(PyExc_TypeError,"DoubleVector expected");
             return NULL;
         }
     }
@@ -17307,10 +18545,10 @@ static PyObject *_wrap_Statistics_addWeightedSequence(PyObject *self, PyObject *
         try {
             Statistics_addWeightedSequence(arg0,*arg1,*arg2);
             
-        }catch (QuantLib::IndexError& e) {
+        }catch (IndexError& e) {
             PyErr_SetString(PyExc_IndexError,e.what());
             return NULL;
-        }catch (QuantLib::Error& e) {
+        }catch (Error& e) {
             PyErr_SetString(PyExc_Exception,e.what());
             return NULL;
         }catch (std::exception& e) {
@@ -17322,12 +18560,6 @@ static PyObject *_wrap_Statistics_addWeightedSequence(PyObject *self, PyObject *
         }
     }Py_INCREF(Py_None);
     resultobj = Py_None;
-    {
-        delete arg1;
-    }
-    {
-        delete arg2;
-    }
     return resultobj;
 }
 
@@ -17344,10 +18576,10 @@ static PyObject *_wrap_new_MultivariateAccumulator(PyObject *self, PyObject *arg
         try {
             result = (MultivariateAccumulator *)new MultivariateAccumulator();
             
-        }catch (QuantLib::IndexError& e) {
+        }catch (IndexError& e) {
             PyErr_SetString(PyExc_IndexError,e.what());
             return NULL;
-        }catch (QuantLib::Error& e) {
+        }catch (Error& e) {
             PyErr_SetString(PyExc_Exception,e.what());
             return NULL;
         }catch (std::exception& e) {
@@ -17377,10 +18609,10 @@ static PyObject *_wrap_MultivariateAccumulator_size(PyObject *self, PyObject *ar
         try {
             result = (int )arg0->size();
             
-        }catch (QuantLib::IndexError& e) {
+        }catch (IndexError& e) {
             PyErr_SetString(PyExc_IndexError,e.what());
             return NULL;
-        }catch (QuantLib::Error& e) {
+        }catch (Error& e) {
             PyErr_SetString(PyExc_Exception,e.what());
             return NULL;
         }catch (std::exception& e) {
@@ -17410,10 +18642,10 @@ static PyObject *_wrap_MultivariateAccumulator_samples(PyObject *self, PyObject 
         try {
             result = (double )arg0->samples();
             
-        }catch (QuantLib::IndexError& e) {
+        }catch (IndexError& e) {
             PyErr_SetString(PyExc_IndexError,e.what());
             return NULL;
-        }catch (QuantLib::Error& e) {
+        }catch (Error& e) {
             PyErr_SetString(PyExc_Exception,e.what());
             return NULL;
         }catch (std::exception& e) {
@@ -17442,10 +18674,10 @@ static PyObject *_wrap_MultivariateAccumulator_mean(PyObject *self, PyObject *ar
     {
         try {
             result = new Array (arg0->mean());
-        }catch (QuantLib::IndexError& e) {
+        }catch (IndexError& e) {
             PyErr_SetString(PyExc_IndexError,e.what());
             return NULL;
-        }catch (QuantLib::Error& e) {
+        }catch (Error& e) {
             PyErr_SetString(PyExc_Exception,e.what());
             return NULL;
         }catch (std::exception& e) {
@@ -17474,10 +18706,10 @@ static PyObject *_wrap_MultivariateAccumulator_covariance(PyObject *self, PyObje
     {
         try {
             result = new Matrix (arg0->covariance());
-        }catch (QuantLib::IndexError& e) {
+        }catch (IndexError& e) {
             PyErr_SetString(PyExc_IndexError,e.what());
             return NULL;
-        }catch (QuantLib::Error& e) {
+        }catch (Error& e) {
             PyErr_SetString(PyExc_Exception,e.what());
             return NULL;
         }catch (std::exception& e) {
@@ -17538,10 +18770,10 @@ static PyObject *_wrap_MultivariateAccumulator_add(PyObject *self, PyObject *arg
         try {
             arg0->add((Array const &)*arg1,arg2);
             
-        }catch (QuantLib::IndexError& e) {
+        }catch (IndexError& e) {
             PyErr_SetString(PyExc_IndexError,e.what());
             return NULL;
-        }catch (QuantLib::Error& e) {
+        }catch (Error& e) {
             PyErr_SetString(PyExc_Exception,e.what());
             return NULL;
         }catch (std::exception& e) {
@@ -17571,10 +18803,10 @@ static PyObject *_wrap_MultivariateAccumulator_reset(PyObject *self, PyObject *a
         try {
             arg0->reset();
             
-        }catch (QuantLib::IndexError& e) {
+        }catch (IndexError& e) {
             PyErr_SetString(PyExc_IndexError,e.what());
             return NULL;
-        }catch (QuantLib::Error& e) {
+        }catch (Error& e) {
             PyErr_SetString(PyExc_Exception,e.what());
             return NULL;
         }catch (std::exception& e) {
@@ -17702,6 +18934,24 @@ static PyMethodDef QuantLibcMethods[] = {
 	 { "new_InvCumulativeNormalDistribution", (PyCFunction) _wrap_new_InvCumulativeNormalDistribution, METH_VARARGS | METH_KEYWORDS },
 	 { "delete_InvCumulativeNormalDistribution", (PyCFunction) _wrap_delete_InvCumulativeNormalDistribution, METH_VARARGS | METH_KEYWORDS },
 	 { "InvCumulativeNormalDistribution___call__", (PyCFunction) _wrap_InvCumulativeNormalDistribution___call__, METH_VARARGS | METH_KEYWORDS },
+	 { "delete_IntVector", (PyCFunction) _wrap_delete_IntVector, METH_VARARGS | METH_KEYWORDS },
+	 { "IntVector___len__", (PyCFunction) _wrap_IntVector___len__, METH_VARARGS | METH_KEYWORDS },
+	 { "IntVector___getitem__", (PyCFunction) _wrap_IntVector___getitem__, METH_VARARGS | METH_KEYWORDS },
+	 { "IntVector___setitem__", (PyCFunction) _wrap_IntVector___setitem__, METH_VARARGS | METH_KEYWORDS },
+	 { "IntVector___getslice__", (PyCFunction) _wrap_IntVector___getslice__, METH_VARARGS | METH_KEYWORDS },
+	 { "IntVector___setslice__", (PyCFunction) _wrap_IntVector___setslice__, METH_VARARGS | METH_KEYWORDS },
+	 { "IntVector___str__", (PyCFunction) _wrap_IntVector___str__, METH_VARARGS | METH_KEYWORDS },
+	 { "IntVector___repr__", (PyCFunction) _wrap_IntVector___repr__, METH_VARARGS | METH_KEYWORDS },
+	 { "IntVector___nonzero__", (PyCFunction) _wrap_IntVector___nonzero__, METH_VARARGS | METH_KEYWORDS },
+	 { "delete_DoubleVector", (PyCFunction) _wrap_delete_DoubleVector, METH_VARARGS | METH_KEYWORDS },
+	 { "DoubleVector___len__", (PyCFunction) _wrap_DoubleVector___len__, METH_VARARGS | METH_KEYWORDS },
+	 { "DoubleVector___getitem__", (PyCFunction) _wrap_DoubleVector___getitem__, METH_VARARGS | METH_KEYWORDS },
+	 { "DoubleVector___setitem__", (PyCFunction) _wrap_DoubleVector___setitem__, METH_VARARGS | METH_KEYWORDS },
+	 { "DoubleVector___getslice__", (PyCFunction) _wrap_DoubleVector___getslice__, METH_VARARGS | METH_KEYWORDS },
+	 { "DoubleVector___setslice__", (PyCFunction) _wrap_DoubleVector___setslice__, METH_VARARGS | METH_KEYWORDS },
+	 { "DoubleVector___str__", (PyCFunction) _wrap_DoubleVector___str__, METH_VARARGS | METH_KEYWORDS },
+	 { "DoubleVector___repr__", (PyCFunction) _wrap_DoubleVector___repr__, METH_VARARGS | METH_KEYWORDS },
+	 { "DoubleVector___nonzero__", (PyCFunction) _wrap_DoubleVector___nonzero__, METH_VARARGS | METH_KEYWORDS },
 	 { "delete_HistoryIterator", (PyCFunction) _wrap_delete_HistoryIterator, METH_VARARGS | METH_KEYWORDS },
 	 { "HistoryIterator_date", (PyCFunction) _wrap_HistoryIterator_date, METH_VARARGS | METH_KEYWORDS },
 	 { "HistoryIterator_value", (PyCFunction) _wrap_HistoryIterator_value, METH_VARARGS | METH_KEYWORDS },
@@ -18034,11 +19284,11 @@ static swig_type_info _swigt__p_DZero[] = {{"_p_DZero", 0, "DZero *"},{"_p_DZero
 static swig_type_info _swigt__p_CurrencyHandle[] = {{"_p_CurrencyHandle", 0, "CurrencyHandle *"},{"_p_CurrencyHandle"},{0}};
 static swig_type_info _swigt__p_TermStructureHandle[] = {{"_p_TermStructureHandle", 0, "TermStructureHandle *"},{"_p_TermStructureHandle"},{0}};
 static swig_type_info _swigt__p_Date[] = {{"_p_Date", 0, "Date *"},{"_p_Date"},{0}};
+static swig_type_info _swigt__p_DoubleVector[] = {{"_p_DoubleVector", 0, "DoubleVector *"},{"_p_DoubleVector"},{0}};
 static swig_type_info _swigt__p_DateVector[] = {{"_p_DateVector", 0, "DateVector *"},{"_p_DateVector"},{0}};
 static swig_type_info _swigt__p_Newton[] = {{"_p_Newton", 0, "Newton *"},{"_p_Newton"},{0}};
 static swig_type_info _swigt__p_ArrayLexicographicalViewColumn[] = {{"_p_ArrayLexicographicalViewColumn", 0, "ArrayLexicographicalViewColumn *"},{"_p_ArrayLexicographicalViewColumn"},{0}};
 static swig_type_info _swigt__p_DPlus[] = {{"_p_DPlus", 0, "DPlus *"},{"_p_DPlus"},{0}};
-static swig_type_info _swigt__p_StandardMultiPathGenerator[] = {{"_p_StandardMultiPathGenerator", 0, "StandardMultiPathGenerator *"},{"_p_StandardMultiPathGenerator"},{0}};
 static swig_type_info _swigt__p_GaussianArrayGenerator[] = {{"_p_GaussianArrayGenerator", 0, "GaussianArrayGenerator *"},{"_p_GaussianArrayGenerator"},{0}};
 static swig_type_info _swigt__p_StandardPathGenerator[] = {{"_p_StandardPathGenerator", 0, "StandardPathGenerator *"},{"_p_StandardPathGenerator"},{0}};
 static swig_type_info _swigt__p_HistoryValidDataIterator[] = {{"_p_HistoryValidDataIterator", 0, "HistoryValidDataIterator *"},{"_p_HistoryValidDataIterator"},{0}};
@@ -18046,6 +19296,7 @@ static swig_type_info _swigt__p_HistoryDataIterator[] = {{"_p_HistoryDataIterato
 static swig_type_info _swigt__p_HistoryValidIterator[] = {{"_p_HistoryValidIterator", 0, "HistoryValidIterator *"},{"_p_HistoryValidIterator"},{0}};
 static swig_type_info _swigt__p_HistoryIterator[] = {{"_p_HistoryIterator", 0, "HistoryIterator *"},{"_p_HistoryIterator"},{0}};
 static swig_type_info _swigt__p_TridiagonalOperator[] = {{"_p_TridiagonalOperator", 0, "TridiagonalOperator *"},{"_p_DPlusDMinus", _p_DPlusDMinusTo_p_TridiagonalOperator},{"_p_DMinus", _p_DMinusTo_p_TridiagonalOperator},{"_p_DPlus", _p_DPlusTo_p_TridiagonalOperator},{"_p_TridiagonalOperator"},{"_p_DZero", _p_DZeroTo_p_TridiagonalOperator},{0}};
+static swig_type_info _swigt__p_StandardMultiPathGenerator[] = {{"_p_StandardMultiPathGenerator", 0, "StandardMultiPathGenerator *"},{"_p_StandardMultiPathGenerator"},{0}};
 static swig_type_info _swigt__p_UniformRandomGenerator[] = {{"_p_UniformRandomGenerator", 0, "UniformRandomGenerator *"},{"_p_UniformRandomGenerator"},{0}};
 static swig_type_info _swigt__p_GaussianRandomGenerator[] = {{"_p_GaussianRandomGenerator", 0, "GaussianRandomGenerator *"},{"_p_GaussianRandomGenerator"},{0}};
 static swig_type_info _swigt__p_MultivariateAccumulator[] = {{"_p_MultivariateAccumulator", 0, "MultivariateAccumulator *"},{"_p_MultivariateAccumulator"},{0}};
@@ -18073,6 +19324,7 @@ static swig_type_info _swigt__p_InterpolationHandle[] = {{"_p_InterpolationHandl
 static swig_type_info _swigt__p_FalsePosition[] = {{"_p_FalsePosition", 0, "FalsePosition *"},{"_p_FalsePosition"},{0}};
 static swig_type_info _swigt__p_AverageStrikeAsian[] = {{"_p_AverageStrikeAsian", 0, "AverageStrikeAsian *"},{"_p_AverageStrikeAsian"},{0}};
 static swig_type_info _swigt__p_AveragePriceAsian[] = {{"_p_AveragePriceAsian", 0, "AveragePriceAsian *"},{"_p_AveragePriceAsian"},{0}};
+static swig_type_info _swigt__p_IntVector[] = {{"_p_IntVector", 0, "IntVector *"},{"_p_IntVector"},{0}};
 
 static swig_type_info *swig_types_initial[] = {
 _swigt__p_Brent, 
@@ -18093,11 +19345,11 @@ _swigt__p_DZero,
 _swigt__p_CurrencyHandle, 
 _swigt__p_TermStructureHandle, 
 _swigt__p_Date, 
+_swigt__p_DoubleVector, 
 _swigt__p_DateVector, 
 _swigt__p_Newton, 
 _swigt__p_ArrayLexicographicalViewColumn, 
 _swigt__p_DPlus, 
-_swigt__p_StandardMultiPathGenerator, 
 _swigt__p_GaussianArrayGenerator, 
 _swigt__p_StandardPathGenerator, 
 _swigt__p_HistoryValidDataIterator, 
@@ -18105,6 +19357,7 @@ _swigt__p_HistoryDataIterator,
 _swigt__p_HistoryValidIterator, 
 _swigt__p_HistoryIterator, 
 _swigt__p_TridiagonalOperator, 
+_swigt__p_StandardMultiPathGenerator, 
 _swigt__p_UniformRandomGenerator, 
 _swigt__p_GaussianRandomGenerator, 
 _swigt__p_MultivariateAccumulator, 
@@ -18132,6 +19385,7 @@ _swigt__p_InterpolationHandle,
 _swigt__p_FalsePosition, 
 _swigt__p_AverageStrikeAsian, 
 _swigt__p_AveragePriceAsian, 
+_swigt__p_IntVector, 
 0
 };
 

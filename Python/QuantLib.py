@@ -243,6 +243,58 @@ class InvCumulativeNormalDistributionPtr(InvCumulativeNormalDistribution):
 
 InvCumulativeNormalDistribution.__call__ = new.instancemethod(QuantLibc.InvCumulativeNormalDistribution___call__, None, InvCumulativeNormalDistribution)
 
+class IntVector:
+    def __init__(self,this):
+        self.this = this
+
+    def __del__(self,QuantLibc=QuantLibc):
+        if self.thisown == 1 :
+            QuantLibc.delete_IntVector(self)
+    def __getslice__(*args, **kwargs):
+        val = apply(QuantLibc.IntVector___getslice__,args, kwargs)
+        if val: val = IntVectorPtr(val) ; val.thisown = 1
+        return val
+class IntVectorPtr(IntVector):
+    def __init__(self,this):
+        self.this = this
+        self.thisown = 0
+        self.__class__ = IntVector
+
+
+IntVector.__len__ = new.instancemethod(QuantLibc.IntVector___len__, None, IntVector)
+IntVector.__getitem__ = new.instancemethod(QuantLibc.IntVector___getitem__, None, IntVector)
+IntVector.__setitem__ = new.instancemethod(QuantLibc.IntVector___setitem__, None, IntVector)
+IntVector.__setslice__ = new.instancemethod(QuantLibc.IntVector___setslice__, None, IntVector)
+IntVector.__str__ = new.instancemethod(QuantLibc.IntVector___str__, None, IntVector)
+IntVector.__repr__ = new.instancemethod(QuantLibc.IntVector___repr__, None, IntVector)
+IntVector.__nonzero__ = new.instancemethod(QuantLibc.IntVector___nonzero__, None, IntVector)
+
+class DoubleVector:
+    def __init__(self,this):
+        self.this = this
+
+    def __del__(self,QuantLibc=QuantLibc):
+        if self.thisown == 1 :
+            QuantLibc.delete_DoubleVector(self)
+    def __getslice__(*args, **kwargs):
+        val = apply(QuantLibc.DoubleVector___getslice__,args, kwargs)
+        if val: val = DoubleVectorPtr(val) ; val.thisown = 1
+        return val
+class DoubleVectorPtr(DoubleVector):
+    def __init__(self,this):
+        self.this = this
+        self.thisown = 0
+        self.__class__ = DoubleVector
+
+
+DoubleVector.__len__ = new.instancemethod(QuantLibc.DoubleVector___len__, None, DoubleVector)
+DoubleVector.__getitem__ = new.instancemethod(QuantLibc.DoubleVector___getitem__, None, DoubleVector)
+DoubleVector.__setitem__ = new.instancemethod(QuantLibc.DoubleVector___setitem__, None, DoubleVector)
+DoubleVector.__setslice__ = new.instancemethod(QuantLibc.DoubleVector___setslice__, None, DoubleVector)
+DoubleVector.__str__ = new.instancemethod(QuantLibc.DoubleVector___str__, None, DoubleVector)
+DoubleVector.__repr__ = new.instancemethod(QuantLibc.DoubleVector___repr__, None, DoubleVector)
+DoubleVector.__nonzero__ = new.instancemethod(QuantLibc.DoubleVector___nonzero__, None, DoubleVector)
+
 class HistoryIterator:
     def __init__(self,this):
         self.this = this

@@ -36,13 +36,18 @@
 #endif
 #endif
 
+%{
+using QuantLib::Error;
+using QuantLib::IndexError;
+%}
+
 %except(python) {
     try {
         $function
-    } catch (QuantLib::IndexError& e) {
+    } catch (IndexError& e) {
         PyErr_SetString(PyExc_IndexError,e.what());
         return NULL;
-    } catch (QuantLib::Error& e) {
+    } catch (Error& e) {
         PyErr_SetString(PyExc_Exception,e.what());
         return NULL;
     } catch (std::exception& e) {
