@@ -98,8 +98,7 @@ namespace QuantLib {
     //! arguments for single asset option calculation
     class OneAssetOption::arguments : public Option::arguments {
       public:
-        arguments()
-        : blackScholesProcess(Handle<BlackScholesStochasticProcess>()) {}
+        arguments() {}
         void validate() const;
         Handle<BlackScholesStochasticProcess> blackScholesProcess;
     };
