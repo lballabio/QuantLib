@@ -36,9 +36,9 @@ namespace QuantLib {
         #ifndef QL_DISABLE_DEPRECATED
         /*! \deprecated use the constructor with no arguments */
         DiscretizedAsset(const boost::shared_ptr<NumericalMethod>& method)
-        : method_(method),
-          latestPreAdjustment_(QL_MAX_REAL),
-          latestPostAdjustment_(QL_MAX_REAL) {}
+        : latestPreAdjustment_(QL_MAX_REAL),
+          latestPostAdjustment_(QL_MAX_REAL),
+          method_(method) {}
         #endif
 
         DiscretizedAsset()

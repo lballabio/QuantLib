@@ -885,10 +885,7 @@ void EuropeanOptionTest::testImpliedVolContainment() {
     Flag f;
     f.registerWith(option2);
 
-    Volatility impliedVol = option1->impliedVolatility(refValue*1.5,
-                                                       tolerance,
-                                                       maxEvaluations);
-    impliedVol; // borland warning avoided
+    option1->impliedVolatility(refValue*1.5, tolerance, maxEvaluations);
 
     if (f.isUp())
         BOOST_FAIL("implied volatility calculation triggered a change "

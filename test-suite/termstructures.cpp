@@ -111,7 +111,7 @@ void TermStructureTest::testReferenceChange() {
 
     Date today = Settings::instance().evaluationDate();
     Integer days[] = { 10, 30, 60, 120, 360, 720 };
-    Integer i;
+    Size i;
 
     std::vector<DiscountFactor> expected(LENGTH(days));
     for (i=0; i<LENGTH(days); i++)

@@ -37,7 +37,7 @@ using namespace boost::unit_test_framework;
 
 void LowDiscrepancyTest::testSeedGenerator() {
     BOOST_MESSAGE("Testing random seed generator...");
-    unsigned long temp = SeedGenerator::instance().get();
+    SeedGenerator::instance().get();
 }
 
 void LowDiscrepancyTest::testPolynomialsModuloTwo() {
@@ -729,13 +729,18 @@ namespace {
                                   const std::string& fileName,
                                   const std::string& arrayName) {
 
+        #ifndef PRINT_ONLY
+        Real tolerance = 1.0e-2;
+        #endif
+
         // just to avoid Borland warning
+        #if defined(QL_PATCH_BORLAND)
         #ifndef PRINT_ONLY
         fileName;
         arrayName;
-        Real tolerance = 1.0e-2;
         #else
         discrepancy;
+        #endif
         #endif
 
         Array point;
