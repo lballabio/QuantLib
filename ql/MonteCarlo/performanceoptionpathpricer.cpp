@@ -79,9 +79,9 @@ namespace QuantLib {
                     assetValue[i] =underlying_*QL_EXP(log_drift+log_random);
                     assetValue2[i]=underlying_*QL_EXP(log_drift-log_random);
                     result[i] = 0.5 * discounts_[i] * (ExercisePayoff(type_,
-                        assetValue [i]/(assetValue [i-1] *moneyness_), 1.0) +
+                        assetValue [i]/assetValue [i-1], moneyness_) +
                         ExercisePayoff(type_,
-                        assetValue2[i]/(assetValue2[i-1] *moneyness_), 1.0)
+                        assetValue2[i]/assetValue2[i-1], moneyness_)
                         );
                 }
             } else {
@@ -95,7 +95,7 @@ namespace QuantLib {
                         QL_EXP(log_drift+log_random);
                     result[i] = discounts_[i] *
                         ExercisePayoff(type_,
-                        assetValue [i]/(assetValue [i-1] *moneyness_), 1.0);
+                        assetValue [i]/assetValue [i-1], moneyness_);
                 }
             }
 

@@ -79,17 +79,20 @@ namespace QuantLib
         double PerformanceOption::value() const {
             double result = 0.0 * optionlet_[0] -> value();
             for(Size i = 1; i < numOptions_; i++)
-                result += discounts_[i-1] * optionlet_[i] -> value();
+                result += discounts_[i-1] * 
+                    moneyness_ * optionlet_[i] -> value();
             return result;
         }
 
         double PerformanceOption::delta() const {
-            double result = 0.0 * optionlet_[0] -> delta();
+            double result = 0.0 * 
+                moneyness_ * optionlet_[0] -> delta();
             return result;
         }
 
         double PerformanceOption::gamma() const {
-            double result = 0.0 * optionlet_[0] -> gamma();
+            double result = 0.0 * 
+                moneyness_ * optionlet_[0] -> gamma();
             return result;
         }
 
@@ -97,14 +100,15 @@ namespace QuantLib
             double result = 0.0*optionlet_[0] -> theta();
             for(Size i = 1; i < numOptions_; i++)
                 result += riskFreeRate_[i-1] * discounts_[i-1] * 
-                    optionlet_[i] -> value();
+                    moneyness_ * optionlet_[i] -> value();
             return result;
         }
 
         double PerformanceOption::rho() const {
             double result = 0.0*optionlet_[0] -> rho();
             for(Size i = 1; i < numOptions_; i++)
-                result += discounts_[i-1] * (optionlet_[i] -> rho()
+                result += discounts_[i-1] * 
+                    moneyness_ * (optionlet_[i] -> rho()
                      - times_[i-1] * optionlet_[i] -> value());
             return result;
         }
@@ -112,14 +116,16 @@ namespace QuantLib
         double PerformanceOption::dividendRho() const {
             double result = 0.0*optionlet_[0] -> dividendRho();
             for(Size i = 1; i < numOptions_; i++)
-                result += discounts_[i-1] * optionlet_[i] -> dividendRho();
+                result += discounts_[i-1] * 
+                    moneyness_ * optionlet_[i] -> dividendRho();
             return result;
         }
 
         double PerformanceOption::vega() const {
             double result = 0.0*optionlet_[0] -> vega();
             for(Size i = 1; i < numOptions_; i++)
-                result += discounts_[i-1] * optionlet_[i] -> vega();
+                result += discounts_[i-1] *
+                    moneyness_ * optionlet_[i] -> vega();
             return result;
         }
 
