@@ -1,6 +1,6 @@
 
 /*
- * Copyright (C) 2000
+ * Copyright (C) 2000, 2001
  * Ferdinando Ametrano, Luigi Ballabio, Adolfo Benin, Marco Marchioro
  *
  * This file is part of QuantLib.
@@ -18,7 +18,8 @@
  * You should have received a copy of the license along with this file;
  * if not, contact ferdinando@ametrano.net
  *
- * QuantLib license is also available at http://quantlib.sourceforge.net/LICENSE.TXT
+ * QuantLib license is also available at
+ *   http://quantlib.sourceforge.net/LICENSE.TXT
 */
 
 /*! \file americancondition.h
@@ -27,6 +28,9 @@
     $Source$
     $Name$
     $Log$
+    Revision 1.8  2001/03/01 13:56:44  marmar
+    Methods are now inlined explicitly
+
     Revision 1.7  2001/01/17 14:37:56  nando
     tabs removed
 
@@ -45,8 +49,7 @@
 #define BSM_american_condition_h
 
 #include "qldefines.h"
-#include "bsmnumericaloption.h"
-#include "stepcondition.h"
+#include "standardstepcondition.h"
 #include <algorithm>
 #include <functional>
 
@@ -54,16 +57,23 @@ namespace QuantLib {
 
     namespace Pricers {
 
-        class BSMAmericanCondition : public FiniteDifferences::StepCondition<Array> {
+        class BSMAmericanCondition : 
+                public FiniteDifferences::StandardStepCondition {
           public:
-            BSMAmericanCondition(const Array& initialPrices) : initialPrices(initialPrices) {}
-            void applyTo(Array& a, Time t) const {
-                for (int i=0; i<a.size(); i++)
-                    a[i] = QL_MAX(a[i],initialPrices[i]);
-            }
+            BSMAmericanCondition(const Array& initialPrices);
+            void applyTo(Array& a, Time t) const;
           private:
-            Array initialPrices;
+            Array initialPrices_;
         };
+
+        inline BSMAmericanCondition::BSMAmericanCondition(
+                    const Array& initialPrices) 
+            : initialPrices_(initialPrices) {}
+            
+        inline void BSMAmericanCondition::applyTo(Array& a, Time t) const {
+                for (int i = 0; i < a.size(); i++)
+                    a[i] = QL_MAX(a[i], initialPrices_[i]);
+            }
 
     }
 
