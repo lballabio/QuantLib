@@ -35,9 +35,6 @@
 namespace QuantLib
 {
 
-   using Math::LinearInterpolation;
-   using Math::LogLinearInterpolation;
-
    namespace TermStructures
    {
 
@@ -54,15 +51,24 @@ namespace QuantLib
                          const int settlementDays,
                          const RollingConvention roll,
                          const int compoundFrequency);
-            CompoundForward(const std::vector < std::string > &inpPeriods,
-                            const std::vector < Rate > &inpFwdRates,
-                            const Currency currency,
-                            const DayCounter & dayCounter,
-                            const Date & todaysDate,
-                            const Calendar & calendar,
-                            const int settlementDays,
-                            const RollingConvention roll,
-                            const int compoundFrequency);
+	 CompoundForward(const std::vector < std::string > &inpPeriods,
+			 const std::vector < Rate > &inpFwdRates,
+			 const Currency currency,
+			 const DayCounter & dayCounter,
+			 const Date & todaysDate,
+			 const Calendar & calendar,
+			 const int settlementDays,
+			 const RollingConvention roll,
+			 const int compoundFrequency);
+	 CompoundForward(const std::vector < Period> &inpPeriods,
+			 const std::vector < Rate > &inpFwdRates,
+			 const Currency currency,
+			 const DayCounter & dayCounter,
+			 const Date & todaysDate,
+			 const Calendar & calendar,
+			 const int settlementDays,
+			 const RollingConvention roll,
+			 const int compoundFrequency);
          Currency currency() const;
          DayCounter dayCounter() const;
          Date todaysDate() const;
@@ -81,8 +87,6 @@ namespace QuantLib
        protected:
          void validateInputs() const;
          DiscountFactor discountImpl(Time, bool extrapolate = false) const;
-         Rate zeroYieldImpl(Time t, bool extrapolate) const;
-         Rate forwardImpl(Time t, bool extrapolate) const;
        private:
          // methods
          int referenceNode(Time t, bool extrapolate) const;
@@ -102,10 +106,10 @@ namespace QuantLib
          mutable std::vector < Rate > forwards_;
          mutable std::vector < Time > times_;
          mutable std::vector < DiscountFactor > discounts_;
-         typedef LinearInterpolation <
+         typedef Math::LinearInterpolation <
             std::vector < Time >::const_iterator,
             std::vector < Rate >::const_iterator > FwdInterpolation;
-         typedef LogLinearInterpolation <
+         typedef Math::LogLinearInterpolation <
             std::vector < Time >::const_iterator,
             std::vector < DiscountFactor >::const_iterator > DfInterpolation;
          mutable Handle < FwdInterpolation > fwdinterp_;

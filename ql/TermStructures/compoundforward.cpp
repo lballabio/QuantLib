@@ -91,7 +91,41 @@ namespace QuantLib
 
          for(Size i = 0; i < identifiers.size(); i++)
             dates_.push_back(calendar.advance(settlementDate_,
-                                              Period(identifiers.at(i)),
+                                              Period(identifiers[i]),
+                                              roll));
+         inputDates_ = dates_;
+
+         validateInputs();
+      }
+
+      CompoundForward::CompoundForward(const std::vector<Period>& inpPeriods,
+                                       const std::vector < Rate > &forwards,
+                                       const Currency currency,
+                                       const DayCounter & dayCounter,
+                                       const Date & todaysDate,
+                                       const Calendar & calendar,
+                                       const int settlementDays,
+                                       const RollingConvention roll,
+                                       const int compoundFrequency)
+	 :currency_(currency), dayCounter_(dayCounter),
+	  todaysDate_(todaysDate), calendar_(calendar),
+	  settlementDays_(settlementDays), roll_(roll),
+	  compoundFrequency_(compoundFrequency),
+	  needsBootstrap_(true),
+	  forwards_(forwards)
+      {
+
+         QL_REQUIRE(inpPeriods.size() > 0, "No input Periods given");
+         QL_REQUIRE(forwards_.size() > 0, "No input rates given");
+         QL_REQUIRE(inpPeriods.size() == forwards_.size(),
+                    "Inconsistent number of Periods/Forward Rates");
+         settlementDate_ = calendar.advance(todaysDate_,
+                                            settlementDays_, Days);
+         discounts_ = std::vector < DiscountFactor > ();
+
+         for(Size i = 0; i < inpPeriods.size(); i++)
+            dates_.push_back(calendar.advance(settlementDate_,
+                                              inpPeriods[i],
                                               roll));
          inputDates_ = dates_;
 
@@ -161,6 +195,10 @@ namespace QuantLib
          }
          catch(...)
          {
+	    // signal incomplete state
+	    needsBootstrap_ = true;
+	    // rethrow
+	    throw;
          }
       }
 
@@ -222,20 +260,6 @@ namespace QuantLib
          if (t == times_[n])
                return discounts_[n];
             return (*dfinterp_) (t);
-      }
-
-      Rate CompoundForward::zeroYieldImpl(Time t, bool extrapolate) const
-      {
-         if(needsBootstrap_)
-            bootstrap();
-         return DiscountStructure::zeroYieldImpl(t, extrapolate);
-      }
-
-      Rate CompoundForward::forwardImpl(Time t, bool extrapolate) const
-      {
-         if(needsBootstrap_)
-            bootstrap();
-         return DiscountStructure::forwardImpl(t, extrapolate);
       }
 
       int CompoundForward::referenceNode(Time t, bool extrapolate) const
