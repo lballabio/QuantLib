@@ -1,6 +1,7 @@
 includedir = $(prefix)/include/QuantLib/MonteCarlo
 include_HEADERS = antitheticcv.h \
-	averageasianpathpricer.h \
+	averagepriceasianpathpricer.h \
+	averagestrikeasianpathpricer.h \
 	basketpathpricer.h \
 	boxmuller.h \
 	centrallimitgaussian.h \
@@ -28,4 +29,3 @@ include_HEADERS = antitheticcv.h \
 	standardmultipathgenerator.h \
 	standardpathgenerator.h \
 	uniformrandomgenerator.h
-
