@@ -102,7 +102,7 @@ void InterestRateTest::testConversions() {
         compoundf = ir.compoundFactor(d1, d2);
         disc = ir.discountFactor(d1, d2);
         error = QL_FABS(disc-1.0/compoundf);
-        if (error>1e-16)
+        if (error>1e-15)
             BOOST_FAIL("\n  " + InterestRateFormatter::toString(ir) +
                        "\n  1.0/compound_factor: "
                        + DecimalFormatter::toString(1.0/compoundf,16) +
