@@ -229,7 +229,7 @@ int main(int argc, char* argv[])
         for (i=0; i<termTimes.size(); i++)
             times.push_back(termTimes[i]);
         // Building time-grid
-        TimeGrid<std::list<Time>::iterator> grid(times.begin(), times.end(), 30);
+        TimeGrid grid(times.begin(), times.end(), 30);
 
         Handle<Model> modelHW(new HullWhite(rhTermStructure));
         Handle<Model> modelHW2(new HullWhite(rhTermStructure));
