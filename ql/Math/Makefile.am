@@ -27,7 +27,6 @@ include_HEADERS = \
 	incrementalstatistics.hpp \
 	interpolation.hpp \
 	interpolation2D.hpp \
-	interpolationtraits.hpp \
 	kronrodintegral.hpp \
 	lexicographicalview.hpp \
 	linearinterpolation.hpp \
