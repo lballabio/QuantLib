@@ -24,6 +24,7 @@
 #define quantlib_interpolation_h
 
 #include <ql/errors.hpp>
+#include <ql/types.hpp>
 
 namespace QuantLib {
 
