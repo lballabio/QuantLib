@@ -1,5 +1,6 @@
 
 /*!
+ Copyright (C) 2004 Ferdinando Ametrano
  Copyright (C) 2000, 2001, 2002, 2003 Sadruddin Rejeb
 
  This file is part of QuantLib, a free-software/open-source library
@@ -228,13 +229,32 @@ int main(int, char* [])
         // Building time-grid
         TimeGrid grid(times.begin(), times.end(), 30);
 
+        boost::shared_ptr<G2> modelG2(new G2(rhTermStructure));
         boost::shared_ptr<HullWhite> modelHW(new HullWhite(rhTermStructure));
         boost::shared_ptr<HullWhite> modelHW2(new HullWhite(rhTermStructure));
         boost::shared_ptr<BlackKarasinski> modelBK(
                                         new BlackKarasinski(rhTermStructure));
 
+
         std::cout << "Calibrating to swaptions" << std::endl;
 
+        std::cout << "G2 (analytic formulae):" << std::endl;
+        for (i=0; i<swaptions.size(); i++)
+            swaptions[i]->setPricingEngine(boost::shared_ptr<PricingEngine>(
+                                      new G2SwaptionEngine(modelG2, 6.0, 16)));
+
+        calibrateModel(modelG2, swaptions, 0.05);
+        std::cout << "calibrated to:\n"
+                  << "a     = " << modelG2->params()[0] << "\n"
+                  << "sigma = " << modelG2->params()[1] << "\n"
+                  << "b     = " << modelG2->params()[2] << "\n"
+                  << "eta   = " << modelG2->params()[3] << "\n"
+                  << "rho   = " << modelG2->params()[4]
+                  << std::endl
+                  << std::endl;
+
+                 
+                  
         std::cout << "Hull-White (analytic formulae):" << std::endl;
         for (i=0; i<swaptions.size(); i++)
             swaptions[i]->setPricingEngine(boost::shared_ptr<PricingEngine>(
@@ -271,6 +291,7 @@ int main(int, char* [])
                   << std::endl
                   << std::endl;
 
+
         std::cout << "Pricing an ATM bermudan swaption" << std::endl;
 
         // Define the bermudan swaption
@@ -293,6 +314,11 @@ int main(int, char* [])
                                        new TreeSwaptionEngine(modelHW, 100)));
 
         // Do the pricing for each model
+        bermudanSwaption.setPricingEngine(
+            boost::shared_ptr<PricingEngine>(
+                                      new G2SwaptionEngine(modelG2, 6.0, 16)));
+        std::cout << "G2:       " << bermudanSwaption.NPV() << std::endl;
+
         bermudanSwaption.setPricingEngine(
             boost::shared_ptr<PricingEngine>(
                                       new TreeSwaptionEngine(modelHW, 100)));
@@ -319,6 +345,11 @@ int main(int, char* [])
         // Do the pricing for each model
         otmBermudanSwaption.setPricingEngine(
             boost::shared_ptr<PricingEngine>(
+                                      new G2SwaptionEngine(modelG2, 6.0, 16)));
+        std::cout << "G2:       " << otmBermudanSwaption.NPV() << std::endl;
+
+        otmBermudanSwaption.setPricingEngine(
+            boost::shared_ptr<PricingEngine>(
                                       new TreeSwaptionEngine(modelHW, 100)));
         std::cout << "HW:       " << otmBermudanSwaption.NPV() << std::endl;
 
@@ -343,8 +374,14 @@ int main(int, char* [])
         // Do the pricing for each model
         itmBermudanSwaption.setPricingEngine(
             boost::shared_ptr<PricingEngine>(
+                                      new G2SwaptionEngine(modelG2, 6.0, 16)));
+        std::cout << "G2:       " << itmBermudanSwaption.NPV() << std::endl;
+
+        itmBermudanSwaption.setPricingEngine(
+            boost::shared_ptr<PricingEngine>(
                                       new TreeSwaptionEngine(modelHW, 100)));
         std::cout << "HW:       " << itmBermudanSwaption.NPV() << std::endl;
+
         itmBermudanSwaption.setPricingEngine(
             boost::shared_ptr<PricingEngine>(
                                       new TreeSwaptionEngine(modelHW2, 100)));
