@@ -12,7 +12,7 @@ EXTRA_DIST=Authors.txt \
 	QuantLib.dsw \
 	QuantLib.mak \
 	QuantLib.prj \
-	QuantLib.prj.exp
+	QuantLib.prj.exp \
 	Readme.txt \
 	README-win.txt \
 	README-mac.txt \
