@@ -2,4 +2,4 @@
 Changes since latest release:
 
 - Added pricing engine for American options with Ju quadratic approximation
-
+- Reworked the DiscretizedAsset interface

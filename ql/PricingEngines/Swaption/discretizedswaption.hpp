@@ -45,7 +45,8 @@ namespace QuantLib {
             adjustValues();
         }
 
-        void addTimesTo(std::list<Time>& times) const {
+        std::vector<Time> mandatoryTimes() const {
+            std::vector<Time> times;
             Time t;
             Size i;
             for (i=0; i<arguments_.fixedPayTimes.size(); i++) {
@@ -63,6 +64,7 @@ namespace QuantLib {
                 if (t >= 0.0)
                     times.push_back(t);
             }
+            return times;
         }
       protected:
         void preAdjustValuesImpl();

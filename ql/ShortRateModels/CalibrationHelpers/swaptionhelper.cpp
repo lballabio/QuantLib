@@ -15,9 +15,10 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include <ql/CashFlows/floatingratecoupon.hpp>
 #include <ql/ShortRateModels/CalibrationHelpers/swaptionhelper.hpp>
 #include <ql/PricingEngines/Swaption/blackswaptionengine.hpp>
+#include <ql/PricingEngines/Swaption/discretizedswaption.hpp>
+#include <ql/CashFlows/floatingratecoupon.hpp>
 #include <ql/Instruments/payoffs.hpp>
 
 namespace QuantLib {
@@ -68,19 +69,12 @@ namespace QuantLib {
     }
 
     void SwaptionHelper::addTimesTo(std::list<Time>& times) const {
-        Swaption::arguments params;
-        swaption_->setupArguments(&params);
-        Size i;
-        for (i=0; i<params.stoppingTimes.size(); i++)
-            times.push_back(params.stoppingTimes[i]);
-        for (i=0; i<params.fixedResetTimes.size(); i++)
-            times.push_back(params.fixedResetTimes[i]);
-        for (i=0; i<params.fixedPayTimes.size(); i++)
-            times.push_back(params.fixedPayTimes[i]);
-        for (i=0; i<params.floatingResetTimes.size(); i++)
-            times.push_back(params.floatingResetTimes[i]);
-        for (i=0; i<params.floatingPayTimes.size(); i++)
-            times.push_back(params.floatingPayTimes[i]);
+        Swaption::arguments args;
+        swaption_->setupArguments(&args);
+        std::vector<Time> swaptionTimes = 
+            DiscretizedSwaption(args).mandatoryTimes();
+        std::copy(swaptionTimes.begin(), swaptionTimes.end(),
+                  std::back_inserter(times));
     }
 
     Real SwaptionHelper::modelValue() const {

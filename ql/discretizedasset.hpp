@@ -59,9 +59,9 @@ namespace QuantLib {
 
         /*! \name High-level interface
 
-            Users of discretized assets should use these methods for
-            initializing, evolving and take the present value of the
-            assets.
+            Users of discretized assets should use these methods in
+            order to initialize, evolve and take the present value of
+            the assets.
 
             @{
         */
@@ -114,12 +114,27 @@ namespace QuantLib {
             postAdjustValues();
         }
 
+        /*! This method returns the times at which the numerical
+            method should stop while rolling back the asset. Typical
+            examples include payment times, exercise times and such.
+
+            \note The returned values are not guaranteed to be sorted.
+        */
+        virtual std::vector<Time> mandatoryTimes() const {
+            return std::vector<Time>();
+        }
+
+        #ifndef QL_DISABLE_DEPRECATED
         /*! This method appends to the given list the times at which
             the numerical method should stop while rolling back.
-            Typical examples include payment times, exercise times
-            and such.
+
+            \deprecated use mandatoryTimes() instead.
         */
-        virtual void addTimesTo(std::list<Time>&) const {}
+        virtual void addTimesTo(std::list<Time>& l) const {
+            std::vector<Time> times = mandatoryTimes();
+            std::copy(times.begin(), times.back(), std::back_inserter(l));
+        }
+        #endif
         //@}
       protected:
         /*! This method checks whether the asset was rolled at the
@@ -168,7 +183,7 @@ namespace QuantLib {
         : underlying_(underlying), exerciseType_(exerciseType),
           exerciseTimes_(exerciseTimes) {}
         void reset(Size size);
-        void addTimesTo(std::list<Time>& times) const;
+        std::vector<Time> mandatoryTimes() const;
       protected:
         void postAdjustValuesImpl();
         void applyExerciseCondition();
@@ -229,16 +244,16 @@ namespace QuantLib {
         adjustValues();
     }
 
-    inline void DiscretizedOption::addTimesTo(std::list<Time>& times) const {
-        underlying_->addTimesTo(times);
+    inline std::vector<Time> DiscretizedOption::mandatoryTimes() const {
+        std::vector<Time> times = underlying_->mandatoryTimes();
         // discard negative times...
         std::vector<Time>::const_iterator i =
             std::find_if(exerciseTimes_.begin(),exerciseTimes_.end(),
                          std::bind2nd(std::greater_equal<Time>(),0.0));
         // and add the positive ones
         std::copy(i,exerciseTimes_.end(),std::back_inserter(times));
+        return times;
     }
-
 
     inline void DiscretizedOption::applyExerciseCondition() {
         for (Size i=0; i<values_.size(); i++)

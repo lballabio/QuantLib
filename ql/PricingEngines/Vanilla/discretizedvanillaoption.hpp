@@ -45,9 +45,8 @@ namespace QuantLib {
 
         void reset(Size size);
 
-        void addTimesTo(std::list<Time>& times) const {
-            for (Size i=0; i<arguments_.stoppingTimes.size(); i++)
-                times.push_back(arguments_.stoppingTimes[i]);
+        std::vector<Time> mandatoryTimes() const {
+            return arguments_.stoppingTimes;
         }
       protected:
         void postAdjustValuesImpl();

@@ -16,9 +16,10 @@
 */
 
 #include <ql/ShortRateModels/CalibrationHelpers/caphelper.hpp>
+#include <ql/PricingEngines/CapFloor/blackcapfloorengine.hpp>
+#include <ql/PricingEngines/CapFloor/discretizedcapfloor.hpp>
 #include <ql/CashFlows/cashflowvectors.hpp>
 #include <ql/Instruments/swap.hpp>
-#include <ql/PricingEngines/CapFloor/blackcapfloorengine.hpp>
 
 namespace QuantLib {
 
@@ -77,13 +78,12 @@ namespace QuantLib {
     }
 
     void CapHelper::addTimesTo(std::list<Time>& times) const {
-        CapFloor::arguments params;
-        cap_->setupArguments(&params);
-        Size nPeriods = params.startTimes.size();
-        for (Size i=0; i<nPeriods; i++) {
-            times.push_back(params.startTimes[i]);
-            times.push_back(params.endTimes[i]);
-        }
+        CapFloor::arguments args;
+        cap_->setupArguments(&args);
+        std::vector<Time> capTimes = 
+            DiscretizedCapFloor(args).mandatoryTimes();
+        std::copy(capTimes.begin(), capTimes.end(),
+                  std::back_inserter(times));
     }
 
     Real CapHelper::modelValue() const {

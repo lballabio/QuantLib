@@ -31,7 +31,7 @@ namespace QuantLib {
     class DiscretizedCapFloor : public DiscretizedAsset {
       public:
         #ifndef QL_DISABLE_DEPRECATED
-        /*! \deprecated use the constructor with no arguments */
+        /*! \deprecated use the constructor with a single argument */
         DiscretizedCapFloor(const boost::shared_ptr<NumericalMethod>& method,
                             const CapFloor::arguments& args)
         : DiscretizedAsset(method), arguments_(args) {}
@@ -47,11 +47,11 @@ namespace QuantLib {
 
         void preAdjustValues();
 
-        void addTimesTo(std::list<Time>& times) const {
-            for (Size i=0; i<arguments_.startTimes.size(); i++) {
-                times.push_back(arguments_.startTimes[i]);
-                times.push_back(arguments_.endTimes[i]);
-            }
+        std::vector<Time> mandatoryTimes() const {
+            std::vector<Time> times = arguments_.startTimes;
+            std::copy(arguments_.endTimes.begin(), arguments_.endTimes.end(),
+                      std::back_inserter(times));
+            return times;
         }
       protected:
         void preAdjustValuesImpl();

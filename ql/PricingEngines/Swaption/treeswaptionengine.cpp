@@ -35,45 +35,18 @@ namespace QuantLib {
     void TreeSwaptionEngine::calculate() const {
 
         QL_REQUIRE(model_, "no model specified");
-        boost::shared_ptr<Lattice> lattice;
-
-        if (!lattice_) {
-            std::list<Time> times;
-            Time t;
-            Size i;
-            for (i=0; i<arguments_.stoppingTimes.size(); i++) {
-                t = arguments_.stoppingTimes[i];
-                if (t >= 0.0)
-                    times.push_back(t);
-            }
-            for (i=0; i<arguments_.fixedResetTimes.size(); i++) {
-                t = arguments_.fixedResetTimes[i];
-                if (t >= 0.0)
-                    times.push_back(t);
-            }
-            for (i=0; i<arguments_.fixedPayTimes.size(); i++) {
-                t = arguments_.fixedPayTimes[i];
-                if (t >= 0.0)
-                    times.push_back(t);
-            }
-            for (i=0; i<arguments_.floatingResetTimes.size(); i++) {
-                t = arguments_.floatingResetTimes[i];
-                if (t >= 0.0)
-                    times.push_back(t);
-            }
-            for (i=0; i<arguments_.floatingPayTimes.size(); i++) {
-                t = arguments_.floatingPayTimes[i];
-                if (t >= 0.0)
-                    times.push_back(t);
-            }
-
-            TimeGrid timeGrid(times.begin(), times.end(), timeSteps_);
-            lattice = model_->tree(timeGrid);
-        } else {
-            lattice = lattice_;
-        }
 
         DiscretizedSwaption swaption(arguments_);
+        boost::shared_ptr<Lattice> lattice;
+
+        if (lattice_) {
+            lattice = lattice_;
+        } else {
+            std::vector<Time> times = swaption.mandatoryTimes();
+            TimeGrid timeGrid(times.begin(), times.end(), timeSteps_);
+            lattice = model_->tree(timeGrid);
+        }
+
         swaption.initialize(lattice, arguments_.stoppingTimes.back());
 
         Time nextExercise = 

@@ -36,24 +36,17 @@ namespace QuantLib {
     void TreeCapFloorEngine::calculate() const {
 
         QL_REQUIRE(model_, "no model specified");
-        boost::shared_ptr<Lattice> lattice;
-
-        if (!lattice_) {
-            std::list<Time> times(0);
-            Size nPeriods = arguments_.startTimes.size();
-            Size i;
-            for (i=0; i<nPeriods; i++) {
-                times.push_back(arguments_.startTimes[i]);
-                times.push_back(arguments_.endTimes[i]);
-            }
-
-            TimeGrid timeGrid(times.begin(), times.end(), timeSteps_);
-            lattice = model_->tree(timeGrid);
-        } else {
-            lattice = lattice_;
-        }
 
         DiscretizedCapFloor capfloor(arguments_);
+        boost::shared_ptr<Lattice> lattice;
+
+        if (lattice_) {
+            lattice = lattice_;
+        } else {
+            std::vector<Time> times = capfloor.mandatoryTimes();
+            TimeGrid timeGrid(times.begin(), times.end(), timeSteps_);
+            lattice = model_->tree(timeGrid);
+        }
 
         capfloor.initialize(lattice, arguments_.endTimes.back());
         capfloor.rollback(arguments_.startTimes.front());
