@@ -15,6 +15,7 @@ include_HEADERS = \
 	fdtypedefs.hpp \
 	finitedifferencemodel.hpp \
 	impliciteuler.hpp \
+    onefactoroperator.hpp \
 	stepcondition.hpp \
 	tridiagonaloperator.hpp \
 	valueatcenter.hpp
@@ -23,6 +24,7 @@ EXTRA_DIST=makefile.mak
 
 libFiniteDifferences_la_SOURCES = \
     bsmoperator.cpp \
+    onefactoroperator.cpp \
     tridiagonaloperator.cpp \
     valueatcenter.cpp
 
