@@ -1,115 +1,100 @@
-add quanto, forward and performance forward to test suite
+FINITE DIFFERENCE FRAMEWORK
+-*allow for time dependant parameters
+-*boundary conditions as in Wilmott
+-*Douglas scheme (QuEP)
+-*Richardson extrapolation (QuEP)
+-*SOR rollback for free boundary condition
+-*have time scheme as input
+- clean up FDMultiPeriodOption
+- check american with discrete dividends
+- merge rollback scheme with tree rollback scheme
+-*use DicretisedAsset instaed of array
 
-check addDates
-future convexity adjustment
-make unit test to work under Borland
+MONTE CARLO FRAMEWORK
+- add example of Martingale control variate
+- add examples of Montecarlo internal and Montecarlo convergence
+-*replace all instance of seed with a random generator
+-*have statistics class as input
+- add Milstein Scheme
+-*revise multidimensional MonteCarlo
+-*time-dependant parameter in path generator
+-*asset-dependant parameters in path generator
 
-clean up FDMultiPeriodOption
-update freshmeat description
-get in touch with Gnumeric team
+VOLATILITY
+-*local volatility
 
-revise interpolation allowExtrapolation
+PRICING ENGINE FRAMEWORK
+- create Arguments class not including strike and use it in forward options
+-*create vanilla FD example
+-*create vanilla MC example
+-*add new engines to test-suite
+- deprecate old pricers
+-*fix quantotermstructure/drifttermstructure problem
+-*MC with both tolerance and/or fixed number of samples
 
-Louw copyright
+MISCELLANEA
+-*make unit test to work under Borland
+-*add quanto, forward and performance forward to test suite
+- verify PDB distribution
+- remove defines in MS VC project settings
+- solve copyright issues for external packages (COOOL, GAlib, etc.)
+- ISDA/FpML
+- PRMIA
+- update freshmeat description
+- get in touch with Gnumeric team
+- Louw copyright
+- revise interpolation allowExtrapolation
+- add solver's target value (now the target value is 0.0)
+- RPM package
+- document namespaces on InterestRateDerivatives, Optimizers
+- introduce compoundpathpricer ???
+- GaussianPathGenerator, etc: allow for more general random walks
+- what about barrier or FD with dividends ???
+- revisite model/slice interface
+- IRR, duration, etc for a cash flow stream
+- QuantLib dynamic Win32 library (QuantLib.dll)
+- clean up accuracy definition in solver1D (x or f(x) accuracy ?)
+- implement round as per OMG enumeration/definition
+- add one-touch option (american binary)
+- implement dividendRho for dividendOption
+- add historicalvolatility to RiskMeasures
+- histogram class
+- contact M. Higgings
+- check disable warning 4786 better
+- understand difference between multi-threaded and multi-threaded dll
+- && (_MSC_VER >= 1200)
 
-add solver's target value (now the target value is 0.0)
-check american with discrete dividends
+ASIAN
+- continuous geometric APO backward starting instead of forward starting
+- introduce continuous geometric ASO
+- handle backward starting asian
 
-DISTRIBUTING
-    RPM package
+OPTIMIZATION FRAMEWORK
+- create a framework similar to the Solver1d framework
+- add GALib (genetic algorithm)
+- add COOOL algorithms
 
-COMPILING
-    borland compiler build tree indipendent from source tree
-    check compile success/failure on other platforms/compilers
-    Borland projects
-
-LIBRARY
-
-    PRICING ENGINE FRAMEWORK
-        create Arguments class not including strike and use it in forward options
-        create vanilla FD example
-        create vanilla MC example
-        add to test-suite
-        deprecate old pricers
-        fix quantotermstructure problem
-        MC path generator time dependant
-        MC with both tolerance and/or fixed number of samples
-
-    MONTE CARLO FRAMEWORK
-        allow for time dependant parameters
-        add example of Martingale control variate
-        add examples of Montecarlo internal and Montecarlo convergence
-        replace all instance of seed with a random generator
-        have statistics class as input
-        add Milstein Scheme
-        make drift and diffusion time dependant
-
-    FINITE DIFFERENCE FRAMEWORK
-        allow for time dependant parameters
-        boundary conditions as in Wilmott
-        Douglas scheme (QuEP)
-        Richardson extrapolation (QuEP)
-        SOR for free boundary condition
-        have time scheme as input
-
-    TREE framework
-        allow for time dependant parameters
-
-    ASIAN:
-        continuous geometric APO backward starting instead of forward starting
-        introduce continuous geometric ASO
-        handle backward starting asian
-
-    OPTIMIZATION FRAMEWORK:
-        create a framework similar to the Solver1d framework
-        add GALib (genetic algorithm)
-        add COOOL algorithms
-
-    QuEP:
-        Currency as class with methods returning related info
-        implement currency as per OMG definition
-
-    document namespaces on InterestRateDerivatives, Optimizers
-
-    introduce compoundpathpricer
-    GaussianPathGenerator, etc: allow for more general random walks
-
-    what about barrier or FD with dividends ???
-    revisite model/slice interface
-
-    QuEP:
-        Payoff class from EuropeanOption into QuantLib
-        redesign payoff class for integral (Green) option pricing, step
-        condition, strategy, etc.
-
-
-    add futures convexity adjustment
-    cash flow stream for IRR, duration
-    QuantLib dynamic Win32 library (QuantLib.dll)
-    develop C++ unit test suite based on boost
-    clean up accuracy definition in solver1D (x or f(x) accuracy ?)
-    implement round as per OMG enumeration/definition
-    add one-touch option (american binary)
-    implement dividendRho for dividendOption
-    add historicalvolatility to RiskMeasures
-    rename all files/dirs to lowercase no spaces (except INSTALL, TODO?)
-    histogram class
-    contact M. Higgings
+QuEP
+- Currency as class with methods returning related info
+- implement currency as per OMG definition
 
 DOCUMENTATION
-    http://www.iisec.com/
-    use tidy (if available) on the HTML documentation
-    enforce fulpath&classesinclude DoxyGen requirements
-    add/update FAQ material in QuantLib-site TOD.txt
+- http://www.iisec.com/
+- use tidy (if available) on the HTML documentation
+- enforce fulpath&classesinclude DoxyGen requirements
+- add/update FAQ material in QuantLib-site TOD.txt
 
-VARIUOS
-    verify PDB distribution
-    remove defines in MS VC project settings
-    solve copyright issues for external packages (COOOL, GAlib, etc.)
-    Gnumeric
-    ISDA/FpML
-    PRMIA
+YIELD CURVE
+- future convexity adjustment
+- end of year turn
 
-    check disable warning 4786 better
-    understand difference between multi-threaded and multi-threaded dll
-    && (_MSC_VER >= 1200)
+TREES
+- check addDates
+- BS correction
+- merge rollback scheme with FD merge scheme
+- trinomial trees
+- implied trinomial trees
+COMPILING
+- borland compiler build tree indipendent from source tree
+- check compile success/failure on other platforms/compilers available @SF
+- Borland projects
