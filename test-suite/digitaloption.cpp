@@ -670,10 +670,8 @@ void DigitalOptionTest::testMCCashAtHit() {
 
     DigitalOptionData values[] = {
         //        type, strike,   spot,    q,    r,   t,  vol,   value, tol
-        { Option::Put,  100.00, 105.00, 0.20, 0.10, 0.5, 0.20, 12.2715, 5e-3 },
-        { Option::Call, 100.00,  95.00, 0.20, 0.10, 0.5, 0.20,  8.9109, 5e-3 }
-//        { Option::Call, 100.00, 105.00, 0.20, 0.10, 0.5, 0.20, 15.0000, 1e-16},
-//        { Option::Put,  100.00,  95.00, 0.20, 0.10, 0.5, 0.20, 15.0000, 1e-16}
+        { Option::Put,  100.00, 105.00, 0.20, 0.10, 0.5, 0.20, 12.2715, 1e-3 },
+        { Option::Call, 100.00,  95.00, 0.20, 0.10, 0.5, 0.20,  8.9109, 3e-3 }
     };
 
     DayCounter dc = Actual360();
@@ -713,14 +711,6 @@ void DigitalOptionTest::testMCCashAtHit() {
                                 Handle<YieldTermStructure>(rTS),
                                 Handle<BlackVolTermStructure>(volTS)));
 
-        antitheticVariate = true;
-        brownianBridge = false;
-        boost::shared_ptr<PricingEngine> mcEngine(new
-            MCDigitalEngine<PseudoRandom>(maxTimeStepsPerYear, brownianBridge,
-                                          antitheticVariate, controlVariate,
-                                          Null<Size>(), values[i].tol,
-                                          maxSamples, seed));
-
         antitheticVariate = false;
         brownianBridge = true;
         Size requiredSamples = Size(QL_POW(2.0, 14)-1);
@@ -731,26 +721,12 @@ void DigitalOptionTest::testMCCashAtHit() {
                                             requiredSamples, Null<Real>(),
                                             maxSamples, seed));
 
-
-
         VanillaOption opt(stochProcess, payoff, amExercise,
-                          mcEngine);
+                          mcldEngine);
 
         Real calculated = opt.NPV();
-/*
-        std::cout << "\n MC:   " << DecimalFormatter::toString(calculated);
-
-        opt.setPricingEngine(mcldEngine);
-        Real calculatedLD = opt.NPV();
-        std::cout << "\n MCLD: " << DecimalFormatter::toString(calculatedLD) << " with samples: " << requiredSamples;
-
-        boost::shared_ptr<PricingEngine> amEngine(new AnalyticDigitalAmericanEngine());
-        opt.setPricingEngine(amEngine);
-        Real calcAnalytic = opt.NPV();
-        std::cout << "\n anal: " << DecimalFormatter::toString(calcAnalytic);
-*/
-        Real error = relativeError(calculated, values[i].result, values[i].result);
-        if (error > 2.0*values[i].tol) {
+        Real error = QL_FABS(calculated-values[i].result);
+        if (error > values[i].tol) {
             REPORT_FAILURE("value", payoff, amExercise, values[i].s,
                            values[i].q, values[i].r, today, values[i].v,
                            values[i].result, calculated, error, values[i].tol);

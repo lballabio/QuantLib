@@ -440,27 +440,6 @@ void BasketOptionTest::testBarraquandThreeValues() {
     boost::shared_ptr<SimpleQuote> vol3(new SimpleQuote(0.0));
     boost::shared_ptr<BlackVolTermStructure> volTS3 = flatVol(today, vol3, dc);
 
-    Size maxSamples = 200000;
-    Real mcRelativeErrorTolerance = 0.01;
-    Real mcAmericanRelativeErrorTolerance = 0.1;
-    boost::shared_ptr<PricingEngine> mcEngine(
-        new MCBasketEngine<PseudoRandom, Statistics>(1, false, false, false,
-                                                     Null<Size>(), 0.005,
-                                                     maxSamples, 42));
-
-    // use a 3D sobol sequence...
-    // Think long and hard before moving to more than 1 timestep....
-    boost::shared_ptr<PricingEngine> mcQuasiEngine(
-        new MCBasketEngine<LowDiscrepancy, Statistics>(1, false, false, false,
-                                                       Null<Size>(), 0.005,
-                                                       maxSamples, 42));
-
-    Size requiredSamples = 20000;
-    Size timeSteps = 20;
-    BigNatural seed = 1;
-    boost::shared_ptr<PricingEngine> mcLSMCEngine(
-        new MCAmericanBasketEngine(requiredSamples, timeSteps, seed));
-
     for (Size i=0; i<LENGTH(values); i++) {
 
         boost::shared_ptr<PlainVanillaPayoff> payoff(new
@@ -507,12 +486,25 @@ void BasketOptionTest::testBarraquandThreeValues() {
             correlation[j][j] = 1.0;
         }
 
+
+
+
+        // use a 3D sobol sequence...
+        // Think long and hard before moving to more than 1 timestep....
+        boost::shared_ptr<PricingEngine> mcQuasiEngine(new
+            MCBasketEngine<LowDiscrepancy>(1, false, false, false,
+                                           8091, Null<Real>(),
+                                           Null<Size>(), 42));
+
         BasketOption euroBasketOption(values[i].basketType, procs, payoff,
                                   exercise, correlation, mcQuasiEngine);
 
         Real expected = values[i].euroValue;
+        // std::cerr<<"\n starting euro calculation";
         Real calculated = euroBasketOption.NPV();
+        // std::cerr<<"\neuro " << calculated << "\n";
         Real relError = relativeError(calculated, expected, values[i].s1);
+        Real mcRelativeErrorTolerance = 0.01;
         if (relError > mcRelativeErrorTolerance ) {
             REPORT_FAILURE_3("MC Quasi value", values[i].basketType, payoff,
                              exercise, values[i].s1, values[i].s2,
@@ -522,14 +514,23 @@ void BasketOptionTest::testBarraquandThreeValues() {
                              mcRelativeErrorTolerance);
         }
 
-        //std::cout<<"\neuro " << calculated;
+
+        Size requiredSamples = 20000;
+        Size timeSteps = 20;
+        BigNatural seed = 1;
+        boost::shared_ptr<PricingEngine> mcLSMCEngine(
+            new MCAmericanBasketEngine(requiredSamples, timeSteps, seed));
+
+
         BasketOption amBasketOption(values[i].basketType, procs, payoff,
                                   amExercise, correlation, mcLSMCEngine);
 
         expected = values[i].amValue;
+        // std::cerr<<"\n  starting american ";
         calculated = amBasketOption.NPV();
-        //std::cout<<"\namerican " << calculated << "\n";
+        // std::cerr<<"\namerican " << calculated << "\n";
         relError = relativeError(calculated, expected, values[i].s1);
+        Real mcAmericanRelativeErrorTolerance = 0.1;
         if (relError > mcAmericanRelativeErrorTolerance) {
             REPORT_FAILURE_3("MC LSMC Value", values[i].basketType, payoff,
                              exercise, values[i].s1, values[i].s2,
@@ -585,8 +586,6 @@ void BasketOptionTest::testTavellaValues() {
     boost::shared_ptr<PricingEngine> mcLSMCEngine(
         new MCAmericanBasketEngine(requiredSamples, timeSteps, seed));
 
-    //boost::shared_ptr<PricingEngine> mcEuroEngine(new MCBasketEngine<PseudoRandom, Statistics>
-    //   (1, false, false, Null<Size>(), 0.005, Null<Size>(), false, 42));
 
     boost::shared_ptr<PlainVanillaPayoff> payoff(new
         PlainVanillaPayoff(values[0].type, values[0].strike));
@@ -729,10 +728,6 @@ void BasketOptionTest::testOneDAmericanValues() {
 
     Matrix correlation(1, 1, 1.0);
 
-    boost::shared_ptr<PricingEngine> mcEngine(
-        new MCBasketEngine<PseudoRandom, Statistics>(1, false, false, false,
-                                                     Null<Size>(), 0.005,
-                                                     Null<Size>(), 42));
 
     for (Size i=0; i<LENGTH(values); i++) {
         boost::shared_ptr<PlainVanillaPayoff> payoff(new

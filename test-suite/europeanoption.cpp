@@ -122,7 +122,7 @@ namespace {
             break;
           case PseudoMonteCarlo:
             engine = MakeMCEuropeanEngine<PseudoRandom>().withStepsPerYear(1)
-                                                         .withTolerance(0.05)
+                                                         .withSamples(2000)
                                                          .withSeed(42);
             break;
           case QuasiMonteCarlo:
@@ -1029,13 +1029,22 @@ void EuropeanOptionTest::testMcEngines() {
     BOOST_MESSAGE("Testing Monte Carlo European engines "
                   "against analytic results...");
 
-    EngineType engines[] = { PseudoMonteCarlo, QuasiMonteCarlo };
+    EngineType engines[] = { PseudoMonteCarlo };
     testEngineConsistency(engines,LENGTH(engines));
 }
 
+void EuropeanOptionTest::testQmcEngines() {
+
+    BOOST_MESSAGE("Testing Quasi Monte Carlo European engines "
+                  "against analytic results...");
+
+    EngineType engines[] = { QuasiMonteCarlo };
+    testEngineConsistency(engines,LENGTH(engines));
+}
 
 test_suite* EuropeanOptionTest::suite() {
     test_suite* suite = BOOST_TEST_SUITE("European option tests");
+
     suite->add(BOOST_TEST_CASE(&EuropeanOptionTest::testValues));
     suite->add(BOOST_TEST_CASE(&EuropeanOptionTest::testGreekValues));
     suite->add(BOOST_TEST_CASE(&EuropeanOptionTest::testGreeks));
@@ -1044,6 +1053,7 @@ test_suite* EuropeanOptionTest::suite() {
                            &EuropeanOptionTest::testImpliedVolContainment));
     suite->add(BOOST_TEST_CASE(&EuropeanOptionTest::testBinomialEngines));
     suite->add(BOOST_TEST_CASE(&EuropeanOptionTest::testMcEngines));
+    suite->add(BOOST_TEST_CASE(&EuropeanOptionTest::testQmcEngines));
     return suite;
 }
 

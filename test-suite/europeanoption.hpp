@@ -31,6 +31,7 @@ class EuropeanOptionTest {
     static void testImpliedVol();
     static void testImpliedVolContainment();
     static void testBinomialEngines();
+    static void testQmcEngines();
     static void testMcEngines();
     static boost::unit_test_framework::test_suite* suite();
 };

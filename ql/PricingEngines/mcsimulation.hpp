@@ -47,7 +47,7 @@ namespace QuantLib {
             stats_type;
 
         virtual ~McSimulation() {}
-        //! add samples until the required tolerance is reached
+        //! add samples until the required absolute tolerance is reached
         Real value(Real tolerance,
                    Size maxSample = QL_MAX_INTEGER) const;
         //! simulate a fixed number of samples
@@ -99,34 +99,30 @@ namespace QuantLib {
         }
 
         Size nextBatch;
-        Real order, accuracy;
+        Real order;
         Real result = mcModel_->sampleAccumulator().mean();
         Real error = mcModel_->sampleAccumulator().errorEstimate();
-        if (result==0.0) {
-            if (error==0.0) { // deep OTM option
-                accuracy = 0.99*tolerance; // this way it will exit
-            } else {
-                accuracy = error; // not sure I like this approach
-            }
-        } else {
-            accuracy = error/result;
-        }
-        while (accuracy > tolerance) {
+        while (error > tolerance) {
+            QL_REQUIRE(sampleNumber<maxSamples,
+                "max number of samples ("
+                + IntegerFormatter::toString(maxSamples) + 
+                ") reached, while error ("
+                + DecimalFormatter::toString(error) + 
+                ") is still above tolerance ("
+                + DecimalFormatter::toString(tolerance) + 
+                ")");
+
             // conservative estimate of how many samples are needed
-            order = accuracy*accuracy/tolerance/tolerance;
+            order = error*error/tolerance/tolerance;
             nextBatch = Size(QL_MAX<Real>(sampleNumber*order*0.8-sampleNumber,
                                           minSample_));
 
             // do not exceed maxSamples
             nextBatch = QL_MIN(nextBatch, maxSamples-sampleNumber);
-            QL_REQUIRE(nextBatch>0,
-                       "max number of samples exceeded");
-
             sampleNumber += nextBatch;
             mcModel_->addSamples(nextBatch);
             result = mcModel_->sampleAccumulator().mean();
             error = mcModel_->sampleAccumulator().errorEstimate();
-            accuracy = ( (result==0.0) ? error : error/result);
         }
 
         return result;

@@ -553,7 +553,6 @@ void AsianOptionTest::testMCDiscreteArithmeticAveragePrice() {
     boost::shared_ptr<BlackVolTermStructure> volTS = flatVol(today, vol, dc);
 
 
-    Real tolerance = 2.0e-2;
 
     boost::shared_ptr<PricingEngine> engine;
     engine =
@@ -606,6 +605,7 @@ void AsianOptionTest::testMCDiscreteArithmeticAveragePrice() {
 
         Real calculated = option.NPV();
         Real expected = cases4[l].result;
+        Real tolerance = 2.0e-2;
         if (QL_FABS(calculated-expected) > tolerance) {
             REPORT_FAILURE("value", averageType, runningSum, pastFixings,
                         fixingDates, payoff, exercise, spot->value(),

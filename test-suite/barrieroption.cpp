@@ -34,7 +34,7 @@ using namespace boost::unit_test_framework;
 #define REPORT_FAILURE(greekName, barrierType, barrier, rebate, payoff, \
                        exercise, s, q, r, today, v, expected, calculated, \
                        error, tolerance) \
-    BOOST_FAIL(barrierTypeToString(barrierType) + " " + \
+    BOOST_FAIL("\n" + barrierTypeToString(barrierType) + " " + \
                exerciseTypeToString(exercise) + " " \
                + OptionTypeFormatter::toString(payoff->optionType()) + \
                " option with " \
@@ -268,23 +268,6 @@ void BarrierOptionTest::testBabsiriValues() {
 
     BOOST_MESSAGE("Testing barrier options against Babsiri's values...");
 
-    Real maxErrorAllowed = 1.0e-5;
-    Real maxMCErrorAllowed = 1.0e-1;
-
-    Real underlyingPrice = 100.0;
-    Real rebate = 0.0;
-    Rate r = 0.05;
-    Rate q = 0.02;
-
-    Size timeSteps = 1;
-    bool brownianBridge = false;
-    bool antitheticVariate = false;
-    bool controlVariate = false;
-    Size requiredSamples = 10000;
-    Real requiredTolerance = 0.02;
-    Size maxSamples = 1000000;
-    bool isBiased = false;
-
     /*
         Data from
         "Simulating Path-Dependent Options: A New Approach"
@@ -304,6 +287,11 @@ void BarrierOptionTest::testBabsiriValues() {
         { Barrier::UpIn,   0.30,   100,      110,  12.98351,  0.0 }
     };
 
+    Real underlyingPrice = 100.0;
+    Real rebate = 0.0;
+    Rate r = 0.05;
+    Rate q = 0.02;
+
     DayCounter dc = SimpleDayCounter();
     Date today = Date::todaysDate();
     boost::shared_ptr<SimpleQuote> underlying(
@@ -319,14 +307,7 @@ void BarrierOptionTest::testBabsiriValues() {
     boost::shared_ptr<BlackVolTermStructure> volTS =
         flatVol(today, volatility, dc);
 
-    long seed = 5;
-
     boost::shared_ptr<PricingEngine> engine(new AnalyticBarrierEngine);
-    boost::shared_ptr<PricingEngine> mcEngine(
-        new MCBarrierEngine<PseudoRandom>(timeSteps, brownianBridge,
-                                          antitheticVariate, controlVariate,
-                                          requiredSamples, requiredTolerance,
-                                          maxSamples, isBiased, seed));
 
     Calendar calendar = NullCalendar();
     Date exDate = calendar.advance(today,1,Years);
@@ -355,26 +336,40 @@ void BarrierOptionTest::testBabsiriValues() {
                 engine);
         Real calculated = barrierCallOption.NPV();
         Real expected = values[i].callValue;
-        if (QL_FABS(calculated-expected) > maxErrorAllowed) {
-            BOOST_FAIL(
-                "Data at index " + SizeFormatter::toString(i) + ", "
-                "Barrier call option:\n"
-                    "    value:    " +
-                    DecimalFormatter::toString(calculated) + "\n"
-                    "    expected: " +
-                    DecimalFormatter::toString(expected));
+        Real error = QL_FABS(calculated-expected);
+        Real maxErrorAllowed = 1.0e-5;
+        if (error>maxErrorAllowed) {
+            REPORT_FAILURE("value", values[i].type, values[i].barrier,
+                           rebate, callPayoff, exercise, underlyingPrice,
+                           q, r, today, values[i].volatility,
+                           expected, calculated, error, maxErrorAllowed);
         }
+
+        Real maxMcRelativeErrorAllowed = 2.0e-2;
+        Size timeSteps = 1;
+        bool antitheticVariate = false;
+        bool controlVariate = false;
+        bool brownianBridge = true;
+        Size requiredSamples = 131071;
+        Real requiredTolerance = Null<Real>();
+        Size maxSamples = 1000000;
+        bool isBiased = false;
+        long seed = 5;
+
+        boost::shared_ptr<PricingEngine> mcEngine(new
+            MCBarrierEngine<LowDiscrepancy>(timeSteps, brownianBridge,
+                                            antitheticVariate, controlVariate,
+                                            requiredSamples, requiredTolerance,
+                                            maxSamples, isBiased, seed));
 
         barrierCallOption.setPricingEngine(mcEngine);
         calculated = barrierCallOption.NPV();
-        if (QL_FABS(calculated-expected) > maxMCErrorAllowed) {
-            BOOST_FAIL(
-                "Data at index " + SizeFormatter::toString(i) + ", "
-                "Barrier call option MC:\n"
-                    "    value:    " +
-                    DecimalFormatter::toString(calculated) + "\n"
-                    "    expected: " +
-                    DecimalFormatter::toString(expected));
+        error = QL_FABS(calculated-expected)/expected;
+        if (error>maxMcRelativeErrorAllowed) {
+            REPORT_FAILURE("value", values[i].type, values[i].barrier,
+                           rebate, callPayoff, exercise, underlyingPrice,
+                           q, r, today, values[i].volatility,
+                           expected, calculated, error, maxMcRelativeErrorAllowed);
         }
 
     }
@@ -384,22 +379,6 @@ void BarrierOptionTest::testBeagleholeValues() {
 
     BOOST_MESSAGE("Testing barrier options against Beaglehole's values...");
 
-    Real maxErrorAllowed = 1.0e-3;
-    Real maxMCErrorAllowed = 1.5e-1;
-
-    Real underlyingPrice = 50.0;
-    Real rebate = 0.0;
-    Rate r = QL_LOG (1.1);
-    Rate q = 0.00;
-
-    Size timeSteps = 1;
-    bool brownianBridge = false;
-    bool antitheticVariate = false;
-    bool controlVariate = false;
-    Size requiredSamples = 10000;
-    Real requiredTolerance = 0.02;
-    Size maxSamples = 1000000;
-    bool isBiased = false;
 
     /*
         Data from
@@ -412,6 +391,11 @@ void BarrierOptionTest::testBeagleholeValues() {
         { Barrier::DownOut, 0.50,   50,      45,  5.477,  0.0 }
     };
 
+    Real underlyingPrice = 50.0;
+    Real rebate = 0.0;
+    Rate r = QL_LOG (1.1);
+    Rate q = 0.00;
+
     DayCounter dc = SimpleDayCounter();
     Date today = Date::todaysDate();
 
@@ -428,14 +412,8 @@ void BarrierOptionTest::testBeagleholeValues() {
     boost::shared_ptr<BlackVolTermStructure> volTS =
         flatVol(today, volatility, dc);
 
-    long seed = 10;
 
     boost::shared_ptr<PricingEngine> engine(new AnalyticBarrierEngine);
-    boost::shared_ptr<PricingEngine> mcEngine(
-        new MCBarrierEngine<PseudoRandom>(timeSteps, brownianBridge,
-                                          antitheticVariate, controlVariate,
-                                          requiredSamples, requiredTolerance,
-                                          maxSamples, isBiased, seed));
 
     Calendar calendar = NullCalendar();
     Date exDate = calendar.advance(today,1,Years);
@@ -464,26 +442,39 @@ void BarrierOptionTest::testBeagleholeValues() {
                 engine);
         Real calculated = barrierCallOption.NPV();
         Real expected = values[i].callValue;
-        if (QL_FABS(calculated-expected) > maxErrorAllowed) {
-            BOOST_FAIL(
-                "Data at index " + SizeFormatter::toString(i) + ", "
-                "Barrier call option:\n"
-                    "    value:    " +
-                    DecimalFormatter::toString(calculated) + "\n"
-                    "    expected: " +
-                    DecimalFormatter::toString(expected));
+        Real maxErrorAllowed = 1.0e-3;
+        Real error = QL_FABS(calculated-expected);
+        if (error > maxErrorAllowed) {
+            REPORT_FAILURE("value", values[i].type, values[i].barrier,
+                           rebate, callPayoff, exercise, underlyingPrice,
+                           q, r, today, values[i].volatility,
+                           expected, calculated, error, maxErrorAllowed);
         }
+
+        Real maxMcRelativeErrorAllowed = 0.01;
+        Size timeSteps = 1;
+        bool brownianBridge = true;
+        bool antitheticVariate = false;
+        bool controlVariate = false;
+        Size requiredSamples = 131071;
+        Real requiredTolerance = Null<Real>();
+        Size maxSamples = 1000000;
+        bool isBiased = false;
+        long seed = 10;
+        boost::shared_ptr<PricingEngine> mcEngine(
+            new MCBarrierEngine<LowDiscrepancy>(timeSteps, brownianBridge,
+                                            antitheticVariate, controlVariate,
+                                            requiredSamples, requiredTolerance,
+                                            maxSamples, isBiased, seed));
 
         barrierCallOption.setPricingEngine(mcEngine);
         calculated = barrierCallOption.NPV();
-        if (QL_FABS(calculated-expected) > maxMCErrorAllowed) {
-            BOOST_FAIL(
-                "Data at index " + SizeFormatter::toString(i) + ", "
-                "Barrier call option MC:\n"
-                    "    value:    " +
-                    DecimalFormatter::toString(calculated) + "\n"
-                    "    expected: " +
-                    DecimalFormatter::toString(expected));
+        error = QL_FABS(calculated-expected)/expected;
+        if (error>maxMcRelativeErrorAllowed) {
+            REPORT_FAILURE("value", values[i].type, values[i].barrier,
+                           rebate, callPayoff, exercise, underlyingPrice,
+                           q, r, today, values[i].volatility,
+                           expected, calculated, error, maxMcRelativeErrorAllowed);
         }
     }
 }
