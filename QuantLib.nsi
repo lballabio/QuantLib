@@ -11,8 +11,7 @@ Caption "QuantLib - Setup"
 #do not change the name below
 OutFile "..\QuantLib-${VER_NUMBER}-installer.exe"
 
-InstType "Full (w/ Source Code)"
-InstType Typical
+InstType "Full (w/ WinHelp Documentation)"
 InstType Minimal
 
 ComponentText "This will install QuantLib ${VER_NUMBER} on your computer"
@@ -34,24 +33,37 @@ SetDateSave on
 
 
 Section "-QuantLib"
-SectionIn 1 2 3
+SectionIn 1 2
 # this directory must be created first, or the CreateShortCut will not work
     CreateDirectory "$SMPROGRAMS\QuantLib"
     SetOutPath $INSTDIR
-    File "Authors.txt"
-    File "Contributors.txt"
-    File "History.txt"
-    File "LICENSE.txt"
-    File "News.txt"
-    File "README.txt"
-    File "TODO.txt"
+    File "*.txt"
+    File "*.mak"
+    File "*.dsw"
+    File "*.dsp"
+    File "*.nsi"
 
     SetOutPath  $INSTDIR\ql
     File /r "ql\*.hpp"
     File /r "ql\*.h"
     File /r "ql\*.cpp"
     File /r "ql\*.c"
-    File /r "ql\makefile.mak"
+    File /r "ql\*.mak"
+
+    SetOutPath $INSTDIR\test-suite
+    File /r "test-suite\*.txt"
+    File /r "test-suite\*.mak"
+    File /r "test-suite\*.cpp"
+    File /r "test-suite\*.hpp"
+    File /r "test-suite\*.dsp"
+    File /r "test-suite\CPPUNIT-COPYING"
+
+    SetOutPath $INSTDIR\Examples
+    File /r "Examples\*.cpp"
+    File /r "Examples\*.dsp"
+    File /r "Examples\*.txt"
+    File /r "Examples\*.mak"
+    File /r "Examples\*.dsw"
 
     WriteRegStr HKEY_LOCAL_MACHINE \
                 "Software\Microsoft\Windows\CurrentVersion\Uninstall\QuantLib" \
@@ -75,50 +87,28 @@ SectionIn 1 2 3
     CreateShortCut "$SMPROGRAMS\QuantLib\What's new.lnk" \
                    "$INSTDIR\News.txt"
 
+    CreateShortCut "$SMPROGRAMS\QuantLib\Examples workspace.lnk" \
+                   "$INSTDIR\Examples\Examples.dsw"
+
     CreateShortCut "$SMPROGRAMS\QuantLib\QuantLib project workspace.lnk" \
                    "$INSTDIR\QuantLib.dsw"
 
     WriteUninstaller "QuantLibUninstall.exe"
-SectionEnd
 
-
-Section "test-suite"
-SectionIn 1 2 3
-    SetOutPath $INSTDIR\test-suite
-    File /r "test-suite\*.txt"
-    File /r "test-suite\*.mak"
-    File /r "test-suite\*.cpp"
-    File /r "test-suite\*.hpp"
-    File /r "test-suite\*.dsp"
-    File /r "test-suite\CPPUNIT-COPYING"
-
-SectionEnd
-
-Section "Examples"
-SectionIn 1 2
-    SetOutPath $INSTDIR\Examples
-    File /r "Examples\*.cpp"
-    File /r "Examples\*.dsp"
-    File /r "Examples\*.txt"
-    File /r "Examples\*.mak"
-    File /r "Examples\*.dsw"
-
-    IfFileExists $SMPROGRAMS\QuantLib 0 NoSourceShortCuts
-        CreateShortCut "$SMPROGRAMS\QuantLib\Examples workspace.lnk" \
-                       "$INSTDIR\Examples\Examples.dsw"
-    NoSourceShortCuts:
 SectionEnd
 
 Section "WinHelp documentation"
-SectionIn 1 2
+SectionIn 1
   SetOutPath "$INSTDIR\Docs"
-  File "Docs\html\index.chm"
-  CreateShortCut "$SMPROGRAMS\QuantLib\Documentation (WinHelp).lnk" \
+  File /nonfatal "Docs\html\index.chm"
+  IfFileExists "$INSTDIR\Docs\index.chm" 0 NoWinHelpDoc
+      CreateShortCut "$SMPROGRAMS\QuantLib\Documentation (WinHelp).lnk" \
                  "$INSTDIR\Docs\index.chm"
+  NoWinHelpDoc:
 SectionEnd
 
 Section "Start Menu Group"
-SectionIn 1 2 3
+SectionIn 1 2
   SetOutPath $SMPROGRAMS\QuantLib
 
 #it doesn't work
