@@ -265,20 +265,20 @@ namespace QuantLib {
             
             
             // in case one needs to check the directionIntegers used
-            #define PRINT_DIRECTION_INTEGER
-            #ifdef PRINT_DIRECTION_INTEGER
-            std::ofstream outStream("directionIntegers.txt");
-            for (k=0; k<QL_MIN(32UL,dimensionality_); k++) {
-                outStream << std::endl << k+1       << "\t"
-                                       << degree[k] << "\t"
-                                       << ppmt[k]   << "\t";
-                for (j=0; j<10; j++) {
-                    outStream << IntegerFormatter::toPowerOfTwo(
-                        directionIntegers_[k][j], 3) << "\t";
+            bool printDirectionIntegers = false;
+            if (printDirectionIntegers) {
+                std::ofstream outStream("directionIntegers.txt");
+                for (k=0; k<QL_MIN(32UL,dimensionality_); k++) {
+                    outStream << std::endl << k+1       << "\t"
+                                           << degree[k] << "\t"
+                                           << ppmt[k]   << "\t";
+                    for (j=0; j<10; j++) {
+                        outStream << IntegerFormatter::toPowerOfTwo(
+                            directionIntegers_[k][j], 3) << "\t";
+                    }
                 }
+                outStream.close();
             }
-            outStream.close();
-            #endif
             
             
             
