@@ -28,6 +28,9 @@
     $Source$
     $Name$
     $Log$
+    Revision 1.15  2001/02/14 12:27:44  lballabio
+    Bug fixed and guidelines enforced
+
     Revision 1.14  2001/02/14 10:38:28  lballabio
     Found out what 14.6.2.3 of the standard means
 
@@ -82,11 +85,10 @@ namespace QuantLib {
         template <class Iterator>
         History(const Date& firstDate, const Date& lastDate,
             Iterator begin, Iterator end)
-        : theFirstDate(firstDate), theLastDate(lastDate), theValues(end-begin) {
+        : firstDate_(firstDate), lastDate_(lastDate), values_(begin,end) {
             QL_REQUIRE(lastDate >= firstDate, "invalid date range for history");
-            QL_REQUIRE(values.size() == (lastDate-firstDate)+1,
+            QL_ENSURE(values_.size() == (lastDate-firstDate)+1,
                 "history size incompatible with date range");
-            std::copy(begin,end,theValues.begin());
         }
         /*! This constructor initializes the history with the given set of
             values, corresponding to the date range between
@@ -119,11 +121,11 @@ namespace QuantLib {
         //! \name Inspectors
         //@{
         //! returns the first date for which a historical datum exists
-        const Date& firstDate() const { return theFirstDate; }
+        const Date& firstDate() const { return firstDate_; }
         //! returns the last date for which a historical datum exists
-        const Date& lastDate() const { return theLastDate; }
+        const Date& lastDate() const { return lastDate_; }
         //! returns the number of historical data including null ones
-        int size() const { return theValues.size(); }
+        int size() const { return values_.size(); }
         //@}
         //! \name Historical data access
         //@{
@@ -137,14 +139,14 @@ namespace QuantLib {
         class Entry {
             friend class const_iterator;
           public:
-            const Date& date() const { return theDate; }
-            double value() const { return *theValue; }
+            const Date& date() const { return date_; }
+            double value() const { return *value_; }
           private:
             Entry(const Date& date,
                 const std::vector<double>::const_iterator& value)
-            : theDate(date), theValue(value) {}
-            Date theDate;
-            std::vector<double>::const_iterator theValue;
+            : date_(date), value_(value) {}
+            Date date_;
+            std::vector<double>::const_iterator value_;
         };
 
         //! random access iterator on history entries
@@ -162,75 +164,75 @@ namespace QuantLib {
             typedef const Entry&                    reference;
             //! \name Dereferencing
             //@{
-            reference operator*() const  { return theEntry; }
-            pointer   operator->() const { return &theEntry; }
+            reference operator*() const  { return entry_; }
+            pointer   operator->() const { return &entry_; }
             //@}
             //! \name Random access
             //@{
             value_type operator[](difference_type i) const {
-                return Entry(theEntry.theDate+i,theEntry.theValue+i);
+                return Entry(entry_.date_+i,entry_.value_+i);
             }
             //@}
             //! \name Increment and decrement
             //@{
             const_iterator& operator++() {
-                theEntry.theDate++; theEntry.theValue++;
+                entry_.date_++; entry_.value_++;
                 return *this;
             }
             const_iterator operator++(int) {
                 const_iterator temp = *this;
-                theEntry.theDate++; theEntry.theValue++;
+                entry_.date_++; entry_.value_++;
                 return temp;
             }
             const_iterator& operator--() {
-                theEntry.theDate--; theEntry.theValue--;
+                entry_.date_--; entry_.value_--;
                 return *this;
             }
             const_iterator operator--(int) {
                 const_iterator temp = *this;
-                theEntry.theDate--; theEntry.theValue--;
+                entry_.date_--; entry_.value_--;
                 return temp;
             }
             const_iterator& operator+=(difference_type i) {
-                theEntry.theDate+=i; theEntry.theValue+=i;
+                entry_.date_+=i; entry_.value_+=i;
                 return *this;
             }
             const_iterator& operator-=(difference_type i) {
-                theEntry.theDate-=i; theEntry.theValue-=i;
+                entry_.date_-=i; entry_.value_-=i;
                 return *this;
             }
             const_iterator operator+(difference_type i) {
-                return const_iterator(theEntry.theDate+i,theEntry.theValue+i);
+                return const_iterator(entry_.date_+i,entry_.value_+i);
             }
             const_iterator operator-(difference_type i) {
-                return const_iterator(theEntry.theDate-i,theEntry.theValue-i);
+                return const_iterator(entry_.date_-i,entry_.value_-i);
             }
             //@}
             //! \name Difference
             //@{
             difference_type operator-(const const_iterator& i) {
-                return theEntry.theDate-i.theEntry.theDate; }
+                return entry_.date_-i.entry_.date_; }
             //@}
             //! \name Comparisons
             //@{
             bool operator==(const const_iterator& i) {
-                return theEntry.theValue == i.theEntry.theValue; }
+                return entry_.date_ == i.entry_.date_; }
             bool operator!=(const const_iterator& i) {
-                return theEntry.theValue != i.theEntry.theValue; }
+                return entry_.date_ != i.entry_.date_; }
             bool operator<(const const_iterator& i) {
-                return theEntry.theValue < i.theEntry.theValue; }
+                return entry_.date_ < i.entry_.date_; }
             bool operator>(const const_iterator& i) {
-                return theEntry.theValue > i.theEntry.theValue; }
+                return entry_.date_ > i.entry_.date_; }
             bool operator<=(const const_iterator& i) {
-                return theEntry.theValue <= i.theEntry.theValue; }
+                return entry_.date_ <= i.entry_.date_; }
             bool operator>=(const const_iterator& i) {
-                return theEntry.theValue >= i.theEntry.theValue; }
+                return entry_.date_ >= i.entry_.date_; }
             //@}
           private:
             const_iterator(const Date& d,
                 const std::vector<double>::const_iterator& v)
-            : theEntry(d,v) {}
-            Entry theEntry;
+            : entry_(d,v) {}
+            Entry entry_;
         };
 
       private:
@@ -262,11 +264,11 @@ namespace QuantLib {
         //@{
         // entry iterators
         const_iterator begin() const {
-            return const_iterator(theFirstDate,theValues.begin()); }
+            return const_iterator(firstDate_,values_.begin()); }
         const_iterator end() const {
-            return const_iterator(theLastDate+1,theValues.end()); }
+            return const_iterator(lastDate_+1,values_.end()); }
         const_iterator iterator(const Date& d) const {
-            int i = d-theFirstDate;
+            int i = d-firstDate_;
             return begin()+i;
         }
 
@@ -285,10 +287,10 @@ namespace QuantLib {
         }
 
         // data iterators
-        const_data_iterator dbegin() const { return theValues.begin(); }
-        const_data_iterator dend() const { return theValues.end(); }
+        const_data_iterator dbegin() const { return values_.begin(); }
+        const_data_iterator dend() const { return values_.end(); }
         const_data_iterator data_iterator(const Date& d) const {
-            return dbegin()+(d-theFirstDate); }
+            return dbegin()+(d-firstDate_); }
 
         // valid data iterators
         const_valid_data_iterator vdbegin() const {
@@ -303,8 +305,8 @@ namespace QuantLib {
         }
         //@}
       private:
-        Date theFirstDate, theLastDate;
-        std::vector<double> theValues;
+        Date firstDate_, lastDate_;
+        std::vector<double> values_;
         class DataValidator {
           public:
             bool operator()(double x)       { return !IsNull(x); }
@@ -323,7 +325,7 @@ namespace QuantLib {
 
     inline History::History(const Date& firstDate, const Date& lastDate,
         const std::vector<double>& values)
-    : theFirstDate(firstDate), theLastDate(lastDate), theValues(values) {
+    : firstDate_(firstDate), lastDate_(lastDate), values_(values) {
         QL_REQUIRE(lastDate >= firstDate, "invalid date range for history");
         QL_REQUIRE(values.size() == (lastDate-firstDate)+1,
             "history size incompatible with date range");
@@ -334,32 +336,32 @@ namespace QuantLib {
         QL_REQUIRE(dates.size() == values.size(),
             "different size for date and value vectors");
         QL_REQUIRE(dates.size() >= 1,"null history given");
-        theFirstDate = theLastDate = dates[0];
+        firstDate_ = lastDate_ = dates[0];
         double lastValue = values[0];
-        theValues = std::vector<double>(1,lastValue);
+        values_ = std::vector<double>(1,lastValue);
         for (int i=1; i<dates.size(); i++) {
             Date d = dates[i];
             double x = values[i];
-            QL_REQUIRE(d>=theLastDate,
-                "unsorted date after "+DateFormatter::toString(theLastDate));
-            if (d == theLastDate) {
+            QL_REQUIRE(d>=lastDate_,
+                "unsorted date after "+DateFormatter::toString(lastDate_));
+            if (d == lastDate_) {
                 QL_REQUIRE(x==lastValue,
                     "different values in history for " +
-                    DateFormatter::toString(theLastDate));
+                    DateFormatter::toString(lastDate_));
             } else {
-                while (d-theLastDate > 1) {
-                    theLastDate = theLastDate.plusDays(1);
-                    theValues.insert(theValues.end(),Null<double>());
+                while (d-lastDate_ > 1) {
+                    lastDate_ = lastDate_.plusDays(1);
+                    values_.push_back(Null<double>());
                 }
-                theLastDate = d;
-                theValues.insert(theValues.end(),lastValue=x);
+                lastDate_ = d;
+                values_.push_back(lastValue=x);
             }
         }
     }
 
     inline double History::operator[](const Date& d) const {
-        if (d>=theFirstDate && d<=theLastDate)
-            return theValues[d-theFirstDate];
+        if (d>=firstDate_ && d<=lastDate_)
+            return values_[d-firstDate_];
         else
             return Null<double>();
     }
