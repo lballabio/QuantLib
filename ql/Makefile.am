@@ -3,7 +3,8 @@
 
 INCLUDES= -I${top_srcdir} -I${top_builddir}
 
-SUBDIRS = Calendars \
+SUBDIRS = \
+    Calendars \
     CashFlows \
     DayCounters \
     FiniteDifferences \
@@ -11,21 +12,19 @@ SUBDIRS = Calendars \
     Instruments \
     Math \
     MonteCarlo \
-    Pricers \
     Patterns \
+    Pricers \
     Solvers1D \
     TermStructures \
     Utilities
 
 EXTRA_DIST= \
-    config.ansi.hpp \
-    config.bcc.hpp \
-    config.decc.hpp \
+	config.ansi.hpp \
+	config.bcc.hpp \
+	config.decc.hpp \
 	config.msvc.hpp \
 	config.mwcw.hpp \
 	makefile.mak
-
-includedir = $(prefix)/include/ql
 
 include_HEADERS = \
 	array.hpp \
@@ -65,9 +64,8 @@ depend:
 	makedepend $(INCLUDES) -- $(CFLAGS) -- $(SOURCES)
 
 
-
 libQuantLib_la_LIBADD = \
-    Calendars/libCalendars.la \
+	Calendars/libCalendars.la \
 	CashFlows/libCashFlows.la \
 	DayCounters/libDayCounters.la \
 	FiniteDifferences/libFiniteDifferences.la \

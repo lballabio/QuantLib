@@ -3,22 +3,25 @@
 
 INCLUDES= -I${top_srcdir} -I${top_builddir}
 
-includedir = $(prefix)/include/ql/Solvers1D
-include_HEADERS = bisection.hpp \
+include_HEADERS = \
+	bisection.hpp \
 	brent.hpp \
 	falseposition.hpp \
 	newton.hpp \
 	newtonsafe.hpp \
 	ridder.hpp \
 	secant.hpp
+
+
 EXTRA_DIST=makefile.mak
 
-libSolvers1D_la_SOURCES = bisection.cpp \
+libSolvers1D_la_SOURCES = \
 	brent.cpp \
-    falseposition.cpp \
 	newton.cpp \
-    newtonsafe.cpp \
 	ridder.cpp \
-	secant.cpp
+	secant.cpp \
+    bisection.cpp \
+    falseposition.cpp \
+    newtonsafe.cpp
 
 noinst_LTLIBRARIES = libSolvers1D.la

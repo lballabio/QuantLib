@@ -3,12 +3,11 @@
 
 INCLUDES= -I${top_srcdir} -I${top_builddir}
 
-includedir = $(prefix)/include/ql/TermStructures
 include_HEADERS = \
-    flatforward.hpp \
+	piecewiseconstantforwards.hpp \
 	piecewiseflatforward.hpp \
 	ratehelpers.hpp \
-	piecewiseconstantforwards.hpp
+    flatforward.hpp
 
 EXTRA_DIST=makefile.mak
 

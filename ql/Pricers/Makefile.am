@@ -3,20 +3,19 @@
 
 INCLUDES= -I${top_srcdir} -I${top_builddir}
 
-includedir = $(prefix)/include/ql/Pricers
 include_HEADERS = \
     americancondition.hpp \
+    americanoption.hpp \
     averagepriceasian.hpp \
     averagestrikeasian.hpp \
-    americanoption.hpp \
     barrieroption.hpp \
-    binaryoption.hpp \
     bermudanoption.hpp \
+    binaryoption.hpp \
     bsmnumericaloption.hpp \
     cliquetoption.hpp \
-    dividendoption.hpp \
     dividendamericanoption.hpp \
     dividendeuropeanoption.hpp \
+    dividendoption.hpp \
     dividendshoutoption.hpp \
     europeanoption.hpp \
     everestoption.hpp \
@@ -25,12 +24,12 @@ include_HEADERS = \
     himalaya.hpp \
     mceuropeanpricer.hpp \
     multiperiodoption.hpp \
-    plainbasketoption.hpp \
     pagodaoption.hpp \
+    plainbasketoption.hpp \
     shoutcondition.hpp \
+    shoutoption.hpp \
     singleassetoption.hpp \
-    stepconditionoption.hpp \
-    shoutoption.hpp
+    stepconditionoption.hpp
 
 EXTRA_DIST=makefile.mak
 

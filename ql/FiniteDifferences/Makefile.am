@@ -3,8 +3,8 @@
 
 INCLUDES= -I${top_srcdir} -I${top_builddir}
 
-includedir = $(prefix)/include/ql/FiniteDifferences
-include_HEADERS = backwardeuler.hpp \
+include_HEADERS = \
+	backwardeuler.hpp \
 	boundarycondition.hpp \
 	bsmoperator.hpp \
 	cranknicolson.hpp \
@@ -17,9 +17,9 @@ include_HEADERS = backwardeuler.hpp \
 	identity.hpp \
 	operator.hpp \
 	operatortraits.hpp \
-	stepcondition.hpp \
-	standardstepcondition.hpp \
 	standardfdmodel.hpp \
+	standardstepcondition.hpp \
+	stepcondition.hpp \
 	tridiagonaloperator.hpp \
 	valueatcenter.hpp
 

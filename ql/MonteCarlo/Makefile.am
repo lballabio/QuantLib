@@ -3,7 +3,6 @@
 
 INCLUDES= -I${top_srcdir} -I${top_builddir}
 
-includedir = $(prefix)/include/ql/MonteCarlo
 include_HEADERS = \
 	antitheticpathgenerator.hpp \
 	avgpriceasianpathpricer.hpp \
@@ -42,18 +41,17 @@ include_HEADERS = \
 EXTRA_DIST=makefile.mak
 
 libMonteCarlo_la_SOURCES = \
-	avgstrikeasianpathpricer.cpp \
 	avgpriceasianpathpricer.cpp \
+	avgstrikeasianpathpricer.cpp \
 	basketpathpricer.cpp    \
 	controlvariatedpathpricer.cpp \
-	everestpathpricer.cpp \
 	europeanpathpricer.cpp \
+	everestpathpricer.cpp \
 	geometricasianpathpricer.cpp \
 	getcovariance.cpp \
 	himalayapathpricer.cpp \
 	knuthrandomgenerator.cpp \
 	lecuyerrandomgenerator.cpp \
 	pagodapathpricer.cpp
-
 
 noinst_LTLIBRARIES = libMonteCarlo.la

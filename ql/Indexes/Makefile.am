@@ -3,7 +3,6 @@
 
 INCLUDES= -I${top_srcdir} -I${top_builddir}
 
-includedir = $(prefix)/include/ql/Indexes
 include_HEADERS = \
     euribor.hpp \
     gbplibor.hpp \
