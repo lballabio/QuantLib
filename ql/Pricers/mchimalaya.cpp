@@ -41,7 +41,7 @@ namespace QuantLib {
         using MonteCarlo::MonteCarloModel;
         using MonteCarlo::HimalayaPathPricer_old;
 
-        McHimalaya::McHimalaya(const Array& underlying,
+        McHimalaya::McHimalaya(const std::vector<double>& underlying,
             const Array& dividendYield, const Math::Matrix& covariance,
             Rate riskFreeRate, double strike,
             const std::vector<Time>& times,

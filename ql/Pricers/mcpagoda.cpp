@@ -40,7 +40,7 @@ namespace QuantLib {
         using MonteCarlo::MonteCarloModel;
         using MonteCarlo::PagodaPathPricer_old;
 
-        McPagoda::McPagoda(const Array& portfolio, double fraction,
+        McPagoda::McPagoda(const std::vector<double>& portfolio, double fraction,
             double roof, const Array& dividendYield, const Matrix& covariance,
             Rate riskFreeRate, const std::vector<Time>& times,
             bool antitheticVariance, long seed) {

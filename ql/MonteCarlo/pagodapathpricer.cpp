@@ -32,7 +32,7 @@ namespace QuantLib {
 
     namespace MonteCarlo {
 
-        PagodaPathPricer_old::PagodaPathPricer_old(const Array& underlying,
+        PagodaPathPricer_old::PagodaPathPricer_old(const std::vector<double>& underlying,
             double roof,
             DiscountFactor discount, bool useAntitheticVariance)
         : PathPricer_old<MultiPath>(discount, useAntitheticVariance),

@@ -42,13 +42,13 @@ namespace QuantLib {
         */
         class PagodaPathPricer_old : public PathPricer_old<MultiPath> {
           public:
-            PagodaPathPricer_old(const Array& underlying,
+            PagodaPathPricer_old(const std::vector<double>& underlying,
                              double roof,
                              DiscountFactor discount,
                              bool useAntitheticVariance);
             double operator()(const MultiPath& path) const;
           private:
-            Array underlying_;
+            std::vector<double> underlying_;
             double roof_;
         };
 

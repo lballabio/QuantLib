@@ -1128,7 +1128,7 @@ void OldPricerTest::testMcMultiFactorPricers() {
                    "McBasket");
 
     // McMaxBasket
-    Array assetValues(4);
+    std::vector<double> assetValues(4);
     assetValues[0] = 100.0;
     assetValues[1] = 110.0;
     assetValues[2] =  90.0;
@@ -1145,7 +1145,7 @@ void OldPricerTest::testMcMultiFactorPricers() {
                    "McMaxBasket");
 
     // McPagoda
-    Array portfolio(4);
+    std::vector<double> portfolio(4);
     portfolio[0] = 0.15;
     portfolio[1] = 0.20;
     portfolio[2] = 0.35;

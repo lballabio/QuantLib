@@ -46,14 +46,14 @@ namespace QuantLib {
         */
         class HimalayaPathPricer_old : public PathPricer_old<MultiPath> {
           public:
-            HimalayaPathPricer_old(const Array& underlying,
+            HimalayaPathPricer_old(const std::vector<double>& underlying,
                                double strike,
                                DiscountFactor discount,
                                bool useAntitheticVariance);
             double operator()(const MultiPath& multiPath) const;
           private:
             Option::Type type_;
-            Array underlying_;
+            std::vector<double> underlying_;
             double strike_;
         };
 

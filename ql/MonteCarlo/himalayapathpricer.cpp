@@ -30,7 +30,7 @@ namespace QuantLib {
 
     namespace MonteCarlo {
 
-        HimalayaPathPricer_old::HimalayaPathPricer_old(const Array& underlying,
+        HimalayaPathPricer_old::HimalayaPathPricer_old(const std::vector<double>& underlying,
             double strike,
             DiscountFactor discount, bool useAntitheticVariance)
         : PathPricer_old<MultiPath>(discount, useAntitheticVariance),
@@ -56,7 +56,7 @@ namespace QuantLib {
                 "HimalayaPathPricer_old: no asset given");
 
 
-            Array prices(underlying_);
+            std::vector<double> prices(underlying_);
             double averagePrice = 0;
             std::vector<bool> remainingAssets(numAssets, true);
             double bestPrice;

@@ -40,7 +40,7 @@ namespace QuantLib {
         using MonteCarlo::MonteCarloModel;
         using MonteCarlo::MaxBasketPathPricer_old;
 
-        McMaxBasket::McMaxBasket(const Array& underlying,
+        McMaxBasket::McMaxBasket(const std::vector<double>& underlying,
             const Array& dividendYield, const Math::Matrix& covariance,
             Rate riskFreeRate,  double residualTime,
             bool antitheticVariance, long seed) {

@@ -40,12 +40,12 @@ namespace QuantLib {
         */
         class MaxBasketPathPricer_old : public PathPricer_old<MultiPath> {
           public:
-            MaxBasketPathPricer_old(const Array& underlying,
+            MaxBasketPathPricer_old(const std::vector<double>& underlying,
                                 DiscountFactor discount,
                                 bool useAntitheticVariance);
             double operator()(const MultiPath& multiPath) const;
           private:
-            Array underlying_;
+            std::vector<double> underlying_;
         };
 
     }

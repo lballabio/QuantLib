@@ -41,7 +41,7 @@ namespace QuantLib {
             MonteCarlo::GaussianMultiPathGenerator,
             MonteCarlo::PathPricer_old<MonteCarlo::MultiPath> > {
           public:
-            McPagoda(const Array& portfolio,
+            McPagoda(const std::vector<double>& portfolio,
                      double fraction,
                      double roof,
                      const Array& dividendYield,

@@ -32,7 +32,7 @@ namespace QuantLib {
 
     namespace MonteCarlo {
 
-        MaxBasketPathPricer_old::MaxBasketPathPricer_old(const Array& underlying,
+        MaxBasketPathPricer_old::MaxBasketPathPricer_old(const std::vector<double>& underlying,
             DiscountFactor discount, bool useAntitheticVariance)
         : PathPricer_old<MultiPath>(discount, useAntitheticVariance),
           underlying_(underlying) {

@@ -33,7 +33,7 @@ namespace QuantLib {
             MonteCarlo::GaussianMultiPathGenerator,
             MonteCarlo::PathPricer_old<MonteCarlo::MultiPath> > {
           public:
-            McMaxBasket(const Array& underlying,
+            McMaxBasket(const std::vector<double>& underlying,
                         const Array& dividendYield,
                         const Math::Matrix& covariance,
                         Rate riskFreeRate,
