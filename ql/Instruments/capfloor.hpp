@@ -207,9 +207,6 @@ namespace QuantLib {
             : model_(model) {
                 registerWith(model_);
             }
-            ~CapFloorPricingEngine() {
-                unregisterWith(model_);
-            }
             Arguments* parameters() { return &parameters_; }
             const Results* results() const { return &results_; }
             void validateParameters() const { parameters_.validate(); }
