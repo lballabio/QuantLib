@@ -31,14 +31,14 @@ namespace QuantLib {
                 QL_FAIL("exchange rate not applicable");
             break;
           case Derived:
-            if (amount.currency() == rateChain_.front().source() ||
-                amount.currency() == rateChain_.front().target()) {
-                return rateChain_.back().exchange(
-                                         rateChain_.front().exchange(amount));
-            } else if (amount.currency() == rateChain_.back().source() ||
-                       amount.currency() == rateChain_.back().target()) {
-                return rateChain_.front().exchange(
-                                          rateChain_.back().exchange(amount));
+            if (amount.currency() == rateChain_.first->source() ||
+                amount.currency() == rateChain_.first->target()) {
+                return rateChain_.second->exchange(
+                                         rateChain_.first->exchange(amount));
+            } else if (amount.currency() == rateChain_.second->source() ||
+                       amount.currency() == rateChain_.second->target()) {
+                return rateChain_.first->exchange(
+                                         rateChain_.second->exchange(amount));
             } else {
                 QL_FAIL("exchange rate not applicable");
             }
@@ -52,8 +52,9 @@ namespace QuantLib {
                                      const ExchangeRate& r2) {
         ExchangeRate result;
         result.type_ = Derived;
-        result.rateChain_.push_back(r1);
-        result.rateChain_.push_back(r2);
+        result.rateChain_ = std::make_pair(
+                       boost::shared_ptr<ExchangeRate>(new ExchangeRate(r1)),
+                       boost::shared_ptr<ExchangeRate>(new ExchangeRate(r2)));
         if (r1.source_ == r2.source_) {
             result.source_ = r1.target_;
             result.target_ = r2.target_;

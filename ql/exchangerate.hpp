@@ -25,7 +25,7 @@
 
 #include <ql/money.hpp>
 #include <ql/null.hpp>
-#include <list>
+#include <utility>
 
 namespace QuantLib {
 
@@ -71,9 +71,8 @@ namespace QuantLib {
         Currency source_, target_;
         Decimal rate_;
         Type type_;
-        /* a pair would be more appropriate, but it doesn't allow
-           incomplete types */
-        std::list<ExchangeRate> rateChain_;
+        std::pair<boost::shared_ptr<ExchangeRate>,
+                  boost::shared_ptr<ExchangeRate> > rateChain_;
     };
 
 

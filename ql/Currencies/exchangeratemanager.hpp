@@ -26,6 +26,7 @@
 #include <ql/exchangerate.hpp>
 #include <ql/date.hpp>
 #include <ql/Patterns/singleton.hpp>
+#include <list>
 #include <map>
 
 namespace QuantLib {
