@@ -53,7 +53,7 @@ namespace QuantLib {
             // constructor
             enum BarrierType { DownIn, UpIn, DownOut, UpOut };
             BarrierOption(BarrierType barrType,
-                          Type type,
+                          Option::Type type,
                           double underlying,
                           double strike,
                           Rate dividendYield,
