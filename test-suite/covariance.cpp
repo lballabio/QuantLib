@@ -29,7 +29,7 @@ void CovarianceTest::testSalvagingCorrelation() {
 
     BOOST_MESSAGE("Testing correlation-salvaging algorithms...");
 
-    double expected, calculated;
+    Real expected, calculated;
 
     Size n = 3;
 
@@ -68,13 +68,13 @@ void CovarianceTest::testCovariance() {
 
     BOOST_MESSAGE("Testing covariance calculation...");
 
-    double data00[] = { 3.0,  9.0 };
-    double data01[] = { 2.0,  7.0 };
-    double data02[] = { 4.0, 12.0 };
-    double data03[] = { 5.0, 15.0 };
-    double data04[] = { 6.0, 17.0 };
-    double* data[5] = { data00, data01, data02, data03, data04 };
-    std::vector<double> weights(LENGTH(data), 1.0);
+    Real data00[] = { 3.0,  9.0 };
+    Real data01[] = { 2.0,  7.0 };
+    Real data02[] = { 4.0, 12.0 };
+    Real data03[] = { 5.0, 15.0 };
+    Real data04[] = { 6.0, 17.0 };
+    Real* data[5] = { data00, data01, data02, data03, data04 };
+    std::vector<Real> weights(LENGTH(data), 1.0);
 
     Size i, j, n = LENGTH(data00);
 
@@ -83,7 +83,7 @@ void CovarianceTest::testCovariance() {
     expCor[1][0] = 0.9970544855015813; expCor[1][1] = 1.0000000000000000;
 
     SequenceStatistics<> s(n);
-    std::vector<double> temp(n);
+    std::vector<Real> temp(n);
 
     for (i = 0; i<LENGTH(data); i++) {
         for (j=0; j<n; j++) {
@@ -92,8 +92,8 @@ void CovarianceTest::testCovariance() {
         s.add(temp, weights[i]);
     }
 
-    std::vector<double> m = s.mean();
-    std::vector<double> std = s.standardDeviation();
+    std::vector<Real> m = s.mean();
+    std::vector<Real> std = s.standardDeviation();
     Matrix calcCov  =  s.covariance();
     Matrix calcCor  =  s.correlation();
 
@@ -105,7 +105,7 @@ void CovarianceTest::testCovariance() {
         }
     }
 
-    double expected, calculated;
+    Real expected, calculated;
     for (i=0; i<n; i++) {
         for (j=0; j<n; j++) {
             expected   =  expCor[i][j];
@@ -136,8 +136,8 @@ void CovarianceTest::testCovariance() {
 
     for (i=0; i<n; i++) {
         for (j=0; j<n; j++) {
-            double calculated = calcCov[i][j],
-                   expected   = expCov[i][j];
+            Real calculated = calcCov[i][j],
+                 expected   = expCov[i][j];
             if (QL_FABS(calculated-expected) > 1.0e-10) {
                 BOOST_FAIL("getCovariance "
                            "cov[" + SizeFormatter::toString(i) + "]"

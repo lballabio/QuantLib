@@ -61,14 +61,14 @@ namespace {
 
     struct AmericanOptionData {
         Option::Type type;
-        double strike;
-        double s;      // spot
-        double q;      // dividend
-        double r;      // risk-free rate
+        Real strike;
+        Real s;        // spot
+        Rate q;        // dividend
+        Rate r;        // risk-free rate
         Time t;        // time to maturity
-        double v;      // volatility
-        double result; // expected result
-        double tol;    // tolerance
+        Volatility v;  // volatility
+        Real result;   // expected result
+        Real tol;      // tolerance
     };
 
 }
@@ -144,7 +144,7 @@ void AmericanOptionTest::testBaroneAdesiWhaleyValues() {
         boost::shared_ptr<StrikedTypePayoff> payoff(new
             PlainVanillaPayoff(values[i].type, values[i].strike));
 
-        Date exDate = today.plusDays(int(values[i].t*360+0.5));
+        Date exDate = today.plusDays(Integer(values[i].t*360+0.5));
         boost::shared_ptr<Exercise> exercise(
                                          new AmericanExercise(today, exDate));
 
@@ -163,8 +163,8 @@ void AmericanOptionTest::testBaroneAdesiWhaleyValues() {
         VanillaOption option(stochProcess, payoff, exercise,
                              engine);
 
-        double calculated = option.NPV();
-        double error = QL_FABS(calculated-values[i].result);
+        Real calculated = option.NPV();
+        Real error = QL_FABS(calculated-values[i].result);
         if (error > values[i].tol) {
             REPORT_FAILURE("value", payoff, exercise, values[i].s, values[i].q,
                            values[i].r, today, values[i].v, values[i].result, 
@@ -205,7 +205,7 @@ void AmericanOptionTest::testBjerksundStenslandValues() {
         boost::shared_ptr<StrikedTypePayoff> payoff(new
             PlainVanillaPayoff(values[i].type, values[i].strike));
 
-        Date exDate = today.plusDays(int(values[i].t*360+0.5));
+        Date exDate = today.plusDays(Integer(values[i].t*360+0.5));
         boost::shared_ptr<Exercise> exercise(
                                          new AmericanExercise(today, exDate));
 
@@ -224,8 +224,8 @@ void AmericanOptionTest::testBjerksundStenslandValues() {
         VanillaOption option(stochProcess, payoff, exercise,
                              engine);
 
-        double calculated = option.NPV();
-        double error = QL_FABS(calculated-values[i].result);
+        Real calculated = option.NPV();
+        Real error = QL_FABS(calculated-values[i].result);
         if (error > values[i].tol) {
             REPORT_FAILURE("value", payoff, exercise, values[i].s, values[i].q,
                            values[i].r, today, values[i].v, values[i].result, 

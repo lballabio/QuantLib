@@ -32,16 +32,16 @@ namespace {
 
     class Foo {
       public:
-        double operator()(double x) const { return x*x-1.0; }
-        double derivative(double x) const { return 2.0*x; }
+        Real operator()(Real x) const { return x*x-1.0; }
+        Real derivative(Real x) const { return 2.0*x; }
     };
 
     template <class S>
     void test(const S& solver, const std::string& name) {
-        double accuracy[] = { 1.0e-4, 1.0e-6, 1.0e-8 };
-        double expected = 1.0;
+        Real accuracy[] = { 1.0e-4, 1.0e-6, 1.0e-8 };
+        Real expected = 1.0;
         for (Size i=0; i<LENGTH(accuracy); i++) {
-            double root = solver.solve(Foo(),accuracy[i],1.5,0.1);
+            Real root = solver.solve(Foo(),accuracy[i],1.5,0.1);
             if (QL_FABS(root-expected) > accuracy[i]) {
                 BOOST_FAIL(
                     name + " solver:\n"

@@ -127,48 +127,48 @@ namespace {
 
     struct BasketOptionOneData {
         Option::Type type;
-        double strike;
-        double s;      // spot
-        double q;      // dividend
-        double r;      // risk-free rate
+        Real strike;
+        Real s;        // spot
+        Rate q;        // dividend
+        Rate r;        // risk-free rate
         Time t;        // time to maturity
-        double v;      // volatility
-        double result; // expected result
-        double tol;    // tolerance
+        Volatility v;  // volatility
+        Real result;   // expected result
+        Real tol;      // tolerance
     };
 
     struct BasketOptionTwoData {
         BasketOption::BasketType basketType;
         Option::Type type;
-        double strike;
-        double s1;
-        double s2;
-        double q1;
-        double q2;
-        double r;
+        Real strike;
+        Real s1;
+        Real s2;
+        Rate q1;
+        Rate q2;
+        Rate r;
         Time t; // years
-        double v1;
-        double v2;
-        double rho;
-        double result;
-        double tol;
+        Volatility v1;
+        Volatility v2;
+        Real rho;
+        Real result;
+        Real tol;
     };
 
     struct BasketOptionThreeData {
         BasketOption::BasketType basketType;
         Option::Type type;
-        double strike;
-        double s1;
-        double s2;
-        double s3;
-        double r;
+        Real strike;
+        Real s1;
+        Real s2;
+        Real s3;
+        Rate r;
         Time t; // months
-        double v1;
-        double v2;
-        double v3;
-        double rho;
-        double euroValue;
-        double amValue;
+        Volatility v1;
+        Volatility v2;
+        Volatility v3;
+        Real rho;
+        Real euroValue;
+        Real amValue;
     };
 
 
@@ -258,7 +258,7 @@ void BasketOptionTest::testEuroTwoValues() {
 
     boost::shared_ptr<PricingEngine> engine(new StulzEngine);
 
-    double mcRelativeErrorTolerance = 0.01;
+    Real mcRelativeErrorTolerance = 0.01;
     //boost::shared_ptr<PricingEngine> mcEngine(new MCBasketEngine<PseudoRandom, Statistics>
       //  (1, false, false, Null<Size>(), 0.005, Null<Size>(), false, 42));
     boost::shared_ptr<PricingEngine> mcEngine(
@@ -271,7 +271,7 @@ void BasketOptionTest::testEuroTwoValues() {
         boost::shared_ptr<PlainVanillaPayoff> payoff(new
             PlainVanillaPayoff(values[i].type, values[i].strike));
 
-        Date exDate = today.plusDays(int(values[i].t*360+0.5));
+        Date exDate = today.plusDays(Integer(values[i].t*360+0.5));
         boost::shared_ptr<Exercise> exercise(new EuropeanExercise(exDate));
 
         spot1 ->setValue(values[i].s1);
@@ -301,7 +301,7 @@ void BasketOptionTest::testEuroTwoValues() {
         procs.push_back(stochProcess2);
 
         Matrix correlationMatrix(2,2, values[i].rho);
-        for (int j=0; j < 2; j++) {
+        for (Integer j=0; j < 2; j++) {
             correlationMatrix[j][j] = 1.0;
         }
 
@@ -309,9 +309,9 @@ void BasketOptionTest::testEuroTwoValues() {
                                   exercise, correlationMatrix, engine);
 
         // analytic engine
-        double calculated = basketOption.NPV();
-        double expected = values[i].result;
-        double error = QL_FABS(calculated-expected);
+        Real calculated = basketOption.NPV();
+        Real expected = values[i].result;
+        Real error = QL_FABS(calculated-expected);
         if (error > values[i].tol) {
             REPORT_FAILURE_2("value", values[i].basketType, payoff, exercise,
                              values[i].s1, values[i].s2, values[i].q1,
@@ -323,7 +323,7 @@ void BasketOptionTest::testEuroTwoValues() {
         // mc engine
         basketOption.setPricingEngine(mcEngine);
         calculated = basketOption.NPV();
-        double relError = relativeError(calculated, expected, values[i].s1);
+        Real relError = relativeError(calculated, expected, values[i].s1);
         if (relError > mcRelativeErrorTolerance ) {
             REPORT_FAILURE_2("MC value", values[i].basketType, payoff,
                              exercise, values[i].s1, values[i].s2,
@@ -439,8 +439,8 @@ void BasketOptionTest::testBarraquandThreeValues() {
     boost::shared_ptr<BlackVolTermStructure> volTS3 = flatVol(today, vol3, dc);
 
     Size maxSamples = 200000;
-    double mcRelativeErrorTolerance = 0.01;
-    double mcAmericanRelativeErrorTolerance = 0.1;
+    Real mcRelativeErrorTolerance = 0.01;
+    Real mcAmericanRelativeErrorTolerance = 0.1;
     boost::shared_ptr<PricingEngine> mcEngine(
         new MCBasketEngine<PseudoRandom, Statistics>(1, false, false,
                                                      Null<Size>(), 0.005,
@@ -455,7 +455,7 @@ void BasketOptionTest::testBarraquandThreeValues() {
 
     Size requiredSamples = 20000;
     Size timeSteps = 20;
-    long seed = 1;
+    BigNatural seed = 1;
     boost::shared_ptr<PricingEngine> mcLSMCEngine(
         new MCAmericanBasketEngine(requiredSamples, timeSteps, seed));
 
@@ -464,7 +464,7 @@ void BasketOptionTest::testBarraquandThreeValues() {
         boost::shared_ptr<PlainVanillaPayoff> payoff(new
             PlainVanillaPayoff(values[i].type, values[i].strike));
 
-        Date exDate = today.plusDays(int(values[i].t*30+0.5));
+        Date exDate = today.plusDays(Integer(values[i].t*30+0.5));
         boost::shared_ptr<Exercise> exercise(new EuropeanExercise(exDate));
         boost::shared_ptr<Exercise> amExercise(new AmericanExercise(today,
                                                                     exDate));
@@ -504,16 +504,16 @@ void BasketOptionTest::testBarraquandThreeValues() {
         procs.push_back(stochProcess3);
 
         Matrix correlation(3,3, values[i].rho);
-        for (int j=0; j < 3; j++) {
+        for (Integer j=0; j < 3; j++) {
             correlation[j][j] = 1.0;
         }
 
         BasketOption euroBasketOption(values[i].basketType, procs, payoff,
                                   exercise, correlation, mcQuasiEngine);
 
-        double expected = values[i].euroValue;
-        double calculated = euroBasketOption.NPV();
-        double relError = relativeError(calculated, expected, values[i].s1);
+        Real expected = values[i].euroValue;
+        Real calculated = euroBasketOption.NPV();
+        Real relError = relativeError(calculated, expected, values[i].s1);
         if (relError > mcRelativeErrorTolerance ) {
             REPORT_FAILURE_3("MC Quasi value", values[i].basketType, payoff,
                              exercise, values[i].s1, values[i].s2,
@@ -579,10 +579,10 @@ void BasketOptionTest::testTavellaValues() {
     boost::shared_ptr<SimpleQuote> vol3(new SimpleQuote(0.0));
     boost::shared_ptr<BlackVolTermStructure> volTS3 = flatVol(today, vol3, dc);
 
-    double mcRelativeErrorTolerance = 0.01;
+    Real mcRelativeErrorTolerance = 0.01;
     Size requiredSamples = 10000;
     Size timeSteps = 20;
-    long seed = 0;
+    BigNatural seed = 0;
     boost::shared_ptr<PricingEngine> mcLSMCEngine(
         new MCAmericanBasketEngine(requiredSamples, timeSteps, seed));
 
@@ -592,7 +592,7 @@ void BasketOptionTest::testTavellaValues() {
     boost::shared_ptr<PlainVanillaPayoff> payoff(new
         PlainVanillaPayoff(values[0].type, values[0].strike));
 
-    Date exDate = today.plusDays(int(values[0].t*360+0.5));
+    Date exDate = today.plusDays(Integer(values[0].t*360+0.5));
     boost::shared_ptr<Exercise> exercise(new AmericanExercise(today, exDate));
 
     spot1 ->setValue(values[0].s1);
@@ -629,7 +629,7 @@ void BasketOptionTest::testTavellaValues() {
     procs.push_back(stochProcess3);
 
     Matrix correlation(3,3, 0.0);
-    for (int j=0; j < 3; j++) {
+    for (Integer j=0; j < 3; j++) {
         correlation[j][j] = 1.0;
     }
     correlation[1][0] = -0.25;
@@ -642,10 +642,10 @@ void BasketOptionTest::testTavellaValues() {
     BasketOption basketOption(values[0].basketType, procs, payoff,
                                 exercise, correlation, mcLSMCEngine);
 
-    double calculated = basketOption.NPV();
-    double expected = values[0].amValue;
-    double errorEstimate = basketOption.errorEstimate();
-    double relError = relativeError(calculated, expected, values[0].s1);
+    Real calculated = basketOption.NPV();
+    Real expected = values[0].amValue;
+    Real errorEstimate = basketOption.errorEstimate();
+    Real relError = relativeError(calculated, expected, values[0].s1);
     if (relError > mcRelativeErrorTolerance ) {
         REPORT_FAILURE_3("MC LSMC Tavella value", values[0].basketType,
                          payoff, exercise, values[0].s1, values[0].s2,
@@ -718,7 +718,7 @@ void BasketOptionTest::testOneDAmericanValues() {
 
     Size requiredSamples = 10000;
     Size timeSteps = 52;
-    long seed = 0;
+    BigNatural seed = 0;
     boost::shared_ptr<PricingEngine> mcLSMCEngine(
         new MCAmericanBasketEngine(requiredSamples, timeSteps, seed));
 
@@ -744,7 +744,7 @@ void BasketOptionTest::testOneDAmericanValues() {
         boost::shared_ptr<PlainVanillaPayoff> payoff(new
             PlainVanillaPayoff(values[i].type, values[i].strike));
 
-        Date exDate = today.plusDays(int(values[i].t*360+0.5));
+        Date exDate = today.plusDays(Integer(values[i].t*360+0.5));
         boost::shared_ptr<Exercise> exercise(new AmericanExercise(today,
                                                                   exDate));
 
@@ -756,11 +756,11 @@ void BasketOptionTest::testOneDAmericanValues() {
         BasketOption basketOption(BasketOption::Max, procs, payoff,
                                     exercise, correlation, mcLSMCEngine);
 
-        double calculated = basketOption.NPV();
-        double expected = values[i].result;
-        // double errorEstimate = basketOption.errorEstimate();
-        double relError = relativeError(calculated, expected, values[i].s);
-        // double error = QL_FABS(calculated-expected);
+        Real calculated = basketOption.NPV();
+        Real expected = values[i].result;
+        // Real errorEstimate = basketOption.errorEstimate();
+        Real relError = relativeError(calculated, expected, values[i].s);
+        // Real error = QL_FABS(calculated-expected);
 
         if (relError > values[i].tol) {
             BOOST_FAIL("expected value: "

@@ -26,7 +26,7 @@ using namespace boost::unit_test_framework;
 
 namespace {
 
-    double average = 0.0, sigma = 1.0;
+    Real average = 0.0, sigma = 1.0;
 
 }
 
@@ -37,10 +37,10 @@ void OperatorTest::testConsistency() {
     NormalDistribution normal(average,sigma);
     CumulativeNormalDistribution cum(average,sigma);
 
-    double xMin = average - 4*sigma,
-           xMax = average + 4*sigma;
+    Real xMin = average - 4*sigma,
+         xMax = average + 4*sigma;
     Size N = 10001;
-    double h = (xMax-xMin)/(N-1);
+    Real h = (xMax-xMin)/(N-1);
 
     Array x(N), y(N), yi(N), yd(N), temp(N), diff(N);
 
@@ -59,8 +59,8 @@ void OperatorTest::testConsistency() {
     // check that the derivative of cum is Gaussian
     temp = D.applyTo(yi);
     std::transform(y.begin(),y.end(),temp.begin(),diff.begin(),
-                   std::minus<double>());
-    double e = norm(diff.begin(),diff.end(),h);
+                   std::minus<Real>());
+    Real e = norm(diff.begin(),diff.end(),h);
     if (e > 1.0e-6) {
         char s[10];
         QL_SPRINTF(s,"%5.2e",e);
@@ -72,7 +72,7 @@ void OperatorTest::testConsistency() {
     // check that the second derivative of cum is normal.derivative
     temp = D2.applyTo(yi);
     std::transform(yd.begin(),yd.end(),temp.begin(),diff.begin(),
-                   std::minus<double>());
+                   std::minus<Real>());
     e = norm(diff.begin(),diff.end(),h);
     if (e > 1.0e-4) {
         char s[10];

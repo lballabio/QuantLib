@@ -434,7 +434,7 @@ void MersenneTwisterTest::testValues() {
         0.33163422, 0.85739792, 0.59908488, 0.74566046, 0.72157152
     };
 
-    int i;
+    Integer i;
     std::vector<unsigned long> init(4);
     init[0]=0x123;
     init[1]=0x234;

@@ -26,17 +26,17 @@ using namespace boost::unit_test_framework;
 
 namespace {
 
-    double average = 1.0, sigma = 2.0;
+    Real average = 1.0, sigma = 2.0;
 
-    double gaussian(double x) {
-        double normFact = sigma*QL_SQRT(2*M_PI);
-        double dx = x-average;
+    Real gaussian(Real x) {
+        Real normFact = sigma*QL_SQRT(2*M_PI);
+        Real dx = x-average;
         return QL_EXP(-dx*dx/(2.0*sigma*sigma))/normFact;
     }
 
-    double gaussianDerivative(double x) {
-        double normFact = sigma*sigma*sigma*QL_SQRT(2*M_PI);
-        double dx = x-average;
+    Real gaussianDerivative(Real x) {
+        Real normFact = sigma*sigma*sigma*QL_SQRT(2*M_PI);
+        Real dx = x-average;
         return -dx*QL_EXP(-dx*dx/(2.0*sigma*sigma))/normFact;
     }
 
@@ -50,13 +50,13 @@ void DistributionTest::testNormal() {
     CumulativeNormalDistribution cum(average,sigma);
     InverseCumulativeNormal invCum(average,sigma);
 
-    int numberOfStandardDeviation = 6;
-    double xMin = average - numberOfStandardDeviation*sigma,
-           xMax = average + numberOfStandardDeviation*sigma;
+    Size numberOfStandardDeviation = 6;
+    Real xMin = average - numberOfStandardDeviation*sigma,
+         xMax = average + numberOfStandardDeviation*sigma;
     Size N = 100001;
-    double h = (xMax-xMin)/(N-1);
+    Real h = (xMax-xMin)/(N-1);
 
-    std::vector<double> x(N), y(N), yd(N), temp(N), diff(N);
+    std::vector<Real> x(N), y(N), yd(N), temp(N), diff(N);
 
     Size i;
     for (i=0; i<N; i++)
@@ -68,8 +68,8 @@ void DistributionTest::testNormal() {
     // check that normal = Gaussian
     std::transform(x.begin(),x.end(),temp.begin(),normal);
     std::transform(y.begin(),y.end(),temp.begin(),diff.begin(),
-                   std::minus<double>());
-    double e = norm(diff.begin(),diff.end(),h);
+                   std::minus<Real>());
+    Real e = norm(diff.begin(),diff.end(),h);
     if (e > 1.0e-16) {
         char s[10];
         QL_SPRINTF(s,"%5.2e",e);
@@ -83,7 +83,7 @@ void DistributionTest::testNormal() {
     std::transform(x.begin(),x.end(),temp.begin(),cum);
     std::transform(temp.begin(),temp.end(),temp.begin(),invCum);
     std::transform(x.begin(),x.end(),temp.begin(),diff.begin(),
-                   std::minus<double>());
+                   std::minus<Real>());
     e = norm(diff.begin(),diff.end(),h);
     if (e > 1.0e-8) {
         char s[10];
@@ -98,7 +98,7 @@ void DistributionTest::testNormal() {
     for (i=0; i<x.size(); i++)
         temp[i] = cum.derivative(x[i]);
     std::transform(y.begin(),y.end(),temp.begin(),diff.begin(),
-                   std::minus<double>());
+                   std::minus<Real>());
     e = norm(diff.begin(),diff.end(),h);
     if (e > 1.0e-16) {
         char s[10];
@@ -113,7 +113,7 @@ void DistributionTest::testNormal() {
     for (i=0; i<x.size(); i++)
         temp[i] = normal.derivative(x[i]);
     std::transform(yd.begin(),yd.end(),temp.begin(),diff.begin(),
-                   std::minus<double>());
+                   std::minus<Real>());
     e = norm(diff.begin(),diff.end(),h);
     if (e > 1.0e-16) {
         char s[10];
@@ -130,10 +130,10 @@ void DistributionTest::testBivariate() {
     BOOST_MESSAGE("Testing bivariate cumulative normal distribution...");
 
     struct BivariateTestData {
-        double a;
-        double b;
-        double rho;
-        double result;
+        Real a;
+        Real b;
+        Real rho;
+        Real result;
     };
 
     /* The data below are from
@@ -176,7 +176,7 @@ void DistributionTest::testBivariate() {
     for (Size i=0; i<LENGTH(values); i++) {
 
         BivariateCumulativeNormalDistribution bcd(values[i].rho);
-        double value = bcd(values[i].a, values[i].b);
+        Real value = bcd(values[i].a, values[i].b);
 
         if (QL_FABS(value-values[i].result)>=1e-6) {
           BOOST_FAIL("BivariateCumulativeDistribution \n"

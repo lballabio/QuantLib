@@ -87,26 +87,26 @@ namespace {
 
     struct BarrierOptionData {
         Barrier::Type type;
-        double volatility;
-        double strike;
-        double barrier;
-        double callValue;
-        double putValue;
+        Volatility volatility;
+        Real strike;
+        Real barrier;
+        Real callValue;
+        Real putValue;
     };
 
     struct NewBarrierOptionData {
         Barrier::Type barrierType;
-        double barrier;
-        double rebate;
+        Real barrier;
+        Real rebate;
         Option::Type type;
-        double strike;
-        double s;      // spot
-        double q;      // dividend
-        double r;      // risk-free rate
+        Real strike;
+        Real s;        // spot
+        Rate q;        // dividend
+        Rate r;        // risk-free rate
         Time t;        // time to maturity
-        double v;      // volatility
-        double result; // result
-        double tol;    // tolerance
+        Volatility v;  // volatility
+        Real result;   // result
+        Real tol;      // tolerance
     };
 
 }
@@ -227,7 +227,7 @@ void BarrierOptionTest::testHaugValues() {
     boost::shared_ptr<BlackVolTermStructure> volTS = flatVol(today, vol, dc);
 
     for (Size i=0; i<LENGTH(values); i++) {
-        Date exDate = today.plusDays(int(values[i].t*360+0.5));
+        Date exDate = today.plusDays(Integer(values[i].t*360+0.5));
         boost::shared_ptr<Exercise> exercise(new EuropeanExercise(exDate));
 
         spot ->setValue(values[i].s);
@@ -252,9 +252,9 @@ void BarrierOptionTest::testHaugValues() {
                 stochProcess,
                 payoff,
                 exercise);
-        double calculated = barrierOption.NPV();
-        double expected = values[i].result;
-        double error = QL_FABS(calculated-expected);
+        Real calculated = barrierOption.NPV();
+        Real expected = values[i].result;
+        Real error = QL_FABS(calculated-expected);
         if (error>values[i].tol) {
             REPORT_FAILURE("value", values[i].barrierType, values[i].barrier,
                            values[i].rebate, payoff, exercise, values[i].s,
@@ -269,11 +269,11 @@ void BarrierOptionTest::testBabsiriValues() {
 
     BOOST_MESSAGE("Testing barrier options against Babsiri's values...");
 
-    double maxErrorAllowed = 1.0e-5;
-    double maxMCErrorAllowed = 1.0e-1;
+    Real maxErrorAllowed = 1.0e-5;
+    Real maxMCErrorAllowed = 1.0e-1;
 
-    double underlyingPrice = 100.0;
-    double rebate = 0.0;
+    Real underlyingPrice = 100.0;
+    Real rebate = 0.0;
     Rate r = 0.05;
     Rate q = 0.02;
 
@@ -281,7 +281,7 @@ void BarrierOptionTest::testBabsiriValues() {
     bool antitheticVariate = false;
     bool controlVariate = false;
     Size requiredSamples = 10000;
-    double requiredTolerance = 0.02;
+    Real requiredTolerance = 0.02;
     Size maxSamples = 1000000;
     bool isBiased = false;
 
@@ -352,8 +352,8 @@ void BarrierOptionTest::testBabsiriValues() {
                 callPayoff,
                 exercise,
                 engine);
-        double calculated = barrierCallOption.NPV();
-        double expected = values[i].callValue;
+        Real calculated = barrierCallOption.NPV();
+        Real expected = values[i].callValue;
         if (QL_FABS(calculated-expected) > maxErrorAllowed) {
             BOOST_FAIL(
                 "Data at index " + SizeFormatter::toString(i) + ", "
@@ -383,11 +383,11 @@ void BarrierOptionTest::testBeagleholeValues() {
 
     BOOST_MESSAGE("Testing barrier options against Beaglehole's values...");
 
-    double maxErrorAllowed = 1.0e-3;
-    double maxMCErrorAllowed = 1.5e-1;
+    Real maxErrorAllowed = 1.0e-3;
+    Real maxMCErrorAllowed = 1.5e-1;
 
-    double underlyingPrice = 50.0;
-    double rebate = 0.0;
+    Real underlyingPrice = 50.0;
+    Real rebate = 0.0;
     Rate r = QL_LOG (1.1);
     Rate q = 0.00;
 
@@ -395,7 +395,7 @@ void BarrierOptionTest::testBeagleholeValues() {
     bool antitheticVariate = false;
     bool controlVariate = false;
     Size requiredSamples = 10000;
-    double requiredTolerance = 0.02;
+    Real requiredTolerance = 0.02;
     Size maxSamples = 1000000;
     bool isBiased = false;
 
@@ -459,8 +459,8 @@ void BarrierOptionTest::testBeagleholeValues() {
                 callPayoff,
                 exercise,
                 engine);
-        double calculated = barrierCallOption.NPV();
-        double expected = values[i].callValue;
+        Real calculated = barrierCallOption.NPV();
+        Real expected = values[i].callValue;
         if (QL_FABS(calculated-expected) > maxErrorAllowed) {
             BOOST_FAIL(
                 "Data at index " + SizeFormatter::toString(i) + ", "

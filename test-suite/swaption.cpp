@@ -31,24 +31,24 @@ namespace {
 
     // global data
 
-    int exercises[] = { 1, 2, 3, 5, 7, 10 };
-    int lengths[] = { 1, 2, 3, 5, 7, 10, 15, 20 };
+    Integer exercises[] = { 1, 2, 3, 5, 7, 10 };
+    Integer lengths[] = { 1, 2, 3, 5, 7, 10, 15, 20 };
     bool payFixed[] = { false, true };
 
     Date today_, settlement_;
-    double nominal_;
+    Real nominal_;
     Calendar calendar_;
     RollingConvention rollingConvention_;
     Frequency fixedFrequency_, floatingFrequency_;
     DayCounter fixedDayCount_;
     bool fixedIsAdjusted_;
     boost::shared_ptr<Xibor> index_;
-    int settlementDays_, fixingDays_;
+    Integer settlementDays_, fixingDays_;
     RelinkableHandle<TermStructure> termStructure_;
 
     // utilities
 
-    boost::shared_ptr<SimpleSwap> makeSwap(const Date& start, int length, 
+    boost::shared_ptr<SimpleSwap> makeSwap(const Date& start, Integer length, 
                                            Rate fixedRate, 
                                            Spread floatingSpread, 
                                            bool payFixed) {
@@ -63,7 +63,7 @@ namespace {
     boost::shared_ptr<Swaption> makeSwaption(
                                     const boost::shared_ptr<SimpleSwap>& swap,
                                     const Date& exercise, 
-                                    double volatility) {
+                                    Volatility volatility) {
         boost::shared_ptr<Quote> vol_me(new SimpleQuote(volatility));
         RelinkableHandle<Quote> vol_rh(vol_me);
         boost::shared_ptr<BlackModel> model(
@@ -114,7 +114,7 @@ void SwaptionTest::testStrikeDependency() {
                 Date startDate = calendar_.advance(exerciseDate,
                                                    settlementDays_,Days);
                 // store the results for different rates...
-                std::vector<double> values;
+                std::vector<Real> values;
                 for (Size l=0; l<LENGTH(strikes); l++) {
                     boost::shared_ptr<SimpleSwap> swap = 
                         makeSwap(startDate,lengths[j],strikes[l],
@@ -125,9 +125,9 @@ void SwaptionTest::testStrikeDependency() {
                 }
                 // and check that they go the right way
                 if (payFixed[k]) {
-                    std::vector<double>::iterator it = 
+                    std::vector<Real>::iterator it = 
                         std::adjacent_find(values.begin(), values.end(),
-                                           std::less<double>());
+                                           std::less<Real>());
                     if (it != values.end()) {
                         Size n = it - values.begin();
                         BOOST_FAIL(
@@ -147,9 +147,9 @@ void SwaptionTest::testStrikeDependency() {
                             RateFormatter::toString(strikes[n+1],2));
                     }
                 } else {
-                    std::vector<double>::iterator it = 
+                    std::vector<Real>::iterator it = 
                         std::adjacent_find(values.begin(), values.end(),
-                                           std::greater<double>());
+                                           std::greater<Real>());
                     if (it != values.end()) {
                         Size n = it - values.begin();
                         BOOST_FAIL(
@@ -190,7 +190,7 @@ void SwaptionTest::testSpreadDependency() {
                 Date startDate = calendar_.advance(exerciseDate,
                                                    settlementDays_,Days);
                 // store the results for different rates...
-                std::vector<double> values;
+                std::vector<Real> values;
                 for (Size l=0; l<LENGTH(spreads); l++) {
                     boost::shared_ptr<SimpleSwap> swap = 
                         makeSwap(startDate,lengths[j],0.06,
@@ -201,9 +201,9 @@ void SwaptionTest::testSpreadDependency() {
                 }
                 // and check that they go the right way
                 if (payFixed[k]) {
-                    std::vector<double>::iterator it = 
+                    std::vector<Real>::iterator it = 
                         std::adjacent_find(values.begin(), values.end(),
-                                           std::greater<double>());
+                                           std::greater<Real>());
                     if (it != values.end()) {
                         Size n = it - values.begin();
                         BOOST_FAIL(
@@ -223,9 +223,9 @@ void SwaptionTest::testSpreadDependency() {
                             RateFormatter::toString(spreads[n+1],2));
                     }
                 } else {
-                    std::vector<double>::iterator it = 
+                    std::vector<Real>::iterator it = 
                         std::adjacent_find(values.begin(), values.end(),
-                                           std::less<double>());
+                                           std::less<Real>());
                     if (it != values.end()) {
                         Size n = it - values.begin();
                         BOOST_FAIL(
@@ -317,7 +317,7 @@ void SwaptionTest::testCachedValue() {
     boost::shared_ptr<SimpleSwap> swap = makeSwap(startDate,10,0.06,0.0,true);
     boost::shared_ptr<Swaption> swaption = 
         makeSwaption(swap,exerciseDate,0.20);
-    double cachedNPV = 3.639365179345;
+    Real cachedNPV = 3.639365179345;
 
     if (QL_FABS(swaption->NPV()-cachedNPV) > 1.0e-11)
         BOOST_FAIL(

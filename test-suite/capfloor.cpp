@@ -32,18 +32,18 @@ namespace {
     // global data
 
     Date today_, settlement_;
-    std::vector<double> nominals_;
+    std::vector<Real> nominals_;
     RollingConvention rollingConvention_;
     Frequency frequency_;
     boost::shared_ptr<Xibor> index_;
     Calendar calendar_;
-    int settlementDays_, fixingDays_;
+    Integer settlementDays_, fixingDays_;
     RelinkableHandle<TermStructure> termStructure_;
 
     // utilities
 
     std::vector<boost::shared_ptr<CashFlow> > makeLeg(const Date& startDate,
-                                                      int length) {
+                                                      Integer length) {
         Date endDate = calendar_.advance(startDate,length,Years,
                                          rollingConvention_);
         Schedule schedule(calendar_,startDate,endDate,frequency_,
@@ -51,7 +51,7 @@ namespace {
         return FloatingRateCouponVector(schedule,nominals_,index_,fixingDays_);
     }
 
-    boost::shared_ptr<PricingEngine> makeEngine(double volatility) {
+    boost::shared_ptr<PricingEngine> makeEngine(Volatility volatility) {
         RelinkableHandle<Quote> vol(
             boost::shared_ptr<Quote>(new SimpleQuote(volatility)));
         boost::shared_ptr<BlackModel> model(new BlackModel(vol,
@@ -63,7 +63,7 @@ namespace {
                          CapFloor::Type type,
                          const std::vector<boost::shared_ptr<CashFlow> >& leg,
                          Rate strike, 
-                         double volatility) {
+                         Volatility volatility) {
         switch (type) {
           case CapFloor::Cap:
             return boost::shared_ptr<CapFloor>(
@@ -94,7 +94,7 @@ namespace {
     // initialization
 
     void initialize() {
-        nominals_ = std::vector<double>(1,100.0);
+        nominals_ = std::vector<Real>(1,100.0);
         frequency_ = Semiannual;
         index_ = boost::shared_ptr<Xibor>(
                             new Euribor(12/frequency_,Months,termStructure_));
@@ -119,16 +119,16 @@ void CapFloorTest::testStrikeDependency() {
 
     initialize();
 
-    int lengths[] = { 1, 2, 3, 5, 7, 10, 15, 20 };
-    double vols[] = { 0.01, 0.05, 0.10, 0.15, 0.20 };
-    double strikes[] = { 0.03, 0.04, 0.05, 0.06, 0.07 };
+    Integer lengths[] = { 1, 2, 3, 5, 7, 10, 15, 20 };
+    Volatility vols[] = { 0.01, 0.05, 0.10, 0.15, 0.20 };
+    Rate strikes[] = { 0.03, 0.04, 0.05, 0.06, 0.07 };
 
     Date startDate = termStructure_->referenceDate();
 
     for (Size i=0; i<LENGTH(lengths); i++) {
         for (Size j=0; j<LENGTH(vols); j++) {
             // store the results for different strikes...
-            std::vector<double> cap_values, floor_values;
+            std::vector<Real> cap_values, floor_values;
             for (Size k=0; k<LENGTH(strikes); k++) {
                 std::vector<boost::shared_ptr<CashFlow> > leg = 
                     makeLeg(startDate,lengths[i]);
@@ -142,9 +142,9 @@ void CapFloorTest::testStrikeDependency() {
                 floor_values.push_back(floor->NPV());
             }
             // and check that they go the right way
-            std::vector<double>::iterator it = 
+            std::vector<Real>::iterator it = 
                 std::adjacent_find(cap_values.begin(),cap_values.end(),
-                                   std::less<double>());
+                                   std::less<Real>());
             if (it != cap_values.end()) {
                 Size n = it - cap_values.begin();
                 BOOST_FAIL(
@@ -164,7 +164,7 @@ void CapFloorTest::testStrikeDependency() {
             }
             // same for floors
             it = std::adjacent_find(floor_values.begin(),floor_values.end(),
-                                    std::greater<double>());
+                                    std::greater<Real>());
             if (it != floor_values.end()) {
                 Size n = it - floor_values.begin();
                 BOOST_FAIL(
@@ -192,10 +192,10 @@ void CapFloorTest::testConsistency() {
 
     initialize();
 
-    int lengths[] = { 1, 2, 3, 5, 7, 10, 15, 20 };
-    double cap_rates[] = { 0.03, 0.04, 0.05, 0.06, 0.07 };
-    double floor_rates[] = { 0.03, 0.04, 0.05, 0.06, 0.07 };
-    double vols[] = { 0.01, 0.05, 0.10, 0.15, 0.20 };
+    Integer lengths[] = { 1, 2, 3, 5, 7, 10, 15, 20 };
+    Rate cap_rates[] = { 0.03, 0.04, 0.05, 0.06, 0.07 };
+    Rate floor_rates[] = { 0.03, 0.04, 0.05, 0.06, 0.07 };
+    Volatility vols[] = { 0.01, 0.05, 0.10, 0.15, 0.20 };
 
     Date startDate = termStructure_->referenceDate();
 
@@ -246,9 +246,9 @@ void CapFloorTest::testParity() {
 
     initialize();
 
-    int lengths[] = { 1, 2, 3, 5, 7, 10, 15, 20 };
-    double strikes[] = { 0.03, 0.04, 0.05, 0.06, 0.07 };
-    double vols[] = { 0.01, 0.05, 0.10, 0.15, 0.20 };
+    Integer lengths[] = { 1, 2, 3, 5, 7, 10, 15, 20 };
+    Rate strikes[] = { 0.03, 0.04, 0.05, 0.06, 0.07 };
+    Volatility vols[] = { 0.01, 0.05, 0.10, 0.15, 0.20 };
 
     Date startDate = termStructure_->referenceDate();
 
@@ -298,15 +298,15 @@ void CapFloorTest::testImpliedVolatility() {
     initialize();
 
     Size maxEvaluations = 100;
-    double tolerance = 1.0e-6;
+    Real tolerance = 1.0e-6;
 
     CapFloor::Type types[] = { CapFloor::Cap, CapFloor::Floor };
     Rate strikes[] = { 0.02, 0.03, 0.04 };
-    int lengths[] = { 1, 5, 10 };
+    Integer lengths[] = { 1, 5, 10 };
 
     // test data
     Rate rRates[] = { 0.02, 0.03, 0.04 };
-    double vols[] = { 0.01, 0.20, 0.30, 0.70, 0.90 };
+    Volatility vols[] = { 0.01, 0.20, 0.30, 0.70, 0.90 };
 
     for (Size k=0; k<LENGTH(lengths); k++) {
         std::vector<boost::shared_ptr<CashFlow> > leg = 
@@ -321,16 +321,16 @@ void CapFloorTest::testImpliedVolatility() {
                 for (Size n=0; n<LENGTH(rRates); n++) {
                     for (Size m=0; m<LENGTH(vols); m++) {
 
-                        double r = rRates[n],
-                               v = vols[m];
+                        Rate r = rRates[n];
+                        Volatility v = vols[m];
                         termStructure_.linkTo(
                             boost::shared_ptr<TermStructure>(
                                 new FlatForward(today_,settlement_,r,
                                                 Actual360())));
                         capfloor->setPricingEngine(makeEngine(v));
 
-                        double value = capfloor->NPV();
-                        double implVol = 0.0; // just to remove a warning...
+                        Real value = capfloor->NPV();
+                        Volatility implVol = 0.0;
 
                         try {
                             implVol = 
@@ -354,7 +354,7 @@ void CapFloorTest::testImpliedVolatility() {
                         if (QL_FABS(implVol-v) > tolerance) {
                             // the difference might not matter
                             capfloor->setPricingEngine(makeEngine(implVol));
-                            double value2 = capfloor->NPV();
+                            Real value2 = capfloor->NPV();
                             if (QL_FABS(value-value2) > tolerance) {
                                 BOOST_FAIL(
                                     typeToString(types[i]) + ":\n"
@@ -401,8 +401,8 @@ void CapFloorTest::testCachedValue() {
                                                      0.07,0.20);
     boost::shared_ptr<Instrument> floor = makeCapFloor(CapFloor::Floor,leg,
                                                        0.03,0.20);
-    double cachedCapNPV   = 6.960233718984,
-           cachedFloorNPV = 2.701296290808;
+    Real cachedCapNPV   = 6.960233718984,
+         cachedFloorNPV = 2.701296290808;
 
     if (QL_FABS(cap->NPV()-cachedCapNPV) > 1.0e-11)
         BOOST_FAIL(

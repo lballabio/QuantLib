@@ -62,7 +62,7 @@ void DividendEuropeanOptionTest::testGreeks() {
 
     BOOST_MESSAGE("Testing dividend European option greeks...");
 
-    std::map<std::string,double> calculated, expected, tolerance;
+    std::map<std::string,Real> calculated, expected, tolerance;
     tolerance["delta"] = 1.0e-5;
     tolerance["gamma"] = 1.0e-5;
     tolerance["theta"] = 1.0e-5;
@@ -70,12 +70,12 @@ void DividendEuropeanOptionTest::testGreeks() {
     tolerance["vega"]  = 1.0e-5;
 
     Option::Type types[] = { Option::Call, Option::Put, Option::Straddle };
-    double strikes[] = { 50.0, 99.5, 100.0, 100.5, 150.0 };
-    double underlyings[] = { 100.0 };
+    Real strikes[] = { 50.0, 99.5, 100.0, 100.5, 150.0 };
+    Real underlyings[] = { 100.0 };
     Rate qRates[] = { 0.00, 0.10, 0.30 };
     Rate rRates[] = { 0.01, 0.05, 0.15 };
-    int lengths[] = { 1, 2 };
-    double vols[] = { 0.05, 0.20, 0.70 };
+    Integer lengths[] = { 1, 2 };
+    Volatility vols[] = { 0.05, 0.20, 0.70 };
 
     DayCounter dc = Actual360();
     Date today = Date::todaysDate();
@@ -95,7 +95,7 @@ void DividendEuropeanOptionTest::testGreeks() {
           boost::shared_ptr<Exercise> exercise(new EuropeanExercise(exDate));
 
           std::vector<Date> dividendDates;
-          std::vector<double> dividends;
+          std::vector<Real> dividends;
           for (Date d = today.plusMonths(3); d < exercise->lastDate(); 
                     d = d.plusMonths(6)) {
               dividendDates.push_back(d);
@@ -119,16 +119,16 @@ void DividendEuropeanOptionTest::testGreeks() {
             for (Size m=0; m<LENGTH(qRates); m++) {
               for (Size n=0; n<LENGTH(rRates); n++) {
                 for (Size p=0; p<LENGTH(vols); p++) {
-                    double u = underlyings[l],
-                           q = qRates[m],
-                           r = rRates[n],
-                           v = vols[p];
+                    Real u = underlyings[l];
+                    Rate q = qRates[m],
+                         r = rRates[n];
+                    Volatility v = vols[p];
                     spot->setValue(u);
                     qRate->setValue(q);
                     rRate->setValue(r);
                     vol->setValue(v);
 
-                    double value         = option.NPV();
+                    Real value = option.NPV();
                     calculated["delta"]  = option.delta();
                     calculated["gamma"]  = option.gamma();
                     calculated["theta"]  = option.theta();
@@ -137,19 +137,19 @@ void DividendEuropeanOptionTest::testGreeks() {
 
                     if (value > spot->value()*1.0e-5) {
                         // perturb spot and get delta and gamma
-                        double du = u*1.0e-4;
+                        Real du = u*1.0e-4;
                         spot->setValue(u+du);
-                        double value_p = option.NPV(),
-                               delta_p = option.delta();
+                        Real value_p = option.NPV(),
+                             delta_p = option.delta();
                         spot->setValue(u-du);
-                        double value_m = option.NPV(),
-                               delta_m = option.delta();
+                        Real value_m = option.NPV(),
+                             delta_m = option.delta();
                         spot->setValue(u);
                         expected["delta"] = (value_p - value_m)/(2*du);
                         expected["gamma"] = (delta_p - delta_m)/(2*du);
 
                         // perturb risk-free rate and get rho
-                        double dr = r*1.0e-4;
+                        Spread dr = r*1.0e-4;
                         rRate->setValue(r+dr);
                         value_p = option.NPV();
                         rRate->setValue(r-dr);
@@ -158,7 +158,7 @@ void DividendEuropeanOptionTest::testGreeks() {
                         expected["rho"] = (value_p - value_m)/(2*dr);
 
                         // perturb volatility and get vega
-                        double dv = v*1.0e-4;
+                        Spread dv = v*1.0e-4;
                         vol->setValue(v+dv);
                         value_p = option.NPV();
                         vol->setValue(v-dv);
@@ -167,7 +167,7 @@ void DividendEuropeanOptionTest::testGreeks() {
                         expected["vega"] = (value_p - value_m)/(2*dv);
 
                         // perturb date and get theta
-                        double dT = 1.0/360;
+                        Time dT = 1.0/360;
                         qTS.linkTo(flatRate(today-1,qRate,dc));
                         rTS.linkTo(flatRate(today-1,rRate,dc));
                         volTS.linkTo(flatVol(today-1,vol,dc));
@@ -182,14 +182,14 @@ void DividendEuropeanOptionTest::testGreeks() {
                         expected["theta"] = (value_p - value_m)/(2*dT);
 
                         // compare
-                        std::map<std::string,double>::iterator it;
+                        std::map<std::string,Real>::iterator it;
                         for (it = calculated.begin();
                              it != calculated.end(); ++it) {
                             std::string greek = it->first;
-                            double expct = expected  [greek],
-                                   calcl = calculated[greek],
-                                   tol   = tolerance [greek];
-                            double error = relativeError(expct,calcl,u);
+                            Real expct = expected  [greek],
+                                 calcl = calculated[greek],
+                                 tol   = tolerance [greek];
+                            Real error = relativeError(expct,calcl,u);
                             if (error>tol) {
                                 REPORT_FAILURE(greek, payoff, exercise, 
                                                u, q, r, today, v, 

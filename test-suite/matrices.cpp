@@ -31,12 +31,12 @@ namespace {
     Size N;
     Matrix M1, M2, M3, M4, I;
 
-    double norm(const Array& v) {
+    Real norm(const Array& v) {
         return QL_SQRT(DotProduct(v,v));
     }
 
-    double norm(const Matrix& m) {
-        double sum = 0.0;
+    Real norm(const Matrix& m) {
+        Real sum = 0.0;
         for (Size i=0; i<m.rows(); i++)
             for (Size j=0; j<m.columns(); j++)
                 sum += m[i][j]*m[i][j];
@@ -115,8 +115,8 @@ void MatricesTest::testSqrt() {
 
     Matrix m = pseudoSqrt(M1, SalvagingAlgorithm::None);
     Matrix temp = m*transpose(m);
-    double error = norm(temp - M1);
-    double tolerance = 1.0e-12;
+    Real error = norm(temp - M1);
+    Real tolerance = 1.0e-12;
     if (error>tolerance) {
         BOOST_FAIL("Matrix square root calculation failed"
                    "\noriginal matrix:\n" 
@@ -140,7 +140,7 @@ void MatricesTest::testSVD() {
 
     initialize();
 
-    double tol = 1.0e-12;
+    Real tol = 1.0e-12;
     Matrix testMatrices[] = { M1, M2, M3, M4 };
 
     for (Size j = 0; j < LENGTH(testMatrices); j++) {

@@ -66,14 +66,14 @@ namespace {
 
     struct EuropeanOptionData {
         Option::Type type;
-        double strike;
-        double s;      // spot
-        double q;      // dividend
-        double r;      // risk-free rate
+        Real strike;
+        Real s;        // spot
+        Rate q;        // dividend
+        Rate r;        // risk-free rate
         Time t;        // time to maturity
-        double v;      // volatility
-        double result; // expected result
-        double tol;    // tolerance
+        Volatility v;  // volatility
+        Real result;   // expected result
+        Real tol;      // tolerance
     };
 
     enum EngineType { Analytic,
@@ -186,8 +186,8 @@ namespace {
         }
     }
 
-    int timeToDays(Time t) {
-        return int(t*360+0.5);
+    Integer timeToDays(Time t) {
+        return Integer(t*360+0.5);
     }
 
 }
@@ -284,9 +284,9 @@ void EuropeanOptionTest::testValues() {
 
         EuropeanOption option(stochProcess, payoff, exercise, engine);
 
-        double calculated = option.NPV();
-        double error = QL_FABS(calculated-values[i].result);
-        double tolerance = 1e-4;
+        Real calculated = option.NPV();
+        Real error = QL_FABS(calculated-values[i].result);
+        Real tolerance = 1e-4;
         if (error>tolerance) {
             REPORT_FAILURE("value", payoff, exercise, values[i].s,
                            values[i].q, values[i].r, today,
@@ -352,9 +352,9 @@ void EuropeanOptionTest::testGreekValues() {
     Date exDate;
     boost::shared_ptr<Exercise> exercise;
     boost::shared_ptr<VanillaOption> option;
-    double calculated;
+    Real calculated;
 
-    int i = -1;
+    Integer i = -1;
 
     i++;
     payoff = boost::shared_ptr<StrikedTypePayoff>(new
@@ -368,8 +368,8 @@ void EuropeanOptionTest::testGreekValues() {
     option = boost::shared_ptr<VanillaOption>(new EuropeanOption(
         stochProcess, payoff, exercise, engine));
     calculated = option->delta();
-    double error = QL_FABS(calculated-values[i].result);
-    double tolerance = 1e-4;
+    Real error = QL_FABS(calculated-values[i].result);
+    Real tolerance = 1e-4;
     if (error>tolerance)
         REPORT_FAILURE("delta", payoff, exercise, values[i].s,
                        values[i].q, values[i].r, today,
@@ -579,7 +579,7 @@ void EuropeanOptionTest::testGreeks() {
 
     BOOST_MESSAGE("Testing European option greeks...");
 
-    std::map<std::string,double> calculated, expected, tolerance;
+    std::map<std::string,Real> calculated, expected, tolerance;
     tolerance["delta"]  = 1.0e-5;
     tolerance["gamma"]  = 1.0e-5;
     tolerance["theta"]  = 1.0e-5;
@@ -588,12 +588,12 @@ void EuropeanOptionTest::testGreeks() {
     tolerance["vega"]   = 1.0e-5;
 
     Option::Type types[] = { Option::Call, Option::Put, Option::Straddle };
-    double strikes[] = { 50.0, 99.5, 100.0, 100.5, 150.0 };
-    double underlyings[] = { 100.0 };
+    Real strikes[] = { 50.0, 99.5, 100.0, 100.5, 150.0 };
+    Real underlyings[] = { 100.0 };
     Rate qRates[] = { 0.04, 0.05, 0.06 };
     Rate rRates[] = { 0.01, 0.05, 0.15 };
     Time residualTimes[] = { 1.0, 2.0 };
-    double vols[] = { 0.11, 0.50, 1.20 };
+    Volatility vols[] = { 0.11, 0.50, 1.20 };
 
     DayCounter dc = Actual360();
     Date today = Date::todaysDate();
@@ -640,16 +640,16 @@ void EuropeanOptionTest::testGreeks() {
                 for (Size m=0; m<LENGTH(qRates); m++) {
                   for (Size n=0; n<LENGTH(rRates); n++) {
                     for (Size p=0; p<LENGTH(vols); p++) {
-                      double u = underlyings[l],
-                             q = qRates[m],
-                             r = rRates[n],
-                             v = vols[p];
+                      Real u = underlyings[l];
+                      Rate q = qRates[m],
+                           r = rRates[n];
+                      Volatility v = vols[p];
                       spot->setValue(u);
                       qRate->setValue(q);
                       rRate->setValue(r);
                       vol->setValue(v);
 
-                      double value         = option.NPV();
+                      Real value = option.NPV();
                       calculated["delta"]  = option.delta();
                       calculated["gamma"]  = option.gamma();
                       calculated["theta"]  = option.theta();
@@ -659,19 +659,19 @@ void EuropeanOptionTest::testGreeks() {
 
                       if (value > spot->value()*1.0e-5) {
                           // perturb spot and get delta and gamma
-                          double du = u*1.0e-4;
+                          Real du = u*1.0e-4;
                           spot->setValue(u+du);
-                          double value_p = option.NPV(),
-                                 delta_p = option.delta();
+                          Real value_p = option.NPV(),
+                               delta_p = option.delta();
                           spot->setValue(u-du);
-                          double value_m = option.NPV(),
-                                 delta_m = option.delta();
+                          Real value_m = option.NPV(),
+                               delta_m = option.delta();
                           spot->setValue(u);
                           expected["delta"] = (value_p - value_m)/(2*du);
                           expected["gamma"] = (delta_p - delta_m)/(2*du);
 
                           // perturb rates and get rho and dividend rho
-                          double dr = r*1.0e-4;
+                          Spread dr = r*1.0e-4;
                           rRate->setValue(r+dr);
                           value_p = option.NPV();
                           rRate->setValue(r-dr);
@@ -679,7 +679,7 @@ void EuropeanOptionTest::testGreeks() {
                           rRate->setValue(r);
                           expected["rho"] = (value_p - value_m)/(2*dr);
 
-                          double dq = q*1.0e-4;
+                          Spread dq = q*1.0e-4;
                           qRate->setValue(q+dq);
                           value_p = option.NPV();
                           qRate->setValue(q-dq);
@@ -688,7 +688,7 @@ void EuropeanOptionTest::testGreeks() {
                           expected["divRho"] = (value_p - value_m)/(2*dq);
 
                           // perturb volatility and get vega
-                          double dv = v*1.0e-4;
+                          Volatility dv = v*1.0e-4;
                           vol->setValue(v+dv);
                           value_p = option.NPV();
                           vol->setValue(v-dv);
@@ -697,7 +697,7 @@ void EuropeanOptionTest::testGreeks() {
                           expected["vega"] = (value_p - value_m)/(2*dv);
 
                           // perturb date and get theta
-                          double dT = 1.0/360;
+                          Time dT = 1.0/360;
                           qTS.linkTo(flatRate(today-1,qRate,dc));
                           rTS.linkTo(flatRate(today-1,rRate,dc));
                           volTS.linkTo(flatVol(today-1,vol,dc));
@@ -712,14 +712,14 @@ void EuropeanOptionTest::testGreeks() {
                           expected["theta"] = (value_p - value_m)/(2*dT);
 
                           // compare
-                          std::map<std::string,double>::iterator it;
+                          std::map<std::string,Real>::iterator it;
                           for (it = calculated.begin();
                                it != calculated.end(); ++it) {
                               std::string greek = it->first;
-                              double expct = expected  [greek],
-                                     calcl = calculated[greek],
-                                     tol   = tolerance [greek];
-                              double error = relativeError(expct,calcl,u);
+                              Real expct = expected  [greek],
+                                   calcl = calculated[greek],
+                                   tol   = tolerance [greek];
+                              Real error = relativeError(expct,calcl,u);
                               if (error>tol) {
                                   REPORT_FAILURE(greek, payoff, exercise,
                                                  u, q, r, today, v,
@@ -742,18 +742,18 @@ void EuropeanOptionTest::testImpliedVol() {
     BOOST_MESSAGE("Testing European option implied volatility...");
 
     Size maxEvaluations = 100;
-    double tolerance = 1.0e-6;
+    Real tolerance = 1.0e-6;
 
     // test options
     Option::Type types[] = { Option::Call, Option::Put, Option::Straddle };
-    double strikes[] = { 50.0, 99.5, 100.0, 100.5, 150.0 };
-    int lengths[] = { 36, 180, 360, 1080 };
+    Real strikes[] = { 50.0, 99.5, 100.0, 100.5, 150.0 };
+    Integer lengths[] = { 36, 180, 360, 1080 };
 
     // test data
-    double underlyings[] = { 80.0, 95.0, 99.9, 100.0, 100.1, 105.0, 120.0 };
+    Real underlyings[] = { 80.0, 95.0, 99.9, 100.0, 100.1, 105.0, 120.0 };
     Rate qRates[] = { 0.01, 0.05, 0.10 };
     Rate rRates[] = { 0.01, 0.05, 0.10 };
-    double vols[] = { 0.01, 0.20, 0.30, 0.70, 0.90 };
+    Volatility vols[] = { 0.01, 0.20, 0.30, 0.70, 0.90 };
 
     DayCounter dc = Actual360();
     Date today = Date::todaysDate();
@@ -781,17 +781,17 @@ void EuropeanOptionTest::testImpliedVol() {
             for (Size m=0; m<LENGTH(qRates); m++) {
               for (Size n=0; n<LENGTH(rRates); n++) {
                 for (Size p=0; p<LENGTH(vols); p++) {
-                  double u = underlyings[l],
-                         q = qRates[m],
-                         r = rRates[n],
-                         v = vols[p];
+                  Real u = underlyings[l];
+                  Rate q = qRates[m],
+                       r = rRates[n];
+                  Volatility v = vols[p];
                   spot->setValue(u);
                   qRate->setValue(q);
                   rRate->setValue(r);
                   vol->setValue(v);
 
-                  double value = option->NPV();
-                  double implVol = 0.0; // just to remove a warning...
+                  Real value = option->NPV();
+                  Volatility implVol = 0.0; // just to remove a warning...
                   if (value != 0.0) {
                       // shift guess somehow
                       vol->setValue(v*1.5);
@@ -820,8 +820,8 @@ void EuropeanOptionTest::testImpliedVol() {
                       if (QL_FABS(implVol-v) > tolerance) {
                           // the difference might not matter
                           vol->setValue(implVol);
-                          double value2 = option->NPV();
-                          double error = relativeError(value,value2,u);
+                          Real value2 = option->NPV();
+                          Real error = relativeError(value,value2,u);
                           if (error > tolerance) {
                               BOOST_FAIL(
                                   OptionTypeFormatter::toString(types[i])
@@ -865,7 +865,7 @@ void EuropeanOptionTest::testImpliedVolContainment() {
                   "implied volatility calculation...");
 
     Size maxEvaluations = 100;
-    double tolerance = 1.0e-6;
+    Real tolerance = 1.0e-6;
 
     // test options
 
@@ -899,14 +899,14 @@ void EuropeanOptionTest::testImpliedVolContainment() {
 
     // test
 
-    double refValue = option2->NPV();
+    Real refValue = option2->NPV();
 
     Flag f;
     f.registerWith(option2);
 
-    double impliedVol = option1->impliedVolatility(refValue*1.5,
-                                                   tolerance,
-                                                   maxEvaluations);
+    Volatility impliedVol = option1->impliedVolatility(refValue*1.5,
+                                                       tolerance,
+                                                       maxEvaluations);
     impliedVol; // borland warning avoided
 
     if (f.isUp())
@@ -939,18 +939,18 @@ namespace {
 
     void testEngineConsistency(EngineType *engines, Size N) {
 
-        double tolerance = 0.03;
+        Real tolerance = 0.03;
 
         // test options
         Option::Type types[] = { Option::Call, Option::Put, Option::Straddle };
-        double strikes[] = { 50.0, 100.0, 150.0 };
-        int lengths[] = { 1 };
+        Real strikes[] = { 50.0, 100.0, 150.0 };
+        Integer lengths[] = { 1 };
 
         // test data
-        double underlyings[] = { 100.0 };
+        Real underlyings[] = { 100.0 };
         Rate qRates[] = { 0.00, 0.05 };
         Rate rRates[] = { 0.01, 0.05, 0.15 };
-        double vols[] = { 0.11, 0.50, 1.20 };
+        Volatility vols[] = { 0.11, 0.50, 1.20 };
 
         DayCounter dc = Actual360();
         Date today = Date::todaysDate();
@@ -986,18 +986,18 @@ namespace {
                 for (Size m=0; m<LENGTH(qRates); m++) {
                   for (Size n=0; n<LENGTH(rRates); n++) {
                     for (Size p=0; p<LENGTH(vols); p++) {
-                      double u = underlyings[l],
-                             q = qRates[m],
-                             r = rRates[n],
-                             v = vols[p];
+                      Real u = underlyings[l];
+                      Rate q = qRates[m],
+                           r = rRates[n];
+                      Volatility v = vols[p];
                       spot->setValue(u);
                       qRate->setValue(q);
                       rRate->setValue(r);
                       vol->setValue(v);
 
-                      double refValue = refOption->NPV();
+                      Real refValue = refOption->NPV();
                       for (Size ii=0; ii<N; ii++) {
-                          double value = options[engines[ii]]->NPV();
+                          Real value = options[engines[ii]]->NPV();
                           if (relativeError(value,refValue,u) > tolerance) {
                               BOOST_FAIL("European "
                                   + OptionTypeFormatter::toString(types[i]) +

@@ -44,20 +44,20 @@ void OldPricerTest::testCliquetPricer() {
 
     BOOST_MESSAGE("Testing old-style cliquet option pricer...");
 
-    double spot = 60.0;
-    double moneyness = 1.1;
+    Real spot = 60.0;
+    Real moneyness = 1.1;
     std::vector<Spread> divYield(2);
     divYield[0] = 0.04; divYield[1] = 0.04;
     std::vector<Rate> rRate(2);
     rRate[0] = 0.08; rRate[1] = 0.08;
     std::vector<Time> dates(2);
     dates[0] = 0.25; dates[1] = 1.00;
-    std::vector<double> vol(2);
+    std::vector<Volatility> vol(2);
     vol[0] = 0.30; vol[1] = 0.30;
     CliquetOptionPricer cliquet(Option::Call, spot, moneyness,
                                 divYield, rRate, dates, vol);
-    double calculated = cliquet.value();
-    double expected = 4.4064; // Haug, p.37
+    Real calculated = cliquet.value();
+    Real expected = 4.4064; // Haug, p.37
     if (QL_FABS(calculated-expected) > 1.0e-4)
         BOOST_FAIL(
             "calculated value: " +
@@ -75,12 +75,12 @@ void OldPricerTest::testDividendEuropeanPricer() {
 
     Size nstp = 150;
 //    Size ngrd = nstp+1;
-    std::vector<double> div(2);
+    std::vector<Real> div(2);
     div[0] = 3.92; div[1] = 4.21;
     std::vector<Time> dates(2);
     dates[0] = 0.333; dates[1] = 0.667;
 
-    std::map<std::string,double> calculated, expected, tolerance;
+    std::map<std::string,Real> calculated, expected, tolerance;
     tolerance["delta"]  = 1.0e-4;
     tolerance["gamma"]  = 1.0e-4;
     tolerance["theta"]  = 1.0e-4;
@@ -88,12 +88,12 @@ void OldPricerTest::testDividendEuropeanPricer() {
     tolerance["vega"]   = 1.0e-4;
 
     Option::Type types[] = { Option::Call, Option::Put, Option::Straddle };
-    double underlyings[] = { 100 };
+    Real underlyings[] = { 100 };
     Rate rRates[] = { 0.01, 0.10, 0.30 };
     Rate qRates[] = { 0.00, 0.05, 0.15 };
     Time residualTimes[] = { 1.0, 2.0 };
-    double strikes[] = { 50, 99.5, 100, 100.5, 150 };
-    double volatilities[] = { 0.04, 0.2, 0.7 };
+    Real strikes[] = { 50, 99.5, 100, 100.5, 150 };
+    Volatility volatilities[] = { 0.04, 0.2, 0.7 };
 
     for (Size i1=0; i1<LENGTH(types); i1++) {
       for (Size i2=0; i2<LENGTH(underlyings); i2++) {
@@ -104,16 +104,16 @@ void OldPricerTest::testDividendEuropeanPricer() {
                 for (Size i7=0; i7<LENGTH(volatilities); i7++) {
                   // test data
                   Option::Type type = types[i1];
-                  double u = underlyings[i2];
+                  Real u = underlyings[i2];
                   Rate r = rRates[i3];
                   Rate q = qRates[i4];
                   Time T = residualTimes[i5];
-                  double k = strikes[i6];
-                  double v = volatilities[i7];
+                  Real k = strikes[i6];
+                  Volatility v = volatilities[i7];
                   // increments
-                  double du = u*1.0e-4;
+                  Real du = u*1.0e-4;
                   Time dT = T/nstp;
-                  double dv = v*1.0e-4;
+                  Volatility dv = v*1.0e-4;
                   Spread dr = r*1.0e-4;
 
                   // reference option
@@ -149,12 +149,12 @@ void OldPricerTest::testDividendEuropeanPricer() {
                     expected["vega"]   =  (optPv.value()-optMv.value())/(2*dv);
 
                     // check
-                    std::map<std::string,double>::iterator it;
+                    std::map<std::string,Real>::iterator it;
                     for (it = expected.begin(); it != expected.end(); ++it) {
                       std::string greek = it->first;
-                      double expct = expected[greek];
-                      double calcl = calculated[greek];
-                      double tol = tolerance[greek];
+                      Real expct = expected[greek];
+                      Real calcl = calculated[greek];
+                      Real tol = tolerance[greek];
                       if (relativeError(expct,calcl,u) > tol)
                           BOOST_FAIL(
                               "Option details: \n"
@@ -193,14 +193,14 @@ void OldPricerTest::testFdEuropeanPricer() {
 
     BOOST_MESSAGE("Testing old-style finite-difference European pricer...");
 
-    double under = 100.0;
-    double strikeMin = 60.0, strikeRange = 100.0;
+    Real under = 100.0;
+    Real strikeMin = 60.0, strikeRange = 100.0;
     Rate rRateMin = 0.0,  rRateRange = 0.18;
     Rate qRateMin = 0.0,  qRateRange = 0.02;
-    double volMin = 0.0, volRange = 1.2;
+    Volatility volMin = 0.0, volRange = 1.2;
     Time timeMin = 0.5, timeRange = 2.0;
 
-    double tolerance = 1.0e-2;
+    Real tolerance = 1.0e-2;
     Size totCases = 200;
 
     PseudoRandom::urng_type rng(56789012);
@@ -209,25 +209,25 @@ void OldPricerTest::testFdEuropeanPricer() {
 
     for (Size i=0; i<totCases; i++) {
 
-        double strike = strikeMin + strikeRange * rng.next().value;
+        Real strike = strikeMin + strikeRange * rng.next().value;
         Rate qRate = qRateMin + qRateRange * rng.next().value;
         Rate rRate = rRateMin + rRateRange * rng.next().value;
-        double vol = volMin + volRange * rng.next().value;
+        Volatility vol = volMin + volRange * rng.next().value;
         Time resTime = timeMin + timeRange * rng.next().value;
 
         for (Size j=0; j<LENGTH(types); j++) {
 
-            double rDiscount = QL_EXP(-rRate*resTime);
-            double qDiscount = QL_EXP(-qRate*resTime);
-            double forward = under*qDiscount/rDiscount;
-            double variance = vol*vol*resTime;
+            DiscountFactor rDiscount = QL_EXP(-rRate*resTime);
+            DiscountFactor qDiscount = QL_EXP(-qRate*resTime);
+            Real forward = under*qDiscount/rDiscount;
+            Real variance = vol*vol*resTime;
             boost::shared_ptr<StrikedTypePayoff> payoff(
                                     new PlainVanillaPayoff(types[j], strike));
-            double anValue = BlackFormula(forward, rDiscount, 
-                                          variance, payoff).value();
-            double numValue = FdEuropean(types[j], under, strike,
-                                         qRate, rRate, resTime,
-                                         vol, 100, 400).value();
+            Real anValue = BlackFormula(forward, rDiscount, 
+                                        variance, payoff).value();
+            Real numValue = FdEuropean(types[j], under, strike,
+                                       qRate, rRate, resTime,
+                                       vol, 100, 400).value();
             if (QL_FABS(anValue-numValue) > tolerance)
                 BOOST_FAIL(
                     "Option details: \n"
@@ -256,14 +256,14 @@ void OldPricerTest::testFdEuropeanPricer() {
 namespace {
 
     template<class O>
-    void testStepOption(Option::Type type, double u, double k,
-                        Rate q, Rate r, Time T, double v,
+    void testStepOption(Option::Type type, Real u, Real k,
+                        Rate q, Rate r, Time T, Volatility v,
                         const std::string& name) {
 
         Size nstp = 145;
         Size ngrd = nstp+1;
 
-        std::map<std::string,double> calculated, expected, tolerance;
+        std::map<std::string,Real> calculated, expected, tolerance;
         tolerance["delta"]  = 2.0e-3;
         tolerance["gamma"]  = 2.0e-3;
         tolerance["theta"]  = 2.0e-3;
@@ -271,8 +271,8 @@ namespace {
         tolerance["divRho"] = 2.0e-3;
         tolerance["vega"]   = 2.0e-3;
 
-        double du = u*1.0e-4;
-        double dv = v*1.0e-4;
+        Real du = u*1.0e-4;
+        Volatility dv = v*1.0e-4;
         Spread dr = r*1.0e-4;
         Spread dq = q*1.0e-4;
 
@@ -304,12 +304,12 @@ namespace {
             expected["vega"]   = (optPv.value()-optMv.value())/(2*dv);
 
             // check
-            std::map<std::string,double>::iterator it;
+            std::map<std::string,Real>::iterator it;
             for (it = expected.begin(); it != expected.end(); ++it) {
                 std::string greek = it->first;
-                double expct = expected[greek];
-                double calcl = calculated[greek];
-                double tol = tolerance[greek];
+                Real expct = expected[greek];
+                Real calcl = calculated[greek];
+                Real tol = tolerance[greek];
                 if (relativeError(expct,calcl,u) > tol)
                     BOOST_FAIL(
                         "Option details: \n"
@@ -344,12 +344,12 @@ void OldPricerTest::testAmericanPricers() {
     BOOST_MESSAGE("Testing old-style American-type pricers...");
 
     Option::Type types[] = { Option::Call, Option::Put, Option::Straddle };
-    double underlyings[] = { 100 };
+    Real underlyings[] = { 100 };
     Rate rRates[] = { 0.01, 0.05, 0.15 };
     Rate qRates[] = { 0.04, 0.05, 0.06 };
     Time residualTimes[] = { 1.0 };
-    double strikes[] = { 50, 100, 150 };
-    double volatilities[] = { 0.05, 0.5, 1.2 };
+    Real strikes[] = { 50, 100, 150 };
+    Volatility volatilities[] = { 0.05, 0.5, 1.2 };
 
     for (Size i1=0; i1<LENGTH(types); i1++) {
       for (Size i2=0; i2<LENGTH(underlyings); i2++) {
@@ -360,12 +360,12 @@ void OldPricerTest::testAmericanPricers() {
                 for (Size i7=0; i7<LENGTH(volatilities); i7++) {
                   // test data
                   Option::Type type = types[i1];
-                  double u = underlyings[i2];
+                  Real u = underlyings[i2];
                   Rate r = rRates[i3];
                   Rate q = qRates[i4];
                   Time T = residualTimes[i5];
-                  double k = strikes[i6];
-                  double v = volatilities[i7];
+                  Real k = strikes[i6];
+                  Volatility v = volatilities[i7];
 
                   testStepOption<FdAmericanOption>(type,u,k,q,r,T,v,
                       std::string("American"));
@@ -385,16 +385,16 @@ namespace {
 
     struct Batch4Data {
         Option::Type type;
-        double underlying;
-        double strike;
+        Real underlying;
+        Real strike;
         Rate dividendYield;
         Rate riskFreeRate;
         Time first;
         Time length;
         Size fixings;
-        double volatility;
+        Volatility volatility;
         bool controlVariate;
-        double result;
+        Real result;
     };
 
     typedef Batch4Data Batch5Data;
@@ -404,23 +404,23 @@ void OldPricerTest::testMcSingleFactorPricers() {
 
     BOOST_MESSAGE("Testing old-style Monte Carlo single-factor pricers...");
 
-    long seed = 3456789;
+    BigNatural seed = 3456789;
 
     // cannot be too low, or one cannot compare numbers when
     // switching to a new default generator
     Size fixedSamples = 1023;
-    double minimumTol = 1.0e-2;
+    Real minimumTol = 1.0e-2;
 
     // "batch" 1
     //
     // data from "Implementing Derivatives Model",
     // Clewlow, Strickland, p.118-123
     Option::Type type = Option::Call;
-    double underlying = 100.0, strike = 100.0;
+    Real underlying = 100.0, strike = 100.0;
     Rate dividendYield = 0.03, riskFreeRate = 0.06;
     Time times[] = { 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0 };
-    double volatility = 0.2;
-    double storedValue = 5.3425606635;
+    Volatility volatility = 0.2;
+    Real storedValue = 5.3425606635;
 
     std::vector<Time> timeIncrements(LENGTH(times));
     std::copy(times,times+LENGTH(times),timeIncrements.begin());
@@ -580,7 +580,7 @@ void OldPricerTest::testMcSingleFactorPricers() {
                                        timeIncrements,
                                        cases4[k].controlVariate,
                                        seed);
-        double value = pricer.valueWithSamples(fixedSamples);
+        Real value = pricer.valueWithSamples(fixedSamples);
         if (QL_FABS(value-cases4[k].result) > 2.0e-2)
             BOOST_FAIL(
                 "Batch 4, case " + SizeFormatter::toString(k+1) + ":\n"
@@ -588,10 +588,10 @@ void OldPricerTest::testMcSingleFactorPricers() {
                 + DecimalFormatter::toString(value,10) + "\n"
                 "    expected:         "
                 + DecimalFormatter::toString(cases4[k].result,10));
-        double tolerance = pricer.errorEstimate()/value;
+        Real tolerance = pricer.errorEstimate()/value;
         tolerance = QL_MIN(tolerance/2.0, minimumTol);
         value = pricer.value(tolerance);
-        double accuracy = pricer.errorEstimate()/value;
+        Real accuracy = pricer.errorEstimate()/value;
         if (accuracy > tolerance)
             BOOST_FAIL(
                 "Batch 4, case " + SizeFormatter::toString(k+1) + ":\n"
@@ -692,7 +692,7 @@ void OldPricerTest::testMcSingleFactorPricers() {
                                        timeIncrements,
                                        cases5[l].controlVariate,
                                        seed);
-        double value = pricer.valueWithSamples(fixedSamples);
+        Real value = pricer.valueWithSamples(fixedSamples);
         if (QL_FABS(value-cases5[l].result) > 2.0e-2)
             BOOST_FAIL(
                 "Batch 5, case " + SizeFormatter::toString(l+1) + ":\n"
@@ -700,10 +700,10 @@ void OldPricerTest::testMcSingleFactorPricers() {
                 + DecimalFormatter::toString(value,10) + "\n"
                 "    expected:         "
                 + DecimalFormatter::toString(cases5[l].result,10));
-        double tolerance = pricer.errorEstimate()/value;
+        Real tolerance = pricer.errorEstimate()/value;
         tolerance = QL_MIN(tolerance/2.0, minimumTol);
         value = pricer.value(tolerance);
-        double accuracy = pricer.errorEstimate()/value;
+        Real accuracy = pricer.errorEstimate()/value;
         if (accuracy > tolerance)
             BOOST_FAIL(
                 "Batch 5, case " + SizeFormatter::toString(l+1) + ":\n"
@@ -718,15 +718,15 @@ void OldPricerTest::testMcSingleFactorPricers() {
 namespace {
 
     template <class P>
-    void testMcMFPricer(const P& pricer, double storedValue,
-                        double tolerance, const std::string& name) {
+    void testMcMFPricer(const P& pricer, Real storedValue,
+                        Real tolerance, const std::string& name) {
 
         // cannot be too low, or one cannot compare numbers when
         // switching to a new default generator
         Size fixedSamples = 1023;
-        double minimumTol = 1.0e-2;
+        Real minimumTol = 1.0e-2;
 
-        double value = pricer.valueWithSamples(fixedSamples);
+        Real value = pricer.valueWithSamples(fixedSamples);
         if (QL_FABS(value-storedValue) > tolerance)
             BOOST_FAIL(
                 name + ":\n"
@@ -738,7 +738,7 @@ namespace {
         tolerance = pricer.errorEstimate()/value;
         tolerance = QL_MIN(tolerance/2.0, minimumTol);
         value = pricer.value(tolerance);
-        double accuracy = pricer.errorEstimate()/value;
+        Real accuracy = pricer.errorEstimate()/value;
         if (accuracy > tolerance)
             BOOST_FAIL(
                 name + ":\n"
@@ -803,7 +803,7 @@ void OldPricerTest::testMcMultiFactorPricers() {
     std::vector<RelinkableHandle<TermStructure> > 
         sameAssetDividend(4, sameDividend);
 
-    unsigned long seed = 86421;
+    BigNatural seed = 86421;
 
     // McEverest
     testMcMFPricer(McEverest(dividendYields, riskFreeRate, volatilities,
@@ -812,8 +812,8 @@ void OldPricerTest::testMcMultiFactorPricers() {
                    1.0e-8,
                    "McEverest");
 
-    std::vector<double> sameAssetValues(4,25.0);
-    double strike;
+    std::vector<Real> sameAssetValues(4,25.0);
+    Real strike;
 
 #ifndef QL_DISABLE_DEPRECATED
     Option::Type type = Option::Call;
@@ -828,7 +828,7 @@ void OldPricerTest::testMcMultiFactorPricers() {
 #endif
 
     // McMaxBasket
-    std::vector<double> assetValues(4);
+    std::vector<Real> assetValues(4);
     assetValues[0] = 100.0;
     assetValues[1] = 110.0;
     assetValues[2] =  90.0;
@@ -840,13 +840,13 @@ void OldPricerTest::testMcMultiFactorPricers() {
                    "McMaxBasket");
 
     // McPagoda
-    std::vector<double> portfolio(4);
+    std::vector<Real> portfolio(4);
     portfolio[0] = 0.15;
     portfolio[1] = 0.20;
     portfolio[2] = 0.35;
     portfolio[3] = 0.30;
-    double fraction = 0.62;
-    double roof = 0.20;
+    Real fraction = 0.62;
+    Real roof = 0.20;
     std::vector<Time> timeIncrements(4);
     timeIncrements[0] = 0.25;
     timeIncrements[1] = 0.50;

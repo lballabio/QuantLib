@@ -26,18 +26,18 @@ void DateTest::testConsistency() {
 
     BOOST_MESSAGE("Testing dates...");
 
-    int minDate = Date::minDate().serialNumber()+1,
-        maxDate = Date::maxDate().serialNumber();
+    BigInteger minDate = Date::minDate().serialNumber()+1,
+               maxDate = Date::maxDate().serialNumber();
 
-    int dyold = Date(minDate-1).dayOfYear(),
-        dold  = Date(minDate-1).dayOfMonth(),
-        mold  = Date(minDate-1).month(),
-        yold  = Date(minDate-1).year(),
-        wdold = Date(minDate-1).weekday();
+    BigInteger dyold = Date(minDate-1).dayOfYear(),
+               dold  = Date(minDate-1).dayOfMonth(),
+               mold  = Date(minDate-1).month(),
+               yold  = Date(minDate-1).year(),
+               wdold = Date(minDate-1).weekday();
 
-    for (int i=minDate; i<=maxDate; i++) {
+    for (BigInteger i=minDate; i<=maxDate; i++) {
         Date t(i);
-        int serial = t.serialNumber();
+        BigInteger serial = t.serialNumber();
 
         // check serial number consistency
         if (serial != i)
@@ -47,11 +47,11 @@ void DateTest::testConsistency() {
                 "    date:          " + DateFormatter::toString(t) + "\n"
                 "    serial number: " + IntegerFormatter::toString(serial));
 
-        int dy = t.dayOfYear(),
-            d  = t.dayOfMonth(),
-            m  = t.month(),
-            y  = t.year(),
-            wd = t.weekday();
+        Integer dy = t.dayOfYear(),
+                d  = t.dayOfMonth(),
+                m  = t.month(),
+                y  = t.year(),
+                wd = t.weekday();
 
         // check if skipping any date
         if (!((dy == dyold+1) ||
@@ -110,8 +110,8 @@ void DateTest::testConsistency() {
                 "    day: " + IntegerFormatter::toString(d));
 
         // check weekday definition
-        if (!((int(wd) == int(wdold+1)) ||
-              (int(wd) == 1 && int(wdold) == 7)))
+        if (!((Integer(wd) == Integer(wdold+1)) ||
+              (Integer(wd) == 1 && Integer(wdold) == 7)))
             BOOST_FAIL(
                 "invalid weekday: \n"
                 "    date:  " + DateFormatter::toString(t) + "\n"

@@ -33,15 +33,15 @@ namespace {
     // global data
 
     Calendar calendar_;
-    int settlementDays_;
+    Integer settlementDays_;
     boost::shared_ptr<TermStructure> termStructure_;
 
     // utilities
 
     struct Datum {
-        int n;
+        Integer n;
         TimeUnit units;
-        double rate;
+        Rate rate;
     };
 
     void initialize() {
@@ -96,7 +96,7 @@ void TermStructureTest::testImplied() {
 
     initialize();
 
-    double tolerance = 1.0e-10;
+    Real tolerance = 1.0e-10;
     Date newToday = termStructure_->todaysDate().plusYears(3);
     Date newSettlement = calendar_.advance(newToday,settlementDays_,Days);
     Date testDate = newSettlement.plusYears(5);
@@ -104,9 +104,9 @@ void TermStructureTest::testImplied() {
         new ImpliedTermStructure(
             RelinkableHandle<TermStructure>(termStructure_),
             newToday, newSettlement));
-    double baseDiscount = termStructure_->discount(newSettlement);
-    double discount = termStructure_->discount(testDate);
-    double impliedDiscount = implied->discount(testDate);
+    DiscountFactor baseDiscount = termStructure_->discount(newSettlement);
+    DiscountFactor discount = termStructure_->discount(testDate);
+    DiscountFactor impliedDiscount = implied->discount(testDate);
     if (QL_FABS(discount - baseDiscount*impliedDiscount) > tolerance)
         BOOST_FAIL(
             "unable to reproduce discount from implied curve\n"
@@ -140,7 +140,7 @@ void TermStructureTest::testFSpreaded() {
 
     initialize();
 
-    double tolerance = 1.0e-10;
+    Real tolerance = 1.0e-10;
     boost::shared_ptr<Quote> me(new SimpleQuote(0.01));
     RelinkableHandle<Quote> mh(me);
     boost::shared_ptr<TermStructure> spreaded(
@@ -187,7 +187,7 @@ void TermStructureTest::testZSpreaded() {
 
     initialize();
 
-    double tolerance = 1.0e-10;
+    Real tolerance = 1.0e-10;
     boost::shared_ptr<Quote> me(new SimpleQuote(0.01));
     RelinkableHandle<Quote> mh(me);
     boost::shared_ptr<TermStructure> spreaded(

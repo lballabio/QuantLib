@@ -36,12 +36,12 @@ void RiskStatisticsTest::testResults() {
     IncrementalGaussianStatistics igs;
     RiskStatistics s;
 
-    double averages[] = { -100.0, -1.0, 0.0, 1.0, 100.0 };
-    double sigmas[] = { 0.1, 1.0, 100.0 };
+    Real averages[] = { -100.0, -1.0, 0.0, 1.0, 100.0 };
+    Real sigmas[] = { 0.1, 1.0, 100.0 };
     Size i, j, k, N;
     N = Size(QL_POW(2.0,16))-1;
-    double dataMin, dataMax;
-    std::vector<double> data(N), weights(N);
+    Real dataMin, dataMax;
+    std::vector<Real> data(N), weights(N);
 
     for (i=0; i<LENGTH(averages); i++) {
         for (j=0; j<LENGTH(sigmas); j++) {
@@ -64,8 +64,8 @@ void RiskStatisticsTest::testResults() {
             s.addSequence(data.begin(),data.end(),weights.begin());
 
             // checks
-            double calculated, expected;
-            double tolerance;
+            Real calculated, expected;
+            Real tolerance;
 
             if (igs.samples() != N)
                 BOOST_FAIL(
@@ -384,9 +384,9 @@ void RiskStatisticsTest::testResults() {
 
 
             // potential upside
-            double upper_tail = averages[i]+2.0*sigmas[j],
-                   lower_tail = averages[i]-2.0*sigmas[j];
-            double twoSigma = cumulative(upper_tail);
+            Real upper_tail = averages[i]+2.0*sigmas[j],
+                 lower_tail = averages[i]-2.0*sigmas[j];
+            Real twoSigma = cumulative(upper_tail);
 
             expected = QL_MAX(upper_tail,0.0);
             tolerance = (expected == 0.0 ? 1.0e-3 : QL_FABS(expected*1.0e-3));

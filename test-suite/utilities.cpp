@@ -75,12 +75,12 @@ namespace QuantLib {
     }
 
     boost::shared_ptr<BlackVolTermStructure> 
-    flatVol(const Date& today, double vol, const DayCounter& dc) {
+    flatVol(const Date& today, Volatility vol, const DayCounter& dc) {
         return flatVol(
                    today, boost::shared_ptr<Quote>(new SimpleQuote(vol)), dc);
     }
 
-    double relativeError(double x1, double x2, double reference) {
+    Real relativeError(Real x1, Real x2, Real reference) {
         if (reference != 0.0)
             return QL_FABS(x1-x2)/reference;
         else

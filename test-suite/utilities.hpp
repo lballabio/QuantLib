@@ -53,34 +53,35 @@ namespace QuantLib {
 
     boost::shared_ptr<BlackVolTermStructure> 
     flatVol(const Date& today,
-            double volatility, 
+            Volatility volatility, 
             const DayCounter& dc = Actual365());
 
-    double relativeError(double x1, double x2, double reference);
+    Real relativeError(Real x1, Real x2, Real reference);
+
+    class Flag : public QuantLib::Observer {
+      private:
+        bool up_;
+      public:
+        Flag() : up_(false) {}
+        void raise() { up_ = true; }
+        void lower() { up_ = false; }
+        bool isUp() const { return up_; }
+        void update() { raise(); }
+    };
+
+    template<class Iterator>
+    Real norm(const Iterator& begin, const Iterator& end, Real h) {
+        // squared values
+        std::vector<Real> f2(end-begin);
+        std::transform(begin,end,begin,f2.begin(),
+                       std::multiplies<Real>());
+        // numeric integral of f^2
+        Real I = h * (std::accumulate(f2.begin(),f2.end(),0.0)
+                      - 0.5*f2.front() - 0.5*f2.back());
+        return QL_SQRT(I);
+    }
 
 }
 
-class Flag : public QuantLib::Observer {
-  private:
-    bool up_;
-  public:
-    Flag() : up_(false) {}
-    void raise() { up_ = true; }
-    void lower() { up_ = false; }
-    bool isUp() const { return up_; }
-    void update() { raise(); }
-};
-
-template<class Iterator>
-double norm(const Iterator& begin, const Iterator& end, double h) {
-    // squared values
-    std::vector<double> f2(end-begin);
-    std::transform(begin,end,begin,f2.begin(),
-                   std::multiplies<double>());
-    // numeric integral of f^2
-    double I = h * (std::accumulate(f2.begin(),f2.end(),0.0)
-                    - 0.5*f2.front() - 0.5*f2.back());
-    return QL_SQRT(I);
-}
 
 #endif

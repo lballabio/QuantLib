@@ -28,12 +28,12 @@ using namespace boost::unit_test_framework;
 
 namespace {
 
-    double tolerance = 1.0e-4;
+    Real tolerance = 1.0e-4;
 
     template <class T, class F>
     void testSingle(const T& I, const std::string& tag,
-                    const F& f, double xMin, double xMax, double expected) {
-        double calculated = I(f,xMin,xMax);
+                    const F& f, Real xMin, Real xMax, Real expected) {
+        Real calculated = I(f,xMin,xMax);
         if (QL_FABS(calculated-expected) > tolerance) {
             BOOST_FAIL(
                 "integrating " + tag +
@@ -45,15 +45,15 @@ namespace {
     template <class T>
     void testSeveral(const T& I) {
         testSingle(I, "f(x) = 1",
-                   constant<double,double>(1.0), 0.0, 1.0, 1.0);
+                   constant<Real,Real>(1.0), 0.0, 1.0, 1.0);
         testSingle(I, "f(x) = x",
-                   identity<double>(),           0.0, 1.0, 0.5);
+                   identity<Real>(),           0.0, 1.0, 0.5);
         testSingle(I, "f(x) = x^2", 
-                   square<double>(),             0.0, 1.0, 1.0/3.0);
+                   square<Real>(),             0.0, 1.0, 1.0/3.0);
         testSingle(I, "f(x) = sin(x)", 
-                   std::ptr_fun<double,double>(QL_SIN), 0.0, M_PI, 2.0);
+                   std::ptr_fun<Real,Real>(QL_SIN), 0.0, M_PI, 2.0);
         testSingle(I, "f(x) = cos(x)", 
-                   std::ptr_fun<double,double>(QL_COS), 0.0, M_PI, 0.0);
+                   std::ptr_fun<Real,Real>(QL_COS), 0.0, M_PI, 0.0);
         testSingle(I, "f(x) = Gaussian(x)", 
                    NormalDistribution(), -10.0, 10.0, 1.0);
     }

@@ -31,13 +31,13 @@ namespace {
                    const Date& end,
                    const Date& refStart,
                    const Date& refEnd,
-                   double result)
+                   Time result)
         : convention(convention), start(start), end(end),
           refStart(refStart), refEnd(refEnd), result(result) {}
         SingleCase(ActualActual::Convention convention,
                    const Date& start,
                    const Date& end,
-                   double result)
+                   Time result)
         : convention(convention), start(start), end(end),
           refStart(Date()), refEnd(Date()), result(result) {}
         ActualActual::Convention convention;
@@ -45,7 +45,7 @@ namespace {
         Date end;
         Date refStart;
         Date refEnd;
-        double result;
+        Time result;
     };
 
 }
@@ -135,14 +135,14 @@ void DayCounterTest::testActualActual() {
                    0.41530054644)
     };
 
-    int n = sizeof(testCases)/sizeof(SingleCase);
-    for (int i=0; i<n; i++) {
+    Size n = sizeof(testCases)/sizeof(SingleCase);
+    for (Size i=0; i<n; i++) {
         ActualActual dayCounter(testCases[i].convention);
         Date d1 = testCases[i].start,
             d2 = testCases[i].end,
             rd1 = testCases[i].refStart,
             rd2 = testCases[i].refEnd;
-        double calculated = dayCounter.yearFraction(d1,d2,rd1,rd2);
+        Time calculated = dayCounter.yearFraction(d1,d2,rd1,rd2);
 
         if (QL_FABS(calculated-testCases[i].result) > 1.0e-10) {
             std::string period, refPeriod;
@@ -169,7 +169,7 @@ void DayCounterTest::testSimple() {
     BOOST_MESSAGE("Testing simple day counter...");
 
     Period p[] = { Period(3,Months), Period(6,Months), Period(1,Years) };
-    double expected[] = { 0.25, 0.5, 1.0 };
+    Time expected[] = { 0.25, 0.5, 1.0 };
     Size n = sizeof(p)/sizeof(Period);
 
     // 4 years should be enough
@@ -179,7 +179,7 @@ void DayCounterTest::testSimple() {
     for (Date start = first; start <= last; start++) {
         for (Size i=0; i<n; i++) {
             Date end = start.plus(p[i]);
-            double calculated = dayCounter.yearFraction(start,end);
+            Time calculated = dayCounter.yearFraction(start,end);
             if (QL_FABS(calculated-expected[i]) > 1.0e-12) {
                 BOOST_FAIL("from " + DateFormatter::toString(start) +
                            " to " + DateFormatter::toString(end) + ":\n"

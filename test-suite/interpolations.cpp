@@ -34,24 +34,24 @@ namespace {
     #define BEGIN(x) (x+0)
     #define END(x) (x+LENGTH(x))
 
-    std::vector<double> xRange(double start, double end, Size points) {
-        std::vector<double> x(points);
-        double dx = (end-start)/(points-1);
+    std::vector<Real> xRange(Real start, Real end, Size points) {
+        std::vector<Real> x(points);
+        Real dx = (end-start)/(points-1);
         for (Size i=0; i<points-1; i++)
             x[i] = start+i*dx;
         x[points-1] = end;
         return x;
     }
 
-    std::vector<double> gaussian(const std::vector<double>& x) {
-        std::vector<double> y(x.size());
+    std::vector<Real> gaussian(const std::vector<Real>& x) {
+        std::vector<Real> y(x.size());
         for (Size i=0; i<x.size(); i++)
             y[i] = QL_EXP(-x[i]*x[i]);
         return y;
     }
 
-    std::vector<double> parabolic(const std::vector<double>& x) {
-        std::vector<double> y(x.size());
+    std::vector<Real> parabolic(const std::vector<Real>& x) {
+        std::vector<Real> y(x.size());
         for (Size i=0; i<x.size(); i++)
             y[i] = -x[i]*x[i];
         return y;
@@ -60,9 +60,9 @@ namespace {
     void checkValues(const char* type,
                      const CubicSpline& spline,
                      I xBegin, I xEnd, J yBegin) {
-        double tolerance = 2.0e-15;
+        Real tolerance = 2.0e-15;
         while (xBegin != xEnd) {
-            double interpolated = spline(*xBegin);
+            Real interpolated = spline(*xBegin);
             if (QL_FABS(interpolated-*yBegin) > tolerance) {
                 BOOST_FAIL(std::string(type) + 
                            " interpolation failed at x = " +
@@ -81,11 +81,11 @@ namespace {
 
     void check1stDerivativeValue(const char* type,
                                  const CubicSpline& spline,
-                                 double x,
-                                 double value) {
-        double tolerance = 1.0e-14;
-        double interpolated = spline.derivative(x);
-        double error = QL_FABS(interpolated-value);
+                                 Real x,
+                                 Real value) {
+        Real tolerance = 1.0e-14;
+        Real interpolated = spline.derivative(x);
+        Real error = QL_FABS(interpolated-value);
         if (error > tolerance) {
             BOOST_FAIL(std::string(type) + 
                        " interpolation first derivative failure\n"
@@ -102,11 +102,11 @@ namespace {
 
     void check2ndDerivativeValue(const char* type,
                                  const CubicSpline& spline,
-                                 double x,
-                                 double value) {
-        double tolerance = 1.0e-13;
-        double interpolated = spline.secondDerivative(x);
-        double error = QL_FABS(interpolated-value);
+                                 Real x,
+                                 Real value) {
+        Real tolerance = 1.0e-13;
+        Real interpolated = spline.secondDerivative(x);
+        Real error = QL_FABS(interpolated-value);
         if (error > tolerance) {
             BOOST_FAIL(std::string(type) + 
                        " interpolation second derivative failure\n"
@@ -124,8 +124,8 @@ namespace {
     void checkNotAKnotCondition(const char* type,
                                 const CubicSpline& spline) {
 
-        double tolerance = 1.0e-14;
-        const std::vector<double>& c = spline.cCoefficients();
+        Real tolerance = 1.0e-14;
+        const std::vector<Real>& c = spline.cCoefficients();
         if (QL_FABS(c[0]-c[1]) > tolerance) {
             BOOST_FAIL(std::string(type) +
                        " interpolation failure"
@@ -151,10 +151,10 @@ namespace {
 
     void checkSymmetry(const char* type,
                        const CubicSpline& spline,
-                       double xMin) {
-        double tolerance = 1.0e-15;
-        for (double x = xMin; x < 0.0; x += 0.1) {
-            double y1 = spline(x), y2 = spline(-x);
+                       Real xMin) {
+        Real tolerance = 1.0e-15;
+        for (Real x = xMin; x < 0.0; x += 0.1) {
+            Real y1 = spline(x), y2 = spline(-x);
             if (QL_FABS(y1-y2) > tolerance) {
                 BOOST_FAIL(std::string(type) +
                            " interpolation not symmetric"
@@ -168,11 +168,11 @@ namespace {
     }
 
     template <class F>
-    class errorFunction : public std::unary_function<double,double> {
+    class errorFunction : public std::unary_function<Real,Real> {
       public:
         errorFunction(const F& f) : f_(f) {}
-        double operator()(double x) const { 
-            double temp = f_(x)-QL_EXP(-x*x); 
+        Real operator()(Real x) const { 
+            Real temp = f_(x)-QL_EXP(-x*x); 
             return temp*temp; 
         }
       private:
@@ -196,34 +196,34 @@ void InterpolationTest::testSplineErrorOnGaussianValues() {
     Size points[]                = {      5,      9,     17,     33 };
 
     // complete spline data from the original 1983 Hyman paper
-    double tabulatedErrors[]     = { 3.5e-2, 2.0e-3, 4.0e-5, 1.8e-6 };
-    double toleranceOnTabErr[]   = { 0.1e-2, 0.1e-3, 0.1e-5, 0.1e-6 };
+    Real tabulatedErrors[]     = { 3.5e-2, 2.0e-3, 4.0e-5, 1.8e-6 };
+    Real toleranceOnTabErr[]   = { 0.1e-2, 0.1e-3, 0.1e-5, 0.1e-6 };
 
     // (complete) MC spline data from the original 1983 Hyman paper
     // NB: with the improved Hyman filter from the Dougherty, Edelman, and
     //     Hyman 1989 paper the n=17 nonmonotonicity is not filtered anymore
     //     so the error agrees with the non MC method.
-    double tabulatedMCErrors[]   = { 1.7e-2, 2.0e-3, 4.0e-5, 1.8e-6 };
-    double toleranceOnTabMCErr[] = { 0.1e-2, 0.1e-3, 0.1e-5, 0.1e-6 };
+    Real tabulatedMCErrors[]   = { 1.7e-2, 2.0e-3, 4.0e-5, 1.8e-6 };
+    Real toleranceOnTabMCErr[] = { 0.1e-2, 0.1e-3, 0.1e-5, 0.1e-6 };
 
     SimpsonIntegral integral(1e-12);
-    std::vector<double> x, y;
+    std::vector<Real> x, y;
 
     // still unexplained scale factor needed to obtain the numerical 
     // results from the paper
-    double scaleFactor = 1.9;
+    Real scaleFactor = 1.9;
 
     for (Size i=0; i<LENGTH(points); i++) {
         Size n = points[i];
-        std::vector<double> x = xRange(-1.7, 1.9, n);
-        std::vector<double> y = gaussian(x);
+        std::vector<Real> x = xRange(-1.7, 1.9, n);
+        std::vector<Real> y = gaussian(x);
 
         // Not-a-knot
         CubicSpline f = CubicSpline(x.begin(), x.end(), y.begin(),
                                     CubicSpline::NotAKnot, Null<Real>(),
                                     CubicSpline::NotAKnot, Null<Real>(),
                                     false);
-        double result = QL_SQRT(integral(make_error_function(f), -1.7, 1.9));
+        Real result = QL_SQRT(integral(make_error_function(f), -1.7, 1.9));
         result /= scaleFactor;
         if (QL_FABS(result-tabulatedErrors[i]) > toleranceOnTabErr[i])
             BOOST_FAIL("Not-a-knot spline interpolation "
@@ -261,13 +261,13 @@ void InterpolationTest::testSplineOnGaussianValues() {
 
     BOOST_MESSAGE("Testing spline interpolation on a Gaussian data set...");
 
-    double interpolated, interpolated2;
+    Real interpolated, interpolated2;
     Size n = 5;
 
-    std::vector<double> x(n), y(n);
-    double x1_bad=-1.7, x2_bad=1.7;
+    std::vector<Real> x(n), y(n);
+    Real x1_bad=-1.7, x2_bad=1.7;
 
-    for (double start = -1.9, j=0; j<2; start+=0.2, j++) {
+    for (Real start = -1.9, j=0; j<2; start+=0.2, j++) {
         x = xRange(start, start+3.6, n);
         y = gaussian(x);
 
@@ -335,16 +335,16 @@ void InterpolationTest::testSplineOnRPN15AValues() {
 
     BOOST_MESSAGE("Testing spline interpolation on RPN15A data set...");
 
-    const double RPN15A_x[] = { 
+    const Real RPN15A_x[] = { 
         7.99,       8.09,       8.19,      8.7,
         9.2,     10.0,     12.0,     15.0,     20.0 
     };
-    const double RPN15A_y[] = {
+    const Real RPN15A_y[] = {
         0.0, 2.76429e-5, 4.37498e-5, 0.169183,
         0.469428, 0.943740, 0.998636, 0.999919, 0.999994 
     };
 
-    double interpolated;
+    Real interpolated;
 
     // Natural spline
     CubicSpline f = NaturalCubicSpline(BEGIN(RPN15A_x), END(RPN15A_x), 
@@ -356,7 +356,7 @@ void InterpolationTest::testSplineOnRPN15AValues() {
     check2ndDerivativeValue("Natural spline", f,
                             *(END(RPN15A_x)-1), 0.0);
     // poor performance
-    double x_bad = 11.0;
+    Real x_bad = 11.0;
     interpolated = f(x_bad);
     if (interpolated<1.0) {
         BOOST_FAIL("Natural spline interpolation "
@@ -482,13 +482,13 @@ void InterpolationTest::testSplineOnGenericValues() {
 
     BOOST_MESSAGE("Testing spline interpolation on generic values...");
 
-    const double generic_x[] = { 0.0, 1.0, 3.0, 4.0 };
-    const double generic_y[] = { 0.0, 0.0, 2.0, 2.0 };
-    const double generic_natural_y2[] = { 0.0, 1.5, -1.5, 0.0 };
+    const Real generic_x[] = { 0.0, 1.0, 3.0, 4.0 };
+    const Real generic_y[] = { 0.0, 0.0, 2.0, 2.0 };
+    const Real generic_natural_y2[] = { 0.0, 1.5, -1.5, 0.0 };
 
-    double interpolated, error;
+    Real interpolated, error;
     Size i, n = LENGTH(generic_x);
-    std::vector<double> x35(3);
+    std::vector<Real> x35(3);
 
     // Natural spline
     CubicSpline f = CubicSpline(BEGIN(generic_x), END(generic_x), 
@@ -520,7 +520,7 @@ void InterpolationTest::testSplineOnGenericValues() {
 
 
     // Clamped spline
-    double y1a = 0.0, y1b = 0.0;
+    Real y1a = 0.0, y1b = 0.0;
     f = CubicSpline(BEGIN(generic_x), END(generic_x), BEGIN(generic_y),
                     CubicSpline::FirstDerivative, y1a,
                     CubicSpline::FirstDerivative, y1b,
@@ -564,7 +564,7 @@ void InterpolationTest::testSimmetricEndConditions() {
 
     Size n = 9;
 
-    std::vector<double> x, y;
+    std::vector<Real> x, y;
     x = xRange(-1.8, 1.8, n);
     y = gaussian(x);
 
@@ -596,7 +596,7 @@ void InterpolationTest::testDerivativeEndConditions() {
 
     Size n = 4;
 
-    std::vector<double> x, y;
+    std::vector<Real> x, y;
     x = xRange(-2.0, 2.0, n);
     y = parabolic(x);
 
@@ -714,10 +714,10 @@ void InterpolationTest::testNonRestrictiveHymanFilter() {
 
     Size n = 4;
 
-    std::vector<double> x, y;
+    std::vector<Real> x, y;
     x = xRange(-2.0, 2.0, n);
     y = parabolic(x);
-    double zero=0.0, interpolated, expected=0.0;
+    Real zero=0.0, interpolated, expected=0.0;
 
     // MC Not-a-knot spline
     Interpolation f = CubicSpline(x.begin(), x.end(), y.begin(),

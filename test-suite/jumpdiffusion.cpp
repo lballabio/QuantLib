@@ -105,16 +105,16 @@ namespace {
 
     struct HaugMertonData {
         Option::Type type;
-        double strike;
-        double s;      // spot
-        double q;      // dividend
-        double r;      // risk-free rate
+        Real strike;
+        Real s;        // spot
+        Rate q;        // dividend
+        Rate r;        // risk-free rate
         Time t;        // time to maturity
-        double v;      // volatility
-        double jumpIntensity;
-        double gamma;
-        double result; // result
-        double tol;    // tolerance
+        Volatility v;  // volatility
+        Real jumpIntensity;
+        Real gamma;
+        Real result;   // result
+        Real tol;      // tolerance
     };
 
 }
@@ -330,7 +330,7 @@ void JumpDiffusionTest::testMerton76() {
         boost::shared_ptr<StrikedTypePayoff> payoff(new
             PlainVanillaPayoff(values[i].type, values[i].strike));
 
-        Date exDate = today.plusDays(int(values[i].t*360+0.5));
+        Date exDate = today.plusDays(Integer(values[i].t*360+0.5));
         boost::shared_ptr<Exercise> exercise(new EuropeanExercise(exDate));
 
         spot ->setValue(values[i].s);
@@ -341,29 +341,29 @@ void JumpDiffusionTest::testMerton76() {
         jumpIntensity->setValue(values[i].jumpIntensity);
 
         // delta in Haug's notation
-        double jVol = values[i].v *
+        Real jVol = values[i].v *
             QL_SQRT(values[i].gamma / values[i].jumpIntensity);
         jumpVol->setValue(jVol);
 
         // z in Haug's notation
-        double diffusionVol = values[i].v * QL_SQRT(1.0 - values[i].gamma);
+        Real diffusionVol = values[i].v * QL_SQRT(1.0 - values[i].gamma);
         vol  ->setValue(diffusionVol);
 
         // Haug is assuming zero meanJump
-        double meanJump = 0.0;
+        Real meanJump = 0.0;
         meanLogJump->setValue(QL_LOG(1.0+meanJump)-0.5*jVol*jVol);
 
-        double totalVol = QL_SQRT(values[i].jumpIntensity*jVol*jVol + 
-                                  diffusionVol*diffusionVol);
-        double volError = QL_FABS(totalVol-values[i].v);
+        Volatility totalVol = QL_SQRT(values[i].jumpIntensity*jVol*jVol + 
+                                      diffusionVol*diffusionVol);
+        Volatility volError = QL_FABS(totalVol-values[i].v);
         QL_REQUIRE(volError<1e-13,
                    DecimalFormatter::toString(volError) +
                    " mismatch");
 
         EuropeanOption option(stochProcess, payoff, exercise, engine);
 
-        double calculated = option.NPV();
-        double error = QL_FABS(calculated-values[i].result);
+        Real calculated = option.NPV();
+        Real error = QL_FABS(calculated-values[i].result);
         if (error>values[i].tol) {
             REPORT_FAILURE_2("value", payoff, exercise,
                              values[i].s, values[i].q, values[i].r,
@@ -379,7 +379,7 @@ void JumpDiffusionTest::testGreeks() {
 
     BOOST_MESSAGE("Testing jump-diffusion option greeks...");
 
-    std::map<std::string,double> calculated, expected, tolerance;
+    std::map<std::string,Real> calculated, expected, tolerance;
     tolerance["delta"]  = 1.0e-4;
     tolerance["gamma"]  = 1.0e-4;
     tolerance["theta"]  = 1.0e-4;
@@ -388,15 +388,15 @@ void JumpDiffusionTest::testGreeks() {
     tolerance["vega"]   = 1.0e-4;
 
     Option::Type types[] = { Option::Put, Option::Call, Option::Straddle };
-    double strikes[] = { 50.0, 100.0, 150.0 };
-    double underlyings[] = { 100.0 };
+    Real strikes[] = { 50.0, 100.0, 150.0 };
+    Real underlyings[] = { 100.0 };
     Rate qRates[] = { -0.05, 0.0, 0.05 };
     Rate rRates[] = { 0.0, 0.01, 0.2 };
     Time residualTimes[] = { 1.0 };
-    double vols[] = { 0.11 };
-    double jInt[] = { 1.0, 5.0 };
-    double mLJ[] = { -0.20, 0.0, 0.20 };
-    double jV[] = { 0.01, 0.25 };
+    Volatility vols[] = { 0.11 };
+    Real jInt[] = { 1.0, 5.0 };
+    Real mLJ[] = { -0.20, 0.0, 0.20 };
+    Volatility jV[] = { 0.01, 0.25 };
 
     DayCounter dc = Actual360();
     Date today = Date::todaysDate();
@@ -435,7 +435,7 @@ void JumpDiffusionTest::testGreeks() {
       for (Size jj3=0; jj3<LENGTH(jV); jj3++) {
         jumpVol->setValue(jV[jj3]);
         for (Size k=0; k<LENGTH(residualTimes); k++) {
-          Date exDate = today.plusDays(int(residualTimes[k]*360+0.5));
+          Date exDate = today.plusDays(Integer(residualTimes[k]*360+0.5));
           boost::shared_ptr<Exercise> exercise(new EuropeanExercise(exDate));
           for (Size kk=0; kk<1; kk++) {
               // option to check
@@ -456,19 +456,19 @@ void JumpDiffusionTest::testGreeks() {
               EuropeanOption option(stochProcess, payoff, exercise, engine);
 
               for (Size l=0; l<LENGTH(underlyings); l++) {
-                double u = underlyings[l];
+                Real u = underlyings[l];
                 for (Size m=0; m<LENGTH(qRates); m++) {
-                  double q = qRates[m];
+                  Rate q = qRates[m];
                   for (Size n=0; n<LENGTH(rRates); n++) {
-                    double r = rRates[n];
+                    Rate r = rRates[n];
                     for (Size p=0; p<LENGTH(vols); p++) {
-                      double v = vols[p];
+                      Volatility v = vols[p];
                       spot->setValue(u);
                       qRate->setValue(q);
                       rRate->setValue(r);
                       vol->setValue(v);
 
-                      double value         = option.NPV();
+                      Real value = option.NPV();
                       calculated["delta"]  = option.delta();
                       calculated["gamma"]  = option.gamma();
 //                      calculated["theta"]  = option.theta();
@@ -478,19 +478,19 @@ void JumpDiffusionTest::testGreeks() {
 
                       if (value > spot->value()*1.0e-5) {
                           // perturb spot and get delta and gamma
-                          double du = u*1.0e-5;
+                          Real du = u*1.0e-5;
                           spot->setValue(u+du);
-                          double value_p = option.NPV(),
-                                 delta_p = option.delta();
+                          Real value_p = option.NPV(),
+                               delta_p = option.delta();
                           spot->setValue(u-du);
-                          double value_m = option.NPV(),
-                                 delta_m = option.delta();
+                          Real value_m = option.NPV(),
+                               delta_m = option.delta();
                           spot->setValue(u);
                           expected["delta"] = (value_p - value_m)/(2*du);
                           expected["gamma"] = (delta_p - delta_m)/(2*du);
 
                           // perturb rates and get rho and dividend rho
-                          double dr = 1.0e-5;
+                          Spread dr = 1.0e-5;
                           rRate->setValue(r+dr);
                           value_p = option.NPV();
                           rRate->setValue(r-dr);
@@ -498,7 +498,7 @@ void JumpDiffusionTest::testGreeks() {
                           rRate->setValue(r);
                           expected["rho"] = (value_p - value_m)/(2*dr);
 
-                          double dq = 1.0e-5;
+                          Spread dq = 1.0e-5;
                           qRate->setValue(q+dq);
                           value_p = option.NPV();
                           qRate->setValue(q-dq);
@@ -507,7 +507,7 @@ void JumpDiffusionTest::testGreeks() {
                           expected["divRho"] = (value_p - value_m)/(2*dq);
 
                           // perturb volatility and get vega
-                          double dv = v*1.0e-4;
+                          Volatility dv = v*1.0e-4;
                           vol->setValue(v+dv);
                           // value_p = option.NPV();
                           vol->setValue(v-dv);
@@ -519,14 +519,14 @@ void JumpDiffusionTest::testGreeks() {
                           // expected["theta"] = (optionM.NPV() - optionP.NPV())/dT;
 
                           // compare
-                          std::map<std::string,double>::iterator it;
+                          std::map<std::string,Real>::iterator it;
                           for (it = expected.begin(); 
                                it != expected.end(); ++it) {
                               std::string greek = it->first;
-                              double expct = expected  [greek],
-                                     calcl = calculated[greek],
-                                     tol   = tolerance [greek];
-                              double error = QL_FABS(expct-calcl);
+                              Real expct = expected  [greek],
+                                   calcl = calculated[greek],
+                                   tol   = tolerance [greek];
+                              Real error = QL_FABS(expct-calcl);
                               if (error>tol) {
                                   REPORT_FAILURE_1(greek, payoff, exercise,
                                                    u, q, r, today, v,

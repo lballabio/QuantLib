@@ -32,19 +32,19 @@ namespace {
 
     Date today_, settlement_;
     bool payFixed_;
-    double nominal_;
+    Real nominal_;
     Calendar calendar_;
     RollingConvention rollingConvention_;
     Frequency fixedFrequency_, floatingFrequency_;
     DayCounter fixedDayCount_;
     bool fixedIsAdjusted_;
     boost::shared_ptr<Xibor> index_;
-    int settlementDays_, fixingDays_;
+    Integer settlementDays_, fixingDays_;
     RelinkableHandle<TermStructure> termStructure_;
 
     // utilities
 
-    boost::shared_ptr<SimpleSwap> makeSwap(int length, Rate fixedRate,
+    boost::shared_ptr<SimpleSwap> makeSwap(Integer length, Rate fixedRate,
                                            Spread floatingSpread) {
         return boost::shared_ptr<SimpleSwap>(
             new SimpleSwap(payFixed_,settlement_,length,Years,
@@ -83,7 +83,7 @@ void SwapTest::testFairRate() {
 
     initialize();
 
-    int lengths[] = { 1, 2, 5, 10, 20 };
+    Integer lengths[] = { 1, 2, 5, 10, 20 };
     Spread spreads[] = { -0.001, -0.01, 0.0, 0.01, 0.001 };
 
     for (Size i=0; i<LENGTH(lengths); i++) {
@@ -113,7 +113,7 @@ void SwapTest::testFairSpread() {
 
     initialize();
 
-    int lengths[] = { 1, 2, 5, 10, 20 };
+    Integer lengths[] = { 1, 2, 5, 10, 20 };
     Rate rates[] = { 0.04, 0.05, 0.06, 0.07 };
 
     for (Size i=0; i<LENGTH(lengths); i++) {
@@ -142,23 +142,23 @@ void SwapTest::testRateDependency() {
 
     initialize();
 
-    int lengths[] = { 1, 2, 5, 10, 20 };
+    Integer lengths[] = { 1, 2, 5, 10, 20 };
     Spread spreads[] = { -0.001, -0.01, 0.0, 0.01, 0.001 };
     Rate rates[] = { 0.03, 0.04, 0.05, 0.06, 0.07 };
 
     for (Size i=0; i<LENGTH(lengths); i++) {
         for (Size j=0; j<LENGTH(spreads); j++) {
             // store the results for different rates...
-            std::vector<double> swap_values;
+            std::vector<Real> swap_values;
             for (Size k=0; k<LENGTH(rates); k++) {
                 boost::shared_ptr<SimpleSwap> swap = 
                     makeSwap(lengths[i],rates[k],spreads[j]);
                 swap_values.push_back(swap->NPV());
             }
             // and check that they go the right way
-            std::vector<double>::iterator it = 
+            std::vector<Real>::iterator it = 
                 std::adjacent_find(swap_values.begin(),swap_values.end(),
-                                   std::less<double>());
+                                   std::less<Real>());
             if (it != swap_values.end()) {
                 Size n = it - swap_values.begin();
                 BOOST_FAIL(
@@ -184,23 +184,23 @@ void SwapTest::testSpreadDependency() {
 
     initialize();
 
-    int lengths[] = { 1, 2, 5, 10, 20 };
+    Integer lengths[] = { 1, 2, 5, 10, 20 };
     Rate rates[] = { 0.04, 0.05, 0.06, 0.07 };
     Spread spreads[] = { -0.01, -0.002, -0.001, 0.0, 0.001, 0.002, 0.01 };
 
     for (Size i=0; i<LENGTH(lengths); i++) {
         for (Size j=0; j<LENGTH(rates); j++) {
             // store the results for different spreads...
-            std::vector<double> swap_values;
+            std::vector<Real> swap_values;
             for (Size k=0; k<LENGTH(spreads); k++) {
                 boost::shared_ptr<SimpleSwap> swap = 
                     makeSwap(lengths[i],rates[j],spreads[k]);
                 swap_values.push_back(swap->NPV());
             }
             // and check that they go the right way
-            std::vector<double>::iterator it = 
+            std::vector<Real>::iterator it = 
                 std::adjacent_find(swap_values.begin(),swap_values.end(),
-                                   std::greater<double>());
+                                   std::greater<Real>());
             if (it != swap_values.end()) {
                 Size n = it - swap_values.begin();
                 BOOST_FAIL(
@@ -233,7 +233,7 @@ void SwapTest::testCachedValue() {
                                                          0.05,Actual365())));
 
     boost::shared_ptr<SimpleSwap> swap = makeSwap(10, 0.06, 0.001);
-    double cachedNPV   = -5.883663676727;
+    Real cachedNPV   = -5.883663676727;
 
     if (QL_FABS(swap->NPV()-cachedNPV) > 1.0e-11)
         BOOST_FAIL(

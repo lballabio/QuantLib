@@ -28,9 +28,9 @@ using namespace boost::unit_test_framework;
 namespace {
 
     struct Datum {
-        int n;
+        Integer n;
         TimeUnit units;
-        double rate;
+        Rate rate;
     };
 
     Datum depositData[] = {
@@ -60,7 +60,7 @@ namespace {
     // test-global variables
 
     Calendar calendar;
-    int settlementDays, fixingDays;
+    Integer settlementDays, fixingDays;
     Date today, settlement;
     RollingConvention rollingConvention;
     DayCounter dayCounter;
@@ -135,8 +135,8 @@ void CompoundForwardTest::testSuppliedRates() {
                         frequency,0.0,true,
                         dayCounter,frequency,index,
                         fixingDays,0.0,liborHandle);
-        double expectedRate = swapData[i].rate/100,
-               estimatedRate = swap.fairRate();
+        Rate expectedRate = swapData[i].rate/100,
+             estimatedRate = swap.fairRate();
         if (QL_FABS(expectedRate-estimatedRate) > 1.0e-9) {
             BOOST_FAIL(
                 IntegerFormatter::toString(swapData[i].n) + " year(s) swap:\n"
@@ -169,8 +169,8 @@ void CompoundForwardTest::testConvertedRates() {
                         frequency,0.0,true,
                         dayCounter,frequency,index,
                         fixingDays,0.0,liborHandle);
-        double expectedRate = termStructure->compoundForward(swap.maturity(),
-                                                             frequency),
+        Rate expectedRate = termStructure->compoundForward(swap.maturity(),
+                                                           frequency),
                estimatedRate = swap.fairRate();
         if (QL_FABS(expectedRate-estimatedRate) > 1.0e-9) {
             BOOST_FAIL(

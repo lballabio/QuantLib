@@ -28,9 +28,9 @@ void FactorialTest::testFactorial() {
 
     BOOST_MESSAGE("Testing factorial numbers...");
 
-    unsigned int i;
-    double expected = 1.0;
-    double calculated = Factorial::get(0);
+    Natural i;
+    Real expected = 1.0;
+    Real calculated = Factorial::get(0);
     if (calculated!=expected)
         BOOST_FAIL("Factorial(0)"
                    "    calculated: "
@@ -70,8 +70,8 @@ void FactorialTest::testGammaFunction() {
 
     BOOST_MESSAGE("Testing Gamma function...");
 
-    double expected = 0.0;
-    double calculated = GammaFunction().logValue(1);
+    Real expected = 0.0;
+    Real calculated = GammaFunction().logValue(1);
     if (QL_FABS(calculated) > 1.0e-15)
         BOOST_FAIL("GammaFunction("
                    + IntegerFormatter::toString(1) + ")"
@@ -81,7 +81,7 @@ void FactorialTest::testGammaFunction() {
                    + DecimalFormatter::toExponential(expected,16));
 
     for (Size i=2; i<9000; i++) {
-        expected  += QL_LOG(double(i));
+        expected  += QL_LOG(Real(i));
         calculated = GammaFunction().logValue(i+1);
         if (QL_FABS(calculated-expected)/expected > 1.0e-9)
             BOOST_FAIL("GammaFunction("
@@ -103,12 +103,12 @@ void FactorialTest::testPoissonDistribution() {
 
     BOOST_MESSAGE("Testing Poisson distribution...");
 
-    double mean = 0.0;
-    unsigned long i = 0;
+    Real mean = 0.0;
+    BigNatural i = 0;
     PoissonDistribution pdf(mean);
-    double calculated = pdf(i);
-    double expected = 1.0;
-    double error = QL_FABS(calculated-expected);
+    Real calculated = pdf(i);
+    Real expected = 1.0;
+    Real error = QL_FABS(calculated-expected);
     if (error>1.0e-16)
         BOOST_FAIL("Poisson pdf("
                    + DecimalFormatter::toString(mean) + ")("
@@ -121,8 +121,8 @@ void FactorialTest::testPoissonDistribution() {
                    + DecimalFormatter::toExponential(error));
 
     CumulativePoissonDistribution cdf(mean);
-    double cumCalculated = cdf(i);
-    double cumExpected = 1.0;
+    Real cumCalculated = cdf(i);
+    Real cumExpected = 1.0;
     if (cumCalculated!=cumExpected)
         BOOST_FAIL("Poisson cdf("
                    + DecimalFormatter::toString(mean) + ")("
@@ -166,7 +166,7 @@ void FactorialTest::testPoissonDistribution() {
         i = 0;
         pdf = PoissonDistribution(mean);
         calculated = pdf(i);
-        double logHelper = -mean;
+        Real logHelper = -mean;
         expected = QL_EXP(logHelper);
         error = QL_FABS(calculated-expected);
         if (error>1e-16)
@@ -194,9 +194,9 @@ void FactorialTest::testPoissonDistribution() {
                        + DecimalFormatter::toString(cumExpected,16)+
                        "    error:   "
                        + DecimalFormatter::toExponential(error));
-        for (unsigned long i=1; i<25; i++) {
+        for (BigNatural i=1; i<25; i++) {
             calculated = pdf(i);
-            logHelper = logHelper+QL_LOG(mean)-QL_LOG(double(i));
+            logHelper = logHelper+QL_LOG(mean)-QL_LOG(Real(i));
             expected = QL_EXP(logHelper);
             error = QL_FABS(calculated-expected);
             if (error>1.0e-13)

@@ -25,13 +25,13 @@ using namespace boost::unit_test_framework;
 
 namespace {
 
-    double add10(double x) { return x+10; }
-    double mul10(double x) { return x*10; }
-    double sub10(double x) { return x-10; }
+    Real add10(Real x) { return x+10; }
+    Real mul10(Real x) { return x*10; }
+    Real sub10(Real x) { return x-10; }
 
-    double add(double x, double y) { return x+y; }
-    double mul(double x, double y) { return x*y; }
-    double sub(double x, double y) { return x-y; }
+    Real add(Real x, Real y) { return x+y; }
+    Real mul(Real x, Real y) { return x*y; }
+    Real sub(Real x, Real y) { return x-y; }
 
 }
 
@@ -74,16 +74,16 @@ void QuoteTest::testDerived() {
 
     BOOST_MESSAGE("Testing derived quotes...");
 
-    typedef double (*unary_f)(double);
+    typedef Real (*unary_f)(Real);
     unary_f funcs[3] = { add10, mul10, sub10 };
 
     boost::shared_ptr<Quote> me(new SimpleQuote(17.0));
     RelinkableHandle<Quote> h(me);
 
-    for (int i=0; i<3; i++) {
+    for (Integer i=0; i<3; i++) {
         DerivedQuote<unary_f> derived(h,funcs[i]);
-        double x = derived.value(),
-               y = funcs[i](me->value());
+        Real x = derived.value(),
+             y = funcs[i](me->value());
         if (QL_FABS(x-y) > 1.0e-10)
             BOOST_FAIL("derived quote yields " +
                        DecimalFormatter::toString(x) + "\n"
@@ -96,17 +96,17 @@ void QuoteTest::testComposite() {
 
     BOOST_MESSAGE("Testing composite quotes...");
 
-    typedef double (*binary_f)(double,double);
+    typedef Real (*binary_f)(Real,Real);
     binary_f funcs[3] = { add, mul, sub };
 
     boost::shared_ptr<Quote> me1(new SimpleQuote(12.0)),
                              me2(new SimpleQuote(13.0));
     RelinkableHandle<Quote> h1(me1), h2(me2);
 
-    for (int i=0; i<3; i++) {
+    for (Integer i=0; i<3; i++) {
         CompositeQuote<binary_f> composite(h1,h2,funcs[i]);
-        double x = composite.value(),
-               y = funcs[i](me1->value(),me2->value());
+        Real x = composite.value(),
+             y = funcs[i](me1->value(),me2->value());
         if (QL_FABS(x-y) > 1.0e-10)
             BOOST_FAIL("composite quote yields " +
                        DecimalFormatter::toString(x) + "\n"

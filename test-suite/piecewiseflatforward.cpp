@@ -29,9 +29,9 @@ using namespace boost::unit_test_framework;
 namespace {
 
     struct Datum {
-        int n;
+        Integer n;
         TimeUnit units;
-        double rate;
+        Rate rate;
     };
 
     Datum depositData[] = {
@@ -64,7 +64,7 @@ namespace {
     // test-global variables
 
     Calendar calendar;
-    int settlementDays, fixingDays;
+    Integer settlementDays, fixingDays;
     Date today, settlement;
     RollingConvention depoRollingConvention;
     DayCounter depoDayCounter;
@@ -150,8 +150,8 @@ void PiecewiseFlatForwardTest::testConsistency() {
     // check deposits
     for (i=0; i<deposits; i++) {
         Euribor index(depositData[i].n,depositData[i].units,euriborHandle);
-        double expectedRate  = depositData[i].rate/100,
-               estimatedRate = index.fixing(today);
+        Rate expectedRate  = depositData[i].rate/100,
+             estimatedRate = index.fixing(today);
         if (QL_FABS(expectedRate-estimatedRate) > 1.0e-9) {
             BOOST_FAIL(
                 IntegerFormatter::toString(depositData[i].n) + " "
@@ -174,8 +174,8 @@ void PiecewiseFlatForwardTest::testConsistency() {
                         fixedLegFrequency,0.0,fixedLegIsAdjusted,
                         fixedLegDayCounter,floatingLegFrequency,index,
                         fixingDays,0.0,euriborHandle);
-        double expectedRate = swapData[i].rate/100,
-               estimatedRate = swap.fairRate();
+        Rate expectedRate = swapData[i].rate/100,
+             estimatedRate = swap.fairRate();
         if (QL_FABS(expectedRate-estimatedRate) > 1.0e-9) {
             BOOST_FAIL(
                 IntegerFormatter::toString(swapData[i].n) + " year(s) swap:\n"

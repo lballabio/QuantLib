@@ -31,8 +31,8 @@ namespace {
     typedef GaussianStatistics<IncrementalStatistics>
         IncrementalGaussianStatistics;
 
-    double data[] =    { 3.0, 4.0, 5.0, 2.0, 3.0, 4.0, 5.0, 6.0, 4.0, 7.0 };
-    double weights[] = { 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0 };
+    Real data[] =    { 3.0, 4.0, 5.0, 2.0, 3.0, 4.0, 5.0, 6.0, 4.0, 7.0 };
+    Real weights[] = { 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0 };
 
 
     template <class S>
@@ -41,8 +41,8 @@ namespace {
         S s;
         s.addSequence(data,data+LENGTH(data),weights);
 
-        double calculated, expected;
-        double tolerance;
+        Real calculated, expected;
+        Real tolerance;
 
         if (s.samples() != LENGTH(data))
             BOOST_FAIL(name + ": wrong number of samples\n"
@@ -142,17 +142,17 @@ namespace {
 
     template <class S>
     void checkSequence(const std::string& name,
-                       unsigned long dimension) {
+                       Size dimension) {
 
         SequenceStatistics<S> ss(dimension);
         Size i;
         for (i = 0; i<LENGTH(data); i++) {
-            std::vector<double> temp(dimension, data[i]);
+            std::vector<Real> temp(dimension, data[i]);
             ss.add(temp, weights[i]);
         }
 
-        std::vector<double> calculated;
-        double expected, tolerance;
+        std::vector<Real> calculated;
+        Real expected, tolerance;
 
         if (ss.samples() != LENGTH(data))
             BOOST_FAIL("SequenceStatistics<" + name + ">: "

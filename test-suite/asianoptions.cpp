@@ -111,7 +111,7 @@ void AsianOptionTest::testGeometricContinuousAverage() {
 
     Average::Type averageType = Average::Geometric;
     Option::Type type = Option::Put;
-    double strike = 85.0;
+    Real strike = 85.0;
     Date exerciseDate = today.plusMonths(3);
 
     boost::shared_ptr<StrikedTypePayoff> payoff(
@@ -122,9 +122,9 @@ void AsianOptionTest::testGeometricContinuousAverage() {
     ContinuousAveragingAsianOption option(averageType, stochProcess, payoff,
                                           exercise, engine);
 
-    double calculated = option.NPV();
-    double expected = 4.6922;
-    double tolerance = 1.0e-4;
+    Real calculated = option.NPV();
+    Real expected = 4.6922;
+    Real tolerance = 1.0e-4;
     if (QL_FABS(calculated-expected) > tolerance) {
         REPORT_FAILURE("value", averageType, Null<Real>(), Null<Size>(),
                        std::vector<Date>(), payoff, exercise, spot->value(),
@@ -138,7 +138,7 @@ void AsianOptionTest::testGeometricContinuousGreeks() {
 
     BOOST_MESSAGE("Testing continuous-averaging geometric Asian greeks...");
 
-    std::map<std::string,double> calculated, expected, tolerance;
+    std::map<std::string,Real> calculated, expected, tolerance;
     tolerance["delta"]  = 1.0e-5;
     tolerance["gamma"]  = 1.0e-5;
     tolerance["theta"]  = 1.0e-5;
@@ -147,12 +147,12 @@ void AsianOptionTest::testGeometricContinuousGreeks() {
     tolerance["vega"]   = 1.0e-5;
 
     Option::Type types[] = { Option::Call, Option::Put };
-    double underlyings[] = { 100.0 };
-    double strikes[] = { 90.0, 100.0, 110.0 };
+    Real underlyings[] = { 100.0 };
+    Real strikes[] = { 90.0, 100.0, 110.0 };
     Rate qRates[] = { 0.04, 0.05, 0.06 };
     Rate rRates[] = { 0.01, 0.05, 0.15 };
-    int lengths[] = { 1, 2 };
-    double vols[] = { 0.11, 0.50, 1.20 };
+    Integer lengths[] = { 1, 2 };
+    Volatility vols[] = { 0.11, 0.50, 1.20 };
 
     Date today = Date::todaysDate();
 
@@ -190,16 +190,16 @@ void AsianOptionTest::testGeometricContinuousGreeks() {
                 for (Size n=0; n<LENGTH(rRates); n++) {
                   for (Size p=0; p<LENGTH(vols); p++) {
 
-                      double u = underlyings[l],
-                             q = qRates[m],
-                             r = rRates[n],
-                             v = vols[p];
+                      Real u = underlyings[l];
+                      Rate q = qRates[m],
+                           r = rRates[n];
+                      Volatility v = vols[p];
                       spot->setValue(u);
                       qRate->setValue(q);
                       rRate->setValue(r);
                       vol->setValue(v);
 
-                      double value         = option.NPV();
+                      Real value = option.NPV();
                       calculated["delta"]  = option.delta();
                       calculated["gamma"]  = option.gamma();
                       calculated["theta"]  = option.theta();
@@ -209,19 +209,19 @@ void AsianOptionTest::testGeometricContinuousGreeks() {
 
                       if (value > spot->value()*1.0e-5) {
                           // perturb spot and get delta and gamma
-                          double du = u*1.0e-4;
+                          Real du = u*1.0e-4;
                           spot->setValue(u+du);
-                          double value_p = option.NPV(),
-                                 delta_p = option.delta();
+                          Real value_p = option.NPV(),
+                               delta_p = option.delta();
                           spot->setValue(u-du);
-                          double value_m = option.NPV(),
-                                 delta_m = option.delta();
+                          Real value_m = option.NPV(),
+                               delta_m = option.delta();
                           spot->setValue(u);
                           expected["delta"] = (value_p - value_m)/(2*du);
                           expected["gamma"] = (delta_p - delta_m)/(2*du);
 
                           // perturb rates and get rho and dividend rho
-                          double dr = r*1.0e-4;
+                          Spread dr = r*1.0e-4;
                           rRate->setValue(r+dr);
                           value_p = option.NPV();
                           rRate->setValue(r-dr);
@@ -229,7 +229,7 @@ void AsianOptionTest::testGeometricContinuousGreeks() {
                           rRate->setValue(r);
                           expected["rho"] = (value_p - value_m)/(2*dr);
 
-                          double dq = q*1.0e-4;
+                          Spread dq = q*1.0e-4;
                           qRate->setValue(q+dq);
                           value_p = option.NPV();
                           qRate->setValue(q-dq);
@@ -238,7 +238,7 @@ void AsianOptionTest::testGeometricContinuousGreeks() {
                           expected["divRho"] = (value_p - value_m)/(2*dq);
 
                           // perturb volatility and get vega
-                          double dv = v*1.0e-4;
+                          Volatility dv = v*1.0e-4;
                           vol->setValue(v+dv);
                           value_p = option.NPV();
                           vol->setValue(v-dv);
@@ -247,7 +247,7 @@ void AsianOptionTest::testGeometricContinuousGreeks() {
                           expected["vega"] = (value_p - value_m)/(2*dv);
 
                           // perturb date and get theta
-                          double dT = 1.0/365;
+                          Time dT = 1.0/365;
                           qTS.linkTo(flatRate(today-1,qRate));
                           rTS.linkTo(flatRate(today-1,rRate));
                           volTS.linkTo(flatVol(today-1, vol));
@@ -262,14 +262,14 @@ void AsianOptionTest::testGeometricContinuousGreeks() {
                           expected["theta"] = (value_p - value_m)/(2*dT);
 
                           // compare
-                          std::map<std::string,double>::iterator it;
+                          std::map<std::string,Real>::iterator it;
                           for (it = calculated.begin();
                                it != calculated.end(); ++it) {
                               std::string greek = it->first;
-                              double expct = expected  [greek],
-                                     calcl = calculated[greek],
-                                     tol   = tolerance [greek];
-                              double error = relativeError(expct,calcl,u);
+                              Real expct = expected  [greek],
+                                   calcl = calculated[greek],
+                                   tol   = tolerance [greek];
+                              Real error = relativeError(expct,calcl,u);
                               if (error>tol) {
                                   REPORT_FAILURE(greek, Average::Geometric,
                                                  Null<Real>(), Null<Size>(),
@@ -319,11 +319,11 @@ void AsianOptionTest::testGeometricDiscreteAverage() {
                                     new AnalyticDiscreteAveragingAsianEngine);
 
     Average::Type averageType = Average::Geometric;
-    double runningProduct = 1.0;
+    Real runningProduct = 1.0;
     Size pastFixings = 0;
     Size futureFixings = 10;
     Option::Type type = Option::Call;
-    double strike = 100.0;
+    Real strike = 100.0;
     Date exerciseDate = today.plusYears(1);
 
     boost::shared_ptr<StrikedTypePayoff> payoff(
@@ -333,7 +333,7 @@ void AsianOptionTest::testGeometricDiscreteAverage() {
 
     std::vector<Date> fixingDates(futureFixings);
     Time t = dc.yearFraction(today, exerciseDate);
-    int dt = int(t*360/futureFixings+0.5);
+    Integer dt = Integer(t*360/futureFixings+0.5);
     fixingDates[0]=today.plusDays(dt);
     for (Size j=1; j<futureFixings; j++)
         fixingDates[j]=fixingDates[j-1].plusDays(dt);
@@ -343,12 +343,12 @@ void AsianOptionTest::testGeometricDiscreteAverage() {
                                         stochProcess, payoff,
                                         exercise, engine);
 
-    double calculated = option.NPV();
-    double expected = 5.2865;
+    Real calculated = option.NPV();
+    Real expected = 5.2865;
     // even with SimpleDayCounter, the year fractions can vary. This 
     // forces us to use a larger tolerance. An option with 12 fixings 
     // instead of 10 would have been free of this effect...
-    double tolerance = 1.0e-2;
+    Real tolerance = 1.0e-2;
     if (QL_FABS(calculated-expected) > tolerance) {
         REPORT_FAILURE("value", averageType, runningProduct, pastFixings,
                        fixingDates, payoff, exercise, spot->value(),
@@ -362,7 +362,7 @@ void AsianOptionTest::testGeometricDiscreteGreeks() {
 
     BOOST_MESSAGE("Testing discrete-averaging geometric Asian greeks...");
 
-    std::map<std::string,double> calculated, expected, tolerance;
+    std::map<std::string,Real> calculated, expected, tolerance;
     tolerance["delta"]  = 1.0e-5;
     tolerance["gamma"]  = 1.0e-5;
     tolerance["theta"]  = 1.0e-5;
@@ -371,12 +371,12 @@ void AsianOptionTest::testGeometricDiscreteGreeks() {
     tolerance["vega"]   = 1.0e-5;
 
     Option::Type types[] = { Option::Call, Option::Put };
-    double underlyings[] = { 100.0 };
-    double strikes[] = { 90.0, 100.0, 110.0 };
+    Real underlyings[] = { 100.0 };
+    Real strikes[] = { 90.0, 100.0, 110.0 };
     Rate qRates[] = { 0.04, 0.05, 0.06 };
     Rate rRates[] = { 0.01, 0.05, 0.15 };
-    int lengths[] = { 1, 2 };
-    double vols[] = { 0.11, 0.50, 1.20 };
+    Integer lengths[] = { 1, 2 };
+    Volatility vols[] = { 0.11, 0.50, 1.20 };
 
     Date today = Date::todaysDate();
 
@@ -402,7 +402,7 @@ void AsianOptionTest::testGeometricDiscreteGreeks() {
             boost::shared_ptr<PlainVanillaPayoff> payoff(
                                 new PlainVanillaPayoff(types[i], strikes[j]));
 
-            double runningAverage = 1.0;
+            Real runningAverage = 1.0;
             Size pastFixings = 0;
 
             std::vector<Date> fixingDates;
@@ -425,16 +425,16 @@ void AsianOptionTest::testGeometricDiscreteGreeks() {
                 for (Size n=0; n<LENGTH(rRates); n++) {
                   for (Size p=0; p<LENGTH(vols); p++) {
 
-                      double u = underlyings[l],
-                             q = qRates[m],
-                             r = rRates[n],
-                             v = vols[p];
+                      Real u = underlyings[l];
+                      Rate q = qRates[m],
+                           r = rRates[n];
+                      Volatility v = vols[p];
                       spot->setValue(u);
                       qRate->setValue(q);
                       rRate->setValue(r);
                       vol->setValue(v);
 
-                      double value         = option.NPV();
+                      Real value = option.NPV();
                       calculated["delta"]  = option.delta();
                       calculated["gamma"]  = option.gamma();
                       calculated["theta"]  = option.theta();
@@ -444,19 +444,19 @@ void AsianOptionTest::testGeometricDiscreteGreeks() {
 
                       if (value > spot->value()*1.0e-5) {
                           // perturb spot and get delta and gamma
-                          double du = u*1.0e-4;
+                          Real du = u*1.0e-4;
                           spot->setValue(u+du);
-                          double value_p = option.NPV(),
-                                 delta_p = option.delta();
+                          Real value_p = option.NPV(),
+                               delta_p = option.delta();
                           spot->setValue(u-du);
-                          double value_m = option.NPV(),
-                                 delta_m = option.delta();
+                          Real value_m = option.NPV(),
+                               delta_m = option.delta();
                           spot->setValue(u);
                           expected["delta"] = (value_p - value_m)/(2*du);
                           expected["gamma"] = (delta_p - delta_m)/(2*du);
 
                           // perturb rates and get rho and dividend rho
-                          double dr = r*1.0e-4;
+                          Spread dr = r*1.0e-4;
                           rRate->setValue(r+dr);
                           value_p = option.NPV();
                           rRate->setValue(r-dr);
@@ -464,7 +464,7 @@ void AsianOptionTest::testGeometricDiscreteGreeks() {
                           rRate->setValue(r);
                           expected["rho"] = (value_p - value_m)/(2*dr);
 
-                          double dq = q*1.0e-4;
+                          Spread dq = q*1.0e-4;
                           qRate->setValue(q+dq);
                           value_p = option.NPV();
                           qRate->setValue(q-dq);
@@ -473,7 +473,7 @@ void AsianOptionTest::testGeometricDiscreteGreeks() {
                           expected["divRho"] = (value_p - value_m)/(2*dq);
 
                           // perturb volatility and get vega
-                          double dv = v*1.0e-4;
+                          Volatility dv = v*1.0e-4;
                           vol->setValue(v+dv);
                           value_p = option.NPV();
                           vol->setValue(v-dv);
@@ -482,7 +482,7 @@ void AsianOptionTest::testGeometricDiscreteGreeks() {
                           expected["vega"] = (value_p - value_m)/(2*dv);
 
                           // perturb date and get theta
-                          double dT = 1.0/365;
+                          Time dT = 1.0/365;
                           qTS.linkTo(flatRate(today-1,qRate));
                           rTS.linkTo(flatRate(today-1,rRate));
                           volTS.linkTo(flatVol(today-1, vol));
@@ -497,14 +497,14 @@ void AsianOptionTest::testGeometricDiscreteGreeks() {
                           expected["theta"] = (value_p - value_m)/(2*dT);
 
                           // compare
-                          std::map<std::string,double>::iterator it;
+                          std::map<std::string,Real>::iterator it;
                           for (it = calculated.begin();
                                it != calculated.end(); ++it) {
                               std::string greek = it->first;
-                              double expct = expected  [greek],
-                                     calcl = calculated[greek],
-                                     tol   = tolerance [greek];
-                              double error = relativeError(expct,calcl,u);
+                              Real expct = expected  [greek],
+                                   calcl = calculated[greek],
+                                   tol   = tolerance [greek];
+                              Real error = relativeError(expct,calcl,u);
                               if (error>tol) {
                                   REPORT_FAILURE(greek, Average::Geometric,
                                                  Null<Real>(), Null<Size>(),
