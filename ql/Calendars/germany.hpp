@@ -60,7 +60,8 @@ namespace QuantLib {
         <li>New Year's Eve, December 31st</li>
         </ul>
 
-        Holidays for the Xetra exchange (data from http://deutsche-boerse.com/):
+        Holidays for the Xetra exchange
+        (data from http://deutsche-boerse.com/):
         <ul>
         <li>Saturdays</li>
         <li>Sundays</li>
