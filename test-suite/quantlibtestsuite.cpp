@@ -42,6 +42,7 @@
 #include "factorial.hpp"
 #include "instruments.hpp"
 #include "integrals.hpp"
+#include "jumpdiffusion.hpp"
 #include "lowdiscrepancysequences.hpp"
 #include "marketelements.hpp"
 #include "matrices.hpp"
@@ -61,6 +62,7 @@ int main() {
     QLTestListener qlListener;
     runner.eventManager().addListener(&qlListener);
 
+
     runner.addTest(AmericanOptionTest::suite());
     runner.addTest(AsianOptionTest::suite());
     runner.addTest(BarrierOptionTest::suite());
@@ -77,6 +79,7 @@ int main() {
     runner.addTest(FactorialTest::suite());
     runner.addTest(InstrumentTest::suite());
     runner.addTest(IntegralTest::suite());
+//    runner.addTest(JumpDiffusionTest::suite());
     runner.addTest(LDSTest::suite());
     runner.addTest(MarketElementTest::suite());
     runner.addTest(MatricesTest::suite());
