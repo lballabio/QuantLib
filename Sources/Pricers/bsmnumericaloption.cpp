@@ -28,6 +28,9 @@
     $Source$
     $Name$
     $Log$
+    Revision 1.31  2001/03/07 17:14:57  marmar
+    Grid limits are fine tuned
+
     Revision 1.30  2001/03/02 13:50:01  marmar
     Purely virtual method initializeStepCondition()
     introduced in the design of StepConditionOption
@@ -149,9 +152,11 @@ namespace QuantLib {
         
         void BSMNumericalOption::setGridLimits() const {
             // correction for small volatilities
-            double prefactor = 1.0 + 0.05/volatility_;
-            double minMaxFactor = 
-                QL_EXP(4.0*prefactor*volatility_*QL_SQRT(residualTime_));
+            double volSqrtTime = volatility_*QL_SQRT(residualTime_);
+            // the prefactor fine tunes performance at small volatilities
+            double prefactor = 1.0 + 0.02/volSqrtTime;
+            double minMaxFactor = QL_EXP(4.0 * prefactor * volSqrtTime);
+            
             sMin_ = underlying_/minMaxFactor;  // underlying grid min value
             sMax_ = underlying_*minMaxFactor;  // underlying grid max value
             // insure strike is included in the grid
