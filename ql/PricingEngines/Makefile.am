@@ -12,6 +12,7 @@ include_HEADERS = \
     forwardengines.hpp \
     latticeshortratemodelengine.hpp \
     mcengine.hpp \
+    mceuropeanengine.hpp \
     quantoengines.hpp \
     vanillaengines.hpp
 
@@ -25,7 +26,6 @@ libPricingEngines_la_SOURCES = \
     analyticeuropeanengine.cpp \
     binomialvanillaengine.cpp \
     discretizedvanillaoption.cpp \
-    integralengines.cpp \
-    mcbarrierengine.cpp
+    integralengines.cpp
 
 noinst_LTLIBRARIES = libPricingEngines.la
