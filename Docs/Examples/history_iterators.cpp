@@ -1,4 +1,7 @@
 
+// initialize a History
+History h(...);
+
 // print out the mean value and its standard deviation.
 
 Statistics s;

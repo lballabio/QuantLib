@@ -18,10 +18,75 @@
         \hfill --- John Von Neumann
     \end{quotation}
     \endlatexonly
+
+    Documentation for this part of the library is still in progress.
         
     This framework (corresponding to the MonteCarlo namespace) 
-    contains basic building blocks for the implementation of Monte Carlo 
-    models.
+    contains basic building blocks for the numerical calculation of 
+    the integral 
+    \f[ \int_{\Omega} f(\mathbf{x}) p(\mathbf{x}) d \mathbf{x}. \f]
+    where \f$ p(\mathbf{x}) \f$ is a normalized probability function.
+    Monte Carlo methods solve the above integral by approximating it 
+    with the discrete sum 
+    \f[ \frac{1}{N} \sum_{i=1}^{N} f(\mathbf{x}_i) w(\mathbf{x}_i) \f]
+    where the \f$ \mathbf{x}_i \f$ are drawn from \f$ p(\mathbf{x}) \f$,
+    possibly with a weight \f$ w(\mathbf{x}_i) \f$---which otherwise can 
+    be considered uniformly equal to 1.
+    
+    The above sum has a straightforward interpretation in the case of 
+    a derivative product, namely, the \f$ \mathbf{x}_i \f$ are \f$ N \f$ 
+    generated random paths which the value of the underlying can possibly 
+    follow, while the \f$ f(\mathbf{x}_i) \f$ are the values of the 
+    derivative on each of such paths. The sum above can therefore be taken 
+    as an estimate of the price of the derivative, namely, the average of 
+    its value on all possible paths---or rather all considered paths. Such 
+    a method enables the user to construct pricing classes for an unlimited 
+    range of derivatives, most notably path-dependent ones which cannot be 
+    priced by means of finite difference methods.
 
-    Documentation for this part of the library is in progress.
+    It must also be mentioned that for all such methods, the error 
+    \f$ e \f$ on the estimated value is proportional to the square root of 
+    the number of samples \f$ N \f$. 
+    A number of so-called <em>variance-reduction</em> methods have been 
+    found which allows one to reduce the coefficient of proportionality 
+    between \f$ e \f$ and \f$ 1/\sqrt{N} \f$. However, they are not 
+    considered here in any detail. 
+
+    Separate implementations are provided in the library for the three 
+    components of the above average, namely, the drawing of the 
+    \f$ \mathbf{x}_i \f$, the evaluation of the \f$ f(\mathbf{x}_i) \f$, 
+    and the averaging process itself. 
+    The MonteCarloModel class acts as a glue for such three steps---which
+    are outlined in the following subsections---and provides the interface 
+    of the resulting Monte Carlo model to the end user.
+
+    \subsection pathgen Path generation
+    In progress.
+
+    \subsection pathprc Pricing on a path
+    In progress.
+
+    \subsection pathavg Accumulating and averaging samples
+    In progress.
+*/
+
+/*
+    The interface is represented by a template on three classes:
+
+    - A path generation class: the purpose of this class is to generate a 
+    sample path according to the appropriate model. An example would be a 
+    Brownian motion path generator, represented by the class 
+    GaussianPathGenerator.
+
+    - A pricing class: its purpose is to return the value of the derivative
+    given the path followed by the underlying. An example class would be
+    EuropeanPathPricer.
+
+    - A sample accumulator class: this is just a class calculating the 
+    statistical results of the simulation.  It is usually enough to use 
+    the provided class Math::Statistics.
+
+    The McEuropeanPricer class is an example of implementation of a 
+    one-factor Monte Carlo model for european options.
+
 */

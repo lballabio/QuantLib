@@ -12,6 +12,7 @@ EXTRA_DIST = makefile.mak \
              core.docs \
              findiff.docs \
              mcarlo.docs \
+             examples.docs \
              quantlib.doxy \
              quantlibheader.html \
              quantlibfooter.html \
@@ -55,26 +56,27 @@ tex-files: docs-html
 	$(SED) -e "/Page Index/d" \
 	       -e "/input{pages}/d" \
 	       -e "/Page Documentation/d" \
-	       -e "54,$$ s/input{index}/ /" \
-	       -e "54,$$ s/include{index}/ /" \
-	       -e "54,$$ s/input{install}/ /" \
-	       -e "54,$$ s/include{install}/ /" \
-	       -e "54,$$ s/input{license}/ /" \
-	       -e "54,$$ s/include{license}/ /" \
-	       -e "54,$$ s/input{platforms}/ /" \
-	       -e "54,$$ s/include{platforms}/ /" \
-	       -e "54,$$ s/input{usage}/ /" \
-	       -e "54,$$ s/include{usage}/ /" \
-	       -e "54,$$ s/input{where}/ /" \
-	       -e "54,$$ s/include{where}/ /" \
-	       -e "54,$$ s/input{todo}/ /" \
-	       -e "54,$$ s/include{todo}/ /" \
-	       -e "54,$$ s/input{core}/ /" \
-	       -e "54,$$ s/include{core}/ /" \
-	       -e "54,$$ s/input{findiff}/ /" \
-	       -e "54,$$ s/include{findiff}/ /" \
-	       -e "54,$$ s/input{mcarlo}/ /" \
-	       -e "54,$$ s/include{mcarlo}/ /" \
+	       -e "60,$$ s/input{index}/ /" \
+	       -e "60,$$ s/include{index}/ /" \
+	       -e "60,$$ s/input{install}/ /" \
+	       -e "60,$$ s/include{install}/ /" \
+	       -e "60,$$ s/input{license}/ /" \
+	       -e "60,$$ s/include{license}/ /" \
+	       -e "60,$$ s/input{platforms}/ /" \
+	       -e "60,$$ s/include{platforms}/ /" \
+	       -e "60,$$ s/input{usage}/ /" \
+	       -e "60,$$ s/include{usage}/ /" \
+	       -e "60,$$ s/input{where}/ /" \
+	       -e "60,$$ s/include{where}/ /" \
+	       -e "60,$$ s/input{todo}/ /" \
+	       -e "60,$$ s/include{todo}/ /" \
+	       -e "60,$$ s/input{core}/ /" \
+	       -e "60,$$ s/include{core}/ /" \
+	       -e "60,$$ s/input{findiff}/ /" \
+	       -e "60,$$ s/include{findiff}/ /" \
+	       -e "60,$$ s/input{mcarlo}/ /" \
+	       -e "60,$$ s/include{mcarlo}/ /" \
+	       -e "s/ple Documentation}/ple Documentation}\\label{exchap}/" \
 	       oldrefman.tex > latex/refman.tex
 	rm -f oldrefman.tex
 
