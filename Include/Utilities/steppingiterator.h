@@ -28,6 +28,9 @@
     $Source$
     $Name$
     $Log$
+    Revision 1.11  2001/02/21 15:44:19  nando
+    fixed missing ;
+
     Revision 1.10  2001/02/16 15:33:03  lballabio
     Used QL_ITERATOR_TRAITS macro
 
@@ -222,7 +225,7 @@ namespace QuantLib {
             #ifdef QL_DEBUG
                 QL_REQUIRE((it_-i.it_)%dn_ == 0,
                   "Cannot subtract stepping iterators not reachable "
-                  "from each other")
+                  "from each other");
             #endif
             return (it_-i.it_)/dn_;
         }
