@@ -49,7 +49,7 @@ BSC32=bscmake.exe
 # ADD BSC32 /nologo
 LIB32=link.exe -lib
 # ADD BASE LIB32 /nologo
-# ADD LIB32 /nologo
+# ADD LIB32 /nologo /out:"lib\QuantLib.lib"
 
 !ELSEIF  "$(CFG)" == "QuantLib - Win32 Debug"
 
@@ -72,7 +72,7 @@ BSC32=bscmake.exe
 # ADD BSC32 /nologo
 LIB32=link.exe -lib
 # ADD BASE LIB32 /nologo
-# ADD LIB32 /nologo
+# ADD LIB32 /nologo /out:"lib\QuantLib_d.lib"
 
 !ENDIF 
 
@@ -89,7 +89,7 @@ SOURCE=.\Sources\Calendars\frankfurt.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\Include\Calendars\frankfurt.hpp
+SOURCE=.\Include\ql\Calendars\frankfurt.hpp
 # End Source File
 # Begin Source File
 
@@ -97,7 +97,7 @@ SOURCE=.\Sources\Calendars\helsinki.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\Include\Calendars\helsinki.hpp
+SOURCE=.\Include\ql\Calendars\helsinki.hpp
 # End Source File
 # Begin Source File
 
@@ -105,7 +105,7 @@ SOURCE=.\Sources\Calendars\london.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\Include\Calendars\london.hpp
+SOURCE=.\Include\ql\Calendars\london.hpp
 # End Source File
 # Begin Source File
 
@@ -113,7 +113,7 @@ SOURCE=.\Sources\Calendars\milan.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\Include\Calendars\milan.hpp
+SOURCE=.\Include\ql\Calendars\milan.hpp
 # End Source File
 # Begin Source File
 
@@ -121,7 +121,7 @@ SOURCE=.\Sources\Calendars\newyork.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\Include\Calendars\newyork.hpp
+SOURCE=.\Include\ql\Calendars\newyork.hpp
 # End Source File
 # Begin Source File
 
@@ -129,7 +129,7 @@ SOURCE=.\Sources\Calendars\target.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\Include\Calendars\target.hpp
+SOURCE=.\Include\ql\Calendars\target.hpp
 # End Source File
 # Begin Source File
 
@@ -137,7 +137,7 @@ SOURCE=.\Sources\Calendars\wellington.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\Include\Calendars\wellington.hpp
+SOURCE=.\Include\ql\Calendars\wellington.hpp
 # End Source File
 # Begin Source File
 
@@ -145,7 +145,7 @@ SOURCE=.\Sources\Calendars\westerncalendar.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\Include\Calendars\westerncalendar.hpp
+SOURCE=.\Include\ql\Calendars\westerncalendar.hpp
 # End Source File
 # Begin Source File
 
@@ -153,7 +153,7 @@ SOURCE=.\Sources\Calendars\zurich.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\Include\Calendars\zurich.hpp
+SOURCE=.\Include\ql\Calendars\zurich.hpp
 # End Source File
 # End Group
 # Begin Group "Currencies"
@@ -161,47 +161,47 @@ SOURCE=.\Include\Calendars\zurich.hpp
 # PROP Default_Filter ""
 # Begin Source File
 
-SOURCE=.\Include\Currencies\aud.hpp
+SOURCE=.\Include\ql\Currencies\aud.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\Include\Currencies\cad.hpp
+SOURCE=.\Include\ql\Currencies\cad.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\Include\Currencies\chf.hpp
+SOURCE=.\Include\ql\Currencies\chf.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\Include\Currencies\dem.hpp
+SOURCE=.\Include\ql\Currencies\dem.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\Include\Currencies\dkk.hpp
+SOURCE=.\Include\ql\Currencies\dkk.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\Include\Currencies\eur.hpp
+SOURCE=.\Include\ql\Currencies\eur.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\Include\Currencies\gbp.hpp
+SOURCE=.\Include\ql\Currencies\gbp.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\Include\Currencies\itl.hpp
+SOURCE=.\Include\ql\Currencies\itl.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\Include\Currencies\jpy.hpp
+SOURCE=.\Include\ql\Currencies\jpy.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\Include\Currencies\sek.hpp
+SOURCE=.\Include\ql\Currencies\sek.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\Include\Currencies\usd.hpp
+SOURCE=.\Include\ql\Currencies\usd.hpp
 # End Source File
 # End Group
 # Begin Group "Day Counters"
@@ -209,11 +209,11 @@ SOURCE=.\Include\Currencies\usd.hpp
 # PROP Default_Filter ""
 # Begin Source File
 
-SOURCE=.\Include\DayCounters\actual360.hpp
+SOURCE=.\Include\ql\DayCounters\actual360.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\Include\DayCounters\actual365.hpp
+SOURCE=.\Include\ql\DayCounters\actual365.hpp
 # End Source File
 # Begin Source File
 
@@ -221,7 +221,7 @@ SOURCE=.\Sources\DayCounters\actualactual.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\Include\DayCounters\actualactual.hpp
+SOURCE=.\Include\ql\DayCounters\actualactual.hpp
 # End Source File
 # Begin Source File
 
@@ -229,11 +229,11 @@ SOURCE=.\Sources\DayCounters\thirty360.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\Include\DayCounters\thirty360.hpp
+SOURCE=.\Include\ql\DayCounters\thirty360.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\Include\DayCounters\thirty360european.hpp
+SOURCE=.\Include\ql\DayCounters\thirty360european.hpp
 # End Source File
 # Begin Source File
 
@@ -241,7 +241,7 @@ SOURCE=.\Sources\DayCounters\thirty360italian.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\Include\DayCounters\thirty360italian.hpp
+SOURCE=.\Include\ql\DayCounters\thirty360italian.hpp
 # End Source File
 # End Group
 # Begin Group "Finite Differences"
@@ -249,11 +249,11 @@ SOURCE=.\Include\DayCounters\thirty360italian.hpp
 # PROP Default_Filter ""
 # Begin Source File
 
-SOURCE=.\Include\FiniteDifferences\backwardeuler.hpp
+SOURCE=.\Include\ql\FiniteDifferences\backwardeuler.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\Include\FiniteDifferences\boundarycondition.hpp
+SOURCE=.\Include\ql\FiniteDifferences\boundarycondition.hpp
 # End Source File
 # Begin Source File
 
@@ -261,59 +261,59 @@ SOURCE=.\Sources\FiniteDifferences\bsmoperator.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\Include\FiniteDifferences\bsmoperator.hpp
+SOURCE=.\Include\ql\FiniteDifferences\bsmoperator.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\Include\FiniteDifferences\cranknicolson.hpp
+SOURCE=.\Include\ql\FiniteDifferences\cranknicolson.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\Include\FiniteDifferences\dminus.hpp
+SOURCE=.\Include\ql\FiniteDifferences\dminus.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\Include\FiniteDifferences\dplus.hpp
+SOURCE=.\Include\ql\FiniteDifferences\dplus.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\Include\FiniteDifferences\dplusdminus.hpp
+SOURCE=.\Include\ql\FiniteDifferences\dplusdminus.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\Include\FiniteDifferences\dzero.hpp
+SOURCE=.\Include\ql\FiniteDifferences\dzero.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\Include\FiniteDifferences\finitedifferencemodel.hpp
+SOURCE=.\Include\ql\FiniteDifferences\finitedifferencemodel.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\Include\FiniteDifferences\forwardeuler.hpp
+SOURCE=.\Include\ql\FiniteDifferences\forwardeuler.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\Include\FiniteDifferences\identity.hpp
+SOURCE=.\Include\ql\FiniteDifferences\identity.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\Include\FiniteDifferences\operator.hpp
+SOURCE=.\Include\ql\FiniteDifferences\operator.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\Include\FiniteDifferences\operatortraits.hpp
+SOURCE=.\Include\ql\FiniteDifferences\operatortraits.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\Include\FiniteDifferences\standardfdmodel.hpp
+SOURCE=.\Include\ql\FiniteDifferences\standardfdmodel.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\Include\FiniteDifferences\standardstepcondition.hpp
+SOURCE=.\Include\ql\FiniteDifferences\standardstepcondition.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\Include\FiniteDifferences\stepcondition.hpp
+SOURCE=.\Include\ql\FiniteDifferences\stepcondition.hpp
 # End Source File
 # Begin Source File
 
@@ -321,7 +321,7 @@ SOURCE=.\Sources\FiniteDifferences\tridiagonaloperator.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\Include\FiniteDifferences\tridiagonaloperator.hpp
+SOURCE=.\Include\ql\FiniteDifferences\tridiagonaloperator.hpp
 # End Source File
 # Begin Source File
 
@@ -329,7 +329,7 @@ SOURCE=.\Sources\FiniteDifferences\valueatcenter.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\Include\FiniteDifferences\valueatcenter.hpp
+SOURCE=.\Include\ql\FiniteDifferences\valueatcenter.hpp
 # End Source File
 # End Group
 # Begin Group "Instruments"
@@ -337,7 +337,7 @@ SOURCE=.\Include\FiniteDifferences\valueatcenter.hpp
 # PROP Default_Filter ""
 # Begin Source File
 
-SOURCE=.\Include\Instruments\stock.hpp
+SOURCE=.\Include\ql\Instruments\stock.hpp
 # End Source File
 # End Group
 # Begin Group "Math"
@@ -345,19 +345,19 @@ SOURCE=.\Include\Instruments\stock.hpp
 # PROP Default_Filter ""
 # Begin Source File
 
-SOURCE=.\Include\Math\cubicspline.hpp
+SOURCE=.\Include\ql\Math\cubicspline.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\Include\Math\interpolation.hpp
+SOURCE=.\Include\ql\Math\interpolation.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\Include\Math\lexicographicalview.hpp
+SOURCE=.\Include\ql\Math\lexicographicalview.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\Include\Math\linearinterpolation.hpp
+SOURCE=.\Include\ql\Math\linearinterpolation.hpp
 # End Source File
 # Begin Source File
 
@@ -365,7 +365,7 @@ SOURCE=.\Sources\Math\matrix.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\Include\Math\matrix.hpp
+SOURCE=.\Include\ql\Math\matrix.hpp
 # End Source File
 # Begin Source File
 
@@ -373,7 +373,7 @@ SOURCE=.\Sources\Math\multivariateaccumulator.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\Include\Math\multivariateaccumulator.hpp
+SOURCE=.\Include\ql\Math\multivariateaccumulator.hpp
 # End Source File
 # Begin Source File
 
@@ -381,7 +381,7 @@ SOURCE=.\Sources\Math\normaldistribution.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\Include\Math\normaldistribution.hpp
+SOURCE=.\Include\ql\Math\normaldistribution.hpp
 # End Source File
 # Begin Source File
 
@@ -389,11 +389,11 @@ SOURCE=.\Sources\Math\statistics.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\Include\Math\statistics.hpp
+SOURCE=.\Include\ql\Math\statistics.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\Include\Math\symmetriceigenvalues.hpp
+SOURCE=.\Include\ql\Math\symmetriceigenvalues.hpp
 # End Source File
 # Begin Source File
 
@@ -401,11 +401,11 @@ SOURCE=.\Sources\Math\symmetricschurdecomposition.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\Include\Math\symmetricschurdecomposition.hpp
+SOURCE=.\Include\ql\Math\symmetricschurdecomposition.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\Include\Math\vartool.hpp
+SOURCE=.\Include\ql\Math\vartool.hpp
 # End Source File
 # End Group
 # Begin Group "MonteCarlo"
@@ -417,7 +417,7 @@ SOURCE=.\Sources\MonteCarlo\avgpriceasianpathpricer.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\Include\MonteCarlo\avgpriceasianpathpricer.hpp
+SOURCE=.\Include\ql\MonteCarlo\avgpriceasianpathpricer.hpp
 # End Source File
 # Begin Source File
 
@@ -425,7 +425,7 @@ SOURCE=.\Sources\MonteCarlo\avgstrikeasianpathpricer.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\Include\MonteCarlo\avgstrikeasianpathpricer.hpp
+SOURCE=.\Include\ql\MonteCarlo\avgstrikeasianpathpricer.hpp
 # End Source File
 # Begin Source File
 
@@ -433,15 +433,15 @@ SOURCE=.\Sources\MonteCarlo\basketpathpricer.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\Include\MonteCarlo\basketpathpricer.hpp
+SOURCE=.\Include\ql\MonteCarlo\basketpathpricer.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\Include\MonteCarlo\boxmuller.hpp
+SOURCE=.\Include\ql\MonteCarlo\boxmuller.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\Include\MonteCarlo\centrallimitgaussian.hpp
+SOURCE=.\Include\ql\MonteCarlo\centrallimitgaussian.hpp
 # End Source File
 # Begin Source File
 
@@ -449,7 +449,7 @@ SOURCE=.\Sources\MonteCarlo\controlvariatedpathpricer.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\Include\MonteCarlo\controlvariatedpathpricer.hpp
+SOURCE=.\Include\ql\MonteCarlo\controlvariatedpathpricer.hpp
 # End Source File
 # Begin Source File
 
@@ -457,7 +457,7 @@ SOURCE=.\Sources\MonteCarlo\europeanpathpricer.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\Include\MonteCarlo\europeanpathpricer.hpp
+SOURCE=.\Include\ql\MonteCarlo\europeanpathpricer.hpp
 # End Source File
 # Begin Source File
 
@@ -465,19 +465,19 @@ SOURCE=.\Sources\MonteCarlo\everestpathpricer.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\Include\MonteCarlo\everestpathpricer.hpp
+SOURCE=.\Include\ql\MonteCarlo\everestpathpricer.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\Include\MonteCarlo\gaussianarraygenerator.hpp
+SOURCE=.\Include\ql\MonteCarlo\gaussianarraygenerator.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\Include\MonteCarlo\gaussianrandomgenerator.hpp
+SOURCE=.\Include\ql\MonteCarlo\gaussianrandomgenerator.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\Include\MonteCarlo\generalmontecarlo.hpp
+SOURCE=.\Include\ql\MonteCarlo\generalmontecarlo.hpp
 # End Source File
 # Begin Source File
 
@@ -485,7 +485,7 @@ SOURCE=.\Sources\MonteCarlo\geometricasianpathpricer.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\Include\MonteCarlo\geometricasianpathpricer.hpp
+SOURCE=.\Include\ql\MonteCarlo\geometricasianpathpricer.hpp
 # End Source File
 # Begin Source File
 
@@ -493,7 +493,7 @@ SOURCE=.\Sources\MonteCarlo\getcovariance.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\Include\MonteCarlo\getcovariance.hpp
+SOURCE=.\Include\ql\MonteCarlo\getcovariance.hpp
 # End Source File
 # Begin Source File
 
@@ -501,7 +501,7 @@ SOURCE=.\Sources\MonteCarlo\himalayapathpricer.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\Include\MonteCarlo\himalayapathpricer.hpp
+SOURCE=.\Include\ql\MonteCarlo\himalayapathpricer.hpp
 # End Source File
 # Begin Source File
 
@@ -509,39 +509,39 @@ SOURCE=.\Sources\MonteCarlo\lecuyerrandomgenerator.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\Include\MonteCarlo\lecuyerrandomgenerator.hpp
+SOURCE=.\Include\ql\MonteCarlo\lecuyerrandomgenerator.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\Include\MonteCarlo\mcoptionsample.hpp
+SOURCE=.\Include\ql\MonteCarlo\mcoptionsample.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\Include\MonteCarlo\mcpricer.hpp
+SOURCE=.\Include\ql\MonteCarlo\mcpricer.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\Include\MonteCarlo\multifactormontecarlooption.hpp
+SOURCE=.\Include\ql\MonteCarlo\multifactormontecarlooption.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\Include\MonteCarlo\multifactorpricer.hpp
+SOURCE=.\Include\ql\MonteCarlo\multifactorpricer.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\Include\MonteCarlo\multipath.hpp
+SOURCE=.\Include\ql\MonteCarlo\multipath.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\Include\MonteCarlo\multipathgenerator.hpp
+SOURCE=.\Include\ql\MonteCarlo\multipathgenerator.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\Include\MonteCarlo\multipathpricer.hpp
+SOURCE=.\Include\ql\MonteCarlo\multipathpricer.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\Include\MonteCarlo\onefactormontecarlooption.hpp
+SOURCE=.\Include\ql\MonteCarlo\onefactormontecarlooption.hpp
 # End Source File
 # Begin Source File
 
@@ -549,35 +549,35 @@ SOURCE=.\Sources\MonteCarlo\pagodapathpricer.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\Include\MonteCarlo\pagodapathpricer.hpp
+SOURCE=.\Include\ql\MonteCarlo\pagodapathpricer.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\Include\MonteCarlo\path.hpp
+SOURCE=.\Include\ql\MonteCarlo\path.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\Include\MonteCarlo\pathmontecarlo.hpp
+SOURCE=.\Include\ql\MonteCarlo\pathmontecarlo.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\Include\MonteCarlo\pathpricer.hpp
+SOURCE=.\Include\ql\MonteCarlo\pathpricer.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\Include\MonteCarlo\randomarraygenerator.hpp
+SOURCE=.\Include\ql\MonteCarlo\randomarraygenerator.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\Include\MonteCarlo\standardmultipathgenerator.hpp
+SOURCE=.\Include\ql\MonteCarlo\standardmultipathgenerator.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\Include\MonteCarlo\standardpathgenerator.hpp
+SOURCE=.\Include\ql\MonteCarlo\standardpathgenerator.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\Include\MonteCarlo\uniformrandomgenerator.hpp
+SOURCE=.\Include\ql\MonteCarlo\uniformrandomgenerator.hpp
 # End Source File
 # End Group
 # Begin Group "Patterns"
@@ -585,7 +585,7 @@ SOURCE=.\Include\MonteCarlo\uniformrandomgenerator.hpp
 # PROP Default_Filter ""
 # Begin Source File
 
-SOURCE=.\Include\Patterns\observable.hpp
+SOURCE=.\Include\ql\Patterns\observable.hpp
 # End Source File
 # End Group
 # Begin Group "Pricers"
@@ -593,11 +593,11 @@ SOURCE=.\Include\Patterns\observable.hpp
 # PROP Default_Filter ""
 # Begin Source File
 
-SOURCE=.\Include\Pricers\americancondition.hpp
+SOURCE=.\Include\ql\Pricers\americancondition.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\Include\Pricers\americanoption.hpp
+SOURCE=.\Include\ql\Pricers\americanoption.hpp
 # End Source File
 # Begin Source File
 
@@ -605,7 +605,7 @@ SOURCE=.\Sources\Pricers\averagepriceasian.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\Include\Pricers\averagepriceasian.hpp
+SOURCE=.\Include\ql\Pricers\averagepriceasian.hpp
 # End Source File
 # Begin Source File
 
@@ -613,7 +613,7 @@ SOURCE=.\Sources\Pricers\averagestrikeasian.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\Include\Pricers\averagestrikeasian.hpp
+SOURCE=.\Include\ql\Pricers\averagestrikeasian.hpp
 # End Source File
 # Begin Source File
 
@@ -621,7 +621,7 @@ SOURCE=.\Sources\Pricers\barrieroption.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\Include\Pricers\barrieroption.hpp
+SOURCE=.\Include\ql\Pricers\barrieroption.hpp
 # End Source File
 # Begin Source File
 
@@ -629,7 +629,7 @@ SOURCE=.\Sources\Pricers\bermudanoption.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\Include\Pricers\bermudanoption.hpp
+SOURCE=.\Include\ql\Pricers\bermudanoption.hpp
 # End Source File
 # Begin Source File
 
@@ -637,7 +637,7 @@ SOURCE=.\Sources\Pricers\binaryoption.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\Include\Pricers\binaryoption.hpp
+SOURCE=.\Include\ql\Pricers\binaryoption.hpp
 # End Source File
 # Begin Source File
 
@@ -645,7 +645,7 @@ SOURCE=.\Sources\Pricers\bsmeuropeanoption.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\Include\Pricers\bsmeuropeanoption.hpp
+SOURCE=.\Include\ql\Pricers\bsmeuropeanoption.hpp
 # End Source File
 # Begin Source File
 
@@ -653,7 +653,7 @@ SOURCE=.\Sources\Pricers\bsmnumericaloption.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\Include\Pricers\bsmnumericaloption.hpp
+SOURCE=.\Include\ql\Pricers\bsmnumericaloption.hpp
 # End Source File
 # Begin Source File
 
@@ -661,7 +661,7 @@ SOURCE=.\Sources\Pricers\bsmoption.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\Include\Pricers\bsmoption.hpp
+SOURCE=.\Include\ql\Pricers\bsmoption.hpp
 # End Source File
 # Begin Source File
 
@@ -669,7 +669,7 @@ SOURCE=.\Sources\Pricers\cliquetoption.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\Include\Pricers\cliquetoption.hpp
+SOURCE=.\Include\ql\Pricers\cliquetoption.hpp
 # End Source File
 # Begin Source File
 
@@ -677,7 +677,7 @@ SOURCE=.\Sources\Pricers\dividendamericanoption.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\Include\Pricers\dividendamericanoption.hpp
+SOURCE=.\Include\ql\Pricers\dividendamericanoption.hpp
 # End Source File
 # Begin Source File
 
@@ -685,7 +685,7 @@ SOURCE=.\Sources\Pricers\dividendeuropeanoption.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\Include\Pricers\dividendeuropeanoption.hpp
+SOURCE=.\Include\ql\Pricers\dividendeuropeanoption.hpp
 # End Source File
 # Begin Source File
 
@@ -693,7 +693,7 @@ SOURCE=.\Sources\Pricers\dividendoption.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\Include\Pricers\dividendoption.hpp
+SOURCE=.\Include\ql\Pricers\dividendoption.hpp
 # End Source File
 # Begin Source File
 
@@ -701,7 +701,7 @@ SOURCE=.\Sources\Pricers\dividendshoutoption.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\Include\Pricers\dividendshoutoption.hpp
+SOURCE=.\Include\ql\Pricers\dividendshoutoption.hpp
 # End Source File
 # Begin Source File
 
@@ -709,7 +709,7 @@ SOURCE=.\Sources\Pricers\everestoption.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\Include\Pricers\everestoption.hpp
+SOURCE=.\Include\ql\Pricers\everestoption.hpp
 # End Source File
 # Begin Source File
 
@@ -717,11 +717,11 @@ SOURCE=.\Sources\Pricers\finitedifferenceeuropean.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\Include\Pricers\finitedifferenceeuropean.hpp
+SOURCE=.\Include\ql\Pricers\finitedifferenceeuropean.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\Include\Pricers\geometricasianoption.hpp
+SOURCE=.\Include\ql\Pricers\geometricasianoption.hpp
 # End Source File
 # Begin Source File
 
@@ -729,7 +729,7 @@ SOURCE=.\Sources\Pricers\himalaya.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\Include\Pricers\himalaya.hpp
+SOURCE=.\Include\ql\Pricers\himalaya.hpp
 # End Source File
 # Begin Source File
 
@@ -737,7 +737,7 @@ SOURCE=.\Sources\Pricers\mceuropeanpricer.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\Include\Pricers\mceuropeanpricer.hpp
+SOURCE=.\Include\ql\Pricers\mceuropeanpricer.hpp
 # End Source File
 # Begin Source File
 
@@ -745,7 +745,7 @@ SOURCE=.\Sources\Pricers\multiperiodoption.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\Include\Pricers\multiperiodoption.hpp
+SOURCE=.\Include\ql\Pricers\multiperiodoption.hpp
 # End Source File
 # Begin Source File
 
@@ -753,7 +753,7 @@ SOURCE=.\Sources\Pricers\pagodaoption.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\Include\Pricers\pagodaoption.hpp
+SOURCE=.\Include\ql\Pricers\pagodaoption.hpp
 # End Source File
 # Begin Source File
 
@@ -761,15 +761,15 @@ SOURCE=.\Sources\Pricers\plainbasketoption.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\Include\Pricers\plainbasketoption.hpp
+SOURCE=.\Include\ql\Pricers\plainbasketoption.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\Include\Pricers\shoutcondition.hpp
+SOURCE=.\Include\ql\Pricers\shoutcondition.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\Include\Pricers\shoutoption.hpp
+SOURCE=.\Include\ql\Pricers\shoutoption.hpp
 # End Source File
 # Begin Source File
 
@@ -777,7 +777,7 @@ SOURCE=.\Sources\Pricers\stepconditionoption.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\Include\Pricers\stepconditionoption.hpp
+SOURCE=.\Include\ql\Pricers\stepconditionoption.hpp
 # End Source File
 # End Group
 # Begin Group "Solvers 1D"
@@ -789,7 +789,7 @@ SOURCE=.\Sources\Solvers1D\bisection.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\Include\Solvers1D\bisection.hpp
+SOURCE=.\Include\ql\Solvers1D\bisection.hpp
 # End Source File
 # Begin Source File
 
@@ -797,7 +797,7 @@ SOURCE=.\Sources\Solvers1D\brent.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\Include\Solvers1D\brent.hpp
+SOURCE=.\Include\ql\Solvers1D\brent.hpp
 # End Source File
 # Begin Source File
 
@@ -805,7 +805,7 @@ SOURCE=.\Sources\Solvers1D\falseposition.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\Include\Solvers1D\falseposition.hpp
+SOURCE=.\Include\ql\Solvers1D\falseposition.hpp
 # End Source File
 # Begin Source File
 
@@ -813,7 +813,7 @@ SOURCE=.\Sources\Solvers1D\newton.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\Include\Solvers1D\newton.hpp
+SOURCE=.\Include\ql\Solvers1D\newton.hpp
 # End Source File
 # Begin Source File
 
@@ -821,7 +821,7 @@ SOURCE=.\Sources\Solvers1D\newtonsafe.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\Include\Solvers1D\newtonsafe.hpp
+SOURCE=.\Include\ql\Solvers1D\newtonsafe.hpp
 # End Source File
 # Begin Source File
 
@@ -829,7 +829,7 @@ SOURCE=.\Sources\Solvers1D\ridder.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\Include\Solvers1D\ridder.hpp
+SOURCE=.\Include\ql\Solvers1D\ridder.hpp
 # End Source File
 # Begin Source File
 
@@ -837,7 +837,7 @@ SOURCE=.\Sources\Solvers1D\secant.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\Include\Solvers1D\secant.hpp
+SOURCE=.\Include\ql\Solvers1D\secant.hpp
 # End Source File
 # End Group
 # Begin Group "Term Structures"
@@ -845,7 +845,7 @@ SOURCE=.\Include\Solvers1D\secant.hpp
 # PROP Default_Filter ""
 # Begin Source File
 
-SOURCE=.\Include\TermStructures\flatforward.hpp
+SOURCE=.\Include\ql\TermStructures\flatforward.hpp
 # End Source File
 # Begin Source File
 
@@ -853,7 +853,7 @@ SOURCE=.\Sources\TermStructures\piecewiseconstantforwards.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\Include\TermStructures\piecewiseconstantforwards.hpp
+SOURCE=.\Include\ql\TermStructures\piecewiseconstantforwards.hpp
 # End Source File
 # End Group
 # Begin Group "Utilities"
@@ -861,48 +861,32 @@ SOURCE=.\Include\TermStructures\piecewiseconstantforwards.hpp
 # PROP Default_Filter ""
 # Begin Source File
 
-SOURCE=.\Include\Utilities\combiningiterator.hpp
+SOURCE=.\Include\ql\Utilities\combiningiterator.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\Include\Utilities\couplingiterator.hpp
+SOURCE=.\Include\ql\Utilities\couplingiterator.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\Include\Utilities\filteringiterator.hpp
+SOURCE=.\Include\ql\Utilities\filteringiterator.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\Include\Utilities\iteratorcategories.hpp
+SOURCE=.\Include\ql\Utilities\iteratorcategories.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\Include\Utilities\processingiterator.hpp
+SOURCE=.\Include\ql\Utilities\processingiterator.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\Include\Utilities\steppingiterator.hpp
+SOURCE=.\Include\ql\Utilities\steppingiterator.hpp
 # End Source File
 # End Group
 # Begin Source File
 
-SOURCE=.\Include\array.hpp
-# End Source File
-# Begin Source File
-
 SOURCE=.\Sources\calendar.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\Include\calendar.hpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\Include\config.msvc.h
-# End Source File
-# Begin Source File
-
-SOURCE=.\Include\currency.hpp
 # End Source File
 # Begin Source File
 
@@ -910,71 +894,7 @@ SOURCE=.\Sources\dataformatters.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\Include\dataformatters.hpp
-# End Source File
-# Begin Source File
-
 SOURCE=.\Sources\date.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\Include\date.hpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\Include\daycounter.hpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\Include\depositrate.hpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\Include\discountfactor.hpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\Include\expressiontemplates.hpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\Include\forwardvolsurface.hpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\Include\handle.hpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\Include\history.hpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\Include\instrument.hpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\Include\null.hpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\Include\options.hpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\Include\qldefines.hpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\Include\qlerrors.hpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\Include\quantlib.hpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\Include\rate.hpp
 # End Source File
 # Begin Source File
 
@@ -982,31 +902,7 @@ SOURCE=.\Sources\ratehelper.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\Include\ratehelper.hpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\Include\riskstatistics.hpp
-# End Source File
-# Begin Source File
-
 SOURCE=.\Sources\solver1d.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\Include\solver1d.hpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\Include\spread.hpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\Include\swaptionvolsurface.hpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\Include\termstructure.hpp
 # End Source File
 # End Target
 # End Project

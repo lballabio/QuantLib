@@ -118,6 +118,5 @@ clean::
     cd ..
     if exist *.obj      del /q *.obj
     if exist *.obj_d    del /q *.obj
-    if exist *.lib      del /q *.lib
-    if exist ..\lib/*.lib  del /q *.lib
+    if exist ..\lib\*.lib  del /q ..\lib\*.lib
 

@@ -43,7 +43,7 @@ RSC=rc.exe
 # PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /MT /W3 /GX /O2 /D "WIN32" /D "NDEBUG" /D "_WINDOWS" /YX /c
-# ADD CPP /nologo /MD /W3 /GX /Od /I "..\..\Include" /I "..\..\Include\Calendars" /I "..\..\Include\Currencies" /I "..\..\Include\DayCounters" /I "..\..\Include\FiniteDifferences" /I "..\..\Include\Math" /I "..\..\Include\MonteCarlo" /I "..\..\Include\Pricers" /I "..\..\Include\Solvers1D" /D "WIN32" /D "NDEBUG" /D "_WINDOWS" /YX /FD /c
+# ADD CPP /nologo /MD /W3 /GX /Od /I "..\Include" /D "WIN32" /D "NDEBUG" /D "_WINDOWS" /YX /FD /c
 # ADD BASE MTL /nologo /D "NDEBUG" /win32
 # ADD MTL /nologo /D "NDEBUG" /mktyplib203 /win32
 # ADD BASE RSC /l 0x409 /d "NDEBUG"
@@ -53,7 +53,7 @@ BSC32=bscmake.exe
 # ADD BSC32 /nologo
 LINK32=link.exe
 # ADD BASE LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:windows /dll /machine:I386
-# ADD LINK32 python20.lib ..\..\Release\QuantLib.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:windows /dll /machine:I386 /out:".\Release/QuantLibc.dll" /export:initQuantLibc
+# ADD LINK32 python20.lib ..\lib\QuantLib.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:windows /dll /machine:I386 /out:".\QuantLibc.dll" /export:initQuantLibc
 # SUBTRACT LINK32 /pdb:none
 
 !ELSEIF  "$(CFG)" == "PyQuantLib - Win32 Debug"
@@ -70,7 +70,7 @@ LINK32=link.exe
 # PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /MTd /W3 /Gm /GX /Zi /Od /D "WIN32" /D "_DEBUG" /D "_WINDOWS" /YX /c
-# ADD CPP /nologo /MDd /W3 /GX /ZI /Od /I "..\..\Include" /I "..\..\Include\Calendars" /I "..\..\Include\Currencies" /I "..\..\Include\DayCounters" /I "..\..\Include\FiniteDifferences" /I "..\..\Include\Math" /I "..\..\Include\MonteCarlo" /I "..\..\Include\Pricers" /I "..\..\Include\Solvers1D" /D "WIN32" /D "_DEBUG" /D "_WINDOWS" /YX /FD /c
+# ADD CPP /nologo /MDd /W3 /GX /ZI /Od /I "..\Include" /D "WIN32" /D "_DEBUG" /D "_WINDOWS" /YX /FD /c
 # ADD BASE MTL /nologo /D "_DEBUG" /win32
 # ADD MTL /nologo /D "_DEBUG" /mktyplib203 /win32
 # ADD BASE RSC /l 0x409 /d "_DEBUG"
@@ -80,7 +80,7 @@ BSC32=bscmake.exe
 # ADD BSC32 /nologo
 LINK32=link.exe
 # ADD BASE LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:windows /dll /debug /machine:I386
-# ADD LINK32 python20_d.lib ..\..\Debug\QuantLib.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:windows /dll /debug /machine:I386 /out:".\Debug/QuantLibc_d.dll" /export:initQuantLibc
+# ADD LINK32 python20_d.lib ..\lib\QuantLib.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:windows /dll /debug /machine:I386 /out:".\QuantLibc_d.dll" /export:initQuantLibc
 # SUBTRACT LINK32 /pdb:none
 
 !ENDIF 
@@ -89,28 +89,12 @@ LINK32=link.exe
 
 # Name "PyQuantLib - Win32 Release"
 # Name "PyQuantLib - Win32 Debug"
-# Begin Group "Source Files"
+# Begin Group "Wrappers"
 
-# PROP Default_Filter "cpp;c;cxx;rc;def;r;odl;hpj;bat;for;f90"
+# PROP Default_Filter ""
 # Begin Source File
 
-SOURCE=..\quantlib_wrap.cpp
-# End Source File
-# End Group
-# Begin Group "Header Files"
-
-# PROP Default_Filter "h;hpp;hxx;hm;inl;fi;fd"
-# End Group
-# Begin Group "Resource Files"
-
-# PROP Default_Filter "ico;cur;bmp;dlg;rc2;rct;bin;cnt;rtf;gif;jpg;jpeg;jpe"
-# Begin Source File
-
-SOURCE=.\PyQuantLibWrap.bat
-# End Source File
-# Begin Source File
-
-SOURCE=..\QuantLib.py
+SOURCE=quantlib_wrap.cpp
 # End Source File
 # End Group
 # Begin Group "SWIG Interfaces"
@@ -118,107 +102,115 @@ SOURCE=..\QuantLib.py
 # PROP Default_Filter ".i"
 # Begin Source File
 
-SOURCE=..\..\SWIG\Barrier.i
+SOURCE=..\SWIG\Barrier.i
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\SWIG\BoundaryConditions.i
+SOURCE=..\SWIG\BoundaryConditions.i
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\SWIG\Calendars.i
+SOURCE=..\SWIG\Calendars.i
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\SWIG\Currencies.i
+SOURCE=..\SWIG\Currencies.i
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\SWIG\Date.i
+SOURCE=..\SWIG\Date.i
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\SWIG\DayCounters.i
+SOURCE=..\SWIG\DayCounters.i
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\SWIG\Distributions.i
+SOURCE=..\SWIG\Distributions.i
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\SWIG\Financial.i
+SOURCE=..\SWIG\Financial.i
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\SWIG\History.i
+SOURCE=..\SWIG\History.i
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\SWIG\Instruments.i
+SOURCE=..\SWIG\Instruments.i
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\SWIG\Interpolation.i
+SOURCE=..\SWIG\Interpolation.i
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\SWIG\Matrix.i
+SOURCE=..\SWIG\Matrix.i
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\SWIG\MontecarloPricers.i
+SOURCE=..\SWIG\MontecarloPricers.i
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\SWIG\MontecarloTools.i
+SOURCE=..\SWIG\MontecarloTools.i
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\SWIG\Operators.i
+SOURCE=..\SWIG\Operators.i
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\SWIG\Options.i
+SOURCE=..\SWIG\Options.i
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\SWIG\Pricers.i
+SOURCE=..\SWIG\Pricers.i
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\SWIG\QLArray.i
+SOURCE=..\SWIG\QLArray.i
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\SWIG\QuantLib.i
+SOURCE=..\SWIG\QuantLib.i
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\SWIG\RandomGenerators.i
+SOURCE=..\SWIG\RandomGenerators.i
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\SWIG\RiskStatistics.i
+SOURCE=..\SWIG\RiskStatistics.i
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\SWIG\Solvers1D.i
+SOURCE=..\SWIG\Solvers1D.i
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\SWIG\Statistics.i
+SOURCE=..\SWIG\Statistics.i
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\SWIG\String.i
+SOURCE=..\SWIG\String.i
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\SWIG\TermStructures.i
+SOURCE=..\SWIG\TermStructures.i
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\SWIG\Vectors.i
+SOURCE=..\SWIG\Vectors.i
+# End Source File
+# End Group
+# Begin Group "Scripts"
+
+# PROP Default_Filter ""
+# Begin Source File
+
+SOURCE=.\PyWrap.bat
 # End Source File
 # End Group
 # End Target
