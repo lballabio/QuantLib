@@ -1,28 +1,36 @@
 
 # $Id$
 
-EXTRA_DIST = makefile.mak \
-             groups.docs \
-             index.docs \
-             overview.docs \
-             where.docs \
-             install.docs \
-             usage.docs \
-             platforms.docs \
-             history.docs \
-             resources.docs \
+EXTRA_DIST = \
              authors.docs \
-             license.docs \
+             calendars.docs \
              coreclasses.docs \
-             findiff.docs \
-             mcarlo.docs \
+             currencies.docs \
+             daycounters.docs \
              examples.docs \
+             findiff.docs \
+             groups.docs \
+             history.docs \
+             index.docs \
+             install.docs \
+             instruments.docs \
+             license.docs \
+             makefile.mak \
+             mcarlo.docs \
+             overview.docs \
+             platforms.docs \
+             quantlib.css \
              quantlib.doxy \
-             quantlibheader.html \
              quantlibfooter.html \
              quantlibfooteronline.html \
+             quantlibheader.html \
              quantlibheader.tex \
-             README.txt
+             README.txt \
+             resources.docs \
+             solvers1d.docs \
+             termstructures.docs \
+             usage.docs \
+             where.docs
 
 docs-all: docs-pdf docs-ps
 docs-html: docs-html-offline
@@ -84,10 +92,22 @@ tex-files: docs-html
 	       -e "64,$$ s/include{license}/ /" \
 	       -e "64,$$ s/input{coreclasses}/ /" \
 	       -e "64,$$ s/include{coreclasses}/ /" \
+	       -e "64,$$ s/input{calendars}/ /" \
+	       -e "64,$$ s/include{calendars}/ /" \
+	       -e "64,$$ s/input{currencies}/ /" \
+	       -e "64,$$ s/include{currencies}/ /" \
+	       -e "64,$$ s/input{daycounters}/ /" \
+	       -e "64,$$ s/include{daycounters}/ /" \
+	       -e "64,$$ s/input{instruments}/ /" \
+	       -e "64,$$ s/include{instruments}/ /" \
 	       -e "64,$$ s/input{findiff}/ /" \
 	       -e "64,$$ s/include{findiff}/ /" \
 	       -e "64,$$ s/input{mcarlo}/ /" \
 	       -e "64,$$ s/include{mcarlo}/ /" \
+	       -e "64,$$ s/input{solvers1d}/ /" \
+	       -e "64,$$ s/include{solvers1d}/ /" \
+	       -e "64,$$ s/input{termstructures}/ /" \
+	       -e "64,$$ s/include{termstructures}/ /" \
 	       -e "s/ple Documentation}/ple Documentation}\\\\label{exchap}/" \
 	       oldrefman.tex > latex/refman.tex
 	rm -f oldrefman.tex
