@@ -14,10 +14,19 @@
 !endif
 
 # Directories
-SWIG_DIR       = ..\Swig
-INCLUDE_DIR    = ..\Include
-BCC_INCLUDE    = $(MAKEDIR)\..\include
-BCC_LIBS       = $(MAKEDIR)\..\lib
+!if "$(QL_DIR)" == ""
+!message Either set the QL_DIR environment variable to the absolute
+!message path of your QuantLib installation or pass it to $(MAKE) as in
+!message
+!message $(MAKE) -DQL_DIR="your\QuantLib\path".
+!message
+!error terminated
+!endif
+QL_INCLUDE  = "$(QL_DIR)\Include"
+
+SWIG_DIR    = ..\Swig
+BCC_INCLUDE = $(MAKEDIR)\..\include
+BCC_LIBS    = $(MAKEDIR)\..\lib
 
 !if "$(PYTHON_HOME)" == ""
 !message Either set the PYTHON_HOME environment variable to the absolute
@@ -50,7 +59,7 @@ CC_OPTS        = -q -c -tWM -vi- \
     -w-8057 -w-8004 -w-8060 \
     -w-8026 -w-8027 -w-8012 \
     -D__WIN32__ -DMSC_CORE_BC_EXT \
-    -I$(INCLUDE_DIR) \
+    -I$(QL_INCLUDE) \
     -I$(PYTHON_INCLUDE) \
     -I$(BCC_INCLUDE)
 !ifdef DEBUG
