@@ -26,6 +26,9 @@
     $Source$
     $Name$
     $Log$
+    Revision 1.34  2001/03/28 07:37:20  marmar
+    file added
+
     Revision 1.33  2001/03/26 09:59:33  lballabio
     Added Helsinki and Wellington calendars
 
@@ -178,6 +181,7 @@
 #include "array.h"
 #include "matrix.h"
 #include "symmetricschurdecomposition.h"
+#include "symmetriceigenvalues.h"
 #include "multivariateaccumulator.h"
 
 // math tools
