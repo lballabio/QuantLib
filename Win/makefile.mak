@@ -13,9 +13,9 @@ SOURCES_DIR		= ..\Sources
 INCLUDE_DIR		= ..\Include
 BCC_INCLUDE		= $(MAKEDIR)\..\include
 BCC_LIBS		= $(MAKEDIR)\..\lib
-PYTHON_ROOT     = "C:\Python20"
-PYTHON_INCLUDE	= "C:\Python20\include"
-PYTHON_LIBS		= "C:\Python20\libs"
+PYTHON_ROOT     = "C:\Program Files\Python"
+PYTHON_INCLUDE	= $(PYTHON_ROOT)\include
+PYTHON_LIBS		= $(PYTHON_ROOT)\libs
 
 # Object files
 CORE_OBJS		= $(OUTPUT_DIR)\calendar.obj $(OUTPUT_DIR)\date.obj $(OUTPUT_DIR)\solver1d.obj $(OUTPUT_DIR)\dataformatters.obj
@@ -31,7 +31,7 @@ WIN_OBJS		= c0d32.obj
 
 # Libraries
 WIN_LIBS 		= import32.lib cw32mt.lib
-PYTHON_LIB		= $(PYTHON_LIBS)\python20.lib
+PYTHON_LIB		= $(PYTHON_LIBS)\python15.lib
 PYTHON_BCC_LIB	= bccpython.lib
 
 # Tools to be used
