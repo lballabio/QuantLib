@@ -57,6 +57,7 @@ SectionIn 1 2 3
     File "History.txt"
     File "LICENSE.txt"
     File "News.txt"
+    File "README.txt"
     File "TODO.txt"
 
     SetOutPath $INSTDIR\lib\Win32\VisualStudio
@@ -122,6 +123,12 @@ SectionIn 1 2 3
     CreateShortCut "$SMPROGRAMS\QuantLib\Uninstall QuantLib.lnk" \
                    "$INSTDIR\QuantLibUninstall.exe" \
                    "" "$INSTDIR\QuantLibUninstall.exe" 0
+    CreateShortCut "$SMPROGRAMS\QuantLib\README.txt.lnk" \
+                   "$INSTDIR\README.txt"
+    CreateShortCut "$SMPROGRAMS\QuantLib\LICENSE.txt.lnk" \
+                   "$INSTDIR\LICENSE.txt"
+    CreateShortCut "$SMPROGRAMS\QuantLib\What's new.lnk" \
+                   "$INSTDIR\News.txt"
 SectionEnd
 
 
@@ -151,7 +158,6 @@ SectionEnd
 Section "Source Code"
 SectionIn 1
   SetOutPath $INSTDIR
-  File "README.txt"
   File ChangeLog.txt
   File makefile.mak
   File QuantLib.dsp
@@ -207,8 +213,6 @@ SectionIn 1
   File /r "ql\TermStructures\*.cpp"
   File /r "ql\TermStructures\makefile.mak"
 
-  CreateShortCut "$SMPROGRAMS\QuantLib\README.txt.lnk" \
-                 "$INSTDIR\README.txt"
   CreateShortCut "$SMPROGRAMS\QuantLib\QuantLib project workspace.lnk" \
                  "$INSTDIR\QuantLib.dsw"
 

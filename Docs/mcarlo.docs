@@ -24,7 +24,7 @@
     This framework (corresponding to the MonteCarlo namespace) 
     contains basic building blocks for the numerical calculation of 
     the integral 
-    \f[ \int_{\Omega} f(\mathbf{x}) p(\mathbf{x}) d \mathbf{x}. \f]
+    \f[ \int_{\Omega} f(\mathbf{x}) p(\mathbf{x}) d \mathbf{x} \f]
     where \f$ p(\mathbf{x}) \f$ is a normalized probability function.
     Monte Carlo methods solve the above integral by approximating it 
     with the discrete sum 
@@ -61,7 +61,57 @@
     of the resulting Monte Carlo model to the end user.
 
     \subsection pathgen Path generation
-    In progress.
+    The Black-Scholes equation
+    \f[ \frac{\partial t}{\partial t} +
+        \frac{\sigma^2}{2} \frac{\partial^2 f}{\partial x^2} + 
+        \nu \frac{\partial f}{\partial x} - r f = 0, 
+    \f]
+    where \f$ r \f$ is the risk-free rate, \f$ \sigma \f$ is the volatility 
+    of the underlying, and \f$ \nu = r - \sigma^2/2 \f$, has the form of a 
+    diffusion process. According to this heuristic interpretation, paths 
+    followed by the underlying would be Brownian random walks with a 
+    constant drift \f$ \nu \f$ per unit time and a standard deviation 
+    \f$ \sigma \sqrt{T} \f$ over a time \f$ T \f$.
+    
+    A more rigorous approach would lead us to integrate the above equation 
+    by means of Green functions or Laplace transforms. Both such methods 
+    would show that the price at time \f$ t = 0 \f$ of an option with payoff 
+    \f$ G(S(T)) \f$ where \f$ S(T) \f$ is the underlying price at expiry is 
+    given by the integral
+    \f[ \int_{-\infty}^{\infty} e^{-rT} G(S_0 e^\xi) 
+        \frac{1}{\sqrt{2 \pi \sigma^2 T}}
+        \exp \left( -\frac{(\xi - \nu T)^2}{2 \sigma^2 T} \right)
+        \mathrm{d} \xi
+    \f]
+    where \f$ S_0 \f$ is the price of the underlying at \f$ t = 0 \f$.
+    It can be seen that the above integral is of the form shown at the 
+    beginning of this section, namely, the pricing function is 
+    \f[ f(x) = e^{-rT} G(S_0 e^x) \f]
+    and can be interpreted as the option payoff discounted to the
+    present time, while the probability distribution is
+    \f[ p(x) = \frac{1}{\sqrt{2 \pi \sigma^2 T}}
+        \exp \left( -\frac{(x - \nu T)^2}{2 \sigma^2 T} \right).
+    \f]
+    which again shows that the underlying prices at time \f$ T \f$ are 
+    distributed as a Gaussian with average \f$ \nu T \f$ and standard 
+    deviation \f$ \sigma \sqrt{T} \f$.
+    
+    Therefore, the paths to be generated for a Monte Carlo model of the 
+    Black-Scholes equation will be vectors of successive variations of 
+    the underlying price over \f$ N \f$ consecutive time intervals 
+    \f$ \Delta t_i, i = 0 \dots N-1 \f$. 
+    Each such variation will be drawn from a Gaussian distribution with 
+    average \f$ \nu \Delta T_i \f$ and standard deviation 
+    \f$ \sigma \sqrt{\Delta T_i} \f$---or possibly \f$ \nu_i \Delta T_i \f$ 
+    and \f$ \sigma_i \sqrt{\Delta T_i} \f$ should \f$ \nu \f$ and 
+    \f$ \sigma \f$ vary in time.
+
+    The library provides a number of components which can be chosen and 
+    assembled to form the machinery for the generation of such paths.
+    
+
+    
+    Further documentation is in progress.
 
     \subsection pathprc Pricing an instrument on a path
     In progress.
@@ -70,23 +120,3 @@
     In progress.
 */
 
-/*
-    The interface is represented by a template on three classes:
-
-    - A path generation class: the purpose of this class is to generate a 
-    sample path according to the appropriate model. An example would be a 
-    Brownian motion path generator, represented by the class 
-    GaussianPathGenerator.
-
-    - A pricing class: its purpose is to return the value of the derivative
-    given the path followed by the underlying. An example class would be
-    EuropeanPathPricer.
-
-    - A sample accumulator class: this is just a class calculating the 
-    statistical results of the simulation.  It is usually enough to use 
-    the provided class Math::Statistics.
-
-    The McEuropeanPricer class is an example of implementation of a 
-    one-factor Monte Carlo model for european options.
-
-*/

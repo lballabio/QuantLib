@@ -9,7 +9,7 @@ Changes since Release 0.1.9:
     - clean compilation (no warnings)
     - bootstrap script on cygwin
     - Fixed automatic choice of seed for random number generators
-    - Actual Actual classes
+    - Actual/Actual classes
     - extended platform support (see table in documentation)
     - antithetic variance-reduction technique made possible in Monte Carlo
     - added dividend-Rho greek
@@ -22,11 +22,11 @@ Changes since Release 0.1.9:
 - Installation facilities:
     - improved and smoother Win32 binary installer
     - better distribution
-    - debian packages available
+    - Debian packages available
 
 - Documentation:
     - general re-hauling
-    - examples added of QuantLib use and project based on QL
+    - added examples of QuantLib usage and of projects based on QL
 
 
 2001-05-31 Release 0.1.9

@@ -94,13 +94,13 @@ tex-files:: html
            -e "64,$s/include{group}/ /" \
            -e "64,$s/input{license}/ /" \
            -e "64,$s/include{license}/ /" \
-           -e "64,$s/input{core}/ /" \
-           -e "64,$s/include{core}/ /" \
+           -e "64,$s/input{coreclasses}/ /" \
+           -e "64,$s/include{coreclasses}/ /" \
            -e "64,$s/input{findiff}/ /" \
            -e "64,$s/include{findiff}/ /" \
            -e "64,$s/input{mcarlo}/ /" \
            -e "64,$s/include{mcarlo}/ /" \
-           -e "s/ple Documentation}/ple Documentation}\\label{exchap}/" \
+           -e "s/ple Documentation}/ple Documentation}\\\\label{exchap}/" \
            oldrefman.tex > refman.tex
     del oldrefman.tex
     cd ..

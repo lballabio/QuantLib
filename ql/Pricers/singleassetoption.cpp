@@ -42,18 +42,15 @@ namespace QuantLib {
         double ExercisePayoff(Option::Type type, double price,
             double strike) {
 
-            double optionPrice;
             switch (type) {
               case Option::Call:
-                    optionPrice = QL_MAX(price-strike,0.0);
-                break;
+                return QL_MAX(price-strike,0.0);
               case Option::Put:
-                    optionPrice = QL_MAX(strike-price,0.0);
-                break;
+                return QL_MAX(strike-price,0.0);
               case Option::Straddle:
-                    optionPrice = QL_FABS(strike-price);
+                return QL_FABS(strike-price);
             }
-            return optionPrice;
+            throw Error("Unknown option type");
         }
 
 

@@ -13,7 +13,7 @@ EXTRA_DIST = makefile.mak \
              resources.docs \
              authors.docs \
              license.docs \
-             core.docs \
+             coreclasses.docs \
              findiff.docs \
              mcarlo.docs \
              examples.docs \
@@ -82,8 +82,8 @@ tex-files: docs-html
 	       -e "64,$$ s/include{group}/ /" \
 	       -e "64,$$ s/input{license}/ /" \
 	       -e "64,$$ s/include{license}/ /" \
-	       -e "64,$$ s/input{core}/ /" \
-	       -e "64,$$ s/include{core}/ /" \
+	       -e "64,$$ s/input{coreclasses}/ /" \
+	       -e "64,$$ s/include{coreclasses}/ /" \
 	       -e "64,$$ s/input{findiff}/ /" \
 	       -e "64,$$ s/include{findiff}/ /" \
 	       -e "64,$$ s/input{mcarlo}/ /" \

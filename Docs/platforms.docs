@@ -11,7 +11,7 @@
     <tr>
     <td>CONFIGURATION</td><td>COMPILER</td><td>MAINTAINER</td>
     </tr><tr>
-    <td>i686-pc-debian2.2</td><td>gcc 2.9 and 3.0.1</td><td>Enrico Sirola</td>
+    <td>i686-pc-debian2.2</td><td>gcc 2.95 and 3.0.1</td><td>Enrico Sirola</td>
     </tr><tr>
     <td>i686-pc-WinNT4</td><td>MS Visual C++ 6</td><td>Ferdinando Ametrano</td>
     </tr><tr>

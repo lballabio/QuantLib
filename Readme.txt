@@ -8,7 +8,7 @@ number of formats from <http://quantlib.org>.
 You are going to need it. Trust us.
 
 The project status and the list of platforms QuantLib has been compiled on is
-available at <http://quantlib.org/status.html>.
+available at <http://quantlib.org>.
 See the NEWS file for recent developments.
 
 Please report bugs using the Bug Tracker at

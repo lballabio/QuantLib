@@ -59,7 +59,7 @@ OL.navlinklist{
 }
 
 pre {
-	margin-left: 10%;
+	margin-left: 1%;
 	color: green;
 	background: white;
 	font-family: monospace;
@@ -79,62 +79,70 @@ A.code {
     text-decoration: none;
     font-weight: normal;
     color: #4444ee;
-    background-color: white}
-A.codeRef { font-weight: normal; color: #4444ee;
-    background-color: white }
+    background-color: white
+}
+A.codeRef {
+    font-weight: normal;
+    color: #4444ee;
+    background-color: white
+}
 DL.el { margin-left: -1cm }
 DIV.ah {
     background-color: black;
     color: white;
     margin-bottom: 3em;
     margin-top: 3em
-    }
+}
 DIV.fragment {
-	margin-left: 10%;
+	margin-left: 1%;
 	color: green;
 	background: white;
 	font-family: monospace;
 }
 TD.md {
     background-color: #f2f2ff;
-    color: white;
+    color: black;
+}
+TD.mdname1 {
+    background-color: #f2f2ff;
+    color: black;
 }
 DIV.groupHeader {
     margin-left: 16em;
 	margin-top: 12em;
 	margin-bottom: 6em;
 	font-weight: bold
-    }
+}
 DIV.groupText {
     margin-left: 16em;
     font-style: italic;
 	font-size: smaller
-    }
+}
 FONT.keyword {
     color: #008000;
     background-color: white
-    }
+}
 FONT.keywordtype {
     color: #604020;
     background-color: white
-    }
+}
 FONT.keywordflow {
     color: #e08000;
     background-color: white
-    }
+}
 FONT.comment {
     color: #800000;
     background-color: white
-    }
+}
 FONT.preprocessor {
     color: #806020;
     background-color: white
-    }
+}
 FONT.stringliteral {
     color: #002080;
     background-color: white
-    }
+}
 FONT.charliteral {
     color: #008080;
     background-color: white
-    }
+}

@@ -48,6 +48,7 @@ dist-hook:
 	cp $(srcdir)/Docs/*.docs $(distdir)/Docs
 	cp $(srcdir)/Docs/*.doxy $(distdir)/Docs
 	cp $(srcdir)/Docs/*.html $(distdir)/Docs
+	cp $(srcdir)/Docs/bootstrap $(distdir)/Docs
 	cp $(srcdir)/Docs/README.txt $(distdir)/Docs
 	mkdir $(distdir)/Docs/Examples
 	cp $(srcdir)/Docs/Examples/*.cpp $(distdir)/Docs/Examples/

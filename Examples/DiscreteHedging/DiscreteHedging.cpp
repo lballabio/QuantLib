@@ -1,4 +1,4 @@
-/*
+/*!
  * Copyright (C) 2000-2001 QuantLib Group
  *
  * This file is part of QuantLib.
@@ -21,41 +21,34 @@
  * available at http://quantlib.org/group.html
 */
 
-/*! \file DiscreteHedging.cpp
-    \brief Example on using QuantLib Montecarlo framework.
+//! $Id$
 
-    This example computes profit and loss of a discrete interval hedging
+/*  This example computes profit and loss of a discrete interval hedging
     strategy and compares with the results of Derman & Kamal's (Goldman Sachs
     Equity Derivatives Research) Research Note: "When You Cannot Hedge
     Continuously: The Corrections to Black-Scholes"
     (http://www.gs.com/qs/doc/when_you_cannot_hedge.pdf)
 
     Suppose an option hedger sells an European option and receives the
-    Black-Scholes value as the options premium. 
-    Then he follows a Black-Scholes hedging strategy, rehedging at discrete, 
-    evenly spaced time intervals as the underlying stock changes. At 
-    expiration, the hedger delivers the option payoff to the option holder, 
-    and unwinds the hedge. We are interested in understanding the final 
+    Black-Scholes value as the options premium.
+    Then he follows a Black-Scholes hedging strategy, rehedging at discrete,
+    evenly spaced time intervals as the underlying stock changes. At
+    expiration, the hedger delivers the option payoff to the option holder,
+    and unwinds the hedge. We are interested in understanding the final
     profit or loss of this strategy.
 
     If the hedger had followed the exact Black-Scholes replication strategy,
     re-hedging continuously as the underlying stock evolved towards its final
-    value at expiration, then, no matter what path the stock took, the final 
-    P&L would be exactly zero. When the replication strategy deviates from 
-    the exact Black-Scholes method, the final P&L may deviate from zero. This 
-    deviation is called the replication error. When the hedger rebalances at 
-    discrete rather than continuous intervals, the hedge is imperfect and the 
-    replication is inexact. The more often hedging occurs, the smaller the 
+    value at expiration, then, no matter what path the stock took, the final
+    P&L would be exactly zero. When the replication strategy deviates from
+    the exact Black-Scholes method, the final P&L may deviate from zero. This
+    deviation is called the replication error. When the hedger rebalances at
+    discrete rather than continuous intervals, the hedge is imperfect and the
+    replication is inexact. The more often hedging occurs, the smaller the
     replication error.
 
     We examine the range of possibilities, computing the replication error.
-
-    \fullpath
-    Examples/DiscreteHedging/%DiscreteHedging.cpp
 */
-
-// $Id$
-
 
 // the only header you need to use QuantLib
 #include "ql/quantlib.hpp"
@@ -112,7 +105,7 @@ public:
                      double s0,
                      double sigma,
                      Rate r)
-    : type_(type), maturity_(maturity), strike_(strike), s0_(s0), 
+    : type_(type), maturity_(maturity), strike_(strike), s0_(s0),
       sigma_(sigma), r_(r) {
 
         // value of the option
@@ -124,11 +117,11 @@ public:
         vega_ = option.vega();
 
         std::cout << std::endl;
-        std::cout << 
+        std::cout <<
             "        |        | P&L  \t|  P&L    | Derman&Kamal | P&L"
             "      \t| P&L" << std::endl;
 
-        std::cout << 
+        std::cout <<
             "samples | trades | Mean \t| Std Dev | Formula      |"
             " skewness \t| kurt." << std::endl;
 
@@ -166,12 +159,12 @@ class ReplicationPathPricer : public PathPricer
             "ReplicationPathPricer: strike must be positive");
         QL_REQUIRE(underlying_ > 0.0,
             "ReplicationPathPricer: underlying must be positive");
-        QL_REQUIRE(r_ >= 0.0, 
+        QL_REQUIRE(r_ >= 0.0,
             "ReplicationPathPricer: risk free rate (r) must"
             " be positive or zero");
         QL_REQUIRE(maturity_ > 0.0,
             "ReplicationPathPricer: maturity must be positive");
-        QL_REQUIRE(sigma_ >= 0.0, 
+        QL_REQUIRE(sigma_ >= 0.0,
             "ReplicationPathPricer: volatility (sigma)"
             " must be positive or zero");
 
@@ -223,7 +216,7 @@ int main(int argc, char* argv[])
 /* The actual computation of the Profit&Loss for each single path.
 
    In each scenario N rehedging trades spaced evenly in time over
-   the life of the option are carried out, using the Black-Scholes 
+   the life of the option are carried out, using the Black-Scholes
    hedge ratio.
 */
 double ReplicationPathPricer::operator()(const Path & path) const
@@ -326,28 +319,21 @@ void ReplicationError::compute(int nTimeSteps, int nSamples)
     // hedging interval
     // double tau = maturity_ / nTimeSteps;
 
-    /* Black-Scholes framework: the underlying stock price evolves 
-       lognormally with a fixed known volatility that stays constant 
+    /* Black-Scholes framework: the underlying stock price evolves
+       lognormally with a fixed known volatility that stays constant
        throughout time.
     */
-    // stock variance
-    // double sigma = sigma_* sqrt(tau);
-    // stock growth
-    // r_ is used for semplicity, it can be whatever value
-    // double drift = r_ * tau - 0.5*sigma*sigma;
     double drift = r_ - 0.5*sigma_*sigma_;
-    // std::cout << drift << std::endl;
-    // drift = 0.1 * tau - 0.5*sigma*sigma;
 
     // Black Scholes equation rules the path generator:
     // at each step the log of the stock
     // will have drift and sigma^2 variance
     Handle<GaussianPathGenerator> myPathGenerator(
-        new GaussianPathGenerator(drift, sigma_*sigma_, 
+        new GaussianPathGenerator(drift, sigma_*sigma_,
             maturity_, nTimeSteps));
 
-    // The replication strategy's Profit&Loss is computed for each path 
-    // of the stock. The path pricer knows how to price a path using its 
+    // The replication strategy's Profit&Loss is computed for each path
+    // of the stock. The path pricer knows how to price a path using its
     // value() method
     Handle<PathPricer> myPathPricer =
         Handle<PathPricer>(new ReplicationPathPricer(type_, s0_, strike_, r_,

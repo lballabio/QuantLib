@@ -1,4 +1,4 @@
-/*
+/*!
  * Copyright (C) 2000-2001 QuantLib Group
  *
  * This file is part of QuantLib.
@@ -21,12 +21,7 @@
  * available at http://quantlib.org/group.html
 */
 
-/* \file Parities.cpp
-   \brief Example on pricing european option with different methods.
-
-*/
-
-// $Id$
+//! $Id$
 
 #include "ql/quantlib.hpp"
 
@@ -209,7 +204,8 @@ int main(int argc, char* argv[])
         // significant. Let's go for the fastest way: just one step
         int nTimeSteps = 1;
         int nSamples = 200000;
-        long seed = 100000*UniformRandomGenerator().next();
+        // this causes the actual seed to change randomly at each run
+        long seed = 0;
 	    double drift = riskFreeRate - 0.5*volatility*volatility;
         Statistics samples;
         Handle<GaussianPathGenerator> myPathGenerator(

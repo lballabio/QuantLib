@@ -1,12 +1,12 @@
 dnl
 dnl $Id$
 dnl
-dnl This is QuantLib's configure.in
+dnl This is QuantLib Docs' configure.in
 dnl Process this file with autoconf to produce a configure script.
 dnl
 
 AC_INIT(quantlib.doxy)
-AM_INIT_AUTOMAKE(QuantLib-docs, 0.2)
+AM_INIT_AUTOMAKE(QuantLib-docs, 0.2.0)
 
 dnl Check for programs
 
@@ -29,5 +29,6 @@ echo ""
 echo "    make docs-html: Produce HTML documentation"
 echo "    make docs-ps:   Produce PostScript documentation"
 echo "    make docs-pdf:  Produce PDF documentation"
+echo "    make docs-all:  Produce all type of documentation"
 echo ""
 

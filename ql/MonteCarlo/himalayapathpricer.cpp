@@ -53,17 +53,19 @@ namespace QuantLib {
             QL_REQUIRE(underlying_.size() == numAssets,
                 "HimalayaPathPricer: the multi-path must contain "
                 + IntegerFormatter::toString(underlying_.size()) +" assets");
+            QL_REQUIRE(numAssets>0,
+                "HimalayaPathPricer: no asset given");
 
 
             Array prices(underlying_);
             double averagePrice = 0;
             std::vector<bool> remainingAssets(numAssets, true);
 
-            for(unsigned int j = 0; j < numSteps; j++){
+            for(unsigned int j = 0; j < numSteps; j++) {
                 double bestPrice = 0.0;
                 unsigned int removeAsset;
-                for(unsigned int i = 0; i < numAssets; i++){
-                    if(remainingAssets[i]){
+                for(unsigned int i = 0; i < numAssets; i++) {
+                    if(remainingAssets[i]) {
                         prices[i] *= QL_EXP(path[i][j]);
                         if(prices[i] >= bestPrice) {
                             bestPrice = prices[i];

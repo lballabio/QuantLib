@@ -2,12 +2,6 @@
 /*! \example DiscreteHedging.cpp
     This is an example of using the %QuantLib Monte Carlo framework.
 
-    It computes profit and loss of a discrete interval hedging strategy 
-    and compares them with the results of Derman and Kamal's (Goldman Sachs 
-    Equity Derivatives Research).
-    
-    Research Note: ``When You Cannot Hedge Continuously: The Corrections to 
-    Black-Scholes'' (http://www.gs.com/qs/doc/when_you_cannot_hedge.pdf)
 */
 
 /*! \example Parities.cpp
