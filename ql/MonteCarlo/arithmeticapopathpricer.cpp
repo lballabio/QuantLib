@@ -52,22 +52,29 @@ namespace QuantLib {
 
             double price1 = underlying_;
             double averagePrice1 = 0.0;
+            Size fixings = n;
+            if (path.timeGrid().mandatoryTimes()[0]==0.0) {
+                averagePrice1 = price1;
+                fixings = n+1;
+            }
             Size i;
             for (i=0; i<n; i++) {
                 price1 *= QL_EXP(path.drift()[i]+path.diffusion()[i]);
                 averagePrice1 += price1;
             }
-            averagePrice1 = averagePrice1/n;
+            averagePrice1 = averagePrice1/fixings;
 
             if (useAntitheticVariance_) {
                 double price2 = underlying_;
                 double averagePrice2 = 0.0;
 
+                if (path.timeGrid().mandatoryTimes()[0]==0.0)
+                    averagePrice2 = price2;
                 for (i=0; i<n; i++) {
                     price2 *= QL_EXP(path.drift()[i]-path.diffusion()[i]);
                     averagePrice2 += price2;
                 }
-                averagePrice2 = averagePrice2/n;
+                averagePrice2 = averagePrice2/fixings;
                 return discount_/2.0*(ExercisePayoff(type_, averagePrice1, strike_)
                     +ExercisePayoff(type_, averagePrice2, strike_));
             } else

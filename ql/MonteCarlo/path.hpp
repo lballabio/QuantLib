@@ -1,6 +1,6 @@
 
-
 /*
+ Copyright (C) 2003 Ferdinando Ametrano
  Copyright (C) 2000, 2001, 2002, 2003 RiskMap srl
 
  This file is part of QuantLib, a free-software/open-source library
@@ -21,6 +21,7 @@
 #ifndef quantlib_montecarlo_path_h
 #define quantlib_montecarlo_path_h
 
+#include <ql/grid.hpp>
 #include <ql/array.hpp>
 #include <ql/handle.hpp>
 #include <vector>
@@ -29,14 +30,12 @@ namespace QuantLib {
 
     namespace MonteCarlo {
 
-
         //! single factor random walk
         class Path {
           public:
-            Path(Size size);
-            Path(const std::vector<Time>& times,
-                 const Array& drift,
-                 const Array& diffusion);
+            Path(const TimeGrid& timeGrid,
+                 const Array& drift = Array(),
+                 const Array& diffusion = Array());
             //! \name inspectors
             //@{
             double operator[](int i) const;
@@ -44,31 +43,37 @@ namespace QuantLib {
             //@}
             //! \name read/write access to components
             //@{
-            const std::vector<Time>& times() const;
-            std::vector<Time>& times();
+            const TimeGrid& timeGrid() const;
+            TimeGrid& timeGrid();
             const Array& drift() const;
             Array& drift();
             const Array& diffusion() const;
             Array& diffusion();
             //@}
           private:
-            std::vector<Time> times_;
+            TimeGrid timeGrid_;
             Array drift_;
             Array diffusion_;
         };
 
         // inline definitions
 
-        inline Path::Path(Size size)
-        : times_(size), drift_(size), diffusion_(size) {}
-
-        inline Path::Path(const std::vector<Time>& times, const Array& drift,
+        inline Path::Path(const TimeGrid& timeGrid, const Array& drift,
             const Array& diffusion)
-        : times_(times), drift_(drift), diffusion_(diffusion) {
-            QL_REQUIRE(drift_.size() == diffusion_.size(),
-                "Path: drift and diffusion have different size");
-            QL_REQUIRE(times_.size() == drift_.size(),
-                "Path: times and drift have different size");
+        : timeGrid_(timeGrid), drift_(drift), diffusion_(diffusion) {
+            if (drift_.size()==0) {
+                drift_ = Array(timeGrid_.size()-1);
+            } else {
+                QL_REQUIRE(drift_.size() == timeGrid_.size()-1,
+                    "Path: drift and times have different size");
+            }
+            if (diffusion_.size()==0) {
+                diffusion_ = Array(timeGrid_.size()-1);
+            } else {
+                QL_REQUIRE(diffusion_.size() == timeGrid_.size()-1,
+                    "Path: diffusion and times have different size");
+            }
+
         }
 
         inline double Path::operator[](int i) const {
@@ -79,12 +84,12 @@ namespace QuantLib {
             return drift_.size();
         }
 
-        inline const std::vector<Time>& Path::times() const {
-            return times_;
+        inline const TimeGrid& Path::timeGrid() const {
+            return timeGrid_;
         }
 
-        inline std::vector<Time>& Path::times() {
-            return times_;
+        inline TimeGrid& Path::timeGrid() {
+            return timeGrid_;
         }
 
         inline const Array& Path::drift() const {
@@ -102,6 +107,10 @@ namespace QuantLib {
         inline Array& Path::diffusion() {
             return diffusion_;
         }
+
+
+
+
 
     }
 

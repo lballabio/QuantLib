@@ -55,12 +55,16 @@ namespace QuantLib {
                 geoLogDrift += (n-i)*path.drift()[i];
                 geoLogDiffusion += (n-i)*path.diffusion()[i];
             }
+            Size fixings = n;
+            if (path.timeGrid().mandatoryTimes()[0]==0.0) {
+                fixings = n+1;
+            }
             double averagePrice1 = underlying_*
-                QL_EXP((geoLogDrift+geoLogDiffusion)/n);
+                QL_EXP((geoLogDrift+geoLogDiffusion)/fixings);
 
             if (useAntitheticVariance_) {
                 double averagePrice2 = underlying_*
-                    QL_EXP((geoLogDrift-geoLogDiffusion)/n);
+                    QL_EXP((geoLogDrift-geoLogDiffusion)/fixings);
                 return discount_/2.0*(
                     ExercisePayoff(type_, averagePrice1, strike_)
                     +ExercisePayoff(type_, averagePrice2, strike_));

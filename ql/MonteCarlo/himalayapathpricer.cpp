@@ -61,6 +61,21 @@ namespace QuantLib {
             std::vector<bool> remainingAssets(numAssets, true);
             double bestPrice;
             Size removeAsset, i, j;
+            Size fixings = numSteps;
+            if (multiPath[0].timeGrid().mandatoryTimes()[0] == 0.0) {
+                bestPrice = 0.0;
+                // dummy assignement to avoid compiler warning
+                removeAsset=0;
+                for(j = 0; j < numAssets; j++) {
+                    if(prices[j] >= bestPrice) {
+                        bestPrice = prices[j];
+                        removeAsset = j;
+                    }
+                }
+                remainingAssets[removeAsset] = false;
+                averagePrice += bestPrice;
+                fixings = numSteps+1;
+            }
             for(i = 0; i < numSteps; i++) {
                 bestPrice = 0.0;
                 // dummy assignement to avoid compiler warning
@@ -78,13 +93,26 @@ namespace QuantLib {
                 remainingAssets[removeAsset] = false;
                 averagePrice += bestPrice;
             }
-            averagePrice /= QL_MIN(numSteps, numAssets);
+            averagePrice /= QL_MIN(fixings, numAssets);
             double optPrice = QL_MAX(averagePrice - strike_, 0.0);
 
             if (useAntitheticVariance_) {
                 prices = underlying_;
                 averagePrice = 0;
                 remainingAssets = std::vector<bool>(numAssets, true);
+                if (multiPath[0].timeGrid().mandatoryTimes()[0] == 0.0) {
+                    bestPrice = 0.0;
+                    // dummy assignement to avoid compiler warning
+                    removeAsset=0;
+                    for(j = 0; j < numAssets; j++) {
+                        if(prices[j] >= bestPrice) {
+                            bestPrice = prices[j];
+                            removeAsset = j;
+                        }
+                    }
+                    remainingAssets[removeAsset] = false;
+                    averagePrice += bestPrice;
+                }
                 for(i = 0; i < numSteps; i++) {
                     bestPrice = 0.0;
                     // dummy assignement to avoid compiler warning
@@ -102,7 +130,7 @@ namespace QuantLib {
                     remainingAssets[removeAsset] = false;
                     averagePrice += bestPrice;
                 }
-                averagePrice /= QL_MIN(numSteps, numAssets);
+                averagePrice /= QL_MIN(fixings, numAssets);
                 double optPrice2 = QL_MAX(averagePrice - strike_, 0.0);
 
                 return discount_ * 0.5 * (optPrice+optPrice2);

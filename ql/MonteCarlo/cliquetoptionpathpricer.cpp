@@ -51,7 +51,7 @@ namespace QuantLib {
 
         double CliquetOptionPathPricer::operator()(const Path& path) const {
             double result = accruedCoupon_;
-            return result * riskFreeTS_->discount(path.times().back());
+            return result * riskFreeTS_->discount(path.timeGrid().back());
         }
 
 

@@ -59,7 +59,7 @@ namespace QuantLib {
 
             return ExercisePayoff(type_, underlying_ *
                     QL_EXP(log_drift+log_random), strike_) *
-                riskFreeTS_->discount(path.times().back());
+                riskFreeTS_->discount(path.timeGrid().back());
         }
 
 
