@@ -288,16 +288,16 @@
 /*! \def QL_MAX \brief maximum between two elements */
 #include <algorithm>
 #if !defined(QL_MIN)
-    template <class T> inline const T& __quantlib_min(const T& x, const T& y) {
+    template <class T> inline const T& quantlib_min__(const T& x, const T& y) {
         return x < y ? x : y;
     }
-    #define QL_MIN  __quantlib_min
+    #define QL_MIN  quantlib_min__
 #endif
 #if !defined(QL_MAX)
-    template <class T> inline const T& __quantlib_max(const T& x, const T& y) {
+    template <class T> inline const T& quantlib_max__(const T& x, const T& y) {
         return x > y ? x : y;
     }
-    #define QL_MAX  __quantlib_max
+    #define QL_MAX  quantlib_max__
 #endif
 /*! @} */
 
@@ -339,14 +339,14 @@
 #if !defined(QL_ITERATOR)
     template <class Category, class T, class Distance = ptrdiff_t,
               class Pointer = T*, class Reference = T&>
-    struct __quantlib_iterator {
+    struct quantlib_iterator__ {
         typedef T          value_type;
         typedef Distance   difference_type;
         typedef Pointer    pointer;
         typedef Reference  reference;
         typedef Category   iterator_category;
     };
-    #define QL_ITERATOR     __quantlib_iterator
+    #define QL_ITERATOR     quantlib_iterator__
 #endif
 
 /*! \def QL_ITERATOR_TRAITS
@@ -360,14 +360,14 @@
 */
 #if !defined(QL_ITERATOR_TRAITS)
     template <class Iterator>
-    struct __quantlib_iterator_traits {
+    struct quantlib_iterator_traits__ {
         typedef typename Iterator::value_type           value_type;
         typedef typename Iterator::difference_type      difference_type;
         typedef typename Iterator::pointer              pointer;
         typedef typename Iterator::reference            reference;
         typedef typename Iterator::iterator_category    iterator_category;
     };
-    #define QL_ITERATOR_TRAITS  __quantlib_iterator_traits
+    #define QL_ITERATOR_TRAITS  quantlib_iterator_traits__
     #define QL_SPECIALIZE_ITERATOR_TRAITS(T) \
     template<> \
     struct QL_ITERATOR_TRAITS<T*> { \
