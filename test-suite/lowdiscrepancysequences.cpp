@@ -92,22 +92,31 @@ void LDSTest::testSobol() {
         }
     }
 
-    // generic extractions
+    // testing discrepancy
     dimensionality = 33;
     seed = 123456;
     rsg = SobolRsg(dimensionality, seed);
-    points = 100000;
-    point = rsg.nextSequence().value;
-    if (point.size()!=dimensionality) {
-        CPPUNIT_FAIL("Sobol sequence generator returns "
-                     " a sequence of wrong dimensionality: " +
-                     IntegerFormatter::toString(point.size())
-                     + " instead of  " +
-                     IntegerFormatter::toString(dimensionality));
-    }
-    for (i=1; i<points; i++) {
+    Math::ArrayStatistics stat(dimensionality);
+    points = Size(QL_POW(2.0, 5))-1; // five cycles
+    for (i=0; i<points; i++) {
         point = rsg.nextSequence().value;
+        stat.add(point);
     }
+    double discrepancy = stat.discrepancy();
+    if (discrepancy!=0.0) {
+        CPPUNIT_FAIL("Sobol sequence discrepancy ");
+    }
+    Array mean = stat.mean();
+    for (i=0; i<dimensionality; i++) {
+        if (mean[i]!=0.5) {
+            CPPUNIT_FAIL(IntegerFormatter::toOrdinal(i+1) +
+                         " mean (" +
+                         DoubleFormatter::toString(mean[i]) +
+                         ") in Sobol sequence is not " + 
+                         DoubleFormatter::toString(0.5));
+        }
+    }
+
 
     const double vanderCorputSequenceModuloTwo[] = {
         // first cycle (zero excluded)
@@ -130,7 +139,7 @@ void LDSTest::testSobol() {
         point = rsg .nextSequence().value;
         if (point[0]!=vanderCorputSequenceModuloTwo[i]) {
             CPPUNIT_FAIL(IntegerFormatter::toOrdinal(i+1) +
-                         " number (" +
+                         " draw (" +
                          DoubleFormatter::toString(point[0]) +
                          ") in 1-D Sobol sequence is not in the "
                          "van der Corput sequence modulo two: " +
@@ -161,23 +170,36 @@ void LDSTest::testHalton() {
         }
     }
 
-    // generic extractions
+    // testing discrepancy
     dimensionality = 33;
     seed = 123456;
     rsg = HaltonRsg(dimensionality);
-    points = 100000;
-
-    point = rsg.nextSequence().value;
-    if (point.size()!=dimensionality) {
-        CPPUNIT_FAIL("Sobol sequence generator returns "
-                     " a sequence of wrong dimensionality: " +
-                     IntegerFormatter::toString(point.size())
-                     + " instead of  " +
-                     IntegerFormatter::toString(dimensionality));
-    }
-    for (i=1; i<points; i++) {
+    Math::ArrayStatistics stat(dimensionality);
+    points = Size(QL_POW(3.0, 3))-1; // three cycles base 3
+    for (i=0; i<points; i++) {
         point = rsg.nextSequence().value;
+        stat.add(point);
     }
+    Array mean = stat.mean();
+    if (mean[1]!=0.5) {
+        CPPUNIT_FAIL("Second dimension mean (" +
+                     DoubleFormatter::toString(mean[1]) +
+                     ") in Halton sequence is not " + 
+                     DoubleFormatter::toString(0.5));
+    }
+    points = Size(QL_POW(2.0, 5))-1; // five cycles base 2
+    for (; i<points; i++) {
+        point = rsg.nextSequence().value;
+        stat.add(point);
+    }
+    mean = stat.mean();
+    if (mean[0]!=0.5) {
+        CPPUNIT_FAIL("First dimension mean (" +
+                     DoubleFormatter::toString(mean[0]) +
+                     ") in Halton sequence is not " + 
+                     DoubleFormatter::toString(0.5));
+    }
+
 
     const double vanderCorputSequenceModuloTwo[] = {
         // first cycle (zero excluded)
@@ -201,7 +223,7 @@ void LDSTest::testHalton() {
         point = rsg .nextSequence().value;
         if (point[0]!=vanderCorputSequenceModuloTwo[i]) {
             CPPUNIT_FAIL(IntegerFormatter::toOrdinal(i+1) +
-                         " number (" +
+                         " draw (" +
                          DoubleFormatter::toString(point[0]) +
                          ") in 1-D Halton sequence is not in the "
                          "van der Corput sequence modulo two: " +
@@ -213,13 +235,13 @@ void LDSTest::testHalton() {
 
     const double vanderCorputSequenceModuloThree[] = {
         // first cycle (zero excluded)
-        0.333333, 0.666667,
+        1.0/3,  2.0/3,
         // second cycle
-        0.111111, 0.444444, 0.777778, 0.2222220, 0.555556, 0.888889,
+        1.0/9,  4.0/9,  7.0/9,  2.0/9,  5.0/9,  8.0/9,
         // third cycle
-        0.037037, 0.370370, 0.703704, 0.1481480, 0.481481, 0.814815,
-        0.259259, 0.592593, 0.925926, 0.0740741, 0.407407, 0.740741,
-        0.185185, 0.518519, 0.851852, 0.2962960, 0.629630, 0.962963
+        1.0/27, 10.0/27, 19.0/27,  4.0/27, 13.0/27, 22.0/27,
+        7.0/27, 16.0/27, 25.0/27,  2.0/27, 11.0/27, 20.0/27,
+        5.0/27, 14.0/27, 23.0/27,  8.0/27, 17.0/27, 26.0/27
     };
 
     dimensionality = 2;
@@ -230,7 +252,7 @@ void LDSTest::testHalton() {
         if (point[0]!=vanderCorputSequenceModuloTwo[i]) {
             CPPUNIT_FAIL("First component of " +
                          IntegerFormatter::toOrdinal(i+1) +
-                         " number (" +
+                         " draw (" +
                          DoubleFormatter::toString(point[0]) +
                          ") in 2-D Halton sequence is not in the "
                          "van der Corput sequence modulo two: " +
@@ -238,10 +260,10 @@ void LDSTest::testHalton() {
                          DoubleFormatter::toString(
                              vanderCorputSequenceModuloTwo[i]));
         }
-        if (fabs(point[1]-vanderCorputSequenceModuloThree[i])>1e-6) {
+        if (fabs(point[1]-vanderCorputSequenceModuloThree[i])>1.0e-15) {
             CPPUNIT_FAIL("Second component of " +
                          IntegerFormatter::toOrdinal(i+1) +
-                         " number (" +
+                         " draw (" +
                          DoubleFormatter::toString(point[1]) +
                          ") in 2-D Halton sequence is not in the "
                          "van der Corput sequence modulo three: "
