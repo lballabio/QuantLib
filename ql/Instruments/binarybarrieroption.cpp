@@ -27,6 +27,7 @@
 
 namespace QuantLib {
 
+    /*    \deprecated use VanillaOption instead. */
     BinaryBarrierOption::BinaryBarrierOption(
         const Handle<BlackScholesStochasticProcess>& stochProc,
         const Handle<CashOrNothingPayoff>& payoff,

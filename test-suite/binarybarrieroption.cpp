@@ -554,6 +554,7 @@ void BinaryBarrierOptionTest::testEngineConsistency() {
 }
 
 
+/*! \deprecated use DigitalOptionTest instead. */
 CppUnit::Test* BinaryBarrierOptionTest::suite() {
     CppUnit::TestSuite* tests =
         new CppUnit::TestSuite("BinaryBarrier option tests");

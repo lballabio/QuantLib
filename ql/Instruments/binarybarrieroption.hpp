@@ -31,6 +31,8 @@ namespace QuantLib {
     //! Binary barrier option on a single asset.
     /*! Depending on the exercise type, either the European or American
         analytic pricing engine will be used if none is given.
+    
+        \deprecated use VanillaOption instead.
     */
     class BinaryBarrierOption : public OneAssetStrikedOption {
       public:

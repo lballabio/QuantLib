@@ -30,7 +30,10 @@
 
 namespace QuantLib {
 
-    //! Pricing engine for binary barrier options using Monte Carlo simulation
+    /*! Pricing engine for binary barrier options using Monte Carlo simulation
+
+        \deprecated use MCDigitalEngine instead
+    */
     template<class RNG = PseudoRandom, class S = Statistics>
     class MCBinaryBarrierEngine : public BinaryBarrierEngine,
                                   public McSimulation<SingleAsset<RNG>, S> {

@@ -29,7 +29,10 @@
 
 namespace QuantLib {
 
-    //! Analytic pricing engine for American binary barrier options formulae
+    /*! Analytic pricing engine for American binary barrier options formulae
+
+        \deprecated use AnalyticAmericanEngine instead
+    */
     class AnalyticAmericanBinaryBarrierEngine : public BinaryBarrierEngine {
       public:
         void calculate() const;

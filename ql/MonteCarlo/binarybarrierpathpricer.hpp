@@ -45,6 +45,8 @@ namespace QuantLib {
         M. El Babsiri and G. Noel
         Journal of Derivatives; Winter 1998; 6, 2; pg. 65-83
         </i>
+
+        \deprecated use DigitalPathPricer instead
     */
     class BinaryBarrierPathPricer : public PathPricer<Path> {
       public:

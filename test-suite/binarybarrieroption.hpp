@@ -21,6 +21,7 @@
 #include <cppunit/TestCase.h>
 #include <cppunit/TestFixture.h>
 
+/*! \deprecated use DigitalOptionTest instead. */
 class BinaryBarrierOptionTest : public CppUnit::TestFixture {
   public:
     void testValues();    

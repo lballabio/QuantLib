@@ -28,7 +28,10 @@
 
 namespace QuantLib {
 
-    //! Analytic pricing engine for European binary barrier options
+    /*! Analytic pricing engine for European binary barrier options formulae
+
+        \deprecated use AnalyticEuropeanEngine instead
+    */
     class AnalyticEuropeanBinaryBarrierEngine : public BinaryBarrierEngine {
       public:
         void calculate() const;
