@@ -175,7 +175,8 @@ namespace QuantLib {
 
         // do this with template parameters?
         if (isBiased_) {
-            return boost::shared_ptr<MCBarrierEngine<RNG,S>::path_pricer_type>(
+            return boost::shared_ptr<
+                           typename MCBarrierEngine<RNG,S>::path_pricer_type>(
                 new BiasedBarrierPathPricer(
                        arguments_.barrierType,
                        arguments_.barrier,
@@ -189,7 +190,8 @@ namespace QuantLib {
             PseudoRandom::ursg_type sequenceGen(grid.size()-1,
                                                 PseudoRandom::urng_type(5));
 
-            return boost::shared_ptr<MCBarrierEngine<RNG,S>::path_pricer_type>(
+            return boost::shared_ptr<
+                           typename MCBarrierEngine<RNG,S>::path_pricer_type>(
                 new BarrierPathPricer(
                     arguments_.barrierType,
                     arguments_.barrier,
@@ -254,11 +256,11 @@ namespace QuantLib {
                     controlPE->results());
             Real controlVariateValue = controlResults->value;
 
-            mcModel_ =
+            this->mcModel_ =
                 boost::shared_ptr<MonteCarloModel<SingleAsset<RNG>, S> >(
                     new MonteCarloModel<SingleAsset<RNG>, S>(
                         pathGenerator(), pathPricer(), stats_type(),
-                        antitheticVariate_, controlPP,
+                        this->antitheticVariate_, controlPP,
                         controlVariateValue));
             */
         } else {

@@ -26,7 +26,7 @@
 
 namespace QuantLib {
 
-    //! Forward performance engine 
+    //! Forward performance engine
     /*! \ingroup forwardengines */
     template<class ArgumentsType, class ResultsType>
     class ForwardPerformanceEngine
@@ -49,9 +49,8 @@ namespace QuantLib {
     : ForwardEngine<ArgumentsType, ResultsType>(originalEngine) {}
 
     template<class ArgumentsType, class ResultsType>
-    void ForwardPerformanceEngine<ArgumentsType, ResultsType>::calculate() 
+    void ForwardPerformanceEngine<ArgumentsType, ResultsType>::calculate()
                                                                        const {
-
         this->setOriginalArguments();
         this->originalEngine_->calculate();
         getOriginalResults();
@@ -65,7 +64,7 @@ namespace QuantLib {
             this->arguments_.blackScholesProcess;
 
         Time resetTime = process->riskFreeRate()->dayCounter().yearFraction(
-                                    process->riskFreeRate()->referenceDate(), 
+                                    process->riskFreeRate()->referenceDate(),
                                     this->arguments_.resetDate);
         DiscountFactor discR = process->riskFreeRate()->discount(
                                     this->arguments_.resetDate);

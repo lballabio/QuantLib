@@ -56,7 +56,7 @@ namespace QuantLib {
             return QL_SQRT(gaussianDownsideVariance());
         }
 
-        /*! returns the variance of observations below target 
+        /*! returns the variance of observations below target
             \f[ \frac{\sum w_i (min(0, x_i-target))^2 }{\sum w_i}. \f]
 
             See Dembo, Freeman "The Rules Of Risk", Wiley (2001)
@@ -82,7 +82,7 @@ namespace QuantLib {
             a VaR threshold,
 
             \f[ \mathrm{E}\left[ x \;|\; x < \mathrm{VaR}(p) \right], \f]
-                
+
             that is the average of observations below the
             given percentile \f$ p \f$.
             Also know as conditional value-at-risk.

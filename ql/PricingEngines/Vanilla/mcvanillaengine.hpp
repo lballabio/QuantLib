@@ -78,7 +78,7 @@ namespace QuantLib {
     // template definitions
 
     template<class RNG, class S>
-    inline 
+    inline
     boost::shared_ptr<QL_TYPENAME MCVanillaEngine<RNG,S>::path_generator_type>
     MCVanillaEngine<RNG,S>::pathGenerator() const {
 
@@ -87,7 +87,7 @@ namespace QuantLib {
             RNG::make_sequence_generator(grid.size()-1,seed_);
         // BB here
         return boost::shared_ptr<path_generator_type>(
-                      new path_generator_type(arguments_.blackScholesProcess, 
+                      new path_generator_type(arguments_.blackScholesProcess,
                                               grid, gen, true));
     }
 
@@ -105,13 +105,13 @@ namespace QuantLib {
         //! Initialize the one-factor Monte Carlo
         if (this->controlVariate_) {
 
-            boost::shared_ptr<path_pricer_type> controlPP = 
+            boost::shared_ptr<path_pricer_type> controlPP =
                 this->controlPathPricer();
             QL_REQUIRE(controlPP,
                        "engine does not provide "
                        "control variation path pricer");
 
-            boost::shared_ptr<PricingEngine> controlPE = 
+            boost::shared_ptr<PricingEngine> controlPE =
                 this->controlPricingEngine();
             QL_REQUIRE(controlPE,
                        "engine does not provide "

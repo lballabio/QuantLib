@@ -37,14 +37,14 @@ namespace QuantLib {
         template <class I1, class I2, class M>
         class Impl : public Interpolation2D::templateImpl<I1,I2,M> {
           public:
-            Impl(const I1& xBegin, const I1& xEnd, 
+            Impl(const I1& xBegin, const I1& xEnd,
                  const I2& yBegin, const I2& yEnd, const M& zData)
             : Interpolation2D::templateImpl<I1,I2,M>(xBegin,xEnd,
                                                      yBegin,yEnd,
                                                      zData) {
                 for (Size i=0; i<(this->zData_.rows()); i++)
-                    splines_.push_back(NaturalCubicSpline(xBegin, xEnd,
-                        this->zData_.row_begin(i)));
+                    splines_.push_back(NaturalCubicSpline(
+                                    xBegin, xEnd, this->zData_.row_begin(i)));
             }
             Real value(Real x, Real y) const {
                 std::vector<Real> section(splines_.size());
@@ -61,11 +61,11 @@ namespace QuantLib {
       public:
         /*! \pre the \f$ x \f$ and \f$ y \f$ values must be sorted. */
         template <class I1, class I2, class M>
-        BicubicSpline(const I1& xBegin, const I1& xEnd, 
+        BicubicSpline(const I1& xBegin, const I1& xEnd,
                       const I2& yBegin, const I2& yEnd,
                       const M& zData) {
             impl_ = boost::shared_ptr<Interpolation2D::Impl>(
-                  new BicubicSpline::Impl<I1,I2,M>(xBegin, xEnd, 
+                  new BicubicSpline::Impl<I1,I2,M>(xBegin, xEnd,
                                                    yBegin, yEnd, zData));
         }
     };

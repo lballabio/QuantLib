@@ -32,7 +32,7 @@ namespace QuantLib {
         method
     */
     template <class Arguments, class Results>
-    class LatticeShortRateModelEngine 
+    class LatticeShortRateModelEngine
         : public GenericModelEngine<ShortRateModel, Arguments, Results> {
       public:
         LatticeShortRateModelEngine(
@@ -51,22 +51,22 @@ namespace QuantLib {
 
     template <class Arguments, class Results>
     LatticeShortRateModelEngine<Arguments, Results>::LatticeShortRateModelEngine(
-            const boost::shared_ptr<ShortRateModel>& model, 
-            Size timeSteps) 
-    : GenericModelEngine<ShortRateModel, Arguments, Results>(model), 
+            const boost::shared_ptr<ShortRateModel>& model,
+            Size timeSteps)
+    : GenericModelEngine<ShortRateModel, Arguments, Results>(model),
       timeSteps_(timeSteps) {}
 
     template <class Arguments, class Results>
     LatticeShortRateModelEngine<Arguments, Results>::LatticeShortRateModelEngine(
             const boost::shared_ptr<ShortRateModel>& model,
-            const TimeGrid& timeGrid) 
-    : GenericModelEngine<ShortRateModel, Arguments, Results>(model), 
+            const TimeGrid& timeGrid)
+    : GenericModelEngine<ShortRateModel, Arguments, Results>(model),
       timeGrid_(timeGrid), timeSteps_(0) {
         lattice_ = this->model_->tree(timeGrid);
     }
 
     template <class Arguments, class Results>
-    void LatticeShortRateModelEngine<Arguments, Results>::update() 
+    void LatticeShortRateModelEngine<Arguments, Results>::update()
     {
         if (timeGrid_.size() > 0)
             lattice_ = this->model_->tree(timeGrid_);

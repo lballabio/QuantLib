@@ -168,9 +168,9 @@ namespace QuantLib {
 
 
         Volatility volatility = process->blackVolatility()->blackVol(
-            this->arguments_.exercise->lastDate(),
-            process->stateVariable()->value());
-        this->results_.qvega = + this->arguments_.correlation *
+                                        this->arguments_.exercise->lastDate(),
+                                        process->stateVariable()->value());
+        this->results_.qvega = this->arguments_.correlation *
             process->blackVolatility()->blackVol(
                 this->arguments_.exercise->lastDate(),
                 process->stateVariable()->value()) *

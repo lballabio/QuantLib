@@ -34,7 +34,7 @@ namespace QuantLib {
     //! %Cubic spline interpolation between discrete points.
     /*! It implements different type of end conditions: not-a-knot,
         first derivative value, second derivative value.
-        
+
         It also implements Hyman's monotonicity constraint filter
         which ensures that the interpolating spline remains monotonic
         at the expense of the second derivative of the curve which will no
@@ -42,14 +42,14 @@ namespace QuantLib {
         If the interpolating spline is already monotonic, the Hyman filter
         leaves it unchanged.
 
-        See R. L. Dougherty, A. Edelman, and J. M. Hyman, 
+        See R. L. Dougherty, A. Edelman, and J. M. Hyman,
         "Nonnegativity-, Monotonicity-, or Convexity-Preserving Cubic and
         Quintic Hermite Interpolation"
         Mathematics Of Computation, v. 52, n. 186, April 1989, pp. 471-494.
     */
     class CubicSpline : public Interpolation {
       public:
-        enum BoundaryCondition { 
+        enum BoundaryCondition {
             //! Make second(-last) point an inactive knot
             NotAKnot,
             //! Match value of end-slope
@@ -58,7 +58,7 @@ namespace QuantLib {
             SecondDerivative,
             //! Match first and second derivative at either end
             Periodic,
-            /*! Match end-slope to the slope of the cubic that matches 
+            /*! Match end-slope to the slope of the cubic that matches
                 the first four data at the respective end
             */
             Lagrange
@@ -87,7 +87,7 @@ namespace QuantLib {
                  CubicSpline::BoundaryCondition rightCondition,
                  Real rightConditionValue,
                  bool monotonicityConstraint)
-            : Interpolation::templateImpl<I1,I2>(xBegin,xEnd,yBegin), 
+            : Interpolation::templateImpl<I1,I2>(xBegin,xEnd,yBegin),
               CoefficientHolder(xEnd-xBegin),
               monotone_(false) {
 
@@ -96,11 +96,11 @@ namespace QuantLib {
                 std::vector<Real> dx(n_-1), S(n_-1);
 
                 Size i=0;
-                dx[i]= this->xBegin_[i+1] - this->xBegin_[i];
-                S[i] =(this->yBegin_[i+1] - this->yBegin_[i])/dx[i];
+                dx[i] = this->xBegin_[i+1] - this->xBegin_[i];
+                S[i] = (this->yBegin_[i+1] - this->yBegin_[i])/dx[i];
                 for (i=1; i<n_-1; i++) {
-                    dx[i]= this->xBegin_[i+1] - this->xBegin_[i];
-                    S[i] =(this->yBegin_[i+1] - this->yBegin_[i])/dx[i];
+                    dx[i] = this->xBegin_[i+1] - this->xBegin_[i];
+                    S[i] = (this->yBegin_[i+1] - this->yBegin_[i])/dx[i];
 
                     L.setMidRow(i, dx[i], 2.0*(dx[i]+dx[i-1]), dx[i-1]);
                     tmp[i] = 3.0*(dx[i]*S[i-1] + dx[i-1]*S[i]);
@@ -112,9 +112,9 @@ namespace QuantLib {
                 switch (leftCondition) {
                   case NotAKnot:
                     // ignoring end condition value
-                    L.setFirstRow(dx[1]*(dx[1]+dx[0]), 
+                    L.setFirstRow(dx[1]*(dx[1]+dx[0]),
                                   (dx[0]+dx[1])*(dx[0]+dx[1]));
-                    tmp[0] = S[0]*dx[1]*(2.0*dx[1]+3.0*dx[0]) + 
+                    tmp[0] = S[0]*dx[1]*(2.0*dx[1]+3.0*dx[0]) +
                              S[1]*dx[0]*dx[0];
                     break;
                   case FirstDerivative:
@@ -167,8 +167,8 @@ namespace QuantLib {
                     for (i=0; i<n_; i++) {
                         if (i==0) {
                             if (tmp[i]*S[0]>0.0) {
-                                correction = tmp[i]/QL_FABS(tmp[i]) * 
-                                    QL_MIN<Real>(QL_FABS(tmp[i]), 
+                                correction = tmp[i]/QL_FABS(tmp[i]) *
+                                    QL_MIN<Real>(QL_FABS(tmp[i]),
                                                  QL_FABS(3.0*S[0]));
                             } else {
                                 correction = 0.0;
@@ -179,7 +179,7 @@ namespace QuantLib {
                             }
                         } else if (i==n_-1) {
                             if (tmp[i]*S[n_-2]>0.0) {
-                                correction = tmp[i]/QL_FABS(tmp[i]) * 
+                                correction = tmp[i]/QL_FABS(tmp[i]) *
                                     QL_MIN<Real>(QL_FABS(tmp[i]), QL_FABS(3.0*S[n_-2]));
                             } else {
                                 correction = 0.0;
@@ -211,7 +211,7 @@ namespace QuantLib {
                                 }
                             }
                             if (tmp[i]*pm>0.0) {
-                                correction = tmp[i]/QL_FABS(tmp[i]) * 
+                                correction = tmp[i]/QL_FABS(tmp[i]) *
                                     QL_MIN(QL_FABS(tmp[i]), M);
                             } else {
                                 correction = 0.0;
@@ -233,7 +233,7 @@ namespace QuantLib {
                 primitiveConst_[0] = 0.0;
                 for (i=1; i<n_-1; i++) {
                     primitiveConst_[i] = primitiveConst_[i-1]
-                        + dx[i-1] * 
+                        + dx[i-1] *
                         (this->yBegin_[i-1] + dx[i-1] *
                          (a_[i-1]/2.0 + dx[i-1] *
                           (b_[i-1]/3.0 + dx[i-1] * c_[i-1]/4.0)));
@@ -302,7 +302,7 @@ namespace QuantLib {
       public:
         /*! \pre the \f$ x \f$ values must be sorted. */
         template <class I1, class I2>
-        MonotonicCubicSpline(const I1& xBegin, const I1& xEnd, 
+        MonotonicCubicSpline(const I1& xBegin, const I1& xEnd,
                              const I2& yBegin,
                              CubicSpline::BoundaryCondition leftCondition,
                              Real leftConditionValue,
@@ -319,7 +319,7 @@ namespace QuantLib {
       public:
         /*! \pre the \f$ x \f$ values must be sorted. */
         template <class I1, class I2>
-        NaturalCubicSpline(const I1& xBegin, const I1& xEnd, 
+        NaturalCubicSpline(const I1& xBegin, const I1& xEnd,
                            const I2& yBegin)
         : CubicSpline(xBegin,xEnd,yBegin,
                       SecondDerivative, 0.0,
@@ -332,7 +332,7 @@ namespace QuantLib {
       public:
         /*! \pre the \f$ x \f$ values must be sorted. */
         template <class I1, class I2>
-        NaturalMonotonicCubicSpline(const I1& xBegin, const I1& xEnd, 
+        NaturalMonotonicCubicSpline(const I1& xBegin, const I1& xEnd,
                                     const I2& yBegin)
         : CubicSpline(xBegin,xEnd,yBegin,
                       SecondDerivative, 0.0,

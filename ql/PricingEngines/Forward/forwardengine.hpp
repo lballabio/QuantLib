@@ -28,7 +28,7 @@
 namespace QuantLib {
 
     //! %Arguments for forward (strike-resetting) option calculation
-    template <class ArgumentsType> 
+    template <class ArgumentsType>
     class ForwardOptionArguments : public ArgumentsType {
       public:
         ForwardOptionArguments() : moneyness(Null<Real>()),
@@ -52,7 +52,7 @@ namespace QuantLib {
         void calculate() const;
         void getOriginalResults() const;
       protected:
-        boost::shared_ptr<GenericEngine<ArgumentsType, 
+        boost::shared_ptr<GenericEngine<ArgumentsType,
                                         ResultsType> > originalEngine_;
         ArgumentsType* originalArguments_;
         const ResultsType* originalResults_;
@@ -61,7 +61,7 @@ namespace QuantLib {
 
     // template definitions
 
-    template <class ArgumentsType> 
+    template <class ArgumentsType>
     void ForwardOptionArguments<ArgumentsType>::validate() const {
         ArgumentsType::validate();
 
@@ -69,11 +69,10 @@ namespace QuantLib {
         QL_REQUIRE(moneyness > 0.0, "negative or zero moneyness given");
 
         QL_REQUIRE(resetDate != Null<Date>(), "null reset date given");
-        QL_REQUIRE(resetDate >=
-            ArgumentsType::blackScholesProcess->riskFreeRate()
-                ->referenceDate(),
+        QL_REQUIRE(resetDate >= this->blackScholesProcess->riskFreeRate()
+                                                            ->referenceDate(),
                    "reset date later than settlement");
-        QL_REQUIRE(ArgumentsType::exercise->lastDate() > resetDate,
+        QL_REQUIRE(this->exercise->lastDate() > resetDate,
                    "reset date later or equal to maturity");
     }
 
@@ -105,7 +104,7 @@ namespace QuantLib {
 
         boost::shared_ptr<StrikedTypePayoff> payoff(
                    new PlainVanillaPayoff(argumentsPayoff->optionType(),
-                                          this->arguments_.moneyness * 
+                                          this->arguments_.moneyness *
                                           process->stateVariable()->value()));
         originalArguments_->payoff = payoff;
 
@@ -116,13 +115,13 @@ namespace QuantLib {
         Handle<TermStructure> dividendYield(
             boost::shared_ptr<TermStructure>(
                new ImpliedTermStructure(
-                             Handle<TermStructure>(process->dividendYield()), 
+                             Handle<TermStructure>(process->dividendYield()),
                              this->arguments_.resetDate,
                              this->arguments_.resetDate)));
         Handle<TermStructure> riskFreeRate(
             boost::shared_ptr<TermStructure>(
                new ImpliedTermStructure(
-                              Handle<TermStructure>(process->riskFreeRate()), 
+                              Handle<TermStructure>(process->riskFreeRate()),
                               this->arguments_.resetDate,
                               this->arguments_.resetDate)));
         // The following approach is ok if the vol is at most
@@ -134,7 +133,7 @@ namespace QuantLib {
             boost::shared_ptr<BlackVolTermStructure>(
                 new ImpliedVolTermStructure(
                     Handle<BlackVolTermStructure>(process->blackVolatility()),
-                        this->arguments_.resetDate)));
+                    this->arguments_.resetDate)));
 
         originalArguments_->blackScholesProcess =
             boost::shared_ptr<BlackScholesProcess>(
@@ -162,7 +161,7 @@ namespace QuantLib {
             this->arguments_.blackScholesProcess;
 
         Time resetTime = process->riskFreeRate()->dayCounter().yearFraction(
-                                    process->riskFreeRate()->referenceDate(), 
+                                    process->riskFreeRate()->referenceDate(),
                                     this->arguments_.resetDate);
         DiscountFactor discQ = process->dividendYield()->discount(
                                     this->arguments_.resetDate);

@@ -167,8 +167,9 @@ namespace QuantLib {
         PseudoRandom::ursg_type sequenceGen(grid.size()-1,
                                             PseudoRandom::urng_type(76));
 
-        return boost::shared_ptr<MCDigitalEngine<RNG,S>::path_pricer_type>(new
-          DigitalPathPricer(
+        return boost::shared_ptr<
+                           typename MCDigitalEngine<RNG,S>::path_pricer_type>(
+          new DigitalPathPricer(
             payoff,
             exercise,
             this->arguments_.blackScholesProcess->stateVariable()->value(),
@@ -184,8 +185,9 @@ namespace QuantLib {
     TimeGrid MCDigitalEngine<RNG,S>::timeGrid() const {
         Time t = this->arguments_.blackScholesProcess->riskFreeRate()
             ->dayCounter().yearFraction(
-            this->arguments_.blackScholesProcess->riskFreeRate()->referenceDate(),
-            this->arguments_.exercise->lastDate());
+                     this->arguments_.blackScholesProcess->riskFreeRate()
+                                                             ->referenceDate(),
+                     this->arguments_.exercise->lastDate());
         return TimeGrid(t, Size(QL_MAX<Real>(
             t * this->maxTimeStepsPerYear_, 1.0)));
     }
@@ -215,7 +217,7 @@ namespace QuantLib {
             this->mcModel_ =
                 boost::shared_ptr<MonteCarloModel<SingleAsset<RNG>, S> >(
                     new MonteCarloModel<SingleAsset<RNG>, S>(
-                        this->pathGenerator(), pathPricer(), S(),
+                        this->pathGenerator(), this->pathPricer(), S(),
                         this->antitheticVariate_));
         }
 

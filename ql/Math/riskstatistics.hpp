@@ -30,7 +30,7 @@ namespace QuantLib {
 
     //! empirical-distribution risk measures
     /*! This class wraps a somewhat generic statistic tool and adds
-        a number of risk measures (e.g.: value-at-risk, expected 
+        a number of risk measures (e.g.: value-at-risk, expected
         shortfall, etc.) based on the data distribution as reported by
         the underlying tool.
 
@@ -40,8 +40,8 @@ namespace QuantLib {
     template <class S>
     class GenericRiskStatistics : public S {
       public:
-        /*! returns the variance of observations below the mean, 
-            \f[ \frac{N}{N-1} 
+        /*! returns the variance of observations below the mean,
+            \f[ \frac{N}{N-1}
                 \mathrm{E}\left[ (x-\langle x \rangle)^2 \;|\;
                                   x < \langle x \rangle \right]. \f]
 
@@ -55,7 +55,7 @@ namespace QuantLib {
         Real semiDeviation() const;
 
         /*! returns the variance of observations below 0.0,
-            \f[ \frac{N}{N-1} 
+            \f[ \frac{N}{N-1}
                 \mathrm{E}\left[ x^2 \;|\; x < 0\right]. \f]
         */
         Real downsideVariance() const;
@@ -66,7 +66,7 @@ namespace QuantLib {
         Real downsideDeviation() const;
 
         /*! returns the variance of observations below target,
-            \f[ \frac{N}{N-1} 
+            \f[ \frac{N}{N-1}
                 \mathrm{E}\left[ (x-t)^2 \;|\;
                                   x < t \right]. \f]
 
@@ -85,7 +85,7 @@ namespace QuantLib {
             a VaR threshold,
 
             \f[ \mathrm{E}\left[ x \;|\; x < \mathrm{VaR}(p) \right], \f]
-                
+
             that is the average of observations below the
             given percentile \f$ p \f$.
             Also know as conditional value-at-risk.
@@ -115,7 +115,7 @@ namespace QuantLib {
 
 
     //! default risk measures tool
-    typedef GaussianStatistics<GenericRiskStatistics<GeneralStatistics> > 
+    typedef GaussianStatistics<GenericRiskStatistics<GeneralStatistics> >
                                                                RiskStatistics;
 
 
@@ -124,7 +124,7 @@ namespace QuantLib {
 
     template <class S>
     inline Real GenericRiskStatistics<S>::semiVariance() const {
-        return regret(mean());
+        return regret(this->mean());
     }
 
     template <class S>
@@ -136,7 +136,7 @@ namespace QuantLib {
     inline Real GenericRiskStatistics<S>::downsideVariance() const {
         return regret(0.0);
     }
- 
+
     template <class S>
     inline Real GenericRiskStatistics<S>::downsideDeviation() const {
         return QL_SQRT(downsideVariance());
@@ -149,8 +149,9 @@ namespace QuantLib {
         // average over the range below the target
         std::pair<Real,Size> result =
             this->expectationValue(compose(square<Real>(),
-                std::bind2nd(std::minus<Real>(), target)),
-                std::bind2nd(std::less<Real>(),  target));
+                                           std::bind2nd(std::minus<Real>(),
+                                                        target)),
+                                   std::bind2nd(std::less<Real>(),  target));
         Real x = result.first;
         Size N = result.second;
         QL_REQUIRE(N > 1,
@@ -194,7 +195,7 @@ namespace QuantLib {
 
         QL_ENSURE(this->samples() != 0, "empty sample set");
         Real target = -valueAtRisk(centile);
-        std::pair<Real,Size> result = 
+        std::pair<Real,Size> result =
             this->expectationValue(identity<Real>(),
                              std::bind2nd(std::less<Real>(),
                                           target));
@@ -209,19 +210,19 @@ namespace QuantLib {
     Real GenericRiskStatistics<S>::shortfall(Real target) const {
         QL_ENSURE(this->samples() != 0, "empty sample set");
         return this->expectationValue(clip(constant<Real,Real>(1.0),
-                                     std::bind2nd(std::less<Real>(),
-                                                  target)),
-                                everywhere()).first;
+                                           std::bind2nd(std::less<Real>(),
+                                                        target)),
+                                      everywhere()).first;
     }
 
     template <class S>
-    Real GenericRiskStatistics<S>::averageShortfall(Real target) 
+    Real GenericRiskStatistics<S>::averageShortfall(Real target)
         const {
-        std::pair<Real,Size> result = 
+        std::pair<Real,Size> result =
             this->expectationValue(std::bind1st(std::minus<Real>(),
-                                          target),
-                             std::bind2nd(std::less<Real>(),
-                                          target));
+                                                target),
+                                   std::bind2nd(std::less<Real>(),
+                                                target));
         Real x = result.first;
         Size N = result.second;
         QL_ENSURE(N != 0, "no data below the target");

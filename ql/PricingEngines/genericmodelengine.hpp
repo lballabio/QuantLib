@@ -31,7 +31,7 @@ namespace QuantLib {
         method
     */
     template<class ModelType, class ArgumentsType, class ResultsType>
-    class GenericModelEngine 
+    class GenericModelEngine
         : public GenericEngine<ArgumentsType, ResultsType>,
           public Observer {
       public:
