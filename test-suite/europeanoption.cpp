@@ -65,6 +65,15 @@ Handle<Instrument> EuropeanOptionTest::makeEuropeanOption(
         engine = Handle<PricingEngine>(
             new BinomialVanillaEngine(
                 BinomialVanillaEngine::CoxRossRubinstein, 800));
+      case EQP:
+        engine = Handle<PricingEngine>(
+            new BinomialVanillaEngine(
+                BinomialVanillaEngine::EQP, 800));
+        break;
+      case Trigeorgis:
+        engine = Handle<PricingEngine>(
+            new BinomialVanillaEngine(
+                BinomialVanillaEngine::Trigeorgis, 800));
         break;
     }
     
@@ -417,6 +426,12 @@ void EuropeanOptionTest::testBinomialEngines() {
           Handle<VanillaOption> option3 =
               makeEuropeanOption(types[i],underlying,strikes[j],
                                  divCurve,rfCurve,exDate,volCurve,CRR);
+          Handle<VanillaOption> option4 =
+              makeEuropeanOption(types[i],underlying,strikes[j],
+                                 divCurve,rfCurve,exDate,volCurve,EQP);
+          Handle<VanillaOption> option5 =
+              makeEuropeanOption(types[i],underlying,strikes[j],
+                                 divCurve,rfCurve,exDate,volCurve,Trigeorgis);
           
           for (int l=0; l<LENGTH(underlyings); l++) {
             for (int m=0; m<LENGTH(qRates); m++) {
@@ -433,7 +448,9 @@ void EuropeanOptionTest::testBinomialEngines() {
                   
                   double value     = option1->NPV(),
                          value_jr  = option2->NPV(),
-                         value_crr = option3->NPV();
+                         value_crr = option3->NPV(),
+                         value_eqp = option4->NPV(),
+                         value_tri = option5->NPV();
 
                   if (relativeError(value,value_jr,u) > tolerance) {
                       CPPUNIT_FAIL(
@@ -476,6 +493,49 @@ void EuropeanOptionTest::testBinomialEngines() {
                           "    binomial (CRR): " 
                           + DoubleFormatter::toString(value_crr));
                   }
+
+                  if (relativeError(value,value_eqp,u) > tolerance) {
+                      CPPUNIT_FAIL(
+                          typeToString(types[i]) + " option :\n"
+                          "    underlying value: "
+                          + DoubleFormatter::toString(u) + "\n"
+                          "    strike:           "
+                          + DoubleFormatter::toString(strikes[j]) +"\n"
+                          "    dividend yield:   "
+                          + DoubleFormatter::toString(q) + "\n"
+                          "    risk-free rate:   "
+                          + DoubleFormatter::toString(r) + "\n"
+                          "    maturity:         "
+                          + DateFormatter::toString(exDate) + "\n"
+                          "    volatility:       "
+                          + DoubleFormatter::toString(v) + "\n\n"
+                          "    analytic value: " 
+                          + DoubleFormatter::toString(value) + "\n"
+                          "    binomial (EQP): " 
+                          + DoubleFormatter::toString(value_eqp));
+                  }
+
+                  if (relativeError(value,value_tri,u) > tolerance) {
+                      CPPUNIT_FAIL(
+                          typeToString(types[i]) + " option :\n"
+                          "    underlying value: "
+                          + DoubleFormatter::toString(u) + "\n"
+                          "    strike:           "
+                          + DoubleFormatter::toString(strikes[j]) +"\n"
+                          "    dividend yield:   "
+                          + DoubleFormatter::toString(q) + "\n"
+                          "    risk-free rate:   "
+                          + DoubleFormatter::toString(r) + "\n"
+                          "    maturity:         "
+                          + DateFormatter::toString(exDate) + "\n"
+                          "    volatility:       "
+                          + DoubleFormatter::toString(v) + "\n\n"
+                          "    analytic value: " 
+                          + DoubleFormatter::toString(value) + "\n"
+                          "    binomial (Trigeorgis): " 
+                          + DoubleFormatter::toString(value_tri));
+                  }
+
                 }
               }
             }
