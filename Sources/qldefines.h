@@ -22,9 +22,12 @@ Contact ferdinando@ametrano.net if LICENSE.TXT was not distributed with this fil
 	#define QL_CCHAR_IN_STD						0
 	#define QL_SUPPORTS_NAMESPACES				1
 	#define QL_TEMPLATE_SPECIALIZATION_WORKS	0
+	#define QL_EXPRESSION_TEMPLATES_WORK		1
+	#define QL_TEMPLATE_METAPROGRAMMING_WORKS	1
 	#define QL_REQUIRES_DUMMY_RETURN			1
 	#define QL_GARBLED_MIN_AND_MAX				1
 	#define QL_GARBLED_REVERSE_ITERATORS		1
+	#define QL_GARBLED_PTR_CONST				1
 
 #elif defined(__BORLANDC__)				// Borland C++
 	// set switches
@@ -32,9 +35,12 @@ Contact ferdinando@ametrano.net if LICENSE.TXT was not distributed with this fil
 	#define QL_CCHAR_IN_STD						1
 	#define QL_SUPPORTS_NAMESPACES				1
 	#define QL_TEMPLATE_SPECIALIZATION_WORKS	1
+	#define QL_TEMPLATE_METAPROGRAMMING_WORKS	0
+	#define QL_EXPRESSION_TEMPLATES_WORK		0
 	#define QL_REQUIRES_DUMMY_RETURN			0
-	#define GARBLED_MIN_AND_MAX					0
+	#define QL_GARBLED_MIN_AND_MAX				0
 	#define QL_GARBLED_REVERSE_ITERATORS		0
+	#define QL_GARBLED_PTR_CONST				0
 
 #elif defined(__MWERKS__)					// Metrowerks CodeWarrior
 	// set switches
@@ -42,9 +48,12 @@ Contact ferdinando@ametrano.net if LICENSE.TXT was not distributed with this fil
 	#define QL_CCHAR_IN_STD						1
 	#define QL_SUPPORTS_NAMESPACES				1
 	#define QL_TEMPLATE_SPECIALIZATION_WORKS	1
+	#define QL_TEMPLATE_METAPROGRAMMING_WORKS	1
+	#define QL_EXPRESSION_TEMPLATES_WORK		0
 	#define QL_REQUIRES_DUMMY_RETURN			1
 	#define QL_GARBLED_MIN_AND_MAX				0
 	#define QL_GARBLED_REVERSE_ITERATORS		0
+	#define QL_GARBLED_PTR_CONST				0
 
 #else										// Generic ANSI C++ compliant compiler
 	// set switches
@@ -52,9 +61,12 @@ Contact ferdinando@ametrano.net if LICENSE.TXT was not distributed with this fil
 	#define QL_CCHAR_IN_STD						1
 	#define QL_SUPPORTS_NAMESPACES				1
 	#define QL_TEMPLATE_SPECIALIZATION_WORKS	1
+	#define QL_TEMPLATE_METAPROGRAMMING_WORKS	1
+	#define QL_EXPRESSION_TEMPLATES_WORK		1
 	#define QL_REQUIRES_DUMMY_RETURN			0
 	#define QL_GARBLED_MIN_AND_MAX				0
 	#define QL_GARBLED_REVERSE_ITERATORS		0
+	#define QL_GARBLED_PTR_CONST				0
 
 #endif
 
@@ -138,6 +150,13 @@ Contact ferdinando@ametrano.net if LICENSE.TXT was not distributed with this fil
 	#define QL_REVERSE_ITERATOR(iterator,type)	std::reverse_iterator<iterator,type>
 #else
 	#define QL_REVERSE_ITERATOR(iterator,type)	std::reverse_iterator<iterator>
+#endif
+
+// Does * const have the syntax you would expect? Blame Microsoft for this one
+#if QL_GARBLED_PTR_CONST
+	#define QL_PTR_CONST	const *
+#else
+	#define QL_PTR_CONST	* const
 #endif
 
 

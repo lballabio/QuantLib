@@ -115,13 +115,14 @@ Array TridiagonalOperatorCommon::solveFor(const Array& rhs) const {
 	double bet=diagonal[0];
 	Require(bet != 0.0, "TridiagonalOperator::solveFor: division by zero"); 
 	result[0] = bcRhs[0]/bet;
-	for(int j=1;j<=theSize-1;j++){
+	int j;
+	for (j=1;j<=theSize-1;j++){
 		tmp[j]=aboveDiagonal[j-1]/bet;
 		bet=diagonal[j]-belowDiagonal[j-1]*tmp[j];
 		Require(bet != 0.0, "TridiagonalOperator::solveFor: division by zero"); 
 		result[j] = (bcRhs[j]-belowDiagonal[j-1]*result[j-1])/bet;
 	}
-	for(j=theSize-2;j>=0;j--) 
+	for (j=theSize-2;j>=0;j--) 
 		result[j] -= tmp[j+1]*result[j+1];
 
 	return result;

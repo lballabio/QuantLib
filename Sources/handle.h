@@ -35,7 +35,7 @@ class Handle {
 	Type& operator*() const;
 	Type* operator->() const;
 	// pointer access
-	const Type const * pointer() const;
+	const Type QL_PTR_CONST pointer() const;
 	Type * pointer();
   private:
 	Type* ptr;
@@ -100,7 +100,7 @@ inline Type* Handle<Type>::operator->() const {
 }
 
 template <class Type>
-inline const Type const * Handle<Type>::pointer() const {
+inline const Type QL_PTR_CONST Handle<Type>::pointer() const {
 	return ptr;
 }
 

@@ -20,16 +20,16 @@ class Instrument {
 	Instrument()
 	: termStructureHasChanged(true), swaptionVolHasChanged(true), forwardVolHasChanged(true), 
 	  theSettlementDate(Date()), theNPV(0.0), expired(false) {}
-	Instrument(std::string isinCode, std::string description)
+	Instrument(const std::string& isinCode, const std::string& description)
 	: theISINCode(isinCode), theDescription(description), 
 	  termStructureHasChanged(true), swaptionVolHasChanged(true), forwardVolHasChanged(true), 
 	  theSettlementDate(Date()), theNPV(0.0), expired(false) {}
 	virtual ~Instrument();
 	// modifiers
 	virtual void setPrice(double price) = 0;
-	virtual void setTermStructure(Handle<TermStructure>);
-	virtual void setSwaptionVolatility(Handle<SwaptionVolatilitySurface>);
-	virtual void setForwardVolatility(Handle<ForwardVolatilitySurface>);
+	virtual void setTermStructure(const Handle<TermStructure>&);
+	virtual void setSwaptionVolatility(const Handle<SwaptionVolatilitySurface>&);
+	virtual void setForwardVolatility(const Handle<ForwardVolatilitySurface>&);
 	// inspectors
 	std::string isinCode() const;
 	std::string description() const;
@@ -113,7 +113,7 @@ QL_DECLARE_TEMPLATE_SPECIALIZATION(bool operator!=(const Handle<Instrument>&, co
 class PricedInstrument : public Instrument {
   public:
 	PricedInstrument() : priceIsSet(false) {}
-	PricedInstrument(std::string isinCode, std::string description)
+	PricedInstrument(const std::string& isinCode, const std::string& description)
 	: Instrument(isinCode,description), priceIsSet(false) {}
 	void setPrice(double price) { thePrice = price; priceIsSet = true; }
 	double price() const { Require(priceIsSet, "price not set"); return thePrice; }
@@ -126,7 +126,7 @@ class PricedInstrument : public Instrument {
 class OTCInstrument : public Instrument { // over the counter
   public:
 	OTCInstrument() {}
-	OTCInstrument(std::string isinCode, std::string description)
+	OTCInstrument(const std::string& isinCode, const std::string& description)
 	: Instrument(isinCode,description) {}
 	void setPrice(double price) { throw Error("Cannot set price"); }
 	double price() const { return NPV(); }
@@ -139,7 +139,7 @@ inline Instrument::~Instrument() {
 	unregisterFromTermStructure();
 }
 
-inline void Instrument::setTermStructure(Handle<TermStructure> termStructure) {
+inline void Instrument::setTermStructure(const Handle<TermStructure>& termStructure) {
 	if (useTermStructure()) {
 		unregisterFromTermStructure();
 		theTermStructure = termStructure;
@@ -161,7 +161,7 @@ inline void Instrument::unregisterFromTermStructure() {
 		theTermStructure->unregisterObserver(&theTermStructureObserver);
 }
 
-inline void Instrument::setSwaptionVolatility(Handle<SwaptionVolatilitySurface> vol) {
+inline void Instrument::setSwaptionVolatility(const Handle<SwaptionVolatilitySurface>& vol) {
 	if (useSwaptionVolatility()) {
 		unregisterFromSwaptionVol();
 		theSwaptionVol = vol;
@@ -182,7 +182,7 @@ inline void Instrument::unregisterFromSwaptionVol() {
 		theSwaptionVol->unregisterObserver(&theSwaptionVolObserver);
 }
 
-inline void Instrument::setForwardVolatility(Handle<ForwardVolatilitySurface> vol) {
+inline void Instrument::setForwardVolatility(const Handle<ForwardVolatilitySurface>& vol) {
 	if (useForwardVolatility()) {
 		unregisterFromForwardVol();
 		theForwardVol = vol;

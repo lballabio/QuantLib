@@ -55,7 +55,7 @@ class ConstantForwardVolatilitySurface : public ForwardVolatilitySurface {
 class SpreadedForwardVolatilitySurface : public ForwardVolatilitySurface {
   public:
 	// constructor
-	SpreadedForwardVolatilitySurface(Handle<ForwardVolatilitySurface>, Spread spread);
+	SpreadedForwardVolatilitySurface(const Handle<ForwardVolatilitySurface>&, Spread spread);
 	// clone
 	Handle<ForwardVolatilitySurface> clone() const;
 	// volatility
@@ -94,7 +94,7 @@ inline Yield ConstantForwardVolatilitySurface::vol(const Date& d, Yield strike) 
 // spreaded surface
 
 inline SpreadedForwardVolatilitySurface::SpreadedForwardVolatilitySurface(
-	Handle<ForwardVolatilitySurface> h, Spread spread)
+	const Handle<ForwardVolatilitySurface>& h, Spread spread)
 : theOriginalCurve(h), theSpread(spread) {}
 
 inline Handle<ForwardVolatilitySurface> SpreadedForwardVolatilitySurface::clone() const {

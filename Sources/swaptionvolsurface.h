@@ -31,7 +31,7 @@ class SwaptionVolatilitySurface : public Observable {
 class SpreadedSwaptionVolatilitySurface : public SwaptionVolatilitySurface {
   public:
 	// constructor
-	SpreadedSwaptionVolatilitySurface(Handle<SwaptionVolatilitySurface>, Spread spread);
+	SpreadedSwaptionVolatilitySurface(const Handle<SwaptionVolatilitySurface>&, Spread spread);
 	// clone
 	Handle<SwaptionVolatilitySurface> clone() const;
 	// volatility
@@ -49,7 +49,7 @@ class SpreadedSwaptionVolatilitySurface : public SwaptionVolatilitySurface {
 // inline definitions
 
 inline SpreadedSwaptionVolatilitySurface::SpreadedSwaptionVolatilitySurface(
-	Handle<SwaptionVolatilitySurface> h, Spread spread)
+	const Handle<SwaptionVolatilitySurface>& h, Spread spread)
 : theOriginalSurface(h), theSpread(spread) {}
 
 inline Handle<SwaptionVolatilitySurface> SpreadedSwaptionVolatilitySurface::clone() const {

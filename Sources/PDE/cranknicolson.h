@@ -27,7 +27,8 @@ QL_BEGIN_NAMESPACE(PDE)
 	Operator& operator=(const Operator&);	// omitted. They will be provided by the compiler.
 
 	// modifiers
-	void setTime(Time t);					// only if derived from TimeDependentOperator.
+	void setTime(Time t);					// those derived from TimeConstantOperator might
+											// skip this if the compiler allows it.
 
 	// operator interface
 	arrayType applyTo(const arrayType&);
@@ -48,43 +49,54 @@ class CrankNicolson {
 	// constructors
 	CrankNicolson(const operatorType& D) : D(D), dt(0.0) {}
 	void step(arrayType& a, Time t);
-	void setStep(Time dt) { this->dt = dt; system = Identity<arrayType>()+(dt/2)*D; }
-	operatorType D, system;
+	void setStep(Time dt) {
+		this->dt = dt;
+		explicitPart = Identity<arrayType>()-(dt/2)*D;
+		implicitPart = Identity<arrayType>()+(dt/2)*D;
+	}
+	operatorType D, explicitPart, implicitPart;
 	Time dt;
-	// a bit of template metaprogramming to relax interface constraints on time-constant operators
-	// see T. L. Veldhuizen, "Using C++ Template Metaprograms", C++ Report, Vol 7 No. 4, May 1995
-	// http://extreme.indiana.edu/~tveldhui/papers/
-	
-	template <int constant>
-	class CrankNicolsonTimeSetter {};
-	
-	// the following specialization will be instantiated if Operator is derived from TimeConstantOperator
-	template<>
-	class CrankNicolsonTimeSetter<0> {
-	  public:
-		static inline void setTime(Operator& D, Operator& system, Time t, Time dt) {}
-	};
-	
-	// the following specialization will be instantiated if Operator is derived from TimeDependentOperator:
-	// only in this case Operator will be required to implement void setTime(Time t)
-	template<>
-	class CrankNicolsonTimeSetter<1> {
-		typedef typename OperatorTraits<Operator>::arrayType arrayType;
-	  public:
-		static inline void setTime(Operator& D, Operator& system, Time t, Time dt) {
-			D.setTime(t);
-			system = Identity<arrayType>()+(dt/2)*D;
-		}
-	};
+	#if QL_TEMPLATE_METAPROGRAMMING_WORKS
+		// a bit of template metaprogramming to relax interface constraints on time-constant operators
+		// see T. L. Veldhuizen, "Using C++ Template Metaprograms", C++ Report, Vol 7 No. 4, May 1995
+		// http://extreme.indiana.edu/~tveldhui/papers/
+		template <int constant>
+		class CrankNicolsonTimeSetter {};
+		// the following specialization will be instantiated if Operator is derived from TimeConstantOperator
+		template<>
+		class CrankNicolsonTimeSetter<0> {
+		  public:
+			static inline void setTime(Operator& D, Operator& explicitPart, Operator& implicitPart, Time t, Time dt) {}
+		};
+		// the following specialization will be instantiated if Operator is derived from TimeDependentOperator:
+		// only in this case Operator will be required to implement void setTime(Time t)
+		template<>
+		class CrankNicolsonTimeSetter<1> {
+			typedef typename OperatorTraits<Operator>::arrayType arrayType;
+		  public:
+			static inline void setTime(Operator& D, Operator& explicitPart, Operator& implicitPart, Time t, Time dt) {
+				D.setTime(t);
+				explicitPart = Identity<arrayType>()-(dt/2)*D;
+				implicitPart = Identity<arrayType>()+(dt/2)*D;
+			}
+		};
+	#endif
 };
 
 // inline definitions
 
 template <class Operator>
 inline void CrankNicolson<Operator>::step(arrayType& a, Time t) {
-	CrankNicolsonTimeSetter<Operator::isTimeDependent>::setTime(D,system,t,dt);
-	a -= (dt/2)*(D.applyTo(a));
-	a = system.solveFor(a); 
+	#if QL_TEMPLATE_METAPROGRAMMING_WORKS
+		CrankNicolsonTimeSetter<Operator::isTimeDependent>::setTime(D,explicitPart,implicitPart,t,dt);
+	#else
+		if (Operator::isTimeDependent) {
+			D.setTime(t);
+			explicitPart = Identity<arrayType>()-(dt/2)*D;
+			implicitPart = Identity<arrayType>()+(dt/2)*D;
+		}
+	#endif
+	a = implicitPart.solveFor(explicitPart.applyTo(a)); 
 }
 
 

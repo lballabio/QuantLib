@@ -19,7 +19,7 @@ QL_BEGIN_NAMESPACE(QuantLib)
 class Deposit {
   public:
 	Deposit() {}
-	Deposit(const Date& maturity, Yield rate, Handle<DayCounter> dayCounter)
+	Deposit(const Date& maturity, Yield rate, const Handle<DayCounter>& dayCounter)
 	: theMaturity(maturity), theRate(rate), theDayCounter(dayCounter) {}
 	Date maturity() const { return theMaturity; }
 	Yield rate() const { return theRate; }

@@ -216,13 +216,5 @@ SOURCE=..\Sources\solver1d.cpp
 SOURCE=..\Sources\statistics.cpp
 # End Source File
 # End Group
-# Begin Source File
-
-SOURCE=..\Sources\normaldistribution.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\Sources\statistics.h
-# End Source File
 # End Target
 # End Project

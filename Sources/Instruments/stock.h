@@ -18,7 +18,7 @@ QL_BEGIN_NAMESPACE(Instruments)
 class Stock : public PricedInstrument {
   public:
 	Stock() {}
-	Stock(std::string isinCode, std::string description)
+	Stock(const std::string& isinCode, const std::string& description)
 	: PricedInstrument(isinCode,description) {}
 	// modifiers
 	void setPrice(double price) { PricedInstrument::setPrice(price); theNPV = price; }

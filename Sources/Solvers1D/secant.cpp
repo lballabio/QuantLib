@@ -5,7 +5,7 @@ See the file LICENSE.TXT for information on usage and distribution
 Contact ferdinando@ametrano.net if LICENSE.TXT was not distributed with this file
 */
 
-// The implementation of the algorithm was inspired from
+// The implementation of the algorithm was inspired by
 // "Numerical Recipes in C", 2nd edition, Press, Teukolsky, Vetterling, Flannery
 // Chapter 9
 
@@ -41,10 +41,9 @@ double Secant::_solve(const Function& f, double xAccuracy) const {
   	evaluationNumber++;
 		if (QL_FABS(dx) < xAccuracy || froot == 0.0)  return root;
 	}
-	throw Error("Secant: "
-	"maximum number of function evaluations ("
-	+ IntegerFormat(maxEvaluations) + ") exceeded");
-	return 0.0;
+	throw Error("Secant: maximum number of function evaluations ("
+	  + IntegerFormat(maxEvaluations) + ") exceeded");
+	QL_DUMMY_RETURN(0.0);
 }
 
 QL_END_NAMESPACE(Solvers1D)

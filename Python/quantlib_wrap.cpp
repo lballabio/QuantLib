@@ -4379,15 +4379,13 @@ static PyObject *_wrap_new_BSMEuropeanOption(PyObject *self, PyObject *args, PyO
     Yield arg4 ;
     Time arg5 ;
     double arg6 ;
-    int arg7 ;
-    int arg8 ;
     PyObject * obj0  = 0 ;
     char *kwnames[] = {
-        "type","underlying","strike","underlyingGrowthRate","riskFreeRate","residualTime","volatility","timeSteps","gridPoints", NULL 
+        "type","underlying","strike","underlyingGrowthRate","riskFreeRate","residualTime","volatility", NULL 
     };
     BSMEuropeanOption *result ;
     
-    if(!PyArg_ParseTupleAndKeywords(args,kwargs,"Oddddddii:new_BSMEuropeanOption",kwnames,&obj0,&arg1,&arg2,&arg3,&arg4,&arg5,&arg6,&arg7,&arg8)) return NULL;
+    if(!PyArg_ParseTupleAndKeywords(args,kwargs,"Odddddd:new_BSMEuropeanOption",kwnames,&obj0,&arg1,&arg2,&arg3,&arg4,&arg5,&arg6)) return NULL;
     {
         if (PyString_Check(obj0)) {
             arg0 = new OptionType;
@@ -4408,7 +4406,7 @@ static PyObject *_wrap_new_BSMEuropeanOption(PyObject *self, PyObject *args, PyO
     }
     {
         try {
-            result = (BSMEuropeanOption *)new BSMEuropeanOption(*arg0,arg1,arg2,arg3,arg4,arg5,arg6,arg7,arg8);
+            result = (BSMEuropeanOption *)new BSMEuropeanOption(*arg0,arg1,arg2,arg3,arg4,arg5,arg6);
             
         }catch (std::exception& e) {
             PyErr_SetString(PyExc_Exception,e.what());

@@ -78,7 +78,7 @@ class ForwardRateStructure : public TermStructure {
 class ImpliedTermStructure : public DiscountStructure {
   public:
 	// constructor
-	ImpliedTermStructure(Handle<TermStructure>, const Date& evaluationDate);
+	ImpliedTermStructure(const Handle<TermStructure>&, const Date& evaluationDate);
 	// clone
 	Handle<TermStructure> clone() const;
 	// inspectors
@@ -102,7 +102,7 @@ class ImpliedTermStructure : public DiscountStructure {
 class SpreadedTermStructure : public ZeroYieldStructure {
   public:
 	// constructor
-	SpreadedTermStructure(Handle<TermStructure>, Spread spread);
+	SpreadedTermStructure(const Handle<TermStructure>&, Spread spread);
 	// clone
 	Handle<TermStructure> clone() const;
 	// inspectors
@@ -202,7 +202,7 @@ inline DiscountFactor ForwardRateStructure::discount(const Date& d) const {
 
 // time-shifted curve
 
-inline ImpliedTermStructure::ImpliedTermStructure(Handle<TermStructure> h, const Date& evaluationDate)
+inline ImpliedTermStructure::ImpliedTermStructure(const Handle<TermStructure>& h, const Date& evaluationDate)
 : theOriginalCurve(h), theEvaluationDate(evaluationDate) {}
 
 inline Handle<Currency> ImpliedTermStructure::currency() const {
@@ -256,7 +256,7 @@ inline void ImpliedTermStructure::unregisterAll() {
 
 // spreaded curve
 
-inline SpreadedTermStructure::SpreadedTermStructure(Handle<TermStructure> h, Spread spread)
+inline SpreadedTermStructure::SpreadedTermStructure(const Handle<TermStructure>& h, Spread spread)
 : theOriginalCurve(h), theSpread(spread) {}
 
 inline Handle<Currency> SpreadedTermStructure::currency() const {
