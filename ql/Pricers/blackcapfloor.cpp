@@ -72,8 +72,15 @@ namespace QuantLib {
                 return QL_MAX(forward-strike,0.0);
             } else {
                 // forecast
+                #if defined(QL_PATCH_MICROSOFT_BUGS)
+                // numerical inaccuracies can yield a negative answer
+                return QL_MAX(BlackModel::formula(forward, strike, 
+                                                  vol*QL_SQRT(start), 1),
+                              0.0);
+                #else
                 return BlackModel::formula(forward, strike, 
                                            vol*QL_SQRT(start), 1);
+                #endif
             }
         }
         
@@ -84,8 +91,15 @@ namespace QuantLib {
                 return QL_MAX(strike-forward,0.0);
             } else {
                 // forecast
+                #if defined(QL_PATCH_MICROSOFT_BUGS)
+                // numerical inaccuracies can yield a negative answer
+                return QL_MAX(BlackModel::formula(forward, strike, 
+                                                  vol*QL_SQRT(start), -1),
+                              0.0);
+                #else
                 return BlackModel::formula(forward, strike, 
                                            vol*QL_SQRT(start), -1);
+                #endif
             }
         }
         
