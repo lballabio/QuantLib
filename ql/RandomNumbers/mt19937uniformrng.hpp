@@ -102,10 +102,10 @@ namespace QuantLib {
                 if (i>=N) { mt[0] = mt[N-1]; i=1; }
             }
 
-            mt[0] = 0x80000000UL; /* MSB is 1; assuring non-zero initial array */
+            mt[0] = 0x80000000UL; /*MSB is 1; assuring non-zero initial array*/
         }
 
-        
+
         /* generates a random number on (0,1)-real-interval */
         inline MersenneTwisterUniformRng::sample_type
         MersenneTwisterUniformRng::next() const {
