@@ -37,7 +37,6 @@ namespace QuantLib {
 
             // coefficients of the free direction integers as given
             // by Jäckel
-
             const unsigned long degree01initializers[] = {
                 1UL, 0UL };
             const unsigned long degree02initializers[] = {
@@ -190,8 +189,9 @@ namespace QuantLib {
                 sizeof(initializers)/sizeof(unsigned long *)+1;
             // dimensions from 2 to maxTabulated included are initialized
             // from tabulated coefficients
-            for (k=1; k<QL_MIN(dimensionality_,maxTabulated); k++) {
+            for (k=1; k<QL_MIN(dimensionality_, maxTabulated); k++) {
                 j = 0;
+                // 0UL marks the end of the coefficients for a given dimension
                 while (initializers[k-1][j] != 0UL) {
                     directionIntegers_[k][j] =
                         (initializers[k-1][j] << (bits_-j-1));
@@ -206,14 +206,18 @@ namespace QuantLib {
                     for (Size l=1; l<=degree[k]; l++) {
                         unsigned long n;
                         do {
-                            double u = uniformRng.next().value;
                             // u is in (0,1)
+                            double u = uniformRng.next().value;
                             // n has at most the rightmost l bits non-zero
                             n = (unsigned long)(u*(1UL<<l));
                         } while (n & 1UL); // requiring odd number
+                        // that is we have the rightmost bit set
 
                         // shifting bits_-l bits to the left
-                        directionIntegers_[k][l] = (n<<(bits_-l));
+                        // we are guaranteed that the l-th leftmost bit
+                        // is set, and only the first l leftmost bit
+                        // can be non-zero
+                        directionIntegers_[k][l-1] = (n<<(bits_-l));
                     }
                 }
             }
@@ -248,9 +252,9 @@ namespace QuantLib {
             // increment the counter (and avoid the zero-th draw)
             sequenceCounter_++;
             // did we overflow?
-//            QL_REQUIRE(sequenceCounter_ != 0,
-//                       "SobolRsg::nextSequence() : "
-//                       "period exceeded");
+            QL_REQUIRE(sequenceCounter_ != 0,
+                       "SobolRsg::nextSequence() : "
+                       "period exceeded");
 
             // instead of using the counter n as new unique generating integer
             // for the n-th draw use the Gray code G(n) as proposed
