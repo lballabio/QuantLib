@@ -24,15 +24,25 @@
 #define quantlib_mc_discrete_arithmetic_average_price_asian_engine_h
 
 #include <ql/PricingEngines/Asian/mcdiscreteasianengine.hpp>
+#include <ql/PricingEngines/Asian/mc_discr_geom_av_price.hpp>
+#include <ql/PricingEngines/Asian/analytic_discr_geom_av_price.hpp>
 #include <ql/Volatilities/blackconstantvol.hpp>
 #include <ql/Volatilities/blackvariancecurve.hpp>
 
 namespace QuantLib {
 
     //!  Monte Carlo pricing engine for discrete arithmetic average price Asian
-    /*! \ingroup asianengines */
+    /*!  Monte Carlo pricing engine for discrete arithmetic average price
+         Asian options. It can use MCDiscreteGeometricAPEngine (Monte Carlo
+         discrete arithmetic average price engine) and
+         AnalyticDiscreteGeometricAveragePriceAsianEngine (analytic discrete
+         arithmetic average price engine) for control variation.
+    
+         \ingroup asianengines
+    */
     template <class RNG = PseudoRandom, class S = Statistics>
-    class MCDiscreteArithmeticAPEngine : public MCDiscreteAveragingAsianEngine<RNG,S> {
+    class MCDiscreteArithmeticAPEngine :
+                                public MCDiscreteAveragingAsianEngine<RNG,S> {
       public:
         typedef typename MCDiscreteAveragingAsianEngine<RNG,S>::path_generator_type
             path_generator_type;
@@ -50,6 +60,11 @@ namespace QuantLib {
                             BigNatural seed = 0);
       protected:
         boost::shared_ptr<path_pricer_type> pathPricer() const;
+        boost::shared_ptr<path_pricer_type> controlPathPricer() const;
+        boost::shared_ptr<PricingEngine> controlPricingEngine() const {
+            return boost::shared_ptr<PricingEngine>(new
+                AnalyticDiscreteGeometricAveragePriceAsianEngine());
+        }
     };
 
 
@@ -58,12 +73,15 @@ namespace QuantLib {
         ArithmeticAPOPathPricer(Option::Type type,
                                 Real underlying,
                                 Real strike,
-                                DiscountFactor discount);
+                                DiscountFactor discount,
+                                Real runningSum = 0.0,
+                                Size pastFixings = 0);
         Real operator()(const Path& path) const  {
             Size n = path.size();
             QL_REQUIRE(n>0, "the path cannot be empty");
-            Real price1 = underlying_, averagePrice1 = 0.0;
-            Size fixings = n;
+            Real price1 = underlying_, averagePrice1 = runningSum_;
+            Size fixings = n + pastFixings_;
+            // not sure the if is correct
             if (path.timeGrid().mandatoryTimes()[0]==0.0) {
                 averagePrice1 = price1;
                 fixings = n+1;
@@ -79,6 +97,8 @@ namespace QuantLib {
         Real underlying_;
         PlainVanillaPayoff payoff_;
         DiscountFactor discount_;
+        Real runningSum_;
+        Size pastFixings_;
     };
 
 
@@ -127,6 +147,33 @@ namespace QuantLib {
                                         ->discount(this->timeGrid().back())));
     }
 
+    template <class RNG, class S>
+    inline
+    boost::shared_ptr<QL_TYPENAME MCDiscreteArithmeticAPEngine<RNG,S>::path_pricer_type>
+        MCDiscreteArithmeticAPEngine<RNG,S>::controlPathPricer() const {
+
+        boost::shared_ptr<PlainVanillaPayoff> payoff =
+            boost::dynamic_pointer_cast<PlainVanillaPayoff>(
+                this->arguments_.payoff);
+        QL_REQUIRE(payoff, "non-plain payoff given");
+
+        boost::shared_ptr<EuropeanExercise> exercise =
+            boost::dynamic_pointer_cast<EuropeanExercise>(
+                this->arguments_.exercise);
+        QL_REQUIRE(exercise, "wrong exercise given");
+
+        // for seasoned option the geometric strike might be rescaled
+        // to obtain an equivalent arithmetic strike.
+        // Any change applied here MUST be applied to the analytic engine too
+        return boost::shared_ptr<QL_TYPENAME
+            MCDiscreteArithmeticAPEngine<RNG,S>::path_pricer_type>(
+            new GeometricAPOPathPricer(
+              payoff->optionType(),
+              this->arguments_.blackScholesProcess->stateVariable()->value(),
+              payoff->strike(),
+              this->arguments_.blackScholesProcess->riskFreeRate()
+                                        ->discount(this->timeGrid().back())));
+    }
 
     template <class RNG = PseudoRandom, class S = Statistics>
     class MakeMCDiscreteArithmeticAPEngine {
