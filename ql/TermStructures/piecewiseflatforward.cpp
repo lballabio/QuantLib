@@ -32,10 +32,11 @@ namespace QuantLib {
 
     namespace TermStructures {
 
-        PiecewiseFlatForward::PiecewiseFlatForward(const Date& settlementDate,
+        PiecewiseFlatForward::PiecewiseFlatForward(const Date& todaysDate,
+            const Date& settlementDate,
             const std::vector<Handle<RateHelper> >& instruments,
             const DayCounter& dayCounter, double accuracy)
-        : dayCounter_(dayCounter), 
+        : dayCounter_(dayCounter), todaysDate_(todaysDate), 
           settlementDate_(settlementDate), instruments_(instruments), 
           needsBootstrap_(true), accuracy_(accuracy) {
 
@@ -61,10 +62,11 @@ namespace QuantLib {
         }
 
         PiecewiseFlatForward::PiecewiseFlatForward(
+            const Date& todaysDate,
             const std::vector<Date>& dates, const std::vector<Rate>& forwards,
             const DayCounter& dayCounter)
-        : dayCounter_(dayCounter), settlementDate_(dates[0]),
-          needsBootstrap_(false),
+        : dayCounter_(dayCounter), todaysDate_(todaysDate), 
+          settlementDate_(dates[0]), needsBootstrap_(false),
           times_(dates.size()), dates_(dates), 
           discounts_(dates.size()), forwards_(forwards), 
           zeroYields_(dates.size()) {

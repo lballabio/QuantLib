@@ -44,6 +44,7 @@ namespace QuantLib {
             //@{
             DayCounter dayCounter() const;
             Date settlementDate() const;
+            Date todaysDate() const;
             Date maxDate() const;
             Time maxTime() const;
             //@}
@@ -74,6 +75,10 @@ namespace QuantLib {
 
         inline DayCounter ZeroSpreadedTermStructure::dayCounter() const {
             return originalCurve_->dayCounter();
+        }
+
+        inline Date ZeroSpreadedTermStructure::todaysDate() const {
+            return originalCurve_->todaysDate();
         }
 
         inline Date ZeroSpreadedTermStructure::settlementDate() const {

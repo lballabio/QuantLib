@@ -59,17 +59,20 @@ namespace QuantLib {
           public:
             // constructor
             PiecewiseFlatForward(
+                         const Date& todaysDate,
                          const Date& settlementDate,
                          const std::vector<Handle<RateHelper> >& instruments,
                          const DayCounter& dayCounter,
                          double accuracy=1.0e-12);
            PiecewiseFlatForward(
+                         const Date& todaysDate,
                          const std::vector<Date>& dates,
                          const std::vector<Rate>& forwards,
                          const DayCounter& dayCounter);
             //! \name TermStructure interface
             //@{
             DayCounter dayCounter() const;
+            Date todaysDate() const {return todaysDate_; }
             Date settlementDate() const;
             const std::vector<Date>& dates() const;
             Date maxDate() const;
@@ -111,7 +114,7 @@ namespace QuantLib {
             void bootstrap() const;
             // data members
             DayCounter dayCounter_;
-            Date settlementDate_;
+            Date todaysDate_, settlementDate_;
             std::vector<Handle<RateHelper> > instruments_;
             mutable bool needsBootstrap_;
             mutable std::vector<Time> times_;

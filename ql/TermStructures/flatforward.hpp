@@ -37,14 +37,17 @@ namespace QuantLib {
                             public Patterns::Observer {
           public:
             // constructors
-            FlatForward(const Date& settlementDate,
+            FlatForward(const Date& todaysDate,
+                        const Date& settlementDate,
                         Rate forward,
                         const DayCounter& dayCounter);
-            FlatForward(const Date& settlementDate,
+            FlatForward(const Date& todaysDate,
+                        const Date& settlementDate,
                         const RelinkableHandle<MarketElement>& forward,
                         const DayCounter& dayCounter);
             // inspectors
             DayCounter dayCounter() const;
+            Date todaysDate() const {return todaysDate_; }
             Date settlementDate() const;
             Date maxDate() const;
             // Observer interface
@@ -55,26 +58,28 @@ namespace QuantLib {
                 bool extrapolate = false) const;
             Rate forwardImpl(Time, bool extrapolate = false) const;
           private:
-            Date settlementDate_;
+            Date todaysDate_, settlementDate_;
             DayCounter dayCounter_;
             RelinkableHandle<MarketElement> forward_;
         };
 
         // inline definitions
 
-        inline FlatForward::FlatForward(const Date& settlementDate,
+        inline FlatForward::FlatForward(const Date& todaysDate,
+            const Date& settlementDate,
             Rate forward, const DayCounter& dayCounter)
-        : settlementDate_(settlementDate),
+        : todaysDate_(todaysDate), settlementDate_(settlementDate),
           dayCounter_(dayCounter) {
             forward_.linkTo(
                 Handle<MarketElement>(new SimpleMarketElement(forward)));
             registerWith(forward_);
         }
 
-        inline FlatForward::FlatForward(const Date& settlementDate,
+        inline FlatForward::FlatForward(const Date& todaysDate,
+            const Date& settlementDate,
             const RelinkableHandle<MarketElement>& forward,
             const DayCounter& dayCounter)
-        : settlementDate_(settlementDate),
+        : todaysDate_(todaysDate), settlementDate_(settlementDate),
           dayCounter_(dayCounter), forward_(forward) {
             registerWith(forward_);
         }

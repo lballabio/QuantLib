@@ -207,12 +207,13 @@ int main(int argc, char* argv[])
         // New option pricing framework 
         std::cout << "\nNew Pricing engine framework" << std::endl;
 
+        Date todaysDate(15, February, 1999);
         Date settlementDate(17, February, 1999);
         DayCounter depositDayCounter = DayCounters::Thirty360();
 
         // bootstrap the curve
         Handle<TermStructure> flatTermStructure(new
-            TermStructures::FlatForward(settlementDate,
+            TermStructures::FlatForward(todaysDate, settlementDate,
             riskFreeRate, depositDayCounter));
 
         Instruments::VanillaOption option(

@@ -30,10 +30,11 @@ namespace QuantLib {
     namespace TermStructures {
 
         DiscountCurve::DiscountCurve(
+                             const Date &todaysDate,
                              const std::vector < Date > &dates,
                              const std::vector < DiscountFactor > &discounts,
                              const DayCounter & dayCounter)
-        : dates_(dates), discounts_(discounts),
+        : todaysDate_(todaysDate), dates_(dates), discounts_(discounts),
           dayCounter_(dayCounter) {
 
             QL_REQUIRE(dates_.size()>1, "DiscountCurve::DiscountCurve : "

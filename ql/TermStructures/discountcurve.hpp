@@ -49,11 +49,13 @@ namespace QuantLib
         {
          public:
            // constructor
-           DiscountCurve(const std::vector < Date > &dates,
+           DiscountCurve(const Date& todaysDate,
+                         const std::vector < Date > &dates,
                          const std::vector < DiscountFactor > &discounts,
                          const DayCounter & dayCounter);
 
            DayCounter dayCounter() const;
+           Date todaysDate() const {return todaysDate_; }
            Date settlementDate() const;
            const std::vector<Date>& dates() const;
            Date maxDate() const;
@@ -62,6 +64,7 @@ namespace QuantLib
          protected:
            DiscountFactor discountImpl(Time t, bool extrapolate = false) const;
          private:
+           Date todaysDate_;
            const std::vector < Date > dates_;
            const std::vector < DiscountFactor > discounts_;
            const DayCounter dayCounter_;

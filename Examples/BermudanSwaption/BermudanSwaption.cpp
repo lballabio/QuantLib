@@ -86,10 +86,11 @@ void calibrateModel(const Handle<Model>& model,
 int main(int argc, char* argv[])
 {
     try {
-//        Date todaysDate(15, February, 2002);
+        Date todaysDate(15, February, 2002);
         Calendar calendar = Calendars::TARGET();
-//        Date settlementDate = calendar.advance(todaysDate, 
-//                                               settlementDays, Days);
+
+        // Date settlementDate = calendar.advance(todaysDate, 
+        //                                        settlementDays, Days);
         Date settlementDate(19, February, 2002);
 
         //Instruments used to bootstrap the yield curve:
@@ -148,7 +149,7 @@ int main(int argc, char* argv[])
 
         // bootstrapping the yield curve
         Handle<PiecewiseFlatForward> myTermStructure(new
-            PiecewiseFlatForward(settlementDate, instruments, 
+            PiecewiseFlatForward(todaysDate, settlementDate, instruments, 
                                  depositDayCounter));
 
         RelinkableHandle<TermStructure > rhTermStructure;

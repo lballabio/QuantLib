@@ -30,6 +30,22 @@ namespace QuantLib {
     using Instruments::SimpleSwap;
     using Indexes::Xibor;
 
+    namespace {
+        
+        int settlementDays(const Date& today, const Date& settlement,
+                           const Calendar& calendar) {
+            Date temp = today;
+            int n = 0;
+            while (temp < settlement) {
+                temp = temp+1;
+                if (calendar.isBusinessDay(temp))
+                    n++;
+            }
+            return n;
+        }
+
+    }
+
     namespace TermStructures {
 
         RateHelper::RateHelper(const RelinkableHandle<MarketElement>& quote)
@@ -261,7 +277,8 @@ namespace QuantLib {
                 Handle<TermStructure>(t,false),false);
             RateHelper::setTermStructure(t);
             settlement_ = termStructure_->settlementDate();
-            int fixingDays = 2;
+            int fixingDays = settlementDays(termStructure_->todaysDate(),
+                                            settlement_, calendar_);
             // dummy Libor index with curve/swap arguments
             Handle<Xibor> dummyIndex(new Xibor("dummy",
                 12/floatingFrequency_,Months, fixingDays,

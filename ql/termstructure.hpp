@@ -77,6 +77,8 @@ namespace QuantLib {
 
         //! \name Dates
         //@{
+        //! returns today's date
+        virtual Date todaysDate() const = 0;
         //! returns the settlement date
         virtual Date settlementDate() const = 0;
         //! returns the day counter

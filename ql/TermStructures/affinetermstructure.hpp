@@ -49,11 +49,13 @@ namespace QuantLib {
           public:
             //! constructor using a fixed model
             AffineTermStructure(
+                const Date& todaysDate,
                 const Date& settlementDate,
                 const Handle<ShortRateModels::AffineModel>& model,
                 const DayCounter& dayCounter);
             //! constructor using a model that has to be calibrated
             AffineTermStructure(
+                const Date& todaysDate,
                 const Date& settlementDate,
                 const Handle<ShortRateModels::AffineModel>& model,
                 const std::vector<Handle<RateHelper> >& instruments,
@@ -62,6 +64,7 @@ namespace QuantLib {
 
             // inspectors
             DayCounter dayCounter() const;
+            Date todaysDate() const {return todaysDate_; }
             Date settlementDate() const;
             Date maxDate() const;
 
@@ -75,7 +78,7 @@ namespace QuantLib {
             void calibrate() const;
 
             DayCounter dayCounter_;
-            Date settlementDate_;
+            Date todaysDate_, settlementDate_;
 
             mutable bool needsRecalibration_;
             Handle<ShortRateModels::AffineModel> model_;

@@ -51,7 +51,7 @@ int main(int argc, char* argv[])
          *********************/
 
         Calendar calendar = TARGET();
-        // the difference between the calendar date and the value date
+        Date todaysDate(6, November, 2001);
         Date settlementDate(8, November, 2001);
 
         // deposits
@@ -169,7 +169,7 @@ int main(int argc, char* argv[])
         depoSwapInstruments.push_back(s10y);
         depoSwapInstruments.push_back(s15y);
         Handle<TermStructure> depoSwapTermStructure(new
-            PiecewiseFlatForward(settlementDate,
+            PiecewiseFlatForward(todaysDate, settlementDate,
             depoSwapInstruments, termStructureDayCounter));
 
 
@@ -462,7 +462,7 @@ int main(int argc, char* argv[])
         depoFutSwapInstruments.push_back(s10y);
         depoFutSwapInstruments.push_back(s15y);
         Handle<TermStructure> depoFutSwapTermStructure(new
-            PiecewiseFlatForward(settlementDate,
+            PiecewiseFlatForward(todaysDate, settlementDate,
             depoFutSwapInstruments, termStructureDayCounter));
 
 
@@ -481,7 +481,7 @@ int main(int argc, char* argv[])
         depoFRASwapInstruments.push_back(s10y);
         depoFRASwapInstruments.push_back(s15y);
         Handle<TermStructure> depoFRASwapTermStructure(new
-            PiecewiseFlatForward(settlementDate,
+            PiecewiseFlatForward(todaysDate, settlementDate,
             depoFRASwapInstruments, termStructureDayCounter));
 
 
