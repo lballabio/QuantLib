@@ -27,6 +27,9 @@
     $Source$
     $Name$
     $Log$
+    Revision 1.12  2001/02/23 17:24:45  lballabio
+    Allow formatting of null dates
+
     Revision 1.11  2001/01/17 14:37:56  nando
     tabs removed
 
@@ -90,32 +93,37 @@ namespace QuantLib {
             "January", "February", "March", "April", "May", "June",
             "July", "August", "September", "October", "November", "December" };
         std::string output;
-        int dd = d.dayOfMonth(), mm = int(d.month()), yyyy = d.year();
-        if (shortFormat) {
-            output = (mm < 10 ? "0" : "") + IntegerFormatter::toString(mm);
-            output += (dd < 10 ? "/0" : "/") + IntegerFormatter::toString(dd);
-            output += "/" + IntegerFormatter::toString(yyyy);
+        if (IsNull(d)) {
+            output = "Null date";
         } else {
-            output = monthName[mm-1] + " ";
-            output += IntegerFormatter::toString(dd);
-            switch (dd) {
-              case 1:
-              case 21:
-              case 31:
-                output += "st, ";
-                break;
-              case 2:
-              case 22:
-                output += "nd, ";
-                break;
-              case 3:
-              case 23:
-                output += "rd, ";
-                break;
-              default:
-                output += "th, ";
+            int dd = d.dayOfMonth(), mm = int(d.month()), yyyy = d.year();
+            if (shortFormat) {
+                output = (mm < 10 ? "0" : "") + IntegerFormatter::toString(mm);
+                output += (dd < 10 ? "/0" : "/") + 
+                    IntegerFormatter::toString(dd);
+                output += "/" + IntegerFormatter::toString(yyyy);
+            } else {
+                output = monthName[mm-1] + " ";
+                output += IntegerFormatter::toString(dd);
+                switch (dd) {
+                  case 1:
+                  case 21:
+                  case 31:
+                    output += "st, ";
+                    break;
+                  case 2:
+                  case 22:
+                    output += "nd, ";
+                    break;
+                  case 3:
+                  case 23:
+                    output += "rd, ";
+                    break;
+                  default:
+                    output += "th, ";
+                }
+                output += IntegerFormatter::toString(yyyy);
             }
-            output += IntegerFormatter::toString(yyyy);
         }
         return output;
     }
