@@ -36,8 +36,11 @@
 
 #include <ql/Instruments/swap.hpp>
 #include <ql/Indexes/xibor.hpp>
+#include <ql/CashFlows/fixedratecoupon.hpp>
 
 namespace QuantLib {
+
+    using CashFlows::FixedRateCoupon;
 
     namespace Instruments {
 
@@ -76,6 +79,27 @@ namespace QuantLib {
             double fixedLegBPS() const;
             double floatingLegBPS() const;
             const Date& maturity() const { return maturity_; }
+            //added by Sad
+            const std::vector<Handle<CashFlow> >& fixedLeg() const {
+                if (payFixedRate_) {
+                    return firstLeg_;
+                } else {
+                    return secondLeg_;
+                } 
+            }   
+            const std::vector<Handle<CashFlow> >& floatingLeg() const {
+                if (payFixedRate_) {
+                    return secondLeg_;
+                } else {
+                    return firstLeg_;
+                } 
+            }
+            bool payFixedRate() const {
+                return payFixedRate_;
+            }
+            double nominal() const { return fixedLeg()[0].downcast<FixedRateCoupon>()->nominal(); }
+            Rate fixedRate() const { return fixedLeg()[0].downcast<FixedRateCoupon>()->rate(); }
+
           private:
             bool payFixedRate_;
             Date maturity_;
