@@ -23,29 +23,13 @@
 */
 
 /*! \file uniformrandomgenerator.hpp
-    \fullpath Include/ql/MonteCarlo/%uniformrandomgenerator.hpp
     \brief Default choice for uniform random number generator
 
+    \fullpath
+    Include/ql/MonteCarlo/%uniformrandomgenerator.hpp
 */
 
 // $Id$
-// $Log$
-// Revision 1.12  2001/08/09 14:59:47  sigmud
-// header modification
-//
-// Revision 1.11  2001/08/08 11:07:49  sigmud
-// inserting \fullpath for doxygen
-//
-// Revision 1.10  2001/08/07 17:33:03  nando
-// 1) StandardPathGenerator now is GaussianPathGenerator;
-// 2) StandardMultiPathGenerator now is GaussianMultiPathGenerator;
-// 3) PathMonteCarlo now is MonteCarloModel;
-// 4) added ICGaussian, a Gaussian distribution that use
-//    QuantLib::Math::InvCumulativeNormalDistribution to convert uniform
-//    distribution extractions into gaussian distribution extractions;
-// 5) added a few trailing underscore to private members
-// 6) style enforced here and there ....
-//
 
 #ifndef quantlib_uniform_random_generator_h
 #define quantlib_uniform_random_generator_h

@@ -27,49 +27,8 @@
 */
 
 // $Id$
-// $Log$
-// Revision 1.21  2001/08/28 14:47:46  nando
-// unsigned int instead of int
-//
-// Revision 1.20  2001/08/28 14:46:01  enri
-// .am files for examples added, minor changes to permit compilation on unixes
-//
-// Revision 1.19  2001/08/28 10:15:37  nando
-// comments removed
-//
-// Revision 1.18  2001/08/23 14:39:50  nando
-// miscellanea
-//
-// Revision 1.17  2001/08/23 11:24:37  nando
-// try/catch in examples
-//
-// Revision 1.16  2001/08/22 17:57:54  nando
-// Examples compiles under borland
-// added borland makefile
-//
-// Revision 1.15  2001/08/22 15:28:19  nando
-// added AntitheticPathGenerator
-//
-// Revision 1.14  2001/08/20 08:27:31  marmar
-// Disabled quite-silly warning
-//
-// Revision 1.13  2001/08/09 09:16:43  marmar
-// Better version of Integral method
-//
-// Revision 1.12  2001/08/08 17:24:08  marmar
-// intermediate commit
-//
-// Revision 1.11  2001/08/08 16:02:33  nando
-// refactoring .... not finished yet
-//
-
-// disable useless warning
-// 'identifier' : decorated name length exceeded,
-//                name was truncated in debug info
 
 #include "ql/quantlib.hpp"
-
-// using namespace std;
 
 // Rate and Time are just double, but having their own types allows for
 // a stonger check at compile time
@@ -271,7 +230,7 @@ int main(int argc, char* argv[])
         // let's go for the fastest way: just one step
         int nTimeSteps = 1;
         int nSamples = 900000;
-        long seed = long(1.0/UniformRandomGenerator().next());
+        long seed = 100000*UniformRandomGenerator().next();
 	    double tau = maturity/nTimeSteps;
 	    double sigma = volatility* sqrt(tau);
 	    double drift = riskFreeRate * tau - 0.5*sigma*sigma;

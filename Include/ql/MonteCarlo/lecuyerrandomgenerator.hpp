@@ -23,39 +23,19 @@
 */
 
 /*! \file lecuyerrandomgenerator.hpp
-    \fullpath Include/ql/MonteCarlo/%lecuyerrandomgenerator.hpp
     \brief L'Ecuyer uniform random number generator
 
+    \fullpath
+    Include/ql/MonteCarlo/%lecuyerrandomgenerator.hpp
 */
 
 // $Id$
-// $Log$
-// Revision 1.12  2001/08/09 14:59:46  sigmud
-// header modification
-//
-// Revision 1.11  2001/08/08 11:07:49  sigmud
-// inserting \fullpath for doxygen
-//
-// Revision 1.10  2001/08/07 11:25:54  sigmud
-// copyright header maintenance
-//
-// Revision 1.9  2001/07/25 15:47:28  sigmud
-// Change from quantlib.sourceforge.net to quantlib.org
-//
-// Revision 1.8  2001/07/19 16:40:10  lballabio
-// Improved docs a bit
-//
-// Revision 1.7  2001/06/22 16:38:15  lballabio
-// Improved documentation
-//
-// Revision 1.6  2001/05/24 15:38:08  nando
-// smoothing #include xx.hpp and cutting old Log messages
-//
 
 #ifndef quantlib_lecuyer_random_generator_h
 #define quantlib_lecuyer_random_generator_h
 
 #include "ql/qldefines.hpp"
+#include <iostream>
 #include <string>
 #include <vector>
 
@@ -97,7 +77,7 @@ namespace QuantLib {
         };
 
         inline LecuyerRandomGenerator::LecuyerRandomGenerator(long seed) : buffer(LecuyerRandomGenerator::bufferSize) {
-            temp2 = temp1 = (seed != 0 ? seed : long(QL_CLOCK()));
+            temp2 = temp1 = (seed != 0 ? seed : long(QL_CLOCK(0)));
             for (int j=bufferSize+7; j>=0; j--) {
                 long k = temp1/q1;
                 temp1 = a1*(temp1-k*q1)-k*r1;
