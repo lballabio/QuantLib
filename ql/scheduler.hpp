@@ -39,16 +39,18 @@ namespace QuantLib {
         Schedule(const std::vector<Date>&,
                  const Calendar& calendar, BusinessDayConvention convention);
 #ifndef QL_DISABLE_DEPRECATED
-        /*! \deprecated Use the constructor without the isAdjusted argument;
-                        pass convention = Unadjusted for isAdjusted = false.
+        /*! \deprecated use the constructor without the <tt>isAdjusted</tt> 
+                        argument; use <tt>convention = Unadjusted</tt> for
+                        <tt>isAdjusted = false</tt>.
         */
         Schedule(const Calendar& calendar,
                  const Date& startDate, const Date& endDate,
                  Frequency frequency, BusinessDayConvention convention,
                  bool isAdjusted, const Date& stubDate = Date(),
                  bool startFromEnd = false, bool longFinal = false);
-        /*! \deprecated Use the constructor without the isAdjusted argument;
-                        pass convention = Unadjusted for isAdjusted = false.
+        /*! \deprecated use the constructor without the <tt>isAdjusted</tt>
+                        argument; use <tt>convention = Unadjusted</tt> for
+                        <tt>isAdjusted = false</tt>.
         */
         Schedule(const std::vector<Date>&,
                  const Calendar& calendar, BusinessDayConvention convention,
@@ -72,7 +74,7 @@ namespace QuantLib {
         //! \deprecated renamed to businessDayConvention()
         BusinessDayConvention rollingConvention() const;
         /*! \deprecated if you really need it (which you shouldn't) check
-                        that <c>businessDayConvention() != Unadjusted</c>
+                        that <tt>businessDayConvention() != Unadjusted</tt>
         */
         bool isAdjusted() const;
 #endif
@@ -109,8 +111,9 @@ namespace QuantLib {
           frequency_(frequency), convention_(convention),
           stubDate_(Date()), startFromEnd_(false), longFinal_(false) {}
 #ifndef QL_DISABLE_DEPRECATED
-        /*! \deprecated Use the constructor without the isAdjusted argument;
-                        pass convention = Unadjusted for isAdjusted = false.
+        /*! \deprecated use the constructor without the <tt>isAdjusted</tt>
+                        argument; use <tt>convention = Unadjusted</tt> for
+                        <tt>isAdjusted = false</tt>.
         */
         MakeSchedule(const Calendar& calendar,
                      const Date& startDate, const Date& endDate,

@@ -29,7 +29,7 @@
 namespace QuantLib {
 
     //! American exercise condition.
-    /*! \todo Unify the intrinsicValues/Payoff thing */
+    /*! \todo unify the intrinsicValues/Payoff thing */
     class AmericanCondition : public StandardStepCondition {
       public:
         AmericanCondition(Option::Type type,

@@ -30,7 +30,7 @@ namespace QuantLib {
     //! least-square Monte Carlo engine
     /*! \warning This method is intrinsically weak for out-of-the-money
                  options.
-        \bug This engine does not yet work for put options. More problems
+        \bug this engine does not yet work for put options. More problems
              might surface.
 
         \ingroup basketengines

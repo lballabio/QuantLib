@@ -36,8 +36,7 @@ namespace QuantLib {
         at discretized time \f$ t_i \f$. The first index refers to the
         underlying, the second to the time position MultiPath[j,i]
         
-        \todo a) make it time-aware
-              b) rename it as MultiAssetPath
+        \todo rename as MultiAssetPath
 
         \ingroup mcarlo
     */

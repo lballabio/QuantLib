@@ -45,9 +45,9 @@ namespace QuantLib {
             registerWith(termStructure_);
         }
 #ifndef QL_DISABLE_DEPRECATED
-        /*! \deprecated use the constructor without isAdjusted argument;
-                        isAdjusted = false can be replicated with 
-                        convention = Unadjusted
+        /*! \deprecated use the constructor without <tt>isAdjusted</tt>
+                        argument; <tt>isAdjusted = false</tt> can be 
+                        replicated by <tt>convention = Unadjusted</tt>.
         */
         Xibor(const std::string& familyName,
               Integer n, TimeUnit units, Integer settlementDays,

@@ -57,7 +57,7 @@ namespace QuantLib {
                              const RelinkableHandle<TermStructure>&);
 
 
-    /*! \bug This class must still be checked. It is not guaranteed
+    /*! \bug this class must still be checked. It is not guaranteed
              to yield the right results.
     */
     class BPSBasketCalculator : public AcyclicVisitor,

@@ -30,7 +30,7 @@ namespace QuantLib {
 
     /*! %Log-linear interpolation between discrete points
 
-        \todo Implement primitive, derivative, and secondDerivative functions.
+        \todo implement primitive, derivative, and secondDerivative functions.
     */
     class LogLinearInterpolation : public Interpolation {
       protected:

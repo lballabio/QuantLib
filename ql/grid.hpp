@@ -32,7 +32,7 @@ namespace QuantLib {
     Disposable<Array> BoundedGrid(Real xMin, Real xMax, Size steps);
 
     //! time grid class
-    /*! \todo What was the rationale for limiting the grid to
+    /*! \todo what was the rationale for limiting the grid to
               positive times? Investigate and see whether we
               can use it for negative ones as well.
     */

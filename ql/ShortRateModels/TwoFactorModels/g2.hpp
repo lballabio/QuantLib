@@ -42,7 +42,7 @@ namespace QuantLib {
         \f]
         and \f$ dW^1_t dW^2_t = \rho dt \f$.
 
-        \bug This class was not tested enough to guarantee
+        \bug this class was not tested enough to guarantee
              its functionality.
 
         \ingroup shortrate

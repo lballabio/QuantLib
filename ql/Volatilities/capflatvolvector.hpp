@@ -35,7 +35,7 @@ namespace QuantLib {
         the market volatilities of a set of caps/floors with given
         length.
             
-        \todo Either add correct copy behavior or inhibit copy. Right
+        \todo either add correct copy behavior or inhibit copy. Right
               now, a copied instance would end up with its own copy of
               the length vector but an interpolation pointing to the
               original ones.

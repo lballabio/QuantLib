@@ -35,7 +35,7 @@ namespace QuantLib {
 
         see www.math.nyu.edu/fellows_fin_math/gatheral/Lecture1_Fall02.pdf
 
-        \bug This class is untested, probably unreliable.
+        \bug this class is untested, probably unreliable.
 
     */
     class LocalVolSurface : public LocalVolTermStructure,

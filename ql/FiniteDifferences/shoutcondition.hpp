@@ -33,7 +33,7 @@ namespace QuantLib {
         during the option's life. The minimum value is the option's
         intrinsic value at the shout time.
 
-        \todo Unify the intrinsicValues/Payoff thing
+        \todo unify the intrinsicValues/Payoff thing
     */
     class ShoutCondition : public StandardStepCondition {
       public:

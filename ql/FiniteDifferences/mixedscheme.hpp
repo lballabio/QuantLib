@@ -62,8 +62,8 @@ namespace QuantLib {
         \warning The differential operator must be linear for
                  this evolver to work.
 
-        \todo a) derive variable theta schemes
-              b) introduce multi time-level schemes.
+        \todo derive variable theta schemes
+        \todo introduce multi time-level schemes.
 
         \ingroup findiff
     */

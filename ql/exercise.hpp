@@ -68,7 +68,7 @@ namespace QuantLib {
         dates
 
         \todo check that everywhere the American condition is applied
-              from the earliestDate and not earlier
+              from earliestDate and not earlier
 
     */
     class AmericanExercise : public EarlyExercise {

@@ -31,7 +31,7 @@ namespace QuantLib {
 
     //! Interest rate swap
     /*! The cash flows belonging to the first leg are payed;
-        the ones belonging to the first leg are received. 
+        the ones belonging to the second leg are received. 
 
         \ingroup instruments
     */
@@ -50,7 +50,7 @@ namespace QuantLib {
         Date maturity() const;
         Real firstLegBPS() const;
         Real secondLegBPS() const;
-        /*! \bug This method must still be checked. It is not guaranteed
+        /*! \bug this method must still be checked. It is not guaranteed
                  to yield the right results.
         */
         TimeBasket sensitivity(Integer basis = 2) const;

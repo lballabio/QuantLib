@@ -32,7 +32,7 @@ namespace QuantLib {
             dr_t = k(\theta - r_t)dt + \sqrt{r_t}\sigma dW_t .
         \f]
 
-        \bug This class was not tested enough to guarantee
+        \bug this class was not tested enough to guarantee
              its functionality.
 
         \ingroup shortrate
