@@ -405,6 +405,7 @@ test::
     python binary_option.py -b
     python date.py -b
     python distributions.py -b
+    python everest_option.py -b
     python european_option.py -b
     python european_with_dividends.py -b
     python himalaya_option.py -b
