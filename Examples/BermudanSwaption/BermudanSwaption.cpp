@@ -168,7 +168,6 @@ int main(int argc, char* argv[])
             calendar, roll, 1000.0, fixedLegFrequency, dummyFixedRate,
             fixedLegIsAdjusted, fixedLegDayCounter, floatingLegFrequency,
             indexSixMonths, fixingDays, 0.0, rhTermStructure));
-
         Rate fixedATMRate = swap->fairRate();
 
         Handle<SimpleSwap> atmSwap(new SimpleSwap(
@@ -176,26 +175,16 @@ int main(int argc, char* argv[])
             calendar, roll, 1000.0, fixedLegFrequency, fixedATMRate,
             fixedLegIsAdjusted, fixedLegDayCounter, floatingLegFrequency,
             indexSixMonths, fixingDays, 0.0, rhTermStructure));
-
-        std::cout << atmSwap->NPV() << std::endl;
-
-
         Handle<SimpleSwap> otmSwap(new SimpleSwap(
             payFixedRate, Date(15, February, 2003), 5, Years,
             calendar, roll, 1000.0, fixedLegFrequency, fixedATMRate * 1.2,
             fixedLegIsAdjusted, fixedLegDayCounter, floatingLegFrequency,
             indexSixMonths, fixingDays, 0.0, rhTermStructure));
-
-        std::cout << otmSwap->NPV() << std::endl;
-
-
         Handle<SimpleSwap> itmSwap(new SimpleSwap(
             payFixedRate, Date(15, February, 2003), 5, Years,
             calendar, roll, 1000.0, fixedLegFrequency, fixedATMRate * 0.8,
             fixedLegIsAdjusted, fixedLegDayCounter, floatingLegFrequency,
             indexSixMonths, fixingDays, 0.0, rhTermStructure));
-
-        std::cout << itmSwap->NPV() << std::endl;
 
         std::vector<Period> swaptionMaturities;
         swaptionMaturities.push_back(Period(1, Months));

@@ -225,6 +225,9 @@ int main(int argc, char* argv[])
          * SWAP PRICING *
          ****************/
 
+        std::cout <<  "*** 5Y swap at 4.30%" << std::endl;
+
+        
         // let's price in term of NPV, fixed rate, and spread
         double NPV;
         Rate fairFixedRate;
@@ -241,14 +244,14 @@ int main(int argc, char* argv[])
             << " NPV:               "
             << DoubleFormatter::toString(NPV,2)
             << std::endl;
-        fairFloatingSpread = - NPV / spot5YearSwap.floatingLegBPS();
+        fairFloatingSpread = spot5YearSwap.fairSpread();
         std::cout << "5Y "
             << RateFormatter::toString(fixedRate,2)
-            << " spread:               "
+            << " fair spread:          "
             << RateFormatter::toString(fairFloatingSpread,8)
             << std::endl;
         fairFixedRate = spot5YearSwap.fairRate();
-        std::cout << "5Y fixed rate:                  "
+        std::cout << "5Y fair fixed rate:             "
             << RateFormatter::toString(fairFixedRate,8)
             << std::endl;
         // let's check that the 5 years swap has been correctly re-priced
@@ -262,14 +265,14 @@ int main(int argc, char* argv[])
             << " NPV:            "
             << DoubleFormatter::toString(NPV,2)
             << std::endl;
-        fairFloatingSpread = -NPV / oneYearForward5YearSwap.floatingLegBPS();
+        fairFloatingSpread = oneYearForward5YearSwap.fairSpread();
         std::cout << "1Yx5Y "
             << RateFormatter::toString(fixedRate,2)
-            << " spread:            "
+            << " fair spread:       "
             << RateFormatter::toString(fairFloatingSpread,8)
             << std::endl;
         fairFixedRate = oneYearForward5YearSwap.fairRate();
-        std::cout << "1Yx5Y fixed rate:               "
+        std::cout << "1Yx5Y fair fixed rate:          "
             << RateFormatter::toString(fairFixedRate,8)
             << std::endl;
 
@@ -506,14 +509,14 @@ int main(int argc, char* argv[])
             << " NPV:               "
             << DoubleFormatter::toString(NPV,2)
             << std::endl;
-        fairFloatingSpread = - NPV / spot5YearSwap.floatingLegBPS();
+        fairFloatingSpread = spot5YearSwap.fairSpread();
         std::cout << "5Y "
             << RateFormatter::toString(fixedRate,2)
-            << " spread:               "
+            << " fair spread:          "
             << RateFormatter::toString(fairFloatingSpread,8)
             << std::endl;
         fairFixedRate = spot5YearSwap.fairRate();
-        std::cout << "5Y fixed rate:                  "
+        std::cout << "5Y fair fixed rate:             "
             << RateFormatter::toString(fairFixedRate,8)
             << std::endl;
         // let's check that the 5 years swap has been correctly re-priced
@@ -527,14 +530,14 @@ int main(int argc, char* argv[])
             << " NPV:            "
             << DoubleFormatter::toString(NPV,2)
             << std::endl;
-        fairFloatingSpread = -NPV / oneYearForward5YearSwap.floatingLegBPS();
+        fairFloatingSpread = oneYearForward5YearSwap.fairSpread();
         std::cout << "1Yx5Y "
             << RateFormatter::toString(fixedRate,2)
-            << " spread:            "
+            << " fair spread:       "
             << RateFormatter::toString(fairFloatingSpread,8)
             << std::endl;
         fairFixedRate = oneYearForward5YearSwap.fairRate();
-        std::cout << "1Yx5Y fixed rate:               "
+        std::cout << "1Yx5Y fair fixed rate:          "
             << RateFormatter::toString(fairFixedRate,8)
             << std::endl;
 
@@ -550,14 +553,14 @@ int main(int argc, char* argv[])
             << " NPV:               "
             << DoubleFormatter::toString(NPV,2)
             << std::endl;
-        fairFloatingSpread = - NPV / spot5YearSwap.floatingLegBPS();
+        fairFloatingSpread = spot5YearSwap.fairSpread();
         std::cout << "5Y "
             << RateFormatter::toString(fixedRate,2)
-            << " spread:               "
+            << " fair spread:          "
             << RateFormatter::toString(fairFloatingSpread,8)
             << std::endl;
         fairFixedRate = spot5YearSwap.fairRate();
-        std::cout << "5Y fixed rate:                  "
+        std::cout << "5Y fair fixed rate:             "
             << RateFormatter::toString(fairFixedRate,8)
             << std::endl;
         // let's check that the 5 years swap has been correctly re-priced
@@ -571,14 +574,14 @@ int main(int argc, char* argv[])
             << " NPV:            "
             << DoubleFormatter::toString(NPV,2)
             << std::endl;
-        fairFloatingSpread = -NPV / oneYearForward5YearSwap.floatingLegBPS();
+        fairFloatingSpread = oneYearForward5YearSwap.fairSpread();
         std::cout << "1Yx5Y "
             << RateFormatter::toString(fixedRate,2)
-            << " spread:            "
+            << " fair spread:       "
             << RateFormatter::toString(fairFloatingSpread,8)
             << std::endl;
         fairFixedRate = oneYearForward5YearSwap.fairRate();
-        std::cout << "1Yx5Y fixed rate:               "
+        std::cout << "1Yx5Y fair fixed rate:          "
             << RateFormatter::toString(fairFixedRate,8)
             << std::endl;
 
@@ -594,7 +597,7 @@ int main(int argc, char* argv[])
 
         Handle<SimpleMarketElement> fiveYearsRate = s5yRate;
         fiveYearsRate->setValue(0.0460);
-        std::cout <<  "*** 5Y swap goes up to 4.60%" << std::endl;
+        std::cout << std::endl <<  "*** 5Y swap goes up to 4.60%" << std::endl;
 
 
         // now get the updated results
@@ -608,14 +611,14 @@ int main(int argc, char* argv[])
             << " NPV:               "
             << DoubleFormatter::toString(NPV,2)
             << std::endl;
-        fairFloatingSpread = - NPV / spot5YearSwap.floatingLegBPS();
+        fairFloatingSpread = spot5YearSwap.fairSpread();
         std::cout << "5Y "
             << RateFormatter::toString(fixedRate,2)
-            << " spread:               "
+            << " fair spread:          "
             << RateFormatter::toString(fairFloatingSpread,8)
             << std::endl;
         fairFixedRate = spot5YearSwap.fairRate();
-        std::cout << "5Y fixed rate:                  "
+        std::cout << "5Y fair fixed rate:             "
             << RateFormatter::toString(fairFixedRate,8)
             << std::endl;
         // let's check that the 5 years swap has been correctly re-priced
@@ -628,14 +631,14 @@ int main(int argc, char* argv[])
             << " NPV:            "
             << DoubleFormatter::toString(NPV,2)
             << std::endl;
-        fairFloatingSpread = -NPV / oneYearForward5YearSwap.floatingLegBPS();
+        fairFloatingSpread = oneYearForward5YearSwap.fairSpread();
         std::cout << "1Yx5Y "
             << RateFormatter::toString(fixedRate,2)
-            << " spread:            "
+            << " fair spread:       "
             << RateFormatter::toString(fairFloatingSpread,8)
             << std::endl;
         fairFixedRate = oneYearForward5YearSwap.fairRate();
-        std::cout << "1Yx5Y fixed rate:               "
+        std::cout << "1Yx5Y fair fixed rate:          "
             << RateFormatter::toString(fairFixedRate,8)
             << std::endl;
 
@@ -650,14 +653,14 @@ int main(int argc, char* argv[])
             << " NPV:               "
             << DoubleFormatter::toString(NPV,2)
             << std::endl;
-        fairFloatingSpread = - NPV / spot5YearSwap.floatingLegBPS();
+        fairFloatingSpread = spot5YearSwap.fairSpread();
         std::cout << "5Y "
             << RateFormatter::toString(fixedRate,2)
-            << " spread:               "
+            << " fair spread:          "
             << RateFormatter::toString(fairFloatingSpread,8)
             << std::endl;
         fairFixedRate = spot5YearSwap.fairRate();
-        std::cout << "5Y fixed rate:                  "
+        std::cout << "5Y fair fixed rate:             "
             << RateFormatter::toString(fairFixedRate,8)
             << std::endl;
         // let's check that the 5 years swap has been correctly re-priced
@@ -670,14 +673,14 @@ int main(int argc, char* argv[])
             << " NPV:            "
             << DoubleFormatter::toString(NPV,2)
             << std::endl;
-        fairFloatingSpread = -NPV / oneYearForward5YearSwap.floatingLegBPS();
+        fairFloatingSpread = oneYearForward5YearSwap.fairSpread();
         std::cout << "1Yx5Y "
             << RateFormatter::toString(fixedRate,2)
-            << " spread:            "
+            << " fair spread:       "
             << RateFormatter::toString(fairFloatingSpread,8)
             << std::endl;
         fairFixedRate = oneYearForward5YearSwap.fairRate();
-        std::cout << "1Yx5Y fixed rate:               "
+        std::cout << "1Yx5Y fair fixed rate:          "
             << RateFormatter::toString(fairFixedRate,8)
             << std::endl;
 

@@ -59,6 +59,7 @@ namespace QuantLib {
                 const std::string& description = "");
             // results
             Rate fairRate() const;
+            Spread fairSpread() const;
             double fixedLegBPS() const;
             double floatingLegBPS() const;
             // inspectors
@@ -79,6 +80,10 @@ namespace QuantLib {
 
         inline Rate SimpleSwap::fairRate() const {
             return fixedRate_ - NPV()/fixedLegBPS();
+        }
+
+        inline Spread SimpleSwap::fairSpread() const {
+            return spread_ - NPV()/floatingLegBPS();
         }
 
         inline double SimpleSwap::fixedLegBPS() const {
