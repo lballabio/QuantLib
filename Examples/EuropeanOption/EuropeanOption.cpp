@@ -216,7 +216,24 @@ int main(int argc, char* argv[])
             Handle<PricingEngine>(new Pricers::BinomialVanillaEngine(
                 Pricers::BinomialVanillaEngine::JarrowRudd, 100)));
             
-        // seventh method: Binomial Method (JR)
+
+        std::cout << "\nNew Pricing engine framework" << std::endl;
+        
+        // method: Black Scholes Engine
+        method = "Black Scholes";
+        option.setPricingEngine(Handle<PricingEngine>(
+            new Pricers::EuropeanEngine()));
+        value = option.NPV();
+        discrepancy = QL_FABS(value-rightValue);
+        relativeDiscrepancy = discrepancy/rightValue;
+        std::cout << method << "\t"
+             << DoubleFormatter::toString(value, 4) << "\t"
+             << "N/A\t\t"
+             << DoubleFormatter::toString(discrepancy, 6) << "\t"
+             << DoubleFormatter::toString(relativeDiscrepancy, 6)
+             << std::endl;
+
+        // Binomial Method (JR)
         method = "Binomial (JR)";
         option.setPricingEngine(Handle<PricingEngine>(
             new Pricers::BinomialVanillaEngine(
@@ -231,7 +248,7 @@ int main(int argc, char* argv[])
              << DoubleFormatter::toString(relativeDiscrepancy, 6)
              << std::endl;
 
-        // eigth method: Binomial Method (CRR)
+        // Binomial Method (CRR)
         method = "Binomial (CRR)";
         option.setPricingEngine(Handle<PricingEngine>(
             new Pricers::BinomialVanillaEngine(
