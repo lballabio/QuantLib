@@ -208,14 +208,16 @@ namespace QuantLib {
         const Date& d2, bool extrapolate) const {
             Time t1 = dayCounter().yearFraction(settlementDate(),d1);
             Time t2 = dayCounter().yearFraction(settlementDate(),d2);
-            return QL_LOG( discountImpl(t1,extrapolate)/
-                           discountImpl(t2,extrapolate)  ) / (t2-t1);
+            return forward(t1, t2, extrapolate);
     }
 
     inline Rate TermStructure::forward(Time t1, Time t2,
         bool extrapolate) const {
-            return QL_LOG( discountImpl(t1,extrapolate)/
-                           discountImpl(t2,extrapolate)  ) / (t2-t1);
+            if (t2==t1)
+                return instantaneousForward(t1, extrapolate);
+            else 
+                return QL_LOG( discountImpl(t1,extrapolate)/
+                               discountImpl(t2,extrapolate)  ) / (t2-t1);
     }
 
     inline Time TermStructure::maxTime() const {
@@ -244,8 +246,15 @@ namespace QuantLib {
 
     inline Rate DiscountStructure::zeroYieldImpl(Time t,
         bool extrapolate) const {
-            DiscountFactor df = discountImpl(t, extrapolate);
-            return Rate(-QL_LOG(df)/t);
+            DiscountFactor df;
+            if (t==0.0) {
+                Time dt = 0.001;
+                df = discountImpl(dt, extrapolate);
+                return Rate(-QL_LOG(df)/dt);
+            } else {
+                df = discountImpl(t, extrapolate);
+                return Rate(-QL_LOG(df)/t);
+            }
     }
 
     inline Rate DiscountStructure::forwardImpl(Time t,
