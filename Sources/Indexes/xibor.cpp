@@ -30,6 +30,9 @@
 
 // $Source$
 // $Log$
+// Revision 1.4  2001/05/29 09:24:06  lballabio
+// Using relinkable handle to term structure
+//
 // Revision 1.3  2001/05/24 15:40:09  nando
 // smoothing #include xx.hpp and cutting old Log messages
 //
@@ -43,11 +46,13 @@ namespace QuantLib {
 
         Rate Xibor::fixing(const Date& fixingDate,
           int n, TimeUnit unit) const {
-            Date settlementDate = termStructure()->settlementDate();
+            QL_REQUIRE(!termStructure_.isNull(),
+                "null term structure set");
+            Date settlementDate = termStructure_->settlementDate();
             if (fixingDate < settlementDate) {
                 // must have been fixed
                 Rate pastFixing =
-                    LiborManager::getHistory(currency(),n,unit)[fixingDate];
+                    LiborManager::getHistory(name(),n,unit)[fixingDate];
                 QL_REQUIRE(pastFixing != Null<double>(),
                     "Missing " + CurrencyFormatter::toString(currency()) +
                         " Libor fixing for " +
@@ -58,7 +63,7 @@ namespace QuantLib {
                 // might have been fixed
                 try {
                     Rate pastFixing =
-                        LiborManager::getHistory(currency(),n,unit)[fixingDate];
+                        LiborManager::getHistory(name(),n,unit)[fixingDate];
                     if (pastFixing != Null<double>())
                         return pastFixing;
                     else
@@ -71,16 +76,12 @@ namespace QuantLib {
             if (isAdjusted())
                 endDate = calendar()->roll(endDate,isModifiedFollowing());
             DiscountFactor fixingDiscount =
-                termStructure()->discount(fixingDate);
+                termStructure_->discount(fixingDate);
             DiscountFactor endDiscount =
-                termStructure()->discount(endDate);
+                termStructure_->discount(endDate);
             double fixingPeriod =
                 dayCounter()->yearFraction(fixingDate, endDate);
             return (fixingDiscount/endDiscount-1.0) / fixingPeriod;
-        }
-
-        Handle<TermStructure> Xibor::termStructure() const {
-            return LiborManager::getTermStructure(currency());
         }
 
     }

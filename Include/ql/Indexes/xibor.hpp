@@ -30,6 +30,9 @@
 
 // $Source$
 // $Log$
+// Revision 1.4  2001/05/29 09:24:06  lballabio
+// Using relinkable handle to term structure
+//
 // Revision 1.3  2001/05/24 15:38:08  nando
 // smoothing #include xx.hpp and cutting old Log messages
 //
@@ -50,10 +53,12 @@ namespace QuantLib {
         */
         class Xibor : public Index {
           public:
+            Xibor(const RelinkableHandle<TermStructure>& h)
+            : termStructure_(h) {}
             Rate fixing(const Date& fixingDate,
                 int n, TimeUnit unit) const;
           private:
-            Handle<TermStructure> termStructure() const;
+            RelinkableHandle<TermStructure> termStructure_;
         };
 
     }

@@ -30,6 +30,9 @@
 
 // $Source$
 // $Log$
+// Revision 1.8  2001/05/29 09:24:06  lballabio
+// Using relinkable handle to term structure
+//
 // Revision 1.7  2001/05/28 16:12:12  lballabio
 // *** empty log message ***
 //
@@ -51,24 +54,18 @@ namespace QuantLib {
 
     namespace Indexes {
 
-        //! global repository for libor term structures and histories
+        //! global repository for libor histories
         class LiborManager {
           public:
-            // discount curves
-            static void setTermStructure(Currency,
-                const Handle<TermStructure>&);
-            static Handle<TermStructure> getTermStructure(Currency);
-            static bool hasTermStructure(Currency);
             // historical fixings
-            static void setHistory(Currency, int n, TimeUnit unit,
-                const History&);
-            static const History& getHistory(Currency, int n, TimeUnit unit);
-            static bool hasHistory(Currency, int n, TimeUnit unit);
+            static void setHistory(const std::string& name, 
+                int n, TimeUnit unit, const History&);
+            static const History& getHistory(const std::string& name, 
+                int n, TimeUnit unit);
+            static bool hasHistory(const std::string& name, 
+                int n, TimeUnit unit);
           private:
             static std::string tag(int n, TimeUnit unit);
-            typedef std::map<Currency,Handle<TermStructure> >
-                TermStructureMap;
-            static TermStructureMap termStructureMap_;
             typedef std::map<std::string,History> HistoryMap;
             static HistoryMap historyMap_;
         };

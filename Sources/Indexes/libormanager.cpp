@@ -30,6 +30,9 @@
 
 // $Source$
 // $Log$
+// Revision 1.7  2001/05/29 09:24:06  lballabio
+// Using relinkable handle to term structure
+//
 // Revision 1.6  2001/05/28 16:12:21  lballabio
 // *** empty log message ***
 //
@@ -46,36 +49,7 @@ namespace QuantLib {
 
     namespace Indexes {
 
-        LiborManager::TermStructureMap LiborManager::termStructureMap_;
-
         LiborManager::HistoryMap LiborManager::historyMap_;
-
-        void LiborManager::setTermStructure(Currency c,
-            const Handle<TermStructure>& termStructure) {
-                QL_REQUIRE(termStructure->currency() == c,
-                    "currency mismatch while setting " +
-                    CurrencyFormatter::toString(c)
-                    + " Libor term structure "
-                    "(the given term structure has " +
-                    CurrencyFormatter::toString(termStructure->currency()) +
-                    " currency");
-                termStructureMap_[c] = termStructure;
-        }
-
-        Handle<TermStructure> LiborManager::getTermStructure(
-            Currency c) {
-                LiborManager::TermStructureMap::const_iterator i =
-                    termStructureMap_.find(c);
-                QL_REQUIRE(i != termStructureMap_.end(),
-                    CurrencyFormatter::toString(c) +
-                    " Libor term structure not loaded");
-                return i->second;
-        }
-
-        bool LiborManager::hasTermStructure(Currency c) {
-            return (termStructureMap_.find(c) !=
-                    termStructureMap_.end());
-        }
 
         std::string LiborManager::tag(int n, TimeUnit unit) {
             switch (unit) {
@@ -93,27 +67,24 @@ namespace QuantLib {
             QL_DUMMY_RETURN(std::string())
         }
 
-        void LiborManager::setHistory(Currency c,
+        void LiborManager::setHistory(const std::string& name,
             int n, TimeUnit unit, const History& history) {
-                historyMap_[CurrencyFormatter::toString(c)+tag(n,unit)] =
-                    history;
+                historyMap_[name+tag(n,unit)] = history;
         }
 
         const History& LiborManager::getHistory(
-            Currency c, int n, TimeUnit unit) {
+            const std::string& name, int n, TimeUnit unit) {
                 LiborManager::HistoryMap::const_iterator i =
-                    historyMap_.find(
-                        CurrencyFormatter::toString(c)+tag(n,unit));
+                    historyMap_.find(name+tag(n,unit));
                 QL_REQUIRE(i != historyMap_.end(),
-                    CurrencyFormatter::toString(c) + " Libor " +
+                    name + " " +
                     tag(n,unit) + " history not loaded");
                 return i->second;
         }
 
-        bool LiborManager::hasHistory(Currency c,
+        bool LiborManager::hasHistory(const std::string& name,
             int n, TimeUnit unit) {
-                return (historyMap_.find(
-                    CurrencyFormatter::toString(c)+tag(n,unit)) !=
+                return (historyMap_.find(name+tag(n,unit)) !=
                         historyMap_.end());
         }
 

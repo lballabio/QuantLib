@@ -30,6 +30,9 @@
 
 // $Source$
 // $Log$
+// Revision 1.5  2001/05/29 09:24:06  lballabio
+// Using relinkable handle to term structure
+//
 // Revision 1.4  2001/05/24 15:38:08  nando
 // smoothing #include xx.hpp and cutting old Log messages
 //
@@ -48,6 +51,8 @@ namespace QuantLib {
         //! Libor index
         class Libor : public Xibor {
           public:
+            Libor(const RelinkableHandle<TermStructure>& h)
+            : Xibor(h) {}
             Currency currency() const { return GBP; }
             Handle<Calendar> calendar() const {
                 return Handle<Calendar>(new Calendars::London);

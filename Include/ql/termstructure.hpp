@@ -30,6 +30,9 @@
 
 // $Source$
 // $Log$
+// Revision 1.7  2001/05/29 09:24:06  lballabio
+// Using relinkable handle to term structure
+//
 // Revision 1.6  2001/05/24 15:38:07  nando
 // smoothing #include xx.hpp and cutting old Log messages
 //
@@ -42,7 +45,7 @@
 #include "ql/spread.hpp"
 #include "ql/discountfactor.hpp"
 #include "ql/currency.hpp"
-#include "ql/handle.hpp"
+#include "ql/relinkablehandle.hpp"
 #include <vector>
 
 namespace QuantLib {
@@ -151,7 +154,7 @@ namespace QuantLib {
     */
     class ImpliedTermStructure : public DiscountStructure {
       public:
-        ImpliedTermStructure(const Handle<TermStructure>&,
+        ImpliedTermStructure(const RelinkableHandle<TermStructure>&,
             const Date& settlementDate);
         Currency currency() const;
         Date settlementDate() const;
@@ -160,7 +163,7 @@ namespace QuantLib {
         //! returns the discount factor as seen from the evaluation date
         DiscountFactor discount(const Date&, bool extrapolate = false) const;
       private:
-        Handle<TermStructure> originalCurve_;
+        RelinkableHandle<TermStructure> originalCurve_;
         Date settlementDate_;
     };
 
@@ -170,7 +173,8 @@ namespace QuantLib {
     */
     class SpreadedTermStructure : public ZeroYieldStructure {
       public:
-        SpreadedTermStructure(const Handle<TermStructure>&, Spread spread);
+        SpreadedTermStructure(const RelinkableHandle<TermStructure>&, 
+            Spread spread);
         Currency currency() const;
         Date settlementDate() const;
         Date maxDate() const;
@@ -178,7 +182,7 @@ namespace QuantLib {
         //! returns the spreaded zero yield rate
         Rate zeroYield(const Date&, bool extrapolate = false) const;
       private:
-        Handle<TermStructure> originalCurve_;
+        RelinkableHandle<TermStructure> originalCurve_;
         Spread spread_;
     };
 
@@ -275,7 +279,7 @@ namespace QuantLib {
     // time-shifted curve
 
     inline ImpliedTermStructure::ImpliedTermStructure(
-        const Handle<TermStructure>& h, const Date& settlementDate)
+        const RelinkableHandle<TermStructure>& h, const Date& settlementDate)
     : originalCurve_(h), settlementDate_(settlementDate) {
         QL_REQUIRE(settlementDate_ <= originalCurve_->maxDate(),
             "the settlement date of an implied term structure"
@@ -312,7 +316,7 @@ namespace QuantLib {
     // spreaded curve
 
     inline SpreadedTermStructure::SpreadedTermStructure(
-        const Handle<TermStructure>& h, Spread spread)
+        const RelinkableHandle<TermStructure>& h, Spread spread)
     : originalCurve_(h), spread_(spread) {}
 
     inline Currency SpreadedTermStructure::currency() const {
