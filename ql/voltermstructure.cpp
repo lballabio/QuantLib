@@ -73,21 +73,32 @@ namespace QuantLib {
     double BlackVolTermStructure::blackForwardVol(Time time1, Time time2,
         double strike, bool extrapolate) const {
 
-        QL_REQUIRE(time2>=time1,
-            "VolTermStructure::blackForwardVol : "
-            "time2<time1");
-        double var1 = blackVarianceImpl(time1, strike, extrapolate);
+
         if (time2==time1) {
-            Time epsilon = 0.00001;
-            return QL_SQRT(
-                (blackVarianceImpl(time1+epsilon, strike, extrapolate)-var1)
-                /epsilon
-                );
+            if (time1==0.0) {
+                Time epsilon = 0.00001;
+                return QL_SQRT(
+                    (blackVarianceImpl(time1+epsilon, strike, extrapolate)-
+                     blackVarianceImpl(time1,         strike, extrapolate))/
+                        epsilon);
+            } else {
+                QL_REQUIRE(time1>0.0,
+                    "BlackVolTermStructure::blackForwardVol : "
+                    "negative times");
+                Time epsilon = QL_MIN(0.00001, time1);
+                return QL_SQRT(
+                    (blackVarianceImpl(time1+epsilon, strike, extrapolate)-
+                     blackVarianceImpl(time1-epsilon, strike, extrapolate))/
+                               (2*epsilon));
+            }
         } else {
+            QL_REQUIRE(time2>time1,
+                "BlackVolTermStructure::blackForwardVol : "
+                "time2<time1");
             return QL_SQRT(
-                (blackVarianceImpl(time2, strike, extrapolate)-var1)
-                /(time2-time1)
-                );
+                (blackVarianceImpl(time2, strike, extrapolate)-
+                 blackVarianceImpl(time1, strike, extrapolate))/
+                           (time2-time1));
         }
     }
 
@@ -147,6 +158,9 @@ namespace QuantLib {
 	 double BlackVarianceTermStructure ::blackVolImpl(Time maturity,
 		 double strike, bool extrapolate) const {
 
+         QL_REQUIRE(maturity>=0,
+             "BlackVarianceTermStructure ::blackVolImpl : "
+             "negative time not allowed");
         Time nonZeroMaturity = (maturity==0.0 ? 0.00001 : maturity);
         double var = blackVarianceImpl(nonZeroMaturity, strike, extrapolate);
         return QL_SQRT(var/nonZeroMaturity);
