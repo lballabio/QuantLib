@@ -129,8 +129,9 @@ LINK_OPTS    = -q -x -L$(BCC_LIBS)
 LINK_OPTS    = $(LINK_OPTS) -v
 !endif
 
+TLIB_OPTS    = /P32
 !ifdef DEBUG
-TLIB_OPTS    = /P64
+TLIB_OPTS    = /P128
 !endif
 
 # Generic rules
