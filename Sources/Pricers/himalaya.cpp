@@ -25,6 +25,9 @@
     
     $Source$
     $Log$
+    Revision 1.4  2001/03/28 12:49:52  marmar
+    Dates are now used for input instead of time delays
+
     Revision 1.3  2001/03/06 15:13:50  marmar
     Himalaya option now can handle any number of time steps
 
@@ -74,8 +77,7 @@ namespace QuantLib {
             Handle<StandardMultiPathGenerator> pathGenerator(
                 new StandardMultiPathGenerator(timeDelays, mu, 
                                         covariance, seed));
-            double residualTime = std::accumulate(
-                            timeDelays.begin(), timeDelays.end(), 0.0);
+            double residualTime = timeDelays[timeDelays.size()-1];
             
             //! Initialize the pricer on the path pricer
             Handle<MultiPathPricer> pathPricer(new HimalayaPathPricer(

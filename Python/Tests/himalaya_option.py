@@ -25,15 +25,16 @@
 """ 
     $Source$
     $Log$
+    Revision 1.3  2001/03/28 12:50:32  marmar
+    Dates are now used for input instead of time delays
+
     Revision 1.2  2001/03/15 13:49:35  marmar
     getCovariance function added
-
 """
 
 from QuantLib import Himalaya, Matrix, getCovariance
 from TestUnit import TestUnit
 from math import fabs
-
 
 class HimalayaTest(TestUnit):
     def doTest(self):
@@ -48,7 +49,7 @@ class HimalayaTest(TestUnit):
         
         assetValues = [100, 100, 100, 100]
         dividendYields = [0.0, 0.0, 0.0, 0]
-        timeIncrements = [0.25, 0.25, 0.25, 0.25]
+        timeIncrements = [0.25, 0.5, 0.75, 1.0]
         riskFreeRate = 0.05
         strike = 100    
         samples = 40000
@@ -65,7 +66,7 @@ class HimalayaTest(TestUnit):
         )
         self.printDetails(
             "Stored values:                   %g %g" %
-            (7.30213127731,0.0521786123186)
+            (7.30213127731, 0.0521786123186)
         )
         if fabs(value-7.30213127731) > 1e-10 \
         or fabs(error-0.05217861232) > 1e-10:

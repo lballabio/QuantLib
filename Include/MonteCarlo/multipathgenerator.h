@@ -26,6 +26,9 @@
     $Source$
     $Name$
     $Log$
+    Revision 1.5  2001/03/28 12:49:07  marmar
+    Dates are now used for input instead of time delays
+
     Revision 1.4  2001/02/06 17:07:31  marmar
     New constructor added
 
@@ -69,11 +72,13 @@ namespace QuantLib {
         // this typedef would make MultiPathGenerator into a sample generator
             MultiPathGenerator();
             MultiPathGenerator(int timeDimension, 
-                const Array &average, const Math::Matrix &covariance, 
-                long seed=0);
-            MultiPathGenerator(const std::vector<Time> &timeDelays, 
-                const Array &average, const Math::Matrix &covariance, 
-                long seed=0);
+                               const Array &average, 
+                               const Math::Matrix &covariance, 
+                               long seed=0);
+            MultiPathGenerator(const std::vector<Time> &dates, 
+                               const Array &average, 
+                               const Math::Matrix &covariance, 
+                               long seed=0);
             MultiPath next() const;
             double weight() const{return weight_;}
         private:
@@ -106,10 +111,10 @@ namespace QuantLib {
 
         template <class RAG>
         inline MultiPathGenerator<RAG >::MultiPathGenerator(
-            const std::vector<Time> &timeDelays, const Array &average,
+            const std::vector<Time> &dates, const Array &average,
             const Math::Matrix &covariance, long seed):
-            timeDimension_(timeDelays.size()),
-            timeDelays_(timeDelays),
+            timeDimension_(dates.size()),
+            timeDelays_(dates.size()),
             numAssets_(average.size()),
             average_(average),
             rndArray_(covariance, seed){
@@ -118,12 +123,25 @@ namespace QuantLib {
                 "Time dimension("+
                 DoubleFormatter::toString(timeDimension_)+
                 ") too small");
-                
-            for(int i = 0; i < timeDelays_.size(); i++)
-                QL_REQUIRE(timeDelays_[i] > 0,
-                    "MultiPathGenerator: "
-                    "time delay(" + IntegerFormatter::toString(i)+                    
-                    ") not positive");
+                             
+             QL_REQUIRE(dates[0] > 0,
+                 "MultiPathGenerator: first date(" +
+                 DoubleFormatter::toString(dates[0])+
+                 ") must be positive");                             
+            timeDelays_[0] = dates[0];
+
+            if(timeDimension_ > 1){
+                for(int i = 1; i < timeDimension_; i++){
+                    QL_REQUIRE(dates[i] >= dates[i-1],
+                        "MultiPathGenerator: date(" +
+                        IntegerFormatter::toString(i-1)+")="+
+                        DoubleFormatter::toString(dates[i-1])+
+                        " is later than date("+
+                        IntegerFormatter::toString(i)+")="+
+                        DoubleFormatter::toString(dates[i]));                    
+                    timeDelays_[i] = dates[i] - dates[i-1];                    
+                }
+            }                    
         }
 
         template <class RAG>
@@ -136,10 +154,10 @@ namespace QuantLib {
             weight_ = 1.0;
             for(int i = 0; i < timeDimension_; i++){
                 nextArray = average_ * timeDelays_[i] 
-                                + rndArray_.next()* QL_SQRT(timeDelays_[i]);
+                            + rndArray_.next()* QL_SQRT(timeDelays_[i]);
                 weight_ *= rndArray_.weight();
                 std::copy(nextArray.begin(), nextArray.end(),     
-                                            multiPath.column_begin(i));
+                          multiPath.column_begin(i));
             }
             return multiPath;
         }
