@@ -14,8 +14,6 @@ EXTRA_DIST = \
 
 TEX_PARAMETERS = buf_size=500000 pool_size=768000 extra_mem_top=512000 extra_mem_bot=512000 max_strings=45000 hash_extra=10000 save_size=8000
 
-BASEPATH = @abs_top_srcdir@
-
 docs-all: docs-ps docs-pdf
 docs-html: docs-html-offline
 docs-html-offline:

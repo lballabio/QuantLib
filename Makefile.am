@@ -33,16 +33,17 @@ examples:
 	$(MAKE) -C Examples examples
 
 .PHONY: docs-all docs-html docs-html-online docs-pdf docs-man docs-clean
+BASEPATH = @abs_top_srcdir@
 docs-all:
-	$(MAKE) -C Docs docs-all
+	BASEPATH=$(BASEPATH) $(MAKE) -C Docs docs-all
 docs-html:
-	$(MAKE) -C Docs docs-html
+	BASEPATH=$(BASEPATH) $(MAKE) -C Docs docs-html
 docs-html-online:
-	$(MAKE) -C Docs docs-html-online
+	BASEPATH=$(BASEPATH) $(MAKE) -C Docs docs-html-online
 docs-pdf:
-	$(MAKE) -C Docs docs-pdf
+	BASEPATH=$(BASEPATH) $(MAKE) -C Docs docs-pdf
 docs-man:
-	$(MAKE) -C Docs docs-man
+	BASEPATH=$(BASEPATH) $(MAKE) -C Docs docs-man
 docs-clean:
 	$(MAKE) -C Docs docs-clean
 
