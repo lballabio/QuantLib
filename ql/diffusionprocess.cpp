@@ -42,7 +42,9 @@ namespace QuantLib {
     }
 
     double BlackScholesProcess::drift(Time t, double x) const {
-        double sigma = localVolTS_->localVol(t, x);
+        // this is a quick and dirty patch
+        // rethink how to handle extrapolation
+        double sigma = localVolTS_->localVol(t, x, true);
 
         // we could be more anticipatory if we know the right dt
         // for which the drift will be used

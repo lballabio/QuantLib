@@ -89,7 +89,9 @@ namespace QuantLib {
             double s0);
         double drift(Time t, double x) const ;
         double diffusion(Time t, double x) const {
-            return localVolTS_->localVol(t, x);
+            // this is a quick and dirty patch
+            // rethink how to handle extrapolation
+            return localVolTS_->localVol(t, x, true);
         }
       private:
         RelinkableHandle<TermStructure> riskFreeTS_, dividendTS_;
