@@ -1,4 +1,5 @@
 /*
+ Copyright (C) 2003 Ferdinando Ametrano
  Copyright (C) 2001, 2002, 2003 Sadruddin Rejeb
 
  This file is part of QuantLib, a free-software/open-source library
@@ -28,15 +29,68 @@ namespace QuantLib {
 
     namespace Lattices {
 
-        StandardBinomialTree::StandardBinomialTree(
-            const Handle<DiffusionProcess>& process,
-            Time end, Size steps) : BinomialTree(steps + 1) {
 
-            double dt = end/steps;
+        EqualProbabilitiesBinomialTree::EqualProbabilitiesBinomialTree(
+            const Handle<DiffusionProcess>& process,
+            Time end, Size steps)
+        : BinomialTree(steps+1) {
 
             x0_ = process->x0();
-            dx_ = QL_SQRT(process->variance(0.0, 0.0, dt));
+            dt_ = end/steps;
+            double drift = process->drift(0.0, x0_);
+            driftPerStep_ = drift * dt_;
         }
+
+        JarrowRudd::JarrowRudd(const Handle<DiffusionProcess>& process,
+            Time end, Size steps)
+        : EqualProbabilitiesBinomialTree(process, end, steps) {
+
+            up_ = QL_SQRT(process->variance(0.0, x0_, dt_));
+        }
+
+        AdditiveEQPBinomialTree::AdditiveEQPBinomialTree(
+            const Handle<DiffusionProcess>& process, Time end, Size steps)
+        : EqualProbabilitiesBinomialTree(process, end, steps) {
+
+            up_ = - driftPerStep_/2.0 + 0.5 *
+                QL_SQRT(4.0 * process->variance(0.0, x0_, dt_) -
+                        3.0 * driftPerStep_ * driftPerStep_);
+        }
+
+
+
+       
+        EqualJumpsBinomialTree::EqualJumpsBinomialTree(
+            const Handle<DiffusionProcess>& process, Time end, Size steps)
+        : BinomialTree(steps+1) {
+
+            x0_ = process->x0();
+            dt_ = end/steps;
+            double drift = process->drift(0.0, x0_);
+            driftPerStep_ = drift * dt_;
+        }
+
+        CoxRossRubinstein::CoxRossRubinstein(
+            const Handle<DiffusionProcess>& process, Time end, Size steps)
+        : EqualJumpsBinomialTree(process, end, steps) {
+
+            dx_ = QL_SQRT(process->variance(0.0, x0_, dt_));
+            pu_ = 0.5 + 0.5*driftPerStep_/dx_;;
+            pd_ = 1.0 - pu_;
+        }
+
+
+        Trigeorgis::Trigeorgis(const Handle<DiffusionProcess>& process,
+            Time end, Size steps)
+        : EqualJumpsBinomialTree(process, end, steps) {
+
+            dx_ = QL_SQRT(process->variance(0.0, x0_, dt_)+
+                          driftPerStep_*driftPerStep_);
+            pu_ = 0.5 + 0.5*driftPerStep_/dx_;;
+            pd_ = 1.0 - pu_;
+        }
+
+
 
     }
 

@@ -26,6 +26,7 @@
 // $Id$
 
 #include <ql/PricingEngines/discretizedvanillaoption.hpp>
+#include <ql/Lattices/binomialtree.hpp>
 
 using QuantLib::Pricers::ExercisePayoff;
 
@@ -44,15 +45,24 @@ namespace QuantLib {
                 referenceDate, exerciseDate);
 
             Handle<Lattices::Tree> tree;
+            Handle<DiffusionProcess> bs(new
+                BlackScholesProcess(r, q, v, s0));
             switch(type_) {
                 case CoxRossRubinstein:
                     tree = Handle<Lattices::Tree>(
-                        new Lattices::CoxRossRubinstein(v, r, q, 
-                                                        s0, t, steps_));
+                        new Lattices::CoxRossRubinstein(bs, t, steps_));
                     break;
                 case JarrowRudd:
                     tree = Handle<Lattices::Tree>(
-                        new Lattices::JarrowRudd(v, r, q, s0, t, steps_));
+                        new Lattices::JarrowRudd(bs, t, steps_));
+                    break;
+                case EQP:
+                    tree = Handle<Lattices::Tree>(
+                        new Lattices::AdditiveEQPBinomialTree(bs, t, steps_));
+                    break;
+                case Trigeorgis:
+                    tree = Handle<Lattices::Tree>(
+                        new Lattices::Trigeorgis(bs, t, steps_));
                     break;
             }
 

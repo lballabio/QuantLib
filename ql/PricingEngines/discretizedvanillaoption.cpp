@@ -53,8 +53,9 @@ namespace QuantLib {
 
             Array prices(values_.size(), 0.0);
             for (Size j=0; j<values_.size(); j++) {
+                double underlying = tree->underlying(i, j);
                 prices[j] = Pricers::ExercisePayoff(arguments_.type,
-                    tree->underlying(i, j), strike);
+                    underlying, strike);
                 values_[j] = QL_MAX(values_[j], prices[j]);
             }
         }

@@ -75,9 +75,9 @@ int main(int argc, char* argv[])
         Spread dividendYield = 0.01; // 1%
         Rate riskFreeRate = 0.05; // 5%
 
-        Date todaysDate(15, May, 1999);
-        Date settlementDate(17, May, 1999);
-        Date exerciseDate(17, August, 1999); // 3 months
+        Date todaysDate(15, May, 1998);
+        Date settlementDate(17, May, 1998);
+        Date exerciseDate(17, May, 1999); // 1 year
         DayCounter rateDayCounter = DayCounters::Actual365();
         Time maturity = rateDayCounter.yearFraction(settlementDate,
             exerciseDate);
@@ -90,6 +90,8 @@ int main(int argc, char* argv[])
         std::cout << "Strike = "                  << strike
                   << std::endl;
         std::cout << "Risk-free interest rate = " << riskFreeRate
+                  << std::endl;
+        std::cout << "dividend yield = " << dividendYield
                   << std::endl;
         std::cout << "Volatility = "              << volatility
                   << std::endl;
@@ -289,6 +291,36 @@ int main(int argc, char* argv[])
         option.setPricingEngine(Handle<PricingEngine>(
             new BinomialVanillaEngine(
                 BinomialVanillaEngine::CoxRossRubinstein, 800)));
+        value = option.NPV();
+        discrepancy = QL_FABS(value-rightValue);
+        relativeDiscrepancy = discrepancy/rightValue;
+        std::cout << method << "\t"
+             << DoubleFormatter::toString(value, 4) << "\t"
+             << "N/A\t\t"
+             << DoubleFormatter::toString(discrepancy, 6) << "\t"
+             << DoubleFormatter::toString(relativeDiscrepancy, 6)
+             << std::endl;
+
+        // Equal Probability Additive Binomial Tree (EQP)
+        method = "Additive (EQP)";
+        option.setPricingEngine(Handle<PricingEngine>(
+            new BinomialVanillaEngine(
+                BinomialVanillaEngine::EQP, 800)));
+        value = option.NPV();
+        discrepancy = QL_FABS(value-rightValue);
+        relativeDiscrepancy = discrepancy/rightValue;
+        std::cout << method << "\t"
+             << DoubleFormatter::toString(value, 4) << "\t"
+             << "N/A\t\t"
+             << DoubleFormatter::toString(discrepancy, 6) << "\t"
+             << DoubleFormatter::toString(relativeDiscrepancy, 6)
+             << std::endl;
+
+        // Equal Jumps Additive Binomial Tree (Trigeorgis)
+        method = "Bin. Trigeorgis";
+        option.setPricingEngine(Handle<PricingEngine>(
+            new BinomialVanillaEngine(
+                BinomialVanillaEngine::Trigeorgis, 800)));
         value = option.NPV();
         discrepancy = QL_FABS(value-rightValue);
         relativeDiscrepancy = discrepancy/rightValue;

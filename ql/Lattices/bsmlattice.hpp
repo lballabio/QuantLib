@@ -25,8 +25,8 @@
 #ifndef quantlib_lattices_bsm_lattice_h
 #define quantlib_lattices_bsm_lattice_h
 
+#include <ql/Lattices/tree.hpp>
 #include <ql/Lattices/lattice.hpp>
-#include <ql/Lattices/binomialtree.hpp>
 
 namespace QuantLib {
 
@@ -57,40 +57,6 @@ namespace QuantLib {
             Handle<Tree> tree_;
             DiscountFactor discount_;
             double pd_, pu_;
-        };
-
-        //! Cox-Ross-Rubinstein binomial tree
-        class CoxRossRubinstein : public BinomialTree {
-          public:
-            CoxRossRubinstein(double volatility,
-                              Rate riskFreeRate,
-                              Rate dividendYield, 
-                              double underlying,
-                              Time end, 
-                              Size steps);
-
-            double underlying(Size i, Size index) const;
-
-            double probability(Size i, Size index, Size branch) const;
-
-          private:
-            double x0_, sigma_, mu_, dt_;
-        };
-
-        //! Jarrow-Rudd binomial tree
-        class JarrowRudd : public BinomialTree {
-          public:
-            JarrowRudd(double volatility,
-                       Rate riskFreeRate,
-                       Rate dividendYield, 
-                       double underlying,
-                       Time end, 
-                       Size steps);
-
-            double underlying(Size i, Size index) const;
-            double probability(Size i, Size index, Size branch) const;
-          private:
-            double x0_, sigma_, mu_, dt_;
         };
 
     }

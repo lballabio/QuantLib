@@ -112,7 +112,7 @@ namespace QuantLib {
         //! Pricing engine for Vanilla options using binomial trees
         class BinomialVanillaEngine : public VanillaEngine {
           public:
-            enum Type { CoxRossRubinstein, JarrowRudd, LeisenReimer };
+            enum Type { CoxRossRubinstein, JarrowRudd, EQP, Trigeorgis };
 
             BinomialVanillaEngine(Type type, Size steps)
             : type_(type), steps_(steps) {}
