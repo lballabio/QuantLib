@@ -32,6 +32,7 @@
 #include "operators.hpp"
 #include "piecewiseflatforward.hpp"
 #include "riskstats.hpp"
+#include "swap.hpp"
 
 int main() {
     CppUnit::TextUi::TestRunner runner;
@@ -49,6 +50,7 @@ int main() {
     runner.addTest(new OperatorTest);
     runner.addTest(new PiecewiseFlatForwardTest);
     runner.addTest(new RiskStatisticsTest);
+    runner.addTest(SimpleSwapTest::suite());
 
     std::string header = "Testing QuantLib " QL_VERSION ;
     std::cerr << std::string(header.length(),'=') << std::endl;
