@@ -60,6 +60,30 @@ python-test:
 endif
 
 
+if RUBY_FOUND
+if SWIG_FOUND
+ruby:
+	$(SWIG) -ruby -c++ -ISWIG -o Ruby/quantlib_wrap.cpp SWIG/QuantLib.i
+	$(RUBY) -CRuby extconf.rb
+	$(MAKE) -C Ruby
+else
+ruby:
+	echo You need to install swig in order to generate wrappers
+endif
+ruby-install:
+	$(MAKE) -C Ruby install
+ruby-test:
+	$(MAKE) -C Ruby/Tests ruby-test
+else
+ruby:
+	echo You need to install ruby in order to build this module
+ruby-install:
+	echo You need to install ruby in order to install this module
+ruby-test:
+	echo You need to install ruby in order to test this module
+endif
+
+
 if DOXYGEN_FOUND
 docs:
 	$(MAKE) -C Docs docs

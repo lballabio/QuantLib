@@ -23,6 +23,9 @@
 
 /* $Source$
    $Log$
+   Revision 1.27  2001/03/26 12:41:23  lballabio
+   Added ruby, ruby-install and ruby-test targets to makefile (and added calendars to Ruby module in the meantime)
+
    Revision 1.26  2001/03/23 15:01:19  lballabio
    Added targets python and python-install which actually build and install the module, and renamed target test to python-test
 
@@ -38,11 +41,7 @@
 
 */
 
-#if defined(SWIGRUBY)
-%module QuantLibc
-#else
 %module QuantLib
-#endif
 
 %{
 #include "quantlib.h"
@@ -87,6 +86,7 @@ using QuantLib::IndexError;
 
 #if defined(SWIGRUBY)
 %include Date.i
+%include Calendars.i
 %include String.i
 #else
 // PLEASE ADD ANY NEW *.i FILE AT THE BOTTOM, NOT HERE

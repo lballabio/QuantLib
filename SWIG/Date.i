@@ -24,6 +24,9 @@
 
 /* $Source$
    $Log$
+   Revision 1.26  2001/03/26 12:41:23  lballabio
+   Added ruby, ruby-install and ruby-test targets to makefile (and added calendars to Ruby module in the meantime)
+
    Revision 1.25  2001/03/21 15:04:06  lballabio
    Started playing with Ruby
 
@@ -511,6 +514,7 @@ class Date {
     }
 };
 
+#if defined(SWIGPYTHON)
 // typemap Python sequence of Dates to std::vector<Date>
 
 %{
@@ -605,6 +609,7 @@ class DateVector {
     #endif
 
 }; 
+#endif
 
 %typemap(python,in) DateVector (DateVector temp), 
   DateVector * (DateVector temp), const DateVector & (DateVector temp), 

@@ -24,9 +24,12 @@
 
 /*  $Source$
 	$Log$
+	Revision 1.19  2001/03/26 12:41:23  lballabio
+	Added ruby, ruby-install and ruby-test targets to makefile (and added calendars to Ruby module in the meantime)
+
 	Revision 1.18  2001/03/26 10:00:45  lballabio
 	Turned string-based factory into Calendar constructor
-
+	
 	Revision 1.17  2001/03/26 09:59:35  lballabio
 	Added Helsinki and Wellington calendars
 	
@@ -51,6 +54,14 @@
 using QuantLib::Handle;
 using QuantLib::Calendar;
 typedef Handle<Calendar> CalendarHandle;
+using QuantLib::Calendars::TARGET;
+using QuantLib::Calendars::NewYork;
+using QuantLib::Calendars::London;
+using QuantLib::Calendars::Milan;
+using QuantLib::Calendars::Frankfurt;
+using QuantLib::Calendars::Zurich;
+using QuantLib::Calendars::Helsinki;
+using QuantLib::Calendars::Wellington;
 %}
 
 // export Handle<Calendar>
@@ -62,6 +73,9 @@ typedef Handle<Calendar> CalendarHandle;
 
 // replicate the Calendar interface
 %addmethods CalendarHandle {
+    #if defined(SWIGRUBY)
+    void crash() {}
+    #endif
     CalendarHandle(const String& name) {
         String s = StringFormatter::toLowercase(name);
         if (s == "target" || s == "euro" || s == "eur")
@@ -87,16 +101,18 @@ typedef Handle<Calendar> CalendarHandle;
     bool isBusinessDay(const Date& d) {
         return (*self)->isBusinessDay(d);
     }
+    %pragma(ruby) pred = "isBusinessDay";
     bool isHoliday(const Date& d) {
         return (*self)->isHoliday(d);
     }
+    %pragma(ruby) pred = "isHoliday";
     Date roll(const Date& d, bool modified = false) {
         return (*self)->roll(d,modified);
     }
     Date advance(const Date& d, int n, TimeUnit unit, bool modified = false) {
         return (*self)->advance(d,n,unit,modified);
     }
-    #if defined (SWIGPYTHON)
+    #if defined (SWIGPYTHON) || defined (SWIGRUBY)
     String __str__() {
         if (!self->isNull())
             return (*self)->name()+" calendar";
@@ -106,24 +122,16 @@ typedef Handle<Calendar> CalendarHandle;
     int __cmp__(const CalendarHandle& other) {
         return ((*self) == other ? 0 : 1);
     }
+    #endif
+    #if defined (SWIGPYTHON)
     int __nonzero__() {
         return (self->isNull() ? 0 : 1);
     }
     #endif
 }
 
-// actual calendars
-
+#if defined (SWIGPYTHON)
 %{
-using QuantLib::Calendars::TARGET;
-using QuantLib::Calendars::NewYork;
-using QuantLib::Calendars::London;
-using QuantLib::Calendars::Milan;
-using QuantLib::Calendars::Frankfurt;
-using QuantLib::Calendars::Zurich;
-using QuantLib::Calendars::Helsinki;
-using QuantLib::Calendars::Wellington;
-
 CalendarHandle NewTARGET()     { return CalendarHandle(new TARGET); }
 CalendarHandle NewNewYork()    { return CalendarHandle(new NewYork); }
 CalendarHandle NewLondon()     { return CalendarHandle(new London); }
@@ -142,6 +150,8 @@ CalendarHandle NewWellington() { return CalendarHandle(new Wellington); }
 %name(Zurich)     CalendarHandle NewZurich();
 %name(Helsinki)   CalendarHandle NewHelsinki();
 %name(Wellington) CalendarHandle NewWellington();
+#endif
 
 
 #endif
+

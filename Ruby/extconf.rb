@@ -14,5 +14,5 @@ $CPPFLAGS += ' -I../Include/Solvers1D'
 $CPPFLAGS += ' -I../Include/TermStructures'
 $CPPFLAGS += ' -I../Include/Utilities'
 $libs     += ' -lQuantLib'
-create_makefile("QuantLibc")
+create_makefile("QuantLib")
 
