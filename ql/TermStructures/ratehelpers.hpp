@@ -93,11 +93,13 @@ namespace QuantLib {
         */
         class DepositRateHelper : public RateHelper {
           public:
-            DepositRateHelper(const RelinkableHandle<MarketElement>& rate, 
-                int settlementDays, int n, TimeUnit units, 
-                const Handle<Calendar>& calendar, 
-                RollingConvention convention, 
-                const Handle<DayCounter>& dayCounter);
+            DepositRateHelper(const RelinkableHandle<MarketElement>& rate,
+                              int settlementDays,
+                              int n,
+                              TimeUnit units,
+                              const Handle<Calendar>& calendar,
+                              RollingConvention convention,
+                              const Handle<DayCounter>& dayCounter);
             Rate impliedRate() const;
             DiscountFactor discountGuess() const;
             void setTermStructure(TermStructure*);
@@ -120,11 +122,13 @@ namespace QuantLib {
         */
         class FraRateHelper : public RateHelper {
           public:
-            FraRateHelper(const RelinkableHandle<MarketElement>& rate, 
-                int settlementDays, int monthsToStart, int monthsToEnd, 
-                const Handle<Calendar>& calendar,
-                RollingConvention convention, 
-                const Handle<DayCounter>& dayCounter);
+            FraRateHelper(const RelinkableHandle<MarketElement>& rate,
+                          int settlementDays,
+                          int monthsToStart,
+                          int monthsToEnd,
+                          const Handle<Calendar>& calendar,
+                          RollingConvention convention,
+                          const Handle<DayCounter>& dayCounter);
             Rate impliedRate() const;
             DiscountFactor discountGuess() const;
             void setTermStructure(TermStructure*);
@@ -147,16 +151,17 @@ namespace QuantLib {
         */
         class SwapRateHelper : public RateHelper {
           public:
-            SwapRateHelper(const RelinkableHandle<MarketElement>& rate, 
-                int settlementDays, int lengthInYears, 
-                const Handle<Calendar>& calendar, 
-                RollingConvention convention, 
-                // fixed leg
-                int fixedFrequency, 
-                bool fixedIsAdjusted, 
-                const Handle<DayCounter>& fixedDayCount, 
-                // floating leg
-                int floatingFrequency);
+            SwapRateHelper(const RelinkableHandle<MarketElement>& rate,
+                           int settlementDays,
+                           int lengthInYears,
+                           const Handle<Calendar>& calendar,
+                           RollingConvention convention,
+                           // fixed leg
+                           int fixedFrequency,
+                           bool fixedIsAdjusted,
+                           const Handle<DayCounter>& fixedDayCount,
+                           // floating leg
+                           int floatingFrequency);
             Rate impliedRate() const;
             // double discountGuess() const; // null for the time being
             Date maturity() const;

@@ -9,7 +9,6 @@ COMPILING
 
 LIBRARY
     *****
-    explicit/implicit instead of BackwardEuler, ForwardEuler
     asian continuous and/or discrete
     check geometric continuous and/or discrete
     introduce compoundpathpricer
@@ -17,17 +16,21 @@ LIBRARY
     next&weight in a std::pair
     check fraction in McPagoda
     Payoff class from EuropeanOption into QuantLib
-    Douglas Scheme
-    Richardson extrapolation
-    FuturesRateHelpers as FRA
+        redesign payoff class for integral (Green) option pricing, step
+        condition, etc
+
+    FuturesRateHelpers as FRA (no convexity)
     allow for negative dividendYield (that is cost of carry)
     Currency as class with methods returning related info
-        redesign payoff class for integral (Green) option pricing, step
-            condition, etc
     Nicolas spline contribution
     Maxim integral
     introduce size_t where appropriate
     ******
+
+    explicit/implicit instead of BackwardEuler, ForwardEuler
+    Douglas Scheme
+    Richardson extrapolation
+
     add futures (and convexity adjustment) to the bootstrapping method
     cash flow stream for IRR, duration
     QuantLib dynamic Win32 library (QuantLib.dll)
