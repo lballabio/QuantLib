@@ -8,3 +8,11 @@ Changes since release 0.3.8:
 
 - Added a tentative tracing facility to ease debugging
 
+- Formatters deprecated in favor of output manipulators. A number of
+  data types can now be sent directly to output streams. 
+- Stream-based implementation of QL_REQUIRE, QL_TRACE and similar macros.
+  Together with manipulators, this allows one to write simpler error
+  messages, as in:
+  QL_FAIL("forward at date " << d << " is " << io::rate(f));
+
+

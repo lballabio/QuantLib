@@ -198,6 +198,37 @@ namespace QuantLib {
     /*! \relates Period */
     bool operator>=(const Period&, const Period&);
 
+    /*! \relates Period */
+    std::ostream& operator<<(std::ostream&, const Period&);
+
+    namespace detail {
+
+        struct long_period_holder {
+            long_period_holder(const Period& p) : p(p) {}
+            Period p;
+        };
+        std::ostream& operator<<(std::ostream&, const long_period_holder&);
+
+        struct short_period_holder {
+            short_period_holder(Period p) : p(p) {}
+            Period p;
+        };
+        std::ostream& operator<<(std::ostream&, const short_period_holder&);
+
+    }
+
+    namespace io {
+
+        //! output periods in long format (e.g. "2 weeks")
+        /*! \ingroup manips */
+        detail::long_period_holder long_period(const Period&);
+
+        //! output periods in short format (e.g. "2w")
+        /*! \ingroup manips */
+        detail::short_period_holder short_period(const Period&);
+
+    }
+
 
     //! Concrete date class
     /*! This class provides methods to inspect dates as well as methods and

@@ -1,6 +1,6 @@
 
 /*
- Copyright (C) 2003 StatPro Italia srl
+ Copyright (C) 2003, 2004, 2005 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -23,6 +23,7 @@
 #include <ql/Utilities/dataformatters.hpp>
 #include <ql/Utilities/tracing.hpp>
 #include <ql/Utilities/steppingiterator.hpp>
+#include <ql/Utilities/strings.hpp>
 
 
 #endif

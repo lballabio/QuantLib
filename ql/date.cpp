@@ -525,6 +525,65 @@ namespace QuantLib {
     }
 
 
+    // period formatting
+
+    std::ostream& operator<<(std::ostream& out, const Period& p) {
+        return out << io::long_period(p);
+    }
+
+    namespace detail {
+
+        std::ostream& operator<<(std::ostream& out,
+                                 const long_period_holder& holder) {
+            Integer n = holder.p.length();
+            out << n << " ";
+            switch (holder.p.units()) {
+              case Days:
+                return out << (n == 1 ? "day" : "days");
+              case Weeks:
+                return out << (n == 1 ? "week" : "weeks");
+              case Months:
+                return out << (n == 1 ? "month" : "months");
+              case Years:
+                return out << (n == 1 ? "year" : "years");
+              default:
+                QL_FAIL("unknown time unit");
+            }
+        }
+
+        std::ostream& operator<<(std::ostream& out,
+                                 const short_period_holder& holder) {
+            Integer n = holder.p.length();
+            out << n;
+            switch (holder.p.units()) {
+              case Days:
+                return out << "d";
+              case Weeks:
+                return out << "w";
+              case Months:
+                return out << "m";
+              case Years:
+                return out << "y";
+              default:
+                QL_FAIL("unknown time unit");
+            }
+        }
+
+    }
+
+    namespace io {
+
+        detail::long_period_holder long_period(const Period& p) {
+            return detail::long_period_holder(p);
+        }
+
+        detail::short_period_holder short_period(const Period& p) {
+            return detail::short_period_holder(p);
+        }
+
+    }
+
+
     // month formatting
 
     std::ostream& operator<<(std::ostream& out, Month m) {
