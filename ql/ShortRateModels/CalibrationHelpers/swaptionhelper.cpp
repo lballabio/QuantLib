@@ -56,8 +56,9 @@ namespace QuantLib {
                     frequency=1;
                 } else
                     throw Error("index tenor not valid!");
-                Date startDate = termStructure->settlementDate().
-                    plus(maturity.length(), maturity.units());
+                Date startDate = index->calendar().advance(
+                    termStructure->settlementDate(),
+                    maturity.length(), maturity.units());
                 Rate fixedRate = 0.04;//dummy value
                 swap_ = Handle<SimpleSwap>(new SimpleSwap(
                   false,
