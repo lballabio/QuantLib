@@ -893,10 +893,6 @@ SOURCE=.\ql\Math\primenumbers.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\ql\Math\riskmeasures.hpp
-# End Source File
-# Begin Source File
-
 SOURCE=.\ql\Math\riskstatistics.hpp
 # End Source File
 # Begin Source File
@@ -2133,10 +2129,6 @@ SOURCE=.\ql\quantlib.hpp
 # Begin Source File
 
 SOURCE=.\ql\relinkablehandle.hpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\ql\riskstatistics.hpp
 # End Source File
 # Begin Source File
 
