@@ -81,35 +81,37 @@ namespace QuantLib {
 
     // inline definitions
     
-    double CapFlatVolatilityStructure::volatility(const Date& end, 
-                                                  Rate strike) const {
+    inline double CapFlatVolatilityStructure::volatility(const Date& end, 
+                                                         Rate strike) const {
         Date start = settlementDate();
         Time t = dayCounter().yearFraction(start,end,start,end);
         return volatilityImpl(t,strike);
     }
 
-    double CapFlatVolatilityStructure::volatility(const Period& length, 
-                                                  Rate strike) const {
+    inline double CapFlatVolatilityStructure::volatility(const Period& length, 
+                                                         Rate strike) const {
         Date start = settlementDate();
         Date end = start.plus(length);
         Time t = dayCounter().yearFraction(start,end,start,end);
         return volatilityImpl(t,strike);
     }
 
-    double CapFlatVolatilityStructure::volatility(Time t, 
-                                                  Rate strike) const {
+    inline double CapFlatVolatilityStructure::volatility(Time t, 
+                                                         Rate strike) const {
         return volatilityImpl(t,strike);
     }
 
 
-    double CapletForwardVolatilityStructure::volatility(const Date& start, 
+    inline double CapletForwardVolatilityStructure::volatility(
+                                                        const Date& start, 
                                                         Rate strike) const {
         Date settl = settlementDate();
         Time t = dayCounter().yearFraction(settl,start,settl,start);
         return volatilityImpl(t,strike);
     }
 
-    double CapletForwardVolatilityStructure::volatility(Time t, 
+    inline double CapletForwardVolatilityStructure::volatility(
+                                                        Time t, 
                                                         Rate strike) const {
         return volatilityImpl(t,strike);
     }

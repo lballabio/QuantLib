@@ -58,9 +58,9 @@ namespace QuantLib {
 
     // inline definitions
     
-    double SwaptionVolatilityStructure::volatility(const Date& start, 
-                                                   const Period& length, 
-                                                   Rate strike) const {
+    inline double SwaptionVolatilityStructure::volatility(const Date& start, 
+                                                          const Period& length, 
+                                                          Rate strike) const {
         Time startTime = dayCounter().yearFraction(todaysDate(),start,
                                                    todaysDate(),start);
         Date end = start.plus(length);
@@ -68,9 +68,9 @@ namespace QuantLib {
         return volatilityImpl(startTime,timeLength,strike);
     }
 
-    double SwaptionVolatilityStructure::volatility(Time start, 
-                                                   Time length, 
-                                                   Rate strike) const {
+    inline double SwaptionVolatilityStructure::volatility(Time start, 
+                                                          Time length, 
+                                                          Rate strike) const {
         return volatilityImpl(start,length,strike);
     }
     
