@@ -18,7 +18,8 @@
  * You should have received a copy of the license along with this file;
  * if not, contact ferdinando@ametrano.net
  *
- * QuantLib license is also available at http://quantlib.sourceforge.net/LICENSE.TXT
+ * QuantLib license is also available at 
+ *   http://quantlib.sourceforge.net/LICENSE.TXT
 */
 
 /*! \file bsmoption.cpp
@@ -27,6 +28,10 @@
     $Source$
     $Name$
     $Log$
+    Revision 1.20  2001/02/15 15:27:52  marmar
+    Now impliedVol is called with default values for maxVolatility
+    and minVolatility
+
     Revision 1.19  2001/02/15 11:56:54  nando
     impliedVol require targetValue>0.0
 
@@ -71,8 +76,8 @@ namespace QuantLib {
                 "BSMOption::BSMOption : volatility must be positive");
         }
 
-        double BSMOption::impliedVolatility(double targetValue, double accuracy,
-                    int maxEvaluations) const {
+        double BSMOption::impliedVolatility(double targetValue, double accuracy, 
+                    int maxEvaluations, double minVol, double maxVol) const {
             // check option targetValue boundary condition
             QL_REQUIRE(targetValue > 0.0,
              "BSMOption::impliedVol : targetValue must be positive");
@@ -111,7 +116,8 @@ namespace QuantLib {
             // solver
             Solvers1D::Brent s1d = Solvers1D::Brent();
             s1d.setMaxEvaluations(maxEvaluations);
-            s1d.setLowBound(QL_EPSILON);
+            s1d.setLowBound(minVol);
+            s1d.setHiBound(maxVol);
 
             return s1d.solve(bsmf, accuracy, theVolatility, 0.05);
         }
