@@ -119,12 +119,12 @@ std::string Representation(const Handle<Instrument>& i) {
 %{
 using QuantLib::Instruments::Stock;
 
-InstrumentHandle NewStock(char* isinCode, char* description) {
+InstrumentHandle NewStock(char* isinCode = "", char* description = "") {
 	return InstrumentHandle(new Stock(isinCode,description));
 }
 %}
 
-%name(Stock) InstrumentHandle NewStock(char* isinCode, char* description);
+%name(Stock) InstrumentHandle NewStock(char* isinCode = "", char* description = "");
 
 
 #endif
