@@ -1,7 +1,7 @@
 
 # $Id$
 
-SUBDIRS = pages
+SUBDIRS = pages Examples images
 
 EXTRA_DIST = \
              makefile.mak \

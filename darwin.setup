@@ -1,4 +1,4 @@
-#!/usr/bin
+#!/bin/sh
 patch -p1 < config/macosx/configure.patch
 patch -p1 < config/macosx/ltmain.sh.patch
 patch -p1 < config/macosx/history.patch

@@ -3,8 +3,8 @@
 
 EXTRA_DIST = \
              authors.docs \
-             cashflows.docs \
              coreclasses.docs \
+			 currencies.docs \
              datetime.docs \
              examples.docs \
              findiff.docs \

@@ -74,8 +74,6 @@ If you want to compile the HTML documentation into Microsoft Help format:
 From the base directory, you'll have to do
 
 cd Docs
-./bootstrap
-./configure
 make docs-all
 
 You'll end up with:
