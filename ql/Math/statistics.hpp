@@ -208,8 +208,8 @@ namespace QuantLib {
             QL_REQUIRE(sampleNumber_>2,
                        "Stat::skewness() : sample number <=2, unsufficient");
             double s = standardDeviation();
-            QL_ENSURE(s>0.0,
-                      "Stat::skewness() : standard_dev=0.0, skew undefined");
+	    if (s==0.0) return 0.0;
+
             double m = mean();
 
             return sampleNumber_*sampleNumber_/
@@ -220,10 +220,13 @@ namespace QuantLib {
         inline double Statistics::kurtosis() const {
             QL_REQUIRE(sampleNumber_>3,
                        "Stat::kurtosis() : sample number <=3, unsufficient");
+
             double m = mean();
             double v = variance();
-            QL_ENSURE(v>0.0,
-                      "Stat::kurtosis() : variance=0.0, kurtosis undefined");
+
+	    if (v==0)
+		return  - 3.0*(sampleNumber_-1.0)*(sampleNumber_-1.0) /
+		    ((sampleNumber_-2.0)*(sampleNumber_-3.0));
 
             return sampleNumber_*sampleNumber_*(sampleNumber_+1.0) /
                 ((sampleNumber_-1.0)*(sampleNumber_-2.0) *
