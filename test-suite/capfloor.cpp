@@ -80,7 +80,8 @@ Handle<Instrument> CapFloorTest::makeCapFloor(
 }
 
 Handle<PricingEngine> CapFloorTest::makeEngine(double volatility) {
-    Handle<MarketElement> vol(new SimpleMarketElement(volatility));
+    RelinkableHandle<MarketElement> vol(
+        Handle<MarketElement>(new SimpleMarketElement(volatility)));
     Handle<BlackModel> model(new BlackModel(vol,termStructure_));
     return Handle<PricingEngine>(new BlackCapFloor(model));
 }

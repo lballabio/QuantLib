@@ -84,11 +84,11 @@ namespace QuantLib {
                         index->rollingConvention(), index, 0, 
                         std::vector<double>(1, 0.0));
                 std::vector<Handle<CashFlow> > fixedLeg = 
-                    FixedRateCouponVector(nominals, 
-                        std::vector<Rate>(1, fixedRate), startDate, maturity, 
-                        frequency, index->calendar(), 
-                        index->rollingConvention(), false, index->dayCounter(), 
-                        index->dayCounter());
+                    FixedRateCouponVector(
+                        nominals, std::vector<Rate>(1, fixedRate), 
+                        startDate, maturity, frequency, index->calendar(), 
+                        index->rollingConvention(), false, 
+                        index->dayCounter(), index->dayCounter());
 
                 Handle<Swap> swap(
                     new Swap(floatingLeg, fixedLeg, termStructure));
@@ -97,7 +97,8 @@ namespace QuantLib {
                 engine_  = Handle<PricingEngine>( 
                     new Pricers::BlackCapFloor(blackModel_));
                 cap_ = Handle<VanillaCap>(
-                    new VanillaCap(floatingLeg, std::vector<Rate>(1, fairRate), 
+                    new VanillaCap(floatingLeg, 
+                                   std::vector<Rate>(1, fairRate), 
                                    termStructure, engine_));
                 marketValue_ = blackPrice(volatility_->value());
             }
@@ -120,7 +121,8 @@ namespace QuantLib {
             double CapHelper::blackPrice(double sigma) const {
                 Handle<MarketElement> vol(new SimpleMarketElement(sigma));
                 Handle<BlackModel> blackModel(
-                    new BlackModel(vol, termStructure_));
+                    new BlackModel(RelinkableHandle<MarketElement>(vol), 
+                                   termStructure_));
                 Handle<PricingEngine> black(
                     new Pricers::BlackCapFloor(blackModel));
                 cap_->setPricingEngine(black);
@@ -128,6 +130,9 @@ namespace QuantLib {
                 cap_->setPricingEngine(engine_);
                 return value;
             }
+
         }
+
     }
+
 }

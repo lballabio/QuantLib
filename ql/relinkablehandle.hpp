@@ -39,7 +39,7 @@ namespace QuantLib {
         /*! \warning see the documentation of the <tt>linkTo</tt> method
                 for issues relatives to <tt>registerAsObserver</tt>.
         */
-        Link(const Handle<Type>& h = Handle<Type>(),
+        explicit Link(const Handle<Type>& h = Handle<Type>(),
              bool registerAsObserver = true);
         /*! \warning <i><b>registerAsObserver</b></i> is left as a backdoor
                 in case the programmer cannot guarantee that the object
@@ -78,8 +78,8 @@ namespace QuantLib {
         /*! \warning see the documentation of <tt>Link</tt> for issues 
                      relatives to <tt>registerAsObserver</tt>.
         */
-        RelinkableHandle(const Handle<Type>& h = Handle<Type>(),
-            bool registerAsObserver = true);
+        explicit RelinkableHandle(const Handle<Type>& h = Handle<Type>(),
+                                  bool registerAsObserver = true);
         /*! \warning see the documentation of <tt>Link</tt> for issues 
                      relatives to <tt>registerAsObserver</tt>.
         */

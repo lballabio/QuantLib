@@ -111,8 +111,9 @@ int main(int argc, char* argv[])
         Rate weekRates[3] = {3.295, 3.3, 3.3};
         Size i;
         for (i=0; i<3; i++) {
-            Handle<MarketElement> depositRate(
-                new SimpleMarketElement(weekRates[i]*0.01));
+            RelinkableHandle<MarketElement> depositRate(
+                Handle<MarketElement>(
+                    new SimpleMarketElement(weekRates[i]*0.01)));
             Handle<RateHelper> depositHelper(new DepositRateHelper(
                 depositRate, i+1, Weeks, settlementDays, calendar,
                 ModifiedFollowing, depositDayCounter));
@@ -124,8 +125,9 @@ int main(int argc, char* argv[])
             3.395, 3.41, 3.41, 3.49, 3.54, 3.53};
 
         for (i=0; i<11; i++) {
-            Handle<MarketElement> depositRate(
-                new SimpleMarketElement(depositRates[i]*0.01));
+            RelinkableHandle<MarketElement> depositRate(
+                Handle<MarketElement>(
+                    new SimpleMarketElement(depositRates[i]*0.01)));
             Handle<RateHelper> depositHelper(new DepositRateHelper(
                 depositRate, i+1, Months, settlementDays, calendar,
                 ModifiedFollowing, depositDayCounter));

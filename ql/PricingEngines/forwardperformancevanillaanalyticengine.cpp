@@ -14,6 +14,7 @@
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
+
 /*! \file forwardperformancevanillaanalyticengine.cpp
     \brief Forward Performance vanilla engine using analytic formulas
 
@@ -39,12 +40,16 @@ namespace QuantLib {
             originalArguments_->type = arguments_.type;
             originalArguments_->underlying = 1.0;
             originalArguments_->strike = arguments_.moneyness;
-            originalArguments_->dividendTS = Handle<TermStructure>(new
-                ImpliedTermStructure(arguments_.dividendTS,
-                arguments_.resetDate, arguments_.resetDate));
-            originalArguments_->riskFreeTS = Handle<TermStructure>(new
-                ImpliedTermStructure(arguments_.riskFreeTS,
-                arguments_.resetDate, arguments_.resetDate));
+            originalArguments_->dividendTS = RelinkableHandle<TermStructure>(
+                Handle<TermStructure>(
+                    new ImpliedTermStructure(arguments_.dividendTS,
+                                             arguments_.resetDate, 
+                                             arguments_.resetDate)));
+            originalArguments_->riskFreeTS = RelinkableHandle<TermStructure>(
+                Handle<TermStructure>(
+                    new ImpliedTermStructure(arguments_.riskFreeTS,
+                                             arguments_.resetDate, 
+                                             arguments_.resetDate)));
 
             // The following approach is plain wrong.
             // The right solution would be stochastic volatility or
@@ -52,11 +57,16 @@ namespace QuantLib {
             // As a bare minimum one could extract from the Black vol surface
             // the implied vol at moneyness% of the forward value,
             // istead of the moneyness% of the spot value
-            originalArguments_->volTS = Handle<BlackVolTermStructure>(new
-                BlackConstantVol(arguments_.resetDate,
-                arguments_.volTS->blackForwardVol(arguments_.resetDate,
-                arguments_.exercise.date(),
-                arguments_.moneyness* arguments_.underlying)));
+            originalArguments_->volTS = 
+                RelinkableHandle<BlackVolTermStructure>(
+                    Handle<BlackVolTermStructure>(
+                        new BlackConstantVol(
+                            arguments_.resetDate,
+                            arguments_.volTS->blackForwardVol(
+                                arguments_.resetDate,
+                                arguments_.exercise.date(),
+                                arguments_.moneyness*arguments_.underlying),
+                            arguments_.volTS->dayCounter())));
 
             originalArguments_->exercise = arguments_.exercise;
 

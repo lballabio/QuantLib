@@ -25,6 +25,8 @@ using namespace QuantLib;
 using QuantLib::Pricers::EuropeanOption;
 using QuantLib::Pricers::McEuropean;
 using QuantLib::Pricers::FdEuropean;
+using QuantLib::TermStructures::FlatForward;
+using QuantLib::VolTermStructures::BlackConstantVol;
 
 // helper function for option payoff: MAX((stike-underlying),0), etc.
 using QuantLib::Pricers::ExercisePayoff;
@@ -223,26 +225,30 @@ int main(int argc, char* argv[])
 
 
         // bootstrap the yield/dividend/vol curves
-        Handle<TermStructure> flatTermStructure(new
-            TermStructures::FlatForward(todaysDate, settlementDate,
-            riskFreeRate, rateDayCounter));
-        Handle<TermStructure> flatDividendTS(new
-            TermStructures::FlatForward(todaysDate, settlementDate,
-            dividendYield, rateDayCounter));
-        Handle<BlackVolTermStructure> flatVolTS(new
-            VolTermStructures::BlackConstantVol(settlementDate, volatility));
+        RelinkableHandle<TermStructure> flatTermStructure(
+            Handle<TermStructure>(
+                new FlatForward(todaysDate, settlementDate,
+                                riskFreeRate, rateDayCounter)));
+        RelinkableHandle<TermStructure> flatDividendTS(
+            Handle<TermStructure>(
+                new FlatForward(todaysDate, settlementDate,
+                                dividendYield, rateDayCounter)));
+        RelinkableHandle<BlackVolTermStructure> flatVolTS(
+            Handle<BlackVolTermStructure>(
+                new BlackConstantVol(settlementDate, volatility)));
 
 
         Instruments::VanillaOption option(
             Option::Call,
-            Handle<MarketElement>(new SimpleMarketElement(underlying)),
+            RelinkableHandle<MarketElement>(
+                Handle<MarketElement>(new SimpleMarketElement(underlying))),
             strike,
             flatDividendTS,
             flatTermStructure,
             exercise,
             flatVolTS,
-            Handle<PricingEngine>(new PricingEngines::EuropeanAnalyticalEngine())
-            );
+            Handle<PricingEngine>(
+                new PricingEngines::EuropeanAnalyticalEngine()));
             
         // method: Black Scholes Engine
         method = "Black Scholes";
@@ -295,7 +301,8 @@ int main(int argc, char* argv[])
         double correlation = 0.0;
         Instruments::QuantoVanillaOption quantoOption(
             Option::Call,
-            Handle<MarketElement>(new SimpleMarketElement(underlying)),
+            RelinkableHandle<MarketElement>(
+                Handle<MarketElement>(new SimpleMarketElement(underlying))),
             strike,
             flatDividendTS,
             flatTermStructure,
@@ -304,8 +311,8 @@ int main(int argc, char* argv[])
             quantoEngine,
             flatTermStructure,
             flatVolTS,
-            Handle<MarketElement>(new SimpleMarketElement(correlation))
-            );
+            RelinkableHandle<MarketElement>(
+                Handle<MarketElement>(new SimpleMarketElement(correlation))));
             
         value = quantoOption.NPV();
         double delta = quantoOption.delta();

@@ -132,7 +132,8 @@ namespace QuantLib {
             double SwaptionHelper::blackPrice(double sigma) const {
                 Handle<MarketElement> vol(new SimpleMarketElement(sigma));
                 Handle<BlackModel> blackModel(
-                    new BlackModel(vol, termStructure_));
+                    new BlackModel(RelinkableHandle<MarketElement>(vol), 
+                                   termStructure_));
                 Handle<PricingEngine> black(
                     new Pricers::BlackSwaption(blackModel));
                 swaption_->setPricingEngine(black);

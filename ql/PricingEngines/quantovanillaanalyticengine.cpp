@@ -14,6 +14,7 @@
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
+
 /*! \file quantovanillaanalyticengine.cpp
     \brief Quanto vanilla engine using analytic formulas
 
@@ -37,11 +38,15 @@ namespace QuantLib {
             originalArguments_->type = arguments_.type;
             originalArguments_->underlying = arguments_.underlying;
             originalArguments_->strike = arguments_.strike;
-            originalArguments_->dividendTS = Handle<TermStructure>(new
-                QuantoTermStructure(arguments_.dividendTS,
-                arguments_.riskFreeTS, arguments_.foreignRiskFreeTS,
-                arguments_.volTS, arguments_.exchRateVolTS,
-                arguments_.correlation));
+            originalArguments_->dividendTS = 
+                RelinkableHandle<TermStructure>(
+                    Handle<TermStructure>(
+                        new QuantoTermStructure(arguments_.dividendTS,
+                                                arguments_.riskFreeTS, 
+                                                arguments_.foreignRiskFreeTS,
+                                                arguments_.volTS, 
+                                                arguments_.exchRateVolTS,
+                                                arguments_.correlation)));
             originalArguments_->riskFreeTS = arguments_.riskFreeTS;
             originalArguments_->volTS = arguments_.volTS;
             originalArguments_->exercise = arguments_.exercise;

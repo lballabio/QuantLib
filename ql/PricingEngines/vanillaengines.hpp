@@ -54,27 +54,37 @@ namespace QuantLib {
 
         inline void VanillaOptionArguments::validate() const {
             QL_REQUIRE(type != Option::Type(-1),
-                       "VanillaOptionArguments::validate() : no option type given");
+                       "VanillaOptionArguments::validate() : "
+                       "no option type given");
             QL_REQUIRE(underlying != Null<double>(),
-                       "VanillaOptionArguments::validate() : null underlying given");
+                       "VanillaOptionArguments::validate() : "
+                       "null underlying given");
             QL_REQUIRE(underlying > 0.0,
-                       "VanillaOptionArguments::validate() : negative or zero underlying given");
+                       "VanillaOptionArguments::validate() : "
+                       "negative or zero underlying given");
             QL_REQUIRE(strike != Null<double>(),
-                       "VanillaOptionArguments::validate() : null strike given");
+                       "VanillaOptionArguments::validate() : "
+                       "null strike given");
             QL_REQUIRE(strike >= 0.0,
-                       "VanillaOptionArguments::validate() : negative strike given");
+                       "VanillaOptionArguments::validate() : "
+                       "negative strike given");
             QL_REQUIRE(!dividendTS.isNull(),
-                       "VanillaOptionArguments::validate() : null dividend term structure");
+                       "VanillaOptionArguments::validate() : "
+                       "null dividend term structure");
             QL_REQUIRE(!riskFreeTS.isNull(),
-                       "VanillaOptionArguments::validate() : null risk free term structure");
+                       "VanillaOptionArguments::validate() : "
+                       "null risk free term structure");
             QL_REQUIRE(!exercise.isNull(),
-                       "VanillaOptionArguments::validate() : null exercise data");
+                       "VanillaOptionArguments::validate() : "
+                       "null exercise data");
             QL_REQUIRE(!volTS.isNull(),
-                       "VanillaOptionArguments::validate() : null vol term structure");
+                       "VanillaOptionArguments::validate() : "
+                       "null vol term structure");
         }
 
         //! %results from vanilla option calculation
-        class VanillaOptionResults : public OptionValue, public OptionGreeks {};
+        class VanillaOptionResults : public OptionValue, 
+                                     public OptionGreeks {};
 
 
         //! Vanilla engine base class
