@@ -1,3 +1,47 @@
+2003-11-03 14:48  Ferdinando Ametrano <nando AT ametrano DOT net>
+
+	* History.txt (1.19), News.txt (1.30), Docs/pages/history.docs
+	(1.10), Docs/pages/platforms.docs (1.9), Docs/pages/usage.docs
+	(1.12): initial doc update
+
+2003-11-03 13:27  Luigi Ballabio <luigi.ballabio@riskmap.net>
+
+	* ql/ShortRateModels/model.hpp (1.20): Bug fix
+
+2003-11-03 13:27  Ferdinando Ametrano <nando AT ametrano DOT net>
+
+	* ql/scheduler.hpp (1.19): removing Borland warnings
+
+2003-11-03 12:58  Ferdinando Ametrano <nando AT ametrano DOT net>
+
+	* Examples/AmericanOption/.cvsignore (1.3),
+	Examples/BermudanSwaption/.cvsignore (1.8),
+	Examples/DiscreteHedging/.cvsignore (1.8),
+	Examples/EuropeanOption/.cvsignore (1.8), Examples/Swap/.cvsignore
+	(1.8), ql/.cvsignore (1.11), ql/Calendars/.cvsignore (1.7),
+	ql/CashFlows/.cvsignore (1.7), ql/DayCounters/.cvsignore (1.7),
+	ql/FiniteDifferences/.cvsignore (1.7), ql/Indexes/.cvsignore (1.7),
+	ql/Instruments/.cvsignore (1.7), ql/Lattices/.cvsignore (1.7),
+	ql/Math/.cvsignore (1.7), ql/MonteCarlo/.cvsignore (1.7),
+	ql/Optimization/.cvsignore (1.7), ql/Pricers/.cvsignore (1.7),
+	ql/PricingEngines/.cvsignore (1.7), ql/RandomNumbers/.cvsignore
+	(1.7), ql/ShortRateModels/.cvsignore (1.7),
+	ql/ShortRateModels/CalibrationHelpers/.cvsignore (1.7),
+	ql/ShortRateModels/OneFactorModels/.cvsignore (1.7),
+	ql/ShortRateModels/TwoFactorModels/.cvsignore (1.7),
+	ql/Solvers1D/.cvsignore (1.7), ql/TermStructures/.cvsignore (1.7),
+	ql/Volatilities/.cvsignore (1.2), ql/functions/.cvsignore (1.7),
+	test-suite/.cvsignore (1.11): Borland obj files ignored
+
+2003-11-03 12:46  Ferdinando Ametrano <nando AT ametrano DOT net>
+
+	* ql/: scheduler.hpp (1.18), CashFlows/basispointsensitivity.cpp
+	(1.3): removing Borland warnings
+
+2003-11-03 12:18  Ferdinando Ametrano <nando AT ametrano DOT net>
+
+	* ChangeLog.txt (1.37): updated
+
 2003-11-03 12:00  Ferdinando Ametrano <nando AT ametrano DOT net>
 
 	* Docs/README.txt (1.23), ql/Instruments/barrieroption.hpp (1.8),
