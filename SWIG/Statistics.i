@@ -26,6 +26,9 @@
     $Id$
     $Source$
     $Log$
+    Revision 1.21  2001/04/11 17:04:34  lballabio
+    Rubified RiskStatistics
+
     Revision 1.20  2001/04/09 12:24:58  nando
     updated copyright notice header and improved CVS tags
 
@@ -34,9 +37,6 @@
 #ifndef quantlib_statistics_i
 #define quantlib_statistics_i
 
-#if defined (SWIGPYTHON)
-%include QLArray.i
-#endif
 %include Vectors.i
 
 %{
@@ -64,6 +64,9 @@ class Statistics {
 };
 
 %addmethods Statistics {
+    #if defined(SWIGRUBY)
+    void crash() {}
+    #endif
     #if defined(SWIGPYTHON) || defined(SWIGRUBY)
     void addSequence(DoubleVector values) {
         self->addSequence(values.begin(), values.end());
@@ -75,6 +78,7 @@ class Statistics {
 }
 
 #if defined(SWIGPYTHON)
+%include QLArray.i
 %include Matrix.i
 
 %{

@@ -26,6 +26,9 @@
  $Id$
  $Source$
  $Log$
+ Revision 1.3  2001/04/11 17:04:34  lballabio
+ Rubified RiskStatistics
+
  Revision 1.2  2001/04/06 18:46:21  nando
  changed Authors, Contributors, Licence and copyright header
 
@@ -54,11 +57,12 @@ class DateTest < RUNIT::TestCase
         minDate.upto(maxDate) { |i|
             t = QuantLib.DateFromSerialNumber(i)
             # check serial number consistency
-            assert(t.serialNumber == i,
-                "inconsistent serial number:\n" +
-                "original:      #{i}\n" +
-                "date:          #{t}\n" +
-                "serial number: #{t.serialNumber}\n")
+            unless t.serialNumber == i
+                raise "inconsistent serial number:\n" + \
+                      "original:      #{i}\n" + \
+                      "date:          #{t}\n" + \
+                      "serial number: #{t.serialNumber}\n"
+            end
 
             dy  = t.dayOfYear
             d   = t.dayOfMonth

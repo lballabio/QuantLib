@@ -26,6 +26,9 @@
     $Id$
     $Source$
     $Log$
+    Revision 1.10  2001/04/11 17:04:34  lballabio
+    Rubified RiskStatistics
+
     Revision 1.9  2001/04/09 12:24:58  nando
     updated copyright notice header and improved CVS tags
 
@@ -46,17 +49,10 @@ class VarTool {
   public:
     VarTool();
     ~VarTool();
-    double valueAtRisk(double percentile,
-                       double mean,
-                       double std) const ;
-    double shortfall(double target,
-                     double mean,
-                     double std) const ;
-    double averageShortfall(double target,
-                            double mean,
-                            double std) const ;
+    double valueAtRisk(double percentile, double mean, double std) const ;
+    double shortfall(double target, double mean, double std) const ;
+    double averageShortfall(double target, double mean, double std) const ;
 };
-
 
 
 class RiskStatistics {
@@ -84,12 +80,19 @@ class RiskStatistics {
 };
 
 %addmethods RiskStatistics {
-	void addSequence(DoubleVector values) {
-	  self->addSequence(values.begin(), values.end());
-	}
-	void addWeightedSequence(DoubleVector values, DoubleVector weights) {
-	  self->addSequence(values.begin(), values.end(), weights.begin());
-	}
+    #if defined(SWIGRUBY)
+    void crash() {}
+    #endif
+    #if defined(SWIGPYTHON) || defined(SWIGRUBY)
+    void addSequence(DoubleVector values) {
+        self->addSequence(values.begin(), values.end());
+    }
+    void addWeightedSequence(DoubleVector values, DoubleVector weights) {
+        self->addSequence(values.begin(), values.end(), weights.begin());
+    }
+    #endif
 }
 
+
 #endif
+

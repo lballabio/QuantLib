@@ -26,6 +26,9 @@
     $Id$
     $Source$
     $Log$
+    Revision 1.40  2001/04/11 17:04:34  lballabio
+    Rubified RiskStatistics
+
     Revision 1.39  2001/04/11 11:06:16  lballabio
     Rubified Array
 
@@ -96,6 +99,7 @@ using QuantLib::IndexError;
 %include History.i
 %include QLArray.i
 %include RandomGenerators.i
+%include RiskStatistics.i
 %include Statistics.i
 %include Solvers1D.i
 %include String.i
@@ -113,7 +117,6 @@ using QuantLib::IndexError;
 %include Operators.i
 %include Options.i
 %include Pricers.i
-%include RiskStatistics.i
 %include TermStructures.i
 #endif
 

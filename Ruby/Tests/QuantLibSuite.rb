@@ -26,6 +26,9 @@
  $Id$
  $Source$
  $Log$
+ Revision 1.3  2001/04/11 17:04:34  lballabio
+ Rubified RiskStatistics
+
  Revision 1.2  2001/04/06 18:46:21  nando
  changed Authors, Contributors, Licence and copyright header
 
@@ -38,12 +41,14 @@ require 'runit/cui/testrunner'
 require 'dates'
 require 'distributions'
 require 'random_generators'
+require 'risk_statistics'
 require 'statistics'
 
 suite = RUNIT::TestSuite.new
 suite.add_test(DateTest.suite)
 suite.add_test(DistributionTest.suite)
 suite.add_test(RNGTest.suite)
+suite.add_test(RiskStatisticsTest.suite)
 suite.add_test(StatisticsTest.suite)
 
 result = RUNIT::CUI::TestRunner.run(suite)
