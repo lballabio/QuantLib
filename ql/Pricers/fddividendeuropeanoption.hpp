@@ -19,15 +19,15 @@
     \brief european option with discrete deterministic dividends
 */
 
-#ifndef BSM_dividend_european_option_pricer_h
-#define BSM_dividend_european_option_pricer_h
+#ifndef BSM_dividend_european_option_pricer_hpp
+#define BSM_dividend_european_option_pricer_hpp
 
-#include <ql/Pricers/europeanoption.hpp>
+#include <ql/option.hpp>
 
 namespace QuantLib {
 
     //! European option with dividends
-    class FdDividendEuropeanOption : public EuropeanOption    {
+    class FdDividendEuropeanOption {
       public:
         FdDividendEuropeanOption(Option::Type type, double underlying,
                                  double strike, Spread dividendYield, 
@@ -35,31 +35,19 @@ namespace QuantLib {
                                  double volatility,
                                  const std::vector<double>& dividends,
                                  const std::vector<Time>& exdivdates);
-        double theta() const;
-        double rho() const;
-        double dividendRho() const {
-            QL_FAIL("FdDividendEuropeanOption::dividendRho not"
-                    "implemented yet");
-        }
-        boost::shared_ptr<SingleAssetOption> clone() const;
-        double riskless(Rate r, std::vector<double> divs,
-                        std::vector<Time> divDates) const;
+        double value() const { return value_; }
+        double delta() const { return delta_; }
+        double gamma() const { return gamma_; }
+        double theta() const { return theta_; }
+        double vega() const { return vega_; }
+        double rho() const { return rho_; }
       private:
-        std::vector<double> dividends_;
-        std::vector<Time> exDivDates_;
+        double value_;
+        double delta_, gamma_;
+        double theta_;
+        double vega_;
+        double rho_;
     };
-
-
-    // inline definitions
-
-    inline double FdDividendEuropeanOption::riskless(
-                                            Rate r, std::vector<double> divs, 
-                                            std::vector<Time> divDates) const {
-        double tmp_riskless = 0.0;
-        for(Size j = 0; j < divs.size(); j++)
-            tmp_riskless += divs[j]*QL_EXP(-r*divDates[j]);
-        return tmp_riskless;
-    }
 
 }
 

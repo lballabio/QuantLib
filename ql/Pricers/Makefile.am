@@ -9,7 +9,6 @@ include_HEADERS = \
     continuousgeometricapo.hpp \
     discretegeometricapo.hpp \
     discretegeometricaso.hpp \
-    europeanoption.hpp \
     fdamericanoption.hpp \
     fdbermudanoption.hpp \
     fdbsmoption.hpp \
@@ -40,7 +39,6 @@ libPricers_la_SOURCES = \
     cliquetoption.cpp \
     discretegeometricapo.cpp \
     discretegeometricaso.cpp \
-    europeanoption.cpp \
     fdbermudanoption.cpp \
     fdbsmoption.cpp \
     fddividendamericanoption.cpp \

@@ -16,7 +16,7 @@
 */
 
 #include <ql/Pricers/fdstepconditionoption.hpp>
-#include <ql/Pricers/europeanoption.hpp>
+#include <ql/PricingEngines/blackformula.hpp>
 #include <ql/FiniteDifferences/valueatcenter.hpp>
 
 namespace QuantLib {
@@ -45,9 +45,13 @@ namespace QuantLib {
 
         // Control-variate variance reduction:
         // 1) calculate value/greeks of the European option analytically
-        EuropeanOption analyticEuro(payoff_.optionType(), underlying_, 
-                                    payoff_.strike(), dividendYield_, 
-                                    riskFreeRate_, residualTime_, volatility_);
+        double discount = QL_EXP(-riskFreeRate_*residualTime_);
+        double qDiscount = QL_EXP(-dividendYield_*residualTime_);
+        double forward = underlying_*qDiscount/discount;
+        double variance = volatility_*volatility_*residualTime_;
+        boost::shared_ptr<StrikedTypePayoff> payoff(
+                                             new PlainVanillaPayoff(payoff_));
+        BlackFormula black(forward, discount, variance, payoff);
 
         // 2) Initialize prices on the grid
         Array europeanPrices = intrinsicValues_;
@@ -59,19 +63,19 @@ namespace QuantLib {
                        stepCondition_);
 
         /* 4) Numerically calculate option value and greeks using
-           the european option as control variate                */
+           the European option as control variate                */
 
         value_ =  valueAtCenter(americanPrices)
             - valueAtCenter(europeanPrices)
-            + analyticEuro.value();
+            + black.value();
 
         delta_ =   firstDerivativeAtCenter(americanPrices, grid_)
             - firstDerivativeAtCenter(europeanPrices, grid_)
-            + analyticEuro.delta();
+            + black.delta(underlying_);
 
         gamma_ =   secondDerivativeAtCenter(americanPrices, grid_)
             - secondDerivativeAtCenter(europeanPrices, grid_)
-            + analyticEuro.gamma();
+            + black.gamma(underlying_);
 
         hasBeenCalculated_ = true;
     }

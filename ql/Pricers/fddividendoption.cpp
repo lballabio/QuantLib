@@ -17,7 +17,6 @@
 
 #include <ql/Pricers/fddividendoption.hpp>
 #include <ql/Math/cubicspline.hpp>
-#include <ql/Pricers/fddividendeuropeanoption.hpp>
 #include <ql/FiniteDifferences/valueatcenter.hpp>
 #include <iterator>
 
@@ -52,11 +51,20 @@ namespace QuantLib {
     }
 
     void FdDividendOption::initializeControlVariate() const{
-        analytic_ = boost::shared_ptr<SingleAssetOption>(
-             new FdDividendEuropeanOption(
-                  payoff_.optionType(), underlying_ + addElements(dividends_),
-                  payoff_.strike(), dividendYield_, riskFreeRate_,
-                  residualTime_, volatility_, dividends_, dates_));
+        double riskless = 0.0;
+        for (Size i=0; i<dividends_.size(); i++)
+            riskless += dividends_[i]*QL_EXP(-riskFreeRate_*dates_[i]);
+        double spot = underlying_ + addElements(dividends_) - riskless;
+        double discount = QL_EXP(-riskFreeRate_*residualTime_);
+        double qDiscount = QL_EXP(-dividendYield_*residualTime_);
+        double forward = spot*qDiscount/discount;
+        double variance = volatility_*volatility_*residualTime_;
+        boost::shared_ptr<StrikedTypePayoff> payoff(
+                                             new PlainVanillaPayoff(payoff_));
+        // theta, rho, and dividend rho should be corrected. However,
+        // the control variate machinery won't use them.
+        analytic_ = boost::shared_ptr<BlackFormula>(
+                       new BlackFormula(forward, discount, variance, payoff));
     }
 
     void FdDividendOption::executeIntermediateStep(Size step) const{

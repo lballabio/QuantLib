@@ -16,7 +16,6 @@
 */
 
 #include <ql/Pricers/fdbermudanoption.hpp>
-#include <ql/Pricers/europeanoption.hpp>
 
 namespace QuantLib {
 

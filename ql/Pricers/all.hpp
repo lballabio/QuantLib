@@ -25,7 +25,6 @@
 #include <ql/Pricers/continuousgeometricapo.hpp>
 #include <ql/Pricers/discretegeometricapo.hpp>
 #include <ql/Pricers/discretegeometricaso.hpp>
-#include <ql/Pricers/europeanoption.hpp>
 #include <ql/Pricers/fdamericanoption.hpp>
 #include <ql/Pricers/fdbermudanoption.hpp>
 #include <ql/Pricers/fdbsmoption.hpp>

@@ -19,10 +19,9 @@
     \brief Continuous Geometric Average Price Option (European exercise)
 */
 
-#ifndef quantlib_continous_geometric_average_price_option_h
-#define quantlib_continous_geometric_average_price_option_h
+#ifndef quantlib_continous_geometric_average_price_option_hpp
+#define quantlib_continous_geometric_average_price_option_hpp
 
-#include <ql/Pricers/europeanoption.hpp>
 #include <ql/PricingEngines/blackformula.hpp>
 
 namespace QuantLib {

@@ -213,9 +213,14 @@ void OldPricerTest::testFdEuropeanPricer() {
 
         for (Size j=0; j<LENGTH(types); j++) {
 
-            double anValue = EuropeanOption(types[j], under, strike,
-                                            qRate, rRate, resTime,
-                                            vol).value();
+            double rDiscount = QL_EXP(-rRate*resTime);
+            double qDiscount = QL_EXP(-qRate*resTime);
+            double forward = under*qDiscount/rDiscount;
+            double variance = vol*vol*resTime;
+            boost::shared_ptr<StrikedTypePayoff> payoff(
+                                    new PlainVanillaPayoff(types[j], strike));
+            double anValue = BlackFormula(forward, rDiscount, 
+                                          variance, payoff).value();
             double numValue = FdEuropean(types[j], under, strike,
                                          qRate, rRate, resTime,
                                          vol, 100, 400).value();
@@ -436,22 +441,12 @@ void OldPricerTest::testMcSingleFactorPricers() {
     Time residualTime = 0.25;
     volatility = 0.2;
 
-    EuropeanOption pricer1(type,underlying,strike,dividendYield,
-                           riskFreeRate,residualTime,volatility);
-    storedValue =  5.2185855660;
-    if (QL_FABS(pricer1.value()-storedValue) > 1.0e-10)
-        BOOST_FAIL(
-            "Batch 2, case 1:\n"
-            "    calculated value: "
-            + DoubleFormatter::toString(pricer1.value(),10) + "\n"
-            "    expected:         "
-            + DoubleFormatter::toString(storedValue,10));
     ContinuousGeometricAPO pricer2(type,underlying,strike,dividendYield,
                                    riskFreeRate,residualTime,volatility);
     storedValue = 4.6922213122;
     if (QL_FABS(pricer2.value()-storedValue) > 1.0e-10)
         BOOST_FAIL(
-            "Batch 2, case 2:\n"
+            "Batch 2:\n"
             "    calculated value: "
             + DoubleFormatter::toString(pricer2.value(),10) + "\n"
             "    expected:         "
@@ -459,7 +454,7 @@ void OldPricerTest::testMcSingleFactorPricers() {
 
     // "batch" 3
     //
-    // trying to approximate the continous version with the discrete version
+    // trying to approximate the continuous version with the discrete version
     type = Option::Put;
     underlying = 80.0;
     strike = 85.0;

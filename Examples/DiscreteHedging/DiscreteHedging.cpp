@@ -64,12 +64,17 @@ public:
       sigma_(sigma), r_(r) {
 
         // value of the option
-        EuropeanOption option = EuropeanOption(type, s0_, strike, 0.0, r_,
-            maturity_, sigma_);
-        std::cout << "Option value: " << option.value() << std::endl;
+        double rDiscount = QL_EXP(-r_*maturity_);
+        double qDiscount = 1.0;
+        double forward = s0_*qDiscount/rDiscount;
+        double variance = sigma_*sigma_*maturity_;
+        boost::shared_ptr<StrikedTypePayoff> payoff(
+                                             new PlainVanillaPayoff(payoff_));
+        BlackFormula black(forward,rDiscount,variance,payoff);
+        std::cout << "Option value: " << black.value() << std::endl;
 
         // store option's vega, since Derman and Kamal's formula needs it
-        vega_ = option.vega();
+        vega_ = black.vega(maturity_);
 
         std::cout << std::endl;
         std::cout <<
@@ -206,12 +211,17 @@ double ReplicationPathPricer::operator()(const Path& path) const
     /*** the initial deal ***/
     /************************/
     // option fair price (Black-Scholes) at t=0
-    EuropeanOption option = EuropeanOption(type_, stock, strike_,
-        stockDividendYield, r_, maturity_, sigma_);
+    double rDiscount = QL_EXP(-r_*maturity_);
+    double qDiscount = QL_EXP(-stockDividendYield*maturity_);
+    double forward = stock*qDiscount/rDiscount;
+    double variance = sigma_*sigma_*maturity_;
+    boost::shared_ptr<StrikedTypePayoff> payoff(
+                                       new PlainVanillaPayoff(type_,strike_));
+    BlackFormula black(forward,rDiscount,variance,payoff);
     // sell the option, cash in its premium
-    money_account += option.value();
+    money_account += black.value();
     // compute delta
-    double delta = option.delta();
+    double delta = black.delta(stock);
     // delta-hedge the option buying stock
     double stockAmount = delta;
     money_account -= stockAmount*stock;
@@ -235,11 +245,14 @@ double ReplicationPathPricer::operator()(const Path& path) const
 
         // recalculate option value at the current stock value,
         // and the current time to maturity
-        EuropeanOption option = EuropeanOption(type_, stock, strike_,
-            stockDividendYield, r_, maturity_-t, sigma_);
+        rDiscount = QL_EXP(-r_*(maturity_-t));
+        qDiscount = QL_EXP(-stockDividendYield*(maturity_-t));
+        forward = stock*qDiscount/rDiscount;
+        variance = sigma_*sigma_*(maturity_-t);
+        BlackFormula black(forward,rDiscount,variance,payoff);
 
         // recalculate delta
-        delta = option.delta();
+        delta = black.delta(stock);
 
         // re-hedging
         money_account -= (delta - stockAmount)*stock;

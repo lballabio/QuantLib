@@ -24,6 +24,7 @@
 
 #include <ql/Pricers/fdbsmoption.hpp>
 #include <ql/FiniteDifferences/fdtypedefs.hpp>
+#include <ql/PricingEngines/blackformula.hpp>
 
 namespace QuantLib {
 
@@ -47,7 +48,7 @@ namespace QuantLib {
         bool firstDateIsZero_;
         double firstNonZeroDate_;
         int firstIndex_;
-        mutable boost::shared_ptr<SingleAssetOption> analytic_;
+        mutable boost::shared_ptr<BlackFormula> analytic_;
         mutable Array prices_, controlPrices_;
         mutable boost::shared_ptr<StandardStepCondition> stepCondition_;
         mutable boost::shared_ptr<StandardFiniteDifferenceModel> model_;

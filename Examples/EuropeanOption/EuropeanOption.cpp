@@ -90,103 +90,6 @@ int main(int, char* [])
                   << std::endl;
         std::cout << std::endl;
 
-        std::string method;
-        double value, discrepancy, rightValue, relativeDiscrepancy;
-
-
-        std::cout << std::endl << std::endl ;
-
-        // write column headings
-        std::cout << "Method\t\tValue\tEstimatedError\tDiscrepancy"
-            "\tRel. Discr." << std::endl;
-
-
-
-        // first method: Black Scholes analytic solution
-        method ="Black Scholes";
-        value = EuropeanOption(type, underlying, strike,
-            dividendYield, riskFreeRate, maturity, volatility).value();
-        double estimatedError = 0.0;
-        discrepancy = 0.0;
-        relativeDiscrepancy = 0.0;
-        std::cout << method << "\t"
-             << DoubleFormatter::toString(value, 4) << "\t"
-             << DoubleFormatter::toString(estimatedError, 4) << "\t\t"
-             << DoubleFormatter::toString(discrepancy, 6) << "\t"
-             << DoubleFormatter::toString(relativeDiscrepancy, 6)
-             << std::endl;
-
-
-        // store the Black Scholes value as the correct one
-        rightValue = value;
-
-
-
-
-
-        // second method: Call-Put parity
-        method ="Call-Put parity";
-        Option::Type reverseType =
-            (type==Option::Call ? Option::Put : Option::Call);
-        double coefficient =
-            (type==Option::Call ? 1.0 : -1.0);
-        value = EuropeanOption(reverseType, underlying, strike,
-            dividendYield, riskFreeRate, maturity, volatility).value()
-            + coefficient * (underlying*QL_EXP(-dividendYield*maturity)
-            - strike*QL_EXP(- riskFreeRate*maturity));
-        discrepancy = QL_FABS(value-rightValue);
-        relativeDiscrepancy = discrepancy/rightValue;
-        std::cout << method << "\t"
-             << DoubleFormatter::toString(value, 4) << "\t"
-             << "N/A\t\t"
-             << discrepancy << "\t"
-             << DoubleFormatter::toString(relativeDiscrepancy, 6)
-             << std::endl;
-
-
-        // third method: Integral
-        method ="Integral";
-        WeightedPayoff po(type, maturity, strike, underlying,
-                          volatility, riskFreeRate, dividendYield);
-        SegmentIntegral integrator(5000);
-
-        double nuT = (riskFreeRate - dividendYield
-                      + 0.5*volatility*volatility)*maturity;
-        double infinity = 10.0*volatility*QL_SQRT(maturity);
-
-        value = integrator(po, nuT-infinity, nuT+infinity);
-        discrepancy = QL_FABS(value-rightValue);
-        relativeDiscrepancy = discrepancy/rightValue;
-        std::cout << method << "\t"
-             << DoubleFormatter::toString(value, 4) << "\t"
-             << "N/A\t\t"
-             << DoubleFormatter::toString(discrepancy, 6) << "\t"
-             << DoubleFormatter::toString(relativeDiscrepancy, 6)
-             << std::endl;
-
-
-
-
-        // fourth method: Finite Differences
-        method ="Finite Diff.";
-        Size grid = 100;
-        value = FdEuropean(type, underlying, strike,
-            dividendYield, riskFreeRate, maturity, volatility, grid).value();
-        discrepancy = QL_FABS(value-rightValue);
-        relativeDiscrepancy = discrepancy/rightValue;
-        std::cout << method << "\t"
-             << DoubleFormatter::toString(value, 4) << "\t"
-             << "N/A\t\t"
-             << DoubleFormatter::toString(discrepancy, 6) << "\t"
-             << DoubleFormatter::toString(relativeDiscrepancy, 6)
-             << std::endl;
-
-
-/************************************/
-
-        // New option pricing framework
-        std::cout << "\nNew Pricing engine framework" << std::endl;
-
         Date midlifeDate(19, November, 1998);
         std::vector<Date> exDates(2);
         exDates[0]=midlifeDate;
@@ -264,11 +167,20 @@ int main(int, char* [])
             boost::shared_ptr<PricingEngine>(new AnalyticEuropeanEngine()));
 
 
-        // method: Black Scholes Engine
-        method = "Black Scholes";
+        std::string method;
+        double value, discrepancy, rightValue, relativeDiscrepancy;
+
+        std::cout << std::endl << std::endl;
+
+        // write column headings
+        std::cout << "Method\t\tValue\tEstimatedError\tDiscrepancy"
+                     "\tRel. Discr." << std::endl;
+
+        // method: Black-Scholes Engine
+        method = "Black-Scholes";
         option.setPricingEngine(boost::shared_ptr<PricingEngine>(
             new AnalyticEuropeanEngine()));
-        value = option.NPV();
+        rightValue = value = option.NPV();
         discrepancy = QL_FABS(value-rightValue);
         relativeDiscrepancy = discrepancy/rightValue;
         std::cout << method << "\t"

@@ -16,6 +16,8 @@
 */
 
 #include <ql/Pricers/fddividendeuropeanoption.hpp>
+#include <ql/PricingEngines/blackformula.hpp>
+#include <ql/dataformatters.hpp>
 
 namespace QuantLib {
 
@@ -23,55 +25,55 @@ namespace QuantLib {
                    Option::Type type, double underlying, double strike,
                    Spread dividendYield, Rate riskFreeRate, Time residualTime,
                    double volatility, const std::vector<double>& dividends,
-                   const std::vector<Time>& exdivdates):
-    EuropeanOption(type, 
-                   underlying - riskless(riskFreeRate, dividends, exdivdates), 
-                   strike, dividendYield,
-                   riskFreeRate, residualTime, volatility),
-    dividends_(dividends),exDivDates_(exdivdates){
+                   const std::vector<Time>& exdivdates) {
 
-        QL_REQUIRE(dividends_.size() == exDivDates_.size(),
+        QL_REQUIRE(dividends.size() == exdivdates.size(),
                    "the number of dividends is different from that of dates");
-        for(Size j = 0; j < dividends_.size(); j++){
 
-            QL_REQUIRE(exDivDates_[j] >= 0, "The "+
-                       IntegerFormatter::toString(j)+ "-th" +
-                       "dividend date is negative"    + "(" +
-                       DoubleFormatter::toString(exDivDates_[j]) + ")");
+        for (Size j = 0; j < dividends.size(); j++) {
+            QL_REQUIRE(exdivdates[j] >= 0, "The "+
+                       IntegerFormatter::toOrdinal(j) +
+                       " dividend time is negative"    + "(" +
+                       DoubleFormatter::toString(exdivdates[j]) + ")");
 
-            QL_REQUIRE(exDivDates_[j] <= residualTime,"The " +
-                       IntegerFormatter::toString(j) + "-th" +
-                       "dividend date is greater than residual time" + "(" +
-                       DoubleFormatter::toString(exDivDates_[j]) + ">" +
+            QL_REQUIRE(exdivdates[j] <= residualTime,"The " +
+                       IntegerFormatter::toOrdinal(j) +
+                       " dividend time is greater than residual time" + "(" +
+                       DoubleFormatter::toString(exdivdates[j]) + ">" +
                        DoubleFormatter::toString(residualTime)    + ")");
         }
 
-    }
+        double riskless = 0.0;
+        Size i;
+        for (i = 0; i < dividends.size(); i++)
+            riskless += dividends[i]*QL_EXP(-riskFreeRate*exdivdates[i]);
+        double spot = underlying-riskless;
+        double discount = QL_EXP(-riskFreeRate*residualTime);
+        double qDiscount = QL_EXP(-dividendYield*residualTime);
+        double forward = spot*qDiscount/discount;
+        double variance = volatility*volatility*residualTime;
+        boost::shared_ptr<StrikedTypePayoff> payoff(
+                                         new PlainVanillaPayoff(type,strike));
+        BlackFormula black(forward, discount, variance, payoff);
 
-    boost::shared_ptr<SingleAssetOption> 
-    FdDividendEuropeanOption::clone() const {
-        return boost::shared_ptr<SingleAssetOption>(
-                                         new FdDividendEuropeanOption(*this));
-    }
+        value_ = black.value();
+        delta_ = black.delta(spot);
+        gamma_ = black.gamma(spot);
+        vega_ = black.vega(residualTime);
 
-    double FdDividendEuropeanOption::theta() const{
-
-        double tmp_theta = EuropeanOption::theta();
         double delta_theta = 0.0;
-        for(Size j = 0; j < dividends_.size(); j++)
-            delta_theta -= dividends_[j] * riskFreeRate_ *
-                QL_EXP(-riskFreeRate_ * exDivDates_[j]);
-        return tmp_theta + delta_theta * EuropeanOption::delta();
-    }
+        for (i = 0; i < dividends.size(); i++)
+            delta_theta -= dividends[i] * riskFreeRate * 
+                           QL_EXP(-riskFreeRate * exdivdates[i]);
+        theta_ = black.theta(spot, residualTime) +
+                 delta_theta * black.delta(spot);
 
-    double FdDividendEuropeanOption::rho() const{
-
-        double tmp_rho = EuropeanOption::rho();
         double delta_rho = 0.0;
-        for(Size j = 0; j < dividends_.size(); j++)
-            delta_rho += dividends_[j] * exDivDates_[j] *
-                QL_EXP(-riskFreeRate_ * exDivDates_[j]);
-        return tmp_rho + delta_rho * EuropeanOption::delta();
+        for (i = 0; i < dividends.size(); i++)
+            delta_rho += dividends[i] * exdivdates[i] *
+                         QL_EXP(-riskFreeRate * exdivdates[i]);
+        rho_ = black.rho(residualTime) +
+               delta_rho * black.delta(spot);
     }
 
 }

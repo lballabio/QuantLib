@@ -15,9 +15,8 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include <ql/Pricers/europeanoption.hpp>
-#include <ql/FiniteDifferences/americancondition.hpp>
 #include <ql/Pricers/fdmultiperiodoption.hpp>
+#include <ql/FiniteDifferences/americancondition.hpp>
 #include <ql/FiniteDifferences/valueatcenter.hpp>
 
 namespace QuantLib {
@@ -133,27 +132,30 @@ namespace QuantLib {
 
         // Option price and greeks are computed
         controlVariateCorrection_ =
-            analytic_ -> value() - valueAtCenter(controlPrices_);
+            analytic_->value() - valueAtCenter(controlPrices_);
 
-        value_ =   valueAtCenter(prices_)
-            - valueAtCenter(controlPrices_)
-            + analytic_ -> value();
+        value_ = valueAtCenter(prices_) + controlVariateCorrection_;
 
         delta_ =   firstDerivativeAtCenter(prices_, grid_)
             - firstDerivativeAtCenter(controlPrices_, grid_)
-            + analytic_ -> delta();
+            + analytic_->delta(underlying_);
 
         gamma_ =   secondDerivativeAtCenter(prices_, grid_)
             - secondDerivativeAtCenter(controlPrices_, grid_)
-            + analytic_ -> gamma();
+            + analytic_->gamma(underlying_);
 
         hasBeenCalculated_ = true;
     }
 
-    void FdMultiPeriodOption::initializeControlVariate() const{
-        analytic_ = boost::shared_ptr<SingleAssetOption>(new EuropeanOption(
-                 payoff_.optionType(), underlying_, payoff_.strike(), 
-                 dividendYield_, riskFreeRate_, residualTime_, volatility_));
+    void FdMultiPeriodOption::initializeControlVariate() const {
+        double discount = QL_EXP(-riskFreeRate_*residualTime_);
+        double qDiscount = QL_EXP(-dividendYield_*residualTime_);
+        double forward = underlying_*qDiscount/discount;
+        double variance = volatility_*volatility_*residualTime_;
+        boost::shared_ptr<StrikedTypePayoff> payoff(
+                                             new PlainVanillaPayoff(payoff_));
+        analytic_ = boost::shared_ptr<BlackFormula>(
+                       new BlackFormula(forward, discount, variance, payoff));
     }
 
     void FdMultiPeriodOption::initializeStepCondition() const{
