@@ -1,9 +1,9 @@
-CXXFLAGS = -g -O2 -Wall
+CXXFLAGS = -g -O2 -Wall @QUANTLIB_CXXFLAGS@
 INCLUDES = -I${top_srcdir} -I${top_builddir}
 
 bin_PROGRAMS = Parities
 Parities_SOURCES = Parities.cpp
-Parities_LDADD = ../../ql/libQuantLib.la
+Parities_LDADD = @QUANTLIB_LIBS@
 
 TESTS = Parities
 
