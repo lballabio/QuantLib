@@ -78,6 +78,8 @@ CLEAN :
 	-@erase "$(INTDIR)\barrierpathpricer.sbr"
 	-@erase "$(INTDIR)\basispointsensitivity.obj"
 	-@erase "$(INTDIR)\basispointsensitivity.sbr"
+	-@erase "$(INTDIR)\basketoption.obj"
+	-@erase "$(INTDIR)\basketoption.sbr"
 	-@erase "$(INTDIR)\basketpathpricer.obj"
 	-@erase "$(INTDIR)\basketpathpricer.sbr"
 	-@erase "$(INTDIR)\beta.obj"
@@ -278,6 +280,8 @@ CLEAN :
 	-@erase "$(INTDIR)\model.sbr"
 	-@erase "$(INTDIR)\mt19937uniformrng.obj"
 	-@erase "$(INTDIR)\mt19937uniformrng.sbr"
+	-@erase "$(INTDIR)\multiassetoption.obj"
+	-@erase "$(INTDIR)\multiassetoption.sbr"
 	-@erase "$(INTDIR)\newyork.obj"
 	-@erase "$(INTDIR)\newyork.sbr"
 	-@erase "$(INTDIR)\normaldistribution.obj"
@@ -332,6 +336,8 @@ CLEAN :
 	-@erase "$(INTDIR)\stock.sbr"
 	-@erase "$(INTDIR)\stockholm.obj"
 	-@erase "$(INTDIR)\stockholm.sbr"
+	-@erase "$(INTDIR)\stulzengine.obj"
+	-@erase "$(INTDIR)\stulzengine.sbr"
 	-@erase "$(INTDIR)\svd.obj"
 	-@erase "$(INTDIR)\svd.sbr"
 	-@erase "$(INTDIR)\swap.obj"
@@ -571,7 +577,10 @@ BSC32_SBRS= \
 	"$(INTDIR)\exercise.sbr" \
 	"$(INTDIR)\grid.sbr" \
 	"$(INTDIR)\scheduler.sbr" \
-	"$(INTDIR)\voltermstructure.sbr"
+	"$(INTDIR)\voltermstructure.sbr" \
+	"$(INTDIR)\basketoption.sbr" \
+	"$(INTDIR)\multiassetoption.sbr" \
+	"$(INTDIR)\stulzengine.sbr"
 
 "$(OUTDIR)\QuantLib.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -753,7 +762,10 @@ LIB32_OBJS= \
 	"$(INTDIR)\exercise.obj" \
 	"$(INTDIR)\grid.obj" \
 	"$(INTDIR)\scheduler.obj" \
-	"$(INTDIR)\voltermstructure.obj"
+	"$(INTDIR)\voltermstructure.obj" \
+	"$(INTDIR)\basketoption.obj" \
+	"$(INTDIR)\multiassetoption.obj" \
+	"$(INTDIR)\stulzengine.obj"
 
 ".\lib\Win32\VisualStudio\QuantLib.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
    if not exist lib\Win32\VisualStudio mkdir lib\Win32\VisualStudio
@@ -811,6 +823,8 @@ CLEAN :
 	-@erase "$(INTDIR)\barrierpathpricer.sbr"
 	-@erase "$(INTDIR)\basispointsensitivity.obj"
 	-@erase "$(INTDIR)\basispointsensitivity.sbr"
+	-@erase "$(INTDIR)\basketoption.obj"
+	-@erase "$(INTDIR)\basketoption.sbr"
 	-@erase "$(INTDIR)\basketpathpricer.obj"
 	-@erase "$(INTDIR)\basketpathpricer.sbr"
 	-@erase "$(INTDIR)\beta.obj"
@@ -1011,6 +1025,8 @@ CLEAN :
 	-@erase "$(INTDIR)\model.sbr"
 	-@erase "$(INTDIR)\mt19937uniformrng.obj"
 	-@erase "$(INTDIR)\mt19937uniformrng.sbr"
+	-@erase "$(INTDIR)\multiassetoption.obj"
+	-@erase "$(INTDIR)\multiassetoption.sbr"
 	-@erase "$(INTDIR)\newyork.obj"
 	-@erase "$(INTDIR)\newyork.sbr"
 	-@erase "$(INTDIR)\normaldistribution.obj"
@@ -1065,6 +1081,8 @@ CLEAN :
 	-@erase "$(INTDIR)\stock.sbr"
 	-@erase "$(INTDIR)\stockholm.obj"
 	-@erase "$(INTDIR)\stockholm.sbr"
+	-@erase "$(INTDIR)\stulzengine.obj"
+	-@erase "$(INTDIR)\stulzengine.sbr"
 	-@erase "$(INTDIR)\svd.obj"
 	-@erase "$(INTDIR)\svd.sbr"
 	-@erase "$(INTDIR)\swap.obj"
@@ -1305,7 +1323,10 @@ BSC32_SBRS= \
 	"$(INTDIR)\exercise.sbr" \
 	"$(INTDIR)\grid.sbr" \
 	"$(INTDIR)\scheduler.sbr" \
-	"$(INTDIR)\voltermstructure.sbr"
+	"$(INTDIR)\voltermstructure.sbr" \
+	"$(INTDIR)\basketoption.sbr" \
+	"$(INTDIR)\multiassetoption.sbr" \
+	"$(INTDIR)\stulzengine.sbr"
 
 "$(OUTDIR)\QuantLib.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -1487,7 +1508,10 @@ LIB32_OBJS= \
 	"$(INTDIR)\exercise.obj" \
 	"$(INTDIR)\grid.obj" \
 	"$(INTDIR)\scheduler.obj" \
-	"$(INTDIR)\voltermstructure.obj"
+	"$(INTDIR)\voltermstructure.obj" \
+	"$(INTDIR)\basketoption.obj" \
+	"$(INTDIR)\multiassetoption.obj" \
+	"$(INTDIR)\stulzengine.obj"
 
 ".\lib\Win32\VisualStudio\QuantLib_d.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
    if not exist lib\Win32\VisualStudio mkdir lib\Win32\VisualStudio
@@ -1545,6 +1569,8 @@ CLEAN :
 	-@erase "$(INTDIR)\barrierpathpricer.sbr"
 	-@erase "$(INTDIR)\basispointsensitivity.obj"
 	-@erase "$(INTDIR)\basispointsensitivity.sbr"
+	-@erase "$(INTDIR)\basketoption.obj"
+	-@erase "$(INTDIR)\basketoption.sbr"
 	-@erase "$(INTDIR)\basketpathpricer.obj"
 	-@erase "$(INTDIR)\basketpathpricer.sbr"
 	-@erase "$(INTDIR)\beta.obj"
@@ -1745,6 +1771,8 @@ CLEAN :
 	-@erase "$(INTDIR)\model.sbr"
 	-@erase "$(INTDIR)\mt19937uniformrng.obj"
 	-@erase "$(INTDIR)\mt19937uniformrng.sbr"
+	-@erase "$(INTDIR)\multiassetoption.obj"
+	-@erase "$(INTDIR)\multiassetoption.sbr"
 	-@erase "$(INTDIR)\newyork.obj"
 	-@erase "$(INTDIR)\newyork.sbr"
 	-@erase "$(INTDIR)\normaldistribution.obj"
@@ -1799,6 +1827,8 @@ CLEAN :
 	-@erase "$(INTDIR)\stock.sbr"
 	-@erase "$(INTDIR)\stockholm.obj"
 	-@erase "$(INTDIR)\stockholm.sbr"
+	-@erase "$(INTDIR)\stulzengine.obj"
+	-@erase "$(INTDIR)\stulzengine.sbr"
 	-@erase "$(INTDIR)\svd.obj"
 	-@erase "$(INTDIR)\svd.sbr"
 	-@erase "$(INTDIR)\swap.obj"
@@ -2038,7 +2068,10 @@ BSC32_SBRS= \
 	"$(INTDIR)\exercise.sbr" \
 	"$(INTDIR)\grid.sbr" \
 	"$(INTDIR)\scheduler.sbr" \
-	"$(INTDIR)\voltermstructure.sbr"
+	"$(INTDIR)\voltermstructure.sbr" \
+	"$(INTDIR)\basketoption.sbr" \
+	"$(INTDIR)\multiassetoption.sbr" \
+	"$(INTDIR)\stulzengine.sbr"
 
 "$(OUTDIR)\QuantLib.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -2220,7 +2253,10 @@ LIB32_OBJS= \
 	"$(INTDIR)\exercise.obj" \
 	"$(INTDIR)\grid.obj" \
 	"$(INTDIR)\scheduler.obj" \
-	"$(INTDIR)\voltermstructure.obj"
+	"$(INTDIR)\voltermstructure.obj" \
+	"$(INTDIR)\basketoption.obj" \
+	"$(INTDIR)\multiassetoption.obj" \
+	"$(INTDIR)\stulzengine.obj"
 
 ".\lib\Win32\VisualStudio\QuantLib_MTDLL.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
    if not exist lib\Win32\VisualStudio mkdir lib\Win32\VisualStudio
@@ -2278,6 +2314,8 @@ CLEAN :
 	-@erase "$(INTDIR)\barrierpathpricer.sbr"
 	-@erase "$(INTDIR)\basispointsensitivity.obj"
 	-@erase "$(INTDIR)\basispointsensitivity.sbr"
+	-@erase "$(INTDIR)\basketoption.obj"
+	-@erase "$(INTDIR)\basketoption.sbr"
 	-@erase "$(INTDIR)\basketpathpricer.obj"
 	-@erase "$(INTDIR)\basketpathpricer.sbr"
 	-@erase "$(INTDIR)\beta.obj"
@@ -2478,6 +2516,8 @@ CLEAN :
 	-@erase "$(INTDIR)\model.sbr"
 	-@erase "$(INTDIR)\mt19937uniformrng.obj"
 	-@erase "$(INTDIR)\mt19937uniformrng.sbr"
+	-@erase "$(INTDIR)\multiassetoption.obj"
+	-@erase "$(INTDIR)\multiassetoption.sbr"
 	-@erase "$(INTDIR)\newyork.obj"
 	-@erase "$(INTDIR)\newyork.sbr"
 	-@erase "$(INTDIR)\normaldistribution.obj"
@@ -2532,6 +2572,8 @@ CLEAN :
 	-@erase "$(INTDIR)\stock.sbr"
 	-@erase "$(INTDIR)\stockholm.obj"
 	-@erase "$(INTDIR)\stockholm.sbr"
+	-@erase "$(INTDIR)\stulzengine.obj"
+	-@erase "$(INTDIR)\stulzengine.sbr"
 	-@erase "$(INTDIR)\svd.obj"
 	-@erase "$(INTDIR)\svd.sbr"
 	-@erase "$(INTDIR)\swap.obj"
@@ -2772,7 +2814,10 @@ BSC32_SBRS= \
 	"$(INTDIR)\exercise.sbr" \
 	"$(INTDIR)\grid.sbr" \
 	"$(INTDIR)\scheduler.sbr" \
-	"$(INTDIR)\voltermstructure.sbr"
+	"$(INTDIR)\voltermstructure.sbr" \
+	"$(INTDIR)\basketoption.sbr" \
+	"$(INTDIR)\multiassetoption.sbr" \
+	"$(INTDIR)\stulzengine.sbr"
 
 "$(OUTDIR)\QuantLib.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -2954,7 +2999,10 @@ LIB32_OBJS= \
 	"$(INTDIR)\exercise.obj" \
 	"$(INTDIR)\grid.obj" \
 	"$(INTDIR)\scheduler.obj" \
-	"$(INTDIR)\voltermstructure.obj"
+	"$(INTDIR)\voltermstructure.obj" \
+	"$(INTDIR)\basketoption.obj" \
+	"$(INTDIR)\multiassetoption.obj" \
+	"$(INTDIR)\stulzengine.obj"
 
 ".\lib\Win32\VisualStudio\QuantLib_MTDLL_d.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
    if not exist lib\Win32\VisualStudio mkdir lib\Win32\VisualStudio
@@ -3235,6 +3283,12 @@ SOURCE=.\ql\Instruments\barrieroption.cpp
 	$(CPP) $(CPP_PROJ) $(SOURCE)
 
 
+SOURCE=.\ql\Instruments\basketoption.cpp
+
+"$(INTDIR)\basketoption.obj"	"$(INTDIR)\basketoption.sbr" : $(SOURCE) "$(INTDIR)"
+	$(CPP) $(CPP_PROJ) $(SOURCE)
+
+
 SOURCE=.\ql\Instruments\binarybarrieroption.cpp
 
 "$(INTDIR)\binarybarrieroption.obj"	"$(INTDIR)\binarybarrieroption.sbr" : $(SOURCE) "$(INTDIR)"
@@ -3250,6 +3304,12 @@ SOURCE=.\ql\Instruments\capfloor.cpp
 SOURCE=.\ql\Instruments\forwardvanillaoption.cpp
 
 "$(INTDIR)\forwardvanillaoption.obj"	"$(INTDIR)\forwardvanillaoption.sbr" : $(SOURCE) "$(INTDIR)"
+	$(CPP) $(CPP_PROJ) $(SOURCE)
+
+
+SOURCE=.\ql\Instruments\multiassetoption.cpp
+
+"$(INTDIR)\multiassetoption.obj"	"$(INTDIR)\multiassetoption.sbr" : $(SOURCE) "$(INTDIR)"
 	$(CPP) $(CPP_PROJ) $(SOURCE)
 
 
@@ -3846,6 +3906,12 @@ SOURCE=.\ql\PricingEngines\Vanilla\integralengine.cpp
 SOURCE=.\ql\PricingEngines\Vanilla\jumpdiffusionengine.cpp
 
 "$(INTDIR)\jumpdiffusionengine.obj"	"$(INTDIR)\jumpdiffusionengine.sbr" : $(SOURCE) "$(INTDIR)"
+	$(CPP) $(CPP_PROJ) $(SOURCE)
+
+
+SOURCE=.\ql\PricingEngines\Basket\stulzengine.cpp
+
+"$(INTDIR)\stulzengine.obj"	"$(INTDIR)\stulzengine.sbr" : $(SOURCE) "$(INTDIR)"
 	$(CPP) $(CPP_PROJ) $(SOURCE)
 
 

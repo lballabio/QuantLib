@@ -3,6 +3,7 @@ QL_TESTS = \
            americanoption.hpp americanoption.cpp \
            asianoptions.hpp asianoptions.cpp \
            barrieroption.hpp barrieroption.cpp \
+           basketoption.hpp basketoption.cpp \
            binarybarrieroption.hpp binarybarrieroption.cpp \
            calendars.hpp calendars.cpp \
            capfloor.hpp capfloor.cpp \

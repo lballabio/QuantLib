@@ -40,6 +40,7 @@ OPTIMIZATION_LIB    = Optimization\Optimization$(_D).lib
 PRICER_LIB          = Pricers\Pricers$(_D).lib
 ASIAN_ENGINES_LIB   = PricingEngines\Asian\AsianEngines$(_D).lib
 BARRIER_ENGINES_LIB = PricingEngines\Barrier\BarrierEngines$(_D).lib
+BASKET_ENGINES_LIB  = PricingEngines\Basket\BasketEngines$(_D).lib
 VANILLA_ENGINES_LIB = PricingEngines\Vanilla\VanillaEngines$(_D).lib
 RNG_LIB             = RandomNumbers\RandomNumbers$(_D).lib
 SHORTRATEMODELS_LIB = ShortRateModels\ShortRateModels$(_D).lib
@@ -69,6 +70,7 @@ QUANTLIB_OBJS = \
     $(PRICER_LIB) \
     $(ASIAN_ENGINES_LIB) \
     $(BARRIER_ENGINES_LIB) \
+    $(BASKET_ENGINES_LIB) \
     $(VANILLA_ENGINES_LIB) \
     $(RNG_LIB) \
     $(TERMSTRUCT_LIB) \
@@ -151,6 +153,8 @@ SubLibraries:
     $(MAKE)
     cd ..\Barrier
     $(MAKE)
+    cd ..\Basket
+    $(MAKE)
     cd ..\Vanilla
     $(MAKE)
     cd ..\..\RandomNumbers
@@ -189,16 +193,6 @@ clean::
     $(MAKE) clean
     cd ..\Instruments
     $(MAKE) clean
-    cd ..\ShortRateModels
-    $(MAKE) clean
-    cd CalibrationHelpers
-    $(MAKE) clean
-    cd ..\OneFactorModels
-    $(MAKE) clean
-    cd ..\TwoFactorModels
-    $(MAKE) clean
-    cd ..\..\Lattices
-    $(MAKE) clean
     cd ..\Math
     $(MAKE) clean
     cd ..\MonteCarlo
@@ -208,13 +202,31 @@ clean::
     cd ..\Pricers
     $(MAKE) clean
     cd ..\PricingEngines
+    cd Asian
     $(MAKE) clean
-    cd ..\RandomNumbers
+    cd ..\Barrier
+    $(MAKE) clean
+    cd ..\Basket
+    $(MAKE) clean
+    cd ..\Vanilla
+    $(MAKE) clean
+    cd ..\..\RandomNumbers
+    $(MAKE) clean
+    cd ..\Lattices
     $(MAKE) clean
     cd ..\TermStructures
     $(MAKE) clean
     cd ..\Volatilities
     $(MAKE) clean
+    cd ..\ShortRateModels
+    $(MAKE) clean
+    cd CalibrationHelpers
+    $(MAKE) clean
+    cd ..\OneFactorModels
+    $(MAKE) clean
+    cd ..\TwoFactorModels
+    $(MAKE) clean
+    cd ..
     cd ..
     if exist *.obj         del /q *.obj
     if exist *.obj$(_D)    del /q *.obj

@@ -9,37 +9,23 @@
 
 # Directories
 BOOST_INCLUDE_DIR   = "$(BOOST_DIR)"
-INCLUDE_DIR    = ..\..
+INCLUDE_DIR    = ..\..\..
 BCC_INCLUDE    = $(MAKEDIR)\..\include
 
 
 # Object files
 OBJS = \
-    asianoption.obj$(_D) \
-    barrieroption.obj$(_D) \
-    basketoption.obj$(_D) \
-    binarybarrieroption.obj$(_D) \
-    capfloor.obj$(_D) \
-    forwardvanillaoption.obj$(_D) \
-    multiassetoption.obj$(_D) \
-    oneassetoption.obj$(_D) \
-    oneassetstrikedoption.obj$(_D) \
-    quantoforwardvanillaoption.obj$(_D) \
-    quantovanillaoption.obj$(_D) \
-    simpleswap.obj$(_D) \
-    stock.obj$(_D) \
-    swap.obj$(_D) \
-    swaption.obj$(_D) \
-    vanillaoption.obj$(_D)
+    stulzengine.obj$(_D)
+
 
 # Tools to be used
 CC        = bcc32
 TLIB      = tlib
 
-#                 -w-8026 -w-8027 -w-8012 \
+
 
 # Options
-CC_OPTS = -vi- -q -c -tWM \
+CC_OPTS        = -vi- -q -c -tWM \
     -I$(BOOST_INCLUDE_DIR) \
     -I$(INCLUDE_DIR) \
     -I$(BCC_INCLUDE)
@@ -66,9 +52,9 @@ TLIB_OPTS    = /P128
 
 # Primary target:
 # static library
-Instruments$(_D).lib:: $(OBJS)
-    if exist Instruments$(_D).lib     del Instruments$(_D).lib
-    $(TLIB) $(TLIB_OPTS) Instruments$(_D).lib /a $(OBJS)
+BasketEngines$(_D).lib:: $(OBJS)
+    if exist BasketEngines$(_D).lib     del BasketEngines$(_D).lib
+    $(TLIB) $(TLIB_OPTS) BasketEngines$(_D).lib /a $(OBJS)
 
 
 # Clean up

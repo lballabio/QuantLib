@@ -153,6 +153,10 @@ SOURCE=.\barrieroption.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=.\basketoption.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\binarybarrieroption.cpp
 # End Source File
 # Begin Source File
@@ -282,6 +286,10 @@ SOURCE=.\asianoptions.hpp
 # Begin Source File
 
 SOURCE=.\barrieroption.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\basketoption.hpp
 # End Source File
 # Begin Source File
 

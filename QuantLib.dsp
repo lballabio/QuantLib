@@ -619,6 +619,14 @@ SOURCE=.\ql\Instruments\barrieroption.hpp
 # End Source File
 # Begin Source File
 
+SOURCE=.\ql\Instruments\basketoption.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\Instruments\basketoption.hpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\ql\Instruments\binarybarrieroption.cpp
 # End Source File
 # Begin Source File
@@ -648,6 +656,14 @@ SOURCE=.\ql\Instruments\forwardvanillaoption.cpp
 # Begin Source File
 
 SOURCE=.\ql\Instruments\forwardvanillaoption.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\Instruments\multiassetoption.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\Instruments\multiassetoption.hpp
 # End Source File
 # Begin Source File
 
@@ -1715,6 +1731,22 @@ SOURCE=.\ql\PricingEngines\Vanilla\mceuropeanengine.hpp
 # Begin Source File
 
 SOURCE=.\ql\PricingEngines\Vanilla\mcvanillaengine.hpp
+# End Source File
+# End Group
+# Begin Group "Basket"
+
+# PROP Default_Filter ""
+# Begin Source File
+
+SOURCE=.\ql\PricingEngines\Basket\all.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\PricingEngines\Basket\stulzengine.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\PricingEngines\Basket\stulzengine.hpp
 # End Source File
 # End Group
 # Begin Source File

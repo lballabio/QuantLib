@@ -7,10 +7,12 @@ include_HEADERS = \
     core.hpp \
     asianoption.hpp \
     barrieroption.hpp \
+    basketoption.hpp \
     binarybarrieroption.hpp \
     capfloor.hpp \
     cliquetoption.hpp \
     forwardvanillaoption.hpp \
+    multiassetoption.hpp \
     oneassetoption.hpp \
     oneassetstrikedoption.hpp \
     payoffs.hpp \
@@ -27,9 +29,11 @@ EXTRA_DIST=makefile.mak
 libInstruments_la_SOURCES = \
     asianoption.cpp \
     barrieroption.cpp \
+    basketoption.cpp \
     binarybarrieroption.cpp \
     capfloor.cpp \
     forwardvanillaoption.cpp \
+    multiassetoption.cpp \
     oneassetoption.cpp \
     oneassetstrikedoption.cpp \
     quantoforwardvanillaoption.cpp \
