@@ -31,19 +31,13 @@ namespace QuantLib {
         using InterestRateModelling::BlackModel;
 
         void BlackSwaption::calculate() const {
-            const std::vector<Time>& times = parameters_.floatingPayTimes;
-            double p = 0.0;
-            for (Size i=0; i<times.size(); i++) {
-                Time tenor = times[i] - parameters_.floatingResetTimes[i];
-                p += tenor*model_->termStructure()->discount(times[i]);
-            }
             Time start = parameters_.floatingResetTimes[0];
             double w;
             if (parameters_.payFixed)
                 w = 1.0;
             else 
                 w = -1.0;
-            results_.value =  p*parameters_.nominals.front()*
+            results_.value =  parameters_.fixedBPS * 
                 BlackModel::formula(parameters_.fixedRate, parameters_.fairRate,
                                     model_->volatility()*QL_SQRT(start), w);
         }

@@ -37,9 +37,11 @@ namespace QuantLib {
             const RelinkableHandle<TermStructure>& termStructure,
             const Handle<OptionPricingEngine>& engine)
         : Option(engine), swap_(swap), exercise_(exercise),
-          termStructure_(termStructure) {}
-
-        Swaption::~Swaption() {}
+          termStructure_(termStructure) {
+            registerWith(swap_);
+            registerWith(termStructure_);
+            registerWith(engine_);
+        }
 
         void Swaption::setupEngine() const {
             SwaptionParameters* parameters =
@@ -53,8 +55,18 @@ namespace QuantLib {
             Size i;
 
             parameters->payFixed = swap_->payFixedRate();
-            parameters->fixedRate = swap_->fixedRate();
-            parameters->fairRate = swap_->fairRate();
+            // volatilities are calculated for zero-spreaded swaps.
+            // Therefore, the spread on the floating leg is removed
+            // and a corresponding correction is made on the fixed leg.
+            Spread correction = swap_->spread() * 
+                                swap_->floatingLegBPS() /
+                                swap_->fixedLegBPS();
+            // the above is the opposite of the needed value since the 
+            // two BPSs have opposite sign; hence the + sign below
+            parameters->fixedRate = swap_->fixedRate() + correction;
+            parameters->fairRate = swap_->fairRate() + correction;
+            // this is passed explicitly for precision
+            parameters->fixedBPS = QL_FABS(swap_->fixedLegBPS());
 
             const std::vector<Handle<CashFlow> >& fixedLeg = swap_->fixedLeg();
 

@@ -52,7 +52,7 @@ namespace QuantLib {
         : Swap(std::vector<Handle<CashFlow> >(),
                std::vector<Handle<CashFlow> >(),
                termStructure, isinCode, description),
-          payFixedRate_(payFixedRate), fixedRate_(fixedRate), 
+          payFixedRate_(payFixedRate), fixedRate_(fixedRate), spread_(spread), 
           nominal_(nominal) {
                         
             maturity_ = calendar.advance(startDate,n,units,rollingConvention);

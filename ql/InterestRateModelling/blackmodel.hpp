@@ -59,6 +59,7 @@ namespace QuantLib {
                 Math::CumulativeNormalDistribution phi;
                 return f*w*phi(w*d1) - k*w*phi(w*d2);
             }
+            void update() { notifyObservers(); }
           private:
             RelinkableHandle<MarketElement> volatility_;
             RelinkableHandle<TermStructure> termStructure_;

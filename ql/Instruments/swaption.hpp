@@ -43,7 +43,6 @@ namespace QuantLib {
                      const Exercise& exercise,
                      const RelinkableHandle<TermStructure>& termStructure,
                      const Handle<OptionPricingEngine>& engine);
-            ~Swaption();
           protected:
             void performCalculations() const;
             void setupEngine() const;
@@ -61,6 +60,7 @@ namespace QuantLib {
             SwaptionParameters() : payFixed(false),
                                    fairRate(0.0),
                                    fixedRate(0.0),
+                                   fixedBPS(0.0),
                                    fixedPayTimes(0),
                                    fixedCoupons(0),
                                    floatingResetTimes(0),
@@ -71,6 +71,7 @@ namespace QuantLib {
             bool payFixed;
             Rate fairRate;
             Rate fixedRate;
+            double fixedBPS;
             std::vector<Time> fixedPayTimes;
             std::vector<double> fixedCoupons;
             std::vector<Time> floatingResetTimes;

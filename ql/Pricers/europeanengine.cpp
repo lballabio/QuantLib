@@ -1,5 +1,4 @@
 
-
 /*
  Copyright (C) 2000, 2001, 2002 RiskMap srl
 
@@ -36,6 +35,7 @@ namespace QuantLib {
         }
 
         void EuropeanEngine::calculate() const {
+                        
             double alpha, beta;
             double stdDev = parameters_.volatility *
                 QL_SQRT(parameters_.residualTime);
