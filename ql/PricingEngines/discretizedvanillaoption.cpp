@@ -37,7 +37,8 @@ namespace QuantLib {
             Size i;
             switch(arguments_.exerciseType) {
                 case Exercise::American:
-                    if ((now<=arguments_.stoppingTimes[1]) & (now>=arguments_.stoppingTimes[0]))
+                    if (now <= arguments_.stoppingTimes[1] && 
+                        now >= arguments_.stoppingTimes[0])
                         applySpecificCondition();
                     break;
                 case Exercise::European:
