@@ -8,6 +8,7 @@ include_HEADERS = \
    discretizedvanillaoption.hpp \
    genericengine.hpp \
    forwardengines.hpp \
+   latticeshortratemodelengine.hpp \
    quantoengines.hpp \
    vanillaengines.hpp
 
