@@ -81,6 +81,16 @@ namespace QuantLib {
         return stream << ArrayFormatter::toString(a.begin(), a.end());
     }
 
+    std::ostream& operator<< (std::ostream& stream, const Math::Matrix& matrix) {
+        for (Size i=0; i<matrix.rows(); i++) { 
+            for (Size j=0; j<matrix.columns(); j++) {
+                stream << DoubleFormatter::toString(matrix[i][j]) << " ";
+            }
+            stream << "\n";
+        }
+        return stream;
+    }
+
     std::string EuroFormatter::toString(double amount) {
         std::string output;
         if (amount < 0.0) {

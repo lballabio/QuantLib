@@ -26,6 +26,7 @@
 #include <ql/date.hpp>
 #include <ql/currency.hpp>
 #include <ql/array.hpp>
+#include <ql/math/matrix.hpp>
 
 namespace QuantLib {
 
@@ -76,6 +77,9 @@ namespace QuantLib {
     /*! \relates Array */
     std::ostream& operator<< (std::ostream&, const Array&);
     
+    /*! \relates Matrix */
+    std::ostream& operator<< (std::ostream&, const Math::Matrix&);    
+
     //! Formats amounts in Euro for output
     /*! Formatting follows Euro convention (x,xxx,xxx.xx) */
     class EuroFormatter {
