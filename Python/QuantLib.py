@@ -325,6 +325,47 @@ BSMAmericanOption.vega = new.instancemethod(QuantLibc.BSMAmericanOption_vega, No
 BSMAmericanOption.rho = new.instancemethod(QuantLibc.BSMAmericanOption_rho, None, BSMAmericanOption)
 BSMAmericanOption.impliedVolatility = new.instancemethod(QuantLibc.BSMAmericanOption_impliedVolatility, None, BSMAmericanOption)
 
+class DividendAmericanOption:
+    def __init__(self,*args,**kwargs):
+        self.this = apply(QuantLibc.new_DividendAmericanOption,args,kwargs)
+        self.thisown = 1
+
+    def __repr__(self):
+        return "<C DividendAmericanOption instance at %s>" % (self.this,)
+class DividendAmericanOptionPtr(DividendAmericanOption):
+    def __init__(self,this):
+        self.this = this
+        self.thisown = 0
+        self.__class__ = DividendAmericanOption
+
+
+DividendAmericanOption.value = new.instancemethod(QuantLibc.DividendAmericanOption_value, None, DividendAmericanOption)
+DividendAmericanOption.delta = new.instancemethod(QuantLibc.DividendAmericanOption_delta, None, DividendAmericanOption)
+DividendAmericanOption.gamma = new.instancemethod(QuantLibc.DividendAmericanOption_gamma, None, DividendAmericanOption)
+DividendAmericanOption.vega = new.instancemethod(QuantLibc.DividendAmericanOption_vega, None, DividendAmericanOption)
+DividendAmericanOption.rho = new.instancemethod(QuantLibc.DividendAmericanOption_rho, None, DividendAmericanOption)
+DividendAmericanOption.impliedVolatility = new.instancemethod(QuantLibc.DividendAmericanOption_impliedVolatility, None, DividendAmericanOption)
+
+class DividendEuropeanOption:
+    def __init__(self,*args,**kwargs):
+        self.this = apply(QuantLibc.new_DividendEuropeanOption,args,kwargs)
+        self.thisown = 1
+
+    def __repr__(self):
+        return "<C DividendEuropeanOption instance at %s>" % (self.this,)
+class DividendEuropeanOptionPtr(DividendEuropeanOption):
+    def __init__(self,this):
+        self.this = this
+        self.thisown = 0
+        self.__class__ = DividendEuropeanOption
+
+
+DividendEuropeanOption.value = new.instancemethod(QuantLibc.DividendEuropeanOption_value, None, DividendEuropeanOption)
+DividendEuropeanOption.delta = new.instancemethod(QuantLibc.DividendEuropeanOption_delta, None, DividendEuropeanOption)
+DividendEuropeanOption.gamma = new.instancemethod(QuantLibc.DividendEuropeanOption_gamma, None, DividendEuropeanOption)
+DividendEuropeanOption.vega = new.instancemethod(QuantLibc.DividendEuropeanOption_vega, None, DividendEuropeanOption)
+DividendEuropeanOption.impliedVolatility = new.instancemethod(QuantLibc.DividendEuropeanOption_impliedVolatility, None, DividendEuropeanOption)
+
 class ObjectiveFunction:
     def __init__(self,this):
         self.this = this
