@@ -231,6 +231,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\xibormanager.obj" \
 	"$(INTDIR)\capfloor.obj" \
 	"$(INTDIR)\forwardvanillaoption.obj" \
+	"$(INTDIR)\quantoforwardvanillaoption.obj" \
 	"$(INTDIR)\quantovanillaoption.obj" \
 	"$(INTDIR)\simpleswap.obj" \
 	"$(INTDIR)\stock.obj" \
@@ -345,8 +346,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\option.obj" \
 	"$(INTDIR)\scheduler.obj" \
 	"$(INTDIR)\solver1d.obj" \
-	"$(INTDIR)\voltermstructure.obj" \
-	"$(INTDIR)\quantoforwardvanillaoption.obj"
+	"$(INTDIR)\voltermstructure.obj"
 
 ".\lib\Win32\VisualStudio\QuantLib.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
     $(LIB32) @<<
@@ -555,6 +555,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\xibormanager.obj" \
 	"$(INTDIR)\capfloor.obj" \
 	"$(INTDIR)\forwardvanillaoption.obj" \
+	"$(INTDIR)\quantoforwardvanillaoption.obj" \
 	"$(INTDIR)\quantovanillaoption.obj" \
 	"$(INTDIR)\simpleswap.obj" \
 	"$(INTDIR)\stock.obj" \
@@ -669,8 +670,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\option.obj" \
 	"$(INTDIR)\scheduler.obj" \
 	"$(INTDIR)\solver1d.obj" \
-	"$(INTDIR)\voltermstructure.obj" \
-	"$(INTDIR)\quantoforwardvanillaoption.obj"
+	"$(INTDIR)\voltermstructure.obj"
 
 ".\lib\Win32\VisualStudio\QuantLib_d.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
     $(LIB32) @<<
@@ -878,6 +878,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\xibormanager.obj" \
 	"$(INTDIR)\capfloor.obj" \
 	"$(INTDIR)\forwardvanillaoption.obj" \
+	"$(INTDIR)\quantoforwardvanillaoption.obj" \
 	"$(INTDIR)\quantovanillaoption.obj" \
 	"$(INTDIR)\simpleswap.obj" \
 	"$(INTDIR)\stock.obj" \
@@ -992,8 +993,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\option.obj" \
 	"$(INTDIR)\scheduler.obj" \
 	"$(INTDIR)\solver1d.obj" \
-	"$(INTDIR)\voltermstructure.obj" \
-	"$(INTDIR)\quantoforwardvanillaoption.obj"
+	"$(INTDIR)\voltermstructure.obj"
 
 ".\lib\Win32\VisualStudio\QuantLib.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
     $(LIB32) @<<
@@ -1202,6 +1202,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\xibormanager.obj" \
 	"$(INTDIR)\capfloor.obj" \
 	"$(INTDIR)\forwardvanillaoption.obj" \
+	"$(INTDIR)\quantoforwardvanillaoption.obj" \
 	"$(INTDIR)\quantovanillaoption.obj" \
 	"$(INTDIR)\simpleswap.obj" \
 	"$(INTDIR)\stock.obj" \
@@ -1316,8 +1317,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\option.obj" \
 	"$(INTDIR)\scheduler.obj" \
 	"$(INTDIR)\solver1d.obj" \
-	"$(INTDIR)\voltermstructure.obj" \
-	"$(INTDIR)\quantoforwardvanillaoption.obj"
+	"$(INTDIR)\voltermstructure.obj"
 
 ".\lib\Win32\VisualStudio\QuantLib_d.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
     $(LIB32) @<<
