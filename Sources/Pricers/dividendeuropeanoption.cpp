@@ -30,6 +30,9 @@
 
 // $Source$
 // $Log$
+// Revision 1.11  2001/07/19 14:27:27  sigmud
+// warnings purged
+//
 // Revision 1.10  2001/07/13 14:23:11  sigmud
 // removed a few gcc compile warnings
 //
@@ -48,10 +51,10 @@ namespace QuantLib {
             Rate riskFreeRate, Time residualTime, double volatility,
             const std::vector<double>& dividends,
             const std::vector<Time>& exdivdates):
-            dividends_(dividends),exDivDates_(exdivdates),
             BSMEuropeanOption(type, underlying - riskless(riskFreeRate,
                 dividends, exdivdates), strike, dividendYield,
-                riskFreeRate, residualTime, volatility){
+                riskFreeRate, residualTime, volatility),
+                dividends_(dividends),exDivDates_(exdivdates){
 
                 QL_REQUIRE(dividends_.size() == exDivDates_.size(),
                     "the number of dividends is different from that of dates");

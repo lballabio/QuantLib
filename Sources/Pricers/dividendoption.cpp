@@ -29,6 +29,9 @@
 */
 // $Source$
 // $Log$
+// Revision 1.20  2001/07/19 14:27:27  sigmud
+// warnings purged
+//
 // Revision 1.19  2001/07/02 12:36:18  sigmud
 // pruned redundant header inclusions
 //
@@ -57,14 +60,13 @@ namespace QuantLib {
             Time residualTime, double volatility,
             const std::vector<double>& dividends,
             const std::vector<Time>& exdivdates, int timeSteps, int gridPoints)
-        : dividends_(dividends),
-          MultiPeriodOption(type, underlying - addElements(dividends),
-          strike, dividendYield, riskFreeRate, residualTime, volatility,
-          exdivdates, timeSteps, gridPoints) {
+        : MultiPeriodOption(type, underlying - addElements(dividends),
+          strike, dividendYield, riskFreeRate, residualTime, volatility, gridPoints,
+          exdivdates, timeSteps), dividends_(dividends) {
 
-            QL_REQUIRE(dateNumber_ == dividends_.size(),
+            QL_REQUIRE(dateNumber_ == dividends.size(),
                        "the number of dividends(" +
-                       IntegerFormatter::toString(dividends_.size()) +
+                       IntegerFormatter::toString(dividends.size()) +
                        ") is different from the number of dates(" +
                        IntegerFormatter::toString(dateNumber_) +
                        ")");

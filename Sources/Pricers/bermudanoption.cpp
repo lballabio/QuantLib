@@ -30,6 +30,9 @@
 
 // $Source$
 // $Log$
+// Revision 1.13  2001/07/19 14:27:27  sigmud
+// warnings purged
+//
 // Revision 1.12  2001/06/05 09:35:14  lballabio
 // Updated docs to use Doxygen 1.2.8
 //
@@ -50,8 +53,7 @@ namespace QuantLib {
             const std::vector<Time>& dates,
             int timeSteps, int gridPoints)
         : MultiPeriodOption(type, underlying, strike, dividendYield,
-          riskFreeRate, residualTime, volatility, dates, timeSteps,
-          gridPoints) {}
+          riskFreeRate, residualTime, volatility, gridPoints, dates, timeSteps) {}
 
         using FiniteDifferences::StandardStepCondition;
 

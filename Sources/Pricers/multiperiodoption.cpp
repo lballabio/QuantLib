@@ -30,6 +30,9 @@
 
 // $Source$
 // $Log$
+// Revision 1.20  2001/07/19 14:27:27  sigmud
+// warnings purged
+//
 // Revision 1.19  2001/07/13 14:48:13  nando
 // warning pruning action ....
 //
@@ -54,21 +57,21 @@ namespace QuantLib {
 
         MultiPeriodOption::MultiPeriodOption(Type type, double underlying,
             double strike, Rate dividendYield, Rate riskFreeRate,
-            Time residualTime, double volatility,
+            Time residualTime, double volatility, int gridPoints,
             const std::vector<Time>& dates,
-            int timeSteps, int gridPoints)
-        : dates_(dates),
+            int timeSteps)
+        : BSMNumericalOption(type, underlying, strike,
+                             dividendYield, riskFreeRate,
+                             residualTime, volatility,
+                             gridPoints),
+          dates_(dates),
           dateNumber_(dates.size()),
           timeStepPerPeriod_(timeSteps),
           lastDateIsResTime_(false),
           lastIndex_(dateNumber_ - 1),
           firstDateIsZero_(false),
           firstNonZeroDate_(residualTime),
-          firstIndex_(-1),
-          BSMNumericalOption(type, underlying, strike,
-                             dividendYield, riskFreeRate,
-                             residualTime, volatility,
-                             gridPoints) {
+          firstIndex_(-1) {
 
             double dateTollerance = 1e-6;
 
@@ -133,7 +136,7 @@ namespace QuantLib {
 
             int j = lastIndex_;
             do{
-                if (j == dateNumber_ - 1)
+                if (j == int(dateNumber_) - 1)
                     beginDate = residualTime_;
                 else
                     beginDate = dates_[j+1];

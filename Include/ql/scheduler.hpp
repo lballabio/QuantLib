@@ -30,6 +30,9 @@
 
 //  $Source$
 //  $Log$
+//  Revision 1.7  2001/07/19 14:27:27  sigmud
+//  warnings purged
+//
 //  Revision 1.6  2001/07/13 14:39:52  nando
 //  warning pruning action ....
 //
@@ -70,11 +73,13 @@ namespace QuantLib {
         const_iterator begin() const { return dates_.begin(); }
         const_iterator end() const { return dates_.end(); }
       private:
-        Date startDate_, endDate_, stubDate_;
         Handle<Calendar> calendar_;
+        Date startDate_, endDate_;
         int frequency_;
         RollingConvention rollingConvention_;
-        bool isAdjusted_, lastIsRegular_;
+        bool isAdjusted_;
+        Date stubDate_;
+        bool lastIsRegular_;
         std::vector<Date> dates_;
         bool isEndOfMonth(const Date&) const;
     };

@@ -30,6 +30,9 @@
 
 // $Source$
 // $Log$
+// Revision 1.13  2001/07/19 14:27:27  sigmud
+// warnings purged
+//
 // Revision 1.12  2001/07/13 14:48:13  nando
 // warning pruning action ....
 //
@@ -66,9 +69,9 @@ namespace QuantLib {
             // constructor
             MultiPeriodOption(Type type, double underlying,
                 double strike, Rate dividendYield, Rate riskFreeRate,
-                Time residualTime, double volatility,
+                Time residualTime, double volatility, int gridPoints,
                 const std::vector<Time>& dates,
-                int timeSteps, int gridPoints);
+                int timeSteps);
             // Protected attributes
             std::vector<Time> dates_;
 	    unsigned int dateNumber_;

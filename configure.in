@@ -12,6 +12,7 @@ AM_INIT_AUTOMAKE(QuantLib, 0.1.9)
 
 dnl Check for programs
 
+CXXFLAGS=-Wall
 AC_PROG_INSTALL
 AC_PROG_CC
 AC_PROG_CXX

@@ -28,6 +28,9 @@
     $Id$
     $Source$
     $Log$
+    Revision 1.7  2001/07/19 14:27:27  sigmud
+    warnings purged
+
     Revision 1.6  2001/07/16 16:07:42  lballabio
     Market elements and stuff
 
@@ -87,11 +90,11 @@ namespace QuantLib {
           private:
             double accrualPeriod() const;
             double nominal_;
+            RelinkableHandle<TermStructure> termStructure_;
             Date startDate_, endDate_;
             Date refPeriodStart_, refPeriodEnd_;
             Handle<Indexes::Xibor> index_;
             Spread spread_;
-            RelinkableHandle<TermStructure> termStructure_;
         };
 
     }
