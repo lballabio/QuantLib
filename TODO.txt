@@ -1,6 +1,5 @@
 
 
-check McPricer.value(tolerance) in European pricer
 solve copyright issues (COOOL, GAlib, etc.)
 separate SF projects for QuantLib-Python, etc.
 
@@ -17,7 +16,7 @@ LIBRARY
     contact Broda
 
     MONTE CARLO FRAMEWORK
-        make Path time-aware, then add example of Martingale control variate
+        add example of Martingale control variate
 
     ASIAN:
         continuous geometric APO backward starting instead of forward starting
@@ -25,13 +24,12 @@ LIBRARY
         handle backward starting asian
 
     Maxim integral
-    Nicolas spline contribution
 
     QuEP:
         Currency as class with methods returning related info
         implement currency as per OMG definition
 
-    document namespaces on Sad-branch
+    document namespaces on InterestRateDerivatives, Optimizers
 
     introduce compoundpathpricer
     GaussianPathGenerator, etc: allow for more general random walks

@@ -5,7 +5,7 @@ Changes since Release 0.2.1:
 - Library:
     MONTE CARLO FRAMEWORK
     - Path and MultiPath are time-aware
-    - Improved convergency algorithm in McPricer
+    - McPricer: extended interface, improved convergency algorithm
 
     FINITE DIFFERENCE FRAMEWORK
 
@@ -22,6 +22,7 @@ Changes since Release 0.2.1:
 
     VARIOUS
     - Handle is now castable to an Handle of a compatible type
+    - better spline interpolation algorithm
 
 2001-12-03 Release 0.2.1
 
