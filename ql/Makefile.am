@@ -110,6 +110,7 @@ libQuantLib_la_SOURCES = \
     date.cpp \
     option.cpp \
     scheduler.cpp \
-    solver1d.cpp
+    solver1d.cpp \
+    voltermstructure.cpp
 
 lib_LTLIBRARIES = libQuantLib.la

@@ -21,7 +21,8 @@ CORE_OBJS        = calendar.obj$(_D) \
                    date.obj$(_D) \
                    option.obj$(_D) \
                    scheduler.obj$(_D) \
-                   solver1d.obj$(_D)
+                   solver1d.obj$(_D) \
+		   voltermstructure.obj$(_D)
 
 CALENDAR_LIB        = Calendars\Calendars$(_D).lib
 CALIBRATION_LIB     = ShortRateModels\CalibrationHelpers\CalibrationHelpers$(_D).lib
