@@ -22,7 +22,7 @@ EXTRA_DIST = \
 	QuantLib.nsi \
 	Readme.txt \
 	TODO.txt \
-	updateproject.sh
+        bootstrap
 
 dist-hook:
 	mkdir $(distdir)/lib
