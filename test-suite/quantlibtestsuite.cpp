@@ -42,7 +42,7 @@
 #include "factorial.hpp"
 #include "instruments.hpp"
 #include "integrals.hpp"
-#include "jumpdiffusion.hpp"
+//#include "jumpdiffusion.hpp"
 #include "lowdiscrepancysequences.hpp"
 #include "marketelements.hpp"
 #include "matrices.hpp"

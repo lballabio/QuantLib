@@ -842,7 +842,7 @@ void DigitalOptionTest::testEngineConsistency() {
 //    Size maxTimeStepsPerYear = 365;
     bool antitheticVariate = false;
     bool controlVariate = false;
-    Size requiredSamples = QL_POW(2, 10)-1;
+    Size requiredSamples = Size(QL_POW(2.0, 10)-1);
     double requiredAccuracy = 0.05;
 //    double requiredAccuracy = 0.005;
     Size maxSamples = 1000000;
