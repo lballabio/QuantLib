@@ -18,12 +18,12 @@
 #include <ql/interestrate.hpp>
 #include <ql/null.hpp>
 #include <ql/basicdataformatters.hpp>
-//#include <iostream>
 #include <sstream>
 
 namespace QuantLib {
 
     // constructors
+
     InterestRate::InterestRate()
     : r_(Null<Real>()) {}
 
@@ -39,7 +39,7 @@ namespace QuantLib {
     }
 
     Real InterestRate::compoundFactor(Time t) const {
-        QL_REQUIRE(r_, "null InterestRate");
+        QL_REQUIRE(r_ != Null<Rate>(), "null interest rate");
         switch (comp_) {
           case Simple:
             return 1.0 + r_*t;
@@ -53,8 +53,7 @@ namespace QuantLib {
     }
 
     Rate InterestRate::impliedRate(Real compound, Time t,
-        Compounding comp, Frequency freq) {
-
+                                   Compounding comp, Frequency freq) {
         switch (comp) {
           case Simple:
             return (compound - 1.0)/t;

@@ -29,14 +29,14 @@
 namespace QuantLib {
 
     //! Interest rate coumpounding rule
-    enum Compounding { Simple = 0,     //!< 1+r*t
-                       Compounded = 1, //!< (1+r)^t
-                       Continuous = 2  //!< exp(r*t)
+    enum Compounding { Simple = 0,     //!< \f$ 1+rt \f$
+                       Compounded = 1, //!< \f$ (1+r)^t \f$
+                       Continuous = 2  //!< \f$ e^{rt} \f$
     };
 
     //! Concrete interest rate class
     /*! This class encapsulate the interest rate compounding algebra.
-        It manages daycounting conventions, compounding conventions,
+        It manages day-counting conventions, compounding conventions,
         conversion between different conventions, discount/compound factor
         calculations, and implied/equivalent rate calculations.
 
@@ -66,8 +66,8 @@ namespace QuantLib {
         //! \name discount/compound factor calculations
         //@{
         //! discount factor implied by the rate compounded at time t.
-        /*! 
-            \warning Time must be measured using InterestRate's own daycounter.
+        /*! \warning Time must be measured using InterestRate's own
+                     day counter.
         */
         DiscountFactor discountFactor(Time t) const {
             return 1.0/compoundFactor(t);
@@ -83,7 +83,8 @@ namespace QuantLib {
         /*! returns the compound (a.k.a capitalization) factor
             implied by the rate compounded at time t.
 
-            \warning Time must be measured using InterestRate's own daycounter.
+            \warning Time must be measured using InterestRate's own
+                     day counter.
         */
         Real compoundFactor(Time t) const;
 
@@ -100,24 +101,24 @@ namespace QuantLib {
         //! \name implied rate calculations
         //@{
 
-        //! implied Rate for a given t-time compound factor.
-        /*! The resulting Rate is calculated implicitly assuming
-            the same daycounting rule used for the time t measure.
+        //! implied rate for a given t-time compound factor.
+        /*! The resulting rate is calculated implicitly assuming
+            the same day-counting rule used for the time t measure.
 
-            \warning Time must be measured using the InterestRate
-                     instance own daycounter.
+            \warning Time must be measured using the InterestRate's
+                     own day-counter.
         */
         static Rate impliedRate(Real compound,
                                 Time t,
                                 Compounding comp,
                                 Frequency freq = Annual);
 
-        //! implied InterestRate for a given t-time compound factor.
-        /*! The resulting InterestRate shares the same implicit daycounting
-            rule of the original InterestRate instance.
+        //! implied interest rate for a given t-time compound factor.
+        /*! The resulting InterestRate shares the same implicit
+            day-counting rule of the original InterestRate instance.
 
             \warning Time must be measured using the InterestRate
-                     instance own daycounter.
+                     instance own day-counter.
         */
         InterestRate impliedInterestRate(Real compound,
                                          Time t,
@@ -127,9 +128,9 @@ namespace QuantLib {
             return InterestRate(r, dc_, comp, freq);
         }
 
-        //! implied Rate for a given compound factor between two dates.
-        /*! The resulting Rate is calculated taking the required daycounting
-            rule into account.
+        //! implied rate for a given compound factor between two dates.
+        /*! The resulting rate is calculated taking the required
+            day-counting rule into account.
         */
         static Rate impliedRate(Real compound,
                                 Date d1,
@@ -141,8 +142,9 @@ namespace QuantLib {
             return impliedRate(compound, t, comp, freq);
         }
 
-        //! implied InterestRate for a given compound factor between two dates.
-        /*! The resulting InterestRate has the required daycounting rule.
+        //! implied interest rate for a given compound factor between two dates.
+        /*! The resulting InterestRate has the required day-counting
+            rule.
         */
         static InterestRate impliedInterestRate(Real compound,
                                                 Date d1,
@@ -158,12 +160,12 @@ namespace QuantLib {
         //! \name equivalent rate calculations
         //@{
 
-        //! equivalent Rate for a compounding period t.
-        /*! The resulting Rate is calculated implicitly assuming
-            the same daycounting rule used for the time t measure.
+        //! equivalent rate for a compounding period t.
+        /*! The resulting rate is calculated implicitly assuming
+            the same day-counting rule used for the time t measure.
 
             \warning Time must be measured using the InterestRate
-                     instance own daycounter.
+                     instance own day counter.
         */
         Rate equivalentRate(Time t,
                             Compounding comp,
@@ -171,12 +173,12 @@ namespace QuantLib {
             return impliedRate(compoundFactor(t), t, comp, freq);
         }
 
-        //! equivalent InterestRate for a compounding period t.
-        /*! The resulting InterestRate shares the same implicit daycounting
-            rule of the original InterestRate instance.
+        //! equivalent interest rate for a compounding period t.
+        /*! The resulting InterestRate shares the same implicit
+            day-counting rule of the original InterestRate instance.
 
-            \warning Time must be measured using the InterestRate
-                     instance own daycounter.
+            \warning Time must be measured using the InterestRate's
+                     own day counter.
         */
         InterestRate equivalentInterestRate(Time t,
                                             Compounding comp,
@@ -185,9 +187,9 @@ namespace QuantLib {
             return InterestRate(r, dc_, comp, freq);
         }
 
-        //! equivalent Rate for a compounding period between two dates
-        /*! The resulting Rate is calculated taking the required daycounting
-            rule into account.
+        //! equivalent rate for a compounding period between two dates
+        /*! The resulting rate is calculated taking the required
+            day-counting rule into account.
         */
         Rate equivalentRate(Date d1,
                             Date d2,
@@ -199,8 +201,9 @@ namespace QuantLib {
             return impliedRate(compoundFactor(t1), t2, comp, freq);
         }
 
-        //! equivalent InterestRate for a compounding period between two dates
-        /*! The resulting InterestRate has the required daycounting rule.
+        //! equivalent interest rate for a compounding period between two dates
+        /*! The resulting InterestRate has the required day-counting
+            rule.
         */
         InterestRate equivalentInterestRate(Date d1,
                                             Date d2,
@@ -229,7 +232,8 @@ namespace QuantLib {
 
     //! Formats interest rates for output
     /*! Combines RateFormatter and CompoundingRuleFormatter with
-        information about the daycounting convention*/
+        information about the day-counting convention
+    */
     class InterestRateFormatter {
       public:
         static std::string toString(InterestRate ir,
