@@ -20,6 +20,7 @@ include_HEADERS = americancondition.h \
     mceuropeanpricer.h  \
     multiperiodoption.h \
     plainbasketoption.h \
+    pagodaoption.h \
     shoutcondition.h    \
     stepconditionoption.h \
     shoutoption.h 

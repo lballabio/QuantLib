@@ -22,6 +22,7 @@ include_HEADERS = antitheticcv.h \
 	multipath.h \
 	multipathgenerator.h \
 	multipathpricer.h \
+	pagodapathpricer.h \
 	onefactormontecarlooption.h \
 	path.h \
 	pathmontecarlo.h \

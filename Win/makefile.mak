@@ -53,7 +53,8 @@ MONTECARLO_OBJS  = $(OUTPUT_DIR)\avgpriceasianpathpricer.obj \
                    $(OUTPUT_DIR)\geometricasianpathpricer.obj  \
                    $(OUTPUT_DIR)\getcovariance.obj        \
                    $(OUTPUT_DIR)\himalayapathpricer.obj  \
-                   $(OUTPUT_DIR)\lecuyerrandomgenerator.obj
+                   $(OUTPUT_DIR)\lecuyerrandomgenerator.obj \
+                   $(OUTPUT_DIR)\pagodapathpricer.obj
 
 FDM_OBJS         = $(OUTPUT_DIR)\tridiagonaloperator.obj \
                    $(OUTPUT_DIR)\bsmoperator.obj\
@@ -78,6 +79,7 @@ PRICER_OBJS      = $(OUTPUT_DIR)\bsmoption.obj \
                    $(OUTPUT_DIR)\mceuropeanpricer.obj \
                    $(OUTPUT_DIR)\multiperiodoption.obj \
                    $(OUTPUT_DIR)\plainbasketoption.obj \
+                   $(OUTPUT_DIR)\pagodaoption.obj \
                    $(OUTPUT_DIR)\stepconditionoption.obj
 
 
@@ -233,6 +235,8 @@ $(OUTPUT_DIR)\himalayapathpricer.obj: \
     $(SOURCES_DIR)\MonteCarlo\himalayapathpricer.cpp
 $(OUTPUT_DIR)\lecuyerrandomgenerator.obj: \
     $(SOURCES_DIR)\MonteCarlo\lecuyerrandomgenerator.cpp
+$(OUTPUT_DIR)\pagodapathpricer.obj: \
+    $(SOURCES_DIR)\MonteCarlo\pagodapathpricer.cpp
 
 
 # Pricers
@@ -272,6 +276,8 @@ $(OUTPUT_DIR)\multiperiodoption.obj: \
                 $(SOURCES_DIR)\Pricers\multiperiodoption.cpp
 $(OUTPUT_DIR)\plainbasketoption.obj: \
                 $(SOURCES_DIR)\Pricers\plainbasketoption.cpp
+$(OUTPUT_DIR)\pagodaoption.obj: \
+                $(SOURCES_DIR)\Pricers\pagodaoption.cpp                
 $(OUTPUT_DIR)\stepconditionoption.obj: \
                 $(SOURCES_DIR)\Pricers\stepconditionoption.cpp
 

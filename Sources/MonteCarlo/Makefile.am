@@ -13,6 +13,7 @@ libMonteCarlo_la_SOURCES = \
 	geometricasianpathpricer.cpp \
 	getcovariance.cpp \
 	himalayapathpricer.cpp \
+	pagodapathpricer.cpp \
 	lecuyerrandomgenerator.cpp
 
 

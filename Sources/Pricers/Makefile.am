@@ -25,6 +25,7 @@ libPricers_la_SOURCES = \
     mceuropeanpricer.cpp \
     multiperiodoption.cpp \
     plainbasketoption.cpp \
+    pagodaoption.cpp \
     stepconditionoption.cpp 
 
 noinst_LTLIBRARIES = libPricers.la

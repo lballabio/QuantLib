@@ -23,6 +23,9 @@
 
 /* $Source$
    $Log$
+   Revision 1.11  2001/03/22 12:13:05  marmar
+   Introducing pagoda options
+
    Revision 1.10  2001/03/09 12:40:41  lballabio
    Spring cleaning for SWIG interfaces
 
@@ -45,13 +48,14 @@
 %include Matrix.i
 
 %{
-using QuantLib::Pricers::McEuropeanPricer;
-using QuantLib::Pricers::GeometricAsianOption;
 using QuantLib::Pricers::AveragePriceAsian;
 using QuantLib::Pricers::AverageStrikeAsian;
-using QuantLib::Pricers::PlainBasketOption;
-using QuantLib::Pricers::Himalaya;
 using QuantLib::Pricers::EverestOption;
+using QuantLib::Pricers::GeometricAsianOption;
+using QuantLib::Pricers::Himalaya;
+using QuantLib::Pricers::McEuropeanPricer;
+using QuantLib::Pricers::PlainBasketOption;
+using QuantLib::Pricers::PagodaOption;
 %}
 
 class McEuropeanPricer {
@@ -103,6 +107,18 @@ class PlainBasketOption {
         Rate riskFreeRate,  double residualTime, 
         int timesteps, long samples, long seed = 0);
     ~PlainBasketOption();
+	double value() const;
+	double errorEstimate() const;
+};
+
+
+class PagodaOption {
+  public:
+    PagodaOption(const Array &portfolio,  double fraction,
+        double roof, double residualTime, const Matrix &covariance,
+        const Array &dividendYield, Rate riskFreeRate,
+        int timesteps, long samples, long seed = 0);
+    ~PagodaOption();
 	double value() const;
 	double errorEstimate() const;
 };
