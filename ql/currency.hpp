@@ -26,8 +26,6 @@
 #include <ql/Math/rounding.hpp>
 #include <ql/errors.hpp>
 #include <boost/shared_ptr.hpp>
-#include <assert.h>
-#include <boost/format.hpp>
 #include <ostream>
 
 namespace QuantLib {
@@ -62,7 +60,7 @@ namespace QuantLib {
         /*! The format will be fed three positional parameters,
             namely, value, code, and symbol, in this order.
         */
-        boost::format format() const;
+        std::string format() const;
         //@}
         //! \name other info
         //@{
@@ -83,7 +81,7 @@ namespace QuantLib {
         Integer fractionsPerUnit;
         Rounding rounding;
         Currency triangulated;
-        boost::format format;
+        std::string formatString;
 
         Data(const std::string& name,
              const std::string& code,
@@ -97,10 +95,7 @@ namespace QuantLib {
         : name(name), code(code), numeric(numericCode),
           symbol(symbol), fractionsPerUnit(fractionsPerUnit),
           rounding(rounding), triangulated(triangulationCurrency),
-          format(formatString) {
-            format.exceptions(boost::io::all_error_bits ^
-                              boost::io::too_many_args_bit);
-        }
+          formatString(formatString) {}
     };
 
     /*! \relates Currency */
@@ -155,7 +150,7 @@ namespace QuantLib {
         return data_->rounding;
     }
 
-    inline boost::format Currency::format() const {
+    inline std::string Currency::format() const {
         return data_->format;
     }
 

@@ -19,6 +19,10 @@
 #include <ql/Currencies/exchangeratemanager.hpp>
 #include <ql/Math/comparison.hpp>
 #include <sstream>
+#if !defined(QL_PATCH_BORLAND) || BOOST_VERSION < 103200
+#include <assert.h>
+#include <boost/format.hpp>
+#endif
 
 namespace QuantLib {
 
@@ -188,12 +192,36 @@ namespace QuantLib {
     }
 
 
+    std::ostream& operator<<(std::ostream& out, const Money& m) {
+        #if defined(QL_PATCH_BORLAND) && BOOST_VERSION >= 103200
+        return out << m.currency().symbol() << " " << m.rounded().value();
+        #else
+        boost::format fmt(m.currency().format());
+        fmt.exceptions(boost::io::all_error_bits ^
+                       boost::io::too_many_args_bit);
+        return out << fmt % m.rounded().value()
+                          % m.currency().code()
+                          % m.currency().symbol();
+        #endif
+    }
+
+    #ifndef QL_DISABLE_DEPRECATED
     std::string MoneyFormatter::toString(const Money& m) {
-        boost::format fmt = m.currency().format();
+        #if defined(QL_PATCH_BORLAND) && BOOST_VERSION >= 103200
+        std::ostringstream out;
+        out << m.currency().symbol() << " " << m.rounded().value();
+        return out.str();
+        #else
+        boost::format fmt(m.currency().format());
+        fmt.exceptions(boost::io::all_error_bits ^
+                       boost::io::too_many_args_bit);
         fmt % m.rounded().value()
             % m.currency().code()
             % m.currency().symbol();
         return boost::io::str(fmt);
+        #endif
     }
+    #endif
+
 
 }

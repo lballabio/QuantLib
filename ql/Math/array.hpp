@@ -30,9 +30,6 @@
 #include <boost/iterator/reverse_iterator.hpp>
 #include <functional>
 #include <numeric>
-#ifdef QL_PATCH_MSVC6
-#include <sstream>
-#endif
 
 namespace QuantLib {
 
@@ -165,8 +162,13 @@ namespace QuantLib {
     /*! \relates Array */
     const Disposable<Array> Exp(const Array&);
 
+    // format
+    /*! \relates Array */
+    std::ostream& operator<<(std::ostream&, const Array&);
 
+    #ifndef QL_DISABLE_DEPRECATED
     //! format arrays for output
+    /*! \deprecated use streams and manipulators for proper formatting */
     class ArrayFormatter {
       public:
         static std::string toString(const Array& a,
@@ -189,6 +191,7 @@ namespace QuantLib {
             return s.str();
         }
     };
+    #endif
 
 
     // inline definitions
@@ -562,6 +565,16 @@ namespace QuantLib {
         std::transform(v.begin(),v.end(),result.begin(),
                        std::ptr_fun<Real,Real>(std::exp));
         return result;
+    }
+
+    inline std::ostream& operator<<(std::ostream& out, const Array& a) {
+        Size width = out.width();
+        out << "[ ";
+        for (Integer n=0; n<Integer(a.size())-1; ++n)
+            out << std::setw(width) << a[n] << "; ";
+        out << std::setw(width) << a[a.size()-1];
+        out << " ]";
+        return out;
     }
 
 }

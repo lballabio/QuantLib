@@ -92,6 +92,50 @@ namespace QuantLib {
         return InterestRate(r, resultDC, comp, freq);
     }
 
+
+    std::ostream& operator<<(std::ostream& out, const InterestRate& ir) {
+        if (ir.rate() == Null<Rate>())
+            return out << "null interest rate";
+
+        out << io::rate(ir.rate()) << " " << ir.dayCounter().name() << " ";
+        switch (ir.compounding()) {
+          case Simple:
+            out << "simple compounding";
+            break;
+          case Compounded:
+            switch (ir.frequency()) {
+              case NoFrequency:
+              case Once:
+                QL_FAIL(ir.frequency() << " frequency not allowed "
+                        "for this interest rate");
+              default:
+                out << ir.frequency() <<" compounding";
+            }
+            break;
+          case Continuous:
+            out << "continuous compounding";
+            break;
+          case SimpleThenCompounded:
+            switch (ir.frequency()) {
+              case NoFrequency:
+              case Once:
+                QL_FAIL(ir.frequency() << " frequency not allowed "
+                        "for this interest rate");
+              default:
+                out << "simple compounding up to "
+                    << Integer(12/ir.frequency()) << " months, then "
+                    << ir.frequency() << " compounding";
+            }
+            break;
+          default:
+            QL_FAIL("unknown compounding convention ("
+                    << Integer(ir.compounding()) << ")");
+        }
+        return out;
+    }
+
+
+    #ifndef QL_DISABLE_DEPRECATED
     std::string InterestRateFormatter::toString(InterestRate ir,
                                                 Integer precision) {
         static std::ostringstream out;
@@ -147,5 +191,6 @@ namespace QuantLib {
         }
         return out.str();
     }
+    #endif
 
 }

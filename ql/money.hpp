@@ -115,13 +115,17 @@ namespace QuantLib {
     /*! \relates Money */
     bool close_enough(const Money&, const Money&, Size n = 42);
 
+    /*! \relates Money */
+    std::ostream& operator<<(std::ostream&, const Money&);
 
+    #ifndef QL_DISABLE_DEPRECATED
     //! format money for output
+    /*! \deprecated use streams and manipulators for proper formatting */
     class MoneyFormatter {
       public:
         static std::string toString(const Money&);
     };
-
+    #endif
 
 
     // inline definitions

@@ -47,6 +47,8 @@ namespace QuantLib {
         boost::shared_ptr<Exercise> exercise_;
     };
 
+    /*! \relates Option */
+    std::ostream& operator<<(std::ostream&, Option::Type);
 
     /*! basic %option arguments
 
@@ -95,8 +97,9 @@ namespace QuantLib {
              strikeSensitivity;
     };
 
-
+    #ifndef QL_DISABLE_DEPRECATED
     //! format option type for output
+    /*! \deprecated use streams and manipulators for proper formatting */
     class OptionTypeFormatter {
       public:
         static std::string toString(Option::Type type) {
@@ -108,6 +111,21 @@ namespace QuantLib {
             }
         }
     };
+    #endif
+
+
+    // inline definitions
+
+    inline std::ostream& operator<<(std::ostream& out, Option::Type type) {
+        switch (type) {
+          case Option::Call:
+            return out << "call";
+          case Option::Put:
+            return out << "put";
+          default:
+            QL_FAIL("unknown option type");
+        }
+    }
 
 }
 

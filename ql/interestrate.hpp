@@ -176,8 +176,13 @@ namespace QuantLib {
         Real freq_;
     };
 
+    /*! \relates InterestRate */
+    std::ostream& operator<<(std::ostream&, const InterestRate&);
+
+
+    #ifndef QL_DISABLE_DEPRECATED
     //! Formats compounding rule for output
-    /*! Uses FrequencyFormatter and adds compounding informations */
+    /*! \deprecated use streams and manipulators for proper formatting */
     class CompoundingRuleFormatter {
       public:
         static std::string toString(Compounding comp,
@@ -185,14 +190,13 @@ namespace QuantLib {
     };
 
     //! Formats interest rates for output
-    /*! Combines RateFormatter and CompoundingRuleFormatter with
-        information about the day-counting convention
-    */
+    /*! \deprecated use streams and manipulators for proper formatting */
     class InterestRateFormatter {
       public:
         static std::string toString(InterestRate ir,
                                     Integer precision = 5);
     };
+    #endif
 
 }
 

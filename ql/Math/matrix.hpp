@@ -164,8 +164,12 @@ namespace QuantLib {
     const Disposable<Matrix> outerProduct(Iterator1 v1begin, Iterator1 v1end,
                                           Iterator2 v2begin, Iterator2 v2end);
 
+    /*! \relates Matrix */
+    std::ostream& operator<<(std::ostream&, const Matrix&);
 
+    #ifndef QL_DISABLE_DEPRECATED
     //! format matrices for output
+    /*! \deprecated use streams and manipulators for proper formatting */
     class MatrixFormatter {
       public:
         static std::string toString(const Matrix& m,
@@ -188,6 +192,7 @@ namespace QuantLib {
             return s.str();
         }
     };
+    #endif
 
 
     // inline definitions
@@ -568,6 +573,17 @@ namespace QuantLib {
                            std::bind1st(std::multiplies<Real>(), *v1begin));
 
         return result;
+    }
+
+    inline std::ostream& operator<<(std::ostream& out, const Matrix& m) {
+        Size width = out.width();
+        for (Size i=0; i<m.rows(); i++) {
+            out << "| ";
+            for (Size j=0; j<m.columns(); j++)
+                out << std::setw(width) << m[i][j] << " ";
+            out << "|\n";
+        }
+        return out;
     }
 
 }
