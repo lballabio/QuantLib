@@ -83,20 +83,6 @@ namespace QuantLib {
                                     Time time2,
                                     double strike,
                                     bool extrapolate = false) const;
-        //! Partial derivative of Black volatility with respect to time
-        virtual double timeDerivative(Time t, 
-                                      double strike, 
-                                      bool extrapolate = false) const;
-        
-		//! Partial derivative of Black volatility with respect to strike
-        virtual double strikeDerivative(Time t, 
-                                        double strike, 
-                                        bool extrapolate = false) const;
-                   
-        //! Second-order derivative of Black volatility with respect to strike
-        virtual double strikeSecondDerivative(Time t, 
-                                              double strike, 
-                                              bool extrapolate = false) const;
         //@}
         //! \name Dates
         //@{

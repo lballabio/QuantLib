@@ -55,12 +55,6 @@ namespace QuantLib {
             Date referenceDate() const;
             DayCounter dayCounter() const;
             Date maxDate() const;
-            double strikeDerivative(Time t, 
-                                    double strike, 
-                                    bool extrapolate = false) const;
-            double strikeSecondDerivative(Time t, 
-                                          double strike, 
-                                          bool extrapolate = false) const;
             //@}
             //! \name Modifiers
             //@{
@@ -112,18 +106,6 @@ namespace QuantLib {
 
         inline Date BlackVarianceCurve::maxDate() const { 
             return maxDate_; 
-        }
-
-        inline double 
-        BlackVarianceCurve::strikeDerivative(Time t, double strike, 
-                                             bool extrapolate) const {
-            return 0.0;
-        }
-
-        inline double 
-        BlackVarianceCurve::strikeSecondDerivative(Time t, double strike, 
-                                                   bool extrapolate) const {
-            return 0.0;
         }
 
         inline void BlackVarianceCurve::update() {

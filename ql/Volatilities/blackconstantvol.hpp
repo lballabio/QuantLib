@@ -54,18 +54,6 @@ namespace QuantLib {
             Date maxDate() const;
             double blackForwardVol(Time t1, Time t2, double strike,
                                    bool extrapolate = false) const;
-            double timeDerivative(Time t, double strike, 
-                                  bool extrapolate = false) const {
-                return 0.0;
-            }
-            double strikeDerivative(Time t, double strike, 
-                                    bool extrapolate = false) const {
-                return 0.0;
-            }
-            double strikeSecondDerivative(Time t, double strike, 
-                                          bool extrapolate = false) const {
-                return 0.0;
-            }
             //@}
             //! \name Observer interface
             //@{
