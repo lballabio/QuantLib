@@ -79,10 +79,10 @@ namespace QuantLib {
     inline IndexedCoupon::IndexedCoupon(Real nominal,
                                         const Date& paymentDate,
                                         const boost::shared_ptr<Xibor>& index,
-                                        const Date& startDate, 
+                                        const Date& startDate,
                                         const Date& endDate,
                                         Integer fixingDays, Spread spread,
-                                        const Date& refPeriodStart, 
+                                        const Date& refPeriodStart,
                                         const Date& refPeriodEnd,
                                         const DayCounter& dayCounter)
     : FloatingRateCoupon(nominal, paymentDate, startDate, endDate,

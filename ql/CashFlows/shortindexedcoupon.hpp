@@ -44,10 +44,10 @@ namespace QuantLib {
               const Date& refPeriodEnd = Date(),
               const DayCounter& dayCounter = DayCounter())
         : IndexedCouponType(nominal, paymentDate, index, startDate,
-                            endDate, fixingDays, spread, 
+                            endDate, fixingDays, spread,
                             refPeriodStart, refPeriodEnd, dayCounter) {}
         //! inhibit calculation
-        /*! Unlike ParCoupon, this coupon can't calculate 
+        /*! Unlike ParCoupon, this coupon can't calculate
             its fixing for future dates, either.
         */
         Real amount() const {

@@ -23,6 +23,7 @@
 #define quantlib_short_floating_rate_coupon_hpp
 
 #include <ql/CashFlows/parcoupon.hpp>
+#include <ql/CashFlows/shortindexedcoupon.hpp>
 
 namespace QuantLib {
 
@@ -31,16 +32,18 @@ namespace QuantLib {
                  i.e., the start and end date passed upon construction
                  should be already rolled to a business day.
     */
-    class ShortFloatingRateCoupon : public ParCoupon {
+    template <>
+    class Short<ParCoupon> : public ParCoupon {
       public:
-        ShortFloatingRateCoupon(Real nominal,
-                                const Date& paymentDate,
-                                const boost::shared_ptr<Xibor>& index,
-                                const Date& startDate, const Date& endDate,
-                                Integer fixingDays,
-                                Spread spread = 0.0,
-                                const Date& refPeriodStart = Date(),
-                                const Date& refPeriodEnd = Date());
+        Short(Real nominal,
+              const Date& paymentDate,
+              const boost::shared_ptr<Xibor>& index,
+              const Date& startDate, const Date& endDate,
+              Integer fixingDays,
+              Spread spread = 0.0,
+              const Date& refPeriodStart = Date(),
+              const Date& refPeriodEnd = Date(),
+              const DayCounter& dayCounter = DayCounter());
         //! throws when an interpolated fixing is needed
         Real amount() const;
         //! \name Visitability
@@ -49,13 +52,17 @@ namespace QuantLib {
         //@}
     };
 
+    #ifndef QL_DISABLE_DEPRECATED
+    /*! \deprecated use Short<ParCoupon> instead */
+    typedef Short<ParCoupon> ShortFloatingRateCoupon;
+    #endif
+
 
     // inline definitions
 
-    inline 
-    void ShortFloatingRateCoupon::accept(AcyclicVisitor& v) {
-        Visitor<ShortFloatingRateCoupon>* v1 = 
-            dynamic_cast<Visitor<ShortFloatingRateCoupon>*>(&v);
+    inline void Short<ParCoupon>::accept(AcyclicVisitor& v) {
+        Visitor<Short<ParCoupon> >* v1 =
+            dynamic_cast<Visitor<Short<ParCoupon> >*>(&v);
         if (v1 != 0)
             v1->visit(*this);
         else

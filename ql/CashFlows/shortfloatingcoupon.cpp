@@ -20,16 +20,18 @@
 
 namespace QuantLib {
 
-    ShortFloatingRateCoupon::ShortFloatingRateCoupon(
+    Short<ParCoupon>::Short(
         Real nominal, const Date& paymentDate,
-        const boost::shared_ptr<Xibor>& index, const Date& startDate, 
+        const boost::shared_ptr<Xibor>& index, const Date& startDate,
         const Date& endDate, Integer fixingDays, Spread spread,
-        const Date& refPeriodStart, const Date& refPeriodEnd)
+        const Date& refPeriodStart, const Date& refPeriodEnd,
+        const DayCounter& dayCounter)
     : ParCoupon(nominal,paymentDate,index,
                 startDate,endDate,fixingDays,
-                spread,refPeriodStart,refPeriodEnd) {}
+                spread,refPeriodStart,refPeriodEnd,
+                dayCounter) {}
 
-    Real ShortFloatingRateCoupon::amount() const {
+    Real Short<ParCoupon>::amount() const {
         QL_REQUIRE(index()->termStructure(),
                    "null term structure set to par coupon");
         Date today = index()->termStructure()->todaysDate();
@@ -38,9 +40,9 @@ namespace QuantLib {
                    // must have been fixed
                    // but we have no way to interpolate the fixing yet
                    "short/long floating coupons not supported yet"
-                   " (start = " + 
+                   " (start = " +
                    DateFormatter::toString(accrualStartDate_) +
-                   ", end = " + 
+                   ", end = " +
                    DateFormatter::toString(accrualEndDate_) + ")");
         return ParCoupon::amount();
     }
