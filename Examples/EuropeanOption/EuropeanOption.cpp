@@ -414,7 +414,6 @@ int main(int argc, char* argv[])
              << std::endl;
 
 
-/*        
         Handle<PricingEngines::ForwardPerformanceEngine<PricingEngines::VanillaOptionArguments,
                                              PricingEngines::VanillaOptionResults> >
                                              forwardPerformanceEngine(new
@@ -460,6 +459,7 @@ int main(int argc, char* argv[])
 
 ///////////////////////////////////
 
+/*        
 
 
         Handle<PricingEngines::QuantoEngine<PricingEngines::ForwardOptionArguments,
