@@ -3,6 +3,7 @@
 	ProjectType="Visual C++"
 	Version="7.10"
 	Name="QuantLib"
+	ProjectGUID="{4178494F-272C-4BF8-A4CF-E120C5FFA04E}"
 	SccProjectName=""
 	SccLocalPath="">
 	<Platforms>

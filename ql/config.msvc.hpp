@@ -43,6 +43,17 @@
 #pragma warning(disable: 4503)
 
 
+// force undefining min and max macros
+#ifndef NOMINMAX
+#  define NOMINMAX
+#endif
+#ifdef min
+#  undef min
+#endif
+#ifdef max
+#  undef max
+#endif
+
 // leave outside here common configs
 
 #define HAVE_CSTDLIB 1
