@@ -283,7 +283,7 @@ void AmericanOptionTest::testBaroneAdesiWhaleyValues() {
         Handle<StrikedTypePayoff> payoff(new
             PlainVanillaPayoff(values[i].type, values[i].strike));
 
-        Date exDate = today.plusDays(values[i].t*360);
+        Date exDate = today.plusDays(int(values[i].t*360+0.5));
         Handle<Exercise> exercise(new AmericanExercise(today, exDate));
 
         spot ->setValue(values[i].s);
@@ -339,7 +339,7 @@ void AmericanOptionTest::testBjerksundStenslandValues() {
         Handle<StrikedTypePayoff> payoff(new
             PlainVanillaPayoff(values[i].type, values[i].strike));
 
-        Date exDate = today.plusDays(values[i].t*360);
+        Date exDate = today.plusDays(int(values[i].t*360+0.5));
         Handle<Exercise> exercise(new AmericanExercise(today, exDate));
 
         spot ->setValue(values[i].s);

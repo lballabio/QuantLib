@@ -16,7 +16,7 @@
 */
 
 #include "asianoptions.hpp"
-#include <ql/DayCounters/Actual360.hpp>
+#include <ql/DayCounters/actual360.hpp>
 #include <ql/Instruments/asianoption.hpp>
 #include <ql/PricingEngines/Asian/asianengines.hpp>
 #include <ql/TermStructures/flatforward.hpp>
@@ -244,7 +244,7 @@ void AsianOptionTest::testGeometricDiscreteAverage() {
 
     Date today = Date::todaysDate();
     std::vector<Date> fixingDates(values[0].futureFixings);
-    Size dt = values[0].t*360/values[0].futureFixings;
+    Size dt = Size(values[0].t*360/values[0].futureFixings+0.5);
     fixingDates[0]=today.plusDays(dt);
     for (Size i=1; i<values[0].futureFixings; i++)
         fixingDates[i]=fixingDates[i-1].plusDays(dt);
