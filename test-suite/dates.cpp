@@ -22,7 +22,7 @@ using namespace QuantLib;
 
 void DateTest::runTest() {
     
-    int minDate = Date::minDate().serialNumber(),
+    int minDate = Date::minDate().serialNumber()+1,
         maxDate = Date::maxDate().serialNumber();
 
     int dyold = Date(minDate-1).dayOfYear(),
