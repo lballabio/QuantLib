@@ -10,7 +10,7 @@ include_HEADERS = calendar.h \
 	dataformatters.h \
 	date.h \
 	daycounter.h \
-	deposit.h \
+	depositrate.h \
 	discountfactor.h \
 	expressiontemplates.h \
 	forwardvolsurface.h \
@@ -19,7 +19,7 @@ include_HEADERS = calendar.h \
 	null.h \
 	options.h qldefines.h \
 	qlerrors.h quantlib.h \
-	rate.h risktool.h \
+	rate.h riskstatistics.h \
 	solver1d.h spread.h \
 	swaptionvolsurface.h \
 	termstructure.h
