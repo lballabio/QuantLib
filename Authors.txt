@@ -1,7 +1,7 @@
 Ferdinando Ametrano (ferdinando@ametrano.net) - admin
 Luigi Ballabio (luigi.ballabio@riskmap.net) - library designer
 Marco Marchioro (marco.marchioro@riskmap.net)
-Sadruddin Rejeb (sad.rejeb@riskmap.it)
+Sadruddin Rejeb (sad@quantlib.org)
 Nicolas Di Césaré
 Enrico Sirola (enrico.sirola@riskmap.net)
 Mario Aleppo (mario.aleppo@riskmap.net)
