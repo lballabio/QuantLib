@@ -134,7 +134,7 @@ namespace QuantLib
 	    for (Size i=0,ci=1; i<dates_.size(); i++)
 	    {
 	       DiscountFactor df;
-	       Time t;
+	       Time t = 0.0;
 
 	       Date rateDate = dates_.at(i);
 	       Rate fwd = forwards_.at(i);
@@ -166,7 +166,12 @@ namespace QuantLib
 						  pDate,aDate);
 		     tempD += fwd*prev*t;
 		  }
-		  if (a >= 0)
+		  // currCnt could start at 0 (start bootstrapping above
+		  // compounding)
+		  if (currCnt == 0)
+		     t = dayCounter_.yearFraction(settlementDate_,rateDate,
+						  settlementDate_,rateDate);
+		  else
 		  {
 		     prev = discounts_.at(a);
 		     aDate = dates_.at(a);
@@ -179,9 +184,6 @@ namespace QuantLib
 		     t = dayCounter_.yearFraction(pDate,aDate,
 						  pDate,aDate);
 		  }
-		  else
-		     t = dayCounter_.yearFraction(settlementDate_,rateDate,
-						  settlementDate_,rateDate);
 		  df = (1.0-tempD)/(1.0+fwd*t);
 		  std::cout << rateDate
 			    << ", fwd => "
