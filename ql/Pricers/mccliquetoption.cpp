@@ -71,7 +71,7 @@ namespace QuantLib {
 
                 QL_REQUIRE(n==discounts_.size(), "discounts/options mismatch");
 
-                double result, result2, lastFixing, underlying, payoff;
+                double result, lastFixing, underlying, payoff;
 
                 // start the simulation
                 lastFixing = lastFixing_;
