@@ -18,39 +18,43 @@ Contact ferdinando@ametrano.net if LICENSE.TXT was not distributed with this fil
 	// disable useless warnings
 	#pragma warning(disable: 4786)  // identifier truncated in debug info
 	// set switches
-	#define QL_CMATH_IN_STD	0
-	#define QL_CCHAR_IN_STD	0
-	#define QL_SUPPORTS_NAMESPACES	1
+	#define QL_CMATH_IN_STD						0
+	#define QL_CCHAR_IN_STD						0
+	#define QL_SUPPORTS_NAMESPACES				1
 	#define QL_TEMPLATE_SPECIALIZATION_WORKS	0
-	#define QL_REQUIRES_DUMMY_RETURN	1
-	#define GARBLED_MIN_AND_MAX		1
+	#define QL_REQUIRES_DUMMY_RETURN			1
+	#define QL_GARBLED_MIN_AND_MAX				1
+	#define QL_GARBLED_REVERSE_ITERATORS		1
 
 #elif defined(__BORLANDC__)				// Borland C++
 	// set switches
-	#define QL_CMATH_IN_STD	1
-	#define QL_CCHAR_IN_STD	1
-	#define QL_SUPPORTS_NAMESPACES	1
+	#define QL_CMATH_IN_STD						1
+	#define QL_CCHAR_IN_STD						1
+	#define QL_SUPPORTS_NAMESPACES				1
 	#define QL_TEMPLATE_SPECIALIZATION_WORKS	1
-	#define QL_REQUIRES_DUMMY_RETURN	0
-	#define GARBLED_MIN_AND_MAX		0
+	#define QL_REQUIRES_DUMMY_RETURN			0
+	#define GARBLED_MIN_AND_MAX					0
+	#define QL_GARBLED_REVERSE_ITERATORS		0
 
 #elif defined(__MWERKS__)					// Metrowerks CodeWarrior
 	// set switches
-	#define QL_CMATH_IN_STD	1
-	#define QL_CCHAR_IN_STD	1
-	#define QL_SUPPORTS_NAMESPACES	1
+	#define QL_CMATH_IN_STD						1
+	#define QL_CCHAR_IN_STD						1
+	#define QL_SUPPORTS_NAMESPACES				1
 	#define QL_TEMPLATE_SPECIALIZATION_WORKS	1
-	#define QL_REQUIRES_DUMMY_RETURN	0
-	#define GARBLED_MIN_AND_MAX		0
+	#define QL_REQUIRES_DUMMY_RETURN			1
+	#define QL_GARBLED_MIN_AND_MAX				0
+	#define QL_GARBLED_REVERSE_ITERATORS		0
 
 #else										// Generic ANSI C++ compliant compiler
 	// set switches
-	#define QL_CMATH_IN_STD	1
-	#define QL_CCHAR_IN_STD	1
-	#define QL_SUPPORTS_NAMESPACES	1
+	#define QL_CMATH_IN_STD						1
+	#define QL_CCHAR_IN_STD						1
+	#define QL_SUPPORTS_NAMESPACES				1
 	#define QL_TEMPLATE_SPECIALIZATION_WORKS	1
-	#define QL_REQUIRES_DUMMY_RETURN	0
-	#define GARBLED_MIN_AND_MAX		1
+	#define QL_REQUIRES_DUMMY_RETURN			0
+	#define QL_GARBLED_MIN_AND_MAX				0
+	#define QL_GARBLED_REVERSE_ITERATORS		0
 
 #endif
 
@@ -63,6 +67,8 @@ Contact ferdinando@ametrano.net if LICENSE.TXT was not distributed with this fil
 	#define QL_FABS	std::fabs
 	#define QL_EXP	std::exp
 	#define QL_LOG	std::log
+	#define QL_SIN	std::sin
+	#define QL_COS	std::cos
 	#define QL_POW	std::pow
 	#define QL_MODF	std::modf
 #else
@@ -70,6 +76,8 @@ Contact ferdinando@ametrano.net if LICENSE.TXT was not distributed with this fil
 	#define QL_FABS	fabs
 	#define QL_EXP	exp
 	#define QL_LOG	log
+	#define QL_SIN	sin
+	#define QL_COS	cos
 	#define QL_POW	pow
 	#define QL_MODF	modf
 #endif
@@ -117,12 +125,19 @@ Contact ferdinando@ametrano.net if LICENSE.TXT was not distributed with this fil
 #endif
 
 // Do std::min and std::max have the names you would expect? Blame Microsoft for this one
-#if GARBLED_MIN_AND_MAX
+#if QL_GARBLED_MIN_AND_MAX
 	#define QL_MIN	std::_cpp_min
 	#define QL_MAX	std::_cpp_max
 #else
 	#define QL_MIN	std::min
 	#define QL_MAX	std::max
+#endif
+
+// Does std::reverse_iterator need an extra template argument? Blame Microsoft for this one too
+#if QL_GARBLED_REVERSE_ITERATORS
+	#define QL_REVERSE_ITERATOR(iterator,type)	std::reverse_iterator<iterator,type>
+#else
+	#define QL_REVERSE_ITERATOR(iterator,type)	std::reverse_iterator<iterator>
 #endif
 
 

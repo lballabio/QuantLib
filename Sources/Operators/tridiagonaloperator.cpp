@@ -44,9 +44,9 @@ void TridiagonalOperatorCommon::setHigherBC(const BoundaryCondition& bc) {
 }
 
 
-Array<double> TridiagonalOperatorCommon::applyTo(const Array<double>& v) const {
+Array TridiagonalOperatorCommon::applyTo(const Array& v) const {
 	Require(v.size()==theSize,"TridiagonalOperator::applyTo: vector of the wrong size");
-	Array<double> result(theSize);
+	Array result(theSize);
 
 	// matricial product
 	result[0] = diagonal[0]*v[0] + aboveDiagonal[0]*v[1];
@@ -83,9 +83,9 @@ Array<double> TridiagonalOperatorCommon::applyTo(const Array<double>& v) const {
 	return result;
 }
 
-Array<double> TridiagonalOperatorCommon::solveFor(const Array<double>& rhs) const {
+Array TridiagonalOperatorCommon::solveFor(const Array& rhs) const {
 	Require(rhs.size()==theSize,"TridiagonalOperator::solveFor: rhs vector has the wrong size");
-	Array<double> bcRhs = rhs;
+	Array bcRhs = rhs;
 
 	// apply lower boundary condition
 	switch (theLowerBC.type()) {
@@ -110,7 +110,7 @@ Array<double> TridiagonalOperatorCommon::solveFor(const Array<double>& rhs) cons
 	}
 
 	// solve tridiagonal system
-	Array<double> result(theSize), tmp(theSize);
+	Array result(theSize), tmp(theSize);
 
 	double bet=diagonal[0];
 	Require(bet != 0.0, "TridiagonalOperator::solveFor: division by zero"); 

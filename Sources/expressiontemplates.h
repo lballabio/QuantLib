@@ -20,11 +20,11 @@ QL_BEGIN_NAMESPACE(QuantLib)
 
 // iterator on generic vectorial expression
 
-template <class Type, class Iter> 
+template <class Iter> 
 class VectorialExpression {
   public:
 	VectorialExpression(const Iter& i, int size) : i(i), n(size) {}
-	Type operator*() const { return *i; }
+	double operator*() const { return *i; }
 	VectorialExpression& operator++() { ++i; return *this; }
 	// pre-increment operator not defined - inefficient
 	int size() const { return n; }
@@ -35,24 +35,23 @@ class VectorialExpression {
 
 // dummy iterator on scalar
 
-template <class Type> 
 class Scalar {
   public:
-	Scalar(const Type& x) : x(x) {}
-	Type operator*() const { return x; }
+	Scalar(double x) : x(x) {}
+	double operator*() const { return x; }
 	Scalar& operator++() { return *this; }
 	// pre-increment operator not defined - inefficient
   private:
-	Type x;
+	double x;
 };
 
 // iterator on unary vectorial expression
 
-template <class Type, class Iter1, class Operation> 
+template <class Iter1, class Operation> 
 class UnaryVectorialExpression {
   public:
 	UnaryVectorialExpression(const Iter1& i, int size) : i(i), n(size) {}
-	Type operator*() const { return Operation::apply(*i); }
+	double operator*() const { return Operation::apply(*i); }
 	UnaryVectorialExpression& operator++() { ++i; return *this; }
 	// pre-increment operator not defined - inefficient
 	int size() const { return n; }
@@ -63,11 +62,11 @@ class UnaryVectorialExpression {
 
 // iterator on binary vectorial expression
 
-template <class Type, class Iter1, class Iter2, class Operation> 
+template <class Iter1, class Iter2, class Operation> 
 class BinaryVectorialExpression {
   public:
 	BinaryVectorialExpression(const Iter1& i, const Iter2& j, int size) : i(i), j(j), n(size) {}
-	Type operator*() const { return Operation::apply(*i,*j); }
+	double operator*() const { return Operation::apply(*i,*j); }
 	BinaryVectorialExpression& operator++() { ++i; ++j; return *this; }
 	// pre-increment operator not defined - inefficient
 	int size() const { return n; }
@@ -80,84 +79,73 @@ class BinaryVectorialExpression {
 
 // unary operations
 
-template <class Type> 
 class Plus {
   public:
-	static inline Type apply(Type a) { return +a; }
+	static inline double apply(double a) { return +a; }
 };
 
-template <class Type> 
 class Minus {
   public:
-	static inline Type apply(Type a) { return -a; }
+	static inline double apply(double a) { return -a; }
 };
 
 
 // binary operations
 
-template <class Type> 
 class Add {
   public:
-	static inline Type apply(Type a, Type b) { return a+b; }
+	static inline double apply(double a, double b) { return a+b; }
 };
 
-template <class Type> 
 class Subtract {
   public:
-	static inline Type apply(Type a, Type b) { return a-b; }
+	static inline double apply(double a, double b) { return a-b; }
 };
 
-template <class Type> 
 class Multiply {
   public:
-	static inline Type apply(Type a, Type b) { return a*b; }
+	static inline double apply(double a, double b) { return a*b; }
 };
 
-template <class Type> 
 class Divide {
   public:
-	static inline Type apply(Type a, Type b) { return a/b; }
+	static inline double apply(double a, double b) { return a/b; }
 };
 
 
 // functions
 
-template <class Type>
 class AbsoluteValue {
   public:
-	static inline Type apply(Type a) { return QL_ABS(a); }
+	static inline double apply(double a) { return QL_FABS(a); }
 };
 
-template <class Type>
 class SquareRoot {
   public:
-	static inline Type apply(Type a) { return QL_SQRT(a); }
+	static inline double apply(double a) { return QL_SQRT(a); }
 };
 
-template <class Type>
-class Sinus {
+class Sine {
   public:
-	static inline Type apply(Type a) { return QL_SIN(a); }
+	static inline double apply(double a) { return QL_SIN(a); }
 };
 
-template <class Type>
-class Cosinus {
+class Cosine {
   public:
-	static inline Type apply(Type a) { return QL_COS(a); }
+	static inline double apply(double a) { return QL_COS(a); }
 };
 
-template <class Type>
 class Logarithm {
   public:
-	static inline Type apply(Type a) { return QL_LOG(a); }
+	static inline double apply(double a) { return QL_LOG(a); }
 };
 
-template <class Type>
 class Exponential {
   public:
-	static inline Type apply(Type a) { return QL_EXP(a); }
+	static inline double apply(double a) { return QL_EXP(a); }
 };
 
 QL_END_NAMESPACE(QuantLib)
+
 
 #endif

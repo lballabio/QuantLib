@@ -27,7 +27,6 @@ typedef std::vector<double> DoubleVector;
 // array
 #include "array.h"
 QL_USING(QuantLib,Array)
-typedef Array<double> DoubleArray;
 %}
 
 %typemap(python,in) IntVector, IntVector * {
@@ -78,7 +77,7 @@ typedef Array<double> DoubleArray;
 }
 
 
-%typemap(python,in) DoubleVector, DoubleVector *, DoubleArray, DoubleArray * {
+%typemap(python,in) DoubleVector, DoubleVector *, Array, Array * {
 	if (PyTuple_Check($source)) {
 		int size = PyTuple_Size($source);
 		$target = new $basetype(size);
@@ -115,17 +114,17 @@ typedef Array<double> DoubleArray;
 	}
 };
 
-%typemap(python,freearg) DoubleVector, DoubleVector *, DoubleArray, DoubleArray * {
+%typemap(python,freearg) DoubleVector, DoubleVector *, Array, Array * {
 	delete $source;
 };
 
-%typemap(python,out) DoubleVector, DoubleVector *, DoubleArray, DoubleArray * {
+%typemap(python,out) DoubleVector, DoubleVector *, Array, Array * {
 	$target = PyTuple_New($source->size());
 	for (int i=0; i<$source->size(); i++)
 		PyTuple_SetItem($target,i,PyFloat_FromDouble((*$source)[i]));
 };
 
-%typemap(python,ret) DoubleVector, DoubleArray {
+%typemap(python,ret) DoubleVector, Array {
 	delete $source;
 }
 

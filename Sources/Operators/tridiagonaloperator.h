@@ -23,10 +23,10 @@ class TridiagonalOperatorCommon {
 	// constructors
 	TridiagonalOperatorCommon() : theSize(0) {}
 	TridiagonalOperatorCommon(int size);
-	TridiagonalOperatorCommon(const Array<double>& low, const Array<double>& mid, const Array<double>& high);
+	TridiagonalOperatorCommon(const Array& low, const Array& mid, const Array& high);
 	// operator interface
-	Array<double> solveFor(const Array<double>& rhs) const;
-	Array<double> applyTo(const Array<double>& v) const;
+	Array solveFor(const Array& rhs) const;
+	Array applyTo(const Array& v) const;
 	// inspectors
 	int size() const { return theSize; }
 	// modifiers
@@ -37,7 +37,7 @@ class TridiagonalOperatorCommon {
 	void setMidRows(double, double, double);
 	void setLastRow(double, double);
   protected:
-	Array<double> diagonal, belowDiagonal, aboveDiagonal;
+	Array diagonal, belowDiagonal, aboveDiagonal;
 	QL_ADD_NAMESPACE(PDE,BoundaryCondition) theLowerBC, theHigherBC;
   private:
 	int theSize;
@@ -54,15 +54,15 @@ class TridiagonalOperator : public TridiagonalOperatorCommon, public QL_ADD_NAME
 	friend TridiagonalOperator operator*(const TridiagonalOperator&, double);
 	friend TridiagonalOperator operator+(const TridiagonalOperator&, const TridiagonalOperator&);
 	friend TridiagonalOperator operator-(const TridiagonalOperator&, const TridiagonalOperator&);
-	friend TridiagonalOperator operator+(const QL_ADD_NAMESPACE(PDE,Identity)<Array<double> >&, const TridiagonalOperator&);
-	friend TridiagonalOperator operator+(const TridiagonalOperator&, const QL_ADD_NAMESPACE(PDE,Identity)<Array<double> >&);
-	friend TridiagonalOperator operator-(const QL_ADD_NAMESPACE(PDE,Identity)<Array<double> >&, const TridiagonalOperator&);
-	friend TridiagonalOperator operator-(const TridiagonalOperator&, const QL_ADD_NAMESPACE(PDE,Identity)<Array<double> >&);
+	friend TridiagonalOperator operator+(const QL_ADD_NAMESPACE(PDE,Identity)<Array>&, const TridiagonalOperator&);
+	friend TridiagonalOperator operator+(const TridiagonalOperator&, const QL_ADD_NAMESPACE(PDE,Identity)<Array>&);
+	friend TridiagonalOperator operator-(const QL_ADD_NAMESPACE(PDE,Identity)<Array>&, const TridiagonalOperator&);
+	friend TridiagonalOperator operator-(const TridiagonalOperator&, const QL_ADD_NAMESPACE(PDE,Identity)<Array>&);
   public:
 	// constructors
 	TridiagonalOperator() : TridiagonalOperatorCommon() {}
 	TridiagonalOperator(int size) : TridiagonalOperatorCommon(size) {}
-	TridiagonalOperator(const Array<double>& low, const Array<double>& mid, const Array<double>& high)
+	TridiagonalOperator(const Array& low, const Array& mid, const Array& high)
 	: TridiagonalOperatorCommon(low,mid,high) {}
 };
 
@@ -74,7 +74,7 @@ class TimeDependentTridiagonalOperator : public TridiagonalOperatorCommon, publi
 	// constructors
 	TimeDependentTridiagonalOperator() : TridiagonalOperatorCommon() {}
 	TimeDependentTridiagonalOperator(int size) : TridiagonalOperatorCommon(size) {}
-	TimeDependentTridiagonalOperator(const Array<double>& low, const Array<double>& mid, const Array<double>& high)
+	TimeDependentTridiagonalOperator(const Array& low, const Array& mid, const Array& high)
 	: TridiagonalOperatorCommon(low,mid,high) {}
 };
 
@@ -84,12 +84,12 @@ class TimeDependentTridiagonalOperator : public TridiagonalOperatorCommon, publi
 inline TridiagonalOperatorCommon::TridiagonalOperatorCommon(int size) 
 : theSize(size) {
 	Require(theSize >= 3, "invalid size for tridiagonal operator (must be >= 3)");
-	belowDiagonal = Array<double>(theSize-1);
-	diagonal = Array<double>(theSize);
-	aboveDiagonal = Array<double>(theSize-1);
+	belowDiagonal = Array(theSize-1);
+	diagonal = Array(theSize);
+	aboveDiagonal = Array(theSize-1);
 }
 
-inline TridiagonalOperatorCommon::TridiagonalOperatorCommon(const Array<double>& low, const Array<double>& mid, const Array<double>& high)
+inline TridiagonalOperatorCommon::TridiagonalOperatorCommon(const Array& low, const Array& mid, const Array& high)
 : diagonal(mid), belowDiagonal(low), aboveDiagonal(high), theSize(mid.size()) {
 	Require(belowDiagonal.size() == theSize-1, "wrong size for lower diagonal vector");
 	Require(aboveDiagonal.size() == theSize-1, "wrong size for upper diagonal vector");
@@ -157,32 +157,32 @@ inline TridiagonalOperator operator-(const TridiagonalOperator& D1, const Tridia
 	return TridiagonalOperator(D1.belowDiagonal-D2.belowDiagonal,D1.diagonal-D2.diagonal,D1.aboveDiagonal-D2.aboveDiagonal);
 }
 
-inline TridiagonalOperator operator+(const TridiagonalOperator& D, const QL_ADD_NAMESPACE(PDE,Identity)<Array<double> >& I) {
-	Array<double> temp(D.size(),1.0);
+inline TridiagonalOperator operator+(const TridiagonalOperator& D, const QL_ADD_NAMESPACE(PDE,Identity)<Array>& I) {
+	Array temp(D.size(),1.0);
 	TridiagonalOperator result(D.belowDiagonal,D.diagonal+temp,D.aboveDiagonal);
 	result.setLowerBC(D.theLowerBC);
 	result.setHigherBC(D.theHigherBC);
 	return result;
 }
 
-inline TridiagonalOperator operator+(const QL_ADD_NAMESPACE(PDE,Identity)<Array<double> >& I, const TridiagonalOperator& D) {
-	Array<double> temp(D.size(),1.0);
+inline TridiagonalOperator operator+(const QL_ADD_NAMESPACE(PDE,Identity)<Array>& I, const TridiagonalOperator& D) {
+	Array temp(D.size(),1.0);
 	TridiagonalOperator result(D.belowDiagonal,D.diagonal+temp,D.aboveDiagonal);
 	result.setLowerBC(D.theLowerBC);
 	result.setHigherBC(D.theHigherBC);
 	return result;
 }
 
-inline TridiagonalOperator operator-(const TridiagonalOperator& D, const QL_ADD_NAMESPACE(PDE,Identity)<Array<double> >& I) {
-	Array<double> temp(D.size(),1.0);
+inline TridiagonalOperator operator-(const TridiagonalOperator& D, const QL_ADD_NAMESPACE(PDE,Identity)<Array>& I) {
+	Array temp(D.size(),1.0);
 	TridiagonalOperator result(D.belowDiagonal,D.diagonal-temp,D.aboveDiagonal);
 	result.setLowerBC(D.theLowerBC);
 	result.setHigherBC(D.theHigherBC);
 	return result;
 }
 
-inline TridiagonalOperator operator-(const QL_ADD_NAMESPACE(PDE,Identity)<Array<double> >& I, const TridiagonalOperator& D) {
-	Array<double> temp(D.size(),1.0);
+inline TridiagonalOperator operator-(const QL_ADD_NAMESPACE(PDE,Identity)<Array>& I, const TridiagonalOperator& D) {
+	Array temp(D.size(),1.0);
 	TridiagonalOperator result(-D.belowDiagonal,temp-D.diagonal,-D.aboveDiagonal);
 	result.setLowerBC(D.theLowerBC);
 	result.setHigherBC(D.theHigherBC);

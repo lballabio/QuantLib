@@ -10,6 +10,9 @@ Contact ferdinando@ametrano.net if LICENSE.TXT was not distributed with this fil
 
 #include "qldefines.h"
 #include "expressiontemplates.h"
+#include <algorithm>
+#include <functional>
+#include <numeric>
 
 /* The concepts implemented here with regard to vector algebra are from 
    T. L. Veldhuizen, "Expression templates", C++ Report, 7(5):26-31, June 1995
@@ -18,31 +21,30 @@ Contact ferdinando@ametrano.net if LICENSE.TXT was not distributed with this fil
 
 QL_BEGIN_NAMESPACE(QuantLib)
 
-// array
-
-template <class Type>
 class Array {
   public:
 	// constructors
 	explicit Array(int size = 0);
-	Array(int size, Type value);
-	Array(int size, Type value, Type increment);
-	Array(const Array<Type>& from)
+	Array(int size, double value);
+	Array(int size, double value, double increment);
+	Array(const Array& from)
 	  : pointer(0), n(0), bufferSize(0) { allocate(from.size()); copy(from); }
-	template <class Iter> Array(VectorialExpression<Type,Iter>& e)
+	template <class Iter> Array(VectorialExpression<Iter>& e)
 	  : pointer(0), n(0), bufferSize(0) { allocate(e.size()); copy(e); }
 	// destructor
 	~Array();
 	// assignment
-	Array& operator=(const Array<Type>& from) {
-		if (this != &from) { resize(from.size()); copy(from); } return *this; }
-	template <class Iter> Array& operator=(VectorialExpression<Type,Iter>& e) {
+	Array& operator=(const Array& from) {
+		if (this != &from) { resize(from.size()); copy(from); } 
+		return *this;
+	}
+	template <class Iter> Array& operator=(VectorialExpression<Iter>& e) {
 		resize(e.size()); copy(e); return *this;
 	}
 	// computed assignment
 	Array& operator+=(const Array&);
-	Array& operator+=(Type);
-	template <class Iter> Array& operator+=(VectorialExpression<Type,Iter>& e) {
+	Array& operator+=(double);
+	template <class Iter> Array& operator+=(VectorialExpression<Iter>& e) {
 		#ifdef QL_DEBUG
 			Require(size() == e.size(), "adding arrays with different sizes");
 		#endif
@@ -51,8 +53,8 @@ class Array {
 		return *this;
 	}
 	Array& operator-=(const Array&);
-	Array& operator-=(Type);
-	template <class Iter> Array& operator-=(VectorialExpression<Type,Iter>& e) {
+	Array& operator-=(double);
+	template <class Iter> Array& operator-=(VectorialExpression<Iter>& e) {
 		#ifdef QL_DEBUG
 			Require(size() == e.size(), "subtracting arrays with different sizes");
 		#endif
@@ -62,7 +64,7 @@ class Array {
 	}
 	Array& operator*=(const Array&);
 	Array& operator*=(double);
-	template <class Iter> Array& operator*=(VectorialExpression<Type,Iter>& e) {
+	template <class Iter> Array& operator*=(VectorialExpression<Iter>& e) {
 		#ifdef QL_DEBUG
 			Require(size() == e.size(), "multiplying arrays with different sizes");
 		#endif
@@ -72,7 +74,7 @@ class Array {
 	}
 	Array& operator/=(const Array&);
 	Array& operator/=(double);
-	template <class Iter> Array& operator/=(VectorialExpression<Type,Iter>& e) {
+	template <class Iter> Array& operator/=(VectorialExpression<Iter>& e) {
 		#ifdef QL_DEBUG
 			Require(size() == e.size(), "dividing arrays with different sizes");
 		#endif
@@ -81,20 +83,15 @@ class Array {
 		return *this;
 	}
 	// element access
-	const Type& operator[](int) const;
-	Type& operator[](int);
+	double operator[](int) const;
+	double& operator[](int);
 	// info
 	int size() const;
 	// iterators
-	typedef Type* iterator;
-	typedef const Type* const_iterator;
-	#if defined(__MWERKS__) || defined(__BORLANDC__)
-	typedef std::reverse_iterator<iterator> reverse_iterator;
-	typedef std::reverse_iterator<const_iterator> const_reverse_iterator;
-	#else
-	typedef std::reverse_iterator<iterator,Type> reverse_iterator;
-	typedef std::reverse_iterator<const_iterator,Type> const_reverse_iterator;
-	#endif
+	typedef double* iterator;
+	typedef const double* const_iterator;
+	typedef QL_REVERSE_ITERATOR(iterator,double) reverse_iterator;
+	typedef QL_REVERSE_ITERATOR(const_iterator,double) const_reverse_iterator;
 	const_iterator begin() const;
 	iterator begin();
 	const_iterator end() const;
@@ -106,13 +103,10 @@ class Array {
   protected:
 	void allocate(int size);
 	void resize(int size);
-	template <class Type2> void copy(const Array<Type2>& from) {
+	void copy(const Array& from) {
 		std::copy(from.begin(),from.end(),begin());
 	}
-	void copy(const Array<Type>& from) {
-		std::copy(from.begin(),from.end(),begin());
-	}
-	template <class Iter> void copy(VectorialExpression<Type,Iter>& e) {
+	template <class Iter> void copy(VectorialExpression<Iter>& e) {
 		iterator i = begin(), j = end();
 		while (i != j) {
 			*i = *e;
@@ -120,180 +114,159 @@ class Array {
 		}
 	}
   private:
-	Type* pointer;
+	double* pointer;
 	int n, bufferSize;
 };
 
 // vectorial products
-template <class Type> Type DotProduct(const Array<Type>&, const Array<Type>&);
+ double DotProduct(const Array&, const Array&);
 
 // unary operators
-template <class Type> 
-VectorialExpression<Type,UnaryVectorialExpression<Type,Array<Type>::const_iterator,Plus<Type> > >
-operator+(const Array<Type>& v);
-template <class Type, class Iter1> 
-VectorialExpression<Type,UnaryVectorialExpression<Type,VectorialExpression<Type,Iter1>,Plus<Type> > >
-operator+(const VectorialExpression<Type,Iter1>& e);
+ 
+VectorialExpression<UnaryVectorialExpression<Array::const_iterator,Plus> >
+operator+(const Array& v);
+template <class Iter1> 
+VectorialExpression<UnaryVectorialExpression<VectorialExpression<Iter1>,Plus> >
+operator+(const VectorialExpression<Iter1>& e);
 
-template <class Type> 
-VectorialExpression<Type,UnaryVectorialExpression<Type,Array<Type>::const_iterator,Minus<Type> > >
-operator-(const Array<Type>& v);
-template <class Type, class Iter1> 
-VectorialExpression<Type,UnaryVectorialExpression<Type,VectorialExpression<Type,Iter1>,Minus<Type> > >
-operator-(const VectorialExpression<Type,Iter1>& e);
+VectorialExpression<UnaryVectorialExpression<Array::const_iterator,Minus> >
+operator-(const Array& v);
+template <class Iter1> 
+VectorialExpression<UnaryVectorialExpression<VectorialExpression<Iter1>,Minus> >
+operator-(const VectorialExpression<Iter1>& e);
 
 // binary operators
 // addition
-template <class Type> 
-VectorialExpression<Type,BinaryVectorialExpression<Type,Array<Type>::const_iterator,Array<Type>::const_iterator,Add<Type> > >
-operator+(const Array<Type>& v1, const Array<Type>& v2);
-template <class Type> 
-VectorialExpression<Type,BinaryVectorialExpression<Type,Array<Type>::const_iterator,Scalar<Type>,Add<Type> > >
-operator+(const Array<Type>& v1, const Type& x);
-template <class Type> 
-VectorialExpression<Type,BinaryVectorialExpression<Type,Scalar<Type>,Array<Type>::const_iterator,Add<Type> > >
-operator+(const Type& x, const Array<Type>& v2);
-template <class Type, class Iter2> 
-VectorialExpression<Type,BinaryVectorialExpression<Type,Array<Type>::const_iterator,VectorialExpression<Type,Iter2>,Add<Type> > >
-operator+(const Array<Type>& v1, const VectorialExpression<Type,Iter2>& e2);
-template <class Type, class Iter1> 
-VectorialExpression<Type,BinaryVectorialExpression<Type,VectorialExpression<Type,Iter1>,Array<Type>::const_iterator,Add<Type> > >
-operator+(const VectorialExpression<Type,Iter1>& e1, const Array<Type>& v2);
-template <class Type, class Iter1>
-VectorialExpression<Type,BinaryVectorialExpression<Type,VectorialExpression<Type,Iter1>,Scalar<Type>,Add<Type> > >
-operator+(const VectorialExpression<Type,Iter1>& e1, const Type& x);
-template <class Type, class Iter2>
-VectorialExpression<Type,BinaryVectorialExpression<Type,Scalar<Type>,VectorialExpression<Type,Iter2>,Add<Type> > >
-operator+(const Type& x, const VectorialExpression<Type,Iter2>& e2);
-template <class Type, class Iter1, class Iter2>
-VectorialExpression<Type,BinaryVectorialExpression<Type,VectorialExpression<Type,Iter1>,VectorialExpression<Type,Iter2>,Add<Type> > >
-operator+(const VectorialExpression<Type,Iter1>& e1, const VectorialExpression<Type,Iter2>& e2);
+VectorialExpression<BinaryVectorialExpression<Array::const_iterator,Array::const_iterator,Add> >
+operator+(const Array& v1, const Array& v2);
+VectorialExpression<BinaryVectorialExpression<Array::const_iterator,Scalar,Add> >
+operator+(const Array& v1, double x);
+VectorialExpression<BinaryVectorialExpression<Scalar,Array::const_iterator,Add> >
+operator+(double x, const Array& v2);
+template <class Iter2> 
+VectorialExpression<BinaryVectorialExpression<Array::const_iterator,VectorialExpression<Iter2>,Add> >
+operator+(const Array& v1, const VectorialExpression<Iter2>& e2);
+template <class Iter1> 
+VectorialExpression<BinaryVectorialExpression<VectorialExpression<Iter1>,Array::const_iterator,Add> >
+operator+(const VectorialExpression<Iter1>& e1, const Array& v2);
+template <class Iter1>
+VectorialExpression<BinaryVectorialExpression<VectorialExpression<Iter1>,Scalar,Add> >
+operator+(const VectorialExpression<Iter1>& e1, double x);
+template <class Iter2>
+VectorialExpression<BinaryVectorialExpression<Scalar,VectorialExpression<Iter2>,Add> >
+operator+(double x, const VectorialExpression<Iter2>& e2);
+template <class Iter1, class Iter2>
+VectorialExpression<BinaryVectorialExpression<VectorialExpression<Iter1>,VectorialExpression<Iter2>,Add> >
+operator+(const VectorialExpression<Iter1>& e1, const VectorialExpression<Iter2>& e2);
 // subtraction
-template <class Type> 
-VectorialExpression<Type,BinaryVectorialExpression<Type,Array<Type>::const_iterator,Array<Type>::const_iterator,Subtract<Type> > >
-operator-(const Array<Type>& v1, const Array<Type>& v2);
-template <class Type> 
-VectorialExpression<Type,BinaryVectorialExpression<Type,Array<Type>::const_iterator,Scalar<Type>,Subtract<Type> > >
-operator-(const Array<Type>& v1, const Type& x);
-template <class Type> 
-VectorialExpression<Type,BinaryVectorialExpression<Type,Scalar<Type>,Array<Type>::const_iterator,Subtract<Type> > >
-operator-(const Type& x, const Array<Type>& v2);
-template <class Type, class Iter2> 
-VectorialExpression<Type,BinaryVectorialExpression<Type,Array<Type>::const_iterator,VectorialExpression<Type,Iter2>,Subtract<Type> > >
-operator-(const Array<Type>& v1, const VectorialExpression<Type,Iter2>& e2);
-template <class Type, class Iter1> 
-VectorialExpression<Type,BinaryVectorialExpression<Type,VectorialExpression<Type,Iter1>,Array<Type>::const_iterator,Subtract<Type> > >
-operator-(const VectorialExpression<Type,Iter1>& e1, const Array<Type>& v2);
-template <class Type, class Iter1>
-VectorialExpression<Type,BinaryVectorialExpression<Type,VectorialExpression<Type,Iter1>,Scalar<Type>,Subtract<Type> > >
-operator-(const VectorialExpression<Type,Iter1>& e1, const Type& x);
-template <class Type, class Iter2>
-VectorialExpression<Type,BinaryVectorialExpression<Type,Scalar<Type>,VectorialExpression<Type,Iter2>,Subtract<Type> > >
-operator-(const Type& x, const VectorialExpression<Type,Iter2>& e2);
-template <class Type, class Iter1, class Iter2>
-VectorialExpression<Type,BinaryVectorialExpression<Type,VectorialExpression<Type,Iter1>,VectorialExpression<Type,Iter2>,Subtract<Type> > >
-operator-(const VectorialExpression<Type,Iter1>& e1, const VectorialExpression<Type,Iter2>& e2);
+VectorialExpression<BinaryVectorialExpression<Array::const_iterator,Array::const_iterator,Subtract> >
+operator-(const Array& v1, const Array& v2);
+VectorialExpression<BinaryVectorialExpression<Array::const_iterator,Scalar,Subtract> >
+operator-(const Array& v1, double x);
+VectorialExpression<BinaryVectorialExpression<Scalar,Array::const_iterator,Subtract> >
+operator-(double x, const Array& v2);
+template <class Iter2> 
+VectorialExpression<BinaryVectorialExpression<Array::const_iterator,VectorialExpression<Iter2>,Subtract> >
+operator-(const Array& v1, const VectorialExpression<Iter2>& e2);
+template <class Iter1> 
+VectorialExpression<BinaryVectorialExpression<VectorialExpression<Iter1>,Array::const_iterator,Subtract> >
+operator-(const VectorialExpression<Iter1>& e1, const Array& v2);
+template <class Iter1>
+VectorialExpression<BinaryVectorialExpression<VectorialExpression<Iter1>,Scalar,Subtract> >
+operator-(const VectorialExpression<Iter1>& e1, double x);
+template <class Iter2>
+VectorialExpression<BinaryVectorialExpression<Scalar,VectorialExpression<Iter2>,Subtract> >
+operator-(double x, const VectorialExpression<Iter2>& e2);
+template <class Iter1, class Iter2>
+VectorialExpression<BinaryVectorialExpression<VectorialExpression<Iter1>,VectorialExpression<Iter2>,Subtract> >
+operator-(const VectorialExpression<Iter1>& e1, const VectorialExpression<Iter2>& e2);
 // multiplication
-template <class Type> 
-VectorialExpression<Type,BinaryVectorialExpression<Type,Array<Type>::const_iterator,Array<Type>::const_iterator,Multiply<Type> > >
-operator*(const Array<Type>& v1, const Array<Type>& v2);
-template <class Type> 
-VectorialExpression<Type,BinaryVectorialExpression<Type,Array<Type>::const_iterator,Scalar<Type>,Multiply<Type> > >
-operator*(const Array<Type>& v1, const Type& x);
-template <class Type> 
-VectorialExpression<Type,BinaryVectorialExpression<Type,Scalar<Type>,Array<Type>::const_iterator,Multiply<Type> > >
-operator*(const Type& x, const Array<Type>& v2);
-template <class Type, class Iter2> 
-VectorialExpression<Type,BinaryVectorialExpression<Type,Array<Type>::const_iterator,VectorialExpression<Type,Iter2>,Multiply<Type> > >
-operator*(const Array<Type>& v1, const VectorialExpression<Type,Iter2>& e2);
-template <class Type, class Iter1> 
-VectorialExpression<Type,BinaryVectorialExpression<Type,VectorialExpression<Type,Iter1>,Array<Type>::const_iterator,Multiply<Type> > >
-operator*(const VectorialExpression<Type,Iter1>& e1, const Array<Type>& v2);
-template <class Type, class Iter1>
-VectorialExpression<Type,BinaryVectorialExpression<Type,VectorialExpression<Type,Iter1>,Scalar<Type>,Multiply<Type> > >
-operator*(const VectorialExpression<Type,Iter1>& e1, const Type& x);
-template <class Type, class Iter2>
-VectorialExpression<Type,BinaryVectorialExpression<Type,Scalar<Type>,VectorialExpression<Type,Iter2>,Multiply<Type> > >
-operator*(const Type& x, const VectorialExpression<Type,Iter2>& e2);
-template <class Type, class Iter1, class Iter2>
-VectorialExpression<Type,BinaryVectorialExpression<Type,VectorialExpression<Type,Iter1>,VectorialExpression<Type,Iter2>,Multiply<Type> > >
-operator*(const VectorialExpression<Type,Iter1>& e1, const VectorialExpression<Type,Iter2>& e2);
+VectorialExpression<BinaryVectorialExpression<Array::const_iterator,Array::const_iterator,Multiply> >
+operator*(const Array& v1, const Array& v2);
+VectorialExpression<BinaryVectorialExpression<Array::const_iterator,Scalar,Multiply> >
+operator*(const Array& v1, double x);
+VectorialExpression<BinaryVectorialExpression<Scalar,Array::const_iterator,Multiply> >
+operator*(double x, const Array& v2);
+template <class Iter2> 
+VectorialExpression<BinaryVectorialExpression<Array::const_iterator,VectorialExpression<Iter2>,Multiply> >
+operator*(const Array& v1, const VectorialExpression<Iter2>& e2);
+template <class Iter1> 
+VectorialExpression<BinaryVectorialExpression<VectorialExpression<Iter1>,Array::const_iterator,Multiply> >
+operator*(const VectorialExpression<Iter1>& e1, const Array& v2);
+template <class Iter1>
+VectorialExpression<BinaryVectorialExpression<VectorialExpression<Iter1>,Scalar,Multiply> >
+operator*(const VectorialExpression<Iter1>& e1, double x);
+template <class Iter2>
+VectorialExpression<BinaryVectorialExpression<Scalar,VectorialExpression<Iter2>,Multiply> >
+operator*(double x, const VectorialExpression<Iter2>& e2);
+template <class Iter1, class Iter2>
+VectorialExpression<BinaryVectorialExpression<VectorialExpression<Iter1>,VectorialExpression<Iter2>,Multiply> >
+operator*(const VectorialExpression<Iter1>& e1, const VectorialExpression<Iter2>& e2);
 // division
-template <class Type> 
-VectorialExpression<Type,BinaryVectorialExpression<Type,Array<Type>::const_iterator,Array<Type>::const_iterator,Divide<Type> > >
-operator/(const Array<Type>& v1, const Array<Type>& v2);
-template <class Type> 
-VectorialExpression<Type,BinaryVectorialExpression<Type,Array<Type>::const_iterator,Scalar<Type>,Divide<Type> > >
-operator/(const Array<Type>& v1, const Type& x);
-template <class Type> 
-VectorialExpression<Type,BinaryVectorialExpression<Type,Scalar<Type>,Array<Type>::const_iterator,Divide<Type> > >
-operator/(const Type& x, const Array<Type>& v2);
-template <class Type, class Iter2> 
-VectorialExpression<Type,BinaryVectorialExpression<Type,Array<Type>::const_iterator,VectorialExpression<Type,Iter2>,Divide<Type> > >
-operator/(const Array<Type>& v1, const VectorialExpression<Type,Iter2>& e2);
-template <class Type, class Iter1> 
-VectorialExpression<Type,BinaryVectorialExpression<Type,VectorialExpression<Type,Iter1>,Array<Type>::const_iterator,Divide<Type> > >
-operator/(const VectorialExpression<Type,Iter1>& e1, const Array<Type>& v2);
-template <class Type, class Iter1>
-VectorialExpression<Type,BinaryVectorialExpression<Type,VectorialExpression<Type,Iter1>,Scalar<Type>,Divide<Type> > >
-operator/(const VectorialExpression<Type,Iter1>& e1, const Type& x);
-template <class Type, class Iter2>
-VectorialExpression<Type,BinaryVectorialExpression<Type,Scalar<Type>,VectorialExpression<Type,Iter2>,Divide<Type> > >
-operator/(const Type& x, const VectorialExpression<Type,Iter2>& e2);
-template <class Type, class Iter1, class Iter2>
-VectorialExpression<Type,BinaryVectorialExpression<Type,VectorialExpression<Type,Iter1>,VectorialExpression<Type,Iter2>,Divide<Type> > >
-operator/(const VectorialExpression<Type,Iter1>& e1, const VectorialExpression<Type,Iter2>& e2);
-
+VectorialExpression<BinaryVectorialExpression<Array::const_iterator,Array::const_iterator,Divide> >
+operator/(const Array& v1, const Array& v2);
+VectorialExpression<BinaryVectorialExpression<Array::const_iterator,Scalar,Divide> >
+operator/(const Array& v1, double x);
+VectorialExpression<BinaryVectorialExpression<Scalar,Array::const_iterator,Divide> >
+operator/(double x, const Array& v2);
+template <class Iter2> 
+VectorialExpression<BinaryVectorialExpression<Array::const_iterator,VectorialExpression<Iter2>,Divide> >
+operator/(const Array& v1, const VectorialExpression<Iter2>& e2);
+template <class Iter1> 
+VectorialExpression<BinaryVectorialExpression<VectorialExpression<Iter1>,Array::const_iterator,Divide> >
+operator/(const VectorialExpression<Iter1>& e1, const Array& v2);
+template <class Iter1>
+VectorialExpression<BinaryVectorialExpression<VectorialExpression<Iter1>,Scalar,Divide> >
+operator/(const VectorialExpression<Iter1>& e1, double x);
+template <class Iter2>
+VectorialExpression<BinaryVectorialExpression<Scalar,VectorialExpression<Iter2>,Divide> >
+operator/(double x, const VectorialExpression<Iter2>& e2);
+template <class Iter1, class Iter2>
+VectorialExpression<BinaryVectorialExpression<VectorialExpression<Iter1>,VectorialExpression<Iter2>,Divide> >
+operator/(const VectorialExpression<Iter1>& e1, const VectorialExpression<Iter2>& e2);
 
 // math functions
 
-template <class Type> 
-VectorialExpression<Type,UnaryVectorialExpression<Type,Array<Type>::const_iterator,AbsoluteValue<Type> > >
-Abs(const Array<Type>& v);
-template <class Type, class Iter1> 
-VectorialExpression<Type,UnaryVectorialExpression<Type,VectorialExpression<Type,Iter1>,AbsoluteValue<Type> > >
-Abs(const VectorialExpression<Type,Iter1>& e);
+VectorialExpression<UnaryVectorialExpression<Array::const_iterator,AbsoluteValue> >
+Abs(const Array& v);
+template <class Iter1> 
+VectorialExpression<UnaryVectorialExpression<VectorialExpression<Iter1>,AbsoluteValue> >
+Abs(const VectorialExpression<Iter1>& e);
 
-template <class Type> 
-VectorialExpression<Type,UnaryVectorialExpression<Type,Array<Type>::const_iterator,SquareRoot<Type> > >
-Sqrt(const Array<Type>& v);
-template <class Type, class Iter1> 
-VectorialExpression<Type,UnaryVectorialExpression<Type,VectorialExpression<Type,Iter1>,SquareRoot<Type> > >
-Sqrt(const VectorialExpression<Type,Iter1>& e);
+VectorialExpression<UnaryVectorialExpression<Array::const_iterator,SquareRoot> >
+Sqrt(const Array& v);
+template <class Iter1> 
+VectorialExpression<UnaryVectorialExpression<VectorialExpression<Iter1>,SquareRoot> >
+Sqrt(const VectorialExpression<Iter1>& e);
 
-template <class Type> 
-VectorialExpression<Type,UnaryVectorialExpression<Type,Array<Type>::const_iterator,Logarithm<Type> > >
-Log(const Array<Type>& v);
-template <class Type, class Iter1> 
-VectorialExpression<Type,UnaryVectorialExpression<Type,VectorialExpression<Type,Iter1>,Logarithm<Type> > >
-Log(const VectorialExpression<Type,Iter1>& e);
+VectorialExpression<UnaryVectorialExpression<Array::const_iterator,Logarithm> >
+Log(const Array& v);
+template <class Iter1> 
+VectorialExpression<UnaryVectorialExpression<VectorialExpression<Iter1>,Logarithm> >
+Log(const VectorialExpression<Iter1>& e);
 
-template <class Type> 
-VectorialExpression<Type,UnaryVectorialExpression<Type,Array<Type>::const_iterator,Exponential<Type> > >
-Exp(const Array<Type>& v);
-template <class Type, class Iter1> 
-VectorialExpression<Type,UnaryVectorialExpression<Type,VectorialExpression<Type,Iter1>,Exponential<Type> > >
-Exp(const VectorialExpression<Type,Iter1>& e);
+VectorialExpression<UnaryVectorialExpression<Array::const_iterator,Exponential> >
+Exp(const Array& v);
+template <class Iter1> 
+VectorialExpression<UnaryVectorialExpression<VectorialExpression<Iter1>,Exponential> >
+Exp(const VectorialExpression<Iter1>& e);
 
 // inline definitions
 
-template <class Type>
-inline Array<Type>::Array(int size)
+inline Array::Array(int size)
 : pointer(0), n(0), bufferSize(0) {
 	if (size > 0)
 		allocate(size);
 }
 
-template <class Type>
-inline Array<Type>::Array(int size, Type value)
+inline Array::Array(int size, double value)
 : pointer(0), n(0), bufferSize(0) {
 	if (size > 0)
 		allocate(size);
 	std::fill(begin(),end(),value);
 }
 
-template <class Type>
-inline Array<Type>::Array(int size, Type value, Type increment)
+inline Array::Array(int size, double value, double increment)
 : pointer(0), n(0), bufferSize(0) {
 	if (size > 0)
 		allocate(size);
@@ -301,144 +274,121 @@ inline Array<Type>::Array(int size, Type value, Type increment)
 		*i = value;
 }
 
-template <class Type>
-inline Array<Type>::~Array() {
+inline Array::~Array() {
 	if (pointer != 0 && bufferSize != 0)
 		delete[] pointer;
 	pointer = 0;
 	n = bufferSize = 0;
 }
 
-template <class Type>
-inline Array<Type>& Array<Type>::operator+=(const Array<Type>& v) {
+inline Array& Array::operator+=(const Array& v) {
 	Require(n == v.n, "arrays with different sizes cannot be added");
-	std::transform(begin(),end(),v.begin(),begin(),std::plus<Type>());
+	std::transform(begin(),end(),v.begin(),begin(),std::plus<double>());
 	return *this;
 }
 
-template <class Type>
-inline Array<Type>& Array<Type>::operator+=(Type x) {
-	std::transform(begin(),end(),begin(),std::bind2nd(std::plus<Type>(),x));
+inline Array& Array::operator+=(double x) {
+	std::transform(begin(),end(),begin(),std::bind2nd(std::plus<double>(),x));
 	return *this;
 }
 
-template <class Type>
-inline Array<Type>& Array<Type>::operator-=(const Array<Type>& v) {
+inline Array& Array::operator-=(const Array& v) {
 	Require(n == v.n, "arrays with different sizes cannot be subtracted");
-	std::transform(begin(),end(),v.begin(),begin(),std::minus<Type>());
+	std::transform(begin(),end(),v.begin(),begin(),std::minus<double>());
 	return *this;
 }
 
-template <class Type>
-inline Array<Type>& Array<Type>::operator-=(Type x) {
-	std::transform(begin(),end(),begin(),std::bind2nd(std::minus<Type>(),x));
+inline Array& Array::operator-=(double x) {
+	std::transform(begin(),end(),begin(),std::bind2nd(std::minus<double>(),x));
 	return *this;
 }
 
-template <class Type>
-inline Array<Type>& Array<Type>::operator*=(const Array<Type>& v) {
+inline Array& Array::operator*=(const Array& v) {
 	Require(n == v.n, "arrays with different sizes cannot be multiplied");
-	std::transform(begin(),end(),v.begin(),begin(),std::multiplies<Type>());
+	std::transform(begin(),end(),v.begin(),begin(),std::multiplies<double>());
 	return *this;
 }
 
-template <class Type>
-inline Array<Type>& Array<Type>::operator*=(double x) {
+inline Array& Array::operator*=(double x) {
 	std::transform(begin(),end(),begin(),std::bind2nd(std::multiplies<double>(),x));
 	return *this;
 }
 
-template <class Type>
-inline Array<Type>& Array<Type>::operator/=(const Array<Type>& v) {
+inline Array& Array::operator/=(const Array& v) {
 	Require(n == v.n, "arrays with different sizes cannot be divided");
-	std::transform(begin(),end(),v.begin(),begin(),std::divides<Type>());
+	std::transform(begin(),end(),v.begin(),begin(),std::divides<double>());
 	return *this;
 }
 
-template <class Type>
-inline Array<Type>& Array<Type>::operator/=(double x) {
+inline Array& Array::operator/=(double x) {
 	std::transform(begin(),end(),begin(),std::bind2nd(std::divides<double>(),x));
 	return *this;
 }
 
-template <class Type>
-inline const Type& Array<Type>::operator[](int i) const {
+inline double Array::operator[](int i) const {
 	#ifdef QL_DEBUG
 		Require(i>=0 && i<n, "array cannot be accessed out of range");
 	#endif
 	return pointer[i];
 }
 
-template <class Type>
-inline Type& Array<Type>::operator[](int i) {
+inline double& Array::operator[](int i) {
 	#ifdef QL_DEBUG
 		Require(i>=0 && i<n, "array cannot be accessed out of range");
 	#endif
 	return pointer[i];
 }
 
-template <class Type>
-inline int Array<Type>::size() const {
+inline int Array::size() const {
 	return n;
 }
 
-template <class Type>
-inline void Array<Type>::resize(int size) {
+inline void Array::resize(int size) {
 	if (size != n) {
 		if (size <= bufferSize) {
 			n = size;
 		} else {
-			Array<Type> temp(size);
+			Array temp(size);
 			std::copy(begin(),end(),temp.begin());
-//			swap(*this,temp);
 			allocate(size);
 			copy(temp);
 		}
 	}
 }
 
-template <class Type>
-inline Array<Type>::const_iterator Array<Type>::begin() const {
+inline Array::const_iterator Array::begin() const {
 	return pointer;
 }
 
-template <class Type>
-inline Array<Type>::iterator Array<Type>::begin() {
+inline Array::iterator Array::begin() {
 	return pointer;
 }
 
-template <class Type>
-inline Array<Type>::const_iterator Array<Type>::end() const {
+inline Array::const_iterator Array::end() const {
 	return pointer+n;
 }
 
-template <class Type>
-inline Array<Type>::iterator Array<Type>::end() {
+inline Array::iterator Array::end() {
 	return pointer+n;
 }
 
-template <class Type>
-inline Array<Type>::const_reverse_iterator Array<Type>::rbegin() const {
+inline Array::const_reverse_iterator Array::rbegin() const {
 	return const_reverse_iterator(end());
 }
 
-template <class Type>
-inline Array<Type>::reverse_iterator Array<Type>::rbegin() {
+inline Array::reverse_iterator Array::rbegin() {
 	return reverse_iterator(end());
 }
 
-template <class Type>
-inline Array<Type>::const_reverse_iterator Array<Type>::rend() const {
+inline Array::const_reverse_iterator Array::rend() const {
 	return const_reverse_iterator(begin());
 }
 
-template <class Type>
-inline Array<Type>::reverse_iterator Array<Type>::rend() {
+inline Array::reverse_iterator Array::rend() {
 	return reverse_iterator(begin());
 }
 
-template <class Type>
-inline void Array<Type>::allocate(int size) {
+inline void Array::allocate(int size) {
 	if (pointer != 0 && bufferSize != 0)
 		delete[] pointer;
 	if (size <= 0) {
@@ -447,7 +397,7 @@ inline void Array<Type>::allocate(int size) {
 		n = size;
 		bufferSize = size+size/10+10;
 		try {
-			pointer = new Type[bufferSize];
+			pointer = new double[bufferSize];
 		}
 		catch (...) {
 			pointer = 0;
@@ -455,7 +405,7 @@ inline void Array<Type>::allocate(int size) {
 		if (pointer == 0) {
 			n = bufferSize = size;
 			try {
-				pointer = new Type[bufferSize];
+				pointer = new double[bufferSize];
 			}
 			catch (...) {
 				pointer = 0;
@@ -472,32 +422,30 @@ inline void Array<Type>::allocate(int size) {
 
 // unary
 
-template <class Type> 
-inline VectorialExpression<Type,UnaryVectorialExpression<Type,Array<Type>::const_iterator,Plus<Type> > >
-operator+(const Array<Type>& v) {
-	typedef UnaryVectorialExpression<Type,Array<Type>::const_iterator,Plus<Type> > Iter;
-	return VectorialExpression<Type,Iter>(Iter(v.begin(),v.size()),v.size());
+inline VectorialExpression<UnaryVectorialExpression<Array::const_iterator,Plus> >
+operator+(const Array& v) {
+	typedef UnaryVectorialExpression<Array::const_iterator,Plus> Iter;
+	return VectorialExpression<Iter>(Iter(v.begin(),v.size()),v.size());
 }
 
-template <class Type, class Iter1> 
-inline VectorialExpression<Type,UnaryVectorialExpression<Type,VectorialExpression<Type,Iter1>,Plus<Type> > >
-operator+(const VectorialExpression<Type,Iter1>& e) {
-	typedef UnaryVectorialExpression<Type,VectorialExpression<Type,Iter1>,Plus<Type> > Iter;
-	return VectorialExpression<Type,Iter>(Iter(e,e.size()),e.size());
+template <class Iter1> 
+inline VectorialExpression<UnaryVectorialExpression<VectorialExpression<Iter1>,Plus> >
+operator+(const VectorialExpression<Iter1>& e) {
+	typedef UnaryVectorialExpression<VectorialExpression<Iter1>,Plus> Iter;
+	return VectorialExpression<Iter>(Iter(e,e.size()),e.size());
 }
 
-template <class Type> 
-inline VectorialExpression<Type,UnaryVectorialExpression<Type,Array<Type>::const_iterator,Minus<Type> > >
-operator-(const Array<Type>& v) {
-	typedef UnaryVectorialExpression<Type,Array<Type>::const_iterator,Minus<Type> > Iter;
-	return VectorialExpression<Type,Iter>(Iter(v.begin(),v.size()),v.size());
+inline VectorialExpression<UnaryVectorialExpression<Array::const_iterator,Minus> >
+operator-(const Array& v) {
+	typedef UnaryVectorialExpression<Array::const_iterator,Minus> Iter;
+	return VectorialExpression<Iter>(Iter(v.begin(),v.size()),v.size());
 }
 
-template <class Type, class Iter1> 
-inline VectorialExpression<Type,UnaryVectorialExpression<Type,VectorialExpression<Type,Iter1>,Minus<Type> > >
-operator-(const VectorialExpression<Type,Iter1>& e) {
-	typedef UnaryVectorialExpression<Type,VectorialExpression<Type,Iter1>,Minus<Type> > Iter;
-	return VectorialExpression<Type,Iter>(Iter(e,e.size()),e.size());
+template <class Iter1> 
+inline VectorialExpression<UnaryVectorialExpression<VectorialExpression<Iter1>,Minus> >
+operator-(const VectorialExpression<Iter1>& e) {
+	typedef UnaryVectorialExpression<VectorialExpression<Iter1>,Minus> Iter;
+	return VectorialExpression<Iter>(Iter(e,e.size()),e.size());
 }
 
 
@@ -505,355 +453,342 @@ operator-(const VectorialExpression<Type,Iter1>& e) {
 
 // addition
 
-template <class Type>
-inline VectorialExpression<Type,BinaryVectorialExpression<Type,Array<Type>::const_iterator,Array<Type>::const_iterator,Add<Type> > >
-operator+(const Array<Type>& v1, const Array<Type>& v2) {
+inline VectorialExpression<BinaryVectorialExpression<Array::const_iterator,Array::const_iterator,Add> >
+operator+(const Array& v1, const Array& v2) {
 	#ifdef QL_DEBUG
 		Require(v1.size() == v2.size(), "adding arrays with different sizes");
 	#endif
-	typedef BinaryVectorialExpression<Type,Array<Type>::const_iterator,Array<Type>::const_iterator,Add<Type> > Iter;
-	return VectorialExpression<Type,Iter>(Iter(v1.begin(),v2.begin(),v1.size()),v1.size());
+	typedef BinaryVectorialExpression<Array::const_iterator,Array::const_iterator,Add> Iter;
+	return VectorialExpression<Iter>(Iter(v1.begin(),v2.begin(),v1.size()),v1.size());
 }
 
-template <class Type> 
-inline VectorialExpression<Type,BinaryVectorialExpression<Type,Array<Type>::const_iterator,Scalar<Type>,Add<Type> > >
-operator+(const Array<Type>& v1, const Type& x) {
-	typedef BinaryVectorialExpression<Type,Array<Type>::const_iterator,Scalar<Type>,Add<Type> > Iter;
-	return VectorialExpression<Type,Iter>(Iter(v1.begin(),Scalar<Type>(x),v1.size()),v1.size());
+inline VectorialExpression<BinaryVectorialExpression<Array::const_iterator,Scalar,Add> >
+operator+(const Array& v1, double x) {
+	typedef BinaryVectorialExpression<Array::const_iterator,Scalar,Add> Iter;
+	return VectorialExpression<Iter>(Iter(v1.begin(),Scalar(x),v1.size()),v1.size());
 }
 
-template <class Type> 
-inline VectorialExpression<Type,BinaryVectorialExpression<Type,Scalar<Type>,Array<Type>::const_iterator,Add<Type> > >
-operator+(const Type& x, const Array<Type>& v2) {
-	typedef BinaryVectorialExpression<Type,Scalar<Type>,Array<Type>::const_iterator,Add<Type> > Iter;
-	return VectorialExpression<Type,Iter>(Iter(Scalar<Type>(x),v2.begin(),v2.size()),v2.size());
+inline VectorialExpression<BinaryVectorialExpression<Scalar,Array::const_iterator,Add> >
+operator+(double x, const Array& v2) {
+	typedef BinaryVectorialExpression<Scalar,Array::const_iterator,Add> Iter;
+	return VectorialExpression<Iter>(Iter(Scalar(x),v2.begin(),v2.size()),v2.size());
 }
 
-template <class Type, class Iter2> 
-inline VectorialExpression<Type,BinaryVectorialExpression<Type,Array<Type>::const_iterator,VectorialExpression<Type,Iter2>,Add<Type> > >
-operator+(const Array<Type>& v1, const VectorialExpression<Type,Iter2>& e2) {
+template <class Iter2> 
+inline VectorialExpression<BinaryVectorialExpression<Array::const_iterator,VectorialExpression<Iter2>,Add> >
+operator+(const Array& v1, const VectorialExpression<Iter2>& e2) {
 	#ifdef QL_DEBUG
 		Require(v1.size() == e2.size(), "adding arrays with different sizes");
 	#endif
-	typedef BinaryVectorialExpression<Type,Array<Type>::const_iterator,VectorialExpression<Type,Iter2>,Add<Type> > Iter;
-	return VectorialExpression<Type,Iter>(Iter(v1.begin(),e2,v1.size()),v1.size());
+	typedef BinaryVectorialExpression<Array::const_iterator,VectorialExpression<Iter2>,Add> Iter;
+	return VectorialExpression<Iter>(Iter(v1.begin(),e2,v1.size()),v1.size());
 }
 
-template <class Type, class Iter1> 
-inline VectorialExpression<Type,BinaryVectorialExpression<Type,VectorialExpression<Type,Iter1>,Array<Type>::const_iterator,Add<Type> > >
-operator+(const VectorialExpression<Type,Iter1>& e1, const Array<Type>& v2) {
+template <class Iter1> 
+inline VectorialExpression<BinaryVectorialExpression<VectorialExpression<Iter1>,Array::const_iterator,Add> >
+operator+(const VectorialExpression<Iter1>& e1, const Array& v2) {
 	#ifdef QL_DEBUG
 		Require(e1.size() == v2.size(), "adding arrays with different sizes");
 	#endif
-	typedef BinaryVectorialExpression<Type,VectorialExpression<Type,Iter1>,Array<Type>::const_iterator,Add<Type> > Iter;
-	return VectorialExpression<Type,Iter>(Iter(e1,v2.begin(),v2.size()),v2.size());
+	typedef BinaryVectorialExpression<VectorialExpression<Iter1>,Array::const_iterator,Add> Iter;
+	return VectorialExpression<Iter>(Iter(e1,v2.begin(),v2.size()),v2.size());
 }
 
-template <class Type, class Iter1, class Iter2>
-inline VectorialExpression<Type,BinaryVectorialExpression<Type,VectorialExpression<Type,Iter1>,VectorialExpression<Type,Iter2>,Add<Type> > >
-operator+(const VectorialExpression<Type,Iter1>& e1, const VectorialExpression<Type,Iter2>& e2) {
+template <class Iter1, class Iter2>
+inline VectorialExpression<BinaryVectorialExpression<VectorialExpression<Iter1>,VectorialExpression<Iter2>,Add> >
+operator+(const VectorialExpression<Iter1>& e1, const VectorialExpression<Iter2>& e2) {
 	#ifdef QL_DEBUG
 		Require(e1.size() == e2.size(), "adding arrays with different sizes");
 	#endif
-	typedef BinaryVectorialExpression<Type,VectorialExpression<Type,Iter1>,VectorialExpression<Type,Iter2>,Add<Type> > Iter;
-	return VectorialExpression<Type,Iter>(Iter(e1,e2,e1.size()),e1.size());
+	typedef BinaryVectorialExpression<VectorialExpression<Iter1>,VectorialExpression<Iter2>,Add> Iter;
+	return VectorialExpression<Iter>(Iter(e1,e2,e1.size()),e1.size());
 }
 
-template <class Type, class Iter1>
-inline VectorialExpression<Type,BinaryVectorialExpression<Type,VectorialExpression<Type,Iter1>,Scalar<Type>,Add<Type> > >
-operator+(const VectorialExpression<Type,Iter1>& e1, const Type& x) {
-	typedef BinaryVectorialExpression<Type,VectorialExpression<Type,Iter1>,Scalar<Type>,Add<Type> > Iter;
-	return VectorialExpression<Type,Iter>(Iter(e1,Scalar<Type>(x),e1.size()),e1.size());
+template <class Iter1>
+inline VectorialExpression<BinaryVectorialExpression<VectorialExpression<Iter1>,Scalar,Add> >
+operator+(const VectorialExpression<Iter1>& e1, double x) {
+	typedef BinaryVectorialExpression<VectorialExpression<Iter1>,Scalar,Add> Iter;
+	return VectorialExpression<Iter>(Iter(e1,Scalar(x),e1.size()),e1.size());
 }
 
-template <class Type, class Iter2>
-inline VectorialExpression<Type,BinaryVectorialExpression<Type,Scalar<Type>,VectorialExpression<Type,Iter2>,Add<Type> > >
-operator+(const Type& x, const VectorialExpression<Type,Iter2>& e2) {
-	typedef BinaryVectorialExpression<Type,Scalar<Type>,VectorialExpression<Type,Iter2>,Add<Type> > Iter;
-	return VectorialExpression<Type,Iter>(Iter(Scalar<Type>(x),e2,e2.size()),e2.size());
+template <class Iter2>
+inline VectorialExpression<BinaryVectorialExpression<Scalar,VectorialExpression<Iter2>,Add> >
+operator+(double x, const VectorialExpression<Iter2>& e2) {
+	typedef BinaryVectorialExpression<Scalar,VectorialExpression<Iter2>,Add> Iter;
+	return VectorialExpression<Iter>(Iter(Scalar(x),e2,e2.size()),e2.size());
 }
 
 // subtraction
 
-template <class Type>
-inline VectorialExpression<Type,BinaryVectorialExpression<Type,Array<Type>::const_iterator,Array<Type>::const_iterator,Subtract<Type> > >
-operator-(const Array<Type>& v1, const Array<Type>& v2) {
+inline VectorialExpression<BinaryVectorialExpression<Array::const_iterator,Array::const_iterator,Subtract> >
+operator-(const Array& v1, const Array& v2) {
 	#ifdef QL_DEBUG
 		Require(v1.size() == v2.size(), "adding arrays with different sizes");
 	#endif
-	typedef BinaryVectorialExpression<Type,Array<Type>::const_iterator,Array<Type>::const_iterator,Subtract<Type> > Iter;
-	return VectorialExpression<Type,Iter>(Iter(v1.begin(),v2.begin(),v1.size()),v1.size());
+	typedef BinaryVectorialExpression<Array::const_iterator,Array::const_iterator,Subtract> Iter;
+	return VectorialExpression<Iter>(Iter(v1.begin(),v2.begin(),v1.size()),v1.size());
 }
 
-template <class Type> 
-inline VectorialExpression<Type,BinaryVectorialExpression<Type,Array<Type>::const_iterator,Scalar<Type>,Subtract<Type> > >
-operator-(const Array<Type>& v1, const Type& x) {
-	typedef BinaryVectorialExpression<Type,Array<Type>::const_iterator,Scalar<Type>,Subtract<Type> > Iter;
-	return VectorialExpression<Type,Iter>(Iter(v1.begin(),Scalar<Type>(x),v1.size()),v1.size());
+inline VectorialExpression<BinaryVectorialExpression<Array::const_iterator,Scalar,Subtract> >
+operator-(const Array& v1, double x) {
+	typedef BinaryVectorialExpression<Array::const_iterator,Scalar,Subtract> Iter;
+	return VectorialExpression<Iter>(Iter(v1.begin(),Scalar(x),v1.size()),v1.size());
 }
 
-template <class Type> 
-inline VectorialExpression<Type,BinaryVectorialExpression<Type,Scalar<Type>,Array<Type>::const_iterator,Subtract<Type> > >
-operator-(const Type& x, const Array<Type>& v2) {
-	typedef BinaryVectorialExpression<Type,Scalar<Type>,Array<Type>::const_iterator,Subtract<Type> > Iter;
-	return VectorialExpression<Type,Iter>(Iter(Scalar<Type>(x),v2.begin(),v2.size()),v2.size());
+inline VectorialExpression<BinaryVectorialExpression<Scalar,Array::const_iterator,Subtract> >
+operator-(double x, const Array& v2) {
+	typedef BinaryVectorialExpression<Scalar,Array::const_iterator,Subtract> Iter;
+	return VectorialExpression<Iter>(Iter(Scalar(x),v2.begin(),v2.size()),v2.size());
 }
 
-template <class Type, class Iter2> 
-inline VectorialExpression<Type,BinaryVectorialExpression<Type,Array<Type>::const_iterator,VectorialExpression<Type,Iter2>,Subtract<Type> > >
-operator-(const Array<Type>& v1, const VectorialExpression<Type,Iter2>& e2) {
+template <class Iter2> 
+inline VectorialExpression<BinaryVectorialExpression<Array::const_iterator,VectorialExpression<Iter2>,Subtract> >
+operator-(const Array& v1, const VectorialExpression<Iter2>& e2) {
 	#ifdef QL_DEBUG
 		Require(v1.size() == e2.size(), "adding arrays with different sizes");
 	#endif
-	typedef BinaryVectorialExpression<Type,Array<Type>::const_iterator,VectorialExpression<Type,Iter2>,Subtract<Type> > Iter;
-	return VectorialExpression<Type,Iter>(Iter(v1.begin(),e2,v1.size()),v1.size());
+	typedef BinaryVectorialExpression<Array::const_iterator,VectorialExpression<Iter2>,Subtract> Iter;
+	return VectorialExpression<Iter>(Iter(v1.begin(),e2,v1.size()),v1.size());
 }
 
-template <class Type, class Iter1> 
-inline VectorialExpression<Type,BinaryVectorialExpression<Type,VectorialExpression<Type,Iter1>,Array<Type>::const_iterator,Subtract<Type> > >
-operator-(const VectorialExpression<Type,Iter1>& e1, const Array<Type>& v2) {
+template <class Iter1> 
+inline VectorialExpression<BinaryVectorialExpression<VectorialExpression<Iter1>,Array::const_iterator,Subtract> >
+operator-(const VectorialExpression<Iter1>& e1, const Array& v2) {
 	#ifdef QL_DEBUG
 		Require(e1.size() == v2.size(), "adding arrays with different sizes");
 	#endif
-	typedef BinaryVectorialExpression<Type,VectorialExpression<Type,Iter1>,Array<Type>::const_iterator,Subtract<Type> > Iter;
-	return VectorialExpression<Type,Iter>(Iter(e1,v2.begin(),v2.size()),v2.size());
+	typedef BinaryVectorialExpression<VectorialExpression<Iter1>,Array::const_iterator,Subtract> Iter;
+	return VectorialExpression<Iter>(Iter(e1,v2.begin(),v2.size()),v2.size());
 }
 
-template <class Type, class Iter1, class Iter2>
-inline VectorialExpression<Type,BinaryVectorialExpression<Type,VectorialExpression<Type,Iter1>,VectorialExpression<Type,Iter2>,Subtract<Type> > >
-operator-(const VectorialExpression<Type,Iter1>& e1, const VectorialExpression<Type,Iter2>& e2) {
+template <class Iter1, class Iter2>
+inline VectorialExpression<BinaryVectorialExpression<VectorialExpression<Iter1>,VectorialExpression<Iter2>,Subtract> >
+operator-(const VectorialExpression<Iter1>& e1, const VectorialExpression<Iter2>& e2) {
 	#ifdef QL_DEBUG
 		Require(e1.size() == e2.size(), "adding arrays with different sizes");
 	#endif
-	typedef BinaryVectorialExpression<Type,VectorialExpression<Type,Iter1>,VectorialExpression<Type,Iter2>,Subtract<Type> > Iter;
-	return VectorialExpression<Type,Iter>(Iter(e1,e2,e1.size()),e1.size());
+	typedef BinaryVectorialExpression<VectorialExpression<Iter1>,VectorialExpression<Iter2>,Subtract> Iter;
+	return VectorialExpression<Iter>(Iter(e1,e2,e1.size()),e1.size());
 }
 
-template <class Type, class Iter1>
-inline VectorialExpression<Type,BinaryVectorialExpression<Type,VectorialExpression<Type,Iter1>,Scalar<Type>,Subtract<Type> > >
-operator-(const VectorialExpression<Type,Iter1>& e1, const Type& x) {
-	typedef BinaryVectorialExpression<Type,VectorialExpression<Type,Iter1>,Scalar<Type>,Subtract<Type> > Iter;
-	return VectorialExpression<Type,Iter>(Iter(e1,Scalar<Type>(x),e1.size()),e1.size());
+template <class Iter1>
+inline VectorialExpression<BinaryVectorialExpression<VectorialExpression<Iter1>,Scalar,Subtract> >
+operator-(const VectorialExpression<Iter1>& e1, double x) {
+	typedef BinaryVectorialExpression<VectorialExpression<Iter1>,Scalar,Subtract> Iter;
+	return VectorialExpression<Iter>(Iter(e1,Scalar(x),e1.size()),e1.size());
 }
 
-template <class Type, class Iter2>
-inline VectorialExpression<Type,BinaryVectorialExpression<Type,Scalar<Type>,VectorialExpression<Type,Iter2>,Subtract<Type> > >
-operator-(const Type& x, const VectorialExpression<Type,Iter2>& e2) {
-	typedef BinaryVectorialExpression<Type,Scalar<Type>,VectorialExpression<Type,Iter2>,Subtract<Type> > Iter;
-	return VectorialExpression<Type,Iter>(Iter(Scalar<Type>(x),e2,e2.size()),e2.size());
+template <class Iter2>
+inline VectorialExpression<BinaryVectorialExpression<Scalar,VectorialExpression<Iter2>,Subtract> >
+operator-(double x, const VectorialExpression<Iter2>& e2) {
+	typedef BinaryVectorialExpression<Scalar,VectorialExpression<Iter2>,Subtract> Iter;
+	return VectorialExpression<Iter>(Iter(Scalar(x),e2,e2.size()),e2.size());
 }
 
 // multiplication
 
-template <class Type>
-inline VectorialExpression<Type,BinaryVectorialExpression<Type,Array<Type>::const_iterator,Array<Type>::const_iterator,Multiply<Type> > >
-operator*(const Array<Type>& v1, const Array<Type>& v2) {
+inline VectorialExpression<BinaryVectorialExpression<Array::const_iterator,Array::const_iterator,Multiply> >
+operator*(const Array& v1, const Array& v2) {
 	#ifdef QL_DEBUG
 		Require(v1.size() == v2.size(), "adding arrays with different sizes");
 	#endif
-	typedef BinaryVectorialExpression<Type,Array<Type>::const_iterator,Array<Type>::const_iterator,Multiply<Type> > Iter;
-	return VectorialExpression<Type,Iter>(Iter(v1.begin(),v2.begin(),v1.size()),v1.size());
+	typedef BinaryVectorialExpression<Array::const_iterator,Array::const_iterator,Multiply> Iter;
+	return VectorialExpression<Iter>(Iter(v1.begin(),v2.begin(),v1.size()),v1.size());
 }
 
-template <class Type> 
-inline VectorialExpression<Type,BinaryVectorialExpression<Type,Array<Type>::const_iterator,Scalar<Type>,Multiply<Type> > >
-operator*(const Array<Type>& v1, const Type& x) {
-	typedef BinaryVectorialExpression<Type,Array<Type>::const_iterator,Scalar<Type>,Multiply<Type> > Iter;
-	return VectorialExpression<Type,Iter>(Iter(v1.begin(),Scalar<Type>(x),v1.size()),v1.size());
+inline VectorialExpression<BinaryVectorialExpression<Array::const_iterator,Scalar,Multiply> >
+operator*(const Array& v1, double x) {
+	typedef BinaryVectorialExpression<Array::const_iterator,Scalar,Multiply> Iter;
+	return VectorialExpression<Iter>(Iter(v1.begin(),Scalar(x),v1.size()),v1.size());
 }
 
-template <class Type> 
-inline VectorialExpression<Type,BinaryVectorialExpression<Type,Scalar<Type>,Array<Type>::const_iterator,Multiply<Type> > >
-operator*(const Type& x, const Array<Type>& v2) {
-	typedef BinaryVectorialExpression<Type,Scalar<Type>,Array<Type>::const_iterator,Multiply<Type> > Iter;
-	return VectorialExpression<Type,Iter>(Iter(Scalar<Type>(x),v2.begin(),v2.size()),v2.size());
+inline VectorialExpression<BinaryVectorialExpression<Scalar,Array::const_iterator,Multiply> >
+operator*(double x, const Array& v2) {
+	typedef BinaryVectorialExpression<Scalar,Array::const_iterator,Multiply> Iter;
+	return VectorialExpression<Iter>(Iter(Scalar(x),v2.begin(),v2.size()),v2.size());
 }
 
-template <class Type, class Iter2> 
-inline VectorialExpression<Type,BinaryVectorialExpression<Type,Array<Type>::const_iterator,VectorialExpression<Type,Iter2>,Multiply<Type> > >
-operator*(const Array<Type>& v1, const VectorialExpression<Type,Iter2>& e2) {
+template <class Iter2> 
+inline VectorialExpression<BinaryVectorialExpression<Array::const_iterator,VectorialExpression<Iter2>,Multiply> >
+operator*(const Array& v1, const VectorialExpression<Iter2>& e2) {
 	#ifdef QL_DEBUG
 		Require(v1.size() == e2.size(), "adding arrays with different sizes");
 	#endif
-	typedef BinaryVectorialExpression<Type,Array<Type>::const_iterator,VectorialExpression<Type,Iter2>,Multiply<Type> > Iter;
-	return VectorialExpression<Type,Iter>(Iter(v1.begin(),e2,v1.size()),v1.size());
+	typedef BinaryVectorialExpression<Array::const_iterator,VectorialExpression<Iter2>,Multiply> Iter;
+	return VectorialExpression<Iter>(Iter(v1.begin(),e2,v1.size()),v1.size());
 }
 
-template <class Type, class Iter1> 
-inline VectorialExpression<Type,BinaryVectorialExpression<Type,VectorialExpression<Type,Iter1>,Array<Type>::const_iterator,Multiply<Type> > >
-operator*(const VectorialExpression<Type,Iter1>& e1, const Array<Type>& v2) {
+template <class Iter1> 
+inline VectorialExpression<BinaryVectorialExpression<VectorialExpression<Iter1>,Array::const_iterator,Multiply> >
+operator*(const VectorialExpression<Iter1>& e1, const Array& v2) {
 	#ifdef QL_DEBUG
 		Require(e1.size() == v2.size(), "adding arrays with different sizes");
 	#endif
-	typedef BinaryVectorialExpression<Type,VectorialExpression<Type,Iter1>,Array<Type>::const_iterator,Multiply<Type> > Iter;
-	return VectorialExpression<Type,Iter>(Iter(e1,v2.begin(),v2.size()),v2.size());
+	typedef BinaryVectorialExpression<VectorialExpression<Iter1>,Array::const_iterator,Multiply> Iter;
+	return VectorialExpression<Iter>(Iter(e1,v2.begin(),v2.size()),v2.size());
 }
 
-template <class Type, class Iter1, class Iter2>
-inline VectorialExpression<Type,BinaryVectorialExpression<Type,VectorialExpression<Type,Iter1>,VectorialExpression<Type,Iter2>,Multiply<Type> > >
-operator*(const VectorialExpression<Type,Iter1>& e1, const VectorialExpression<Type,Iter2>& e2) {
+template <class Iter1, class Iter2>
+inline VectorialExpression<BinaryVectorialExpression<VectorialExpression<Iter1>,VectorialExpression<Iter2>,Multiply> >
+operator*(const VectorialExpression<Iter1>& e1, const VectorialExpression<Iter2>& e2) {
 	#ifdef QL_DEBUG
 		Require(e1.size() == e2.size(), "adding arrays with different sizes");
 	#endif
-	typedef BinaryVectorialExpression<Type,VectorialExpression<Type,Iter1>,VectorialExpression<Type,Iter2>,Multiply<Type> > Iter;
-	return VectorialExpression<Type,Iter>(Iter(e1,e2,e1.size()),e1.size());
+	typedef BinaryVectorialExpression<VectorialExpression<Iter1>,VectorialExpression<Iter2>,Multiply> Iter;
+	return VectorialExpression<Iter>(Iter(e1,e2,e1.size()),e1.size());
 }
 
-template <class Type, class Iter1>
-inline VectorialExpression<Type,BinaryVectorialExpression<Type,VectorialExpression<Type,Iter1>,Scalar<Type>,Multiply<Type> > >
-operator*(const VectorialExpression<Type,Iter1>& e1, const Type& x) {
-	typedef BinaryVectorialExpression<Type,VectorialExpression<Type,Iter1>,Scalar<Type>,Multiply<Type> > Iter;
-	return VectorialExpression<Type,Iter>(Iter(e1,Scalar<Type>(x),e1.size()),e1.size());
+template <class Iter1>
+inline VectorialExpression<BinaryVectorialExpression<VectorialExpression<Iter1>,Scalar,Multiply> >
+operator*(const VectorialExpression<Iter1>& e1, double x) {
+	typedef BinaryVectorialExpression<VectorialExpression<Iter1>,Scalar,Multiply> Iter;
+	return VectorialExpression<Iter>(Iter(e1,Scalar(x),e1.size()),e1.size());
 }
 
-template <class Type, class Iter2>
-inline VectorialExpression<Type,BinaryVectorialExpression<Type,Scalar<Type>,VectorialExpression<Type,Iter2>,Multiply<Type> > >
-operator*(const Type& x, const VectorialExpression<Type,Iter2>& e2) {
-	typedef BinaryVectorialExpression<Type,Scalar<Type>,VectorialExpression<Type,Iter2>,Multiply<Type> > Iter;
-	return VectorialExpression<Type,Iter>(Iter(Scalar<Type>(x),e2,e2.size()),e2.size());
+template <class Iter2>
+inline VectorialExpression<BinaryVectorialExpression<Scalar,VectorialExpression<Iter2>,Multiply> >
+operator*(double x, const VectorialExpression<Iter2>& e2) {
+	typedef BinaryVectorialExpression<Scalar,VectorialExpression<Iter2>,Multiply> Iter;
+	return VectorialExpression<Iter>(Iter(Scalar(x),e2,e2.size()),e2.size());
 }
 
 // division
 
-template <class Type>
-inline VectorialExpression<Type,BinaryVectorialExpression<Type,Array<Type>::const_iterator,Array<Type>::const_iterator,Divide<Type> > >
-operator/(const Array<Type>& v1, const Array<Type>& v2) {
+inline VectorialExpression<BinaryVectorialExpression<Array::const_iterator,Array::const_iterator,Divide> >
+operator/(const Array& v1, const Array& v2) {
 	#ifdef QL_DEBUG
 		Require(v1.size() == v2.size(), "adding arrays with different sizes");
 	#endif
-	typedef BinaryVectorialExpression<Type,Array<Type>::const_iterator,Array<Type>::const_iterator,Divide<Type> > Iter;
-	return VectorialExpression<Type,Iter>(Iter(v1.begin(),v2.begin(),v1.size()),v1.size());
+	typedef BinaryVectorialExpression<Array::const_iterator,Array::const_iterator,Divide> Iter;
+	return VectorialExpression<Iter>(Iter(v1.begin(),v2.begin(),v1.size()),v1.size());
 }
 
-template <class Type> 
-inline VectorialExpression<Type,BinaryVectorialExpression<Type,Array<Type>::const_iterator,Scalar<Type>,Divide<Type> > >
-operator/(const Array<Type>& v1, const Type& x) {
-	typedef BinaryVectorialExpression<Type,Array<Type>::const_iterator,Scalar<Type>,Divide<Type> > Iter;
-	return VectorialExpression<Type,Iter>(Iter(v1.begin(),Scalar<Type>(x),v1.size()),v1.size());
+inline VectorialExpression<BinaryVectorialExpression<Array::const_iterator,Scalar,Divide> >
+operator/(const Array& v1, double x) {
+	typedef BinaryVectorialExpression<Array::const_iterator,Scalar,Divide> Iter;
+	return VectorialExpression<Iter>(Iter(v1.begin(),Scalar(x),v1.size()),v1.size());
 }
 
-template <class Type> 
-inline VectorialExpression<Type,BinaryVectorialExpression<Type,Scalar<Type>,Array<Type>::const_iterator,Divide<Type> > >
-operator/(const Type& x, const Array<Type>& v2) {
-	typedef BinaryVectorialExpression<Type,Scalar<Type>,Array<Type>::const_iterator,Divide<Type> > Iter;
-	return VectorialExpression<Type,Iter>(Iter(Scalar<Type>(x),v2.begin(),v2.size()),v2.size());
+inline VectorialExpression<BinaryVectorialExpression<Scalar,Array::const_iterator,Divide> >
+operator/(double x, const Array& v2) {
+	typedef BinaryVectorialExpression<Scalar,Array::const_iterator,Divide> Iter;
+	return VectorialExpression<Iter>(Iter(Scalar(x),v2.begin(),v2.size()),v2.size());
 }
 
-template <class Type, class Iter2> 
-inline VectorialExpression<Type,BinaryVectorialExpression<Type,Array<Type>::const_iterator,VectorialExpression<Type,Iter2>,Divide<Type> > >
-operator/(const Array<Type>& v1, const VectorialExpression<Type,Iter2>& e2) {
+template <class Iter2> 
+inline VectorialExpression<BinaryVectorialExpression<Array::const_iterator,VectorialExpression<Iter2>,Divide> >
+operator/(const Array& v1, const VectorialExpression<Iter2>& e2) {
 	#ifdef QL_DEBUG
 		Require(v1.size() == e2.size(), "adding arrays with different sizes");
 	#endif
-	typedef BinaryVectorialExpression<Type,Array<Type>::const_iterator,VectorialExpression<Type,Iter2>,Divide<Type> > Iter;
-	return VectorialExpression<Type,Iter>(Iter(v1.begin(),e2,v1.size()),v1.size());
+	typedef BinaryVectorialExpression<Array::const_iterator,VectorialExpression<Iter2>,Divide> Iter;
+	return VectorialExpression<Iter>(Iter(v1.begin(),e2,v1.size()),v1.size());
 }
 
-template <class Type, class Iter1> 
-inline VectorialExpression<Type,BinaryVectorialExpression<Type,VectorialExpression<Type,Iter1>,Array<Type>::const_iterator,Divide<Type> > >
-operator/(const VectorialExpression<Type,Iter1>& e1, const Array<Type>& v2) {
+template <class Iter1> 
+inline VectorialExpression<BinaryVectorialExpression<VectorialExpression<Iter1>,Array::const_iterator,Divide> >
+operator/(const VectorialExpression<Iter1>& e1, const Array& v2) {
 	#ifdef QL_DEBUG
 		Require(e1.size() == v2.size(), "adding arrays with different sizes");
 	#endif
-	typedef BinaryVectorialExpression<Type,VectorialExpression<Type,Iter1>,Array<Type>::const_iterator,Divide<Type> > Iter;
-	return VectorialExpression<Type,Iter>(Iter(e1,v2.begin(),v2.size()),v2.size());
+	typedef BinaryVectorialExpression<VectorialExpression<Iter1>,Array::const_iterator,Divide> Iter;
+	return VectorialExpression<Iter>(Iter(e1,v2.begin(),v2.size()),v2.size());
 }
 
-template <class Type, class Iter1, class Iter2>
-inline VectorialExpression<Type,BinaryVectorialExpression<Type,VectorialExpression<Type,Iter1>,VectorialExpression<Type,Iter2>,Divide<Type> > >
-operator/(const VectorialExpression<Type,Iter1>& e1, const VectorialExpression<Type,Iter2>& e2) {
+template <class Iter1, class Iter2>
+inline VectorialExpression<BinaryVectorialExpression<VectorialExpression<Iter1>,VectorialExpression<Iter2>,Divide> >
+operator/(const VectorialExpression<Iter1>& e1, const VectorialExpression<Iter2>& e2) {
 	#ifdef QL_DEBUG
 		Require(e1.size() == e2.size(), "adding arrays with different sizes");
 	#endif
-	typedef BinaryVectorialExpression<Type,VectorialExpression<Type,Iter1>,VectorialExpression<Type,Iter2>,Divide<Type> > Iter;
-	return VectorialExpression<Type,Iter>(Iter(e1,e2,e1.size()),e1.size());
+	typedef BinaryVectorialExpression<VectorialExpression<Iter1>,VectorialExpression<Iter2>,Divide> Iter;
+	return VectorialExpression<Iter>(Iter(e1,e2,e1.size()),e1.size());
 }
 
-template <class Type, class Iter1>
-inline VectorialExpression<Type,BinaryVectorialExpression<Type,VectorialExpression<Type,Iter1>,Scalar<Type>,Divide<Type> > >
-operator/(const VectorialExpression<Type,Iter1>& e1, const Type& x) {
-	typedef BinaryVectorialExpression<Type,VectorialExpression<Type,Iter1>,Scalar<Type>,Divide<Type> > Iter;
-	return VectorialExpression<Type,Iter>(Iter(e1,Scalar<Type>(x),e1.size()),e1.size());
+template <class Iter1>
+inline VectorialExpression<BinaryVectorialExpression<VectorialExpression<Iter1>,Scalar,Divide> >
+operator/(const VectorialExpression<Iter1>& e1, double x) {
+	typedef BinaryVectorialExpression<VectorialExpression<Iter1>,Scalar,Divide> Iter;
+	return VectorialExpression<Iter>(Iter(e1,Scalar(x),e1.size()),e1.size());
 }
 
-template <class Type, class Iter2>
-inline VectorialExpression<Type,BinaryVectorialExpression<Type,Scalar<Type>,VectorialExpression<Type,Iter2>,Divide<Type> > >
-operator/(const Type& x, const VectorialExpression<Type,Iter2>& e2) {
-	typedef BinaryVectorialExpression<Type,Scalar<Type>,VectorialExpression<Type,Iter2>,Divide<Type> > Iter;
-	return VectorialExpression<Type,Iter>(Iter(Scalar<Type>(x),e2,e2.size()),e2.size());
+template <class Iter2>
+inline VectorialExpression<BinaryVectorialExpression<Scalar,VectorialExpression<Iter2>,Divide> >
+operator/(double x, const VectorialExpression<Iter2>& e2) {
+	typedef BinaryVectorialExpression<Scalar,VectorialExpression<Iter2>,Divide> Iter;
+	return VectorialExpression<Iter>(Iter(Scalar(x),e2,e2.size()),e2.size());
 }
 
 // dot product
 
-template <class Type> 
-inline Type DotProduct(const Array<Type>& v1, const Array<Type>& v2) {
+inline double DotProduct(const Array& v1, const Array& v2) {
 	Require(v1.size() == v2.size(), "arrays with different sizes cannot be multiplied");
-	return std::inner_product(v1.begin(),v1.end(),v2.begin(),Type());
+	return std::inner_product(v1.begin(),v1.end(),v2.begin(),0.0);
 }
 
 // functions
 
 // Abs()
-template <class Type> 
-inline VectorialExpression<Type,UnaryVectorialExpression<Type,Array<Type>::const_iterator,AbsoluteValue<Type> > >
-Abs(const Array<Type>& v) {
-	typedef UnaryVectorialExpression<Type,Array<Type>::const_iterator,AbsoluteValue<Type> > Iter;
-	return VectorialExpression<Type,Iter>(Iter(v.begin(),v.size()),v.size());
+ 
+inline VectorialExpression<UnaryVectorialExpression<Array::const_iterator,AbsoluteValue> >
+Abs(const Array& v) {
+	typedef UnaryVectorialExpression<Array::const_iterator,AbsoluteValue> Iter;
+	return VectorialExpression<Iter>(Iter(v.begin(),v.size()),v.size());
 }
 
-template <class Type, class Iter1> 
-inline VectorialExpression<Type,UnaryVectorialExpression<Type,VectorialExpression<Type,Iter1>,AbsoluteValue<Type> > >
-Abs(const VectorialExpression<Type,Iter1>& e) {
-	typedef UnaryVectorialExpression<Type,VectorialExpression<Type,Iter1>,AbsoluteValue<Type> > Iter;
-	return VectorialExpression<Type,Iter>(Iter(e,e.size()),e.size());
+template <class Iter1> 
+inline VectorialExpression<UnaryVectorialExpression<VectorialExpression<Iter1>,AbsoluteValue> >
+Abs(const VectorialExpression<Iter1>& e) {
+	typedef UnaryVectorialExpression<VectorialExpression<Iter1>,AbsoluteValue> Iter;
+	return VectorialExpression<Iter>(Iter(e,e.size()),e.size());
 }
 
 // Sqrt()
-template <class Type> 
-inline VectorialExpression<Type,UnaryVectorialExpression<Type,Array<Type>::const_iterator,SquareRoot<Type> > >
-Sqrt(const Array<Type>& v) {
-	typedef UnaryVectorialExpression<Type,Array<Type>::const_iterator,SquareRoot<Type> > Iter;
-	return VectorialExpression<Type,Iter>(Iter(v.begin(),v.size()),v.size());
+ 
+inline VectorialExpression<UnaryVectorialExpression<Array::const_iterator,SquareRoot> >
+Sqrt(const Array& v) {
+	typedef UnaryVectorialExpression<Array::const_iterator,SquareRoot> Iter;
+	return VectorialExpression<Iter>(Iter(v.begin(),v.size()),v.size());
 }
 
-template <class Type, class Iter1> 
-inline VectorialExpression<Type,UnaryVectorialExpression<Type,VectorialExpression<Type,Iter1>,SquareRoot<Type> > >
-Sqrt(const VectorialExpression<Type,Iter1>& e) {
-	typedef UnaryVectorialExpression<Type,VectorialExpression<Type,Iter1>,SquareRoot<Type> > Iter;
-	return VectorialExpression<Type,Iter>(Iter(e,e.size()),e.size());
+template <class Iter1> 
+inline VectorialExpression<UnaryVectorialExpression<VectorialExpression<Iter1>,SquareRoot> >
+Sqrt(const VectorialExpression<Iter1>& e) {
+	typedef UnaryVectorialExpression<VectorialExpression<Iter1>,SquareRoot> Iter;
+	return VectorialExpression<Iter>(Iter(e,e.size()),e.size());
 }
 
 // Log()
-template <class Type> 
-inline VectorialExpression<Type,UnaryVectorialExpression<Type,Array<Type>::const_iterator,Logarithm<Type> > >
-Log(const Array<Type>& v) {
-	typedef UnaryVectorialExpression<Type,Array<Type>::const_iterator,Logarithm<Type> > Iter;
-	return VectorialExpression<Type,Iter>(Iter(v.begin(),v.size()),v.size());
+ 
+inline VectorialExpression<UnaryVectorialExpression<Array::const_iterator,Logarithm> >
+Log(const Array& v) {
+	typedef UnaryVectorialExpression<Array::const_iterator,Logarithm> Iter;
+	return VectorialExpression<Iter>(Iter(v.begin(),v.size()),v.size());
 }
 
-template <class Type, class Iter1> 
-inline VectorialExpression<Type,UnaryVectorialExpression<Type,VectorialExpression<Type,Iter1>,Logarithm<Type> > >
-Log(const VectorialExpression<Type,Iter1>& e) {
-	typedef UnaryVectorialExpression<Type,VectorialExpression<Type,Iter1>,Logarithm<Type> > Iter;
-	return VectorialExpression<Type,Iter>(Iter(e,e.size()),e.size());
+template <class Iter1> 
+inline VectorialExpression<UnaryVectorialExpression<VectorialExpression<Iter1>,Logarithm> >
+Log(const VectorialExpression<Iter1>& e) {
+	typedef UnaryVectorialExpression<VectorialExpression<Iter1>,Logarithm> Iter;
+	return VectorialExpression<Iter>(Iter(e,e.size()),e.size());
 }
 
 // Exp()
-template <class Type> 
-inline VectorialExpression<Type,UnaryVectorialExpression<Type,Array<Type>::const_iterator,Exponential<Type> > >
-Exp(const Array<Type>& v) {
-	typedef UnaryVectorialExpression<Type,Array<Type>::const_iterator,Exponential<Type> > Iter;
-	return VectorialExpression<Type,Iter>(Iter(v.begin(),v.size()),v.size());
+ 
+inline VectorialExpression<UnaryVectorialExpression<Array::const_iterator,Exponential> >
+Exp(const Array& v) {
+	typedef UnaryVectorialExpression<Array::const_iterator,Exponential> Iter;
+	return VectorialExpression<Iter>(Iter(v.begin(),v.size()),v.size());
 }
 
-template <class Type, class Iter1> 
-inline VectorialExpression<Type,UnaryVectorialExpression<Type,VectorialExpression<Type,Iter1>,Exponential<Type> > >
-Exp(const VectorialExpression<Type,Iter1>& e) {
-	typedef UnaryVectorialExpression<Type,VectorialExpression<Type,Iter1>,Exponential<Type> > Iter;
-	return VectorialExpression<Type,Iter>(Iter(e,e.size()),e.size());
+template <class Iter1> 
+inline VectorialExpression<UnaryVectorialExpression<VectorialExpression<Iter1>,Exponential> >
+Exp(const VectorialExpression<Iter1>& e) {
+	typedef UnaryVectorialExpression<VectorialExpression<Iter1>,Exponential> Iter;
+	return VectorialExpression<Iter>(Iter(e,e.size()),e.size());
 }
-
 
 QL_END_NAMESPACE(QuantLib)
+
 
 #endif

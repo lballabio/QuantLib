@@ -47,7 +47,7 @@ double BSMEuropeanOption::value() const {
 		}
 		
 		// set initial condition
-		Array<double> thePrices(theGridPoints);
+		Array thePrices(theGridPoints);
 		double dx = (QL_LOG(sMax)-QL_LOG(sMin))/(theGridPoints-1);
 		double edx = QL_EXP(dx);
 		thePrices[0] = sMin;

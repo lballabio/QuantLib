@@ -18,7 +18,7 @@ QL_BEGIN_NAMESPACE(PDE)
 template<class Operator>
 class OperatorTraits {
   public:
-	typedef Array<double> arrayType;
+	typedef Array arrayType;
 };
 
 QL_END_NAMESPACE(PDE)

@@ -29,10 +29,10 @@ QL_USING(QuantLib::Operators,TridiagonalOperator)
 class TridiagonalOperator {
   public:
 	// constructors
-	TridiagonalOperator(DoubleArray low, DoubleArray mid, DoubleArray high);
+	TridiagonalOperator(Array low, Array mid, Array high);
 	// operator interface
-	DoubleArray solveFor(DoubleArray rhs) const;
-	DoubleArray applyTo(DoubleArray v) const;
+	Array solveFor(Array rhs) const;
+	Array applyTo(Array v) const;
 	// inspectors
 	int size() const;
 	// modifiers
