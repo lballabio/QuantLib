@@ -54,9 +54,9 @@ namespace QuantLib {
                 const RandomAccessIteratorY& yBegin,
                 const RandomAccessIteratorY& yEnd,
                 const MatricialData& data)
-             : Interpolation2D<RandomAccessIteratorX,
-                               RandomAccessIteratorY,
-                               MatricialData>(
+            : Interpolation2D<RandomAccessIteratorX,
+                              RandomAccessIteratorY,
+                              MatricialData>(
                  xBegin,xEnd,yBegin,yEnd,data) {}
             result_type operator()(
                 const first_argument_type& x,
