@@ -50,6 +50,7 @@ Date.dayOfYear = new.instancemethod(QuantLibc.Date_dayOfYear, None, Date)
 Date.month = new.instancemethod(QuantLibc.Date_month, None, Date)
 Date.year = new.instancemethod(QuantLibc.Date_year, None, Date)
 Date.serialNumber = new.instancemethod(QuantLibc.Date_serialNumber, None, Date)
+Date.__cmp__ = new.instancemethod(QuantLibc.Date___cmp__, None, Date)
 Date.__str__ = new.instancemethod(QuantLibc.Date___str__, None, Date)
 Date.__repr__ = new.instancemethod(QuantLibc.Date___repr__, None, Date)
 
