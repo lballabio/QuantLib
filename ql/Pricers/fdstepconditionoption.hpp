@@ -38,11 +38,15 @@ namespace QuantLib {
         class FdStepConditionOption : public FdBsmOption {
           protected:
             // constructor
-            FdStepConditionOption(Option::Type type, double underlying,
-                                double strike,
-                                Spread dividendYield, Rate riskFreeRate,
-                                Time residualTime, double volatility,
-                                int timeSteps, int gridPoints);
+            FdStepConditionOption(Option::Type type,
+                                  double underlying,
+                                  double strike,
+                                  Spread dividendYield,
+                                  Rate riskFreeRate,
+                                  Time residualTime,
+                                  double volatility,
+                                  int timeSteps,
+                                  int gridPoints);
             void calculate() const;
             virtual void initializeStepCondition() const = 0;
             mutable Handle<FiniteDifferences::StandardStepCondition >

@@ -39,10 +39,15 @@ namespace QuantLib {
         class FdAmericanOption : public FdStepConditionOption {
           public:
             // constructor
-            FdAmericanOption(Option::Type type, double underlying, double strike,
-                           Spread dividendYield, Rate riskFreeRate,
-                           Time residualTime, double volatility,
-                           int timeSteps, int gridPoints);
+            FdAmericanOption(Option::Type type,
+                             double underlying,
+                             double strike,
+                             Spread dividendYield,
+                             Rate riskFreeRate,
+                             Time residualTime,
+                             double volatility,
+                             int timeSteps,
+                             int gridPoints);
                 void initializeStepCondition() const;
 
             // This method must be implemented to imply volatilities
@@ -64,7 +69,7 @@ namespace QuantLib {
 
         inline void FdAmericanOption::initializeStepCondition() const {
             stepCondition_ = Handle<FiniteDifferences::StandardStepCondition>(
-                new FiniteDifferences::AmericanCondition(initialPrices_));
+                new FiniteDifferences::AmericanCondition(intrinsicValues_));
         }
 
     }
