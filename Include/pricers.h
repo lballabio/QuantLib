@@ -35,11 +35,15 @@
 	#include "Pricers/bsmnumericaloption.h"
 	#include "Pricers/americancondition.h"
 	#include "Pricers/bsmamericanoption.h"
+	#include "Pricers/dividendeuropeanoption.h"
+	#include "Pricers/dividendamericanoption.h"
 #else
 	#include "bsmoption.h"
 	#include "bsmeuropeanoption.h"
 	#include "bsmnumericaloption.h"
 	#include "americancondition.h"
 	#include "bsmamericanoption.h"
+	#include "dividendeuropeanoption.h"
+	#include "dividendamericanoption.h"
 #endif
 

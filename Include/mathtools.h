@@ -30,8 +30,13 @@
 #if QL_INCLUDE_IN_SUBFOLDERS
 	#include "Math/normaldistribution.h"
 	#include "Math/statistics.h"
+	#include "Math/newcubicspline.h"
+	#include "Math/location.h"		
+	
 #else
 	#include "normaldistribution.h"
 	#include "statistics.h"
+	#include "newcubicspline.h"
+	#include "location.h"		
 #endif
 
