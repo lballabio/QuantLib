@@ -1060,6 +1060,10 @@ SOURCE=.\ql\Patterns\bridge.hpp
 # End Source File
 # Begin Source File
 
+SOURCE=.\ql\Patterns\curiouslyrecurring.hpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\ql\Patterns\lazyobject.hpp
 # End Source File
 # Begin Source File

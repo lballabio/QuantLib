@@ -157,8 +157,6 @@ CLEAN :
 	-@erase "$(INTDIR)\fdmultiperiodoption.sbr"
 	-@erase "$(INTDIR)\fdstepconditionoption.obj"
 	-@erase "$(INTDIR)\fdstepconditionoption.sbr"
-	-@erase "$(INTDIR)\fdvanillaengine.obj"
-	-@erase "$(INTDIR)\fdvanillaengine.sbr"
 	-@erase "$(INTDIR)\forwardvanillaoption.obj"
 	-@erase "$(INTDIR)\forwardvanillaoption.sbr"
 	-@erase "$(INTDIR)\frankfurt.obj"
@@ -461,7 +459,6 @@ BSC32_SBRS= \
 	"$(INTDIR)\analyticeuropeanengine.sbr" \
 	"$(INTDIR)\binomialvanillaengine.sbr" \
 	"$(INTDIR)\discretizedvanillaoption.sbr" \
-	"$(INTDIR)\fdvanillaengine.sbr" \
 	"$(INTDIR)\integralengines.sbr" \
 	"$(INTDIR)\haltonrsg.sbr" \
 	"$(INTDIR)\knuthuniformrng.sbr" \
@@ -492,12 +489,12 @@ BSC32_SBRS= \
 	"$(INTDIR)\dataparsers.sbr" \
 	"$(INTDIR)\date.sbr" \
 	"$(INTDIR)\diffusionprocess.sbr" \
+	"$(INTDIR)\discretizedasset.sbr" \
 	"$(INTDIR)\exercise.sbr" \
 	"$(INTDIR)\grid.sbr" \
 	"$(INTDIR)\option.sbr" \
 	"$(INTDIR)\scheduler.sbr" \
-	"$(INTDIR)\voltermstructure.sbr" \
-	"$(INTDIR)\discretizedasset.sbr"
+	"$(INTDIR)\voltermstructure.sbr"
 
 "$(OUTDIR)\QuantLib.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -618,7 +615,6 @@ LIB32_OBJS= \
 	"$(INTDIR)\analyticeuropeanengine.obj" \
 	"$(INTDIR)\binomialvanillaengine.obj" \
 	"$(INTDIR)\discretizedvanillaoption.obj" \
-	"$(INTDIR)\fdvanillaengine.obj" \
 	"$(INTDIR)\integralengines.obj" \
 	"$(INTDIR)\haltonrsg.obj" \
 	"$(INTDIR)\knuthuniformrng.obj" \
@@ -649,12 +645,12 @@ LIB32_OBJS= \
 	"$(INTDIR)\dataparsers.obj" \
 	"$(INTDIR)\date.obj" \
 	"$(INTDIR)\diffusionprocess.obj" \
+	"$(INTDIR)\discretizedasset.obj" \
 	"$(INTDIR)\exercise.obj" \
 	"$(INTDIR)\grid.obj" \
 	"$(INTDIR)\option.obj" \
 	"$(INTDIR)\scheduler.obj" \
-	"$(INTDIR)\voltermstructure.obj" \
-	"$(INTDIR)\discretizedasset.obj"
+	"$(INTDIR)\voltermstructure.obj"
 
 ".\lib\Win32\VisualStudio\QuantLib.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
     $(LIB32) @<<
@@ -787,8 +783,6 @@ CLEAN :
 	-@erase "$(INTDIR)\fdmultiperiodoption.sbr"
 	-@erase "$(INTDIR)\fdstepconditionoption.obj"
 	-@erase "$(INTDIR)\fdstepconditionoption.sbr"
-	-@erase "$(INTDIR)\fdvanillaengine.obj"
-	-@erase "$(INTDIR)\fdvanillaengine.sbr"
 	-@erase "$(INTDIR)\forwardvanillaoption.obj"
 	-@erase "$(INTDIR)\forwardvanillaoption.sbr"
 	-@erase "$(INTDIR)\frankfurt.obj"
@@ -1092,7 +1086,6 @@ BSC32_SBRS= \
 	"$(INTDIR)\analyticeuropeanengine.sbr" \
 	"$(INTDIR)\binomialvanillaengine.sbr" \
 	"$(INTDIR)\discretizedvanillaoption.sbr" \
-	"$(INTDIR)\fdvanillaengine.sbr" \
 	"$(INTDIR)\integralengines.sbr" \
 	"$(INTDIR)\haltonrsg.sbr" \
 	"$(INTDIR)\knuthuniformrng.sbr" \
@@ -1123,12 +1116,12 @@ BSC32_SBRS= \
 	"$(INTDIR)\dataparsers.sbr" \
 	"$(INTDIR)\date.sbr" \
 	"$(INTDIR)\diffusionprocess.sbr" \
+	"$(INTDIR)\discretizedasset.sbr" \
 	"$(INTDIR)\exercise.sbr" \
 	"$(INTDIR)\grid.sbr" \
 	"$(INTDIR)\option.sbr" \
 	"$(INTDIR)\scheduler.sbr" \
-	"$(INTDIR)\voltermstructure.sbr" \
-	"$(INTDIR)\discretizedasset.sbr"
+	"$(INTDIR)\voltermstructure.sbr"
 
 "$(OUTDIR)\QuantLib.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -1249,7 +1242,6 @@ LIB32_OBJS= \
 	"$(INTDIR)\analyticeuropeanengine.obj" \
 	"$(INTDIR)\binomialvanillaengine.obj" \
 	"$(INTDIR)\discretizedvanillaoption.obj" \
-	"$(INTDIR)\fdvanillaengine.obj" \
 	"$(INTDIR)\integralengines.obj" \
 	"$(INTDIR)\haltonrsg.obj" \
 	"$(INTDIR)\knuthuniformrng.obj" \
@@ -1280,12 +1272,12 @@ LIB32_OBJS= \
 	"$(INTDIR)\dataparsers.obj" \
 	"$(INTDIR)\date.obj" \
 	"$(INTDIR)\diffusionprocess.obj" \
+	"$(INTDIR)\discretizedasset.obj" \
 	"$(INTDIR)\exercise.obj" \
 	"$(INTDIR)\grid.obj" \
 	"$(INTDIR)\option.obj" \
 	"$(INTDIR)\scheduler.obj" \
-	"$(INTDIR)\voltermstructure.obj" \
-	"$(INTDIR)\discretizedasset.obj"
+	"$(INTDIR)\voltermstructure.obj"
 
 ".\lib\Win32\VisualStudio\QuantLib_d.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
     $(LIB32) @<<
@@ -1418,8 +1410,6 @@ CLEAN :
 	-@erase "$(INTDIR)\fdmultiperiodoption.sbr"
 	-@erase "$(INTDIR)\fdstepconditionoption.obj"
 	-@erase "$(INTDIR)\fdstepconditionoption.sbr"
-	-@erase "$(INTDIR)\fdvanillaengine.obj"
-	-@erase "$(INTDIR)\fdvanillaengine.sbr"
 	-@erase "$(INTDIR)\forwardvanillaoption.obj"
 	-@erase "$(INTDIR)\forwardvanillaoption.sbr"
 	-@erase "$(INTDIR)\frankfurt.obj"
@@ -1722,7 +1712,6 @@ BSC32_SBRS= \
 	"$(INTDIR)\analyticeuropeanengine.sbr" \
 	"$(INTDIR)\binomialvanillaengine.sbr" \
 	"$(INTDIR)\discretizedvanillaoption.sbr" \
-	"$(INTDIR)\fdvanillaengine.sbr" \
 	"$(INTDIR)\integralengines.sbr" \
 	"$(INTDIR)\haltonrsg.sbr" \
 	"$(INTDIR)\knuthuniformrng.sbr" \
@@ -1753,12 +1742,12 @@ BSC32_SBRS= \
 	"$(INTDIR)\dataparsers.sbr" \
 	"$(INTDIR)\date.sbr" \
 	"$(INTDIR)\diffusionprocess.sbr" \
+	"$(INTDIR)\discretizedasset.sbr" \
 	"$(INTDIR)\exercise.sbr" \
 	"$(INTDIR)\grid.sbr" \
 	"$(INTDIR)\option.sbr" \
 	"$(INTDIR)\scheduler.sbr" \
-	"$(INTDIR)\voltermstructure.sbr" \
-	"$(INTDIR)\discretizedasset.sbr"
+	"$(INTDIR)\voltermstructure.sbr"
 
 "$(OUTDIR)\QuantLib.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -1879,7 +1868,6 @@ LIB32_OBJS= \
 	"$(INTDIR)\analyticeuropeanengine.obj" \
 	"$(INTDIR)\binomialvanillaengine.obj" \
 	"$(INTDIR)\discretizedvanillaoption.obj" \
-	"$(INTDIR)\fdvanillaengine.obj" \
 	"$(INTDIR)\integralengines.obj" \
 	"$(INTDIR)\haltonrsg.obj" \
 	"$(INTDIR)\knuthuniformrng.obj" \
@@ -1910,12 +1898,12 @@ LIB32_OBJS= \
 	"$(INTDIR)\dataparsers.obj" \
 	"$(INTDIR)\date.obj" \
 	"$(INTDIR)\diffusionprocess.obj" \
+	"$(INTDIR)\discretizedasset.obj" \
 	"$(INTDIR)\exercise.obj" \
 	"$(INTDIR)\grid.obj" \
 	"$(INTDIR)\option.obj" \
 	"$(INTDIR)\scheduler.obj" \
-	"$(INTDIR)\voltermstructure.obj" \
-	"$(INTDIR)\discretizedasset.obj"
+	"$(INTDIR)\voltermstructure.obj"
 
 ".\lib\Win32\VisualStudio\QuantLib.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
     $(LIB32) @<<
@@ -2048,8 +2036,6 @@ CLEAN :
 	-@erase "$(INTDIR)\fdmultiperiodoption.sbr"
 	-@erase "$(INTDIR)\fdstepconditionoption.obj"
 	-@erase "$(INTDIR)\fdstepconditionoption.sbr"
-	-@erase "$(INTDIR)\fdvanillaengine.obj"
-	-@erase "$(INTDIR)\fdvanillaengine.sbr"
 	-@erase "$(INTDIR)\forwardvanillaoption.obj"
 	-@erase "$(INTDIR)\forwardvanillaoption.sbr"
 	-@erase "$(INTDIR)\frankfurt.obj"
@@ -2353,7 +2339,6 @@ BSC32_SBRS= \
 	"$(INTDIR)\analyticeuropeanengine.sbr" \
 	"$(INTDIR)\binomialvanillaengine.sbr" \
 	"$(INTDIR)\discretizedvanillaoption.sbr" \
-	"$(INTDIR)\fdvanillaengine.sbr" \
 	"$(INTDIR)\integralengines.sbr" \
 	"$(INTDIR)\haltonrsg.sbr" \
 	"$(INTDIR)\knuthuniformrng.sbr" \
@@ -2384,12 +2369,12 @@ BSC32_SBRS= \
 	"$(INTDIR)\dataparsers.sbr" \
 	"$(INTDIR)\date.sbr" \
 	"$(INTDIR)\diffusionprocess.sbr" \
+	"$(INTDIR)\discretizedasset.sbr" \
 	"$(INTDIR)\exercise.sbr" \
 	"$(INTDIR)\grid.sbr" \
 	"$(INTDIR)\option.sbr" \
 	"$(INTDIR)\scheduler.sbr" \
-	"$(INTDIR)\voltermstructure.sbr" \
-	"$(INTDIR)\discretizedasset.sbr"
+	"$(INTDIR)\voltermstructure.sbr"
 
 "$(OUTDIR)\QuantLib.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -2510,7 +2495,6 @@ LIB32_OBJS= \
 	"$(INTDIR)\analyticeuropeanengine.obj" \
 	"$(INTDIR)\binomialvanillaengine.obj" \
 	"$(INTDIR)\discretizedvanillaoption.obj" \
-	"$(INTDIR)\fdvanillaengine.obj" \
 	"$(INTDIR)\integralengines.obj" \
 	"$(INTDIR)\haltonrsg.obj" \
 	"$(INTDIR)\knuthuniformrng.obj" \
@@ -2541,12 +2525,12 @@ LIB32_OBJS= \
 	"$(INTDIR)\dataparsers.obj" \
 	"$(INTDIR)\date.obj" \
 	"$(INTDIR)\diffusionprocess.obj" \
+	"$(INTDIR)\discretizedasset.obj" \
 	"$(INTDIR)\exercise.obj" \
 	"$(INTDIR)\grid.obj" \
 	"$(INTDIR)\option.obj" \
 	"$(INTDIR)\scheduler.obj" \
-	"$(INTDIR)\voltermstructure.obj" \
-	"$(INTDIR)\discretizedasset.obj"
+	"$(INTDIR)\voltermstructure.obj"
 
 ".\lib\Win32\VisualStudio\QuantLib_d.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
     $(LIB32) @<<
@@ -2679,8 +2663,6 @@ CLEAN :
 	-@erase "$(INTDIR)\fdmultiperiodoption.sbr"
 	-@erase "$(INTDIR)\fdstepconditionoption.obj"
 	-@erase "$(INTDIR)\fdstepconditionoption.sbr"
-	-@erase "$(INTDIR)\fdvanillaengine.obj"
-	-@erase "$(INTDIR)\fdvanillaengine.sbr"
 	-@erase "$(INTDIR)\forwardvanillaoption.obj"
 	-@erase "$(INTDIR)\forwardvanillaoption.sbr"
 	-@erase "$(INTDIR)\frankfurt.obj"
@@ -2983,7 +2965,6 @@ BSC32_SBRS= \
 	"$(INTDIR)\analyticeuropeanengine.sbr" \
 	"$(INTDIR)\binomialvanillaengine.sbr" \
 	"$(INTDIR)\discretizedvanillaoption.sbr" \
-	"$(INTDIR)\fdvanillaengine.sbr" \
 	"$(INTDIR)\integralengines.sbr" \
 	"$(INTDIR)\haltonrsg.sbr" \
 	"$(INTDIR)\knuthuniformrng.sbr" \
@@ -3014,12 +2995,12 @@ BSC32_SBRS= \
 	"$(INTDIR)\dataparsers.sbr" \
 	"$(INTDIR)\date.sbr" \
 	"$(INTDIR)\diffusionprocess.sbr" \
+	"$(INTDIR)\discretizedasset.sbr" \
 	"$(INTDIR)\exercise.sbr" \
 	"$(INTDIR)\grid.sbr" \
 	"$(INTDIR)\option.sbr" \
 	"$(INTDIR)\scheduler.sbr" \
-	"$(INTDIR)\voltermstructure.sbr" \
-	"$(INTDIR)\discretizedasset.sbr"
+	"$(INTDIR)\voltermstructure.sbr"
 
 "$(OUTDIR)\QuantLib.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -3140,7 +3121,6 @@ LIB32_OBJS= \
 	"$(INTDIR)\analyticeuropeanengine.obj" \
 	"$(INTDIR)\binomialvanillaengine.obj" \
 	"$(INTDIR)\discretizedvanillaoption.obj" \
-	"$(INTDIR)\fdvanillaengine.obj" \
 	"$(INTDIR)\integralengines.obj" \
 	"$(INTDIR)\haltonrsg.obj" \
 	"$(INTDIR)\knuthuniformrng.obj" \
@@ -3171,12 +3151,12 @@ LIB32_OBJS= \
 	"$(INTDIR)\dataparsers.obj" \
 	"$(INTDIR)\date.obj" \
 	"$(INTDIR)\diffusionprocess.obj" \
+	"$(INTDIR)\discretizedasset.obj" \
 	"$(INTDIR)\exercise.obj" \
 	"$(INTDIR)\grid.obj" \
 	"$(INTDIR)\option.obj" \
 	"$(INTDIR)\scheduler.obj" \
-	"$(INTDIR)\voltermstructure.obj" \
-	"$(INTDIR)\discretizedasset.obj"
+	"$(INTDIR)\voltermstructure.obj"
 
 ".\lib\Win32\VisualStudio\QuantLib.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
     $(LIB32) @<<
@@ -3937,12 +3917,6 @@ SOURCE=.\ql\PricingEngines\binomialvanillaengine.cpp
 SOURCE=.\ql\PricingEngines\discretizedvanillaoption.cpp
 
 "$(INTDIR)\discretizedvanillaoption.obj"	"$(INTDIR)\discretizedvanillaoption.sbr" : $(SOURCE) "$(INTDIR)"
-	$(CPP) $(CPP_PROJ) $(SOURCE)
-
-
-SOURCE=.\ql\PricingEngines\fdvanillaengine.cpp
-
-"$(INTDIR)\fdvanillaengine.obj"	"$(INTDIR)\fdvanillaengine.sbr" : $(SOURCE) "$(INTDIR)"
 	$(CPP) $(CPP_PROJ) $(SOURCE)
 
 
