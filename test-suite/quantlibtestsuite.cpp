@@ -17,10 +17,15 @@
 
 #include <cppunit/ui/text/TestRunner.h>
 #include <cppunit/TestResult.h>
+
 #include <ql/qldefines.hpp>
+
 #include <iostream>
 #include <string>
+
 #include "qltestlistener.hpp"
+
+#include "asianoptions.hpp"
 #include "barrieroption.hpp"
 #include "binaryoption.hpp"
 #include "calendars.hpp"
@@ -53,6 +58,7 @@ int main() {
     QLTestListener qlListener;
     runner.eventManager().addListener(&qlListener);
 
+    runner.addTest(AsianOptionTest::suite());
     runner.addTest(BarrierOptionTest::suite());
     runner.addTest(BinaryOptionTest::suite());
     runner.addTest(new CalendarTest);

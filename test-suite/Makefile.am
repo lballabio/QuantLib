@@ -1,5 +1,7 @@
 
-QL_TESTS = barrieroption.hpp barrieroption.cpp \
+QL_TESTS = \
+           asianoptions.hpp asianoptions.cpp \
+           barrieroption.hpp barrieroption.cpp \
            binaryoption.hpp binaryoption.cpp \
            calendars.hpp calendars.cpp \
            capfloor.hpp capfloor.cpp \
