@@ -1,5 +1,6 @@
 
 /*
+ Copyright (C) 2003 Ferdinando Ametrano
  Copyright (C) 2000, 2001, 2002, 2003 RiskMap srl
 
  This file is part of QuantLib, a free-software/open-source library
@@ -15,11 +16,11 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file statistics.hpp
-    \brief statistic tools
+/*! \file statistic.hpp
+    \brief statistic tool with gaussian risk measures
 
     \fullpath
-    ql/Math/%statistics.hpp
+    ql/Math/%statistic.hpp
 */
 
 // $Id$
@@ -30,43 +31,46 @@
 #include <ql/null.hpp>
 #include <ql/dataformatters.hpp>
 #include <ql/Math/normaldistribution.hpp>
+#include <ql/Math/riskmeasures.hpp>
 
 namespace QuantLib {
 
     namespace Math {
 
-        //! Statistic tool
+        //! Statistic tool with gaussian risk measures
         /*! It can accumulate a set of data and return statistic quantities
-            as mean, variance, skewness, kurtosis, error estimation,
-            percentile, etc.
+            (e.g: mean, variance, skewness, kurtosis, error estimation,
+            percentile, etc.) plus gaussian assumption risk measures
+            (e.g.: value at risk, expected shortfall, etc.)
         */
-        class Statistics {
+        class Statistic {
           public:
-            Statistics();
+            Statistic();
+            virtual ~Statistic() {};
             //! \name Inspectors
             //@{
             //! number of samples collected
             Size samples() const;
+
             //! sum of data weights
             double weightSum() const;
+
             /*! returns the mean, defined as
                 \f[ \langle x \rangle = \frac{\sum w_i x_i}{\sum w_i}. \f]
             */
             double mean() const;
+
             /*! returns the variance, defined as
                 \f[ \frac{N}{N-1} \left\langle \left(
                 x-\langle x \rangle \right)^2 \right\rangle. \f]
             */
             double variance() const;
+
             /*! returns the standard deviation \f$ \sigma \f$, defined as the
                 square root of the variance.
             */
             double standardDeviation() const;
-            /*! returns the y percentile, defined as the value x such that
-                \f[ y = \frac{1}{\sqrt{2 \pi}}
-                     \int_{-\infty}^{x} \exp (-u^2/2) du \f]
-                */
-            double percentile(double y) const;
+
             /*! returns the downside variance, defined as
                 \f[ \frac{N}{N-1} \times \frac{ \sum_{i=1}^{N}
                 \theta \times x_i^{2}}{ \sum_{i=1}^{N} w_i} \f],
@@ -74,32 +78,74 @@ namespace QuantLib {
                 \f$ \theta \f$ =1 if x <0
             */
             double downsideVariance() const;
+
             /*! returns the downside deviation, defined as the
                 square root of the downside variance.
             */
             double downsideDeviation() const;
+
             /*! returns the error estimate \f$ \epsilon \f$, defined as the
                 square root of the ratio of the variance to the number of
                 samples.
             */
             double errorEstimate() const;
+
             /*! returns the skewness, defined as
                 \f[ \frac{N^2}{(N-1)(N-2)} \frac{\left\langle \left(
                 x-\langle x \rangle \right)^3 \right\rangle}{\sigma^3}. \f]
                 The above evaluates to 0 for a Gaussian distribution.
             */
             double skewness() const;
+
             /*! returns the excess kurtosis, defined as
                 \f[ \frac{N(N+1)}{(N-1)(N-2)(N-3)}
-                \frac{\left\langle \left( x-\langle x \rangle \right)^4
+                \frac{\left\langle \left(x-\langle x \rangle \right)^4
                 \right\rangle}{\sigma^4} - \frac{3(N-1)^2}{(N-2)(N-3)}. \f]
                 The above evaluates to 0 for a Gaussian distribution.
             */
             double kurtosis() const;
+
             /*! returns the minimum sample value */
             double min() const;
+
             /*! returns the maximum sample value */
             double max() const;
+
+            /*! gaussian-assumption y percentile, defined as the value x such
+                that \f[ y = \frac{1}{\sqrt{2 \pi}}
+                                      \int_{-\infty}^{x} \exp (-u^2/2) du \f]
+            */
+            double gaussianPercentile(double y) const;
+
+            //! gaussian-assumption Potential-Upside at a given percentile
+            double gaussianPotentialUpside(double percentile) const {
+                return rm_.potentialUpside(percentile,
+                    mean(), standardDeviation());
+            }
+
+            //! gaussian-assumption Value-At-Risk at a given percentile
+            double gaussianValueAtRisk(double percentile) const {
+                return rm_.valueAtRisk(percentile,
+                    mean(), standardDeviation());
+            }
+
+            //! gaussian-assumption Expected Shortfall at a given percentile
+            double gaussianExpectedShortfall(double percentile) const {
+                return rm_.expectedShortfall(percentile,
+                    mean(), standardDeviation());
+            }
+
+            //! gaussian-assumption Shortfall (observations below target)
+            double gaussianShortfall(double target) const {
+                return rm_.shortfall(target,
+                    mean(), standardDeviation());
+            }
+
+            //! gaussian-assumption Average Shortfall (averaged shortfallness)
+            double gaussianAverageShortfall(double target) const  {
+                return rm_.averageShortfall(target,
+                    mean(), standardDeviation());
+            }
             //@}
 
             //! \name Modifiers
@@ -122,26 +168,27 @@ namespace QuantLib {
             //! resets the data to a null set
             void reset();
             //@}
-          private:
+          protected:
             Size sampleNumber_;
             double sampleWeight_;
             double sum_, quadraticSum_, downsideQuadraticSum_,
                    cubicSum_, fourthPowerSum_;
             double min_, max_;
+            RiskMeasures rm_;
         };
 
         // inline definitions
 
         /*! \pre weights must be positive or null */
-        inline void Statistics::add(double value, double weight) {
+        inline void Statistic::add(double value, double weight) {
             QL_REQUIRE(weight>=0.0,
-                "Statistics::add : negative weight (" +
+                "Statistic::add : negative weight (" +
                 DoubleFormatter::toString(weight) + ") not allowed");
 
             Size oldSamples = sampleNumber_;
             sampleNumber_++;
             QL_ENSURE(sampleNumber_ > oldSamples,
-                      "Statistics::add : maximum number of samples reached");
+                      "Statistic::add : maximum number of samples reached");
 
             sampleWeight_ += weight;
 
@@ -158,21 +205,21 @@ namespace QuantLib {
             max_=QL_MAX(value, max_);
         }
 
-        inline Size Statistics::samples() const {
+        inline Size Statistic::samples() const {
             return sampleNumber_;
         }
 
-        inline double Statistics::weightSum() const {
+        inline double Statistic::weightSum() const {
             return sampleWeight_;
         }
 
-        inline double Statistics::mean() const {
+        inline double Statistic::mean() const {
             QL_REQUIRE(sampleWeight_>0.0,
                        "Stat::mean() : sampleWeight_=0, unsufficient");
             return sum_/sampleWeight_;
         }
 
-        inline double Statistics::variance() const {
+        inline double Statistic::variance() const {
             QL_REQUIRE(sampleWeight_>0.0,
                        "Stat::variance() : sampleWeight_=0, unsufficient");
             QL_REQUIRE(sampleNumber_>1,
@@ -185,17 +232,17 @@ namespace QuantLib {
                 v = 0.0;
 
             QL_ENSURE(v >= 0.0,
-                      "Statistics: negative variance (" +
+                      "Statistic: negative variance (" +
                       DoubleFormatter::toString(v,20) + ")");
 
             return v;
         }
 
-        inline double Statistics::standardDeviation() const {
+        inline double Statistic::standardDeviation() const {
             return QL_SQRT(variance());
         }
 
-        inline double Statistics::downsideVariance() const {
+        inline double Statistic::downsideVariance() const {
             QL_REQUIRE(sampleWeight_>0.0,
                        "Stat::variance() : sampleWeight_=0, unsufficient");
             QL_REQUIRE(sampleNumber_>1,
@@ -205,18 +252,18 @@ namespace QuantLib {
                 downsideQuadraticSum_ /sampleWeight_;
         }
 
-        inline double Statistics::downsideDeviation() const {
+        inline double Statistic::downsideDeviation() const {
             return QL_SQRT(downsideVariance());
         }
 
-        inline double Statistics::errorEstimate() const {
+        inline double Statistic::errorEstimate() const {
             double var = variance();
             QL_REQUIRE(samples() > 0,
-                       "Statistics: zero samples are not sufficient");
+                       "Statistic: zero samples are not sufficient");
             return QL_SQRT(var/samples());
         }
 
-        inline double Statistics::skewness() const {
+        inline double Statistic::skewness() const {
             QL_REQUIRE(sampleNumber_>2,
                        "Stat::skewness() : sample number <=2, unsufficient");
             double s = standardDeviation();
@@ -229,7 +276,7 @@ namespace QuantLib {
                 (cubicSum_-3.0*m*quadraticSum_+2.0*m*m*sum_)/sampleWeight_;
         }
 
-        inline double Statistics::kurtosis() const {
+        inline double Statistic::kurtosis() const {
             QL_REQUIRE(sampleNumber_>3,
                        "Stat::kurtosis() : sample number <=3, unsufficient");
 
@@ -249,20 +296,20 @@ namespace QuantLib {
                 ((sampleNumber_-2.0)*(sampleNumber_-3.0));
         }
 
-        inline double Statistics::min() const {
+        inline double Statistic::min() const {
             QL_REQUIRE(sampleNumber_>0, "Stat::min_() : empty sample");
             return min_;
         }
 
-        inline double Statistics::max() const {
+        inline double Statistic::max() const {
             QL_REQUIRE(sampleNumber_>0, "Stat::max_() : empty sample");
             return max_;
         }
 
-        inline double Statistics::percentile(double y) const {
+        inline double Statistic::gaussianPercentile(double y) const {
 
             QL_REQUIRE(y<1.0 && y>0.0,
-                "Statistics::percentile : percentile (" +
+                "Statistic::percentile : percentile (" +
                 DoubleFormatter::toString(y) +
                 ") must be in (0%, 100%) extremes excluded");
 

@@ -38,7 +38,7 @@ namespace QuantLib {
         /*! The payoff of an Everest option is simply given by the
             final price / initial price ratio of the worst performer
         */
-        class McEverest : public McPricer<Math::Statistics,
+        class McEverest : public McPricer<Math::Statistic,
             MonteCarlo::GaussianMultiPathGenerator,
             MonteCarlo::PathPricer_old<MonteCarlo::MultiPath> > {
           public:

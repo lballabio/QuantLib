@@ -1,5 +1,4 @@
 
-
 /*
  Copyright (C) 2000, 2001, 2002, 2003 RiskMap srl
 
@@ -15,26 +14,26 @@
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
-/*! \file statistics.cpp
+/*! \file statistic.cpp
     \brief statistic tools
 
     \fullpath
-    ql/Math/%statistics.cpp
+    ql/Math/%statistic.cpp
 */
 
 // $Id$
 
-#include <ql/Math/statistics.hpp>
+#include <ql/Math/statistic.hpp>
 
 namespace QuantLib {
 
     namespace Math {
 
-        Statistics::Statistics() {
+        Statistic::Statistic() {
             reset();
         }
 
-        void Statistics::reset() {
+        void Statistic::reset() {
             min_ = QL_MAX_DOUBLE;
             max_ = QL_MIN_DOUBLE;
             sampleNumber_ = 0;
