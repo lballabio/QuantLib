@@ -229,12 +229,12 @@ namespace QuantLib {
         }
 
         inline double Statistics::min() const {
-          QL_REQUIRE(sampleNumber_>=0, "Stat::min_() : empty sample");
+          QL_REQUIRE(sampleNumber_>0, "Stat::min_() : empty sample");
           return min_;
         }
 
         inline double Statistics::max() const {
-          QL_REQUIRE(sampleNumber_>=0, "Stat::max_() : empty sample");
+          QL_REQUIRE(sampleNumber_>0, "Stat::max_() : empty sample");
           return max_;
         }
 
