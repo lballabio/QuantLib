@@ -224,7 +224,7 @@ int main(int argc, char* argv[])
          * SWAP PRICING *
          ****************/
 
-        std::cout <<  "*** 5Y swap at 4.30%" << std::endl;
+        std::cout <<  "*** 5Y swap at 4.43%" << std::endl;
 
         
         // let's price in term of NPV, fixed rate, and spread

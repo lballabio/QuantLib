@@ -89,8 +89,8 @@ int main(int argc, char* argv[])
         Date todaysDate(15, February, 2002);
         Calendar calendar = Calendars::TARGET();
         int settlementDays = 2;
-        Date settlementDate=calendar.advance(todaysDate, settlementDays, Days,
-            Following);
+        Date settlementDate = calendar.advance(todaysDate, 
+                                               settlementDays, Days);
 
         //Instruments used to bootstrap the yield curve:
         std::vector<Handle<RateHelper> > instruments;
@@ -148,8 +148,8 @@ int main(int argc, char* argv[])
 
         // bootstrapping the yield curve
         Handle<PiecewiseFlatForward> myTermStructure(new
-            PiecewiseFlatForward(todaysDate, settlementDate,
-            instruments, depositDayCounter));
+            PiecewiseFlatForward(settlementDate, instruments, 
+                                 depositDayCounter));
 
         RelinkableHandle<TermStructure > rhTermStructure;
         rhTermStructure.linkTo(myTermStructure);
@@ -161,29 +161,29 @@ int main(int argc, char* argv[])
         DayCounter fixedLegDayCounter = Thirty360(Thirty360::European);
         int floatingLegFrequency = 2;
         bool payFixedRate = true;
-        int fixingDays = 0;
+        int fixingDays = 2;
         Rate dummyFixedRate = 0.03;
         Handle<Xibor> indexSixMonths(new Euribor(6, Months, rhTermStructure));
 
         Handle<SimpleSwap> swap(new SimpleSwap(
-            payFixedRate, todaysDate.plusYears(1), 5, Years,
+            payFixedRate, settlementDate.plusYears(1), 5, Years,
             calendar, roll, 1000.0, fixedLegFrequency, dummyFixedRate,
             fixedLegIsAdjusted, fixedLegDayCounter, floatingLegFrequency,
             indexSixMonths, fixingDays, 0.0, rhTermStructure));
         Rate fixedATMRate = swap->fairRate();
 
         Handle<SimpleSwap> atmSwap(new SimpleSwap(
-            payFixedRate, todaysDate.plusYears(1), 5, Years,
+            payFixedRate, settlementDate.plusYears(1), 5, Years,
             calendar, roll, 1000.0, fixedLegFrequency, fixedATMRate,
             fixedLegIsAdjusted, fixedLegDayCounter, floatingLegFrequency,
             indexSixMonths, fixingDays, 0.0, rhTermStructure));
         Handle<SimpleSwap> otmSwap(new SimpleSwap(
-            payFixedRate, Date(15, February, 2003), 5, Years,
+            payFixedRate, settlementDate.plusYears(1), 5, Years,
             calendar, roll, 1000.0, fixedLegFrequency, fixedATMRate * 1.2,
             fixedLegIsAdjusted, fixedLegDayCounter, floatingLegFrequency,
             indexSixMonths, fixingDays, 0.0, rhTermStructure));
         Handle<SimpleSwap> itmSwap(new SimpleSwap(
-            payFixedRate, Date(15, February, 2003), 5, Years,
+            payFixedRate, settlementDate.plusYears(1), 5, Years,
             calendar, roll, 1000.0, fixedLegFrequency, fixedATMRate * 0.8,
             fixedLegIsAdjusted, fixedLegDayCounter, floatingLegFrequency,
             indexSixMonths, fixingDays, 0.0, rhTermStructure));
