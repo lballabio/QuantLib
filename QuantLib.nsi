@@ -10,7 +10,7 @@
 # $Id$
 
 
-!define VER_NUMBER "0.3.0a3"
+!define VER_NUMBER "0.3.0a4"
 
 # HEADER CONFIGURATION COMMANDS
 !ifdef LIGHT

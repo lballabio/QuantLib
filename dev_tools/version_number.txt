@@ -11,13 +11,16 @@ e.g. R000300a2 stands for Release 0.3.1a2
 e.g. R000300f0 stands for Release 0.3.1f0
 
 The version number is in:
-    QuantLib/configure.in,
     QuantLib/QuantLib.nsi,
+    QuantLib/configure.in,
     QuantLib/Docs/quantlib.doxy,
     QuantLib/ql/qldefines.hpp,
+
     QuantLib-Python/setup.py
     QuantLib-Python/QuantLib/SWIG/ql.i
+
     QuantLib-Ruby/SWIG/ql.i
+
     QuantLib-MzScheme/SWIG/ql.i
 
 It's also in some script used by RiskMap for automatic building:
