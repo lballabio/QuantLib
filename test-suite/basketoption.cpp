@@ -21,6 +21,7 @@
 #include <ql/DayCounters/actual360.hpp>
 #include <ql/Instruments/basketoption.hpp>
 #include <ql/PricingEngines/Basket/stulzengine.hpp>
+#include <ql/PricingEngines/Basket/mcbasketengine.hpp>
 #include <ql/TermStructures/flatforward.hpp>
 #include <ql/Volatilities/blackconstantvol.hpp>
 #include <cppunit/TestSuite.h>
@@ -47,6 +48,12 @@ namespace {
             BlackConstantVol(today, RelinkableHandle<Quote>(vol), dc));
     }
 
+    double relativeError(double x1, double x2, double reference) {
+        if (reference != 0.0)
+            return QL_FABS(x1-x2)/reference;
+        else
+            return 1.0e+10;
+    }
 
 
     std::string payoffTypeToString(const Handle<Payoff>& payoff) {
@@ -284,6 +291,7 @@ void BasketOptionTest::testValues() {
         {BasketOption::Min,  Option::Put,  100.0, 100.0, 100.0, 0.00, 0.00, 0.05, 1.00, 0.30, 0.30, 0.50, 13.890, 1.0e-3},
         {BasketOption::Min,  Option::Put,  100.0, 100.0, 100.0, 0.00, 0.00, 0.05, 1.00, 0.30, 0.30, 0.30, 14.741, 1.0e-3},
         {BasketOption::Min,  Option::Put,  100.0, 100.0, 100.0, 0.00, 0.00, 0.05, 1.00, 0.30, 0.30, 0.10, 15.485, 1.0e-3},
+        
         {BasketOption::Min,  Option::Put,  100.0, 100.0, 100.0, 0.00, 0.00, 0.05, 0.50, 0.30, 0.30, 0.10, 11.893, 1.0e-3},
         {BasketOption::Min,  Option::Put,  100.0, 100.0, 100.0, 0.00, 0.00, 0.05, 0.25, 0.30, 0.30, 0.10,  8.881, 1.0e-3},
         {BasketOption::Min,  Option::Put,  100.0, 100.0, 100.0, 0.00, 0.00, 0.05, 2.00, 0.30, 0.30, 0.10, 19.268, 1.0e-3},
@@ -326,6 +334,10 @@ void BasketOptionTest::testValues() {
 
 
     Handle<PricingEngine> engine(new StulzEngine);
+    
+    double mcRelativeErrorTolerance = 0.01;
+    Handle<PricingEngine> mcEngine(new MCBasketEngine<PseudoRandom, Statistics> 
+        (1, false, false, Null<int>(), 0.005, Null<int>(), 42));
 
     Date today = Date::todaysDate();
 
@@ -368,6 +380,7 @@ void BasketOptionTest::testValues() {
         BasketOption basketOption(values[i].basketType, procs, payoff, 
                                   exercise, values[i].rho, engine);
 
+        // analytic engine
         double calculated = basketOption.NPV();
         double expected = values[i].result;
         double error = QL_FABS(calculated-expected);
@@ -377,6 +390,18 @@ void BasketOptionTest::testValues() {
                 values[i].q1, values[i].q2, values[i].r,
                 today, dc, values[i].v1, values[i].v2, values[i].rho,
                 values[i].result, calculated, error, values[i].tol);
+        }
+
+        // mc engine
+        basketOption.setPricingEngine(mcEngine);
+        calculated = basketOption.NPV();        
+        double relError = relativeError(calculated, expected, values[i].s1);
+        if (relError > mcRelativeErrorTolerance ) {
+            basketOptionTestFailed("MC value",
+                values[i].basketType, payoff, exercise, values[i].s1, values[i].s2,
+                values[i].q1, values[i].q2, values[i].r,
+                today, dc, values[i].v1, values[i].v2, values[i].rho,
+                values[i].result, calculated, relError, mcRelativeErrorTolerance);
         }
 
     }
