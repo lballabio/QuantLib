@@ -29,6 +29,9 @@ NULL=
 NULL=nul
 !ENDIF 
 
+CPP=cl.exe
+RSC=rc.exe
+
 !IF  "$(CFG)" == "testsuite - Win32 Release"
 
 OUTDIR=.\build\Release
@@ -92,6 +95,8 @@ CLEAN :
 	-@erase "$(INTDIR)\instruments.sbr"
 	-@erase "$(INTDIR)\integrals.obj"
 	-@erase "$(INTDIR)\integrals.sbr"
+	-@erase "$(INTDIR)\interestrates.obj"
+	-@erase "$(INTDIR)\interestrates.sbr"
 	-@erase "$(INTDIR)\interpolations.obj"
 	-@erase "$(INTDIR)\interpolations.sbr"
 	-@erase "$(INTDIR)\jumpdiffusion.obj"
@@ -139,40 +144,7 @@ CLEAN :
 "$(OUTDIR)" :
     if not exist "$(OUTDIR)/$(NULL)" mkdir "$(OUTDIR)"
 
-CPP=cl.exe
 CPP_PROJ=/nologo /MT /W3 /Gi /GR /GX /O2 /Ob2 /I ".." /I "..\functions" /D "NDEBUG" /D "WIN32" /D "_CONSOLE" /D "_MBCS" /D "NOMINMAX" /Fr"$(INTDIR)\\" /Fp"$(INTDIR)\testsuite.pch" /YX /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\\" /FD /c 
-
-.c{$(INTDIR)}.obj::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-.cpp{$(INTDIR)}.obj::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-.cxx{$(INTDIR)}.obj::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-.c{$(INTDIR)}.sbr::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-.cpp{$(INTDIR)}.sbr::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-.cxx{$(INTDIR)}.sbr::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-RSC=rc.exe
 BSC32=bscmake.exe
 BSC32_FLAGS=/nologo /o"$(OUTDIR)\testsuite.bsc" 
 BSC32_SBRS= \
@@ -215,7 +187,8 @@ BSC32_SBRS= \
 	"$(INTDIR)\swap.sbr" \
 	"$(INTDIR)\swaption.sbr" \
 	"$(INTDIR)\termstructures.sbr" \
-	"$(INTDIR)\utilities.sbr"
+	"$(INTDIR)\utilities.sbr" \
+	"$(INTDIR)\interestrates.sbr"
 
 "$(OUTDIR)\testsuite.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -265,6 +238,7 @@ LINK32_OBJS= \
 	"$(INTDIR)\swaption.obj" \
 	"$(INTDIR)\termstructures.obj" \
 	"$(INTDIR)\utilities.obj" \
+	"$(INTDIR)\interestrates.obj" \
 	"..\lib\QuantLib-vc6-mt-s-0_3_8.lib" \
 	"..\lib\QuantLibFunctions-vc6-mt-s-0_3_8.lib"
 
@@ -352,6 +326,8 @@ CLEAN :
 	-@erase "$(INTDIR)\instruments.sbr"
 	-@erase "$(INTDIR)\integrals.obj"
 	-@erase "$(INTDIR)\integrals.sbr"
+	-@erase "$(INTDIR)\interestrates.obj"
+	-@erase "$(INTDIR)\interestrates.sbr"
 	-@erase "$(INTDIR)\interpolations.obj"
 	-@erase "$(INTDIR)\interpolations.sbr"
 	-@erase "$(INTDIR)\jumpdiffusion.obj"
@@ -402,40 +378,7 @@ CLEAN :
 "$(OUTDIR)" :
     if not exist "$(OUTDIR)/$(NULL)" mkdir "$(OUTDIR)"
 
-CPP=cl.exe
 CPP_PROJ=/nologo /MTd /W3 /Gm /Gi /GR /GX /ZI /Od /I ".." /I "..\functions" /D "_DEBUG" /D "WIN32" /D "_CONSOLE" /D "_MBCS" /D "NOMINMAX" /Fr"$(INTDIR)\\" /Fp"$(INTDIR)\testsuite.pch" /YX /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\\" /FD /GZ /c 
-
-.c{$(INTDIR)}.obj::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-.cpp{$(INTDIR)}.obj::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-.cxx{$(INTDIR)}.obj::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-.c{$(INTDIR)}.sbr::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-.cpp{$(INTDIR)}.sbr::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-.cxx{$(INTDIR)}.sbr::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-RSC=rc.exe
 BSC32=bscmake.exe
 BSC32_FLAGS=/nologo /o"$(OUTDIR)\testsuite.bsc" 
 BSC32_SBRS= \
@@ -478,7 +421,8 @@ BSC32_SBRS= \
 	"$(INTDIR)\swap.sbr" \
 	"$(INTDIR)\swaption.sbr" \
 	"$(INTDIR)\termstructures.sbr" \
-	"$(INTDIR)\utilities.sbr"
+	"$(INTDIR)\utilities.sbr" \
+	"$(INTDIR)\interestrates.sbr"
 
 "$(OUTDIR)\testsuite.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -528,6 +472,7 @@ LINK32_OBJS= \
 	"$(INTDIR)\swaption.obj" \
 	"$(INTDIR)\termstructures.obj" \
 	"$(INTDIR)\utilities.obj" \
+	"$(INTDIR)\interestrates.obj" \
 	"..\lib\QuantLib-vc6-mt-sgd-0_3_8.lib" \
 	"..\lib\QuantLibFunctions-vc6-mt-sgd-0_3_8.lib"
 
@@ -615,6 +560,8 @@ CLEAN :
 	-@erase "$(INTDIR)\instruments.sbr"
 	-@erase "$(INTDIR)\integrals.obj"
 	-@erase "$(INTDIR)\integrals.sbr"
+	-@erase "$(INTDIR)\interestrates.obj"
+	-@erase "$(INTDIR)\interestrates.sbr"
 	-@erase "$(INTDIR)\interpolations.obj"
 	-@erase "$(INTDIR)\interpolations.sbr"
 	-@erase "$(INTDIR)\jumpdiffusion.obj"
@@ -664,40 +611,7 @@ CLEAN :
 "$(OUTDIR)" :
     if not exist "$(OUTDIR)/$(NULL)" mkdir "$(OUTDIR)"
 
-CPP=cl.exe
 CPP_PROJ=/nologo /MD /W3 /Gi /GR /GX /O2 /Ob2 /I ".." /I "..\functions" /D "NDEBUG" /D "WIN32" /D "_CONSOLE" /D "_MBCS" /D "NOMINMAX" /Fr"$(INTDIR)\\" /Fp"$(INTDIR)\testsuite.pch" /YX /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\\" /FD /c 
-
-.c{$(INTDIR)}.obj::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-.cpp{$(INTDIR)}.obj::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-.cxx{$(INTDIR)}.obj::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-.c{$(INTDIR)}.sbr::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-.cpp{$(INTDIR)}.sbr::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-.cxx{$(INTDIR)}.sbr::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-RSC=rc.exe
 BSC32=bscmake.exe
 BSC32_FLAGS=/nologo /o"$(OUTDIR)\testsuite.bsc" 
 BSC32_SBRS= \
@@ -740,7 +654,8 @@ BSC32_SBRS= \
 	"$(INTDIR)\swap.sbr" \
 	"$(INTDIR)\swaption.sbr" \
 	"$(INTDIR)\termstructures.sbr" \
-	"$(INTDIR)\utilities.sbr"
+	"$(INTDIR)\utilities.sbr" \
+	"$(INTDIR)\interestrates.sbr"
 
 "$(OUTDIR)\testsuite.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -790,6 +705,7 @@ LINK32_OBJS= \
 	"$(INTDIR)\swaption.obj" \
 	"$(INTDIR)\termstructures.obj" \
 	"$(INTDIR)\utilities.obj" \
+	"$(INTDIR)\interestrates.obj" \
 	"..\lib\QuantLib-vc6-mt-0_3_8.lib" \
 	"..\lib\QuantLibFunctions-vc6-mt-0_3_8.lib"
 
@@ -877,6 +793,8 @@ CLEAN :
 	-@erase "$(INTDIR)\instruments.sbr"
 	-@erase "$(INTDIR)\integrals.obj"
 	-@erase "$(INTDIR)\integrals.sbr"
+	-@erase "$(INTDIR)\interestrates.obj"
+	-@erase "$(INTDIR)\interestrates.sbr"
 	-@erase "$(INTDIR)\interpolations.obj"
 	-@erase "$(INTDIR)\interpolations.sbr"
 	-@erase "$(INTDIR)\jumpdiffusion.obj"
@@ -927,40 +845,7 @@ CLEAN :
 "$(OUTDIR)" :
     if not exist "$(OUTDIR)/$(NULL)" mkdir "$(OUTDIR)"
 
-CPP=cl.exe
 CPP_PROJ=/nologo /MDd /W3 /Gm /Gi /GR /GX /ZI /Od /I ".." /I "..\functions" /D "_DEBUG" /D "WIN32" /D "_CONSOLE" /D "_MBCS" /D "NOMINMAX" /Fr"$(INTDIR)\\" /Fp"$(INTDIR)\testsuite.pch" /YX /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\\" /FD /GZ /c 
-
-.c{$(INTDIR)}.obj::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-.cpp{$(INTDIR)}.obj::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-.cxx{$(INTDIR)}.obj::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-.c{$(INTDIR)}.sbr::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-.cpp{$(INTDIR)}.sbr::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-.cxx{$(INTDIR)}.sbr::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-RSC=rc.exe
 BSC32=bscmake.exe
 BSC32_FLAGS=/nologo /o"$(OUTDIR)\testsuite.bsc" 
 BSC32_SBRS= \
@@ -1003,7 +888,8 @@ BSC32_SBRS= \
 	"$(INTDIR)\swap.sbr" \
 	"$(INTDIR)\swaption.sbr" \
 	"$(INTDIR)\termstructures.sbr" \
-	"$(INTDIR)\utilities.sbr"
+	"$(INTDIR)\utilities.sbr" \
+	"$(INTDIR)\interestrates.sbr"
 
 "$(OUTDIR)\testsuite.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -1053,6 +939,7 @@ LINK32_OBJS= \
 	"$(INTDIR)\swaption.obj" \
 	"$(INTDIR)\termstructures.obj" \
 	"$(INTDIR)\utilities.obj" \
+	"$(INTDIR)\interestrates.obj" \
 	"..\lib\QuantLib-vc6-mt-gd-0_3_8.lib" \
 	"..\lib\QuantLibFunctions-vc6-mt-gd-0_3_8.lib"
 
@@ -1140,6 +1027,8 @@ CLEAN :
 	-@erase "$(INTDIR)\instruments.sbr"
 	-@erase "$(INTDIR)\integrals.obj"
 	-@erase "$(INTDIR)\integrals.sbr"
+	-@erase "$(INTDIR)\interestrates.obj"
+	-@erase "$(INTDIR)\interestrates.sbr"
 	-@erase "$(INTDIR)\interpolations.obj"
 	-@erase "$(INTDIR)\interpolations.sbr"
 	-@erase "$(INTDIR)\jumpdiffusion.obj"
@@ -1187,40 +1076,7 @@ CLEAN :
 "$(OUTDIR)" :
     if not exist "$(OUTDIR)/$(NULL)" mkdir "$(OUTDIR)"
 
-CPP=cl.exe
 CPP_PROJ=/nologo /ML /W3 /Gi /GR /GX /O2 /Ob2 /I ".." /I "..\functions" /D "NDEBUG" /D "WIN32" /D "_CONSOLE" /D "_MBCS" /D "NOMINMAX" /Fr"$(INTDIR)\\" /Fp"$(INTDIR)\testsuite.pch" /YX /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\\" /FD /c 
-
-.c{$(INTDIR)}.obj::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-.cpp{$(INTDIR)}.obj::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-.cxx{$(INTDIR)}.obj::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-.c{$(INTDIR)}.sbr::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-.cpp{$(INTDIR)}.sbr::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-.cxx{$(INTDIR)}.sbr::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-RSC=rc.exe
 BSC32=bscmake.exe
 BSC32_FLAGS=/nologo /o"$(OUTDIR)\testsuite.bsc" 
 BSC32_SBRS= \
@@ -1263,7 +1119,8 @@ BSC32_SBRS= \
 	"$(INTDIR)\swap.sbr" \
 	"$(INTDIR)\swaption.sbr" \
 	"$(INTDIR)\termstructures.sbr" \
-	"$(INTDIR)\utilities.sbr"
+	"$(INTDIR)\utilities.sbr" \
+	"$(INTDIR)\interestrates.sbr"
 
 "$(OUTDIR)\testsuite.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -1313,6 +1170,7 @@ LINK32_OBJS= \
 	"$(INTDIR)\swaption.obj" \
 	"$(INTDIR)\termstructures.obj" \
 	"$(INTDIR)\utilities.obj" \
+	"$(INTDIR)\interestrates.obj" \
 	"..\lib\QuantLib-vc6-s-0_3_8.lib" \
 	"..\lib\QuantLibFunctions-vc6-s-0_3_8.lib"
 
@@ -1400,6 +1258,8 @@ CLEAN :
 	-@erase "$(INTDIR)\instruments.sbr"
 	-@erase "$(INTDIR)\integrals.obj"
 	-@erase "$(INTDIR)\integrals.sbr"
+	-@erase "$(INTDIR)\interestrates.obj"
+	-@erase "$(INTDIR)\interestrates.sbr"
 	-@erase "$(INTDIR)\interpolations.obj"
 	-@erase "$(INTDIR)\interpolations.sbr"
 	-@erase "$(INTDIR)\jumpdiffusion.obj"
@@ -1450,40 +1310,7 @@ CLEAN :
 "$(OUTDIR)" :
     if not exist "$(OUTDIR)/$(NULL)" mkdir "$(OUTDIR)"
 
-CPP=cl.exe
 CPP_PROJ=/nologo /MLd /W3 /Gm /Gi /GR /GX /ZI /Od /I ".." /I "..\functions" /D "_DEBUG" /D "WIN32" /D "_CONSOLE" /D "_MBCS" /D "NOMINMAX" /Fr"$(INTDIR)\\" /Fp"$(INTDIR)\testsuite.pch" /YX /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\\" /FD /GZ /c 
-
-.c{$(INTDIR)}.obj::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-.cpp{$(INTDIR)}.obj::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-.cxx{$(INTDIR)}.obj::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-.c{$(INTDIR)}.sbr::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-.cpp{$(INTDIR)}.sbr::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-.cxx{$(INTDIR)}.sbr::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-RSC=rc.exe
 BSC32=bscmake.exe
 BSC32_FLAGS=/nologo /o"$(OUTDIR)\testsuite.bsc" 
 BSC32_SBRS= \
@@ -1526,7 +1353,8 @@ BSC32_SBRS= \
 	"$(INTDIR)\swap.sbr" \
 	"$(INTDIR)\swaption.sbr" \
 	"$(INTDIR)\termstructures.sbr" \
-	"$(INTDIR)\utilities.sbr"
+	"$(INTDIR)\utilities.sbr" \
+	"$(INTDIR)\interestrates.sbr"
 
 "$(OUTDIR)\testsuite.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -1576,6 +1404,7 @@ LINK32_OBJS= \
 	"$(INTDIR)\swaption.obj" \
 	"$(INTDIR)\termstructures.obj" \
 	"$(INTDIR)\utilities.obj" \
+	"$(INTDIR)\interestrates.obj" \
 	"..\lib\QuantLib-vc6-sgd-0_3_8.lib" \
 	"..\lib\QuantLibFunctions-vc6-sgd-0_3_8.lib"
 
@@ -1601,6 +1430,36 @@ $(DS_POSTBUILD_DEP) : "QuantLibFunctions - Win32 Debug SingleThread" "QuantLib -
 	echo Helper for Post-build step > "$(DS_POSTBUILD_DEP)"
 
 !ENDIF 
+
+.c{$(INTDIR)}.obj::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.cpp{$(INTDIR)}.obj::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.cxx{$(INTDIR)}.obj::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.c{$(INTDIR)}.sbr::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.cpp{$(INTDIR)}.sbr::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.cxx{$(INTDIR)}.sbr::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
 
 
 !IF "$(NO_EXTERNAL_DEPS)" != "1"
@@ -1711,6 +1570,11 @@ SOURCE=.\instruments.cpp
 SOURCE=.\integrals.cpp
 
 "$(INTDIR)\integrals.obj"	"$(INTDIR)\integrals.sbr" : $(SOURCE) "$(INTDIR)"
+
+
+SOURCE=.\interestrates.cpp
+
+"$(INTDIR)\interestrates.obj"	"$(INTDIR)\interestrates.sbr" : $(SOURCE) "$(INTDIR)"
 
 
 SOURCE=.\interpolations.cpp

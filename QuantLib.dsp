@@ -2508,6 +2508,14 @@ SOURCE=.\ql\instrument.hpp
 # End Source File
 # Begin Source File
 
+SOURCE=".\test-suite\interestrates.cpp"
+# End Source File
+# Begin Source File
+
+SOURCE=".\test-suite\interestrates.hpp"
+# End Source File
+# Begin Source File
+
 SOURCE=.\ql\money.cpp
 # End Source File
 # Begin Source File

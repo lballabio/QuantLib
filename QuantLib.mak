@@ -232,6 +232,8 @@ CLEAN :
 	-@erase "$(INTDIR)\indexmanager.sbr"
 	-@erase "$(INTDIR)\integralengine.obj"
 	-@erase "$(INTDIR)\integralengine.sbr"
+	-@erase "$(INTDIR)\interestrates.obj"
+	-@erase "$(INTDIR)\interestrates.sbr"
 	-@erase "$(INTDIR)\italy.obj"
 	-@erase "$(INTDIR)\italy.sbr"
 	-@erase "$(INTDIR)\jamshidianswaptionengine.obj"
@@ -447,6 +449,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\zurich.sbr" \
 	"$(INTDIR)\basispointsensitivity.sbr" \
 	"$(INTDIR)\cashflowvectors.sbr" \
+	"$(INTDIR)\inarrearindexedcoupon.sbr" \
 	"$(INTDIR)\parcoupon.sbr" \
 	"$(INTDIR)\shortfloatingcoupon.sbr" \
 	"$(INTDIR)\timebasket.sbr" \
@@ -501,6 +504,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\rounding.sbr" \
 	"$(INTDIR)\svd.sbr" \
 	"$(INTDIR)\symmetricschurdecomposition.sbr" \
+	"$(INTDIR)\getcovariance.sbr" \
 	"$(INTDIR)\armijo.sbr" \
 	"$(INTDIR)\conjugategradient.sbr" \
 	"$(INTDIR)\simplex.sbr" \
@@ -602,8 +606,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\schedule.sbr" \
 	"$(INTDIR)\stochasticprocess.sbr" \
 	"$(INTDIR)\voltermstructure.sbr" \
-	"$(INTDIR)\getcovariance.sbr" \
-	"$(INTDIR)\inarrearindexedcoupon.sbr"
+	"$(INTDIR)\interestrates.sbr"
 
 "$(OUTDIR)\QuantLib.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -639,6 +642,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\zurich.obj" \
 	"$(INTDIR)\basispointsensitivity.obj" \
 	"$(INTDIR)\cashflowvectors.obj" \
+	"$(INTDIR)\inarrearindexedcoupon.obj" \
 	"$(INTDIR)\parcoupon.obj" \
 	"$(INTDIR)\shortfloatingcoupon.obj" \
 	"$(INTDIR)\timebasket.obj" \
@@ -693,6 +697,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\rounding.obj" \
 	"$(INTDIR)\svd.obj" \
 	"$(INTDIR)\symmetricschurdecomposition.obj" \
+	"$(INTDIR)\getcovariance.obj" \
 	"$(INTDIR)\armijo.obj" \
 	"$(INTDIR)\conjugategradient.obj" \
 	"$(INTDIR)\simplex.obj" \
@@ -794,8 +799,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\schedule.obj" \
 	"$(INTDIR)\stochasticprocess.obj" \
 	"$(INTDIR)\voltermstructure.obj" \
-	"$(INTDIR)\getcovariance.obj" \
-	"$(INTDIR)\inarrearindexedcoupon.obj"
+	"$(INTDIR)\interestrates.obj"
 
 ".\lib\QuantLib-vc6-mt-s-0_3_8.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
    if not exist lib mkdir lib
@@ -1005,6 +1009,8 @@ CLEAN :
 	-@erase "$(INTDIR)\indexmanager.sbr"
 	-@erase "$(INTDIR)\integralengine.obj"
 	-@erase "$(INTDIR)\integralengine.sbr"
+	-@erase "$(INTDIR)\interestrates.obj"
+	-@erase "$(INTDIR)\interestrates.sbr"
 	-@erase "$(INTDIR)\italy.obj"
 	-@erase "$(INTDIR)\italy.sbr"
 	-@erase "$(INTDIR)\jamshidianswaptionengine.obj"
@@ -1221,6 +1227,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\zurich.sbr" \
 	"$(INTDIR)\basispointsensitivity.sbr" \
 	"$(INTDIR)\cashflowvectors.sbr" \
+	"$(INTDIR)\inarrearindexedcoupon.sbr" \
 	"$(INTDIR)\parcoupon.sbr" \
 	"$(INTDIR)\shortfloatingcoupon.sbr" \
 	"$(INTDIR)\timebasket.sbr" \
@@ -1275,6 +1282,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\rounding.sbr" \
 	"$(INTDIR)\svd.sbr" \
 	"$(INTDIR)\symmetricschurdecomposition.sbr" \
+	"$(INTDIR)\getcovariance.sbr" \
 	"$(INTDIR)\armijo.sbr" \
 	"$(INTDIR)\conjugategradient.sbr" \
 	"$(INTDIR)\simplex.sbr" \
@@ -1376,8 +1384,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\schedule.sbr" \
 	"$(INTDIR)\stochasticprocess.sbr" \
 	"$(INTDIR)\voltermstructure.sbr" \
-	"$(INTDIR)\getcovariance.sbr" \
-	"$(INTDIR)\inarrearindexedcoupon.sbr"
+	"$(INTDIR)\interestrates.sbr"
 
 "$(OUTDIR)\QuantLib.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -1413,6 +1420,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\zurich.obj" \
 	"$(INTDIR)\basispointsensitivity.obj" \
 	"$(INTDIR)\cashflowvectors.obj" \
+	"$(INTDIR)\inarrearindexedcoupon.obj" \
 	"$(INTDIR)\parcoupon.obj" \
 	"$(INTDIR)\shortfloatingcoupon.obj" \
 	"$(INTDIR)\timebasket.obj" \
@@ -1467,6 +1475,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\rounding.obj" \
 	"$(INTDIR)\svd.obj" \
 	"$(INTDIR)\symmetricschurdecomposition.obj" \
+	"$(INTDIR)\getcovariance.obj" \
 	"$(INTDIR)\armijo.obj" \
 	"$(INTDIR)\conjugategradient.obj" \
 	"$(INTDIR)\simplex.obj" \
@@ -1568,8 +1577,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\schedule.obj" \
 	"$(INTDIR)\stochasticprocess.obj" \
 	"$(INTDIR)\voltermstructure.obj" \
-	"$(INTDIR)\getcovariance.obj" \
-	"$(INTDIR)\inarrearindexedcoupon.obj"
+	"$(INTDIR)\interestrates.obj"
 
 ".\lib\QuantLib-vc6-mt-sgd-0_3_8.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
    if not exist lib mkdir lib
@@ -1779,6 +1787,8 @@ CLEAN :
 	-@erase "$(INTDIR)\indexmanager.sbr"
 	-@erase "$(INTDIR)\integralengine.obj"
 	-@erase "$(INTDIR)\integralengine.sbr"
+	-@erase "$(INTDIR)\interestrates.obj"
+	-@erase "$(INTDIR)\interestrates.sbr"
 	-@erase "$(INTDIR)\italy.obj"
 	-@erase "$(INTDIR)\italy.sbr"
 	-@erase "$(INTDIR)\jamshidianswaptionengine.obj"
@@ -1994,6 +2004,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\zurich.sbr" \
 	"$(INTDIR)\basispointsensitivity.sbr" \
 	"$(INTDIR)\cashflowvectors.sbr" \
+	"$(INTDIR)\inarrearindexedcoupon.sbr" \
 	"$(INTDIR)\parcoupon.sbr" \
 	"$(INTDIR)\shortfloatingcoupon.sbr" \
 	"$(INTDIR)\timebasket.sbr" \
@@ -2048,6 +2059,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\rounding.sbr" \
 	"$(INTDIR)\svd.sbr" \
 	"$(INTDIR)\symmetricschurdecomposition.sbr" \
+	"$(INTDIR)\getcovariance.sbr" \
 	"$(INTDIR)\armijo.sbr" \
 	"$(INTDIR)\conjugategradient.sbr" \
 	"$(INTDIR)\simplex.sbr" \
@@ -2149,8 +2161,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\schedule.sbr" \
 	"$(INTDIR)\stochasticprocess.sbr" \
 	"$(INTDIR)\voltermstructure.sbr" \
-	"$(INTDIR)\getcovariance.sbr" \
-	"$(INTDIR)\inarrearindexedcoupon.sbr"
+	"$(INTDIR)\interestrates.sbr"
 
 "$(OUTDIR)\QuantLib.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -2186,6 +2197,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\zurich.obj" \
 	"$(INTDIR)\basispointsensitivity.obj" \
 	"$(INTDIR)\cashflowvectors.obj" \
+	"$(INTDIR)\inarrearindexedcoupon.obj" \
 	"$(INTDIR)\parcoupon.obj" \
 	"$(INTDIR)\shortfloatingcoupon.obj" \
 	"$(INTDIR)\timebasket.obj" \
@@ -2240,6 +2252,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\rounding.obj" \
 	"$(INTDIR)\svd.obj" \
 	"$(INTDIR)\symmetricschurdecomposition.obj" \
+	"$(INTDIR)\getcovariance.obj" \
 	"$(INTDIR)\armijo.obj" \
 	"$(INTDIR)\conjugategradient.obj" \
 	"$(INTDIR)\simplex.obj" \
@@ -2341,8 +2354,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\schedule.obj" \
 	"$(INTDIR)\stochasticprocess.obj" \
 	"$(INTDIR)\voltermstructure.obj" \
-	"$(INTDIR)\getcovariance.obj" \
-	"$(INTDIR)\inarrearindexedcoupon.obj"
+	"$(INTDIR)\interestrates.obj"
 
 ".\lib\QuantLib-vc6-mt-0_3_8.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
    if not exist lib mkdir lib
@@ -2552,6 +2564,8 @@ CLEAN :
 	-@erase "$(INTDIR)\indexmanager.sbr"
 	-@erase "$(INTDIR)\integralengine.obj"
 	-@erase "$(INTDIR)\integralengine.sbr"
+	-@erase "$(INTDIR)\interestrates.obj"
+	-@erase "$(INTDIR)\interestrates.sbr"
 	-@erase "$(INTDIR)\italy.obj"
 	-@erase "$(INTDIR)\italy.sbr"
 	-@erase "$(INTDIR)\jamshidianswaptionengine.obj"
@@ -2768,6 +2782,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\zurich.sbr" \
 	"$(INTDIR)\basispointsensitivity.sbr" \
 	"$(INTDIR)\cashflowvectors.sbr" \
+	"$(INTDIR)\inarrearindexedcoupon.sbr" \
 	"$(INTDIR)\parcoupon.sbr" \
 	"$(INTDIR)\shortfloatingcoupon.sbr" \
 	"$(INTDIR)\timebasket.sbr" \
@@ -2822,6 +2837,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\rounding.sbr" \
 	"$(INTDIR)\svd.sbr" \
 	"$(INTDIR)\symmetricschurdecomposition.sbr" \
+	"$(INTDIR)\getcovariance.sbr" \
 	"$(INTDIR)\armijo.sbr" \
 	"$(INTDIR)\conjugategradient.sbr" \
 	"$(INTDIR)\simplex.sbr" \
@@ -2923,8 +2939,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\schedule.sbr" \
 	"$(INTDIR)\stochasticprocess.sbr" \
 	"$(INTDIR)\voltermstructure.sbr" \
-	"$(INTDIR)\getcovariance.sbr" \
-	"$(INTDIR)\inarrearindexedcoupon.sbr"
+	"$(INTDIR)\interestrates.sbr"
 
 "$(OUTDIR)\QuantLib.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -2960,6 +2975,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\zurich.obj" \
 	"$(INTDIR)\basispointsensitivity.obj" \
 	"$(INTDIR)\cashflowvectors.obj" \
+	"$(INTDIR)\inarrearindexedcoupon.obj" \
 	"$(INTDIR)\parcoupon.obj" \
 	"$(INTDIR)\shortfloatingcoupon.obj" \
 	"$(INTDIR)\timebasket.obj" \
@@ -3014,6 +3030,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\rounding.obj" \
 	"$(INTDIR)\svd.obj" \
 	"$(INTDIR)\symmetricschurdecomposition.obj" \
+	"$(INTDIR)\getcovariance.obj" \
 	"$(INTDIR)\armijo.obj" \
 	"$(INTDIR)\conjugategradient.obj" \
 	"$(INTDIR)\simplex.obj" \
@@ -3115,8 +3132,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\schedule.obj" \
 	"$(INTDIR)\stochasticprocess.obj" \
 	"$(INTDIR)\voltermstructure.obj" \
-	"$(INTDIR)\getcovariance.obj" \
-	"$(INTDIR)\inarrearindexedcoupon.obj"
+	"$(INTDIR)\interestrates.obj"
 
 ".\lib\QuantLib-vc6-mt-gd-0_3_8.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
    if not exist lib mkdir lib
@@ -3326,6 +3342,8 @@ CLEAN :
 	-@erase "$(INTDIR)\indexmanager.sbr"
 	-@erase "$(INTDIR)\integralengine.obj"
 	-@erase "$(INTDIR)\integralengine.sbr"
+	-@erase "$(INTDIR)\interestrates.obj"
+	-@erase "$(INTDIR)\interestrates.sbr"
 	-@erase "$(INTDIR)\italy.obj"
 	-@erase "$(INTDIR)\italy.sbr"
 	-@erase "$(INTDIR)\jamshidianswaptionengine.obj"
@@ -3541,6 +3559,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\zurich.sbr" \
 	"$(INTDIR)\basispointsensitivity.sbr" \
 	"$(INTDIR)\cashflowvectors.sbr" \
+	"$(INTDIR)\inarrearindexedcoupon.sbr" \
 	"$(INTDIR)\parcoupon.sbr" \
 	"$(INTDIR)\shortfloatingcoupon.sbr" \
 	"$(INTDIR)\timebasket.sbr" \
@@ -3595,6 +3614,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\rounding.sbr" \
 	"$(INTDIR)\svd.sbr" \
 	"$(INTDIR)\symmetricschurdecomposition.sbr" \
+	"$(INTDIR)\getcovariance.sbr" \
 	"$(INTDIR)\armijo.sbr" \
 	"$(INTDIR)\conjugategradient.sbr" \
 	"$(INTDIR)\simplex.sbr" \
@@ -3696,8 +3716,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\schedule.sbr" \
 	"$(INTDIR)\stochasticprocess.sbr" \
 	"$(INTDIR)\voltermstructure.sbr" \
-	"$(INTDIR)\getcovariance.sbr" \
-	"$(INTDIR)\inarrearindexedcoupon.sbr"
+	"$(INTDIR)\interestrates.sbr"
 
 "$(OUTDIR)\QuantLib.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -3733,6 +3752,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\zurich.obj" \
 	"$(INTDIR)\basispointsensitivity.obj" \
 	"$(INTDIR)\cashflowvectors.obj" \
+	"$(INTDIR)\inarrearindexedcoupon.obj" \
 	"$(INTDIR)\parcoupon.obj" \
 	"$(INTDIR)\shortfloatingcoupon.obj" \
 	"$(INTDIR)\timebasket.obj" \
@@ -3787,6 +3807,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\rounding.obj" \
 	"$(INTDIR)\svd.obj" \
 	"$(INTDIR)\symmetricschurdecomposition.obj" \
+	"$(INTDIR)\getcovariance.obj" \
 	"$(INTDIR)\armijo.obj" \
 	"$(INTDIR)\conjugategradient.obj" \
 	"$(INTDIR)\simplex.obj" \
@@ -3888,8 +3909,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\schedule.obj" \
 	"$(INTDIR)\stochasticprocess.obj" \
 	"$(INTDIR)\voltermstructure.obj" \
-	"$(INTDIR)\getcovariance.obj" \
-	"$(INTDIR)\inarrearindexedcoupon.obj"
+	"$(INTDIR)\interestrates.obj"
 
 ".\lib\QuantLib-vc6-s-0_3_8.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
    if not exist lib mkdir lib
@@ -4099,6 +4119,8 @@ CLEAN :
 	-@erase "$(INTDIR)\indexmanager.sbr"
 	-@erase "$(INTDIR)\integralengine.obj"
 	-@erase "$(INTDIR)\integralengine.sbr"
+	-@erase "$(INTDIR)\interestrates.obj"
+	-@erase "$(INTDIR)\interestrates.sbr"
 	-@erase "$(INTDIR)\italy.obj"
 	-@erase "$(INTDIR)\italy.sbr"
 	-@erase "$(INTDIR)\jamshidianswaptionengine.obj"
@@ -4315,6 +4337,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\zurich.sbr" \
 	"$(INTDIR)\basispointsensitivity.sbr" \
 	"$(INTDIR)\cashflowvectors.sbr" \
+	"$(INTDIR)\inarrearindexedcoupon.sbr" \
 	"$(INTDIR)\parcoupon.sbr" \
 	"$(INTDIR)\shortfloatingcoupon.sbr" \
 	"$(INTDIR)\timebasket.sbr" \
@@ -4369,6 +4392,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\rounding.sbr" \
 	"$(INTDIR)\svd.sbr" \
 	"$(INTDIR)\symmetricschurdecomposition.sbr" \
+	"$(INTDIR)\getcovariance.sbr" \
 	"$(INTDIR)\armijo.sbr" \
 	"$(INTDIR)\conjugategradient.sbr" \
 	"$(INTDIR)\simplex.sbr" \
@@ -4470,8 +4494,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\schedule.sbr" \
 	"$(INTDIR)\stochasticprocess.sbr" \
 	"$(INTDIR)\voltermstructure.sbr" \
-	"$(INTDIR)\getcovariance.sbr" \
-	"$(INTDIR)\inarrearindexedcoupon.sbr"
+	"$(INTDIR)\interestrates.sbr"
 
 "$(OUTDIR)\QuantLib.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -4507,6 +4530,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\zurich.obj" \
 	"$(INTDIR)\basispointsensitivity.obj" \
 	"$(INTDIR)\cashflowvectors.obj" \
+	"$(INTDIR)\inarrearindexedcoupon.obj" \
 	"$(INTDIR)\parcoupon.obj" \
 	"$(INTDIR)\shortfloatingcoupon.obj" \
 	"$(INTDIR)\timebasket.obj" \
@@ -4561,6 +4585,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\rounding.obj" \
 	"$(INTDIR)\svd.obj" \
 	"$(INTDIR)\symmetricschurdecomposition.obj" \
+	"$(INTDIR)\getcovariance.obj" \
 	"$(INTDIR)\armijo.obj" \
 	"$(INTDIR)\conjugategradient.obj" \
 	"$(INTDIR)\simplex.obj" \
@@ -4662,8 +4687,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\schedule.obj" \
 	"$(INTDIR)\stochasticprocess.obj" \
 	"$(INTDIR)\voltermstructure.obj" \
-	"$(INTDIR)\getcovariance.obj" \
-	"$(INTDIR)\inarrearindexedcoupon.obj"
+	"$(INTDIR)\interestrates.obj"
 
 ".\lib\QuantLib-vc6-sgd-0_3_8.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
    if not exist lib mkdir lib
@@ -5787,6 +5811,12 @@ SOURCE=.\ql\exercise.cpp
 SOURCE=.\ql\grid.cpp
 
 "$(INTDIR)\grid.obj"	"$(INTDIR)\grid.sbr" : $(SOURCE) "$(INTDIR)"
+	$(CPP) $(CPP_PROJ) $(SOURCE)
+
+
+SOURCE=".\test-suite\interestrates.cpp"
+
+"$(INTDIR)\interestrates.obj"	"$(INTDIR)\interestrates.sbr" : $(SOURCE) "$(INTDIR)"
 	$(CPP) $(CPP_PROJ) $(SOURCE)
 
 
