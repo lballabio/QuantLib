@@ -1280,30 +1280,30 @@ ShoutOption.vega = new.instancemethod(QuantLibc.ShoutOption_vega, None, ShoutOpt
 ShoutOption.rho = new.instancemethod(QuantLibc.ShoutOption_rho, None, ShoutOption)
 ShoutOption.impliedVolatility = new.instancemethod(QuantLibc.ShoutOption_impliedVolatility, None, ShoutOption)
 
-class DividendOption:
+class BermudanOption:
     def __init__(self,*args,**kwargs):
-        self.this = apply(QuantLibc.new_DividendOption,args,kwargs)
+        self.this = apply(QuantLibc.new_BermudanOption,args,kwargs)
         self.thisown = 1
 
     def __del__(self,QuantLibc=QuantLibc):
         if self.thisown == 1 :
-            QuantLibc.delete_DividendOption(self)
+            QuantLibc.delete_BermudanOption(self)
     def __repr__(self):
-        return "<C DividendOption instance at %s>" % (self.this,)
-class DividendOptionPtr(DividendOption):
+        return "<C BermudanOption instance at %s>" % (self.this,)
+class BermudanOptionPtr(BermudanOption):
     def __init__(self,this):
         self.this = this
         self.thisown = 0
-        self.__class__ = DividendOption
+        self.__class__ = BermudanOption
 
 
-DividendOption.value = new.instancemethod(QuantLibc.DividendOption_value, None, DividendOption)
-DividendOption.delta = new.instancemethod(QuantLibc.DividendOption_delta, None, DividendOption)
-DividendOption.gamma = new.instancemethod(QuantLibc.DividendOption_gamma, None, DividendOption)
-DividendOption.theta = new.instancemethod(QuantLibc.DividendOption_theta, None, DividendOption)
-DividendOption.vega = new.instancemethod(QuantLibc.DividendOption_vega, None, DividendOption)
-DividendOption.rho = new.instancemethod(QuantLibc.DividendOption_rho, None, DividendOption)
-DividendOption.impliedVolatility = new.instancemethod(QuantLibc.DividendOption_impliedVolatility, None, DividendOption)
+BermudanOption.value = new.instancemethod(QuantLibc.BermudanOption_value, None, BermudanOption)
+BermudanOption.delta = new.instancemethod(QuantLibc.BermudanOption_delta, None, BermudanOption)
+BermudanOption.gamma = new.instancemethod(QuantLibc.BermudanOption_gamma, None, BermudanOption)
+BermudanOption.theta = new.instancemethod(QuantLibc.BermudanOption_theta, None, BermudanOption)
+BermudanOption.vega = new.instancemethod(QuantLibc.BermudanOption_vega, None, BermudanOption)
+BermudanOption.rho = new.instancemethod(QuantLibc.BermudanOption_rho, None, BermudanOption)
+BermudanOption.impliedVolatility = new.instancemethod(QuantLibc.BermudanOption_impliedVolatility, None, BermudanOption)
 
 class DividendShoutOption:
     def __init__(self,*args,**kwargs):

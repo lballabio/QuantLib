@@ -498,7 +498,7 @@ SWIG_InstallConstants(PyObject *d, swig_const_info constants[]) {
 #define  SWIGTYPE_p_BSMEuropeanOption swig_types[8] 
 #define  SWIGTYPE_p_AmericanOption swig_types[9] 
 #define  SWIGTYPE_p_ShoutOption swig_types[10] 
-#define  SWIGTYPE_p_DividendOption swig_types[11] 
+#define  SWIGTYPE_p_BermudanOption swig_types[11] 
 #define  SWIGTYPE_p_DividendShoutOption swig_types[12] 
 #define  SWIGTYPE_p_DividendAmericanOption swig_types[13] 
 #define  SWIGTYPE_p_DividendEuropeanOption swig_types[14] 
@@ -903,11 +903,11 @@ using QuantLib::FiniteDifferences::DPlusDMinus;
 
 using QuantLib::Pricers::AmericanOption;
 using QuantLib::Pricers::BinaryOption;
+using QuantLib::Pricers::BermudanOption;
 using QuantLib::Pricers::BSMEuropeanOption;
 using QuantLib::Pricers::FiniteDifferenceEuropean;
 using QuantLib::Pricers::DividendAmericanOption;
 using QuantLib::Pricers::DividendEuropeanOption;
-using QuantLib::Pricers::DividendOption;
 using QuantLib::Pricers::DividendShoutOption;
 using QuantLib::Pricers::ShoutOption;
 
@@ -16939,7 +16939,7 @@ static PyObject *_wrap_ShoutOption_impliedVolatility(PyObject *self, PyObject *a
 }
 
 
-static PyObject *_wrap_new_DividendOption(PyObject *self, PyObject *args, PyObject *kwargs) {
+static PyObject *_wrap_new_BermudanOption(PyObject *self, PyObject *args, PyObject *kwargs) {
     PyObject *resultobj;
     OptionType *arg0 ;
     double arg1 ;
@@ -16949,20 +16949,17 @@ static PyObject *_wrap_new_DividendOption(PyObject *self, PyObject *args, PyObje
     Time arg5 ;
     double arg6 ;
     DoubleVector *arg7 ;
-    DoubleVector *arg8 ;
+    int arg8 = 100 ;
     int arg9 = 100 ;
-    int arg10 = 100 ;
     PyObject * obj0  = 0 ;
     DoubleVector temp ;
     PyObject * obj7  = 0 ;
-    DoubleVector temp0 ;
-    PyObject * obj8  = 0 ;
     char *kwnames[] = {
-        "type","underlying","strike","dividendYield","riskFreeRate","residualTime","volatility","dividends","exdivdates","timeSteps","gridPoints", NULL 
+        "type","underlying","strike","dividendYield","riskFreeRate","residualTime","volatility","dates","timeSteps","gridPoints", NULL 
     };
-    DividendOption *result ;
+    BermudanOption *result ;
     
-    if(!PyArg_ParseTupleAndKeywords(args,kwargs,"OddddddOO|ii:new_DividendOption",kwnames,&obj0,&arg1,&arg2,&arg3,&arg4,&arg5,&arg6,&obj7,&obj8,&arg9,&arg10)) return NULL;
+    if(!PyArg_ParseTupleAndKeywords(args,kwargs,"OddddddO|ii:new_BermudanOption",kwnames,&obj0,&arg1,&arg2,&arg3,&arg4,&arg5,&arg6,&obj7,&arg8,&arg9)) return NULL;
     {
         if (PyString_Check(obj0)) {
             arg0 = new OptionType;
@@ -17011,37 +17008,8 @@ static PyObject *_wrap_new_DividendOption(PyObject *self, PyObject *args, PyObje
         }
     }
     {
-        DoubleVector* v;
-        if (PyTuple_Check(obj8) || PyList_Check(obj8)) {
-            int size = (PyTuple_Check(obj8) ? 
-            PyTuple_Size(obj8) :
-            PyList_Size(obj8));
-            temp0 = DoubleVector(size);
-            arg8 = &temp0;
-            for (int i=0; i<size; i++) {
-                PyObject* o = PySequence_GetItem(obj8,i);
-                if (o == Py_None) {
-                    (*arg8)[i] = Null<double>();
-                }else if (PyFloat_Check(o)) {
-                    (*arg8)[i] = PyFloat_AsDouble(o);
-                }else if (PyInt_Check(o)) {
-                    (*arg8)[i] = double(PyInt_AsLong(o));
-                }else {
-                    PyErr_SetString(PyExc_TypeError,"doubles expected");
-                    return NULL;
-                }
-            }
-        }else if ((SWIG_ConvertPtr(obj8,(void **) &v,
-        (swig_type_info *)SWIG_TypeQuery("DoubleVector *"),0)) != -1) {
-            arg8 = v;
-        }else {
-            PyErr_SetString(PyExc_TypeError,"DoubleVector expected");
-            return NULL;
-        }
-    }
-    {
         try {
-            result = (DividendOption *)new DividendOption(*arg0,arg1,arg2,arg3,arg4,arg5,arg6,(DoubleVector const &)*arg7,(DoubleVector const &)*arg8,arg9,arg10);
+            result = (BermudanOption *)new BermudanOption(*arg0,arg1,arg2,arg3,arg4,arg5,arg6,(DoubleVector const &)*arg7,arg8,arg9);
             
         }catch (IndexError& e) {
             PyErr_SetString(PyExc_IndexError,e.what());
@@ -17056,7 +17024,7 @@ static PyObject *_wrap_new_DividendOption(PyObject *self, PyObject *args, PyObje
             PyErr_SetString(PyExc_Exception,"unknown error");
             return NULL;
         }
-    }resultobj = SWIG_NewPointerObj((void *) result, SWIGTYPE_p_DividendOption);
+    }resultobj = SWIG_NewPointerObj((void *) result, SWIGTYPE_p_BermudanOption);
     {
         delete arg0;
     }
@@ -17064,16 +17032,16 @@ static PyObject *_wrap_new_DividendOption(PyObject *self, PyObject *args, PyObje
 }
 
 
-static PyObject *_wrap_delete_DividendOption(PyObject *self, PyObject *args, PyObject *kwargs) {
+static PyObject *_wrap_delete_BermudanOption(PyObject *self, PyObject *args, PyObject *kwargs) {
     PyObject *resultobj;
-    DividendOption *arg0 ;
+    BermudanOption *arg0 ;
     PyObject * argo0 =0 ;
     char *kwnames[] = {
         "self", NULL 
     };
     
-    if(!PyArg_ParseTupleAndKeywords(args,kwargs,"O:delete_DividendOption",kwnames,&argo0)) return NULL;
-    if ((SWIG_ConvertPtr(argo0,(void **) &arg0,SWIGTYPE_p_DividendOption,1)) == -1) return NULL;
+    if(!PyArg_ParseTupleAndKeywords(args,kwargs,"O:delete_BermudanOption",kwnames,&argo0)) return NULL;
+    if ((SWIG_ConvertPtr(argo0,(void **) &arg0,SWIGTYPE_p_BermudanOption,1)) == -1) return NULL;
     {
         try {
             delete arg0;
@@ -17097,17 +17065,17 @@ static PyObject *_wrap_delete_DividendOption(PyObject *self, PyObject *args, PyO
 }
 
 
-static PyObject *_wrap_DividendOption_value(PyObject *self, PyObject *args, PyObject *kwargs) {
+static PyObject *_wrap_BermudanOption_value(PyObject *self, PyObject *args, PyObject *kwargs) {
     PyObject *resultobj;
-    DividendOption *arg0 ;
+    BermudanOption *arg0 ;
     PyObject * argo0 =0 ;
     char *kwnames[] = {
         "self", NULL 
     };
     double result ;
     
-    if(!PyArg_ParseTupleAndKeywords(args,kwargs,"O:DividendOption_value",kwnames,&argo0)) return NULL;
-    if ((SWIG_ConvertPtr(argo0,(void **) &arg0,SWIGTYPE_p_DividendOption,1)) == -1) return NULL;
+    if(!PyArg_ParseTupleAndKeywords(args,kwargs,"O:BermudanOption_value",kwnames,&argo0)) return NULL;
+    if ((SWIG_ConvertPtr(argo0,(void **) &arg0,SWIGTYPE_p_BermudanOption,1)) == -1) return NULL;
     {
         try {
             result = (double )arg0->value();
@@ -17130,17 +17098,17 @@ static PyObject *_wrap_DividendOption_value(PyObject *self, PyObject *args, PyOb
 }
 
 
-static PyObject *_wrap_DividendOption_delta(PyObject *self, PyObject *args, PyObject *kwargs) {
+static PyObject *_wrap_BermudanOption_delta(PyObject *self, PyObject *args, PyObject *kwargs) {
     PyObject *resultobj;
-    DividendOption *arg0 ;
+    BermudanOption *arg0 ;
     PyObject * argo0 =0 ;
     char *kwnames[] = {
         "self", NULL 
     };
     double result ;
     
-    if(!PyArg_ParseTupleAndKeywords(args,kwargs,"O:DividendOption_delta",kwnames,&argo0)) return NULL;
-    if ((SWIG_ConvertPtr(argo0,(void **) &arg0,SWIGTYPE_p_DividendOption,1)) == -1) return NULL;
+    if(!PyArg_ParseTupleAndKeywords(args,kwargs,"O:BermudanOption_delta",kwnames,&argo0)) return NULL;
+    if ((SWIG_ConvertPtr(argo0,(void **) &arg0,SWIGTYPE_p_BermudanOption,1)) == -1) return NULL;
     {
         try {
             result = (double )arg0->delta();
@@ -17163,17 +17131,17 @@ static PyObject *_wrap_DividendOption_delta(PyObject *self, PyObject *args, PyOb
 }
 
 
-static PyObject *_wrap_DividendOption_gamma(PyObject *self, PyObject *args, PyObject *kwargs) {
+static PyObject *_wrap_BermudanOption_gamma(PyObject *self, PyObject *args, PyObject *kwargs) {
     PyObject *resultobj;
-    DividendOption *arg0 ;
+    BermudanOption *arg0 ;
     PyObject * argo0 =0 ;
     char *kwnames[] = {
         "self", NULL 
     };
     double result ;
     
-    if(!PyArg_ParseTupleAndKeywords(args,kwargs,"O:DividendOption_gamma",kwnames,&argo0)) return NULL;
-    if ((SWIG_ConvertPtr(argo0,(void **) &arg0,SWIGTYPE_p_DividendOption,1)) == -1) return NULL;
+    if(!PyArg_ParseTupleAndKeywords(args,kwargs,"O:BermudanOption_gamma",kwnames,&argo0)) return NULL;
+    if ((SWIG_ConvertPtr(argo0,(void **) &arg0,SWIGTYPE_p_BermudanOption,1)) == -1) return NULL;
     {
         try {
             result = (double )arg0->gamma();
@@ -17196,17 +17164,17 @@ static PyObject *_wrap_DividendOption_gamma(PyObject *self, PyObject *args, PyOb
 }
 
 
-static PyObject *_wrap_DividendOption_theta(PyObject *self, PyObject *args, PyObject *kwargs) {
+static PyObject *_wrap_BermudanOption_theta(PyObject *self, PyObject *args, PyObject *kwargs) {
     PyObject *resultobj;
-    DividendOption *arg0 ;
+    BermudanOption *arg0 ;
     PyObject * argo0 =0 ;
     char *kwnames[] = {
         "self", NULL 
     };
     double result ;
     
-    if(!PyArg_ParseTupleAndKeywords(args,kwargs,"O:DividendOption_theta",kwnames,&argo0)) return NULL;
-    if ((SWIG_ConvertPtr(argo0,(void **) &arg0,SWIGTYPE_p_DividendOption,1)) == -1) return NULL;
+    if(!PyArg_ParseTupleAndKeywords(args,kwargs,"O:BermudanOption_theta",kwnames,&argo0)) return NULL;
+    if ((SWIG_ConvertPtr(argo0,(void **) &arg0,SWIGTYPE_p_BermudanOption,1)) == -1) return NULL;
     {
         try {
             result = (double )arg0->theta();
@@ -17229,17 +17197,17 @@ static PyObject *_wrap_DividendOption_theta(PyObject *self, PyObject *args, PyOb
 }
 
 
-static PyObject *_wrap_DividendOption_vega(PyObject *self, PyObject *args, PyObject *kwargs) {
+static PyObject *_wrap_BermudanOption_vega(PyObject *self, PyObject *args, PyObject *kwargs) {
     PyObject *resultobj;
-    DividendOption *arg0 ;
+    BermudanOption *arg0 ;
     PyObject * argo0 =0 ;
     char *kwnames[] = {
         "self", NULL 
     };
     double result ;
     
-    if(!PyArg_ParseTupleAndKeywords(args,kwargs,"O:DividendOption_vega",kwnames,&argo0)) return NULL;
-    if ((SWIG_ConvertPtr(argo0,(void **) &arg0,SWIGTYPE_p_DividendOption,1)) == -1) return NULL;
+    if(!PyArg_ParseTupleAndKeywords(args,kwargs,"O:BermudanOption_vega",kwnames,&argo0)) return NULL;
+    if ((SWIG_ConvertPtr(argo0,(void **) &arg0,SWIGTYPE_p_BermudanOption,1)) == -1) return NULL;
     {
         try {
             result = (double )arg0->vega();
@@ -17262,17 +17230,17 @@ static PyObject *_wrap_DividendOption_vega(PyObject *self, PyObject *args, PyObj
 }
 
 
-static PyObject *_wrap_DividendOption_rho(PyObject *self, PyObject *args, PyObject *kwargs) {
+static PyObject *_wrap_BermudanOption_rho(PyObject *self, PyObject *args, PyObject *kwargs) {
     PyObject *resultobj;
-    DividendOption *arg0 ;
+    BermudanOption *arg0 ;
     PyObject * argo0 =0 ;
     char *kwnames[] = {
         "self", NULL 
     };
     double result ;
     
-    if(!PyArg_ParseTupleAndKeywords(args,kwargs,"O:DividendOption_rho",kwnames,&argo0)) return NULL;
-    if ((SWIG_ConvertPtr(argo0,(void **) &arg0,SWIGTYPE_p_DividendOption,1)) == -1) return NULL;
+    if(!PyArg_ParseTupleAndKeywords(args,kwargs,"O:BermudanOption_rho",kwnames,&argo0)) return NULL;
+    if ((SWIG_ConvertPtr(argo0,(void **) &arg0,SWIGTYPE_p_BermudanOption,1)) == -1) return NULL;
     {
         try {
             result = (double )arg0->rho();
@@ -17295,9 +17263,9 @@ static PyObject *_wrap_DividendOption_rho(PyObject *self, PyObject *args, PyObje
 }
 
 
-static PyObject *_wrap_DividendOption_impliedVolatility(PyObject *self, PyObject *args, PyObject *kwargs) {
+static PyObject *_wrap_BermudanOption_impliedVolatility(PyObject *self, PyObject *args, PyObject *kwargs) {
     PyObject *resultobj;
-    DividendOption *arg0 ;
+    BermudanOption *arg0 ;
     double arg1 ;
     double arg2 = 1e-4 ;
     int arg3 = 100 ;
@@ -17307,8 +17275,8 @@ static PyObject *_wrap_DividendOption_impliedVolatility(PyObject *self, PyObject
     };
     double result ;
     
-    if(!PyArg_ParseTupleAndKeywords(args,kwargs,"Od|di:DividendOption_impliedVolatility",kwnames,&argo0,&arg1,&arg2,&arg3)) return NULL;
-    if ((SWIG_ConvertPtr(argo0,(void **) &arg0,SWIGTYPE_p_DividendOption,1)) == -1) return NULL;
+    if(!PyArg_ParseTupleAndKeywords(args,kwargs,"Od|di:BermudanOption_impliedVolatility",kwnames,&argo0,&arg1,&arg2,&arg3)) return NULL;
+    if ((SWIG_ConvertPtr(argo0,(void **) &arg0,SWIGTYPE_p_BermudanOption,1)) == -1) return NULL;
     {
         try {
             result = (double )arg0->impliedVolatility(arg1,arg2,arg3);
@@ -21574,15 +21542,15 @@ static PyMethodDef QuantLibcMethods[] = {
 	 { "ShoutOption_vega", (PyCFunction) _wrap_ShoutOption_vega, METH_VARARGS | METH_KEYWORDS },
 	 { "ShoutOption_rho", (PyCFunction) _wrap_ShoutOption_rho, METH_VARARGS | METH_KEYWORDS },
 	 { "ShoutOption_impliedVolatility", (PyCFunction) _wrap_ShoutOption_impliedVolatility, METH_VARARGS | METH_KEYWORDS },
-	 { "new_DividendOption", (PyCFunction) _wrap_new_DividendOption, METH_VARARGS | METH_KEYWORDS },
-	 { "delete_DividendOption", (PyCFunction) _wrap_delete_DividendOption, METH_VARARGS | METH_KEYWORDS },
-	 { "DividendOption_value", (PyCFunction) _wrap_DividendOption_value, METH_VARARGS | METH_KEYWORDS },
-	 { "DividendOption_delta", (PyCFunction) _wrap_DividendOption_delta, METH_VARARGS | METH_KEYWORDS },
-	 { "DividendOption_gamma", (PyCFunction) _wrap_DividendOption_gamma, METH_VARARGS | METH_KEYWORDS },
-	 { "DividendOption_theta", (PyCFunction) _wrap_DividendOption_theta, METH_VARARGS | METH_KEYWORDS },
-	 { "DividendOption_vega", (PyCFunction) _wrap_DividendOption_vega, METH_VARARGS | METH_KEYWORDS },
-	 { "DividendOption_rho", (PyCFunction) _wrap_DividendOption_rho, METH_VARARGS | METH_KEYWORDS },
-	 { "DividendOption_impliedVolatility", (PyCFunction) _wrap_DividendOption_impliedVolatility, METH_VARARGS | METH_KEYWORDS },
+	 { "new_BermudanOption", (PyCFunction) _wrap_new_BermudanOption, METH_VARARGS | METH_KEYWORDS },
+	 { "delete_BermudanOption", (PyCFunction) _wrap_delete_BermudanOption, METH_VARARGS | METH_KEYWORDS },
+	 { "BermudanOption_value", (PyCFunction) _wrap_BermudanOption_value, METH_VARARGS | METH_KEYWORDS },
+	 { "BermudanOption_delta", (PyCFunction) _wrap_BermudanOption_delta, METH_VARARGS | METH_KEYWORDS },
+	 { "BermudanOption_gamma", (PyCFunction) _wrap_BermudanOption_gamma, METH_VARARGS | METH_KEYWORDS },
+	 { "BermudanOption_theta", (PyCFunction) _wrap_BermudanOption_theta, METH_VARARGS | METH_KEYWORDS },
+	 { "BermudanOption_vega", (PyCFunction) _wrap_BermudanOption_vega, METH_VARARGS | METH_KEYWORDS },
+	 { "BermudanOption_rho", (PyCFunction) _wrap_BermudanOption_rho, METH_VARARGS | METH_KEYWORDS },
+	 { "BermudanOption_impliedVolatility", (PyCFunction) _wrap_BermudanOption_impliedVolatility, METH_VARARGS | METH_KEYWORDS },
 	 { "new_DividendShoutOption", (PyCFunction) _wrap_new_DividendShoutOption, METH_VARARGS | METH_KEYWORDS },
 	 { "delete_DividendShoutOption", (PyCFunction) _wrap_delete_DividendShoutOption, METH_VARARGS | METH_KEYWORDS },
 	 { "DividendShoutOption_value", (PyCFunction) _wrap_DividendShoutOption_value, METH_VARARGS | METH_KEYWORDS },
@@ -21735,7 +21703,7 @@ static swig_type_info _swigt__p_DPlusDMinus[] = {{"_p_DPlusDMinus", 0, "DPlusDMi
 static swig_type_info _swigt__p_BSMEuropeanOption[] = {{"_p_BSMEuropeanOption", 0, "BSMEuropeanOption *"},{"_p_BSMEuropeanOption"},{0}};
 static swig_type_info _swigt__p_AmericanOption[] = {{"_p_AmericanOption", 0, "AmericanOption *"},{"_p_AmericanOption"},{0}};
 static swig_type_info _swigt__p_ShoutOption[] = {{"_p_ShoutOption", 0, "ShoutOption *"},{"_p_ShoutOption"},{0}};
-static swig_type_info _swigt__p_DividendOption[] = {{"_p_DividendOption", 0, "DividendOption *"},{"_p_DividendOption"},{0}};
+static swig_type_info _swigt__p_BermudanOption[] = {{"_p_BermudanOption", 0, "BermudanOption *"},{"_p_BermudanOption"},{0}};
 static swig_type_info _swigt__p_DividendShoutOption[] = {{"_p_DividendShoutOption", 0, "DividendShoutOption *"},{"_p_DividendShoutOption"},{0}};
 static swig_type_info _swigt__p_DividendAmericanOption[] = {{"_p_DividendAmericanOption", 0, "DividendAmericanOption *"},{"_p_DividendAmericanOption"},{0}};
 static swig_type_info _swigt__p_DividendEuropeanOption[] = {{"_p_DividendEuropeanOption", 0, "DividendEuropeanOption *"},{"_p_DividendEuropeanOption"},{0}};
@@ -21802,7 +21770,7 @@ _swigt__p_DPlusDMinus,
 _swigt__p_BSMEuropeanOption, 
 _swigt__p_AmericanOption, 
 _swigt__p_ShoutOption, 
-_swigt__p_DividendOption, 
+_swigt__p_BermudanOption, 
 _swigt__p_DividendShoutOption, 
 _swigt__p_DividendAmericanOption, 
 _swigt__p_DividendEuropeanOption, 

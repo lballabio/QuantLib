@@ -24,6 +24,9 @@
 
 /* $Source$
    $Log$
+   Revision 1.25  2001/03/21 09:54:56  marmar
+   BermudanOption added, DividendOption removed
+
    Revision 1.24  2001/03/20 15:13:59  marmar
    MultiPeriodOption is a generalization of DividendAmericanOption
 
@@ -46,11 +49,11 @@
 %{
 using QuantLib::Pricers::AmericanOption;
 using QuantLib::Pricers::BinaryOption;
+using QuantLib::Pricers::BermudanOption;
 using QuantLib::Pricers::BSMEuropeanOption;
 using QuantLib::Pricers::FiniteDifferenceEuropean;
 using QuantLib::Pricers::DividendAmericanOption;
 using QuantLib::Pricers::DividendEuropeanOption;
-using QuantLib::Pricers::DividendOption;
 using QuantLib::Pricers::DividendShoutOption;
 using QuantLib::Pricers::ShoutOption;
 %}
@@ -137,15 +140,13 @@ class ShoutOption {
 };
 
 
-class DividendOption{
+class BermudanOption{
   public:
-	DividendOption(OptionType type, double underlying, double strike, 
+	BermudanOption(OptionType type, double underlying, double strike, 
 	  Rate dividendYield, Rate riskFreeRate, Time residualTime,
-	  double volatility,
-	  const DoubleVector &dividends, 
-	  const DoubleVector &exdivdates,
+	  double volatility, const DoubleVector &dates,
 	  int timeSteps = 100, int gridPoints = 100);
-	~DividendOption();
+	~BermudanOption();
 	double value() const;
 	double delta() const;
 	double gamma() const;
