@@ -49,7 +49,7 @@ namespace QuantLib {
             for(Size i = 1; i < dates_.size(); i++) {
                 QL_REQUIRE(dates_[i]>dates_[i-1],
                    "ZeroCurve::ZeroCurve : invalid date");
-                QL_REQUIRE(yields_[i] > 0.0,
+                QL_REQUIRE(yields_[i] >= 0.0,
                    "ZeroCurve::ZeroCurve : invalid yield");
                 times_[i] = dayCounter_.yearFraction(dates_[0],
                    dates_[i]);
