@@ -34,11 +34,7 @@ PYTHON_LIBS    = "$(PYTHON_HOME)"\libs
 WIN_OBJS        = c0d32.obj
 
 # Libraries
-!ifdef DEBUG
-    QUANTLIB_LIB = ..\Sources\Debug\QuantLib.lib
-!else
-    QUANTLIB_LIB = ..\Sources\Release\QuantLib.lib
-!endif
+QUANTLIB_LIB     = ..\Sources\QuantLib$(_D).lib
 QUANTLIB_DLL     = QuantLibc$(_D).dll
 WIN_LIBS         = import32.lib cw32mt.lib
 PYTHON_BCC_LIB   = bccpython.lib

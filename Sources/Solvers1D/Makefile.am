@@ -1,3 +1,6 @@
+
+EXTRA_DIST=makefile.mak
+
 INCLUDES = -I$(top_srcdir)/Include/ \
 	-I$(top_srcdir)/Include/Solvers1D
 

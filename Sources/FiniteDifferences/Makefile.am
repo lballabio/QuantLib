@@ -1,6 +1,7 @@
 AUTOMAKE_OPTIONS=foreign
 
-#INCLUDES = -I$(top_srcdir)/Include -I$(top_srcdir)/Include/FiniteDifferences
+EXTRA_DIST=makefile.mak
+
 INCLUDES = -I$(top_srcdir)/Include \
 	-I$(top_srcdir)/Include/FiniteDifferences \
 	-I$(top_srcdir)/Include/Pricers
