@@ -24,7 +24,7 @@
 
 #include <ql/swaptionvolstructure.hpp>
 #include <ql/Math/matrix.hpp>
-#include <ql/Math/interpolationtraits.hpp>
+#include <ql/Math/bilinearinterpolation.hpp>
 #include <vector>
 
 namespace QuantLib {
@@ -86,11 +86,11 @@ namespace QuantLib {
             timeLengths_[i] = dayCounter_.yearFraction(startDate,endDate);
         }
         interpolation_ =
-            Linear::make_interpolation(exerciseTimes_.begin(),
-                                       exerciseTimes_.end(),
-                                       timeLengths_.begin(),
-                                       timeLengths_.end(),
-                                       volatilities_);
+            BilinearInterpolation(exerciseTimes_.begin(),
+                                  exerciseTimes_.end(),
+                                  timeLengths_.begin(),
+                                  timeLengths_.end(),
+                                  volatilities_);
     }
 
     inline const std::vector<Date>&

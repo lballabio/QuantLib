@@ -65,7 +65,7 @@ namespace QuantLib {
 
     }
 
-    /*! bicubic spline interpolation between discrete points
+    /*! bicubic-spline interpolation between discrete points
         \todo revise end conditions
     */
     class BicubicSpline : public Interpolation2D {
@@ -91,6 +91,17 @@ namespace QuantLib {
                                                               zData));
         }
         #endif
+    };
+
+    //! bicubic-spline interpolation factory
+    class Bicubic {
+      public:
+        template <class I1, class I2, class M>
+        Interpolation2D interpolate(const I1& xBegin, const I1& xEnd,
+                                    const I2& yBegin, const I2& yEnd,
+                                    const M& z) const {
+            return BicubicSpline(xBegin,xEnd,yBegin,yEnd,z);
+        }
     };
 
 }

@@ -70,16 +70,12 @@ namespace QuantLib {
         //@}
         //! \name Modifiers
         //@{
-        template <class Traits>
-        #if defined(QL_PATCH_MSVC6)
-        void setInterpolation(const Traits&) {
-        #else
-        void setInterpolation() {
-        #endif
+        template <class Interpolator>
+        void setInterpolation(const Interpolator& i = Interpolator()) {
             varianceSurface_ =
-                Traits::make_interpolation(times_.begin(), times_.end(),
-                                           strikes_.begin(), strikes_.end(),
-                                           variances_);
+                i.interpolate(times_.begin(), times_.end(),
+                              strikes_.begin(), strikes_.end(),
+                              variances_);
             notifyObservers();
         }
         //@}

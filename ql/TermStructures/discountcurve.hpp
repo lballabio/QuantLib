@@ -24,19 +24,21 @@
 #define quantlib_discount_curve_hpp
 
 #include <ql/yieldtermstructure.hpp>
-#include <ql/Math/interpolationtraits.hpp>
+#include <ql/Math/loglinearinterpolation.hpp>
 #include <vector>
 
 namespace QuantLib {
 
     //! Term structure based on interpolation of discount factors
     /*! \ingroup yieldtermstructures */
-    template <class InterpolationTraits>
+    template <class Interpolator>
     class InterpolatedDiscountCurve : public YieldTermStructure {
       public:
         InterpolatedDiscountCurve(const std::vector<Date>& dates,
                                   const std::vector<DiscountFactor>& dfs,
-                                  const DayCounter& dayCounter);
+                                  const DayCounter& dayCounter,
+                                  const Interpolator& interpolator
+                                                            = Interpolator());
         //! \name Inspectors
         //@{
         DayCounter dayCounter() const;
@@ -59,6 +61,7 @@ namespace QuantLib {
         mutable std::vector<DiscountFactor> discounts_;
         mutable std::vector<Time> times_;
         mutable Interpolation interpolation_;
+        Interpolator interpolator_;
     };
 
     //! Term structure based on log-linear interpolation of discount factors
@@ -130,9 +133,11 @@ namespace QuantLib {
     InterpolatedDiscountCurve<T>::InterpolatedDiscountCurve(
                                  const std::vector<Date>& dates,
                                  const std::vector<DiscountFactor>& discounts,
-                                 const DayCounter& dayCounter)
+                                 const DayCounter& dayCounter,
+                                 const T& interpolator)
     : YieldTermStructure(dates[0]),
-      dayCounter_(dayCounter), dates_(dates), discounts_(discounts) {
+      dayCounter_(dayCounter), dates_(dates), discounts_(discounts),
+      interpolator_(interpolator) {
         QL_REQUIRE(dates_.size() > 0,
                    "no input dates given");
         QL_REQUIRE(discounts_.size() > 0,
@@ -152,8 +157,9 @@ namespace QuantLib {
             QL_REQUIRE(discounts_[i] > 0.0, "negative discount");
             times_[i] = dayCounter.yearFraction(dates_[0], dates_[i]);
         }
-        interpolation_ = T::make_interpolation(times_.begin(), times_.end(),
-                                               discounts_.begin());
+        interpolation_ = interpolator_.interpolate(times_.begin(),
+                                                   times_.end(),
+                                                   discounts_.begin());
     }
 
     template <class T>

@@ -58,15 +58,11 @@ namespace QuantLib {
         //@}
         //! \name Modifiers
         //@{
-        template <class Traits>
-        #if defined(QL_PATCH_MSVC6)
-        void setInterpolation(const Traits&) {
-        #else
-        void setInterpolation() {
-        #endif
+        template <class Interpolator>
+        void setInterpolation(const Interpolator& i = Interpolator()) {
             varianceCurve_ =
-                Traits::make_interpolation(times_.begin(), times_.end(),
-                                           variances_.begin());
+                i.interpolate(times_.begin(), times_.end(),
+                              variances_.begin());
             notifyObservers();
         }
         //@}

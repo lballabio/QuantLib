@@ -17,7 +17,7 @@
 */
 
 #include <ql/Volatilities/blackvariancesurface.hpp>
-#include <ql/Math/interpolationtraits.hpp>
+#include <ql/Math/bilinearinterpolation.hpp>
 
 namespace QuantLib {
 
@@ -61,9 +61,9 @@ namespace QuantLib {
         }
         // default: bilinear interpolation
         #if defined(QL_PATCH_MSVC6)
-        setInterpolation(Linear());
+        setInterpolation(Bilinear());
         #else
-        setInterpolation<Linear>();
+        setInterpolation<Bilinear>();
         #endif
     }
 

@@ -19,11 +19,11 @@
     \brief Cap/floor at-the-money flat volatility vector
 */
 
-#ifndef quantlib_cap_volatility_vector_h
-#define quantlib_cap_volatility_vector_h
+#ifndef quantlib_cap_volatility_vector_hpp
+#define quantlib_cap_volatility_vector_hpp
 
 #include <ql/capvolstructures.hpp>
-#include <ql/Math/interpolationtraits.hpp>
+#include <ql/Math/linearinterpolation.hpp>
 #include <ql/DayCounters/thirty360.hpp>
 #include <vector>
 
@@ -113,9 +113,9 @@ namespace QuantLib {
             timeLengths_[i+1] = timeFromReference(endDate);
         }
         interpolation_ =
-            Linear::make_interpolation(timeLengths_.begin(),
-                                       timeLengths_.end(),
-                                       volatilities_.begin());
+            LinearInterpolation(timeLengths_.begin(),
+                                timeLengths_.end(),
+                                volatilities_.begin());
     }
 
     inline Volatility CapVolatilityVector::volatilityImpl(

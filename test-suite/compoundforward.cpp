@@ -22,6 +22,7 @@
 #include <ql/Instruments/simpleswap.hpp>
 #include <ql/Indexes/zarlibor.hpp>
 #include <ql/Utilities/dataformatters.hpp>
+#include <iomanip>
 
 using namespace QuantLib;
 using namespace boost::unit_test_framework;

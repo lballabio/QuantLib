@@ -84,6 +84,16 @@ namespace QuantLib {
         }
     };
 
+    //! Linear interpolation factory
+    class Linear {
+      public:
+        template <class I1, class I2>
+        Interpolation interpolate(const I1& xBegin, const I1& xEnd,
+                                  const I2& yBegin) const {
+            return LinearInterpolation(xBegin,xEnd,yBegin);
+        }
+    };
+
 }
 
 

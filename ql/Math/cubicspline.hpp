@@ -163,6 +163,35 @@ namespace QuantLib {
                       true) {}
     };
 
+    //! %cubic-spline interpolation factory
+    class Cubic {
+      public:
+        Cubic(CubicSpline::BoundaryCondition leftCondition
+                                              = CubicSpline::SecondDerivative,
+              Real leftConditionValue = 0.0,
+              CubicSpline::BoundaryCondition rightCondition
+                                              = CubicSpline::SecondDerivative,
+              Real rightConditionValue = 0.0,
+              bool monotonicityConstraint = false)
+        : leftCondition_(leftCondition), leftValue_(leftConditionValue),
+          rightCondition_(rightCondition), rightValue_(rightConditionValue),
+          monotone_(monotonicityConstraint) {}
+        template <class I1, class I2>
+        Interpolation interpolate(const I1& xBegin, const I1& xEnd,
+                                  const I2& yBegin) const {
+            return CubicSpline(xBegin,xEnd,yBegin,
+                               leftCondition_,leftValue_,
+                               rightCondition_,rightValue_,
+                               monotone_);
+        }
+      private:
+        CubicSpline::BoundaryCondition leftCondition_;
+        Real leftValue_;
+        CubicSpline::BoundaryCondition rightCondition_;
+        Real rightValue_;
+        bool monotone_;
+    };
+
 
     namespace detail {
 

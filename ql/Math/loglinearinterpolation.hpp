@@ -68,7 +68,7 @@ namespace QuantLib {
 
     }
 
-    /*! %Log-linear interpolation between discrete points
+    /*! %log-linear interpolation between discrete points
 
         \todo implement primitive, derivative, and secondDerivative functions.
     */
@@ -81,6 +81,16 @@ namespace QuantLib {
             impl_ = boost::shared_ptr<Interpolation::Impl>(
                    new detail::LogLinearInterpolationImpl<I1,I2>(xBegin, xEnd,
                                                                  yBegin));
+        }
+    };
+
+    //! log-linear interpolation factory
+    class LogLinear {
+      public:
+        template <class I1, class I2>
+        Interpolation interpolate(const I1& xBegin, const I1& xEnd,
+                                  const I2& yBegin) const {
+            return LogLinearInterpolation(xBegin,xEnd,yBegin);
         }
     };
 
