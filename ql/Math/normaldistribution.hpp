@@ -110,7 +110,10 @@ namespace QuantLib {
 
         inline double NormalDistribution::operator()(double x) const {
             double deltax = x-average_;
-            return normalizationFactor_*QL_EXP(-deltax*deltax/denominator_);
+            double exponent = -deltax*deltax/denominator_;
+            // debian alpha had some strange problem in the very-low range
+            return exponent <= -690.0 ? 0.0 :  // exp(x) < 1.0e-300 anyway
+                                        normalizationFactor_*QL_EXP(exponent);
         }
 
         inline double NormalDistribution::derivative(double x) const {
