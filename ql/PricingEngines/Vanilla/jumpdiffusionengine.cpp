@@ -92,8 +92,8 @@ namespace QuantLib {
         results_.value       = 0.0;
         results_.delta       = 0.0;
         results_.gamma       = 0.0;
-        results_.theta       = 0.0;
-        results_.vega        = 0.0;
+//        results_.theta       = 0.0;
+//        results_.vega        = 0.0;
         results_.rho         = 0.0;
         results_.dividendRho = 0.0;
 
@@ -127,12 +127,40 @@ namespace QuantLib {
             results_.value       += weight * baseResults->value;
             results_.delta       += weight * baseResults->delta;
             results_.gamma       += weight * baseResults->gamma;
-            results_.theta       += weight * baseResults->theta;
-            results_.vega        += weight * baseResults->vega;
+//            results_.theta       += weight * baseResults->theta;
+//            results_.vega        += weight * baseResults->vega;
             results_.rho         += weight * baseResults->rho;
             results_.dividendRho += weight * baseResults->dividendRho;
 
-            lastContribution = weight * baseResults->value / results_.value;
+            lastContribution = QL_FABS(baseResults->value /
+                (QL_FABS(results_.value)>QL_EPSILON ? results_.value : 1.0));
+            
+            lastContribution = QL_MAX(lastContribution,
+                QL_FABS(baseResults->delta /
+                (QL_FABS(results_.delta)>QL_EPSILON ? results_.delta : 1.0)));
+
+            lastContribution = QL_MAX(lastContribution,
+                QL_FABS(baseResults->gamma /
+                (QL_FABS(results_.gamma)>QL_EPSILON ? results_.gamma : 1.0)));
+/*
+            lastContribution = QL_MAX(lastContribution,
+                QL_FABS(baseResults->theta /
+                (QL_FABS(results_.theta)>QL_EPSILON ? results_.theta : 1.0)));
+
+            lastContribution = QL_MAX(lastContribution,
+                QL_FABS(baseResults->vega /
+                (QL_FABS(results_.vega)>QL_EPSILON ? results_.vega : 1.0)));
+*/
+            lastContribution = QL_MAX(lastContribution,
+                QL_FABS(baseResults->rho /
+                (QL_FABS(results_.rho)>QL_EPSILON ? results_.rho : 1.0)));
+
+            lastContribution = QL_MAX(lastContribution,
+                QL_FABS(baseResults->dividendRho /
+                (QL_FABS(results_.dividendRho)>QL_EPSILON ?
+                                          results_.dividendRho : 1.0)));
+
+            lastContribution *= weight;
         }
         QL_ENSURE(i<maxIterations_,
             "JumpDiffusionEngine::calculate : "

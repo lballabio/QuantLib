@@ -47,6 +47,13 @@ namespace {
             BlackConstantVol(today, RelinkableHandle<Quote>(volatility), dc));
     }
 
+    double relativeError(double x1, double x2, double reference) {
+        if (reference != 0.0)
+            return QL_FABS(x1-x2)/reference;
+        else
+            return 1.0e+10;
+    }
+
     std::string payoffTypeToString(const Handle<Payoff>& payoff) {
 
         // PlainVanillaPayoff?
@@ -165,10 +172,66 @@ namespace {
                               DayCounter dc,
                               double v,
                               double intensity,
-                              double gamma,
+                              double meanLogJump,
+                              double jumpVol,
                               double expected,
                               double calculated,
-                              double tolerance = Null<double>()) {
+                              double error,
+                              double tolerance) {
+
+        Time t = dc.yearFraction(today, exercise->lastDate());
+
+        CPPUNIT_FAIL(exerciseTypeToString(exercise) + " "
+            + OptionTypeFormatter::toString(payoff->optionType()) +
+            " option with "
+            + payoffTypeToString(payoff) + ":\n"
+            "    underlying value: "
+            + DoubleFormatter::toString(s) + "\n"
+            "    strike:           "
+            + DoubleFormatter::toString(payoff->strike()) +"\n"
+            "    dividend yield:   "
+            + DoubleFormatter::toString(q) + "\n"
+            "    risk-free rate:   "
+            + DoubleFormatter::toString(r) + "\n"
+            "    reference date:   "
+            + DateFormatter::toString(today) + "\n"
+            "    maturity:         "
+            + DateFormatter::toString(exercise->lastDate()) + "\n"
+            "    time to expiry:   "
+            + DoubleFormatter::toString(t) + "\n"
+            "    volatility:       "
+            + DoubleFormatter::toString(v) + "\n\n"
+            "    intensity:        "
+            + DoubleFormatter::toString(intensity) + "\n"
+            "    mean log-jump:    "
+            + DoubleFormatter::toString(meanLogJump) + "\n"
+            "    jump volatility:  "
+            + DoubleFormatter::toString(jumpVol) + "\n\n"
+            "    expected   " + greekName + ": "
+            + DoubleFormatter::toString(expected) + "\n"
+            "    calculated " + greekName + ": "
+            + DoubleFormatter::toString(calculated) + "\n"
+            "    error:            "
+            + DoubleFormatter::toString(error) + "\n"
+            + (tolerance==Null<double>() ? std::string("") :
+            "    tolerance:        " + DoubleFormatter::toString(tolerance)));
+    }
+
+    void jump2OptionTestFailed(std::string greekName,
+                               const Handle<StrikedTypePayoff>& payoff,
+                               const Handle<Exercise>& exercise,
+                               double s,
+                               double q,
+                               double r,
+                               Date today,
+                               DayCounter dc,
+                               double v,
+                               double intensity,
+                               double gamma,
+                               double expected,
+                               double calculated,
+                               double error,
+                               double tolerance) {
 
         Time t = dc.yearFraction(today, exercise->lastDate());
 
@@ -201,7 +264,7 @@ namespace {
             "    calculated " + greekName + ": "
             + DoubleFormatter::toString(calculated) + "\n"
             "    error:            "
-            + DoubleFormatter::toString(QL_FABS(expected-calculated)) + "\n"
+            + DoubleFormatter::toString(error) + "\n"
             + (tolerance==Null<double>() ? std::string("") :
             "    tolerance:        " + DoubleFormatter::toString(tolerance)));
     }
@@ -438,11 +501,12 @@ void JumpDiffusionTest::testMerton76() {
         rRate->setValue(values[i].r);
 
 
+        jumpIntensity->setValue(values[i].jumpIntensity);
+
         // delta in Haug's notation
         double jVol = values[i].v *
             QL_SQRT(values[i].gamma / values[i].jumpIntensity);
         jumpVol->setValue(jVol);
-        jumpIntensity->setValue(values[i].jumpIntensity);
 
         // z in Haug's notation
         double diffusionVol = values[i].v * QL_SQRT(1.0 - values[i].gamma);
@@ -453,9 +517,9 @@ void JumpDiffusionTest::testMerton76() {
         meanLogJump->setValue(QL_LOG(1.0+meanJump)-0.5*jVol*jVol);
 
         double totalVol = QL_SQRT(values[i].jumpIntensity*jVol*jVol+diffusionVol*diffusionVol);
-        double error = QL_FABS(totalVol-values[i].v);
-        QL_REQUIRE(error<1e-13,
-            "" + DoubleFormatter::toString(error) +
+        double volError = QL_FABS(totalVol-values[i].v);
+        QL_REQUIRE(volError<1e-13,
+            "" + DoubleFormatter::toString(volError) +
             " mismatch");
 
         VanillaOption option(stochProcess,
@@ -464,17 +528,208 @@ void JumpDiffusionTest::testMerton76() {
                              engine);
 
         double calculated = option.NPV();
-        if (QL_FABS(calculated-values[i].result) > values[i].tol) {
-            jumpOptionTestFailed("value", payoff, exercise, values[i].s, values[i].q,
-                values[i].r, today, dc, values[i].v,
-                values[i].jumpIntensity, values[i].gamma,
-                values[i].result, calculated,
-                values[i].tol);
+        double error = QL_FABS(calculated-values[i].result);
+        if (error>values[i].tol) {
+            jump2OptionTestFailed("value",
+                                  payoff, exercise,
+                                  values[i].s, values[i].q, values[i].r,
+                                  today, dc,
+                                  values[i].v,
+                                  values[i].jumpIntensity, values[i].gamma,
+                                  values[i].result, calculated,
+                                  error, values[i].tol);
         }
     }
 
 }
 
+void JumpDiffusionTest::testGreeks() {
+
+    std::map<std::string,double> calculated, expected, tolerance;
+    tolerance["delta"]  = 1.0e-4;
+    tolerance["gamma"]  = 1.0e-4;
+    tolerance["theta"]  = 1.0e-4;
+    tolerance["rho"]    = 1.0e-4;
+    tolerance["divRho"] = 1.0e-4;
+    tolerance["vega"]   = 1.0e-4;
+
+    Option::Type types[] = { Option::Call, Option::Put, Option::Straddle };
+    double strikes[] = { 50.0, 100.0, 150.0 };
+    double underlyings[] = { 100.0 };
+    Rate qRates[] = { -0.05, 0.0, 0.05 };
+    Rate rRates[] = { 0.0, 0.01, 0.2 };
+    Time residualTimes[] = { 1.0 };
+    double vols[] = { 0.11 };
+    double jInt[] = { 1.0, 5.0 };
+    double mLJ[] = { -0.20, 0.0, 0.20 };
+    double jV[] = { 0.01, 0.25 };
+
+    DayCounter dc = Actual360();
+    Handle<SimpleQuote> spot(new SimpleQuote(0.0));
+    Handle<SimpleQuote> qRate(new SimpleQuote(0.0));
+    Handle<TermStructure> qTS = makeFlatCurve(qRate, dc);
+    Handle<SimpleQuote> rRate(new SimpleQuote(0.0));
+    Handle<TermStructure> rTS = makeFlatCurve(rRate, dc);
+    Handle<SimpleQuote> vol(new SimpleQuote(0.0));
+    Handle<BlackVolTermStructure> volTS = makeFlatVolatility(vol, dc);
+
+    Handle<SimpleQuote> jumpIntensity(new SimpleQuote(0.0));
+    Handle<SimpleQuote> meanLogJump(new SimpleQuote(0.0));
+    Handle<SimpleQuote> jumpVol(new SimpleQuote(0.0));
+    
+    Handle<BlackScholesStochasticProcess> stochProcess(new
+        Merton76StochasticProcess(
+            RelinkableHandle<Quote>(spot),
+            RelinkableHandle<TermStructure>(qTS),
+            RelinkableHandle<TermStructure>(rTS),
+            RelinkableHandle<BlackVolTermStructure>(volTS),
+            RelinkableHandle<Quote>(jumpIntensity),
+            RelinkableHandle<Quote>(meanLogJump),
+            RelinkableHandle<Quote>(jumpVol)));
+
+    Handle<StrikedTypePayoff> payoff;
+
+    Date today = Date::todaysDate();
+
+    Handle<VanillaEngine> baseEngine(new AnalyticEuropeanEngine);
+    Handle<PricingEngine> engine(new JumpDiffusionEngine(baseEngine));
+
+    for (Size i=0; i<LENGTH(types); i++) {
+      for (Size j=0; j<LENGTH(strikes); j++) {
+      for (Size jj1=0; jj1<LENGTH(jInt); jj1++) {
+        jumpIntensity->setValue(jInt[jj1]);
+      for (Size jj2=0; jj2<LENGTH(mLJ); jj2++) {
+        meanLogJump->setValue(mLJ[jj2]);
+      for (Size jj3=0; jj3<LENGTH(jV); jj3++) {
+        jumpVol->setValue(jV[jj3]);
+        for (Size k=0; k<LENGTH(residualTimes); k++) {
+          Date exDate = today.plusDays(int(residualTimes[k]*360+0.5));
+          Handle<Exercise> exercise(new EuropeanExercise(exDate));
+          Date exDateP = exDate.plusDays(1),
+               exDateM = exDate.plusDays(-1);
+          Time dT = (exDateP-exDateM)/360.0;
+          for (Size kk=0; kk<1; kk++) {
+              // option to check
+              if (kk==0) {
+                  payoff = Handle<StrikedTypePayoff>(new
+                    PlainVanillaPayoff(types[i], strikes[j]));
+              } else if (kk==1) {
+                  payoff = Handle<StrikedTypePayoff>(new
+                    CashOrNothingPayoff(types[i], strikes[j],
+                    100.0));
+              } else if (kk==2) {
+                  payoff = Handle<StrikedTypePayoff>(new
+                    AssetOrNothingPayoff(types[i], strikes[j]));
+              } else if (kk==3) {
+                  payoff = Handle<StrikedTypePayoff>(new
+                    GapPayoff(types[i], strikes[j], 100.0));
+              }
+              Handle<VanillaOption> option(new
+                  VanillaOption(stochProcess, payoff, exercise, engine));
+              // time-shifted exercise dates and options
+              Handle<Exercise> exerciseP(new EuropeanExercise(exDateP));
+              Handle<VanillaOption> optionP(new
+                  VanillaOption(stochProcess, payoff, exerciseP, engine));
+              Handle<Exercise> exerciseM(new EuropeanExercise(exDateM));
+              Handle<VanillaOption> optionM(new
+                  VanillaOption(stochProcess, payoff, exerciseM, engine));
+
+              for (Size l=0; l<LENGTH(underlyings); l++) {
+                double u = underlyings[l];
+                for (Size m=0; m<LENGTH(qRates); m++) {
+                  double q = qRates[m];
+                  for (Size n=0; n<LENGTH(rRates); n++) {
+                    double r = rRates[n];
+                    for (Size p=0; p<LENGTH(vols); p++) {
+                      double v = vols[p];
+                      spot->setValue(u);
+                      qRate->setValue(q);
+                      rRate->setValue(r);
+                      vol->setValue(v);
+
+                      double value         = option->NPV();
+                      calculated["delta"]  = option->delta();
+                      calculated["gamma"]  = option->gamma();
+//                      calculated["theta"]  = option->theta();
+                      calculated["rho"]    = option->rho();
+                      calculated["divRho"] = option->dividendRho();
+//                      calculated["vega"]   = option->vega();
+
+                      if (value > spot->value()*1.0e-5) {
+                          // perturb spot and get delta and gamma
+                          double du = u*1.0e-5;
+                          spot->setValue(u+du);
+                          double value_p = option->NPV(),
+                                 delta_p = option->delta();
+                          spot->setValue(u-du);
+                          double value_m = option->NPV(),
+                                 delta_m = option->delta();
+                          spot->setValue(u);
+                          expected["delta"] = (value_p - value_m)/(2*du);
+                          expected["gamma"] = (delta_p - delta_m)/(2*du);
+
+                          // perturb rates and get rho and dividend rho
+                          double dr = r*1.0e-5;
+                          rRate->setValue(r+dr);
+                          value_p = option->NPV();
+                          rRate->setValue(r-dr);
+                          value_m = option->NPV();
+                          rRate->setValue(r);
+                          expected["rho"] = (value_p - value_m)/(2*dr);
+
+                          double dq = q*1.0e-4;
+                          qRate->setValue(q+dq);
+                          value_p = option->NPV();
+                          qRate->setValue(q-dq);
+                          value_m = option->NPV();
+                          qRate->setValue(q);
+                          expected["divRho"] = (value_p - value_m)/(2*dq);
+
+                          // perturb volatility and get vega
+                          double dv = v*1.0e-4;
+                          vol->setValue(v+dv);
+                          value_p = option->NPV();
+                          vol->setValue(v-dv);
+                          value_m = option->NPV();
+                          vol->setValue(v);
+                          // expected["vega"] = (value_p - value_m)/(2*dv);
+
+                          // get theta from time-shifted options
+                          // expected["theta"] = (optionM->NPV() - optionP->NPV())/dT;
+
+                          // compare
+                          std::map<std::string,double>::iterator it;
+                          for (it = expected.begin(); 
+                               it != expected.end(); ++it) {
+                              std::string greek = it->first;
+                              double expct = expected  [greek],
+                                     calcl = calculated[greek],
+                                     tol   = tolerance [greek];
+                              double error = QL_FABS(expct-calcl);
+                              if (error>tol) {
+                                  jumpOptionTestFailed(greek, payoff, exercise,
+                                                       u, q, r,
+                                                       today, dc,
+                                                       v,
+                                                       jInt[jj1],
+                                                       mLJ[jj2], jV[jj3],
+                                                       expct, calcl,
+                                                       error, tol);
+                              }
+                          }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+        }
+      } // strike loop
+      }
+      }
+      }
+    } // type loop
+}
 
 CppUnit::Test* JumpDiffusionTest::suite() {
     CppUnit::TestSuite* tests =
@@ -483,6 +738,10 @@ CppUnit::Test* JumpDiffusionTest::suite() {
     tests->addTest(new CppUnit::TestCaller<JumpDiffusionTest>
         ("Testing Merton 76 jump diffusion model for European options",
         &JumpDiffusionTest::testMerton76));
+
+    tests->addTest(new CppUnit::TestCaller<JumpDiffusionTest>
+        ("Testing jump diffusion option greeks",
+        &JumpDiffusionTest::testGreeks));
 
     return tests;
 }

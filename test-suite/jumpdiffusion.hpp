@@ -24,6 +24,7 @@
 class JumpDiffusionTest : public CppUnit::TestFixture {
   public:
     void testMerton76();
+    void testGreeks();
     static CppUnit::Test* suite();
 };
 
