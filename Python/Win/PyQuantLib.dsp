@@ -70,7 +70,7 @@ LINK32=link.exe
 # PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /MTd /W3 /Gm /GX /Zi /Od /D "WIN32" /D "_DEBUG" /D "_WINDOWS" /YX /c
-# ADD CPP /nologo /MDd /W3 /Gm /GX /ZI /Od /I "..\..\Include" /I "..\..\Include\Calendars" /I "..\..\Include\Currencies" /I "..\..\Include\DayCounters" /I "..\..\Include\FiniteDifferences" /I "..\..\Include\Instruments" /I "..\..\Include\Math" /I "..\..\Include\MonteCarlo" /I "..\..\Include\Patterns" /I "..\..\Include\Pricers" /I "..\..\Include\Solvers1D" /I "..\..\Include\TermStructures" /I "..\..\Include\Utilities" /D "WIN32" /D "_DEBUG" /D "_WINDOWS" /YX /FD /c
+# ADD CPP /nologo /MDd /W3 /Gm- /GX /ZI /Od /I "..\..\Include" /I "..\..\Include\Calendars" /I "..\..\Include\Currencies" /I "..\..\Include\DayCounters" /I "..\..\Include\FiniteDifferences" /I "..\..\Include\Instruments" /I "..\..\Include\Math" /I "..\..\Include\MonteCarlo" /I "..\..\Include\Patterns" /I "..\..\Include\Pricers" /I "..\..\Include\Solvers1D" /I "..\..\Include\TermStructures" /I "..\..\Include\Utilities" /D "WIN32" /D "_DEBUG" /D "_WINDOWS" /YX /FD /c
 # ADD BASE MTL /nologo /D "_DEBUG" /win32
 # ADD MTL /nologo /D "_DEBUG" /mktyplib203 /win32
 # ADD BASE RSC /l 0x409 /d "_DEBUG"
