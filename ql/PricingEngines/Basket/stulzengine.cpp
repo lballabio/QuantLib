@@ -50,9 +50,9 @@ namespace QuantLib {
             double sigma = QL_SQRT(sigma_squared);
         
             double a1 = gamma1 + vol_s1 * rootExpiry;
-            double b1 = (QL_LOG(s2_0 / s1_0) - 0.5 * sigma_squared * rootExpiry) / (sigma * rootExpiry);
+            double b1 = (QL_LOG(s2_0 / s1_0) - 0.5 * sigma_squared * expiry) / (sigma * rootExpiry);
             double a2 = gamma2 + vol_s2 * rootExpiry;
-            double b2 = (QL_LOG(s1_0 / s2_0) - 0.5 * sigma_squared * rootExpiry) / (sigma * rootExpiry);
+            double b2 = (QL_LOG(s1_0 / s2_0) - 0.5 * sigma_squared * expiry) / (sigma * rootExpiry);
             double modRho1 = (rho * vol_s2 - vol_s1) / sigma;
             double modRho2 = (rho * vol_s1 - vol_s2) / sigma;
         

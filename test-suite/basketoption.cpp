@@ -153,9 +153,9 @@ void BasketOptionTest::testValues() {
         {Option::Put, BasketOption::Min, 100.0, 100.0, 0.5, 0.3, 0.3, 100, 0.05, 12, 13.89038},
         {Option::Put, BasketOption::Min, 100.0, 100.0, 0.3, 0.3, 0.3, 100, 0.05, 12, 14.74097},
         {Option::Put, BasketOption::Min, 100.0, 100.0, 0.1, 0.3, 0.3, 100, 0.05, 12, 15.4854},
-        {Option::Put, BasketOption::Min, 100.0, 100.0, 0.1, 0.3, 0.3, 100, 0.05, 6, 13.93915},
-        {Option::Put, BasketOption::Min, 100.0, 100.0, 0.1, 0.3, 0.3, 100, 0.05, 3, 12.60395},
-        {Option::Put, BasketOption::Min, 100.0, 100.0, 0.1, 0.3, 0.3, 100, 0.05, 24, 17.00579},
+        {Option::Put, BasketOption::Min, 100.0, 100.0, 0.1, 0.3, 0.3, 100, 0.05, 6, 11.89271},
+        {Option::Put, BasketOption::Min, 100.0, 100.0, 0.1, 0.3, 0.3, 100, 0.05, 3, 8.880667},
+        {Option::Put, BasketOption::Min, 100.0, 100.0, 0.1, 0.3, 0.3, 100, 0.05, 24, 19.26801},
         // put on the max
         {Option::Put, BasketOption::Max, 100.0, 100.0, 0.9, 0.3, 0.3, 100, 0.05, 12, 7.339334},
         {Option::Put, BasketOption::Max, 100.0, 100.0, 0.7, 0.3, 0.3, 100, 0.05, 12, 5.852663},
