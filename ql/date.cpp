@@ -173,7 +173,7 @@ namespace QuantLib {
         return d;
     }
 
-    Date Date::nextIMM() const {
+    Date Date::nextIMMdate() const {
         Year y = this->year();
         Month m = this->month();
 
@@ -191,6 +191,14 @@ namespace QuantLib {
             Date nextWednesday = nextDayOfWeekAfterDate(*this, Wednesday);
             if (nextWednesday.dayOfMonth() <= 21)
                 return nextWednesday;
+            else {
+                if (m<=9)
+                    m=Month(Size(m)+3);
+                else {
+                    m=Month(Size(m)-9);
+                    y+=1;
+                }
+            }
         }
 
         return nthDayOfWeekForMonthAndYear(3, Wednesday, m, y);
@@ -274,7 +282,7 @@ namespace QuantLib {
     Date Date::nextDayOfWeekAfterDate(const Date& d, Weekday dayOfWeek) {
 
         Weekday wd = d.weekday();
-        return d.plusDays((wd>=dayOfWeek ? 7 : 0) - wd + dayOfWeek);
+        return d.plusDays((wd>dayOfWeek ? 7 : 0) - wd + dayOfWeek);
     }
 
     Date Date::nthDayOfWeekForMonthAndYear(Size nth, Weekday dayOfWeek,

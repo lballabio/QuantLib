@@ -170,6 +170,7 @@ namespace QuantLib {
         Weekday weekday() const;
         Day dayOfMonth() const;
         bool isEndOfMonth() const;
+        bool isIMMdate() const;
         Day lastDayOfMonth() const;
         //! One-based (Jan 1st = 1)
         Day dayOfYear() const;
@@ -178,10 +179,12 @@ namespace QuantLib {
         BigInteger serialNumber() const;
         /*! returns the 1st delivery date for next contract listed in the
             International Money Market section of the Chicago Mercantile
-            Exchange
+            Exchange.
+            
+            \warning The result date is following or equal to the original date
         */
         //! next IMM date
-        Date nextIMM() const;
+        Date nextIMMdate() const;
         //@}
 
         //! \name date algebra
@@ -308,6 +311,13 @@ namespace QuantLib {
 
     inline bool Date::isEndOfMonth() const {
        return (dayOfMonth() == monthLength(month(), isLeap(year())));
+    }
+
+    inline bool Date::isIMMdate() const {
+        Day d = this->dayOfMonth();
+        Month m = this->month();
+        return ((this->weekday() == Wednesday) && (d >= 15 && d <= 21) && 
+                (m == March || m == June || m == September || m == December));
     }
 
     inline Day Date::lastDayOfMonth() const {
