@@ -39,7 +39,7 @@ namespace QuantLib {
         //! multipath pricer for European-type Himalaya option
         /*! The payoff of an himalaya option is computed in the following way:
             given a basket of N assets, and M time periods, at end of
-            each period the option who performed the best is added to the
+            each period the option which performed the best is added to the
             average and then discarded from the basket. At the end of the
             M periods the option pays the max between the strike and the
             average of the best performers.
