@@ -233,7 +233,7 @@ namespace QuantLib {
 
         //! European Vanilla option pricing engine using Monte Carlo simulation
         template<class S, class PG, class PP>
-        class MCEuropeanVanillaEngine : MCVanillaEngine<S, PG, PP> {
+        class MCEuropeanVanillaEngine : public MCVanillaEngine<S, PG, PP> {
           public:
             MCEuropeanVanillaEngine(bool antitheticVariance,
                                     long seed=0) 
