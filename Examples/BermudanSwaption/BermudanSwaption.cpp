@@ -148,8 +148,8 @@ int main(int argc, char* argv[])
 
         // bootstrapping the yield curve
         Handle<PiecewiseFlatForward> myTermStructure(new
-            PiecewiseFlatForward(depositDayCounter,
-            todaysDate, settlementDate, instruments));
+            PiecewiseFlatForward(todaysDate, settlementDate,
+            instruments, depositDayCounter));
 
         RelinkableHandle<TermStructure > rhTermStructure;
         rhTermStructure.linkTo(myTermStructure);

@@ -58,26 +58,29 @@ namespace QuantLib {
                 bool extrapolate = false) const;
             Rate forwardImpl(Time, bool extrapolate = false) const;
           private:
+            Date todaysDate_, settlementDate_;
             DayCounter dayCounter_;
-            Date settlementDate_;
             RelinkableHandle<MarketElement> forward_;
         };
 
         // inline definitions
 
-        inline FlatForward::FlatForward(const Date& settlementDate,
+        inline FlatForward::FlatForward(const Date& todaysDate,
+            const Date& settlementDate,
             Rate forward, const DayCounter& dayCounter)
-        : settlementDate_(settlementDate), dayCounter_(dayCounter) {
+        : todaysDate_(todaysDate), settlementDate_(settlementDate),
+          dayCounter_(dayCounter) {
             forward_.linkTo(
                 Handle<MarketElement>(new SimpleMarketElement(forward)));
             registerWith(forward_);
         }
 
-        inline FlatForward::FlatForward(const Date& settlementDate,
+        inline FlatForward::FlatForward(const Date& todaysDate,
+            const Date& settlementDate,
             const RelinkableHandle<MarketElement>& forward,
             const DayCounter& dayCounter)
-        : settlementDate_(settlementDate), forward_(forward),
-          dayCounter_(dayCounter) {
+        : todaysDate_(todaysDate), settlementDate_(settlementDate),
+          dayCounter_(dayCounter), forward_(forward) {
             registerWith(forward_);
         }
 

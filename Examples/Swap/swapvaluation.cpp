@@ -46,7 +46,6 @@ int main(int argc, char* argv[])
 {
     try {
         Calendar calendar = TARGET();
-        Currency currency = EUR;
         int settlementDays = 2;
         int fixingDays = 2;
 
@@ -173,8 +172,8 @@ int main(int argc, char* argv[])
         depoSwapInstruments.push_back(s10y);
         depoSwapInstruments.push_back(s15y);
         Handle<TermStructure> depoSwapTermStructure(new
-            PiecewiseFlatForward(currency, termStructureDayCounter,
-            todaysDate, settlementDate, depoSwapInstruments));
+            PiecewiseFlatForward(todaysDate, settlementDate,
+            depoSwapInstruments, termStructureDayCounter));
 
 
          /*********************
@@ -468,8 +467,8 @@ int main(int argc, char* argv[])
         depoFutSwapInstruments.push_back(s10y);
         depoFutSwapInstruments.push_back(s15y);
         Handle<TermStructure> depoFutSwapTermStructure(new
-            PiecewiseFlatForward(currency, termStructureDayCounter,
-            todaysDate, settlementDate, depoFutSwapInstruments));
+            PiecewiseFlatForward(todaysDate, settlementDate,
+            depoFutSwapInstruments, termStructureDayCounter));
 
 
 
@@ -487,8 +486,8 @@ int main(int argc, char* argv[])
         depoFRASwapInstruments.push_back(s10y);
         depoFRASwapInstruments.push_back(s15y);
         Handle<TermStructure> depoFRASwapTermStructure(new
-            PiecewiseFlatForward(currency, termStructureDayCounter,
-            todaysDate, settlementDate, depoFRASwapInstruments));
+            PiecewiseFlatForward(todaysDate, settlementDate,
+            depoFRASwapInstruments, termStructureDayCounter));
 
 
 

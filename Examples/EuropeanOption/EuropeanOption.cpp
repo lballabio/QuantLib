@@ -212,8 +212,8 @@ int main(int argc, char* argv[])
 
         // bootstrap the curve
         Handle<TermStructure> flatTermStructure(new
-            TermStructures::FlatForward(depositDayCounter, todaysDate,
-                                   todaysDate, riskFreeRate));
+            TermStructures::FlatForward(todaysDate,
+            todaysDate, riskFreeRate,depositDayCounter));
 
         Instruments::VanillaOption option(
             Option::Call,
