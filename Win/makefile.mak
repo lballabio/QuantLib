@@ -28,7 +28,7 @@ PYTHON_LIBS		= "$(PYTHON_HOME)"\libs
 CORE_OBJS		= $(OUTPUT_DIR)\calendar.obj $(OUTPUT_DIR)\date.obj $(OUTPUT_DIR)\solver1d.obj $(OUTPUT_DIR)\dataformatters.obj
 CALENDAR_OBJS	= $(OUTPUT_DIR)\westerncalendar.obj $(OUTPUT_DIR)\frankfurt.obj $(OUTPUT_DIR)\london.obj $(OUTPUT_DIR)\milan.obj $(OUTPUT_DIR)\newyork.obj $(OUTPUT_DIR)\target.obj $(OUTPUT_DIR)\zurich.obj 
 DAYCOUNT_OBJS	= $(OUTPUT_DIR)\actualactual.obj $(OUTPUT_DIR)\thirty360.obj $(OUTPUT_DIR)\thirty360italian.obj
-MATH_OBJS		= $(OUTPUT_DIR)\normaldistribution.obj $(OUTPUT_DIR)\statistics.obj  $(OUTPUT_DIR)\newcubicspline.obj
+MATH_OBJS		= $(OUTPUT_DIR)\normaldistribution.obj $(OUTPUT_DIR)\statistics.obj  $(OUTPUT_DIR)\newcubicspline.obj $(OUTPUT_DIR)\randomgenerator.obj
 FDM_OBJS		= $(OUTPUT_DIR)\tridiagonaloperator.obj $(OUTPUT_DIR)\bsmoperator.obj
 PRICER_OBJS		= $(OUTPUT_DIR)\bsmoption.obj $(OUTPUT_DIR)\bsmnumericaloption.obj $(OUTPUT_DIR)\bsmeuropeanoption.obj $(OUTPUT_DIR)\bsmamericanoption.obj $(OUTPUT_DIR)\dividendamericanoption.obj 
 SOLVER1D_OBJS	= $(OUTPUT_DIR)\bisection.obj $(OUTPUT_DIR)\brent.obj $(OUTPUT_DIR)\falseposition.obj $(OUTPUT_DIR)\newton.obj $(OUTPUT_DIR)\newtonsafe.obj $(OUTPUT_DIR)\ridder.obj $(OUTPUT_DIR)\secant.obj
@@ -164,6 +164,7 @@ Math: $(OUTPUT_DIR) $(MATH_OBJS)
 $(OUTPUT_DIR)\normaldistribution.obj: $(SOURCES_DIR)\Math\normaldistribution.cpp
 $(OUTPUT_DIR)\statistics.obj: $(SOURCES_DIR)\Math\statistics.cpp
 $(OUTPUT_DIR)\newcubicspline.obj: $(SOURCES_DIR)\Math\newcubicspline.cpp
+$(OUTPUT_DIR)\randomgenerator.obj: $(SOURCES_DIR)\Math\randomgenerator.cpp
 
 
 # Pricers
@@ -249,6 +250,6 @@ test::
 
 # Install PyQuantLib
 install::
-	if exist $(PYTHON_HOME)\QuantLib.pyc      del $(PYTHON_HOME)\QuantLib.pyc
-	copy $(PYTHON_DIR)\QuantLib.py $(PYTHON_HOME)\QuantLib.py
-	copy $(PYTHON_DIR)\QuantLibc.dll $(PYTHON_HOME)\QuantLibc.dll
+	if exist $(PYTHON_HOME)\QuantLib.pyc      del "$(PYTHON_HOME)"\QuantLib.pyc
+	copy $(PYTHON_DIR)\QuantLib.py "$(PYTHON_HOME)"\QuantLib.py
+	copy $(PYTHON_DIR)\QuantLibc.dll "$(PYTHON_HOME)"\QuantLibc.dll
