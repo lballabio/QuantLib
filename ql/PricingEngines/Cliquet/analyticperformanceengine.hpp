@@ -15,12 +15,24 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#ifndef quantlib_pricing_engines_cliquet_all_hpp
-#define quantlib_pricing_engines_cliquet_all_hpp
+/*! \file analyticperformanceengine.hpp
+    \brief Analytic performance engine
+*/
 
-#include <ql/qldefines.hpp>
-#include <ql/PricingEngines/Cliquet/analyticcliquetengine.hpp>
-#include <ql/PricingEngines/Cliquet/analyticperformanceengine.hpp>
+#ifndef quantlib_analytic_performance_engine_hpp
+#define quantlib_analytic_performance_engine_hpp
+
+#include <ql/Instruments/cliquetoption.hpp>
+
+namespace QuantLib {
+
+    //! Pricing engine for performance options using analytical formulae
+    class AnalyticPerformanceEngine : public CliquetOption::engine {
+      public:
+        void calculate() const;
+    };
+
+}
 
 
 #endif

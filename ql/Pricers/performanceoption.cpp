@@ -20,6 +20,8 @@
 
 namespace QuantLib {
 
+#ifndef QL_DISABLE_DEPRECATED
+
     PerformanceOption::PerformanceOption(
                        Option::Type type, double, double moneyness,
                        const std::vector<Spread>& dividendYield,
@@ -28,7 +30,7 @@ namespace QuantLib {
                        const std::vector<double>& volatility) {
 
         QL_REQUIRE(times.size() > 0,
-                   "at least one option is required for performance options");
+                   "at least one time is required for performance options");
         QL_REQUIRE(dividendYield.size()==times.size(),
                    "dividendYield vector of wrong size");
         QL_REQUIRE(riskFreeRate.size()==times.size(),
@@ -62,6 +64,8 @@ namespace QuantLib {
             discount *= QL_EXP(-riskFreeRate[i] * dt);
        }
     }
+
+#endif
 
 }
 

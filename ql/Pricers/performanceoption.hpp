@@ -26,10 +26,14 @@
 
 namespace QuantLib {
 
+#ifndef QL_DISABLE_DEPRECATED
+
     //! Performance option
     /*! A performance option is a variant of a cliquet option: the
         payoff of each forward-starting (a.k.a. deferred strike)
         options is \$ max(S/X- 1) \$.
+
+        \deprecated Use CliquetOption with AnalyticPerformanceEngine instead
     */
     class PerformanceOption {
       public:
@@ -55,11 +59,10 @@ namespace QuantLib {
         double rho_, dividendRho_;
     };
 
+#endif
+
 }
 
 
 #endif
-
-
-
 

@@ -19,6 +19,7 @@
 #include "utilities.hpp"
 #include <ql/Instruments/cliquetoption.hpp>
 #include <ql/PricingEngines/Cliquet/analyticcliquetengine.hpp>
+#include <ql/PricingEngines/Cliquet/analyticperformanceengine.hpp>
 #include <ql/DayCounters/actual365.hpp>
 #include <ql/DayCounters/simpledaycounter.hpp>
 #include <ql/TermStructures/flatforward.hpp>
@@ -130,9 +131,10 @@ void CliquetOptionTest::testValues() {
 }
 
 
-void CliquetOptionTest::testGreeks() {
+namespace {
 
-    BOOST_MESSAGE("Testing Cliquet option greeks...");
+  template <class T>
+  void testOptionGreeks() {
 
     std::map<std::string,double> calculated, expected, tolerance;
     tolerance["delta"]  = 1.0e-5;
@@ -185,7 +187,7 @@ void CliquetOptionTest::testGreeks() {
                  d = d.plusMonths(months))
                 reset.push_back(d);
 
-            boost::shared_ptr<PricingEngine> engine(new AnalyticCliquetEngine);
+            boost::shared_ptr<PricingEngine> engine(new T);
 
             CliquetOption option(process, payoff, maturity, reset, engine);
 
@@ -289,6 +291,20 @@ void CliquetOptionTest::testGreeks() {
         }
       }
     }
+  }
+
+}
+
+
+void CliquetOptionTest::testGreeks() {
+    BOOST_MESSAGE("Testing Cliquet option greeks...");
+    testOptionGreeks<AnalyticCliquetEngine>();
+}
+
+
+void CliquetOptionTest::testPerformanceGreeks() {
+    BOOST_MESSAGE("Testing performance option greeks...");
+    testOptionGreeks<AnalyticPerformanceEngine>();
 }
 
 
@@ -296,6 +312,7 @@ test_suite* CliquetOptionTest::suite() {
     test_suite* suite = BOOST_TEST_SUITE("Cliquet option tests");
     suite->add(BOOST_TEST_CASE(&CliquetOptionTest::testValues));
     suite->add(BOOST_TEST_CASE(&CliquetOptionTest::testGreeks));
+    suite->add(BOOST_TEST_CASE(&CliquetOptionTest::testPerformanceGreeks));
     return suite;
 }
 

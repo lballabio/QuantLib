@@ -24,6 +24,7 @@ class CliquetOptionTest {
   public:
     static void testValues();
     static void testGreeks();
+    static void testPerformanceGreeks();
     static boost::unit_test_framework::test_suite* suite();
 };
 
