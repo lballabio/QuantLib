@@ -1,5 +1,6 @@
 includedir = $(prefix)/include/QuantLib/Math
 include_HEADERS = \
+    matrix.h \
 	normaldistribution.h \
 	statistics.h \
 	cubicspline.h \

@@ -18,7 +18,8 @@
  * You should have received a copy of the license along with this file;
  * if not, contact ferdinando@ametrano.net
  *
- * QuantLib license is also available at http://quantlib.sourceforge.net/LICENSE.TXT
+ * QuantLib license is also available at 
+ * http://quantlib.sourceforge.net/LICENSE.TXT
 */
 
 /*! \file array.h
@@ -27,18 +28,12 @@
     $Source$
     $Name$
     $Log$
+    Revision 1.15  2001/01/23 18:12:50  lballabio
+    Added matrix.h to Include/Math
+
     Revision 1.14  2001/01/11 11:02:37  nando
     added #include <iterator>
 
-    Revision 1.13  2001/01/08 11:47:55  lballabio
-    Moved array.h back to Include folder
-
-    Revision 1.2  2001/01/08 11:44:17  lballabio
-    Array back into QuantLib namespace - Math namespace broke expression templates, go figure
-
-    Revision 1.1  2001/01/08 10:28:16  lballabio
-    Moved Array to Math namespace
-    
 */
 
 #ifndef quantlib_array_h
@@ -73,20 +68,13 @@ namespace QuantLib {
             a_{i}=a_{i-1}+increment \f$
         */
         Array(int size, double value, double increment);
-        Array(const Array& from)
-        : pointer(0), n(0), bufferSize(0) {
-            allocate(from.size()); 
-            copy(from);
-        }
+        Array(const Array& from);
         #if QL_EXPRESSION_TEMPLATES_WORK
         template <class Iter> Array(const VectorialExpression<Iter>& e)
         : pointer(0), n(0), bufferSize(0) { allocate(e.size()); copy(e); }
         #endif
         ~Array();
-        Array& operator=(const Array& from) {
-            if (this != &from) { resize(from.size()); copy(from); } 
-            return *this;
-        }
+        Array& operator=(const Array& from);
         #if QL_EXPRESSION_TEMPLATES_WORK
         template <class Iter> Array& operator=(
           const VectorialExpression<Iter>& e) {
@@ -205,7 +193,6 @@ namespace QuantLib {
             }
         }
         #endif
-      private:
         double* pointer;
         int n, bufferSize;
     };
@@ -529,6 +516,12 @@ namespace QuantLib {
             *i = value;
     }
     
+    inline Array::Array(const Array& from)
+    : pointer(0), n(0), bufferSize(0) {
+        allocate(from.size()); 
+        copy(from);
+    }
+
     inline Array::~Array() {
         if (pointer != 0 && bufferSize != 0)
             delete[] pointer;
@@ -536,6 +529,14 @@ namespace QuantLib {
         n = bufferSize = 0;
     }
     
+    inline Array& Array::operator=(const Array& from) {
+        if (this != &from) {
+            resize(from.size());
+            copy(from);
+        }
+        return *this;
+    }
+
     inline Array& Array::operator+=(const Array& v) {
         #ifdef QL_DEBUG
             QL_REQUIRE(n == v.n, 

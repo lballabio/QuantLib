@@ -25,6 +25,9 @@
     $Source$
     $Name$
     $Log$
+    Revision 1.17  2001/01/23 18:12:50  lballabio
+    Added matrix.h to Include/Math
+
     Revision 1.16  2001/01/23 11:08:51  lballabio
     Renamed iterators in Include\Utilities and related files
 
@@ -146,6 +149,7 @@
 /*** math ***/
 
 #include "array.h"
+#include "matrix.h"
 
 // math tools
 #include "normaldistribution.h"
@@ -155,14 +159,12 @@
 #include "cubicspline.h"
 #include "lexicographicalview.h"
 
-
 // Monte Carlo tools
 #include "boxmuller.h"
 #include "centrallimitgaussian.h"
 #include "gaussianrandomgenerator.h"
 #include "lecuyerrandomgenerator.h"
 #include "uniformrandomgenerator.h"
-
 
 // finite difference tools
 #include "backwardeuler.h"
