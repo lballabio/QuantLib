@@ -32,6 +32,7 @@ namespace QuantLib {
         //!  Cost function abstract class for optimization problem
         class CostFunction {
           public:
+            virtual ~CostFunction() {}
             //! method to overload to compute the cost functon value in x
             virtual double value(const Array& x) const = 0;
 
