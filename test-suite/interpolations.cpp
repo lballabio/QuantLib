@@ -197,6 +197,10 @@ namespace {
     }
 }
 
+/* See J. M. Hyman, "Accurate monotonicity preserving cubic interpolation"
+   SIAM J. of Scientific and Statistical Computing, v. 4, 1983, pp. 645-654.
+   http://math.lanl.gov/~mac/papers/numerics/H83.pdf
+*/
 void InterpolationTest::testSplineErrorOnGaussianValues() {
 
     Size points[]                = {      5,      9,     17,     33 };
@@ -256,6 +260,10 @@ void InterpolationTest::testSplineErrorOnGaussianValues() {
 
 }
 
+/* See J. M. Hyman, "Accurate monotonicity preserving cubic interpolation"
+   SIAM J. of Scientific and Statistical Computing, v. 4, 1983, pp. 645-654.
+   http://math.lanl.gov/~mac/papers/numerics/H83.pdf
+*/
 void InterpolationTest::testSplineOnGaussianValues() {
     double interpolated, interpolated2;
     Size n = 5;
@@ -323,6 +331,10 @@ void InterpolationTest::testSplineOnGaussianValues() {
 }
 
 
+/* See J. M. Hyman, "Accurate monotonicity preserving cubic interpolation"
+   SIAM J. of Scientific and Statistical Computing, v. 4, 1983, pp. 645-654.
+   http://math.lanl.gov/~mac/papers/numerics/H83.pdf
+*/
 void InterpolationTest::testSplineOnRPN15AValues() {
 
     const double RPN15A_x[] = { 
@@ -458,6 +470,10 @@ void InterpolationTest::testSplineOnRPN15AValues() {
     }
 }
 
+/* Blossey, Frigyik, Farnum "A Note On Cubic Splines"
+   Applied Linear Algebra and Numerical Analysis AMATH 352 Lecture Notes
+   http://www.amath.washington.edu/courses/352-winter-2002/spline_note.pdf
+*/
 void InterpolationTest::testSplineOnGenericValues() {
 
     const double generic_x[] = { 0.0, 1.0, 3.0, 4.0 };

@@ -42,8 +42,8 @@ namespace QuantLib {
         If the interpolating spline is already monotonic, the Hyman filter
         leaves it unchanged.
 
-        See J. M. Hyman, SIAM Journal of Scientific and Statistical Computing,
-        4, No. 4, (December 1983) 645--654.
+        See J. M. Hyman, "Accurate monotonicity preserving cubic interpolation"
+        SIAM J. of Scientific and Statist. Computing, v. 4, 1983, pp. 645-654.
         http://math.lanl.gov/~mac/papers/numerics/H83.pdf
     */
     class CubicSpline : public Interpolation {
@@ -161,17 +161,17 @@ namespace QuantLib {
                             if (constraint>=0.0) {
                                 correction = QL_MIN(QL_MAX(0.0, tmp[i]), 
                                                     constraint);
-                                if (correction!=tmp[i]) {
-                                    tmp[i] = correction;
-                                    monotone_ = true;
-                                }
                             } else {
                                 correction = QL_MAX(QL_MIN(0.0, tmp[i]), 
                                                     constraint);
-                                if (correction!=tmp[i]) {
-                                    tmp[i] = correction;
-                                    monotone_ = true;
-                                }
+                            }
+                            if (correction!=tmp[i]) {
+                                tmp[i] = correction;
+                                monotone_ = true;
+                            }
+                            if (correction!=tmp[i]) {
+                                tmp[i] = correction;
+                                monotone_ = true;
                             }
                         } else if (i==n_-1) {
                             // locally monotone constrain
@@ -179,17 +179,13 @@ namespace QuantLib {
                             if (constraint>=0.0) {
                                 correction = QL_MIN(QL_MAX(0.0, tmp[i]), 
                                                     constraint);
-                                if (correction!=tmp[i]) {
-                                    tmp[i] = correction;
-                                    monotone_ = true;
-                                }
                             } else {
                                 correction = QL_MAX(QL_MIN(0.0, tmp[i]), 
                                                     constraint);
-                                if (correction!=tmp[i]) {
-                                    tmp[i] = correction;
-                                    monotone_ = true;
-                                }
+                            }
+                            if (correction!=tmp[i]) {
+                                tmp[i] = correction;
+                                monotone_ = true;
                             }
                         } else {
                             // locally non-monotone (generalized) constrain
@@ -198,17 +194,13 @@ namespace QuantLib {
                             if (tmp[i]>=0.0) {
                                 correction = QL_MIN(QL_MAX(0.0, tmp[i]), 
                                                     constraint);
-                                if (correction!=tmp[i]) {
-                                    tmp[i] = correction;
-                                    monotone_ = true;
-                                }
                             } else {
                                 correction = QL_MAX(QL_MIN(0.0, tmp[i]),
                                                     -constraint);
-                                if (correction!=tmp[i]) {
-                                    tmp[i] = correction;
-                                    monotone_ = true;
-                                }
+                            }
+                            if (correction!=tmp[i]) {
+                                tmp[i] = correction;
+                                monotone_ = true;
                             }
                         }
                     }
