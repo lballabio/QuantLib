@@ -2,6 +2,9 @@
 ******************************************************
  $Source$
  $Log$
+ Revision 1.10  2001/07/11 16:43:38  benin
+ added a note about MikTek on Win32
+
  Revision 1.9  2001/05/16 16:55:19  nando
  improved doc
 
@@ -55,3 +58,5 @@ that includes fancyhdr.sty, extramarks.sty and fixmarks.sty (the 3 files can be
 downloaded from http://toocool.calpoly.edu/latex/fancy_header.html)
 7) download http://www.tex.ac.uk/tex-archive/support/epstopdf/epstopdf.exe
 and copy it into a directory on your path
+8) Open MikTeX Option panel from Programs/MiKTeX 2 list and click on the
+"Refresh Now" button in the "General" folder.
