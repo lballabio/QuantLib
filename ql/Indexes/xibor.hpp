@@ -86,39 +86,39 @@ namespace QuantLib {
 
         // inline definitions
 
-        void Xibor::update() {
+        inline void Xibor::update() {
             notifyObservers();
         }
         
-        Period Xibor::tenor() const { 
+        inline Period Xibor::tenor() const { 
             return Period(n_,units_); 
         }
         
-        int Xibor::settlementDays() const { 
+        inline int Xibor::settlementDays() const { 
             return settlementDays_; 
         }
         
-        Currency Xibor::currency() const { 
+        inline Currency Xibor::currency() const { 
             return currency_; 
         }
         
-        Calendar Xibor::calendar() const { 
+        inline Calendar Xibor::calendar() const { 
             return calendar_; 
         }
         
-        bool Xibor::isAdjusted() const { 
+        inline bool Xibor::isAdjusted() const { 
             return isAdjusted_; 
         }
         
-        RollingConvention Xibor::rollingConvention() const {
+        inline RollingConvention Xibor::rollingConvention() const {
             return rollingConvention_; 
         }
         
-        DayCounter Xibor::dayCounter() const { 
+        inline DayCounter Xibor::dayCounter() const { 
             return termStructure_->dayCounter(); 
         }
         
-        Handle<TermStructure> Xibor::termStructure() const {
+        inline Handle<TermStructure> Xibor::termStructure() const {
             return (*termStructure_).currentLink();
         }
         
