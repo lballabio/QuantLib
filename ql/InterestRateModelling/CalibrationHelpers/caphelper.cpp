@@ -22,16 +22,16 @@
  * available at http://quantlib.org/group.html
 */
 
-/*! \file cap.cpp
-    \brief European cap and floor class
+/*! \file caphelper.cpp
+    \brief Cap calibration helper
 
     \fullpath
-    ql/InterestRateModelling/CalibrationHelpers/%cap.hpp
+    ql/InterestRateModelling/CalibrationHelpers/%caphelper.hpp
 */
 
 // $Id$
 
-#include "ql/InterestRateModelling/CalibrationHelpers/cap.hpp"
+#include "ql/InterestRateModelling/CalibrationHelpers/caphelper.hpp"
 #include "ql/CashFlows/floatingratecoupon.hpp"
 #include "ql/Math/normaldistribution.hpp"
 
@@ -45,7 +45,7 @@ namespace QuantLib {
             using Instruments::EuropeanCap;
             using Instruments::SimpleSwap;
 
-            Cap::Cap(
+            CapHelper::CapHelper(
                 const Period& wait,
                 const Period& tenor,
                 const Handle<Indexes::Xibor>& index,
@@ -98,42 +98,77 @@ namespace QuantLib {
                   0,//FIXME
                   std::vector<double>(1, 0.0),
                   termStructure));
+
                 cap_ = Handle<EuropeanCap>(new EuropeanCap(
                   swap_,
                   std::vector<Rate>(1, exerciseRate_),
                   termStructure));
 
-                std::vector<Handle<CashFlow> > floatingLeg = 
-                    swap_->floatingLeg();
-                std::vector<Handle<CashFlow> >::const_iterator begin, end;
-                begin = floatingLeg.begin();
-                end   = floatingLeg.end();
-                Date today = termStructure_->minDate();
-                DayCounter counter = termStructure_->dayCounter();
-                size_t i=0;
-                for (; begin != end; ++begin) {
-                    Handle<FloatingRateCoupon> coupon = *begin;
-                    QL_ENSURE(!coupon.isNull(), 
-                        "not a floating rate coupon");
-                    Date beginDate = coupon->accrualStartDate();
-                    Date endDate = coupon->date();
-                    startTimes_.resize(i+1);
-                    endTimes_.resize(i+1);
-                    startTimes_[i] = counter.yearFraction(today, beginDate);
-                    endTimes_[i] = counter.yearFraction(today, endDate);
-                    i++;
-                }
-                nbOfPeriods_ = i;
+            }
+
+            CapHelper::CapHelper(
+                const Period& tenor,
+                const Handle<Indexes::Xibor>& index,
+                const RelinkableHandle<TermStructure>& termStructure) :
+                termStructure_(termStructure) {
+
+                Period indexTenor = index->tenor();
+                int frequency;
+                if (indexTenor.units() == Months)
+                    frequency = 12/indexTenor.length();
+                else if (indexTenor.units() == Years)
+                    frequency = 1/indexTenor.length();
+                else
+                    throw Error("index tenor not valid!");
+                Rate fixedRate = 0.04;//dummy value
+                SimpleSwap swap(
+                  false, 
+                  termStructure->settlementDate(),
+                  tenor.length(),
+                  tenor.units(),
+                  index->calendar(),
+                  index->rollingConvention(),
+                  std::vector<double>(1, 1.0),
+                  frequency,
+                  std::vector<double>(1, fixedRate),
+                  false,
+                  index->dayCounter(),
+                  frequency,
+                  index,
+                  0,//FIXME
+                  std::vector<double>(1, 0.0),
+                  termStructure);
+                Rate fairFixedRate = fixedRate - swap.NPV()/swap.fixedLegBPS();
+                swap_ = Handle<SimpleSwap>(new SimpleSwap(
+                  false, 
+                  termStructure->settlementDate(),
+                  tenor.length(),
+                  tenor.units(),
+                  index->calendar(),
+                  index->rollingConvention(),
+                  std::vector<double>(1, 1.0),
+                  frequency,
+                  std::vector<double>(1, fairFixedRate),
+                  false,
+                  index->dayCounter(),
+                  frequency,
+                  index,
+                  0,//FIXME
+                  std::vector<double>(1, 0.0),
+                  termStructure));
+                exerciseRate_ = fairFixedRate;
+                cap_ = Handle<EuropeanCap>(new EuropeanCap( swap_,
+                    std::vector<Rate>(1, fairFixedRate), termStructure));
 
             }
 
-            double Cap::value(const Handle<Model>& model) {
+            double CapHelper::modelValue(const Handle<Model>& model) {
                 cap_->useModel(model);
                 cap_->recalculate();
                 return cap_->NPV();
             }
 
-            double Cap::blackPrice(double sigma) const {
+            double CapHelper::blackPrice(double sigma) const {
                 Math::CumulativeNormalDistribution f;
                 double value = 0.0;
                 for (unsigned i=0; i<nbOfPeriods_; i++) {
@@ -141,14 +176,18 @@ namespace QuantLib {
                     Time end = endTimes_[i];
                     double tenor = end - start;
                     double p = termStructure_->discount(start);
-                    double forward = QL_LOG(p/termStructure_->discount(end))/tenor;
+                    double forward = QL_LOG(p/termStructure_->discount(end))/
+                        tenor;
                     double capletValue;
                     if (start > QL_EPSILON) {
-                        double d1 = (QL_LOG(forward/exerciseRate_)+0.5*sigma*sigma*start)/(sigma*QL_SQRT(start));
+                        double d1 = (QL_LOG(forward/exerciseRate_)+
+                            0.5*sigma*sigma*start)/(sigma*QL_SQRT(start));
                         double d2 = d1 - sigma*QL_SQRT(start);
-                        capletValue = p*tenor*(forward*f(d1) - exerciseRate_*f(d2));
+                        capletValue = p*tenor*
+                            (forward*f(d1) - exerciseRate_*f(d2));
                     } else {
-                        capletValue = p*tenor*QL_MAX(forward - exerciseRate_, 0.0);
+                        capletValue = p*tenor*
+                            QL_MAX(forward - exerciseRate_, 0.0);
                     }
                     value += capletValue;
                 }

@@ -22,11 +22,11 @@
  * available at http://quantlib.org/group.html
 */
 
-/*! \file cap.hpp
-    \brief Cap calibration helper
+/*! \file caphelper.hpp
+    \brief CapHelper calibration helper
 
     \fullpath
-    ql/InterestRateModelling/CalibrationHelpers/%cap.hpp
+    ql/InterestRateModelling/CalibrationHelpers/%caphelper.hpp
 */
 
 // $Id$
@@ -35,7 +35,7 @@
 #define quantlib_interest_rate_modelling_calibration_helpers_cap_h
 
 #include "ql/Instruments/capfloor.hpp"
-#include "ql/InterestRateModelling/onefactormodel.hpp"
+#include "ql/InterestRateModelling/model.hpp"
 
 namespace QuantLib {
 
@@ -43,23 +43,47 @@ namespace QuantLib {
 
         namespace CalibrationHelpers {
 
-            class Cap : public CalibrationHelper {
+            class CapHelper : public CalibrationHelper {
               public:
-                Cap(
+                //Constructor for any cap
+                CapHelper(
                     const Period& wait,
                     const Period& tenor,
                     const Handle<Indexes::Xibor>& index,
                     Rate exerciseRate,
                     const RelinkableHandle<TermStructure>& termStructure);
-                virtual ~Cap() {}
-                virtual double value(const Handle<Model>& model);
-                virtual double blackPrice(double volatility) const;
+
+                //Constructor for ATM cap
+                CapHelper(
+                    const Period& tenor,
+                    const Handle<Indexes::Xibor>& index,
+                    const RelinkableHandle<TermStructure>& termStructure);
+
+                virtual ~CapHelper() {}
+
+                virtual double modelValue(const Handle<Model>& model);
+                virtual double marketValue() { return marketValue_; }
+
+                void setVolatility(double volatility) {
+                    volatility_ = volatility;
+                    marketValue_ = blackPrice(volatility);
+                }
+
+                void setMarketValue(double value) {
+                    volatility_ = Null<double>();
+                    marketValue_ = value;
+                }
+
               private:
+                virtual double blackPrice(double volatility) const;
+
+                double volatility_;
+                double marketValue_;
                 Rate exerciseRate_;
                 RelinkableHandle<TermStructure> termStructure_;
                 Handle<Instruments::SimpleSwap> swap_;
                 Handle<Instruments::EuropeanCap> cap_;
-                size_t nbOfPeriods_;
+                unsigned int nbOfPeriods_;
                 std::vector<Time> startTimes_;
                 std::vector<Time> endTimes_;
             };
