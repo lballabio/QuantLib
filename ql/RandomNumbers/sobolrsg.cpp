@@ -142,8 +142,8 @@ namespace QuantLib {
             0.5/(1UL<<(SobolRsg::bits_-1));
 
         SobolRsg::SobolRsg(Size dimensionality, unsigned long seed)
-        : dimensionality_(dimensionality), sequenceCounter_(0),
-          sequence_(Array(dimensionality), 1.0),
+        : dimensionality_(dimensionality), sequenceCounter_(0), 
+          firstDraw_(true), sequence_(Array(dimensionality), 1.0),
           integerSequence_(dimensionality, 0),
           directionIntegers_(dimensionality,std::vector<unsigned long>(bits_))
         {
@@ -182,7 +182,7 @@ namespace QuantLib {
 
             // degenerate (no free integers) first dimension
             int j;
-            for(j=0; j<bits_; j++)
+            for (j=0; j<bits_; j++)
                 directionIntegers_[0][j] = (1UL<<(bits_-j-1));
 
             unsigned long maxTabulated = 
@@ -238,10 +238,9 @@ namespace QuantLib {
             }
 
             // initialize the Sobol integer/double vectors
-            for(k=0; k<dimensionality_; k++) {
+            for (k=0; k<dimensionality_; k++) {
                 integerSequence_[k]=directionIntegers_[k][0];
-                // the following is probably useless
-                // since we reject the zero-th draw
+                // first draw
                 sequence_.value[k] = integerSequence_[k]*normalizationFactor_;
             }
 
@@ -249,7 +248,12 @@ namespace QuantLib {
 
 
         const SobolRsg::sample_type& SobolRsg::nextSequence() const {
-            // increment the counter (and avoid the zero-th draw)
+            if (firstDraw_) {
+                // it was precomputed in the constructor
+                firstDraw_ = false;
+                return sequence_;
+            }
+            // increment the counter
             sequenceCounter_++;
             // did we overflow?
             QL_REQUIRE(sequenceCounter_ != 0,
@@ -259,9 +263,9 @@ namespace QuantLib {
             // instead of using the counter n as new unique generating integer
             // for the n-th draw use the Gray code G(n) as proposed
             // by Antonov and Saleev
-            unsigned long n=sequenceCounter_;
+            unsigned long n = sequenceCounter_;
             // Find rightmost zero bit of n
-            int j=0;
+            int j = 0;
             while (n & 1) { n >>= 1; j++; }
             for (Size k=0; k<dimensionality_; k++) {
                 // XOR the appropriate direction number into each component of

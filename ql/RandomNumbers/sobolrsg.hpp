@@ -75,6 +75,7 @@ namespace QuantLib {
             static const double normalizationFactor_;
             unsigned long dimensionality_;
             mutable unsigned long sequenceCounter_;
+            mutable bool firstDraw_;
             mutable sample_type sequence_;
             mutable std::vector<unsigned long> integerSequence_;
             std::vector<std::vector<unsigned long> > directionIntegers_;
@@ -83,5 +84,6 @@ namespace QuantLib {
     }
 
 }
+
 
 #endif

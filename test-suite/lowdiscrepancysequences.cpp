@@ -31,10 +31,10 @@ CppUnit::Test* LDSTest::suite() {
                    ("Testing primitive polynomials modulo two",
                     &LDSTest::testPolynomialsModuloTwo));
     tests->addTest(new CppUnit::TestCaller<LDSTest>
-                   ("Testing Sobol Sequences",
+                   ("Testing Sobol sequences",
                     &LDSTest::testSobol));
     tests->addTest(new CppUnit::TestCaller<LDSTest>
-                   ("Testing Halton Sequences",
+                   ("Testing Halton sequences",
                     &LDSTest::testHalton));
     return tests;
 }
@@ -85,10 +85,10 @@ void LDSTest::testSobol() {
         point = rsg.nextSequence().value;
         if (point.size()!=dimensionality) {
             CPPUNIT_FAIL("Sobol sequence generator returns "
-                " a sequence of wrong dimensionality: " +
-                IntegerFormatter::toString(point.size())
-                + " instead of  " +
-                IntegerFormatter::toString(PPMT_MAX_DIM));
+                         " a sequence of wrong dimensionality: " +
+                         IntegerFormatter::toString(point.size())
+                         + " instead of  " +
+                         IntegerFormatter::toString(PPMT_MAX_DIM));
         }
     }
 
@@ -100,42 +100,43 @@ void LDSTest::testSobol() {
     point = rsg.nextSequence().value;
     if (point.size()!=dimensionality) {
         CPPUNIT_FAIL("Sobol sequence generator returns "
-            " a sequence of wrong dimensionality: " +
-            IntegerFormatter::toString(point.size())
-            + " instead of  " +
-            IntegerFormatter::toString(PPMT_MAX_DIM));
+                     " a sequence of wrong dimensionality: " +
+                     IntegerFormatter::toString(point.size())
+                     + " instead of  " +
+                     IntegerFormatter::toString(PPMT_MAX_DIM));
     }
     for (i=1; i<points; i++) {
         point = rsg.nextSequence().value;
     }
 
-    static const double vanderCorputSequenceModuloTwo[] = {
-       // first cycle (zero excluded)
-//     0.50000,
-       // second cycle
-       0.75000, 0.25000,
-       // third cycle
-       0.37500, 0.87500, 0.62500, 0.12500,
-       // fourth cycle
-       0.18750, 0.68750, 0.93750, 0.43750, 0.31250, 0.81250, 0.56250, 0.06250,
-       // fifth cycle
-       0.09375, 0.59375, 0.84375, 0.34375, 0.46875, 0.96875, 0.71875, 0.21875,
-       0.15625, 0.65625, 0.90625, 0.40625, 0.28125, 0.78125, 0.53125, 0.03125
+    const double vanderCorputSequenceModuloTwo[] = {
+        // first cycle (zero excluded)
+        0.50000,
+        // second cycle
+        0.75000, 0.25000,
+        // third cycle
+        0.37500, 0.87500, 0.62500, 0.12500,
+        // fourth cycle
+        0.18750, 0.68750, 0.93750, 0.43750, 0.31250, 0.81250, 0.56250, 0.06250,
+        // fifth cycle
+        0.09375, 0.59375, 0.84375, 0.34375, 0.46875, 0.96875, 0.71875, 0.21875,
+        0.15625, 0.65625, 0.90625, 0.40625, 0.28125, 0.78125, 0.53125, 0.03125
     };
     
     dimensionality = 1;
     rsg = SobolRsg(dimensionality);
-    points = QL_POW(2, 5)-1-1;
+    points = sizeof(vanderCorputSequenceModuloTwo)/sizeof(double);
     for (i=0; i<points; i++) {
         point = rsg .nextSequence().value;
         if (point[0]!=vanderCorputSequenceModuloTwo[i]) {
-            CPPUNIT_FAIL("Sobol sequence " +
-                IntegerFormatter::toString(i+1) +
-                "-th number (" +
-                DoubleFormatter::toString(point[0]) +
-                ") is not in the van der Corput sequence modulo two: " +
-                "it should have been " + 
-                DoubleFormatter::toString(vanderCorputSequenceModuloTwo[i]));
+            CPPUNIT_FAIL(IntegerFormatter::toString(i+1) +
+                         "-th number (" +
+                         DoubleFormatter::toString(point[0]) +
+                         ") in 1-D Sobol sequence is not in the "
+                         "van der Corput sequence modulo two: " +
+                         "it should have been " + 
+                         DoubleFormatter::toString(
+                             vanderCorputSequenceModuloTwo[i]));
         }
     }
 }
@@ -153,10 +154,10 @@ void LDSTest::testHalton() {
         point = rsg.nextSequence().value;
         if (point.size()!=dimensionality) {
             CPPUNIT_FAIL("Sobol sequence generator returns "
-                " a sequence of wrong dimensionality: " +
-                IntegerFormatter::toString(point.size())
-                + " instead of  " +
-                IntegerFormatter::toString(PPMT_MAX_DIM));
+                         " a sequence of wrong dimensionality: " +
+                         IntegerFormatter::toString(point.size())
+                         + " instead of  " +
+                         IntegerFormatter::toString(PPMT_MAX_DIM));
         }
     }
 
@@ -169,47 +170,48 @@ void LDSTest::testHalton() {
     point = rsg.nextSequence().value;
     if (point.size()!=dimensionality) {
         CPPUNIT_FAIL("Sobol sequence generator returns "
-            " a sequence of wrong dimensionality: " +
-            IntegerFormatter::toString(point.size())
-            + " instead of  " +
-            IntegerFormatter::toString(PPMT_MAX_DIM));
+                     " a sequence of wrong dimensionality: " +
+                     IntegerFormatter::toString(point.size())
+                     + " instead of  " +
+                     IntegerFormatter::toString(PPMT_MAX_DIM));
     }
     for (i=1; i<points; i++) {
         point = rsg.nextSequence().value;
     }
 
-    static const double vanderCorputSequenceModuloTwo[] = {
-       // first cycle (zero excluded)
-       0.50000,
-       // second cycle
-       0.25000, 0.75000,
-       // third cycle
-       0.12500, 0.62500, 0.37500, 0.87500,
-       // fourth cycle
-       0.06250, 0.56250, 0.31250, 0.81250, 0.18750, 0.68750, 0.43750, 0.93750,
-       // fifth cycle
-       0.03125, 0.53125, 0.28125, 0.78125, 0.15625, 0.65625, 0.40625, 0.90625,
-       0.09375, 0.59375, 0.34375, 0.84375, 0.21875, 0.71875, 0.46875, 0.96875,
+    const double vanderCorputSequenceModuloTwo[] = {
+        // first cycle (zero excluded)
+        0.50000,
+        // second cycle
+        0.25000, 0.75000,
+        // third cycle
+        0.12500, 0.62500, 0.37500, 0.87500,
+        // fourth cycle
+        0.06250, 0.56250, 0.31250, 0.81250, 0.18750, 0.68750, 0.43750, 0.93750,
+        // fifth cycle
+        0.03125, 0.53125, 0.28125, 0.78125, 0.15625, 0.65625, 0.40625, 0.90625,
+        0.09375, 0.59375, 0.34375, 0.84375, 0.21875, 0.71875, 0.46875, 0.96875,
     };
     
 
     dimensionality = 1;
     rsg = HaltonRsg(dimensionality);
-    points = QL_POW(2, 5)-1;
+    points = sizeof(vanderCorputSequenceModuloTwo)/sizeof(double);
     for (i=0; i<points; i++) {
         point = rsg .nextSequence().value;
         if (point[0]!=vanderCorputSequenceModuloTwo[i]) {
-            CPPUNIT_FAIL("Halton sequence "+
-                IntegerFormatter::toString(i+1) +
-                "-th number (" +
-                DoubleFormatter::toString(point[0]) +
-                ") is not in the van der Corput sequence modulo two: " +
-                "it should have been " + 
-                DoubleFormatter::toString(vanderCorputSequenceModuloTwo[i]));
+            CPPUNIT_FAIL(IntegerFormatter::toString(i+1) +
+                         "-th number (" +
+                         DoubleFormatter::toString(point[0]) +
+                         ") in 1-D Halton sequence is not in the "
+                         "van der Corput sequence modulo two: " +
+                         "it should have been " + 
+                         DoubleFormatter::toString(
+                             vanderCorputSequenceModuloTwo[i]));
         }
     }
 
-    static const double vanderCorputSequenceModuloThree[] = {
+    const double vanderCorputSequenceModuloThree[] = {
         // first cycle (zero excluded)
         0.333333, 0.666667,
         // second cycle
@@ -220,30 +222,32 @@ void LDSTest::testHalton() {
         0.185185, 0.518519, 0.851852, 0.2962960, 0.629630, 0.962963
     };
 
-
     dimensionality = 2;
     rsg = HaltonRsg(dimensionality);
-    points = QL_POW(3, 3)-1;
+    points = sizeof(vanderCorputSequenceModuloThree)/sizeof(double);
     for (i=0; i<points; i++) {
         point = rsg .nextSequence().value;
         if (point[0]!=vanderCorputSequenceModuloTwo[i]) {
-            CPPUNIT_FAIL("Halton sequence dimension two first component " +
-                IntegerFormatter::toString(i+1) +
-                "-th number (" +
-                DoubleFormatter::toString(point[0]) +
-                ") is not in the van der Corput sequence modulo two: " +
-                "it should have been " + 
-                DoubleFormatter::toString(vanderCorputSequenceModuloTwo[i]));
+            CPPUNIT_FAIL("First component of " +
+                         IntegerFormatter::toString(i+1) +
+                         "-th number (" +
+                         DoubleFormatter::toString(point[0]) +
+                         ") in 2-D Halton sequence is not in the "
+                         "van der Corput sequence modulo two: " +
+                         "it should have been " + 
+                         DoubleFormatter::toString(
+                             vanderCorputSequenceModuloTwo[i]));
         }
         if (fabs(point[1]-vanderCorputSequenceModuloThree[i])>1e-6) {
-            CPPUNIT_FAIL("Halton sequence dimension two second component " +
-                IntegerFormatter::toString(i+1) +
-                "-th number (" +
-                DoubleFormatter::toString(point[1]) +
-                ") is not in the van der Corput sequence modulo three: "
-                "it should have been " + 
-                DoubleFormatter::toString(vanderCorputSequenceModuloThree[i]));
-
+            CPPUNIT_FAIL("Second component of " +
+                         IntegerFormatter::toString(i+1) +
+                         "-th number (" +
+                         DoubleFormatter::toString(point[1]) +
+                         ") in 2-D Halton sequence is not in the "
+                         "van der Corput sequence modulo three: "
+                         "it should have been " + 
+                         DoubleFormatter::toString(
+                             vanderCorputSequenceModuloThree[i]));
         }
     }
 
