@@ -1,6 +1,7 @@
 
 /*
  Copyright (C) 2001, 2002, 2003 Sadruddin Rejeb
+ Copyright (C) 2004 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -30,8 +31,16 @@ namespace QuantLib {
     //! Discretized asset class used by numerical methods
     class DiscretizedAsset {
       public:
+        #ifndef QL_DISABLE_DEPRECATED
+        /*! \deprecated use the constructor with no arguments */
         DiscretizedAsset(const boost::shared_ptr<NumericalMethod>& method)
-        : method_(method) {}
+        : method_(method), latestPreAdjustment_(QL_MAX_REAL),
+          latestPostAdjustment_(QL_MAX_REAL) {}
+        #endif
+
+        DiscretizedAsset()
+        : latestPreAdjustment_(QL_MAX_REAL),
+          latestPostAdjustment_(QL_MAX_REAL) {}
         virtual ~DiscretizedAsset() {}
 
         virtual void reset(Size size) = 0;
@@ -50,15 +59,21 @@ namespace QuantLib {
             other asset (i.e., an option on this one) has any chance to 
             look at the values. For instance, payments happening at times 
             already spanned by the rollback will be added here.
+
+            This method is not virtual; derived classes must override
+            the protected preAdjustValuesImpl() method instead.
         */
-        virtual void preAdjustValues() {}
+        void preAdjustValues();
         /*! This method will be invoked after rollback and after any
             other asset had their chance to look at the values. For 
             instance, payments happening at the present time (and therefore 
             not included in an option to be exercised at this time) will be 
             added here.
+
+            This method is not virtual; derived classes must override
+            the protected postAdjustValuesImpl() method instead.
         */
-        virtual void postAdjustValues() {}
+        void postAdjustValues();
 
         void adjustValues() {
             preAdjustValues();
@@ -68,13 +83,17 @@ namespace QuantLib {
         virtual void addTimesTo(std::list<Time>&) const {}
       protected:
         bool isOnTime(Time t) const;
+        virtual void preAdjustValuesImpl() {}
+        virtual void postAdjustValuesImpl() {}
 
         Time time_;
+        Time latestPreAdjustment_, latestPostAdjustment_;
         Array values_;
 
       private:
         boost::shared_ptr<NumericalMethod> method_;
     };
+
 
     //! Useful discretized discount bond asset
     class DiscretizedDiscountBond : public DiscretizedAsset {
@@ -86,6 +105,7 @@ namespace QuantLib {
             values_ = Array(size, 1.0);
         }
     };
+
 
     //! Discretized option on another asset
     /*! \pre The underlying asset must be initialized */
@@ -99,9 +119,9 @@ namespace QuantLib {
           underlying_(underlying), exerciseType_(exerciseType),
           exerciseTimes_(exerciseTimes) {}
         void reset(Size size);
-        void postAdjustValues();
         void addTimesTo(std::list<Time>& times) const;
       protected:
+        void postAdjustValuesImpl();
         void applyExerciseCondition();
         boost::shared_ptr<DiscretizedAsset> underlying_;
         Exercise::Type exerciseType_;
@@ -111,6 +131,20 @@ namespace QuantLib {
 
 
     // inline definitions
+
+    inline void DiscretizedAsset::preAdjustValues() {
+        if (!close_enough(time(),latestPreAdjustment_)) {
+            preAdjustValuesImpl();
+            latestPreAdjustment_ = time();
+        }
+    }
+
+    inline void DiscretizedAsset::postAdjustValues() {
+        if (!close_enough(time(),latestPostAdjustment_)) {
+            postAdjustValuesImpl();
+            latestPostAdjustment_ = time();
+        }
+    }
 
     inline bool DiscretizedAsset::isOnTime(Time t) const {
         const TimeGrid& grid = method()->timeGrid();

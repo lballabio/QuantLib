@@ -78,10 +78,9 @@ namespace QuantLib {
                                     new DiscretizedSwap(lattice, arguments_));
         Time lastFixedPay = arguments_.fixedPayTimes.back();
         Time lastFloatPay = arguments_.floatingPayTimes.back();
-        lattice->initialize(swap,QL_MAX(lastFixedPay,lastFloatPay));
+        lattice->initialize(*swap,QL_MAX(lastFixedPay,lastFloatPay));
 
-        boost::shared_ptr<DiscretizedAsset> swaption(
-                                   new DiscretizedSwaption(swap, arguments_));
+        DiscretizedSwaption swaption(swap, arguments_);
         lattice->initialize(swaption, arguments_.stoppingTimes.back());
 
         Time nextExercise = 

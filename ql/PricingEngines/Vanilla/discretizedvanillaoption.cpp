@@ -1,6 +1,7 @@
 
 /*
  Copyright (C) 2002, 2003 Sadruddin Rejeb
+ Copyright (C) 2004 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -25,11 +26,11 @@ namespace QuantLib {
         adjustValues();
     }
 
-    void DiscretizedVanillaOption::postAdjustValues() {
+    void DiscretizedVanillaOption::postAdjustValuesImpl() {
 
         Time now = time();
         Size i;
-        switch(arguments_.exercise->type()) {
+        switch (arguments_.exercise->type()) {
           case Exercise::American:
             if (now <= arguments_.stoppingTimes[1] && 
                 now >= arguments_.stoppingTimes[0])

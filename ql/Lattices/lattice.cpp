@@ -1,6 +1,7 @@
 
 /*
  Copyright (C) 2001, 2002, 2003 Sadruddin Rejeb
+ Copyright (C) 2004 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -41,31 +42,25 @@ namespace QuantLib {
         return statePrices_[i];
     }
 
-    Real Lattice::presentValue(
-                           const boost::shared_ptr<DiscretizedAsset>& asset) {
-        Size i = t_.findIndex(asset->time());
-        return DotProduct(asset->values(), statePrices(i));
+    Real Lattice::presentValue(DiscretizedAsset& asset) {
+        Size i = t_.findIndex(asset.time());
+        return DotProduct(asset.values(), statePrices(i));
     }
 
-    void Lattice::initialize(const boost::shared_ptr<DiscretizedAsset>& asset,
-                             Time t) const {
-
+    void Lattice::initialize(DiscretizedAsset& asset, Time t) const {
         Size i = t_.findIndex(t);
-        asset->time() = t;
-        asset->reset(size(i));
+        asset.time() = t;
+        asset.reset(size(i));
     }
 
-    void Lattice::rollback(const boost::shared_ptr<DiscretizedAsset>& asset,
-                           Time to) const {
-        rollAlmostBack(asset,to);
-        asset->postAdjustValues();
+    void Lattice::rollback(DiscretizedAsset& asset, Time to) const {
+        partialRollback(asset,to);
+        asset.postAdjustValues();
     }
 
-    void Lattice::rollAlmostBack(
-                            const boost::shared_ptr<DiscretizedAsset>& asset,
-                            Time to) const {
+    void Lattice::partialRollback(DiscretizedAsset& asset, Time to) const {
 
-        Time from = asset->time();
+        Time from = asset.time();
 
         if (close(from,to))
             return;
@@ -81,14 +76,12 @@ namespace QuantLib {
 
         for (Integer i=iFrom-1; i>=iTo; i--) {
             Array newValues(size(i));
-            stepback(i, asset->values(), newValues);
-            asset->time() = t_[i];
-            asset->values() = newValues;
-            // skip the very last post-adjustment
+            stepback(i, asset.values(), newValues);
+            asset.time() = t_[i];
+            asset.values() = newValues;
+            // skip the very last adjustment
             if (i != iTo)
-                asset->adjustValues();
-            else
-                asset->preAdjustValues();
+                asset.adjustValues();
         }
     }
 

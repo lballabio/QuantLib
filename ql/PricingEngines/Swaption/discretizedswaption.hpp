@@ -1,6 +1,7 @@
 
 /*
  Copyright (C) 2001, 2002, 2003 Sadruddin Rejeb
+ Copyright (C) 2004 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -38,8 +39,6 @@ namespace QuantLib {
             adjustValues();
         }
 
-        void preAdjustValues();
-
         void addTimesTo(std::list<Time>& times) const {
             Time t;
             Size i;
@@ -59,6 +58,9 @@ namespace QuantLib {
                     times.push_back(t);
             }
         }
+      protected:
+        void preAdjustValuesImpl();
+        void postAdjustValuesImpl();
       private:
         SimpleSwap::arguments arguments_;
     };

@@ -1,6 +1,7 @@
 
 /*
  Copyright (C) 2001, 2002, 2003 Sadruddin Rejeb
+ Copyright (C) 2004 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -19,13 +20,14 @@
 
 namespace QuantLib {
 
-    void DiscretizedOption::postAdjustValues() {
+    void DiscretizedOption::postAdjustValuesImpl() {
         /* In the real world, with time flowing forward, first
            any payment is settled and only after options can be
            exercised. Here, with time flowing backward, options
            must be exercised before performing the adjustment.
         */
-        method()->rollAlmostBack(underlying_, time());
+        method()->partialRollback(*underlying_, time());
+        underlying_->preAdjustValues();
         switch (exerciseType_) {
           case Exercise::American:
             if (time_ >= exerciseTimes_[0] && time_ <= exerciseTimes_[1])

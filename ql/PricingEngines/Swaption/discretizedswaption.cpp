@@ -1,6 +1,7 @@
 
 /*
  Copyright (C) 2001, 2002, 2003 Sadruddin Rejeb
+ Copyright (C) 2004 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -19,46 +20,36 @@
 
 namespace QuantLib {
 
-    void DiscretizedSwap::preAdjustValues() {
-        Size i;
-
-        for (i=0; i<arguments_.fixedResetTimes.size(); i++) {
-            Time t = arguments_.fixedResetTimes[i];
-            if (t >= 0.0 && isOnTime(t)) {
-                boost::shared_ptr<DiscretizedAsset> bond(
-                                       new DiscretizedDiscountBond(method()));
-                method()->initialize(bond,
-                                     arguments_.fixedPayTimes[i]);
-                method()->rollback(bond,time_);
-
-                Real fixedCoupon = arguments_.fixedCoupons[i];
-                for (Size j=0; j<values_.size(); j++) {
-                    Real coupon = fixedCoupon*bond->values()[j];
-                    if (arguments_.payFixed)
-                        values_[j] -= coupon;
-                    else
-                        values_[j] += coupon;
-                }
-            }
-        }
-
-        for (i=0; i<arguments_.floatingResetTimes.size(); i++) {
+    void DiscretizedSwap::preAdjustValuesImpl() {
+        for (Size i=0; i<arguments_.floatingResetTimes.size(); i++) {
             Time t = arguments_.floatingResetTimes[i];
             if (t >= 0.0 && isOnTime(t)) {
-                boost::shared_ptr<DiscretizedAsset> bond(
-                                       new DiscretizedDiscountBond(method()));
+                DiscretizedDiscountBond bond(method());
                 method()->initialize(bond, 
                                      arguments_.floatingPayTimes[i]);
                 method()->rollback(bond,time_);
 
                 Real nominal = arguments_.nominal;
                 for (Size j=0; j<values_.size(); j++) {
-                    Real coupon = nominal*(1.0 - bond->values()[j]);
+                    Real coupon = nominal*(1.0 - bond.values()[j]);
                     if (arguments_.payFixed)
                         values_[j] += coupon;
                     else
                         values_[j] -= coupon;
                 }
+            }
+        }
+    }
+
+    void DiscretizedSwap::postAdjustValuesImpl() {
+        for (Size i=0; i<arguments_.fixedPayTimes.size(); i++) {
+            Time t = arguments_.fixedPayTimes[i];
+            if (t >= 0.0 && isOnTime(t)) {
+                Real fixedCoupon = arguments_.fixedCoupons[i];
+                if (arguments_.payFixed)
+                    values_ -= fixedCoupon;
+                else
+                    values_ += fixedCoupon;
             }
         }
     }

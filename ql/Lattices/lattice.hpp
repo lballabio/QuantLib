@@ -1,6 +1,7 @@
 
 /*
  Copyright (C) 2001, 2002, 2003 Sadruddin Rejeb
+ Copyright (C) 2004 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -43,24 +44,14 @@ namespace QuantLib {
             statePricesLimit_ = 0;
         }
 
+        //! \name NumericalMethod interface
+        //@{
+        void initialize(DiscretizedAsset&, Time t) const;
+        void rollback(DiscretizedAsset&, Time to) const;
+        void partialRollback(DiscretizedAsset&, Time to) const;
         //! Computes the present value of an asset using Arrow-Debrew prices
-        Real presentValue(const boost::shared_ptr<DiscretizedAsset>& asset);
-
-        //! Initialize a DiscretizedAsset object.
-        void initialize(const boost::shared_ptr<DiscretizedAsset>& asset,
-                        Time t) const;
-
-        /*! Roll back a DiscretizedAsset object until a certain time,
-            performing any needed adjustment
-        */
-        void rollback(const boost::shared_ptr<DiscretizedAsset>& asset,
-                      Time to) const;
-
-        /*! Roll-back a DiscretizedAsset object until a certain time,
-            but do not perform the final adjustment.
-        */
-        void rollAlmostBack(const boost::shared_ptr<DiscretizedAsset>& asset,
-                            Time to) const;
+        Real presentValue(DiscretizedAsset&);
+        //@}
 
         virtual Size size(Size i) const = 0;
 

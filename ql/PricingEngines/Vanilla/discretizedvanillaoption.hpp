@@ -1,6 +1,7 @@
 
 /*
  Copyright (C) 2002, 2003 Sadruddin Rejeb
+ Copyright (C) 2004 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -38,13 +39,12 @@ namespace QuantLib {
 
         void reset(Size size);
 
-        void postAdjustValues();
-
         void addTimesTo(std::list<Time>& times) const {
             for (Size i=0; i<arguments_.stoppingTimes.size(); i++)
                 times.push_back(arguments_.stoppingTimes[i]);
         }
-
+      protected:
+        void postAdjustValuesImpl();
       private:
         void applySpecificCondition();
         VanillaOption::arguments arguments_;

@@ -1,6 +1,7 @@
 
 /*
  Copyright (C) 2001, 2002, 2003 Sadruddin Rejeb
+ Copyright (C) 2004 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -37,14 +38,24 @@ namespace QuantLib {
 
         const TimeGrid& timeGrid() const { return t_; }
 
-        virtual void initialize(const boost::shared_ptr<DiscretizedAsset>&,
+        //! initialize an asset at the given time.
+        virtual void initialize(DiscretizedAsset&,
                                 Time time) const = 0;
 
-        virtual void rollback(const boost::shared_ptr<DiscretizedAsset>&,
+        /*! Roll back an asset until the given time, performing any
+            needed adjustment.
+        */
+        virtual void rollback(DiscretizedAsset&,
                               Time to) const = 0;
 
-        virtual void rollAlmostBack(const boost::shared_ptr<DiscretizedAsset>&,
-                                    Time to) const = 0;
+        /*! Roll back an asset until the given time, but do not perform
+            the final adjustment.
+        */
+        virtual void partialRollback(DiscretizedAsset&,
+                                     Time to) const = 0;
+
+        //! computes the present value of an asset.
+        virtual double presentValue(DiscretizedAsset&) = 0;
       protected:
         TimeGrid t_;
     };

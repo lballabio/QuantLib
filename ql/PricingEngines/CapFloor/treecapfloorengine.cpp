@@ -53,8 +53,7 @@ namespace QuantLib {
             lattice = lattice_;
         }
 
-        boost::shared_ptr<DiscretizedAsset> capfloor(
-                                 new DiscretizedCapFloor(lattice,arguments_));
+        DiscretizedCapFloor capfloor(lattice, arguments_);
 
         lattice->initialize(capfloor, arguments_.endTimes.back());
         lattice->rollback(capfloor, arguments_.startTimes.front());
