@@ -71,8 +71,7 @@ The file INSTALL.txt contains more detailed instructions.
 
 ============= WIN32 USERS =================
 
-QuantLib.dsw, QuantLib.dsp, QuantLib.dep are MS VC++ workspace, project, and
-dependencies files.
+QuantLib.dsw and QuantLib.dsp are MS VC++ workspace and project files.
 
 QuantLib.mak is the MS VC++ command line makefile to be used with NMAKE, as in:
 NMAKE /f "QuantLib.mak" CFG="QuantLib - Win32 Release"

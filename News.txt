@@ -1,5 +1,32 @@
 
 2002-XX-XX Release 0.3.0
+Changes since Release 0.3.0:
+- Library:
+    YIELD TERM STRUCTURE
+    - added discrete time forward methods
+    - added DiscountCurve (loglinear interpolated) and CoumpondForward term
+      structures
+    - the pair {calendar, settlementDays} has been replaced by settlementDate
+      in the constructors
+    - ForwardSpreadedTermStructure moved under QuantLib::TermStructures
+      namespace
+
+    FIXED INCOME
+    - Modified coupons so that the payment date can be after the end of the
+      accrual period
+
+	 MISCELLANEA
+    - added Period(std::string&)
+    - it is now possible to advance a calandar using a Period
+    - added LogLinear Interpolation
+    - the allowExtrapolation boolen in interpolation classes has been removed
+      from constructirs and added to the operator()
+    - More autoconfiscated time functions and types
+    - Renamed Solver1D::lowBound and hiBound
+    - bug fixes
+
+
+2002-05-06 Release 0.3.0
 
 Changes since Release 0.2.1:
 - Library:

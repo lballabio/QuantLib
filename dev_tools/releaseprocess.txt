@@ -13,6 +13,7 @@
     review documentation
     create hidden sourceforge.net release
     last minute update of news.txt, history.txt, ChangeLog.txt, history.docs
+    export makefiles from Examples.dsw
     update news, changelog and date on the SF release page
     upload files on sourceforge.net
     alert Dirk, our Debian packager
