@@ -11,9 +11,11 @@ Documentation for the QuantLib library is both online and downloadable in a
 number of formats from <http://quantlib.org>.
 You are going to need it. Trust us.
 
-The project status and the list of platforms QuantLib has been compiled on is
-available at <http://quantlib.org>.
+The project status is available at <http://quantlib.org>.
 See the NEWS file for recent developments.
+
+QuantLib depends on Boost <http://www.boost.org>. You will need to download,
+build, and install Boost before compiling and using QuantLib.
 
 Please report bugs using the Bug Tracker at
 <http://sourceforge.net/tracker/?group_id=12740&atid=112740>,
@@ -74,8 +76,10 @@ The file INSTALL.txt contains more detailed instructions.
 
 QuantLib.dsw and QuantLib.dsp are MS VC++ 6 workspace and project files.
 
-QuantLib.mak is the MS VC++ command line makefile to be used with NMAKE, as
+QuantLib.mak is the MS VC++ 6 command line makefile to be used with NMAKE, as
 in: NMAKE /f "QuantLib.mak" CFG="QuantLib - Win32 Release"
+
+QuantLib.sln and QuantLib.vcproj are MS VC++ 7.1 solution and project files.
 
 makefile.mak is the Borland command line makefile. You can download the
 Borland Free compiler from: <http://www.borland.com/bcppbuilder/freecompiler/>
