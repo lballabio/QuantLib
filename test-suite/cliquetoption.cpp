@@ -67,17 +67,17 @@ void CliquetOptionTest::testValues() {
 
     boost::shared_ptr<SimpleQuote> spot(new SimpleQuote(60.0));
     boost::shared_ptr<SimpleQuote> qRate(new SimpleQuote(0.04));
-    boost::shared_ptr<TermStructure> qTS = flatRate(today, qRate, dc);
+    boost::shared_ptr<YieldTermStructure> qTS = flatRate(today, qRate, dc);
     boost::shared_ptr<SimpleQuote> rRate(new SimpleQuote(0.08));
-    boost::shared_ptr<TermStructure> rTS = flatRate(today, rRate, dc);
+    boost::shared_ptr<YieldTermStructure> rTS = flatRate(today, rRate, dc);
     boost::shared_ptr<SimpleQuote> vol(new SimpleQuote(0.30));
     boost::shared_ptr<BlackVolTermStructure> volTS = flatVol(today, vol, dc);
     boost::shared_ptr<PricingEngine> engine(new AnalyticCliquetEngine);
 
     boost::shared_ptr<BlackScholesProcess> process(
                new BlackScholesProcess(Handle<Quote>(spot),
-                                       Handle<TermStructure>(qTS),
-                                       Handle<TermStructure>(rTS),
+                                       Handle<YieldTermStructure>(qTS),
+                                       Handle<YieldTermStructure>(rTS),
                                        Handle<BlackVolTermStructure>(volTS)));
 
     std::vector<Date> reset;
@@ -132,9 +132,9 @@ namespace {
 
     boost::shared_ptr<SimpleQuote> spot(new SimpleQuote(0.0));
     boost::shared_ptr<SimpleQuote> qRate(new SimpleQuote(0.0));
-    Handle<TermStructure> qTS(flatRate(today, qRate));
+    Handle<YieldTermStructure> qTS(flatRate(today, qRate));
     boost::shared_ptr<SimpleQuote> rRate(new SimpleQuote(0.0));
-    Handle<TermStructure> rTS(flatRate(today, rRate));
+    Handle<YieldTermStructure> rTS(flatRate(today, rRate));
     boost::shared_ptr<SimpleQuote> vol(new SimpleQuote(0.0));
     Handle<BlackVolTermStructure> volTS(flatVol(today, vol));
 

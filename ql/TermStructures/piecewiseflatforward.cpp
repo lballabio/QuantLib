@@ -50,7 +50,7 @@ namespace QuantLib {
                const Date& referenceDate,
                const std::vector<boost::shared_ptr<RateHelper> >& instruments,
                const DayCounter& dayCounter, Real accuracy)
-    : TermStructure(todaysDate,referenceDate), dayCounter_(dayCounter),
+    : YieldTermStructure(todaysDate,referenceDate), dayCounter_(dayCounter),
       instruments_(instruments), accuracy_(accuracy) {
         checkInstruments();
     }
@@ -60,7 +60,7 @@ namespace QuantLib {
                                            const std::vector<Date>& dates,
                                            const std::vector<Rate>& forwards,
                                            const DayCounter& dayCounter)
-    : TermStructure(todaysDate, dates[0]), dayCounter_(dayCounter),
+    : YieldTermStructure(todaysDate, dates[0]), dayCounter_(dayCounter),
       times_(dates.size()), dates_(dates), discounts_(dates.size()),
       forwards_(forwards), zeroYields_(dates.size()) {
 
@@ -86,7 +86,7 @@ namespace QuantLib {
                const Date& referenceDate,
                const std::vector<boost::shared_ptr<RateHelper> >& instruments,
                const DayCounter& dayCounter, Real accuracy)
-    : TermStructure(referenceDate), dayCounter_(dayCounter),
+    : YieldTermStructure(referenceDate), dayCounter_(dayCounter),
       instruments_(instruments), accuracy_(accuracy) {
         checkInstruments();
     }
@@ -95,7 +95,7 @@ namespace QuantLib {
                Integer settlementDays, const Calendar& calendar,
                const std::vector<boost::shared_ptr<RateHelper> >& instruments,
                const DayCounter& dayCounter, Real accuracy)
-    : TermStructure(settlementDays, calendar), dayCounter_(dayCounter),
+    : YieldTermStructure(settlementDays, calendar), dayCounter_(dayCounter),
       instruments_(instruments), accuracy_(accuracy) {
         checkInstruments();
     }
@@ -104,7 +104,7 @@ namespace QuantLib {
                                            const std::vector<Date>& dates,
                                            const std::vector<Rate>& forwards,
                                            const DayCounter& dayCounter)
-    : TermStructure(dates[0]), dayCounter_(dayCounter),
+    : YieldTermStructure(dates[0]), dayCounter_(dayCounter),
       times_(dates.size()), dates_(dates), discounts_(dates.size()),
       forwards_(forwards), zeroYields_(dates.size()) {
 

@@ -42,7 +42,7 @@ namespace {
     boost::shared_ptr<Xibor> index_;
     Calendar calendar_;
     Integer settlementDays_, fixingDays_;
-    Handle<TermStructure> termStructure_;
+    Handle<YieldTermStructure> termStructure_;
 
     // utilities
 

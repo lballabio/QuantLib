@@ -21,8 +21,8 @@ namespace QuantLib {
 
     LocalVolSurface::LocalVolSurface(
                                  const Handle<BlackVolTermStructure>& blackTS,
-                                 const Handle<TermStructure>& riskFreeTS,
-                                 const Handle<TermStructure>& dividendTS,
+                                 const Handle<YieldTermStructure>& riskFreeTS,
+                                 const Handle<YieldTermStructure>& dividendTS,
                                  const Handle<Quote>& underlying)
     : blackTS_(blackTS), riskFreeTS_(riskFreeTS),
       dividendTS_(dividendTS), underlying_(underlying) {
@@ -35,8 +35,8 @@ namespace QuantLib {
 
     LocalVolSurface::LocalVolSurface(
                                  const Handle<BlackVolTermStructure>& blackTS,
-                                 const Handle<TermStructure>& riskFreeTS,
-                                 const Handle<TermStructure>& dividendTS,
+                                 const Handle<YieldTermStructure>& riskFreeTS,
+                                 const Handle<YieldTermStructure>& dividendTS,
                                  Real underlying)
     : blackTS_(blackTS), riskFreeTS_(riskFreeTS),
       dividendTS_(dividendTS) {
@@ -48,7 +48,7 @@ namespace QuantLib {
     }
 
     void LocalVolSurface::accept(AcyclicVisitor& v) {
-        Visitor<LocalVolSurface>* v1 = 
+        Visitor<LocalVolSurface>* v1 =
             dynamic_cast<Visitor<LocalVolSurface>*>(&v);
         if (v1 != 0)
             v1->visit(*this);
@@ -56,7 +56,7 @@ namespace QuantLib {
             LocalVolTermStructure::accept(v);
     }
 
-    Volatility LocalVolSurface::localVolImpl(Time t, Real underlyingLevel) 
+    Volatility LocalVolSurface::localVolImpl(Time t, Real underlyingLevel)
                                                                      const {
 
         Real forwardValue = underlying_->value() *

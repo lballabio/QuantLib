@@ -31,7 +31,7 @@
 namespace QuantLib {
 
     //! Affine model class
-    /*! Base class for analytically tractable models. 
+    /*! Base class for analytically tractable models.
 
         \ingroup shortrate
     */
@@ -55,13 +55,13 @@ namespace QuantLib {
     class TermStructureConsistentModel : public virtual Observable {
       public:
         TermStructureConsistentModel(
-                                 const Handle<TermStructure>& termStructure)
+                              const Handle<YieldTermStructure>& termStructure)
         : termStructure_(termStructure) {}
-        const Handle<TermStructure>& termStructure() const {
+        const Handle<YieldTermStructure>& termStructure() const {
             return termStructure_;
         }
       private:
-        Handle<TermStructure> termStructure_;
+        Handle<YieldTermStructure> termStructure_;
     };
 
     //! Abstract short-rate model class

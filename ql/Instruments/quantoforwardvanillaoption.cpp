@@ -20,7 +20,7 @@
 namespace QuantLib {
 
     QuantoForwardVanillaOption::QuantoForwardVanillaOption(
-                      const Handle<TermStructure>& foreignRiskFreeTS,
+                      const Handle<YieldTermStructure>& foreignRiskFreeTS,
                       const Handle<BlackVolTermStructure>& exchRateVolTS,
                       const Handle<Quote>& correlation,
                       Real moneyness,

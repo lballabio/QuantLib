@@ -33,7 +33,7 @@ namespace QuantLib {
     class Euribor : public Xibor {
       public:
         Euribor(Integer n, TimeUnit units,
-                const Handle<TermStructure>& h,
+                const Handle<YieldTermStructure>& h,
                 const DayCounter& dc = Actual360())
         : Xibor("Euribor", n, units, 2, EURCurrency(),
                 TARGET(), ModifiedFollowing, dc, h) {}

@@ -36,24 +36,24 @@ namespace QuantLib {
     std::string payoffTypeToString(const boost::shared_ptr<Payoff>&);
     std::string exerciseTypeToString(const boost::shared_ptr<Exercise>&);
 
-    boost::shared_ptr<TermStructure> 
+    boost::shared_ptr<YieldTermStructure>
     flatRate(const Date& today,
              const boost::shared_ptr<Quote>& forward,
              const DayCounter& dc = Actual365());
 
-    boost::shared_ptr<TermStructure> 
+    boost::shared_ptr<YieldTermStructure>
     flatRate(const Date& today,
-             Rate forward, 
+             Rate forward,
              const DayCounter& dc = Actual365());
 
-    boost::shared_ptr<BlackVolTermStructure> 
+    boost::shared_ptr<BlackVolTermStructure>
     flatVol(const Date& today,
             const boost::shared_ptr<Quote>& volatility,
             const DayCounter& dc = Actual365());
 
-    boost::shared_ptr<BlackVolTermStructure> 
+    boost::shared_ptr<BlackVolTermStructure>
     flatVol(const Date& today,
-            Volatility volatility, 
+            Volatility volatility,
             const DayCounter& dc = Actual365());
 
     Real relativeError(Real x1, Real x2, Real reference);

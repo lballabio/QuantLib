@@ -107,7 +107,7 @@ namespace QuantLib {
                                          forwards_.begin());
     }
 
-    boost::shared_ptr<TermStructure> CompoundForward::bootstrap() const {
+    boost::shared_ptr<YieldTermStructure> CompoundForward::bootstrap() const {
         needsBootstrap_ = false;
         QL_REQUIRE(compounding_ > 0,
                    "continuous compounding needs no bootstrap.");
@@ -211,7 +211,8 @@ namespace QuantLib {
         return discountCurve()->compoundForward(t,f,true);
     }
 
-    boost::shared_ptr<TermStructure> CompoundForward::discountCurve() const {
+    boost::shared_ptr<YieldTermStructure>
+    CompoundForward::discountCurve() const {
         QL_REQUIRE(compounding_ > 0,
                    "continuous compounding needs no bootstrap.");
         if (needsBootstrap_)

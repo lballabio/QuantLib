@@ -28,7 +28,7 @@ namespace QuantLib {
 
     //! Standard Black-Karasinski model class.
     /*! This class implements the standard Black-Karasinski model defined by
-        \f[ 
+        \f[
             d\ln r_t = (\theta(t) - \alpha \ln r_t)dt + \sigma dW_t,
         \f]
         where \f$ alpha \f$ and \f$ sigma \f$ are constants.
@@ -38,7 +38,7 @@ namespace QuantLib {
     class BlackKarasinski : public OneFactorModel,
                             public TermStructureConsistentModel {
       public:
-        BlackKarasinski(const Handle<TermStructure>& termStructure,
+        BlackKarasinski(const Handle<YieldTermStructure>& termStructure,
                         Real a = 0.1, Real sigma = 0.1);
 
         boost::shared_ptr<ShortRateDynamics> dynamics() const {
@@ -63,12 +63,12 @@ namespace QuantLib {
         \f[
             r_t = e^{\varphi(t) + x_t}
          \f]
-         where \f$ \varphi(t) \f$ is the deterministic time-dependent 
+         where \f$ \varphi(t) \f$ is the deterministic time-dependent
          parameter (which can not be determined analytically)
          used for term-structure fitting and \f$ x_t \f$ is the state
          variable following an Ornstein-Uhlenbeck process.
     */
-    class BlackKarasinski::Dynamics 
+    class BlackKarasinski::Dynamics
         : public BlackKarasinski::ShortRateDynamics {
       public:
         Dynamics(const Parameter& fitting, Real alpha, Real sigma)

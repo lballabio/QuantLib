@@ -28,8 +28,8 @@
 namespace QuantLib {
 
     //! Flat interest-rate curve
-    /*! \ingroup termstructures */
-    class FlatForward : public TermStructure {
+    /*! \ingroup yieldtermstructures */
+    class FlatForward : public YieldTermStructure {
       public:
         // constructors
         #ifndef QL_DISABLE_DEPRECATED
@@ -78,7 +78,7 @@ namespace QuantLib {
                                     const Date& referenceDate,
                                     Rate forward,
                                     const DayCounter& dayCounter)
-    : TermStructure(todaysDate, referenceDate),
+    : YieldTermStructure(todaysDate, referenceDate),
       dayCounter_(dayCounter) {
         forward_.linkTo(boost::shared_ptr<Quote>(new SimpleQuote(forward)));
     }
@@ -87,7 +87,7 @@ namespace QuantLib {
                                     const Date& referenceDate,
                                     const Handle<Quote>& forward,
                                     const DayCounter& dayCounter)
-    : TermStructure(todaysDate, referenceDate),
+    : YieldTermStructure(todaysDate, referenceDate),
       dayCounter_(dayCounter), forward_(forward) {
         registerWith(forward_);
     }
@@ -96,7 +96,7 @@ namespace QuantLib {
     inline FlatForward::FlatForward(const Date& referenceDate,
                                     const Handle<Quote>& forward,
                                     const DayCounter& dayCounter)
-    : TermStructure(referenceDate), dayCounter_(dayCounter),
+    : YieldTermStructure(referenceDate), dayCounter_(dayCounter),
       forward_(forward) {
         registerWith(forward_);
     }
@@ -104,7 +104,7 @@ namespace QuantLib {
     inline FlatForward::FlatForward(const Date& referenceDate,
                                     Rate forward,
                                     const DayCounter& dayCounter)
-    : TermStructure(referenceDate), dayCounter_(dayCounter) {
+    : YieldTermStructure(referenceDate), dayCounter_(dayCounter) {
         forward_.linkTo(boost::shared_ptr<Quote>(new SimpleQuote(forward)));
     }
 
@@ -112,7 +112,7 @@ namespace QuantLib {
                                     const Calendar& calendar,
                                     const Handle<Quote>& forward,
                                     const DayCounter& dayCounter)
-    : TermStructure(settlementDays,calendar), dayCounter_(dayCounter),
+    : YieldTermStructure(settlementDays,calendar), dayCounter_(dayCounter),
       forward_(forward) {
         registerWith(forward_);
     }
@@ -121,7 +121,7 @@ namespace QuantLib {
                                     const Calendar& calendar,
                                     Rate forward,
                                     const DayCounter& dayCounter)
-    : TermStructure(settlementDays,calendar), dayCounter_(dayCounter) {
+    : YieldTermStructure(settlementDays,calendar), dayCounter_(dayCounter) {
         forward_.linkTo(boost::shared_ptr<Quote>(new SimpleQuote(forward)));
     }
 

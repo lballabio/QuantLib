@@ -220,9 +220,9 @@ void BarrierOptionTest::testHaugValues() {
 
     boost::shared_ptr<SimpleQuote> spot(new SimpleQuote(0.0));
     boost::shared_ptr<SimpleQuote> qRate(new SimpleQuote(0.0));
-    boost::shared_ptr<TermStructure> qTS = flatRate(today, qRate, dc);
+    boost::shared_ptr<YieldTermStructure> qTS = flatRate(today, qRate, dc);
     boost::shared_ptr<SimpleQuote> rRate(new SimpleQuote(0.0));
-    boost::shared_ptr<TermStructure> rTS = flatRate(today, rRate, dc);
+    boost::shared_ptr<YieldTermStructure> rTS = flatRate(today, rRate, dc);
     boost::shared_ptr<SimpleQuote> vol(new SimpleQuote(0.0));
     boost::shared_ptr<BlackVolTermStructure> volTS = flatVol(today, vol, dc);
 
@@ -240,8 +240,8 @@ void BarrierOptionTest::testHaugValues() {
 
         boost::shared_ptr<BlackScholesProcess> stochProcess(new
             BlackScholesProcess(Handle<Quote>(spot),
-                                Handle<TermStructure>(qTS),
-                                Handle<TermStructure>(rTS),
+                                Handle<YieldTermStructure>(qTS),
+                                Handle<YieldTermStructure>(rTS),
                                 Handle<BlackVolTermStructure>(volTS)));
 
         BarrierOption barrierOption(
@@ -309,10 +309,10 @@ void BarrierOptionTest::testBabsiriValues() {
                                             new SimpleQuote(underlyingPrice));
 
     boost::shared_ptr<SimpleQuote> qH_SME(new SimpleQuote(q));
-    boost::shared_ptr<TermStructure> qTS = flatRate(today, qH_SME, dc);
+    boost::shared_ptr<YieldTermStructure> qTS = flatRate(today, qH_SME, dc);
 
     boost::shared_ptr<SimpleQuote> rH_SME(new SimpleQuote(r));
-    boost::shared_ptr<TermStructure> rTS = flatRate(today, rH_SME, dc);
+    boost::shared_ptr<YieldTermStructure> rTS = flatRate(today, rH_SME, dc);
 
     boost::shared_ptr<SimpleQuote> volatility(new SimpleQuote(0.10));
     boost::shared_ptr<BlackVolTermStructure> volTS =
@@ -337,8 +337,8 @@ void BarrierOptionTest::testBabsiriValues() {
 
         boost::shared_ptr<BlackScholesProcess> stochProcess(new
             BlackScholesProcess(Handle<Quote>(underlying),
-                                Handle<TermStructure>(qTS),
-                                Handle<TermStructure>(rTS),
+                                Handle<YieldTermStructure>(qTS),
+                                Handle<YieldTermStructure>(rTS),
                                 Handle<BlackVolTermStructure>(volTS)));
 
         // analytic
@@ -415,10 +415,10 @@ void BarrierOptionTest::testBeagleholeValues() {
                                             new SimpleQuote(underlyingPrice));
 
     boost::shared_ptr<SimpleQuote> qH_SME(new SimpleQuote(q));
-    boost::shared_ptr<TermStructure> qTS = flatRate(today, qH_SME, dc);
+    boost::shared_ptr<YieldTermStructure> qTS = flatRate(today, qH_SME, dc);
 
     boost::shared_ptr<SimpleQuote> rH_SME(new SimpleQuote(r));
-    boost::shared_ptr<TermStructure> rTS = flatRate(today, rH_SME, dc);
+    boost::shared_ptr<YieldTermStructure> rTS = flatRate(today, rH_SME, dc);
 
     boost::shared_ptr<SimpleQuote> volatility(new SimpleQuote(0.10));
     boost::shared_ptr<BlackVolTermStructure> volTS =
@@ -443,8 +443,8 @@ void BarrierOptionTest::testBeagleholeValues() {
 
         boost::shared_ptr<BlackScholesProcess> stochProcess(new
             BlackScholesProcess(Handle<Quote>(underlying),
-                                Handle<TermStructure>(qTS),
-                                Handle<TermStructure>(rTS),
+                                Handle<YieldTermStructure>(qTS),
+                                Handle<YieldTermStructure>(rTS),
                                 Handle<BlackVolTermStructure>(volTS)));
 
         // analytic

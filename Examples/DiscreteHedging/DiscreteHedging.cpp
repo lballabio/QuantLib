@@ -289,12 +289,12 @@ void ReplicationError::compute(Size nTimeSteps, Size nSamples)
     Date today = Date::todaysDate();
     Handle<Quote> stateVariable(
                           boost::shared_ptr<Quote>(new SimpleQuote(s0_)));
-    Handle<TermStructure> riskFreeRate(
-                          boost::shared_ptr<TermStructure>(
-                                        new FlatForward(today, today, r_)));
-    Handle<TermStructure> dividendYield(
-                          boost::shared_ptr<TermStructure>(
-                                        new FlatForward(today, today, 0.0)));
+    Handle<YieldTermStructure> riskFreeRate(
+                          boost::shared_ptr<YieldTermStructure>(
+                                        new FlatForward(today, r_)));
+    Handle<YieldTermStructure> dividendYield(
+                          boost::shared_ptr<YieldTermStructure>(
+                                        new FlatForward(today, 0.0)));
     Handle<BlackVolTermStructure> volatility(
                           boost::shared_ptr<BlackVolTermStructure>(
                                         new BlackConstantVol(today, sigma_)));

@@ -28,7 +28,7 @@
 namespace QuantLib {
 
     //! Quanto version of a forward vanilla option
-    /*! \ingroup instruments */ 
+    /*! \ingroup instruments */
     class QuantoForwardVanillaOption : public QuantoVanillaOption {
       public:
         typedef QuantoOptionArguments<ForwardVanillaOption::arguments>
@@ -38,7 +38,7 @@ namespace QuantLib {
         typedef QuantoEngine<ForwardVanillaOption::arguments,
                              ForwardVanillaOption::results> engine;
         QuantoForwardVanillaOption(
-                           const Handle<TermStructure>& foreignRiskFreeTS,
+                           const Handle<YieldTermStructure>& foreignRiskFreeTS,
                            const Handle<BlackVolTermStructure>& exchRateVolTS,
                            const Handle<Quote>& correlation,
                            Real moneyness,

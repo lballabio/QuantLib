@@ -301,9 +301,9 @@ void JumpDiffusionTest::testMerton76() {
 
     boost::shared_ptr<SimpleQuote> spot(new SimpleQuote(0.0));
     boost::shared_ptr<SimpleQuote> qRate(new SimpleQuote(0.0));
-    boost::shared_ptr<TermStructure> qTS = flatRate(today, qRate, dc);
+    boost::shared_ptr<YieldTermStructure> qTS = flatRate(today, qRate, dc);
     boost::shared_ptr<SimpleQuote> rRate(new SimpleQuote(0.0));
-    boost::shared_ptr<TermStructure> rTS = flatRate(today, rRate, dc);
+    boost::shared_ptr<YieldTermStructure> rTS = flatRate(today, rRate, dc);
     boost::shared_ptr<SimpleQuote> vol(new SimpleQuote(0.0));
     boost::shared_ptr<BlackVolTermStructure> volTS = flatVol(today, vol, dc);
 
@@ -313,8 +313,8 @@ void JumpDiffusionTest::testMerton76() {
 
     boost::shared_ptr<BlackScholesProcess> stochProcess(
            new Merton76Process(Handle<Quote>(spot),
-                               Handle<TermStructure>(qTS),
-                               Handle<TermStructure>(rTS),
+                               Handle<YieldTermStructure>(qTS),
+                               Handle<YieldTermStructure>(rTS),
                                Handle<BlackVolTermStructure>(volTS),
                                Handle<Quote>(jumpIntensity),
                                Handle<Quote>(meanLogJump),
@@ -403,9 +403,9 @@ void JumpDiffusionTest::testGreeks() {
 
     boost::shared_ptr<SimpleQuote> spot(new SimpleQuote(0.0));
     boost::shared_ptr<SimpleQuote> qRate(new SimpleQuote(0.0));
-    Handle<TermStructure> qTS(flatRate(today, qRate, dc));
+    Handle<YieldTermStructure> qTS(flatRate(today, qRate, dc));
     boost::shared_ptr<SimpleQuote> rRate(new SimpleQuote(0.0));
-    Handle<TermStructure> rTS(flatRate(today, rRate, dc));
+    Handle<YieldTermStructure> rTS(flatRate(today, rRate, dc));
     boost::shared_ptr<SimpleQuote> vol(new SimpleQuote(0.0));
     Handle<BlackVolTermStructure> volTS(flatVol(today, vol, dc));
 

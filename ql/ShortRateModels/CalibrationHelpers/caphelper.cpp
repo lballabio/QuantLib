@@ -26,7 +26,7 @@ namespace QuantLib {
     CapHelper::CapHelper(const Period& length,
                          const Handle<Quote>& volatility,
                          const boost::shared_ptr<Xibor>& index,
-                         const Handle<TermStructure>& termStructure)
+                         const Handle<YieldTermStructure>& termStructure)
     : CalibrationHelper(volatility,termStructure) {
 
         Period indexTenor = index->tenor();
@@ -69,11 +69,11 @@ namespace QuantLib {
 
         boost::shared_ptr<Swap> swap(
                               new Swap(floatingLeg, fixedLeg, termStructure));
-        Rate fairRate = fixedRate - 
+        Rate fairRate = fixedRate -
             swap->NPV()/swap->secondLegBPS();
         engine_  = boost::shared_ptr<PricingEngine>();
-        cap_ = boost::shared_ptr<Cap>(new Cap(floatingLeg, 
-                                              std::vector<Rate>(1, fairRate), 
+        cap_ = boost::shared_ptr<Cap>(new Cap(floatingLeg,
+                                              std::vector<Rate>(1, fairRate),
                                               termStructure, engine_));
         marketValue_ = blackPrice(volatility_->value());
     }
@@ -81,7 +81,7 @@ namespace QuantLib {
     void CapHelper::addTimesTo(std::list<Time>& times) const {
         CapFloor::arguments args;
         cap_->setupArguments(&args);
-        std::vector<Time> capTimes = 
+        std::vector<Time> capTimes =
             DiscretizedCapFloor(args).mandatoryTimes();
         std::copy(capTimes.begin(), capTimes.end(),
                   std::back_inserter(times));

@@ -28,11 +28,11 @@ namespace QuantLib {
 
     //! Single-factor Hull-White (extended %Vasicek) model class.
     /*! This class implements the standard single-factor Hull-White model
-        defined by 
-        \f[ 
+        defined by
+        \f[
             dr_t = (\theta(t) - \alpha r_t)dt + \sigma dW_t
         \f]
-        where \f$ \alpha \f$ and \f$ \sigma \f$ are constants. 
+        where \f$ \alpha \f$ and \f$ \sigma \f$ are constants.
 
         \bug When the term structure is relinked, the r0 parameter of
              the underlying Vasicek model is not updated.
@@ -41,7 +41,7 @@ namespace QuantLib {
     */
     class HullWhite : public Vasicek, public TermStructureConsistentModel {
       public:
-        HullWhite(const Handle<TermStructure>& termStructure, 
+        HullWhite(const Handle<YieldTermStructure>& termStructure,
                   Real a = 0.1, Real sigma = 0.01);
 
         boost::shared_ptr<Lattice> tree(const TimeGrid& grid) const;
@@ -70,8 +70,8 @@ namespace QuantLib {
         \f[
             r_t = \varphi(t) + x_t
         \f]
-        where \f$ \varphi(t) \f$ is the deterministic time-dependent 
-        parameter used for term-structure fitting and \f$ x_t \f$ is the 
+        where \f$ \varphi(t) \f$ is the deterministic time-dependent
+        parameter used for term-structure fitting and \f$ x_t \f$ is the
         state variable following an Ornstein-Uhlenbeck process.
     */
     class HullWhite::Dynamics : public ShortRateDynamics {
@@ -83,11 +83,11 @@ namespace QuantLib {
                                      new OrnsteinUhlenbeckProcess(a, sigma))),
           fitting_(fitting) {}
 
-        Real variable(Time t, Rate r) const { 
-            return r - fitting_(t); 
+        Real variable(Time t, Rate r) const {
+            return r - fitting_(t);
         }
-        Real shortRate(Time t, Real x) const { 
-            return x + fitting_(t); 
+        Real shortRate(Time t, Real x) const {
+            return x + fitting_(t);
         }
       private:
         Parameter fitting_;
@@ -100,27 +100,27 @@ namespace QuantLib {
         \f]
         where \f$ f(t) \f$ is the instantaneous forward rate at \f$ t \f$.
     */
-    class HullWhite::FittingParameter 
+    class HullWhite::FittingParameter
         : public TermStructureFittingParameter {
       private:
         class Impl : public Parameter::Impl {
           public:
-            Impl(const Handle<TermStructure>& termStructure,
-                 Real a, Real sigma) 
+            Impl(const Handle<YieldTermStructure>& termStructure,
+                 Real a, Real sigma)
             : termStructure_(termStructure), a_(a), sigma_(sigma) {}
 
             Real value(const Array& params, Time t) const {
-                Rate forwardRate = 
+                Rate forwardRate =
                     termStructure_->instantaneousForward(t);
                 Real temp = sigma_*(1.0 - QL_EXP(-a_*t))/a_;
                 return (forwardRate + 0.5*temp*temp);
             }
           private:
-            Handle<TermStructure> termStructure_;
+            Handle<YieldTermStructure> termStructure_;
             Real a_, sigma_;
         };
       public:
-        FittingParameter(const Handle<TermStructure>& termStructure,
+        FittingParameter(const Handle<YieldTermStructure>& termStructure,
                          Real a, Real sigma)
         : TermStructureFittingParameter(boost::shared_ptr<Parameter::Impl>(
                       new FittingParameter::Impl(termStructure, a, sigma))) {}
@@ -129,7 +129,7 @@ namespace QuantLib {
 
     // inline definitions
 
-    inline boost::shared_ptr<OneFactorModel::ShortRateDynamics> 
+    inline boost::shared_ptr<OneFactorModel::ShortRateDynamics>
     HullWhite::dynamics() const {
         return boost::shared_ptr<ShortRateDynamics>(
                                             new Dynamics(phi_, a(), sigma()));

@@ -108,8 +108,8 @@ namespace QuantLib {
     McDiscreteArithmeticASO::McDiscreteArithmeticASO(
                               Option::Type type,
                               Real underlying,
-                              const Handle<TermStructure>& dividendYield,
-                              const Handle<TermStructure>& riskFreeRate,
+                              const Handle<YieldTermStructure>& dividendYield,
+                              const Handle<YieldTermStructure>& riskFreeRate,
                               const Handle<BlackVolTermStructure>& volatility,
                               const std::vector<Time>& times,
                               bool controlVariate,

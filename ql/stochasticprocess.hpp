@@ -55,17 +55,17 @@ namespace QuantLib {
             \f$ \sigma(t, x_t) \f$
         */
         virtual Real diffusion(Time t, Real x) const = 0;
-        /*! returns the expectation 
+        /*! returns the expectation
             \f$ E(x_{t_0 + \Delta t} | x_{t_0} = x_0) \f$
-            of the process after a time interval \f$ \Delta t \f$ 
+            of the process after a time interval \f$ \Delta t \f$
             according to the given discretization. This method can be
-            overridden in derived classes which want to hard-code a 
+            overridden in derived classes which want to hard-code a
             particular discretization.
         */
         virtual Real expectation(Time t0, Real x0, Time dt) const;
         /*! returns the variance
             \f$ V(x_{t_0 + \Delta t} | x_{t_0} = x_0) \f$
-            of the process after a time interval \f$ \Delta t \f$ 
+            of the process after a time interval \f$ \Delta t \f$
             according to the given discretization.This method can be
             overridden in derived classes which want to hard-code a
             particular discretization.
@@ -107,8 +107,8 @@ namespace QuantLib {
       public:
         BlackScholesProcess(
             const Handle<Quote>& x0,
-            const Handle<TermStructure>& dividendTS,
-            const Handle<TermStructure>& riskFreeTS,
+            const Handle<YieldTermStructure>& dividendTS,
+            const Handle<YieldTermStructure>& riskFreeTS,
             const Handle<BlackVolTermStructure>& blackVolTS,
             const boost::shared_ptr<StochasticProcess::discretization>& d =
                     boost::shared_ptr<StochasticProcess::discretization>(
@@ -128,16 +128,16 @@ namespace QuantLib {
         //! \name Inspectors
         //@{
         const boost::shared_ptr<Quote>& stateVariable() const;
-        const boost::shared_ptr<TermStructure>& dividendYield() const;
-        const boost::shared_ptr<TermStructure>& riskFreeRate() const;
-        const boost::shared_ptr<BlackVolTermStructure>& 
+        const boost::shared_ptr<YieldTermStructure>& dividendYield() const;
+        const boost::shared_ptr<YieldTermStructure>& riskFreeRate() const;
+        const boost::shared_ptr<BlackVolTermStructure>&
                                                      blackVolatility() const;
-        const boost::shared_ptr<LocalVolTermStructure>& 
+        const boost::shared_ptr<LocalVolTermStructure>&
                                                      localVolatility() const;
         //@}
       private:
         Handle<Quote> x0_;
-        Handle<TermStructure> riskFreeRate_, dividendYield_;
+        Handle<YieldTermStructure> riskFreeRate_, dividendYield_;
         Handle<BlackVolTermStructure> blackVolatility_;
         mutable Handle<LocalVolTermStructure> localVolatility_;
         mutable bool updated_;
@@ -149,8 +149,8 @@ namespace QuantLib {
       public:
         Merton76Process(
             const Handle<Quote>& stateVariable,
-            const Handle<TermStructure>& dividendTS,
-            const Handle<TermStructure>& riskFreeTS,
+            const Handle<YieldTermStructure>& dividendTS,
+            const Handle<YieldTermStructure>& riskFreeTS,
             const Handle<BlackVolTermStructure>& blackVolTS,
             const Handle<Quote>& jumpInt,
             const Handle<Quote>& logJMean,

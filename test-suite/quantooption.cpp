@@ -165,14 +165,14 @@ void QuantoOptionTest::testValues() {
 
     boost::shared_ptr<SimpleQuote> spot(new SimpleQuote(0.0));
     boost::shared_ptr<SimpleQuote> qRate(new SimpleQuote(0.0));
-    Handle<TermStructure> qTS(flatRate(today, qRate, dc));
+    Handle<YieldTermStructure> qTS(flatRate(today, qRate, dc));
     boost::shared_ptr<SimpleQuote> rRate(new SimpleQuote(0.0));
-    Handle<TermStructure> rTS(flatRate(today, rRate, dc));
+    Handle<YieldTermStructure> rTS(flatRate(today, rRate, dc));
     boost::shared_ptr<SimpleQuote> vol(new SimpleQuote(0.0));
     Handle<BlackVolTermStructure> volTS(flatVol(today, vol, dc));
 
     boost::shared_ptr<SimpleQuote> fxRate(new SimpleQuote(0.0));
-    Handle<TermStructure> fxrTS(flatRate(today, fxRate, dc));
+    Handle<YieldTermStructure> fxrTS(flatRate(today, fxRate, dc));
     boost::shared_ptr<SimpleQuote> fxVol(new SimpleQuote(0.0));
     Handle<BlackVolTermStructure> fxVolTS(flatVol(today, fxVol, dc));
     boost::shared_ptr<SimpleQuote> correlation(new SimpleQuote(0.0));
@@ -185,8 +185,8 @@ void QuantoOptionTest::testValues() {
 
     boost::shared_ptr<BlackScholesProcess> stochProcess(
             new BlackScholesProcess(Handle<Quote>(spot),
-                                    Handle<TermStructure>(qTS),
-                                    Handle<TermStructure>(rTS),
+                                    Handle<YieldTermStructure>(qTS),
+                                    Handle<YieldTermStructure>(rTS),
                                     Handle<BlackVolTermStructure>(volTS)));
 
     for (Size i=0; i<LENGTH(values); i++) {
@@ -253,13 +253,13 @@ void QuantoOptionTest::testGreeks() {
 
     boost::shared_ptr<SimpleQuote> spot(new SimpleQuote(0.0));
     boost::shared_ptr<SimpleQuote> qRate(new SimpleQuote(0.0));
-    Handle<TermStructure> qTS(flatRate(today, qRate, dc));
+    Handle<YieldTermStructure> qTS(flatRate(today, qRate, dc));
     boost::shared_ptr<SimpleQuote> rRate(new SimpleQuote(0.0));
-    Handle<TermStructure> rTS(flatRate(today, rRate, dc));
+    Handle<YieldTermStructure> rTS(flatRate(today, rRate, dc));
     boost::shared_ptr<SimpleQuote> vol(new SimpleQuote(0.0));
     Handle<BlackVolTermStructure> volTS(flatVol(today, vol, dc));
     boost::shared_ptr<SimpleQuote> fxRate(new SimpleQuote(0.0));
-    Handle<TermStructure> fxrTS(flatRate(today, fxRate, dc));
+    Handle<YieldTermStructure> fxrTS(flatRate(today, fxRate, dc));
     boost::shared_ptr<SimpleQuote> fxVol(new SimpleQuote(0.0));
     Handle<BlackVolTermStructure> fxVolTS(flatVol(today, fxVol, dc));
     boost::shared_ptr<SimpleQuote> correlation(new SimpleQuote(0.0));
@@ -458,14 +458,14 @@ void QuantoOptionTest::testForwardValues() {
 
     boost::shared_ptr<SimpleQuote> spot(new SimpleQuote(0.0));
     boost::shared_ptr<SimpleQuote> qRate(new SimpleQuote(0.0));
-    Handle<TermStructure> qTS(flatRate(today, qRate, dc));
+    Handle<YieldTermStructure> qTS(flatRate(today, qRate, dc));
     boost::shared_ptr<SimpleQuote> rRate(new SimpleQuote(0.0));
-    Handle<TermStructure> rTS(flatRate(today, rRate, dc));
+    Handle<YieldTermStructure> rTS(flatRate(today, rRate, dc));
     boost::shared_ptr<SimpleQuote> vol(new SimpleQuote(0.0));
     Handle<BlackVolTermStructure> volTS(flatVol(today, vol, dc));
 
     boost::shared_ptr<SimpleQuote> fxRate(new SimpleQuote(0.0));
-    Handle<TermStructure> fxrTS(flatRate(today, fxRate, dc));
+    Handle<YieldTermStructure> fxrTS(flatRate(today, fxRate, dc));
     boost::shared_ptr<SimpleQuote> fxVol(new SimpleQuote(0.0));
     Handle<BlackVolTermStructure> fxVolTS(flatVol(today, fxVol, dc));
     boost::shared_ptr<SimpleQuote> correlation(new SimpleQuote(0.0));
@@ -481,8 +481,8 @@ void QuantoOptionTest::testForwardValues() {
 
     boost::shared_ptr<BlackScholesProcess> stochProcess(
             new BlackScholesProcess(Handle<Quote>(spot),
-                                    Handle<TermStructure>(qTS),
-                                    Handle<TermStructure>(rTS),
+                                    Handle<YieldTermStructure>(qTS),
+                                    Handle<YieldTermStructure>(rTS),
                                     Handle<BlackVolTermStructure>(volTS)));
 
     for (Size i=0; i<LENGTH(values); i++) {
@@ -555,13 +555,13 @@ void QuantoOptionTest::testForwardGreeks() {
 
     boost::shared_ptr<SimpleQuote> spot(new SimpleQuote(0.0));
     boost::shared_ptr<SimpleQuote> qRate(new SimpleQuote(0.0));
-    Handle<TermStructure> qTS(flatRate(today, qRate, dc));
+    Handle<YieldTermStructure> qTS(flatRate(today, qRate, dc));
     boost::shared_ptr<SimpleQuote> rRate(new SimpleQuote(0.0));
-    Handle<TermStructure> rTS(flatRate(today, rRate, dc));
+    Handle<YieldTermStructure> rTS(flatRate(today, rRate, dc));
     boost::shared_ptr<SimpleQuote> vol(new SimpleQuote(0.0));
     Handle<BlackVolTermStructure> volTS(flatVol(today, vol, dc));
     boost::shared_ptr<SimpleQuote> fxRate(new SimpleQuote(0.0));
-    Handle<TermStructure> fxrTS(flatRate(today, fxRate, dc));
+    Handle<YieldTermStructure> fxrTS(flatRate(today, fxRate, dc));
     boost::shared_ptr<SimpleQuote> fxVol(new SimpleQuote(0.0));
     Handle<BlackVolTermStructure> fxVolTS(flatVol(today, fxVol, dc));
     boost::shared_ptr<SimpleQuote> correlation(new SimpleQuote(0.0));
@@ -770,14 +770,14 @@ void QuantoOptionTest::testForwardPerformanceValues() {
 
     boost::shared_ptr<SimpleQuote> spot(new SimpleQuote(0.0));
     boost::shared_ptr<SimpleQuote> qRate(new SimpleQuote(0.0));
-    Handle<TermStructure> qTS(flatRate(today, qRate, dc));
+    Handle<YieldTermStructure> qTS(flatRate(today, qRate, dc));
     boost::shared_ptr<SimpleQuote> rRate(new SimpleQuote(0.0));
-    Handle<TermStructure> rTS(flatRate(today, rRate, dc));
+    Handle<YieldTermStructure> rTS(flatRate(today, rRate, dc));
     boost::shared_ptr<SimpleQuote> vol(new SimpleQuote(0.0));
     Handle<BlackVolTermStructure> volTS(flatVol(today, vol, dc));
 
     boost::shared_ptr<SimpleQuote> fxRate(new SimpleQuote(0.0));
-    Handle<TermStructure> fxrTS(flatRate(today, fxRate, dc));
+    Handle<YieldTermStructure> fxrTS(flatRate(today, fxRate, dc));
     boost::shared_ptr<SimpleQuote> fxVol(new SimpleQuote(0.0));
     Handle<BlackVolTermStructure> fxVolTS(flatVol(today, fxVol, dc));
     boost::shared_ptr<SimpleQuote> correlation(new SimpleQuote(0.0));
@@ -793,8 +793,8 @@ void QuantoOptionTest::testForwardPerformanceValues() {
 
     boost::shared_ptr<BlackScholesProcess> stochProcess(
             new BlackScholesProcess(Handle<Quote>(spot),
-                                    Handle<TermStructure>(qTS),
-                                    Handle<TermStructure>(rTS),
+                                    Handle<YieldTermStructure>(qTS),
+                                    Handle<YieldTermStructure>(rTS),
                                     Handle<BlackVolTermStructure>(volTS)));
 
     for (Size i=0; i<LENGTH(values); i++) {

@@ -24,7 +24,7 @@
 
 namespace QuantLib {
 
-    // base class 
+    // base class
 
     StochasticProcess::StochasticProcess() {}
 
@@ -41,7 +41,7 @@ namespace QuantLib {
     }
 
     void StochasticProcess::update() {
-        notifyObservers(); 
+        notifyObservers();
     }
 
 
@@ -63,12 +63,12 @@ namespace QuantLib {
 
     BlackScholesProcess::BlackScholesProcess(
              const Handle<Quote>& x0,
-             const Handle<TermStructure>& dividendTS,
-             const Handle<TermStructure>& riskFreeTS,
+             const Handle<YieldTermStructure>& dividendTS,
+             const Handle<YieldTermStructure>& riskFreeTS,
              const Handle<BlackVolTermStructure>& blackVolTS,
              const boost::shared_ptr<StochasticProcess::discretization>& disc)
-    : StochasticProcess(disc), x0_(x0), riskFreeRate_(riskFreeTS), 
-      dividendYield_(dividendTS), blackVolatility_(blackVolTS), 
+    : StochasticProcess(disc), x0_(x0), riskFreeRate_(riskFreeTS),
+      dividendYield_(dividendTS), blackVolatility_(blackVolTS),
       updated_(false) {
         registerWith(x0_);
         registerWith(riskFreeRate_);
@@ -99,27 +99,27 @@ namespace QuantLib {
         StochasticProcess::update();
     }
 
-    const boost::shared_ptr<Quote>& 
+    const boost::shared_ptr<Quote>&
     BlackScholesProcess::stateVariable() const {
         return x0_.currentLink();
     }
 
-    const boost::shared_ptr<TermStructure>& 
+    const boost::shared_ptr<YieldTermStructure>&
     BlackScholesProcess::dividendYield() const {
         return dividendYield_.currentLink();
     }
 
-    const boost::shared_ptr<TermStructure>& 
+    const boost::shared_ptr<YieldTermStructure>&
     BlackScholesProcess::riskFreeRate() const {
         return riskFreeRate_.currentLink();
     }
 
-    const boost::shared_ptr<BlackVolTermStructure>& 
+    const boost::shared_ptr<BlackVolTermStructure>&
     BlackScholesProcess::blackVolatility() const {
         return blackVolatility_.currentLink();
     }
 
-    const boost::shared_ptr<LocalVolTermStructure>& 
+    const boost::shared_ptr<LocalVolTermStructure>&
     BlackScholesProcess::localVolatility() const {
         if (!updated_) {
 
@@ -171,14 +171,14 @@ namespace QuantLib {
 
     Merton76Process::Merton76Process(
              const Handle<Quote>& stateVariable,
-             const Handle<TermStructure>& dividendTS,
-             const Handle<TermStructure>& riskFreeTS,
+             const Handle<YieldTermStructure>& dividendTS,
+             const Handle<YieldTermStructure>& riskFreeTS,
              const Handle<BlackVolTermStructure>& blackVolTS,
              const Handle<Quote>& jumpInt,
              const Handle<Quote>& logJMean,
              const Handle<Quote>& logJVol,
              const boost::shared_ptr<StochasticProcess::discretization>& disc)
-    : BlackScholesProcess(stateVariable, dividendTS, riskFreeTS, 
+    : BlackScholesProcess(stateVariable, dividendTS, riskFreeTS,
                           blackVolTS, disc),
       jumpIntensity_(jumpInt), logMeanJump_(logJMean),
       logJumpVolatility_(logJVol) {
@@ -195,7 +195,7 @@ namespace QuantLib {
         return logMeanJump_.currentLink();
     }
 
-    const boost::shared_ptr<Quote>& 
+    const boost::shared_ptr<Quote>&
     Merton76Process::logJumpVolatility() const {
         return logJumpVolatility_.currentLink();
     }
@@ -236,7 +236,7 @@ namespace QuantLib {
     SquareRootProcess::SquareRootProcess(
              Real b, Real a, Volatility sigma, Real x0,
              const boost::shared_ptr<StochasticProcess::discretization>& disc)
-    : StochasticProcess(disc), x0_(x0), mean_(b), speed_(a), 
+    : StochasticProcess(disc), x0_(x0), mean_(b), speed_(a),
       volatility_(sigma) {}
 
     Real SquareRootProcess::x0() const {

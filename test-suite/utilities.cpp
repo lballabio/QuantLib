@@ -50,15 +50,15 @@ namespace QuantLib {
     }
 
 
-    boost::shared_ptr<TermStructure>
+    boost::shared_ptr<YieldTermStructure>
     flatRate(const Date& today,
              const boost::shared_ptr<Quote>& forward,
              const DayCounter& dc) {
-        return boost::shared_ptr<TermStructure>(
+        return boost::shared_ptr<YieldTermStructure>(
                           new FlatForward(today, Handle<Quote>(forward), dc));
     }
 
-    boost::shared_ptr<TermStructure>
+    boost::shared_ptr<YieldTermStructure>
     flatRate(const Date& today, Rate forward, const DayCounter& dc) {
         return flatRate(
                today, boost::shared_ptr<Quote>(new SimpleQuote(forward)), dc);

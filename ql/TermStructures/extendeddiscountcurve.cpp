@@ -78,7 +78,7 @@ namespace QuantLib {
                                                 discounts_.begin());
     }
 
-    boost::shared_ptr<TermStructure>
+    boost::shared_ptr<YieldTermStructure>
     ExtendedDiscountCurve::reversebootstrap(Integer compounding) const {
         std::vector<Rate> forwards;
         Date compoundDate = calendar_.advance(referenceDate(),
@@ -131,7 +131,7 @@ namespace QuantLib {
                                                           true);
     }
 
-    boost::shared_ptr<TermStructure>
+    boost::shared_ptr<YieldTermStructure>
     ExtendedDiscountCurve::forwardCurve(Integer compounding) const {
         if (forwardCurveMap_.find(compounding) == forwardCurveMap_.end())
             forwardCurveMap_[compounding] = reversebootstrap(compounding);

@@ -50,13 +50,13 @@ namespace QuantLib {
     }
 
     McEverest::McEverest(
-                  const std::vector<Handle<TermStructure> >& dividendYield,
-                  const Handle<TermStructure>& riskFreeRate,
-                  const std::vector<Handle<BlackVolTermStructure> >&
+                const std::vector<Handle<YieldTermStructure> >& dividendYield,
+                const Handle<YieldTermStructure>& riskFreeRate,
+                const std::vector<Handle<BlackVolTermStructure> >&
                                                              volatilities,
-                  const Matrix& correlation,
-                  Time residualTime,
-                  BigNatural seed) {
+                const Matrix& correlation,
+                Time residualTime,
+                BigNatural seed) {
 
         Size n = correlation.rows();
         QL_REQUIRE(correlation.columns() == n,

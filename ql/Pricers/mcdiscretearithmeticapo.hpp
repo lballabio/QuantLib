@@ -31,28 +31,25 @@ namespace QuantLib {
 
     #ifndef QL_DISABLE_DEPRECATED
     //! example of Monte Carlo pricer using a control variate
-    /*! 
-    
-    \deprecated use the DiscreteAveragingAsianOption instrument 
-    with MCDiscreteArithmeticAPEngine instead
-
+    /*! \deprecated use the DiscreteAveragingAsianOption instrument
+                    with MCDiscreteArithmeticAPEngine instead
     */
-    class McDiscreteArithmeticAPO 
-        : public McPricer<SingleAsset<PseudoRandom> >{
+    class McDiscreteArithmeticAPO
+        : public McPricer<SingleAsset<PseudoRandom> > {
       public:
         McDiscreteArithmeticAPO(
                             Option::Type type,
                             Real underlying,
                             Real strike,
-                            const Handle<TermStructure>& dividendYield,
-                            const Handle<TermStructure>& riskFreeRate,
+                            const Handle<YieldTermStructure>& dividendYield,
+                            const Handle<YieldTermStructure>& riskFreeRate,
                             const Handle<BlackVolTermStructure>& volatility,
                             const std::vector<Time>& times,
                             bool controlVariate,
                             BigNatural seed = 0);
     };
-
     #endif // QL_DISABLE_DEPRECATED
+
 }
 
 

@@ -43,7 +43,7 @@ namespace QuantLib {
                    const boost::shared_ptr<Xibor>& index,
                    Integer indexFixingDays,
                    Spread spread,
-                   const Handle<TermStructure>& termStructure);
+                   const Handle<YieldTermStructure>& termStructure);
         // results
         Rate fairRate() const;
         Spread fairSpread() const;

@@ -33,7 +33,7 @@ namespace QuantLib {
               structure, i.e., any changes in the latter will be
               reflected in this structure as well.
 
-        \ingroup termstructures
+        \ingroup yieldtermstructures
     */
     class ImpliedTermStructure : public DiscountStructure {
       public:
@@ -41,13 +41,13 @@ namespace QuantLib {
         /*! \deprecated use the constructor without today's date; set the
                         evaluation date through Settings::instance().
         */
-        ImpliedTermStructure(const Handle<TermStructure>&,
+        ImpliedTermStructure(const Handle<YieldTermStructure>&,
                              const Date& newTodaysDate,
                              const Date& newReferenceDate);
         #endif
-        ImpliedTermStructure(const Handle<TermStructure>&,
+        ImpliedTermStructure(const Handle<YieldTermStructure>&,
                              const Date& referenceDate);
-        //! \name TermStructure interface
+        //! \name YieldTermStructure interface
         //@{
         DayCounter dayCounter() const;
         Calendar calendar() const;
@@ -57,7 +57,7 @@ namespace QuantLib {
         //! returns the discount factor as seen from the evaluation date
         DiscountFactor discountImpl(Time) const;
       private:
-        Handle<TermStructure> originalCurve_;
+        Handle<YieldTermStructure> originalCurve_;
     };
 
 
@@ -65,9 +65,9 @@ namespace QuantLib {
 
     #ifndef QL_DISABLE_DEPRECATED
     inline ImpliedTermStructure::ImpliedTermStructure(
-                                               const Handle<TermStructure>& h,
-                                               const Date& todaysDate,
-                                               const Date& referenceDate)
+                                          const Handle<YieldTermStructure>& h,
+                                          const Date& todaysDate,
+                                          const Date& referenceDate)
     : DiscountStructure(todaysDate, referenceDate),
       originalCurve_(h) {
         registerWith(originalCurve_);
@@ -75,8 +75,8 @@ namespace QuantLib {
     #endif
 
     inline ImpliedTermStructure::ImpliedTermStructure(
-                                               const Handle<TermStructure>& h,
-                                               const Date& referenceDate)
+                                          const Handle<YieldTermStructure>& h,
+                                          const Date& referenceDate)
     : DiscountStructure(referenceDate), originalCurve_(h) {
         registerWith(originalCurve_);
     }

@@ -22,9 +22,9 @@
 
 namespace QuantLib {
 
-    Swaption::Swaption(const boost::shared_ptr<SimpleSwap>& swap, 
+    Swaption::Swaption(const boost::shared_ptr<SimpleSwap>& swap,
                        const boost::shared_ptr<Exercise>& exercise,
-                       const Handle<TermStructure>& termStructure,
+                       const Handle<YieldTermStructure>& termStructure,
                        const boost::shared_ptr<PricingEngine>& engine)
     : Option(boost::shared_ptr<Payoff>(), exercise, engine), swap_(swap),
       termStructure_(termStructure) {
@@ -51,10 +51,10 @@ namespace QuantLib {
         // volatilities are calculated for zero-spreaded swaps.
         // Therefore, the spread on the floating leg is removed
         // and a corresponding correction is made on the fixed leg.
-        Spread correction = swap_->spread() * 
+        Spread correction = swap_->spread() *
             swap_->floatingLegBPS() /
             swap_->fixedLegBPS();
-        // the above is the opposite of the needed value since the 
+        // the above is the opposite of the needed value since the
         // two BPSs have opposite sign; hence the + sign below
         arguments->fixedRate = swap_->fixedRate() + correction;
         arguments->fairRate = swap_->fairRate() + correction;
@@ -79,11 +79,11 @@ namespace QuantLib {
         SimpleSwap::arguments::validate();
         #endif
 
-        QL_REQUIRE(fixedRate != Null<Real>(), 
+        QL_REQUIRE(fixedRate != Null<Real>(),
                    "fixed swap rate null or not set");
-        QL_REQUIRE(fairRate != Null<Real>(), 
+        QL_REQUIRE(fairRate != Null<Real>(),
                    "fair swap rate null or not set");
-        QL_REQUIRE(fixedBPS != Null<Real>(), 
+        QL_REQUIRE(fixedBPS != Null<Real>(),
                    "fixed swap BPS null or not set");
     }
 

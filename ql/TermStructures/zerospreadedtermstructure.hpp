@@ -31,13 +31,13 @@ namespace QuantLib {
               structure, i.e., any changes in the latter will be
               reflected in this structure as well.
 
-        \ingroup termstructures
+        \ingroup yieldtermstructures
     */
     class ZeroSpreadedTermStructure : public ZeroYieldStructure {
       public:
-        ZeroSpreadedTermStructure(const Handle<TermStructure>&,
+        ZeroSpreadedTermStructure(const Handle<YieldTermStructure>&,
                                   const Handle<Quote>& spread);
-        //! \name TermStructure interface
+        //! \name YieldTermStructure interface
         //@{
         DayCounter dayCounter() const;
         Calendar calendar() const;
@@ -57,13 +57,13 @@ namespace QuantLib {
         */
         Rate forwardImpl(Time) const;
       private:
-        Handle<TermStructure> originalCurve_;
+        Handle<YieldTermStructure> originalCurve_;
         Handle<Quote> spread_;
     };
 
     inline ZeroSpreadedTermStructure::ZeroSpreadedTermStructure(
-                                               const Handle<TermStructure>& h,
-                                               const Handle<Quote>& spread)
+                                          const Handle<YieldTermStructure>& h,
+                                          const Handle<Quote>& spread)
     : originalCurve_(h), spread_(spread) {
         registerWith(originalCurve_);
         registerWith(spread_);

@@ -22,8 +22,8 @@
 namespace QuantLib {
 
     ExtendedCoxIngersollRoss::ExtendedCoxIngersollRoss(
-                                   const Handle<TermStructure>& termStructure,
-                                   Real theta, Real k, Real sigma, Real x0)
+                              const Handle<YieldTermStructure>& termStructure,
+                              Real theta, Real k, Real sigma, Real x0)
     : CoxIngersollRoss(x0, theta, k, sigma),
       TermStructureConsistentModel(termStructure) {
         generateArguments();
@@ -39,7 +39,7 @@ namespace QuantLib {
                    new TrinomialTree(numericDynamics->process(), grid, true));
 
         typedef TermStructureFittingParameter::NumericalImpl NumericalImpl;
-        boost::shared_ptr<NumericalImpl> impl = 
+        boost::shared_ptr<NumericalImpl> impl =
             boost::dynamic_pointer_cast<NumericalImpl>(phi.implementation());
 
         return boost::shared_ptr<Lattice>(
@@ -55,8 +55,8 @@ namespace QuantLib {
         return value;
     }
 
-    Real ExtendedCoxIngersollRoss::discountBondOption(Option::Type type, 
-                                                      Real strike, 
+    Real ExtendedCoxIngersollRoss::discountBondOption(Option::Type type,
+                                                      Real strike,
                                                       Time t, Time s) const {
 
         QL_REQUIRE(strike>0.0, "strike must be positive");
@@ -78,7 +78,7 @@ namespace QuantLib {
 
         Real rho = 2.0*h/(sigma2*(QL_EXP(h*t) - 1.0));
         Real psi = (k() + h)/sigma2;
- 
+
         Real df = 4.0*k()*theta()/sigma2;
         Real ncps = 2.0*rho*rho*(r0-phi_(0.0))*QL_EXP(h*t)/(rho+psi+b);
         Real ncpt = 2.0*rho*rho*(r0-phi_(0.0))*QL_EXP(h*t)/(rho+psi);
@@ -86,7 +86,7 @@ namespace QuantLib {
         NonCentralChiSquareDistribution chis(df, ncps);
         NonCentralChiSquareDistribution chit(df, ncpt);
 
-        Real z = QL_LOG(CoxIngersollRoss::A(t,s)/strike)/b; 
+        Real z = QL_LOG(CoxIngersollRoss::A(t,s)/strike)/b;
         Real call = discountS*chis(2.0*z*(rho+psi+b)) -
             strike*discountT*chit(2.0*z*(rho+psi));
         if (type == Option::Call)

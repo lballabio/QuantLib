@@ -29,7 +29,7 @@
 namespace QuantLib {
 
     //! Term structure based on linear interpolation of zero yields
-    /*! \ingroup termstructures */
+    /*! \ingroup yieldtermstructures */
     class ZeroCurve : public ZeroYieldStructure {
       public:
         // constructor

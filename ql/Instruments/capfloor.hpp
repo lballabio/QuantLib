@@ -15,12 +15,12 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file capfloor.hpp
+/*! \file Instruments/capfloor.hpp
     \brief Cap and Floor class
 */
 
-#ifndef quantlib_instruments_capfloor_h
-#define quantlib_instruments_capfloor_h
+#ifndef quantlib_instruments_capfloor_hpp
+#define quantlib_instruments_capfloor_hpp
 
 #include <ql/numericalmethod.hpp>
 #include <ql/instrument.hpp>
@@ -40,7 +40,7 @@ namespace QuantLib {
                  const std::vector<boost::shared_ptr<CashFlow> >& floatingLeg,
                  const std::vector<Rate>& capRates,
                  const std::vector<Rate>& floorRates,
-                 const Handle<TermStructure>& termStructure,
+                 const Handle<YieldTermStructure>& termStructure,
                  const boost::shared_ptr<PricingEngine>& engine);
         //! \name Instrument interface
         //@{
@@ -72,17 +72,17 @@ namespace QuantLib {
         std::vector<boost::shared_ptr<CashFlow> > floatingLeg_;
         std::vector<Rate> capRates_;
         std::vector<Rate> floorRates_;
-        Handle<TermStructure> termStructure_;
+        Handle<YieldTermStructure> termStructure_;
         // helper class for implied volatility calculation
         class ImpliedVolHelper {
           public:
             ImpliedVolHelper(const CapFloor&,
-                             const Handle<TermStructure>&,
+                             const Handle<YieldTermStructure>&,
                              Real targetValue);
             Real operator()(Volatility x) const;
           private:
             boost::shared_ptr<PricingEngine> engine_;
-            Handle<TermStructure> termStructure_;
+            Handle<YieldTermStructure> termStructure_;
             Real targetValue_;
             boost::shared_ptr<SimpleQuote> vol_;
             const Value* results_;
@@ -95,9 +95,9 @@ namespace QuantLib {
       public:
         Cap(const std::vector<boost::shared_ptr<CashFlow> >& floatingLeg,
             const std::vector<Rate>& exerciseRates,
-            const Handle<TermStructure>& termStructure,
+            const Handle<YieldTermStructure>& termStructure,
             const boost::shared_ptr<PricingEngine>& engine)
-        : CapFloor(CapFloor::Cap, floatingLeg, 
+        : CapFloor(CapFloor::Cap, floatingLeg,
                    exerciseRates, std::vector<Rate>(),
                    termStructure, engine) {}
     };
@@ -108,9 +108,9 @@ namespace QuantLib {
       public:
         Floor(const std::vector<boost::shared_ptr<CashFlow> >& floatingLeg,
               const std::vector<Rate>& exerciseRates,
-              const Handle<TermStructure>& termStructure,
+              const Handle<YieldTermStructure>& termStructure,
               const boost::shared_ptr<PricingEngine>& engine)
-        : CapFloor(CapFloor::Floor, floatingLeg, 
+        : CapFloor(CapFloor::Floor, floatingLeg,
                    std::vector<Rate>(), exerciseRates,
                    termStructure, engine) {}
     };
@@ -122,7 +122,7 @@ namespace QuantLib {
         Collar(const std::vector<boost::shared_ptr<CashFlow> >& floatingLeg,
                const std::vector<Rate>& capRates,
                const std::vector<Rate>& floorRates,
-               const Handle<TermStructure>& termStructure,
+               const Handle<YieldTermStructure>& termStructure,
                const boost::shared_ptr<PricingEngine>& engine)
         : CapFloor(CapFloor::Collar, floatingLeg, capRates, floorRates,
                    termStructure, engine) {}

@@ -33,13 +33,14 @@ namespace QuantLib {
     */
     class McEverest : public McPricer<MultiAsset<PseudoRandom> > {
       public:
-        McEverest(const std::vector<Handle<TermStructure> >& dividendYield,
-                  const Handle<TermStructure>& riskFreeRate,
-                  const std::vector<Handle<BlackVolTermStructure> >& 
+        McEverest(
+                const std::vector<Handle<YieldTermStructure> >& dividendYield,
+                const Handle<YieldTermStructure>& riskFreeRate,
+                const std::vector<Handle<BlackVolTermStructure> >&
                                                              volatilities,
-                  const Matrix& correlation,
-                  Time residualTime,
-                  BigNatural seed = 0);
+                const Matrix& correlation,
+                Time residualTime,
+                BigNatural seed = 0);
     };
 
 }

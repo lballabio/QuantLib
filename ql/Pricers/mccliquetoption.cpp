@@ -39,7 +39,7 @@ namespace QuantLib {
             : type_(type), underlying_(underlying), moneyness_(moneyness),
               accruedCoupon_(accruedCoupon), lastFixing_(lastFixing),
               localCap_(localCap), localFloor_(localFloor),
-              globalCap_(globalCap), globalFloor_(globalFloor), 
+              globalCap_(globalCap), globalFloor_(globalFloor),
               discounts_(discounts), redemptionOnly_(redemptionOnly) {
                 QL_REQUIRE(underlying>0.0,
                            "underlying less/equal zero not allowed");
@@ -114,7 +114,7 @@ namespace QuantLib {
           private:
             Option::Type type_;
             Real underlying_, moneyness_, accruedCoupon_;
-            Real lastFixing_, localCap_, localFloor_, 
+            Real lastFixing_, localCap_, localFloor_,
                  globalCap_, globalFloor_;
             std::vector<DiscountFactor> discounts_;
             bool redemptionOnly_;
@@ -125,14 +125,14 @@ namespace QuantLib {
     McCliquetOption::McCliquetOption(
                               Option::Type type,
                               Real underlying, Real moneyness,
-                              const Handle<TermStructure>& dividendYield,
-                              const Handle<TermStructure>& riskFreeRate,
+                              const Handle<YieldTermStructure>& dividendYield,
+                              const Handle<YieldTermStructure>& riskFreeRate,
                               const Handle<BlackVolTermStructure>& volatility,
                               const std::vector<Time>& times,
                               Real accruedCoupon, Real lastFixing,
-                              Real localCap, Real localFloor, 
-                              Real globalCap, Real globalFloor, 
-                              bool redemptionOnly, 
+                              Real localCap, Real localFloor,
+                              Real globalCap, Real globalFloor,
+                              bool redemptionOnly,
                               BigNatural seed) {
 
         std::vector<DiscountFactor> discounts(times.size());
@@ -142,9 +142,9 @@ namespace QuantLib {
         // initialize the path generator
         Handle<Quote> u(boost::shared_ptr<Quote>(new SimpleQuote(underlying)));
         boost::shared_ptr<StochasticProcess> diffusion(
-                                     new BlackScholesProcess(u, 
+                                     new BlackScholesProcess(u,
                                                              dividendYield,
-                                                             riskFreeRate, 
+                                                             riskFreeRate,
                                                              volatility));
         TimeGrid grid(times.begin(), times.end());
         PseudoRandom::rsg_type rsg =
@@ -156,14 +156,14 @@ namespace QuantLib {
 
         // initialize the path pricer
         boost::shared_ptr<PathPricer<Path> > cliquetPathPricer(
-            new CliquetOptionPathPricer(type, underlying, moneyness, 
+            new CliquetOptionPathPricer(type, underlying, moneyness,
                                         accruedCoupon, lastFixing,
-                                        localCap, localFloor, 
+                                        localCap, localFloor,
                                         globalCap, globalFloor,
                                         discounts, redemptionOnly));
 
         // initialize the one-factor Monte Carlo
-        mcModel_ = 
+        mcModel_ =
             boost::shared_ptr<MonteCarloModel<SingleAsset<PseudoRandom> > >(
                 new MonteCarloModel<SingleAsset<PseudoRandom> >(
                       pathGenerator, cliquetPathPricer, Statistics(), false));

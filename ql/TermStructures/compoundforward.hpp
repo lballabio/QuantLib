@@ -15,7 +15,7 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file compoundforward.hpp
+/*! \file TermStructures/compoundforward.hpp
     \brief compounded forward term structure
 */
 
@@ -58,11 +58,11 @@ namespace QuantLib {
         const std::vector<Time>& times() const;
         const std::vector<Date>& dates() const;
         const std::vector<Rate>& forwards() const;
-        boost::shared_ptr<TermStructure> discountCurve() const;
+        boost::shared_ptr<YieldTermStructure> discountCurve() const;
       protected:
         // methods
         void calibrateNodes() const;
-        boost::shared_ptr<TermStructure> bootstrap() const;
+        boost::shared_ptr<YieldTermStructure> bootstrap() const;
         Rate zeroYieldImpl(Time) const;
         DiscountFactor discountImpl(Time) const;
         Size referenceNode(Time) const;
@@ -79,7 +79,7 @@ namespace QuantLib {
         mutable std::vector<Rate> forwards_;
         mutable std::vector<Time> times_;
         mutable Interpolation fwdinterp_;
-        mutable boost::shared_ptr<TermStructure> discountCurve_;
+        mutable boost::shared_ptr<YieldTermStructure> discountCurve_;
     };
 
     // inline definitions

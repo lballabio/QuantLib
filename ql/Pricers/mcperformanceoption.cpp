@@ -30,7 +30,7 @@ namespace QuantLib {
                                  Real underlying,
                                  Real moneyness,
                                  const std::vector<DiscountFactor>& discounts)
-            : underlying_(underlying), discounts_(discounts), 
+            : underlying_(underlying), discounts_(discounts),
               payoff_(type, moneyness) {
                 QL_REQUIRE(underlying>0.0,
                            "underlying less/equal zero not allowed");
@@ -76,8 +76,8 @@ namespace QuantLib {
                               Option::Type type,
                               Real underlying,
                               Real moneyness,
-                              const Handle<TermStructure>& dividendYield,
-                              const Handle<TermStructure>& riskFreeRate,
+                              const Handle<YieldTermStructure>& dividendYield,
+                              const Handle<YieldTermStructure>& riskFreeRate,
                               const Handle<BlackVolTermStructure>& volatility,
                               const std::vector<Time>& times,
                               BigNatural seed) {
@@ -89,7 +89,7 @@ namespace QuantLib {
         // Initialize the path generator
         Handle<Quote> u(boost::shared_ptr<Quote>(new SimpleQuote(underlying)));
         boost::shared_ptr<StochasticProcess> diffusion(
-                                      new BlackScholesProcess(u, 
+                                      new BlackScholesProcess(u,
                                                               dividendYield,
                                                               riskFreeRate,
                                                               volatility));

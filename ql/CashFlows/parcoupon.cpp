@@ -36,7 +36,7 @@ namespace QuantLib {
     }
 
     Real ParCoupon::amount() const {
-        boost::shared_ptr<TermStructure> termStructure =
+        boost::shared_ptr<YieldTermStructure> termStructure =
             index_->termStructure();
         QL_REQUIRE(termStructure,
                    "null term structure set to par coupon");

@@ -30,14 +30,14 @@
 namespace QuantLib {
 
     //! simple example of Monte Carlo pricer
-    class McCliquetOption 
+    class McCliquetOption
         : public McPricer<SingleAsset<PseudoRandom> >{
       public:
         McCliquetOption(Option::Type type,
                         Real underlying,
                         Real moneyness,
-                        const Handle<TermStructure>& dividendYield,
-                        const Handle<TermStructure>& riskFreeRate,
+                        const Handle<YieldTermStructure>& dividendYield,
+                        const Handle<YieldTermStructure>& riskFreeRate,
                         const Handle<BlackVolTermStructure>& volatility,
                         const std::vector<Time>& times,
                         Real accruedCoupon,

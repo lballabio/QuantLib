@@ -34,7 +34,7 @@ namespace QuantLib {
     class JPYLibor : public Xibor {
       public:
         JPYLibor(Integer n, TimeUnit units,
-                 const Handle<TermStructure>& h,
+                 const Handle<YieldTermStructure>& h,
                  const DayCounter& dc = Actual360())
         : Xibor("JPYLibor", n, units, 2, JPYCurrency(),
                 Tokyo(), ModifiedFollowing, dc, h) {}

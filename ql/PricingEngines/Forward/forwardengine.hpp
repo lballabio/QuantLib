@@ -112,16 +112,16 @@ namespace QuantLib {
         // the right level is needed in order to interpolate
         // the vol
         Handle<Quote> spot(process->stateVariable());
-        Handle<TermStructure> dividendYield(
-            boost::shared_ptr<TermStructure>(
+        Handle<YieldTermStructure> dividendYield(
+            boost::shared_ptr<YieldTermStructure>(
                new ImpliedTermStructure(
-                             Handle<TermStructure>(process->dividendYield()),
-                             this->arguments_.resetDate)));
-        Handle<TermStructure> riskFreeRate(
-            boost::shared_ptr<TermStructure>(
+                         Handle<YieldTermStructure>(process->dividendYield()),
+                         this->arguments_.resetDate)));
+        Handle<YieldTermStructure> riskFreeRate(
+            boost::shared_ptr<YieldTermStructure>(
                new ImpliedTermStructure(
-                              Handle<TermStructure>(process->riskFreeRate()),
-                              this->arguments_.resetDate)));
+                          Handle<YieldTermStructure>(process->riskFreeRate()),
+                          this->arguments_.resetDate)));
         // The following approach is ok if the vol is at most
         // time dependant. It is plain wrong if it is asset dependant.
         // In the latter case the right solution would be stochastic

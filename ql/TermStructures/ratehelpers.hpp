@@ -60,7 +60,7 @@ namespace QuantLib {
                      constructors, setting the term structure to
                      <b>this</b>, i.e., the one being constructed.
         */
-        virtual void setTermStructure(TermStructure*);
+        virtual void setTermStructure(YieldTermStructure*);
         //! maturity date
         virtual Date maturity() const = 0;
         //@}
@@ -70,7 +70,7 @@ namespace QuantLib {
         //@}
       protected:
         Handle<Quote> quote_;
-        TermStructure* termStructure_;
+        YieldTermStructure* termStructure_;
     };
 
 
@@ -94,7 +94,7 @@ namespace QuantLib {
                           const DayCounter& dayCounter);
         Real impliedQuote() const;
         DiscountFactor discountGuess() const;
-        void setTermStructure(TermStructure*);
+        void setTermStructure(YieldTermStructure*);
         Date maturity() const;
       private:
         Integer n_;
@@ -130,7 +130,7 @@ namespace QuantLib {
                       const DayCounter& dayCounter);
         Real impliedQuote() const;
         DiscountFactor discountGuess() const;
-        void setTermStructure(TermStructure*);
+        void setTermStructure(YieldTermStructure*);
         Date maturity() const;
       private:
         Integer monthsToStart_, monthsToEnd_;
@@ -214,7 +214,7 @@ namespace QuantLib {
         // implementing discountGuess() is not worthwhile,
         // and may not avoid the root-finding process
         Date maturity() const;
-        void setTermStructure(TermStructure*);
+        void setTermStructure(YieldTermStructure*);
       protected:
         Integer n_;
         TimeUnit units_;
@@ -225,7 +225,7 @@ namespace QuantLib {
         DayCounter fixedDayCount_;
         Date settlement_;
         boost::shared_ptr<SimpleSwap> swap_;
-        Handle<TermStructure> termStructureHandle_;
+        Handle<YieldTermStructure> termStructureHandle_;
     };
 
 }

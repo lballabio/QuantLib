@@ -36,7 +36,7 @@ namespace QuantLib {
               const Calendar& calendar,
               BusinessDayConvention convention,
               const DayCounter& dayCounter,
-              const Handle<TermStructure>& h)
+              const Handle<YieldTermStructure>& h)
         : familyName_(familyName), n_(n), units_(units),
           settlementDays_(settlementDays),
           currency_(currency), calendar_(calendar),
@@ -53,7 +53,7 @@ namespace QuantLib {
               const Calendar& calendar,
               BusinessDayConvention convention,
               const DayCounter& dayCounter,
-              const Handle<TermStructure>& h)
+              const Handle<YieldTermStructure>& h)
         : familyName_(familyName), n_(n), units_(units),
           settlementDays_(settlementDays),
           currency_(make_currency(currency)), calendar_(calendar),
@@ -82,7 +82,7 @@ namespace QuantLib {
         bool isAdjusted() const;
         BusinessDayConvention businessDayConvention() const;
         DayCounter dayCounter() const;
-        boost::shared_ptr<TermStructure> termStructure() const;
+        boost::shared_ptr<YieldTermStructure> termStructure() const;
         //@}
       private:
         std::string familyName_;
@@ -93,7 +93,7 @@ namespace QuantLib {
         Calendar calendar_;
         BusinessDayConvention convention_;
         DayCounter dayCounter_;
-        Handle<TermStructure> termStructure_;
+        Handle<YieldTermStructure> termStructure_;
     };
 
 
@@ -131,7 +131,7 @@ namespace QuantLib {
         return dayCounter_;
     }
 
-    inline boost::shared_ptr<TermStructure> Xibor::termStructure() const {
+    inline boost::shared_ptr<YieldTermStructure> Xibor::termStructure() const {
         return termStructure_.currentLink();
     }
 

@@ -67,8 +67,8 @@ namespace QuantLib {
         baseArguments->payoff   = arguments_.payoff;
         baseArguments->exercise = arguments_.exercise;
         Handle<Quote> stateVariable(jdProcess->stateVariable());
-        Handle<TermStructure> dividendTS(jdProcess->dividendYield());
-        Handle<TermStructure> riskFreeTS(jdProcess->riskFreeRate());
+        Handle<YieldTermStructure> dividendTS(jdProcess->dividendYield());
+        Handle<YieldTermStructure> riskFreeTS(jdProcess->riskFreeRate());
         Handle<BlackVolTermStructure> volTS(jdProcess->blackVolatility());
         baseArguments->blackScholesProcess =
             boost::shared_ptr<BlackScholesProcess>(
@@ -100,7 +100,7 @@ namespace QuantLib {
             v = QL_SQRT((variance + i*jumpSquareVol)/t);
             r = riskFreeRate - jdProcess->jumpIntensity()->value()*k
                 + i*muPlusHalfSquareVol/t;
-            riskFreeTS.linkTo(boost::shared_ptr<TermStructure>(
+            riskFreeTS.linkTo(boost::shared_ptr<YieldTermStructure>(
                                    new FlatForward(rateRefDate, r, dc)));
             volTS.linkTo(boost::shared_ptr<BlackVolTermStructure>(
                                    new BlackConstantVol(rateRefDate, v, dc)));

@@ -33,7 +33,7 @@ namespace QuantLib {
 
         Rates are assumed to be annual continuous compounding.
 
-        \ingroup termstructures
+        \ingroup yieldtermstructures
     */
     class DiscountCurve : public DiscountStructure {
       public:

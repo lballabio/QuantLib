@@ -84,8 +84,8 @@ namespace {
     makeOption(const boost::shared_ptr<StrikedTypePayoff>& payoff,
                const boost::shared_ptr<Exercise>& exercise,
                const boost::shared_ptr<Quote>& u,
-               const boost::shared_ptr<TermStructure>& q,
-               const boost::shared_ptr<TermStructure>& r,
+               const boost::shared_ptr<YieldTermStructure>& q,
+               const boost::shared_ptr<YieldTermStructure>& r,
                const boost::shared_ptr<BlackVolTermStructure>& vol,
                EngineType engineType = Analytic) {
 
@@ -136,8 +136,8 @@ namespace {
 
         boost::shared_ptr<BlackScholesProcess> stochProcess(new
             BlackScholesProcess(Handle<Quote>(u),
-                                Handle<TermStructure>(q),
-                                Handle<TermStructure>(r),
+                                Handle<YieldTermStructure>(q),
+                                Handle<YieldTermStructure>(r),
                                 Handle<BlackVolTermStructure>(vol)));
 
         return boost::shared_ptr<VanillaOption>(new
@@ -239,9 +239,9 @@ void EuropeanOptionTest::testValues() {
 
     boost::shared_ptr<SimpleQuote> spot(new SimpleQuote(0.0));
     boost::shared_ptr<SimpleQuote> qRate(new SimpleQuote(0.0));
-    boost::shared_ptr<TermStructure> qTS = flatRate(today, qRate, dc);
+    boost::shared_ptr<YieldTermStructure> qTS = flatRate(today, qRate, dc);
     boost::shared_ptr<SimpleQuote> rRate(new SimpleQuote(0.0));
-    boost::shared_ptr<TermStructure> rTS = flatRate(today, rRate, dc);
+    boost::shared_ptr<YieldTermStructure> rTS = flatRate(today, rRate, dc);
     boost::shared_ptr<SimpleQuote> vol(new SimpleQuote(0.0));
     boost::shared_ptr<BlackVolTermStructure> volTS = flatVol(today, vol, dc);
     boost::shared_ptr<PricingEngine> engine(new AnalyticEuropeanEngine);
@@ -260,8 +260,8 @@ void EuropeanOptionTest::testValues() {
 
         boost::shared_ptr<BlackScholesProcess> stochProcess(new
             BlackScholesProcess(Handle<Quote>(spot),
-                                Handle<TermStructure>(qTS),
-                                Handle<TermStructure>(rTS),
+                                Handle<YieldTermStructure>(qTS),
+                                Handle<YieldTermStructure>(rTS),
                                 Handle<BlackVolTermStructure>(volTS)));
 
         EuropeanOption option(stochProcess, payoff, exercise, engine);
@@ -317,16 +317,16 @@ void EuropeanOptionTest::testGreekValues() {
 
     boost::shared_ptr<SimpleQuote> spot(new SimpleQuote(0.0));
     boost::shared_ptr<SimpleQuote> qRate(new SimpleQuote(0.0));
-    boost::shared_ptr<TermStructure> qTS = flatRate(today, qRate, dc);
+    boost::shared_ptr<YieldTermStructure> qTS = flatRate(today, qRate, dc);
     boost::shared_ptr<SimpleQuote> rRate(new SimpleQuote(0.0));
-    boost::shared_ptr<TermStructure> rTS = flatRate(today, rRate, dc);
+    boost::shared_ptr<YieldTermStructure> rTS = flatRate(today, rRate, dc);
     boost::shared_ptr<SimpleQuote> vol(new SimpleQuote(0.0));
     boost::shared_ptr<BlackVolTermStructure> volTS = flatVol(today, vol, dc);
     boost::shared_ptr<PricingEngine> engine(new AnalyticEuropeanEngine);
     boost::shared_ptr<BlackScholesProcess> stochProcess(new
         BlackScholesProcess(Handle<Quote>(spot),
-                            Handle<TermStructure>(qTS),
-                            Handle<TermStructure>(rTS),
+                            Handle<YieldTermStructure>(qTS),
+                            Handle<YieldTermStructure>(rTS),
                             Handle<BlackVolTermStructure>(volTS)));
 
     boost::shared_ptr<StrikedTypePayoff> payoff;
@@ -581,9 +581,9 @@ void EuropeanOptionTest::testGreeks() {
 
     boost::shared_ptr<SimpleQuote> spot(new SimpleQuote(0.0));
     boost::shared_ptr<SimpleQuote> qRate(new SimpleQuote(0.0));
-    Handle<TermStructure> qTS(flatRate(today, qRate, dc));
+    Handle<YieldTermStructure> qTS(flatRate(today, qRate, dc));
     boost::shared_ptr<SimpleQuote> rRate(new SimpleQuote(0.0));
-    Handle<TermStructure> rTS(flatRate(today, rRate, dc));
+    Handle<YieldTermStructure> rTS(flatRate(today, rRate, dc));
     boost::shared_ptr<SimpleQuote> vol(new SimpleQuote(0.0));
     Handle<BlackVolTermStructure> volTS(flatVol(today, vol, dc));
 
@@ -743,9 +743,9 @@ void EuropeanOptionTest::testImpliedVol() {
     boost::shared_ptr<SimpleQuote> vol(new SimpleQuote(0.0));
     boost::shared_ptr<BlackVolTermStructure> volTS = flatVol(today, vol, dc);
     boost::shared_ptr<SimpleQuote> qRate(new SimpleQuote(0.0));
-    boost::shared_ptr<TermStructure> qTS = flatRate(today, qRate, dc);
+    boost::shared_ptr<YieldTermStructure> qTS = flatRate(today, qRate, dc);
     boost::shared_ptr<SimpleQuote> rRate(new SimpleQuote(0.0));
-    boost::shared_ptr<TermStructure> rTS = flatRate(today, rRate, dc);
+    boost::shared_ptr<YieldTermStructure> rTS = flatRate(today, rRate, dc);
 
     for (Size i=0; i<LENGTH(types); i++) {
       for (Size j=0; j<LENGTH(strikes); j++) {
@@ -856,9 +856,9 @@ void EuropeanOptionTest::testImpliedVolContainment() {
     boost::shared_ptr<SimpleQuote> spot(new SimpleQuote(100.0));
     Handle<Quote> underlying(spot);
     boost::shared_ptr<SimpleQuote> qRate(new SimpleQuote(0.05));
-    Handle<TermStructure> qTS(flatRate(today, qRate, dc));
+    Handle<YieldTermStructure> qTS(flatRate(today, qRate, dc));
     boost::shared_ptr<SimpleQuote> rRate(new SimpleQuote(0.03));
-    Handle<TermStructure> rTS(flatRate(today, rRate, dc));
+    Handle<YieldTermStructure> rTS(flatRate(today, rRate, dc));
     boost::shared_ptr<SimpleQuote> vol(new SimpleQuote(0.20));
     Handle<BlackVolTermStructure> volTS(flatVol(today, vol, dc));
 
@@ -940,9 +940,9 @@ namespace {
         boost::shared_ptr<SimpleQuote> vol(new SimpleQuote(0.0));
         boost::shared_ptr<BlackVolTermStructure> volTS = flatVol(today,vol,dc);
         boost::shared_ptr<SimpleQuote> qRate(new SimpleQuote(0.0));
-        boost::shared_ptr<TermStructure> qTS = flatRate(today,qRate,dc);
+        boost::shared_ptr<YieldTermStructure> qTS = flatRate(today,qRate,dc);
         boost::shared_ptr<SimpleQuote> rRate(new SimpleQuote(0.0));
-        boost::shared_ptr<TermStructure> rTS = flatRate(today,rRate,dc);
+        boost::shared_ptr<YieldTermStructure> rTS = flatRate(today,rRate,dc);
 
         for (Size i=0; i<LENGTH(types); i++) {
           for (Size j=0; j<LENGTH(strikes); j++) {

@@ -31,14 +31,14 @@ namespace QuantLib {
     class BlackModel : public Observable, public Observer {
       public:
         BlackModel(const Handle<Quote>& volatility,
-                   const Handle<TermStructure>& termStructure);
+                   const Handle<YieldTermStructure>& termStructure);
 
         void update() { notifyObservers(); }
 
         //Returns the Black volatility
         Volatility volatility() const;
 
-        const Handle<TermStructure>& termStructure() const;
+        const Handle<YieldTermStructure>& termStructure() const;
 
         //! General Black formula
         static Real formula(Real f, Real k, Real v, Real w);
@@ -46,13 +46,14 @@ namespace QuantLib {
         static Real itmProbability(Real f, Real k, Real v, Real w);
       private:
         Handle<Quote> volatility_;
-        Handle<TermStructure> termStructure_;
+        Handle<YieldTermStructure> termStructure_;
     };
 
     // inline definitions
 
-    inline BlackModel::BlackModel(const Handle<Quote>& volatility,
-                                  const Handle<TermStructure>& termStructure)
+    inline BlackModel::BlackModel(
+                              const Handle<Quote>& volatility,
+                              const Handle<YieldTermStructure>& termStructure)
     : volatility_(volatility), termStructure_(termStructure) {
         registerWith(volatility_);
         registerWith(termStructure_);
@@ -62,8 +63,8 @@ namespace QuantLib {
         return volatility_->value();
     }
 
-    inline 
-    const Handle<TermStructure>& BlackModel::termStructure() const {
+    inline
+    const Handle<YieldTermStructure>& BlackModel::termStructure() const {
         return termStructure_;
     }
 
@@ -75,7 +76,7 @@ namespace QuantLib {
         \f[
             d_1(f,k,v) = \frac{\ln(f/k)+v^2/2}{v}
         \f]
-        and 
+        and
         \f[
             d_2(f,k,v) = d_1(f,k,v) - v.
         \f]
@@ -99,7 +100,7 @@ namespace QuantLib {
         \f[
             d_1(f,k,v) = \frac{\ln(f/k)+v^2/2}{v}
         \f]
-        and 
+        and
         \f[
             d_2(f,k,v) = d_1(f,k,v) - v.
         \f]

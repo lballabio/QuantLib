@@ -76,7 +76,7 @@ namespace {
     Size deposits, swaps;
     std::vector<boost::shared_ptr<SimpleQuote> > rates;
     std::vector<boost::shared_ptr<RateHelper> > instruments;
-    boost::shared_ptr<TermStructure> termStructure;
+    boost::shared_ptr<YieldTermStructure> termStructure;
 
     void initialize() {
 
@@ -131,7 +131,7 @@ namespace {
         }
 
         // instantiate curve
-        termStructure = boost::shared_ptr<TermStructure>(
+        termStructure = boost::shared_ptr<YieldTermStructure>(
                 new PiecewiseFlatForward(settlement,instruments,Actual360()));
 
     }
@@ -148,7 +148,7 @@ void PiecewiseFlatForwardTest::testConsistency() {
 
     initialize();
 
-    Handle<TermStructure> euriborHandle;
+    Handle<YieldTermStructure> euriborHandle;
     euriborHandle.linkTo(termStructure);
 
     Size i;
@@ -206,7 +206,7 @@ void PiecewiseFlatForwardTest::testObservability() {
 
     initialize();
 
-    termStructure = boost::shared_ptr<TermStructure>(
+    termStructure = boost::shared_ptr<YieldTermStructure>(
                           new PiecewiseFlatForward(settlementDays,calendar,
                                                    instruments,Actual360()));
 

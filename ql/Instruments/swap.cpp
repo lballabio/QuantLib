@@ -22,7 +22,7 @@ namespace QuantLib {
 
     Swap::Swap(const std::vector<boost::shared_ptr<CashFlow> >& firstLeg,
                const std::vector<boost::shared_ptr<CashFlow> >& secondLeg,
-               const Handle<TermStructure>& termStructure)
+               const Handle<YieldTermStructure>& termStructure)
     : firstLeg_(firstLeg), secondLeg_(secondLeg),
       termStructure_(termStructure) {
         registerWith(termStructure_);

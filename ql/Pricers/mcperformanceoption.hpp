@@ -34,14 +34,14 @@ namespace QuantLib {
         the payoff of each forward-starting (a.k.a. deferred
         strike) options is \$ max(S/X- 1) \$.
     */
-    class McPerformanceOption 
+    class McPerformanceOption
         : public McPricer<SingleAsset<PseudoRandom> >{
       public:
         McPerformanceOption(Option::Type type,
                             Real underlying,
                             Real moneyness,
-                            const Handle<TermStructure>& dividendYield,
-                            const Handle<TermStructure>& riskFreeRate,
+                            const Handle<YieldTermStructure>& dividendYield,
+                            const Handle<YieldTermStructure>& riskFreeRate,
                             const Handle<BlackVolTermStructure>& volatility,
                             const std::vector<Time>& times,
                             BigNatural seed = 0);

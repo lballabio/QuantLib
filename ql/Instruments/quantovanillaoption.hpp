@@ -36,7 +36,7 @@ namespace QuantLib {
         typedef QuantoEngine<VanillaOption::arguments,
                              VanillaOption::results> engine;
         QuantoVanillaOption(
-                      const Handle<TermStructure>& foreignRiskFreeTS,
+                      const Handle<YieldTermStructure>& foreignRiskFreeTS,
                       const Handle<BlackVolTermStructure>& exchRateVolTS,
                       const Handle<Quote>& correlation,
                       const boost::shared_ptr<BlackScholesProcess>& stochProc,
@@ -54,7 +54,7 @@ namespace QuantLib {
         void setupExpired() const;
         void performCalculations() const;
         // arguments
-        Handle<TermStructure> foreignRiskFreeTS_;
+        Handle<YieldTermStructure> foreignRiskFreeTS_;
         Handle<BlackVolTermStructure> exchRateVolTS_;
         Handle<Quote> correlation_;
         // results

@@ -39,6 +39,8 @@ int main(int, char* [])
 
         Date todaysDate(15, May, 1998);
         Date settlementDate(17, May, 1998);
+        Settings::instance().setEvaluationDate(todaysDate);
+
         Date exerciseDate(17, May, 1999);
         DayCounter rateDayCounter = Actual365();
         Time maturity = rateDayCounter.yearFraction(settlementDate,
@@ -88,13 +90,13 @@ int main(int, char* [])
             boost::shared_ptr<Quote>(new SimpleQuote(underlying)));
 
         // bootstrap the yield/dividend/vol curves
-        Handle<TermStructure> flatTermStructure(
-            boost::shared_ptr<TermStructure>(
-                new FlatForward(todaysDate, settlementDate,
+        Handle<YieldTermStructure> flatTermStructure(
+            boost::shared_ptr<YieldTermStructure>(
+                new FlatForward(settlementDate,
                                 riskFreeRate, rateDayCounter)));
-        Handle<TermStructure> flatDividendTS(
-            boost::shared_ptr<TermStructure>(
-                new FlatForward(todaysDate, settlementDate,
+        Handle<YieldTermStructure> flatDividendTS(
+            boost::shared_ptr<YieldTermStructure>(
+                new FlatForward(settlementDate,
                                 dividendYield, rateDayCounter)));
         Handle<BlackVolTermStructure> flatVolTS(
             boost::shared_ptr<BlackVolTermStructure>(
@@ -122,7 +124,7 @@ int main(int, char* [])
             vols[3][2] = volatility*0.9; vols[3][3] = volatility*0.8;
         Handle<BlackVolTermStructure> blackSurface(
             boost::shared_ptr<BlackVolTermStructure>(
-                new BlackVarianceSurface(settlementDate, dates, 
+                new BlackVarianceSurface(settlementDate, dates,
                                          strikes, vols)));
 
         boost::shared_ptr<StrikedTypePayoff> payoff(new

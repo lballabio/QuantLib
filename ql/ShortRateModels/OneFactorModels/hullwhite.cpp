@@ -21,9 +21,9 @@
 
 namespace QuantLib {
 
-    HullWhite::HullWhite(const Handle<TermStructure>& termStructure, 
+    HullWhite::HullWhite(const Handle<YieldTermStructure>& termStructure,
                          Real a, Real sigma)
-    : Vasicek(termStructure->instantaneousForward(0.0), a, 0.0, sigma), 
+    : Vasicek(termStructure->instantaneousForward(0.0), a, 0.0, sigma),
       TermStructureConsistentModel(termStructure) {
         arguments_[1] = NullParameter();
         generateArguments();
@@ -43,7 +43,7 @@ namespace QuantLib {
                          new ShortRateTree(trinomial, numericDynamics, grid));
 
         typedef TermStructureFittingParameter::NumericalImpl NumericalImpl;
-        boost::shared_ptr<NumericalImpl> impl = 
+        boost::shared_ptr<NumericalImpl> impl =
             boost::dynamic_pointer_cast<NumericalImpl>(phi.implementation());
         impl->reset();
         for (Size i=0; i<(grid.size() - 1); i++) {
@@ -77,8 +77,8 @@ namespace QuantLib {
         phi_ = FittingParameter(termStructure(), a(), sigma());
     }
 
-    Real HullWhite::discountBondOption(Option::Type type, Real strike, 
-                                       Time maturity, 
+    Real HullWhite::discountBondOption(Option::Type type, Real strike,
+                                       Time maturity,
                                        Time bondMaturity) const {
 
         Real v = sigma()*B(maturity, bondMaturity)*

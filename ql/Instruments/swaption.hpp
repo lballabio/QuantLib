@@ -15,12 +15,12 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file swaption.hpp
+/*! \file Instruments/swaption.hpp
     \brief Swaption class
 */
 
-#ifndef quantlib_instruments_swaption_h
-#define quantlib_instruments_swaption_h
+#ifndef quantlib_instruments_swaption_hpp
+#define quantlib_instruments_swaption_hpp
 
 #include <ql/numericalmethod.hpp>
 #include <ql/option.hpp>
@@ -36,14 +36,14 @@ namespace QuantLib {
         class results;
         Swaption(const boost::shared_ptr<SimpleSwap>& swap,
                  const boost::shared_ptr<Exercise>& exercise,
-                 const Handle<TermStructure>& termStructure,
+                 const Handle<YieldTermStructure>& termStructure,
                  const boost::shared_ptr<PricingEngine>& engine);
         bool isExpired() const;
         void setupArguments(Arguments*) const;
       private:
         // arguments
         boost::shared_ptr<SimpleSwap> swap_;
-        Handle<TermStructure> termStructure_;
+        Handle<YieldTermStructure> termStructure_;
     };
 
     //! %Arguments for swaption calculation

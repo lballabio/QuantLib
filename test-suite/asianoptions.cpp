@@ -94,16 +94,16 @@ void AsianOptionTest::testAnalyticContinuousGeometricAveragePrice() {
 
     boost::shared_ptr<SimpleQuote> spot(new SimpleQuote(80.0));
     boost::shared_ptr<SimpleQuote> qRate(new SimpleQuote(-0.03));
-    boost::shared_ptr<TermStructure> qTS = flatRate(today, qRate, dc);
+    boost::shared_ptr<YieldTermStructure> qTS = flatRate(today, qRate, dc);
     boost::shared_ptr<SimpleQuote> rRate(new SimpleQuote(0.05));
-    boost::shared_ptr<TermStructure> rTS = flatRate(today, rRate, dc);
+    boost::shared_ptr<YieldTermStructure> rTS = flatRate(today, rRate, dc);
     boost::shared_ptr<SimpleQuote> vol(new SimpleQuote(0.20));
     boost::shared_ptr<BlackVolTermStructure> volTS = flatVol(today, vol, dc);
 
     boost::shared_ptr<BlackScholesProcess> stochProcess(new
         BlackScholesProcess(Handle<Quote>(spot),
-                            Handle<TermStructure>(qTS),
-                            Handle<TermStructure>(rTS),
+                            Handle<YieldTermStructure>(qTS),
+                            Handle<YieldTermStructure>(rTS),
                             Handle<BlackVolTermStructure>(volTS)));
 
     boost::shared_ptr<PricingEngine> engine(new
@@ -128,7 +128,7 @@ void AsianOptionTest::testAnalyticContinuousGeometricAveragePrice() {
     if (QL_FABS(calculated-expected) > tolerance) {
         REPORT_FAILURE("value", averageType, Null<Real>(), Null<Size>(),
                        std::vector<Date>(), payoff, exercise, spot->value(),
-                       qRate->value(), rRate->value(), today, 
+                       qRate->value(), rRate->value(), today,
                        vol->value(), expected, calculated, tolerance);
     }
 
@@ -151,7 +151,7 @@ void AsianOptionTest::testAnalyticContinuousGeometricAveragePrice() {
     if (QL_FABS(calculated-expected) > tolerance) {
         REPORT_FAILURE("value", averageType, runningAccumulator, pastFixings,
                        fixingDates, payoff, exercise, spot->value(),
-                       qRate->value(), rRate->value(), today, 
+                       qRate->value(), rRate->value(), today,
                        vol->value(), expected, calculated, tolerance);
     }
 
@@ -183,9 +183,9 @@ void AsianOptionTest::testAnalyticContinuousGeometricAveragePriceGreeks() {
 
     boost::shared_ptr<SimpleQuote> spot(new SimpleQuote(0.0));
     boost::shared_ptr<SimpleQuote> qRate(new SimpleQuote(0.0));
-    Handle<TermStructure> qTS(flatRate(today, qRate));
+    Handle<YieldTermStructure> qTS(flatRate(today, qRate));
     boost::shared_ptr<SimpleQuote> rRate(new SimpleQuote(0.0));
-    Handle<TermStructure> rTS(flatRate(today, rRate));
+    Handle<YieldTermStructure> rTS(flatRate(today, rRate));
     boost::shared_ptr<SimpleQuote> vol(new SimpleQuote(0.0));
     Handle<BlackVolTermStructure> volTS(flatVol(today, vol));
 
@@ -206,7 +206,7 @@ void AsianOptionTest::testAnalyticContinuousGeometricAveragePriceGreeks() {
                 AnalyticContinuousGeometricAveragePriceAsianEngine);
 
             ContinuousAveragingAsianOption option(Average::Geometric,
-                                                  process, payoff, 
+                                                  process, payoff,
                                                   maturity, engine);
 
             for (Size l=0; l<LENGTH(underlyings); l++) {
@@ -299,7 +299,7 @@ void AsianOptionTest::testAnalyticContinuousGeometricAveragePriceGreeks() {
                                                  Null<Real>(), Null<Size>(),
                                                  std::vector<Date>(),
                                                  payoff, maturity,
-                                                 u, q, r, today, v, 
+                                                 u, q, r, today, v,
                                                  expct, calcl, tol);
                               }
                           }
@@ -327,16 +327,16 @@ void AsianOptionTest::testAnalyticDiscreteGeometricAveragePrice() {
 
     boost::shared_ptr<SimpleQuote> spot(new SimpleQuote(100.0));
     boost::shared_ptr<SimpleQuote> qRate(new SimpleQuote(0.03));
-    boost::shared_ptr<TermStructure> qTS = flatRate(today, qRate, dc);
+    boost::shared_ptr<YieldTermStructure> qTS = flatRate(today, qRate, dc);
     boost::shared_ptr<SimpleQuote> rRate(new SimpleQuote(0.06));
-    boost::shared_ptr<TermStructure> rTS = flatRate(today, rRate, dc);
+    boost::shared_ptr<YieldTermStructure> rTS = flatRate(today, rRate, dc);
     boost::shared_ptr<SimpleQuote> vol(new SimpleQuote(0.20));
     boost::shared_ptr<BlackVolTermStructure> volTS = flatVol(today, vol, dc);
 
     boost::shared_ptr<BlackScholesProcess> stochProcess(new
         BlackScholesProcess(Handle<Quote>(spot),
-                            Handle<TermStructure>(qTS),
-                            Handle<TermStructure>(rTS),
+                            Handle<YieldTermStructure>(qTS),
+                            Handle<YieldTermStructure>(rTS),
                             Handle<BlackVolTermStructure>(volTS)));
 
     boost::shared_ptr<PricingEngine> engine(new
@@ -371,7 +371,7 @@ void AsianOptionTest::testAnalyticDiscreteGeometricAveragePrice() {
     if (QL_FABS(calculated-expected) > tolerance) {
         REPORT_FAILURE("value", averageType, runningAccumulator, pastFixings,
                        fixingDates, payoff, exercise, spot->value(),
-                       qRate->value(), rRate->value(), today, 
+                       qRate->value(), rRate->value(), today,
                        vol->value(), expected, calculated, tolerance);
     }
 }
@@ -390,16 +390,16 @@ void AsianOptionTest::testMCDiscreteGeometricAveragePrice() {
 
     boost::shared_ptr<SimpleQuote> spot(new SimpleQuote(100.0));
     boost::shared_ptr<SimpleQuote> qRate(new SimpleQuote(0.03));
-    boost::shared_ptr<TermStructure> qTS = flatRate(today, qRate, dc);
+    boost::shared_ptr<YieldTermStructure> qTS = flatRate(today, qRate, dc);
     boost::shared_ptr<SimpleQuote> rRate(new SimpleQuote(0.06));
-    boost::shared_ptr<TermStructure> rTS = flatRate(today, rRate, dc);
+    boost::shared_ptr<YieldTermStructure> rTS = flatRate(today, rRate, dc);
     boost::shared_ptr<SimpleQuote> vol(new SimpleQuote(0.20));
     boost::shared_ptr<BlackVolTermStructure> volTS = flatVol(today, vol, dc);
 
     boost::shared_ptr<BlackScholesProcess> stochProcess(new
         BlackScholesProcess(Handle<Quote>(spot),
-                            Handle<TermStructure>(qTS),
-                            Handle<TermStructure>(rTS),
+                            Handle<YieldTermStructure>(qTS),
+                            Handle<YieldTermStructure>(rTS),
                             Handle<BlackVolTermStructure>(volTS)));
 
     boost::shared_ptr<PricingEngine> engine;
@@ -409,7 +409,7 @@ void AsianOptionTest::testMCDiscreteGeometricAveragePrice() {
 //        MakeMCDiscreteGeometricAPEngine<PseudoRandom>().withStepsPerYear(1)
 //                                            .withTolerance(0.003)
 //                                            .withSeed(42);
-    
+
     Average::Type averageType = Average::Geometric;
     Real runningAccumulator = 1.0;
     Size pastFixings = 0;
@@ -439,7 +439,7 @@ void AsianOptionTest::testMCDiscreteGeometricAveragePrice() {
     if (QL_FABS(calculated-expected) > tolerance) {
         REPORT_FAILURE("value", averageType, runningAccumulator, pastFixings,
                        fixingDates, payoff, exercise, spot->value(),
-                       qRate->value(), rRate->value(), today, 
+                       qRate->value(), rRate->value(), today,
                        vol->value(), expected, calculated, tolerance);
     }
 }
@@ -538,9 +538,9 @@ void AsianOptionTest::testMCDiscreteArithmeticAveragePrice() {
 
     boost::shared_ptr<SimpleQuote> spot(new SimpleQuote(100.0));
     boost::shared_ptr<SimpleQuote> qRate(new SimpleQuote(0.03));
-    boost::shared_ptr<TermStructure> qTS = flatRate(today, qRate, dc);
+    boost::shared_ptr<YieldTermStructure> qTS = flatRate(today, qRate, dc);
     boost::shared_ptr<SimpleQuote> rRate(new SimpleQuote(0.06));
-    boost::shared_ptr<TermStructure> rTS = flatRate(today, rRate, dc);
+    boost::shared_ptr<YieldTermStructure> rTS = flatRate(today, rRate, dc);
     boost::shared_ptr<SimpleQuote> vol(new SimpleQuote(0.20));
     boost::shared_ptr<BlackVolTermStructure> volTS = flatVol(today, vol, dc);
 
@@ -581,8 +581,8 @@ void AsianOptionTest::testMCDiscreteArithmeticAveragePrice() {
 
         boost::shared_ptr<BlackScholesProcess> stochProcess(new
             BlackScholesProcess(Handle<Quote>(spot),
-                                Handle<TermStructure>(qTS),
-                                Handle<TermStructure>(rTS),
+                                Handle<YieldTermStructure>(qTS),
+                                Handle<YieldTermStructure>(rTS),
                                 Handle<BlackVolTermStructure>(volTS)));
 
         DiscreteAveragingAsianOption option(averageType, runningSum,
@@ -596,11 +596,11 @@ void AsianOptionTest::testMCDiscreteArithmeticAveragePrice() {
         if (QL_FABS(calculated-expected) > tolerance) {
             REPORT_FAILURE("value", averageType, runningSum, pastFixings,
                         fixingDates, payoff, exercise, spot->value(),
-                        qRate->value(), rRate->value(), today, 
+                        qRate->value(), rRate->value(), today,
                         vol->value(), expected, calculated, tolerance);
         }
     }
-        
+
 }
 
 void AsianOptionTest::testAnalyticDiscreteGeometricAveragePriceGreeks() {
@@ -627,9 +627,9 @@ void AsianOptionTest::testAnalyticDiscreteGeometricAveragePriceGreeks() {
 
     boost::shared_ptr<SimpleQuote> spot(new SimpleQuote(0.0));
     boost::shared_ptr<SimpleQuote> qRate(new SimpleQuote(0.0));
-    Handle<TermStructure> qTS(flatRate(today, qRate));
+    Handle<YieldTermStructure> qTS(flatRate(today, qRate));
     boost::shared_ptr<SimpleQuote> rRate(new SimpleQuote(0.0));
-    Handle<TermStructure> rTS(flatRate(today, rRate));
+    Handle<YieldTermStructure> rTS(flatRate(today, rRate));
     boost::shared_ptr<SimpleQuote> vol(new SimpleQuote(0.0));
     Handle<BlackVolTermStructure> volTS(flatVol(today, vol));
 
@@ -650,7 +650,7 @@ void AsianOptionTest::testAnalyticDiscreteGeometricAveragePriceGreeks() {
             Size pastFixings = 0;
 
             std::vector<Date> fixingDates;
-            for (Date d = today.plusMonths(3); 
+            for (Date d = today.plusMonths(3);
                  d <= maturity->lastDate();
                  d = d.plusMonths(3))
                 fixingDates.push_back(d);
@@ -659,9 +659,9 @@ void AsianOptionTest::testAnalyticDiscreteGeometricAveragePriceGreeks() {
             boost::shared_ptr<PricingEngine> engine(new
                 AnalyticDiscreteGeometricAveragePriceAsianEngine);
 
-            DiscreteAveragingAsianOption option(Average::Geometric, 
+            DiscreteAveragingAsianOption option(Average::Geometric,
                                                 runningAverage, pastFixings,
-                                                fixingDates, process, payoff, 
+                                                fixingDates, process, payoff,
                                                 maturity, engine);
 
             for (Size l=0; l<LENGTH(underlyings); l++) {
@@ -754,7 +754,7 @@ void AsianOptionTest::testAnalyticDiscreteGeometricAveragePriceGreeks() {
                                                  Null<Real>(), Null<Size>(),
                                                  std::vector<Date>(),
                                                  payoff, maturity,
-                                                 u, q, r, today, v, 
+                                                 u, q, r, today, v,
                                                  expct, calcl, tol);
                               }
                           }
@@ -780,7 +780,7 @@ test_suite* AsianOptionTest::suite() {
         &AsianOptionTest::testMCDiscreteGeometricAveragePrice));
     suite->add(BOOST_TEST_CASE(
         &AsianOptionTest::testMCDiscreteArithmeticAveragePrice));
-    /* broken 
+    /* broken
     suite->add(BOOST_TEST_CASE(
         &AsianOptionTest::testAnalyticDiscreteGeometricAveragePriceGreeks));
     */

@@ -35,6 +35,7 @@ EXTRA_DIST= \
 include_HEADERS = \
 	core.hpp \
 	argsandresults.hpp \
+	basetermstructure.hpp \
 	basicdataformatters.hpp \
 	calendar.hpp \
 	capvolstructures.hpp \

@@ -37,7 +37,7 @@ namespace {
 
     Calendar calendar_;
     Integer settlementDays_;
-    boost::shared_ptr<TermStructure> termStructure_;
+    boost::shared_ptr<YieldTermStructure> termStructure_;
 
     // utilities
 
@@ -88,7 +88,7 @@ namespace {
                                              Annual, Unadjusted, Thirty360(),
                                              Semiannual, ModifiedFollowing));
         }
-        termStructure_ = boost::shared_ptr<TermStructure>(
+        termStructure_ = boost::shared_ptr<YieldTermStructure>(
                 new PiecewiseFlatForward(settlement,instruments,Actual360()));
     }
 
@@ -105,7 +105,7 @@ void TermStructureTest::testReferenceChange() {
 
     initialize();
 
-    termStructure_ = boost::shared_ptr<TermStructure>(
+    termStructure_ = boost::shared_ptr<YieldTermStructure>(
          new FlatForward(settlementDays_, NullCalendar(), 0.03, Actual360()));
 
     Date today = Settings::instance().evaluationDate();
@@ -146,8 +146,8 @@ void TermStructureTest::testImplied() {
     Date newToday = today.plusYears(3);
     Date newSettlement = calendar_.advance(newToday,settlementDays_,Days);
     Date testDate = newSettlement.plusYears(5);
-    boost::shared_ptr<TermStructure> implied(
-        new ImpliedTermStructure(Handle<TermStructure>(termStructure_),
+    boost::shared_ptr<YieldTermStructure> implied(
+        new ImpliedTermStructure(Handle<YieldTermStructure>(termStructure_),
                                  newSettlement));
     DiscountFactor baseDiscount = termStructure_->discount(newSettlement);
     DiscountFactor discount = termStructure_->discount(testDate);
@@ -170,8 +170,8 @@ void TermStructureTest::testImpliedObs() {
     Date today = Settings::instance().evaluationDate();
     Date newToday = today.plusYears(3);
     Date newSettlement = calendar_.advance(newToday,settlementDays_,Days);
-    Handle<TermStructure> h;
-    boost::shared_ptr<TermStructure> implied(
+    Handle<YieldTermStructure> h;
+    boost::shared_ptr<YieldTermStructure> implied(
                                   new ImpliedTermStructure(h, newSettlement));
     Flag flag;
     flag.registerWith(implied);
@@ -189,9 +189,9 @@ void TermStructureTest::testFSpreaded() {
     Real tolerance = 1.0e-10;
     boost::shared_ptr<Quote> me(new SimpleQuote(0.01));
     Handle<Quote> mh(me);
-    boost::shared_ptr<TermStructure> spreaded(
+    boost::shared_ptr<YieldTermStructure> spreaded(
         new ForwardSpreadedTermStructure(
-            Handle<TermStructure>(termStructure_),mh));
+            Handle<YieldTermStructure>(termStructure_),mh));
     Date testDate = termStructure_->referenceDate().plusYears(5);
     Rate forward = termStructure_->instantaneousForward(testDate);
     Rate spreadedForward = spreaded->instantaneousForward(testDate);
@@ -213,8 +213,8 @@ void TermStructureTest::testFSpreadedObs() {
 
     boost::shared_ptr<SimpleQuote> me(new SimpleQuote(0.01));
     Handle<Quote> mh(me);
-    Handle<TermStructure> h;
-    boost::shared_ptr<TermStructure> spreaded(
+    Handle<YieldTermStructure> h;
+    boost::shared_ptr<YieldTermStructure> spreaded(
         new ForwardSpreadedTermStructure(h,mh));
     Flag flag;
     flag.registerWith(spreaded);
@@ -236,9 +236,9 @@ void TermStructureTest::testZSpreaded() {
     Real tolerance = 1.0e-10;
     boost::shared_ptr<Quote> me(new SimpleQuote(0.01));
     Handle<Quote> mh(me);
-    boost::shared_ptr<TermStructure> spreaded(
+    boost::shared_ptr<YieldTermStructure> spreaded(
         new ZeroSpreadedTermStructure(
-            Handle<TermStructure>(termStructure_),mh));
+            Handle<YieldTermStructure>(termStructure_),mh));
     Date testDate = termStructure_->referenceDate().plusYears(5);
     Rate zero = termStructure_->zeroYield(testDate);
     Rate spreadedZero = spreaded->zeroYield(testDate);
@@ -259,8 +259,8 @@ void TermStructureTest::testZSpreadedObs() {
 
     boost::shared_ptr<SimpleQuote> me(new SimpleQuote(0.01));
     Handle<Quote> mh(me);
-    Handle<TermStructure> h;
-    boost::shared_ptr<TermStructure> spreaded(
+    Handle<YieldTermStructure> h;
+    boost::shared_ptr<YieldTermStructure> spreaded(
         new ZeroSpreadedTermStructure(h,mh));
     Flag flag;
     flag.registerWith(spreaded);

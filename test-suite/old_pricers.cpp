@@ -391,9 +391,9 @@ void OldPricerTest::testMcSingleFactorPricers() {
             timeIncrements[i] = i*dt + cases4[k].first;
 
         Date today = Date::todaysDate();
-        Handle<TermStructure> riskFreeRate(
+        Handle<YieldTermStructure> riskFreeRate(
                                     flatRate(today, cases4[k].riskFreeRate));
-        Handle<TermStructure> dividendYield(
+        Handle<YieldTermStructure> dividendYield(
                                     flatRate(today, cases4[k].dividendYield));
         Handle<BlackVolTermStructure> volatility(
                                     flatVol(today, cases4[k].volatility));
@@ -505,9 +505,9 @@ void OldPricerTest::testMcSingleFactorPricers() {
             timeIncrements[i] = i*dt + cases5[l].first;
 
         Date today = Date::todaysDate();
-        Handle<TermStructure> riskFreeRate(
+        Handle<YieldTermStructure> riskFreeRate(
                                     flatRate(today, cases5[l].riskFreeRate));
-        Handle<TermStructure> dividendYield(
+        Handle<YieldTermStructure> dividendYield(
                                     flatRate(today, cases5[l].dividendYield));
         Handle<BlackVolTermStructure> volatility(
                                     flatVol(today, cases5[l].volatility));
@@ -608,22 +608,22 @@ void OldPricerTest::testMcMultiFactorPricers() {
     volatilities[2] = Handle<BlackVolTermStructure>(flatVol(today, 0.25));
     volatilities[3] = Handle<BlackVolTermStructure>(flatVol(today, 0.20));
 
-    std::vector<Handle<TermStructure> > dividendYields(4);
-    dividendYields[0] = Handle<TermStructure>(flatRate(today, 0.01));
-    dividendYields[1] = Handle<TermStructure>(flatRate(today, 0.05));
-    dividendYields[2] = Handle<TermStructure>(flatRate(today, 0.04));
-    dividendYields[3] = Handle<TermStructure>(flatRate(today, 0.03));
+    std::vector<Handle<YieldTermStructure> > dividendYields(4);
+    dividendYields[0] = Handle<YieldTermStructure>(flatRate(today, 0.01));
+    dividendYields[1] = Handle<YieldTermStructure>(flatRate(today, 0.05));
+    dividendYields[2] = Handle<YieldTermStructure>(flatRate(today, 0.04));
+    dividendYields[3] = Handle<YieldTermStructure>(flatRate(today, 0.03));
 
-    Handle<TermStructure> riskFreeRate(flatRate(today, 0.05));
+    Handle<YieldTermStructure> riskFreeRate(flatRate(today, 0.05));
     Time resTime = 1.0;
 
     // degenerate portfolio
     Matrix perfectCorrelation(4,4,1.0);
     Handle<BlackVolTermStructure> sameVol(flatVol(today, 0.30));
-    Handle<TermStructure> sameDividend(flatRate(today, 0.03));
+    Handle<YieldTermStructure> sameDividend(flatRate(today, 0.03));
 
     std::vector<Handle<BlackVolTermStructure> > sameAssetVols(4, sameVol);
-    std::vector<Handle<TermStructure> > sameAssetDividend(4, sameDividend);
+    std::vector<Handle<YieldTermStructure> > sameAssetDividend(4, sameDividend);
 
     BigNatural seed = 86421;
 

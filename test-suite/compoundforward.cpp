@@ -69,7 +69,7 @@ namespace {
     Size deposits, swaps;
     std::vector<Rate> rates;
     std::vector<Date> dates;
-    boost::shared_ptr<TermStructure> termStructure;
+    boost::shared_ptr<YieldTermStructure> termStructure;
 
 
     void initialize() {
@@ -107,7 +107,7 @@ namespace {
                                                  convention);
         }
 
-        termStructure = boost::shared_ptr<TermStructure>(
+        termStructure = boost::shared_ptr<YieldTermStructure>(
                              new CompoundForward(settlement,dates,rates,
                                                  calendar,convention,
                                                  frequency,dayCounter));
@@ -126,7 +126,7 @@ void CompoundForwardTest::testSuppliedRates() {
 
     initialize();
 
-    Handle<TermStructure> liborHandle;
+    Handle<YieldTermStructure> liborHandle;
     liborHandle.linkTo(termStructure);
 
     Size i;
@@ -165,7 +165,7 @@ void CompoundForwardTest::testConvertedRates() {
 
     initialize();
 
-    Handle<TermStructure> liborHandle;
+    Handle<YieldTermStructure> liborHandle;
     liborHandle.linkTo(termStructure);
 
     Size i;

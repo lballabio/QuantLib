@@ -25,7 +25,7 @@ namespace QuantLib {
                       const boost::shared_ptr<CashOrNothingPayoff>& payoff,
                       const boost::shared_ptr<AmericanExercise>& exercise,
                       Real underlying,
-                      const Handle<TermStructure>& discountTS,
+                      const Handle<YieldTermStructure>& discountTS,
                       const boost::shared_ptr<StochasticProcess>& diffProcess,
                       const PseudoRandom::ursg_type& sequenceGen)
     : payoff_(payoff), exercise_(exercise),

@@ -86,7 +86,7 @@ namespace QuantLib {
               boost::shared_ptr<Parameter::Impl>(new ConstantParameter::Impl),
               constraint) {
             params_[0] = value;
-            QL_REQUIRE(testParams(params_), 
+            QL_REQUIRE(testParams(params_),
                 DecimalFormatter::toString(value) + ": invalid value");
         }
 
@@ -147,7 +147,7 @@ namespace QuantLib {
       public:
         class NumericalImpl : public Parameter::Impl {
           public:
-            NumericalImpl(const Handle<TermStructure>& termStructure)
+            NumericalImpl(const Handle<YieldTermStructure>& termStructure)
             : times_(0), values_(0), termStructure_(termStructure) {}
 
             void set(Time t, Real x) {
@@ -168,22 +168,22 @@ namespace QuantLib {
                            "fitting parameter not set!");
                 return values_[result - times_.begin()];
             }
-            const Handle<TermStructure>& termStructure() const {
+            const Handle<YieldTermStructure>& termStructure() const {
                 return termStructure_;
             }
           private:
             std::vector<Time> times_;
             std::vector<Real> values_;
-            Handle<TermStructure> termStructure_;
+            Handle<YieldTermStructure> termStructure_;
         };
 
         TermStructureFittingParameter(
                                const boost::shared_ptr<Parameter::Impl>& impl)
         : Parameter(0, impl, NoConstraint()) {}
 
-        TermStructureFittingParameter(const Handle<TermStructure>& term)
+        TermStructureFittingParameter(const Handle<YieldTermStructure>& term)
         : Parameter(
-                  0, 
+                  0,
                   boost::shared_ptr<Parameter::Impl>(new NumericalImpl(term)),
                   NoConstraint())
         {}

@@ -132,9 +132,9 @@ void AmericanOptionTest::testBaroneAdesiWhaleyValues() {
     DayCounter dc = Actual360();
     boost::shared_ptr<SimpleQuote> spot(new SimpleQuote(0.0));
     boost::shared_ptr<SimpleQuote> qRate(new SimpleQuote(0.0));
-    boost::shared_ptr<TermStructure> qTS = flatRate(today, qRate, dc);
+    boost::shared_ptr<YieldTermStructure> qTS = flatRate(today, qRate, dc);
     boost::shared_ptr<SimpleQuote> rRate(new SimpleQuote(0.0));
-    boost::shared_ptr<TermStructure> rTS = flatRate(today, rRate, dc);
+    boost::shared_ptr<YieldTermStructure> rTS = flatRate(today, rRate, dc);
     boost::shared_ptr<SimpleQuote> vol(new SimpleQuote(0.0));
     boost::shared_ptr<BlackVolTermStructure> volTS = flatVol(today, vol, dc);
     boost::shared_ptr<PricingEngine> engine(
@@ -156,8 +156,8 @@ void AmericanOptionTest::testBaroneAdesiWhaleyValues() {
 
         boost::shared_ptr<BlackScholesProcess> stochProcess(new
             BlackScholesProcess(Handle<Quote>(spot),
-                                Handle<TermStructure>(qTS),
-                                Handle<TermStructure>(rTS),
+                                Handle<YieldTermStructure>(qTS),
+                                Handle<YieldTermStructure>(rTS),
                                 Handle<BlackVolTermStructure>(volTS)));
 
         VanillaOption option(stochProcess, payoff, exercise,
@@ -192,9 +192,9 @@ void AmericanOptionTest::testBjerksundStenslandValues() {
     DayCounter dc = Actual360();
     boost::shared_ptr<SimpleQuote> spot(new SimpleQuote(0.0));
     boost::shared_ptr<SimpleQuote> qRate(new SimpleQuote(0.0));
-    boost::shared_ptr<TermStructure> qTS = flatRate(today, qRate, dc);
+    boost::shared_ptr<YieldTermStructure> qTS = flatRate(today, qRate, dc);
     boost::shared_ptr<SimpleQuote> rRate(new SimpleQuote(0.0));
-    boost::shared_ptr<TermStructure> rTS = flatRate(today, rRate, dc);
+    boost::shared_ptr<YieldTermStructure> rTS = flatRate(today, rRate, dc);
     boost::shared_ptr<SimpleQuote> vol(new SimpleQuote(0.0));
     boost::shared_ptr<BlackVolTermStructure> volTS = flatVol(today, vol, dc);
     boost::shared_ptr<PricingEngine> engine(
@@ -216,8 +216,8 @@ void AmericanOptionTest::testBjerksundStenslandValues() {
 
         boost::shared_ptr<BlackScholesProcess> stochProcess(new
             BlackScholesProcess(Handle<Quote>(spot),
-                                Handle<TermStructure>(qTS),
-                                Handle<TermStructure>(rTS),
+                                Handle<YieldTermStructure>(qTS),
+                                Handle<YieldTermStructure>(rTS),
                                 Handle<BlackVolTermStructure>(volTS)));
 
         VanillaOption option(stochProcess, payoff, exercise,
@@ -316,9 +316,9 @@ void AmericanOptionTest::testJuValues() {
     DayCounter dc = Actual360();
     boost::shared_ptr<SimpleQuote> spot(new SimpleQuote(0.0));
     boost::shared_ptr<SimpleQuote> qRate(new SimpleQuote(0.0));
-    boost::shared_ptr<TermStructure> qTS = flatRate(today, qRate, dc);
+    boost::shared_ptr<YieldTermStructure> qTS = flatRate(today, qRate, dc);
     boost::shared_ptr<SimpleQuote> rRate(new SimpleQuote(0.0));
-    boost::shared_ptr<TermStructure> rTS = flatRate(today, rRate, dc);
+    boost::shared_ptr<YieldTermStructure> rTS = flatRate(today, rRate, dc);
     boost::shared_ptr<SimpleQuote> vol(new SimpleQuote(0.0));
     boost::shared_ptr<BlackVolTermStructure> volTS = flatVol(today, vol, dc);
     boost::shared_ptr<PricingEngine> engine(
@@ -340,8 +340,8 @@ void AmericanOptionTest::testJuValues() {
 
         boost::shared_ptr<BlackScholesProcess> stochProcess(new
             BlackScholesProcess(Handle<Quote>(spot),
-                                Handle<TermStructure>(qTS),
-                                Handle<TermStructure>(rTS),
+                                Handle<YieldTermStructure>(qTS),
+                                Handle<YieldTermStructure>(rTS),
                                 Handle<BlackVolTermStructure>(volTS)));
 
         VanillaOption option(stochProcess, payoff, exercise,

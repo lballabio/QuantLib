@@ -92,9 +92,9 @@ void DigitalOptionTest::testCashOrNothingEuropeanValues() {
 
     boost::shared_ptr<SimpleQuote> spot(new SimpleQuote(0.0));
     boost::shared_ptr<SimpleQuote> qRate(new SimpleQuote(0.0));
-    boost::shared_ptr<TermStructure> qTS = flatRate(today, qRate, dc);
+    boost::shared_ptr<YieldTermStructure> qTS = flatRate(today, qRate, dc);
     boost::shared_ptr<SimpleQuote> rRate(new SimpleQuote(0.0));
-    boost::shared_ptr<TermStructure> rTS = flatRate(today, rRate, dc);
+    boost::shared_ptr<YieldTermStructure> rTS = flatRate(today, rRate, dc);
     boost::shared_ptr<SimpleQuote> vol(new SimpleQuote(0.0));
     boost::shared_ptr<BlackVolTermStructure> volTS = flatVol(today, vol, dc);
     boost::shared_ptr<PricingEngine> engine(new AnalyticEuropeanEngine);
@@ -114,8 +114,8 @@ void DigitalOptionTest::testCashOrNothingEuropeanValues() {
 
         boost::shared_ptr<BlackScholesProcess> stochProcess(new
             BlackScholesProcess(Handle<Quote>(spot),
-                                Handle<TermStructure>(qTS),
-                                Handle<TermStructure>(rTS),
+                                Handle<YieldTermStructure>(qTS),
+                                Handle<YieldTermStructure>(rTS),
                                 Handle<BlackVolTermStructure>(volTS)));
 
         VanillaOption opt(stochProcess, payoff, exercise, engine);
@@ -145,9 +145,9 @@ void DigitalOptionTest::testAssetOrNothingEuropeanValues() {
 
     boost::shared_ptr<SimpleQuote> spot(new SimpleQuote(0.0));
     boost::shared_ptr<SimpleQuote> qRate(new SimpleQuote(0.0));
-    boost::shared_ptr<TermStructure> qTS = flatRate(today, qRate, dc);
+    boost::shared_ptr<YieldTermStructure> qTS = flatRate(today, qRate, dc);
     boost::shared_ptr<SimpleQuote> rRate(new SimpleQuote(0.0));
-    boost::shared_ptr<TermStructure> rTS = flatRate(today, rRate, dc);
+    boost::shared_ptr<YieldTermStructure> rTS = flatRate(today, rRate, dc);
     boost::shared_ptr<SimpleQuote> vol(new SimpleQuote(0.0));
     boost::shared_ptr<BlackVolTermStructure> volTS = flatVol(today, vol, dc);
     boost::shared_ptr<PricingEngine> engine(new AnalyticEuropeanEngine);
@@ -167,8 +167,8 @@ void DigitalOptionTest::testAssetOrNothingEuropeanValues() {
 
         boost::shared_ptr<BlackScholesProcess> stochProcess(new
             BlackScholesProcess(Handle<Quote>(spot),
-                                Handle<TermStructure>(qTS),
-                                Handle<TermStructure>(rTS),
+                                Handle<YieldTermStructure>(qTS),
+                                Handle<YieldTermStructure>(rTS),
                                 Handle<BlackVolTermStructure>(volTS)));
 
         VanillaOption opt(stochProcess, payoff, exercise, engine);
@@ -198,9 +198,9 @@ void DigitalOptionTest::testGapEuropeanValues() {
 
     boost::shared_ptr<SimpleQuote> spot(new SimpleQuote(0.0));
     boost::shared_ptr<SimpleQuote> qRate(new SimpleQuote(0.0));
-    boost::shared_ptr<TermStructure> qTS = flatRate(today, qRate, dc);
+    boost::shared_ptr<YieldTermStructure> qTS = flatRate(today, qRate, dc);
     boost::shared_ptr<SimpleQuote> rRate(new SimpleQuote(0.0));
-    boost::shared_ptr<TermStructure> rTS = flatRate(today, rRate, dc);
+    boost::shared_ptr<YieldTermStructure> rTS = flatRate(today, rRate, dc);
     boost::shared_ptr<SimpleQuote> vol(new SimpleQuote(0.0));
     boost::shared_ptr<BlackVolTermStructure> volTS = flatVol(today, vol, dc);
     boost::shared_ptr<PricingEngine> engine(new AnalyticEuropeanEngine);
@@ -220,8 +220,8 @@ void DigitalOptionTest::testGapEuropeanValues() {
 
         boost::shared_ptr<BlackScholesProcess> stochProcess(new
             BlackScholesProcess(Handle<Quote>(spot),
-                                Handle<TermStructure>(qTS),
-                                Handle<TermStructure>(rTS),
+                                Handle<YieldTermStructure>(qTS),
+                                Handle<YieldTermStructure>(rTS),
                                 Handle<BlackVolTermStructure>(volTS)));
 
         VanillaOption opt(stochProcess, payoff, exercise, engine);
@@ -263,9 +263,9 @@ void DigitalOptionTest::testCashAtHitOrNothingAmericanValues() {
 
     boost::shared_ptr<SimpleQuote> spot(new SimpleQuote(0.0));
     boost::shared_ptr<SimpleQuote> qRate(new SimpleQuote(0.0));
-    boost::shared_ptr<TermStructure> qTS = flatRate(today, qRate, dc);
+    boost::shared_ptr<YieldTermStructure> qTS = flatRate(today, qRate, dc);
     boost::shared_ptr<SimpleQuote> rRate(new SimpleQuote(0.0));
-    boost::shared_ptr<TermStructure> rTS = flatRate(today, rRate, dc);
+    boost::shared_ptr<YieldTermStructure> rTS = flatRate(today, rRate, dc);
     boost::shared_ptr<SimpleQuote> vol(new SimpleQuote(0.0));
     boost::shared_ptr<BlackVolTermStructure> volTS = flatVol(today, vol, dc);
     boost::shared_ptr<PricingEngine> engine(new AnalyticDigitalAmericanEngine);
@@ -286,8 +286,8 @@ void DigitalOptionTest::testCashAtHitOrNothingAmericanValues() {
 
         boost::shared_ptr<BlackScholesProcess> stochProcess(new
             BlackScholesProcess(Handle<Quote>(spot),
-                                Handle<TermStructure>(qTS),
-                                Handle<TermStructure>(rTS),
+                                Handle<YieldTermStructure>(qTS),
+                                Handle<YieldTermStructure>(rTS),
                                 Handle<BlackVolTermStructure>(volTS)));
 
         VanillaOption opt(stochProcess, payoff, amExercise,
@@ -328,9 +328,9 @@ void DigitalOptionTest::testAssetAtHitOrNothingAmericanValues() {
 
     boost::shared_ptr<SimpleQuote> spot(new SimpleQuote(100.0));
     boost::shared_ptr<SimpleQuote> qRate(new SimpleQuote(0.04));
-    boost::shared_ptr<TermStructure> qTS = flatRate(today, qRate, dc);
+    boost::shared_ptr<YieldTermStructure> qTS = flatRate(today, qRate, dc);
     boost::shared_ptr<SimpleQuote> rRate(new SimpleQuote(0.01));
-    boost::shared_ptr<TermStructure> rTS = flatRate(today, rRate, dc);
+    boost::shared_ptr<YieldTermStructure> rTS = flatRate(today, rRate, dc);
     boost::shared_ptr<SimpleQuote> vol(new SimpleQuote(0.25));
     boost::shared_ptr<BlackVolTermStructure> volTS = flatVol(today, vol, dc);
     boost::shared_ptr<PricingEngine> engine(new AnalyticDigitalAmericanEngine);
@@ -351,8 +351,8 @@ void DigitalOptionTest::testAssetAtHitOrNothingAmericanValues() {
 
         boost::shared_ptr<BlackScholesProcess> stochProcess(new
             BlackScholesProcess(Handle<Quote>(spot),
-                                Handle<TermStructure>(qTS),
-                                Handle<TermStructure>(rTS),
+                                Handle<YieldTermStructure>(qTS),
+                                Handle<YieldTermStructure>(rTS),
                                 Handle<BlackVolTermStructure>(volTS)));
 
         VanillaOption opt(stochProcess, payoff, amExercise,
@@ -388,9 +388,9 @@ void DigitalOptionTest::testCashAtExpiryOrNothingAmericanValues() {
 
     boost::shared_ptr<SimpleQuote> spot(new SimpleQuote(100.0));
     boost::shared_ptr<SimpleQuote> qRate(new SimpleQuote(0.04));
-    boost::shared_ptr<TermStructure> qTS = flatRate(today, qRate, dc);
+    boost::shared_ptr<YieldTermStructure> qTS = flatRate(today, qRate, dc);
     boost::shared_ptr<SimpleQuote> rRate(new SimpleQuote(0.01));
-    boost::shared_ptr<TermStructure> rTS = flatRate(today, rRate, dc);
+    boost::shared_ptr<YieldTermStructure> rTS = flatRate(today, rRate, dc);
     boost::shared_ptr<SimpleQuote> vol(new SimpleQuote(0.25));
     boost::shared_ptr<BlackVolTermStructure> volTS = flatVol(today, vol, dc);
     boost::shared_ptr<PricingEngine> engine(new AnalyticDigitalAmericanEngine);
@@ -412,8 +412,8 @@ void DigitalOptionTest::testCashAtExpiryOrNothingAmericanValues() {
 
         boost::shared_ptr<BlackScholesProcess> stochProcess(new
             BlackScholesProcess(Handle<Quote>(spot),
-                                Handle<TermStructure>(qTS),
-                                Handle<TermStructure>(rTS),
+                                Handle<YieldTermStructure>(qTS),
+                                Handle<YieldTermStructure>(rTS),
                                 Handle<BlackVolTermStructure>(volTS)));
 
         VanillaOption opt(stochProcess, payoff, amExercise,
@@ -455,9 +455,9 @@ void DigitalOptionTest::testAssetAtExpiryOrNothingAmericanValues() {
 
     boost::shared_ptr<SimpleQuote> spot(new SimpleQuote(100.0));
     boost::shared_ptr<SimpleQuote> qRate(new SimpleQuote(0.04));
-    boost::shared_ptr<TermStructure> qTS = flatRate(today, qRate, dc);
+    boost::shared_ptr<YieldTermStructure> qTS = flatRate(today, qRate, dc);
     boost::shared_ptr<SimpleQuote> rRate(new SimpleQuote(0.01));
-    boost::shared_ptr<TermStructure> rTS = flatRate(today, rRate, dc);
+    boost::shared_ptr<YieldTermStructure> rTS = flatRate(today, rRate, dc);
     boost::shared_ptr<SimpleQuote> vol(new SimpleQuote(0.25));
     boost::shared_ptr<BlackVolTermStructure> volTS = flatVol(today, vol, dc);
     boost::shared_ptr<PricingEngine> engine(new AnalyticDigitalAmericanEngine);
@@ -479,8 +479,8 @@ void DigitalOptionTest::testAssetAtExpiryOrNothingAmericanValues() {
 
         boost::shared_ptr<BlackScholesProcess> stochProcess(new
             BlackScholesProcess(Handle<Quote>(spot),
-                                Handle<TermStructure>(qTS),
-                                Handle<TermStructure>(rTS),
+                                Handle<YieldTermStructure>(qTS),
+                                Handle<YieldTermStructure>(rTS),
                                 Handle<BlackVolTermStructure>(volTS)));
 
         VanillaOption opt(stochProcess, payoff, amExercise,
@@ -522,9 +522,9 @@ void DigitalOptionTest::testCashAtHitOrNothingAmericanGreeks() {
 
     boost::shared_ptr<SimpleQuote> spot(new SimpleQuote(0.0));
     boost::shared_ptr<SimpleQuote> qRate(new SimpleQuote(0.0));
-    Handle<TermStructure> qTS(flatRate(today, qRate, dc));
+    Handle<YieldTermStructure> qTS(flatRate(today, qRate, dc));
     boost::shared_ptr<SimpleQuote> rRate(new SimpleQuote(0.0));
-    Handle<TermStructure> rTS(flatRate(today, rRate, dc));
+    Handle<YieldTermStructure> rTS(flatRate(today, rRate, dc));
     boost::shared_ptr<SimpleQuote> vol(new SimpleQuote(0.0));
     Handle<BlackVolTermStructure> volTS(flatVol(today, vol, dc));
 
@@ -678,9 +678,9 @@ void DigitalOptionTest::testMCCashAtHit() {
 
     boost::shared_ptr<SimpleQuote> spot(new SimpleQuote(0.0));
     boost::shared_ptr<SimpleQuote> qRate(new SimpleQuote(0.0));
-    boost::shared_ptr<TermStructure> qTS = flatRate(today, qRate, dc);
+    boost::shared_ptr<YieldTermStructure> qTS = flatRate(today, qRate, dc);
     boost::shared_ptr<SimpleQuote> rRate(new SimpleQuote(0.0));
-    boost::shared_ptr<TermStructure> rTS = flatRate(today, rRate, dc);
+    boost::shared_ptr<YieldTermStructure> rTS = flatRate(today, rRate, dc);
     boost::shared_ptr<SimpleQuote> vol(new SimpleQuote(0.0));
     boost::shared_ptr<BlackVolTermStructure> volTS = flatVol(today, vol, dc);
 
@@ -705,8 +705,8 @@ void DigitalOptionTest::testMCCashAtHit() {
 
         boost::shared_ptr<BlackScholesProcess> stochProcess(new
             BlackScholesProcess(Handle<Quote>(spot),
-                                Handle<TermStructure>(qTS),
-                                Handle<TermStructure>(rTS),
+                                Handle<YieldTermStructure>(qTS),
+                                Handle<YieldTermStructure>(rTS),
                                 Handle<BlackVolTermStructure>(volTS)));
 
         bool antitheticVariate = true;

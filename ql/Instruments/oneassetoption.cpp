@@ -27,13 +27,13 @@ namespace QuantLib {
         const boost::shared_ptr<Payoff>& payoff,
         const boost::shared_ptr<Exercise>& exercise,
         const boost::shared_ptr<PricingEngine>& engine)
-    : Option(payoff, exercise, engine), 
+    : Option(payoff, exercise, engine),
       blackScholesProcess_(stochProc) {
         registerWith(blackScholesProcess_);
     }
 
     bool OneAssetOption::isExpired() const {
-        return exercise_->lastDate() < 
+        return exercise_->lastDate() <
             blackScholesProcess_->riskFreeRate()->referenceDate();
     }
 
@@ -136,10 +136,10 @@ namespace QuantLib {
         // it should be moved elsewhere
         arguments->stoppingTimes.clear();
         for (Size i=0; i<exercise_->dates().size(); i++) {
-            Time time = 
+            Time time =
                 blackScholesProcess_->riskFreeRate()
                 ->dayCounter().yearFraction(
-                       blackScholesProcess_->riskFreeRate()->referenceDate(), 
+                       blackScholesProcess_->riskFreeRate()->referenceDate(),
                        exercise_->date(i));
             arguments->stoppingTimes.push_back(time);
         }
@@ -223,9 +223,9 @@ namespace QuantLib {
         // its postponement.)
         Handle<Quote> stateVariable(
                             arguments_->blackScholesProcess->stateVariable());
-        Handle<TermStructure> dividendYield(
+        Handle<YieldTermStructure> dividendYield(
                             arguments_->blackScholesProcess->dividendYield());
-        Handle<TermStructure> riskFreeRate(
+        Handle<YieldTermStructure> riskFreeRate(
                             arguments_->blackScholesProcess->riskFreeRate());
         Handle<BlackVolTermStructure> volatility;
         boost::shared_ptr<BlackScholesProcess> process(

@@ -30,8 +30,8 @@
 namespace QuantLib {
 
     //! Two-additive-factor gaussian model class.
-    /*! This class implements a two-additive-factor model defined by 
-        \f[ 
+    /*! This class implements a two-additive-factor model defined by
+        \f[
             dr_t = \varphi(t) + x_t + y_t
         \f]
         where \f$ x_t \f$ and \f$ y_t \f$ are defined by
@@ -52,10 +52,10 @@ namespace QuantLib {
                public AffineModel,
                public TermStructureConsistentModel {
       public:
-        G2(const Handle<TermStructure>& termStructure,
-           Real a = 0.1, 
+        G2(const Handle<YieldTermStructure>& termStructure,
+           Real a = 0.1,
            Real sigma = 0.01,
-           Real b = 0.1, 
+           Real b = 0.1,
            Real eta = 0.01,
            Real rho = -0.75);
 
@@ -107,7 +107,7 @@ namespace QuantLib {
 
     class G2::Dynamics : public TwoFactorModel::ShortRateDynamics {
       public:
-        Dynamics(const Parameter& fitting, 
+        Dynamics(const Parameter& fitting,
                  Real a,
                  Real sigma,
                  Real b,
@@ -117,7 +117,7 @@ namespace QuantLib {
                                       new OrnsteinUhlenbeckProcess(a, sigma)),
                             boost::shared_ptr<StochasticProcess>(
                                       new OrnsteinUhlenbeckProcess(b, eta)),
-                            rho), 
+                            rho),
           fitting_(fitting) {}
         virtual Rate shortRate(Time t,
                                Real x,
@@ -131,9 +131,9 @@ namespace QuantLib {
     //! Analytical term-structure fitting parameter \f$ \varphi(t) \f$.
     /*! \f$ \varphi(t) \f$ is analytically defined by
         \f[
-            \varphi(t) = f(t) + 
-                 \frac{1}{2}(\frac{\sigma(1-e^{-at})}{a})^2 + 
-                 \frac{1}{2}(\frac{\eta(1-e^{-bt})}{b})^2 + 
+            \varphi(t) = f(t) +
+                 \frac{1}{2}(\frac{\sigma(1-e^{-at})}{a})^2 +
+                 \frac{1}{2}(\frac{\eta(1-e^{-bt})}{b})^2 +
                  \rho\frac{\sigma(1-e^{-at})}{a}\frac{\eta(1-e^{-bt})}{b},
         \f]
         where \f$ f(t) \f$ is the instantaneous forward rate at \f$ t \f$.
@@ -142,13 +142,13 @@ namespace QuantLib {
       private:
         class Impl : public Parameter::Impl {
           public:
-            Impl(const Handle<TermStructure>& termStructure,
+            Impl(const Handle<YieldTermStructure>& termStructure,
                  Real a,
                  Real sigma,
                  Real b,
-                 Real eta, 
-                 Real rho) 
-            : termStructure_(termStructure), 
+                 Real eta,
+                 Real rho)
+            : termStructure_(termStructure),
               a_(a), sigma_(sigma), b_(b), eta_(eta), rho_(rho) {}
 
             Real value(const Array& params, Time t) const {
@@ -161,18 +161,18 @@ namespace QuantLib {
             }
 
           private:
-            Handle<TermStructure> termStructure_;
+            Handle<YieldTermStructure> termStructure_;
             Real a_, sigma_, b_, eta_, rho_;
         };
       public:
-        FittingParameter(const Handle<TermStructure>& termStructure,
+        FittingParameter(const Handle<YieldTermStructure>& termStructure,
                          Real a,
                          Real sigma,
-                         Real b, 
+                         Real b,
                          Real eta,
                          Real rho)
         : TermStructureFittingParameter(boost::shared_ptr<Parameter::Impl>(
-                          new FittingParameter::Impl(termStructure, a, sigma, 
+                          new FittingParameter::Impl(termStructure, a, sigma,
                                                      b, eta, rho))) {}
     };
 

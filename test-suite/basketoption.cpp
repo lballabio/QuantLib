@@ -244,12 +244,12 @@ void BasketOptionTest::testEuroTwoValues() {
     boost::shared_ptr<SimpleQuote> spot2(new SimpleQuote(0.0));
 
     boost::shared_ptr<SimpleQuote> qRate1(new SimpleQuote(0.0));
-    boost::shared_ptr<TermStructure> qTS1 = flatRate(today, qRate1, dc);
+    boost::shared_ptr<YieldTermStructure> qTS1 = flatRate(today, qRate1, dc);
     boost::shared_ptr<SimpleQuote> qRate2(new SimpleQuote(0.0));
-    boost::shared_ptr<TermStructure> qTS2 = flatRate(today, qRate2, dc);
+    boost::shared_ptr<YieldTermStructure> qTS2 = flatRate(today, qRate2, dc);
 
     boost::shared_ptr<SimpleQuote> rRate(new SimpleQuote(0.0));
-    boost::shared_ptr<TermStructure> rTS = flatRate(today, rRate, dc);
+    boost::shared_ptr<YieldTermStructure> rTS = flatRate(today, rRate, dc);
 
     boost::shared_ptr<SimpleQuote> vol1(new SimpleQuote(0.0));
     boost::shared_ptr<BlackVolTermStructure> volTS1 = flatVol(today, vol1, dc);
@@ -284,14 +284,14 @@ void BasketOptionTest::testEuroTwoValues() {
 
         boost::shared_ptr<BlackScholesProcess> stochProcess1(new
             BlackScholesProcess(Handle<Quote>(spot1),
-                                Handle<TermStructure>(qTS1),
-                                Handle<TermStructure>(rTS),
+                                Handle<YieldTermStructure>(qTS1),
+                                Handle<YieldTermStructure>(rTS),
                                 Handle<BlackVolTermStructure>(volTS1)));
 
         boost::shared_ptr<BlackScholesProcess> stochProcess2(new
             BlackScholesProcess(Handle<Quote>(spot2),
-                                Handle<TermStructure>(qTS2),
-                                Handle<TermStructure>(rTS),
+                                Handle<YieldTermStructure>(qTS2),
+                                Handle<YieldTermStructure>(rTS),
                                 Handle<BlackVolTermStructure>(volTS2)));
 
         std::vector<boost::shared_ptr<BlackScholesProcess> > procs;
@@ -424,10 +424,10 @@ void BasketOptionTest::testBarraquandThreeValues() {
     boost::shared_ptr<SimpleQuote> spot3(new SimpleQuote(0.0));
 
     boost::shared_ptr<SimpleQuote> qRate(new SimpleQuote(0.0));
-    boost::shared_ptr<TermStructure> qTS = flatRate(today, qRate, dc);
+    boost::shared_ptr<YieldTermStructure> qTS = flatRate(today, qRate, dc);
 
     boost::shared_ptr<SimpleQuote> rRate(new SimpleQuote(0.0));
-    boost::shared_ptr<TermStructure> rTS = flatRate(today, rRate, dc);
+    boost::shared_ptr<YieldTermStructure> rTS = flatRate(today, rRate, dc);
 
     boost::shared_ptr<SimpleQuote> vol1(new SimpleQuote(0.0));
     boost::shared_ptr<BlackVolTermStructure> volTS1 = flatVol(today, vol1, dc);
@@ -477,20 +477,20 @@ void BasketOptionTest::testBarraquandThreeValues() {
 
         boost::shared_ptr<BlackScholesProcess> stochProcess1(new
             BlackScholesProcess(Handle<Quote>(spot1),
-                                Handle<TermStructure>(qTS),
-                                Handle<TermStructure>(rTS),
+                                Handle<YieldTermStructure>(qTS),
+                                Handle<YieldTermStructure>(rTS),
                                 Handle<BlackVolTermStructure>(volTS1)));
 
         boost::shared_ptr<BlackScholesProcess> stochProcess2(new
             BlackScholesProcess(Handle<Quote>(spot2),
-                                Handle<TermStructure>(qTS),
-                                Handle<TermStructure>(rTS),
+                                Handle<YieldTermStructure>(qTS),
+                                Handle<YieldTermStructure>(rTS),
                                 Handle<BlackVolTermStructure>(volTS2)));
 
         boost::shared_ptr<BlackScholesProcess> stochProcess3(new
             BlackScholesProcess(Handle<Quote>(spot3),
-                                Handle<TermStructure>(qTS),
-                                Handle<TermStructure>(rTS),
+                                Handle<YieldTermStructure>(qTS),
+                                Handle<YieldTermStructure>(rTS),
                                 Handle<BlackVolTermStructure>(volTS3)));
 
         std::vector<boost::shared_ptr<BlackScholesProcess> > procs;
@@ -562,10 +562,10 @@ void BasketOptionTest::testTavellaValues() {
     boost::shared_ptr<SimpleQuote> spot3(new SimpleQuote(0.0));
 
     boost::shared_ptr<SimpleQuote> qRate(new SimpleQuote(0.1));
-    boost::shared_ptr<TermStructure> qTS = flatRate(today, qRate, dc);
+    boost::shared_ptr<YieldTermStructure> qTS = flatRate(today, qRate, dc);
 
     boost::shared_ptr<SimpleQuote> rRate(new SimpleQuote(0.05));
-    boost::shared_ptr<TermStructure> rTS = flatRate(today, rRate, dc);
+    boost::shared_ptr<YieldTermStructure> rTS = flatRate(today, rRate, dc);
 
     boost::shared_ptr<SimpleQuote> vol1(new SimpleQuote(0.0));
     boost::shared_ptr<BlackVolTermStructure> volTS1 = flatVol(today, vol1, dc);
@@ -599,20 +599,20 @@ void BasketOptionTest::testTavellaValues() {
 
     boost::shared_ptr<BlackScholesProcess> stochProcess1(new
         BlackScholesProcess(Handle<Quote>(spot1),
-                            Handle<TermStructure>(qTS),
-                            Handle<TermStructure>(rTS),
+                            Handle<YieldTermStructure>(qTS),
+                            Handle<YieldTermStructure>(rTS),
                             Handle<BlackVolTermStructure>(volTS1)));
 
     boost::shared_ptr<BlackScholesProcess> stochProcess2(new
         BlackScholesProcess(Handle<Quote>(spot2),
-                            Handle<TermStructure>(qTS),
-                            Handle<TermStructure>(rTS),
+                            Handle<YieldTermStructure>(qTS),
+                            Handle<YieldTermStructure>(rTS),
                             Handle<BlackVolTermStructure>(volTS2)));
 
     boost::shared_ptr<BlackScholesProcess> stochProcess3(new
         BlackScholesProcess(Handle<Quote>(spot3),
-                            Handle<TermStructure>(qTS),
-                            Handle<TermStructure>(rTS),
+                            Handle<YieldTermStructure>(qTS),
+                            Handle<YieldTermStructure>(rTS),
                             Handle<BlackVolTermStructure>(volTS3)));
 
     std::vector<boost::shared_ptr<BlackScholesProcess> > procs;
@@ -700,10 +700,10 @@ void BasketOptionTest::testOneDAmericanValues() {
     boost::shared_ptr<SimpleQuote> spot1(new SimpleQuote(0.0));
 
     boost::shared_ptr<SimpleQuote> qRate(new SimpleQuote(0.0));
-    boost::shared_ptr<TermStructure> qTS = flatRate(today, qRate, dc);
+    boost::shared_ptr<YieldTermStructure> qTS = flatRate(today, qRate, dc);
 
     boost::shared_ptr<SimpleQuote> rRate(new SimpleQuote(0.05));
-    boost::shared_ptr<TermStructure> rTS = flatRate(today, rRate, dc);
+    boost::shared_ptr<YieldTermStructure> rTS = flatRate(today, rRate, dc);
 
     boost::shared_ptr<SimpleQuote> vol1(new SimpleQuote(0.0));
     boost::shared_ptr<BlackVolTermStructure> volTS1 = flatVol(today, vol1, dc);
@@ -716,8 +716,8 @@ void BasketOptionTest::testOneDAmericanValues() {
 
     boost::shared_ptr<BlackScholesProcess> stochProcess1(new
         BlackScholesProcess(Handle<Quote>(spot1),
-                            Handle<TermStructure>(qTS),
-                            Handle<TermStructure>(rTS),
+                            Handle<YieldTermStructure>(qTS),
+                            Handle<YieldTermStructure>(rTS),
                             Handle<BlackVolTermStructure>(volTS1)));
 
     std::vector<boost::shared_ptr<BlackScholesProcess> > procs;

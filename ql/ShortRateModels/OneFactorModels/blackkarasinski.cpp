@@ -25,9 +25,9 @@ namespace QuantLib {
     class BlackKarasinski::Helper {
       public:
         Helper(Size i, Real xMin, Real dx,
-               Real discountBondPrice, 
+               Real discountBondPrice,
                const boost::shared_ptr<ShortRateTree>& tree)
-        : size_(tree->size(i)), 
+        : size_(tree->size(i)),
           dt_(tree->timeGrid().dt(i)),
           xMin_(xMin), dx_(dx),
           statePrices_(tree->statePrices(i)),
@@ -53,15 +53,15 @@ namespace QuantLib {
     };
 
     BlackKarasinski::BlackKarasinski(
-                                 const Handle<TermStructure>& termStructure,
-                                 Real a, Real sigma)
-    : OneFactorModel(2), TermStructureConsistentModel(termStructure), 
+                              const Handle<YieldTermStructure>& termStructure,
+                              Real a, Real sigma)
+    : OneFactorModel(2), TermStructureConsistentModel(termStructure),
       a_(arguments_[0]), sigma_(arguments_[1]) {
         a_ = ConstantParameter(a, PositiveConstraint());
         sigma_ = ConstantParameter(sigma, PositiveConstraint());
     }
 
-    boost::shared_ptr<Lattice> 
+    boost::shared_ptr<Lattice>
     BlackKarasinski::tree(const TimeGrid& grid) const {
 
         TermStructureFittingParameter phi(termStructure());
@@ -75,7 +75,7 @@ namespace QuantLib {
                          new ShortRateTree(trinomial, numericDynamics, grid));
 
         typedef TermStructureFittingParameter::NumericalImpl NumericalImpl;
-        boost::shared_ptr<NumericalImpl> impl = 
+        boost::shared_ptr<NumericalImpl> impl =
             boost::dynamic_pointer_cast<NumericalImpl>(phi.implementation());
         impl->reset();
         Real value = 1.0;

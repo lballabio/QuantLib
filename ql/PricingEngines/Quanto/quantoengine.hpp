@@ -33,7 +33,7 @@ namespace QuantLib {
         QuantoOptionArguments() : correlation(Null<Real>()) {}
         void validate() const;
         Real correlation;
-        Handle<TermStructure> foreignRiskFreeTS;
+        Handle<YieldTermStructure> foreignRiskFreeTS;
         Handle<BlackVolTermStructure> exchRateVolTS;
     };
 
@@ -127,13 +127,13 @@ namespace QuantLib {
             this->arguments_.blackScholesProcess;
 
         Handle<Quote> spot(process->stateVariable());
-        Handle<TermStructure> riskFreeRate(process->riskFreeRate());
+        Handle<YieldTermStructure> riskFreeRate(process->riskFreeRate());
         // dividendTS needs modification
-        Handle<TermStructure> dividendYield(
-            boost::shared_ptr<TermStructure>(
+        Handle<YieldTermStructure> dividendYield(
+            boost::shared_ptr<YieldTermStructure>(
                 new QuantoTermStructure(
-                    Handle<TermStructure>(process->dividendYield()),
-                    Handle<TermStructure>(process->riskFreeRate()),
+                    Handle<YieldTermStructure>(process->dividendYield()),
+                    Handle<YieldTermStructure>(process->riskFreeRate()),
                     this->arguments_.foreignRiskFreeTS,
                     Handle<BlackVolTermStructure>(process->blackVolatility()),
                     strike,

@@ -33,7 +33,7 @@ namespace QuantLib {
     class USDLibor : public Xibor {
       public:
         USDLibor(Integer n, TimeUnit units,
-                 const Handle<TermStructure>& h,
+                 const Handle<YieldTermStructure>& h,
                  const DayCounter& dc = Actual360())
         : Xibor("USDLibor", n, units, 2, USDCurrency(),
                 UnitedStates(UnitedStates::Exchange),

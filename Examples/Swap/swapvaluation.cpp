@@ -37,6 +37,7 @@ int main(int, char* [])
         Calendar calendar = TARGET();
         Date todaysDate(6, November, 2001);
         Date settlementDate(8, November, 2001);
+        Settings::instance().setEvaluationDate(todaysDate);
 
         // deposits
         Rate d1wQuote=0.0382;
@@ -116,28 +117,28 @@ int main(int, char* [])
         Integer settlementDays = 2;
 
         boost::shared_ptr<RateHelper> d1w(new DepositRateHelper(
-            Handle<Quote>(d1wRate), 
-            1, Weeks, settlementDays, 
+            Handle<Quote>(d1wRate),
+            1, Weeks, settlementDays,
             calendar, ModifiedFollowing, depositDayCounter));
         boost::shared_ptr<RateHelper> d1m(new DepositRateHelper(
-            Handle<Quote>(d1mRate), 
-            1, Months, settlementDays, 
+            Handle<Quote>(d1mRate),
+            1, Months, settlementDays,
             calendar, ModifiedFollowing, depositDayCounter));
         boost::shared_ptr<RateHelper> d3m(new DepositRateHelper(
-            Handle<Quote>(d3mRate), 
-            3, Months, settlementDays, 
+            Handle<Quote>(d3mRate),
+            3, Months, settlementDays,
             calendar, ModifiedFollowing, depositDayCounter));
         boost::shared_ptr<RateHelper> d6m(new DepositRateHelper(
-            Handle<Quote>(d6mRate), 
-            6, Months, settlementDays, 
+            Handle<Quote>(d6mRate),
+            6, Months, settlementDays,
             calendar, ModifiedFollowing, depositDayCounter));
         boost::shared_ptr<RateHelper> d9m(new DepositRateHelper(
-            Handle<Quote>(d9mRate), 
-            9, Months, settlementDays, 
+            Handle<Quote>(d9mRate),
+            9, Months, settlementDays,
             calendar, ModifiedFollowing, depositDayCounter));
         boost::shared_ptr<RateHelper> d1y(new DepositRateHelper(
-            Handle<Quote>(d1yRate), 
-            1, Years, settlementDays, 
+            Handle<Quote>(d1yRate),
+            1, Years, settlementDays,
             calendar, ModifiedFollowing, depositDayCounter));
 
 
@@ -207,32 +208,32 @@ int main(int, char* [])
         Frequency swFloatingLegFrequency = Semiannual;
 
         boost::shared_ptr<RateHelper> s2y(new SwapRateHelper(
-            Handle<Quote>(s2yRate), 
-            2, Years, settlementDays, 
+            Handle<Quote>(s2yRate),
+            2, Years, settlementDays,
             calendar, swFixedLegFrequency,
             swFixedLegConvention, swFixedLegDayCounter,
             swFloatingLegFrequency, ModifiedFollowing));
         boost::shared_ptr<RateHelper> s3y(new SwapRateHelper(
-            Handle<Quote>(s3yRate), 
-            3, Years, settlementDays, 
+            Handle<Quote>(s3yRate),
+            3, Years, settlementDays,
             calendar, swFixedLegFrequency,
             swFixedLegConvention, swFixedLegDayCounter,
             swFloatingLegFrequency, ModifiedFollowing));
         boost::shared_ptr<RateHelper> s5y(new SwapRateHelper(
-            Handle<Quote>(s5yRate), 
-            5, Years, settlementDays, 
+            Handle<Quote>(s5yRate),
+            5, Years, settlementDays,
             calendar, swFixedLegFrequency,
             swFixedLegConvention, swFixedLegDayCounter,
             swFloatingLegFrequency, ModifiedFollowing));
         boost::shared_ptr<RateHelper> s10y(new SwapRateHelper(
-            Handle<Quote>(s10yRate), 
-            10, Years, settlementDays, 
+            Handle<Quote>(s10yRate),
+            10, Years, settlementDays,
             calendar, swFixedLegFrequency,
             swFixedLegConvention, swFixedLegDayCounter,
             swFloatingLegFrequency, ModifiedFollowing));
         boost::shared_ptr<RateHelper> s15y(new SwapRateHelper(
-            Handle<Quote>(s15yRate), 
-            15, Years, settlementDays, 
+            Handle<Quote>(s15yRate),
+            15, Years, settlementDays,
             calendar, swFixedLegFrequency,
             swFixedLegConvention, swFixedLegDayCounter,
             swFloatingLegFrequency, ModifiedFollowing));
@@ -261,8 +262,8 @@ int main(int, char* [])
         depoSwapInstruments.push_back(s5y);
         depoSwapInstruments.push_back(s10y);
         depoSwapInstruments.push_back(s15y);
-        boost::shared_ptr<TermStructure> depoSwapTermStructure(new
-            PiecewiseFlatForward(todaysDate, settlementDate,
+        boost::shared_ptr<YieldTermStructure> depoSwapTermStructure(new
+            PiecewiseFlatForward(settlementDate,
             depoSwapInstruments, termStructureDayCounter));
 
 
@@ -282,8 +283,8 @@ int main(int, char* [])
         depoFutSwapInstruments.push_back(s5y);
         depoFutSwapInstruments.push_back(s10y);
         depoFutSwapInstruments.push_back(s15y);
-        boost::shared_ptr<TermStructure> depoFutSwapTermStructure(new
-            PiecewiseFlatForward(todaysDate, settlementDate,
+        boost::shared_ptr<YieldTermStructure> depoFutSwapTermStructure(new
+            PiecewiseFlatForward(settlementDate,
             depoFutSwapInstruments, termStructureDayCounter));
 
 
@@ -300,16 +301,16 @@ int main(int, char* [])
         depoFRASwapInstruments.push_back(s5y);
         depoFRASwapInstruments.push_back(s10y);
         depoFRASwapInstruments.push_back(s15y);
-        boost::shared_ptr<TermStructure> depoFRASwapTermStructure(new
-            PiecewiseFlatForward(todaysDate, settlementDate,
+        boost::shared_ptr<YieldTermStructure> depoFRASwapTermStructure(new
+            PiecewiseFlatForward(settlementDate,
             depoFRASwapInstruments, termStructureDayCounter));
 
 
         // Term structures that will be used for pricing:
         // the one used for discounting cash flows
-        Handle<TermStructure> discountingTermStructure;
+        Handle<YieldTermStructure> discountingTermStructure;
         // the one used for forward rate forecasting
-        Handle<TermStructure> forecastingTermStructure;
+        Handle<YieldTermStructure> forecastingTermStructure;
 
 
         /*********************
@@ -372,8 +373,8 @@ int main(int, char* [])
         headers[2] = "fair spread";
         headers[3] = "fair fixed rate";
         std::string separator = " | ";
-        Size width = headers[0].size() + separator.size() 
-                   + headers[1].size() + separator.size() 
+        Size width = headers[0].size() + separator.size()
+                   + headers[1].size() + separator.size()
                    + headers[2].size() + separator.size()
                    + headers[3].size() + separator.size() - 1;
         std::string rule(width, '-'), dblrule(width, '=');
@@ -406,13 +407,13 @@ int main(int, char* [])
         fairSpread = spot5YearSwap.fairSpread();
         fairRate = spot5YearSwap.fairRate();
 
-        std::cout << std::setw(headers[0].size()) 
+        std::cout << std::setw(headers[0].size())
                   << "depo-swap" << separator;
-        std::cout << std::setw(headers[1].size()) 
+        std::cout << std::setw(headers[1].size())
                   << DecimalFormatter::toString(NPV,2) << separator;
-        std::cout << std::setw(headers[2].size()) 
+        std::cout << std::setw(headers[2].size())
                   << RateFormatter::toString(fairSpread,4) << separator;
-        std::cout << std::setw(headers[3].size()) 
+        std::cout << std::setw(headers[3].size())
                   << RateFormatter::toString(fairRate,4) << separator;
         std::cout << std::endl;
 
@@ -429,13 +430,13 @@ int main(int, char* [])
         fairSpread = spot5YearSwap.fairSpread();
         fairRate = spot5YearSwap.fairRate();
 
-        std::cout << std::setw(headers[0].size()) 
+        std::cout << std::setw(headers[0].size())
                   << "depo-fut-swap" << separator;
-        std::cout << std::setw(headers[1].size()) 
+        std::cout << std::setw(headers[1].size())
                   << DecimalFormatter::toString(NPV,2) << separator;
-        std::cout << std::setw(headers[2].size()) 
+        std::cout << std::setw(headers[2].size())
                   << RateFormatter::toString(fairSpread,4) << separator;
-        std::cout << std::setw(headers[3].size()) 
+        std::cout << std::setw(headers[3].size())
                   << RateFormatter::toString(fairRate,4) << separator;
         std::cout << std::endl;
 
@@ -450,13 +451,13 @@ int main(int, char* [])
         fairSpread = spot5YearSwap.fairSpread();
         fairRate = spot5YearSwap.fairRate();
 
-        std::cout << std::setw(headers[0].size()) 
+        std::cout << std::setw(headers[0].size())
                   << "depo-FRA-swap" << separator;
-        std::cout << std::setw(headers[1].size()) 
+        std::cout << std::setw(headers[1].size())
                   << DecimalFormatter::toString(NPV,2) << separator;
-        std::cout << std::setw(headers[2].size()) 
+        std::cout << std::setw(headers[2].size())
                   << RateFormatter::toString(fairSpread,4) << separator;
-        std::cout << std::setw(headers[3].size()) 
+        std::cout << std::setw(headers[3].size())
                   << RateFormatter::toString(fairRate,4) << separator;
         std::cout << std::endl;
 
@@ -484,13 +485,13 @@ int main(int, char* [])
         fairSpread = oneYearForward5YearSwap.fairSpread();
         fairRate = oneYearForward5YearSwap.fairRate();
 
-        std::cout << std::setw(headers[0].size()) 
+        std::cout << std::setw(headers[0].size())
                   << "depo-swap" << separator;
-        std::cout << std::setw(headers[1].size()) 
+        std::cout << std::setw(headers[1].size())
                   << DecimalFormatter::toString(NPV,2) << separator;
-        std::cout << std::setw(headers[2].size()) 
+        std::cout << std::setw(headers[2].size())
                   << RateFormatter::toString(fairSpread,4) << separator;
-        std::cout << std::setw(headers[3].size()) 
+        std::cout << std::setw(headers[3].size())
                   << RateFormatter::toString(fairRate,4) << separator;
         std::cout << std::endl;
 
@@ -502,13 +503,13 @@ int main(int, char* [])
         fairSpread = oneYearForward5YearSwap.fairSpread();
         fairRate = oneYearForward5YearSwap.fairRate();
 
-        std::cout << std::setw(headers[0].size()) 
+        std::cout << std::setw(headers[0].size())
                   << "depo-fut-swap" << separator;
-        std::cout << std::setw(headers[1].size()) 
+        std::cout << std::setw(headers[1].size())
                   << DecimalFormatter::toString(NPV,2) << separator;
-        std::cout << std::setw(headers[2].size()) 
+        std::cout << std::setw(headers[2].size())
                   << RateFormatter::toString(fairSpread,4) << separator;
-        std::cout << std::setw(headers[3].size()) 
+        std::cout << std::setw(headers[3].size())
                   << RateFormatter::toString(fairRate,4) << separator;
         std::cout << std::endl;
 
@@ -520,13 +521,13 @@ int main(int, char* [])
         fairSpread = oneYearForward5YearSwap.fairSpread();
         fairRate = oneYearForward5YearSwap.fairRate();
 
-        std::cout << std::setw(headers[0].size()) 
+        std::cout << std::setw(headers[0].size())
                   << "depo-FRA-swap" << separator;
-        std::cout << std::setw(headers[1].size()) 
+        std::cout << std::setw(headers[1].size())
                   << DecimalFormatter::toString(NPV,2) << separator;
-        std::cout << std::setw(headers[2].size()) 
+        std::cout << std::setw(headers[2].size())
                   << RateFormatter::toString(fairSpread,4) << separator;
-        std::cout << std::setw(headers[3].size()) 
+        std::cout << std::setw(headers[3].size())
                   << RateFormatter::toString(fairRate,4) << separator;
         std::cout << std::endl;
 
@@ -540,7 +541,7 @@ int main(int, char* [])
         // value contained in the Quote triggers a new bootstrapping
         // of the curve and a repricing of the swap.
 
-        boost::shared_ptr<SimpleQuote> fiveYearsRate = 
+        boost::shared_ptr<SimpleQuote> fiveYearsRate =
             boost::dynamic_pointer_cast<SimpleQuote>(s5yRate);
         fiveYearsRate->setValue(0.0460);
 
@@ -565,13 +566,13 @@ int main(int, char* [])
         fairSpread = spot5YearSwap.fairSpread();
         fairRate = spot5YearSwap.fairRate();
 
-        std::cout << std::setw(headers[0].size()) 
+        std::cout << std::setw(headers[0].size())
                   << "depo-swap" << separator;
-        std::cout << std::setw(headers[1].size()) 
+        std::cout << std::setw(headers[1].size())
                   << DecimalFormatter::toString(NPV,2) << separator;
-        std::cout << std::setw(headers[2].size()) 
+        std::cout << std::setw(headers[2].size())
                   << RateFormatter::toString(fairSpread,4) << separator;
-        std::cout << std::setw(headers[3].size()) 
+        std::cout << std::setw(headers[3].size())
                   << RateFormatter::toString(fairRate,4) << separator;
         std::cout << std::endl;
 
@@ -586,13 +587,13 @@ int main(int, char* [])
         fairSpread = spot5YearSwap.fairSpread();
         fairRate = spot5YearSwap.fairRate();
 
-        std::cout << std::setw(headers[0].size()) 
+        std::cout << std::setw(headers[0].size())
                   << "depo-fut-swap" << separator;
-        std::cout << std::setw(headers[1].size()) 
+        std::cout << std::setw(headers[1].size())
                   << DecimalFormatter::toString(NPV,2) << separator;
-        std::cout << std::setw(headers[2].size()) 
+        std::cout << std::setw(headers[2].size())
                   << RateFormatter::toString(fairSpread,4) << separator;
-        std::cout << std::setw(headers[3].size()) 
+        std::cout << std::setw(headers[3].size())
                   << RateFormatter::toString(fairRate,4) << separator;
         std::cout << std::endl;
 
@@ -607,13 +608,13 @@ int main(int, char* [])
         fairSpread = spot5YearSwap.fairSpread();
         fairRate = spot5YearSwap.fairRate();
 
-        std::cout << std::setw(headers[0].size()) 
+        std::cout << std::setw(headers[0].size())
                   << "depo-FRA-swap" << separator;
-        std::cout << std::setw(headers[1].size()) 
+        std::cout << std::setw(headers[1].size())
                   << DecimalFormatter::toString(NPV,2) << separator;
-        std::cout << std::setw(headers[2].size()) 
+        std::cout << std::setw(headers[2].size())
                   << RateFormatter::toString(fairSpread,4) << separator;
-        std::cout << std::setw(headers[3].size()) 
+        std::cout << std::setw(headers[3].size())
                   << RateFormatter::toString(fairRate,4) << separator;
         std::cout << std::endl;
 
@@ -640,13 +641,13 @@ int main(int, char* [])
         fairSpread = oneYearForward5YearSwap.fairSpread();
         fairRate = oneYearForward5YearSwap.fairRate();
 
-        std::cout << std::setw(headers[0].size()) 
+        std::cout << std::setw(headers[0].size())
                   << "depo-swap" << separator;
-        std::cout << std::setw(headers[1].size()) 
+        std::cout << std::setw(headers[1].size())
                   << DecimalFormatter::toString(NPV,2) << separator;
-        std::cout << std::setw(headers[2].size()) 
+        std::cout << std::setw(headers[2].size())
                   << RateFormatter::toString(fairSpread,4) << separator;
-        std::cout << std::setw(headers[3].size()) 
+        std::cout << std::setw(headers[3].size())
                   << RateFormatter::toString(fairRate,4) << separator;
         std::cout << std::endl;
 
@@ -658,13 +659,13 @@ int main(int, char* [])
         fairSpread = oneYearForward5YearSwap.fairSpread();
         fairRate = oneYearForward5YearSwap.fairRate();
 
-        std::cout << std::setw(headers[0].size()) 
+        std::cout << std::setw(headers[0].size())
                   << "depo-fut-swap" << separator;
-        std::cout << std::setw(headers[1].size()) 
+        std::cout << std::setw(headers[1].size())
                   << DecimalFormatter::toString(NPV,2) << separator;
-        std::cout << std::setw(headers[2].size()) 
+        std::cout << std::setw(headers[2].size())
                   << RateFormatter::toString(fairSpread,4) << separator;
-        std::cout << std::setw(headers[3].size()) 
+        std::cout << std::setw(headers[3].size())
                   << RateFormatter::toString(fairRate,4) << separator;
         std::cout << std::endl;
 
@@ -676,13 +677,13 @@ int main(int, char* [])
         fairSpread = oneYearForward5YearSwap.fairSpread();
         fairRate = oneYearForward5YearSwap.fairRate();
 
-        std::cout << std::setw(headers[0].size()) 
+        std::cout << std::setw(headers[0].size())
                   << "depo-FRA-swap" << separator;
-        std::cout << std::setw(headers[1].size()) 
+        std::cout << std::setw(headers[1].size())
                   << DecimalFormatter::toString(NPV,2) << separator;
-        std::cout << std::setw(headers[2].size()) 
+        std::cout << std::setw(headers[2].size())
                   << RateFormatter::toString(fairSpread,4) << separator;
-        std::cout << std::setw(headers[3].size()) 
+        std::cout << std::setw(headers[3].size())
                   << RateFormatter::toString(fairRate,4) << separator;
         std::cout << std::endl;
 

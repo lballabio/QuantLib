@@ -15,7 +15,7 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file piecewiseflatforward.hpp
+/*! \file TermStructures/piecewiseflatforward.hpp
     \brief piecewise flat forward term structure
 */
 
@@ -44,9 +44,9 @@ namespace QuantLib {
         \warning The bootstrapping algorithm will raise an exception if
         any two instruments have the same maturity date.
 
-        \ingroup termstructures
+        \ingroup yieldtermstructures
     */
-    class PiecewiseFlatForward : public TermStructure,
+    class PiecewiseFlatForward : public YieldTermStructure,
                                  public LazyObject {
       public:
         //! \name Constructors
@@ -86,7 +86,7 @@ namespace QuantLib {
                              const std::vector<Rate>& forwards,
                              const DayCounter& dayCounter);
         //@}
-        //! \name TermStructure interface
+        //! \name YieldTermStructure interface
         //@{
         DayCounter dayCounter() const;
         const std::vector<Date>& dates() const;
@@ -101,7 +101,7 @@ namespace QuantLib {
       protected:
         /* We implement all calculation methods in order to take advantage
            of its own internal structure. This is also the reason why we
-           derive directly from TermStructure. */
+           derive directly from YieldTermStructure. */
         Rate zeroYieldImpl(Time) const;
         DiscountFactor discountImpl(Time) const;
         Rate forwardImpl(Time) const;
@@ -152,7 +152,7 @@ namespace QuantLib {
     }
 
     inline void PiecewiseFlatForward::update() {
-        TermStructure::update();
+        YieldTermStructure::update();
         LazyObject::update();
     }
 

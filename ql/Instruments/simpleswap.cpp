@@ -31,7 +31,7 @@ namespace QuantLib {
                            const boost::shared_ptr<Xibor>& index,
                            Integer indexFixingDays,
                            Spread spread,
-                           const Handle<TermStructure>& termStructure)
+                           const Handle<YieldTermStructure>& termStructure)
     : Swap(std::vector<boost::shared_ptr<CashFlow> >(),
            std::vector<boost::shared_ptr<CashFlow> >(),
            termStructure),

@@ -15,12 +15,12 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file swap.hpp
+/*! \file Instruments/swap.hpp
     \brief Interest rate swap
 */
 
-#ifndef quantlib_swap_h
-#define quantlib_swap_h
+#ifndef quantlib_swap_hpp
+#define quantlib_swap_hpp
 
 #include <ql/instrument.hpp>
 #include <ql/termstructure.hpp>
@@ -31,7 +31,7 @@ namespace QuantLib {
 
     //! Interest rate swap
     /*! The cash flows belonging to the first leg are payed;
-        the ones belonging to the second leg are received. 
+        the ones belonging to the second leg are received.
 
         \ingroup instruments
     */
@@ -39,7 +39,7 @@ namespace QuantLib {
       public:
         Swap(const std::vector<boost::shared_ptr<CashFlow> >& firstLeg,
              const std::vector<boost::shared_ptr<CashFlow> >& secondLeg,
-             const Handle<TermStructure>& termStructure);
+             const Handle<YieldTermStructure>& termStructure);
         //! \name Instrument interface
         //@{
         bool isExpired() const;
@@ -61,7 +61,7 @@ namespace QuantLib {
         void performCalculations() const;
         // data members
         std::vector<boost::shared_ptr<CashFlow> > firstLeg_, secondLeg_;
-        Handle<TermStructure> termStructure_;
+        Handle<YieldTermStructure> termStructure_;
         mutable Real firstLegBPS_, secondLegBPS_;
     };
 }

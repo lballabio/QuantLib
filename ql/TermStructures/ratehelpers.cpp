@@ -21,7 +21,7 @@
 namespace QuantLib {
 
     namespace {
-        void no_deletion(TermStructure*) {}
+        void no_deletion(YieldTermStructure*) {}
     }
 
     RateHelper::RateHelper(const Handle<Quote>& quote)
@@ -35,7 +35,7 @@ namespace QuantLib {
         registerWith(quote_);
     }
 
-    void RateHelper::setTermStructure(TermStructure* t) {
+    void RateHelper::setTermStructure(YieldTermStructure* t) {
         QL_REQUIRE(t != 0, "null term structure given");
         termStructure_ = t;
     }
@@ -87,7 +87,7 @@ namespace QuantLib {
                 (1.0+quote_->value()*yearFraction_);
     }
 
-    void DepositRateHelper::setTermStructure(TermStructure* t) {
+    void DepositRateHelper::setTermStructure(YieldTermStructure* t) {
         RateHelper::setTermStructure(t);
         Date today = Settings::instance().evaluationDate();
         settlement_ = calendar_.advance(today,settlementDays_,Days);
@@ -146,7 +146,7 @@ namespace QuantLib {
             (1.0+quote_->value()*yearFraction_);
     }
 
-    void FraRateHelper::setTermStructure(TermStructure* t) {
+    void FraRateHelper::setTermStructure(YieldTermStructure* t) {
         RateHelper::setTermStructure(t);
         Date today = Settings::instance().evaluationDate();
         settlement_ = calendar_.advance(today,settlementDays_,Days);
@@ -261,12 +261,12 @@ namespace QuantLib {
         registerWith(Settings::instance().evaluationDateGuard());
     }
 
-    void SwapRateHelper::setTermStructure(TermStructure* t) {
+    void SwapRateHelper::setTermStructure(YieldTermStructure* t) {
         // do not set the relinkable handle as an observer -
         // force recalculation when needed
         termStructureHandle_.linkTo(
-                              boost::shared_ptr<TermStructure>(t,no_deletion),
-                              false);
+                         boost::shared_ptr<YieldTermStructure>(t,no_deletion),
+                         false);
         RateHelper::setTermStructure(t);
         Date today = Settings::instance().evaluationDate();
         settlement_ = calendar_.advance(today,settlementDays_,Days);

@@ -19,14 +19,11 @@
     \brief Term structure
 */
 
-#ifndef quantlib_term_structure_hpp
-#define quantlib_term_structure_hpp
+#ifndef quantlib_yield_term_structure_hpp
+#define quantlib_yield_term_structure_hpp
 
-#include <ql/calendar.hpp>
-#include <ql/daycounter.hpp>
+#include <ql/basetermstructure.hpp>
 #include <ql/quote.hpp>
-#include <ql/settings.hpp>
-#include <ql/null.hpp>
 #include <ql/basicdataformatters.hpp>
 #include <ql/Math/extrapolation.hpp>
 #include <vector>
@@ -45,31 +42,14 @@ namespace QuantLib {
         \todo allow for different compounding rules and compounding
               frequencies
 
-        \ingroup termstructures
+        \ingroup yieldtermstructures
     */
-    class TermStructure : public virtual Observer,
-                          public virtual Observable,
-                          public Extrapolator {
+    class YieldTermStructure : public BaseTermStructure,
+                               public Extrapolator {
       public:
         /*! \name Constructors
-
-            There are three ways in which a term structure can keep
-            track of its reference date.  The first is that such date
-            is fixed; the second is that it is determined by advancing
-            the current date of a given number of business days; and
-            the third is that it is based on the reference date of
-            some other structure.
-
-            In the first case, the constructor taking a date is to be
-            used; the default implementation of referenceDate() will
-            then return such date. In the second case, the constructor
-            taking a number of days and a calendar is to be used;
-            referenceDate() will return a date calculated based on the
-            current evaluation date, and the term structure and its
-            observers will be notified when the evaluation date
-            changes. In the last case, the referenceDate() method must
-            be overridden in derived classes so that it fetches and
-            return the appropriate date.
+            See the BaseTermStructure documentation for issues regarding
+            constructors.
         */
         //@{
         #ifndef QL_DISABLE_DEPRECATED
@@ -77,20 +57,20 @@ namespace QuantLib {
         /*! \deprecated use the constructor without today's date; set the
                         evaluation date through Settings::instance().
         */
-        TermStructure(const Date& todaysDate, const Date& referenceDate);
+        YieldTermStructure(const Date& todaysDate, const Date& referenceDate);
         #endif
         //! default constructor
         /*! \warning term structures initialized by means of this
                      constructor must manage their own reference date
                      by overriding the referenceDate() method.
         */
-        TermStructure();
+        YieldTermStructure();
         //! initialize with a fixed reference date
-        TermStructure(const Date& referenceDate);
+        YieldTermStructure(const Date& referenceDate);
         //! calculate the reference date based on the global evaluation date
-        TermStructure(Integer settlementDays, const Calendar&);
+        YieldTermStructure(Integer settlementDays, const Calendar&);
         //@}
-        virtual ~TermStructure() {}
+        virtual ~YieldTermStructure() {}
         /*! \name Rates and discount
 
             These methods are either function of dates or times.
@@ -127,26 +107,10 @@ namespace QuantLib {
 
         //! \name Dates
         //@{
-        #ifndef QL_DISABLE_DEPRECATED
-        //! today's date
-        /*! \deprecated use Settings::instance().evaluationDate(). */
-        virtual const Date& todaysDate() const;
-        #endif
-        //! the reference date, i.e., the date at which discount = 1
-        virtual const Date& referenceDate() const;
-        //! the calendar used for reference date calculation
-        virtual Calendar calendar() const;
-        //! the day counter used for date/time conversion
-        virtual DayCounter dayCounter() const = 0;
         //! the latest date for which the curve can return rates
         virtual Date maxDate() const = 0;
         //! the latest time for which the curve can return rates
         virtual Time maxTime() const;
-        //@}
-
-        //! \name Observer interface
-        //@{
-        void update();
         //@}
       protected:
         /*! \name Calculations
@@ -167,32 +131,29 @@ namespace QuantLib {
         virtual Rate compoundForwardImpl(Time, Integer) const = 0;
         //@}
       private:
-        #ifndef QL_DISABLE_DEPRECATED
-        Date todaysDate_;
-        #endif
-        mutable Date referenceDate_;
-        bool moving_;
-        mutable bool updated_;
-        Integer settlementDays_;
-        Calendar calendar_;
         void checkRange(const Date&, bool extrapolate) const;
         void checkRange(Time, bool extrapolate) const;
     };
 
+    #ifndef QL_DISABLE_DEPRECATED
+    //! \deprecated renamed to YieldTermStructure
+    typedef YieldTermStructure TermStructure;
+    #endif
 
-    //! Zero yield term structure
-    /*! This abstract class acts as an adapter to TermStructure allowing the
-        programmer to implement only the
+
+    //! Zero-yield term structure
+    /*! This abstract class acts as an adapter to YieldTermStructure
+        allowing the programmer to implement only the
         <tt>zeroYieldImpl(Time, bool)</tt> method in derived classes.
 
         Rates are assumed to be annual continuous compounding.
 
-        \ingroup termstructures
+        \ingroup yieldtermstructures
     */
-    class ZeroYieldStructure : public TermStructure {
+    class ZeroYieldStructure : public YieldTermStructure {
       public:
         /*! \name Constructors
-            See the TermStructure documentation for issues regarding
+            See the BaseTermStructure documentation for issues regarding
             constructors.
         */
         //@{
@@ -208,7 +169,7 @@ namespace QuantLib {
         //@}
         virtual ~ZeroYieldStructure() {}
       protected:
-        //! \name TermStructure implementation
+        //! \name YieldTermStructure implementation
         //@{
         /*! Returns the discount factor for the given date calculating it
             from the zero yield.
@@ -226,18 +187,19 @@ namespace QuantLib {
     };
 
     //! Discount factor term structure
-    /*! This abstract class acts as an adapter to TermStructure allowing the
-        programmer to implement only the
-        <tt>discountImpl(const Date&, bool)</tt> method in derived classes.
+    /*! This abstract class acts as an adapter to YieldTermStructure
+        allowing the programmer to implement only the
+        <tt>discountImpl(const Date&, bool)</tt> method in derived
+        classes.
 
         Rates are assumed to be annual continuous compounding.
 
-        \ingroup termstructures
+        \ingroup yieldtermstructures
     */
-    class DiscountStructure : public TermStructure {
+    class DiscountStructure : public YieldTermStructure {
       public:
         /*! \name Constructors
-            See the TermStructure documentation for issues regarding
+            See the BaseTermStructure documentation for issues regarding
             constructors.
         */
         //@{
@@ -253,7 +215,7 @@ namespace QuantLib {
         //@}
         virtual ~DiscountStructure() {}
       protected:
-        //! \name TermStructure implementation
+        //! \name YieldTermStructure implementation
         //@{
         /*! Returns the zero yield rate for the given date calculating it
             from the discount.
@@ -277,12 +239,12 @@ namespace QuantLib {
 
         Rates are assumed to be annual continuous compounding.
 
-        \ingroup termstructures
+        \ingroup yieldtermstructures
     */
-    class ForwardRateStructure : public TermStructure {
+    class ForwardRateStructure : public YieldTermStructure {
       public:
         /*! \name Constructors
-            See the TermStructure documentation for issues regarding
+            See the BaseTermStructure documentation for issues regarding
             constructors.
         */
         //@{
@@ -299,7 +261,7 @@ namespace QuantLib {
         //@}
         virtual ~ForwardRateStructure() {}
       protected:
-        //! \name TermStructure implementation
+        //! \name YieldTermStructure implementation
         //@{
         /*! Returns the zero yield rate for the given date calculating it
             from the instantaneous forward rate.
@@ -324,91 +286,83 @@ namespace QuantLib {
     // inline definitions
 
     #ifndef QL_DISABLE_DEPRECATED
-    inline TermStructure::TermStructure(const Date& todaysDate,
-                                        const Date& referenceDate)
-    : todaysDate_(todaysDate), referenceDate_(referenceDate),
-      moving_(false), updated_(true), settlementDays_(Null<Integer>()) {}
+    inline YieldTermStructure::YieldTermStructure(const Date& todaysDate,
+                                                  const Date& referenceDate)
+    : BaseTermStructure(todaysDate, referenceDate) {}
     #endif
 
-    inline TermStructure::TermStructure()
-    : moving_(false), updated_(true), settlementDays_(Null<Integer>()) {}
+    inline YieldTermStructure::YieldTermStructure() {}
 
-    inline TermStructure::TermStructure(const Date& referenceDate)
-    : referenceDate_(referenceDate), moving_(false), updated_(true),
-      settlementDays_(Null<Integer>()) {}
+    inline YieldTermStructure::YieldTermStructure(const Date& referenceDate)
+    : BaseTermStructure(referenceDate) {}
 
-    inline TermStructure::TermStructure(Integer settlementDays,
-                                        const Calendar& calendar)
-    : moving_(true), updated_(false), settlementDays_(settlementDays),
-      calendar_(calendar) {
-        registerWith(Settings::instance().evaluationDateGuard());
-    }
+    inline YieldTermStructure::YieldTermStructure(Integer settlementDays,
+                                                  const Calendar& calendar)
+    : BaseTermStructure(settlementDays, calendar) {}
 
-    inline Rate TermStructure::zeroYield(const Date& d,
-                                         bool extrapolate) const {
+    inline Rate YieldTermStructure::zeroYield(const Date& d,
+                                              bool extrapolate) const {
         checkRange(d, extrapolate);
-        Time t = dayCounter().yearFraction(referenceDate(),d);
-        return zeroYieldImpl(t);
+        return zeroYieldImpl(timeFromReference(d));
     }
 
-    inline Rate TermStructure::zeroYield(Time t, bool extrapolate) const {
+    inline Rate YieldTermStructure::zeroYield(Time t, bool extrapolate) const {
         checkRange(t, extrapolate);
         return zeroYieldImpl(t);
     }
 
-    inline DiscountFactor TermStructure::discount(const Date& d,
-                                                  bool extrapolate) const {
+    inline DiscountFactor YieldTermStructure::discount(const Date& d,
+                                                       bool extrapolate)
+                                                                       const {
         checkRange(d, extrapolate);
-        Time t = dayCounter().yearFraction(referenceDate(),d);
-        return discountImpl(t);
+        return discountImpl(timeFromReference(d));
     }
 
-    inline DiscountFactor TermStructure::discount(Time t,
-                                                  bool extrapolate) const {
+    inline DiscountFactor YieldTermStructure::discount(Time t,
+                                                       bool extrapolate)
+                                                                       const {
         checkRange(t, extrapolate);
         return discountImpl(t);
     }
 
-    inline Rate TermStructure::instantaneousForward(const Date& d,
-                                                    bool extrapolate) const {
+    inline Rate YieldTermStructure::instantaneousForward(const Date& d,
+                                                         bool extrapolate)
+                                                                       const {
         checkRange(d, extrapolate);
-        Time t = dayCounter().yearFraction(referenceDate(),d);
-        return forwardImpl(t);
+        return forwardImpl(timeFromReference(d));
     }
 
-    inline Rate TermStructure::instantaneousForward(Time t,
-                                                    bool extrapolate) const {
+    inline Rate YieldTermStructure::instantaneousForward(Time t,
+                                                         bool extrapolate)
+                                                                       const {
         checkRange(t, extrapolate);
         return forwardImpl(t);
     }
 
-    inline Rate TermStructure::compoundForward(const Date& d, Integer f,
-                                               bool extrapolate) const {
+    inline Rate YieldTermStructure::compoundForward(const Date& d, Integer f,
+                                                    bool extrapolate) const {
         checkRange(d, extrapolate);
-        Time t = dayCounter().yearFraction(referenceDate(),d);
-        return compoundForwardImpl(t,f);
+        return compoundForwardImpl(timeFromReference(d),f);
     }
 
-    inline Rate TermStructure::compoundForward(Time t, Integer f,
-                                               bool extrapolate) const {
+    inline Rate YieldTermStructure::compoundForward(Time t, Integer f,
+                                                    bool extrapolate) const {
         checkRange(t, extrapolate);
         return compoundForwardImpl(t,f);
     }
 
-    inline Rate TermStructure::forward(const Date& d1, const Date& d2,
-                                       bool extrapolate) const {
+    inline Rate YieldTermStructure::forward(const Date& d1, const Date& d2,
+                                            bool extrapolate) const {
         QL_REQUIRE(d1 <= d2,
                    DateFormatter::toString(d1) +
                    " later than " +
                    DateFormatter::toString(d2));
         checkRange(d2, extrapolate);
-        Time t1 = dayCounter().yearFraction(referenceDate(),d1);
-        Time t2 = dayCounter().yearFraction(referenceDate(),d2);
-        return forward(t1, t2);
+        return forward(timeFromReference(d1), timeFromReference(d2));
     }
 
-    inline Rate TermStructure::forward(Time t1, Time t2,
-                                       bool extrapolate) const {
+    inline Rate YieldTermStructure::forward(Time t1, Time t2,
+                                            bool extrapolate) const {
         QL_REQUIRE(t1 <= t2,
                    DecimalFormatter::toString(t1) +
                    " later than " +
@@ -420,14 +374,13 @@ namespace QuantLib {
             return QL_LOG(discountImpl(t1)/discountImpl(t2))/(t2-t1);
     }
 
-    inline Rate TermStructure::zeroCoupon(const Date& d, Integer f,
-                                          bool extrapolate) const {
-        Time t = dayCounter().yearFraction(referenceDate(),d);
-        return zeroCoupon(t,f,extrapolate);
+    inline Rate YieldTermStructure::zeroCoupon(const Date& d, Integer f,
+                                               bool extrapolate) const {
+        return zeroCoupon(timeFromReference(d),f,extrapolate);
     }
 
-    inline Rate TermStructure::zeroCoupon(Time t, Integer f,
-                                          bool extrapolate) const {
+    inline Rate YieldTermStructure::zeroCoupon(Time t, Integer f,
+                                               bool extrapolate) const {
         checkRange(t, extrapolate);
         DiscountFactor df = discountImpl(t);
         if (t == 0.0)
@@ -438,42 +391,17 @@ namespace QuantLib {
             return Rate((QL_POW(1.0/df,1.0/(t*f))-1.0)*f);
     }
 
-    #ifndef QL_DISABLE_DEPRECATED
-    inline const Date& TermStructure::todaysDate() const {
-        return todaysDate_;
-    }
-    #endif
-
-    inline const Date& TermStructure::referenceDate() const {
-        if (!updated_) {
-            Date today = Settings::instance().evaluationDate();
-            referenceDate_ = calendar().advance(today,settlementDays_,Days);
-            updated_ = true;
-        }
-        return referenceDate_;
+    inline Time YieldTermStructure::maxTime() const {
+        return timeFromReference(maxDate());
     }
 
-    inline Calendar TermStructure::calendar() const {
-        return calendar_;
+    inline void YieldTermStructure::checkRange(const Date& d,
+                                               bool extrapolate) const {
+        checkRange(timeFromReference(d),extrapolate);
     }
 
-    inline Time TermStructure::maxTime() const {
-        return dayCounter().yearFraction(referenceDate(), maxDate());
-    }
-
-    inline void TermStructure::update() {
-        if (moving_)
-            updated_ = false;
-        notifyObservers();
-    }
-
-    inline void TermStructure::checkRange(const Date& d,
-                                          bool extrapolate) const {
-        Time t = dayCounter().yearFraction(referenceDate(),d);
-        checkRange(t,extrapolate);
-    }
-
-    inline void TermStructure::checkRange(Time t, bool extrapolate) const {
+    inline void YieldTermStructure::checkRange(Time t,
+                                               bool extrapolate) const {
         QL_REQUIRE(t >= 0.0,
                    "negative time (" +
                    DecimalFormatter::toString(t) +
@@ -491,17 +419,17 @@ namespace QuantLib {
     #ifndef QL_DISABLE_DEPRECATED
     inline ZeroYieldStructure::ZeroYieldStructure(const Date& todaysDate,
                                                   const Date& referenceDate)
-    : TermStructure(todaysDate,referenceDate) {}
+    : YieldTermStructure(todaysDate,referenceDate) {}
     #endif
 
     inline ZeroYieldStructure::ZeroYieldStructure() {}
 
     inline ZeroYieldStructure::ZeroYieldStructure(const Date& referenceDate)
-    : TermStructure(referenceDate) {}
+    : YieldTermStructure(referenceDate) {}
 
     inline ZeroYieldStructure::ZeroYieldStructure(Integer settlementDays,
                                                   const Calendar& calendar)
-    : TermStructure(settlementDays,calendar) {}
+    : YieldTermStructure(settlementDays,calendar) {}
 
     inline DiscountFactor ZeroYieldStructure::discountImpl(Time t) const {
         Rate r = zeroYieldImpl(t);
@@ -531,17 +459,17 @@ namespace QuantLib {
     #ifndef QL_DISABLE_DEPRECATED
     inline DiscountStructure::DiscountStructure(const Date& todaysDate,
                                                 const Date& referenceDate)
-    : TermStructure(todaysDate,referenceDate) {}
+    : YieldTermStructure(todaysDate,referenceDate) {}
     #endif
 
     inline DiscountStructure::DiscountStructure() {}
 
     inline DiscountStructure::DiscountStructure(const Date& referenceDate)
-    : TermStructure(referenceDate) {}
+    : YieldTermStructure(referenceDate) {}
 
     inline DiscountStructure::DiscountStructure(Integer settlementDays,
                                                 const Calendar& calendar)
-    : TermStructure(settlementDays,calendar) {}
+    : YieldTermStructure(settlementDays,calendar) {}
 
     inline Rate DiscountStructure::zeroYieldImpl(Time t) const {
         DiscountFactor df;
@@ -579,18 +507,18 @@ namespace QuantLib {
     inline ForwardRateStructure::ForwardRateStructure(
                                                     const Date& todaysDate,
                                                     const Date& referenceDate)
-    : TermStructure(todaysDate,referenceDate) {}
+    : YieldTermStructure(todaysDate,referenceDate) {}
     #endif
 
     inline ForwardRateStructure::ForwardRateStructure() {}
 
     inline ForwardRateStructure::ForwardRateStructure(
                                                     const Date& referenceDate)
-    : TermStructure(referenceDate) {}
+    : YieldTermStructure(referenceDate) {}
 
     inline ForwardRateStructure::ForwardRateStructure(Integer settlementDays,
                                                       const Calendar& calendar)
-    : TermStructure(settlementDays,calendar) {}
+    : YieldTermStructure(settlementDays,calendar) {}
 
     inline Rate ForwardRateStructure::zeroYieldImpl(Time t) const {
         if (t == 0.0)

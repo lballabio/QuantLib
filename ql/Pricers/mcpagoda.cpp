@@ -57,16 +57,15 @@ namespace QuantLib {
     }
 
     McPagoda::McPagoda(
-                 const std::vector<Real>& underlying,
-                 Real fraction,
-                 Real roof,
-                 const std::vector<Handle<TermStructure> >& dividendYield,
-                 const Handle<TermStructure>& riskFreeRate,
-                 const std::vector<Handle<BlackVolTermStructure> >&
-                                                             volatilities,
-                 const Matrix& correlation,
-                 const std::vector<Time>& times,
-                 BigNatural seed) {
+              const std::vector<Real>& underlying,
+              Real fraction,
+              Real roof,
+              const std::vector<Handle<YieldTermStructure> >& dividendYield,
+              const Handle<YieldTermStructure>& riskFreeRate,
+              const std::vector<Handle<BlackVolTermStructure> >& volatilities,
+              const Matrix& correlation,
+              const std::vector<Time>& times,
+              BigNatural seed) {
 
         QL_REQUIRE(correlation.rows() == correlation.columns(),
                    "correlation matrix not square");

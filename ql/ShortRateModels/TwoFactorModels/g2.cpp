@@ -23,7 +23,7 @@
 
 namespace QuantLib {
 
-    G2::G2(const Handle<TermStructure>& termStructure,
+    G2::G2(const Handle<YieldTermStructure>& termStructure,
            Real a, Real sigma, Real b, Real eta, Real rho)
     : TwoFactorModel(5), TermStructureConsistentModel(termStructure),
       a_(arguments_[0]), sigma_(arguments_[1]), b_(arguments_[2]),
@@ -44,7 +44,7 @@ namespace QuantLib {
     }
 
     void G2::generateArguments() {
-        
+
         phi_ = FittingParameter(termStructure(),
             a(), sigma(), b(), eta(), rho());
     }
@@ -84,8 +84,8 @@ namespace QuantLib {
         Real cy = eta()/b();
         Real valuex = cx*cx*(t + (2.0*expat-0.5*expat*expat-1.5)/a());
         Real valuey = cy*cy*(t + (2.0*expbt-0.5*expbt*expbt-1.5)/b());
-        Real value = 2.0*rho()*cx*cy* (t + (expat - 1.0)/a() 
-                                         + (expbt - 1.0)/b() 
+        Real value = 2.0*rho()*cx*cy* (t + (expat - 1.0)/a()
+                                         + (expbt - 1.0)/b()
                                          - (expat*expbt-1.0)/(a()+b()));
         return valuex + valuey + value;
     }
@@ -102,12 +102,12 @@ namespace QuantLib {
     class G2::SwaptionPricingFunction {
       public:
         SwaptionPricingFunction(Real a, Real sigma,
-                                Real b, Real eta, Real rho, 
-                                Real w, Real start, 
-                                const std::vector<Time>& payTimes, 
+                                Real b, Real eta, Real rho,
+                                Real w, Real start,
+                                const std::vector<Time>& payTimes,
                                 Rate fixedRate, const G2& model)
-        : a_(a), sigma_(sigma), b_(b), eta_(eta), rho_(rho), w_(w), 
-          T_(start), t_(payTimes), rate_(fixedRate), size_(t_.size()), 
+        : a_(a), sigma_(sigma), b_(b), eta_(eta), rho_(rho), w_(w),
+          T_(start), t_(payTimes), rate_(fixedRate), size_(t_.size()),
           A_(size_), Ba_(size_), Bb_(size_) {
 
 
@@ -155,13 +155,13 @@ namespace QuantLib {
             s1d.setMaxEvaluations(1000);
             Real yb = s1d.solve(function, 1e-6, 0.00, -100.0, 100.0);
 
-            Real h1 = (yb - muy_)/(sigmay_*txy) - 
+            Real h1 = (yb - muy_)/(sigmay_*txy) -
                 rhoxy_*(x  - mux_)/(sigmax_*txy);
             Real value = phi(-w_*h1);
 
-            
+
             for (i=0; i<size_; i++) {
-                Real h2 = h1 + 
+                Real h2 = h1 +
                     Bb_[i]*sigmay_*QL_SQRT(1.0-rhoxy_*rhoxy_);
                 Real kappa = - Bb_[i] *
                     (muy_ - 0.5*txy*txy*sigmay_*sigmay_*Bb_[i] +
@@ -177,7 +177,7 @@ namespace QuantLib {
       private:
         class SolvingFunction {
           public:
-            SolvingFunction(const Array& lambda, const Array& Bb) 
+            SolvingFunction(const Array& lambda, const Array& Bb)
             : lambda_(lambda), Bb_(Bb) {}
             Real operator()(Real y) const {
                 Real value = 1.0;
@@ -205,9 +205,9 @@ namespace QuantLib {
 
         Time start = arguments.floatingResetTimes[0];
         Real w = (arguments.payFixed ? 1 : -1 );
-        SwaptionPricingFunction function(a(), sigma(), b(), eta(), rho(), 
-                                         w, start, 
-                                         arguments.floatingPayTimes, 
+        SwaptionPricingFunction function(a(), sigma(), b(), eta(), rho(),
+                                         w, start,
+                                         arguments.floatingPayTimes,
                                          arguments.fixedRate, (*this));
 
         Real upper = function.mux() + range*function.sigmax();

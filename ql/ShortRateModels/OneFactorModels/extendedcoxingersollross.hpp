@@ -28,8 +28,8 @@ namespace QuantLib {
 
     //! Extended Cox-Ingersoll-Ross model class.
     /*! This class implements the extended Cox-Ingersoll-Ross model
-        defined by 
-        \f[ 
+        defined by
+        \f[
             dr_t = (\theta(t) - \alpha r_t)dt + \sqrt{r_t}\sigma dW_t .
         \f]
 
@@ -41,11 +41,12 @@ namespace QuantLib {
     class ExtendedCoxIngersollRoss : public CoxIngersollRoss,
                                      public TermStructureConsistentModel {
       public:
-        ExtendedCoxIngersollRoss(const Handle<TermStructure>& termStructure,
-                                 Real theta = 0.1,
-                                 Real k = 0.1,
-                                 Real sigma = 0.1,
-                                 Real x0 = 0.05);
+        ExtendedCoxIngersollRoss(
+                              const Handle<YieldTermStructure>& termStructure,
+                              Real theta = 0.1,
+                              Real k = 0.1,
+                              Real sigma = 0.1,
+                              Real x0 = 0.05);
 
         boost::shared_ptr<Lattice> tree(const TimeGrid& grid) const;
 
@@ -72,8 +73,8 @@ namespace QuantLib {
         \f[
             r_t = \varphi(t) + y_t^2
         \f]
-        where \f$ \varphi(t) \f$ is the deterministic time-dependent 
-        parameter used for term-structure fitting and \f$ y_t \f$ is the 
+        where \f$ \varphi(t) \f$ is the deterministic time-dependent
+        parameter used for term-structure fitting and \f$ y_t \f$ is the
         state variable, the square-root of a standard CIR process.
     */
     class ExtendedCoxIngersollRoss::Dynamics
@@ -99,25 +100,25 @@ namespace QuantLib {
     //! Analytical term-structure fitting parameter \f$ \varphi(t) \f$.
     /*! \f$ \varphi(t) \f$ is analytically defined by
         \f[
-            \varphi(t) = f(t) - 
+            \varphi(t) = f(t) -
                          \frac{2k\theta(e^{th}-1)}{2h+(k+h)(e^{th}-1)} -
                          \frac{4 x_0 h^2 e^{th}}{(2h+(k+h)(e^{th}-1))^1},
         \f]
-        where \f$ f(t) \f$ is the instantaneous forward rate at \f$ t \f$ 
+        where \f$ f(t) \f$ is the instantaneous forward rate at \f$ t \f$
         and \f$ h = \sqrt{k^2 + 2\sigma^2} \f$.
     */
-    class ExtendedCoxIngersollRoss::FittingParameter 
+    class ExtendedCoxIngersollRoss::FittingParameter
         : public TermStructureFittingParameter {
       private:
         class Impl : public Parameter::Impl {
           public:
-            Impl(const Handle<TermStructure>& termStructure,
-                 Real theta, Real k, Real sigma, Real x0) 
-            : termStructure_(termStructure), 
+            Impl(const Handle<YieldTermStructure>& termStructure,
+                 Real theta, Real k, Real sigma, Real x0)
+            : termStructure_(termStructure),
               theta_(theta), k_(k), sigma_(sigma), x0_(x0) {}
 
             Real value(const Array&, Time t) const {
-                Rate forwardRate = 
+                Rate forwardRate =
                     termStructure_->instantaneousForward(t);
                 Real h = QL_SQRT(k_*k_ + 2.0*sigma_*sigma_);
                 Real expth = QL_EXP(t*h);
@@ -128,12 +129,12 @@ namespace QuantLib {
                 return phi;
             }
           private:
-            Handle<TermStructure> termStructure_;
+            Handle<YieldTermStructure> termStructure_;
             Real theta_, k_, sigma_, x0_;
         };
       public:
-        FittingParameter(const Handle<TermStructure>& termStructure,
-                         Real theta, Real k, Real sigma, Real x0) 
+        FittingParameter(const Handle<YieldTermStructure>& termStructure,
+                         Real theta, Real k, Real sigma, Real x0)
         : TermStructureFittingParameter(boost::shared_ptr<Parameter::Impl>(
                  new FittingParameter::Impl(
                                      termStructure, theta, k, sigma, x0))) {}
@@ -141,7 +142,7 @@ namespace QuantLib {
 
     // inline definitions
 
-    inline boost::shared_ptr<OneFactorModel::ShortRateDynamics> 
+    inline boost::shared_ptr<OneFactorModel::ShortRateDynamics>
     ExtendedCoxIngersollRoss::dynamics() const {
         return boost::shared_ptr<ShortRateDynamics>(
                             new Dynamics(phi_, theta(), k() , sigma(), x0()));
