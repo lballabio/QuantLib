@@ -13,6 +13,8 @@ QL_TESTS = quantlibtestsuite.cpp \
            operators.hpp operators.cpp \
            piecewiseflatforward.hpp piecewiseflatforward.cpp \
            riskstats.hpp riskstats.cpp \
+           solvers.hpp solvers.cpp \
+           stats.hpp stats.cpp \
            swap.hpp swap.cpp \
            utilities.hpp
 

@@ -33,6 +33,8 @@
 #include "operators.hpp"
 #include "piecewiseflatforward.hpp"
 #include "riskstats.hpp"
+#include "solvers.hpp"
+#include "stats.hpp"
 #include "swap.hpp"
 
 int main() {
@@ -52,6 +54,8 @@ int main() {
     runner.addTest(new OperatorTest);
     runner.addTest(new PiecewiseFlatForwardTest);
     runner.addTest(new RiskStatisticsTest);
+    runner.addTest(new Solver1DTest);
+    runner.addTest(new StatisticsTest);
     runner.addTest(SimpleSwapTest::suite());
 
     std::string header = "Testing QuantLib " QL_VERSION ;
