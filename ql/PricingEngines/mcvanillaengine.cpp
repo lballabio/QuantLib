@@ -14,11 +14,11 @@
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
-/*! \file europeanMCengine.cpp
-    \brief European option engine using Monte Carlo Simulation
+/*! \file mcvanillaengine.cpp
+    \brief Vanilla option engine using Monte Carlo simulation
 
     \fullpath
-    ql/Pricers/%europeanMCengine.cpp
+    ql/Pricers/%mcvanillaengine.cpp
 */
 
 // $Id$
@@ -29,27 +29,6 @@ namespace QuantLib {
 
     namespace PricingEngines {
 
-        void EuropeanMCEngine::calculate() const {
-
-            Date exerciseDate = arguments_.exercise.date();
-
-            double variance = arguments_.volTS->blackVariance(
-                exerciseDate,arguments_.strike);
-            double stdDev = QL_SQRT(variance);
-            double vol = arguments_.volTS->blackVol(
-                exerciseDate, arguments_.strike);
-            Time residualTime = variance/(vol*vol);
-
-
-            results_.value = 0.0;
-            results_.delta = 0.0;
-            results_.gamma       = 0.0;
-            results_.theta       = 0.0;
-            results_.rho         = 0.0;
-            results_.dividendRho = 0.0;
-            results_.vega        = 0.0;
-
-        }
 
     }
 

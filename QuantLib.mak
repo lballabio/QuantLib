@@ -27,6 +27,9 @@ NULL=
 NULL=nul
 !ENDIF 
 
+CPP=cl.exe
+RSC=rc.exe
+
 !IF  "$(CFG)" == "QuantLib - Win32 Release"
 
 OUTDIR=.\build\Release
@@ -45,6 +48,8 @@ CLEAN :
 	-@erase "$(INTDIR)\affinetermstructure.sbr"
 	-@erase "$(INTDIR)\analyticalcapfloor.obj"
 	-@erase "$(INTDIR)\analyticalcapfloor.sbr"
+	-@erase "$(INTDIR)\analyticalvanillaengine.obj"
+	-@erase "$(INTDIR)\analyticalvanillaengine.sbr"
 	-@erase "$(INTDIR)\arithmeticapopathpricer.obj"
 	-@erase "$(INTDIR)\arithmeticapopathpricer.sbr"
 	-@erase "$(INTDIR)\arithmeticasopathpricer.obj"
@@ -59,6 +64,8 @@ CLEAN :
 	-@erase "$(INTDIR)\binaryoption.sbr"
 	-@erase "$(INTDIR)\binomialtree.obj"
 	-@erase "$(INTDIR)\binomialtree.sbr"
+	-@erase "$(INTDIR)\binomialvanillaengine.obj"
+	-@erase "$(INTDIR)\binomialvanillaengine.sbr"
 	-@erase "$(INTDIR)\bisection.obj"
 	-@erase "$(INTDIR)\bisection.sbr"
 	-@erase "$(INTDIR)\blackcapfloor.obj"
@@ -117,14 +124,6 @@ CLEAN :
 	-@erase "$(INTDIR)\discretegeometricaso.sbr"
 	-@erase "$(INTDIR)\discretizedvanillaoption.obj"
 	-@erase "$(INTDIR)\discretizedvanillaoption.sbr"
-	-@erase "$(INTDIR)\europeananalyticalengine.obj"
-	-@erase "$(INTDIR)\europeananalyticalengine.sbr"
-	-@erase "$(INTDIR)\europeanbinomialengine.obj"
-	-@erase "$(INTDIR)\europeanbinomialengine.sbr"
-	-@erase "$(INTDIR)\europeanFDengine.obj"
-	-@erase "$(INTDIR)\europeanFDengine.sbr"
-	-@erase "$(INTDIR)\europeanMCengine.obj"
-	-@erase "$(INTDIR)\europeanMCengine.sbr"
 	-@erase "$(INTDIR)\europeanoption.obj"
 	-@erase "$(INTDIR)\europeanoption.sbr"
 	-@erase "$(INTDIR)\europeanpathpricer.obj"
@@ -153,8 +152,8 @@ CLEAN :
 	-@erase "$(INTDIR)\fdmultiperiodoption.sbr"
 	-@erase "$(INTDIR)\fdstepconditionoption.obj"
 	-@erase "$(INTDIR)\fdstepconditionoption.sbr"
-	-@erase "$(INTDIR)\floatingratecoupon.obj"
-	-@erase "$(INTDIR)\floatingratecoupon.sbr"
+	-@erase "$(INTDIR)\fdvanillaengine.obj"
+	-@erase "$(INTDIR)\fdvanillaengine.sbr"
 	-@erase "$(INTDIR)\forwardvanillaoption.obj"
 	-@erase "$(INTDIR)\forwardvanillaoption.sbr"
 	-@erase "$(INTDIR)\frankfurt.obj"
@@ -219,6 +218,8 @@ CLEAN :
 	-@erase "$(INTDIR)\mcpagoda.sbr"
 	-@erase "$(INTDIR)\mcperformanceoption.obj"
 	-@erase "$(INTDIR)\mcperformanceoption.sbr"
+	-@erase "$(INTDIR)\mcvanillaengine.obj"
+	-@erase "$(INTDIR)\mcvanillaengine.sbr"
 	-@erase "$(INTDIR)\milan.obj"
 	-@erase "$(INTDIR)\milan.sbr"
 	-@erase "$(INTDIR)\model.obj"
@@ -243,6 +244,8 @@ CLEAN :
 	-@erase "$(INTDIR)\oslo.sbr"
 	-@erase "$(INTDIR)\pagodapathpricer.obj"
 	-@erase "$(INTDIR)\pagodapathpricer.sbr"
+	-@erase "$(INTDIR)\parcoupon.obj"
+	-@erase "$(INTDIR)\parcoupon.sbr"
 	-@erase "$(INTDIR)\performanceoption.obj"
 	-@erase "$(INTDIR)\performanceoption.sbr"
 	-@erase "$(INTDIR)\performanceoptionpathpricer.obj"
@@ -338,40 +341,7 @@ CLEAN :
 "$(OUTDIR)" :
     if not exist "$(OUTDIR)/$(NULL)" mkdir "$(OUTDIR)"
 
-CPP=cl.exe
 CPP_PROJ=/nologo /MD /W3 /GR /GX /Od /Ob2 /I ".\\" /D "NDEBUG" /D "WIN32" /D "_MBCS" /D "_LIB" /D "NOMINMAX" /Fr"$(INTDIR)\\" /Fp"$(INTDIR)\QuantLib.pch" /YX /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\\" /FD /c 
-
-.c{$(INTDIR)}.obj::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-.cpp{$(INTDIR)}.obj::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-.cxx{$(INTDIR)}.obj::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-.c{$(INTDIR)}.sbr::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-.cpp{$(INTDIR)}.sbr::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-.cxx{$(INTDIR)}.sbr::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-RSC=rc.exe
 BSC32=bscmake.exe
 BSC32_FLAGS=/nologo /o"$(OUTDIR)\QuantLib.bsc" 
 BSC32_SBRS= \
@@ -393,7 +363,6 @@ BSC32_SBRS= \
 	"$(INTDIR)\wellington.sbr" \
 	"$(INTDIR)\zurich.sbr" \
 	"$(INTDIR)\cashflowvectors.sbr" \
-	"$(INTDIR)\floatingratecoupon.sbr" \
 	"$(INTDIR)\shortfloatingcoupon.sbr" \
 	"$(INTDIR)\actualactual.sbr" \
 	"$(INTDIR)\thirty360.sbr" \
@@ -508,10 +477,6 @@ BSC32_SBRS= \
 	"$(INTDIR)\onefactormodel.sbr" \
 	"$(INTDIR)\twofactormodel.sbr" \
 	"$(INTDIR)\discretizedvanillaoption.sbr" \
-	"$(INTDIR)\europeananalyticalengine.sbr" \
-	"$(INTDIR)\europeanbinomialengine.sbr" \
-	"$(INTDIR)\europeanFDengine.sbr" \
-	"$(INTDIR)\europeanMCengine.sbr" \
 	"$(INTDIR)\calendar.sbr" \
 	"$(INTDIR)\dataformatters.sbr" \
 	"$(INTDIR)\dataparsers.sbr" \
@@ -520,7 +485,12 @@ BSC32_SBRS= \
 	"$(INTDIR)\option.sbr" \
 	"$(INTDIR)\scheduler.sbr" \
 	"$(INTDIR)\solver1d.sbr" \
-	"$(INTDIR)\voltermstructure.sbr"
+	"$(INTDIR)\voltermstructure.sbr" \
+	"$(INTDIR)\analyticalvanillaengine.sbr" \
+	"$(INTDIR)\binomialvanillaengine.sbr" \
+	"$(INTDIR)\mcvanillaengine.sbr" \
+	"$(INTDIR)\fdvanillaengine.sbr" \
+	"$(INTDIR)\parcoupon.sbr"
 
 "$(OUTDIR)\QuantLib.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -548,7 +518,6 @@ LIB32_OBJS= \
 	"$(INTDIR)\wellington.obj" \
 	"$(INTDIR)\zurich.obj" \
 	"$(INTDIR)\cashflowvectors.obj" \
-	"$(INTDIR)\floatingratecoupon.obj" \
 	"$(INTDIR)\shortfloatingcoupon.obj" \
 	"$(INTDIR)\actualactual.obj" \
 	"$(INTDIR)\thirty360.obj" \
@@ -663,10 +632,6 @@ LIB32_OBJS= \
 	"$(INTDIR)\onefactormodel.obj" \
 	"$(INTDIR)\twofactormodel.obj" \
 	"$(INTDIR)\discretizedvanillaoption.obj" \
-	"$(INTDIR)\europeananalyticalengine.obj" \
-	"$(INTDIR)\europeanbinomialengine.obj" \
-	"$(INTDIR)\europeanFDengine.obj" \
-	"$(INTDIR)\europeanMCengine.obj" \
 	"$(INTDIR)\calendar.obj" \
 	"$(INTDIR)\dataformatters.obj" \
 	"$(INTDIR)\dataparsers.obj" \
@@ -675,7 +640,12 @@ LIB32_OBJS= \
 	"$(INTDIR)\option.obj" \
 	"$(INTDIR)\scheduler.obj" \
 	"$(INTDIR)\solver1d.obj" \
-	"$(INTDIR)\voltermstructure.obj"
+	"$(INTDIR)\voltermstructure.obj" \
+	"$(INTDIR)\analyticalvanillaengine.obj" \
+	"$(INTDIR)\binomialvanillaengine.obj" \
+	"$(INTDIR)\mcvanillaengine.obj" \
+	"$(INTDIR)\fdvanillaengine.obj" \
+	"$(INTDIR)\parcoupon.obj"
 
 ".\lib\Win32\VisualStudio\QuantLib.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
     $(LIB32) @<<
@@ -700,6 +670,8 @@ CLEAN :
 	-@erase "$(INTDIR)\affinetermstructure.sbr"
 	-@erase "$(INTDIR)\analyticalcapfloor.obj"
 	-@erase "$(INTDIR)\analyticalcapfloor.sbr"
+	-@erase "$(INTDIR)\analyticalvanillaengine.obj"
+	-@erase "$(INTDIR)\analyticalvanillaengine.sbr"
 	-@erase "$(INTDIR)\arithmeticapopathpricer.obj"
 	-@erase "$(INTDIR)\arithmeticapopathpricer.sbr"
 	-@erase "$(INTDIR)\arithmeticasopathpricer.obj"
@@ -714,6 +686,8 @@ CLEAN :
 	-@erase "$(INTDIR)\binaryoption.sbr"
 	-@erase "$(INTDIR)\binomialtree.obj"
 	-@erase "$(INTDIR)\binomialtree.sbr"
+	-@erase "$(INTDIR)\binomialvanillaengine.obj"
+	-@erase "$(INTDIR)\binomialvanillaengine.sbr"
 	-@erase "$(INTDIR)\bisection.obj"
 	-@erase "$(INTDIR)\bisection.sbr"
 	-@erase "$(INTDIR)\blackcapfloor.obj"
@@ -772,14 +746,6 @@ CLEAN :
 	-@erase "$(INTDIR)\discretegeometricaso.sbr"
 	-@erase "$(INTDIR)\discretizedvanillaoption.obj"
 	-@erase "$(INTDIR)\discretizedvanillaoption.sbr"
-	-@erase "$(INTDIR)\europeananalyticalengine.obj"
-	-@erase "$(INTDIR)\europeananalyticalengine.sbr"
-	-@erase "$(INTDIR)\europeanbinomialengine.obj"
-	-@erase "$(INTDIR)\europeanbinomialengine.sbr"
-	-@erase "$(INTDIR)\europeanFDengine.obj"
-	-@erase "$(INTDIR)\europeanFDengine.sbr"
-	-@erase "$(INTDIR)\europeanMCengine.obj"
-	-@erase "$(INTDIR)\europeanMCengine.sbr"
 	-@erase "$(INTDIR)\europeanoption.obj"
 	-@erase "$(INTDIR)\europeanoption.sbr"
 	-@erase "$(INTDIR)\europeanpathpricer.obj"
@@ -808,8 +774,8 @@ CLEAN :
 	-@erase "$(INTDIR)\fdmultiperiodoption.sbr"
 	-@erase "$(INTDIR)\fdstepconditionoption.obj"
 	-@erase "$(INTDIR)\fdstepconditionoption.sbr"
-	-@erase "$(INTDIR)\floatingratecoupon.obj"
-	-@erase "$(INTDIR)\floatingratecoupon.sbr"
+	-@erase "$(INTDIR)\fdvanillaengine.obj"
+	-@erase "$(INTDIR)\fdvanillaengine.sbr"
 	-@erase "$(INTDIR)\forwardvanillaoption.obj"
 	-@erase "$(INTDIR)\forwardvanillaoption.sbr"
 	-@erase "$(INTDIR)\frankfurt.obj"
@@ -874,6 +840,8 @@ CLEAN :
 	-@erase "$(INTDIR)\mcpagoda.sbr"
 	-@erase "$(INTDIR)\mcperformanceoption.obj"
 	-@erase "$(INTDIR)\mcperformanceoption.sbr"
+	-@erase "$(INTDIR)\mcvanillaengine.obj"
+	-@erase "$(INTDIR)\mcvanillaengine.sbr"
 	-@erase "$(INTDIR)\milan.obj"
 	-@erase "$(INTDIR)\milan.sbr"
 	-@erase "$(INTDIR)\model.obj"
@@ -898,6 +866,8 @@ CLEAN :
 	-@erase "$(INTDIR)\oslo.sbr"
 	-@erase "$(INTDIR)\pagodapathpricer.obj"
 	-@erase "$(INTDIR)\pagodapathpricer.sbr"
+	-@erase "$(INTDIR)\parcoupon.obj"
+	-@erase "$(INTDIR)\parcoupon.sbr"
 	-@erase "$(INTDIR)\performanceoption.obj"
 	-@erase "$(INTDIR)\performanceoption.sbr"
 	-@erase "$(INTDIR)\performanceoptionpathpricer.obj"
@@ -994,40 +964,7 @@ CLEAN :
 "$(OUTDIR)" :
     if not exist "$(OUTDIR)/$(NULL)" mkdir "$(OUTDIR)"
 
-CPP=cl.exe
 CPP_PROJ=/nologo /MDd /W3 /GR /GX /ZI /Od /I ".\\" /D "_DEBUG" /D "QL_DEBUG" /D "WIN32" /D "_MBCS" /D "_LIB" /D "NOMINMAX" /Fr"$(INTDIR)\\" /Fp"$(INTDIR)\QuantLib.pch" /YX /Fo"$(INTDIR)\\" /Fd"lib\Win32\VisualStudio\QuantLib" /FD /GZ /c 
-
-.c{$(INTDIR)}.obj::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-.cpp{$(INTDIR)}.obj::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-.cxx{$(INTDIR)}.obj::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-.c{$(INTDIR)}.sbr::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-.cpp{$(INTDIR)}.sbr::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-.cxx{$(INTDIR)}.sbr::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-RSC=rc.exe
 BSC32=bscmake.exe
 BSC32_FLAGS=/nologo /o"$(OUTDIR)\QuantLib.bsc" 
 BSC32_SBRS= \
@@ -1049,7 +986,6 @@ BSC32_SBRS= \
 	"$(INTDIR)\wellington.sbr" \
 	"$(INTDIR)\zurich.sbr" \
 	"$(INTDIR)\cashflowvectors.sbr" \
-	"$(INTDIR)\floatingratecoupon.sbr" \
 	"$(INTDIR)\shortfloatingcoupon.sbr" \
 	"$(INTDIR)\actualactual.sbr" \
 	"$(INTDIR)\thirty360.sbr" \
@@ -1164,10 +1100,6 @@ BSC32_SBRS= \
 	"$(INTDIR)\onefactormodel.sbr" \
 	"$(INTDIR)\twofactormodel.sbr" \
 	"$(INTDIR)\discretizedvanillaoption.sbr" \
-	"$(INTDIR)\europeananalyticalengine.sbr" \
-	"$(INTDIR)\europeanbinomialengine.sbr" \
-	"$(INTDIR)\europeanFDengine.sbr" \
-	"$(INTDIR)\europeanMCengine.sbr" \
 	"$(INTDIR)\calendar.sbr" \
 	"$(INTDIR)\dataformatters.sbr" \
 	"$(INTDIR)\dataparsers.sbr" \
@@ -1176,7 +1108,12 @@ BSC32_SBRS= \
 	"$(INTDIR)\option.sbr" \
 	"$(INTDIR)\scheduler.sbr" \
 	"$(INTDIR)\solver1d.sbr" \
-	"$(INTDIR)\voltermstructure.sbr"
+	"$(INTDIR)\voltermstructure.sbr" \
+	"$(INTDIR)\analyticalvanillaengine.sbr" \
+	"$(INTDIR)\binomialvanillaengine.sbr" \
+	"$(INTDIR)\mcvanillaengine.sbr" \
+	"$(INTDIR)\fdvanillaengine.sbr" \
+	"$(INTDIR)\parcoupon.sbr"
 
 "$(OUTDIR)\QuantLib.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -1204,7 +1141,6 @@ LIB32_OBJS= \
 	"$(INTDIR)\wellington.obj" \
 	"$(INTDIR)\zurich.obj" \
 	"$(INTDIR)\cashflowvectors.obj" \
-	"$(INTDIR)\floatingratecoupon.obj" \
 	"$(INTDIR)\shortfloatingcoupon.obj" \
 	"$(INTDIR)\actualactual.obj" \
 	"$(INTDIR)\thirty360.obj" \
@@ -1319,10 +1255,6 @@ LIB32_OBJS= \
 	"$(INTDIR)\onefactormodel.obj" \
 	"$(INTDIR)\twofactormodel.obj" \
 	"$(INTDIR)\discretizedvanillaoption.obj" \
-	"$(INTDIR)\europeananalyticalengine.obj" \
-	"$(INTDIR)\europeanbinomialengine.obj" \
-	"$(INTDIR)\europeanFDengine.obj" \
-	"$(INTDIR)\europeanMCengine.obj" \
 	"$(INTDIR)\calendar.obj" \
 	"$(INTDIR)\dataformatters.obj" \
 	"$(INTDIR)\dataparsers.obj" \
@@ -1331,7 +1263,12 @@ LIB32_OBJS= \
 	"$(INTDIR)\option.obj" \
 	"$(INTDIR)\scheduler.obj" \
 	"$(INTDIR)\solver1d.obj" \
-	"$(INTDIR)\voltermstructure.obj"
+	"$(INTDIR)\voltermstructure.obj" \
+	"$(INTDIR)\analyticalvanillaengine.obj" \
+	"$(INTDIR)\binomialvanillaengine.obj" \
+	"$(INTDIR)\mcvanillaengine.obj" \
+	"$(INTDIR)\fdvanillaengine.obj" \
+	"$(INTDIR)\parcoupon.obj"
 
 ".\lib\Win32\VisualStudio\QuantLib_d.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
     $(LIB32) @<<
@@ -1356,6 +1293,8 @@ CLEAN :
 	-@erase "$(INTDIR)\affinetermstructure.sbr"
 	-@erase "$(INTDIR)\analyticalcapfloor.obj"
 	-@erase "$(INTDIR)\analyticalcapfloor.sbr"
+	-@erase "$(INTDIR)\analyticalvanillaengine.obj"
+	-@erase "$(INTDIR)\analyticalvanillaengine.sbr"
 	-@erase "$(INTDIR)\arithmeticapopathpricer.obj"
 	-@erase "$(INTDIR)\arithmeticapopathpricer.sbr"
 	-@erase "$(INTDIR)\arithmeticasopathpricer.obj"
@@ -1370,6 +1309,8 @@ CLEAN :
 	-@erase "$(INTDIR)\binaryoption.sbr"
 	-@erase "$(INTDIR)\binomialtree.obj"
 	-@erase "$(INTDIR)\binomialtree.sbr"
+	-@erase "$(INTDIR)\binomialvanillaengine.obj"
+	-@erase "$(INTDIR)\binomialvanillaengine.sbr"
 	-@erase "$(INTDIR)\bisection.obj"
 	-@erase "$(INTDIR)\bisection.sbr"
 	-@erase "$(INTDIR)\blackcapfloor.obj"
@@ -1428,14 +1369,6 @@ CLEAN :
 	-@erase "$(INTDIR)\discretegeometricaso.sbr"
 	-@erase "$(INTDIR)\discretizedvanillaoption.obj"
 	-@erase "$(INTDIR)\discretizedvanillaoption.sbr"
-	-@erase "$(INTDIR)\europeananalyticalengine.obj"
-	-@erase "$(INTDIR)\europeananalyticalengine.sbr"
-	-@erase "$(INTDIR)\europeanbinomialengine.obj"
-	-@erase "$(INTDIR)\europeanbinomialengine.sbr"
-	-@erase "$(INTDIR)\europeanFDengine.obj"
-	-@erase "$(INTDIR)\europeanFDengine.sbr"
-	-@erase "$(INTDIR)\europeanMCengine.obj"
-	-@erase "$(INTDIR)\europeanMCengine.sbr"
 	-@erase "$(INTDIR)\europeanoption.obj"
 	-@erase "$(INTDIR)\europeanoption.sbr"
 	-@erase "$(INTDIR)\europeanpathpricer.obj"
@@ -1464,8 +1397,8 @@ CLEAN :
 	-@erase "$(INTDIR)\fdmultiperiodoption.sbr"
 	-@erase "$(INTDIR)\fdstepconditionoption.obj"
 	-@erase "$(INTDIR)\fdstepconditionoption.sbr"
-	-@erase "$(INTDIR)\floatingratecoupon.obj"
-	-@erase "$(INTDIR)\floatingratecoupon.sbr"
+	-@erase "$(INTDIR)\fdvanillaengine.obj"
+	-@erase "$(INTDIR)\fdvanillaengine.sbr"
 	-@erase "$(INTDIR)\forwardvanillaoption.obj"
 	-@erase "$(INTDIR)\forwardvanillaoption.sbr"
 	-@erase "$(INTDIR)\frankfurt.obj"
@@ -1530,6 +1463,8 @@ CLEAN :
 	-@erase "$(INTDIR)\mcpagoda.sbr"
 	-@erase "$(INTDIR)\mcperformanceoption.obj"
 	-@erase "$(INTDIR)\mcperformanceoption.sbr"
+	-@erase "$(INTDIR)\mcvanillaengine.obj"
+	-@erase "$(INTDIR)\mcvanillaengine.sbr"
 	-@erase "$(INTDIR)\milan.obj"
 	-@erase "$(INTDIR)\milan.sbr"
 	-@erase "$(INTDIR)\model.obj"
@@ -1554,6 +1489,8 @@ CLEAN :
 	-@erase "$(INTDIR)\oslo.sbr"
 	-@erase "$(INTDIR)\pagodapathpricer.obj"
 	-@erase "$(INTDIR)\pagodapathpricer.sbr"
+	-@erase "$(INTDIR)\parcoupon.obj"
+	-@erase "$(INTDIR)\parcoupon.sbr"
 	-@erase "$(INTDIR)\performanceoption.obj"
 	-@erase "$(INTDIR)\performanceoption.sbr"
 	-@erase "$(INTDIR)\performanceoptionpathpricer.obj"
@@ -1649,40 +1586,7 @@ CLEAN :
 "$(OUTDIR)" :
     if not exist "$(OUTDIR)/$(NULL)" mkdir "$(OUTDIR)"
 
-CPP=cl.exe
 CPP_PROJ=/nologo /MD /W3 /GR /GX /Od /Ob2 /I ".\\" /D "NDEBUG" /D "WIN32" /D "_MBCS" /D "_LIB" /D "NOMINMAX" /Fr"$(INTDIR)\\" /Fp"$(INTDIR)\QuantLib.pch" /YX /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\\" /FD /c 
-
-.c{$(INTDIR)}.obj::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-.cpp{$(INTDIR)}.obj::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-.cxx{$(INTDIR)}.obj::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-.c{$(INTDIR)}.sbr::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-.cpp{$(INTDIR)}.sbr::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-.cxx{$(INTDIR)}.sbr::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-RSC=rc.exe
 BSC32=bscmake.exe
 BSC32_FLAGS=/nologo /o"$(OUTDIR)\QuantLib.bsc" 
 BSC32_SBRS= \
@@ -1704,7 +1608,6 @@ BSC32_SBRS= \
 	"$(INTDIR)\wellington.sbr" \
 	"$(INTDIR)\zurich.sbr" \
 	"$(INTDIR)\cashflowvectors.sbr" \
-	"$(INTDIR)\floatingratecoupon.sbr" \
 	"$(INTDIR)\shortfloatingcoupon.sbr" \
 	"$(INTDIR)\actualactual.sbr" \
 	"$(INTDIR)\thirty360.sbr" \
@@ -1819,10 +1722,6 @@ BSC32_SBRS= \
 	"$(INTDIR)\onefactormodel.sbr" \
 	"$(INTDIR)\twofactormodel.sbr" \
 	"$(INTDIR)\discretizedvanillaoption.sbr" \
-	"$(INTDIR)\europeananalyticalengine.sbr" \
-	"$(INTDIR)\europeanbinomialengine.sbr" \
-	"$(INTDIR)\europeanFDengine.sbr" \
-	"$(INTDIR)\europeanMCengine.sbr" \
 	"$(INTDIR)\calendar.sbr" \
 	"$(INTDIR)\dataformatters.sbr" \
 	"$(INTDIR)\dataparsers.sbr" \
@@ -1831,7 +1730,12 @@ BSC32_SBRS= \
 	"$(INTDIR)\option.sbr" \
 	"$(INTDIR)\scheduler.sbr" \
 	"$(INTDIR)\solver1d.sbr" \
-	"$(INTDIR)\voltermstructure.sbr"
+	"$(INTDIR)\voltermstructure.sbr" \
+	"$(INTDIR)\analyticalvanillaengine.sbr" \
+	"$(INTDIR)\binomialvanillaengine.sbr" \
+	"$(INTDIR)\mcvanillaengine.sbr" \
+	"$(INTDIR)\fdvanillaengine.sbr" \
+	"$(INTDIR)\parcoupon.sbr"
 
 "$(OUTDIR)\QuantLib.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -1859,7 +1763,6 @@ LIB32_OBJS= \
 	"$(INTDIR)\wellington.obj" \
 	"$(INTDIR)\zurich.obj" \
 	"$(INTDIR)\cashflowvectors.obj" \
-	"$(INTDIR)\floatingratecoupon.obj" \
 	"$(INTDIR)\shortfloatingcoupon.obj" \
 	"$(INTDIR)\actualactual.obj" \
 	"$(INTDIR)\thirty360.obj" \
@@ -1974,10 +1877,6 @@ LIB32_OBJS= \
 	"$(INTDIR)\onefactormodel.obj" \
 	"$(INTDIR)\twofactormodel.obj" \
 	"$(INTDIR)\discretizedvanillaoption.obj" \
-	"$(INTDIR)\europeananalyticalengine.obj" \
-	"$(INTDIR)\europeanbinomialengine.obj" \
-	"$(INTDIR)\europeanFDengine.obj" \
-	"$(INTDIR)\europeanMCengine.obj" \
 	"$(INTDIR)\calendar.obj" \
 	"$(INTDIR)\dataformatters.obj" \
 	"$(INTDIR)\dataparsers.obj" \
@@ -1986,7 +1885,12 @@ LIB32_OBJS= \
 	"$(INTDIR)\option.obj" \
 	"$(INTDIR)\scheduler.obj" \
 	"$(INTDIR)\solver1d.obj" \
-	"$(INTDIR)\voltermstructure.obj"
+	"$(INTDIR)\voltermstructure.obj" \
+	"$(INTDIR)\analyticalvanillaengine.obj" \
+	"$(INTDIR)\binomialvanillaengine.obj" \
+	"$(INTDIR)\mcvanillaengine.obj" \
+	"$(INTDIR)\fdvanillaengine.obj" \
+	"$(INTDIR)\parcoupon.obj"
 
 ".\lib\Win32\VisualStudio\QuantLib.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
     $(LIB32) @<<
@@ -2011,6 +1915,8 @@ CLEAN :
 	-@erase "$(INTDIR)\affinetermstructure.sbr"
 	-@erase "$(INTDIR)\analyticalcapfloor.obj"
 	-@erase "$(INTDIR)\analyticalcapfloor.sbr"
+	-@erase "$(INTDIR)\analyticalvanillaengine.obj"
+	-@erase "$(INTDIR)\analyticalvanillaengine.sbr"
 	-@erase "$(INTDIR)\arithmeticapopathpricer.obj"
 	-@erase "$(INTDIR)\arithmeticapopathpricer.sbr"
 	-@erase "$(INTDIR)\arithmeticasopathpricer.obj"
@@ -2025,6 +1931,8 @@ CLEAN :
 	-@erase "$(INTDIR)\binaryoption.sbr"
 	-@erase "$(INTDIR)\binomialtree.obj"
 	-@erase "$(INTDIR)\binomialtree.sbr"
+	-@erase "$(INTDIR)\binomialvanillaengine.obj"
+	-@erase "$(INTDIR)\binomialvanillaengine.sbr"
 	-@erase "$(INTDIR)\bisection.obj"
 	-@erase "$(INTDIR)\bisection.sbr"
 	-@erase "$(INTDIR)\blackcapfloor.obj"
@@ -2083,14 +1991,6 @@ CLEAN :
 	-@erase "$(INTDIR)\discretegeometricaso.sbr"
 	-@erase "$(INTDIR)\discretizedvanillaoption.obj"
 	-@erase "$(INTDIR)\discretizedvanillaoption.sbr"
-	-@erase "$(INTDIR)\europeananalyticalengine.obj"
-	-@erase "$(INTDIR)\europeananalyticalengine.sbr"
-	-@erase "$(INTDIR)\europeanbinomialengine.obj"
-	-@erase "$(INTDIR)\europeanbinomialengine.sbr"
-	-@erase "$(INTDIR)\europeanFDengine.obj"
-	-@erase "$(INTDIR)\europeanFDengine.sbr"
-	-@erase "$(INTDIR)\europeanMCengine.obj"
-	-@erase "$(INTDIR)\europeanMCengine.sbr"
 	-@erase "$(INTDIR)\europeanoption.obj"
 	-@erase "$(INTDIR)\europeanoption.sbr"
 	-@erase "$(INTDIR)\europeanpathpricer.obj"
@@ -2119,8 +2019,8 @@ CLEAN :
 	-@erase "$(INTDIR)\fdmultiperiodoption.sbr"
 	-@erase "$(INTDIR)\fdstepconditionoption.obj"
 	-@erase "$(INTDIR)\fdstepconditionoption.sbr"
-	-@erase "$(INTDIR)\floatingratecoupon.obj"
-	-@erase "$(INTDIR)\floatingratecoupon.sbr"
+	-@erase "$(INTDIR)\fdvanillaengine.obj"
+	-@erase "$(INTDIR)\fdvanillaengine.sbr"
 	-@erase "$(INTDIR)\forwardvanillaoption.obj"
 	-@erase "$(INTDIR)\forwardvanillaoption.sbr"
 	-@erase "$(INTDIR)\frankfurt.obj"
@@ -2185,6 +2085,8 @@ CLEAN :
 	-@erase "$(INTDIR)\mcpagoda.sbr"
 	-@erase "$(INTDIR)\mcperformanceoption.obj"
 	-@erase "$(INTDIR)\mcperformanceoption.sbr"
+	-@erase "$(INTDIR)\mcvanillaengine.obj"
+	-@erase "$(INTDIR)\mcvanillaengine.sbr"
 	-@erase "$(INTDIR)\milan.obj"
 	-@erase "$(INTDIR)\milan.sbr"
 	-@erase "$(INTDIR)\model.obj"
@@ -2209,6 +2111,8 @@ CLEAN :
 	-@erase "$(INTDIR)\oslo.sbr"
 	-@erase "$(INTDIR)\pagodapathpricer.obj"
 	-@erase "$(INTDIR)\pagodapathpricer.sbr"
+	-@erase "$(INTDIR)\parcoupon.obj"
+	-@erase "$(INTDIR)\parcoupon.sbr"
 	-@erase "$(INTDIR)\performanceoption.obj"
 	-@erase "$(INTDIR)\performanceoption.sbr"
 	-@erase "$(INTDIR)\performanceoptionpathpricer.obj"
@@ -2305,40 +2209,7 @@ CLEAN :
 "$(OUTDIR)" :
     if not exist "$(OUTDIR)/$(NULL)" mkdir "$(OUTDIR)"
 
-CPP=cl.exe
 CPP_PROJ=/nologo /MDd /W3 /GR /GX /ZI /Od /I ".\\" /D "_DEBUG" /D "QL_DEBUG" /D "WIN32" /D "_MBCS" /D "_LIB" /D "NOMINMAX" /Fr"$(INTDIR)\\" /Fp"$(INTDIR)\QuantLib.pch" /YX /Fo"$(INTDIR)\\" /Fd"lib\Win32\VisualStudio\QuantLib" /FD /GZ /c 
-
-.c{$(INTDIR)}.obj::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-.cpp{$(INTDIR)}.obj::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-.cxx{$(INTDIR)}.obj::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-.c{$(INTDIR)}.sbr::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-.cpp{$(INTDIR)}.sbr::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-.cxx{$(INTDIR)}.sbr::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-RSC=rc.exe
 BSC32=bscmake.exe
 BSC32_FLAGS=/nologo /o"$(OUTDIR)\QuantLib.bsc" 
 BSC32_SBRS= \
@@ -2360,7 +2231,6 @@ BSC32_SBRS= \
 	"$(INTDIR)\wellington.sbr" \
 	"$(INTDIR)\zurich.sbr" \
 	"$(INTDIR)\cashflowvectors.sbr" \
-	"$(INTDIR)\floatingratecoupon.sbr" \
 	"$(INTDIR)\shortfloatingcoupon.sbr" \
 	"$(INTDIR)\actualactual.sbr" \
 	"$(INTDIR)\thirty360.sbr" \
@@ -2475,10 +2345,6 @@ BSC32_SBRS= \
 	"$(INTDIR)\onefactormodel.sbr" \
 	"$(INTDIR)\twofactormodel.sbr" \
 	"$(INTDIR)\discretizedvanillaoption.sbr" \
-	"$(INTDIR)\europeananalyticalengine.sbr" \
-	"$(INTDIR)\europeanbinomialengine.sbr" \
-	"$(INTDIR)\europeanFDengine.sbr" \
-	"$(INTDIR)\europeanMCengine.sbr" \
 	"$(INTDIR)\calendar.sbr" \
 	"$(INTDIR)\dataformatters.sbr" \
 	"$(INTDIR)\dataparsers.sbr" \
@@ -2487,7 +2353,12 @@ BSC32_SBRS= \
 	"$(INTDIR)\option.sbr" \
 	"$(INTDIR)\scheduler.sbr" \
 	"$(INTDIR)\solver1d.sbr" \
-	"$(INTDIR)\voltermstructure.sbr"
+	"$(INTDIR)\voltermstructure.sbr" \
+	"$(INTDIR)\analyticalvanillaengine.sbr" \
+	"$(INTDIR)\binomialvanillaengine.sbr" \
+	"$(INTDIR)\mcvanillaengine.sbr" \
+	"$(INTDIR)\fdvanillaengine.sbr" \
+	"$(INTDIR)\parcoupon.sbr"
 
 "$(OUTDIR)\QuantLib.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -2515,7 +2386,6 @@ LIB32_OBJS= \
 	"$(INTDIR)\wellington.obj" \
 	"$(INTDIR)\zurich.obj" \
 	"$(INTDIR)\cashflowvectors.obj" \
-	"$(INTDIR)\floatingratecoupon.obj" \
 	"$(INTDIR)\shortfloatingcoupon.obj" \
 	"$(INTDIR)\actualactual.obj" \
 	"$(INTDIR)\thirty360.obj" \
@@ -2630,10 +2500,6 @@ LIB32_OBJS= \
 	"$(INTDIR)\onefactormodel.obj" \
 	"$(INTDIR)\twofactormodel.obj" \
 	"$(INTDIR)\discretizedvanillaoption.obj" \
-	"$(INTDIR)\europeananalyticalengine.obj" \
-	"$(INTDIR)\europeanbinomialengine.obj" \
-	"$(INTDIR)\europeanFDengine.obj" \
-	"$(INTDIR)\europeanMCengine.obj" \
 	"$(INTDIR)\calendar.obj" \
 	"$(INTDIR)\dataformatters.obj" \
 	"$(INTDIR)\dataparsers.obj" \
@@ -2642,7 +2508,12 @@ LIB32_OBJS= \
 	"$(INTDIR)\option.obj" \
 	"$(INTDIR)\scheduler.obj" \
 	"$(INTDIR)\solver1d.obj" \
-	"$(INTDIR)\voltermstructure.obj"
+	"$(INTDIR)\voltermstructure.obj" \
+	"$(INTDIR)\analyticalvanillaengine.obj" \
+	"$(INTDIR)\binomialvanillaengine.obj" \
+	"$(INTDIR)\mcvanillaengine.obj" \
+	"$(INTDIR)\fdvanillaengine.obj" \
+	"$(INTDIR)\parcoupon.obj"
 
 ".\lib\Win32\VisualStudio\QuantLib_d.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
     $(LIB32) @<<
@@ -2650,6 +2521,36 @@ LIB32_OBJS= \
 <<
 
 !ENDIF 
+
+.c{$(INTDIR)}.obj::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.cpp{$(INTDIR)}.obj::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.cxx{$(INTDIR)}.obj::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.c{$(INTDIR)}.sbr::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.cpp{$(INTDIR)}.sbr::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.cxx{$(INTDIR)}.sbr::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
 
 
 !IF "$(NO_EXTERNAL_DEPS)" != "1"
@@ -2770,9 +2671,9 @@ SOURCE=.\ql\CashFlows\cashflowvectors.cpp
 	$(CPP) $(CPP_PROJ) $(SOURCE)
 
 
-SOURCE=.\ql\CashFlows\floatingratecoupon.cpp
+SOURCE=.\ql\CashFlows\parcoupon.cpp
 
-"$(INTDIR)\floatingratecoupon.obj"	"$(INTDIR)\floatingratecoupon.sbr" : $(SOURCE) "$(INTDIR)"
+"$(INTDIR)\parcoupon.obj"	"$(INTDIR)\parcoupon.sbr" : $(SOURCE) "$(INTDIR)"
 	$(CPP) $(CPP_PROJ) $(SOURCE)
 
 
@@ -3454,33 +3355,33 @@ SOURCE=.\ql\ShortRateModels\twofactormodel.cpp
 	$(CPP) $(CPP_PROJ) $(SOURCE)
 
 
+SOURCE=.\ql\PricingEngines\analyticalvanillaengine.cpp
+
+"$(INTDIR)\analyticalvanillaengine.obj"	"$(INTDIR)\analyticalvanillaengine.sbr" : $(SOURCE) "$(INTDIR)"
+	$(CPP) $(CPP_PROJ) $(SOURCE)
+
+
+SOURCE=.\ql\PricingEngines\binomialvanillaengine.cpp
+
+"$(INTDIR)\binomialvanillaengine.obj"	"$(INTDIR)\binomialvanillaengine.sbr" : $(SOURCE) "$(INTDIR)"
+	$(CPP) $(CPP_PROJ) $(SOURCE)
+
+
 SOURCE=.\ql\PricingEngines\discretizedvanillaoption.cpp
 
 "$(INTDIR)\discretizedvanillaoption.obj"	"$(INTDIR)\discretizedvanillaoption.sbr" : $(SOURCE) "$(INTDIR)"
 	$(CPP) $(CPP_PROJ) $(SOURCE)
 
 
-SOURCE=.\ql\PricingEngines\europeananalyticalengine.cpp
+SOURCE=.\ql\PricingEngines\fdvanillaengine.cpp
 
-"$(INTDIR)\europeananalyticalengine.obj"	"$(INTDIR)\europeananalyticalengine.sbr" : $(SOURCE) "$(INTDIR)"
+"$(INTDIR)\fdvanillaengine.obj"	"$(INTDIR)\fdvanillaengine.sbr" : $(SOURCE) "$(INTDIR)"
 	$(CPP) $(CPP_PROJ) $(SOURCE)
 
 
-SOURCE=.\ql\PricingEngines\europeanbinomialengine.cpp
+SOURCE=.\ql\PricingEngines\mcvanillaengine.cpp
 
-"$(INTDIR)\europeanbinomialengine.obj"	"$(INTDIR)\europeanbinomialengine.sbr" : $(SOURCE) "$(INTDIR)"
-	$(CPP) $(CPP_PROJ) $(SOURCE)
-
-
-SOURCE=.\ql\PricingEngines\europeanFDengine.cpp
-
-"$(INTDIR)\europeanFDengine.obj"	"$(INTDIR)\europeanFDengine.sbr" : $(SOURCE) "$(INTDIR)"
-	$(CPP) $(CPP_PROJ) $(SOURCE)
-
-
-SOURCE=.\ql\PricingEngines\europeanMCengine.cpp
-
-"$(INTDIR)\europeanMCengine.obj"	"$(INTDIR)\europeanMCengine.sbr" : $(SOURCE) "$(INTDIR)"
+"$(INTDIR)\mcvanillaengine.obj"	"$(INTDIR)\mcvanillaengine.sbr" : $(SOURCE) "$(INTDIR)"
 	$(CPP) $(CPP_PROJ) $(SOURCE)
 
 

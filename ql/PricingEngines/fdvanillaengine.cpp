@@ -14,11 +14,11 @@
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
-/*! \file europeanFDengine.cpp
-    \brief European option engine using Finite Differences
+/*! \file fdvanillaengine.cpp
+    \brief Vanilla option engine using Finite Differences
 
     \fullpath
-    ql/Pricers/%europeanFDengine.cpp
+    ql/Pricers/%fdvanillaengine.cpp
 */
 
 // $Id$
@@ -29,17 +29,7 @@ namespace QuantLib {
 
     namespace PricingEngines {
 
-        void EuropeanFDEngine::calculate() const {
-
-            Date exerciseDate = arguments_.exercise.date();
-
-            double variance = arguments_.volTS->blackVariance(
-                exerciseDate,arguments_.strike);
-            double stdDev = QL_SQRT(variance);
-            double vol = arguments_.volTS->blackVol(
-                exerciseDate, arguments_.strike);
-            Time residualTime = variance/(vol*vol);
-
+        void FDVanillaEngine::calculate() const {
 
             results_.value = 0.0;
             results_.delta = 0.0;

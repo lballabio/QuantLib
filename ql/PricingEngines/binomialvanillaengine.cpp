@@ -16,11 +16,11 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file europeanbinomialengine.cpp
-    \brief European option engine using binomial methods
+/*! \file binomialvanillaengine.cpp
+    \brief Vanilla option engine using binomial tree
 
     \fullpath
-    ql/Pricers/%europeanbinomialengine.cpp
+    ql/Pricers/%binomialvanillaengine.cpp
 */
 
 // $Id$
@@ -33,7 +33,7 @@ namespace QuantLib {
 
     namespace PricingEngines {
 
-        void EuropeanBinomialEngine::calculate() const {
+        void BinomialVanillaEngine::calculate() const {
             double s0 = arguments_.underlying;
             Date exerciseDate = arguments_.exercise.date();
             double v = arguments_.volTS->blackVol(exerciseDate, s0);

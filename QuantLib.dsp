@@ -275,6 +275,10 @@ SOURCE=.\ql\Calendars\zurich.hpp
 # PROP Default_Filter ""
 # Begin Source File
 
+SOURCE=.\ql\CashFlows\basispointsensitivity.hpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\ql\CashFlows\cashflowvectors.cpp
 # End Source File
 # Begin Source File
@@ -291,11 +295,15 @@ SOURCE=.\ql\CashFlows\fixedratecoupon.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\ql\CashFlows\floatingratecoupon.cpp
+SOURCE=.\ql\CashFlows\floatingratecoupon.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\ql\CashFlows\floatingratecoupon.hpp
+SOURCE=.\ql\CashFlows\parcoupon.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\CashFlows\parcoupon.hpp
 # End Source File
 # Begin Source File
 
@@ -1607,6 +1615,14 @@ SOURCE=.\ql\ShortRateModels\twofactormodel.hpp
 # PROP Default_Filter ""
 # Begin Source File
 
+SOURCE=.\ql\PricingEngines\analyticalvanillaengine.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\PricingEngines\binomialvanillaengine.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\ql\PricingEngines\discretizedvanillaoption.cpp
 # End Source File
 # Begin Source File
@@ -1615,19 +1631,7 @@ SOURCE=.\ql\PricingEngines\discretizedvanillaoption.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\ql\PricingEngines\europeananalyticalengine.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\ql\PricingEngines\europeanbinomialengine.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\ql\PricingEngines\europeanFDengine.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\ql\PricingEngines\europeanMCengine.cpp
+SOURCE=.\ql\PricingEngines\fdvanillaengine.cpp
 # End Source File
 # Begin Source File
 
@@ -1640,6 +1644,14 @@ SOURCE=.\ql\PricingEngines\genericengine.hpp
 # Begin Source File
 
 SOURCE=.\ql\PricingEngines\latticeshortratemodelengine.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\PricingEngines\mcengine.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\PricingEngines\mcvanillaengine.cpp
 # End Source File
 # Begin Source File
 

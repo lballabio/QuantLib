@@ -9,16 +9,17 @@ include_HEADERS = \
    genericengine.hpp \
    forwardengines.hpp \
    latticeshortratemodelengine.hpp \
+   mcengine.hpp \
    quantoengines.hpp \
    vanillaengines.hpp
 
 EXTRA_DIST=makefile.mak
 
 libPricingEngines_la_SOURCES = \
+    analyticalvanillaengine.cpp \
+    binomialvanillaengine.cpp \
     discretizedvanillaoption.cpp \
-    europeananalyticalengine.cpp \
-    europeanbinomialengine.cpp \
-    europeanFDengine.cpp \
-    europeanMCengine.cpp
+    fdvanillaengine.cpp \
+    mcvanillaengine.cpp
 
 noinst_LTLIBRARIES = libPricingEngines.la

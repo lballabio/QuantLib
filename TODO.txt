@@ -29,6 +29,7 @@ LIBRARY
         add to test-suite
         deprecate old pricers
         fix quantotermstructure problem
+        MC path generator time dependant
 
     MONTE CARLO FRAMEWORK
         allow for time dependant parameters

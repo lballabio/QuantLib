@@ -253,7 +253,7 @@ int main(int argc, char* argv[])
             exercise,
             flatVolTS,
             Handle<PricingEngine>(
-                new EuropeanAnalyticalEngine()));
+                new AnalyticalVanillaEngine()));
             
         // method: Black Scholes Engine
         method = "Black Scholes";
@@ -270,8 +270,8 @@ int main(int argc, char* argv[])
         // Binomial Method (JR)
         method = "Binomial (JR)";
         option.setPricingEngine(Handle<PricingEngine>(
-            new EuropeanBinomialEngine(
-                EuropeanBinomialEngine::JarrowRudd, 800)));
+            new BinomialVanillaEngine(
+                BinomialVanillaEngine::JarrowRudd, 800)));
         value = option.NPV();
         discrepancy = QL_FABS(value-rightValue);
         relativeDiscrepancy = discrepancy/rightValue;
@@ -285,8 +285,8 @@ int main(int argc, char* argv[])
         // Binomial Method (CRR)
         method = "Binomial (CRR)";
         option.setPricingEngine(Handle<PricingEngine>(
-            new EuropeanBinomialEngine(
-                EuropeanBinomialEngine::CoxRossRubinstein, 800)));
+            new BinomialVanillaEngine(
+                BinomialVanillaEngine::CoxRossRubinstein, 800)));
         value = option.NPV();
         discrepancy = QL_FABS(value-rightValue);
         relativeDiscrepancy = discrepancy/rightValue;
@@ -300,7 +300,7 @@ int main(int argc, char* argv[])
         // Finite Differences Method
         method = "Finite Diff.";
         option.setPricingEngine(Handle<PricingEngine>(
-            new EuropeanFDEngine()));
+            new FDVanillaEngine()));
         value = option.NPV();
         discrepancy = QL_FABS(value-rightValue);
         relativeDiscrepancy = discrepancy/rightValue;
@@ -314,7 +314,7 @@ int main(int argc, char* argv[])
         // Monte Carlo Method
         method = "Monte Carlo";
         option.setPricingEngine(Handle<PricingEngine>(
-            new EuropeanMCEngine()));
+            new MCVanillaEngine(true)));
         value = option.NPV();
         discrepancy = QL_FABS(value-rightValue);
         relativeDiscrepancy = discrepancy/rightValue;
@@ -326,8 +326,8 @@ int main(int argc, char* argv[])
              << std::endl;
         
 
-        Handle<EuropeanAnalyticalEngine> baseEngine(new
-            EuropeanAnalyticalEngine);
+        Handle<AnalyticalVanillaEngine> baseEngine(new
+            AnalyticalVanillaEngine);
 
         Handle<QuantoEngine<VanillaOptionArguments,
                             VanillaOptionResults> >

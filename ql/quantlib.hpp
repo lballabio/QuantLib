@@ -237,6 +237,7 @@
 #include <ql/PricingEngines/forwardengines.hpp>
 #include <ql/PricingEngines/genericengine.hpp>
 #include <ql/PricingEngines/latticeshortratemodelengine.hpp>
+#include <ql/PricingEngines/mcengine.hpp>
 #include <ql/PricingEngines/quantoengines.hpp>
 #include <ql/PricingEngines/vanillaengines.hpp>
 
@@ -272,6 +273,7 @@
 
 #include <ql/TermStructures/compoundforward.hpp>
 #include <ql/TermStructures/discountcurve.hpp>
+#include <ql/TermStructures/drifttermstructure.hpp>
 #include <ql/TermStructures/flatforward.hpp>
 #include <ql/TermStructures/forwardspreadedtermstructure.hpp>
 #include <ql/TermStructures/impliedtermstructure.hpp>

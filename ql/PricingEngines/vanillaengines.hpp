@@ -28,10 +28,15 @@
 #ifndef quantlib_vanilla_engines_h
 #define quantlib_vanilla_engines_h
 
-#include <ql/PricingEngines/genericengine.hpp>
 #include <ql/exercise.hpp>
 #include <ql/termstructure.hpp>
 #include <ql/voltermstructure.hpp>
+//#include <ql/TermStructures/quantotermstructure.hpp>
+#include <ql/MonteCarlo/mctypedefs.hpp>
+#include <ql/MonteCarlo/europeanpathpricer.hpp>
+#include <ql/TermStructures/drifttermstructure.hpp>
+#include <ql/PricingEngines/mcengine.hpp>
+#include <ql/PricingEngines/genericengine.hpp>
 
 namespace QuantLib {
 
@@ -91,33 +96,101 @@ namespace QuantLib {
         class VanillaEngine : public GenericEngine<VanillaOptionArguments,
                                                    VanillaOptionResults> {};
 
-        //! European engine base class
-        class EuropeanEngine : public VanillaEngine {};
-
-        //! Pricing engine for European options using analytical formulas
-        class EuropeanAnalyticalEngine : public EuropeanEngine {
-        public:
+        //! Pricing engine for Vanilla options using analytical formulae
+        class AnalyticalVanillaEngine : public VanillaEngine {
             void calculate() const;
         };
 
-        //! Pricing engine for European options using finite differences
-        class EuropeanFDEngine : public EuropeanEngine {
-        public:
+        //! Pricing engine for Vanilla options using Finite Differences
+        class FDVanillaEngine : public VanillaEngine {
             void calculate() const;
         };
 
-        //! Pricing engine for European options using Monte Carlo simulation
-        class EuropeanMCEngine : public EuropeanEngine {
-        public:
+        //! Pricing engine for Vanilla options using Monte Carlo simulation
+//        template<class S, class PG, class PP>
+        class MCVanillaEngine : public VanillaEngine,
+                                public McEngine<Math::Statistics,
+                                                MonteCarlo::GaussianPathGenerator,
+                                                MonteCarlo::PathPricer<MonteCarlo::Path> > {
+          public:
+            MCVanillaEngine(bool antitheticVariance,
+                            long seed=0) 
+            : antitheticVariance_(antitheticVariance), seed_(seed) {}
             void calculate() const;
+          private:
+            bool antitheticVariance_;
+            long seed_;
         };
 
-        //! Pricing engine for European options using binomial trees
-        class EuropeanBinomialEngine : public EuropeanEngine {
+
+//        template<class S, class PG, class PP>
+        inline void MCVanillaEngine::calculate() const {
+
+            QL_REQUIRE(arguments_.exercise.type() == Exercise::European,
+                "MCVanillaEngine::calculate() : "
+                "not an European Option");
+
+            Date referenceDate = arguments_.riskFreeTS->referenceDate();
+            Date exerciseDate = arguments_.exercise.date();
+            Time residualTime = arguments_.riskFreeTS->dayCounter().yearFraction(
+                referenceDate, exerciseDate);
+
+            //! Initialize the path generator
+            Handle<TermStructure> drift(new
+                TermStructures::DriftTermStructure(arguments_.riskFreeTS,
+                                                   arguments_.dividendTS,
+                                                   arguments_.volTS));
+            double mu = drift->zeroYield(exerciseDate);
+            double volatility = arguments_.volTS->blackVol(exerciseDate,
+                arguments_.underlying);
+
+            Handle<MonteCarlo::GaussianPathGenerator> pathGenerator(
+                new MonteCarlo::GaussianPathGenerator(mu,
+                    volatility*volatility, residualTime, 1, seed_));
+
+            //! Initialize the pricer on the single Path
+            Handle<MonteCarlo::PathPricer<MonteCarlo::Path> > euroPathPricer(
+                new MonteCarlo::EuropeanPathPricer(arguments_.type,
+                arguments_.underlying, arguments_.strike,
+                arguments_.riskFreeTS->discount(exerciseDate),
+                antitheticVariance_));
+
+            //! Initialize the one-factor Monte Carlo
+            mcModel_ = Handle<MonteCarlo::MonteCarloModel<
+                Math::Statistics,
+                MonteCarlo::GaussianPathGenerator,
+                MonteCarlo::PathPricer<MonteCarlo::Path> > > (new
+                    MonteCarlo::MonteCarloModel<
+                        Math::Statistics,
+                        MonteCarlo::GaussianPathGenerator,
+                        MonteCarlo::PathPricer<MonteCarlo::Path> > (
+                            pathGenerator,
+                            euroPathPricer,
+                            Math::Statistics()));
+
+
+            valueWithSamples(50000);
+
+            results_.value = mcModel_->sampleAccumulator().mean();
+            results_.delta = 0.0;
+            results_.gamma       = 0.0;
+            results_.theta       = 0.0;
+            results_.rho         = 0.0;
+            results_.dividendRho = 0.0;
+            results_.vega        = 0.0;
+//            results_.errorEstimate = mcModel_->sampleAccumulator().errorEstimate()
+
+        }
+        
+        
+        
+        
+        //! Pricing engine for Vanilla options using binomial trees
+        class BinomialVanillaEngine : public VanillaEngine {
           public:
             enum Type { CoxRossRubinstein, JarrowRudd, LeisenReimer };
 
-            EuropeanBinomialEngine(Type type, Size steps)
+            BinomialVanillaEngine(Type type, Size steps)
             : type_(type), steps_(steps) {}
             void calculate() const;
           private:
@@ -125,22 +198,6 @@ namespace QuantLib {
             Size steps_;
         };
 
-        
-        
-        //! American engine base class
-        class AmericanEngine : public VanillaEngine {};
-
-        //! Pricing engine for American options using finite differences
-        class AmericanFDEngine : public AmericanEngine {
-        public:
-            void calculate() const;
-        };
-
-
-        // Pricing engine for American options using binomial trees
-        // etc. etc.
-    
-    
     }
 
 }

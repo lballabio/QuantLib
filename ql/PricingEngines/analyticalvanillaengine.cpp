@@ -1,7 +1,6 @@
 
 /*
  Copyright (C) 2003 Ferdinando Ametrano
- Copyright (C) 2000, 2001, 2002, 2003 RiskMap srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -15,11 +14,11 @@
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
-/*! \file europeananalyticalengine.cpp
-    \brief European option engine using analytic formulas
+/*! \file analyticalvanillaengine.cpp
+    \brief Vanilla option engine using analytic formulas
 
     \fullpath
-    ql/Pricers/%europeananalyticalengine.cpp
+    ql/Pricers/%analyticalvanillaengine.cpp
 */
 
 // $Id$
@@ -31,12 +30,10 @@ namespace QuantLib {
 
     namespace PricingEngines {
 
-        void EuropeanAnalyticalEngine::calculate() const {
+        void AnalyticalVanillaEngine::calculate() const {
 
-            // this should be moved to a better place where it checks
-            // exercise type for all the european engines
             QL_REQUIRE(arguments_.exercise.type() == Exercise::European,
-                "EuropeanAnalyticalEngine::calculate() : "
+                "AnalyticalVanillaEngine::calculate() : "
                 "not an European Option");
 
             Date exerciseDate = arguments_.exercise.date();
