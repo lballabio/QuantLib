@@ -28,6 +28,9 @@
     $Id$
     $Source$
     $Log$
+    Revision 1.2  2001/06/18 11:51:38  lballabio
+    Fixed cash flow date
+
     Revision 1.1  2001/06/18 08:10:00  lballabio
     Reworked indexes and floating rate coupon
 
@@ -62,7 +65,7 @@ namespace QuantLib {
                 Spread spread = 0.0);
             //! \name CashFlow interface
             //@{
-            Date date() const { return startDate_; }
+            Date date() const { return endDate_; }
             double amount() const;
             //@}
           private:
