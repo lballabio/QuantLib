@@ -44,11 +44,6 @@ void calibrateModel(const boost::shared_ptr<ShortRateModel>& model,
     om.setEndCriteria(EndCriteria(10000, 1e-7));
     model->calibrate(helpers, om);
 
-    #if defined(QL_PATCH_DARWIN)
-    // to be investigated
-    return;
-    #endif
-
     // Output the implied Black volatilities
     for (Size i=0; i<numRows; i++) {
         Size j = numCols - i -1; // 1x5, 2x4, 3x3, 4x2, 5x1

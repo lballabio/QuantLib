@@ -29,16 +29,20 @@
 namespace QuantLib {
 
     //! Analytic engine for cap/floor
-    /*! \ingroup capfloorengines */
+    /*! \bug This engine does not currently work for caps/floors
+             with caplets whose rate is already fixed.
+
+        \ingroup capfloorengines
+    */
     class AnalyticCapFloorEngine
-        : public GenericModelEngine<AffineModel, 
+        : public GenericModelEngine<AffineModel,
                                     CapFloor::arguments,
                                     CapFloor::results > {
       public:
-        AnalyticCapFloorEngine(const boost::shared_ptr<AffineModel>& model) 
-        : GenericModelEngine<AffineModel, 
+        AnalyticCapFloorEngine(const boost::shared_ptr<AffineModel>& model)
+        : GenericModelEngine<AffineModel,
                              CapFloor::arguments,
-                             CapFloor::results >(model) 
+                             CapFloor::results >(model)
         {}
         void calculate() const;
     };

@@ -28,18 +28,14 @@
 namespace QuantLib {
 
     //! Numerical lattice engine for cap/floors
-    /*! \bug caplets which have already fixed are not included in
-             the cap value.
-
-        \ingroup capfloorengines
-    */
+    /*! \ingroup capfloorengines */
     class TreeCapFloorEngine
         : public LatticeShortRateModelEngine<CapFloor::arguments,
                                              CapFloor::results> {
       public:
-        TreeCapFloorEngine(const boost::shared_ptr<ShortRateModel>& model, 
+        TreeCapFloorEngine(const boost::shared_ptr<ShortRateModel>& model,
                            Size timeSteps);
-        TreeCapFloorEngine(const boost::shared_ptr<ShortRateModel>& model, 
+        TreeCapFloorEngine(const boost::shared_ptr<ShortRateModel>& model,
                            const TimeGrid& timeGrid);
         void calculate() const;
     };
