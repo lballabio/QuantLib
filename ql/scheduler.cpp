@@ -31,8 +31,8 @@
 
 // $Id$
 
-#include "ql/scheduler.hpp"
-#include "ql/dataformatters.hpp"
+#include <ql/scheduler.hpp>
+#include <ql/dataformatters.hpp>
 
 namespace QuantLib {
 

@@ -34,25 +34,25 @@
 #ifndef quantlib_ratehelper_h
 #define quantlib_ratehelper_h
 
-#include "ql/marketelement.hpp"
-#include "ql/Instruments/simpleswap.hpp"
+#include <ql/marketelement.hpp>
+#include <ql/Instruments/simpleswap.hpp>
 
 namespace QuantLib {
 
     namespace TermStructures {
 
         //! base class for rate helpers
-        /*! This class provides an abstraction for the instruments used to 
-            bootstrap a term structure. 
-            It is advised that a rate helper for an instrument contain an 
-            instance of the actual instrument class to ensure consistancy 
-            between the algorithms used during bootstrapping and later 
-            instrument pricing. This is not yet fully enforced in the 
-            available rate helpers, though - only SwapRateHelper contains a 
+        /*! This class provides an abstraction for the instruments used to
+            bootstrap a term structure.
+            It is advised that a rate helper for an instrument contain an
+            instance of the actual instrument class to ensure consistancy
+            between the algorithms used during bootstrapping and later
+            instrument pricing. This is not yet fully enforced in the
+            available rate helpers, though - only SwapRateHelper contains a
             Swap instrument for the time being.
         */
-            
-        class RateHelper : public Patterns::Observer, 
+
+        class RateHelper : public Patterns::Observer,
                            public Patterns::Observable {
           public:
             RateHelper(const RelinkableHandle<MarketElement>& quote);
@@ -62,16 +62,16 @@ namespace QuantLib {
             //@{
             double quoteError() const;
             virtual double impliedQuote() const = 0;
-            virtual DiscountFactor discountGuess() const { 
-                return Null<double>(); 
+            virtual DiscountFactor discountGuess() const {
+                return Null<double>();
             }
             //! sets the term structure to be used for pricing
-            /*! \warning Being a pointer and not a Handle, the term structure 
-                is not guaranteed to remain allocated for the whole life of 
-                the rate helper. It is responsibility of the programmer to 
-                ensure that the pointer remains valid. It is advised that 
-                rate helpers be used only in term structure constructors, 
-                setting the term structure to <b>this</b>, i.e., the one 
+            /*! \warning Being a pointer and not a Handle, the term structure
+                is not guaranteed to remain allocated for the whole life of
+                the rate helper. It is responsibility of the programmer to
+                ensure that the pointer remains valid. It is advised that
+                rate helpers be used only in term structure constructors,
+                setting the term structure to <b>this</b>, i.e., the one
                 being constructed.
             */
             virtual void setTermStructure(TermStructure*);
@@ -89,7 +89,7 @@ namespace QuantLib {
 
 
         //! Deposit rate
-        /*! \warning This class assumes that today's date does not change 
+        /*! \warning This class assumes that today's date does not change
             between calls of setTermStructure().
         */
         class DepositRateHelper : public RateHelper {
@@ -123,7 +123,7 @@ namespace QuantLib {
 
 
         //! Forward rate agreement
-        /*! \warning This class assumes that today's date does not change 
+        /*! \warning This class assumes that today's date does not change
             between calls of setTermStructure().
 
             \todo convexity adjustment should be implemented.
@@ -159,7 +159,7 @@ namespace QuantLib {
 
 
         //! Interest Rate Futures
-        /*! \warning This class assumes that today's date does not change 
+        /*! \warning This class assumes that today's date does not change
             between calls of setTermStructure().
         */
         class FuturesRateHelper : public RateHelper {
@@ -194,7 +194,7 @@ namespace QuantLib {
 
 
         //! swap rate
-        /*! \warning This class assumes that today's date does not change 
+        /*! \warning This class assumes that today's date does not change
             between calls of setTermStructure().
 
             \todo discountGuess() should be implemented.

@@ -15,16 +15,16 @@ include_HEADERS = \
 	getcovariance.hpp \
 	himalayapathpricer.hpp \
 	mctypedefs.hpp \
+	maxbasketpathpricer.hpp \
 	montecarlomodel.hpp \
 	multipath.hpp \
 	multipathgenerator.hpp \
-	multipathpricer.hpp \
 	pagodapathpricer.hpp \
 	path.hpp \
 	pathgenerator.hpp \
 	pathpricer.hpp \
-	sample.hpp \
-	singleassetpathpricer.hpp
+	sample.hpp
+
 
 EXTRA_DIST=makefile.mak
 
@@ -38,7 +38,7 @@ libMonteCarlo_la_SOURCES = \
 	geometricasopathpricer.cpp \
 	getcovariance.cpp \
 	himalayapathpricer.cpp \
-	pagodapathpricer.cpp \
-	singleassetpathpricer.cpp
+	maxbasketpathpricer.cpp \
+	pagodapathpricer.cpp
 
 noinst_LTLIBRARIES = libMonteCarlo.la

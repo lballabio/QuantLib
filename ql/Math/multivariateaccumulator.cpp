@@ -31,7 +31,7 @@
 
 // $Id$
 
-#include "ql/Math/multivariateaccumulator.hpp"
+#include <ql/Math/multivariateaccumulator.hpp>
 
 namespace QuantLib {
 

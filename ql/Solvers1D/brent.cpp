@@ -37,7 +37,7 @@
  */
 
 
-#include "ql/Solvers1D/brent.hpp"
+#include <ql/Solvers1D/brent.hpp>
 
 namespace QuantLib {
 

@@ -32,35 +32,33 @@
 
 // $Id$
 
-#include "ql/MonteCarlo/pagodapathpricer.hpp"
-#include "ql/dataformatters.hpp"
+#include <ql/MonteCarlo/pagodapathpricer.hpp>
+#include <ql/dataformatters.hpp>
 #include <iostream>
 
 namespace QuantLib {
 
     namespace MonteCarlo {
 
-        PagodaPathPricer::PagodaPathPricer(const Array &underlying,
-            double roof, double discount, bool antitheticVariance)
-        : underlying_(underlying), roof_(roof), discount_(discount),
-          antitheticVariance_(antitheticVariance) {
-            isInitialized_ = true;
-        }
+        PagodaPathPricer::PagodaPathPricer(const Array& underlying,
+            double roof,
+            DiscountFactor discount, bool useAntitheticVariance)
+        : PathPricer<MultiPath>(discount, useAntitheticVariance),
+          underlying_(underlying), roof_(roof) {}
 
-        double PagodaPathPricer::operator()(const MultiPath & multiPath) const {
+        double PagodaPathPricer::operator()(const MultiPath& multiPath) const {
             size_t numAssets = multiPath.assetNumber();
             size_t numSteps = multiPath.pathSize();
-            QL_REQUIRE(isInitialized_,
-                "PagodaPathPricer: pricer not initialized");
             QL_REQUIRE(underlying_.size() == numAssets,
                 "PagodaPathPricer: the multi-path must contain "
                 + IntegerFormatter::toString(underlying_.size()) +" assets");
 
 
-            if (antitheticVariance_) {
+            size_t i,j;
+            if (useAntitheticVariance_) {
                 double averageGain = 0.0, averageGain2 = 0.0;
-                for(size_t i = 0; i < numSteps; i++)
-                    for(size_t j = 0; j < numAssets; j++) {
+                for(i = 0; i < numSteps; i++)
+                    for(j = 0; j < numAssets; j++) {
                         averageGain += underlying_[j] *
                             (QL_EXP(multiPath[j].drift()[i]+
                                     multiPath[j].diffusion()[i])
@@ -75,8 +73,8 @@ namespace QuantLib {
                      QL_MAX(0.0, QL_MIN(roof_, averageGain2)));
             } else {
                 double averageGain = 0.0;
-                for(size_t i = 0; i < numSteps; i++)
-                    for(size_t j = 0; j < numAssets; j++) {
+                for(i = 0; i < numSteps; i++)
+                    for(j = 0; j < numAssets; j++) {
                         averageGain += underlying_[j] *
                             (QL_EXP(multiPath[j].drift()[i]+
                                     multiPath[j].diffusion()[i])

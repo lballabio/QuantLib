@@ -33,8 +33,8 @@
 #ifndef quantlib_basket_pricer_h
 #define quantlib_basket_pricer_h
 
-#include "ql/Pricers/mcpricer.hpp"
-#include "ql/Math/matrix.hpp"
+#include <ql/Pricers/mcpricer.hpp>
+#include <ql/Math/matrix.hpp>
 
 namespace QuantLib {
 
@@ -42,15 +42,18 @@ namespace QuantLib {
 
         //! simple example of multi-factor Monte Carlo pricer
         class McBasket : public McPricer<Math::Statistics,
-            MonteCarlo::GaussianMultiPathGenerator, MonteCarlo::MultiPathPricer> {
+            MonteCarlo::GaussianMultiPathGenerator,
+            MonteCarlo::PathPricer<MonteCarlo::MultiPath> > {
           public:
-            McBasket(const Array& underlying,
-                     const Array& dividendYield,
-                     const Math::Matrix& covariance,
-                     Rate riskFreeRate,
-                     double residualTime,
-                     bool antitheticVariance,
-                     long seed=0);
+              McBasket(Option::Type type,
+                       const Array& underlying,
+                       double strike,
+                       const Array& dividendYield,
+                       const Math::Matrix& covariance,
+                       Rate riskFreeRate,
+                       double residualTime,
+                       bool antitheticVariance,
+                       long seed=0);
         };
 
     }

@@ -34,7 +34,7 @@
 #ifndef quantlib_knuth_uniform_rng_h
 #define quantlib_knuth_uniform_rng_h
 
-#include "ql/MonteCarlo/sample.hpp"
+#include <ql/MonteCarlo/sample.hpp>
 #include <vector>
 
 namespace QuantLib {
@@ -45,7 +45,7 @@ namespace QuantLib {
 
         //! Uniform random number generator
         /*! Random number generator by Knuth.
-            For more details see Knuth, Seminumerical Algorithms, 
+            For more details see Knuth, Seminumerical Algorithms,
             3rd edition, Section 3.6.
             \note This is <b>not</b> Knuth's original implementation which
             is available at
@@ -61,7 +61,7 @@ namespace QuantLib {
             /*! if the given seed is 0, a random seed will be chosen
                 based on clock() */
             explicit KnuthUniformRng(long seed = 0);
-            /*! returns a sample with weight 1.0 containing a random number 
+            /*! returns a sample with weight 1.0 containing a random number
                 uniformly chosen from (0.0,1.0) */
             sample_type next() const;
           private:

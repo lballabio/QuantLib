@@ -31,8 +31,8 @@
 
 // $Id$
 
-#include "ql/dataformatters.hpp"
-#include "ql/null.hpp"
+#include <ql/dataformatters.hpp>
+#include <ql/null.hpp>
 #include <stdio.h>
 
 namespace QuantLib {

@@ -34,8 +34,8 @@
 #ifndef quantlib_floating_rate_coupon_hpp
 #define quantlib_floating_rate_coupon_hpp
 
-#include "ql/CashFlows/coupon.hpp"
-#include "ql/Indexes/xibor.hpp"
+#include <ql/CashFlows/coupon.hpp>
+#include <ql/Indexes/xibor.hpp>
 
 namespace QuantLib {
 

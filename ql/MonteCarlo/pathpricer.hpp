@@ -24,7 +24,7 @@
 
 /*! \file pathpricer.hpp
     \brief base class for single-path pricers
-    
+
     \fullpath
     ql/MonteCarlo/%pathpricer.hpp
 */
@@ -34,20 +34,36 @@
 #ifndef quantlib_montecarlo_path_pricer_h
 #define quantlib_montecarlo_path_pricer_h
 
-#include "ql/MonteCarlo/path.hpp"
+#include <ql/option.hpp>
+#include <ql/types.hpp>
 
 namespace QuantLib {
 
     namespace MonteCarlo {
 
-        //! base class for single-path pricers
+        //! base class for path pricers
         /*! Given a path the value of an option is returned on that path.
         */
-        class PathPricer : public std::unary_function<Path, double> {
+        template<class P>
+        class PathPricer : public std::unary_function<P, double> {
           public:
+            PathPricer(DiscountFactor discount,
+                       bool useAntitheticVariance);
             virtual ~PathPricer() {}
-            virtual double operator()(const Path& path) const=0;
+            virtual double operator()(const P& path) const=0;
+          protected:
+            DiscountFactor discount_;
+            bool useAntitheticVariance_;
         };
+
+        template<class P>
+        PathPricer<P>::PathPricer(DiscountFactor discount,
+            bool useAntitheticVariance)
+            : discount_(discount),
+              useAntitheticVariance_(useAntitheticVariance) {
+            QL_REQUIRE(discount_ <= 1.0 && discount_ > 0.0,
+                "PathPricer: discount must be positive");
+        }
 
     }
 

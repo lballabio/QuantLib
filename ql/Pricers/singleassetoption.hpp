@@ -34,8 +34,8 @@
 #ifndef BSM_option_pricer_h
 #define BSM_option_pricer_h
 
-#include "ql/option.hpp"
-#include "ql/solver1d.hpp"
+#include <ql/option.hpp>
+#include <ql/solver1d.hpp>
 
 #define QL_MIN_VOLATILITY 0.0001
 #define QL_MAX_VOLATILITY 4.0

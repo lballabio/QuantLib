@@ -31,7 +31,7 @@
 
 // $Id$
 
-#include "ql/Math/normaldistribution.hpp"
+#include <ql/Math/normaldistribution.hpp>
 
 namespace QuantLib {
 

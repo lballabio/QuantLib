@@ -34,7 +34,7 @@
 #ifndef quantlib_helsinki_calendar_h
 #define quantlib_helsinki_calendar_h
 
-#include "ql/calendar.hpp"
+#include <ql/calendar.hpp>
 
 namespace QuantLib {
 

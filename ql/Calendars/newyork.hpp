@@ -34,7 +34,7 @@
 #ifndef quantlib_newyork_calendar_h
 #define quantlib_newyork_calendar_h
 
-#include "ql/calendar.hpp"
+#include <ql/calendar.hpp>
 
 namespace QuantLib {
 
@@ -50,14 +50,14 @@ namespace QuantLib {
             <li>Martin Luther King's birthday, third Monday in January</li>
             <li>Washington's birthday, third Monday in February</li>
             <li>Memorial Day, last Monday in May</li>
-            <li>Independence Day, July 4th (moved to Monday if Sunday or 
+            <li>Independence Day, July 4th (moved to Monday if Sunday or
                 Friday if Saturday)</li>
             <li>Labor Day, first Monday in September</li>
             <li>Columbus Day, second Monday in October</li>
             <li>Veteran's Day, November 11th (moved to Monday if Sunday or
                 Friday if Saturday)</li>
             <li>Thanksgiving Day, fourth Thursday in November</li>
-            <li>Christmas, December 25th (moved to Monday if Sunday or Friday 
+            <li>Christmas, December 25th (moved to Monday if Sunday or Friday
                 if Saturday)</li>
             </ul>
         */

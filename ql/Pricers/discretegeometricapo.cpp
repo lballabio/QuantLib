@@ -31,7 +31,7 @@
 
 // $Id$
 
-#include "ql/Pricers/discretegeometricapo.hpp"
+#include <ql/Pricers/discretegeometricapo.hpp>
 #include <iostream>
 #include <numeric>
 
@@ -45,8 +45,8 @@ namespace QuantLib {
             double underlying, double strike, Spread dividendYield,
             Rate riskFreeRate, const std::vector<Time>& times,
             double volatility)
-        : times_(times), SingleAssetOption(type, underlying, strike,
-          dividendYield, riskFreeRate, times.back(), volatility) {}
+        : SingleAssetOption(type, underlying, strike, dividendYield,
+          riskFreeRate, times.back(), volatility), times_(times) {}
 
         double DiscreteGeometricAPO::value() const {
             // almost ready for mid-life re-evaluation
@@ -78,14 +78,15 @@ namespace QuantLib {
             double x1 = (muG-QL_LOG(strike_)+sigmaG_2)/QL_SQRT(sigmaG_2);
             double x2 = x1-QL_SQRT(sigmaG_2);
 
+            double result;
             switch (type_) {
                 case Option::Call:
-                    return QL_EXP(-riskFreeRate_*residualTime_)*
+                    result = QL_EXP(-riskFreeRate_*residualTime_)*
                 (QL_EXP(muG + sigmaG_2 / 2.0) * f_(x1) -
                 strike_ * f_(x2));
                     break;
                 case Option::Put:
-                    return QL_EXP(-riskFreeRate_*residualTime_)*
+                    result = QL_EXP(-riskFreeRate_*residualTime_)*
                         (strike_ * f_(-x2) -
                         QL_EXP(muG + sigmaG_2 / 2.0) * f_(-x1)
                         );
@@ -94,6 +95,7 @@ namespace QuantLib {
                     throw IllegalArgumentError(
                         "DiscreteGeometricAPO: invalid option type");
             }
+            return result;
 
 
         }

@@ -34,12 +34,12 @@
 #ifndef quantlib_simple_cash_flow_hpp
 #define quantlib_simple_cash_flow_hpp
 
-#include "ql/cashflow.hpp"
+#include <ql/cashflow.hpp>
 
 namespace QuantLib {
 
     namespace CashFlows {
-        
+
         //! Predetermined cash flow
         /*! This cash flow pays a predetermined amount at a given date. */
         class SimpleCashFlow : public CashFlow {

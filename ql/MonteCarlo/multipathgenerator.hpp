@@ -34,8 +34,8 @@
 #ifndef quantlib_montecarlo_multi_path_generator_h
 #define quantlib_montecarlo_multi_path_generator_h
 
-#include "ql/MonteCarlo/multipath.hpp"
-#include "ql/MonteCarlo/sample.hpp"
+#include <ql/MonteCarlo/multipath.hpp>
+#include <ql/MonteCarlo/sample.hpp>
 
 namespace QuantLib {
 
@@ -108,7 +108,7 @@ namespace QuantLib {
             const Array& drifts, const Math::Matrix& covariance,
             const std::vector<Time>& times, long seed)
         : drifts_(covariance.rows(), 0.0), timeSteps_(times.size()),
-          timeDelays_(times.size()), numAssets_(covariance.rows()), 
+          timeDelays_(times.size()), numAssets_(covariance.rows()),
           rndArrayGen_(covariance, seed),
           next_(MultiPath(covariance.rows(),times.size()),1.0) {
 
@@ -141,7 +141,7 @@ namespace QuantLib {
         }
 
         template <class RAG>
-        inline const MultiPathGenerator<RAG >::sample_type& 
+        inline const MultiPathGenerator<RAG >::sample_type&
         MultiPathGenerator<RAG >::next() const {
 
             QL_REQUIRE(numAssets_ > 0,
@@ -153,7 +153,7 @@ namespace QuantLib {
                 next_.weight *= randomExtraction.weight;
                 for (size_t j=0; j<numAssets_; j++) {
                     next_.value[j].drift()[i] = drifts_[j] * timeDelays_[i];
-                    next_.value[j].diffusion()[i] = 
+                    next_.value[j].diffusion()[i] =
                         randomExtraction.value[j] * QL_SQRT(timeDelays_[i]);
                 }
             }

@@ -34,7 +34,7 @@
 #ifndef quantlib_coupling_iterator_h
 #define quantlib_coupling_iterator_h
 
-#include "ql/Utilities/iteratorcategories.hpp"
+#include <ql/Utilities/iteratorcategories.hpp>
 
 namespace QuantLib {
 
@@ -57,7 +57,7 @@ namespace QuantLib {
             const typename Function::result_type&>
         {
           public:
-            /* These typedefs are needed even though inherited from 
+            /* These typedefs are needed even though inherited from
                QL_ITERATOR (see 14.6.2.3 of the standard).  */
             typedef typename Function::result_type value_type;
             typedef typename QL_ITERATOR_TRAITS<Iterator1>::difference_type

@@ -31,7 +31,7 @@
 
 // $Id$
 
-#include "ql/Math/segmentintegral.hpp"
+#include <ql/Math/segmentintegral.hpp>
 
 namespace QuantLib {
 

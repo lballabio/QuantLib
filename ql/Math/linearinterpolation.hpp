@@ -34,7 +34,7 @@
 #ifndef quantlib_linear_interpolation_h
 #define quantlib_linear_interpolation_h
 
-#include "ql/Math/interpolation.hpp"
+#include <ql/Math/interpolation.hpp>
 
 namespace QuantLib {
 

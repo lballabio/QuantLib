@@ -34,7 +34,7 @@
 #ifndef quantlib_lexicographical_view_h
 #define quantlib_lexicographical_view_h
 
-#include "ql/Utilities/steppingiterator.hpp"
+#include <ql/Utilities/steppingiterator.hpp>
 
 namespace QuantLib {
 
@@ -97,12 +97,12 @@ namespace QuantLib {
         // inline definitions
 
         template <class RandomAccessIterator>
-        inline 
+        inline
         LexicographicalView<RandomAccessIterator>::LexicographicalView(
-            const RandomAccessIterator& begin, 
+            const RandomAccessIterator& begin,
             const RandomAccessIterator& end,
             int xSize)
-        : begin_(begin), end_(end), xSize_(xSize), 
+        : begin_(begin), end_(end), xSize_(xSize),
           ySize_((end-begin)/xSize) {
             #ifdef QL_DEBUG
                 QL_REQUIRE((end_-begin_) % xSize_ == 0,

@@ -33,14 +33,16 @@
 #ifndef quantlib_montecarlo_path_h
 #define quantlib_montecarlo_path_h
 
-#include "ql/array.hpp"
-#include "ql/handle.hpp"
+#include <ql/array.hpp>
+#include <ql/handle.hpp>
 
 namespace QuantLib {
 
     namespace MonteCarlo {
 
-        //! single random walk
+        //! single factor random walk
+        /*! \todo make it time-aware
+        */
         class Path {
           public:
             Path(size_t size);
@@ -66,37 +68,37 @@ namespace QuantLib {
 
         inline Path::Path(size_t size)
         : drift_(size), diffusion_(size) {}
-        
+
         inline Path::Path(const Array& drift, const Array& diffusion)
         : drift_(drift), diffusion_(diffusion) {
             QL_REQUIRE(drift_.size() == diffusion_.size(),
                 "Path: drift and diffusion have different size");
         }
 
-        inline double Path::operator[](int i) const { 
-            return drift_[i] + diffusion_[i]; 
+        inline double Path::operator[](int i) const {
+            return drift_[i] + diffusion_[i];
         }
-        
+
         inline size_t Path::size() const {
-            return drift_.size(); 
+            return drift_.size();
         }
 
-        inline const Array& Path::drift() const { 
-            return drift_; 
+        inline const Array& Path::drift() const {
+            return drift_;
         }
 
-        inline Array& Path::drift() { 
-            return drift_; 
+        inline Array& Path::drift() {
+            return drift_;
         }
 
         inline const Array& Path::diffusion() const {
-            return diffusion_; 
+            return diffusion_;
         }
-        
+
         inline Array& Path::diffusion() {
-            return diffusion_; 
+            return diffusion_;
         }
-        
+
     }
 
 }

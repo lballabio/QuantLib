@@ -34,13 +34,13 @@
 #ifndef quantlib_mc_typedefs_h
 #define quantlib_mc_typedefs_h
 
-#include "ql/RandomNumbers/rngtypedefs.hpp"
-#include "ql/MonteCarlo/pathgenerator.hpp"
-#include "ql/MonteCarlo/multipathgenerator.hpp"
-#include "ql/MonteCarlo/montecarlomodel.hpp"
-#include "ql/MonteCarlo/pathpricer.hpp"
-#include "ql/MonteCarlo/multipathpricer.hpp"
-#include "ql/Math/statistics.hpp"
+#include <ql/RandomNumbers/rngtypedefs.hpp>
+#include <ql/MonteCarlo/path.hpp>
+#include <ql/MonteCarlo/pathgenerator.hpp>
+#include <ql/MonteCarlo/multipathgenerator.hpp>
+#include <ql/MonteCarlo/pathpricer.hpp>
+#include <ql/MonteCarlo/montecarlomodel.hpp>
+#include <ql/Math/statistics.hpp>
 
 namespace QuantLib {
 
@@ -50,19 +50,21 @@ namespace QuantLib {
         typedef PathGenerator<RandomNumbers::GaussianRandomGenerator> GaussianPathGenerator;
 
         //! default choice for Gaussian multi-path generator.
-        typedef 
+        typedef
         MultiPathGenerator<RandomNumbers::RandomArrayGenerator<RandomNumbers::GaussianRandomGenerator> >
             GaussianMultiPathGenerator;
 
         //! default choice for one-factor Monte Carlo model.
         typedef MonteCarloModel<Math::Statistics,
                                 GaussianPathGenerator,
-                                PathPricer> OneFactorMonteCarloOption;
+                                PathPricer<Path> >
+                                    OneFactorMonteCarloOption;
 
         //! default choice for multi-factor Monte Carlo model.
         typedef MonteCarloModel<Math::Statistics,
                                 GaussianMultiPathGenerator,
-                                MultiPathPricer> MultiFactorMonteCarloOption;
+                                PathPricer<MultiPath> >
+                                    MultiFactorMonteCarloOption;
 
     }
 

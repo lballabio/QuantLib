@@ -31,7 +31,7 @@
 
 // $Id$
 
-#include "ql/MonteCarlo/getcovariance.hpp"
+#include <ql/MonteCarlo/getcovariance.hpp>
 
 namespace QuantLib {
 

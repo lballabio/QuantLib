@@ -34,31 +34,31 @@
 #ifndef quantlib_piecewise_flat_forward_curve_h
 #define quantlib_piecewise_flat_forward_curve_h
 
-#include "ql/TermStructures/ratehelpers.hpp"
-#include "ql/solver1d.hpp"
+#include <ql/TermStructures/ratehelpers.hpp>
+#include <ql/solver1d.hpp>
 
 namespace QuantLib {
 
     namespace TermStructures {
 
         //! Piecewise flat forward term structure
-        /*! This term structure is bootstrapped on a number of interest rate 
+        /*! This term structure is bootstrapped on a number of interest rate
             instruments which are passed as a vector of handles to RateHelper
-            instances. Their maturities mark the boundaries of the flat 
-            forward segments. 
-            
-            The values of the forward rates for each segment are determined 
+            instances. Their maturities mark the boundaries of the flat
+            forward segments.
+
+            The values of the forward rates for each segment are determined
             sequentially starting from the earliest period to the latest.
-            
-            The value for each segment is chosen so that the instrument whose 
-            maturity marks the end of such segment is correctly repriced on 
+
+            The value for each segment is chosen so that the instrument whose
+            maturity marks the end of such segment is correctly repriced on
             the curve.
-            
-            \warning The bootstrapping algorithm will raise an exception if 
+
+            \warning The bootstrapping algorithm will raise an exception if
             any two instruments have the same maturity date.
         */
-        /* This class is derived directly from term structure since we are 
-           rewriting all of forward, discount and zeroYield to take advantage 
+        /* This class is derived directly from term structure since we are
+           rewriting all of forward, discount and zeroYield to take advantage
            of its own internal structure. */
         class PiecewiseFlatForward : public TermStructure,
                                      public Patterns::Observer {
@@ -91,7 +91,7 @@ namespace QuantLib {
             //@}
           protected:
             Rate zeroYieldImpl(Time, bool extrapolate = false) const;
-            DiscountFactor discountImpl(Time, 
+            DiscountFactor discountImpl(Time,
                 bool extrapolate = false) const;
             Rate forwardImpl(Time, bool extrapolate = false) const;
           private:

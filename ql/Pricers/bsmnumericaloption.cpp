@@ -31,8 +31,8 @@
 
 // $Id$
 
-#include "ql/Pricers/bsmnumericaloption.hpp"
-#include "ql/FiniteDifferences/valueatcenter.hpp"
+#include <ql/Pricers/bsmnumericaloption.hpp>
+#include <ql/FiniteDifferences/valueatcenter.hpp>
 
 namespace QuantLib {
 
@@ -48,7 +48,7 @@ namespace QuantLib {
             double underlying, double strike, Spread dividendYield,
             Rate riskFreeRate, Time residualTime, double volatility,
             size_t gridPoints)
-        : SingleAssetOption(type, underlying, strike, dividendYield, 
+        : SingleAssetOption(type, underlying, strike, dividendYield,
             riskFreeRate, residualTime, volatility),
             gridPoints_(safeGridPoints(gridPoints, residualTime)),
             grid_(gridPoints_), initialPrices_(gridPoints_){

@@ -34,7 +34,7 @@
 #ifndef quantlib_actualactual_day_counter_h
 #define quantlib_actualactual_day_counter_h
 
-#include "ql/daycounter.hpp"
+#include <ql/daycounter.hpp>
 
 namespace QuantLib {
 
@@ -42,11 +42,11 @@ namespace QuantLib {
 
         //! Actual/Actual day count
         /*! The day count can be calculated according to ISMA and US Treasury
-            convention, also known as "Actual/Actual (Bond)"; to ISDA, also 
+            convention, also known as "Actual/Actual (Bond)"; to ISDA, also
             known as "Actual/Actual (Historical)"; or to AFB, also known as
             "Actual/Actual (Euro)".
 
-            For more details, refer to 
+            For more details, refer to
             http://www.isda.org/c_and_a/pdf/mktc1198.pdf
         */
         class ActualActual : public DayCounter {

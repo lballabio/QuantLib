@@ -33,9 +33,9 @@
 #ifndef quantlib_pagoda_pricer_h
 #define quantlib_pagoda_pricer_h
 
-#include "ql/MonteCarlo/mctypedefs.hpp"
-#include "ql/Pricers/mcpricer.hpp"
-#include "ql/Math/matrix.hpp"
+#include <ql/MonteCarlo/mctypedefs.hpp>
+#include <ql/Pricers/mcpricer.hpp>
+#include <ql/Math/matrix.hpp>
 #include <vector>
 
 namespace QuantLib {
@@ -51,7 +51,7 @@ namespace QuantLib {
         */
         class McPagoda : public McPricer<Math::Statistics,
             MonteCarlo::GaussianMultiPathGenerator,
-            MonteCarlo::MultiPathPricer> {
+            MonteCarlo::PathPricer<MonteCarlo::MultiPath> > {
           public:
             McPagoda(const Array& portfolio,
                      double fraction,

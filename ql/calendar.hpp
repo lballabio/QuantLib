@@ -34,9 +34,9 @@
 #ifndef quantlib_calendar_h
 #define quantlib_calendar_h
 
-#include "ql/date.hpp"
-#include "ql/handle.hpp"
-#include "ql/null.hpp"
+#include <ql/date.hpp>
+#include <ql/handle.hpp>
+#include <ql/null.hpp>
 
 /*! \namespace QuantLib::Calendars
     \brief Specialized Calendar classes
@@ -47,30 +47,30 @@
 namespace QuantLib {
 
     //! Rolling conventions
-    /*! These conventions specify the algorithm used to find the business day 
+    /*! These conventions specify the algorithm used to find the business day
         which is "closest" to a given holiday.
     */
     enum RollingConvention {
-        Preceding,          /*!< Choose the first business day before 
+        Preceding,          /*!< Choose the first business day before
                                  the given holiday. */
         ModifiedPreceding,  /*!< Choose the first business day before
-                                 the given holiday unless it belongs to a 
-                                 different month, in which case choose the 
+                                 the given holiday unless it belongs to a
+                                 different month, in which case choose the
                                  first business day after the holiday. */
-        Following,          /*!< Choose the first business day after 
+        Following,          /*!< Choose the first business day after
                                  the given holiday. */
         ModifiedFollowing   /*!< Choose the first business day after
-                                 the given holiday unless it belongs to a 
-                                 different month, in which case choose the 
+                                 the given holiday unless it belongs to a
+                                 different month, in which case choose the
                                  first business day before the holiday. */
     };
 
     //! %calendar class
-    /*! This class provides methods for determining whether a date is a 
-        business day or a holiday for a given market, and for 
-        incrementing/decrementing a date of a given number of business days. 
+    /*! This class provides methods for determining whether a date is a
+        business day or a holiday for a given market, and for
+        incrementing/decrementing a date of a given number of business days.
 
-        The Strategy pattern is used to provide the base behavior of the 
+        The Strategy pattern is used to provide the base behavior of the
         calendar, namely, to determine whether a date is a business day.
     */
     class Calendar {
@@ -79,11 +79,11 @@ namespace QuantLib {
         //@{
         //! Returns the name of the calendar.
         /*! \warning This method is used for output and comparison between
-                calendars. It is <b>not</b> meant to be used for writing 
+                calendars. It is <b>not</b> meant to be used for writing
                 switch-on-type code.
         */
         std::string name() const;
-        /*! Returns <tt>true</tt> iff the date is a business day for the 
+        /*! Returns <tt>true</tt> iff the date is a business day for the
             given market.
         */
         bool isBusinessDay(const Date& d) const;
@@ -94,7 +94,7 @@ namespace QuantLib {
         /*! Returns the next business day on the given market with respect to
             the given date and convention.
         */
-        Date roll(const Date&, 
+        Date roll(const Date&,
                   RollingConvention convention = Following) const;
         /*! Advances the given date of the given number of business days and
             returns the result.
@@ -125,14 +125,14 @@ namespace QuantLib {
             static Day easterMonday(Year y);
         };
       protected:
-        /*! this protected constructor will only be invoked by derived 
+        /*! this protected constructor will only be invoked by derived
             classes which define a given Calendar implementation */
         Calendar(const Handle<CalendarImpl>& impl) : impl_(impl) {}
       private:
         Handle<CalendarImpl> impl_;
     };
 
-    /*! Returns <tt>true</tt> iff the two calendars belong to the same 
+    /*! Returns <tt>true</tt> iff the two calendars belong to the same
         derived class.
         \relates Calendar
     */
@@ -144,15 +144,15 @@ namespace QuantLib {
 
     // inline definitions
 
-    inline std::string Calendar::name() const { 
+    inline std::string Calendar::name() const {
         return impl_->name();
     }
 
-    inline bool Calendar::isBusinessDay(const Date& d) const { 
+    inline bool Calendar::isBusinessDay(const Date& d) const {
         return impl_->isBusinessDay(d);
     }
 
-    inline bool Calendar::isHoliday(const Date& d) const { 
+    inline bool Calendar::isHoliday(const Date& d) const {
         return !(impl_->isBusinessDay(d));
     }
 

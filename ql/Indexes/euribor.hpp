@@ -34,9 +34,9 @@
 #ifndef quantlib_euribor_hpp
 #define quantlib_euribor_hpp
 
-#include "ql/Indexes/xibor.hpp"
-#include "ql/Calendars/target.hpp"
-#include "ql/DayCounters/actual360.hpp"
+#include <ql/Indexes/xibor.hpp>
+#include <ql/Calendars/target.hpp>
+#include <ql/DayCounters/actual360.hpp>
 
 namespace QuantLib {
 
@@ -45,10 +45,10 @@ namespace QuantLib {
         //! %Euribor index
         class Euribor : public Xibor {
           public:
-            Euribor(int n, TimeUnit units, 
+            Euribor(int n, TimeUnit units,
                 const RelinkableHandle<TermStructure>& h)
-            : Xibor("Euribor", n, units, 2, EUR, 
-                Calendar(Calendars::TARGET()), true, ModifiedFollowing, 
+            : Xibor("Euribor", n, units, 2, EUR,
+                Calendar(Calendars::TARGET()), true, ModifiedFollowing,
                 DayCounter(DayCounters::Actual360()), h) {}
         };
 

@@ -31,7 +31,7 @@
 
 // $Id$
 
-#include "ql/Indexes/xibormanager.hpp"
+#include <ql/Indexes/xibormanager.hpp>
 
 namespace QuantLib {
 
@@ -39,7 +39,7 @@ namespace QuantLib {
 
         XiborManager::HistoryMap XiborManager::historyMap_;
 
-        void XiborManager::setHistory(const std::string& name, 
+        void XiborManager::setHistory(const std::string& name,
             const History& history) {
                 historyMap_[name] = history;
         }

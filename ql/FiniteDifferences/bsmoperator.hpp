@@ -34,7 +34,7 @@
 #ifndef quantlib_bsm_operator_h
 #define quantlib_bsm_operator_h
 
-#include "ql/FiniteDifferences/tridiagonaloperator.hpp"
+#include <ql/FiniteDifferences/tridiagonaloperator.hpp>
 
 namespace QuantLib {
 
@@ -44,10 +44,10 @@ namespace QuantLib {
         class BSMOperator : public TridiagonalOperator {
           public:
             BSMOperator() {}
-            BSMOperator(size_t size, 
-                        double dx, 
-                        double r, 
-                        double q, 
+            BSMOperator(size_t size,
+                        double dx,
+                        double r,
+                        double q,
                         double sigma);
         };
 

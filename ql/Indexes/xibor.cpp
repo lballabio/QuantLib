@@ -31,8 +31,8 @@
 
 // $Id$
 
-#include "ql/Indexes/xibor.hpp"
-#include "ql/Indexes/xibormanager.hpp"
+#include <ql/Indexes/xibor.hpp>
+#include <ql/Indexes/xibormanager.hpp>
 
 namespace QuantLib {
 
@@ -53,7 +53,7 @@ namespace QuantLib {
             }
             QL_DUMMY_RETURN(std::string());
         }
-        
+
         Rate Xibor::fixing(const Date& fixingDate) const {
             QL_REQUIRE(!termStructure_.isNull(),
                 "null term structure set");

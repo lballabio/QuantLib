@@ -34,8 +34,8 @@
 #ifndef quantlib_pricers_everest_pricer_h
 #define quantlib_pricers_everest_pricer_h
 
-#include "ql/Pricers/mcpricer.hpp"
-#include "ql/Math/matrix.hpp"
+#include <ql/Pricers/mcpricer.hpp>
+#include <ql/Math/matrix.hpp>
 
 namespace QuantLib {
 
@@ -47,7 +47,7 @@ namespace QuantLib {
         */
         class McEverest : public McPricer<Math::Statistics,
             MonteCarlo::GaussianMultiPathGenerator,
-            MonteCarlo::MultiPathPricer> {
+            MonteCarlo::PathPricer<MonteCarlo::MultiPath> > {
           public:
             McEverest(const Array& dividendYield,
                       const Math::Matrix& covariance,

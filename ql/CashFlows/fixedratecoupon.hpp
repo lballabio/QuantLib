@@ -34,24 +34,24 @@
 #ifndef quantlib_fixed_rate_coupon_hpp
 #define quantlib_fixed_rate_coupon_hpp
 
-#include "ql/CashFlows/coupon.hpp"
+#include <ql/CashFlows/coupon.hpp>
 
 namespace QuantLib {
 
     namespace CashFlows {
-        
+
         //! %coupon paying a fixed interest rate
         class FixedRateCoupon : public Coupon {
           public:
-            FixedRateCoupon(double nominal, Rate rate, 
-                const Calendar& calendar, 
+            FixedRateCoupon(double nominal, Rate rate,
+                const Calendar& calendar,
                 RollingConvention rollingConvention,
                 const DayCounter& dayCounter,
                 const Date& startDate, const Date& endDate,
                 const Date& refPeriodStart = Date(),
                 const Date& refPeriodEnd = Date())
-            : Coupon(nominal, calendar, rollingConvention, dayCounter, 
-              startDate, endDate, refPeriodStart, refPeriodEnd), 
+            : Coupon(nominal, calendar, rollingConvention, dayCounter,
+              startDate, endDate, refPeriodStart, refPeriodEnd),
               rate_(rate) {}
             //! \name CashFlow interface
             //@{
@@ -72,10 +72,10 @@ namespace QuantLib {
             return nominal()*rate_*accrualPeriod();
         }
 
-        inline Rate FixedRateCoupon::rate() const { 
-            return rate_; 
+        inline Rate FixedRateCoupon::rate() const {
+            return rate_;
         }
-        
+
     }
 
 }

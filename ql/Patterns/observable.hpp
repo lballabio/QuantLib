@@ -34,7 +34,7 @@
 #ifndef quantlib_observable_h
 #define quantlib_observable_h
 
-#include "ql/qldefines.hpp"
+#include <ql/qldefines.hpp>
 #include <set>
 
 namespace QuantLib {
@@ -45,15 +45,15 @@ namespace QuantLib {
 
         //! Object that gets notified when a given observable changes
         /*! These classes are a simplified version of the ones implemented in
-            Bruce Eckel, Thinking in C++ (http://www.bruceeckel.com) which in 
+            Bruce Eckel, Thinking in C++ (http://www.bruceeckel.com) which in
             turn mirror the Java Observer and Observable interfaces.
         */
         class Observer {
           public:
             virtual ~Observer() {}
-            /*! This method must be implemented in derived classes. An 
-                instance of %Observer does not call this method directly: 
-                instead, it will be called by the observables the instance 
+            /*! This method must be implemented in derived classes. An
+                instance of %Observer does not call this method directly:
+                instead, it will be called by the observables the instance
                 registered with when they need to notify any changes.
             */
             virtual void update() = 0;
@@ -64,8 +64,8 @@ namespace QuantLib {
           public:
             virtual ~Observable() {}
             /*! \name Observer management
-                \warning It is responsibility of the programmer to make sure 
-                that the registered observers unregister themselves before 
+                \warning It is responsibility of the programmer to make sure
+                that the registered observers unregister themselves before
                 going out of scope.
             */
             //@{
@@ -75,7 +75,7 @@ namespace QuantLib {
             void unregisterObservers(std::set<Observer*>&);
             virtual void unregisterAll();
             std::set<Observer*> observers() const;
-            /*! In derived classes, this method should be called at the end 
+            /*! In derived classes, this method should be called at the end
                 of non-const methods or when the programmer desires to notify
                 any changes.
             */

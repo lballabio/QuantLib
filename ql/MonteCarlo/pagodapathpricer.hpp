@@ -34,7 +34,8 @@
 #ifndef quantlib_pagoda_path_pricer_h
 #define quantlib_pagoda_path_pricer_h
 
-#include "ql/MonteCarlo/multipathpricer.hpp"
+#include <ql/MonteCarlo/pathpricer.hpp>
+#include <ql/MonteCarlo/multipath.hpp>
 
 namespace QuantLib {
 
@@ -43,22 +44,20 @@ namespace QuantLib {
         //! %multipath pricer for pagoda options
         /*! A pagoda option is a multi-asset asian option with a cap
             (the pagoda "roof").
-            Given a portfolio of assets the payoff is the 
+            Given a portfolio of assets the payoff is the
             arithmetic average of the portfolio performance,
             with a maximum cap given by the roof.
         */
-        class PagodaPathPricer : public MultiPathPricer {
+        class PagodaPathPricer : public PathPricer<MultiPath> {
           public:
-            PagodaPathPricer() {}
             PagodaPathPricer(const Array& underlying,
                              double roof,
-                             double discount,
-                             bool antitheticVariance);
+                             DiscountFactor discount,
+                             bool useAntitheticVariance);
             double operator()(const MultiPath& path) const;
-          protected:
+          private:
             Array underlying_;
-            double roof_, discount_;
-            bool antitheticVariance_;
+            double roof_;
         };
 
     }

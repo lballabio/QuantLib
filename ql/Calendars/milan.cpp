@@ -31,7 +31,7 @@
 
 // $Id$
 
-#include "ql/Calendars/milan.hpp"
+#include <ql/Calendars/milan.hpp>
 
 namespace QuantLib {
 

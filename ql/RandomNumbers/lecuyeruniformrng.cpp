@@ -31,7 +31,7 @@
 
 // $Id$
 
-#include "ql/RandomNumbers/lecuyeruniformrng.hpp"
+#include <ql/RandomNumbers/lecuyeruniformrng.hpp>
 
 namespace QuantLib {
 

@@ -31,7 +31,7 @@
 
 // $Id$
 
-#include "ql/solver1d.hpp"
+#include <ql/solver1d.hpp>
 
 namespace QuantLib {
 

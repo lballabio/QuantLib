@@ -34,7 +34,7 @@
 #ifndef quantlib_math_jacobi_decomposition_h
 #define quantlib_math_jacobi_decomposition_h
 
-#include "ql/Math/matrix.hpp"
+#include <ql/Math/matrix.hpp>
 
 namespace QuantLib {
 
@@ -76,7 +76,7 @@ namespace QuantLib {
 
 
         // inline definitions
-        
+
         inline Array SymmetricSchurDecomposition::eigenvalues() const{
             if(!hasBeenComputed_)
                 compute();

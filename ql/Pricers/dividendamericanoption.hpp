@@ -34,7 +34,7 @@
 #ifndef quantlib_dividend_american_option_pricer_h
 #define quantlib_dividend_american_option_pricer_h
 
-#include "ql/Pricers/dividendoption.hpp"
+#include <ql/Pricers/dividendoption.hpp>
 
 namespace QuantLib {
 

@@ -34,9 +34,9 @@
 #ifndef quantlib_coupon_hpp
 #define quantlib_coupon_hpp
 
-#include "ql/cashflow.hpp"
-#include "ql/calendar.hpp"
-#include "ql/daycounter.hpp"
+#include <ql/cashflow.hpp>
+#include <ql/calendar.hpp>
+#include <ql/daycounter.hpp>
 
 namespace QuantLib {
 
@@ -49,7 +49,7 @@ namespace QuantLib {
         */
         class Coupon : public CashFlow {
           public:
-            Coupon(double nominal, 
+            Coupon(double nominal,
                 const Calendar& calendar,
                 RollingConvention rollingConvention,
                 const DayCounter& dayCounter,
@@ -83,7 +83,7 @@ namespace QuantLib {
 
         // inline definitions
 
-        inline Coupon::Coupon(double nominal, 
+        inline Coupon::Coupon(double nominal,
             const Calendar& calendar,
             RollingConvention rollingConvention,
             const DayCounter& dayCounter,
@@ -98,16 +98,16 @@ namespace QuantLib {
             return calendar_.roll(endDate_,rollingConvention_);
         }
 
-        inline double Coupon::nominal() const { 
-            return nominal_; 
+        inline double Coupon::nominal() const {
+            return nominal_;
         }
 
-        inline const Date& Coupon::accrualStartDate() const { 
-            return startDate_; 
+        inline const Date& Coupon::accrualStartDate() const {
+            return startDate_;
         }
 
-        inline const Date& Coupon::accrualEndDate() const { 
-            return endDate_; 
+        inline const Date& Coupon::accrualEndDate() const {
+            return endDate_;
         }
 
         inline double Coupon::accrualPeriod() const {

@@ -34,7 +34,7 @@
 #ifndef quantlib_european_engine_h
 #define quantlib_european_engine_h
 
-#include "ql/Instruments/plainoption.hpp"
+#include <ql/Instruments/plainoption.hpp>
 
 namespace QuantLib {
 

@@ -8,23 +8,16 @@ COMPILING
     Borland projects
 
 LIBRARY
-    *****
-    check FRA mXn definition
-    term structure bootstrapping example with real data
-    check fraction in McPagoda
-
-    ASIAN:
-        continuous geometric APO backward starting instead of forward starting
-        continuous geometric ASO
-        discrete geometric ASO
-        handle mid-life asian
-    example of european Martingale control variate
-
-    ******
-
 
     contact Broda
 
+    MONTE CARLO FRAMEWORK
+        make Path time-aware, then add example of Martingale control variate
+
+    ASIAN:
+        continuous geometric APO backward starting instead of forward starting
+        introduce continuous geometric ASO
+        handle backward starting asian
 
     Maxim integral
     Nicolas spline contribution
@@ -65,12 +58,7 @@ LIBRARY
     histogram class
     contact M. Higgings
 
-DOCUMENTATION ***
-    ******
-    review News.txt, History.txt
-    add MS-Windows Help
-    complete MC documentation
-    ******
+DOCUMENTATION
     http://www.iisec.com/
     use tidy (if available) on the HTML documentation
     enforce fulpath&classesinclude DoxyGen requirements

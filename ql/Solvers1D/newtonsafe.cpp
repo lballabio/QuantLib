@@ -37,7 +37,7 @@
  */
 
 
-#include "ql/Solvers1D/newtonsafe.hpp"
+#include <ql/Solvers1D/newtonsafe.hpp>
 
 namespace QuantLib {
 

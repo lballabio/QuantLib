@@ -34,7 +34,7 @@
 #ifndef quantlib_symmetric_eigenvalues_h
 #define quantlib_symmetric_eigenvalues_h
 
-#include "ql/Math/symmetricschurdecomposition.hpp"
+#include <ql/Math/symmetricschurdecomposition.hpp>
 
 namespace QuantLib {
 
@@ -42,13 +42,13 @@ namespace QuantLib {
 
         // Eigenvalues of a symmetric matrix
         Array SymmetricEigenvalues(Matrix &s);
-        
+
         // Eigenvectors of a symmetric matrix
         Matrix SymmetricEigenvectors(Matrix &s);
-        
+
 
         // inline definitions
-        
+
         inline Array SymmetricEigenvalues(Matrix &s) {
             return SymmetricSchurDecomposition(s).eigenvalues();
         }

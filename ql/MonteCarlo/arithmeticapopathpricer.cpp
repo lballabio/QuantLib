@@ -32,10 +32,8 @@
 
 // $Id$
 
-#include "ql/MonteCarlo/arithmeticapopathpricer.hpp"
-#include "ql/Pricers/singleassetoption.hpp"
-
-
+#include <ql/MonteCarlo/arithmeticapopathpricer.hpp>
+#include <ql/Pricers/singleassetoption.hpp>
 
 using QuantLib::Pricers::ExercisePayoff;
 
@@ -44,27 +42,34 @@ namespace QuantLib {
     namespace MonteCarlo {
 
         ArithmeticAPOPathPricer::ArithmeticAPOPathPricer(
-          Option::Type type, double underlying, double strike, double discount,
-          bool antitheticVariance)
-        : SingleAssetPathPricer(type, underlying, strike, discount,
-          antitheticVariance) {}
+          Option::Type type, double underlying, double strike,
+          DiscountFactor discount, bool useAntitheticVariance)
+        : PathPricer<Path>(discount, useAntitheticVariance), type_(type),
+          underlying_(underlying), strike_(strike) {
+            QL_REQUIRE(underlying>0.0,
+                "ArithmeticAPOPathPricer: "
+                "underlying less/equal zero not allowed");
+            QL_REQUIRE(strike>0.0,
+                "ArithmeticAPOPathPricer: "
+                "strike less/equal zero not allowed");
+        }
 
         double ArithmeticAPOPathPricer::operator()(const Path& path) const {
 
-            int n = path.size();
+            size_t n = path.size();
             QL_REQUIRE(n>0,
                 "ArithmeticAPOPathPricer: the path cannot be empty");
 
             double price1 = underlying_;
             double averagePrice1 = 0.0;
-            int i;
+            size_t i;
             for (i=0; i<n; i++) {
                 price1 *= QL_EXP(path.drift()[i]+path.diffusion()[i]);
                 averagePrice1 += price1;
             }
             averagePrice1 = averagePrice1/n;
 
-            if (antitheticVariance_) {
+            if (useAntitheticVariance_) {
                 double price2 = underlying_;
                 double averagePrice2 = 0.0;
 

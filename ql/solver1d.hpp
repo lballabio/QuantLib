@@ -34,8 +34,8 @@
 #ifndef quantlib_solver1d_h
 #define quantlib_solver1d_h
 
-#include "ql/null.hpp"
-#include "ql/dataformatters.hpp"
+#include <ql/null.hpp>
+#include <ql/dataformatters.hpp>
 
 namespace QuantLib {
 
@@ -44,7 +44,7 @@ namespace QuantLib {
 
         See sect. \ref solvers1d
     */
-    
+
     #define MAX_FUNCTION_EVALUATIONS 100
 
     //! Objective function for 1-D solvers
@@ -63,16 +63,16 @@ namespace QuantLib {
     class Solver1D {
       public:
         Solver1D()
-        : maxEvaluations_(MAX_FUNCTION_EVALUATIONS), 
+        : maxEvaluations_(MAX_FUNCTION_EVALUATIONS),
           lowBoundEnforced_(false), hiBoundEnforced_(false) {}
         virtual ~Solver1D() {}
         //! \name Modifiers
         //@{
         /*! This method returns the zero of the ObjectiveFunction f,
-            determined with the given accuracy (i.e., \f$ x \f$ is considered 
+            determined with the given accuracy (i.e., \f$ x \f$ is considered
             a zero if \f$ |f(x)| < accuracy \f$).
-            This method contains a bracketing routine to which an initial 
-            guess must be supplied as well as a step used to scan the range 
+            This method contains a bracketing routine to which an initial
+            guess must be supplied as well as a step used to scan the range
             of the possible bracketing values.
         */
         double solve(const ObjectiveFunction& f,
@@ -80,11 +80,11 @@ namespace QuantLib {
                      double guess,
                      double step) const;
         /*! This method returns the zero of the ObjectiveFunction f,
-            determined with the given accuracy (i.e., \f$ x \f$ is considered 
+            determined with the given accuracy (i.e., \f$ x \f$ is considered
             a zero if \f$ |f(x)| < accuracy \f$). An initial guess must be
-            supplied, as well as two values which must bracket the zero 
-            (i.e., either \f$ f(x_{min}) > 0 \f$ && \f$ f(x_{max}) < 0 \f$, 
-            or \f$ f(x_{min}) < 0 \f$ && \f$ f(x_{max}) > 0 \f$ must be 
+            supplied, as well as two values which must bracket the zero
+            (i.e., either \f$ f(x_{min}) > 0 \f$ && \f$ f(x_{max}) < 0 \f$,
+            or \f$ f(x_{min}) < 0 \f$ && \f$ f(x_{max}) > 0 \f$ must be
             true).
         */
         double solve(const ObjectiveFunction& f,
@@ -92,8 +92,8 @@ namespace QuantLib {
                      double guess,
                      double xMin,
                      double xMax) const;
-        /*! This method sets the maximum number of function evaluations for 
-            the bracketing routine. An Error is thrown if a bracket is not 
+        /*! This method sets the maximum number of function evaluations for
+            the bracketing routine. An Error is thrown if a bracket is not
             found after this number of evaluations.
         */
         void setMaxEvaluations(int evaluations);
@@ -113,7 +113,7 @@ namespace QuantLib {
             the actual code which searches for the zeroes of the
             ObjectiveFunction. It assumes that:
             - <b>xMin_</b> and  <b>xMax_</b> form a valid bracket;
-            - <b>fxMin_</b> and <b>fxMax_</b> contain the values of the 
+            - <b>fxMin_</b> and <b>fxMax_</b> contain the values of the
               function in <b>xMin_</b> and  <b>xMax_</b>;
             - <b>root_</b> was initialized to a valid initial guess.
         */

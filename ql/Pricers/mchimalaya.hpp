@@ -33,8 +33,8 @@
 #ifndef quantlib_himalaya_h
 #define quantlib_himalaya_h
 
-#include "ql/Pricers/mcpricer.hpp"
-#include "ql/Math/matrix.hpp"
+#include <ql/Pricers/mcpricer.hpp>
+#include <ql/Math/matrix.hpp>
 #include <vector>
 
 namespace QuantLib {
@@ -51,7 +51,7 @@ namespace QuantLib {
         */
         class McHimalaya : public McPricer<Math::Statistics,
             MonteCarlo::GaussianMultiPathGenerator,
-            MonteCarlo::MultiPathPricer> {
+            MonteCarlo::PathPricer<MonteCarlo::MultiPath> > {
         public:
             McHimalaya(const Array& underlying,
                        const Array& dividendYield,

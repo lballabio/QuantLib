@@ -34,7 +34,7 @@
 #ifndef quantlib_montecarlo_pricer_h
 #define quantlib_montecarlo_pricer_h
 
-#include "ql/MonteCarlo/montecarlomodel.hpp"
+#include <ql/MonteCarlo/montecarlomodel.hpp>
 
 namespace QuantLib {
 
@@ -54,9 +54,12 @@ namespace QuantLib {
         class McPricer {
           public:
             virtual ~McPricer() {}
+            //! add samples until the required tolerance is reached
             double value(double tolerance,
                          size_t maxSample = QL_MAX_INT) const;
+            //! simulate a fixed number of samples
             double value(size_t samples) const;
+            //! error Estimated of the samples simulated so far
             double errorEstimate() const;
           protected:
             McPricer() {}

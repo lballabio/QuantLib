@@ -34,13 +34,13 @@
 #ifndef quantlib_pricers_shout_condition_h
 #define quantlib_pricers_shout_condition_h
 
-#include "ql/FiniteDifferences/fdtypedefs.hpp"
+#include <ql/FiniteDifferences/fdtypedefs.hpp>
 
 namespace QuantLib {
 
     namespace Pricers {
 
-        class ShoutCondition 
+        class ShoutCondition
         : public FiniteDifferences::StandardStepCondition {
           public:
             ShoutCondition(const Array& initialPrices, Time resTime,
@@ -58,7 +58,7 @@ namespace QuantLib {
 
         inline void ShoutCondition::applyTo(Array& a, Time t) const {
             for (size_t i = 0; i < a.size(); i++)
-                a[i] = QL_MAX(a[i], QL_EXP(-rate_ * (t - resTime_)) * 
+                a[i] = QL_MAX(a[i], QL_EXP(-rate_ * (t - resTime_)) *
                                            initialPrices_[i] );
         }
 

@@ -33,7 +33,7 @@
 #ifndef quantlib_montecarlo_get_covariance_h
 #define quantlib_montecarlo_get_covariance_h
 
-#include "ql/Math/matrix.hpp"
+#include <ql/Math/matrix.hpp>
 
 namespace QuantLib {
 

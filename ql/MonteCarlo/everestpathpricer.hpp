@@ -35,7 +35,8 @@
 #ifndef quantlib_everest_path_pricer_h
 #define quantlib_everest_path_pricer_h
 
-#include "ql/MonteCarlo/multipathpricer.hpp"
+#include <ql/MonteCarlo/pathpricer.hpp>
+#include <ql/MonteCarlo/multipath.hpp>
 
 namespace QuantLib {
 
@@ -45,15 +46,11 @@ namespace QuantLib {
         /*! The payoff of an Everest option is given by the
             final-price initial-price ratio of the worst performer.
         */
-        class EverestPathPricer : public MultiPathPricer {
+        class EverestPathPricer : public PathPricer<MultiPath> {
           public:
-//            EverestPathPricer() {}
-            EverestPathPricer(double discount,
-                              bool antitheticVariance);
+            EverestPathPricer(DiscountFactor discount,
+                              bool useAntitheticVariance);
             double operator()(const MultiPath& multiPath) const;
-          protected:
-            double discount_;
-            bool antitheticVariance_;
         };
 
     }

@@ -22,38 +22,43 @@
  * available at http://quantlib.org/group.html
 */
 
-/*! \file singleassetpathpricer.cpp
-    \brief generic single asset %path pricer
+/*! \file maxbasketpathpricer.hpp
+    \brief multipath pricer for max basket option
 
     \fullpath
-    ql/MonteCarlo/%singleassetpathpricer.cpp
+    ql/MonteCarlo/%maxbasketpathpricer.hpp
 
 */
 
 // $Id$
 
-#include "ql/MonteCarlo/singleassetpathpricer.hpp"
+#ifndef quantlib_max_basket_path_pricer_h
+#define quantlib_max_basket_path_pricer_h
+
+#include <ql/MonteCarlo/pathpricer.hpp>
+#include <ql/MonteCarlo/multipath.hpp>
 
 namespace QuantLib {
 
     namespace MonteCarlo {
 
-        //! generic %path pricer for single asset
-        SingleAssetPathPricer::SingleAssetPathPricer(Option::Type type,
-            double underlying, double strike, double discount,
-            bool antitheticVariance)
-            : type_(type), underlying_(underlying), strike_(strike),
-              discount_(discount),
-              antitheticVariance_(antitheticVariance) {
-            QL_REQUIRE(strike_ > 0.0,
-                "SingleAssetPathPricer: strike must be positive");
-            QL_REQUIRE(underlying_ > 0.0,
-                "SingleAssetPathPricer: underlying must be positive");
-            QL_REQUIRE(discount_ > 0.0,
-                "SingleAssetPathPricer: discount must be positive");
-        }
+        //! multipath pricer for European-type basket option
+        /*! The value of the option at expiration is given by the value
+            of the underlying which has best performed.
+        */
+        class MaxBasketPathPricer : public PathPricer<MultiPath> {
+          public:
+            MaxBasketPathPricer(const Array& underlying,
+                                DiscountFactor discount,
+                                bool useAntitheticVariance);
+            double operator()(const MultiPath& multiPath) const;
+          private:
+            Array underlying_;
+        };
 
     }
 
 }
 
+
+#endif

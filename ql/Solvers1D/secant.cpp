@@ -37,7 +37,7 @@
  */
 
 
-#include "ql/Solvers1D/secant.hpp"
+#include <ql/Solvers1D/secant.hpp>
 
 namespace QuantLib {
 

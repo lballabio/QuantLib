@@ -31,7 +31,7 @@
 
 // $Id$
 
-#include "ql/Pricers/discretegeometricaso.hpp"
+#include <ql/Pricers/discretegeometricaso.hpp>
 #include <iostream>
 #include <numeric>
 
@@ -45,8 +45,8 @@ namespace QuantLib {
             double underlying, Spread dividendYield,
             Rate riskFreeRate, const std::vector<Time>& times,
             double volatility)
-        : times_(times), SingleAssetOption(type, underlying, underlying,
-          dividendYield, riskFreeRate, times.back(), volatility) {}
+        : SingleAssetOption(type, underlying, underlying, dividendYield,
+          riskFreeRate, times.back(), volatility), times_(times) {}
 
         double DiscreteGeometricASO::value() const {
             // almost ready for mid-life re-evaluation
@@ -88,15 +88,16 @@ namespace QuantLib {
                 /QL_SQRT(sigmaSum_2);
             double y2=y1-QL_SQRT(sigmaSum_2);
 
+            double result;
             switch (type_) {
                 case Option::Call:
-                    return underlying_*QL_EXP(-dividendYield_*residualTime_)
+                    result = underlying_*QL_EXP(-dividendYield_*residualTime_)
                         *f_(y1)-
                         QL_EXP(muG+sigmaG_2/2.0-riskFreeRate_*residualTime_)
                         *f_(y2);
                     break;
                 case Option::Put:
-                    return -underlying_*QL_EXP(-dividendYield_*residualTime_)
+                    result = -underlying_*QL_EXP(-dividendYield_*residualTime_)
                         *f_(-y1)+
                         QL_EXP(muG+sigmaG_2/2.0-riskFreeRate_*residualTime_)
                         *f_(-y2);
@@ -105,8 +106,7 @@ namespace QuantLib {
                     throw IllegalArgumentError(
                         "DiscreteGeometricASO: invalid option type");
             }
-
-
+            return result;
         }
     }
 }

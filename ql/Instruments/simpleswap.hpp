@@ -34,8 +34,8 @@
 #ifndef quantlib_simple_swap_h
 #define quantlib_simple_swap_h
 
-#include "ql/Instruments/swap.hpp"
-#include "ql/Indexes/xibor.hpp"
+#include <ql/Instruments/swap.hpp>
+#include <ql/Indexes/xibor.hpp>
 
 namespace QuantLib {
 
@@ -47,29 +47,29 @@ namespace QuantLib {
             SimpleSwap(bool payFixedRate,
                 // dates
                 const Date& startDate, int n, TimeUnit units,
-                const Calendar& calendar, 
-                RollingConvention rollingConvention, 
+                const Calendar& calendar,
+                RollingConvention rollingConvention,
                 /* nominals (if the vector length is lower than the number
-                   of coupons, the last nominal will prevail for the 
+                   of coupons, the last nominal will prevail for the
                    remaining coupons)
                 */
-                const std::vector<double>& nominals, 
+                const std::vector<double>& nominals,
                 // fixed leg
-                int fixedFrequency, 
-                /* fixed coupon rates (if the vector length is lower than 
-                   the number of coupons, the last rate will prevail for 
+                int fixedFrequency,
+                /* fixed coupon rates (if the vector length is lower than
+                   the number of coupons, the last rate will prevail for
                    the remaining coupons)
                 */
-                const std::vector<Rate>& couponRates, 
-                bool fixedIsAdjusted, 
-                const DayCounter& fixedDayCount, 
+                const std::vector<Rate>& couponRates,
+                bool fixedIsAdjusted,
+                const DayCounter& fixedDayCount,
                 // floating leg
-                int floatingFrequency, 
+                int floatingFrequency,
                 const Handle<Indexes::Xibor>& index,
                 int indexFixingDays,
-                const std::vector<Spread>& spreads, 
+                const std::vector<Spread>& spreads,
                 // hook to term structure
-                const RelinkableHandle<TermStructure>& termStructure, 
+                const RelinkableHandle<TermStructure>& termStructure,
                 // description
                 const std::string& isinCode = "",
                 const std::string& description = "");
@@ -83,7 +83,7 @@ namespace QuantLib {
 
 
         // inline definitions
-        
+
         inline double SimpleSwap::fixedLegBPS() const {
             return (payFixedRate_ ? firstLegBPS() : secondLegBPS());
         }

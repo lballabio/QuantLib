@@ -32,10 +32,8 @@
 
 // $Id$
 
-#include "ql/MonteCarlo/geometricasopathpricer.hpp"
-#include "ql/Pricers/singleassetoption.hpp"
-
-
+#include <ql/MonteCarlo/geometricasopathpricer.hpp>
+#include <ql/Pricers/singleassetoption.hpp>
 
 using QuantLib::Pricers::ExercisePayoff;
 
@@ -44,13 +42,18 @@ namespace QuantLib {
     namespace MonteCarlo {
 
         GeometricASOPathPricer::GeometricASOPathPricer(Option::Type type,
-            double underlying, double discount, bool antitheticVariance)
-        : SingleAssetPathPricer(type, underlying, underlying, discount,
-          antitheticVariance) {}
-
+            double underlying,
+            DiscountFactor discount, bool useAntitheticVariance)
+        : PathPricer<Path>(discount, useAntitheticVariance), type_(type),
+          underlying_(underlying) {
+            QL_REQUIRE(underlying>0.0,
+                "GeometricASOPathPricer: "
+                "underlying less/equal zero not allowed");
+        }
+        
         double GeometricASOPathPricer::operator()(const Path& path) const {
 
-            int n = path.size();
+            size_t n = path.size();
             QL_REQUIRE(n>0,"GeometricASOPathPricer: the path cannot be empty");
 
             double logDrift = 0.0, logDiffusion = 0.0;
@@ -65,7 +68,7 @@ namespace QuantLib {
             double averageStrike1 = underlying_*
                 QL_EXP((geoLogDrift+geoLogDiffusion)/n);
 
-            if (antitheticVariance_) {
+            if (useAntitheticVariance_) {
                 double averageStrike2 = underlying_*
                     QL_EXP((geoLogDrift-geoLogDiffusion)/n);
                 return discount_/2.0*(ExercisePayoff(type_, underlying_ *

@@ -32,58 +32,62 @@
 
 // $Id$
 
-#include "ql/MonteCarlo/basketpathpricer.hpp"
-#include "ql/dataformatters.hpp"
+#include <ql/MonteCarlo/basketpathpricer.hpp>
+#include <ql/Pricers/singleassetoption.hpp>
+#include <ql/dataformatters.hpp>
+
+using QuantLib::Pricers::ExercisePayoff;
 
 namespace QuantLib {
 
     namespace MonteCarlo {
 
-        BasketPathPricer::BasketPathPricer(const Array& underlying,
-            double discount, bool antitheticVariance)
-        : underlying_(underlying), discount_(discount),
-          antitheticVariance_(antitheticVariance) {
-            QL_REQUIRE(discount_ > 0.0,
-                "BasketPathPricer: discount must be positive");
-            isInitialized_ = true;
+        BasketPathPricer::BasketPathPricer(Option::Type type,
+            const Array& underlying, double strike,
+            DiscountFactor discount, bool useAntitheticVariance)
+        : PathPricer<MultiPath>(discount, useAntitheticVariance), type_(type),
+          underlying_(underlying) {
+            for (size_t j=0; j<underlying_.size(); j++) {
+                QL_REQUIRE(underlying_[j]>0.0,
+                    "BasketPathPricer: "
+                    "underlying less/equal zero not allowed");
+            QL_REQUIRE(strike>0.0,
+                "BasketPathPricer: "
+                "strike less/equal zero not allowed");
+            }
         }
 
-        double BasketPathPricer::operator()(const MultiPath & multiPath) const {
+        double BasketPathPricer::operator()(const MultiPath& multiPath)
+          const {
             size_t numAssets = multiPath.assetNumber();
             size_t numSteps = multiPath.pathSize();
-            QL_REQUIRE(isInitialized_,
-                "BasketPathPricer: pricer not initialized");
             QL_REQUIRE(underlying_.size() == numAssets,
                 "BasketPathPricer: the multi-path must contain "
                 + IntegerFormatter::toString(underlying_.size()) +" assets");
 
-            double log_drift, log_diffusion;
-            if (antitheticVariance_) {
-                double maxPrice = -QL_MAX_DOUBLE, maxPrice2 = -QL_MAX_DOUBLE;
-                for(size_t j = 0; j < numAssets; j++) {
-                    log_drift = log_diffusion = 0.0;
-                    for(size_t i = 0; i < numSteps; i++) {
-                        log_drift += multiPath[j].drift()[i];
-                        log_diffusion += multiPath[j].diffusion()[i];
-                    }
-                    maxPrice = QL_MAX(maxPrice,
-                        underlying_[j]*QL_EXP(log_drift+log_diffusion));
-                    maxPrice2 = QL_MAX(maxPrice2,
-                        underlying_[j]*QL_EXP(log_drift-log_diffusion));
+            double log_drift=0.0, log_diffusion=0.0;
+            size_t i,j;
+            double basketPrice = 0.0;
+            for(j = 0; j < numAssets; j++) {
+                log_drift = log_diffusion = 0.0;
+                for(i = 0; i < numSteps; i++) {
+                    log_drift += multiPath[j].drift()[i];
+                    log_diffusion += multiPath[j].diffusion()[i];
                 }
-                return discount_*0.5*(maxPrice+maxPrice2);
+                basketPrice += underlying_[j]*
+                    QL_EXP(log_drift+log_diffusion);
+            }
+            if (useAntitheticVariance_) {
+                double basketPrice2 = 0.0;
+                for(j = 0; j < numAssets; j++) {
+                    basketPrice2 += underlying_[j]*
+                        QL_EXP(log_drift-log_diffusion);
+                }
+                return discount_*0.5*
+                    (ExercisePayoff(type_, basketPrice, strike_)+
+                    ExercisePayoff(type_, basketPrice2, strike_));
             } else {
-                double maxPrice = -QL_MAX_DOUBLE;
-                for(size_t j = 0; j < numAssets; j++) {
-                    log_drift = log_diffusion = 0.0;
-                    for(size_t i = 0; i < numSteps; i++) {
-                        log_drift += multiPath[j].drift()[i];
-                        log_diffusion += multiPath[j].diffusion()[i];
-                    }
-                    maxPrice = QL_MAX(maxPrice,
-                        underlying_[j]*QL_EXP(log_drift+log_diffusion));
-                }
-                return discount_*maxPrice;
+                return discount_*ExercisePayoff(type_, basketPrice, strike_);
             }
 
         }

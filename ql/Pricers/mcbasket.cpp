@@ -30,22 +30,24 @@
 
 // $Id$
 
-#include "ql/handle.hpp"
-#include "ql/MonteCarlo/basketpathpricer.hpp"
-#include "ql/MonteCarlo/mctypedefs.hpp"
-#include "ql/Pricers/mcbasket.hpp"
+#include <ql/handle.hpp>
+#include <ql/MonteCarlo/basketpathpricer.hpp>
+#include <ql/MonteCarlo/mctypedefs.hpp>
+#include <ql/Pricers/mcbasket.hpp>
 
 namespace QuantLib {
 
     namespace Pricers {
 
-        using MonteCarlo::MultiPathPricer;
+        using MonteCarlo::PathPricer;
+        using MonteCarlo::MultiPath;
         using MonteCarlo::GaussianMultiPathGenerator;
         using MonteCarlo::BasketPathPricer;
         using MonteCarlo::MultiFactorMonteCarloOption;
 
-        McBasket::McBasket(const Array &underlying,
-            const Array &dividendYield, const Math::Matrix &covariance,
+        McBasket::McBasket(Option::Type type, const Array& underlying,
+            double strike, const Array& dividendYield,
+            const Math::Matrix& covariance,
             Rate riskFreeRate,  double residualTime,
             bool antitheticVariance, long seed) {
 
@@ -69,15 +71,19 @@ namespace QuantLib {
                 std::vector<Time>(1, residualTime), seed));
 
             //! Initialize the pricer on the path pricer
-            Handle<MultiPathPricer> pathPricer(new BasketPathPricer(
-                underlying, QL_EXP(-riskFreeRate*residualTime),
+            Handle<PathPricer<MultiPath> > pathPricer(new BasketPathPricer(
+                type, underlying, strike,
+                QL_EXP(-riskFreeRate*residualTime),
                 antitheticVariance));
 
              //! Initialize the multi-factor Monte Carlo
-            mcModel_ = Handle<MonteCarlo::MonteCarloModel<Math::Statistics, MonteCarlo::GaussianMultiPathGenerator, MonteCarlo::MultiPathPricer> > (
-                new MonteCarlo::MonteCarloModel<Math::Statistics, MonteCarlo::GaussianMultiPathGenerator, MonteCarlo::MultiPathPricer> (
-                                        pathGenerator, pathPricer,
-                                        Math::Statistics()));
+            mcModel_ = Handle<MonteCarlo::MonteCarloModel<Math::Statistics,
+                MonteCarlo::GaussianMultiPathGenerator,
+                MonteCarlo::PathPricer<MultiPath> > > (
+                new MonteCarlo::MonteCarloModel<Math::Statistics,
+                MonteCarlo::GaussianMultiPathGenerator,
+                MonteCarlo::PathPricer<MultiPath> > (pathGenerator,
+                pathPricer, Math::Statistics()));
 
         }
 

@@ -37,7 +37,7 @@
  */
 
 
-#include "ql/Solvers1D/ridder.hpp"
+#include <ql/Solvers1D/ridder.hpp>
 
 namespace QuantLib {
 

@@ -31,7 +31,7 @@
 
 // $Id$
 
-#include "ql/FiniteDifferences/bsmoperator.hpp"
+#include <ql/FiniteDifferences/bsmoperator.hpp>
 
 namespace QuantLib {
 

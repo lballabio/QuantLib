@@ -34,8 +34,8 @@
 #ifndef quantlib_pricers_shout_option_h
 #define quantlib_pricers_shout_option_h
 
-#include "ql/Pricers/stepconditionoption.hpp"
-#include "ql/Pricers/shoutcondition.hpp"
+#include <ql/Pricers/stepconditionoption.hpp>
+#include <ql/Pricers/shoutcondition.hpp>
 
 namespace QuantLib {
 
@@ -58,7 +58,7 @@ namespace QuantLib {
 
 
         // inline definitions
-        
+
         inline ShoutOption::ShoutOption(Option::Type type, double underlying,
             double strike, Spread dividendYield, Rate riskFreeRate,
             Time residualTime, double volatility, int timeSteps,

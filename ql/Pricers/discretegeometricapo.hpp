@@ -34,8 +34,8 @@
 #ifndef quantlib_discrete_geometric_average_price_option_h
 #define quantlib_discrete_geometric_average_price_option_h
 
-#include "ql/Pricers/singleassetoption.hpp"
-#include "ql/Math/normaldistribution.hpp"
+#include <ql/Pricers/singleassetoption.hpp>
+#include <ql/Math/normaldistribution.hpp>
 #include <vector>
 
 
@@ -50,8 +50,7 @@ namespace QuantLib {
             in "Exotic Options: The State of the Art",
             edited by L. Clewlow, C. Strickland, pag65-97
 
-            \todo analytical greeks for Discrete Geometric Average Price
-            Asian Option
+            \todo add analytical greeks
         */
         class DiscreteGeometricAPO : public SingleAssetOption    {
            public:

@@ -31,13 +31,13 @@
 
 // $Id$
 
-#include "ql/Instruments/stock.hpp"
+#include <ql/Instruments/stock.hpp>
 
 namespace QuantLib {
 
     namespace Instruments {
 
-        Stock::Stock(const RelinkableHandle<MarketElement>& quote, 
+        Stock::Stock(const RelinkableHandle<MarketElement>& quote,
             const std::string& isinCode, const std::string& description)
         : Instrument(isinCode,description), quote_(quote) {
             quote_.registerObserver(this);
@@ -46,9 +46,9 @@ namespace QuantLib {
         Stock::~Stock() {
             quote_.unregisterObserver(this);
         }
-        
+
         void Stock::performCalculations() const {
-            QL_REQUIRE(!quote_.isNull(), 
+            QL_REQUIRE(!quote_.isNull(),
                 "null quote set for "+isinCode()+" stock");
             isExpired_ = false;
             NPV_ = quote_->value();

@@ -34,8 +34,8 @@
 #ifndef quantlib_swaption_volatility_surface_h
 #define quantlib_swaption_volatility_surface_h
 
-#include "ql/date.hpp"
-#include "ql/handle.hpp"
+#include <ql/date.hpp>
+#include <ql/handle.hpp>
 
 namespace QuantLib {
 
@@ -51,10 +51,10 @@ namespace QuantLib {
     };
 
     //! Swaption volatility surface with an added spread
-    /*! This surface will remain linked to the original surface, i.e., 
+    /*! This surface will remain linked to the original surface, i.e.,
         any changes in the latter will be reflected in this surface as well.
     */
-    class SpreadedSwaptionVolatilitySurface 
+    class SpreadedSwaptionVolatilitySurface
     : public SwaptionVolatilitySurface {
       public:
         SpreadedSwaptionVolatilitySurface(
@@ -69,7 +69,7 @@ namespace QuantLib {
 
     // inline definitions
 
-    inline 
+    inline
     SpreadedSwaptionVolatilitySurface::SpreadedSwaptionVolatilitySurface(
         const Handle<SwaptionVolatilitySurface>& h, Spread spread)
     : theOriginalSurface(h), theSpread(spread) {}

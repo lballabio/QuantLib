@@ -34,7 +34,7 @@
 #ifndef quantlib_forward_euler_h
 #define quantlib_forward_euler_h
 
-#include "ql/FiniteDifferences/finitedifferencemodel.hpp"
+#include <ql/FiniteDifferences/finitedifferencemodel.hpp>
 
 namespace QuantLib {
 
@@ -69,6 +69,8 @@ namespace QuantLib {
             Operator operator*(double, const Operator&);
             Operator operator-(const Operator&, const Operator&);
             \endcode
+
+            \todo adda Richardson extrapolation
         */
         template <class Operator>
         class ExplicitEuler {

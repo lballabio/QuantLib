@@ -34,9 +34,9 @@
 #ifndef quantlib_math_multivariate_accumulator_h
 #define quantlib_math_multivariate_accumulator_h
 
-#include "ql/null.hpp"
-#include "ql/dataformatters.hpp"
-#include "ql/Math/matrix.hpp"
+#include <ql/null.hpp>
+#include <ql/dataformatters.hpp>
+#include <ql/Math/matrix.hpp>
 #include <vector>
 
 namespace QuantLib {

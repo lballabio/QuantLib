@@ -31,19 +31,22 @@
 
 // $Id$
 
-#include "ql/handle.hpp"
-#include "ql/MonteCarlo/himalayapathpricer.hpp"
-#include "ql/MonteCarlo/mctypedefs.hpp"
-#include "ql/Pricers/mchimalaya.hpp"
+#include <ql/handle.hpp>
+#include <ql/MonteCarlo/himalayapathpricer.hpp>
+#include <ql/MonteCarlo/mctypedefs.hpp>
+#include <ql/Pricers/mchimalaya.hpp>
 
 namespace QuantLib {
 
     namespace Pricers {
 
-        using MonteCarlo::MultiPathPricer;
+        using Math::Statistics;
+        using Math::Matrix;
+        using MonteCarlo::MultiPath;
         using MonteCarlo::GaussianMultiPathGenerator;
+        using MonteCarlo::PathPricer;
+        using MonteCarlo::MonteCarloModel;
         using MonteCarlo::HimalayaPathPricer;
-        using MonteCarlo::MultiFactorMonteCarloOption;
 
         McHimalaya::McHimalaya(const Array& underlying,
             const Array& dividendYield, const Math::Matrix& covariance,
@@ -75,13 +78,13 @@ namespace QuantLib {
             double residualTime = times[times.size()-1];
 
             //! Initialize the pricer on the path pricer
-            Handle<MultiPathPricer> pathPricer(new HimalayaPathPricer(
+            Handle<PathPricer<MultiPath> > pathPricer(new HimalayaPathPricer(
                 underlying, strike, QL_EXP(-riskFreeRate*residualTime),
                 antitheticVariance));
 
              //! Initialize the multi-factor Monte Carlo
-            mcModel_ = Handle<MonteCarlo::MonteCarloModel<Math::Statistics, MonteCarlo::GaussianMultiPathGenerator, MonteCarlo::MultiPathPricer> > (
-                new MonteCarlo::MonteCarloModel<Math::Statistics, MonteCarlo::GaussianMultiPathGenerator, MonteCarlo::MultiPathPricer> (
+            mcModel_ = Handle<MonteCarlo::MonteCarloModel<Math::Statistics, MonteCarlo::GaussianMultiPathGenerator, MonteCarlo::PathPricer<MultiPath> > > (
+                new MonteCarlo::MonteCarloModel<Math::Statistics, MonteCarlo::GaussianMultiPathGenerator, MonteCarlo::PathPricer<MultiPath> > (
                                         pathGenerator, pathPricer,
                                         Math::Statistics()));
 

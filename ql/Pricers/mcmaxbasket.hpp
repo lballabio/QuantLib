@@ -21,37 +21,37 @@
  * The members of the QuantLib Group are listed in the Authors.txt file, also
  * available at http://quantlib.org/group.html
 */
-
-/*! \file multipathpricer.hpp
-    \brief base class for multi-path pricers
+/*! \file mcmaxbasket.hpp
+    \brief Max Basket Monte Carlo pricer
 
     \fullpath
-    ql/MonteCarlo/%multipathpricer.hpp
-
+    ql/Pricers/%mcmaxbasket.hpp
 */
 
 // $Id$
 
-#ifndef quantlib_montecarlo_multi_path_pricer_h
-#define quantlib_montecarlo_multi_path_pricer_h
+#ifndef quantlib_max_basket_pricer_h
+#define quantlib_max_basket_pricer_h
 
-#include "ql/MonteCarlo/multipath.hpp"
+#include <ql/Pricers/mcpricer.hpp>
+#include <ql/Math/matrix.hpp>
 
 namespace QuantLib {
 
-    namespace MonteCarlo {
+    namespace Pricers {
 
-        //! base class for multi-path pricers
-        /*! Given a multi-path the value of an option is returned on
-            that path.
-        */
-        class MultiPathPricer : public std::unary_function<MultiPath, double> {
+        //! simple example of multi-factor Monte Carlo pricer
+        class McMaxBasket : public McPricer<Math::Statistics,
+            MonteCarlo::GaussianMultiPathGenerator,
+            MonteCarlo::PathPricer<MonteCarlo::MultiPath> > {
           public:
-            MultiPathPricer() : isInitialized_(false) {}
-            virtual ~MultiPathPricer() {}
-            virtual double operator()(const MultiPath& multiPath) const = 0;
-          protected:
-            bool isInitialized_;
+            McMaxBasket(const Array& underlying,
+                        const Array& dividendYield,
+                        const Math::Matrix& covariance,
+                        Rate riskFreeRate,
+                        double residualTime,
+                        bool antitheticVariance,
+                        long seed=0);
         };
 
     }

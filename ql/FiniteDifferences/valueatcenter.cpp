@@ -31,7 +31,7 @@
 
 // $Id$
 
-#include "ql/array.hpp"
+#include <ql/array.hpp>
 
 namespace QuantLib {
 

@@ -34,15 +34,15 @@
 #ifndef quantlib_relinkable_handle_h
 #define quantlib_relinkable_handle_h
 
-#include "ql/handle.hpp"
-#include "ql/Patterns/observable.hpp"
+#include <ql/handle.hpp>
+#include <ql/Patterns/observable.hpp>
 
 namespace QuantLib {
 
     //! Globally accessible relinkable pointer
-    /*! This class acts as a proxy to a pointer referenced through a 
-        pointer to pointer to Handle. An instance can be relinked to another 
-        Handle: such change will be propagated to all the copies of the 
+    /*! This class acts as a proxy to a pointer referenced through a
+        pointer to pointer to Handle. An instance can be relinked to another
+        Handle: such change will be propagated to all the copies of the
         instance.
         \pre Class "Type" must inherit from Observable
     */
@@ -62,21 +62,21 @@ namespace QuantLib {
         //! \name Linking
         //@{
         /*! \warning <i><b>registerAsObserver</b></i> is left as a backdoor
-                in case the programmer cannot guarantee that the object 
-                pointed to will remain alive for the whole lifetime of the 
-                handle---namely, it should be set to <tt>false</tt> when the 
-                passed handle was created with <tt>owns = false</tt> (the 
-                latter should only happen in a controlled environment, so 
-                that the programmer is aware of it). Failure to do so can 
-                very likely result in a program crash. 
-                If the programmer does want the relinkable handle to register 
-                as observer of such a handle, it is his responsibility to 
-                ensure that the relinkable handle gets destroyed before the 
+                in case the programmer cannot guarantee that the object
+                pointed to will remain alive for the whole lifetime of the
+                handle---namely, it should be set to <tt>false</tt> when the
+                passed handle was created with <tt>owns = false</tt> (the
+                latter should only happen in a controlled environment, so
+                that the programmer is aware of it). Failure to do so can
+                very likely result in a program crash.
+                If the programmer does want the relinkable handle to register
+                as observer of such a handle, it is his responsibility to
+                ensure that the relinkable handle gets destroyed before the
                 pointed object does.
         */
         void linkTo(const Handle<Type>& h, bool registerAsObserver = true);
         //@}
-        
+
         //! \name Dereferencing
         //@{
         Type& operator*() const;
@@ -93,7 +93,7 @@ namespace QuantLib {
 
         /*! \name Observable interface
             Although this class does not directly inherit from Observable,
-            it contains an inner class which does. This methods act as 
+            it contains an inner class which does. This methods act as
             proxies for the corresponding methods of the data member.
         */
         //@{
@@ -103,10 +103,10 @@ namespace QuantLib {
       private:
         Handle<Type>** ptr_;
         int* n_;
-        // assignment would join two handle groups - 
+        // assignment would join two handle groups -
         // inhibit it until we found out if we really want this.
         // It doesn't seem a good idea right now.
-        RelinkableHandle& operator=(const RelinkableHandle& from) { 
+        RelinkableHandle& operator=(const RelinkableHandle& from) {
             return *this; }
         class InnerObserver : public Patterns::Observable,
                               public Patterns::Observer {
@@ -185,13 +185,13 @@ namespace QuantLib {
     }
 
     template <class Type>
-    inline void 
+    inline void
     RelinkableHandle<Type>::registerObserver(Patterns::Observer* o) {
         observer_->registerObserver(o);
     }
 
     template <class Type>
-    inline void 
+    inline void
     RelinkableHandle<Type>::unregisterObserver(Patterns::Observer* o) {
         observer_->unregisterObserver(o);
     }

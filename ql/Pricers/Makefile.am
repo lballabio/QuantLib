@@ -28,6 +28,7 @@ include_HEADERS = \
     mceuropean.hpp \
     mceverest.hpp \
     mchimalaya.hpp \
+    mcmaxbasket.hpp \
     mcpagoda.hpp \
     mcpricer.hpp \
     multiperiodoption.hpp \
@@ -59,6 +60,7 @@ libPricers_la_SOURCES = \
     mceuropean.cpp \
     mceverest.cpp \
     mchimalaya.cpp \
+    mcmaxbasket.cpp \
     mcpagoda.cpp \
     multiperiodoption.cpp \
     singleassetoption.cpp \

@@ -73,34 +73,32 @@ tex-files:: html
     $(SED) -e "/Page Index/d" \
            -e "/input{pages}/d" \
            -e "/Page Documentation/d" \
-           -e "s/input{index}/ /" \
-           -e "s/include{index}/ /" \
-           -e "s/input{overview}/ /" \
-           -e "s/include{overview}/ /" \
-           -e "s/input{where}/ /" \
-           -e "s/include{where}/ /" \
-           -e "s/input{install}/ /" \
-           -e "s/include{install}/ /" \
-           -e "s/input{usage}/ /" \
-           -e "s/include{usage}/ /" \
-           -e "s/input{platforms}/ /" \
-           -e "s/include{platforms}/ /" \
-           -e "s/input{history}/ /" \
-           -e "s/include{history}/ /" \
-           -e "s/input{todo}/ /" \
-           -e "s/include{todo}/ /" \
-           -e "s/input{resources}/ /" \
-           -e "s/include{resources}/ /" \
-           -e "s/input{group}/ /" \
-           -e "s/include{group}/ /" \
-           -e "s/input{license}/ /" \
-           -e "s/include{license}/ /" \
-           -e "s/input{coreclasses}/ /" \
-           -e "s/include{coreclasses}/ /" \
-           -e "s/input{findiff}/ /" \
-           -e "s/include{findiff}/ /" \
-           -e "s/input{mcarlo}/ /" \
-           -e "s/include{mcarlo}/ /" \
+           -e "/input{group}/d" \
+           -e "/include{cashflows}/d" \
+           -e "/include{coreclasses}/d" \
+           -e "/include{currencies}/d" \
+           -e "/include{datetime}/d" \
+           -e "/include{findiff}/d" \
+           -e "/include{history}/d" \
+           -e "/include{index}/d" \
+           -e "/include{indexes}/d" \
+           -e "/include{install}/d" \
+           -e "/include{instruments}/d" \
+           -e "/include{license}/d" \
+           -e "/include{math}/d" \
+           -e "/include{mcarlo}/d" \
+           -e "/include{overview}/d" \
+           -e "/include{patterns}/d" \
+           -e "/include{platforms}/d" \
+           -e "/include{pricers}/d" \
+           -e "/include{randomnumbers}/d" \
+           -e "/include{resources}/d" \
+           -e "/include{solvers1d}/d" \
+           -e "/include{termstructures}/d" \
+           -e "/include{usage}/d" \
+           -e "/include{utilities}/d" \
+           -e "/include{where}/d" \
+           -e "/include{todo}/d" \
            -e "s/ple Documentation}/ple Documentation}\\\\label{exchap}/" \
            oldrefman.tex > refman.tex
     del oldrefman.tex

@@ -25,7 +25,7 @@
 /*! \file types.hpp
     \brief Custom types
 
-    \fullpath 
+    \fullpath
     ql/%types.hpp
 */
 
@@ -34,19 +34,19 @@
 #ifndef quantlib_types_hpp
 #define quantlib_types_hpp
 
-#include "ql/qldefines.hpp"
+#include <ql/qldefines.hpp>
 
 namespace QuantLib {
 
     //! integer number
     typedef int Integer;
-    
+
     //! real number
     typedef double Real;
-    
+
     //! size of a container
     typedef size_t Size;
-    
+
     //! continuous quantity with 1-year units
     typedef double Time;
 

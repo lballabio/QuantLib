@@ -141,9 +141,9 @@ private:
 };
 
 // The key for the MonteCarlo simulation is to have a PathPricer that
-// implements a value(const Path &path) method.
+// implements a value(const Path& path) method.
 // This method prices the portfolio for each Path of the random variable
-class ReplicationPathPricer : public PathPricer
+class ReplicationPathPricer : public PathPricer<Path>
 {
   public:
     // real constructor
@@ -153,8 +153,8 @@ class ReplicationPathPricer : public PathPricer
                           Rate r,
                           Time maturity,
                           double sigma)
-    : type_(type),underlying_(underlying), strike_(strike), r_(r),
-      maturity_(maturity), sigma_(sigma) {
+    : PathPricer<Path>(1.0, false), type_(type), underlying_(underlying),
+      strike_(strike), r_(r), maturity_(maturity), sigma_(sigma) {
         QL_REQUIRE(strike_ > 0.0,
             "ReplicationPathPricer: strike must be positive");
         QL_REQUIRE(underlying_ > 0.0,
@@ -170,7 +170,7 @@ class ReplicationPathPricer : public PathPricer
 
     }
     // The value() method encapsulates the pricing code
-    double operator()(const Path &path) const;
+    double operator()(const Path& path) const;
 
   private:
     Option::Type type_;
@@ -219,7 +219,7 @@ int main(int argc, char* argv[])
    the life of the option are carried out, using the Black-Scholes
    hedge ratio.
 */
-double ReplicationPathPricer::operator()(const Path & path) const
+double ReplicationPathPricer::operator()(const Path& path) const
 {
 
     // path is an instance of QuantLib::MonteCarlo::Path
@@ -335,8 +335,8 @@ void ReplicationError::compute(int nTimeSteps, int nSamples)
     // The replication strategy's Profit&Loss is computed for each path
     // of the stock. The path pricer knows how to price a path using its
     // value() method
-    Handle<PathPricer> myPathPricer =
-        Handle<PathPricer>(new ReplicationPathPricer(type_, s0_, strike_, r_,
+    Handle<PathPricer<Path> > myPathPricer =
+        Handle<PathPricer<Path> >(new ReplicationPathPricer(type_, s0_, strike_, r_,
             maturity_, sigma_));
 
     // a statistic accumulator for the path-dependant Profit&Loss values

@@ -34,7 +34,7 @@
 #ifndef quantlib_actual365_day_counter_h
 #define quantlib_actual365_day_counter_h
 
-#include "ql/daycounter.hpp"
+#include <ql/daycounter.hpp>
 
 namespace QuantLib {
 

@@ -34,9 +34,9 @@
 #ifndef quantlib_swap_h
 #define quantlib_swap_h
 
-#include "ql/instrument.hpp"
-#include "ql/cashflow.hpp"
-#include "ql/termstructure.hpp"
+#include <ql/instrument.hpp>
+#include <ql/cashflow.hpp>
+#include <ql/termstructure.hpp>
 
 namespace QuantLib {
 
@@ -49,7 +49,7 @@ namespace QuantLib {
           public:
             Swap(const std::vector<Handle<CashFlow> >& firstLeg,
                  const std::vector<Handle<CashFlow> >& secondLeg,
-                 const RelinkableHandle<TermStructure>& termStructure, 
+                 const RelinkableHandle<TermStructure>& termStructure,
                  const std::string& isinCode = "",
                  const std::string& description = "");
             ~Swap();
@@ -67,7 +67,7 @@ namespace QuantLib {
 
 
         // inline definitions
-        
+
         inline double Swap::firstLegBPS() const {
             calculate();
             return firstLegBPS_;

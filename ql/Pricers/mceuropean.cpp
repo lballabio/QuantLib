@@ -31,20 +31,22 @@
 
 // $Id$
 
-#include "ql/Pricers/mceuropean.hpp"
-#include "ql/MonteCarlo/europeanpathpricer.hpp"
+#include <ql/Pricers/mceuropean.hpp>
+#include <ql/MonteCarlo/europeanpathpricer.hpp>
 
 namespace QuantLib {
 
     namespace Pricers {
 
-        using MonteCarlo::OneFactorMonteCarloOption;
-        using MonteCarlo::PathPricer;
+        using Math::Statistics;
+        using MonteCarlo::Path;
         using MonteCarlo::GaussianPathGenerator;
+        using MonteCarlo::PathPricer;
+        using MonteCarlo::MonteCarloModel;
         using MonteCarlo::EuropeanPathPricer;
 
-        McEuropean::McEuropean(Option::Type type, 
-          double underlying, double strike, Spread dividendYield, 
+        McEuropean::McEuropean(Option::Type type,
+          double underlying, double strike, Spread dividendYield,
           Rate riskFreeRate, double residualTime, double volatility,
           bool antitheticVariance, long seed) {
 
@@ -54,19 +56,22 @@ namespace QuantLib {
                                      - 0.5 * volatility * volatility;
 
             Handle<GaussianPathGenerator> pathGenerator(
-                new GaussianPathGenerator(mu, volatility*volatility, 
+                new GaussianPathGenerator(mu, volatility*volatility,
                     residualTime, 1, seed));
 
             //! Initialize the pricer on the single Path
-            Handle<PathPricer> euroPathPricer(new EuropeanPathPricer(type,
+            Handle<PathPricer<Path> > euroPathPricer(
+                new EuropeanPathPricer(type,
                 underlying, strike, QL_EXP(-riskFreeRate*residualTime),
                 antitheticVariance));
 
             //! Initialize the one-factor Monte Carlo
-            mcModel_ = Handle<MonteCarlo::MonteCarloModel<Math::Statistics, MonteCarlo::GaussianPathGenerator, MonteCarlo::PathPricer> > (
-                new MonteCarlo::MonteCarloModel<Math::Statistics, MonteCarlo::GaussianPathGenerator, MonteCarlo::PathPricer> (
-                    pathGenerator, euroPathPricer,
-                    Math::Statistics()));
+            mcModel_ = Handle<MonteCarloModel<Statistics,
+                GaussianPathGenerator, PathPricer<Path> > > (
+                new MonteCarloModel<Statistics,
+                GaussianPathGenerator, PathPricer<Path> > (
+                pathGenerator, euroPathPricer,
+                Statistics()));
 
         }
 

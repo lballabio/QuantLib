@@ -1,37 +1,34 @@
 
-2001-11-27 Release 0.2.1
+
+2001-12-03 Release 0.2.1
 
 Changes since Release 0.2.0:
 - Library:
-    MONTECARLO FRAMEWORK
+    MONTE CARLO FRAMEWORK
+    - Path and MultiPath are now classes on their own
+    - PathPricer now handles both Path and MultiPath
+    - MonteCarloModel now handles both single factor and
+      multi factors simulations.
+    - McPricer now handles both single factor and
+      multi factors pricing. New pricing interface
     - antithetic variance-reduction technique made possible in Monte Carlo
-    - average price asian option
-    - average strike asian option
+      for both single factor and multi factors
+    - Control Variate specific class removed: control variation technique is
+      now handled by the general MC model
+    - average price and average strike asian option refactored
     - Sample as a (value,weight) struct
-    - Introducing antithetic approach to multi asset option general cleaning of multiasset MC interface
-    - Monte Carlo Pricers new interface
     - random number generators moved under RandomNumbers folder and namespace
-    - merged mcmultipricer and mcpricer
-    - removing controlvariate specific class: control variation technique is now handled by the general MC model
-    - Monte Carlo Pricers clean up
-    - antithetic variance reduction technique
-    - MultiPath is now a class
 
     FINITE DIFFERENCE FRAMEWORK
-    - Boundary condition bug fixed
-    - BackwardEuler and ForwardEuler renamed ImplicitEuler and ExplicitEuler
-    - Setting the right time in evolvers (FD bug fixing)
-    - Changed setTime machinery for TridiagonalOperator
-    - Beginning of new Option framework
-    - Some changes related to the implementation of a time-dependant operator. (refactored the tridiagonaloperator class and its descendants)
+    - BackwardEuler and ForwardEuler renamed ImplicitEuler and ExplicitEuler,
+      respectively
+    - refactoring of TridiagonalOperator and derived classes
 
     YIELD TERM STRUCTURE AND FIXED INCOME
     - Added some useful methods to term structure classes
     - Allowed passing a quote to RateHelpers as double
     - added FuturesRateHelpers (no convexity adjustment yet)
-    - fixed a bug in the FRAHelper class
     - PiecewiseFlatForward now observer of rates passed as MarketElements
-    - Last bit of reworking for TermStructure; RelinkableHandle initialized with an	optional Handle
     - Unified Date and Time interface in TermStructure
     - Added BPS to generic swap legs
     - added term_structure+swap example
@@ -39,17 +36,14 @@ Changes since Release 0.2.0:
 
     PATTERNS
     - Added factory pattern
-    - modification to have factory works under MS VC++
     - Calendar and DayCounter now use the Strategy pattern
-
-    OPTION DESIGN
-    - Temporarily removed the deprecation of EuropeanOption
-    - First working option engine
-    - dividendYield is now a Spread instead of a Rate (that is: cost of carry is allowed)
 
     VARIOUS
     - used do-while-false idiom in QL_REQUIRE-like macros
     - now using size_t where appropriate
+    - dividendYield is now a Spread instead of a Rate (that is: cost of carry
+      is allowed)
+    - RelinkableHandle initialized with an optional Handle
     - Worked around VC++ problems in History constructor
     - added QL_VERSION and QL_HEX_VERSION
     - generic bug fixes
@@ -60,12 +54,16 @@ Changes since Release 0.2.0:
 
 - Documentation:
     - general re-hauling
+    - improved and extended Monte Carlo documentation
     - improved and extended examples
     - Upgraded to Doxygen 1.2.11.1
     - Added man pages for installed executables
-    - Dirk's man files added
-    - added info on "Win32 OnTheEdgeRelease" and  "Win32 OnTheEdgeDebug" MS VC++ configurations
-    - additional information on how to create a MS VC++ project based on QuantLib
+    - added docs in Windows Help format
+    - added info on "Win32 OnTheEdgeRelease" and  "Win32 OnTheEdgeDebug" MS
+      VC++ configurations
+    - additional information on how to create a MS VC++ project based on
+      QuantLib
+
 
 =====================================================
 

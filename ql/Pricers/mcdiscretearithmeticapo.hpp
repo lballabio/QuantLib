@@ -34,10 +34,10 @@
 #ifndef quantlib_pricers_mc_discrete_arithmetic_average_price_option_h
 #define quantlib_pricers_mc_discrete_arithmetic_average_price_option_h
 
-#include "ql/option.hpp"
-#include "ql/types.hpp"
-#include "ql/MonteCarlo/mctypedefs.hpp"
-#include "ql/Pricers/mcpricer.hpp"
+#include <ql/option.hpp>
+#include <ql/types.hpp>
+#include <ql/MonteCarlo/mctypedefs.hpp>
+#include <ql/Pricers/mcpricer.hpp>
 #include <vector>
 
 namespace QuantLib {
@@ -45,9 +45,10 @@ namespace QuantLib {
     namespace Pricers {
 
         //! example of Monte Carlo pricer using a control variate
-        /*! \todo Continous Arithmetic Average Price Option     */
+        /*! \todo Continous Averaging version     */
          class McDiscreteArithmeticAPO : public McPricer<Math::Statistics,
-            MonteCarlo::GaussianPathGenerator, MonteCarlo::PathPricer> {
+            MonteCarlo::GaussianPathGenerator,
+            MonteCarlo::PathPricer<MonteCarlo::Path> > {
           public:
             McDiscreteArithmeticAPO(Option::Type type,
                                     double underlying,

@@ -25,8 +25,8 @@ OBJS = \
     geometricasopathpricer.obj$(_D) \
     getcovariance.obj$(_D) \
     himalayapathpricer.obj$(_D) \
-    pagodapathpricer.obj$(_D) \
-    singleassetpathpricer.obj$(_D)
+	maxbasketpathpricer.obj$(_D) \
+    pagodapathpricer.obj$(_D)
 
 # Tools to be used
 CC        = bcc32

@@ -22,7 +22,7 @@
  * available at http://quantlib.org/group.html
 */
 
-/*! \file fdtypedefs.hpp 
+/*! \file fdtypedefs.hpp
     \brief default choices for template instantiations
 
     \fullpath
@@ -34,8 +34,8 @@
 #ifndef quantlib_fd_typedefs_h
 #define quantlib_fd_typedefs_h
 
-#include "ql/FiniteDifferences/cranknicolson.hpp"
-#include "ql/FiniteDifferences/tridiagonaloperator.hpp"
+#include <ql/FiniteDifferences/cranknicolson.hpp>
+#include <ql/FiniteDifferences/tridiagonaloperator.hpp>
 
 namespace QuantLib {
 

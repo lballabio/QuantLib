@@ -34,8 +34,8 @@
 #ifndef quantlib_cash_flow_hpp
 #define quantlib_cash_flow_hpp
 
-#include "ql/date.hpp"
-#include "ql/Patterns/observable.hpp"
+#include <ql/date.hpp>
+#include <ql/Patterns/observable.hpp>
 
 /*! \namespace QuantLib::CashFlows
     \brief Concrete implementations of the CashFlow interface
@@ -46,14 +46,14 @@
 namespace QuantLib {
 
     //! Base class for cash flows
-    /*! This class is purely virtual and acts as a base class for the actual 
-        cash flow implementations. 
+    /*! This class is purely virtual and acts as a base class for the actual
+        cash flow implementations.
     */
     class CashFlow : public Patterns::Observable {
       public:
         virtual ~CashFlow() {}
         //! returns the amount of the cash flow
-        /*! \note The amount is not discounted, i.e., it is the actual amount 
+        /*! \note The amount is not discounted, i.e., it is the actual amount
             paid at the cash flow date.
         */
         virtual double amount() const = 0;

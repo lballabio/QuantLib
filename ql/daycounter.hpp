@@ -34,9 +34,9 @@
 #ifndef quantlib_day_counter_h
 #define quantlib_day_counter_h
 
-#include "ql/date.hpp"
-#include "ql/handle.hpp"
-#include "ql/null.hpp"
+#include <ql/date.hpp>
+#include <ql/handle.hpp>
+#include <ql/null.hpp>
 
 /*! \namespace QuantLib::DayCounters
     \brief Specialized DayCounter classes
@@ -47,11 +47,11 @@
 namespace QuantLib {
 
     //! day counter class
-    /*! This class provides methods for determining the length of a time 
-        period according to given market convention, both as a number 
+    /*! This class provides methods for determining the length of a time
+        period according to given market convention, both as a number
         of days and as a year fraction.
 
-        The Strategy pattern is used to provide the base behavior of the 
+        The Strategy pattern is used to provide the base behavior of the
         day counter.
     */
     class DayCounter {
@@ -59,8 +59,8 @@ namespace QuantLib {
         //! \name DayCounter interface
         //@{
         //! Returns the name of the day counter.
-        /*! \warning This method is used for output and comparison between 
-                day counters. It is <b>not</b> meant to be used for writing 
+        /*! \warning This method is used for output and comparison between
+                day counters. It is <b>not</b> meant to be used for writing
                 switch-on-type code.
         */
         std::string name() const;
@@ -89,7 +89,7 @@ namespace QuantLib {
                 const Date& refPeriodEnd) const = 0;
         };
       protected:
-        /*! this protected constructor will only be invoked by derived 
+        /*! this protected constructor will only be invoked by derived
             classes which define a given Calendar implementation */
         DayCounter(const Handle<DayCounterImpl>& impl) : impl_(impl) {}
       private:

@@ -30,8 +30,8 @@
 
 // $Id$
 
-#include "ql/CashFlows/floatingratecoupon.hpp"
-#include "ql/Indexes/xibormanager.hpp"
+#include <ql/CashFlows/floatingratecoupon.hpp>
+#include <ql/Indexes/xibormanager.hpp>
 
 namespace QuantLib {
 
@@ -41,15 +41,15 @@ namespace QuantLib {
     namespace CashFlows {
 
         FloatingRateCoupon::FloatingRateCoupon(double nominal,
-          const Handle<Xibor>& index, 
+          const Handle<Xibor>& index,
           const RelinkableHandle<TermStructure>& termStructure,
           const Date& startDate, const Date& endDate,
-          int fixingDays, Spread spread, 
+          int fixingDays, Spread spread,
           const Date& refPeriodStart, const Date& refPeriodEnd)
         : Coupon(nominal, index->calendar(),index->rollingConvention(),
               index->dayCounter(), startDate, endDate,
-              refPeriodStart, refPeriodEnd), 
-          termStructure_(termStructure), index_(index), 
+              refPeriodStart, refPeriodEnd),
+          termStructure_(termStructure), index_(index),
           fixingDays_(fixingDays), spread_(spread) {
             termStructure_.registerObserver(this);
         }
@@ -59,10 +59,10 @@ namespace QuantLib {
                 "null term structure set to par coupon");
             Date settlementDate = termStructure_->settlementDate();
             Date fixingDate = index_->calendar().advance(
-                startDate_, -fixingDays_, Days, 
+                startDate_, -fixingDays_, Days,
                 index_->rollingConvention());
             Date fixingValueDate = index_->calendar().advance(
-                fixingDate, index_->settlementDays(), Days, 
+                fixingDate, index_->settlementDays(), Days,
                 index_->rollingConvention());
             if (fixingValueDate < settlementDate) {
                 // must have been fixed
@@ -79,7 +79,7 @@ namespace QuantLib {
                     Rate pastFixing = XiborManager::getHistory(
                         index_->name())[fixingDate];
                     if (pastFixing != Null<double>())
-                        return (pastFixing+spread_) * 
+                        return (pastFixing+spread_) *
                             accrualPeriod() * nominal();
                     else
                         ;   // fall through and forecast

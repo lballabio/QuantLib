@@ -34,13 +34,13 @@
 #ifndef quantlib_solver1d_brent_h
 #define quantlib_solver1d_brent_h
 
-#include "ql/solver1d.hpp"
+#include <ql/solver1d.hpp>
 
 namespace QuantLib {
 
     namespace Solvers1D {
 
-        //! %Brent 1-D solver 
+        //! %Brent 1-D solver
         class Brent : public Solver1D {
           private:
             double solve_(const ObjectiveFunction& f, double xAccuracy) const;

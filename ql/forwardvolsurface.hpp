@@ -34,8 +34,8 @@
 #ifndef quantlib_forward_volatility_surface_h
 #define quantlib_forward_volatility_surface_h
 
-#include "ql/date.hpp"
-#include "ql/handle.hpp"
+#include <ql/date.hpp>
+#include <ql/handle.hpp>
 
 namespace QuantLib {
 
@@ -69,7 +69,7 @@ namespace QuantLib {
     };
 
     //! Constant forward volatility surface
-    class ConstantForwardVolatilitySurface 
+    class ConstantForwardVolatilitySurface
     : public ForwardVolatilitySurface {
       public:
         ConstantForwardVolatilitySurface(Rate volatility);
@@ -83,7 +83,7 @@ namespace QuantLib {
     /*! This surface will remain linked to the original surface, i.e., any
         changes in the latter will be reflected in this surface as well.
     */
-    class SpreadedForwardVolatilitySurface 
+    class SpreadedForwardVolatilitySurface
     : public ForwardVolatilitySurface {
       public:
         SpreadedForwardVolatilitySurface(

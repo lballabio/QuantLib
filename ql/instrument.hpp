@@ -34,7 +34,7 @@
 #ifndef quantlib_instrument_h
 #define quantlib_instrument_h
 
-#include "ql/Patterns/observable.hpp"
+#include <ql/Patterns/observable.hpp>
 #include <string>
 
 /*! \namespace QuantLib::Instruments
@@ -65,45 +65,45 @@ namespace QuantLib {
         //! returns the net present value of the instrument.
         double NPV() const;
         //@}
-        
+
         //! \name Observer interface
         //@{
         void update();
         //@}
 
         /*! \name Calculations
-            These methods do not modify the structure of the instrument and 
-            are therefore declared as <tt>const</tt>. Temporary variables 
+            These methods do not modify the structure of the instrument and
+            are therefore declared as <tt>const</tt>. Temporary variables
             will be declared as mutable.
         */
         //@{
-        /*! This method force the recalculation of the instrument value and 
-            other results which would otherwise be cached. It is not 
-            declared as const since it needs to call the non-const 
+        /*! This method force the recalculation of the instrument value and
+            other results which would otherwise be cached. It is not
+            declared as const since it needs to call the non-const
             <i><b>notifyObservers</b></i> method.
-            \note Explicit invocation of this method is <b>not</b> 
-            necessary if the instrument registered itself as observer 
-            with the structures on which such results depend. 
+            \note Explicit invocation of this method is <b>not</b>
+            necessary if the instrument registered itself as observer
+            with the structures on which such results depend.
             It is strongly advised to follow this policy when possible.
         */
         void recalculate();
       protected:
         /*! This method performs all needed calculations by calling
             the <i><b>performCalculations</b></i> method.
-            
-            \warning Instruments cache the results of the previous 
-            calculation. Such results will be returned upon later 
-            invocations of <i><b>calculate</b></i>. When the results depend 
-            on parameters such as term structures which could change 
-            between invocations, the instrument must register itself as 
-            observer of such objects for the calculations to be performed 
-            again when they change. 
 
-            \warning This method should <b>not</b> be redefined in derived 
+            \warning Instruments cache the results of the previous
+            calculation. Such results will be returned upon later
+            invocations of <i><b>calculate</b></i>. When the results depend
+            on parameters such as term structures which could change
+            between invocations, the instrument must register itself as
+            observer of such objects for the calculations to be performed
+            again when they change.
+
+            \warning This method should <b>not</b> be redefined in derived
             classes.
         */
         void calculate() const;
-        /*! This method must implement any calculations which must be 
+        /*! This method must implement any calculations which must be
             (re)done in order to calculate the NPV of the instrument.
         */
         virtual void performCalculations() const = 0;
@@ -120,17 +120,17 @@ namespace QuantLib {
       private:
         std::string isinCode_, description_;
         mutable bool calculated;
-        
+
     };
 
     // inline definitions
 
-    inline Instrument::Instrument(const std::string& isinCode, 
+    inline Instrument::Instrument(const std::string& isinCode,
         const std::string& description)
-        : NPV_(0.0), 
-        isExpired_(false), 
+        : NPV_(0.0),
+        isExpired_(false),
         isinCode_(isinCode),
-        description_(description), 
+        description_(description),
         calculated(false) {}
 
     inline std::string Instrument::isinCode() const {
@@ -150,13 +150,13 @@ namespace QuantLib {
         calculated = false;
         notifyObservers();
     }
-    
+
     inline void Instrument::recalculate() {
         performCalculations();
         calculated = true;
         notifyObservers();
     }
-    
+
     inline void Instrument::calculate() const {
         if (!calculated)
             performCalculations();

@@ -34,8 +34,8 @@
 #ifndef quantlib_risk_measures_h
 #define quantlib_risk_measures_h
 
-#include "ql/null.hpp"
-#include "ql/Math/normaldistribution.hpp"
+#include <ql/null.hpp>
+#include <ql/Math/normaldistribution.hpp>
 #include <iostream>
 #include <vector>
 

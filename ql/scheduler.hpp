@@ -34,7 +34,7 @@
 #ifndef quantlib_scheduler_hpp
 #define quantlib_scheduler_hpp
 
-#include "ql/calendar.hpp"
+#include <ql/calendar.hpp>
 #include <vector>
 
 namespace QuantLib {

@@ -31,15 +31,15 @@
 
 // $Id$
 
-#include "ql/Pricers/binaryoption.hpp"
-#include "ql/Math/normaldistribution.hpp"
+#include <ql/Pricers/binaryoption.hpp>
+#include <ql/Math/normaldistribution.hpp>
 
 namespace QuantLib
 {
     namespace Pricers
     {
-        BinaryOption::BinaryOption(Option::Type type, double underlying, 
-                                   double strike, Spread dividendYield, 
+        BinaryOption::BinaryOption(Option::Type type, double underlying,
+                                   double strike, Spread dividendYield,
                                    Rate riskFreeRate, Time residualTime,
                                    double volatility, double cashPayoff)
             : SingleAssetOption(type, underlying, strike, dividendYield,

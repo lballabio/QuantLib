@@ -31,9 +31,9 @@
 
 // $Id$
 
-#include "ql/Instruments/simpleswap.hpp"
-#include "ql/CashFlows/fixedratecoupon.hpp"
-#include "ql/CashFlows/cashflowvectors.hpp"
+#include <ql/Instruments/simpleswap.hpp>
+#include <ql/CashFlows/fixedratecoupon.hpp>
+#include <ql/CashFlows/cashflowvectors.hpp>
 
 namespace QuantLib {
 
@@ -41,53 +41,53 @@ namespace QuantLib {
     using CashFlows::FixedRateCouponVector;
     using CashFlows::FloatingRateCouponVector;
     using Indexes::Xibor;
-    
+
     namespace Instruments {
 
         SimpleSwap::SimpleSwap(bool payFixedRate,
           const Date& startDate, int n, TimeUnit units,
-          const Calendar& calendar, 
-          RollingConvention rollingConvention, 
-          const std::vector<double>& nominals, 
-          int fixedFrequency, 
-          const std::vector<Rate>& couponRates, 
-          bool fixedIsAdjusted, 
-          const DayCounter& fixedDayCount, 
-          int floatingFrequency, 
-          const Handle<Xibor>& index, 
+          const Calendar& calendar,
+          RollingConvention rollingConvention,
+          const std::vector<double>& nominals,
+          int fixedFrequency,
+          const std::vector<Rate>& couponRates,
+          bool fixedIsAdjusted,
+          const DayCounter& fixedDayCount,
+          int floatingFrequency,
+          const Handle<Xibor>& index,
           int indexFixingDays,
-          const std::vector<Spread>& spreads, 
-          const RelinkableHandle<TermStructure>& termStructure, 
+          const std::vector<Spread>& spreads,
+          const RelinkableHandle<TermStructure>& termStructure,
           const std::string& isinCode, const std::string& description)
-        : Swap(std::vector<Handle<CashFlow> >(), 
+        : Swap(std::vector<Handle<CashFlow> >(),
                std::vector<Handle<CashFlow> >(),
-               termStructure, isinCode, description), 
+               termStructure, isinCode, description),
           payFixedRate_(payFixedRate) {
             maturity_ = calendar.advance(
                 startDate,n,units,rollingConvention);
             if (payFixedRate_) {
-                firstLeg_ = FixedRateCouponVector(nominals, 
-                    couponRates, startDate, maturity_, 
-                    fixedFrequency, calendar, rollingConvention, 
+                firstLeg_ = FixedRateCouponVector(nominals,
+                    couponRates, startDate, maturity_,
+                    fixedFrequency, calendar, rollingConvention,
                     fixedIsAdjusted, fixedDayCount, fixedDayCount);
-                secondLeg_ = FloatingRateCouponVector(nominals, 
-                    startDate, maturity_, floatingFrequency, 
+                secondLeg_ = FloatingRateCouponVector(nominals,
+                    startDate, maturity_, floatingFrequency,
                     calendar, rollingConvention, termStructure,
                     index, indexFixingDays, spreads);
             } else {
-                firstLeg_ = FloatingRateCouponVector(nominals, 
-                    startDate, maturity_, floatingFrequency, 
+                firstLeg_ = FloatingRateCouponVector(nominals,
+                    startDate, maturity_, floatingFrequency,
                     calendar, rollingConvention, termStructure,
                     index, indexFixingDays, spreads);
-                secondLeg_ = FixedRateCouponVector(nominals, 
-                    couponRates, startDate, maturity_, 
-                    fixedFrequency, calendar, rollingConvention, 
+                secondLeg_ = FixedRateCouponVector(nominals,
+                    couponRates, startDate, maturity_,
+                    fixedFrequency, calendar, rollingConvention,
                     fixedIsAdjusted, fixedDayCount, fixedDayCount);
             }
             // we should register as observer with the cash flows. However,
-            // the base Swap class already registers as observer with 
-            // the term structure, which is also the same passed to floating 
-            // rate coupons; the index is only used for past fixings; and 
+            // the base Swap class already registers as observer with
+            // the term structure, which is also the same passed to floating
+            // rate coupons; the index is only used for past fixings; and
             // fixed rate coupons are not modifiable.
         }
 

@@ -34,8 +34,8 @@
 #ifndef BSM_european_option_pricer_h
 #define BSM_european_option_pricer_h
 
-#include "ql/Pricers/singleassetoption.hpp"
-#include "ql/Math/normaldistribution.hpp"
+#include <ql/Pricers/singleassetoption.hpp>
+#include <ql/Math/normaldistribution.hpp>
 
 namespace QuantLib {
 
@@ -45,7 +45,7 @@ namespace QuantLib {
         class EuropeanOption : public SingleAssetOption {
           public:
             // constructor
-            EuropeanOption(Option::Type type, double underlying, 
+            EuropeanOption(Option::Type type, double underlying,
                 double strike, Spread dividendYield, Rate riskFreeRate,
                 Time residualTime, double volatility);
             // accessors
@@ -74,7 +74,7 @@ namespace QuantLib {
             DiscountFactor riskFreeDiscount() const;
             // declared as mutable to preserve
             // the logical constness (does this word exist?) of value()
-            mutable double alpha_, beta_, standardDeviation_, 
+            mutable double alpha_, beta_, standardDeviation_,
                 D1_, D2_, NID1_;
             mutable DiscountFactor dividendDiscount_, riskFreeDiscount_;
         };
@@ -128,7 +128,7 @@ namespace QuantLib {
         inline double EuropeanOption::D1() const {
             if (D1_==Null<double>())
                 D1_ = QL_LOG(underlying_/strike_)/standardDeviation() +
-                    standardDeviation()/2.0 + 
+                    standardDeviation()/2.0 +
                     (riskFreeRate_ - dividendYield_) *
                     residualTime_/standardDeviation();
             return D1_;

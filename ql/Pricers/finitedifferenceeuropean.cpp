@@ -31,8 +31,8 @@
 
 // $Id$
 
-#include "ql/Pricers/finitedifferenceeuropean.hpp"
-#include "ql/FiniteDifferences/valueatcenter.hpp"
+#include <ql/Pricers/finitedifferenceeuropean.hpp>
+#include <ql/FiniteDifferences/valueatcenter.hpp>
 
 namespace QuantLib {
 

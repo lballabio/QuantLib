@@ -1,6 +1,69 @@
 
 /*! \page history Version history
 
+    <strong>Release 0.2.1 - December 3rd, 2001</strong>
+
+    - Library:
+        MONTE CARLO FRAMEWORK
+        - Path and MultiPath are now classes on their own
+        - PathPricer now handles both Path and MultiPath
+        - MonteCarloModel now handles both single factor and
+          multi factors simulations.
+        - McPricer now handles both single factor and
+          multi factors pricing. New pricing interface
+        - antithetic variance-reduction technique made possible in Monte Carlo
+          for both single factor and multi factors
+        - Control Variate specific class removed: control variation technique is
+          now handled by the general MC model
+        - average price and average strike asian option refactored
+        - Sample as a (value,weight) struct
+        - random number generators moved under RandomNumbers folder and namespace
+
+        FINITE DIFFERENCE FRAMEWORK
+        - BackwardEuler and ForwardEuler renamed ImplicitEuler and ExplicitEuler,
+          respectively
+        - refactoring of TridiagonalOperator and derived classes
+
+        YIELD TERM STRUCTURE AND FIXED INCOME
+        - Added some useful methods to term structure classes
+        - Allowed passing a quote to RateHelpers as double
+        - added FuturesRateHelpers (no convexity adjustment yet)
+        - PiecewiseFlatForward now observer of rates passed as MarketElements
+        - Unified Date and Time interface in TermStructure
+        - Added BPS to generic swap legs
+        - added term_structure+swap example
+        - Fixing days introduced for floating-coupon bond
+
+        PATTERNS
+        - Added factory pattern
+        - Calendar and DayCounter now use the Strategy pattern
+
+        VARIOUS
+        - used do-while-false idiom in QL_REQUIRE-like macros
+        - now using size_t where appropriate
+        - dividendYield is now a Spread instead of a Rate (that is: cost of carry
+          is allowed)
+        - RelinkableHandle initialized with an optional Handle
+        - Worked around VC++ problems in History constructor
+        - added QL_VERSION and QL_HEX_VERSION
+        - generic bug fixes
+        - removed classes deprecated in 0.2.0
+
+    - Installation facilities:
+        - improved and smoother Win32 binary installer
+
+    - Documentation:
+        - general re-hauling
+        - improved and extended Monte Carlo documentation
+        - improved and extended examples
+        - Upgraded to Doxygen 1.2.11.1
+        - Added man pages for installed executables
+        - added docs in Windows Help format
+        - added info on "Win32 OnTheEdgeRelease" and  "Win32 OnTheEdgeDebug" MS
+          VC++ configurations
+        - additional information on how to create a MS VC++ project based on
+          QuantLib
+
     <strong>Release 0.2.0 - September 18th, 2001</strong>
 
     - Library:
@@ -12,7 +75,7 @@
         - Fixed automatic choice of seed for random number generators
         - Actual/actual classes
         - extended platform support (see table in documentation)
-        - antithetic variance-reduction technique made possible in Monte 
+        - antithetic variance-reduction technique made possible in Monte
           Carlo
         - added dividend-Rho greek
         - First implementation of segment integral (to be redesigned)
@@ -40,25 +103,25 @@
         without automake/autoconf support)
       - Include files moved under Include/ql folder and referenced as
         "ql/header.hpp"
-      - Implemented expression templates techniques for array algebra 
+      - Implemented expression templates techniques for array algebra
         optimization
       - Added custom iterators
       - Improved term structure
       - Added Asian, Bermudan, Shout, Cliquet, Himalaya, and Barrier
-        options (all with greeks calculation, control variated where 
+        options (all with greeks calculation, control variated where
         possible)
       - Added Helsinki and Wellington calendars
       - Improved Normal distribution related functions: cumulative, inverse
         cumulative, etc.
       - Added uniform and Gaussian random number generators
-      - Added Statistics class (mean, variance, skewness, downside variance, 
+      - Added Statistics class (mean, variance, skewness, downside variance,
         etc.)
-      - Added RiskMeasures class: VAR, average shortfall, expected shortfall, 
+      - Added RiskMeasures class: VAR, average shortfall, expected shortfall,
         etc.
       - Added RiskStatistics class combining Statistics and RiskMeasures
       - Added sample accumulator for multivariate analysis
       - Added Monte Carlo tools
-      - Added matrix-related functions (square root, symmetric Schur 
+      - Added matrix-related functions (square root, symmetric Schur
         decomposition)
       - Added interpolation framework (linear and cubic spline interpolation
         implemented).

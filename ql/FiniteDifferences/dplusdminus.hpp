@@ -34,7 +34,7 @@
 #ifndef quantlib_d_plus_d_minus_h
 #define quantlib_d_plus_d_minus_h
 
-#include "ql/FiniteDifferences/tridiagonaloperator.hpp"
+#include <ql/FiniteDifferences/tridiagonaloperator.hpp>
 
 namespace QuantLib {
 

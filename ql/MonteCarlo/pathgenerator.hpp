@@ -33,14 +33,17 @@
 #ifndef quantlib_montecarlo_path_generator_h
 #define quantlib_montecarlo_path_generator_h
 
-#include "ql/MonteCarlo/path.hpp"
-#include "ql/RandomNumbers/randomarraygenerator.hpp"
+#include <ql/MonteCarlo/path.hpp>
+#include <ql/RandomNumbers/randomarraygenerator.hpp>
 
 namespace QuantLib {
 
     namespace MonteCarlo {
 
         //! Generates random paths from a random number generator
+        /*! \todo add more general path generator with drift(S,t) and
+                  variance(S,t)
+        */
         template <class RNG>
         class PathGenerator {
           public:
@@ -51,7 +54,7 @@ namespace QuantLib {
                           Time length,
                           size_t steps,
                           long seed = 0);
-            /*! \warning the initial time is assumed to be zero 
+            /*! \warning the initial time is assumed to be zero
                 and must <b>not</b> be included in the passed vector */
             PathGenerator(double drift,
                           double variance,
@@ -68,7 +71,7 @@ namespace QuantLib {
         };
 
         template <class RNG>
-        PathGenerator<RNG>::PathGenerator(double drift, double variance, 
+        PathGenerator<RNG>::PathGenerator(double drift, double variance,
             Time length, size_t steps, long seed)
         : next_(Path(steps),1.0) {
             QL_REQUIRE(variance >= 0.0, "PathGenerator: negative variance");
@@ -79,7 +82,7 @@ namespace QuantLib {
         }
 
         template <class RNG>
-        PathGenerator<RNG>::PathGenerator(double drift, double variance, 
+        PathGenerator<RNG>::PathGenerator(double drift, double variance,
             const std::vector<Time>& times, long seed)
         : next_(Path(times.size()),1.0) {
             QL_REQUIRE(variance >= 0.0, "PathGenerator: negative variance");
@@ -106,7 +109,7 @@ namespace QuantLib {
         }
 
         template <class RNG>
-        inline const PathGenerator<RNG>::sample_type& 
+        inline const PathGenerator<RNG>::sample_type&
         PathGenerator<RNG>::next() const {
             const Sample<Array>& sample = generator_->next();
             next_.value.diffusion() = sample.value;

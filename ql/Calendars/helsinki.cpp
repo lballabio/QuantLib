@@ -31,7 +31,7 @@
 
 // $Id$
 
-#include "ql/Calendars/helsinki.hpp"
+#include <ql/Calendars/helsinki.hpp>
 
 namespace QuantLib {
 

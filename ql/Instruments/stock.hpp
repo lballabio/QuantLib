@@ -34,8 +34,8 @@
 #ifndef quantlib_stock_hpp
 #define quantlib_stock_hpp
 
-#include "ql/instrument.hpp"
-#include "ql/marketelement.hpp"
+#include <ql/instrument.hpp>
+#include <ql/marketelement.hpp>
 
 namespace QuantLib {
 
@@ -44,7 +44,7 @@ namespace QuantLib {
         //! Simple stock class
         class Stock : public Instrument {
           public:
-            Stock(const RelinkableHandle<MarketElement>& quote, 
+            Stock(const RelinkableHandle<MarketElement>& quote,
                 const std::string& isinCode, const std::string& description);
             ~Stock();
           protected:

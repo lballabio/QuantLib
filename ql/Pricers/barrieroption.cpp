@@ -31,7 +31,7 @@
 
 // $Id$
 
-#include "ql/Pricers/barrieroption.hpp"
+#include <ql/Pricers/barrieroption.hpp>
 
 namespace QuantLib {
 

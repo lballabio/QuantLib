@@ -33,16 +33,15 @@
 #ifndef quantlib_montecarlo_multi_path_h
 #define quantlib_montecarlo_multi_path_h
 
-#include "ql/MonteCarlo/path.hpp"
+#include <ql/MonteCarlo/path.hpp>
 #include <vector>
 
 namespace QuantLib {
 
     namespace MonteCarlo {
 
+        //! MultiPath implements multiple factors evolving at the same time
         /*!
-        \typedef MultiPath
-        \brief MultiPath implements multiple paths evolving at the same time
 
         MultiPath contains the list of variations for each asset,
         \f[
@@ -52,6 +51,9 @@ namespace QuantLib {
         where \f$ Y^j_i \f$ is the value of the underlying \f$ j \f$
         at discretized time \f$ t_i \f$. The first index refers to the
         underlying, the second to the time position MultiPath[j,i]
+
+        \todo make it time-aware
+
         */
 
         //! single random walk
@@ -87,7 +89,7 @@ namespace QuantLib {
         inline MultiPath::MultiPath(const std::vector<Path>& multiPath)
             : multiPath_(multiPath) {}
 
-    
+
     }
 
 }

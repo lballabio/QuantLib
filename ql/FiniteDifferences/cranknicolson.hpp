@@ -34,7 +34,7 @@
 #ifndef quantlib_crank_nicolson_h
 #define quantlib_crank_nicolson_h
 
-#include "ql/FiniteDifferences/finitedifferencemodel.hpp"
+#include <ql/FiniteDifferences/finitedifferencemodel.hpp>
 
 namespace QuantLib {
 
@@ -42,21 +42,21 @@ namespace QuantLib {
 
         //! Crank-Nicolson scheme for finite difference methods
         /*! See sect. \ref findiff for details on the method.
-            
-            In this implementation, the passed operator must be derived 
+
+            In this implementation, the passed operator must be derived
             from either TimeConstantOperator or TimeDependentOperator.
             Also, it must implement at least the following interface:
 
             \code
             typedef ... arrayType;
-            
+
             // copy constructor/assignment
             // (these will be provided by the compiler if none is defined)
             Operator(const Operator&);
             Operator& operator=(const Operator&);
 
             // inspectors
-            size_t size(); 
+            size_t size();
 
             // modifiers
             void setTime(Time t);
@@ -71,9 +71,11 @@ namespace QuantLib {
             Operator operator+(const Operator&, const Operator&);
             Operator operator+(const Operator&, const Operator&);
             \endcode
-            
+
             \warning The differential operator must be linear for
             this evolver to work.
+
+            \todo add Douglas Scheme
         */
         template <class Operator>
         class CrankNicolson {
@@ -83,7 +85,7 @@ namespace QuantLib {
             typedef typename Operator::arrayType arrayType;
             typedef Operator operatorType;
             // constructors
-            CrankNicolson(const Operator& L) 
+            CrankNicolson(const Operator& L)
             : L_(L), I_(Operator::identity(L.size())), dt_(0.0) {}
             void step(arrayType& a, Time t);
             void setStep(Time dt) {

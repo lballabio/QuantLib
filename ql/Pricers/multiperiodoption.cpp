@@ -31,10 +31,10 @@
 
 // $Id$
 
-#include "ql/Pricers/europeanoption.hpp"
-#include "ql/Pricers/americancondition.hpp"
-#include "ql/Pricers/multiperiodoption.hpp"
-#include "ql/FiniteDifferences/valueatcenter.hpp"
+#include <ql/Pricers/europeanoption.hpp>
+#include <ql/Pricers/americancondition.hpp>
+#include <ql/Pricers/multiperiodoption.hpp>
+#include <ql/FiniteDifferences/valueatcenter.hpp>
 
 namespace QuantLib {
 
@@ -43,9 +43,9 @@ namespace QuantLib {
         using FiniteDifferences::firstDerivativeAtCenter;
         using FiniteDifferences::secondDerivativeAtCenter;
 
-        MultiPeriodOption::MultiPeriodOption(Option::Type type, 
-            double underlying, double strike, Spread dividendYield, 
-            Rate riskFreeRate, Time residualTime, double volatility, 
+        MultiPeriodOption::MultiPeriodOption(Option::Type type,
+            double underlying, double strike, Spread dividendYield,
+            Rate riskFreeRate, Time residualTime, double volatility,
             int gridPoints, const std::vector<Time>& dates,
             int timeSteps)
         : BSMNumericalOption(type, underlying, strike,

@@ -31,7 +31,7 @@
 
 // $Id$
 
-#include "ql/DayCounters/actualactual.hpp"
+#include <ql/DayCounters/actualactual.hpp>
 
 namespace QuantLib {
 

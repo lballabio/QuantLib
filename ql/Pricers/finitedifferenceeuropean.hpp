@@ -34,8 +34,8 @@
 #ifndef quantlib_pricers_finite_difference_european_option_h
 #define quantlib_pricers_finite_difference_european_option_h
 
-#include "ql/Pricers/bsmnumericaloption.hpp"
-#include "ql/FiniteDifferences/fdtypedefs.hpp"
+#include <ql/Pricers/bsmnumericaloption.hpp>
+#include <ql/FiniteDifferences/fdtypedefs.hpp>
 
 namespace QuantLib {
 
@@ -66,7 +66,7 @@ namespace QuantLib {
         };
 
         // inline definitions
-        
+
         inline Array  FiniteDifferenceEuropean::getPrices() const{
             value();
             return euroPrices_;

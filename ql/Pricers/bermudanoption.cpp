@@ -31,8 +31,8 @@
 
 // $Id$
 
-#include "ql/Pricers/bermudanoption.hpp"
-#include "ql/Pricers/europeanoption.hpp"
+#include <ql/Pricers/bermudanoption.hpp>
+#include <ql/Pricers/europeanoption.hpp>
 
 namespace QuantLib {
 
@@ -44,7 +44,7 @@ namespace QuantLib {
             const std::vector<Time>& dates,
             int timeSteps, int gridPoints)
         : MultiPeriodOption(type, underlying, strike, dividendYield,
-          riskFreeRate, residualTime, volatility, gridPoints, dates, 
+          riskFreeRate, residualTime, volatility, gridPoints, dates,
           timeSteps) {}
 
         using FiniteDifferences::StandardStepCondition;
@@ -61,9 +61,9 @@ namespace QuantLib {
         }
 
         Handle<SingleAssetOption> BermudanOption::clone() const {
-            return Handle<SingleAssetOption>(new BermudanOption(type_, 
-                underlying_, strike_, dividendYield_, riskFreeRate_, 
-                residualTime_, volatility_, dates_, timeStepPerPeriod_, 
+            return Handle<SingleAssetOption>(new BermudanOption(type_,
+                underlying_, strike_, dividendYield_, riskFreeRate_,
+                residualTime_, volatility_, dates_, timeStepPerPeriod_,
                 gridPoints_));
         }
 

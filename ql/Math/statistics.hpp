@@ -34,8 +34,8 @@
 #ifndef quantlib_statistic_h
 #define quantlib_statistic_h
 
-#include "ql/null.hpp"
-#include "ql/dataformatters.hpp"
+#include <ql/null.hpp>
+#include <ql/dataformatters.hpp>
 #include <iostream>
 
 namespace QuantLib {

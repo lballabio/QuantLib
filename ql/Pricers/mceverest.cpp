@@ -31,22 +31,25 @@
 
 // $Id$
 
-#include "ql/handle.hpp"
-#include "ql/MonteCarlo/everestpathpricer.hpp"
-#include "ql/MonteCarlo/mctypedefs.hpp"
-#include "ql/Pricers/mceverest.hpp"
+#include <ql/handle.hpp>
+#include <ql/MonteCarlo/everestpathpricer.hpp>
+#include <ql/MonteCarlo/mctypedefs.hpp>
+#include <ql/Pricers/mceverest.hpp>
 
 
 namespace QuantLib {
 
     namespace Pricers {
 
-        using MonteCarlo::MultiPathPricer;
-        using MonteCarlo::GaussianMultiPathGenerator;
-        using MonteCarlo::EverestPathPricer;
+        using Math::Statistics;
         using Math::Matrix;
+        using MonteCarlo::MultiPath;
+        using MonteCarlo::GaussianMultiPathGenerator;
+        using MonteCarlo::PathPricer;
+        using MonteCarlo::MonteCarloModel;
+        using MonteCarlo::EverestPathPricer;
 
-        McEverest::McEverest(const Array &dividendYield,
+        McEverest::McEverest(const Array& dividendYield,
             const Matrix& covariance,
             Rate riskFreeRate, Time residualTime,
             bool antitheticVariance, long seed) {
@@ -69,13 +72,13 @@ namespace QuantLib {
                 std::vector<Time>(1, residualTime), seed));
 
             //! Initialize the pricer on the path pricer
-            Handle<MultiPathPricer> pathPricer(
+            Handle<PathPricer<MultiPath> > pathPricer(
                 new EverestPathPricer(QL_EXP(-riskFreeRate*residualTime),
                 antitheticVariance));
 
              //! Initialize the multi-factor Monte Carlo
-            mcModel_ = Handle<MonteCarlo::MonteCarloModel<Math::Statistics, MonteCarlo::GaussianMultiPathGenerator, MonteCarlo::MultiPathPricer> > (
-                new MonteCarlo::MonteCarloModel<Math::Statistics, MonteCarlo::GaussianMultiPathGenerator, MonteCarlo::MultiPathPricer> (
+            mcModel_ = Handle<MonteCarlo::MonteCarloModel<Math::Statistics, MonteCarlo::GaussianMultiPathGenerator, MonteCarlo::PathPricer<MultiPath> > > (
+                new MonteCarlo::MonteCarloModel<Math::Statistics, MonteCarlo::GaussianMultiPathGenerator, MonteCarlo::PathPricer<MultiPath> > (
                                     pathGenerator, pathPricer,
                                     Math::Statistics()));
 

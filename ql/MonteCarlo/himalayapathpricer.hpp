@@ -36,7 +36,8 @@
 #define quantlib_himalaya_path_pricer_h
 
 
-#include "ql/MonteCarlo/multipathpricer.hpp"
+#include <ql/MonteCarlo/pathpricer.hpp>
+#include <ql/MonteCarlo/multipath.hpp>
 
 namespace QuantLib {
 
@@ -50,19 +51,17 @@ namespace QuantLib {
             M periods the option pays the max between the strike and the
             average of the best performers.
         */
-        class HimalayaPathPricer : public MultiPathPricer {
+        class HimalayaPathPricer : public PathPricer<MultiPath> {
           public:
-//            HimalayaPathPricer() {}
             HimalayaPathPricer(const Array& underlying,
                                double strike,
-                               double discount,
-                               bool antitheticVariance);
+                               DiscountFactor discount,
+                               bool useAntitheticVariance);
             double operator()(const MultiPath& multiPath) const;
-          protected:
+          private:
+            Option::Type type_;
             Array underlying_;
             double strike_;
-            double discount_;
-            bool antitheticVariance_;
         };
 
     }

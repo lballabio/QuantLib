@@ -2,4 +2,67 @@
 /*! \page pricers Pricer classes
     Documentation for this part of the library is in progress.
 
+    \subsection mcpricer Monte Carlo Pricer interface
+
+    \code
+    template<class S, class PG, class PP>
+    class McPricer {
+      public:
+        virtual ~McPricer() {}
+        // add samples until the required tolerance is reached
+        double value(double tolerance,
+                     size_t maxSample = QL_MAX_INT) const;
+        // simulate a fixed number of samples
+        double value(size_t samples) const;
+        // error Estimated of the samples simulated so far
+        double errorEstimate() const;
+    };
+    \endcode
+
+    \code
+    class McEuropean : public McPricer<Math::Statistics,
+                                       MonteCarlo::GaussianPathGenerator,
+                                       MonteCarlo::PathPricer> {
+      public:
+        McEuropean(Option::Type type,
+                   double underlying,
+                   double strike,
+                   Spread dividendYield,
+                   Rate riskFreeRate,
+                   double residualTime,
+                   double volatility,
+                   bool antitheticVariance,
+                   long seed=0);
+    };
+
+    McEuropean::McEuropean(Option::Type type,
+      double underlying, double strike, Spread dividendYield,
+      Rate riskFreeRate, double residualTime, double volatility,
+      bool antitheticVariance, long seed) {
+
+
+        //! Initialize the path generator
+        double mu = riskFreeRate - dividendYield
+                                 - 0.5 * volatility * volatility;
+
+        Handle<GaussianPathGenerator> pathGenerator(
+            new GaussianPathGenerator(mu, volatility*volatility,
+                residualTime, 1, seed));
+
+        //! Initialize the pricer on the single Path
+        Handle<PathPricer> euroPathPricer(new EuropeanPathPricer(type,
+            underlying, strike, QL_EXP(-riskFreeRate*residualTime),
+            antitheticVariance));
+
+        //! Initialize the one-factor Monte Carlo
+        mcModel_ = Handle<MonteCarlo::MonteCarloModel<Math::Statistics,
+            MonteCarlo::GaussianPathGenerator, MonteCarlo::PathPricer> > (
+            new MonteCarlo::MonteCarloModel<Math::Statistics,
+            MonteCarlo::GaussianPathGenerator, MonteCarlo::PathPricer> (
+            pathGenerator, euroPathPricer,
+            Math::Statistics()));
+
+    }
+    \endcode
+
 */

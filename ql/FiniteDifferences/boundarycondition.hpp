@@ -34,17 +34,17 @@
 #ifndef quantlib_boundary_condition_h
 #define quantlib_boundary_condition_h
 
-#include "ql/null.hpp"
-#include "ql/errors.hpp"
+#include <ql/null.hpp>
+#include <ql/errors.hpp>
 
 namespace QuantLib {
 
     namespace FiniteDifferences {
 
         //! Boundary condition for finite difference problems
-        /*! Three possibilities are given for setting boundary conditions, 
-            namely, no boundary condition, Dirichlet boundary condition 
-            (i.e., constant value), and Neumann boundary condition (i.e., 
+        /*! Three possibilities are given for setting boundary conditions,
+            namely, no boundary condition, Dirichlet boundary condition
+            (i.e., constant value), and Neumann boundary condition (i.e.,
             constant derivative).
 
             \warning For Neumann conditions. the value passed must not be the

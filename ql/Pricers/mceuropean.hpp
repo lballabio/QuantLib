@@ -34,27 +34,29 @@
 #ifndef quantlib_montecarlo_european_pricer_h
 #define quantlib_montecarlo_european_pricer_h
 
-#include "ql/option.hpp"
-#include "ql/types.hpp"
-#include "ql/MonteCarlo/mctypedefs.hpp"
-#include "ql/Pricers/mcpricer.hpp"
+#include <ql/option.hpp>
+#include <ql/types.hpp>
+#include <ql/MonteCarlo/mctypedefs.hpp>
+#include <ql/Pricers/mcpricer.hpp>
 
 namespace QuantLib {
 
     namespace Pricers {
 
         //! simple example of Monte Carlo pricer
-        class McEuropean : public McPricer<Math::Statistics, MonteCarlo::GaussianPathGenerator, MonteCarlo::PathPricer> {
+        class McEuropean : public McPricer<Math::Statistics,
+            MonteCarlo::GaussianPathGenerator,
+            MonteCarlo::PathPricer<MonteCarlo::Path> > {
           public:
             McEuropean(Option::Type type,
-                             double underlying,
-                             double strike,
-                             Spread dividendYield,
-                             Rate riskFreeRate,
-                             double residualTime,
-                             double volatility,
-                             bool antitheticVariance,
-                             long seed=0);
+                       double underlying,
+                       double strike,
+                       Spread dividendYield,
+                       Rate riskFreeRate,
+                       double residualTime,
+                       double volatility,
+                       bool antitheticVariance,
+                       long seed=0);
         };
 
     }

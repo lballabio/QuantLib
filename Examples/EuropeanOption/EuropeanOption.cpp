@@ -205,8 +205,8 @@ int main(int argc, char* argv[])
         method ="Monte Carlo";
         bool antitheticVariance = false;
         // The European path pricer
-        Handle<PathPricer> myEuropeanPathPricer =
-            Handle<PathPricer>(new EuropeanPathPricer(Option::Call,
+        Handle<PathPricer<Path> > myEuropeanPathPricer =
+            Handle<PathPricer<Path> >(new EuropeanPathPricer(Option::Call,
             underlying, strike, exp(-riskFreeRate*maturity),
             antitheticVariance));
         // The OneFactorMontecarloModel generates paths using myPathGenerator
@@ -235,7 +235,7 @@ int main(int argc, char* argv[])
         // The European path pricer, this time with antithetic variance
         // reduction
         myEuropeanPathPricer =
-            Handle<PathPricer>(new EuropeanPathPricer(Option::Call,
+            Handle<PathPricer<Path> >(new EuropeanPathPricer(Option::Call,
             underlying, strike, exp(-riskFreeRate*maturity),
             antitheticVariance));
         // reset the statistic accumulator

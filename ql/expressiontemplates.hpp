@@ -34,7 +34,7 @@
 #ifndef quantlib_expression_templates_h
 #define quantlib_expression_templates_h
 
-#include "ql/qldefines.hpp"
+#include <ql/qldefines.hpp>
 
 /* The concepts implemented here are from
    T. L. Veldhuizen, "Expression templates", C++ Report, 7(5):26-31, June 1995

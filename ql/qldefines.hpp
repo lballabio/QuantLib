@@ -56,13 +56,13 @@
 #define QL_TRACE_LEVEL 0
 
 #if   defined(__BORLANDC__)     // Borland C++ 5.5
-    #include "ql/config.bcc.hpp"
+    #include <ql/config.bcc.hpp>
 #elif defined(__MWERKS__)       // Metrowerks CodeWarrior
-    #include "ql/config.mwcw.hpp"
+    #include <ql/config.mwcw.hpp>
 #elif defined(_MSC_VER)         // Microsoft Visual C++ 6.0
-    #include "ql/config.msvc.hpp"
+    #include <ql/config.msvc.hpp>
 #elif defined(HAVE_CONFIG_H)    // Dynamically created by configure
-    #include "ql/config.hpp"
+    #include <ql/config.hpp>
 #else
     #error Unsupported compiler - please contact the QuantLib team
 #endif

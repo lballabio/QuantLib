@@ -35,20 +35,24 @@
 #ifndef quantlib_montecarlo_geometric_average_strike_option_path_pricer_h
 #define quantlib_montecarlo_geometric_average_strike_option_path_pricer_h
 
-#include "ql/MonteCarlo/singleassetpathpricer.hpp"
+#include <ql/MonteCarlo/pathpricer.hpp>
+#include <ql/MonteCarlo/path.hpp>
 
 namespace QuantLib {
 
     namespace MonteCarlo {
 
         //! %path pricer for geometric average price option
-        class GeometricASOPathPricer : public SingleAssetPathPricer {
+        class GeometricASOPathPricer : public PathPricer<Path> {
           public:
             GeometricASOPathPricer(Option::Type type,
                                    double underlying,
-                                   double discount,
-                                   bool antitheticVariance);
-            virtual double operator()(const Path& path) const;
+                                   DiscountFactor discount,
+                                   bool useAntitheticVariance);
+            double operator()(const Path& path) const;
+          private:
+            Option::Type type_;
+            double underlying_;
         };
 
     }

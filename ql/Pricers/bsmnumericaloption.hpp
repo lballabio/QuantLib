@@ -34,8 +34,8 @@
 #ifndef BSM_numerical_option_pricer_h
 #define BSM_numerical_option_pricer_h
 
-#include "ql/Pricers/singleassetoption.hpp"
-#include "ql/FiniteDifferences/bsmoperator.hpp"
+#include <ql/Pricers/singleassetoption.hpp>
+#include <ql/FiniteDifferences/bsmoperator.hpp>
 
 namespace QuantLib {
 
@@ -44,8 +44,8 @@ namespace QuantLib {
         //! Black-Scholes-Merton option priced numerically
         class BSMNumericalOption : public SingleAssetOption {
           public:
-            BSMNumericalOption(Option::Type type, double underlying, 
-                double strike, Spread dividendYield, Rate riskFreeRate, 
+            BSMNumericalOption(Option::Type type, double underlying,
+                double strike, Spread dividendYield, Rate riskFreeRate,
                 Time residualTime, double volatility, size_t gridPoints);
             // accessors
             virtual void calculate() const = 0;
@@ -57,7 +57,7 @@ namespace QuantLib {
 
           protected:
             // methods
-            virtual void setGridLimits(double center, 
+            virtual void setGridLimits(double center,
                                        double timeDelay) const;
             virtual void initializeGrid() const;
             virtual void initializeInitialCondition() const;
@@ -75,7 +75,7 @@ namespace QuantLib {
           private:
             // temporaries
             mutable double gridLogSpacing_;
-            size_t safeGridPoints(size_t gridPoints, 
+            size_t safeGridPoints(size_t gridPoints,
             Time residualTime);
         };
 
@@ -90,8 +90,8 @@ namespace QuantLib {
             size_t gridPoints, Time residualTime) {
             return QL_MAX(gridPoints, residualTime>1.0 ?
                 static_cast<size_t>(
-                    (QL_NUM_OPT_MIN_GRID_POINTS + 
-                    (residualTime-1.0) * 
+                    (QL_NUM_OPT_MIN_GRID_POINTS +
+                    (residualTime-1.0) *
                     QL_NUM_OPT_GRID_POINTS_PER_YEAR))
                 : QL_NUM_OPT_MIN_GRID_POINTS);
         }

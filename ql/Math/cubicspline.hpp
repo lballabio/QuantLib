@@ -34,7 +34,7 @@
 #ifndef quantlib_cubic_spline_h
 #define quantlib_cubic_spline_h
 
-#include "ql/Math/interpolation.hpp"
+#include <ql/Math/interpolation.hpp>
 #include <vector>
 
 namespace QuantLib {

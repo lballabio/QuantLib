@@ -34,7 +34,7 @@
 #ifndef quantlib_backward_euler_h
 #define quantlib_backward_euler_h
 
-#include "ql/FiniteDifferences/finitedifferencemodel.hpp"
+#include <ql/FiniteDifferences/finitedifferencemodel.hpp>
 
 namespace QuantLib {
 

@@ -31,7 +31,7 @@
 
 // $Id$
 
-#include "ql/option.hpp"
+#include <ql/option.hpp>
 
 namespace QuantLib {
 
@@ -47,7 +47,7 @@ namespace QuantLib {
         setupEngine();
         engine_->validateParameters();
         engine_->calculate();
-        const OptionValue* results = 
+        const OptionValue* results =
             dynamic_cast<const OptionValue*>(engine_->results());
         QL_ENSURE(results != 0, "no results returned from option pricer");
         NPV_ = results->value;

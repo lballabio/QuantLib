@@ -36,6 +36,7 @@ OBJS = \
        mceuropean.obj$(_D) \
        mceverest.obj$(_D) \
        mchimalaya.obj$(_D) \
+       mcmaxbasket.obj$(_D) \
        mcpagoda.obj$(_D) \
        multiperiodoption.obj$(_D) \
        singleassetoption.obj$(_D) \

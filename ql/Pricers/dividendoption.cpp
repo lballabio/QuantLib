@@ -31,10 +31,10 @@
 
 // $Id$
 
-#include "ql/Pricers/dividendoption.hpp"
-#include "ql/Math/cubicspline.hpp"
-#include "ql/Pricers/dividendeuropeanoption.hpp"
-#include "ql/FiniteDifferences/valueatcenter.hpp"
+#include <ql/Pricers/dividendoption.hpp>
+#include <ql/Math/cubicspline.hpp>
+#include <ql/Pricers/dividendeuropeanoption.hpp>
+#include <ql/FiniteDifferences/valueatcenter.hpp>
 #include <iterator>
 
 namespace QuantLib {
@@ -48,10 +48,10 @@ namespace QuantLib {
             double strike, Spread dividendYield, Rate riskFreeRate,
             Time residualTime, double volatility,
             const std::vector<double>& dividends,
-            const std::vector<Time>& exdivdates, 
+            const std::vector<Time>& exdivdates,
             int timeSteps, int gridPoints)
         : MultiPeriodOption(type, underlying - addElements(dividends),
-          strike, dividendYield, riskFreeRate, residualTime, volatility, 
+          strike, dividendYield, riskFreeRate, residualTime, volatility,
           gridPoints, exdivdates, timeSteps), dividends_(dividends) {
 
             QL_REQUIRE(dateNumber_ == dividends.size(),
@@ -129,7 +129,7 @@ namespace QuantLib {
                 }
             }
 
-            CubicSpline<std::vector<double>::iterator, 
+            CubicSpline<std::vector<double>::iterator,
               std::vector<double>::iterator> priceSpline(
                 logOldGrid.begin(), logOldGrid.end(), tmpPrices.begin());
 

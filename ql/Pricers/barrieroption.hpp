@@ -34,8 +34,8 @@
 #ifndef quantlib_barrier_option_pricer_h
 #define quantlib_barrier_option_pricer_h
 
-#include "ql/Pricers/singleassetoption.hpp"
-#include "ql/Math/normaldistribution.hpp"
+#include <ql/Pricers/singleassetoption.hpp>
+#include <ql/Math/normaldistribution.hpp>
 
 namespace QuantLib {
 

@@ -34,7 +34,7 @@
 #ifndef quantlib_bermudan_option_pricer_h
 #define quantlib_bermudan_option_pricer_h
 
-#include "ql/Pricers/multiperiodoption.hpp"
+#include <ql/Pricers/multiperiodoption.hpp>
 
 namespace QuantLib {
 

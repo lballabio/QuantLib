@@ -34,9 +34,9 @@
 #ifndef quantlib_gbp_libor_hpp
 #define quantlib_gbp_libor_hpp
 
-#include "ql/Indexes/xibor.hpp"
-#include "ql/Calendars/london.hpp"
-#include "ql/DayCounters/actual365.hpp"
+#include <ql/Indexes/xibor.hpp>
+#include <ql/Calendars/london.hpp>
+#include <ql/DayCounters/actual365.hpp>
 
 namespace QuantLib {
 
@@ -45,10 +45,10 @@ namespace QuantLib {
         //! %GBP %Libor index
         class GBPLibor : public Xibor {
           public:
-            GBPLibor(int n, TimeUnit units, 
+            GBPLibor(int n, TimeUnit units,
                 const RelinkableHandle<TermStructure>& h)
-            : Xibor("GBPLibor", n, units, 0, GBP, 
-                Calendar(Calendars::London()), true, ModifiedFollowing, 
+            : Xibor("GBPLibor", n, units, 0, GBP,
+                Calendar(Calendars::London()), true, ModifiedFollowing,
                 DayCounter(DayCounters::Actual365()), h) {}
         };
 

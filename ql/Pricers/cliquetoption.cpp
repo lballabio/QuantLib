@@ -31,7 +31,7 @@
 
 // $Id$
 
-#include "ql/Pricers/cliquetoption.hpp"
+#include <ql/Pricers/cliquetoption.hpp>
 
 namespace QuantLib
 {

@@ -31,7 +31,7 @@
 
 // $Id$
 
-#include "ql/calendar.hpp"
+#include <ql/calendar.hpp>
 
 namespace QuantLib {
 
@@ -87,7 +87,7 @@ namespace QuantLib {
     }
 
     // Western calendars
-    
+
     namespace { // hide implementation into an anonymous namespace
         const Day EasterMonday[] = {
             107,  98,  90, 103,  95, 114, 106,  91, 111, 102,   // 1900-1909

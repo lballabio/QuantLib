@@ -34,13 +34,13 @@
 #ifndef bsm_american_condition_h
 #define bsm_american_condition_h
 
-#include "ql/FiniteDifferences/fdtypedefs.hpp"
+#include <ql/FiniteDifferences/fdtypedefs.hpp>
 
 namespace QuantLib {
 
     namespace Pricers {
 
-        class AmericanCondition 
+        class AmericanCondition
         : public FiniteDifferences::StandardStepCondition {
           public:
             AmericanCondition(const Array& initialPrices);
@@ -51,7 +51,7 @@ namespace QuantLib {
 
 
         // inline definitions
-        
+
         inline AmericanCondition::AmericanCondition(
             const Array& initialPrices)
             : initialPrices_(initialPrices) {}

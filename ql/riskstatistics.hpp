@@ -34,8 +34,8 @@
 #ifndef quantlib_risk_statistics_h
 #define quantlib_risk_statistics_h
 
-#include "ql/Math/statistics.hpp"
-#include "ql/Math/riskmeasures.hpp"
+#include <ql/Math/statistics.hpp>
+#include <ql/Math/riskmeasures.hpp>
 
 namespace QuantLib {
 

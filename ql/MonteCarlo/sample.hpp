@@ -35,7 +35,7 @@
 #ifndef quantlib_sample_h
 #define quantlib_sample_h
 
-#include "ql/qldefines.hpp"
+#include <ql/qldefines.hpp>
 
 namespace QuantLib {
 

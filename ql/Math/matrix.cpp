@@ -31,8 +31,8 @@
 
 // $Id$
 
-#include "ql/Math/symmetricschurdecomposition.hpp"
-#include "ql/dataformatters.hpp"
+#include <ql/Math/symmetricschurdecomposition.hpp>
+#include <ql/dataformatters.hpp>
 
 namespace QuantLib {
 

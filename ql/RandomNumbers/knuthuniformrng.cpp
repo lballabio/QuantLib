@@ -31,7 +31,7 @@
 
 // $Id$
 
-#include "ql/RandomNumbers/knuthuniformrng.hpp"
+#include <ql/RandomNumbers/knuthuniformrng.hpp>
 
 namespace QuantLib {
 

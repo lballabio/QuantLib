@@ -34,10 +34,10 @@
 #ifndef quantlib_plain_option_h
 #define quantlib_plain_option_h
 
-#include "ql/option.hpp"
-#include "ql/marketelement.hpp"
-#include "ql/termstructure.hpp"
-#include "ql/solver1d.hpp"
+#include <ql/option.hpp>
+#include <ql/marketelement.hpp>
+#include <ql/termstructure.hpp>
+#include <ql/solver1d.hpp>
 
 namespace QuantLib {
 

@@ -34,8 +34,8 @@
 #ifndef quantlib_date_h
 #define quantlib_date_h
 
-#include "ql/errors.hpp"
-#include "ql/types.hpp"
+#include <ql/errors.hpp>
+#include <ql/types.hpp>
 #include <utility>
 
 namespace QuantLib {
@@ -92,7 +92,7 @@ namespace QuantLib {
 
     //! Concrete date class
     /*! This class provides methods to inspect dates as well as methods and
-        operators which implement a limited date algebra (increasing and 
+        operators which implement a limited date algebra (increasing and
         decreasing dates, and calculating their difference).
     */
     class Date {
@@ -160,7 +160,7 @@ namespace QuantLib {
         static size_t monthLength(Month m, bool leapYear);
         static size_t monthOffset(Month m, bool leapYear);
         static size_t yearOffset(Year y);
-        
+
     };
 
     /*! \relates Date

@@ -34,7 +34,7 @@
 #ifndef quantlib_currency_h
 #define quantlib_currency_h
 
-#include "ql/qldefines.hpp"
+#include <ql/qldefines.hpp>
 
 namespace QuantLib {
 

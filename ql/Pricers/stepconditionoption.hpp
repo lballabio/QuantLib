@@ -34,8 +34,8 @@
 #ifndef quantlib_pricers_stepconditionoption_h
 #define quantlib_pricers_stepconditionoption_h
 
-#include "ql/Pricers/bsmnumericaloption.hpp"
-#include "ql/FiniteDifferences/fdtypedefs.hpp"
+#include <ql/Pricers/bsmnumericaloption.hpp>
+#include <ql/FiniteDifferences/fdtypedefs.hpp>
 
 namespace QuantLib {
 
@@ -45,7 +45,7 @@ namespace QuantLib {
         class StepConditionOption : public BSMNumericalOption {
           protected:
             // constructor
-            StepConditionOption(Option::Type type, double underlying, 
+            StepConditionOption(Option::Type type, double underlying,
                                 double strike,
                                 Spread dividendYield, Rate riskFreeRate,
                                 Time residualTime, double volatility,

@@ -34,14 +34,14 @@
 #ifndef quantlib_thirty360_day_counter_h
 #define quantlib_thirty360_day_counter_h
 
-#include "ql/daycounter.hpp"
+#include <ql/daycounter.hpp>
 
 namespace QuantLib {
 
     namespace DayCounters {
 
         //! 30/360 day count convention
-        /*! The day count can be calculated according to US, European, or 
+        /*! The day count can be calculated according to US, European, or
             Italian conventions.
         */
         class Thirty360 : public DayCounter {

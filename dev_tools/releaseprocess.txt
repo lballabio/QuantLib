@@ -3,17 +3,20 @@
     purge headers
     purge warnings
     check for tab
-    first ChangeLog update
-first update of news and history
-    branch out of the trunk
+    first ChangeLog update (also python and ruby)
+    first update of news and history (also python and ruby)
+    branch out of the trunk (also python and ruby)
     update version number on the trunk
-alert Dirk, our Debian packager
-test and bug fixing on the branch
-review documentation
+    update web-site
+    test and bug fixing on the branch
+    review documentation
     create hidden sourceforge.net release
-last update of news, history, ChangeLog
-download files on sourceforge.net
-update download and doc pages at quantlib.org
+    last minute update of news.txt, history.txt, ChangeLog.txt, history.docs
+update news, changelog and date on the SF release page
+upload files on sourceforge.net
+alert Dirk, our Debian packager
+upload new version of quantlib.org
+unhide new release
 news on sourceforge.net
 email quantlib-users, quantlib-announce
 update freshmeat

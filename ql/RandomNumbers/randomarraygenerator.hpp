@@ -34,9 +34,9 @@
 #ifndef quantlib_montecarlo_random_array_generator_h
 #define quantlib_montecarlo_random_array_generator_h
 
-#include "ql/Math/matrix.hpp"
-#include "ql/MonteCarlo/sample.hpp"
-#include "ql/dataformatters.hpp"
+#include <ql/Math/matrix.hpp>
+#include <ql/MonteCarlo/sample.hpp>
+#include <ql/dataformatters.hpp>
 
 namespace QuantLib {
 
@@ -106,7 +106,7 @@ namespace QuantLib {
 
 
         template <class RNG>
-        inline const RandomArrayGenerator<RNG>::sample_type& 
+        inline const RandomArrayGenerator<RNG>::sample_type&
         RandomArrayGenerator<RNG>::next() const{
             // starting point for product
             next_.weight = 1.0;

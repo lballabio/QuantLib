@@ -34,10 +34,10 @@
 #ifndef quantlib_array_h
 #define quantlib_array_h
 
-#include "ql/types.hpp"
-#include "ql/errors.hpp"
+#include <ql/types.hpp>
+#include <ql/errors.hpp>
 #if QL_EXPRESSION_TEMPLATES_WORK
-#include "ql/expressiontemplates.hpp"
+    #include <ql/expressiontemplates.hpp>
 #endif
 #include <functional>
 #include <numeric>
@@ -45,9 +45,9 @@
 namespace QuantLib {
 
     //! 1-D array used in linear algebra.
-    /*! This class implements the concept of vector as used in linear 
-        algebra. 
-        As such, it is <b>not</b> meant to be used as a container - 
+    /*! This class implements the concept of vector as used in linear
+        algebra.
+        As such, it is <b>not</b> meant to be used as a container -
         <tt>std::vector</tt> should be used instead.
     */
     class Array {
@@ -58,7 +58,7 @@ namespace QuantLib {
         explicit Array(size_t size = 0);
         //! creates the array and fills it with <tt>value</tt>
         Array(size_t size, double value);
-        /*! \brief creates the array and fills it according to 
+        /*! \brief creates the array and fills it according to
             \f$ a_{0} = value, a_{i}=a_{i-1}+increment \f$
         */
         Array(size_t size, double value, double increment);

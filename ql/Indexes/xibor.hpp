@@ -34,8 +34,8 @@
 #ifndef quantlib_xibor_hpp
 #define quantlib_xibor_hpp
 
-#include "ql/index.hpp"
-#include "ql/termstructure.hpp"
+#include <ql/index.hpp>
+#include <ql/termstructure.hpp>
 
 namespace QuantLib {
 
@@ -44,18 +44,18 @@ namespace QuantLib {
         //! base class for libor indexes
         class Xibor : public Index {
           public:
-            Xibor(const std::string& familyName, 
-                int n, TimeUnit units, int settlementDays, 
-                Currency currency, 
-                const Calendar& calendar, bool isAdjusted, 
+            Xibor(const std::string& familyName,
+                int n, TimeUnit units, int settlementDays,
+                Currency currency,
+                const Calendar& calendar, bool isAdjusted,
                 RollingConvention rollingConvention,
                 const DayCounter& dayCounter,
                 const RelinkableHandle<TermStructure>& h)
-            : familyName_(familyName), n_(n), units_(units), 
+            : familyName_(familyName), n_(n), units_(units),
               settlementDays_(settlementDays),
-              currency_(currency), calendar_(calendar), 
-              isAdjusted_(isAdjusted), 
-              rollingConvention_(rollingConvention), 
+              currency_(currency), calendar_(calendar),
+              isAdjusted_(isAdjusted),
+              rollingConvention_(rollingConvention),
               dayCounter_(dayCounter), termStructure_(h) {}
             //! \name Index interface
             //@{
@@ -69,7 +69,7 @@ namespace QuantLib {
             Currency currency() const { return currency_; }
             Calendar calendar() const { return calendar_; }
             bool isAdjusted() const { return isAdjusted_; }
-            RollingConvention rollingConvention() const { 
+            RollingConvention rollingConvention() const {
                 return rollingConvention_; }
             DayCounter dayCounter() const { return dayCounter_; }
             //@}

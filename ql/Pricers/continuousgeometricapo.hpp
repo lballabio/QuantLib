@@ -34,7 +34,7 @@
 #ifndef quantlib_continous_geometric_average_price_option_h
 #define quantlib_continous_geometric_average_price_option_h
 
-#include "ql/Pricers/europeanoption.hpp"
+#include <ql/Pricers/europeanoption.hpp>
 
 namespace QuantLib {
 
@@ -46,8 +46,7 @@ namespace QuantLib {
             The formula is from "Option Pricing Formulas", E. G. Haug (1997)
             pag 96-97
 
-            \todo Continous Geometric Average Strike Option
-
+            \todo add Average Strike version and make it backward starting
         */
         class ContinuousGeometricAPO : public EuropeanOption    {
            public:
@@ -65,7 +64,7 @@ namespace QuantLib {
 
 
         // inline definitions
-        
+
         inline ContinuousGeometricAPO::ContinuousGeometricAPO(
             Option::Type type, double underlying, double strike,
             Spread dividendYield, Rate riskFreeRate, Time residualTime,

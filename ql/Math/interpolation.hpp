@@ -34,16 +34,16 @@
 #ifndef quantlib_interpolation_h
 #define quantlib_interpolation_h
 
-#include "ql/errors.hpp"
+#include <ql/errors.hpp>
 
 namespace QuantLib {
 
     namespace Math {
 
         //! abstract base class for 1-D interpolations
-        /*! Classes derived from this class will override operator() to 
-            provide interpolated values from two sequences of equal length, 
-            representing discretized values of a variable and a function of 
+        /*! Classes derived from this class will override operator() to
+            provide interpolated values from two sequences of equal length,
+            representing discretized values of a variable and a function of
             the former, respectively.
         */
         template <class RandomAccessIterator1, class RandomAccessIterator2>
@@ -61,10 +61,10 @@ namespace QuantLib {
             Interpolation(const RandomAccessIterator1& xBegin,
                 const RandomAccessIterator1& xEnd,
                 const RandomAccessIterator2& yBegin);
-            /*! This operator must be overridden to provide an implementation 
+            /*! This operator must be overridden to provide an implementation
                 of the actual interpolation.
 
-                \pre The sequence of values for x must have been sorted for 
+                \pre The sequence of values for x must have been sorted for
                 the result to make sense.
             */
             virtual result_type operator()(const argument_type& x) const = 0;

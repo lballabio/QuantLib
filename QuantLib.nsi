@@ -279,6 +279,14 @@ SectionIn 1 2
                  "$INSTDIR\Docs\html\index.html"
 SectionEnd
 
+Section "WinHelp documentation"
+SectionIn 1
+  SetOutPath "$INSTDIR\Docs"
+  File "Docs\html\index.chm"
+  CreateShortCut "$SMPROGRAMS\QuantLib\Documentation (WinHelp).lnk" \
+                 "$INSTDIR\Docs\index.chm"
+SectionEnd
+
 Section "PDF documentation"
 SectionIn 1
   SetOutPath "$INSTDIR\Docs"

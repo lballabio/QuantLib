@@ -34,9 +34,9 @@
 #ifndef quantlib_finite_difference_model_h
 #define quantlib_finite_difference_model_h
 
-#include "ql/FiniteDifferences/stepcondition.hpp"
-#include "ql/handle.hpp"
-#include "ql/null.hpp"
+#include <ql/FiniteDifferences/stepcondition.hpp>
+#include <ql/handle.hpp>
+#include <ql/null.hpp>
 
 namespace QuantLib {
 
@@ -55,13 +55,13 @@ namespace QuantLib {
             FiniteDifferenceModel(const operatorType& L) : evolver(L) {}
             // methods
             // arrayType grid() const { return evolver.xGrid(); }
-            /*! solves the problem between the given times, possibly 
+            /*! solves the problem between the given times, possibly
                 applying a condition at every step.
-                \warning being this a rollback, <tt>from</tt> must be a later 
+                \warning being this a rollback, <tt>from</tt> must be a later
                 time than <tt>to</tt>.
             */
-            void rollback(arrayType& a, Time from, Time to, 
-              size_t steps, 
+            void rollback(arrayType& a, Time from, Time to,
+              size_t steps,
               Handle<StepCondition<arrayType> > condition =
                 Handle<StepCondition<arrayType> >());
           private:

@@ -31,13 +31,13 @@
 
 // $Id$
 
-#include "ql/DayCounters/thirty360.hpp"
+#include <ql/DayCounters/thirty360.hpp>
 
 namespace QuantLib {
 
     namespace DayCounters {
 
-        Handle<DayCounter::DayCounterImpl> 
+        Handle<DayCounter::DayCounterImpl>
         Thirty360::implementation(Thirty360::Convention c) {
             switch (c) {
               case USA:
@@ -57,9 +57,9 @@ namespace QuantLib {
                 int dd1 = d1.dayOfMonth(), dd2 = d2.dayOfMonth();
                 int mm1 = d1.month(), mm2 = d2.month();
                 int yy1 = d1.year(), yy2 = d2.year();
-    
+
                 if (dd2 == 31 && dd1 < 30) { dd2 = 1; mm2++; }
-                
+
                 return 360*(yy2-yy1) + 30*(mm2-mm1-1) +
                        QL_MAX(0,30-dd1) + QL_MIN(30,dd2);
         }
@@ -69,8 +69,8 @@ namespace QuantLib {
                 int dd1 = d1.dayOfMonth(), dd2 = d2.dayOfMonth();
                 int mm1 = d1.month(), mm2 = d2.month();
                 int yy1 = d1.year(), yy2 = d2.year();
-    
-                return 360*(yy2-yy1) + 30*(mm2-mm1-1) + 
+
+                return 360*(yy2-yy1) + 30*(mm2-mm1-1) +
                        QL_MAX(0,30-dd1) + QL_MIN(30,dd2);
         }
 

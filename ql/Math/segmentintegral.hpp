@@ -31,7 +31,7 @@
 
 // $Id$
 
-#include "ql/solver1d.hpp"
+#include <ql/solver1d.hpp>
 #include <functional>
 
 #ifndef quantlib_segment_integral_h
@@ -42,16 +42,16 @@ namespace QuantLib {
     namespace Math {
 
         /*! \brief Integral of a one-dimensional function
-        
-            \warning the use of this class is not recommended since 
+
+            \warning the use of this class is not recommended since
             it will be redesigned in one of the next minor releases.
-            
+
             \todo Redesign as a template function.
         */
         class SegmentIntegral{
           public:
             SegmentIntegral(size_t intervals);
-            double operator()(const ObjectiveFunction &f, 
+            double operator()(const ObjectiveFunction &f,
                              double a, double b) const;
           private:
             size_t intervals_;

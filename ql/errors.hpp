@@ -34,7 +34,7 @@
 #ifndef quantlib_errors_hpp
 #define quantlib_errors_hpp
 
-#include "ql/qldefines.hpp"
+#include <ql/qldefines.hpp>
 #include <exception>
 #include <string>
 

@@ -7,7 +7,7 @@ The current version we're using is 1.2.11.1
 
 The basic requirement to produce html documentation are:
 1) DoxyGen (latest release at
-http://www.stack.nl/~dimitri/doxygen/download.html#latestsrc)
+   http://www.stack.nl/~dimitri/doxygen/download.html#latestsrc)
 2) Graphviz (http://www.research.att.com/sw/tools/graphviz/)
 3) Aladdin Ghostscript (http://www.cs.wisc.edu/~ghost/)
 
@@ -15,9 +15,9 @@ If you want to produce PDF and/or PS documentation you will need also:
 4) TeX/LaTeX
 5) LaTeX Fancy Header (http://toocool.calpoly.edu/latex/fancy_header.html)
 6) epstopdf. It's available as Perl script (you will also need Perl, of
-course), C source to be compiled or Windows executable.
-http://www.tex.ac.uk/tex-archive/help/Catalogue/entries/epstopdf.html
-or http://www.ctan.org/tex-archive/support/epstopdf/
+   course), C source to be compiled or Windows executable.
+   http://www.tex.ac.uk/tex-archive/help/Catalogue/entries/epstopdf.html
+   or http://www.ctan.org/tex-archive/support/epstopdf/
 
 
 
@@ -31,20 +31,21 @@ To produce HTML documentation:
 3) Install Ghostscript. Add to your path gs\gsx.xx\bin
 4) a) Borland user: type 'make html' in the QuantLib\Docs directory
    b) VC user: go to the QuantLib\Docs directory and type:
-        doxygen quantlib.win32.doxy
+      doxygen quantlib.win32.doxy
 
 If you want to produce TeX/PDF/PS documentation:
 5) install MiKTeX 2 or higher from http://www.miktex.org
-Choose to create your "Local TEXMF Tree".
-Add miktex\bin (where latex.exe is) to your PATH.
+   Choose to create your "Local TEXMF Tree".
+   Add miktex\bin (where latex.exe is) to your PATH.
 6) under your "Local TEXMF Tree" create a folder \tex\latex\fancyhdr
-that includes fancyhdr.sty, extramarks.sty and fixmarks.sty (the 3 files can be
-downloaded from http://toocool.calpoly.edu/latex/fancy_header.html)
+   that includes fancyhdr.sty, extramarks.sty and fixmarks.sty (the 3 files
+   can be downloaded from http://toocool.calpoly.edu/latex/fancy_header.html)
 7) download http://www.tex.ac.uk/tex-archive/support/epstopdf/epstopdf.exe
-and copy it into a directory on your path
+   and copy it into a directory on your path
 8) Open MikTeX Option panel from Programs/MiKTeX 2 list and click on the
-"Refresh Now" button in the "General" folder.
-9) a) Borland users: type 'make ps' or 'make pdf' in the QuantLib\Docs directory
+   "Refresh Now" button in the "General" folder.
+9) a) Borland users: type 'make ps' or 'make pdf' from the QuantLib\Docs
+      directory
    b) VC user: go to the QuantLib\Docs\latex directory and type:
         latex refman
         makeindex refman.idx
@@ -54,11 +55,21 @@ and copy it into a directory on your path
         makeindex refman.idx
         pdflatex refman
       for PDF output.
-Just ignore TeX/LaTeX warning/error.
+   Just ignore TeX/LaTeX warning/error.
 
-*********
-* Win32 *
-*********
+If you want to compile the HTML documentation into Microsoft Help format:
+10) download and install the HTML Help Workshop from
+    msdn.microsoft.com/library/default.asp?url=/library/en-us/htmlhelp/html/vsconhh1start.asp
+    and add to your path the directory created by the installer
+11) type 'hhc index.hhp' from the QuantLib\Docs\html directory. The file
+    index.chm will be created.
+
+
+
+
+**************
+* Unix/Linux *
+**************
 
 From the QuantLib base directory, you'll have to do
 
@@ -73,4 +84,4 @@ You'll end up with:
   plus refman.pdf and refman.ps which are their final result
 - and a directory Docs/man containing the man pages.
 
-Look in MAkefile.am for additional directives
+Look in Makefile.am for additional directives

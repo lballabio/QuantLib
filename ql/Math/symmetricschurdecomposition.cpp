@@ -36,7 +36,7 @@
     only 2 spaces are used for each indentation
 */
 
-#include "ql/Math/symmetricschurdecomposition.hpp"
+#include <ql/Math/symmetricschurdecomposition.hpp>
 
 namespace QuantLib {
 

@@ -31,7 +31,7 @@
 
 // $Id$
 
-#include "ql/Pricers/dividendshoutoption.hpp"
+#include <ql/Pricers/dividendshoutoption.hpp>
 
 namespace QuantLib {
 

@@ -34,9 +34,9 @@
 #ifndef quantlib_usd_libor_hpp
 #define quantlib_usd_libor_hpp
 
-#include "ql/Indexes/xibor.hpp"
-#include "ql/Calendars/newyork.hpp"
-#include "ql/DayCounters/actual360.hpp"
+#include <ql/Indexes/xibor.hpp>
+#include <ql/Calendars/newyork.hpp>
+#include <ql/DayCounters/actual360.hpp>
 
 namespace QuantLib {
 
@@ -45,10 +45,10 @@ namespace QuantLib {
         //! %USD %Libor index
         class USDLibor : public Xibor {
           public:
-            USDLibor(int n, TimeUnit units, 
+            USDLibor(int n, TimeUnit units,
                 const RelinkableHandle<TermStructure>& h)
-            : Xibor("USDLibor", n, units, 2, USD, 
-                Calendar(Calendars::NewYork()), true, ModifiedFollowing, 
+            : Xibor("USDLibor", n, units, 2, USD,
+                Calendar(Calendars::NewYork()), true, ModifiedFollowing,
                 DayCounter(DayCounters::Actual360()), h) {}
         };
 

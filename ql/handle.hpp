@@ -34,7 +34,7 @@
 #ifndef quantlib_handle_h
 #define quantlib_handle_h
 
-#include "ql/errors.hpp"
+#include <ql/errors.hpp>
 
 // The implementation of this class is taken from
 // "The C++ Programming Language", 3rd edition, B.Stroustrup
@@ -45,12 +45,12 @@ namespace QuantLib {
     /*! This class acts as a proxy to a pointer contained in it. Such pointer is
         owned by the handle, i.e., the handle will be responsible for its
         deletion, unless explicitly stated by the programmer.
-        
+
         A count of the references to the contained pointer is incremented every
         time a handle is copied, and decremented every time a handle is deleted
-        or goes out of scope. When the handle owns the pointer, this mechanism 
-        ensures on one hand, that the pointer will not be deallocated as long as 
-        a handle refers to it, and on the other hand, that it will be 
+        or goes out of scope. When the handle owns the pointer, this mechanism
+        ensures on one hand, that the pointer will not be deallocated as long as
+        a handle refers to it, and on the other hand, that it will be
         deallocated when no more handles do.
 
         \note The implementation of this class was originally taken from
@@ -71,7 +71,7 @@ namespace QuantLib {
         \code
         Handle<SomeObj> h1(new SomeObj);    // this is as safe as can be.
         \endcode
-        
+
         \warning When the programmer keeps the ownership of the pointer, as
         explicitly declared in
         \code
@@ -92,17 +92,17 @@ namespace QuantLib {
         : ptr_(0), n_(new int(1)), owns_(true) {}
         //! Constructor taking a pointer.
         /*! If <b>owns</b> is set to <tt>true</tt> (the default), the handle
-            will be responsible for the deletion of the pointer. If it is 
-            set to <tt>false</tt>, the programmer must make sure that the 
-            pointed object remains in scope for the lifetime of the handle 
-            and its copies. Destruction of the object is also responsibility 
-            of the programmer. 
-            
-            It is advised that handles be used with <tt>owns = false</tt> 
-            only in a controlled an self-contained environment. Such a case 
-            happens when an object needs to pass a handle to itself to inner 
-            classes or bootstrappers - i.e., contained or temporary objects 
-            whose lifetime is guaranteed not to last more than the lifetime 
+            will be responsible for the deletion of the pointer. If it is
+            set to <tt>false</tt>, the programmer must make sure that the
+            pointed object remains in scope for the lifetime of the handle
+            and its copies. Destruction of the object is also responsibility
+            of the programmer.
+
+            It is advised that handles be used with <tt>owns = false</tt>
+            only in a controlled an self-contained environment. Such a case
+            happens when an object needs to pass a handle to itself to inner
+            classes or bootstrappers - i.e., contained or temporary objects
+            whose lifetime is guaranteed not to last more than the lifetime
             of the object.
         */
         explicit Handle(Type* ptr, bool owns = true)
@@ -123,7 +123,7 @@ namespace QuantLib {
         //! \name Casting
         //@{
         /*! Returns a null pointer in case of failure.
-            \warning The returned pointer is not guaranteed to remain 
+            \warning The returned pointer is not guaranteed to remain
             allocated and should be discarded immediately after being used */
         template <class Type2>
         Type2* downcast() const {
@@ -131,14 +131,14 @@ namespace QuantLib {
         }
         //@}
         #endif
-        
+
         //! \name Inspectors
         //@{
         //! Checks if the contained pointer is actually allocated
         bool isNull() const;
         #if !QL_ALLOW_TEMPLATE_METHOD_CALLS
         /*! \warning This is here only because MSVC won't compile downcast().
-            I know it is dangerous. Avoid using it if you can. 
+            I know it is dangerous. Avoid using it if you can.
             Blame Microsoft if you can't. */
         Type* pointer() const { return ptr_; }
         #endif

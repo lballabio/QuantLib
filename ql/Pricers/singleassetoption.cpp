@@ -31,8 +31,8 @@
 
 // $Id$
 
-#include "ql/Pricers/singleassetoption.hpp"
-#include "ql/Solvers1D/brent.hpp"
+#include <ql/Pricers/singleassetoption.hpp>
+#include <ql/Solvers1D/brent.hpp>
 
 namespace QuantLib {
 
@@ -59,8 +59,8 @@ namespace QuantLib {
 //        const double SingleAssetOption::dSMultiplier_   = 0.0001;
 //        const double SingleAssetOption::dTMultiplier_   = 0.0001;
 
-        SingleAssetOption::SingleAssetOption(Option::Type type, 
-            double underlying, double strike, Spread dividendYield, 
+        SingleAssetOption::SingleAssetOption(Option::Type type,
+            double underlying, double strike, Spread dividendYield,
             Rate riskFreeRate, Time residualTime, double volatility)
             : type_(type), underlying_(underlying),
             strike_(strike), dividendYield_(dividendYield),

@@ -34,8 +34,8 @@
 #ifndef quantlib_xibor_manager_hpp
 #define quantlib_xibor_manager_hpp
 
-#include "ql/history.hpp"
-#include "ql/termstructure.hpp"
+#include <ql/history.hpp>
+#include <ql/termstructure.hpp>
 #include <map>
 
 namespace QuantLib {
@@ -46,7 +46,7 @@ namespace QuantLib {
         class XiborManager {
           public:
             // historical fixings
-            static void setHistory(const std::string& name, 
+            static void setHistory(const std::string& name,
                 const History&);
             static const History& getHistory(const std::string& name);
             static bool hasHistory(const std::string& name);

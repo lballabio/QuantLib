@@ -34,7 +34,7 @@
 #ifndef quantlib_target_calendar_h
 #define quantlib_target_calendar_h
 
-#include "ql/calendar.hpp"
+#include <ql/calendar.hpp>
 
 namespace QuantLib {
 

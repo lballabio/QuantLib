@@ -34,21 +34,21 @@
 #ifndef quantlib_pricers_cliquet_option_h
 #define quantlib_pricers_cliquet_option_h
 
-#include "ql/Pricers/europeanoption.hpp"
+#include <ql/Pricers/europeanoption.hpp>
 #include <vector>
 
 namespace QuantLib {
-    
+
     namespace Pricers {
 
-        //! cliquet (Ratchet) option        
+        //! cliquet (Ratchet) option
         /*! A cliquet option, also known as Ratchet option, is a series
             of forward-starting options where the strike for the next
-            exercize date is set to the spot price at the beginning of each 
+            exercize date is set to the spot price at the beginning of each
             period.
-            In the particular case in which only two dates are given the 
-            price of the option is the same as that of a forward-starting 
-            option starting at the first date and expiring at the second 
+            In the particular case in which only two dates are given the
+            price of the option is the same as that of a forward-starting
+            option starting at the first date and expiring at the second
             date.
         */
         class CliquetOption : public SingleAssetOption {

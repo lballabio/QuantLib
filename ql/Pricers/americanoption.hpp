@@ -34,8 +34,8 @@
 #ifndef quantlib_pricers_american_option_h
 #define quantlib_pricers_american_option_h
 
-#include "ql/Pricers/stepconditionoption.hpp"
-#include "ql/Pricers/americancondition.hpp"
+#include <ql/Pricers/stepconditionoption.hpp>
+#include <ql/Pricers/americancondition.hpp>
 
 namespace QuantLib {
 
@@ -59,10 +59,10 @@ namespace QuantLib {
 
 
         // inline definitions
-        
-        inline AmericanOption::AmericanOption(Option::Type type, 
-            double underlying, double strike, Spread dividendYield, 
-            Rate riskFreeRate, Time residualTime, double volatility, 
+
+        inline AmericanOption::AmericanOption(Option::Type type,
+            double underlying, double strike, Spread dividendYield,
+            Rate riskFreeRate, Time residualTime, double volatility,
             int timeSteps, int gridPoints)
         : StepConditionOption(type, underlying, strike, dividendYield,
             riskFreeRate, residualTime, volatility, timeSteps,

@@ -34,7 +34,7 @@
 #ifndef quantlib_null_h
 #define quantlib_null_h
 
-#include "ql/qldefines.hpp"
+#include <ql/qldefines.hpp>
 
 namespace QuantLib {
 

@@ -34,7 +34,7 @@
 #ifndef quantlib_args_and_results_h
 #define quantlib_args_and_results_h
 
-#include "ql/qldefines.hpp"
+#include <ql/qldefines.hpp>
 
 namespace QuantLib {
 

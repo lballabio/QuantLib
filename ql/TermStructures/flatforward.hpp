@@ -34,8 +34,8 @@
 #ifndef quantlib_flat_forward_curve_h
 #define quantlib_flat_forward_curve_h
 
-#include "ql/termstructure.hpp"
-#include "ql/dataformatters.hpp"
+#include <ql/termstructure.hpp>
+#include <ql/dataformatters.hpp>
 
 namespace QuantLib {
 
@@ -44,9 +44,9 @@ namespace QuantLib {
         class FlatForward : public TermStructure {
           public:
             // constructor
-            FlatForward(Currency currency, 
+            FlatForward(Currency currency,
                 const DayCounter& dayCounter,
-                const Date& todaysDate, const Calendar& calendar, 
+                const Date& todaysDate, const Calendar& calendar,
                 int settlementDays, Rate forward);
             // inspectors
             Currency currency() const;
@@ -61,7 +61,7 @@ namespace QuantLib {
             Time minTime() const;
           protected:
             Rate zeroYieldImpl(Time, bool extrapolate = false) const;
-            DiscountFactor discountImpl(Time, 
+            DiscountFactor discountImpl(Time,
                 bool extrapolate = false) const;
             Rate forwardImpl(Time, bool extrapolate = false) const;
           private:
@@ -77,11 +77,11 @@ namespace QuantLib {
         // inline definitions
 
         inline FlatForward::FlatForward(Currency currency,
-            const DayCounter& dayCounter, const Date& todaysDate, 
-            const Calendar& calendar, int settlementDays, 
+            const DayCounter& dayCounter, const Date& todaysDate,
+            const Calendar& calendar, int settlementDays,
             Rate forward)
         : currency_(currency), dayCounter_(dayCounter),
-          todaysDate_(todaysDate), calendar_(calendar), 
+          todaysDate_(todaysDate), calendar_(calendar),
           settlementDays_(settlementDays), forward_(forward) {
             settlementDate_ = calendar_.advance(
                 todaysDate_,settlementDays_,Days);
@@ -131,15 +131,15 @@ namespace QuantLib {
         inline Rate FlatForward::zeroYieldImpl(Time t, bool) const {
             // no forward limit on time
             QL_REQUIRE(t >= 0.0,
-                "FlatForward: zero yield requested for negative time (" + 
+                "FlatForward: zero yield requested for negative time (" +
                 DoubleFormatter::toString(t) + ")");
             return forward_;
         }
-        
+
         inline DiscountFactor FlatForward::discountImpl(Time t, bool) const {
             // no forward limit on time
             QL_REQUIRE(t >= 0.0,
-                "FlatForward: discount requested for negative time (" + 
+                "FlatForward: discount requested for negative time (" +
                 DoubleFormatter::toString(t) + ")");
             return DiscountFactor(QL_EXP(-forward_*t));
         }
@@ -147,7 +147,7 @@ namespace QuantLib {
         inline Rate FlatForward::forwardImpl(Time t, bool) const {
             // no forward limit on time
             QL_REQUIRE(t >= 0.0,
-                "FlatForward: forward requested for negative time (" + 
+                "FlatForward: forward requested for negative time (" +
                 DoubleFormatter::toString(t) + ")");
             return forward_;
         }

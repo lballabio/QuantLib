@@ -34,10 +34,10 @@
 #ifndef quantlib_tridiagonal_operator_h
 #define quantlib_tridiagonal_operator_h
 
-#include "ql/FiniteDifferences/boundarycondition.hpp"
-#include "ql/array.hpp"
-#include "ql/date.hpp"
-#include "ql/handle.hpp"
+#include <ql/FiniteDifferences/boundarycondition.hpp>
+#include <ql/array.hpp>
+#include <ql/date.hpp>
+#include <ql/handle.hpp>
 
 namespace QuantLib {
 
@@ -45,7 +45,7 @@ namespace QuantLib {
 
         //! Base implementation for tridiagonal operator
         /*! \warning to use real time-dependant algebra, you must overload
-            the corresponding operators in the inheriting time-dependent 
+            the corresponding operators in the inheriting time-dependent
             class
         */
         class TridiagonalOperator {
@@ -70,9 +70,9 @@ namespace QuantLib {
             TridiagonalOperator(const Array& low, const Array& mid,
                 const Array& high);
             #if defined(QL_PATCH_MICROSOFT_BUGS)
-                /* This copy constructor and assignment operator are here 
-                   because somehow Visual C++ is not able to generate working 
-                   ones. They are _not_ to be defined for other compilers 
+                /* This copy constructor and assignment operator are here
+                   because somehow Visual C++ is not able to generate working
+                   ones. They are _not_ to be defined for other compilers
                    which are able to generate correct ones.   */
                 TridiagonalOperator(const TridiagonalOperator& L);
                 TridiagonalOperator& operator=(const TridiagonalOperator& L);
@@ -105,7 +105,7 @@ namespace QuantLib {
             class TimeSetter {
               public:
                 virtual ~TimeSetter() {}
-                virtual void setTime(Time t, 
+                virtual void setTime(Time t,
                                      TridiagonalOperator& L) const = 0;
             };
           protected:
@@ -139,8 +139,8 @@ namespace QuantLib {
             }
         #endif
 
-        inline size_t TridiagonalOperator::size() const { 
-            return diagonal_.size(); 
+        inline size_t TridiagonalOperator::size() const {
+            return diagonal_.size();
         }
 
         inline bool TridiagonalOperator::isTimeDependent() {
@@ -153,7 +153,7 @@ namespace QuantLib {
             aboveDiagonal_[0] = valC;
         }
 
-        inline void TridiagonalOperator::setMidRow(size_t i, 
+        inline void TridiagonalOperator::setMidRow(size_t i,
           double valA, double valB, double valC) {
             QL_REQUIRE(i>=1 && i<=size()-2,
                 "out of range in TridiagonalSystem::setMidRow");

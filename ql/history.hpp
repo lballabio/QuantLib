@@ -24,7 +24,7 @@
 
 /*! \file history.hpp
     \brief history class
-    
+
     \fullpath
     ql/%history.hpp
 */
@@ -34,9 +34,9 @@
 #ifndef quantlib_history_h
 #define quantlib_history_h
 
-#include "ql/null.hpp"
-#include "ql/Utilities/filteringiterator.hpp"
-#include "ql/dataformatters.hpp"
+#include <ql/null.hpp>
+#include <ql/Utilities/filteringiterator.hpp>
+#include <ql/dataformatters.hpp>
 #include <vector>
 
 namespace QuantLib {
@@ -46,9 +46,9 @@ namespace QuantLib {
         Single data can be accessed through their date, while sets of
         consecutive data can be accessed through iterators.
 
-        A history can contain null data, which can either be returned or 
+        A history can contain null data, which can either be returned or
         skipped according to the chosen iterator type.
-            
+
         <b>Example: </b>
         \link history_iterators.cpp
         uses of history iterators
@@ -62,8 +62,8 @@ namespace QuantLib {
             values, corresponding to the date range between
             <b><i>firstDate</i></b> and <b><i>lastDate</i></b> included.
 
-            \pre <b><i>begin</i></b>-<b><i>end</i></b> must equal the 
-            number of days from <b><i>firstDate</i></b> to 
+            \pre <b><i>begin</i></b>-<b><i>end</i></b> must equal the
+            number of days from <b><i>firstDate</i></b> to
             <b><i>lastDate</i></b> included.
         */
         template <class Iterator>
@@ -77,26 +77,26 @@ namespace QuantLib {
             while (begin != end)
                 values_.push_back(*(begin++));
         #endif
-            QL_REQUIRE(lastDate >= firstDate, 
+            QL_REQUIRE(lastDate >= firstDate,
                 "invalid date range for history");
             QL_ENSURE(values_.size() == (size_t)(lastDate-firstDate+1),
                 "history size incompatible with date range");
         }
-        History(const Date& firstDate, const std::vector<double>& values) 
+        History(const Date& firstDate, const std::vector<double>& values)
         : firstDate_(firstDate), lastDate_(firstDate + values.size()),
           values_(values) {}
         /*! This constructor initializes the history with the given set of
             values, corresponding to the date range between
             <b><i>firstDate</i></b> and <b><i>lastDate</i></b> included.
 
-            \pre The size of <b><i>values</i></b> must equal the number of 
-                 days from <b><i>firstDate</i></b> to <b><i>lastDate</i></b> 
+            \pre The size of <b><i>values</i></b> must equal the number of
+                 days from <b><i>firstDate</i></b> to <b><i>lastDate</i></b>
                  included.
         */
         History(const Date& firstDate, const Date& lastDate,
             const std::vector<double>& values);
         /*! This constructor initializes the history with the given set of
-            values, corresponding each to the element with the same index in 
+            values, corresponding each to the element with the same index in
             the given set of dates. The whole date range between
             <b><i>dates</i></b>[0] and <b><i>dates</i></b>[N-1] will be
             automatically filled by inserting null values where a date is
@@ -106,13 +106,13 @@ namespace QuantLib {
             \pre There can be no pairs
                  (<b><i>dates</i></b>[i],<b><i>values</i></b>[i]) and
                  (<b><i>dates</i></b>[j],<b><i>values</i></b>[j])
-                 such that <tt>dates[i] == dates[j] && values[i] != 
+                 such that <tt>dates[i] == dates[j] && values[i] !=
                  values[j]</tt>.
-                 Pairs with <tt>dates[i] == dates[j] && values[i] == 
-                 values[j]</tt> are allowed; the duplicated entries will be 
+                 Pairs with <tt>dates[i] == dates[j] && values[i] ==
+                 values[j]</tt> are allowed; the duplicated entries will be
                  discarded.
-            \pre The size of <b><i>values</i></b> must equal the number of 
-                 days from <b><i>firstDate</i></b> to <b><i>lastDate</i></b> 
+            \pre The size of <b><i>values</i></b> must equal the number of
+                 days from <b><i>firstDate</i></b> to <b><i>lastDate</i></b>
                  included.
         */
         History(const std::vector<Date>& dates,
@@ -155,7 +155,7 @@ namespace QuantLib {
         {
             friend class History;
           public:
-            /* These typedefs are needed even though inherited from 
+            /* These typedefs are needed even though inherited from
                QL_ITERATOR (see 14.6.2.3 of the standard).  */
             typedef Entry                           value_type;
             typedef int                             difference_type;
@@ -245,7 +245,7 @@ namespace QuantLib {
         typedef std::vector<double>::const_iterator const_data_iterator;
 
         //! bidirectional iterator on non-null historical data
-        typedef 
+        typedef
             Utilities::filtering_iterator<const_data_iterator,DataValidator>
                 const_valid_data_iterator;
 
@@ -254,11 +254,11 @@ namespace QuantLib {
             const_iterator, const_valid_iterator, const_data_iterator, and
             const_valid_data_iterator.
 
-            const_iterator and const_valid_iterator point to an Entry 
-            structure, the difference being that the latter only iterates 
+            const_iterator and const_valid_iterator point to an Entry
+            structure, the difference being that the latter only iterates
             over valid entries - i.e., entries whose data are not null.
             The same difference exists between const_data_iterator and
-            const_valid_data_iterator which point directly to historical 
+            const_valid_data_iterator which point directly to historical
             values without reference to the date they are associated to.
         */
         //@{
@@ -320,7 +320,7 @@ namespace QuantLib {
 
 
     /*! \example history_iterators.cpp
-        This code exemplifies how to use History iterators to perform 
+        This code exemplifies how to use History iterators to perform
         statistic analyses on historical data.
     */
 

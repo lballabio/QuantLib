@@ -1,4 +1,3 @@
-
 /*
  * Copyright (C) 2000-2001 QuantLib Group
  *
@@ -22,19 +21,19 @@
  * available at http://quantlib.org/group.html
 */
 
-/*! \file mcpagoda.cpp
-    \brief Roofed multi asset Asian option
+/*! \file mcmaxbasket.cpp
+    \brief Max Basket Monte Carlo pricer
 
     \fullpath
-    ql/Pricers/%mcpagoda.cpp
+    ql/Pricers/%mcmaxbasket.cpp
 */
 
 // $Id$
 
 #include <ql/handle.hpp>
-#include <ql/Pricers/mcpagoda.hpp>
-#include <ql/MonteCarlo/pagodapathpricer.hpp>
+#include <ql/MonteCarlo/maxbasketpathpricer.hpp>
 #include <ql/MonteCarlo/mctypedefs.hpp>
+#include <ql/Pricers/mcmaxbasket.hpp>
 
 namespace QuantLib {
 
@@ -46,50 +45,46 @@ namespace QuantLib {
         using MonteCarlo::GaussianMultiPathGenerator;
         using MonteCarlo::PathPricer;
         using MonteCarlo::MonteCarloModel;
-        using MonteCarlo::PagodaPathPricer;
+        using MonteCarlo::MaxBasketPathPricer;
 
-        McPagoda::McPagoda(const Array& portfolio, double fraction,
-            double roof, const Array& dividendYield, const Matrix& covariance,
-            Rate riskFreeRate, const std::vector<Time>& times,
+        McMaxBasket::McMaxBasket(const Array& underlying,
+            const Array& dividendYield, const Math::Matrix& covariance,
+            Rate riskFreeRate,  double residualTime,
             bool antitheticVariance, long seed) {
 
             QL_REQUIRE(covariance.rows() == covariance.columns(),
-                "McPagoda: covariance matrix not square");
-            QL_REQUIRE(covariance.rows() == portfolio.size(),
-                "McPagoda: underlying size does not match that of"
+                "McMaxBasket: covariance matrix not square");
+            QL_REQUIRE(covariance.rows() == underlying.size(),
+                "McMaxBasket: underlying size does not match that of"
                 " covariance matrix");
             QL_REQUIRE(covariance.rows() == dividendYield.size(),
-                "McPagoda: dividendYield size does not match"
+                "McMaxBasket: dividendYield size does not match"
                 " that of covariance matrix");
-            QL_REQUIRE(fraction > 0,
-                "McPagoda: option fraction must be positive");
-            QL_REQUIRE(roof > 0,
-                "McPagoda: roof must be positive");
-            QL_REQUIRE(times.size() >= 1,
-                "McPagoda: you must have at least one time-step");
+            QL_REQUIRE(residualTime > 0,
+                "McMaxBasket: residual time must be positive");
 
             //! Initialize the path generator
             Array mu(riskFreeRate - dividendYield
-                            - 0.5 * covariance.diagonal());
+                - 0.5 * covariance.diagonal());
 
             Handle<GaussianMultiPathGenerator> pathGenerator(
-                new GaussianMultiPathGenerator(mu,
-                                               covariance,
-                                               times,
-                                               seed));
-            double residualTime = times[times.size()-1];
+                new GaussianMultiPathGenerator(mu, covariance,
+                std::vector<Time>(1, residualTime), seed));
 
             //! Initialize the pricer on the path pricer
             Handle<PathPricer<MultiPath> > pathPricer(
-                new PagodaPathPricer(portfolio, roof,
-                        fraction * QL_EXP(-riskFreeRate*residualTime),
-                        antitheticVariance));
+                new MaxBasketPathPricer(
+                underlying, QL_EXP(-riskFreeRate*residualTime),
+                antitheticVariance));
 
              //! Initialize the multi-factor Monte Carlo
-            mcModel_ = Handle<MonteCarlo::MonteCarloModel<Math::Statistics, MonteCarlo::GaussianMultiPathGenerator, MonteCarlo::PathPricer<MultiPath> > > (
-                new MonteCarlo::MonteCarloModel<Math::Statistics, MonteCarlo::GaussianMultiPathGenerator, MonteCarlo::PathPricer<MultiPath> > (
-                                        pathGenerator, pathPricer,
-                                        Math::Statistics()));
+            mcModel_ = Handle<MonteCarlo::MonteCarloModel<Statistics,
+                GaussianMultiPathGenerator,
+                PathPricer<MultiPath> > > (
+                new MonteCarloModel<Statistics,
+                GaussianMultiPathGenerator,
+                PathPricer<MultiPath> > (pathGenerator,
+                pathPricer, Statistics()));
 
         }
 

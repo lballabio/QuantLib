@@ -34,7 +34,7 @@
 #ifndef quantlib_central_limit_gaussian_rng_h
 #define quantlib_central_limit_gaussian_rng_h
 
-#include "ql/MonteCarlo/sample.hpp"
+#include <ql/MonteCarlo/sample.hpp>
 
 namespace QuantLib {
 

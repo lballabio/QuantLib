@@ -34,18 +34,18 @@
 #ifndef quantlib_pricers_binaryoption_h
 #define quantlib_pricers_binaryoption_h
 
-#include "ql/Pricers/singleassetoption.hpp"
+#include <ql/Pricers/singleassetoption.hpp>
 
 namespace QuantLib  {
-    
+
     namespace Pricers {
 
-        //! Binary (digital) option        
+        //! Binary (digital) option
         class BinaryOption : public SingleAssetOption {
           public:
             BinaryOption(Option::Type type, double underlying, double strike,
-                         Spread dividendYield, Rate riskFreeRate, 
-                         Time residualTime, double volatility, 
+                         Spread dividendYield, Rate riskFreeRate,
+                         Time residualTime, double volatility,
                          double cashPayoff = 1 );
             double value() const;
             double delta() const;

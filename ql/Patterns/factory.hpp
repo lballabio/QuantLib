@@ -34,7 +34,7 @@
 #ifndef quantlib_factory_h
 #define quantlib_factory_h
 
-#include "ql/qldefines.hpp"
+#include <ql/qldefines.hpp>
 #include <string>
 #include <map>
 
@@ -47,7 +47,7 @@ namespace QuantLib {
             implemented in Bruce Eckel, Thinking in Patterns
             (http://www.bruceeckel.com).
 
-            The class <tt>Type</tt> must define a type 
+            The class <tt>Type</tt> must define a type
             <tt>Type::factory</tt>.
             Instances of the latter must implement a method
             \code
@@ -68,7 +68,7 @@ namespace QuantLib {
             typedef std::map<std::string,Handle<factory_type> > map_type;
           public:
             //! adds a factory with the corresponding tag
-            void add(const std::string& tag, 
+            void add(const std::string& tag,
                      const Handle<factory_type>& factory) {
                 factories_[tag] = factory;
             }

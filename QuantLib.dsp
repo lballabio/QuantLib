@@ -547,6 +547,14 @@ SOURCE=.\ql\MonteCarlo\himalayapathpricer.hpp
 # End Source File
 # Begin Source File
 
+SOURCE=.\ql\MonteCarlo\maxbasketpathpricer.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\MonteCarlo\maxbasketpathpricer.hpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\ql\MonteCarlo\mctypedefs.hpp
 # End Source File
 # Begin Source File
@@ -560,10 +568,6 @@ SOURCE=.\ql\MonteCarlo\multipath.hpp
 # Begin Source File
 
 SOURCE=.\ql\MonteCarlo\multipathgenerator.hpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\ql\MonteCarlo\multipathpricer.hpp
 # End Source File
 # Begin Source File
 
@@ -588,14 +592,6 @@ SOURCE=.\ql\MonteCarlo\pathpricer.hpp
 # Begin Source File
 
 SOURCE=.\ql\MonteCarlo\sample.hpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\ql\MonteCarlo\singleassetpathpricer.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\ql\MonteCarlo\singleassetpathpricer.hpp
 # End Source File
 # End Group
 # Begin Group "Patterns"
@@ -780,6 +776,14 @@ SOURCE=.\ql\Pricers\mchimalaya.cpp
 # Begin Source File
 
 SOURCE=.\ql\Pricers\mchimalaya.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\Pricers\mcmaxbasket.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\Pricers\mcmaxbasket.hpp
 # End Source File
 # Begin Source File
 

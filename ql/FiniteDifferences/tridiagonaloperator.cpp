@@ -31,8 +31,8 @@
 
 // $Id$
 
-#include "ql/FiniteDifferences/tridiagonaloperator.hpp"
-#include "ql/dataformatters.hpp"
+#include <ql/FiniteDifferences/tridiagonaloperator.hpp>
+#include <ql/dataformatters.hpp>
 
 namespace QuantLib {
 

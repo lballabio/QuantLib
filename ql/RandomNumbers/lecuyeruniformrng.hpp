@@ -34,7 +34,7 @@
 #ifndef quantlib_lecuyer_uniform_rng_h
 #define quantlib_lecuyer_uniform_rng_h
 
-#include "ql/MonteCarlo/sample.hpp"
+#include <ql/MonteCarlo/sample.hpp>
 #include <iostream>
 #include <string>
 #include <vector>
@@ -44,7 +44,7 @@ namespace QuantLib {
     namespace RandomNumbers {
 
         //! Uniform random number generator
-        /*! Random number generator of L'Ecuyer with added Bays-Durham 
+        /*! Random number generator of L'Ecuyer with added Bays-Durham
             shuffle.
             For more details see Section 7.1 of Numerical Recipes in C, 2nd
             Edition, Cambridge University Press (available at
@@ -56,7 +56,7 @@ namespace QuantLib {
             /*! if the given seed is 0, a random seed will be chosen
                 based on clock() */
             explicit LecuyerUniformRng(long seed = 0);
-            /*! returns a sample with weight 1.0 containing a random number 
+            /*! returns a sample with weight 1.0 containing a random number
                 uniformly chosen from (0.0,1.0) */
             sample_type next() const;
           private:
@@ -76,7 +76,7 @@ namespace QuantLib {
             static const long double maxRandom;
         };
 
-        inline LecuyerUniformRng::LecuyerUniformRng(long seed) 
+        inline LecuyerUniformRng::LecuyerUniformRng(long seed)
         : buffer(LecuyerUniformRng::bufferSize) {
             temp2 = temp1 = (seed != 0 ? seed : long(QL_TIME(0)));
             for (int j=bufferSize+7; j>=0; j--) {
@@ -90,7 +90,7 @@ namespace QuantLib {
             y = buffer[0];
         }
 
-        inline LecuyerUniformRng::sample_type 
+        inline LecuyerUniformRng::sample_type
         LecuyerUniformRng::next() const {
             long k = temp1/q1;
             temp1 = a1*(temp1-k*q1)-k*r1;

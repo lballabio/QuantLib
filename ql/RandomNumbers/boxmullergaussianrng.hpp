@@ -34,15 +34,15 @@
 #ifndef quantlib_box_muller_gaussian_rng_h
 #define quantlib_box_muller_gaussian_rng_h
 
-#include "ql/MonteCarlo/sample.hpp"
+#include <ql/MonteCarlo/sample.hpp>
 
 namespace QuantLib {
 
     namespace RandomNumbers {
 
         //! Gaussian random number generator
-        /*! It uses the well-known Box-Muller transformation to return a 
-            normal distributed Gaussian deviate with average 0.0 and standard 
+        /*! It uses the well-known Box-Muller transformation to return a
+            normal distributed Gaussian deviate with average 0.0 and standard
             deviation of 1.0, from a uniform deviate in (0,1) supplied by U.
 
             Class U must implement the following interface:

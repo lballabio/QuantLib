@@ -34,7 +34,7 @@
 #ifndef quantlib_actual360_day_counter_h
 #define quantlib_actual360_day_counter_h
 
-#include "ql/daycounter.hpp"
+#include <ql/daycounter.hpp>
 
 namespace QuantLib {
 
@@ -50,7 +50,7 @@ namespace QuantLib {
             class Act360Impl : public DayCounter::DayCounterImpl {
               public:
                 std::string name() const { return std::string("act/360"); }
-                int dayCount(const Date& d1, const Date& d2) const { 
+                int dayCount(const Date& d1, const Date& d2) const {
                     return (d2-d1); }
                 Time yearFraction(const Date& d1, const Date& d2,
                     const Date&, const Date&) const {

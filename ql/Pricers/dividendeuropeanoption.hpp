@@ -34,7 +34,7 @@
 #ifndef BSM_dividend_european_option_pricer_h
 #define BSM_dividend_european_option_pricer_h
 
-#include "ql/Pricers/europeanoption.hpp"
+#include <ql/Pricers/europeanoption.hpp>
 #include <vector>
 
 namespace QuantLib {
@@ -44,9 +44,9 @@ namespace QuantLib {
         //! European option with dividends
         class DividendEuropeanOption : public EuropeanOption    {
           public:
-            DividendEuropeanOption(Option::Type type, double underlying, 
-                double strike, Spread dividendYield, Rate riskFreeRate, 
-                Time residualTime, double volatility, 
+            DividendEuropeanOption(Option::Type type, double underlying,
+                double strike, Spread dividendYield, Rate riskFreeRate,
+                Time residualTime, double volatility,
                 const std::vector<double>& dividends,
                 const std::vector<Time>& exdivdates);
             double theta() const;
@@ -65,7 +65,7 @@ namespace QuantLib {
 
 
         // inline definitions
-        
+
         inline double DividendEuropeanOption::riskless(Rate r,
             std::vector<double> divs, std::vector<Time> divDates) const{
 

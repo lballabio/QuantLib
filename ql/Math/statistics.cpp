@@ -31,7 +31,7 @@
 
 // $Id$
 
-#include "ql/Math/statistics.hpp"
+#include <ql/Math/statistics.hpp>
 
 namespace QuantLib {
 

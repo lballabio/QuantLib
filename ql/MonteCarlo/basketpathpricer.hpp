@@ -35,7 +35,8 @@
 #ifndef quantlib_basket_path_pricer_h
 #define quantlib_basket_path_pricer_h
 
-#include "ql/MonteCarlo/multipathpricer.hpp"
+#include <ql/MonteCarlo/pathpricer.hpp>
+#include <ql/MonteCarlo/multipath.hpp>
 
 namespace QuantLib {
 
@@ -45,16 +46,18 @@ namespace QuantLib {
         /*! The value of the option at expiration is given by the value
             of the underlying which has best performed.
         */
-        class BasketPathPricer : public MultiPathPricer {
+        class BasketPathPricer : public PathPricer<MultiPath> {
           public:
-            BasketPathPricer(const Array& underlying,
-                             double discount,
-                             bool antitheticVariance);
+            BasketPathPricer(Option::Type type,
+                             const Array& underlying,
+                             double strike,
+                             DiscountFactor discount,
+                             bool useAntitheticVariance);
             double operator()(const MultiPath& multiPath) const;
-          protected:
+          private:
+            Option::Type type_;
             Array underlying_;
-            double discount_;
-            bool antitheticVariance_;
+            double strike_;
         };
 
     }

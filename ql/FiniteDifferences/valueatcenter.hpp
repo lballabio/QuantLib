@@ -34,7 +34,7 @@
 #ifndef quantlib_finite_difference_value_at_center_h
 #define quantlib_finite_difference_value_at_center_h
 
-#include "ql/array.hpp"
+#include <ql/array.hpp>
 
 namespace QuantLib {
 
@@ -44,11 +44,11 @@ namespace QuantLib {
         double valueAtCenter(const Array& a);
 
         //! mid-point first derivative
-        double firstDerivativeAtCenter(const Array& a, 
+        double firstDerivativeAtCenter(const Array& a,
             const Array& g);
 
         //! mid-point second derivative
-        double secondDerivativeAtCenter(const Array& a, 
+        double secondDerivativeAtCenter(const Array& a,
             const Array& g);
 
     }

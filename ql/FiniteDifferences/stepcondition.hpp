@@ -34,7 +34,7 @@
 #ifndef quantlib_step_condition_h
 #define quantlib_step_condition_h
 
-#include "ql/date.hpp"
+#include <ql/date.hpp>
 
 namespace QuantLib {
 

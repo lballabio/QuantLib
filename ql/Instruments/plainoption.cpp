@@ -31,8 +31,8 @@
 
 // $Id$
 
-#include "ql/Instruments/plainoption.hpp"
-#include "ql/Solvers1D/brent.hpp"
+#include <ql/Instruments/plainoption.hpp>
+#include <ql/Solvers1D/brent.hpp>
 
 namespace QuantLib {
 

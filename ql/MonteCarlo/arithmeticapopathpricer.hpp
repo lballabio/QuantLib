@@ -34,21 +34,25 @@
 #ifndef quantlib_montecarlo_arithmetic_average_price_option_path_pricer_h
 #define quantlib_montecarlo_arithmetic_average_price_option_path_pricer_h
 
-#include "ql/MonteCarlo/singleassetpathpricer.hpp"
+#include <ql/MonteCarlo/pathpricer.hpp>
+#include <ql/MonteCarlo/path.hpp>
 
 namespace QuantLib {
 
     namespace MonteCarlo {
 
         //! %path pricer for arithmetic average price option
-        class ArithmeticAPOPathPricer : public SingleAssetPathPricer {
+        class ArithmeticAPOPathPricer : public PathPricer<Path> {
           public:
             ArithmeticAPOPathPricer(Option::Type type,
                                     double underlying,
                                     double strike,
-                                    double discount,
-                                    bool antitheticVariance);
-            virtual double operator()(const Path &path) const;
+                                    DiscountFactor discount,
+                                    bool useAntitheticVariance);
+            double operator()(const Path& path) const;
+          private:
+            Option::Type type_;
+            double underlying_, strike_;
         };
 
     }

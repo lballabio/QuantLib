@@ -31,38 +31,40 @@
 
 // $Id$
 
-#include "ql/MonteCarlo/arithmeticasopathpricer.hpp"
-#include "ql/Pricers/singleassetoption.hpp"
-
-
+#include <ql/MonteCarlo/arithmeticasopathpricer.hpp>
+#include <ql/Pricers/singleassetoption.hpp>
 
 using QuantLib::Pricers::ExercisePayoff;
-
 
 namespace QuantLib {
 
     namespace MonteCarlo {
 
         ArithmeticASOPathPricer::ArithmeticASOPathPricer(
-          Option::Type type, double underlying, double discount,
-          bool antitheticVariance)
-        : SingleAssetPathPricer(type, underlying, underlying, discount,
-          antitheticVariance) {}
+          Option::Type type, double underlying,
+          DiscountFactor discount, bool useAntitheticVariance)
+        : PathPricer<Path>(discount, useAntitheticVariance), type_(type),
+          underlying_(underlying) {
+            QL_REQUIRE(underlying>0.0,
+                "ArithmeticASOPathPricer: "
+                "underlying less/equal zero not allowed");
+        }
+
         double ArithmeticASOPathPricer::operator()(const Path& path) const {
 
-            int n = path.size();
+            size_t n = path.size();
             QL_REQUIRE(n>0,"ArithmeticASOPathPricer: the path cannot be empty");
 
             double price1 = underlying_;
             double averageStrike1 = 0.0;
-            int i;
+            size_t i;
             for (i=0; i<n; i++) {
                 price1 *= QL_EXP(path.drift()[i]+path.diffusion()[i]);
                 averageStrike1 += price1;
             }
             averageStrike1 = averageStrike1/n;
 
-            if (antitheticVariance_) {
+            if (useAntitheticVariance_) {
                 double price2 = underlying_;
                 double averageStrike2 = 0.0;
 

@@ -31,7 +31,7 @@
 
 // $Id$
 
-#include "ql/Calendars/wellington.hpp"
+#include <ql/Calendars/wellington.hpp>
 
 namespace QuantLib {
 
