@@ -38,11 +38,8 @@ namespace QuantLib {
         bool payoffAtExpiry)
     : EarlyExercise(payoffAtExpiry) {
 
-        type_ = American;
-        // Bermudan exercise cannot degenerate into European exercise
-        QL_REQUIRE(dates.size()>1,
-                   "at least 2 exercise dates are needed");
-        dates_ = dates;
+        type_ = Bermudan;
+		dates_ = dates;
         std::sort(dates_.begin(), dates_.end());
 
     }
