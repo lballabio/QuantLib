@@ -21,7 +21,6 @@
 #include "utilities.hpp"
 #include <ql/Calendars/nullcalendar.hpp>
 #include <ql/DayCounters/actual360.hpp>
-#include <ql/DayCounters/simpledaycounter.hpp>
 #include <ql/Instruments/barrieroption.hpp>
 #include <ql/PricingEngines/Barrier/analyticbarrierengine.hpp>
 #include <ql/PricingEngines/Barrier/mcbarrierengine.hpp>
@@ -292,7 +291,7 @@ void BarrierOptionTest::testBabsiriValues() {
     Rate r = 0.05;
     Rate q = 0.02;
 
-    DayCounter dc = SimpleDayCounter();
+    DayCounter dc = Actual360();
     Date today = Date::todaysDate();
     boost::shared_ptr<SimpleQuote> underlying(
                                             new SimpleQuote(underlyingPrice));
@@ -309,8 +308,7 @@ void BarrierOptionTest::testBabsiriValues() {
 
     boost::shared_ptr<PricingEngine> engine(new AnalyticBarrierEngine);
 
-    Calendar calendar = NullCalendar();
-    Date exDate = calendar.advance(today,1,Years);
+    Date exDate = today+360;
     boost::shared_ptr<Exercise> exercise(new EuropeanExercise(exDate));
 
     for (Size i=0; i<LENGTH(values); i++) {
@@ -396,7 +394,7 @@ void BarrierOptionTest::testBeagleholeValues() {
     Rate r = QL_LOG (1.1);
     Rate q = 0.00;
 
-    DayCounter dc = SimpleDayCounter();
+    DayCounter dc = Actual360();
     Date today = Date::todaysDate();
 
     boost::shared_ptr<SimpleQuote> underlying(
@@ -415,8 +413,7 @@ void BarrierOptionTest::testBeagleholeValues() {
 
     boost::shared_ptr<PricingEngine> engine(new AnalyticBarrierEngine);
 
-    Calendar calendar = NullCalendar();
-    Date exDate = calendar.advance(today,1,Years);
+    Date exDate = today+360;
     boost::shared_ptr<Exercise> exercise(new EuropeanExercise(exDate));
 
     for (Size i=0; i<LENGTH(values); i++) {
