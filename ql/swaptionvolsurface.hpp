@@ -1,5 +1,4 @@
 
-
 /*
  Copyright (C) 2000, 2001, 2002 RiskMap srl
 
@@ -28,7 +27,8 @@
 #define quantlib_swaption_volatility_surface_h
 
 #include <ql/date.hpp>
-#include <ql/handle.hpp>
+#include <ql/relinkablehandle.hpp>
+#include <ql/marketelement.hpp>
 #include <ql/Patterns/observable.hpp>
 
 namespace QuantLib {
@@ -41,23 +41,27 @@ namespace QuantLib {
       public:
         virtual ~SwaptionVolatilitySurface() {}
         //! returns the volatility for a given starting date and length
-        virtual Rate vol(const Date& start, Time length) const = 0;
+        virtual Rate volatility(const Date& start, Time length) const = 0;
     };
 
     //! Swaption volatility surface with an added spread
     /*! This surface will remain linked to the original surface, i.e.,
         any changes in the latter will be reflected in this surface as well.
     */
-    class SpreadedSwaptionVolatilitySurface
-    : public SwaptionVolatilitySurface {
+    class SpreadedSwaptionVolatilitySurface : public SwaptionVolatilitySurface,
+                                              public Patterns::Observer {
       public:
         SpreadedSwaptionVolatilitySurface(
-            const Handle<SwaptionVolatilitySurface>&, Spread spread);
+            const RelinkableHandle<SwaptionVolatilitySurface>&, 
+            const RelinkableHandle<MarketElement>& spread);
+        ~SpreadedSwaptionVolatilitySurface();
         //! volatility of the original surface plus the given spread
-        Rate vol(const Date& start, Time length) const;
+        Rate volatility(const Date& start, Time length) const;
+        //! Observer interface
+        void update();
       private:
-        Handle<SwaptionVolatilitySurface> theOriginalSurface;
-        Spread theSpread;
+        RelinkableHandle<SwaptionVolatilitySurface> originalSurface_;
+        RelinkableHandle<MarketElement> spread_;
     };
 
 
@@ -65,12 +69,27 @@ namespace QuantLib {
 
     inline
     SpreadedSwaptionVolatilitySurface::SpreadedSwaptionVolatilitySurface(
-        const Handle<SwaptionVolatilitySurface>& h, Spread spread)
-    : theOriginalSurface(h), theSpread(spread) {}
+        const RelinkableHandle<SwaptionVolatilitySurface>& h, 
+        const RelinkableHandle<MarketElement>& spread)
+    : originalSurface_(h), spread_(spread) {
+        originalSurface_.registerObserver(this);
+        spread_.registerObserver(this);
+    }
 
-    inline Rate SpreadedSwaptionVolatilitySurface::vol(const Date& start,
-        Time length) const {
-            return theOriginalSurface->vol(start,length)+theSpread;
+    inline
+    SpreadedSwaptionVolatilitySurface::~SpreadedSwaptionVolatilitySurface() {
+        originalSurface_.unregisterObserver(this);
+        spread_.unregisterObserver(this);
+    }
+    
+    inline Rate SpreadedSwaptionVolatilitySurface::volatility(
+        const Date& start, Time length) const {
+            return originalSurface_->volatility(start,length) + 
+                   spread_->value();
+    }
+
+    inline void SpreadedSwaptionVolatilitySurface::update() {
+        notifyObservers();
     }
 
 }
