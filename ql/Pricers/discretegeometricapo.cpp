@@ -19,7 +19,8 @@
 #include <numeric>
 
 namespace QuantLib {
-
+    
+    #ifndef QL_DISABLE_DEPRECATED
     const CumulativeNormalDistribution DiscreteGeometricAPO::f_;
 
     DiscreteGeometricAPO::DiscreteGeometricAPO(
@@ -78,5 +79,6 @@ namespace QuantLib {
         return result;
     }
 
+    #endif // QL_DISABLE_DEPRECATED
 }
 

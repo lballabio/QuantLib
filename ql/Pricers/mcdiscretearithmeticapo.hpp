@@ -29,8 +29,14 @@
 
 namespace QuantLib {
 
+    #ifndef QL_DISABLE_DEPRECATED
     //! example of Monte Carlo pricer using a control variate
-    /*! \todo continous-averaging version  */
+    /*! 
+    
+    \deprecated use the DiscreteAveragingAsianOption instrument 
+    with MCDiscreteArithmeticAPEngine instead
+
+    */
     class McDiscreteArithmeticAPO 
         : public McPricer<SingleAsset<PseudoRandom> >{
       public:
@@ -46,6 +52,7 @@ namespace QuantLib {
                             BigNatural seed = 0);
     };
 
+    #endif // QL_DISABLE_DEPRECATED
 }
 
 

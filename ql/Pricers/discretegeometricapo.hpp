@@ -28,6 +28,7 @@
 
 namespace QuantLib {
 
+    #ifndef QL_DISABLE_DEPRECATED
     //! Discrete geometric average-price Asian option (European style)
     /*! This class implements a discrete geometric average price asian
         option, with european exercise.  The formula is from "Asian
@@ -35,11 +36,9 @@ namespace QuantLib {
         Art", edited by L. Clewlow, C. Strickland, pag65-97
 
         \deprecated use the DiscreteAveragingAsianOption instrument 
-        with AnalyticDiscreteAveragingAsianEngine instead
+        with AnalyticDiscreteGeometricAveragePriceAsianEngine instead
 
     */
-    // it is deprecated, but it cannot be removed until mcdiscretearithmeticapo
-    // old pricer is replaced with the new instrument/engine
     class DiscreteGeometricAPO : public SingleAssetOption    {
       public:
         DiscreteGeometricAPO(Option::Type type,
@@ -67,6 +66,7 @@ namespace QuantLib {
                                              new DiscreteGeometricAPO(*this));
     }
 
+    #endif // QL_DISABLE_DEPRECATED
 }
 
 

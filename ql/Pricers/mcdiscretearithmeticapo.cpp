@@ -17,96 +17,13 @@
 
 #include <ql/Pricers/mcdiscretearithmeticapo.hpp>
 #include <ql/Pricers/discretegeometricapo.hpp>
-//#include <ql/PricingEngines/Asian/analyticdiscreteasianengine.hpp>
+#include <ql/PricingEngines/Asian/mc_discr_geom_av_price.hpp>
+#include <ql/PricingEngines/Asian/mc_discr_arith_av_price.hpp>
 
 namespace QuantLib {
 
-    namespace {
 
-        class ArithmeticAPOPathPricer : public PathPricer<Path> {
-          public:
-            ArithmeticAPOPathPricer(Option::Type type,
-                                    Real underlying,
-                                    Real strike,
-                                    DiscountFactor discount)
-            : underlying_(underlying), payoff_(type, strike),
-              discount_(discount) {
-                QL_REQUIRE(underlying>0.0,
-                           "underlying less/equal zero not allowed");
-                QL_REQUIRE(strike>=0.0,
-                           "strike less than zero not allowed");
-            }
-
-            Real operator()(const Path& path) const  {
-
-                Size n = path.size();
-                QL_REQUIRE(n>0,
-                           "the path cannot be empty");
-
-                Real price1 = underlying_;
-                Real averagePrice1 = 0.0;
-                Size fixings = n;
-                if (path.timeGrid().mandatoryTimes()[0]==0.0) {
-                    averagePrice1 = price1;
-                    fixings = n+1;
-                }
-                Size i;
-                for (i=0; i<n; i++) {
-                    price1 *= QL_EXP(path[i]);
-                    averagePrice1 += price1;
-                }
-                averagePrice1 = averagePrice1/fixings;
-
-                return discount_ * payoff_(averagePrice1);
-            }
-
-          private:
-            Real underlying_;
-            PlainVanillaPayoff payoff_;
-            DiscountFactor discount_;
-        };
-
-        class GeometricAPOPathPricer : public PathPricer<Path> {
-          public:
-            GeometricAPOPathPricer(Option::Type type,
-                                   Real underlying,
-                                   Real strike,
-                                   DiscountFactor discount)
-            : underlying_(underlying), payoff_(type, strike),
-              discount_(discount) {
-                QL_REQUIRE(underlying>0.0,
-                           "underlying less/equal zero not allowed");
-                QL_REQUIRE(strike>=0.0,
-                           "strike less than zero not allowed");
-            }
-
-            Real operator()(const Path& path) const {
-                Size n = path.size();
-                QL_REQUIRE(n>0,
-                           "the path cannot be empty");
-
-                Real geoLogVariation = 0.0;
-                Size i;
-                for (i=0; i<n; i++)
-                    geoLogVariation += (n-i)*path[i];
-                Size fixings = n;
-                if (path.timeGrid().mandatoryTimes()[0]==0.0)
-                    fixings = n+1;
-                Real averagePrice1 = underlying_*
-                    QL_EXP(geoLogVariation/fixings);
-
-                return discount_ * payoff_(averagePrice1);
-            }
-
-          private:
-            Real underlying_;
-            PlainVanillaPayoff payoff_;
-            DiscountFactor discount_;
-        };
-
-    }
-
-
+    #ifndef QL_DISABLE_DEPRECATED
     McDiscreteArithmeticAPO::McDiscreteArithmeticAPO(
                               Option::Type type,
                               Real underlying,
@@ -183,4 +100,5 @@ namespace QuantLib {
 
     }
 
+    #endif // QL_DISABLE_DEPRECATED
 }
