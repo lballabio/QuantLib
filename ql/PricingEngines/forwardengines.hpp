@@ -93,22 +93,54 @@ namespace QuantLib {
 
         //! Forward vanilla engine base class
         class ForwardVanillaEngine : public ForwardEngine<
-                                        VanillaOptionParameters,
-                                        VanillaOptionResults> {
+            VanillaOptionParameters, VanillaOptionResults> {
         public:
-            ForwardVanillaEngine(const Handle<VanillaEngine>& vanillaEngine)
-                : ForwardEngine<VanillaOptionParameters,
-                                VanillaOptionResults>(vanillaEngine) {}
+            ForwardVanillaEngine(const Handle<VanillaEngine>& vanillaEngine);
         };
 
-        //! Forward vanilla engine base class
+        inline ForwardVanillaEngine::ForwardVanillaEngine(const
+            Handle<VanillaEngine>& vanillaEngine)
+        : ForwardEngine<VanillaOptionParameters,
+                        VanillaOptionResults    >(vanillaEngine) {
+            QL_REQUIRE(!vanillaEngine.isNull(),
+                "ForwardVanillaEngine::ForwardVanillaEngine : "
+                "null engine or wrong engine type");
+        }
+
+        //! Forward vanilla engine class using analytic formulas
         class ForwardVanillaAnalyticEngine : public ForwardVanillaEngine {
         public:
-            ForwardVanillaAnalyticEngine(
-                const Handle<VanillaEngine>& vanillaEngine)
-                : ForwardVanillaEngine(vanillaEngine) {}
+            ForwardVanillaAnalyticEngine(const Handle<VanillaEngine>&
+                vanillaEngine);
             void calculate() const;
         };
+
+        inline ForwardVanillaAnalyticEngine::ForwardVanillaAnalyticEngine(const
+            Handle<VanillaEngine>& vanillaEngine)
+        : ForwardVanillaEngine(vanillaEngine) {
+            QL_REQUIRE(!vanillaEngine.isNull(),
+                "ForwardVanillaAnalyticEngine::ForwardVanillaAnalyticEngine : "
+                "null engine or wrong engine type");
+        }
+
+        //! Forward Performance vanilla engine class using analytic formulas
+        class ForwardPerformanceVanillaAnalyticEngine : public
+            ForwardVanillaEngine {
+        public:
+            ForwardPerformanceVanillaAnalyticEngine(const
+                Handle<VanillaEngine>& vanillaEngine);
+            void calculate() const;
+        };
+
+       inline ForwardPerformanceVanillaAnalyticEngine::
+           ForwardPerformanceVanillaAnalyticEngine(const Handle<VanillaEngine>&
+           vanillaEngine)
+        : ForwardVanillaEngine(vanillaEngine) {
+            QL_REQUIRE(!vanillaEngine.isNull(),
+                "ForwardPerformanceVanillaAnalyticEngine::"
+                "ForwardPerformanceVanillaAnalyticEngine : "
+                "null engine or wrong engine type");
+        }
 
     }
 

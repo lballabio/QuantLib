@@ -14,11 +14,11 @@
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
-/*! \file quantovanillaengine.cpp
+/*! \file quantovanillaanalyticengine.cpp
     \brief Quanto vanilla engine using analytic formulas
 
     \fullpath
-    ql/Pricers/%quantovanillaengine.cpp
+    ql/Pricers/%quantovanillaanalyticengine.cpp
 */
 
 // $Id$
@@ -34,10 +34,10 @@ namespace QuantLib {
             originalParameters_->type = parameters_.type;
             originalParameters_->underlying = parameters_.underlying;
             originalParameters_->strike = parameters_.strike;
-            originalParameters_->dividendYield = parameters_.dividendYield +
-                parameters_.riskFreeRate - parameters_.foreignRiskFreeRate +
-                parameters_.correlation * parameters_.volatility *
-                parameters_.exchangeRateVolatility;
+            originalParameters_->dividendYield = parameters_.dividendYield
+                + parameters_.riskFreeRate - parameters_.foreignRiskFreeRate
+                + parameters_.correlation *
+                parameters_.volatility * parameters_.exchangeRateVolatility;
             originalParameters_->riskFreeRate = parameters_.riskFreeRate;
             originalParameters_->residualTime = parameters_.residualTime;
             originalParameters_->volatility = parameters_.volatility;
@@ -55,9 +55,10 @@ namespace QuantLib {
             results_.dividendRho = originalResults_->dividendRho;
             results_.vega = originalResults_->vega +
                 parameters_.correlation * parameters_.exchangeRateVolatility *
-                originalResults_->dividendRho ;
+                originalResults_->dividendRho;
 
-            results_.qvega = parameters_.correlation * parameters_.volatility *
+            results_.qvega = + parameters_.correlation
+                * parameters_.volatility *
                 originalResults_->dividendRho;
             results_.qrho = - originalResults_->dividendRho;
             results_.qlambda = parameters_.exchangeRateVolatility *

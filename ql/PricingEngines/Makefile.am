@@ -8,6 +8,7 @@ include_HEADERS = \
    discretizedvanillaoption.hpp \
    genericengine.hpp \
    forwardengines.hpp \
+   forwardperformanceengines.hpp \
    quantoengines.hpp \
    vanillaengines.hpp
 
@@ -17,6 +18,8 @@ libPricingEngines_la_SOURCES = \
     discretizedvanillaoption.cpp \
     europeanbinomialengine.cpp \
     europeananalyticalengine.cpp \
+    forwardvanillaanalyticengine.cpp \
+    forwardperformancevanillaanalyticengine.cpp \
     quantovanillaanalyticengine.cpp
 
 noinst_LTLIBRARIES = libPricingEngines.la

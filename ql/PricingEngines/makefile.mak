@@ -18,6 +18,8 @@ OBJS = \
        discretizedvanillaoption.obj$(_D) \
        europeananalyticalengine.obj$(_D) \
        europeanbinomialengine.obj$(_D) \
+       forwardvanillaanalyticengine.obj$(_D) \
+       forwardperformancevanillaanalyticengine.obj$(_D) \
        quantovanillaanalyticengine.obj$(_D)
 
 

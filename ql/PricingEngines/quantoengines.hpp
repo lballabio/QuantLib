@@ -26,7 +26,6 @@
 #ifndef quantlib_quanto_engines_h
 #define quantlib_quanto_engines_h
 
-#include <ql/PricingEngines/genericengine.hpp>
 #include <ql/PricingEngines/vanillaengines.hpp>
 
 namespace QuantLib {
@@ -106,23 +105,22 @@ namespace QuantLib {
 
         //! Quanto vanilla engine base class
         class QuantoVanillaEngine : public QuantoEngine<
-                                        VanillaOptionParameters,
-                                        VanillaOptionResults> {
+            VanillaOptionParameters, VanillaOptionResults> {
         public:
             QuantoVanillaEngine(const Handle<VanillaEngine>& vanillaEngine);
         };
 
-        inline QuantoVanillaEngine::QuantoVanillaEngine(const Handle<VanillaEngine>&
-            vanillaEngine)
+        inline QuantoVanillaEngine::QuantoVanillaEngine(const
+            Handle<VanillaEngine>& vanillaEngine)
         : QuantoEngine<VanillaOptionParameters,
-                        VanillaOptionResults>(vanillaEngine) {
+                       VanillaOptionResults    >(vanillaEngine) {
             QL_REQUIRE(!vanillaEngine.isNull(),
                 "QuantoVanillaEngine::QuantoVanillaEngine : "
                 "null engine or wrong engine type");
         }
 
 
-        //! Quanto vanilla engine base class
+        //! Quanto vanilla engine class
         class QuantoVanillaAnalyticEngine : public QuantoVanillaEngine {
         public:
             QuantoVanillaAnalyticEngine(const Handle<VanillaEngine>&
@@ -138,9 +136,8 @@ namespace QuantLib {
                 "null engine or wrong engine type");
         }
 
-
-
     }
+
 }
 
 #endif
