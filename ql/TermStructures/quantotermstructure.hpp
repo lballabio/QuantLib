@@ -50,8 +50,10 @@ namespace QuantLib {
                   const RelinkableHandle<TermStructure>& foreignRiskFreeTS,
                   const RelinkableHandle<BlackVolTermStructure>& 
                       underlyingBlackVolTS,
+                  double strike,
                   const RelinkableHandle<BlackVolTermStructure>& 
                       exchRateBlackVolTS,
+                  double exchRateATMlevel,
                   double underlyingExchRateCorrelation);
             //! \name TermStructure interface
             //@{
@@ -72,7 +74,7 @@ namespace QuantLib {
                 foreignRiskFreeTS_;
             RelinkableHandle<BlackVolTermStructure> underlyingBlackVolTS_,
                 exchRateBlackVolTS_;
-            double underlyingExchRateCorrelation_, underlyingLevel_;
+            double underlyingExchRateCorrelation_, strike_, exchRateATMlevel_;
             Date maxDate_;
         };
 
@@ -85,14 +87,17 @@ namespace QuantLib {
             const RelinkableHandle<TermStructure>& foreignRiskFreeTS,
             const RelinkableHandle<BlackVolTermStructure>& 
                 underlyingBlackVolTS,
+            double strike,
             const RelinkableHandle<BlackVolTermStructure>& 
-                exchRateBlackVolTS,
+              exchRateBlackVolTS,
+            double exchRateATMlevel,
             double underlyingExchRateCorrelation)
         : underlyingDividendTS_(underlyingDividendTS),
           riskFreeTS_(riskFreeTS), foreignRiskFreeTS_(foreignRiskFreeTS),
           underlyingBlackVolTS_(underlyingBlackVolTS),
           exchRateBlackVolTS_(exchRateBlackVolTS),
-          underlyingExchRateCorrelation_(underlyingExchRateCorrelation) {
+          underlyingExchRateCorrelation_(underlyingExchRateCorrelation),
+          strike_(strike), exchRateATMlevel_(exchRateATMlevel) {
             registerWith(underlyingDividendTS_);
             registerWith(riskFreeTS_);
             registerWith(foreignRiskFreeTS_);
@@ -129,17 +134,13 @@ namespace QuantLib {
             // warning: here it is assumed that all TS have the same daycount.
             //          It should be QL_REQUIREd, or maybe even enforced in the
             //          whole QuantLib
-            // warning: the underlyingLevel_ used in underlyingBlackVolTS_ 
-            // is ambiguous
-            // warning: the underlyingLevel_ used in exchRateBlackVolTS_ 
-            // is wrong
             return underlyingDividendTS_->zeroYield(t, extrapolate)
                 +            riskFreeTS_->zeroYield(t, extrapolate)
                 -     foreignRiskFreeTS_->zeroYield(t, extrapolate)
                 + underlyingExchRateCorrelation_
-                * underlyingBlackVolTS_->blackVol(t, underlyingLevel_,
+                * underlyingBlackVolTS_->blackVol(t, strike_,
                                                   extrapolate)
-                *   exchRateBlackVolTS_->blackVol(t, underlyingLevel_,
+                *   exchRateBlackVolTS_->blackVol(t, exchRateATMlevel_,
                                                   extrapolate);
         }
 
