@@ -103,7 +103,7 @@ namespace QuantLib {
           const VectorialExpression<Iter>& e) {
             #ifdef QL_DEBUG
                 QL_REQUIRE(size() == e.size(),
-                    "adding arrays with different sizes")
+                    "adding arrays with different sizes");
             #endif
             iterator i = begin(), j = end();
             while (i != j) { *i += *e; ++i; ++e; }
@@ -113,7 +113,7 @@ namespace QuantLib {
           const VectorialExpression<Iter>& e) {
             #ifdef QL_DEBUG
                 QL_REQUIRE(size() == e.size(),
-                    "subtracting arrays with different sizes")
+                    "subtracting arrays with different sizes");
             #endif
             iterator i = begin(), j = end();
             while (i != j) { *i -= *e; ++i; ++e; }
@@ -123,7 +123,7 @@ namespace QuantLib {
           const VectorialExpression<Iter>& e) {
             #ifdef QL_DEBUG
                 QL_REQUIRE(size() == e.size(),
-                    "multiplying arrays with different sizes")
+                    "multiplying arrays with different sizes");
             #endif
             iterator i = begin(), j = end();
             while (i != j) { *i *= *e; ++i; ++e; }
@@ -133,7 +133,7 @@ namespace QuantLib {
           const VectorialExpression<Iter>& e) {
             #ifdef QL_DEBUG
                 QL_REQUIRE(size() == e.size(),
-                    "dividing arrays with different sizes")
+                    "dividing arrays with different sizes");
             #endif
             iterator i = begin(), j = end();
             while (i != j) { *i /= *e; ++i; ++e; }
