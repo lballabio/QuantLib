@@ -28,7 +28,7 @@
 
 namespace QuantLib {
 
-   Period PeriodParser::parse(const std::string str)
+   Period PeriodParser::parse(const std::string& str)
    {
       TimeUnit units = Days;
       
@@ -41,7 +41,7 @@ namespace QuantLib {
       else if (abbr == 'W') units = Weeks;
       else if (abbr == 'M') units = Months;
       else if (abbr == 'Y') units = Years;
-      return Period(atoi(str.c_str()), units);
+      return Period(QL_ATOI(str.c_str()), units);
    }
 
 }

@@ -1,5 +1,4 @@
 
-
 /*
  Copyright (C) 2000, 2001, 2002 RiskMap srl
 
@@ -93,9 +92,9 @@ namespace QuantLib {
         Matrix MultivariateAccumulator::correlation() const {
           Matrix correlation = covariance();
           Array variances = correlation.diagonal();
-          size_t dimension = variances.size();
-          for (size_t i=0; i < dimension; ++i){
-              for (size_t j=0 ; j < dimension; ++j){
+          Size dimension = variances.size();
+          for (Size i=0; i < dimension; ++i){
+              for (Size j=0 ; j < dimension; ++j){
                   if( i == j){
                       if(variances[i] == 0.0){
                       

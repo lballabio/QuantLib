@@ -72,7 +72,8 @@ namespace QuantLib {
              used for term-structure fitting and \f$ x_t \f$ is the state
              variable following an Ornstein-Uhlenbeck process.
         */
-        class BlackKarasinski::Dynamics : public ShortRateDynamics {
+        class BlackKarasinski::Dynamics 
+        : public BlackKarasinski::ShortRateDynamics {
           public:
             Dynamics(const Parameter& fitting, double alpha, double sigma)
             : ShortRateDynamics(Handle<DiffusionProcess>(new 

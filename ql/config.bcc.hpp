@@ -22,6 +22,7 @@
 
 #define HAVE_CSTDLIB
 #define QL_SIZE_T std::size_t
+#define QL_ATOI   std::atoi
 
 #define HAVE_CMATH
 #define QL_SQRT   std::sqrt

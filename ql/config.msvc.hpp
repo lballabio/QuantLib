@@ -50,6 +50,7 @@
 
 #define HAVE_CSTDLIB
 #define QL_SIZE_T size_t
+#define QL_ATOI   atoi
 
 #define HAVE_CMATH
 #define QL_SQRT   sqrt

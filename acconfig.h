@@ -1,4 +1,5 @@
 #undef QL_SIZE_T
+#undef QL_ATOI
 #undef QL_SQRT
 #undef QL_FABS
 #undef QL_EXP

@@ -69,8 +69,10 @@ namespace QuantLib {
                         "extrapolation not allowed");
                 }
                 I2 j = yBegin_+(position_-xBegin_);
-                return (pow(*j,(x/(*position_)*((*(position_+1))-x)/((*(position_+1))-(*position_))))) * 
-                    (pow(*(j+1),(x/(*(position_+1))*(x-(*position_))/((*(position_+1))-(*position_)))));
+                return (QL_POW(*j,(x/(*position_)*((*(position_+1))-x)/
+                                   ((*(position_+1))-(*position_))))) * 
+                    (QL_POW(*(j+1),(x/(*(position_+1))*(x-(*position_))/
+                                    ((*(position_+1))-(*position_)))));
         }
 
     }

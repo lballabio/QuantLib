@@ -79,6 +79,7 @@ else
   AC_ERROR(Could not find cstdlib nor stdlib.h)
 fi
 QL_CHECK_TYPENAME([size_t],[$ql_stdlib],[])
+QL_CHECK_FUNCTION([atoi],[$ql_stdlib],["26"])
 
 if test $ac_cv_header_cmath = yes ; then
   ql_math=cmath
