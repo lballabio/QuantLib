@@ -399,11 +399,11 @@ namespace QuantLib {
         inline 
         Handle<QL_TYPENAME MCEuropeanEngine<RNG,S>::path_pricer_type>
         MCEuropeanEngine<RNG,S>::pathPricer() const {
-            //! Initialize the path pricer
+            Handle<PlainPayoff> payoff = arguments_.payoff;
             return Handle<MCEuropeanEngine<RNG,S>::path_pricer_type>(
-                new MonteCarlo::EuropeanPathPricer(arguments_.type,
+                new MonteCarlo::EuropeanPathPricer(payoff->optionType(),
                                                    arguments_.underlying, 
-                                                   arguments_.strike,
+                                                   payoff->strike(),
                                                    arguments_.riskFreeTS));
         }
 

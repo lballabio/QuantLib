@@ -35,11 +35,14 @@ namespace QuantLib {
                 "AnalyticEuropeanEngine::calculate() : "
                 "not an European Option");
 
+            Handle<PlainPayoff> payoff = arguments_.payoff;
+
+            double strike = payoff->strike();
             double variance = arguments_.volTS->blackVariance(
-                arguments_.maturity, arguments_.strike);
+                arguments_.maturity, strike);
             double stdDev = QL_SQRT(variance);
             double vol = arguments_.volTS->blackVol(
-                arguments_.maturity, arguments_.strike);
+                arguments_.maturity, strike);
 
             DiscountFactor dividendDiscount =
                 arguments_.dividendTS->discount(arguments_.maturity);
@@ -55,7 +58,7 @@ namespace QuantLib {
 
             double fD1, fD2, fderD1;
             if (variance>0.0) {
-                double D1 = (QL_LOG(forwardPrice/arguments_.strike) +
+                double D1 = (QL_LOG(forwardPrice/strike) +
                              0.5 * variance) / stdDev;
                 double D2 = D1-stdDev;
                 fD1 = f_(D1);
@@ -64,7 +67,7 @@ namespace QuantLib {
             } else {
                 stdDev = QL_EPSILON;
                 fderD1 = 0.0;
-                if (forwardPrice>arguments_.strike) {
+                if (forwardPrice>strike) {
                     fD1 = 1.0;
                     fD2 = 1.0;
                 } else {
@@ -74,7 +77,7 @@ namespace QuantLib {
             }
 
             double alpha, beta, NID1;
-            switch (arguments_.type) {
+            switch (payoff->optionType()) {
               case Option::Call:
                 alpha = fD1;
                 beta  = fD2;
@@ -98,7 +101,7 @@ namespace QuantLib {
 
 
             results_.value = riskFreeDiscount *
-                (forwardPrice * alpha - arguments_.strike *  beta);
+                (forwardPrice * alpha - strike *  beta);
             results_.delta = dividendDiscount * alpha;
 //            results_.deltaForward = riskFreeDiscount * alpha;
             results_.gamma = NID1 * dividendDiscount /
@@ -109,7 +112,7 @@ namespace QuantLib {
                 - 0.5 * vol * vol * arguments_.underlying 
                 * arguments_.underlying * results_.gamma;
             results_.rho = arguments_.maturity * riskFreeDiscount *
-                arguments_.strike * beta;
+                strike * beta;
             results_.dividendRho = - arguments_.maturity *
                 dividendDiscount * arguments_.underlying * alpha;
             results_.vega = arguments_.underlying * NID1 *

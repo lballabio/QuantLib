@@ -25,6 +25,7 @@
 #define quantlib_vanilla_engines_h
 
 #include <ql/exercise.hpp>
+#include <ql/handle.hpp>
 #include <ql/payoff.hpp>
 #include <ql/termstructure.hpp>
 #include <ql/voltermstructure.hpp>
@@ -38,13 +39,11 @@ namespace QuantLib {
         //! arguments for vanilla option calculation
         class VanillaOptionArguments : public virtual Arguments {
           public:
-              VanillaOptionArguments() : type(Option::Type(-1)),
-                                         underlying(Null<double>()),
-                                         strike(Null<double>()),
+              VanillaOptionArguments() : underlying(Null<double>()),
                                          maturity(Null<Time>()) {}
             void validate() const;
-            Option::Type type;
-            double underlying, strike;
+            Handle<Payoff> payoff;
+            double underlying;
             RelinkableHandle<TermStructure> riskFreeTS, dividendTS;
             RelinkableHandle<BlackVolTermStructure> volTS;
             // we need to calculate option at times that are not
@@ -56,21 +55,15 @@ namespace QuantLib {
         };
 
         inline void VanillaOptionArguments::validate() const {
-            QL_REQUIRE(type != Option::Type(-1),
+            QL_REQUIRE(!payoff.isNull(),
                        "VanillaOptionArguments::validate() : "
-                       "no option type given");
+                       "null payoff given");
             QL_REQUIRE(underlying != Null<double>(),
                        "VanillaOptionArguments::validate() : "
                        "no underlying given");
             QL_REQUIRE(underlying > 0.0,
                        "VanillaOptionArguments::validate() : "
                        "negative or zero underlying given");
-            QL_REQUIRE(strike != Null<double>(),
-                       "VanillaOptionArguments::validate() : "
-                       "no strike given");
-            QL_REQUIRE(strike >= 0.0,
-                       "VanillaOptionArguments::validate() : "
-                       "negative strike given");
             QL_REQUIRE(!dividendTS.isNull(),
                        "VanillaOptionArguments::validate() : "
                        "no dividend term structure given");
@@ -115,54 +108,13 @@ namespace QuantLib {
             #endif
         };
 
-        //! Pricing engine using integral approach
+
+        //! Pricing engine for Vanilla options using integral approach
         class IntegralEngine : public VanillaEngine {
           public:
             void calculate() const;
-          protected:
-            virtual Handle<Payoff> payoff() const = 0;
         };
 
-        //! European option pricing engine using integral approach
-        class IntegralEuropeanEngine : public IntegralEngine {
-          protected:
-              Handle<Payoff> payoff() const {
-                  return Handle<Payoff>(new
-                      PlainPayoff(arguments_.type,
-                                  arguments_.strike)); }
-        };
-
-        //! Binary Cash-Or-Nothing pricing engine using integral approach
-        class IntegralCashOrNothingEngine : public IntegralEngine {
-          public:
-            IntegralCashOrNothingEngine(double cashPayoff)
-            : IntegralEngine(), cashPayoff_(cashPayoff)  {}
-          protected:
-              Handle<Payoff> payoff() const {
-                  return Handle<Payoff>(new
-                      CashOrNothingPayoff(arguments_.type,
-                                          arguments_.strike,
-                                          cashPayoff_)); }
-          private:
-              double cashPayoff_;
-        };
-
-        //! Binary Asset-Or-Nothing pricing engine using integral approach
-        class IntegralAssetOrNothingEngine : public IntegralEngine {
-          protected:
-              Handle<Payoff> payoff() const {
-                  return Handle<Payoff>(new
-                      AssetOrNothingPayoff(arguments_.type,
-                                           arguments_.strike)); }
-        };
-
-        //! Pricing engine for Vanilla options using Finite Differences
-        class FDVanillaEngine : public VanillaEngine {
-          public:
-            void calculate() const;
-        };
-
-        
         
         //! Pricing engine for Vanilla options using binomial trees
         class BinomialVanillaEngine : public VanillaEngine {
@@ -180,5 +132,6 @@ namespace QuantLib {
     }
 
 }
+
 
 #endif

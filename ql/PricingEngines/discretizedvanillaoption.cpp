@@ -64,11 +64,10 @@ namespace QuantLib {
             Handle<Lattices::Tree> tree(lattice->tree());
             Size i = tree->nColumns() - 1;
 
-            // it should be easy to generalize to more complex payoff
-            PlainPayoff payoff(arguments_.type, arguments_.strike);
             for (Size j=0; j<values_.size(); j++) {
-                values_[j] = QL_MAX(values_[j],
-                                    payoff(tree->underlying(i, j)));
+                values_[j] = 
+                    QL_MAX(values_[j],
+                           (*arguments_.payoff)(tree->underlying(i, j)));
             }
         }
 

@@ -29,7 +29,7 @@ namespace QuantLib {
     namespace {
         class Integrand : std::unary_function<double,double> {
         public:
-            Integrand(Handle<Payoff> payoff,
+            Integrand(const Handle<Payoff>& payoff,
                       double s0,
                       double drift,
                       double variance)
@@ -54,8 +54,10 @@ namespace QuantLib {
                 "IntegralEuropeanEngine::calculate() : "
                 "not an European Option");
 
+            Handle<PlainPayoff> payoff = arguments_.payoff;
+
             double variance = arguments_.volTS->blackVariance(
-                arguments_.maturity, arguments_.strike);
+                arguments_.maturity, payoff->strike());
 
             Rate dividendRate =
                 arguments_.dividendTS->zeroYield(arguments_.maturity);
@@ -64,7 +66,8 @@ namespace QuantLib {
             double drift = (riskFreeRate - dividendRate) * arguments_.maturity
                 - 0.5 * variance;
 
-            Integrand f(payoff(), arguments_.underlying, drift, variance);
+            Integrand f(arguments_.payoff, arguments_.underlying, 
+                        drift, variance);
             QuantLib::Math::SegmentIntegral integrator(5000);
 
             double infinity = 10.0*QL_SQRT(variance);
