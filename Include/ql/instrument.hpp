@@ -26,14 +26,8 @@
     $Id$
     $Source$
     $Log$
-    Revision 1.2  2001/05/14 17:09:47  lballabio
-    Went for simplicity and removed Observer-Observable relationships from Instrument
-
-    Revision 1.1  2001/04/09 14:03:54  nando
-    all the *.hpp moved below the Include/ql level
-
-    Revision 1.2  2001/04/06 18:46:19  nando
-    changed Authors, Contributors, Licence and copyright header
+    Revision 1.3  2001/05/24 12:52:01  nando
+    smoothing #include xx.hpp
 
 */
 
@@ -44,7 +38,6 @@
 #ifndef quantlib_financial_instrument_h
 #define quantlib_financial_instrument_h
 
-#include "ql/qldefines.hpp"
 #include "ql/termstructure.hpp"
 #include "ql/swaptionvolsurface.hpp"
 #include "ql/forwardvolsurface.hpp"
@@ -115,8 +108,8 @@ namespace QuantLib {
             <b>performTermStructureCalculations</b>,
             <b>performSwaptionVolCalculations</b>,
             <b>performForwardVolCalculations</b>, and
-            <b>performFinalCalculations</b> in turn while checking that the 
-            needed structures are not null. 
+            <b>performFinalCalculations</b> in turn while checking that the
+            needed structures are not null.
             It should not be redefined in derived classes.
         */
         void calculate() const;

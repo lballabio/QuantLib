@@ -28,6 +28,9 @@
     $Source$
     $Name$
     $Log$
+    Revision 1.5  2001/05/24 12:52:02  nando
+    smoothing #include xx.hpp
+
     Revision 1.4  2001/05/23 19:30:27  nando
     smoothing #include xx.hpp
 
@@ -43,30 +46,6 @@
     Revision 1.3  2001/04/06 18:46:20  nando
     changed Authors, Contributors, Licence and copyright header
 
-    Revision 1.2  2001/04/04 12:13:23  nando
-    Headers policy part 2:
-    The Include directory is added to the compiler's include search path.
-    Then both your code and user code specifies the sub-directory in
-    #include directives, as in
-    #include <Solvers1d/newton.hpp>
-
-    Revision 1.1  2001/04/04 11:07:23  nando
-    Headers policy part 1:
-    Headers should have a .hpp (lowercase) filename extension
-    All *.h renamed to *.hpp
-
-    Revision 1.16  2001/03/21 11:33:02  marmar
-    Main loop transfered from method value to method calculate.
-    Methods vega and rho moved from BSMNumericalOption to BSMOption
-
-    Revision 1.15  2001/03/21 10:49:27  marmar
-    valueAtCenter, firstDerivativeAtCenter, secondDerivativeAtCenter,
-    are no longer methods of BSMNumericalOption but separate
-    functions
-
-    Revision 1.14  2001/03/12 12:59:53  marmar
-    Public method getGrid added
-
 */
 
 #ifndef BSM_numerical_option_pricer_h
@@ -74,8 +53,6 @@
 
 #include "ql/Pricers/bsmoption.hpp"
 #include "ql/FiniteDifferences/bsmoperator.hpp"
-#include "ql/array.hpp"
-#include "ql/handle.hpp"
 
 namespace QuantLib {
 

@@ -26,11 +26,11 @@
     $Id$
     $Source$
     $Log$
+    Revision 1.2  2001/05/24 12:52:01  nando
+    smoothing #include xx.hpp
+
     Revision 1.1  2001/04/09 14:05:47  nando
     all the *.hpp moved below the Include/ql level
-
-    Revision 1.2  2001/04/06 18:46:19  nando
-    changed Authors, Contributors, Licence and copyright header
 
 */
 

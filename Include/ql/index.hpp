@@ -28,24 +28,18 @@
     $Id$
     $Source$
     $Log$
-    Revision 1.2  2001/05/24 11:15:57  lballabio
-    Stripped conventions from Currencies
-
-    Revision 1.1  2001/05/16 09:57:27  lballabio
-    Added indexes and piecewise flat forward curve
+    Revision 1.3  2001/05/24 12:52:01  nando
+    smoothing #include xx.hpp
 
 */
 
 #ifndef quantlib_index_hpp
 #define quantlib_index_hpp
 
-#include "ql/qldefines.hpp"
-#include "ql/date.hpp"
 #include "ql/calendar.hpp"
 #include "ql/currency.hpp"
 #include "ql/daycounter.hpp"
 #include "ql/rate.hpp"
-#include "ql/handle.hpp"
 
 namespace QuantLib {
 
@@ -62,11 +56,11 @@ namespace QuantLib {
         virtual std::string name() const = 0;
         //@}
         /*! \brief return the fixing at the given date and tenor
-            \note any date passed as arguments must be a value date, 
-            i.e., the real calendar date advanced by a number of 
+            \note any date passed as arguments must be a value date,
+            i.e., the real calendar date advanced by a number of
             settlement days.
         */
-        virtual Rate fixing(const Date& fixingDate, 
+        virtual Rate fixing(const Date& fixingDate,
             int n, TimeUnit unit) const = 0;
     };
 

@@ -26,6 +26,9 @@
     $Id$
     $Source$
     $Log$
+    Revision 1.2  2001/05/24 12:52:01  nando
+    smoothing #include xx.hpp
+
     Revision 1.1  2001/04/09 14:03:54  nando
     all the *.hpp moved below the Include/ql level
 
@@ -45,12 +48,9 @@
 #ifndef quantlib_calendar_h
 #define quantlib_calendar_h
 
-#include "ql/qldefines.hpp"
-#include "ql/qlerrors.hpp"
 #include "ql/date.hpp"
 #include "ql/handle.hpp"
 #include "ql/null.hpp"
-#include <string>
 
 namespace QuantLib {
 

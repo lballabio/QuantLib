@@ -26,20 +26,8 @@
     $Id$
     $Source$
     $Log$
-    Revision 1.4  2001/05/24 11:15:57  lballabio
-    Stripped conventions from Currencies
-
-    Revision 1.3  2001/05/14 17:09:47  lballabio
-    Went for simplicity and removed Observer-Observable relationships from Instrument
-
-    Revision 1.2  2001/05/03 10:25:31  lballabio
-    Fixed today and settlement in implied term structure
-
-    Revision 1.1  2001/04/09 14:03:54  nando
-    all the *.hpp moved below the Include/ql level
-
-    Revision 1.3  2001/04/06 18:46:19  nando
-    changed Authors, Contributors, Licence and copyright header
+    Revision 1.5  2001/05/24 12:52:01  nando
+    smoothing #include xx.hpp
 
 */
 
@@ -52,7 +40,6 @@
 #ifndef quantlib_term_structure_h
 #define quantlib_term_structure_h
 
-#include "ql/qldefines.hpp"
 #include "ql/date.hpp"
 #include "ql/rate.hpp"
 #include "ql/spread.hpp"
@@ -161,8 +148,8 @@ namespace QuantLib {
 
     //! Implied term structure at a given date in the future
     /*! The given date will be the implied today's date.
-        \note This term structure will remain linked to the original structure, 
-        i.e., any changes in the latter will be reflected in this structure as 
+        \note This term structure will remain linked to the original structure,
+        i.e., any changes in the latter will be reflected in this structure as
         well.
     */
     class ImpliedTermStructure : public DiscountStructure {
@@ -232,7 +219,7 @@ namespace QuantLib {
 
     // curve deriving discount and forward from zero yield
 
-    inline DiscountFactor ZeroYieldStructure::discount(const Date& d, 
+    inline DiscountFactor ZeroYieldStructure::discount(const Date& d,
         bool extrapolate) const {
             Rate r = zeroYield(d, extrapolate);
             double t = double(d-settlementDate())/365;
@@ -317,8 +304,8 @@ namespace QuantLib {
     inline DiscountFactor ImpliedTermStructure::discount(const Date& d,
         bool extrapolate) const {
             // evaluationDate cannot be an extrapolation
-            /* discount at evaluation date cannot be cached 
-               since the original curve could change between 
+            /* discount at evaluation date cannot be cached
+               since the original curve could change between
                invocations of this method */
             return originalCurve_->discount(d, extrapolate) /
                 originalCurve_->discount(settlementDate_);

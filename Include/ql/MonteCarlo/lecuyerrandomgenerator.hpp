@@ -28,6 +28,9 @@
     $Source$
     $Name$
     $Log$
+    Revision 1.4  2001/05/24 12:52:02  nando
+    smoothing #include xx.hpp
+
     Revision 1.3  2001/05/24 11:34:07  nando
     smoothing #include xx.hpp
 
@@ -44,7 +47,6 @@
 
 #include "ql/qldefines.hpp"
 #include <string>
-#include <algorithm>
 #include <vector>
 
 namespace QuantLib {

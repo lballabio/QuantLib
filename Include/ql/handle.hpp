@@ -26,6 +26,9 @@
     $Id$
     $Source$
     $Log$
+    Revision 1.4  2001/05/24 12:52:01  nando
+    smoothing #include xx.hpp
+
     Revision 1.3  2001/05/15 08:08:05  lballabio
     Restored 'owns' flag
 
@@ -47,7 +50,6 @@
 #ifndef quantlib_handle_h
 #define quantlib_handle_h
 
-#include "ql/qldefines.hpp"
 #include "ql/qlerrors.hpp"
 
 // The implementation of this class is taken from

@@ -1,6 +1,10 @@
 
 # $Id$
 # $Source$
+# $Log$
+# Revision 1.7  2001/05/24 12:52:01  nando
+# smoothing #include xx.hpp
+#
 
 
 EXTRA_DIST = README.txt quantlib.doxy quantlibfooter.html makefile.mak

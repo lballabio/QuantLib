@@ -28,6 +28,9 @@
     $Id$
     $Source$
     $Log$
+    Revision 1.3  2001/05/24 12:52:01  nando
+    smoothing #include xx.hpp
+
     Revision 1.2  2001/05/24 11:15:57  lballabio
     Stripped conventions from Currencies
 
@@ -39,7 +42,6 @@
 #ifndef quantlib_libor_hpp
 #define quantlib_libor_hpp
 
-#include "ql/qldefines.hpp"
 #include "ql/Indexes/xibor.hpp"
 #include "ql/Calendars/london.hpp"
 #include "ql/DayCounters/actual365.hpp"
@@ -47,22 +49,22 @@
 namespace QuantLib {
 
     namespace Indexes {
-        
+
         //! Libor index
         class Libor : public Xibor {
           public:
             Currency currency() const { return GBP; }
-            Handle<Calendar> calendar() const { 
+            Handle<Calendar> calendar() const {
                 return Handle<Calendar>(new Calendars::London);
             }
             bool isAdjusted() const { return true; }
             bool isModifiedFollowing() const { return true; }
-            Handle<DayCounter> dayCounter() const { 
+            Handle<DayCounter> dayCounter() const {
                 return Handle<DayCounter>(new DayCounters::Actual365);
             }
             std::string name() const { return "Libor"; }
         };
-    
+
     }
 
 }

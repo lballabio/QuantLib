@@ -27,6 +27,9 @@
     $Source$
     $Name$
     $Log$
+    Revision 1.9  2001/05/24 12:52:02  nando
+    smoothing #include xx.hpp
+
     Revision 1.8  2001/04/09 14:13:34  nando
     all the *.hpp moved below the Include/ql level
 
@@ -60,7 +63,6 @@
 
 */
 
-#include "ql/handle.hpp"
 #include "ql/MonteCarlo/standardpathgenerator.hpp"
 #include "ql/Pricers/averagestrikeasian.hpp"
 #include "ql/MonteCarlo/controlvariatedpathpricer.hpp"

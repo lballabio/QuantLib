@@ -27,23 +27,14 @@
 
     $Source$
     $Log$
+    Revision 1.7  2001/05/24 12:52:02  nando
+    smoothing #include xx.hpp
+
     Revision 1.6  2001/05/23 19:30:27  nando
     smoothing #include xx.hpp
 
     Revision 1.5  2001/05/22 13:18:35  marmar
     Volatility limits change to [0.0001, 1.0]
-
-    Revision 1.4  2001/05/09 11:06:18  nando
-    A few comments modified/removed
-
-    Revision 1.3  2001/04/26 16:04:52  marmar
-    underlying_ not mutable anymore
-
-    Revision 1.2  2001/04/23 14:17:22  marmar
-    Some variables are now mutable
-
-    Revision 1.1  2001/04/09 14:05:48  nando
-    all the *.hpp moved below the Include/ql level
 
 */
 
@@ -51,7 +42,6 @@
 #define BSM_option_pricer_h
 
 #include "ql/options.hpp"
-#include "ql/date.hpp"
 #include "ql/rate.hpp"
 #include "ql/handle.hpp"
 #include "ql/solver1d.hpp"

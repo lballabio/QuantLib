@@ -27,6 +27,9 @@
 
     $Source$
     $Log$
+    Revision 1.11  2001/05/24 12:52:02  nando
+    smoothing #include xx.hpp
+
     Revision 1.10  2001/04/17 09:15:37  marmar
     Another bug fixed
 
@@ -50,18 +53,6 @@
     Headers policy part 1:
     Headers should have a .hpp (lowercase) filename extension
     All *.h renamed to *.hpp
-
-    Revision 1.4  2001/03/28 12:40:42  lballabio
-    Added constness to initialize() and mutableness to data members (how did this compile before?)
-
-    Revision 1.3  2001/03/27 17:19:12  marmar
-    Bug fixed in calculation of rho and vega
-
-    Revision 1.2  2001/03/22 16:37:33  marmar
-    Barrier option greeks included
-
-    Revision 1.1  2001/02/20 11:09:59  marmar
-    BarrierOption implements the analytical barrier option
 
 */
 

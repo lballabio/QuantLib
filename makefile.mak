@@ -5,17 +5,14 @@
 # $Id$
 # $Source$
 # $Log$
+# Revision 1.16  2001/05/24 12:52:01  nando
+# smoothing #include xx.hpp
+#
 # Revision 1.15  2001/05/21 11:06:58  lballabio
 # Python extension removed
 #
 # Revision 1.14  2001/05/16 09:57:26  lballabio
 # Added indexes and piecewise flat forward curve
-#
-# Revision 1.13  2001/05/16 08:35:45  nando
-# reverted "make python" to old style, not ready for distutils with borland compiler
-#
-# Revision 1.12  2001/05/15 16:10:01  nando
-# updated all PyWrap depencencies to PyQuantLibWrap
 #
 
 .autodepend

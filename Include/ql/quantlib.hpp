@@ -26,32 +26,11 @@
     $Id$
     $Source$
     $Log$
+    Revision 1.9  2001/05/24 12:52:01  nando
+    smoothing #include xx.hpp
+
     Revision 1.8  2001/05/24 11:15:57  lballabio
     Stripped conventions from Currencies
-
-    Revision 1.7  2001/05/18 08:20:48  marmar
-    USD-Libor index added
-
-    Revision 1.6  2001/05/17 14:23:32  lballabio
-    Removed phony currencies before adding methods to interface
-
-    Revision 1.5  2001/05/16 09:57:27  lballabio
-    Added indexes and piecewise flat forward curve
-
-    Revision 1.4  2001/05/14 10:10:17  lballabio
-    *** empty log message ***
-
-    Revision 1.3  2001/04/24 08:48:37  lballabio
-    *** empty log message ***
-
-    Revision 1.2  2001/04/12 14:32:13  marmar
-    QL, QLMTH, and such converted into official namespace nicknames
-
-    Revision 1.1  2001/04/09 14:03:54  nando
-    all the *.hpp moved below the Include/ql level
-
-    Revision 1.4  2001/04/06 18:46:19  nando
-    changed Authors, Contributors, Licence and copyright header
 
 */
 

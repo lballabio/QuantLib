@@ -28,21 +28,17 @@
     $Id$
     $Source$
     $Log$
+    Revision 1.3  2001/05/24 12:52:01  nando
+    smoothing #include xx.hpp
+
     Revision 1.2  2001/05/24 11:15:57  lballabio
     Stripped conventions from Currencies
-
-    Revision 1.1  2001/05/18 08:20:31  marmar
-    USD-Libor index added
-
-    Revision 1.1  2001/05/16 09:57:27  lballabio
-    Added indexes and piecewise flat forward curve
 
 */
 
 #ifndef quantlib_usd_libor_hpp
 #define quantlib_usd_libor_hpp
 
-#include "ql/qldefines.hpp"
 #include "ql/Indexes/xibor.hpp"
 #include "ql/Calendars/newyork.hpp"
 #include "ql/DayCounters/actual360.hpp"
@@ -50,22 +46,22 @@
 namespace QuantLib {
 
     namespace Indexes {
-        
+
         //! Libor index
         class USDLibor : public Xibor {
           public:
             Currency currency() const { return USD; }
-            Handle<Calendar> calendar() const { 
+            Handle<Calendar> calendar() const {
                 return Handle<Calendar>(new Calendars::NewYork);
             }
             bool isAdjusted() const { return true; }
             bool isModifiedFollowing() const { return true; }
-            Handle<DayCounter> dayCounter() const { 
+            Handle<DayCounter> dayCounter() const {
                 return Handle<DayCounter>(new DayCounters::Actual360);
             }
             std::string name() const { return "USD-Libor"; }
         };
-    
+
     }
 
 }

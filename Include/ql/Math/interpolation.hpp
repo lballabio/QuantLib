@@ -28,22 +28,8 @@
     $Source$
     $Name$
     $Log$
-    Revision 1.2  2001/05/24 11:34:07  nando
+    Revision 1.3  2001/05/24 12:52:02  nando
     smoothing #include xx.hpp
-
-    Revision 1.1  2001/04/09 14:05:48  nando
-    all the *.hpp moved below the Include/ql level
-
-    Revision 1.2  2001/04/06 18:46:20  nando
-    changed Authors, Contributors, Licence and copyright header
-
-    Revision 1.1  2001/04/04 11:07:22  nando
-    Headers policy part 1:
-    Headers should have a .hpp (lowercase) filename extension
-    All *.h renamed to *.hpp
-
-    Revision 1.3  2001/02/16 15:32:22  lballabio
-    Used QL_ITERATOR_TRAITS macro
 
 */
 
@@ -51,7 +37,6 @@
 #define quantlib_interpolation_h
 
 #include "ql/qlerrors.hpp"
-#include <iterator>
 
 namespace QuantLib {
 

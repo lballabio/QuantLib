@@ -27,6 +27,9 @@
     $Source$
     $Name$
     $Log$
+    Revision 1.4  2001/05/24 12:52:02  nando
+    smoothing #include xx.hpp
+
     Revision 1.3  2001/05/24 11:34:07  nando
     smoothing #include xx.hpp
 
@@ -38,9 +41,6 @@
 #ifndef quantlib_montecarlo_pricer_h
 #define quantlib_montecarlo_pricer_h
 
-#include "ql/Math/statistics.hpp"
-#include "ql/MonteCarlo/pathpricer.hpp"
-#include "ql/MonteCarlo/standardpathgenerator.hpp"
 #include "ql/MonteCarlo/onefactormontecarlooption.hpp"
 
 namespace QuantLib {

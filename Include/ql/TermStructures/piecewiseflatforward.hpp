@@ -27,6 +27,9 @@
 
     $Source$
     $Log$
+    Revision 1.3  2001/05/24 12:52:02  nando
+    smoothing #include xx.hpp
+
     Revision 1.2  2001/05/24 11:15:57  lballabio
     Stripped conventions from Currencies
 
@@ -38,7 +41,6 @@
 #ifndef quantlib_piecewise_flat_forward_curve_h
 #define quantlib_piecewise_flat_forward_curve_h
 
-#include "ql/qldefines.hpp"
 #include "ql/daycounter.hpp"
 #include "ql/TermStructures/ratehelpers.hpp"
 #include "ql/solver1d.hpp"
@@ -47,14 +49,14 @@ namespace QuantLib {
 
     namespace TermStructures {
 
-        /* derived directly from term structure since we are rewriting all of 
-           forward, discount and zeroYield to take advantage of the internal 
+        /* derived directly from term structure since we are rewriting all of
+           forward, discount and zeroYield to take advantage of the internal
            structure. */
         class PiecewiseFlatForward : public TermStructure {
           public:
             // constructor
             PiecewiseFlatForward(Currency currency,
-                const Handle<DayCounter>& dayCounter, 
+                const Handle<DayCounter>& dayCounter,
                 const Date& settlementDate,
                 const std::vector<Handle<RateHelper> >& instruments);
             // inspectors
@@ -66,7 +68,7 @@ namespace QuantLib {
             // zero yield
             Rate zeroYield(const Date&, bool extrapolate = false) const;
             // discount
-            DiscountFactor discount(const Date&, 
+            DiscountFactor discount(const Date&,
                 bool extrapolate = false) const;
             // forward (instantaneous)
             Rate forward(const Date&, bool extrapolate = false) const;

@@ -1,6 +1,10 @@
 
 # $Id$
 # $Source$
+# $Log$
+# Revision 1.6  2001/05/24 12:52:03  nando
+# smoothing #include xx.hpp
+#
 #
 # makefile for QuantLib term structure library under Borland C++
 #

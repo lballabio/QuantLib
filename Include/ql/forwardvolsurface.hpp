@@ -26,6 +26,9 @@
     $Id$
     $Source$
     $Log$
+    Revision 1.3  2001/05/24 12:52:01  nando
+    smoothing #include xx.hpp
+
     Revision 1.2  2001/05/14 17:09:47  lballabio
     Went for simplicity and removed Observer-Observable relationships from Instrument
 
@@ -44,12 +47,10 @@
 #ifndef quantlib_forward_volatility_surface_h
 #define quantlib_forward_volatility_surface_h
 
-#include "ql/qldefines.hpp"
 #include "ql/date.hpp"
 #include "ql/rate.hpp"
 #include "ql/spread.hpp"
 #include "ql/handle.hpp"
-#include "ql/spread.hpp"
 
 namespace QuantLib {
 

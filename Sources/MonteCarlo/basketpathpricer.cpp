@@ -27,6 +27,9 @@
     $Source$
     $Name$
     $Log$
+    Revision 1.7  2001/05/24 12:52:02  nando
+    smoothing #include xx.hpp
+
     Revision 1.6  2001/04/09 14:13:34  nando
     all the *.hpp moved below the Include/ql level
 
@@ -43,18 +46,9 @@
     #include directives, as in
     #include <Solvers1d/newton.hpp>
 
-    Revision 1.2  2001/04/04 11:07:24  nando
-    Headers policy part 1:
-    Headers should have a .hpp (lowercase) filename extension
-    All *.h renamed to *.hpp
-
-    Revision 1.1  2001/02/02 10:53:18  marmar
-    Example of a path pricer depending on multiple factors
-
 */
 
 #include "ql/MonteCarlo/basketpathpricer.hpp"
-#include "ql/qlerrors.hpp"
 #include "ql/dataformatters.hpp"
 
 namespace QuantLib {

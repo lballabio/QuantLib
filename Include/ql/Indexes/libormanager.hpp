@@ -28,6 +28,9 @@
     $Id$
     $Source$
     $Log$
+    Revision 1.3  2001/05/24 12:52:01  nando
+    smoothing #include xx.hpp
+
     Revision 1.2  2001/05/24 11:15:57  lballabio
     Stripped conventions from Currencies
 
@@ -39,7 +42,6 @@
 #ifndef quantlib_libor_manager_hpp
 #define quantlib_libor_manager_hpp
 
-#include "ql/qldefines.hpp"
 #include "ql/currency.hpp"
 #include "ql/date.hpp"
 #include "ql/history.hpp"
@@ -50,17 +52,17 @@
 namespace QuantLib {
 
     namespace Indexes {
-        
+
         //! global repository for libor term structures and histories
         class LiborManager {
           public:
             // discount curves
-            static void setTermStructure(Currency, 
+            static void setTermStructure(Currency,
                 const Handle<TermStructure>&);
             static Handle<TermStructure> getTermStructure(Currency);
             static bool hasTermStructure(Currency);
             // historical fixings
-            static void setHistory(Currency, int n, TimeUnit unit, 
+            static void setHistory(Currency, int n, TimeUnit unit,
                 const History&);
             static const History& getHistory(Currency, int n, TimeUnit unit);
             static bool hasHistory(Currency, int n, TimeUnit unit);
@@ -72,9 +74,9 @@ namespace QuantLib {
             typedef std::map<std::string,History> HistoryMap;
             static HistoryMap historyMap_;
         };
-        
+
     }
-    
+
 }
 
 

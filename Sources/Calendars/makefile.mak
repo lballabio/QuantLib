@@ -1,6 +1,10 @@
 
 # $Id$
 # $Source$
+# $Log$
+# Revision 1.5  2001/05/24 12:52:02  nando
+# smoothing #include xx.hpp
+#
 #
 # makefile for QuantLib calendar library under Borland C++
 #
