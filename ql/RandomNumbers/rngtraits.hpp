@@ -34,10 +34,10 @@ namespace QuantLib {
 
     // random number traits
 
-    template <class RNG, class IC>
+    template <class URSG, class IC>
     struct GenericPseudoRandom {
         // typedefs
-        typedef RNG urng_type;
+        typedef URSG urng_type;
         typedef ICGaussianRng<urng_type,IC> rng_type;
         typedef RandomSequenceGenerator<urng_type> ursg_type;
         typedef ICGaussianRsg<ursg_type,IC> rsg_type;
@@ -55,9 +55,10 @@ namespace QuantLib {
     typedef GenericPseudoRandom<MersenneTwisterUniformRng,
                                 InverseCumulativeNormal> PseudoRandom;
 
-    struct LowDiscrepancy {
+    template <class URSG>
+    struct GenericLowDiscrepancy {
         // typedefs
-        typedef SobolRsg ursg_type;
+        typedef URSG ursg_type;
         typedef InverseCumulativeNormal ic_type;
         typedef ICGaussianRsg<ursg_type,ic_type> rsg_type;
         // more traits
@@ -69,6 +70,9 @@ namespace QuantLib {
             return rsg_type(g);
         }
     };
+
+    // default choice
+    typedef GenericLowDiscrepancy<SobolRsg> LowDiscrepancy;
 
 }
 
