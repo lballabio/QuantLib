@@ -52,8 +52,8 @@ void calibrateModel(const Handle<Model>& model,
                     CalibrationSet& calibs,
                     double lambda) {
 
-    Handle<Optimization::Method> om(new Optimization::Simplex(lambda, 1e-9));
-    om->setEndCriteria(Optimization::EndCriteria(10000, 1e-7));
+    Optimization::Simplex om(lambda, 1e-9);
+    om.setEndCriteria(Optimization::EndCriteria(10000, 1e-7));
     model->calibrate(calibs, om);
 
     #if defined(QL_PATCH_DARWIN)

@@ -56,20 +56,20 @@ namespace QuantLib {
 
         void Model::calibrate(
             const std::vector<Handle<CalibrationHelper> >& instruments,
-            const Handle<Optimization::Method>& method) {
+            Optimization::Method& method) {
 
             CalibrationFunction f(this, instruments);
 
-            method->setInitialValue(params());
-            method->endCriteria().setPositiveOptimization();
-            Optimization::Problem prob(f, *constraint_, *method);
+            method.setInitialValue(params());
+            method.endCriteria().setPositiveOptimization();
+            Optimization::Problem prob(f, *constraint_, method);
             prob.minimize();
 
             Array result(prob.minimumValue());
             setParams(result);
         }
 
-        Array Model::params() {
+        Disposable<Array> Model::params() const {
             Size size = 0, i;
             for (i=0; i<arguments_.size(); i++)
                 size += arguments_[i].size();

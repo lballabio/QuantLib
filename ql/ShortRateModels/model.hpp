@@ -86,12 +86,12 @@ namespace QuantLib {
             //! Calibrate to a set of market instruments (caps/swaptions)
             void calibrate(
                 const std::vector<Handle<CalibrationHelper> >& instruments,
-                const Handle<Optimization::Method>& method);
+                Optimization::Method& method);
 
             const Handle<Optimization::Constraint>& constraint() const;
 
             //! Returns array of arguments on which calibration is done
-            Array params();
+            Disposable<Array> params() const;
             void setParams(const Array& params);
           protected:
             virtual void generateArguments() {}
