@@ -1477,6 +1477,9 @@
 				RelativePath="ql\CashFlows\floatingratecoupon.hpp">
 			</File>
 			<File
+				RelativePath=".\ql\CashFlows\inarrearindexedcoupon.cpp">
+			</File>
+			<File
 				RelativePath="ql\CashFlows\inarrearindexedcoupon.hpp">
 			</File>
 			<File
@@ -9490,6 +9493,9 @@
 			</File>
 			<File
 				RelativePath="ql\Volatilities\capflatvolvector.hpp">
+			</File>
+			<File
+				RelativePath=".\ql\Volatilities\capletconstantvol.hpp">
 			</File>
 			<File
 				RelativePath="ql\Volatilities\impliedvoltermstructure.hpp">

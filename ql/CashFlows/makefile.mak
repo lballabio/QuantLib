@@ -25,6 +25,7 @@ INCLUDE_DIR    = ..\..
 OBJS = \
     "basispointsensitivity.obj$(_mt)$(_D)" \
     "cashflowvectors.obj$(_mt)$(_D)" \
+    "inarrearindexedcoupon.obj$(_mt)$(_D)" \
     "parcoupon.obj$(_mt)$(_D)" \
     "shortfloatingcoupon.obj$(_mt)$(_D)" \
     "timebasket.obj$(_mt)$(_D)"
