@@ -35,7 +35,12 @@ namespace QuantLib {
 
         \ingroup yieldtermstructures
     */
-    class DiscountCurve : public DiscountStructure {
+    class DiscountCurve
+    #ifdef QL_DISABLE_DEPRECATED
+        : public YieldTermStructure {
+    #else
+        : public DiscountStructure {
+    #endif
       public:
         // constructor
         #ifndef QL_DISABLE_DEPRECATED

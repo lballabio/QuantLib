@@ -26,9 +26,7 @@
 
 namespace QuantLib {
 
-    #ifdef QL_DISABLE_DEPRECATED
-    typedef YieldTermStructure DiscountStructure;
-    #else
+    #ifndef QL_DISABLE_DEPRECATED
     //! Discount factor term structure
     /*! This abstract class acts as an adapter to YieldTermStructure
         allowing the programmer to implement only the
@@ -37,6 +35,8 @@ namespace QuantLib {
         Zero yield and forward are calculated from discounts.
 
         Rates are assumed to be annual continuous compounding.
+
+        \deprecated use YieldTermStructure instead
 
         \ingroup yieldtermstructures
     */
@@ -47,9 +47,6 @@ namespace QuantLib {
             constructors.
         */
         //@{
-        /*! \deprecated use the constructor without today's date; set the
-                        evaluation date through Settings::instance().
-        */
         DiscountStructure(const Date& todaysDate, const Date& referenceDate);
         DiscountStructure();
         DiscountStructure(const Date& referenceDate);
@@ -122,5 +119,6 @@ namespace QuantLib {
 
     #endif
 }
+
 
 #endif

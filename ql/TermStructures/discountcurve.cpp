@@ -54,10 +54,14 @@ namespace QuantLib {
 
     DiscountCurve::DiscountCurve(const std::vector<Date>& dates,
                                  const std::vector<DiscountFactor>& discounts)
+    #ifdef QL_DISABLE_DEPRECATED
+    : YieldTermStructure(dates[0]),
+    #else
     : DiscountStructure(dates[0]),
-      #ifndef QL_DISABLE_DEPRECATED
+    #endif
+    #ifndef QL_DISABLE_DEPRECATED
       dayCounter_(Settings::instance().dayCounter()),
-      #endif
+    #endif
       dates_(dates), discounts_(discounts) {
         QL_REQUIRE(dates_.size() > 0,
                    "no input Dates given");

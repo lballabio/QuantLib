@@ -41,7 +41,12 @@ namespace QuantLib {
         \test b) observability against changes in the underlying term
                  structure is checked.
     */
-    class ImpliedTermStructure : public DiscountStructure {
+    class ImpliedTermStructure
+    #ifdef QL_DISABLE_DEPRECATED
+        : public YieldTermStructure {
+    #else
+        : public DiscountStructure {
+    #endif
       public:
         #ifndef QL_DISABLE_DEPRECATED
         /*! \deprecated use the constructor without today's date; set the
@@ -85,7 +90,12 @@ namespace QuantLib {
     inline ImpliedTermStructure::ImpliedTermStructure(
                                           const Handle<YieldTermStructure>& h,
                                           const Date& referenceDate)
-    : DiscountStructure(referenceDate), originalCurve_(h) {
+    #ifdef QL_DISABLE_DEPRECATED
+    : YieldTermStructure(referenceDate),
+    #else
+    : DiscountStructure(referenceDate),
+    #endif
+      originalCurve_(h) {
         registerWith(originalCurve_);
     }
 
