@@ -146,6 +146,7 @@ void AsianOptionTest::testAnalyticContinuousGeometricAveragePrice() {
                                          fixingDates,
                                          stochProcess, payoff,
                                          exercise, engine2);
+
     calculated = option2.NPV();
     tolerance = 3.0e-3;
     if (QL_FABS(calculated-expected) > tolerance) {
@@ -544,15 +545,20 @@ void AsianOptionTest::testMCDiscreteArithmeticAveragePrice() {
     boost::shared_ptr<SimpleQuote> vol(new SimpleQuote(0.20));
     boost::shared_ptr<BlackVolTermStructure> volTS = flatVol(today, vol, dc);
 
+
+    Real tolerance = 2.0e-2;
+
     boost::shared_ptr<PricingEngine> engine;
     engine =
-/*
-        MakeMCDiscreteArithmeticAPEngine<PseudoRandom>().withStepsPerYear(1)
-                                                        .withTolerance(0.005)
+/*        MakeMCDiscreteArithmeticAPEngine<PseudoRandom>().withStepsPerYear(1)
+                                                        .withTolerance(tolerance/4.0)
+                                                        .withControlVariate()
                                                         .withSeed(42);
 */
         MakeMCDiscreteArithmeticAPEngine<LowDiscrepancy>().withStepsPerYear(1)
-                                                          .withSamples(2047);
+                                                          .withSamples(2047)
+                                                          .withControlVariate()
+                                                          ;
 
     Average::Type averageType = Average::Arithmetic;
     Real runningSum = 0.0;
@@ -592,7 +598,6 @@ void AsianOptionTest::testMCDiscreteArithmeticAveragePrice() {
 
         Real calculated = option.NPV();
         Real expected = cases4[l].result;
-        Real tolerance = 2.0e-2;
         if (QL_FABS(calculated-expected) > tolerance) {
             REPORT_FAILURE("value", averageType, runningSum, pastFixings,
                         fixingDates, payoff, exercise, spot->value(),
@@ -770,6 +775,7 @@ void AsianOptionTest::testAnalyticDiscreteGeometricAveragePriceGreeks() {
 
 test_suite* AsianOptionTest::suite() {
     test_suite* suite = BOOST_TEST_SUITE("Asian option tests");
+
     suite->add(BOOST_TEST_CASE(
         &AsianOptionTest::testAnalyticContinuousGeometricAveragePrice));
     suite->add(BOOST_TEST_CASE(
@@ -780,7 +786,8 @@ test_suite* AsianOptionTest::suite() {
         &AsianOptionTest::testMCDiscreteGeometricAveragePrice));
     suite->add(BOOST_TEST_CASE(
         &AsianOptionTest::testMCDiscreteArithmeticAveragePrice));
-    /* broken
+
+     /* broken
     suite->add(BOOST_TEST_CASE(
         &AsianOptionTest::testAnalyticDiscreteGeometricAveragePriceGreeks));
     */
