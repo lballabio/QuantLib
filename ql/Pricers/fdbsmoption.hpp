@@ -72,9 +72,9 @@ namespace QuantLib {
         };
 
         //! This is a safety check to be sure we have enough grid points.
-        #define QL_NUM_OPT_MIN_GRID_POINTS            100
+        #define QL_NUM_OPT_MIN_GRID_POINTS            10
         //! This is a safety check to be sure we have enough grid points.
-        #define QL_NUM_OPT_GRID_POINTS_PER_YEAR        50
+        #define QL_NUM_OPT_GRID_POINTS_PER_YEAR        2
 
         // The following is a safety check to be sure we have enough grid
         // points.
