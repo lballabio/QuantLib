@@ -2,7 +2,7 @@
 # makefile for QuantLib documentation under Borland C++
 
 .autodepend
-.silent
+#.silent
 
 # Tools to be used
 SED       = sed
@@ -17,7 +17,7 @@ TEX_OPTS = --quiet --pool-size=1000000
 
 # Primary target:
 # all docs
-all:: tex-files
+all:: html-config htmlhelp-config tex-config tex-files
     cd latex
     $(PDFLATEX) $(TEX_OPTS) refman
     $(MAKEINDEX) refman.idx
@@ -25,51 +25,69 @@ all:: tex-files
     $(LATEX) $(TEX_OPTS) refman
     $(DVIPS) refman
     cd ..
+    copy latex\refman.pdf QuantLib-docs-0.3.9.pdf
+    copy latex\refman.ps  QuantLib-docs-0.3.9.ps
 
-# HTML documentation only
-html: html-offline
-
-html-offline::
-    $(SED) -e "s|ql_basepath|$(QL_DIR)\\\\|" \
+generic-config::
+    $(SED) -e "s|ql_basepath|D:/Projects/QuantLib|" \
+           -e "s|ql_version|0.3.9|" \
            quantlib.doxy > quantlib.doxy.temp
-    $(DOXYGEN) quantlib.doxy.temp
+
+html-config:: generic-config
+    $(SED) -e "s|GENERATE_HTML          = NO|GENERATE_HTML          = YES|" \
+           quantlib.doxy.temp > quantlib.doxy.temp2
     del /Q quantlib.doxy.temp
+    ren quantlib.doxy.temp2 quantlib.doxy.temp
+    if not exist .\html md .\html
     copy images\*.jpg html
     copy images\*.png html
+
+htmlhelp-config:: generic-config
+    $(SED) -e "s|GENERATE_HTML          = NO|GENERATE_HTML          = YES|" \
+           -e "s|GENERATE_HTMLHELP      = NO|GENERATE_HTMLHELP      = YES|" \
+           quantlib.doxy.temp > quantlib.doxy.temp2
+    del /Q quantlib.doxy.temp
+    ren quantlib.doxy.temp2 quantlib.doxy.temp
+    if not exist .\html md .\html
+    copy images\*.jpg html
+    copy images\*.png html
+
+html-online-config:: generic-config
+    $(SED) -e "s/_OUTPUT            = html/_OUTPUT            = html-online/" \
+           -e "s/quantlibfooter.html/quantlibfooteronline.html/" \
+           -e "s|GENERATE_HTML          = NO|GENERATE_HTML          = YES|" \
+           quantlib.doxy.temp > quantlib.doxy.temp2
+    del /Q quantlib.doxy.temp
+    ren quantlib.doxy.temp2 quantlib.doxy.temp
+    if not exist .\html-online md .\html-online
+    copy images\*.jpg html-online
+    copy images\*.png html-online
+
+tex-config:: generic-config
+    $(SED) -e "s|GENERATE_LATEX         = NO|GENERATE_LATEX         = YES|" \
+           quantlib.doxy.temp > quantlib.doxy.temp2
+    del /Q quantlib.doxy.temp
+    ren quantlib.doxy.temp2 quantlib.doxy.temp
+    if not exist .\latex md .\latex
     copy images\*.pdf latex
     copy images\*.eps latex
 
-html-online::
-    $(SED) -e "s/quantlibfooter.html/quantlibfooteronline.html/" \
-           -e "s|ql_basepath|$(QL_DIR)\\\\|" \
-           quantlib.doxy > quantlib.doxy.temp
+html:: html-config
     $(DOXYGEN) quantlib.doxy.temp
     del /Q quantlib.doxy.temp
-    copy images\*.jpg html
-    copy images\*.png html
-    copy images\*.pdf latex
-    copy images\*.eps latex
 
-# PDF documentation
-pdf:: tex-files
-    cd latex
-    $(PDFLATEX) $(TEX_OPTS) refman
-    $(MAKEINDEX) refman.idx
-    $(PDFLATEX) $(TEX_OPTS) refman
-    cd ..
+htmlhelp:: htmlhelp-config
+    $(DOXYGEN) quantlib.doxy.temp
+    del /Q quantlib.doxy.temp
 
-# PostScript documentation
-ps:: tex-files
-    cd latex
-    $(LATEX) $(TEX_OPTS) refman
-    $(MAKEINDEX) refman.idx
-    $(LATEX) $(TEX_OPTS) refman
-    $(DVIPS) refman
-    cd ..
+html-online:: html-online-config
+    $(DOXYGEN) quantlib.doxy.temp
+    del /Q quantlib.doxy.temp
 
 # Correct LaTeX files to get the right layout
-tex-files:: html
-    copy userman.tex latex
+tex-files:: tex-config
+    $(DOXYGEN) quantlib.doxy.temp
+    del /Q quantlib.doxy.temp
     cd latex
     ren refman.tex oldrefman.tex
     $(SED) -e "/Page Index/d" \
@@ -96,7 +114,31 @@ tex-files:: html
 	rm -f oldbug.tex
     cd ..
 
+# PDF documentation
+pdf:: tex-files
+    cd latex
+    $(PDFLATEX) $(TEX_OPTS) refman
+    $(MAKEINDEX) refman.idx
+    $(PDFLATEX) $(TEX_OPTS) refman
+    cd ..
+    copy latex\refman.pdf QuantLib-docs-0.3.9.pdf
+
+# PostScript documentation
+ps:: tex-files
+    cd latex
+    $(LATEX) $(TEX_OPTS) refman
+    $(MAKEINDEX) refman.idx
+    $(LATEX) $(TEX_OPTS) refman
+    $(DVIPS) refman
+    cd ..
+    copy latex\refman.ps QuantLib-docs-0.3.9.ps
+
+
 # Clean up
 clean::
-    if exist html  rmdir /S /Q html
-    if exist latex rmdir /S /Q latex
+    if exist html            rmdir /S /Q html
+    if exist html-online     rmdir /S /Q html-online
+    if exist latex           rmdir /S /Q latex
+    if exist QuantLib-docs-* rm -f QuantLib-docs-*
+    if exist *.temp          rm -f *.temp
+    if exist *.temp2         rm -f *.temp2

@@ -1,8 +1,9 @@
+QuantLib-docs-*
 Makefile.in
 Makefile
 docswarnings.txt
 html-online
-html-offline
+html
 latex
 man
 .time-stamp*
