@@ -30,9 +30,11 @@
 #include <ql/Math/bicubicsplineinterpolation.hpp>
 #include <ql/Math/riskmeasures.hpp>
 #include <ql/Math/primenumbers.hpp>
+#include <ql/RandomNumbers/mt19937uniformrng.hpp>
 
 using namespace QuantLib;
 using namespace QuantLib::Math;
+using QuantLib::RandomNumbers::MersenneTwisterUniformRng;
 
 namespace QuantLib {
 
@@ -131,6 +133,17 @@ namespace QuantLib {
         Size primeNumbers(Size absoluteIndex) {
             return PrimeNumbers::get(absoluteIndex);
         }
+
+
+        static MersenneTwisterUniformRng rng;
+
+        double rand() {
+            return rng.next().value;
+        }
+        void randomize(unsigned long seed) {
+            rng = MersenneTwisterUniformRng(seed);
+        }
+
 
     }
 

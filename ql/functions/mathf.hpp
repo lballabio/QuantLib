@@ -59,6 +59,10 @@ namespace QuantLib {
 
         Size primeNumbers(Size absoluteIndex);
 
+        double rand();
+        void randomize(unsigned long seed);
+
+    
     }
 
 }
