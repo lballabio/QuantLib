@@ -20,6 +20,12 @@ quantlib::
     $(MAKE)
     cd ..
 
+# QuantLib library
+install::
+    xcopy Include\ql\*.hpp %QL_DIR%\Include\ql /S /I
+    xcopy lib\Win32\VisualStudio\*.lib %QL_DIR%\lib\Win32\VisualStudio /S /I
+    xcopy lib\Win32\Borland\*.lib %QL_DIR%\lib\Win32\Borland /S /I
+
 # Python module
 python::
     cd Python
