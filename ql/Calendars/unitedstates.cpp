@@ -50,7 +50,7 @@ namespace QuantLib {
         Day d = date.dayOfMonth(), dd = date.dayOfYear();
         Month m = date.month();
         Year y = date.year();
-        Day em = easterMonday(y);
+//        Day em = easterMonday(y);
         if ((w == Saturday || w == Sunday)
             // New Year's Day (possibly moved to Monday if on Sunday)
             || ((d == 1 || (d == 2 && w == Monday)) && m == January)
@@ -60,8 +60,6 @@ namespace QuantLib {
             || ((d >= 15 && d <= 21) && w == Monday && m == January)
             // Washington's birthday (third Monday in February)
             || ((d >= 15 && d <= 21) && w == Monday && m == February)
-            // Good Friday
-            || (dd == em-3)
             // Memorial Day (last Monday in May)
             || (d >= 25 && w == Monday && m == May)
             // Independence Day (Monday if Sunday or Friday if Saturday)

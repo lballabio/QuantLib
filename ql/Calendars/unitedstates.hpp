@@ -28,7 +28,7 @@
 namespace QuantLib {
 
     //! United States calendars
-    /*! Public holidays:
+    /*! Public holidays (see: http://www.opm.gov/fedhol/):
         <ul>
         <li>Saturdays</li>
         <li>Sundays</li>
@@ -37,7 +37,6 @@ namespace QuantLib {
         <li>Martin Luther King's birthday, third Monday in January</li>
         <li>Presidents' Day (a.k.a. Washington's birthday),
 		    third Monday in February</li>
-        <li>Good Friday</li>
         <li>Memorial Day, last Monday in May</li>
         <li>Independence Day, July 4th (moved to Monday if Sunday or
             Friday if Saturday)</li>
