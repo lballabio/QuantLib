@@ -27,6 +27,9 @@
 
     $Source$
     $Log$
+    Revision 1.15  2001/05/22 13:28:40  marmar
+    setGridLimits interface changed and other changes
+
     Revision 1.14  2001/04/26 16:05:42  marmar
     underlying_ not mutable anymore, setGridLimits accepts the value for center
 
@@ -100,21 +103,21 @@ namespace QuantLib {
         : dates_(dates),
           dateNumber_(dates.size()),
           timeStepPerPeriod_(timeSteps),
-          BSMNumericalOption(type, underlying, strike, 
-                             dividendYield, riskFreeRate, 
-                             residualTime, volatility, 
+          BSMNumericalOption(type, underlying, strike,
+                             dividendYield, riskFreeRate,
+                             residualTime, volatility,
                              gridPoints),
           lastDateIsResTime_(false),
-          lastIndex_(dateNumber_ - 1), 
-          firstDateIsZero_(false), 
-          firstNonZeroDate_(residualTime), 
+          lastIndex_(dateNumber_ - 1),
+          firstDateIsZero_(false),
+          firstNonZeroDate_(residualTime),
           firstIndex_(-1){
-            
+
             double dateTollerance = 1e-6;
 
             if (dateNumber_ > 0){
-                QL_REQUIRE(dates_[0] >= 0, 
-                          "First date " + 
+                QL_REQUIRE(dates_[0] >= 0,
+                          "First date " +
                           DoubleFormatter::toString(dates_[0]) +
                           " cannot be negative");
                 if(dates_[0] < residualTime * dateTollerance ){
@@ -122,8 +125,8 @@ namespace QuantLib {
                     firstIndex_ = 0;
                     if(dateNumber_ > 0)
                         firstNonZeroDate_ = dates_[1];
-                }   
-    
+                }
+
                 if(QL_FABS(dates_[0] - residualTime) < dateTollerance){
                     lastDateIsResTime_ = true;
                     lastIndex_ =dateNumber_ - 2;
@@ -153,7 +156,7 @@ namespace QuantLib {
 
             Time beginDate, endDate;
             initializeControlVariate();
-            setGridLimits(underlying_);
+            setGridLimits(underlying_, residualTime_);
             initializeGrid();
             initializeInitialCondition();
             initializeOperator();
@@ -165,15 +168,11 @@ namespace QuantLib {
             if(lastDateIsResTime_)
                 executeIntermediateStep(dateNumber_ - 1);
 
-            double dt;
-            if (dateNumber_ > 0)
-                dt = residualTime_/(timeStepPerPeriod_*dateNumber_*10);
-            else
-                dt = residualTime_/(timeStepPerPeriod_*10);
-                
+            double dt = residualTime_/(timeStepPerPeriod_*(dateNumber_+1));
+
             // Ensure that dt is always smaller than the first non-zero date
             if (firstNonZeroDate_ <= dt)
-                dt = firstNonZeroDate_/2.0; 
+                dt = firstNonZeroDate_/2.0;
 
             int j = lastIndex_;
             do{
@@ -195,18 +194,23 @@ namespace QuantLib {
 
                 if (j >= 0)
                     executeIntermediateStep(j);
+                
             } while (--j >= firstIndex_);
 
-            double pricePlusDt = valueAtCenter(prices_);
-            double controlPlusDt = valueAtCenter(controlPrices_);
+            double pricePlus = + valueAtCenter(prices_)
+                               - valueAtCenter(controlPrices_)
+                               + analytic_ -> theta() * dt; // + analytic_ -> value() 
 
             model_ -> rollback(prices_,        dt, 0, 1, stepCondition_);
             model_ -> rollback(controlPrices_, dt, 0, 1);
-            
+
             if(firstDateIsZero_)
                 executeIntermediateStep(0);
 
             // Option price and greeks are computed
+            controlVariateCorrection_ =
+                analytic_ -> value() - valueAtCenter(controlPrices_);
+
             value_ =   valueAtCenter(prices_)
                      - valueAtCenter(controlPrices_)
                      + analytic_ -> value();
@@ -223,9 +227,11 @@ namespace QuantLib {
             model_ -> rollback(prices_,        0, -dt, 1, stepCondition_);
             model_ -> rollback(controlPrices_, 0, -dt, 1);
 
-            theta_=  (pricePlusDt - valueAtCenter(prices_))/(2.0*dt)
-                    -(controlPlusDt - valueAtCenter(controlPrices_))/(2.0*dt)
-                    + analytic_ -> theta();
+            double priceMinus = + valueAtCenter(prices_)
+                                - valueAtCenter(controlPrices_)
+                                - analytic_ -> theta() * dt; // + analytic_ -> value() 
+
+            theta_= (pricePlus - priceMinus)/(2.0*dt);
 
             hasBeenCalculated_ = true;
         }
@@ -249,6 +255,12 @@ namespace QuantLib {
             model_ = Handle<StandardFiniteDifferenceModel> (
                      new StandardFiniteDifferenceModel
                             (finiteDifferenceOperator_));
+        }
+
+        double MultiPeriodOption::controlVariateCorrection() const{
+            if(!hasBeenCalculated_)
+                calculate();
+            return controlVariateCorrection_;
         }
 
     }
