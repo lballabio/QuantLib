@@ -71,5 +71,26 @@
     - Local volatility models---in progress;
     - Stochastic volatility---to do.
 
+    <strong>Assorted Possible Milestones</strong>
+
+    - Moving to the generic option pricing engine (see
+      http://quantlib.org/quep/quep005.html) where each option can be priced
+      with different engines: analytic, trees, Finite Differences, Monte
+      Carlo. Allow everywhere for time varying volatilities and interest rates.
+    - Two dimensions FD framework, with satisfactory solution of the Free
+      Boundary problem (early exercise).
+    - MC path-wise Greek evaluation.
+    - Full coverage of analytic models for option pricing.
+    - Complete coverage of basic Fixed Income instruments (cap/floor, swaption,
+      Bermuda swaption) with all major one-factor models.
+    - Modeling of stochastic process with jumps, reversion, etc.
+    - Extraction of local volatilities surface from Black volatility surface.
+    - Implementation of FI products using FD framework.
+    - Low-discrepancy sequences for MC simulation.
+    - FD solution of weak path-dependent options (Asian, look-back, etc).
+    - Advanced MC variance reduction techniques.
+    - Implementation of Fixed Income products using MC framework.
+
+
 */
 
