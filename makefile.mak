@@ -28,12 +28,12 @@ install::
     !message
     !error terminated
     !endif
-    rmdir /S /Q %QL_DIR%\Include\ql
-    xcopy Include\ql\*.hpp %QL_DIR%\Include\ql /S /I
-    rmdir /S /Q %QL_DIR%\lib\Win32\VisualStudio
-    xcopy lib\Win32\VisualStudio\*.lib %QL_DIR%\lib\Win32\VisualStudio /S /I
-    rmdir /S /Q %QL_DIR%\lib\Win32\Borland
-    xcopy lib\Win32\Borland\*.lib %QL_DIR%\lib\Win32\Borland /S /I
+    rmdir /S /Q $(QL_DIR)\Include\ql
+    xcopy Include\ql\*.hpp $(QL_DIR)\Include\ql /S /I
+    rmdir /S /Q $(QL_DIR)\lib\Win32\VisualStudio
+    xcopy lib\Win32\VisualStudio\*.lib $(QL_DIR)\lib\Win32\VisualStudio /S /I
+    rmdir /S /Q $(QL_DIR)\lib\Win32\Borland
+    xcopy lib\Win32\Borland\*.lib $(QL_DIR)\lib\Win32\Borland /S /I
 
 # Python module
 python::
