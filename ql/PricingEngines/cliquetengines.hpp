@@ -118,9 +118,11 @@ namespace QuantLib {
         Handle<PP> MCCliquetEngine<S, SG, PG, PP>::pathPricer() const {
             //! Initialize the path pricer
             return Handle<MonteCarlo::PathPricer<MonteCarlo::Path> >(
-                new MonteCarlo::EuropeanPathPricer(arguments_.type,
-                arguments_.underlying, arguments_.strike,
-                arguments_.riskFreeTS));
+                new MonteCarlo::CliquetOptionPathPricer(arguments_.type,
+                arguments_.underlying, arguments_.moneyness,
+                arguments_.accruedCoupon, arguments_.localCap,
+                arguments_.localFloor, arguments_.globalCap,
+                arguments_.globalFloor, arguments_.riskFreeTS));
         }
 
     }

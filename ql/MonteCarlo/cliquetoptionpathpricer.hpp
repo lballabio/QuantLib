@@ -34,6 +34,30 @@ namespace QuantLib {
     namespace MonteCarlo {
 
         //! %path pricer for cliquet options
+        class CliquetOptionPathPricer : public PathPricer<Path> {
+          public:
+            CliquetOptionPathPricer(
+                Option::Type type,
+                double underlying,
+                double moneyness,
+                double accruedCoupon,
+                double localCap,
+                double localFloor,
+                double globalCap,
+                double globalFloor,
+                const RelinkableHandle<TermStructure>& riskFreeTS);
+            double operator()(const Path& path) const;
+          private:
+            Option::Type type_;
+            double underlying_, moneyness_, accruedCoupon_;
+            double localCap_, localFloor_, globalCap_, globalFloor_;
+        };
+
+        
+        //! %path pricer for cliquet options
+        /*! %path pricer for cliquet options
+            \deprecated use CliquetOptionPathPricer instead
+        */
         class CliquetOptionPathPricer_old : public PathPricer_old<Path> {
           public:
             CliquetOptionPathPricer_old(Option::Type type,

@@ -31,6 +31,32 @@ namespace QuantLib {
 
     namespace MonteCarlo {
 
+        CliquetOptionPathPricer::CliquetOptionPathPricer(Option::Type type,
+          double underlying, double moneyness, double accruedCoupon,
+          double localCap, double localFloor, double globalCap,
+          double globalFloor,
+          const RelinkableHandle<TermStructure>& riskFreeTS)
+        : PathPricer<Path>(riskFreeTS), type_(type),
+          underlying_(underlying), moneyness_(moneyness),
+          accruedCoupon_(accruedCoupon), localCap_(localCap),
+          localFloor_(localFloor), globalCap_(globalCap),
+          globalFloor_(globalFloor) {
+            QL_REQUIRE(underlying_>0.0,
+                "CliquetOptionPathPricer: "
+                "underlying less/equal zero not allowed");
+            QL_REQUIRE(moneyness_>0.0,
+                "CliquetOptionPathPricer: "
+                "moneyness less/equal zero not allowed");
+        }
+
+        double CliquetOptionPathPricer::operator()(const Path& path) const {
+            return 0.0;
+        }
+
+
+
+
+
         CliquetOptionPathPricer_old::CliquetOptionPathPricer_old(Option::Type type,
           double underlying, double moneyness,
           const std::vector<DiscountFactor>& discounts,
