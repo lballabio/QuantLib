@@ -43,6 +43,10 @@
 	in progress. Eventually, all %QuantLib classes will be documented. However, no
 	date is currently set for this goal.
     Join the mailing lists (http://sourceforge.net/mail/?group_id=12740) for the latest updates.
+
+    \section download Download
+    If you want to download the documentation, source code, modules, etc. go to
+    http://sourceforge.net/project/showfiles.php?group_id=12740
 */
 
 /*! \file qldefines.h
