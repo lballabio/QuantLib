@@ -26,6 +26,9 @@
     $Id$
     $Source$
     $Log$
+    Revision 1.24  2001/05/15 12:40:49  lballabio
+    Exported derived classes as derived classes
+
     Revision 1.23  2001/05/14 17:09:47  lballabio
     Went for simplicity and removed Observer-Observable relationships from Instrument
 
@@ -96,52 +99,78 @@ typedef Handle<TermStructure> TermStructureHandle;
 
 %{
 using QuantLib::ImpliedTermStructure;
-
-TermStructureHandle NewImpliedTermStructure(TermStructureHandle curve,
-  Date evaluationDate) {
-	return Handle<TermStructure>(
-	  new ImpliedTermStructure(curve,evaluationDate));
-}
+typedef Handle<TermStructure> ImpliedTermStructureHandle;
 %}
 
-%name(ImpliedTermStructure) TermStructureHandle
-NewImpliedTermStructure(TermStructureHandle curve, Date evaluationDate);
+// actually they are the same class, but I'll fake inheritance...
+%name(ImpliedTermStructure) class ImpliedTermStructureHandle
+: public TermStructureHandle {
+  public:
+    // constructor redefined below
+    ~ImpliedTermStructureHandle();
+};
 
+%addmethods ImpliedTermStructureHandle {
+    ImpliedTermStructureHandle(TermStructureHandle curve,
+        Date evaluationDate) {
+	        return new ImpliedTermStructureHandle(
+	            new ImpliedTermStructure(curve,evaluationDate));
+    }
+}
 
 // spreaded term structure
 
 %{
 using QuantLib::SpreadedTermStructure;
-
-TermStructureHandle NewSpreadedTermStructure(TermStructureHandle curve,
-  Spread spread) {
-	return Handle<TermStructure>(new SpreadedTermStructure(curve,spread));
-}
+typedef Handle<TermStructure> SpreadedTermStructureHandle;
 %}
 
-%name(SpreadedTermStructure) TermStructureHandle NewSpreadedTermStructure(TermStructureHandle curve, Spread spread);
+// actually they are the same class, but I'll fake inheritance...
+%name(SpreadedTermStructure) class SpreadedTermStructureHandle
+: public TermStructureHandle {
+  public:
+    // constructor redefined below
+    ~SpreadedTermStructureHandle();
+};
+
+%addmethods SpreadedTermStructureHandle {
+    SpreadedTermStructureHandle(TermStructureHandle curve,
+        Spread spread) {
+	        return new SpreadedTermStructureHandle(
+	            new SpreadedTermStructure(curve,spread));
+    }
+}
+
 
 // flat forward curve
 
 %{
 using QuantLib::TermStructures::FlatForward;
-
-TermStructureHandle NewFlatForward(CurrencyHandle currency,
-  DayCounterHandle dayCounter, Date today, Rate forward) {
-	return Handle<TermStructure>(
-	  new FlatForward(currency,dayCounter,today,forward));
-}
+typedef Handle<TermStructure> FlatForwardHandle;
 %}
 
-%name(FlatForward) TermStructureHandle NewFlatForward(CurrencyHandle currency,
-  DayCounterHandle dayCounter, Date today, Rate forward);
+// actually they are the same class, but I'll fake inheritance...
+%name(FlatForward) class FlatForwardHandle
+: public TermStructureHandle {
+  public:
+    // constructor redefined below
+    ~FlatForwardHandle();
+};
 
+%addmethods FlatForwardHandle {
+    FlatForwardHandle(CurrencyHandle currency, DayCounterHandle dayCounter, 
+        Date today, Rate forward) {
+	        return new FlatForwardHandle(
+	            new FlatForward(currency,dayCounter,today,forward));
+    }
+}
 
 
 // piecewise constant forward curve on deposits
 
 %{
 using QuantLib::TermStructures::PiecewiseConstantForwards;
+typedef Handle<TermStructure> PiecewiseConstantForwardsHandle;
 using QuantLib::DepositRate;
 %}
 
@@ -205,16 +234,22 @@ typedef std::vector<DepositRate> DepositList;
 
 // piecewise constant forward generation
 
-%{
-TermStructureHandle NewPiecewiseConstantForwards(CurrencyHandle currency,
-  DayCounterHandle dayCounter, Date today, DepositList deposits) {
-	return Handle<TermStructure>(
-	  new PiecewiseConstantForwards(currency,dayCounter,today,deposits));
-}
-%}
+// actually they are the same class, but I'll fake inheritance...
+%name(PiecewiseConstantForwards) class PiecewiseConstantForwardsHandle
+: public TermStructureHandle {
+  public:
+    // constructor redefined below
+    ~PiecewiseConstantForwardsHandle();
+};
 
-%name(PiecewiseConstantForwards) TermStructureHandle NewPiecewiseConstantForwards(CurrencyHandle currency,
-  DayCounterHandle dayCounter, Date today, DepositList deposits);
+%addmethods PiecewiseConstantForwardsHandle {
+    PiecewiseConstantForwardsHandle(CurrencyHandle currency,
+        DayCounterHandle dayCounter, Date today, DepositList deposits) {
+	        return new PiecewiseConstantForwardsHandle(
+	            new PiecewiseConstantForwards(currency, dayCounter, today, 
+	                deposits));
+    }
+}
 
 
 #endif
