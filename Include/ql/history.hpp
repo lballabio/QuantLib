@@ -30,6 +30,9 @@
 
 // $Source$
 // $Log$
+// Revision 1.5  2001/07/04 16:23:39  uid38474
+// * history.hpp (History(const Date& firstDate, const Date& lastDate, Iterator begin, Iterator end)): added static_cast to prevent gcc warning
+//
 // Revision 1.4  2001/05/25 08:12:11  lballabio
 // Fixed bug in docs
 //
@@ -72,7 +75,7 @@ namespace QuantLib {
             Iterator begin, Iterator end)
         : firstDate_(firstDate), lastDate_(lastDate), values_(begin,end) {
             QL_REQUIRE(lastDate >= firstDate, "invalid date range for history");
-            QL_ENSURE(values_.size() == (lastDate-firstDate)+1,
+            QL_ENSURE(values_.size() == static_cast<unsigned int>((lastDate-firstDate))+1,
                 "history size incompatible with date range");
         }
         /*! This constructor initializes the history with the given set of
@@ -82,6 +85,12 @@ namespace QuantLib {
             \pre The size of <b><i>values</i></b> must equal the number of days
             from <b><i>firstDate</i></b> to <b><i>lastDate</i></b> included.
         */
+        History(const Date& firstDate, 
+                const std::vector<double>& values) : 
+            firstDate_(firstDate), 
+            lastDate_(firstDate + values.size()),
+            values_(values) {};
+        
         History(const Date& firstDate, const Date& lastDate,
             const std::vector<double>& values);
         /*! This constructor initializes the history with the given set of
