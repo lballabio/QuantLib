@@ -38,7 +38,7 @@ namespace QuantLib {
             const Array& underlying, double strike,
             DiscountFactor discount, bool useAntitheticVariance)
         : PathPricer<MultiPath>(discount, useAntitheticVariance), type_(type),
-          underlying_(underlying) {
+          underlying_(underlying), strike_(strike) {
             for (Size j=0; j<underlying_.size(); j++) {
                 QL_REQUIRE(underlying_[j]>0.0,
                     "BasketPathPricer: "
@@ -57,23 +57,24 @@ namespace QuantLib {
                 "BasketPathPricer: the multi-path must contain "
                 + IntegerFormatter::toString(underlying_.size()) +" assets");
 
-            double log_drift=0.0, log_diffusion=0.0;
+            std::vector<double> log_drift(numAssets, 0.0);
+            std::vector<double> log_diffusion(numAssets, 0.0);
             Size i,j;
             double basketPrice = 0.0;
             for(j = 0; j < numAssets; j++) {
-                log_drift = log_diffusion = 0.0;
+                log_drift[j] = log_diffusion[j] = 0.0;
                 for(i = 0; i < numSteps; i++) {
-                    log_drift += multiPath[j].drift()[i];
-                    log_diffusion += multiPath[j].diffusion()[i];
+                    log_drift[j] += multiPath[j].drift()[i];
+                    log_diffusion[j] += multiPath[j].diffusion()[i];
                 }
                 basketPrice += underlying_[j]*
-                    QL_EXP(log_drift+log_diffusion);
+                    QL_EXP(log_drift[j]+log_diffusion[j]);
             }
             if (useAntitheticVariance_) {
                 double basketPrice2 = 0.0;
                 for(j = 0; j < numAssets; j++) {
                     basketPrice2 += underlying_[j]*
-                        QL_EXP(log_drift-log_diffusion);
+                        QL_EXP(log_drift[j]-log_diffusion[j]);
                 }
                 return discount_*0.5*
                     (ExercisePayoff(type_, basketPrice, strike_)+

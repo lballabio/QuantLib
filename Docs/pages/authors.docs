@@ -148,6 +148,13 @@
     </tr>
 
     <tr>
+    <td><em>Toyin Akin</em></td>
+    <td> </td>
+    <td> </td>
+    <td> </td>
+    </tr>
+
+    <tr>
     <td><em>David Binderman</em></td>
     <td> </td>
     <td> </td>
@@ -198,6 +205,7 @@
         \item Dirk Eddelbuettel, Debian maintainer
         \item Christopher Baus, inspiration for custom iterators
         \item Thomas Becker, inspiration for custom iterators
+        \item Toyin Akin
         \item David Binderman
         \item Matteo Gallivanoni (matteo.gallivanoni@riskmap.net)
         \item Gilbert Peffer
