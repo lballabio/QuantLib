@@ -49,10 +49,17 @@ namespace QuantLib {
                 const Date& startDate, int n, TimeUnit units,
                 const Handle<Calendar>& calendar, 
                 RollingConvention rollingConvention, 
-                // nominals
+                /*! nominals (if the vector length is lower than the number
+                    of coupons, the last nominal will prevail for the remaining
+                    coupons)
+                */
                 const std::vector<double>& nominals, 
                 // fixed leg
                 int fixedFrequency, 
+                /*! fixed coupon rates (if the vector length is lower than the number
+                    of coupons, the last rate will prevail for the remaining 
+                    coupons)
+                */
                 const std::vector<Rate>& couponRates, 
                 bool fixedIsAdjusted, 
                 const Handle<DayCounter>& fixedDayCount, 
