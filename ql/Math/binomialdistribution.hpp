@@ -133,8 +133,7 @@ namespace QuantLib {
     inline Real PeizerPrattMethod2Inversion(Real z, BigNatural n) {
 
         QL_REQUIRE(n%2==1,
-                   "n must be an odd number" +
-                   IntegerFormatter::toString(n) + " not allowed");
+                   "n must be an odd number: " << n << " not allowed");
 
         Real result = (z/(n+1.0/3.0+0.1/(n+1.0)));
         result *= result;

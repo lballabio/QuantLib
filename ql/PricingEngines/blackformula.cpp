@@ -27,19 +27,16 @@ namespace QuantLib {
     : forward_(forward), discount_(discount), variance_(variance) {
 
         QL_REQUIRE(forward>0.0,
-                   "positive forward value required: " +
-                   DecimalFormatter::toString(forward) +
-                   " not allowed");
+                   "positive forward value required: "
+                   << forward << " not allowed");
 
         QL_REQUIRE(discount>0.0,
-                   "positive discount required " +
-                   DecimalFormatter::toString(discount) +
-                   " not allowed");
+                   "positive discount required: "
+                   << discount << " not allowed");
 
         QL_REQUIRE(variance>=0.0,
-                   "non-negative variance required " +
-                   DecimalFormatter::toString(variance) +
-                   " not allowed");
+                   "non-negative variance required: "
+                   << variance << " not allowed");
 
         stdDev_ = std::sqrt(variance);
         strike_ = payoff->strike();

@@ -65,12 +65,10 @@ void CovarianceTest::testSalvagingCorrelation() {
             calculated = calcCorr[i][j];
             if (std::fabs(calculated-expected) > 1.0e-10)
                 BOOST_FAIL("SalvagingCorrelation with spectral alg "
-                           "cor[" + SizeFormatter::toString(i) + "]"
-                           "[" + SizeFormatter::toString(j) + "]:\n"
-                           "    calculated: "
-                           + DecimalFormatter::toString(calculated,16) + "\n"
-                           "    expected:   "
-                           + DecimalFormatter::toString(expected,16));
+                           << "cor[" << i << "][" << j << "]:\n"
+                           << std::setprecision(10)
+                           << "    calculated: " << calculated << "\n"
+                           << "    expected:   " << expected);
         }
     }
 
@@ -84,12 +82,14 @@ void CovarianceTest::testSalvagingCorrelation() {
 
     Real error = norm(goodCov-badCov);
     if (error > 4.0e-4)
-        BOOST_FAIL(DecimalFormatter::toExponential(error) +
-            " error while salvaging covariance matrix with spectral alg\n"
-            "input matrix:\n" +
-            MatrixFormatter::toString(badCov)
-            + "\nsalvaged matrix:\n" +
-            MatrixFormatter::toString(goodCov));
+        BOOST_FAIL(
+            std::scientific << error
+            << " error while salvaging covariance matrix with spectral alg\n"
+            << std::fixed
+            << "input matrix:\n"
+            << MatrixFormatter::toString(badCov)
+            << "\nsalvaged matrix:\n"
+            << MatrixFormatter::toString(goodCov));
 
 }
 
@@ -141,23 +141,19 @@ void CovarianceTest::testCovariance() {
             calculated = calcCor[i][j];
             if (std::fabs(calculated-expected) > 1.0e-10)
                 BOOST_FAIL("SequenceStatistics "
-                           "cor[" + SizeFormatter::toString(i) + "]"
-                           "[" + SizeFormatter::toString(j) + "]:\n"
-                           "    calculated: "
-                           + DecimalFormatter::toString(calculated,16) + "\n"
-                           "    expected:   "
-                           + DecimalFormatter::toString(expected,16));
+                           << "cor[" << i << "][" << j << "]:\n"
+                           << std::setprecision(10)
+                           << "    calculated: " << calculated << "\n"
+                           << "    expected:   " << expected);
 
             expected   =  expCov[i][j];
             calculated = calcCov[i][j];
             if (std::fabs(calculated-expected) > 1.0e-10)
                 BOOST_FAIL("SequenceStatistics "
-                           "cov[" + SizeFormatter::toString(i) + "]"
-                           "[" + SizeFormatter::toString(j) + "]:\n"
-                           "    calculated: "
-                           + DecimalFormatter::toString(calculated,16) + "\n"
-                           "    expected:   "
-                           + DecimalFormatter::toString(expected,16));
+                           << "cov[" << i << "][" << j << "]:\n"
+                           << std::setprecision(10)
+                           << "    calculated: " << calculated << "\n"
+                           << "    expected:   " << expected);
         }
     }
 
@@ -169,12 +165,10 @@ void CovarianceTest::testCovariance() {
                  expected   = expCov[i][j];
             if (std::fabs(calculated-expected) > 1.0e-10) {
                 BOOST_FAIL("getCovariance "
-                           "cov[" + SizeFormatter::toString(i) + "]"
-                           "[" + SizeFormatter::toString(j) + "]:\n"
-                           "    calculated: "
-                           + DecimalFormatter::toString(calculated,11) + "\n"
-                           "    expected:   "
-                           + DecimalFormatter::toString(expected,11));
+                           << "cov[" << i << "][" << j << "]:\n"
+                           << std::setprecision(10)
+                           << "    calculated: " << calculated << "\n"
+                           << "    expected:   " << expected);
             }
         }
     }
@@ -191,24 +185,20 @@ void CovarianceTest::testCovariance() {
         expected   = std[i];
         if (std::fabs(calculated-expected) > 1.0e-16) {
             BOOST_FAIL("CovarianceDecomposition "
-                        "standardDev[" + SizeFormatter::toString(i) + "]"
-                        ":\n"
-                        "    calculated: "
-                        + DecimalFormatter::toExponential(calculated, 16)+"\n"
-                        "    expected:   "
-                        + DecimalFormatter::toExponential(expected, 16));
+                       << "standardDev[" << i << "]:\n"
+                       << std::setprecision(16) << std::scientific
+                       << "    calculated: " << calculated << "\n"
+                       << "    expected:   " << expected);
         }
         for (j=0; j<n; j++) {
             calculated = calcCor[i][j];
             expected   = expCor[i][j];
             if (std::fabs(calculated-expected) > 1.0e-14) {
                 BOOST_FAIL("\nCovarianceDecomposition "
-                           "corr[" + SizeFormatter::toString(i) + "]"
-                           "[" + SizeFormatter::toString(j) + "]:\n"
-                           "    calculated: "
-                           + DecimalFormatter::toExponential(calculated, 16) + "\n"
-                           "    expected:   "
-                           + DecimalFormatter::toExponential(expected, 16));
+                           << "corr[" << i << "][" << j << "]:\n"
+                           << std::setprecision(14) << std::scientific
+                           << "    calculated: " << calculated << "\n"
+                           << "    expected:   " << expected);
             }
         }
     }

@@ -70,12 +70,11 @@ void RoundingTest::testClosest() {
         Real calculated = closest(testData[i].x);
         Real expected = testData[i].closest;
         if (!close(calculated,expected,1))
-            BOOST_FAIL("Original number: " +
-                       DecimalFormatter::toString(testData[i].x,8) + "\n"
-                       "Expected:        " +
-                       DecimalFormatter::toString(expected,digits) + "\n"
-                       "Calculated:      " +
-                       DecimalFormatter::toString(calculated,digits));
+            BOOST_FAIL(std::fixed << std::setprecision(8)
+                       << "Original number: " << testData[i].x << "\n"
+                       << std::setprecision(digits)
+                       << "Expected:        " << expected << "\n"
+                       << "Calculated:      " << calculated);
     }
 }
 
@@ -89,12 +88,11 @@ void RoundingTest::testUp() {
         Real calculated = up(testData[i].x);
         Real expected = testData[i].up;
         if (!close(calculated,expected,1))
-            BOOST_FAIL("Original number: " +
-                       DecimalFormatter::toString(testData[i].x,8) + "\n"
-                       "Expected:        " +
-                       DecimalFormatter::toString(expected,digits) + "\n"
-                       "Calculated:      " +
-                       DecimalFormatter::toString(calculated,digits));
+            BOOST_FAIL(std::fixed << std::setprecision(8)
+                       << "Original number: " << testData[i].x << "\n"
+                       << std::setprecision(digits)
+                       << "Expected:        " << expected << "\n"
+                       << "Calculated:      " << calculated);
     }
 }
 
@@ -108,12 +106,11 @@ void RoundingTest::testDown() {
         Real calculated = down(testData[i].x);
         Real expected = testData[i].down;
         if (!close(calculated,expected,1))
-            BOOST_FAIL("Original number: " +
-                       DecimalFormatter::toString(testData[i].x,8) + "\n"
-                       "Expected:        " +
-                       DecimalFormatter::toString(expected,digits) + "\n"
-                       "Calculated:      " +
-                       DecimalFormatter::toString(calculated,digits));
+            BOOST_FAIL(std::fixed << std::setprecision(8)
+                       << "Original number: " << testData[i].x << "\n"
+                       << std::setprecision(digits)
+                       << "Expected:        " << expected << "\n"
+                       << "Calculated:      " << calculated);
     }
 }
 
@@ -127,12 +124,11 @@ void RoundingTest::testFloor() {
         Real calculated = floor(testData[i].x);
         Real expected = testData[i].floor;
         if (!close(calculated,expected,1))
-            BOOST_FAIL("Original number: " +
-                       DecimalFormatter::toString(testData[i].x,8) + "\n"
-                       "Expected:        " +
-                       DecimalFormatter::toString(expected,digits) + "\n"
-                       "Calculated:      " +
-                       DecimalFormatter::toString(calculated,digits));
+            BOOST_FAIL(std::fixed << std::setprecision(8)
+                       << "Original number: " << testData[i].x << "\n"
+                       << std::setprecision(digits)
+                       << "Expected:        " << expected << "\n"
+                       << "Calculated:      " << calculated);
     }
 }
 
@@ -146,12 +142,11 @@ void RoundingTest::testCeiling() {
         Real calculated = ceiling(testData[i].x);
         Real expected = testData[i].ceiling;
         if (!close(calculated,expected,1))
-            BOOST_FAIL("Original number: " +
-                       DecimalFormatter::toString(testData[i].x,8) + "\n"
-                       "Expected:        " +
-                       DecimalFormatter::toString(expected,digits) + "\n"
-                       "Calculated:      " +
-                       DecimalFormatter::toString(calculated,digits));
+            BOOST_FAIL(std::fixed << std::setprecision(8)
+                       << "Original number: " << testData[i].x << "\n"
+                       << std::setprecision(digits)
+                       << "Expected:        " << expected << "\n"
+                       << "Calculated:      " << calculated);
     }
 }
 

@@ -62,15 +62,13 @@ namespace QuantLib {
         switch (averageType) {
             case Average::Arithmetic:
                 QL_REQUIRE(runningAccumulator >= 0.0,
-                    "non negative running sum required: "
-                    + DecimalFormatter::toString(runningAccumulator) +
-                    " not allowed");
+                           "non negative running sum required: "
+                           << runningAccumulator << " not allowed");
                 break;
             case Average::Geometric:
                 QL_REQUIRE(runningAccumulator > 0.0,
-                    "positive running product required: "
-                    + DecimalFormatter::toString(runningAccumulator) +
-                    " not allowed");
+                           "positive running product required: "
+                           << runningAccumulator << " not allowed");
                 break;
             default:
                 QL_FAIL("invalid average type");

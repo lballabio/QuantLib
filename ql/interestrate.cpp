@@ -85,8 +85,8 @@ namespace QuantLib {
                 r = (std::pow(compound, 1.0/(Real(freq)*t))-1.0)*Real(freq);
             break;
           default:
-            QL_FAIL("unknown compounding convention ("+
-                    IntegerFormatter::toString(comp)+")");
+            QL_FAIL("unknown compounding convention ("
+                    << Integer(comp) << ")");
         }
         return InterestRate(r, resultDC, comp, freq);
     }
@@ -110,38 +110,41 @@ namespace QuantLib {
 
     std::string CompoundingRuleFormatter::toString(Compounding comp,
                                                    Frequency freq) {
+        std::ostringstream out;
         switch (comp) {
           case Simple:
-            return std::string("simple compounding");
+            out << "simple compounding";
+            break;
           case Compounded:
             switch (freq) {
               case NoFrequency:
               case Once:
-                QL_FAIL(FrequencyFormatter::toString(freq) +
+                QL_FAIL(FrequencyFormatter::toString(freq) <<
                         " frequency not allowed for this interest rate");
               default:
-                return std::string(FrequencyFormatter::toString(freq)
-                                   + " compounding");
+                out << FrequencyFormatter::toString(freq) <<" compounding";
             }
+            break;
           case Continuous:
-            return std::string("continuous compounding");
+            out << "continuous compounding";
+            break;
           case SimpleThenCompounded:
             switch (freq) {
               case NoFrequency:
               case Once:
-                QL_FAIL(FrequencyFormatter::toString(freq) +
+                QL_FAIL(FrequencyFormatter::toString(freq) <<
                         " frequency not allowed for this interest rate");
               default:
-                return std::string("simple compounding up to " +
-                                   IntegerFormatter::toString(Integer(12/freq))
-                                   + " months, then "
-                                   + FrequencyFormatter::toString(freq) +
-                                   " compounding");
+                out << "simple compounding up to "
+                    << Integer(12/freq) << " months, then "
+                    << FrequencyFormatter::toString(freq) << " compounding";
             }
+            break;
           default:
-            QL_FAIL("unknown compounding convention (" +
-                    IntegerFormatter::toString(comp) + ")");
+            QL_FAIL("unknown compounding convention ("
+                    << Integer(comp) << ")");
         }
+        return out.str();
     }
 
 }

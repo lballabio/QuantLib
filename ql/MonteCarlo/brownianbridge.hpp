@@ -222,10 +222,8 @@ namespace QuantLib {
                    "there must be at least one step");
 
         QL_REQUIRE(dimension_==timeGrid_.size()-1,
-                   "GSG/timeGrid dimension mismatch"
-                   "(" + SizeFormatter::toString(dimension_) +
-                   "/" + SizeFormatter::toString(timeGrid_.size()-1) +
-                   ")");
+                   "GSG/timeGrid dimension mismatch ("
+                   << dimension_ << "/" << timeGrid_.size()-1 << ")");
 
         std::vector<Real> variances(dimension_);
         for (Size i=0; i<dimension_; i++) {
@@ -241,10 +239,8 @@ namespace QuantLib {
     void BrownianBridge<GSG>::initialize(const std::vector<Real>& v) {
 
         QL_REQUIRE(v.size()==dimension_,
-                   "GSG/variance vector dimension mismatch"
-                   "(" + SizeFormatter::toString(dimension_) +
-                   "/" + SizeFormatter::toString(v.size()) +
-                   ")");
+                   "GSG/variance vector dimension mismatch ("
+                   << dimension_ << "/" << v.size() << ")");
 
         std::vector<Size> map(dimension_, 0);
         // map is used to indicate which points are already constructed.

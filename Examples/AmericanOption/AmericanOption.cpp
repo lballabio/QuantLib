@@ -144,10 +144,7 @@ int main(int, char* [])
         method = "equivalent European option       ";
         value = euroOption.NPV();
         std::cout << method << " "
-             << DecimalFormatter::toString(value, 6) << "\t"
-             << "N/A\t\t"
-             << "N/A\t\t"
-             << std::endl;
+                  << value << "\t" << "N/A\t\t" << "N/A\t\t" << std::endl;
 
         // American option
         VanillaOption option(stochasticProcess, payoff, amExercise);
@@ -162,10 +159,8 @@ int main(int, char* [])
         discrepancy = std::fabs(value-rightValue);
         relativeDiscrepancy = discrepancy/rightValue;
         std::cout << method << " "
-             << DecimalFormatter::toString(value, 6) << "\t"
-             << DecimalFormatter::toString(discrepancy, 6) << "\t"
-             << DecimalFormatter::toString(relativeDiscrepancy, 6)
-             << std::endl;
+                  << value << "\t" << discrepancy << "\t"
+                  << relativeDiscrepancy << std::endl;
 
         // Binomial Method (CRR)
         method = "Binomial Cox-Ross-Rubinstein     ";
@@ -175,10 +170,8 @@ int main(int, char* [])
         discrepancy = std::fabs(value-rightValue);
         relativeDiscrepancy = discrepancy/rightValue;
         std::cout << method << " "
-             << DecimalFormatter::toString(value, 6) << "\t"
-             << DecimalFormatter::toString(discrepancy, 6) << "\t"
-             << DecimalFormatter::toString(relativeDiscrepancy, 6)
-             << std::endl;
+                  << value << "\t" << discrepancy << "\t"
+                  << relativeDiscrepancy << std::endl;
 
         // Equal Probability Additive Binomial Tree (EQP)
         method = "Additive equiprobabilities       ";
@@ -188,10 +181,8 @@ int main(int, char* [])
         discrepancy = std::fabs(value-rightValue);
         relativeDiscrepancy = discrepancy/rightValue;
         std::cout << method << " "
-             << DecimalFormatter::toString(value, 6) << "\t"
-             << DecimalFormatter::toString(discrepancy, 6) << "\t"
-             << DecimalFormatter::toString(relativeDiscrepancy, 6)
-             << std::endl;
+                  << value << "\t" << discrepancy << "\t"
+                  << relativeDiscrepancy << std::endl;
 
         // Equal Jumps Additive Binomial Tree (Trigeorgis)
         method = "Binomial Trigeorgis              ";
@@ -201,10 +192,8 @@ int main(int, char* [])
         discrepancy = std::fabs(value-rightValue);
         relativeDiscrepancy = discrepancy/rightValue;
         std::cout << method << " "
-             << DecimalFormatter::toString(value, 6) << "\t"
-             << DecimalFormatter::toString(discrepancy, 6) << "\t"
-             << DecimalFormatter::toString(relativeDiscrepancy, 6)
-             << std::endl;
+                  << value << "\t" << discrepancy << "\t"
+                  << relativeDiscrepancy << std::endl;
 
         // Tian Binomial Tree (third moment matching)
         method = "Binomial Tian                    ";
@@ -214,10 +203,8 @@ int main(int, char* [])
         discrepancy = std::fabs(value-rightValue);
         relativeDiscrepancy = discrepancy/rightValue;
         std::cout << method << " "
-             << DecimalFormatter::toString(value, 6) << "\t"
-             << DecimalFormatter::toString(discrepancy, 6) << "\t"
-             << DecimalFormatter::toString(relativeDiscrepancy, 6)
-             << std::endl;
+                  << value << "\t" << discrepancy << "\t"
+                  << relativeDiscrepancy << std::endl;
 
         // Leisen-Reimer Binomial Tree
         method = "Binomial Leisen-Reimer           ";
@@ -227,10 +214,8 @@ int main(int, char* [])
         discrepancy = std::fabs(value-rightValue);
         relativeDiscrepancy = discrepancy/rightValue;
         std::cout << method << " "
-             << DecimalFormatter::toString(value, 6) << "\t"
-             << DecimalFormatter::toString(discrepancy, 6) << "\t"
-             << DecimalFormatter::toString(relativeDiscrepancy, 6)
-             << std::endl;
+                  << value << "\t" << discrepancy << "\t"
+                  << relativeDiscrepancy << std::endl;
 
         // Barone-Adesi and Whaley approximation
         method = "Barone-Adesi and Whaley approx.  ";
@@ -240,10 +225,8 @@ int main(int, char* [])
         discrepancy = std::fabs(value-rightValue);
         relativeDiscrepancy = discrepancy/rightValue;
         std::cout << method << " "
-             << DecimalFormatter::toString(value, 6) << "\t"
-             << DecimalFormatter::toString(discrepancy, 6) << "\t"
-             << DecimalFormatter::toString(relativeDiscrepancy, 6)
-             << std::endl;
+                  << value << "\t" << discrepancy << "\t"
+                  << relativeDiscrepancy << std::endl;
 
         // Bjerksund and Stensland approximation
         method = "Bjerksund and Stensland approx.  ";
@@ -253,10 +236,8 @@ int main(int, char* [])
         discrepancy = std::fabs(value-rightValue);
         relativeDiscrepancy = discrepancy/rightValue;
         std::cout << method << " "
-             << DecimalFormatter::toString(value, 6) << "\t"
-             << DecimalFormatter::toString(discrepancy, 6) << "\t"
-             << DecimalFormatter::toString(relativeDiscrepancy, 6)
-             << std::endl;
+                  << value << "\t" << discrepancy << "\t"
+                  << relativeDiscrepancy << std::endl;
 
         return 0;
     } catch (std::exception& e) {

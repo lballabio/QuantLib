@@ -1256,11 +1256,10 @@ namespace QuantLib {
       directionIntegers_(dimensionality,std::vector<unsigned long>(bits_)) {
 
         QL_REQUIRE(dimensionality<=PPMT_MAX_DIM,
-                   "dimensionality "
-                   + SizeFormatter::toString(dimensionality) +
-                   " exceeds the number of available "
-                   "primitive polynomials modulo two (" +
-                   IntegerFormatter::toString(PPMT_MAX_DIM) +")");
+                   "dimensionality " << dimensionality
+                   << " exceeds the number of available "
+                   << "primitive polynomials modulo two ("
+                   << PPMT_MAX_DIM << ")");
 
         // initializes coefficient array of the k-th primitive polynomial
         // and degree of the k-th primitive polynomial

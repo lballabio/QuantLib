@@ -36,9 +36,8 @@ namespace QuantLib {
         Size pastFixings;
         if (arguments_.averageType == Average::Geometric) {
             QL_REQUIRE(arguments_.runningAccumulator>0.0,
-                "positive running product required: "
-                + DecimalFormatter::toString(arguments_.runningAccumulator) +
-                " not allowed");
+                       "positive running product required: "
+                       << arguments_.runningAccumulator << " not allowed");
             runningLog = std::log(arguments_.runningAccumulator);
             pastFixings = arguments_.pastFixings;
         } else {  // it is being used as control variate

@@ -134,46 +134,6 @@ namespace QuantLib {
         Real min_, max_;
     };
 
-    // inline definitions
-
-    inline Size IncrementalStatistics::samples() const {
-        return sampleNumber_;
-    }
-
-    inline Real IncrementalStatistics::weightSum() const {
-        return sampleWeight_;
-    }
-
-    inline Real IncrementalStatistics::mean() const {
-        QL_REQUIRE(sampleWeight_>0.0,
-                   "sampleWeight_=0, unsufficient");
-        return sum_/sampleWeight_;
-    }
-
-    inline Real IncrementalStatistics::standardDeviation() const {
-        return std::sqrt(variance());
-    }
-
-    inline Real IncrementalStatistics::downsideDeviation() const {
-        return std::sqrt(downsideVariance());
-    }
-
-    inline Real IncrementalStatistics::errorEstimate() const {
-        Real var = variance();
-        QL_REQUIRE(samples() > 0, "empty sample set");
-        return std::sqrt(var/samples());
-    }
-
-    inline Real IncrementalStatistics::min() const {
-        QL_REQUIRE(samples() > 0, "empty sample set");
-        return min_;
-    }
-
-    inline Real IncrementalStatistics::max() const {
-        QL_REQUIRE(samples() > 0, "empty sample set");
-        return max_;
-    }
-
 }
 
 

@@ -87,7 +87,7 @@ namespace QuantLib {
               constraint) {
             params_[0] = value;
             QL_REQUIRE(testParams(params_),
-                DecimalFormatter::toString(value) + ": invalid value");
+                       value << ": invalid value");
         }
 
     };

@@ -84,9 +84,8 @@ namespace QuantLib {
 
     Real InverseCumulativeNormal::operator()(Real x) const {
         QL_REQUIRE(x > 0.0 && x < 1.0,
-                   "InverseCumulativeNormal(" +
-                   DecimalFormatter::toString(x) +
-                   ") undefined: must be 0 < x < 1");
+                   "InverseCumulativeNormal(" << x
+                   << ") undefined: must be 0 < x < 1");
 
         Real z, r;
 
@@ -146,9 +145,8 @@ namespace QuantLib {
 
     Real MoroInverseCumulativeNormal::operator()(Real x) const {
         QL_REQUIRE(x > 0.0 && x < 1.0,
-                   "MoroInverseCumulativeNormal(" +
-                   DecimalFormatter::toString(x) +
-                   ") undefined: must be 0<x<1");
+                   "MoroInverseCumulativeNormal(" << x
+                   << ") undefined: must be 0<x<1");
 
         Real result;
         Real temp=x-0.5;

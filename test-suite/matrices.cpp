@@ -129,14 +129,12 @@ void MatricesTest::testSqrt() {
     Real tolerance = 1.0e-12;
     if (error>tolerance) {
         BOOST_FAIL("Matrix square root calculation failed"
-                   "\noriginal matrix:\n"
-                   + MatrixFormatter::toString(M1) +
-                   "\npseudoSqrt:\n"
-                   + MatrixFormatter::toString(m) +
-                   "\npseudoSqrt*pseudoSqrt:\n"
-                   + MatrixFormatter::toString(temp) +
-                   "\nerror:     " + DecimalFormatter::toString(error) +
-                   "\ntolerance: " + DecimalFormatter::toString(tolerance));
+                   << "\noriginal matrix:\n" << MatrixFormatter::toString(M1)
+                   << "\npseudoSqrt:\n" << MatrixFormatter::toString(m)
+                   << "\npseudoSqrt*pseudoSqrt:\n"
+                   << MatrixFormatter::toString(temp)
+                   << "\nerror:     " << error
+                   << "\ntolerance: " << tolerance);
     }
 
     QL_TEST_END
@@ -173,21 +171,18 @@ void MatricesTest::testSVD() {
         // tests
         Matrix U_Utranspose = transpose(U)*U;
         if (norm(U_Utranspose-I) > tol)
-            BOOST_FAIL("U not orthogonal (norm of U^T*U-I = " +
-                       DecimalFormatter::toExponential(norm(U_Utranspose-I))
-                       + ")");
+            BOOST_FAIL("U not orthogonal (norm of U^T*U-I = "
+                       << norm(U_Utranspose-I) << ")");
 
         Matrix V_Vtranspose = transpose(V)*V;
         if (norm(V_Vtranspose-I) > tol)
-            BOOST_FAIL("V not orthogonal (norm of V^T*V-I = " +
-                       DecimalFormatter::toExponential(norm(V_Vtranspose-I))
-                       + ")");
+            BOOST_FAIL("V not orthogonal (norm of V^T*V-I = "
+                       << norm(V_Vtranspose-I) << ")");
 
         Matrix A_reconstructed = U * S * transpose(V);
         if (norm(A_reconstructed-A) > tol)
-            BOOST_FAIL("Product does not recover A: (norm of U*S*V^T-A = " +
-                       DecimalFormatter::toExponential(norm(A_reconstructed-A))
-                       + ")");
+            BOOST_FAIL("Product does not recover A: (norm of U*S*V^T-A = "
+                       << norm(A_reconstructed-A) << ")");
     }
 
     QL_TEST_END

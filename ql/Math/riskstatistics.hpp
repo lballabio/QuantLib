@@ -167,9 +167,7 @@ namespace QuantLib {
     Real GenericRiskStatistics<S>::potentialUpside(Real centile)
         const {
         QL_REQUIRE(centile>=0.9 && centile<1.0,
-                   "percentile (" +
-                   DecimalFormatter::toString(centile) +
-                   ") out of range [0.9, 1.0)");
+                   "percentile (" << centile << ") out of range [0.9, 1.0)");
 
         // potential upside must be a gain, i.e., floored at 0.0
         return std::max<Real>(this->percentile(centile), 0.0);
@@ -180,9 +178,7 @@ namespace QuantLib {
     Real GenericRiskStatistics<S>::valueAtRisk(Real centile) const {
 
         QL_REQUIRE(centile>=0.9 && centile<1.0,
-                   "percentile (" +
-                   DecimalFormatter::toString(centile) +
-                   ") out of range [0.9, 1.0)");
+                   "percentile (" << centile << ") out of range [0.9, 1.0)");
 
         // must be a loss, i.e., capped at 0.0 and negated
         return -std::min<Real>(this->percentile(1.0-centile), 0.0);
@@ -192,9 +188,7 @@ namespace QuantLib {
     template <class S>
     Real GenericRiskStatistics<S>::expectedShortfall(Real centile) const {
         QL_REQUIRE(centile>=0.9 && centile<1.0,
-                   "percentile (" +
-                   DecimalFormatter::toString(centile) +
-                   ") out of range [0.9, 1.0)");
+                   "percentile (" << centile << ") out of range [0.9, 1.0)");
 
         QL_ENSURE(this->samples() != 0, "empty sample set");
         Real target = -valueAtRisk(centile);

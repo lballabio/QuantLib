@@ -52,8 +52,8 @@ void DistributionTest::testNormal() {
     Real check = invCumStandardNormal(0.5);
     if (check != 0.0e0) {
         BOOST_FAIL("C++ inverse cumulative of the standard normal at 0.5 is "
-                   + DecimalFormatter::toExponential(check,2) +
-                   "\n instead of zero: something is wrong!");
+                   << std::scientific << check
+                   << "\n instead of zero: something is wrong!");
     }
 
     NormalDistribution normal(average,sigma);
@@ -82,8 +82,8 @@ void DistributionTest::testNormal() {
     Real e = norm(diff.begin(),diff.end(),h);
     if (e > 1.0e-16) {
         BOOST_FAIL("norm of C++ NormalDistribution minus analytic Gaussian: "
-                   + DecimalFormatter::toExponential(e,2) + "\n"
-                   "tolerance exceeded");
+                   << std::scientific << e << "\n"
+                   << "tolerance exceeded");
     }
 
     // check that invCum . cum = identity
@@ -94,8 +94,8 @@ void DistributionTest::testNormal() {
     e = norm(diff.begin(),diff.end(),h);
     if (e > 1.0e-8) {
         BOOST_FAIL("norm of invCum . cum minus identity: "
-                   + DecimalFormatter::toExponential(e,2) + "\n"
-                   "tolerance exceeded");
+                   << std::scientific << e << "\n"
+                   << "tolerance exceeded");
     }
 
     // check that cum.derivative = Gaussian
@@ -107,8 +107,8 @@ void DistributionTest::testNormal() {
     if (e > 1.0e-16) {
         BOOST_FAIL(
             "norm of C++ Cumulative.derivative minus analytic Gaussian: "
-            + DecimalFormatter::toExponential(e,2) + "\n"
-            "tolerance exceeded");
+            << std::scientific << e << "\n"
+            << "tolerance exceeded");
     }
 
     // check that normal.derivative = gaussianDerivative
@@ -119,8 +119,8 @@ void DistributionTest::testNormal() {
     e = norm(diff.begin(),diff.end(),h);
     if (e > 1.0e-16) {
         BOOST_FAIL("norm of C++ Normal.derivative minus analytic derivative: "
-                   + DecimalFormatter::toExponential(e,2) + "\n"
-                   "tolerance exceeded");
+                   << std::scientific << e << "\n"
+                   << "tolerance exceeded");
     }
 }
 
@@ -203,18 +203,12 @@ void DistributionTest::testBivariate() {
 
         if (std::fabs(value-values[i].result)>=1e-6) {
           BOOST_FAIL("BivariateCumulativeDistribution \n"
-              "case "
-              + SizeFormatter::toString(i+1) + "\n"
-              "    a:   "
-              + DecimalFormatter::toString(values[i].a) + "\n"
-              "    b:   "
-              + DecimalFormatter::toString(values[i].b) + "\n"
-              "    rho:           "
-              + DecimalFormatter::toString(values[i].rho) +"\n"
-              "    tabulated value:  "
-              + DecimalFormatter::toString(values[i].result) + "\n"
-              "    result:  "
-              + DecimalFormatter::toString(value));
+                     << "case " << i+1 << "\n"
+                     << "    a:   " << values[i].a << "\n"
+                     << "    b:   " << values[i].b << "\n"
+                     << "    rho: " << values[i].rho <<"\n"
+                     << "    tabulated value:  " << values[i].result << "\n"
+                     << "    result:           " << value);
         }
     }
 
@@ -233,15 +227,11 @@ void DistributionTest::testPoisson() {
         Real expected = std::exp(logHelper);
         Real error = std::fabs(calculated-expected);
         if (error > 1.0e-16)
-            BOOST_FAIL("Poisson pdf("
-                       + DecimalFormatter::toString(mean) + ")("
-                       + IntegerFormatter::toString(i) + ")\n"
-                       "    calculated: "
-                       + DecimalFormatter::toString(calculated,16) + "\n"
-                       "    expected:   "
-                       + DecimalFormatter::toString(expected,16)+
-                       "    error:   "
-                       + DecimalFormatter::toExponential(error));
+            BOOST_FAIL("Poisson pdf(" << mean << ")(" << i << ")\n"
+                       << std::setprecision(16)
+                       << "    calculated: " << calculated << "\n"
+                       << "    expected:   " << expected << "\n"
+                       << "    error:      " << error);
 
         for (i=1; i<25; i++) {
             calculated = pdf(i);
@@ -253,15 +243,11 @@ void DistributionTest::testPoisson() {
             }
             error = std::fabs(calculated-expected);
             if (error>1.0e-13)
-                BOOST_FAIL("Poisson pdf("
-                           + DecimalFormatter::toString(mean) + ")("
-                           + IntegerFormatter::toString(i) + ")\n"
-                           "    calculated: "
-                           + DecimalFormatter::toString(calculated,13) + "\n"
-                           "    expected:   "
-                           + DecimalFormatter::toString(expected,13)+
-                           "    error:   "
-                           + DecimalFormatter::toExponential(error));
+                BOOST_FAIL("Poisson pdf(" << mean << ")(" << i << ")\n"
+                           << std::setprecision(13)
+                           << "    calculated: " << calculated << "\n"
+                           << "    expected:   " << expected << "\n"
+                           << "    error:      " << error);
         }
     }
 }
@@ -278,15 +264,11 @@ void DistributionTest::testCumulativePoisson() {
         Real cumExpected = std::exp(logHelper);
         Real error = std::fabs(cumCalculated-cumExpected);
         if (error>1.0e-13)
-            BOOST_FAIL("Poisson cdf("
-                       + DecimalFormatter::toString(mean) + ")("
-                       + IntegerFormatter::toString(i) + ")\n"
-                       "    calculated: "
-                       + DecimalFormatter::toString(cumCalculated,13) + "\n"
-                       "    expected:   "
-                       + DecimalFormatter::toString(cumExpected,13)+
-                       "    error:   "
-                       + DecimalFormatter::toExponential(error));
+            BOOST_FAIL("Poisson cdf(" << mean << ")(" << i << ")\n"
+                       << std::setprecision(13)
+                       << "    calculated: " << cumCalculated << "\n"
+                       << "    expected:   " << cumExpected << "\n"
+                       << "    error:      " << error);
         for (i=1; i<25; i++) {
             cumCalculated = cdf(i);
             if (mean == 0.0) {
@@ -297,15 +279,11 @@ void DistributionTest::testCumulativePoisson() {
             }
             error = std::fabs(cumCalculated-cumExpected);
             if (error>1.0e-12)
-                BOOST_FAIL("Poisson cdf("
-                           + DecimalFormatter::toString(mean) + ")("
-                           + IntegerFormatter::toString(i) + ")\n"
-                           "    calculated: "
-                           + DecimalFormatter::toString(cumCalculated,12)+"\n"
-                           "    expected:   "
-                           + DecimalFormatter::toString(cumExpected,12)+
-                           "    error:   "
-                           + DecimalFormatter::toExponential(error));
+                BOOST_FAIL("Poisson cdf(" << mean << ")(" << i << ")\n"
+                           << std::setprecision(12)
+                           << "    calculated: " << cumCalculated << "\n"
+                           << "    expected:   " << cumExpected << "\n"
+                           << "    error:      " << error);
         }
     }
 }
@@ -332,12 +310,11 @@ void DistributionTest::testInverseCumulativePoisson() {
 
     for (Size i=0; i<LENGTH(data); i++) {
         if (!close(icp(data[i]), i)) {
-            BOOST_FAIL("failed to reproduce known value for x = "
-                       + DecimalFormatter::toString(data[i],8) + "\n"
-                       "    calculated: "
-                       + DecimalFormatter::toString(icp(data[i]),2) + "\n"
-                       "    expected:   "
-                       + DecimalFormatter::toString(Real(i),1));
+            BOOST_FAIL(std::setprecision(8)
+                       << "failed to reproduce known value for x = "
+                       << data[i] << "\n"
+                       << "    calculated: " << icp(data[i]) << "\n"
+                       << "    expected:   " << Real(i));
         }
     }
 }

@@ -103,13 +103,9 @@ namespace QuantLib {
         Real error = mcModel_->sampleAccumulator().errorEstimate();
         while (error > tolerance) {
             QL_REQUIRE(sampleNumber<maxSamples,
-                "max number of samples ("
-                + IntegerFormatter::toString(maxSamples) +
-                ") reached, while error ("
-                + DecimalFormatter::toString(error) +
-                ") is still above tolerance ("
-                + DecimalFormatter::toString(tolerance) +
-                ")");
+                       "max number of samples (" << maxSamples
+                       << ") reached, while error (" << error
+                       << ") is still above tolerance (" << tolerance << ")");
 
             // conservative estimate of how many samples are needed
             order = error*error/tolerance/tolerance;
@@ -132,20 +128,14 @@ namespace QuantLib {
     inline Real McSimulation<MC,S>::valueWithSamples(Size samples) const {
 
         QL_REQUIRE(samples>=minSample_,
-                   "number of requested samples ("
-                   + SizeFormatter::toString(samples) +
-                   ") lower than minSample_ ("
-                   + SizeFormatter::toString(minSample_) +
-                   ")");
+                   "number of requested samples (" << samples
+                   << ") lower than minSample_ (" << minSample_ << ")");
 
         Size sampleNumber = mcModel_->sampleAccumulator().samples();
 
         QL_REQUIRE(samples>=sampleNumber,
-                   "number of already simulated samples ("
-                   + SizeFormatter::toString(sampleNumber) +
-                   ") greater than requested samples ("
-                   + SizeFormatter::toString(samples) +
-                   ")");
+                   "number of already simulated samples (" << sampleNumber
+                   << ") greater than requested samples (" << samples << ")");
 
         mcModel_->addSamples(samples-sampleNumber);
 

@@ -444,18 +444,15 @@ void MersenneTwisterTest::testValues() {
 
     for (i=0; i<1000; i++) {
         if (referenceLongValues[i] != mt19937.nextInt32()) {
-            BOOST_FAIL("Mersenne Twister test failed at index "
-                       + IntegerFormatter::toString(i));
+            BOOST_FAIL("Mersenne Twister test failed at index " << i);
         }
     }
     for (i=0; i<1000; i++) {
         double e = std::fabs(referenceValues[i] -
                              mt19937.next().value);
         if (e > 1.0e-8) {
-            BOOST_FAIL("Mersenne Twister test failed at index: "
-                       + IntegerFormatter::toString(i) + "\n"
-                       "error: "
-                       + DecimalFormatter::toExponential(e,2));
+            BOOST_FAIL("Mersenne Twister test failed at index: " << i << "\n"
+                       "error: " << e);
         }
     }
 

@@ -38,9 +38,7 @@ namespace QuantLib {
                                                       Real strike,
                                                       bool extrapolate) const {
         QL_REQUIRE(time1 <= time2,
-                   DecimalFormatter::toString(time1) +
-                   " later than " +
-                   DecimalFormatter::toString(time2));
+                   time1 << " later than " << time2);
         checkRange(time2,strike,extrapolate);
         if (time2==time1) {
             if (time1==0.0) {
@@ -83,9 +81,7 @@ namespace QuantLib {
                                                      Real strike,
                                                      bool extrapolate) const {
         QL_REQUIRE(time1 <= time2,
-                   DecimalFormatter::toString(time1) +
-                   " later than " +
-                   DecimalFormatter::toString(time2));
+                   time1 << " later than " << time2);
         checkRange(time2, strike, extrapolate);
         Real v1 = blackVarianceImpl(time1, strike);
         Real v2 = blackVarianceImpl(time2, strike);

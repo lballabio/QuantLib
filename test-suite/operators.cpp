@@ -62,9 +62,8 @@ void OperatorTest::testConsistency() {
                    std::minus<Real>());
     Real e = norm(diff.begin(),diff.end(),h);
     if (e > 1.0e-6) {
-        BOOST_FAIL("norm of 1st derivative of cum minus Gaussian: "
-                   + DecimalFormatter::toExponential(e,2) + "\n"
-                   "tolerance exceeded");
+        BOOST_FAIL("norm of 1st derivative of cum minus Gaussian: " << e
+                   << "\ntolerance exceeded");
     }
 
     // check that the second derivative of cum is normal.derivative
@@ -74,8 +73,7 @@ void OperatorTest::testConsistency() {
     e = norm(diff.begin(),diff.end(),h);
     if (e > 1.0e-4) {
         BOOST_FAIL("norm of 2nd derivative of cum minus Gaussian derivative: "
-                   + DecimalFormatter::toExponential(e,2) + "\n"
-                   "tolerance exceeded");
+                   << e << "\ntolerance exceeded");
     }
 }
 

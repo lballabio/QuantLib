@@ -50,10 +50,9 @@ namespace QuantLib {
                        DateFormatter::toString(endDate) + "))");
         }
         QL_REQUIRE(frequency == 0 || 12 % frequency == 0,
-                   "frequency (" +
-                   IntegerFormatter::toString(frequency) +
-                   " per year) does not correspond to "
-                   "a whole number of months");
+                   "frequency (" << Integer(frequency)
+                   << " per year) does not correspond to "
+                   << "a whole number of months");
 
         if (frequency == 0) {
             QL_REQUIRE(stubDate == Date(),

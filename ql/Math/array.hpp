@@ -248,11 +248,8 @@ namespace QuantLib {
 
     inline const Array& Array::operator+=(const Array& v) {
         QL_REQUIRE(n_ == v.n_,
-                   "arrays with different sizes ("
-                   + SizeFormatter::toString(n_) +
-                   ", "
-                   + SizeFormatter::toString(v.n_) +
-                   ") cannot be added");
+                   "arrays with different sizes (" << n_ << ", "
+                   << v.n_ << ") cannot be added");
         std::transform(begin(),end(),v.begin(),begin(),
                        std::plus<Real>());
         return *this;
@@ -266,11 +263,8 @@ namespace QuantLib {
 
     inline const Array& Array::operator-=(const Array& v) {
         QL_REQUIRE(n_ == v.n_,
-                   "arrays with different sizes ("
-                   + SizeFormatter::toString(n_) +
-                   ", "
-                   + SizeFormatter::toString(v.n_) +
-                   ") cannot be subtracted");
+                   "arrays with different sizes (" << n_ << ", "
+                   << v.n_ << ") cannot be subtracted");
         std::transform(begin(),end(),v.begin(),begin(),
                        std::minus<Real>());
         return *this;
@@ -284,11 +278,8 @@ namespace QuantLib {
 
     inline const Array& Array::operator*=(const Array& v) {
         QL_REQUIRE(n_ == v.n_,
-                   "arrays with different sizes ("
-                   + SizeFormatter::toString(n_) +
-                   ", "
-                   + SizeFormatter::toString(v.n_) +
-                   ") cannot be multiplied");
+                   "arrays with different sizes (" << n_ << ", "
+                   << v.n_ << ") cannot be multiplied");
         std::transform(begin(),end(),v.begin(),begin(),
                        std::multiplies<Real>());
         return *this;
@@ -302,11 +293,8 @@ namespace QuantLib {
 
     inline const Array& Array::operator/=(const Array& v) {
         QL_REQUIRE(n_ == v.n_,
-                   "arrays with different sizes ("
-                   + SizeFormatter::toString(n_) +
-                   ", "
-                   + SizeFormatter::toString(v.n_) +
-                   ") cannot be divided");
+                   "arrays with different sizes (" << n_ << ", "
+                   << v.n_ << ") cannot be divided");
         std::transform(begin(),end(),v.begin(),begin(),
                        std::divides<Real>());
         return *this;
@@ -427,11 +415,8 @@ namespace QuantLib {
 
     inline Real DotProduct(const Array& v1, const Array& v2) {
         QL_REQUIRE(v1.size() == v2.size(),
-                   "arrays with different sizes ("
-                   + SizeFormatter::toString(v1.size()) +
-                   ", "
-                   + SizeFormatter::toString(v2.size()) +
-                   ") cannot be multiplied");
+                   "arrays with different sizes (" << v1.size() << ", "
+                   << v2.size() << ") cannot be multiplied");
         return std::inner_product(v1.begin(),v1.end(),v2.begin(),0.0);
     }
 
@@ -456,11 +441,8 @@ namespace QuantLib {
 
     inline const Disposable<Array> operator+(const Array& v1, const Array& v2) {
         QL_REQUIRE(v1.size() == v2.size(),
-                   "arrays with different sizes ("
-                   + SizeFormatter::toString(v1.size()) +
-                   ", "
-                   + SizeFormatter::toString(v2.size()) +
-                   ") cannot be added");
+                   "arrays with different sizes (" << v1.size() << ", "
+                   << v2.size() << ") cannot be added");
         Array result(v1.size());
         std::transform(v1.begin(),v1.end(),v2.begin(),result.begin(),
                        std::plus<Real>());
@@ -483,11 +465,8 @@ namespace QuantLib {
 
     inline const Disposable<Array> operator-(const Array& v1, const Array& v2) {
         QL_REQUIRE(v1.size() == v2.size(),
-                   "arrays with different sizes ("
-                   + SizeFormatter::toString(v1.size()) +
-                   ", "
-                   + SizeFormatter::toString(v2.size()) +
-                   ") cannot be subtracted");
+                   "arrays with different sizes (" << v1.size() << ", "
+                   << v2.size() << ") cannot be subtracted");
         Array result(v1.size());
         std::transform(v1.begin(),v1.end(),v2.begin(),result.begin(),
                        std::minus<Real>());
@@ -510,11 +489,8 @@ namespace QuantLib {
 
     inline const Disposable<Array> operator*(const Array& v1, const Array& v2) {
         QL_REQUIRE(v1.size() == v2.size(),
-                   "arrays with different sizes ("
-                   + SizeFormatter::toString(v1.size()) +
-                   ", "
-                   + SizeFormatter::toString(v2.size()) +
-                   ") cannot be multiplied");
+                   "arrays with different sizes (" << v1.size() << ", "
+                   << v2.size() << ") cannot be multiplied");
         Array result(v1.size());
         std::transform(v1.begin(),v1.end(),v2.begin(),result.begin(),
                        std::multiplies<Real>());
@@ -537,11 +513,8 @@ namespace QuantLib {
 
     inline const Disposable<Array> operator/(const Array& v1, const Array& v2) {
         QL_REQUIRE(v1.size() == v2.size(),
-                   "arrays with different sizes ("
-                   + SizeFormatter::toString(v1.size()) +
-                   ", "
-                   + SizeFormatter::toString(v2.size()) +
-                   ") cannot be divided");
+                   "arrays with different sizes (" << v1.size() << ", "
+                   << v2.size() << ") cannot be divided");
         Array result(v1.size());
         std::transform(v1.begin(),v1.end(),v2.begin(),result.begin(),
                        std::divides<Real>());

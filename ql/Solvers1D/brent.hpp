@@ -110,8 +110,7 @@ namespace QuantLib {
                 evaluationNumber_++;
             }
             QL_FAIL("maximum number of function evaluations ("
-                    + SizeFormatter::toString(maxEvaluations_)
-                    + ") exceeded");
+                    << maxEvaluations_ << ") exceeded");
             QL_DUMMY_RETURN(0.0);
         }
       private:

@@ -70,11 +70,9 @@ namespace QuantLib {
     : rho_(rho), rho2_(rho*rho) {
 
         QL_REQUIRE(rho>=-1.0,
-                   "rho must be >= -1.0 (" +
-                   DecimalFormatter::toString(rho) + " not allowed)");
+                   "rho must be >= -1.0 (" << rho << " not allowed)");
         QL_REQUIRE(rho<=1.0,
-                   "rho must be <= 1.0 (" +
-                   DecimalFormatter::toString(rho) + " not allowed)");
+                   "rho must be <= 1.0 (" << rho << " not allowed)");
     }
 
 }

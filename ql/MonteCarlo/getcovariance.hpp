@@ -59,23 +59,18 @@ namespace QuantLib {
             for (j=0, jIt=volBegin; j<i; j++, jIt++){
                 QL_REQUIRE(std::fabs(corr[i][j]-corr[j][i]) <= tolerance,
                            "invalid correlation matrix:"
-                           "\nc[" + SizeFormatter::toString(i) +
-                           ", "   + SizeFormatter::toString(j) +
-                           "] = " + DecimalFormatter::toString(corr[i][j]) +
-                           "\nc[" + SizeFormatter::toString(j) +
-                           ", "   + SizeFormatter::toString(i) +
-                           "] = " + DecimalFormatter::toString(corr[j][i]));
+                           << "\nc[" << i << "," << j << "] = " << corr[i][j]
+                           << "\nc[" << j << "," << i << "] = " << corr[j][i]);
                 covariance[i][i] = (*iIt) * (*iIt);
                 covariance[i][j] = (*iIt) * (*jIt) *
                     0.5 * (corr[i][j] + corr[j][i]);
                 covariance[j][i] = covariance[i][j];
             }
             QL_REQUIRE(std::fabs(corr[i][i]-1.0) <= tolerance,
-                       "invalid correlation matrix, diagonal element of the "
-                       + SizeFormatter::toOrdinal(i) +
-                       " row is "
-                       + DecimalFormatter::toString(corr[i][i]) +
-                       " instead of 1.0");
+                       "invalid correlation matrix, "
+                       << "diagonal element of the "
+                       << SizeFormatter::toOrdinal(i)
+                       << " row is " << corr[i][i] << " instead of 1.0");
             covariance[i][i] = (*iIt) * (*iIt);
         }
         return covariance;

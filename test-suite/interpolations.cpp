@@ -65,16 +65,12 @@ namespace {
         while (xBegin != xEnd) {
             Real interpolated = spline(*xBegin);
             if (std::fabs(interpolated-*yBegin) > tolerance) {
-                BOOST_FAIL(std::string(type) +
-                           " interpolation failed at x = " +
-                           DecimalFormatter::toString(*xBegin) +
-                           "\n    interpolated value: " +
-                           DecimalFormatter::toExponential(interpolated) +
-                           "\n    expected value:     " +
-                           DecimalFormatter::toExponential(*yBegin) +
-                           "\n    error:              "
-                           + DecimalFormatter::toExponential(
-                                            std::fabs(interpolated-*yBegin)));
+                BOOST_FAIL(type << " interpolation failed at x = " << *xBegin
+                           << std::scientific
+                           << "\n    interpolated value: " << interpolated
+                           << "\n    expected value:     " << *yBegin
+                           << "\n    error:              "
+                           << std::fabs(interpolated-*yBegin));
             }
             ++xBegin; ++yBegin;
         }
@@ -88,16 +84,12 @@ namespace {
         Real interpolated = spline.derivative(x);
         Real error = std::fabs(interpolated-value);
         if (error > tolerance) {
-            BOOST_FAIL(std::string(type) +
-                       " interpolation first derivative failure\n"
-                       "at x="
-                       + DecimalFormatter::toString(x) +
-                       "\n    interpolated value: "
-                       + DecimalFormatter::toString(interpolated) +
-                       "\n    expected value:     "
-                       + DecimalFormatter::toString(value) +
-                       "\n    error:              "
-                       + DecimalFormatter::toExponential(error));
+            BOOST_FAIL(type << " interpolation first derivative failure\n"
+                       << "at x = " << x
+                       << "\n    interpolated value: " << interpolated
+                       << "\n    expected value:     " << value
+                       << std::scientific
+                       << "\n    error:              " << error);
         }
     }
 
@@ -109,16 +101,12 @@ namespace {
         Real interpolated = spline.secondDerivative(x);
         Real error = std::fabs(interpolated-value);
         if (error > tolerance) {
-            BOOST_FAIL(std::string(type) +
-                       " interpolation second derivative failure\n"
-                       "at x="
-                       + DecimalFormatter::toString(x) +
-                       "\n    interpolated value: "
-                       + DecimalFormatter::toString(interpolated) +
-                       "\n    expected value:     "
-                       + DecimalFormatter::toString(value) +
-                       "\n    error:              "
-                       + DecimalFormatter::toExponential(error));
+            BOOST_FAIL(type << " interpolation second derivative failure\n"
+                       << "at x = " << x
+                       << "\n    interpolated value: " << interpolated
+                       << "\n    expected value:     " << value
+                       << std::scientific
+                       << "\n    error:              " << error);
         }
     }
 
@@ -128,25 +116,19 @@ namespace {
         Real tolerance = 1.0e-14;
         const std::vector<Real>& c = spline.cCoefficients();
         if (std::fabs(c[0]-c[1]) > tolerance) {
-            BOOST_FAIL(std::string(type) +
-                       " interpolation failure"
-                       "\n    cubic coefficient of the first"
-                       " polinomial is "
-                       + DecimalFormatter::toString(c[0]) +
-                       "\n    cubic coefficient of the second"
-                       " polinomial is "
-                       + DecimalFormatter::toString(c[1]));
+            BOOST_FAIL(type << " interpolation failure"
+                       << "\n    cubic coefficient of the first"
+                       << " polinomial is " << c[0]
+                       << "\n    cubic coefficient of the second"
+                       << " polinomial is " << c[1]);
         }
         Size n = c.size();
         if (std::fabs(c[n-2]-c[n-1]) > tolerance) {
-            BOOST_FAIL(std::string(type) +
-                       " interpolation failure"
-                       "\n    cubic coefficient of the 2nd to last"
-                       " polinomial is "
-                       + DecimalFormatter::toString(c[n-2]) +
-                       "\n    cubic coefficient of the last"
-                       " polinomial is "
-                       + DecimalFormatter::toString(c[n-1]));
+            BOOST_FAIL(type << " interpolation failure"
+                       << "\n    cubic coefficient of the 2nd to last"
+                       << " polinomial is " << c[n-2]
+                       << "\n    cubic coefficient of the last"
+                       << " polinomial is " << c[n-1]);
         }
     }
 
@@ -157,14 +139,11 @@ namespace {
         for (Real x = xMin; x < 0.0; x += 0.1) {
             Real y1 = spline(x), y2 = spline(-x);
             if (std::fabs(y1-y2) > tolerance) {
-                BOOST_FAIL(std::string(type) +
-                           " interpolation not symmetric"
-                           "\n    x = "   + DecimalFormatter::toString(x) +
-                           "\n    g(x)  = " + DecimalFormatter::toString(y1) +
-                           "\n    g(-x) = " + DecimalFormatter::toString(y2) +
-                           "\n    error:              "
-                           + DecimalFormatter::toExponential(
-                                                           std::fabs(y1-y2)));
+                BOOST_FAIL(type << " interpolation not symmetric"
+                           << "\n    x = " << x
+                           << "\n    g(x)  = " << y1
+                           << "\n    g(-x) = " << y2
+                           << "\n    error:  " << std::fabs(y1-y2));
             }
         }
     }
@@ -236,12 +215,9 @@ void InterpolationTest::testSplineErrorOnGaussianValues() {
         result /= scaleFactor;
         if (std::fabs(result-tabulatedErrors[i]) > toleranceOnTabErr[i])
             BOOST_FAIL("Not-a-knot spline interpolation "
-                       "\n    sample points:      " +
-                       SizeFormatter::toString(n) +
-                       "\n    norm of difference: " +
-                       DecimalFormatter::toExponential(result,1) +
-                       "\n    it should be:       " +
-                       DecimalFormatter::toExponential(tabulatedErrors[i],1));
+                       << "\n    sample points:      " << n
+                       << "\n    norm of difference: " << result
+                       << "\n    it should be:       " << tabulatedErrors[i]);
 
         // MC not-a-knot
         f = MonotonicCubicSpline(x.begin(), x.end(), y.begin(),
@@ -251,13 +227,10 @@ void InterpolationTest::testSplineErrorOnGaussianValues() {
         result /= scaleFactor;
         if (std::fabs(result-tabulatedMCErrors[i]) > toleranceOnTabMCErr[i])
             BOOST_FAIL("MC Not-a-knot spline interpolation "
-                       "\n    sample points:      " +
-                       SizeFormatter::toString(n) +
-                       "\n    norm of difference: " +
-                       DecimalFormatter::toExponential(result,1) +
-                       "\n    it should be:       " +
-                       DecimalFormatter::toExponential(
-                                                     tabulatedMCErrors[i],1));
+                       << "\n    sample points:      " << n
+                       << "\n    norm of difference: " << result
+                       << "\n    it should be:       "
+                       << tabulatedMCErrors[i]);
     }
 
 }
@@ -293,16 +266,12 @@ void InterpolationTest::testSplineOnGaussianValues() {
         interpolated2= f(x2_bad);
         if (interpolated>0.0 && interpolated2>0.0 ) {
             BOOST_FAIL("Not-a-knot spline interpolation "
-                       "bad performance unverified"
-                       "\nat x="
-                       + DecimalFormatter::toString(x1_bad) +
-                       " interpolated value: "
-                       + DecimalFormatter::toString(interpolated) +
-                       "\nat x="
-                       + DecimalFormatter::toString(x2_bad) +
-                       " interpolated value: "
-                       + DecimalFormatter::toString(interpolated) +
-                       "\n at least one of them was expected to be < 0.0");
+                       << "bad performance unverified"
+                       << "\nat x = " << x1_bad
+                       << " interpolated value: " << interpolated
+                       << "\nat x = " << x2_bad
+                       << " interpolated value: " << interpolated
+                       << "\n at least one of them was expected to be < 0.0");
         }
 
         // MC not-a-knot spline
@@ -315,22 +284,18 @@ void InterpolationTest::testSplineOnGaussianValues() {
         interpolated = f(x1_bad);
         if (interpolated<0.0) {
             BOOST_FAIL("MC not-a-knot spline interpolation "
-                       "good performance unverified\n"
-                       "at x="
-                       + DecimalFormatter::toString(x1_bad) +
-                       "\ninterpolated value: "
-                       + DecimalFormatter::toString(interpolated) +
-                       "\nexpected value > 0.0");
+                       << "good performance unverified\n"
+                       << "at x = " << x1_bad
+                       << "\ninterpolated value: " << interpolated
+                       << "\nexpected value > 0.0");
         }
         interpolated = f(x2_bad);
         if (interpolated<0.0) {
             BOOST_FAIL("MC not-a-knot spline interpolation "
-                       "good performance unverified\n"
-                       "at x="
-                       + DecimalFormatter::toString(x2_bad) +
-                       "\ninterpolated value: "
-                       + DecimalFormatter::toString(interpolated) +
-                       "\nexpected value > 0.0");
+                       << "good performance unverified\n"
+                       << "at x = " << x2_bad
+                       << "\ninterpolated value: " << interpolated
+                       << "\nexpected value > 0.0");
         }
     }
 }
@@ -369,12 +334,10 @@ void InterpolationTest::testSplineOnRPN15AValues() {
     interpolated = f(x_bad);
     if (interpolated<1.0) {
         BOOST_FAIL("Natural spline interpolation "
-                   "poor performance unverified\n"
-                   "at x="
-                   + DecimalFormatter::toString(x_bad) +
-                   "\ninterpolated value: "
-                   + DecimalFormatter::toString(interpolated) +
-                   "\nexpected value > 1.0");
+                   << "poor performance unverified\n"
+                   << "at x = " << x_bad
+                   << "\ninterpolated value: " << interpolated
+                   << "\nexpected value > 1.0");
     }
 
 
@@ -393,12 +356,10 @@ void InterpolationTest::testSplineOnRPN15AValues() {
     interpolated = f(x_bad);
     if (interpolated<1.0) {
         BOOST_FAIL("Clamped spline interpolation "
-                   "poor performance unverified\n"
-                   "at x="
-                   + DecimalFormatter::toString(x_bad) +
-                   "\ninterpolated value: "
-                   + DecimalFormatter::toString(interpolated) +
-                   "\nexpected value > 1.0");
+                   << "poor performance unverified\n"
+                   << "at x = " << x_bad
+                   << "\ninterpolated value: " << interpolated
+                   << "\nexpected value > 1.0");
     }
 
 
@@ -414,12 +375,10 @@ void InterpolationTest::testSplineOnRPN15AValues() {
     interpolated = f(x_bad);
     if (interpolated<1.0) {
         BOOST_FAIL("Not-a-knot spline interpolation "
-                   "poor performance unverified\n"
-                   "at x="
-                   + DecimalFormatter::toString(x_bad) +
-                   "\ninterpolated value: "
-                   + DecimalFormatter::toString(interpolated) +
-                   "\nexpected value > 1.0");
+                   << "poor performance unverified\n"
+                   << "at x = " << x_bad
+                   << "\ninterpolated value: " << interpolated
+                   << "\nexpected value > 1.0");
     }
 
 
@@ -432,12 +391,10 @@ void InterpolationTest::testSplineOnRPN15AValues() {
     interpolated = f(x_bad);
     if (interpolated>1.0) {
         BOOST_FAIL("MC natural spline interpolation "
-                   "good performance unverified\n"
-                   "at x="
-                   + DecimalFormatter::toString(x_bad) +
-                   "\ninterpolated value: "
-                   + DecimalFormatter::toString(interpolated) +
-                   "\nexpected value < 1.0");
+                   << "good performance unverified\n"
+                   << "at x = " << x_bad
+                   << "\ninterpolated value: " << interpolated
+                   << "\nexpected value < 1.0");
     }
 
 
@@ -455,12 +412,10 @@ void InterpolationTest::testSplineOnRPN15AValues() {
     interpolated = f(x_bad);
     if (interpolated>1.0) {
         BOOST_FAIL("MC clamped spline interpolation "
-                   "good performance unverified\n"
-                   "at x="
-                   + DecimalFormatter::toString(x_bad) +
-                   "\ninterpolated value: "
-                   + DecimalFormatter::toString(interpolated) +
-                   "\nexpected value < 1.0");
+                   << "good performance unverified\n"
+                   << "at x = " << x_bad
+                   << "\ninterpolated value: " << interpolated
+                   << "\nexpected value < 1.0");
     }
 
 
@@ -474,12 +429,10 @@ void InterpolationTest::testSplineOnRPN15AValues() {
     interpolated = f(x_bad);
     if (interpolated>1.0) {
         BOOST_FAIL("MC clamped spline interpolation "
-                   "good performance unverified\n"
-                   "at x="
-                   + DecimalFormatter::toString(x_bad) +
-                   "\ninterpolated value: "
-                   + DecimalFormatter::toString(interpolated) +
-                   "\nexpected value < 1.0");
+                   << "good performance unverified\n"
+                   << "at x = " << x_bad
+                   << "\ninterpolated value: " << interpolated
+                   << "\nexpected value < 1.0");
     }
 }
 
@@ -515,14 +468,10 @@ void InterpolationTest::testSplineOnGenericValues() {
         error = interpolated - generic_natural_y2[i];
         if (std::fabs(error)>3e-16) {
             BOOST_FAIL("Natural spline interpolation "
-                       "second derivative failed at x="
-                       + DecimalFormatter::toString(generic_x[i]) +
-                       "\ninterpolated value: "
-                       + DecimalFormatter::toString(interpolated) +
-                       "\nexpected value:     "
-                       + DecimalFormatter::toString(generic_natural_y2[i]) +
-                       "\nerror:              "
-                       + DecimalFormatter::toExponential(error));
+                       << "second derivative failed at x=" << generic_x[i]
+                       << "\ninterpolated value: " << interpolated
+                       << "\nexpected value:     " << generic_natural_y2[i]
+                       << "\nerror:              " << error);
         }
     }
     x35[1] = f(3.5);
@@ -556,12 +505,11 @@ void InterpolationTest::testSplineOnGenericValues() {
 
     if (x35[0]>x35[1] || x35[1]>x35[2]) {
         BOOST_FAIL("Spline interpolation failure"
-                   "\nat x="
-                   + DecimalFormatter::toString(3.5) +
-                   "\nclamped spline    " + DecimalFormatter::toString(x35[0])+
-                   "\nnatural spline    " + DecimalFormatter::toString(x35[1])+
-                   "\nnot-a-knot spline " + DecimalFormatter::toString(x35[2])+
-                   "\nvalues should be in increasing order");
+                   << "\nat x = " << 3.5
+                   << "\nclamped spline    " << x35[0]
+                   << "\nnatural spline    " << x35[1]
+                   << "\nnot-a-knot spline " << x35[2]
+                   << "\nvalues should be in increasing order");
     }
 }
 
@@ -736,15 +684,11 @@ void InterpolationTest::testNonRestrictiveHymanFilter() {
     interpolated = f(zero);
     if (std::fabs(interpolated-expected)>1e-15) {
         BOOST_FAIL("MC not-a-knot spline"
-                   " interpolation failed at x = " +
-                   DecimalFormatter::toString(zero) +
-                   "\n    interpolated value: " +
-                   DecimalFormatter::toString(interpolated) +
-                   "\n    expected value:     " +
-                   DecimalFormatter::toString(expected) +
-                   "\n    error:              "
-                   + DecimalFormatter::toExponential(
-                                           std::fabs(interpolated-expected)));
+                   << " interpolation failed at x = " << zero
+                   << "\n    interpolated value: " << interpolated
+                   << "\n    expected value:     " << expected
+                   << "\n    error:              "
+                   << std::fabs(interpolated-expected));
     }
 
 
@@ -756,15 +700,11 @@ void InterpolationTest::testNonRestrictiveHymanFilter() {
     interpolated = f(zero);
     if (std::fabs(interpolated-expected)>1e-15) {
         BOOST_FAIL("MC clamped spline"
-                   " interpolation failed at x = " +
-                   DecimalFormatter::toString(zero) +
-                   "\n    interpolated value: " +
-                   DecimalFormatter::toString(interpolated) +
-                   "\n    expected value:     " +
-                   DecimalFormatter::toString(expected) +
-                   "\n    error:              "
-                   + DecimalFormatter::toExponential(
-                                           std::fabs(interpolated-expected)));
+                   << " interpolation failed at x = " << zero
+                   << "\n    interpolated value: " << interpolated
+                   << "\n    expected value:     " << expected
+                   << "\n    error:              "
+                   << std::fabs(interpolated-expected));
     }
 
 
@@ -775,15 +715,11 @@ void InterpolationTest::testNonRestrictiveHymanFilter() {
                     true);
     if (std::fabs(interpolated-expected)>1e-15) {
         BOOST_FAIL("MC SecondDerivative spline"
-                   " interpolation failed at x = " +
-                   DecimalFormatter::toString(zero) +
-                   "\n    interpolated value: " +
-                   DecimalFormatter::toString(interpolated) +
-                   "\n    expected value:     " +
-                   DecimalFormatter::toString(expected) +
-                   "\n    error:              "
-                   + DecimalFormatter::toExponential(
-                                           std::fabs(interpolated-expected)));
+                   << " interpolation failed at x = " << zero
+                   << "\n    interpolated value: " << interpolated
+                   << "\n    expected value:     " << expected
+                   << "\n    error:              "
+                   << std::fabs(interpolated-expected));
     }
 
 }
@@ -858,21 +794,14 @@ void InterpolationTest::testMultiSpline() {
                         Real error = std::fabs(interpolated-expected);
                         Real tolerance = 1e-16;
                         if (error > tolerance) {
-                            BOOST_FAIL("\n  At ("
-                                + DecimalFormatter::toString(s) + ","
-                                + DecimalFormatter::toString(t) + ","
-                                + DecimalFormatter::toString(u) + ","
-                                + DecimalFormatter::toString(v) + ","
-                                + DecimalFormatter::toString(w) + "):"
-                                "\n    interpolated: "
-                                + DecimalFormatter::toString(interpolated,4) +
-                                "\n    actual value: "
-                                + DecimalFormatter::toString(expected,4) +
-                                "\n       error: "
-                                + DecimalFormatter::toExponential(error,1) +
-                                "\n    tolerance: "
-                                + DecimalFormatter::toExponential(tolerance,1)
-                                );
+                            BOOST_FAIL(
+                                "\n  At ("
+                                << s << "," << t << "," << u << ","
+                                            << v << "," << w << "):"
+                                << "\n    interpolated: " << interpolated
+                                << "\n    actual value: " << expected
+                                << "\n       error: " << error
+                                << "\n    tolerance: " << tolerance);
                         }
                     }
 
@@ -892,19 +821,13 @@ void InterpolationTest::testMultiSpline() {
         Real interpolated = cs(args), expected = multif(s, t, u, v, w);
         Real error = std::fabs(interpolated-expected);
         if (error > tolerance) {
-            BOOST_FAIL("\n  At (" + DecimalFormatter::toString(s) + ","
-                       + DecimalFormatter::toString(t) + ","
-                       + DecimalFormatter::toString(u) + ","
-                       + DecimalFormatter::toString(v) + ","
-                       + DecimalFormatter::toString(w) + "):"
-                       "\n    interpolated: "
-                       + DecimalFormatter::toString(interpolated,4) +
-                       "\n    actual value: "
-                       + DecimalFormatter::toString(expected,4) +
-                       "\n    error:     "
-                       + DecimalFormatter::toExponential(error,1) +
-                       "\n    tolerance: "
-                       + DecimalFormatter::toExponential(tolerance,1));
+            BOOST_FAIL(
+                "\n  At ("
+                << s << "," << t << "," << u << "," << v << "," << w << "):"
+                << "\n    interpolated: " << interpolated
+                << "\n    actual value: " << expected
+                << "\n    error:        " << error
+                << "\n    tolerance:    " << tolerance);
         }
     }
 }

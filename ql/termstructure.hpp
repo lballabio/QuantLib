@@ -219,14 +219,10 @@ namespace QuantLib {
     inline void YieldTermStructure::checkRange(Time t,
                                                bool extrapolate) const {
         QL_REQUIRE(t >= 0.0,
-                   "negative time (" +
-                   DecimalFormatter::toString(t) +
-                   ") given");
+                   "negative time (" << t << ") given");
         QL_REQUIRE(extrapolate || allowsExtrapolation() || t <= maxTime(),
-                   "time (" +
-                   DecimalFormatter::toString(t) +
-                   ") is past max curve time (" +
-                   DecimalFormatter::toString(maxTime()) + ")");
+                   "time (" << t << ") is past max curve time ("
+                            << maxTime() << ")");
     }
 
 
@@ -294,9 +290,7 @@ namespace QuantLib {
                                                    Frequency freq,
                                                    bool extrapolate) const {
         if (t2==t1) t2=t1+0.0001;
-        QL_REQUIRE(t2>t1, "t2(" + DecimalFormatter::toString(t2) +
-                          ")<t1(" + DecimalFormatter::toString(t2) +
-                          ")");
+        QL_REQUIRE(t2>t1, "t2 (" << t2 << ") < t1 (" << t2 << ")");
         Real compound = discount(t1, extrapolate)/discount(t2, extrapolate);
         return InterestRate::impliedRate(compound, t2-t1,
                                          dayCounter(), comp, freq);

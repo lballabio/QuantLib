@@ -17,28 +17,29 @@
 
 #include <ql/Indexes/xibor.hpp>
 #include <ql/Indexes/indexmanager.hpp>
+#include <sstream>
 
 namespace QuantLib {
 
     std::string Xibor::name() const {
-        std::string tenor;
+        std::ostringstream tenor;
         switch (units_) {
           case Days:
-            tenor = IntegerFormatter::toString(n_)+"d";
+            tenor << n_ << "d";
             break;
           case Weeks:
-            tenor = IntegerFormatter::toString(n_)+"w";
+            tenor << n_ << "w";
             break;
           case Months:
-            tenor = IntegerFormatter::toString(n_)+"m";
+            tenor << n_ << "m";
             break;
           case Years:
-            tenor = IntegerFormatter::toString(n_)+"y";
+            tenor << n_ << "y";
             break;
           default:
             QL_FAIL("invalid time unit");
         }
-        return familyName_+tenor+" "+dayCounter_.name();
+        return familyName_+tenor.str()+" "+dayCounter_.name();
     }
 
     Frequency Xibor::frequency() const {

@@ -38,10 +38,9 @@ void RngTraitsTest::testGaussian() {
     Real stored = 4.09916;
     Real tolerance = 1.0e-5;
     if (std::fabs(sum - stored) > tolerance)
-        BOOST_FAIL(
-            "the sum of the samples does not match the stored value\n"
-            "    calculated: " + DecimalFormatter::toString(sum) + "\n"
-            "    expected:   " + DecimalFormatter::toString(stored));
+        BOOST_FAIL("the sum of the samples does not match the stored value\n"
+                   << "    calculated: " << sum << "\n"
+                   << "    expected:   " << stored);
 }
 
 
@@ -61,10 +60,9 @@ void RngTraitsTest::testDefaultPoisson() {
 
     Real stored = 108.0;
     if (!close(sum, stored))
-        BOOST_FAIL(
-            "the sum of the samples does not match the stored value\n"
-            "    calculated: " + DecimalFormatter::toString(sum) + "\n"
-            "    expected:   " + DecimalFormatter::toString(stored));
+        BOOST_FAIL("the sum of the samples does not match the stored value\n"
+                   << "    calculated: " << sum << "\n"
+                   << "    expected:   " << stored);
 }
 
 
@@ -85,10 +83,9 @@ void RngTraitsTest::testCustomPoisson() {
 
     Real stored = 409.0;
     if (!close(sum, stored))
-        BOOST_FAIL(
-            "the sum of the samples does not match the stored value\n"
-            "    calculated: " + DecimalFormatter::toString(sum) + "\n"
-            "    expected:   " + DecimalFormatter::toString(stored));
+        BOOST_FAIL("the sum of the samples does not match the stored value\n"
+                   << "    calculated: " << sum << "\n"
+                   << "    expected:   " << stored);
 }
 
 

@@ -34,79 +34,64 @@ using namespace boost::unit_test_framework;
 #define QUANTO_REPORT_FAILURE(greekName, payoff, exercise, s, q, r, \
                         today, v, fxr, fxv, corr, expected, \
                         calculated, error, tolerance) \
-    BOOST_FAIL("Quanto " + exerciseTypeToString(exercise) + " " \
-               + OptionTypeFormatter::toString(payoff->optionType()) + \
-               " option with " \
-               + payoffTypeToString(payoff) + " payoff:\n" \
-               "    spot value:        " \
-               + DecimalFormatter::toString(s) + "\n" \
-               "    strike:            " \
-               + DecimalFormatter::toString(payoff->strike()) +"\n" \
-               "    dividend yield:    " \
-               + RateFormatter::toString(q) + "\n" \
-               "    risk-free rate:    " \
-               + RateFormatter::toString(r) + "\n" \
-               "    fx risk-free rate: " \
-               + RateFormatter::toString(fxr) + "\n" \
-               "    reference date:    " \
-               + DateFormatter::toString(today) + "\n" \
-               "    maturity:          " \
-               + DateFormatter::toString(exercise->lastDate()) + "\n" \
-               "    volatility:        " \
-               + VolatilityFormatter::toString(v) + "\n" \
-               "    fx volatility:     " \
-               + VolatilityFormatter::toString(fxv) + "\n" \
-               "    correlation:       " \
-               + DecimalFormatter::toString(corr) + "\n\n" \
-               "    expected   " + greekName + ": " \
-               + DecimalFormatter::toString(expected) + "\n" \
-               "    calculated " + greekName + ": " \
-               + DecimalFormatter::toString(calculated) + "\n" \
-               "    error:            " \
-               + DecimalFormatter::toString(error) + "\n" \
-               "    tolerance:        " \
-               + DecimalFormatter::toString(tolerance));
+    BOOST_FAIL("Quanto " << exerciseTypeToString(exercise) << " " \
+               << OptionTypeFormatter::toString(payoff->optionType()) \
+               << " option with " \
+               << payoffTypeToString(payoff) << " payoff:\n" \
+               << "    spot value:        " << s << "\n" \
+               << "    strike:            " << payoff->strike() << "\n" \
+               << "    dividend yield:    " \
+               << RateFormatter::toString(q) << "\n" \
+               << "    risk-free rate:    " \
+               << RateFormatter::toString(r) << "\n" \
+               << "    fx risk-free rate: " \
+               << RateFormatter::toString(fxr) << "\n" \
+               << "    reference date:    " \
+               << DateFormatter::toString(today) << "\n" \
+               << "    maturity:          " \
+               << DateFormatter::toString(exercise->lastDate()) << "\n" \
+               << "    volatility:        " \
+               << VolatilityFormatter::toString(v) << "\n" \
+               << "    fx volatility:     " \
+               << VolatilityFormatter::toString(fxv) << "\n" \
+               << "    correlation:       " << corr << "\n\n" \
+               << "    expected   " << greekName << ": " << expected << "\n" \
+               << "    calculated " << greekName << ": " << calculated << "\n"\
+               << "    error:            " << error << "\n" \
+               << "    tolerance:        " << tolerance);
 
 #define QUANTO_FORWARD_REPORT_FAILURE(greekName, payoff, moneyness, \
                         exercise, s, q, r, \
                         today, reset, v, fxr, fxv, corr, expected, \
                         calculated, error, tolerance) \
-    BOOST_FAIL("Quanto " + exerciseTypeToString(exercise) + " " \
-               + OptionTypeFormatter::toString(payoff->optionType()) + \
-               " option with " \
-               + payoffTypeToString(payoff) + " payoff:\n" \
-               "    spot value:        " \
-               + DecimalFormatter::toString(s) + "\n" \
-               "    strike:            " \
-               + DecimalFormatter::toString(payoff->strike()) +"\n" \
-               "    moneyness:         " \
-               + DecimalFormatter::toString(moneyness) +"\n" \
-               "    dividend yield:    " \
-               + RateFormatter::toString(q) + "\n" \
-               "    risk-free rate:    " \
-               + RateFormatter::toString(r) + "\n" \
-               "    fx risk-free rate: " \
-               + RateFormatter::toString(fxr) + "\n" \
-               "    reference date:    " \
-               + DateFormatter::toString(today) + "\n" \
-               "    reset date:        " \
-               + DateFormatter::toString(reset) + "\n" \
-               "    maturity:          " \
-               + DateFormatter::toString(exercise->lastDate()) + "\n" \
-               "    volatility:        " \
-               + VolatilityFormatter::toString(v) + "\n" \
-               "    fx volatility:     " \
-               + VolatilityFormatter::toString(fxv) + "\n" \
-               "    correlation:       " \
-               + DecimalFormatter::toString(corr) + "\n\n" \
-               "    expected   " + greekName + ": " \
-               + DecimalFormatter::toString(expected) + "\n" \
-               "    calculated " + greekName + ": " \
-               + DecimalFormatter::toString(calculated) + "\n" \
-               "    error:            " \
-               + DecimalFormatter::toString(error) + "\n" \
-               "    tolerance:        " \
-               + DecimalFormatter::toString(tolerance));
+    BOOST_FAIL("Quanto " << exerciseTypeToString(exercise) << " " \
+               << OptionTypeFormatter::toString(payoff->optionType()) \
+               << " option with " \
+               << payoffTypeToString(payoff) << " payoff:\n" \
+               << "    spot value:        " << s << "\n" \
+               << "    strike:            " << payoff->strike() << "\n" \
+               << "    moneyness:         " << moneyness << "\n" \
+               << "    dividend yield:    " \
+               << RateFormatter::toString(q) << "\n" \
+               << "    risk-free rate:    " \
+               << RateFormatter::toString(r) << "\n" \
+               << "    fx risk-free rate: " \
+               << RateFormatter::toString(fxr) << "\n" \
+               << "    reference date:    " \
+               << DateFormatter::toString(today) << "\n" \
+               << "    reset date:        " \
+               << DateFormatter::toString(reset) << "\n" \
+               << "    maturity:          " \
+               << DateFormatter::toString(exercise->lastDate()) << "\n" \
+               << "    volatility:        " \
+               << VolatilityFormatter::toString(v) << "\n" \
+               << "    fx volatility:     " \
+               << VolatilityFormatter::toString(fxv) << "\n" \
+               << "    correlation:       " << corr << "\n\n" \
+               << "    expected   " << greekName << ": " << expected << "\n" \
+               << "    calculated " << greekName << ": " << calculated << "\n"\
+               << "    error:            " << error << "\n" \
+               << "    tolerance:        " << tolerance);
 
 namespace {
 

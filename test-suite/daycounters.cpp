@@ -154,12 +154,11 @@ void DayCounterTest::testActualActual() {
                 refPeriod = "referencePeriod: "
                     + DateFormatter::toString(rd1) + " to "
                     + DateFormatter::toString(rd2) + "\n";
-            BOOST_FAIL(dayCounter.name() + ":\n"
-                       + period + refPeriod +
-                       "    calculated: "
-                       + DecimalFormatter::toString(calculated) + "\n"
-                       "    expected:   "
-                       + DecimalFormatter::toString(testCases[i].result,11));
+            BOOST_FAIL(dayCounter.name() << ":\n"
+                       << period << refPeriod
+                       << std::setprecision(10)
+                       << "    calculated: " << calculated << "\n"
+                       << "    expected:   " << testCases[i].result);
         }
     }
 }
@@ -182,12 +181,11 @@ void DayCounterTest::testSimple() {
             Date end = start + p[i];
             Time calculated = dayCounter.yearFraction(start,end);
             if (std::fabs(calculated-expected[i]) > 1.0e-12) {
-                BOOST_FAIL("from " + DateFormatter::toString(start) +
-                           " to " + DateFormatter::toString(end) + ":\n"
-                           "    calculated: "
-                           + DecimalFormatter::toString(calculated,12) + "\n"
-                           "    expected:   "
-                           + DecimalFormatter::toString(expected[i],2));
+                BOOST_FAIL("from " << DateFormatter::toString(start)
+                           << " to " << DateFormatter::toString(end) << ":\n"
+                           << std::setprecision(12)
+                           << "    calculated: " << calculated << "\n"
+                           << "    expected:   " << expected[i]);
             }
         }
     }
@@ -210,12 +208,11 @@ void DayCounterTest::testOne() {
             Date end = start + p[i];
             Time calculated = dayCounter.yearFraction(start,end);
             if (std::fabs(calculated-expected[i]) > 1.0e-12) {
-                BOOST_FAIL("from " + DateFormatter::toString(start) +
-                           " to " + DateFormatter::toString(end) + ":\n"
-                           "    calculated: "
-                           + DecimalFormatter::toString(calculated,12) + "\n"
-                           "    expected:   "
-                           + DecimalFormatter::toString(expected[i],2));
+                BOOST_FAIL("from " << DateFormatter::toString(start)
+                           << " to " << DateFormatter::toString(end) << ":\n"
+                           << std::setprecision(12)
+                           << "    calculated: " << calculated << "\n"
+                           << "    expected:   " << expected[i]);
             }
         }
     }

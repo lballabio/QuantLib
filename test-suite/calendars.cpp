@@ -194,11 +194,9 @@ void CalendarTest::testUSSettlement() {
                        + DateFormatter::toString(hol[i]));
     }
     if (hol.size()!=expectedHol.size())
-            BOOST_FAIL("there were "
-                + SizeFormatter::toString(expectedHol.size()) +
-                " expected holidays, while there are "
-                + SizeFormatter::toString(hol.size()) +
-                " calculated holidays");
+        BOOST_FAIL("there were " << expectedHol.size()
+                   << " expected holidays, while there are " << hol.size()
+                   << " calculated holidays");
 }
 
 void CalendarTest::testUSGovernmentBondMarket() {
@@ -229,11 +227,9 @@ void CalendarTest::testUSGovernmentBondMarket() {
                        + DateFormatter::toString(hol[i]));
     }
     if (hol.size()!=expectedHol.size())
-            BOOST_FAIL("there were "
-                + SizeFormatter::toString(expectedHol.size()) +
-                " expected holidays, while there are "
-                + SizeFormatter::toString(hol.size()) +
-                " calculated holidays");
+        BOOST_FAIL("there were " << expectedHol.size()
+                   << " expected holidays, while there are " << hol.size()
+                   << " calculated holidays");
 }
 
 void CalendarTest::testUSNewYorkStockExchange() {
@@ -274,7 +270,8 @@ void CalendarTest::testUSNewYorkStockExchange() {
     std::vector<Date> hol = holidayList(c, Date(1,January,2004),
                                            Date(31,December,2006));
 
-    for (Size i=0; i<std::min<Size>(hol.size(), expectedHol.size()); i++) {
+    Size i;
+    for (i=0; i<std::min<Size>(hol.size(), expectedHol.size()); i++) {
         if (hol[i]!=expectedHol[i])
             BOOST_FAIL("expected holiday was "
                        + DateFormatter::toString(expectedHol[i]) +
@@ -282,11 +279,9 @@ void CalendarTest::testUSNewYorkStockExchange() {
                        + DateFormatter::toString(hol[i]));
     }
     if (hol.size()!=expectedHol.size())
-            BOOST_FAIL("there were "
-                + SizeFormatter::toString(expectedHol.size()) +
-                " expected holidays, while there are "
-                + SizeFormatter::toString(hol.size()) +
-                " calculated holidays");
+        BOOST_FAIL("there were " << expectedHol.size()
+                   << " expected holidays, while there are " << hol.size()
+                   << " calculated holidays");
 
     std::vector<Date> histClose;
     histClose.push_back(Date(11,June,2004));     // Reagan's funeral
@@ -320,7 +315,7 @@ void CalendarTest::testUSNewYorkStockExchange() {
     histClose.push_back(Date(7,Nov,1972));
     histClose.push_back(Date(5,Nov,1968));
     histClose.push_back(Date(3,Nov,1964));
-    for (Size i=0; i<histClose.size(); i++) {
+    for (i=0; i<histClose.size(); i++) {
         if (!c.isHoliday(histClose[i]))
             BOOST_FAIL(DateFormatter::toString(histClose[i]) +
                        " should be holiday (historical close)");
@@ -390,11 +385,9 @@ void CalendarTest::testTARGET() {
                        + DateFormatter::toString(hol[i]));
     }
     if (hol.size()!=expectedHol.size())
-            BOOST_FAIL("there were "
-                + SizeFormatter::toString(expectedHol.size()) +
-                " expected holidays, while there are "
-                + SizeFormatter::toString(hol.size()) +
-                " calculated holidays");
+        BOOST_FAIL("there were " << expectedHol.size()
+                   << " expected holidays, while there are " << hol.size()
+                   << " calculated holidays");
 
 }
 
@@ -429,11 +422,9 @@ void CalendarTest::testGermanyFrankfurt() {
                        + DateFormatter::toString(hol[i]));
     }
     if (hol.size()!=expectedHol.size())
-            BOOST_FAIL("there were "
-                + SizeFormatter::toString(expectedHol.size()) +
-                " expected holidays, while there are "
-                + SizeFormatter::toString(hol.size()) +
-                " calculated holidays");
+        BOOST_FAIL("there were " << expectedHol.size()
+                   << " expected holidays, while there are " << hol.size()
+                   << " calculated holidays");
 }
 
 void CalendarTest::testGermanyEurex() {
@@ -467,11 +458,9 @@ void CalendarTest::testGermanyEurex() {
                        + DateFormatter::toString(hol[i]));
     }
     if (hol.size()!=expectedHol.size())
-            BOOST_FAIL("there were "
-                + SizeFormatter::toString(expectedHol.size()) +
-                " expected holidays, while there are "
-                + SizeFormatter::toString(hol.size()) +
-                " calculated holidays");
+        BOOST_FAIL("there were " << expectedHol.size()
+                   << " expected holidays, while there are " << hol.size()
+                   << " calculated holidays");
 }
 
 void CalendarTest::testGermanyXetra() {
@@ -505,11 +494,9 @@ void CalendarTest::testGermanyXetra() {
                        + DateFormatter::toString(hol[i]));
     }
     if (hol.size()!=expectedHol.size())
-            BOOST_FAIL("there were "
-                + SizeFormatter::toString(expectedHol.size()) +
-                " expected holidays, while there are "
-                + SizeFormatter::toString(hol.size()) +
-                " calculated holidays");
+        BOOST_FAIL("there were " << expectedHol.size()
+                   << " expected holidays, while there are " << hol.size()
+                   << " calculated holidays");
 }
 
 void CalendarTest::testUKSettlement() {
@@ -564,11 +551,9 @@ void CalendarTest::testUKSettlement() {
                        + DateFormatter::toString(hol[i]));
     }
     if (hol.size()!=expectedHol.size())
-            BOOST_FAIL("there were "
-                + SizeFormatter::toString(expectedHol.size()) +
-                " expected holidays, while there are "
-                + SizeFormatter::toString(hol.size()) +
-                " calculated holidays");
+        BOOST_FAIL("there were " << expectedHol.size()
+                   << " expected holidays, while there are " << hol.size()
+                   << " calculated holidays");
 }
 
 void CalendarTest::testUKExchange() {
@@ -623,11 +608,9 @@ void CalendarTest::testUKExchange() {
                        + DateFormatter::toString(hol[i]));
     }
     if (hol.size()!=expectedHol.size())
-            BOOST_FAIL("there were "
-                + SizeFormatter::toString(expectedHol.size()) +
-                " expected holidays, while there are "
-                + SizeFormatter::toString(hol.size()) +
-                " calculated holidays");
+        BOOST_FAIL("there were " << expectedHol.size()
+                   << " expected holidays, while there are " << hol.size()
+                   << " calculated holidays");
 }
 
 void CalendarTest::testUKMetals() {
@@ -682,11 +665,9 @@ void CalendarTest::testUKMetals() {
                        + DateFormatter::toString(hol[i]));
     }
     if (hol.size()!=expectedHol.size())
-            BOOST_FAIL("there were "
-                + SizeFormatter::toString(expectedHol.size()) +
-                " expected holidays, while there are "
-                + SizeFormatter::toString(hol.size()) +
-                " calculated holidays");
+        BOOST_FAIL("there were " << expectedHol.size()
+                   << " expected holidays, while there are " << hol.size()
+                   << " calculated holidays");
 }
 
 void CalendarTest::testItalyExchange() {
@@ -731,11 +712,9 @@ void CalendarTest::testItalyExchange() {
                        + DateFormatter::toString(hol[i]));
     }
     if (hol.size()!=expectedHol.size())
-            BOOST_FAIL("there were "
-                + SizeFormatter::toString(expectedHol.size()) +
-                " expected holidays, while there are "
-                + SizeFormatter::toString(hol.size()) +
-                " calculated holidays");
+        BOOST_FAIL("there were " << expectedHol.size()
+                   << " expected holidays, while there are " << hol.size()
+                   << " calculated holidays");
 }
 
 test_suite* CalendarTest::suite() {

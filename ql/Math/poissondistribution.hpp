@@ -90,8 +90,7 @@ namespace QuantLib {
     : mu_(mu) {
 
         QL_REQUIRE(mu_>=0.0,
-                   "mu must be non negative (" +
-                   DecimalFormatter::toString(mu_) + " not allowed)");
+                   "mu must be non negative (" << mu_ << " not allowed)");
 
         if (mu_!=0.0) logMu_ = std::log(mu_);
     }

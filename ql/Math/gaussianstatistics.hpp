@@ -140,13 +140,9 @@ namespace QuantLib {
                                                      Real percentile) const {
 
         QL_REQUIRE(percentile>0.0,
-                   "percentile (" +
-                   DecimalFormatter::toString(percentile) +
-                   ") must be > 0.0");
+                   "percentile (" << percentile << ") must be > 0.0");
         QL_REQUIRE(percentile<1.0,
-                   "percentile (" +
-                   DecimalFormatter::toString(percentile) +
-                   ") must be < 1.0");
+                   "percentile (" << percentile << ") must be < 1.0");
 
         InverseCumulativeNormal gInverse(Stat::mean(),
                                          Stat::standardDeviation());
@@ -167,9 +163,7 @@ namespace QuantLib {
                                                     Real percentile) const {
 
         QL_REQUIRE(percentile<1.0 && percentile>=0.9,
-                   "percentile (" +
-                   DecimalFormatter::toString(percentile) +
-                   ") out of range [0.9, 1.0)");
+                   "percentile (" << percentile << ") out of range [0.9, 1)");
 
         Real result = gaussianPercentile(percentile);
         // potential upside must be a gain, i.e., floored at 0.0
@@ -183,9 +177,7 @@ namespace QuantLib {
                                                     Real percentile) const {
 
         QL_REQUIRE(percentile<1.0 && percentile>=0.9,
-                   "percentile (" +
-                   DecimalFormatter::toString(percentile) +
-                   ") out of range [0.9, 1.0)");
+                   "percentile (" << percentile << ") out of range [0.9, 1)");
 
         Real result = gaussianPercentile(1.0-percentile);
         // VAR must be a loss
@@ -200,9 +192,7 @@ namespace QuantLib {
     inline Real GaussianStatistics<Stat>::gaussianExpectedShortfall(
                                                     Real percentile) const {
         QL_REQUIRE(percentile<1.0 && percentile>=0.9,
-                   "percentile (" +
-                   DecimalFormatter::toString(percentile) +
-                   ") out of range [0.9, 1.0)");
+                   "percentile (" << percentile << ") out of range [0.9, 1)");
 
         Real m = this->mean();
         Real std = this->standardDeviation();

@@ -31,7 +31,7 @@ namespace QuantLib {
         const boost::shared_ptr<StrikedTypePayoff>& payoff,
         const boost::shared_ptr<Exercise>& exercise,
         const boost::shared_ptr<PricingEngine>& engine)
-    : OneAssetStrikedOption(stochProc, payoff, exercise, engine), 
+    : OneAssetStrikedOption(stochProc, payoff, exercise, engine),
       barrierType_(barrierType), barrier_(barrier), rebate_(rebate) {
 
         if (!engine)
@@ -71,44 +71,36 @@ namespace QuantLib {
 
         switch (barrierType) {
           case Barrier::DownIn:
-            QL_REQUIRE(blackScholesProcess->stateVariable()->value() 
+            QL_REQUIRE(blackScholesProcess->stateVariable()->value()
                        >= barrier,
-                       "underlying (" +
-                       DecimalFormatter::toString(blackScholesProcess
-                                                  ->stateVariable()->value()) +
-                       ") < barrier (" +
-                       DecimalFormatter::toString(barrier) +
-                       "): down-and-in barrier undefined");
+                       "underlying ("
+                       << blackScholesProcess->stateVariable()->value()
+                       << ") < barrier (" << barrier
+                       << "): down-and-in barrier undefined");
             break;
           case Barrier::UpIn:
             QL_REQUIRE(blackScholesProcess->stateVariable()->value()
                        <= barrier,
-                       "underlying ("+
-                       DecimalFormatter::toString(blackScholesProcess
-                                                  ->stateVariable()->value()) +
-                       ") > barrier ("+
-                       DecimalFormatter::toString(barrier) +
-                       "): up-and-in barrier undefined");
+                       "underlying ("
+                       << blackScholesProcess->stateVariable()->value()
+                       << ") > barrier (" << barrier
+                       << "): up-and-in barrier undefined");
             break;
           case Barrier::DownOut:
-            QL_REQUIRE(blackScholesProcess->stateVariable()->value() 
+            QL_REQUIRE(blackScholesProcess->stateVariable()->value()
                        >= barrier,
-                       "underlying ("+
-                       DecimalFormatter::toString(blackScholesProcess
-                                                  ->stateVariable()->value()) +
-                       ") < barrier ("+ 
-                       DecimalFormatter::toString(barrier) +
-                       "): down-and-out barrier undefined");
+                       "underlying ("
+                       << blackScholesProcess->stateVariable()->value()
+                       << ") < barrier (" << barrier
+                       << "): down-and-out barrier undefined");
             break;
           case Barrier::UpOut:
-            QL_REQUIRE(blackScholesProcess->stateVariable()->value() 
+            QL_REQUIRE(blackScholesProcess->stateVariable()->value()
                        <= barrier,
-                       "underlying ("+
-                       DecimalFormatter::toString(blackScholesProcess
-                                                  ->stateVariable()->value()) +
-                       ") > barrier ("+
-                       DecimalFormatter::toString(barrier) +
-                       "): up-and-out barrier undefined");
+                       "underlying ("
+                       << blackScholesProcess->stateVariable()->value()
+                       << ") > barrier (" << barrier
+                       << "): up-and-out barrier undefined");
             break;
           default:
             QL_FAIL("unknown type");

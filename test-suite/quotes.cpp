@@ -84,10 +84,8 @@ void QuoteTest::testDerived() {
         Real x = derived.value(),
              y = funcs[i](me->value());
         if (std::fabs(x-y) > 1.0e-10)
-            BOOST_FAIL("derived quote yields " +
-                       DecimalFormatter::toString(x) + "\n"
-                       "function result is " +
-                       DecimalFormatter::toString(y));
+            BOOST_FAIL("derived quote yields " << x << "\n"
+                       << "function result is " << y);
     }
 }
 
@@ -107,10 +105,8 @@ void QuoteTest::testComposite() {
         Real x = composite.value(),
              y = funcs[i](me1->value(),me2->value());
         if (std::fabs(x-y) > 1.0e-10)
-            BOOST_FAIL("composite quote yields " +
-                       DecimalFormatter::toString(x) + "\n"
-                       "function result is " +
-                       DecimalFormatter::toString(y));
+            BOOST_FAIL("composite quote yields " << x << "\n"
+                       << "function result is " << y);
     }
 }
 

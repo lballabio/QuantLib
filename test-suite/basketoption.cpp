@@ -2,7 +2,7 @@
 /*
  Copyright (C) 2004 Ferdinando Ametrano
  Copyright (C) 2004 Neil Firth
- Copyright (C) 2003 RiskMap srl
+ Copyright (C) 2003, 2004, 2005 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -34,82 +34,65 @@ using namespace boost::unit_test_framework;
 #define REPORT_FAILURE_2(greekName, basketType, payoff, exercise, \
                          s1, s2, q1, q2, r, today, v1, v2, rho, \
                          expected, calculated, error, tolerance) \
-    BOOST_FAIL(exerciseTypeToString(exercise) + " " \
-               + OptionTypeFormatter::toString(payoff->optionType()) + \
-               " option on " \
-               + basketTypeToString(basketType) + \
-               " with " \
-               + payoffTypeToString(payoff) + " payoff:\n" \
-               "1st underlying value: " \
-               + DecimalFormatter::toString(s1) + "\n" \
-               "2nd underlying value: " \
-               + DecimalFormatter::toString(s2) + "\n" \
-               "              strike: " \
-               + DecimalFormatter::toString(payoff->strike()) +"\n" \
-               "  1st dividend yield: " \
-               + DecimalFormatter::toString(q1) + "\n" \
-               "  2nd dividend yield: " \
-               + DecimalFormatter::toString(q2) + "\n" \
-               "      risk-free rate: " \
-               + DecimalFormatter::toString(r) + "\n" \
-               "      reference date: " \
-               + DateFormatter::toString(today) + "\n" \
-               "            maturity: " \
-               + DateFormatter::toString(exercise->lastDate()) + "\n" \
-               "1st asset volatility: " \
-               + DecimalFormatter::toString(v1) + "\n" \
-               "2nd asset volatility: " \
-               + DecimalFormatter::toString(v2) + "\n" \
-               "         correlation: " \
-               + DecimalFormatter::toString(rho) + "\n\n" \
-               "    expected   " + greekName + ": " \
-               + DecimalFormatter::toString(expected) + "\n" \
-               "    calculated " + greekName + ": " \
-               + DecimalFormatter::toString(calculated) + "\n" \
-               "    error:            " \
-               + DecimalFormatter::toString(error) + "\n" \
-               "    tolerance:        " \
-               + DecimalFormatter::toString(tolerance));
+    BOOST_FAIL(exerciseTypeToString(exercise) << " " \
+               << OptionTypeFormatter::toString(payoff->optionType()) \
+               << " option on " \
+               << basketTypeToString(basketType) \
+               << " with " \
+               << payoffTypeToString(payoff) << " payoff:\n" \
+               << "1st underlying value: " << s1 << "\n" \
+               << "2nd underlying value: " << s2 << "\n" \
+               << "              strike: " << payoff->strike() << "\n" \
+               << "  1st dividend yield: " \
+               << RateFormatter::toString(q1) << "\n" \
+               << "  2nd dividend yield: " \
+               << RateFormatter::toString(q2) << "\n" \
+               << "      risk-free rate: " \
+               << RateFormatter::toString(r) << "\n" \
+               << "      reference date: " \
+               << DateFormatter::toString(today) << "\n" \
+               << "            maturity: " \
+               << DateFormatter::toString(exercise->lastDate()) << "\n" \
+               << "1st asset volatility: " \
+               << VolatilityFormatter::toString(v1) << "\n" \
+               << "2nd asset volatility: " \
+               << VolatilityFormatter::toString(v2) << "\n" \
+               << "         correlation: " << rho << "\n\n" \
+               << "    expected   " << greekName << ": " << expected << "\n" \
+               << "    calculated " << greekName << ": " << calculated << "\n"\
+               << "    error:            " << error << "\n" \
+               << "    tolerance:        " << tolerance);
 
 #define REPORT_FAILURE_3(greekName, basketType, payoff, exercise, \
                          s1, s2, s3, r, today, v1, v2, v3, rho, \
                          expected, calculated, error, tolerance) \
-    BOOST_FAIL(exerciseTypeToString(exercise) + " " \
-               + OptionTypeFormatter::toString(payoff->optionType()) + \
-               " option on " \
-               + basketTypeToString(basketType) + \
-               " with " \
-               + payoffTypeToString(payoff) + " payoff:\n" \
-               "1st underlying value: " \
-               + DecimalFormatter::toString(s1) + "\n" \
-               "2nd underlying value: " \
-               + DecimalFormatter::toString(s2) + "\n" \
-               "3rd underlying value: " \
-               + DecimalFormatter::toString(s3) + "\n" \
-               "              strike: " \
-               + DecimalFormatter::toString(payoff->strike()) +"\n" \
-               "      risk-free rate: " \
-               + DecimalFormatter::toString(r) + "\n" \
-               "      reference date: " \
-               + DateFormatter::toString(today) + "\n" \
-               "            maturity: " \
-               + DateFormatter::toString(exercise->lastDate()) + "\n" \
-               "1st asset volatility: " \
-               + DecimalFormatter::toString(v1) + "\n" \
-               "2nd asset volatility: " \
-               + DecimalFormatter::toString(v2) + "\n" \
-               "3rd asset volatility: " \
-               + DecimalFormatter::toString(v3) + "\n" \
-               "         correlation: " \
-               + DecimalFormatter::toString(rho) + "\n\n" \
-               "    expected   " + greekName + ": " \
-               + DecimalFormatter::toString(expected) + "\n" \
-               "    calculated " + greekName + ": " \
-               + DecimalFormatter::toString(calculated) + "\n" \
-               "    error:            " \
-               + DecimalFormatter::toString(error) + "\n" \
-               "    tolerance:        " \
-               + DecimalFormatter::toString(tolerance));
+    BOOST_FAIL(exerciseTypeToString(exercise) << " " \
+               << OptionTypeFormatter::toString(payoff->optionType()) \
+               << " option on " \
+               << basketTypeToString(basketType) \
+               << " with " \
+               << payoffTypeToString(payoff) << " payoff:\n" \
+               << "1st underlying value: " << s1 << "\n" \
+               << "2nd underlying value: " << s2 << "\n" \
+               << "3rd underlying value: " << s3 << "\n" \
+               << "              strike: " << payoff->strike() <<"\n" \
+               << "      risk-free rate: " \
+               << RateFormatter::toString(r) << "\n" \
+               << "      reference date: " \
+               << DateFormatter::toString(today) << "\n" \
+               << "            maturity: " \
+               << DateFormatter::toString(exercise->lastDate()) << "\n" \
+               << "1st asset volatility: " \
+               << VolatilityFormatter::toString(v1) << "\n" \
+               << "2nd asset volatility: " \
+               << VolatilityFormatter::toString(v2) << "\n" \
+               << "3rd asset volatility: " \
+               << VolatilityFormatter::toString(v3) << "\n" \
+               << "         correlation: " << rho << "\n\n" \
+               << "    expected   " << greekName << ": " << expected << "\n" \
+               << "    calculated " << greekName << ": " << calculated << "\n"\
+               << "    error:            " << error << "\n" \
+               << "    tolerance:        " << tolerance);
 
 
 namespace {
@@ -759,10 +742,8 @@ void BasketOptionTest::testOneDAmericanValues() {
         // Real error = std::fabs(calculated-expected);
 
         if (relError > values[i].tol) {
-            BOOST_FAIL("expected value: "
-                       + DecimalFormatter::toString(values[i].result) + "\n"
-                       "calculated: "
-                       + DecimalFormatter::toString(calculated));
+            BOOST_FAIL("expected value: " << values[i].result << "\n"
+                       << "calculated:     " << calculated);
         }
 
     }

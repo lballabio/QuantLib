@@ -150,15 +150,12 @@ namespace QuantLib {
             lastContribution *= weight;
         }
         QL_ENSURE(i<maxIterations_,
-                  SizeFormatter::toString(i) +
-                  " iterations have been not enough to reach the required "
-                  + DecimalFormatter::toExponential(relativeAccuracy_) +
-                  " accuracy. The "
-                  + SizeFormatter::toOrdinal(i) +
-                  " addendum was "
-                  + DecimalFormatter::toExponential(lastContribution) +
-                  " while the running sum was "
-                  + DecimalFormatter::toExponential(results_.value));
+                  i << " iterations have been not enough to reach "
+                  << "the required " << std::scientific << relativeAccuracy_
+                  << " accuracy. The "
+                  << SizeFormatter::toOrdinal(i)
+                  << " addendum was " << lastContribution
+                  << " while the running sum was " << results_.value);
     }
 
 }

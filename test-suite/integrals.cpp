@@ -35,10 +35,9 @@ namespace {
                     const F& f, Real xMin, Real xMax, Real expected) {
         Real calculated = I(f,xMin,xMax);
         if (std::fabs(calculated-expected) > tolerance) {
-            BOOST_FAIL(
-                "integrating " + tag +
-                "    calculated: " + DecimalFormatter::toString(calculated) +
-                "    expected:   " + DecimalFormatter::toString(expected));
+            BOOST_FAIL("integrating " << tag
+                       << "    calculated: " << calculated
+                       << "    expected:   " << expected);
         }
     }
 

@@ -194,8 +194,8 @@ namespace QuantLib {
     : average_(average), sigma_(sigma) {
 
         QL_REQUIRE(sigma_>0.0,
-                   "sigma must be greater than 0.0 (" +
-                   DecimalFormatter::toString(sigma_) + " not allowed)");
+                   "sigma must be greater than 0.0 ("
+                   << sigma_ << " not allowed)");
 
         normalizationFactor_ = M_SQRT_2*M_1_SQRTPI/sigma_;
         derNormalizationFactor_ = sigma_*sigma_;
@@ -219,8 +219,8 @@ namespace QuantLib {
     : average_(average), sigma_(sigma) {
 
         QL_REQUIRE(sigma_>0.0,
-                   "sigma must be greater than 0.0 (" +
-                   DecimalFormatter::toString(sigma_) + " not allowed)");
+                   "sigma must be greater than 0.0 ("
+                   << sigma_ << " not allowed)");
     }
 
     inline Real CumulativeNormalDistribution::derivative(Real x) const {
@@ -233,8 +233,8 @@ namespace QuantLib {
     : average_(average), sigma_(sigma) {
 
         QL_REQUIRE(sigma_>0.0,
-                   "sigma must be greater than 0.0 (" +
-                   DecimalFormatter::toString(sigma_) + " not allowed)");
+                   "sigma must be greater than 0.0 ("
+                   << sigma_ << " not allowed)");
     }
 
     inline MoroInverseCumulativeNormal::MoroInverseCumulativeNormal(
@@ -242,8 +242,8 @@ namespace QuantLib {
     : average_(average), sigma_(sigma) {
 
         QL_REQUIRE(sigma_>0.0,
-                   "sigma must be greater than 0.0 (" +
-                   DecimalFormatter::toString(sigma_) + " not allowed)");
+                   "sigma must be greater than 0.0 ("
+                   << sigma_ << " not allowed)");
     }
 
 }

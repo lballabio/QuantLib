@@ -77,26 +77,20 @@ void OldPricerTest::testFdEuropeanPricer() {
                                        qRate, rRate, resTime,
                                        vol, 100, 400).value();
             if (std::fabs(anValue-numValue) > tolerance)
-                BOOST_FAIL(
-                    "Option details: \n"
-                    "    type:           " +
-                    OptionTypeFormatter::toString(types[j]) + "\n"
-                    "    underlying:     " +
-                    DecimalFormatter::toString(under) + "\n"
-                    "    strike:         " +
-                    DecimalFormatter::toString(strike) + "\n"
-                    "    dividend yield: " +
-                    RateFormatter::toString(qRate) + "\n"
-                    "    risk-free rate: " +
-                    RateFormatter::toString(rRate) + "\n"
-                    "    residual time:  " +
-                    DecimalFormatter::toString(resTime) + "\n"
-                    "    volatility:     " +
-                    VolatilityFormatter::toString(vol) + "\n\n"
-                    "    calculated value: " +
-                    DecimalFormatter::toString(numValue) + "\n"
-                    "    expected:         " +
-                    DecimalFormatter::toString(anValue));
+                BOOST_FAIL("Option details: \n"
+                           << "    type:           "
+                           << OptionTypeFormatter::toString(types[j]) << "\n"
+                           << "    underlying:     " << under << "\n"
+                           << "    strike:         " << strike << "\n"
+                           << "    dividend yield: "
+                           << RateFormatter::toString(qRate) << "\n"
+                           << "    risk-free rate: "
+                           << RateFormatter::toString(rRate) << "\n"
+                           << "    residual time:  " << resTime << "\n"
+                           << "    volatility:     "
+                           << VolatilityFormatter::toString(vol) << "\n\n"
+                           << "    calculated value: " << numValue << "\n"
+                           << "    expected:         " << anValue);
         }
     }
 }
@@ -161,26 +155,20 @@ namespace {
                 if (relativeError(expct,calcl,u) > tol)
                     BOOST_FAIL(
                         "Option details: \n"
-                        "    type:           " +
-                        name + " " + OptionTypeFormatter::toString(type)
-                        + "\n"
-                        "    underlying:     " +
-                        DecimalFormatter::toString(u) + "\n"
-                        "    strike:         " +
-                        DecimalFormatter::toString(k) + "\n"
-                        "    dividend yield: " +
-                        RateFormatter::toString(q) + "\n"
-                        "    risk-free rate: " +
-                        RateFormatter::toString(r) + "\n"
-                        "    residual time:  " +
-                        DecimalFormatter::toString(T) + "\n"
-                        "    volatility:     " +
-                        VolatilityFormatter::toString(v) + "\n\n"
-                        "    calculated " + greek + ": " +
-                        DecimalFormatter::toString(calcl) + "\n"
-                        "    expected:    " +
-                        std::string(greek.size(),' ') +
-                        DecimalFormatter::toString(expct));
+                        << "    type:           "
+                        << name << " " << OptionTypeFormatter::toString(type)
+                        << "\n"
+                        << "    underlying:     " << u << "\n"
+                        << "    strike:         " << k << "\n"
+                        << "    dividend yield: "
+                        << RateFormatter::toString(q) << "\n"
+                        << "    risk-free rate: "
+                        << RateFormatter::toString(r) << "\n"
+                        << "    residual time:  " << T << "\n"
+                        << "    volatility:     "
+                        << VolatilityFormatter::toString(v) << "\n\n"
+                        << "    calculated " << greek << ": " << calcl << "\n"
+                        << "    expected:  " << greek << ": " << expct);
             }
         }
     }
@@ -269,10 +257,8 @@ void OldPricerTest::testFdAmericanDividendPricers() {
 
         if (std::fabs(refValue-value) > tolerance)
             BOOST_FAIL("DividendAmericanOption :\n"
-                       "    calculated value: "
-                       + DecimalFormatter::toString(value,6) + "\n"
-                       "    expected:         "
-                       + DecimalFormatter::toString(refValue,6));
+                       << "    calculated value: " << value << "\n"
+                       << "    expected:         " << refValue);
 
         dividendA.push_back(0.0);
         dividendTimeA.push_back(1.0e-3 * i);
@@ -407,23 +393,19 @@ void OldPricerTest::testMcSingleFactorPricers() {
                                        seed);
         Real value = pricer.valueWithSamples(fixedSamples);
         if (std::fabs(value-cases5[l].result) > 2.0e-2)
-            BOOST_FAIL(
-                "Batch 5, case " + SizeFormatter::toString(l+1) + ":\n"
-                "    calculated value: "
-                + DecimalFormatter::toString(value,10) + "\n"
-                "    expected:         "
-                + DecimalFormatter::toString(cases5[l].result,10));
+            BOOST_FAIL("Batch 5, case " << l+1 << ":\n"
+                       << std::setprecision(10)
+                       << "    calculated value: " << value << "\n"
+                       << "    expected:         " << cases5[l].result);
         Real tolerance = pricer.errorEstimate()/value;
         tolerance = std::min<Real>(tolerance/2.0, minimumTol);
         value = pricer.value(tolerance);
         Real accuracy = pricer.errorEstimate()/value;
         if (accuracy > tolerance)
-            BOOST_FAIL(
-                "Batch 5, case " + SizeFormatter::toString(l+1) + ":\n"
-                "    reached accuracy: "
-                + DecimalFormatter::toString(accuracy,10) + "\n"
-                "    expected:         "
-                + DecimalFormatter::toString(tolerance,10));
+            BOOST_FAIL("Batch 5, case " << l+1 << ":\n"
+                       << std::setprecision(10)
+                       << "    reached accuracy: " << accuracy << "\n"
+                       << "    expected:         " << tolerance);
     }
 
 }
@@ -441,24 +423,20 @@ namespace {
 
         Real value = pricer.valueWithSamples(fixedSamples);
         if (std::fabs(value-storedValue) > tolerance)
-            BOOST_FAIL(
-                name + ":\n"
-                "    calculated value: "
-                + DecimalFormatter::toString(value,10) + "\n"
-                "    expected:         "
-                + DecimalFormatter::toString(storedValue,10));
+            BOOST_FAIL(name << ":\n"
+                       << std::setprecision(10)
+                       << "    calculated value: " << value << "\n"
+                       << "    expected:         " << storedValue);
 
         tolerance = pricer.errorEstimate()/value;
         tolerance = std::min<Real>(tolerance/2.0, minimumTol);
         value = pricer.value(tolerance);
         Real accuracy = pricer.errorEstimate()/value;
         if (accuracy > tolerance)
-            BOOST_FAIL(
-                name + ":\n"
-                "    reached accuracy: "
-                + DecimalFormatter::toString(accuracy,10) + "\n"
-                "    expected:         "
-                + DecimalFormatter::toString(tolerance,10));
+            BOOST_FAIL(name << ":\n"
+                       << std::setprecision(10)
+                       << "    reached accuracy: " << accuracy << "\n"
+                       << "    expected:         " << tolerance);
 
     }
 

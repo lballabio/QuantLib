@@ -84,13 +84,10 @@ namespace QuantLib {
         next_(MultiPath(correlation.rows(), times), 1.0) {
 
         QL_REQUIRE(generator_.dimension() == numAssets_*(times.size()-1),
-                   "dimension (" +
-                   SizeFormatter::toString(generator_.dimension()) +
-                   ") is not equal to (" +
-                   SizeFormatter::toString(numAssets_) +
-                   " * " +
-                   SizeFormatter::toString(times.size()-1) +
-                   ") the number of assets times the number of time steps");
+                   "dimension (" << generator_.dimension()
+                   << ") is not equal to ("
+                   << numAssets_ << " * " << times.size()-1
+                   << ") the number of assets times the number of time steps");
         QL_REQUIRE(sqrtCorrelation_.columns() == numAssets_,
                    "correlation is not a square matrix");
         QL_REQUIRE(times.size() > 1,

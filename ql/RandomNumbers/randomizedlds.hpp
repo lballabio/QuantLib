@@ -87,12 +87,9 @@ namespace QuantLib {
       x(Array(dimension_), 1.0), randomizer_(Array(dimension_), 1.0) {
 
         QL_REQUIRE(prsg_.dimension()==dimension_,
-            "generator mismatch: "
-            + IntegerFormatter::toString(dimension_) +
-            "-dim low discrepancy "
-            "and "
-            + IntegerFormatter::toString(prsg_.dimension()) +
-            "-dim pseudo random")
+                   "generator mismatch: "
+                   << dimension_ << "-dim low discrepancy "
+                   << "and " << prsg_.dimension() << "-dim pseudo random")
 
         randomizer_ = prsg_.nextSequence();
 

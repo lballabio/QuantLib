@@ -43,6 +43,8 @@ include_HEADERS = \
 	cashflow.hpp \
 	config.hpp \
 	currency.hpp \
+	dataformatters.hpp \
+	dataformatters.details.hpp \
 	dataparsers.hpp \
 	date.hpp \
 	daycounter.hpp \

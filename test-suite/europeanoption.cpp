@@ -34,32 +34,26 @@ using namespace boost::unit_test_framework;
 
 #define REPORT_FAILURE(greekName, payoff, exercise, s, q, r, today, \
                        v, expected, calculated, error, tolerance) \
-    BOOST_FAIL(exerciseTypeToString(exercise) + " " \
-               + OptionTypeFormatter::toString(payoff->optionType()) + \
-               " option with " \
-               + payoffTypeToString(payoff) + " payoff:\n" \
-               "    spot value: " \
-               + DecimalFormatter::toString(s) + "\n" \
-               "    strike:           " \
-               + DecimalFormatter::toString(payoff->strike()) +"\n" \
-               "    dividend yield:   " \
-               + RateFormatter::toString(q) + "\n" \
-               "    risk-free rate:   " \
-               + RateFormatter::toString(r) + "\n" \
-               "    reference date:   " \
-               + DateFormatter::toString(today) + "\n" \
-               "    maturity:         " \
-               + DateFormatter::toString(exercise->lastDate()) + "\n" \
-               "    volatility:       " \
-               + VolatilityFormatter::toString(v) + "\n\n" \
-               "    expected   " + greekName + ": " \
-               + DecimalFormatter::toString(expected) + "\n" \
-               "    calculated " + greekName + ": " \
-               + DecimalFormatter::toString(calculated) + "\n" \
-               "    error:            " \
-               + DecimalFormatter::toString(error) + "\n" \
-               "    tolerance:        " \
-               + DecimalFormatter::toString(tolerance));
+    BOOST_FAIL(exerciseTypeToString(exercise) << " " \
+               << OptionTypeFormatter::toString(payoff->optionType()) \
+               << " option with " \
+               << payoffTypeToString(payoff) << " payoff:\n" \
+               << "    spot value:       " << s << "\n" \
+               << "    strike:           " << payoff->strike() << "\n" \
+               << "    dividend yield:   " \
+               << RateFormatter::toString(q) << "\n" \
+               << "    risk-free rate:   " \
+               << RateFormatter::toString(r) << "\n" \
+               << "    reference date:   " \
+               << DateFormatter::toString(today) << "\n" \
+               << "    maturity:         " \
+               << DateFormatter::toString(exercise->lastDate()) << "\n" \
+               << "    volatility:       " \
+               << VolatilityFormatter::toString(v) << "\n\n" \
+               << "    expected   " << greekName << ": " << expected << "\n" \
+               << "    calculated " << greekName << ": " << calculated << "\n"\
+               << "    error:            " << error << "\n" \
+               << "    tolerance:        " << tolerance);
 
 namespace {
 
@@ -789,20 +783,18 @@ void EuropeanOptionTest::testImpliedVol() {
                       } catch (std::exception& e) {
                           BOOST_FAIL(
                               OptionTypeFormatter::toString(types[i])
-                              + " option :\n"
-                              "    spot value: "
-                              + DecimalFormatter::toString(u) + "\n"
-                              "    strike:           "
-                              + DecimalFormatter::toString(strikes[j]) +"\n"
-                              "    dividend yield:   "
-                              + RateFormatter::toString(q) + "\n"
-                              "    risk-free rate:   "
-                              + RateFormatter::toString(r) + "\n"
-                              "    maturity:         "
-                              + DateFormatter::toString(exDate) + "\n"
-                              "    volatility:       "
-                              + VolatilityFormatter::toString(v) + "\n\n"
-                              + std::string(e.what()));
+                              << " option :\n"
+                              << "    spot value:     " << u << "\n"
+                              << "    strike:         " << strikes[j] << "\n"
+                              << "    dividend yield: "
+                              << RateFormatter::toString(q) << "\n"
+                              << "    risk-free rate: "
+                              << RateFormatter::toString(r) << "\n"
+                              << "    maturity:       "
+                              << DateFormatter::toString(exDate) << "\n"
+                              << "    volatility:     "
+                              << VolatilityFormatter::toString(v) << "\n\n"
+                              << e.what());
                       }
                       if (std::fabs(implVol-v) > tolerance) {
                           // the difference might not matter
@@ -812,27 +804,26 @@ void EuropeanOptionTest::testImpliedVol() {
                           if (error > tolerance) {
                               BOOST_FAIL(
                                   OptionTypeFormatter::toString(types[i])
-                                  + " option :\n"
-                                  "    spot value: "
-                                  + DecimalFormatter::toString(u) + "\n"
-                                  "    strike:           "
-                                  + DecimalFormatter::toString(strikes[j])+"\n"
-                                  "    dividend yield:   "
-                                  + RateFormatter::toString(q) + "\n"
-                                  "    risk-free rate:   "
-                                  + RateFormatter::toString(r) + "\n"
-                                  "    maturity:         "
-                                  + DateFormatter::toString(exDate) + "\n\n"
-                                  "    original volatility: "
-                                  + VolatilityFormatter::toString(v) + "\n"
-                                  "    price:               "
-                                  + DecimalFormatter::toString(value) + "\n"
-                                  "    implied volatility:  "
-                                  + VolatilityFormatter::toString(implVol)+"\n"
-                                  "    corresponding price: "
-                                  + DecimalFormatter::toString(value2) + "\n"
-                                  "    error:               "
-                                  + DecimalFormatter::toExponential(error));
+                                  << " option :\n"
+                                  << "    spot value:          " << u << "\n"
+                                  << "    strike:              "
+                                  << strikes[j] << "\n"
+                                  << "    dividend yield:      "
+                                  << RateFormatter::toString(q) << "\n"
+                                  << "    risk-free rate:      "
+                                  << RateFormatter::toString(r) << "\n"
+                                  << "    maturity:            "
+                                  << DateFormatter::toString(exDate) << "\n\n"
+                                  << "    original volatility: "
+                                  <<  VolatilityFormatter::toString(v) << "\n"
+                                  << "    price:               "
+                                  << value << "\n"
+                                  << "    implied volatility:  "
+                                  << VolatilityFormatter::toString(implVol)
+                                  << "\n"
+                                  << "    corresponding price: "
+                                  << value2 << "\n"
+                                  << "    error:               " << error);
                           }
                       }
                   }
@@ -900,11 +891,10 @@ void EuropeanOptionTest::testImpliedVolContainment() {
     option2->recalculate();
     if (std::fabs(option2->NPV() - refValue) >= 1.0e-8)
         BOOST_FAIL("implied volatility calculation changed the value "
-                   "of another instrument: \n"
-                   "previous value: " +
-                   DecimalFormatter::toString(refValue,8) + "\n"
-                   "current value:  " +
-                   DecimalFormatter::toString(option2->NPV(),8));
+                   << "of another instrument: \n"
+                   << std::setprecision(8)
+                   << "previous value: " << refValue << "\n"
+                   << "current value:  " << option2->NPV());
 
     vol->setValue(vol->value()*1.5);
 
@@ -991,31 +981,30 @@ namespace {
                           Real relErr = relativeError(value,refValue,u);
                           if (relErr > tolerance) {
                               BOOST_FAIL("European "
-                                  + OptionTypeFormatter::toString(types[i]) +
-                                  " option :\n"
-                                  "    spot value: "
-                                  + DecimalFormatter::toString(u) + "\n"
-                                  "    strike:           "
-                                  + DecimalFormatter::toString(strikes[j])+"\n"
-                                  "    dividend yield:   "
-                                  + RateFormatter::toString(q) + "\n"
-                                  "    risk-free rate:   "
-                                  + RateFormatter::toString(r) + "\n"
-                                  "    reference date:   "
-                                  + DateFormatter::toString(today) + "\n"
-                                  "    maturity:         "
-                                  + DateFormatter::toString(exDate) + "\n"
-                                  "    volatility:       "
-                                  + VolatilityFormatter::toString(v) + "\n\n"
-                                  "    analytic value: "
-                                  + DecimalFormatter::toString(refValue) + "\n"
-                                  "    "
-                                  + engineTypeToString(engines[ii]) + ":  "
-                                  + DecimalFormatter::toString(value) + "\n"
-                                  "    relative error: " \
-                                  + DecimalFormatter::toString(relErr) + "\n"
-                                  "         tolerance: " \
-                                  + DecimalFormatter::toString(tolerance));
+                                  << OptionTypeFormatter::toString(types[i])
+                                  << " option :\n"
+                                  << "    spot value: " << u << "\n"
+                                  << "    strike:           "
+                                  << strikes[j] << "\n"
+                                  << "    dividend yield:   "
+                                  << RateFormatter::toString(q) << "\n"
+                                  << "    risk-free rate:   "
+                                  << RateFormatter::toString(r) << "\n"
+                                  << "    reference date:   "
+                                  << DateFormatter::toString(today) << "\n"
+                                  << "    maturity:         "
+                                  << DateFormatter::toString(exDate) << "\n"
+                                  << "    volatility:       "
+                                  << VolatilityFormatter::toString(v) << "\n\n"
+                                  << "    analytic value: "
+                                  << refValue << "\n"
+                                  << "    "
+                                  << engineTypeToString(engines[ii]) << ":  "
+                                  << value << "\n"
+                                  << "    relative error: " \
+                                  << relErr << "\n"
+                                  << "         tolerance: " \
+                                  << tolerance);
                           }
                       }
                     }

@@ -349,11 +349,12 @@ void ReplicationError::compute(Size nTimeSteps, Size nSamples)
     Real theorStD = std::sqrt(M_PI/4/nTimeSteps)*vega_*sigma_;
 
 
-    std::cout << nSamples << "\t| "
-        << nTimeSteps << "\t | "
-        << DecimalFormatter::toString(PLMean,   3) << " \t| "
-        << DecimalFormatter::toString(PLStDev,  2) << " \t  | "
-        << DecimalFormatter::toString(theorStD, 2) << " \t | "
-        << DecimalFormatter::toString(PLSkew,   2) << " \t| "
-        << DecimalFormatter::toString(PLKurt,   2) << std::endl;
+    std::cout << std::fixed
+              << nSamples << "\t| "
+              << nTimeSteps << "\t | "
+              << std::setprecision(3) << PLMean << " \t| "
+              << std::setprecision(2) << PLStDev << " \t  | "
+              << std::setprecision(2) << theorStD << " \t | "
+              << std::setprecision(2) << PLSkew << " \t| "
+              << std::setprecision(2) << PLKurt << std::endl;
 }

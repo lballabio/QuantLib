@@ -47,9 +47,9 @@ namespace QuantLib {
           case SalvagingAlgorithm::None:
             // eigenvalues are sorted in decreasing order
             QL_REQUIRE(jd.eigenvalues()[size-1]>=-1e-16,
-                "negative eigenvalue(s) ("
-                + DecimalFormatter::toExponential(jd.eigenvalues()[size-1]) +
-                ")");
+                       "negative eigenvalue(s) ("
+                       << std::scientific << jd.eigenvalues()[size-1]
+                       << ")");
             result = CholeskyDecomposition(matrix, true);
             break;
           default:

@@ -439,7 +439,7 @@ int main(int, char* [])
         std::cout << std::setw(headers[0].size())
                   << "depo-swap" << separator;
         std::cout << std::setw(headers[1].size())
-                  << DecimalFormatter::toString(NPV,2) << separator;
+                  << std::fixed << std::setprecision(2) << NPV << separator;
         std::cout << std::setw(headers[2].size())
                   << RateFormatter::toString(fairSpread) << separator;
         std::cout << std::setw(headers[3].size())
@@ -463,7 +463,7 @@ int main(int, char* [])
         std::cout << std::setw(headers[0].size())
                   << "depo-fut-swap" << separator;
         std::cout << std::setw(headers[1].size())
-                  << DecimalFormatter::toString(NPV,2) << separator;
+                  << std::fixed << std::setprecision(2) << NPV << separator;
         std::cout << std::setw(headers[2].size())
                   << RateFormatter::toString(fairSpread) << separator;
         std::cout << std::setw(headers[3].size())
@@ -484,7 +484,7 @@ int main(int, char* [])
         std::cout << std::setw(headers[0].size())
                   << "depo-FRA-swap" << separator;
         std::cout << std::setw(headers[1].size())
-                  << DecimalFormatter::toString(NPV,2) << separator;
+                  << std::fixed << std::setprecision(2) << NPV << separator;
         std::cout << std::setw(headers[2].size())
                   << RateFormatter::toString(fairSpread) << separator;
         std::cout << std::setw(headers[3].size())
@@ -518,7 +518,7 @@ int main(int, char* [])
         std::cout << std::setw(headers[0].size())
                   << "depo-swap" << separator;
         std::cout << std::setw(headers[1].size())
-                  << DecimalFormatter::toString(NPV,2) << separator;
+                  << std::fixed << std::setprecision(2) << NPV << separator;
         std::cout << std::setw(headers[2].size())
                   << RateFormatter::toString(fairSpread) << separator;
         std::cout << std::setw(headers[3].size())
@@ -536,7 +536,7 @@ int main(int, char* [])
         std::cout << std::setw(headers[0].size())
                   << "depo-fut-swap" << separator;
         std::cout << std::setw(headers[1].size())
-                  << DecimalFormatter::toString(NPV,2) << separator;
+                  << std::fixed << std::setprecision(2) << NPV << separator;
         std::cout << std::setw(headers[2].size())
                   << RateFormatter::toString(fairSpread) << separator;
         std::cout << std::setw(headers[3].size())
@@ -554,7 +554,7 @@ int main(int, char* [])
         std::cout << std::setw(headers[0].size())
                   << "depo-FRA-swap" << separator;
         std::cout << std::setw(headers[1].size())
-                  << DecimalFormatter::toString(NPV,2) << separator;
+                  << std::fixed << std::setprecision(2) << NPV << separator;
         std::cout << std::setw(headers[2].size())
                   << RateFormatter::toString(fairSpread) << separator;
         std::cout << std::setw(headers[3].size())
@@ -599,7 +599,7 @@ int main(int, char* [])
         std::cout << std::setw(headers[0].size())
                   << "depo-swap" << separator;
         std::cout << std::setw(headers[1].size())
-                  << DecimalFormatter::toString(NPV,2) << separator;
+                  << std::fixed << std::setprecision(2) << NPV << separator;
         std::cout << std::setw(headers[2].size())
                   << RateFormatter::toString(fairSpread) << separator;
         std::cout << std::setw(headers[3].size())
@@ -620,7 +620,7 @@ int main(int, char* [])
         std::cout << std::setw(headers[0].size())
                   << "depo-fut-swap" << separator;
         std::cout << std::setw(headers[1].size())
-                  << DecimalFormatter::toString(NPV,2) << separator;
+                  << std::fixed << std::setprecision(2) << NPV << separator;
         std::cout << std::setw(headers[2].size())
                   << RateFormatter::toString(fairSpread) << separator;
         std::cout << std::setw(headers[3].size())
@@ -641,7 +641,7 @@ int main(int, char* [])
         std::cout << std::setw(headers[0].size())
                   << "depo-FRA-swap" << separator;
         std::cout << std::setw(headers[1].size())
-                  << DecimalFormatter::toString(NPV,2) << separator;
+                  << std::fixed << std::setprecision(2) << NPV << separator;
         std::cout << std::setw(headers[2].size())
                   << RateFormatter::toString(fairSpread) << separator;
         std::cout << std::setw(headers[3].size())
@@ -674,7 +674,7 @@ int main(int, char* [])
         std::cout << std::setw(headers[0].size())
                   << "depo-swap" << separator;
         std::cout << std::setw(headers[1].size())
-                  << DecimalFormatter::toString(NPV,2) << separator;
+                  << std::fixed << std::setprecision(2) << NPV << separator;
         std::cout << std::setw(headers[2].size())
                   << RateFormatter::toString(fairSpread) << separator;
         std::cout << std::setw(headers[3].size())
@@ -692,7 +692,7 @@ int main(int, char* [])
         std::cout << std::setw(headers[0].size())
                   << "depo-fut-swap" << separator;
         std::cout << std::setw(headers[1].size())
-                  << DecimalFormatter::toString(NPV,2) << separator;
+                  << std::fixed << std::setprecision(2) << NPV << separator;
         std::cout << std::setw(headers[2].size())
                   << RateFormatter::toString(fairSpread) << separator;
         std::cout << std::setw(headers[3].size())
@@ -710,7 +710,7 @@ int main(int, char* [])
         std::cout << std::setw(headers[0].size())
                   << "depo-FRA-swap" << separator;
         std::cout << std::setw(headers[1].size())
-                  << DecimalFormatter::toString(NPV,2) << separator;
+                  << std::fixed << std::setprecision(2) << NPV << separator;
         std::cout << std::setw(headers[2].size())
                   << RateFormatter::toString(fairSpread) << separator;
         std::cout << std::setw(headers[3].size())

@@ -1,6 +1,7 @@
 
 /*
  Copyright (C) 2003, 2004 Ferdinando Ametrano
+ Copyright (C) 2005 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -17,6 +18,7 @@
 
 #include "asianoptions.hpp"
 #include "utilities.hpp"
+#include <ql/dataformatters.hpp>
 #include <ql/DayCounters/actual360.hpp>
 #include <ql/Instruments/asianoption.hpp>
 #include <ql/PricingEngines/Asian/analytic_discr_geom_av_price.hpp>
@@ -35,40 +37,32 @@ using namespace boost::unit_test_framework;
                        runningAccumulator, pastFixings, \
                        fixingDates, payoff, exercise, s, q, r, today, v, \
                        expected, calculated, tolerance) \
-    BOOST_FAIL(exerciseTypeToString(exercise) + \
-               " Asian option with " \
-               + averageTypeToString(averageType) + " and " \
-               + payoffTypeToString(payoff) + " payoff:\n" \
-               "    running variable:  " \
-               + DecimalFormatter::toString(runningAccumulator) + "\n" \
-               "    past fixings:     " \
-               + SizeFormatter::toString(pastFixings) + "\n" \
-               "    future fixings:   " \
-               + SizeFormatter::toString(fixingDates.size()) + "\n" \
-               "    underlying value: " \
-               + DecimalFormatter::toString(s) + "\n" \
-               "    strike:           " \
-               + DecimalFormatter::toString(payoff->strike()) +"\n" \
-               "    dividend yield:   " \
-               + DecimalFormatter::toString(q) + "\n" \
-               "    risk-free rate:   " \
-               + DecimalFormatter::toString(r) + "\n" \
-               "    reference date:   " \
-               + DateFormatter::toString(today) + "\n" \
-               "    maturity:         " \
-               + DateFormatter::toString(exercise->lastDate()) + "\n" \
-               "    volatility:       " \
-               + DecimalFormatter::toString(v) + "\n\n" \
-               "    expected   " + greekName + ": " \
-               + DecimalFormatter::toString(expected) + "\n" \
-               "    calculated " + greekName + ": " \
-               + DecimalFormatter::toString(calculated) + "\n" \
-               "    error:            " \
-               + DecimalFormatter::toString(std::fabs(expected-calculated)) \
-               + "\n" \
-               + (tolerance==Null<Real>() ? std::string("") : \
-                  "    tolerance:        " \
-                  + DecimalFormatter::toString(tolerance)));
+    BOOST_FAIL(exerciseTypeToString(exercise) \
+               << " Asian option with " \
+               << averageTypeToString(averageType) << " and " \
+               << payoffTypeToString(payoff) << " payoff:\n" \
+               << "    running variable: " \
+               << io::checknull(runningAccumulator) << "\n" \
+               << "    past fixings:     " \
+               << io::checknull(pastFixings) << "\n" \
+               << "    future fixings:   " << fixingDates.size() << "\n" \
+               << "    underlying value: " << s << "\n" \
+               << "    strike:           " << payoff->strike() << "\n" \
+               << "    dividend yield:   " \
+               << RateFormatter::toString(q) << "\n" \
+               << "    risk-free rate:   " \
+               << RateFormatter::toString(r) << "\n" \
+               << "    reference date:   " \
+               << DateFormatter::toString(today) << "\n" \
+               << "    maturity:         " \
+               << DateFormatter::toString(exercise->lastDate()) << "\n" \
+               << "    volatility:       " \
+               << VolatilityFormatter::toString(v) << "\n\n" \
+               << "    expected   " << greekName << ": " << expected << "\n" \
+               << "    calculated " << greekName << ": " << calculated << "\n"\
+               << "    error:            " << std::fabs(expected-calculated) \
+               << "\n" \
+               << "    tolerance:        " << tolerance);
 
 namespace {
 
@@ -120,6 +114,9 @@ void AsianOptionTest::testAnalyticContinuousGeometricAveragePrice() {
     Real strike = 85.0;
     Date exerciseDate = today + 90;
 
+    Size pastFixings = Null<Size>();
+    Real runningAccumulator = Null<Real>();
+
     boost::shared_ptr<StrikedTypePayoff> payoff(
                                         new PlainVanillaPayoff(type, strike));
 
@@ -132,15 +129,15 @@ void AsianOptionTest::testAnalyticContinuousGeometricAveragePrice() {
     Real expected = 4.6922;
     Real tolerance = 1.0e-4;
     if (std::fabs(calculated-expected) > tolerance) {
-        REPORT_FAILURE("value", averageType, Null<Real>(), Null<Size>(),
+        REPORT_FAILURE("value", averageType, runningAccumulator, pastFixings,
                        std::vector<Date>(), payoff, exercise, spot->value(),
                        qRate->value(), rRate->value(), today,
                        vol->value(), expected, calculated, tolerance);
     }
 
     // trying to approximate the continuous version with the discrete version
-    Real runningAccumulator = 1.0;
-    Size pastFixings = 0;
+    runningAccumulator = 1.0;
+    pastFixings = 0;
     std::vector<Date> fixingDates(exerciseDate-today+1);
     for (Size i=0; i<fixingDates.size(); i++) {
         fixingDates[i] = today + i;
@@ -219,6 +216,8 @@ void AsianOptionTest::testAnalyticContinuousGeometricAveragePriceGreeks() {
             ContinuousAveragingAsianOption option(Average::Geometric,
                                                   process, payoff,
                                                   maturity, engine);
+            Size pastFixings = Null<Size>();
+            Real runningAverage = Null<Real>();
 
             for (Size l=0; l<LENGTH(underlyings); l++) {
               for (Size m=0; m<LENGTH(qRates); m++) {
@@ -301,7 +300,7 @@ void AsianOptionTest::testAnalyticContinuousGeometricAveragePriceGreeks() {
                               Real error = relativeError(expct,calcl,u);
                               if (error>tol) {
                                   REPORT_FAILURE(greek, Average::Geometric,
-                                                 Null<Real>(), Null<Size>(),
+                                                 runningAverage, pastFixings,
                                                  std::vector<Date>(),
                                                  payoff, maturity,
                                                  u, q, r, today, v,
@@ -769,7 +768,7 @@ void AsianOptionTest::testAnalyticDiscreteGeometricAveragePriceGreeks() {
                               Real error = relativeError(expct,calcl,u);
                               if (error>tol) {
                                   REPORT_FAILURE(greek, Average::Geometric,
-                                                 Null<Real>(), Null<Size>(),
+                                                 runningAverage, pastFixings,
                                                  std::vector<Date>(),
                                                  payoff, maturity,
                                                  u, q, r, today, v,

@@ -68,21 +68,14 @@ void RiskStatisticsTest::testResults() {
             Real tolerance;
 
             if (igs.samples() != N)
-                BOOST_FAIL(
-                    "IncrementalGaussianStatistics: "
-                    "wrong number of samples\n"
-                    "    calculated: "
-                    + SizeFormatter::toString(igs.samples(),16) + "\n"
-                    "    expected:   "
-                    + SizeFormatter::toString(N,16));
+                BOOST_FAIL("IncrementalGaussianStatistics: "
+                           << "wrong number of samples\n"
+                           << "    calculated: " << igs.samples() << "\n"
+                           << "    expected:   " << N);
             if (s.samples() != N)
-                BOOST_FAIL(
-                    "Statistics: "
-                    "wrong number of samples\n"
-                    "    calculated: "
-                    + SizeFormatter::toString(s.samples(),16) + "\n"
-                    "    expected:   "
-                    + SizeFormatter::toString(N,16));
+                BOOST_FAIL("Statistics: wrong number of samples\n"
+                           << "    calculated: " << s.samples() << "\n"
+                           << "    expected:   " << N);
 
 
             // weightSum()
@@ -90,26 +83,19 @@ void RiskStatisticsTest::testResults() {
             expected = std::accumulate(weights.begin(),weights.end(),0.0);
             calculated = igs.weightSum();
             if (std::fabs(calculated-expected) > tolerance)
-                BOOST_FAIL(
-                    "IncrementalGaussianStatistics: "
-                    "wrong sum of weights\n"
-                    "    calculated: "
-                    + DecimalFormatter::toString(calculated,16) + "\n"
-                    "    expected:   "
-                    + DecimalFormatter::toString(expected,16) + "\n"
-                    "    tolerance:   "
-                    + DecimalFormatter::toString(tolerance,16));
+                BOOST_FAIL("IncrementalGaussianStatistics: "
+                           << "wrong sum of weights\n"
+                           << std::setprecision(16)
+                           << "    calculated: " << calculated << "\n"
+                           << "    expected:   " << expected << "\n"
+                           << "    tolerance:  " << tolerance);
             calculated = s.weightSum();
             if (std::fabs(calculated-expected) > tolerance)
-                BOOST_FAIL(
-                    "Statistics: "
-                    "wrong sum of weights\n"
-                    "    calculated: "
-                    + DecimalFormatter::toString(calculated,16) + "\n"
-                    "    expected:   "
-                    + DecimalFormatter::toString(expected,16) + "\n"
-                    "    tolerance:   "
-                    + DecimalFormatter::toString(tolerance,16));
+                BOOST_FAIL("Statistics: wrong sum of weights\n"
+                           << std::setprecision(16)
+                           << "    calculated: " << calculated << "\n"
+                           << "    expected:   " << expected << "\n"
+                           << "    tolerance:  " << tolerance);
 
 
             // min
@@ -117,52 +103,40 @@ void RiskStatisticsTest::testResults() {
             expected = dataMin;
             calculated = igs.min();
             if (std::fabs(calculated-expected)>tolerance)
-                BOOST_FAIL(
-                    "IncrementalGaussianStatistics: "
-                    "wrong minimum value\n"
-                    "    calculated: "
-                    + DecimalFormatter::toString(calculated,16) + "\n"
-                    "    expected:   "
-                    + DecimalFormatter::toString(expected,16) + "\n"
-                    "    tolerance:   "
-                    + DecimalFormatter::toString(tolerance,16));
+                BOOST_FAIL("IncrementalGaussianStatistics: "
+                           << "wrong minimum value\n"
+                           << std::setprecision(16)
+                           << "    calculated: " << calculated << "\n"
+                           << "    expected:   " << expected << "\n"
+                           << "    tolerance:  " << tolerance);
             calculated = s.min();
             if (std::fabs(calculated-expected)>tolerance)
-                BOOST_FAIL(
-                    "Statistics: "
-                    "wrong minimum value\n"
-                    "    calculated: "
-                    + DecimalFormatter::toString(calculated,16) + "\n"
-                    "    expected:   "
-                    + DecimalFormatter::toString(expected,16) + "\n"
-                    "    tolerance:   "
-                    + DecimalFormatter::toString(tolerance,16));
+                BOOST_FAIL("Statistics: "
+                           << "wrong minimum value\n"
+                           << std::setprecision(16)
+                           << "    calculated: " << calculated << "\n"
+                           << "    expected:   " << expected << "\n"
+                           << "    tolerance:  " << tolerance);
 
 
             // max
             expected = dataMax;
             calculated = igs.max();
             if (std::fabs(calculated-expected)>tolerance)
-                BOOST_FAIL(
-                    "IncrementalGaussianStatistics: "
-                    "wrong maximum value\n"
-                    "    calculated: "
-                    + DecimalFormatter::toString(calculated,16) + "\n"
-                    "    expected:   "
-                    + DecimalFormatter::toString(expected,16) + "\n"
-                    "    tolerance:   "
-                    + DecimalFormatter::toString(tolerance,16));
+                BOOST_FAIL("IncrementalGaussianStatistics: "
+                           << "wrong maximum value\n"
+                           << std::setprecision(16)
+                           << "    calculated: " << calculated << "\n"
+                           << "    expected:   " << expected << "\n"
+                           << "    tolerance:  " << tolerance);
             calculated = s.max();
             if (std::fabs(calculated-expected)>tolerance)
-                BOOST_FAIL(
-                    "Statistics: "
-                    "wrong maximum value\n"
-                    "    calculated: "
-                    + DecimalFormatter::toString(calculated,16) + "\n"
-                    "    expected:   "
-                    + DecimalFormatter::toString(expected,16) + "\n"
-                    "    tolerance:   "
-                    + DecimalFormatter::toString(tolerance,16));
+                BOOST_FAIL("Statistics: "
+                           << "wrong maximum value\n"
+                           << std::setprecision(16)
+                           << "    calculated: " << calculated << "\n"
+                           << "    expected:   " << expected << "\n"
+                           << "    tolerance:  " << tolerance);
 
 
             // mean
@@ -171,32 +145,23 @@ void RiskStatisticsTest::testResults() {
                                            std::fabs(expected)*1.0e-13);
             calculated = igs.mean();
             if (std::fabs(calculated-expected) > tolerance)
-                BOOST_FAIL(
-                    "IncrementalGaussianStatistics: "
-                    "wrong mean value"
-                    " for N("
-                    + DecimalFormatter::toString(averages[i],2) + ", "
-                    + DecimalFormatter::toString(sigmas[j],2) + ")\n"
-                    "    calculated: "
-                    + DecimalFormatter::toString(calculated,16) + "\n"
-                    "    expected:   "
-                    + DecimalFormatter::toString(expected,16) + "\n"
-                    "    tolerance:   "
-                    + DecimalFormatter::toString(tolerance,16));
+                BOOST_FAIL("IncrementalGaussianStatistics: "
+                           << "wrong mean value"
+                           << " for N(" << averages[i] << ", "
+                           << sigmas[j] << ")\n"
+                           << std::setprecision(16)
+                           << "    calculated: " << calculated << "\n"
+                           << "    expected:   " << expected << "\n"
+                           << "    tolerance:  " << tolerance);
             calculated = s.mean();
             if (std::fabs(calculated-expected) > tolerance)
-                BOOST_FAIL(
-                    "Statistics: "
-                    "wrong mean value"
-                    " for N("
-                    + DecimalFormatter::toString(averages[i],2) + ", "
-                    + DecimalFormatter::toString(sigmas[j],2) + ")\n"
-                    "    calculated: "
-                    + DecimalFormatter::toString(calculated,16) + "\n"
-                    "    expected:   "
-                    + DecimalFormatter::toString(expected,16) + "\n"
-                    "    tolerance:   "
-                    + DecimalFormatter::toString(tolerance,16));
+                BOOST_FAIL("Statistics: wrong mean value"
+                           << " for N(" << averages[i] << ", "
+                           << sigmas[j] << ")\n"
+                           << std::setprecision(16)
+                           << "    calculated: " << calculated << "\n"
+                           << "    expected:   " << expected << "\n"
+                           << "    tolerance:  " << tolerance);
 
 
             // variance
@@ -204,32 +169,23 @@ void RiskStatisticsTest::testResults() {
             tolerance = expected*1.0e-1;
             calculated = igs.variance();
             if (std::fabs(calculated-expected) > tolerance)
-                BOOST_FAIL(
-                    "IncrementalGaussianStatistics: "
-                    "wrong variance"
-                    " for N("
-                    + DecimalFormatter::toString(averages[i],2) + ", "
-                    + DecimalFormatter::toString(sigmas[j],2) + ")\n"
-                    "    calculated: "
-                    + DecimalFormatter::toString(calculated,16) + "\n"
-                    "    expected:   "
-                    + DecimalFormatter::toString(expected,16) + "\n"
-                    "    tolerance:   "
-                    + DecimalFormatter::toString(tolerance,16));
+                BOOST_FAIL("IncrementalGaussianStatistics: "
+                           << "wrong variance"
+                           << " for N(" << averages[i] << ", "
+                           << sigmas[j] << ")\n"
+                           << std::setprecision(16)
+                           << "    calculated: " << calculated << "\n"
+                           << "    expected:   " << expected << "\n"
+                           << "    tolerance:  " << tolerance);
             calculated = s.variance();
             if (std::fabs(calculated-expected) > tolerance)
-                BOOST_FAIL(
-                    "Statistics: "
-                    "wrong variance"
-                    " for N("
-                    + DecimalFormatter::toString(averages[i],2) + ", "
-                    + DecimalFormatter::toString(sigmas[j],2) + ")\n"
-                    "    calculated: "
-                    + DecimalFormatter::toString(calculated,16) + "\n"
-                    "    expected:   "
-                    + DecimalFormatter::toString(expected,16) + "\n"
-                    "    tolerance:   "
-                    + DecimalFormatter::toString(tolerance,16));
+                BOOST_FAIL("Statistics: wrong variance"
+                           << " for N(" << averages[i] << ", "
+                           << sigmas[j] << ")\n"
+                           << std::setprecision(16)
+                           << "    calculated: " << calculated << "\n"
+                           << "    expected:   " << expected << "\n"
+                           << "    tolerance:  " << tolerance);
 
 
             // standardDeviation
@@ -237,32 +193,23 @@ void RiskStatisticsTest::testResults() {
             tolerance = expected*1.0e-1;
             calculated = igs.standardDeviation();
             if (std::fabs(calculated-expected) > tolerance)
-                BOOST_FAIL(
-                    "IncrementalGaussianStatistics: "
-                    "wrong standard deviation"
-                    " for N("
-                    + DecimalFormatter::toString(averages[i],2) + ", "
-                    + DecimalFormatter::toString(sigmas[j],2) + ")\n"
-                    "    calculated: "
-                    + DecimalFormatter::toString(calculated,16) + "\n"
-                    "    expected:   "
-                    + DecimalFormatter::toString(expected,16) + "\n"
-                    "    tolerance:   "
-                    + DecimalFormatter::toString(tolerance,16));
+                BOOST_FAIL("IncrementalGaussianStatistics: "
+                           << "wrong standard deviation"
+                           << " for N(" << averages[i] << ", "
+                           << sigmas[j] << ")\n"
+                           << std::setprecision(16)
+                           << "    calculated: " << calculated << "\n"
+                           << "    expected:   " << expected << "\n"
+                           << "    tolerance:  " << tolerance);
             calculated = s.standardDeviation();
             if (std::fabs(calculated-expected) > tolerance)
-                BOOST_FAIL(
-                    "Statistics: "
-                    "wrong standard deviation"
-                    " for N("
-                    + DecimalFormatter::toString(averages[i],2) + ", "
-                    + DecimalFormatter::toString(sigmas[j],2) + ")\n"
-                    "    calculated: "
-                    + DecimalFormatter::toString(calculated,16) + "\n"
-                    "    expected:   "
-                    + DecimalFormatter::toString(expected,16) + "\n"
-                    "    tolerance:   "
-                    + DecimalFormatter::toString(tolerance,16));
+                BOOST_FAIL("Statistics: wrong standard deviation"
+                           << " for N(" << averages[i] << ", "
+                           << sigmas[j] << ")\n"
+                           << std::setprecision(16)
+                           << "    calculated: " << calculated << "\n"
+                           << "    expected:   " << expected << "\n"
+                           << "    tolerance:  " << tolerance);
 
 
             // missing errorEstimate() test
@@ -272,32 +219,23 @@ void RiskStatisticsTest::testResults() {
             tolerance = 1.0e-4;
             calculated = igs.skewness();
             if (std::fabs(calculated-expected) > tolerance)
-                BOOST_FAIL(
-                    "IncrementalGaussianStatistics: "
-                    "wrong skewness"
-                    " for N("
-                    + DecimalFormatter::toString(averages[i],2) + ", "
-                    + DecimalFormatter::toString(sigmas[j],2) + ")\n"
-                    "    calculated: "
-                    + DecimalFormatter::toString(calculated,16) + "\n"
-                    "    expected:   "
-                    + DecimalFormatter::toString(expected,16) + "\n"
-                    "    tolerance:   "
-                    + DecimalFormatter::toString(tolerance,16));
+                BOOST_FAIL("IncrementalGaussianStatistics: "
+                           << "wrong skewness"
+                           << " for N(" << averages[i] << ", "
+                           << sigmas[j] << ")\n"
+                           << std::setprecision(16)
+                           << "    calculated: " << calculated << "\n"
+                           << "    expected:   " << expected << "\n"
+                           << "    tolerance:  " << tolerance);
             calculated = s.skewness();
             if (std::fabs(calculated-expected) > tolerance)
-                BOOST_FAIL(
-                    "Statistics: "
-                    "wrong skewness"
-                    " for N("
-                    + DecimalFormatter::toString(averages[i],2) + ", "
-                    + DecimalFormatter::toString(sigmas[j],2) + ")\n"
-                    "    calculated: "
-                    + DecimalFormatter::toString(calculated,16) + "\n"
-                    "    expected:   "
-                    + DecimalFormatter::toString(expected,16) + "\n"
-                    "    tolerance:   "
-                    + DecimalFormatter::toString(tolerance,16));
+                BOOST_FAIL("Statistics: wrong skewness"
+                           << " for N(" << averages[i] << ", "
+                           << sigmas[j] << ")\n"
+                           << std::setprecision(16)
+                           << "    calculated: " << calculated << "\n"
+                           << "    expected:   " << expected << "\n"
+                           << "    tolerance:  " << tolerance);
 
 
             // kurtosis
@@ -305,32 +243,23 @@ void RiskStatisticsTest::testResults() {
             tolerance = 1.0e-1;
             calculated = igs.kurtosis();
             if (std::fabs(calculated-expected) > tolerance)
-                BOOST_FAIL(
-                    "IncrementalGaussianStatistics: "
-                    "wrong kurtosis"
-                    " for N("
-                    + DecimalFormatter::toString(averages[i],2) + ", "
-                    + DecimalFormatter::toString(sigmas[j],2) + ")\n"
-                    "    calculated: "
-                    + DecimalFormatter::toString(calculated,16) + "\n"
-                    "    expected:   "
-                    + DecimalFormatter::toString(expected,16) + "\n"
-                    "    tolerance:   "
-                    + DecimalFormatter::toString(tolerance,16));
+                BOOST_FAIL("IncrementalGaussianStatistics: "
+                           << "wrong kurtosis"
+                           << " for N(" << averages[i] << ", "
+                           << sigmas[j] << ")\n"
+                           << std::setprecision(16)
+                           << "    calculated: " << calculated << "\n"
+                           << "    expected:   " << expected << "\n"
+                           << "    tolerance:  " << tolerance);
             calculated = s.kurtosis();
             if (std::fabs(calculated-expected) > tolerance)
-                BOOST_FAIL(
-                    "Statistics: "
-                    "wrong kurtosis"
-                    " for N("
-                    + DecimalFormatter::toString(averages[i],2) + ", "
-                    + DecimalFormatter::toString(sigmas[j],2) + ")\n"
-                    "    calculated: "
-                    + DecimalFormatter::toString(calculated,16) + "\n"
-                    "    expected:   "
-                    + DecimalFormatter::toString(expected,16) + "\n"
-                    "    tolerance:   "
-                    + DecimalFormatter::toString(tolerance,16));
+                BOOST_FAIL("Statistics: wrong kurtosis"
+                           << " for N(" << averages[i] << ", "
+                           << sigmas[j] << ")\n"
+                           << std::setprecision(16)
+                           << "    calculated: " << calculated << "\n"
+                           << "    expected:   " << expected << "\n"
+                           << "    tolerance:  " << tolerance);
 
 
             // percentile
@@ -339,48 +268,32 @@ void RiskStatisticsTest::testResults() {
                                            std::fabs(expected*1.0e-3));
             calculated = igs.gaussianPercentile(0.5);
             if (std::fabs(calculated-expected) > tolerance)
-                BOOST_FAIL(
-                    "IncrementalGaussianStatistics: "
-                    "wrong Gaussian percentile"
-                    " for N("
-                    + DecimalFormatter::toString(averages[i],2) + ", "
-                    + DecimalFormatter::toString(sigmas[j],2) + ")\n"
-                    "    calculated: "
-                    + DecimalFormatter::toString(calculated,16) + "\n"
-                    "    expected:   "
-                    + DecimalFormatter::toString(expected,16) + "\n"
-                    "    tolerance:   "
-                    + DecimalFormatter::toString(tolerance,16));
+                BOOST_FAIL("IncrementalGaussianStatistics: "
+                           << "wrong Gaussian percentile"
+                           << " for N(" << averages[i] << ", "
+                           << sigmas[j] << ")\n"
+                           << std::setprecision(16)
+                           << "    calculated: " << calculated << "\n"
+                           << "    expected:   " << expected << "\n"
+                           << "    tolerance:  " << tolerance);
             calculated = s.gaussianPercentile(0.5);
             if (std::fabs(calculated-expected) > tolerance)
-                BOOST_FAIL(
-                    "Statistics: "
-                    "wrong Gaussian percentile"
-                    " for N("
-                    + DecimalFormatter::toString(averages[i],2) + ", "
-                    + DecimalFormatter::toString(sigmas[j],2) + ")\n"
-                    "    calculated: "
-                    + DecimalFormatter::toString(calculated,16) + "\n"
-                    "    expected:   "
-                    + DecimalFormatter::toString(expected,16) + "\n"
-                    "    tolerance:   "
-                    + DecimalFormatter::toString(tolerance,16));
+                BOOST_FAIL("Statistics: wrong Gaussian percentile"
+                           << " for N(" << averages[i] << ", "
+                           << sigmas[j] << ")\n"
+                           << std::setprecision(16)
+                           << "    calculated: " << calculated << "\n"
+                           << "    expected:   " << expected << "\n"
+                           << "    tolerance:  " << tolerance);
             calculated = s.percentile(0.5);
             if (std::fabs(calculated-expected) > tolerance)
-                BOOST_FAIL(
-                    "Statistics: "
-                    "wrong percentile"
-                    " for N("
-                    + DecimalFormatter::toString(averages[i],2) + ", "
-                    + DecimalFormatter::toString(sigmas[j],2) + ")\n"
-                    "    calculated: "
-                    + DecimalFormatter::toString(calculated,16) + "\n"
-                    "    expected:   "
-                    + DecimalFormatter::toString(expected,16) + "\n"
-                    "    tolerance:   "
-                    + DecimalFormatter::toString(tolerance,16));
-
-
+                BOOST_FAIL("Statistics: wrong percentile"
+                           << " for N(" << averages[i] << ", "
+                           << sigmas[j] << ")\n"
+                           << std::setprecision(16)
+                           << "    calculated: " << calculated << "\n"
+                           << "    expected:   " << expected << "\n"
+                           << "    tolerance:  " << tolerance);
 
 
 
@@ -394,46 +307,32 @@ void RiskStatisticsTest::testResults() {
                                            std::fabs(expected*1.0e-3));
             calculated = igs.gaussianPotentialUpside(twoSigma);
             if (std::fabs(calculated-expected) > tolerance)
-                BOOST_FAIL(
-                    "IncrementalGaussianStatistics: "
-                    "wrong Gaussian potential upside"
-                    " for N("
-                    + DecimalFormatter::toString(averages[i],2) + ", "
-                    + DecimalFormatter::toString(sigmas[j],2) + ")\n"
-                    "    calculated: "
-                    + DecimalFormatter::toString(calculated,16) + "\n"
-                    "    expected:   "
-                    + DecimalFormatter::toString(expected,16) + "\n"
-                    "    tolerance:   "
-                    + DecimalFormatter::toString(tolerance,16));
+                BOOST_FAIL("IncrementalGaussianStatistics: "
+                           << "wrong Gaussian potential upside"
+                           << " for N(" << averages[i] << ", "
+                           << sigmas[j] << ")\n"
+                           << std::setprecision(16)
+                           << "    calculated: " << calculated << "\n"
+                           << "    expected:   " << expected << "\n"
+                           << "    tolerance:  " << tolerance);
             calculated = s.gaussianPotentialUpside(twoSigma);
             if (std::fabs(calculated-expected) > tolerance)
-                BOOST_FAIL(
-                    "Statistics: "
-                    "wrong Gaussian potential upside"
-                    " for N("
-                    + DecimalFormatter::toString(averages[i],2) + ", "
-                    + DecimalFormatter::toString(sigmas[j],2) + ")\n"
-                    "    calculated: "
-                    + DecimalFormatter::toString(calculated,16) + "\n"
-                    "    expected:   "
-                    + DecimalFormatter::toString(expected,16) + "\n"
-                    "    tolerance:   "
-                    + DecimalFormatter::toString(tolerance,16));
+                BOOST_FAIL("Statistics: wrong Gaussian potential upside"
+                           << " for N(" << averages[i] << ", "
+                           << sigmas[j] << ")\n"
+                           << std::setprecision(16)
+                           << "    calculated: " << calculated << "\n"
+                           << "    expected:   " << expected << "\n"
+                           << "    tolerance:  " << tolerance);
             calculated = s.potentialUpside(twoSigma);
             if (std::fabs(calculated-expected) > tolerance)
-                BOOST_FAIL(
-                    "Statistics: "
-                    "wrong potential upside"
-                    " for N("
-                    + DecimalFormatter::toString(averages[i],2) + ", "
-                    + DecimalFormatter::toString(sigmas[j],2) + ")\n"
-                    "    calculated: "
-                    + DecimalFormatter::toString(calculated,16) + "\n"
-                    "    expected:   "
-                    + DecimalFormatter::toString(expected,16) + "\n"
-                    "    tolerance:   "
-                    + DecimalFormatter::toString(tolerance,16));
+                BOOST_FAIL("Statistics: wrong potential upside"
+                           << " for N(" << averages[i] << ", "
+                           << sigmas[j] << ")\n"
+                           << std::setprecision(16)
+                           << "    calculated: " << calculated << "\n"
+                           << "    expected:   " << expected << "\n"
+                           << "    tolerance:  " << tolerance);
 
 
             // just to check that GaussianStatistics<StatsHolder> does work
@@ -446,60 +345,38 @@ void RiskStatisticsTest::testResults() {
 
 
 
-
-
             // value-at-risk
             expected = -std::min<Real>(lower_tail,0.0);
             tolerance = (expected == 0.0 ? 1.0e-3 :
                                            std::fabs(expected*1.0e-3));
             calculated = igs.gaussianValueAtRisk(twoSigma);
             if (std::fabs(calculated-expected) > tolerance)
-                BOOST_FAIL(
-                    "IncrementalGaussianStatistics: "
-                    "wrong Gaussian value-at-risk"
-                    " for N("
-                    + DecimalFormatter::toString(averages[i],2) + ", "
-                    + DecimalFormatter::toString(sigmas[j],2) + ")\n"
-                    "    calculated: "
-                    + DecimalFormatter::toString(calculated,16) + "\n"
-                    "    expected:   "
-                    + DecimalFormatter::toString(expected,16) + "\n"
-                    "    tolerance:   "
-                    + DecimalFormatter::toString(tolerance,16));
+                BOOST_FAIL("IncrementalGaussianStatistics: "
+                           << "wrong Gaussian value-at-risk"
+                           << " for N(" << averages[i] << ", "
+                           << sigmas[j] << ")\n"
+                           << std::setprecision(16)
+                           << "    calculated: " << calculated << "\n"
+                           << "    expected:   " << expected << "\n"
+                           << "    tolerance:  " << tolerance);
             calculated = s.gaussianValueAtRisk(twoSigma);
             if (std::fabs(calculated-expected) > tolerance)
-                BOOST_FAIL(
-                    "Statistics: "
-                    "wrong Gaussian value-at-risk"
-                    " for N("
-                    + DecimalFormatter::toString(averages[i],2) + ", "
-                    + DecimalFormatter::toString(sigmas[j],2) + ")"
-                    " for N("
-                    + DecimalFormatter::toString(averages[i],2) + ", "
-                    + DecimalFormatter::toString(sigmas[j],2) + ")\n"
-                    "    calculated: "
-                    + DecimalFormatter::toString(calculated,16) + "\n"
-                    "    expected:   "
-                    + DecimalFormatter::toString(expected,16) + "\n"
-                    "    tolerance:   "
-                    + DecimalFormatter::toString(tolerance,16));
+                BOOST_FAIL("Statistics: wrong Gaussian value-at-risk"
+                           << " for N(" << averages[i] << ", "
+                           << sigmas[j] << ")\n"
+                           << std::setprecision(16)
+                           << "    calculated: " << calculated << "\n"
+                           << "    expected:   " << expected << "\n"
+                           << "    tolerance:  " << tolerance);
             calculated = s.valueAtRisk(twoSigma);
             if (std::fabs(calculated-expected) > tolerance)
-                BOOST_FAIL(
-                    "Statistics: "
-                    "wrong value-at-risk"
-                    " for N("
-                    + DecimalFormatter::toString(averages[i],2) + ", "
-                    + DecimalFormatter::toString(sigmas[j],2) + ")"
-                    " for N("
-                    + DecimalFormatter::toString(averages[i],2) + ", "
-                    + DecimalFormatter::toString(sigmas[j],2) + ")\n"
-                    "    calculated: "
-                    + DecimalFormatter::toString(calculated,16) + "\n"
-                    "    expected:   "
-                    + DecimalFormatter::toString(expected,16) + "\n"
-                    "    tolerance:   "
-                    + DecimalFormatter::toString(tolerance,16));
+                BOOST_FAIL("Statistics: wrong value-at-risk"
+                           << " for N(" << averages[i] << ", "
+                           << sigmas[j] << ")\n"
+                           << std::setprecision(16)
+                           << "    calculated: " << calculated << "\n"
+                           << "    expected:   " << expected << "\n"
+                           << "    tolerance:  " << tolerance);
 
             if (averages[i] > 0.0 && sigmas[j] < averages[i]) {
                 // no data will miss the targets:
@@ -519,46 +396,32 @@ void RiskStatisticsTest::testResults() {
                                          : std::fabs(expected)*1.0e-2);
             calculated = igs.gaussianExpectedShortfall(twoSigma);
             if (std::fabs(calculated-expected) > tolerance)
-                BOOST_FAIL(
-                    "IncrementalGaussianStatistics: "
-                    "wrong Gaussian expected shortfall"
-                    " for N("
-                    + DecimalFormatter::toString(averages[i],2) + ", "
-                    + DecimalFormatter::toString(sigmas[j],2) + ")\n"
-                    "    calculated: "
-                    + DecimalFormatter::toString(calculated,16) + "\n"
-                    "    expected:   "
-                    + DecimalFormatter::toString(expected,16) + "\n"
-                    "    tolerance:   "
-                    + DecimalFormatter::toString(tolerance,16));
+                BOOST_FAIL("IncrementalGaussianStatistics: "
+                           << "wrong Gaussian expected shortfall"
+                           << " for N(" << averages[i] << ", "
+                           << sigmas[j] << ")\n"
+                           << std::setprecision(16)
+                           << "    calculated: " << calculated << "\n"
+                           << "    expected:   " << expected << "\n"
+                           << "    tolerance:  " << tolerance);
             calculated = s.gaussianExpectedShortfall(twoSigma);
             if (std::fabs(calculated-expected) > tolerance)
-                BOOST_FAIL(
-                    "Statistics: "
-                    "wrong Gaussian expected shortfall"
-                    " for N("
-                    + DecimalFormatter::toString(averages[i],2) + ", "
-                    + DecimalFormatter::toString(sigmas[j],2) + ")\n"
-                    "    calculated: "
-                    + DecimalFormatter::toString(calculated,16) + "\n"
-                    "    expected:   "
-                    + DecimalFormatter::toString(expected,16) + "\n"
-                    "    tolerance:   "
-                    + DecimalFormatter::toString(tolerance,16));
+                BOOST_FAIL("Statistics: wrong Gaussian expected shortfall"
+                           << " for N(" << averages[i] << ", "
+                           << sigmas[j] << ")\n"
+                           << std::setprecision(16)
+                           << "    calculated: " << calculated << "\n"
+                           << "    expected:   " << expected << "\n"
+                           << "    tolerance:  " << tolerance);
             calculated = s.expectedShortfall(twoSigma);
             if (std::fabs(calculated-expected) > tolerance)
-                BOOST_FAIL(
-                    "Statistics: "
-                    "wrong expected shortfall"
-                    " for N("
-                    + DecimalFormatter::toString(averages[i],2) + ", "
-                    + DecimalFormatter::toString(sigmas[j],2) + ")\n"
-                    "    calculated: "
-                    + DecimalFormatter::toString(calculated,16) + "\n"
-                    "    expected:   "
-                    + DecimalFormatter::toString(expected,16) + "\n"
-                    "    tolerance:   "
-                    + DecimalFormatter::toString(tolerance,16));
+                BOOST_FAIL("Statistics: wrong expected shortfall"
+                           << " for N(" << averages[i] << ", "
+                           << sigmas[j] << ")\n"
+                           << std::setprecision(16)
+                           << "    calculated: " << calculated << "\n"
+                           << "    expected:   " << expected << "\n"
+                           << "    tolerance:  " << tolerance);
 
 
             // shortfall
@@ -567,46 +430,32 @@ void RiskStatisticsTest::testResults() {
                                            std::fabs(expected*1.0e-3));
             calculated = igs.gaussianShortfall(averages[i]);
             if (std::fabs(calculated-expected) > tolerance)
-                BOOST_FAIL(
-                    "IncrementalGaussianStatistics: "
-                    "wrong Gaussian shortfall"
-                    " for N("
-                    + DecimalFormatter::toString(averages[i],2) + ", "
-                    + DecimalFormatter::toString(sigmas[j],2) + ")\n"
-                    "    calculated: "
-                    + DecimalFormatter::toString(calculated,16) + "\n"
-                    "    expected:   "
-                    + DecimalFormatter::toString(expected,16) + "\n"
-                    "    tolerance:   "
-                    + DecimalFormatter::toString(tolerance,16));
+                BOOST_FAIL("IncrementalGaussianStatistics: "
+                           << "wrong Gaussian shortfall"
+                           << " for N(" << averages[i] << ", "
+                           << sigmas[j] << ")\n"
+                           << std::setprecision(16)
+                           << "    calculated: " << calculated << "\n"
+                           << "    expected:   " << expected << "\n"
+                           << "    tolerance:  " << tolerance);
             calculated = s.gaussianShortfall(averages[i]);
             if (std::fabs(calculated-expected) > tolerance)
-                BOOST_FAIL(
-                    "Statistics: "
-                    "wrong Gaussian shortfall"
-                    " for N("
-                    + DecimalFormatter::toString(averages[i],2) + ", "
-                    + DecimalFormatter::toString(sigmas[j],2) + ")\n"
-                    "    calculated: "
-                    + DecimalFormatter::toString(calculated,16) + "\n"
-                    "    expected:   "
-                    + DecimalFormatter::toString(expected,16) + "\n"
-                    "    tolerance:   "
-                    + DecimalFormatter::toString(tolerance,16));
+                BOOST_FAIL("Statistics: wrong Gaussian shortfall"
+                           << " for N(" << averages[i] << ", "
+                           << sigmas[j] << ")\n"
+                           << std::setprecision(16)
+                           << "    calculated: " << calculated << "\n"
+                           << "    expected:   " << expected << "\n"
+                           << "    tolerance:  " << tolerance);
             calculated = s.shortfall(averages[i]);
             if (std::fabs(calculated-expected) > tolerance)
-                BOOST_FAIL(
-                    "Statistics: "
-                    "wrong shortfall"
-                    " for N("
-                    + DecimalFormatter::toString(averages[i],2) + ", "
-                    + DecimalFormatter::toString(sigmas[j],2) + ")\n"
-                    "    calculated: "
-                    + DecimalFormatter::toString(calculated,16) + "\n"
-                    "    expected:   "
-                    + DecimalFormatter::toString(expected,16) + "\n"
-                    "    tolerance:   "
-                    + DecimalFormatter::toString(tolerance,16));
+                BOOST_FAIL("Statistics: wrong shortfall"
+                           << " for N(" << averages[i] << ", "
+                           << sigmas[j] << ")\n"
+                           << std::setprecision(16)
+                           << "    calculated: " << calculated << "\n"
+                           << "    expected:   " << expected << "\n"
+                           << "    tolerance:  " << tolerance);
 
 
             // average shortfall
@@ -614,46 +463,32 @@ void RiskStatisticsTest::testResults() {
             tolerance = expected*1.0e-3;
             calculated = igs.gaussianAverageShortfall(averages[i]);
             if (std::fabs(calculated-expected) > tolerance)
-                BOOST_FAIL(
-                    "IncrementalGaussianStatistics: "
-                    "wrong Gaussian average shortfall"
-                    " for N("
-                    + DecimalFormatter::toString(averages[i],2) + ", "
-                    + DecimalFormatter::toString(sigmas[j],2) + ")\n"
-                    "    calculated: "
-                    + DecimalFormatter::toString(calculated,16) + "\n"
-                    "    expected:   "
-                    + DecimalFormatter::toString(expected,16) + "\n"
-                    "    tolerance:   "
-                    + DecimalFormatter::toString(tolerance,16));
+                BOOST_FAIL("IncrementalGaussianStatistics: "
+                           << "wrong Gaussian average shortfall"
+                           << " for N(" << averages[i] << ", "
+                           << sigmas[j] << ")\n"
+                           << std::setprecision(16)
+                           << "    calculated: " << calculated << "\n"
+                           << "    expected:   " << expected << "\n"
+                           << "    tolerance:  " << tolerance);
             calculated = s.gaussianAverageShortfall(averages[i]);
             if (std::fabs(calculated-expected) > tolerance)
-                BOOST_FAIL(
-                    "Statistics: "
-                    "wrong Gaussian average shortfall"
-                    " for N("
-                    + DecimalFormatter::toString(averages[i],2) + ", "
-                    + DecimalFormatter::toString(sigmas[j],2) + ")\n"
-                    "    calculated: "
-                    + DecimalFormatter::toString(calculated,16) + "\n"
-                    "    expected:   "
-                    + DecimalFormatter::toString(expected,16) + "\n"
-                    "    tolerance:   "
-                    + DecimalFormatter::toString(tolerance,16));
+                BOOST_FAIL("Statistics: wrong Gaussian average shortfall"
+                           << " for N(" << averages[i] << ", "
+                           << sigmas[j] << ")\n"
+                           << std::setprecision(16)
+                           << "    calculated: " << calculated << "\n"
+                           << "    expected:   " << expected << "\n"
+                           << "    tolerance:  " << tolerance);
             calculated = s.averageShortfall(averages[i]);
             if (std::fabs(calculated-expected) > tolerance)
-                BOOST_FAIL(
-                    "Statistics: "
-                    "wrong average shortfall"
-                    " for N("
-                    + DecimalFormatter::toString(averages[i],2) + ", "
-                    + DecimalFormatter::toString(sigmas[j],2) + ")\n"
-                    "    calculated: "
-                    + DecimalFormatter::toString(calculated,16) + "\n"
-                    "    expected:   "
-                    + DecimalFormatter::toString(expected,16) + "\n"
-                    "    tolerance:   "
-                    + DecimalFormatter::toString(tolerance,16));
+                BOOST_FAIL("Statistics: wrong average shortfall"
+                           << " for N(" << averages[i] << ", "
+                           << sigmas[j] << ")\n"
+                           << std::setprecision(16)
+                           << "    calculated: " << calculated << "\n"
+                           << "    expected:   " << expected << "\n"
+                           << "    tolerance:  " << tolerance);
 
 
             // regret
@@ -661,49 +496,34 @@ void RiskStatisticsTest::testResults() {
             tolerance = expected*1.0e-1;
             calculated = igs.gaussianRegret(averages[i]);
             if (std::fabs(calculated-expected) > tolerance)
-                BOOST_FAIL(
-                    "IncrementalGaussianStatistics: "
-                    "wrong Gaussian regret("
-                    + DecimalFormatter::toString(averages[i],2) +
-                    ") for N("
-                    + DecimalFormatter::toString(averages[i],2) + ", "
-                    + DecimalFormatter::toString(sigmas[j],2) + ")\n"
-                    "    calculated: "
-                    + DecimalFormatter::toString(calculated,16) + "\n"
-                    "    expected:   "
-                    + DecimalFormatter::toString(expected,16) + "\n"
-                    "    tolerance:   "
-                    + DecimalFormatter::toString(tolerance,16));
+                BOOST_FAIL("IncrementalGaussianStatistics: "
+                           << "wrong Gaussian regret(" << averages[i] << ") "
+                           << "for N(" << averages[i] << ", "
+                           << sigmas[j] << ")\n"
+                           << std::setprecision(16)
+                           << "    calculated: " << calculated << "\n"
+                           << "    expected:   " << expected << "\n"
+                           << "    tolerance:  " << tolerance);
             calculated = s.gaussianRegret(averages[i]);
             if (std::fabs(calculated-expected) > tolerance)
-                BOOST_FAIL(
-                    "Statistics: "
-                    "wrong Gaussian regret("
-                    + DecimalFormatter::toString(averages[i],2) +
-                    ") for N("
-                    + DecimalFormatter::toString(averages[i],2) + ", "
-                    + DecimalFormatter::toString(sigmas[j],2) + ")\n"
-                    "    calculated: "
-                    + DecimalFormatter::toString(calculated,16) + "\n"
-                    "    expected:   "
-                    + DecimalFormatter::toString(expected,16) + "\n"
-                    "    tolerance:   "
-                    + DecimalFormatter::toString(tolerance,16));
+                BOOST_FAIL("Statistics: "
+                           << "wrong Gaussian regret(" << averages[i] << ") "
+                           << "for N(" << averages[i] << ", "
+                           << sigmas[j] << ")\n"
+                           << std::setprecision(16)
+                           << "    calculated: " << calculated << "\n"
+                           << "    expected:   " << expected << "\n"
+                           << "    tolerance:  " << tolerance);
             calculated = s.regret(averages[i]);
             if (std::fabs(calculated-expected) > tolerance)
-                BOOST_FAIL(
-                    "Statistics: "
-                    "wrong regret("
-                    + DecimalFormatter::toString(averages[i],2) +
-                    ") for N("
-                    + DecimalFormatter::toString(averages[i],2) + ", "
-                    + DecimalFormatter::toString(sigmas[j],2) + ")\n"
-                    "    calculated: "
-                    + DecimalFormatter::toString(calculated,16) + "\n"
-                    "    expected:   "
-                    + DecimalFormatter::toString(expected,16) + "\n"
-                    "    tolerance:   "
-                    + DecimalFormatter::toString(tolerance,16));
+                BOOST_FAIL("Statistics: "
+                           << "wrong regret(" << averages[i] << ") "
+                           << "for N(" << averages[i] << ", "
+                           << sigmas[j] << ")\n"
+                           << std::setprecision(16)
+                           << "    calculated: " << calculated << "\n"
+                           << "    expected:   " << expected << "\n"
+                           << "    tolerance:  " << tolerance);
 
 
             // downsideVariance
@@ -712,32 +532,24 @@ void RiskStatisticsTest::testResults() {
                                            std::fabs(expected*1.0e-3));
             calculated = igs.downsideVariance();
             if (std::fabs(calculated-expected) > tolerance)
-                BOOST_FAIL(
-                    "IncrementalGaussianStatistics: "
-                    "wrong downside variance"
-                    " for N("
-                    + DecimalFormatter::toString(averages[i],2) + ", "
-                    + DecimalFormatter::toString(sigmas[j],2) + ")\n"
-                    "    calculated: "
-                    + DecimalFormatter::toString(calculated,16) + "\n"
-                    "    expected:   "
-                    + DecimalFormatter::toString(expected,16) + "\n"
-                    "    tolerance:   "
-                    + DecimalFormatter::toString(tolerance,16));
+                BOOST_FAIL("IncrementalGaussianStatistics: "
+                           << "wrong downside variance"
+                           << "for N(" << averages[i] << ", "
+                           << sigmas[j] << ")\n"
+                           << std::setprecision(16)
+                           << "    calculated: " << calculated << "\n"
+                           << "    expected:   " << expected << "\n"
+                           << "    tolerance:  " << tolerance);
             calculated = igs.gaussianDownsideVariance();
             if (std::fabs(calculated-expected) > tolerance)
-                BOOST_FAIL(
-                    "IncrementalGaussianStatistics: "
-                    "wrong Gaussian downside variance"
-                    " for N("
-                    + DecimalFormatter::toString(averages[i],2) + ", "
-                    + DecimalFormatter::toString(sigmas[j],2) + ")\n"
-                    "    calculated: "
-                    + DecimalFormatter::toString(calculated,16) + "\n"
-                    "    expected:   "
-                    + DecimalFormatter::toString(expected,16) + "\n"
-                    "    tolerance:   "
-                    + DecimalFormatter::toString(tolerance,16));
+                BOOST_FAIL("IncrementalGaussianStatistics: "
+                           << "wrong Gaussian downside variance"
+                           << "for N(" << averages[i] << ", "
+                           << sigmas[j] << ")\n"
+                           << std::setprecision(16)
+                           << "    calculated: " << calculated << "\n"
+                           << "    expected:   " << expected << "\n"
+                           << "    tolerance:  " << tolerance);
 
             // downsideVariance
             if (averages[i]==0.0) {
@@ -745,60 +557,42 @@ void RiskStatisticsTest::testResults() {
                 tolerance = expected*1.0e-3;
                 calculated = igs.downsideVariance();
                 if (std::fabs(calculated-expected) > tolerance)
-                    BOOST_FAIL(
-                        "IncrementalGaussianStatistics: "
-                        "wrong downside variance"
-                        " for N("
-                        + DecimalFormatter::toString(averages[i],2) + ", "
-                        + DecimalFormatter::toString(sigmas[j],2) + ")\n"
-                        "    calculated: "
-                        + DecimalFormatter::toString(calculated,16) + "\n"
-                        "    expected:   "
-                        + DecimalFormatter::toString(expected,16) + "\n"
-                        "    tolerance:   "
-                        + DecimalFormatter::toString(tolerance,16));
+                    BOOST_FAIL("IncrementalGaussianStatistics: "
+                               << "wrong downside variance"
+                               << "for N(" << averages[i] << ", "
+                               << sigmas[j] << ")\n"
+                               << std::setprecision(16)
+                               << "    calculated: " << calculated << "\n"
+                               << "    expected:   " << expected << "\n"
+                               << "    tolerance:  " << tolerance);
                 calculated = igs.gaussianDownsideVariance();
                 if (std::fabs(calculated-expected) > tolerance)
-                    BOOST_FAIL(
-                        "IncrementalGaussianStatistics: "
-                        "wrong Gaussian downside variance"
-                        " for N("
-                        + DecimalFormatter::toString(averages[i],2) + ", "
-                        + DecimalFormatter::toString(sigmas[j],2) + ")\n"
-                        "    calculated: "
-                        + DecimalFormatter::toString(calculated,16) + "\n"
-                        "    expected:   "
-                        + DecimalFormatter::toString(expected,16) + "\n"
-                        "    tolerance:   "
-                        + DecimalFormatter::toString(tolerance,16));
+                    BOOST_FAIL("IncrementalGaussianStatistics: "
+                               << "wrong Gaussian downside variance"
+                               << "for N(" << averages[i] << ", "
+                               << sigmas[j] << ")\n"
+                               << std::setprecision(16)
+                               << "    calculated: " << calculated << "\n"
+                               << "    expected:   " << expected << "\n"
+                               << "    tolerance:  " << tolerance);
                 calculated = s.downsideVariance();
                 if (std::fabs(calculated-expected) > tolerance)
-                    BOOST_FAIL(
-                        "Statistics: "
-                        "wrong downside variance"
-                        " for N("
-                        + DecimalFormatter::toString(averages[i],2) + ", "
-                        + DecimalFormatter::toString(sigmas[j],2) + ")\n"
-                        "    calculated: "
-                        + DecimalFormatter::toString(calculated,16) + "\n"
-                        "    expected:   "
-                        + DecimalFormatter::toString(expected,16) + "\n"
-                        "    tolerance:   "
-                        + DecimalFormatter::toString(tolerance,16));
+                    BOOST_FAIL("Statistics: wrong downside variance"
+                               << "for N(" << averages[i] << ", "
+                               << sigmas[j] << ")\n"
+                               << std::setprecision(16)
+                               << "    calculated: " << calculated << "\n"
+                               << "    expected:   " << expected << "\n"
+                               << "    tolerance:  " << tolerance);
                 calculated = s.gaussianDownsideVariance();
                 if (std::fabs(calculated-expected) > tolerance)
-                    BOOST_FAIL(
-                        "Statistics: "
-                        "wrong gaussian downside variance"
-                        " for N("
-                        + DecimalFormatter::toString(averages[i],2) + ", "
-                        + DecimalFormatter::toString(sigmas[j],2) + ")\n"
-                        "    calculated: "
-                        + DecimalFormatter::toString(calculated,16) + "\n"
-                        "    expected:   "
-                        + DecimalFormatter::toString(expected,16) + "\n"
-                        "    tolerance:   "
-                        + DecimalFormatter::toString(tolerance,16));
+                    BOOST_FAIL("Statistics: wrong Gaussian downside variance"
+                               << "for N(" << averages[i] << ", "
+                               << sigmas[j] << ")\n"
+                               << std::setprecision(16)
+                               << "    calculated: " << calculated << "\n"
+                               << "    expected:   " << expected << "\n"
+                               << "    tolerance:  " << tolerance);
             }
 
             igs.reset();

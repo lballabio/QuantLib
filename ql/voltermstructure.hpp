@@ -344,21 +344,14 @@ namespace QuantLib {
     inline void BlackVolTermStructure::checkRange(Time t, Real k,
                                                   bool extrapolate) const {
         QL_REQUIRE(t >= 0.0,
-                   "negative time (" +
-                   DecimalFormatter::toString(t) +
-                   ") given");
+                   "negative time (" << t << ") given");
         QL_REQUIRE(extrapolate || allowsExtrapolation() || t <= maxTime(),
-                   "time (" +
-                   DecimalFormatter::toString(t) +
-                   ") is past max curve time (" +
-                   DecimalFormatter::toString(maxTime()) + ")");
+                   "time (" << t << ") is past max curve time ("
+                   << maxTime() << ")");
         QL_REQUIRE(extrapolate || allowsExtrapolation() ||
                    (k >= minStrike() && k <= maxStrike()),
-                   "strike (" +
-                   DecimalFormatter::toString(k) +
-                   ") is outside the curve domain [" +
-                   DecimalFormatter::toString(minStrike()) + "," +
-                   DecimalFormatter::toString(maxStrike()) + "]");
+                   "strike (" << k << ") is outside the curve domain ["
+                   << minStrike() << "," << maxStrike()<< "]");
     }
 
 
@@ -465,21 +458,14 @@ namespace QuantLib {
     inline void LocalVolTermStructure::checkRange(Time t, Real k,
                                                   bool extrapolate) const {
         QL_REQUIRE(t >= 0.0,
-                   "negative time (" +
-                   DecimalFormatter::toString(t) +
-                   ") given");
+                   "negative time (" << t << ") given");
         QL_REQUIRE(extrapolate || allowsExtrapolation() || t <= maxTime(),
-                   "time (" +
-                   DecimalFormatter::toString(t) +
-                   ") is past max curve time (" +
-                   DecimalFormatter::toString(maxTime()) + ")");
+                   "time (" << t << ") is past max curve time ("
+                   << maxTime() << ")");
         QL_REQUIRE(extrapolate || allowsExtrapolation() ||
                    (k >= minStrike() && k <= maxStrike()),
-                   "strike (" +
-                   DecimalFormatter::toString(k) +
-                   ") is outside the curve domain [" +
-                   DecimalFormatter::toString(minStrike()) + "," +
-                   DecimalFormatter::toString(maxStrike()) + "]");
+                   "strike (" << k << ") is outside the curve domain ["
+                   << minStrike() << "," << maxStrike() << "]");
     }
 
 }

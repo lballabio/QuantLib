@@ -22,11 +22,11 @@
 
 #include <ql/basicdataformatters.hpp>
 #include <ql/null.hpp>
-#include <sstream>
 #include <iomanip>
 
 namespace QuantLib {
 
+    #ifndef QL_DISABLE_DEPRECATED
     std::string IntegerFormatter::toString(BigInteger l, Integer digits) {
         static BigInteger null = Null<BigInteger>();
         static std::ostringstream out;
@@ -38,6 +38,7 @@ namespace QuantLib {
             return out.str();
         }
     }
+    #endif
 
     std::string IntegerFormatter::toPowerOfTwo(BigInteger l, Integer digits) {
         if (l < 0L)
@@ -46,6 +47,7 @@ namespace QuantLib {
             return SizeFormatter::toPowerOfTwo(Size(l),digits);
     }
 
+    #ifndef QL_DISABLE_DEPRECATED
     std::string SizeFormatter::toString(Size l, Integer digits) {
         static Size null = Null<Size>();
         static std::ostringstream out;
@@ -57,20 +59,22 @@ namespace QuantLib {
             return out.str();
         }
     }
+    #endif
 
     std::string SizeFormatter::toOrdinal(Size l) {
-        std::string suffix;
+        std::ostringstream s;
+        s << l;
         if (l == Size(11) || l == Size(12) || l == Size(13)) {
-            suffix = "th";
+            s << "th";
         } else {
             switch (l % 10) {
-              case 1:  suffix = "st";  break;
-              case 2:  suffix = "nd";  break;
-              case 3:  suffix = "rd";  break;
-              default: suffix = "th";
+              case 1:  s << "st";  break;
+              case 2:  s << "nd";  break;
+              case 3:  s << "rd";  break;
+              default: s << "th";
             }
         }
-        return toString(l)+suffix;
+        return s.str();
     }
 
     std::string SizeFormatter::toPowerOfTwo(Size l, Integer digits) {
@@ -82,9 +86,12 @@ namespace QuantLib {
             power++;
             l >>= 1;
         }
-        return toString(l,digits) + "*2^" + toString(power,2);
+        std::ostringstream s;
+        s << std::setw(digits) << l << "*2^" << std::setw(2) << power;
+        return s.str();
     }
 
+    #ifndef QL_DISABLE_DEPRECATED
     std::string DecimalFormatter::toString(Decimal x, Integer precision,
                                            Integer digits) {
         static Decimal null = Null<Decimal>();
@@ -93,7 +100,7 @@ namespace QuantLib {
             return std::string("null");
         } else {
             out.str("");
-	    out.setf(std::ios::fixed, std::ios::floatfield);
+            out << std::fixed;
             out << std::setw(digits) << std::setprecision(precision) << x;
             return out.str();
         }
@@ -107,15 +114,21 @@ namespace QuantLib {
             return std::string("null");
         } else {
             out.str("");
-	    out.setf(std::ios::scientific, std::ios::floatfield);
+            out << std::scientific;
             out << std::setw(digits) << std::setprecision(precision) << x;
             return out.str();
         }
     }
+    #endif
 
     std::string DecimalFormatter::toPercentage(Decimal x, Integer precision,
                                                Integer digits) {
-        return toString(x*100,precision,digits)+"%";
+        static std::ostringstream out;
+        out.str("");
+        out << std::fixed;
+        out << std::setw(digits) << std::setprecision(precision);
+        out << x*100 << "%";
+        return out.str();
     }
 
     std::string StringFormatter::toLowercase(const std::string& s) {

@@ -116,28 +116,20 @@ namespace QuantLib {
                                                  bool extrapolate) const {
         Time t = timeFromReference(d);
         QL_REQUIRE(t >= 0.0,
-                   "negative time (" +
-                   DecimalFormatter::toString(t) +
-                   ") given");
+                   "negative time (" << t << ") given");
         QL_REQUIRE(extrapolate || allowsExtrapolation() || t <= maxTime(),
-                   "time (" +
-                   DecimalFormatter::toString(t) +
-                   ") is past max curve time (" +
-                   DecimalFormatter::toString(maxTime()) + ")");
+                   "time (" << t << ") is past max curve time ("
+                   << maxTime() << ")");
         return compoundForwardImpl(timeFromReference(d),f);
     }
 
     inline Rate CompoundForward::compoundForward(Time t, Integer f,
                                                  bool extrapolate) const {
         QL_REQUIRE(t >= 0.0,
-                   "negative time (" +
-                   DecimalFormatter::toString(t) +
-                   ") given");
+                   "negative time (" << t << ") given");
         QL_REQUIRE(extrapolate || allowsExtrapolation() || t <= maxTime(),
-                   "time (" +
-                   DecimalFormatter::toString(t) +
-                   ") is past max curve time (" +
-                   DecimalFormatter::toString(maxTime()) + ")");
+                   "time (" << t << ") is past max curve time ("
+                   << maxTime() << ")");
         return compoundForwardImpl(t,f);
     }
 

@@ -48,9 +48,8 @@ namespace QuantLib {
 
     Disposable<Array> TridiagonalOperator::applyTo(const Array& v) const {
         QL_REQUIRE(v.size()==size(),
-                   "vector of the wrong size (" +
-                   SizeFormatter::toString(v.size()) + "instead of " +
-                   SizeFormatter::toString(size()) + ")"  );
+                   "vector of the wrong size (" << v.size()
+                   << "instead of " << size() << ")"  );
         Array result(size());
 
         // matricial product
@@ -102,12 +101,9 @@ namespace QuantLib {
         Real temp;
         for (sorIteration=0; err>tol ; sorIteration++) {
             QL_REQUIRE(sorIteration<100000,
-                       "tolerance ["
-                       + DecimalFormatter::toString(tol) +
-                       "] not reached in "
-                       + SizeFormatter::toString(sorIteration) +
-                       " iterations. The error still is "
-                       + DecimalFormatter::toString(err));
+                       "tolerance (" << tol << ") not reached in "
+                       << sorIteration << " iterations. "
+                       << "The error still is " << err);
             err=0.0;
             for (i=1; i<size()-2 ; i++) {
                 temp = omega * (rhs[i]     -

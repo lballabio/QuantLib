@@ -35,18 +35,13 @@ namespace QuantLib {
       dividends_(dividends) {
 
         QL_REQUIRE(dateNumber_ == dividends.size(),
-                   "the number of dividends(" +
-                   SizeFormatter::toString(dividends.size()) +
-                   ") is different from the number of dates(" +
-                   SizeFormatter::toString(dateNumber_) +
-                   ")");
+                   "the number of dividends(" << dividends.size()
+                   << ") is different from the number of dates("
+                   << dateNumber_ << ")");
 
         QL_REQUIRE(underlying > addElements(dividends),
-                   "dividends(" +
-                   DecimalFormatter::toString(underlying - underlying_) +
-                   ") cannot exceed underlying(" +
-                   DecimalFormatter::toString(underlying) +
-                   ")");
+                   "dividends(" << underlying - underlying_
+                   << ") cannot exceed underlying(" << underlying << ")");
     }
 
     void FdDividendOption::initializeControlVariate() const{

@@ -17,6 +17,7 @@
 
 #include <ql/grid.hpp>
 #include <ql/Math/comparison.hpp>
+#include <iomanip>
 
 namespace QuantLib {
 
@@ -47,25 +48,23 @@ namespace QuantLib {
             if (i == 0) {
                 QL_FAIL("using inadequate time grid: all nodes "
                         "are later than the required time t = "
-                        + DecimalFormatter::toString(t,12) +
-                        " (earliest node is t1 = "
-                        + DecimalFormatter::toString((*this)[0],12) +
-                        ")");
+                        << std::setprecision(12) << t
+                        << " (earliest node is t1 = "
+                        << std::setprecision(12) << (*this)[0] << ")");
             } else if (i == size()) {
                 QL_FAIL("using inadequate time grid: all nodes "
                         "are earlier than the required time t = "
-                        + DecimalFormatter::toString(t,12) +
-                        " (latest node is t1 = "
-                        + DecimalFormatter::toString((*this)[size()-1],12) +
-                        ")");
+                        << std::setprecision(12) << t
+                        << " (latest node is t1 = "
+                        << std::setprecision(12) << (*this)[size()-1] << ")");
             } else {
                 QL_FAIL("using inadequate time grid: the nodes closest "
                         "to the required time t = "
-                        + DecimalFormatter::toString(t,12) +
-                        " are t1 = "
-                        + DecimalFormatter::toString((*this)[i-1],12) +
-                        " and t2 = "
-                        + DecimalFormatter::toString((*this)[i],12));
+                        << std::setprecision(12) << t
+                        << " are t1 = "
+                        << std::setprecision(12) << (*this)[i-1]
+                        << " and t2 = "
+                        << std::setprecision(12) << (*this)[i]);
             }
         }
         return result - begin();

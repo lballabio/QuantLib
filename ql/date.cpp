@@ -18,6 +18,7 @@
 
 #include <ql/date.hpp>
 #include <ql/basicdataformatters.hpp>
+#include <sstream>
 
 namespace QuantLib {
 
@@ -72,26 +73,23 @@ namespace QuantLib {
     : serialNumber_(serialNumber) {
         QL_REQUIRE(serialNumber >= minimumSerialNumber() &&
                    serialNumber <= maximumSerialNumber(),
-                   "Date " + IntegerFormatter::toString(serialNumber) +
-                   " outside allowed range [" +
-                   DateFormatter::toString(minDate()) + "-" +
-                   DateFormatter::toString(maxDate()) + "]");
+                   "Date " << serialNumber << " outside allowed range ["
+                   << DateFormatter::toString(minDate()) << "-"
+                   << DateFormatter::toString(maxDate()) << "]");
     }
 
     Date::Date(Day d, Month m, Year y) {
         QL_REQUIRE(y > 1900 && y < 2100,
-                   "year " + IntegerFormatter::toString(y) +
-                   " out of bound. It must be in [1901,2099]");
+                   "year " << y << " out of bound. It must be in [1901,2099]");
         QL_REQUIRE(Integer(m) > 0 && Integer(m) < 13,
-                   "month " + IntegerFormatter::toString(Integer(m)) +
-                   " outside January-December range [1,12]");
+                   "month " << Integer(m)
+                   << " outside January-December range [1,12]");
 
         bool leap = isLeap(y);
         Day len = monthLength(m,leap), offset = monthOffset(m,leap);
         QL_REQUIRE(d <= len && d > 0,
-                   "day outside month (" +
-                   IntegerFormatter::toString(Integer(m)) + ") day-range "
-                   "[1," + IntegerFormatter::toString(len) + "]");
+                   "day outside month (" << Integer(m) << ") day-range "
+                   << "[1," << len << "]");
 
         serialNumber_ = d + offset + yearOffset(y);
     }
@@ -119,10 +117,9 @@ namespace QuantLib {
         BigInteger serial = serialNumber_ + days;
         QL_REQUIRE(serial >= minimumSerialNumber() &&
                    serial <= maximumSerialNumber(),
-                   "Date " + IntegerFormatter::toString(serial) +
-                   "outside allowed range [" +
-                   DateFormatter::toString(minDate()) + "-" +
-                   DateFormatter::toString(maxDate()) + "]");
+                   "Date " << serial << "outside allowed range ["
+                   << DateFormatter::toString(minDate()) << "-"
+                   << DateFormatter::toString(maxDate()) << "]");
         serialNumber_ = serial;
         return *this;
     }
@@ -136,10 +133,9 @@ namespace QuantLib {
         BigInteger serial = serialNumber_ - days;
         QL_REQUIRE(serial >= minimumSerialNumber() &&
                    serial <= maximumSerialNumber(),
-                   "Date " + IntegerFormatter::toString(serial) +
-                   "outside allowed range [" +
-                   DateFormatter::toString(minDate()) + "-" +
-                   DateFormatter::toString(maxDate()) + "]");
+                   "Date " << serial << "outside allowed range ["
+                   << DateFormatter::toString(minDate()) << "-"
+                   << DateFormatter::toString(maxDate()) << "]");
         serialNumber_ = serial;
         return *this;
     }
@@ -153,10 +149,9 @@ namespace QuantLib {
         BigInteger serial = serialNumber_ + 1;
         QL_REQUIRE(serial >= minimumSerialNumber() &&
                    serial <= maximumSerialNumber(),
-                   "Date " + IntegerFormatter::toString(serial) +
-                   "outside allowed range [" +
-                   DateFormatter::toString(minDate()) + "-" +
-                   DateFormatter::toString(maxDate()) + "]");
+                   "Date " << serial << "outside allowed range ["
+                   << DateFormatter::toString(minDate()) << "-"
+                   << DateFormatter::toString(maxDate()) << "]");
         serialNumber_ = serial;
         return *this;
     }
@@ -166,10 +161,9 @@ namespace QuantLib {
         BigInteger serial = serialNumber_ + 1;
         QL_REQUIRE(serial >= minimumSerialNumber() &&
                    serial <= maximumSerialNumber(),
-                   "Date " + IntegerFormatter::toString(serial) +
-                   "outside allowed range [" +
-                   DateFormatter::toString(minDate()) + "-" +
-                   DateFormatter::toString(maxDate()) + "]");
+                   "Date " << serial << "outside allowed range ["
+                   << DateFormatter::toString(minDate()) << "-"
+                   << DateFormatter::toString(maxDate()) << "]");
         serialNumber_ = serial;
         return temp;
     }
@@ -178,10 +172,9 @@ namespace QuantLib {
         BigInteger serial = serialNumber_ - 1;
         QL_REQUIRE(serial >= minimumSerialNumber() &&
                    serial <= maximumSerialNumber(),
-                   "Date " + IntegerFormatter::toString(serial) +
-                   "outside allowed range [" +
-                   DateFormatter::toString(minDate()) + "-" +
-                   DateFormatter::toString(maxDate()) + "]");
+                   "Date " << serial << "outside allowed range ["
+                   << DateFormatter::toString(minDate()) << "-"
+                   << DateFormatter::toString(maxDate()) << "]");
         serialNumber_ = serial;
         return *this;
     }
@@ -191,10 +184,9 @@ namespace QuantLib {
         BigInteger serial = serialNumber_ - 1;
         QL_REQUIRE(serial >= minimumSerialNumber() &&
                    serial <= maximumSerialNumber(),
-                   "Date " + IntegerFormatter::toString(serial) +
-                   "outside allowed range [" +
-                   DateFormatter::toString(minDate()) + "-" +
-                   DateFormatter::toString(maxDate()) + "]");
+                   "Date " << serial << "outside allowed range ["
+                   << DateFormatter::toString(minDate()) << "-"
+                   << DateFormatter::toString(maxDate()) << "]");
         serialNumber_ = serial;
         return temp;
     }
@@ -240,8 +232,8 @@ namespace QuantLib {
             }
 
             QL_ENSURE(y >= 1900 && y <= 2099,
-                      "year " + IntegerFormatter::toString(y) +
-                      " out of bound. It must be in [1901,2099]");
+                      "year " << y << " out of bounds. "
+                      << "It must be in [1901,2099]");
 
             Integer length = monthLength(Month(m), isLeap(y));
             if (d > length)
@@ -255,8 +247,8 @@ namespace QuantLib {
               Year y = date.year()+n;
 
               QL_ENSURE(y >= 1900 && y <= 2099,
-                        "year " + IntegerFormatter::toString(y) +
-                        " out of bound. It must be in [1901,2099]");
+                        "year " << y << " out of bounds. "
+                        << "It must be in [1901,2099]");
 
               if (d == 29 && m == February && !isLeap(y))
                   d = 28;
@@ -452,54 +444,50 @@ namespace QuantLib {
             "January", "February", "March", "April", "May", "June",
             "July", "August", "September", "October", "November", "December"
         };
-        std::string output;
+        std::ostringstream output;
         if (d == Date()) {
-            output = "Null date";
+            output << "Null date";
         } else {
             Integer dd = d.dayOfMonth(), mm = Integer(d.month()),
                     yyyy = d.year();
             switch (f) {
               case Long:
-                output = monthName[mm-1] + " ";
-                output += IntegerFormatter::toString(dd);
+                output << monthName[mm-1] << " ";
+                output << dd;
                 switch (dd) {
                   case 1:
                   case 21:
                   case 31:
-                    output += "st, ";
+                    output << "st, ";
                     break;
                   case 2:
                   case 22:
-                    output += "nd, ";
+                    output << "nd, ";
                     break;
                   case 3:
                   case 23:
-                    output += "rd, ";
+                    output << "rd, ";
                     break;
                   default:
-                    output += "th, ";
+                    output << "th, ";
                 }
-                output += IntegerFormatter::toString(yyyy);
+                output << yyyy;
                 break;
               case Short:
-                output = (mm < 10 ? "0" : "") +
-                         IntegerFormatter::toString(mm);
-                output += (dd < 10 ? "/0" : "/") +
-                         IntegerFormatter::toString(dd);
-                output += "/" + IntegerFormatter::toString(yyyy);
+                output << (mm < 10 ? "0" : "") << mm;
+                output << (dd < 10 ? "/0" : "/") << dd;
+                output << "/" << yyyy;
                 break;
               case ISO:
-                output = IntegerFormatter::toString(yyyy);
-                output += (mm < 10 ? "-0" : "-") +
-                         IntegerFormatter::toString(mm);
-                output += (dd < 10 ? "-0" : "-") +
-                         IntegerFormatter::toString(dd);
+                output << yyyy;
+                output << (mm < 10 ? "-0" : "-") << mm;
+                output << (dd < 10 ? "-0" : "-") << dd;
                 break;
               default:
                 QL_FAIL("unknown date format");
             }
         }
-        return output;
+        return output.str();
     }
 
 
@@ -552,8 +540,7 @@ namespace QuantLib {
           case Monthly:
             return std::string("monthly");
           default:
-            QL_FAIL("unknown frequency ("+
-                    IntegerFormatter::toString(freq)+")");
+            QL_FAIL("unknown frequency (" << Integer(freq) << ")");
         }
     }
 

@@ -137,18 +137,11 @@ namespace QuantLib {
         void checkRange(Real x, Real y, bool allowExtrapolation) const {
             QL_REQUIRE(allowExtrapolation || impl_->isInRange(x,y),
                        "interpolation range is ["
-                       + DecimalFormatter::toString(impl_->xMin()) +
-                       ", "
-                       + DecimalFormatter::toString(impl_->xMax()) +
-                       "] x ["
-                       + DecimalFormatter::toString(impl_->yMin()) +
-                       ", "
-                       + DecimalFormatter::toString(impl_->yMax()) +
-                       "]: extrapolation at ("
-                       + DecimalFormatter::toString(x) +
-                       ", "
-                       + DecimalFormatter::toString(y) +
-                       " not allowed");
+                       << impl_->xMin() << ", " << impl_->xMax()
+                       << "] x ["
+                       << impl_->yMin() << ", " << impl_->yMax()
+                       << "]: extrapolation at ("
+                       << x << ", " << y << ") not allowed");
         }
     };
 

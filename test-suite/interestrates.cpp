@@ -102,13 +102,11 @@ void InterestRateTest::testConversions() {
         disc = ir.discountFactor(d1, d2);
         error = std::fabs(disc-1.0/compoundf);
         if (error>1e-15)
-            BOOST_FAIL("\n  " + InterestRateFormatter::toString(ir) +
-                       "\n  1.0/compound_factor: "
-                       + DecimalFormatter::toString(1.0/compoundf,16) +
-                       "\n      discount_factor: "
-                       + DecimalFormatter::toString(disc, 16) +
-                       "\n        error: "
-                       + DecimalFormatter::toExponential(error));
+            BOOST_FAIL("\n  " << InterestRateFormatter::toString(ir)
+                       << std::setprecision(16)
+                       << "\n  1.0/compound_factor: " << 1.0/compoundf
+                       << "\n  discount_factor:     " << disc
+                       << "\n  error:               " << error);
 
         // check that the equivalent InterestRate with *same* daycounter,
         // compounding, and frequency is the *same* InterestRate
@@ -118,11 +116,10 @@ void InterestRateTest::testConversions() {
         error = std::fabs(ir.rate()-ir2.rate());
         if (error>1e-15)
             BOOST_FAIL("\n    original interest rate: "
-                       + InterestRateFormatter::toString(ir, 12) +
-                       "\n  equivalent interest rate: "
-                       + InterestRateFormatter::toString(ir2,12) +
-                       "\n                rate error: "
-                       + DecimalFormatter::toExponential(error, 1));
+                       << InterestRateFormatter::toString(ir, 12)
+                       << "\n  equivalent interest rate: "
+                       << InterestRateFormatter::toString(ir2,12)
+                       << "\n                rate error: " << error);
         if (ir.dayCounter()!=ir2.dayCounter())
             BOOST_FAIL("\n day counter error"
                        "\n original interest rate:   "
@@ -150,11 +147,11 @@ void InterestRateTest::testConversions() {
         error = std::fabs(ir.rate()-r2);
         if (error>1e-15)
             BOOST_FAIL("\n    original rate: "
-                       + InterestRateFormatter::toString(ir, 12) +
-                       "\n  equivalent rate: "
-                       + RateFormatter::toString(r2,12) +
-                       "\n            error: "
-                       + DecimalFormatter::toExponential(error, 1));
+                       << InterestRateFormatter::toString(ir, 12)
+                       << "\n  equivalent rate: "
+                       << RateFormatter::toString(r2,12)
+                       << std::scientific
+                       << "\n            error: " << error);
 
         // check that the equivalent InterestRate with *different*
         // compounding, and frequency is the *expected* InterestRate
@@ -166,18 +163,18 @@ void InterestRateTest::testConversions() {
         error = std::fabs(r3-expectedIR.rate());
         if (error>1.0e-17)
             BOOST_FAIL("\n               original interest rate: "
-                       + InterestRateFormatter::toString(ir,
-                                                         cases[i].precision+1) +
-                       "\n  calculated equivalent interest rate: "
-                       + InterestRateFormatter::toString(ir3,
-                                                         cases[i].precision+1) +
-                       "\n            truncated equivalent rate: "
-                       + RateFormatter::toString(r3, cases[i].precision+1) +
-                       "\n    expected equivalent interest rate: "
-                       + InterestRateFormatter::toString(expectedIR,
-                                                         cases[i].precision+1) +
-                       "\n                           rate error: "
-                       + DecimalFormatter::toExponential(error, 1));
+                       << InterestRateFormatter::toString(ir,
+                                                          cases[i].precision+1)
+                       << "\n  calculated equivalent interest rate: "
+                       << InterestRateFormatter::toString(ir3,
+                                                          cases[i].precision+1)
+                       << "\n            truncated equivalent rate: "
+                       << RateFormatter::toString(r3, cases[i].precision+1)
+                       << "\n    expected equivalent interest rate: "
+                       << InterestRateFormatter::toString(expectedIR,
+                                                          cases[i].precision+1)
+                       << "\n                           rate error: "
+                       << std::scientific << error);
         if (ir3.dayCounter()!=expectedIR.dayCounter())
             BOOST_FAIL("\n day counter error"
                        "\n    original interest rate: "
@@ -205,13 +202,12 @@ void InterestRateTest::testConversions() {
         error = std::fabs(r3-cases[i].expected);
         if (error>1.0e-17)
             BOOST_FAIL("\n  calculated equivalent rate: "
-                       + RateFormatter::toString(r3,cases[i].precision-2) +
-                       "\n    expected equivalent rate: "
-                       + RateFormatter::toString(cases[i].expected,
-                                                 cases[i].precision-2) +
-                       "\n                       error: "
-                       + DecimalFormatter::toExponential(error, 1));
-
+                       << RateFormatter::toString(r3,cases[i].precision-2)
+                       << "\n    expected equivalent rate: "
+                       << RateFormatter::toString(cases[i].expected,
+                                                  cases[i].precision-2)
+                       << "\n                       error: "
+                       << std::scientific << error);
     }
 }
 

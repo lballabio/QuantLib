@@ -1,6 +1,7 @@
 
 /*
  Copyright (C) 2003, 2004 Ferdinando Ametrano
+ Copyright (C) 2005 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -31,32 +32,26 @@ using namespace boost::unit_test_framework;
 
 #define REPORT_FAILURE(greekName, payoff, exercise, s, q, r, today, \
                        v, expected, calculated, error, tolerance) \
-    BOOST_FAIL(exerciseTypeToString(exercise) + " " \
-               + OptionTypeFormatter::toString(payoff->optionType()) + \
-               " option with " \
-               + payoffTypeToString(payoff) + " payoff:\n" \
-               "    spot value: " \
-               + DecimalFormatter::toString(s) + "\n" \
-               "    strike:           " \
-               + DecimalFormatter::toString(payoff->strike()) +"\n" \
-               "    dividend yield:   " \
-               + DecimalFormatter::toString(q) + "\n" \
-               "    risk-free rate:   " \
-               + DecimalFormatter::toString(r) + "\n" \
-               "    reference date:   " \
-               + DateFormatter::toString(today) + "\n" \
-               "    maturity:         " \
-               + DateFormatter::toString(exercise->lastDate()) + "\n" \
-               "    volatility:       " \
-               + DecimalFormatter::toString(v) + "\n\n" \
-               "    expected   " + greekName + ": " \
-               + DecimalFormatter::toString(expected) + "\n" \
-               "    calculated " + greekName + ": " \
-               + DecimalFormatter::toString(calculated) + "\n" \
-               "    error:            " \
-               + DecimalFormatter::toString(error) + "\n" \
-               "    tolerance:        " \
-               + DecimalFormatter::toString(tolerance));
+    BOOST_FAIL(exerciseTypeToString(exercise) << " " \
+               << OptionTypeFormatter::toString(payoff->optionType()) \
+               << " option with " \
+               << payoffTypeToString(payoff) << " payoff:\n" \
+               <<"    spot value:        " << s << "\n" \
+               << "    strike:           " << payoff->strike() << "\n" \
+               << "    dividend yield:   " \
+               << RateFormatter::toString(q) << "\n" \
+               << "    risk-free rate:   " \
+               << RateFormatter::toString(r) << "\n" \
+               << "    reference date:   " \
+               << DateFormatter::toString(today) << "\n" \
+               << "    maturity:         " \
+               << DateFormatter::toString(exercise->lastDate()) << "\n" \
+               << "    volatility:       " \
+               << VolatilityFormatter::toString(v) << "\n\n" \
+               << "    expected   " << greekName << ": " << expected << "\n" \
+               << "    calculated " << greekName << ": " << calculated << "\n"\
+               << "    error:            " << error << "\n" \
+               << "    tolerance:        " << tolerance);
 
 namespace {
 

@@ -102,22 +102,15 @@ namespace QuantLib {
     inline Real McPricer<MC,S>::valueWithSamples(Size samples) const {
 
         QL_REQUIRE(samples>=minSample_,
-                   "number of requested samples ("
-                   + SizeFormatter::toString(samples) +
-                   ") lower than minSample_ ("
-                   + SizeFormatter::toString(minSample_) +
-                   ")");
+                   "number of requested samples (" << samples
+                   << ") lower than minSample_ (" << minSample_ << ")");
 
         Size sampleNumber =
             mcModel_->sampleAccumulator().samples();
 
         QL_REQUIRE(samples>=sampleNumber,
-                   "number of already simulated samples ("
-                   + SizeFormatter::toString(sampleNumber) +
-                   ") greater than"
-                   "requested samples ("
-                   + SizeFormatter::toString(samples) +
-                   ")");
+                   "number of already simulated samples (" << sampleNumber
+                   << ") greater than requested samples (" << samples << ")");
 
         mcModel_->addSamples(samples-sampleNumber);
 

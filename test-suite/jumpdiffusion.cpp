@@ -31,74 +31,55 @@ using namespace boost::unit_test_framework;
 #define REPORT_FAILURE_1(greekName, payoff, exercise, s, q, r, today, v, \
                          intensity, meanLogJump, jumpVol, expected, \
                          calculated, error, tolerance) \
-    BOOST_FAIL(exerciseTypeToString(exercise) + " " \
-               + OptionTypeFormatter::toString(payoff->optionType()) + \
-               " option with " \
-               + payoffTypeToString(payoff) + " payoff:\n" \
-               "    underlying value: " \
-               + DecimalFormatter::toString(s) + "\n" \
-               "    strike:           " \
-               + DecimalFormatter::toString(payoff->strike()) +"\n" \
-               "    dividend yield:   " \
-               + RateFormatter::toString(q) + "\n" \
-               "    risk-free rate:   " \
-               + RateFormatter::toString(r) + "\n" \
-               "    reference date:   " \
-               + DateFormatter::toString(today) + "\n" \
-               "    maturity:         " \
-               + DateFormatter::toString(exercise->lastDate()) + "\n" \
-               "    volatility:       " \
-               + VolatilityFormatter::toString(v) + "\n\n" \
-               "    intensity:        " \
-               + DecimalFormatter::toString(intensity) + "\n" \
-               "    mean log-jump:    " \
-               + DecimalFormatter::toString(meanLogJump) + "\n" \
-               "    jump volatility:  " \
-               + VolatilityFormatter::toString(jumpVol) + "\n\n" \
-               "    expected   " + greekName + ": " \
-               + DecimalFormatter::toString(expected) + "\n" \
-               "    calculated " + greekName + ": " \
-               + DecimalFormatter::toString(calculated) + "\n" \
-               "    error:            " \
-               + DecimalFormatter::toString(error) + "\n" \
-               + (tolerance==Null<Real>() ? std::string("") : \
-                  "    tolerance:        "  \
-                  + DecimalFormatter::toString(tolerance)));
+    BOOST_FAIL(exerciseTypeToString(exercise) << " " \
+               << OptionTypeFormatter::toString(payoff->optionType()) \
+               << " option with " \
+               << payoffTypeToString(payoff) << " payoff:\n" \
+               << "    underlying value: " << s << "\n" \
+               << "    strike:           " << payoff->strike() <<"\n" \
+               << "    dividend yield:   " \
+               << RateFormatter::toString(q) << "\n" \
+               << "    risk-free rate:   " \
+               << RateFormatter::toString(r) << "\n" \
+               << "    reference date:   " \
+               << DateFormatter::toString(today) << "\n" \
+               << "    maturity:         " \
+               << DateFormatter::toString(exercise->lastDate()) << "\n" \
+               << "    volatility:       " \
+               << VolatilityFormatter::toString(v) << "\n\n" \
+               << "    intensity:        " << intensity << "\n" \
+               << "    mean log-jump:    " << meanLogJump << "\n" \
+               << "    jump volatility:  " << jumpVol << "\n\n" \
+               << "    expected   " << greekName << ": " << expected << "\n" \
+               << "    calculated " << greekName << ": " << calculated << "\n"\
+               << "    error:            " << error << "\n" \
+               << "    tolerance:        "  << tolerance);
 
 #define REPORT_FAILURE_2(greekName, payoff, exercise, s, q, r, today, v, \
                          intensity, gamma, expected, calculated, \
                          error, tolerance) \
-    BOOST_FAIL(exerciseTypeToString(exercise) + " " \
-               + OptionTypeFormatter::toString(payoff->optionType()) + \
-               " option with " \
-               + payoffTypeToString(payoff) + " payoff:\n" \
-               "    underlying value: " \
-               + DecimalFormatter::toString(s) + "\n" \
-               "    strike:           " \
-               + DecimalFormatter::toString(payoff->strike()) +"\n" \
-               "    dividend yield:   " \
-               + RateFormatter::toString(q) + "\n" \
-               "    risk-free rate:   " \
-               + RateFormatter::toString(r) + "\n" \
-               "    reference date:   " \
-               + DateFormatter::toString(today) + "\n" \
-               "    maturity:         " \
-               + DateFormatter::toString(exercise->lastDate()) + "\n" \
-               "    volatility:       " \
-               + VolatilityFormatter::toString(v) + "\n" \
-               "    intensity:        " \
-               + DecimalFormatter::toString(intensity) + "\n" \
-               "    gamma:            " \
-               + DecimalFormatter::toString(gamma) + "\n\n" \
-               "    expected   " + greekName + ": " \
-               + DecimalFormatter::toString(expected) + "\n" \
-               "    calculated " + greekName + ": " \
-               + DecimalFormatter::toString(calculated) + "\n" \
-               "    error:            " \
-               + DecimalFormatter::toString(error) + "\n" \
-               + (tolerance==Null<Real>() ? std::string("") : \
-                  "    tolerance:        " \
-                  + DecimalFormatter::toString(tolerance)));
+    BOOST_FAIL(exerciseTypeToString(exercise) << " " \
+               << OptionTypeFormatter::toString(payoff->optionType()) \
+               << " option with " \
+               << payoffTypeToString(payoff) << " payoff:\n" \
+               << "    underlying value: " << s << "\n" \
+               << "    strike:           " << payoff->strike() <<"\n" \
+               << "    dividend yield:   " \
+               << RateFormatter::toString(q) << "\n" \
+               << "    risk-free rate:   " \
+               << RateFormatter::toString(r) << "\n" \
+               << "    reference date:   " \
+               << DateFormatter::toString(today) << "\n" \
+               << "    maturity:         " \
+               << DateFormatter::toString(exercise->lastDate()) << "\n" \
+               << "    volatility:       " \
+               << VolatilityFormatter::toString(v) << "\n" \
+               << "    intensity:        " << intensity << "\n" \
+               << "    gamma:            " << gamma << "\n\n" \
+               << "    expected   " << greekName << ": " << expected << "\n" \
+               << "    calculated " << greekName << ": " << calculated << "\n"\
+               << "    error:            " << error << "\n" \
+               << "    tolerance:        " << tolerance);
 
 
 namespace {
@@ -361,8 +342,7 @@ void JumpDiffusionTest::testMerton76() {
                                       diffusionVol*diffusionVol);
         Volatility volError = std::fabs(totalVol-values[i].v);
         QL_REQUIRE(volError<1e-13,
-                   DecimalFormatter::toString(volError) +
-                   " mismatch");
+                   volError << " mismatch");
 
         EuropeanOption option(stochProcess, payoff, exercise, engine);
 

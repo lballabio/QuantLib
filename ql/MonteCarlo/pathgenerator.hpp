@@ -79,11 +79,8 @@ namespace QuantLib {
       next_(Path(timeGrid_),1.0),
       bb_(diffProcess_, timeGrid_, generator_) {
         QL_REQUIRE(dimension_==timeSteps,
-                   "sequence generator dimensionality ("
-                   + IntegerFormatter::toString(dimension_) +
-                   ") != timeSteps ("
-                   + IntegerFormatter::toString(timeSteps) +
-                   ")");
+                   "sequence generator dimensionality (" << dimension_
+                   << ") != timeSteps (" << timeSteps << ")");
     }
 
     template <class GSG>
@@ -98,11 +95,8 @@ namespace QuantLib {
       next_(Path(timeGrid_),1.0),
       bb_(diffProcess_, timeGrid_, generator_) {
         QL_REQUIRE(dimension_==timeGrid_.size()-1,
-                   "sequence generator dimensionality ("
-                   + SizeFormatter::toString(dimension_) +
-                   ") != timeSteps ("
-                   + SizeFormatter::toString(timeGrid_.size()-1) +
-                   ")");
+                   "sequence generator dimensionality (" << dimension_
+                   << ") != timeSteps (" << timeGrid_.size()-1 << ")");
     }
 
     template <class GSG>

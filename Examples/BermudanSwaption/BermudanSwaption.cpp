@@ -54,9 +54,10 @@ void calibrateModel(const boost::shared_ptr<ShortRateModel>& model,
         Volatility diff = implied - swaptionVols[k];
 
         std::cout << i+1 << "x" << swapLenghts[j]
-            << ": model " << DecimalFormatter::toString(implied,2,5)
-            << ", market " << DecimalFormatter::toString(swaptionVols[k],2,5)
-            << " (" << DecimalFormatter::toString(diff,2,5) << ")\n";
+                  << std::fixed << std::setprecision(5) << std::noshowpos
+                  << ": model " << std::setw(5) << implied
+                  << ", market " << std::setw(5) << swaptionVols[k]
+                  << " (" << std::setw(5) << std::showpos << diff << ")\n";
     }
 }
 

@@ -160,14 +160,13 @@ void PiecewiseFlatForwardTest::testConsistency() {
              estimatedRate = index.fixing(today);
         if (std::fabs(expectedRate-estimatedRate) > 1.0e-9) {
             BOOST_FAIL(
-                IntegerFormatter::toString(depositData[i].n) + " "
-                + (depositData[i].units == Weeks ? std::string("week(s)") :
-                                                   std::string("month(s)")) +
-                " deposit: \n"
-                "    estimated rate: "
-                + RateFormatter::toString(estimatedRate,8) + "\n"
-                "    expected rate:  "
-                + RateFormatter::toString(expectedRate,8));
+                depositData[i].n << " "
+                << (depositData[i].units == Weeks ? "week(s)" : "month(s)")
+                << " deposit: \n"
+                << "    estimated rate: "
+                << RateFormatter::toString(estimatedRate,8) << "\n"
+                << "    expected rate:  "
+                << RateFormatter::toString(expectedRate,8));
         }
     }
 
@@ -189,12 +188,11 @@ void PiecewiseFlatForwardTest::testConsistency() {
         Rate expectedRate = swapData[i].rate/100,
              estimatedRate = swap.fairRate();
         if (std::fabs(expectedRate-estimatedRate) > 1.0e-9) {
-            BOOST_FAIL(
-                IntegerFormatter::toString(swapData[i].n) + " year(s) swap:\n"
-                "    estimated rate: "
-                + RateFormatter::toString(estimatedRate,8) + "\n"
-                "    expected rate:  "
-                + RateFormatter::toString(expectedRate,8));
+            BOOST_FAIL(swapData[i].n << " year(s) swap:\n"
+                       << "    estimated rate: "
+                       << RateFormatter::toString(estimatedRate,8) << "\n"
+                       << "    expected rate:  "
+                       << RateFormatter::toString(expectedRate,8));
         }
     }
 

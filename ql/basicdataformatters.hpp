@@ -24,21 +24,28 @@
 #define quantlib_basic_data_formatters_hpp
 
 #include <ql/types.hpp>
-#include <string>
+#include <sstream>
+#include <iomanip>
 
 namespace QuantLib {
 
     //! Formats integers for output
     class IntegerFormatter {
       public:
+        #ifndef QL_DISABLE_DEPRECATED
+        /*! \deprecated use streams and manipulators for proper formatting */
         static std::string toString(BigInteger l, Integer digits = 0);
+        #endif
         static std::string toPowerOfTwo(BigInteger l, Integer digits = 0);
     };
 
     //! Formats unsigned integers for output
     class SizeFormatter {
       public:
+        #ifndef QL_DISABLE_DEPRECATED
+        /*! \deprecated use streams and manipulators for proper formatting */
         static std::string toString(Size l, Integer digits = 0);
+        #endif
         static std::string toOrdinal(Size l);
         static std::string toPowerOfTwo(Size l, Integer digits = 0);
     };
@@ -46,12 +53,16 @@ namespace QuantLib {
     //! Formats real numbers for output
     class DecimalFormatter {
       public:
+        #ifndef QL_DISABLE_DEPRECATED
+        /*! \deprecated use streams and manipulators for proper formatting */
         static std::string toString(Decimal x,
                                     Integer precision = 6,
                                     Integer digits = 0);
+        /*! \deprecated use streams and manipulators for proper formatting */
         static std::string toExponential(Decimal x,
                                          Integer precision = 6,
                                          Integer digits = 0);
+        #endif
         static std::string toPercentage(Decimal x,
                                         Integer precision = 6,
                                         Integer digits = 0);
@@ -74,18 +85,20 @@ namespace QuantLib {
                                     Integer precision = 6,
                                     Integer digits = 0,
                                     Size elementsPerRow = QL_MAX_INTEGER) {
-            std::string s = "[ ";
+            std::ostringstream s;
+            s.precision(precision);
+            s << "[ ";
             for (Size n=0; begin!=end; ++begin, ++n) {
                 if (n == elementsPerRow) {
-                    s += ";\n  ";
+                    s << ";\n  ";
                     n = 0;
                 }
                 if (n!=0)
-                    s += " ; ";
-                s += DecimalFormatter::toString(*begin, precision, digits);
+                    s << " ; ";
+                s << std::setw(digits) << *begin;
             }
-            s += " ]";
-            return s;
+            s << " ]";
+            return s.str();
         }
     };
     #endif

@@ -124,12 +124,10 @@ void TermStructureTest::testReferenceChange() {
 
     for (i=0; i<LENGTH(days); i++) {
         if (!close(expected[i],calculated[i]))
-            BOOST_FAIL("\n  Discount at "
-                       + IntegerFormatter::toString(days[i]) + " days:\n"
-                       "    before date change: "
-                       + DecimalFormatter::toString(expected[i],12) + "\n"
-                       "    after date change:  "
-                       + DecimalFormatter::toString(calculated[i],12));
+            BOOST_FAIL("\n  Discount at " << days[i] << " days:\n"
+                       << std::setprecision(12)
+                       << "    before date change: " << expected[i] << "\n"
+                       << "    after date change:  " << calculated[i]);
     }
 
     QL_TEST_TEARDOWN
@@ -157,10 +155,9 @@ void TermStructureTest::testImplied() {
     if (std::fabs(discount - baseDiscount*impliedDiscount) > tolerance)
         BOOST_FAIL(
             "unable to reproduce discount from implied curve\n"
-            "    calculated: "
-            + DecimalFormatter::toString(baseDiscount*impliedDiscount,10)+"\n"
-            "    expected:   "
-            + DecimalFormatter::toString(discount,10));
+            << std::fixed << std::setprecision(10)
+            << "    calculated: " << baseDiscount*impliedDiscount << "\n"
+            << "    expected:   " << discount);
 
     QL_TEST_TEARDOWN
 }

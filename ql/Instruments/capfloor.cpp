@@ -106,37 +106,27 @@ namespace QuantLib {
 
     void CapFloor::arguments::validate() const {
         QL_REQUIRE(endTimes.size() == startTimes.size(),
-                   "Invalid pricing arguments: size of startTimes (" +
-                   SizeFormatter::toString(startTimes.size()) +
-                   ") different from that of endTimes (" +
-                   SizeFormatter::toString(endTimes.size()) +
-                   ")");
+                   "size of startTimes (" << startTimes.size()
+                   << ") different from that of endTimes ("
+                   << endTimes.size() << ")");
         QL_REQUIRE(accrualTimes.size() == startTimes.size(),
-                   "Invalid pricing arguments: size of startTimes (" +
-                   SizeFormatter::toString(startTimes.size()) +
-                   ") different from that of accrualTimes (" +
-                   SizeFormatter::toString(accrualTimes.size()) +
-                   ")");
+                   "size of startTimes (" << startTimes.size()
+                   << ") different from that of accrualTimes ("
+                   << accrualTimes.size() << ")");
         QL_REQUIRE(type == CapFloor::Floor ||
                    capRates.size() == startTimes.size(),
-                   "Invalid pricing arguments: size of startTimes (" +
-                   SizeFormatter::toString(startTimes.size()) +
-                   ") different from that of capRates (" +
-                   SizeFormatter::toString(capRates.size()) +
-                   ")");
+                   "size of startTimes (" << startTimes.size()
+                   << ") different from that of capRates ("
+                   << capRates.size() << ")");
         QL_REQUIRE(type == CapFloor::Cap ||
                    floorRates.size() == startTimes.size(),
-                   "Invalid pricing arguments: size of startTimes (" +
-                   SizeFormatter::toString(startTimes.size()) +
-                   ") different from that of floorRates (" +
-                   SizeFormatter::toString(floorRates.size()) +
-                   ")");
+                   "size of startTimes (" << startTimes.size()
+                   << ") different from that of floorRates ("
+                   << floorRates.size() << ")");
         QL_REQUIRE(nominals.size() == startTimes.size(),
-                   "Invalid pricing arguments: size of startTimes (" +
-                   SizeFormatter::toString(startTimes.size()) +
-                   ") different from that of nominals (" +
-                   SizeFormatter::toString(nominals.size()) +
-                   ")");
+                   "size of startTimes (" << startTimes.size()
+                   << ") different from that of nominals ("
+                   << nominals.size() << ")");
     }
 
     Volatility CapFloor::impliedVolatility(Real targetValue,

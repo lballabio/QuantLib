@@ -27,6 +27,7 @@
 #include <ql/capvolstructures.hpp>
 #include <ql/cashflow.hpp>
 #include <ql/currency.hpp>
+#include <ql/dataformatters.hpp>
 #include <ql/dataparsers.hpp>
 #include <ql/date.hpp>
 #include <ql/daycounter.hpp>

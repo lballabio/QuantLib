@@ -519,11 +519,10 @@ namespace QuantLib {
                 }
             }
             QL_REQUIRE(dim >= 3,
-                       "Dimension " + SizeFormatter::toString(j) +
-                       " : not enough points for interpolation");
+                       "Dimension " << j
+                       << " : not enough points for interpolation");
             QL_REQUIRE(k >= dim,
-                       "Dimension " + SizeFormatter::toString(j) +
-                       " : invalid data");
+                       "Dimension " << j << " : invalid data");
         }
 
         typename c_splint::data tmp1(x), tmp2(y);
@@ -542,8 +541,8 @@ namespace QuantLib {
             const std::vector<Real> &v = grid_[j];
             if(x[j] < v[0] || x[j] >= v[sz]) {
                 QL_REQUIRE(ae_[j],
-                           "Dimension " + SizeFormatter::toString(j) +
-                           ": extrapolation is not allowed.");
+                           "Dimension " << j
+                           << ": extrapolation is not allowed.");
                 a_[j] = 1.0, a2_[j] = b_[j] = b2_[j] = 0.0;
                 k =  x[j] < v[0] ? 0 : sz;
             }

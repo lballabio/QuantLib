@@ -107,14 +107,11 @@ void SwapTest::testFairRate() {
                 makeSwap(lengths[i],0.0,spreads[j]);
             swap = makeSwap(lengths[i],swap->fairRate(),spreads[j]);
             if (std::fabs(swap->NPV()) > 1.0e-10) {
-                BOOST_FAIL(
-                    "recalculating with implied rate:\n"
-                    "    length: " +
-                    IntegerFormatter::toString(lengths[i]) + " years\n"
-                    "    floating spread: " +
-                    RateFormatter::toString(spreads[j],2) + "\n"
-                    "    swap value: " +
-                    DecimalFormatter::toString(swap->NPV()));
+                BOOST_FAIL("recalculating with implied rate:\n"
+                           << "    length: " << lengths[i] << " years\n"
+                           << "    floating spread: "
+                           << RateFormatter::toString(spreads[j],2) << "\n"
+                           << "    swap value: " << swap->NPV());
             }
         }
     }
@@ -140,14 +137,11 @@ void SwapTest::testFairSpread() {
                 makeSwap(lengths[i],rates[j],0.0);
             swap = makeSwap(lengths[i],rates[j],swap->fairSpread());
             if (std::fabs(swap->NPV()) > 1.0e-10) {
-                BOOST_FAIL(
-                    "recalculating with implied spread:\n"
-                    "    length: " +
-                    IntegerFormatter::toString(lengths[i]) + " years\n"
-                    "    fixed rate: " +
-                    RateFormatter::toString(rates[j],2) + "\n"
-                    "    swap value: " +
-                    DecimalFormatter::toString(swap->NPV()));
+                BOOST_FAIL("recalculating with implied spread:\n"
+                           << "    length: " << lengths[i] << " years\n"
+                           << "    fixed rate: "
+                           << RateFormatter::toString(rates[j],2) << "\n"
+                           << "    swap value: " << swap->NPV());
             }
         }
     }
@@ -183,16 +177,13 @@ void SwapTest::testRateDependency() {
                 Size n = it - swap_values.begin();
                 BOOST_FAIL(
                     "NPV is increasing with the fixed rate in a swap: \n"
-                    "    length: " +
-                    IntegerFormatter::toString(lengths[i]) + " years\n"
-                    "    value: " +
-                    DecimalFormatter::toString(swap_values[n]) +
-                    " paying fixed rate: " +
-                    RateFormatter::toString(rates[n],2) + "\n"
-                    "    value: " +
-                    DecimalFormatter::toString(swap_values[n+1]) +
-                    " paying fixed rate: " +
-                    RateFormatter::toString(rates[n+1],2));
+                    << "    length: " << lengths[i] << " years\n"
+                    << "    value:  " << swap_values[n]
+                    << " paying fixed rate: "
+                    << RateFormatter::toString(rates[n],2) << "\n"
+                    << "    value:  " << swap_values[n+1]
+                    << " paying fixed rate: "
+                    << RateFormatter::toString(rates[n+1],2));
             }
         }
     }
@@ -228,16 +219,13 @@ void SwapTest::testSpreadDependency() {
                 Size n = it - swap_values.begin();
                 BOOST_FAIL(
                     "NPV is decreasing with the floating spread in a swap: \n"
-                    "    length: " +
-                    IntegerFormatter::toString(lengths[i]) + " years\n"
-                    "    value: " +
-                    DecimalFormatter::toString(swap_values[n]) +
-                    " receiving spread: " +
-                    RateFormatter::toString(spreads[n],2) + "\n"
-                    "    value: " +
-                    DecimalFormatter::toString(swap_values[n+1]) +
-                    " receiving spread: " +
-                    RateFormatter::toString(spreads[n+1],2));
+                    << "    length: " << lengths[i] << " years\n"
+                    << "    value:  " << swap_values[n]
+                    << " receiving spread: "
+                    << RateFormatter::toString(spreads[n],2) << "\n"
+                    << "    value:  " << swap_values[n+1]
+                    << " receiving spread: "
+                    << RateFormatter::toString(spreads[n+1],2));
             }
         }
     }
@@ -289,9 +277,8 @@ void SwapTest::testInArrears() {
 
     if (std::fabs(swap.NPV()) > 1.0e-4)
         BOOST_FAIL("While setting up test:\n"
-                   "    expected swap NPV: 0.0\n"
-                   "    calculated:        "
-                   + DecimalFormatter::toString(swap.NPV(),4));
+                   << "    expected swap NPV: 0.0\n"
+                   << "    calculated:        " << swap.NPV());
 
     Volatility capletVolatility = 0.22;
     Handle<CapletVolatilityStructure> vol(
@@ -308,10 +295,8 @@ void SwapTest::testInArrears() {
 
     if (std::fabs(swap.NPV()-storedValue) > tolerance)
         BOOST_FAIL("Wrong NPV calculation:\n"
-                   "    expected:   "
-                   + DecimalFormatter::toString(storedValue,0) + "\n"
-                   "    calculated: "
-                   + DecimalFormatter::toString(swap.NPV(),0));
+                   << "    expected:   " << storedValue << "\n"
+                   << "    calculated: " << swap.NPV());
 
     QL_TEST_TEARDOWN
 }
@@ -337,10 +322,9 @@ void SwapTest::testCachedValue() {
 
     if (std::fabs(swap->NPV()-cachedNPV) > 1.0e-11)
         BOOST_FAIL("failed to reproduce cached swap value:\n"
-                   "    calculated: " +
-                   DecimalFormatter::toString(swap->NPV(),12) + "\n"
-                   "    expected:   " +
-                   DecimalFormatter::toString(cachedNPV,12));
+                   << std::fixed << std::setprecision(12)
+                   << "    calculated: " << swap->NPV() << "\n"
+                   << "    expected:   " << cachedNPV);
 
     QL_TEST_TEARDOWN
 }

@@ -141,19 +141,16 @@ void SwaptionTest::testStrikeDependency() {
                         Size n = it - values.begin();
                         BOOST_FAIL(
                             "NPV is increasing with the strike "
-                            "in a payer swaption: \n"
-                            "    exercise date: " +
-                            DateFormatter::toString(exerciseDate) + "\n"
-                            "    length: " +
-                            IntegerFormatter::toString(lengths[j]) + " years\n"
-                            "    value: " +
-                            DecimalFormatter::toString(values[n]) +
-                            " at strike: " +
-                            RateFormatter::toString(strikes[n],2) + "\n"
-                            "    value: " +
-                            DecimalFormatter::toString(values[n+1]) +
-                            " at strike: " +
-                            RateFormatter::toString(strikes[n+1],2));
+                            << "in a payer swaption: \n"
+                            << "    exercise date: "
+                            << DateFormatter::toString(exerciseDate) << "\n"
+                            << "    length: " << lengths[j] << " years\n"
+                            << "    value:  " << values[n]
+                            << " at strike: "
+                            << RateFormatter::toString(strikes[n],2) << "\n"
+                            << "    value:  " << values[n+1]
+                            << " at strike: "
+                            << RateFormatter::toString(strikes[n+1],2));
                     }
                 } else {
                     std::vector<Real>::iterator it =
@@ -163,19 +160,16 @@ void SwaptionTest::testStrikeDependency() {
                         Size n = it - values.begin();
                         BOOST_FAIL(
                             "NPV is decreasing with the strike "
-                            "in a receiver swaption: \n"
-                            "    exercise date: " +
-                            DateFormatter::toString(exerciseDate) + "\n"
-                            "    length: " +
-                            IntegerFormatter::toString(lengths[j]) + " years\n"
-                            "    value: " +
-                            DecimalFormatter::toString(values[n]) +
-                            " at strike: " +
-                            RateFormatter::toString(strikes[n],2) + "\n"
-                            "    value: " +
-                            DecimalFormatter::toString(values[n+1]) +
-                            " at strike: " +
-                            RateFormatter::toString(strikes[n+1],2));
+                            << "in a receiver swaption: \n"
+                            << "    exercise date: "
+                            << DateFormatter::toString(exerciseDate) << "\n"
+                            << "    length: " << lengths[j] << " years\n"
+                            << "    value:  " << values[n]
+                            << " at strike: "
+                            << RateFormatter::toString(strikes[n],2) << "\n"
+                            << "    value:  " << values[n+1]
+                            << " at strike: "
+                            << RateFormatter::toString(strikes[n+1],2));
                     }
                 }
             }
@@ -220,19 +214,16 @@ void SwaptionTest::testSpreadDependency() {
                         Size n = it - values.begin();
                         BOOST_FAIL(
                             "NPV is decreasing with the spread "
-                            "in a payer swaption: \n"
-                            "    exercise date: " +
-                            DateFormatter::toString(exerciseDate) + "\n"
-                            "    length: " +
-                            IntegerFormatter::toString(lengths[j]) + " years\n"
-                            "    value: " +
-                            DecimalFormatter::toString(values[n]) +
-                            " for spread: " +
-                            RateFormatter::toString(spreads[n],2) + "\n"
-                            "    value: " +
-                            DecimalFormatter::toString(values[n+1]) +
-                            " for spread: " +
-                            RateFormatter::toString(spreads[n+1],2));
+                            << "in a payer swaption: \n"
+                            << "    exercise date: "
+                            << DateFormatter::toString(exerciseDate) << "\n"
+                            << "    length: " << lengths[j] << " years\n"
+                            << "    value:  " << values[n]
+                            << " for spread: "
+                            << RateFormatter::toString(spreads[n],2) << "\n"
+                            << "    value:  " << values[n+1]
+                            << " for spread: "
+                            << RateFormatter::toString(spreads[n+1],2));
                     }
                 } else {
                     std::vector<Real>::iterator it =
@@ -242,19 +233,16 @@ void SwaptionTest::testSpreadDependency() {
                         Size n = it - values.begin();
                         BOOST_FAIL(
                             "NPV is increasing with the spread "
-                            "in a receiver swaption: \n"
-                            "    exercise date: " +
-                            DateFormatter::toString(exerciseDate) + "\n"
-                            "    length: " +
-                            IntegerFormatter::toString(lengths[j]) + " years\n"
-                            "    value: " +
-                            DecimalFormatter::toString(values[n]) +
-                            " for spread: " +
-                            RateFormatter::toString(spreads[n],2) + "\n"
-                            "    value: " +
-                            DecimalFormatter::toString(values[n+1]) +
-                            " for spread: " +
-                            RateFormatter::toString(spreads[n+1],2));
+                            << "in a receiver swaption: \n"
+                            << "    exercise date: "
+                            << DateFormatter::toString(exerciseDate) << "\n"
+                            << "    length: " << lengths[j] << " years\n"
+                            << "    value:  " << values[n]
+                            << " for spread: "
+                            << RateFormatter::toString(spreads[n],2) << "\n"
+                            << "    value:  " << values[n+1]
+                            << " for spread: "
+                            << RateFormatter::toString(spreads[n+1],2));
                     }
                 }
             }
@@ -297,19 +285,17 @@ void SwaptionTest::testSpreadTreatment() {
                     if (std::fabs(swaption1->NPV()-swaption2->NPV()) > 1.0e-10)
                         BOOST_FAIL(
                             "wrong spread treatment: \n"
-                            "    exercise date: " +
-                            DateFormatter::toString(exerciseDate) + "\n"
-                            "    length: " +
-                            IntegerFormatter::toString(lengths[j]) + " years\n"
-                            "    pay " +
-                            std::string(payFixed[k] ? "fixed\n"
-                                                    : "floating\n") +
-                            "    spread: " +
-                            RateFormatter::toString(spreads[l],2) + "\n"
-                            "    value of original swaption:   " +
-                            DecimalFormatter::toString(swaption1->NPV()) + "\n"
-                            "    value of equivalent swaption: " +
-                            DecimalFormatter::toString(swaption2->NPV()));
+                            << "    exercise date: "
+                            << DateFormatter::toString(exerciseDate) << "\n"
+                            << "    length: " << lengths[j] << " years\n"
+                            << "    pay " << (payFixed[k] ? "fixed\n"
+                                                          : "floating\n")
+                            << "    spread: "
+                            << RateFormatter::toString(spreads[l],2) << "\n"
+                            << "    value of original swaption:   "
+                            << swaption1->NPV() << "\n"
+                            << "    value of equivalent swaption: "
+                            << swaption2->NPV());
                 }
             }
         }
@@ -341,12 +327,10 @@ void SwaptionTest::testCachedValue() {
 #endif
 
     if (std::fabs(swaption->NPV()-cachedNPV) > 1.0e-11)
-        BOOST_FAIL(
-            "failed to reproduce cached swaption value:\n"
-            "    calculated: " +
-            DecimalFormatter::toString(swaption->NPV(),12) + "\n"
-            "    expected:   " +
-            DecimalFormatter::toString(cachedNPV,12));
+        BOOST_FAIL("failed to reproduce cached swaption value:\n"
+                   << std::fixed << std::setprecision(12)
+                   << "    calculated: " << swaption->NPV() << "\n"
+                   << "    expected:   " << cachedNPV);
 
     QL_TEST_TEARDOWN
 }

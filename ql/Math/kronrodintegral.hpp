@@ -149,14 +149,13 @@ namespace QuantLib {
     : tolerance_(tolerance),
       maxFunctionEvaluations_(maxFunctionEvaluations) {
         QL_REQUIRE(tolerance > QL_EPSILON,
-                   "required tolerance ("
-                   + DecimalFormatter::toExponential(tolerance) +
-                   ") not allowed. It must be > "
-                   + DecimalFormatter::toExponential(QL_EPSILON));
+                   std::scientific
+                   << "required tolerance (" << tolerance
+                   << ") not allowed. It must be > " << QL_EPSILON);
         QL_REQUIRE(maxFunctionEvaluations >= 15,
                    "required maxFunctionEvaluations ("
-                   + DecimalFormatter::toExponential(maxFunctionEvaluations) +
-                   ") not allowed. It must be >= 15");
+                   << maxFunctionEvaluations
+                   << ") not allowed. It must be >= 15");
     }
 
 }

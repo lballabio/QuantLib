@@ -86,9 +86,7 @@ namespace QuantLib {
     Real GeneralStatistics::percentile(Real percent) const {
 
         QL_REQUIRE(percent > 0.0 && percent <= 1.0,
-                   "percentile (" +
-                   DecimalFormatter::toString(percent) +
-                   ") must be in (0.0, 1.0]");
+                   "percentile (" << percent << ") must be in (0.0, 1.0]");
 
         Real sampleWeight = weightSum();
         QL_REQUIRE(sampleWeight>0.0,
@@ -112,9 +110,7 @@ namespace QuantLib {
     Real GeneralStatistics::topPercentile(Real percent) const {
 
         QL_REQUIRE(percent > 0.0 && percent <= 1.0,
-                   "percentile (" +
-                   DecimalFormatter::toString(percent) +
-                   ") must be in (0.0, 1.0]");
+                   "percentile (" << percent << ") must be in (0.0, 1.0]");
 
         Real sampleWeight = weightSum();
         QL_REQUIRE(sampleWeight > 0.0,

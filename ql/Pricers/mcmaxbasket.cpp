@@ -37,8 +37,7 @@ namespace QuantLib {
                 Size numSteps = multiPath.pathSize();
                 QL_REQUIRE(underlying_.size() == numAssets,
                            "the multi-path must contain "
-                           + SizeFormatter::toString(underlying_.size()) +
-                           " assets");
+                           << underlying_.size() << " assets");
 
                 Real log_variation;
                 Size i,j;

@@ -25,6 +25,7 @@
 #include <ql/null.hpp>
 #include <ql/basicdataformatters.hpp>
 #include <ql/Patterns/curiouslyrecurring.hpp>
+#include <iomanip>
 
 namespace QuantLib {
 
@@ -128,13 +129,10 @@ namespace QuantLib {
                 evaluationNumber_++;
             }
 
-            QL_FAIL("unable to bracket root in " +
-                    SizeFormatter::toString(maxEvaluations_) +
-                    " function evaluations (last bracket attempt: f[" +
-                    DecimalFormatter::toString(xMin_) + "," +
-                    DecimalFormatter::toString(xMax_) + "] -> [" +
-                    DecimalFormatter::toExponential(fxMin_) + "," +
-                    DecimalFormatter::toExponential(fxMax_) + "])");
+            QL_FAIL("unable to bracket root in " << maxEvaluations_
+                    << " function evaluations (last bracket attempt: "
+                    << "f[" << xMin_ << "," << xMax_ << "] "
+                    << "-> [" << fxMin_ << "," << fxMax_ << "])");
         }
         /*! This method returns the zero of the function \f$ f \f$,
             determined with the given accuracy (i.e., \f$ x \f$ is
@@ -155,20 +153,15 @@ namespace QuantLib {
             xMin_ = xMin;
             xMax_ = xMax;
 
-            QL_REQUIRE(xMin_ < xMax_, "invalid range: xMin_ (" +
-                       DecimalFormatter::toString(xMin_) +
-                       ") >= xMax_ (" +
-                       DecimalFormatter::toString(xMax_) + ")");
+            QL_REQUIRE(xMin_ < xMax_,
+                       "invalid range: xMin_ (" << xMin_
+                       << ") >= xMax_ (" << xMax_ << ")");
             QL_REQUIRE(!lowerBoundEnforced_ || xMin_ >= lowerBound_,
-                       "xMin_ (" +
-                       DecimalFormatter::toString(xMin_) +
-                       ") < enforced low bound (" +
-                       DecimalFormatter::toString(lowerBound_) + ")");
+                       "xMin_ (" << xMin_
+                       << ") < enforced low bound (" << lowerBound_ << ")");
             QL_REQUIRE(!upperBoundEnforced_ || xMax_ <= upperBound_,
-                       "xMax_ (" +
-                       DecimalFormatter::toString(xMax_) +
-                       ") > enforced hi bound (" +
-                       DecimalFormatter::toString(upperBound_) + ")");
+                       "xMax_ (" << xMax_
+                       << ") > enforced hi bound (" << upperBound_ << ")");
 
             fxMin_ = f(xMin_);
             if (std::fabs(fxMin_) < accuracy)
@@ -181,20 +174,15 @@ namespace QuantLib {
             evaluationNumber_ = 2;
 
             QL_REQUIRE(fxMin_*fxMax_ < 0.0,
-                       "root not bracketed: f[" +
-                       DecimalFormatter::toString(xMin_) + "," +
-                       DecimalFormatter::toString(xMax_) + "] -> [" +
-                       DecimalFormatter::toExponential(fxMin_) + "," +
-                       DecimalFormatter::toExponential(fxMax_) + "]");
+                       "root not bracketed: f["
+                       << xMin_ << "," << xMax_ << "] -> ["
+                       << std::scientific
+                       << fxMin_ << "," << fxMax_ << "]");
 
             QL_REQUIRE(guess > xMin_,
-                       "guess (" +
-                       DecimalFormatter::toString(guess) + ") < xMin_ (" +
-                       DecimalFormatter::toString(xMin_) + ")");
+                       "guess (" << guess << ") < xMin_ (" << xMin_ << ")");
             QL_REQUIRE(guess < xMax_,
-                       "guess (" +
-                       DecimalFormatter::toString(guess) + ") > xMax_ (" +
-                       DecimalFormatter::toString(xMax_) + ")");
+                       "guess (" << guess << ") > xMax_ (" << xMax_ << ")");
 
             root_ = guess;
 

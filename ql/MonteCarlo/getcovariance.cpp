@@ -37,12 +37,8 @@ namespace QuantLib {
             for (j=0; j<i; j++){
                 QL_REQUIRE(std::fabs(cov[i][j]-cov[j][i]) <= tolerance,
                            "invalid covariance matrix:"
-                           "\nc[" + SizeFormatter::toString(i) +
-                           ", "   + SizeFormatter::toString(j) +
-                           "] = " + DecimalFormatter::toString(cov[i][j]) +
-                           "\nc[" + SizeFormatter::toString(j) +
-                           ", "   + SizeFormatter::toString(i) +
-                           "] = " + DecimalFormatter::toString(cov[j][i]));
+                           << "\nc[" << i << ", " << j << "] = " << cov[i][j]
+                           << "\nc[" << j << ", " << i << "] = " << cov[j][i]);
                 correlationMatrix_[i][j] = cov[i][j]/
                     (standardDeviations_[i]*standardDeviations_[j]);
                 correlationMatrix_[j][i] = correlationMatrix_[i][j];

@@ -26,9 +26,9 @@ namespace QuantLib {
     // const Real SingleAssetOption::dTMultiplier_   = 0.0001;
 
     SingleAssetOption::SingleAssetOption(Option::Type type,
-                                         Real underlying, Real strike, 
+                                         Real underlying, Real strike,
                                          Spread dividendYield,
-                                         Rate riskFreeRate, Time residualTime, 
+                                         Rate riskFreeRate, Time residualTime,
                                          Volatility volatility)
     : underlying_(underlying),
       payoff_(type, strike), dividendYield_(dividendYield),
@@ -36,17 +36,11 @@ namespace QuantLib {
       rhoComputed_(false), dividendRhoComputed_(false),
       vegaComputed_(false), thetaComputed_(false) {
         QL_REQUIRE(strike>=0.0,
-                   "strike ("+
-                   DecimalFormatter::toString(strike)+
-                   ") must be non negative");
+                   "strike (" << strike << ") must be non negative");
         QL_REQUIRE(underlying > 0.0,
-                   "underlying ("+
-                   DecimalFormatter::toString(underlying)+
-                   ") must be positive");
+                   "underlying (" << underlying << ") must be positive");
         QL_REQUIRE(residualTime > 0.0,
-                   "residual time ("+
-                   DecimalFormatter::toString(residualTime)+
-                   ") must be positive");
+                   "residual time (" << residualTime << ") must be positive");
         // checks on volatility values are in setVolatility
         setVolatility(volatility);
         // checks on the risk-free rate are in setRiskFreeRate
@@ -55,14 +49,10 @@ namespace QuantLib {
 
     void SingleAssetOption::setVolatility(Volatility volatility) {
         QL_REQUIRE(volatility >= QL_MIN_VOLATILITY,
-                   "volatility too small ("+
-                   DecimalFormatter::toString(volatility)+
-                   ")");
+                   "volatility too small (" << volatility << ")");
 
         QL_REQUIRE(volatility <= QL_MAX_VOLATILITY,
-                   "volatility too high ("+
-                   DecimalFormatter::toString(volatility)+
-                   ")");
+                   "volatility too high (" << volatility << ")");
 
         volatility_ = volatility;
         hasBeenCalculated_ = false;
@@ -150,10 +140,10 @@ namespace QuantLib {
         return rho_;
     }
 
-    Volatility SingleAssetOption::impliedVolatility(Real targetValue, 
-                                                    Real accuracy, 
-                                                    Size maxEvaluations, 
-                                                    Volatility minVol, 
+    Volatility SingleAssetOption::impliedVolatility(Real targetValue,
+                                                    Real accuracy,
+                                                    Size maxEvaluations,
+                                                    Volatility minVol,
                                                     Volatility maxVol) const {
         // check option targetValue boundary condition
         QL_REQUIRE(targetValue > 0.0,
@@ -174,10 +164,10 @@ namespace QuantLib {
         return s1d.solve(bsmf, accuracy, volatility_, minVol, maxVol);
     }
 
-    Spread SingleAssetOption::impliedDivYield(Real targetValue, 
-                                              Real accuracy, 
-                                              Size maxEvaluations, 
-                                              Spread minDivYield, 
+    Spread SingleAssetOption::impliedDivYield(Real targetValue,
+                                              Real accuracy,
+                                              Size maxEvaluations,
+                                              Spread minDivYield,
                                               Spread maxDivYield) const {
         // check option targetValue boundary condition
         QL_REQUIRE(targetValue > 0.0,
@@ -195,7 +185,7 @@ namespace QuantLib {
         s1d.setLowerBound(minDivYield);
         s1d.setUpperBound(maxDivYield);
 
-        return s1d.solve(bsmf, accuracy, dividendYield_, 
+        return s1d.solve(bsmf, accuracy, dividendYield_,
                          minDivYield, maxDivYield);
     }
 

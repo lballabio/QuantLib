@@ -147,12 +147,11 @@ void CompoundForwardTest::testSuppliedRates() {
         Rate expectedRate = swapData[i].rate/100,
              estimatedRate = swap.fairRate();
         if (std::fabs(expectedRate-estimatedRate) > 1.0e-9) {
-            BOOST_FAIL(
-                IntegerFormatter::toString(swapData[i].n) + " year(s) swap:\n"
-                "    estimated rate: "
-                + RateFormatter::toString(estimatedRate,8) + "\n"
-                "    expected rate:  "
-                + RateFormatter::toString(expectedRate,8));
+            BOOST_FAIL(swapData[i].n << " year(s) swap:\n"
+                       << "    estimated rate: "
+                       << RateFormatter::toString(estimatedRate,8) << "\n"
+                       << "    expected rate:  "
+                       << RateFormatter::toString(expectedRate,8));
         }
     }
 
@@ -191,11 +190,11 @@ void CompoundForwardTest::testConvertedRates() {
         Rate estimatedRate = swap.fairRate();
         if (std::fabs(expectedRate-estimatedRate) > 1.0e-9) {
             BOOST_FAIL(
-                IntegerFormatter::toString(swapData[i].n) + " year(s) swap:\n"
-                "    estimated rate: "
-                + RateFormatter::toString(estimatedRate,8) + "\n"
-                "    compound rate:  "
-                + RateFormatter::toString(expectedRate,8));
+                       swapData[i].n << " year(s) swap:\n"
+                       << "    estimated rate: "
+                       << RateFormatter::toString(estimatedRate,8) << "\n"
+                       << "    compound rate:  "
+                       << RateFormatter::toString(expectedRate,8));
         }
     }
 
