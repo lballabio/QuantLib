@@ -350,6 +350,8 @@ namespace QLDCO = QuantLib::DayCounters;
 //! \deprecated inner namespace aliases will be removed in next release
 namespace QLFDM = QuantLib::FiniteDifferences;
 //! \deprecated inner namespace aliases will be removed in next release
+namespace QLFUN = QuantLib::Functions;
+//! \deprecated inner namespace aliases will be removed in next release
 namespace QLIDX = QuantLib::Indexes;
 //! \deprecated inner namespace aliases will be removed in next release
 namespace QLINS = QuantLib::Instruments;
