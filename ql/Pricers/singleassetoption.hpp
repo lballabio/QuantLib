@@ -84,12 +84,12 @@ namespace QuantLib {
             double underlying_;
             double strike_;
             Spread dividendYield_;
+            Rate riskFreeRate_;
             Time residualTime_;
+            double volatility_;
             mutable bool hasBeenCalculated_;
             mutable double rho_, dividendRho_, vega_;
             mutable bool rhoComputed_, dividendRhoComputed_, vegaComputed_;
-            double volatility_;
-            Rate riskFreeRate_;
             const static double dVolMultiplier_;
             const static double dRMultiplier_;
           private:

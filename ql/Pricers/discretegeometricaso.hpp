@@ -67,8 +67,8 @@ namespace QuantLib {
             double theta() const {return 0.0;}
             Handle<SingleAssetOption> clone() const;
            private:
-            std::vector<Time> times_;
             static const Math::CumulativeNormalDistribution f_;
+            std::vector<Time> times_;
         };
 
 

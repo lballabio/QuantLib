@@ -38,12 +38,12 @@ namespace QuantLib {
     namespace Math {
 
         MultivariateAccumulator::MultivariateAccumulator()
-                : size_(0){
+        : size_(0) {
             reset();
         }
 
         MultivariateAccumulator::MultivariateAccumulator(size_t size)
-                : size_(size){
+        : size_(size){
             reset();
         }
 
@@ -61,8 +61,7 @@ namespace QuantLib {
             if(size_ == 0){
                 size_ = value.size();
                 reset();
-            }
-            else{
+            } else {
                 QL_REQUIRE(value.size() == size_,
                         "MultivariateAccumulator::add : "
                                     "wrong size for input array");
@@ -76,7 +75,7 @@ namespace QuantLib {
             sampleNumber_++;
             QL_ENSURE(sampleNumber_ > oldSamples,
                 "MultivariateAccumulator::add : "
-      	        "maximum number of samples reached");
+                "maximum number of samples reached");
 
             sampleWeight_ += weight;
 
