@@ -18,7 +18,6 @@
 #include <ql/handle.hpp>
 #include <ql/Pricers/mcbasket.hpp>
 #include <ql/Instruments/payoffs.hpp>
-#include <ql/TermStructures/flatforward.hpp>
 
 namespace QuantLib {
 
@@ -77,45 +76,54 @@ namespace QuantLib {
     }
 
 
-    McBasket::McBasket(Option::Type type, 
-                       const std::vector<double>& underlying,
-                       double strike, const Array& dividendYield,
-                       const Matrix& covariance,
-                       Rate riskFreeRate,  double residualTime,
-                       long seed) {
+    McBasket::McBasket(
+                 Option::Type type, 
+                 const std::vector<double>& underlying,
+                 double strike,
+                 const std::vector<RelinkableHandle<TermStructure> >& 
+                                                             dividendYield,
+                 const RelinkableHandle<TermStructure>& riskFreeRate,
+                 const std::vector<RelinkableHandle<BlackVolTermStructure> >& 
+                                                             volatilities,
+                 const Matrix& correlation,
+                 double residualTime,
+                 long seed) {
 
-        QL_REQUIRE(covariance.rows() == covariance.columns(),
-                   "McBasket: covariance matrix not square");
-        QL_REQUIRE(covariance.rows() == underlying.size(),
+        QL_REQUIRE(correlation.rows() == correlation.columns(),
+                   "McBasket: correlation matrix not square");
+        QL_REQUIRE(correlation.rows() == underlying.size(),
                    "McBasket: underlying size does not match that of"
-                   " covariance matrix");
-        QL_REQUIRE(covariance.rows() == dividendYield.size(),
+                   " correlation matrix");
+        QL_REQUIRE(correlation.rows() == dividendYield.size(),
                    "McBasket: dividendYield size does not match"
-                   " that of covariance matrix");
+                   " that of correlation matrix");
         QL_REQUIRE(residualTime > 0,
                    "McBasket: residual time must be positive");
 
         // initialize the path generator
-        Array mu(riskFreeRate - dividendYield
-                 - 0.5 * covariance.diagonal());
+        Size n = underlying.size();
+        std::vector<boost::shared_ptr<DiffusionProcess> > processes(n);
+        for (Size i=0; i<n; i++)
+            processes[i] = Handle<DiffusionProcess>(
+                     new BlackScholesProcess(riskFreeRate, dividendYield[i],
+                                             volatilities[i], underlying[i]));
+
+        TimeGrid grid(residualTime, 1);
+        PseudoRandom::rsg_type rsg = 
+            PseudoRandom::make_sequence_generator(n*(grid.size()-1),seed);
 
         boost::shared_ptr<GaussianMultiPathGenerator> pathGenerator(
-            new GaussianMultiPathGenerator(mu, covariance,
-                                           TimeGrid(residualTime, 1), seed));
-
-        RelinkableHandle<TermStructure> discount(
-                  Handle<TermStructure>(
-                      new FlatForward(Date::todaysDate(), Date::todaysDate(), 
-                                      riskFreeRate)));
+            new GaussianMultiPathGenerator(processes, correlation, grid, 
+                                           rsg, false));
 
         // initialize the path pricer
         boost::shared_ptr<PathPricer<MultiPath> > pathPricer(
-            new BasketPathPricer(type, underlying, strike, discount));
+            new BasketPathPricer(type, underlying, strike, riskFreeRate));
 
         // initialize the multi-factor Monte Carlo
-        mcModel_ = boost::shared_ptr<MonteCarloModel
-                             <MultiAsset_old<PseudoRandomSequence_old> > >(
-            new MonteCarloModel<MultiAsset_old<PseudoRandomSequence_old> >(
+        mcModel_ = boost::shared_ptr<MonteCarloModel<MultiAsset<
+                                                          PseudoRandom> > >(
+            new MonteCarloModel<MultiAsset<PseudoRandom> >(
                              pathGenerator, pathPricer, Statistics(), false));
     }
 

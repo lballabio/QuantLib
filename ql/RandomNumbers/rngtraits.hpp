@@ -70,17 +70,6 @@ namespace QuantLib {
         }
     };
 
-
-    // support for migration --- born deprecated 
-
-    struct PseudoRandomSequence_old {
-        typedef MersenneTwisterUniformRng urng_type;
-        typedef InverseCumulativeNormal ic_type;
-        typedef ICGaussianRng<urng_type,ic_type> rng_type;
-        typedef RandomArrayGenerator<rng_type> rsg_type;
-    };
-
-
 }
 
 

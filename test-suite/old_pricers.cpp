@@ -749,45 +749,67 @@ void OldPricerTest::testMcMultiFactorPricers() {
 
     BOOST_MESSAGE("Testing old-style Monte Carlo multi-factor pricers...");
 
-    Matrix cor(4,4);
-    cor[0][0] = 1.00; cor[0][1] = 0.50; cor[0][2] = 0.30; cor[0][3] = 0.10;
-    cor[1][0] = 0.50; cor[1][1] = 1.00; cor[1][2] = 0.20; cor[1][3] = 0.40;
-    cor[2][0] = 0.30; cor[2][1] = 0.20; cor[2][2] = 1.00; cor[2][3] = 0.60;
-    cor[3][0] = 0.10; cor[3][1] = 0.40; cor[3][2] = 0.60; cor[3][3] = 1.00;
+    Matrix correlation(4,4);
+    correlation[0][0] = 1.00;
+                    correlation[0][1] = 0.50; 
+                                    correlation[0][2] = 0.30; 
+                                                    correlation[0][3] = 0.10;
+    correlation[1][0] = 0.50; 
+                    correlation[1][1] = 1.00;
+                                    correlation[1][2] = 0.20;
+                                                    correlation[1][3] = 0.40;
+    correlation[2][0] = 0.30;
+                    correlation[2][1] = 0.20;
+                                    correlation[2][2] = 1.00;
+                                                    correlation[2][3] = 0.60;
+    correlation[3][0] = 0.10; 
+                    correlation[3][1] = 0.40;
+                                    correlation[3][2] = 0.60;
+                                                    correlation[3][3] = 1.00;
 
-    Array volatilities(4);
-    volatilities[0] = 0.30;
-    volatilities[1] = 0.35;
-    volatilities[2] = 0.25;
-    volatilities[3] = 0.20;
+    std::vector<RelinkableHandle<BlackVolTermStructure> > volatilities(4);
+    volatilities[0] = RelinkableHandle<BlackVolTermStructure>(
+                                       makeFlatVolatility(0.30, Actual365()));
+    volatilities[1] = RelinkableHandle<BlackVolTermStructure>(
+                                       makeFlatVolatility(0.35, Actual365()));
+    volatilities[2] = RelinkableHandle<BlackVolTermStructure>(
+                                       makeFlatVolatility(0.25, Actual365()));
+    volatilities[3] = RelinkableHandle<BlackVolTermStructure>(
+                                       makeFlatVolatility(0.20, Actual365()));
 
-    Matrix covariance = getCovariance(volatilities.begin(),
-                                      volatilities.end(), cor);
+    std::vector<RelinkableHandle<TermStructure> > dividendYields(4);
+    dividendYields[0] = RelinkableHandle<TermStructure>(
+                                            makeFlatCurve(0.01, Actual365()));
+    dividendYields[1] = RelinkableHandle<TermStructure>(
+                                            makeFlatCurve(0.05, Actual365()));
+    dividendYields[2] = RelinkableHandle<TermStructure>(
+                                            makeFlatCurve(0.04, Actual365()));
+    dividendYields[3] = RelinkableHandle<TermStructure>(
+                                            makeFlatCurve(0.03, Actual365()));
 
-    Array dividendYields(4);
-    dividendYields[0] = 0.01;
-    dividendYields[1] = 0.05;
-    dividendYields[2] = 0.04;
-    dividendYields[3] = 0.03;
-
-    Rate riskFreeRate = 0.05;
+    RelinkableHandle<TermStructure> riskFreeRate(
+                                            makeFlatCurve(0.05, Actual365()));
     Time resTime = 1.0;
 
     // degenerate portfolio
     Matrix perfectCorrelation(4,4,1.0);
-    Array sameAssetVols(4,0.3);
-    Matrix sameAssetCovariance = getCovariance(sameAssetVols.begin(),
-                                               sameAssetVols.end(),
-                                               perfectCorrelation);
-    Array sameAssetDividend(4,0.03);
+    RelinkableHandle<BlackVolTermStructure> sameVol(
+                                       makeFlatVolatility(0.30, Actual365()));
+    RelinkableHandle<TermStructure> sameDividend(
+                                       makeFlatCurve(0.03, Actual365()));
+
+    std::vector<RelinkableHandle<BlackVolTermStructure> > 
+        sameAssetVols(4, sameVol);
+    std::vector<RelinkableHandle<TermStructure> > 
+        sameAssetDividend(4, sameDividend);
 
     Size seed = 86421;
 
     // McEverest
-    testMcMFPricer(McEverest(dividendYields, covariance,
-                             riskFreeRate, resTime, seed),
-                   0.7576728045,
-                   1.0e-5,
+    testMcMFPricer(McEverest(dividendYields, riskFreeRate, volatilities,
+                             correlation, resTime, seed),
+                   0.75784944,
+                   1.0e-8,
                    "McEverest");
 
     // McBasket
@@ -795,9 +817,10 @@ void OldPricerTest::testMcMultiFactorPricers() {
     Option::Type type = Option::Call;
     double strike = 100.0;
     testMcMFPricer(McBasket(type, sameAssetValues, strike, sameAssetDividend,
-                            sameAssetCovariance, riskFreeRate, resTime, seed),
-                   12.6949338213,
-                   1.0e-3,
+                            riskFreeRate, sameAssetVols, perfectCorrelation,
+                            resTime, seed),
+                   12.69493382,
+                   1.0e-8,
                    "McBasket");
 
     // McMaxBasket
@@ -806,10 +829,10 @@ void OldPricerTest::testMcMultiFactorPricers() {
     assetValues[1] = 110.0;
     assetValues[2] =  90.0;
     assetValues[3] = 105.0;
-    testMcMFPricer(McMaxBasket(assetValues, dividendYields, covariance,
-                               riskFreeRate, resTime, seed),
-                   122.9022162184,
-                   1.0e-5,
+    testMcMFPricer(McMaxBasket(assetValues, dividendYields, riskFreeRate,
+                               volatilities, correlation, resTime, seed),
+                   122.87781492,
+                   1.0e-8,
                    "McMaxBasket");
 
     // McPagoda
@@ -826,19 +849,19 @@ void OldPricerTest::testMcMultiFactorPricers() {
     timeIncrements[2] = 0.75;
     timeIncrements[3] = 1.00;
     testMcMFPricer(McPagoda(portfolio, fraction, roof, dividendYields,
-                            covariance, riskFreeRate, timeIncrements,
-                            seed),
-                   0.0375712308,
-                   1.0e-5,
+                            riskFreeRate, volatilities, correlation,
+                            timeIncrements, seed),
+                   0.03829317,
+                   1.0e-8,
                    "McPagoda");
 
     // McHimalaya
     strike = 101.0;
-    testMcMFPricer(McHimalaya(assetValues, dividendYields, covariance,
-                              riskFreeRate, strike, timeIncrements,
-                              seed),
-                   5.8695504793,
-                   1.0e-5,
+    testMcMFPricer(McHimalaya(assetValues, dividendYields, riskFreeRate,
+                              volatilities, correlation, strike, 
+                              timeIncrements, seed),
+                   5.80409038,
+                   1.0e-8,
                    "McHimalaya");
 }
 

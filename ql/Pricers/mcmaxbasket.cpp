@@ -16,7 +16,6 @@
 */
 
 #include <ql/Pricers/mcmaxbasket.hpp>
-#include <ql/TermStructures/flatforward.hpp>
 
 namespace QuantLib {
 
@@ -66,46 +65,53 @@ namespace QuantLib {
     }
 
 
-    McMaxBasket::McMaxBasket(const std::vector<double>& underlying,
-                             const Array& dividendYield, 
-                             const Matrix& covariance,
-                             Rate riskFreeRate,  double residualTime,
-                             long seed) {
+    McMaxBasket::McMaxBasket(
+               const std::vector<double>& underlying,
+               const std::vector<RelinkableHandle<TermStructure> >& 
+                                                             dividendYield,
+               const RelinkableHandle<TermStructure>& riskFreeRate,
+               const std::vector<RelinkableHandle<BlackVolTermStructure> >& 
+                                                             volatilities,
+               const Matrix& correlation,
+               double residualTime,
+               long seed) {
 
-        QL_REQUIRE(covariance.rows() == covariance.columns(),
-                   "McMaxBasket: covariance matrix not square");
-        QL_REQUIRE(covariance.rows() == underlying.size(),
+        QL_REQUIRE(correlation.rows() == correlation.columns(),
+                   "McMaxBasket: correlation matrix not square");
+        QL_REQUIRE(correlation.rows() == underlying.size(),
                    "McMaxBasket: underlying size does not match that of"
-                   " covariance matrix");
-        QL_REQUIRE(covariance.rows() == dividendYield.size(),
+                   " correlation matrix");
+        QL_REQUIRE(correlation.rows() == dividendYield.size(),
                    "McMaxBasket: dividendYield size does not match"
-                   " that of covariance matrix");
+                   " that of correlation matrix");
         QL_REQUIRE(residualTime > 0,
                    "McMaxBasket: residual time must be positive");
 
         // initialize the path generator
-        Array mu(riskFreeRate - dividendYield
-                 - 0.5 * covariance.diagonal());
+        Size n = underlying.size();
+        std::vector<boost::shared_ptr<DiffusionProcess> > processes(n);
+        for (Size i=0; i<n; i++)
+            processes[i] = Handle<DiffusionProcess>(
+                    new BlackScholesProcess(riskFreeRate, dividendYield[i],
+                                            volatilities[i], underlying[i]));
+
+        TimeGrid grid(residualTime, 1);
+        PseudoRandom::rsg_type rsg = 
+            PseudoRandom::make_sequence_generator(n*(grid.size()-1),seed);
 
         boost::shared_ptr<GaussianMultiPathGenerator> pathGenerator(
-            new GaussianMultiPathGenerator(mu, covariance,
-            TimeGrid(residualTime, 1), seed));
-
-        RelinkableHandle<TermStructure> discount(
-                  Handle<TermStructure>(
-                      new FlatForward(Date::todaysDate(), Date::todaysDate(), 
-                                      riskFreeRate)));
+            new GaussianMultiPathGenerator(processes, correlation, grid, 
+                                           rsg, false));
 
         // initialize the path pricer
         boost::shared_ptr<PathPricer<MultiPath> > pathPricer(
-            new MaxBasketPathPricer(underlying, discount));
+            new MaxBasketPathPricer(underlying, riskFreeRate));
 
         // initialize the multi-factor Monte Carlo
-        mcModel_ = boost::shared_ptr<MonteCarloModel<MultiAsset_old<
-                                          PseudoRandomSequence_old> > > (
-            new MonteCarloModel<MultiAsset_old<
-                                PseudoRandomSequence_old> > (pathGenerator,
-            pathPricer, Statistics(), false));
+        mcModel_ = boost::shared_ptr<MonteCarloModel<MultiAsset<
+                                                      PseudoRandom> > > (
+            new MonteCarloModel<MultiAsset<PseudoRandom> >(
+                             pathGenerator, pathPricer, Statistics(), false));
 
     }
 

@@ -17,7 +17,6 @@
 
 #include <ql/MonteCarlo/mctypedefs.hpp>
 #include <ql/Pricers/mchimalaya.hpp>
-#include <ql/TermStructures/flatforward.hpp>
 
 namespace QuantLib {
 
@@ -103,51 +102,54 @@ namespace QuantLib {
 
     }
 
-    McHimalaya::McHimalaya(const std::vector<double>& underlying,
-                           const Array& dividendYield, 
-                           const Matrix& covariance,
-                           Rate riskFreeRate, double strike,
-                           const std::vector<Time>& times,
-                           long seed) {
+    McHimalaya::McHimalaya(
+               const std::vector<double>& underlying,
+               const std::vector<RelinkableHandle<TermStructure> >& 
+                                                             dividendYield,
+               const RelinkableHandle<TermStructure>& riskFreeRate,
+               const std::vector<RelinkableHandle<BlackVolTermStructure> >& 
+                                                             volatilities,
+               const Matrix& correlation,
+               double strike,
+               const std::vector<Time>& times,
+               long seed) {
 
-        Size  n = covariance.rows();
-        QL_REQUIRE(covariance.columns() == n,
-                   "McHimalaya: covariance matrix not square");
+        Size  n = correlation.rows();
+        QL_REQUIRE(correlation.columns() == n,
+                   "McHimalaya: correlation matrix not square");
         QL_REQUIRE(underlying.size() == n,
                    "McHimalaya: underlying size does not match that of"
-                   " covariance matrix");
+                   " correlation matrix");
         QL_REQUIRE(dividendYield.size() == n,
                    "McHimalaya: dividendYield size does not match"
-                   " that of covariance matrix");
+                   " that of correlation matrix");
         QL_REQUIRE(times.size() >= 1,
                    "McHimalaya: you must have at least one time-step");
 
         // initialize the path generator
-        Array mu(riskFreeRate - dividendYield
-                 - 0.5 * covariance.diagonal());
+        std::vector<boost::shared_ptr<DiffusionProcess> > processes(n);
+        for (Size i=0; i<n; i++)
+            processes[i] = Handle<DiffusionProcess>(
+                    new BlackScholesProcess(riskFreeRate, dividendYield[i],
+                                            volatilities[i], underlying[i]));
+
+        TimeGrid grid(times.begin(), times.end());
+        PseudoRandom::rsg_type rsg = 
+            PseudoRandom::make_sequence_generator(n*(grid.size()-1),seed);
 
         boost::shared_ptr<GaussianMultiPathGenerator> pathGenerator(
-            new GaussianMultiPathGenerator(
-                mu, covariance,
-                TimeGrid(times.begin(), times.end()),
-                seed));
-        double residualTime = times[times.size()-1];
-
-        RelinkableHandle<TermStructure> discount(
-                  Handle<TermStructure>(
-                      new FlatForward(Date::todaysDate(), Date::todaysDate(), 
-                                      riskFreeRate)));
+            new GaussianMultiPathGenerator(processes, correlation, grid, 
+                                           rsg, false));
 
         // initialize the path pricer
         boost::shared_ptr<PathPricer<MultiPath> > pathPricer(
-            new HimalayaPathPricer(underlying, strike, discount));
+            new HimalayaPathPricer(underlying, strike, riskFreeRate));
 
         // initialize the multi-factor Monte Carlo
-        mcModel_ = boost::shared_ptr<MonteCarloModel<MultiAsset_old<
-                                          PseudoRandomSequence_old> > > (
-            new MonteCarloModel<MultiAsset_old<
-                                PseudoRandomSequence_old> > (
-            pathGenerator, pathPricer, Statistics(), false));
+        mcModel_ = boost::shared_ptr<MonteCarloModel<MultiAsset<
+                                                      PseudoRandom> > > (
+            new MonteCarloModel<MultiAsset<PseudoRandom> > (
+                             pathGenerator, pathPricer, Statistics(), false));
 
     }
 

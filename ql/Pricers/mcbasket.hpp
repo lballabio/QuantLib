@@ -28,15 +28,18 @@
 namespace QuantLib {
 
     //! simple example of multi-factor Monte Carlo pricer
-    class McBasket 
-        : public McPricer<MultiAsset_old<PseudoRandomSequence_old> > {
+    /*! \deprecated use BasketOption instead */
+    class McBasket : public McPricer<MultiAsset<PseudoRandom> > {
       public:
         McBasket(Option::Type type,
-                 const std::vector<double>& underlying,
+                 const std::vector<double>& underlyings,
                  double strike,
-                 const Array& dividendYield,
-                 const Matrix& covariance,
-                 Rate riskFreeRate,
+                 const std::vector<RelinkableHandle<TermStructure> >& 
+                                                             dividendYields,
+                 const RelinkableHandle<TermStructure>& riskFreeRate,
+                 const std::vector<RelinkableHandle<BlackVolTermStructure> >& 
+                                                             volatilities,
+                 const Matrix& correlation,
                  double residualTime,
                  long seed = 0);
     };

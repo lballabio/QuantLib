@@ -33,15 +33,17 @@ namespace QuantLib {
         fraction of the positive portfolio performance.  If the
         performance of the portfolio is below then the payoff is null.
     */
-    class McPagoda 
-        : public McPricer<MultiAsset_old<PseudoRandomSequence_old> > {
+    class McPagoda : public McPricer<MultiAsset<PseudoRandom> > {
       public:
-        McPagoda(const std::vector<double>& portfolio,
+        McPagoda(const std::vector<double>& underlyings,
                  double fraction,
                  double roof,
-                 const Array& dividendYield,
-                 const Matrix& covariance,
-                 Rate riskFreeRate,
+                 const std::vector<RelinkableHandle<TermStructure> >& 
+                                                             dividendYields,
+                 const RelinkableHandle<TermStructure>& riskFreeRate,
+                 const std::vector<RelinkableHandle<BlackVolTermStructure> >& 
+                                                             volatilities,
+                 const Matrix& correlation,
                  const std::vector<Time>& times,
                  long seed = 0);
     };

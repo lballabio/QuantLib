@@ -34,16 +34,19 @@ namespace QuantLib {
         N periods the option pays the max between the strike and the
         average of the best performers.
     */
-    class McHimalaya 
-        : public McPricer<MultiAsset_old<PseudoRandomSequence_old> > {
+    class McHimalaya : public McPricer<MultiAsset<PseudoRandom> > {
       public:
-        McHimalaya(const std::vector<double>& underlying,
-                   const Array& dividendYield,
-                   const Matrix& covariance,
-                   Rate riskFreeRate,
-                   double strike,
-                   const std::vector<Time>& times,
-                   long seed = 0);
+        McHimalaya(
+               const std::vector<double>& underlyings,
+               const std::vector<RelinkableHandle<TermStructure> >& 
+                                                             dividendYields,
+               const RelinkableHandle<TermStructure>& riskFreeRate,
+               const std::vector<RelinkableHandle<BlackVolTermStructure> >& 
+                                                             volatilities,
+               const Matrix& correlation,
+               double strike,
+               const std::vector<Time>& times,
+               long seed = 0);
     };
 
 }
