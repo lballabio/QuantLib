@@ -1,6 +1,7 @@
 
 GENERAL
 - develop a framework for stochastic processes
+- merge NesQuant code
 
 DOCUMENTATION
 - rewrite and/or update project overview
