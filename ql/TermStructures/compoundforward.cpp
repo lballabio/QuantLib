@@ -92,7 +92,8 @@ namespace QuantLib
 	 QL_REQUIRE(identifiers.size()==forwards_.size(),
 		    "Inconsistent number of Identifiers/Forward Rates");
 	 settlementDate_ = calendar.advance(todaysDate_,settlementDays_,Days);
-	 for (Size i=0; i<identifiers.size(); i++)
+     Size i;
+	 for (i=0; i<identifiers.size(); i++)
 	 {
 	    std::string identifier;
 	    Date aDate;
@@ -105,7 +106,7 @@ namespace QuantLib
 	 discounts_ = std::vector<DiscountFactor>();
 	 zeroYields_ = std::vector<Rate>();
    
-	 for (Size i=0; i<dates_.size(); i++)
+	 for (i=0; i<dates_.size(); i++)
 	    times_[i] = dayCounter_.yearFraction(settlementDate_, dates_[i]);
 	 
  	 fwdinterp_ = Handle<FwdInterpolation>

@@ -27,9 +27,6 @@ NULL=
 NULL=nul
 !ENDIF 
 
-CPP=cl.exe
-RSC=rc.exe
-
 !IF  "$(CFG)" == "QuantLib - Win32 Release"
 
 OUTDIR=.\build\Release
@@ -94,6 +91,8 @@ CLEAN :
 	-@erase "$(INTDIR)\chisquaredistribution.sbr"
 	-@erase "$(INTDIR)\cliquetoption.obj"
 	-@erase "$(INTDIR)\cliquetoption.sbr"
+	-@erase "$(INTDIR)\compoundforward.obj"
+	-@erase "$(INTDIR)\compoundforward.sbr"
 	-@erase "$(INTDIR)\conjugategradient.obj"
 	-@erase "$(INTDIR)\conjugategradient.sbr"
 	-@erase "$(INTDIR)\coxingersollross.obj"
@@ -104,6 +103,8 @@ CLEAN :
 	-@erase "$(INTDIR)\date.sbr"
 	-@erase "$(INTDIR)\daycounters.obj"
 	-@erase "$(INTDIR)\daycounters.sbr"
+	-@erase "$(INTDIR)\discountcurve.obj"
+	-@erase "$(INTDIR)\discountcurve.sbr"
 	-@erase "$(INTDIR)\discretegeometricapo.obj"
 	-@erase "$(INTDIR)\discretegeometricapo.sbr"
 	-@erase "$(INTDIR)\discretegeometricaso.obj"
@@ -295,7 +296,40 @@ CLEAN :
 "$(OUTDIR)" :
     if not exist "$(OUTDIR)/$(NULL)" mkdir "$(OUTDIR)"
 
+CPP=cl.exe
 CPP_PROJ=/nologo /MD /W3 /Gi /GR /GX /Od /Ob2 /I ".\\" /D "NDEBUG" /D "WIN32" /D "_MBCS" /D "_LIB" /D "NOMINMAX" /FR"$(INTDIR)\\" /Fp"$(INTDIR)\QuantLib.pch" /YX /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\\" /FD /c 
+
+.c{$(INTDIR)}.obj::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.cpp{$(INTDIR)}.obj::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.cxx{$(INTDIR)}.obj::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.c{$(INTDIR)}.sbr::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.cpp{$(INTDIR)}.sbr::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.cxx{$(INTDIR)}.sbr::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+RSC=rc.exe
 BSC32=bscmake.exe
 BSC32_FLAGS=/nologo /o"$(OUTDIR)\QuantLib.bsc" 
 BSC32_SBRS= \
@@ -391,6 +425,8 @@ BSC32_SBRS= \
 	"$(INTDIR)\ridder.sbr" \
 	"$(INTDIR)\secant.sbr" \
 	"$(INTDIR)\affinetermstructure.sbr" \
+	"$(INTDIR)\compoundforward.sbr" \
+	"$(INTDIR)\discountcurve.sbr" \
 	"$(INTDIR)\piecewiseflatforward.sbr" \
 	"$(INTDIR)\ratehelpers.sbr" \
 	"$(INTDIR)\armijo.sbr" \
@@ -429,7 +465,7 @@ BSC32_SBRS= \
 <<
 
 LIB32=link.exe -lib
-LIB32_FLAGS=/nologo /out:"lib\Win32\VisualStudio\QuantLib.lib" 
+LIB32_FLAGS=/nologo /out:".\lib\Win32\VisualStudio\QuantLib.lib" 
 LIB32_OBJS= \
 	"$(INTDIR)\frankfurt.obj" \
 	"$(INTDIR)\helsinki.obj" \
@@ -523,6 +559,8 @@ LIB32_OBJS= \
 	"$(INTDIR)\ridder.obj" \
 	"$(INTDIR)\secant.obj" \
 	"$(INTDIR)\affinetermstructure.obj" \
+	"$(INTDIR)\compoundforward.obj" \
+	"$(INTDIR)\discountcurve.obj" \
 	"$(INTDIR)\piecewiseflatforward.obj" \
 	"$(INTDIR)\ratehelpers.obj" \
 	"$(INTDIR)\armijo.obj" \
@@ -624,6 +662,8 @@ CLEAN :
 	-@erase "$(INTDIR)\chisquaredistribution.sbr"
 	-@erase "$(INTDIR)\cliquetoption.obj"
 	-@erase "$(INTDIR)\cliquetoption.sbr"
+	-@erase "$(INTDIR)\compoundforward.obj"
+	-@erase "$(INTDIR)\compoundforward.sbr"
 	-@erase "$(INTDIR)\conjugategradient.obj"
 	-@erase "$(INTDIR)\conjugategradient.sbr"
 	-@erase "$(INTDIR)\coxingersollross.obj"
@@ -634,6 +674,8 @@ CLEAN :
 	-@erase "$(INTDIR)\date.sbr"
 	-@erase "$(INTDIR)\daycounters.obj"
 	-@erase "$(INTDIR)\daycounters.sbr"
+	-@erase "$(INTDIR)\discountcurve.obj"
+	-@erase "$(INTDIR)\discountcurve.sbr"
 	-@erase "$(INTDIR)\discretegeometricapo.obj"
 	-@erase "$(INTDIR)\discretegeometricapo.sbr"
 	-@erase "$(INTDIR)\discretegeometricaso.obj"
@@ -826,7 +868,40 @@ CLEAN :
 "$(OUTDIR)" :
     if not exist "$(OUTDIR)/$(NULL)" mkdir "$(OUTDIR)"
 
+CPP=cl.exe
 CPP_PROJ=/nologo /MDd /W3 /Gi /GR /GX /ZI /Od /I ".\\" /D "_DEBUG" /D "QL_DEBUG" /D "WIN32" /D "_MBCS" /D "_LIB" /D "NOMINMAX" /FR"$(INTDIR)\\" /Fp"$(INTDIR)\QuantLib.pch" /YX /Fo"$(INTDIR)\\" /Fd"lib\Win32\VisualStudio\QuantLib" /FD /GZ /c 
+
+.c{$(INTDIR)}.obj::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.cpp{$(INTDIR)}.obj::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.cxx{$(INTDIR)}.obj::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.c{$(INTDIR)}.sbr::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.cpp{$(INTDIR)}.sbr::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.cxx{$(INTDIR)}.sbr::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+RSC=rc.exe
 BSC32=bscmake.exe
 BSC32_FLAGS=/nologo /o"$(OUTDIR)\QuantLib.bsc" 
 BSC32_SBRS= \
@@ -922,6 +997,8 @@ BSC32_SBRS= \
 	"$(INTDIR)\ridder.sbr" \
 	"$(INTDIR)\secant.sbr" \
 	"$(INTDIR)\affinetermstructure.sbr" \
+	"$(INTDIR)\compoundforward.sbr" \
+	"$(INTDIR)\discountcurve.sbr" \
 	"$(INTDIR)\piecewiseflatforward.sbr" \
 	"$(INTDIR)\ratehelpers.sbr" \
 	"$(INTDIR)\armijo.sbr" \
@@ -1054,6 +1131,8 @@ LIB32_OBJS= \
 	"$(INTDIR)\ridder.obj" \
 	"$(INTDIR)\secant.obj" \
 	"$(INTDIR)\affinetermstructure.obj" \
+	"$(INTDIR)\compoundforward.obj" \
+	"$(INTDIR)\discountcurve.obj" \
 	"$(INTDIR)\piecewiseflatforward.obj" \
 	"$(INTDIR)\ratehelpers.obj" \
 	"$(INTDIR)\armijo.obj" \
@@ -1155,6 +1234,8 @@ CLEAN :
 	-@erase "$(INTDIR)\chisquaredistribution.sbr"
 	-@erase "$(INTDIR)\cliquetoption.obj"
 	-@erase "$(INTDIR)\cliquetoption.sbr"
+	-@erase "$(INTDIR)\compoundforward.obj"
+	-@erase "$(INTDIR)\compoundforward.sbr"
 	-@erase "$(INTDIR)\conjugategradient.obj"
 	-@erase "$(INTDIR)\conjugategradient.sbr"
 	-@erase "$(INTDIR)\coxingersollross.obj"
@@ -1165,6 +1246,8 @@ CLEAN :
 	-@erase "$(INTDIR)\date.sbr"
 	-@erase "$(INTDIR)\daycounters.obj"
 	-@erase "$(INTDIR)\daycounters.sbr"
+	-@erase "$(INTDIR)\discountcurve.obj"
+	-@erase "$(INTDIR)\discountcurve.sbr"
 	-@erase "$(INTDIR)\discretegeometricapo.obj"
 	-@erase "$(INTDIR)\discretegeometricapo.sbr"
 	-@erase "$(INTDIR)\discretegeometricaso.obj"
@@ -1356,7 +1439,40 @@ CLEAN :
 "$(OUTDIR)" :
     if not exist "$(OUTDIR)/$(NULL)" mkdir "$(OUTDIR)"
 
+CPP=cl.exe
 CPP_PROJ=/nologo /MD /W3 /Gi /GR /GX /Od /Ob2 /I ".\\" /D "NDEBUG" /D "WIN32" /D "_MBCS" /D "_LIB" /D "NOMINMAX" /FR"$(INTDIR)\\" /Fp"$(INTDIR)\QuantLib.pch" /YX /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\\" /FD /c 
+
+.c{$(INTDIR)}.obj::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.cpp{$(INTDIR)}.obj::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.cxx{$(INTDIR)}.obj::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.c{$(INTDIR)}.sbr::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.cpp{$(INTDIR)}.sbr::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.cxx{$(INTDIR)}.sbr::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+RSC=rc.exe
 BSC32=bscmake.exe
 BSC32_FLAGS=/nologo /o"$(OUTDIR)\QuantLib.bsc" 
 BSC32_SBRS= \
@@ -1452,6 +1568,8 @@ BSC32_SBRS= \
 	"$(INTDIR)\ridder.sbr" \
 	"$(INTDIR)\secant.sbr" \
 	"$(INTDIR)\affinetermstructure.sbr" \
+	"$(INTDIR)\compoundforward.sbr" \
+	"$(INTDIR)\discountcurve.sbr" \
 	"$(INTDIR)\piecewiseflatforward.sbr" \
 	"$(INTDIR)\ratehelpers.sbr" \
 	"$(INTDIR)\armijo.sbr" \
@@ -1584,6 +1702,8 @@ LIB32_OBJS= \
 	"$(INTDIR)\ridder.obj" \
 	"$(INTDIR)\secant.obj" \
 	"$(INTDIR)\affinetermstructure.obj" \
+	"$(INTDIR)\compoundforward.obj" \
+	"$(INTDIR)\discountcurve.obj" \
 	"$(INTDIR)\piecewiseflatforward.obj" \
 	"$(INTDIR)\ratehelpers.obj" \
 	"$(INTDIR)\armijo.obj" \
@@ -1685,6 +1805,8 @@ CLEAN :
 	-@erase "$(INTDIR)\chisquaredistribution.sbr"
 	-@erase "$(INTDIR)\cliquetoption.obj"
 	-@erase "$(INTDIR)\cliquetoption.sbr"
+	-@erase "$(INTDIR)\compoundforward.obj"
+	-@erase "$(INTDIR)\compoundforward.sbr"
 	-@erase "$(INTDIR)\conjugategradient.obj"
 	-@erase "$(INTDIR)\conjugategradient.sbr"
 	-@erase "$(INTDIR)\coxingersollross.obj"
@@ -1695,6 +1817,8 @@ CLEAN :
 	-@erase "$(INTDIR)\date.sbr"
 	-@erase "$(INTDIR)\daycounters.obj"
 	-@erase "$(INTDIR)\daycounters.sbr"
+	-@erase "$(INTDIR)\discountcurve.obj"
+	-@erase "$(INTDIR)\discountcurve.sbr"
 	-@erase "$(INTDIR)\discretegeometricapo.obj"
 	-@erase "$(INTDIR)\discretegeometricapo.sbr"
 	-@erase "$(INTDIR)\discretegeometricaso.obj"
@@ -1887,7 +2011,40 @@ CLEAN :
 "$(OUTDIR)" :
     if not exist "$(OUTDIR)/$(NULL)" mkdir "$(OUTDIR)"
 
+CPP=cl.exe
 CPP_PROJ=/nologo /MDd /W3 /Gi /GR /GX /ZI /Od /I ".\\" /D "_DEBUG" /D "QL_DEBUG" /D "WIN32" /D "_MBCS" /D "_LIB" /D "NOMINMAX" /FR"$(INTDIR)\\" /Fp"$(INTDIR)\QuantLib.pch" /YX /Fo"$(INTDIR)\\" /Fd"lib\Win32\VisualStudio\QuantLib" /FD /GZ /c 
+
+.c{$(INTDIR)}.obj::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.cpp{$(INTDIR)}.obj::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.cxx{$(INTDIR)}.obj::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.c{$(INTDIR)}.sbr::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.cpp{$(INTDIR)}.sbr::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.cxx{$(INTDIR)}.sbr::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+RSC=rc.exe
 BSC32=bscmake.exe
 BSC32_FLAGS=/nologo /o"$(OUTDIR)\QuantLib.bsc" 
 BSC32_SBRS= \
@@ -1983,6 +2140,8 @@ BSC32_SBRS= \
 	"$(INTDIR)\ridder.sbr" \
 	"$(INTDIR)\secant.sbr" \
 	"$(INTDIR)\affinetermstructure.sbr" \
+	"$(INTDIR)\compoundforward.sbr" \
+	"$(INTDIR)\discountcurve.sbr" \
 	"$(INTDIR)\piecewiseflatforward.sbr" \
 	"$(INTDIR)\ratehelpers.sbr" \
 	"$(INTDIR)\armijo.sbr" \
@@ -2115,6 +2274,8 @@ LIB32_OBJS= \
 	"$(INTDIR)\ridder.obj" \
 	"$(INTDIR)\secant.obj" \
 	"$(INTDIR)\affinetermstructure.obj" \
+	"$(INTDIR)\compoundforward.obj" \
+	"$(INTDIR)\discountcurve.obj" \
 	"$(INTDIR)\piecewiseflatforward.obj" \
 	"$(INTDIR)\ratehelpers.obj" \
 	"$(INTDIR)\armijo.obj" \
@@ -2153,36 +2314,6 @@ LIB32_OBJS= \
 <<
 
 !ENDIF 
-
-.c{$(INTDIR)}.obj::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-.cpp{$(INTDIR)}.obj::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-.cxx{$(INTDIR)}.obj::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-.c{$(INTDIR)}.sbr::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-.cpp{$(INTDIR)}.sbr::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-.cxx{$(INTDIR)}.sbr::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
 
 
 !IF "$(NO_EXTERNAL_DEPS)" != "1"
@@ -2744,6 +2875,18 @@ SOURCE=.\ql\Solvers1D\secant.cpp
 SOURCE=.\ql\TermStructures\affinetermstructure.cpp
 
 "$(INTDIR)\affinetermstructure.obj"	"$(INTDIR)\affinetermstructure.sbr" : $(SOURCE) "$(INTDIR)"
+	$(CPP) $(CPP_PROJ) $(SOURCE)
+
+
+SOURCE=.\ql\TermStructures\compoundforward.cpp
+
+"$(INTDIR)\compoundforward.obj"	"$(INTDIR)\compoundforward.sbr" : $(SOURCE) "$(INTDIR)"
+	$(CPP) $(CPP_PROJ) $(SOURCE)
+
+
+SOURCE=.\ql\TermStructures\discountcurve.cpp
+
+"$(INTDIR)\discountcurve.obj"	"$(INTDIR)\discountcurve.sbr" : $(SOURCE) "$(INTDIR)"
 	$(CPP) $(CPP_PROJ) $(SOURCE)
 
 

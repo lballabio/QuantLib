@@ -13,6 +13,7 @@ include_HEADERS = \
     gammadistribution.hpp \
 	lexicographicalview.hpp \
 	linearinterpolation.hpp \
+	loglinearinterpolation.hpp \
 	matrix.hpp \
 	multivariateaccumulator.hpp \
 	normaldistribution.hpp \

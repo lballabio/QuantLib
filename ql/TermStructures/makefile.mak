@@ -17,6 +17,8 @@ BCC_INCLUDE    = $(MAKEDIR)\..\include
 # Object files
 OBJS = \
     affinetermstructure.obj$(_D) \
+    compoundforward.obj$(_D) \
+    discountcurve.obj$(_D) \
     piecewiseflatforward.obj$(_D) \
     ratehelpers.obj$(_D)
 
