@@ -28,6 +28,10 @@
     $Source$
     $Name$
     $Log$
+    Revision 1.26  2001/02/15 15:57:41  marmar
+    Defined QL_MIN_VOLATILITY 0.0005 and
+    QL_MAX_VOLATILITY 3.0
+
     Revision 1.25  2001/02/15 15:30:30  marmar
     dVolMultiplier and dRMultiplier defined
     constant
@@ -78,12 +82,6 @@ namespace QuantLib {
             theGridPoints(safeGridPoints(gridPoints, residualTime)),
             theGrid(theGridPoints), theInitialPrices(theGridPoints){
                 hasBeenCalculated = false;
-                QL_REQUIRE(volatility >= 0.001, 
-                        "BSMNumericalOption: volatility to low "
-                        "for a meaningful result");
-                QL_REQUIRE(volatility <= 3.0, 
-                        "BSMNumericalOption: volatility to high "
-                        "for a meaningful result");
         }
         
         double BSMNumericalOption::delta() const {
@@ -110,10 +108,10 @@ namespace QuantLib {
                 if(!hasBeenCalculated) 
                     value();
                 Handle<BSMOption> brandNewFD = clone();
-                double volMinus=theVolatility*(1.0-dVolMultiplier);
-                brandNewFD->setVolatility(volMinus);        
-                theVega=(value() - brandNewFD->value()) / 
-                    (theVolatility*dVolMultiplier);          
+                double volMinus = theVolatility * (1.0 - dVolMultiplier);
+                brandNewFD -> setVolatility(volMinus);        
+                theVega = (value() - brandNewFD -> value()) / 
+                    (theVolatility * dVolMultiplier);          
                 vegaComputed = true;
             }
             return theVega;
@@ -125,10 +123,10 @@ namespace QuantLib {
                 if(!hasBeenCalculated) 
                     value();
                 Handle<BSMOption> brandNewFD = clone();
-                Rate rMinus=theRiskFreeRate*(1.0-dRMultiplier);        
-                brandNewFD->setRiskFreeRate(rMinus);
-                theRho=(value() - brandNewFD->value()) / 
-                    (theRiskFreeRate*dRMultiplier);
+                Rate rMinus=theRiskFreeRate * (1.0 - dRMultiplier);        
+                brandNewFD -> setRiskFreeRate(rMinus);
+                theRho=(value() - brandNewFD -> value()) / 
+                    (theRiskFreeRate * dRMultiplier);
                 rhoComputed  = true;
             }
             return theRho;
@@ -136,7 +134,7 @@ namespace QuantLib {
         
         void BSMNumericalOption::setGridLimits() const {
             // correction for small volatilities
-            double prefactor = 1.0+0.05/theVolatility;
+            double prefactor = 1.0 + 0.05/theVolatility;
             double minMaxFactor = 
                 QL_EXP(4.0*prefactor*theVolatility*QL_SQRT(theResidualTime));
             sMin = theUnderlying/minMaxFactor;  // underlying grid min value
@@ -188,9 +186,11 @@ namespace QuantLib {
         void BSMNumericalOption::initializeOperator() const {
             theOperator = BSMOperator(theGridPoints, theGridLogSpacing, 
                 theRiskFreeRate, dividendYield_, theVolatility);
+                
             theOperator.setLowerBC(
                 BoundaryCondition(BoundaryCondition::Neumann,
                     theInitialPrices[1]-theInitialPrices[0]));
+                    
             theOperator.setHigherBC(
                 BoundaryCondition(BoundaryCondition::Neumann,
                     theInitialPrices[theGridPoints-1] - 
@@ -198,7 +198,7 @@ namespace QuantLib {
         }
         
         // Useful functions
-        
+                
         double BSMNumericalOption::valueAtCenter(const Array& a) const {
             int jmid = a.size()/2;
             if (a.size() % 2 == 1)

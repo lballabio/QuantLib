@@ -28,6 +28,10 @@
     $Source$
     $Name$
     $Log$
+    Revision 1.21  2001/02/15 15:57:41  marmar
+    Defined QL_MIN_VOLATILITY 0.0005 and
+    QL_MAX_VOLATILITY 3.0
+
     Revision 1.20  2001/02/15 15:27:52  marmar
     Now impliedVol is called with default values for maxVolatility
     and minVolatility
@@ -72,8 +76,10 @@ namespace QuantLib {
                 "BSMOption::BSMOption : underlying must be positive");
             QL_REQUIRE(residualTime > 0.0,
                 "BSMOption::BSMOption : residual time must be positive");
-            QL_REQUIRE(volatility > 0.0,
-                "BSMOption::BSMOption : volatility must be positive");
+            QL_REQUIRE(volatility >= QL_MIN_VOLATILITY,
+                 "BSMOption: Volatility to small");
+            QL_REQUIRE(volatility <= QL_MAX_VOLATILITY, 
+                "BSMOption: Volatility to high");
         }
 
         double BSMOption::impliedVolatility(double targetValue, double accuracy, 

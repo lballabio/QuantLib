@@ -28,6 +28,10 @@
     $Source$
     $Name$
     $Log$
+    Revision 1.10  2001/02/15 15:58:03  marmar
+    Defined QL_MIN_VOLATILITY 0.0005 and
+    QL_MAX_VOLATILITY 3.0
+
     Revision 1.9  2001/02/15 15:27:10  marmar
     New constructor with default values for maxVolatility
     and minVolatility
@@ -63,6 +67,9 @@
 #include "handle.h"
 #include "solver1d.h"
 
+#define QL_MIN_VOLATILITY 0.0005
+#define QL_MAX_VOLATILITY 3.0
+
 namespace QuantLib {
 
     namespace Pricers {
@@ -85,7 +92,8 @@ namespace QuantLib {
             virtual double rho() const = 0;
             double impliedVolatility(double targetValue, 
                 double accuracy = 1e-4, int maxEvaluations = 100,
-                double minVol = 0.0005, double maxVol = 3.0) const ;
+                double minVol = QL_MIN_VOLATILITY, 
+                double maxVol = QL_MAX_VOLATILITY) const ;
             virtual Handle<BSMOption> clone() const = 0;
           protected:
             // input data
@@ -123,8 +131,14 @@ namespace QuantLib {
         };
 
         inline void BSMOption::setVolatility(double volatility) {
-            QL_REQUIRE(volatility >= 0.0,
-                 "BSMOption::setVolatility : Volatility must be positive");
+            QL_REQUIRE(volatility >= QL_MIN_VOLATILITY,
+                 "BSMOption::setVolatility : Volatility to small");
+
+            QL_REQUIRE(volatility <= QL_MAX_VOLATILITY, 
+                "BSMOption::setVolatility : Volatility to high "
+                "for a meaningful result");
+
+ 
             theVolatility = volatility;
             hasBeenCalculated=false;
         }
