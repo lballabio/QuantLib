@@ -1,5 +1,4 @@
 #!/bin/sh
-patch -p1 < patches/darwin.configure
 patch -p1 < patches/darwin.history
 patch -p1 < patches/darwin.BermudanSwaption
 

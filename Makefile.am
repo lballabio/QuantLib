@@ -1,11 +1,7 @@
 
 # $Id$
 
-#AUTOMAKE_OPTIONS=foreign dist-bzip2
-
-AUTOMAKE_OPTIONS=foreign
-SUBDIRS=config ql man lib Docs Examples patches
-CFLAGS=-Wall
+SUBDIRS=config ql man lib Docs Examples
 
 bin_SCRIPTS = quantlib-config
 
@@ -33,10 +29,6 @@ EXTRA_DIST = \
 	makefile.mak \
 	quantlib.m4 \
 	solaris.setup
-
-
-tags:
-	cd ql && find . -name '*.[hc]pp' -print | etags --members -
 
 
 docs-all:

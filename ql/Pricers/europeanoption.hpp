@@ -1,5 +1,4 @@
 
-
 /*
  Copyright (C) 2000, 2001, 2002 RiskMap srl
 
@@ -15,6 +14,7 @@
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
+
 /*! \file europeanoption.hpp
     \brief european option
 
@@ -57,7 +57,11 @@ namespace QuantLib {
             void setDividendYield(Rate newDividendYield);
             double beta() const;
           private:
+            #if defined(QL_PATCH_SOLARIS)
+            Math::CumulativeNormalDistribution f_;
+            #else
             static const Math::CumulativeNormalDistribution f_;
+            #endif
             double alpha() const;
             double standardDeviation() const;
             double D1() const;

@@ -1,5 +1,4 @@
 
-
 /*
  Copyright (C) 2000, 2001, 2002 RiskMap srl
 
@@ -15,6 +14,7 @@
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
+
 /*! \file history.hpp
     \brief history class
 
@@ -132,7 +132,11 @@ namespace QuantLib {
             friend class const_iterator;
           public:
             Entry() {
+                #if defined(QL_PATCH_DARWIN)
+                std::vector<double> v(1,Null<double>());
+                #else
                 static std::vector<double> v(1,Null<double>());
+                #endif
                 date_ = Date();
                 value_ = v.begin();
             }

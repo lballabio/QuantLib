@@ -1,7 +1,4 @@
 config.hpp
 config.hpp.in
-stamp-h
-stamp-h.in
+stamp-h1
 .qldefines.hpp
-*.lib
-*.obj_d

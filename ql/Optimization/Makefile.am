@@ -1,9 +1,8 @@
+
 # $Id$
 
-INCLUDES= -I${top_srcdir} -I${top_builddir}
+AM_CPPFLAGS = -I${top_srcdir} -I${top_builddir}
 includedir = $(prefix)/include/ql/Optimization
-
-# SUBDIRS = GeneticAlgorithms
 
 include_HEADERS = \
     armijo.hpp \

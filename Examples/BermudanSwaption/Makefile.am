@@ -1,9 +1,9 @@
-CXXFLAGS = @CXXFLAGS@ @QUANTLIB_CXXFLAGS@
-INCLUDES = -I${top_srcdir} -I${top_builddir}
+
+AM_CPPFLAGS = -I${top_srcdir} -I${top_builddir}
 
 bin_PROGRAMS = BermudanSwaption
 BermudanSwaption_SOURCES = BermudanSwaption.cpp
-BermudanSwaption_LDADD = @QUANTLIB_LIBS@
+BermudanSwaption_LDADD = ../../ql/libQuantLib.la
 
 TESTS = BermudanSwaption@EXEEXT@
 

@@ -1,8 +1,9 @@
 
 # $Id$
 
-INCLUDES= -I${top_srcdir} -I${top_builddir}
+AM_CPPFLAGS = -I${top_srcdir} -I${top_builddir}
 includedir = $(prefix)/include/ql/DayCounters
+
 include_HEADERS = \
 	actual360.hpp \
 	actual365.hpp \

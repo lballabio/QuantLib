@@ -1,9 +1,9 @@
-CXXFLAGS = @CXXFLAGS@ @QUANTLIB_CXXFLAGS@
-INCLUDES = -I${top_srcdir} -I${top_builddir}
+
+AM_CPPFLAGS = -I${top_srcdir} -I${top_builddir}
 
 bin_PROGRAMS = DiscreteHedging
 DiscreteHedging_SOURCES = DiscreteHedging.cpp
-DiscreteHedging_LDADD = @QUANTLIB_LIBS@
+DiscreteHedging_LDADD = ../../ql/libQuantLib.la
 
 TESTS = DiscreteHedging@EXEEXT@
 

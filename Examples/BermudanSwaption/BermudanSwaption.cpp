@@ -1,3 +1,4 @@
+
 /*!
  Copyright (C) 2000, 2001, 2002 Sadruddin Rejeb
 
@@ -63,6 +64,11 @@ void calibrateModel(const Handle<Model>& model,
     Handle<Optimization::Method> om(new Optimization::Simplex(lambda, 1e-9));
     om->setEndCriteria(Optimization::EndCriteria(10000, 1e-7));
     model->calibrate(calibs, om);
+
+    #if defined(QL_PATCH_DARWIN)
+    // to be investigated
+    return;
+    #endif
 
     //Output the implied Black volatilities
     Size i;

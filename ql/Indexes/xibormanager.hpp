@@ -1,5 +1,4 @@
 
-
 /*
  Copyright (C) 2000, 2001, 2002 RiskMap srl
 
@@ -15,6 +14,7 @@
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
+
 /*! \file xibormanager.hpp
     \brief global repository for %Xibor histories
 
@@ -42,11 +42,21 @@ namespace QuantLib {
             // historical fixings
             static void setHistory(const std::string& name,
                 const History&);
+            #if defined(QL_PATCH_SOLARIS)
+            static History getHistory(const std::string& name);
+            #else
             static const History& getHistory(const std::string& name);
+            #endif
             static bool hasHistory(const std::string& name);
             static std::vector<std::string> histories();
           private:
+            #if defined(QL_PATCH_SOLARIS)
+            static void checkHistoryMap();
+            static bool initialized_;
+            static HistoryMap* historyMap_;
+            #else
             static HistoryMap historyMap_;
+            #endif
         };
 
     }

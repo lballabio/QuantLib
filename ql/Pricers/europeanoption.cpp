@@ -1,5 +1,4 @@
 
-
 /*
  Copyright (C) 2000, 2001, 2002 RiskMap srl
 
@@ -15,6 +14,7 @@
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
+
 /*! \file europeanoption.cpp
     \brief european option
 
@@ -30,7 +30,9 @@ namespace QuantLib {
 
     namespace Pricers {
 
+        #if !defined(QL_PATCH_SOLARIS)
         const Math::CumulativeNormalDistribution EuropeanOption::f_;
+        #endif
 
         EuropeanOption::EuropeanOption(Option::Type type, double underlying,
             double strike, Spread dividendYield, Rate riskFreeRate,

@@ -14,6 +14,7 @@
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
+
 /*! \file qldefines.hpp
     \brief Global definitions and compiler switches.
 
@@ -30,6 +31,7 @@
 */
 
 #ifndef quantlib_defines_h
+/* install-hook */
 #define quantlib_defines_h
 
 /*! \defgroup macros Global QuantLib macros
@@ -213,13 +215,29 @@
 /*! @} */
 
 
+/*! \defgroup strMacros String functions
+    Some compilers still define string functions in the global namespace.
+    For the code to be portable these macros should be used instead of
+    the actual functions.
+    @{
+*/
+/*! \def QL_STRLEN  \brief string length */
+#if defined HAVE_CSTRING
+    #include <cstring>
+#elif defined HAVE_STRING_H
+    #include <string.h>
+#else
+    #error Neither <cstring> nor <string.h> found
+#endif
+/*! @} */
+
+
 /*! \defgroup charMacros Character functions
     Some compilers still define character functions in the global namespace.
     For the code to be portable these macros should be used instead of
     the actual functions.
     @{
 */
-/*! \def QL_STRLEN  \brief string length */
 /*! \def QL_TOUPPER \brief convert to uppercase */
 /*! \def QL_TOLOWER \brief convert to lowercase */
 #if defined HAVE_CCTYPE

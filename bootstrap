@@ -4,12 +4,9 @@
 # configure program
 # this is known to work with the following tools:
 #
-# GNU automake 1.5
-# GNU Autoconf 2.52
-# GNU libtool 1.4.2
+# GNU Automake 1.5
+# GNU Autoconf 2.54
+# GNU Libtool 1.4.2
 
-aclocal
-autoheader
-automake --add-missing
-autoconf
+autoreconf --force --install
 

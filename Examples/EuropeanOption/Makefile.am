@@ -1,9 +1,9 @@
-CXXFLAGS = @CXXFLAGS@ @QUANTLIB_CXXFLAGS@
-INCLUDES = -I${top_srcdir} -I${top_builddir}
+
+AM_CPPFLAGS = -I${top_srcdir} -I${top_builddir}
 
 bin_PROGRAMS = EuropeanOption
 EuropeanOption_SOURCES = EuropeanOption.cpp
-EuropeanOption_LDADD = @QUANTLIB_LIBS@
+EuropeanOption_LDADD = ../../ql/libQuantLib.la
 
 TESTS = EuropeanOption@EXEEXT@
 

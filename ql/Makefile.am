@@ -1,7 +1,7 @@
 
 # $Id$
 
-INCLUDES= -I${top_srcdir} -I${top_builddir}
+AM_CPPFLAGS = -I${top_srcdir} -I${top_builddir}
 includedir = $(prefix)/include/ql
 
 SUBDIRS = \
@@ -73,7 +73,9 @@ include_HEADERS = \
 
 
 install-data-hook:
-	$(SED) -e 's/HAVE_CONFIG_H/QL_HAVE_CONFIG_H/;/#ifndef quantlib_defines_h/{G;s/$$/#define QL_HAVE_CONFIG_H/;}' $(includedir)/qldefines.hpp > .qldefines.hpp
+	$(SED) -e 's,HAVE_CONFIG_H,QL_HAVE_CONFIG_H,' \
+           -e 's,/* install-hook */,#define QL_HAVE_CONFIG_H,' \
+           $(includedir)/qldefines.hpp > .qldefines.hpp
 	$(INSTALL_DATA) .qldefines.hpp $(includedir)/qldefines.hpp
 depend:
 	makedepend $(INCLUDES) -- $(CFLAGS) -- $(SOURCES)
