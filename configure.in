@@ -46,7 +46,6 @@ using namespace Foo;
 ],[
 A a;
 ],[
-AC_DEFINE(QL_HAVE_NAMESPACES)
 ac_namespaces=yes
 ],[
 config_errors=yes
@@ -118,11 +117,6 @@ fi
 
 QL_FUN_IN_STD_HEADER([max],[algorithm],[1,2])
 QL_FUN_IN_STD_HEADER([min],[algorithm],[1,2])
-
-dnl QL_FUN_IN_STD_HEADER([random_access_iterator_tag],[iterator],[])
-
-QL_TMPL_IN_STD_HEADER([iterator],[std::random_access_iterator_tag,double],[iterator],[])
-dnl QL_TMPL_IN_STD_HEADER([iterator_traits],[double*],[iterator],[])
 
 AC_OUTPUT(Makefile Sources/Makefile Sources/FiniteDifferences/Makefile \
 	Sources/Calendars/Makefile \
