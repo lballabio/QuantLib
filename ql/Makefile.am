@@ -73,8 +73,8 @@ include_HEADERS = \
 
 
 install-data-hook:
-	$(SED) -e 's,HAVE_CONFIG_H,QL_HAVE_CONFIG_H,' \
-           -e 's,/* install-hook */,#define QL_HAVE_CONFIG_H,' \
+	$(SED) -e "s,HAVE_CONFIG_H,QL_HAVE_CONFIG_H," \
+               -e "s,/\* install-hook \*/,#define QL_HAVE_CONFIG_H," \
            $(includedir)/qldefines.hpp > .qldefines.hpp
 	$(INSTALL_DATA) .qldefines.hpp $(includedir)/qldefines.hpp
 depend:
