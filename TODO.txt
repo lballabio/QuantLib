@@ -1,4 +1,5 @@
 
+forbid automatic casting from int to unsigned int
 update automated build to take care of docs installer
 compile with gcc 3.0
 compile examples under linux
