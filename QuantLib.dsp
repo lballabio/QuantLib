@@ -139,6 +139,14 @@ LIB32=link.exe -lib
 # PROP Default_Filter ""
 # Begin Source File
 
+SOURCE=.\ql\Calendars\budapest.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\Calendars\budapest.hpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\ql\Calendars\frankfurt.cpp
 # End Source File
 # Begin Source File
@@ -187,6 +195,22 @@ SOURCE=.\ql\Calendars\newyork.hpp
 # End Source File
 # Begin Source File
 
+SOURCE=.\ql\Calendars\oslo.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\Calendars\oslo.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\Calendars\stockholm.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\Calendars\stockholm.hpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\ql\Calendars\sydney.cpp
 # End Source File
 # Begin Source File
@@ -216,6 +240,14 @@ SOURCE=.\ql\Calendars\toronto.cpp
 # Begin Source File
 
 SOURCE=.\ql\Calendars\toronto.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\Calendars\warsaw.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\Calendars\warsaw.hpp
 # End Source File
 # Begin Source File
 

@@ -56,16 +56,20 @@
 #include <ql/types.hpp>
 #include <ql/voltermstructure.hpp>
 
+#include <ql/Calendars/budapest.hpp>
 #include <ql/Calendars/frankfurt.hpp>
 #include <ql/Calendars/helsinki.hpp>
 #include <ql/Calendars/johannesburg.hpp>
 #include <ql/Calendars/london.hpp>
 #include <ql/Calendars/milan.hpp>
 #include <ql/Calendars/newyork.hpp>
+#include <ql/Calendars/oslo.hpp>
 #include <ql/Calendars/target.hpp>
 #include <ql/Calendars/tokyo.hpp>
 #include <ql/Calendars/toronto.hpp>
+#include <ql/Calendars/stockholm.hpp>
 #include <ql/Calendars/sydney.hpp>
+#include <ql/Calendars/warsaw.hpp>
 #include <ql/Calendars/wellington.hpp>
 #include <ql/Calendars/zurich.hpp>
 

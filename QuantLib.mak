@@ -57,6 +57,7 @@ CLEAN :
 	-@erase "$(INTDIR)\brent.obj"
 	-@erase "$(INTDIR)\bsmlattice.obj"
 	-@erase "$(INTDIR)\bsmoperator.obj"
+	-@erase "$(INTDIR)\budapest.obj"
 	-@erase "$(INTDIR)\calendar.obj"
 	-@erase "$(INTDIR)\calibrationhelper.obj"
 	-@erase "$(INTDIR)\capfloor.obj"
@@ -136,6 +137,7 @@ CLEAN :
 	-@erase "$(INTDIR)\onefactormodel.obj"
 	-@erase "$(INTDIR)\onefactoroperator.obj"
 	-@erase "$(INTDIR)\option.obj"
+	-@erase "$(INTDIR)\oslo.obj"
 	-@erase "$(INTDIR)\pagodapathpricer.obj"
 	-@erase "$(INTDIR)\performanceoption.obj"
 	-@erase "$(INTDIR)\performanceoptionpathpricer.obj"
@@ -154,6 +156,7 @@ CLEAN :
 	-@erase "$(INTDIR)\statistics.obj"
 	-@erase "$(INTDIR)\steepestdescent.obj"
 	-@erase "$(INTDIR)\stock.obj"
+	-@erase "$(INTDIR)\stockholm.obj"
 	-@erase "$(INTDIR)\swap.obj"
 	-@erase "$(INTDIR)\swaption.obj"
 	-@erase "$(INTDIR)\swaptionhelper.obj"
@@ -174,6 +177,7 @@ CLEAN :
 	-@erase "$(INTDIR)\vasicek.obj"
 	-@erase "$(INTDIR)\vc60.idb"
 	-@erase "$(INTDIR)\vols.obj"
+	-@erase "$(INTDIR)\warsaw.obj"
 	-@erase "$(INTDIR)\wellington.obj"
 	-@erase "$(INTDIR)\xibor.obj"
 	-@erase "$(INTDIR)\xibormanager.obj"
@@ -328,7 +332,11 @@ LIB32_OBJS= \
 	"$(INTDIR)\date.obj" \
 	"$(INTDIR)\option.obj" \
 	"$(INTDIR)\scheduler.obj" \
-	"$(INTDIR)\solver1d.obj"
+	"$(INTDIR)\solver1d.obj" \
+	"$(INTDIR)\oslo.obj" \
+	"$(INTDIR)\stockholm.obj" \
+	"$(INTDIR)\warsaw.obj" \
+	"$(INTDIR)\budapest.obj"
 
 ".\lib\Win32\VisualStudio\QuantLib.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
     $(LIB32) @<<
@@ -362,6 +370,7 @@ CLEAN :
 	-@erase "$(INTDIR)\brent.obj"
 	-@erase "$(INTDIR)\bsmlattice.obj"
 	-@erase "$(INTDIR)\bsmoperator.obj"
+	-@erase "$(INTDIR)\budapest.obj"
 	-@erase "$(INTDIR)\calendar.obj"
 	-@erase "$(INTDIR)\calibrationhelper.obj"
 	-@erase "$(INTDIR)\capfloor.obj"
@@ -441,6 +450,7 @@ CLEAN :
 	-@erase "$(INTDIR)\onefactormodel.obj"
 	-@erase "$(INTDIR)\onefactoroperator.obj"
 	-@erase "$(INTDIR)\option.obj"
+	-@erase "$(INTDIR)\oslo.obj"
 	-@erase "$(INTDIR)\pagodapathpricer.obj"
 	-@erase "$(INTDIR)\performanceoption.obj"
 	-@erase "$(INTDIR)\performanceoptionpathpricer.obj"
@@ -459,6 +469,7 @@ CLEAN :
 	-@erase "$(INTDIR)\statistics.obj"
 	-@erase "$(INTDIR)\steepestdescent.obj"
 	-@erase "$(INTDIR)\stock.obj"
+	-@erase "$(INTDIR)\stockholm.obj"
 	-@erase "$(INTDIR)\swap.obj"
 	-@erase "$(INTDIR)\swaption.obj"
 	-@erase "$(INTDIR)\swaptionhelper.obj"
@@ -478,6 +489,7 @@ CLEAN :
 	-@erase "$(INTDIR)\vanillaoption.obj"
 	-@erase "$(INTDIR)\vasicek.obj"
 	-@erase "$(INTDIR)\vols.obj"
+	-@erase "$(INTDIR)\warsaw.obj"
 	-@erase "$(INTDIR)\wellington.obj"
 	-@erase "$(INTDIR)\xibor.obj"
 	-@erase "$(INTDIR)\xibormanager.obj"
@@ -634,7 +646,11 @@ LIB32_OBJS= \
 	"$(INTDIR)\date.obj" \
 	"$(INTDIR)\option.obj" \
 	"$(INTDIR)\scheduler.obj" \
-	"$(INTDIR)\solver1d.obj"
+	"$(INTDIR)\solver1d.obj" \
+	"$(INTDIR)\oslo.obj" \
+	"$(INTDIR)\stockholm.obj" \
+	"$(INTDIR)\warsaw.obj" \
+	"$(INTDIR)\budapest.obj"
 
 ".\lib\Win32\VisualStudio\QuantLib_d.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
     $(LIB32) @<<
@@ -668,6 +684,7 @@ CLEAN :
 	-@erase "$(INTDIR)\brent.obj"
 	-@erase "$(INTDIR)\bsmlattice.obj"
 	-@erase "$(INTDIR)\bsmoperator.obj"
+	-@erase "$(INTDIR)\budapest.obj"
 	-@erase "$(INTDIR)\calendar.obj"
 	-@erase "$(INTDIR)\calibrationhelper.obj"
 	-@erase "$(INTDIR)\capfloor.obj"
@@ -747,6 +764,7 @@ CLEAN :
 	-@erase "$(INTDIR)\onefactormodel.obj"
 	-@erase "$(INTDIR)\onefactoroperator.obj"
 	-@erase "$(INTDIR)\option.obj"
+	-@erase "$(INTDIR)\oslo.obj"
 	-@erase "$(INTDIR)\pagodapathpricer.obj"
 	-@erase "$(INTDIR)\performanceoption.obj"
 	-@erase "$(INTDIR)\performanceoptionpathpricer.obj"
@@ -765,6 +783,7 @@ CLEAN :
 	-@erase "$(INTDIR)\statistics.obj"
 	-@erase "$(INTDIR)\steepestdescent.obj"
 	-@erase "$(INTDIR)\stock.obj"
+	-@erase "$(INTDIR)\stockholm.obj"
 	-@erase "$(INTDIR)\swap.obj"
 	-@erase "$(INTDIR)\swaption.obj"
 	-@erase "$(INTDIR)\swaptionhelper.obj"
@@ -785,6 +804,7 @@ CLEAN :
 	-@erase "$(INTDIR)\vasicek.obj"
 	-@erase "$(INTDIR)\vc60.idb"
 	-@erase "$(INTDIR)\vols.obj"
+	-@erase "$(INTDIR)\warsaw.obj"
 	-@erase "$(INTDIR)\wellington.obj"
 	-@erase "$(INTDIR)\xibor.obj"
 	-@erase "$(INTDIR)\xibormanager.obj"
@@ -939,7 +959,11 @@ LIB32_OBJS= \
 	"$(INTDIR)\date.obj" \
 	"$(INTDIR)\option.obj" \
 	"$(INTDIR)\scheduler.obj" \
-	"$(INTDIR)\solver1d.obj"
+	"$(INTDIR)\solver1d.obj" \
+	"$(INTDIR)\oslo.obj" \
+	"$(INTDIR)\stockholm.obj" \
+	"$(INTDIR)\warsaw.obj" \
+	"$(INTDIR)\budapest.obj"
 
 ".\lib\Win32\VisualStudio\QuantLib.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
     $(LIB32) @<<
@@ -973,6 +997,7 @@ CLEAN :
 	-@erase "$(INTDIR)\brent.obj"
 	-@erase "$(INTDIR)\bsmlattice.obj"
 	-@erase "$(INTDIR)\bsmoperator.obj"
+	-@erase "$(INTDIR)\budapest.obj"
 	-@erase "$(INTDIR)\calendar.obj"
 	-@erase "$(INTDIR)\calibrationhelper.obj"
 	-@erase "$(INTDIR)\capfloor.obj"
@@ -1052,6 +1077,7 @@ CLEAN :
 	-@erase "$(INTDIR)\onefactormodel.obj"
 	-@erase "$(INTDIR)\onefactoroperator.obj"
 	-@erase "$(INTDIR)\option.obj"
+	-@erase "$(INTDIR)\oslo.obj"
 	-@erase "$(INTDIR)\pagodapathpricer.obj"
 	-@erase "$(INTDIR)\performanceoption.obj"
 	-@erase "$(INTDIR)\performanceoptionpathpricer.obj"
@@ -1070,6 +1096,7 @@ CLEAN :
 	-@erase "$(INTDIR)\statistics.obj"
 	-@erase "$(INTDIR)\steepestdescent.obj"
 	-@erase "$(INTDIR)\stock.obj"
+	-@erase "$(INTDIR)\stockholm.obj"
 	-@erase "$(INTDIR)\swap.obj"
 	-@erase "$(INTDIR)\swaption.obj"
 	-@erase "$(INTDIR)\swaptionhelper.obj"
@@ -1089,6 +1116,7 @@ CLEAN :
 	-@erase "$(INTDIR)\vanillaoption.obj"
 	-@erase "$(INTDIR)\vasicek.obj"
 	-@erase "$(INTDIR)\vols.obj"
+	-@erase "$(INTDIR)\warsaw.obj"
 	-@erase "$(INTDIR)\wellington.obj"
 	-@erase "$(INTDIR)\xibor.obj"
 	-@erase "$(INTDIR)\xibormanager.obj"
@@ -1245,7 +1273,11 @@ LIB32_OBJS= \
 	"$(INTDIR)\date.obj" \
 	"$(INTDIR)\option.obj" \
 	"$(INTDIR)\scheduler.obj" \
-	"$(INTDIR)\solver1d.obj"
+	"$(INTDIR)\solver1d.obj" \
+	"$(INTDIR)\oslo.obj" \
+	"$(INTDIR)\stockholm.obj" \
+	"$(INTDIR)\warsaw.obj" \
+	"$(INTDIR)\budapest.obj"
 
 ".\lib\Win32\VisualStudio\QuantLib_d.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
     $(LIB32) @<<
@@ -1295,6 +1327,12 @@ LIB32_OBJS= \
 
 
 !IF "$(CFG)" == "QuantLib - Win32 Release" || "$(CFG)" == "QuantLib - Win32 Debug" || "$(CFG)" == "QuantLib - Win32 OnTheEdgeRelease" || "$(CFG)" == "QuantLib - Win32 OnTheEdgeDebug"
+SOURCE=.\ql\Calendars\budapest.cpp
+
+"$(INTDIR)\budapest.obj" : $(SOURCE) "$(INTDIR)"
+	$(CPP) $(CPP_PROJ) $(SOURCE)
+
+
 SOURCE=.\ql\Calendars\frankfurt.cpp
 
 "$(INTDIR)\frankfurt.obj" : $(SOURCE) "$(INTDIR)"
@@ -1331,6 +1369,18 @@ SOURCE=.\ql\Calendars\newyork.cpp
 	$(CPP) $(CPP_PROJ) $(SOURCE)
 
 
+SOURCE=.\ql\Calendars\oslo.cpp
+
+"$(INTDIR)\oslo.obj" : $(SOURCE) "$(INTDIR)"
+	$(CPP) $(CPP_PROJ) $(SOURCE)
+
+
+SOURCE=.\ql\Calendars\stockholm.cpp
+
+"$(INTDIR)\stockholm.obj" : $(SOURCE) "$(INTDIR)"
+	$(CPP) $(CPP_PROJ) $(SOURCE)
+
+
 SOURCE=.\ql\Calendars\sydney.cpp
 
 "$(INTDIR)\sydney.obj" : $(SOURCE) "$(INTDIR)"
@@ -1352,6 +1402,12 @@ SOURCE=.\ql\Calendars\tokyo.cpp
 SOURCE=.\ql\Calendars\toronto.cpp
 
 "$(INTDIR)\toronto.obj" : $(SOURCE) "$(INTDIR)"
+	$(CPP) $(CPP_PROJ) $(SOURCE)
+
+
+SOURCE=.\ql\Calendars\warsaw.cpp
+
+"$(INTDIR)\warsaw.obj" : $(SOURCE) "$(INTDIR)"
 	$(CPP) $(CPP_PROJ) $(SOURCE)
 
 
