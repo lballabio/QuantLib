@@ -82,7 +82,7 @@ namespace QuantLib {
             double discount2 = termStructure()->discount(T);
             double forward = termStructure()->instantaneousForward(t);
             double temp = sigma()*B(t,T);
-            double value = B(t,T)*forward - 0.5*temp*temp*B(0.0,2.0*t); // Shouldn't be 0.25 insetad of 0.5???
+            double value = B(t,T)*forward - 0.25*temp*temp*B(0.0,2.0*t);
             return QL_EXP(value)*discount2/discount1;
         }
 
