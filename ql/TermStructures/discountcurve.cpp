@@ -16,7 +16,7 @@
 */
 
 #include <ql/TermStructures/discountcurve.hpp>
-#include <ql/TermStructures/compoundforward.hpp>
+#include <ql/Math/loglinearinterpolation.hpp>
 
 namespace QuantLib {
 
@@ -48,6 +48,20 @@ namespace QuantLib {
         interpolation_ = LogLinearInterpolation(times_.begin(), times_.end(),
                                                 discounts_.begin());
     }
+
+
+    DiscountCurve::DiscountCurve(const DayCounter& dayCounter)
+    : dayCounter_(dayCounter) {}
+
+    DiscountCurve::DiscountCurve(const Date& referenceDate,
+                                 const DayCounter& dayCounter)
+    : YieldTermStructure(referenceDate), dayCounter_(dayCounter) {}
+
+    DiscountCurve::DiscountCurve(Integer settlementDays,
+                                 const Calendar& calendar,
+                                 const DayCounter& dayCounter)
+    : YieldTermStructure(settlementDays,calendar), dayCounter_(dayCounter) {}
+
 
     DiscountFactor DiscountCurve::discountImpl(Time t) const {
         if (t == 0.0) {

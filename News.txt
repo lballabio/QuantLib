@@ -2,3 +2,7 @@
 ??? 2005 - Release 0.3.9
 Changes since release 0.3.8:
 
+- QL_SQRT, QL_MIN etc. deprecated in favor of std::sqrt, std::min...
+
+- DiscountCurve can now be set an interpolation other than log-linear
+
