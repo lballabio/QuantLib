@@ -37,11 +37,11 @@ namespace QuantLib {
         template<class ArgumentsType, class ResultsType>
         class GenericEngine : public PricingEngine {
           public:
-            Arguments* arguments() { return &arguments_; }
+            Arguments* arguments() const { return &arguments_; }
             const Results* results() const { return &results_; }
             void reset() const { results_.reset(); }
           protected:
-            ArgumentsType arguments_;
+            mutable ArgumentsType arguments_;
             mutable ResultsType results_;
         };
 
