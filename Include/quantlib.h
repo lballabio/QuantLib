@@ -139,8 +139,10 @@
 #include "termstructure.h"
 #if QL_INCLUDE_IN_SUBFOLDERS
 	#include "TermStructures/piecewiseconstantforwards.h"
+	#include "TermStructures/flatforward.h"
 #else
 	#include "piecewiseconstantforwards.h"
+	#include "flatforward.h"
 #endif
 
 
