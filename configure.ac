@@ -156,16 +156,15 @@ if test "$ql_early_payments" = "no" ; then
               of an instrument.])
 fi
 
-AC_ARG_ENABLE([deprecated-code-disabled],
-              AC_HELP_STRING([--enable-deprecated-code-disabled],
-                             [If enabled, deprecated code will be
-                              disabled.]),
-              [ql_deprecated_code_disabled=$enableval],
-              [ql_deprecated_code_disabled=no])
-if test "$ql_deprecated_code_disabled" = "yes" ; then
-   AC_DEFINE([QL_DEPRECATED_DISABLED],[1],
-             [Define this if you want to disable deprecated
-              code.])
+AC_ARG_ENABLE([deprecated-code],
+              AC_HELP_STRING([--enable-deprecated-code],
+                             [If enabled (the default), deprecated code 
+                              will be included in the library.]),
+              [ql_use_deprecated_code=$enableval],
+              [ql_use_deprecated_code=yes])
+if test "$ql_use_deprecated_code" = "no" ; then
+   AC_DEFINE([QL_DISABLE_DEPRECATED],[1],
+             [Define this if you want to disable deprecated code.])
 fi
 
 AC_ARG_ENABLE([examples],
