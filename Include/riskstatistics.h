@@ -27,6 +27,9 @@
 
     $Source$
     $Log$
+    Revision 1.3  2001/02/21 13:16:20  lballabio
+    Removed unneeded default constructor
+
     Revision 1.2  2001/02/20 13:58:59  nando
     added class VarTool.
     RiskStatistics was derived from Statistics:
@@ -45,7 +48,7 @@
 
     Revision 1.1  2001/01/12 17:30:29  nando
     added RiskStatistics.
-    It offres VAR, shortfall, average shortfall methods.
+    It provides VAR, shortfall, average shortfall methods.
     It still needs test
 
 */
@@ -70,7 +73,6 @@ namespace QuantLib {
     */
     class RiskStatistics {
       public:
-        RiskStatistics() ;
         //! \name Inspectors
         //@{
         // Statistics proxy methods
@@ -107,6 +109,9 @@ namespace QuantLib {
                                          statistics_.mean(),
                                          statistics_.standardDeviation());
         }
+        //@}
+        //! \name Modifiers
+        //@{
         void add(double value, double weight = 1.0);
         template <class DataIterator>
         void addSequence(DataIterator begin, DataIterator end) {
@@ -124,15 +129,11 @@ namespace QuantLib {
 
         //@}
       private:
-        QuantLib::Math::Statistics statistics_;
-        QuantLib::Math::VarTool varTool_;
+        Math::Statistics statistics_;
+        Math::VarTool varTool_;
     };
 
     // inline definitions
-    inline RiskStatistics::RiskStatistics() {
-    statistics_  = QuantLib::Math::Statistics();
-    varTool_     = QuantLib::Math::VarTool();
-    }
 
     /*! \pre weights must be positive or null */
     inline void RiskStatistics::add(double value, double weight) {
