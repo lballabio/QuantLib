@@ -12,7 +12,6 @@
 # Directories
 INCLUDE_DIR    = ..\..
 BCC_INCLUDE    = $(MAKEDIR)\..\include
-BCC_LIBS       = $(MAKEDIR)\..\lib
 
 # Object files
 OBJS = xibor.obj$(_D) \

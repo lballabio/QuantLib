@@ -12,7 +12,6 @@
 # Directories
 INCLUDE_DIR    = ..
 BCC_INCLUDE    = $(MAKEDIR)\..\include
-BCC_LIBS       = $(MAKEDIR)\..\lib
 OUTPUT_DIR     = ..\lib\Win32\Borland
 
 # Object files
