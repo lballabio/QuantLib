@@ -1,7 +1,7 @@
 
 The documentation is automatically extracted from the source code using
-Doxygen (http://www.doxygen.org). The suggested version is 1.3.6; versions
-as back as 1.2.14 should still work.
+Doxygen (http://www.doxygen.org). The suggested version is the latest one;
+versions as back as 1.2.14 should still work.
 
 The basic requirement to produce html documentation are:
 1) Doxygen
@@ -21,38 +21,40 @@ are available through the CTAN (http://www.ctan.org/)
 *********
 
 To produce HTML documentation:
-1) Install Doxygen. You will also need to add to your PATH doxygen-x.x.x\bin.
-2) Install Graphviz. Add to your PATH Graphviz\bin
-3) Install Ghostscript. Add to your path gs\gsx.xx\bin
+1) Install Doxygen. You will also need to add the doxygen\bin folder to your
+   PATH environment variable.
+2) Install Graphviz. Add Graphviz\bin to your PATH
+3) Install Ghostscript. Add gs\gsx.xx\bin to your path
 4) a) Borland user: type 'make html' in the Docs directory
-   b) VC user: go to the Docs directory and type:
-      doxygen quantlib.doxy
+   b) VC user: edit quantlib.doxy in the Docs directory:
+      - replace ql_basepath with your QuantLib folder path
+      - replace ql_version with the current version number
+      - change GENERATE_HTML = NO to GENERATE_HTML = YES
+      - run 'doxygen quantlib.doxy'
 
 If you want to produce TeX/PDF/PS documentation:
 5) install MiKTeX 2 or higher from http://www.miktex.org
 6) download http://www.tex.ac.uk/tex-archive/support/epstopdf/epstopdf.exe
-   and copy it into a directory on your path
+   and copy it into a directory on your path (recent version of MikTeX already
+   includes epstopdf, so this step could be skipped)
 7) a) Borland users: type 'make ps' or 'make pdf' from the Docs
       directory
-   b) VC user: go to the Docs\latex directory and type:
-        latex refman
-        makeindex refman.idx
-        latex refman
-      for PostScript output or
-        pdflatex refman
-        makeindex refman.idx
-        pdflatex refman
-      for PDF output.
-   Just ignore TeX/LaTeX warning/error.
+   b) VC user: TeX/PDF/PS documentation cannot be easily generated without a
+      make facility. See Borland Makefile.mak for directions.
 
 If you want to compile the HTML documentation into Microsoft Help format:
 8) download and install the HTML Help Workshop from
    msdn.microsoft.com/library/default.asp?url=/library/en-us/htmlhelp/html/vsconhh1start.asp
     and add to your path the directory created by the installer
-9) type 'hhc index.hhp' from the Docs\html directory. The file
-    index.chm will be created.
+9) a) Borland user: type 'make htmlhelp' in the Docs directory
+   b) VC user: edit quantlib.doxy in the Docs directory:
+      - replace ql_basepath with your QuantLib folder path
+      - replace ql_version with the current version number
+      - change GENERATE_HTML = NO to GENERATE_HTML = YES
+      - change GENERATE_HTMLHELP = NO to GENERATE_HTMLHELP = YES
+      - run 'doxygen quantlib.doxy'
 
-
+Borland users can look in Makefile.mak for additional directives.
 
 
 **************
@@ -71,4 +73,3 @@ You'll end up with:
 - and a directory Docs/man containing the man pages.
 
 Look in Makefile.am for additional directives
-

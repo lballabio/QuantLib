@@ -6,18 +6,22 @@
 
 # Tools to be used
 SED       = sed
-DOXYGEN   = doxygen
+!ifdef NODOXYGEN
+    DOXYGEN   = type
+!else
+    DOXYGEN   = doxygen
+!endif
 LATEX     = latex
 PDFLATEX  = pdflatex
 MAKEINDEX = makeindex
 DVIPS     = dvips
 
 # Options
-TEX_OPTS = --quiet --pool-size=1000000
+TEX_OPTS = --quiet --pool-size=2000000
 
 # Primary target:
 # all docs
-all:: html-config htmlhelp-config tex-config tex-files
+all:: htmlhelp-config tex-config tex-files
     cd latex
     $(PDFLATEX) $(TEX_OPTS) refman
     $(MAKEINDEX) refman.idx
@@ -42,15 +46,11 @@ html-config:: generic-config
     copy images\*.jpg html
     copy images\*.png html
 
-htmlhelp-config:: generic-config
-    $(SED) -e "s|GENERATE_HTML          = NO|GENERATE_HTML          = YES|" \
-           -e "s|GENERATE_HTMLHELP      = NO|GENERATE_HTMLHELP      = YES|" \
+htmlhelp-config:: html-config
+    $(SED) -e "s|GENERATE_HTMLHELP      = NO|GENERATE_HTMLHELP      = YES|" \
            quantlib.doxy.temp > quantlib.doxy.temp2
     del /Q quantlib.doxy.temp
     ren quantlib.doxy.temp2 quantlib.doxy.temp
-    if not exist .\html md .\html
-    copy images\*.jpg html
-    copy images\*.png html
 
 html-online-config:: generic-config
     $(SED) -e "s/_OUTPUT            = html/_OUTPUT            = html-online/" \
@@ -69,6 +69,7 @@ tex-config:: generic-config
     del /Q quantlib.doxy.temp
     ren quantlib.doxy.temp2 quantlib.doxy.temp
     if not exist .\latex md .\latex
+	copy qlintro.tex latex
     copy images\*.pdf latex
     copy images\*.eps latex
 
@@ -93,6 +94,7 @@ tex-files:: tex-config
     $(SED) -e "/Page Index/d" \
            -e "/input{pages}/d" \
            -e "/Page Documentation/d" \
+           -e "/include{config}/d" \
            -e "/input{faq}/d" \
            -e "/include{group}/d" \
            -e "/include{history}/d" \
@@ -106,12 +108,23 @@ tex-files:: tex-config
            -e "s/ple Documentation}/ple Documentation}\\\\label{exchap}/" \
            oldrefman.tex > refman.tex
     del oldrefman.tex
+
 	ren deprecated.tex olddeprecated.tex
 	$(SED) -e "s/section/chapter/" olddeprecated.tex > deprecated.tex
 	del olddeprecated.tex
+
 	ren bug.tex oldbug.tex
 	$(SED) -e "s/section/chapter/" oldbug.tex > bug.tex
-	rm -f oldbug.tex
+	del oldbug.tex
+
+	ren test.tex oldtest.tex
+	$(SED) -e "s/section/chapter/" oldtest.tex > test.tex
+	del oldtest.tex
+
+	ren todo.tex oldtodo.tex
+	$(SED) -e "s/section/chapter/" oldtodo.tex > todo.tex
+	del oldtodo.tex
+
     cd ..
 
 # PDF documentation
