@@ -50,8 +50,14 @@ namespace QuantLib {
             locate(x);
             if (isOutOfRange_) {
                 QL_REQUIRE(allowExtrapolation,
-                           "LinearInterpolation::operator() : "
-                           "extrapolation not allowed");
+                    "LinearInterpolation::operator() : "
+                    "\ninterpolation range is ["
+                    + DoubleFormatter::toString(xBegin_[0]) +
+                    ", "
+                    + DoubleFormatter::toString(xBegin_[n_-1]) +
+                    "]: extrapolation at "
+                    + DoubleFormatter::toString(x) +
+                    " not allowed");
             }
             RandomAccessIterator2 j = yBegin_+(position_-xBegin_);
             return *j + (x-*position_)*double(*(j+1)-*j)/
