@@ -39,7 +39,7 @@ namespace QuantLib {
         double result=-1.0;
     
         if (a<=0.0 && b<=0 && rho_<=0) {
-            double sum=0.0*x_[0];
+            double sum=0.0;
             for (Size i=0; i<5; i++) { 
                 for (Size j=0;j<5; j++) {
                     sum += x_[i]*x_[j]*
