@@ -2,6 +2,8 @@
 2004-??-?? Release 0.3.8
 Changes since release 0.3.7:
 
+- Boost version 1.31.0 or later is now required.
+
 - Added pricing engine for American options with Ju quadratic approximation.
 
 - Reworked the DiscretizedAsset interface.
@@ -70,4 +72,7 @@ Changes since release 0.3.7:
   Penschke.)
 
 - Added N-dimensional cubic spline (thanks to Roman Gitlin.)
+
+- IndexedCoupon can now take a generic index rather than a Libor
+  (thanks to Daniele De Francesco.)
 
