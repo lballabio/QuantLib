@@ -25,9 +25,7 @@
 
     \subsection authors Authors
 
-    The %QuantLib Group holds the copyright of all the %QuantLib
-    source code. Its members are listed in the %QuantLib License.
-    They are:
+    The %QuantLib Group members are:
 
     \htmlonly
     <table>
@@ -98,12 +96,6 @@
     <td><a href="http://sourceforge.net/users/enri/">enri</a></td>
     </tr>
 
-    <tr>
-    <td><em><a href="http://www.riskmap.net/">RiskMap</a></em></td>
-    <td>info@riskmap.net</td>
-    <td>main sponsor</td>
-    <td> </td>
-    </tr>
     </table>
     \endhtmlonly
 
@@ -113,12 +105,11 @@
         \item Ferdinando Ametrano (ferdinando@ametrano.net),
               project manager
         \item Luigi Ballabio (luigi.ballabio@riskmap.net), library designer
-        \item Adolfo Benin (adolfo.benin@riskmap.net)
+        \item Adolfo Benin (adolfo.benin@libero.it)
         \item Nicolas Di C\'esar\'e
         \item Marco Marchioro (marco.marchioro@riskmap.net)
         \item Sadruddin Rejeb (sad.rejeb@riskmap.it)
         \item Enrico Sirola (enrico.sirola@riskmap.net)
-        \item RiskMap (info@riskmap.net), main sponsor
     \end{itemize}
     \endlatexonly
 
@@ -132,6 +123,14 @@
     <td><strong>email</strong></td>
     <td><strong>contribution</strong></td>
     <td><strong>SourceForge.net user name</strong></td>
+    </tr>
+
+    <tr>
+    <td><em>Dirk Eddelbuettel</em></td>
+    <td> </td>
+    <td>Debian maintainer</td>
+    <td><a href=
+    "http://sourceforge.net/users/eddelbuettel/">eddelbuettel</a></td>
     </tr>
 
     <tr>
@@ -153,14 +152,6 @@
     <td> </td>
     <td> </td>
     <td> </td>
-    </tr>
-
-    <tr>
-    <td><em>Dirk Eddelbuettel</em></td>
-    <td> </td>
-    <td>Debian maintainer</td>
-    <td><a href=
-    "http://sourceforge.net/users/eddelbuettel/">eddelbuettel</a></td>
     </tr>
 
     <tr>
@@ -204,10 +195,10 @@
 
     \latexonly
     \begin{itemize}
+        \item Dirk Eddelbuettel, Debian maintainer
         \item Christopher Baus, inspiration for custom iterators
         \item Thomas Becker, inspiration for custom iterators
         \item David Binderman
-        \item Dirk Eddelbuettel, Debian maintainer
         \item Matteo Gallivanoni (matteo.gallivanoni@riskmap.net)
         \item Gilbert Peffer
         \item Peter Schmitteckert (quantlib@schmitteckert.com)
