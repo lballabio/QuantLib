@@ -27,9 +27,6 @@ NULL=
 NULL=nul
 !ENDIF 
 
-CPP=cl.exe
-RSC=rc.exe
-
 !IF  "$(CFG)" == "QuantLib - Win32 Release"
 
 OUTDIR=.\build\Release
@@ -60,10 +57,10 @@ CLEAN :
 	-@erase "$(INTDIR)\basketpathpricer.sbr"
 	-@erase "$(INTDIR)\binaryoption.obj"
 	-@erase "$(INTDIR)\binaryoption.sbr"
-	-@erase "$(INTDIR)\binomialvanillaengine.obj"
-	-@erase "$(INTDIR)\binomialvanillaengine.sbr"
 	-@erase "$(INTDIR)\binomialtree.obj"
 	-@erase "$(INTDIR)\binomialtree.sbr"
+	-@erase "$(INTDIR)\binomialvanillaengine.obj"
+	-@erase "$(INTDIR)\binomialvanillaengine.sbr"
 	-@erase "$(INTDIR)\bisection.obj"
 	-@erase "$(INTDIR)\bisection.sbr"
 	-@erase "$(INTDIR)\blackcapfloor.obj"
@@ -234,8 +231,6 @@ CLEAN :
 	-@erase "$(INTDIR)\performanceoptionpathpricer.sbr"
 	-@erase "$(INTDIR)\piecewiseflatforward.obj"
 	-@erase "$(INTDIR)\piecewiseflatforward.sbr"
-	-@erase "$(INTDIR)\vanillaoption.obj"
-	-@erase "$(INTDIR)\vanillaoption.sbr"
 	-@erase "$(INTDIR)\ratehelpers.obj"
 	-@erase "$(INTDIR)\ratehelpers.sbr"
 	-@erase "$(INTDIR)\ridder.obj"
@@ -292,6 +287,10 @@ CLEAN :
 	-@erase "$(INTDIR)\twofactormodel.sbr"
 	-@erase "$(INTDIR)\valueatcenter.obj"
 	-@erase "$(INTDIR)\valueatcenter.sbr"
+	-@erase "$(INTDIR)\vanillaoption.obj"
+	-@erase "$(INTDIR)\vanillaoption.sbr"
+	-@erase "$(INTDIR)\vanillaoptionengine.obj"
+	-@erase "$(INTDIR)\vanillaoptionengine.sbr"
 	-@erase "$(INTDIR)\vasicek.obj"
 	-@erase "$(INTDIR)\vasicek.sbr"
 	-@erase "$(INTDIR)\vc60.idb"
@@ -309,7 +308,40 @@ CLEAN :
 "$(OUTDIR)" :
     if not exist "$(OUTDIR)/$(NULL)" mkdir "$(OUTDIR)"
 
+CPP=cl.exe
 CPP_PROJ=/nologo /MD /W3 /Gi /GR /GX /Od /Ob2 /I ".\\" /D "NDEBUG" /D "WIN32" /D "_MBCS" /D "_LIB" /D "NOMINMAX" /FR"$(INTDIR)\\" /Fp"$(INTDIR)\QuantLib.pch" /YX /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\\" /FD /c 
+
+.c{$(INTDIR)}.obj::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.cpp{$(INTDIR)}.obj::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.cxx{$(INTDIR)}.obj::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.c{$(INTDIR)}.sbr::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.cpp{$(INTDIR)}.sbr::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.cxx{$(INTDIR)}.sbr::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+RSC=rc.exe
 BSC32=bscmake.exe
 BSC32_FLAGS=/nologo /o"$(OUTDIR)\QuantLib.bsc" 
 BSC32_SBRS= \
@@ -337,11 +369,11 @@ BSC32_SBRS= \
 	"$(INTDIR)\xibor.sbr" \
 	"$(INTDIR)\xibormanager.sbr" \
 	"$(INTDIR)\capfloor.sbr" \
-	"$(INTDIR)\vanillaoption.sbr" \
 	"$(INTDIR)\simpleswap.sbr" \
 	"$(INTDIR)\stock.sbr" \
 	"$(INTDIR)\swap.sbr" \
 	"$(INTDIR)\swaption.sbr" \
+	"$(INTDIR)\vanillaoption.sbr" \
 	"$(INTDIR)\chisquaredistribution.sbr" \
 	"$(INTDIR)\gammadistribution.sbr" \
 	"$(INTDIR)\matrix.sbr" \
@@ -399,6 +431,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\swaptionpricer.sbr" \
 	"$(INTDIR)\treecapfloor.sbr" \
 	"$(INTDIR)\treeswaption.sbr" \
+	"$(INTDIR)\vanillaoptionengine.sbr" \
 	"$(INTDIR)\knuthuniformrng.sbr" \
 	"$(INTDIR)\lecuyeruniformrng.sbr" \
 	"$(INTDIR)\bisection.sbr" \
@@ -476,11 +509,11 @@ LIB32_OBJS= \
 	"$(INTDIR)\xibor.obj" \
 	"$(INTDIR)\xibormanager.obj" \
 	"$(INTDIR)\capfloor.obj" \
-	"$(INTDIR)\vanillaoption.obj" \
 	"$(INTDIR)\simpleswap.obj" \
 	"$(INTDIR)\stock.obj" \
 	"$(INTDIR)\swap.obj" \
 	"$(INTDIR)\swaption.obj" \
+	"$(INTDIR)\vanillaoption.obj" \
 	"$(INTDIR)\chisquaredistribution.obj" \
 	"$(INTDIR)\gammadistribution.obj" \
 	"$(INTDIR)\matrix.obj" \
@@ -538,6 +571,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\swaptionpricer.obj" \
 	"$(INTDIR)\treecapfloor.obj" \
 	"$(INTDIR)\treeswaption.obj" \
+	"$(INTDIR)\vanillaoptionengine.obj" \
 	"$(INTDIR)\knuthuniformrng.obj" \
 	"$(INTDIR)\lecuyeruniformrng.obj" \
 	"$(INTDIR)\bisection.obj" \
@@ -618,10 +652,10 @@ CLEAN :
 	-@erase "$(INTDIR)\basketpathpricer.sbr"
 	-@erase "$(INTDIR)\binaryoption.obj"
 	-@erase "$(INTDIR)\binaryoption.sbr"
-	-@erase "$(INTDIR)\binomialvanillaengine.obj"
-	-@erase "$(INTDIR)\binomialvanillaengine.sbr"
 	-@erase "$(INTDIR)\binomialtree.obj"
 	-@erase "$(INTDIR)\binomialtree.sbr"
+	-@erase "$(INTDIR)\binomialvanillaengine.obj"
+	-@erase "$(INTDIR)\binomialvanillaengine.sbr"
 	-@erase "$(INTDIR)\bisection.obj"
 	-@erase "$(INTDIR)\bisection.sbr"
 	-@erase "$(INTDIR)\blackcapfloor.obj"
@@ -792,8 +826,6 @@ CLEAN :
 	-@erase "$(INTDIR)\performanceoptionpathpricer.sbr"
 	-@erase "$(INTDIR)\piecewiseflatforward.obj"
 	-@erase "$(INTDIR)\piecewiseflatforward.sbr"
-	-@erase "$(INTDIR)\vanillaoption.obj"
-	-@erase "$(INTDIR)\vanillaoption.sbr"
 	-@erase "$(INTDIR)\ratehelpers.obj"
 	-@erase "$(INTDIR)\ratehelpers.sbr"
 	-@erase "$(INTDIR)\ridder.obj"
@@ -850,6 +882,10 @@ CLEAN :
 	-@erase "$(INTDIR)\twofactormodel.sbr"
 	-@erase "$(INTDIR)\valueatcenter.obj"
 	-@erase "$(INTDIR)\valueatcenter.sbr"
+	-@erase "$(INTDIR)\vanillaoption.obj"
+	-@erase "$(INTDIR)\vanillaoption.sbr"
+	-@erase "$(INTDIR)\vanillaoptionengine.obj"
+	-@erase "$(INTDIR)\vanillaoptionengine.sbr"
 	-@erase "$(INTDIR)\vasicek.obj"
 	-@erase "$(INTDIR)\vasicek.sbr"
 	-@erase "$(INTDIR)\wellington.obj"
@@ -868,7 +904,40 @@ CLEAN :
 "$(OUTDIR)" :
     if not exist "$(OUTDIR)/$(NULL)" mkdir "$(OUTDIR)"
 
+CPP=cl.exe
 CPP_PROJ=/nologo /MDd /W3 /Gi /GR /GX /ZI /Od /I ".\\" /D "_DEBUG" /D "QL_DEBUG" /D "WIN32" /D "_MBCS" /D "_LIB" /D "NOMINMAX" /FR"$(INTDIR)\\" /Fp"$(INTDIR)\QuantLib.pch" /YX /Fo"$(INTDIR)\\" /Fd"lib\Win32\VisualStudio\QuantLib" /FD /GZ /c 
+
+.c{$(INTDIR)}.obj::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.cpp{$(INTDIR)}.obj::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.cxx{$(INTDIR)}.obj::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.c{$(INTDIR)}.sbr::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.cpp{$(INTDIR)}.sbr::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.cxx{$(INTDIR)}.sbr::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+RSC=rc.exe
 BSC32=bscmake.exe
 BSC32_FLAGS=/nologo /o"$(OUTDIR)\QuantLib.bsc" 
 BSC32_SBRS= \
@@ -896,11 +965,11 @@ BSC32_SBRS= \
 	"$(INTDIR)\xibor.sbr" \
 	"$(INTDIR)\xibormanager.sbr" \
 	"$(INTDIR)\capfloor.sbr" \
-	"$(INTDIR)\vanillaoption.sbr" \
 	"$(INTDIR)\simpleswap.sbr" \
 	"$(INTDIR)\stock.sbr" \
 	"$(INTDIR)\swap.sbr" \
 	"$(INTDIR)\swaption.sbr" \
+	"$(INTDIR)\vanillaoption.sbr" \
 	"$(INTDIR)\chisquaredistribution.sbr" \
 	"$(INTDIR)\gammadistribution.sbr" \
 	"$(INTDIR)\matrix.sbr" \
@@ -958,6 +1027,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\swaptionpricer.sbr" \
 	"$(INTDIR)\treecapfloor.sbr" \
 	"$(INTDIR)\treeswaption.sbr" \
+	"$(INTDIR)\vanillaoptionengine.sbr" \
 	"$(INTDIR)\knuthuniformrng.sbr" \
 	"$(INTDIR)\lecuyeruniformrng.sbr" \
 	"$(INTDIR)\bisection.sbr" \
@@ -1035,11 +1105,11 @@ LIB32_OBJS= \
 	"$(INTDIR)\xibor.obj" \
 	"$(INTDIR)\xibormanager.obj" \
 	"$(INTDIR)\capfloor.obj" \
-	"$(INTDIR)\vanillaoption.obj" \
 	"$(INTDIR)\simpleswap.obj" \
 	"$(INTDIR)\stock.obj" \
 	"$(INTDIR)\swap.obj" \
 	"$(INTDIR)\swaption.obj" \
+	"$(INTDIR)\vanillaoption.obj" \
 	"$(INTDIR)\chisquaredistribution.obj" \
 	"$(INTDIR)\gammadistribution.obj" \
 	"$(INTDIR)\matrix.obj" \
@@ -1097,6 +1167,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\swaptionpricer.obj" \
 	"$(INTDIR)\treecapfloor.obj" \
 	"$(INTDIR)\treeswaption.obj" \
+	"$(INTDIR)\vanillaoptionengine.obj" \
 	"$(INTDIR)\knuthuniformrng.obj" \
 	"$(INTDIR)\lecuyeruniformrng.obj" \
 	"$(INTDIR)\bisection.obj" \
@@ -1177,10 +1248,10 @@ CLEAN :
 	-@erase "$(INTDIR)\basketpathpricer.sbr"
 	-@erase "$(INTDIR)\binaryoption.obj"
 	-@erase "$(INTDIR)\binaryoption.sbr"
-	-@erase "$(INTDIR)\binomialvanillaengine.obj"
-	-@erase "$(INTDIR)\binomialvanillaengine.sbr"
 	-@erase "$(INTDIR)\binomialtree.obj"
 	-@erase "$(INTDIR)\binomialtree.sbr"
+	-@erase "$(INTDIR)\binomialvanillaengine.obj"
+	-@erase "$(INTDIR)\binomialvanillaengine.sbr"
 	-@erase "$(INTDIR)\bisection.obj"
 	-@erase "$(INTDIR)\bisection.sbr"
 	-@erase "$(INTDIR)\blackcapfloor.obj"
@@ -1351,8 +1422,6 @@ CLEAN :
 	-@erase "$(INTDIR)\performanceoptionpathpricer.sbr"
 	-@erase "$(INTDIR)\piecewiseflatforward.obj"
 	-@erase "$(INTDIR)\piecewiseflatforward.sbr"
-	-@erase "$(INTDIR)\vanillaoption.obj"
-	-@erase "$(INTDIR)\vanillaoption.sbr"
 	-@erase "$(INTDIR)\ratehelpers.obj"
 	-@erase "$(INTDIR)\ratehelpers.sbr"
 	-@erase "$(INTDIR)\ridder.obj"
@@ -1409,6 +1478,10 @@ CLEAN :
 	-@erase "$(INTDIR)\twofactormodel.sbr"
 	-@erase "$(INTDIR)\valueatcenter.obj"
 	-@erase "$(INTDIR)\valueatcenter.sbr"
+	-@erase "$(INTDIR)\vanillaoption.obj"
+	-@erase "$(INTDIR)\vanillaoption.sbr"
+	-@erase "$(INTDIR)\vanillaoptionengine.obj"
+	-@erase "$(INTDIR)\vanillaoptionengine.sbr"
 	-@erase "$(INTDIR)\vasicek.obj"
 	-@erase "$(INTDIR)\vasicek.sbr"
 	-@erase "$(INTDIR)\vc60.idb"
@@ -1426,7 +1499,40 @@ CLEAN :
 "$(OUTDIR)" :
     if not exist "$(OUTDIR)/$(NULL)" mkdir "$(OUTDIR)"
 
+CPP=cl.exe
 CPP_PROJ=/nologo /MD /W3 /Gi /GR /GX /Od /Ob2 /I ".\\" /D "NDEBUG" /D "WIN32" /D "_MBCS" /D "_LIB" /D "NOMINMAX" /FR"$(INTDIR)\\" /Fp"$(INTDIR)\QuantLib.pch" /YX /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\\" /FD /c 
+
+.c{$(INTDIR)}.obj::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.cpp{$(INTDIR)}.obj::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.cxx{$(INTDIR)}.obj::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.c{$(INTDIR)}.sbr::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.cpp{$(INTDIR)}.sbr::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.cxx{$(INTDIR)}.sbr::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+RSC=rc.exe
 BSC32=bscmake.exe
 BSC32_FLAGS=/nologo /o"$(OUTDIR)\QuantLib.bsc" 
 BSC32_SBRS= \
@@ -1454,11 +1560,11 @@ BSC32_SBRS= \
 	"$(INTDIR)\xibor.sbr" \
 	"$(INTDIR)\xibormanager.sbr" \
 	"$(INTDIR)\capfloor.sbr" \
-	"$(INTDIR)\vanillaoption.sbr" \
 	"$(INTDIR)\simpleswap.sbr" \
 	"$(INTDIR)\stock.sbr" \
 	"$(INTDIR)\swap.sbr" \
 	"$(INTDIR)\swaption.sbr" \
+	"$(INTDIR)\vanillaoption.sbr" \
 	"$(INTDIR)\chisquaredistribution.sbr" \
 	"$(INTDIR)\gammadistribution.sbr" \
 	"$(INTDIR)\matrix.sbr" \
@@ -1516,6 +1622,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\swaptionpricer.sbr" \
 	"$(INTDIR)\treecapfloor.sbr" \
 	"$(INTDIR)\treeswaption.sbr" \
+	"$(INTDIR)\vanillaoptionengine.sbr" \
 	"$(INTDIR)\knuthuniformrng.sbr" \
 	"$(INTDIR)\lecuyeruniformrng.sbr" \
 	"$(INTDIR)\bisection.sbr" \
@@ -1593,11 +1700,11 @@ LIB32_OBJS= \
 	"$(INTDIR)\xibor.obj" \
 	"$(INTDIR)\xibormanager.obj" \
 	"$(INTDIR)\capfloor.obj" \
-	"$(INTDIR)\vanillaoption.obj" \
 	"$(INTDIR)\simpleswap.obj" \
 	"$(INTDIR)\stock.obj" \
 	"$(INTDIR)\swap.obj" \
 	"$(INTDIR)\swaption.obj" \
+	"$(INTDIR)\vanillaoption.obj" \
 	"$(INTDIR)\chisquaredistribution.obj" \
 	"$(INTDIR)\gammadistribution.obj" \
 	"$(INTDIR)\matrix.obj" \
@@ -1655,6 +1762,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\swaptionpricer.obj" \
 	"$(INTDIR)\treecapfloor.obj" \
 	"$(INTDIR)\treeswaption.obj" \
+	"$(INTDIR)\vanillaoptionengine.obj" \
 	"$(INTDIR)\knuthuniformrng.obj" \
 	"$(INTDIR)\lecuyeruniformrng.obj" \
 	"$(INTDIR)\bisection.obj" \
@@ -1735,10 +1843,10 @@ CLEAN :
 	-@erase "$(INTDIR)\basketpathpricer.sbr"
 	-@erase "$(INTDIR)\binaryoption.obj"
 	-@erase "$(INTDIR)\binaryoption.sbr"
-	-@erase "$(INTDIR)\binomialvanillaengine.obj"
-	-@erase "$(INTDIR)\binomialvanillaengine.sbr"
 	-@erase "$(INTDIR)\binomialtree.obj"
 	-@erase "$(INTDIR)\binomialtree.sbr"
+	-@erase "$(INTDIR)\binomialvanillaengine.obj"
+	-@erase "$(INTDIR)\binomialvanillaengine.sbr"
 	-@erase "$(INTDIR)\bisection.obj"
 	-@erase "$(INTDIR)\bisection.sbr"
 	-@erase "$(INTDIR)\blackcapfloor.obj"
@@ -1909,8 +2017,6 @@ CLEAN :
 	-@erase "$(INTDIR)\performanceoptionpathpricer.sbr"
 	-@erase "$(INTDIR)\piecewiseflatforward.obj"
 	-@erase "$(INTDIR)\piecewiseflatforward.sbr"
-	-@erase "$(INTDIR)\vanillaoption.obj"
-	-@erase "$(INTDIR)\vanillaoption.sbr"
 	-@erase "$(INTDIR)\ratehelpers.obj"
 	-@erase "$(INTDIR)\ratehelpers.sbr"
 	-@erase "$(INTDIR)\ridder.obj"
@@ -1967,6 +2073,10 @@ CLEAN :
 	-@erase "$(INTDIR)\twofactormodel.sbr"
 	-@erase "$(INTDIR)\valueatcenter.obj"
 	-@erase "$(INTDIR)\valueatcenter.sbr"
+	-@erase "$(INTDIR)\vanillaoption.obj"
+	-@erase "$(INTDIR)\vanillaoption.sbr"
+	-@erase "$(INTDIR)\vanillaoptionengine.obj"
+	-@erase "$(INTDIR)\vanillaoptionengine.sbr"
 	-@erase "$(INTDIR)\vasicek.obj"
 	-@erase "$(INTDIR)\vasicek.sbr"
 	-@erase "$(INTDIR)\wellington.obj"
@@ -1985,7 +2095,40 @@ CLEAN :
 "$(OUTDIR)" :
     if not exist "$(OUTDIR)/$(NULL)" mkdir "$(OUTDIR)"
 
+CPP=cl.exe
 CPP_PROJ=/nologo /MDd /W3 /Gi /GR /GX /ZI /Od /I ".\\" /D "_DEBUG" /D "QL_DEBUG" /D "WIN32" /D "_MBCS" /D "_LIB" /D "NOMINMAX" /FR"$(INTDIR)\\" /Fp"$(INTDIR)\QuantLib.pch" /YX /Fo"$(INTDIR)\\" /Fd"lib\Win32\VisualStudio\QuantLib" /FD /GZ /c 
+
+.c{$(INTDIR)}.obj::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.cpp{$(INTDIR)}.obj::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.cxx{$(INTDIR)}.obj::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.c{$(INTDIR)}.sbr::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.cpp{$(INTDIR)}.sbr::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.cxx{$(INTDIR)}.sbr::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+RSC=rc.exe
 BSC32=bscmake.exe
 BSC32_FLAGS=/nologo /o"$(OUTDIR)\QuantLib.bsc" 
 BSC32_SBRS= \
@@ -2013,11 +2156,11 @@ BSC32_SBRS= \
 	"$(INTDIR)\xibor.sbr" \
 	"$(INTDIR)\xibormanager.sbr" \
 	"$(INTDIR)\capfloor.sbr" \
-	"$(INTDIR)\vanillaoption.sbr" \
 	"$(INTDIR)\simpleswap.sbr" \
 	"$(INTDIR)\stock.sbr" \
 	"$(INTDIR)\swap.sbr" \
 	"$(INTDIR)\swaption.sbr" \
+	"$(INTDIR)\vanillaoption.sbr" \
 	"$(INTDIR)\chisquaredistribution.sbr" \
 	"$(INTDIR)\gammadistribution.sbr" \
 	"$(INTDIR)\matrix.sbr" \
@@ -2075,6 +2218,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\swaptionpricer.sbr" \
 	"$(INTDIR)\treecapfloor.sbr" \
 	"$(INTDIR)\treeswaption.sbr" \
+	"$(INTDIR)\vanillaoptionengine.sbr" \
 	"$(INTDIR)\knuthuniformrng.sbr" \
 	"$(INTDIR)\lecuyeruniformrng.sbr" \
 	"$(INTDIR)\bisection.sbr" \
@@ -2152,11 +2296,11 @@ LIB32_OBJS= \
 	"$(INTDIR)\xibor.obj" \
 	"$(INTDIR)\xibormanager.obj" \
 	"$(INTDIR)\capfloor.obj" \
-	"$(INTDIR)\vanillaoption.obj" \
 	"$(INTDIR)\simpleswap.obj" \
 	"$(INTDIR)\stock.obj" \
 	"$(INTDIR)\swap.obj" \
 	"$(INTDIR)\swaption.obj" \
+	"$(INTDIR)\vanillaoption.obj" \
 	"$(INTDIR)\chisquaredistribution.obj" \
 	"$(INTDIR)\gammadistribution.obj" \
 	"$(INTDIR)\matrix.obj" \
@@ -2214,6 +2358,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\swaptionpricer.obj" \
 	"$(INTDIR)\treecapfloor.obj" \
 	"$(INTDIR)\treeswaption.obj" \
+	"$(INTDIR)\vanillaoptionengine.obj" \
 	"$(INTDIR)\knuthuniformrng.obj" \
 	"$(INTDIR)\lecuyeruniformrng.obj" \
 	"$(INTDIR)\bisection.obj" \
@@ -2265,36 +2410,6 @@ LIB32_OBJS= \
 <<
 
 !ENDIF 
-
-.c{$(INTDIR)}.obj::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-.cpp{$(INTDIR)}.obj::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-.cxx{$(INTDIR)}.obj::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-.c{$(INTDIR)}.sbr::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-.cpp{$(INTDIR)}.sbr::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-.cxx{$(INTDIR)}.sbr::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
 
 
 !IF "$(NO_EXTERNAL_DEPS)" != "1"
@@ -2451,12 +2566,6 @@ SOURCE=.\ql\Instruments\capfloor.cpp
 	$(CPP) $(CPP_PROJ) $(SOURCE)
 
 
-SOURCE=.\ql\Instruments\vanillaoption.cpp
-
-"$(INTDIR)\vanillaoption.obj"	"$(INTDIR)\vanillaoption.sbr" : $(SOURCE) "$(INTDIR)"
-	$(CPP) $(CPP_PROJ) $(SOURCE)
-
-
 SOURCE=.\ql\Instruments\simpleswap.cpp
 
 "$(INTDIR)\simpleswap.obj"	"$(INTDIR)\simpleswap.sbr" : $(SOURCE) "$(INTDIR)"
@@ -2478,6 +2587,12 @@ SOURCE=.\ql\Instruments\swap.cpp
 SOURCE=.\ql\Instruments\swaption.cpp
 
 "$(INTDIR)\swaption.obj"	"$(INTDIR)\swaption.sbr" : $(SOURCE) "$(INTDIR)"
+	$(CPP) $(CPP_PROJ) $(SOURCE)
+
+
+SOURCE=.\ql\Instruments\vanillaoption.cpp
+
+"$(INTDIR)\vanillaoption.obj"	"$(INTDIR)\vanillaoption.sbr" : $(SOURCE) "$(INTDIR)"
 	$(CPP) $(CPP_PROJ) $(SOURCE)
 
 
@@ -2820,6 +2935,12 @@ SOURCE=.\ql\Pricers\treecapfloor.cpp
 SOURCE=.\ql\Pricers\treeswaption.cpp
 
 "$(INTDIR)\treeswaption.obj"	"$(INTDIR)\treeswaption.sbr" : $(SOURCE) "$(INTDIR)"
+	$(CPP) $(CPP_PROJ) $(SOURCE)
+
+
+SOURCE=.\ql\Pricers\vanillaoptionengine.cpp
+
+"$(INTDIR)\vanillaoptionengine.obj"	"$(INTDIR)\vanillaoptionengine.sbr" : $(SOURCE) "$(INTDIR)"
 	$(CPP) $(CPP_PROJ) $(SOURCE)
 
 

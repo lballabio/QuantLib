@@ -451,14 +451,6 @@ SOURCE=.\ql\Instruments\capfloor.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\ql\Instruments\plainoption.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\ql\Instruments\plainoption.hpp
-# End Source File
-# Begin Source File
-
 SOURCE=.\ql\Instruments\simpleswap.cpp
 # End Source File
 # Begin Source File
@@ -488,6 +480,14 @@ SOURCE=.\ql\Instruments\swaption.cpp
 # Begin Source File
 
 SOURCE=.\ql\Instruments\swaption.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\Instruments\vanillaoption.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\Instruments\vanillaoption.hpp
 # End Source File
 # End Group
 # Begin Group "Math"
@@ -767,11 +767,11 @@ SOURCE=.\ql\Pricers\binaryoption.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\ql\Pricers\binomialplainoption.cpp
+SOURCE=.\ql\Pricers\binomialvanillaengine.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\ql\Pricers\binomialplainoption.hpp
+SOURCE=.\ql\Pricers\binomialvanillaengine.hpp
 # End Source File
 # Begin Source File
 
@@ -1052,6 +1052,14 @@ SOURCE=.\ql\Pricers\treeswaption.cpp
 # Begin Source File
 
 SOURCE=.\ql\Pricers\treeswaption.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\Pricers\vanillaoptionengine.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\Pricers\vanillaoptionengine.hpp
 # End Source File
 # End Group
 # Begin Group "RandomNumbers"
