@@ -53,6 +53,7 @@ namespace QuantLib {
             double qlambda() const;
             //@}
           protected:
+            void setupExpired() const;
             void setupEngine() const;
             void performCalculations() const;
             // arguments

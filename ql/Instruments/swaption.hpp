@@ -39,6 +39,7 @@ namespace QuantLib {
                      const Exercise& exercise,
                      const RelinkableHandle<TermStructure>& termStructure,
                      const Handle<PricingEngine>& engine);
+            bool isExpired() const;
           protected:
             void performCalculations() const;
             void setupEngine() const;

@@ -40,12 +40,19 @@ namespace QuantLib {
                  const RelinkableHandle<TermStructure>& termStructure,
                  const std::string& isinCode = "",
                  const std::string& description = "");
-            // added interface
+            //! \name Instrument interface
+            //@{
+            bool isExpired() const;
+            //@}
+            //! \name Additional interface
+            //@{
             double firstLegBPS() const;
             double secondLegBPS() const;
             const Handle<CashFlows::TimeBasket>& sensitivity() const;
+            //@}
           protected:
             // methods
+            void setupExpired() const;
             void performCalculations() const;
             // data members
             std::vector<Handle<CashFlow> > firstLeg_, secondLeg_;

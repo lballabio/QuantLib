@@ -56,7 +56,14 @@ namespace QuantLib {
             registerWith(termStructure);
             registerWith(engine);
         }
-        
+
+        bool VanillaCapFloor::isExpired() const {
+            Date lastFixing = Date::minDate();
+            for (Size i=0; i<floatingLeg_.size(); i++)
+                lastFixing = QL_MAX(lastFixing, floatingLeg_[i]->date());
+            return lastFixing < termStructure_->referenceDate();
+        }
+
         void VanillaCapFloor::setupEngine() const {
             CapFloorArguments* arguments =
                 dynamic_cast<CapFloorArguments*>(
@@ -96,18 +103,6 @@ namespace QuantLib {
                 if (type_ == Floor || type_ == Collar)
                     arguments->floorRates.push_back(floorRates_[i]);
             }
-        }
-
-        void VanillaCapFloor::performCalculations() const {
-            if (floatingLeg_.back()->date()<termStructure_->referenceDate()) {
-                isExpired_ = true;
-                NPV_ = 0.0;
-            } else {
-                isExpired_ = false;
-                Option::performCalculations();
-            }
-            QL_ENSURE(isExpired_ || NPV_ != Null<double>(),
-                      "null value returned from cap/floor pricer");
         }
 
         void CapFloorArguments::validate() const {

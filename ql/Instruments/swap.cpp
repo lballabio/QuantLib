@@ -38,11 +38,7 @@
 
 namespace QuantLib {
 
-    using CashFlows::Coupon;
-    using CashFlows::FloatingRateCoupon;
-    using CashFlows::BPSCalculator;
-    using CashFlows::BPSBasketCalculator;
-    using CashFlows::TimeBasket;
+    using namespace CashFlows;
 
     namespace Instruments {
 
@@ -60,6 +56,25 @@ namespace QuantLib {
                 registerWith(*i);
         }
 
+        bool Swap::isExpired() const {
+            Date lastPayment = Date::minDate();
+            std::vector<Handle<CashFlow> >::const_iterator i;
+            for (i = firstLeg_.begin(); i!= firstLeg_.end(); ++i)
+                lastPayment = QL_MAX(lastPayment, (*i)->date());
+            for (i = secondLeg_.begin(); i!= secondLeg_.end(); ++i)
+                lastPayment = QL_MAX(lastPayment, (*i)->date());
+            #if QL_INCLUDE_TODAYS_COUPON
+            return lastPayment < termStructure_->referenceDate();
+            #else
+            return lastPayment <= termStructure_->referenceDate();
+            #endif
+        }
+
+        void Swap::setupExpired() const {
+            NPV_ = firstLegBPS_= secondLegBPS_ = 0.0;
+            sensitivity_ = Handle<TimeBasket>();
+        }
+
         void Swap::performCalculations() const {
             QL_REQUIRE(!termStructure_.isNull(),
                 "Swap::performCalculations trying to price swap "
@@ -70,7 +85,6 @@ namespace QuantLib {
             secondLegBPS_ = 0.0;
             double firstLegNPV_ = 0.0;
             double secondLegNPV_ = 0.0;
-            isExpired_ = true;
 
             BPSBasketCalculator basketbps(termStructure_,2);
             // subtract first leg cash flows and BPS
@@ -82,9 +96,6 @@ namespace QuantLib {
                 #else
                 if (cashFlowDate > settlement) {
                 #endif
-                    isExpired_ = false;  // keeping track of whether this
-                                         // was already set isn't worth the
-                                         // effort
                     firstLegNPV_ -= firstLeg_[i]->amount() *
                         termStructure_->discount(cashFlowDate);
                     firstLeg_[i]->accept(bps1);
@@ -102,7 +113,6 @@ namespace QuantLib {
                 #else
                 if (cashFlowDate > settlement) {
                 #endif
-                    isExpired_ = false;
                     secondLegNPV_ += secondLeg_[j]->amount() *
                         termStructure_->discount(cashFlowDate);
                     secondLeg_[j]->accept(bps2);

@@ -34,7 +34,6 @@ namespace QuantLib {
         void Stock::performCalculations() const {
             QL_REQUIRE(!quote_.isNull(),
                 "null quote set for "+isinCode()+" stock");
-            isExpired_ = false;
             NPV_ = quote_->value();
         }
 

@@ -42,6 +42,10 @@ namespace QuantLib {
             registerWith(engine_);
         }
 
+        bool Swaption::isExpired() const {
+            return exercise_.dates().back() < termStructure_->referenceDate();
+        }
+
         void Swaption::setupEngine() const {
             SwaptionArguments* arguments =
                 dynamic_cast<SwaptionArguments*>(engine_->arguments());
@@ -115,14 +119,8 @@ namespace QuantLib {
         }
 
         void Swaption::performCalculations() const {
-            if (exercise_.dates().back() < termStructure_->referenceDate()) {
-                isExpired_ = true;
-                NPV_ = 0.0;
-            } else {
-                isExpired_ = false;
-                Option::performCalculations();
-            }
-            QL_ENSURE(isExpired_ || NPV_ != Null<double>(),
+            Option::performCalculations();
+            QL_ENSURE(NPV_ != Null<double>(),
                       "null value returned from swaption pricer");
         }
 

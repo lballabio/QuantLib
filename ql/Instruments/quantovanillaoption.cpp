@@ -80,6 +80,11 @@ namespace QuantLib {
             return qlambda_;
         }
 
+        void QuantoVanillaOption::setupExpired() const {
+            VanillaOption::setupExpired();
+            qvega_ = qrho_ = qlambda_ = 0.0;
+        }
+
         void QuantoVanillaOption::setupEngine() const {
             VanillaOption::setupEngine();
             QuantoOptionArguments<VanillaOptionArguments>* arguments =
@@ -103,46 +108,35 @@ namespace QuantLib {
         }
 
         void QuantoVanillaOption::performCalculations() const {
-            // when == it should provide an answer
-            if (exercise_.lastDate() < riskFreeTS_->referenceDate()) {
-                isExpired_ = true;
-                NPV_ = delta_ = gamma_ = theta_ =
-                    vega_ = rho_ = dividendRho_ =
-                    strikeSensitivity_ =
-                    qvega_ = qrho_ = qlambda_ = 0.0;
-            } else {
-                isExpired_ = false;
-                Option::performCalculations();
+            Option::performCalculations();
 
-                const VanillaOptionResults* vanillaResults =
-                    dynamic_cast<const VanillaOptionResults*>(
-                        engine_->results());
-                QL_ENSURE(vanillaResults != 0,
-                    "QuantoVanillaOption::performCalculations() : "
-                    "no vanilla results returned from pricing engine");
-                delta_       = vanillaResults->delta;
-                gamma_       = vanillaResults->gamma;
-                theta_       = vanillaResults->theta;
-                vega_        = vanillaResults->vega;
-                rho_         = vanillaResults->rho;
-                dividendRho_ = vanillaResults->dividendRho;
+            const VanillaOptionResults* vanillaResults =
+                dynamic_cast<const VanillaOptionResults*>(engine_->results());
+            QL_ENSURE(vanillaResults != 0,
+                      "QuantoVanillaOption::performCalculations() : "
+                      "no vanilla results returned from pricing engine");
+            delta_       = vanillaResults->delta;
+            gamma_       = vanillaResults->gamma;
+            theta_       = vanillaResults->theta;
+            vega_        = vanillaResults->vega;
+            rho_         = vanillaResults->rho;
+            dividendRho_ = vanillaResults->dividendRho;
 
-                const QuantoOptionResults<VanillaOptionResults>* 
-                    quantoResults =
-                    dynamic_cast
-                    <const QuantoOptionResults<VanillaOptionResults>*>(
-                        engine_->results());
-                QL_ENSURE(quantoResults != 0,
-                    "QuantoVanillaOption::performCalculations() : "
-                    "no quanto results returned from pricing engine");
-                qrho_        = quantoResults->qrho;
-                qvega_       = quantoResults->qvega;
-                qlambda_     = quantoResults->qlambda;
+            const QuantoOptionResults<VanillaOptionResults>* 
+                quantoResults =
+                dynamic_cast
+                <const QuantoOptionResults<VanillaOptionResults>*>(
+                    engine_->results());
+            QL_ENSURE(quantoResults != 0,
+                      "QuantoVanillaOption::performCalculations() : "
+                      "no quanto results returned from pricing engine");
+            qrho_        = quantoResults->qrho;
+            qvega_       = quantoResults->qvega;
+            qlambda_     = quantoResults->qlambda;
 
-            }
-            QL_ENSURE(isExpired_ || NPV_ != Null<double>(),
-                "QuantoVanillaOption::performCalculations() : "
-                "null value returned from option pricer");
+            QL_ENSURE(NPV_ != Null<double>(),
+                      "QuantoVanillaOption::performCalculations() : "
+                      "null value returned from option pricer");
         }
 
     }

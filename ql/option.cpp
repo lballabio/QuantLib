@@ -56,8 +56,8 @@ namespace QuantLib {
         const OptionValue* results =
             dynamic_cast<const OptionValue*>(engine_->results());
         QL_ENSURE(results != 0,
-            "Option::performCalculations : "
-            "no results returned from option pricer");
+                  "Option::performCalculations : "
+                  "no results returned from option pricer");
         NPV_ = results->value;
         errorEstimate_ = results->errorEstimate;
     }

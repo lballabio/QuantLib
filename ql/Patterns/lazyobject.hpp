@@ -81,16 +81,16 @@ namespace QuantLib {
                 observer of such objects for the calculations to be
                 performed again when they change.
 
-                \warning This method should <b>not</b> be redefined in
-                         derived classes.
+                \warning Should this method be redefined in derived classes,
+                         LazyObject::calculate() should be called in the
+                         overriding method.
             */
-            void calculate() const;
+            virtual void calculate() const;
             /*! This method must implement any calculations which must be
                 (re)done in order to calculate the desired results.
             */
             virtual void performCalculations() const = 0;
             //@}
-          private:
             mutable bool calculated_, frozen_;
         };
 
@@ -108,15 +108,16 @@ namespace QuantLib {
         }
 
         inline void LazyObject::recalculate() {
-            calculated_ = true;   // prevent infinite recursion in 
-                                  // case of bootstrapping
+            bool wasFrozen = frozen_;
+            calculated_ = frozen_ = false;
             try {
-                performCalculations();
+                calculate();
             } catch (...) {
-                calculated_ = false;
+                frozen_ = wasFrozen;
                 notifyObservers();
                 throw;
             }
+            frozen_ = wasFrozen;
             notifyObservers();
         }
 

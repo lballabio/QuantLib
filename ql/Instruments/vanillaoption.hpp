@@ -44,6 +44,10 @@ namespace QuantLib {
                                                    Handle<PricingEngine>(),
                           const std::string& isinCode = "",
                           const std::string& description = "");
+            //! \name Instrument interface
+            //@{
+            bool isExpired() const;
+            //@}
             //! \name greeks
             //@{
             double delta() const;
@@ -68,6 +72,7 @@ namespace QuantLib {
                                      double minVol = 1.0e-4,
                                      double maxVol = 4.0) const;
           protected:
+            void setupExpired() const;
             void setupEngine() const;
             void performCalculations() const;
             // results

@@ -40,8 +40,6 @@ namespace QuantLib {
       public:
         Instrument(const std::string& isinCode = "",
                    const std::string& description = "");
-        virtual ~Instrument() {}
-
         //! \name Inspectors
         //@{
         //! returns the ISIN code of the instrument, when given.
@@ -51,17 +49,26 @@ namespace QuantLib {
         //! returns the net present value of the instrument.
         double NPV() const;
         //! returns whether the instrument is still tradable.
-        bool isExpired() const;
+        virtual bool isExpired() const = 0;
         //@}
       protected:
+        //! \name Calculations 
+        //@{
+        void calculate() const;
+        /*! This method must leave the instrument in a consistent
+            state when the expiration condition is met.
+        */
+        virtual void setupExpired() const;
+        //@}
         /*! \name Results
-            The value of these attributes must be set in the body of the
+            The value of this attribute and any other that derived 
+            classes might declare must be set in the body of the
             <b>performCalculations</b> method.
         */
         //@{
         mutable double NPV_;
-        mutable bool isExpired_;
         //@}
+        
       private:
         std::string isinCode_, description_;
     };
@@ -70,8 +77,7 @@ namespace QuantLib {
 
     inline Instrument::Instrument(const std::string& isinCode,
                                   const std::string& description)
-    : NPV_(0.0), isExpired_(false), isinCode_(isinCode),
-      description_(description) {}
+    : NPV_(0.0), isinCode_(isinCode), description_(description) {}
 
     inline std::string Instrument::isinCode() const {
         return isinCode_;
@@ -81,14 +87,22 @@ namespace QuantLib {
         return description_;
     }
 
-    inline double Instrument::NPV() const {
-        calculate();
-        return (isExpired_ ? 0.0 : NPV_);
+    inline void Instrument::calculate() const {
+        if (isExpired()) {
+            setupExpired();
+            calculated_ = true;
+        } else {
+            LazyObject::calculate();
+        }
     }
 
-    inline bool Instrument::isExpired() const {
+    inline void Instrument::setupExpired() const {
+        NPV_ = 0.0;
+    }
+
+    inline double Instrument::NPV() const {
         calculate();
-        return isExpired_;
+        return NPV_;
     }
 
 }

@@ -59,13 +59,10 @@ namespace QuantLib {
         }
 
         void ForwardVanillaOption::performCalculations() const {
-            // when == it should provide an answer
-            if (exercise_.lastDate() < riskFreeTS_->referenceDate()) {
-                isExpired_ = true;
+            if (isExpired()) {
                 NPV_ = delta_ = gamma_ = theta_ =
                     vega_ =   rho_ = dividendRho_ = strikeSensitivity_ = 0.0;
             } else {
-                isExpired_ = false;
                 Option::performCalculations();
 
                 const VanillaOptionResults* vanillaResults =
@@ -81,7 +78,7 @@ namespace QuantLib {
                 dividendRho_ = vanillaResults->dividendRho;
 
             }
-            QL_ENSURE(isExpired_ || NPV_ != Null<double>(),
+            QL_ENSURE(NPV_ != Null<double>(),
                       "null value returned from option pricer");
         }
 

@@ -41,6 +41,12 @@ namespace QuantLib {
                             const RelinkableHandle<TermStructure>& 
                                 termStructure,
                             const Handle<PricingEngine>& engine);
+            //! \name Instrument interface
+            //@{
+            bool isExpired() const;
+            //@}
+            //! \name Inspectors
+            //@{
             Type type() const { return type_; }
             const std::vector<Handle<CashFlow> >& leg() const {
                 return floatingLeg_;
@@ -51,8 +57,8 @@ namespace QuantLib {
             const std::vector<Rate>& floorRates() const {
                 return floorRates_;
             }
+            //@}
           protected:
-            void performCalculations() const;
             void setupEngine() const;
           private:
             Type type_;
