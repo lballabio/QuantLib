@@ -11,7 +11,7 @@ LIBRARY
     *****
     check FRA mXn definition
     implement swap discountGuess()
-    explicit/implicit instead of BackwardEuler, ForwardEuler
+    explicitEuler/implicitEuler instead of BackwardEuler, ForwardEuler
     use pragma in config.msvc.hpp for MS VC++ requirement
     asian continuous and/or discrete
     check geometric continuous and/or discrete
@@ -27,6 +27,7 @@ LIBRARY
     Maxim integral
     ******
 
+    document namespaces on Sad-branch
     introduce compoundpathpricer
     GaussianPathGenerator, etc: allow for more general random walks
 

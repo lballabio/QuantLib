@@ -246,7 +246,10 @@ int main(int argc, char* argv[])
             PiecewiseFlatForward(currency, termStructureDayCounter,
             todaysDate, calendar, settlementDays, depoFutSwapInstruments));
 
+// adding the following 2 curves, even if unused, make it crash
+// the 2 following curves do work if used instead of the above
 
+/*
         // A depo-swap curve
         std::vector<Handle<RateHelper> > depoSwapInstruments;
         depoSwapInstruments.push_back(d1w);
@@ -282,6 +285,7 @@ int main(int argc, char* argv[])
             PiecewiseFlatForward(currency, termStructureDayCounter,
             todaysDate, calendar, settlementDays, depoFRASwapInstruments));
 
+*/
         
         /**********************
          * SWAPS TO BE PRICED *
