@@ -27,6 +27,9 @@
 
     $Source$
     $Log$
+    Revision 1.7  2001/04/05 07:57:46  marmar
+    One bug fixed in bermudan option, theta, rho, and vega  still not working
+
     Revision 1.6  2001/04/04 12:13:24  nando
     Headers policy part 2:
     The Include directory is added to the compiler's include search path.
@@ -103,6 +106,14 @@ namespace QuantLib {
             prices_ = initialPrices_;
             controlPrices_ = initialPrices_;
 
+            double dt = 0.01;
+/*            if (dateNumber_ > 0)                
+                dt = residualTime_/(timeStepPerPeriod_*dateNumber_*10);
+            else
+                dt = residualTime_/(timeStepPerPeriod_*10);*/
+                
+            
+            
             int j = dateNumber_ - 1;
             do{
                 initializeStepCondition();
@@ -116,7 +127,7 @@ namespace QuantLib {
                 if (j >= 0)
                     endDate = dates_[j];
                 else
-                    endDate = 0;
+                    endDate = dt;
 
                 model_ -> rollback(prices_, beginDate, endDate,
                                   timeStepPerPeriod_, stepCondition_);
@@ -127,6 +138,13 @@ namespace QuantLib {
                 if (j >= 0)
                     executeIntermediateStep(j);
             } while (--j >= -1);
+
+            double valuePlus = valueAtCenter(prices_) -
+                               valueAtCenter(controlPrices_) +
+                               analitic_ -> value();
+
+            model_ -> rollback(controlPrices_, dt, 0, 1);
+            model_ -> rollback(prices_,        dt, 0, 1, stepCondition_);
 
             // Option price and greeks are computed
             value_ = valueAtCenter(prices_) -
@@ -141,22 +159,16 @@ namespace QuantLib {
                      analitic_ -> gamma();
 
             // calculating theta_
-            double dt;
-            if (dateNumber_ > 0)                
-                dt = residualTime_/(timeStepPerPeriod_ * dateNumber_ * 100);
-            else
-                dt = residualTime_/(timeStepPerPeriod_ * 100);
-
             model_ -> rollback(controlPrices_, 0, -dt, 1);
             model_ -> rollback(prices_,        0, -dt, 1, stepCondition_);
 
             double valueMinus = valueAtCenter(prices_) -
-                                valueAtCenter(controlPrices_);
+                                valueAtCenter(controlPrices_) +
+                                analitic_ -> value();
 
-            theta_ = (value_ - valueMinus)/dt + analitic_ -> theta();
+            theta_ = (valuePlus - valueMinus)/(2.0*dt);
             hasBeenCalculated_ = true;
         }
-
 
         using FiniteDifferences::StandardStepCondition;
 

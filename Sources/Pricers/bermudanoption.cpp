@@ -27,6 +27,9 @@
 
     $Source$
     $Log$
+    Revision 1.5  2001/04/05 07:57:46  marmar
+    One bug fixed in bermudan option, theta, rho, and vega  still not working
+
     Revision 1.4  2001/04/04 17:13:37  nando
     bat file was not updated with Luigi's shuffling
 
@@ -79,8 +82,8 @@ namespace QuantLib {
             // to avoid warning
             step;
             int size = initialPrices_.size();
-            for(int j = 0; size; j++)
-                prices_[j] = QL_MAX(prices_[j], initialPrices_[j]);
+            for(int j = 0; j < size; j++)
+                prices_[j] = QL_MAX(prices_[j], initialPrices_[j]);            
         }
 
     }

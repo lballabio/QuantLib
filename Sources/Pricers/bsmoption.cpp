@@ -27,6 +27,9 @@
 
     $Source$
     $Log$
+    Revision 1.28  2001/04/05 07:57:46  marmar
+    One bug fixed in bermudan option, theta, rho, and vega  still not working
+
     Revision 1.27  2001/04/04 13:32:54  enri
     tons of typos fixed
 
@@ -117,7 +120,7 @@ namespace QuantLib {
                 "for a meaningful result");
  
             volatility_ = volatility;
-            hasBeenCalculated_=false;
+            hasBeenCalculated_ = false;
         }
 
         void BSMOption::setRiskFreeRate(Rate newRiskFreeRate) {
@@ -150,7 +153,6 @@ namespace QuantLib {
             }
             return rho_;
         }
-
 
         double BSMOption::impliedVolatility(double targetValue, double accuracy, 
                     int maxEvaluations, double minVol, double maxVol) const {
