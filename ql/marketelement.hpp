@@ -67,8 +67,9 @@ namespace QuantLib {
     class DerivedMarketElement : public MarketElement, 
                                  public Patterns::Observer {
       public:
-        DerivedMarketElement(const RelinkableHandle<MarketElement>& element, 
-                             const UnaryFunction& f);
+        DerivedMarketElement(
+            const RelinkableHandle<MarketElement>& element, 
+            const UnaryFunction& f);
         ~DerivedMarketElement();
         //! \name Market element interface
         //@{
@@ -88,9 +89,10 @@ namespace QuantLib {
     class CompositeMarketElement : public MarketElement, 
                                    public Patterns::Observer {
       public:
-        CompositeMarketElement(const RelinkableHandle<MarketElement>& element1,
-                               const RelinkableHandle<MarketElement>& element2,
-                               const BinaryFunction& f);
+        CompositeMarketElement(
+            const RelinkableHandle<MarketElement>& element1,
+            const RelinkableHandle<MarketElement>& element2,
+            const BinaryFunction& f);
         ~CompositeMarketElement();
         //! \name Market element interface
         //@{
@@ -147,7 +149,7 @@ namespace QuantLib {
 
     template <class UnaryFunction>
     inline void DerivedMarketElement<UnaryFunction>::update() {
-        notifyObserver();
+        notifyObservers();
     }
 
     // composite market element
@@ -158,8 +160,8 @@ namespace QuantLib {
         const RelinkableHandle<MarketElement>& element2,
         const BinaryFunction& f) 
     : element1_(element1), element2_(element2), f_(f) {
-        element1_.unregisterObserver(this);
-        element2_.unregisterObserver(this);
+        element1_.registerObserver(this);
+        element2_.registerObserver(this);
     }
 
     template <class BinaryFunction>
@@ -177,7 +179,7 @@ namespace QuantLib {
 
     template <class BinaryFunction>
     inline void CompositeMarketElement<BinaryFunction>::update() {
-        notifyObserver();
+        notifyObservers();
     }
     
 }
