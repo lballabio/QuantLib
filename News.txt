@@ -88,4 +88,6 @@ Changes since release 0.3.7:
 - Added "1/1" day counter. The Actual365 is deprecated: as per ISDA
   documentation "Actual/365" is the same as "Actual/Actual". Use the
   ActualActual class instead, or the Actual365Fixed class.
+
+- added dayCounterFromString(std::string)
   

@@ -15,7 +15,7 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file daycounters.hpp
+/*! \file Functions/daycounters.hpp
     \brief day counters functions
 */
 
@@ -24,9 +24,11 @@
 
 #include <ql/Functions/qlfunctions.hpp>
 #include <ql/daycounter.hpp>
+#include <string>
 
 namespace QuantLib {
 
+    DayCounter dayCounterFromString(std::string s);
     BigInteger accrualDays(DayCounter dc, Date d1, Date d2);
     Time accrualFactor(DayCounter dc, Date d1, Date d2, Date d3, Date d4);
 
