@@ -29,6 +29,9 @@
 
 // $Source$
 // $Log$
+// Revision 1.9  2001/07/20 13:06:57  marmar
+// Monte Carlo interfaces imporved
+//
 // Revision 1.8  2001/07/19 16:40:10  lballabio
 // Improved docs a bit
 //
@@ -66,19 +69,18 @@ namespace QuantLib {
             };
         
             class PP{
-                    // The value() method will eventually evolve into
-                    // PP::ValueType value() const;
-                double value(PATH_TYPE &) const;
+                ValueType value(PATH_TYPE &) const;
             };
             \endcode
         */
         template<class PG, class PP>
         class OptionSample {
           public:
+            typedef typename PP::ValueType SampleType;
+
             OptionSample(){}
             OptionSample(Handle<PG> samplePath, Handle<PP> pathPricer);
-            double next() const; // this will eventually evolve into
-                                 // PP::ValueType next() const;
+            SampleType next() const; 
             double weight() const;
           private:
             mutable Handle<PG> samplePath_;
@@ -94,7 +96,7 @@ namespace QuantLib {
                pathPricer_(pathPricer), weight_(0){}
 
         template<class PG, class PP>
-        inline double OptionSample<PG, PP>::next() const{
+            inline OptionSample<PG, PP>::SampleType OptionSample<PG, PP>::next() const{
             double price = pathPricer_ -> value(samplePath_ -> next());
             weight_ = samplePath_ -> weight();
             return price;

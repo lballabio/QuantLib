@@ -30,6 +30,9 @@
 
 // $Source$
 // $Log$
+// Revision 1.8  2001/07/20 13:06:57  marmar
+// Monte Carlo interfaces imporved
+//
 // Revision 1.7  2001/07/19 16:40:10  lballabio
 // Improved docs a bit
 //
@@ -54,6 +57,7 @@ namespace QuantLib {
         */
         class PathPricer {
           public:
+            typedef double ValueType;
             PathPricer() : isInitialized_(false) {}
             virtual ~PathPricer() {}
             virtual double value(const Path &path) const=0;

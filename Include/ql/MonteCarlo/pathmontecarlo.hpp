@@ -29,6 +29,9 @@
 
 // $Source$
 // $Log$
+// Revision 1.10  2001/07/20 13:06:57  marmar
+// Monte Carlo interfaces imporved
+//
 // Revision 1.9  2001/07/13 15:25:13  marmar
 // MonteCarlo interface changed
 //
@@ -90,7 +93,7 @@ namespace QuantLib {
             PathMonteCarlo(Handle<PG> pathGenerator, 
                            Handle<PP> pathPricer,
                            S sampleAccumulator);
-            S sampleAccumulator(long samples = 0) const;
+            const S& sampleAccumulator(long samples = 0) const;
           private:
             S sampleAccumulator_;
             OptionSample<PG,PP> optionSample_;
@@ -110,7 +113,7 @@ namespace QuantLib {
                 isInitialized_(true){}
 
         template<class S, class PG, class PP>
-        inline S PathMonteCarlo<S, PG, PP>::
+        inline const S& PathMonteCarlo<S, PG, PP>::
                     sampleAccumulator(long samples) const{
             QL_REQUIRE(isInitialized_ == true,
                        "PathMonteCarlo must be initialized");

@@ -29,6 +29,9 @@
 
 // $Source$
 // $Log$
+// Revision 1.12  2001/07/20 13:06:57  marmar
+// Monte Carlo interfaces imporved
+//
 // Revision 1.11  2001/07/19 16:40:10  lballabio
 // Improved docs a bit
 //
@@ -114,7 +117,7 @@ namespace QuantLib {
             GeneralMonteCarlo() : isInitialized_(false) {}
             GeneralMonteCarlo(const SA &statisticAccumulator,
                               const SG &sampleGenerator);
-            SA sampleAccumulator(long iterations = 0) const;
+            const SA& sampleAccumulator(long iterations = 0) const;
           private:
             mutable SA sampleAccumulator_;
             mutable SG sampleGenerator_;
@@ -130,7 +133,7 @@ namespace QuantLib {
                 isInitialized_(true){}
 
         template<class SA, class SG>
-        inline SA GeneralMonteCarlo<SA, SG>::sampleAccumulator(long iterations) const{
+        inline const SA& GeneralMonteCarlo<SA, SG>::sampleAccumulator(long iterations) const{
             QL_REQUIRE(isInitialized_ == true,
                        "GeneralMonteCarlo must be initialized");
             for(long j = 1; j <= iterations; j++){
