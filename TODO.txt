@@ -9,7 +9,6 @@ MultiPath and MultiPathPricer
 
 UNIT TEST SUITE
 -*add covariance/correlation test for SequenceStatistics
--*make unit test to work under Borland
 - add Gauss-Kronrod test
 - add single factor calibration test
 - add bermudan (single factor) pricing test
@@ -138,6 +137,7 @@ COMPILING
 - check compile success/failure on other platforms/compilers available @SF
 - Borland projects
 
+======================================
 
 +Changes to the Web Site
   * Improve documentation, maybe add a web-log where web-surfer can leave
