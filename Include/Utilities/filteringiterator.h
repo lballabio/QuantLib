@@ -28,9 +28,12 @@
 	$Source$
 	$Name$
 	$Log$
+	Revision 1.3  2001/01/09 17:45:26  lballabio
+	Typedefs changed
+
 	Revision 1.2  2001/01/09 14:35:17  lballabio
 	Fixed typo in (so far) not instantiated method
-
+	
 	Revision 1.1  2001/01/09 11:51:10  lballabio
 	Added a couple of smart iterators
 	
@@ -63,13 +66,18 @@ namespace QuantLib {
 		template <class Iterator, class UnaryPredicate>
 		class FilteringIterator {
 		  public:
-			typedef std::iterator_traits<Iterator> traits;
-			typedef typename FilteringTag<
-			    typename traits::iterator_category>   iterator_category;
-			typedef typename traits::value_type       value_type;
-			typedef typename traits::difference_type  difference_type;
-			typedef typename traits::pointer          pointer;
-			typedef typename traits::reference        reference;
+		    typedef typename std::iterator_traits<Iterator>::iterator_category
+		        underlying_category;
+			typedef FilteringTag<underlying_category>::iterator_category
+			    iterator_category;
+			typedef typename std::iterator_traits<Iterator>::value_type
+			    value_type;
+			typedef typename std::iterator_traits<Iterator>::difference_type
+			    difference_type;
+			typedef typename std::iterator_traits<Iterator>::pointer
+			    pointer;
+			typedef typename std::iterator_traits<Iterator>::reference
+			    reference;
 			FilteringIterator(const Iterator&, const UnaryPredicate&, 
 			    const Iterator& beforeBegin, const Iterator& end);
 			//! \name Dereferencing
