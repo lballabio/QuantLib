@@ -27,6 +27,7 @@ OBJS = averagepriceasian.obj$(_D) \
        bsmeuropeanoption.obj$(_D) \
        bsmnumericaloption.obj$(_D) \
        bsmoption.obj$(_D) \
+       cliquetoption.obj$(_D) \
        dividendamericanoption.obj$(_D) \
        dividendeuropeanoption.obj$(_D) \
        dividendoption.obj$(_D) \
