@@ -5,7 +5,7 @@ INCLUDES= -I${top_srcdir} -I${top_builddir}
 
 SUBDIRS =  \
 	DiscreteHedging \
-    Parities \
+    EuropeanOption \
     Swap
 
 EXTRA_DIST = \

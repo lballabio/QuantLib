@@ -3,7 +3,7 @@
     This is an example of using the %QuantLib Monte Carlo framework.
 */
 
-/*! \example Parities.cpp
+/*! \example EuropeanOption.cpp
     This example calculates European call options using different methods
     while testing call-put parity.
 */

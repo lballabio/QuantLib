@@ -1,27 +1,27 @@
-# Microsoft Developer Studio Project File - Name="Parities" - Package Owner=<4>
+# Microsoft Developer Studio Project File - Name="EuropeanOption" - Package Owner=<4>
 # Microsoft Developer Studio Generated Build File, Format Version 6.00
 # ** DO NOT EDIT **
 
 # TARGTYPE "Win32 (x86) Console Application" 0x0103
 
-CFG=Parities - Win32 OnTheEdgeDebug
+CFG=EuropeanOption - Win32 OnTheEdgeDebug
 !MESSAGE This is not a valid makefile. To build this project using NMAKE,
 !MESSAGE use the Export Makefile command and run
-!MESSAGE 
-!MESSAGE NMAKE /f "Parities.mak".
-!MESSAGE 
+!MESSAGE
+!MESSAGE NMAKE /f "EuropeanOption.mak".
+!MESSAGE
 !MESSAGE You can specify a configuration when running NMAKE
 !MESSAGE by defining the macro CFG on the command line. For example:
-!MESSAGE 
-!MESSAGE NMAKE /f "Parities.mak" CFG="Parities - Win32 OnTheEdgeDebug"
-!MESSAGE 
+!MESSAGE
+!MESSAGE NMAKE /f "EuropeanOption.mak" CFG="EuropeanOption - Win32 OnTheEdgeDebug"
+!MESSAGE
 !MESSAGE Possible choices for configuration are:
-!MESSAGE 
-!MESSAGE "Parities - Win32 Release" (based on "Win32 (x86) Console Application")
-!MESSAGE "Parities - Win32 Debug" (based on "Win32 (x86) Console Application")
-!MESSAGE "Parities - Win32 OnTheEdgeRelease" (based on "Win32 (x86) Console Application")
-!MESSAGE "Parities - Win32 OnTheEdgeDebug" (based on "Win32 (x86) Console Application")
-!MESSAGE 
+!MESSAGE
+!MESSAGE "EuropeanOption - Win32 Release" (based on "Win32 (x86) Console Application")
+!MESSAGE "EuropeanOption - Win32 Debug" (based on "Win32 (x86) Console Application")
+!MESSAGE "EuropeanOption - Win32 OnTheEdgeRelease" (based on "Win32 (x86) Console Application")
+!MESSAGE "EuropeanOption - Win32 OnTheEdgeDebug" (based on "Win32 (x86) Console Application")
+!MESSAGE
 
 # Begin Project
 # PROP AllowPerConfigDependencies 0
@@ -30,7 +30,7 @@ CFG=Parities - Win32 OnTheEdgeDebug
 CPP=cl.exe
 RSC=rc.exe
 
-!IF  "$(CFG)" == "Parities - Win32 Release"
+!IF  "$(CFG)" == "EuropeanOption - Win32 Release"
 
 # PROP BASE Use_MFC 0
 # PROP BASE Use_Debug_Libraries 0
@@ -55,7 +55,7 @@ LINK32=link.exe
 # ADD LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:console /machine:I386 /libpath:"$(QL_DIR)\lib\Win32\VisualStudio\\"
 # SUBTRACT LINK32 /profile
 
-!ELSEIF  "$(CFG)" == "Parities - Win32 Debug"
+!ELSEIF  "$(CFG)" == "EuropeanOption - Win32 Debug"
 
 # PROP BASE Use_MFC 0
 # PROP BASE Use_Debug_Libraries 1
@@ -80,12 +80,12 @@ LINK32=link.exe
 # ADD LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:console /debug /machine:I386 /libpath:"$(QL_DIR)\lib\Win32\VisualStudio\\"
 # SUBTRACT LINK32 /profile
 
-!ELSEIF  "$(CFG)" == "Parities - Win32 OnTheEdgeRelease"
+!ELSEIF  "$(CFG)" == "EuropeanOption - Win32 OnTheEdgeRelease"
 
 # PROP BASE Use_MFC 0
 # PROP BASE Use_Debug_Libraries 0
-# PROP BASE Output_Dir "Parities___Win32_OnTheEdgeRelease"
-# PROP BASE Intermediate_Dir "Parities___Win32_OnTheEdgeRelease"
+# PROP BASE Output_Dir "EuropeanOption___Win32_OnTheEdgeRelease"
+# PROP BASE Intermediate_Dir "EuropeanOption___Win32_OnTheEdgeRelease"
 # PROP BASE Ignore_Export_Lib 0
 # PROP BASE Target_Dir ""
 # PROP Use_MFC 0
@@ -107,12 +107,12 @@ LINK32=link.exe
 # ADD LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:console /machine:I386 /libpath:"..\..\lib\Win32\VisualStudio\\"
 # SUBTRACT LINK32 /profile
 
-!ELSEIF  "$(CFG)" == "Parities - Win32 OnTheEdgeDebug"
+!ELSEIF  "$(CFG)" == "EuropeanOption - Win32 OnTheEdgeDebug"
 
 # PROP BASE Use_MFC 0
 # PROP BASE Use_Debug_Libraries 1
-# PROP BASE Output_Dir "Parities___Win32_OnTheEdgeDebug"
-# PROP BASE Intermediate_Dir "Parities___Win32_OnTheEdgeDebug"
+# PROP BASE Output_Dir "EuropeanOption___Win32_OnTheEdgeDebug"
+# PROP BASE Intermediate_Dir "EuropeanOption___Win32_OnTheEdgeDebug"
 # PROP BASE Ignore_Export_Lib 0
 # PROP BASE Target_Dir ""
 # PROP Use_MFC 0
@@ -134,20 +134,20 @@ LINK32=link.exe
 # ADD LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:console /debug /machine:I386 /libpath:"..\..\lib\Win32\VisualStudio\\"
 # SUBTRACT LINK32 /profile
 
-!ENDIF 
+!ENDIF
 
 # Begin Target
 
-# Name "Parities - Win32 Release"
-# Name "Parities - Win32 Debug"
-# Name "Parities - Win32 OnTheEdgeRelease"
-# Name "Parities - Win32 OnTheEdgeDebug"
+# Name "EuropeanOption - Win32 Release"
+# Name "EuropeanOption - Win32 Debug"
+# Name "EuropeanOption - Win32 OnTheEdgeRelease"
+# Name "EuropeanOption - Win32 OnTheEdgeDebug"
 # Begin Group "Source Files"
 
 # PROP Default_Filter "cpp;c;cxx;rc;def;r;odl;idl;hpj;bat"
 # Begin Source File
 
-SOURCE=.\Parities.cpp
+SOURCE=.\EuropeanOption.cpp
 # End Source File
 # End Group
 # Begin Group "Header Files"

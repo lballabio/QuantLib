@@ -21,10 +21,6 @@
  * available at http://quantlib.org/group.html
 */
 
-/* \file Parities.cpp
-   \brief Example on pricing european option with different methods.
-
-*/
 
 // $Id$
 

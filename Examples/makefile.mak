@@ -17,7 +17,7 @@
 examples::
     cd DiscreteHedging
     $(MAKE)
-    cd ..\Parities
+    cd ..\EuropeanOption
     $(MAKE)
     cd ..\Swap
     $(MAKE)
@@ -27,7 +27,7 @@ examples::
 clean::
     cd DiscreteHedging
     $(MAKE) clean
-    cd ..\Parities
+    cd ..\EuropeanOption
     $(MAKE) clean
     cd ..\Swap
     $(MAKE) clean

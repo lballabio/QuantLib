@@ -1,6 +1,6 @@
 
 #
-# makefile for Parities.cpp under Borland C++
+# makefile for EuropeanOption.cpp under Borland C++
 #
 # $Id$
 
@@ -29,8 +29,8 @@ CC_OPTS = $(CC_OPTS) -v -DQL_DEBUG
 !endif
 
 # Primary target:
-Parities$(_D).exe: Parities.cpp
-    bcc32 $(CC_OPTS) -L$(QL_LIB_DIR) -oParities$(_D).obj -eParities$(_D).exe Parities.cpp QuantLib$(_D).lib
+EuropeanOption$(_D).exe: EuropeanOption.cpp
+    bcc32 $(CC_OPTS) -L$(QL_LIB_DIR) -oEuropeanOption$(_D).obj -eEuropeanOption$(_D).exe EuropeanOption.cpp QuantLib$(_D).lib
 
 # Clean up
 clean::

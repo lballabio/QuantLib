@@ -236,11 +236,11 @@ SectionIn 1 2
     File /r "Examples\DiscreteHedging\*.txt"
     File /r "Examples\DiscreteHedging\*.mak"
 
-    SetOutPath $INSTDIR\Examples\Parities
-    File /r "Examples\Parities\*.cpp"
-    File /r "Examples\Parities\*.dsp"
-    File /r "Examples\Parities\*.txt"
-    File /r "Examples\Parities\*.mak"
+    SetOutPath $INSTDIR\Examples\EuropeanOption
+    File /r "Examples\EuropeanOption\*.cpp"
+    File /r "Examples\EuropeanOption\*.dsp"
+    File /r "Examples\EuropeanOption\*.txt"
+    File /r "Examples\EuropeanOption\*.mak"
 
     SetOutPath $INSTDIR\Examples\Swap
     File /r "Examples\Swap\*.cpp"
