@@ -285,8 +285,8 @@ namespace QuantLib {
             leftIndex_[i]   = j;
             rightIndex_[i]  = k;
             leftWeight_[i]  = (v[k]-v[l])  /(v[k]-v[j-1]);
-            rightWeight_[i] = (v[l]-v[j-1])/(v[k]-v[j]-1);
-            stdDev_[i] = sqrt(((v[l]-v[j-1])*(v[k]-v[l]))/(v[k]-v[j-1]));
+            rightWeight_[i] = (v[l]-v[j-1])/(v[k]-v[j-1]);
+            stdDev_[i] = QL_SQRT(((v[l]-v[j-1])*(v[k]-v[l]))/(v[k]-v[j-1]));
             j=k+1;
             if (j>=dimension_) j=0;	//	Wrap around.
         }
