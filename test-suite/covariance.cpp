@@ -87,9 +87,9 @@ void CovarianceTest::testSalvagingCorrelation() {
         BOOST_FAIL(DecimalFormatter::toExponential(error) + 
             " error while salvaging covariance matrix with spectral alg\n"
             "input matrix:\n" +
-            SequenceFormatter::toString(badCov.begin(), badCov.end(), 6, 0, n)
+            MatrixFormatter::toString(badCov)
             + "\nsalvaged matrix:\n" +
-            SequenceFormatter::toString(goodCov.begin(),goodCov.end(),6,0,n));
+            MatrixFormatter::toString(goodCov));
 
 }
 
