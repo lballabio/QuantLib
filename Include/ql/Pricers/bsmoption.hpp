@@ -25,11 +25,15 @@
 /*! \file bsmoption.hpp
     \brief common code for option evaluation
 
-    $Id$
+    \fullpath
+    Include/ql/Pricers/%bsmoption.hpp
 */
 
 // $Source$
 // $Log$
+// Revision 1.15  2001/07/26 13:56:23  nando
+// straddle barrier option handled
+//
 // Revision 1.14  2001/07/25 15:47:28  sigmud
 // Change from quantlib.sourceforge.net to quantlib.org
 //
@@ -38,19 +42,6 @@
 //
 // Revision 1.12  2001/07/13 14:29:08  sigmud
 // removed a few gcc compile warnings
-//
-// Revision 1.11  2001/07/06 18:24:17  nando
-// slight modifications to avoid VisualStudio warnings
-//
-// Revision 1.10  2001/07/05 15:57:22  lballabio
-// Collected typedefs in a single file
-//
-// Revision 1.9  2001/06/22 16:38:15  lballabio
-// Improved documentation
-//
-// Revision 1.8  2001/05/24 15:38:08  nando
-// smoothing #include xx.hpp and cutting old Log messages
-//
 
 #ifndef BSM_option_pricer_h
 #define BSM_option_pricer_h

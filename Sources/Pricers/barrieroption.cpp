@@ -31,6 +31,9 @@
 
 // $Source$
 // $Log$
+// Revision 1.17  2001/07/26 13:56:23  nando
+// straddle barrier option handled
+//
 // Revision 1.16  2001/07/25 15:47:29  sigmud
 // Change from quantlib.sourceforge.net to quantlib.org
 //
@@ -51,24 +54,59 @@ namespace QuantLib {
     namespace Pricers {
 
         BarrierOption::BarrierOption(BarrierType barrType,
-                Type type, double underlying, double strike,
-                Rate dividendYield, Rate riskFreeRate,
-                Time residualTime, double volatility,
-                double barrier, double rebate)
-        : BSMOption(type, underlying, strike, dividendYield,
-              riskFreeRate, residualTime, volatility), barrType_(barrType),
-              barrier_(barrier), rebate_(rebate), f_(){
+                                     Type type,
+                                     double underlying,
+                                     double strike,
+                                     Rate dividendYield,
+                                     Rate riskFreeRate,
+                                     Time residualTime,
+                                     double volatility,
+                                     double barrier,
+                                     double rebate)
+        : BSMOption(type, underlying, strike, dividendYield, riskFreeRate,
+            residualTime, volatility), barrType_(barrType), barrier_(barrier),
+            rebate_(rebate), f_(){
 
-            QL_REQUIRE(type != Straddle,
-                "BarrierOption: Straddle is meaningless for barrier options");
             QL_REQUIRE(barrier_ > 0,
                 "BarrierOption: barrier must be positive");
             QL_REQUIRE(rebate_ >= 0,
                 "BarrierOption: rebate cannot be neagative");
 
+            switch (barrType_) {
+              case DownIn:
+                QL_REQUIRE(underlying_ >= barrier_, "underlying (" +
+                    DoubleFormatter::toString(underlying_) +
+                    ")< barrier(" +
+                    DoubleFormatter::toString(barrier_) +
+                    "): down-and-in barrier undefined");
+                break;
+              case UpIn:
+                QL_REQUIRE(underlying_ <= barrier_, "underlying ("+
+                    DoubleFormatter::toString(underlying_) +
+                    ")> barrier("+
+                    DoubleFormatter::toString(barrier_) +
+                    "): up-and-in barrier undefined");
+                break;
+              case DownOut:
+                QL_REQUIRE(underlying_ >= barrier_, "underlying ("+
+                    DoubleFormatter::toString(underlying_) +
+                    ")< barrier("+
+                    "): down-and-out barrier undefined");
+                break;
+              case UpOut:
+                QL_REQUIRE(underlying_ <= barrier_, "underlying ("+
+                    DoubleFormatter::toString(underlying_) +
+                    ")> barrier("+
+                    DoubleFormatter::toString(barrier_) +
+                    "): up-and-out barrier undefined");
+                break;
+              default:
+                throw Error("Barrier Option: unknown type");
+            }
+
         }
 
-        void BarrierOption::initialize() const {
+        void BarrierOption::initialize_() const {
             sigmaSqrtT_ = volatility_ * QL_SQRT(residualTime_);
 
             mu_ = (riskFreeRate_ - dividendYield_)/
@@ -81,33 +119,33 @@ namespace QuantLib {
 
         double BarrierOption::value() const {
           if(!hasBeenCalculated_) {
-            initialize();
+            initialize_();
             switch (type_) {
               case Call:
                 switch (barrType_) {
                   case DownIn:
                     if(strike_ >= barrier_)
-                        value_ = C(1,1) + E(1,1);
+                        value_ = C_(1,1) + E_(1,1);
                     else
-                        value_ = A(1,1) - B(1,1) + D(1,1) + E(1,1);
+                        value_ = A_(1,1) - B_(1,1) + D_(1,1) + E_(1,1);
                     break;
                   case UpIn:
                     if(strike_ >= barrier_)
-                        value_ = A(-1,1) + E(-1,1);
+                        value_ = A_(-1,1) + E_(-1,1);
                     else
-                        value_ = B(-1,1) - C(-1,1) + D(-1,1) + E(-1,1);
+                        value_ = B_(-1,1) - C_(-1,1) + D_(-1,1) + E_(-1,1);
                     break;
                   case DownOut:
                     if(strike_ >= barrier_)
-                        value_ = A(1,1) - C(1,1) + F(1,1);
+                        value_ = A_(1,1) - C_(1,1) + F_(1,1);
                     else
-                        value_ = B(1,1) - D(1,1) + F(1,1);
+                        value_ = B_(1,1) - D_(1,1) + F_(1,1);
                     break;
                   case UpOut:
                     if(strike_ >= barrier_)
-                        value_ = F(-1,1);
+                        value_ = F_(-1,1);
                     else
-                        value_ = A(-1,1) - B(-1,1) + C(-1,1) - D(-1,1)+ F(-1,1);
+                        value_ = A_(-1,1) - B_(-1,1)+C_(-1,1)-D_(-1,1)+F_(-1,1);
                     break;
                 }
                 break;
@@ -115,60 +153,89 @@ namespace QuantLib {
                 switch (barrType_) {
                   case DownIn:
                     if(strike_ >= barrier_)
-                        value_ = B(1,-1) - C(1,-1) + D(1,-1) + E(1,-1);
+                        value_ = B_(1,-1) - C_(1,-1) + D_(1,-1) + E_(1,-1);
                     else
-                        value_ = A(1,-1) + E(1,-1);
+                        value_ = A_(1,-1) + E_(1,-1);
                     break;
                   case UpIn:
                     if(strike_ >= barrier_)
-                        value_ = A(-1,-1) - B(-1,-1) + D(-1,-1) + E(-1,-1);
+                        value_ = A_(-1,-1) - B_(-1,-1) + D_(-1,-1) + E_(-1,-1);
                     else
-                        value_ = C(-1,-1) + E(-1,-1);
+                        value_ = C_(-1,-1) + E_(-1,-1);
                     break;
                   case DownOut:
                     if(strike_ >= barrier_)
-                        value_ = A(1,-1) - B(1,-1) + C(1,-1)- D(1,-1) + F(1,-1);
+                        value_ = A_(1,-1) - B_(1,-1)+C_(1,-1)-D_(1,-1)+F_(1,-1);
                     else
-                        value_ = F(1,-1);
+                        value_ = F_(1,-1);
                     break;
                   case UpOut:
                     if(strike_ >= barrier_)
-                        value_ = B(-1,-1) - D(-1,-1) + F(-1,-1);
+                        value_ = B_(-1,-1) - D_(-1,-1) + F_(-1,-1);
                     else
-                        value_ = A(-1,-1) - C(-1,-1) + F(-1,-1);
+                        value_ = A_(-1,-1) - C_(-1,-1) + F_(-1,-1);
                     break;
                 }
                 break;
               case Straddle:
-                // Actually, because of a previous QL_REQUIRE statement,
-                // this code is unreachable, but it avoids a warning
-                throw Error("BarrierOption: Straddle is meaningless for barrier"
-                            " options");
+                switch (barrType_) {
+                  case DownIn:
+                    if(strike_ >= barrier_)
+                        value_ = C_(1,1) + E_(1,1) +
+                            B_(1,-1) - C_(1,-1) + D_(1,-1) + E_(1,-1);
+                    else
+                        value_ = A_(1,1) - B_(1,1) + D_(1,1) + E_(1,1) +
+                            A_(1,-1) + E_(1,-1);
+                    break;
+                  case UpIn:
+                    if(strike_ >= barrier_)
+                        value_ = A_(-1,1) + E_(-1,1) +
+                            A_(-1,-1) - B_(-1,-1) + D_(-1,-1) + E_(-1,-1);
+                    else
+                        value_ = B_(-1,1) - C_(-1,1) + D_(-1,1) + E_(-1,1) +
+                            C_(-1,-1) + E_(-1,-1);
+                    break;
+                  case DownOut:
+                    if(strike_ >= barrier_)
+                        value_ = A_(1,1) - C_(1,1) + F_(1,1) +
+                            A_(1,-1) - B_(1,-1)+C_(1,-1)-D_(1,-1)+F_(1,-1);
+                    else
+                        value_ = B_(1,1) - D_(1,1) + F_(1,1) +
+                            F_(1,-1);
+                    break;
+                  case UpOut:
+                    if(strike_ >= barrier_)
+                        value_ = F_(-1,1) +
+                            B_(-1,-1) - D_(-1,-1) + F_(-1,-1);
+                    else
+                        value_ = A_(-1,1) -B_(-1,1)+C_(-1,1)-D_(-1,1)+F_(-1,1) +
+                            A_(-1,-1) - C_(-1,-1) + F_(-1,-1);
+                    break;
+                }
                 break;
+              default:
+                throw Error("Option: unknown type");
             }
             hasBeenCalculated_ = true;
           }
           return value_;
         }
 
-        void BarrierOption::calculate() const{
+        void BarrierOption::calculate_() const{
 
             double underPlus = underlying_ * (1 + 0.0001);
             double underMinu = underlying_ * (1 - 0.0001);
             double timePlus = residualTime_ * (1 + 0.0001);
-            BarrierOption barrierTimePlus(barrType_,
-                type_, underlying_, strike_, dividendYield_,
-                riskFreeRate_, timePlus, volatility_,
+            BarrierOption barrierTimePlus(barrType_, type_, underlying_,
+                strike_, dividendYield_, riskFreeRate_, timePlus, volatility_,
                 barrier_, rebate_);
 
-            BarrierOption barrierPlus(barrType_,
-                type_, underPlus, strike_, dividendYield_,
-                riskFreeRate_, residualTime_, volatility_,
+            BarrierOption barrierPlus(barrType_, type_, underPlus, strike_,
+                dividendYield_, riskFreeRate_, residualTime_, volatility_,
                 barrier_, rebate_);
 
-            BarrierOption barrierMinus(barrType_,
-                type_, underMinu, strike_, dividendYield_,
-                riskFreeRate_, residualTime_, volatility_,
+            BarrierOption barrierMinus(barrType_, type_, underMinu, strike_,
+                dividendYield_, riskFreeRate_, residualTime_, volatility_,
                 barrier_, rebate_);
 
             delta_ = (barrierPlus.value()-barrierMinus.value())/
@@ -184,19 +251,19 @@ namespace QuantLib {
 
         double BarrierOption::delta() const {
             if (!greeksCalculated_)
-                calculate();
+                calculate_();
             return delta_;
         }
 
         double BarrierOption::gamma() const {
             if(!greeksCalculated_)
-                calculate();
+                calculate_();
             return gamma_;
         }
 
         double BarrierOption::theta() const {
             if(!greeksCalculated_)
-                calculate();
+                calculate_();
             return theta_;
         }
 
