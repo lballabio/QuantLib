@@ -27,6 +27,9 @@
     $Id$
     $Source$
     $Log$
+    Revision 1.7  2001/04/27 10:44:15  lballabio
+    Support for unittest in Python 2.1
+
     Revision 1.6  2001/04/20 10:52:37  nando
     smoothing the autobuild process
 
@@ -108,7 +111,10 @@ def test():
     from term_structures import TermStructureTest
     suite.addTest(TermStructureTest())
 
-    result = unittest.TextTestRunner().run(suite)
+    if sys.hexversion >= 0x020100f0:
+        result = unittest.TextTestRunner(verbosity=2).run(suite)
+    else:
+        result = unittest.TextTestRunner().run(suite)
 
     if not result.wasSuccessful:
         sys.exit(1)

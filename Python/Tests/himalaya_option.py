@@ -25,6 +25,9 @@
     $Id$
     $Source$
     $Log$
+    Revision 1.8  2001/04/27 10:44:15  lballabio
+    Support for unittest in Python 2.1
+
     Revision 1.7  2001/04/18 09:03:22  nando
     added/removed final
     raw_input('press any key to continue')
@@ -87,10 +90,12 @@ class HimalayaOptionTest(unittest.TestCase):
 
 
 if __name__ == '__main__':
+    import sys
     suite = unittest.TestSuite()
     suite.addTest(HimalayaOptionTest())
-    unittest.TextTestRunner().run(suite)
+    if sys.hexversion >= 0x020100f0:
+        unittest.TextTestRunner(verbosity=2).run(suite)
+    else:
+        unittest.TextTestRunner().run(suite)
     raw_input('press any key to continue')
-
-
 
