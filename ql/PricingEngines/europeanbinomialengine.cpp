@@ -60,7 +60,7 @@ namespace QuantLib {
                 new Lattices::BlackScholesLattice(tree, r, t, steps_));
 
             Handle<DiscretizedAsset> option(
-                new DiscretizedVanillaOption(lattice, arguments_));
+                new DiscretizedVanillaOption(lattice,arguments_));
 
             lattice->initialize(option, t);
             lattice->rollback(option, 0.0);

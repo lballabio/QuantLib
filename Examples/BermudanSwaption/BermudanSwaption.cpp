@@ -164,7 +164,7 @@ int main(int argc, char* argv[])
             PiecewiseFlatForward(todaysDate, settlementDate, instruments, 
                                  depositDayCounter));
 
-        RelinkableHandle<TermStructure > rhTermStructure;
+        RelinkableHandle<TermStructure> rhTermStructure;
         rhTermStructure.linkTo(myTermStructure);
 
         //Define the ATM/OTM/ITM swaps

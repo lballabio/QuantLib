@@ -1,3 +1,4 @@
+
 /*
  Copyright (C) 2001, 2002, 2003 Sadruddin Rejeb
 
@@ -13,6 +14,7 @@
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
+
 /*! \file treecapfloor.cpp
     \brief Cap/Floor calculated using a tree
 
@@ -68,7 +70,7 @@ namespace QuantLib {
             }
 
             Handle<DiscretizedAsset> capfloor(
-                new DiscretizedCapFloor(lattice, arguments_));
+                new DiscretizedCapFloor(lattice,arguments_));
 
             lattice->initialize(capfloor, arguments_.endTimes.back());
             lattice->rollback(capfloor, arguments_.startTimes.front());

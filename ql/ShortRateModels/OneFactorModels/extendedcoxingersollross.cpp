@@ -14,8 +14,9 @@
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
+
 /*! \file extendedcoxingersollross.cpp
-    \brief Extended Cox-Ingersoll-Ross model
+    \brief extended Cox-Ingersoll-Ross model
 
     \fullpath
     ql/ShortRateModels/OneFactorModels/%extendedcoxingersollross.cpp

@@ -1,5 +1,4 @@
 
-
 /*
  Copyright (C) 2000, 2001, 2002, 2003 RiskMap srl
 
@@ -15,6 +14,7 @@
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
+
 /*! \file cashflow.hpp
     \brief Base class for cash flows
 
@@ -29,6 +29,7 @@
 
 #include <ql/date.hpp>
 #include <ql/Patterns/observable.hpp>
+#include <ql/Patterns/visitor.hpp>
 
 /*! \namespace QuantLib::CashFlows
     \brief Concrete implementations of the CashFlow interface
@@ -45,6 +46,8 @@ namespace QuantLib {
     class CashFlow : public Patterns::Observable {
       public:
         virtual ~CashFlow() {}
+        //! \name CashFlow interface
+        //@{
         //! returns the amount of the cash flow
         /*! \note The amount is not discounted, i.e., it is the actual amount
             paid at the cash flow date.
@@ -52,7 +55,28 @@ namespace QuantLib {
         virtual double amount() const = 0;
         //! returns the date at which the cash flow is settled
         virtual Date date() const = 0;
+        //@}
+        //! \name Visitability
+        //@{
+        virtual void accept(Patterns::Visitor&);
+        class Visitor {
+          public:
+            virtual void visit(CashFlow&) = 0;
+        };
+        //@}
     };
+
+
+    // inline definitions
+
+    inline void CashFlow::accept(Patterns::Visitor& v) {
+        CashFlow::Visitor* v1 = 
+            dynamic_cast<CashFlow::Visitor*>(&v);
+        if (v1 != 0)
+            v1->visit(*this);
+        else
+            throw Error("Not a CashFlow visitor");
+    }
 
 }
 

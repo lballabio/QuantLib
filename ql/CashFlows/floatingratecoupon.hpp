@@ -70,6 +70,14 @@ namespace QuantLib {
             //@{
             void update();
             //@}
+            //! \name Visitability
+            //@{
+            virtual void accept(Patterns::Visitor&);
+            class Visitor {
+              public:
+                virtual void visit(FloatingRateCoupon&) = 0;
+            };
+            //@}
           private:
             Handle<Indexes::Xibor> index_;
             int fixingDays_;
@@ -114,6 +122,15 @@ namespace QuantLib {
                                               refPeriodStart_,
                                               refPeriodEnd_);
             }
+        }
+
+        inline void FloatingRateCoupon::accept(Patterns::Visitor& v) {
+            FloatingRateCoupon::Visitor* v1 = 
+                dynamic_cast<FloatingRateCoupon::Visitor*>(&v);
+            if (v1 != 0)
+                v1->visit(*this);
+            else
+                Coupon::accept(v);
         }
         
     }

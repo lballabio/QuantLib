@@ -14,6 +14,7 @@
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
+
 /*! \file handle.hpp
     \brief Reference-counted pointer
 
@@ -27,6 +28,8 @@
 #define quantlib_handle_h
 
 #include <ql/errors.hpp>
+#include <string>
+#include <typeinfo>
 
 // The implementation of this class is taken from
 // "The C++ Programming Language", 3rd edition, B.Stroustrup
@@ -40,24 +43,25 @@ namespace QuantLib {
         template <class T, class U>
         static void copy(const Handle<T>& from, const Handle<U>& to) {
             if (from.n_ != to.n_) {
-                // if to was the last reference to its object...
+                // cast to the new type - the resulting pointer will
+                // be null if the two types are not compatible
+                U* u  = dynamic_cast<U*>(from.ptr_);
+                QL_REQUIRE(u != 0,
+                           "A handle to " +
+                           std::string(typeid(T).name()) +
+                           " cannot be converted to a handle to " +
+                           std::string(typeid(U).name()));
+                // if 'to' was the last reference to its object...
                 if (--(*to.n_) == 0) {
                     // ...delete the latter and the counter
                     if (to.ptr_ != 0 && to.owns_)
                         delete to.ptr_;
                     delete to.n_;
                 }
-                // cast to the new type - the resulting pointer will
-                // be null if the two types are not compatible
-                to.ptr_  = dynamic_cast<U*>(from.ptr_);
-                if (to.ptr_ != 0) {
-                    to.n_    = from.n_;
-                    to.owns_ = from.owns_;
-                    (*to.n_)++;
-                } else {
-                    to.n_ = new int(1);
-                    to.owns_ = true;
-                }
+                to.ptr_  = u;
+                to.n_    = from.n_;
+                to.owns_ = from.owns_;
+                (*to.n_)++;
             }
         }
     };
@@ -195,13 +199,17 @@ namespace QuantLib {
 
     template <class T>
     inline T& Handle<T>::operator*() const {
-        QL_REQUIRE(ptr_ != 0, "tried to dereference null handle");
+        QL_REQUIRE(ptr_ != 0, 
+                   "tried to dereference null handle to "
+                   + std::string(typeid(T).name()));
         return *ptr_;
     }
 
     template <class T>
     inline T* Handle<T>::operator->() const {
-        QL_REQUIRE(ptr_ != 0, "tried to dereference null handle");
+        QL_REQUIRE(ptr_ != 0, 
+                   "tried to dereference null handle to "
+                   + std::string(typeid(T).name()));
         return ptr_;
     }
 

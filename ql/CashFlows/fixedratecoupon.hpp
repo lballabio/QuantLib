@@ -14,6 +14,7 @@
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
+
 /*! \file fixedratecoupon.hpp
     \brief Coupon paying a fixed annual rate
 
@@ -58,6 +59,14 @@ namespace QuantLib {
             //@{
             Rate rate() const;
             //@}
+            //! \name Visitability
+            //@{
+            virtual void accept(Patterns::Visitor&);
+            class Visitor {
+              public:
+                virtual void visit(FixedRateCoupon&) = 0;
+            };
+            //@}
           private:
             Rate rate_;
             DayCounter dayCounter_;
@@ -88,6 +97,15 @@ namespace QuantLib {
                                                 refPeriodStart_,
                                                 refPeriodEnd_);
             }
+        }
+
+        inline void FixedRateCoupon::accept(Patterns::Visitor& v) {
+            FixedRateCoupon::Visitor* v1 = 
+                dynamic_cast<FixedRateCoupon::Visitor*>(&v);
+            if (v1 != 0)
+                v1->visit(*this);
+            else
+                Coupon::accept(v);
         }
         
     }

@@ -81,7 +81,6 @@ namespace QuantLib {
             arguments->fixedCoupons.clear();
             for (i=0; i<fixedLeg.size(); i++) {
                 Handle<FixedRateCoupon> coupon = fixedLeg[i];
-                QL_ENSURE(!coupon.isNull(), "not a fixed rate coupon");
 
                 Time time = counter.yearFraction(settlement, coupon->date());
                 arguments->fixedPayTimes.push_back(time);
@@ -103,7 +102,6 @@ namespace QuantLib {
 
             for (; begin != end; ++begin) {
                 Handle<FloatingRateCoupon> coupon = *begin;
-                QL_ENSURE(!coupon.isNull(), "not a floating rate coupon");
                 const Handle<Indexes::Xibor>& index = coupon->index();
 /*                Date fixingDate = index->calendar().advance(
                     coupon->accrualStartDate(), -coupon->fixingDays(), Days,

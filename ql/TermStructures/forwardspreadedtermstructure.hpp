@@ -111,7 +111,10 @@ namespace QuantLib {
                 return originalCurve_->zeroYield(t, extrapolate) +
                     spread_->value();
         }
+
     }
+
 }
+
 
 #endif

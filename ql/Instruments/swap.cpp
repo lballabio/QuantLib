@@ -26,6 +26,7 @@
 
 #include <ql/Instruments/swap.hpp>
 #include <ql/CashFlows/coupon.hpp>
+#include <ql/CashFlows/basispointsensitivity.hpp>
 
 /* The following checks whether the user wants coupon payments with
    date corresponding to the evaluation date to be included in the NPV.
@@ -45,6 +46,7 @@
 namespace QuantLib {
 
     using CashFlows::Coupon;
+    using CashFlows::BPSCalculator;
 
     namespace Instruments {
 
@@ -71,7 +73,9 @@ namespace QuantLib {
             firstLegBPS_ = 0.0;
             secondLegBPS_ = 0.0;
             isExpired_ = true;
+
             // subtract first leg cash flows and BPS
+            BPSCalculator bps1(termStructure_);
             for (Size i=0; i<firstLeg_.size(); i++) {
                 Date cashFlowDate = firstLeg_[i]->date();
                 #if QL_INCLUDE_TODAYS_COUPON
@@ -84,17 +88,13 @@ namespace QuantLib {
                                          // effort
                     NPV_ -= firstLeg_[i]->amount() *
                         termStructure_->discount(cashFlowDate);
-                    Handle<Coupon> coupon = firstLeg_[i];
-                    // check that the downcast succeeded
-                    // and subtract coupon sensitivity
-                    if (!coupon.isNull()) {
-                        firstLegBPS_ -= coupon->accrualPeriod() *
-                            coupon->nominal() *
-                            termStructure_->discount(coupon->date());
-                    }
+                    firstLeg_[i]->accept(bps1);
                 }
             }
+            firstLegBPS_ = -bps1.result();
+
             // add second leg cash flows and BPS
+            BPSCalculator bps2(termStructure_);
             for (Size j=0; j<secondLeg_.size(); j++) {
                 Date cashFlowDate = secondLeg_[j]->date();
                 #if QL_INCLUDE_TODAYS_COUPON
@@ -105,16 +105,10 @@ namespace QuantLib {
                     isExpired_ = false;
                     NPV_ += secondLeg_[j]->amount() *
                         termStructure_->discount(cashFlowDate);
-                    Handle<Coupon> coupon = secondLeg_[j];
-                    // check that the downcast succeeded
-                    // and add coupon sensitivity
-                    if (!coupon.isNull()) {
-                        secondLegBPS_ += coupon->accrualPeriod() *
-                            coupon->nominal() *
-                            termStructure_->discount(coupon->date());
-                    }
+                    secondLeg_[j]->accept(bps2);
                 }
             }
+            secondLegBPS_ = bps2.result();
         }
 
     }

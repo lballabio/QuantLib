@@ -14,6 +14,7 @@
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
+
 /*! \file hullwhite.cpp
     \brief Hull & White model
 
@@ -42,7 +43,7 @@ namespace QuantLib {
             generateArguments();
         }
 
-        Handle<Lattices::Lattice> HullWhite::tree(
+        Handle<Lattice> HullWhite::tree(
             const TimeGrid& grid) const {
 
             TermStructureFittingParameter phi(termStructure());
@@ -56,7 +57,7 @@ namespace QuantLib {
             Handle<ShortRateTree> numericTree(
                 new ShortRateTree(trinomial, numericDynamics, grid));
 
-            Handle<TermStructureFittingParameter::NumericalImpl> impl = 
+            Handle<TermStructureFittingParameter::NumericalImpl> impl =
                 phi.implementation();
             impl->reset();
             for (Size i=0; i<(grid.size() - 1); i++) {

@@ -152,17 +152,17 @@ void EuropeanOptionTest::testGreeks() {
         for (int k=0; k<LENGTH(lengths); k++) {
           // option to check
           Date exDate = calendar.advance(today,lengths[k],Years);
-          Handle<VanillaOption> option = 
+          Handle<VanillaOption> option =
               makeEuropeanOption(types[i],underlying,strikes[j],
                                  divCurve,rfCurve,exDate,volCurve);
           // time-shifted exercise dates and options
           Date exDateP = calendar.advance(exDate,1,Days),
                exDateM = calendar.advance(exDate,-1,Days);
           Time dT = (exDateP-exDateM)/365.0;
-          Handle<VanillaOption> optionP = 
+          Handle<VanillaOption> optionP =
               makeEuropeanOption(types[i],underlying,strikes[j],
                                  divCurve,rfCurve,exDateP,volCurve);
-          Handle<VanillaOption> optionM = 
+          Handle<VanillaOption> optionM =
               makeEuropeanOption(types[i],underlying,strikes[j],
                                  divCurve,rfCurve,exDateM,volCurve);
 
@@ -298,7 +298,7 @@ void EuropeanOptionTest::testImpliedVol() {
         for (int k=0; k<LENGTH(lengths); k++) {
           // option to check
           Date exDate = today.plusDays(lengths[k]);
-          Handle<VanillaOption> option = 
+          Handle<VanillaOption> option =
               makeEuropeanOption(types[i],underlying,strikes[j],
                                  divCurve,rfCurve,exDate,volCurve);
           
@@ -408,13 +408,13 @@ void EuropeanOptionTest::testBinomialEngines() {
         for (int k=0; k<LENGTH(lengths); k++) {
           // option to check
           Date exDate = calendar.advance(today,lengths[k],Years);
-          Handle<VanillaOption> option1 = 
+          Handle<VanillaOption> option1 =
               makeEuropeanOption(types[i],underlying,strikes[j],
                                  divCurve,rfCurve,exDate,volCurve);
-          Handle<VanillaOption> option2 = 
+          Handle<VanillaOption> option2 =
               makeEuropeanOption(types[i],underlying,strikes[j],
                                  divCurve,rfCurve,exDate,volCurve,JR);
-          Handle<VanillaOption> option3 = 
+          Handle<VanillaOption> option3 =
               makeEuropeanOption(types[i],underlying,strikes[j],
                                  divCurve,rfCurve,exDate,volCurve,CRR);
           

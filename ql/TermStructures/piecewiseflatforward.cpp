@@ -79,12 +79,10 @@ namespace QuantLib {
             discounts_[0]=1.0;
             zeroYields_[0]=forwards_[0];
             for (Size i=1; i<dates_.size(); i++) {
-
-                times_[i] = dayCounter_.yearFraction(referenceDate_, dates_[i]);
-
+                times_[i] = dayCounter_.yearFraction(referenceDate_, 
+                                                     dates_[i]);
                 zeroYields_[i] = (forwards_[i]*(times_[i]-times_[i-1])+
                                   zeroYields_[i-1]*times_[i-1])/times_[i];
-
                 discounts_[i] = QL_EXP(-zeroYields_[i]*times_[i]);
             }
         }

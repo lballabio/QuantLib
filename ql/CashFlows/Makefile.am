@@ -5,6 +5,7 @@ AM_CPPFLAGS = -I${top_srcdir} -I${top_builddir}
 includedir = $(prefix)/include/ql/CashFlows
 
 include_HEADERS = \
+        basispointsensitivity.hpp \
         coupon.hpp \
         cashflowvectors.hpp \
         fixedratecoupon.hpp \

@@ -482,6 +482,7 @@ int main(int argc, char* argv[])
         qvega   = quantoForwardOption.qvega();
         qrho    = quantoForwardOption.qrho();
         qlambda = quantoForwardOption.qlambda();
+
         std::cout << std::endl << std::endl << "quanto forward: "
              << DoubleFormatter::toString(value, 4)
              << std::endl;
@@ -532,6 +533,7 @@ int main(int argc, char* argv[])
         qvega   = quantoForwardOption.qvega();
         qrho    = quantoForwardOption.qrho();
         qlambda = quantoForwardOption.qlambda();
+
         std::cout << std::endl << std::endl << "quanto forward performance: "
              << DoubleFormatter::toString(value, 4)
              << std::endl;

@@ -14,6 +14,7 @@
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
+
 /*! \file swap.hpp
     \brief Interest rate swap
 
@@ -52,7 +53,7 @@ namespace QuantLib {
             void performCalculations() const;
             // data members
             std::vector<Handle<CashFlow> > firstLeg_, secondLeg_;
-	    RelinkableHandle<TermStructure> termStructure_;
+            RelinkableHandle<TermStructure> termStructure_;
             mutable double firstLegBPS_, secondLegBPS_;
         };
 

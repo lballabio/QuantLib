@@ -69,8 +69,8 @@ namespace QuantLib {
         inline BlackConstantVol::BlackConstantVol(const Date& referenceDate,
             double volatility, const DayCounter& dayCounter)
         : referenceDate_(referenceDate), dayCounter_(dayCounter) {
-            volatility_.linkTo(Handle<MarketElement>(new
-                SimpleMarketElement(volatility)));
+            volatility_.linkTo(Handle<MarketElement>(
+                new SimpleMarketElement(volatility)));
             registerWith(volatility_);
         }
 

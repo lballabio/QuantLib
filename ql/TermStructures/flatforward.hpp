@@ -72,7 +72,6 @@ namespace QuantLib {
           dayCounter_(dayCounter) {
             forward_.linkTo(
                 Handle<MarketElement>(new SimpleMarketElement(forward)));
-            registerWith(forward_);
         }
 
         inline FlatForward::FlatForward(const Date& todaysDate,

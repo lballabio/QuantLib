@@ -1,6 +1,6 @@
 
 /*
- Copyright (C) 2000, 2001, 2002, 2003 RiskMap srl
+ Copyright (C) 2003 RiskMap srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -15,35 +15,33 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file stock.cpp
-    \brief concrete stock class
+/*! \file visitor.hpp
+    \brief degenerate base class for the Acyclic Visitor pattern
 
     \fullpath
-    ql/Instruments/%stock.cpp
+    ql/Patterns/%visitor.hpp
 */
 
 // $Id$
 
-#include <ql/Instruments/stock.hpp>
+#ifndef quantlib_visitor_h
+#define quantlib_visitor_h
+
+#include <ql/qldefines.hpp>
 
 namespace QuantLib {
 
-    namespace Instruments {
+    namespace Patterns {
 
-        Stock::Stock(const RelinkableHandle<MarketElement>& quote,
-            const std::string& isinCode, const std::string& description)
-        : Instrument(isinCode,description), quote_(quote) {
-            registerWith(quote_);
-        }
-
-        void Stock::performCalculations() const {
-            QL_REQUIRE(!quote_.isNull(),
-                "null quote set for "+isinCode()+" stock");
-            isExpired_ = false;
-            NPV_ = quote_->value();
-        }
-
+        //! degenerate base class for the Acyclic Visitor pattern
+        class Visitor {
+          public:
+            virtual ~Visitor() {}
+        };
+                        
     }
 
 }
 
+
+#endif

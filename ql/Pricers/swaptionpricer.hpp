@@ -1,3 +1,4 @@
+
 /*
  Copyright (C) 2001, 2002, 2003 Sadruddin Rejeb
 
@@ -13,6 +14,7 @@
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
+
 /*! \file swaptionpricer.hpp
     \brief Swaption pricer class
 
@@ -69,7 +71,7 @@ namespace QuantLib {
                 Time lastFixedPay = arguments_.fixedPayTimes.back();
                 Time lastFloatPay = arguments_.floatingPayTimes.back();
                 Time start = QL_MAX(lastFixedPay, lastFloatPay);
-                method->initialize(swap_, start);
+                method->initialize(swap_,start);
             }
 
             void reset(Size size) {

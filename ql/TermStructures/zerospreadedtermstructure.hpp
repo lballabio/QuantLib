@@ -109,7 +109,10 @@ namespace QuantLib {
                 return originalCurve_->instantaneousForward(t, extrapolate) +
                     spread_->value();
         }
+
     }
+
 }
+
 
 #endif

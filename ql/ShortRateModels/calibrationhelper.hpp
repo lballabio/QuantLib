@@ -1,3 +1,4 @@
+
 /*
  Copyright (C) 2001, 2002, 2003 Sadruddin Rejeb
 
@@ -13,6 +14,7 @@
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
+
 /*! \file calibrationhelper.hpp
     \brief Calibration helper class
 
@@ -33,13 +35,18 @@ namespace QuantLib {
 
     namespace ShortRateModels {
 
-        //! Class representing liquid market instruments used during calibration
+        //! liquid market instrument used during calibration
         class CalibrationHelper : public Patterns::Observer, 
                                   public Patterns::Observable {
           public:
-            CalibrationHelper(const RelinkableHandle<MarketElement>& volatility)
-            : volatility_(volatility), blackModel_(volatility_) {
+            CalibrationHelper(
+                const RelinkableHandle<MarketElement>& volatility,
+                const RelinkableHandle<TermStructure>& termStructure)
+            : volatility_(volatility), termStructure_(termStructure) {
+                blackModel_ = Handle<BlackModel>(
+                    new BlackModel(volatility_,termStructure_));
                 registerWith(volatility_);
+                registerWith(termStructure_);
             }
             void update() { 
                 marketValue_ = blackPrice(volatility_->value());
@@ -76,6 +83,7 @@ namespace QuantLib {
           protected:
             double marketValue_;
             RelinkableHandle<MarketElement> volatility_;
+            RelinkableHandle<TermStructure> termStructure_;
             Handle<BlackModel> blackModel_;
             Handle<PricingEngine> engine_;
 

@@ -14,6 +14,7 @@
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
+
 /*! \file shortfloatingcoupon.hpp
     \brief Short (or long) coupon at par on a term structure
 
@@ -49,7 +50,27 @@ namespace QuantLib {
                 const Date& refPeriodEnd = Date());
             //! throws when an interpolated fixing is needed
             double amount() const;
+            //! \name Visitability
+            //@{
+            virtual void accept(Patterns::Visitor&);
+            class Visitor {
+              public:
+                virtual void visit(ShortFloatingRateCoupon&) = 0;
+            };
+            //@}
         };
+
+        
+        // inline definitions
+
+        inline void ShortFloatingRateCoupon::accept(Patterns::Visitor& v) {
+            ShortFloatingRateCoupon::Visitor* v1 = 
+                dynamic_cast<ShortFloatingRateCoupon::Visitor*>(&v);
+            if (v1 != 0)
+                v1->visit(*this);
+            else
+                FloatingRateCoupon::accept(v);
+        }
 
     }
 

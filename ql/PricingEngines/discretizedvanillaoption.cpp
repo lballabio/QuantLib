@@ -1,3 +1,4 @@
+
 /*
  Copyright (C) 2002, 2003 Sadruddin Rejeb
 
@@ -13,6 +14,7 @@
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
+
 /*! \file discretizedvanillaoption.cpp
     \brief Discretized Vanilla Option
 
@@ -44,9 +46,7 @@ namespace QuantLib {
         }
 
         void DiscretizedVanillaOption::applySpecificCondition() {
-            Handle<Lattices::BlackScholesLattice> lattice(method());
-            QL_REQUIRE(!lattice.isNull(),
-                       "Must use a BlackScholes lattice");
+            Handle<Lattices::BlackScholesLattice> lattice = method();
             Handle<Lattices::Tree> tree(lattice->tree());
             Size i = tree->nColumns() - 1;
             double strike = arguments_.strike;
@@ -58,7 +58,6 @@ namespace QuantLib {
                 values_[j] = QL_MAX(values_[j], prices[j]);
             }
         }
-
 
     }
 

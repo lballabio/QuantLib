@@ -1,5 +1,4 @@
 
-
 /*
  Copyright (C) 2000, 2001, 2002, 2003 RiskMap srl
 
@@ -15,6 +14,7 @@
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
+
 /*! \file coupon.hpp
     \brief Coupon accruing over a fixed period
 
@@ -71,6 +71,14 @@ namespace QuantLib {
             //! accrued amount at the given date
             virtual double accruedAmount(const Date&) const = 0;
             //@}
+            //! \name Visitability
+            //@{
+            virtual void accept(Patterns::Visitor&);
+            class Visitor {
+              public:
+                virtual void visit(Coupon&) = 0;
+            };
+            //@}
           protected:
             double nominal_;
             Date paymentDate_, accrualStartDate_, accrualEndDate_, 
@@ -114,6 +122,15 @@ namespace QuantLib {
         inline int Coupon::accrualDays() const {
             return dayCounter().dayCount(accrualStartDate_,
                                          accrualEndDate_);
+        }
+
+        inline void Coupon::accept(Patterns::Visitor& v) {
+            Coupon::Visitor* v1 = 
+                dynamic_cast<Coupon::Visitor*>(&v);
+            if (v1 != 0)
+                v1->visit(*this);
+            else
+                CashFlow::accept(v);
         }
 
     }

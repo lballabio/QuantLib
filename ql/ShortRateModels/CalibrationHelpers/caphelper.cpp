@@ -49,7 +49,7 @@ namespace QuantLib {
                 const RelinkableHandle<MarketElement>& volatility,
                 const Handle<Xibor>& index,
                 const RelinkableHandle<TermStructure>& termStructure)
-            : CalibrationHelper(volatility), termStructure_(termStructure) {
+            : CalibrationHelper(volatility,termStructure) {
 
                 Period indexTenor = index->tenor();
                 int frequency;

@@ -1,3 +1,4 @@
+
 /*
  Copyright (C) 2001, 2002, 2003 Sadruddin Rejeb
 
@@ -13,6 +14,7 @@
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
+
 /*! \file treeswaption.cpp
     \brief European swaption computed on a lattice
 
@@ -79,7 +81,7 @@ namespace QuantLib {
             }
 
             Handle<DiscretizedAsset> swaption(
-            new DiscretizedSwaption(lattice, arguments_));
+                new DiscretizedSwaption(lattice,arguments_));
 
             lattice->initialize(swaption, arguments_.exerciseTimes.back());
             lattice->rollback(swaption, arguments_.exerciseTimes.front());

@@ -1,3 +1,4 @@
+
 /*
  Copyright (C) 2001, 2002, 2003 Sadruddin Rejeb
 
@@ -13,6 +14,7 @@
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
+
 /*! \file caphelper.hpp
     \brief CapHelper calibration helper
 
@@ -50,11 +52,13 @@ namespace QuantLib {
                 virtual double blackPrice(double volatility) const;
 
               private:
-                RelinkableHandle<TermStructure> termStructure_;
                 Handle<Instruments::VanillaCap> cap_;
             };
         }
+
     }
+
 }
+
 
 #endif

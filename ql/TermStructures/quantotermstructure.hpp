@@ -31,13 +31,15 @@
 #include <ql/voltermstructure.hpp>
 
 namespace QuantLib {
+
     namespace TermStructures {
 
         //! Quanto term structure
-        /*! Quanto term structure for modelling quanto effect in option pricing.
+        /*! Quanto term structure for modelling quanto effect in 
+            option pricing.
             \note This term structure will remain linked to the original
-                structures, i.e., any changes in the latters will be reflected in
-                this structure as well.
+                  structures, i.e., any changes in the latters will be 
+                  reflected in this structure as well.
         */
         class QuantoTermStructure : public ZeroYieldStructure,
                                     public Patterns::Observer {
@@ -46,8 +48,10 @@ namespace QuantLib {
                   const RelinkableHandle<TermStructure>& underlyingDividendTS,
                   const RelinkableHandle<TermStructure>& riskFreeTS,
                   const RelinkableHandle<TermStructure>& foreignRiskFreeTS,
-                  const RelinkableHandle<BlackVolTermStructure>& underlyingBlackVolTS,
-                  const RelinkableHandle<BlackVolTermStructure>& exchRateBlackVolTS,
+                  const RelinkableHandle<BlackVolTermStructure>& 
+                      underlyingBlackVolTS,
+                  const RelinkableHandle<BlackVolTermStructure>& 
+                      exchRateBlackVolTS,
                   double underlyingExchRateCorrelation);
             //! \name TermStructure interface
             //@{
@@ -70,17 +74,19 @@ namespace QuantLib {
                 exchRateBlackVolTS_;
             double underlyingExchRateCorrelation_, underlyingLevel_;
             Date maxDate_;
-
         };
 
 
+        // inline definitions
 
         inline QuantoTermStructure::QuantoTermStructure(
             const RelinkableHandle<TermStructure>& underlyingDividendTS,
             const RelinkableHandle<TermStructure>& riskFreeTS,
             const RelinkableHandle<TermStructure>& foreignRiskFreeTS,
-            const RelinkableHandle<BlackVolTermStructure>& underlyingBlackVolTS,
-            const RelinkableHandle<BlackVolTermStructure>& exchRateBlackVolTS,
+            const RelinkableHandle<BlackVolTermStructure>& 
+                underlyingBlackVolTS,
+            const RelinkableHandle<BlackVolTermStructure>& 
+                exchRateBlackVolTS,
             double underlyingExchRateCorrelation)
         : underlyingDividendTS_(underlyingDividendTS),
           riskFreeTS_(riskFreeTS), foreignRiskFreeTS_(foreignRiskFreeTS),
@@ -117,23 +123,28 @@ namespace QuantLib {
             notifyObservers();
         }
 
-        inline Rate QuantoTermStructure::zeroYieldImpl(Time t,
-            bool extrapolate) const {
+        inline 
+        Rate QuantoTermStructure::zeroYieldImpl(Time t,
+                                                bool extrapolate) const {
             // warning: here it is assumed that all TS have the same daycount.
             //          It should be QL_REQUIREd, or maybe even enforced in the
             //          whole QuantLib
-            // warning: the underlyingLevel_ used in underlyingBlackVolTS_ is ambigous
-            // warning: the underlyingLevel_ used in exchRateBlackVolTS_ is wrong
-                return underlyingDividendTS_->zeroYield(t, extrapolate)
-                    +            riskFreeTS_->zeroYield(t, extrapolate)
-                    -     foreignRiskFreeTS_->zeroYield(t, extrapolate)
-                    + underlyingExchRateCorrelation_
-                      * underlyingBlackVolTS_->blackVol(t, underlyingLevel_,
-                                                                 extrapolate)
-                      *   exchRateBlackVolTS_->blackVol(t, underlyingLevel_,
-                                                                extrapolate);
+            // warning: the underlyingLevel_ used in underlyingBlackVolTS_ 
+            // is ambiguous
+            // warning: the underlyingLevel_ used in exchRateBlackVolTS_ 
+            // is wrong
+            return underlyingDividendTS_->zeroYield(t, extrapolate)
+                +            riskFreeTS_->zeroYield(t, extrapolate)
+                -     foreignRiskFreeTS_->zeroYield(t, extrapolate)
+                + underlyingExchRateCorrelation_
+                * underlyingBlackVolTS_->blackVol(t, underlyingLevel_,
+                                                  extrapolate)
+                *   exchRateBlackVolTS_->blackVol(t, underlyingLevel_,
+                                                  extrapolate);
         }
+
     }
+
 }
 
 

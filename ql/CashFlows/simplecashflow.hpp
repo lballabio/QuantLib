@@ -1,5 +1,4 @@
 
-
 /*
  Copyright (C) 2000, 2001, 2002, 2003 RiskMap srl
 
@@ -15,6 +14,7 @@
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
+
 /*! \file simplecashflow.hpp
     \brief Predetermined cash flow
 
@@ -39,12 +39,35 @@ namespace QuantLib {
           public:
             SimpleCashFlow(double amount, const Date& date)
             : amount_(amount), date_(date) {}
+            //! \name CashFlow interface
+            //@{
             double amount() const { return amount_; }
             Date date() const { return date_; }
+            //@}
+            //! \name Visitability
+            //@{
+            virtual void accept(Patterns::Visitor&);
+            class Visitor {
+              public:
+                virtual void visit(SimpleCashFlow&) = 0;
+            };
+            //@}
           private:
             double amount_;
             Date date_;
         };
+
+
+        // inline definitions
+
+        inline void SimpleCashFlow::accept(Patterns::Visitor& v) {
+            SimpleCashFlow::Visitor* v1 = 
+                dynamic_cast<SimpleCashFlow::Visitor*>(&v);
+            if (v1 != 0)
+                v1->visit(*this);
+            else
+                CashFlow::accept(v);
+        }
 
     }
 

@@ -1,3 +1,4 @@
+
 /*
  Copyright (C) 2001, 2002, 2003 Sadruddin Rejeb
 
@@ -13,6 +14,7 @@
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
+
 /*! \file swaptionhelper.hpp
     \brief Swaption calibration helper
 
@@ -53,7 +55,6 @@ namespace QuantLib {
 
               private:
                 Rate exerciseRate_;
-                RelinkableHandle<TermStructure> termStructure_;
                 Handle<Instruments::SimpleSwap> swap_;
                 Handle<Instruments::Swaption> swaption_;
             };

@@ -14,6 +14,7 @@
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
+
 /*! \file affinetermstructure.cpp
     \brief Affine term-structure
 
@@ -78,7 +79,7 @@ namespace QuantLib {
         }
 
         void AffineTermStructure::calibrate() const {
-            Handle<ShortRateModels::Model> model(model_);
+            Handle<ShortRateModels::Model> model = model_;
             CalibrationFunction f(model, instruments_);
 
             method_->setInitialValue(model->params());

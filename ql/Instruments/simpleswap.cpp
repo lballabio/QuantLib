@@ -56,7 +56,8 @@ namespace QuantLib {
           payFixedRate_(payFixedRate), fixedRate_(fixedRate), spread_(spread), 
           nominal_(nominal) {
                         
-            maturity_ = calendar.roll(startDate.plus(n,units),rollingConvention);
+            maturity_ = calendar.roll(startDate.plus(n,units),
+                                      rollingConvention);
             
             std::vector<Handle<CashFlow> >::const_iterator i;
             if (payFixedRate_) {

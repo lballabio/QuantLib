@@ -1,3 +1,4 @@
+
 /*
  Copyright (C) 2001, 2002, 2003 Sadruddin Rejeb
 
@@ -13,6 +14,7 @@
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
+
 /*! \file blackkarasinski.cpp
     \brief Black-Karasinski model
 
@@ -87,7 +89,7 @@ namespace QuantLib {
             Handle<ShortRateTree> numericTree(
                 new ShortRateTree(trinomial, numericDynamics, grid));
 
-            Handle<TermStructureFittingParameter::NumericalImpl> impl = 
+            Handle<TermStructureFittingParameter::NumericalImpl> impl =
                 phi.implementation();
             impl->reset();
             double value = 1.0;

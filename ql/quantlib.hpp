@@ -75,6 +75,7 @@
 #include <ql/Calendars/wellington.hpp>
 #include <ql/Calendars/zurich.hpp>
 
+#include <ql/CashFlows/basispointsensitivity.hpp>
 #include <ql/CashFlows/cashflowvectors.hpp>
 #include <ql/CashFlows/coupon.hpp>
 #include <ql/CashFlows/fixedratecoupon.hpp>
@@ -189,7 +190,9 @@
 #include <ql/Optimization/simplex.hpp>
 #include <ql/Optimization/steepestdescent.hpp>
 
+#include <ql/Patterns/bridge.hpp>
 #include <ql/Patterns/observable.hpp>
+#include <ql/Patterns/visitor.hpp>
 
 #include <ql/Pricers/analyticalcapfloor.hpp>
 #include <ql/Pricers/barrieroption.hpp>
