@@ -1,4 +1,6 @@
 
+get in touch with Gnumeric team
+
 revise interpolation allowExtrapolation
 
 Louw copyright and cygwin compilation
@@ -21,6 +23,8 @@ LIBRARY
         add examples of Montecarlo internal and Montecarlo convergence
         have random generator as input
         have statistics class as input
+        add Milstein Scheme
+        make drift and diffusion time dependant
 
     FINITE DIFFERENCE FRAMEWORK
         boundary conditions as in Wilmott
