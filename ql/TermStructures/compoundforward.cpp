@@ -169,20 +169,20 @@ namespace QuantLib
                              "compounding start");
                   for(a = discounts_.size() - 1; a > ci; a--)
                   {
-                     prev = discounts_.at(a);
-                     aDate = dates_.at(a);
-                     pDate = dates_.at(a - 1);
+                     prev = discounts_[a];
+                     aDate = dates_[a];
+                     pDate = dates_[a-1];
                      t = dayCounter_.yearFraction(pDate, aDate, pDate, aDate);
                      tempD += fwd * prev * t;
                   }
-                  prev = discounts_.at(a);
-                  aDate = dates_.at(a);
+                  prev = discounts_[a];
+                  aDate = dates_[a];
                   t = dayCounter_.yearFraction(settlementDate_, aDate,
                                                settlementDate_, aDate);
                   tempD += fwd * prev * t;
 
-                  aDate = dates_.at(discounts_.size());
-                  pDate = dates_.at(discounts_.size() - 1);
+                  aDate = dates_[discounts_.size()];
+                  pDate = dates_[discounts_.size()-1];
                   t = dayCounter_.yearFraction(pDate, aDate, pDate, aDate);
                   df = (1.0 - tempD) / (1.0 + fwd * t);
                }
@@ -223,7 +223,7 @@ namespace QuantLib
          {
             Date rateDate;
 
-               rateDate = dates_.at(i);
+               rateDate = dates_[i];
             // Passed compounding?
             if (compoundDate < rateDate)
             {
