@@ -27,6 +27,9 @@ NULL=
 NULL=nul
 !ENDIF 
 
+CPP=cl.exe
+RSC=rc.exe
+
 !IF  "$(CFG)" == "QuantLib - Win32 Release"
 
 OUTDIR=.\build\Release
@@ -75,6 +78,8 @@ CLEAN :
 	-@erase "$(INTDIR)\bjerksundstenslandengine.sbr"
 	-@erase "$(INTDIR)\blackcapfloor.obj"
 	-@erase "$(INTDIR)\blackcapfloor.sbr"
+	-@erase "$(INTDIR)\blackformula.obj"
+	-@erase "$(INTDIR)\blackformula.sbr"
 	-@erase "$(INTDIR)\blackkarasinski.obj"
 	-@erase "$(INTDIR)\blackkarasinski.sbr"
 	-@erase "$(INTDIR)\blackswaption.obj"
@@ -368,40 +373,7 @@ CLEAN :
 "$(OUTDIR)" :
     if not exist "$(OUTDIR)/$(NULL)" mkdir "$(OUTDIR)"
 
-CPP=cl.exe
 CPP_PROJ=/nologo /MT /W3 /Gi /GR /GX /O2 /Ob2 /I "." /D "NDEBUG" /D "WIN32" /D "_MBCS" /D "_LIB" /D "NOMINMAX" /Fr"$(INTDIR)\\" /Fp"$(INTDIR)\QuantLib.pch" /YX /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\\" /FD /Oi- /c 
-
-.c{$(INTDIR)}.obj::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-.cpp{$(INTDIR)}.obj::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-.cxx{$(INTDIR)}.obj::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-.c{$(INTDIR)}.sbr::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-.cpp{$(INTDIR)}.sbr::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-.cxx{$(INTDIR)}.sbr::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-RSC=rc.exe
 BSC32=bscmake.exe
 BSC32_FLAGS=/nologo /o"$(OUTDIR)\QuantLib.bsc" 
 BSC32_SBRS= \
@@ -565,7 +537,8 @@ BSC32_SBRS= \
 	"$(INTDIR)\exercise.sbr" \
 	"$(INTDIR)\grid.sbr" \
 	"$(INTDIR)\scheduler.sbr" \
-	"$(INTDIR)\voltermstructure.sbr"
+	"$(INTDIR)\voltermstructure.sbr" \
+	"$(INTDIR)\blackformula.sbr"
 
 "$(OUTDIR)\QuantLib.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -735,7 +708,8 @@ LIB32_OBJS= \
 	"$(INTDIR)\exercise.obj" \
 	"$(INTDIR)\grid.obj" \
 	"$(INTDIR)\scheduler.obj" \
-	"$(INTDIR)\voltermstructure.obj"
+	"$(INTDIR)\voltermstructure.obj" \
+	"$(INTDIR)\blackformula.obj"
 
 ".\lib\Win32\VisualStudio\QuantLib.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
    if not exist lib\Win32\VisualStudio mkdir lib\Win32\VisualStudio
@@ -793,6 +767,8 @@ CLEAN :
 	-@erase "$(INTDIR)\bjerksundstenslandengine.sbr"
 	-@erase "$(INTDIR)\blackcapfloor.obj"
 	-@erase "$(INTDIR)\blackcapfloor.sbr"
+	-@erase "$(INTDIR)\blackformula.obj"
+	-@erase "$(INTDIR)\blackformula.sbr"
 	-@erase "$(INTDIR)\blackkarasinski.obj"
 	-@erase "$(INTDIR)\blackkarasinski.sbr"
 	-@erase "$(INTDIR)\blackswaption.obj"
@@ -1087,40 +1063,7 @@ CLEAN :
 "$(OUTDIR)" :
     if not exist "$(OUTDIR)/$(NULL)" mkdir "$(OUTDIR)"
 
-CPP=cl.exe
 CPP_PROJ=/nologo /MTd /W3 /Gm /Gi /GR /GX /ZI /Od /I "." /D "_DEBUG" /D "WIN32" /D "_MBCS" /D "_LIB" /D "NOMINMAX" /Fr"$(INTDIR)\\" /Fp"$(INTDIR)\QuantLib.pch" /YX /Fo"$(INTDIR)\\" /Fd"lib\Win32\VisualStudio\QuantLib" /FD /GZ /c 
-
-.c{$(INTDIR)}.obj::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-.cpp{$(INTDIR)}.obj::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-.cxx{$(INTDIR)}.obj::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-.c{$(INTDIR)}.sbr::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-.cpp{$(INTDIR)}.sbr::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-.cxx{$(INTDIR)}.sbr::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-RSC=rc.exe
 BSC32=bscmake.exe
 BSC32_FLAGS=/nologo /o"$(OUTDIR)\QuantLib.bsc" 
 BSC32_SBRS= \
@@ -1284,7 +1227,8 @@ BSC32_SBRS= \
 	"$(INTDIR)\exercise.sbr" \
 	"$(INTDIR)\grid.sbr" \
 	"$(INTDIR)\scheduler.sbr" \
-	"$(INTDIR)\voltermstructure.sbr"
+	"$(INTDIR)\voltermstructure.sbr" \
+	"$(INTDIR)\blackformula.sbr"
 
 "$(OUTDIR)\QuantLib.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -1454,7 +1398,8 @@ LIB32_OBJS= \
 	"$(INTDIR)\exercise.obj" \
 	"$(INTDIR)\grid.obj" \
 	"$(INTDIR)\scheduler.obj" \
-	"$(INTDIR)\voltermstructure.obj"
+	"$(INTDIR)\voltermstructure.obj" \
+	"$(INTDIR)\blackformula.obj"
 
 ".\lib\Win32\VisualStudio\QuantLib_d.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
    if not exist lib\Win32\VisualStudio mkdir lib\Win32\VisualStudio
@@ -1512,6 +1457,8 @@ CLEAN :
 	-@erase "$(INTDIR)\bjerksundstenslandengine.sbr"
 	-@erase "$(INTDIR)\blackcapfloor.obj"
 	-@erase "$(INTDIR)\blackcapfloor.sbr"
+	-@erase "$(INTDIR)\blackformula.obj"
+	-@erase "$(INTDIR)\blackformula.sbr"
 	-@erase "$(INTDIR)\blackkarasinski.obj"
 	-@erase "$(INTDIR)\blackkarasinski.sbr"
 	-@erase "$(INTDIR)\blackswaption.obj"
@@ -1805,40 +1752,7 @@ CLEAN :
 "$(OUTDIR)" :
     if not exist "$(OUTDIR)/$(NULL)" mkdir "$(OUTDIR)"
 
-CPP=cl.exe
 CPP_PROJ=/nologo /MD /W3 /Gi /GR /GX /O2 /Ob2 /I "." /D "NDEBUG" /D "WIN32" /D "_MBCS" /D "_LIB" /D "NOMINMAX" /Fr"$(INTDIR)\\" /Fp"$(INTDIR)\QuantLib.pch" /YX /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\\" /FD /Oi- /c 
-
-.c{$(INTDIR)}.obj::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-.cpp{$(INTDIR)}.obj::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-.cxx{$(INTDIR)}.obj::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-.c{$(INTDIR)}.sbr::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-.cpp{$(INTDIR)}.sbr::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-.cxx{$(INTDIR)}.sbr::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-RSC=rc.exe
 BSC32=bscmake.exe
 BSC32_FLAGS=/nologo /o"$(OUTDIR)\QuantLib.bsc" 
 BSC32_SBRS= \
@@ -2002,7 +1916,8 @@ BSC32_SBRS= \
 	"$(INTDIR)\exercise.sbr" \
 	"$(INTDIR)\grid.sbr" \
 	"$(INTDIR)\scheduler.sbr" \
-	"$(INTDIR)\voltermstructure.sbr"
+	"$(INTDIR)\voltermstructure.sbr" \
+	"$(INTDIR)\blackformula.sbr"
 
 "$(OUTDIR)\QuantLib.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -2172,7 +2087,8 @@ LIB32_OBJS= \
 	"$(INTDIR)\exercise.obj" \
 	"$(INTDIR)\grid.obj" \
 	"$(INTDIR)\scheduler.obj" \
-	"$(INTDIR)\voltermstructure.obj"
+	"$(INTDIR)\voltermstructure.obj" \
+	"$(INTDIR)\blackformula.obj"
 
 ".\lib\Win32\VisualStudio\QuantLib_MTDLL.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
    if not exist lib\Win32\VisualStudio mkdir lib\Win32\VisualStudio
@@ -2230,6 +2146,8 @@ CLEAN :
 	-@erase "$(INTDIR)\bjerksundstenslandengine.sbr"
 	-@erase "$(INTDIR)\blackcapfloor.obj"
 	-@erase "$(INTDIR)\blackcapfloor.sbr"
+	-@erase "$(INTDIR)\blackformula.obj"
+	-@erase "$(INTDIR)\blackformula.sbr"
 	-@erase "$(INTDIR)\blackkarasinski.obj"
 	-@erase "$(INTDIR)\blackkarasinski.sbr"
 	-@erase "$(INTDIR)\blackswaption.obj"
@@ -2524,40 +2442,7 @@ CLEAN :
 "$(OUTDIR)" :
     if not exist "$(OUTDIR)/$(NULL)" mkdir "$(OUTDIR)"
 
-CPP=cl.exe
 CPP_PROJ=/nologo /MDd /W3 /Gm /Gi /GR /GX /ZI /Od /I "." /D "_DEBUG" /D "WIN32" /D "_MBCS" /D "_LIB" /D "NOMINMAX" /Fr"$(INTDIR)\\" /Fp"$(INTDIR)\QuantLib.pch" /YX /Fo"$(INTDIR)\\" /Fd"lib\Win32\VisualStudio\QuantLib" /FD /GZ /c 
-
-.c{$(INTDIR)}.obj::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-.cpp{$(INTDIR)}.obj::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-.cxx{$(INTDIR)}.obj::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-.c{$(INTDIR)}.sbr::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-.cpp{$(INTDIR)}.sbr::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-.cxx{$(INTDIR)}.sbr::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-RSC=rc.exe
 BSC32=bscmake.exe
 BSC32_FLAGS=/nologo /o"$(OUTDIR)\QuantLib.bsc" 
 BSC32_SBRS= \
@@ -2721,7 +2606,8 @@ BSC32_SBRS= \
 	"$(INTDIR)\exercise.sbr" \
 	"$(INTDIR)\grid.sbr" \
 	"$(INTDIR)\scheduler.sbr" \
-	"$(INTDIR)\voltermstructure.sbr"
+	"$(INTDIR)\voltermstructure.sbr" \
+	"$(INTDIR)\blackformula.sbr"
 
 "$(OUTDIR)\QuantLib.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -2891,7 +2777,8 @@ LIB32_OBJS= \
 	"$(INTDIR)\exercise.obj" \
 	"$(INTDIR)\grid.obj" \
 	"$(INTDIR)\scheduler.obj" \
-	"$(INTDIR)\voltermstructure.obj"
+	"$(INTDIR)\voltermstructure.obj" \
+	"$(INTDIR)\blackformula.obj"
 
 ".\lib\Win32\VisualStudio\QuantLib_MTDLL_d.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
    if not exist lib\Win32\VisualStudio mkdir lib\Win32\VisualStudio
@@ -2902,6 +2789,36 @@ LIB32_OBJS= \
 SOURCE="$(InputPath)"
 
 !ENDIF 
+
+.c{$(INTDIR)}.obj::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.cpp{$(INTDIR)}.obj::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.cxx{$(INTDIR)}.obj::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.c{$(INTDIR)}.sbr::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.cpp{$(INTDIR)}.sbr::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.cxx{$(INTDIR)}.sbr::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
 
 
 !IF "$(NO_EXTERNAL_DEPS)" != "1"
@@ -3681,6 +3598,12 @@ SOURCE=.\ql\PricingEngines\Swaption\swaptionpricer.cpp
 SOURCE=.\ql\PricingEngines\Swaption\treeswaption.cpp
 
 "$(INTDIR)\treeswaption.obj"	"$(INTDIR)\treeswaption.sbr" : $(SOURCE) "$(INTDIR)"
+	$(CPP) $(CPP_PROJ) $(SOURCE)
+
+
+SOURCE=.\ql\PricingEngines\blackformula.cpp
+
+"$(INTDIR)\blackformula.obj"	"$(INTDIR)\blackformula.sbr" : $(SOURCE) "$(INTDIR)"
 	$(CPP) $(CPP_PROJ) $(SOURCE)
 
 

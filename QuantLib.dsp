@@ -1627,6 +1627,10 @@ SOURCE=.\ql\PricingEngines\americanpayoffathit.hpp
 # End Source File
 # Begin Source File
 
+SOURCE=.\ql\PricingEngines\blackformula.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\ql\PricingEngines\blackformula.hpp
 # End Source File
 # Begin Source File
@@ -1704,10 +1708,6 @@ SOURCE=.\ql\RandomNumbers\primitivepolynomials.c
 # Begin Source File
 
 SOURCE=.\ql\RandomNumbers\primitivepolynomials.h
-# End Source File
-# Begin Source File
-
-SOURCE=.\ql\RandomNumbers\randomarraygenerator.hpp
 # End Source File
 # Begin Source File
 
