@@ -5,6 +5,12 @@
 #pragma warning(disable: 4786)  // identifier truncated in debug info
 #pragma warning(disable: 4190)  // C-linkage of SWIG wrappers
 
+#ifdef _DEBUG
+#pragma comment(lib,"QuantLib_d.lib")
+#else
+#pragma comment(lib,"QuantLib.lib")
+#endif
+
 #define REQUIRES_DUMMY_RETURN
 
 #define HAVE_CMATH

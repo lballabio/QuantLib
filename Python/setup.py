@@ -25,6 +25,9 @@
     $Id$
     $Source$
     $Log$
+    Revision 1.12  2001/04/20 17:21:56  nando
+    added support for Python 1.6 and Python 2.1
+
     Revision 1.11  2001/04/20 15:34:27  marmar
     Compiling options changed
 
@@ -177,7 +180,7 @@ setup ( cmdclass = cmdclass,
         ext_modules = [Extension
                        ("QuantLibc",
                         ["quantlib_wrap.cpp"],
-                        libraries = ["QuantLib"],
+                        libraries = None,
                         define_macros = define_macros,
                         include_dirs = include_dirs,
                         library_dirs = library_dirs,
