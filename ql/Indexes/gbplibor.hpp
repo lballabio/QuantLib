@@ -47,7 +47,7 @@ namespace QuantLib {
           public:
             GBPLibor(int n, TimeUnit units, 
                 const RelinkableHandle<TermStructure>& h)
-            : Xibor("GBPLibor", n, units, GBP, 
+            : Xibor("GBPLibor", n, units, 0, GBP, 
                 Calendar(Calendars::London()), true, ModifiedFollowing, 
                 DayCounter(DayCounters::Actual365()), h) {}
         };

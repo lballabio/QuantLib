@@ -47,7 +47,7 @@ namespace QuantLib {
           public:
             USDLibor(int n, TimeUnit units, 
                 const RelinkableHandle<TermStructure>& h)
-            : Xibor("USDLibor", n, units, USD, 
+            : Xibor("USDLibor", n, units, 2, USD, 
                 Calendar(Calendars::NewYork()), true, ModifiedFollowing, 
                 DayCounter(DayCounters::Actual360()), h) {}
         };

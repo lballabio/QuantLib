@@ -59,8 +59,13 @@ namespace QuantLib {
             QL_REQUIRE(!termStructure_.isNull(),
                 "null term structure set to par coupon");
             Date settlementDate = termStructure_->settlementDate();
-            Date fixingDate = startDate_ - fixingDays_;
-            if (fixingDate < settlementDate) {
+            Date fixingDate = index_->calendar().advance(
+                startDate_, -fixingDays_, Days, 
+                index_->rollingConvention());
+            Date fixingValueDate = index_->calendar().advance(
+                fixingDate, index_->settlementDays(), Days, 
+                index_->rollingConvention());
+            if (fixingValueDate < settlementDate) {
                 // must have been fixed
                 Rate pastFixing = XiborManager::getHistory(
                     index_->name())[fixingDate];
@@ -69,7 +74,7 @@ namespace QuantLib {
                         DateFormatter::toString(fixingDate));
                 return (pastFixing+spread_)*accrualPeriod()*nominal();
             }
-            if (fixingDate == settlementDate) {
+            if (fixingValueDate == settlementDate) {
                 // might have been fixed
                 try {
                     Rate pastFixing = XiborManager::getHistory(
@@ -84,9 +89,12 @@ namespace QuantLib {
                 }
             }
             DiscountFactor startDiscount =
-                termStructure_->discount(startDate_ - fixingDays_);
+                termStructure_->discount(fixingValueDate);
             DiscountFactor endDiscount =
-                termStructure_->discount(endDate_ - fixingDays_);
+                termStructure_->discount(
+                    index_->calendar().advance(endDate_,
+                        index_->settlementDays()-fixingDays_, Days,
+                        index_->rollingConvention()));
             return ((startDiscount/endDiscount-1.0) +
                 spread_*accrualPeriod()) * nominal();
         }

@@ -199,10 +199,12 @@ namespace QuantLib {
             RateHelper::setTermStructure(t);
             settlement_ = calendar_.advance(
                 termStructure_->todaysDate(),settlementDays_,Days);
-            // any index would do and will give the same results - 
-            // it must be a concrete one, though
-            Handle<Xibor> dummyIndex(new Euribor(6,Months,
-                RelinkableHandle<TermStructure>()));
+            // dummy Libor index with curve/swap parameters
+            Handle<Xibor> dummyIndex(new Xibor("dummy",
+                12/floatingFrequency_,Months,settlementDays_,
+                EUR, // any would do
+                calendar_,true,convention_,
+                t->dayCounter(), RelinkableHandle<TermStructure>()));
             swap_ = Handle<SimpleSwap>(
                 new SimpleSwap(true,                // pay fixed rate
                     settlement_, lengthInYears_, Years, calendar_, 
@@ -211,7 +213,7 @@ namespace QuantLib {
                     fixedFrequency_, 
                     std::vector<Rate>(1,0.0),       // coupon rate
                     fixedIsAdjusted_, fixedDayCount_, 
-                    floatingFrequency_, dummyIndex, 0,
+                    floatingFrequency_, dummyIndex, settlementDays_,
                     std::vector<Spread>(),       // null spread
                     termStructureHandle_));
         }

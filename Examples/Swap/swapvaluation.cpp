@@ -54,6 +54,7 @@ int main(int argc, char* argv[])
         Calendar calendar = TARGET();
         Currency currency = EUR;
         int settlementDays = 2;
+        int fixingDays = 2;
         Date todaysDate(6, November, 2001);
 
         /*********************
@@ -322,14 +323,14 @@ int main(int argc, char* argv[])
         SimpleSwap spot5YearSwap(payFixedRate, spotDate, lenghtInYears, 
             Years, calendar, roll, nominals, fixedLegFrequency, couponRates,
             fixedLegIsAdjusted, fixedLegDayCounter, floatingLegFrequency,
-            euriborIndex, spreads,
+            euriborIndex, fixingDays, spreads,
             discountingTermStructure); // using the discounting curve
         SimpleSwap oneYearForward5YearSwap(payFixedRate,
             calendar.advance(spotDate, 1, Years, ModifiedFollowing),
             lenghtInYears, Years,
             calendar, roll, nominals, fixedLegFrequency, couponRates,
             fixedLegIsAdjusted, fixedLegDayCounter, floatingLegFrequency,
-            euriborIndex, spreads,
+            euriborIndex, fixingDays, spreads,
             discountingTermStructure); // using the discounting curve
 
 
