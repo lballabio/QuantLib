@@ -23,6 +23,9 @@
 
 /* $Source$
    $Log$
+   Revision 1.31  2001/04/02 14:10:44  lballabio
+   Added Brent solver to Ruby module
+
    Revision 1.30  2001/03/30 15:45:42  lballabio
    Still working on make dist (and added IntVector and DoubleVector to Ruby module)
 
@@ -99,6 +102,7 @@ using QuantLib::IndexError;
 %include Distributions.i
 %include RandomGenerators.i
 %include Statistics.i
+%include Solvers1D.i
 %include String.i
 %include Vectors.i
 #else

@@ -24,6 +24,9 @@
 
 /* $Source$
    $Log$
+   Revision 1.14  2001/04/02 14:10:44  lballabio
+   Added Brent solver to Ruby module
+
    Revision 1.13  2001/04/02 10:59:48  lballabio
    Changed ObjectiveFunction::value to ObjectiveFunction::operator() - also in Python module
 
@@ -75,6 +78,19 @@ class PyObjectiveFunction : public ObjectiveFunction {
 %}
 #endif
 
+#if defined(SWIGRUBY)
+%{
+#include <iostream>
+// C++ container for Ruby block
+class RubyObjectiveFunction : public ObjectiveFunction {
+  public:
+    double operator()(double x) const {
+        return NUM2DBL(rb_yield(rb_float_new(x)));
+    }
+};
+%}
+#endif
+
 // 1D Solver interface
 
 %{
@@ -90,67 +106,90 @@ using QuantLib::Solvers1D::Secant;
 
 class Solver1D {
   public:
-	void setMaxEvaluations(int evaluations);
+    void setMaxEvaluations(int evaluations);
+    void setLowBound(double lowBound);
+    %pragma(ruby) alias = "lowBound= setLowBound";
+    void setHiBound(double hiBound);
+    %pragma(ruby) alias = "hiBound= setHiBound";
 };
 
 #if defined(SWIGPYTHON)
 %addmethods Solver1D {
-	double solve(PyObject *pyFunction, double xAccuracy, double guess, 
-	  double step) {
-		PyObjectiveFunction f(pyFunction);
-		return self->solve(f, xAccuracy, guess, step);
-	}
-	double bracketedSolve(PyObject *pyFunction, double xAccuracy, 
-	  double guess, double xMin, double xMax) {
-		PyObjectiveFunction f(pyFunction);
-		return self->solve(f, xAccuracy, guess, xMin, xMax);
-	}
+    double solve(PyObject *pyFunction, double xAccuracy, double guess, 
+        double step) {
+            PyObjectiveFunction f(pyFunction);
+            return self->solve(f, xAccuracy, guess, step);
+    }
+    double bracketedSolve(PyObject *pyFunction, double xAccuracy, 
+        double guess, double xMin, double xMax) {
+            PyObjectiveFunction f(pyFunction);
+            return self->solve(f, xAccuracy, guess, xMin, xMax);
+    }
+}
+#endif
+
+#if defined(SWIGRUBY)
+%addmethods Solver1D {
+    void crash() {}
+    double solve(double xAccuracy, double guess, double step) {
+        RubyObjectiveFunction f;
+        return self->solve(f, xAccuracy, guess, step);
+    }
+    double bracketedSolve(double xAccuracy, double guess, 
+      double xMin, double xMax) {
+        RubyObjectiveFunction f;
+        return self->solve(f, xAccuracy, guess, xMin, xMax);
+    }
 }
 #endif
 
 // Actual solvers
 
-class Bisection : public Solver1D {
-  public:
-	Bisection();
-	~Bisection();
-};
-
+#if defined(SWIGPYTHON) || defined(SWIGRUBY)
 class Brent : public Solver1D {
   public:
-	Brent();
-	~Brent();
+    Brent();
+    ~Brent();
+};
+#endif
+
+#if defined(SWIGPYTHON)
+class Bisection : public Solver1D {
+  public:
+    Bisection();
+    ~Bisection();
 };
 
 class FalsePosition : public Solver1D {
   public:
-	FalsePosition();
-	~FalsePosition();
+    FalsePosition();
+    ~FalsePosition();
 };
 
 class Newton : public Solver1D {
   public:
-	Newton();
-	~Newton();
+    Newton();
+    ~Newton();
 };
 
 class NewtonSafe : public Solver1D {
   public:
-	NewtonSafe();
-	~NewtonSafe();
+    NewtonSafe();
+    ~NewtonSafe();
 };
 
 class Ridder : public Solver1D {
   public:
-	Ridder();
-	~Ridder();
+    Ridder();
+    ~Ridder();
 };
 
 class Secant : public Solver1D {
   public:
-	Secant();
-	~Secant();
+    Secant();
+    ~Secant();
 };
+#endif
 
 
 #endif
