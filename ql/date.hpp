@@ -221,6 +221,14 @@ namespace QuantLib {
         static Date minDate();
         //! latest allowed date
         static Date maxDate();
+        /*! returns the date of the next day of week following (or equal to)
+            a given date.
+            (e.g. the Friday following Tuesday 15-Jan-2002 is 18-Jan-2002)
+
+            see http://www.cpearson.com/excel/DateTimeWS.htm
+        */
+        static Date nextDayOfWeekAfterDate(const Date& d,
+                                           Weekday dayOfWeek);
         /*! returns the date of Nth weekday in a given month and year
             (e.g. 26-March-98 for the 4th Thursday of March, 1998)
 

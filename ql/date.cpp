@@ -186,23 +186,14 @@ namespace QuantLib {
                 m=(Month)(skipMonths-12);
                 y+=1;
             }
+        // (*this) is in a IMM month and in the IMM week [15,21]
+        } else if (this->dayOfMonth() > 14) {
+            Date nextWednesday = nextDayOfWeekAfterDate(*this, Wednesday);
+            if (nextWednesday.dayOfMonth() <= 21)
+                return nextWednesday;
         }
 
-        Date result = nthDayOfWeekForMonthAndYear(3, Wednesday, m, y);
-
-
-        if (result>=(*this))
-            return result;
-        // (*this) is in the IMM week [15,21] with the 3rd Wednesday behind
-        else {
-            if (m<=9)
-                m=(Month)(Size(m)+3);
-            else {
-                m=(Month)(Size(m)-9);
-                y+=1;
-            }
-            return nthDayOfWeekForMonthAndYear(3, Wednesday, m, y);
-        }
+        return nthDayOfWeekForMonthAndYear(3, Wednesday, m, y);
 
     }
 
@@ -278,6 +269,12 @@ namespace QuantLib {
                    DateFormatter::toString(maxDate()) + "]");
         serialNumber_ = serial;
         return temp;
+    }
+
+    Date Date::nextDayOfWeekAfterDate(const Date& d, Weekday dayOfWeek) {
+
+        Weekday wd = d.weekday();
+        return d.plusDays((wd>=dayOfWeek ? 7 : 0) - wd + dayOfWeek);
     }
 
     Date Date::nthDayOfWeekForMonthAndYear(Size nth, Weekday dayOfWeek,
