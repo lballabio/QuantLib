@@ -308,10 +308,12 @@ void ReplicationError::compute(Size nTimeSteps, Size nSamples)
     PseudoRandom::rsg_type rsg =
         PseudoRandom::make_sequence_generator(nTimeSteps, 0);
 
+    bool brownianBridge = false;
+
     typedef SingleAsset<PseudoRandom>::path_generator_type generator_type;
-    boost::shared_ptr<generator_type> myPathGenerator(
-        new generator_type(diffusion, maturity_, nTimeSteps,
-                           rsg, false));
+    boost::shared_ptr<generator_type> myPathGenerator(new
+        generator_type(diffusion, maturity_, nTimeSteps,
+                       rsg, brownianBridge));
 
     // The replication strategy's Profit&Loss is computed for each path
     // of the stock. The path pricer knows how to price a path using its
