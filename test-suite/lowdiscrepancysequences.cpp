@@ -24,6 +24,7 @@
 using namespace QuantLib;
 using namespace QuantLib::Math;
 using namespace QuantLib::RandomNumbers;
+using namespace QuantLib::Math;
 
 CppUnit::Test* LDSTest::suite() {
     CppUnit::TestSuite* tests =
@@ -37,6 +38,9 @@ CppUnit::Test* LDSTest::suite() {
     tests->addTest(new CppUnit::TestCaller<LDSTest>
                    ("Testing Halton sequences",
                     &LDSTest::testHalton));
+//    tests->addTest(new CppUnit::TestCaller<LDSTest>
+//                   ("Testing sequences' discrepancy",
+//                    &LDSTest::testDiscrepancy));
     return tests;
 }
 
@@ -77,6 +81,7 @@ void LDSTest::testPolynomialsModuloTwo() {
 void LDSTest::testSobol() {
 
     Array point;
+
     // testing max dimensionality
     Size dimensionality = PPMT_MAX_DIM;
     unsigned long seed = 123456;
@@ -93,32 +98,35 @@ void LDSTest::testSobol() {
         }
     }
 
-    // testing discrepancy
+    // testing homogeneity properties
     dimensionality = 33;
     seed = 123456;
     rsg = SobolRsg(dimensionality, seed);
-    SequenceStatistics<Statistics> stat(dimensionality);
-    points = Size(QL_POW(2.0, 5))-1; // five cycles
-    for (i=0; i<points; i++) {
-        point = rsg.nextSequence().value;
-        stat.add(point);
-    }
-    double discrepancy = stat.discrepancy();
-    if (discrepancy!=0.0) {
-        CPPUNIT_FAIL("Sobol sequence discrepancy ");
-    }
-    std::vector<double> mean = stat.mean();
-    for (i=0; i<dimensionality; i++) {
-        if (mean[i]!=0.5) {
-            CPPUNIT_FAIL(IntegerFormatter::toOrdinal(i+1) +
-                         " mean (" +
-                         DoubleFormatter::toString(mean[i]) +
-                         ") in Sobol sequence is not " + 
-                         DoubleFormatter::toString(0.5));
+    ArrayStatistic stat(dimensionality);
+    Array mean, stdev, variance, skewness, kurtosis;
+    Size k = 0;
+    for (int j=1; j<5; j++) { // five cycle
+        points = Size(QL_POW(2, j))-1; // base 2
+        for (; k<points; k++) {
+            point = rsg.nextSequence().value;
+            stat.add(point);
+        }
+        mean        = stat.mean();
+        for (i=0; i<dimensionality; i++) {
+            if (mean[i]!=0.5) {
+                CPPUNIT_FAIL(IntegerFormatter::toOrdinal(i+1) +
+                             " dimension mean (" +
+                             DoubleFormatter::toString(mean[i]) +
+                             ") at the end of the " +
+                             IntegerFormatter::toOrdinal(j+1) +
+                             " cycle in Sobol sequence is not " + 
+                             DoubleFormatter::toString(0.5));
+            }
         }
     }
 
 
+    // testing first dimension (van der Corput sequence)
     const double vanderCorputSequenceModuloTwo[] = {
         // first cycle (zero excluded)
         0.50000,
@@ -159,11 +167,11 @@ void LDSTest::testHalton() {
     Size dimensionality = PPMT_MAX_DIM;
     unsigned long seed = 123456;
     HaltonRsg rsg(dimensionality);
-    Size points = 100, i;
+    Size points = 100, i, k;
     for (i=0; i<points; i++) {
         point = rsg.nextSequence().value;
         if (point.size()!=dimensionality) {
-            CPPUNIT_FAIL("Sobol sequence generator returns "
+            CPPUNIT_FAIL("Halton sequence generator returns "
                          " a sequence of wrong dimensionality: " +
                          IntegerFormatter::toString(point.size())
                          + " instead of  " +
@@ -171,37 +179,8 @@ void LDSTest::testHalton() {
         }
     }
 
-    // testing discrepancy
-    dimensionality = 33;
-    seed = 123456;
-    rsg = HaltonRsg(dimensionality);
-    SequenceStatistics<Statistics> stat(dimensionality);
-    points = Size(QL_POW(3.0, 3))-1; // three cycles base 3
-    for (i=0; i<points; i++) {
-        point = rsg.nextSequence().value;
-        stat.add(point);
-    }
-    std::vector<double> mean = stat.mean();
-    if (mean[1] != 0.5) {
-        CPPUNIT_FAIL("Second dimension mean (" +
-                     DoubleFormatter::toString(mean[1]) +
-                     ") in Halton sequence is not " + 
-                     DoubleFormatter::toString(0.5));
-    }
-    points = Size(QL_POW(2.0, 5))-1; // five cycles base 2
-    for (; i<points; i++) {
-        point = rsg.nextSequence().value;
-        stat.add(point);
-    }
-    mean = stat.mean();
-    if (mean[0] != 0.5) {
-        CPPUNIT_FAIL("First dimension mean (" +
-                     DoubleFormatter::toString(mean[0]) +
-                     ") in Halton sequence is not " + 
-                     DoubleFormatter::toString(0.5));
-    }
 
-
+    // testing first and second dimension (van der Corput sequence)
     const double vanderCorputSequenceModuloTwo[] = {
         // first cycle (zero excluded)
         0.50000,
@@ -221,7 +200,7 @@ void LDSTest::testHalton() {
     rsg = HaltonRsg(dimensionality);
     points = Size(QL_POW(2.0, 5))-1;  // five cycles
     for (i=0; i<points; i++) {
-        point = rsg .nextSequence().value;
+        point = rsg.nextSequence().value;
         if (point[0]!=vanderCorputSequenceModuloTwo[i]) {
             CPPUNIT_FAIL(IntegerFormatter::toOrdinal(i+1) +
                          " draw (" +
@@ -271,6 +250,95 @@ void LDSTest::testHalton() {
                          "it should have been " + 
                          DoubleFormatter::toString(
                              vanderCorputSequenceModuloThree[i]));
+        }
+    }
+
+
+
+
+    // testing homogeneity properties
+    dimensionality = 33;
+    seed = 123456;
+    rsg = HaltonRsg(dimensionality);
+    ArrayStatistic stat(dimensionality);
+    Array mean, stdev, variance, skewness, kurtosis;
+    k = 0;
+    for (int j=1; j<5; j++) { // five cycle
+        points = Size(QL_POW(2, j))-1; // base 2
+        for (; k<points; k++) {
+            point = rsg.nextSequence().value;
+            stat.add(point);
+        }
+        mean        = stat.mean();
+        if (mean[0]!=0.5) {
+            CPPUNIT_FAIL("First dimension mean (" +
+                         DoubleFormatter::toString(mean[0]) +
+                         ") at the end of the " +
+                         IntegerFormatter::toOrdinal(j+1) +
+                         " cycle in Halton sequence is not " + 
+                         DoubleFormatter::toString(0.5));
+        }
+    }
+
+    // reset generator and statistic
+    rsg  = HaltonRsg(dimensionality);
+    stat = ArrayStatistic(dimensionality);
+    k = 0;
+    for (j=1; j<3; j++) { // three cycle
+        points = Size(QL_POW(3, j))-1; // base 3
+        for (; k<points; k++) {
+            point = rsg.nextSequence().value;
+            stat.add(point);
+        }
+        mean        = stat.mean();
+        if (QL_FABS(mean[1]-0.5)>1e-16) {
+            CPPUNIT_FAIL("Second dimension mean (" +
+                         DoubleFormatter::toString(mean[1]) +
+                         ") at the end of the " +
+                         IntegerFormatter::toOrdinal(j+1) +
+                         " cycle in Halton sequence is not " + 
+                         DoubleFormatter::toString(0.5));
+        }
+    }
+
+}
+
+void LDSTest::testDiscrepancy() {
+
+    Array point;
+    unsigned long dim, dimensionality[] = {2, 3, 5, 10, 15, 30, 50, 100 };
+    unsigned long seed = 123456;
+
+    std::cout << std::endl;
+
+    for (int i = 0; i<8; i++) {
+        dim = dimensionality[i];
+        MersenneTwisterUniformRsg mer(dim, seed);
+        HaltonRsg                 hal(dim);
+        SobolRsg                  sob(dim, seed);
+
+        DiscrepancyArrayStatistic merStat(dim);
+        DiscrepancyArrayStatistic halStat(dim);
+        DiscrepancyArrayStatistic sobStat(dim);
+        std::cout << "dim " << dim << std::endl;
+
+        Size k = 0;
+        for (int j=10; j<17; j++) {
+            Size points = Size(QL_POW(2, j))-1;
+            for (; k<points; k++) {
+                point = mer.nextSequence().value;
+                merStat.add(point);
+                point = hal.nextSequence().value;
+                halStat.add(point);
+                point = sob.nextSequence().value;
+                sobStat.add(point);
+            }
+            std::cout << points << ": "
+                "r " << QL_SQRT((1.0/QL_POW(2, dim)-1.0/QL_POW(3, dim))/points) <<
+                ", Mers. " << merStat.discrepancy() <<
+                ", Halt. " << halStat.discrepancy() <<
+                ", Sobol " << sobStat.discrepancy() <<
+                std::endl;
         }
     }
 

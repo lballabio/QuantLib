@@ -50,6 +50,8 @@ int main() {
     runner.eventManager().addListener(&qlListener);
 
     runner.addTest(LDSTest::suite());
+    runner.addTest(new RiskStatisticsTest);
+    runner.addTest(new StatisticsTest);
 
     runner.addTest(new CalendarTest);
     runner.addTest(CapFloorTest::suite());
@@ -65,9 +67,7 @@ int main() {
     runner.addTest(new MersenneTwisterTest());
     runner.addTest(new OperatorTest);
     runner.addTest(new PiecewiseFlatForwardTest);
-    runner.addTest(new RiskStatisticsTest);
     runner.addTest(new Solver1DTest);
-    runner.addTest(new StatisticsTest);
     runner.addTest(SimpleSwapTest::suite());
     runner.addTest(SwaptionTest::suite());
     runner.addTest(TermStructureTest::suite());
