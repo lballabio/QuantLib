@@ -204,11 +204,11 @@ int main(int argc, char* argv[])
         rp.compute(hedgesNum, scenarios);
 
         return 0;
-    } catch (exception& e) {
-        cout << e.what() << endl;
+    } catch (std::exception& e) {
+        std::cout << e.what() << std::endl;
         return 1;
     } catch (...) {
-        cout << "unknown error" << endl;
+        std::cout << "unknown error" << std::endl;
         return 1;
     }
 }

@@ -28,6 +28,9 @@
 
 // $Id$
 // $Log$
+// Revision 1.18  2001/08/23 14:39:50  nando
+// miscellanea
+//
 // Revision 1.17  2001/08/23 11:24:37  nando
 // try/catch in examples
 //
@@ -54,15 +57,17 @@
 // disable useless warning
 // 'identifier' : decorated name length exceeded,
 //                name was truncated in debug info
+/*
 #pragma warning(disable: 4786)
 
 #include "stdlib.h"
 #include <iostream>
 #include <ctime>
+*/
 
 #include "ql\quantlib.hpp"
 
-using namespace std;
+// using namespace std;
 
 // Rate and Time are just double, but having their own types allows for
 // a stonger check at compile time
@@ -174,31 +179,31 @@ int main(int argc, char* argv[])
         Rate riskFreeRate = 0.05; // 5%
         Time maturity = 1.0;      // 1 year
         double volatility = 0.20; // 20%
-        cout << "Time to maturity = "        << maturity     << endl;
-        cout << "Underlying price = "        << underlying   << endl;
-	    cout << "Strike = "                  << strike       << endl;
-        cout << "Risk-free interest rate = " << riskFreeRate << endl;
-	    cout << "Volatility = "              << volatility   << endl;
-        cout << endl;
+        std::cout << "Time to maturity = "        << maturity     << std::endl;
+        std::cout << "Underlying price = "        << underlying   << std::endl;
+	    std::cout << "Strike = "                  << strike       << std::endl;
+        std::cout << "Risk-free interest rate = " << riskFreeRate << std::endl;
+	    std::cout << "Volatility = "              << volatility   << std::endl;
+        std::cout << std::endl;
 
         // write column headings
-        cout << "Method\t\tValue\tEstimatedError\tDiscrepancy"
-            "\tRel. Discr." << endl;
+        std::cout << "Method\t\tValue\tEstimatedError\tDiscrepancy"
+            "\tRel. Discr." << std::endl;
 
 
 
         // first method: Black Scholes analytic solution
-        string method ="Black Scholes";
+        std::string method ="Black Scholes";
         double value = EuropeanOption(Option::Call, underlying, strike,
             dividendYield, riskFreeRate, maturity, volatility).value();
         double estimatedError = 0.0;
         double discrepancy = 0.0;
         double relativeDiscrepancy = 0.0;
-        cout << method << "\t"
+        std::cout << method << "\t"
              << DoubleFormatter::toString(value, 4) << "\t"
              << DoubleFormatter::toString(estimatedError, 4) << "\t\t"
              << DoubleFormatter::toString(discrepancy, 6) << "\t"
-             << DoubleFormatter::toString(relativeDiscrepancy, 6) << endl;
+             << DoubleFormatter::toString(relativeDiscrepancy, 6) << std::endl;
 
 
         // store the Black Scholes value as the correct one
@@ -215,11 +220,11 @@ int main(int argc, char* argv[])
             + underlying - strike*QL_EXP(- riskFreeRate*maturity);
         discrepancy = QL_FABS(value-rightValue);
         relativeDiscrepancy = discrepancy/rightValue;
-        cout << method << "\t"
+        std::cout << method << "\t"
              << DoubleFormatter::toString(value, 4) << "\t"
              << "N/A\t\t"
              << discrepancy << "\t"
-             << DoubleFormatter::toString(relativeDiscrepancy, 6) << endl;
+             << DoubleFormatter::toString(relativeDiscrepancy, 6) << std::endl;
 
 
         // third method: Integral
@@ -234,11 +239,11 @@ int main(int argc, char* argv[])
         value = integrator(po, nuT-infinity, nuT+infinity);
         discrepancy = QL_FABS(value-rightValue);
         relativeDiscrepancy = discrepancy/rightValue;
-        cout << method << "\t"
+        std::cout << method << "\t"
              << DoubleFormatter::toString(value, 4) << "\t"
              << "N/A\t\t"
              << DoubleFormatter::toString(discrepancy, 6) << "\t"
-             << DoubleFormatter::toString(relativeDiscrepancy, 6) << endl;
+             << DoubleFormatter::toString(relativeDiscrepancy, 6) << std::endl;
 
 
 
@@ -250,11 +255,11 @@ int main(int argc, char* argv[])
             dividendYield, riskFreeRate, maturity, volatility, grid).value();
         discrepancy = QL_FABS(value-rightValue);
         relativeDiscrepancy = discrepancy/rightValue;
-        cout << method << "\t"
+        std::cout << method << "\t"
              << DoubleFormatter::toString(value, 4) << "\t"
              << "N/A\t\t"
              << DoubleFormatter::toString(discrepancy, 6) << "\t"
-             << DoubleFormatter::toString(relativeDiscrepancy, 6) << endl;
+             << DoubleFormatter::toString(relativeDiscrepancy, 6) << std::endl;
 
 
 
@@ -292,11 +297,11 @@ int main(int argc, char* argv[])
         estimatedError = mc.sampleAccumulator().errorEstimate();
         discrepancy = QL_FABS(value-rightValue);
         relativeDiscrepancy = discrepancy/rightValue;
-        cout << method << "\t"
+        std::cout << method << "\t"
              << DoubleFormatter::toString(value, 4) << "\t"
              << DoubleFormatter::toString(estimatedError, 4) << "\t\t"
              << DoubleFormatter::toString(discrepancy, 6) << "\t"
-             << DoubleFormatter::toString(relativeDiscrepancy, 6) << endl;
+             << DoubleFormatter::toString(relativeDiscrepancy, 6) << std::endl;
 
 
         // sixth method:  MonteCarlo with antithetic variance reduction
@@ -320,11 +325,11 @@ int main(int argc, char* argv[])
         estimatedError = improvedMC.sampleAccumulator().errorEstimate();
         discrepancy = QL_FABS(value-rightValue);
         relativeDiscrepancy = discrepancy/rightValue;
-        cout << method << "\t"
+        std::cout << method << "\t"
              << DoubleFormatter::toString(value, 4) << "\t"
              << DoubleFormatter::toString(estimatedError, 4) << "\t\t"
              << DoubleFormatter::toString(discrepancy, 6) << "\t"
-             << DoubleFormatter::toString(relativeDiscrepancy, 6) << endl;
+             << DoubleFormatter::toString(relativeDiscrepancy, 6) << std::endl;
 
 
 
@@ -347,24 +352,24 @@ int main(int argc, char* argv[])
 
         double integral = optionSurplusIntegral(maturity, strike, underlying,
             volatility, riskFreeRate);
-        cout<<"\nOption surplus integral: \n";
-        cout<<"Integral value: "<<integral<<"\t Theoretical value: "<<theory;
+        std::cout<<"\nOption surplus integral: \n";
+        std::cout<<"Integral value: "<<integral<<"\t Theoretical value: "<<theory;
         double err = QL_FABS(integral - theory);
-        cout<<"\t Error: "<<err;
-        cout<<"\t Relative error: ";
+        std::cout<<"\t Error: "<<err;
+        std::cout<<"\t Relative error: ";
         if(QL_FABS(theory)>1e-16)
-            cout<<err/theory;
+            std::cout<<err/theory;
         else
-            cout<<"not computed";
-        cout<<"\n";
+            std::cout<<"not computed";
+        std::cout<<"\n";
 
 
 	    return 0;
-    } catch (exception& e) {
-        cout << e.what() << endl;
+    } catch (std::exception& e) {
+        std::cout << e.what() << std::endl;
         return 1;
     } catch (...) {
-        cout << "unknown error" << endl;
+        std::cout << "unknown error" << std::endl;
         return 1;
     }
 }

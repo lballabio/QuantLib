@@ -2,22 +2,12 @@
 # $Id$
 # $Source$
 # $Log$
-# Revision 1.18  2001/08/23 11:24:37  nando
-# try/catch in examples
+# Revision 1.19  2001/08/23 14:39:50  nando
+# miscellanea
 #
-# Revision 1.17  2001/08/23 10:16:36  nando
-# Examples have been added to Win32 binary installer
-#
-# Revision 1.16  2001/07/11 09:44:57  nando
-# install executable sets environment variable QL_DIR
-#
-# Revision 1.15  2001/06/05 12:45:26  nando
-# R019-branch-merge4 merged into trunk
-#
-
 
 #############################
-# to be used with NSIS 1.41 #
+# to be used with NSIS 1.44 #
 #############################
 
 # HEADER CONFIGURATION COMMANDS
@@ -28,11 +18,11 @@ SilentInstall normal
 CRCCheck on
 UninstallText "This will uninstall QuantLib. Hit next to continue."
 UninstallExeName "QuantLibUninstall.exe"
-LicenseText "This installer will install QuantLib. Please read the license."
+LicenseText "You must read the following license before installing:"
 LicenseData License.txt
-ComponentText "Select which optional components you want installed."
+ComponentText "This will install QuantLib documentation on your computer:"
 DirShow show
-DirText "Choose a directory to install into:"
+DirText "Please select a location to install QuantLib (or use the default):"
 InstallDir $PROGRAMFILES\QuantLib
 InstallDirRegKey HKEY_LOCAL_MACHINE SOFTWARE\QuantLib "Install_Dir"
 AutoCloseWindow false
@@ -90,6 +80,12 @@ WriteRegStr HKEY_LOCAL_MACHINE \
 WriteRegStr HKEY_CURRENT_USER \
             "Environment" \
             "QL_DIR" "$INSTDIR"
+CreateDirectory "$SMPROGRAMS\QuantLib"
+CreateShortCut "$SMPROGRAMS\QuantLib\Uninstall.lnk" \
+               "$INSTDIR\QuantLibUninstall.exe" \
+               "" "$INSTDIR\QuantLibUninstall.exe" 0
+CreateShortCut "$SMPROGRAMS\QuantLib\Readme.txt.lnk" \
+             "$INSTDIR\Readme.txt"
 SectionEnd
 
 Section "Examples"
@@ -108,22 +104,31 @@ File /r "Examples\Parities\*.cpp"
 File /r "Examples\Parities\*.dsp"
 File /r "Examples\Parities\*.txt"
 File /r "Examples\Parities\*.mak"
+IfFileExists $SMPROGRAMS\QuantLib 0 NoSourceShortCuts
+CreateShortCut "$SMPROGRAMS\QuantLib\Examples workspace.lnk" \
+               "$INSTDIR\Examples\Examples.dsw"
+NoSourceShortCuts:
 SectionEnd
 
-Section "Start Menu Shortcuts"
-CreateDirectory "$SMPROGRAMS\QuantLib"
-CreateShortCut "$SMPROGRAMS\QuantLib\Uninstall.lnk" \
-               "$INSTDIR\QuantLibUninstall.exe" \
-               "" "$INSTDIR\QuantLibUninstall.exe" 0
-SectionEnd
+Function .onInstSuccess
+  MessageBox MB_YESNO|MB_ICONQUESTION \
+             "Setup has completed. View Readme.txt now?" \
+             IDNO NoReadme
+    ExecShell open '$INSTDIR\Readme.txt'
+  NoReadme:
+FunctionEnd
+
 
 Section "Uninstall"
-DeleteRegKey   HKEY_LOCAL_MACHINE "Software\Microsoft\Windows\CurrentVersion\Uninstall\QuantLib"
-DeleteRegKey   HKEY_LOCAL_MACHINE SOFTWARE\QuantLib
-DeleteRegValue HKEY_CURRENT_USER  "Environment" "QL_DIR"
+DeleteRegKey    HKEY_LOCAL_MACHINE \
+                "Software\Microsoft\Windows\CurrentVersion\Uninstall\QuantLib"
+DeleteRegKey    HKEY_LOCAL_MACHINE SOFTWARE\QuantLib
+DeleteRegValue  HKEY_CURRENT_USER  "Environment" "QL_DIR"
 Delete "$SMPROGRAMS\QuantLib\*.*"
 RMDir "$SMPROGRAMS\QuantLib"
 RMDir /r "$INSTDIR\Examples"
+RMDir /r "$INSTDIR\Sources"
+RMDir /r "$INSTDIR\Docs"
 RMDir /r "$INSTDIR\Include"
 RMDir /r "$INSTDIR\lib"
 RMDir /r "$INSTDIR"
