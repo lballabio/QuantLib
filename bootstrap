@@ -9,14 +9,7 @@
 # libtool 1.4.2
 
 aclocal
-# cppunit approach
-#aclocal || \
-#    aclocal -I /usr/share/aclocal
-
-# this is absent in gsl
 autoheader
-
 automake --add-missing
-
 autoconf
 
