@@ -58,40 +58,11 @@ File /r "Include\ql\TermStructures\*.hpp"
 SetOutPath  $INSTDIR\Include\ql\Utilities
 File /r "Include\ql\Utilities\*.hpp"
 
-Section "SWIG wrapper files"
-SetOutPath $INSTDIR\Swig
-File /r "Swig\*.i"
-
 Section "Documentation"
 SetOutPath $INSTDIR\Docs\html
 File "Docs\html\*.*"
 SetOutPath $INSTDIR\Docs\pdf
 File "Docs\latex\refma*.pdf"
-
-;Section "Examples"
-;SetOutPath $INSTDIR\Examples
-;File "Examples\*.cpp"
-;File "Examples\*.hpp"
-
-Section "Sources"
-SetOutPath $INSTDIR\Sources
-File /r "Sources\*.cpp"
-SetOutPath $INSTDIR\Sources\Calendars
-File /r "Sources\Calendars\*.cpp"
-SetOutPath $INSTDIR\Sources\DayCounters
-File /r "Sources\DayCounters\*.cpp"
-SetOutPath $INSTDIR\Sources\FiniteDifferences
-File /r "Sources\FiniteDifferences\*.cpp"
-SetOutPath $INSTDIR\Sources\Math
-File /r "Sources\Math\*.cpp"
-SetOutPath $INSTDIR\Sources\MonteCarlo
-File /r "Sources\MonteCarlo\*.cpp"
-SetOutPath $INSTDIR\Sources\Pricers
-File /r "Sources\Pricers\*.cpp"
-SetOutPath $INSTDIR\Sources\Solvers1D
-File /r "Sources\Solvers1D\*.cpp"
-SetOutPath $INSTDIR\Sources\TermStructures
-File /r "Sources\TermStructures\*.cpp"
 
 Section "Start Menu Shortcuts"
 CreateDirectory "$SMPROGRAMS\QuantLib"
@@ -103,9 +74,7 @@ DeleteRegKey HKEY_LOCAL_MACHINE SOFTWARE\QuantLib
 Delete "$SMPROGRAMS\QuantLib\*.*"
 RMDir "$SMPROGRAMS\QuantLib"
 RMDir /r $INSTDIR\Docs
-RMDir /r $INSTDIR\Examples
 RMDir /r $INSTDIR\Include
-RMDir /r $INSTDIR\Sources
 RMDir /r $INSTDIR\lib
 RMDir /r "$INSTDIR"
 
