@@ -24,7 +24,6 @@
 
 # Make sure that Python path contains the directory of QuantLib and that of this file
 from QuantLib import BSMAmericanOption
-import time
 
 pricer = BSMAmericanOption
 nstp = 150
@@ -57,8 +56,6 @@ total_number_of_error = 0
 
 print "Test of the class BSMAmericanOption, maximum-error"
 print "     Type  items err-delta err-gamma err-theta  err-rho  err-vega "
-
-start = time.clock()
 
 for typ in ['Call','Put','Straddle']:
   resuDelta = [];  resuGamma = [];  resuTheta = []
@@ -120,10 +117,7 @@ for typ in ['Call','Put','Straddle']:
   maxNumDerErrorList.append(max(resuRho))
   maxNumDerErrorList.append(max(resuVega))
 
-stop = time.clock()
-
-print "\nFinal maximum global error on numerical derivatives = %g" % max(maxNumDerErrorList)
-print "Elapsed time: %6.3f\n" % stop-start
+print "\nFinal maximum global error on numerical derivatives = %g\n" % max(maxNumDerErrorList)
 
 if total_number_of_error > 1:
         print "Test not passed, total number of failures:",total_number_of_error
