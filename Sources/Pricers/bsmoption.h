@@ -12,6 +12,7 @@ Contact ferdinando@ametrano.net if LICENSE.TXT was not distributed with this fil
 #include "options.h"
 #include "date.h"
 #include "yield.h"
+#include "handle.h"
 
 QL_BEGIN_NAMESPACE(QuantLib)
 
@@ -41,17 +42,34 @@ class BSMOption : public Option {
 	virtual double rho() const = 0;
 	//virtual double impliedVolatility(double targetValue, double xacc = 1e-4, int maxEvaluations = 100) const;
 	//virtual Handle<BSMOption> clone() const = 0;
+	void setVolatility(double volatility);
+	void setRiskFreeRate(Rate newRiskFreeRate);
+	virtual Handle<BSMOption > clone() const = 0;
+
   protected:
 	// input data
 	Type theType;
 	double theUnderlying, theStrike;
-	Rate theUnderlyingGrowthRate, theRiskFreeRate;
+	Rate theUnderlyingGrowthRate;
+	mutable Rate theRiskFreeRate;
 	Time theResidualTime;
 	double theVolatility;
 	// results
 	mutable bool hasBeenCalculated;	// declared as mutable to preserve the logical
 	mutable double theValue;				// constness (does this word exist?) of value()
 };
+
+
+inline void BSMOption::setVolatility(double volatility) {
+	Require(volatility>=0,"Volatility must be positive");
+	theVolatility = volatility;
+	hasBeenCalculated=false;
+}
+
+inline void BSMOption::setRiskFreeRate(Rate newRiskFreeRate) {
+	theRiskFreeRate = newRiskFreeRate;
+	hasBeenCalculated=false;
+}
 
 
 QL_END_NAMESPACE(Pricers)
