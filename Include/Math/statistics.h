@@ -47,7 +47,7 @@ namespace QuantLib {
 		    //! \name Inspectors
 		    //@{
 		    //! size of data set
-		    int samples() const;
+		    double samples() const;
 		    //! sum of data weights
 		    double weightSum() const;
 		    /*! returns the mean, defined as
@@ -99,7 +99,7 @@ namespace QuantLib {
 		    void reset();
 		    //@}
 		  private:
-		    int theSampleNumber;
+		    double theSampleNumber;
 		    double theSampleWeight;
 		    double theSum, theQuadraticSum, theCubicSum, theFourthPowerSum;
 		    double theMin, theMax;
@@ -123,7 +123,7 @@ namespace QuantLib {
 		  theMax=QL_MAX(value, theMax);
 		}
 		
-		inline int Statistics::samples() const {
+		inline double Statistics::samples() const {
 		  return theSampleNumber;
 		}
 		
