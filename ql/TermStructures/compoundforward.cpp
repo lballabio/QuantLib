@@ -45,7 +45,8 @@ namespace QuantLib {
     }
 
     void CompoundForward::calibrateNodes() const {
-        Size i,ci;
+        Size i;
+        int ci;
 
         times_.resize(dates_.size());
         for (i = 0; i < dates_.size(); i++)
@@ -100,7 +101,8 @@ namespace QuantLib {
             Time compoundTime = dayCounter_.yearFraction(referenceDate_,
                                                          compoundDate);
             double qFactor = 0.0;
-            Size i,ci;
+            Size i;
+            int ci;
             for (i = 0, ci = 1; i < dates_.size(); i++) {
                 DiscountFactor df;
                 Date rateDate = dates_[i];
@@ -156,7 +158,7 @@ namespace QuantLib {
         return discountCurve()->discount(t,extrapolate);
     }
 
-    int CompoundForward::referenceNode(Time t, bool extrapolate) const {
+    Size CompoundForward::referenceNode(Time t, bool extrapolate) const {
         QL_REQUIRE(t >= 0.0 && (t <= times_.back() || extrapolate),
                    "CompoundForward: time (" +
                    DoubleFormatter::toString(t) +
@@ -181,7 +183,7 @@ namespace QuantLib {
         if (t == 0.0) {
             return forwards_[0];
         } else {
-            int n = referenceNode(t, extrapolate);
+            Size n = referenceNode(t, extrapolate);
             if (t == times_[n]) {
                 return forwards_[n];
             } else {

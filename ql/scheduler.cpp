@@ -156,7 +156,7 @@ namespace QuantLib {
             }
 
             // possibly collapse last two dates
-            int N = dates_.size();
+            Size N = dates_.size();
             if (calendar.roll(dates_[N-2],rollingConvention) ==
                 calendar.roll(dates_[N-1],rollingConvention)) {
                 dates_[N-2] = dates_[N-1];

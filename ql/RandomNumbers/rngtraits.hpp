@@ -44,7 +44,7 @@ namespace QuantLib {
         // more traits
         enum { allowsErrorEstimate = 1 };
         // factory
-        static rsg_type make_sequence_generator(int dimension,
+        static rsg_type make_sequence_generator(Size dimension,
                                                 unsigned long seed) {
             ursg_type g(dimension, seed);
             return rsg_type(g);
@@ -63,7 +63,7 @@ namespace QuantLib {
         // more traits
         enum { allowsErrorEstimate = 0 };
         // factory
-        static rsg_type make_sequence_generator(int dimension,
+        static rsg_type make_sequence_generator(Size dimension,
                                                 unsigned long seed) {
             ursg_type g(dimension, seed);
             return rsg_type(g);

@@ -40,7 +40,7 @@ namespace QuantLib {
              const Array& diffusion = Array());
         //! \name inspectors
         //@{
-        double operator[](int i) const;
+        double operator[](Size i) const;
         Size size() const;
         //@}
         //! \name read/write access to components
@@ -80,7 +80,7 @@ namespace QuantLib {
         }
     }
 
-    inline double Path::operator[](int i) const {
+    inline double Path::operator[](Size i) const {
         return drift_[i] + diffusion_[i];
     }
 

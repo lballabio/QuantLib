@@ -50,7 +50,7 @@ namespace QuantLib {
         const std::vector<DiscountFactor>& discounts() const;
       protected:
         DiscountFactor discountImpl(Time, bool extrapolate = false) const;
-        int referenceNode(Time, bool extrapolate = false) const;
+        Size referenceNode(Time, bool extrapolate = false) const;
         Date todaysDate_;
         Date referenceDate_;
         DayCounter dayCounter_;

@@ -157,7 +157,7 @@ namespace QuantLib {
         if (t == 0.0) {
             return zeroYields_[0];
         } else {
-            int n = referenceNode(t, extrapolate);
+            Size n = referenceNode(t, extrapolate);
             if (t == times_[n]) {
                 return zeroYields_[n];
             } else {
@@ -174,7 +174,7 @@ namespace QuantLib {
         if (t == 0.0) {
             return discounts_[0];
         } else {
-            int n = referenceNode(t, extrapolate);
+            Size n = referenceNode(t, extrapolate);
             if (t == times_[n]) {
                 return discounts_[n];
             } else {
@@ -208,7 +208,7 @@ namespace QuantLib {
 		return (QL_EXP(zy*(1.0/compFreq))-1.0)*compFreq;
 	}
 
-    int PiecewiseFlatForward::referenceNode(Time t, 
+    Size PiecewiseFlatForward::referenceNode(Time t, 
                                             bool extrapolate) const {
         QL_REQUIRE(t >= 0.0 && (t <= times_.back() || extrapolate),
                    "PiecewiseFlatForward::referenceNode : "
@@ -234,7 +234,7 @@ namespace QuantLib {
     PiecewiseFlatForward::FFObjFunction::FFObjFunction(
                               const PiecewiseFlatForward* curve,
                               const boost::shared_ptr<RateHelper>& rateHelper,
-                              int segment)
+                              Size segment)
     : curve_(curve), rateHelper_(rateHelper), segment_(segment) {
         // extend curve to next point
         curve_->dates_.push_back(rateHelper_->maturity());

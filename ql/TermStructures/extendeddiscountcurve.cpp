@@ -33,7 +33,8 @@ namespace QuantLib {
     }
 
     void ExtendedDiscountCurve::calibrateNodes() const {
-        Size i,ci;
+        Size i;
+        int ci;
 	 
         std::vector<Date> dates = dates_;
         std::vector<Time> times = times_;
@@ -73,7 +74,8 @@ namespace QuantLib {
         Time compoundTime = dayCounter_.yearFraction(referenceDate_,
                                                      compoundDate);
         double qFactor = 0.0;
-        Size i,ci;
+        Size i;
+        int ci;
         // Ignore first entry (SPOT with df=1.0)
         for (i = 1, ci = 1; i < dates_.size(); i++) {
             Rate fwd;

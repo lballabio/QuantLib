@@ -94,12 +94,12 @@ namespace QuantLib {
         class FFObjFunction {
           public:
             FFObjFunction(const PiecewiseFlatForward*,
-                          const boost::shared_ptr<RateHelper>&, int segment);
+                          const boost::shared_ptr<RateHelper>&, Size segment);
             double operator()(double discountGuess) const;
           private:
             const PiecewiseFlatForward* curve_;
             boost::shared_ptr<RateHelper> rateHelper_;
-            int segment_;
+            Size segment_;
         };
         // instrument sorter
         class RateHelperSorter {
@@ -108,7 +108,7 @@ namespace QuantLib {
                             const boost::shared_ptr<RateHelper>&) const;
         };
         // methods
-        int referenceNode(Time t, bool extrapolate) const;
+        Size referenceNode(Time t, bool extrapolate) const;
         void performCalculations() const;
         // data members
         DayCounter dayCounter_;

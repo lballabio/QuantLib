@@ -67,7 +67,7 @@ namespace QuantLib {
         if (t == 0.0) {
             return discounts_[0];
         } else {
-            int n = referenceNode(t, extrapolate);
+            Size n = referenceNode(t, extrapolate);
             if (t == times_[n]) {
                 return discounts_[n];
             } else {
@@ -77,7 +77,7 @@ namespace QuantLib {
         QL_DUMMY_RETURN(DiscountFactor());
     }
 
-    int DiscountCurve::referenceNode(Time t, bool extrapolate) const {
+    Size DiscountCurve::referenceNode(Time t, bool extrapolate) const {
         QL_REQUIRE(t >= 0.0 && (t <= times_.back() || extrapolate),
                    "DiscountCurve: time (" +
                    DoubleFormatter::toString(t) +

@@ -61,7 +61,7 @@ namespace QuantLib {
         boost::shared_ptr<TermStructure> bootstrap() const;
         Rate zeroYieldImpl(Time, bool extrapolate = false) const;
         DiscountFactor discountImpl(Time, bool extrapolate = false) const;
-        int referenceNode(Time, bool extrapolate = false) const;
+        Size referenceNode(Time, bool extrapolate = false) const;
         Rate forwardImpl(Time, bool extrapolate = false) const;
         Rate compoundForwardImpl(Time, int, bool extrapolate = false) const;
       private:
