@@ -159,14 +159,13 @@ namespace QuantLib {
             Size k, index, currentDegree;
             for (k=0, index=0, currentDegree = 0;
                       k<dimensionality_; k++, index++) {
-                long polynomial = PrimitivePolynomials[currentDegree][index];
-                if (polynomial==-1) {
+                ppmt[k] = PrimitivePolynomials[currentDegree][index];
+                if (ppmt[k]==-1) {
                     ++currentDegree;
                     index=0;
-                    polynomial = PrimitivePolynomials[currentDegree][index];
+                    ppmt[k] = PrimitivePolynomials[currentDegree][index];
                 }
                 degree[k] = currentDegree;
-                ppmt[k] = polynomial;
             }
 
             // initializes bits_ direction integers for each dimension
