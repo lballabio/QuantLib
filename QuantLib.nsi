@@ -46,6 +46,7 @@ SetDateSave on
 
 # INSTALLATION EXECUTION COMMANDS
 
+
 Section "-QuantLib"
 SectionIn 1 2 3
 # this directory must be created first, or the CreateShortCut will not work
@@ -123,13 +124,16 @@ SectionIn 1 2 3
                    "" "$INSTDIR\QuantLibUninstall.exe" 0
 SectionEnd
 
+
 !ifndef LIGHT
 
 #Function .onInit
 #  SetOutPath $TEMP
 #  File /oname=spltmp.dat "Docs\images\QL-largish.bmp"
-#  ReadRegStr $0 HKLM SOFTWARE\NSIS "Default"
-#  File /oname=spltmp.exe $0\splash.exe
+#  ReadRegStr $1 HKLM SOFTWARE\NSIS ""
+#  StrCpy $2 "$1\splash.exe"
+#  File /oname=spltmp.exe $2
+#  File /oname=spltmp.exe "E:\Program Files\NSIS\splash.exe"
 #  ExecWait '"$TEMP\spltmp.exe" 2000 $HWNDPARENT spltmp.dat'
 #  Delete $TEMP\spltmp.exe
 #  Delete $TEMP\spltmp.dat
