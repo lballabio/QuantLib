@@ -55,7 +55,7 @@ namespace QuantLib {
         <li>Saturdays</li>
         <li>Sundays</li>
         <li>New Year's Day, January 1st (possibly moved to Monday if
-            actually on Sunday, or to Friday if on Saturday)</li>
+            actually on Sunday)</li>
         <li>Martin Luther King's birthday, third Monday in January</li>
         <li>Presidents' Day (a.k.a. Washington's birthday),
 		    third Monday in February</li>
@@ -69,12 +69,13 @@ namespace QuantLib {
             if Saturday)</li>
         </ul>
 
-        Holidays for the government bond market:
+        Holidays for the government bond market (data from
+        http://www.bondmarkets.com):
         <ul>
         <li>Saturdays</li>
         <li>Sundays</li>
         <li>New Year's Day, January 1st (possibly moved to Monday if
-            actually on Sunday, or to Friday if on Saturday)</li>
+            actually on Sunday)</li>
         <li>Martin Luther King's birthday, third Monday in January</li>
         <li>Presidents' Day (a.k.a. Washington's birthday),
 		    third Monday in February</li>
