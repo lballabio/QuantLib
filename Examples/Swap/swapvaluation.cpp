@@ -233,7 +233,7 @@ int main(int argc, char* argv[])
         // Of course, you're not forced to really use different curves
         forecastingTermStructure.linkTo(depoSwapTermStructure);
         discountingTermStructure.linkTo(depoSwapTermStructure);
-        std::cout << "*** using Depo-Fut-Swap term structure:" << std::endl;
+        std::cout << "*** using Depo-Swap term structure:" << std::endl;
 
         NPV = spot5YearSwap.NPV();
         std::cout << "5Y "
@@ -262,7 +262,7 @@ int main(int argc, char* argv[])
             << " NPV:            "
             << DoubleFormatter::toString(NPV,2)
             << std::endl;
-        fairFloatingSpread = -NPV / spot5YearSwap.floatingLegBPS();
+        fairFloatingSpread = -NPV / oneYearForward5YearSwap.floatingLegBPS();
         std::cout << "1Yx5Y "
             << RateFormatter::toString(fixedRate,2)
             << " spread:            "
@@ -527,7 +527,7 @@ int main(int argc, char* argv[])
             << " NPV:            "
             << DoubleFormatter::toString(NPV,2)
             << std::endl;
-        fairFloatingSpread = -NPV / spot5YearSwap.floatingLegBPS();
+        fairFloatingSpread = -NPV / oneYearForward5YearSwap.floatingLegBPS();
         std::cout << "1Yx5Y "
             << RateFormatter::toString(fixedRate,2)
             << " spread:            "
@@ -571,7 +571,7 @@ int main(int argc, char* argv[])
             << " NPV:            "
             << DoubleFormatter::toString(NPV,2)
             << std::endl;
-        fairFloatingSpread = -NPV / spot5YearSwap.floatingLegBPS();
+        fairFloatingSpread = -NPV / oneYearForward5YearSwap.floatingLegBPS();
         std::cout << "1Yx5Y "
             << RateFormatter::toString(fixedRate,2)
             << " spread:            "
@@ -628,7 +628,7 @@ int main(int argc, char* argv[])
             << " NPV:            "
             << DoubleFormatter::toString(NPV,2)
             << std::endl;
-        fairFloatingSpread = -NPV / spot5YearSwap.floatingLegBPS();
+        fairFloatingSpread = -NPV / oneYearForward5YearSwap.floatingLegBPS();
         std::cout << "1Yx5Y "
             << RateFormatter::toString(fixedRate,2)
             << " spread:            "
@@ -670,7 +670,7 @@ int main(int argc, char* argv[])
             << " NPV:            "
             << DoubleFormatter::toString(NPV,2)
             << std::endl;
-        fairFloatingSpread = -NPV / spot5YearSwap.floatingLegBPS();
+        fairFloatingSpread = -NPV / oneYearForward5YearSwap.floatingLegBPS();
         std::cout << "1Yx5Y "
             << RateFormatter::toString(fixedRate,2)
             << " spread:            "
