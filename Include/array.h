@@ -27,6 +27,9 @@
     $Source$
     $Name$
     $Log$
+    Revision 1.13  2001/01/08 11:47:55  lballabio
+    Moved array.h back to Include folder
+
     Revision 1.2  2001/01/08 11:44:17  lballabio
     Array back into QuantLib namespace - Math namespace broke expression templates, go figure
 
