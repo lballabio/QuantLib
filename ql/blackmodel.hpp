@@ -42,6 +42,8 @@ namespace QuantLib {
 
         //! General Black formula
         static double formula(double f, double k, double v, double w);
+        //! In-the-money probability
+        static double itmProbability(double f, double k, double v, double w);
       private:
         RelinkableHandle<Quote> volatility_;
         RelinkableHandle<TermStructure> termStructure_;
@@ -66,7 +68,6 @@ namespace QuantLib {
         return termStructure_;
     }
 
-    //! Black formula
     /*! Returns
         \f[
             Black(f,k,v,w) = fw\Phi(wd_1(f,k,v)) - kw\Phi(wd_2(f,k,v)),
@@ -87,6 +88,29 @@ namespace QuantLib {
         double d2 = d1 - v;
         CumulativeNormalDistribution phi;
         return f*w*phi(w*d1) - k*w*phi(w*d2);
+    }
+
+    /*! Returns
+        \f[
+            P(f,k,v,w) = \Phi(wd_2(f,k,v)),
+        \f]
+        where
+        \f[
+            d_1(f,k,v) = \frac{\ln(f/k)+v^2/2}{v}
+        \f]
+        and 
+        \f[
+            d_2(f,k,v) = d_1(f,k,v) - v.
+        \f]
+    */
+    inline double BlackModel::itmProbability(double f, double k, 
+                                             double v, double w) {
+        if (QL_FABS(v) < QL_EPSILON)
+            return (f*w > k*w ? 1.0 : 0.0);
+        double d1 = QL_LOG(f/k)/v + 0.5*v;
+        double d2 = d1 - v;
+        CumulativeNormalDistribution phi;
+        return phi(w*d2);
     }
 
 }
