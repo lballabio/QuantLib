@@ -4,6 +4,9 @@
     \subsection linux Linux/Unix
     The simplest way to compile and install %QuantLib is:
 
+    -# get the sources from <br>
+       http://sourceforge.net/project/showfiles.php?group_id=12740
+       and untar them.
     -# `cd' to the %QuantLib directory and type `./configure' to configure the
        package for your system.  If you're using `csh' on an old version of
        System V, you might need to type `sh ./configure' instead to prevent
@@ -18,9 +21,14 @@
        files that `configure' created (so you can compile the package for
        a different kind of computer), type `make distclean'.  There is
        also a `make maintainer-clean' target, but that is intended mainly
-       for the package's developers.  If you use it, you may have to get
-       all sorts of other programs in order to regenerate files that came
-       with the distribution.
+       for the package's developers.  If you use it, you will need some GNU
+       tools that usually only developers use, and which are not required to
+       build QuantLib from tarballs. These are automake, autoconf, libtool, GNU
+       m4, GNU make, and maybe others. They all come with recent GNU/Linux
+       distributions. To begin the build process after `make distclean' start
+       with `sh ./bootstrap' which will prepare the package for compilation. You
+       can then use `configure' and `make' in the usual way.</p>
+
 
     The file INSTALL.txt in the %QuantLib source distribution
     contains more detailed instructions.

@@ -2,19 +2,29 @@
 /*! \page usage Usage
     To use %QuantLib classes in your own code just add
     \code
-    #include "ql/quantlib.hpp"
+    #include <ql/quantlib.hpp>
     \endcode
     at the beginning of your source/header files.
 
-    Under the Examples folder you can find examples of QuantLib usage, including
-    makefiles for gcc, Borland Free compiler,
+    Under the Examples folder you can find examples of %QuantLib usage,
+    including makefiles for gcc, Borland Free compiler,
     and Microsoft Visual C++. For the latter projects files are also available.
 
 
     \subsection microsoftvisual Microsoft Visual C++
     A few suggestions for Visual C++ users wanting to use %QuantLib into their
     own application:
-    -# your main() must be compiled with the same options that were used in
+    -# As long as you include ql/quantlib.hpp, you won't have to explicitly link
+    your application to QuantLib.lib (or QuantLib_d.lib). This is automatically
+    done by quantlib.hpp using the pragma statement:
+    \code
+    #ifdef _DEBUG
+        #pragma comment(lib,"QuantLib_d.lib")
+    #else
+        #pragma comment(lib,"QuantLib.lib")
+    #endif
+    \endcode
+    -# Your main() must be compiled with the same options that were used in
     compiling the %QuantLib library - namely, you'll have to set the run-time
     library to "Multithreaded DLL" or "Debug Multithreaded DLL" depending on
     whether you're linking to QuantLib.lib or QuantLib_d.lib, respectively.
@@ -22,12 +32,6 @@
     category.
     You'll have to check the "Use RTTI" option under the "C++ Language"
     category, too.
-    -# as long as you include ql/quantlib.hpp, you won't have to explicitly link
-    your application to QuantLib.lib (or QuantLib_d.lib). This is automatically
-    done by quantlib.hpp using the pragma statement:
-    \code
-    #pragma comment(lib,"QuantLib.lib")
-    \endcode
 
 */
 
