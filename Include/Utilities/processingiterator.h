@@ -28,6 +28,9 @@
     $Source$
     $Name$
     $Log$
+    Revision 1.9  2001/02/20 17:08:37  nando
+    bug fix
+
     Revision 1.8  2001/02/16 15:33:03  lballabio
     Used QL_ITERATOR_TRAITS macro
 
@@ -64,10 +67,10 @@ namespace QuantLib {
         /*! This iterator advances an underlying iterator and returns the values
             obtained by applying a unary function to the values such iterator
             points to.
-            
-            This class was implemented based on Christopher Baus and Thomas 
-            Becker, <i>Custom Iterators for the STL</i>, included in the 
-            proceedings of the First Workshop on C++ Template Programming, 
+
+            This class was implemented based on Christopher Baus and Thomas
+            Becker, <i>Custom Iterators for the STL</i>, included in the
+            proceedings of the First Workshop on C++ Template Programming,
             Erfurt, Germany, 2000 (http://www.oonumerics.org/tmpw00/)
         */
         template <class Iterator, class UnaryFunction>
@@ -79,7 +82,7 @@ namespace QuantLib {
             const typename UnaryFunction::result_type&>
         {
           public:
-            /* These typedefs are needed even though inherited from QL_ITERATOR 
+            /* These typedefs are needed even though inherited from QL_ITERATOR
                (see 14.6.2.3 of the standard).  */
             typedef typename UnaryFunction::result_type value_type;
             typedef typename QL_ITERATOR_TRAITS<Iterator>::difference_type
@@ -125,7 +128,7 @@ namespace QuantLib {
           private:
             Iterator it_;
             UnaryFunction f_;
-            value_type x_;
+            mutable value_type x_;
         };
 
         //! helper function to create processing iterators
@@ -141,14 +144,12 @@ namespace QuantLib {
         template <class Iterator, class UnaryFunction>
         inline processing_iterator<Iterator,UnaryFunction>::processing_iterator(
           const Iterator& it, const UnaryFunction& f)
-        : it_(it), f_(f) {
-            x_ = f_(*it_);
-        }
+        : it_(it), f_(f) {}
 
         template <class Iterator, class UnaryFunction>
         inline processing_iterator<Iterator,UnaryFunction>&
         processing_iterator<Iterator,UnaryFunction>::operator++() {
-            x_ = f_(*(++it_));
+            ++it_;
             return *this;
         }
 
@@ -156,14 +157,14 @@ namespace QuantLib {
         inline processing_iterator<Iterator,UnaryFunction>
         processing_iterator<Iterator,UnaryFunction>::operator++(int) {
             processing_iterator<Iterator,UnaryFunction> temp = *this;
-            x_ = f_(*(++it_));
+            ++it_;
             return temp;
         }
 
         template <class Iterator, class UnaryFunction>
         inline processing_iterator<Iterator,UnaryFunction>&
         processing_iterator<Iterator,UnaryFunction>::operator--() {
-            x_ = f_(*(--it_));
+            --it_;
             return *this;
         }
 
@@ -171,7 +172,7 @@ namespace QuantLib {
         inline processing_iterator<Iterator,UnaryFunction>
         processing_iterator<Iterator,UnaryFunction>::operator--(int) {
             processing_iterator<Iterator,UnaryFunction> temp = *this;
-            x_ = f_(*(--it_));
+            --it_;
             return temp;
         }
 
@@ -179,7 +180,7 @@ namespace QuantLib {
         inline processing_iterator<Iterator,UnaryFunction>&
         processing_iterator<Iterator,UnaryFunction>::operator+=(
           processing_iterator<Iterator,UnaryFunction>::difference_type i) {
-            x_ = f_(*(it_+=i));
+            it_+=i;
             return *this;
         }
 
@@ -187,26 +188,28 @@ namespace QuantLib {
         inline processing_iterator<Iterator,UnaryFunction>&
         processing_iterator<Iterator,UnaryFunction>::operator-=(
           processing_iterator<Iterator,UnaryFunction>::difference_type i) {
-            x_ = f_(*(it_-=i));
+            it_-=i;
             return *this;
         }
 
         template <class Iterator, class UnaryFunction>
         inline processing_iterator<Iterator,UnaryFunction>::reference
         processing_iterator<Iterator,UnaryFunction>::operator*() const {
+            x_ = f_(*it_);
             return x_;
         }
 
         template <class Iterator, class UnaryFunction>
         inline processing_iterator<Iterator,UnaryFunction>::pointer
         processing_iterator<Iterator,UnaryFunction>::operator->() const {
+            x_ = f_(*it_);
             return &x_;
         }
 
         template <class Iterator, class UnaryFunction>
         inline processing_iterator<Iterator,UnaryFunction>::value_type
         processing_iterator<Iterator,UnaryFunction>::operator[](int i) const {
-            return f_(*(it_+i));
+            return *(*this+i);
         }
 
         template <class Iterator, class UnaryFunction>
