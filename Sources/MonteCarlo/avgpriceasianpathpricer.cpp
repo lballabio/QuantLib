@@ -30,6 +30,10 @@
 
 // $Source$
 // $Log$
+// Revision 1.12  2001/08/06 16:49:17  nando
+// 1) BSMFunction now is VolatilityFunction
+// 2) Introduced ExercisePayoff (to be reworked later)
+//
 // Revision 1.11  2001/08/06 15:43:34  nando
 // BSMOption now is SingleAssetOption
 // BSMEuropeanOption now is EuropeanOption
@@ -45,6 +49,11 @@
 //
 
 #include "ql/MonteCarlo/avgpriceasianpathpricer.hpp"
+#include "ql/Pricers/singleassetoption.hpp"
+
+
+
+using QuantLib::Pricers::ExercisePayoff;
 
 namespace QuantLib {
 
@@ -72,7 +81,7 @@ namespace QuantLib {
             }
             averagePrice = averagePrice/n;
 
-            return discount_*europeanPayoff(type_, averagePrice, strike_);
+            return discount_*ExercisePayoff(type_, averagePrice, strike_);
         }
 
     }

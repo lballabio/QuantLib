@@ -28,6 +28,10 @@
 */
 
 // $Log$
+// Revision 1.8  2001/08/06 16:49:17  nando
+// 1) BSMFunction now is VolatilityFunction
+// 2) Introduced ExercisePayoff (to be reworked later)
+//
 // Revision 1.7  2001/08/06 15:43:34  nando
 // BSMOption now is SingleAssetOption
 // BSMEuropeanOption now is EuropeanOption
@@ -55,6 +59,7 @@ using QuantLib::Rate;
 using QuantLib::Time;
 using QuantLib::Option;
 using QuantLib::Handle;
+using QuantLib::Pricers::ExercisePayoff;
 using QuantLib::Pricers::EuropeanOption;
 using QuantLib::Math::Statistics;
 using QuantLib::MonteCarlo::Path;
@@ -74,9 +79,6 @@ class HedgeErrorPathPricer : public PathPricer
                          Time maturity,
                          double sigma);
     double value(const Path &path) const;
-    double europeanPayoff(Option::Type type,
-                          double price,
-                          double strike) const;
   protected:
     Option::Type type_;
     Rate r_;
@@ -175,29 +177,10 @@ double HedgeErrorPathPricer::value(const Path & path) const
     stock = underlying_*QL_EXP(stockLogGrowth);
 
     /*** final Profit&Loss valuation ***/
-    double optionPayoff = europeanPayoff(type_, stock, strike_);
+    double optionPayoff = ExercisePayoff(type_, stock, strike_);
     double profitLoss = stockAmount*stock + money_account - optionPayoff;
 
     return profitLoss;
-}
-
-double HedgeErrorPathPricer::europeanPayoff(Option::Type type,
-                                            double price,
-                                            double strike) const
-{
-    double optionPrice;
-
-    switch (type) {
-      case Option::Call:
-            optionPrice = QL_MAX(price-strike,0.0);
-        break;
-      case Option::Put:
-            optionPrice = QL_MAX(strike-price,0.0);
-        break;
-      case Option::Straddle:
-            optionPrice = QL_FABS(strike-price);
-    }
-    return optionPrice;
 }
 
 class ComputeHedgingError
@@ -269,7 +252,8 @@ public:
         std::cout << "Profit&Loss StDev (Derman & Kamal's formula):\t"
                 << theoretical_error_sd << "\n";
 
-        std::cout   << ProfitLossDistribution.skewness() << "\n";
+        std::cout << "Profit&Loss skewness           (Montecarlo) :\t"
+            << ProfitLossDistribution.skewness() << "\n";
         std::cout << "Profit&Loss excess kurtosis    (Montecarlo) :\t"
              << ProfitLossDistribution.kurtosis() << "\n";
 

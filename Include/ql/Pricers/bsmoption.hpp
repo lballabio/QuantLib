@@ -31,6 +31,10 @@
 
 // $Source$
 // $Log$
+// Revision 1.17  2001/08/06 16:49:17  nando
+// 1) BSMFunction now is VolatilityFunction
+// 2) Introduced ExercisePayoff (to be reworked later)
+//
 // Revision 1.16  2001/08/06 15:43:34  nando
 // BSMOption now is SingleAssetOption
 // BSMEuropeanOption now is EuropeanOption
@@ -103,26 +107,26 @@ namespace QuantLib {
             const static double dVolMultiplier_;
             const static double dRMultiplier_;
           private:
-            class BSMFunction;
-            friend class BSMFunction;
+            class VolatilityFunction;
+            friend class VolatilityFunction;
         };
 
-        class SingleAssetOption::BSMFunction : public ObjectiveFunction {
+        class SingleAssetOption::VolatilityFunction : public ObjectiveFunction {
           public:
-            BSMFunction(const Handle<SingleAssetOption>& tempBSM, double targetPrice);
+            VolatilityFunction(const Handle<SingleAssetOption>& tempBSM, double targetPrice);
             double operator()(double x) const;
           private:
             mutable Handle<SingleAssetOption> bsm;
             double targetPrice_;
         };
 
-        inline SingleAssetOption::BSMFunction::BSMFunction(
+        inline SingleAssetOption::VolatilityFunction::VolatilityFunction(
                 const Handle<SingleAssetOption>& tempBSM, double targetPrice) {
             bsm = tempBSM;
             targetPrice_ = targetPrice;
         }
 
-        inline double SingleAssetOption::BSMFunction::operator()(double x) const {
+        inline double SingleAssetOption::VolatilityFunction::operator()(double x) const {
             bsm -> setVolatility(x);
             return (bsm -> value() - targetPrice_);
         }

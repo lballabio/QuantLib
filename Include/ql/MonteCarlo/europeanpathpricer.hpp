@@ -30,6 +30,10 @@
 
 // $Source$
 // $Log$
+// Revision 1.9  2001/08/06 16:49:17  nando
+// 1) BSMFunction now is VolatilityFunction
+// 2) Introduced ExercisePayoff (to be reworked later)
+//
 // Revision 1.8  2001/08/06 15:43:34  nando
 // BSMOption now is SingleAssetOption
 // BSMEuropeanOption now is EuropeanOption
@@ -58,17 +62,12 @@ namespace QuantLib {
     namespace MonteCarlo {
 
         //! path pricer for European options
-        /*! The public method europeanPayoff can also be used
-            in other path pricer that do similar calculations.
-        */
         class EuropeanPathPricer : public PathPricer {
           public:
             EuropeanPathPricer():PathPricer(){}
             EuropeanPathPricer(Option::Type type, double underlying,
                 double strike, double discount);
             double value(const Path &path) const;
-            double europeanPayoff(Option::Type type, double price,
-                double strike) const;
           protected:
             mutable Option::Type type_;
             mutable double underlying_, strike_, discount_;

@@ -30,6 +30,10 @@
 
 // $Source$
 // $Log$
+// Revision 1.14  2001/08/06 16:49:17  nando
+// 1) BSMFunction now is VolatilityFunction
+// 2) Introduced ExercisePayoff (to be reworked later)
+//
 // Revision 1.13  2001/08/06 15:43:34  nando
 // BSMOption now is SingleAssetOption
 // BSMEuropeanOption now is EuropeanOption
@@ -45,6 +49,12 @@
 //
 
 #include "ql/MonteCarlo/europeanpathpricer.hpp"
+#include "ql/Pricers/singleassetoption.hpp"
+
+
+
+using QuantLib::Pricers::ExercisePayoff;
+
 
 
 namespace QuantLib {
@@ -75,25 +85,8 @@ namespace QuantLib {
             for(int i = 0; i < n; i++)
                 log_price += path[i];
 
-            return europeanPayoff(type_, underlying_*QL_EXP(log_price),
+            return ExercisePayoff(type_, underlying_*QL_EXP(log_price),
                 strike_)*discount_;
-        }
-
-        double EuropeanPathPricer::europeanPayoff(Option::Type type,
-            double price, double strike) const {
-
-            double optionPrice;
-            switch (type) {
-              case Option::Call:
-                    optionPrice = QL_MAX(price-strike,0.0);
-                break;
-              case Option::Put:
-                    optionPrice = QL_MAX(strike-price,0.0);
-                break;
-              case Option::Straddle:
-                    optionPrice = QL_FABS(strike-price);
-            }
-            return optionPrice;
         }
 
     }
