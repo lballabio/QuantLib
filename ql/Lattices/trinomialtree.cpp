@@ -49,7 +49,8 @@ namespace QuantLib {
                 dx_.push_back(v*QL_SQRT(3));
 
                 std::vector<int> k(0);
-                for (int j=jMin(i); j<=jMax(i); j++) {
+                int j;
+                for (j=jMin(i); j<=jMax(i); j++) {
                     double x = x0 + j*dx(i);
                     double m = process->expectation(t(i), x, dt(i));
                     int temp = (int)std::floor((m-x0)/dx(i+1) + 0.5);
@@ -75,7 +76,7 @@ namespace QuantLib {
                 int jMin = *std::min_element(k.begin(), k.end()) - 1;
                 int jMax = *std::max_element(k.begin(), k.end()) + 1;
 
-                for (int j=jMin; j<=jMax; j++) {
+                for (j=jMin; j<=jMax; j++) {
                     nodes_.back().push_back(new TrinomialNode(j));
                 }
 

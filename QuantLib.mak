@@ -198,8 +198,6 @@ CLEAN :
 	-@erase "$(INTDIR)\piecewiseflatforward.sbr"
 	-@erase "$(INTDIR)\plainoption.obj"
 	-@erase "$(INTDIR)\plainoption.sbr"
-	-@erase "$(INTDIR)\powell.obj"
-	-@erase "$(INTDIR)\powell.sbr"
 	-@erase "$(INTDIR)\ratehelpers.obj"
 	-@erase "$(INTDIR)\ratehelpers.sbr"
 	-@erase "$(INTDIR)\ridder.obj"
@@ -216,8 +214,6 @@ CLEAN :
 	-@erase "$(INTDIR)\simpleswap.sbr"
 	-@erase "$(INTDIR)\simplex.obj"
 	-@erase "$(INTDIR)\simplex.sbr"
-	-@erase "$(INTDIR)\simulatedannealing.obj"
-	-@erase "$(INTDIR)\simulatedannealing.sbr"
 	-@erase "$(INTDIR)\singleassetoption.obj"
 	-@erase "$(INTDIR)\singleassetoption.sbr"
 	-@erase "$(INTDIR)\solver1d.obj"
@@ -374,21 +370,19 @@ BSC32_SBRS= \
 	"$(INTDIR)\onefactormodel.sbr" \
 	"$(INTDIR)\armijo.sbr" \
 	"$(INTDIR)\conjugategradient.sbr" \
-	"$(INTDIR)\powell.sbr" \
 	"$(INTDIR)\simplex.sbr" \
-	"$(INTDIR)\simulatedannealing.sbr" \
 	"$(INTDIR)\steepestdescent.sbr" \
 	"$(INTDIR)\binomialtree.sbr" \
 	"$(INTDIR)\tree.sbr" \
 	"$(INTDIR)\trinomialtree.sbr" \
 	"$(INTDIR)\daycounters.sbr" \
+	"$(INTDIR)\mathf.sbr" \
 	"$(INTDIR)\calendar.sbr" \
 	"$(INTDIR)\dataformatters.sbr" \
 	"$(INTDIR)\date.sbr" \
 	"$(INTDIR)\option.sbr" \
 	"$(INTDIR)\scheduler.sbr" \
-	"$(INTDIR)\solver1d.sbr" \
-	"$(INTDIR)\mathf.sbr"
+	"$(INTDIR)\solver1d.sbr"
 
 "$(OUTDIR)\QuantLib.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -495,21 +489,19 @@ LIB32_OBJS= \
 	"$(INTDIR)\onefactormodel.obj" \
 	"$(INTDIR)\armijo.obj" \
 	"$(INTDIR)\conjugategradient.obj" \
-	"$(INTDIR)\powell.obj" \
 	"$(INTDIR)\simplex.obj" \
-	"$(INTDIR)\simulatedannealing.obj" \
 	"$(INTDIR)\steepestdescent.obj" \
 	"$(INTDIR)\binomialtree.obj" \
 	"$(INTDIR)\tree.obj" \
 	"$(INTDIR)\trinomialtree.obj" \
 	"$(INTDIR)\daycounters.obj" \
+	"$(INTDIR)\mathf.obj" \
 	"$(INTDIR)\calendar.obj" \
 	"$(INTDIR)\dataformatters.obj" \
 	"$(INTDIR)\date.obj" \
 	"$(INTDIR)\option.obj" \
 	"$(INTDIR)\scheduler.obj" \
-	"$(INTDIR)\solver1d.obj" \
-	"$(INTDIR)\mathf.obj"
+	"$(INTDIR)\solver1d.obj"
 
 ".\lib\Win32\VisualStudio\QuantLib.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
     $(LIB32) @<<
@@ -684,8 +676,6 @@ CLEAN :
 	-@erase "$(INTDIR)\piecewiseflatforward.sbr"
 	-@erase "$(INTDIR)\plainoption.obj"
 	-@erase "$(INTDIR)\plainoption.sbr"
-	-@erase "$(INTDIR)\powell.obj"
-	-@erase "$(INTDIR)\powell.sbr"
 	-@erase "$(INTDIR)\ratehelpers.obj"
 	-@erase "$(INTDIR)\ratehelpers.sbr"
 	-@erase "$(INTDIR)\ridder.obj"
@@ -702,8 +692,6 @@ CLEAN :
 	-@erase "$(INTDIR)\simpleswap.sbr"
 	-@erase "$(INTDIR)\simplex.obj"
 	-@erase "$(INTDIR)\simplex.sbr"
-	-@erase "$(INTDIR)\simulatedannealing.obj"
-	-@erase "$(INTDIR)\simulatedannealing.sbr"
 	-@erase "$(INTDIR)\singleassetoption.obj"
 	-@erase "$(INTDIR)\singleassetoption.sbr"
 	-@erase "$(INTDIR)\solver1d.obj"
@@ -861,21 +849,19 @@ BSC32_SBRS= \
 	"$(INTDIR)\onefactormodel.sbr" \
 	"$(INTDIR)\armijo.sbr" \
 	"$(INTDIR)\conjugategradient.sbr" \
-	"$(INTDIR)\powell.sbr" \
 	"$(INTDIR)\simplex.sbr" \
-	"$(INTDIR)\simulatedannealing.sbr" \
 	"$(INTDIR)\steepestdescent.sbr" \
 	"$(INTDIR)\binomialtree.sbr" \
 	"$(INTDIR)\tree.sbr" \
 	"$(INTDIR)\trinomialtree.sbr" \
 	"$(INTDIR)\daycounters.sbr" \
+	"$(INTDIR)\mathf.sbr" \
 	"$(INTDIR)\calendar.sbr" \
 	"$(INTDIR)\dataformatters.sbr" \
 	"$(INTDIR)\date.sbr" \
 	"$(INTDIR)\option.sbr" \
 	"$(INTDIR)\scheduler.sbr" \
-	"$(INTDIR)\solver1d.sbr" \
-	"$(INTDIR)\mathf.sbr"
+	"$(INTDIR)\solver1d.sbr"
 
 "$(OUTDIR)\QuantLib.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -982,21 +968,19 @@ LIB32_OBJS= \
 	"$(INTDIR)\onefactormodel.obj" \
 	"$(INTDIR)\armijo.obj" \
 	"$(INTDIR)\conjugategradient.obj" \
-	"$(INTDIR)\powell.obj" \
 	"$(INTDIR)\simplex.obj" \
-	"$(INTDIR)\simulatedannealing.obj" \
 	"$(INTDIR)\steepestdescent.obj" \
 	"$(INTDIR)\binomialtree.obj" \
 	"$(INTDIR)\tree.obj" \
 	"$(INTDIR)\trinomialtree.obj" \
 	"$(INTDIR)\daycounters.obj" \
+	"$(INTDIR)\mathf.obj" \
 	"$(INTDIR)\calendar.obj" \
 	"$(INTDIR)\dataformatters.obj" \
 	"$(INTDIR)\date.obj" \
 	"$(INTDIR)\option.obj" \
 	"$(INTDIR)\scheduler.obj" \
-	"$(INTDIR)\solver1d.obj" \
-	"$(INTDIR)\mathf.obj"
+	"$(INTDIR)\solver1d.obj"
 
 ".\lib\Win32\VisualStudio\QuantLib_d.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
     $(LIB32) @<<
@@ -1171,8 +1155,6 @@ CLEAN :
 	-@erase "$(INTDIR)\piecewiseflatforward.sbr"
 	-@erase "$(INTDIR)\plainoption.obj"
 	-@erase "$(INTDIR)\plainoption.sbr"
-	-@erase "$(INTDIR)\powell.obj"
-	-@erase "$(INTDIR)\powell.sbr"
 	-@erase "$(INTDIR)\ratehelpers.obj"
 	-@erase "$(INTDIR)\ratehelpers.sbr"
 	-@erase "$(INTDIR)\ridder.obj"
@@ -1189,8 +1171,6 @@ CLEAN :
 	-@erase "$(INTDIR)\simpleswap.sbr"
 	-@erase "$(INTDIR)\simplex.obj"
 	-@erase "$(INTDIR)\simplex.sbr"
-	-@erase "$(INTDIR)\simulatedannealing.obj"
-	-@erase "$(INTDIR)\simulatedannealing.sbr"
 	-@erase "$(INTDIR)\singleassetoption.obj"
 	-@erase "$(INTDIR)\singleassetoption.sbr"
 	-@erase "$(INTDIR)\solver1d.obj"
@@ -1347,21 +1327,19 @@ BSC32_SBRS= \
 	"$(INTDIR)\onefactormodel.sbr" \
 	"$(INTDIR)\armijo.sbr" \
 	"$(INTDIR)\conjugategradient.sbr" \
-	"$(INTDIR)\powell.sbr" \
 	"$(INTDIR)\simplex.sbr" \
-	"$(INTDIR)\simulatedannealing.sbr" \
 	"$(INTDIR)\steepestdescent.sbr" \
 	"$(INTDIR)\binomialtree.sbr" \
 	"$(INTDIR)\tree.sbr" \
 	"$(INTDIR)\trinomialtree.sbr" \
 	"$(INTDIR)\daycounters.sbr" \
+	"$(INTDIR)\mathf.sbr" \
 	"$(INTDIR)\calendar.sbr" \
 	"$(INTDIR)\dataformatters.sbr" \
 	"$(INTDIR)\date.sbr" \
 	"$(INTDIR)\option.sbr" \
 	"$(INTDIR)\scheduler.sbr" \
-	"$(INTDIR)\solver1d.sbr" \
-	"$(INTDIR)\mathf.sbr"
+	"$(INTDIR)\solver1d.sbr"
 
 "$(OUTDIR)\QuantLib.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -1468,21 +1446,19 @@ LIB32_OBJS= \
 	"$(INTDIR)\onefactormodel.obj" \
 	"$(INTDIR)\armijo.obj" \
 	"$(INTDIR)\conjugategradient.obj" \
-	"$(INTDIR)\powell.obj" \
 	"$(INTDIR)\simplex.obj" \
-	"$(INTDIR)\simulatedannealing.obj" \
 	"$(INTDIR)\steepestdescent.obj" \
 	"$(INTDIR)\binomialtree.obj" \
 	"$(INTDIR)\tree.obj" \
 	"$(INTDIR)\trinomialtree.obj" \
 	"$(INTDIR)\daycounters.obj" \
+	"$(INTDIR)\mathf.obj" \
 	"$(INTDIR)\calendar.obj" \
 	"$(INTDIR)\dataformatters.obj" \
 	"$(INTDIR)\date.obj" \
 	"$(INTDIR)\option.obj" \
 	"$(INTDIR)\scheduler.obj" \
-	"$(INTDIR)\solver1d.obj" \
-	"$(INTDIR)\mathf.obj"
+	"$(INTDIR)\solver1d.obj"
 
 ".\lib\Win32\VisualStudio\QuantLib.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
     $(LIB32) @<<
@@ -1657,8 +1633,6 @@ CLEAN :
 	-@erase "$(INTDIR)\piecewiseflatforward.sbr"
 	-@erase "$(INTDIR)\plainoption.obj"
 	-@erase "$(INTDIR)\plainoption.sbr"
-	-@erase "$(INTDIR)\powell.obj"
-	-@erase "$(INTDIR)\powell.sbr"
 	-@erase "$(INTDIR)\ratehelpers.obj"
 	-@erase "$(INTDIR)\ratehelpers.sbr"
 	-@erase "$(INTDIR)\ridder.obj"
@@ -1675,8 +1649,6 @@ CLEAN :
 	-@erase "$(INTDIR)\simpleswap.sbr"
 	-@erase "$(INTDIR)\simplex.obj"
 	-@erase "$(INTDIR)\simplex.sbr"
-	-@erase "$(INTDIR)\simulatedannealing.obj"
-	-@erase "$(INTDIR)\simulatedannealing.sbr"
 	-@erase "$(INTDIR)\singleassetoption.obj"
 	-@erase "$(INTDIR)\singleassetoption.sbr"
 	-@erase "$(INTDIR)\solver1d.obj"
@@ -1834,21 +1806,19 @@ BSC32_SBRS= \
 	"$(INTDIR)\onefactormodel.sbr" \
 	"$(INTDIR)\armijo.sbr" \
 	"$(INTDIR)\conjugategradient.sbr" \
-	"$(INTDIR)\powell.sbr" \
 	"$(INTDIR)\simplex.sbr" \
-	"$(INTDIR)\simulatedannealing.sbr" \
 	"$(INTDIR)\steepestdescent.sbr" \
 	"$(INTDIR)\binomialtree.sbr" \
 	"$(INTDIR)\tree.sbr" \
 	"$(INTDIR)\trinomialtree.sbr" \
 	"$(INTDIR)\daycounters.sbr" \
+	"$(INTDIR)\mathf.sbr" \
 	"$(INTDIR)\calendar.sbr" \
 	"$(INTDIR)\dataformatters.sbr" \
 	"$(INTDIR)\date.sbr" \
 	"$(INTDIR)\option.sbr" \
 	"$(INTDIR)\scheduler.sbr" \
-	"$(INTDIR)\solver1d.sbr" \
-	"$(INTDIR)\mathf.sbr"
+	"$(INTDIR)\solver1d.sbr"
 
 "$(OUTDIR)\QuantLib.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -1955,21 +1925,19 @@ LIB32_OBJS= \
 	"$(INTDIR)\onefactormodel.obj" \
 	"$(INTDIR)\armijo.obj" \
 	"$(INTDIR)\conjugategradient.obj" \
-	"$(INTDIR)\powell.obj" \
 	"$(INTDIR)\simplex.obj" \
-	"$(INTDIR)\simulatedannealing.obj" \
 	"$(INTDIR)\steepestdescent.obj" \
 	"$(INTDIR)\binomialtree.obj" \
 	"$(INTDIR)\tree.obj" \
 	"$(INTDIR)\trinomialtree.obj" \
 	"$(INTDIR)\daycounters.obj" \
+	"$(INTDIR)\mathf.obj" \
 	"$(INTDIR)\calendar.obj" \
 	"$(INTDIR)\dataformatters.obj" \
 	"$(INTDIR)\date.obj" \
 	"$(INTDIR)\option.obj" \
 	"$(INTDIR)\scheduler.obj" \
-	"$(INTDIR)\solver1d.obj" \
-	"$(INTDIR)\mathf.obj"
+	"$(INTDIR)\solver1d.obj"
 
 ".\lib\Win32\VisualStudio\QuantLib_d.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
     $(LIB32) @<<
@@ -2601,21 +2569,9 @@ SOURCE=.\ql\Optimization\conjugategradient.cpp
 	$(CPP) $(CPP_PROJ) $(SOURCE)
 
 
-SOURCE=.\ql\Optimization\powell.cpp
-
-"$(INTDIR)\powell.obj"	"$(INTDIR)\powell.sbr" : $(SOURCE) "$(INTDIR)"
-	$(CPP) $(CPP_PROJ) $(SOURCE)
-
-
 SOURCE=.\ql\Optimization\simplex.cpp
 
 "$(INTDIR)\simplex.obj"	"$(INTDIR)\simplex.sbr" : $(SOURCE) "$(INTDIR)"
-	$(CPP) $(CPP_PROJ) $(SOURCE)
-
-
-SOURCE=.\ql\Optimization\simulatedannealing.cpp
-
-"$(INTDIR)\simulatedannealing.obj"	"$(INTDIR)\simulatedannealing.sbr" : $(SOURCE) "$(INTDIR)"
 	$(CPP) $(CPP_PROJ) $(SOURCE)
 
 

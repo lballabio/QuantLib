@@ -18,9 +18,7 @@ BCC_LIBS       = $(MAKEDIR)\..\lib
 OBJS = \
        armijo.obj$(_D) \
        conjugategradient.obj$(_D) \
-       powell.obj$(_D) \
        simplex.obj$(_D) \
-       simulatedannealing.obj$(_D) \
        steepestdescent.obj$(_D)
 
 # Tools to be used

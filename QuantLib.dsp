@@ -1255,27 +1255,11 @@ SOURCE=.\ql\Optimization\optimizer.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\ql\Optimization\powell.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\ql\Optimization\powell.hpp
-# End Source File
-# Begin Source File
-
 SOURCE=.\ql\Optimization\simplex.cpp
 # End Source File
 # Begin Source File
 
 SOURCE=.\ql\Optimization\simplex.hpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\ql\Optimization\simulatedannealing.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\ql\Optimization\simulatedannealing.hpp
 # End Source File
 # Begin Source File
 
@@ -1345,10 +1329,6 @@ SOURCE=.\ql\argsandresults.hpp
 # Begin Source File
 
 SOURCE=.\ql\array.hpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\ql\asset.hpp
 # End Source File
 # Begin Source File
 
@@ -1428,6 +1408,10 @@ SOURCE=.\ql\forwardvolsurface.hpp
 # End Source File
 # Begin Source File
 
+SOURCE=.\ql\grid.hpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\ql\handle.hpp
 # End Source File
 # Begin Source File
@@ -1449,6 +1433,10 @@ SOURCE=.\ql\marketelement.hpp
 # Begin Source File
 
 SOURCE=.\ql\null.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\numericalmethod.hpp
 # End Source File
 # Begin Source File
 
@@ -1497,10 +1485,6 @@ SOURCE=.\ql\swaptionvolsurface.hpp
 # Begin Source File
 
 SOURCE=.\ql\termstructure.hpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\ql\timegrid.hpp
 # End Source File
 # Begin Source File
 
