@@ -2,6 +2,9 @@
 # $Id$
 # $Source$
 # $Log$
+# Revision 1.13  2001/08/23 14:58:53  lballabio
+# Doc fixes
+#
 # Revision 1.12  2001/08/22 17:54:35  lballabio
 # Documentation revamped
 #
@@ -33,33 +36,13 @@ MAKEINDEX = makeindex
 DVIPS     = dvips
 
 # Options
-SED_CMDS = -e "/Page Index/d" \
-           -e "/input{pages}/d" \
-           -e "/Page Documentation/d" \
-           -e "/input{index}/d" \
-           -e "/include{install}/d" \
-           -e "/include{license}/d" \
-           -e "/include{platforms}/d" \
-           -e "/include{usage}/d" \
-           -e "/include{where}/d" \
-           -e "/include{todo}/d" \
-           -e "s/i_ndex/index/" \
-           -e "s/w_here/where/" \
-           -e "s/i_nstall/install/" \
-           -e "s/u_sage/usage/" \
-           -e "s/p_latforms/platforms/" \
-           -e "s/t_odo/todo/" \
-           -e "s/l_icense/license/"
 TEX_OPTS = --quiet --pool-size=1000000
 
 
 # Primary target:
 # all docs
-all:: html
+all:: tex-files
     cd latex
-    ren refman.tex oldrefman.tex
-    $(SED) $(SED_CMDS) oldrefman.tex > refman.tex
-    del oldrefman.tex
     $(PDFLATEX) $(TEX_OPTS) refman
     $(MAKEINDEX) refman.idx
     $(PDFLATEX) $(TEX_OPTS) refman
@@ -75,26 +58,45 @@ html::
     copy images\*.eps latex
 
 # PDF documentation
-pdf:: html
+pdf:: tex-files
     cd latex
-    ren refman.tex oldrefman.tex
-    $(SED) $(SED_CMDS) oldrefman.tex > refman.tex
-    del oldrefman.tex
     $(PDFLATEX) $(TEX_OPTS) refman
     $(MAKEINDEX) refman.idx
     $(PDFLATEX) $(TEX_OPTS) refman
     cd ..
 
 # PostScript documentation
-ps:: html
+ps:: tex-files
     cd latex
-    ren refman.tex oldrefman.tex
-    $(SED) $(SED_CMDS) oldrefman.tex > refman.tex
-    del oldrefman.tex
     $(LATEX) $(TEX_OPTS) refman
     $(MAKEINDEX) refman.idx
     $(LATEX) $(TEX_OPTS) refman
     $(DVIPS) refman
+    cd ..
+
+# Correct LaTeX files to get the right layout
+tex-files:: html
+    cd latex
+    ren refman.tex oldrefman.tex
+    $(SED) -e "/Page Index/d" \
+           -e "/input{pages}/d" \
+           -e "/Page Documentation/d" \
+           -e "/input{index}/d" \
+           -e "/include{install}/d" \
+           -e "/include{license}/d" \
+           -e "/include{platforms}/d" \
+           -e "/include{usage}/d" \
+           -e "/include{where}/d" \
+           -e "/include{todo}/d" \
+           -e "s/i_ndex/index/" \
+           -e "s/w_here/where/" \
+           -e "s/i_nstall/install/" \
+           -e "s/u_sage/usage/" \
+           -e "s/p_latforms/platforms/" \
+           -e "s/t_odo/todo/" \
+           -e "s/l_icense/license/" \
+           oldrefman.tex > refman.tex
+    del oldrefman.tex
     cd ..
 
 # Clean up
