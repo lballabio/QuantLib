@@ -22,7 +22,7 @@
 */
 
 /*! \file chf.h
-	\brief Swiss franc
+	\brief Swiss Franc
 */
 
 #ifndef quantlib_CHF_h
@@ -36,7 +36,7 @@ namespace QuantLib {
 
 	namespace Currencies {
 	
-		//! Swiss franc
+		//! Swiss Franc
 		class CHF : public Currency {
 		  public:
 			CHF() {}
