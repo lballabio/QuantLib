@@ -23,22 +23,72 @@
 #define quantlib_functions_math_h
 
 #include <ql/Math/matrix.hpp>
+#include <ql/Math/loglinearinterpolation.hpp>
 #include <ql/Math/cubicspline.hpp>
 #include <vector>
 
 namespace QuantLib {
 
-    double interpolate(const std::vector<double>& x_values,
-                       const std::vector<double>& y_values,
-                       double x,
-                       int interpolationType,
-                       bool allowExtrapolation,
-                       CubicSpline::BoundaryCondition leftCondition,
-                       double leftConditionValue,
-                       CubicSpline::BoundaryCondition rightCondition,
-                       double rightConditionValue,
-                       bool monotonicityConstraint,
-                       int derivativeOrder);
+    template<class I1, class I2, class I3>
+    std::vector<double> interpolate(const I1& xx_begin,
+                                    const I1& xx_end,
+                                    const I2& yy_begin,
+                                    const I3& x_begin,
+                                    const I3& x_end,
+                                    int interpolationType,
+                                    bool allowExtrapolation,
+                                    CubicSpline::BoundaryCondition leftCondition,
+                                    double leftConditionValue,
+                                    CubicSpline::BoundaryCondition rightCondition,
+                                    double rightConditionValue,
+                                    bool monotonicityConstraint,
+                                    int derivativeOrder) {
+
+        std::vector<double> result(x_end-x_begin);
+        Interpolation f;
+
+        switch (interpolationType) {
+          case 1:
+            f = LinearInterpolation(xx_begin, xx_end, yy_begin);
+            break;
+          case 2:
+            f = CubicSpline(xx_begin, xx_end, yy_begin,
+                leftCondition, leftConditionValue,
+                rightCondition, rightConditionValue,
+                monotonicityConstraint);
+            break;
+          case 3:
+            f = LogLinearInterpolation(xx_begin, xx_end, yy_begin);
+            break;
+          default:
+            QL_FAIL("interpolate: invalid interpolation type");
+        }
+
+        switch (derivativeOrder) {
+          case -1:
+              // should be f.primitive(.., allowExtrapolation)
+              std::transform(x_begin, x_end, result.begin(), f);
+            break;
+          case 0:
+              // should be f(.., allowExtrapolation)
+              std::transform(x_begin, x_end, result.begin(), f);
+            break;
+          case 1:
+              // should be f.derivative(.., allowExtrapolation)
+              std::transform(x_begin, x_end, result.begin(), f);
+            break;
+          case 2:
+              // should be f.secondDerivative(.., allowExtrapolation)
+              std::transform(x_begin, x_end, result.begin(), f);
+            break;
+          default:
+              QL_FAIL(IntegerFormatter::toString(derivativeOrder)
+                  + " is an invalid derivative order");
+        }
+
+        return result;
+    }
+
 
     double interpolate2D(const std::vector<double>& x_values,
                          const std::vector<double>& y_values,
