@@ -22,7 +22,7 @@
 #define QL_TOLOWER  tolower
 #define QL_TOUPPER  toupper
 
-#define HAVE_STD_ITERATOR
+#define QL_ITERATOR std::iterator
 
 
 #endif
