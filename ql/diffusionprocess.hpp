@@ -30,7 +30,7 @@
 namespace QuantLib {
 
     //! Diffusion process class
-    /*! This class describes a stochastic process goverved by 
+    /*! This class describes a stochastic process governed by 
         \f[
             dx_t = \mu(t, x_t)dt + \sigma(t, x_t)dW_t.
         \f]
@@ -78,17 +78,20 @@ namespace QuantLib {
     */
     class BlackScholesProcess : public DiffusionProcess {
       public:
-        BlackScholesProcess(Rate rate, double volatility, double s0 = 0.0)
-        : DiffusionProcess(s0), r_(rate), sigma_(volatility)  {}
+        BlackScholesProcess(Rate rate,
+                            Rate q,
+                            double volatility,
+                            double s0 = 0.0)
+        : DiffusionProcess(s0), r_(rate), q_(q), sigma_(volatility)  {}
 
         double drift(Time t, double x) const {
-            return r_ - 0.5*sigma_*sigma_;
+            return r_ - q_ -0.5*sigma_*sigma_;
         }
         double diffusion(Time t, double x) const {
             return sigma_;
         }
       private:
-        double r_, sigma_;
+        double r_, q_, sigma_;
     };
 
     //! Ornstein-Uhlenbeck process class
