@@ -11,9 +11,8 @@ void HelloWorld() {
 
     std::cout << "Hello, world" << std::endl;
 
-
-    std::cout << ("Hello, world," + QuantLib::DoubleFormatter::toString(dummy) + " is a number")
-        << std::endl;
+// uncomment the following line to corrupt the SWIG Python extension
+//    std::cout << ("Hello, world," + QuantLib::DoubleFormatter::toString(dummy) + " is a number") << std::endl;
 
 }
 
