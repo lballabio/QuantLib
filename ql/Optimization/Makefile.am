@@ -10,6 +10,7 @@ include_HEADERS = \
     criteria.hpp \
     leastsquare.hpp \
     linesearch.hpp \
+    optimizer.hpp \
     steepestdescent.hpp
 
 EXTRA_DIST=makefile.mak
