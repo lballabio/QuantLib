@@ -137,6 +137,8 @@ namespace QuantLib {
                                 const DayCounter& resultDayCounter,
                                 Compounding comp,
                                 Frequency freq = Annual) {
+            QL_REQUIRE(d2>d1, "no implied rate when d2==d1 ("
+                + DateFormatter::toString(d1) + ")");
             Time t = resultDayCounter.yearFraction(d1, d2);
             return impliedRate(compound, t, comp, freq);
         }
@@ -194,6 +196,8 @@ namespace QuantLib {
                             const DayCounter& resultDayCounter,
                             Compounding comp,
                             Frequency freq = Annual) const {
+            QL_REQUIRE(d2>d1, "no equivalent rate when d2==d1 ("
+                + DateFormatter::toString(d1) + ")");
             Time t1 = dc_.yearFraction(d1, d2);
             Time t2 = resultDayCounter.yearFraction(d1, d2);
             return impliedRate(compoundFactor(t1), t2, comp, freq);
