@@ -28,6 +28,9 @@
     $Source$
     $Name$
     $Log$
+    Revision 1.7  2001/02/14 10:38:28  lballabio
+    Found out what 14.6.2.3 of the standard means
+
     Revision 1.6  2001/02/13 09:58:23  lballabio
     Some more work on iterators
 
@@ -42,9 +45,6 @@
 
     Revision 1.2  2001/01/25 15:11:55  lballabio
     Added helper functions to make iterators
-
-    Revision 1.1  2001/01/23 11:08:51  lballabio
-    Renamed iterators in Include\Utilities and related files
 
 */
 
@@ -76,13 +76,9 @@ namespace QuantLib {
             const typename UnaryFunction::result_type&>
         {
           public:
-            /* it is not really clear (and 14.6.2.3 of the standard doesn't 
-               help) whether these typedefs are needed or should be inherited 
-               from QL_ITERATOR. Let's play it safe.                       */
-            typedef typename std::iterator_traits<Iterator>::iterator_category
-                iterator_category;
-            typedef typename UnaryFunction::result_type
-                value_type;
+            /* These typedefs are needed even though inherited from QL_ITERATOR 
+               (see 14.6.2.3 of the standard).  */
+            typedef typename UnaryFunction::result_type value_type;
             typedef typename std::iterator_traits<Iterator>::difference_type
                 difference_type;
             typedef const value_type* pointer;

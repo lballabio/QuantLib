@@ -28,6 +28,9 @@
     $Source$
     $Name$
     $Log$
+    Revision 1.9  2001/02/14 10:38:28  lballabio
+    Found out what 14.6.2.3 of the standard means
+
     Revision 1.8  2001/02/13 09:58:23  lballabio
     Some more work on iterators
 
@@ -39,21 +42,6 @@
 
     Revision 1.5  2001/01/25 15:11:55  lballabio
     Added helper functions to make iterators
-
-    Revision 1.4  2001/01/23 11:08:51  lballabio
-    Renamed iterators in Include\Utilities and related files
-
-    Revision 1.3  2001/01/17 14:37:56  nando
-    tabs removed
-
-    Revision 1.2  2001/01/11 12:20:26  lballabio
-    Fixed constructor calls with wrong arguments
-
-    Revision 1.1  2001/01/11 11:43:52  lballabio
-    Renamed StepIterator to stepping_iterator
-
-    Revision 1.1  2001/01/09 11:51:10  lballabio
-    Added a couple of smart iterators
 
 */
 
@@ -81,15 +69,14 @@ namespace QuantLib {
             typename std::iterator_traits<RandomAccessIterator>::reference>
         {
           public:
-            /* it is not really clear (and 14.6.2.3 of the standard doesn't 
-               help) whether these typedefs are needed or should be inherited 
-               from QL_ITERATOR. Let's play it safe.                       */
-            typedef std::iterator_traits<RandomAccessIterator> traits;
-            typedef std::random_access_iterator_tag   iterator_category;
-            typedef typename traits::value_type       value_type;
-            typedef typename traits::difference_type  difference_type;
-            typedef typename traits::pointer          pointer;
-            typedef typename traits::reference        reference;
+            /* These typedefs are needed even though inherited from QL_ITERATOR 
+               (see 14.6.2.3 of the standard).  */
+            typedef typename std::iterator_traits<
+                RandomAccessIterator>::difference_type difference_type;
+            typedef typename std::iterator_traits<
+                RandomAccessIterator>::pointer pointer;
+            typedef typename std::iterator_traits<
+                RandomAccessIterator>::reference reference;
 
             stepping_iterator(const RandomAccessIterator&, 
                 difference_type step);

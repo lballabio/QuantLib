@@ -28,6 +28,9 @@
     $Source$
     $Name$
     $Log$
+    Revision 1.14  2001/02/14 10:38:28  lballabio
+    Found out what 14.6.2.3 of the standard means
+
     Revision 1.13  2001/02/13 09:58:23  lballabio
     Some more work on iterators
 
@@ -39,33 +42,6 @@
 
     Revision 1.10  2001/02/09 19:16:21  lballabio
     removed QL_PTR_CONST macro
-
-    Revision 1.9  2001/01/23 11:08:51  lballabio
-    Renamed iterators in Include\Utilities and related files
-
-    Revision 1.8  2001/01/17 14:37:54  nando
-    tabs removed
-
-    Revision 1.7  2001/01/10 11:21:00  lballabio
-    Added Examples folder
-
-    Revision 1.6  2001/01/09 17:58:38  enri
-    added explicit typedefs to const_iterator
-
-    Revision 1.5  2001/01/09 11:51:51  lballabio
-    Using FilteringIterator for valid iterators
-
-    Revision 1.4  2000/12/27 14:18:04  lballabio
-    added missing semicolons
-
-    Revision 1.3  2000/12/27 14:05:56  lballabio
-    Turned Require and Ensure functions into QL_REQUIRE and QL_ENSURE macros
-
-    Revision 1.2  2000/12/20 15:19:56  lballabio
-    Removed History:: scopes not digestible by VC++
-
-    Revision 1.1  2000/12/18 18:37:34  lballabio
-    Added to CVS
 
 */
 
@@ -178,10 +154,8 @@ namespace QuantLib {
         {
             friend class History;
           public:
-            /* it is not really clear (and 14.6.2.3 of the standard doesn't 
-               help) whether these typedefs are needed or should be inherited 
-               from QL_ITERATOR. Let's play it safe.                       */
-            typedef std::random_access_iterator_tag iterator_category;
+            /* These typedefs are needed even though inherited from QL_ITERATOR 
+               (see 14.6.2.3 of the standard).  */
             typedef Entry                           value_type;
             typedef int                             difference_type;
             typedef const Entry*                    pointer;
