@@ -76,7 +76,7 @@
 using namespace boost::unit_test_framework;
 
 
-test_suite* init_unit_test_suite(int argc, char* argv[]) {
+test_suite* init_unit_test_suite(int, char* []) {
 
     std::string header = "Testing QuantLib " QL_VERSION;
     std::string rule = std::string(header.length(),'=');
