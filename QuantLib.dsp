@@ -235,22 +235,6 @@ SOURCE=.\ql\DayCounters\actualactual.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\ql\DayCounters\actualactualeuro.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\ql\DayCounters\actualactualeuro.hpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\ql\DayCounters\actualactualhistorical.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\ql\DayCounters\actualactualhistorical.hpp
-# End Source File
-# Begin Source File
-
 SOURCE=.\ql\DayCounters\Makefile.am
 # End Source File
 # Begin Source File
@@ -268,14 +252,6 @@ SOURCE=.\ql\DayCounters\thirty360.hpp
 # Begin Source File
 
 SOURCE=.\ql\DayCounters\thirty360european.hpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\ql\DayCounters\thirty360italian.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\ql\DayCounters\thirty360italian.hpp
 # End Source File
 # End Group
 # Begin Group "Finite Differences"
@@ -960,14 +936,6 @@ SOURCE=.\ql\TermStructures\Makefile.am
 # Begin Source File
 
 SOURCE=.\ql\TermStructures\makefile.mak
-# End Source File
-# Begin Source File
-
-SOURCE=.\ql\TermStructures\piecewiseconstantforwards.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\ql\TermStructures\piecewiseconstantforwards.hpp
 # End Source File
 # Begin Source File
 

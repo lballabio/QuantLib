@@ -27,6 +27,9 @@ NULL=
 NULL=nul
 !ENDIF 
 
+CPP=cl.exe
+RSC=rc.exe
+
 !IF  "$(CFG)" == "QuantLib - Win32 Release"
 
 OUTDIR=.\build\Release
@@ -41,10 +44,6 @@ ALL : ".\lib\Win32\VisualStudio\QuantLib.lib" "$(OUTDIR)\QuantLib.bsc"
 CLEAN :
 	-@erase "$(INTDIR)\actualactual.obj"
 	-@erase "$(INTDIR)\actualactual.sbr"
-	-@erase "$(INTDIR)\actualactualeuro.obj"
-	-@erase "$(INTDIR)\actualactualeuro.sbr"
-	-@erase "$(INTDIR)\actualactualhistorical.obj"
-	-@erase "$(INTDIR)\actualactualhistorical.sbr"
 	-@erase "$(INTDIR)\averagepriceasian.obj"
 	-@erase "$(INTDIR)\averagepriceasian.sbr"
 	-@erase "$(INTDIR)\averagestrikeasian.obj"
@@ -143,8 +142,6 @@ CLEAN :
 	-@erase "$(INTDIR)\pagodaoption.sbr"
 	-@erase "$(INTDIR)\pagodapathpricer.obj"
 	-@erase "$(INTDIR)\pagodapathpricer.sbr"
-	-@erase "$(INTDIR)\piecewiseconstantforwards.obj"
-	-@erase "$(INTDIR)\piecewiseconstantforwards.sbr"
 	-@erase "$(INTDIR)\piecewiseflatforward.obj"
 	-@erase "$(INTDIR)\piecewiseflatforward.sbr"
 	-@erase "$(INTDIR)\plainbasketoption.obj"
@@ -179,8 +176,6 @@ CLEAN :
 	-@erase "$(INTDIR)\target.sbr"
 	-@erase "$(INTDIR)\thirty360.obj"
 	-@erase "$(INTDIR)\thirty360.sbr"
-	-@erase "$(INTDIR)\thirty360italian.obj"
-	-@erase "$(INTDIR)\thirty360italian.sbr"
 	-@erase "$(INTDIR)\tridiagonaloperator.obj"
 	-@erase "$(INTDIR)\tridiagonaloperator.sbr"
 	-@erase "$(INTDIR)\valueatcenter.obj"
@@ -202,40 +197,7 @@ CLEAN :
 "$(OUTDIR)" :
     if not exist "$(OUTDIR)/$(NULL)" mkdir "$(OUTDIR)"
 
-CPP=cl.exe
 CPP_PROJ=/nologo /MD /W3 /Gi /GR /GX /Od /Ob2 /I ".\\" /D "WIN32" /D "NDEBUG" /D "_MBCS" /D "_LIB" /FR"$(INTDIR)\\" /Fp"$(INTDIR)\QuantLib.pch" /YX /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\\" /FD /c 
-
-.c{$(INTDIR)}.obj::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-.cpp{$(INTDIR)}.obj::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-.cxx{$(INTDIR)}.obj::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-.c{$(INTDIR)}.sbr::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-.cpp{$(INTDIR)}.sbr::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-.cxx{$(INTDIR)}.sbr::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-RSC=rc.exe
 BSC32=bscmake.exe
 BSC32_FLAGS=/nologo /o"$(OUTDIR)\QuantLib.bsc" 
 BSC32_SBRS= \
@@ -249,10 +211,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\westerncalendar.sbr" \
 	"$(INTDIR)\zurich.sbr" \
 	"$(INTDIR)\actualactual.sbr" \
-	"$(INTDIR)\actualactualeuro.sbr" \
-	"$(INTDIR)\actualactualhistorical.sbr" \
 	"$(INTDIR)\thirty360.sbr" \
-	"$(INTDIR)\thirty360italian.sbr" \
 	"$(INTDIR)\bsmoperator.sbr" \
 	"$(INTDIR)\tridiagonaloperator.sbr" \
 	"$(INTDIR)\valueatcenter.sbr" \
@@ -305,7 +264,6 @@ BSC32_SBRS= \
 	"$(INTDIR)\newtonsafe.sbr" \
 	"$(INTDIR)\ridder.sbr" \
 	"$(INTDIR)\secant.sbr" \
-	"$(INTDIR)\piecewiseconstantforwards.sbr" \
 	"$(INTDIR)\piecewiseflatforward.sbr" \
 	"$(INTDIR)\ratehelpers.sbr" \
 	"$(INTDIR)\xibor.sbr" \
@@ -336,10 +294,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\westerncalendar.obj" \
 	"$(INTDIR)\zurich.obj" \
 	"$(INTDIR)\actualactual.obj" \
-	"$(INTDIR)\actualactualeuro.obj" \
-	"$(INTDIR)\actualactualhistorical.obj" \
 	"$(INTDIR)\thirty360.obj" \
-	"$(INTDIR)\thirty360italian.obj" \
 	"$(INTDIR)\bsmoperator.obj" \
 	"$(INTDIR)\tridiagonaloperator.obj" \
 	"$(INTDIR)\valueatcenter.obj" \
@@ -392,7 +347,6 @@ LIB32_OBJS= \
 	"$(INTDIR)\newtonsafe.obj" \
 	"$(INTDIR)\ridder.obj" \
 	"$(INTDIR)\secant.obj" \
-	"$(INTDIR)\piecewiseconstantforwards.obj" \
 	"$(INTDIR)\piecewiseflatforward.obj" \
 	"$(INTDIR)\ratehelpers.obj" \
 	"$(INTDIR)\xibor.obj" \
@@ -424,10 +378,6 @@ ALL : ".\lib\Win32\VisualStudio\QuantLib_d.lib" "$(OUTDIR)\QuantLib.bsc"
 CLEAN :
 	-@erase "$(INTDIR)\actualactual.obj"
 	-@erase "$(INTDIR)\actualactual.sbr"
-	-@erase "$(INTDIR)\actualactualeuro.obj"
-	-@erase "$(INTDIR)\actualactualeuro.sbr"
-	-@erase "$(INTDIR)\actualactualhistorical.obj"
-	-@erase "$(INTDIR)\actualactualhistorical.sbr"
 	-@erase "$(INTDIR)\averagepriceasian.obj"
 	-@erase "$(INTDIR)\averagepriceasian.sbr"
 	-@erase "$(INTDIR)\averagestrikeasian.obj"
@@ -526,8 +476,6 @@ CLEAN :
 	-@erase "$(INTDIR)\pagodaoption.sbr"
 	-@erase "$(INTDIR)\pagodapathpricer.obj"
 	-@erase "$(INTDIR)\pagodapathpricer.sbr"
-	-@erase "$(INTDIR)\piecewiseconstantforwards.obj"
-	-@erase "$(INTDIR)\piecewiseconstantforwards.sbr"
 	-@erase "$(INTDIR)\piecewiseflatforward.obj"
 	-@erase "$(INTDIR)\piecewiseflatforward.sbr"
 	-@erase "$(INTDIR)\plainbasketoption.obj"
@@ -562,8 +510,6 @@ CLEAN :
 	-@erase "$(INTDIR)\target.sbr"
 	-@erase "$(INTDIR)\thirty360.obj"
 	-@erase "$(INTDIR)\thirty360.sbr"
-	-@erase "$(INTDIR)\thirty360italian.obj"
-	-@erase "$(INTDIR)\thirty360italian.sbr"
 	-@erase "$(INTDIR)\tridiagonaloperator.obj"
 	-@erase "$(INTDIR)\tridiagonaloperator.sbr"
 	-@erase "$(INTDIR)\valueatcenter.obj"
@@ -586,40 +532,7 @@ CLEAN :
 "$(OUTDIR)" :
     if not exist "$(OUTDIR)/$(NULL)" mkdir "$(OUTDIR)"
 
-CPP=cl.exe
 CPP_PROJ=/nologo /MDd /W3 /Gi /GR /GX /ZI /Od /I ".\\" /D "WIN32" /D "_DEBUG" /D "_MBCS" /D "_LIB" /D "QL_DEBUG" /FR"$(INTDIR)\\" /Fp"$(INTDIR)\QuantLib.pch" /YX /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\\" /FD /GZ /c 
-
-.c{$(INTDIR)}.obj::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-.cpp{$(INTDIR)}.obj::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-.cxx{$(INTDIR)}.obj::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-.c{$(INTDIR)}.sbr::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-.cpp{$(INTDIR)}.sbr::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-.cxx{$(INTDIR)}.sbr::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-RSC=rc.exe
 BSC32=bscmake.exe
 BSC32_FLAGS=/nologo /o"$(OUTDIR)\QuantLib.bsc" 
 BSC32_SBRS= \
@@ -633,10 +546,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\westerncalendar.sbr" \
 	"$(INTDIR)\zurich.sbr" \
 	"$(INTDIR)\actualactual.sbr" \
-	"$(INTDIR)\actualactualeuro.sbr" \
-	"$(INTDIR)\actualactualhistorical.sbr" \
 	"$(INTDIR)\thirty360.sbr" \
-	"$(INTDIR)\thirty360italian.sbr" \
 	"$(INTDIR)\bsmoperator.sbr" \
 	"$(INTDIR)\tridiagonaloperator.sbr" \
 	"$(INTDIR)\valueatcenter.sbr" \
@@ -689,7 +599,6 @@ BSC32_SBRS= \
 	"$(INTDIR)\newtonsafe.sbr" \
 	"$(INTDIR)\ridder.sbr" \
 	"$(INTDIR)\secant.sbr" \
-	"$(INTDIR)\piecewiseconstantforwards.sbr" \
 	"$(INTDIR)\piecewiseflatforward.sbr" \
 	"$(INTDIR)\ratehelpers.sbr" \
 	"$(INTDIR)\xibor.sbr" \
@@ -720,10 +629,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\westerncalendar.obj" \
 	"$(INTDIR)\zurich.obj" \
 	"$(INTDIR)\actualactual.obj" \
-	"$(INTDIR)\actualactualeuro.obj" \
-	"$(INTDIR)\actualactualhistorical.obj" \
 	"$(INTDIR)\thirty360.obj" \
-	"$(INTDIR)\thirty360italian.obj" \
 	"$(INTDIR)\bsmoperator.obj" \
 	"$(INTDIR)\tridiagonaloperator.obj" \
 	"$(INTDIR)\valueatcenter.obj" \
@@ -776,7 +682,6 @@ LIB32_OBJS= \
 	"$(INTDIR)\newtonsafe.obj" \
 	"$(INTDIR)\ridder.obj" \
 	"$(INTDIR)\secant.obj" \
-	"$(INTDIR)\piecewiseconstantforwards.obj" \
 	"$(INTDIR)\piecewiseflatforward.obj" \
 	"$(INTDIR)\ratehelpers.obj" \
 	"$(INTDIR)\xibor.obj" \
@@ -808,10 +713,6 @@ ALL : ".\lib\Win32\VisualStudio\QuantLib.lib" "$(OUTDIR)\QuantLib.bsc"
 CLEAN :
 	-@erase "$(INTDIR)\actualactual.obj"
 	-@erase "$(INTDIR)\actualactual.sbr"
-	-@erase "$(INTDIR)\actualactualeuro.obj"
-	-@erase "$(INTDIR)\actualactualeuro.sbr"
-	-@erase "$(INTDIR)\actualactualhistorical.obj"
-	-@erase "$(INTDIR)\actualactualhistorical.sbr"
 	-@erase "$(INTDIR)\averagepriceasian.obj"
 	-@erase "$(INTDIR)\averagepriceasian.sbr"
 	-@erase "$(INTDIR)\averagestrikeasian.obj"
@@ -910,8 +811,6 @@ CLEAN :
 	-@erase "$(INTDIR)\pagodaoption.sbr"
 	-@erase "$(INTDIR)\pagodapathpricer.obj"
 	-@erase "$(INTDIR)\pagodapathpricer.sbr"
-	-@erase "$(INTDIR)\piecewiseconstantforwards.obj"
-	-@erase "$(INTDIR)\piecewiseconstantforwards.sbr"
 	-@erase "$(INTDIR)\piecewiseflatforward.obj"
 	-@erase "$(INTDIR)\piecewiseflatforward.sbr"
 	-@erase "$(INTDIR)\plainbasketoption.obj"
@@ -946,8 +845,6 @@ CLEAN :
 	-@erase "$(INTDIR)\target.sbr"
 	-@erase "$(INTDIR)\thirty360.obj"
 	-@erase "$(INTDIR)\thirty360.sbr"
-	-@erase "$(INTDIR)\thirty360italian.obj"
-	-@erase "$(INTDIR)\thirty360italian.sbr"
 	-@erase "$(INTDIR)\tridiagonaloperator.obj"
 	-@erase "$(INTDIR)\tridiagonaloperator.sbr"
 	-@erase "$(INTDIR)\valueatcenter.obj"
@@ -969,40 +866,7 @@ CLEAN :
 "$(OUTDIR)" :
     if not exist "$(OUTDIR)/$(NULL)" mkdir "$(OUTDIR)"
 
-CPP=cl.exe
 CPP_PROJ=/nologo /MD /W3 /Gi /GR /GX /Od /Ob2 /I ".\\" /D "WIN32" /D "NDEBUG" /D "_MBCS" /D "_LIB" /FR"$(INTDIR)\\" /Fp"$(INTDIR)\QuantLib.pch" /YX /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\\" /FD /c 
-
-.c{$(INTDIR)}.obj::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-.cpp{$(INTDIR)}.obj::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-.cxx{$(INTDIR)}.obj::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-.c{$(INTDIR)}.sbr::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-.cpp{$(INTDIR)}.sbr::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-.cxx{$(INTDIR)}.sbr::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-RSC=rc.exe
 BSC32=bscmake.exe
 BSC32_FLAGS=/nologo /o"$(OUTDIR)\QuantLib.bsc" 
 BSC32_SBRS= \
@@ -1016,10 +880,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\westerncalendar.sbr" \
 	"$(INTDIR)\zurich.sbr" \
 	"$(INTDIR)\actualactual.sbr" \
-	"$(INTDIR)\actualactualeuro.sbr" \
-	"$(INTDIR)\actualactualhistorical.sbr" \
 	"$(INTDIR)\thirty360.sbr" \
-	"$(INTDIR)\thirty360italian.sbr" \
 	"$(INTDIR)\bsmoperator.sbr" \
 	"$(INTDIR)\tridiagonaloperator.sbr" \
 	"$(INTDIR)\valueatcenter.sbr" \
@@ -1072,7 +933,6 @@ BSC32_SBRS= \
 	"$(INTDIR)\newtonsafe.sbr" \
 	"$(INTDIR)\ridder.sbr" \
 	"$(INTDIR)\secant.sbr" \
-	"$(INTDIR)\piecewiseconstantforwards.sbr" \
 	"$(INTDIR)\piecewiseflatforward.sbr" \
 	"$(INTDIR)\ratehelpers.sbr" \
 	"$(INTDIR)\xibor.sbr" \
@@ -1103,10 +963,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\westerncalendar.obj" \
 	"$(INTDIR)\zurich.obj" \
 	"$(INTDIR)\actualactual.obj" \
-	"$(INTDIR)\actualactualeuro.obj" \
-	"$(INTDIR)\actualactualhistorical.obj" \
 	"$(INTDIR)\thirty360.obj" \
-	"$(INTDIR)\thirty360italian.obj" \
 	"$(INTDIR)\bsmoperator.obj" \
 	"$(INTDIR)\tridiagonaloperator.obj" \
 	"$(INTDIR)\valueatcenter.obj" \
@@ -1159,7 +1016,6 @@ LIB32_OBJS= \
 	"$(INTDIR)\newtonsafe.obj" \
 	"$(INTDIR)\ridder.obj" \
 	"$(INTDIR)\secant.obj" \
-	"$(INTDIR)\piecewiseconstantforwards.obj" \
 	"$(INTDIR)\piecewiseflatforward.obj" \
 	"$(INTDIR)\ratehelpers.obj" \
 	"$(INTDIR)\xibor.obj" \
@@ -1191,10 +1047,6 @@ ALL : ".\lib\Win32\VisualStudio\QuantLib_d.lib" "$(OUTDIR)\QuantLib.bsc"
 CLEAN :
 	-@erase "$(INTDIR)\actualactual.obj"
 	-@erase "$(INTDIR)\actualactual.sbr"
-	-@erase "$(INTDIR)\actualactualeuro.obj"
-	-@erase "$(INTDIR)\actualactualeuro.sbr"
-	-@erase "$(INTDIR)\actualactualhistorical.obj"
-	-@erase "$(INTDIR)\actualactualhistorical.sbr"
 	-@erase "$(INTDIR)\averagepriceasian.obj"
 	-@erase "$(INTDIR)\averagepriceasian.sbr"
 	-@erase "$(INTDIR)\averagestrikeasian.obj"
@@ -1293,8 +1145,6 @@ CLEAN :
 	-@erase "$(INTDIR)\pagodaoption.sbr"
 	-@erase "$(INTDIR)\pagodapathpricer.obj"
 	-@erase "$(INTDIR)\pagodapathpricer.sbr"
-	-@erase "$(INTDIR)\piecewiseconstantforwards.obj"
-	-@erase "$(INTDIR)\piecewiseconstantforwards.sbr"
 	-@erase "$(INTDIR)\piecewiseflatforward.obj"
 	-@erase "$(INTDIR)\piecewiseflatforward.sbr"
 	-@erase "$(INTDIR)\plainbasketoption.obj"
@@ -1329,8 +1179,6 @@ CLEAN :
 	-@erase "$(INTDIR)\target.sbr"
 	-@erase "$(INTDIR)\thirty360.obj"
 	-@erase "$(INTDIR)\thirty360.sbr"
-	-@erase "$(INTDIR)\thirty360italian.obj"
-	-@erase "$(INTDIR)\thirty360italian.sbr"
 	-@erase "$(INTDIR)\tridiagonaloperator.obj"
 	-@erase "$(INTDIR)\tridiagonaloperator.sbr"
 	-@erase "$(INTDIR)\valueatcenter.obj"
@@ -1353,40 +1201,7 @@ CLEAN :
 "$(OUTDIR)" :
     if not exist "$(OUTDIR)/$(NULL)" mkdir "$(OUTDIR)"
 
-CPP=cl.exe
 CPP_PROJ=/nologo /MDd /W3 /Gi /GR /GX /ZI /Od /I ".\\" /D "WIN32" /D "_DEBUG" /D "_MBCS" /D "_LIB" /D "QL_DEBUG" /FR"$(INTDIR)\\" /Fp"$(INTDIR)\QuantLib.pch" /YX /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\\" /FD /GZ /c 
-
-.c{$(INTDIR)}.obj::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-.cpp{$(INTDIR)}.obj::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-.cxx{$(INTDIR)}.obj::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-.c{$(INTDIR)}.sbr::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-.cpp{$(INTDIR)}.sbr::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-.cxx{$(INTDIR)}.sbr::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-RSC=rc.exe
 BSC32=bscmake.exe
 BSC32_FLAGS=/nologo /o"$(OUTDIR)\QuantLib.bsc" 
 BSC32_SBRS= \
@@ -1400,10 +1215,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\westerncalendar.sbr" \
 	"$(INTDIR)\zurich.sbr" \
 	"$(INTDIR)\actualactual.sbr" \
-	"$(INTDIR)\actualactualeuro.sbr" \
-	"$(INTDIR)\actualactualhistorical.sbr" \
 	"$(INTDIR)\thirty360.sbr" \
-	"$(INTDIR)\thirty360italian.sbr" \
 	"$(INTDIR)\bsmoperator.sbr" \
 	"$(INTDIR)\tridiagonaloperator.sbr" \
 	"$(INTDIR)\valueatcenter.sbr" \
@@ -1456,7 +1268,6 @@ BSC32_SBRS= \
 	"$(INTDIR)\newtonsafe.sbr" \
 	"$(INTDIR)\ridder.sbr" \
 	"$(INTDIR)\secant.sbr" \
-	"$(INTDIR)\piecewiseconstantforwards.sbr" \
 	"$(INTDIR)\piecewiseflatforward.sbr" \
 	"$(INTDIR)\ratehelpers.sbr" \
 	"$(INTDIR)\xibor.sbr" \
@@ -1487,10 +1298,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\westerncalendar.obj" \
 	"$(INTDIR)\zurich.obj" \
 	"$(INTDIR)\actualactual.obj" \
-	"$(INTDIR)\actualactualeuro.obj" \
-	"$(INTDIR)\actualactualhistorical.obj" \
 	"$(INTDIR)\thirty360.obj" \
-	"$(INTDIR)\thirty360italian.obj" \
 	"$(INTDIR)\bsmoperator.obj" \
 	"$(INTDIR)\tridiagonaloperator.obj" \
 	"$(INTDIR)\valueatcenter.obj" \
@@ -1543,7 +1351,6 @@ LIB32_OBJS= \
 	"$(INTDIR)\newtonsafe.obj" \
 	"$(INTDIR)\ridder.obj" \
 	"$(INTDIR)\secant.obj" \
-	"$(INTDIR)\piecewiseconstantforwards.obj" \
 	"$(INTDIR)\piecewiseflatforward.obj" \
 	"$(INTDIR)\ratehelpers.obj" \
 	"$(INTDIR)\xibor.obj" \
@@ -1562,6 +1369,36 @@ LIB32_OBJS= \
 <<
 
 !ENDIF 
+
+.c{$(INTDIR)}.obj::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.cpp{$(INTDIR)}.obj::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.cxx{$(INTDIR)}.obj::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.c{$(INTDIR)}.sbr::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.cpp{$(INTDIR)}.sbr::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.cxx{$(INTDIR)}.sbr::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
 
 
 !IF "$(NO_EXTERNAL_DEPS)" != "1"
@@ -1634,27 +1471,9 @@ SOURCE=.\ql\DayCounters\actualactual.cpp
 	$(CPP) $(CPP_PROJ) $(SOURCE)
 
 
-SOURCE=.\ql\DayCounters\actualactualeuro.cpp
-
-"$(INTDIR)\actualactualeuro.obj"	"$(INTDIR)\actualactualeuro.sbr" : $(SOURCE) "$(INTDIR)"
-	$(CPP) $(CPP_PROJ) $(SOURCE)
-
-
-SOURCE=.\ql\DayCounters\actualactualhistorical.cpp
-
-"$(INTDIR)\actualactualhistorical.obj"	"$(INTDIR)\actualactualhistorical.sbr" : $(SOURCE) "$(INTDIR)"
-	$(CPP) $(CPP_PROJ) $(SOURCE)
-
-
 SOURCE=.\ql\DayCounters\thirty360.cpp
 
 "$(INTDIR)\thirty360.obj"	"$(INTDIR)\thirty360.sbr" : $(SOURCE) "$(INTDIR)"
-	$(CPP) $(CPP_PROJ) $(SOURCE)
-
-
-SOURCE=.\ql\DayCounters\thirty360italian.cpp
-
-"$(INTDIR)\thirty360italian.obj"	"$(INTDIR)\thirty360italian.sbr" : $(SOURCE) "$(INTDIR)"
 	$(CPP) $(CPP_PROJ) $(SOURCE)
 
 
@@ -1967,12 +1786,6 @@ SOURCE=.\ql\Solvers1D\ridder.cpp
 SOURCE=.\ql\Solvers1D\secant.cpp
 
 "$(INTDIR)\secant.obj"	"$(INTDIR)\secant.sbr" : $(SOURCE) "$(INTDIR)"
-	$(CPP) $(CPP_PROJ) $(SOURCE)
-
-
-SOURCE=.\ql\TermStructures\piecewiseconstantforwards.cpp
-
-"$(INTDIR)\piecewiseconstantforwards.obj"	"$(INTDIR)\piecewiseconstantforwards.sbr" : $(SOURCE) "$(INTDIR)"
 	$(CPP) $(CPP_PROJ) $(SOURCE)
 
 
