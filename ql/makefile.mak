@@ -251,6 +251,8 @@ clean::
     $(MAKE) clean
     cd ..\Basket
     $(MAKE) clean
+    cd ..\Cliquet
+    $(MAKE) clean
     cd ..\CapFloor
     $(MAKE) clean
     cd ..\Swaption
