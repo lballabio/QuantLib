@@ -196,6 +196,55 @@ int main(int argc, char* argv[])
              << DoubleFormatter::toString(relativeDiscrepancy, 6)
              << std::endl;
 
+        Date todaysDate(17, February, 1999);
+        Currency currency = EUR;
+        DayCounter depositDayCounter = DayCounters::Thirty360();
+
+        // bootstrap the curve
+        Handle<TermStructure> flatTermStructure(new
+            TermStructures::FlatForward(currency, depositDayCounter, todaysDate,
+                                        Calendars::Zurich(), 0, riskFreeRate));
+
+        Instruments::PlainOption option(
+            Option::Call,
+            Handle<MarketElement>(new SimpleMarketElement(underlying)),
+            strike,
+            Handle<TermStructure>(),
+            flatTermStructure,
+            todaysDate.plus(3, Months),
+            Handle<MarketElement>(new SimpleMarketElement(volatility)),
+            Handle<OptionPricingEngine>(new Pricers::BinomialPlainOption(
+                Pricers::BinomialPlainOption::JarrowRudd, 100)));
+            
+        // seventh method: Binomial Method (JR)
+        method = "Binomial (JR)";
+        option.setPricingEngine(Handle<OptionPricingEngine>(
+            new Pricers::BinomialPlainOption(
+                Pricers::BinomialPlainOption::JarrowRudd, 800)));
+        value = option.NPV();
+        discrepancy = QL_FABS(value-rightValue);
+        relativeDiscrepancy = discrepancy/rightValue;
+        std::cout << method << "\t"
+             << DoubleFormatter::toString(value, 4) << "\t"
+             << "N/A\t\t"
+             << DoubleFormatter::toString(discrepancy, 6) << "\t"
+             << DoubleFormatter::toString(relativeDiscrepancy, 6)
+             << std::endl;
+
+        // eigth method: Binomial Method (CRR)
+        method = "Binomial (CRR)";
+        option.setPricingEngine(Handle<OptionPricingEngine>(
+            new Pricers::BinomialPlainOption(
+                Pricers::BinomialPlainOption::CoxRossRubinstein, 800)));
+        value = option.NPV();
+        discrepancy = QL_FABS(value-rightValue);
+        relativeDiscrepancy = discrepancy/rightValue;
+        std::cout << method << "\t"
+             << DoubleFormatter::toString(value, 4) << "\t"
+             << "N/A\t\t"
+             << DoubleFormatter::toString(discrepancy, 6) << "\t"
+             << DoubleFormatter::toString(relativeDiscrepancy, 6)
+             << std::endl;
 
         return 0;
     } catch (std::exception& e) {
