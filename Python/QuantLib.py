@@ -697,6 +697,60 @@ class McAsianPricerPtr(McAsianPricer):
 McAsianPricer.value = new.instancemethod(QuantLibc.McAsianPricer_value, None, McAsianPricer)
 McAsianPricer.errorEstimate = new.instancemethod(QuantLibc.McAsianPricer_errorEstimate, None, McAsianPricer)
 
+class PlainBasketOption:
+    def __init__(self,*args,**kwargs):
+        self.this = apply(QuantLibc.new_PlainBasketOption,args,kwargs)
+        self.thisown = 1
+
+    def __repr__(self):
+        return "<C PlainBasketOption instance at %s>" % (self.this,)
+class PlainBasketOptionPtr(PlainBasketOption):
+    def __init__(self,this):
+        self.this = this
+        self.thisown = 0
+        self.__class__ = PlainBasketOption
+
+
+PlainBasketOption.value = new.instancemethod(QuantLibc.PlainBasketOption_value, None, PlainBasketOption)
+PlainBasketOption.errorEstimate = new.instancemethod(QuantLibc.PlainBasketOption_errorEstimate, None, PlainBasketOption)
+
+class GaussianArrayGenerator:
+    def __init__(self,*args,**kwargs):
+        self.this = apply(QuantLibc.new_GaussianArrayGenerator,args,kwargs)
+        self.thisown = 1
+
+    def __repr__(self):
+        return "<C GaussianArrayGenerator instance at %s>" % (self.this,)
+class GaussianArrayGeneratorPtr(GaussianArrayGenerator):
+    def __init__(self,this):
+        self.this = this
+        self.thisown = 0
+        self.__class__ = GaussianArrayGenerator
+
+
+GaussianArrayGenerator.next = new.instancemethod(QuantLibc.GaussianArrayGenerator_next, None, GaussianArrayGenerator)
+GaussianArrayGenerator.weight = new.instancemethod(QuantLibc.GaussianArrayGenerator_weight, None, GaussianArrayGenerator)
+
+class StandardMultiPathGenerator:
+    def __init__(self,*args,**kwargs):
+        self.this = apply(QuantLibc.new_StandardMultiPathGenerator,args,kwargs)
+        self.thisown = 1
+
+    def next(*args, **kwargs):
+        val = apply(QuantLibc.StandardMultiPathGenerator_next,args, kwargs)
+        if val: val = MatrixPtr(val) ; val.thisown = 1
+        return val
+    def __repr__(self):
+        return "<C StandardMultiPathGenerator instance at %s>" % (self.this,)
+class StandardMultiPathGeneratorPtr(StandardMultiPathGenerator):
+    def __init__(self,this):
+        self.this = this
+        self.thisown = 0
+        self.__class__ = StandardMultiPathGenerator
+
+
+StandardMultiPathGenerator.weight = new.instancemethod(QuantLibc.StandardMultiPathGenerator_weight, None, StandardMultiPathGenerator)
+
 class TridiagonalOperator:
     def __init__(self,*args,**kwargs):
         self.this = apply(QuantLibc.new_TridiagonalOperator,args,kwargs)
@@ -1167,6 +1221,30 @@ Statistics.add = new.instancemethod(QuantLibc.Statistics_add, None, Statistics)
 Statistics.reset = new.instancemethod(QuantLibc.Statistics_reset, None, Statistics)
 Statistics.addSequence = new.instancemethod(QuantLibc.Statistics_addSequence, None, Statistics)
 Statistics.addWeightedSequence = new.instancemethod(QuantLibc.Statistics_addWeightedSequence, None, Statistics)
+
+class MultivariateAccumulator:
+    def __init__(self,*args,**kwargs):
+        self.this = apply(QuantLibc.new_MultivariateAccumulator,args,kwargs)
+        self.thisown = 1
+
+    def covariance(*args, **kwargs):
+        val = apply(QuantLibc.MultivariateAccumulator_covariance,args, kwargs)
+        if val: val = MatrixPtr(val) ; val.thisown = 1
+        return val
+    def __repr__(self):
+        return "<C MultivariateAccumulator instance at %s>" % (self.this,)
+class MultivariateAccumulatorPtr(MultivariateAccumulator):
+    def __init__(self,this):
+        self.this = this
+        self.thisown = 0
+        self.__class__ = MultivariateAccumulator
+
+
+MultivariateAccumulator.size = new.instancemethod(QuantLibc.MultivariateAccumulator_size, None, MultivariateAccumulator)
+MultivariateAccumulator.samples = new.instancemethod(QuantLibc.MultivariateAccumulator_samples, None, MultivariateAccumulator)
+MultivariateAccumulator.mean = new.instancemethod(QuantLibc.MultivariateAccumulator_mean, None, MultivariateAccumulator)
+MultivariateAccumulator.add = new.instancemethod(QuantLibc.MultivariateAccumulator_add, None, MultivariateAccumulator)
+MultivariateAccumulator.reset = new.instancemethod(QuantLibc.MultivariateAccumulator_reset, None, MultivariateAccumulator)
 
 
 
