@@ -40,6 +40,7 @@ LIBRARY
     histogram class
 
 DOCUMENTATION ***
+    add MS-Windows Help and TeX DVI format.
     enforce fulpath&classesinclude DoxyGen requirements
     automated changelog update for each cvs commit
     add/update DoxyGen TODO with CVS TODO.txt file
