@@ -75,6 +75,7 @@ Date.weekdayNumber = new.instancemethod(QuantLibc.Date_weekdayNumber, None, Date
 Date.__cmp__ = new.instancemethod(QuantLibc.Date___cmp__, None, Date)
 Date.__str__ = new.instancemethod(QuantLibc.Date___str__, None, Date)
 Date.__repr__ = new.instancemethod(QuantLibc.Date___repr__, None, Date)
+Date.__nonzero__ = new.instancemethod(QuantLibc.Date___nonzero__, None, Date)
 
 class DateVector:
     def __init__(self,this):
@@ -87,8 +88,10 @@ class DateVector:
         val = apply(QuantLibc.DateVector___getitem__,args, kwargs)
         if val: val = DatePtr(val) ; val.thisown = 1
         return val
-    def __repr__(self):
-        return "<C DateVector instance at %s>" % (self.this,)
+    def __getslice__(*args, **kwargs):
+        val = apply(QuantLibc.DateVector___getslice__,args, kwargs)
+        if val: val = DateVectorPtr(val) ; val.thisown = 1
+        return val
 class DateVectorPtr(DateVector):
     def __init__(self,this):
         self.this = this
@@ -98,7 +101,10 @@ class DateVectorPtr(DateVector):
 
 DateVector.__len__ = new.instancemethod(QuantLibc.DateVector___len__, None, DateVector)
 DateVector.__setitem__ = new.instancemethod(QuantLibc.DateVector___setitem__, None, DateVector)
+DateVector.__setslice__ = new.instancemethod(QuantLibc.DateVector___setslice__, None, DateVector)
 DateVector.__str__ = new.instancemethod(QuantLibc.DateVector___str__, None, DateVector)
+DateVector.__repr__ = new.instancemethod(QuantLibc.DateVector___repr__, None, DateVector)
+DateVector.__nonzero__ = new.instancemethod(QuantLibc.DateVector___nonzero__, None, DateVector)
 
 class Calendar:
     def __init__(self,this):
