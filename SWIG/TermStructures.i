@@ -131,6 +131,20 @@ TermStructureHandle NewSpreadedTermStructure(TermStructureHandle curve, Spread s
 
 %name(SpreadedTermStructure) TermStructureHandle NewSpreadedTermStructure(TermStructureHandle curve, Spread spread);
 
+// flat forward curve
+
+%{
+using QuantLib::TermStructures::FlatForward;
+
+TermStructureHandle NewFlatForward(CurrencyHandle currency, DayCounterHandle dayCounter, Date today, Rate forward) {
+	return Handle<TermStructure>(new FlatForward(currency,dayCounter,today,forward));
+}
+%}
+
+%name(FlatForward) TermStructureHandle NewFlatForward(CurrencyHandle currency, 
+  DayCounterHandle dayCounter, Date today, Rate forward);
+
+
 
 // piecewise constant forward curve on deposits
 
@@ -204,7 +218,7 @@ TermStructureHandle NewPiecewiseConstantForwards(CurrencyHandle currency, DayCou
 }
 %}
 
-%name(PiecewiseConstantForwards)	TermStructureHandle NewPiecewiseConstantForwards(CurrencyHandle currency, 
+%name(PiecewiseConstantForwards) TermStructureHandle NewPiecewiseConstantForwards(CurrencyHandle currency, 
   DayCounterHandle dayCounter, Date today, DepositList deposits);
 
 
