@@ -48,7 +48,7 @@ namespace QuantLib {
 
             times_.resize(dates_.size());
             times_[0]=0.0;
-            for(Size i = 1; i < dates.size(); i++) {
+            for(Size i = 1; i < dates_.size(); i++) {
                 QL_REQUIRE(dates_[i]>dates_[i-1],
                    "DiscountCurveDiscountCurve : invalid date");
                 QL_REQUIRE(discounts_[i]<=discounts_[i-1],
@@ -59,7 +59,7 @@ namespace QuantLib {
 
             interpolation_ = Handle < DfInterpolation >
                 (new DfInterpolation(times_.begin(), times_.end(),
-                discounts.begin()));
+                discounts_.begin()));
       }
 
       DiscountFactor DiscountCurve::discountImpl(Time t,

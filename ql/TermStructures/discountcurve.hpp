@@ -71,7 +71,7 @@ namespace QuantLib
            Currency currency_;
            const DayCounter dayCounter_;
            const Date todaysDate_;
-           const std::vector < Date > &dates_;
+           const std::vector < Date > dates_;
            const std::vector < DiscountFactor > discounts_;
            std::vector < Time > times_;
            typedef Math::LogLinearInterpolation <
