@@ -23,7 +23,7 @@
 #define quantlib_lattice_short_rate_model_engine_hpp
 
 #include <ql/ShortRateModels/model.hpp>
-#include <ql/PricingEngines/genericengine.hpp>
+#include <ql/PricingEngines/genericmodelengine.hpp>
 
 namespace QuantLib {
 

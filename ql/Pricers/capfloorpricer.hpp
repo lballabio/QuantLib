@@ -23,7 +23,6 @@
 #define quantlib_pricers_capfloor_pricer_h
 
 #include <ql/Instruments/capfloor.hpp>
-#include <ql/PricingEngines/genericengine.hpp>
 #include <ql/discretizedasset.hpp>
 
 namespace QuantLib {

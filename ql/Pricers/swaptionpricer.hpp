@@ -23,7 +23,6 @@
 #define quantlib_pricers_swaption_pricer_h
 
 #include <ql/Instruments/swaption.hpp>
-#include <ql/PricingEngines/genericengine.hpp>
 #include <ql/discretizedasset.hpp>
 
 namespace QuantLib {

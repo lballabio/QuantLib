@@ -23,6 +23,7 @@
 #define quantlib_pricers_analytical_cap_floor_h
 
 #include <ql/Pricers/capfloorpricer.hpp>
+#include <ql/PricingEngines/genericmodelengine.hpp>
 #include <ql/ShortRateModels/model.hpp>
 
 namespace QuantLib {

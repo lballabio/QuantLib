@@ -24,6 +24,7 @@
 
 #include <ql/Pricers/swaptionpricer.hpp>
 #include <ql/ShortRateModels/onefactormodel.hpp>
+#include <ql/PricingEngines/genericmodelengine.hpp>
 
 namespace QuantLib {
 

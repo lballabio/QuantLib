@@ -25,7 +25,6 @@
 #define quantlib_vanilla_engines_h
 
 #include <ql/Instruments/vanillaoption.hpp>
-#include <ql/PricingEngines/genericengine.hpp>
 #include <ql/Lattices/binomialtree.hpp>
 #include <ql/PricingEngines/discretizedvanillaoption.hpp>
 #include <ql/Math/normaldistribution.hpp>

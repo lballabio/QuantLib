@@ -8,7 +8,7 @@ include_HEADERS = \
     binaryengines.hpp \
     cliquetengines.hpp \
     discretizedvanillaoption.hpp \
-    genericengine.hpp \
+    genericmodelengine.hpp \
     forwardengines.hpp \
     latticeshortratemodelengine.hpp \
     mcengine.hpp \

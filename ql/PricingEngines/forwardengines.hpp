@@ -23,7 +23,6 @@
 #define quantlib_forward_engines_h
 
 #include <ql/Instruments/forwardvanillaoption.hpp>
-#include <ql/PricingEngines/genericengine.hpp>
 #include <ql/Volatilities/impliedvoltermstructure.hpp>
 #include <ql/TermStructures/impliedtermstructure.hpp>
 

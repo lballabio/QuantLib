@@ -261,7 +261,7 @@
 #include <ql/PricingEngines/cliquetengines.hpp>
 #include <ql/PricingEngines/discretizedvanillaoption.hpp>
 #include <ql/PricingEngines/forwardengines.hpp>
-#include <ql/PricingEngines/genericengine.hpp>
+#include <ql/PricingEngines/genericmodelengine.hpp>
 #include <ql/PricingEngines/latticeshortratemodelengine.hpp>
 #include <ql/PricingEngines/mcengine.hpp>
 #include <ql/PricingEngines/mceuropeanengine.hpp>

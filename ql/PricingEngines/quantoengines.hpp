@@ -23,7 +23,6 @@
 #define quantlib_quanto_engines_h
 
 #include <ql/Instruments/quantovanillaoption.hpp>
-#include <ql/PricingEngines/genericengine.hpp>
 #include <ql/TermStructures/quantotermstructure.hpp>
 
 namespace QuantLib {

@@ -24,6 +24,7 @@
 
 #include <ql/blackmodel.hpp>
 #include <ql/Pricers/capfloorpricer.hpp>
+#include <ql/PricingEngines/genericmodelengine.hpp>
 
 namespace QuantLib {
 

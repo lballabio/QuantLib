@@ -28,7 +28,7 @@
 
 namespace QuantLib {
 
-    //! base class for pricing engines
+    //! interface for pricing engines
     class PricingEngine : public Observable {
       public:
         virtual ~PricingEngine() {}
@@ -36,6 +36,22 @@ namespace QuantLib {
         virtual const Results* results() const = 0;
         virtual void reset() const = 0;
         virtual void calculate() const = 0;
+    };
+
+
+    //! template base class for option pricing engines
+    /*! Derived engines only need to implement 
+        the <tt>calculate()</tt> method.
+    */
+    template<class ArgumentsType, class ResultsType>
+    class GenericEngine : public PricingEngine {
+      public:
+        Arguments* arguments() const { return &arguments_; }
+        const Results* results() const { return &results_; }
+        void reset() const { results_.reset(); }
+      protected:
+        mutable ArgumentsType arguments_;
+        mutable ResultsType results_;
     };
 
 }

@@ -1503,7 +1503,7 @@ SOURCE=.\ql\PricingEngines\forwardengines.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\ql\PricingEngines\genericengine.hpp
+SOURCE=.\ql\PricingEngines\genericmodelengine.hpp
 # End Source File
 # Begin Source File
 

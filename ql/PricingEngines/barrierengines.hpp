@@ -26,7 +26,6 @@
 #define quantlib_barrier_engines_h
 
 #include <ql/Instruments/barrieroption.hpp>
-#include <ql/PricingEngines/genericengine.hpp>
 #include <ql/PricingEngines/mcengine.hpp>
 #include <ql/MonteCarlo/barrierpathpricer.hpp>
 #include <ql/MonteCarlo/biasedbarrierpathpricer.hpp>
