@@ -27,6 +27,9 @@
 
     $Source$
     $Log$
+    Revision 1.33  2001/05/22 13:19:57  marmar
+    Implied volatility changed
+
     Revision 1.32  2001/05/09 11:06:19  nando
     A few comments modified/removed
 
@@ -144,34 +147,6 @@ namespace QuantLib {
             // check option targetValue boundary condition
             QL_REQUIRE(targetValue > 0.0,
              "BSMOption::impliedVol : targetValue must be positive");
-            // the following checks may be improved
-             switch (type_) {
-              case Call:
-                QL_REQUIRE(targetValue <= underlying_,
-                  "BSMOption::impliedVol : call option targetValue (" +
-                  DoubleFormatter::toString(targetValue) +
-                  ") > underlying value (" +
-                  DoubleFormatter::toString(underlying_) + ") not allowed");
-                break;
-              case Put:
-                QL_REQUIRE(targetValue <= strike_,
-                  "BSMOption::impliedVol : put option targetValue (" +
-                  DoubleFormatter::toString(targetValue) +
-                  ") > strike value (" + DoubleFormatter::toString(strike_) +
-                  ") not allowed");
-                break;
-              case Straddle:
-                // to be verified
-                QL_REQUIRE(targetValue < underlying_+strike_,
-                  "BSMOption::impliedFlatVol : straddle option targetValue (" +
-                  DoubleFormatter::toString(targetValue) +
-                  ") >= (underlying+strike) value (" +
-                  DoubleFormatter::toString(underlying_+strike_) +
-                  ") not allowed");
-                break;
-              default:
-                throw IllegalArgumentError("BSMOption: invalid option type");
-            }
             // clone used for root finding
             Handle<BSMOption> tempBSM = clone();
             // objective function
@@ -182,7 +157,7 @@ namespace QuantLib {
             s1d.setLowBound(minVol);
             s1d.setHiBound(maxVol);
 
-            return s1d.solve(bsmf, accuracy, volatility_, 0.05);
+            return s1d.solve(bsmf, accuracy, volatility_, minVol, maxVol);
         }
 
     }
