@@ -13,3 +13,8 @@ implement round as per OMG enumeration/definition
 automated changelog update for each cvs commit
 improve documentation (using DoxyGen comments)
 undersatnd why updateproject.sh does not work under cygwin
+add futures (and convexity adjustment) to the bootstrapping method
+revisite model/slice interface
+add historicalvolatility to RiskMeasures
+handle library versioning to allow multiple installed versions
+rename all files/dirs to lowercase no spaces
