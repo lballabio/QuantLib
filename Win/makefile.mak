@@ -42,8 +42,11 @@ DAYCOUNT_OBJS    = $(OUTPUT_DIR)\actualactual.obj \
                    $(OUTPUT_DIR)\thirty360.obj \
                    $(OUTPUT_DIR)\thirty360italian.obj
 
-MATH_OBJS        = $(OUTPUT_DIR)\normaldistribution.obj \
-                   $(OUTPUT_DIR)\statistics.obj
+MATH_OBJS        = $(OUTPUT_DIR)\matrixsqrt.obj      \
+                   $(OUTPUT_DIR)\jacobidecomposition.obj    \
+                   $(OUTPUT_DIR)\multivariateaccumulator.obj\
+                   $(OUTPUT_DIR)\normaldistribution.obj \                   
+                   $(OUTPUT_DIR)\statistics.obj 
 
 MONTECARLO_OBJS  = $(OUTPUT_DIR)\lecuyerrandomgenerator.obj \
                    $(OUTPUT_DIR)\averageasianpathpricer.obj \
@@ -167,6 +170,7 @@ $(OUTPUT_DIR)\quantlib_wrap.obj:: $(PYTHON_DIR)\quantlib_wrap.cpp
     echo Compiling wrappers...
     $(CC) $(CC_OPTS) -w-8057 -w-8004 -w-8060 -D__WIN32__ -DMSC_CORE_BC_EXT \
     $(PYTHON_DIR)\quantlib_wrap.cpp
+    
 $(PYTHON_DIR)\quantlib_wrap.cpp:: \
     $(SWIG_DIR)\QuantLib.i \
     $(SWIG_DIR)\BoundaryConditions.i \
@@ -233,8 +237,12 @@ $(OUTPUT_DIR)\bsmoperator.obj: $(SOURCES_DIR)\FiniteDifferences\bsmoperator.cpp
 
 # Math
 Math: $(OUTPUT_DIR) $(MATH_OBJS)
-$(OUTPUT_DIR)\normaldistribution.obj: $(SOURCES_DIR)\Math\normaldistribution.cpp
-$(OUTPUT_DIR)\statistics.obj: $(SOURCES_DIR)\Math\statistics.cpp
+$(OUTPUT_DIR)\jacobidecomposition.obj: $(SOURCES_DIR)\Math\jacobidecomposition.cpp
+$(OUTPUT_DIR)\matrixsqrt.obj:   $(SOURCES_DIR)\Math\matrixsqrt.cpp
+$(OUTPUT_DIR)\normaldistribution.obj:  $(SOURCES_DIR)\Math\normaldistribution.cpp
+$(OUTPUT_DIR)\statistics.obj:          $(SOURCES_DIR)\Math\statistics.cpp
+$(OUTPUT_DIR)\multivariateaccumulator.obj: $(SOURCES_DIR)\Math\multivariateaccumulator.cpp
+
 
 
 # Monte Carlo
@@ -326,7 +334,7 @@ alldocs::
 
 # Install PyQuantLib
 install::
-    if exist $(PYTHON_HOME)\QuantLib.pyc      del "$(PYTHON_HOME)"\QuantLib.pyc
+#    if exist $(PYTHON_HOME)\QuantLib.pyc      del "$(PYTHON_HOME)"\QuantLib.pyc
     copy $(PYTHON_DIR)\QuantLib.py "$(PYTHON_HOME)"\QuantLib.py
     copy $(PYTHON_DIR)\QuantLibc.dll "$(PYTHON_HOME)"\QuantLibc.dll
 
