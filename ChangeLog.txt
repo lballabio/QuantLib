@@ -1,3 +1,132 @@
+2002-03-22 16:29  Luigi Ballabio <luigi.ballabio@riskmap.net>
+
+	* Examples/Swap/swapvaluation.cpp (1.21): Fixed errors in cutting
+	and pasting :)
+
+2002-03-21 17:03  Ferdinando Ametrano <ferdinando@ametrano.net>
+
+	* ql/: makefile.mak (1.12), Calendars/makefile.mak (1.8),
+	CashFlows/makefile.mak (1.6), DayCounters/makefile.mak (1.6),
+	FiniteDifferences/makefile.mak (1.6), Indexes/makefile.mak (1.5),
+	Instruments/makefile.mak (1.9), InterestRateModelling/makefile.mak
+	(1.8), InterestRateModelling/CalibrationHelpers/makefile.mak (1.3),
+	InterestRateModelling/OneFactorModels/makefile.mak (1.6),
+	InterestRateModelling/TwoFactorModels/makefile.mak (1.2),
+	Lattices/makefile.mak (1.9), Math/makefile.mak (1.5),
+	MonteCarlo/makefile.mak (1.10), Optimization/makefile.mak (1.5),
+	Pricers/makefile.mak (1.16), RandomNumbers/makefile.mak (1.5),
+	Solvers1D/makefile.mak (1.5), TermStructures/makefile.mak (1.6),
+	functions/makefile.mak (1.4): improved parametrization of debug
+	trailing identifier in Borland makefiles
+
+2002-03-21 15:35  Ferdinando Ametrano <ferdinando@ametrano.net>
+
+	* dev_tools/newdeveloperintro.txt (1.5): updated
+
+2002-03-21 14:48  Ferdinando Ametrano <ferdinando@ametrano.net>
+
+	* QuantLib.nsi (1.69), Examples/DiscreteHedging/DiscreteHedging.mak
+	(1.21), Examples/EuropeanOption/EuropeanOption.mak (1.16),
+	Examples/Swap/Swap.mak (1.17): removed project dependencies: they
+	make makefile not portable
+
+2002-03-21 08:10  Ferdinando Ametrano <ferdinando@ametrano.net>
+
+	* TODO.txt (1.82): updated
+
+2002-03-20 16:36  Ferdinando Ametrano <ferdinando@ametrano.net>
+
+	* ql/: makefile.mak (1.11), Calendars/makefile.mak (1.7),
+	CashFlows/makefile.mak (1.5), DayCounters/makefile.mak (1.5),
+	FiniteDifferences/makefile.mak (1.5), Indexes/makefile.mak (1.4),
+	Instruments/makefile.mak (1.8), InterestRateModelling/makefile.mak
+	(1.7), Lattices/makefile.mak (1.8), Math/makefile.mak (1.4),
+	MonteCarlo/makefile.mak (1.9), Optimization/makefile.mak (1.4),
+	Pricers/makefile.mak (1.15), RandomNumbers/makefile.mak (1.4),
+	Solvers1D/makefile.mak (1.4), TermStructures/makefile.mak (1.5),
+	functions/makefile.mak (1.3): removed useless BCC_LIBS from Borland
+	makefile(s)
+
+2002-03-20 09:23  Ferdinando Ametrano <ferdinando@ametrano.net>
+
+	* Contributors.txt (1.17), Docs/pages/authors.docs (1.12),
+	ql/DayCounters/actualactual.cpp (1.14): bug fixed in
+	ActualActual::ActActAFBImpl::yearFraction thanks to James Battle
+
+2002-03-19 17:12  Luigi Ballabio <luigi.ballabio@riskmap.net>
+
+	* Docs/Makefile.am (1.47): Increased memory for LaTeX runs
+
+2002-03-19 17:10  Luigi Ballabio <luigi.ballabio@riskmap.net>
+
+	* ql/: InterestRateModelling/blackmodel.hpp (1.3),
+	Pricers/blackcapfloor.cpp (1.5), Pricers/blackcapfloor.hpp (1.3):
+	Factored out a bit of code
+
+2002-03-19 15:31  Ferdinando Ametrano <ferdinando@ametrano.net>
+
+	* ql/: quantlib.hpp (1.54), RandomNumbers/rngtypedefs.hpp (1.8):
+	sobol reference removed
+
+2002-03-19 11:32  Luigi Ballabio <luigi.ballabio@riskmap.net>
+
+	* Docs/pages/authors.docs (1.11): Obfuscated mail addresses in html
+	output
+
+2002-03-19 08:24  Ferdinando Ametrano <ferdinando@ametrano.net>
+
+	* QuantLib.mak (1.74), Examples/DiscreteHedging/DiscreteHedging.mak
+	(1.20), Examples/EuropeanOption/EuropeanOption.mak (1.15),
+	Examples/Swap/Swap.mak (1.16): updated
+
+2002-03-18 09:46  Mario Aleppo <mario.aleppo@riskmap.net>
+
+	* ql/DayCounters/actualactual.cpp (1.13): Better error message
+
+2002-03-15 14:16  Luigi Ballabio <luigi.ballabio@riskmap.net>
+
+	* ql/: Instruments/capfloor.cpp (1.24), Instruments/capfloor.hpp
+	(1.24), Pricers/blackcapfloor.cpp (1.4): Added treatment of expired
+	and started caplets/floorlets
+
+2002-03-15 09:46  Luigi Ballabio <luigi.ballabio@riskmap.net>
+
+	* ql/: capvolstructures.hpp (1.2), swaptionvolstructure.hpp (1.2):
+	inline missing
+
+2002-03-15 08:23  Ferdinando Ametrano <ferdinando@ametrano.net>
+
+	* QuantLib.dsp (1.85), Examples/DiscreteHedging/DiscreteHedging.mak
+	(1.19), Examples/EuropeanOption/EuropeanOption.mak (1.14),
+	Examples/Swap/Swap.mak (1.15): MS VC++ project updated
+
+2002-03-15 08:04  Ferdinando Ametrano <ferdinando@ametrano.net>
+
+	* Docs/pages/usage.docs (1.7): typo fixed
+
+2002-03-14 17:39  Luigi Ballabio <luigi.ballabio@riskmap.net>
+
+	* ql/: Makefile.am (1.18), capvolstructures.hpp (1.1),
+	forwardvolsurface.hpp (1.6), quantlib.hpp (1.53),
+	swaptionvolstructure.hpp (1.1), swaptionvolsurface.hpp (1.12),
+	Volatilities/Makefile.am (1.2), Volatilities/capflatvolvector.hpp
+	(1.1), Volatilities/swaptionvolmatrix.hpp (1.5): Reorganized vol
+	structures
+
+2002-03-14 15:51  Mario Aleppo <mario.aleppo@riskmap.net>
+
+	* ql/Math/multivariateaccumulator.cpp (1.12): Bug fixed
+
+2002-03-14 14:08  Luigi Ballabio <luigi.ballabio@riskmap.net>
+
+	* ql/: CashFlows/coupon.hpp (1.8), Instruments/capfloor.cpp (1.23),
+	Instruments/capfloor.hpp (1.23), Pricers/blackcapfloor.cpp (1.3),
+	Pricers/blackcapfloor.hpp (1.2): Fine-tuned Black cap/floor
+
+2002-03-14 08:49  Ferdinando Ametrano <ferdinando@ametrano.net>
+
+	* ChangeLog.txt (1.18): updated
+
 2002-03-13 15:40  Luigi Ballabio <luigi.ballabio@riskmap.net>
 
 	* ql/: Instruments/simpleswap.cpp (1.17),
