@@ -23,27 +23,10 @@
 /* install-hook */
 #define quantlib_defines_h
 
-/*! \defgroup macros Global QuantLib macros
-    Global definitions and quite a few macros which help porting the code to
-    different compilers
-    @{
-*/
-
 #if defined(_DEBUG) || defined(DEBUG)
     #define QL_DEBUG
 #endif
 
-//! version hexadecimal number
-#define QL_HEX_VERSION 0x000306a0
-
-//! version string
-#ifdef QL_DEBUG
-    #define QL_VERSION "0.3.6-debug"
-#else
-    #define QL_VERSION "0.3.6"
-#endif
-
-//! specific per-compiler definitions
 #if   defined(__BORLANDC__)     // Borland C++ 5.5
     #include <ql/config.bcc.hpp>
 #elif defined(__MWERKS__)       // Metrowerks CodeWarrior
@@ -65,6 +48,28 @@
     #define BOOST_ENABLE_ASSERT_HANDLER
 #endif
 
+
+/*! \defgroup macros QuantLib macros
+    Global definitions and quite a few macros which help porting the code to
+    different compilers
+    @{
+*/
+
+//! version hexadecimal number
+#define QL_HEX_VERSION 0x000306a0
+
+//! version string
+#ifdef QL_DEBUG
+    #define QL_VERSION "0.3.6-debug"
+#else
+    #define QL_VERSION "0.3.6"
+#endif
+
+/*! \defgroup miscMacros Generic macros
+    Miscellaneous macros for compiler idiosyncrasies not fitting other
+    categories.
+    @{
+*/
 
 /*! \def QL_DUMMY_RETURN
     \brief Is a dummy return statement required?
@@ -481,6 +486,8 @@ QL_SPECIALIZE_ITERATOR_TRAITS(long double)
 #if !defined(HAVE_INCOMPLETE_ITERATOR_SUPPORT)
     #define QL_FULL_ITERATOR_SUPPORT
 #endif
+
+/*! @}  */
 
 /*! @}  */
 
