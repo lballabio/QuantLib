@@ -23,48 +23,47 @@
 #define quantlib_scheduler_hpp
 
 #include <ql/calendar.hpp>
+#include <ql/null.hpp>
 #include <vector>
 
 namespace QuantLib {
 
-    //! %Date scheduler
-    class Scheduler {
+    //! Payment schedule
+    class Schedule {
       public:
-        Scheduler(const Calendar& calendar,
-                  const Date& startDate, const Date& endDate,
-                  int frequency, RollingConvention rollingConvention,
-                  bool isAdjusted, const Date& stubDate = Date(),
-                  bool startFromEnd = false, bool longFinal = false);
-        // inspectors
-        const Calendar& calendar() const {
-            return calendar_;
-        }
-        const Date& startDate() const {
-            return startDate_;
-        }
-        const Date& endDate() const {
-            return endDate_;
-        }
-        int frequency() const {
-            return frequency_;
-        }
-        RollingConvention const rollingConvention() const {
-            return rollingConvention_;
-        }
-        bool isAdjusted() const {
-            return isAdjusted_;
-        }
+        Schedule(const Calendar& calendar,
+                 const Date& startDate, const Date& endDate,
+                 int frequency, RollingConvention rollingConvention,
+                 bool isAdjusted, const Date& stubDate = Date(),
+                 bool startFromEnd = false, bool longFinal = false);
+        Schedule(const std::vector<Date>&,
+                 const Calendar& calendar, 
+                 RollingConvention rollingConvention,
+                 bool isAdjusted);
+        //! \name Date access
+        //@{
         Size size() const { return dates_.size(); }
+        const Date& operator[](Size i) const;
         const Date& date(int i) const;
         bool isRegular(Size i) const;
-        // iterators
+        //@}
+        //! \name Other inspectors
+        //@{
+        const Calendar& calendar() const;
+        const Date& startDate() const;
+        const Date& endDate() const;
+        int frequency() const;
+        RollingConvention rollingConvention() const;
+        bool isAdjusted() const;
+        //@}
+        //! \name Iterators
+        //@{
         typedef std::vector<Date>::const_iterator const_iterator;
         const_iterator begin() const { return dates_.begin(); }
         const_iterator end() const { return dates_.end(); }
-        const Date& operator[] (Size i) const;
+        //@}
       private:
         Calendar calendar_;
-        Date startDate_, endDate_;
         int frequency_;
         RollingConvention rollingConvention_;
         bool isAdjusted_;
@@ -75,55 +74,49 @@ namespace QuantLib {
         std::vector<Date> dates_;
     };
 
-    inline const Date& Scheduler::date(int i) const {
-        QL_REQUIRE(i >= 0 && i <= int(dates_.size()),
-                   "date index out of bounds");
-        return dates_[i];
-    }
+    /*! \deprecated use Schedule instead */
+    typedef Schedule Scheduler;
 
-    inline const Date& Scheduler::operator[] (Size i) const {
-        #if defined(QL_DEBUG)
-        QL_REQUIRE(i >= 0 && i <= int(dates_.size()),
-                   "date index out of bounds");
-        #endif
-        return dates_[i];
-    }
 
-    class MakeScheduler {
+    //! helper class
+    /*! This class provides a more comfortable interface to the
+        argument list of Schedule's constructor.
+    */
+    class MakeSchedule {
       public:
-        MakeScheduler(const Calendar& calendar,
-                      const Date& startDate, const Date& endDate,
-                      int frequency, RollingConvention rollingConvention,
-                      bool isAdjusted)
+        MakeSchedule(const Calendar& calendar,
+                     const Date& startDate, const Date& endDate,
+                     int frequency, RollingConvention rollingConvention,
+                     bool isAdjusted)
         : calendar_(calendar), startDate_(startDate), endDate_(endDate),
           frequency_(frequency), rollingConvention_(rollingConvention),
-          isAdjusted_(isAdjusted),
-          stubDate_(Date()), startFromEnd_(false), longFinal_(false) {}
+          isAdjusted_(isAdjusted), stubDate_(Date()), 
+          startFromEnd_(false), longFinal_(false) {}
         
-        MakeScheduler& withStubDate(const Date& d) {
+        MakeSchedule& withStubDate(const Date& d) {
             stubDate_ = d; 
             return *this;
         }
-        MakeScheduler& backwards(bool flag=true) {
+        MakeSchedule& backwards(bool flag=true) {
             startFromEnd_ = flag; 
             return *this;
         }
-        MakeScheduler& forwards(bool flag=true) {
+        MakeSchedule& forwards(bool flag=true) {
             startFromEnd_ = !flag; 
             return *this;
         }
-        MakeScheduler& longFinalPeriod(bool flag=true) {
+        MakeSchedule& longFinalPeriod(bool flag=true) {
             longFinal_ = flag; 
             return *this;
         }
-        MakeScheduler& shortFinalPeriod(bool flag=true) {
+        MakeSchedule& shortFinalPeriod(bool flag=true) {
             longFinal_ = !flag; 
             return *this;
         }
-        operator Scheduler() {
-            return Scheduler(calendar_,startDate_,endDate_,frequency_,
-                             rollingConvention_,isAdjusted_,stubDate_,
-                             startFromEnd_,longFinal_);
+        operator Schedule() {
+            return Schedule(calendar_,startDate_,endDate_,frequency_,
+                            rollingConvention_,isAdjusted_,stubDate_,
+                            startFromEnd_,longFinal_);
         }
       private:
         Calendar calendar_;
@@ -136,6 +129,64 @@ namespace QuantLib {
         bool longFinal_;
     };
     
+    /*! \deprecated use MakeSchedule instead */
+    typedef MakeSchedule MakeScheduler;
+
+
+
+    // inline definitions
+
+    inline Schedule::Schedule(const std::vector<Date>& dates,
+                              const Calendar& calendar, 
+                              RollingConvention rollingConvention,
+                              bool isAdjusted)
+    : calendar_(calendar), frequency_(Null<int>()), 
+      rollingConvention_(rollingConvention),
+      isAdjusted_(isAdjusted), startFromEnd_(false), 
+      longFinal_(false), finalIsRegular_(true),
+      dates_(dates) {}
+        
+
+    inline const Date& Schedule::date(int i) const {
+        QL_REQUIRE(i >= 0 && i <= int(dates_.size()),
+                   "date index out of bounds");
+        return dates_[i];
+    }
+
+    inline const Date& Schedule::operator[] (Size i) const {
+        #if defined(QL_DEBUG)
+        QL_REQUIRE(i >= 0 && i <= int(dates_.size()),
+                   "date index out of bounds");
+        #endif
+        return dates_[i];
+    }
+
+    inline const Calendar& Schedule::calendar() const {
+        return calendar_;
+    }
+
+    inline const Date& Schedule::startDate() const {
+        return dates_.front();
+    }
+
+    inline const Date& Schedule::endDate() const {
+        return dates_.back();
+    }
+
+    inline int Schedule::frequency() const {
+        QL_REQUIRE(frequency_ != Null<int>(),
+                   "frequency not available");
+        return frequency_;
+    }
+
+    inline RollingConvention Schedule::rollingConvention() const {
+        return rollingConvention_;
+    }
+
+    inline bool Schedule::isAdjusted() const {
+        return isAdjusted_;
+    }
+
 }
 
 

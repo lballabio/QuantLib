@@ -24,35 +24,35 @@
 
 namespace QuantLib {
 
-    Scheduler::Scheduler(const Calendar& calendar,
-                         const Date& startDate, const Date& endDate, 
-                         int frequency,
-                         RollingConvention rollingConvention, 
-                         bool isAdjusted,
-                         const Date& stubDate, bool startFromEnd, 
-                         bool longFinal)
-    : calendar_(calendar), startDate_(startDate), endDate_(endDate),
-      frequency_(frequency), rollingConvention_(rollingConvention),
+    Schedule::Schedule(const Calendar& calendar,
+                       const Date& startDate, const Date& endDate, 
+                       int frequency,
+                       RollingConvention rollingConvention, 
+                       bool isAdjusted,
+                       const Date& stubDate, bool startFromEnd, 
+                       bool longFinal)
+    : calendar_(calendar), frequency_(frequency), 
+      rollingConvention_(rollingConvention),
       isAdjusted_(isAdjusted), stubDate_(stubDate),
       startFromEnd_(startFromEnd),longFinal_(longFinal),
       finalIsRegular_(true) {
         // sanity checks
-        QL_REQUIRE(startDate_ != Date(), "null start date");
-        QL_REQUIRE(endDate_ != Date(),   "null end date");
-        QL_REQUIRE(startDate_ < endDate_,
+        QL_REQUIRE(startDate != Date(), "null start date");
+        QL_REQUIRE(endDate != Date(),   "null end date");
+        QL_REQUIRE(startDate < endDate,
                    "start date (" +
-                   DateFormatter::toString(startDate_) +
+                   DateFormatter::toString(startDate) +
                    ") later than end date (" +
-                   DateFormatter::toString(endDate_) +
+                   DateFormatter::toString(endDate) +
                    ")");
         if (stubDate_ != Date()) {
-            QL_REQUIRE((stubDate_ > startDate_ && stubDate_ < endDate_),
+            QL_REQUIRE((stubDate_ > startDate && stubDate_ < endDate),
                        "stub date (" +
                        DateFormatter::toString(stubDate_) +
                        ") out of range (start date (" +
-                       DateFormatter::toString(startDate_) +
+                       DateFormatter::toString(startDate) +
                        "), end date (" +
-                       DateFormatter::toString(endDate_) + "))");
+                       DateFormatter::toString(endDate) + "))");
         }
         QL_REQUIRE(12 % frequency_ == 0,
                    "frequency (" +
@@ -62,12 +62,12 @@ namespace QuantLib {
 
         if (startFromEnd_) {
             // calculations
-            Date seed = endDate_;
+            Date seed = endDate;
             Date first = (isAdjusted_ ?
-                          calendar_.roll(startDate_,rollingConvention_) :
-                          startDate_);
+                          calendar_.roll(startDate,rollingConvention_) :
+                          startDate);
             // add end date
-            dates_.push_back(endDate_);
+            dates_.push_back(endDate);
 	   
             // add stub date if given
             if (stubDate_ != Date()) {
@@ -109,12 +109,12 @@ namespace QuantLib {
             }
         } else {
             // calculations
-            Date seed = startDate_;
+            Date seed = startDate;
             Date last = (isAdjusted_ ?
-                         calendar_.roll(endDate_,rollingConvention_) :
-                         endDate_);
+                         calendar_.roll(endDate,rollingConvention_) :
+                         endDate);
             // add start date
-            dates_.push_back(startDate_);
+            dates_.push_back(startDate);
 	   
             // add stub date if given
             if (stubDate_ != Date()) {
@@ -158,7 +158,7 @@ namespace QuantLib {
     }
 
 
-    bool Scheduler::isRegular(Size i) const {
+    bool Schedule::isRegular(Size i) const {
         if (startFromEnd_) {
             if (i == 1)
                 return finalIsRegular_;
