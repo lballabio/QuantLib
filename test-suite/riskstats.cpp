@@ -27,7 +27,6 @@ using namespace QuantLib::RandomNumbers;
 
 void RiskStatisticsTest::runTest() {
 
-
     Statistics   s;
     HStatistics hs;
 
@@ -49,7 +48,7 @@ void RiskStatisticsTest::runTest() {
             
             NormalDistribution               normal(averages[i],sigmas[j]);
             CumulativeNormalDistribution cumulative(averages[i],sigmas[j]);
-            InverseCumulativeNormal      inverseCum(averages[i],sigmas[j]);
+            //InverseCumulativeNormal      inverseCum(averages[i],sigmas[j]);
             SobolRsg rng(1);
 
             dataMin = averages[i] - numberOfSigma*sigmas[j];
@@ -78,27 +77,22 @@ void RiskStatisticsTest::runTest() {
             double calculated, expected;
             double tolerance;
 
-            // samples()
-            expected = N;
-            calculated = s.samples();
-            if (calculated != expected)
+            if (s.samples() != N)
                 CPPUNIT_FAIL(
                     "Statistics: "
                     "wrong number of samples\n"
                     "    calculated: "
-                    + IntegerFormatter::toString(calculated,16) + "\n"
+                    + IntegerFormatter::toString(s.samples(),16) + "\n"
                     "    expected:   "
-                    + IntegerFormatter::toString(expected,16));
-            calculated = hs.samples();
-            if (calculated != expected)
+                    + IntegerFormatter::toString(N,16));
+            if (hs.samples() != N)
                 CPPUNIT_FAIL(
                     "HStatistics: "
                     "wrong number of samples\n"
                     "    calculated: "
-                    + IntegerFormatter::toString(calculated,16) + "\n"
+                    + IntegerFormatter::toString(hs.samples(),16) + "\n"
                     "    expected:   "
-                    + IntegerFormatter::toString(expected,16));
-
+                    + IntegerFormatter::toString(N,16));
 
 
             // weightSum()
@@ -146,12 +140,6 @@ void RiskStatisticsTest::runTest() {
                     + DoubleFormatter::toString(expected,16));
 
 
-
-
-
-
-
-
             //max()
             expected = dataMax;
             calculated = s.max();
@@ -172,9 +160,6 @@ void RiskStatisticsTest::runTest() {
                     + DoubleFormatter::toString(calculated,16) + "\n"
                     "    expected:   "
                     + DoubleFormatter::toString(expected,16));
-
-
-
 
 
             //mean()
@@ -207,10 +192,6 @@ void RiskStatisticsTest::runTest() {
                     + DoubleFormatter::toString(expected,16));
 
 
-
-
-
-
             //variance()
             expected = sigmas[j]*sigmas[j];
             tolerance = expected*1.0e-4;
@@ -238,8 +219,6 @@ void RiskStatisticsTest::runTest() {
                     + DoubleFormatter::toString(calculated,16) + "\n"
                     "    expected:   "
                     + DoubleFormatter::toString(expected,16));
-
-
 
 
             // missing downsideVariance() test
@@ -271,7 +250,6 @@ void RiskStatisticsTest::runTest() {
                     + DoubleFormatter::toString(calculated,16) + "\n"
                     "    expected:   "
                     + DoubleFormatter::toString(expected,16));
-
 
 
             // missing downsideDeviation() test
@@ -338,8 +316,6 @@ void RiskStatisticsTest::runTest() {
 
             // missing percentile() test
 
-
-
             //gaussianPotentialUpside() and potentialUpside
             double upper_tail = averages[i]+2.0*sigmas[j],
                    lower_tail = averages[i]-2.0*sigmas[j];
@@ -384,7 +360,6 @@ void RiskStatisticsTest::runTest() {
                     + DoubleFormatter::toString(calculated,16) + "\n"
                     "    expected:   "
                     + DoubleFormatter::toString(expected,16));
-
 
 
             // gaussianValueAtRisk
