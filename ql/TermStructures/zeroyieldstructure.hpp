@@ -15,7 +15,7 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file zeroyieldtermstructure.hpp
+/*! \file zeroyieldstructure.hpp
     \brief Zero-yield based term structure
 */
 

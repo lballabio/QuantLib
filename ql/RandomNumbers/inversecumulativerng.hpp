@@ -16,7 +16,7 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file inversecumgaussianrng.hpp
+/*! \file inversecumulativerng.hpp
     \brief Inverse cumulative Gaussian random-number generator
 */
 
