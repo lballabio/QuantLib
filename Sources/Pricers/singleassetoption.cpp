@@ -30,6 +30,9 @@
 
 // $Id$
 // $Log$
+// Revision 1.6  2001/08/20 14:49:21  sigmud
+// enhanced error messages
+//
 // Revision 1.5  2001/08/13 15:06:17  nando
 // added dividendRho method
 //
@@ -93,11 +96,17 @@ namespace QuantLib {
             rhoComputed_(false), dividendRhoComputed_(false),
             vegaComputed_(false) {
             QL_REQUIRE(strike > 0.0,
-                "SingleAssetOption::SingleAssetOption : strike must be positive");
+                "SingleAssetOption::SingleAssetOption : strike ("+
+                 DoubleFormatter::toString(strike)+
+                 ") must be positive");
             QL_REQUIRE(underlying > 0.0,
-                "SingleAssetOption::SingleAssetOption : underlying must be positive");
+                "SingleAssetOption::SingleAssetOption : underlying ("+
+                 DoubleFormatter::toString(underlying)+
+                 ") must be positive");
             QL_REQUIRE(residualTime > 0.0,
-                "SingleAssetOption::SingleAssetOption : residual time must be positive");
+                "SingleAssetOption::SingleAssetOption : residual time ("+
+                 DoubleFormatter::toString(residualTime)+
+                 ") must be positive");
             //! Checks on volatility values are in setVolatility
             setVolatility(volatility);
             //! Checks on the risk-free rate are in setRiskFreeRate
@@ -106,11 +115,14 @@ namespace QuantLib {
 
         void SingleAssetOption::setVolatility(double volatility) {
             QL_REQUIRE(volatility >= QL_MIN_VOLATILITY,
-                 "SingleAssetOption::setVolatility : Volatility to small");
+                 "SingleAssetOption::setVolatility ("+
+                 DoubleFormatter::toString(volatility)+
+                 "): Volatility to small");
 
             QL_REQUIRE(volatility <= QL_MAX_VOLATILITY,
-                "SingleAssetOption::setVolatility : Volatility to high "
-                "for a meaningful result");
+                "SingleAssetOption::setVolatility ("+
+                 DoubleFormatter::toString(volatility)+
+                 ") : Volatility to high");
 
             volatility_ = volatility;
             hasBeenCalculated_ = false;
