@@ -53,7 +53,7 @@ namespace QuantLib {
         static Operator identity(Size size);
 
         // operator algebra
-        Operator operator*(double, const Operator&);
+        Operator operator*(Real, const Operator&);
         Operator operator+(const Operator&, const Operator&);
         Operator operator+(const Operator&, const Operator&);
         \endcode

@@ -54,7 +54,7 @@ namespace QuantLib {
         static Operator identity(Size size);
 
         // operator algebra
-        Operator operator*(double, const Operator&);
+        Operator operator*(Real, const Operator&);
         Operator operator+(const Operator&, const Operator&);
         Operator operator+(const Operator&, const Operator&);
         \endcode
@@ -77,7 +77,7 @@ namespace QuantLib {
         typedef BoundaryCondition<Operator> bcType;
         // constructors
         MixedScheme(const Operator& L,
-                    double theta,
+                    Real theta,
                     const std::vector<boost::shared_ptr<bcType> >& bcs)
         : L_(L), I_(Operator::identity(L.size())), 
           dt_(0.0), theta_(theta) , bcs_(bcs) {}
@@ -92,7 +92,7 @@ namespace QuantLib {
         }
         Operator L_, I_, explicitPart_, implicitPart_;
         Time dt_;
-        double theta_;
+        Real theta_;
         std::vector<boost::shared_ptr<bcType> > bcs_;
     };
 

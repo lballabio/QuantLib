@@ -48,14 +48,14 @@ namespace QuantLib {
         operator-(const TridiagonalOperator&,
                   const TridiagonalOperator&);
         friend Disposable<TridiagonalOperator>
-        operator*(double,
+        operator*(Real,
                   const TridiagonalOperator&);
         friend Disposable<TridiagonalOperator>
         operator*(const TridiagonalOperator&,
-                  double);
+                  Real);
         friend Disposable<TridiagonalOperator>
         operator/(const TridiagonalOperator&,
-                  double);
+                  Real);
       public:
         typedef Array arrayType;
         // constructors
@@ -80,7 +80,7 @@ namespace QuantLib {
         //! solve linear system for a given right-hand side
         Disposable<Array> solveFor(const Array& rhs) const;
         //! solve linear system with SOR approach
-        Disposable<Array> SOR(const Array& rhs, double tol) const;
+        Disposable<Array> SOR(const Array& rhs, Real tol) const;
         //! identity instance
         static Disposable<TridiagonalOperator> identity(Size size);
         //@}
@@ -94,10 +94,10 @@ namespace QuantLib {
         //@}
         //! \name Modifiers
         //@{
-        void setFirstRow(double, double);
-        void setMidRow(Size, double, double, double);
-        void setMidRows(double, double, double);
-        void setLastRow(double, double);
+        void setFirstRow(Real, Real);
+        void setMidRow(Size, Real, Real, Real);
+        void setMidRows(Real, Real, Real);
+        void setLastRow(Real, Real);
         void setTime(Time t);
         //@}
         //! \name Utilities
@@ -168,16 +168,16 @@ namespace QuantLib {
         return upperDiagonal_;
     }
 
-    inline void TridiagonalOperator::setFirstRow(double valB,
-                                                 double valC) {
+    inline void TridiagonalOperator::setFirstRow(Real valB,
+                                                 Real valC) {
         diagonal_[0]      = valB;
         upperDiagonal_[0] = valC;
     }
 
     inline void TridiagonalOperator::setMidRow(Size i,
-                                               double valA, 
-                                               double valB, 
-                                               double valC) {
+                                               Real valA, 
+                                               Real valB, 
+                                               Real valC) {
         QL_REQUIRE(i>=1 && i<=size()-2,
                    "out of range in TridiagonalSystem::setMidRow");
         lowerDiagonal_[i-1] = valA;
@@ -185,9 +185,9 @@ namespace QuantLib {
         upperDiagonal_[i]   = valC;
     }
 
-    inline void TridiagonalOperator::setMidRows(double valA,
-                                                double valB, 
-                                                double valC) {
+    inline void TridiagonalOperator::setMidRows(Real valA,
+                                                Real valB, 
+                                                Real valC) {
         for (Size i=1; i<=size()-2; i++) {
             lowerDiagonal_[i-1] = valA;
             diagonal_[i]        = valB;
@@ -195,8 +195,8 @@ namespace QuantLib {
         }
     }
 
-    inline void TridiagonalOperator::setLastRow(double valA,
-                                                double valB) {
+    inline void TridiagonalOperator::setLastRow(Real valA,
+                                                Real valB) {
         lowerDiagonal_[size()-2] = valA;
         diagonal_[size()-1]      = valB;
     }
@@ -251,7 +251,7 @@ namespace QuantLib {
     }
 
     inline Disposable<TridiagonalOperator> 
-    operator*(double a,
+    operator*(Real a,
               const TridiagonalOperator& D) {
         Array low = D.lowerDiagonal_*a, mid = D.diagonal_*a,
             high = D.upperDiagonal_*a;
@@ -261,7 +261,7 @@ namespace QuantLib {
 
     inline Disposable<TridiagonalOperator>
     operator*(const TridiagonalOperator& D,
-              double a) {
+              Real a) {
         Array low = D.lowerDiagonal_*a, mid = D.diagonal_*a,
             high = D.upperDiagonal_*a;
         TridiagonalOperator result(low,mid,high);
@@ -270,7 +270,7 @@ namespace QuantLib {
 
     inline Disposable<TridiagonalOperator>
     operator/(const TridiagonalOperator& D,
-              double a) {
+              Real a) {
         Array low = D.lowerDiagonal_/a, mid = D.diagonal_/a,
             high = D.upperDiagonal_/a;
         TridiagonalOperator result(low,mid,high);

@@ -31,13 +31,13 @@
 namespace QuantLib {
 
     //! Distribution over a number of dates
-    class TimeBasket : private std::map<Date,double> {
+    class TimeBasket : private std::map<Date,Real> {
         // this is needed for Visual C++ 6
-        typedef std::map<Date,double> super;
+        typedef std::map<Date,Real> super;
       public:
         TimeBasket() {}
         TimeBasket(const std::vector<Date>& dates,
-                   const std::vector<double>& values);
+                   const std::vector<Real>& values);
         //! \name Map interface
         //@{
         //! returns the number of entries

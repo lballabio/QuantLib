@@ -20,10 +20,10 @@
 
 namespace QuantLib {
 
-    ParCoupon::ParCoupon(double nominal, const Date& paymentDate,
+    ParCoupon::ParCoupon(Real nominal, const Date& paymentDate,
                          const boost::shared_ptr<Xibor>& index,
                          const Date& startDate, const Date& endDate,
-                         int fixingDays, Spread spread,
+                         Integer fixingDays, Spread spread,
                          const Date& refPeriodStart, 
                          const Date& refPeriodEnd)
     : FloatingRateCoupon(nominal, paymentDate, startDate, endDate, 
@@ -32,7 +32,7 @@ namespace QuantLib {
         registerWith(index_);
     }
 
-    double ParCoupon::amount() const {
+    Real ParCoupon::amount() const {
         boost::shared_ptr<TermStructure> termStructure = 
             index_->termStructure();
         QL_REQUIRE(termStructure,

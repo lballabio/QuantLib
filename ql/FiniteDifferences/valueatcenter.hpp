@@ -29,30 +29,29 @@ namespace QuantLib {
     /*! mid-point value
 
         \todo replace with a more general (not "centered") function:
-              valueAt(double spot,
-                      const Array& a);
+              valueAt(Real spot, const Array& a);
     */
-    double valueAtCenter(const Array& a);
+    Real valueAtCenter(const Array& a);
 
     /*! mid-point first derivative
 
         \todo replace with a more general (not "centered") function:
-              firstDerivativeAt(double spot,
+              firstDerivativeAt(Real spot,
                                 const Array& a,
                                 const Array& grid);
     */
-    double firstDerivativeAtCenter(const Array& a,
-                                   const Array& grid);
+    Real firstDerivativeAtCenter(const Array& a,
+                                 const Array& grid);
 
     /*! mid-point second derivative
 
         \todo replace with a more general (not "centered") function:
-              secondDerivativeAt(double spot,
+              secondDerivativeAt(Real spot,
                                  const Array& a,
                                  const Array& grid);
     */
-    double secondDerivativeAtCenter(const Array& a,
-                                    const Array& grid);
+    Real secondDerivativeAtCenter(const Array& a,
+                                  const Array& grid);
 
 }
 

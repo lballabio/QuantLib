@@ -38,7 +38,7 @@ namespace QuantLib {
     class ShoutCondition : public StandardStepCondition {
       public:
         ShoutCondition(Option::Type type,
-                       double strike,
+                       Real strike,
                        Time resTime,
                        Rate rate);
         ShoutCondition(const Array& intrinsicValues,
@@ -55,7 +55,7 @@ namespace QuantLib {
     };
 
     inline ShoutCondition::ShoutCondition(Option::Type type,
-                                          double strike, Time resTime, 
+                                          Real strike, Time resTime, 
                                           Rate rate)
     : payoff_(new PlainVanillaPayoff(type, strike)), 
       resTime_(resTime), rate_(rate) {}

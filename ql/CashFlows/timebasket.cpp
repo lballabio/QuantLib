@@ -21,7 +21,7 @@
 namespace QuantLib {
 
     TimeBasket::TimeBasket(const std::vector<Date>& dates,
-                           const std::vector<double>& values) {
+                           const std::vector<Real>& values) {
         QL_REQUIRE(dates.size() == values.size(),
                    "number of dates differs from number of values");
         for (Size i = 0; i < dates.size(); i++)
@@ -41,7 +41,7 @@ namespace QuantLib {
 
         for (const_iterator j = begin(); j != end(); j++) {
             Date date = j->first;
-            double value = j->second;
+            Real value = j->second;
             Date pDate = Null<Date>(), nDate = Null<Date>();
 
             std::vector<Date>::const_iterator bi =
@@ -58,9 +58,9 @@ namespace QuantLib {
             if (pDate == date || nDate == Null<Date>()) {
                 result[pDate] += value;
             } else {
-                double pDays = (double)(pDate-date);
-                double nDays = (double)(date-nDate);
-                double tDays = (double)(pDate-nDate);
+                Real pDays = Real(pDate-date);
+                Real nDays = Real(date-nDate);
+                Real tDays = Real(pDate-nDate);
                 result[pDate] += value*(nDays/tDays);
                 result[nDate] += value*(pDays/tDays);
             }

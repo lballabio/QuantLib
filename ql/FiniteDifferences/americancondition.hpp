@@ -33,7 +33,7 @@ namespace QuantLib {
     class AmericanCondition : public StandardStepCondition {
       public:
         AmericanCondition(Option::Type type,
-                          double strike);
+                          Real strike);
         AmericanCondition(const Array& intrinsicValues);
         void applyTo(Array& a,
                      Time t) const;
@@ -47,7 +47,7 @@ namespace QuantLib {
     // inline definitions
 
     inline AmericanCondition::AmericanCondition(Option::Type type,
-                                                double strike)
+                                                Real strike)
     : payoff_(new PlainVanillaPayoff(type, strike)) {}
 
     inline AmericanCondition::AmericanCondition(const Array& intrinsicValues)

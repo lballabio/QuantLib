@@ -73,7 +73,7 @@ namespace QuantLib {
     */
     class NeumannBC : public BoundaryCondition<TridiagonalOperator> {
       public:
-        NeumannBC(double value, Side side);
+        NeumannBC(Real value, Side side);
         // interface
         void applyBeforeApplying(TridiagonalOperator&) const;
         void applyAfterApplying(Array&) const;
@@ -81,7 +81,7 @@ namespace QuantLib {
         void applyAfterSolving(Array&) const;
         void setTime(Time) {}
       private:
-        double value_;
+        Real value_;
         Side side_;
     };
 
@@ -92,7 +92,7 @@ namespace QuantLib {
     */
     class DirichletBC : public BoundaryCondition<TridiagonalOperator> {
       public:
-        DirichletBC(double value, Side side);
+        DirichletBC(Real value, Side side);
         // interface
         void applyBeforeApplying(TridiagonalOperator&) const;
         void applyAfterApplying(Array&) const;
@@ -100,7 +100,7 @@ namespace QuantLib {
         void applyAfterSolving(Array&) const;
         void setTime(Time) {}
       private:
-        double value_;
+        Real value_;
         Side side_;
     };
 

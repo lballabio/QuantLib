@@ -29,7 +29,7 @@ namespace QuantLib {
 
     void BPSCalculator::visit(CashFlow&) {}
 
-    double BasisPointSensitivity(
+    Real BasisPointSensitivity(
                          const std::vector<boost::shared_ptr<CashFlow> >& leg,
                          const RelinkableHandle<TermStructure>& ts) {
         Date settlement = ts->referenceDate();
@@ -45,7 +45,7 @@ namespace QuantLib {
     }
 
 
-    double BPSBasketCalculator::sensfactor(const Date& date) const {
+    Real BPSBasketCalculator::sensfactor(const Date& date) const {
         Time t = termStructure_->dayCounter().yearFraction(
                                          termStructure_->referenceDate(),date);
         // Based on 1st derivative of zero coupon rate
@@ -59,11 +59,11 @@ namespace QuantLib {
              accrualEnd = c.accrualEndDate(),
              payment = c.date();
         if (accrualStart > today) {
-            double bps = sensfactor(accrualStart);
+            Real bps = sensfactor(accrualStart);
             result_[accrualStart] += bps*c.nominal()/10000.0;
         }
         if (accrualEnd >= today) {
-            double bps = -sensfactor(accrualEnd);
+            Real bps = -sensfactor(accrualEnd);
             DiscountFactor dfs = 1.0, dfe;
             if (accrualStart > today)
                 dfs = termStructure_->discount(accrualStart);
@@ -71,7 +71,7 @@ namespace QuantLib {
             result_[accrualEnd] += bps*c.nominal()*(dfs/dfe)/10000.0;
         }
         if (payment > today) {
-            double bps = sensfactor(payment);
+            Real bps = sensfactor(payment);
             result_[payment] += bps*c.amount()/10000.0;
         }
     }
@@ -80,7 +80,7 @@ namespace QuantLib {
         Date today = termStructure_->todaysDate(),
              payment = c.date();
         if (payment > today) {
-            double bps = sensfactor(payment);
+            Real bps = sensfactor(payment);
             result_[payment] -= bps*c.amount()/10000.0;
         }
     }
@@ -92,7 +92,7 @@ namespace QuantLib {
     TimeBasket BasisPointSensitivityBasket(
                          const std::vector<boost::shared_ptr<CashFlow> >& leg,
                          const RelinkableHandle<TermStructure>& ts,
-                         int basis) {
+                         Integer basis) {
         Date settlement = ts->referenceDate();
         BPSBasketCalculator calc(ts,basis);
         for (Size i=0; i<leg.size(); i++)

@@ -23,7 +23,7 @@ namespace QuantLib {
 
     std::vector<boost::shared_ptr<CashFlow> > 
     FixedRateCouponVector(const Schedule& schedule,
-                          const std::vector<double>& nominals,
+                          const std::vector<Real>& nominals,
                           const std::vector<Rate>& couponRates,
                           const DayCounter& dayCount, 
                           const DayCounter& firstPeriodDayCount) {
@@ -43,7 +43,7 @@ namespace QuantLib {
         Date start = schedule.date(0), end = schedule.date(1);
         Date paymentDate = calendar.roll(end,rollingConvention);
         Rate rate = couponRates[0];
-        double nominal = nominals[0];
+        Real nominal = nominals[0];
         if (schedule.isRegular(1)) {
             QL_REQUIRE(firstPeriodDayCount.isNull() ||
                        firstPeriodDayCount == dayCount,
@@ -114,9 +114,9 @@ namespace QuantLib {
 
     std::vector<boost::shared_ptr<CashFlow> > 
     FloatingRateCouponVector(const Schedule& schedule,
-                             const std::vector<double>& nominals,
+                             const std::vector<Real>& nominals,
                              const boost::shared_ptr<Xibor>& index, 
-                             int fixingDays,
+                             Integer fixingDays,
                              const std::vector<Spread>& spreads) {
 
         QL_REQUIRE(nominals.size() != 0, "unspecified nominals");
@@ -134,7 +134,7 @@ namespace QuantLib {
             spread = spreads[0];
         else
             spread = 0.0;
-        double nominal = nominals[0];
+        Real nominal = nominals[0];
         if (schedule.isRegular(1)) {
             leg.push_back(boost::shared_ptr<CashFlow>(
                 new ParCoupon(nominal, paymentDate, index, start, end, 

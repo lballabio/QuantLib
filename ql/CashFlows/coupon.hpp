@@ -38,7 +38,7 @@ namespace QuantLib {
         /*! \warning the coupon does not roll the payment date
           which must already be a business day.
         */
-        Coupon(double nominal,
+        Coupon(Real nominal,
                const Date& paymentDate, 
                const Date& accrualStartDate, 
                const Date& accrualEndDate,
@@ -50,7 +50,7 @@ namespace QuantLib {
         //@}
         //! \name Inspectors
         //@{
-        double nominal() const;
+        Real nominal() const;
         //! start of the accrual period
         const Date& accrualStartDate() const;
         //! end of the accrual period
@@ -58,18 +58,18 @@ namespace QuantLib {
         //! accrual period as fraction of year
         Time accrualPeriod() const;
         //! accrual period in days
-        int accrualDays() const;
+        Integer accrualDays() const;
         //! day counter for accrual calculation
         virtual DayCounter dayCounter() const = 0;
         //! accrued amount at the given date
-        virtual double accruedAmount(const Date&) const = 0;
+        virtual Real accruedAmount(const Date&) const = 0;
         //@}
         //! \name Visitability
         //@{
         virtual void accept(AcyclicVisitor&);
         //@}
       protected:
-        double nominal_;
+        Real nominal_;
         Date paymentDate_, accrualStartDate_, accrualEndDate_, 
              refPeriodStart_, refPeriodEnd_;
     };
@@ -77,7 +77,7 @@ namespace QuantLib {
 
     // inline definitions
 
-    inline Coupon::Coupon(double nominal,
+    inline Coupon::Coupon(Real nominal,
                           const Date& paymentDate, 
                           const Date& accrualStartDate, 
                           const Date& accrualEndDate,
@@ -96,7 +96,7 @@ namespace QuantLib {
         return paymentDate_;
     }
 
-    inline double Coupon::nominal() const {
+    inline Real Coupon::nominal() const {
         return nominal_;
     }
 
@@ -115,7 +115,7 @@ namespace QuantLib {
                                          refPeriodEnd_);
     }
 
-    inline int Coupon::accrualDays() const {
+    inline Integer Coupon::accrualDays() const {
         return dayCounter().dayCount(accrualStartDate_,
                                      accrualEndDate_);
     }

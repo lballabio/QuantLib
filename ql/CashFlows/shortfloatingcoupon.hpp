@@ -33,16 +33,16 @@ namespace QuantLib {
     */
     class ShortFloatingRateCoupon : public ParCoupon {
       public:
-        ShortFloatingRateCoupon(double nominal,
+        ShortFloatingRateCoupon(Real nominal,
                                 const Date& paymentDate,
                                 const boost::shared_ptr<Xibor>& index,
                                 const Date& startDate, const Date& endDate,
-                                int fixingDays,
+                                Integer fixingDays,
                                 Spread spread = 0.0,
                                 const Date& refPeriodStart = Date(),
                                 const Date& refPeriodEnd = Date());
         //! throws when an interpolated fixing is needed
-        double amount() const;
+        Real amount() const;
         //! \name Visitability
         //@{
         virtual void accept(AcyclicVisitor&);

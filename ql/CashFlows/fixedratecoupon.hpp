@@ -29,7 +29,7 @@ namespace QuantLib {
     //! %Coupon paying a fixed interest rate
     class FixedRateCoupon : public Coupon {
       public:
-        FixedRateCoupon(double nominal, 
+        FixedRateCoupon(Real nominal, 
                         const Date& paymentDate,
                         Rate rate,
                         const DayCounter& dayCounter,
@@ -41,12 +41,12 @@ namespace QuantLib {
           rate_(rate), dayCounter_(dayCounter) {}
         //! \name CashFlow interface
         //@{
-        double amount() const;
+        Real amount() const;
         //@}
         //! \name Coupon interface
         //@{
         DayCounter dayCounter() const;
-        double accruedAmount(const Date&) const;
+        Real accruedAmount(const Date&) const;
         //@}
         //! \name Inspectors
         //@{
@@ -64,7 +64,7 @@ namespace QuantLib {
 
     // inline definitions
 
-    inline double FixedRateCoupon::amount() const {
+    inline Real FixedRateCoupon::amount() const {
         return nominal()*rate_*accrualPeriod();
     }
 
@@ -76,7 +76,7 @@ namespace QuantLib {
         return dayCounter_;
     }
 
-    inline double FixedRateCoupon::accruedAmount(const Date& d) const {
+    inline Real FixedRateCoupon::accruedAmount(const Date& d) const {
         if (d <= accrualStartDate_ || d > paymentDate_) {
             return 0.0;
         } else {

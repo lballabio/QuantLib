@@ -33,11 +33,11 @@ namespace QuantLib {
     */
     class UpFrontIndexedCoupon : public IndexedCoupon {
       public:
-        UpFrontIndexedCoupon(double nominal,
+        UpFrontIndexedCoupon(Real nominal,
                              const Date& paymentDate,
                              const boost::shared_ptr<Xibor>& index,
                              const Date& startDate, const Date& endDate,
-                             int fixingDays,
+                             Integer fixingDays,
                              Spread spread = 0.0,
                              const Date& refPeriodStart = Date(),
                              const Date& refPeriodEnd = Date(),

@@ -32,11 +32,11 @@ namespace QuantLib {
         Month m = date.month();
         Year y = date.year();
         // equinox calculation
-        const double exact_vernal_equinox_time = 20.69115;
-        const double exact_autumnal_equinox_time = 23.09;
-        const double diff_per_year = 0.242194;
-        double moving_amount = (y-2000)*diff_per_year;
-        int number_of_leap_years = (y-2000)/4+(y-2000)/100-(y-2000)/400;
+        const Time exact_vernal_equinox_time = 20.69115;
+        const Time exact_autumnal_equinox_time = 23.09;
+        const Time diff_per_year = 0.242194;
+        const Time moving_amount = (y-2000)*diff_per_year;
+        Integer number_of_leap_years = (y-2000)/4+(y-2000)/100-(y-2000)/400;
         Day ve =    // vernal equinox day
             Day(exact_vernal_equinox_time
                 + moving_amount - number_of_leap_years);

@@ -21,15 +21,15 @@
 namespace QuantLib {
 
     ShortFloatingRateCoupon::ShortFloatingRateCoupon(
-        double nominal, const Date& paymentDate,
+        Real nominal, const Date& paymentDate,
         const boost::shared_ptr<Xibor>& index, const Date& startDate, 
-        const Date& endDate, int fixingDays, Spread spread,
+        const Date& endDate, Integer fixingDays, Spread spread,
         const Date& refPeriodStart, const Date& refPeriodEnd)
     : ParCoupon(nominal,paymentDate,index,
                 startDate,endDate,fixingDays,
                 spread,refPeriodStart,refPeriodEnd) {}
 
-    double ShortFloatingRateCoupon::amount() const {
+    Real ShortFloatingRateCoupon::amount() const {
         QL_REQUIRE(index()->termStructure(),
                    "null term structure set to par coupon");
         Date today = index()->termStructure()->todaysDate();

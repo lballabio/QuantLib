@@ -43,7 +43,8 @@
               '("QuantLib" 
                 "Integer" "BigInteger" "Real" "Decimal" 
                 "Time" "Rate" "Spread" "DiscountFactor" "Size" "Volatility"
-                "Date" "TimeUnit" "Frequency" "Period" "Weekday"
+                "Date" "Day" "Month" "Year" "Weekday"
+                "TimeUnit" "Frequency" "Period" 
                 "DayCounter" "Calendar" "RollingConvention"
                 "RelinkableHandle")))
 ; from Boost:

@@ -19,14 +19,14 @@
 
 namespace QuantLib {
 
-    BSMOperator::BSMOperator(Size size, double dx, double r,
-                             double q, double sigma)
+    BSMOperator::BSMOperator(Size size, Real dx, Rate r,
+                             Rate q, Volatility sigma)
     : TridiagonalOperator(size) {
-        double sigma2 = sigma*sigma;
-        double nu = r-q-sigma2/2;
-        double pd = -(sigma2/dx-nu)/(2*dx);
-        double pu = -(sigma2/dx+nu)/(2*dx);
-        double pm = sigma2/(dx*dx)+r;
+        Real sigma2 = sigma*sigma;
+        Real nu = r-q-sigma2/2;
+        Real pd = -(sigma2/dx-nu)/(2*dx);
+        Real pu = -(sigma2/dx+nu)/(2*dx);
+        Real pm = sigma2/(dx*dx)+r;
         setMidRows(pd,pm,pu);
     }
 

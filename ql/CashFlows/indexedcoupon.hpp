@@ -35,11 +35,11 @@ namespace QuantLib {
     class IndexedCoupon : public FloatingRateCoupon,
                           public Observer {
       public:
-        IndexedCoupon(double nominal,
+        IndexedCoupon(Real nominal,
                       const Date& paymentDate,
                       const boost::shared_ptr<Xibor>& index,
                       const Date& startDate, const Date& endDate,
-                      int fixingDays,
+                      Integer fixingDays,
                       Spread spread = 0.0,
                       const Date& refPeriodStart = Date(),
                       const Date& refPeriodEnd = Date(),
@@ -47,7 +47,7 @@ namespace QuantLib {
         virtual ~IndexedCoupon() {}
         //! \name CashFlow interface
         //@{
-        double amount() const;
+        Real amount() const;
         //@}
         //! \name Coupon interface
         //@{
@@ -76,12 +76,12 @@ namespace QuantLib {
 
 
     // inline definitions
-    inline IndexedCoupon::IndexedCoupon(double nominal,
+    inline IndexedCoupon::IndexedCoupon(Real nominal,
                                         const Date& paymentDate,
                                         const boost::shared_ptr<Xibor>& index,
                                         const Date& startDate, 
                                         const Date& endDate,
-                                        int fixingDays, Spread spread,
+                                        Integer fixingDays, Spread spread,
                                         const Date& refPeriodStart, 
                                         const Date& refPeriodEnd,
                                         const DayCounter& dayCounter)
@@ -107,7 +107,7 @@ namespace QuantLib {
         return dayCounter_;
     }
 
-    inline double IndexedCoupon::amount() const {
+    inline Real IndexedCoupon::amount() const {
         return fixing() * accrualPeriod() * nominal();
     }
 

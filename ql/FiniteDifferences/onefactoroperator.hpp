@@ -44,13 +44,12 @@ namespace QuantLib {
         : public TridiagonalOperator::TimeSetter{
       public:
         SpecificTimeSetter(
-            double x0, double dx,
+            Real x0, Real dx,
             const boost::shared_ptr<OneFactorModel::ShortRateDynamics>&);
         virtual ~SpecificTimeSetter() {}
         virtual void setTime(Time t, TridiagonalOperator& L) const;
       private:
-        double x0_;
-        double dx_;
+        Real x0_, dx_;
         boost::shared_ptr<OneFactorModel::ShortRateDynamics> dynamics_;
     };
 

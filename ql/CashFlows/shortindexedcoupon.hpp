@@ -34,11 +34,11 @@ namespace QuantLib {
     template <class IndexedCouponType>
     class Short : public IndexedCouponType {
       public:
-        Short(double nominal,
+        Short(Real nominal,
               const Date& paymentDate,
               const boost::shared_ptr<Xibor>& index,
               const Date& startDate, const Date& endDate,
-              int fixingDays,
+              Integer fixingDays,
               Spread spread = 0.0,
               const Date& refPeriodStart = Date(),
               const Date& refPeriodEnd = Date(),
@@ -50,7 +50,7 @@ namespace QuantLib {
         /*! Unlike ParCoupon, this coupon can't calculate 
             its fixing for future dates, either.
         */
-        double amount() const {
+        Real amount() const {
             QL_FAIL("short/long indexed coupons not supported yet"
                     " (start = " +
                     DateFormatter::toString(accrualStartDate_) +

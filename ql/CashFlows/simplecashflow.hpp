@@ -30,11 +30,11 @@ namespace QuantLib {
     /*! This cash flow pays a predetermined amount at a given date. */
     class SimpleCashFlow : public CashFlow {
       public:
-        SimpleCashFlow(double amount, const Date& date)
+        SimpleCashFlow(Real amount, const Date& date)
         : amount_(amount), date_(date) {}
         //! \name CashFlow interface
         //@{
-        double amount() const { return amount_; }
+        Real amount() const { return amount_; }
         Date date() const { return date_; }
         //@}
         //! \name Visitability
@@ -42,7 +42,7 @@ namespace QuantLib {
         virtual void accept(AcyclicVisitor&);
         //@}
       private:
-        double amount_;
+        Real amount_;
         Date date_;
     };
 

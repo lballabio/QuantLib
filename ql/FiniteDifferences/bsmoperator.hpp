@@ -31,7 +31,7 @@ namespace QuantLib {
     class BSMOperator : public TridiagonalOperator {
       public:
         BSMOperator() {}
-        BSMOperator(Size size, double dx, double r, double q, double sigma);
+        BSMOperator(Size size, Real dx, Rate r, Rate q, Volatility sigma);
     };
 
 }

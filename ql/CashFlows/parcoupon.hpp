@@ -35,15 +35,15 @@ namespace QuantLib {
     class ParCoupon : public FloatingRateCoupon,
                       public Observer {
       public:
-        ParCoupon(double nominal, const Date& paymentDate,
+        ParCoupon(Real nominal, const Date& paymentDate,
                   const boost::shared_ptr<Xibor>& index,
                   const Date& startDate, const Date& endDate,
-                  int fixingDays, Spread spread = 0.0,
+                  Integer fixingDays, Spread spread = 0.0,
                   const Date& refPeriodStart = Date(),
                   const Date& refPeriodEnd = Date());
         //! \name CashFlow interface
         //@{
-        double amount() const;
+        Real amount() const;
         //@}
         //! \name Coupon interface
         //@{

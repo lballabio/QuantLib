@@ -61,10 +61,10 @@ namespace QuantLib {
 
         // estimate roughly the length in months of a period
         Integer months = 
-            Integer(0.5+12*double(refPeriodEnd-refPeriodStart)/365);
+            Integer(0.5+12*Real(refPeriodEnd-refPeriodStart)/365);
         QL_REQUIRE(months != 0,
                    "number of months does not divide 12 exactly");
-        double period = double(months)/12.0;
+        Time period = Real(months)/12.0;
 
         if (d2 <= refPeriodEnd) {
             // here refPeriodEnd is a future (notional?) payment date
@@ -75,7 +75,7 @@ namespace QuantLib {
                 // [maybe the equality should be enforced, since
                 // refPeriodStart < d1 <= d2 < refPeriodEnd
                 // could give wrong results] ???
-                return period*double(dayCount(d1,d2)) /
+                return period*Real(dayCount(d1,d2)) /
                     dayCount(refPeriodStart,refPeriodEnd);
             } else {
                 // here refPeriodStart is the next (maybe notional)
@@ -104,8 +104,8 @@ namespace QuantLib {
             // now it is: refPeriodStart <= d1 < refPeriodEnd < d2
 
             // the part from d1 to refPeriodEnd
-            double sum = yearFraction(d1, refPeriodEnd, 
-                                      refPeriodStart, refPeriodEnd);
+            Time sum = yearFraction(d1, refPeriodEnd, 
+                                    refPeriodStart, refPeriodEnd);
 
             // the part from refPeriodEnd to d2
             // count how many regular periods are in [refPeriodEnd, d2],
@@ -136,10 +136,10 @@ namespace QuantLib {
             return 0.0;
 
         Integer y1 = d1.year(), y2 = d2.year();
-        double dib1 = (Date::isLeap(y1) ? 366.0 : 365.0),
-            dib2 = (Date::isLeap(y2) ? 366.0 : 365.0);
+        Real dib1 = (Date::isLeap(y1) ? 366.0 : 365.0),
+             dib2 = (Date::isLeap(y2) ? 366.0 : 365.0);
 
-        double sum = y2 - y1 - 1;
+        Time sum = y2 - y1 - 1;
         sum += dayCount(d1, Date(1,(Month)1,y1+1))/dib1;
         sum += dayCount(Date(1,(Month)1,y2),d2)/dib2;
         return sum;
@@ -166,7 +166,7 @@ namespace QuantLib {
             }
         }
 
-        double den = 365.0;
+        Real den = 365.0;
 
         if (Date::isLeap(newD2.year())) {
             temp = Date(29, (Month)2, newD2.year());

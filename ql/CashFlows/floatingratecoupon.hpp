@@ -33,18 +33,18 @@ namespace QuantLib {
     */
     class FloatingRateCoupon : public Coupon {
       public:
-        FloatingRateCoupon(double nominal, const Date& paymentDate,
+        FloatingRateCoupon(Real nominal, const Date& paymentDate,
                            const Date& startDate, const Date& endDate,
-                           int fixingDays, Spread spread = 0.0,
+                           Integer fixingDays, Spread spread = 0.0,
                            const Date& refPeriodStart = Date(),
                            const Date& refPeriodEnd = Date());
         //! \name Coupon interface
         //@{
-        double accruedAmount(const Date&) const;
+        Real accruedAmount(const Date&) const;
         //@}
         //! \name Inspectors
         //@{
-        int fixingDays() const;
+        Integer fixingDays() const;
         virtual Spread spread() const;
         virtual Rate fixing() const = 0;
         virtual Date fixingDate() const = 0;
@@ -54,7 +54,7 @@ namespace QuantLib {
         virtual void accept(AcyclicVisitor&);
         //@}
       protected:
-        int fixingDays_;
+        Integer fixingDays_;
         Spread spread_;
     };
 
@@ -62,15 +62,15 @@ namespace QuantLib {
     // inline definitions
 
     inline FloatingRateCoupon::FloatingRateCoupon(
-        double nominal, const Date& paymentDate,
-        const Date& startDate, const Date& endDate,
-        int fixingDays, Spread spread,
-        const Date& refPeriodStart, const Date& refPeriodEnd)
+                         Real nominal, const Date& paymentDate,
+                         const Date& startDate, const Date& endDate,
+                         Integer fixingDays, Spread spread,
+                         const Date& refPeriodStart, const Date& refPeriodEnd)
     : Coupon(nominal, paymentDate, 
              startDate, endDate, refPeriodStart, refPeriodEnd),
       fixingDays_(fixingDays), spread_(spread) {}
 
-    inline int FloatingRateCoupon::fixingDays() const {
+    inline Integer FloatingRateCoupon::fixingDays() const {
         return fixingDays_;
     }
 
@@ -78,7 +78,7 @@ namespace QuantLib {
         return spread_;
     }
 
-    inline double FloatingRateCoupon::accruedAmount(const Date& d) const {
+    inline Real FloatingRateCoupon::accruedAmount(const Date& d) const {
         if (d <= accrualStartDate_ || d > paymentDate_) {
             return 0.0;
         } else {

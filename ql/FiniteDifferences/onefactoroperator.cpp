@@ -28,7 +28,7 @@ namespace QuantLib {
     }
 
     OneFactorOperator::SpecificTimeSetter::SpecificTimeSetter(
-         double x0, double dx, 
+         Real x0, Real dx, 
          const boost::shared_ptr<OneFactorModel::ShortRateDynamics>& dynamics)
     : x0_(x0), dx_(dx), dynamics_(dynamics) {}
 
@@ -37,16 +37,16 @@ namespace QuantLib {
                                             TridiagonalOperator& op) const {
         Size length = op.size();
         for (Size i=0; i<length; i++) {
-            double x = x0_ + dx_*i;
+            Real x = x0_ + dx_*i;
 
             Rate r = dynamics_->shortRate(t, x);
-            double mu = dynamics_->process()->drift(t, x);
-            double sigma = dynamics_->process()->diffusion(t, x);
+            Real mu = dynamics_->process()->drift(t, x);
+            Real sigma = dynamics_->process()->diffusion(t, x);
 
-            double sigma2 = sigma*sigma;
-            double pdown = (- sigma2/(2.0*dx_*dx_) ) + mu/(2.0*dx_);
-            double pm    = (+ sigma2/(dx_*dx_) )     + r;
-            double pup   = (- sigma2/(2.0*dx_*dx_) ) - mu/(2.0*dx_);
+            Real sigma2 = sigma*sigma;
+            Real pdown = (- sigma2/(2.0*dx_*dx_) ) + mu/(2.0*dx_);
+            Real pm    = (+ sigma2/(dx_*dx_) )     + r;
+            Real pup   = (- sigma2/(2.0*dx_*dx_) ) - mu/(2.0*dx_);
             if (i==0)
                 op.setFirstRow(pm, pup);
             else if (i==(length - 1))

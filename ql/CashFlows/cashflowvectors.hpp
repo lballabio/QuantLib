@@ -31,7 +31,7 @@ namespace QuantLib {
     //! helper function building a sequence of fixed rate coupons
     std::vector<boost::shared_ptr<CashFlow> > FixedRateCouponVector(
         const Schedule& schedule,
-        const std::vector<double>& nominals,
+        const std::vector<Real>& nominals,
         const std::vector<Rate>& couponRates,
         const DayCounter& dayCount, 
         const DayCounter& firstPeriodDayCount = DayCounter());
@@ -46,8 +46,8 @@ namespace QuantLib {
     */
     std::vector<boost::shared_ptr<CashFlow> > FloatingRateCouponVector(
         const Schedule& schedule,
-        const std::vector<double>& nominals,
-        const boost::shared_ptr<Xibor>& index, int fixingDays,
+        const std::vector<Real>& nominals,
+        const boost::shared_ptr<Xibor>& index, Integer fixingDays,
         const std::vector<Spread>& spreads = std::vector<Spread>());
 
 }

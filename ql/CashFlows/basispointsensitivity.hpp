@@ -45,14 +45,14 @@ namespace QuantLib {
         virtual void visit(Coupon&);
         virtual void visit(CashFlow&);
         //@}
-        double result() const { return result_; }
+        Real result() const { return result_; }
       private:
         RelinkableHandle<TermStructure> termStructure_;
-        double result_;
+        Real result_;
     };
 
     //! Collective basis-point sensitivity of a cash-flow sequence
-    double BasisPointSensitivity(
+    Real BasisPointSensitivity(
                              const std::vector<boost::shared_ptr<CashFlow> >&,
                              const RelinkableHandle<TermStructure>&);
 
@@ -66,11 +66,11 @@ namespace QuantLib {
                                 public Visitor<FixedRateCoupon> {
       public:
         BPSBasketCalculator(const RelinkableHandle<TermStructure>& ts,
-                            int basis)
+                            Integer basis)
         : termStructure_(ts), basis_(basis) {}
         //! \name Visitor interface
         //@{
-        double sensfactor(const Date& date) const;
+        Real sensfactor(const Date& date) const;
         virtual void visit(Coupon&);
         virtual void visit(FixedRateCoupon&);
         virtual void visit(CashFlow&);
@@ -78,7 +78,7 @@ namespace QuantLib {
         const TimeBasket& result() const { return result_; }
       private:
         RelinkableHandle<TermStructure> termStructure_;
-        int basis_;
+        Integer basis_;
         TimeBasket result_;
     };
 
@@ -88,7 +88,7 @@ namespace QuantLib {
     TimeBasket BasisPointSensitivityBasket(
                              const std::vector<boost::shared_ptr<CashFlow> >&,
                              const RelinkableHandle<TermStructure>&,
-                             int basis);
+                             Integer basis);
 
 }
 

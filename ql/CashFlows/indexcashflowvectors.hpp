@@ -30,8 +30,9 @@ namespace QuantLib {
     template <class IndexedCouponType>
     std::vector<boost::shared_ptr<CashFlow> > 
     IndexedCouponVector(const Schedule& schedule, 
-                        const std::vector<double>& nominals,
-                        const boost::shared_ptr<Xibor>& index, int fixingDays,
+                        const std::vector<Real>& nominals,
+                        const boost::shared_ptr<Xibor>& index, 
+                        Integer fixingDays,
                         const std::vector<Spread>& spreads,
                         const DayCounter& dayCounter = DayCounter()) {
 
@@ -49,7 +50,7 @@ namespace QuantLib {
             spread = spreads[0];
         else
             spread = 0.0;
-        double nominal = nominals[0];
+        Real nominal = nominals[0];
         if (schedule.isRegular(1)) {
             leg.push_back(boost::shared_ptr<CashFlow>(
                 new IndexedCouponType(nominal, paymentDate, index, 

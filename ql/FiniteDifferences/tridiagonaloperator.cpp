@@ -70,7 +70,7 @@ namespace QuantLib {
 
         Array result(size()), tmp(size());
 
-        double bet=diagonal_[0];
+        Real bet=diagonal_[0];
         QL_REQUIRE(bet != 0.0, "division by zero");
         result[0] = rhs[0]/bet;
         Size j;
@@ -89,7 +89,7 @@ namespace QuantLib {
     }
 
     Disposable<Array>
-    TridiagonalOperator::SOR(const Array& rhs, double tol) const {
+    TridiagonalOperator::SOR(const Array& rhs, Real tol) const {
         QL_REQUIRE(rhs.size()==size(), "rhs has the wrong size");
 
         // initial guess
@@ -97,9 +97,9 @@ namespace QuantLib {
 
         // solve tridiagonal system with SOR technique
         Size sorIteration, i;
-        double omega = 1.5;
-        double err=2.0*tol;
-        double temp;
+        Real omega = 1.5;
+        Real err = 2.0*tol;
+        Real temp;
         for (sorIteration=0; err>tol ; sorIteration++) {
             QL_REQUIRE(sorIteration<100000,
                        "tolerance ["

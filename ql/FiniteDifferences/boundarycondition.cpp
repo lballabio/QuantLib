@@ -19,7 +19,7 @@
 
 namespace QuantLib {
 
-    NeumannBC::NeumannBC(double value, NeumannBC::Side side)
+    NeumannBC::NeumannBC(Real value, NeumannBC::Side side)
     : value_(value), side_(side) {}
 
     void NeumannBC::applyBeforeApplying(TridiagonalOperator& L) const {
@@ -68,7 +68,7 @@ namespace QuantLib {
 
 
 
-    DirichletBC::DirichletBC(double value, DirichletBC::Side side)
+    DirichletBC::DirichletBC(Real value, DirichletBC::Side side)
     : value_(value), side_(side) {}
 
     void DirichletBC::applyBeforeApplying(TridiagonalOperator& L) const {
