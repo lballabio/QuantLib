@@ -17,7 +17,8 @@ AC_PROG_CC
 AC_PROG_CXX
 AC_LANG_CPLUSPLUS
 AM_PROG_LIBTOOL
-AC_PATH_PROG(SWIG, swig)
+AC_PATH_PROG(SWIG, swig, notfound)
+AM_CONDITIONAL(SWIG_FOUND, test x$SWIG != xnotfound)
 AC_PATH_PROG(SED, sed)
 
 dnl Check for Libraries

@@ -21,6 +21,7 @@ SWIG_INCLUDEDIR = ../SWIG
 
 #libQuantLibc_la_SOURCES = quantlib_wrap.cpp
 
+if SWIG_FOUND
 quantlib_wrap.cpp:  $(SWIG_INCLUDEDIR)/QuantLib.i \
 	$(SWIG_INCLUDEDIR)/Date.i \
 	$(SWIG_INCLUDEDIR)/Calendars.i \
@@ -39,7 +40,8 @@ quantlib_wrap.cpp:  $(SWIG_INCLUDEDIR)/QuantLib.i \
 	$(SWIG_INCLUDEDIR)/History.i \
 	$(SWIG_INCLUDEDIR)/Distributions.i \
 	$(SWIG_INCLUDEDIR)/MontecarloPricers.i
-	$(SWIG) -python -c++ -shadow -keyword -opt -I$(SWIG_INCLUDEDIR) -o quantlib_wrap.cpp $(SWIG_INCLUDEDIR)/QuantLib.i
+	$(SWIG) -python -c++ -shadow -I$(SWIG_INCLUDEDIR) -o quantlib_wrap.cpp $(SWIG_INCLUDEDIR)/QuantLib.i
 #endif
 
 python: quantlib_wrap.cpp
+endif

@@ -33,5 +33,10 @@ EXTRA_DIST=News.txt Contributors.txt History.txt LICENSE.TXT \
 	Examples/history_iterators.cpp
 	 
 
+if SWIG_FOUND
 python:
 	$(MAKE) -C Python python
+else
+python:
+	echo You have to install swig in order to generate wrappers, sorry.
+endif
