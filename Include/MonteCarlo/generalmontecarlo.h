@@ -23,9 +23,12 @@
 /*! \file generalmontecarlo.h
     \brief A class useful in many different Monte-Carlo-type simulations
 
-    $Source$
-    $Name$
-    $Log$
+  $Source$ 
+  $Name$
+  $Log$
+  Revision 1.3  2001/01/30 15:48:25  marmar
+  Template class updated
+
     Revision 1.2  2001/01/30 09:21:48  marmar
     Documentation updated
 
@@ -45,53 +48,52 @@ namespace QuantLib {
 
     namespace MonteCarlo {
     /*!
-    Given a sample accumulator class SA and a sample generator SG a class 
-    GeneralMonteCarlo<SA, SG> is constructed. An instance of this class can 
-    be used to loop over the generator, store the results in the accumulator
-    that can be returned upon request.
+    Given a sample-accumulator class SA and a sample-generator SG class, 
+    a GeneralMonteCarlo<SA, SG>  class is constructed. This class
+    can be used to sample over the generator and store the results in the 
+    accumulator. The accumulator itself can be returned upon request.
 
-    These are the minimal interfaces that SA and SG should implements:
+    The minimal interfaces that SA and SG should implements are
 
-    class SA{
-        SAMPLE_TYPE next() const;
-        double weight() const;
-    };
-
-    class SG{
-        void add(SAMPLE_TYPE sample, double weight) const;    
-    };
+        class SA{
+            void add(SAMPLE_TYPE sample, double weight) const;    
+        };
+    
+        class SG{
+            SAMPLE_TYPE next() const;
+            double weight() const;
+        };
+    
     */
-
         template<class SA, class SG>
         class GeneralMonteCarlo {
         public:
-            GeneralMonteCarlo(){}
+            GeneralMonteCarlo():isInitialized_(false){}
             GeneralMonteCarlo(SA &statisticAccumulator, 
                               SG &sampleGenerator);
-            void sample(long iterations) const; 
-            SA statisticAccumulator() const;
+            SA sampleAccumulator(long iterations = 0) const; 
         private:
-            mutable SA statisticAccumulator_;
+            mutable bool isInitialized_;
+            mutable SA sampleAccumulator_;
             mutable SG sampleGenerator_;
         };
 
         template<class SA, class SG>
         inline GeneralMonteCarlo<SA, SG>::GeneralMonteCarlo(
-                SA &statisticAccumulator, SG &sampleGenerator): 
-                statisticAccumulator_(statisticAccumulator),
-                sampleGenerator_(sampleGenerator){}
+                SA &sampleAccumulator, SG &sampleGenerator): 
+                sampleAccumulator_(sampleAccumulator),
+                sampleGenerator_(sampleGenerator),
+                isInitialized_(true){}
 
         template<class SA, class SG>
-        inline void GeneralMonteCarlo<SA, SG>::sample(long iterations) const{
+        inline SA GeneralMonteCarlo<SA, SG>::sampleAccumulator(long iterations) const{
+            QL_REQUIRE(isInitialized_ == true, 
+                       "GeneralMonteCarlo must be initialized");
             for(long j = 1; j <= iterations; j++){
-                statisticAccumulator_.add(sampleGenerator_.next(),
+                sampleAccumulator_.add(sampleGenerator_.next(),
                                           sampleGenerator_.weight());
             }                                            
-        }
-
-        template<class SA, class SG>
-        inline SA GeneralMonteCarlo<SA, SG>::statisticAccumulator() const{
-            return statisticAccumulator_;
+            return sampleAccumulator_;
         }
 
     }
