@@ -24,6 +24,7 @@
 
 #include <ql/FiniteDifferences/fdtypedefs.hpp>
 #include <ql/discretizedasset.hpp>
+#include <ql/payoff.hpp>
 
 namespace QuantLib {
 

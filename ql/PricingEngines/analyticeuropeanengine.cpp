@@ -103,7 +103,7 @@ namespace QuantLib {
             results_.value = riskFreeDiscount *
                 (forwardPrice * alpha - strike *  beta);
             results_.delta = dividendDiscount * alpha;
-//            results_.deltaForward = riskFreeDiscount * alpha;
+            // results_.deltaForward = riskFreeDiscount * alpha;
             results_.gamma = NID1 * dividendDiscount /
                 (arguments_.underlying * stdDev);
             results_.theta = riskFreeRate * results_.value
