@@ -76,9 +76,9 @@ namespace QuantLib {
             const M& data)
         : Interpolation2D<I1,I2, M>(xBegin,xEnd,yBegin,yEnd,data), 
           rows_(data_.rows()) {
+            typedef typename M::const_row_iterator row_iterator;
             for (Size i = 0; i< rows_; i++)
-                splines_.push_back(CubicSpline<I1,
-                                   typename M::const_row_iterator>(
+                splines_.push_back(CubicSpline<I1, row_iterator>(
                     xBegin, xEnd, data_.row_begin(i)));
 
         }
