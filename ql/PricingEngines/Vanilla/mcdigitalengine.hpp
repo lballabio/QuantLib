@@ -150,6 +150,7 @@ namespace QuantLib {
 */
 
     template <class RNG, class S>
+    inline
     boost::shared_ptr<QL_TYPENAME MCDigitalEngine<RNG,S>::path_pricer_type>
     MCDigitalEngine<RNG,S>::pathPricer() const {
 
