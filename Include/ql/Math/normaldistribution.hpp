@@ -28,6 +28,9 @@
     $Source$
     $Name$
     $Log$
+    Revision 1.2  2001/05/09 11:06:18  nando
+    A few comments modified/removed
+
     Revision 1.1  2001/04/09 14:05:48  nando
     all the *.hpp moved below the Include/ql level
 
@@ -44,24 +47,6 @@
 
     Revision 1.8  2001/01/16 11:22:17  nando
     fixed typo in error message
-
-    Revision 1.7  2001/01/11 18:06:09  nando
-    generalized to sigma<>1 and average<>0
-    Also added NormalDistribution.derivative().
-    Improved Python test now also uses Finite Difference
-    first and second order operators
-
-    Revision 1.6  2001/01/08 16:22:32  nando
-    added InverseCumulativeNormalDistribution
-
-    Revision 1.5  2001/01/04 11:59:29  lballabio
-    Line wraps fixed when stumbling upon them
-
-    Revision 1.4  2000/12/27 17:18:35  lballabio
-    Changes for compiling under Linux and Alpha Linux
-
-    Revision 1.3  2000/12/14 12:32:30  lballabio
-    Added CVS tags in Doxygen file documentation blocks
 
 */
 

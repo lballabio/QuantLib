@@ -25,6 +25,9 @@
 /*! \file vartool.hpp
     $Source$
     $Log$
+    Revision 1.2  2001/05/09 11:06:18  nando
+    A few comments modified/removed
+
     Revision 1.1  2001/04/09 14:05:48  nando
     all the *.hpp moved below the Include/ql level
 
@@ -42,21 +45,6 @@
     Headers policy part 1:
     Headers should have a .hpp (lowercase) filename extension
     All *.h renamed to *.hpp
-
-    Revision 1.3  2001/03/05 10:42:19  nando
-    Expected Shortfall added to classes HVarTool and HRiskStatistics.
-    Expected Shortfall included in python test.
-
-    Revision 1.2  2001/02/21 11:33:47  lballabio
-    Inlined definition that was supposed to be
-
-    Revision 1.1  2001/02/20 13:59:00  nando
-    added class VarTool.
-    RiskStatistics was derived from Statistics:
-    now RiskStatistics includes VarTool and Statistics.
-    VarTool is not based on Statistics, but requires
-    mean and standardDeviation as input.
-
 
 */
 

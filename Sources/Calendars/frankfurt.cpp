@@ -27,6 +27,9 @@
 
 	$Source$
 	$Log$
+	Revision 1.16  2001/05/09 11:06:19  nando
+	A few comments modified/removed
+
 	Revision 1.15  2001/04/09 14:13:33  nando
 	all the *.hpp moved below the Include/ql level
 
@@ -47,12 +50,6 @@
 
 	Revision 1.11  2001/03/26 08:47:00  lballabio
 	Fixed line wrappings
-
-	Revision 1.10  2001/01/04 20:09:31  nando
-	few changes: enumerations, tab/spaces, more checks, python test, bug fixed
-
-	Revision 1.9  2000/12/14 12:32:31  lballabio
-	Added CVS tags in Doxygen file documentation blocks
 
 */
 

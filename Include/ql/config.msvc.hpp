@@ -7,8 +7,7 @@
 
 /* So nobody using MSVC needs to specify the .lib in their Makefile any
    more (other compilers will still need to do so)
-   For Python extensions that's taken care of by the Distutils,
-   so it's not a problem. */
+*/
 #ifdef QL_DEBUG
     #pragma comment(lib,"QuantLib_d.lib")
 #else

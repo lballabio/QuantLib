@@ -27,6 +27,9 @@
 
     $Source$
     $Log$
+    Revision 1.18  2001/05/09 11:06:19  nando
+    A few comments modified/removed
+
     Revision 1.17  2001/04/10 07:54:33  lballabio
     Ruby histories (the Ruby way)
 
@@ -49,12 +52,6 @@
 
     Revision 1.11  2001/01/17 14:37:56  nando
     tabs removed
-
-    Revision 1.10  2001/01/04 20:09:31  nando
-    few changes: enumerations, tab/spaces, more checks, python test, bug fixed
-
-    Revision 1.9  2000/12/27 17:18:35  lballabio
-    Changes for compiling under Linux and Alpha Linux
 
 */
 

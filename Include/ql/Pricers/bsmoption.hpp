@@ -27,6 +27,9 @@
 
     $Source$
     $Log$
+    Revision 1.4  2001/05/09 11:06:18  nando
+    A few comments modified/removed
+
     Revision 1.3  2001/04/26 16:04:52  marmar
     underlying_ not mutable anymore
 
@@ -35,57 +38,6 @@
 
     Revision 1.1  2001/04/09 14:05:48  nando
     all the *.hpp moved below the Include/ql level
-
-    Revision 1.2  2001/04/06 18:46:20  nando
-    changed Authors, Contributors, Licence and copyright header
-
-    Revision 1.1  2001/04/04 11:07:23  nando
-    Headers policy part 1:
-    Headers should have a .hpp (lowercase) filename extension
-    All *.h renamed to *.hpp
-
-    Revision 1.15  2001/04/02 10:59:48  lballabio
-    Changed ObjectiveFunction::value to ObjectiveFunction::operator() - also in Python module
-
-    Revision 1.14  2001/03/21 11:33:02  marmar
-    Main loop transfered from method value to method calculate.
-    Methods vega and rho moved from BSMNumericalOption to BSMOption
-
-    Revision 1.13  2001/02/20 11:11:13  marmar
-    BarrierOption implements the analytical barrier option
-
-    Revision 1.12  2001/02/19 15:05:41  lballabio
-    Inlined function which was supposed to be
-
-    Revision 1.11  2001/02/19 12:16:48  marmar
-    Vega is not required for implied volatility calculations
-
-    Revision 1.10  2001/02/15 15:58:03  marmar
-    Defined QL_MIN_VOLATILITY 0.0005 and
-    QL_MAX_VOLATILITY 3.0
-
-    Revision 1.9  2001/02/15 15:27:10  marmar
-    New constructor with default values for maxVolatility
-    and minVolatility
-
-    Revision 1.8  2001/02/14 13:54:23  marmar
-    Some spaces have been added
-
-    Revision 1.7  2001/02/14 10:57:57  marmar
-    BSMOption has  a cleaner constructor
-
-    Revision 1.6  2001/02/13 10:02:17  marmar
-    Ambiguous variable name underlyingGrowthRate changed in
-    unambiguos dividendYield
-
-    Revision 1.5  2001/01/17 14:37:56  nando
-    tabs removed
-
-    Revision 1.4  2000/12/27 14:05:56  lballabio
-    Turned Require and Ensure functions into QL_REQUIRE and QL_ENSURE macros
-
-    Revision 1.3  2000/12/14 12:32:30  lballabio
-    Added CVS tags in Doxygen file documentation blocks
 
 */
 

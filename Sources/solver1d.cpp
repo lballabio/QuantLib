@@ -27,6 +27,9 @@
 
     $Source$
     $Log$
+    Revision 1.20  2001/05/09 11:06:19  nando
+    A few comments modified/removed
+
     Revision 1.19  2001/04/09 14:13:33  nando
     all the *.hpp moved below the Include/ql level
 
@@ -37,33 +40,6 @@
     Headers policy part 1:
     Headers should have a .hpp (lowercase) filename extension
     All *.h renamed to *.hpp
-
-    Revision 1.16  2001/04/02 10:59:48  lballabio
-    Changed ObjectiveFunction::value to ObjectiveFunction::operator() - also in Python module
-
-    Revision 1.15  2001/03/15 15:31:26  aleppo
-    Minimum at boudaries compatible with accuracy required.
-
-    Revision 1.14  2001/03/02 14:01:36  aleppo
-    Bug Fixed
-
-    Revision 1.13  2001/02/16 07:57:41  marmar
-    The condition "fxMax_ == 0.0" became "if (QL_FABS(fxMax_) <= xAccuracy",
-    and other minor changes
-
-    Revision 1.12  2001/01/17 13:53:47  nando
-    80 columns enforced
-    tabs removed
-    private data member now have trailing underscore
-
-    Revision 1.11  2000/12/27 14:53:50  lballabio
-    using QL_EPSILON macro
-
-    Revision 1.10  2000/12/27 14:05:57  lballabio
-    Turned Require and Ensure functions into QL_REQUIRE and QL_ENSURE macros
-
-    Revision 1.9  2000/12/14 12:32:31  lballabio
-    Added CVS tags in Doxygen file documentation blocks
 
 */
 

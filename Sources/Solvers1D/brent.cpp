@@ -27,6 +27,9 @@
 
     $Source$
     $Log$
+    Revision 1.22  2001/05/09 11:06:19  nando
+    A few comments modified/removed
+
     Revision 1.21  2001/04/09 14:13:34  nando
     all the *.hpp moved below the Include/ql level
 
@@ -47,20 +50,6 @@
     Headers policy part 1:
     Headers should have a .hpp (lowercase) filename extension
     All *.h renamed to *.hpp
-
-    Revision 1.16  2001/04/02 10:59:49  lballabio
-    Changed ObjectiveFunction::value to ObjectiveFunction::operator() - also in Python module
-
-    Revision 1.15  2001/01/17 13:54:02  nando
-    80 columns enforced
-    tabs removed
-    private data member now have trailing underscore
-
-    Revision 1.14  2000/12/20 17:00:59  enri
-    modified to use new macros
-
-    Revision 1.13  2000/12/14 12:32:31  lballabio
-    Added CVS tags in Doxygen file documentation blocks
 
 */
 

@@ -27,6 +27,9 @@
 
     $Source$
     $Log$
+    Revision 1.32  2001/05/09 11:06:19  nando
+    A few comments modified/removed
+
     Revision 1.31  2001/04/09 14:13:34  nando
     all the *.hpp moved below the Include/ql level
 
@@ -53,42 +56,6 @@
     Headers policy part 1:
     Headers should have a .hpp (lowercase) filename extension
     All *.h renamed to *.hpp
-
-    Revision 1.24  2001/04/02 10:59:49  lballabio
-    Changed ObjectiveFunction::value to ObjectiveFunction::operator() - also in Python module
-
-    Revision 1.23  2001/03/21 11:31:55  marmar
-    Main loop tranfered from method value to method calculate.
-    Methods vega and rho belong now to class BSMOption
-
-    Revision 1.22  2001/02/19 12:19:29  marmar
-    Added trailing _ to protected and private members
-
-    Revision 1.21  2001/02/15 15:57:41  marmar
-    Defined QL_MIN_VOLATILITY 0.0005 and
-    QL_MAX_VOLATILITY 3.0
-
-    Revision 1.20  2001/02/15 15:27:52  marmar
-    Now impliedVol is called with default values for maxVolatility
-    and minVolatility
-
-    Revision 1.19  2001/02/15 11:56:54  nando
-    impliedVol require targetValue>0.0
-
-    Revision 1.18  2001/02/14 10:57:41  marmar
-    BSMOption has  a cleaner constructor
-
-    Revision 1.17  2001/01/17 14:37:57  nando
-    tabs removed
-
-    Revision 1.16  2000/12/27 14:05:57  lballabio
-    Turned Require and Ensure functions into QL_REQUIRE and QL_ENSURE macros
-
-    Revision 1.15  2000/12/20 17:00:59  enri
-    modified to use new macros
-
-    Revision 1.14  2000/12/14 12:40:14  lballabio
-    Added CVS tags in Doxygen file documentation blocks
 
 */
 
