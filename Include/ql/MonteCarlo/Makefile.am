@@ -2,6 +2,9 @@
 # $Id$
 # $Source$
 # $Log$
+# Revision 1.7  2001/08/22 15:49:27  nando
+# missing file added
+#
 # Revision 1.6  2001/08/22 10:58:00  nando
 # removed useless gaussianarraygenerator.hpp
 # It was a clone of gaussianpathgenerator.hpp
@@ -25,6 +28,7 @@
 
 includedir = $(prefix)/include/ql/MonteCarlo
 include_HEADERS = \
+	antitheticpathgenerator.hpp \
 	avgpriceasianpathpricer.hpp \
 	avgstrikeasianpathpricer.hpp \
 	basketpathpricer.hpp \
