@@ -28,6 +28,7 @@ namespace QuantLib {
 
     namespace Patterns {
 
+        //! Framework for calculation on demand and result caching.
         class LazyObject : public virtual Observable, 
                            public virtual Observer {
           public:
