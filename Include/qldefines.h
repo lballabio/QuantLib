@@ -31,6 +31,9 @@
     $Source$
     $Name$
     $Log$
+    Revision 1.22  2001/01/09 18:31:18  enri
+    gnu autotools files added. QuantLib autoconfiscation in progress....
+
     Revision 1.21  2001/01/09 11:56:44  lballabio
     Added QL_ITERATOR macro
 
@@ -89,6 +92,8 @@
 
 #ifndef quantlib_defines_h
 #define quantlib_defines_h
+
+#ifndef HAVE_CONFIG_H 
 
 //! global trace level (may be superseded locally by a greater value)
 #define QL_TRACE_LEVEL 0
@@ -362,6 +367,123 @@
     #define QL_EPSILON		DBL_EPSILON
 #endif
 
+/*! \def QL_GARBLED_MIN_AND_MAX
+    \brief Blame Microsoft for this one...
+    
+	They decided to call them <tt>std::_cpp_min</tt> and <tt>std::_cpp_max</tt> 
+	to avoid the hassle of rewriting their code.
+	This switch affects the definition of the macros QL_MIN and QL_MAX which 
+	should be used instead of the actual functions.
+*/
+
+/*! \def QL_HAS_MIN_AND_MAX
+    \brief are std::min and std::max defined?
+    
+	Some compilers do not implement them yet.
+	This switch affects the definition of the macros QL_MIN and QL_MAX which 
+	should be used instead of the actual functions.
+*/
+
+#include <algorithm>
+#if QL_GARBLED_MIN_AND_MAX
+    #define QL_MIN	std::_cpp_min
+    #define QL_MAX	std::_cpp_max
+#elif QL_HAS_MIN_MAX
+    /*! \def QL_MIN \see QL_HAS_MIN_MAX \see QL_GARBLED_MIN_AND_MAX */
+    #define QL_MIN	std::min
+    /*! \def QL_MIN \see QL_HAS_MIN_MAX \see QL_GARBLED_MIN_AND_MAX */
+    #define QL_MAX	std::max
+#else
+	template <class T> T QL_MIN(const T& x, const T& y) { 
+	    return x < y ? x : y; }
+	template <class T> T QL_MAX(const T& x, const T& y) { 
+	    return x > y ? x : y; }
+#endif
+
+
+#else
+#include "config.h"
+#if defined HAVE_CMATH
+# include <cmath>
+#elif defined HAVE_MATH_H
+# include <math.h>
+#else
+# error neither <cmath> nor <math.h> found by configure!
+#endif
+#if defined HAVE_LIMITS
+# include <limits>
+# define QL_MIN_INT      std::numeric_limits<int>::min()
+# define QL_MAX_INT	 std::numeric_limits<int>::max()
+# define QL_MIN_DOUBLE	 std::numeric_limits<double>::min()
+# define QL_MAX_DOUBLE	 std::numeric_limits<double>::max()
+# define QL_EPSILON	 std::numeric_limits<double>::epsilon()
+#elif defined HAVE_FLOAT_H
+# if defined HAVE_CLIMITS
+#  include <climits>
+#  include <float.h>   
+#  define QL_MIN_INT		INT_MIN
+#  define QL_MAX_INT		INT_MAX
+#  define QL_MIN_DOUBLE	        DBL_MIN
+#  define QL_MAX_DOUBLE	        DBL_MAX
+#  define QL_EPSILON		DBL_EPSILON
+# elif defined HAVE_LIMITS_H
+#  include <limits.h>
+#  include <float.h>
+#  define QL_MIN_INT		INT_MIN
+#  define QL_MAX_INT		INT_MAX
+#  define QL_MIN_DOUBLE	        DBL_MIN
+#  define QL_MAX_DOUBLE	        DBL_MAX
+#  define QL_EPSILON		DBL_EPSILON
+# endif
+#else 
+# error no limits, climits or limits.h!
+#endif
+
+#include <algorithm>
+#define QL_GARBLED_REVERSE_ITERATORS 0
+#define QL_GARBLED_PTR_CONST 0
+#define QL_TEMPLATE_METAPROGRAMMING_WORKS	0
+#define QL_EXPRESSION_TEMPLATES_WORK		0	
+#define QL_REQUIRES_DUMMY_RETURN			0
+#define QL_BROKEN_TEMPLATE_SPECIALIZATION	0
+#define QL_GARBLED_MIN_AND_MAX				0
+
+#endif /* HAVE_CONFIG_H */
+
+/*! \def QL_GARBLED_REVERSE_ITERATORS
+    \brief Blame Microsoft for this one...
+    
+	They decided that <tt>std::reverse_iterator<iterator></tt> needed an extra 
+	template argument.
+	This switch affects the definition of the macro 
+	QL_REVERSE_ITERATOR(iterator,type) which should be used instead of the 
+	actual class.
+*/
+#include <iterator>
+#if QL_GARBLED_REVERSE_ITERATORS
+    #define QL_REVERSE_ITERATOR(iterator,type)	\
+        std::reverse_iterator< iterator , type >
+#else
+    /*! \def QL_REVERSE_ITERATOR \see QL_GARBLED_REVERSE_ITERATORS */
+    #define QL_REVERSE_ITERATOR(iterator,type) \
+        std::reverse_iterator< iterator >
+#endif
+
+/*! \def QL_GARBLED_PTR_CONST
+    \brief Blame Microsoft for this one...
+    
+	They decided to redefine ANSI C++ and use <tt>const *</tt> instead of <tt>* 
+	const</tt>.
+	This switch affects the definition of the macro 
+	QL_PTR_CONST which should be used instead of the actual type.
+*/
+#if QL_GARBLED_PTR_CONST
+    #define QL_PTR_CONST	const *
+#else
+    /*! \def QL_PTR_CONST \see QL_GARBLED_PTR_CONST */
+    #define QL_PTR_CONST	* const
+#endif
+
 /*! \def QL_REQUIRES_DUMMY_RETURN
     \brief Is a dummy return statement required?
     
@@ -408,72 +530,6 @@
     #define QL_TEMPLATE_SPECIALIZATION	        	template<>
 #endif
 
-/*! \def QL_GARBLED_MIN_AND_MAX
-    \brief Blame Microsoft for this one...
-    
-	They decided to call them <tt>std::_cpp_min</tt> and <tt>std::_cpp_max</tt> 
-	to avoid the hassle of rewriting their code.
-	This switch affects the definition of the macros QL_MIN and QL_MAX which 
-	should be used instead of the actual functions.
-*/
-
-/*! \def QL_HAS_MIN_AND_MAX
-    \brief are std::min and std::max defined?
-    
-	Some compilers do not implement them yet.
-	This switch affects the definition of the macros QL_MIN and QL_MAX which 
-	should be used instead of the actual functions.
-*/
-
-#include <algorithm>
-#if QL_GARBLED_MIN_AND_MAX
-    #define QL_MIN	std::_cpp_min
-    #define QL_MAX	std::_cpp_max
-#elif QL_HAS_MIN_MAX
-    /*! \def QL_MIN \see QL_HAS_MIN_MAX \see QL_GARBLED_MIN_AND_MAX */
-    #define QL_MIN	std::min
-    /*! \def QL_MIN \see QL_HAS_MIN_MAX \see QL_GARBLED_MIN_AND_MAX */
-    #define QL_MAX	std::max
-#else
-	template <class T> T QL_MIN(const T& x, const T& y) { 
-	    return x < y ? x : y; }
-	template <class T> T QL_MAX(const T& x, const T& y) { 
-	    return x > y ? x : y; }
-#endif
-
-/*! \def QL_GARBLED_REVERSE_ITERATORS
-    \brief Blame Microsoft for this one...
-    
-	They decided that <tt>std::reverse_iterator<iterator></tt> needed an extra 
-	template argument.
-	This switch affects the definition of the macro 
-	QL_REVERSE_ITERATOR(iterator,type) which should be used instead of the 
-	actual class.
-*/
-#include <iterator>
-#if QL_GARBLED_REVERSE_ITERATORS
-    #define QL_REVERSE_ITERATOR(iterator,type)	\
-        std::reverse_iterator< iterator , type >
-#else
-    /*! \def QL_REVERSE_ITERATOR \see QL_GARBLED_REVERSE_ITERATORS */
-    #define QL_REVERSE_ITERATOR(iterator,type) \
-        std::reverse_iterator< iterator >
-#endif
-
-/*! \def QL_GARBLED_PTR_CONST
-    \brief Blame Microsoft for this one...
-    
-	They decided to redefine ANSI C++ and use <tt>const *</tt> instead of <tt>* 
-	const</tt>.
-	This switch affects the definition of the macro 
-	QL_PTR_CONST which should be used instead of the actual type.
-*/
-#if QL_GARBLED_PTR_CONST
-    #define QL_PTR_CONST	const *
-#else
-    /*! \def QL_PTR_CONST \see QL_GARBLED_PTR_CONST */
-    #define QL_PTR_CONST	* const
 #endif
 
 
-#endif

@@ -1,0 +1,140 @@
+dnl
+dnl $Id$
+dnl
+dnl This is QuantLib's configure.in
+dnl Process this file with autoconf to produce a configure script.
+dnl
+
+AC_INIT(Include/qldefines.h)
+
+AM_CONFIG_HEADER(Include/config.h)
+AM_INIT_AUTOMAKE(QuantLib, 0.1.1)
+
+dnl Check for programs
+
+AC_PROG_INSTALL
+AC_PROG_CC
+AC_PROG_CXX
+AC_LANG_CPLUSPLUS
+AM_PROG_LIBTOOL
+AC_PATH_PROG(SWIG, swig)
+AC_PATH_PROG(SED, sed)
+
+dnl Check for Libraries
+dnl Testing for Python 1.5
+AC_CHECK_LIB(python1.5,PyArg_Parse, 
+				[PYLIB=-lpython1.5
+				 py15_found=yes]
+	) 
+
+dnl Testing for Python 2.0
+AC_CHECK_LIB(python2.0,PyArg_Parse, 
+				[PYLIB=-lpython2.0
+				 py20_found=yes]
+	)
+
+AM_CONDITIONAL(python_found,test "$py20_found" = yes)
+AM_CONDITIONAL(python_found,test "$py15_found" = yes)
+AC_SUBST(PYLIB)
+
+AC_MSG_CHECKING(if C++ compiler supports namespaces (required))
+AC_TRY_COMPILE(
+[
+namespace Foo { struct A {}; }
+using namespace Foo;
+],[
+A a;
+],[
+AC_DEFINE(QL_HAVE_NAMESPACES)
+ac_namespaces=yes
+],[
+config_errors=yes
+ac_namespaces=no
+])
+AC_MSG_RESULT([$ac_namespaces])
+AC_MSG_CHECKING(if C++ environment has working string class (required))
+AC_TRY_LINK(
+[
+#include <string>
+namespace std{}
+using namespace std;
+  class foo {
+  public:
+    void f(const string &s);
+  };
+  void foo::f(const string &s) {
+    f(s.c_str());
+  }
+],[
+   foo f1;
+   f1.f("test");
+],[
+  ql_string_ok=yes
+],[
+  ql_string_ok=no
+  config_error=yes 
+  AC_WARN(C++ compilers string support does not work)
+])
+AC_MSG_RESULT([$ql_string_ok])
+
+AC_CHECK_HEADERS(math.h cmath ctype.h cctype ctime time.h)
+AC_CHECK_HEADERS(limits climits limits.h float.h)
+
+if test $ac_cv_header_cmath = yes ; then
+	QL_FUN_IN_STD_HEADER([sqrt],[cmath],[2])
+	QL_FUN_IN_STD_HEADER([fabs],[cmath],[2])
+	QL_FUN_IN_STD_HEADER([exp],[cmath],[2])
+	QL_FUN_IN_STD_HEADER([log],[cmath],[2])
+	QL_FUN_IN_STD_HEADER([sin],[cmath],[2])
+	QL_FUN_IN_STD_HEADER([cos],[cmath],[2])
+	QL_FUN_IN_STD_HEADER([pow],[cmath],[2,2])
+	QL_FUN_IN_STD_HEADER([modf],[cmath],[2,&dv])
+elif test $ac_cv_header_math_h = yes ; then
+	QL_FUN_IN_STD_HEADER([sqrt],[math.h],[2])
+	QL_FUN_IN_STD_HEADER([fabs],[math.h],[2])
+	QL_FUN_IN_STD_HEADER([exp],[math.h],[2])
+	QL_FUN_IN_STD_HEADER([log],[math.h],[2])
+	QL_FUN_IN_STD_HEADER([sin],[math.h],[2])
+	QL_FUN_IN_STD_HEADER([cos],[math.h],[2])
+	QL_FUN_IN_STD_HEADER([pow],[math.h],[2,2])
+	QL_FUN_IN_STD_HEADER([modf],[math.h],[2,&dv])
+fi
+
+if test $ac_cv_header_cctype = yes ; then
+	QL_FUN_IN_STD_HEADER([toupper],[cctype],['c'])
+	QL_FUN_IN_STD_HEADER([strlen],[cctype],["foo"])
+	QL_FUN_IN_STD_HEADER([tolower],[cctype],['c'])
+elif test $ac_cv_header_ctype_h = yes ; then
+	QL_FUN_IN_STD_HEADER([toupper],[ctype.h],['c'])
+	QL_FUN_IN_STD_HEADER([strlen],[ctype.h],["foo"])
+	QL_FUN_IN_STD_HEADER([tolower],[ctype.h],['c'])
+fi
+if test $ac_cv_header_ctime = yes ; then
+	QL_FUN_IN_STD_HEADER([clock],[ctime],[])
+elif test $ac_cv_header_time_h = yes ; then
+	QL_FUN_IN_STD_HEADER([clock],[time.h],[])
+fi
+
+QL_FUN_IN_STD_HEADER([max],[algorithm],[1,2])
+QL_FUN_IN_STD_HEADER([min],[algorithm],[1,2])
+
+dnl QL_FUN_IN_STD_HEADER([random_access_iterator_tag],[iterator],[])
+
+QL_TMPL_IN_STD_HEADER([iterator],[std::random_access_iterator_tag,double],[iterator],[])
+dnl QL_TMPL_IN_STD_HEADER([iterator_traits],[double*],[iterator],[])
+
+AC_OUTPUT(Makefile Sources/Makefile Sources/FiniteDifferences/Makefile \
+	Sources/Calendars/Makefile \
+	Sources/Solvers1D/Makefile Sources/TermStructures/Makefile \
+	Sources/DayCounters/Makefile Sources/Math/Makefile \
+	Sources/Pricers/Makefile Include/Makefile \
+	Sources/MonteCarlo/Makefile \
+	Include/Calendars/Makefile Include/Currencies/Makefile \
+	Include/DayCounters/Makefile \
+	Include/FiniteDifferences/Makefile Include/Instruments/Makefile \
+	Include/Math/Makefile Include/Patterns/Makefile \
+	Include/Pricers/Makefile \
+	Include/Solvers1D/Makefile Include/TermStructures/Makefile \
+	Include/MonteCarlo/Makefile \
+	Include/Utilities/Makefile \
+	Python/Makefile SWIG/Makefile) 
