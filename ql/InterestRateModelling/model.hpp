@@ -55,15 +55,10 @@ namespace QuantLib {
             virtual ~Model() {}
             virtual void setParameters(const Array& params) = 0;
 
-            virtual double discountBond(Time now, Time maturity, Rate r) const
-            {
-                return Null<double>();
-            }
+            virtual double discountBond(Time now, Time maturity, Rate r) = 0;
 
             virtual double discountBondOption(Option::Type type, double strike,
-                Time maturity, Time bondMaturity) const {
-                return Null<double>();
-            }
+                Time maturity, Time bondMaturity) = 0;
 
             void calibrate(const Handle<Minimizer>& minimizer,
                 std::vector<Handle<CalibrationHelper> > instruments,

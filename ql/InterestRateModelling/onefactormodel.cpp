@@ -33,7 +33,7 @@
 
 #include "ql/InterestRateModelling/grid.hpp"
 #include "ql/FiniteDifferences/boundarycondition.hpp"
-#include "ql/FiniteDifferences/impliciteuler.hpp"
+#include "ql/FiniteDifferences/expliciteuler.hpp"
 #include "ql/FiniteDifferences/onefactoroperator.hpp"
 #include "ql/Solvers1D/brent.hpp"
 using std::cout;
@@ -45,32 +45,44 @@ namespace QuantLib {
 
         using namespace FiniteDifferences;
 
-        typedef FiniteDifferenceModel<ImplicitEuler<TridiagonalOperator> >
+        typedef FiniteDifferenceModel<ExplicitEuler<TridiagonalOperator> > 
             CustomFiniteDifferenceModel;
 
         class OneFactorModel::FitFunction : public ObjectiveFunction {
           public:
             FitFunction(const RelinkableHandle<TermStructure>& termStructure,
-                std::vector<double>& theta, CustomFiniteDifferenceModel& fd,
+                const Array& statePrices,
+                std::vector<double>& theta, CustomFiniteDifferenceModel& fd, 
                 double dt, unsigned nit, const Grid& grid)
-            : termStructure_(termStructure), theta_(theta), fd_(fd), dt_(dt),
-              nit_(nit), grid_(grid) {}
+            : termStructure_(termStructure), statePrices_(statePrices), 
+              theta_(theta), fd_(fd), nit_(nit), grid_(grid) {
+                from_ = (nit_ - 1)*dt;
+                to_ = nit_*dt;
+            }
             double operator()(double x) const;
           private:
             const RelinkableHandle<TermStructure>& termStructure_;
+            const Array& statePrices_;
             std::vector<double>& theta_;
             CustomFiniteDifferenceModel& fd_;
-            double dt_;
             unsigned nit_;
             const Grid& grid_;
-        };
-
+            double from_;
+            double to_;
+        };      
+            
         inline double OneFactorModel::FitFunction::operator()(double x) const {
-            double discount = termStructure_->discount(nit_*dt_);
-            Array prices(grid_.size(), 1.0);
+            unsigned int index = grid_.index();
             theta_[nit_ - 1] = x;
-            fd_.rollback(prices, nit_*dt_, 0.0, nit_);
-            double value = prices[grid_.index()] - discount;
+
+            Array prices(statePrices_);
+            fd_.rollback(prices, from_, to_, 1);
+
+            double value = termStructure_->discount(to_);
+            for (unsigned k=(index-nit_-1); k<=(index+nit_+1); k++) {
+                cout << k << "," << x <<  " --> " << prices[k] << endl;
+                value -= prices[k];
+            }
             return value;
         }
 
@@ -78,18 +90,22 @@ namespace QuantLib {
             unsigned timeSteps_ = theta_.size() - 1;
             unsigned gridPoints = timeSteps_;
             double dt_ = termStructure()->maxTime()/timeSteps_;
+
             Rate r0 = termStructure()->forward(0.0);
             double center = stateVariable(r0);
             Grid grid(gridPoints, center, center, timeSteps_*dt_, dt_, this);
 
+            Array statePrices(grid.size(), 0.0);
+            statePrices[grid.index()] = 1.0;
+
             OneFactorOperator op(grid, process());
             op.setLowerBC( BoundaryCondition(BoundaryCondition::Neumann, 0));
             op.setUpperBC( BoundaryCondition(BoundaryCondition::Neumann, 0));
-
             CustomFiniteDifferenceModel finiteDifferenceModel(op);
+
             Solvers1D::Brent s1d = Solvers1D::Brent();
-            double minStrike = -4.0;
-            double maxStrike = 4.0;
+            double minStrike = -0.02;
+            double maxStrike = 0.0;
             s1d.setMaxEvaluations(1000);
             s1d.setLowBound(minStrike);
             s1d.setHiBound(maxStrike);
@@ -98,9 +114,9 @@ namespace QuantLib {
             double sigma_ = 0.0087;
 
             for (unsigned i=0; i<timeSteps_; i++) {
-                FitFunction finder(termStructure(), theta_,
+                FitFunction finder(termStructure(), statePrices, theta_, 
                     finiteDifferenceModel, dt_, i+1, grid);
-                // solver
+
                 double forwardRate = termStructure()->forward(i*dt_);
                 double theta =  alpha_*forwardRate + sigma_*sigma_*
                     (1.0-QL_EXP(-2.0*alpha_*i*dt_))/(2.0*alpha_);
@@ -109,6 +125,8 @@ namespace QuantLib {
                 double initialValue = 0.05;
                 theta_[i] = s1d.solve(finder, accuracy, initialValue,
                     minStrike, maxStrike);
+                finiteDifferenceModel.
+                    rollback(statePrices, i*dt_, (i+1)*dt_, 1);
                 cout << i << " ---> " << theta_[i] << " =? " << theta << endl;
             }
             theta_[timeSteps_] = theta_[timeSteps_ - 1];
