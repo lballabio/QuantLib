@@ -71,8 +71,14 @@ namespace QuantLib {
                           const Date& refPeriodStart = Date(),
                           const Date& refPeriodEnd = Date()) const;
         //@}
-
+        /*! This default constructor returns a day counter with a null 
+            implementation, which is therefore unusable except as a 
+            placeholder.
+        */
+        DayCounter() {}
       protected:
+        /*! This protected constructor will only be invoked by derived
+            classes which define a given DayCounter implementation */
         DayCounter(const Handle<DayCounterImpl>& impl) 
         : Patterns::Bridge<DayCounter,DayCounterImpl>(impl) {}
     };
@@ -105,12 +111,13 @@ namespace QuantLib {
     }
 
 
-    inline bool operator==(const DayCounter& h1, const DayCounter& h2) {
-        return (h1.name() == h2.name());
+    inline bool operator==(const DayCounter& d1, const DayCounter& d2) {
+        return (d1.isNull() && d2.isNull())
+            || (!d1.isNull() && !d2.isNull() && d1.name() == d2.name());
     }
 
-    inline bool operator!=(const DayCounter& h1, const DayCounter& h2) {
-        return (h1.name() != h2.name());
+    inline bool operator!=(const DayCounter& d1, const DayCounter& d2) {
+        return !(d1 == d2);
     }
 
 }

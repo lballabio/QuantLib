@@ -49,7 +49,7 @@ namespace {
     Calendar calendar_;
     RollingConvention rollingConvention_;
     int fixedFrequency_, floatingFrequency_;
-    DayCounter fixedDayCount_ = Thirty360();
+    DayCounter fixedDayCount_;
     bool fixedIsAdjusted_;
     Handle<Xibor> index_;
     int settlementDays_, fixingDays_;

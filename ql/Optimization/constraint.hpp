@@ -42,9 +42,10 @@ namespace QuantLib {
         //! Base constraint class
         class Constraint : public Patterns::Bridge<Constraint,ConstraintImpl> {
           public:
-            Constraint(const Handle<ConstraintImpl>& impl);
             bool test(const Array& p) const { return impl_->test(p); }
             double update(Array& p, const Array& direction, double beta);
+          protected:
+            Constraint(const Handle<ConstraintImpl>& impl);
         };
 
         //! No constraint 

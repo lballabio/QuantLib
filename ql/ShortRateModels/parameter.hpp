@@ -43,15 +43,7 @@ namespace QuantLib {
         class Parameter : public Patterns::Bridge<Parameter,ParameterImpl> {
           public:
             Parameter()
-            : Patterns::Bridge<Parameter,ParameterImpl>(
-                Handle<ParameterImpl>()),
-              constraint_(Optimization::NoConstraint()) {}
-            Parameter(Size size,
-                      const Handle<ParameterImpl>& impl,
-                      const Optimization::Constraint& constraint)
-            : Patterns::Bridge<Parameter,ParameterImpl>(impl),
-              params_(size), constraint_(constraint) {}
-
+            : constraint_(Optimization::NoConstraint()) {}
             const Array& params() const { return params_; }
             void setParam(Size i, double x) { params_[i] = x; }
             bool testParams(const Array& params) const {
@@ -61,9 +53,13 @@ namespace QuantLib {
             double operator()(Time t) const {
                 return impl_->value(params_, t);
             }
-
             const Handle<ParameterImpl>& implementation() const {return impl_;}
           protected:
+            Parameter(Size size,
+                      const Handle<ParameterImpl>& impl,
+                      const Optimization::Constraint& constraint)
+            : Patterns::Bridge<Parameter,ParameterImpl>(impl),
+              params_(size), constraint_(constraint) {}
             Array params_;
             Optimization::Constraint constraint_;
         };

@@ -19,18 +19,14 @@
 #include "integrals.hpp"
 #include <ql/Math/segmentintegral.hpp>
 #include <ql/Math/normaldistribution.hpp>
+#include <ql/Math/functional.hpp>
 
 using namespace QuantLib;
-using QuantLib::Math::SegmentIntegral;
-using QuantLib::Math::NormalDistribution;
+using namespace QuantLib::Math;
 
 namespace {
 
     double tolerance = 1.0e-4;
-
-    double one(double) { return 1.0; }
-    double id(double x) { return x; }
-    double square(double x) { return x*x; }
 
     template <class F>
     void test(const SegmentIntegral& I, const std::string& tag,
@@ -50,9 +46,9 @@ void IntegralTest::runTest() {
 
     SegmentIntegral I(10000);
 
-    test(I, "f(x) = 1",   std::ptr_fun(one),    0.0, 1.0, 1.0);
-    test(I, "f(x) = x",   std::ptr_fun(id),     0.0, 1.0, 0.5);
-    test(I, "f(x) = x^2", std::ptr_fun(square), 0.0, 1.0, 1.0/3.0);
+    test(I, "f(x) = 1",   constant<double,double>(1.0), 0.0, 1.0, 1.0);
+    test(I, "f(x) = x",   identity<double>(),           0.0, 1.0, 0.5);
+    test(I, "f(x) = x^2", square<double>(),             0.0, 1.0, 1.0/3.0);
 
     test(I, "f(x) = sin(x)", 
          std::ptr_fun<double,double>(QL_SIN), 0.0, M_PI, 2.0);

@@ -99,20 +99,14 @@ namespace QuantLib {
         */
         Date advance(const Date&, int n, TimeUnit unit,
                      RollingConvention convention = Following) const;
-        //@}
         /*! Advances the given date as specified by the given period and
             returns the result.
             \note The input date is not modified.
         */
         Date advance(const Date& date, const Period& period, 
                      RollingConvention convention) const;
+        //@}
 
-        /*! "null" implementation to be used by the default constructor */
-        class NullImpl : public CalendarImpl {
-          public:
-            std::string name() const { return "null calendar"; }
-            bool isBusinessDay(const Date&) const { return true; }
-        };
         /*! partial implementation providing the means of
             determining the Easter Monday for a given year. */
         class WesternImpl : public CalendarImpl {
@@ -120,12 +114,13 @@ namespace QuantLib {
             //! expressed relative to first day of year
             static Day easterMonday(Year y);
         };
-        // default constructor
-        Calendar()
-        : Patterns::Bridge<Calendar,CalendarImpl>(
-              Handle<CalendarImpl>(new Calendar::NullImpl)) {}
+        /*! This default constructor returns a calendar with a null 
+            implementation, which is therefore unusable except as a 
+            placeholder.
+        */
+        Calendar() {}
       protected:
-        /*! this protected constructor will only be invoked by derived
+        /*! This protected constructor will only be invoked by derived
             classes which define a given Calendar implementation */
         Calendar(const Handle<CalendarImpl>& impl) 
         : Patterns::Bridge<Calendar,CalendarImpl>(impl) {}
@@ -152,15 +147,16 @@ namespace QuantLib {
     }
 
     inline bool Calendar::isHoliday(const Date& d) const {
-        return !(impl_->isBusinessDay(d));
+        return !isBusinessDay(d);
     }
 
-    inline bool operator==(const Calendar& h1, const Calendar& h2) {
-            return (h1.name() == h2.name());
+    inline bool operator==(const Calendar& c1, const Calendar& c2) {
+        return (c1.isNull() && c2.isNull())
+            || (!c1.isNull() && !c2.isNull() && c1.name() == c2.name());
     }
 
-    inline bool operator!=(const Calendar& h1, const Calendar& h2) {
-            return (h1.name() != h2.name());
+    inline bool operator!=(const Calendar& c1, const Calendar& c2) {
+        return !(c1 == c2);
     }
 
 }
