@@ -2,3 +2,6 @@
 *.obj
 *.lib
 Makefile.in
+QuantLibFunctions.dep
+QuantLibFunctions.plg
+build

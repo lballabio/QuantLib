@@ -79,6 +79,8 @@ CLEAN :
 	-@erase "$(INTDIR)\digitaloption.sbr"
 	-@erase "$(INTDIR)\distributions.obj"
 	-@erase "$(INTDIR)\distributions.sbr"
+	-@erase "$(INTDIR)\dividendeuropeanoption.obj"
+	-@erase "$(INTDIR)\dividendeuropeanoption.sbr"
 	-@erase "$(INTDIR)\europeanoption.obj"
 	-@erase "$(INTDIR)\europeanoption.sbr"
 	-@erase "$(INTDIR)\factorial.obj"
@@ -164,7 +166,8 @@ BSC32_SBRS= \
 	"$(INTDIR)\swap.sbr" \
 	"$(INTDIR)\swaption.sbr" \
 	"$(INTDIR)\termstructures.sbr" \
-	"$(INTDIR)\utilities.sbr"
+	"$(INTDIR)\utilities.sbr" \
+	"$(INTDIR)\dividendeuropeanoption.sbr"
 
 "$(OUTDIR)\testsuite.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -207,6 +210,7 @@ LINK32_OBJS= \
 	"$(INTDIR)\swaption.obj" \
 	"$(INTDIR)\termstructures.obj" \
 	"$(INTDIR)\utilities.obj" \
+	"$(INTDIR)\dividendeuropeanoption.obj" \
 	"..\lib\QuantLib-vc6-mt-s-0_3_6.lib"
 
 "$(OUTDIR)\testsuite.exe" : "$(OUTDIR)" $(DEF_FILE) $(LINK32_OBJS)
@@ -277,6 +281,8 @@ CLEAN :
 	-@erase "$(INTDIR)\digitaloption.sbr"
 	-@erase "$(INTDIR)\distributions.obj"
 	-@erase "$(INTDIR)\distributions.sbr"
+	-@erase "$(INTDIR)\dividendeuropeanoption.obj"
+	-@erase "$(INTDIR)\dividendeuropeanoption.sbr"
 	-@erase "$(INTDIR)\europeanoption.obj"
 	-@erase "$(INTDIR)\europeanoption.sbr"
 	-@erase "$(INTDIR)\factorial.obj"
@@ -365,7 +371,8 @@ BSC32_SBRS= \
 	"$(INTDIR)\swap.sbr" \
 	"$(INTDIR)\swaption.sbr" \
 	"$(INTDIR)\termstructures.sbr" \
-	"$(INTDIR)\utilities.sbr"
+	"$(INTDIR)\utilities.sbr" \
+	"$(INTDIR)\dividendeuropeanoption.sbr"
 
 "$(OUTDIR)\testsuite.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -408,6 +415,7 @@ LINK32_OBJS= \
 	"$(INTDIR)\swaption.obj" \
 	"$(INTDIR)\termstructures.obj" \
 	"$(INTDIR)\utilities.obj" \
+	"$(INTDIR)\dividendeuropeanoption.obj" \
 	"..\lib\QuantLib-vc6-mt-sgd-0_3_6.lib"
 
 "$(OUTDIR)\testsuite.exe" : "$(OUTDIR)" $(DEF_FILE) $(LINK32_OBJS)
@@ -478,6 +486,8 @@ CLEAN :
 	-@erase "$(INTDIR)\digitaloption.sbr"
 	-@erase "$(INTDIR)\distributions.obj"
 	-@erase "$(INTDIR)\distributions.sbr"
+	-@erase "$(INTDIR)\dividendeuropeanoption.obj"
+	-@erase "$(INTDIR)\dividendeuropeanoption.sbr"
 	-@erase "$(INTDIR)\europeanoption.obj"
 	-@erase "$(INTDIR)\europeanoption.sbr"
 	-@erase "$(INTDIR)\factorial.obj"
@@ -565,7 +575,8 @@ BSC32_SBRS= \
 	"$(INTDIR)\swap.sbr" \
 	"$(INTDIR)\swaption.sbr" \
 	"$(INTDIR)\termstructures.sbr" \
-	"$(INTDIR)\utilities.sbr"
+	"$(INTDIR)\utilities.sbr" \
+	"$(INTDIR)\dividendeuropeanoption.sbr"
 
 "$(OUTDIR)\testsuite.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -608,6 +619,7 @@ LINK32_OBJS= \
 	"$(INTDIR)\swaption.obj" \
 	"$(INTDIR)\termstructures.obj" \
 	"$(INTDIR)\utilities.obj" \
+	"$(INTDIR)\dividendeuropeanoption.obj" \
 	"..\lib\QuantLib-vc6-mt-0_3_6.lib"
 
 "$(OUTDIR)\testsuite.exe" : "$(OUTDIR)" $(DEF_FILE) $(LINK32_OBJS)
@@ -678,6 +690,8 @@ CLEAN :
 	-@erase "$(INTDIR)\digitaloption.sbr"
 	-@erase "$(INTDIR)\distributions.obj"
 	-@erase "$(INTDIR)\distributions.sbr"
+	-@erase "$(INTDIR)\dividendeuropeanoption.obj"
+	-@erase "$(INTDIR)\dividendeuropeanoption.sbr"
 	-@erase "$(INTDIR)\europeanoption.obj"
 	-@erase "$(INTDIR)\europeanoption.sbr"
 	-@erase "$(INTDIR)\factorial.obj"
@@ -766,7 +780,8 @@ BSC32_SBRS= \
 	"$(INTDIR)\swap.sbr" \
 	"$(INTDIR)\swaption.sbr" \
 	"$(INTDIR)\termstructures.sbr" \
-	"$(INTDIR)\utilities.sbr"
+	"$(INTDIR)\utilities.sbr" \
+	"$(INTDIR)\dividendeuropeanoption.sbr"
 
 "$(OUTDIR)\testsuite.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -809,6 +824,7 @@ LINK32_OBJS= \
 	"$(INTDIR)\swaption.obj" \
 	"$(INTDIR)\termstructures.obj" \
 	"$(INTDIR)\utilities.obj" \
+	"$(INTDIR)\dividendeuropeanoption.obj" \
 	"..\lib\QuantLib-vc6-mt-gd-0_3_6.lib"
 
 "$(OUTDIR)\testsuite.exe" : "$(OUTDIR)" $(DEF_FILE) $(LINK32_OBJS)
@@ -879,6 +895,8 @@ CLEAN :
 	-@erase "$(INTDIR)\digitaloption.sbr"
 	-@erase "$(INTDIR)\distributions.obj"
 	-@erase "$(INTDIR)\distributions.sbr"
+	-@erase "$(INTDIR)\dividendeuropeanoption.obj"
+	-@erase "$(INTDIR)\dividendeuropeanoption.sbr"
 	-@erase "$(INTDIR)\europeanoption.obj"
 	-@erase "$(INTDIR)\europeanoption.sbr"
 	-@erase "$(INTDIR)\factorial.obj"
@@ -964,7 +982,8 @@ BSC32_SBRS= \
 	"$(INTDIR)\swap.sbr" \
 	"$(INTDIR)\swaption.sbr" \
 	"$(INTDIR)\termstructures.sbr" \
-	"$(INTDIR)\utilities.sbr"
+	"$(INTDIR)\utilities.sbr" \
+	"$(INTDIR)\dividendeuropeanoption.sbr"
 
 "$(OUTDIR)\testsuite.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -1007,6 +1026,7 @@ LINK32_OBJS= \
 	"$(INTDIR)\swaption.obj" \
 	"$(INTDIR)\termstructures.obj" \
 	"$(INTDIR)\utilities.obj" \
+	"$(INTDIR)\dividendeuropeanoption.obj" \
 	"..\lib\QuantLib-vc6-s-0_3_6.lib"
 
 "$(OUTDIR)\testsuite.exe" : "$(OUTDIR)" $(DEF_FILE) $(LINK32_OBJS)
@@ -1077,6 +1097,8 @@ CLEAN :
 	-@erase "$(INTDIR)\digitaloption.sbr"
 	-@erase "$(INTDIR)\distributions.obj"
 	-@erase "$(INTDIR)\distributions.sbr"
+	-@erase "$(INTDIR)\dividendeuropeanoption.obj"
+	-@erase "$(INTDIR)\dividendeuropeanoption.sbr"
 	-@erase "$(INTDIR)\europeanoption.obj"
 	-@erase "$(INTDIR)\europeanoption.sbr"
 	-@erase "$(INTDIR)\factorial.obj"
@@ -1165,7 +1187,8 @@ BSC32_SBRS= \
 	"$(INTDIR)\swap.sbr" \
 	"$(INTDIR)\swaption.sbr" \
 	"$(INTDIR)\termstructures.sbr" \
-	"$(INTDIR)\utilities.sbr"
+	"$(INTDIR)\utilities.sbr" \
+	"$(INTDIR)\dividendeuropeanoption.sbr"
 
 "$(OUTDIR)\testsuite.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -1208,6 +1231,7 @@ LINK32_OBJS= \
 	"$(INTDIR)\swaption.obj" \
 	"$(INTDIR)\termstructures.obj" \
 	"$(INTDIR)\utilities.obj" \
+	"$(INTDIR)\dividendeuropeanoption.obj" \
 	"..\lib\QuantLib-vc6-sgd-0_3_6.lib"
 
 "$(OUTDIR)\testsuite.exe" : "$(OUTDIR)" $(DEF_FILE) $(LINK32_OBJS)
@@ -1332,6 +1356,11 @@ SOURCE=.\digitaloption.cpp
 SOURCE=.\distributions.cpp
 
 "$(INTDIR)\distributions.obj"	"$(INTDIR)\distributions.sbr" : $(SOURCE) "$(INTDIR)"
+
+
+SOURCE=.\dividendeuropeanoption.cpp
+
+"$(INTDIR)\dividendeuropeanoption.obj"	"$(INTDIR)\dividendeuropeanoption.sbr" : $(SOURCE) "$(INTDIR)"
 
 
 SOURCE=.\europeanoption.cpp

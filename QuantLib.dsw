@@ -71,6 +71,21 @@ Package=<5>
 
 Package=<4>
 {{{
+    Begin Project Dependency
+    Project_Dep_Name QuantLibFunctions
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "QuantLibFunctions"=.\FUNCTIONS\QL\FUNCTIONS\QuantLibFunctions.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
 }}}
 
 ###############################################################################

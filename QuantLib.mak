@@ -56,6 +56,8 @@ CLEAN :
 	-@erase "$(INTDIR)\analyticbarrierengine.sbr"
 	-@erase "$(INTDIR)\analyticdigitalamericanengine.obj"
 	-@erase "$(INTDIR)\analyticdigitalamericanengine.sbr"
+	-@erase "$(INTDIR)\analyticdividendeuropeanengine.obj"
+	-@erase "$(INTDIR)\analyticdividendeuropeanengine.sbr"
 	-@erase "$(INTDIR)\analyticeuropeanengine.obj"
 	-@erase "$(INTDIR)\analyticeuropeanengine.sbr"
 	-@erase "$(INTDIR)\armijo.obj"
@@ -132,8 +134,6 @@ CLEAN :
 	-@erase "$(INTDIR)\dataparsers.sbr"
 	-@erase "$(INTDIR)\date.obj"
 	-@erase "$(INTDIR)\date.sbr"
-	-@erase "$(INTDIR)\daycounters.obj"
-	-@erase "$(INTDIR)\daycounters.sbr"
 	-@erase "$(INTDIR)\diffusionprocess.obj"
 	-@erase "$(INTDIR)\diffusionprocess.sbr"
 	-@erase "$(INTDIR)\discountcurve.obj"
@@ -150,6 +150,8 @@ CLEAN :
 	-@erase "$(INTDIR)\discretizedvanillaoption.sbr"
 	-@erase "$(INTDIR)\dividendeuropeanoption.obj"
 	-@erase "$(INTDIR)\dividendeuropeanoption.sbr"
+	-@erase "$(INTDIR)\dividendvanillaoption.obj"
+	-@erase "$(INTDIR)\dividendvanillaoption.sbr"
 	-@erase "$(INTDIR)\errorfunction.obj"
 	-@erase "$(INTDIR)\errorfunction.sbr"
 	-@erase "$(INTDIR)\errors.obj"
@@ -224,8 +226,6 @@ CLEAN :
 	-@erase "$(INTDIR)\localvolsurface.sbr"
 	-@erase "$(INTDIR)\london.obj"
 	-@erase "$(INTDIR)\london.sbr"
-	-@erase "$(INTDIR)\mathf.obj"
-	-@erase "$(INTDIR)\mathf.sbr"
 	-@erase "$(INTDIR)\mcamericanbasketengine.obj"
 	-@erase "$(INTDIR)\mcamericanbasketengine.sbr"
 	-@erase "$(INTDIR)\mcbarrierengine.obj"
@@ -355,8 +355,6 @@ CLEAN :
 	-@erase "$(INTDIR)\vasicek.obj"
 	-@erase "$(INTDIR)\vasicek.sbr"
 	-@erase "$(INTDIR)\vc60.idb"
-	-@erase "$(INTDIR)\vols.obj"
-	-@erase "$(INTDIR)\vols.sbr"
 	-@erase "$(INTDIR)\voltermstructure.obj"
 	-@erase "$(INTDIR)\voltermstructure.sbr"
 	-@erase "$(INTDIR)\warsaw.obj"
@@ -412,15 +410,13 @@ BSC32_SBRS= \
 	"$(INTDIR)\onefactoroperator.sbr" \
 	"$(INTDIR)\tridiagonaloperator.sbr" \
 	"$(INTDIR)\valueatcenter.sbr" \
-	"$(INTDIR)\daycounters.sbr" \
-	"$(INTDIR)\mathf.sbr" \
-	"$(INTDIR)\vols.sbr" \
 	"$(INTDIR)\xibor.sbr" \
 	"$(INTDIR)\xibormanager.sbr" \
 	"$(INTDIR)\asianoption.sbr" \
 	"$(INTDIR)\barrieroption.sbr" \
 	"$(INTDIR)\basketoption.sbr" \
 	"$(INTDIR)\capfloor.sbr" \
+	"$(INTDIR)\europeanoption.sbr" \
 	"$(INTDIR)\forwardvanillaoption.sbr" \
 	"$(INTDIR)\multiassetoption.sbr" \
 	"$(INTDIR)\oneassetoption.sbr" \
@@ -543,7 +539,8 @@ BSC32_SBRS= \
 	"$(INTDIR)\grid.sbr" \
 	"$(INTDIR)\scheduler.sbr" \
 	"$(INTDIR)\voltermstructure.sbr" \
-	"$(INTDIR)\europeanoption.sbr"
+	"$(INTDIR)\dividendvanillaoption.sbr" \
+	"$(INTDIR)\analyticdividendeuropeanengine.sbr"
 
 "$(OUTDIR)\QuantLib.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -584,15 +581,13 @@ LIB32_OBJS= \
 	"$(INTDIR)\onefactoroperator.obj" \
 	"$(INTDIR)\tridiagonaloperator.obj" \
 	"$(INTDIR)\valueatcenter.obj" \
-	"$(INTDIR)\daycounters.obj" \
-	"$(INTDIR)\mathf.obj" \
-	"$(INTDIR)\vols.obj" \
 	"$(INTDIR)\xibor.obj" \
 	"$(INTDIR)\xibormanager.obj" \
 	"$(INTDIR)\asianoption.obj" \
 	"$(INTDIR)\barrieroption.obj" \
 	"$(INTDIR)\basketoption.obj" \
 	"$(INTDIR)\capfloor.obj" \
+	"$(INTDIR)\europeanoption.obj" \
 	"$(INTDIR)\forwardvanillaoption.obj" \
 	"$(INTDIR)\multiassetoption.obj" \
 	"$(INTDIR)\oneassetoption.obj" \
@@ -715,7 +710,8 @@ LIB32_OBJS= \
 	"$(INTDIR)\grid.obj" \
 	"$(INTDIR)\scheduler.obj" \
 	"$(INTDIR)\voltermstructure.obj" \
-	"$(INTDIR)\europeanoption.obj"
+	"$(INTDIR)\dividendvanillaoption.obj" \
+	"$(INTDIR)\analyticdividendeuropeanengine.obj"
 
 ".\lib\QuantLib-vc6-mt-s-0_3_6.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
    if not exist lib mkdir lib
@@ -749,6 +745,8 @@ CLEAN :
 	-@erase "$(INTDIR)\analyticbarrierengine.sbr"
 	-@erase "$(INTDIR)\analyticdigitalamericanengine.obj"
 	-@erase "$(INTDIR)\analyticdigitalamericanengine.sbr"
+	-@erase "$(INTDIR)\analyticdividendeuropeanengine.obj"
+	-@erase "$(INTDIR)\analyticdividendeuropeanengine.sbr"
 	-@erase "$(INTDIR)\analyticeuropeanengine.obj"
 	-@erase "$(INTDIR)\analyticeuropeanengine.sbr"
 	-@erase "$(INTDIR)\armijo.obj"
@@ -825,8 +823,6 @@ CLEAN :
 	-@erase "$(INTDIR)\dataparsers.sbr"
 	-@erase "$(INTDIR)\date.obj"
 	-@erase "$(INTDIR)\date.sbr"
-	-@erase "$(INTDIR)\daycounters.obj"
-	-@erase "$(INTDIR)\daycounters.sbr"
 	-@erase "$(INTDIR)\diffusionprocess.obj"
 	-@erase "$(INTDIR)\diffusionprocess.sbr"
 	-@erase "$(INTDIR)\discountcurve.obj"
@@ -843,6 +839,8 @@ CLEAN :
 	-@erase "$(INTDIR)\discretizedvanillaoption.sbr"
 	-@erase "$(INTDIR)\dividendeuropeanoption.obj"
 	-@erase "$(INTDIR)\dividendeuropeanoption.sbr"
+	-@erase "$(INTDIR)\dividendvanillaoption.obj"
+	-@erase "$(INTDIR)\dividendvanillaoption.sbr"
 	-@erase "$(INTDIR)\errorfunction.obj"
 	-@erase "$(INTDIR)\errorfunction.sbr"
 	-@erase "$(INTDIR)\errors.obj"
@@ -917,8 +915,6 @@ CLEAN :
 	-@erase "$(INTDIR)\localvolsurface.sbr"
 	-@erase "$(INTDIR)\london.obj"
 	-@erase "$(INTDIR)\london.sbr"
-	-@erase "$(INTDIR)\mathf.obj"
-	-@erase "$(INTDIR)\mathf.sbr"
 	-@erase "$(INTDIR)\mcamericanbasketengine.obj"
 	-@erase "$(INTDIR)\mcamericanbasketengine.sbr"
 	-@erase "$(INTDIR)\mcbarrierengine.obj"
@@ -1047,8 +1043,6 @@ CLEAN :
 	-@erase "$(INTDIR)\vanillaoption.sbr"
 	-@erase "$(INTDIR)\vasicek.obj"
 	-@erase "$(INTDIR)\vasicek.sbr"
-	-@erase "$(INTDIR)\vols.obj"
-	-@erase "$(INTDIR)\vols.sbr"
 	-@erase "$(INTDIR)\voltermstructure.obj"
 	-@erase "$(INTDIR)\voltermstructure.sbr"
 	-@erase "$(INTDIR)\warsaw.obj"
@@ -1106,15 +1100,13 @@ BSC32_SBRS= \
 	"$(INTDIR)\onefactoroperator.sbr" \
 	"$(INTDIR)\tridiagonaloperator.sbr" \
 	"$(INTDIR)\valueatcenter.sbr" \
-	"$(INTDIR)\daycounters.sbr" \
-	"$(INTDIR)\mathf.sbr" \
-	"$(INTDIR)\vols.sbr" \
 	"$(INTDIR)\xibor.sbr" \
 	"$(INTDIR)\xibormanager.sbr" \
 	"$(INTDIR)\asianoption.sbr" \
 	"$(INTDIR)\barrieroption.sbr" \
 	"$(INTDIR)\basketoption.sbr" \
 	"$(INTDIR)\capfloor.sbr" \
+	"$(INTDIR)\europeanoption.sbr" \
 	"$(INTDIR)\forwardvanillaoption.sbr" \
 	"$(INTDIR)\multiassetoption.sbr" \
 	"$(INTDIR)\oneassetoption.sbr" \
@@ -1237,7 +1229,8 @@ BSC32_SBRS= \
 	"$(INTDIR)\grid.sbr" \
 	"$(INTDIR)\scheduler.sbr" \
 	"$(INTDIR)\voltermstructure.sbr" \
-	"$(INTDIR)\europeanoption.sbr"
+	"$(INTDIR)\dividendvanillaoption.sbr" \
+	"$(INTDIR)\analyticdividendeuropeanengine.sbr"
 
 "$(OUTDIR)\QuantLib.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -1278,15 +1271,13 @@ LIB32_OBJS= \
 	"$(INTDIR)\onefactoroperator.obj" \
 	"$(INTDIR)\tridiagonaloperator.obj" \
 	"$(INTDIR)\valueatcenter.obj" \
-	"$(INTDIR)\daycounters.obj" \
-	"$(INTDIR)\mathf.obj" \
-	"$(INTDIR)\vols.obj" \
 	"$(INTDIR)\xibor.obj" \
 	"$(INTDIR)\xibormanager.obj" \
 	"$(INTDIR)\asianoption.obj" \
 	"$(INTDIR)\barrieroption.obj" \
 	"$(INTDIR)\basketoption.obj" \
 	"$(INTDIR)\capfloor.obj" \
+	"$(INTDIR)\europeanoption.obj" \
 	"$(INTDIR)\forwardvanillaoption.obj" \
 	"$(INTDIR)\multiassetoption.obj" \
 	"$(INTDIR)\oneassetoption.obj" \
@@ -1409,7 +1400,8 @@ LIB32_OBJS= \
 	"$(INTDIR)\grid.obj" \
 	"$(INTDIR)\scheduler.obj" \
 	"$(INTDIR)\voltermstructure.obj" \
-	"$(INTDIR)\europeanoption.obj"
+	"$(INTDIR)\dividendvanillaoption.obj" \
+	"$(INTDIR)\analyticdividendeuropeanengine.obj"
 
 ".\lib\QuantLib-vc6-mt-sgd-0_3_6.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
    if not exist lib mkdir lib
@@ -1443,6 +1435,8 @@ CLEAN :
 	-@erase "$(INTDIR)\analyticbarrierengine.sbr"
 	-@erase "$(INTDIR)\analyticdigitalamericanengine.obj"
 	-@erase "$(INTDIR)\analyticdigitalamericanengine.sbr"
+	-@erase "$(INTDIR)\analyticdividendeuropeanengine.obj"
+	-@erase "$(INTDIR)\analyticdividendeuropeanengine.sbr"
 	-@erase "$(INTDIR)\analyticeuropeanengine.obj"
 	-@erase "$(INTDIR)\analyticeuropeanengine.sbr"
 	-@erase "$(INTDIR)\armijo.obj"
@@ -1519,8 +1513,6 @@ CLEAN :
 	-@erase "$(INTDIR)\dataparsers.sbr"
 	-@erase "$(INTDIR)\date.obj"
 	-@erase "$(INTDIR)\date.sbr"
-	-@erase "$(INTDIR)\daycounters.obj"
-	-@erase "$(INTDIR)\daycounters.sbr"
 	-@erase "$(INTDIR)\diffusionprocess.obj"
 	-@erase "$(INTDIR)\diffusionprocess.sbr"
 	-@erase "$(INTDIR)\discountcurve.obj"
@@ -1537,6 +1529,8 @@ CLEAN :
 	-@erase "$(INTDIR)\discretizedvanillaoption.sbr"
 	-@erase "$(INTDIR)\dividendeuropeanoption.obj"
 	-@erase "$(INTDIR)\dividendeuropeanoption.sbr"
+	-@erase "$(INTDIR)\dividendvanillaoption.obj"
+	-@erase "$(INTDIR)\dividendvanillaoption.sbr"
 	-@erase "$(INTDIR)\errorfunction.obj"
 	-@erase "$(INTDIR)\errorfunction.sbr"
 	-@erase "$(INTDIR)\errors.obj"
@@ -1611,8 +1605,6 @@ CLEAN :
 	-@erase "$(INTDIR)\localvolsurface.sbr"
 	-@erase "$(INTDIR)\london.obj"
 	-@erase "$(INTDIR)\london.sbr"
-	-@erase "$(INTDIR)\mathf.obj"
-	-@erase "$(INTDIR)\mathf.sbr"
 	-@erase "$(INTDIR)\mcamericanbasketengine.obj"
 	-@erase "$(INTDIR)\mcamericanbasketengine.sbr"
 	-@erase "$(INTDIR)\mcbarrierengine.obj"
@@ -1742,8 +1734,6 @@ CLEAN :
 	-@erase "$(INTDIR)\vasicek.obj"
 	-@erase "$(INTDIR)\vasicek.sbr"
 	-@erase "$(INTDIR)\vc60.idb"
-	-@erase "$(INTDIR)\vols.obj"
-	-@erase "$(INTDIR)\vols.sbr"
 	-@erase "$(INTDIR)\voltermstructure.obj"
 	-@erase "$(INTDIR)\voltermstructure.sbr"
 	-@erase "$(INTDIR)\warsaw.obj"
@@ -1799,15 +1789,13 @@ BSC32_SBRS= \
 	"$(INTDIR)\onefactoroperator.sbr" \
 	"$(INTDIR)\tridiagonaloperator.sbr" \
 	"$(INTDIR)\valueatcenter.sbr" \
-	"$(INTDIR)\daycounters.sbr" \
-	"$(INTDIR)\mathf.sbr" \
-	"$(INTDIR)\vols.sbr" \
 	"$(INTDIR)\xibor.sbr" \
 	"$(INTDIR)\xibormanager.sbr" \
 	"$(INTDIR)\asianoption.sbr" \
 	"$(INTDIR)\barrieroption.sbr" \
 	"$(INTDIR)\basketoption.sbr" \
 	"$(INTDIR)\capfloor.sbr" \
+	"$(INTDIR)\europeanoption.sbr" \
 	"$(INTDIR)\forwardvanillaoption.sbr" \
 	"$(INTDIR)\multiassetoption.sbr" \
 	"$(INTDIR)\oneassetoption.sbr" \
@@ -1930,7 +1918,8 @@ BSC32_SBRS= \
 	"$(INTDIR)\grid.sbr" \
 	"$(INTDIR)\scheduler.sbr" \
 	"$(INTDIR)\voltermstructure.sbr" \
-	"$(INTDIR)\europeanoption.sbr"
+	"$(INTDIR)\dividendvanillaoption.sbr" \
+	"$(INTDIR)\analyticdividendeuropeanengine.sbr"
 
 "$(OUTDIR)\QuantLib.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -1971,15 +1960,13 @@ LIB32_OBJS= \
 	"$(INTDIR)\onefactoroperator.obj" \
 	"$(INTDIR)\tridiagonaloperator.obj" \
 	"$(INTDIR)\valueatcenter.obj" \
-	"$(INTDIR)\daycounters.obj" \
-	"$(INTDIR)\mathf.obj" \
-	"$(INTDIR)\vols.obj" \
 	"$(INTDIR)\xibor.obj" \
 	"$(INTDIR)\xibormanager.obj" \
 	"$(INTDIR)\asianoption.obj" \
 	"$(INTDIR)\barrieroption.obj" \
 	"$(INTDIR)\basketoption.obj" \
 	"$(INTDIR)\capfloor.obj" \
+	"$(INTDIR)\europeanoption.obj" \
 	"$(INTDIR)\forwardvanillaoption.obj" \
 	"$(INTDIR)\multiassetoption.obj" \
 	"$(INTDIR)\oneassetoption.obj" \
@@ -2102,7 +2089,8 @@ LIB32_OBJS= \
 	"$(INTDIR)\grid.obj" \
 	"$(INTDIR)\scheduler.obj" \
 	"$(INTDIR)\voltermstructure.obj" \
-	"$(INTDIR)\europeanoption.obj"
+	"$(INTDIR)\dividendvanillaoption.obj" \
+	"$(INTDIR)\analyticdividendeuropeanengine.obj"
 
 ".\lib\QuantLib-vc6-mt-0_3_6.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
    if not exist lib mkdir lib
@@ -2136,6 +2124,8 @@ CLEAN :
 	-@erase "$(INTDIR)\analyticbarrierengine.sbr"
 	-@erase "$(INTDIR)\analyticdigitalamericanengine.obj"
 	-@erase "$(INTDIR)\analyticdigitalamericanengine.sbr"
+	-@erase "$(INTDIR)\analyticdividendeuropeanengine.obj"
+	-@erase "$(INTDIR)\analyticdividendeuropeanengine.sbr"
 	-@erase "$(INTDIR)\analyticeuropeanengine.obj"
 	-@erase "$(INTDIR)\analyticeuropeanengine.sbr"
 	-@erase "$(INTDIR)\armijo.obj"
@@ -2212,8 +2202,6 @@ CLEAN :
 	-@erase "$(INTDIR)\dataparsers.sbr"
 	-@erase "$(INTDIR)\date.obj"
 	-@erase "$(INTDIR)\date.sbr"
-	-@erase "$(INTDIR)\daycounters.obj"
-	-@erase "$(INTDIR)\daycounters.sbr"
 	-@erase "$(INTDIR)\diffusionprocess.obj"
 	-@erase "$(INTDIR)\diffusionprocess.sbr"
 	-@erase "$(INTDIR)\discountcurve.obj"
@@ -2230,6 +2218,8 @@ CLEAN :
 	-@erase "$(INTDIR)\discretizedvanillaoption.sbr"
 	-@erase "$(INTDIR)\dividendeuropeanoption.obj"
 	-@erase "$(INTDIR)\dividendeuropeanoption.sbr"
+	-@erase "$(INTDIR)\dividendvanillaoption.obj"
+	-@erase "$(INTDIR)\dividendvanillaoption.sbr"
 	-@erase "$(INTDIR)\errorfunction.obj"
 	-@erase "$(INTDIR)\errorfunction.sbr"
 	-@erase "$(INTDIR)\errors.obj"
@@ -2304,8 +2294,6 @@ CLEAN :
 	-@erase "$(INTDIR)\localvolsurface.sbr"
 	-@erase "$(INTDIR)\london.obj"
 	-@erase "$(INTDIR)\london.sbr"
-	-@erase "$(INTDIR)\mathf.obj"
-	-@erase "$(INTDIR)\mathf.sbr"
 	-@erase "$(INTDIR)\mcamericanbasketengine.obj"
 	-@erase "$(INTDIR)\mcamericanbasketengine.sbr"
 	-@erase "$(INTDIR)\mcbarrierengine.obj"
@@ -2434,8 +2422,6 @@ CLEAN :
 	-@erase "$(INTDIR)\vanillaoption.sbr"
 	-@erase "$(INTDIR)\vasicek.obj"
 	-@erase "$(INTDIR)\vasicek.sbr"
-	-@erase "$(INTDIR)\vols.obj"
-	-@erase "$(INTDIR)\vols.sbr"
 	-@erase "$(INTDIR)\voltermstructure.obj"
 	-@erase "$(INTDIR)\voltermstructure.sbr"
 	-@erase "$(INTDIR)\warsaw.obj"
@@ -2493,15 +2479,13 @@ BSC32_SBRS= \
 	"$(INTDIR)\onefactoroperator.sbr" \
 	"$(INTDIR)\tridiagonaloperator.sbr" \
 	"$(INTDIR)\valueatcenter.sbr" \
-	"$(INTDIR)\daycounters.sbr" \
-	"$(INTDIR)\mathf.sbr" \
-	"$(INTDIR)\vols.sbr" \
 	"$(INTDIR)\xibor.sbr" \
 	"$(INTDIR)\xibormanager.sbr" \
 	"$(INTDIR)\asianoption.sbr" \
 	"$(INTDIR)\barrieroption.sbr" \
 	"$(INTDIR)\basketoption.sbr" \
 	"$(INTDIR)\capfloor.sbr" \
+	"$(INTDIR)\europeanoption.sbr" \
 	"$(INTDIR)\forwardvanillaoption.sbr" \
 	"$(INTDIR)\multiassetoption.sbr" \
 	"$(INTDIR)\oneassetoption.sbr" \
@@ -2624,7 +2608,8 @@ BSC32_SBRS= \
 	"$(INTDIR)\grid.sbr" \
 	"$(INTDIR)\scheduler.sbr" \
 	"$(INTDIR)\voltermstructure.sbr" \
-	"$(INTDIR)\europeanoption.sbr"
+	"$(INTDIR)\dividendvanillaoption.sbr" \
+	"$(INTDIR)\analyticdividendeuropeanengine.sbr"
 
 "$(OUTDIR)\QuantLib.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -2665,15 +2650,13 @@ LIB32_OBJS= \
 	"$(INTDIR)\onefactoroperator.obj" \
 	"$(INTDIR)\tridiagonaloperator.obj" \
 	"$(INTDIR)\valueatcenter.obj" \
-	"$(INTDIR)\daycounters.obj" \
-	"$(INTDIR)\mathf.obj" \
-	"$(INTDIR)\vols.obj" \
 	"$(INTDIR)\xibor.obj" \
 	"$(INTDIR)\xibormanager.obj" \
 	"$(INTDIR)\asianoption.obj" \
 	"$(INTDIR)\barrieroption.obj" \
 	"$(INTDIR)\basketoption.obj" \
 	"$(INTDIR)\capfloor.obj" \
+	"$(INTDIR)\europeanoption.obj" \
 	"$(INTDIR)\forwardvanillaoption.obj" \
 	"$(INTDIR)\multiassetoption.obj" \
 	"$(INTDIR)\oneassetoption.obj" \
@@ -2796,7 +2779,8 @@ LIB32_OBJS= \
 	"$(INTDIR)\grid.obj" \
 	"$(INTDIR)\scheduler.obj" \
 	"$(INTDIR)\voltermstructure.obj" \
-	"$(INTDIR)\europeanoption.obj"
+	"$(INTDIR)\dividendvanillaoption.obj" \
+	"$(INTDIR)\analyticdividendeuropeanengine.obj"
 
 ".\lib\QuantLib-vc6-mt-gd-0_3_6.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
    if not exist lib mkdir lib
@@ -2830,6 +2814,8 @@ CLEAN :
 	-@erase "$(INTDIR)\analyticbarrierengine.sbr"
 	-@erase "$(INTDIR)\analyticdigitalamericanengine.obj"
 	-@erase "$(INTDIR)\analyticdigitalamericanengine.sbr"
+	-@erase "$(INTDIR)\analyticdividendeuropeanengine.obj"
+	-@erase "$(INTDIR)\analyticdividendeuropeanengine.sbr"
 	-@erase "$(INTDIR)\analyticeuropeanengine.obj"
 	-@erase "$(INTDIR)\analyticeuropeanengine.sbr"
 	-@erase "$(INTDIR)\armijo.obj"
@@ -2906,8 +2892,6 @@ CLEAN :
 	-@erase "$(INTDIR)\dataparsers.sbr"
 	-@erase "$(INTDIR)\date.obj"
 	-@erase "$(INTDIR)\date.sbr"
-	-@erase "$(INTDIR)\daycounters.obj"
-	-@erase "$(INTDIR)\daycounters.sbr"
 	-@erase "$(INTDIR)\diffusionprocess.obj"
 	-@erase "$(INTDIR)\diffusionprocess.sbr"
 	-@erase "$(INTDIR)\discountcurve.obj"
@@ -2924,6 +2908,8 @@ CLEAN :
 	-@erase "$(INTDIR)\discretizedvanillaoption.sbr"
 	-@erase "$(INTDIR)\dividendeuropeanoption.obj"
 	-@erase "$(INTDIR)\dividendeuropeanoption.sbr"
+	-@erase "$(INTDIR)\dividendvanillaoption.obj"
+	-@erase "$(INTDIR)\dividendvanillaoption.sbr"
 	-@erase "$(INTDIR)\errorfunction.obj"
 	-@erase "$(INTDIR)\errorfunction.sbr"
 	-@erase "$(INTDIR)\errors.obj"
@@ -2998,8 +2984,6 @@ CLEAN :
 	-@erase "$(INTDIR)\localvolsurface.sbr"
 	-@erase "$(INTDIR)\london.obj"
 	-@erase "$(INTDIR)\london.sbr"
-	-@erase "$(INTDIR)\mathf.obj"
-	-@erase "$(INTDIR)\mathf.sbr"
 	-@erase "$(INTDIR)\mcamericanbasketengine.obj"
 	-@erase "$(INTDIR)\mcamericanbasketengine.sbr"
 	-@erase "$(INTDIR)\mcbarrierengine.obj"
@@ -3129,8 +3113,6 @@ CLEAN :
 	-@erase "$(INTDIR)\vasicek.obj"
 	-@erase "$(INTDIR)\vasicek.sbr"
 	-@erase "$(INTDIR)\vc60.idb"
-	-@erase "$(INTDIR)\vols.obj"
-	-@erase "$(INTDIR)\vols.sbr"
 	-@erase "$(INTDIR)\voltermstructure.obj"
 	-@erase "$(INTDIR)\voltermstructure.sbr"
 	-@erase "$(INTDIR)\warsaw.obj"
@@ -3186,15 +3168,13 @@ BSC32_SBRS= \
 	"$(INTDIR)\onefactoroperator.sbr" \
 	"$(INTDIR)\tridiagonaloperator.sbr" \
 	"$(INTDIR)\valueatcenter.sbr" \
-	"$(INTDIR)\daycounters.sbr" \
-	"$(INTDIR)\mathf.sbr" \
-	"$(INTDIR)\vols.sbr" \
 	"$(INTDIR)\xibor.sbr" \
 	"$(INTDIR)\xibormanager.sbr" \
 	"$(INTDIR)\asianoption.sbr" \
 	"$(INTDIR)\barrieroption.sbr" \
 	"$(INTDIR)\basketoption.sbr" \
 	"$(INTDIR)\capfloor.sbr" \
+	"$(INTDIR)\europeanoption.sbr" \
 	"$(INTDIR)\forwardvanillaoption.sbr" \
 	"$(INTDIR)\multiassetoption.sbr" \
 	"$(INTDIR)\oneassetoption.sbr" \
@@ -3317,7 +3297,8 @@ BSC32_SBRS= \
 	"$(INTDIR)\grid.sbr" \
 	"$(INTDIR)\scheduler.sbr" \
 	"$(INTDIR)\voltermstructure.sbr" \
-	"$(INTDIR)\europeanoption.sbr"
+	"$(INTDIR)\dividendvanillaoption.sbr" \
+	"$(INTDIR)\analyticdividendeuropeanengine.sbr"
 
 "$(OUTDIR)\QuantLib.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -3358,15 +3339,13 @@ LIB32_OBJS= \
 	"$(INTDIR)\onefactoroperator.obj" \
 	"$(INTDIR)\tridiagonaloperator.obj" \
 	"$(INTDIR)\valueatcenter.obj" \
-	"$(INTDIR)\daycounters.obj" \
-	"$(INTDIR)\mathf.obj" \
-	"$(INTDIR)\vols.obj" \
 	"$(INTDIR)\xibor.obj" \
 	"$(INTDIR)\xibormanager.obj" \
 	"$(INTDIR)\asianoption.obj" \
 	"$(INTDIR)\barrieroption.obj" \
 	"$(INTDIR)\basketoption.obj" \
 	"$(INTDIR)\capfloor.obj" \
+	"$(INTDIR)\europeanoption.obj" \
 	"$(INTDIR)\forwardvanillaoption.obj" \
 	"$(INTDIR)\multiassetoption.obj" \
 	"$(INTDIR)\oneassetoption.obj" \
@@ -3489,7 +3468,8 @@ LIB32_OBJS= \
 	"$(INTDIR)\grid.obj" \
 	"$(INTDIR)\scheduler.obj" \
 	"$(INTDIR)\voltermstructure.obj" \
-	"$(INTDIR)\europeanoption.obj"
+	"$(INTDIR)\dividendvanillaoption.obj" \
+	"$(INTDIR)\analyticdividendeuropeanengine.obj"
 
 ".\lib\QuantLib-vc6-s-0_3_6.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
    if not exist lib mkdir lib
@@ -3523,6 +3503,8 @@ CLEAN :
 	-@erase "$(INTDIR)\analyticbarrierengine.sbr"
 	-@erase "$(INTDIR)\analyticdigitalamericanengine.obj"
 	-@erase "$(INTDIR)\analyticdigitalamericanengine.sbr"
+	-@erase "$(INTDIR)\analyticdividendeuropeanengine.obj"
+	-@erase "$(INTDIR)\analyticdividendeuropeanengine.sbr"
 	-@erase "$(INTDIR)\analyticeuropeanengine.obj"
 	-@erase "$(INTDIR)\analyticeuropeanengine.sbr"
 	-@erase "$(INTDIR)\armijo.obj"
@@ -3599,8 +3581,6 @@ CLEAN :
 	-@erase "$(INTDIR)\dataparsers.sbr"
 	-@erase "$(INTDIR)\date.obj"
 	-@erase "$(INTDIR)\date.sbr"
-	-@erase "$(INTDIR)\daycounters.obj"
-	-@erase "$(INTDIR)\daycounters.sbr"
 	-@erase "$(INTDIR)\diffusionprocess.obj"
 	-@erase "$(INTDIR)\diffusionprocess.sbr"
 	-@erase "$(INTDIR)\discountcurve.obj"
@@ -3617,6 +3597,8 @@ CLEAN :
 	-@erase "$(INTDIR)\discretizedvanillaoption.sbr"
 	-@erase "$(INTDIR)\dividendeuropeanoption.obj"
 	-@erase "$(INTDIR)\dividendeuropeanoption.sbr"
+	-@erase "$(INTDIR)\dividendvanillaoption.obj"
+	-@erase "$(INTDIR)\dividendvanillaoption.sbr"
 	-@erase "$(INTDIR)\errorfunction.obj"
 	-@erase "$(INTDIR)\errorfunction.sbr"
 	-@erase "$(INTDIR)\errors.obj"
@@ -3691,8 +3673,6 @@ CLEAN :
 	-@erase "$(INTDIR)\localvolsurface.sbr"
 	-@erase "$(INTDIR)\london.obj"
 	-@erase "$(INTDIR)\london.sbr"
-	-@erase "$(INTDIR)\mathf.obj"
-	-@erase "$(INTDIR)\mathf.sbr"
 	-@erase "$(INTDIR)\mcamericanbasketengine.obj"
 	-@erase "$(INTDIR)\mcamericanbasketengine.sbr"
 	-@erase "$(INTDIR)\mcbarrierengine.obj"
@@ -3821,8 +3801,6 @@ CLEAN :
 	-@erase "$(INTDIR)\vanillaoption.sbr"
 	-@erase "$(INTDIR)\vasicek.obj"
 	-@erase "$(INTDIR)\vasicek.sbr"
-	-@erase "$(INTDIR)\vols.obj"
-	-@erase "$(INTDIR)\vols.sbr"
 	-@erase "$(INTDIR)\voltermstructure.obj"
 	-@erase "$(INTDIR)\voltermstructure.sbr"
 	-@erase "$(INTDIR)\warsaw.obj"
@@ -3880,15 +3858,13 @@ BSC32_SBRS= \
 	"$(INTDIR)\onefactoroperator.sbr" \
 	"$(INTDIR)\tridiagonaloperator.sbr" \
 	"$(INTDIR)\valueatcenter.sbr" \
-	"$(INTDIR)\daycounters.sbr" \
-	"$(INTDIR)\mathf.sbr" \
-	"$(INTDIR)\vols.sbr" \
 	"$(INTDIR)\xibor.sbr" \
 	"$(INTDIR)\xibormanager.sbr" \
 	"$(INTDIR)\asianoption.sbr" \
 	"$(INTDIR)\barrieroption.sbr" \
 	"$(INTDIR)\basketoption.sbr" \
 	"$(INTDIR)\capfloor.sbr" \
+	"$(INTDIR)\europeanoption.sbr" \
 	"$(INTDIR)\forwardvanillaoption.sbr" \
 	"$(INTDIR)\multiassetoption.sbr" \
 	"$(INTDIR)\oneassetoption.sbr" \
@@ -4011,7 +3987,8 @@ BSC32_SBRS= \
 	"$(INTDIR)\grid.sbr" \
 	"$(INTDIR)\scheduler.sbr" \
 	"$(INTDIR)\voltermstructure.sbr" \
-	"$(INTDIR)\europeanoption.sbr"
+	"$(INTDIR)\dividendvanillaoption.sbr" \
+	"$(INTDIR)\analyticdividendeuropeanengine.sbr"
 
 "$(OUTDIR)\QuantLib.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -4052,15 +4029,13 @@ LIB32_OBJS= \
 	"$(INTDIR)\onefactoroperator.obj" \
 	"$(INTDIR)\tridiagonaloperator.obj" \
 	"$(INTDIR)\valueatcenter.obj" \
-	"$(INTDIR)\daycounters.obj" \
-	"$(INTDIR)\mathf.obj" \
-	"$(INTDIR)\vols.obj" \
 	"$(INTDIR)\xibor.obj" \
 	"$(INTDIR)\xibormanager.obj" \
 	"$(INTDIR)\asianoption.obj" \
 	"$(INTDIR)\barrieroption.obj" \
 	"$(INTDIR)\basketoption.obj" \
 	"$(INTDIR)\capfloor.obj" \
+	"$(INTDIR)\europeanoption.obj" \
 	"$(INTDIR)\forwardvanillaoption.obj" \
 	"$(INTDIR)\multiassetoption.obj" \
 	"$(INTDIR)\oneassetoption.obj" \
@@ -4183,7 +4158,8 @@ LIB32_OBJS= \
 	"$(INTDIR)\grid.obj" \
 	"$(INTDIR)\scheduler.obj" \
 	"$(INTDIR)\voltermstructure.obj" \
-	"$(INTDIR)\europeanoption.obj"
+	"$(INTDIR)\dividendvanillaoption.obj" \
+	"$(INTDIR)\analyticdividendeuropeanengine.obj"
 
 ".\lib\QuantLib-vc6-sgd-0_3_6.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
    if not exist lib mkdir lib
@@ -4422,24 +4398,6 @@ SOURCE=.\ql\FiniteDifferences\valueatcenter.cpp
 	$(CPP) $(CPP_PROJ) $(SOURCE)
 
 
-SOURCE=.\ql\functions\daycounters.cpp
-
-"$(INTDIR)\daycounters.obj"	"$(INTDIR)\daycounters.sbr" : $(SOURCE) "$(INTDIR)"
-	$(CPP) $(CPP_PROJ) $(SOURCE)
-
-
-SOURCE=.\ql\functions\mathf.cpp
-
-"$(INTDIR)\mathf.obj"	"$(INTDIR)\mathf.sbr" : $(SOURCE) "$(INTDIR)"
-	$(CPP) $(CPP_PROJ) $(SOURCE)
-
-
-SOURCE=.\ql\functions\vols.cpp
-
-"$(INTDIR)\vols.obj"	"$(INTDIR)\vols.sbr" : $(SOURCE) "$(INTDIR)"
-	$(CPP) $(CPP_PROJ) $(SOURCE)
-
-
 SOURCE=.\ql\Indexes\xibor.cpp
 
 "$(INTDIR)\xibor.obj"	"$(INTDIR)\xibor.sbr" : $(SOURCE) "$(INTDIR)"
@@ -4473,6 +4431,12 @@ SOURCE=.\ql\Instruments\basketoption.cpp
 SOURCE=.\ql\Instruments\capfloor.cpp
 
 "$(INTDIR)\capfloor.obj"	"$(INTDIR)\capfloor.sbr" : $(SOURCE) "$(INTDIR)"
+	$(CPP) $(CPP_PROJ) $(SOURCE)
+
+
+SOURCE=.\ql\Instruments\dividendvanillaoption.cpp
+
+"$(INTDIR)\dividendvanillaoption.obj"	"$(INTDIR)\dividendvanillaoption.sbr" : $(SOURCE) "$(INTDIR)"
 	$(CPP) $(CPP_PROJ) $(SOURCE)
 
 
@@ -4933,6 +4897,12 @@ SOURCE=.\ql\PricingEngines\Basket\stulzengine.cpp
 SOURCE=.\ql\PricingEngines\Vanilla\analyticdigitalamericanengine.cpp
 
 "$(INTDIR)\analyticdigitalamericanengine.obj"	"$(INTDIR)\analyticdigitalamericanengine.sbr" : $(SOURCE) "$(INTDIR)"
+	$(CPP) $(CPP_PROJ) $(SOURCE)
+
+
+SOURCE=.\ql\PricingEngines\Vanilla\analyticdividendeuropeanengine.cpp
+
+"$(INTDIR)\analyticdividendeuropeanengine.obj"	"$(INTDIR)\analyticdividendeuropeanengine.sbr" : $(SOURCE) "$(INTDIR)"
 	$(CPP) $(CPP_PROJ) $(SOURCE)
 
 

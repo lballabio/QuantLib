@@ -574,34 +574,6 @@ SOURCE=.\ql\FiniteDifferences\valueatcenter.cpp
 SOURCE=.\ql\FiniteDifferences\valueatcenter.hpp
 # End Source File
 # End Group
-# Begin Group "functions"
-
-# PROP Default_Filter ""
-# Begin Source File
-
-SOURCE=.\ql\functions\daycounters.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\ql\functions\daycounters.hpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\ql\functions\mathf.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\ql\functions\mathf.hpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\ql\functions\vols.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\ql\functions\vols.hpp
-# End Source File
-# End Group
 # Begin Group "Indexes"
 
 # PROP Default_Filter ""
@@ -700,6 +672,14 @@ SOURCE=.\ql\Instruments\cliquetoption.hpp
 # Begin Source File
 
 SOURCE=.\ql\Instruments\core.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\Instruments\dividendvanillaoption.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\Instruments\dividendvanillaoption.hpp
 # End Source File
 # Begin Source File
 
@@ -1542,6 +1522,14 @@ SOURCE=.\ql\PricingEngines\Vanilla\analyticdigitalamericanengine.cpp
 # Begin Source File
 
 SOURCE=.\ql\PricingEngines\Vanilla\analyticdigitalamericanengine.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\PricingEngines\Vanilla\analyticdividendeuropeanengine.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\PricingEngines\Vanilla\analyticdividendeuropeanengine.hpp
 # End Source File
 # Begin Source File
 
