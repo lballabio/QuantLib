@@ -26,11 +26,11 @@
     \section download QuantLib releases
     Source code, documentation, modules, etc. of current and previous
     %QuantLib releases can be downloaded from
-    http://quantlib.org/download.html
+    http://quantlib.org/download.shtml
 
     \section cvs Current CVS snapshot
     Instructions for anonymous CVS access are available at
-    http://quantlib.org/cvs.html
+    http://quantlib.org/cvs.shtml
 
     Access to the CVS repository is intended mainly for developers and
     is not recommended to end users which should download the

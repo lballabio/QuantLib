@@ -452,13 +452,13 @@
     <strong>Release 0.3.1 - February 4th, 2003</strong>
 
     FINITE DIFFERENCE FRAMEWORK
-    - partially implemented QuEP 2 (http://quantlib.org/quep.html)
+    - partially implemented QuEP 2 (http://quantlib.org/quep.shtml)
 
     VOLATILITY FRAMEWORK
     - added Black and local volatility interface
 
     PRICING ENGINES FRAMEWORK
-    - partially implemented QuEP 5 (http://quantlib.org/quep.html)
+    - partially implemented QuEP 5 (http://quantlib.org/quep.shtml)
 
     YIELD TERM STRUCTURE
     - interface revisited
@@ -660,7 +660,7 @@
     <strong>Release 0.1.9 - May 31st, 2001</strong>
 
     - Library:
-      - Style guidelines introduced (see http://quantlib.org/style.html)
+      - Style guidelines introduced (see http://quantlib.org/style.shtml)
         and partially enforced
       - full support for Microsoft Visual Studio
       - full support for Linux/gcc
