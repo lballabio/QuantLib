@@ -253,8 +253,7 @@ namespace QuantLib {
                         if ((ppmt[k] >> (gk-j-1)) & 1UL)
                             n ^= directionIntegers_[k][l-j];
                     }
-                    // since the lowest order coefficient a[k][gk]
-                    // is always set, the directionIntegers_[k][l-gk]
+                    // a[k][gk] is always set, so directionIntegers_[k][l-gk]
                     // will always enter
                     n ^= directionIntegers_[k][l-gk];
                     directionIntegers_[k][l]=n;
