@@ -26,7 +26,7 @@
 #include <ql/voltermstructure.hpp>
 #include <ql/Math/matrix.hpp>
 #include <ql/Math/interpolation2D.hpp>
-#include <ql/DayCounters/actual365.hpp>
+#include <ql/DayCounters/actual365fixed.hpp>
 
 namespace QuantLib {
 
@@ -54,7 +54,7 @@ namespace QuantLib {
                              InterpolatorDefaultExtrapolation,
                              Extrapolation upperExtrapolation =
                              InterpolatorDefaultExtrapolation,
-                             const DayCounter& dayCounter = Actual365());
+                             const DayCounter& dayCounter = Actual365Fixed());
         //! \name BlackVolTermStructure interface
         //@{
         DayCounter dayCounter() const {

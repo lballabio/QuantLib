@@ -37,16 +37,16 @@ namespace QuantLib {
       public:
         LocalConstantVol(const Date& referenceDate,
                          Volatility volatility,
-                         const DayCounter& dayCounter = Actual365());
+                         const DayCounter& dayCounter = Actual365Fixed());
         LocalConstantVol(const Date& referenceDate,
                          const Handle<Quote>& volatility,
-                         const DayCounter& dayCounter = Actual365());
+                         const DayCounter& dayCounter = Actual365Fixed());
         LocalConstantVol(Integer settlementDays, const Calendar&,
                          Volatility volatility,
-                         const DayCounter& dayCounter = Actual365());
+                         const DayCounter& dayCounter = Actual365Fixed());
         LocalConstantVol(Integer settlementDays, const Calendar&,
                          const Handle<Quote>& volatility,
-                         const DayCounter& dayCounter = Actual365());
+                         const DayCounter& dayCounter = Actual365Fixed());
         //! \name LocalVolTermStructure interface
         //@{
         DayCounter dayCounter() const { return dayCounter_; }

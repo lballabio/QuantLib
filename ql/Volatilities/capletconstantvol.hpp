@@ -23,7 +23,7 @@
 #define quantlib_caplet_constant_volatility_hpp
 
 #include <ql/capvolstructures.hpp>
-#include <ql/DayCounters/actual365.hpp>
+#include <ql/DayCounters/actual365fixed.hpp>
 
 namespace QuantLib {
 
@@ -32,16 +32,16 @@ namespace QuantLib {
       public:
         CapletConstantVolatility(const Date& referenceDate,
                                  Volatility volatility,
-                                 const DayCounter& dayCounter = Actual365());
+                                 const DayCounter& dayCounter = Actual365Fixed());
         CapletConstantVolatility(const Date& referenceDate,
                                  const Handle<Quote>& volatility,
-                                 const DayCounter& dayCounter = Actual365());
+                                 const DayCounter& dayCounter = Actual365Fixed());
         CapletConstantVolatility(Integer settlementDays, const Calendar&,
                                  Volatility volatility,
-                                 const DayCounter& dayCounter = Actual365());
+                                 const DayCounter& dayCounter = Actual365Fixed());
         CapletConstantVolatility(Integer settlementDays, const Calendar&,
                                  const Handle<Quote>& volatility,
-                                 const DayCounter& dayCounter = Actual365());
+                                 const DayCounter& dayCounter = Actual365Fixed());
         //! \name BaseTermStructure interface
         //@{
         DayCounter dayCounter() const;

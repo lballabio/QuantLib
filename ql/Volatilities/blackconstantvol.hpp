@@ -24,7 +24,7 @@
 #define quantlib_blackconstantvol_hpp
 
 #include <ql/voltermstructure.hpp>
-#include <ql/DayCounters/actual365.hpp>
+#include <ql/DayCounters/actual365fixed.hpp>
 
 namespace QuantLib {
 
@@ -37,16 +37,16 @@ namespace QuantLib {
       public:
         BlackConstantVol(const Date& referenceDate,
                          Volatility volatility,
-                         const DayCounter& dayCounter = Actual365());
+                         const DayCounter& dayCounter = Actual365Fixed());
         BlackConstantVol(const Date& referenceDate,
                          const Handle<Quote>& volatility,
-                         const DayCounter& dayCounter = Actual365());
+                         const DayCounter& dayCounter = Actual365Fixed());
         BlackConstantVol(Integer settlementDays, const Calendar&,
                          Volatility volatility,
-                         const DayCounter& dayCounter = Actual365());
+                         const DayCounter& dayCounter = Actual365Fixed());
         BlackConstantVol(Integer settlementDays, const Calendar&,
                          const Handle<Quote>& volatility,
-                         const DayCounter& dayCounter = Actual365());
+                         const DayCounter& dayCounter = Actual365Fixed());
         //! \name BlackVolTermStructure interface
         //@{
         DayCounter dayCounter() const;

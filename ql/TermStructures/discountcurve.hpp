@@ -23,7 +23,7 @@
 #define quantlib_discount_curve_hpp
 
 #include <ql/termstructure.hpp>
-#include <ql/DayCounters/actual365.hpp>
+#include <ql/DayCounters/actual365fixed.hpp>
 #include <ql/Math/loglinearinterpolation.hpp>
 
 namespace QuantLib {
@@ -43,11 +43,11 @@ namespace QuantLib {
         DiscountCurve(const Date& todaysDate,
                       const std::vector<Date>& dates,
                       const std::vector<DiscountFactor>& dfs,
-                      const DayCounter& dayCounter = Actual365());
+                      const DayCounter& dayCounter = Actual365Fixed());
         #endif
         DiscountCurve(const std::vector<Date>& dates,
                       const std::vector<DiscountFactor>& dfs,
-                      const DayCounter& dayCounter = Actual365());
+                      const DayCounter& dayCounter = Actual365Fixed());
         DayCounter dayCounter() const { return dayCounter_; }
         Calendar calendar() const { return Calendar(); }
         Date maxDate() const;

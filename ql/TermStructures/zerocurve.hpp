@@ -23,7 +23,7 @@
 #define quantlib_zero_curve_hpp
 
 #include <ql/termstructure.hpp>
-#include <ql/DayCounters/actual365.hpp>
+#include <ql/DayCounters/actual365fixed.hpp>
 #include <ql/Math/linearinterpolation.hpp>
 
 namespace QuantLib {
@@ -38,11 +38,11 @@ namespace QuantLib {
         ZeroCurve(const Date& todaysDate,
                   const std::vector<Date>& dates,
                   const std::vector<Rate>& yields,
-                  const DayCounter& dayCounter = Actual365());
+                  const DayCounter& dayCounter = Actual365Fixed());
         #endif
         ZeroCurve(const std::vector<Date>& dates,
                   const std::vector<Rate>& yields,
-                  const DayCounter& dayCounter = Actual365());
+                  const DayCounter& dayCounter = Actual365Fixed());
         // inspectors
         DayCounter dayCounter() const;
         Calendar calendar() const;

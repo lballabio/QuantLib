@@ -42,13 +42,13 @@ namespace QuantLib {
                               const std::vector<DiscountFactor>& dfs,
                               const Calendar& calendar,
                               const BusinessDayConvention conv,
-                              const DayCounter& dayCounter = Actual365());
+                              const DayCounter& dayCounter = Actual365Fixed());
         #endif
         ExtendedDiscountCurve(const std::vector<Date>& dates,
                               const std::vector<DiscountFactor>& dfs,
                               const Calendar& calendar,
                               const BusinessDayConvention conv,
-                              const DayCounter& dayCounter = Actual365());
+                              const DayCounter& dayCounter = Actual365Fixed());
         Calendar calendar() const { return calendar_; };
         BusinessDayConvention businessDayConvention() const {
             return conv_;
