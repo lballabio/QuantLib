@@ -21,7 +21,7 @@
 namespace QuantLib {
 
     PerformanceOption::PerformanceOption(
-                       Option::Type type, double underlying, double moneyness,
+                       Option::Type type, double, double moneyness,
                        const std::vector<Spread>& dividendYield,
                        const std::vector<Rate>& riskFreeRate,
                        const std::vector<Time>& times,
