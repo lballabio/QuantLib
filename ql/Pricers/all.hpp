@@ -25,11 +25,11 @@
 #include <ql/Pricers/continuousgeometricapo.hpp>
 #include <ql/Pricers/discretegeometricapo.hpp>
 #include <ql/Pricers/discretegeometricaso.hpp>
+#include <ql/Pricers/dividendeuropeanoption.hpp>
 #include <ql/Pricers/fdamericanoption.hpp>
 #include <ql/Pricers/fdbermudanoption.hpp>
 #include <ql/Pricers/fdbsmoption.hpp>
 #include <ql/Pricers/fddividendamericanoption.hpp>
-#include <ql/Pricers/fddividendeuropeanoption.hpp>
 #include <ql/Pricers/fddividendoption.hpp>
 #include <ql/Pricers/fddividendshoutoption.hpp>
 #include <ql/Pricers/fdeuropean.hpp>

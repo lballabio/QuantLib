@@ -18,7 +18,7 @@
 #include "old_pricers.hpp"
 #include "utilities.hpp"
 #include <ql/Pricers/cliquetoption.hpp>
-#include <ql/Pricers/fddividendeuropeanoption.hpp>
+#include <ql/Pricers/dividendeuropeanoption.hpp>
 #include <ql/Pricers/fdeuropean.hpp>
 #include <ql/Pricers/fdamericanoption.hpp>
 #include <ql/Pricers/fdshoutoption.hpp>
@@ -114,7 +114,7 @@ void OldPricerTest::testDividendEuropeanPricer() {
                   Spread dr = r*1.0e-4;
 
                   // reference option
-                  FdDividendEuropeanOption opt(type,u,k,q,r,T,v,div,dates);
+                  DividendEuropeanOption opt(type,u,k,q,r,T,v,div,dates);
                   if (opt.value() > u*1.0e-5) {
                     // greeks
                     calculated["delta"]  = opt.delta();
@@ -129,7 +129,7 @@ void OldPricerTest::testDividendEuropeanPricer() {
                                    std::bind2nd(std::plus<Time>(),dT));
                     std::transform(dates.begin(),dates.end(),datesM.begin(),
                                    std::bind2nd(std::minus<Time>(),dT));
-                    FdDividendEuropeanOption
+                    DividendEuropeanOption
                         optPs(type, u+du, k, q, r,    T ,   v   , div, dates),
                         optMs(type, u-du, k, q, r,    T ,   v   , div, dates),
                         optPt(type, u   , k, q, r,    T+dT, v   , div, datesP),

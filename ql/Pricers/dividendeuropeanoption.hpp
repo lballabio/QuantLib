@@ -15,26 +15,26 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-/*! \file fddividendeuropeanoption.hpp
-    \brief european option with discrete deterministic dividends
+/*! \file dividendeuropeanoption.hpp
+    \brief European option with discrete deterministic dividends
 */
 
-#ifndef BSM_dividend_european_option_pricer_hpp
-#define BSM_dividend_european_option_pricer_hpp
+#ifndef dividend_european_option_pricer_hpp
+#define dividend_european_option_pricer_hpp
 
 #include <ql/option.hpp>
 
 namespace QuantLib {
 
     //! European option with dividends
-    class FdDividendEuropeanOption {
+    class DividendEuropeanOption {
       public:
-        FdDividendEuropeanOption(Option::Type type, double underlying,
-                                 double strike, Spread dividendYield, 
-                                 Rate riskFreeRate, Time residualTime, 
-                                 double volatility,
-                                 const std::vector<double>& dividends,
-                                 const std::vector<Time>& exdivdates);
+        DividendEuropeanOption(Option::Type type, double underlying,
+                               double strike, Spread dividendYield, 
+                               Rate riskFreeRate, Time residualTime, 
+                               double volatility,
+                               const std::vector<double>& dividends,
+                               const std::vector<Time>& exdivdates);
         double value() const { return value_; }
         double delta() const { return delta_; }
         double gamma() const { return gamma_; }

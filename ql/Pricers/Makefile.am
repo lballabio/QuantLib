@@ -9,11 +9,11 @@ include_HEADERS = \
     continuousgeometricapo.hpp \
     discretegeometricapo.hpp \
     discretegeometricaso.hpp \
+    dividendeuropeanoption.hpp \
     fdamericanoption.hpp \
     fdbermudanoption.hpp \
     fdbsmoption.hpp \
     fddividendamericanoption.hpp \
-    fddividendeuropeanoption.hpp \
     fddividendoption.hpp \
     fddividendshoutoption.hpp \
     fdeuropean.hpp \
@@ -39,10 +39,10 @@ libPricers_la_SOURCES = \
     cliquetoption.cpp \
     discretegeometricapo.cpp \
     discretegeometricaso.cpp \
+    dividendeuropeanoption.cpp \
     fdbermudanoption.cpp \
     fdbsmoption.cpp \
     fddividendamericanoption.cpp \
-    fddividendeuropeanoption.cpp \
     fddividendoption.cpp \
     fddividendshoutoption.cpp \
     fdeuropean.cpp \

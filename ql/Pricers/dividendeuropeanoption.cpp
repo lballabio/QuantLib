@@ -15,13 +15,13 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include <ql/Pricers/fddividendeuropeanoption.hpp>
+#include <ql/Pricers/dividendeuropeanoption.hpp>
 #include <ql/PricingEngines/blackformula.hpp>
 #include <ql/dataformatters.hpp>
 
 namespace QuantLib {
 
-    FdDividendEuropeanOption::FdDividendEuropeanOption(
+    DividendEuropeanOption::DividendEuropeanOption(
                    Option::Type type, double underlying, double strike,
                    Spread dividendYield, Rate riskFreeRate, Time residualTime,
                    double volatility, const std::vector<double>& dividends,
