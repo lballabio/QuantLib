@@ -55,6 +55,21 @@ namespace QuantLib {
               const Date& refPeriodEnd = Date()) const;
             //@}
           private:
+            class Thirty360Factory : public factory {
+              public:
+                Thirty360Factory(Convention c) : convention_(c) {}
+                Handle<DayCounter> create() const {
+                    return Handle<DayCounter>(new Thirty360(convention_));
+                }
+              private:
+                Convention convention_;
+            };
+          public:
+            //! returns a factory of 30/360 day counters
+            Handle<factory> getFactory(Convention c) const {
+                return Handle<factory>(new Thirty360Factory(c));
+            }
+          private:
             Convention convention_;
         };
 

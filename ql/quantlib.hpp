@@ -143,6 +143,7 @@
 #include "ql/MonteCarlo/pathpricer.hpp"
 #include "ql/MonteCarlo/randomarraygenerator.hpp"
 
+#include "ql/Patterns/factory.hpp"
 #include "ql/Patterns/observable.hpp"
 
 #include "ql/Pricers/americancondition.hpp"

@@ -62,6 +62,21 @@ namespace QuantLib {
                 const Date& refPeriodStart, const Date& refPeriodEnd) const;
             //@}
           private:
+            class ActActFactory : public factory {
+              public:
+                ActActFactory(Convention c) : convention_(c) {}
+                Handle<DayCounter> create() const {
+                    return Handle<DayCounter>(new ActualActual(convention_));
+                }
+              private:
+                Convention convention_;
+            };
+          public:
+            //! returns a factory of actual/actual day counters
+            Handle<factory> getFactory(Convention c) const {
+                return Handle<factory>(new ActActFactory(c));
+            }
+          private:
             Convention convention_;
             Time ismaYearFraction(const Date& d1, const Date& d2,
                 const Date& refPeriodStart, const Date& refPeriodEnd) const;

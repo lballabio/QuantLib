@@ -42,12 +42,11 @@ namespace QuantLib {
     //! Implementations of design patterns
     namespace Patterns {
 
-        /*  These classes are a simplified version of the ones implemented in
-            Thinking in C++ which in turn mirror the Java Observer and
-            Observable interface
-        */
-
         //! Object that gets notified when a given observable changes
+        /*! These classes are a simplified version of the ones implemented in
+            Bruce Eckel, Thinking in C++ (http://www.bruceeckel.com) which in 
+            turn mirror the Java Observer and Observable interfaces.
+        */
         class Observer {
           public:
             virtual ~Observer() {}

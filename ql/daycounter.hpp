@@ -54,6 +54,8 @@ namespace QuantLib {
     */
     class DayCounter {
       public:
+        //! \name %DayCounter interface
+        //@{
         //! Returns the name of the day counter.
         /*! \warning This method is used for output and comparison between day
             counters.
@@ -66,6 +68,13 @@ namespace QuantLib {
         virtual Time yearFraction(const Date&, const Date&,
           const Date& refPeriodStart = Date(),
           const Date& refPeriodEnd = Date()) const = 0;
+        //@}
+        //! abstract base class for calendar factories
+        class DayCounterFactory {
+          public:
+            virtual Handle<DayCounter> create() const = 0;
+        };
+        typedef DayCounterFactory factory;
     };
 
     // comparison based on name

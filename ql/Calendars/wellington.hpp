@@ -69,6 +69,18 @@ namespace QuantLib {
             Wellington() {}
             std::string name() const { return "Wellington"; }
             bool isBusinessDay(const Date&) const;
+          private:
+            class WelCalendarFactory : public factory {
+              public:
+                Handle<Calendar> create() const {
+                    return Handle<Calendar>(new Wellington);
+                }
+            };
+          public:
+            //! returns a factory of %Wellington calendars
+            Handle<factory> getFactory() const {
+                return Handle<factory>(new WelCalendarFactory);
+            }
         };
 
     }

@@ -51,6 +51,18 @@ namespace QuantLib {
               const Date& refPeriodEnd = Date()) const {
                 return dayCount(d1,d2)/365.0;
             }
+          private:
+            class Act365Factory : public factory {
+              public:
+                Handle<DayCounter> create() const {
+                    return Handle<DayCounter>(new Actual365);
+                }
+            };
+          public:
+            //! returns a factory of actual/365 day counters
+            Handle<factory> getFactory() const {
+                return Handle<factory>(new Act365Factory);
+            }
         };
 
     }

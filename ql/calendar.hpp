@@ -73,6 +73,8 @@ namespace QuantLib {
     */
     class Calendar {
       public:
+        //! \name %Calendar interface
+        //@{
         //! Returns the name of the calendar.
         /*! \warning This method is used for output and comparison between
             calendars.
@@ -97,6 +99,13 @@ namespace QuantLib {
         */
         Date advance(const Date&, int n, TimeUnit unit,
             RollingConvention convention = Following) const;
+        //@}
+        //! abstract base class for calendar factories
+        class CalendarFactory {
+          public:
+            virtual Handle<Calendar> create() const = 0;
+        };
+        typedef CalendarFactory factory;
     };
 
     bool operator==(const Handle<Calendar>&, const Handle<Calendar>&);
@@ -112,6 +121,18 @@ namespace QuantLib {
             std::string name() const { return "None"; }
             //! always returns <tt>true</tt>
             bool isBusinessDay(const Date& d) const {return true; }
+          private:
+            class NullCalendarFactory : public factory {
+              public:
+                Handle<Calendar> create() const {
+                    return Handle<Calendar>(new NullCalendar);
+                }
+            };
+          public:
+            //! returns a factory of null calendars
+            Handle<factory> getFactory() const {
+                return Handle<factory>(new NullCalendarFactory);
+            }
         };
 
     }

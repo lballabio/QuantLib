@@ -58,6 +58,18 @@ namespace QuantLib {
             TARGET() {}
             std::string name() const { return "TARGET"; }
             bool isBusinessDay(const Date&) const;
+          private:
+            class EurCalendarFactory : public factory {
+              public:
+                Handle<Calendar> create() const {
+                    return Handle<Calendar>(new TARGET);
+                }
+            };
+          public:
+            //! returns a factory of %TARGET calendars
+            Handle<factory> getFactory() const {
+                return Handle<factory>(new EurCalendarFactory);
+            }
         };
 
     }
