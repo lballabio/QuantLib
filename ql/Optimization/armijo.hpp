@@ -1,5 +1,3 @@
-
-
 /*
  Copyright (C) 2001, 2002 Nicolas Di Césaré
 
@@ -38,7 +36,7 @@
   f(x+t/beta*d) - f(x) > -alpha*t*f'(x+t*d)/beta
 
   (see Polak. Algorithms and consitent approximations, Optimization,
-  volume 124 of Apllied Mathematical Sciences. Springer-Arrayerlag, N-Y, 1997)
+  volume 124 of Applied Mathematical Sciences. Springer-Arrayerlag, N-Y, 1997)
 */
 
 namespace QuantLib {
@@ -48,19 +46,17 @@ namespace QuantLib {
         class ArmijoLineSearch : public LineSearch {
           public:
             //! Default constructor
-            ArmijoLineSearch (double eps = 1e-8,
-                              double alpha = 0.5,
-                              double beta = 0.65)
+            ArmijoLineSearch(double eps = 1e-8,
+                             double alpha = 0.5,
+                             double beta = 0.65)
             : LineSearch(eps), alpha_(alpha), beta_(beta) {}
             //! Destructor
-            virtual ~ ArmijoLineSearch () {}
+            virtual ~ArmijoLineSearch () {}
 
             //! Perform line search
-            virtual double operator () (
+            virtual double operator() (
                 OptimizationProblem &P,// Optimization problem
-                double t_ini,      // initial value of line-search step
-                double q0,         // function value
-                double qp0);       // squared norm of gradient vector
+                double t_ini);     // initial value of line-search step
           private:
             //! Armijo paramters
             double alpha_, beta_;

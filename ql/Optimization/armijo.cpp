@@ -1,5 +1,3 @@
-
-
 /*
  Copyright (C) 2001, 2002 Nicolas Di Césaré
 
@@ -30,43 +28,49 @@ namespace QuantLib {
 
         double ArmijoLineSearch::operator()(
             OptimizationProblem &P, // Optimization problem
-            double t_ini,           // initial value of line-search step
-            double q0,              // function value
-            double qp0)             // squared norm of gradient vector
+            double t_ini)           // initial value of line-search step
         {
+            OptimizationMethod& method = P.optimisationMethod();
+            Constraint& constraint = P.constraint();
+
             bool maxIter = false;
+            double q0 = method.functionValue();
+            double qp0 = method.gradientNormValue();
             qt_ = q0;
             qpt_ = qp0;
             double qtold, t = t_ini;
             int loopNumber = 0;
 
-            OptimizationMethod &method = P.optimisationMethod ();
-            Array & x = method.x ();
-            Array & d = method.searchDirection ();
+            Array& x = method.x();
+            Array& d = method.searchDirection();
 
             // Initialize gradient
-            gradient_ = Array (x.size ());
+            gradient_ = Array(x.size());
             // Compute new point
-            xtd_ = x + t * d;
+            xtd_ = x;
+            t = update(xtd_, d, t, constraint);
             // Compute function value at the new point
             qt_ = P.value (xtd_);
 
             // Enter in the loop if the criterion is not satisfied
-            if ((qt_ - q0) > -alpha_ * t * qpt_) {
+            if ((qt_-q0) > -alpha_*t*qpt_) {
                 do {
+                    std::cout << "Line iteration for t " << t << std::endl;
                     loopNumber++;
                     // Decrease step
                     t *= beta_;
                     // Store old value of the function
                     qtold = qt_;
                     // New point value
-                    xtd_ = x + t * d;
+                    xtd_ = x;
+                    t = update(xtd_, d, t, constraint);
+
                     // Compute function value at the new point
                     qt_ = P.value (xtd_);
                     P.gradient (gradient_, xtd_);
                     // and it squared norm
-                    maxIter = P.optimisationMethod ().endCriteria ().
-                        checkIterationNumber (loopNumber);
+                    maxIter = P.optimisationMethod().endCriteria().
+                        checkIterationNumber(loopNumber);
                 } while (
                     (((qt_ - q0) > (-alpha_ * t * qpt_)) ||
                     ((qtold - q0) <= (-alpha_ * t * qpt_ / beta_))) &&

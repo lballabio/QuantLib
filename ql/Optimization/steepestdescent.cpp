@@ -1,5 +1,3 @@
-
-
 /*
  Copyright (C) 2001, 2002 Nicolas Di Césaré
 
@@ -28,11 +26,11 @@ namespace QuantLib {
 
     namespace Optimization {
 
-        void SteepestDescent::Minimize(OptimizationProblem& P) {
+        void SteepestDescent::minimize(OptimizationProblem& P) {
             bool EndCriteria = false;
 
             // function and squared norm of gradient values;
-            double fold, gold2, normdiff;
+            double normdiff;
             // classical initial value for line-search step
             double t = 1.0;
 
@@ -42,43 +40,40 @@ namespace QuantLib {
             Array gold(searchDirection().size());
             Array gdiff(searchDirection().size());
 
-            fold = P.valueAndGradient(gold, X);
+            functionValue() = P.valueAndGradient(gold, X);
             searchDirection() = -gold;
-            gold2 = DotProduct(gold, gold);
-            normdiff = QL_SQRT(gold2);
+            gradientNormValue() = DotProduct(gold, gold);
+            normdiff = QL_SQRT(gradientNormValue());
 
             do {
                 // Linesearch
-                t = (*lineSearch_)(P, t, fold, gold2);
+                t = (*lineSearch_)(P, t);
 
-                if (lineSearch_->succeed()) {
-                    // End criteria
-                    EndCriteria =
-                        endCriteria()(iterationNumber_, fold, QL_SQRT(gold2),
-                             lineSearch_->lastFunctionValue(),
-                             QL_SQRT(lineSearch_->lastGradientNorm2()),
-                             normdiff);
+                if (!lineSearch_->succeed()) 
+                    throw Error("SteepestDescent: line-search failed!");
+                // End criteria
+                EndCriteria = endCriteria()(
+                    iterationNumber_, functionValue(), 
+                    QL_SQRT(gradientNormValue()), 
+                    lineSearch_->lastFunctionValue(),
+                    QL_SQRT(lineSearch_->lastGradientNorm2()), normdiff);
 
-                    // Updates
-                    // New point
-                    X = lineSearch_->lastX();
-                    // New function value
-                    fold = lineSearch_->lastFunctionValue();
-                    // New gradient and search direction vectors
-                    gdiff = gold - lineSearch_->lastGradient();
-                    normdiff = QL_SQRT(DotProduct (gdiff, gdiff));
-                    gold = lineSearch_->lastGradient();
-                    searchDirection() = -gold;
-                    // New gradient squared norm
-                    gold2 = lineSearch_->lastGradientNorm2();
+                // Updates
+                // New point
+                X = lineSearch_->lastX();
+                // New function value
+                functionValue() = lineSearch_->lastFunctionValue();
+                // New gradient and search direction vectors
+                gdiff = gold - lineSearch_->lastGradient();
+                normdiff = QL_SQRT(DotProduct (gdiff, gdiff));
+                gold = lineSearch_->lastGradient();
+                searchDirection() = -gold;
+                // New gradient squared norm
+                gradientNormValue() = lineSearch_->lastGradientNorm2();
 
-                    // Increase interation number
-                    iterationNumber()++;
-                }
-            } while ((EndCriteria == false) && (lineSearch_->succeed()));
-
-            if (!lineSearch_->succeed())
-                throw Error("SteepestDescent::Minimize(), line-search failed!");
+                // Increase interation number
+                iterationNumber()++;
+            } while (EndCriteria == false);
         }
 
     }

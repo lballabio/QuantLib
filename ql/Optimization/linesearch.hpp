@@ -1,5 +1,3 @@
-
-
 /*
  Copyright (C) 2001, 2002 Nicolas Di Césaré
 
@@ -43,23 +41,47 @@ namespace QuantLib {
             //! Destructor
             virtual ~LineSearch() {}
 
+            //! return last x value
+            const Array& lastX() { return xtd_; }
             //! return last cost function value
             double lastFunctionValue() { return qt_; }
+            //! return last gradient
+            const Array& lastGradient() { return gradient_; }
             //! return square norm of last gradient
             double lastGradientNorm2() { return qpt_;}
-            //! return last x value
-            Array& lastX() { return xtd_; }
-            //! return last gradient
-            Array& lastGradient() { return gradient_; }
 
             bool succeed() { return succeed_; }
 
             //! Perform line search
             virtual double operator() (
                 OptimizationProblem &P,
-                double t_ini,
-                double q0,
-                double qp0) = 0;
+                double t_ini) = 0;
+
+            double update(
+              Array& params, 
+              const Array& direction,
+              double beta,
+              const Constraint& constraint) {
+
+                double diff=beta;
+
+                Array newParams = params + diff*direction;
+                bool valid = constraint.test(newParams);
+                int icount = 0;
+                while (!valid) {
+                    if (icount > 200)
+                        throw Error("Can't update linesearch");
+                    diff *= 0.5;
+                    icount ++;
+            
+                    newParams = params + diff*direction;
+                    valid = constraint.test(newParams);
+                }
+
+                params += diff*direction;
+                return diff;
+            }
+
           protected:
             //! new x and its gradient
             Array xtd_, gradient_;

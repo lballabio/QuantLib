@@ -1,5 +1,3 @@
-
-
 /*
  Copyright (C) 2001, 2002 Nicolas Di Césaré
 
@@ -26,8 +24,13 @@
 #define quantlib_optimization_costfunction_h
 
 /*!
-  Cost function abstract class for unconstrained optimization pb
+  Cost function abstract class for optimization problem
 */
+
+#include <ql/qldefines.hpp>
+#include <ql/array.hpp>
+
+#include <iostream>
 
 namespace QuantLib {
 
@@ -42,15 +45,22 @@ namespace QuantLib {
             //  the cost function with respect to x
             virtual void gradient(Array& grad_f, const Array& x) {
                 double eps = finiteDifferenceEpsilon(), fp, fm;
-                Array xx = x;
-                int i, sz = x.size();
-                for (i = 0; i < sz; ++i) {
-                      xx[i] += eps;
-                      fp = value(xx);
-                      xx[i] -= 2. * eps;
-                      fm = value(xx);
-                      grad_f[i] = 0.5 * (fp - fm) / eps;
+                Array xx(x);
+                std::cout << "Gradient at";
+                for (Size i=0; i<x.size(); i++)
+                    std::cout << " " << x[i];
+                std::cout << "  =  ";
+
+                for (Size i=0; i<x.size(); i++) {
+                    xx[i] += eps;
+                    fp = value(xx);
+                    xx[i] -= 2.0*eps;
+                    fm = value(xx);
+                    grad_f[i] = 0.5*(fp - fm)/eps;
+                    std::cout << " " << grad_f[i];
+                    xx[i] = x[i];
                 }
+                std::cout << std::endl;
             }
 
             //! method to overload to compute grad_f, the first derivative of

@@ -1,5 +1,5 @@
 /*
- Copyright (C) 2001, 2002 Nicolas Di Césaré
+ Copyright (C) 2001, 2002 Sadruddin Rejeb
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -13,15 +13,15 @@
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
-/*! \file conjugategradient.hpp
-    \brief Conjugate gradient optimization method
+/*! \file powell.hpp
+    \brief Powell optimization method
 
     \fullpath
-    ql/Optimization/%conjugategradient.hpp
+    ql/Optimization/%powell.hpp
 */
 
-#ifndef quantlib_optimization_conjugate_gradient_h
-#define quantlib_optimization_conjugate_gradient_h
+#ifndef quantlib_optimization_powell_h
+#define quantlib_optimization_powell_h
 
 #include "ql/Optimization/armijo.hpp"
 
@@ -29,25 +29,24 @@ namespace QuantLib {
 
     namespace Optimization {
 
-        //! Multi-dimensionnal Conjugate Gradient class
+        //! Multi-dimensionnal Powell class
         /*! User has to provide line-search method and
             optimization end criteria
 
-            search direction \f$ d_i = - f'(x_i) + c_i*d_{i-1} \f$
-            where \f$ c_i = ||f'(x_i)||^2/||f'(x_{i-1})||^2 \f$
-            and \f$ d_1 = - f'(x_1) \f$
+            search direction \f$ = - f'(x) \f$
         */
-        class ConjugateGradient: public OptimizationMethod {
+        class Powell : public OptimizationMethod {
           public:
+            //! default default constructor (msvc bug)
+            Powell()
+            : OptimizationMethod(),
+              lineSearch_(Handle<LineSearch>(new ArmijoLineSearch ())) {}
+
             //! default constructor
-            ConjugateGradient() : OptimizationMethod(),
-              lineSearch_(Handle<LineSearch>(new ArmijoLineSearch())) {}
-
-            ConjugateGradient(const Handle<LineSearch>& lineSearch)
-            : OptimizationMethod(), lineSearch_ (lineSearch) {}
-
+            Powell(const Handle<LineSearch>& lineSearch)
+            : OptimizationMethod(), lineSearch_(lineSearch) {}
             //! destructor
-            virtual ~ConjugateGradient() {}
+            virtual ~Powell() {}
 
             //! minimize the optimization problem P
             virtual void minimize(OptimizationProblem& P);

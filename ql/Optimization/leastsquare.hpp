@@ -1,5 +1,3 @@
-
-
 /*
  Copyright (C) 2001, 2002 Nicolas Di Césaré
 
@@ -28,6 +26,7 @@
 #include "ql/Math/matrix.hpp"
 #include "ql/Optimization/conjugategradient.hpp"
 
+#include <iostream>
 /*!
   Base class for least square problem
 */
@@ -41,8 +40,8 @@ namespace QuantLib {
             //! size of the problem ie size of target vector
             virtual int size () = 0;
             //! compute the target vector and the values of the fonction to fit
-            virtual void targetAndValue (const Array& x, Array& target,
-                         Array & fct2fit) = 0;
+            virtual void targetAndValue(const Array& x, Array& target,
+                                        Array& fct2fit) = 0;
             //! compute the target vector, the values of the fonction to fit and the matrix of derivatives
             virtual void targetValueAndGradient (const Array& x,
                 Math::Matrix& grad_fct2fit, Array& target, Array& fct2fit) = 0;
@@ -80,13 +79,13 @@ namespace QuantLib {
 
         inline double LeastSquareFunction::value (const Array & x) {
             // size of target and function to fit vectors
-            Array target (lsp_.size ()), fct2fit (lsp_.size ());
+            Array target(lsp_.size()), fct2fit(lsp_.size());
             // compute its values
-            lsp_.targetAndValue (x, target, fct2fit);
+            lsp_.targetAndValue(x, target, fct2fit);
             // do the difference
             Array diff = target - fct2fit;
             // and compute the scalar product (square of the norm)
-            return DotProduct (diff, diff);
+            return DotProduct(diff, diff);
         }
 
         inline void LeastSquareFunction::gradient (Array& grad_f,
@@ -106,18 +105,17 @@ namespace QuantLib {
         inline double LeastSquareFunction::valueAndGradient(
             Array& grad_f, const Array& x) {
             // size of target and function to fit vectors
-            Array target(lsp_.size ()), fct2fit (lsp_.size ());
+            Array target(lsp_.size()), fct2fit(lsp_.size());
             // size of gradient matrix
-            Math::Matrix grad_fct2fit (lsp_.size (), x.size ());
+            Math::Matrix grad_fct2fit(lsp_.size(), x.size());
             // compute its values
-            lsp_.targetValueAndGradient (x, grad_fct2fit, target,
-                            fct2fit);
+            lsp_.targetValueAndGradient(x, grad_fct2fit, target, fct2fit);
             // do the difference
             Array diff = target - fct2fit;
             // compute derivative
             grad_f = -2.0*(Math::transpose(grad_fct2fit)*diff);
             // and compute the scalar product (square of the norm)
-            return DotProduct (diff, diff);
+            return DotProduct(diff, diff);
         }
 
         /*!
@@ -142,12 +140,14 @@ namespace QuantLib {
         class NonLinearLeastSquare {
           public:
             //! Default constructor
-            inline NonLinearLeastSquare (double accuracy = 1e-4,
-                                         int maxiter = 100);
+            inline NonLinearLeastSquare(Constraint& c,
+                                        double accuracy = 1e-4,
+                                        int maxiter = 100);
             //! Default constructor
-            inline NonLinearLeastSquare (double accuracy,
-                                         int maxiter,
-                                         Handle<OptimizationMethod> om);
+            inline NonLinearLeastSquare(Constraint& c,
+                                        double accuracy,
+                                        int maxiter,
+                                        Handle<OptimizationMethod> om);
             //! Destructor
             inline ~NonLinearLeastSquare () {}
 
@@ -167,10 +167,12 @@ namespace QuantLib {
                 LeastSquareFunction lsf(lsProblem);
 
                 // define optimization problem
-                OptimizationProblem P(lsf, *om_);
+                OptimizationProblem P(lsf, c_, *om_);
 
                 // minimize
-                P.Minimize();
+                P.minimize();
+                std::cout << "Minimized function value" << lsf.value(om_->x());
+                std::cout << std::endl;
 
                 // summarize results of minimization
                 exitFlag_ = om_->endCriteria ().criteria();
@@ -215,20 +217,26 @@ namespace QuantLib {
             Size maxIterations_, nbIterations_;
             //! Optimization method
             Handle<OptimizationMethod> om_;
+            //constraint
+            Constraint& c_;
 
         };
 
 
-        inline NonLinearLeastSquare::NonLinearLeastSquare (double accuracy,
+        inline NonLinearLeastSquare::NonLinearLeastSquare (
+          Constraint& c,
+          double accuracy,
           int maxiter):
         exitFlag_(-1), accuracy_ (accuracy), maxIterations_ (maxiter),
-            om_ (Handle<OptimizationMethod>(new ConjugateGradient()))
+            om_ (Handle<OptimizationMethod>(new ConjugateGradient())), c_(c)
         {}
 
-        inline NonLinearLeastSquare::NonLinearLeastSquare (double accuracy,
+        inline NonLinearLeastSquare::NonLinearLeastSquare (
+            Constraint& c,
+            double accuracy,
             int maxiter, Handle<OptimizationMethod> om)
         : exitFlag_(-1), accuracy_ (accuracy), maxIterations_ (maxiter),
-          om_ (om) {}
+          om_ (om), c_(c) {}
 
     }
 

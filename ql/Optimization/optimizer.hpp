@@ -1,5 +1,3 @@
-
-
 /*
  Copyright (C) 2001, 2002 Nicolas Di Césaré
 
@@ -28,6 +26,7 @@
 #include "ql/array.hpp"
 #include "ql/handle.hpp"
 
+#include "ql/Optimization/constraint.hpp"
 #include "ql/Optimization/costfunction.hpp"
 #include "ql/Optimization/criteria.hpp"
 
@@ -84,7 +83,7 @@ namespace QuantLib {
             Array& searchDirection() { return searchDirection_; }
 
             //! minimize the optimization problem P
-            virtual void Minimize(OptimizationProblem& P) = 0;
+            virtual void minimize(OptimizationProblem& P) = 0;
           protected:
             //! initial value of unknowns
             Array initialValue_;
@@ -108,8 +107,9 @@ namespace QuantLib {
             //! default constructor
             OptimizationProblem(
                 CostFunction& f,          // Function and it gradient vector
+                Constraint& c,            // Constraint
                 OptimizationMethod& meth) // Optimization method
-            : costFunction_(f), method_(meth) {}
+            : costFunction_(f), constraint_(c), method_(meth) {}
             //! destructor
             ~OptimizationProblem() {}
 
@@ -138,17 +138,27 @@ namespace QuantLib {
                 return method_;
             }
 
+            //! constraint
+            Constraint& constraint() {
+                return constraint_;
+            }
+
+            CostFunction& costFunction() {
+                return costFunction_;
+            }
+
             //! Minimization
-            void Minimize() { method_.Minimize(*this); }
+            void minimize() { method_.minimize(*this); }
 
             Array& minimumValue() { return method_.x (); }
 
           protected:
             //! Unconstrained cost function
             CostFunction& costFunction_;
+            //! Constraint
+            Constraint& constraint_;
             //! Unconstrained optimization method
             OptimizationMethod& method_;
-
         };
 
     }

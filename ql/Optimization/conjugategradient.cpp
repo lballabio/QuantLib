@@ -1,5 +1,3 @@
-
-
 /*
  Copyright (C) 2001, 2002 Nicolas Di Césaré
 
@@ -28,11 +26,11 @@ namespace QuantLib {
 
     namespace Optimization {
 
-        void ConjugateGradient::Minimize(OptimizationProblem &P) {
+        void ConjugateGradient::minimize(OptimizationProblem &P) {
             bool EndCriteria = false;
 
             // function and squared norm of gradient values;
-            double f, fold, g2, gold2;
+            double fold, gold2;
             double c;
             double normdiff;
             // classical initial value for line-search step
@@ -45,43 +43,43 @@ namespace QuantLib {
             int sz = searchDirection().size();
             Array g(sz), d(sz), sddiff(sz);
 
-            f = P.valueAndGradient(g, X);
+            functionValue() = P.valueAndGradient(g, X);
             SearchDirection = -g;
-            g2 = DotProduct (g, g);
+            gradientNormValue() = DotProduct(g, g);
 
             do {
                 // Linesearch
-                t = (*lineSearch_)(P, t, f, g2);
+                std::cout << "Doing line search on direction " << SearchDirection <<  std::endl;
+                t = (*lineSearch_)(P, t);
+                if (!lineSearch_->succeed())
+                    throw Error("Conjugate gradient: line-search failed!");
 
-                if (lineSearch_->succeed ()) {
-                    // Updates
-                    d = SearchDirection;
-                    // New point
-                    X = lineSearch_->lastX ();
-                    // New function value
-                    fold = f;
-                    f = lineSearch_->lastFunctionValue ();
-                    // New gradient and search direction vectors
-                    g = lineSearch_->lastGradient ();
-                    // orthogonalization coef
-                    gold2 = g2;
-                    g2 = lineSearch_->lastGradientNorm2 ();
-                    c = g2 / gold2;
-                    // conjugate gradient search direction
-                    sddiff = (-g + c * d) - SearchDirection;
-                    normdiff = QL_SQRT (DotProduct (sddiff, sddiff));
-                    SearchDirection = -g + c * d;
-                    // End criteria
-                    EndCriteria = endCriteria()(iterationNumber_,
-                        fold, QL_SQRT (gold2), f, QL_SQRT(g2), normdiff);
+                // Updates
+                d = SearchDirection;
+                // New point
+                X = lineSearch_->lastX();
+                // New function value
+                fold = functionValue();
+                functionValue() = lineSearch_->lastFunctionValue();
+                // New gradient and search direction vectors
+                g = lineSearch_->lastGradient();
+                // orthogonalization coef
+                gold2 = gradientNormValue();
+                gradientNormValue() = lineSearch_->lastGradientNorm2();
+                c = gradientNormValue() / gold2;
+                // conjugate gradient search direction
+                sddiff = (-g + c * d) - SearchDirection;
+                normdiff = QL_SQRT(DotProduct(sddiff, sddiff));
+                SearchDirection = -g + c * d;
+                // End criteria
+                EndCriteria = endCriteria()(iterationNumber_,
+                    fold, QL_SQRT(gold2), functionValue(), 
+                    QL_SQRT(gradientNormValue()), normdiff);
 
-                    // Increase interation number
-                    iterationNumber()++;
-                }
-            } while ((EndCriteria == false) && (lineSearch_->succeed()));
+                // Increase interation number
+                iterationNumber()++;
+            } while (EndCriteria == false);
 
-            if (!lineSearch_->succeed())
-                throw Error("ConjugateGradient::Minimize(), line-search failed!");
         }
 
     }
