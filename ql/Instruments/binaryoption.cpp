@@ -30,11 +30,24 @@ namespace QuantLib {
 
     namespace Instruments {
 
+        void BinaryOption::arguments::validate() const {
+            #if defined(QL_PATCH_MICROSOFT)
+            VanillaOption::arguments copy = *this;
+            copy.validate();
+            #else
+            VanillaOption::arguments::validate();
+            #endif
+            QL_REQUIRE(barrier != Null<double>(),
+                       "BinaryOption: no barrier given");
+            QL_REQUIRE(cashPayoff != Null<double>(),
+                       "BinaryOption: no cash payoff given");
+        }
+
         BinaryOption::BinaryOption(Binary::Type binaryType,
             double barrier,
             double cashPayoff,
             Option::Type type,
-            const RelinkableHandle<MarketElement>& underlying,            
+            const RelinkableHandle<MarketElement>& underlying,
             const RelinkableHandle<TermStructure>& dividendTS,
             const RelinkableHandle<TermStructure>& riskFreeTS,
             const Exercise& exercise,
@@ -109,8 +122,8 @@ namespace QuantLib {
             NPV_ = delta_ = gamma_ = theta_ =
                    vega_ = rho_ = dividendRho_ = strikeSensitivity_ = 0.0;
         }
-        
-        void BinaryOption::setupArguments(Arguments* args) const {      
+
+        void BinaryOption::setupArguments(Arguments* args) const {
             BinaryOption::arguments* arguments =
                 dynamic_cast<BinaryOption::arguments*>(args);
             QL_REQUIRE(arguments != 0,
@@ -148,7 +161,7 @@ namespace QuantLib {
         }
 
         void BinaryOption::performCalculations() const {
-            Option::performCalculations();            
+            Option::performCalculations();
             const Greeks* results =
                 dynamic_cast<const Greeks*>(engine_->results());
             QL_ENSURE(results != 0,
@@ -169,12 +182,12 @@ namespace QuantLib {
             rho_         = results->rho;
             dividendRho_ = results->dividendRho;
             strikeSensitivity_ = results->strikeSensitivity;
-            
+
             QL_ENSURE(NPV_ != Null<double>(),
                 "BinaryOption::performCalculations : "
                 "null value returned from option pricer");
         }
-        
+
     }
 
 }

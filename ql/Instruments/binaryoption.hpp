@@ -39,7 +39,7 @@ namespace QuantLib {
         //! Binary option on a single asset
 
         class BinaryOption : public Option {
-          public:            
+          public:
             class arguments;
             class results;
             BinaryOption(Binary::Type binaryType,
@@ -65,10 +65,10 @@ namespace QuantLib {
             double dividendRho() const;
             double strikeSensitivity() const;
             //@}
-            bool isExpired() const;       
+            bool isExpired() const;
             void setupArguments(Arguments*) const;
           protected:
-            void setupExpired() const;            
+            void setupExpired() const;
             void performCalculations() const;
             // results
             mutable double delta_, gamma_, theta_, 
@@ -78,36 +78,26 @@ namespace QuantLib {
             double barrier_;
             double cashPayoff_;
             Option::Type type_;
-            RelinkableHandle<MarketElement> underlying_;            
+            RelinkableHandle<MarketElement> underlying_;
             Exercise exercise_;
             RelinkableHandle<TermStructure> riskFreeTS_, dividendTS_;
             RelinkableHandle<BlackVolTermStructure> volTS_;
-          private:
-            
         };
 
-        //! arguments for binary option calculation
+        //! %arguments for binary option calculation
         class BinaryOption::arguments : public VanillaOption::arguments {
           public:
+            arguments() : barrier(Null<double>()), 
+                          cashPayoff(Null<double>()) {}
               Binary::Type binaryType;
               double barrier;
               double cashPayoff;
               void validate() const;
         };
 
-        inline void BinaryOption::arguments::validate() const {            
-            #if defined(QL_PATCH_MICROSOFT)
-            VanillaOption::arguments copy = *this;
-            copy.validate();
-            #else
-            VanillaOption::arguments::validate();
-            #endif
-        }
-
         //! %results from binary option calculation
         class BinaryOption::results 
-            : public virtual VanillaOption::results {};
-
+        : public virtual VanillaOption::results {};
 
     }
 

@@ -108,8 +108,8 @@ namespace QuantLib {
         //! arguments for vanilla option calculation
         class VanillaOption::arguments : public virtual Arguments {
           public:
-              arguments() : underlying(Null<double>()),
-                            maturity(Null<Time>()) {}
+            arguments() : underlying(Null<double>()),
+                          maturity(Null<Time>()) {}
             void validate() const;
             Handle<Payoff> payoff;
             double underlying;

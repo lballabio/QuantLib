@@ -20,143 +20,108 @@
 */
 
 #include <ql/Pricers/binaryoptionpricer.hpp>
-#include <ql/Math/normaldistribution.hpp>
+#include <ql/DayCounters/simpledaycounter.hpp>
+#include <ql/TermStructures/flatforward.hpp>
+#include <ql/Volatilities/blackconstantvol.hpp>
 
-namespace QuantLib
-{
-    namespace Pricers
-    {
+namespace QuantLib {
+
+    using namespace Instruments;
+    using namespace DayCounters;
+    using namespace TermStructures;
+    using namespace VolTermStructures;
+
+    namespace Pricers {
+
         BinaryOption::BinaryOption(Option::Type type, double underlying,
                                    double strike, Spread dividendYield,
                                    Rate riskFreeRate, Time residualTime,
                                    double volatility, double cashPayoff)
-            : SingleAssetOption(type, underlying, strike, dividendYield,
-                        riskFreeRate, residualTime, volatility),
-            cashPayoff_(cashPayoff)
-        {
-            discount_ = QL_EXP(-riskFreeRate_ * residualTime_);
-            volSqrtTime_ = volatility_ * QL_SQRT(residualTime_);
+        : SingleAssetOption(type, underlying, strike, dividendYield,
+                            riskFreeRate, residualTime, volatility) {
 
-            D1_ = QL_LOG(underlying_ / payoff_.strike()) / volSqrtTime_
-                + (riskFreeRate_ - dividendYield_) * residualTime_ / volSqrtTime_
-                + volSqrtTime_/2.0;
-            D2_ = D1_ - volSqrtTime_;
+            Instruments::BinaryOption::arguments* args =
+                dynamic_cast<Instruments::BinaryOption::arguments*>(
+                    engine_.arguments());
 
-            Math::CumulativeNormalDistribution f;
+            Date today = Date::todaysDate();
 
-            ND2_ = f(D2_);
+            args->payoff = Handle<Payoff>(
+                new PlainVanillaPayoff(type,strike));
 
-            switch (payoff_.optionType()) {
-            case Option::Call:
-                optionSign_ = 1.0;
-                beta_ = ND2_;
-                NID2_ = f.derivative(D2_);
-                break;
-            case Option::Put:
-                optionSign_ = -1.0;
-                beta_ = ND2_ - 1.0;
-                NID2_ = f.derivative(D2_);
-                break;
-            case Option::Straddle:
-                optionSign_ = 0.0;
-                beta_ = 2.0 * ND2_ - 1.0;
-                NID2_ = 2.0 * f.derivative(D2_);
-                break;
-            default:
-                throw IllegalArgumentError("AnalyticBSM: invalid option type");
+            args->binaryType = Binary::CashAtExpiry;
+            args->barrier = strike;
+            args->cashPayoff = cashPayoff;
 
-            }
+            args->underlying = underlying;
+
+            args->riskFreeTS.linkTo(Handle<TermStructure>(
+                new FlatForward(today,today,riskFreeRate_,
+                                SimpleDayCounter())));
+            args->dividendTS.linkTo(Handle<TermStructure>(
+                new FlatForward(today,today,dividendYield_,
+                                SimpleDayCounter())));
+
+            args->maturity = residualTime;
+
+            args->exerciseType = Exercise::European;
+            args->stoppingTimes = std::vector<Time>(1,residualTime);
+
+            args->volTS.linkTo(Handle<BlackVolTermStructure>(
+                new BlackConstantVol(today,volatility_,
+                                     SimpleDayCounter())));
+
+            args->validate();
+            engine_.calculate();
         }
 
         Handle<SingleAssetOption> BinaryOption::clone() const {
-//            QL_REQUIRE(hasBeenInitialized,
-            //                     "BinaryOption::clone() : BinaryOption must be initialized");
-
             return Handle<SingleAssetOption>(new BinaryOption(*this));
         }
 
         double BinaryOption::value() const {
-//            QL_REQUIRE(hasBeenInitialized,
-//                       "BinaryOption::value() : BinaryOption must be initialized");
-            double inTheMoneyProbability;
-            switch (payoff_.optionType()) {
-            case Option::Call:
-                inTheMoneyProbability = ND2_;
-                break;
-            case Option::Put:
-                inTheMoneyProbability = 1.0 - ND2_;
-                break;
-            case Option::Straddle:
-                inTheMoneyProbability = 1.0;
-                break;
-            default:
-                throw IllegalArgumentError("AnalyticBSM: invalid option type");
-            }
-            return cashPayoff_ * discount_ * inTheMoneyProbability;
+            const Value* result = 
+                dynamic_cast<const Value*>(engine_.results());
+            return result->value;
         }
 
         double BinaryOption::delta() const {
-//            QL_REQUIRE(hasBeenInitialized, "BinaryOption must be initialized");
-            return optionSign_*cashPayoff_*discount_*NID2_/(underlying_*volSqrtTime_);
+            const Greeks* results = 
+                dynamic_cast<const Greeks*>(engine_.results());
+            return results->delta;
         }
 
         double BinaryOption::gamma() const {
-//            QL_REQUIRE(hasBeenInitialized, "BinaryOption must be initialized");
-            return -cashPayoff_ * discount_ * optionSign_ * NID2_ *
-                ( 1.0 + D2_/volSqrtTime_) / (underlying_ *
-                                             underlying_ *
-                                             volSqrtTime_);
+            const Greeks* results = 
+                dynamic_cast<const Greeks*>(engine_.results());
+            return results->gamma;
         }
 
         double BinaryOption::theta() const {
-//            QL_REQUIRE(hasBeenInitialized, "BinaryOption must be initialized");
-
-            if(payoff_.optionType() == Option::Straddle) {
-                return cashPayoff_*discount_*riskFreeRate_;
-            } else {
-                double D2IT = (-QL_LOG(underlying_ / payoff_.strike()) / volSqrtTime_
-                               + (riskFreeRate_ - dividendYield_) *
-                               residualTime_ / volSqrtTime_
-                               - volSqrtTime_ / 2.0)/(2.0 * residualTime_);
-                return -cashPayoff_ * discount_ * optionSign_ *
-                    ( D2IT * NID2_ - riskFreeRate_ * beta_);
-            }
+            const Greeks* results = 
+                dynamic_cast<const Greeks*>(engine_.results());
+            return results->theta;
         }
 
         double BinaryOption::rho() const {
-//            QL_REQUIRE(hasBeenInitialized, "BinaryOption must be initialized");
-
-            if(payoff_.optionType() == Option::Straddle)
-                return -cashPayoff_*residualTime_*discount_;
-            else {
-                double D2IT = residualTime_/volSqrtTime_;
-                return cashPayoff_*discount_*optionSign_*(D2IT*NID2_-residualTime_*beta_);
-            }
+            const Greeks* results = 
+                dynamic_cast<const Greeks*>(engine_.results());
+            return results->rho;
         }
 
         double BinaryOption::dividendRho() const {
-//            QL_REQUIRE(hasBeenInitialized, "BinaryOption must be initialized");
-
-            if(payoff_.optionType() == Option::Straddle)
-                return 0.0;
-            else {
-                double D2IT = residualTime_/volSqrtTime_;
-                return -cashPayoff_*discount_*optionSign_*(D2IT*NID2_);
-            }
+            const Greeks* results = 
+                dynamic_cast<const Greeks*>(engine_.results());
+            return results->dividendRho;
         }
 
         double BinaryOption::vega() const {
-//            QL_REQUIRE(hasBeenInitialized, "BinaryOption must be initialized");
-            return -optionSign_ * cashPayoff_ * discount_ * NID2_ * D1_/volatility_;
+            const Greeks* results = 
+                dynamic_cast<const Greeks*>(engine_.results());
+            return results->vega;
         }
 
-
     }
+
 }
-
-
-
-
-
-
 

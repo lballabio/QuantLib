@@ -23,12 +23,14 @@
 #define quantlib_pricers_binaryoptionpricer_h
 
 #include <ql/Pricers/singleassetoption.hpp>
+#include <ql/PricingEngines/binaryengines.hpp>
 
 namespace QuantLib  {
 
     namespace Pricers {
 
         //! Binary (digital) option
+        /*! \deprecated use Instruments::BarrierOption instead. */
         class BinaryOption : public SingleAssetOption {
           public:
             BinaryOption(Option::Type type, double underlying, double strike,
@@ -43,23 +45,13 @@ namespace QuantLib  {
             double rho() const;
             double dividendRho() const;
             Handle<SingleAssetOption> clone() const;
-        private:
-            double cashPayoff_;
-            double beta_;
-            double discount_;
-            double volSqrtTime_;
-            double optionSign_;
-            double D2_;
-            double NID2_;
-            double ND2_;
-            double D1_;
+          private:
+            PricingEngines::AnalyticEuropeanBinaryEngine engine_;
         };
+
     }
+
 }
 
 
 #endif
-
-
-
-

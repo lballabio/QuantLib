@@ -36,7 +36,6 @@
 #include <ql/Math/normaldistribution.hpp>
 #include <ql/MonteCarlo/binarypathpricer.hpp>
 #include <ql/MonteCarlo/mctraits.hpp>
-#include <ql/Pricers/binaryoptionpricer.hpp>
 #include <ql/PricingEngines/genericengine.hpp>
 #include <ql/PricingEngines/mcengine.hpp>
 
@@ -53,6 +52,12 @@ namespace QuantLib {
         class AnalyticEuropeanBinaryEngine : public BinaryEngine {
           public:
             void calculate() const;
+          private:
+            #if defined(QL_PATCH_SOLARIS)
+            Math::CumulativeNormalDistribution f_;
+            #else
+            static const Math::CumulativeNormalDistribution f_;
+            #endif
         };
 
         //! Pricing engine for American binary options using analytic formulae
@@ -66,64 +71,6 @@ namespace QuantLib {
             static const Math::CumulativeNormalDistribution f_;
             #endif
         };
-
-        //#if !defined(QL_PATCH_SOLARIS)
-        //const Math::CumulativeNormalDistribution AnalyticEuropeanEngine::f_;
-        //#endif
-
-        inline 
-        void AnalyticEuropeanBinaryEngine::calculate() const {
-
-            QL_REQUIRE(arguments_.exerciseType == Exercise::European,
-                "AnalyticBinaryEngine::calculate() : "
-                "not an European Option");
-
-            Handle<PlainVanillaPayoff> payoff = arguments_.payoff;
-
-            Binary::Type binaryType = arguments_.binaryType;
-            double barrier = arguments_.barrier;
-            double cashPayoff = arguments_.cashPayoff;
-
-            double underlying = arguments_.underlying;
-            Time maturity = arguments_.maturity;
-
-            double strike = payoff->strike();
-            double vol = arguments_.volTS->blackVol(
-                arguments_.maturity, strike);
-
-            DiscountFactor dividendDiscount =
-                arguments_.dividendTS->discount(arguments_.maturity);
-            Rate dividendRate =
-                arguments_.dividendTS->zeroYield(arguments_.maturity);
-
-            DiscountFactor riskFreeDiscount =
-                arguments_.riskFreeTS->discount(arguments_.maturity);
-            Rate riskFreeRate =
-                arguments_.riskFreeTS->zeroYield(arguments_.maturity);
-            double forwardPrice = arguments_.underlying *
-                dividendDiscount / riskFreeDiscount;
-
-
-            Pricers::BinaryOption pricer = Pricers::BinaryOption(
-                          payoff->optionType(),
-                          underlying,
-                          barrier,
-                          dividendRate,
-                          riskFreeRate,
-                          maturity,
-                          vol,
-                          cashPayoff);
-
-            results_.value = pricer.value();
-            results_.delta = pricer.delta();
-            results_.gamma = pricer.gamma();
-            results_.theta = pricer.theta();
-            results_.rho = pricer.rho();
-            results_.dividendRho = pricer.dividendRho();
-            results_.vega = pricer.vega();
-
-        }
-
 
         //! Pricing engine for Binary options using Monte Carlo
         template<class RNG = MonteCarlo::PseudoRandom, 
@@ -175,7 +122,6 @@ namespace QuantLib {
 
 
         template<class RNG, class S>
-        inline
         MCBinaryEngine<RNG,S>::MCBinaryEngine(Size maxTimeStepsPerYear,
                                                   bool antitheticVariate,
                                                   bool controlVariate,
@@ -195,7 +141,6 @@ namespace QuantLib {
 
 
         template<class RNG, class S>
-        inline
         Handle<QL_TYPENAME MCBinaryEngine<RNG,S>::path_generator_type> 
         MCBinaryEngine<RNG,S>::pathGenerator() const
         {
@@ -217,7 +162,6 @@ namespace QuantLib {
 
 
         template <class RNG, class S>
-        inline
         Handle<QL_TYPENAME MCBinaryEngine<RNG,S>::path_pricer_type>
         MCBinaryEngine<RNG,S>::pathPricer() const {
             Handle<PlainVanillaPayoff> payoff = arguments_.payoff;
@@ -256,12 +200,11 @@ namespace QuantLib {
         inline
         TimeGrid MCBinaryEngine<RNG,S>::timeGrid() const {
             return TimeGrid(arguments_.maturity, 
-                                Size(arguments_.maturity * 
-                                     maxTimeStepsPerYear_));
+                            Size(arguments_.maturity * 
+                                 maxTimeStepsPerYear_));
         }
 
         template<class RNG, class S>
-        inline
         void MCBinaryEngine<RNG,S>::calculate() const {
 
             QL_REQUIRE(requiredTolerance_ != Null<double>() ||
@@ -302,15 +245,6 @@ namespace QuantLib {
             } else {
                 valueWithSamples(requiredSamples_);
             }
-/*
-            Statistics stats = mcModel_->sampleAccumulator();
-            std::cout << " samples: " << stats.samples()
-                << " min: " << stats.min()
-                << " max: " << stats.max()
-                << " mean: " << stats.mean()
-                << " errorEstimate: " << stats.errorEstimate()
-                << std::endl;        
-*/
 
             results_.value = mcModel_->sampleAccumulator().mean();
             if (RNG::allowsErrorEstimate)
