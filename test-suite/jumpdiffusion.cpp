@@ -190,7 +190,7 @@ namespace {
           + DoubleFormatter::toString(calculated) + "\n"
           "    error:            "
           + DoubleFormatter::toString(QL_FABS(expected-calculated)) + "\n"
-          + (tolerance==Null<double>() ? "" :
+          + (tolerance==Null<double>() ? std::string("") :
           "    tolerance:        " + DoubleFormatter::toString(tolerance)));
     }
 
@@ -397,7 +397,7 @@ void JumpDiffusionTest::testMerton76() {
             PlainVanillaPayoff(values[i].type, values[i].strike));
 
         Date exDate = today.plusDays(values[i].t*360);
-        Handle<Exercise> exercise(new AmericanExercise(today, exDate));
+        Handle<Exercise> exercise(new EuropeanExercise(exDate));
 
         spot ->setValue(values[i].s);
         qRate->setValue(values[i].q);

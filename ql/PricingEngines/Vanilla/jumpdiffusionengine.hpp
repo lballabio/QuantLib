@@ -32,8 +32,6 @@ namespace QuantLib {
         void calculate() const;
       private:
         Handle<VanillaEngine> baseEngine_;
-        VanillaOption::arguments* baseArguments_;
-        const VanillaOption::results* baseResults_;
     };
 
 

@@ -37,6 +37,7 @@ QL_TESTS = \
     factorial.obj$(_D) \
     instruments.obj$(_D) \
     integrals.obj$(_D) \
+    jumpdiffusion.obj$(_D) \
     lowdiscrepancysequences.obj$(_D) \
     marketelements.obj$(_D) \
     matrices.obj$(_D) \
@@ -48,10 +49,10 @@ QL_TESTS = \
     quantlibtestsuite.obj$(_D) \
     riskstats.obj$(_D) \
     solvers.obj$(_D) \
+    stats.obj$(_D) \
     swap.obj$(_D) \
     swaption.obj$(_D) \
-    termstructures.obj$(_D) \
-    stats.obj$(_D)
+    termstructures.obj$(_D)
 
 # Tools to be used
 CC        = bcc32

@@ -85,6 +85,8 @@ CLEAN :
 	-@erase "$(INTDIR)\instruments.sbr"
 	-@erase "$(INTDIR)\integrals.obj"
 	-@erase "$(INTDIR)\integrals.sbr"
+	-@erase "$(INTDIR)\jumpdiffusion.obj"
+	-@erase "$(INTDIR)\jumpdiffusion.sbr"
 	-@erase "$(INTDIR)\lowdiscrepancysequences.obj"
 	-@erase "$(INTDIR)\lowdiscrepancysequences.sbr"
 	-@erase "$(INTDIR)\marketelements.obj"
@@ -140,6 +142,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\covariance.sbr" \
 	"$(INTDIR)\dates.sbr" \
 	"$(INTDIR)\daycounters.sbr" \
+	"$(INTDIR)\digitaloption.sbr" \
 	"$(INTDIR)\distributions.sbr" \
 	"$(INTDIR)\europeanoption.sbr" \
 	"$(INTDIR)\factorial.sbr" \
@@ -162,7 +165,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\swap.sbr" \
 	"$(INTDIR)\swaption.sbr" \
 	"$(INTDIR)\termstructures.sbr" \
-	"$(INTDIR)\digitaloption.sbr"
+	"$(INTDIR)\jumpdiffusion.sbr"
 
 "$(OUTDIR)\testsuite.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -182,6 +185,7 @@ LINK32_OBJS= \
 	"$(INTDIR)\covariance.obj" \
 	"$(INTDIR)\dates.obj" \
 	"$(INTDIR)\daycounters.obj" \
+	"$(INTDIR)\digitaloption.obj" \
 	"$(INTDIR)\distributions.obj" \
 	"$(INTDIR)\europeanoption.obj" \
 	"$(INTDIR)\factorial.obj" \
@@ -204,7 +208,7 @@ LINK32_OBJS= \
 	"$(INTDIR)\swap.obj" \
 	"$(INTDIR)\swaption.obj" \
 	"$(INTDIR)\termstructures.obj" \
-	"$(INTDIR)\digitaloption.obj" \
+	"$(INTDIR)\jumpdiffusion.obj" \
 	"..\lib\Win32\VisualStudio\QuantLib.lib"
 
 "$(OUTDIR)\testsuite.exe" : "$(OUTDIR)" $(DEF_FILE) $(LINK32_OBJS)
@@ -267,6 +271,8 @@ CLEAN :
 	-@erase "$(INTDIR)\instruments.sbr"
 	-@erase "$(INTDIR)\integrals.obj"
 	-@erase "$(INTDIR)\integrals.sbr"
+	-@erase "$(INTDIR)\jumpdiffusion.obj"
+	-@erase "$(INTDIR)\jumpdiffusion.sbr"
 	-@erase "$(INTDIR)\lowdiscrepancysequences.obj"
 	-@erase "$(INTDIR)\lowdiscrepancysequences.sbr"
 	-@erase "$(INTDIR)\marketelements.obj"
@@ -325,6 +331,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\covariance.sbr" \
 	"$(INTDIR)\dates.sbr" \
 	"$(INTDIR)\daycounters.sbr" \
+	"$(INTDIR)\digitaloption.sbr" \
 	"$(INTDIR)\distributions.sbr" \
 	"$(INTDIR)\europeanoption.sbr" \
 	"$(INTDIR)\factorial.sbr" \
@@ -347,7 +354,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\swap.sbr" \
 	"$(INTDIR)\swaption.sbr" \
 	"$(INTDIR)\termstructures.sbr" \
-	"$(INTDIR)\digitaloption.sbr"
+	"$(INTDIR)\jumpdiffusion.sbr"
 
 "$(OUTDIR)\testsuite.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -367,6 +374,7 @@ LINK32_OBJS= \
 	"$(INTDIR)\covariance.obj" \
 	"$(INTDIR)\dates.obj" \
 	"$(INTDIR)\daycounters.obj" \
+	"$(INTDIR)\digitaloption.obj" \
 	"$(INTDIR)\distributions.obj" \
 	"$(INTDIR)\europeanoption.obj" \
 	"$(INTDIR)\factorial.obj" \
@@ -389,7 +397,7 @@ LINK32_OBJS= \
 	"$(INTDIR)\swap.obj" \
 	"$(INTDIR)\swaption.obj" \
 	"$(INTDIR)\termstructures.obj" \
-	"$(INTDIR)\digitaloption.obj" \
+	"$(INTDIR)\jumpdiffusion.obj" \
 	"..\lib\Win32\VisualStudio\QuantLib_d.lib"
 
 "$(OUTDIR)\testsuite.exe" : "$(OUTDIR)" $(DEF_FILE) $(LINK32_OBJS)
@@ -452,6 +460,8 @@ CLEAN :
 	-@erase "$(INTDIR)\instruments.sbr"
 	-@erase "$(INTDIR)\integrals.obj"
 	-@erase "$(INTDIR)\integrals.sbr"
+	-@erase "$(INTDIR)\jumpdiffusion.obj"
+	-@erase "$(INTDIR)\jumpdiffusion.sbr"
 	-@erase "$(INTDIR)\lowdiscrepancysequences.obj"
 	-@erase "$(INTDIR)\lowdiscrepancysequences.sbr"
 	-@erase "$(INTDIR)\marketelements.obj"
@@ -507,6 +517,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\covariance.sbr" \
 	"$(INTDIR)\dates.sbr" \
 	"$(INTDIR)\daycounters.sbr" \
+	"$(INTDIR)\digitaloption.sbr" \
 	"$(INTDIR)\distributions.sbr" \
 	"$(INTDIR)\europeanoption.sbr" \
 	"$(INTDIR)\factorial.sbr" \
@@ -529,7 +540,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\swap.sbr" \
 	"$(INTDIR)\swaption.sbr" \
 	"$(INTDIR)\termstructures.sbr" \
-	"$(INTDIR)\digitaloption.sbr"
+	"$(INTDIR)\jumpdiffusion.sbr"
 
 "$(OUTDIR)\testsuite.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -549,6 +560,7 @@ LINK32_OBJS= \
 	"$(INTDIR)\covariance.obj" \
 	"$(INTDIR)\dates.obj" \
 	"$(INTDIR)\daycounters.obj" \
+	"$(INTDIR)\digitaloption.obj" \
 	"$(INTDIR)\distributions.obj" \
 	"$(INTDIR)\europeanoption.obj" \
 	"$(INTDIR)\factorial.obj" \
@@ -571,7 +583,7 @@ LINK32_OBJS= \
 	"$(INTDIR)\swap.obj" \
 	"$(INTDIR)\swaption.obj" \
 	"$(INTDIR)\termstructures.obj" \
-	"$(INTDIR)\digitaloption.obj" \
+	"$(INTDIR)\jumpdiffusion.obj" \
 	"..\lib\Win32\VisualStudio\QuantLib_MTDLL.lib"
 
 "$(OUTDIR)\testsuite.exe" : "$(OUTDIR)" $(DEF_FILE) $(LINK32_OBJS)
@@ -634,6 +646,8 @@ CLEAN :
 	-@erase "$(INTDIR)\instruments.sbr"
 	-@erase "$(INTDIR)\integrals.obj"
 	-@erase "$(INTDIR)\integrals.sbr"
+	-@erase "$(INTDIR)\jumpdiffusion.obj"
+	-@erase "$(INTDIR)\jumpdiffusion.sbr"
 	-@erase "$(INTDIR)\lowdiscrepancysequences.obj"
 	-@erase "$(INTDIR)\lowdiscrepancysequences.sbr"
 	-@erase "$(INTDIR)\marketelements.obj"
@@ -692,6 +706,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\covariance.sbr" \
 	"$(INTDIR)\dates.sbr" \
 	"$(INTDIR)\daycounters.sbr" \
+	"$(INTDIR)\digitaloption.sbr" \
 	"$(INTDIR)\distributions.sbr" \
 	"$(INTDIR)\europeanoption.sbr" \
 	"$(INTDIR)\factorial.sbr" \
@@ -714,7 +729,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\swap.sbr" \
 	"$(INTDIR)\swaption.sbr" \
 	"$(INTDIR)\termstructures.sbr" \
-	"$(INTDIR)\digitaloption.sbr"
+	"$(INTDIR)\jumpdiffusion.sbr"
 
 "$(OUTDIR)\testsuite.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -734,6 +749,7 @@ LINK32_OBJS= \
 	"$(INTDIR)\covariance.obj" \
 	"$(INTDIR)\dates.obj" \
 	"$(INTDIR)\daycounters.obj" \
+	"$(INTDIR)\digitaloption.obj" \
 	"$(INTDIR)\distributions.obj" \
 	"$(INTDIR)\europeanoption.obj" \
 	"$(INTDIR)\factorial.obj" \
@@ -756,7 +772,7 @@ LINK32_OBJS= \
 	"$(INTDIR)\swap.obj" \
 	"$(INTDIR)\swaption.obj" \
 	"$(INTDIR)\termstructures.obj" \
-	"$(INTDIR)\digitaloption.obj" \
+	"$(INTDIR)\jumpdiffusion.obj" \
 	"..\lib\Win32\VisualStudio\QuantLib_MTDLL_d.lib"
 
 "$(OUTDIR)\testsuite.exe" : "$(OUTDIR)" $(DEF_FILE) $(LINK32_OBJS)
@@ -885,6 +901,11 @@ SOURCE=.\instruments.cpp
 SOURCE=.\integrals.cpp
 
 "$(INTDIR)\integrals.obj"	"$(INTDIR)\integrals.sbr" : $(SOURCE) "$(INTDIR)"
+
+
+SOURCE=.\jumpdiffusion.cpp
+
+"$(INTDIR)\jumpdiffusion.obj"	"$(INTDIR)\jumpdiffusion.sbr" : $(SOURCE) "$(INTDIR)"
 
 
 SOURCE=.\lowdiscrepancysequences.cpp

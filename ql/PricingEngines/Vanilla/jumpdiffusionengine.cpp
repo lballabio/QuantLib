@@ -29,10 +29,6 @@ namespace QuantLib {
     : baseEngine_(baseEngine) {
         QL_REQUIRE(!IsNull(baseEngine_),
                    "JumpDiffusionEngine::JumpDiffusionEngine: null base engine");
-        baseResults_ = dynamic_cast<const VanillaOption::results*>(
-            baseEngine_->results());
-        baseArguments_ = dynamic_cast<VanillaOption::arguments*>(
-            baseEngine_->arguments());
     }
 
 
@@ -71,8 +67,21 @@ namespace QuantLib {
         PoissonDistribution p(lambda*t);
 
         baseEngine_->reset();
-        *baseArguments_ = arguments_;
 
+        VanillaOption::arguments* baseArguments =
+            dynamic_cast<VanillaOption::arguments*>(baseEngine_->arguments());
+//        *baseArguments = arguments_;
+        baseArguments->payoff   = arguments_.payoff;
+        baseArguments->exercise = arguments_.exercise;
+        baseArguments->blackScholesProcess->dividendTS =
+            arguments_.blackScholesProcess->dividendTS;
+        baseArguments->blackScholesProcess->stateVariable =
+            arguments_.blackScholesProcess->stateVariable;
+
+
+        const VanillaOption::results* baseResults =
+            dynamic_cast<const VanillaOption::results*>(
+            baseEngine_->results());
 
         double r, v, weight, weightSum = 0.0;
         for (Size i=0; i<11; i++) {
@@ -81,26 +90,28 @@ namespace QuantLib {
             v = QL_SQRT((variance + i*jumpSquareVol)/t);
             r = riskFreeRate - jdProcess->jumpIntensity*k
                 + i*muPlusHalfSquareVol/t;
-            baseArguments_->blackScholesProcess->riskFreeTS =
+            baseArguments->blackScholesProcess->riskFreeTS =
                 RelinkableHandle<TermStructure>(
                     Handle<TermStructure>(new
                         FlatForward(rateRefDate, rateRefDate, r, dc)));
-            baseArguments_->blackScholesProcess->volTS =
+            baseArguments->blackScholesProcess->volTS =
                 RelinkableHandle<BlackVolTermStructure>(
                     Handle<BlackVolTermStructure>(new
                         BlackConstantVol(rateRefDate, v, dc)));
+
+            baseArguments->validate();
 
             baseEngine_->calculate();
 
 
             weight = p(i);
-            results_.value       += weight * baseResults_->value;
-            results_.delta       += weight * baseResults_->delta;
-            results_.gamma       += weight * baseResults_->gamma;
-            results_.theta       += weight * baseResults_->theta;
-            results_.vega        += weight * baseResults_->vega;
-            results_.rho         += weight * baseResults_->rho;
-            results_.dividendRho += weight * baseResults_->dividendRho;
+            results_.value       += weight * baseResults->value;
+            results_.delta       += weight * baseResults->delta;
+            results_.gamma       += weight * baseResults->gamma;
+            results_.theta       += weight * baseResults->theta;
+            results_.vega        += weight * baseResults->vega;
+            results_.rho         += weight * baseResults->rho;
+            results_.dividendRho += weight * baseResults->dividendRho;
         }
 
         
