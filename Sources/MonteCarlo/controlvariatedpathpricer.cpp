@@ -20,11 +20,14 @@
  * QuantLib license is also available at http://quantlib.sourceforge.net/LICENSE.TXT
 */
 
-/*! \file singlepathcontrolvariatedpricer.cpp
+/*! \file controlvariatedpathpricer.cpp
     
     $Source$
     $Name$
     $Log$
+    Revision 1.2  2001/01/05 15:58:27  lballabio
+    Fixed Doxygen documentation
+
     Revision 1.1  2001/01/05 12:28:15  lballabio
     Renamed SinglePathControlVariatedPricer to ControlVariatedPathPricer
 
