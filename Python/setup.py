@@ -25,6 +25,9 @@
     $Id$
     $Source$
     $Log$
+    Revision 1.11  2001/04/20 15:34:27  marmar
+    Compiling options changed
+
     Revision 1.10  2001/04/20 13:45:14  nando
     minor changes
 
@@ -45,9 +48,22 @@ if sys.platform == 'win32':
         raise('Please set environment variable "QL_DIR" to installation directory of QuantLib')
     include_dirs = [quantLibInstallDirectory + "\\Include"]
     library_dirs = [quantLibInstallDirectory + '\\lib\\win32\\VisualStudio']
+    extra_compile_args = ['/Fp"..\Release\PyQuantLib.pch"',
+                          '/YX',
+                          '/Fd"..\Release"',
+                          '/FD']
+    extra_link_args = ['/subsystem:windows',
+                       '/pdb:"..\Release\QuantLibc.pdb"',
+                       '/machine:I386']
+    define_macros = [('WIN32', None),
+                     ('NDEBUG', None),
+                     ('_WINDOWS', None)]
 else:
     include_dirs = ["/usr/local/include"]
     library_dirs = None
+    extra_compile_args = None
+    extra_link_args = None
+    define_macros = None
     # changes the compiler from gcc to g++
     save_init_posix = sysconfig._init_posix
     def my_init_posix():
@@ -148,6 +164,7 @@ class test(Command):
 
 # class test
 
+
 cmdclass = {'test': test}
 
 setup ( cmdclass = cmdclass,
@@ -158,11 +175,14 @@ setup ( cmdclass = cmdclass,
         url = "http://quantlib.sourceforge.net",
         py_modules = ["QuantLib"],
         ext_modules = [Extension
-                       ( "QuantLibc",
-                          ["quantlib_wrap.cpp"],
-                          libraries = ["QuantLib"],
-                          include_dirs = include_dirs,
-                          library_dirs = library_dirs
-                          )
+                       ("QuantLibc",
+                        ["quantlib_wrap.cpp"],
+                        libraries = ["QuantLib"],
+                        define_macros = define_macros,
+                        include_dirs = include_dirs,
+                        library_dirs = library_dirs,
+                        extra_compile_args = extra_compile_args,
+                        extra_link_args = extra_link_args
+                        )
                        ]
         )
