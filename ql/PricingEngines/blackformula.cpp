@@ -79,7 +79,9 @@ namespace QuantLib {
         // super-share will be properly handled
         DXDs_ = 0.0;
 
-        // Plain Vanilla Payoff
+        // this part is always executed.
+        // in case of plain-vanilla payoffs, it is also the only part
+        // which is executed.
         switch (payoff->optionType()) {
           case Option::Call:
             alpha_     =  cum_d1_;//  N(d1)
@@ -104,11 +106,25 @@ namespace QuantLib {
             QL_FAIL("invalid option type");
         }
 
+        // now dispatch on type.
+
+        /* note: if we suspected that plain-vanilla payoffs are the
+           ones used most of the times, we could add here the following:
+
+            boost::shared_ptr<PlainVanillaPayoff> pv =
+                boost::dynamic_pointer_cast<PlainVanillaPayoff>(payoff);
+            if (pv)
+                return;
+
+           and save the time that would be spent in the four dynamic 
+           casts below (which would all be executed since they would
+           all fail.)
+        */
+
         // binary cash-or-nothing payoff?
         boost::shared_ptr<CashOrNothingPayoff> coo =
             boost::dynamic_pointer_cast<CashOrNothingPayoff>(payoff);
         if (coo) {
-            // ok, the payoff is binary cash-or-nothing
             alpha_ = DalphaDd1_ = 0.0;
             X_ = coo->cashPayoff();
             DXDstrike_ = 0.0;
@@ -129,13 +145,13 @@ namespace QuantLib {
               default:
                 QL_FAIL("invalid option type");
             }
+            return;
         }
 
         // binary asset-or-nothing payoff?
         boost::shared_ptr<AssetOrNothingPayoff> aoo =
             boost::dynamic_pointer_cast<AssetOrNothingPayoff>(payoff);
         if (aoo) {
-            // ok, the payoff is binary asset-or-nothing
             beta_ = DbetaDd2_ = 0.0;
             switch (payoff->optionType()) {
               case Option::Call:
@@ -154,22 +170,22 @@ namespace QuantLib {
               default:
                 QL_FAIL("invalid option type");
             }
+            return;
         }
 
         // binary gap payoff?
         boost::shared_ptr<GapPayoff> gap =
             boost::dynamic_pointer_cast<GapPayoff>(payoff);
         if (gap) {
-            // ok, the payoff is binary gap
             X_ = gap->strikePayoff();
             DXDstrike_ = 0.0;
+            return;
         }
 
         // binary super-share payoff?
         boost::shared_ptr<SuperSharePayoff> ss =
             boost::dynamic_pointer_cast<SuperSharePayoff>(payoff);
         if (ss) {
-            // ok, the payoff is binary super-share
             QL_FAIL("binary super-share payoff not handled yet");
         }
     }
@@ -313,7 +329,6 @@ namespace QuantLib {
         double temp = DalphaDq * forward_ - alpha_ * forward_ + DbetaDq * X_;
 
         return maturity * discount_ * temp;
-            ;
     }
 
     double BlackFormula::vega(double maturity) const {
