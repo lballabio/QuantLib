@@ -1,6 +1,4 @@
 - add covariance/correlation test for SequenceStatistics
-- cross test with getcovariance
-- add correlation salvaging alg test
 
 cliquet move forward
 optimize PathPricer
@@ -26,16 +24,23 @@ LATTICE FRAMEWORK
 MONTE CARLO FRAMEWORK
 -*revise multidimensional MonteCarlo
 -*revise extrapolation in diffusion process
+- predictor-corrector scheme
 -*quasi-random number generator (Faure, Sobol)
 -*replace all instance of seed with a random generator
+- settle on interface (tolerance, number of samples)
+- number of samples as (n#batches, batch_size)
 - add example of Martingale control variate
 - add examples of Montecarlo internal and Montecarlo convergence
 - add Milstein Scheme
 - Hypersphere approximation for non positive semi definite correlation
   matrices
-- use brownian bridge in sequence generation
+- use brownian bridge in path generation
 - rename MultiPath as MultiAssetPath
 - move all (Multi)PathPricer under a folder (namesapace?) PathPricers
+- grreks calculation
+
+INTEGRAL PRICING ENGINE FRAMEWORK
+- use Gauss-Kronrod algorythm
 
 VOLATILITY
 -*local volatility
