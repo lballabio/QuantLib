@@ -172,8 +172,10 @@ namespace QuantLib {
                     if (t == times_[n]) {
                         return discounts_[n];
                     } else {
+		        if (n == 0)
+			   return 1.0;
                         return discounts_[n-1] *
-                            QL_EXP(-forwards_[n] * (t-times_[n-1]));
+			   QL_EXP(-forwards_[n] * (t-times_[n-1]));
                     }
                 }
                 QL_DUMMY_RETURN(DiscountFactor());
