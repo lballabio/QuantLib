@@ -51,31 +51,29 @@ int main() {
     QLTestListener qlListener;
     runner.eventManager().addListener(&qlListener);
 
-
     runner.addTest(BarrierOptionTest::suite());
+    runner.addTest(new CalendarTest);
     runner.addTest(CapFloorTest::suite());
     runner.addTest(CompoundForwardTest::suite());
     runner.addTest(CovarianceTest::suite());
+    runner.addTest(new DateTest);
     runner.addTest(DayCounterTest::suite());
-    // the next one don't work under Borland
-    runner.addTest(EuropeanOptionTest::suite());
+    runner.addTest(new DistributionTest);
+    runner.addTest(EuropeanOptionTest::suite()); // fails with Borland
     runner.addTest(InstrumentTest::suite());
+    runner.addTest(new IntegralTest);
     runner.addTest(LDSTest::suite());
     runner.addTest(MarketElementTest::suite());
-    runner.addTest(PiecewiseFlatForwardTest::suite());
-    runner.addTest(SimpleSwapTest::suite());
-    runner.addTest(SwaptionTest::suite());
-    runner.addTest(TermStructureTest::suite());
-    runner.addTest(new CalendarTest);
-    runner.addTest(new DateTest);
-    runner.addTest(new DistributionTest);
-    runner.addTest(new IntegralTest);
     runner.addTest(new MatricesTest());
     runner.addTest(new MersenneTwisterTest());
     runner.addTest(new OperatorTest);
+    runner.addTest(PiecewiseFlatForwardTest::suite());
     runner.addTest(new RiskStatisticsTest);
+    runner.addTest(SimpleSwapTest::suite());
     runner.addTest(new Solver1DTest);
     runner.addTest(new StatisticsTest);
+    runner.addTest(SwaptionTest::suite());
+    runner.addTest(TermStructureTest::suite());
 
     // to be deprecated
     runner.addTest(OldPricerTest::suite());
