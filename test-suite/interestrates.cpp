@@ -94,8 +94,10 @@ void InterestRateTest::testConversions() {
     for (Size i=0; i<LENGTH(cases); i++) {
         ir = InterestRate(cases[i].r, Settings::instance().dayCounter(),
                           cases[i].comp, cases[i].freq);
-
         d2 = d1+Integer(Settings::instance().dayCounterBase()*cases[i].t+0.5)*Days;
+        roundingPrecision = Rounding(cases[i].precision);
+
+
         // check that the compound factor is the inverse of the discount factor
         compoundf = ir.compoundFactor(d1, d2);
         disc = ir.discountFactor(d1, d2);
@@ -164,12 +166,17 @@ void InterestRateTest::testConversions() {
         r3 = roundingPrecision(ir3.rate());
         error = QL_FABS(r3-expectedIR.rate());
         if (error>1.0e-17)
-            BOOST_FAIL("\n  calculated equivalent interest rate: "
+            BOOST_FAIL("\n               original interest rate: "
+                       + InterestRateFormatter::toString(ir,
+                                                         cases[i].precision+1) +
+                       "\n  calculated equivalent interest rate: "
                        + InterestRateFormatter::toString(ir3,
-                                                         cases[i].precision-2) +
+                                                         cases[i].precision+1) +
+                       "\n            truncated equivalent rate: "
+                       + RateFormatter::toString(r3, cases[i].precision+1) +
                        "\n    expected equivalent interest rate: "
                        + InterestRateFormatter::toString(expectedIR,
-                                                         cases[i].precision-2) +
+                                                         cases[i].precision+1) +
                        "\n                           rate error: "
                        + DecimalFormatter::toExponential(error, 1));
         if (ir3.dayCounter()!=expectedIR.dayCounter())
@@ -195,7 +202,6 @@ void InterestRateTest::testConversions() {
         // compounding, and frequency is the *expected* rate
         r3 = ir.equivalentRate(d1, d2, ir.dayCounter(),
                                cases[i].comp2, cases[i].freq2);
-        roundingPrecision = Rounding(cases[i].precision);
         r3 = roundingPrecision(r3);
         error = QL_FABS(r3-cases[i].expected);
         if (error>1.0e-17)
