@@ -30,6 +30,9 @@
 
 // $Id$
 // $Log$
+// Revision 1.8  2001/08/28 13:37:35  nando
+// unsigned int instead of int
+//
 // Revision 1.7  2001/08/09 14:59:46  sigmud
 // header modification
 //
@@ -65,12 +68,12 @@ namespace QuantLib {
         class DZero : public TridiagonalOperator {
           public:
             DZero() {}
-            DZero(int gridPoints, double h);
+            DZero(unsigned int gridPoints, double h);
         };
 
         // inline definitions
 
-        inline DZero::DZero(int gridPoints, double h)
+        inline DZero::DZero(unsigned int gridPoints, double h)
         : TridiagonalOperator(gridPoints) {
             setFirstRow(-1/h,1/h);                  // linear extrapolation
             setMidRows(-1/(2*h),0.0,1/(2*h));

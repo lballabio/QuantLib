@@ -30,6 +30,9 @@
 
 // $Id$
 // $Log$
+// Revision 1.13  2001/08/28 13:37:36  nando
+// unsigned int instead of int
+//
 // Revision 1.12  2001/08/09 14:59:48  sigmud
 // header modification
 //
@@ -58,7 +61,7 @@ namespace QuantLib {
 
         Matrix getCovariance(const Array &volatilities,
                              const Matrix &correlations){
-            int size = volatilities.size();
+            unsigned int size = volatilities.size();
             QL_REQUIRE(correlations.rows() == size,
                        "getCovariance: volatilities and correlations "
                        "have different size");
@@ -66,8 +69,8 @@ namespace QuantLib {
                 "getCovariance: correlation matrix is not square");
 
             Matrix covariance(size,size);
-            for(int i = 0; i < size; i++){
-                for(int j = 0; j < i; j++){
+            for(unsigned int i = 0; i < size; i++){
+                for(unsigned int j = 0; j < i; j++){
                     covariance[i][j] = volatilities[i] * volatilities[j] *
                             0.5 * (correlations[i][j] + correlations[j][i]);
                     covariance[j][i] = covariance[i][j];

@@ -30,6 +30,9 @@
 
 // $Id$
 // $Log$
+// Revision 1.19  2001/08/28 13:37:36  nando
+// unsigned int instead of int
+//
 // Revision 1.18  2001/08/09 14:59:48  sigmud
 // header modification
 //
@@ -80,7 +83,7 @@ namespace QuantLib {
             Rate riskFreeRate, double strike,
             const std::vector<Time> &timeDelays, long samples, long seed)
         : MultiFactorPricer(samples, seed){
-            int  n = covariance.rows();
+            unsigned int  n = covariance.rows();
             QL_REQUIRE(covariance.columns() == n,
                 "Himalaya: covariance matrix not square");
             QL_REQUIRE(underlying.size() == n,

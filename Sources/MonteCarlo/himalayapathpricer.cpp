@@ -30,6 +30,9 @@
 
 // $Id$
 // $Log$
+// Revision 1.15  2001/08/28 13:37:36  nando
+// unsigned int instead of int
+//
 // Revision 1.14  2001/08/09 14:59:48  sigmud
 // header modification
 //
@@ -68,7 +71,7 @@ namespace QuantLib {
         }
 
         double HimalayaPathPricer::value(const MultiPath & path) const {
-            int numAssets = path.rows(), numSteps = path.columns();
+            unsigned int numAssets = path.rows(), numSteps = path.columns();
             QL_REQUIRE(isInitialized_,
                 "HimalayaPathPricer: pricer not initialized");
             QL_REQUIRE(underlying_.size() == numAssets,
@@ -80,10 +83,10 @@ namespace QuantLib {
             double averagePrice = 0;
             std::vector<bool> remainingAssets(numAssets, true);
 
-            for(int j = 0; j < numSteps; j++){
+            for(unsigned int j = 0; j < numSteps; j++){
                 double bestPrice = 0.0;
-                int removeAsset;
-                for(int i = 0; i < numAssets; i++){
+                unsigned int removeAsset;
+                for(unsigned int i = 0; i < numAssets; i++){
                     if(remainingAssets[i]){
                         prices[i] *= QL_EXP(path[i][j]);
                         if(prices[i] >= bestPrice) {

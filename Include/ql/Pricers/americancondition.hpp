@@ -30,6 +30,9 @@
 
 // $Id$
 // $Log$
+// Revision 1.10  2001/08/28 13:37:35  nando
+// unsigned int instead of int
+//
 // Revision 1.9  2001/08/09 14:59:47  sigmud
 // header modification
 //
@@ -75,7 +78,7 @@ namespace QuantLib {
             : initialPrices_(initialPrices) {}
 
         inline void AmericanCondition::applyTo(Array& a, Time t) const {
-            for (int i = 0; i < a.size(); i++)
+            for (unsigned int i = 0; i < a.size(); i++)
                 a[i] = QL_MAX(a[i], initialPrices_[i]);
         }
 

@@ -30,6 +30,9 @@
 
 // $Id$
 // $Log$
+// Revision 1.22  2001/08/28 13:37:35  nando
+// unsigned int instead of int
+//
 // Revision 1.21  2001/08/09 14:59:47  sigmud
 // header modification
 //
@@ -57,7 +60,7 @@ namespace QuantLib {
 
     namespace FiniteDifferences {
 
-        TridiagonalOperatorCommon::TridiagonalOperatorCommon(int size)
+        TridiagonalOperatorCommon::TridiagonalOperatorCommon(unsigned int size)
         : diagonal(size), belowDiagonal(size-1), aboveDiagonal(size-1) {
             QL_ENSURE(diagonal.size() >= 3 || diagonal.size() == 0,
                 "invalid size for tridiagonal operator (must be >= 3)");
@@ -115,7 +118,7 @@ namespace QuantLib {
 
             // matricial product
             result[0] = diagonal[0]*v[0] + aboveDiagonal[0]*v[1];
-            for (int j=1;j<=size()-2;j++)
+            for (unsigned int j=1;j<=size()-2;j++)
                 result[j] = belowDiagonal[j-1]*v[j-1]+ diagonal[j]*v[j] +
                     aboveDiagonal[j]*v[j+1];
             result[size()-1] = belowDiagonal[size()-2]*v[size()-2] +
@@ -185,7 +188,7 @@ namespace QuantLib {
             QL_REQUIRE(bet != 0.0,
                 "TridiagonalOperator::solveFor: division by zero");
             result[0] = bcRhs[0]/bet;
-            int j;
+            unsigned int j;
             for (j=1;j<=size()-1;j++){
                 tmp[j]=aboveDiagonal[j-1]/bet;
                 bet=diagonal[j]-belowDiagonal[j-1]*tmp[j];

@@ -30,6 +30,9 @@
 
 // $Id$
 // $Log$
+// Revision 1.14  2001/08/28 13:37:36  nando
+// unsigned int instead of int
+//
 // Revision 1.13  2001/08/09 14:59:48  sigmud
 // header modification
 //
@@ -67,7 +70,7 @@ namespace QuantLib {
         }
 
         double PagodaPathPricer::value(const MultiPath & path) const {
-            int numAssets = path.rows(), numSteps = path.columns();
+            unsigned int numAssets = path.rows(), numSteps = path.columns();
             QL_REQUIRE(isInitialized_,
                 "PagodaPathPricer: pricer not initialized");
             QL_REQUIRE(underlying_.size() == numAssets,
@@ -75,8 +78,8 @@ namespace QuantLib {
                 + IntegerFormatter::toString(underlying_.size()) +" assets");
 
             double averageGain = 0.0;
-            for(int j = 0; j < numSteps; j++)
-                for(int i = 0; i < numAssets; i++)
+            for(unsigned int j = 0; j < numSteps; j++)
+                for(unsigned int i = 0; i < numAssets; i++)
                     averageGain += underlying_[i] * (QL_EXP(path[i][j])-1.0);
 
             return discount_ * QL_MAX(0.0, QL_MIN(roof_, averageGain));

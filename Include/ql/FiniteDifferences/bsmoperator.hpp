@@ -30,6 +30,9 @@
 
 // $Id$
 // $Log$
+// Revision 1.9  2001/08/28 13:37:35  nando
+// unsigned int instead of int
+//
 // Revision 1.8  2001/08/09 14:59:46  sigmud
 // header modification
 //
@@ -62,7 +65,7 @@ namespace QuantLib {
         class BSMOperator : public TridiagonalOperator {
           public:
             BSMOperator() : TridiagonalOperator() {}
-            BSMOperator(int size, double dx, double r, double q, double sigma);
+            BSMOperator(unsigned int size, double dx, double r, double q, double sigma);
         };
 
     }

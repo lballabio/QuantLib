@@ -30,6 +30,9 @@
 
 // $Id$
 // $Log$
+// Revision 1.12  2001/08/28 13:37:35  nando
+// unsigned int instead of int
+//
 // Revision 1.11  2001/08/09 14:59:47  sigmud
 // header modification
 //
@@ -82,7 +85,7 @@ namespace QuantLib {
             : rate_(rate), resTime_(resTime), initialPrices_(initialPrices){}
 
         inline void ShoutCondition::applyTo(Array& a, Time t) const {
-            for (int i = 0; i < a.size(); i++)
+            for (unsigned int i = 0; i < a.size(); i++)
                 a[i] = QL_MAX(a[i], QL_EXP(-rate_ * (t - resTime_)) * 
                                            initialPrices_[i] );
         }

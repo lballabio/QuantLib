@@ -30,6 +30,9 @@
 
 // $Id$
 // $Log$
+// Revision 1.16  2001/08/28 13:37:35  nando
+// unsigned int instead of int
+//
 // Revision 1.15  2001/08/09 14:59:47  sigmud
 // header modification
 //
@@ -52,7 +55,8 @@ namespace QuantLib {
 
     namespace FiniteDifferences {
 
-        BSMOperator::BSMOperator(int size, double dx, double r, double q, double sigma)
+        BSMOperator::BSMOperator(unsigned int size, double dx, double r,
+            double q, double sigma)
         : TridiagonalOperator(size) {
             double sigma2 = sigma*sigma;
             double nu = r-q-sigma2/2;

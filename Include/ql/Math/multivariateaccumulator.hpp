@@ -30,6 +30,9 @@
 
 // $Id$
 // $Log$
+// Revision 1.11  2001/08/28 13:37:35  nando
+// unsigned int instead of int
+//
 // Revision 1.10  2001/08/09 14:59:46  sigmud
 // header modification
 //
@@ -69,11 +72,11 @@ namespace QuantLib {
         class MultivariateAccumulator {
           public:
             MultivariateAccumulator();
-            MultivariateAccumulator(int size);
+            MultivariateAccumulator(unsigned int size);
             //! \name Inspectors
             //@{
             //! size of each sample
-            int size() const;
+            unsigned int size() const;
             //! number of samples collected
             double samples() const;
             //! returns the mean as an Array
@@ -107,7 +110,7 @@ namespace QuantLib {
             void reset();
             //@}
           private:
-            int size_;
+            unsigned int size_;
             double sampleNumber_;
             double sampleWeight_;
             Array sum_;
@@ -116,7 +119,7 @@ namespace QuantLib {
 
 
         // inline definitions
-        inline int MultivariateAccumulator::size() const {
+        inline unsigned int MultivariateAccumulator::size() const {
             return size_;
         }
 

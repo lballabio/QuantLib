@@ -30,6 +30,9 @@
 
 // $Id$
 // $Log$
+// Revision 1.13  2001/08/28 13:37:35  nando
+// unsigned int instead of int
+//
 // Revision 1.12  2001/08/09 14:59:48  sigmud
 // header modification
 //
@@ -53,7 +56,7 @@ namespace QuantLib {
     namespace FiniteDifferences {
 
         double valueAtCenter(const Array& a) {
-            int jmid = a.size()/2;
+            unsigned int jmid = a.size()/2;
             if (a.size() % 2 == 1)
                 return a[jmid];
             else
@@ -67,7 +70,7 @@ namespace QuantLib {
             QL_REQUIRE(a.size()>=3,
                 "BSMNumericalOption::firstDerivativeAtCenter: "
                 "the size of the two vectors must be at least 3");
-            int jmid = a.size()/2;
+            unsigned int jmid = a.size()/2;
             if(a.size() % 2 == 1)
                 return (a[jmid+1]-a[jmid-1])/(g[jmid+1]-g[jmid-1]);
             else
@@ -81,7 +84,7 @@ namespace QuantLib {
             QL_REQUIRE(a.size()>=4,
                 "BSMNumericalOption::secondDerivativeAtCenter: "
                 "the size of the two vectors must be at least 4");
-            int jmid = a.size()/2;
+            unsigned int jmid = a.size()/2;
             if(a.size() % 2 == 1){
                 double deltaPlus = (a[jmid+1]-a[jmid])/(g[jmid+1]-g[jmid]);
                 double deltaMinus = (a[jmid]-a[jmid-1])/(g[jmid]-g[jmid-1]);

@@ -30,6 +30,9 @@
 
 // $Id$
 // $Log$
+// Revision 1.18  2001/08/28 13:37:35  nando
+// unsigned int instead of int
+//
 // Revision 1.17  2001/08/09 14:59:48  sigmud
 // header modification
 //
@@ -60,7 +63,7 @@ namespace QuantLib {
             reset();
         }
 
-        MultivariateAccumulator::MultivariateAccumulator(int size)
+        MultivariateAccumulator::MultivariateAccumulator(unsigned int size)
                 : size_(size){
             reset();
         }

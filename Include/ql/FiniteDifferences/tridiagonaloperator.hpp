@@ -30,6 +30,9 @@
 
 // $Id$
 // $Log$
+// Revision 1.9  2001/08/28 13:37:35  nando
+// unsigned int instead of int
+//
 // Revision 1.8  2001/08/09 14:59:46  sigmud
 // header modification
 //
@@ -66,19 +69,19 @@ namespace QuantLib {
         class TridiagonalOperatorCommon {
           public:
             // constructors
-            TridiagonalOperatorCommon(int size = 0);
+            TridiagonalOperatorCommon(unsigned int size = 0);
             TridiagonalOperatorCommon(const Array& low, const Array& mid,
                 const Array& high);
             // operator interface
             Array solveFor(const Array& rhs) const;
             Array applyTo(const Array& v) const;
             // inspectors
-            int size() const { return diagonal.size(); }
+            unsigned int size() const { return diagonal.size(); }
             // modifiers
             void setLowerBC(const BoundaryCondition& bc);
             void setHigherBC(const BoundaryCondition& bc);
             void setFirstRow(double, double);
-            void setMidRow(int, double, double, double);
+            void setMidRow(unsigned int, double, double, double);
             void setMidRows(double, double, double);
             void setLastRow(double, double);
             #if !(QL_TEMPLATE_METAPROGRAMMING_WORKS)
@@ -118,7 +121,7 @@ namespace QuantLib {
           public:
             // constructors
             TridiagonalOperator() : TridiagonalOperatorCommon() {}
-            TridiagonalOperator(int size) : TridiagonalOperatorCommon(size) {}
+            TridiagonalOperator(unsigned int size) : TridiagonalOperatorCommon(size) {}
             TridiagonalOperator(const Array& low, const Array& mid,
                 const Array& high)
             : TridiagonalOperatorCommon(low,mid,high) {}
@@ -150,7 +153,7 @@ namespace QuantLib {
           public TridiagonalOperatorCommon, public TimeDependentOperator {
           public:
             // constructors
-            TimeDependentTridiagonalOperator(int size = 0)
+            TimeDependentTridiagonalOperator(unsigned int size = 0)
             : TridiagonalOperatorCommon(size) {}
             TimeDependentTridiagonalOperator(const Array& low, const Array& mid,
                 const Array& high)
@@ -166,7 +169,7 @@ namespace QuantLib {
             aboveDiagonal[0] = valC;
         }
 
-        inline void TridiagonalOperatorCommon::setMidRow(int i, double valA,
+        inline void TridiagonalOperatorCommon::setMidRow(unsigned int i, double valA,
           double valB, double valC) {
             QL_REQUIRE(i>=1 && i<=size()-2,
                 "out of range in TridiagonalSystem::setMidRow");
@@ -177,7 +180,7 @@ namespace QuantLib {
 
         inline void TridiagonalOperatorCommon::setMidRows(double valA,
           double valB, double valC){
-            for (int i=1; i<=size()-2; i++) {
+            for (unsigned int i=1; i<=size()-2; i++) {
                 belowDiagonal[i-1] = valA;
                 diagonal[i]        = valB;
                 aboveDiagonal[i]   = valC;

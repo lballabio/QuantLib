@@ -30,6 +30,9 @@
 
 // $Id$
 // $Log$
+// Revision 1.8  2001/08/28 13:37:35  nando
+// unsigned int instead of int
+//
 // Revision 1.7  2001/08/09 14:59:46  sigmud
 // header modification
 //
@@ -65,12 +68,12 @@ namespace QuantLib {
         class DPlusDMinus : public TridiagonalOperator {
           public:
             DPlusDMinus() {}
-            DPlusDMinus(int gridPoints, double h);
+            DPlusDMinus(unsigned int gridPoints, double h);
         };
 
         // inline definitions
 
-        inline DPlusDMinus::DPlusDMinus(int gridPoints, double h)
+        inline DPlusDMinus::DPlusDMinus(unsigned int gridPoints, double h)
         : TridiagonalOperator(gridPoints) {
             setFirstRow(0.0,0.0);                   // linear extrapolation
             setMidRows(1/(h*h),-2/(h*h),1/(h*h));

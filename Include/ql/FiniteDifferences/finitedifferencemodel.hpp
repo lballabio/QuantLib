@@ -31,6 +31,9 @@
 
 // $Id$
 // $Log$
+// Revision 1.10  2001/08/28 13:37:35  nando
+// unsigned int instead of int
+//
 // Revision 1.9  2001/08/09 14:59:46  sigmud
 // header modification
 //
@@ -161,7 +164,7 @@ namespace QuantLib {
                 \warning being this a rollback, <tt>from</tt> must be a later 
                 time than <tt>to</tt>.
             */
-            void rollback(arrayType& a, Time from, Time to, int steps,
+            void rollback(arrayType& a, Time from, Time to, unsigned int steps,
               Handle<StepCondition<arrayType> > condition =
                 Handle<StepCondition<arrayType> >());
           private:
@@ -193,14 +196,17 @@ namespace QuantLib {
         // template definitions
         template<class Evolver>
         void FiniteDifferenceModel<Evolver>::rollback(
-          FiniteDifferenceModel::arrayType& a, Time from, Time to, int steps,
-          Handle<StepCondition<arrayType> > condition) {
-            Time dt = (from-to)/steps, t = from;
-            evolver.setStep(dt);
-            for (int i=0; i<steps; i++, t -= dt) {
-                evolver.step(a,t);
-                if (!condition.isNull())
-                    condition->applyTo(a,t);
+            FiniteDifferenceModel::arrayType& a,
+            Time from,
+            Time to,
+            unsigned int steps,
+            Handle<StepCondition<arrayType> > condition) {
+                Time dt = (from-to)/steps, t = from;
+                evolver.setStep(dt);
+                for (unsigned int i=0; i<steps; i++, t -= dt) {
+                    evolver.step(a,t);
+                    if (!condition.isNull())
+                        condition->applyTo(a,t);
             }
         }
     }
