@@ -60,4 +60,5 @@
 %include TermStructures.i
 %include Statistics.i
 %include RandomGenerators.i
+%include History.i
 
