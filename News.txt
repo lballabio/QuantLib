@@ -1,28 +1,23 @@
 
-2001-09-xx Release 0.2
+2001-09-18 Release 0.2.0
 
 Changes since Release 0.1.9:
 - Library:
     - source code moved under ql, better GNU standards
-    - build dir separated from source tree
+    - gcc build dir can now be separated from source tree
     - gcc 3.0.1 port
     - clean compilation (no warnings)
     - bootstrap script on cygwin
-    - improved MonteCarlo randomness
+    - Fixed automatic choice of seed for random number generators
     - Actual Actual classes
-    - extended platform support
-    - antithetic montecarlo
-    - dividend Rho
-    - segment integral
-    - Payoff class
+    - extended platform support (see table in documentation)
+    - antithetic variance-reduction technique made possible in Monte Carlo
+    - added dividend-Rho greek
+    - First implementation of segment integral (to be redesigned)
     - Knuth random generator
-    - ParCoupon added to project
-    - Cash flows, scheduler, and generic swap added - the latter should be
-      specialized and tested
-    - added ICGaussian, a Gaussian distribution than use
-      QuantLib::Math::InvCumulativeNormalDistribution to convert uniform
-      distribution extractions into gaussian distribution extractions
-    - bug fixes
+    - Cash flows, scheduler, and swap (both generic and simple) added
+    - added ICGaussian random generator
+    - generic bug fixes
 
 - Installation facilities:
     - improved and smoother Win32 binary installer
@@ -30,8 +25,8 @@ Changes since Release 0.1.9:
     - debian packages available
 
 - Documentation:
-    general re-hauling
-    examples added of QuantLib use and project based on QL
+    - general re-hauling
+    - examples added of QuantLib use and project based on QL
 
 
 2001-05-31 Release 0.1.9

@@ -71,7 +71,7 @@ using QuantLib::DoubleFormatter;
 // helper function for option payoff: MAX((stike-underlying),0), etc.
 using QuantLib::Pricers::ExercisePayoff;
 
-
+// This will be included in the library after a bit of redesign
 class Payoff : public QL::ObjectiveFunction{
     public:
         Payoff(Time maturity,

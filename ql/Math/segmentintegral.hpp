@@ -23,39 +23,32 @@
 */
 
 /*! \file segmentintegral.hpp
+    \brief Integral of a one-dimensional function
 
     \fullpath
     Include/ql/Math/%integral.hpp
-    \brief Integral of a one-dimensional function
-
 */
 
 // $Id$
-// $Log$
-// Revision 1.1  2001/09/03 13:57:12  nando
-// source (*.hpp and *.cpp) moved under topdir/ql
-//
-// Revision 1.3  2001/08/31 15:23:45  sigmud
-// refining fullpath entries for doxygen documentation
-//
-// Revision 1.2  2001/08/09 14:59:46  sigmud
-// header modification
-//
-// Revision 1.1  2001/08/08 15:47:11  marmar
-// Class SegmentIntegral computes the integral of a function over an interval
-//
 
 #include "ql/dataformatters.hpp"
 #include "ql/solver1d.hpp"
 #include <functional>
 
-#ifndef quantlib_math_segmant_integral_h
-#define quantlib_math_segmant_integral_h
+#ifndef quantlib_segment_integral_h
+#define quantlib_segment_integral_h
 
 namespace QuantLib {
 
     namespace Math {
+
+        /*! \brief Integral of a one-dimensional function
         
+            \warning the use of this class is not recommended since 
+            it will be redesigned in one of the next minor releases.
+            
+            \todo Redesign as a template function.
+        */
         class SegmentIntegral{
           public:
             SegmentIntegral(long intervals);

@@ -1,16 +1,10 @@
 
-
-make Parities to work
-remove option integral from parities
-
-online/offline docs
-
-switch false/true antithetic variate
+group together "standard" typedefs in FiniteDifferences and MonteCarlo
+replace static array members with arrays in anonymous namespaces 
+    in Date and WesternCalendar
 config.h is installed?
 installer splash screen
-add examples to documentation
-documentation of path (where it is? continously compounded)
-MonteCarloModel refactoring
+MonteCarloModel refactoring (remove old classes)
 
 
 DISTRIBUTING
@@ -24,11 +18,14 @@ COMPILING
     Borland projects
 
 LIBRARY
+    switch false/true antithetic variate
+    timer class
     cash flow stream for IRR, duration
     Actual/actual and 30/360 factory taking conventions
     Currency as class with methods returning related info
     QuantLib dynamic Win32 library (QuantLib.dll)
-    develop C++ unit test suite based on http://sourceforge.net/projects/cppunit
+    develop C++ unit test suite based on 
+        http://sourceforge.net/projects/cppunit
     clean up accuracy definition in solver1D (x or f(x) accuracy ?)
     implement currency as per OMG definition
     implement round as per OMG enumeration/definition
@@ -37,12 +34,16 @@ LIBRARY
     add futures (and convexity adjustment) to the bootstrapping method
     allow for negative dividendYield (that is cost of carry)
     implement dividendRho for dividendOption
-    add payoff class for integral (Green) option pricing, step condition, etc
+    redesign payoff class for integral (Green) option pricing, step 
+        condition, etc
+    redesign segment integral
     what about barrier or FD with dividends ???
     revisite model/slice interface
     add historicalvolatility to RiskMeasures
     handle library versioning to allow multiple installed versions
     rename all files/dirs to lowercase no spaces (except INSTALL, TODO?)
+    histogram class
+    remove deprecated classes
 
 DOCUMENTATION ***
     enforce fulpath&classesinclude DoxyGen requirements
