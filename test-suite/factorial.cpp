@@ -74,7 +74,8 @@ void FactorialTest::testFactorial() {
                          "    expected:   "
                          + DoubleFormatter::toExponential(expected,16) + "\n"
                          "    rel error:   "
-                         + DoubleFormatter::toExponential(QL_FABS(calculated-expected)/expected,16));
+                         + DoubleFormatter::toExponential(
+                                   QL_FABS(calculated-expected)/expected,16));
     }
 }
 
@@ -82,7 +83,7 @@ void FactorialTest::testGammaFunction() {
 
     double expected = 0.0;
     double calculated = GammaFunction().logValue(1);
-    if (FABS(calculated) > 1.0e-15)
+    if (QL_FABS(calculated) > 1.0e-15)
         CPPUNIT_FAIL("GammaFunction("
                      + IntegerFormatter::toString(1) + ")"
                      "    calculated: "
@@ -91,7 +92,7 @@ void FactorialTest::testGammaFunction() {
                      + DoubleFormatter::toExponential(expected,16));
 
     for (Size i=2; i<9000; i++) {
-        expected  += QL_LOG(i);
+        expected  += QL_LOG(double(i));
         calculated = GammaFunction().logValue(i+1);
         if (QL_FABS(calculated-expected)/expected > 1.0e-9)
             CPPUNIT_FAIL("GammaFunction("
@@ -101,7 +102,8 @@ void FactorialTest::testGammaFunction() {
                          "    expected:   "
                          + DoubleFormatter::toExponential(expected,16) + "\n"
                          "    rel error:   "
-                         + DoubleFormatter::toExponential(QL_FABS(calculated-expected)/expected,16));
+                         + DoubleFormatter::toExponential(
+                                   QL_FABS(calculated-expected)/expected,16));
     }
 }
 

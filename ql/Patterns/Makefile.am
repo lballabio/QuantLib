@@ -4,6 +4,7 @@ includedir = $(prefix)/include/ql/Patterns
 
 include_HEADERS = \
     bridge.hpp \
+    composite.hpp \
     curiouslyrecurring.hpp \
     lazyobject.hpp \
     observable.hpp \
