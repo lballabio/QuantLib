@@ -47,9 +47,11 @@ namespace QuantLib {
         void QuantoOptionArguments<ArgumentsType>::validate() const {
             ArgumentsType::validate();
             QL_REQUIRE(!foreignRiskFreeTS.isNull(),
-                       "QuantoOptionArguments::validate() : null foreign risk free term structure");
+                       "QuantoOptionArguments::validate() : "
+                       "null foreign risk free term structure");
             QL_REQUIRE(!exchRateVolTS.isNull(),
-                       "QuantoOptionArguments::validate() : null exchange rate vol term structure");
+                       "QuantoOptionArguments::validate() : "
+                       "null exchange rate vol term structure");
             QL_REQUIRE(correlation != Null<double>(),
                        "QuantoOptionArguments::validate() : "
                        "null correlation given");
