@@ -49,7 +49,7 @@
     \endcode
     -# Your main() must be compiled with the same options that were used in
     compiling the %QuantLib library - namely, you'll have to set the run-time
-    library to "Multithreaded DLL" or "Debug Multithreaded DLL" depending on
+    library to "Multithreaded" or "Debug Multithreaded" depending on
     whether you're linking to QuantLib.lib or QuantLib_d.lib, respectively.
     This setting is in the project settings, "C/C++" tab, "Code Generation"
     category.
