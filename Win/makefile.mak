@@ -325,11 +325,14 @@ install::
 # Test PyQuantLib
 test::
     cd ..\Python\Tests
+    python american_option.py
+    python date.py
+    python distributions.py
+    python european_option.py
+    python european_with_dividends.py
+    python impliedVol.py
+    python mcpricers.py
     python statistics_test.py
     python testRNGs.py
-    python impliedVol.py
-    python greeks_in_european.py
-    python greeks_in_european_with_dividend.py
-    python greeks_in_american.py
     cd ..\..\Win
 
