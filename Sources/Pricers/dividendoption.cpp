@@ -27,6 +27,9 @@
 
     $Source$
     $Log$
+    Revision 1.14  2001/05/24 14:03:08  marmar
+    New grid is always within previous one
+
     Revision 1.13  2001/05/24 13:57:52  nando
     smoothing #include xx.hpp and cutting old Log messages
 
@@ -90,10 +93,16 @@ namespace QuantLib {
         void DividendOption::executeIntermediateStep(int step) const{
 
             double newSMin = sMin_ + dividends_[step];
+            double newSMax = sMax_ + dividends_[step];
+
             setGridLimits(center_ + dividends_[step], dates_[step]);
-            if (newSMin > sMin_){
+            if (sMin_ < newSMin){
                 sMin_ = newSMin;
                 sMax_ = center_/(sMin_/center_);
+            }
+            if (sMax_ > newSMax){
+                sMax_ = newSMax;
+                sMin_ = center_/(sMax_/center_);
             }
             Array oldGrid = grid_ + dividends_[step];
 
@@ -107,8 +116,10 @@ namespace QuantLib {
             initializeOperator();
             initializeModel();
             initializeStepCondition();
+            
             stepCondition_ -> applyTo(prices_, dates_[step]);
-        }
+
+           }
 
         void DividendOption::movePricesBeforeExDiv(
                 Array& prices, const Array& newGrid,
@@ -131,15 +142,8 @@ namespace QuantLib {
             CubicSpline<Array::iterator, Array::iterator> priceSpline(
                 logOldGrid.begin(), logOldGrid.end(), tmpPrices.begin());
 
-            int jGrid;
-            for (j = 0; j < gridSize; j++){
-                if (newGrid[j] >= oldGrid[gridSize-2] )
-                    jGrid = gridSize-2;
-                else
-                    jGrid = j;
-                double logNewGridPoint = QL_LOG(newGrid[jGrid]);
-                prices[j] = priceSpline(logNewGridPoint);
-            }
+            for (j = 0; j < gridSize; j++)
+                prices[j] = priceSpline(QL_LOG(newGrid[j]));
 
         }
 
