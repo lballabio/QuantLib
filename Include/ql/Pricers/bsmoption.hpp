@@ -27,6 +27,9 @@
 
     $Source$
     $Log$
+    Revision 1.2  2001/04/23 14:17:22  marmar
+    Some variables are now mutable
+
     Revision 1.1  2001/04/09 14:05:48  nando
     all the *.hpp moved below the Include/ql level
 
@@ -124,9 +127,10 @@ namespace QuantLib {
           protected:
             // input data
             Type type_;
-            double underlying_, strike_;
+            mutable double underlying_;
+            double strike_;
             Rate dividendYield_, riskFreeRate_;
-            Time residualTime_;
+            mutable Time residualTime_;
             double volatility_;
             // results
             // declared as mutable to preserve the logical
