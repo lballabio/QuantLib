@@ -74,13 +74,6 @@ namespace QuantLib {
             const Date& newSettlementDate)
         : originalCurve_(h), todaysDate_(todaysDate_),
           newSettlementDate_(newSettlementDate) {
-
-            QL_REQUIRE(newSettlementDate_ <= originalCurve_->maxDate(),
-                "settlement date for the implied curve > max Date "
-                "of original curve");
-            QL_REQUIRE(newSettlementDate_ >= originalCurve_->minDate(),
-                "settlement date for the implied curve < min Date "
-                "of original curve");
             registerWith(originalCurve_);
         }
 
