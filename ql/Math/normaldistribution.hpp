@@ -50,7 +50,8 @@ namespace QuantLib {
             double operator()(double x) const;
             double derivative(double x) const;
           private:
-            double average_, sigma_, normalizationFactor_, denominator_, derNormalizationFactor_;
+            double average_, sigma_, normalizationFactor_, denominator_,
+                derNormalizationFactor_;
         };
 
         typedef NormalDistribution GaussianDistribution;
@@ -206,14 +207,14 @@ namespace QuantLib {
 
         inline double NormalDistribution::operator()(double x) const {
             double deltax = x-average_;
-            double exponent = -deltax*deltax/denominator_;
+            double exponent = -(deltax*deltax)/denominator_;
             // debian alpha had some strange problem in the very-low range
             return exponent <= -690.0 ? 0.0 :  // exp(x) < 1.0e-300 anyway
                                         normalizationFactor_*QL_EXP(exponent);
         }
 
         inline double NormalDistribution::derivative(double x) const {
-            return (*this)(x) * (average_ - x) / derNormalizationFactor_;
+            return ((*this)(x) * (average_ - x)) / derNormalizationFactor_;
         }
 
         inline CumulativeNormalDistribution::CumulativeNormalDistribution(
