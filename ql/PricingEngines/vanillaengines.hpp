@@ -98,11 +98,13 @@ namespace QuantLib {
 
         //! Pricing engine for Vanilla options using analytical formulae
         class AnalyticalVanillaEngine : public VanillaEngine {
+          public:
             void calculate() const;
         };
 
         //! Pricing engine for Vanilla options using Finite Differences
         class FDVanillaEngine : public VanillaEngine {
+          public:
             void calculate() const;
         };
 
