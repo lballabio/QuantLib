@@ -901,6 +901,10 @@ SOURCE=.\Include\ql\Indexes\libormanager.hpp
 # End Source File
 # Begin Source File
 
+SOURCE=.\Include\ql\Indexes\usdlibor.hpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\Sources\Indexes\xibor.cpp
 # End Source File
 # Begin Source File
@@ -910,7 +914,19 @@ SOURCE=.\Include\ql\Indexes\xibor.hpp
 # End Group
 # Begin Source File
 
+SOURCE=.\Include\ql\array.hpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\Sources\calendar.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\Include\ql\config.msvc.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\Include\ql\currency.hpp
 # End Source File
 # Begin Source File
 
@@ -922,7 +938,79 @@ SOURCE=.\Sources\date.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=.\Include\ql\daycounter.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\Include\ql\depositrate.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\Include\ql\discountfactor.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\Include\ql\expressiontemplates.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\Include\ql\forwardvolsurface.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\Include\ql\handle.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\Include\ql\history.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\Include\ql\index.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\Include\ql\instrument.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\Include\ql\null.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\Include\ql\options.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\Include\ql\qldefines.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\Include\ql\qlerrors.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\Include\ql\rate.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\Include\ql\riskstatistics.hpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\Sources\solver1d.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\Include\ql\spread.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\Include\ql\swaptionvolsurface.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\Include\ql\termstructure.hpp
 # End Source File
 # End Target
 # End Project

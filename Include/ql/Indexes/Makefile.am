@@ -7,5 +7,6 @@ include_HEADERS = \
     euribor.hpp \
 	libor.hpp \
 	libormanager.hpp \
+	usdlibor.hpp \
 	xibor.hpp
 

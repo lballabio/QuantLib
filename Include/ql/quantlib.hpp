@@ -26,6 +26,9 @@
     $Id$
     $Source$
     $Log$
+    Revision 1.7  2001/05/18 08:20:48  marmar
+    USD-Libor index added
+
     Revision 1.6  2001/05/17 14:23:32  lballabio
     Removed phony currencies before adding methods to interface
 
@@ -125,6 +128,7 @@
 #include "ql/Indexes/libor.hpp"
 #include "ql/Indexes/libormanager.hpp"
 #include "ql/Indexes/xibor.hpp"
+#include "ql/Indexes/usdlibor.hpp"
 
 #include "ql/Instruments/stock.hpp"
 

@@ -26,6 +26,9 @@
     $Id$
     $Source$
     $Log$
+    Revision 1.2  2001/05/18 08:25:15  marmar
+    USD-Libor index added
+
     Revision 1.1  2001/05/16 09:57:27  lballabio
     Added indexes and piecewise flat forward curve
 
@@ -73,6 +76,7 @@ using QuantLib::Index;
 typedef Handle<Index> IndexHandle;
 using QuantLib::Indexes::Euribor;
 using QuantLib::Indexes::Libor;
+using QuantLib::Indexes::USDLibor;
 %}
 
 // export Handle<Index>
@@ -90,6 +94,8 @@ using QuantLib::Indexes::Libor;
             return new IndexHandle(new Euribor);
         else if (s == "libor")
             return new IndexHandle(new Libor);
+        else if (s == "usd-libor" || s == "usdlibor")
+            return new IndexHandle(new USDLibor);
         else
             throw Error("Unknown index");
         QL_DUMMY_RETURN(new IndexHandle)
@@ -120,11 +126,12 @@ using QuantLib::Indexes::Libor;
 %{
 IndexHandle NewEuribor()     { return IndexHandle(new Euribor); }
 IndexHandle NewLibor()       { return IndexHandle(new Libor); }
+IndexHandle NewUSDLibor()    { return IndexHandle(new USDLibor); }
 %}
 
 %name(Euribor)    IndexHandle NewEuribor();
 %name(Libor)      IndexHandle NewLibor();
-
+%name(USDLibor)   IndexHandle NewUSDLibor();
 
 #endif
 
