@@ -17,6 +17,7 @@ libPricers_la_SOURCES = \
     dividendamericanoption.cpp \
     dividendeuropeanoption.cpp \
     everestoption.cpp \
+    finitedifferenceeuropean.cpp \
     himalaya.cpp \
     mceuropeanpricer.cpp \
     plainbasketoption.cpp \

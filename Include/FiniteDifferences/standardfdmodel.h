@@ -25,6 +25,9 @@
 
     $Source$
     $Log$
+    Revision 1.2  2001/03/14 14:03:44  lballabio
+    Fixed Doxygen documentation and makefiles
+
     Revision 1.1  2001/03/01 13:51:15  marmar
     Choice made for the standard finite-difference model
 
@@ -40,14 +43,14 @@ namespace QuantLib {
 
     namespace FiniteDifferences {
 
-    /*! \typedef StandardPathGenerator
-        The following is the default choice for the finite-difference
-        model.
-    */
+        //! default choice for finite-difference model
         typedef FiniteDifferenceModel< 
                             CrankNicolson<TridiagonalOperator>  >
                                         StandardFiniteDifferenceModel;
     }
+
 }
 
+
 #endif
+

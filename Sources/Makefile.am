@@ -1,4 +1,6 @@
-INCLUDES = -I$(top_srcdir)/Include -I$(top_srcdir)/Include/Math
+INCLUDES = -I$(top_srcdir)/Include \
+           -I$(top_srcdir)/Include/Math \
+           -I$(top_srcdir)/Include/Patterns
 
 SUBDIRS = FiniteDifferences Calendars Solvers1D TermStructures \
 	DayCounters Math Pricers MonteCarlo

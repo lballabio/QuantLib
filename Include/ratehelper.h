@@ -18,14 +18,18 @@
  * You should have received a copy of the license along with this file;
  * if not, contact ferdinando@ametrano.net
  *
- * QuantLib license is also available at http://quantlib.sourceforge.net/LICENSE.TXT
+ * QuantLib license is also available at 
+ * http://quantlib.sourceforge.net/LICENSE.TXT
 */
 
 /*! \file ratehelper.h
-    \brief Rate Helpers
+    \brief rate helpers
 
     $Source$
     $Log$
+    Revision 1.2  2001/03/14 14:03:44  lballabio
+    Fixed Doxygen documentation and makefiles
+
     Revision 1.1  2001/03/07 10:34:25  nando
     added ratehelper.cpp and ratehelper.h.
     Borland, Linux and Visual C++ updated

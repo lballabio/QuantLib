@@ -11,10 +11,11 @@ include_HEADERS = americancondition.h \
     dividendamericanoption.h \
     dividendeuropeanoption.h \
     everestoption.h \
+    finitedifferenceeuropean.h \
     geometricasianoption.h \
     himalaya.h  \
     mceuropeanpricer.h  \
     plainbasketoption.h \
     shoutcondition.h    \
-	stepconditionoption.h \
-	shoutoption.h 
+    stepconditionoption.h \
+    shoutoption.h 

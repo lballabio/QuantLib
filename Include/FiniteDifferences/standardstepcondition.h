@@ -20,11 +20,14 @@
  * QuantLib license is also available at
  *  http://quantlib.sourceforge.net/LICENSE.TXT
 */
-/*! \file standardfdmodel.h
+/*! \file standardstepcondition.h
     \brief Defines the standard step condition
 
     $Source$
     $Log$
+    Revision 1.2  2001/03/14 14:03:44  lballabio
+    Fixed Doxygen documentation and makefiles
+
     Revision 1.1  2001/03/01 13:51:50  marmar
     Choice made for the standard step condition
 
@@ -40,11 +43,12 @@ namespace QuantLib {
 
     namespace FiniteDifferences {
 
-    /*! \typedef StandardPathGenerator
-        The following is the default choice for the step condition.
-    */
+        //! default choice for step condition
         typedef StepCondition< Array > StandardStepCondition;
     }
+
 }
 
+
 #endif
+
