@@ -11,7 +11,6 @@ LIBRARY
     *****
     check FRA mXn definition
     implement swap discountGuess()
-    use pragma in config.msvc.hpp for MS VC++ requirement
     asian continuous and/or discrete
     check geometric continuous and/or discrete
     example of european Martingale control variate
@@ -24,6 +23,7 @@ LIBRARY
     Currency as class with methods returning related info
     Nicolas spline contribution
     Maxim integral
+    update sflogo for offline documentation
     ******
 
     document namespaces on Sad-branch

@@ -48,5 +48,26 @@
 
 #define QL_PATCH_MICROSOFT_BUGS
 
+/*** libraries to be linked***/
+
+#ifdef _DEBUG
+    #pragma comment(lib,"QuantLib_d.lib")
+#else
+    #pragma comment(lib,"QuantLib.lib")
+#endif
+
+#ifndef _MT
+    #ifndef _DLL 
+        #ifdef _DEBUG
+            #pragma message("Warning: Set 'C/C++ | Code Generation | Debug Multithreaded DLL'")
+        #else
+            #pragma message("Warning: Set 'C/C++ | Code Generation | Multithreaded DLL'")
+        #endif
+    #endif
+#endif
+
+#ifndef _CPPRTTI
+    #pragma message("Warning: check the 'C/C++ | C++ Language | Use RTTI' option")
+#endif
 
 #endif

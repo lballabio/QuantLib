@@ -212,15 +212,4 @@ namespace QLTST = QuantLib::TermStructures;
 namespace QLUTL = QuantLib::Utilities;
 
 
-/*** library to be linked***/
-
-#if defined(_MSC_VER)
-    #ifdef _DEBUG
-        #pragma comment(lib,"QuantLib_d.lib")
-    #else
-        #pragma comment(lib,"QuantLib.lib")
-    #endif
-#endif
-
-
 #endif
