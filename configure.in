@@ -117,7 +117,6 @@ AC_SUBST(QUANTLIB_CXXFLAGS)
 
 AC_OUTPUT(Makefile \
     ql/Makefile \
-    ql/Makefile \
     ql/Calendars/Makefile \
     ql/CashFlows/Makefile \
     ql/DayCounters/Makefile \
@@ -131,18 +130,6 @@ AC_OUTPUT(Makefile \
     ql/Solvers1D/Makefile \
     ql/TermStructures/Makefile \
     ql/Utilities/Makefile \
-    ql/Calendars/Makefile \
-    ql/CashFlows/Makefile \
-    ql/DayCounters/Makefile \
-    ql/FiniteDifferences/Makefile \
-    ql/Indexes/Makefile \
-    ql/Instruments/Makefile \
-    ql/Math/Makefile \
-    ql/MonteCarlo/Makefile \
-    ql/Pricers/Makefile \
-    ql/Solvers1D/Makefile \
-    ql/TermStructures/Makefile \
-    Docs/Makefile \
     Examples/Makefile \
     Examples/Parities/Makefile \
     Examples/DiscreteHedging/Makefile \
