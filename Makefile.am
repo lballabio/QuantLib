@@ -15,7 +15,7 @@ EXTRA_DIST=News.txt Contributors.txt History.txt LICENSE.TXT \
 	Python/Tests/himalaya_option.py \
 	Python/Tests/implied_volatility.py \
 	Python/Tests/montecarlo_pricers.py \
-	Python/Tests/plain_basket_options.py \
+	Python/Tests/plain_basket_option.py \
 	Python/Tests/random_generators.py \
 	Python/Tests/risk_statistics.py \
 	Python/Tests/statistics.py \
