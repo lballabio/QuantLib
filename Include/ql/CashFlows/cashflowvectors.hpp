@@ -30,6 +30,9 @@
 
 //  $Source$
 //  $Log$
+//  Revision 1.5  2001/06/19 10:25:18  lballabio
+//  Disabled short/long floating coupons
+//
 //  Revision 1.4  2001/06/18 08:05:59  lballabio
 //  Reworked indexes and floating rate coupon
 //
@@ -58,7 +61,8 @@
 namespace QuantLib {
 
     namespace CashFlows {
-        
+
+        //! helper class building a sequence of fixed rate coupons
         class FixedRateCouponVector : public std::vector<Handle<CashFlow> > {
           public:
             FixedRateCouponVector(
@@ -73,6 +77,13 @@ namespace QuantLib {
                     Handle<DayCounter>());
         };
 
+        //! helper class building a sequence of floating rate coupons
+        /*! \warning The passing of a non-null stub date - i.e., the creation 
+            of a short/long first coupon - is currently disabled. 
+            \todo A suitable algorithm should be implemented for the 
+            calculation of the interpolated index fixing for a 
+            short/long first coupon. 
+        */
         class FloatingRateCouponVector 
         : public std::vector<Handle<CashFlow> > {
           public:

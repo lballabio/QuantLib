@@ -30,6 +30,9 @@
 
 //  $Source$
 //  $Log$
+//  Revision 1.7  2001/06/19 10:25:18  lballabio
+//  Disabled short/long floating coupons
+//
 //  Revision 1.6  2001/06/18 08:50:21  lballabio
 //  Added cross check on stub date and first period day count
 //
@@ -151,6 +154,12 @@ namespace QuantLib {
           const Handle<Index>& index, const std::vector<Spread>& spreads, 
           const Date& stubDate) {
             QL_REQUIRE(nominals.size() != 0, "unspecified nominals");
+
+            /* the following precondition is to be removed when an 
+               algorithm for the fixing of the short coupon is implemented */
+            QL_REQUIRE(stubDate == Date(),
+                "short/long floating coupons are currently disabled");
+
             Scheduler scheduler(calendar, startDate, endDate, frequency, 
                 rollingConvention, true, stubDate);
             // first period might be short or long
