@@ -27,9 +27,6 @@ NULL=
 NULL=nul
 !ENDIF 
 
-CPP=cl.exe
-RSC=rc.exe
-
 !IF  "$(CFG)" == "QuantLib - Win32 Release"
 
 OUTDIR=.\build\Release
@@ -120,6 +117,8 @@ CLEAN :
 	-@erase "$(INTDIR)\london.sbr"
 	-@erase "$(INTDIR)\matrix.obj"
 	-@erase "$(INTDIR)\matrix.sbr"
+	-@erase "$(INTDIR)\maxbasketpathpricer.obj"
+	-@erase "$(INTDIR)\maxbasketpathpricer.sbr"
 	-@erase "$(INTDIR)\mcbasket.obj"
 	-@erase "$(INTDIR)\mcbasket.sbr"
 	-@erase "$(INTDIR)\mcdiscretearithmeticapo.obj"
@@ -132,6 +131,8 @@ CLEAN :
 	-@erase "$(INTDIR)\mceverest.sbr"
 	-@erase "$(INTDIR)\mchimalaya.obj"
 	-@erase "$(INTDIR)\mchimalaya.sbr"
+	-@erase "$(INTDIR)\mcmaxbasket.obj"
+	-@erase "$(INTDIR)\mcmaxbasket.sbr"
 	-@erase "$(INTDIR)\mcpagoda.obj"
 	-@erase "$(INTDIR)\mcpagoda.sbr"
 	-@erase "$(INTDIR)\milan.obj"
@@ -170,8 +171,6 @@ CLEAN :
 	-@erase "$(INTDIR)\simpleswap.sbr"
 	-@erase "$(INTDIR)\singleassetoption.obj"
 	-@erase "$(INTDIR)\singleassetoption.sbr"
-	-@erase "$(INTDIR)\singleassetpathpricer.obj"
-	-@erase "$(INTDIR)\singleassetpathpricer.sbr"
 	-@erase "$(INTDIR)\solver1d.obj"
 	-@erase "$(INTDIR)\solver1d.sbr"
 	-@erase "$(INTDIR)\statistics.obj"
@@ -207,7 +206,40 @@ CLEAN :
 "$(OUTDIR)" :
     if not exist "$(OUTDIR)/$(NULL)" mkdir "$(OUTDIR)"
 
+CPP=cl.exe
 CPP_PROJ=/nologo /MD /W3 /Gi /GR /GX /Od /Ob2 /I ".\\" /D "WIN32" /D "NDEBUG" /D "_MBCS" /D "_LIB" /FR"$(INTDIR)\\" /Fp"$(INTDIR)\QuantLib.pch" /YX /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\\" /FD /c 
+
+.c{$(INTDIR)}.obj::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.cpp{$(INTDIR)}.obj::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.cxx{$(INTDIR)}.obj::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.c{$(INTDIR)}.sbr::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.cpp{$(INTDIR)}.sbr::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.cxx{$(INTDIR)}.sbr::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+RSC=rc.exe
 BSC32=bscmake.exe
 BSC32_FLAGS=/nologo /o"$(OUTDIR)\QuantLib.bsc" 
 BSC32_SBRS= \
@@ -247,8 +279,8 @@ BSC32_SBRS= \
 	"$(INTDIR)\geometricasopathpricer.sbr" \
 	"$(INTDIR)\getcovariance.sbr" \
 	"$(INTDIR)\himalayapathpricer.sbr" \
+	"$(INTDIR)\maxbasketpathpricer.sbr" \
 	"$(INTDIR)\pagodapathpricer.sbr" \
-	"$(INTDIR)\singleassetpathpricer.sbr" \
 	"$(INTDIR)\barrieroption.sbr" \
 	"$(INTDIR)\bermudanoption.sbr" \
 	"$(INTDIR)\binaryoption.sbr" \
@@ -269,6 +301,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\mceuropean.sbr" \
 	"$(INTDIR)\mceverest.sbr" \
 	"$(INTDIR)\mchimalaya.sbr" \
+	"$(INTDIR)\mcmaxbasket.sbr" \
 	"$(INTDIR)\mcpagoda.sbr" \
 	"$(INTDIR)\multiperiodoption.sbr" \
 	"$(INTDIR)\singleassetoption.sbr" \
@@ -335,8 +368,8 @@ LIB32_OBJS= \
 	"$(INTDIR)\geometricasopathpricer.obj" \
 	"$(INTDIR)\getcovariance.obj" \
 	"$(INTDIR)\himalayapathpricer.obj" \
+	"$(INTDIR)\maxbasketpathpricer.obj" \
 	"$(INTDIR)\pagodapathpricer.obj" \
-	"$(INTDIR)\singleassetpathpricer.obj" \
 	"$(INTDIR)\barrieroption.obj" \
 	"$(INTDIR)\bermudanoption.obj" \
 	"$(INTDIR)\binaryoption.obj" \
@@ -357,6 +390,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\mceuropean.obj" \
 	"$(INTDIR)\mceverest.obj" \
 	"$(INTDIR)\mchimalaya.obj" \
+	"$(INTDIR)\mcmaxbasket.obj" \
 	"$(INTDIR)\mcpagoda.obj" \
 	"$(INTDIR)\multiperiodoption.obj" \
 	"$(INTDIR)\singleassetoption.obj" \
@@ -474,6 +508,8 @@ CLEAN :
 	-@erase "$(INTDIR)\london.sbr"
 	-@erase "$(INTDIR)\matrix.obj"
 	-@erase "$(INTDIR)\matrix.sbr"
+	-@erase "$(INTDIR)\maxbasketpathpricer.obj"
+	-@erase "$(INTDIR)\maxbasketpathpricer.sbr"
 	-@erase "$(INTDIR)\mcbasket.obj"
 	-@erase "$(INTDIR)\mcbasket.sbr"
 	-@erase "$(INTDIR)\mcdiscretearithmeticapo.obj"
@@ -486,6 +522,8 @@ CLEAN :
 	-@erase "$(INTDIR)\mceverest.sbr"
 	-@erase "$(INTDIR)\mchimalaya.obj"
 	-@erase "$(INTDIR)\mchimalaya.sbr"
+	-@erase "$(INTDIR)\mcmaxbasket.obj"
+	-@erase "$(INTDIR)\mcmaxbasket.sbr"
 	-@erase "$(INTDIR)\mcpagoda.obj"
 	-@erase "$(INTDIR)\mcpagoda.sbr"
 	-@erase "$(INTDIR)\milan.obj"
@@ -524,8 +562,6 @@ CLEAN :
 	-@erase "$(INTDIR)\simpleswap.sbr"
 	-@erase "$(INTDIR)\singleassetoption.obj"
 	-@erase "$(INTDIR)\singleassetoption.sbr"
-	-@erase "$(INTDIR)\singleassetpathpricer.obj"
-	-@erase "$(INTDIR)\singleassetpathpricer.sbr"
 	-@erase "$(INTDIR)\solver1d.obj"
 	-@erase "$(INTDIR)\solver1d.sbr"
 	-@erase "$(INTDIR)\statistics.obj"
@@ -562,7 +598,40 @@ CLEAN :
 "$(OUTDIR)" :
     if not exist "$(OUTDIR)/$(NULL)" mkdir "$(OUTDIR)"
 
+CPP=cl.exe
 CPP_PROJ=/nologo /MDd /W3 /Gi /GR /GX /ZI /Od /I ".\\" /D "WIN32" /D "_DEBUG" /D "_MBCS" /D "_LIB" /D "QL_DEBUG" /FR"$(INTDIR)\\" /Fp"$(INTDIR)\QuantLib.pch" /YX /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\\" /FD /GZ /c 
+
+.c{$(INTDIR)}.obj::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.cpp{$(INTDIR)}.obj::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.cxx{$(INTDIR)}.obj::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.c{$(INTDIR)}.sbr::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.cpp{$(INTDIR)}.sbr::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.cxx{$(INTDIR)}.sbr::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+RSC=rc.exe
 BSC32=bscmake.exe
 BSC32_FLAGS=/nologo /o"$(OUTDIR)\QuantLib.bsc" 
 BSC32_SBRS= \
@@ -602,8 +671,8 @@ BSC32_SBRS= \
 	"$(INTDIR)\geometricasopathpricer.sbr" \
 	"$(INTDIR)\getcovariance.sbr" \
 	"$(INTDIR)\himalayapathpricer.sbr" \
+	"$(INTDIR)\maxbasketpathpricer.sbr" \
 	"$(INTDIR)\pagodapathpricer.sbr" \
-	"$(INTDIR)\singleassetpathpricer.sbr" \
 	"$(INTDIR)\barrieroption.sbr" \
 	"$(INTDIR)\bermudanoption.sbr" \
 	"$(INTDIR)\binaryoption.sbr" \
@@ -624,6 +693,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\mceuropean.sbr" \
 	"$(INTDIR)\mceverest.sbr" \
 	"$(INTDIR)\mchimalaya.sbr" \
+	"$(INTDIR)\mcmaxbasket.sbr" \
 	"$(INTDIR)\mcpagoda.sbr" \
 	"$(INTDIR)\multiperiodoption.sbr" \
 	"$(INTDIR)\singleassetoption.sbr" \
@@ -690,8 +760,8 @@ LIB32_OBJS= \
 	"$(INTDIR)\geometricasopathpricer.obj" \
 	"$(INTDIR)\getcovariance.obj" \
 	"$(INTDIR)\himalayapathpricer.obj" \
+	"$(INTDIR)\maxbasketpathpricer.obj" \
 	"$(INTDIR)\pagodapathpricer.obj" \
-	"$(INTDIR)\singleassetpathpricer.obj" \
 	"$(INTDIR)\barrieroption.obj" \
 	"$(INTDIR)\bermudanoption.obj" \
 	"$(INTDIR)\binaryoption.obj" \
@@ -712,6 +782,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\mceuropean.obj" \
 	"$(INTDIR)\mceverest.obj" \
 	"$(INTDIR)\mchimalaya.obj" \
+	"$(INTDIR)\mcmaxbasket.obj" \
 	"$(INTDIR)\mcpagoda.obj" \
 	"$(INTDIR)\multiperiodoption.obj" \
 	"$(INTDIR)\singleassetoption.obj" \
@@ -829,6 +900,8 @@ CLEAN :
 	-@erase "$(INTDIR)\london.sbr"
 	-@erase "$(INTDIR)\matrix.obj"
 	-@erase "$(INTDIR)\matrix.sbr"
+	-@erase "$(INTDIR)\maxbasketpathpricer.obj"
+	-@erase "$(INTDIR)\maxbasketpathpricer.sbr"
 	-@erase "$(INTDIR)\mcbasket.obj"
 	-@erase "$(INTDIR)\mcbasket.sbr"
 	-@erase "$(INTDIR)\mcdiscretearithmeticapo.obj"
@@ -841,6 +914,8 @@ CLEAN :
 	-@erase "$(INTDIR)\mceverest.sbr"
 	-@erase "$(INTDIR)\mchimalaya.obj"
 	-@erase "$(INTDIR)\mchimalaya.sbr"
+	-@erase "$(INTDIR)\mcmaxbasket.obj"
+	-@erase "$(INTDIR)\mcmaxbasket.sbr"
 	-@erase "$(INTDIR)\mcpagoda.obj"
 	-@erase "$(INTDIR)\mcpagoda.sbr"
 	-@erase "$(INTDIR)\milan.obj"
@@ -879,8 +954,6 @@ CLEAN :
 	-@erase "$(INTDIR)\simpleswap.sbr"
 	-@erase "$(INTDIR)\singleassetoption.obj"
 	-@erase "$(INTDIR)\singleassetoption.sbr"
-	-@erase "$(INTDIR)\singleassetpathpricer.obj"
-	-@erase "$(INTDIR)\singleassetpathpricer.sbr"
 	-@erase "$(INTDIR)\solver1d.obj"
 	-@erase "$(INTDIR)\solver1d.sbr"
 	-@erase "$(INTDIR)\statistics.obj"
@@ -916,7 +989,40 @@ CLEAN :
 "$(OUTDIR)" :
     if not exist "$(OUTDIR)/$(NULL)" mkdir "$(OUTDIR)"
 
+CPP=cl.exe
 CPP_PROJ=/nologo /MD /W3 /Gi /GR /GX /Od /Ob2 /I ".\\" /D "WIN32" /D "NDEBUG" /D "_MBCS" /D "_LIB" /FR"$(INTDIR)\\" /Fp"$(INTDIR)\QuantLib.pch" /YX /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\\" /FD /c 
+
+.c{$(INTDIR)}.obj::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.cpp{$(INTDIR)}.obj::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.cxx{$(INTDIR)}.obj::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.c{$(INTDIR)}.sbr::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.cpp{$(INTDIR)}.sbr::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.cxx{$(INTDIR)}.sbr::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+RSC=rc.exe
 BSC32=bscmake.exe
 BSC32_FLAGS=/nologo /o"$(OUTDIR)\QuantLib.bsc" 
 BSC32_SBRS= \
@@ -956,8 +1062,8 @@ BSC32_SBRS= \
 	"$(INTDIR)\geometricasopathpricer.sbr" \
 	"$(INTDIR)\getcovariance.sbr" \
 	"$(INTDIR)\himalayapathpricer.sbr" \
+	"$(INTDIR)\maxbasketpathpricer.sbr" \
 	"$(INTDIR)\pagodapathpricer.sbr" \
-	"$(INTDIR)\singleassetpathpricer.sbr" \
 	"$(INTDIR)\barrieroption.sbr" \
 	"$(INTDIR)\bermudanoption.sbr" \
 	"$(INTDIR)\binaryoption.sbr" \
@@ -978,6 +1084,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\mceuropean.sbr" \
 	"$(INTDIR)\mceverest.sbr" \
 	"$(INTDIR)\mchimalaya.sbr" \
+	"$(INTDIR)\mcmaxbasket.sbr" \
 	"$(INTDIR)\mcpagoda.sbr" \
 	"$(INTDIR)\multiperiodoption.sbr" \
 	"$(INTDIR)\singleassetoption.sbr" \
@@ -1044,8 +1151,8 @@ LIB32_OBJS= \
 	"$(INTDIR)\geometricasopathpricer.obj" \
 	"$(INTDIR)\getcovariance.obj" \
 	"$(INTDIR)\himalayapathpricer.obj" \
+	"$(INTDIR)\maxbasketpathpricer.obj" \
 	"$(INTDIR)\pagodapathpricer.obj" \
-	"$(INTDIR)\singleassetpathpricer.obj" \
 	"$(INTDIR)\barrieroption.obj" \
 	"$(INTDIR)\bermudanoption.obj" \
 	"$(INTDIR)\binaryoption.obj" \
@@ -1066,6 +1173,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\mceuropean.obj" \
 	"$(INTDIR)\mceverest.obj" \
 	"$(INTDIR)\mchimalaya.obj" \
+	"$(INTDIR)\mcmaxbasket.obj" \
 	"$(INTDIR)\mcpagoda.obj" \
 	"$(INTDIR)\multiperiodoption.obj" \
 	"$(INTDIR)\singleassetoption.obj" \
@@ -1183,6 +1291,8 @@ CLEAN :
 	-@erase "$(INTDIR)\london.sbr"
 	-@erase "$(INTDIR)\matrix.obj"
 	-@erase "$(INTDIR)\matrix.sbr"
+	-@erase "$(INTDIR)\maxbasketpathpricer.obj"
+	-@erase "$(INTDIR)\maxbasketpathpricer.sbr"
 	-@erase "$(INTDIR)\mcbasket.obj"
 	-@erase "$(INTDIR)\mcbasket.sbr"
 	-@erase "$(INTDIR)\mcdiscretearithmeticapo.obj"
@@ -1195,6 +1305,8 @@ CLEAN :
 	-@erase "$(INTDIR)\mceverest.sbr"
 	-@erase "$(INTDIR)\mchimalaya.obj"
 	-@erase "$(INTDIR)\mchimalaya.sbr"
+	-@erase "$(INTDIR)\mcmaxbasket.obj"
+	-@erase "$(INTDIR)\mcmaxbasket.sbr"
 	-@erase "$(INTDIR)\mcpagoda.obj"
 	-@erase "$(INTDIR)\mcpagoda.sbr"
 	-@erase "$(INTDIR)\milan.obj"
@@ -1233,8 +1345,6 @@ CLEAN :
 	-@erase "$(INTDIR)\simpleswap.sbr"
 	-@erase "$(INTDIR)\singleassetoption.obj"
 	-@erase "$(INTDIR)\singleassetoption.sbr"
-	-@erase "$(INTDIR)\singleassetpathpricer.obj"
-	-@erase "$(INTDIR)\singleassetpathpricer.sbr"
 	-@erase "$(INTDIR)\solver1d.obj"
 	-@erase "$(INTDIR)\solver1d.sbr"
 	-@erase "$(INTDIR)\statistics.obj"
@@ -1271,7 +1381,40 @@ CLEAN :
 "$(OUTDIR)" :
     if not exist "$(OUTDIR)/$(NULL)" mkdir "$(OUTDIR)"
 
+CPP=cl.exe
 CPP_PROJ=/nologo /MDd /W3 /Gi /GR /GX /ZI /Od /I ".\\" /D "WIN32" /D "_DEBUG" /D "_MBCS" /D "_LIB" /D "QL_DEBUG" /FR"$(INTDIR)\\" /Fp"$(INTDIR)\QuantLib.pch" /YX /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\\" /FD /GZ /c 
+
+.c{$(INTDIR)}.obj::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.cpp{$(INTDIR)}.obj::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.cxx{$(INTDIR)}.obj::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.c{$(INTDIR)}.sbr::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.cpp{$(INTDIR)}.sbr::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.cxx{$(INTDIR)}.sbr::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+RSC=rc.exe
 BSC32=bscmake.exe
 BSC32_FLAGS=/nologo /o"$(OUTDIR)\QuantLib.bsc" 
 BSC32_SBRS= \
@@ -1311,8 +1454,8 @@ BSC32_SBRS= \
 	"$(INTDIR)\geometricasopathpricer.sbr" \
 	"$(INTDIR)\getcovariance.sbr" \
 	"$(INTDIR)\himalayapathpricer.sbr" \
+	"$(INTDIR)\maxbasketpathpricer.sbr" \
 	"$(INTDIR)\pagodapathpricer.sbr" \
-	"$(INTDIR)\singleassetpathpricer.sbr" \
 	"$(INTDIR)\barrieroption.sbr" \
 	"$(INTDIR)\bermudanoption.sbr" \
 	"$(INTDIR)\binaryoption.sbr" \
@@ -1333,6 +1476,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\mceuropean.sbr" \
 	"$(INTDIR)\mceverest.sbr" \
 	"$(INTDIR)\mchimalaya.sbr" \
+	"$(INTDIR)\mcmaxbasket.sbr" \
 	"$(INTDIR)\mcpagoda.sbr" \
 	"$(INTDIR)\multiperiodoption.sbr" \
 	"$(INTDIR)\singleassetoption.sbr" \
@@ -1399,8 +1543,8 @@ LIB32_OBJS= \
 	"$(INTDIR)\geometricasopathpricer.obj" \
 	"$(INTDIR)\getcovariance.obj" \
 	"$(INTDIR)\himalayapathpricer.obj" \
+	"$(INTDIR)\maxbasketpathpricer.obj" \
 	"$(INTDIR)\pagodapathpricer.obj" \
-	"$(INTDIR)\singleassetpathpricer.obj" \
 	"$(INTDIR)\barrieroption.obj" \
 	"$(INTDIR)\bermudanoption.obj" \
 	"$(INTDIR)\binaryoption.obj" \
@@ -1421,6 +1565,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\mceuropean.obj" \
 	"$(INTDIR)\mceverest.obj" \
 	"$(INTDIR)\mchimalaya.obj" \
+	"$(INTDIR)\mcmaxbasket.obj" \
 	"$(INTDIR)\mcpagoda.obj" \
 	"$(INTDIR)\multiperiodoption.obj" \
 	"$(INTDIR)\singleassetoption.obj" \
@@ -1449,36 +1594,6 @@ LIB32_OBJS= \
 <<
 
 !ENDIF 
-
-.c{$(INTDIR)}.obj::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-.cpp{$(INTDIR)}.obj::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-.cxx{$(INTDIR)}.obj::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-.c{$(INTDIR)}.sbr::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-.cpp{$(INTDIR)}.sbr::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-.cxx{$(INTDIR)}.sbr::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
 
 
 !IF "$(NO_EXTERNAL_DEPS)" != "1"
@@ -1707,15 +1822,15 @@ SOURCE=.\ql\MonteCarlo\himalayapathpricer.cpp
 	$(CPP) $(CPP_PROJ) $(SOURCE)
 
 
-SOURCE=.\ql\MonteCarlo\pagodapathpricer.cpp
+SOURCE=.\ql\MonteCarlo\maxbasketpathpricer.cpp
 
-"$(INTDIR)\pagodapathpricer.obj"	"$(INTDIR)\pagodapathpricer.sbr" : $(SOURCE) "$(INTDIR)"
+"$(INTDIR)\maxbasketpathpricer.obj"	"$(INTDIR)\maxbasketpathpricer.sbr" : $(SOURCE) "$(INTDIR)"
 	$(CPP) $(CPP_PROJ) $(SOURCE)
 
 
-SOURCE=.\ql\MonteCarlo\singleassetpathpricer.cpp
+SOURCE=.\ql\MonteCarlo\pagodapathpricer.cpp
 
-"$(INTDIR)\singleassetpathpricer.obj"	"$(INTDIR)\singleassetpathpricer.sbr" : $(SOURCE) "$(INTDIR)"
+"$(INTDIR)\pagodapathpricer.obj"	"$(INTDIR)\pagodapathpricer.sbr" : $(SOURCE) "$(INTDIR)"
 	$(CPP) $(CPP_PROJ) $(SOURCE)
 
 
@@ -1836,6 +1951,12 @@ SOURCE=.\ql\Pricers\mceverest.cpp
 SOURCE=.\ql\Pricers\mchimalaya.cpp
 
 "$(INTDIR)\mchimalaya.obj"	"$(INTDIR)\mchimalaya.sbr" : $(SOURCE) "$(INTDIR)"
+	$(CPP) $(CPP_PROJ) $(SOURCE)
+
+
+SOURCE=.\ql\Pricers\mcmaxbasket.cpp
+
+"$(INTDIR)\mcmaxbasket.obj"	"$(INTDIR)\mcmaxbasket.sbr" : $(SOURCE) "$(INTDIR)"
 	$(CPP) $(CPP_PROJ) $(SOURCE)
 
 

@@ -402,48 +402,48 @@ SOURCE=.\DiscreteHedging.cpp
 !IF  "$(CFG)" == "DiscreteHedging - Win32 Release"
 
 "QuantLib - Win32 Release" : 
-   cd "\Branches\QuantLib"
+   cd "\Projects\QuantLib"
    $(MAKE) /$(MAKEFLAGS) /F .\QuantLib.mak CFG="QuantLib - Win32 Release" 
    cd ".\Examples\DiscreteHedging"
 
 "QuantLib - Win32 ReleaseCLEAN" : 
-   cd "\Branches\QuantLib"
+   cd "\Projects\QuantLib"
    $(MAKE) /$(MAKEFLAGS) /F .\QuantLib.mak CFG="QuantLib - Win32 Release" RECURSE=1 CLEAN 
    cd ".\Examples\DiscreteHedging"
 
 !ELSEIF  "$(CFG)" == "DiscreteHedging - Win32 Debug"
 
 "QuantLib - Win32 Debug" : 
-   cd "\Branches\QuantLib"
+   cd "\Projects\QuantLib"
    $(MAKE) /$(MAKEFLAGS) /F .\QuantLib.mak CFG="QuantLib - Win32 Debug" 
    cd ".\Examples\DiscreteHedging"
 
 "QuantLib - Win32 DebugCLEAN" : 
-   cd "\Branches\QuantLib"
+   cd "\Projects\QuantLib"
    $(MAKE) /$(MAKEFLAGS) /F .\QuantLib.mak CFG="QuantLib - Win32 Debug" RECURSE=1 CLEAN 
    cd ".\Examples\DiscreteHedging"
 
 !ELSEIF  "$(CFG)" == "DiscreteHedging - Win32 OnTheEdgeRelease"
 
 "QuantLib - Win32 OnTheEdgeRelease" : 
-   cd "\Branches\QuantLib"
+   cd "\Projects\QuantLib"
    $(MAKE) /$(MAKEFLAGS) /F .\QuantLib.mak CFG="QuantLib - Win32 OnTheEdgeRelease" 
    cd ".\Examples\DiscreteHedging"
 
 "QuantLib - Win32 OnTheEdgeReleaseCLEAN" : 
-   cd "\Branches\QuantLib"
+   cd "\Projects\QuantLib"
    $(MAKE) /$(MAKEFLAGS) /F .\QuantLib.mak CFG="QuantLib - Win32 OnTheEdgeRelease" RECURSE=1 CLEAN 
    cd ".\Examples\DiscreteHedging"
 
 !ELSEIF  "$(CFG)" == "DiscreteHedging - Win32 OnTheEdgeDebug"
 
 "QuantLib - Win32 OnTheEdgeDebug" : 
-   cd "\Branches\QuantLib"
+   cd "\Projects\QuantLib"
    $(MAKE) /$(MAKEFLAGS) /F .\QuantLib.mak CFG="QuantLib - Win32 OnTheEdgeDebug" 
    cd ".\Examples\DiscreteHedging"
 
 "QuantLib - Win32 OnTheEdgeDebugCLEAN" : 
-   cd "\Branches\QuantLib"
+   cd "\Projects\QuantLib"
    $(MAKE) /$(MAKEFLAGS) /F .\QuantLib.mak CFG="QuantLib - Win32 OnTheEdgeDebug" RECURSE=1 CLEAN 
    cd ".\Examples\DiscreteHedging"
 
