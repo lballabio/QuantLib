@@ -27,6 +27,9 @@
 
 // $Source$
 // $Log$
+// Revision 1.3  2001/07/25 11:02:39  nando
+// 80 columns enforced
+//
 // Revision 1.2  2001/07/24 16:54:05  dzuki
 // Minor fixes.
 //
@@ -48,20 +51,20 @@ using namespace QuantLib::MonteCarlo;
 
 
 
-class PathHedgeErrorCalculator : public PathPricer 
+class PathHedgeErrorCalculator : public PathPricer
 {
   public:
     PathHedgeErrorCalculator():PathPricer(){}
     PathHedgeErrorCalculator(Option::Type type, double underlying,
         double strike, Rate r, double maturity, double sigma);
-    
+
 	double value(const Path &path) const;
-    
+
 	double computePlainVanilla(Option::Type type, double price,
 								double strike, double discount) const;
 
   protected:
-  
+
 	mutable Option::Type type_;
 	mutable Rate r_;
     mutable double underlying_, strike_, maturity_, sigma_;
@@ -69,33 +72,33 @@ class PathHedgeErrorCalculator : public PathPricer
 };
 
 PathHedgeErrorCalculator::PathHedgeErrorCalculator(Option::Type type,
-                                    double underlying, 
-                                    double strike, 
-                                    double r, 
-                                    double maturity, 
+                                    double underlying,
+                                    double strike,
+                                    double r,
+                                    double maturity,
                                     double sigma)
-            :   type_(type),underlying_(underlying), 
+            :   type_(type),underlying_(underlying),
                 strike_(strike), r_(r),
-                maturity_(maturity), sigma_(sigma) 
+                maturity_(maturity), sigma_(sigma)
 {
     QL_REQUIRE(strike_ > 0.0,
         "PathHedgeErrorCalculator: strike must be positive");
     QL_REQUIRE(underlying_ > 0.0,
         "PathHedgeErrorCalculator: underlying must be positive");
-    QL_REQUIRE(r_ >= 0.0,
-        "PathHedgeErrorCalculator: risk free rate (r) must be positive or zero");
+    QL_REQUIRE(r_ >= 0.0, "PathHedgeErrorCalculator: risk free rate (r) must"
+        " be positive or zero");
    QL_REQUIRE(maturity_ > 0.0,
         "PathHedgeErrorCalculator: maturity must be positive");
-   QL_REQUIRE(sigma_ >= 0.0,
-        "PathHedgeErrorCalculator: volatility (sigma) must be positive or zero");
-    
+   QL_REQUIRE(sigma_ >= 0.0, "PathHedgeErrorCalculator: volatility (sigma)"
+        " must be positive or zero");
+
    isInitialized_ = true;
 }
 
-double PathHedgeErrorCalculator::value(const Path & path) const 
+double PathHedgeErrorCalculator::value(const Path & path) const
 {
     int n = path.size();
-    
+
 	QL_REQUIRE(isInitialized_,
         "PathHedgeErrorCalculator: pricer not initialized");
     QL_REQUIRE(n>0,
@@ -103,26 +106,23 @@ double PathHedgeErrorCalculator::value(const Path & path) const
 
     double log_price = 0.0;
 	double stock = underlying_;
-	BSMEuropeanOption option = BSMEuropeanOption(type_, 
-											stock, 
-											strike_, 
+	BSMEuropeanOption option = BSMEuropeanOption(type_,
+											stock,
+											strike_,
 											0.0,
 											r_, maturity_, sigma_);
 
 	double delta = option.delta();
 	double money_account = option.value() - delta*stock;
         double dt = maturity_/n;
-	
+
 	for(int i = 0; i < n; i++){
         log_price += path[i];
 		money_account *= QL_EXP( r_*dt );
 		stock = underlying_*QL_EXP(log_price);
 		if(i < n-1) {
-			BSMEuropeanOption option = BSMEuropeanOption(type_, 
-													stock, 
-													strike_, 
-													0.0,
-													r_, maturity_ - dt*(i+1), sigma_);
+			BSMEuropeanOption option = BSMEuropeanOption(type_, stock, strike_,
+			    0.0, r_, maturity_ - dt*(i+1), sigma_);
 			double new_delta = option.delta();
 			money_account -= (new_delta - delta)*stock;
 			delta = new_delta;
@@ -134,13 +134,13 @@ double PathHedgeErrorCalculator::value(const Path & path) const
 }
 
 double PathHedgeErrorCalculator::computePlainVanilla(
-									Option::Type type, 
-									double price, 
+									Option::Type type,
+									double price,
 									double strike,
-									double discount) const 
+									double discount) const
 {
     double optionPrice;
-    
+
 	switch (type) {
       case Option::Call:
             optionPrice = QL_MAX(price-strike,0.0);
@@ -173,19 +173,20 @@ public:
 
 	void doTest(int nTimeSteps = 21, int nSamples = 50000)
 	{
-        BSMEuropeanOption option = BSMEuropeanOption(Option::Type::Call, 
-											s0_, 
-											strike_, 
+        BSMEuropeanOption option = BSMEuropeanOption(Option::Type::Call,
+											s0_,
+											strike_,
 											0.0,
 											r_, maturity_, sigma_);
-        
-        cout << "\n" << "Option value:\t " << option.value() << "\n"; 
 
-        double theoretical_error_sd = 
+        cout << "\n" << "Option value:\t " << option.value() << "\n";
+
+        double theoretical_error_sd =
                 QL_SQRT(3.1415926535/4/nTimeSteps)*option.vega()*sigma_;
-        
+
         cout << "Value of the hedging error SD"
-                " computed using Derman & Kamal's formula:\t "<< theoretical_error_sd;
+                " computed using Derman & Kamal's formula:\t "
+                << theoretical_error_sd;
 
 		double tau = maturity_ / nTimeSteps;
 		double sigma = sigma_* sqrt(tau);
@@ -205,7 +206,8 @@ public:
 
 		cout << "\n";
 		cout << "Mean hedging error: \t" << samples.mean() << "\n";
-		cout << "Hedging error standard deviation: \t" << samples.standardDeviation() << "\n";
+		cout << "Hedging error standard deviation: \t"
+		    << samples.standardDeviation() << "\n";
 	}
 
 private:
