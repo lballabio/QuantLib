@@ -36,9 +36,9 @@ namespace QuantLib {
 
     //! Concrete interest rate class
     /*! This class encapsulate the interest rate compounding algebra.
-        It manages daycounting convention, compounding convention,
-        conversion between different conventions, and discount and accrual
-        calculations.
+        It manages daycounting conventions, compounding conventions,
+        conversion between different conventions, discount/compound factor
+        calculations, and implied/equivalent rate calculations.
 
         \test Converted rates are checked against known good results
     */
@@ -50,7 +50,7 @@ namespace QuantLib {
         InterestRate();
         //! Standard constructor
         InterestRate(Rate r,
-                     DayCounter dc,
+                     const DayCounter& dc,
                      Compounding comp,
                      Frequency freq = Annual);
         //@}
@@ -63,48 +63,154 @@ namespace QuantLib {
             return comp_==Compounded ? Frequency(Integer(freq_)) : NoFrequency;
         }
         //@}
-        //! \name calculations
+        //! \name discount/compound factor calculations
         //@{
-        /*! returns the discount factor implied by the rate
-            compounded at time t
+        //! discount factor implied by the rate compounded at time t.
+        /*! 
+            \warning Time must be measured using InterestRate's own daycounter.
         */
         DiscountFactor discountFactor(Time t) const {
-            return 1.0/compoundingFactor(t);
+            return 1.0/compoundFactor(t);
         }
-        /*! returns the discount factor implied by the rate
-            compounded between two dates
-        */
+
+        //! discount factor implied by the rate compounded between two dates
         DiscountFactor discountFactor(Date d1, Date d2) const {
             Time t = dc_.yearFraction(d1, d2);
             return discountFactor(t);
         }
-        /*! returns the compounding (a.k.a capitalization) factor
-            implied by the rate compounded at time t
+
+        //! compound factor implied by the rate compounded at time t.
+        /*! returns the compound (a.k.a capitalization) factor
+            implied by the rate compounded at time t.
+
+            \warning Time must be measured using InterestRate's own daycounter.
         */
-        Real compoundingFactor(Time t) const;
-        /*! returns the compound factor implied by the rate
-            compounded between two dates
+        Real compoundFactor(Time t) const;
+
+        //! compound factor implied by the rate compounded between two dates
+        /*! returns the compound (a.k.a capitalization) factor
+            implied by the rate compounded between two dates.
         */
-        Real compoundingFactor(Date d1, Date d2) const {
+        Real compoundFactor(Date d1, Date d2) const {
             Time t = dc_.yearFraction(d1, d2);
-            return compoundingFactor(t);
+            return compoundFactor(t);
         }
-        //! returns the equivalent rate for the compounding period t
+        //@}
+
+        //! \name implied rate calculations
+        //@{
+
+        //! implied Rate for a given t-time compound factor.
+        /*! The resulting Rate is calculated implicitly assuming
+            the same daycounting rule used for the time t measure.
+
+            \warning Time must be measured using the InterestRate
+                     instance own daycounter.
+        */
+        static Rate impliedRate(Real compound,
+                                Time t,
+                                Compounding comp,
+                                Frequency freq = Annual);
+
+        //! implied InterestRate for a given t-time compound factor.
+        /*! The resulting InterestRate shares the same implicit daycounting
+            rule of the original InterestRate instance.
+
+            \warning Time must be measured using the InterestRate
+                     instance own daycounter.
+        */
+        InterestRate impliedInterestRate(Real compound,
+                                         Time t,
+                                         Compounding comp,
+                                         Frequency freq = Annual) {
+            Real r = impliedRate(compound, t, comp, freq);
+            return InterestRate(r, dc_, comp, freq);
+        }
+
+        //! implied Rate for a given compound factor between two dates.
+        /*! The resulting Rate is calculated taking the required daycounting
+            rule into account.
+        */
+        static Rate impliedRate(Real compound,
+                                Date d1,
+                                Date d2,
+                                const DayCounter& resultDayCounter,
+                                Compounding comp,
+                                Frequency freq = Annual) {
+            Time t = resultDayCounter.yearFraction(d1, d2);
+            return impliedRate(compound, t, comp, freq);
+        }
+
+        //! implied InterestRate for a given compound factor between two dates.
+        /*! The resulting InterestRate has the required daycounting rule.
+        */
+        static InterestRate impliedInterestRate(Real compound,
+                                                Date d1,
+                                                Date d2,
+                                                const DayCounter& resultDC,
+                                                Compounding comp,
+                                                Frequency freq = Annual) {
+            Real r = impliedRate(compound, d1, d2, resultDC, comp, freq);
+            return InterestRate(r, resultDC, comp, freq);
+        }
+        //@}
+
+        //! \name equivalent rate calculations
+        //@{
+
+        //! equivalent Rate for a compounding period t.
+        /*! The resulting Rate is calculated implicitly assuming
+            the same daycounting rule used for the time t measure.
+
+            \warning Time must be measured using the InterestRate
+                     instance own daycounter.
+        */
         Rate equivalentRate(Time t,
-                            DayCounter dc,
                             Compounding comp,
-                            Frequency freq = Annual) const;
-        /*! returns the equivalent rate for the
-            compounding period between two dates
+                            Frequency freq = Annual) const {
+            return impliedRate(compoundFactor(t), t, comp, freq);
+        }
+
+        //! equivalent InterestRate for a compounding period t.
+        /*! The resulting InterestRate shares the same implicit daycounting
+            rule of the original InterestRate instance.
+
+            \warning Time must be measured using the InterestRate
+                     instance own daycounter.
+        */
+        InterestRate equivalentInterestRate(Time t,
+                                            Compounding comp,
+                                            Frequency freq = Annual) const {
+            Real r = equivalentRate(t, comp, freq);
+            return InterestRate(r, dc_, comp, freq);
+        }
+
+        //! equivalent Rate for a compounding period between two dates
+        /*! The resulting Rate is calculated taking the required daycounting
+            rule into account.
         */
         Rate equivalentRate(Date d1,
                             Date d2,
-                            DayCounter dc,
+                            const DayCounter& resultDayCounter,
                             Compounding comp,
                             Frequency freq = Annual) const {
-            Time t = dc_.yearFraction(d1, d2);
-            return equivalentRate(t, dc, comp, freq);
+            Time t1 = dc_.yearFraction(d1, d2);
+            Time t2 = resultDayCounter.yearFraction(d1, d2);
+            return impliedRate(compoundFactor(t1), t2, comp, freq);
         }
+
+        //! equivalent InterestRate for a compounding period between two dates
+        /*! The resulting InterestRate has the required daycounting rule.
+        */
+        InterestRate equivalentInterestRate(Date d1,
+                                            Date d2,
+                                            const DayCounter& resultDayCounter,
+                                            Compounding comp,
+                                            Frequency freq = Annual) const {
+            Real r = equivalentRate(d1, d2, resultDayCounter, comp, freq);
+            return InterestRate(r, resultDayCounter, comp, freq);
+        }
+
         //@}
       private:
         Rate r_;

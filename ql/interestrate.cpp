@@ -27,7 +27,7 @@ namespace QuantLib {
     InterestRate::InterestRate()
     : r_(Null<Real>()) {}
 
-    InterestRate::InterestRate(Rate r, DayCounter dc,
+    InterestRate::InterestRate(Rate r, const DayCounter& dc,
                                Compounding comp, Frequency freq)
     : r_(r), dc_(dc), comp_(comp) {
 
@@ -38,19 +38,12 @@ namespace QuantLib {
         }
     }
 
-    Real InterestRate::compoundingFactor(Time t) const {
+    Real InterestRate::compoundFactor(Time t) const {
         QL_REQUIRE(r_, "null InterestRate");
         switch (comp_) {
           case Simple:
             return 1.0 + r_*t;
           case Compounded:
-            /*
-              std::cout << "accrualFactor Compounded, ";
-              std::cout << timeMultiplier_ << ", ";
-              std::cout << t << ", ";
-              std::cout << r_ << ", ";
-              std::cout << QL_POW(1.0+r_, timeMultiplier_*t) << std::endl;
-            */
             return QL_POW(1.0+r_/freq_, freq_*t);
           case Continuous:
             return QL_EXP(r_*t);
@@ -59,19 +52,16 @@ namespace QuantLib {
         }
     }
 
-    Rate InterestRate::equivalentRate(Time t, DayCounter dc,
-                                      Compounding comp, Frequency freq) const {
+    Rate InterestRate::impliedRate(Real compound, Time t,
+        Compounding comp, Frequency freq) {
 
-        QL_REQUIRE(r_, "null InterestRate");
-
-        Real compounded = compoundingFactor(t);
         switch (comp) {
           case Simple:
-            return (compounded - 1.0)/t;
+            return (compound - 1.0)/t;
           case Compounded:
-            return (QL_POW(compounded, 1.0/(Real(freq)*t))-1.0)*Real(freq);
+            return (QL_POW(compound, 1.0/(Real(freq)*t))-1.0)*Real(freq);
           case Continuous:
-            return QL_LOG(compounded)/t;
+            return QL_LOG(compound)/t;
           default:
             QL_FAIL("unknown compounding convention ("+
                 IntegerFormatter::toString(comp)+")");
