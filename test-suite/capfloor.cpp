@@ -184,7 +184,7 @@ void CapFloorTest::testConsistency() {
                                    std::vector<Rate>(1,floor_rates[k]),
                                    termStructure_,makeEngine(vols[l]));
               
-              if (QL_FABS((cap->NPV()-floor->NPV())-collar.NPV()) > 1.0e+10) {
+              if (QL_FABS((cap->NPV()-floor->NPV())-collar.NPV()) > 1.0e-10) {
                   CPPUNIT_FAIL(
                     "inconsistency between cap, floor and collar:\n"
                     "    length: " + 
@@ -234,7 +234,7 @@ void CapFloorTest::testParity() {
                             index_->isAdjusted(),index_->dayCounter(),
                             frequency_,index_,fixingDays_,0.0,
                             termStructure_);
-            if (QL_FABS((cap->NPV()-floor->NPV()) - swap.NPV()) > 1.0e+10) {
+            if (QL_FABS((cap->NPV()-floor->NPV()) - swap.NPV()) > 1.0e-10) {
                 CPPUNIT_FAIL(
                     "put/call parity violated:\n"
                     "    length: " + 
@@ -271,7 +271,7 @@ void CapFloorTest::testCachedValue() {
     double cachedCapNPV   = 6.958278080775,
            cachedFloorNPV = 2.700476857631;
     
-    if (QL_FABS(cap->NPV()-cachedCapNPV) > 1.0e+11)
+    if (QL_FABS(cap->NPV()-cachedCapNPV) > 1.0e-11)
         CPPUNIT_FAIL(
             "failed to reproduce cached cap value:\n"
             "    calculated: " +
@@ -279,7 +279,7 @@ void CapFloorTest::testCachedValue() {
             "    expected:   " +
             DoubleFormatter::toString(cachedCapNPV,12));
 
-    if (QL_FABS(floor->NPV()-cachedFloorNPV) > 1.0e+11)
+    if (QL_FABS(floor->NPV()-cachedFloorNPV) > 1.0e-11)
         CPPUNIT_FAIL(
             "failed to reproduce cached floor value:\n"
             "    calculated: " +

@@ -191,8 +191,8 @@ void SimpleSwapTest::testSpreadDependency() {
 
 void SimpleSwapTest::testCachedValue() {
 
-    today_ = Date(14,March,2002);
-    settlement_ = Date(18,March,2002);
+    today_ = Date(17,June,2002);
+    settlement_ = calendar_.advance(today_,settlementDays_,Days);
     termStructure_.linkTo(
         Handle<TermStructure>(new FlatForward(today_,settlement_,0.05,
                                               Actual365())));
@@ -200,7 +200,7 @@ void SimpleSwapTest::testCachedValue() {
     Handle<SimpleSwap> swap = makeSwap(10, 0.06, 0.001);
     double cachedNPV   = -5.883663676727;
     
-    if (QL_FABS(swap->NPV()-cachedNPV) > 1.0e+11)
+    if (QL_FABS(swap->NPV()-cachedNPV) > 1.0e-11)
         CPPUNIT_FAIL(
             "failed to reproduce cached swap value:\n"
             "    calculated: " +

@@ -36,6 +36,7 @@
 #include "solvers.hpp"
 #include "stats.hpp"
 #include "swap.hpp"
+#include "swaption.hpp"
 
 int main() {
     CppUnit::TextUi::TestRunner runner;
@@ -57,6 +58,7 @@ int main() {
     runner.addTest(new Solver1DTest);
     runner.addTest(new StatisticsTest);
     runner.addTest(SimpleSwapTest::suite());
+    runner.addTest(SwaptionTest::suite());
 
     std::string header = "Testing QuantLib " QL_VERSION ;
     std::cerr << std::string(header.length(),'=') << std::endl;
