@@ -85,17 +85,17 @@ SectionIn 1 2 3
     SetOutPath  $INSTDIR\ql\Instruments
     File /r "ql\Instruments\*.hpp"
 
-    SetOutPath  $INSTDIR\ql\InterestRateModelling
-    File /r "ql\InterestRateModelling\*.hpp"
+    SetOutPath  $INSTDIR\ql\ShortRateModels
+    File /r "ql\ShortRateModels\*.hpp"
 
-    SetOutPath  $INSTDIR\ql\InterestRateModelling\CalibrationHelpers
-    File /r "ql\InterestRateModelling\CalibrationHelpers\*.hpp"
+    SetOutPath  $INSTDIR\ql\ShortRateModels\CalibrationHelpers
+    File /r "ql\ShortRateModels\CalibrationHelpers\*.hpp"
 
-    SetOutPath  $INSTDIR\ql\InterestRateModelling\OneFactorModels
-    File /r "ql\InterestRateModelling\OneFactorModels\*.hpp"
+    SetOutPath  $INSTDIR\ql\ShortRateModels\OneFactorModels
+    File /r "ql\ShortRateModels\OneFactorModels\*.hpp"
 
-    SetOutPath  $INSTDIR\ql\InterestRateModelling\TwoFactorModels
-    File /r "ql\InterestRateModelling\TwoFactorModels\*.hpp"
+    SetOutPath  $INSTDIR\ql\ShortRateModels\TwoFactorModels
+    File /r "ql\ShortRateModels\TwoFactorModels\*.hpp"
 
     SetOutPath  $INSTDIR\ql\Lattices
     File /r "ql\Lattices\*.hpp"
@@ -216,21 +216,21 @@ SectionIn 1
   File /r "ql\Instruments\*.cpp"
   File /r "ql\Instruments\makefile.mak"
 
-  SetOutPath  $INSTDIR\ql\InterestRateModelling
-  File /r "ql\InterestRateModelling\*.cpp"
-  File /r "ql\InterestRateModelling\makefile.mak"
+  SetOutPath  $INSTDIR\ql\ShortRateModels
+  File /r "ql\ShortRateModels\*.cpp"
+  File /r "ql\ShortRateModels\makefile.mak"
 
-  SetOutPath  $INSTDIR\ql\InterestRateModelling\CalibrationHelpers
-  File /r "ql\InterestRateModelling\CalibrationHelpers\*.cpp"
-  File /r "ql\InterestRateModelling\CalibrationHelpers\makefile.mak"
+  SetOutPath  $INSTDIR\ql\ShortRateModels\CalibrationHelpers
+  File /r "ql\ShortRateModels\CalibrationHelpers\*.cpp"
+  File /r "ql\ShortRateModels\CalibrationHelpers\makefile.mak"
 
-  SetOutPath  $INSTDIR\ql\InterestRateModelling\OneFactorModels
-  File /r "ql\InterestRateModelling\OneFactorModels\*.cpp"
-  File /r "ql\InterestRateModelling\OneFactorModels\makefile.mak"
+  SetOutPath  $INSTDIR\ql\ShortRateModels\OneFactorModels
+  File /r "ql\ShortRateModels\OneFactorModels\*.cpp"
+  File /r "ql\ShortRateModels\OneFactorModels\makefile.mak"
 
-  SetOutPath  $INSTDIR\ql\InterestRateModelling\TwoFactorModels
-  File /r "ql\InterestRateModelling\TwoFactorModels\*.cpp"
-  File /r "ql\InterestRateModelling\TwoFactorModels\makefile.mak"
+  SetOutPath  $INSTDIR\ql\ShortRateModels\TwoFactorModels
+  File /r "ql\ShortRateModels\TwoFactorModels\*.cpp"
+  File /r "ql\ShortRateModels\TwoFactorModels\makefile.mak"
 
   SetOutPath  $INSTDIR\ql\Lattices
   File /r "ql\Lattices\*.cpp"
