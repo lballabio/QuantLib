@@ -74,6 +74,8 @@ namespace QuantLib {
             
             class Dynamics;
           private:
+            class VolatilityConstraint;
+
             Parameter& theta_;
             Parameter& k_;
             Parameter& sigma_;

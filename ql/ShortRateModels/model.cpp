@@ -47,7 +47,7 @@ namespace QuantLib {
             virtual double value(
                 const Array& params) {
                 model_->setParams(params);
-//                std::cout << "parameters set to " << params << std::endl;
+                std::cout << "parameters set to " << params << std::endl;
 
                 double value = 0.0;
                 for (Size i=0; i<prices_.size(); i++) {

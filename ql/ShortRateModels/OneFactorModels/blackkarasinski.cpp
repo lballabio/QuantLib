@@ -97,7 +97,7 @@ namespace QuantLib {
                 Helper finder(i, xMin, dx, discountBond, numericTree);
                 Solvers1D::Brent s1d = Solvers1D::Brent();
                 s1d.setMaxEvaluations(1000);
-                value = s1d.solve(finder, 1e-7, value, -50.0, 50.0);
+                value = s1d.solve(finder, 1e-7, value, vMin, vMax);
                 impl->set(timeGrid[i], value);
                 vMin = value - 1.0;
                 vMax = value + 1.0;

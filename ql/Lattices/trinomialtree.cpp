@@ -62,7 +62,6 @@ namespace QuantLib {
                     if (isPositive) {
                         while (x0+(temp-1)*dx_[i+1]<=0) {
                             temp++;
-                            std::cout << i << "pushing up to " << temp << std::endl;
                         }
                     }
 
