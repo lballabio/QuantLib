@@ -125,6 +125,7 @@
 
 #define HAVE_INCOMPLETE_ITERATOR_SUPPORT
 
+#define QL_PATCH_MSVC  // more granularity below
 
 //
 // select toolset:
