@@ -1,5 +1,6 @@
 *.obj
-*.dep
-*.plg
+testsuite.dep
+testsuite.plg
+test-suite.tds
 quantlib-test-suite
 build

@@ -30,7 +30,7 @@ void RiskStatisticsTest::runTest() {
 
     double averages[] = { -100.0, 0.0, 100.0 };
     double sigmas[] = { 0.1, 1.0, 10.0 };
-    int N = 25000,
+    Size N = 25000,
         numberOfSigma = 15;
 
     for (int i=0; i<LENGTH(averages); i++) {
@@ -44,7 +44,7 @@ void RiskStatisticsTest::runTest() {
             double h = (dataMax-dataMin)/(N-1);
 
             std::vector<double> data(N), weights(N);
-            for (int k=0; k<N; k++)
+            for (Size k=0; k<N; k++)
                 data[k] = dataMin + h*k;
             std::transform(data.begin(),data.end(),weights.begin(),normal);
 
@@ -94,7 +94,7 @@ void RiskStatisticsTest::runTest() {
 
             calculated = s.mean();
             expected = averages[i];
-            tolerance = (expected == 0.0 ? 1.0e-13 : 
+            tolerance = (expected == 0.0 ? 1.0e-13 :
                                            QL_FABS(expected)*1.0e-13);
             if (QL_FABS(calculated-expected) > tolerance)
                 CPPUNIT_FAIL(
@@ -114,7 +114,7 @@ void RiskStatisticsTest::runTest() {
                     + DoubleFormatter::toString(calculated) + "\n"
                     "    expected:   "
                     + DoubleFormatter::toString(expected));
-            
+
             calculated = s.standardDeviation();
             expected = sigmas[j];
             tolerance = expected*1.0e-4;
@@ -174,11 +174,11 @@ void RiskStatisticsTest::runTest() {
                     + DoubleFormatter::toString(expected));
 
             calculated = s.expectedShortfall(twoSigma);
-            expected = -QL_MIN(averages[i] 
-                               - sigmas[j]*sigmas[j] 
+            expected = -QL_MIN(averages[i]
+                               - sigmas[j]*sigmas[j]
                                * normal(lower_tail)/(1.0-twoSigma),
                                0.0);
-            tolerance = (expected == 0.0 ? 1.0e-4 
+            tolerance = (expected == 0.0 ? 1.0e-4
                                          : QL_FABS(expected)*1.0e-4);
             if (QL_FABS(calculated-expected) > tolerance)
                 CPPUNIT_FAIL(

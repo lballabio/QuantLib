@@ -30,12 +30,12 @@ void CovarianceTest::runTest() {
     vol[0] = 0.1; vol[1] = 0.5; vol[2] = 1.0;
 
     Matrix corr(n,n);
-    corr[0][0] = 1.0; corr[0][1] = 0.2; corr[0][2] = 0.5; 
-    corr[1][0] = 0.2; corr[1][1] = 1.0; corr[1][2] = 0.8; 
-    corr[2][0] = 0.5; corr[2][1] = 0.8; corr[2][2] = 1.0; 
+    corr[0][0] = 1.0; corr[0][1] = 0.2; corr[0][2] = 0.5;
+    corr[1][0] = 0.2; corr[1][1] = 1.0; corr[1][2] = 0.8;
+    corr[2][0] = 0.5; corr[2][1] = 0.8; corr[2][2] = 1.0;
 
     Matrix expCov(n,n);
-    int i,j;
+    Size i,j;
     for (i=0; i<n; i++) {
         expCov[i][i] = vol[i]*vol[i];
         for (j=0; j<i; j++) {
@@ -44,7 +44,7 @@ void CovarianceTest::runTest() {
     }
 
     Matrix calcCov = getCovariance(vol,corr);
-    
+
     for (i=0; i<n; i++) {
         for (j=0; j<n; j++) {
             double calculated = calcCov[i][j],
@@ -55,7 +55,7 @@ void CovarianceTest::runTest() {
                              "[" + IntegerFormatter::toString(j) + "]:\n"
                              "    calculated: "
                              + DoubleFormatter::toString(calculated,11) + "\n"
-                             "    expected:   " 
+                             "    expected:   "
                              + DoubleFormatter::toString(expected,11));
             }
         }

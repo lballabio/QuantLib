@@ -75,7 +75,7 @@ namespace {
 }
 
 CppUnit::Test* OldPricerTest::suite() {
-    CppUnit::TestSuite* tests = 
+    CppUnit::TestSuite* tests =
         new CppUnit::TestSuite("Old-style pricer tests");
     tests->addTest(new CppUnit::TestCaller<OldPricerTest>
                    ("Testing old-style barrier option pricer",
@@ -106,7 +106,7 @@ CppUnit::Test* OldPricerTest::suite() {
 
 
 namespace {
-    
+
     struct BarrierOptionData {
         BarrierOption::BarrierType type;
         double volatility;
@@ -182,7 +182,7 @@ void OldPricerTest::testBarrierPricer() {
             CPPUNIT_FAIL(
                 "Data at index " + IntegerFormatter::toString(i) + ", "
                 "Call option:\n"
-                    "    value:    " + 
+                    "    value:    " +
                     DoubleFormatter::toString(calculated) + "\n"
                     "    expected: " +
                     DoubleFormatter::toString(expected));
@@ -196,15 +196,15 @@ void OldPricerTest::testBarrierPricer() {
             CPPUNIT_FAIL(
                 "Data at index " + IntegerFormatter::toString(i) + ", "
                 "Put option:\n"
-                    "    value:    " + 
+                    "    value:    " +
                     DoubleFormatter::toString(calculated) + "\n"
                     "    expected: " +
                     DoubleFormatter::toString(expected));
 
-        BarrierOption opStraddle(values[i].type, Option::Straddle, 
-                                 underlyingPrice, values[i].strike, 
+        BarrierOption opStraddle(values[i].type, Option::Straddle,
+                                 underlyingPrice, values[i].strike,
                                  qRate, rRate, residualTime,
-                                 values[i].volatility, values[i].barrier, 
+                                 values[i].volatility, values[i].barrier,
                                  rebate);
         calculated = opStraddle.value();
         expected = values[i].callValue+values[i].putValue;
@@ -212,7 +212,7 @@ void OldPricerTest::testBarrierPricer() {
             CPPUNIT_FAIL(
                 "Data at index " + IntegerFormatter::toString(i) + ", "
                 "Straddle:\n"
-                    "    value:    " + 
+                    "    value:    " +
                     DoubleFormatter::toString(calculated) + "\n"
                     "    expected: " +
                     DoubleFormatter::toString(expected));
@@ -228,7 +228,7 @@ void OldPricerTest::testBinaryPricer() {
     tolerance["rho"]    = 5.0e-5;
     tolerance["divRho"] = 5.0e-5;
     tolerance["vega"]   = 5.0e-5;
-    
+
     Option::Type types[] = { Option::Call, Option::Put, Option::Straddle };
     double underlyings[] = { 100 };
     Rate rRates[] = { 0.01, 0.05, 0.15 };
@@ -288,7 +288,7 @@ void OldPricerTest::testBinaryPricer() {
                     expected["rho"]    =  (optPr.value()-optMr.value())/(2*dR);
                     expected["divRho"] =  (optPq.value()-optMq.value())/(2*dQ);
                     expected["vega"]   =  (optPv.value()-optMv.value())/(2*dV);
-                    
+
                     // check
                     std::map<std::string,double>::iterator it;
                     for (it = expected.begin(); it != expected.end(); ++it) {
@@ -315,7 +315,7 @@ void OldPricerTest::testBinaryPricer() {
                               RateFormatter::toString(v) + "\n\n"
                               "    calculated " + greek + ": " +
                               DoubleFormatter::toString(calcl) + "\n"
-                              "    expected:    " + 
+                              "    expected:    " +
                               std::string(greek.size(),' ') +
                               DoubleFormatter::toString(expct));
                     }
@@ -355,7 +355,7 @@ void OldPricerTest::testCliquetPricer() {
 void OldPricerTest::testDividendEuropeanPricer() {
 
     Size nstp = 150;
-    Size ngrd = nstp+1;
+//    Size ngrd = nstp+1;
     std::vector<double> div(2);
     div[0] = 3.92; div[1] = 4.21;
     std::vector<Time> dates(2);
@@ -367,7 +367,7 @@ void OldPricerTest::testDividendEuropeanPricer() {
     tolerance["theta"]  = 1.0e-4;
     tolerance["rho"]    = 1.0e-4;
     tolerance["vega"]   = 1.0e-4;
-    
+
     Option::Type types[] = { Option::Call, Option::Put, Option::Straddle };
     double underlyings[] = { 100 };
     Rate rRates[] = { 0.01, 0.10, 0.30 };
@@ -413,7 +413,7 @@ void OldPricerTest::testDividendEuropeanPricer() {
                                    std::bind2nd(std::plus<Time>(),dT));
                     std::transform(dates.begin(),dates.end(),datesM.begin(),
                                    std::bind2nd(std::minus<Time>(),dT));
-                    FdDividendEuropeanOption 
+                    FdDividendEuropeanOption
                         optPs(type, u+du, k, q, r,    T ,   v   , div, dates),
                         optMs(type, u-du, k, q, r,    T ,   v   , div, dates),
                         optPt(type, u   , k, q, r,    T+dT, v   , div, datesP),
@@ -428,7 +428,7 @@ void OldPricerTest::testDividendEuropeanPricer() {
                     expected["theta"]  = -(optPt.value()-optMt.value())/(2*dT);
                     expected["rho"]    =  (optPr.value()-optMr.value())/(2*dr);
                     expected["vega"]   =  (optPv.value()-optMv.value())/(2*dv);
-                    
+
                     // check
                     std::map<std::string,double>::iterator it;
                     for (it = expected.begin(); it != expected.end(); ++it) {
@@ -455,7 +455,7 @@ void OldPricerTest::testDividendEuropeanPricer() {
                               RateFormatter::toString(v) + "\n\n"
                               "    calculated " + greek + ": " +
                               DoubleFormatter::toString(calcl) + "\n"
-                              "    expected:    " + 
+                              "    expected:    " +
                               std::string(greek.size(),' ') +
                               DoubleFormatter::toString(expct));
                     }
@@ -485,7 +485,7 @@ void OldPricerTest::testFdEuropeanPricer() {
 
     Option::Type types[] = { Option::Call, Option::Put, Option::Straddle };
 
-    for (int i=0; i<totCases; i++) {
+    for (Size i=0; i<totCases; i++) {
 
         double strike = strikeMin + strikeRange * rng.next().value;
         Rate qRate = qRateMin + qRateRange * rng.next().value;
@@ -495,11 +495,11 @@ void OldPricerTest::testFdEuropeanPricer() {
 
         for (int j=0; j<LENGTH(types); j++) {
 
-            double anValue = EuropeanOption(types[j], under, strike, 
-                                            qRate, rRate, resTime, 
+            double anValue = EuropeanOption(types[j], under, strike,
+                                            qRate, rRate, resTime,
                                             vol).value();
-            double numValue = FdEuropean(types[j], under, strike, 
-                                         qRate, rRate, resTime, 
+            double numValue = FdEuropean(types[j], under, strike,
+                                         qRate, rRate, resTime,
                                          vol, 100, 400).value();
             if (QL_FABS(anValue-numValue) > tolerance)
                 CPPUNIT_FAIL(
@@ -520,7 +520,7 @@ void OldPricerTest::testFdEuropeanPricer() {
                     RateFormatter::toString(vol) + "\n\n"
                     "    calculated value: " +
                     DoubleFormatter::toString(numValue) + "\n"
-                    "    expected:         " + 
+                    "    expected:         " +
                     DoubleFormatter::toString(anValue));
         }
     }
@@ -529,7 +529,7 @@ void OldPricerTest::testFdEuropeanPricer() {
 namespace {
 
     template<class O>
-    void testStepOption(Option::Type type, double u, double k, 
+    void testStepOption(Option::Type type, double u, double k,
                         Rate q, Rate r, Time T, double v,
                         const std::string& name) {
 
@@ -543,7 +543,7 @@ namespace {
         tolerance["rho"]    = 2.0e-3;
         tolerance["divRho"] = 2.0e-3;
         tolerance["vega"]   = 2.0e-3;
-        
+
         double du = u*1.0e-4;
         double dv = v*1.0e-4;
         Spread dr = r*1.0e-4;
@@ -567,7 +567,7 @@ namespace {
             O optMq(type,u,   k,q-dq,r,   T,v,   nstp,ngrd);
             O optPv(type,u,   k,q,   r,   T,v+dv,nstp,ngrd);
             O optMv(type,u,   k,q,   r,   T,v-dv,nstp,ngrd);
-            
+
             expected["delta"]  = (optPs.value()-optMs.value())/(2*du);
             expected["gamma"]  = (optPs.delta()-optMs.delta())/(2*du);
             expected["theta"]  = r*option.value() - (r-q)*u*option.delta()
@@ -602,7 +602,7 @@ namespace {
                         RateFormatter::toString(v) + "\n\n"
                         "    calculated " + greek + ": " +
                         DoubleFormatter::toString(calcl) + "\n"
-                        "    expected:    " + 
+                        "    expected:    " +
                         std::string(greek.size(),' ') +
                         DoubleFormatter::toString(expct));
             }
@@ -612,7 +612,7 @@ namespace {
 }
 
 void OldPricerTest::testAmericanPricers() {
-    
+
     Option::Type types[] = { Option::Call, Option::Put, Option::Straddle };
     double underlyings[] = { 100 };
     Rate rRates[] = { 0.01, 0.05, 0.15 };
@@ -636,11 +636,12 @@ void OldPricerTest::testAmericanPricers() {
                   Time T = residualTimes[i5];
                   double k = strikes[i6];
                   double v = volatilities[i7];
-                    
+
                   testStepOption<FdAmericanOption>(type,u,k,q,r,T,v,
-                                                   "American");
-                  testStepOption<FdShoutOption>(type,u,k,q,r,T,v,"shout");
-                  
+                      std::string("American"));
+                  testStepOption<FdShoutOption>(type,u,k,q,r,T,v,
+                      std::string("shout"));
+
                 }
               }
             }
@@ -742,7 +743,7 @@ void OldPricerTest::testMcSingleFactorPricers() {
             + DoubleFormatter::toString(pricer2.value(),10) + "\n"
             "    expected:         "
             + DoubleFormatter::toString(storedValue,10));
-    
+
     // "batch" 3
     //
     // trying to approximate the continous version with the discrete version
@@ -758,7 +759,7 @@ void OldPricerTest::testMcSingleFactorPricers() {
 
     timeIncrements = std::vector<Time>(timeSteps);
     Time dt = residualTime/timeSteps;
-    for (int i=0; i<timeSteps; i++)
+    for (Size i=0; i<timeSteps; i++)
         timeIncrements[i] = (i+1)*dt;
     DiscreteGeometricAPO pricer3(type,underlying,strike,dividendYield,
                                  riskFreeRate,timeIncrements,volatility);
@@ -769,21 +770,21 @@ void OldPricerTest::testMcSingleFactorPricers() {
             + DoubleFormatter::toString(pricer3.value(),10) + "\n"
             "    expected:         "
             + DoubleFormatter::toString(storedValue,10));
-    
+
     // batch 4
 
     Batch4Data cases4[] = {
-        { Option::Put, 80.0, 85.0, -0.03, 0.05, 0.25, 0.2, 
+        { Option::Put, 80.0, 85.0, -0.03, 0.05, 0.25, 0.2,
           false, 5.9135872358 },
-        { Option::Put, 80.0, 85.0, -0.03, 0.05, 0.25, 0.2, 
+        { Option::Put, 80.0, 85.0, -0.03, 0.05, 0.25, 0.2,
           true,  5.42005964479 },
-        { Option::Call, 80.0, 85.0, -0.03, 0.05, 0.25, 0.2, 
+        { Option::Call, 80.0, 85.0, -0.03, 0.05, 0.25, 0.2,
           false, 1.98816310759 },
-        { Option::Call, 80.0, 85.0, -0.03, 0.05, 0.25, 0.2, 
+        { Option::Call, 80.0, 85.0, -0.03, 0.05, 0.25, 0.2,
           true, 2.12098432917 },
-        { Option::Straddle, 80.0, 85.0, -0.03, 0.05, 0.25, 0.2, 
+        { Option::Straddle, 80.0, 85.0, -0.03, 0.05, 0.25, 0.2,
           false, 7.90175034339 },
-        { Option::Straddle, 80.0, 85.0, -0.03, 0.05, 0.25, 0.2, 
+        { Option::Straddle, 80.0, 85.0, -0.03, 0.05, 0.25, 0.2,
           true, 7.54104397396 }
     };
 
@@ -820,72 +821,72 @@ void OldPricerTest::testMcSingleFactorPricers() {
     // edited by Clewlow, Strickland
 
     Batch5Data cases5[] = {
-        { Option::Put, 90.0, 87.0, 0.06, 0.025, 0.0, 11.0/12.0, 2, 
+        { Option::Put, 90.0, 87.0, 0.06, 0.025, 0.0, 11.0/12.0, 2,
           0.13, true, true, 1.38418414762 },
-        { Option::Put, 90.0, 87.0, 0.06, 0.025, 0.0, 11.0/12.0, 4, 
+        { Option::Put, 90.0, 87.0, 0.06, 0.025, 0.0, 11.0/12.0, 4,
           0.13, true, true, 1.57691714387 },
-        { Option::Put, 90.0, 87.0, 0.06, 0.025, 0.0, 11.0/12.0, 8, 
+        { Option::Put, 90.0, 87.0, 0.06, 0.025, 0.0, 11.0/12.0, 8,
           0.13, true, true, 1.66062743445 },
-        { Option::Put, 90.0, 87.0, 0.06, 0.025, 0.0, 11.0/12.0, 12, 
+        { Option::Put, 90.0, 87.0, 0.06, 0.025, 0.0, 11.0/12.0, 12,
           0.13, true, true, 1.68847081883 },
-        { Option::Put, 90.0, 87.0, 0.06, 0.025, 0.0, 11.0/12.0, 26, 
+        { Option::Put, 90.0, 87.0, 0.06, 0.025, 0.0, 11.0/12.0, 26,
           0.13, true, true, 1.72955964448 },
-        { Option::Put, 90.0, 87.0, 0.06, 0.025, 0.0, 11.0/12.0, 52, 
+        { Option::Put, 90.0, 87.0, 0.06, 0.025, 0.0, 11.0/12.0, 52,
           0.13, true, true, 1.73372169316 },
-        { Option::Put, 90.0, 87.0, 0.06, 0.025, 0.0, 11.0/12.0, 100, 
+        { Option::Put, 90.0, 87.0, 0.06, 0.025, 0.0, 11.0/12.0, 100,
           0.13, true, true, 1.74918801089 },
-        { Option::Put, 90.0, 87.0, 0.06, 0.025, 0.0, 11.0/12.0, 250, 
+        { Option::Put, 90.0, 87.0, 0.06, 0.025, 0.0, 11.0/12.0, 250,
           0.13, true, true, 1.75421310915 },
-        { Option::Put, 90.0, 87.0, 0.06, 0.025, 0.0, 11.0/12.0, 500, 
+        { Option::Put, 90.0, 87.0, 0.06, 0.025, 0.0, 11.0/12.0, 500,
           0.13, true, true, 1.75158383443 },
-        { Option::Put, 90.0, 87.0, 0.06, 0.025, 0.0, 11.0/12.0, 1000, 
+        { Option::Put, 90.0, 87.0, 0.06, 0.025, 0.0, 11.0/12.0, 1000,
           0.13, true, true, 1.75162110180 },
-        { Option::Put, 90.0, 87.0, 0.06, 0.025, 1.0/12.0, 11.0/12.0, 2, 
+        { Option::Put, 90.0, 87.0, 0.06, 0.025, 1.0/12.0, 11.0/12.0, 2,
           0.13, true, true, 1.83665087164 },
-        { Option::Put, 90.0, 87.0, 0.06, 0.025, 1.0/12.0, 11.0/12.0, 4, 
+        { Option::Put, 90.0, 87.0, 0.06, 0.025, 1.0/12.0, 11.0/12.0, 4,
           0.13, true, true, 2.00560271429 },
-        { Option::Put, 90.0, 87.0, 0.06, 0.025, 1.0/12.0, 11.0/12.0, 8, 
+        { Option::Put, 90.0, 87.0, 0.06, 0.025, 1.0/12.0, 11.0/12.0, 8,
           0.13, true, true, 2.07789721712 },
-        { Option::Put, 90.0, 87.0, 0.06, 0.025, 1.0/12.0, 11.0/12.0, 12, 
+        { Option::Put, 90.0, 87.0, 0.06, 0.025, 1.0/12.0, 11.0/12.0, 12,
           0.13, true, true, 2.09622556625 },
-        { Option::Put, 90.0, 87.0, 0.06, 0.025, 1.0/12.0, 11.0/12.0, 26, 
+        { Option::Put, 90.0, 87.0, 0.06, 0.025, 1.0/12.0, 11.0/12.0, 26,
           0.13, true, true, 2.14229795212 },
-        { Option::Put, 90.0, 87.0, 0.06, 0.025, 1.0/12.0, 11.0/12.0, 52, 
+        { Option::Put, 90.0, 87.0, 0.06, 0.025, 1.0/12.0, 11.0/12.0, 52,
           0.13, true, true, 2.14470270916 },
-        { Option::Put, 90.0, 87.0, 0.06, 0.025, 1.0/12.0, 11.0/12.0, 100, 
+        { Option::Put, 90.0, 87.0, 0.06, 0.025, 1.0/12.0, 11.0/12.0, 100,
           0.13, true, true, 2.15954145741 },
-        { Option::Put, 90.0, 87.0, 0.06, 0.025, 1.0/12.0, 11.0/12.0, 250, 
+        { Option::Put, 90.0, 87.0, 0.06, 0.025, 1.0/12.0, 11.0/12.0, 250,
           0.13, true, true, 2.16007690017 },
-        { Option::Put, 90.0, 87.0, 0.06, 0.025, 1.0/12.0, 11.0/12.0, 500, 
+        { Option::Put, 90.0, 87.0, 0.06, 0.025, 1.0/12.0, 11.0/12.0, 500,
           0.13, true, true, 2.15986704400 },
-        { Option::Put, 90.0, 87.0, 0.06, 0.025, 1.0/12.0, 11.0/12.0, 1000, 
+        { Option::Put, 90.0, 87.0, 0.06, 0.025, 1.0/12.0, 11.0/12.0, 1000,
           0.13, true, true, 2.15951634387 },
-        { Option::Put, 90.0, 87.0, 0.06, 0.025, 3.0/12.0, 11.0/12.0, 2, 
+        { Option::Put, 90.0, 87.0, 0.06, 0.025, 3.0/12.0, 11.0/12.0, 2,
           0.13, true, true, 2.63315092584 },
-        { Option::Put, 90.0, 87.0, 0.06, 0.025, 3.0/12.0, 11.0/12.0, 4, 
+        { Option::Put, 90.0, 87.0, 0.06, 0.025, 3.0/12.0, 11.0/12.0, 4,
           0.13, true, true, 2.76723962361 },
-        { Option::Put, 90.0, 87.0, 0.06, 0.025, 3.0/12.0, 11.0/12.0, 8, 
+        { Option::Put, 90.0, 87.0, 0.06, 0.025, 3.0/12.0, 11.0/12.0, 8,
           0.13, true, true, 2.83124836881 },
-        { Option::Put, 90.0, 87.0, 0.06, 0.025, 3.0/12.0, 11.0/12.0, 12, 
+        { Option::Put, 90.0, 87.0, 0.06, 0.025, 3.0/12.0, 11.0/12.0, 12,
           0.13, true, true, 2.84290301412 },
-        { Option::Put, 90.0, 87.0, 0.06, 0.025, 3.0/12.0, 11.0/12.0, 26, 
+        { Option::Put, 90.0, 87.0, 0.06, 0.025, 3.0/12.0, 11.0/12.0, 26,
           0.13, true, true, 2.88179560417 },
-        { Option::Put, 90.0, 87.0, 0.06, 0.025, 3.0/12.0, 11.0/12.0, 52, 
+        { Option::Put, 90.0, 87.0, 0.06, 0.025, 3.0/12.0, 11.0/12.0, 52,
           0.13, true, true, 2.88447044543 },
-        { Option::Put, 90.0, 87.0, 0.06, 0.025, 3.0/12.0, 11.0/12.0, 100, 
+        { Option::Put, 90.0, 87.0, 0.06, 0.025, 3.0/12.0, 11.0/12.0, 100,
           0.13, true, true, 2.89985329603 },
-        { Option::Put, 90.0, 87.0, 0.06, 0.025, 3.0/12.0, 11.0/12.0, 250, 
+        { Option::Put, 90.0, 87.0, 0.06, 0.025, 3.0/12.0, 11.0/12.0, 250,
           0.13, true, true, 2.90047296063 },
-        { Option::Put, 90.0, 87.0, 0.06, 0.025, 3.0/12.0, 11.0/12.0, 500, 
+        { Option::Put, 90.0, 87.0, 0.06, 0.025, 3.0/12.0, 11.0/12.0, 500,
           0.13, true, true, 2.89813412160 },
-        { Option::Put, 90.0, 87.0, 0.06, 0.025, 3.0/12.0, 11.0/12.0, 1000, 
+        { Option::Put, 90.0, 87.0, 0.06, 0.025, 3.0/12.0, 11.0/12.0, 1000,
           0.13, true, true, 2.89703362437 }
     };
 
     for (int k=0; k<LENGTH(cases5); k++) {
         Time dt = cases5[k].length/(cases5[k].fixings-1);
         std::vector<Time> timeIncrements(cases5[k].fixings);
-        for (int i=0; i<cases5[k].fixings; i++)
+        for (Size i=0; i<cases5[k].fixings; i++)
             timeIncrements[i] = i*dt + cases5[k].first;
         McDiscreteArithmeticAPO pricer(cases5[k].type,
                                        cases5[k].underlying,
@@ -925,72 +926,72 @@ void OldPricerTest::testMcSingleFactorPricers() {
     // edited by Clewlow, Strickland
 
     Batch6Data cases6[] = {
-        { Option::Call, 90.0, 87.0, 0.06, 0.025, 0.0, 11.0/12.0, 2, 
+        { Option::Call, 90.0, 87.0, 0.06, 0.025, 0.0, 11.0/12.0, 2,
           0.13, true, true, 1.51917595129 },
-        { Option::Call, 90.0, 87.0, 0.06, 0.025, 0.0, 11.0/12.0, 4, 
+        { Option::Call, 90.0, 87.0, 0.06, 0.025, 0.0, 11.0/12.0, 4,
           0.13, true, true, 1.67940165674 },
-        { Option::Call, 90.0, 87.0, 0.06, 0.025, 0.0, 11.0/12.0, 8, 
+        { Option::Call, 90.0, 87.0, 0.06, 0.025, 0.0, 11.0/12.0, 8,
           0.13, true, true, 1.75371215251 },
-        { Option::Call, 90.0, 87.0, 0.06, 0.025, 0.0, 11.0/12.0, 12, 
+        { Option::Call, 90.0, 87.0, 0.06, 0.025, 0.0, 11.0/12.0, 12,
           0.13, true, true, 1.77595318693 },
-        { Option::Call, 90.0, 87.0, 0.06, 0.025, 0.0, 11.0/12.0, 26, 
+        { Option::Call, 90.0, 87.0, 0.06, 0.025, 0.0, 11.0/12.0, 26,
           0.13, true, true, 1.81430536630 },
-        { Option::Call, 90.0, 87.0, 0.06, 0.025, 0.0, 11.0/12.0, 52, 
+        { Option::Call, 90.0, 87.0, 0.06, 0.025, 0.0, 11.0/12.0, 52,
           0.13, true, true, 1.82269246898 },
-        { Option::Call, 90.0, 87.0, 0.06, 0.025, 0.0, 11.0/12.0, 100, 
+        { Option::Call, 90.0, 87.0, 0.06, 0.025, 0.0, 11.0/12.0, 100,
           0.13, true, true, 1.83822402464 },
-        { Option::Call, 90.0, 87.0, 0.06, 0.025, 0.0, 11.0/12.0, 250, 
+        { Option::Call, 90.0, 87.0, 0.06, 0.025, 0.0, 11.0/12.0, 250,
           0.13, true, true, 1.83875059026 },
-        { Option::Call, 90.0, 87.0, 0.06, 0.025, 0.0, 11.0/12.0, 500, 
+        { Option::Call, 90.0, 87.0, 0.06, 0.025, 0.0, 11.0/12.0, 500,
           0.13, true, true, 1.83750703638 },
-        { Option::Call, 90.0, 87.0, 0.06, 0.025, 0.0, 11.0/12.0, 1000, 
+        { Option::Call, 90.0, 87.0, 0.06, 0.025, 0.0, 11.0/12.0, 1000,
           0.13, true, true, 1.83887181884 },
-        { Option::Call, 90.0, 87.0, 0.06, 0.025, 1.0/12.0, 11.0/12.0, 2, 
+        { Option::Call, 90.0, 87.0, 0.06, 0.025, 1.0/12.0, 11.0/12.0, 2,
           0.13, true, true, 1.51154400089 },
-        { Option::Call, 90.0, 87.0, 0.06, 0.025, 1.0/12.0, 11.0/12.0, 4, 
+        { Option::Call, 90.0, 87.0, 0.06, 0.025, 1.0/12.0, 11.0/12.0, 4,
           0.13, true, true, 1.67103508506 },
-        { Option::Call, 90.0, 87.0, 0.06, 0.025, 1.0/12.0, 11.0/12.0, 8, 
+        { Option::Call, 90.0, 87.0, 0.06, 0.025, 1.0/12.0, 11.0/12.0, 8,
           0.13, true, true, 1.74529684070 },
         { Option::Call, 90.0, 87.0, 0.06, 0.025, 1.0/12.0, 11.0/12.0, 12,
           0.13, true, true, 1.76667074564 },
-        { Option::Call, 90.0, 87.0, 0.06, 0.025, 1.0/12.0, 11.0/12.0, 26, 
+        { Option::Call, 90.0, 87.0, 0.06, 0.025, 1.0/12.0, 11.0/12.0, 26,
           0.13, true, true, 1.80528400613 },
-        { Option::Call, 90.0, 87.0, 0.06, 0.025, 1.0/12.0, 11.0/12.0, 52, 
+        { Option::Call, 90.0, 87.0, 0.06, 0.025, 1.0/12.0, 11.0/12.0, 52,
           0.13, true, true, 1.81400883891 },
-        { Option::Call, 90.0, 87.0, 0.06, 0.025, 1.0/12.0, 11.0/12.0, 100, 
+        { Option::Call, 90.0, 87.0, 0.06, 0.025, 1.0/12.0, 11.0/12.0, 100,
           0.13, true, true, 1.82922901451 },
-        { Option::Call, 90.0, 87.0, 0.06, 0.025, 1.0/12.0, 11.0/12.0, 250, 
+        { Option::Call, 90.0, 87.0, 0.06, 0.025, 1.0/12.0, 11.0/12.0, 250,
           0.13, true, true, 1.82937111773 },
-        { Option::Call, 90.0, 87.0, 0.06, 0.025, 1.0/12.0, 11.0/12.0, 500, 
+        { Option::Call, 90.0, 87.0, 0.06, 0.025, 1.0/12.0, 11.0/12.0, 500,
           0.13, true, true, 1.82826193186 },
-        { Option::Call, 90.0, 87.0, 0.06, 0.025, 1.0/12.0, 11.0/12.0, 1000, 
+        { Option::Call, 90.0, 87.0, 0.06, 0.025, 1.0/12.0, 11.0/12.0, 1000,
           0.13, true, true, 1.82967846654 },
-        { Option::Call, 90.0, 87.0, 0.06, 0.025, 3.0/12.0, 11.0/12.0, 2, 
+        { Option::Call, 90.0, 87.0, 0.06, 0.025, 3.0/12.0, 11.0/12.0, 2,
           0.13, true, true, 1.49648170891 },
-        { Option::Call, 90.0, 87.0, 0.06, 0.025, 3.0/12.0, 11.0/12.0, 4, 
+        { Option::Call, 90.0, 87.0, 0.06, 0.025, 3.0/12.0, 11.0/12.0, 4,
           0.13, true, true, 1.65443100462 },
-        { Option::Call, 90.0, 87.0, 0.06, 0.025, 3.0/12.0, 11.0/12.0, 8, 
+        { Option::Call, 90.0, 87.0, 0.06, 0.025, 3.0/12.0, 11.0/12.0, 8,
           0.13, true, true, 1.72817806731 },
-        { Option::Call, 90.0, 87.0, 0.06, 0.025, 3.0/12.0, 11.0/12.0, 12, 
+        { Option::Call, 90.0, 87.0, 0.06, 0.025, 3.0/12.0, 11.0/12.0, 12,
           0.13, true, true, 1.74877367895 },
-        { Option::Call, 90.0, 87.0, 0.06, 0.025, 3.0/12.0, 11.0/12.0, 26, 
+        { Option::Call, 90.0, 87.0, 0.06, 0.025, 3.0/12.0, 11.0/12.0, 26,
           0.13, true, true, 1.78733801988 },
-        { Option::Call, 90.0, 87.0, 0.06, 0.025, 3.0/12.0, 11.0/12.0, 52, 
+        { Option::Call, 90.0, 87.0, 0.06, 0.025, 3.0/12.0, 11.0/12.0, 52,
           0.13, true, true, 1.79624826757 },
-        { Option::Call, 90.0, 87.0, 0.06, 0.025, 3.0/12.0, 11.0/12.0, 100, 
+        { Option::Call, 90.0, 87.0, 0.06, 0.025, 3.0/12.0, 11.0/12.0, 100,
           0.13, true, true, 1.81114186876 },
-        { Option::Call, 90.0, 87.0, 0.06, 0.025, 3.0/12.0, 11.0/12.0, 250, 
+        { Option::Call, 90.0, 87.0, 0.06, 0.025, 3.0/12.0, 11.0/12.0, 250,
           0.13, true, true, 1.81101152587 },
-        { Option::Call, 90.0, 87.0, 0.06, 0.025, 3.0/12.0, 11.0/12.0, 500, 
+        { Option::Call, 90.0, 87.0, 0.06, 0.025, 3.0/12.0, 11.0/12.0, 500,
           0.13, true, true, 1.81002311939 },
-        { Option::Call, 90.0, 87.0, 0.06, 0.025, 3.0/12.0, 11.0/12.0, 1000, 
+        { Option::Call, 90.0, 87.0, 0.06, 0.025, 3.0/12.0, 11.0/12.0, 1000,
           0.13, true, true, 1.81145760308 }
     };
 
     for (int l=0; l<LENGTH(cases6); l++) {
         Time dt = cases6[l].length/(cases6[l].fixings-1);
         std::vector<Time> timeIncrements(cases6[l].fixings);
-        for (int i=0; i<cases6[l].fixings; i++)
+        for (Size i=0; i<cases6[l].fixings; i++)
             timeIncrements[i] = i*dt + cases6[l].first;
         McDiscreteArithmeticASO pricer(cases6[l].type,
                                        cases6[l].underlying,
@@ -1027,7 +1028,7 @@ void OldPricerTest::testMcSingleFactorPricers() {
 namespace {
 
     template <class P>
-    void testMcMFPricer(const P& pricer, double storedValue, 
+    void testMcMFPricer(const P& pricer, double storedValue,
                         double tolerance, const std::string& name) {
 
         Size fixedSamples = 100;
@@ -1061,10 +1062,10 @@ namespace {
 void OldPricerTest::testMcMultiFactorPricers() {
 
     Matrix cor(4,4);
-    cor[0][0] = 1.00; cor[0][1] = 0.50; cor[0][2] = 0.30; cor[0][3] = 0.10; 
-    cor[1][0] = 0.50; cor[1][1] = 1.00; cor[1][2] = 0.20; cor[1][3] = 0.40; 
-    cor[2][0] = 0.30; cor[2][1] = 0.20; cor[2][2] = 1.00; cor[2][3] = 0.60; 
-    cor[3][0] = 0.10; cor[3][1] = 0.40; cor[3][2] = 0.60; cor[3][3] = 1.00; 
+    cor[0][0] = 1.00; cor[0][1] = 0.50; cor[0][2] = 0.30; cor[0][3] = 0.10;
+    cor[1][0] = 0.50; cor[1][1] = 1.00; cor[1][2] = 0.20; cor[1][3] = 0.40;
+    cor[2][0] = 0.30; cor[2][1] = 0.20; cor[2][2] = 1.00; cor[2][3] = 0.60;
+    cor[3][0] = 0.10; cor[3][1] = 0.40; cor[3][2] = 0.60; cor[3][3] = 1.00;
 
     Array volatilities(4);
     volatilities[0] = 0.30;
@@ -1109,18 +1110,18 @@ void OldPricerTest::testMcMultiFactorPricers() {
     Option::Type type = Option::Call;
     double strike = 100.0;
     testMcMFPricer(McBasket(type, sameAssetValues, strike, sameAssetDividend,
-                            sameAssetCovariance, riskFreeRate, resTime, 
+                            sameAssetCovariance, riskFreeRate, resTime,
                             false, seed),
                    10.4484452,
                    1.0e-3,
                    "McBasket");
     testMcMFPricer(McBasket(type, sameAssetValues, strike, sameAssetDividend,
-                            sameAssetCovariance, riskFreeRate, resTime, 
+                            sameAssetCovariance, riskFreeRate, resTime,
                             true, seed),
                    12.2946771,
                    1.0e-3,
                    "McBasket");
-    
+
     // McMaxBasket
     Array assetValues(4);
     assetValues[0] = 100.0;
@@ -1151,14 +1152,14 @@ void OldPricerTest::testMcMultiFactorPricers() {
     timeIncrements[1] = 0.50;
     timeIncrements[2] = 0.75;
     timeIncrements[3] = 1.00;
-    testMcMFPricer(McPagoda(portfolio, fraction, roof, dividendYields, 
-                            covariance, riskFreeRate, timeIncrements, 
+    testMcMFPricer(McPagoda(portfolio, fraction, roof, dividendYields,
+                            covariance, riskFreeRate, timeIncrements,
                             false, seed),
                    0.03438975,
                    1.0e-5,
                    "McPagoda");
-    testMcMFPricer(McPagoda(portfolio, fraction, roof, dividendYields, 
-                            covariance, riskFreeRate, timeIncrements, 
+    testMcMFPricer(McPagoda(portfolio, fraction, roof, dividendYields,
+                            covariance, riskFreeRate, timeIncrements,
                             true, seed),
                    0.03860954,
                    1.0e-5,
@@ -1166,14 +1167,14 @@ void OldPricerTest::testMcMultiFactorPricers() {
 
     // McHimalaya
     strike = 101.0;
-    testMcMFPricer(McHimalaya(assetValues, dividendYields, covariance, 
-                              riskFreeRate, strike, timeIncrements, 
+    testMcMFPricer(McHimalaya(assetValues, dividendYields, covariance,
+                              riskFreeRate, strike, timeIncrements,
                               false, seed),
                    5.0768499,
                    1.0e-5,
                    "McHimalaya");
-    testMcMFPricer(McHimalaya(assetValues, dividendYields, covariance, 
-                              riskFreeRate, strike, timeIncrements, 
+    testMcMFPricer(McHimalaya(assetValues, dividendYields, covariance,
+                              riskFreeRate, strike, timeIncrements,
                               true, seed),
                    6.2478050,
                    1.0e-5,

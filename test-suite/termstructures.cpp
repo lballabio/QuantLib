@@ -69,7 +69,7 @@ void TermStructureTest::setUp() {
          swaps = LENGTH(swapData);
 
     std::vector<Handle<RateHelper> > instruments(deposits+swaps);
-    int i;
+    Size i;
     for (i=0; i<deposits; i++) {
         instruments[i] = Handle<RateHelper>(
             new DepositRateHelper(depositData[i].rate/100,

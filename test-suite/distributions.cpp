@@ -25,9 +25,9 @@ using QuantLib::Math::CumulativeNormalDistribution;
 using QuantLib::Math::InverseCumulativeNormal;
 
 namespace {
-    
+
     double average = 1.0, sigma = 2.0;
-    
+
     double gaussian(double x) {
         double normFact = sigma*QL_SQRT(2*M_PI);
         double dx = x-average;
@@ -56,13 +56,13 @@ void DistributionTest::runTest() {
 
     std::vector<double> x(N), y(N), yd(N), temp(N), diff(N);
 
-    int i;
+    Size i;
     for (i=0; i<N; i++)
         x[i] = xMin+h*i;
     std::transform(x.begin(),x.end(),y.begin(),std::ptr_fun(gaussian));
     std::transform(x.begin(),x.end(),yd.begin(),
                    std::ptr_fun(gaussianDerivative));
-    
+
     // check that normal = Gaussian
     std::transform(x.begin(),x.end(),temp.begin(),normal);
     std::transform(y.begin(),y.end(),temp.begin(),diff.begin(),

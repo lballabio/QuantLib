@@ -26,9 +26,9 @@ using QuantLib::FiniteDifferences::DZero;
 using QuantLib::FiniteDifferences::DPlusDMinus;
 
 namespace {
-    
+
     double average = 0.0, sigma = 1.0;
-    
+
 }
 
 void OperatorTest::runTest() {
@@ -42,8 +42,8 @@ void OperatorTest::runTest() {
     double h = (xMax-xMin)/(N-1);
 
     Array x(N), y(N), yi(N), yd(N), temp(N), diff(N);
-    
-    int i;
+
+    Size i;
     for (i=0; i<N; i++)
         x[i] = xMin+h*i;
     std::transform(x.begin(),x.end(),y.begin(),normal);
