@@ -193,52 +193,6 @@ namespace QuantLib {
             t * this->maxTimeStepsPerYear_, 1.0)));
     }
 
-/*
-    template<class RNG, class S>
-    void MCDigitalEngine<RNG,S>::calculate() const {
-
-        QL_REQUIRE(this->requiredTolerance_ != Null<Real>() ||
-                   this->requiredSamples_ != Null<Size>(),
-                   "neither tolerance nor number of samples set");
-
-        //! Initialize the one-factor Monte Carlo
-        if (this->controlVariate_) {
-
-            boost::shared_ptr<path_pricer_type> controlPP =
-                this->controlPathPricer();
-            QL_REQUIRE(controlPP,
-                       "engine does not provide "
-                       "control variation path pricer");
-
-            boost::shared_ptr<PricingEngine> controlPE =
-                this->controlPricingEngine();
-            QL_REQUIRE(controlPE,
-                       "engine does not provide "
-                       "control variation pricing engine");
-        } else {
-            this->mcModel_ =
-                boost::shared_ptr<MonteCarloModel<SingleAsset<RNG>, S> >(
-                    new MonteCarloModel<SingleAsset<RNG>, S>(
-                        this->pathGenerator(), this->pathPricer(), S(),
-                        this->antitheticVariate_));
-        }
-
-        if (this->requiredTolerance_ != Null<Real>()) {
-            if (this->maxSamples_ != Null<Size>())
-                this->value(this->requiredTolerance_, this->maxSamples_);
-            else
-                this->value(this->requiredTolerance_);
-        } else {
-            this->valueWithSamples(this->requiredSamples_);
-        }
-
-        this->results_.value = this->mcModel_->sampleAccumulator().mean();
-        if (RNG::allowsErrorEstimate)
-            this->results_.errorEstimate =
-                this->mcModel_->sampleAccumulator().errorEstimate();
-    }
-*/
-
 }
 
 
