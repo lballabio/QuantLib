@@ -122,13 +122,13 @@ namespace QuantLib {
             double valueAtRisk(double percentile) const;
 
             //! Expected Shortfall at a given percentile
-//            double expectedShortfall(double percentile) const;
+            double expectedShortfall(double percentile) const;
 
             //! Shortfall risk measure (observations below target)
-//            double shortfall(double target) const;
+            double shortfall(double target) const;
 
             //! Average Shortfall (averaged shortfallness)
-//            double averageShortfall(double target) const;
+            double averageShortfall(double target) const;
 
             //! access to the sample data accumulated so far
             const std::vector<std::pair<double,double> >& sampleData() const {

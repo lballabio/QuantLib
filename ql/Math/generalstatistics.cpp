@@ -208,6 +208,27 @@ namespace QuantLib {
         }
 
         /*! \pre percentile must be in range [90%-100%) */
+        double GeneralStatistics::potentialUpside(double percentile) const {
+
+            QL_REQUIRE(percentile>=0.9,
+                       "GeneralStatistics::potentialUpside() : "
+                       "percentile (" +
+                        DoubleFormatter::toString(percentile) +
+                       ") must be >= 0.90");
+            QL_REQUIRE(percentile<1.0,
+                       "GeneralStatistics::potentialUpside() : "
+                       "percentile (" +
+                        DoubleFormatter::toString(percentile) +
+                       ") must be < 1.0");
+
+            double result=GeneralStatistics::percentile(percentile);
+
+            // PotenzialUpSide must be a gain
+            // this means that it has to be MAX(dist(percentile), 0.0)
+            return QL_MAX(result, 0.0);
+        }
+
+        /*! \pre percentile must be in range [90%-100%) */
         double GeneralStatistics::valueAtRisk(double percentile) const {
 
             QL_REQUIRE(percentile>=0.9,
@@ -230,25 +251,109 @@ namespace QuantLib {
         }
 
         /*! \pre percentile must be in range [90%-100%) */
-        double GeneralStatistics::potentialUpside(double percentile) const {
+        double GeneralStatistics::expectedShortfall(double percentile) const {
 
             QL_REQUIRE(percentile>=0.9,
-                       "GeneralStatistics::potentialUpside() : "
+                       "GeneralStatistics::expectedShortfall() : "
                        "percentile (" +
                         DoubleFormatter::toString(percentile) +
                        ") must be >= 0.90");
             QL_REQUIRE(percentile<1.0,
-                       "GeneralStatistics::potentialUpside() : "
+                       "GeneralStatistics::expectedShortfall() : "
                        "percentile (" +
                         DoubleFormatter::toString(percentile) +
                        ") must be < 1.0");
 
-            double result=GeneralStatistics::percentile(percentile);
+            std::sort(samples_.begin(), samples_.end());
 
-            // PotenzialUpSide must be a gain
-            // this means that it has to be MAX(dist(percentile), 0.0)
-            return QL_MAX(result, 0.0);
+            std::vector<std::pair<double,double> >::iterator k;
+            double sampleWeight = 0;
+            for (k=samples_.begin(); k!=samples_.end(); k++)
+                sampleWeight += k->second;
+
+            QL_REQUIRE(sampleWeight>0.0,
+                       "GeneralStatistics::expectedShortfall() : "
+                       "empty sample (zero weight sum)");
+
+
+            double nextToLastResult, result = 0.0;
+            double integral = 0.0, perc=(1.0-percentile)*sampleWeight;
+            k=samples_.begin()-1;
+            do {
+                k++;
+                nextToLastResult = result;
+                integral += k->second;
+                result   += k->second * k->first;
+            } while (integral<perc && k!=samples_.end()-1);
+
+
+            bool interpolate = false;
+            // interpolating ... if possible and required
+            if (k==samples_.begin() || (!interpolate)) {
+                result /= integral;
+            } else {
+                // just in case there are more samples at value k->first
+                double lastAddedWeight = k->second;
+                std::vector<std::pair<double,double> >::iterator kk = k;
+                kk++;
+                while (kk!=samples_.end() && kk->first==k->first) {
+                    lastAddedWeight += kk->second;
+                    integral        += kk->second;
+                    result          += kk->second * k->first;
+                    kk++;
+                }
+                double lambda = (integral - perc) / lastAddedWeight;
+                result = (1.0-lambda) * result + lambda * nextToLastResult;
+                result /= perc;
+            }
+
+
+            // Expected Shortfall must be a loss
+            // this means that it has to be MIN(dist(1.0-percentile), 0.0)
+            // VAR must also be a positive quantity, so -MIN(*)
+            return -QL_MIN(result, 0.0);
         }
+
+
+        double GeneralStatistics::shortfall(double target) const {
+
+            std::vector<std::pair<double,double> >::iterator k;
+            double sampleWeight = 0;
+            for (k=samples_.begin(); k!=samples_.end(); k++)
+                sampleWeight += k->second;
+
+            QL_REQUIRE(sampleWeight>0.0,
+                       "GeneralStatistics::shortfall() : "
+                       "empty sample (zero weight sum)");
+
+            double result = 0.0;
+            for (k=samples_.begin(); k!=samples_.end(); k++)
+                result += ( k->first<target ? k->second : 0.0);
+
+            return result/sampleWeight;
+        }
+
+
+        double GeneralStatistics::averageShortfall(double target) const {
+
+            std::vector<std::pair<double,double> >::iterator k;
+            double sampleWeight = 0;
+            for (k=samples_.begin(); k!=samples_.end(); k++)
+                sampleWeight += k->second;
+
+            QL_REQUIRE(sampleWeight>0.0,
+                       "GeneralStatistics::averageShortfall() : "
+                       "empty sample (zero weight sum)");
+
+            double shortfallness, result = 0.0;
+            for (k=samples_.begin(); k!=samples_.end(); k++) {
+                shortfallness = target - k->first;
+                result += (shortfallness>0 ? shortfallness * k->second : 0.0);
+            }
+
+            return result/sampleWeight;
+        }
+
 
     }
 
