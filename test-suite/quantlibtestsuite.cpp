@@ -18,7 +18,7 @@
 
 #include <ql/qldefines.hpp>
 #include <boost/test/unit_test.hpp>
-#include <boost/progress.hpp>
+#include <boost/timer.hpp>
 
 /* Use BOOST_MSVC instead of _MSC_VER since some other vendors (Metrowerks,
    for example) also #define _MSC_VER
@@ -74,9 +74,21 @@
 // to be deprecated
 #include "old_pricers.hpp"
 
+#include <iostream>
+
 using namespace boost::unit_test_framework;
 
-static boost::progress_timer t;  // start timing
+namespace {
+
+    boost::timer t;
+
+    void startTimer() { t.restart(); }
+    void stopTimer() {
+        std::cout << " \nTests completed in "
+                  << t.elapsed() << " s\n " << std::endl;
+    }
+
+}
 
 test_suite* init_unit_test_suite(int, char* []) {
 
@@ -87,6 +99,8 @@ test_suite* init_unit_test_suite(int, char* []) {
     BOOST_MESSAGE(header);
     BOOST_MESSAGE(rule);
     test_suite* test = BOOST_TEST_SUITE("QuantLib test suite");
+
+    test->add(BOOST_TEST_CASE(startTimer));
 
     test->add(AmericanOptionTest::suite());
     test->add(AsianOptionTest::suite());
@@ -130,6 +144,8 @@ test_suite* init_unit_test_suite(int, char* []) {
 
     // tests for deprecated (or generally old-style) classes
     test->add(OldPricerTest::suite());
+
+    test->add(BOOST_TEST_CASE(stopTimer));
 
     return test;
 }
