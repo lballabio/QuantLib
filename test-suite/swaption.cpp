@@ -303,7 +303,7 @@ void SwaptionTest::testCachedValue() {
     Date startDate = calendar_.advance(exerciseDate,settlementDays_,Days);
     Handle<SimpleSwap> swap = makeSwap(startDate,10,0.06,0.0,true);
     Handle<Swaption> swaption = makeSwaption(swap,exerciseDate,0.20);
-    double cachedNPV = 3.645305728310;
+    double cachedNPV = 3.639365179345;
     
     if (QL_FABS(swaption->NPV()-cachedNPV) > 1.0e-11)
         CPPUNIT_FAIL(

@@ -26,16 +26,12 @@ namespace QuantLib {
     namespace Pricers {
 
         void BlackSwaption::calculate() const {
-            Time start = arguments_.floatingResetTimes[0];
-            double w;
-            if (arguments_.payFixed)
-                w = 1.0;
-            else 
-                w = -1.0;
+            Time exercise = arguments_.exerciseTimes[0];
+            double w = arguments_.payFixed ? 1.0 : -1.0;
             results_.value =  arguments_.fixedBPS * 
                 BlackModel::formula(arguments_.fairRate,
                                     arguments_.fixedRate, 
-                                    model_->volatility()*QL_SQRT(start), w);
+                                    model_->volatility()*QL_SQRT(exercise), w);
         }
 
     }
