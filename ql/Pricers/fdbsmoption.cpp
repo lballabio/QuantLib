@@ -29,6 +29,8 @@ namespace QuantLib {
       gridPoints_(safeGridPoints(gridPoints, residualTime)),
       grid_(gridPoints_), intrinsicValues_(gridPoints_),
       BCs_(2) {
+        QL_REQUIRE(volatility > 0.0,
+                   "negative or null volatility");
         hasBeenCalculated_ = false;
     }
 
