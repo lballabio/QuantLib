@@ -1,3 +1,48 @@
+2001-12-12 09:58  'Ferdinando Ametrano <ferdinando@ametrano.net>'
+
+	* dev_tools/releaseprocess.txt (1.9): updated
+
+2001-12-11 16:12  'Luigi Ballabio <luigi.ballabio@riskmap.net>'
+
+	* ql/Math/cubicspline.hpp (1.6): Nicolas' cubic spline replaced the
+	NR one
+
+2001-12-11 09:24  'Ferdinando Ametrano <ferdinando@ametrano.net>'
+
+	* dev_tools/version_number.txt (1.8), ql/config.msvc.hpp (1.4),
+	ql/qldefines.hpp (1.23): version number fixed enforced MS VC
+	compilation parameters
+
+2001-12-06 15:13  'Ferdinando Ametrano <ferdinando@ametrano.net>'
+
+	* dev_tools/version_number.txt (1.7): version number policy
+
+2001-12-06 14:49  'Ferdinando Ametrano <ferdinando@ametrano.net>'
+
+	* ql/qldefines.hpp (1.22): comment added
+
+2001-12-06 14:04  'Ferdinando Ametrano <ferdinando@ametrano.net>'
+
+	* dev_tools/releaseprocess.txt (1.8), dev_tools/version_number.txt
+	(1.6), ql/Pricers/americanoption.hpp (1.6): fixed Ruby version
+	number
+
+2001-12-05 15:41  'Ferdinando Ametrano <ferdinando@ametrano.net>'
+
+	* QuantLib.nsi (1.55), configure.in (1.57), Docs/quantlib.doxy
+	(1.42), ql/qldefines.hpp (1.21): after branching out 0.3.1a2
+
+2001-12-05 15:34  'Ferdinando Ametrano <ferdinando@ametrano.net>'
+
+	* QuantLib.nsi (1.54), configure.in (1.56), Docs/quantlib.doxy
+	(1.41), dev_tools/version_number.txt (1.5), ql/qldefines.hpp (1.20)
+	(utags: Root-Of-R000300a2): before branching out 0.3.1a2
+
+2001-12-05 15:13  'Ferdinando Ametrano <ferdinando@ametrano.net>'
+
+	* ChangeLog.txt (1.7), History.txt (1.15), News.txt (1.10) (utags:
+	Root-Of-R000300a2): before branching out 0.3.1a1
+
 2001-12-05 14:45  'Ferdinando Ametrano <ferdinando@ametrano.net>'
 
 	* Authors.txt (1.7), Contributors.txt (1.14),
@@ -5,88 +50,114 @@
 	(1.7), ql/InterestRateModelling/onefactormodel.hpp (1.3),
 	ql/InterestRateModelling/OneFactorModels/blackkarasinski.hpp (1.5),
 	ql/InterestRateModelling/OneFactorModels/hullandwhite.hpp (1.5),
-	ql/Pricers/couponbondoption.hpp (1.5): style and overdue fixes
+	ql/Pricers/couponbondoption.hpp (1.5) (utags: Root-Of-R000300a1,
+	Root-Of-R000300a2): style and overdue fixes
 
 2001-12-05 12:24  'Sadruddin Rejeb <sad.rejeb@riskmap.it>'
 
 	* ql/InterestRateModelling/OneFactorModels/: blackdermanandtoy.cpp
-	(1.7), blackdermanandtoy.hpp (1.3), blackkarasinski.cpp (1.5),
-	blackkarasinski.hpp (1.4), hoandlee.cpp (1.4), hoandlee.hpp (1.3),
-	hullandwhite.cpp (1.4), hullandwhite.hpp (1.4): update
+	(1.7, Root-Of-R000300a2, Root-Of-R000300a1), blackdermanandtoy.hpp
+	(1.3, Root-Of-R000300a2, Root-Of-R000300a1), blackkarasinski.cpp
+	(1.5, Root-Of-R000300a2, Root-Of-R000300a1), blackkarasinski.hpp
+	(1.4), hoandlee.cpp (1.4, Root-Of-R000300a2, Root-Of-R000300a1),
+	hoandlee.hpp (1.3, Root-Of-R000300a2, Root-Of-R000300a1),
+	hullandwhite.cpp (1.4, Root-Of-R000300a2, Root-Of-R000300a1),
+	hullandwhite.hpp (1.4): update
 
 2001-12-05 12:19  'Sadruddin Rejeb <sad.rejeb@riskmap.it>'
 
-	* ql/InterestRateModelling/: onefactormodel.cpp (1.4), model.hpp
-	(1.6): small fix
+	* ql/InterestRateModelling/: onefactormodel.cpp (1.4,
+	Root-Of-R000300a2, Root-Of-R000300a1), model.hpp (1.6): small fix
 
 2001-12-05 09:54  'Ferdinando Ametrano <ferdinando@ametrano.net>'
 
-	* ChangeLog.txt (1.6): updated
+	* ChangeLog.txt (1.6, Root-Of-R000300a1): updated
 
 2001-12-04 16:32  'Ferdinando Ametrano <ferdinando@ametrano.net>'
 
 	* Docs/pages/mcarlo.docs (1.3), Docs/pages/platforms.docs (1.3),
 	Docs/pages/where.docs (1.2), ql/FiniteDifferences/expliciteuler.hpp
 	(1.4), ql/TermStructures/ratehelpers.hpp (1.14) (utags:
-	Before-R000201a5-branch-merge3): R000201-branch-merge2 merged into
-	trunk
+	Root-Of-R000300a1, Before-R000201a5-branch-merge3,
+	Root-Of-R000300a2): R000201-branch-merge2 merged into trunk
 
 2001-12-04 15:06  'Ferdinando Ametrano <ferdinando@ametrano.net>'
 
-	* ql/: minimizer.hpp (1.7), FiniteDifferences/onefactoroperator.hpp
-	(1.3), Instruments/capfloor.hpp (1.5),
-	Instruments/europeanswaption.hpp (1.5),
-	InterestRateModelling/grid.hpp (1.5),
-	InterestRateModelling/model.cpp (1.5),
-	InterestRateModelling/model.hpp (1.5),
+	* ql/: minimizer.hpp (1.7, Root-Of-R000300a2, Root-Of-R000300a1),
+	FiniteDifferences/onefactoroperator.hpp (1.3, Root-Of-R000300a2,
+	Root-Of-R000300a1), Instruments/capfloor.hpp (1.5,
+	Root-Of-R000300a2, Root-Of-R000300a1),
+	Instruments/europeanswaption.hpp (1.5, Root-Of-R000300a2,
+	Root-Of-R000300a1), InterestRateModelling/grid.hpp (1.5,
+	Root-Of-R000300a2, Root-Of-R000300a1),
+	InterestRateModelling/model.cpp (1.5, Root-Of-R000300a2,
+	Root-Of-R000300a1), InterestRateModelling/model.hpp (1.5),
 	InterestRateModelling/onefactormodel.cpp (1.3),
-	InterestRateModelling/CalibrationHelpers/cap.hpp (1.4),
-	InterestRateModelling/CalibrationHelpers/swaption.cpp (1.6),
-	InterestRateModelling/CalibrationHelpers/swaption.hpp (1.3),
+	InterestRateModelling/CalibrationHelpers/cap.hpp (1.4,
+	Root-Of-R000300a2, Root-Of-R000300a1),
+	InterestRateModelling/CalibrationHelpers/swaption.cpp (1.6,
+	Root-Of-R000300a2, Root-Of-R000300a1),
+	InterestRateModelling/CalibrationHelpers/swaption.hpp (1.3,
+	Root-Of-R000300a2, Root-Of-R000300a1),
 	InterestRateModelling/OneFactorModels/blackdermanandtoy.cpp (1.6),
 	InterestRateModelling/OneFactorModels/blackkarasinski.cpp (1.4),
 	InterestRateModelling/OneFactorModels/hullandwhite.hpp (1.3),
-	MonteCarlo/mctypedefs.hpp (1.7), Optimization/armijo.hpp (1.4),
-	Optimization/conjugategradient.hpp (1.3),
-	Optimization/leastsquare.hpp (1.6), Optimization/linesearch.hpp
-	(1.3), Optimization/optimizer.hpp (1.3),
-	Optimization/steepestdescent.hpp (1.3),
-	Pricers/couponbondoption.cpp (1.4), Pricers/fdeuropeanswaption.cpp
-	(1.4), Pricers/fdeuropeanswaption.hpp (1.3),
-	Pricers/mcdiscretearithmeticapo.cpp (1.3),
-	Pricers/mcdiscretearithmeticapo.hpp (1.3),
-	Pricers/mcdiscretearithmeticaso.cpp (1.4),
-	Pricers/mcdiscretearithmeticaso.hpp (1.3), Pricers/mceuropean.hpp
-	(1.5), Pricers/mchimalaya.hpp (1.3), Pricers/mcpagoda.hpp (1.4),
-	Pricers/swaptioncondition.hpp (1.3) (utags:
-	Before-R000201-branch-merge2, Before-R000201a5-branch-merge3):
-	pruned a) redundant header inclusions b) 'using XXX::yyy' directive
-	in hpp files
+	MonteCarlo/mctypedefs.hpp (1.7, Root-Of-R000300a2,
+	Root-Of-R000300a1), Optimization/armijo.hpp (1.4,
+	Root-Of-R000300a2, Root-Of-R000300a1),
+	Optimization/conjugategradient.hpp (1.3, Root-Of-R000300a2,
+	Root-Of-R000300a1), Optimization/leastsquare.hpp (1.6,
+	Root-Of-R000300a2, Root-Of-R000300a1), Optimization/linesearch.hpp
+	(1.3, Root-Of-R000300a2, Root-Of-R000300a1),
+	Optimization/optimizer.hpp (1.3, Root-Of-R000300a2,
+	Root-Of-R000300a1), Optimization/steepestdescent.hpp (1.3,
+	Root-Of-R000300a2, Root-Of-R000300a1), Pricers/couponbondoption.cpp
+	(1.4, Root-Of-R000300a2, Root-Of-R000300a1),
+	Pricers/fdeuropeanswaption.cpp (1.4, Root-Of-R000300a2,
+	Root-Of-R000300a1), Pricers/fdeuropeanswaption.hpp (1.3,
+	Root-Of-R000300a2, Root-Of-R000300a1),
+	Pricers/mcdiscretearithmeticapo.cpp (1.3, Root-Of-R000300a2,
+	Root-Of-R000300a1), Pricers/mcdiscretearithmeticapo.hpp (1.3,
+	Root-Of-R000300a2, Root-Of-R000300a1),
+	Pricers/mcdiscretearithmeticaso.cpp (1.4, Root-Of-R000300a2,
+	Root-Of-R000300a1), Pricers/mcdiscretearithmeticaso.hpp (1.3,
+	Root-Of-R000300a2, Root-Of-R000300a1), Pricers/mceuropean.hpp (1.5,
+	Root-Of-R000300a2, Root-Of-R000300a1), Pricers/mchimalaya.hpp (1.3,
+	Root-Of-R000300a2, Root-Of-R000300a1), Pricers/mcpagoda.hpp (1.4,
+	Root-Of-R000300a2, Root-Of-R000300a1),
+	Pricers/swaptioncondition.hpp (1.3, Root-Of-R000300a2,
+	Root-Of-R000300a1) (utags: Before-R000201-branch-merge2,
+	Before-R000201a5-branch-merge3): pruned a) redundant header
+	inclusions b) 'using XXX::yyy' directive in hpp files
 
 2001-12-04 14:00  'Ferdinando Ametrano <ferdinando@ametrano.net>'
 
-	* Docs/Makefile.am (1.40, Before-R000201a5-branch-merge3,
-	Before-R000201-branch-merge2): fixing bug in doc generation
+	* Docs/Makefile.am (1.40, Root-Of-R000300a2, Root-Of-R000300a1,
+	Before-R000201a5-branch-merge3, Before-R000201-branch-merge2):
+	fixing bug in doc generation
 
 2001-12-03 18:36  'Ferdinando Ametrano <ferdinando@ametrano.net>'
 
-	* dev_tools/: downloadrelease.py (1.3,
-	Before-R000201a5-branch-merge3, Before-R000201-branch-merge2),
-	releaseprocess.txt (1.6), releaseprocess.txt (1.7,
+	* dev_tools/: downloadrelease.py (1.3, Root-Of-R000300a2,
+	Root-Of-R000300a1, Before-R000201a5-branch-merge3,
+	Before-R000201-branch-merge2), releaseprocess.txt (1.6),
+	releaseprocess.txt (1.7, Root-Of-R000300a2, Root-Of-R000300a1,
 	Before-R000201a5-branch-merge3, Before-R000201-branch-merge2):
 	0.2.1 release final touch
 
 2001-12-03 15:55  'Ferdinando Ametrano <ferdinando@ametrano.net>'
 
-	* QuantLib.mak (1.51, Before-R000201a5-branch-merge3,
-	Before-R000201-branch-merge2),
+	* QuantLib.mak (1.51, Root-Of-R000300a2, Root-Of-R000300a1,
+	Before-R000201a5-branch-merge3, Before-R000201-branch-merge2),
 	Examples/DiscreteHedging/DiscreteHedging.mak (1.11,
+	Root-Of-R000300a2, Root-Of-R000300a1,
 	Before-R000201a5-branch-merge3, Before-R000201-branch-merge2),
-	Examples/EuropeanOption/EuropeanOption.mak (1.6,
+	Examples/EuropeanOption/EuropeanOption.mak (1.6, Root-Of-R000300a2,
+	Root-Of-R000300a1, Before-R000201a5-branch-merge3,
+	Before-R000201-branch-merge2), Examples/Swap/Swap.mak (1.7,
+	Root-Of-R000300a2, Root-Of-R000300a1,
 	Before-R000201a5-branch-merge3, Before-R000201-branch-merge2),
-	Examples/Swap/Swap.mak (1.7, Before-R000201a5-branch-merge3,
-	Before-R000201-branch-merge2), dev_tools/releaseprocess.txt (1.5):
-	trying to compile on Win32
+	dev_tools/releaseprocess.txt (1.5): trying to compile on Win32
 
 2001-12-03 15:38  'Ferdinando Ametrano <ferdinando@ametrano.net>'
 
@@ -95,35 +166,42 @@
 
 2001-12-03 15:14  'Ferdinando Ametrano <ferdinando@ametrano.net>'
 
-	* TODO.txt (1.68, Before-R000201a5-branch-merge3,
-	Before-R000201-branch-merge2), Docs/pages/authors.docs (1.2,
+	* TODO.txt (1.68, Root-Of-R000300a2, Root-Of-R000300a1,
 	Before-R000201a5-branch-merge3, Before-R000201-branch-merge2),
-	ql/quantlib.hpp (1.27, Before-R000201a5-branch-merge3,
-	Before-R000201-branch-merge2), ql/Optimization/armijo.hpp (1.3):
-	added missing files
+	Docs/pages/authors.docs (1.2, Before-R000201a5-branch-merge3,
+	Before-R000201-branch-merge2), ql/quantlib.hpp (1.27,
+	Root-Of-R000300a2, Root-Of-R000300a1,
+	Before-R000201a5-branch-merge3, Before-R000201-branch-merge2),
+	ql/Optimization/armijo.hpp (1.3): added missing files
 
 2001-12-03 14:59  'Luigi Ballabio <luigi.ballabio@riskmap.net>'
 
-	* QuantLib.dsp (1.64, Before-R000201a5-branch-merge3,
-	Before-R000201-branch-merge2), QuantLib.mak (1.50),
-	Examples/Swap/swapvaluation.cpp (1.16,
+	* QuantLib.dsp (1.64, Root-Of-R000300a2, Root-Of-R000300a1,
 	Before-R000201a5-branch-merge3, Before-R000201-branch-merge2),
-	ql/handle.hpp (1.5, Before-R000201a5-branch-merge3,
-	Before-R000201-branch-merge2), ql/Instruments/capfloor.cpp (1.5,
+	QuantLib.mak (1.50), Examples/Swap/swapvaluation.cpp (1.16,
+	Root-Of-R000300a2, Root-Of-R000300a1,
 	Before-R000201a5-branch-merge3, Before-R000201-branch-merge2),
-	ql/Instruments/simpleswap.hpp (1.12,
+	ql/handle.hpp (1.5, Root-Of-R000300a2, Root-Of-R000300a1,
 	Before-R000201a5-branch-merge3, Before-R000201-branch-merge2),
-	ql/Instruments/swap.cpp (1.6, Before-R000201a5-branch-merge3,
-	Before-R000201-branch-merge2), ql/InterestRateModelling/grid.hpp
-	(1.4), ql/InterestRateModelling/swapfuturevalue.cpp (1.4,
+	ql/Instruments/capfloor.cpp (1.5, Root-Of-R000300a2,
+	Root-Of-R000300a1, Before-R000201a5-branch-merge3,
+	Before-R000201-branch-merge2), ql/Instruments/simpleswap.hpp (1.12,
+	Root-Of-R000300a2, Root-Of-R000300a1,
+	Before-R000201a5-branch-merge3, Before-R000201-branch-merge2),
+	ql/Instruments/swap.cpp (1.6, Root-Of-R000300a2, Root-Of-R000300a1,
+	Before-R000201a5-branch-merge3, Before-R000201-branch-merge2),
+	ql/InterestRateModelling/grid.hpp (1.4),
+	ql/InterestRateModelling/swapfuturevalue.cpp (1.4,
+	Root-Of-R000300a2, Root-Of-R000300a1,
 	Before-R000201a5-branch-merge3, Before-R000201-branch-merge2),
 	ql/InterestRateModelling/CalibrationHelpers/cap.cpp (1.5,
+	Root-Of-R000300a2, Root-Of-R000300a1,
 	Before-R000201a5-branch-merge3, Before-R000201-branch-merge2),
 	ql/InterestRateModelling/CalibrationHelpers/swaption.cpp (1.5),
 	ql/Pricers/fdeuropeanswaption.cpp (1.3), ql/Pricers/makefile.mak
-	(1.10, Before-R000201a5-branch-merge3,
-	Before-R000201-branch-merge2): Handle can be assigned to Handles to
-	compatible types
+	(1.10, Root-Of-R000300a2, Root-Of-R000300a1,
+	Before-R000201a5-branch-merge3, Before-R000201-branch-merge2):
+	Handle can be assigned to Handles to compatible types
 
 2001-12-03 14:27  'Matteo Gallivanoni <matteo.gallivanoni@riskmap.net>'
 
@@ -136,7 +214,8 @@
 
 2001-12-03 12:05  'Sadruddin Rejeb <sad.rejeb@riskmap.it>'
 
-	* ql/Pricers/Makefile.am (1.17, Before-R000201a5-branch-merge3,
+	* ql/Pricers/Makefile.am (1.17, Root-Of-R000300a2,
+	Root-Of-R000300a1, Before-R000201a5-branch-merge3,
 	Before-R000201-branch-merge2): added missing file
 
 2001-12-03 12:05  'Sadruddin Rejeb <sad.rejeb@riskmap.it>'
@@ -145,8 +224,9 @@
 
 2001-12-03 11:38  'Ferdinando Ametrano <ferdinando@ametrano.net>'
 
-	* QuantLib.nsi (1.53, Before-R000201a5-branch-merge3,
-	Before-R000201-branch-merge2): moved things around
+	* QuantLib.nsi (1.53, Root-Of-R000300a1,
+	Before-R000201a5-branch-merge3, Before-R000201-branch-merge2):
+	moved things around
 
 2001-12-03 11:22  'Sadruddin Rejeb <sad.rejeb@riskmap.it>'
 
@@ -168,7 +248,8 @@
 
 2001-12-03 10:31  'Ferdinando Ametrano <ferdinando@ametrano.net>'
 
-	* ql/Optimization/Makefile.am (1.2, Before-R000201a5-branch-merge3,
+	* ql/Optimization/Makefile.am (1.2, Root-Of-R000300a2,
+	Root-Of-R000300a1, Before-R000201a5-branch-merge3,
 	Before-R000201-branch-merge2): added missing file
 
 2001-12-03 10:03  'Luigi Ballabio <luigi.ballabio@riskmap.net>'
@@ -180,18 +261,19 @@
 
 	* ql/: minimizer.hpp (1.6), Instruments/capfloor.cpp (1.4),
 	Instruments/capfloor.hpp (1.4), Instruments/europeanswaption.cpp
-	(1.4, Before-R000201a5-branch-merge3,
-	Before-R000201-branch-merge2), Instruments/europeanswaption.hpp
-	(1.4), Instruments/simpleswap.hpp (1.11),
-	InterestRateModelling/grid.hpp (1.3),
+	(1.4, Root-Of-R000300a2, Root-Of-R000300a1,
+	Before-R000201a5-branch-merge3, Before-R000201-branch-merge2),
+	Instruments/europeanswaption.hpp (1.4), Instruments/simpleswap.hpp
+	(1.11), InterestRateModelling/grid.hpp (1.3),
 	InterestRateModelling/model.cpp (1.4),
 	InterestRateModelling/model.hpp (1.4),
 	InterestRateModelling/onefactormodel.cpp (1.2),
 	InterestRateModelling/onefactormodel.hpp (1.2,
 	Before-R000201a5-branch-merge3, Before-R000201-branch-merge2),
 	InterestRateModelling/swapfuturevalue.cpp (1.3),
-	InterestRateModelling/swapfuturevalue.hpp (1.2,
-	Before-R000201a5-branch-merge3, Before-R000201-branch-merge2),
+	InterestRateModelling/swapfuturevalue.hpp (1.2, Root-Of-R000300a2,
+	Root-Of-R000300a1, Before-R000201a5-branch-merge3,
+	Before-R000201-branch-merge2),
 	InterestRateModelling/CalibrationHelpers/cap.cpp (1.4),
 	InterestRateModelling/CalibrationHelpers/cap.hpp (1.3),
 	InterestRateModelling/CalibrationHelpers/swaption.cpp (1.4),
@@ -206,23 +288,27 @@
 	InterestRateModelling/OneFactorModels/hullandwhite.cpp (1.3,
 	Before-R000201a5-branch-merge3, Before-R000201-branch-merge2),
 	InterestRateModelling/OneFactorModels/hullandwhite.hpp (1.2),
-	Optimization/armijo.cpp (1.2, Before-R000201a5-branch-merge3,
-	Before-R000201-branch-merge2), Optimization/armijo.hpp (1.2),
-	Optimization/conjugategradient.cpp (1.2,
+	Optimization/armijo.cpp (1.2, Root-Of-R000300a2, Root-Of-R000300a1,
+	Before-R000201a5-branch-merge3, Before-R000201-branch-merge2),
+	Optimization/armijo.hpp (1.2), Optimization/conjugategradient.cpp
+	(1.2, Root-Of-R000300a2, Root-Of-R000300a1,
 	Before-R000201a5-branch-merge3, Before-R000201-branch-merge2),
 	Optimization/conjugategradient.hpp (1.2),
-	Optimization/costfunction.hpp (1.2, Before-R000201a5-branch-merge3,
+	Optimization/costfunction.hpp (1.2, Root-Of-R000300a2,
+	Root-Of-R000300a1, Before-R000201a5-branch-merge3,
 	Before-R000201-branch-merge2), Optimization/criteria.hpp (1.2,
+	Root-Of-R000300a2, Root-Of-R000300a1,
 	Before-R000201a5-branch-merge3, Before-R000201-branch-merge2),
 	Optimization/leastsquare.hpp (1.3), Optimization/linesearch.hpp
 	(1.2), Optimization/optimizer.hpp (1.2),
-	Optimization/steepestdescent.cpp (1.2,
-	Before-R000201a5-branch-merge3, Before-R000201-branch-merge2),
-	Optimization/steepestdescent.hpp (1.2), Pricers/Makefile.am (1.16),
-	Pricers/couponbondoption.cpp (1.3), Pricers/couponbondoption.hpp
-	(1.4, Before-R000201a5-branch-merge3,
-	Before-R000201-branch-merge2): A few updates. Updated Nicolas'
-	optimization classes' copyright notice
+	Optimization/steepestdescent.cpp (1.2, Root-Of-R000300a2,
+	Root-Of-R000300a1, Before-R000201a5-branch-merge3,
+	Before-R000201-branch-merge2), Optimization/steepestdescent.hpp
+	(1.2), Pricers/Makefile.am (1.16), Pricers/couponbondoption.cpp
+	(1.3), Pricers/couponbondoption.hpp (1.4,
+	Before-R000201a5-branch-merge3, Before-R000201-branch-merge2): A
+	few updates. Updated Nicolas' optimization classes' copyright
+	notice
 
 2001-12-03 09:24  'Ferdinando Ametrano <ferdinando@ametrano.net>'
 
@@ -235,8 +321,9 @@
 	InterestRateModelling/CalibrationHelpers/makefile.mak (1.1),
 	InterestRateModelling/OneFactorModels/makefile.mak (1.1),
 	Optimization/makefile.mak (1.1) (utags:
-	Before-R000201-branch-merge2, Before-R000201a5-branch-merge3): [no
-	log message]
+	Before-R000201-branch-merge2, Root-Of-R000300a1,
+	Before-R000201a5-branch-merge3, Root-Of-R000300a2): [no log
+	message]
 
 2001-12-01 20:42  'Ferdinando Ametrano <ferdinando@ametrano.net>'
 
@@ -252,7 +339,8 @@
 2001-11-30 15:49  'Luigi Ballabio <luigi.ballabio@riskmap.net>'
 
 	* QuantLib.dsp (1.63), QuantLib.mak (1.49),
-	ql/stochasticprocess.hpp (1.2, Before-R000201a5-branch-merge3,
+	ql/stochasticprocess.hpp (1.2, Root-Of-R000300a2,
+	Root-Of-R000300a1, Before-R000201a5-branch-merge3,
 	Before-R000201-branch-merge2), ql/Instruments/capfloor.cpp (1.3),
 	ql/Instruments/capfloor.hpp (1.3), ql/Instruments/simpleswap.hpp
 	(1.10), ql/InterestRateModelling/model.cpp (1.3),
@@ -264,27 +352,34 @@
 	ql/InterestRateModelling/OneFactorModels/blackdermanandtoy.cpp
 	(1.3), ql/InterestRateModelling/OneFactorModels/blackkarasinski.cpp
 	(1.3), ql/InterestRateModelling/OneFactorModels/node.hpp (1.2,
+	Root-Of-R000300a2, Root-Of-R000300a1,
 	Before-R000201a5-branch-merge3, Before-R000201-branch-merge2),
 	ql/InterestRateModelling/OneFactorModels/tree.cpp (1.2,
+	Root-Of-R000300a2, Root-Of-R000300a1,
 	Before-R000201a5-branch-merge3, Before-R000201-branch-merge2),
 	ql/InterestRateModelling/OneFactorModels/tree.hpp (1.2,
+	Root-Of-R000300a2, Root-Of-R000300a1,
 	Before-R000201a5-branch-merge3, Before-R000201-branch-merge2),
 	ql/Optimization/leastsquare.hpp (1.2),
 	ql/Pricers/couponbondoption.hpp (1.3): Compiles under VC++
 
 2001-11-30 15:08  'Luigi Ballabio <luigi.ballabio@riskmap.net>'
 
-	* ql/: makefile.mak (1.6, Before-R000201a5-branch-merge3,
-	Before-R000201-branch-merge2), Calendars/makefile.mak (1.4,
+	* ql/: makefile.mak (1.6, Root-Of-R000300a2, Root-Of-R000300a1,
 	Before-R000201a5-branch-merge3, Before-R000201-branch-merge2),
-	CashFlows/makefile.mak (1.3, Before-R000201a5-branch-merge3,
-	Before-R000201-branch-merge2), DayCounters/makefile.mak (1.4,
+	Calendars/makefile.mak (1.4, Root-Of-R000300a2, Root-Of-R000300a1,
 	Before-R000201a5-branch-merge3, Before-R000201-branch-merge2),
-	FiniteDifferences/makefile.mak (1.4,
+	CashFlows/makefile.mak (1.3, Root-Of-R000300a2, Root-Of-R000300a1,
 	Before-R000201a5-branch-merge3, Before-R000201-branch-merge2),
-	Indexes/makefile.mak (1.3, Before-R000201a5-branch-merge3,
-	Before-R000201-branch-merge2), Instruments/europeanswaption.hpp
-	(1.3), Instruments/makefile.mak (1.5,
+	DayCounters/makefile.mak (1.4, Root-Of-R000300a2,
+	Root-Of-R000300a1, Before-R000201a5-branch-merge3,
+	Before-R000201-branch-merge2), FiniteDifferences/makefile.mak (1.4,
+	Root-Of-R000300a2, Root-Of-R000300a1,
+	Before-R000201a5-branch-merge3, Before-R000201-branch-merge2),
+	Indexes/makefile.mak (1.3, Root-Of-R000300a2, Root-Of-R000300a1,
+	Before-R000201a5-branch-merge3, Before-R000201-branch-merge2),
+	Instruments/europeanswaption.hpp (1.3), Instruments/makefile.mak
+	(1.5, Root-Of-R000300a2, Root-Of-R000300a1,
 	Before-R000201a5-branch-merge3, Before-R000201-branch-merge2),
 	InterestRateModelling/grid.hpp (1.2),
 	InterestRateModelling/model.cpp (1.2),
@@ -297,21 +392,24 @@
 	InterestRateModelling/OneFactorModels/blackkarasinski.hpp (1.2),
 	InterestRateModelling/OneFactorModels/hoandlee.cpp (1.2),
 	InterestRateModelling/OneFactorModels/hullandwhite.cpp (1.2),
-	Math/makefile.mak (1.3, Before-R000201a5-branch-merge3,
-	Before-R000201-branch-merge2), MonteCarlo/makefile.mak (1.8,
+	Math/makefile.mak (1.3, Root-Of-R000300a2, Root-Of-R000300a1,
+	Before-R000201a5-branch-merge3, Before-R000201-branch-merge2),
+	MonteCarlo/makefile.mak (1.8, Root-Of-R000300a2, Root-Of-R000300a1,
 	Before-R000201a5-branch-merge3, Before-R000201-branch-merge2),
 	Pricers/makefile.mak (1.9), RandomNumbers/makefile.mak (1.3,
+	Root-Of-R000300a2, Root-Of-R000300a1,
 	Before-R000201a5-branch-merge3, Before-R000201-branch-merge2),
-	Solvers1D/makefile.mak (1.3, Before-R000201a5-branch-merge3,
-	Before-R000201-branch-merge2), TermStructures/makefile.mak (1.4,
-	Before-R000201a5-branch-merge3, Before-R000201-branch-merge2):
-	Compiles under Borland C++
+	Solvers1D/makefile.mak (1.3, Root-Of-R000300a2, Root-Of-R000300a1,
+	Before-R000201a5-branch-merge3, Before-R000201-branch-merge2),
+	TermStructures/makefile.mak (1.4, Root-Of-R000300a2,
+	Root-Of-R000300a1, Before-R000201a5-branch-merge3,
+	Before-R000201-branch-merge2): Compiles under Borland C++
 
 2001-11-30 12:57  'Sadruddin Rejeb <sad.rejeb@riskmap.it>'
 
-	* ql/Makefile.am (1.9, Before-R000201a5-branch-merge3,
-	Before-R000201-branch-merge2): Adding interest rate modelling
-	framework
+	* ql/Makefile.am (1.9, Root-Of-R000300a2, Root-Of-R000300a1,
+	Before-R000201a5-branch-merge3, Before-R000201-branch-merge2):
+	Adding interest rate modelling framework
 
 2001-11-30 12:12  'Ferdinando Ametrano <ferdinando@ametrano.net>'
 
@@ -338,17 +436,19 @@
 
 2001-11-30 11:47  'Sadruddin Rejeb <sad.rejeb@riskmap.it>'
 
-	* ql/constraint.hpp (1.2, Before-R000201a5-branch-merge3,
-	Before-R000201-branch-merge2): Adding interest rate modelling
-	framework
+	* ql/constraint.hpp (1.2, Root-Of-R000300a2, Root-Of-R000300a1,
+	Before-R000201a5-branch-merge3, Before-R000201-branch-merge2):
+	Adding interest rate modelling framework
 
 2001-11-30 11:44  'Sadruddin Rejeb <sad.rejeb@riskmap.it>'
 
 	* ql/: minimizer.hpp (1.5), Pricers/Makefile.am (1.14),
-	qldefines.hpp (1.19, Before-R000201a5-branch-merge3,
-	Before-R000201-branch-merge2), Instruments/simpleswap.cpp (1.10,
-	Before-R000201a5-branch-merge3, Before-R000201-branch-merge2):
-	Adding interest rate modelling framework
+	qldefines.hpp (1.19, Root-Of-R000300a1,
+	Before-R000201a5-branch-merge3, Before-R000201-branch-merge2),
+	Instruments/simpleswap.cpp (1.10, Root-Of-R000300a2,
+	Root-Of-R000300a1, Before-R000201a5-branch-merge3,
+	Before-R000201-branch-merge2): Adding interest rate modelling
+	framework
 
 2001-11-30 11:38  'Sadruddin Rejeb <sad.rejeb@riskmap.it>'
 
@@ -358,10 +458,10 @@
 
 2001-11-30 10:44  'Sadruddin Rejeb <sad.rejeb@riskmap.it>'
 
-	* configure.in (1.55, Before-R000201a5-branch-merge3,
-	Before-R000201-branch-merge2), ql/Makefile.am (1.8),
-	ql/Optimization/Makefile.am (1.1), ql/Optimization/armijo.cpp
-	(1.1), ql/Optimization/armijo.hpp (1.1),
+	* configure.in (1.55, Root-Of-R000300a1,
+	Before-R000201a5-branch-merge3, Before-R000201-branch-merge2),
+	ql/Makefile.am (1.8), ql/Optimization/Makefile.am (1.1),
+	ql/Optimization/armijo.cpp (1.1), ql/Optimization/armijo.hpp (1.1),
 	ql/Optimization/conjugategradient.cpp (1.1),
 	ql/Optimization/conjugategradient.hpp (1.1),
 	ql/Optimization/costfunction.hpp (1.1),
@@ -375,23 +475,24 @@
 2001-11-30 10:38  'Sadruddin Rejeb <sad.rejeb@riskmap.it>'
 
 	* ql/: Instruments/Makefile.am (1.6), FiniteDifferences/Makefile.am
-	(1.9) (utags: Before-R000201-branch-merge2,
-	Before-R000201a5-branch-merge3): Adding interest rate modelling
-	framework
+	(1.9) (utags: Before-R000201-branch-merge2, Root-Of-R000300a1,
+	Before-R000201a5-branch-merge3, Root-Of-R000300a2): Adding interest
+	rate modelling framework
 
 2001-11-30 10:30  'Sadruddin Rejeb <sad.rejeb@riskmap.it>'
 
-	* ql/InterestRateModelling/: Makefile.am (1.1,
-	Before-R000201a5-branch-merge3, Before-R000201-branch-merge2),
-	grid.hpp (1.1), model.cpp (1.1), model.hpp (1.1),
-	onefactormodel.cpp (1.1), onefactormodel.hpp (1.1),
-	swapfuturevalue.cpp (1.1), swapfuturevalue.hpp (1.1),
-	CalibrationHelpers/Makefile.am (1.1,
-	Before-R000201a5-branch-merge3, Before-R000201-branch-merge2),
-	CalibrationHelpers/cap.cpp (1.1), CalibrationHelpers/cap.hpp (1.1),
-	CalibrationHelpers/swaption.cpp (1.1),
-	CalibrationHelpers/swaption.hpp (1.1), OneFactorModels/Makefile.am
-	(1.1, Before-R000201a5-branch-merge3,
+	* ql/InterestRateModelling/: Makefile.am (1.1, Root-Of-R000300a2,
+	Root-Of-R000300a1, Before-R000201a5-branch-merge3,
+	Before-R000201-branch-merge2), grid.hpp (1.1), model.cpp (1.1),
+	model.hpp (1.1), onefactormodel.cpp (1.1), onefactormodel.hpp
+	(1.1), swapfuturevalue.cpp (1.1), swapfuturevalue.hpp (1.1),
+	CalibrationHelpers/Makefile.am (1.1, Root-Of-R000300a2,
+	Root-Of-R000300a1, Before-R000201a5-branch-merge3,
+	Before-R000201-branch-merge2), CalibrationHelpers/cap.cpp (1.1),
+	CalibrationHelpers/cap.hpp (1.1), CalibrationHelpers/swaption.cpp
+	(1.1), CalibrationHelpers/swaption.hpp (1.1),
+	OneFactorModels/Makefile.am (1.1, Root-Of-R000300a2,
+	Root-Of-R000300a1, Before-R000201a5-branch-merge3,
 	Before-R000201-branch-merge2),
 	OneFactorModels/blackdermanandtoy.cpp (1.1),
 	OneFactorModels/blackdermanandtoy.hpp (1.1),
@@ -406,8 +507,9 @@
 2001-11-30 10:25  'Sadruddin Rejeb <sad.rejeb@riskmap.it>'
 
 	* ql/: minimizer.hpp (1.2), stochasticprocess.hpp (1.1),
-	FiniteDifferences/onefactoroperator.cpp (1.2,
-	Before-R000201a5-branch-merge3, Before-R000201-branch-merge2),
+	FiniteDifferences/onefactoroperator.cpp (1.2, Root-Of-R000300a2,
+	Root-Of-R000300a1, Before-R000201a5-branch-merge3,
+	Before-R000201-branch-merge2),
 	FiniteDifferences/onefactoroperator.hpp (1.2),
 	Instruments/capfloor.cpp (1.2), Instruments/capfloor.hpp (1.2),
 	Instruments/europeanswaption.cpp (1.2),
@@ -434,461 +536,660 @@
 
 2001-11-29 17:22  'Ferdinando Ametrano <ferdinando@ametrano.net>'
 
-	* History.txt (1.14, Before-R000201a5-branch-merge3,
-	Before-R000201-branch-merge2, Before-Sad), News.txt (1.9,
+	* History.txt (1.14, Root-Of-R000300a1,
+	Before-R000201a5-branch-merge3, Before-R000201-branch-merge2,
+	Before-Sad), News.txt (1.9, Root-Of-R000300a1,
 	Before-R000201a5-branch-merge3, Before-R000201-branch-merge2,
 	Before-Sad), QuantLib.dsp (1.61, Before-Sad), QuantLib.nsi (1.51,
 	Before-Sad), TODO.txt (1.66, Before-Sad), Docs/Makefile.am (1.39,
-	Before-Sad), Docs/README.txt (1.14, Before-R000201a5-branch-merge3,
+	Before-Sad), Docs/README.txt (1.14, Root-Of-R000300a2,
+	Root-Of-R000300a1, Before-R000201a5-branch-merge3,
 	Before-R000201-branch-merge2, Before-Sad), Docs/makefile.mak (1.25,
+	Root-Of-R000300a2, Root-Of-R000300a1,
 	Before-R000201a5-branch-merge3, Before-R000201-branch-merge2,
-	Before-Sad), Docs/pages/findiff.docs (1.2,
-	Before-R000201a5-branch-merge3, Before-R000201-branch-merge2,
-	Before-Sad), Docs/pages/history.docs (1.2,
+	Before-Sad), Docs/pages/findiff.docs (1.2, Root-Of-R000300a2,
+	Root-Of-R000300a1, Before-R000201a5-branch-merge3,
+	Before-R000201-branch-merge2, Before-Sad), Docs/pages/history.docs
+	(1.2, Root-Of-R000300a2, Root-Of-R000300a1,
 	Before-R000201a5-branch-merge3, Before-R000201-branch-merge2,
 	Before-Sad), Docs/pages/mcarlo.docs (1.2,
 	Before-R000201-branch-merge2, Before-Sad), Docs/pages/pricers.docs
-	(1.2, Before-R000201a5-branch-merge3, Before-R000201-branch-merge2,
+	(1.2, Root-Of-R000300a2, Root-Of-R000300a1,
+	Before-R000201a5-branch-merge3, Before-R000201-branch-merge2,
 	Before-Sad), Examples/DiscreteHedging/DiscreteHedging.cpp (1.7,
+	Root-Of-R000300a2, Root-Of-R000300a1,
 	Before-R000201a5-branch-merge3, Before-R000201-branch-merge2,
 	Before-Sad), Examples/DiscreteHedging/DiscreteHedging.mak (1.8),
-	Examples/EuropeanOption/EuropeanOption.cpp (1.7,
-	Before-R000201a5-branch-merge3, Before-R000201-branch-merge2,
-	Before-Sad), Examples/EuropeanOption/EuropeanOption.mak (1.3),
+	Examples/EuropeanOption/EuropeanOption.cpp (1.7, Root-Of-R000300a2,
+	Root-Of-R000300a1, Before-R000201a5-branch-merge3,
+	Before-R000201-branch-merge2, Before-Sad),
+	Examples/EuropeanOption/EuropeanOption.mak (1.3),
 	Examples/Swap/Swap.mak (1.4), dev_tools/releaseprocess.txt (1.3),
-	dev_tools/version_number.txt (1.4, Before-R000201a5-branch-merge3,
-	Before-R000201-branch-merge2, Before-Sad), ql/argsandresults.hpp
-	(1.3, Before-R000201a5-branch-merge3, Before-R000201-branch-merge2,
-	Before-Sad), ql/array.hpp (1.4, Before-R000201a5-branch-merge3,
-	Before-R000201-branch-merge2, Before-Sad), ql/calendar.cpp (1.5,
+	dev_tools/version_number.txt (1.4, Root-Of-R000300a1,
 	Before-R000201a5-branch-merge3, Before-R000201-branch-merge2,
-	Before-Sad), ql/calendar.hpp (1.10, Before-R000201a5-branch-merge3,
-	Before-R000201-branch-merge2, Before-Sad), ql/cashflow.hpp (1.5,
+	Before-Sad), ql/argsandresults.hpp (1.3, Root-Of-R000300a2,
+	Root-Of-R000300a1, Before-R000201a5-branch-merge3,
+	Before-R000201-branch-merge2, Before-Sad), ql/array.hpp (1.4,
+	Root-Of-R000300a2, Root-Of-R000300a1,
 	Before-R000201a5-branch-merge3, Before-R000201-branch-merge2,
-	Before-Sad), ql/currency.hpp (1.3, Before-R000201a5-branch-merge3,
-	Before-R000201-branch-merge2, Before-Sad), ql/dataformatters.cpp
-	(1.4, Before-R000201a5-branch-merge3, Before-R000201-branch-merge2,
-	Before-Sad), ql/dataformatters.hpp (1.3,
+	Before-Sad), ql/calendar.cpp (1.5, Root-Of-R000300a2,
+	Root-Of-R000300a1, Before-R000201a5-branch-merge3,
+	Before-R000201-branch-merge2, Before-Sad), ql/calendar.hpp (1.10,
+	Root-Of-R000300a2, Root-Of-R000300a1,
 	Before-R000201a5-branch-merge3, Before-R000201-branch-merge2,
-	Before-Sad), ql/date.cpp (1.10, Before-R000201a5-branch-merge3,
+	Before-Sad), ql/cashflow.hpp (1.5, Root-Of-R000300a2,
+	Root-Of-R000300a1, Before-R000201a5-branch-merge3,
+	Before-R000201-branch-merge2, Before-Sad), ql/currency.hpp (1.3,
+	Root-Of-R000300a2, Root-Of-R000300a1,
+	Before-R000201a5-branch-merge3, Before-R000201-branch-merge2,
+	Before-Sad), ql/dataformatters.cpp (1.4, Root-Of-R000300a2,
+	Root-Of-R000300a1, Before-R000201a5-branch-merge3,
+	Before-R000201-branch-merge2, Before-Sad), ql/dataformatters.hpp
+	(1.3, Root-Of-R000300a2, Root-Of-R000300a1,
+	Before-R000201a5-branch-merge3, Before-R000201-branch-merge2,
+	Before-Sad), ql/date.cpp (1.10, Root-Of-R000300a2,
+	Root-Of-R000300a1, Before-R000201a5-branch-merge3,
 	Before-R000201-branch-merge2, Before-Sad), ql/date.hpp (1.8,
+	Root-Of-R000300a2, Root-Of-R000300a1,
 	Before-R000201a5-branch-merge3, Before-R000201-branch-merge2,
-	Before-Sad), ql/daycounter.hpp (1.9,
+	Before-Sad), ql/daycounter.hpp (1.9, Root-Of-R000300a2,
+	Root-Of-R000300a1, Before-R000201a5-branch-merge3,
+	Before-R000201-branch-merge2, Before-Sad), ql/errors.hpp (1.6,
+	Root-Of-R000300a2, Root-Of-R000300a1,
 	Before-R000201a5-branch-merge3, Before-R000201-branch-merge2,
-	Before-Sad), ql/errors.hpp (1.6, Before-R000201a5-branch-merge3,
-	Before-R000201-branch-merge2, Before-Sad),
-	ql/expressiontemplates.hpp (1.3, Before-R000201a5-branch-merge3,
+	Before-Sad), ql/expressiontemplates.hpp (1.3, Root-Of-R000300a2,
+	Root-Of-R000300a1, Before-R000201a5-branch-merge3,
 	Before-R000201-branch-merge2, Before-Sad), ql/forwardvolsurface.hpp
-	(1.3, Before-R000201a5-branch-merge3, Before-R000201-branch-merge2,
+	(1.3, Root-Of-R000300a2, Root-Of-R000300a1,
+	Before-R000201a5-branch-merge3, Before-R000201-branch-merge2,
 	Before-Sad), ql/handle.hpp (1.4, Before-Sad), ql/history.hpp (1.6,
+	Root-Of-R000300a2, Root-Of-R000300a1,
 	Before-R000201a5-branch-merge3, Before-R000201-branch-merge2,
-	Before-Sad), ql/index.hpp (1.6, Before-R000201a5-branch-merge3,
+	Before-Sad), ql/index.hpp (1.6, Root-Of-R000300a2,
+	Root-Of-R000300a1, Before-R000201a5-branch-merge3,
 	Before-R000201-branch-merge2, Before-Sad), ql/instrument.hpp (1.6,
+	Root-Of-R000300a2, Root-Of-R000300a1,
 	Before-R000201a5-branch-merge3, Before-R000201-branch-merge2,
-	Before-Sad), ql/marketelement.hpp (1.5,
+	Before-Sad), ql/marketelement.hpp (1.5, Root-Of-R000300a2,
+	Root-Of-R000300a1, Before-R000201a5-branch-merge3,
+	Before-R000201-branch-merge2, Before-Sad), ql/null.hpp (1.3,
+	Root-Of-R000300a2, Root-Of-R000300a1,
 	Before-R000201a5-branch-merge3, Before-R000201-branch-merge2,
-	Before-Sad), ql/null.hpp (1.3, Before-R000201a5-branch-merge3,
-	Before-R000201-branch-merge2, Before-Sad), ql/option.cpp (1.3,
+	Before-Sad), ql/option.cpp (1.3, Root-Of-R000300a2,
+	Root-Of-R000300a1, Before-R000201a5-branch-merge3,
+	Before-R000201-branch-merge2, Before-Sad), ql/option.hpp (1.4,
+	Root-Of-R000300a2, Root-Of-R000300a1,
 	Before-R000201a5-branch-merge3, Before-R000201-branch-merge2,
-	Before-Sad), ql/option.hpp (1.4, Before-R000201a5-branch-merge3,
-	Before-R000201-branch-merge2, Before-Sad), ql/qldefines.hpp (1.17,
-	Before-Sad), ql/quantlib.hpp (1.26, Before-Sad),
-	ql/relinkablehandle.hpp (1.4, Before-R000201a5-branch-merge3,
-	Before-R000201-branch-merge2, Before-Sad), ql/riskstatistics.hpp
-	(1.4, Before-R000201a5-branch-merge3, Before-R000201-branch-merge2,
-	Before-Sad), ql/scheduler.cpp (1.5, Before-R000201a5-branch-merge3,
-	Before-R000201-branch-merge2, Before-Sad), ql/scheduler.hpp (1.5,
+	Before-Sad), ql/qldefines.hpp (1.17, Before-Sad), ql/quantlib.hpp
+	(1.26, Before-Sad), ql/relinkablehandle.hpp (1.4,
+	Root-Of-R000300a2, Root-Of-R000300a1,
 	Before-R000201a5-branch-merge3, Before-R000201-branch-merge2,
-	Before-Sad), ql/solver1d.cpp (1.3, Before-R000201a5-branch-merge3,
-	Before-R000201-branch-merge2, Before-Sad), ql/solver1d.hpp (1.5,
+	Before-Sad), ql/riskstatistics.hpp (1.4, Root-Of-R000300a2,
+	Root-Of-R000300a1, Before-R000201a5-branch-merge3,
+	Before-R000201-branch-merge2, Before-Sad), ql/scheduler.cpp (1.5,
+	Root-Of-R000300a2, Root-Of-R000300a1,
 	Before-R000201a5-branch-merge3, Before-R000201-branch-merge2,
-	Before-Sad), ql/swaptionvolsurface.hpp (1.3,
+	Before-Sad), ql/scheduler.hpp (1.5, Root-Of-R000300a2,
+	Root-Of-R000300a1, Before-R000201a5-branch-merge3,
+	Before-R000201-branch-merge2, Before-Sad), ql/solver1d.cpp (1.3,
+	Root-Of-R000300a2, Root-Of-R000300a1,
 	Before-R000201a5-branch-merge3, Before-R000201-branch-merge2,
-	Before-Sad), ql/termstructure.hpp (1.11,
-	Before-R000201a5-branch-merge3, Before-R000201-branch-merge2,
-	Before-Sad), ql/types.hpp (1.3, Before-R000201a5-branch-merge3,
+	Before-Sad), ql/solver1d.hpp (1.5, Root-Of-R000300a2,
+	Root-Of-R000300a1, Before-R000201a5-branch-merge3,
 	Before-R000201-branch-merge2, Before-Sad),
-	ql/Calendars/frankfurt.cpp (1.6, Before-R000201a5-branch-merge3,
+	ql/swaptionvolsurface.hpp (1.3, Root-Of-R000300a2,
+	Root-Of-R000300a1, Before-R000201a5-branch-merge3,
+	Before-R000201-branch-merge2, Before-Sad), ql/termstructure.hpp
+	(1.11, Root-Of-R000300a2, Root-Of-R000300a1,
+	Before-R000201a5-branch-merge3, Before-R000201-branch-merge2,
+	Before-Sad), ql/types.hpp (1.3, Root-Of-R000300a2,
+	Root-Of-R000300a1, Before-R000201a5-branch-merge3,
 	Before-R000201-branch-merge2, Before-Sad),
-	ql/Calendars/frankfurt.hpp (1.6, Before-R000201a5-branch-merge3,
+	ql/Calendars/frankfurt.cpp (1.6, Root-Of-R000300a2,
+	Root-Of-R000300a1, Before-R000201a5-branch-merge3,
 	Before-R000201-branch-merge2, Before-Sad),
-	ql/Calendars/helsinki.cpp (1.6, Before-R000201a5-branch-merge3,
+	ql/Calendars/frankfurt.hpp (1.6, Root-Of-R000300a2,
+	Root-Of-R000300a1, Before-R000201a5-branch-merge3,
 	Before-R000201-branch-merge2, Before-Sad),
-	ql/Calendars/helsinki.hpp (1.6, Before-R000201a5-branch-merge3,
+	ql/Calendars/helsinki.cpp (1.6, Root-Of-R000300a2,
+	Root-Of-R000300a1, Before-R000201a5-branch-merge3,
+	Before-R000201-branch-merge2, Before-Sad),
+	ql/Calendars/helsinki.hpp (1.6, Root-Of-R000300a2,
+	Root-Of-R000300a1, Before-R000201a5-branch-merge3,
 	Before-R000201-branch-merge2, Before-Sad), ql/Calendars/london.cpp
-	(1.6, Before-R000201a5-branch-merge3, Before-R000201-branch-merge2,
-	Before-Sad), ql/Calendars/london.hpp (1.6,
+	(1.6, Root-Of-R000300a2, Root-Of-R000300a1,
 	Before-R000201a5-branch-merge3, Before-R000201-branch-merge2,
-	Before-Sad), ql/Calendars/milan.cpp (1.6,
+	Before-Sad), ql/Calendars/london.hpp (1.6, Root-Of-R000300a2,
+	Root-Of-R000300a1, Before-R000201a5-branch-merge3,
+	Before-R000201-branch-merge2, Before-Sad), ql/Calendars/milan.cpp
+	(1.6, Root-Of-R000300a2, Root-Of-R000300a1,
 	Before-R000201a5-branch-merge3, Before-R000201-branch-merge2,
-	Before-Sad), ql/Calendars/milan.hpp (1.6,
+	Before-Sad), ql/Calendars/milan.hpp (1.6, Root-Of-R000300a2,
+	Root-Of-R000300a1, Before-R000201a5-branch-merge3,
+	Before-R000201-branch-merge2, Before-Sad), ql/Calendars/newyork.cpp
+	(1.6, Root-Of-R000300a2, Root-Of-R000300a1,
 	Before-R000201a5-branch-merge3, Before-R000201-branch-merge2,
-	Before-Sad), ql/Calendars/newyork.cpp (1.6,
+	Before-Sad), ql/Calendars/newyork.hpp (1.7, Root-Of-R000300a2,
+	Root-Of-R000300a1, Before-R000201a5-branch-merge3,
+	Before-R000201-branch-merge2, Before-Sad), ql/Calendars/target.cpp
+	(1.6, Root-Of-R000300a2, Root-Of-R000300a1,
 	Before-R000201a5-branch-merge3, Before-R000201-branch-merge2,
-	Before-Sad), ql/Calendars/newyork.hpp (1.7,
+	Before-Sad), ql/Calendars/target.hpp (1.6, Root-Of-R000300a2,
+	Root-Of-R000300a1, Before-R000201a5-branch-merge3,
+	Before-R000201-branch-merge2, Before-Sad),
+	ql/Calendars/wellington.cpp (1.6, Root-Of-R000300a2,
+	Root-Of-R000300a1, Before-R000201a5-branch-merge3,
+	Before-R000201-branch-merge2, Before-Sad),
+	ql/Calendars/wellington.hpp (1.6, Root-Of-R000300a2,
+	Root-Of-R000300a1, Before-R000201a5-branch-merge3,
+	Before-R000201-branch-merge2, Before-Sad), ql/Calendars/zurich.cpp
+	(1.6, Root-Of-R000300a2, Root-Of-R000300a1,
 	Before-R000201a5-branch-merge3, Before-R000201-branch-merge2,
-	Before-Sad), ql/Calendars/target.cpp (1.6,
-	Before-R000201a5-branch-merge3, Before-R000201-branch-merge2,
-	Before-Sad), ql/Calendars/target.hpp (1.6,
-	Before-R000201a5-branch-merge3, Before-R000201-branch-merge2,
-	Before-Sad), ql/Calendars/wellington.cpp (1.6,
-	Before-R000201a5-branch-merge3, Before-R000201-branch-merge2,
-	Before-Sad), ql/Calendars/wellington.hpp (1.6,
-	Before-R000201a5-branch-merge3, Before-R000201-branch-merge2,
-	Before-Sad), ql/Calendars/zurich.cpp (1.6,
-	Before-R000201a5-branch-merge3, Before-R000201-branch-merge2,
-	Before-Sad), ql/Calendars/zurich.hpp (1.6,
-	Before-R000201a5-branch-merge3, Before-R000201-branch-merge2,
-	Before-Sad), ql/CashFlows/cashflowvectors.cpp (1.7,
-	Before-R000201a5-branch-merge3, Before-R000201-branch-merge2,
-	Before-Sad), ql/CashFlows/cashflowvectors.hpp (1.7,
-	Before-R000201a5-branch-merge3, Before-R000201-branch-merge2,
-	Before-Sad), ql/CashFlows/coupon.hpp (1.4,
+	Before-Sad), ql/Calendars/zurich.hpp (1.6, Root-Of-R000300a2,
+	Root-Of-R000300a1, Before-R000201a5-branch-merge3,
+	Before-R000201-branch-merge2, Before-Sad),
+	ql/CashFlows/cashflowvectors.cpp (1.7, Root-Of-R000300a2,
+	Root-Of-R000300a1, Before-R000201a5-branch-merge3,
+	Before-R000201-branch-merge2, Before-Sad),
+	ql/CashFlows/cashflowvectors.hpp (1.7, Root-Of-R000300a2,
+	Root-Of-R000300a1, Before-R000201a5-branch-merge3,
+	Before-R000201-branch-merge2, Before-Sad), ql/CashFlows/coupon.hpp
+	(1.4, Root-Of-R000300a2, Root-Of-R000300a1,
 	Before-R000201a5-branch-merge3, Before-R000201-branch-merge2,
 	Before-Sad), ql/CashFlows/fixedratecoupon.hpp (1.7,
+	Root-Of-R000300a2, Root-Of-R000300a1,
 	Before-R000201a5-branch-merge3, Before-R000201-branch-merge2,
 	Before-Sad), ql/CashFlows/floatingratecoupon.cpp (1.8,
+	Root-Of-R000300a2, Root-Of-R000300a1,
 	Before-R000201a5-branch-merge3, Before-R000201-branch-merge2,
 	Before-Sad), ql/CashFlows/floatingratecoupon.hpp (1.11,
+	Root-Of-R000300a2, Root-Of-R000300a1,
 	Before-R000201a5-branch-merge3, Before-R000201-branch-merge2,
 	Before-Sad), ql/CashFlows/simplecashflow.hpp (1.3,
+	Root-Of-R000300a2, Root-Of-R000300a1,
 	Before-R000201a5-branch-merge3, Before-R000201-branch-merge2,
-	Before-Sad), ql/DayCounters/actual360.hpp (1.6,
-	Before-R000201a5-branch-merge3, Before-R000201-branch-merge2,
-	Before-Sad), ql/DayCounters/actual365.hpp (1.6,
-	Before-R000201a5-branch-merge3, Before-R000201-branch-merge2,
-	Before-Sad), ql/DayCounters/actualactual.cpp (1.8,
-	Before-R000201a5-branch-merge3, Before-R000201-branch-merge2,
-	Before-Sad), ql/DayCounters/actualactual.hpp (1.9,
-	Before-R000201a5-branch-merge3, Before-R000201-branch-merge2,
-	Before-Sad), ql/DayCounters/thirty360.cpp (1.6,
-	Before-R000201a5-branch-merge3, Before-R000201-branch-merge2,
-	Before-Sad), ql/DayCounters/thirty360.hpp (1.8,
-	Before-R000201a5-branch-merge3, Before-R000201-branch-merge2,
-	Before-Sad), ql/FiniteDifferences/boundarycondition.hpp (1.3,
-	Before-R000201a5-branch-merge3, Before-R000201-branch-merge2,
-	Before-Sad), ql/FiniteDifferences/bsmoperator.cpp (1.6,
-	Before-R000201a5-branch-merge3, Before-R000201-branch-merge2,
-	Before-Sad), ql/FiniteDifferences/bsmoperator.hpp (1.6,
-	Before-R000201a5-branch-merge3, Before-R000201-branch-merge2,
-	Before-Sad), ql/FiniteDifferences/cranknicolson.hpp (1.8,
-	Before-R000201a5-branch-merge3, Before-R000201-branch-merge2,
-	Before-Sad), ql/FiniteDifferences/dminus.hpp (1.5,
-	Before-R000201a5-branch-merge3, Before-R000201-branch-merge2,
-	Before-Sad), ql/FiniteDifferences/dplus.hpp (1.5,
-	Before-R000201a5-branch-merge3, Before-R000201-branch-merge2,
-	Before-Sad), ql/FiniteDifferences/dplusdminus.hpp (1.6,
-	Before-R000201a5-branch-merge3, Before-R000201-branch-merge2,
-	Before-Sad), ql/FiniteDifferences/dzero.hpp (1.5,
-	Before-R000201a5-branch-merge3, Before-R000201-branch-merge2,
-	Before-Sad), ql/FiniteDifferences/expliciteuler.hpp (1.3,
+	Before-Sad), ql/DayCounters/actual360.hpp (1.6, Root-Of-R000300a2,
+	Root-Of-R000300a1, Before-R000201a5-branch-merge3,
 	Before-R000201-branch-merge2, Before-Sad),
-	ql/FiniteDifferences/fdtypedefs.hpp (1.3,
-	Before-R000201a5-branch-merge3, Before-R000201-branch-merge2,
-	Before-Sad), ql/FiniteDifferences/finitedifferencemodel.hpp (1.8,
+	ql/DayCounters/actual365.hpp (1.6, Root-Of-R000300a2,
+	Root-Of-R000300a1, Before-R000201a5-branch-merge3,
+	Before-R000201-branch-merge2, Before-Sad),
+	ql/DayCounters/actualactual.cpp (1.8, Root-Of-R000300a2,
+	Root-Of-R000300a1, Before-R000201a5-branch-merge3,
+	Before-R000201-branch-merge2, Before-Sad),
+	ql/DayCounters/actualactual.hpp (1.9, Root-Of-R000300a2,
+	Root-Of-R000300a1, Before-R000201a5-branch-merge3,
+	Before-R000201-branch-merge2, Before-Sad),
+	ql/DayCounters/thirty360.cpp (1.6, Root-Of-R000300a2,
+	Root-Of-R000300a1, Before-R000201a5-branch-merge3,
+	Before-R000201-branch-merge2, Before-Sad),
+	ql/DayCounters/thirty360.hpp (1.8, Root-Of-R000300a2,
+	Root-Of-R000300a1, Before-R000201a5-branch-merge3,
+	Before-R000201-branch-merge2, Before-Sad),
+	ql/FiniteDifferences/boundarycondition.hpp (1.3, Root-Of-R000300a2,
+	Root-Of-R000300a1, Before-R000201a5-branch-merge3,
+	Before-R000201-branch-merge2, Before-Sad),
+	ql/FiniteDifferences/bsmoperator.cpp (1.6, Root-Of-R000300a2,
+	Root-Of-R000300a1, Before-R000201a5-branch-merge3,
+	Before-R000201-branch-merge2, Before-Sad),
+	ql/FiniteDifferences/bsmoperator.hpp (1.6, Root-Of-R000300a2,
+	Root-Of-R000300a1, Before-R000201a5-branch-merge3,
+	Before-R000201-branch-merge2, Before-Sad),
+	ql/FiniteDifferences/cranknicolson.hpp (1.8, Root-Of-R000300a2,
+	Root-Of-R000300a1, Before-R000201a5-branch-merge3,
+	Before-R000201-branch-merge2, Before-Sad),
+	ql/FiniteDifferences/dminus.hpp (1.5, Root-Of-R000300a2,
+	Root-Of-R000300a1, Before-R000201a5-branch-merge3,
+	Before-R000201-branch-merge2, Before-Sad),
+	ql/FiniteDifferences/dplus.hpp (1.5, Root-Of-R000300a2,
+	Root-Of-R000300a1, Before-R000201a5-branch-merge3,
+	Before-R000201-branch-merge2, Before-Sad),
+	ql/FiniteDifferences/dplusdminus.hpp (1.6, Root-Of-R000300a2,
+	Root-Of-R000300a1, Before-R000201a5-branch-merge3,
+	Before-R000201-branch-merge2, Before-Sad),
+	ql/FiniteDifferences/dzero.hpp (1.5, Root-Of-R000300a2,
+	Root-Of-R000300a1, Before-R000201a5-branch-merge3,
+	Before-R000201-branch-merge2, Before-Sad),
+	ql/FiniteDifferences/expliciteuler.hpp (1.3,
+	Before-R000201-branch-merge2, Before-Sad),
+	ql/FiniteDifferences/fdtypedefs.hpp (1.3, Root-Of-R000300a2,
+	Root-Of-R000300a1, Before-R000201a5-branch-merge3,
+	Before-R000201-branch-merge2, Before-Sad),
+	ql/FiniteDifferences/finitedifferencemodel.hpp (1.8,
+	Root-Of-R000300a2, Root-Of-R000300a1,
 	Before-R000201a5-branch-merge3, Before-R000201-branch-merge2,
 	Before-Sad), ql/FiniteDifferences/impliciteuler.hpp (1.3,
+	Root-Of-R000300a2, Root-Of-R000300a1,
 	Before-R000201a5-branch-merge3, Before-R000201-branch-merge2,
 	Before-Sad), ql/FiniteDifferences/stepcondition.hpp (1.3,
+	Root-Of-R000300a2, Root-Of-R000300a1,
 	Before-R000201a5-branch-merge3, Before-R000201-branch-merge2,
 	Before-Sad), ql/FiniteDifferences/tridiagonaloperator.cpp (1.8,
+	Root-Of-R000300a2, Root-Of-R000300a1,
 	Before-R000201a5-branch-merge3, Before-R000201-branch-merge2,
 	Before-Sad), ql/FiniteDifferences/tridiagonaloperator.hpp (1.12,
+	Root-Of-R000300a2, Root-Of-R000300a1,
 	Before-R000201a5-branch-merge3, Before-R000201-branch-merge2,
 	Before-Sad), ql/FiniteDifferences/valueatcenter.cpp (1.4,
+	Root-Of-R000300a2, Root-Of-R000300a1,
 	Before-R000201a5-branch-merge3, Before-R000201-branch-merge2,
 	Before-Sad), ql/FiniteDifferences/valueatcenter.hpp (1.3,
+	Root-Of-R000300a2, Root-Of-R000300a1,
 	Before-R000201a5-branch-merge3, Before-R000201-branch-merge2,
-	Before-Sad), ql/Indexes/euribor.hpp (1.5,
+	Before-Sad), ql/Indexes/euribor.hpp (1.5, Root-Of-R000300a2,
+	Root-Of-R000300a1, Before-R000201a5-branch-merge3,
+	Before-R000201-branch-merge2, Before-Sad), ql/Indexes/gbplibor.hpp
+	(1.5, Root-Of-R000300a2, Root-Of-R000300a1,
 	Before-R000201a5-branch-merge3, Before-R000201-branch-merge2,
-	Before-Sad), ql/Indexes/gbplibor.hpp (1.5,
+	Before-Sad), ql/Indexes/usdlibor.hpp (1.5, Root-Of-R000300a2,
+	Root-Of-R000300a1, Before-R000201a5-branch-merge3,
+	Before-R000201-branch-merge2, Before-Sad), ql/Indexes/xibor.cpp
+	(1.4, Root-Of-R000300a2, Root-Of-R000300a1,
 	Before-R000201a5-branch-merge3, Before-R000201-branch-merge2,
-	Before-Sad), ql/Indexes/usdlibor.hpp (1.5,
-	Before-R000201a5-branch-merge3, Before-R000201-branch-merge2,
-	Before-Sad), ql/Indexes/xibor.cpp (1.4,
-	Before-R000201a5-branch-merge3, Before-R000201-branch-merge2,
-	Before-Sad), ql/Indexes/xibor.hpp (1.5,
-	Before-R000201a5-branch-merge3, Before-R000201-branch-merge2,
-	Before-Sad), ql/Indexes/xibormanager.cpp (1.3,
-	Before-R000201a5-branch-merge3, Before-R000201-branch-merge2,
-	Before-Sad), ql/Indexes/xibormanager.hpp (1.3,
-	Before-R000201a5-branch-merge3, Before-R000201-branch-merge2,
-	Before-Sad), ql/Instruments/plainoption.cpp (1.5,
-	Before-R000201a5-branch-merge3, Before-R000201-branch-merge2,
-	Before-Sad), ql/Instruments/plainoption.hpp (1.5,
-	Before-R000201a5-branch-merge3, Before-R000201-branch-merge2,
-	Before-Sad), ql/Instruments/simpleswap.cpp (1.8, Before-Sad),
-	ql/Instruments/simpleswap.hpp (1.8, Before-Sad),
-	ql/Instruments/stock.cpp (1.3, Before-R000201a5-branch-merge3,
-	Before-R000201-branch-merge2, Before-Sad), ql/Instruments/stock.hpp
-	(1.3, Before-R000201a5-branch-merge3, Before-R000201-branch-merge2,
-	Before-Sad), ql/Instruments/swap.cpp (1.5, Before-Sad),
-	ql/Instruments/swap.hpp (1.4, Before-R000201a5-branch-merge3,
-	Before-R000201-branch-merge2, Before-Sad), ql/Math/cubicspline.hpp
-	(1.5, Before-R000201a5-branch-merge3, Before-R000201-branch-merge2,
-	Before-Sad), ql/Math/interpolation.hpp (1.3,
-	Before-R000201a5-branch-merge3, Before-R000201-branch-merge2,
-	Before-Sad), ql/Math/lexicographicalview.hpp (1.3,
-	Before-R000201a5-branch-merge3, Before-R000201-branch-merge2,
-	Before-Sad), ql/Math/linearinterpolation.hpp (1.3,
-	Before-R000201a5-branch-merge3, Before-R000201-branch-merge2,
-	Before-Sad), ql/Math/matrix.cpp (1.5,
-	Before-R000201a5-branch-merge3, Before-R000201-branch-merge2,
-	Before-Sad), ql/Math/matrix.hpp (1.5,
-	Before-R000201a5-branch-merge3, Before-R000201-branch-merge2,
-	Before-Sad), ql/Math/multivariateaccumulator.cpp (1.7,
-	Before-R000201a5-branch-merge3, Before-R000201-branch-merge2,
-	Before-Sad), ql/Math/multivariateaccumulator.hpp (1.7,
-	Before-R000201a5-branch-merge3, Before-R000201-branch-merge2,
-	Before-Sad), ql/Math/normaldistribution.cpp (1.3,
-	Before-R000201a5-branch-merge3, Before-R000201-branch-merge2,
-	Before-Sad), ql/Math/normaldistribution.hpp (1.3,
-	Before-R000201a5-branch-merge3, Before-R000201-branch-merge2,
-	Before-Sad), ql/Math/riskmeasures.hpp (1.3,
-	Before-R000201a5-branch-merge3, Before-R000201-branch-merge2,
-	Before-Sad), ql/Math/segmentintegral.cpp (1.5,
-	Before-R000201a5-branch-merge3, Before-R000201-branch-merge2,
-	Before-Sad), ql/Math/segmentintegral.hpp (1.7,
-	Before-R000201a5-branch-merge3, Before-R000201-branch-merge2,
-	Before-Sad), ql/Math/statistics.cpp (1.3,
-	Before-R000201a5-branch-merge3, Before-R000201-branch-merge2,
-	Before-Sad), ql/Math/statistics.hpp (1.6,
-	Before-R000201a5-branch-merge3, Before-R000201-branch-merge2,
-	Before-Sad), ql/Math/symmetriceigenvalues.hpp (1.3,
-	Before-R000201a5-branch-merge3, Before-R000201-branch-merge2,
-	Before-Sad), ql/Math/symmetricschurdecomposition.cpp (1.4,
-	Before-R000201a5-branch-merge3, Before-R000201-branch-merge2,
-	Before-Sad), ql/Math/symmetricschurdecomposition.hpp (1.3,
-	Before-R000201a5-branch-merge3, Before-R000201-branch-merge2,
-	Before-Sad), ql/MonteCarlo/Makefile.am (1.16,
-	Before-R000201a5-branch-merge3, Before-R000201-branch-merge2,
-	Before-Sad), ql/MonteCarlo/arithmeticapopathpricer.cpp (1.2,
-	Before-R000201a5-branch-merge3, Before-R000201-branch-merge2,
-	Before-Sad), ql/MonteCarlo/arithmeticapopathpricer.hpp (1.2,
-	Before-R000201a5-branch-merge3, Before-R000201-branch-merge2,
-	Before-Sad), ql/MonteCarlo/arithmeticasopathpricer.cpp (1.2,
-	Before-R000201a5-branch-merge3, Before-R000201-branch-merge2,
-	Before-Sad), ql/MonteCarlo/arithmeticasopathpricer.hpp (1.2,
-	Before-R000201a5-branch-merge3, Before-R000201-branch-merge2,
-	Before-Sad), ql/MonteCarlo/basketpathpricer.cpp (1.12,
-	Before-R000201a5-branch-merge3, Before-R000201-branch-merge2,
-	Before-Sad), ql/MonteCarlo/basketpathpricer.hpp (1.9,
-	Before-R000201a5-branch-merge3, Before-R000201-branch-merge2,
-	Before-Sad), ql/MonteCarlo/europeanpathpricer.cpp (1.9,
-	Before-R000201a5-branch-merge3, Before-R000201-branch-merge2,
-	Before-Sad), ql/MonteCarlo/europeanpathpricer.hpp (1.8,
-	Before-R000201a5-branch-merge3, Before-R000201-branch-merge2,
-	Before-Sad), ql/MonteCarlo/everestpathpricer.cpp (1.10,
-	Before-R000201a5-branch-merge3, Before-R000201-branch-merge2,
-	Before-Sad), ql/MonteCarlo/everestpathpricer.hpp (1.9,
-	Before-R000201a5-branch-merge3, Before-R000201-branch-merge2,
-	Before-Sad), ql/MonteCarlo/geometricapopathpricer.cpp (1.4,
-	Before-R000201a5-branch-merge3, Before-R000201-branch-merge2,
-	Before-Sad), ql/MonteCarlo/geometricapopathpricer.hpp (1.2,
-	Before-R000201a5-branch-merge3, Before-R000201-branch-merge2,
-	Before-Sad), ql/MonteCarlo/geometricasopathpricer.cpp (1.5,
-	Before-R000201a5-branch-merge3, Before-R000201-branch-merge2,
-	Before-Sad), ql/MonteCarlo/geometricasopathpricer.hpp (1.2,
-	Before-R000201a5-branch-merge3, Before-R000201-branch-merge2,
-	Before-Sad), ql/MonteCarlo/getcovariance.cpp (1.5,
-	Before-R000201a5-branch-merge3, Before-R000201-branch-merge2,
-	Before-Sad), ql/MonteCarlo/getcovariance.hpp (1.4,
-	Before-R000201a5-branch-merge3, Before-R000201-branch-merge2,
-	Before-Sad), ql/MonteCarlo/himalayapathpricer.cpp (1.12,
-	Before-R000201a5-branch-merge3, Before-R000201-branch-merge2,
-	Before-Sad), ql/MonteCarlo/himalayapathpricer.hpp (1.8,
-	Before-R000201a5-branch-merge3, Before-R000201-branch-merge2,
-	Before-Sad), ql/MonteCarlo/makefile.mak (1.7, Before-Sad),
-	ql/MonteCarlo/maxbasketpathpricer.cpp (1.2,
-	Before-R000201a5-branch-merge3, Before-R000201-branch-merge2,
-	Before-Sad), ql/MonteCarlo/maxbasketpathpricer.hpp (1.2,
-	Before-R000201a5-branch-merge3, Before-R000201-branch-merge2,
-	Before-Sad), ql/MonteCarlo/mctypedefs.hpp (1.6, Before-Sad),
-	ql/MonteCarlo/multipath.hpp (1.7, Before-R000201a5-branch-merge3,
+	Before-Sad), ql/Indexes/xibor.hpp (1.5, Root-Of-R000300a2,
+	Root-Of-R000300a1, Before-R000201a5-branch-merge3,
 	Before-R000201-branch-merge2, Before-Sad),
-	ql/MonteCarlo/multipathgenerator.hpp (1.15,
+	ql/Indexes/xibormanager.cpp (1.3, Root-Of-R000300a2,
+	Root-Of-R000300a1, Before-R000201a5-branch-merge3,
+	Before-R000201-branch-merge2, Before-Sad),
+	ql/Indexes/xibormanager.hpp (1.3, Root-Of-R000300a2,
+	Root-Of-R000300a1, Before-R000201a5-branch-merge3,
+	Before-R000201-branch-merge2, Before-Sad),
+	ql/Instruments/plainoption.cpp (1.5, Root-Of-R000300a2,
+	Root-Of-R000300a1, Before-R000201a5-branch-merge3,
+	Before-R000201-branch-merge2, Before-Sad),
+	ql/Instruments/plainoption.hpp (1.5, Root-Of-R000300a2,
+	Root-Of-R000300a1, Before-R000201a5-branch-merge3,
+	Before-R000201-branch-merge2, Before-Sad),
+	ql/Instruments/simpleswap.cpp (1.8, Before-Sad),
+	ql/Instruments/simpleswap.hpp (1.8, Before-Sad),
+	ql/Instruments/stock.cpp (1.3, Root-Of-R000300a2,
+	Root-Of-R000300a1, Before-R000201a5-branch-merge3,
+	Before-R000201-branch-merge2, Before-Sad), ql/Instruments/stock.hpp
+	(1.3, Root-Of-R000300a2, Root-Of-R000300a1,
 	Before-R000201a5-branch-merge3, Before-R000201-branch-merge2,
-	Before-Sad), ql/MonteCarlo/multipathpricer.hpp (1.5),
-	ql/MonteCarlo/pagodapathpricer.cpp (1.8,
+	Before-Sad), ql/Instruments/swap.cpp (1.5, Before-Sad),
+	ql/Instruments/swap.hpp (1.4, Root-Of-R000300a2, Root-Of-R000300a1,
 	Before-R000201a5-branch-merge3, Before-R000201-branch-merge2,
-	Before-Sad), ql/MonteCarlo/pagodapathpricer.hpp (1.10,
+	Before-Sad), ql/Math/cubicspline.hpp (1.5, Root-Of-R000300a2,
+	Root-Of-R000300a1, Before-R000201a5-branch-merge3,
+	Before-R000201-branch-merge2, Before-Sad),
+	ql/Math/interpolation.hpp (1.3, Root-Of-R000300a2,
+	Root-Of-R000300a1, Before-R000201a5-branch-merge3,
+	Before-R000201-branch-merge2, Before-Sad),
+	ql/Math/lexicographicalview.hpp (1.3, Root-Of-R000300a2,
+	Root-Of-R000300a1, Before-R000201a5-branch-merge3,
+	Before-R000201-branch-merge2, Before-Sad),
+	ql/Math/linearinterpolation.hpp (1.3, Root-Of-R000300a2,
+	Root-Of-R000300a1, Before-R000201a5-branch-merge3,
+	Before-R000201-branch-merge2, Before-Sad), ql/Math/matrix.cpp (1.5,
+	Root-Of-R000300a2, Root-Of-R000300a1,
 	Before-R000201a5-branch-merge3, Before-R000201-branch-merge2,
-	Before-Sad), ql/MonteCarlo/path.hpp (1.5,
+	Before-Sad), ql/Math/matrix.hpp (1.5, Root-Of-R000300a2,
+	Root-Of-R000300a1, Before-R000201a5-branch-merge3,
+	Before-R000201-branch-merge2, Before-Sad),
+	ql/Math/multivariateaccumulator.cpp (1.7, Root-Of-R000300a2,
+	Root-Of-R000300a1, Before-R000201a5-branch-merge3,
+	Before-R000201-branch-merge2, Before-Sad),
+	ql/Math/multivariateaccumulator.hpp (1.7, Root-Of-R000300a2,
+	Root-Of-R000300a1, Before-R000201a5-branch-merge3,
+	Before-R000201-branch-merge2, Before-Sad),
+	ql/Math/normaldistribution.cpp (1.3, Root-Of-R000300a2,
+	Root-Of-R000300a1, Before-R000201a5-branch-merge3,
+	Before-R000201-branch-merge2, Before-Sad),
+	ql/Math/normaldistribution.hpp (1.3, Root-Of-R000300a2,
+	Root-Of-R000300a1, Before-R000201a5-branch-merge3,
+	Before-R000201-branch-merge2, Before-Sad), ql/Math/riskmeasures.hpp
+	(1.3, Root-Of-R000300a2, Root-Of-R000300a1,
+	Before-R000201a5-branch-merge3, Before-R000201-branch-merge2,
+	Before-Sad), ql/Math/segmentintegral.cpp (1.5, Root-Of-R000300a2,
+	Root-Of-R000300a1, Before-R000201a5-branch-merge3,
+	Before-R000201-branch-merge2, Before-Sad),
+	ql/Math/segmentintegral.hpp (1.7, Root-Of-R000300a2,
+	Root-Of-R000300a1, Before-R000201a5-branch-merge3,
+	Before-R000201-branch-merge2, Before-Sad), ql/Math/statistics.cpp
+	(1.3, Root-Of-R000300a2, Root-Of-R000300a1,
+	Before-R000201a5-branch-merge3, Before-R000201-branch-merge2,
+	Before-Sad), ql/Math/statistics.hpp (1.6, Root-Of-R000300a2,
+	Root-Of-R000300a1, Before-R000201a5-branch-merge3,
+	Before-R000201-branch-merge2, Before-Sad),
+	ql/Math/symmetriceigenvalues.hpp (1.3, Root-Of-R000300a2,
+	Root-Of-R000300a1, Before-R000201a5-branch-merge3,
+	Before-R000201-branch-merge2, Before-Sad),
+	ql/Math/symmetricschurdecomposition.cpp (1.4, Root-Of-R000300a2,
+	Root-Of-R000300a1, Before-R000201a5-branch-merge3,
+	Before-R000201-branch-merge2, Before-Sad),
+	ql/Math/symmetricschurdecomposition.hpp (1.3, Root-Of-R000300a2,
+	Root-Of-R000300a1, Before-R000201a5-branch-merge3,
+	Before-R000201-branch-merge2, Before-Sad),
+	ql/MonteCarlo/Makefile.am (1.16, Root-Of-R000300a2,
+	Root-Of-R000300a1, Before-R000201a5-branch-merge3,
+	Before-R000201-branch-merge2, Before-Sad),
+	ql/MonteCarlo/arithmeticapopathpricer.cpp (1.2, Root-Of-R000300a2,
+	Root-Of-R000300a1, Before-R000201a5-branch-merge3,
+	Before-R000201-branch-merge2, Before-Sad),
+	ql/MonteCarlo/arithmeticapopathpricer.hpp (1.2, Root-Of-R000300a2,
+	Root-Of-R000300a1, Before-R000201a5-branch-merge3,
+	Before-R000201-branch-merge2, Before-Sad),
+	ql/MonteCarlo/arithmeticasopathpricer.cpp (1.2, Root-Of-R000300a2,
+	Root-Of-R000300a1, Before-R000201a5-branch-merge3,
+	Before-R000201-branch-merge2, Before-Sad),
+	ql/MonteCarlo/arithmeticasopathpricer.hpp (1.2, Root-Of-R000300a2,
+	Root-Of-R000300a1, Before-R000201a5-branch-merge3,
+	Before-R000201-branch-merge2, Before-Sad),
+	ql/MonteCarlo/basketpathpricer.cpp (1.12, Root-Of-R000300a2,
+	Root-Of-R000300a1, Before-R000201a5-branch-merge3,
+	Before-R000201-branch-merge2, Before-Sad),
+	ql/MonteCarlo/basketpathpricer.hpp (1.9, Root-Of-R000300a2,
+	Root-Of-R000300a1, Before-R000201a5-branch-merge3,
+	Before-R000201-branch-merge2, Before-Sad),
+	ql/MonteCarlo/europeanpathpricer.cpp (1.9, Root-Of-R000300a2,
+	Root-Of-R000300a1, Before-R000201a5-branch-merge3,
+	Before-R000201-branch-merge2, Before-Sad),
+	ql/MonteCarlo/europeanpathpricer.hpp (1.8, Root-Of-R000300a2,
+	Root-Of-R000300a1, Before-R000201a5-branch-merge3,
+	Before-R000201-branch-merge2, Before-Sad),
+	ql/MonteCarlo/everestpathpricer.cpp (1.10, Root-Of-R000300a2,
+	Root-Of-R000300a1, Before-R000201a5-branch-merge3,
+	Before-R000201-branch-merge2, Before-Sad),
+	ql/MonteCarlo/everestpathpricer.hpp (1.9, Root-Of-R000300a2,
+	Root-Of-R000300a1, Before-R000201a5-branch-merge3,
+	Before-R000201-branch-merge2, Before-Sad),
+	ql/MonteCarlo/geometricapopathpricer.cpp (1.4, Root-Of-R000300a2,
+	Root-Of-R000300a1, Before-R000201a5-branch-merge3,
+	Before-R000201-branch-merge2, Before-Sad),
+	ql/MonteCarlo/geometricapopathpricer.hpp (1.2, Root-Of-R000300a2,
+	Root-Of-R000300a1, Before-R000201a5-branch-merge3,
+	Before-R000201-branch-merge2, Before-Sad),
+	ql/MonteCarlo/geometricasopathpricer.cpp (1.5, Root-Of-R000300a2,
+	Root-Of-R000300a1, Before-R000201a5-branch-merge3,
+	Before-R000201-branch-merge2, Before-Sad),
+	ql/MonteCarlo/geometricasopathpricer.hpp (1.2, Root-Of-R000300a2,
+	Root-Of-R000300a1, Before-R000201a5-branch-merge3,
+	Before-R000201-branch-merge2, Before-Sad),
+	ql/MonteCarlo/getcovariance.cpp (1.5, Root-Of-R000300a2,
+	Root-Of-R000300a1, Before-R000201a5-branch-merge3,
+	Before-R000201-branch-merge2, Before-Sad),
+	ql/MonteCarlo/getcovariance.hpp (1.4, Root-Of-R000300a2,
+	Root-Of-R000300a1, Before-R000201a5-branch-merge3,
+	Before-R000201-branch-merge2, Before-Sad),
+	ql/MonteCarlo/himalayapathpricer.cpp (1.12, Root-Of-R000300a2,
+	Root-Of-R000300a1, Before-R000201a5-branch-merge3,
+	Before-R000201-branch-merge2, Before-Sad),
+	ql/MonteCarlo/himalayapathpricer.hpp (1.8, Root-Of-R000300a2,
+	Root-Of-R000300a1, Before-R000201a5-branch-merge3,
+	Before-R000201-branch-merge2, Before-Sad),
+	ql/MonteCarlo/makefile.mak (1.7, Before-Sad),
+	ql/MonteCarlo/maxbasketpathpricer.cpp (1.2, Root-Of-R000300a2,
+	Root-Of-R000300a1, Before-R000201a5-branch-merge3,
+	Before-R000201-branch-merge2, Before-Sad),
+	ql/MonteCarlo/maxbasketpathpricer.hpp (1.2, Root-Of-R000300a2,
+	Root-Of-R000300a1, Before-R000201a5-branch-merge3,
+	Before-R000201-branch-merge2, Before-Sad),
+	ql/MonteCarlo/mctypedefs.hpp (1.6, Before-Sad),
+	ql/MonteCarlo/multipath.hpp (1.7, Root-Of-R000300a2,
+	Root-Of-R000300a1, Before-R000201a5-branch-merge3,
+	Before-R000201-branch-merge2, Before-Sad),
+	ql/MonteCarlo/multipathgenerator.hpp (1.15, Root-Of-R000300a2,
+	Root-Of-R000300a1, Before-R000201a5-branch-merge3,
+	Before-R000201-branch-merge2, Before-Sad),
+	ql/MonteCarlo/multipathpricer.hpp (1.5),
+	ql/MonteCarlo/pagodapathpricer.cpp (1.8, Root-Of-R000300a2,
+	Root-Of-R000300a1, Before-R000201a5-branch-merge3,
+	Before-R000201-branch-merge2, Before-Sad),
+	ql/MonteCarlo/pagodapathpricer.hpp (1.10, Root-Of-R000300a2,
+	Root-Of-R000300a1, Before-R000201a5-branch-merge3,
+	Before-R000201-branch-merge2, Before-Sad), ql/MonteCarlo/path.hpp
+	(1.5, Root-Of-R000300a2, Root-Of-R000300a1,
 	Before-R000201a5-branch-merge3, Before-R000201-branch-merge2,
 	Before-Sad), ql/MonteCarlo/pathgenerator.hpp (1.13,
+	Root-Of-R000300a2, Root-Of-R000300a1,
 	Before-R000201a5-branch-merge3, Before-R000201-branch-merge2,
-	Before-Sad), ql/MonteCarlo/pathpricer.hpp (1.7,
-	Before-R000201a5-branch-merge3, Before-R000201-branch-merge2,
-	Before-Sad), ql/MonteCarlo/sample.hpp (1.2,
+	Before-Sad), ql/MonteCarlo/pathpricer.hpp (1.7, Root-Of-R000300a2,
+	Root-Of-R000300a1, Before-R000201a5-branch-merge3,
+	Before-R000201-branch-merge2, Before-Sad), ql/MonteCarlo/sample.hpp
+	(1.2, Root-Of-R000300a2, Root-Of-R000300a1,
 	Before-R000201a5-branch-merge3, Before-R000201-branch-merge2,
 	Before-Sad), ql/MonteCarlo/singleassetpathpricer.cpp (1.2),
 	ql/MonteCarlo/singleassetpathpricer.hpp (1.3),
-	ql/Patterns/factory.hpp (1.3, Before-R000201a5-branch-merge3,
-	Before-R000201-branch-merge2, Before-Sad),
-	ql/Patterns/observable.hpp (1.5, Before-R000201a5-branch-merge3,
+	ql/Patterns/factory.hpp (1.3, Root-Of-R000300a2, Root-Of-R000300a1,
+	Before-R000201a5-branch-merge3, Before-R000201-branch-merge2,
+	Before-Sad), ql/Patterns/observable.hpp (1.5, Root-Of-R000300a2,
+	Root-Of-R000300a1, Before-R000201a5-branch-merge3,
 	Before-R000201-branch-merge2, Before-Sad), ql/Pricers/Makefile.am
 	(1.12, Before-Sad), ql/Pricers/americancondition.hpp (1.4,
+	Root-Of-R000300a2, Root-Of-R000300a1,
 	Before-R000201a5-branch-merge3, Before-R000201-branch-merge2,
-	Before-Sad), ql/Pricers/americanoption.hpp (1.5,
-	Before-R000201a5-branch-merge3, Before-R000201-branch-merge2,
-	Before-Sad), ql/Pricers/barrieroption.cpp (1.5,
-	Before-R000201a5-branch-merge3, Before-R000201-branch-merge2,
-	Before-Sad), ql/Pricers/barrieroption.hpp (1.5,
-	Before-R000201a5-branch-merge3, Before-R000201-branch-merge2,
-	Before-Sad), ql/Pricers/bermudanoption.cpp (1.5,
-	Before-R000201a5-branch-merge3, Before-R000201-branch-merge2,
-	Before-Sad), ql/Pricers/bermudanoption.hpp (1.5,
-	Before-R000201a5-branch-merge3, Before-R000201-branch-merge2,
-	Before-Sad), ql/Pricers/binaryoption.cpp (1.5,
-	Before-R000201a5-branch-merge3, Before-R000201-branch-merge2,
-	Before-Sad), ql/Pricers/binaryoption.hpp (1.5,
-	Before-R000201a5-branch-merge3, Before-R000201-branch-merge2,
-	Before-Sad), ql/Pricers/bsmnumericaloption.cpp (1.7,
-	Before-R000201a5-branch-merge3, Before-R000201-branch-merge2,
-	Before-Sad), ql/Pricers/bsmnumericaloption.hpp (1.6,
-	Before-R000201a5-branch-merge3, Before-R000201-branch-merge2,
-	Before-Sad), ql/Pricers/cliquetoption.cpp (1.6,
-	Before-R000201a5-branch-merge3, Before-R000201-branch-merge2,
-	Before-Sad), ql/Pricers/cliquetoption.hpp (1.5,
-	Before-R000201a5-branch-merge3, Before-R000201-branch-merge2,
-	Before-Sad), ql/Pricers/continuousgeometricapo.hpp (1.2,
-	Before-R000201a5-branch-merge3, Before-R000201-branch-merge2,
-	Before-Sad), ql/Pricers/discretegeometricapo.cpp (1.3,
-	Before-R000201a5-branch-merge3, Before-R000201-branch-merge2,
-	Before-Sad), ql/Pricers/discretegeometricapo.hpp (1.3,
-	Before-R000201a5-branch-merge3, Before-R000201-branch-merge2,
-	Before-Sad), ql/Pricers/discretegeometricaso.cpp (1.3,
-	Before-R000201a5-branch-merge3, Before-R000201-branch-merge2,
-	Before-Sad), ql/Pricers/discretegeometricaso.hpp (1.3,
-	Before-R000201a5-branch-merge3, Before-R000201-branch-merge2,
-	Before-Sad), ql/Pricers/dividendamericanoption.cpp (1.5,
-	Before-R000201a5-branch-merge3, Before-R000201-branch-merge2,
-	Before-Sad), ql/Pricers/dividendamericanoption.hpp (1.5,
-	Before-R000201a5-branch-merge3, Before-R000201-branch-merge2,
-	Before-Sad), ql/Pricers/dividendeuropeanoption.cpp (1.6,
-	Before-R000201a5-branch-merge3, Before-R000201-branch-merge2,
-	Before-Sad), ql/Pricers/dividendeuropeanoption.hpp (1.6,
-	Before-R000201a5-branch-merge3, Before-R000201-branch-merge2,
-	Before-Sad), ql/Pricers/dividendoption.cpp (1.7,
-	Before-R000201a5-branch-merge3, Before-R000201-branch-merge2,
-	Before-Sad), ql/Pricers/dividendoption.hpp (1.5,
-	Before-R000201a5-branch-merge3, Before-R000201-branch-merge2,
-	Before-Sad), ql/Pricers/dividendshoutoption.cpp (1.5,
-	Before-R000201a5-branch-merge3, Before-R000201-branch-merge2,
-	Before-Sad), ql/Pricers/dividendshoutoption.hpp (1.5,
-	Before-R000201a5-branch-merge3, Before-R000201-branch-merge2,
-	Before-Sad), ql/Pricers/europeanengine.cpp (1.2,
-	Before-R000201a5-branch-merge3, Before-R000201-branch-merge2,
-	Before-Sad), ql/Pricers/europeanengine.hpp (1.3,
-	Before-R000201a5-branch-merge3, Before-R000201-branch-merge2,
-	Before-Sad), ql/Pricers/europeanoption.cpp (1.5,
-	Before-R000201a5-branch-merge3, Before-R000201-branch-merge2,
-	Before-Sad), ql/Pricers/europeanoption.hpp (1.7,
-	Before-R000201a5-branch-merge3, Before-R000201-branch-merge2,
-	Before-Sad), ql/Pricers/finitedifferenceeuropean.cpp (1.6,
-	Before-R000201a5-branch-merge3, Before-R000201-branch-merge2,
-	Before-Sad), ql/Pricers/finitedifferenceeuropean.hpp (1.8,
-	Before-R000201a5-branch-merge3, Before-R000201-branch-merge2,
-	Before-Sad), ql/Pricers/makefile.mak (1.8, Before-Sad),
-	ql/Pricers/mcbasket.cpp (1.2, Before-R000201a5-branch-merge3,
+	Before-Sad), ql/Pricers/americanoption.hpp (1.5, Root-Of-R000300a2,
+	Root-Of-R000300a1, Before-R000201a5-branch-merge3,
+	Before-R000201-branch-merge2, Before-Sad),
+	ql/Pricers/barrieroption.cpp (1.5, Root-Of-R000300a2,
+	Root-Of-R000300a1, Before-R000201a5-branch-merge3,
+	Before-R000201-branch-merge2, Before-Sad),
+	ql/Pricers/barrieroption.hpp (1.5, Root-Of-R000300a2,
+	Root-Of-R000300a1, Before-R000201a5-branch-merge3,
+	Before-R000201-branch-merge2, Before-Sad),
+	ql/Pricers/bermudanoption.cpp (1.5, Root-Of-R000300a2,
+	Root-Of-R000300a1, Before-R000201a5-branch-merge3,
+	Before-R000201-branch-merge2, Before-Sad),
+	ql/Pricers/bermudanoption.hpp (1.5, Root-Of-R000300a2,
+	Root-Of-R000300a1, Before-R000201a5-branch-merge3,
+	Before-R000201-branch-merge2, Before-Sad),
+	ql/Pricers/binaryoption.cpp (1.5, Root-Of-R000300a2,
+	Root-Of-R000300a1, Before-R000201a5-branch-merge3,
+	Before-R000201-branch-merge2, Before-Sad),
+	ql/Pricers/binaryoption.hpp (1.5, Root-Of-R000300a2,
+	Root-Of-R000300a1, Before-R000201a5-branch-merge3,
+	Before-R000201-branch-merge2, Before-Sad),
+	ql/Pricers/bsmnumericaloption.cpp (1.7, Root-Of-R000300a2,
+	Root-Of-R000300a1, Before-R000201a5-branch-merge3,
+	Before-R000201-branch-merge2, Before-Sad),
+	ql/Pricers/bsmnumericaloption.hpp (1.6, Root-Of-R000300a2,
+	Root-Of-R000300a1, Before-R000201a5-branch-merge3,
+	Before-R000201-branch-merge2, Before-Sad),
+	ql/Pricers/cliquetoption.cpp (1.6, Root-Of-R000300a2,
+	Root-Of-R000300a1, Before-R000201a5-branch-merge3,
+	Before-R000201-branch-merge2, Before-Sad),
+	ql/Pricers/cliquetoption.hpp (1.5, Root-Of-R000300a2,
+	Root-Of-R000300a1, Before-R000201a5-branch-merge3,
+	Before-R000201-branch-merge2, Before-Sad),
+	ql/Pricers/continuousgeometricapo.hpp (1.2, Root-Of-R000300a2,
+	Root-Of-R000300a1, Before-R000201a5-branch-merge3,
+	Before-R000201-branch-merge2, Before-Sad),
+	ql/Pricers/discretegeometricapo.cpp (1.3, Root-Of-R000300a2,
+	Root-Of-R000300a1, Before-R000201a5-branch-merge3,
+	Before-R000201-branch-merge2, Before-Sad),
+	ql/Pricers/discretegeometricapo.hpp (1.3, Root-Of-R000300a2,
+	Root-Of-R000300a1, Before-R000201a5-branch-merge3,
+	Before-R000201-branch-merge2, Before-Sad),
+	ql/Pricers/discretegeometricaso.cpp (1.3, Root-Of-R000300a2,
+	Root-Of-R000300a1, Before-R000201a5-branch-merge3,
+	Before-R000201-branch-merge2, Before-Sad),
+	ql/Pricers/discretegeometricaso.hpp (1.3, Root-Of-R000300a2,
+	Root-Of-R000300a1, Before-R000201a5-branch-merge3,
+	Before-R000201-branch-merge2, Before-Sad),
+	ql/Pricers/dividendamericanoption.cpp (1.5, Root-Of-R000300a2,
+	Root-Of-R000300a1, Before-R000201a5-branch-merge3,
+	Before-R000201-branch-merge2, Before-Sad),
+	ql/Pricers/dividendamericanoption.hpp (1.5, Root-Of-R000300a2,
+	Root-Of-R000300a1, Before-R000201a5-branch-merge3,
+	Before-R000201-branch-merge2, Before-Sad),
+	ql/Pricers/dividendeuropeanoption.cpp (1.6, Root-Of-R000300a2,
+	Root-Of-R000300a1, Before-R000201a5-branch-merge3,
+	Before-R000201-branch-merge2, Before-Sad),
+	ql/Pricers/dividendeuropeanoption.hpp (1.6, Root-Of-R000300a2,
+	Root-Of-R000300a1, Before-R000201a5-branch-merge3,
+	Before-R000201-branch-merge2, Before-Sad),
+	ql/Pricers/dividendoption.cpp (1.7, Root-Of-R000300a2,
+	Root-Of-R000300a1, Before-R000201a5-branch-merge3,
+	Before-R000201-branch-merge2, Before-Sad),
+	ql/Pricers/dividendoption.hpp (1.5, Root-Of-R000300a2,
+	Root-Of-R000300a1, Before-R000201a5-branch-merge3,
+	Before-R000201-branch-merge2, Before-Sad),
+	ql/Pricers/dividendshoutoption.cpp (1.5, Root-Of-R000300a2,
+	Root-Of-R000300a1, Before-R000201a5-branch-merge3,
+	Before-R000201-branch-merge2, Before-Sad),
+	ql/Pricers/dividendshoutoption.hpp (1.5, Root-Of-R000300a2,
+	Root-Of-R000300a1, Before-R000201a5-branch-merge3,
+	Before-R000201-branch-merge2, Before-Sad),
+	ql/Pricers/europeanengine.cpp (1.2, Root-Of-R000300a2,
+	Root-Of-R000300a1, Before-R000201a5-branch-merge3,
+	Before-R000201-branch-merge2, Before-Sad),
+	ql/Pricers/europeanengine.hpp (1.3, Root-Of-R000300a2,
+	Root-Of-R000300a1, Before-R000201a5-branch-merge3,
+	Before-R000201-branch-merge2, Before-Sad),
+	ql/Pricers/europeanoption.cpp (1.5, Root-Of-R000300a2,
+	Root-Of-R000300a1, Before-R000201a5-branch-merge3,
+	Before-R000201-branch-merge2, Before-Sad),
+	ql/Pricers/europeanoption.hpp (1.7, Root-Of-R000300a2,
+	Root-Of-R000300a1, Before-R000201a5-branch-merge3,
+	Before-R000201-branch-merge2, Before-Sad),
+	ql/Pricers/finitedifferenceeuropean.cpp (1.6, Root-Of-R000300a2,
+	Root-Of-R000300a1, Before-R000201a5-branch-merge3,
+	Before-R000201-branch-merge2, Before-Sad),
+	ql/Pricers/finitedifferenceeuropean.hpp (1.8, Root-Of-R000300a2,
+	Root-Of-R000300a1, Before-R000201a5-branch-merge3,
+	Before-R000201-branch-merge2, Before-Sad), ql/Pricers/makefile.mak
+	(1.8, Before-Sad), ql/Pricers/mcbasket.cpp (1.2, Root-Of-R000300a2,
+	Root-Of-R000300a1, Before-R000201a5-branch-merge3,
 	Before-R000201-branch-merge2, Before-Sad), ql/Pricers/mcbasket.hpp
-	(1.3, Before-R000201a5-branch-merge3, Before-R000201-branch-merge2,
+	(1.3, Root-Of-R000300a2, Root-Of-R000300a1,
+	Before-R000201a5-branch-merge3, Before-R000201-branch-merge2,
 	Before-Sad), ql/Pricers/mcdiscretearithmeticapo.cpp (1.2,
 	Before-Sad), ql/Pricers/mcdiscretearithmeticapo.hpp (1.2,
 	Before-Sad), ql/Pricers/mcdiscretearithmeticaso.cpp (1.3,
 	Before-Sad), ql/Pricers/mcdiscretearithmeticaso.hpp (1.2,
-	Before-Sad), ql/Pricers/mceuropean.cpp (1.4,
-	Before-R000201a5-branch-merge3, Before-R000201-branch-merge2,
-	Before-Sad), ql/Pricers/mceuropean.hpp (1.4, Before-Sad),
-	ql/Pricers/mceverest.cpp (1.4, Before-R000201a5-branch-merge3,
+	Before-Sad), ql/Pricers/mceuropean.cpp (1.4, Root-Of-R000300a2,
+	Root-Of-R000300a1, Before-R000201a5-branch-merge3,
+	Before-R000201-branch-merge2, Before-Sad),
+	ql/Pricers/mceuropean.hpp (1.4, Before-Sad),
+	ql/Pricers/mceverest.cpp (1.4, Root-Of-R000300a2,
+	Root-Of-R000300a1, Before-R000201a5-branch-merge3,
 	Before-R000201-branch-merge2, Before-Sad), ql/Pricers/mceverest.hpp
-	(1.3, Before-R000201a5-branch-merge3, Before-R000201-branch-merge2,
-	Before-Sad), ql/Pricers/mchimalaya.cpp (1.3,
+	(1.3, Root-Of-R000300a2, Root-Of-R000300a1,
 	Before-R000201a5-branch-merge3, Before-R000201-branch-merge2,
-	Before-Sad), ql/Pricers/mchimalaya.hpp (1.2, Before-Sad),
-	ql/Pricers/mcmaxbasket.cpp (1.2, Before-R000201a5-branch-merge3,
+	Before-Sad), ql/Pricers/mchimalaya.cpp (1.3, Root-Of-R000300a2,
+	Root-Of-R000300a1, Before-R000201a5-branch-merge3,
 	Before-R000201-branch-merge2, Before-Sad),
-	ql/Pricers/mcmaxbasket.hpp (1.2, Before-R000201a5-branch-merge3,
+	ql/Pricers/mchimalaya.hpp (1.2, Before-Sad),
+	ql/Pricers/mcmaxbasket.cpp (1.2, Root-Of-R000300a2,
+	Root-Of-R000300a1, Before-R000201a5-branch-merge3,
+	Before-R000201-branch-merge2, Before-Sad),
+	ql/Pricers/mcmaxbasket.hpp (1.2, Root-Of-R000300a2,
+	Root-Of-R000300a1, Before-R000201a5-branch-merge3,
 	Before-R000201-branch-merge2, Before-Sad), ql/Pricers/mcpagoda.cpp
-	(1.3, Before-R000201a5-branch-merge3, Before-R000201-branch-merge2,
+	(1.3, Root-Of-R000300a2, Root-Of-R000300a1,
+	Before-R000201a5-branch-merge3, Before-R000201-branch-merge2,
 	Before-Sad), ql/Pricers/mcpagoda.hpp (1.3, Before-Sad),
-	ql/Pricers/mcpricer.hpp (1.8, Before-R000201a5-branch-merge3,
-	Before-R000201-branch-merge2, Before-Sad),
-	ql/Pricers/multiperiodoption.cpp (1.6,
+	ql/Pricers/mcpricer.hpp (1.8, Root-Of-R000300a2, Root-Of-R000300a1,
+	Before-R000201a5-branch-merge3, Before-R000201-branch-merge2,
+	Before-Sad), ql/Pricers/multiperiodoption.cpp (1.6,
+	Root-Of-R000300a2, Root-Of-R000300a1,
 	Before-R000201a5-branch-merge3, Before-R000201-branch-merge2,
 	Before-Sad), ql/Pricers/multiperiodoption.hpp (1.9,
+	Root-Of-R000300a2, Root-Of-R000300a1,
 	Before-R000201a5-branch-merge3, Before-R000201-branch-merge2,
-	Before-Sad), ql/Pricers/shoutcondition.hpp (1.4,
-	Before-R000201a5-branch-merge3, Before-R000201-branch-merge2,
-	Before-Sad), ql/Pricers/shoutoption.hpp (1.5,
-	Before-R000201a5-branch-merge3, Before-R000201-branch-merge2,
-	Before-Sad), ql/Pricers/singleassetoption.cpp (1.9,
-	Before-R000201a5-branch-merge3, Before-R000201-branch-merge2,
-	Before-Sad), ql/Pricers/singleassetoption.hpp (1.10,
-	Before-R000201a5-branch-merge3, Before-R000201-branch-merge2,
-	Before-Sad), ql/Pricers/stepconditionoption.cpp (1.6,
-	Before-R000201a5-branch-merge3, Before-R000201-branch-merge2,
-	Before-Sad), ql/Pricers/stepconditionoption.hpp (1.6,
-	Before-R000201a5-branch-merge3, Before-R000201-branch-merge2,
-	Before-Sad), ql/RandomNumbers/boxmullergaussianrng.hpp (1.3,
-	Before-R000201a5-branch-merge3, Before-R000201-branch-merge2,
-	Before-Sad), ql/RandomNumbers/centrallimitgaussianrng.hpp (1.3,
+	Before-Sad), ql/Pricers/shoutcondition.hpp (1.4, Root-Of-R000300a2,
+	Root-Of-R000300a1, Before-R000201a5-branch-merge3,
+	Before-R000201-branch-merge2, Before-Sad),
+	ql/Pricers/shoutoption.hpp (1.5, Root-Of-R000300a2,
+	Root-Of-R000300a1, Before-R000201a5-branch-merge3,
+	Before-R000201-branch-merge2, Before-Sad),
+	ql/Pricers/singleassetoption.cpp (1.9, Root-Of-R000300a2,
+	Root-Of-R000300a1, Before-R000201a5-branch-merge3,
+	Before-R000201-branch-merge2, Before-Sad),
+	ql/Pricers/singleassetoption.hpp (1.10, Root-Of-R000300a2,
+	Root-Of-R000300a1, Before-R000201a5-branch-merge3,
+	Before-R000201-branch-merge2, Before-Sad),
+	ql/Pricers/stepconditionoption.cpp (1.6, Root-Of-R000300a2,
+	Root-Of-R000300a1, Before-R000201a5-branch-merge3,
+	Before-R000201-branch-merge2, Before-Sad),
+	ql/Pricers/stepconditionoption.hpp (1.6, Root-Of-R000300a2,
+	Root-Of-R000300a1, Before-R000201a5-branch-merge3,
+	Before-R000201-branch-merge2, Before-Sad),
+	ql/RandomNumbers/boxmullergaussianrng.hpp (1.3, Root-Of-R000300a2,
+	Root-Of-R000300a1, Before-R000201a5-branch-merge3,
+	Before-R000201-branch-merge2, Before-Sad),
+	ql/RandomNumbers/centrallimitgaussianrng.hpp (1.3,
+	Root-Of-R000300a2, Root-Of-R000300a1,
 	Before-R000201a5-branch-merge3, Before-R000201-branch-merge2,
 	Before-Sad), ql/RandomNumbers/inversecumulativegaussianrng.hpp
-	(1.3, Before-R000201a5-branch-merge3, Before-R000201-branch-merge2,
+	(1.3, Root-Of-R000300a2, Root-Of-R000300a1,
+	Before-R000201a5-branch-merge3, Before-R000201-branch-merge2,
 	Before-Sad), ql/RandomNumbers/knuthuniformrng.cpp (1.2,
+	Root-Of-R000300a2, Root-Of-R000300a1,
 	Before-R000201a5-branch-merge3, Before-R000201-branch-merge2,
 	Before-Sad), ql/RandomNumbers/knuthuniformrng.hpp (1.5,
+	Root-Of-R000300a2, Root-Of-R000300a1,
 	Before-R000201a5-branch-merge3, Before-R000201-branch-merge2,
 	Before-Sad), ql/RandomNumbers/lecuyeruniformrng.cpp (1.2,
+	Root-Of-R000300a2, Root-Of-R000300a1,
 	Before-R000201a5-branch-merge3, Before-R000201-branch-merge2,
 	Before-Sad), ql/RandomNumbers/lecuyeruniformrng.hpp (1.3,
+	Root-Of-R000300a2, Root-Of-R000300a1,
 	Before-R000201a5-branch-merge3, Before-R000201-branch-merge2,
 	Before-Sad), ql/RandomNumbers/randomarraygenerator.hpp (1.4,
+	Root-Of-R000300a2, Root-Of-R000300a1,
 	Before-R000201a5-branch-merge3, Before-R000201-branch-merge2,
 	Before-Sad), ql/RandomNumbers/rngtypedefs.hpp (1.4,
+	Root-Of-R000300a2, Root-Of-R000300a1,
 	Before-R000201a5-branch-merge3, Before-R000201-branch-merge2,
-	Before-Sad), ql/Solvers1D/bisection.cpp (1.3,
+	Before-Sad), ql/Solvers1D/bisection.cpp (1.3, Root-Of-R000300a2,
+	Root-Of-R000300a1, Before-R000201a5-branch-merge3,
+	Before-R000201-branch-merge2, Before-Sad),
+	ql/Solvers1D/bisection.hpp (1.3, Root-Of-R000300a2,
+	Root-Of-R000300a1, Before-R000201a5-branch-merge3,
+	Before-R000201-branch-merge2, Before-Sad), ql/Solvers1D/brent.cpp
+	(1.4, Root-Of-R000300a2, Root-Of-R000300a1,
 	Before-R000201a5-branch-merge3, Before-R000201-branch-merge2,
-	Before-Sad), ql/Solvers1D/bisection.hpp (1.3,
+	Before-Sad), ql/Solvers1D/brent.hpp (1.3, Root-Of-R000300a2,
+	Root-Of-R000300a1, Before-R000201a5-branch-merge3,
+	Before-R000201-branch-merge2, Before-Sad),
+	ql/Solvers1D/falseposition.cpp (1.3, Root-Of-R000300a2,
+	Root-Of-R000300a1, Before-R000201a5-branch-merge3,
+	Before-R000201-branch-merge2, Before-Sad),
+	ql/Solvers1D/falseposition.hpp (1.3, Root-Of-R000300a2,
+	Root-Of-R000300a1, Before-R000201a5-branch-merge3,
+	Before-R000201-branch-merge2, Before-Sad), ql/Solvers1D/newton.cpp
+	(1.3, Root-Of-R000300a2, Root-Of-R000300a1,
 	Before-R000201a5-branch-merge3, Before-R000201-branch-merge2,
-	Before-Sad), ql/Solvers1D/brent.cpp (1.4,
+	Before-Sad), ql/Solvers1D/newton.hpp (1.3, Root-Of-R000300a2,
+	Root-Of-R000300a1, Before-R000201a5-branch-merge3,
+	Before-R000201-branch-merge2, Before-Sad),
+	ql/Solvers1D/newtonsafe.cpp (1.4, Root-Of-R000300a2,
+	Root-Of-R000300a1, Before-R000201a5-branch-merge3,
+	Before-R000201-branch-merge2, Before-Sad),
+	ql/Solvers1D/newtonsafe.hpp (1.4, Root-Of-R000300a2,
+	Root-Of-R000300a1, Before-R000201a5-branch-merge3,
+	Before-R000201-branch-merge2, Before-Sad), ql/Solvers1D/ridder.cpp
+	(1.3, Root-Of-R000300a2, Root-Of-R000300a1,
 	Before-R000201a5-branch-merge3, Before-R000201-branch-merge2,
-	Before-Sad), ql/Solvers1D/brent.hpp (1.3,
+	Before-Sad), ql/Solvers1D/ridder.hpp (1.3, Root-Of-R000300a2,
+	Root-Of-R000300a1, Before-R000201a5-branch-merge3,
+	Before-R000201-branch-merge2, Before-Sad), ql/Solvers1D/secant.cpp
+	(1.3, Root-Of-R000300a2, Root-Of-R000300a1,
 	Before-R000201a5-branch-merge3, Before-R000201-branch-merge2,
-	Before-Sad), ql/Solvers1D/falseposition.cpp (1.3,
-	Before-R000201a5-branch-merge3, Before-R000201-branch-merge2,
-	Before-Sad), ql/Solvers1D/falseposition.hpp (1.3,
-	Before-R000201a5-branch-merge3, Before-R000201-branch-merge2,
-	Before-Sad), ql/Solvers1D/newton.cpp (1.3,
-	Before-R000201a5-branch-merge3, Before-R000201-branch-merge2,
-	Before-Sad), ql/Solvers1D/newton.hpp (1.3,
-	Before-R000201a5-branch-merge3, Before-R000201-branch-merge2,
-	Before-Sad), ql/Solvers1D/newtonsafe.cpp (1.4,
-	Before-R000201a5-branch-merge3, Before-R000201-branch-merge2,
-	Before-Sad), ql/Solvers1D/newtonsafe.hpp (1.4,
-	Before-R000201a5-branch-merge3, Before-R000201-branch-merge2,
-	Before-Sad), ql/Solvers1D/ridder.cpp (1.3,
-	Before-R000201a5-branch-merge3, Before-R000201-branch-merge2,
-	Before-Sad), ql/Solvers1D/ridder.hpp (1.3,
-	Before-R000201a5-branch-merge3, Before-R000201-branch-merge2,
-	Before-Sad), ql/Solvers1D/secant.cpp (1.3,
-	Before-R000201a5-branch-merge3, Before-R000201-branch-merge2,
-	Before-Sad), ql/Solvers1D/secant.hpp (1.3,
-	Before-R000201a5-branch-merge3, Before-R000201-branch-merge2,
-	Before-Sad), ql/TermStructures/flatforward.hpp (1.9,
-	Before-R000201a5-branch-merge3, Before-R000201-branch-merge2,
-	Before-Sad), ql/TermStructures/piecewiseflatforward.cpp (1.10,
+	Before-Sad), ql/Solvers1D/secant.hpp (1.3, Root-Of-R000300a2,
+	Root-Of-R000300a1, Before-R000201a5-branch-merge3,
+	Before-R000201-branch-merge2, Before-Sad),
+	ql/TermStructures/flatforward.hpp (1.9, Root-Of-R000300a2,
+	Root-Of-R000300a1, Before-R000201a5-branch-merge3,
+	Before-R000201-branch-merge2, Before-Sad),
+	ql/TermStructures/piecewiseflatforward.cpp (1.10,
+	Root-Of-R000300a2, Root-Of-R000300a1,
 	Before-R000201a5-branch-merge3, Before-R000201-branch-merge2,
 	Before-Sad), ql/TermStructures/piecewiseflatforward.hpp (1.11,
+	Root-Of-R000300a2, Root-Of-R000300a1,
 	Before-R000201a5-branch-merge3, Before-R000201-branch-merge2,
 	Before-Sad), ql/TermStructures/ratehelpers.cpp (1.13,
+	Root-Of-R000300a2, Root-Of-R000300a1,
 	Before-R000201a5-branch-merge3, Before-R000201-branch-merge2,
 	Before-Sad), ql/TermStructures/ratehelpers.hpp (1.13,
 	Before-R000201-branch-merge2, Before-Sad),
-	ql/Utilities/couplingiterator.hpp (1.3,
-	Before-R000201a5-branch-merge3, Before-R000201-branch-merge2,
-	Before-Sad): R000201-branch-merge1 merged into trunk
+	ql/Utilities/couplingiterator.hpp (1.3, Root-Of-R000300a2,
+	Root-Of-R000300a1, Before-R000201a5-branch-merge3,
+	Before-R000201-branch-merge2, Before-Sad): R000201-branch-merge1
+	merged into trunk
 
 2001-11-29 12:32  'Ferdinando Ametrano <ferdinando@ametrano.net>'
 
@@ -1500,10 +1801,11 @@
 2001-11-20 16:17  'Ferdinando Ametrano <ferdinando@ametrano.net>'
 
 	* QuantLib.nsi (1.50), configure.in (1.54, Before-Sad),
-	Docs/quantlib.doxy (1.40, Before-R000201a5-branch-merge3,
-	Before-R000201-branch-merge2, Before-Sad), ql/qldefines.hpp (1.16)
-	(utags: Before-R000201-branch-merge1,
-	Before-R000201a5-branch-merge2): version number up to 0.3.0a1
+	Docs/quantlib.doxy (1.40, Root-Of-R000300a1,
+	Before-R000201a5-branch-merge3, Before-R000201-branch-merge2,
+	Before-Sad), ql/qldefines.hpp (1.16) (utags:
+	Before-R000201-branch-merge1, Before-R000201a5-branch-merge2):
+	version number up to 0.3.0a1
 
 2001-11-20 15:54  'Ferdinando Ametrano <ferdinando@ametrano.net>'
 
@@ -1562,11 +1864,12 @@
 
 2001-11-20 10:41  'Ferdinando Ametrano <ferdinando@ametrano.net>'
 
-	* makefile.mak (1.26, Before-R000201a5-branch-merge3,
-	R000201-branch-merge2, Before-R000201-branch-merge2, Before-Sad,
-	R000201-branch-merge1, Before-R000201-branch-merge1,
-	Before-R000201a5-branch-merge2, Root-Of-R000201,
-	Before-R000201a5-branch-merge1): install directive is now inst
+	* makefile.mak (1.26, Root-Of-R000300a2, Root-Of-R000300a1,
+	Before-R000201a5-branch-merge3, R000201-branch-merge2,
+	Before-R000201-branch-merge2, Before-Sad, R000201-branch-merge1,
+	Before-R000201-branch-merge1, Before-R000201a5-branch-merge2,
+	Root-Of-R000201, Before-R000201a5-branch-merge1): install directive
+	is now inst
 
 2001-11-19 18:20  'Ferdinando Ametrano <ferdinando@ametrano.net>'
 
@@ -1694,72 +1997,82 @@
 
 2001-11-15 16:36  'Luigi Ballabio <luigi.ballabio@riskmap.net>'
 
-	* Makefile.am (1.63, Before-R000201a5-branch-merge3,
-	R000201-branch-merge2, Before-R000201-branch-merge2, Before-Sad,
-	R000201-branch-merge1, Before-R000201-branch-merge1,
-	Before-R000201a5-branch-merge2, Root-Of-R000201,
-	Before-R000201a5-branch-merge1), Docs/Makefile.am (1.38,
+	* Makefile.am (1.63, Root-Of-R000300a2, Root-Of-R000300a1,
+	Before-R000201a5-branch-merge3, R000201-branch-merge2,
+	Before-R000201-branch-merge2, Before-Sad, R000201-branch-merge1,
 	Before-R000201-branch-merge1, Before-R000201a5-branch-merge2,
-	Root-Of-R000201, Before-R000201a5-branch-merge1), Docs/authors.docs
-	(1.3), Docs/calendars.docs (1.2), Docs/cashflows.docs (1.3),
-	Docs/configure.in (1.3, Before-R000201a5-branch-merge3,
-	R000201-branch-merge2, Before-R000201-branch-merge2, Before-Sad,
-	R000201-branch-merge1, Before-R000201-branch-merge1,
+	Root-Of-R000201, Before-R000201a5-branch-merge1), Docs/Makefile.am
+	(1.38, Before-R000201-branch-merge1,
 	Before-R000201a5-branch-merge2, Root-Of-R000201,
-	Before-R000201a5-branch-merge1), Docs/coreclasses.docs (1.5),
-	Docs/currencies.docs (1.2), Docs/daycounters.docs (1.2),
-	Docs/examples.docs (1.7), Docs/findiff.docs (1.8), Docs/groups.docs
-	(1.3), Docs/history.docs (1.2), Docs/index.docs (1.5),
-	Docs/indexes.docs (1.2), Docs/install.docs (1.4),
-	Docs/instruments.docs (1.2), Docs/license.docs (1.3),
-	Docs/math.docs (1.2), Docs/mcarlo.docs (1.5), Docs/overview.docs
-	(1.2), Docs/patterns.docs (1.3), Docs/platforms.docs (1.6),
-	Docs/pricers.docs (1.3), Docs/quantlib.doxy (1.36),
-	Docs/quantlibheader.html (1.10, Before-R000201a5-branch-merge3,
-	R000201-branch-merge2, Before-R000201-branch-merge2, Before-Sad,
-	R000201-branch-merge1, Before-R000201-branch-merge1,
-	Before-R000201a5-branch-merge2, Root-Of-R000201,
-	Before-R000201a5-branch-merge1), Docs/quantlibheader.tex (1.10,
+	Before-R000201a5-branch-merge1), Docs/authors.docs (1.3),
+	Docs/calendars.docs (1.2), Docs/cashflows.docs (1.3),
+	Docs/configure.in (1.3, Root-Of-R000300a2, Root-Of-R000300a1,
 	Before-R000201a5-branch-merge3, R000201-branch-merge2,
 	Before-R000201-branch-merge2, Before-Sad, R000201-branch-merge1,
 	Before-R000201-branch-merge1, Before-R000201a5-branch-merge2,
 	Root-Of-R000201, Before-R000201a5-branch-merge1),
-	Docs/randomnumbers.docs (1.2), Docs/resources.docs (1.3),
-	Docs/solvers1d.docs (1.2), Docs/termstructures.docs (1.2),
-	Docs/usage.docs (1.6), Docs/utilities.docs (1.3), Docs/where.docs
-	(1.5), Docs/pages/Makefile.am (1.1, Before-R000201a5-branch-merge3,
-	R000201-branch-merge2, Before-R000201-branch-merge2, Before-Sad,
-	R000201-branch-merge1, Before-R000201-branch-merge1,
-	Before-R000201a5-branch-merge2, Root-Of-R000201,
-	Before-R000201a5-branch-merge1), Docs/pages/authors.docs (1.1,
-	Before-Sad, R000201-branch-merge1, Before-R000201-branch-merge1,
-	Before-R000201a5-branch-merge2, Root-Of-R000201,
-	Before-R000201a5-branch-merge1), Docs/pages/cashflows.docs (1.1,
+	Docs/coreclasses.docs (1.5), Docs/currencies.docs (1.2),
+	Docs/daycounters.docs (1.2), Docs/examples.docs (1.7),
+	Docs/findiff.docs (1.8), Docs/groups.docs (1.3), Docs/history.docs
+	(1.2), Docs/index.docs (1.5), Docs/indexes.docs (1.2),
+	Docs/install.docs (1.4), Docs/instruments.docs (1.2),
+	Docs/license.docs (1.3), Docs/math.docs (1.2), Docs/mcarlo.docs
+	(1.5), Docs/overview.docs (1.2), Docs/patterns.docs (1.3),
+	Docs/platforms.docs (1.6), Docs/pricers.docs (1.3),
+	Docs/quantlib.doxy (1.36), Docs/quantlibheader.html (1.10,
+	Root-Of-R000300a2, Root-Of-R000300a1,
 	Before-R000201a5-branch-merge3, R000201-branch-merge2,
 	Before-R000201-branch-merge2, Before-Sad, R000201-branch-merge1,
 	Before-R000201-branch-merge1, Before-R000201a5-branch-merge2,
 	Root-Of-R000201, Before-R000201a5-branch-merge1),
-	Docs/pages/coreclasses.docs (1.1, Before-R000201a5-branch-merge3,
+	Docs/quantlibheader.tex (1.10, Root-Of-R000300a2,
+	Root-Of-R000300a1, Before-R000201a5-branch-merge3,
 	R000201-branch-merge2, Before-R000201-branch-merge2, Before-Sad,
 	R000201-branch-merge1, Before-R000201-branch-merge1,
 	Before-R000201a5-branch-merge2, Root-Of-R000201,
-	Before-R000201a5-branch-merge1), Docs/pages/currencies.docs (1.1,
+	Before-R000201a5-branch-merge1), Docs/randomnumbers.docs (1.2),
+	Docs/resources.docs (1.3), Docs/solvers1d.docs (1.2),
+	Docs/termstructures.docs (1.2), Docs/usage.docs (1.6),
+	Docs/utilities.docs (1.3), Docs/where.docs (1.5),
+	Docs/pages/Makefile.am (1.1, Root-Of-R000300a2, Root-Of-R000300a1,
 	Before-R000201a5-branch-merge3, R000201-branch-merge2,
 	Before-R000201-branch-merge2, Before-Sad, R000201-branch-merge1,
 	Before-R000201-branch-merge1, Before-R000201a5-branch-merge2,
 	Root-Of-R000201, Before-R000201a5-branch-merge1),
-	Docs/pages/datetime.docs (1.1, Before-R000201a5-branch-merge3,
+	Docs/pages/authors.docs (1.1, Before-Sad, R000201-branch-merge1,
+	Before-R000201-branch-merge1, Before-R000201a5-branch-merge2,
+	Root-Of-R000201, Before-R000201a5-branch-merge1),
+	Docs/pages/cashflows.docs (1.1, Root-Of-R000300a2,
+	Root-Of-R000300a1, Before-R000201a5-branch-merge3,
 	R000201-branch-merge2, Before-R000201-branch-merge2, Before-Sad,
 	R000201-branch-merge1, Before-R000201-branch-merge1,
 	Before-R000201a5-branch-merge2, Root-Of-R000201,
-	Before-R000201a5-branch-merge1), Docs/pages/examples.docs (1.1,
+	Before-R000201a5-branch-merge1), Docs/pages/coreclasses.docs (1.1,
+	Root-Of-R000300a2, Root-Of-R000300a1,
 	Before-R000201a5-branch-merge3, R000201-branch-merge2,
 	Before-R000201-branch-merge2, Before-Sad, R000201-branch-merge1,
 	Before-R000201-branch-merge1, Before-R000201a5-branch-merge2,
 	Root-Of-R000201, Before-R000201a5-branch-merge1),
-	Docs/pages/findiff.docs (1.1, Before-R000201-branch-merge1,
+	Docs/pages/currencies.docs (1.1, Root-Of-R000300a2,
+	Root-Of-R000300a1, Before-R000201a5-branch-merge3,
+	R000201-branch-merge2, Before-R000201-branch-merge2, Before-Sad,
+	R000201-branch-merge1, Before-R000201-branch-merge1,
 	Before-R000201a5-branch-merge2, Root-Of-R000201,
-	Before-R000201a5-branch-merge1), Docs/pages/groups.docs (1.1,
+	Before-R000201a5-branch-merge1), Docs/pages/datetime.docs (1.1,
+	Root-Of-R000300a2, Root-Of-R000300a1,
+	Before-R000201a5-branch-merge3, R000201-branch-merge2,
+	Before-R000201-branch-merge2, Before-Sad, R000201-branch-merge1,
+	Before-R000201-branch-merge1, Before-R000201a5-branch-merge2,
+	Root-Of-R000201, Before-R000201a5-branch-merge1),
+	Docs/pages/examples.docs (1.1, Root-Of-R000300a2,
+	Root-Of-R000300a1, Before-R000201a5-branch-merge3,
+	R000201-branch-merge2, Before-R000201-branch-merge2, Before-Sad,
+	R000201-branch-merge1, Before-R000201-branch-merge1,
+	Before-R000201a5-branch-merge2, Root-Of-R000201,
+	Before-R000201a5-branch-merge1), Docs/pages/findiff.docs (1.1,
+	Before-R000201-branch-merge1, Before-R000201a5-branch-merge2,
+	Root-Of-R000201, Before-R000201a5-branch-merge1),
+	Docs/pages/groups.docs (1.1, Root-Of-R000300a2, Root-Of-R000300a1,
 	Before-R000201a5-branch-merge3, R000201-branch-merge2,
 	Before-R000201-branch-merge2, Before-Sad, R000201-branch-merge1,
 	Before-R000201-branch-merge1, Before-R000201a5-branch-merge2,
@@ -1767,81 +2080,93 @@
 	Docs/pages/history.docs (1.1, Before-R000201-branch-merge1,
 	Before-R000201a5-branch-merge2, Root-Of-R000201,
 	Before-R000201a5-branch-merge1), Docs/pages/index.docs (1.1,
+	Root-Of-R000300a2, Root-Of-R000300a1,
 	Before-R000201a5-branch-merge3, R000201-branch-merge2,
 	Before-R000201-branch-merge2, Before-Sad, R000201-branch-merge1,
 	Before-R000201-branch-merge1, Before-R000201a5-branch-merge2,
 	Root-Of-R000201, Before-R000201a5-branch-merge1),
-	Docs/pages/indexes.docs (1.1, Before-R000201a5-branch-merge3,
-	R000201-branch-merge2, Before-R000201-branch-merge2, Before-Sad,
-	R000201-branch-merge1, Before-R000201-branch-merge1,
-	Before-R000201a5-branch-merge2, Root-Of-R000201,
-	Before-R000201a5-branch-merge1), Docs/pages/install.docs (1.1,
+	Docs/pages/indexes.docs (1.1, Root-Of-R000300a2, Root-Of-R000300a1,
 	Before-R000201a5-branch-merge3, R000201-branch-merge2,
 	Before-R000201-branch-merge2, Before-Sad, R000201-branch-merge1,
 	Before-R000201-branch-merge1, Before-R000201a5-branch-merge2,
 	Root-Of-R000201, Before-R000201a5-branch-merge1),
-	Docs/pages/instruments.docs (1.1, Before-R000201a5-branch-merge3,
+	Docs/pages/install.docs (1.1, Root-Of-R000300a2, Root-Of-R000300a1,
+	Before-R000201a5-branch-merge3, R000201-branch-merge2,
+	Before-R000201-branch-merge2, Before-Sad, R000201-branch-merge1,
+	Before-R000201-branch-merge1, Before-R000201a5-branch-merge2,
+	Root-Of-R000201, Before-R000201a5-branch-merge1),
+	Docs/pages/instruments.docs (1.1, Root-Of-R000300a2,
+	Root-Of-R000300a1, Before-R000201a5-branch-merge3,
 	R000201-branch-merge2, Before-R000201-branch-merge2, Before-Sad,
 	R000201-branch-merge1, Before-R000201-branch-merge1,
 	Before-R000201a5-branch-merge2, Root-Of-R000201,
 	Before-R000201a5-branch-merge1), Docs/pages/license.docs (1.1,
+	Root-Of-R000300a2, Root-Of-R000300a1,
 	Before-R000201a5-branch-merge3, R000201-branch-merge2,
 	Before-R000201-branch-merge2, Before-Sad, R000201-branch-merge1,
 	Before-R000201-branch-merge1, Before-R000201a5-branch-merge2,
 	Root-Of-R000201, Before-R000201a5-branch-merge1),
-	Docs/pages/math.docs (1.1, Before-R000201a5-branch-merge3,
+	Docs/pages/math.docs (1.1, Root-Of-R000300a2, Root-Of-R000300a1,
+	Before-R000201a5-branch-merge3, R000201-branch-merge2,
+	Before-R000201-branch-merge2, Before-Sad, R000201-branch-merge1,
+	Before-R000201-branch-merge1, Before-R000201a5-branch-merge2,
+	Root-Of-R000201, Before-R000201a5-branch-merge1),
+	Docs/pages/mcarlo.docs (1.1, Before-R000201-branch-merge1,
+	Before-R000201a5-branch-merge2, Root-Of-R000201,
+	Before-R000201a5-branch-merge1), Docs/pages/overview.docs (1.1,
+	Root-Of-R000300a2, Root-Of-R000300a1,
+	Before-R000201a5-branch-merge3, R000201-branch-merge2,
+	Before-R000201-branch-merge2, Before-Sad, R000201-branch-merge1,
+	Before-R000201-branch-merge1, Before-R000201a5-branch-merge2,
+	Root-Of-R000201, Before-R000201a5-branch-merge1),
+	Docs/pages/patterns.docs (1.1, Root-Of-R000300a2,
+	Root-Of-R000300a1, Before-R000201a5-branch-merge3,
 	R000201-branch-merge2, Before-R000201-branch-merge2, Before-Sad,
 	R000201-branch-merge1, Before-R000201-branch-merge1,
 	Before-R000201a5-branch-merge2, Root-Of-R000201,
-	Before-R000201a5-branch-merge1), Docs/pages/mcarlo.docs (1.1,
-	Before-R000201-branch-merge1, Before-R000201a5-branch-merge2,
-	Root-Of-R000201, Before-R000201a5-branch-merge1),
-	Docs/pages/overview.docs (1.1, Before-R000201a5-branch-merge3,
-	R000201-branch-merge2, Before-R000201-branch-merge2, Before-Sad,
-	R000201-branch-merge1, Before-R000201-branch-merge1,
-	Before-R000201a5-branch-merge2, Root-Of-R000201,
-	Before-R000201a5-branch-merge1), Docs/pages/patterns.docs (1.1,
-	Before-R000201a5-branch-merge3, R000201-branch-merge2,
-	Before-R000201-branch-merge2, Before-Sad, R000201-branch-merge1,
-	Before-R000201-branch-merge1, Before-R000201a5-branch-merge2,
-	Root-Of-R000201, Before-R000201a5-branch-merge1),
-	Docs/pages/platforms.docs (1.1, Before-Sad, R000201-branch-merge1,
-	Before-R000201-branch-merge1, Before-R000201a5-branch-merge2,
-	Root-Of-R000201, Before-R000201a5-branch-merge1),
-	Docs/pages/pricers.docs (1.1, Before-R000201-branch-merge1,
-	Before-R000201a5-branch-merge2, Root-Of-R000201,
-	Before-R000201a5-branch-merge1), Docs/pages/randomnumbers.docs
-	(1.1, Before-R000201a5-branch-merge3, R000201-branch-merge2,
-	Before-R000201-branch-merge2, Before-Sad, R000201-branch-merge1,
-	Before-R000201-branch-merge1, Before-R000201a5-branch-merge2,
-	Root-Of-R000201, Before-R000201a5-branch-merge1),
-	Docs/pages/resources.docs (1.1, Before-R000201a5-branch-merge3,
-	R000201-branch-merge2, Before-R000201-branch-merge2, Before-Sad,
-	R000201-branch-merge1, Before-R000201-branch-merge1,
-	Before-R000201a5-branch-merge2, Root-Of-R000201,
-	Before-R000201a5-branch-merge1), Docs/pages/solvers1d.docs (1.1,
-	Before-R000201a5-branch-merge3, R000201-branch-merge2,
-	Before-R000201-branch-merge2, Before-Sad, R000201-branch-merge1,
-	Before-R000201-branch-merge1, Before-R000201a5-branch-merge2,
-	Root-Of-R000201, Before-R000201a5-branch-merge1),
-	Docs/pages/termstructures.docs (1.1,
-	Before-R000201a5-branch-merge3, R000201-branch-merge2,
-	Before-R000201-branch-merge2, Before-Sad, R000201-branch-merge1,
-	Before-R000201-branch-merge1, Before-R000201a5-branch-merge2,
-	Root-Of-R000201, Before-R000201a5-branch-merge1),
-	Docs/pages/usage.docs (1.1, Before-R000201a5-branch-merge3,
-	R000201-branch-merge2, Before-R000201-branch-merge2, Before-Sad,
-	R000201-branch-merge1, Before-R000201-branch-merge1,
-	Before-R000201a5-branch-merge2, Root-Of-R000201,
-	Before-R000201a5-branch-merge1), Docs/pages/utilities.docs (1.1,
-	Before-R000201a5-branch-merge3, R000201-branch-merge2,
-	Before-R000201-branch-merge2, Before-Sad, R000201-branch-merge1,
-	Before-R000201-branch-merge1, Before-R000201a5-branch-merge2,
-	Root-Of-R000201, Before-R000201a5-branch-merge1),
-	Docs/pages/where.docs (1.1, Before-R000201-branch-merge2,
+	Before-R000201a5-branch-merge1), Docs/pages/platforms.docs (1.1,
 	Before-Sad, R000201-branch-merge1, Before-R000201-branch-merge1,
 	Before-R000201a5-branch-merge2, Root-Of-R000201,
-	Before-R000201a5-branch-merge1), Docs/userman.tex (1.1,
+	Before-R000201a5-branch-merge1), Docs/pages/pricers.docs (1.1,
+	Before-R000201-branch-merge1, Before-R000201a5-branch-merge2,
+	Root-Of-R000201, Before-R000201a5-branch-merge1),
+	Docs/pages/randomnumbers.docs (1.1, Root-Of-R000300a2,
+	Root-Of-R000300a1, Before-R000201a5-branch-merge3,
+	R000201-branch-merge2, Before-R000201-branch-merge2, Before-Sad,
+	R000201-branch-merge1, Before-R000201-branch-merge1,
+	Before-R000201a5-branch-merge2, Root-Of-R000201,
+	Before-R000201a5-branch-merge1), Docs/pages/resources.docs (1.1,
+	Root-Of-R000300a2, Root-Of-R000300a1,
+	Before-R000201a5-branch-merge3, R000201-branch-merge2,
+	Before-R000201-branch-merge2, Before-Sad, R000201-branch-merge1,
+	Before-R000201-branch-merge1, Before-R000201a5-branch-merge2,
+	Root-Of-R000201, Before-R000201a5-branch-merge1),
+	Docs/pages/solvers1d.docs (1.1, Root-Of-R000300a2,
+	Root-Of-R000300a1, Before-R000201a5-branch-merge3,
+	R000201-branch-merge2, Before-R000201-branch-merge2, Before-Sad,
+	R000201-branch-merge1, Before-R000201-branch-merge1,
+	Before-R000201a5-branch-merge2, Root-Of-R000201,
+	Before-R000201a5-branch-merge1), Docs/pages/termstructures.docs
+	(1.1, Root-Of-R000300a2, Root-Of-R000300a1,
+	Before-R000201a5-branch-merge3, R000201-branch-merge2,
+	Before-R000201-branch-merge2, Before-Sad, R000201-branch-merge1,
+	Before-R000201-branch-merge1, Before-R000201a5-branch-merge2,
+	Root-Of-R000201, Before-R000201a5-branch-merge1),
+	Docs/pages/usage.docs (1.1, Root-Of-R000300a2, Root-Of-R000300a1,
+	Before-R000201a5-branch-merge3, R000201-branch-merge2,
+	Before-R000201-branch-merge2, Before-Sad, R000201-branch-merge1,
+	Before-R000201-branch-merge1, Before-R000201a5-branch-merge2,
+	Root-Of-R000201, Before-R000201a5-branch-merge1),
+	Docs/pages/utilities.docs (1.1, Root-Of-R000300a2,
+	Root-Of-R000300a1, Before-R000201a5-branch-merge3,
+	R000201-branch-merge2, Before-R000201-branch-merge2, Before-Sad,
+	R000201-branch-merge1, Before-R000201-branch-merge1,
+	Before-R000201a5-branch-merge2, Root-Of-R000201,
+	Before-R000201a5-branch-merge1), Docs/pages/where.docs (1.1,
+	Before-R000201-branch-merge2, Before-Sad, R000201-branch-merge1,
+	Before-R000201-branch-merge1, Before-R000201a5-branch-merge2,
+	Root-Of-R000201, Before-R000201a5-branch-merge1), Docs/userman.tex
+	(1.1, Root-Of-R000300a2, Root-Of-R000300a1,
 	Before-R000201a5-branch-merge3, R000201-branch-merge2,
 	Before-R000201-branch-merge2, Before-Sad, R000201-branch-merge1,
 	Before-R000201-branch-merge1, Before-R000201a5-branch-merge2,
@@ -1874,11 +2199,13 @@
 2001-11-15 11:55  'Luigi Ballabio <luigi.ballabio@riskmap.net>'
 
 	* Makefile.am (1.62), TODO.txt (1.60), Docs/quantlibfooter.html
-	(1.10, Before-R000201a5-branch-merge3, R000201-branch-merge2,
+	(1.10, Root-Of-R000300a2, Root-Of-R000300a1,
+	Before-R000201a5-branch-merge3, R000201-branch-merge2,
 	Before-R000201-branch-merge2, Before-Sad, R000201-branch-merge1,
 	Before-R000201-branch-merge1, Before-R000201a5-branch-merge2,
 	Root-Of-R000201, Before-R000201a5-branch-merge1),
 	Docs/images/sfnetlogo.bmp (1.2), Docs/images/sfnetlogo.png (1.1,
+	Root-Of-R000300a2, Root-Of-R000300a1,
 	Before-R000201a5-branch-merge3, R000201-branch-merge2,
 	Before-R000201-branch-merge2, Before-Sad, R000201-branch-merge1,
 	Before-R000201-branch-merge1, Before-R000201a5-branch-merge2,
@@ -1890,7 +2217,8 @@
 	Before-R000201-branch-merge1, Before-R000201a5-branch-merge2,
 	Root-Of-R000201, Before-R000201a5-branch-merge1),
 	MonteCarlo/Makefile.am (1.13), MonteCarlo/montecarlomodel.hpp
-	(1.13, Before-R000201a5-branch-merge3, R000201-branch-merge2,
+	(1.13, Root-Of-R000300a2, Root-Of-R000300a1,
+	Before-R000201a5-branch-merge3, R000201-branch-merge2,
 	Before-R000201-branch-merge2, Before-Sad, R000201-branch-merge1,
 	Before-R000201-branch-merge1, Before-R000201a5-branch-merge2,
 	Root-Of-R000201, Before-R000201a5-branch-merge1),
@@ -1922,7 +2250,8 @@
 
 2001-11-14 09:32  'Ferdinando Ametrano <ferdinando@ametrano.net>'
 
-	* dev_tools/backupcvstree.py (1.1, R000201a5-branch-merge3,
+	* dev_tools/backupcvstree.py (1.1, Root-Of-R000300a2,
+	Root-Of-R000300a1, R000201a5-branch-merge3,
 	Before-R000201a5-branch-merge3, R000201-branch-merge2,
 	Before-R000201-branch-merge2, Before-Sad, R000201-branch-merge1,
 	Before-R000201-branch-merge1, R000201a5-branch-merge2,
@@ -1939,20 +2268,22 @@
 
 2001-11-14 08:46  'Ferdinando Ametrano <ferdinando@ametrano.net>'
 
-	* dev_tools/: branching_and_merging.txt (1.1,
-	R000201a5-branch-merge3, Before-R000201a5-branch-merge3,
-	R000201-branch-merge2, Before-R000201-branch-merge2, Before-Sad,
-	R000201-branch-merge1, Before-R000201-branch-merge1,
-	R000201a5-branch-merge2, Before-R000201a5-branch-merge2,
-	Root-Of-R000201, R000201a5-branch-merge1,
-	Before-R000201a5-branch-merge1, Root-Of-R000201a5), checkin_test.py
-	(1.1, R000201a5-branch-merge3, Before-R000201a5-branch-merge3,
-	R000201-branch-merge2, Before-R000201-branch-merge2, Before-Sad,
-	R000201-branch-merge1, Before-R000201-branch-merge1,
-	R000201a5-branch-merge2, Before-R000201a5-branch-merge2,
-	Root-Of-R000201, R000201a5-branch-merge1,
-	Before-R000201a5-branch-merge1, Root-Of-R000201a5),
-	version_number.txt (1.1): added few developers' tools
+	* dev_tools/: branching_and_merging.txt (1.1, Root-Of-R000300a2,
+	Root-Of-R000300a1, R000201a5-branch-merge3,
+	Before-R000201a5-branch-merge3, R000201-branch-merge2,
+	Before-R000201-branch-merge2, Before-Sad, R000201-branch-merge1,
+	Before-R000201-branch-merge1, R000201a5-branch-merge2,
+	Before-R000201a5-branch-merge2, Root-Of-R000201,
+	R000201a5-branch-merge1, Before-R000201a5-branch-merge1,
+	Root-Of-R000201a5), checkin_test.py (1.1, Root-Of-R000300a2,
+	Root-Of-R000300a1, R000201a5-branch-merge3,
+	Before-R000201a5-branch-merge3, R000201-branch-merge2,
+	Before-R000201-branch-merge2, Before-Sad, R000201-branch-merge1,
+	Before-R000201-branch-merge1, R000201a5-branch-merge2,
+	Before-R000201a5-branch-merge2, Root-Of-R000201,
+	R000201a5-branch-merge1, Before-R000201a5-branch-merge1,
+	Root-Of-R000201a5), version_number.txt (1.1): added few developers'
+	tools
 
 2001-11-14 08:40  'Ferdinando Ametrano <ferdinando@ametrano.net>'
 
@@ -1984,14 +2315,15 @@
 	Before-R000201-branch-merge1, Before-R000201a5-branch-merge2,
 	Root-Of-R000201, Before-R000201a5-branch-merge1), Docs/authors.docs
 	(1.2), Docs/quantlibfooter.html (1.9),
-	Docs/quantlibfooteronline.html (1.2,
-	Before-R000201a5-branch-merge3, R000201-branch-merge2,
-	Before-R000201-branch-merge2, Before-Sad, R000201-branch-merge1,
-	Before-R000201-branch-merge1, Before-R000201a5-branch-merge2,
-	Root-Of-R000201, Before-R000201a5-branch-merge1),
-	Docs/resources.docs (1.2) (utags: R000201a5-branch-merge1,
-	R000201a5-branch-merge2, R000201a5-branch-merge3,
-	Root-Of-R000201a5): SourceForge turned into SourceForge.net
+	Docs/quantlibfooteronline.html (1.2, Root-Of-R000300a2,
+	Root-Of-R000300a1, Before-R000201a5-branch-merge3,
+	R000201-branch-merge2, Before-R000201-branch-merge2, Before-Sad,
+	R000201-branch-merge1, Before-R000201-branch-merge1,
+	Before-R000201a5-branch-merge2, Root-Of-R000201,
+	Before-R000201a5-branch-merge1), Docs/resources.docs (1.2) (utags:
+	R000201a5-branch-merge1, R000201a5-branch-merge2,
+	R000201a5-branch-merge3, Root-Of-R000201a5): SourceForge turned
+	into SourceForge.net
 
 2001-11-13 10:53  'Ferdinando Ametrano <ferdinando@ametrano.net>'
 
@@ -2287,7 +2619,8 @@
 	* TODO.txt (1.58), Examples/DiscreteHedging/DiscreteHedging.mak
 	(1.6, R000201a5-branch-merge3, R000201a5-branch-merge2,
 	R000201a5-branch-merge1, Root-Of-R000201a5), ql/config.msvc.hpp
-	(1.3, R000201a5-branch-merge3, Before-R000201a5-branch-merge3,
+	(1.3, Root-Of-R000300a2, Root-Of-R000300a1,
+	R000201a5-branch-merge3, Before-R000201a5-branch-merge3,
 	R000201-branch-merge2, Before-R000201-branch-merge2, Before-Sad,
 	R000201-branch-merge1, Before-R000201-branch-merge1,
 	R000201a5-branch-merge2, Before-R000201a5-branch-merge2,
@@ -2503,14 +2836,14 @@
 
 2001-11-08 10:07  'Luigi Ballabio <luigi.ballabio@riskmap.net>'
 
-	* man/Makefile.am (1.2, R000201a5-branch-merge3,
-	Before-R000201a5-branch-merge3, R000201-branch-merge2,
-	Before-R000201-branch-merge2, Before-Sad, R000201-branch-merge1,
-	Before-R000201-branch-merge1, R000201a5-branch-merge2,
-	Before-R000201a5-branch-merge2, Root-Of-R000201,
-	R000201a5-branch-merge1, Before-R000201a5-branch-merge1,
-	Root-Of-R000201a5, Marco): Added files to dist even though I don't
-	know why they weren't already
+	* man/Makefile.am (1.2, Root-Of-R000300a2, Root-Of-R000300a1,
+	R000201a5-branch-merge3, Before-R000201a5-branch-merge3,
+	R000201-branch-merge2, Before-R000201-branch-merge2, Before-Sad,
+	R000201-branch-merge1, Before-R000201-branch-merge1,
+	R000201a5-branch-merge2, Before-R000201a5-branch-merge2,
+	Root-Of-R000201, R000201a5-branch-merge1,
+	Before-R000201a5-branch-merge1, Root-Of-R000201a5, Marco): Added
+	files to dist even though I don't know why they weren't already
 
 2001-11-08 09:27  'Ferdinando Ametrano <ferdinando@ametrano.net>'
 
@@ -2520,7 +2853,8 @@
 2001-11-07 15:11  'Luigi Ballabio <luigi.ballabio@riskmap.net>'
 
 	* Makefile.am (1.60, Marco), configure.in (1.50, Marco),
-	Examples/DiscreteHedging/Makefile.am (1.7, R000201a5-branch-merge3,
+	Examples/DiscreteHedging/Makefile.am (1.7, Root-Of-R000300a2,
+	Root-Of-R000300a1, R000201a5-branch-merge3,
 	Before-R000201a5-branch-merge3, R000201-branch-merge2,
 	Before-R000201-branch-merge2, Before-Sad, R000201-branch-merge1,
 	Before-R000201-branch-merge1, R000201a5-branch-merge2,
@@ -2559,10 +2893,11 @@
 	SwapValuation.1 (1.1), quantlib-config.1 (1.1) (utags:
 	R000201-branch-merge1, R000201-branch-merge2,
 	Before-R000201a5-branch-merge1, Before-R000201a5-branch-merge2,
-	Before-R000201a5-branch-merge3, Root-Of-R000201a5,
-	Before-R000201-branch-merge1, Before-R000201-branch-merge2,
-	R000201a5-branch-merge1, Root-Of-R000201, R000201a5-branch-merge2,
-	R000201a5-branch-merge3, Before-Sad, Marco): Dirk's man files added
+	Before-R000201a5-branch-merge3, Before-R000201-branch-merge1,
+	Before-R000201-branch-merge2, Root-Of-R000201, Before-Sad,
+	Root-Of-R000300a1, Root-Of-R000300a2, Root-Of-R000201a5,
+	R000201a5-branch-merge1, R000201a5-branch-merge2,
+	R000201a5-branch-merge3, Marco): Dirk's man files added
 
 2001-11-07 12:48  'Marco Marchioro <marco.marchioro@riskmap.net>'
 
@@ -2596,7 +2931,7 @@
 
 	* ql/: calendar.hpp (1.9), daycounter.hpp (1.8) (utags:
 	Before-R000201a5-branch-merge1, Before-R000201a5-branch-merge2,
-	Root-Of-R000201a5, Before-R000201-branch-merge1, Root-Of-R000201,
+	Before-R000201-branch-merge1, Root-Of-R000201, Root-Of-R000201a5,
 	R000201a5-branch-merge1, R000201a5-branch-merge2,
 	R000201a5-branch-merge3, Marco): Now compiles on VS
 
@@ -2622,7 +2957,8 @@
 	R000201a5-branch-merge2, Before-R000201a5-branch-merge2,
 	Root-Of-R000201, R000201a5-branch-merge1,
 	Before-R000201a5-branch-merge1, Root-Of-R000201a5, Marco),
-	ql/Calendars/Makefile.am (1.5, R000201a5-branch-merge3,
+	ql/Calendars/Makefile.am (1.5, Root-Of-R000300a2,
+	Root-Of-R000300a1, R000201a5-branch-merge3,
 	Before-R000201a5-branch-merge3, R000201-branch-merge2,
 	Before-R000201-branch-merge2, Before-Sad, R000201-branch-merge1,
 	Before-R000201-branch-merge1, R000201a5-branch-merge2,
@@ -2894,8 +3230,8 @@
 	Before-R000201a5-branch-merge2, Root-Of-R000201,
 	R000201a5-branch-merge1, Before-R000201a5-branch-merge1,
 	Root-Of-R000201a5, Marco), ql/TermStructures/ratehelpers.cpp (1.8),
-	ql/TermStructures/ratehelpers.hpp (1.8) (utags: Root-Of-R000201a4,
-	ROnline-Release020): added FuturesRateHelpers (no convexity
+	ql/TermStructures/ratehelpers.hpp (1.8) (utags: ROnline-Release020,
+	Root-Of-R000201a4): added FuturesRateHelpers (no convexity
 	adjustment yet) dividendYield is now a Spread instead of a Rate
 	(that is: cost of carry) fixed a bug in the FRAHelper class
 
@@ -3179,7 +3515,8 @@
 	ql/RandomNumbers/knuthuniformrng.hpp (1.3, R000201a5-branch-merge3,
 	R000201a5-branch-merge2, R000201a5-branch-merge1,
 	Root-Of-R000201a5, Root-Of-R000201a4, Marco, ROnline-Release020),
-	ql/Utilities/iteratorcategories.hpp (1.3, R000201a5-branch-merge3,
+	ql/Utilities/iteratorcategories.hpp (1.3, Root-Of-R000300a2,
+	Root-Of-R000300a1, R000201a5-branch-merge3,
 	Before-R000201a5-branch-merge3, R000201-branch-merge2,
 	Before-R000201-branch-merge2, Before-Sad, R000201-branch-merge1,
 	Before-R000201-branch-merge1, R000201a5-branch-merge2,
@@ -3429,7 +3766,8 @@
 
 2001-10-30 14:29  'Ferdinando Ametrano <ferdinando@ametrano.net>'
 
-	* ql/RandomNumbers/Makefile.am (1.3, R000201a5-branch-merge3,
+	* ql/RandomNumbers/Makefile.am (1.3, Root-Of-R000300a2,
+	Root-Of-R000300a1, R000201a5-branch-merge3,
 	Before-R000201a5-branch-merge3, R000201-branch-merge2,
 	Before-R000201-branch-merge2, Before-Sad, R000201-branch-merge1,
 	Before-R000201-branch-merge1, R000201a5-branch-merge2,
@@ -3627,13 +3965,14 @@
 
 2001-10-25 08:59  'Ferdinando Ametrano <ferdinando@ametrano.net>'
 
-	* bootstrap (1.4, R000201a5-branch-merge3,
-	Before-R000201a5-branch-merge3, R000201-branch-merge2,
-	Before-R000201-branch-merge2, Before-Sad, R000201-branch-merge1,
-	Before-R000201-branch-merge1, R000201a5-branch-merge2,
-	Before-R000201a5-branch-merge2, Root-Of-R000201,
-	R000201a5-branch-merge1, Before-R000201a5-branch-merge1,
-	Root-Of-R000201a5, Root-Of-R000201a4, Marco, ROnline-Release020),
+	* bootstrap (1.4, Root-Of-R000300a2, Root-Of-R000300a1,
+	R000201a5-branch-merge3, Before-R000201a5-branch-merge3,
+	R000201-branch-merge2, Before-R000201-branch-merge2, Before-Sad,
+	R000201-branch-merge1, Before-R000201-branch-merge1,
+	R000201a5-branch-merge2, Before-R000201a5-branch-merge2,
+	Root-Of-R000201, R000201a5-branch-merge1,
+	Before-R000201a5-branch-merge1, Root-Of-R000201a5,
+	Root-Of-R000201a4, Marco, ROnline-Release020),
 	ql/Math/segmentintegral.cpp (1.3), ql/Math/segmentintegral.hpp
 	(1.5) (utags: Root-Of-Sad): long -> unsigned int
 
@@ -3661,14 +4000,15 @@
 
 2001-10-23 08:42  'Luigi Ballabio <luigi.ballabio@riskmap.net>'
 
-	* Docs/quantlib.css (1.8, R000201a5-branch-merge3,
-	Before-R000201a5-branch-merge3, R000201-branch-merge2,
-	Before-R000201-branch-merge2, Before-Sad, R000201-branch-merge1,
-	Before-R000201-branch-merge1, R000201a5-branch-merge2,
-	Before-R000201a5-branch-merge2, Root-Of-R000201,
-	R000201a5-branch-merge1, Before-R000201a5-branch-merge1,
-	Root-Of-R000201a5, Root-Of-R000201a4, Marco, ROnline-Release020,
-	Root-Of-Sad): Fixed margins for group headers
+	* Docs/quantlib.css (1.8, Root-Of-R000300a2, Root-Of-R000300a1,
+	R000201a5-branch-merge3, Before-R000201a5-branch-merge3,
+	R000201-branch-merge2, Before-R000201-branch-merge2, Before-Sad,
+	R000201-branch-merge1, Before-R000201-branch-merge1,
+	R000201a5-branch-merge2, Before-R000201a5-branch-merge2,
+	Root-Of-R000201, R000201a5-branch-merge1,
+	Before-R000201a5-branch-merge1, Root-Of-R000201a5,
+	Root-Of-R000201a4, Marco, ROnline-Release020, Root-Of-Sad): Fixed
+	margins for group headers
 
 2001-10-23 07:18  'Ferdinando Ametrano <ferdinando@ametrano.net>'
 
@@ -4194,31 +4534,32 @@
 
 2001-10-15 15:00  'Luigi Ballabio <luigi.ballabio@riskmap.net>'
 
-	* Examples/: DiscreteHedging/makefile.mak (1.2,
-	R000201a5-branch-merge3, Before-R000201a5-branch-merge3,
-	R000201-branch-merge2, Before-R000201-branch-merge2, Before-Sad,
-	R000201-branch-merge1, Before-R000201-branch-merge1,
-	R000201a5-branch-merge2, Before-R000201a5-branch-merge2,
-	Root-Of-R000201, R000201a5-branch-merge1,
-	Before-R000201a5-branch-merge1, Root-Of-R000201a5,
-	Root-Of-R000201a4, Marco, ROnline-Release020, Root-Of-Sad, nando),
-	EuropeanOption/makefile.mak (1.2, R000201a5-branch-merge3,
+	* Examples/: DiscreteHedging/makefile.mak (1.2, Root-Of-R000300a2,
+	Root-Of-R000300a1, R000201a5-branch-merge3,
 	Before-R000201a5-branch-merge3, R000201-branch-merge2,
 	Before-R000201-branch-merge2, Before-Sad, R000201-branch-merge1,
 	Before-R000201-branch-merge1, R000201a5-branch-merge2,
 	Before-R000201a5-branch-merge2, Root-Of-R000201,
 	R000201a5-branch-merge1, Before-R000201a5-branch-merge1,
 	Root-Of-R000201a5, Root-Of-R000201a4, Marco, ROnline-Release020,
-	Root-Of-Sad, nando), Swap/makefile.mak (1.2,
-	R000201a5-branch-merge3, Before-R000201a5-branch-merge3,
-	R000201-branch-merge2, Before-R000201-branch-merge2, Before-Sad,
-	R000201-branch-merge1, Before-R000201-branch-merge1,
-	R000201a5-branch-merge2, Before-R000201a5-branch-merge2,
-	Root-Of-R000201, R000201a5-branch-merge1,
-	Before-R000201a5-branch-merge1, Root-Of-R000201a5,
-	Root-Of-R000201a4, Marco, ROnline-Release020, Root-Of-Sad, nando),
-	Swap/swapvaluation.cpp (1.5): Disabled inlining for Borland C++ (it
-	was leading to strange crashes)
+	Root-Of-Sad, nando), EuropeanOption/makefile.mak (1.2,
+	Root-Of-R000300a2, Root-Of-R000300a1, R000201a5-branch-merge3,
+	Before-R000201a5-branch-merge3, R000201-branch-merge2,
+	Before-R000201-branch-merge2, Before-Sad, R000201-branch-merge1,
+	Before-R000201-branch-merge1, R000201a5-branch-merge2,
+	Before-R000201a5-branch-merge2, Root-Of-R000201,
+	R000201a5-branch-merge1, Before-R000201a5-branch-merge1,
+	Root-Of-R000201a5, Root-Of-R000201a4, Marco, ROnline-Release020,
+	Root-Of-Sad, nando), Swap/makefile.mak (1.2, Root-Of-R000300a2,
+	Root-Of-R000300a1, R000201a5-branch-merge3,
+	Before-R000201a5-branch-merge3, R000201-branch-merge2,
+	Before-R000201-branch-merge2, Before-Sad, R000201-branch-merge1,
+	Before-R000201-branch-merge1, R000201a5-branch-merge2,
+	Before-R000201a5-branch-merge2, Root-Of-R000201,
+	R000201a5-branch-merge1, Before-R000201a5-branch-merge1,
+	Root-Of-R000201a5, Root-Of-R000201a4, Marco, ROnline-Release020,
+	Root-Of-Sad, nando), Swap/swapvaluation.cpp (1.5): Disabled
+	inlining for Borland C++ (it was leading to strange crashes)
 
 2001-10-15 14:27  'Ferdinando Ametrano <ferdinando@ametrano.net>'
 
@@ -4256,19 +4597,20 @@
 
 2001-10-12 13:29  'Ferdinando Ametrano <ferdinando@ametrano.net>'
 
-	* QuantLib.dsw (1.5, R000201a5-branch-merge3,
-	Before-R000201a5-branch-merge3, R000201-branch-merge2,
-	Before-R000201-branch-merge2, Before-Sad, R000201-branch-merge1,
-	Before-R000201-branch-merge1, R000201a5-branch-merge2,
-	Before-R000201a5-branch-merge2, Root-Of-R000201,
-	R000201a5-branch-merge1, Before-R000201a5-branch-merge1,
-	Root-Of-R000201a5, Root-Of-R000201a4, ROnline-Release020,
-	Root-Of-Sad, Marco, nando), QuantLib.nsi (1.42, nando), TODO.txt
-	(1.36), configure.in (1.44, nando), Docs/examples.docs (1.5),
-	Docs/quantlib.doxy (1.35, R000201a5-branch-merge3,
-	R000201a5-branch-merge2, R000201a5-branch-merge1,
-	Root-Of-R000201a5, Root-Of-R000201a4, ROnline-Release020,
-	Root-Of-Sad, Marco, nando), Examples/Examples.dsw (1.4,
+	* QuantLib.dsw (1.5, Root-Of-R000300a2, Root-Of-R000300a1,
+	R000201a5-branch-merge3, Before-R000201a5-branch-merge3,
+	R000201-branch-merge2, Before-R000201-branch-merge2, Before-Sad,
+	R000201-branch-merge1, Before-R000201-branch-merge1,
+	R000201a5-branch-merge2, Before-R000201a5-branch-merge2,
+	Root-Of-R000201, R000201a5-branch-merge1,
+	Before-R000201a5-branch-merge1, Root-Of-R000201a5,
+	Root-Of-R000201a4, ROnline-Release020, Root-Of-Sad, Marco, nando),
+	QuantLib.nsi (1.42, nando), TODO.txt (1.36), configure.in (1.44,
+	nando), Docs/examples.docs (1.5), Docs/quantlib.doxy (1.35,
+	R000201a5-branch-merge3, R000201a5-branch-merge2,
+	R000201a5-branch-merge1, Root-Of-R000201a5, Root-Of-R000201a4,
+	ROnline-Release020, Root-Of-Sad, Marco, nando),
+	Examples/Examples.dsw (1.4, Root-Of-R000300a2, Root-Of-R000300a1,
 	R000201a5-branch-merge3, Before-R000201a5-branch-merge3,
 	R000201-branch-merge2, Before-R000201-branch-merge2, Before-Sad,
 	R000201-branch-merge1, Before-R000201-branch-merge1,
@@ -4276,14 +4618,15 @@
 	Root-Of-R000201, R000201a5-branch-merge1,
 	Before-R000201a5-branch-merge1, Root-Of-R000201a5,
 	Root-Of-R000201a4, Marco, ROnline-Release020, Root-Of-Sad, nando),
-	Examples/Makefile.am (1.14, R000201a5-branch-merge3,
-	Before-R000201a5-branch-merge3, R000201-branch-merge2,
-	Before-R000201-branch-merge2, Before-Sad, R000201-branch-merge1,
-	Before-R000201-branch-merge1, R000201a5-branch-merge2,
-	Before-R000201a5-branch-merge2, Root-Of-R000201,
-	R000201a5-branch-merge1, Before-R000201a5-branch-merge1,
-	Root-Of-R000201a5, Root-Of-R000201a4, ROnline-Release020,
-	Root-Of-Sad, Marco, nando), Examples/configure.in (1.3,
+	Examples/Makefile.am (1.14, Root-Of-R000300a2, Root-Of-R000300a1,
+	R000201a5-branch-merge3, Before-R000201a5-branch-merge3,
+	R000201-branch-merge2, Before-R000201-branch-merge2, Before-Sad,
+	R000201-branch-merge1, Before-R000201-branch-merge1,
+	R000201a5-branch-merge2, Before-R000201a5-branch-merge2,
+	Root-Of-R000201, R000201a5-branch-merge1,
+	Before-R000201a5-branch-merge1, Root-Of-R000201a5,
+	Root-Of-R000201a4, ROnline-Release020, Root-Of-Sad, Marco, nando),
+	Examples/configure.in (1.3, Root-Of-R000300a2, Root-Of-R000300a1,
 	R000201a5-branch-merge3, Before-R000201a5-branch-merge3,
 	R000201-branch-merge2, Before-R000201-branch-merge2, Before-Sad,
 	R000201-branch-merge1, Before-R000201-branch-merge1,
@@ -4291,33 +4634,35 @@
 	Root-Of-R000201, R000201a5-branch-merge1,
 	Before-R000201a5-branch-merge1, Root-Of-R000201a5,
 	Root-Of-R000201a4, Marco, ROnline-Release020, Root-Of-Sad, nando),
-	Examples/makefile.mak (1.6, R000201a5-branch-merge3,
+	Examples/makefile.mak (1.6, Root-Of-R000300a2, Root-Of-R000300a1,
+	R000201a5-branch-merge3, Before-R000201a5-branch-merge3,
+	R000201-branch-merge2, Before-R000201-branch-merge2, Before-Sad,
+	R000201-branch-merge1, Before-R000201-branch-merge1,
+	R000201a5-branch-merge2, Before-R000201a5-branch-merge2,
+	Root-Of-R000201, R000201a5-branch-merge1,
+	Before-R000201a5-branch-merge1, Root-Of-R000201a5,
+	Root-Of-R000201a4, Marco, ROnline-Release020, Root-Of-Sad, nando),
+	Examples/EuropeanOption/EuropeanOption.cpp (1.1),
+	Examples/EuropeanOption/EuropeanOption.dsp (1.1, Root-Of-R000300a2,
+	Root-Of-R000300a1, R000201a5-branch-merge3,
 	Before-R000201a5-branch-merge3, R000201-branch-merge2,
 	Before-R000201-branch-merge2, Before-Sad, R000201-branch-merge1,
 	Before-R000201-branch-merge1, R000201a5-branch-merge2,
 	Before-R000201a5-branch-merge2, Root-Of-R000201,
 	R000201a5-branch-merge1, Before-R000201a5-branch-merge1,
 	Root-Of-R000201a5, Root-Of-R000201a4, Marco, ROnline-Release020,
-	Root-Of-Sad, nando), Examples/EuropeanOption/EuropeanOption.cpp
-	(1.1), Examples/EuropeanOption/EuropeanOption.dsp (1.1,
-	R000201a5-branch-merge3, Before-R000201a5-branch-merge3,
-	R000201-branch-merge2, Before-R000201-branch-merge2, Before-Sad,
-	R000201-branch-merge1, Before-R000201-branch-merge1,
-	R000201a5-branch-merge2, Before-R000201a5-branch-merge2,
-	Root-Of-R000201, R000201a5-branch-merge1,
-	Before-R000201a5-branch-merge1, Root-Of-R000201a5,
-	Root-Of-R000201a4, Marco, ROnline-Release020, Root-Of-Sad, nando),
-	Examples/EuropeanOption/EuropeanOption.mak (1.1, Root-Of-R000201a4,
-	ROnline-Release020, Root-Of-Sad, nando),
-	Examples/EuropeanOption/EuropeanOption.old (1.1,
-	R000201a5-branch-merge3, Before-R000201a5-branch-merge3,
-	R000201-branch-merge2, Before-R000201-branch-merge2, Before-Sad,
-	R000201-branch-merge1, Before-R000201-branch-merge1,
-	R000201a5-branch-merge2, Before-R000201a5-branch-merge2,
-	Root-Of-R000201, R000201a5-branch-merge1,
-	Before-R000201a5-branch-merge1, Root-Of-R000201a5,
-	Root-Of-R000201a4, Marco, ROnline-Release020, Root-Of-Sad, nando),
-	Examples/EuropeanOption/Makefile.am (1.1, R000201a5-branch-merge3,
+	Root-Of-Sad, nando), Examples/EuropeanOption/EuropeanOption.mak
+	(1.1, Root-Of-R000201a4, ROnline-Release020, Root-Of-Sad, nando),
+	Examples/EuropeanOption/EuropeanOption.old (1.1, Root-Of-R000300a2,
+	Root-Of-R000300a1, R000201a5-branch-merge3,
+	Before-R000201a5-branch-merge3, R000201-branch-merge2,
+	Before-R000201-branch-merge2, Before-Sad, R000201-branch-merge1,
+	Before-R000201-branch-merge1, R000201a5-branch-merge2,
+	Before-R000201a5-branch-merge2, Root-Of-R000201,
+	R000201a5-branch-merge1, Before-R000201a5-branch-merge1,
+	Root-Of-R000201a5, Root-Of-R000201a4, Marco, ROnline-Release020,
+	Root-Of-Sad, nando), Examples/EuropeanOption/Makefile.am (1.1,
+	Root-Of-R000300a2, Root-Of-R000300a1, R000201a5-branch-merge3,
 	Before-R000201a5-branch-merge3, R000201-branch-merge2,
 	Before-R000201-branch-merge2, Before-Sad, R000201-branch-merge1,
 	Before-R000201-branch-merge1, R000201a5-branch-merge2,
@@ -4325,15 +4670,15 @@
 	R000201a5-branch-merge1, Before-R000201a5-branch-merge1,
 	Root-Of-R000201a5, Root-Of-R000201a4, Marco, ROnline-Release020,
 	Root-Of-Sad, nando), Examples/EuropeanOption/ReadMe.txt (1.1,
-	R000201a5-branch-merge3, Before-R000201a5-branch-merge3,
-	R000201-branch-merge2, Before-R000201-branch-merge2, Before-Sad,
-	R000201-branch-merge1, Before-R000201-branch-merge1,
-	R000201a5-branch-merge2, Before-R000201a5-branch-merge2,
-	Root-Of-R000201, R000201a5-branch-merge1,
-	Before-R000201a5-branch-merge1, Root-Of-R000201a5,
-	Root-Of-R000201a4, Marco, ROnline-Release020, Root-Of-Sad, nando),
-	Examples/EuropeanOption/makefile.mak (1.1): Parities renamed to
-	EuropeanOption
+	Root-Of-R000300a2, Root-Of-R000300a1, R000201a5-branch-merge3,
+	Before-R000201a5-branch-merge3, R000201-branch-merge2,
+	Before-R000201-branch-merge2, Before-Sad, R000201-branch-merge1,
+	Before-R000201-branch-merge1, R000201a5-branch-merge2,
+	Before-R000201a5-branch-merge2, Root-Of-R000201,
+	R000201a5-branch-merge1, Before-R000201a5-branch-merge1,
+	Root-Of-R000201a5, Root-Of-R000201a4, Marco, ROnline-Release020,
+	Root-Of-Sad, nando), Examples/EuropeanOption/makefile.mak (1.1):
+	Parities renamed to EuropeanOption
 
 2001-10-12 09:42  'Ferdinando Ametrano <ferdinando@ametrano.net>'
 
@@ -4502,7 +4847,7 @@
 
 	* Docs/quantlibheader.tex (1.8, Root-Of-R000201a4, Marco,
 	ROnline-Release020), ql/calendar.hpp (1.5), ql/daycounter.hpp (1.4)
-	(utags: Root-Of-R000201a3, Root-Of-Sad, nando): More documentation
+	(utags: Root-Of-Sad, Root-Of-R000201a3, nando): More documentation
 	glitches
 
 2001-10-05 10:02  'Ferdinando Ametrano <ferdinando@ametrano.net>'
@@ -4512,7 +4857,8 @@
 2001-10-05 09:09  'Luigi Ballabio <luigi.ballabio@riskmap.net>'
 
 	* Docs/examples.docs (1.4, Root-Of-R000201a3), Docs/quantlib.doxy
-	(1.31), ql/config.ansi.hpp (1.3, R000201a5-branch-merge3,
+	(1.31), ql/config.ansi.hpp (1.3, Root-Of-R000300a2,
+	Root-Of-R000300a1, R000201a5-branch-merge3,
 	Before-R000201a5-branch-merge3, R000201-branch-merge2,
 	Before-R000201-branch-merge2, Before-Sad, R000201-branch-merge1,
 	Before-R000201-branch-merge1, R000201a5-branch-merge2,
@@ -4535,7 +4881,8 @@
 
 	* Examples/Swap/swapvaluation.cpp (1.4, Root-Of-R000201a3),
 	ql/quantlib.hpp (1.8, Root-Of-R000201a3), ql/CashFlows/Makefile.am
-	(1.5, R000201a5-branch-merge3, Before-R000201a5-branch-merge3,
+	(1.5, Root-Of-R000300a2, Root-Of-R000300a1,
+	R000201a5-branch-merge3, Before-R000201a5-branch-merge3,
 	R000201-branch-merge2, Before-R000201-branch-merge2, Before-Sad,
 	R000201-branch-merge1, Before-R000201-branch-merge1,
 	R000201a5-branch-merge2, Before-R000201a5-branch-merge2,
@@ -4562,15 +4909,15 @@
 
 2001-10-03 15:57  'Ferdinando Ametrano <ferdinando@ametrano.net>'
 
-	* UFILE (1.1, R000201a5-branch-merge3,
-	Before-R000201a5-branch-merge3, R000201-branch-merge2,
-	Before-R000201-branch-merge2, Before-Sad, R000201-branch-merge1,
-	Before-R000201-branch-merge1, R000201a5-branch-merge2,
-	Before-R000201a5-branch-merge2, Root-Of-R000201,
-	R000201a5-branch-merge1, Before-R000201a5-branch-merge1,
-	Root-Of-R000201a5, Root-Of-R000201a4, Marco, ROnline-Release020,
-	Root-Of-Sad, nando, Root-Of-R000201a3, Root-Of-R000201a2):
-	developer's data
+	* UFILE (1.1, Root-Of-R000300a2, Root-Of-R000300a1,
+	R000201a5-branch-merge3, Before-R000201a5-branch-merge3,
+	R000201-branch-merge2, Before-R000201-branch-merge2, Before-Sad,
+	R000201-branch-merge1, Before-R000201-branch-merge1,
+	R000201a5-branch-merge2, Before-R000201a5-branch-merge2,
+	Root-Of-R000201, R000201a5-branch-merge1,
+	Before-R000201a5-branch-merge1, Root-Of-R000201a5,
+	Root-Of-R000201a4, Marco, ROnline-Release020, Root-Of-Sad, nando,
+	Root-Of-R000201a3, Root-Of-R000201a2): developer's data
 
 2001-10-03 13:11  'Ferdinando Ametrano <ferdinando@ametrano.net>'
 
@@ -4586,7 +4933,7 @@
 2001-10-03 10:05  'Luigi Ballabio <luigi.ballabio@riskmap.net>'
 
 	* Docs/Makefile.am (1.31), ql/history.hpp (1.3, nando) (utags:
-	Root-Of-R000201a2, Root-Of-R000201a3, Root-Of-R021a1): Worked
+	Root-Of-R021a1, Root-Of-R000201a2, Root-Of-R000201a3): Worked
 	around VC++ problems in History constructor
 
 2001-10-03 10:01  'Ferdinando Ametrano <ferdinando@ametrano.net>'
@@ -4622,7 +4969,7 @@
 	Root-Of-R000201a3, nando), DayCounters/actualactual.hpp (1.6,
 	Root-Of-Sad, Root-Of-R000201a3, nando), DayCounters/thirty360.hpp
 	(1.5, Root-Of-Sad, Root-Of-R000201a3, nando) (utags:
-	Root-Of-R000201a2, Root-Of-R021a1): modification to have factory
+	Root-Of-R021a1, Root-Of-R000201a2): modification to have factory
 	works under MS VC++
 
 2001-10-02 15:41  'Luigi Ballabio <luigi.ballabio@riskmap.net>'
@@ -4633,8 +4980,8 @@
 	MonteCarlo/everestpathpricer.hpp (1.3),
 	MonteCarlo/geometricasianpathpricer.hpp (1.3),
 	MonteCarlo/pagodapathpricer.hpp (1.4),
-	Pricers/stepconditionoption.hpp (1.3) (utags: Root-Of-R000201a2,
-	Root-Of-R000201a3, Root-Of-R021a1): Small doc fixes
+	Pricers/stepconditionoption.hpp (1.3) (utags: Root-Of-R021a1,
+	Root-Of-R000201a2, Root-Of-R000201a3): Small doc fixes
 
 2001-10-02 15:41  'Luigi Ballabio <luigi.ballabio@riskmap.net>'
 
@@ -4673,19 +5020,19 @@
 	Calendars/zurich.hpp (1.3), DayCounters/actual360.hpp (1.3),
 	DayCounters/actual365.hpp (1.3), DayCounters/actualactual.hpp
 	(1.5), DayCounters/thirty360.hpp (1.4), Patterns/Makefile.am (1.5,
-	R000201a5-branch-merge3, Before-R000201a5-branch-merge3,
-	R000201-branch-merge2, Before-R000201-branch-merge2, Before-Sad,
-	R000201-branch-merge1, Before-R000201-branch-merge1,
-	R000201a5-branch-merge2, Before-R000201a5-branch-merge2,
-	Root-Of-R000201, R000201a5-branch-merge1,
-	Before-R000201a5-branch-merge1, Root-Of-R000201a5,
-	Root-Of-R000201a4, Marco, ROnline-Release020, Root-Of-Sad,
-	Root-Of-R000201a3, Root-Of-R000201a2, Root-Of-R021a1, nando),
-	Patterns/factory.hpp (1.1, Root-Of-R000201a4, ROnline-Release020,
-	Root-Of-Sad, nando, Root-Of-R000201a3, Root-Of-R000201a2,
-	Root-Of-R021a1), Patterns/observable.hpp (1.3, Root-Of-Sad,
-	Root-Of-R000201a3, Root-Of-R000201a2, Root-Of-R021a1, nando): Added
-	factory pattern
+	Root-Of-R000300a2, Root-Of-R000300a1, R000201a5-branch-merge3,
+	Before-R000201a5-branch-merge3, R000201-branch-merge2,
+	Before-R000201-branch-merge2, Before-Sad, R000201-branch-merge1,
+	Before-R000201-branch-merge1, R000201a5-branch-merge2,
+	Before-R000201a5-branch-merge2, Root-Of-R000201,
+	R000201a5-branch-merge1, Before-R000201a5-branch-merge1,
+	Root-Of-R000201a5, Root-Of-R000201a4, Marco, ROnline-Release020,
+	Root-Of-Sad, Root-Of-R000201a3, Root-Of-R000201a2, Root-Of-R021a1,
+	nando), Patterns/factory.hpp (1.1, Root-Of-R000201a4,
+	ROnline-Release020, Root-Of-Sad, nando, Root-Of-R000201a3,
+	Root-Of-R000201a2, Root-Of-R021a1), Patterns/observable.hpp (1.3,
+	Root-Of-Sad, Root-Of-R000201a3, Root-Of-R000201a2, Root-Of-R021a1,
+	nando): Added factory pattern
 
 2001-10-01 16:27  'Sadruddin Rejeb <sad.rejeb@riskmap.it>'
 
@@ -4712,16 +5059,17 @@
 	(1.2, Root-Of-R000201a3, Root-Of-R000201a2, Root-Of-R021a1),
 	makefile.mak (1.5, Root-Of-R000201a3, Root-Of-R000201a2,
 	Root-Of-R021a1), DiscreteHedging/DiscreteHedging.dsp (1.3,
-	R000201a5-branch-merge3, Before-R000201a5-branch-merge3,
-	R000201-branch-merge2, Before-R000201-branch-merge2, Before-Sad,
-	R000201-branch-merge1, Before-R000201-branch-merge1,
-	R000201a5-branch-merge2, Before-R000201a5-branch-merge2,
-	Root-Of-R000201, R000201a5-branch-merge1,
-	Before-R000201a5-branch-merge1, Root-Of-R000201a5,
-	Root-Of-R000201a4, Marco, ROnline-Release020, Root-Of-Sad,
-	Root-Of-R000201a3, Root-Of-R000201a2, Root-Of-R021a1, nando),
-	DiscreteHedging/DiscreteHedging.mak (1.3, Root-Of-R000201a3,
-	Root-Of-R000201a2, Root-Of-R021a1), Swap/Makefile.am (1.1,
+	Root-Of-R000300a2, Root-Of-R000300a1, R000201a5-branch-merge3,
+	Before-R000201a5-branch-merge3, R000201-branch-merge2,
+	Before-R000201-branch-merge2, Before-Sad, R000201-branch-merge1,
+	Before-R000201-branch-merge1, R000201a5-branch-merge2,
+	Before-R000201a5-branch-merge2, Root-Of-R000201,
+	R000201a5-branch-merge1, Before-R000201a5-branch-merge1,
+	Root-Of-R000201a5, Root-Of-R000201a4, Marco, ROnline-Release020,
+	Root-Of-Sad, Root-Of-R000201a3, Root-Of-R000201a2, Root-Of-R021a1,
+	nando), DiscreteHedging/DiscreteHedging.mak (1.3,
+	Root-Of-R000201a3, Root-Of-R000201a2, Root-Of-R021a1),
+	Swap/Makefile.am (1.1, Root-Of-R000300a2, Root-Of-R000300a1,
 	R000201a5-branch-merge3, Before-R000201a5-branch-merge3,
 	R000201-branch-merge2, Before-R000201-branch-merge2, Before-Sad,
 	R000201-branch-merge1, Before-R000201-branch-merge1,
@@ -4730,26 +5078,28 @@
 	Before-R000201a5-branch-merge1, Root-Of-R000201a5,
 	Root-Of-R000201a4, Marco, ROnline-Release020, Root-Of-Sad, nando,
 	Root-Of-R000201a3, Root-Of-R000201a2, Root-Of-R021a1),
-	Swap/README.txt (1.1, R000201a5-branch-merge3,
-	Before-R000201a5-branch-merge3, R000201-branch-merge2,
-	Before-R000201-branch-merge2, Before-Sad, R000201-branch-merge1,
-	Before-R000201-branch-merge1, R000201a5-branch-merge2,
-	Before-R000201a5-branch-merge2, Root-Of-R000201,
-	R000201a5-branch-merge1, Before-R000201a5-branch-merge1,
-	Root-Of-R000201a5, Root-Of-R000201a4, Marco, ROnline-Release020,
-	Root-Of-Sad, nando, Root-Of-R000201a3, Root-Of-R000201a2,
-	Root-Of-R021a1), Swap/Swap.dsp (1.1, R000201a5-branch-merge3,
-	Before-R000201a5-branch-merge3, R000201-branch-merge2,
-	Before-R000201-branch-merge2, Before-Sad, R000201-branch-merge1,
-	Before-R000201-branch-merge1, R000201a5-branch-merge2,
-	Before-R000201a5-branch-merge2, Root-Of-R000201,
-	R000201a5-branch-merge1, Before-R000201a5-branch-merge1,
-	Root-Of-R000201a5, Root-Of-R000201a4, Marco, ROnline-Release020,
-	Root-Of-Sad, nando, Root-Of-R000201a3, Root-Of-R000201a2,
-	Root-Of-R021a1), Swap/Swap.mak (1.1, Root-Of-R000201a3,
-	Root-Of-R000201a2, Root-Of-R021a1), Swap/makefile.mak (1.1,
+	Swap/README.txt (1.1, Root-Of-R000300a2, Root-Of-R000300a1,
+	R000201a5-branch-merge3, Before-R000201a5-branch-merge3,
+	R000201-branch-merge2, Before-R000201-branch-merge2, Before-Sad,
+	R000201-branch-merge1, Before-R000201-branch-merge1,
+	R000201a5-branch-merge2, Before-R000201a5-branch-merge2,
+	Root-Of-R000201, R000201a5-branch-merge1,
+	Before-R000201a5-branch-merge1, Root-Of-R000201a5,
+	Root-Of-R000201a4, Marco, ROnline-Release020, Root-Of-Sad, nando,
 	Root-Of-R000201a3, Root-Of-R000201a2, Root-Of-R021a1),
-	Swap/swapvaluation.cpp (1.1): added term_structure+swap example
+	Swap/Swap.dsp (1.1, Root-Of-R000300a2, Root-Of-R000300a1,
+	R000201a5-branch-merge3, Before-R000201a5-branch-merge3,
+	R000201-branch-merge2, Before-R000201-branch-merge2, Before-Sad,
+	R000201-branch-merge1, Before-R000201-branch-merge1,
+	R000201a5-branch-merge2, Before-R000201a5-branch-merge2,
+	Root-Of-R000201, R000201a5-branch-merge1,
+	Before-R000201a5-branch-merge1, Root-Of-R000201a5,
+	Root-Of-R000201a4, Marco, ROnline-Release020, Root-Of-Sad, nando,
+	Root-Of-R000201a3, Root-Of-R000201a2, Root-Of-R021a1),
+	Swap/Swap.mak (1.1, Root-Of-R000201a3, Root-Of-R000201a2,
+	Root-Of-R021a1), Swap/makefile.mak (1.1, Root-Of-R000201a3,
+	Root-Of-R000201a2, Root-Of-R021a1), Swap/swapvaluation.cpp (1.1):
+	added term_structure+swap example
 
 2001-09-28 10:31  'Ferdinando Ametrano <ferdinando@ametrano.net>'
 
@@ -4760,8 +5110,8 @@
 	Before-R000201a5-branch-merge2, Root-Of-R000201,
 	R000201a5-branch-merge1, Before-R000201a5-branch-merge1,
 	Root-Of-R000201a5, Root-Of-R000201a4, Marco, ROnline-Release020,
-	Root-Of-Sad, Root-Of-R000201a3, nando) (utags: Root-Of-R000201a2,
-	Root-Of-Macario, Root-Of-R021a1): little tweaks to avoid compiler
+	Root-Of-Sad, Root-Of-R000201a3, nando) (utags: Root-Of-Macario,
+	Root-Of-R021a1, Root-Of-R000201a2): little tweaks to avoid compiler
 	warning
 
 2001-09-26 12:45  'Luigi Ballabio <luigi.ballabio@riskmap.net>'
@@ -4782,14 +5132,15 @@
 
 2001-09-20 10:10  'Ferdinando Ametrano <ferdinando@ametrano.net>'
 
-	* Readme.txt (1.14, R000201a5-branch-merge3,
-	Before-R000201a5-branch-merge3, R000201-branch-merge2,
-	Before-R000201-branch-merge2, Before-Sad, R000201-branch-merge1,
-	Before-R000201-branch-merge1, R000201a5-branch-merge2,
-	Before-R000201a5-branch-merge2, Root-Of-R000201,
-	R000201a5-branch-merge1, Before-R000201a5-branch-merge1,
-	Root-Of-R000201a5, Root-Of-R000201a4, ROnline-Release020,
-	Root-Of-Sad, Root-Of-R000201a3, Root-Of-R000201a2, Root-Of-R021a1,
+	* Readme.txt (1.14, Root-Of-R000300a2, Root-Of-R000300a1,
+	R000201a5-branch-merge3, Before-R000201a5-branch-merge3,
+	R000201-branch-merge2, Before-R000201-branch-merge2, Before-Sad,
+	R000201-branch-merge1, Before-R000201-branch-merge1,
+	R000201a5-branch-merge2, Before-R000201a5-branch-merge2,
+	Root-Of-R000201, R000201a5-branch-merge1,
+	Before-R000201a5-branch-merge1, Root-Of-R000201a5,
+	Root-Of-R000201a4, ROnline-Release020, Root-Of-Sad,
+	Root-Of-R000201a3, Root-Of-R000201a2, Root-Of-R021a1,
 	Root-Of-Macario, Marco, nando): typo fixed
 
 2001-09-20 06:41  'Marco Marchioro <marco.marchioro@riskmap.net>'
@@ -4800,9 +5151,8 @@
 
 2001-09-19 07:38  'Marco Marchioro <marco.marchioro@riskmap.net>'
 
-	* QuantLib.dsp (1.40), QuantLib.mak (1.31) (utags:
-	Root-Of-R000201a2, Root-Of-R000201a3, Root-Of-Macario,
-	Root-Of-R021a1): Updated
+	* QuantLib.dsp (1.40), QuantLib.mak (1.31) (utags: Root-Of-Macario,
+	Root-Of-R021a1, Root-Of-R000201a2, Root-Of-R000201a3): Updated
 
 2001-09-18 13:46  'Ferdinando Ametrano <ferdinando@ametrano.net>'
 
@@ -4817,7 +5167,8 @@
 	QuantLib.nsi (1.35, After-R020-branch-merge1, Root-Of-Macario),
 	Readme.txt (1.13, After-R020-branch-merge1), Docs/Makefile.am
 	(1.30, After-R020-branch-merge1, Root-Of-Macario), Docs/bootstrap
-	(1.2, R000201a5-branch-merge3, Before-R000201a5-branch-merge3,
+	(1.2, Root-Of-R000300a2, Root-Of-R000300a1,
+	R000201a5-branch-merge3, Before-R000201a5-branch-merge3,
 	R000201-branch-merge2, Before-R000201-branch-merge2, Before-Sad,
 	R000201-branch-merge1, Before-R000201-branch-merge1,
 	R000201a5-branch-merge2, Before-R000201a5-branch-merge2,
@@ -4859,7 +5210,8 @@
 	Root-Of-Macario), Examples/DiscreteHedging/DiscreteHedging.cpp
 	(1.4, Root-Of-R000201a3, Root-Of-R000201a2, Root-Of-R021a1,
 	After-R020-branch-merge1, Root-Of-Macario),
-	Examples/DiscreteHedging/ReadMe.txt (1.2, R000201a5-branch-merge3,
+	Examples/DiscreteHedging/ReadMe.txt (1.2, Root-Of-R000300a2,
+	Root-Of-R000300a1, R000201a5-branch-merge3,
 	Before-R000201a5-branch-merge3, R000201-branch-merge2,
 	Before-R000201-branch-merge2, Before-Sad, R000201-branch-merge1,
 	Before-R000201-branch-merge1, R000201a5-branch-merge2,
@@ -4978,14 +5330,14 @@
 	Before-R020-branch-merge1), ql/depositrate.hpp (1.3),
 	ql/quantlib.hpp (1.6, After-R020-branch-merge1, Root-Of-Macario,
 	Before-R020-branch-merge1), ql/TermStructures/Makefile.am (1.5,
-	R000201a5-branch-merge3, Before-R000201a5-branch-merge3,
-	R000201-branch-merge2, Before-R000201-branch-merge2, Before-Sad,
-	R000201-branch-merge1, Before-R000201-branch-merge1,
-	R000201a5-branch-merge2, Before-R000201a5-branch-merge2,
-	Root-Of-R000201, R000201a5-branch-merge1,
-	Before-R000201a5-branch-merge1, Root-Of-R000201a5,
-	Root-Of-R000201a4, Marco, ROnline-Release020, Root-Of-Sad,
-	Root-Of-R000201a3, Root-Of-R000201a2, Root-Of-R021a1,
+	Root-Of-R000300a2, Root-Of-R000300a1, R000201a5-branch-merge3,
+	Before-R000201a5-branch-merge3, R000201-branch-merge2,
+	Before-R000201-branch-merge2, Before-Sad, R000201-branch-merge1,
+	Before-R000201-branch-merge1, R000201a5-branch-merge2,
+	Before-R000201a5-branch-merge2, Root-Of-R000201,
+	R000201a5-branch-merge1, Before-R000201a5-branch-merge1,
+	Root-Of-R000201a5, Root-Of-R000201a4, Marco, ROnline-Release020,
+	Root-Of-Sad, Root-Of-R000201a3, Root-Of-R000201a2, Root-Of-R021a1,
 	After-R020-branch-merge1, Root-Of-Macario,
 	Before-R020-branch-merge1, nando), ql/TermStructures/makefile.mak
 	(1.2, Root-Of-R000201a3, Root-Of-R000201a2, Root-Of-R021a1,
@@ -5011,14 +5363,14 @@
 2001-09-14 15:01  'Luigi Ballabio <luigi.ballabio@riskmap.net>'
 
 	* ql/: quantlib.hpp (1.5), DayCounters/Makefile.am (1.5,
-	R000201a5-branch-merge3, Before-R000201a5-branch-merge3,
-	R000201-branch-merge2, Before-R000201-branch-merge2, Before-Sad,
-	R000201-branch-merge1, Before-R000201-branch-merge1,
-	R000201a5-branch-merge2, Before-R000201a5-branch-merge2,
-	Root-Of-R000201, R000201a5-branch-merge1,
-	Before-R000201a5-branch-merge1, Root-Of-R000201a5,
-	Root-Of-R000201a4, Marco, ROnline-Release020, Root-Of-Sad,
-	Root-Of-R000201a3, Root-Of-R000201a2, Root-Of-R021a1,
+	Root-Of-R000300a2, Root-Of-R000300a1, R000201a5-branch-merge3,
+	Before-R000201a5-branch-merge3, R000201-branch-merge2,
+	Before-R000201-branch-merge2, Before-Sad, R000201-branch-merge1,
+	Before-R000201-branch-merge1, R000201a5-branch-merge2,
+	Before-R000201a5-branch-merge2, Root-Of-R000201,
+	R000201a5-branch-merge1, Before-R000201a5-branch-merge1,
+	Root-Of-R000201a5, Root-Of-R000201a4, Marco, ROnline-Release020,
+	Root-Of-Sad, Root-Of-R000201a3, Root-Of-R000201a2, Root-Of-R021a1,
 	After-R020-branch-merge1, Root-Of-Macario,
 	Before-R020-branch-merge1, nando), DayCounters/actualactual.cpp
 	(1.3, Root-Of-R000201a3, Root-Of-R000201a2, Root-Of-R021a1,
@@ -5089,8 +5441,8 @@
 	Root-Of-R000201a2, Root-Of-R021a1, Root-Of-Macario, nando),
 	Calendars/zurich.cpp (1.3, Root-Of-R000201a4, ROnline-Release020,
 	Root-Of-Sad, Root-Of-R000201a3, Root-Of-R000201a2, Root-Of-R021a1,
-	Root-Of-Macario, nando) (utags: After-R020-branch-merge1,
-	Before-R020-branch-merge1): Moved a few static members to an
+	Root-Of-Macario, nando) (utags: Before-R020-branch-merge1,
+	After-R020-branch-merge1): Moved a few static members to an
 	anonymous namespace
 
 2001-09-14 08:38  'Luigi Ballabio <luigi.ballabio@riskmap.net>'
@@ -5109,7 +5461,8 @@
 	nando), config.ansi.hpp (1.2, Root-Of-R000201a2, Root-Of-R021a1,
 	After-R020-branch-merge1, Root-Of-Macario,
 	Before-R020-branch-merge1, R020-branch-merge1), config.bcc.hpp
-	(1.2, R000201a5-branch-merge3, Before-R000201a5-branch-merge3,
+	(1.2, Root-Of-R000300a2, Root-Of-R000300a1,
+	R000201a5-branch-merge3, Before-R000201a5-branch-merge3,
 	R000201-branch-merge2, Before-R000201-branch-merge2, Before-Sad,
 	R000201-branch-merge1, Before-R000201-branch-merge1,
 	R000201a5-branch-merge2, Before-R000201a5-branch-merge2,
@@ -5119,28 +5472,30 @@
 	Root-Of-R000201a3, Root-Of-R000201a2, Root-Of-R021a1,
 	After-R020-branch-merge1, Root-Of-Macario,
 	Before-R020-branch-merge1, R020-branch-merge1, nando),
-	config.decc.hpp (1.2, R000201a5-branch-merge3,
-	Before-R000201a5-branch-merge3, R000201-branch-merge2,
-	Before-R000201-branch-merge2, Before-Sad, R000201-branch-merge1,
-	Before-R000201-branch-merge1, R000201a5-branch-merge2,
-	Before-R000201a5-branch-merge2, Root-Of-R000201,
-	R000201a5-branch-merge1, Before-R000201a5-branch-merge1,
-	Root-Of-R000201a5, Root-Of-R000201a4, Marco, ROnline-Release020,
-	Root-Of-Sad, Root-Of-R000201a3, Root-Of-R000201a2, Root-Of-R021a1,
+	config.decc.hpp (1.2, Root-Of-R000300a2, Root-Of-R000300a1,
+	R000201a5-branch-merge3, Before-R000201a5-branch-merge3,
+	R000201-branch-merge2, Before-R000201-branch-merge2, Before-Sad,
+	R000201-branch-merge1, Before-R000201-branch-merge1,
+	R000201a5-branch-merge2, Before-R000201a5-branch-merge2,
+	Root-Of-R000201, R000201a5-branch-merge1,
+	Before-R000201a5-branch-merge1, Root-Of-R000201a5,
+	Root-Of-R000201a4, Marco, ROnline-Release020, Root-Of-Sad,
+	Root-Of-R000201a3, Root-Of-R000201a2, Root-Of-R021a1,
 	After-R020-branch-merge1, Root-Of-Macario,
 	Before-R020-branch-merge1, R020-branch-merge1, nando),
 	config.msvc.hpp (1.2, Root-Of-R000201a4, Marco, ROnline-Release020,
 	Root-Of-Sad, Root-Of-R000201a3, Root-Of-R000201a2, Root-Of-R021a1,
 	After-R020-branch-merge1, Root-Of-Macario,
 	Before-R020-branch-merge1, R020-branch-merge1, nando),
-	config.mwcw.hpp (1.2, R000201a5-branch-merge3,
-	Before-R000201a5-branch-merge3, R000201-branch-merge2,
-	Before-R000201-branch-merge2, Before-Sad, R000201-branch-merge1,
-	Before-R000201-branch-merge1, R000201a5-branch-merge2,
-	Before-R000201a5-branch-merge2, Root-Of-R000201,
-	R000201a5-branch-merge1, Before-R000201a5-branch-merge1,
-	Root-Of-R000201a5, Root-Of-R000201a4, Marco, ROnline-Release020,
-	Root-Of-Sad, Root-Of-R000201a3, Root-Of-R000201a2, Root-Of-R021a1,
+	config.mwcw.hpp (1.2, Root-Of-R000300a2, Root-Of-R000300a1,
+	R000201a5-branch-merge3, Before-R000201a5-branch-merge3,
+	R000201-branch-merge2, Before-R000201-branch-merge2, Before-Sad,
+	R000201-branch-merge1, Before-R000201-branch-merge1,
+	R000201a5-branch-merge2, Before-R000201a5-branch-merge2,
+	Root-Of-R000201, R000201a5-branch-merge1,
+	Before-R000201a5-branch-merge1, Root-Of-R000201a5,
+	Root-Of-R000201a4, Marco, ROnline-Release020, Root-Of-Sad,
+	Root-Of-R000201a3, Root-Of-R000201a2, Root-Of-R021a1,
 	After-R020-branch-merge1, Root-Of-Macario,
 	Before-R020-branch-merge1, R020-branch-merge1, nando), currency.hpp
 	(1.2, R000201a5-branch-merge3, Before-R000201-branch-merge1,
@@ -5753,7 +6108,8 @@
 	TermStructures/ratehelpers.hpp (1.2, Root-Of-R000201a3,
 	Root-Of-R000201a2, Root-Of-R021a1, After-R020-branch-merge1,
 	Root-Of-Macario, Before-R020-branch-merge1, R020-branch-merge1),
-	Utilities/combiningiterator.hpp (1.2, R000201a5-branch-merge3,
+	Utilities/combiningiterator.hpp (1.2, Root-Of-R000300a2,
+	Root-Of-R000300a1, R000201a5-branch-merge3,
 	Before-R000201a5-branch-merge3, R000201-branch-merge2,
 	Before-R000201-branch-merge2, Before-Sad, R000201-branch-merge1,
 	Before-R000201-branch-merge1, R000201a5-branch-merge2,
@@ -5771,7 +6127,8 @@
 	Root-Of-Sad, Root-Of-R000201a3, Root-Of-R000201a2, Root-Of-R021a1,
 	After-R020-branch-merge1, Root-Of-Macario,
 	Before-R020-branch-merge1, R020-branch-merge1, nando),
-	Utilities/filteringiterator.hpp (1.2, R000201a5-branch-merge3,
+	Utilities/filteringiterator.hpp (1.2, Root-Of-R000300a2,
+	Root-Of-R000300a1, R000201a5-branch-merge3,
 	Before-R000201a5-branch-merge3, R000201-branch-merge2,
 	Before-R000201-branch-merge2, Before-Sad, R000201-branch-merge1,
 	Before-R000201-branch-merge1, R000201a5-branch-merge2,
@@ -5785,7 +6142,8 @@
 	Root-Of-R000201a3, Root-Of-R000201a2, Root-Of-R021a1,
 	After-R020-branch-merge1, Root-Of-Macario,
 	Before-R020-branch-merge1, R020-branch-merge1, nando),
-	Utilities/processingiterator.hpp (1.2, R000201a5-branch-merge3,
+	Utilities/processingiterator.hpp (1.2, Root-Of-R000300a2,
+	Root-Of-R000300a1, R000201a5-branch-merge3,
 	Before-R000201a5-branch-merge3, R000201-branch-merge2,
 	Before-R000201-branch-merge2, Before-Sad, R000201-branch-merge1,
 	Before-R000201-branch-merge1, R000201a5-branch-merge2,
@@ -5795,7 +6153,8 @@
 	Root-Of-Sad, Root-Of-R000201a3, Root-Of-R000201a2, Root-Of-R021a1,
 	After-R020-branch-merge1, Root-Of-Macario,
 	Before-R020-branch-merge1, R020-branch-merge1, nando),
-	Utilities/steppingiterator.hpp (1.2, R000201a5-branch-merge3,
+	Utilities/steppingiterator.hpp (1.2, Root-Of-R000300a2,
+	Root-Of-R000300a1, R000201a5-branch-merge3,
 	Before-R000201a5-branch-merge3, R000201-branch-merge2,
 	Before-R000201-branch-merge2, Before-Sad, R000201-branch-merge1,
 	Before-R000201-branch-merge1, R000201a5-branch-merge2,
@@ -6027,14 +6386,14 @@
 	R020-branch-merge1, marco_production, RHard_Production,
 	Root-Of-R020), quantlibheader.tex (1.5, RHard_Production,
 	marco_production), Examples/history_iterators.cpp (1.6,
-	R000201a5-branch-merge3, Before-R000201a5-branch-merge3,
-	R000201-branch-merge2, Before-R000201-branch-merge2, Before-Sad,
-	R000201-branch-merge1, Before-R000201-branch-merge1,
-	R000201a5-branch-merge2, Before-R000201a5-branch-merge2,
-	Root-Of-R000201, R000201a5-branch-merge1,
-	Before-R000201a5-branch-merge1, Root-Of-R000201a5,
-	Root-Of-R000201a4, ROnline-Release020, Root-Of-Sad,
-	Root-Of-R000201a3, Root-Of-R000201a2, Root-Of-R021a1,
+	Root-Of-R000300a2, Root-Of-R000300a1, R000201a5-branch-merge3,
+	Before-R000201a5-branch-merge3, R000201-branch-merge2,
+	Before-R000201-branch-merge2, Before-Sad, R000201-branch-merge1,
+	Before-R000201-branch-merge1, R000201a5-branch-merge2,
+	Before-R000201a5-branch-merge2, Root-Of-R000201,
+	R000201a5-branch-merge1, Before-R000201a5-branch-merge1,
+	Root-Of-R000201a5, Root-Of-R000201a4, ROnline-Release020,
+	Root-Of-Sad, Root-Of-R000201a3, Root-Of-R000201a2, Root-Of-R021a1,
 	After-R020-branch-merge1, Root-Of-Macario,
 	Before-R020-branch-merge1, R020-branch-merge1, marco_production,
 	nando, RHard_Production, Root-Of-R020, Marco): Improved
@@ -6127,10 +6486,10 @@
 	Root-Of-R000201a2, Root-Of-R021a1), geometricasianpathpricer.cpp
 	(1.2, Root-Of-R000201a3, Root-Of-R000201a2, Root-Of-R021a1),
 	geometricasianpathpricer.hpp (1.2) (utags: RHard_Production,
-	Root-Of-R020, R020-branch-merge1, After-R020-branch-merge1,
-	marco_production, Root-Of-Macario, Before-R020-branch-merge1):
-	modified geometricasianpathpricer given the Monte Carlo
-	modifications
+	Root-Of-R020, R020-branch-merge1, Root-Of-Macario,
+	Before-R020-branch-merge1, After-R020-branch-merge1,
+	marco_production): modified geometricasianpathpricer given the
+	Monte Carlo modifications
 
 2001-09-11 16:26  'Ferdinando Ametrano <ferdinando@ametrano.net>'
 
@@ -6215,11 +6574,11 @@
 2001-09-11 14:15  'Marco Marchioro <marco.marchioro@riskmap.net>'
 
 	* ql/MonteCarlo/: montecarlomodel.hpp (1.4), multipathpricer.hpp
-	(1.3), pathpricer.hpp (1.4) (utags: RHard_Production,
-	Root-Of-R000201a2, Root-Of-R000201a3, Root-Of-R020,
-	R020-branch-merge1, After-R020-branch-merge1, marco_production,
-	Root-Of-Macario, Root-Of-R021a1, Before-R020-branch-merge1): Fixing
-	here and there after Monte Carlo changes
+	(1.3), pathpricer.hpp (1.4) (utags: RHard_Production, Root-Of-R020,
+	R020-branch-merge1, Root-Of-Macario, Root-Of-R021a1,
+	Before-R020-branch-merge1, Root-Of-R000201a2, Root-Of-R000201a3,
+	After-R020-branch-merge1, marco_production): Fixing here and there
+	after Monte Carlo changes
 
 2001-09-11 13:35  'Ferdinando Ametrano <ferdinando@ametrano.net>'
 
@@ -6401,15 +6760,15 @@
 2001-09-07 09:14  'Sadruddin Rejeb <sad.rejeb@riskmap.it>'
 
 	* configure.in (1.35), Examples/acinclude.m4 (1.1,
-	R000201a5-branch-merge3, Before-R000201a5-branch-merge3,
-	R000201-branch-merge2, Before-R000201-branch-merge2, Before-Sad,
-	R000201-branch-merge1, Before-R000201-branch-merge1,
-	R000201a5-branch-merge2, Before-R000201a5-branch-merge2,
-	Root-Of-R000201, R000201a5-branch-merge1,
-	Before-R000201a5-branch-merge1, Root-Of-R000201a5,
-	Root-Of-R000201a4, Marco, ROnline-Release020, Root-Of-Sad, nando,
-	Root-Of-R000201a3, Root-Of-R000201a2, Root-Of-R021a1,
-	After-R020-branch-merge1, Root-Of-Macario,
+	Root-Of-R000300a2, Root-Of-R000300a1, R000201a5-branch-merge3,
+	Before-R000201a5-branch-merge3, R000201-branch-merge2,
+	Before-R000201-branch-merge2, Before-Sad, R000201-branch-merge1,
+	Before-R000201-branch-merge1, R000201a5-branch-merge2,
+	Before-R000201a5-branch-merge2, Root-Of-R000201,
+	R000201a5-branch-merge1, Before-R000201a5-branch-merge1,
+	Root-Of-R000201a5, Root-Of-R000201a4, Marco, ROnline-Release020,
+	Root-Of-Sad, nando, Root-Of-R000201a3, Root-Of-R000201a2,
+	Root-Of-R021a1, After-R020-branch-merge1, Root-Of-Macario,
 	Before-R020-branch-merge1, R020-branch-merge1, RHard_Production,
 	Root-Of-R020, marco_production), Examples/configure.in (1.1,
 	After-R020-branch-merge1, Root-Of-Macario,
@@ -6419,7 +6778,8 @@
 
 2001-09-07 08:48  'Sadruddin Rejeb <sad.rejeb@riskmap.it>'
 
-	* Examples/config/readme.txt (1.1, R000201a5-branch-merge3,
+	* Examples/config/readme.txt (1.1, Root-Of-R000300a2,
+	Root-Of-R000300a1, R000201a5-branch-merge3,
 	Before-R000201a5-branch-merge3, R000201-branch-merge2,
 	Before-R000201-branch-merge2, Before-Sad, R000201-branch-merge1,
 	Before-R000201-branch-merge1, R000201a5-branch-merge2,
@@ -6434,15 +6794,16 @@
 
 2001-09-07 08:45  'Sadruddin Rejeb <sad.rejeb@riskmap.it>'
 
-	* quantlib-config.in (1.2, R000201a5-branch-merge3,
-	Before-R000201a5-branch-merge3, R000201-branch-merge2,
-	Before-R000201-branch-merge2, Before-Sad, R000201-branch-merge1,
-	Before-R000201-branch-merge1, R000201a5-branch-merge2,
-	Before-R000201a5-branch-merge2, Root-Of-R000201,
-	R000201a5-branch-merge1, Before-R000201a5-branch-merge1,
-	Root-Of-R000201a5, Root-Of-R000201a4, Marco, ROnline-Release020,
-	Root-Of-Sad, nando, Root-Of-R000201a3, Root-Of-R000201a2,
-	Root-Of-R021a1, After-R020-branch-merge1, Root-Of-Macario,
+	* quantlib-config.in (1.2, Root-Of-R000300a2, Root-Of-R000300a1,
+	R000201a5-branch-merge3, Before-R000201a5-branch-merge3,
+	R000201-branch-merge2, Before-R000201-branch-merge2, Before-Sad,
+	R000201-branch-merge1, Before-R000201-branch-merge1,
+	R000201a5-branch-merge2, Before-R000201a5-branch-merge2,
+	Root-Of-R000201, R000201a5-branch-merge1,
+	Before-R000201a5-branch-merge1, Root-Of-R000201a5,
+	Root-Of-R000201a4, Marco, ROnline-Release020, Root-Of-Sad, nando,
+	Root-Of-R000201a3, Root-Of-R000201a2, Root-Of-R021a1,
+	After-R020-branch-merge1, Root-Of-Macario,
 	Before-R020-branch-merge1, R020-branch-merge1, RHard_Production,
 	Root-Of-R020, marco_production): Small fix (CFLAGS cleanup)
 
@@ -6452,30 +6813,32 @@
 
 2001-09-07 08:42  'Sadruddin Rejeb <sad.rejeb@riskmap.it>'
 
-	* config/readme.txt (1.1, R000201a5-branch-merge3,
-	Before-R000201a5-branch-merge3, R000201-branch-merge2,
-	Before-R000201-branch-merge2, Before-Sad, R000201-branch-merge1,
-	Before-R000201-branch-merge1, R000201a5-branch-merge2,
-	Before-R000201a5-branch-merge2, Root-Of-R000201,
-	R000201a5-branch-merge1, Before-R000201a5-branch-merge1,
-	Root-Of-R000201a5, Root-Of-R000201a4, Marco, ROnline-Release020,
-	Root-Of-Sad, nando, Root-Of-R000201a3, Root-Of-R000201a2,
-	Root-Of-R021a1, After-R020-branch-merge1, Root-Of-Macario,
+	* config/readme.txt (1.1, Root-Of-R000300a2, Root-Of-R000300a1,
+	R000201a5-branch-merge3, Before-R000201a5-branch-merge3,
+	R000201-branch-merge2, Before-R000201-branch-merge2, Before-Sad,
+	R000201-branch-merge1, Before-R000201-branch-merge1,
+	R000201a5-branch-merge2, Before-R000201a5-branch-merge2,
+	Root-Of-R000201, R000201a5-branch-merge1,
+	Before-R000201a5-branch-merge1, Root-Of-R000201a5,
+	Root-Of-R000201a4, Marco, ROnline-Release020, Root-Of-Sad, nando,
+	Root-Of-R000201a3, Root-Of-R000201a2, Root-Of-R021a1,
+	After-R020-branch-merge1, Root-Of-Macario,
 	Before-R020-branch-merge1, R020-branch-merge1, RHard_Production,
 	Root-Of-R020, marco_production): Dummy file ensuring that config/
 	is checked out
 
 2001-09-07 08:35  'Sadruddin Rejeb <sad.rejeb@riskmap.it>'
 
-	* quantlib.m4 (1.1, R000201a5-branch-merge3,
-	Before-R000201a5-branch-merge3, R000201-branch-merge2,
-	Before-R000201-branch-merge2, Before-Sad, R000201-branch-merge1,
-	Before-R000201-branch-merge1, R000201a5-branch-merge2,
-	Before-R000201a5-branch-merge2, Root-Of-R000201,
-	R000201a5-branch-merge1, Before-R000201a5-branch-merge1,
-	Root-Of-R000201a5, Root-Of-R000201a4, Marco, ROnline-Release020,
-	Root-Of-Sad, nando, Root-Of-R000201a3, Root-Of-R000201a2,
-	Root-Of-R021a1, After-R020-branch-merge1, Root-Of-Macario,
+	* quantlib.m4 (1.1, Root-Of-R000300a2, Root-Of-R000300a1,
+	R000201a5-branch-merge3, Before-R000201a5-branch-merge3,
+	R000201-branch-merge2, Before-R000201-branch-merge2, Before-Sad,
+	R000201-branch-merge1, Before-R000201-branch-merge1,
+	R000201a5-branch-merge2, Before-R000201a5-branch-merge2,
+	Root-Of-R000201, R000201a5-branch-merge1,
+	Before-R000201a5-branch-merge1, Root-Of-R000201a5,
+	Root-Of-R000201a4, Marco, ROnline-Release020, Root-Of-Sad, nando,
+	Root-Of-R000201a3, Root-Of-R000201a2, Root-Of-R021a1,
+	After-R020-branch-merge1, Root-Of-Macario,
 	Before-R020-branch-merge1, R020-branch-merge1, RHard_Production,
 	Root-Of-R020, marco_production): aclocal m4 file for QuantLib
 
@@ -6601,7 +6964,8 @@
 	DayCounters/Makefile.am (1.4, R020-branch-merge1, RHard_Production,
 	Root-Of-R020, marco_production), FiniteDifferences/Makefile.am
 	(1.4, RHard_Production, marco_production), Indexes/Makefile.am
-	(1.4, R000201a5-branch-merge3, Before-R000201a5-branch-merge3,
+	(1.4, Root-Of-R000300a2, Root-Of-R000300a1,
+	R000201a5-branch-merge3, Before-R000201a5-branch-merge3,
 	R000201-branch-merge2, Before-R000201-branch-merge2, Before-Sad,
 	R000201-branch-merge1, Before-R000201-branch-merge1,
 	R000201a5-branch-merge2, Before-R000201a5-branch-merge2,
@@ -6616,14 +6980,14 @@
 	After-R020-branch-merge1, Root-Of-Macario,
 	Before-R020-branch-merge1, R020-branch-merge1, RHard_Production,
 	Root-Of-R020, marco_production), Math/Makefile.am (1.4,
-	R000201a5-branch-merge3, Before-R000201a5-branch-merge3,
-	R000201-branch-merge2, Before-R000201-branch-merge2, Before-Sad,
-	R000201-branch-merge1, Before-R000201-branch-merge1,
-	R000201a5-branch-merge2, Before-R000201a5-branch-merge2,
-	Root-Of-R000201, R000201a5-branch-merge1,
-	Before-R000201a5-branch-merge1, Root-Of-R000201a5,
-	Root-Of-R000201a4, Marco, ROnline-Release020, Root-Of-Sad,
-	Root-Of-R000201a3, Root-Of-R000201a2, Root-Of-R021a1,
+	Root-Of-R000300a2, Root-Of-R000300a1, R000201a5-branch-merge3,
+	Before-R000201a5-branch-merge3, R000201-branch-merge2,
+	Before-R000201-branch-merge2, Before-Sad, R000201-branch-merge1,
+	Before-R000201-branch-merge1, R000201a5-branch-merge2,
+	Before-R000201a5-branch-merge2, Root-Of-R000201,
+	R000201a5-branch-merge1, Before-R000201a5-branch-merge1,
+	Root-Of-R000201a5, Root-Of-R000201a4, Marco, ROnline-Release020,
+	Root-Of-Sad, Root-Of-R000201a3, Root-Of-R000201a2, Root-Of-R021a1,
 	After-R020-branch-merge1, Root-Of-Macario,
 	Before-R020-branch-merge1, R020-branch-merge1, RHard_Production,
 	Root-Of-R020, marco_production, nando), MonteCarlo/Makefile.am
@@ -6634,27 +6998,27 @@
 	Root-Of-R021a1, After-R020-branch-merge1, Root-Of-Macario,
 	Before-R020-branch-merge1, R020-branch-merge1, RHard_Production,
 	Root-Of-R020, marco_production), Solvers1D/Makefile.am (1.4,
-	R000201a5-branch-merge3, Before-R000201a5-branch-merge3,
-	R000201-branch-merge2, Before-R000201-branch-merge2, Before-Sad,
-	R000201-branch-merge1, Before-R000201-branch-merge1,
-	R000201a5-branch-merge2, Before-R000201a5-branch-merge2,
-	Root-Of-R000201, R000201a5-branch-merge1,
-	Before-R000201a5-branch-merge1, Root-Of-R000201a5,
-	Root-Of-R000201a4, Marco, ROnline-Release020, Root-Of-Sad,
-	Root-Of-R000201a3, Root-Of-R000201a2, Root-Of-R021a1,
+	Root-Of-R000300a2, Root-Of-R000300a1, R000201a5-branch-merge3,
+	Before-R000201a5-branch-merge3, R000201-branch-merge2,
+	Before-R000201-branch-merge2, Before-Sad, R000201-branch-merge1,
+	Before-R000201-branch-merge1, R000201a5-branch-merge2,
+	Before-R000201a5-branch-merge2, Root-Of-R000201,
+	R000201a5-branch-merge1, Before-R000201a5-branch-merge1,
+	Root-Of-R000201a5, Root-Of-R000201a4, Marco, ROnline-Release020,
+	Root-Of-Sad, Root-Of-R000201a3, Root-Of-R000201a2, Root-Of-R021a1,
 	After-R020-branch-merge1, Root-Of-Macario,
 	Before-R020-branch-merge1, R020-branch-merge1, RHard_Production,
 	Root-Of-R020, marco_production, nando), TermStructures/Makefile.am
 	(1.4, R020-branch-merge1, RHard_Production, Root-Of-R020,
-	marco_production), Utilities/Makefile.am (1.4,
-	R000201a5-branch-merge3, Before-R000201a5-branch-merge3,
-	R000201-branch-merge2, Before-R000201-branch-merge2, Before-Sad,
-	R000201-branch-merge1, Before-R000201-branch-merge1,
-	R000201a5-branch-merge2, Before-R000201a5-branch-merge2,
-	Root-Of-R000201, R000201a5-branch-merge1,
-	Before-R000201a5-branch-merge1, Root-Of-R000201a5,
-	Root-Of-R000201a4, Marco, ROnline-Release020, Root-Of-Sad,
-	Root-Of-R000201a3, Root-Of-R000201a2, Root-Of-R021a1,
+	marco_production), Utilities/Makefile.am (1.4, Root-Of-R000300a2,
+	Root-Of-R000300a1, R000201a5-branch-merge3,
+	Before-R000201a5-branch-merge3, R000201-branch-merge2,
+	Before-R000201-branch-merge2, Before-Sad, R000201-branch-merge1,
+	Before-R000201-branch-merge1, R000201a5-branch-merge2,
+	Before-R000201a5-branch-merge2, Root-Of-R000201,
+	R000201a5-branch-merge1, Before-R000201a5-branch-merge1,
+	Root-Of-R000201a5, Root-Of-R000201a4, Marco, ROnline-Release020,
+	Root-Of-Sad, Root-Of-R000201a3, Root-Of-R000201a2, Root-Of-R021a1,
 	After-R020-branch-merge1, Root-Of-Macario,
 	Before-R020-branch-merge1, R020-branch-merge1, RHard_Production,
 	Root-Of-R020, marco_production, nando): installation path for
@@ -7157,7 +7521,8 @@
 
 2001-09-03 08:05  'Ferdinando Ametrano <ferdinando@ametrano.net>'
 
-	* Docs/images/QL-largish.bmp (1.1, R000201a5-branch-merge3,
+	* Docs/images/QL-largish.bmp (1.1, Root-Of-R000300a2,
+	Root-Of-R000300a1, R000201a5-branch-merge3,
 	Before-R000201a5-branch-merge3, R000201-branch-merge2,
 	Before-R000201-branch-merge2, Before-Sad, R000201-branch-merge1,
 	Before-R000201-branch-merge1, R000201a5-branch-merge2,
@@ -7217,14 +7582,15 @@
 
 2001-08-30 17:03  'Ferdinando Ametrano <ferdinando@ametrano.net>'
 
-	* acconfig.h (1.4, R000201a5-branch-merge3,
-	Before-R000201a5-branch-merge3, R000201-branch-merge2,
-	Before-R000201-branch-merge2, Before-Sad, R000201-branch-merge1,
-	Before-R000201-branch-merge1, R000201a5-branch-merge2,
-	Before-R000201a5-branch-merge2, Root-Of-R000201,
-	R000201a5-branch-merge1, Before-R000201a5-branch-merge1,
-	Root-Of-R000201a5, Root-Of-R000201a4, ROnline-Release020,
-	Root-Of-Sad, Root-Of-R000201a3, Root-Of-R000201a2, Root-Of-R021a1,
+	* acconfig.h (1.4, Root-Of-R000300a2, Root-Of-R000300a1,
+	R000201a5-branch-merge3, Before-R000201a5-branch-merge3,
+	R000201-branch-merge2, Before-R000201-branch-merge2, Before-Sad,
+	R000201-branch-merge1, Before-R000201-branch-merge1,
+	R000201a5-branch-merge2, Before-R000201a5-branch-merge2,
+	Root-Of-R000201, R000201a5-branch-merge1,
+	Before-R000201a5-branch-merge1, Root-Of-R000201a5,
+	Root-Of-R000201a4, ROnline-Release020, Root-Of-Sad,
+	Root-Of-R000201a3, Root-Of-R000201a2, Root-Of-R021a1,
 	After-R020-branch-merge1, Root-Of-Macario,
 	Before-R020-branch-merge1, R020-branch-merge1, marco_production,
 	RHard_Production, Root-Of-R020, Marco, nando): clock substitued by
@@ -7497,14 +7863,15 @@
 
 2001-07-24 16:59  'Ferdinando Ametrano <ferdinando@ametrano.net>'
 
-	* INSTALL.txt (1.1, R000201a5-branch-merge3,
-	Before-R000201a5-branch-merge3, R000201-branch-merge2,
-	Before-R000201-branch-merge2, Before-Sad, R000201-branch-merge1,
-	Before-R000201-branch-merge1, R000201a5-branch-merge2,
-	Before-R000201a5-branch-merge2, Root-Of-R000201,
-	R000201a5-branch-merge1, Before-R000201a5-branch-merge1,
-	Root-Of-R000201a5, Root-Of-R000201a4, Marco, ROnline-Release020,
-	Root-Of-Sad, Root-Of-R000201a3, Root-Of-R000201a2, Root-Of-R021a1,
+	* INSTALL.txt (1.1, Root-Of-R000300a2, Root-Of-R000300a1,
+	R000201a5-branch-merge3, Before-R000201a5-branch-merge3,
+	R000201-branch-merge2, Before-R000201-branch-merge2, Before-Sad,
+	R000201-branch-merge1, Before-R000201-branch-merge1,
+	R000201a5-branch-merge2, Before-R000201a5-branch-merge2,
+	Root-Of-R000201, R000201a5-branch-merge1,
+	Before-R000201a5-branch-merge1, Root-Of-R000201a5,
+	Root-Of-R000201a4, Marco, ROnline-Release020, Root-Of-Sad,
+	Root-Of-R000201a3, Root-Of-R000201a2, Root-Of-R021a1,
 	After-R020-branch-merge1, Root-Of-Macario,
 	Before-R020-branch-merge1, R020-branch-merge1, Root-Of-R020,
 	marco_production, nando, After_BS_optimization,
@@ -7521,7 +7888,8 @@
 	(1.1), Docs/makefile.mak (1.11, After_BS_optimization,
 	Before_BS_optimization), Docs/misc.docs (1.1), Docs/quantlib.doxy
 	(1.18, After_BS_optimization, Before_BS_optimization),
-	Docs/images/QL-largish.eps (1.1, R000201a5-branch-merge3,
+	Docs/images/QL-largish.eps (1.1, Root-Of-R000300a2,
+	Root-Of-R000300a1, R000201a5-branch-merge3,
 	Before-R000201a5-branch-merge3, R000201-branch-merge2,
 	Before-R000201-branch-merge2, Before-Sad, R000201-branch-merge1,
 	Before-R000201-branch-merge1, R000201a5-branch-merge2,
@@ -7533,7 +7901,8 @@
 	Before-R020-branch-merge1, R020-branch-merge1, Root-Of-R020,
 	marco_production, nando, After_BS_optimization,
 	Before_BS_optimization, RHard_Production),
-	Docs/images/QL-largish.jpg (1.1, R000201a5-branch-merge3,
+	Docs/images/QL-largish.jpg (1.1, Root-Of-R000300a2,
+	Root-Of-R000300a1, R000201a5-branch-merge3,
 	Before-R000201a5-branch-merge3, R000201-branch-merge2,
 	Before-R000201-branch-merge2, Before-Sad, R000201-branch-merge1,
 	Before-R000201-branch-merge1, R000201a5-branch-merge2,
@@ -7545,7 +7914,8 @@
 	Before-R020-branch-merge1, R020-branch-merge1, Root-Of-R020,
 	marco_production, nando, After_BS_optimization,
 	Before_BS_optimization, RHard_Production),
-	Docs/images/QL-largish.pdf (1.1, R000201a5-branch-merge3,
+	Docs/images/QL-largish.pdf (1.1, Root-Of-R000300a2,
+	Root-Of-R000300a1, R000201a5-branch-merge3,
 	Before-R000201a5-branch-merge3, R000201-branch-merge2,
 	Before-R000201-branch-merge2, Before-Sad, R000201-branch-merge1,
 	Before-R000201-branch-merge1, R000201a5-branch-merge2,
@@ -7557,7 +7927,8 @@
 	Before-R020-branch-merge1, R020-branch-merge1, Root-Of-R020,
 	marco_production, nando, After_BS_optimization,
 	Before_BS_optimization, RHard_Production),
-	Docs/images/QL-small-notitle.jpg (1.1, R000201a5-branch-merge3,
+	Docs/images/QL-small-notitle.jpg (1.1, Root-Of-R000300a2,
+	Root-Of-R000300a1, R000201a5-branch-merge3,
 	Before-R000201a5-branch-merge3, R000201-branch-merge2,
 	Before-R000201-branch-merge2, Before-Sad, R000201-branch-merge1,
 	Before-R000201-branch-merge1, R000201a5-branch-merge2,
@@ -7642,7 +8013,8 @@
 2001-07-15 08:34  'Ferdinando Ametrano <ferdinando@ametrano.net>'
 
 	* Authors.txt (1.3), Contributors.txt (1.9), Examples/README.txt
-	(1.2, R000201a5-branch-merge3, Before-R000201a5-branch-merge3,
+	(1.2, Root-Of-R000300a2, Root-Of-R000300a1,
+	R000201a5-branch-merge3, Before-R000201a5-branch-merge3,
 	R000201-branch-merge2, Before-R000201-branch-merge2, Before-Sad,
 	R000201-branch-merge1, Before-R000201-branch-merge1,
 	R000201a5-branch-merge2, Before-R000201a5-branch-merge2,
@@ -7939,9 +8311,8 @@
 
 2001-05-23 13:06  'Ferdinando Ametrano <ferdinando@ametrano.net>'
 
-	* QuantLib.dsp (1.13), QuantLib.mak (1.3) (utags: R019,
-	Root-Of-R019, R019-branch-merge2): just to be sure ... the latest
-	version
+	* QuantLib.dsp (1.13), QuantLib.mak (1.3) (utags: Root-Of-R019,
+	R019, R019-branch-merge2): just to be sure ... the latest version
 
 2001-05-23 09:23  'Marco Marchioro <marco.marchioro@riskmap.net>'
 
@@ -7968,7 +8339,7 @@
 
 	* Makefile.am (1.27, R019-branch-merge5, Dresdner,
 	R019-branch-merge4, R019-branch-merge3, R019-branch-merge2),
-	configure.in (1.21) (utags: R019, Root-Of-R019): SWIG folder
+	configure.in (1.21) (utags: Root-Of-R019, R019): SWIG folder
 	removed
 
 2001-05-21 11:11  'Luigi Ballabio <luigi.ballabio@riskmap.net>'
@@ -8026,9 +8397,9 @@
 2001-05-09 11:06  'Ferdinando Ametrano <ferdinando@ametrano.net>'
 
 	* README-win.txt (1.2), Readme.txt (1.6) (utags:
-	R019-branch-merge3, R019-branch-merge4, R019-branch-merge5, R019,
-	Dresdner, Root-Of-R019, adolfo_R20010521, R019-branch-merge2): A
-	few comments modified/removed
+	R019-branch-merge3, R019-branch-merge4, R019-branch-merge5,
+	Dresdner, Root-Of-R019, adolfo_R20010521, R019,
+	R019-branch-merge2): A few comments modified/removed
 
 2001-05-09 09:22  'Ferdinando Ametrano <ferdinando@ametrano.net>'
 
@@ -8187,14 +8558,15 @@
 	Before-Sad, Root-Of-R021a1, Before-R020-branch-merge1,
 	Before_BS_optimization, Root-Of-R000201a2, Root-Of-R000201a3,
 	Root-Of-R000201a4, Root-Of-R000201a5, R019-branch-merge2,
-	R019-branch-merge3, RHard_Production, R019-branch-merge4,
-	R000201-branch-merge1, R019-branch-merge5, R000201-branch-merge2,
-	Before-R000201a5-branch-merge1, Before-R000201a5-branch-merge2,
-	Before-R000201a5-branch-merge3, adolfo, Root-Of-R019,
-	Root-Of-R000201, adolfo_R20010521, After-R020-branch-merge1,
+	R019-branch-merge3, R019-branch-merge4, RHard_Production,
+	R019-branch-merge5, R000201-branch-merge1,
+	Before-R000201a5-branch-merge1, R000201-branch-merge2,
+	Before-R000201a5-branch-merge2, Before-R000201a5-branch-merge3,
+	adolfo, Root-Of-R019, Root-Of-R000201, adolfo_R20010521,
+	Root-Of-R000300a1, Root-Of-R000300a2, After-R020-branch-merge1,
 	marco_production, nando, R000201a5-branch-merge1,
-	R000201a5-branch-merge2, R000201a5-branch-merge3, Marco,
-	After_BS_optimization): new homes for Win32 libs
+	R000201a5-branch-merge2, R000201a5-branch-merge3,
+	After_BS_optimization, Marco): new homes for Win32 libs
 
 2001-04-11 17:03  'Luigi Ballabio <luigi.ballabio@riskmap.net>'
 
@@ -8219,14 +8591,15 @@
 
 2001-04-09 14:32  'Ferdinando Ametrano <ferdinando@ametrano.net>'
 
-	* lib/README.txt (1.1, R000201a5-branch-merge3,
-	Before-R000201a5-branch-merge3, R000201-branch-merge2,
-	Before-R000201-branch-merge2, Before-Sad, R000201-branch-merge1,
-	Before-R000201-branch-merge1, R000201a5-branch-merge2,
-	Before-R000201a5-branch-merge2, Root-Of-R000201,
-	R000201a5-branch-merge1, Before-R000201a5-branch-merge1,
-	Root-Of-R000201a5, Root-Of-R000201a4, ROnline-Release020,
-	Root-Of-Sad, Root-Of-R000201a3, Root-Of-R000201a2, Root-Of-R021a1,
+	* lib/README.txt (1.1, Root-Of-R000300a2, Root-Of-R000300a1,
+	R000201a5-branch-merge3, Before-R000201a5-branch-merge3,
+	R000201-branch-merge2, Before-R000201-branch-merge2, Before-Sad,
+	R000201-branch-merge1, Before-R000201-branch-merge1,
+	R000201a5-branch-merge2, Before-R000201a5-branch-merge2,
+	Root-Of-R000201, R000201a5-branch-merge1,
+	Before-R000201a5-branch-merge1, Root-Of-R000201a5,
+	Root-Of-R000201a4, ROnline-Release020, Root-Of-Sad,
+	Root-Of-R000201a3, Root-Of-R000201a2, Root-Of-R021a1,
 	After-R020-branch-merge1, Root-Of-Macario,
 	Before-R020-branch-merge1, R020-branch-merge1, marco_production,
 	After_BS_optimization, Before_BS_optimization, RHard_Production,
@@ -8242,15 +8615,15 @@
 	Root-Of-R019, R019, adolfo_R20010521, adolfo), Contributors.txt
 	(1.6, R019-branch-merge5, Dresdner, R019-branch-merge4,
 	R019-branch-merge3, R019-branch-merge2, Root-Of-R019, R019,
-	adolfo_R20010521, adolfo), LICENSE.TXT (1.2,
-	R000201a5-branch-merge3, Before-R000201a5-branch-merge3,
-	R000201-branch-merge2, Before-R000201-branch-merge2, Before-Sad,
-	R000201-branch-merge1, Before-R000201-branch-merge1,
-	R000201a5-branch-merge2, Before-R000201a5-branch-merge2,
-	Root-Of-R000201, R000201a5-branch-merge1,
-	Before-R000201a5-branch-merge1, Root-Of-R000201a5,
-	Root-Of-R000201a4, ROnline-Release020, Root-Of-Sad,
-	Root-Of-R000201a3, Root-Of-R000201a2, Root-Of-R021a1,
+	adolfo_R20010521, adolfo), LICENSE.TXT (1.2, Root-Of-R000300a2,
+	Root-Of-R000300a1, R000201a5-branch-merge3,
+	Before-R000201a5-branch-merge3, R000201-branch-merge2,
+	Before-R000201-branch-merge2, Before-Sad, R000201-branch-merge1,
+	Before-R000201-branch-merge1, R000201a5-branch-merge2,
+	Before-R000201a5-branch-merge2, Root-Of-R000201,
+	R000201a5-branch-merge1, Before-R000201a5-branch-merge1,
+	Root-Of-R000201a5, Root-Of-R000201a4, ROnline-Release020,
+	Root-Of-Sad, Root-Of-R000201a3, Root-Of-R000201a2, Root-Of-R021a1,
 	After-R020-branch-merge1, Root-Of-Macario,
 	Before-R020-branch-merge1, R020-branch-merge1, marco_production,
 	After_BS_optimization, Before_BS_optimization, RHard_Production,
@@ -8418,14 +8791,14 @@
 	R019-branch-merge5, Dresdner, R019-branch-merge4,
 	R019-branch-merge3, R019-branch-merge2, Root-Of-R019, R019,
 	adolfo_R20010521, marmar, adolfo, enri, mario), acinclude.m4 (1.2,
-	R000201a5-branch-merge3, Before-R000201a5-branch-merge3,
-	R000201-branch-merge2, Before-R000201-branch-merge2, Before-Sad,
-	R000201-branch-merge1, Before-R000201-branch-merge1,
-	R000201a5-branch-merge2, Before-R000201a5-branch-merge2,
-	Root-Of-R000201, R000201a5-branch-merge1,
-	Before-R000201a5-branch-merge1, Root-Of-R000201a5,
-	Root-Of-R000201a4, ROnline-Release020, Root-Of-Sad,
-	Root-Of-R000201a3, Root-Of-R000201a2, Root-Of-R021a1,
+	Root-Of-R000300a2, Root-Of-R000300a1, R000201a5-branch-merge3,
+	Before-R000201a5-branch-merge3, R000201-branch-merge2,
+	Before-R000201-branch-merge2, Before-Sad, R000201-branch-merge1,
+	Before-R000201-branch-merge1, R000201a5-branch-merge2,
+	Before-R000201a5-branch-merge2, Root-Of-R000201,
+	R000201a5-branch-merge1, Before-R000201a5-branch-merge1,
+	Root-Of-R000201a5, Root-Of-R000201a4, ROnline-Release020,
+	Root-Of-Sad, Root-Of-R000201a3, Root-Of-R000201a2, Root-Of-R021a1,
 	After-R020-branch-merge1, Root-Of-Macario,
 	Before-R020-branch-merge1, R020-branch-merge1, marco_production,
 	After_BS_optimization, Before_BS_optimization, RHard_Production,
