@@ -52,7 +52,6 @@ int main() {
     runner.addTest(CovarianceTest::suite());
     runner.addTest(new RiskStatisticsTest);
     runner.addTest(new StatisticsTest);
-    runner.addTest(LDSTest::suite());
 
     runner.addTest(new CalendarTest);
     runner.addTest(CapFloorTest::suite());
@@ -62,6 +61,7 @@ int main() {
     runner.addTest(EuropeanOptionTest::suite());
     runner.addTest(InstrumentTest::suite());
     runner.addTest(new IntegralTest);
+    runner.addTest(LDSTest::suite());
     runner.addTest(MarketElementTest::suite());
     runner.addTest(new MatricesTest());
     runner.addTest(new MersenneTwisterTest());
