@@ -1,0 +1,137 @@
+
+# Make sure that Python path contains the directory of QuantLib and that of this file
+from QuantLib  import BSMEuropeanOption
+import copy
+import math
+
+pricer = BSMEuropeanOption
+
+def relErr(x1, x2, reference):
+    if reference != 0.0:
+	return abs(x1-x2)/reference
+    else:
+    	return 10e10
+    	
+rangeUnder = [100]
+rangeQrate = [0.05]
+rangeResTime = [1.0]
+rangeStrike = [50, 99.5, 100, 100.5, 150]
+rangeVol = [ 0.11, 0.5, 1.2]
+rangeRrate = [ 0.01, 0.05, 0.15]
+
+maxNumDerErrorList=[]; maxCPSerrorList=[];
+resuCPSvalue = [];     resuCPSdelta = [];   resuCPSgamma = [];     resuCPStheta = [];
+resuCPSrho   = [];     resuCPSvega  = [];   resuCPparity = []
+
+err_delta = 5e-5
+err_gamma = 5e-5
+err_theta = 5e-5
+err_rho  =  5e-5
+err_vega =  5e-5
+total_number_of_error = 0
+
+print "Test of the class BSMEuropeanOption, maximum-error"
+print "     Type  items err-value err-delta err-gamma err-theta  err-rho  err-vega "
+for under in rangeUnder:
+  for Qrate in rangeQrate:
+    for resTime in rangeResTime:
+        for Rrate in rangeRrate:
+            for strike in rangeStrike:
+                for vol in rangeVol:
+                    #Check straddle
+                    call     = pricer('Call'    ,under,strike,Qrate,Rrate,resTime,vol)
+                    put      = pricer('Put'     ,under,strike,Qrate,Rrate,resTime,vol)
+                    straddle = pricer('Straddle',under,strike,Qrate,Rrate,resTime,vol)
+                    CPparity=call.value()-put.value()-under*math.exp(-Qrate*resTime)+strike*math.exp(-Rrate*resTime)
+                    resuCPSvalue.append(call.value()+put.value()-straddle.value())
+                    resuCPSdelta.append(call.delta()+put.delta()-straddle.delta())
+                    resuCPSgamma.append(call.gamma()+put.gamma()-straddle.gamma())
+                    resuCPStheta.append(call.theta()+put.theta()-straddle.theta())
+                    resuCPSrho.append(  call.rho()  +put.rho()  -straddle.rho())
+                    resuCPSvega.append( call.vega() +put.vega() -straddle.vega())
+                    resuCPparity.append(CPparity)
+        
+typ = 'C+P-S'
+print "%9s   %d  %7.2e %7.2e %7.2e %7.2e %7.2e %7.2e" % (
+        typ, len(resuCPSvalue),	max(resuCPSvalue),max(resuCPSdelta),max(resuCPSgamma),
+	max(resuCPStheta),max(resuCPSrho),max(resuCPSvega))
+
+maxCPSerrorList.append(max(resuCPSvalue))
+maxCPSerrorList.append(max(resuCPSdelta))
+maxCPSerrorList.append(max(resuCPSgamma))
+maxCPSerrorList.append(max(resuCPStheta))
+maxCPSerrorList.append(max(resuCPSrho))
+maxCPSerrorList.append(max(resuCPSvega))
+
+for typ in ['Call','Put','Straddle']:
+  resuDelta = [];  resuGamma = [];  resuTheta = []
+  resuRho   = [];  resuVega  = []
+  for under in rangeUnder:
+    for Qrate in rangeQrate:
+      for resTime in rangeResTime:        
+        for Rrate in rangeRrate:
+          for strike in rangeStrike:
+            for vol in rangeVol:
+              #Check Greeks
+              dS = under/10000.0
+              dT = resTime/10000.0
+              dVol = vol/10000.0
+              dR = Rrate/10000.0
+              option = pricer(typ,under,strike,Qrate,Rrate,resTime,vol)
+              opt_val = option.value()
+              if opt_val>0.00001*under:
+                optionPs = pricer(typ,under+dS,strike,Qrate,Rrate   ,resTime   ,vol)
+                optionMs = pricer(typ,under-dS,strike,Qrate,Rrate   ,resTime   ,vol)
+                optionPt = pricer(typ,under   ,strike,Qrate,Rrate   ,resTime+dT,vol)
+                optionMt = pricer(typ,under   ,strike,Qrate,Rrate   ,resTime-dT,vol)
+                optionPr = pricer(typ,under   ,strike,Qrate,Rrate+dR,resTime   ,vol)
+                optionMr = pricer(typ,under   ,strike,Qrate,Rrate-dR,resTime   ,vol)
+                optionPv = pricer(typ,under   ,strike,Qrate,Rrate   ,resTime   ,vol+dVol)
+                optionMv = pricer(typ,under   ,strike,Qrate,Rrate   ,resTime   ,vol-dVol)
+                
+                deltaNum = (optionPs.value()-optionMs.value())/(2*dS)
+                gammaNum = (optionPs.delta()-optionMs.delta())/(2*dS)
+                thetaNum =-(optionPt.value()-optionMt.value())/(2*dT)
+                rhoNum   = (optionPr.value()-optionMr.value())/(2*dR)
+                vegaNum  = (optionPv.value()-optionMv.value())/(2*dVol)
+		            
+                resuDelta.append(relErr(option.delta(), deltaNum, under))
+                resuGamma.append(relErr(option.gamma(), gammaNum, under))
+                resuTheta.append(relErr(option.theta(), thetaNum, under))
+                resuRho.append(  relErr(option.rho(),   rhoNum,   under))
+                resuVega.append( relErr(option.vega(),  vegaNum,  under))
+                                   
+                if(relErr(option.delta(),deltaNum,under) > err_delta or
+                   relErr(option.gamma(),gammaNum,under) > err_gamma or
+                   relErr(option.theta(),thetaNum,under) > err_theta or
+                   relErr(option.rho(),  rhoNum,  under) > err_rho   or
+                   relErr(option.vega(), vegaNum, under) > err_vega  ):
+                  total_number_of_error = total_number_of_error + 1
+                  print "Attention required ",typ,under,strike,Qrate,Rrate,resTime,vol
+                  print '\tvalue=%+9.5f' % (opt_val)
+                  print '\tdelta=%+9.5f, deltaNum=%+9.5f err=%7.2e' % (option.delta(),deltaNum,relErr(option.delta(),deltaNum,under))
+                  print '\tgamma=%+9.5f, gammaNum=%+9.5f err=%7.2e' % (option.gamma(),gammaNum,relErr(option.gamma(),gammaNum,under))
+                  print '\ttheta=%+9.5f, thetaNum=%+9.5f err=%7.2e' % (option.theta(),thetaNum,relErr(option.theta(),thetaNum,under))
+                  print '\trho  =%+9.5f,   rhoNum=%+9.5f err=%7.2e' % (option.rho(),  rhoNum,  relErr(option.rho(),  rhoNum,  under))
+                  print '\tvega =%+9.5f, vegaNum =%+9.5f err=%7.2e' % (option.vega(), vegaNum, relErr(option.vega(), vegaNum, under))
+  print "%9s   %d            %7.2e %7.2e %7.2e %7.2e %7.2e" % (typ, len(resuDelta), 
+        max(resuDelta), max(resuGamma), max(resuTheta), max(resuRho), max(resuVega))
+	       
+  maxNumDerErrorList.append(max(resuDelta))
+  maxNumDerErrorList.append(max(resuGamma))
+  maxNumDerErrorList.append(max(resuTheta))
+  maxNumDerErrorList.append(max(resuRho))
+  maxNumDerErrorList.append(max(resuVega))
+
+print 	
+maxCPparityError = max(resuCPparity)
+print "C-P parity err = %g" % (maxCPparityError)       
+print "Final maximum C+P-S = %g" % max(maxCPSerrorList)
+print "Final maximum global error on numerical derivatives = %g" % max(maxNumDerErrorList)
+print 
+if total_number_of_error > 1:
+        print "Test not passed, total noumber of failures:",total_number_of_error
+else:
+        print "Test passed!!"
+
+raw_input()
