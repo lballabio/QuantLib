@@ -1,5 +1,6 @@
 
 /*
+ Copyright (C) 2003 Ferdinando Ametrano
  Copyright (C) 2000, 2001, 2002, 2003 RiskMap srl
 
  This file is part of QuantLib, a free-software/open-source library
@@ -36,8 +37,32 @@ namespace QuantLib {
             used. Also it is assumed that the diagonal member of the
             correlation matrix equals one.
         */
-        Math::Matrix getCovariance(const Array& volatilities,
-            const Math::Matrix& correlations);
+
+        template<class DataIterator>
+        Math::Matrix getCovariance(DataIterator volBegin,
+                                   DataIterator volEnd,
+                                   const Math::Matrix& correlations) {
+            Size size = std::distance(volBegin, volEnd);
+            QL_REQUIRE(correlations.rows() == size,
+                       "getCovariance: volatilities and correlations "
+                       "have different size");
+            QL_REQUIRE(correlations.columns() == size,
+                "getCovariance: correlation matrix is not square");
+
+            Math::Matrix covariance(size,size);
+            Size i, j;
+            DataIterator iIt, jIt;
+            for(i=0, iIt=volBegin; i<size; i++, iIt++){
+                for(j=0, jIt=volBegin; j<i; j++, jIt++){
+                    covariance[i][j] = (*iIt) * (*jIt) *
+                            0.5 * (correlations[i][j] + correlations[j][i]);
+                    covariance[j][i] = covariance[i][j];
+                }
+                covariance[i][i] = (*iIt) * (*iIt);
+            }
+            return covariance;
+        }
+
 
     }
 

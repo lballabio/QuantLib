@@ -23,7 +23,6 @@ OBJS = \
     everestpathpricer.obj$(_D) \
     geometricapopathpricer.obj$(_D) \
     geometricasopathpricer.obj$(_D) \
-    getcovariance.obj$(_D) \
     himalayapathpricer.obj$(_D) \
 	maxbasketpathpricer.obj$(_D) \
     pagodapathpricer.obj$(_D) \

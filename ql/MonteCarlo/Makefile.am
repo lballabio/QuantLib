@@ -40,7 +40,6 @@ libMonteCarlo_la_SOURCES = \
 	everestpathpricer.cpp \
 	geometricapopathpricer.cpp \
 	geometricasopathpricer.cpp \
-	getcovariance.cpp \
 	himalayapathpricer.cpp \
 	maxbasketpathpricer.cpp \
 	pagodapathpricer.cpp \
