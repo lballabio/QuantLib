@@ -45,7 +45,7 @@ while test $# -gt 0; do
 
           includes=-I@includedir@
       fi
-      echo $includes -I@includedir@/ql @CFLAGS@
+      echo $includes -I@includedir@/ql
       ;;
     --libs)
       echo -L@libdir@ -lQuantLib
