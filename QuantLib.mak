@@ -67,8 +67,6 @@ CLEAN :
 	-@erase "$(INTDIR)\armijo.sbr"
 	-@erase "$(INTDIR)\barrieroption.obj"
 	-@erase "$(INTDIR)\barrieroption.sbr"
-	-@erase "$(INTDIR)\barrieroptionpricer.obj"
-	-@erase "$(INTDIR)\barrieroptionpricer.sbr"
 	-@erase "$(INTDIR)\barrierpathpricer.obj"
 	-@erase "$(INTDIR)\barrierpathpricer.sbr"
 	-@erase "$(INTDIR)\basispointsensitivity.obj"
@@ -79,8 +77,6 @@ CLEAN :
 	-@erase "$(INTDIR)\biasedbarrierpathpricer.sbr"
 	-@erase "$(INTDIR)\binaryoption.obj"
 	-@erase "$(INTDIR)\binaryoption.sbr"
-	-@erase "$(INTDIR)\binaryoptionpricer.obj"
-	-@erase "$(INTDIR)\binaryoptionpricer.sbr"
 	-@erase "$(INTDIR)\binarypathpricer.obj"
 	-@erase "$(INTDIR)\binarypathpricer.sbr"
 	-@erase "$(INTDIR)\binomialtree.obj"
@@ -243,8 +239,6 @@ CLEAN :
 	-@erase "$(INTDIR)\mcdiscretearithmeticapo.sbr"
 	-@erase "$(INTDIR)\mcdiscretearithmeticaso.obj"
 	-@erase "$(INTDIR)\mcdiscretearithmeticaso.sbr"
-	-@erase "$(INTDIR)\mceuropean.obj"
-	-@erase "$(INTDIR)\mceuropean.sbr"
 	-@erase "$(INTDIR)\mceverest.obj"
 	-@erase "$(INTDIR)\mceverest.sbr"
 	-@erase "$(INTDIR)\mchimalaya.obj"
@@ -463,8 +457,6 @@ BSC32_SBRS= \
 	"$(INTDIR)\simplex.sbr" \
 	"$(INTDIR)\steepestdescent.sbr" \
 	"$(INTDIR)\analyticalcapfloor.sbr" \
-	"$(INTDIR)\barrieroptionpricer.sbr" \
-	"$(INTDIR)\binaryoptionpricer.sbr" \
 	"$(INTDIR)\blackcapfloor.sbr" \
 	"$(INTDIR)\blackswaption.sbr" \
 	"$(INTDIR)\capfloorpricer.sbr" \
@@ -486,7 +478,6 @@ BSC32_SBRS= \
 	"$(INTDIR)\mccliquetoption.sbr" \
 	"$(INTDIR)\mcdiscretearithmeticapo.sbr" \
 	"$(INTDIR)\mcdiscretearithmeticaso.sbr" \
-	"$(INTDIR)\mceuropean.sbr" \
 	"$(INTDIR)\mceverest.sbr" \
 	"$(INTDIR)\mchimalaya.sbr" \
 	"$(INTDIR)\mcmaxbasket.sbr" \
@@ -635,8 +626,6 @@ LIB32_OBJS= \
 	"$(INTDIR)\simplex.obj" \
 	"$(INTDIR)\steepestdescent.obj" \
 	"$(INTDIR)\analyticalcapfloor.obj" \
-	"$(INTDIR)\barrieroptionpricer.obj" \
-	"$(INTDIR)\binaryoptionpricer.obj" \
 	"$(INTDIR)\blackcapfloor.obj" \
 	"$(INTDIR)\blackswaption.obj" \
 	"$(INTDIR)\capfloorpricer.obj" \
@@ -658,7 +647,6 @@ LIB32_OBJS= \
 	"$(INTDIR)\mccliquetoption.obj" \
 	"$(INTDIR)\mcdiscretearithmeticapo.obj" \
 	"$(INTDIR)\mcdiscretearithmeticaso.obj" \
-	"$(INTDIR)\mceuropean.obj" \
 	"$(INTDIR)\mceverest.obj" \
 	"$(INTDIR)\mchimalaya.obj" \
 	"$(INTDIR)\mcmaxbasket.obj" \
@@ -760,8 +748,6 @@ CLEAN :
 	-@erase "$(INTDIR)\armijo.sbr"
 	-@erase "$(INTDIR)\barrieroption.obj"
 	-@erase "$(INTDIR)\barrieroption.sbr"
-	-@erase "$(INTDIR)\barrieroptionpricer.obj"
-	-@erase "$(INTDIR)\barrieroptionpricer.sbr"
 	-@erase "$(INTDIR)\barrierpathpricer.obj"
 	-@erase "$(INTDIR)\barrierpathpricer.sbr"
 	-@erase "$(INTDIR)\basispointsensitivity.obj"
@@ -772,8 +758,6 @@ CLEAN :
 	-@erase "$(INTDIR)\biasedbarrierpathpricer.sbr"
 	-@erase "$(INTDIR)\binaryoption.obj"
 	-@erase "$(INTDIR)\binaryoption.sbr"
-	-@erase "$(INTDIR)\binaryoptionpricer.obj"
-	-@erase "$(INTDIR)\binaryoptionpricer.sbr"
 	-@erase "$(INTDIR)\binarypathpricer.obj"
 	-@erase "$(INTDIR)\binarypathpricer.sbr"
 	-@erase "$(INTDIR)\binomialtree.obj"
@@ -936,8 +920,6 @@ CLEAN :
 	-@erase "$(INTDIR)\mcdiscretearithmeticapo.sbr"
 	-@erase "$(INTDIR)\mcdiscretearithmeticaso.obj"
 	-@erase "$(INTDIR)\mcdiscretearithmeticaso.sbr"
-	-@erase "$(INTDIR)\mceuropean.obj"
-	-@erase "$(INTDIR)\mceuropean.sbr"
 	-@erase "$(INTDIR)\mceverest.obj"
 	-@erase "$(INTDIR)\mceverest.sbr"
 	-@erase "$(INTDIR)\mchimalaya.obj"
@@ -1157,8 +1139,6 @@ BSC32_SBRS= \
 	"$(INTDIR)\simplex.sbr" \
 	"$(INTDIR)\steepestdescent.sbr" \
 	"$(INTDIR)\analyticalcapfloor.sbr" \
-	"$(INTDIR)\barrieroptionpricer.sbr" \
-	"$(INTDIR)\binaryoptionpricer.sbr" \
 	"$(INTDIR)\blackcapfloor.sbr" \
 	"$(INTDIR)\blackswaption.sbr" \
 	"$(INTDIR)\capfloorpricer.sbr" \
@@ -1180,7 +1160,6 @@ BSC32_SBRS= \
 	"$(INTDIR)\mccliquetoption.sbr" \
 	"$(INTDIR)\mcdiscretearithmeticapo.sbr" \
 	"$(INTDIR)\mcdiscretearithmeticaso.sbr" \
-	"$(INTDIR)\mceuropean.sbr" \
 	"$(INTDIR)\mceverest.sbr" \
 	"$(INTDIR)\mchimalaya.sbr" \
 	"$(INTDIR)\mcmaxbasket.sbr" \
@@ -1329,8 +1308,6 @@ LIB32_OBJS= \
 	"$(INTDIR)\simplex.obj" \
 	"$(INTDIR)\steepestdescent.obj" \
 	"$(INTDIR)\analyticalcapfloor.obj" \
-	"$(INTDIR)\barrieroptionpricer.obj" \
-	"$(INTDIR)\binaryoptionpricer.obj" \
 	"$(INTDIR)\blackcapfloor.obj" \
 	"$(INTDIR)\blackswaption.obj" \
 	"$(INTDIR)\capfloorpricer.obj" \
@@ -1352,7 +1329,6 @@ LIB32_OBJS= \
 	"$(INTDIR)\mccliquetoption.obj" \
 	"$(INTDIR)\mcdiscretearithmeticapo.obj" \
 	"$(INTDIR)\mcdiscretearithmeticaso.obj" \
-	"$(INTDIR)\mceuropean.obj" \
 	"$(INTDIR)\mceverest.obj" \
 	"$(INTDIR)\mchimalaya.obj" \
 	"$(INTDIR)\mcmaxbasket.obj" \
@@ -1454,8 +1430,6 @@ CLEAN :
 	-@erase "$(INTDIR)\armijo.sbr"
 	-@erase "$(INTDIR)\barrieroption.obj"
 	-@erase "$(INTDIR)\barrieroption.sbr"
-	-@erase "$(INTDIR)\barrieroptionpricer.obj"
-	-@erase "$(INTDIR)\barrieroptionpricer.sbr"
 	-@erase "$(INTDIR)\barrierpathpricer.obj"
 	-@erase "$(INTDIR)\barrierpathpricer.sbr"
 	-@erase "$(INTDIR)\basispointsensitivity.obj"
@@ -1466,8 +1440,6 @@ CLEAN :
 	-@erase "$(INTDIR)\biasedbarrierpathpricer.sbr"
 	-@erase "$(INTDIR)\binaryoption.obj"
 	-@erase "$(INTDIR)\binaryoption.sbr"
-	-@erase "$(INTDIR)\binaryoptionpricer.obj"
-	-@erase "$(INTDIR)\binaryoptionpricer.sbr"
 	-@erase "$(INTDIR)\binarypathpricer.obj"
 	-@erase "$(INTDIR)\binarypathpricer.sbr"
 	-@erase "$(INTDIR)\binomialtree.obj"
@@ -1630,8 +1602,6 @@ CLEAN :
 	-@erase "$(INTDIR)\mcdiscretearithmeticapo.sbr"
 	-@erase "$(INTDIR)\mcdiscretearithmeticaso.obj"
 	-@erase "$(INTDIR)\mcdiscretearithmeticaso.sbr"
-	-@erase "$(INTDIR)\mceuropean.obj"
-	-@erase "$(INTDIR)\mceuropean.sbr"
 	-@erase "$(INTDIR)\mceverest.obj"
 	-@erase "$(INTDIR)\mceverest.sbr"
 	-@erase "$(INTDIR)\mchimalaya.obj"
@@ -1850,8 +1820,6 @@ BSC32_SBRS= \
 	"$(INTDIR)\simplex.sbr" \
 	"$(INTDIR)\steepestdescent.sbr" \
 	"$(INTDIR)\analyticalcapfloor.sbr" \
-	"$(INTDIR)\barrieroptionpricer.sbr" \
-	"$(INTDIR)\binaryoptionpricer.sbr" \
 	"$(INTDIR)\blackcapfloor.sbr" \
 	"$(INTDIR)\blackswaption.sbr" \
 	"$(INTDIR)\capfloorpricer.sbr" \
@@ -1873,7 +1841,6 @@ BSC32_SBRS= \
 	"$(INTDIR)\mccliquetoption.sbr" \
 	"$(INTDIR)\mcdiscretearithmeticapo.sbr" \
 	"$(INTDIR)\mcdiscretearithmeticaso.sbr" \
-	"$(INTDIR)\mceuropean.sbr" \
 	"$(INTDIR)\mceverest.sbr" \
 	"$(INTDIR)\mchimalaya.sbr" \
 	"$(INTDIR)\mcmaxbasket.sbr" \
@@ -2022,8 +1989,6 @@ LIB32_OBJS= \
 	"$(INTDIR)\simplex.obj" \
 	"$(INTDIR)\steepestdescent.obj" \
 	"$(INTDIR)\analyticalcapfloor.obj" \
-	"$(INTDIR)\barrieroptionpricer.obj" \
-	"$(INTDIR)\binaryoptionpricer.obj" \
 	"$(INTDIR)\blackcapfloor.obj" \
 	"$(INTDIR)\blackswaption.obj" \
 	"$(INTDIR)\capfloorpricer.obj" \
@@ -2045,7 +2010,6 @@ LIB32_OBJS= \
 	"$(INTDIR)\mccliquetoption.obj" \
 	"$(INTDIR)\mcdiscretearithmeticapo.obj" \
 	"$(INTDIR)\mcdiscretearithmeticaso.obj" \
-	"$(INTDIR)\mceuropean.obj" \
 	"$(INTDIR)\mceverest.obj" \
 	"$(INTDIR)\mchimalaya.obj" \
 	"$(INTDIR)\mcmaxbasket.obj" \
@@ -2147,8 +2111,6 @@ CLEAN :
 	-@erase "$(INTDIR)\armijo.sbr"
 	-@erase "$(INTDIR)\barrieroption.obj"
 	-@erase "$(INTDIR)\barrieroption.sbr"
-	-@erase "$(INTDIR)\barrieroptionpricer.obj"
-	-@erase "$(INTDIR)\barrieroptionpricer.sbr"
 	-@erase "$(INTDIR)\barrierpathpricer.obj"
 	-@erase "$(INTDIR)\barrierpathpricer.sbr"
 	-@erase "$(INTDIR)\basispointsensitivity.obj"
@@ -2159,8 +2121,6 @@ CLEAN :
 	-@erase "$(INTDIR)\biasedbarrierpathpricer.sbr"
 	-@erase "$(INTDIR)\binaryoption.obj"
 	-@erase "$(INTDIR)\binaryoption.sbr"
-	-@erase "$(INTDIR)\binaryoptionpricer.obj"
-	-@erase "$(INTDIR)\binaryoptionpricer.sbr"
 	-@erase "$(INTDIR)\binarypathpricer.obj"
 	-@erase "$(INTDIR)\binarypathpricer.sbr"
 	-@erase "$(INTDIR)\binomialtree.obj"
@@ -2323,8 +2283,6 @@ CLEAN :
 	-@erase "$(INTDIR)\mcdiscretearithmeticapo.sbr"
 	-@erase "$(INTDIR)\mcdiscretearithmeticaso.obj"
 	-@erase "$(INTDIR)\mcdiscretearithmeticaso.sbr"
-	-@erase "$(INTDIR)\mceuropean.obj"
-	-@erase "$(INTDIR)\mceuropean.sbr"
 	-@erase "$(INTDIR)\mceverest.obj"
 	-@erase "$(INTDIR)\mceverest.sbr"
 	-@erase "$(INTDIR)\mchimalaya.obj"
@@ -2543,8 +2501,6 @@ BSC32_SBRS= \
 	"$(INTDIR)\simplex.sbr" \
 	"$(INTDIR)\steepestdescent.sbr" \
 	"$(INTDIR)\analyticalcapfloor.sbr" \
-	"$(INTDIR)\barrieroptionpricer.sbr" \
-	"$(INTDIR)\binaryoptionpricer.sbr" \
 	"$(INTDIR)\blackcapfloor.sbr" \
 	"$(INTDIR)\blackswaption.sbr" \
 	"$(INTDIR)\capfloorpricer.sbr" \
@@ -2566,7 +2522,6 @@ BSC32_SBRS= \
 	"$(INTDIR)\mccliquetoption.sbr" \
 	"$(INTDIR)\mcdiscretearithmeticapo.sbr" \
 	"$(INTDIR)\mcdiscretearithmeticaso.sbr" \
-	"$(INTDIR)\mceuropean.sbr" \
 	"$(INTDIR)\mceverest.sbr" \
 	"$(INTDIR)\mchimalaya.sbr" \
 	"$(INTDIR)\mcmaxbasket.sbr" \
@@ -2715,8 +2670,6 @@ LIB32_OBJS= \
 	"$(INTDIR)\simplex.obj" \
 	"$(INTDIR)\steepestdescent.obj" \
 	"$(INTDIR)\analyticalcapfloor.obj" \
-	"$(INTDIR)\barrieroptionpricer.obj" \
-	"$(INTDIR)\binaryoptionpricer.obj" \
 	"$(INTDIR)\blackcapfloor.obj" \
 	"$(INTDIR)\blackswaption.obj" \
 	"$(INTDIR)\capfloorpricer.obj" \
@@ -2738,7 +2691,6 @@ LIB32_OBJS= \
 	"$(INTDIR)\mccliquetoption.obj" \
 	"$(INTDIR)\mcdiscretearithmeticapo.obj" \
 	"$(INTDIR)\mcdiscretearithmeticaso.obj" \
-	"$(INTDIR)\mceuropean.obj" \
 	"$(INTDIR)\mceverest.obj" \
 	"$(INTDIR)\mchimalaya.obj" \
 	"$(INTDIR)\mcmaxbasket.obj" \
@@ -2840,8 +2792,6 @@ CLEAN :
 	-@erase "$(INTDIR)\armijo.sbr"
 	-@erase "$(INTDIR)\barrieroption.obj"
 	-@erase "$(INTDIR)\barrieroption.sbr"
-	-@erase "$(INTDIR)\barrieroptionpricer.obj"
-	-@erase "$(INTDIR)\barrieroptionpricer.sbr"
 	-@erase "$(INTDIR)\barrierpathpricer.obj"
 	-@erase "$(INTDIR)\barrierpathpricer.sbr"
 	-@erase "$(INTDIR)\basispointsensitivity.obj"
@@ -2852,8 +2802,6 @@ CLEAN :
 	-@erase "$(INTDIR)\biasedbarrierpathpricer.sbr"
 	-@erase "$(INTDIR)\binaryoption.obj"
 	-@erase "$(INTDIR)\binaryoption.sbr"
-	-@erase "$(INTDIR)\binaryoptionpricer.obj"
-	-@erase "$(INTDIR)\binaryoptionpricer.sbr"
 	-@erase "$(INTDIR)\binarypathpricer.obj"
 	-@erase "$(INTDIR)\binarypathpricer.sbr"
 	-@erase "$(INTDIR)\binomialtree.obj"
@@ -3016,8 +2964,6 @@ CLEAN :
 	-@erase "$(INTDIR)\mcdiscretearithmeticapo.sbr"
 	-@erase "$(INTDIR)\mcdiscretearithmeticaso.obj"
 	-@erase "$(INTDIR)\mcdiscretearithmeticaso.sbr"
-	-@erase "$(INTDIR)\mceuropean.obj"
-	-@erase "$(INTDIR)\mceuropean.sbr"
 	-@erase "$(INTDIR)\mceverest.obj"
 	-@erase "$(INTDIR)\mceverest.sbr"
 	-@erase "$(INTDIR)\mchimalaya.obj"
@@ -3237,8 +3183,6 @@ BSC32_SBRS= \
 	"$(INTDIR)\simplex.sbr" \
 	"$(INTDIR)\steepestdescent.sbr" \
 	"$(INTDIR)\analyticalcapfloor.sbr" \
-	"$(INTDIR)\barrieroptionpricer.sbr" \
-	"$(INTDIR)\binaryoptionpricer.sbr" \
 	"$(INTDIR)\blackcapfloor.sbr" \
 	"$(INTDIR)\blackswaption.sbr" \
 	"$(INTDIR)\capfloorpricer.sbr" \
@@ -3260,7 +3204,6 @@ BSC32_SBRS= \
 	"$(INTDIR)\mccliquetoption.sbr" \
 	"$(INTDIR)\mcdiscretearithmeticapo.sbr" \
 	"$(INTDIR)\mcdiscretearithmeticaso.sbr" \
-	"$(INTDIR)\mceuropean.sbr" \
 	"$(INTDIR)\mceverest.sbr" \
 	"$(INTDIR)\mchimalaya.sbr" \
 	"$(INTDIR)\mcmaxbasket.sbr" \
@@ -3409,8 +3352,6 @@ LIB32_OBJS= \
 	"$(INTDIR)\simplex.obj" \
 	"$(INTDIR)\steepestdescent.obj" \
 	"$(INTDIR)\analyticalcapfloor.obj" \
-	"$(INTDIR)\barrieroptionpricer.obj" \
-	"$(INTDIR)\binaryoptionpricer.obj" \
 	"$(INTDIR)\blackcapfloor.obj" \
 	"$(INTDIR)\blackswaption.obj" \
 	"$(INTDIR)\capfloorpricer.obj" \
@@ -3432,7 +3373,6 @@ LIB32_OBJS= \
 	"$(INTDIR)\mccliquetoption.obj" \
 	"$(INTDIR)\mcdiscretearithmeticapo.obj" \
 	"$(INTDIR)\mcdiscretearithmeticaso.obj" \
-	"$(INTDIR)\mceuropean.obj" \
 	"$(INTDIR)\mceverest.obj" \
 	"$(INTDIR)\mchimalaya.obj" \
 	"$(INTDIR)\mcmaxbasket.obj" \
@@ -4039,18 +3979,6 @@ SOURCE=.\ql\Pricers\analyticalcapfloor.cpp
 	$(CPP) $(CPP_PROJ) $(SOURCE)
 
 
-SOURCE=.\ql\Pricers\barrieroptionpricer.cpp
-
-"$(INTDIR)\barrieroptionpricer.obj"	"$(INTDIR)\barrieroptionpricer.sbr" : $(SOURCE) "$(INTDIR)"
-	$(CPP) $(CPP_PROJ) $(SOURCE)
-
-
-SOURCE=.\ql\Pricers\binaryoptionpricer.cpp
-
-"$(INTDIR)\binaryoptionpricer.obj"	"$(INTDIR)\binaryoptionpricer.sbr" : $(SOURCE) "$(INTDIR)"
-	$(CPP) $(CPP_PROJ) $(SOURCE)
-
-
 SOURCE=.\ql\Pricers\blackcapfloor.cpp
 
 "$(INTDIR)\blackcapfloor.obj"	"$(INTDIR)\blackcapfloor.sbr" : $(SOURCE) "$(INTDIR)"
@@ -4222,12 +4150,6 @@ SOURCE=.\ql\Pricers\mcdiscretearithmeticapo.cpp
 SOURCE=.\ql\Pricers\mcdiscretearithmeticaso.cpp
 
 "$(INTDIR)\mcdiscretearithmeticaso.obj"	"$(INTDIR)\mcdiscretearithmeticaso.sbr" : $(SOURCE) "$(INTDIR)"
-	$(CPP) $(CPP_PROJ) $(SOURCE)
-
-
-SOURCE=.\ql\Pricers\mceuropean.cpp
-
-"$(INTDIR)\mceuropean.obj"	"$(INTDIR)\mceuropean.sbr" : $(SOURCE) "$(INTDIR)"
 	$(CPP) $(CPP_PROJ) $(SOURCE)
 
 

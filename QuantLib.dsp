@@ -1209,22 +1209,6 @@ SOURCE=.\ql\Pricers\analyticalcapfloor.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\ql\Pricers\barrieroptionpricer.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\ql\Pricers\barrieroptionpricer.hpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\ql\Pricers\binaryoptionpricer.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\ql\Pricers\binaryoptionpricer.hpp
-# End Source File
-# Begin Source File
-
 SOURCE=.\ql\Pricers\blackcapfloor.cpp
 # End Source File
 # Begin Source File
@@ -1420,14 +1404,6 @@ SOURCE=.\ql\Pricers\mcdiscretearithmeticaso.cpp
 # Begin Source File
 
 SOURCE=.\ql\Pricers\mcdiscretearithmeticaso.hpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\ql\Pricers\mceuropean.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\ql\Pricers\mceuropean.hpp
 # End Source File
 # Begin Source File
 
