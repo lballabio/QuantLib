@@ -53,7 +53,7 @@ namespace QuantLib {
         void calculate() const;
     };
 
-    //! Pricing engine for binary barrier options using Monte Carlo
+    //! Pricing engine for binary barrier options using Monte Carlo simulation
     template<class RNG = PseudoRandom, class S = Statistics>
     class MCBinaryBarrierEngine : public BinaryBarrierEngine,
                            public McSimulation<SingleAsset<RNG>, S> {
@@ -92,7 +92,6 @@ namespace QuantLib {
         Size maxTimeStepsPerYear_;
         Size requiredSamples_, maxSamples_;
         double requiredTolerance_;
-        bool isBiased_;
         long seed_;
     };
 
@@ -112,7 +111,6 @@ namespace QuantLib {
       requiredSamples_(requiredSamples),
       maxSamples_(maxSamples),
       requiredTolerance_(requiredTolerance),
-      isBiased_(isBiased),
       seed_(seed) {}
 
 
@@ -149,16 +147,7 @@ namespace QuantLib {
         #else
         Handle<PlainVanillaPayoff> payoff = arguments_.payoff;
         #endif
-        // do this with Template Parameters?
-        /*if (isBiased_) {
-            return Handle<MCBinaryBarrierEngine<RNG,S>::path_pricer_type>(
-                new BiasedBinaryBarrierPathPricer(                
-                        arguments_.barrierType, arguments_.barrier, 
-                        arguments_.rebate, payoff->optionType(), 
-                        payoff->strike(), arguments_.underlying, 
-                        arguments_.riskFreeTS));
-        } else {                   
-        */
+
         TimeGrid grid = timeGrid();
         UniformRandomSequenceGenerator 
             sequenceGen(grid.size()-1, UniformRandomGenerator(76));

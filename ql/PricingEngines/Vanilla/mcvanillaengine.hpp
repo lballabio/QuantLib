@@ -29,7 +29,7 @@
 namespace QuantLib {
 
 
-    //! Base class for Monte Carlo vanilla option engines
+    //! Pricing engine for vanilla option using Monte Carlo simulation
     template<class RNG = PseudoRandom, class S = Statistics>
     class MCVanillaEngine : public VanillaEngine,
                             public McSimulation<SingleAsset<RNG>, S> {
