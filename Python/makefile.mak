@@ -27,9 +27,9 @@ PYTHON_LIBS    = "$(PYTHON_HOME)"\libs
 
 # Object files
 !ifdef DEBUG
-    WRAPPER_OBJ = quantlib_wrap.obj
-!else
     WRAPPER_OBJ = quantlib_wrap_d.obj
+!else
+    WRAPPER_OBJ = quantlib_wrap.obj
 !endif
 WIN_OBJS        = c0d32.obj
 
