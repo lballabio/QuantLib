@@ -1,3 +1,8 @@
-YYYY-MM-DD
+
+2001-09-xx Release 0.2
+
+2001-07-26 http://quantlib.org announced
+
+2001-05-31 Release 0.1.9
 
 2000-11-21 Release 0.1.1 officially announced
