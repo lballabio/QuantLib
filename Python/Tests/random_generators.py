@@ -25,6 +25,9 @@
 """
     $Source$
     $Log$
+    Revision 1.3  2001/04/04 11:08:11  lballabio
+    Python tests implemented on top of PyUnit
+
     Revision 1.2  2001/03/15 10:29:10  lballabio
     Removed 1M list construction
 
@@ -45,29 +48,26 @@
 
 """
 
-from QuantLib import Statistics, UniformRandomGenerator, GaussianRandomGenerator
-from TestUnit import TestUnit
+import QuantLib
+import unittest
 
-class RNGTest(TestUnit):
-    def doTest(self):
+class RNGTest(unittest.TestCase):
+    def runTest(self):
+        "Testing random number generators"
         seed = 576919
         samples = 1000000
-        self.printDetails(
-            "Generator                          "
-            "mean    sigma    skew    kurt   min   max"
-        )
-        for RNG in [UniformRandomGenerator, GaussianRandomGenerator]:
+        for RNG in [QuantLib.UniformRandomGenerator,
+                    QuantLib.GaussianRandomGenerator]:
             rn = RNG(seed=seed)
-            s = Statistics()
+            s = QuantLib.Statistics()
             while s.samples() < samples:
                 s.add(rn.next())
-            self.printDetails(
-                "%32s %+8.4f %7.4f %7.3f %7.3f %5.2f %5.2f " % 
-                (RNG, s.mean(), s.standardDeviation(), s.skewness(), 
-                s.kurtosis(), s.min(), s.max())
-            )
+            # we'll have to write some meaningful test here
 
 
 if __name__ == '__main__':
-    RNGTest().test('random number generators')
+    suite = unittest.TestSuite()
+    suite.addTest(RNGTest())
+    unittest.TextTestRunner().run(suite)
+
 

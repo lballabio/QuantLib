@@ -25,6 +25,9 @@
 """
     $Source$
     $Log$
+    Revision 1.2  2001/04/04 11:08:11  lballabio
+    Python tests implemented on top of PyUnit
+
     Revision 1.1  2001/02/22 14:43:36  lballabio
     Renamed test script to follow a single naming scheme
 
@@ -45,112 +48,73 @@
 # this file tests the method impliedVolatility
 # (it actually tests the Brent 1D solver used)
 
-from QuantLib import BSMEuropeanOption
-from TestUnit import TestUnit
+import QuantLib
+import unittest
 
-class ImpliedVolTest(TestUnit):
-    def doTest(self):
-        typRange = ['Call']
+class ImpliedVolatilityTest(unittest.TestCase):
+    def runTest(self):
+        "Testing implied volatility and Brent 1D solver"
         typRange = ['Call', 'Put', 'Straddle']
-        underRange = [100]
         underRange = [80, 95, 99.90, 100, 100.10, 105, 120]
-        strikeRange = [100]
         strikeRange = [80, 95, 99.90, 100, 100.10, 105, 120]
-        qRateRange = [0.05]
         qRateRange = [0.01, 0.05, 0.10]
-        rRateRange = [0.05]
         rRateRange = [0.01, 0.05, 0.10]
-        resTimeRange = [1.0]
         resTimeRange = [0.001, 0.1, 0.5, 1.0, 3.0]
-        volRange = [0.2]
         volRange = [0.01, 0.2, 0.3, 0.7, 0.9]
-        dVolRange = [1.0]
         dVolRange = [0.5, 0.999, 1.0, 1.001, 1.5]
         
         maxEval = 100
         tol = 1e-6
         
-        dummyiterations = 1
-        
         for typ in typRange:
-          self.printDetails(typ)
           for under in underRange:
             for strike in strikeRange:
               for qRate in qRateRange:
                 for rRate in rRateRange:
                   for resTime in resTimeRange:
                     for vol in volRange:
-                      bsm = BSMEuropeanOption(typ, under, strike, qRate, rRate,
-                        resTime, vol)
+                      bsm = QuantLib.BSMEuropeanOption(typ, under, \
+                          strike, qRate, rRate, resTime, vol)
                       bsmValue = bsm.value()
                       if bsmValue==0.0 :
                         continue
                       for dVol in dVolRange:
                         vol2 = vol*dVol
-                        bsm2 = BSMEuropeanOption(typ, under, strike, qRate, 
-                          rRate, resTime, vol2)
+                        bsm2 = QuantLib.BSMEuropeanOption(typ, under, \
+                            strike, qRate, rRate, resTime, vol2)
                         try:
-                          for i in range(dummyiterations):
                             implVol = bsm2.impliedVolatility(bsmValue, tol, 
                               maxEval)
                         except Exception, e:
-                          self.printDetails(
-                            "type=%s; under=%5.2f; strike=%5.2f; qRate=%4.2f;"
-                            " rRate=%4.2f; resTime=%5.3f;" % 
-                            (typ, under, strike, qRate, rRate, resTime)
-                          )
-                          self.printDetails(
-                            'at %18.16f vol the option value is %20.12e' % 
-                            (vol, bsmValue)
-                          )
-                          self.printDetails(
-                            'at %18.16f vol the option value is %20.12e' % 
-                            (vol2, bsm2.value())
-                          )
-                          self.printDetails('')
-                          self.printDetails(
-                            'while trying to calculate implied vol from'
-                            ' value %20.12e' % (bsmValue)
-                          )
-                          raise e
-                        err = abs(implVol-vol)
-                        if err > tol :
-                          bsm3 = BSMEuropeanOption(typ, under, strike, qRate, 
-                            rRate, resTime, implVol)
+                            raise str(e) + "\n" + \
+                                "Option details: %s %f %f %f %f %f\n" % \
+                                (typ, under, strike, qRate, rRate, resTime) + \
+                                "volatility:   %18.16f\n" % vol2 + \
+                                "option value: %20.12e\n" % bsm2.value() + \
+                                "while trying to calculate implied vol " + \
+                                "from value %20.12e\n" % bsmValue
+                        if abs(implVol-vol) > tol:
+                          bsm3 = QuantLib.BSMEuropeanOption(typ, under, \
+                            strike, qRate, rRate, resTime, implVol)
                           bsm3Value = bsm3.value()
-                          if (abs(bsm3Value-bsmValue)/under>1e-3):
-                            bsm2Value = bsm2.value()
-                            self.printDetails(
-                              'type=%s; under=%5.2f; strike=%5.2f; qRate=%4.2f;'
-                              'rRate=%4.2f; resTime=%5.3f;' % 
-                              (typ, under, strike, qRate, rRate, resTime)
-                            )
-                            self.printDetails(
-                              'at %18.16f vol the option value is %20.12e' %
-                              (vol, bsmValue)
-                            )
-                            self.printDetails(
-                              'at %18.16f vol the option value is %20.12e' %
-                              (vol2, bsm2Value)
-                            )
-                            self.printDetails(
-                              'for option value %20.12e impliedVol: %20.16f' %
-                              (bsmValue, implVol)
-                            )
-                            self.printDetails(
-                              ' the error is %10.2e (tolerance is %10.2e)' % 
-                              (err, tol)
-                            )
-                            self.printDetails(
-                              'at %18.16f vol the option value is %20.12e' % 
-                              (implVol, bsm3Value)
-                            )
-                            self.printDetails(
-                              ' that is %g above target value' %
-                              (bsm3Value - bsmValue)
-                            )
-                            raise RuntimeError, "out of tolerance"
+                          assert abs(bsm3Value-bsmValue)/under<=1.0e-3, \
+                           "Option details: %s %f %f %f %f %f\n" % \
+                             (typ, under, strike, qRate, rRate, resTime) + \
+                           "at %18.16f vol the option value is %20.12e\n" % \
+                             (vol, bsmValue) + \
+                           "at %18.16f vol the option value is %20.12e\n" % \
+                             (vol2, bsm2.value()) + \
+                           "at %20.12e value the implied vol is  %20.16f\n" % \
+                             (bsmValue, implVol) + \
+                           "the error is %10.2e (tolerance is %10.2e)\n" % \
+                             (err, tol) + \
+                           "at %18.16f vol the option value is %20.12e\n" % \
+                             (implVol, bsm3Value) + \
+                           "which is %g above target value\n" % \
+                             (bsm3Value - bsmValue)
 
 
 if __name__ == '__main__':
-    ImpliedVolTest().test('implied volatility and Brent 1D solver')
+    suite = unittest.TestSuite()
+    suite.addTest(ImpliedVolatilityTest())
+    unittest.TextTestRunner().run(suite)

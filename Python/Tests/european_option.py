@@ -25,6 +25,9 @@
 """ 
     $Source$
     $Log$
+    Revision 1.6  2001/04/04 11:08:11  lballabio
+    Python tests implemented on top of PyUnit
+
     Revision 1.5  2001/03/02 10:19:50  marmar
     One failure is enough to halt the test
 
@@ -42,10 +45,9 @@
 # Make sure that Python path contains the directory of QuantLib and
 # that of this file
 
-from QuantLib import BSMEuropeanOption
-from TestUnit import TestUnit
+import QuantLib
+import unittest
 from math import exp
-
 
 def relErr(x1, x2, reference):
     if reference != 0.0:
@@ -53,9 +55,10 @@ def relErr(x1, x2, reference):
     else:
         return 10e10
 
-class EuropeanOptionTest(TestUnit):
-    def doTest(self):
-        pricer = BSMEuropeanOption
+class EuropeanOptionTest(unittest.TestCase):
+    def runTest(self):
+        "Testing European option pricer"
+        pricer = QuantLib.BSMEuropeanOption
         
         rangeUnder = [100]
         rangeQrate = [0.05]
@@ -64,70 +67,13 @@ class EuropeanOptionTest(TestUnit):
         rangeVol = [ 0.11, 0.5, 1.2]
         rangeRrate = [ 0.01, 0.05, 0.15]
         
-        maxNumDerErrorList=[]; maxCPSerrorList=[];
-        resuCPSvalue = [];     resuCPSdelta = [];   resuCPSgamma = []
-        resuCPStheta = [];     resuCPSrho   = [];   resuCPSvega  = []
-        resuCPparity = []
-        
         err_delta = 5e-5
         err_gamma = 5e-5
         err_theta = 5e-5
         err_rho  =  5e-5
         err_vega =  5e-5
-        total_number_of_error = 0
-
-        self.printDetails(
-          "     Type  items err-value err-delta err-gamma " +
-          "err-theta  err-rho  err-vega "
-        )
-        for under in rangeUnder:
-          for Qrate in rangeQrate:
-            for resTime in rangeResTime:
-                for Rrate in rangeRrate:
-                    for strike in rangeStrike:
-                        for vol in rangeVol:
-                            #Check straddle
-                            call     = pricer(
-                              'Call'    ,under,strike,Qrate,Rrate,resTime,vol)
-                            put      = pricer(
-                              'Put'     ,under,strike,Qrate,Rrate,resTime,vol)
-                            straddle = pricer(
-                              'Straddle',under,strike,Qrate,Rrate,resTime,vol)
-                            CPparity = call.value() - put.value() - \
-                              under*exp(-Qrate*resTime) + \
-                              strike*exp(-Rrate*resTime)
-                            resuCPSvalue.append(
-                              call.value()+put.value()-straddle.value())
-                            resuCPSdelta.append(
-                              call.delta()+put.delta()-straddle.delta())
-                            resuCPSgamma.append(
-                              call.gamma()+put.gamma()-straddle.gamma())
-                            resuCPStheta.append(
-                              call.theta()+put.theta()-straddle.theta())
-                            resuCPSrho.append(
-                              call.rho()  +put.rho()  -straddle.rho())
-                            resuCPSvega.append(
-                              call.vega() +put.vega() -straddle.vega())
-                            resuCPparity.append(CPparity)
-                
-        typ = 'C+P-S'
-        self.printDetails(
-          "%9s   %d  %7.2e %7.2e %7.2e %7.2e %7.2e %7.2e" % 
-          (typ, len(resuCPSvalue), max(resuCPSvalue), max(resuCPSdelta), 
-          max(resuCPSgamma), max(resuCPStheta), max(resuCPSrho), 
-          max(resuCPSvega))
-        )
-
-        maxCPSerrorList.append(max(resuCPSvalue))
-        maxCPSerrorList.append(max(resuCPSdelta))
-        maxCPSerrorList.append(max(resuCPSgamma))
-        maxCPSerrorList.append(max(resuCPStheta))
-        maxCPSerrorList.append(max(resuCPSrho))
-        maxCPSerrorList.append(max(resuCPSvega))
 
         for typ in ['Call','Put','Straddle']:
-          resuDelta = [];  resuGamma = [];  resuTheta = []
-          resuRho   = [];  resuVega  = []
           for under in rangeUnder:
             for Qrate in rangeQrate:
               for resTime in rangeResTime:        
@@ -165,83 +111,33 @@ class EuropeanOptionTest(TestUnit):
                         rhoNum   = (optPr.value()-optMr.value())/(2*dR)
                         vegaNum  = (optPv.value()-optMv.value())/(2*dVol)
                             
-                        resuDelta.append(
-                          relErr(opt.delta(), deltaNum, under))
-                        resuGamma.append(
-                          relErr(opt.gamma(), gammaNum, under))
-                        resuTheta.append(
-                          relErr(opt.theta(), thetaNum, under))
-                        resuRho.append(
-                          relErr(opt.rho(),   rhoNum,   under))
-                        resuVega.append(
-                          relErr(opt.vega(),  vegaNum,  under))
-                                           
-                        if(relErr(opt.delta(),deltaNum,under) > err_delta or
-                           relErr(opt.gamma(),gammaNum,under) > err_gamma or
-                           relErr(opt.theta(),thetaNum,under) > err_theta or
-                           relErr(opt.rho(),  rhoNum,  under) > err_rho   or
-                           relErr(opt.vega(), vegaNum, under) > err_vega  ):
-                          total_number_of_error = total_number_of_error + 1
-                          self.printDetails(
-                            'Attention required: %s %f %f %f %f %f %f' % 
-                            (typ,under,strike,Qrate,Rrate,resTime,vol)
-                          )
-                          self.printDetails('\tvalue=%+9.5f' % (opt_val))
-                          self.printDetails(
-                            '\tdelta=%+9.5f, deltaNum=%+9.5f err=%7.2e' % 
-                            (opt.delta(), deltaNum, 
-                            relErr(opt.delta(),deltaNum,under))
-                          )
-                          self.printDetails(
-                            '\tgamma=%+9.5f, gammaNum=%+9.5f err=%7.2e' % 
-                            (opt.gamma(), gammaNum, 
-                            relErr(opt.gamma(),gammaNum,under))
-                          )
-                          self.printDetails(
-                            '\ttheta=%+9.5f, thetaNum=%+9.5f err=%7.2e' % 
-                            (opt.theta(), thetaNum, 
-                            relErr(opt.theta(),thetaNum,under))
-                          )
-                          self.printDetails(
-                            '\trho  =%+9.5f,   rhoNum=%+9.5f err=%7.2e' % 
-                            (opt.rho(), rhoNum, 
-                            relErr(opt.rho(),rhoNum,under))
-                          )
-                          self.printDetails(
-                            '\tvega =%+9.5f, vegaNum =%+9.5f err=%7.2e' % 
-                            (opt.vega(), vegaNum, 
-                            relErr(opt.vega(),vegaNum,under))
-                          )
-          self.printDetails(
-            "%9s %6d %7.2e %7.2e %7.2e %7.2e %7.2e" % 
-            (typ, len(resuDelta), max(resuDelta), max(resuGamma), 
-            max(resuTheta), max(resuRho), max(resuVega))
-          )
-                   
-          maxNumDerErrorList.append(max(resuDelta))
-          maxNumDerErrorList.append(max(resuGamma))
-          maxNumDerErrorList.append(max(resuTheta))
-          maxNumDerErrorList.append(max(resuRho))
-          maxNumDerErrorList.append(max(resuVega))
-
-        self.printDetails('')
-        maxCPparityError = max(resuCPparity)
-        self.printDetails("C-P parity err = %g" % (maxCPparityError))
-        self.printDetails("Final maximum C+P-S = %g" % max(maxCPSerrorList))
-        self.printDetails(
-          "Final maximum global error on numerical derivatives = %g" % 
-          max(maxNumDerErrorList)
-        )
-        if total_number_of_error >= 1:
-            self.printDetails(
-                "total number of failures: %d" %
-                total_number_of_error
-            )
-            return 1
-        else:
-            return 0
+                        assert (relErr(opt.delta(),deltaNum,under)<=err_delta \
+                            and relErr(opt.gamma(),gammaNum,under)<=err_gamma \
+                            and relErr(opt.theta(),thetaNum,under)<=err_theta \
+                            and relErr(opt.rho(),  rhoNum,  under)<=err_rho \
+                            and relErr(opt.vega(), vegaNum, under)<=err_vega),\
+                            'Option details: %s %f %f %f %f %f %f\n' % \
+                              (typ,under,strike,Qrate,Rrate,resTime,vol) + \
+                            '\tvalue=%+9.5f\n' % (opt_val) + \
+                            '\tdelta=%+9.5f, deltaNum=%+9.5f err=%7.2e\n' % \
+                              (opt.delta(), deltaNum, 
+                               relErr(opt.delta(),deltaNum,under)) + \
+                            '\tgamma=%+9.5f, gammaNum=%+9.5f err=%7.2e\n' % \
+                              (opt.gamma(), gammaNum, 
+                               relErr(opt.gamma(),gammaNum,under)) + \
+                            '\ttheta=%+9.5f, thetaNum=%+9.5f err=%7.2e\n' % \
+                              (opt.theta(), thetaNum, 
+                               relErr(opt.theta(),thetaNum,under)) + \
+                            '\trho  =%+9.5f,   rhoNum=%+9.5f err=%7.2e\n' % \
+                              (opt.rho(), rhoNum, 
+                               relErr(opt.rho(),rhoNum,under)) + \
+                            '\tvega =%+9.5f, vegaNum =%+9.5f err=%7.2e\n' % \
+                              (opt.vega(), vegaNum, 
+                               relErr(opt.vega(),vegaNum,under))
 
 
 if __name__ == '__main__':
-    EuropeanOptionTest().test('European option pricer')
+    suite = unittest.TestSuite()
+    suite.addTest(EuropeanOptionTest())
+    unittest.TextTestRunner().run(suite)
 

@@ -25,6 +25,9 @@
 """ 
     $Source$
     $Log$
+    Revision 1.9  2001/04/04 11:08:11  lballabio
+    Python tests implemented on top of PyUnit
+
     Revision 1.8  2001/03/02 15:44:03  lballabio
     Cosmetic change
 
@@ -51,7 +54,7 @@
 # and that of this file
 
 import QuantLib 
-from TestUnit import TestUnit
+import unittest
 
 def relErr(x1,x2,reference):
     if reference != 0.0:
@@ -59,8 +62,9 @@ def relErr(x1,x2,reference):
     else:
         return 10e10
 
-class AmericanOptionTest(TestUnit):
-  def doTest(self):
+class AmericanOptionTest(unittest.TestCase):
+  def runTest(self):
+    "Testing step condition options"
     nstp = 145
     ngrd = nstp + 1
     # ranges
@@ -70,25 +74,13 @@ class AmericanOptionTest(TestUnit):
     rangeStrike = [50, 100, 150]
     rangeVol = [ 0.05, 0.5, 1.2]
     rangeRrate = [ 0.01, 0.05, 0.15]
-    maxNumDerErrorList=[]; maxCPSerrorList=[];
-    resuCPSvalue = []; resuCPSdelta = []; resuCPSgamma = [] 
-    resuCPStheta = []; resuCPSrho   = []; resuCPSvega  = []
-    resuCPparity = []
     err_delta = 2e-3
     err_gamma = 2e-3
     err_theta = 2e-3
     err_rho  =  2e-3
     err_vega =  2e-3
-    total_number_of_error = 0
     for pricer in [QuantLib.AmericanOption, QuantLib.ShoutOption]:
-      self.printDetails(pricer)
-      # table header
-      self.printDetails(
-        "     Type  items err-delta err-gamma err-theta  err-rho  err-vega ")
-      # test
       for typ in ['Call','Put','Straddle']:
-        resuDelta = [];  resuGamma = [];  resuTheta = []
-        resuRho   = [];  resuVega  = []
         for under in rangeUnder:
           for Qrate in rangeQrate:
             for resTime in rangeResTime:        
@@ -126,69 +118,50 @@ class AmericanOptionTest(TestUnit):
                        thetaNum =-(optPt.value()-optMt.value())/(2*dT)
                        rhoNum   = (optPr.value()-optMr.value())/(2*dR)
                        vegaNum  = (optPv.value()-optMv.value())/(2*dVol)
-                       # store results
-                       resuDelta.append(relErr(opt.delta(),deltaNum,under))
-                       resuGamma.append(relErr(opt.gamma(),gammaNum,under))
-                       resuTheta.append(relErr(opt.theta(),thetaNum,under))
-                       resuRho.append(relErr(opt.rho(),rhoNum,under))
-                       resuVega.append(relErr(opt.vega(),vegaNum,under))
                                            
-                       if(relErr(opt.delta(),deltaNum,under)>err_delta or
-                         relErr(opt.gamma(),gammaNum,under)>err_gamma or
-                         relErr(opt.theta(),thetaNum,under)>err_theta or
-                         relErr(opt.rho(),  rhoNum,  under)>err_rho   or
-                         relErr(opt.vega(), vegaNum, under)>err_vega):
-                           total_number_of_error = total_number_of_error + 1
-                           self.printDetails(
-                             'Attention required: %s %f %f %f %f %f %f' % 
-                             (typ,under,strike,Qrate,Rrate,resTime,vol)
-                           )
-                           self.printDetails('\tvalue=%+9.5f' % (opt_val))
-                           self.printDetails(
-                             '\tdelta=%+9.5f, deltaNum=%+9.5f err=%7.2e' % 
-                             (opt.delta(), deltaNum, 
-                             relErr(opt.delta(),deltaNum,under))
-                           )
-                           self.printDetails(
-                             '\tgamma=%+9.5f, gammaNum=%+9.5f err=%7.2e' % 
+                       assert (relErr(opt.delta(),deltaNum,under)<=err_delta \
+                           and relErr(opt.gamma(),gammaNum,under)<=err_gamma \
+                           and relErr(opt.theta(),thetaNum,under)<=err_theta \
+                           and relErr(opt.rho(),  rhoNum,  under)<=err_rho \
+                           and relErr(opt.vega(), vegaNum, under)<=err_vega), \
+                           'Option details: %s %f %f %f %f %f %f\n' % \
+                             (typ,under,strike,Qrate,Rrate,resTime,vol) + \
+                           '\tvalue=%+9.5f\n' % (opt_val) + \
+                           '\tdelta=%+9.5f, deltaNum=%+9.5f err=%7.2e\n' % \
+                             (opt.delta(), deltaNum,
+                              relErr(opt.delta(),deltaNum,under)) + \
+                           '\tgamma=%+9.5f, gammaNum=%+9.5f err=%7.2e\n' % \
                              (opt.gamma(), gammaNum, 
-                             relErr(opt.gamma(),gammaNum,under))
-                           )
-                           self.printDetails(
-                             '\ttheta=%+9.5f, thetaNum=%+9.5f err=%7.2e' % 
+                              relErr(opt.gamma(),gammaNum,under)) + \
+                           '\ttheta=%+9.5f, thetaNum=%+9.5f err=%7.2e\n' % \
                              (opt.theta(), thetaNum, 
-                             relErr(opt.theta(),thetaNum,under))
-                           )
-                           self.printDetails(
-                             '\trho  =%+9.5f,   rhoNum=%+9.5f err=%7.2e' % 
+                              relErr(opt.theta(),thetaNum,under)) + \
+                           '\trho  =%+9.5f,   rhoNum=%+9.5f err=%7.2e\n' % \
                              (opt.rho(), rhoNum, 
-                             relErr(opt.rho(),rhoNum,under))
-                           )
-                           self.printDetails(
-                             '\tvega =%+9.5f, vegaNum =%+9.5f err=%7.2e' % 
+                              relErr(opt.rho(),rhoNum,under)) + \
+                           '\tvega =%+9.5f, vegaNum =%+9.5f err=%7.2e\n' % \
                              (opt.vega(), vegaNum, 
-                             relErr(opt.vega(),vegaNum,under))
-                           )
-        self.printDetails("%9s %6d %7.2e %7.2e %7.2e %7.2e %7.2e" % 
-            (typ, len(resuDelta), max(resuDelta), max(resuGamma), 
-            max(resuTheta), max(resuRho), max(resuVega)))
-        maxNumDerErrorList.append(max(resuDelta))
-        maxNumDerErrorList.append(max(resuGamma))
-        maxNumDerErrorList.append(max(resuTheta))
-        maxNumDerErrorList.append(max(resuRho))
-        maxNumDerErrorList.append(max(resuVega))
-
-      self.printDetails(
-        "Maximum global error on numerical derivatives = %g\n" % 
-        max(maxNumDerErrorList))
-    if total_number_of_error >= 1:
-        self.printDetails("total number of failures: %d" % 
-          total_number_of_error)
-        return 1
-    else:
-        return 0
+                              relErr(opt.vega(),vegaNum,under))
 
 
 if __name__ == '__main__':
-    AmericanOptionTest().test("step condition options")
+    suite = unittest.TestSuite()
+    suite.addTest(AmericanOptionTest())
+    unittest.TextTestRunner().run(suite)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 

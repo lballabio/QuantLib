@@ -25,6 +25,9 @@
 """ 
     $Source$
     $Log$
+    Revision 1.2  2001/04/04 11:08:11  lballabio
+    Python tests implemented on top of PyUnit
+
     Revision 1.1  2001/02/22 14:43:36  lballabio
     Renamed test script to follow a single naming scheme
 
@@ -46,12 +49,12 @@
 
 """
 
-from QuantLib import *
-from TestUnit import TestUnit
+import QuantLib
+import unittest
 
-class MCPricerTest(TestUnit):
-    def doTest(self):
-        
+class MonteCarloPricerTest(unittest.TestCase):
+    def runTest(self):
+        "Testing MonteCarlo pricers"
         type = "Call"
         underlying = 100
         strike = 100
@@ -62,19 +65,29 @@ class MCPricerTest(TestUnit):
         timesteps = 100
         numIte = 10000
         seed = 3456789
+        cases = [[QuantLib.McEuropeanPricer,  14.209699846520,0.226121398649],
+                 [QuantLib.AverageStrikeAsian, 8.201621371225,0.124035566770],
+                 [QuantLib.AveragePriceAsian,  8.190052086091,0.008114392632]]
         
-        self.printDetails(
-        "Pricer                          iterations   Value     Error Estimate "
-        )
-        for pricer in [McEuropeanPricer,AverageStrikeAsian,AveragePriceAsian]:
+        for (pricer,storedValue,storedError) in cases:
             p = pricer(type, underlying, strike, dividendYield, riskFreeRate,
                 residualTime, volatility, timesteps, numIte, seed=seed)
-            self.printDetails(
-                "%30s: %7i %12.6f %12.6f" %
-                (pricer, numIte, p.value(), p.errorEstimate())
-            )
-
+            assert abs(p.value()-storedValue) <= 1e-10, \
+                "calculated value: %g\n" % p.value() + \
+                "stored value:     %g\n" % storedValue + \
+                "tolerance exceeded\n"
+            assert abs(p.errorEstimate()-storedError) <= 1e-10, \
+                "calculated error: %g\n" % p.errorEstimate() + \
+                "stored error:     %g\n" % storedError + \
+                "tolerance exceeded\n"
 
 
 if __name__ == '__main__':
-    MCPricerTest().test('MonteCarlo pricers')
+    suite = unittest.TestSuite()
+    suite.addTest(MonteCarloPricerTest())
+    unittest.TextTestRunner().run(suite)
+
+
+
+
+

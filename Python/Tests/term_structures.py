@@ -25,6 +25,9 @@
 """
     $Source$
     $Log$
+    Revision 1.2  2001/04/04 11:08:11  lballabio
+    Python tests implemented on top of PyUnit
+
     Revision 1.1  2001/02/22 14:43:36  lballabio
     Renamed test script to follow a single naming scheme
 
@@ -42,40 +45,41 @@
 
 """
 
-from QuantLib import *
-from TestUnit import TestUnit
+import QuantLib
+import unittest
 import time
 
-class TermStructureTest(TestUnit):
-    def doTest(self):
-        
+class TermStructureTest(unittest.TestCase):
+    def runTest(self):
+        "Testing term structure bootstrapping"
         gmt = time.gmtime(time.time())
-        today =  Date(gmt[2],gmt[1],gmt[0])
+        today =  QuantLib.Date(gmt[2],gmt[1],gmt[0])
         
-        currency =  EUR()
-        depoDayCount = Actual360()
-        curveDayCount =  Actual365()
-        depoCalendar =  TARGET()
+        currency = QuantLib.EUR()
+        depoDayCount = QuantLib.Actual360()
+        curveDayCount = QuantLib.Actual365()
+        depoCalendar = QuantLib.TARGET()
         deposits = [
-            DepositRate(depoCalendar.roll(today.plusWeeks(1)), 
+            QuantLib.DepositRate(depoCalendar.roll(today.plusWeeks(1)), 
                 0.0426,  depoDayCount),
-            DepositRate(depoCalendar.roll(today.plusMonths(1)),
+            QuantLib.DepositRate(depoCalendar.roll(today.plusMonths(1)),
                 0.04381, depoDayCount),
-            DepositRate(depoCalendar.roll(today.plusMonths(2)),
+            QuantLib.DepositRate(depoCalendar.roll(today.plusMonths(2)),
                 0.04423, depoDayCount),
-            DepositRate(depoCalendar.roll(today.plusMonths(3)),
+            QuantLib.DepositRate(depoCalendar.roll(today.plusMonths(3)),
                 0.04486, depoDayCount),
-            DepositRate(depoCalendar.roll(today.plusMonths(6)),
+            QuantLib.DepositRate(depoCalendar.roll(today.plusMonths(6)),
                 0.0464,  depoDayCount),
-            DepositRate(depoCalendar.roll(today.plusMonths(9)),
+            QuantLib.DepositRate(depoCalendar.roll(today.plusMonths(9)),
                 0.0481,  depoDayCount),
-            DepositRate(depoCalendar.roll(today.plusYears(1)), 
+            QuantLib.DepositRate(depoCalendar.roll(today.plusYears(1)), 
                 0.04925, depoDayCount)
         ]
         
-        curve = PiecewiseConstantForwards(currency,curveDayCount,today,deposits)
+        curve = QuantLib.PiecewiseConstantForwards(currency,
+                    curveDayCount,today,deposits)
         
-        flatCurve =  FlatForward(currency,curveDayCount,today,0.05)
+        flatCurve =  QuantLib.FlatForward(currency,curveDayCount,today,0.05)
         
         days = 380
         settlement = curve.settlementDate()
@@ -86,18 +90,12 @@ class TermStructureTest(TestUnit):
         discounts = map(lambda x,curve=curve: curve.discount(x, 1),  dates)
         zeros     = map(lambda x,curve=curve: curve.zeroYield(x, 1), dates)
         forwards  = map(lambda x,curve=curve: curve.forward(x, 1),   dates)
-        
-        self.printDetails(
-            ' time                dates          disc    zero   forward'
-        )
-        for i in range(days):
-            self.printDetails(
-                '%5.3f %20s %13.10f %7.3f %9.3f' % 
-                (ytime[i], dates[i], discounts[i], zeros[i]*100, 
-                forwards[i]*100)
-            )
+
+        # we might add some meaningful tests here
 
 
 if __name__ == '__main__':
-    TermStructureTest().test('term structure bootstrapping')
+    suite = unittest.TestSuite()
+    suite.addTest(TermStructureTest())
+    unittest.TextTestRunner().run(suite)
 

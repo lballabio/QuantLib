@@ -25,6 +25,9 @@
 """ 
     $Source$
     $Log$
+    Revision 1.2  2001/04/04 11:08:11  lballabio
+    Python tests implemented on top of PyUnit
+
     Revision 1.1  2001/03/15 13:49:35  marmar
     getCovariance function added
 
@@ -32,14 +35,13 @@
 """
 
 import QuantLib
-from TestUnit import TestUnit
+import unittest
 
 def initCovariance(vol, corr):
     n = len(vol)
     cov = QuantLib.Matrix(n,n)
-    if(n != corr.rows()):
-        raise Exception(
-            "correlation matrix and volatility vector have different size")
+    assert n == corr.rows(), \
+        "correlation matrix and volatility vector have different size"
     for i in range(n):
         cov[i][i] = vol[i]*vol[i]
         for j in range(i):
@@ -48,9 +50,9 @@ def initCovariance(vol, corr):
     return cov
 
 
-class GetCovarianceTest(TestUnit):
-    def doTest(self):
-
+class CovarianceTest(unittest.TestCase):
+    def runTest(self):
+        "Testing covariance calculation"
         vol = QuantLib.Array([0.1, 0.5, 1.0])
         corr = QuantLib.Matrix(3, 3)
         corr[0][0] = 1.0; corr[0][1] = 0.2; corr[0][2] = 0.5
@@ -60,15 +62,15 @@ class GetCovarianceTest(TestUnit):
         expectedCov = initCovariance(vol, corr) 
         cov = QuantLib.getCovariance(vol, corr)
             
-        numErrors = 0
         for i in range(3):
             for j in range(3):
-                if abs(cov[i][j] - expectedCov[i][j]) > 1e-10:
-                    numErrors  = numErrors + 1
-            
-        self.printDetails("QuantLib.getCovariance", cov)            
-        self.printDetails("Python.getCovariance  ", expectedCov)            
-        return numErrors
+                assert abs(cov[i][j] - expectedCov[i][j]) <= 1e-10, \
+                    "cov[%d][%d]: %g\n" % (i,j,cov[i][j]) + \
+                    "expected   : %g\n" % expectedCov[i][j] + \
+                    "tolerance exceeded\n"
+
 
 if __name__ == '__main__':
-    GetCovarianceTest().test("getCovariance")
+    suite = unittest.TestSuite()
+    suite.addTest(CovarianceTest())
+    unittest.TextTestRunner().run(suite)

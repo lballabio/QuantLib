@@ -25,6 +25,9 @@
 """ 
     $Source$
     $Log$
+    Revision 1.3  2001/04/04 11:08:11  lballabio
+    Python tests implemented on top of PyUnit
+
     Revision 1.2  2001/03/08 14:50:35  marmar
     Revised form of test with random parameters
 
@@ -32,17 +35,13 @@
     Example of european option using finite differences
 
 """
-# Make sure that Python path contains the directory of QuantLib and
-# that of this file
-
-from QuantLib import UniformRandomGenerator
-from QuantLib import BSMEuropeanOption
-from QuantLib import FiniteDifferenceEuropean
-from TestUnit import TestUnit
+import QuantLib
+import unittest
 import math
 
-class FDEuropeanOptionTest(TestUnit):
-    def doTest(self):
+class FDEuropeanOptionTest(unittest.TestCase):
+    def runTest(self):
+        "Testing finite-difference European option pricer"
         under = 100
         strikeMin = 60
         rangeStrike = 100
@@ -52,13 +51,12 @@ class FDEuropeanOptionTest(TestUnit):
         timeMin = 0.5
         rangeTime = 2
         
-        tollerance = 8.42e-3
-        total_number_of_error = 0
+        tolerance = 8.42e-3
         maxError = 0
         L2err = 0
 
         totCases = 200
-        rng = UniformRandomGenerator(56789012)
+        rng = QuantLib.UniformRandomGenerator(56789012)
         for ite in range(totCases):
             strike = strikeMin + rangeStrike * rng.next()
             Qrate =              rangeQrate * rng.next()
@@ -66,30 +64,20 @@ class FDEuropeanOptionTest(TestUnit):
             vol =                rangeVol * rng.next()            
             resTime = timeMin +  rangeTime * rng.next()
             for optType in ['Call', 'Put', 'Straddle']:
-                anValue = BSMEuropeanOption(
+                anValue = QuantLib.BSMEuropeanOption(
                            optType, under, strike, Qrate,
                            Rrate, resTime, vol).value()
-                numValue = FiniteDifferenceEuropean(
+                numValue = QuantLib.FiniteDifferenceEuropean(
                            optType, under, strike, Qrate,
                            Rrate, resTime, vol, 100, 400).value()
-                absErr = abs(anValue - numValue)
-                L2err = L2err + absErr*absErr
-                maxError = max(maxError, absErr)
-                if absErr > tollerance:
-                    self.printDetails(optType, under, strike, Qrate, Rrate, resTime, vol,
-                                      "Error = %12.2e " % absErr)
-                    total_number_of_error = total_number_of_error + 1
+                assert abs(anValue - numValue) <= tolerance, \
+                    "Option details: %s %g %g %g %g %g %g\n" % \
+                      (optType, under, strike, Qrate, Rrate, resTime, vol) + \
+                    "Error = %12.2e \n" % abs(anValue - numValue)
          
-        L2err = math.sqrt(L2err/totCases/3)
-        self.printDetails(
-           "total number of failures: %d/%d, maxError =%g, L2err =%g"
-                  % (total_number_of_error, totCases*3, maxError, L2err))
-
-        if total_number_of_error >= 1:
-            return 1
-        else:
-            return 0
          
 if __name__ == '__main__':
-    FDEuropeanOptionTest().test('finite-difference european option pricer')
+    suite = unittest.TestSuite()
+    suite.addTest(FDEuropeanOptionTest())
+    unittest.TextTestRunner().run(suite)
 

@@ -24,55 +24,51 @@
 """ 
     $Source$
     $Log$
+    Revision 1.2  2001/04/04 11:08:11  lballabio
+    Python tests implemented on top of PyUnit
+
     Revision 1.1  2001/04/04 10:01:36  marmar
     introducing cliquet option
 
 """
 
-# Make sure that Python path contains the directory of QuantLib and
-# that of this file
+import QuantLib
+import unittest
+from math import exp
 
-from QuantLib import BSMEuropeanOption, CliquetOption
-from TestUnit import TestUnit
-import math
-
-class CliquetOptionTest(TestUnit):
-    def doTest(self):
+class CliquetOptionTest(unittest.TestCase):
+    def runTest(self):
+        "Testing cliquet option pricer"
         spot = 100
         divYield = 0.01
         rRate = 0.06
         dates = [0.50, 1.00, 2.00]
-        vol =0.35
-        euro1 = BSMEuropeanOption("Call", spot, spot, divYield, rRate,
-                                  dates[1]-dates[0], vol)
-        w1 = math.exp(divYield*dates[0])
+        vol = 0.35
+        euro1 = QuantLib.BSMEuropeanOption("Call", spot, spot, divYield,
+                    rRate, dates[1]-dates[0], vol)
+        w1 = exp(divYield*dates[0])
+        
+        euro2 = QuantLib.BSMEuropeanOption("Call", spot, spot, divYield,
+                    rRate, dates[2]-dates[1], vol)
+        w2 = exp(divYield*dates[1])
          
-        euro2 = BSMEuropeanOption("Call", spot, spot, divYield, rRate,
-                                  dates[2]-dates[1], vol)
-        w2 = math.exp(divYield*dates[1])
-         
-        cliquet = CliquetOption("Call", spot, divYield, rRate,
-                                dates, vol)
-        total_number_of_error = 0
+        cliquet = QuantLib.CliquetOption("Call", spot, divYield, rRate,
+                      dates, vol)
         for method in ['value', 'delta', 'gamma', 'theta', 'rho', 'vega']:
             euro1Method = getattr(euro1, method)
             euro2Method = getattr(euro2, method)
             cliquetMethod = getattr(cliquet, method)
-            error = w1*apply(euro1Method,()) \
-                    + w2 * apply(euro2Method,()) \
-                    - apply(cliquetMethod,())
-            if math.fabs(error) > 1e-10:
-               total_number_of_error = total_number_of_error + 1
-        if total_number_of_error >= 1:
-            self.printDetails(
-                "total number of failures: %d" %
-                total_number_of_error
-            )
-            return 1
-        else:
-            return 0
+            expected = w1*apply(euro1Method,()) + w2 * apply(euro2Method,())
+            calculated = apply(cliquetMethod,())
+            error = abs(calculated-expected)
+            assert error <= 1e-10, \
+                'wrong %s\n' % method + \
+                'calculated: %f\n' % calculated + \
+                'expected  : %f\n' % expected
 
 
 if __name__ == '__main__':
-    CliquetOptionTest().test('cliquet option pricer')
+    suite = unittest.TestSuite()
+    suite.addTest(CliquetOptionTest())
+    unittest.TextTestRunner().run(suite)
 

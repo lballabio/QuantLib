@@ -25,20 +25,22 @@
 """ 
     $Source$
     $Log$
+    Revision 1.2  2001/04/04 11:08:11  lballabio
+    Python tests implemented on top of PyUnit
+
     Revision 1.1  2001/03/07 09:34:02  marmar
     Everest option test added
 
 """
 
-from QuantLib import Matrix, EverestOption
-from TestUnit import TestUnit
-from math import fabs
+import QuantLib
+import unittest
 
 def initCovariance(corr, vol):
     n = len(vol)
-    cov = Matrix(n,n)
-    if(n != corr.rows()):
-        print "correlation matrix and volatility vector have different size"
+    cov = QuantLib.Matrix(n,n)
+    assert n == corr.rows(), \
+        "correlation matrix and volatility vector have different size"
     for i in range(n):
         cov[i][i] = vol[i]*vol[i]
         for j in range(i):
@@ -46,10 +48,10 @@ def initCovariance(corr, vol):
             cov[j][i] = cov[i][j]
     return cov
 
-class EverestTest(TestUnit):
-    def doTest(self):
-        
-        cor = Matrix(4,4)
+class EverestOptionTest(unittest.TestCase):
+    def runTest(self):
+        "Testing Everest option pricer"
+        cor = QuantLib.Matrix(4,4)
         cor[0][0] = 1.00
         cor[1][0] = 0.50; cor[1][1] = 1.00
         cor[2][0] = 0.30; cor[2][1] = 0.20; cor[2][2] = 1.00
@@ -64,29 +66,26 @@ class EverestTest(TestUnit):
         samples = 400000
         seed = 765432123
         
-        everest = EverestOption(dividendYields, covariance,
+        everest = QuantLib.EverestOption(dividendYields, covariance,
                             riskFreeRate, resTime,
                             samples, seed)
         value = everest.value()
         error = everest.errorEstimate()
         storedValue = 0.363309646566 
         storedError = 0.000501529768684
-        self.printDetails(
-            "Everest option price and error: %g %g" %
-            (value, error)
-        )
-        self.printDetails(
-            "Stored values:                  %g %g" %
-            (storedValue, storedError)
-        )
-        if fabs(value-storedValue) > 1e-10 \
-        or fabs(error-storedError) > 1e-10:
-            return 1
-        else:
-            return 0
+        assert abs(value-storedValue) <= 1e-10, \
+            "calculated value: %g\n" % value + \
+            "stored value:     %g\n" % storedValue + \
+            "tolerance exceeded\n"
+        assert abs(error-storedError) <= 1e-10, \
+            "calculated error: %g\n" % error + \
+            "stored error:     %g\n" % storedError + \
+            "tolerance exceeded\n"
 
 
 if __name__ == '__main__':
-    EverestTest().test('everest option pricer')
+    suite = unittest.TestSuite()
+    suite.addTest(EverestOptionTest())
+    unittest.TextTestRunner().run(suite)
 
     

@@ -25,6 +25,9 @@
 """ 
     $Source$
     $Log$
+    Revision 1.4  2001/04/04 11:08:11  lballabio
+    Python tests implemented on top of PyUnit
+
     Revision 1.3  2001/03/28 12:50:32  marmar
     Dates are now used for input instead of time delays
 
@@ -32,20 +35,21 @@
     getCovariance function added
 """
 
-from QuantLib import Himalaya, Matrix, getCovariance
-from TestUnit import TestUnit
+import QuantLib
+import unittest
 from math import fabs
 
-class HimalayaTest(TestUnit):
-    def doTest(self):
-        cor = Matrix(4,4)
+class HimalayaOptionTest(unittest.TestCase):
+    def runTest(self):
+        "Testing Himalaya option pricer"
+        cor = QuantLib.Matrix(4,4)
         cor[0][0] = 1.00; cor[0][1] = 0.50; cor[0][2] = 0.30; cor[0][3] = 0.10
         cor[1][0] = 0.50; cor[1][1] = 1.00; cor[1][2] = 0.20; cor[1][3] = 0.40
         cor[2][0] = 0.30; cor[2][1] = 0.20; cor[2][2] = 1.00; cor[2][3] = 0.60
         cor[3][0] = 0.10; cor[3][1] = 0.40; cor[3][2] = 0.60; cor[3][3] = 1.00
         
         volatility = [ 0.3,  0.3,  0.3,  0.3]
-        covariance = getCovariance(volatility, cor)
+        covariance = QuantLib.getCovariance(volatility, cor)
         
         assetValues = [100, 100, 100, 100]
         dividendYields = [0.0, 0.0, 0.0, 0]
@@ -55,27 +59,27 @@ class HimalayaTest(TestUnit):
         samples = 40000
         seed = 3456789
         
-        him = Himalaya(assetValues, dividendYields, covariance,
+        him = QuantLib.Himalaya(assetValues, dividendYields, covariance,
                        riskFreeRate, strike, timeIncrements, samples, seed)
         
         value = him.value()
         error = him.errorEstimate()
-        self.printDetails(
-            "Himalaya option price and error: %g %g" %
-            (value, error)
-        )
-        self.printDetails(
-            "Stored values:                   %g %g" %
-            (7.30213127731, 0.0521786123186)
-        )
-        if fabs(value-7.30213127731) > 1e-10 \
-        or fabs(error-0.05217861232) > 1e-10:
-            return 1
-        else:
-            return 0
+        storedValue = 7.30213127731
+        storedError = 0.0521786123186
+        assert fabs(value-storedValue) <= 1e-10, \
+            "calculated value: %g\n" % value + \
+            "stored value:     %g\n" % storedValue + \
+            "tolerance exceeded\n"
+        assert fabs(error-storedError) <= 1e-10, \
+            "calculated error: %g\n" % error + \
+            "stored error:     %g\n" % storedError + \
+            "tolerance exceeded\n"
 
 
 if __name__ == '__main__':
-    HimalayaTest().test('Himalaya option pricer')
+    suite = unittest.TestSuite()
+    suite.addTest(HimalayaOptionTest())
+    unittest.TextTestRunner().run(suite)
 
-    
+
+

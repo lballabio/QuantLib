@@ -25,6 +25,9 @@
 """ 
     $Source$
     $Log$
+    Revision 1.7  2001/04/04 11:08:11  lballabio
+    Python tests implemented on top of PyUnit
+
     Revision 1.6  2001/03/05 17:18:21  lballabio
     Using math.pi
 
@@ -44,10 +47,9 @@
     improved
 """
 
-from QuantLib import *
-from TestUnit import TestUnit
+import QuantLib
+import unittest
 from math import exp, sqrt, pi
-
 
 # define a Gaussian
 def gaussian(x, average, sigma):
@@ -69,17 +71,14 @@ def norm(f,h):
     return sqrt(I)
 
 
-class DistributionTest(TestUnit):
-    def doTest(self):
+class DistributionTest(unittest.TestCase):
+    def runTest(self):
+        "Testing distributions"
         average = 0.0
         sigma = 1.0
-        self.printDetails(
-            'Gaussian distribution with average %g and sigma %g' %
-            (average,sigma)
-        )
-        normal = NormalDistribution(average, sigma)
-        cum = CumulativeNormalDistribution(average, sigma)
-        invCum = InvCumulativeNormalDistribution(average, sigma)
+        normal = QuantLib.NormalDistribution(average, sigma)
+        cum = QuantLib.CumulativeNormalDistribution(average, sigma)
+        invCum = QuantLib.InvCumulativeNormalDistribution(average, sigma)
         
         xMin = average - 4*sigma
         xMax = average + 4*sigma
@@ -89,7 +88,7 @@ class DistributionTest(TestUnit):
         
         x = [0]*N		# creates a list of N elements
         for i in range(N):
-        	x[i] = xMin+h*i
+            x[i] = xMin+h*i
 
         y = map(lambda x,average=average,sigma=sigma: 
             gaussian(x,average,sigma), x)
@@ -102,72 +101,59 @@ class DistributionTest(TestUnit):
         ydTemp = map(lambda x,average=average,sigma=sigma: 
             gaussianDerivative(x,average,sigma), x)
 
-        self.printDetails('norm of:')
-        
         #check norm=gaussian
         e = norm(map(lambda x,y:x-y,yTemp,y),h)
-        self.printDetails(
-          'C++ NormalDistribution    MINUS            analityc gaussian: %5.2e' 
-          % e
-        )
-        if e > 1e-16:
-            raise Exception, "tolerance exceeded"
+        assert e <= 1.0e-16, \
+            "norm of C++ NormalDistribution minus analytic gaussian: " + \
+            "%5.2e\n" % e + \
+            "tolerance exceeded\n"
         
         #check invCum(cum) = Identity
         e = norm(map(lambda x,y:x-y,xTemp,x),h)
-        self.printDetails(
-          'C++ invCum(cum(.))        MINUS                     identity: %5.2e' 
-          % e
-        )
-        if e > 1e-3:
-            raise Exception, "tolerance exceeded"
+        assert e <= 1.0e-3, \
+            "norm of C++ invCum(cum(.)) minus identity: %5.2e\n" % e + \
+            "tolerance exceeded\n"
         
         #check cum.derivative=normal
         e = norm(map(lambda x,y:x-y,y2Temp,y),h)
-        self.printDetails(
-          'C++ Cumulative.derivative MINUS            analytic gaussian: %5.2e' 
-          % e
-        )
-        if e > 1e-16:
-            raise Exception, "tolerance exceeded"
+        assert e <= 1.0e-16, \
+            "norm of C++ Cumulative.derivative minus analytic gaussian: " + \
+            "%5.2e\n" % e + \
+            "tolerance exceeded\n"
         
         #check normal.derivative=gaussianDerivative
         e = norm(map(lambda x,y:x-y,ydTemp,yd),h)
-        self.printDetails(
-          'C++ NormalDist.derivative MINUS analytic gaussian.derivative: %5.2e' 
-          % e
-        )
-        if e > 1e-16:
-            raise Exception, "tolerance exceeded"
+        assert e <= 1.0e-16, \
+            "norm of C++ NormalDist.derivative minus " + \
+            "analytic gaussian.derivative: %5.2e\n" % e + \
+            "tolerance exceeded\n"
         
         # ... and now let's toy with finite difference
         # define the first derivative operators
-        D = DZero(N,h)
-        D2 = DPlusDMinus(N,h)
+        D = QuantLib.DZero(N,h)
+        D2 = QuantLib.DPlusDMinus(N,h)
         # and calculate the derivatives
         y3Temp  = D.applyTo(yIntegrated)
         yd2Temp = D2.applyTo(yIntegrated)
         
         #check finite difference first order derivative operator = gaussian
         e = norm(map(lambda x,y:x-y,y3Temp,y),h)
-        self.printDetails(
-          'C++ FD 1st deriv. of cum  MINUS            analytic gaussian: %5.2e' 
-          % e
-        )
-        if e > 1e-6:
-            raise Exception, "tolerance exceeded"
+        assert e <= 1.0e-6, \
+           "norm of C++ FD 1st deriv. of cum minus analytic gaussian: " + \
+           "%5.2e\n" % e + \
+           "tolerance exceeded\n"
         
         # check finite difference second order derivative operator = 
         # normal.derivative
         e = norm(map(lambda x,y:x-y,yd2Temp,yd),h)
-        self.printDetails(
-          'C++ FD 2nd deriv. of cum  MINUS analytic gaussian.derivative: %5.2e' 
-          % e
-        )
-        if e > 1e-4:
-            raise Exception, "tolerance exceeded"
+        assert e <= 1.0e-4, \
+            "norm of C++ FD 2nd deriv. of cum minus " + \
+            "analytic gaussian.derivative: %5.2e\n" % e + \
+            "tolerance exceeded\n"
 
 
 if __name__ == '__main__':
-    DistributionTest().test('distributions')
+    suite = unittest.TestSuite()
+    suite.addTest(DistributionTest())
+    unittest.TextTestRunner().run(suite)
 

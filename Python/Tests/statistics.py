@@ -25,6 +25,9 @@
 """ 
     $Source$
     $Log$
+    Revision 1.2  2001/04/04 11:08:11  lballabio
+    Python tests implemented on top of PyUnit
+
     Revision 1.1  2001/02/22 14:43:36  lballabio
     Renamed test script to follow a single naming scheme
 
@@ -39,70 +42,71 @@
 
 """
 
-from QuantLib import Statistics
-from TestUnit import TestUnit
+import QuantLib
+import unittest
 
-class StatisticsTest(TestUnit):
-    def doTest(self):
+class StatisticsTest(unittest.TestCase):
+    def runTest(self):
+        "Testing statistics"
         tol = 1e-9
         
         data =    [  3,   4,   5,   2,   3,   4,   5,   6,   4,   7]
         weights = [1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0]
         
-        s = Statistics()
+        s = QuantLib.Statistics()
         s.addWeightedSequence(data, weights)
         
-        self.printDetails('samples:                    %d' % s.samples())
-        if s.samples()!=len(data):
-            self.printDetails('wrong')
-            return -1
-        
-        self.printDetails('sum of the weights:  %f' % s.weightSum())
-        if s.weightSum()!=reduce(lambda x,y:x+y, weights):
-            self.printDetails('wrong')
-            return -1
-        
-        self.printDetails('minimum value:        %f' % s.min())
-        if s.min()!=min(data):
-            self.printDetails('wrong')
-            return -1
-        
-        self.printDetails('maximum value:        %f' % s.max())
-        if s.max()!=max(data):
-            self.printDetails('wrong')
-            return -1
+        assert s.samples() == len(data), \
+            'wrong number of samples\n' + \
+            'calculated: %d\n' % s.samples() + \
+            'expected  : %d\n' % len(data)
 
-        self.printDetails('mean value:           %f' % s.mean())
+        rightWeightSum = reduce(lambda x,y:x+y, weights)
+        assert s.weightSum() == rightWeightSum, \
+            'wrong sum of weights\n' + \
+            'calculated: %f\n' % s.weightSum() + \
+            'expected  : %f\n' % rightWeightSum
+        
+        assert s.min() == min(data), \
+            'wrong minimum value\n' + \
+            'calculated: %f\n' % s.min() + \
+            'expected  : %f\n' % min(data)
+        
+        assert s.max() == max(data), \
+            'wrong maximum value\n' + \
+            'calculated: %f\n' % s.max() + \
+            'expected  : %f\n' % max(data)
+
         mean = reduce(lambda x,y:x+y, map(lambda x,y:x*y, data, weights)) \
             / reduce(lambda x,y:x+y, weights)
-        if abs(s.mean()-mean)>tol:
-            self.printDetails('wrong')
-            return -1
+        assert abs(s.mean()-mean) <= tol, \
+            'wrong mean value\n' + \
+            'calculated: %f\n' % s.mean() + \
+            'expected  : %f\n' % mean
         
-        self.printDetails('variance:             %f' % s.variance())
-        if abs(s.variance()-2.23333333333)>tol:
-            self.printDetails('wrong')
-            return -1
+        assert abs(s.variance()-2.23333333333) <= tol, \
+            'wrong variance\n' + \
+            'calculated: %f\n' % s.variance() + \
+            'expected  : 2.23333333333\n'
         
-        self.printDetails('standard deviation:   %f' % s.standardDeviation())
-        if abs(s.standardDeviation()-1.4944341181)>tol:
-            self.printDetails('wrong')
-            return -1
+        assert abs(s.standardDeviation()-1.4944341181) <= tol, \
+            'wrong standard deviation\n' + \
+            'calculated: %f\n' % s.standardDeviation() + \
+            'expected  : 1.4944341181\n'
         
-        self.printDetails('skewness:             %f' % s.skewness())
-        if abs(s.skewness()-0.359543071407)>tol:
-            self.printDetails('wrong')
-            return -1
+        assert abs(s.skewness()-0.359543071407) <= tol, \
+            'wrong skewness\n' + \
+            'calculated: %f\n' % s.skewness() + \
+            'expected  : 0.359543071407\n'
         
-        self.printDetails('excess kurtosis:     %f' % s.kurtosis())
-        if abs(s.kurtosis()+0.151799637209)>tol:
-            self.printDetails('wrong')
-            return -1
-        
-        self.printDetails(
-            'error estimate:       %f (not checked)' % s.errorEstimate()
-        )
+        assert abs(s.kurtosis()+0.151799637209) <= tol, \
+            'wrong kurtosis\n' + \
+            'calculated: %f\n' % s.kurtosis() + \
+            'expected  : -0.151799637209\n'
 
 
 if __name__ == '__main__':
-    StatisticsTest().test('statistics')
+    suite = unittest.TestSuite()
+    suite.addTest(StatisticsTest())
+    unittest.TextTestRunner().run(suite)
+

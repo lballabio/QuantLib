@@ -25,6 +25,9 @@
 """ 
     $Source$
     $Log$
+    Revision 1.5  2001/04/04 11:08:11  lballabio
+    Python tests implemented on top of PyUnit
+
     Revision 1.4  2001/02/28 11:46:13  lballabio
     Removed redundant __str__ methods - __repr__ used instead
 
@@ -39,139 +42,129 @@
 
 """
 
-
-from QuantLib import *
-from TestUnit import TestUnit
+import QuantLib
+import unittest
 
 # check su Day, Month, etc in debug: adesso il check e' solo su Month in SWIG
 
 # ci vorrebbe un general offset su cos'e' il serial number zero
 
-class DateTest(TestUnit):
-    def doTest(self):
-        mindate = Date_minDate().serialNumber()
-        maxdate = Date_maxDate().serialNumber() + 1 #this one is excluded
+class DateTest(unittest.TestCase):
+    def runTest(self):
+        "Testing dates"
+        mindate = QuantLib.Date_minDate().serialNumber()
+        maxdate = QuantLib.Date_maxDate().serialNumber() + 1 #excluded
         
-        dyold  = DateFromSerialNumber(mindate-1).dayOfYear()
-        dold   = DateFromSerialNumber(mindate-1).dayOfMonth()
-        mold   = DateFromSerialNumber(mindate-1).monthNumber()
-        yold   = DateFromSerialNumber(mindate-1).year()
-        wdnold = DateFromSerialNumber(mindate-1).weekdayNumber()
-        
-        self.printDetails(
-            "test starts at %s (%d)" %
-            (str(Date_minDate()), mindate)
-        )
+        dyold  = QuantLib.DateFromSerialNumber(mindate-1).dayOfYear()
+        dold   = QuantLib.DateFromSerialNumber(mindate-1).dayOfMonth()
+        mold   = QuantLib.DateFromSerialNumber(mindate-1).monthNumber()
+        yold   = QuantLib.DateFromSerialNumber(mindate-1).year()
+        wdnold = QuantLib.DateFromSerialNumber(mindate-1).weekdayNumber()
         
         for i in range(mindate,maxdate):
-            try:
-                t = DateFromSerialNumber(i)
-                
-                # check serial number consistency
-                if (t.serialNumber()!=i):
-                    self.printDetails("major problem")
-                dy  = t.dayOfYear()
-                d   = t.dayOfMonth()
-                m   = t.monthNumber()
-                y   = t.year()
-                mm  = t.month()
-                wd  = t.weekday()
-                wdn = t.weekdayNumber()
-                        
-                # check if skipping any date
-                if (dy==dyold+1) or \
-                   (dy==1 and dyold==365 and not Date_isLeap(yold)) or \
-                   (dy==1 and dyold==366 and Date_isLeap(yold)):
-                        dyold = dy
-                else:
-                        self.printDetails("dyold: %d, dy: %d" % (dyold, dy))
-                        raise "wrong day of year increment"
-        
-                # check if skipping any date
-                if (d==dold+1 and m==mold      and y==yold  ) or \
+            t = QuantLib.DateFromSerialNumber(i)
+            
+            # check serial number consistency
+            assert t.serialNumber() == i, \
+                "inconsistent serial number:\n" + \
+                "original:      %d\n" % i + \
+                "date:          %s\n" % t + \
+                "serial number: %d\n" % t.serialNumber()
+            
+            dy  = t.dayOfYear()
+            d   = t.dayOfMonth()
+            m   = t.monthNumber()
+            y   = t.year()
+            mm  = t.month()
+            wd  = t.weekday()
+            wdn = t.weekdayNumber()
+            
+            # check if skipping any date
+            assert (dy==dyold+1) or \
+                   (dy==1 and dyold==365 \
+                    and not QuantLib.Date_isLeap(yold)) or \
+                   (dy==1 and dyold==366 and QuantLib.Date_isLeap(yold)), \
+                   "wrong day of year increment:\n" + \
+                   "date: %s\n" % t + \
+                   "day of year: %d\n" % dy + \
+                   "previous:    %d\n" % dyold
+            dyold = dy
+            
+            # check if skipping any date
+            assert (d==dold+1 and m==mold      and y==yold  ) or \
                    (d==1      and m==mold+1    and y==yold  ) or \
-                   (d==1      and m==1         and y==yold+1):
-                        dold = d
-                        mold = m
-                        yold = y
-                else:
-                        self.printDetails(
-                          'dold: %d, d: %d, mold: %d, m: %d, yold: %d, y: %d' %
-                          (dold, d, mold, m, yold, y)
-                        )
-                        raise "wrong day, month, year increment"
-        
-                # check month definition
-                if (m<1 or m>12):
-                    self.printDetails("m: %d" % m)
-                    raise "undefined month"
-        
-                # check day definition
-                if (d<1):
-                    self.printDetails("d: %d" % d)
-                    raise "day < 1"
-        
-                # check day definition
-                if (m==1   and d>31) or \
-                   (m==2   and d>29) or \
-                   (m==2   and d==29 and (not Date_isLeap(y))) or \
-                   (m==3   and d>31) or \
-                   (m==4   and d>30) or \
-                   (m==5   and d>31) or \
-                   (m==6   and d>30) or \
-                   (m==7   and d>31) or \
-                   (m==8   and d>31) or \
-                   (m==9   and d>30) or \
-                   (m==10  and d>31) or \
-                   (m==11  and d>30) or \
-                   (m==12  and d>31):
-                        self.printDetails("m: %d, d: %d" % (m,d))
-                        raise "day too big for month"
-        
-                # check weekdayNumber definition
-                if (wdn==wdnold+1 or (wdn==1 and wdnold==7)):
-                    wdnold=wdn
-                else:
-                    self.printDetails(t)
-                    self.printDetails("wdn: %d, wdnold: %d" % (wdn, wdnold))
-                    raise "weekdayNumber error"
-                
-                # create the same date with a different constructor
-                s = Date(d,m,y)
-                # check serial number consistency
-                if (s.serialNumber()!=i):
-                    self.printDetails("date: %s" % str(t))
-                    self.printDetails("serial number: %d" % i)
-                    self.printDetails("new date: %s" % str(s))
-                    self.printDetails("serial number: %d" % s.serialNumber())
-                    raise "new date serial number different from old date"
-        
-                # create the same date with a different constructor
-                s = Date(d,mm,y)
-                # check serial number consistency
-                if (s.serialNumber()!=i):
-                    self.printDetails("date: %s" % str(t))
-                    self.printDetails("serial number: %d" % i)
-                    self.printDetails("new date: %s" % str(s))
-                    self.printDetails("serial number: %d" % s.serialNumber())
-                    raise "new date serial number different from old date"
-            except Exception, e:
-                t = DateFromSerialNumber(i)
-                self.printDetails("exception thrown at %s" % str(t))
-                self.printDetails("serial number: %d" % i)
-                self.printDetails("day of year: %d" % t.dayOfYear())
-                self.printDetails("day of month: %d" % t.dayOfMonth())
-                self.printDetails("month: %s" % t.month())
-                self.printDetails("year: %d" % t.year())
-                raise
-        
-        self.printDetails(
-            "test ends at %s (%d)" %
-            (str(t), i)
-        )
-
+                   (d==1      and m==1         and y==yold+1), \
+                   "wrong day, month, year increment\n" + \
+                   "date: %s\n" % t + \
+                   "day, month, year: %d, %d, %d\n" % (d,m,y) + \
+                   "previous:         %d, %d, %d\n" % (dold,mold,yold)
+            dold = d
+            mold = m
+            yold = y
+            
+            # check month definition
+            assert (m>=1 and  m<=12), \
+                "invalid month\n" + \
+                "date: %s\n" % t + \
+                "month: %d\n" % m
+            
+            # check day definition
+            assert d >= 1, \
+               "invalid day of month\n" + \
+               "date: %s\n" % t + \
+               "day: %d\n" % d
+            
+            # check day definition
+            assert (m==1   and d<=31) or \
+                   (m==2   and d<=28) or \
+                   (m==2   and d==29 and QuantLib.Date_isLeap(y)) or \
+                   (m==3   and d<=31) or \
+                   (m==4   and d<=30) or \
+                   (m==5   and d<=31) or \
+                   (m==6   and d<=30) or \
+                   (m==7   and d<=31) or \
+                   (m==8   and d<=31) or \
+                   (m==9   and d<=30) or \
+                   (m==10  and d<=31) or \
+                   (m==11  and d<=30) or \
+                   (m==12  and d<=31), \
+                   "invalid day of month\n" + \
+                   "date: %s\n" % t + \
+                   "day: %d\n" % d + \
+                   "month: %s\n" % mm
+            
+            # check weekdayNumber definition
+            assert (wdn==wdnold+1 or (wdn==1 and wdnold==7)), \
+               "wrong weekday number increment\n" + \
+               "date: %s\n" % t + \
+               "weekday number: %d\n" % wdn + \
+               "previous:       %d\n" % wdnold
+            wdnold=wdn
+            
+            # create the same date with a different constructor
+            s = QuantLib.Date(d,m,y)
+            # check serial number consistency
+            assert s.serialNumber()==i, \
+                "inconsistent serial number\n" + \
+                "date: %s\n" % t + \
+                "serial number: %d\n" % i + \
+                "cloned date: %s\n" % s + \
+                "serial number: %d\n" % s.serialNumber()
+            
+            # create the same date with a different constructor
+            s = QuantLib.Date(d,mm,y)
+            # check serial number consistency
+            assert s.serialNumber()==i, \
+                "inconsistent serial number\n" + \
+                "date: %s\n" % t + \
+                "serial number: %d\n" % i + \
+                "cloned date: %s\n" % s + \
+                "serial number: %d\n" % s.serialNumber()
 
 
 if __name__ == '__main__':
-    DateTest().test('dates')
+    suite = unittest.TestSuite()
+    suite.addTest(DateTest())
+    unittest.TextTestRunner().run(suite)
+
 

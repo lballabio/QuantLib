@@ -2,6 +2,9 @@
 """
     $Source$
     $Log$
+    Revision 1.3  2001/04/04 11:08:11  lballabio
+    Python tests implemented on top of PyUnit
+
     Revision 1.2  2001/03/05 10:31:30  nando
     Expected Shortfall added to classes HVarTool and HRiskStatistics.
     Expected Shortfall included in python test.
@@ -24,21 +27,20 @@
 
 """
 
-from QuantLib import RiskStatistics, NormalDistribution
-from TestUnit import TestUnit
-from math import exp, sqrt
-
+import QuantLib
+import unittest
+from math import exp, sqrt, pi
 
 # define a Gaussian
 def gaussian(x, average, sigma):
-    normFact = sigma * sqrt( 2 * 3.14159265358979323846 )
+    normFact = sigma * sqrt( 2 * pi )
     dx = x-average
     return exp( -dx*dx/(2.0*sigma*sigma) ) / normFact
 
-class RiskStatisticsTest(TestUnit):
-    def doTest(self):
-        
-        s = RiskStatistics()
+class RiskStatisticsTest(unittest.TestCase):
+    def runTest(self):
+        "Testing risk statistics"
+        s = QuantLib.RiskStatistics()
         averageRange = [-100.0, 0.0, 100.0]
         sigmaRange = [0.1, 1.0, 10]
         N = 25000
@@ -46,16 +48,10 @@ class RiskStatisticsTest(TestUnit):
         
         for average in averageRange:
             for sigma in sigmaRange:
-                
                 #target cannot be changed:
                 #it is a strong assumption to compute values to be checked
                 target = average
-                self.printDetails(
-                    'Gaussian distribution with average %g and sigma %g' %
-                    (average,sigma)
-                )
-                
-                normal = NormalDistribution(average, sigma)
+                normal = QuantLib.NormalDistribution(average, sigma)
                 
                 dataMin = average - numberOfSigma*sigma
                 dataMax = average + numberOfSigma*sigma
@@ -64,104 +60,61 @@ class RiskStatisticsTest(TestUnit):
                 
                 data = [0]*N		# creates a list of N elements
                 for i in range(N):
-                	data[i] = dataMin+h*i
+                    data[i] = dataMin+h*i
                 
                 weights = map(lambda x,average=average,sigma=sigma: 
                     gaussian(x,average,sigma), data)
                 s.addWeightedSequence(data, weights)
                 
-                samples = s.samples()
-                self.printDetails('\tsamples:            %9d' % samples)
-                if (samples!=N):
-                    self.printDetails(
-                        'wrong number of samples (%f): should be %f' % 
-                        (samples, N)
-                    )
-                    raise Exception('wrong number of sample')
+                assert s.samples() == N, \
+                    'wrong number of samples\n' + \
+                    'calculated: %d\n' % s.samples() + \
+                    'expected  : %d\n' % N
                 
                 rightWeightSum = reduce(lambda x,y: x+y, weights)
-                weightSum = s.weightSum()
-                self.printDetails('\tsum of the weights: %9.2f' % weightSum)
-                if (weightSum!=rightWeightSum):
-                    self.printDetails(
-                        'wrong weigth sum (%f): should be %f' % 
-                        (weightSum, rightWeightSum)
-                    )
-                    raise Exception('wrong weigth sum')
+                assert s.weightSum() == rightWeightSum, \
+                    'wrong sum of weights\n' + \
+                    'calculated: %f\n' % s.weightSum() + \
+                    'expected  : %f\n' % rightWeightSum
                 
-                minDist = s.min()
-                self.printDetails('\tminimum value:      %9.3g' % minDist)
-                if (s.min()!=dataMin):
-                    self.printDetails(
-                        'wrong min value (%f): should be %f' %
-                        (minDist, dataMin)
-                    )
-                    raise Exception('wrong min value')
+                assert s.min() == dataMin, \
+                    'wrong minimum value\n' + \
+                    'calculated: %f\n' % s.min() + \
+                    'expected  : %f\n' % dataMin
                 
-                maxDist = s.max()
-                self.printDetails('\tmaximum value:      %9.3g' % maxDist)
-                if (abs(maxDist-dataMax)>1e-13):
-                    self.printDetails(
-                        'wrong max value (%f): should be %f' % 
-                        (maxDist, dataMax)
-                    )
-                    raise Exception('wrong max value')
+                assert abs(s.max()-dataMax) <= 1e-13, \
+                    'wrong maximum value\n' + \
+                    'calculated: %f\n' % s.max() + \
+                    'expected  : %f\n' % dataMax
                 
-                mean = s.mean()
                 if average == 0.0:
-                    check = abs(mean-average)
+                    check = abs(s.mean()-average)
                 else:
-                    check = abs(mean-average)/average
-                self.printDetails('\tmean value:         %9.3f' % mean)
-                if (check>1e-13):
-                    self.printDetails(
-                        'wrong mean value (%f): should be %f' % 
-                        (mean, average)
-                    )
-                    raise Exception('wrong mean value')
+                    check = abs(s.mean()-average)/average
+                assert check <= 1e-13, \
+                    'wrong mean value\n' + \
+                    'calculated: %f\n' % s.mean() + \
+                    'expected  : %f\n' % average
                 
-                self.printDetails(
-                    '\terror estimate:     %9.3g (not checked)' % 
-                    s.errorEstimate()
-                )
+                assert abs(s.variance()-sigma*sigma)/(sigma*sigma) <= 1e-4, \
+                    'wrong variance\n' + \
+                    'calculated: %f\n' % s.variance() + \
+                    'expected  : %f\n' % sigma*sigma
                 
-                variance = s.variance()
-                self.printDetails('\tvariance:           %9.3f' % variance)
-                if (abs(variance-sigma*sigma)/(sigma*sigma)>1e-4):
-                    self.printDetails(
-                        'wrong variance (%f): should be %f' % 
-                        (variance, sigma*sigma)
-                    )
-                    raise Exception('wrong variance')
+                assert abs(s.standardDeviation()-sigma)/sigma <= 1e-4, \
+                    'wrong standard deviation\n' + \
+                    'calculated: %f\n' % s.standardDeviation() + \
+                    'expected  : %f\n' % sigma
                 
-                stdev = s.standardDeviation()
-                self.printDetails('\tstandard deviation: %9.3f' % stdev)
-                if (abs(stdev-sigma)/sigma>1e-4):
-                    self.printDetails(
-                        'wrong standard deviation (%f): should be %f' % 
-                        (stdev, sigma)
-                    )
-                    raise Exception('wrong standard deviation')
+                assert abs(s.skewness()) <= 1e-4, \
+                    'wrong skewness\n' + \
+                    'calculated: %f\n' % s.skewness() + \
+                    'expected  : 0.0\n'
                 
-                skew = s.skewness()
-                self.printDetails('\tskewness:           %+9.1e' % skew)
-                if abs(skew)>1e-4:
-                    self.printDetails(
-                        'wrong skewness (%f): should be %f' % 
-                        (skew, 0.0)
-                    )
-                    raise Exception('wrong skewness')
-                
-                kurt = s.kurtosis()
-                self.printDetails('\texcess kurtosis:    %+9.1e' % kurt)
-                if (abs(kurt)>1e-1):
-                    self.printDetails(
-                        'wrong kurtosis (%f): should be %f' % 
-                        (kurt, 0.0)
-                    )
-                    raise Exception('wrong kurtosis')
-                
-
+                assert abs(s.kurtosis()) <= 1e-1, \
+                    'wrong kurtosis\n' + \
+                    'calculated: %f\n' % s.kurtosis() + \
+                    'expected  : 0.0\n'
 
                 rightVAR = -min(average-2.0*sigma, 0.0)
                 VAR = s.valueAtRisk(0.9772)
@@ -169,56 +122,44 @@ class RiskStatisticsTest(TestUnit):
                     check = abs(VAR-rightVAR)
                 else:
                     check = abs(VAR-rightVAR)/rightVAR
-                self.printDetails('\tValue-at-Risk:      %9.3f' % VAR)
-                if (check>1e-3):
-                    self.printDetails(
-                        'wrong valueAtRisk (%f): should be %f' % 
-                        (VAR, rightVAR)
-                    )
-                    raise Exception('wrong valueAtRisk')
+                assert check <= 1e-3, \
+                    'wrong valueAtRisk\n' + \
+                    'calculated: %f\n' % VAR + \
+                    'expected:   %f\n' % rightVAR
                 
-
-
                 tempVAR = average-2.0*sigma
-                rightExShortfall = average - sigma*sigma*gaussian(tempVAR, average, sigma)/(1.0-0.9772)
+                rightExShortfall = average - sigma*sigma*gaussian(tempVAR,
+                    average, sigma)/(1.0-0.9772)
                 rightExShortfall = -min(rightExShortfall, 0.0)
                 exShortfall = s.expectedShortfall(0.9772)
                 if rightExShortfall == 0.0:
                     check = abs(exShortfall)
                 else:
                     check = abs(exShortfall-rightExShortfall)/rightExShortfall
-                self.printDetails('\texpectedShortfall:  %9.3f' % exShortfall)
-                if (check>1e-3):
-                    self.printDetails(
-                        'wrong expectedShortfall (%f): should be %f' % 
-                        (exShortfall, rightExShortfall)
-                    )
-                    raise Exception('wrong expectedShortfall')
-
-
-
+                assert check <= 1e-3, \
+                    'wrong expected shortfall\n' + \
+                    'calculated: %f\n' % exShortFall + \
+                    'expected:   %f\n' % rightExShortfall
+                
                 rightShortfall = 0.5
                 shortfall = s.shortfall(target)
-                self.printDetails('\tshortfall:          %9.3f' % shortfall)
-                if abs(shortfall-rightShortfall)/rightShortfall>1e-8:
-                    self.printDetails(
-                        'wrong shortfall (%f): should be %f' % 
-                        (shortfall, rightShortfall)
-                    )
-                    raise Exception('wrong shortfall')
+                assert abs(shortfall-rightShortfall)/rightShortfall <= 1e-8, \
+                    'wrong shortfall\n' + \
+                    'calculated: %f\n' % shortFall + \
+                    'expected:   %f\n' % rightShortfall
                 
-                rightAvgShortfall = sigma/sqrt( 2 * 3.14159265358979323846 )
+                rightAvgShortfall = sigma/sqrt( 2 * pi )
                 avgShortfall = s.averageShortfall(target)
-                self.printDetails('\taverageShortfall:   %9.3f' % avgShortfall)
-                if abs(avgShortfall-rightAvgShortfall)/rightAvgShortfall>1e-4:
-                    self.printDetails(
-                        'wrong average shortfall (%f): should be %f' % 
-                        (avgShortfall, rightAvgShortfall)
-                    )
-                    raise Exception('wrong average shortfall')
+                check = abs(avgShortfall-rightAvgShortfall)/rightAvgShortfall
+                assert check <= 1e-4, \
+                    'wrong average shortfall\n' + \
+                    'calculated: %f\n' % avgShortFall + \
+                    'expected:   %f\n' % rightAvgShortfall
                 
                 s.reset()
 
 
 if __name__ == '__main__':
-    RiskStatisticsTest().test('risk statistics')
+    suite = unittest.TestSuite()
+    suite.addTest(RiskStatisticsTest())
+    unittest.TextTestRunner().run(suite)

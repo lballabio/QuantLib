@@ -1,5 +1,5 @@
 
-EXTRA_DIST=TestUnit.py \
+EXTRA_DIST=QuantLibSuite.py \
 	american_option.py barrier_option.py binary_option.py \
 	date.py distributions.py european_option.py \
 	european_with_dividends.py everest_option.py \
@@ -10,5 +10,5 @@ EXTRA_DIST=TestUnit.py \
 	risk_statistics.py statistics.py term_structures.py
 
 python-test:
-	for i in *.py ; do eval python $$i -b || exit 1 ; done
+	python QuantLibSuite.py
 
