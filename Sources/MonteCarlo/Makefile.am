@@ -9,6 +9,7 @@ libMonteCarlo_la_SOURCES = averagestrikeasianpathpricer.cpp \
 	controlvariatedpathpricer.cpp \
 	europeanpathpricer.cpp \
 	geometricasianpathpricer.cpp \
+	himalayapathpricer.cpp \
 	lecuyerrandomgenerator.cpp
 
 

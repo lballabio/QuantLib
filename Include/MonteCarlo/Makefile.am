@@ -11,6 +11,7 @@ include_HEADERS = antitheticcv.h \
 	gaussianarraygenerator.h \
 	generalmontecarlo.h \
 	geometricasianpathpricer.h \
+	himalayapathpricer.h \
 	lecuyerrandomgenerator.h \
 	mcoptionsample.h \
 	mcpricer.h \
