@@ -72,7 +72,7 @@ CC_OPTS		= -q -c -tWM -n$(OUTPUT_DIR) -w-8027 \
 	-I$(PYTHON_INCLUDE) \
 	-I$(BCC_INCLUDE)
 !ifdef DEBUG
-CC_OPTS = $(CC_BASE_OPTS) -v
+CC_OPTS = $(CC_OPTS) -v
 !endif
 
 LINK_OPTS	= -q -x -L$(BCC_LIBS)
