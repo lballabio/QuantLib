@@ -75,6 +75,14 @@
     </tr>
 
     <tr>
+    <td><em>Dirk Eddelbuettel</em></td>
+    <td> </td>
+    <td>Debian maintainer, RQuantLib</td>
+    <td><a href=
+    "http://sourceforge.net/users/eddelbuettel/">eddelbuettel</a></td>
+    </tr>
+
+    <tr>
     <td><em>Marco Marchioro</em></td>
     <td>&#109;&#97;&#114;&#99;&#111;&#46;&#109;&#97;&#114;&#99;&#104;&#105;&#111;&#114;&#111;&#64;&#114;&#105;&#115;&#107;&#109;&#97;&#112;&#46;&#110;&#101;&#116;&#32;</td>
     <td> </td>
@@ -84,7 +92,7 @@
     <tr>
     <td><em>Sadruddin Rejeb</em></td>
     <td>&#115;&#97;&#100;&#46;&#114;&#101;&#106;&#101;&#98;&#64;&#114;&#105;&#115;&#107;&#109;&#97;&#112;&#46;&#105;&#116;</td>
-    <td>single factor interest rate models</td>
+    <td>interest rate models</td>
     <td><a href=
     "http://sourceforge.net/users/sadrejeb/">sadrejeb</a></td>
     </tr>
@@ -107,8 +115,9 @@
         \item Luigi Ballabio (luigi.ballabio@riskmap.net), library designer
         \item Adolfo Benin (adolfo.benin@libero.it)
         \item Nicolas Di C\'esar\'e, spline and optimizer
+        \item Dirk Eddelbuettel: Debian maintainer, RQuantLib
         \item Marco Marchioro (marco.marchioro@riskmap.net)
-        \item Sadruddin Rejeb (sad.rejeb@riskmap.it), single factor interest
+        \item Sadruddin Rejeb (sad.rejeb@riskmap.it), interest
               rate models
         \item Enrico Sirola (enrico.sirola@riskmap.net)
     \end{itemize}
@@ -124,14 +133,6 @@
     <td><strong>email</strong></td>
     <td><strong>contribution</strong></td>
     <td><strong>SourceForge.net user name</strong></td>
-    </tr>
-
-    <tr>
-    <td><em>Dirk Eddelbuettel</em></td>
-    <td> </td>
-    <td>Debian maintainer</td>
-    <td><a href=
-    "http://sourceforge.net/users/eddelbuettel/">eddelbuettel</a></td>
     </tr>
 
     <tr>
@@ -210,16 +211,15 @@
 
     \latexonly
     \begin{itemize}
-        \item Dirk Eddelbuettel, Debian maintainer
-        \item Christopher Baus, inspiration for custom iterators
-        \item Thomas Becker, inspiration for custom iterators
+        \item Christopher Baus: inspiration for custom iterators
+        \item Thomas Becker: inspiration for custom iterators
         \item Toyin Akin
         \item James Battle
         \item David Binderman
         \item Matteo Gallivanoni (matteo.gallivanoni@riskmap.net)
         \item Gilbert Peffer
         \item Peter Schmitteckert (quantlib@schmitteckert.com)
-        \item Maxim Sokolov (maxim\_sokolov@rambler.ru), examples
+        \item Maxim Sokolov (maxim\_sokolov@rambler.ru): examples
         \item Bernd Johannes Wuebben
     \end{itemize}
     \endlatexonly
