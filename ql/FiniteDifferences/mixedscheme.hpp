@@ -76,6 +76,7 @@ namespace QuantLib {
         typedef typename Operator::arrayType arrayType;
         typedef Operator operatorType;
         typedef BoundaryCondition<Operator> bcType;
+        typedef StepCondition<arrayType> conditionType;
         // constructors
         MixedScheme(const Operator& L,
                     Real theta,

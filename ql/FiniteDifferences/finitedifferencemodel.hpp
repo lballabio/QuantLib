@@ -37,8 +37,8 @@ namespace QuantLib {
       public:
         typedef typename Evolver::arrayType arrayType;
         typedef typename Evolver::operatorType operatorType;
-        typedef BoundaryCondition<operatorType> bcType;
-        typedef StepCondition<arrayType> conditionType;
+        typedef typename Evolver::bcType bcType;
+        typedef typename Evolver::conditionType conditionType;
         // constructors
         FiniteDifferenceModel(
                            const operatorType& L,
@@ -74,6 +74,9 @@ namespace QuantLib {
                       Size steps,
                       const boost::shared_ptr<conditionType>& condition =
                                          boost::shared_ptr<conditionType>()) {
+
+            QL_REQUIRE(from >= to,
+                       "trying to roll back from " << from << " to " << to);
 
             Time dt = (from-to)/steps, t = from;
             evolver_.setStep(dt);
