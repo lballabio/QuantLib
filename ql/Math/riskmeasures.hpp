@@ -36,31 +36,121 @@ namespace QuantLib {
         //! \deprecated use Statistics instead
         class RiskMeasures {
           public:
-            RiskMeasures() {}
+            /*! \pre percentile must be in range (0%-100%] */
             template<class DataIterator>
             double percentile(double percentile,
                               DataIterator begin,
-                              DataIterator end) const ;
+                              DataIterator end) const {
+
+                QL_REQUIRE(percentile>0.0,
+                           "RiskMeasures::percentile() : "
+                           "percentile must be greater than zero");
+                QL_REQUIRE(percentile<=1.0,
+                           "RiskMeasures::percentile() : "
+                           "percentile must be <=1.0");
+
+                std::sort(begin, end);
+
+                DataIterator k;
+                double sampleWeight = 0;
+                for (k=begin; k!=end; k++)
+                    sampleWeight += k->second;
+
+                QL_REQUIRE(sampleWeight>0.0,
+                           "RiskMeasures::percentile() : "
+                           "empty sample (zero weight sum)");
+
+
+                double integral = 0.0, perc=percentile*sampleWeight;
+                k=begin--;
+                do {
+                    k++;
+                    integral += k->second;
+                } while (integral<perc && k!=end--);
+
+
+                bool interpolate = false;
+                // interpolating ... if possible and required
+                if (k==begin || (!interpolate))
+                    return k->first;
+                else {
+                    // just in case there are more samples at value k->first
+                    double lastAddedWeight = k->second;
+                    DataIterator kk = k;
+                    kk++;
+                    while (kk!=end && kk->first==k->first) {
+                        lastAddedWeight += kk->second;
+                        integral        += kk->second;
+                        kk++;
+                    }
+                    double lambda = (integral - perc) / lastAddedWeight;
+                    return (1.0-lambda) * (k->first) + lambda * ((k-1)->first);
+                }
+
+            }
+            /*! \pre percentile must be in range (0%-100%) extremes excluded */
             double gaussianPercentile(double percentile,
                                       double mean,
                                       double std) const ;
 
+            /*! \pre y must be in range [90%-100%) */
             template<class DataIterator>
             double potentialUpside(double percentile,
                                    DataIterator begin,
-                                   DataIterator end) const ;
+                                   DataIterator end) const {
+
+                QL_REQUIRE(percentile>=0.9,
+                           "RiskMeasures::potentialUpside() : "
+                           "percentile (" +
+                           DoubleFormatter::toString(percentile) +
+                           ") must be >= 0.90");
+                QL_REQUIRE(percentile<1.0,
+                           "RiskMeasures::potentialUpside() : "
+                           "percentile (" +
+                           DoubleFormatter::toString(percentile) +
+                           ") must be < 1.0");
+                
+                double result = this->percentile(y, begin, end);
+                
+                // PotenzialUpSide must be a gain
+                // this means that it has to be MAX(dist(percentile), 0.0)
+                return QL_MAX(result, 0.0);
+            }
+            /*! \pre percentile must be in range [90%-100%) */
             double gaussianPotentialUpside(double percentile,
                                            double mean,
                                            double std) const ;
 
+            /*! \pre y must be in range [90%-100%) */
             template<class DataIterator>
             double valueAtRisk(double percentile,
                                DataIterator begin,
-                               DataIterator end) const ;
+                               DataIterator end) const {
+
+                QL_REQUIRE(percentile>=0.9,
+                           "RiskMeasures::valueAtRisk() : "
+                           "percentile (" +
+                           DoubleFormatter::toString(percentile) +
+                           ") must be >= 0.90");
+                QL_REQUIRE(percentile<1.0,
+                           "RiskMeasures::valueAtRisk() : "
+                           "percentile (" +
+                           DoubleFormatter::toString(percentile) +
+                           ") must be < 1.0");
+
+                double result = this->percentile(1.0-y, begin, end);
+
+                // VAR must be a loss
+                // this means that it has to be MIN(dist(1.0-percentile), 0.0)
+                // VAR must also be a positive quantity, so -MIN(*)
+                return -QL_MIN(result, 0.0);
+            }
+            /*! \pre percentile must be in range [90%-100%) */
             double gaussianValueAtRisk(double percentile,
                                        double mean,
                                        double std) const ;
 
+            /*! \pre percentile must be in range 90%-100% */
             double gaussianExpectedShortfall(double percentile,
                                              double mean,
                                              double std) const ;
@@ -77,60 +167,6 @@ namespace QuantLib {
         // inline definitions
 
         
-        /*! \pre percentile must be in range (0%-100%] */
-        template<class DataIterator>
-        inline double RiskMeasures::percentile(double percentile,
-            DataIterator begin, DataIterator end) const{
-
-            QL_REQUIRE(percentile>0.0,
-                       "RiskMeasures::percentile() : "
-                       "percentile must be greater than zero");
-            QL_REQUIRE(percentile<=1.0,
-                       "RiskMeasures::percentile() : "
-                       "percentile must be <=1.0");
-
-            std::sort(begin, end);
-
-            DataIterator k;
-            double sampleWeight = 0;
-            for (k=begin; k!=end; k++)
-                sampleWeight += k->second;
-
-            QL_REQUIRE(sampleWeight>0.0,
-                       "RiskMeasures::percentile() : "
-                       "empty sample (zero weight sum)");
-
-
-            double integral = 0.0, perc=percentile*sampleWeight;
-            k=begin--;
-            do {
-                k++;
-                integral += k->second;
-            } while (integral<perc && k!=end--);
-
-
-            bool interpolate = false;
-            // interpolating ... if possible and required
-            if (k==begin || (!interpolate))
-                return k->first;
-            else {
-                // just in case there are more samples at value k->first
-                double lastAddedWeight = k->second;
-                DataIterator kk = k;
-                kk++;
-                while (kk!=end && kk->first==k->first) {
-                    lastAddedWeight += kk->second;
-                    integral        += kk->second;
-                    kk++;
-                }
-                double lambda = (integral - perc) / lastAddedWeight;
-                return (1.0-lambda) * (k->first) + lambda * ((k-1)->first);
-            }
-
-        }
-
-
-        /*! \pre percentile must be in range (0%-100%) extremes excluded */
         inline double RiskMeasures::gaussianPercentile(
             double percentile, double mean, double std) const {
             QL_REQUIRE(percentile>0.0,
@@ -149,32 +185,6 @@ namespace QuantLib {
         }
 
 
-
-        
-        /*! \pre y must be in range [90%-100%) */
-        template<class DataIterator>
-        inline double RiskMeasures::potentialUpside(double y,
-            DataIterator begin, DataIterator end) const{
-
-            QL_REQUIRE(percentile>=0.9,
-                       "RiskMeasures::potentialUpside() : "
-                       "percentile (" +
-                        DoubleFormatter::toString(percentile) +
-                       ") must be >= 0.90");
-            QL_REQUIRE(percentile<1.0,
-                       "RiskMeasures::potentialUpside() : "
-                       "percentile (" +
-                        DoubleFormatter::toString(percentile) +
-                       ") must be < 1.0");
-
-            double result=percentile(y, begin, end);
-
-            // PotenzialUpSide must be a gain
-            // this means that it has to be MAX(dist(percentile), 0.0)
-            return QL_MAX(result, 0.0);
-        }
-
-        /*! \pre percentile must be in range [90%-100%) */
         inline double RiskMeasures::gaussianPotentialUpside(
             double percentile, double mean, double std) const {
 
@@ -196,33 +206,6 @@ namespace QuantLib {
         }
 
 
-        
-
-        /*! \pre y must be in range [90%-100%) */
-        template<class DataIterator>
-        inline double RiskMeasures::valueAtRisk(double y,
-            DataIterator begin, DataIterator end) const{
-
-            QL_REQUIRE(percentile>=0.9,
-                       "RiskMeasures::valueAtRisk() : "
-                       "percentile (" +
-                        DoubleFormatter::toString(percentile) +
-                       ") must be >= 0.90");
-            QL_REQUIRE(percentile<1.0,
-                       "RiskMeasures::valueAtRisk() : "
-                       "percentile (" +
-                        DoubleFormatter::toString(percentile) +
-                       ") must be < 1.0");
-
-            double result=percentile(1.0-y, begin, end);
-
-            // VAR must be a loss
-            // this means that it has to be MIN(dist(1.0-percentile), 0.0)
-            // VAR must also be a positive quantity, so -MIN(*)
-            return -QL_MIN(result, 0.0);
-        }
-
-        /*! \pre percentile must be in range [90%-100%) */
         inline double RiskMeasures::gaussianValueAtRisk(
             double percentile, double mean, double std) const {
 
@@ -245,8 +228,6 @@ namespace QuantLib {
         }
 
 
-
-        /*! \pre percentile must be in range 90%-100% */
         inline double RiskMeasures::gaussianExpectedShortfall(
             double percentile, double mean, double std) const {
             QL_REQUIRE(percentile<1.0 && percentile>=0.9,
@@ -265,8 +246,6 @@ namespace QuantLib {
         }
 
 
-
-        
         inline double RiskMeasures::gaussianShortfall(
             double target, double mean, double std) const {
             Math::CumulativeNormalDistribution gIntegral(mean, std);
@@ -274,8 +253,6 @@ namespace QuantLib {
         }
 
 
-        
-        
         inline double RiskMeasures::gaussianAverageShortfall(
             double target, double mean, double std) const {
             Math::CumulativeNormalDistribution gIntegral(mean, std);

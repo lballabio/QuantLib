@@ -35,8 +35,7 @@ namespace QuantLib {
         plus risk quantities as Value-At-Risk, Expected Shortfall,
         Shortfall, Average Shortfall, etc under gaussian assumption
 
-        \deprecated use IncrementalGaussianStatistics instead (or even take
-                    a look at Statistics)
+        \deprecated use IncrementalGaussianStatistics or Statistics instead
     */
     class RiskStatistics {
       public:

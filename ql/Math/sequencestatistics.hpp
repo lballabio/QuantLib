@@ -245,40 +245,39 @@ namespace QuantLib {
                                          mean.begin(), mean.end());
             result *= (inv*inv);
             result -= inv*quadraticSum_;
-            result *= (sampleNumber/(sampleNumber-1.0))
+            result *= (sampleNumber/(sampleNumber-1.0));
             return result;
         }
 
 
         template <class Stat>
         Matrix SequenceStatistics<Stat>::correlation() const {
-          Matrix correlation = covariance();
-          Array variances = correlation.diagonal();
-          for (Size i=0; i<dimension_; i++){
-              for (Size j=0; j<dimension_; j++){
-                  if (i==j) {
-                      if (variances[i]==0.0) {
-                          correlation[i][j] = 1.0;
-                      } else {
-                          correlation[i][j] *= 1.0/QL_SQRT(variances[i]*variances[j]);
-                      }
-                  } else {
-                      if (variances[i]==0.0 && variances[j]==0) {
-                          correlation[i][j] = 1.0;
-                      } else if (variances[i]==0.0 || variances[j]==0.0) {
-                          correlation[i][j] = 0.0;
-                      } else {
-                          correlation[i][j] *= 1.0/QL_SQRT(variances[i]*variances[j]);
-                      }
-                  }
-              } // j for
-          } // i for
+            Matrix correlation = covariance();
+            Array variances = correlation.diagonal();
+            for (Size i=0; i<dimension_; i++){
+                for (Size j=0; j<dimension_; j++){
+                    if (i==j) {
+                        if (variances[i]==0.0) {
+                            correlation[i][j] = 1.0;
+                        } else {
+                            correlation[i][j] *= 
+                                1.0/QL_SQRT(variances[i]*variances[j]);
+                        }
+                    } else {
+                        if (variances[i]==0.0 && variances[j]==0) {
+                            correlation[i][j] = 1.0;
+                        } else if (variances[i]==0.0 || variances[j]==0.0) {
+                            correlation[i][j] = 0.0;
+                        } else {
+                            correlation[i][j] *= 
+                                1.0/QL_SQRT(variances[i]*variances[j]);
+                        }
+                    }
+                } // j for
+            } // i for
 
-          return correlation;
+            return correlation;
         }
-
-
-
 
     }
 
