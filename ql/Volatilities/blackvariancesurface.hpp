@@ -140,6 +140,9 @@ namespace QuantLib {
         double BlackVarianceSurface<Interpolator2D>::
             blackVarianceImpl(Time t, double strike, bool extrapolate) const {
 
+            // it doesn't check if extrapolation is performed/allowed
+            if (t==0.0) return 0.0;
+
             // enforce constant extrapolation when required
             if (strike < strikes_.front() && strike < strikes_.back()
                 && extrapolate
