@@ -30,6 +30,9 @@
 
 // $Source$
 // $Log$
+// Revision 1.4  2001/06/18 10:20:25  nando
+// 80 colums enforced
+//
 // Revision 1.3  2001/05/24 15:38:08  nando
 // smoothing #include xx.hpp and cutting old Log messages
 //
@@ -45,18 +48,22 @@ namespace QuantLib {
 
     namespace FiniteDifferences {
 
-        // WARNING: the differential operator D must be linear for this evolver to work!
+        // WARNING: the differential operator D must be linear for
+        // this evolver to work!
 
-        /*    Operators must be derived from either TimeConstantOperator or TimeDependentOperator.
+        /*  Operators must be derived from either TimeConstantOperator or
+            TimeDependentOperator.
             They must also implement at least the following interface:
 
             // copy constructor/assignment
-            Operator(const Operator&);                // if no particular care is required, these two can be
-            Operator& operator=(const Operator&);    // omitted. They will be provided by the compiler.
+            // if no particular care is required, these two can be
+            // omitted. They will be provided by the compiler.
+            Operator(const Operator&);
+            Operator& operator=(const Operator&);
 
             // modifiers
-            void setTime(Time t);                    // those derived from TimeConstantOperator might
-                                                    // skip this if the compiler allows it.
+            void setTime(Time t);  // those derived from TimeConstantOperator
+                                   // might skip this if the compiler allows it.
 
             // operator interface
             arrayType applyTo(const arrayType&);
@@ -85,24 +92,38 @@ namespace QuantLib {
             operatorType D, explicitPart, implicitPart;
             Time dt;
             #if QL_TEMPLATE_METAPROGRAMMING_WORKS
-                // a bit of template metaprogramming to relax interface constraints on time-constant operators
-                // see T. L. Veldhuizen, "Using C++ Template Metaprograms", C++ Report, Vol 7 No. 4, May 1995
+                // a bit of template metaprogramming to relax interface
+                // constraints on time-constant operators
+                // see T. L. Veldhuizen, "Using C++ Template Metaprograms",
+                // C++ Report, Vol 7 No. 4, May 1995
                 // http://extreme.indiana.edu/~tveldhui/papers/
                 template <int constant>
                 class CrankNicolsonTimeSetter {};
-                // the following specialization will be instantiated if Operator is derived from TimeConstantOperator
+                // the following specialization will be instantiated if
+                // Operator is derived from TimeConstantOperator
                 template<>
                 class CrankNicolsonTimeSetter<0> {
                   public:
-                    static inline void setTime(Operator& D, Operator& explicitPart, Operator& implicitPart, Time t, Time dt) {}
+                    static inline void setTime(Operator& D,
+                                               Operator& explicitPart,
+                                               Operator& implicitPart,
+                                               Time      t,
+                                               Time      dt) {}
                 };
-                // the following specialization will be instantiated if Operator is derived from TimeDependentOperator:
-                // only in this case Operator will be required to implement void setTime(Time t)
+                // the following specialization will be instantiated if Operator
+                // is derived from TimeDependentOperator:
+                // only in this case Operator will be required
+                // to implement void setTime(Time t)
                 template<>
                 class CrankNicolsonTimeSetter<1> {
-                    typedef typename OperatorTraits<Operator>::arrayType arrayType;
+                    typedef typename OperatorTraits<Operator>::arrayType
+                        arrayType;
                   public:
-                    static inline void setTime(Operator& D, Operator& explicitPart, Operator& implicitPart, Time t, Time dt) {
+                    static inline void setTime(Operator& D,
+                                               Operator& explicitPart,
+                                               Operator& implicitPart,
+                                               Time      t,
+                                               Time      dt) {
                         D.setTime(t);
                         explicitPart = Identity<arrayType>()-(dt/2)*D;
                         implicitPart = Identity<arrayType>()+(dt/2)*D;
@@ -116,7 +137,8 @@ namespace QuantLib {
         template <class Operator>
         inline void CrankNicolson<Operator>::step(arrayType& a, Time t) {
             #if QL_TEMPLATE_METAPROGRAMMING_WORKS
-                CrankNicolsonTimeSetter<Operator::isTimeDependent>::setTime(D,explicitPart,implicitPart,t,dt);
+                CrankNicolsonTimeSetter<Operator::isTimeDependent>::setTime(D,
+                    explicitPart, implicitPart, t, dt);
             #else
                 if (Operator::isTimeDependent) {
                     D.setTime(t);
