@@ -43,7 +43,7 @@ namespace QuantLib {
         const double CumulativeNormalDistribution::precision_ = 1e-6;
 
         double CumulativeNormalDistribution::operator()(double x) const {
-            QL_REQUIRE(x >= average_ && 2.0*average_-x >= average_,
+            QL_REQUIRE(!(x >= average_ && 2.0*average_-x > average_),
                 "CumulativeNormalDistribution: not a real number. "
                 "Cannot process x = " +
                 DoubleFormatter::toString(x));
