@@ -40,16 +40,6 @@
 
 namespace QuantLib {
 
-	//! Conventions for rolling, i.e., moving from a holiday to its next/previous business day.
-	enum RollingConvention {
-		Following,				/*!< go to next business day */
-		ModifiedFollowing,		/*!< go to next business day unless it belongs to a different month,
-									in which case go back to previous business day */
-		Preceding,				/*!< go back to previous business day */
-		ModifiedPreceding		/*!< go back to previous business day unless it belongs to a different month,
-									in which case go to next business day */
-	};
-	
 	//! Abstract calendar class
 	/*! This class is purely abstract and defines the interface of concrete
 		calendar classes which will be derived from this one.
@@ -69,12 +59,12 @@ namespace QuantLib {
 		virtual bool isBusinessDay(const Date&) const = 0;
 		//! Returns <tt>true</tt> iff the date is a holiday for the given market.
 		bool isHoliday(const Date& d) const { return !isBusinessDay(d); }
-		//! Returns the next/previous business day on the given market with respect to the given date and convention.
-		Date roll(RollingConvention, const Date&) const;
+		//! Returns the next business day on the given market with respect to the given date and convention.
+		Date roll(const Date&, bool modified = false) const;
 		//! Advances the given date of the givn number of business days and returns the result.
 		/*! \note The input date is not modified.
 		*/
-		Date advance(const Date&, int businessDays) const;
+		Date advance(const Date&, int n, TimeUnit unit, bool modified = false) const;
 	};
 	
 	QL_DECLARE_TEMPLATE_SPECIALIZATION(

@@ -45,8 +45,6 @@ using QuantLib::Handle;
 using QuantLib::Calendar;
 typedef Handle<Calendar> CalendarHandle;
 
-using QuantLib::Following;
-using QuantLib::ModifiedFollowing;
 using QuantLib::IsNull;
 %}
 
@@ -66,10 +64,10 @@ using QuantLib::IsNull;
 		return (*self)->isHoliday(d);
 	}
 	Date roll(const Date& d, bool modified = false) {
-		return (*self)->roll(modified ? ModifiedFollowing : Following, d);
+		return (*self)->roll(d,modified);
 	}
-	Date advance(const Date& d, int businessDays) {
-		return (*self)->advance(d,businessDays);
+	Date advance(const Date& d, int n, TimeUnit unit, bool modified = false) {
+		return (*self)->advance(d,n,unit,modified);
 	}
 	#if defined (SWIGPYTHON)
 	char* __str__() {

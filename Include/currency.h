@@ -77,7 +77,7 @@ namespace QuantLib {
 	// inline definitions
 	
 	inline Date Currency::settlementDate(const Date& d) const {
-		return settlementCalendar()->advance(d,settlementDays());
+		return settlementCalendar()->advance(d,settlementDays(),Days);
 	}
 	
 	/*! Returns <tt>true</tt> iff the two currencies belong to the same derived class.

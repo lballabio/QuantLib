@@ -25,45 +25,52 @@
 
 namespace QuantLib {
 
-	Date Calendar::roll(RollingConvention convention, const Date& d) const {
+	Date Calendar::roll(const Date& d, bool modified) const {
 		Date d1 = d;
-		switch (convention) {
-		  case Following:
-		  case ModifiedFollowing:
-			while (isHoliday(d1))
-				d1++;
-			if (convention == ModifiedFollowing && d1.month() != d.month())
-				return roll(Preceding,d);
-			break;
-		  case Preceding:
-		  case ModifiedPreceding:
+		while (isHoliday(d1))
+			d1++;
+		if (modified && d1.month() != d.month()) {
+			d1 = d;
 			while (isHoliday(d1))
 				d1--;
-			if (convention == ModifiedPreceding && d1.month() != d.month())
-				return roll(Following,d);
-			break;
-		  default:
-			throw IllegalArgumentError("Unknown rolling convention");
 		}
 		return d1;
 	}
 	
-	Date Calendar::advance(const Date& d, int businessDays) const {
-		Date d1 = d;
-		if (businessDays >= 0) {
-			while (businessDays >= 0) {
-				while (isHoliday(d1))
-					d1++;
-				businessDays--;
+	Date Calendar::advance(const Date& d, int n, TimeUnit unit, bool modified) const {
+		if (n == 0) {
+			return roll(d,modified);
+		} else if (unit == Days) {
+			Date d1 = d;
+			if (n >= 0) {
+				while (n >= 0) {
+					while (isHoliday(d1))
+						d1++;
+					n--;
+				}
+			} else {
+				while (n <= 0) {
+					while(isHoliday(d1))
+						d1--;
+					n--;
+				}
 			}
+			return d1;
 		} else {
-			while (businessDays <= 0) {
-				while(isHoliday(d1))
+			Date d1 = d.plus(n,unit);
+			if (modified && d.month() != roll(d.plusDays(1)).month()	// i.e., d is end of month
+			  && (unit == Months || unit == Years)) {
+				Month m = d1.month();
+				Date firstOfNextMonth = (m == December ? Date(1,January,d1.year()+1) : Date(1,Month(m+1),d1.year()));
+				Date d1 = firstOfNextMonth.plusDays(-1);	// i.e., last day of this month
+				while (isHoliday(d1))
 					d1--;
-				businessDays--;
+			} else {
+				d1 = roll(d1,modified);
 			}
+			return d1;
 		}
-		return d1;
+		QL_DUMMY_RETURN(Date());
 	}
 
 }

@@ -576,8 +576,6 @@ using QuantLib::Handle;
 using QuantLib::Calendar;
 typedef Handle<Calendar> CalendarHandle;
 
-using QuantLib::Following;
-using QuantLib::ModifiedFollowing;
 using QuantLib::IsNull;
 
 using QuantLib::Calendars::TARGET;
@@ -2291,7 +2289,7 @@ static PyObject *_wrap_Calendar_isHoliday(PyObject *self, PyObject *args, PyObje
 
 Date  CalendarHandle_roll(CalendarHandle *self,Date const &d,bool modified) {
     {
-        return (*self)->roll(modified ? ModifiedFollowing : Following, d);
+        return (*self)->roll(d,modified);
     }
 }
 
@@ -2328,9 +2326,9 @@ static PyObject *_wrap_Calendar_roll(PyObject *self, PyObject *args, PyObject *k
 }
 
 
-Date  CalendarHandle_advance(CalendarHandle *self,Date const &d,int businessDays) {
+Date  CalendarHandle_advance(CalendarHandle *self,Date const &d,int n,TimeUnit unit,bool modified) {
     {
-        return (*self)->advance(d,businessDays);
+        return (*self)->advance(d,n,unit,modified);
     }
 }
 
@@ -2340,19 +2338,41 @@ static PyObject *_wrap_Calendar_advance(PyObject *self, PyObject *args, PyObject
     CalendarHandle *arg0 ;
     Date *arg1 ;
     int arg2 ;
+    TimeUnit *arg3 ;
+    bool arg4 = false ;
     PyObject * argo0 =0 ;
     PyObject * argo1 =0 ;
+    PyObject * obj3  = 0 ;
+    int tempbool4 = (int) false ;
     char *kwnames[] = {
-        "self","d","businessDays", NULL 
+        "self","d","n","unit","modified", NULL 
     };
     Date *result ;
     
-    if(!PyArg_ParseTupleAndKeywords(args,kwargs,"OOi:Calendar_advance",kwnames,&argo0,&argo1,&arg2)) return NULL;
+    if(!PyArg_ParseTupleAndKeywords(args,kwargs,"OOiO|i:Calendar_advance",kwnames,&argo0,&argo1,&arg2,&obj3,&tempbool4)) return NULL;
     if ((SWIG_ConvertPtr(argo0,(void **) &arg0,SWIGTYPE_p_CalendarHandle,1)) == -1) return NULL;
     if ((SWIG_ConvertPtr(argo1,(void **) &arg1,SWIGTYPE_p_Date,1)) == -1) return NULL;
     {
+        if (PyString_Check(obj3)) {
+            std::string s(PyString_AsString(obj3));
+            s = StringFormatter::toLowercase(s);
+            if (s == "d" || s == "day" || s == "days")			arg3 = new TimeUnit(Days);
+            else if (s == "w" || s == "week" || s == "weeks")	arg3 = new TimeUnit(Weeks);
+            else if (s == "m" || s == "month" || s == "months")	arg3 = new TimeUnit(Months);
+            else if (s == "y" || s == "year" || s == "years")	arg3 = new TimeUnit(Years);
+            else {
+                PyErr_SetString(PyExc_TypeError,"unknown time unit");
+                return NULL;
+            }
+        }else {
+            PyErr_SetString(PyExc_TypeError,"not a time unit");
+            return NULL;
+        }
+    }
+    arg4 = (bool ) tempbool4;
+    {
         try {
-            result = new Date (CalendarHandle_advance(arg0,(Date const &)*arg1,arg2));
+            result = new Date (CalendarHandle_advance(arg0,(Date const &)*arg1,arg2,*arg3,arg4));
         }catch (std::exception& e) {
             PyErr_SetString(PyExc_Exception,e.what());
             return NULL;
@@ -2361,6 +2381,9 @@ static PyObject *_wrap_Calendar_advance(PyObject *self, PyObject *args, PyObject
             return NULL;
         }
     }resultobj = SWIG_NewPointerObj((void *)result, SWIGTYPE_p_Date);
+    {
+        delete arg3;
+    }
     return resultobj;
 }
 
