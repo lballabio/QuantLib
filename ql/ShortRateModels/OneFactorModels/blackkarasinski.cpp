@@ -99,8 +99,8 @@ namespace QuantLib {
                 s1d.setMaxEvaluations(1000);
                 value = s1d.solve(finder, 1e-7, value, vMin, vMax);
                 impl->set(timeGrid[i], value);
-                vMin = value - 1.0;
-                vMax = value + 1.0;
+//                vMin = value - 10.0;
+//                vMax = value + 10.0;
             }
             return numericTree;
         }
