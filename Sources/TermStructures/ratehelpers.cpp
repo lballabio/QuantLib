@@ -22,11 +22,14 @@
  * available at http://quantlib.sourceforge.net/Authors.txt
 */
 
-/*! \file ratehelper.cpp
+/*! \file ratehelpers.cpp
     \brief rate helpers
     
     $Source$
     $Log$
+    Revision 1.2  2001/05/16 15:45:56  lballabio
+    Fixed typo in docs
+
     Revision 1.1  2001/05/16 09:57:27  lballabio
     Added indexes and piecewise flat forward curve
 
