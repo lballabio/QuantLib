@@ -34,64 +34,39 @@ dist-hook:
 	      $(srcdir)/images/*.jpg $(srcdir)/images/*.png \
 	      $(srcdir)/images/*.pdf $(srcdir)/images/*.ico $(distdir)/images
 
-docs-all: .time-stamp-html .time-stamp-ps .time-stamp-pdf .time-stamp-man
-	$(DOXYGEN) .quantlib.doxy
-	rm .quantlib.doxy
-
-docs-dist: docs-all
-	ln -s html-offline QuantLib-docs-$(VERSION)-html
-	tar chof - QuantLib-docs-$(VERSION)-html \
-	    | GZIP=--best gzip -c > QuantLib-docs-$(VERSION)-html.tar.gz
-	rm QuantLib-docs-$(VERSION)-html
-	ln latex/refman.pdf QuantLib-docs-$(VERSION).pdf
-	gzip --best --force QuantLib-docs-$(VERSION).pdf
-	ln latex/refman.ps QuantLib-docs-$(VERSION).ps
-	gzip --best --force QuantLib-docs-$(VERSION).ps
-	ln -s man QuantLib-docs-$(VERSION)-man
-	tar chof - QuantLib-docs-$(VERSION)-man \
-	    | GZIP=--best gzip -c > QuantLib-docs-$(VERSION)-man.tar.gz
-	rm QuantLib-docs-$(VERSION)-man
+docs-all: docs-html docs-ps docs-pdf docs-man
+docs-dist: docs-pdf-dist docs-ps-dist docs-html-dist docs-man-dist
 
 docs-html: .time-stamp-html
-	$(DOXYGEN) .quantlib.doxy
-	rm .quantlib.doxy
-
 .time-stamp-html: .time-stamp
-	$(SED) -e "s|GENERATE_HTML          = NO|GENERATE_HTML          = YES|" \
-	       .quantlib.doxy > .quantlib.doxy2
-	rm .quantlib.doxy
-	mv .quantlib.doxy2 .quantlib.doxy
-	cp images/*.jpg html-offline
-	cp images/*.png html-offline
-	cp images/*.ico html-offline
+	cp images/*.jpg html
+	cp images/*.png html
+	cp images/*.ico html
 	touch .time-stamp-html
 
 docs-html-dist: docs-html
-	ln -s html-offline QuantLib-docs-$(VERSION)-html
+	ln -s html QuantLib-docs-$(VERSION)-html
 	tar chof - QuantLib-docs-$(VERSION)-html \
 	    | GZIP=--best gzip -c > QuantLib-docs-$(VERSION)-html.tar.gz
 	rm QuantLib-docs-$(VERSION)-html
 
 docs-online: .time-stamp-online
+.time-stamp-online: $(DOXYGEN_CONFIG) $(DOXYGEN_CUSTOM) $(DOXYGEN_INPUT)
+	$(SED) -e "s/quantlibfooter/quantlibfooteronline/" \
+           -e "s/GENERATE_HTML          = NO/GENERATE_HTML          = YES/" \
+           -e "s/HTML_OUTPUT            = html/HTML_OUTPUT            = html-online/" \
+           -e "s|ql_basepath|${BASEPATH}/|" \
+           -e "s|ql_version|$(VERSION)|" \
+	       quantlib.doxy > .quantlib.doxy
 	$(DOXYGEN) .quantlib.doxy
 	rm .quantlib.doxy
-
-.time-stamp-online: $(DOXYGEN_CONFIG) $(DOXYGEN_CUSTOM) $(DOXYGEN_INPUT)
-	$(SED) -e "s|ql_basepath|${BASEPATH}/|" \
-	       -e "s|ql_version|$(VERSION)|" \
-           -e "s/_OUTPUT            = html/_OUTPUT            = html-online/" \
-           -e "s/quantlibfooter/quantlibfooteronline/" \
-           -e "s|GENERATE_HTML          = NO|GENERATE_HTML          = YES|" \
-	       .quantlib.doxy > .quantlib.doxy2
-	rm .quantlib.doxy
-	mv .quantlib.doxy2 .quantlib.doxy
 	cp images/*.jpg html-online
 	cp images/*.png html-online
 	cp images/*.ico html-online
 	touch .time-stamp-online
 
 docs-pdf: .time-stamp-pdf
-.time-stamp-pdf: .time-stamp .time-stamp-tex tex-files
+.time-stamp-pdf: .time-stamp .time-stamp-tex
 	cd latex && $(PDFLATEX) refman
 	cd latex && $(MAKEINDEX) refman
 	cd latex && $(PDFLATEX) refman
@@ -102,7 +77,7 @@ docs-pdf-dist: docs-pdf
 	gzip --best --force QuantLib-docs-$(VERSION).pdf
 
 docs-ps: .time-stamp-ps
-.time-stamp-ps: .time-stamp .time-stamp-tex tex-files
+.time-stamp-ps: .time-stamp .time-stamp-tex
 	cd latex && $(LATEX) refman
 	cd latex && $(MAKEINDEX) refman
 	cd latex && $(LATEX) refman
@@ -114,16 +89,9 @@ docs-ps-dist: docs-ps
 	gzip --best --force QuantLib-docs-$(VERSION).ps
 
 docs-man: .time-stamp-man
-	$(DOXYGEN) .quantlib.doxy
-	rm .quantlib.doxy
-
 .time-stamp-man: .time-stamp
 	$(SED) -e "s/index/QuantLib/" man/man3/index.3 > man/man3/QuantLib.3
 	rm man/man3/index.3
-	$(SED) -e "s/_MAN           = NO/_MAN           = YES/" \
-	       .quantlib.doxy > .quantlib.doxy2
-	rm .quantlib.doxy
-	mv .quantlib.doxy2 .quantlib.doxy
 	touch .time-stamp-man
 
 docs-man-dist: docs-man
@@ -141,14 +109,21 @@ docs-clean:
 
 
 .time-stamp: $(DOXYGEN_CONFIG) $(DOXYGEN_CUSTOM) $(DOXYGEN_INPUT)
-	$(SED) -e "s|ql_basepath|${BASEPATH}/|" \
-	       -e "s|ql_version|$(VERSION)|" \
-           quantlib.doxy > .quantlib.doxy
+	$(SED) -e "s/GENERATE_MAN           = NO/GENERATE_MAN           = YES/" \
+           -e "s/GENERATE_HTML          = NO/GENERATE_HTML          = YES/" \
+           -e "s/GENERATE_LATEX         = NO/GENERATE_LATEX         = YES/" \
+           -e "s|ql_basepath|${BASEPATH}/|" \
+           -e "s|ql_version|$(VERSION)|" \
+	       quantlib.doxy > .quantlib.doxy
+	$(DOXYGEN) .quantlib.doxy
+	rm .quantlib.doxy
 	touch .time-stamp
 
 tex-files: .time-stamp-tex
-	$(DOXYGEN) .quantlib.doxy
-	rm .quantlib.doxy
+.time-stamp-tex: .time-stamp
+	cp qlintro.tex latex
+	cp images/*.eps latex
+	cp images/*.pdf latex
 	mv latex/refman.tex .refman.tex
 	$(SED) -e "/Page Index/d" \
            -e "/input{pages}/d" \
@@ -179,13 +154,4 @@ tex-files: .time-stamp-tex
 	mv latex/todo.tex .todo.tex
 	$(SED) -e "s/section/chapter/" .todo.tex > latex/todo.tex
 	rm -f .todo.tex
-
-.time-stamp-tex: .time-stamp
-	$(SED) -e "s|GENERATE_LATEX         = NO|GENERATE_LATEX         = YES|" \
-           .quantlib.doxy > .quantlib.doxy2
-	rm .quantlib.doxy
-	mv .quantlib.doxy2 .quantlib.doxy
-	cp qlintro.tex latex
-	cp images/*.eps latex
-	cp images/*.pdf latex
 	touch .time-stamp-tex
