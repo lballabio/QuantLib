@@ -136,17 +136,20 @@ SectionEnd
 
 !ifndef LIGHT
 
-#Function .onInit
-#  SetOutPath $TEMP
-#  File /oname=spltmp.bmp "Docs\images\QL-largish.bmp"
-## this doesn't work
-##  ReadRegStr $0 HKEY_LOCAL_MACHINE SOFTWARE\NSIS ""
-##  File /oname=spltmp.exe "$0\splash.exe"
-#  File /oname=spltmp.exe "E:\program files\nsis\splash.exe"
-#  ExecWait '"$TEMP\spltmp.exe" 4000 $HWNDPARENT $TEMP\spltmp'
-#  Delete $TEMP\spltmp.exe
-#  Delete $TEMP\spltmp.bmp
-#FunctionEnd
+Function .onInit
+  SetOutPath $TEMP
+  File /oname=spltmp.bmp "Docs\images\QL-largish.bmp"
+# this doesn't work
+#  ReadRegStr $0 HKLM SOFTWARE\NSIS ""
+#  File /oname=spltmp.exe "$0\splash.exe"
+
+#the following line depends on NSIS being installed under E:\program files
+#sorry, but no better solution available yet
+  File /oname=spltmp.exe "E:\program files\nsis\splash.exe"
+  ExecWait '"$TEMP\spltmp.exe" 4000 $HWNDPARENT $TEMP\spltmp'
+  Delete $TEMP\spltmp.exe
+  Delete $TEMP\spltmp.bmp
+FunctionEnd
 
 #it doesn't work
 #Function .onInstSuccess
