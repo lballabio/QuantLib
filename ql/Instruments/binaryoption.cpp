@@ -111,8 +111,8 @@ namespace QuantLib {
         }
         
         void BinaryOption::setupArguments(Arguments* args) const {      
-            BinaryOptionArguments* arguments =
-                dynamic_cast<BinaryOptionArguments*>(args);
+            BinaryOption::arguments* arguments =
+                dynamic_cast<BinaryOption::arguments*>(args);
             QL_REQUIRE(arguments != 0,
                        "BinaryOption::setupArguments : "
                        "Arguments wrong type");

@@ -25,7 +25,7 @@
 #define quantlib_binary_option_h
 
 #include <ql/option.hpp>
-#include <ql/PricingEngines/vanillaengines.hpp>
+#include <ql/Instruments/vanillaoption.hpp>
 
 namespace QuantLib {
 
@@ -40,7 +40,9 @@ namespace QuantLib {
 
         class BinaryOption : public Option {
           public:            
-              BinaryOption(Binary::Type binaryType,
+            class arguments;
+            class results;
+            BinaryOption(Binary::Type binaryType,
                           double barrier,
                           double cashPayoff,
                           Option::Type type,
@@ -84,8 +86,8 @@ namespace QuantLib {
             
         };
 
-        //! arguments for barrier option calculation
-        class BinaryOptionArguments : public PricingEngines::VanillaOptionArguments {
+        //! arguments for binary option calculation
+        class BinaryOption::arguments : public VanillaOption::arguments {
           public:
               Binary::Type binaryType;
               double barrier;
@@ -93,17 +95,18 @@ namespace QuantLib {
               void validate() const;
         };
 
-        inline void BinaryOptionArguments::validate() const {
-            PricingEngines::VanillaOptionArguments::validate();
-            // when should enums be checked?
-            //QL_REQUIRE(binaryType != -1,
-            //           "BinaryOptionArguments::validate() : "
-            //           "null binaryType given");            
+        inline void BinaryOption::arguments::validate() const {            
+            #if defined(QL_PATCH_MICROSOFT)
+            VanillaOption::arguments copy = *this;
+            copy.validate();
+            #else
+            VanillaOption::arguments::validate();
+            #endif
         }
 
-        //! %results from barrier option calculation
-        class BinaryOptionResults 
-            : public virtual PricingEngines::VanillaOptionResults {};
+        //! %results from binary option calculation
+        class BinaryOption::results 
+            : public virtual VanillaOption::results {};
 
 
     }

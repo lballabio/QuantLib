@@ -52,17 +52,11 @@ namespace QuantLib {
             double vol = arguments_.volTS->blackVol(
                 arguments_.maturity, strike);
 
-            //DiscountFactor dividendDiscount =
-            //    arguments_.dividendTS->discount(arguments_.maturity);
             Rate dividendRate =
                 arguments_.dividendTS->zeroYield(arguments_.maturity);
 
-            //DiscountFactor riskFreeDiscount =
-            //    arguments_.riskFreeTS->discount(arguments_.maturity);
             Rate riskFreeRate =
                 arguments_.riskFreeTS->zeroYield(arguments_.maturity);
-            //double forwardPrice = arguments_.underlying *
-            //    dividendDiscount / riskFreeDiscount;
 
             double vol2 = vol*vol;
             double b_temp = riskFreeRate - dividendRate - 0.5*vol2;
@@ -107,9 +101,6 @@ namespace QuantLib {
                     +pow_minus*(root_tau*(mu+1)*mod_exp_zbar2/denom_rho
                         + ((1-((mu+1)/lambda))*log_H_S*f_minus_zbar / vol2)));
 
-                // use rates symmetry
-                //results_.dividendRho = -results_.rho - results_.value*maturity;
-
 
             // down option, or put
             } else {                
@@ -134,15 +125,12 @@ namespace QuantLib {
                         + ((1+((mu+1)/lambda))*log_H_S*f_z / vol2))
                     +pow_minus*(root_tau*(mu+1)*mod_exp_zbar2/denom_rho
                         + ((1-((mu+1)/lambda))*log_H_S*f_zbar / vol2))); 
-                    
-                // use rates symmetry
-                //results_.dividendRho = -results_.rho - results_.value*maturity;
 
             }
-            //results_.delta = f_(1.0);
+            
             //results_.gamma = f_(1.0);
             //results_.theta = f_(1.0);
-            //results_.rho = f_(1.0);
+            
             //results_.dividendRho = f_(1.0);
             //results_.vega = f_(1.0);
             
