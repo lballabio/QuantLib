@@ -1,7 +1,4 @@
 
-group together "standard" typedefs in FiniteDifferences and MonteCarlo
-replace static array members with arrays in anonymous namespaces
-    in Date and WesternCalendar
 config.h is installed?
 installer splash screen
 MonteCarloModel refactoring (remove old classes)
@@ -19,7 +16,6 @@ LIBRARY
     switch false/true antithetic variate
     timer class
     cash flow stream for IRR, duration
-    Actual/actual and 30/360 factory taking conventions
     Currency as class with methods returning related info
     QuantLib dynamic Win32 library (QuantLib.dll)
     develop C++ unit test suite based on
