@@ -1439,78 +1439,6 @@ SOURCE=.\ql\Pricers\discretegeometricaso.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\ql\Pricers\fdamericanoption.hpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\ql\Pricers\fdbermudanoption.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\ql\Pricers\fdbermudanoption.hpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\ql\Pricers\fdbsmoption.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\ql\Pricers\fdbsmoption.hpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\ql\Pricers\fddividendamericanoption.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\ql\Pricers\fddividendamericanoption.hpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\ql\Pricers\fddividendoption.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\ql\Pricers\fddividendoption.hpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\ql\Pricers\fddividendshoutoption.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\ql\Pricers\fddividendshoutoption.hpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\ql\Pricers\fdeuropean.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\ql\Pricers\fdeuropean.hpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\ql\Pricers\fdmultiperiodoption.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\ql\Pricers\fdmultiperiodoption.hpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\ql\Pricers\fdshoutoption.hpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\ql\Pricers\fdstepconditionoption.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\ql\Pricers\fdstepconditionoption.hpp
-# End Source File
-# Begin Source File
-
 SOURCE=.\ql\Pricers\mccliquetoption.cpp
 # End Source File
 # Begin Source File
@@ -2596,14 +2524,6 @@ SOURCE=.\ql\argsandresults.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\ql\basicdataformatters.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\ql\basicdataformatters.hpp
-# End Source File
-# Begin Source File
-
 SOURCE=.\ql\calendar.cpp
 # End Source File
 # Begin Source File
@@ -2693,10 +2613,6 @@ SOURCE=.\ql\exercise.cpp
 # Begin Source File
 
 SOURCE=.\ql\exercise.hpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\ql\grid.cpp
 # End Source File
 # Begin Source File
 
