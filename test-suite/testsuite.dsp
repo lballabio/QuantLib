@@ -180,6 +180,10 @@ SOURCE=.\marketelements.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=.\mersennetwister.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\old_pricers.cpp
 # End Source File
 # Begin Source File
@@ -265,6 +269,10 @@ SOURCE=.\integrals.hpp
 # Begin Source File
 
 SOURCE=.\marketelements.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\mersennetwister.hpp
 # End Source File
 # Begin Source File
 

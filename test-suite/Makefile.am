@@ -11,6 +11,7 @@ QL_TESTS = quantlibtestsuite.cpp \
            instruments.hpp instruments.cpp \
            integrals.hpp integrals.cpp \
            marketelements.hpp marketelements.cpp \
+           mersennetwister.hpp mersennetwister.cpp \
            operators.hpp operators.cpp \
            piecewiseflatforward.hpp piecewiseflatforward.cpp \
            riskstats.hpp riskstats.cpp \

@@ -40,15 +40,17 @@
 #include "swaption.hpp"
 #include "termstructures.hpp"
 #include "old_pricers.hpp"
+#include "mersennetwister.hpp"
 
 int main() {
     CppUnit::TextUi::TestRunner runner;
     QLTestListener qlListener;
     runner.eventManager().addListener(&qlListener);
 
+    runner.addTest(new MersenneTwisterTest());
+    runner.addTest(new DistributionTest);
     runner.addTest(OldPricerTest::suite());
     runner.addTest(CapFloorTest::suite());
-    runner.addTest(new DistributionTest);
     runner.addTest(SwaptionTest::suite());
 
     runner.addTest(new CalendarTest);
