@@ -67,7 +67,16 @@ namespace QuantLib {
                             bool antitheticVariate,
                             const Handle<path_pricer_type>& cvPathPricer 
                                 = Handle<path_pricer_type>(),
-                            result_type cvOptionValue = result_type());
+                            result_type cvOptionValue = result_type())
+            : pathGenerator_(pathGenerator), pathPricer_(pathPricer),
+              sampleAccumulator_(sampleAccumulator),
+              isAntitheticVariate_(antitheticVariate),
+              cvPathPricer_(cvPathPricer), cvOptionValue_(cvOptionValue) {
+                if (cvPathPricer_.isNull())
+                    isControlVariate_=false;
+                else
+                    isControlVariate_=true;
+            }
             void addSamples(Size samples);
             const stats_type& sampleAccumulator(void) const;
           private:
@@ -81,27 +90,6 @@ namespace QuantLib {
         };
 
         // inline definitions
-        template<class MC, class S>
-        inline MonteCarloModel<MC,S>::MonteCarloModel(
-            const Handle<MonteCarloModel<MC,S>::path_generator_type>& 
-                pathGenerator,
-            const Handle<MonteCarloModel<MC,S>::path_pricer_type>& 
-                pathPricer, 
-            const MonteCarloModel<MC,S>::stats_type& sampleAccumulator,
-            bool antitheticVariate,
-            const Handle<MonteCarloModel<MC,S>::path_pricer_type>& 
-                cvPathPricer, 
-            MonteCarloModel<MC,S>::result_type cvOptionValue)
-        : pathGenerator_(pathGenerator), pathPricer_(pathPricer),
-          sampleAccumulator_(sampleAccumulator),
-          isAntitheticVariate_(antitheticVariate),
-          cvPathPricer_(cvPathPricer), cvOptionValue_(cvOptionValue) {
-            if (cvPathPricer_.isNull())
-                isControlVariate_=false;
-            else
-                isControlVariate_=true;
-        }
-
         template<class MC, class S>
         inline void MonteCarloModel<MC,S>::addSamples(Size samples) {
             for(Size j = 1; j <= samples; j++) {
