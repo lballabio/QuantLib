@@ -81,8 +81,10 @@ namespace QuantLib {
 
         template <class I1, class I2, class M>
         double BicubicSplineInterpolation<I1,I2,M>::operator()(
-            const BicubicSplineInterpolation<I1,I2,M>::first_argument_type& x,
-            const BicubicSplineInterpolation<I1,I2,M>::second_argument_type& y,
+            const typename 
+            BicubicSplineInterpolation<I1,I2,M>::first_argument_type& x,
+            const typename 
+            BicubicSplineInterpolation<I1,I2,M>::second_argument_type& y,
             bool allowExtrapolation) const {
 
             std::vector<result_type> newColumn(rows_);

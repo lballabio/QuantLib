@@ -175,7 +175,7 @@ namespace QuantLib {
         template <class I1, class I2>
         typename CubicSpline<I1,I2>::result_type
         CubicSpline<I1,I2>::derivative(
-            const CubicSpline<I1,I2>::argument_type& x,
+            const typename CubicSpline<I1,I2>::argument_type& x,
             bool allowExtrapolation) const {
                 locate(x);
                 if (isOutOfRange_) {
@@ -205,7 +205,7 @@ namespace QuantLib {
         template <class I1, class I2>
         typename CubicSpline<I1,I2>::result_type
         CubicSpline<I1,I2>::secondDerivative(
-            const CubicSpline<I1,I2>::argument_type& x,
+            const typename CubicSpline<I1,I2>::argument_type& x,
             bool allowExtrapolation) const {
                 locate(x);
                 if (isOutOfRange_) {
