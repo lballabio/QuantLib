@@ -1,19 +1,25 @@
+
 # Configure paths for QUANTLIB
 # copied from the SDL library
 
-dnl AM_PATH_QUANTLIB([MINIMUM-VERSION, [ACTION-IF-FOUND [, ACTION-IF-NOT-FOUND]]])
-dnl Test for QUANTLIB, and define QUANTLIB_CXXFLAGS and QUANTLIB_LIBS
-dnl
-AC_DEFUN(AM_PATH_QUANTLIB,
-[dnl 
-dnl Get the cflags and libraries from the quantlib-config script
-dnl
-AC_ARG_WITH(quantlib-prefix,[  --with-quantlib-prefix=PFX   Prefix where QuantLib is installed (optional)],
-            quantlib_prefix="$withval", quantlib_prefix="")
-AC_ARG_WITH(quantlib-exec-prefix,[  --with-quantlib-exec-prefix=PFX Exec prefix where QuantLib is installed (optional)],
-            quantlib_exec_prefix="$withval", quantlib_exec_prefix="")
-AC_ARG_ENABLE(quantlibtest, [  --disable-quantlibtest       Do not try to compile and run a test QuantLib program],
-		    , enable_quantlibtest=yes)
+# AM_PATH_QUANTLIB([MINIMUM-VERSION,[ACTION-IF-FOUND,[ACTION-IF-NOT-FOUND]]])
+# ---------------------------------------------------------------------------
+# Check for QuantLib, and define QUANTLIB_CXXFLAGS and QUANTLIB_LIBS as 
+# the output of quantlib-config --cflags and quantlib-config --libs,
+# respectively
+AC_DEFUN([AM_PATH_QUANTLIB],
+[AC_ARG_ENABLE(quantlib-test,
+               AC_HELP_STRING([--disable-quantlib-test],
+                              [do not try to compile and run a test QuantLib program]),
+		       enable_quantlib_test=yes)
+ AC_ARG_WITH(quantlib-prefix,
+             AC_HELP_STRING([--with-quantlib-prefix=PREFIX],
+                            [prefix where QuantLib is installed]),
+             quantlib_prefix="$withval", quantlib_prefix="")
+ AC_ARG_WITH(quantlib-exec-prefix,
+             AC_HELP_STRING([--with-quantlib-exec-prefix=PREFIX],
+                            [exec prefix where QuantLib is installed]),
+             quantlib_exec_prefix="$withval", quantlib_exec_prefix="")
 
   if test x$quantlib_exec_prefix != x ; then
      quantlib_args="$quantlib_args --exec-prefix=$quantlib_exec_prefix"
@@ -30,7 +36,7 @@ AC_ARG_ENABLE(quantlibtest, [  --disable-quantlibtest       Do not try to compil
 
   AC_PATH_PROG(QUANTLIB_CONFIG, quantlib-config, no)
   min_quantlib_version=ifelse([$1], ,0.2.0,$1)
-  AC_MSG_CHECKING(QuantLib version ($min_quantlib_version or later required))
+  AC_MSG_CHECKING([QuantLib version ($min_quantlib_version or later required)])
   no_quantlib=""
   if test "$QUANTLIB_CONFIG" = "no" ; then
     no_quantlib=yes
@@ -49,16 +55,16 @@ AC_ARG_ENABLE(quantlibtest, [  --disable-quantlibtest       Do not try to compil
       ac_save_LIBS="$LIBS"
       CXXFLAGS="$CXXFLAGS $QUANTLIB_CXXFLAGS"
       LIBS="$LIBS $QUANTLIB_LIBS"
-dnl
-dnl Now check if the installed QuantLib is sufficiently new. (Also sanity
-dnl checks the results of quantlib-config to some extent
-dnl
+
+# Now check if the installed QuantLib is sufficiently new. (Also sanity
+# checks the results of quantlib-config to some extent
+
       rm -f conf.quantlibtest
       AC_TRY_RUN([
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include "ql/quantlib.hpp"
+@%:@include <stdio.h>
+@%:@include <stdlib.h>
+@%:@include <string.h>
+@%:@include <ql/quantlib.hpp>
 
 char*
 my_strdup (char *str)
@@ -111,7 +117,7 @@ int main (int argc, char *argv[])
     }
 }
 
-],, no_quantlib=yes,[echo $ac_n "cross compiling; assumed OK... $ac_c"])
+      ],, no_quantlib=yes,[echo $ac_n "cross compiling; assumed OK... $ac_c"])
        CXXFLAGS="$ac_save_CXXFLAGS"
        LIBS="$ac_save_LIBS"
      fi
@@ -134,8 +140,8 @@ int main (int argc, char *argv[])
           CXXFLAGS="$CXXFLAGS $QUANTLIB_CXXFLAGS"
           LIBS="$LIBS $QUANTLIB_LIBS"
           AC_TRY_LINK([
-#include <stdio.h>
-#include "ql/quantlib.hpp"
+@%:@include <stdio.h>
+@%:@include <ql/quantlib.hpp>
 
 int main(int argc, char *argv[])
 { return 0; }
