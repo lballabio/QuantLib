@@ -1474,6 +1474,10 @@ SOURCE=.\ql\PricingEngines\americanmcengines.hpp
 # End Source File
 # Begin Source File
 
+SOURCE=.\ql\PricingEngines\analyticbarrierengine.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\ql\PricingEngines\analyticeuropeanengine.cpp
 # End Source File
 # Begin Source File
