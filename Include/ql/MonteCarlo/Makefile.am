@@ -2,6 +2,10 @@
 # $Id$
 # $Source$
 # $Log$
+# Revision 1.6  2001/08/22 10:58:00  nando
+# removed useless gaussianarraygenerator.hpp
+# It was a clone of gaussianpathgenerator.hpp
+#
 # Revision 1.5  2001/08/07 17:33:03  nando
 # 1) StandardPathGenerator now is GaussianPathGenerator;
 # 2) StandardMultiPathGenerator now is GaussianMultiPathGenerator;
@@ -29,8 +33,9 @@ include_HEADERS = \
 	controlvariatedpathpricer.hpp \
 	europeanpathpricer.hpp \
 	everestpathpricer.hpp \
+	gaussianmultipathgenerator.hpp \
+	gaussianpathgenerator.hpp \
 	gaussianrandomgenerator.hpp \
-	gaussianarraygenerator.hpp \
 	generalmontecarlo.hpp \
 	geometricasianpathpricer.hpp \
 	getcovariance.hpp \
@@ -40,18 +45,17 @@ include_HEADERS = \
 	lecuyerrandomgenerator.hpp \
 	mcoptionsample.hpp \
 	mcpricer.hpp \
+	montecarlomodel.hpp \
 	multifactormontecarlooption.hpp \
 	multifactorpricer.hpp \
 	multipath.hpp \
 	multipathgenerator.hpp \
 	multipathpricer.hpp \
-	pagodapathpricer.hpp \
 	onefactormontecarlooption.hpp \
+	pagodapathpricer.hpp \
 	path.hpp \
-	montecarlomodel.hpp \
 	pathpricer.hpp \
 	randomarraygenerator.hpp \
-	gaussianmultipathgenerator.hpp \
-	gaussianpathgenerator.hpp \
 	uniformrandomgenerator.hpp
+
 

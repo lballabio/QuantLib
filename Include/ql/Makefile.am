@@ -2,6 +2,10 @@
 # $Id$
 # $Source$
 # $Log$
+# Revision 1.13  2001/08/22 10:59:21  nando
+# removed useless gaussianarraygenerator.hpp
+# It was a clone of gaussianpathgenerator.hpp
+#
 # Revision 1.12  2001/07/09 16:29:27  lballabio
 # Some documentation and market element
 #
@@ -55,6 +59,7 @@ include_HEADERS = \
 	swaptionvolsurface.hpp \
 	termstructure.hpp \
 	types.hpp
+
 
 install-data-hook:
 	$(SED) -e 's/HAVE_CONFIG_H/QL_HAVE_CONFIG_H/;/#ifndef quantlib_defines_h/{G;s/$$/#define QL_HAVE_CONFIG_H/;}' $(includedir)/qldefines.hpp > .qldefines.hpp

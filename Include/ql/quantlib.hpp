@@ -27,6 +27,10 @@
 
 // $Id$
 // $Log$
+// Revision 1.30  2001/08/22 10:59:21  nando
+// removed useless gaussianarraygenerator.hpp
+// It was a clone of gaussianpathgenerator.hpp
+//
 // Revision 1.29  2001/08/09 14:59:45  sigmud
 // header modification
 //
@@ -43,30 +47,6 @@
 // 5) added a few trailing underscore to private members
 // 6) style enforced here and there ....
 //
-// Revision 1.26  2001/08/07 11:25:53  sigmud
-// copyright header maintenance
-//
-// Revision 1.25  2001/08/06 15:43:34  nando
-// BSMOption now is SingleAssetOption
-// BSMEuropeanOption now is EuropeanOption
-//
-// Revision 1.24  2001/07/25 15:47:27  sigmud
-// Change from quantlib.sourceforge.net to quantlib.org
-//
-// Revision 1.23  2001/07/18 12:46:12  marmar
-// Added shortcut for QuantLib::CashFlows namespace
-//
-// Revision 1.22  2001/07/09 16:29:27  lballabio
-// Some documentation and market element
-//
-// Revision 1.21  2001/07/06 18:24:17  nando
-// slight modifications to avoid VisualStudio warnings
-//
-// Revision 1.20  2001/07/05 15:57:22  lballabio
-// Collected typedefs in a single file
-//
-// Revision 1.19  2001/07/03 13:19:38  lballabio
-// Added Knuth random generator after doubts were casted on the NR one
 
 #ifndef quantlib_h
 #define quantlib_h
@@ -159,12 +139,13 @@
 #include "ql/Math/matrix.hpp"
 #include "ql/Math/multivariateaccumulator.hpp"
 #include "ql/Math/normaldistribution.hpp"
+#include "ql/Math/riskmeasures.hpp"
 #include "ql/Math/segmentintegral.hpp"
 #include "ql/Math/statistics.hpp"
 #include "ql/Math/symmetriceigenvalues.hpp"
 #include "ql/Math/symmetricschurdecomposition.hpp"
-#include "ql/Math/riskmeasures.hpp"
 
+#include "ql/MonteCarlo/antitheticgaussianpathgenerator.hpp"
 #include "ql/MonteCarlo/avgpriceasianpathpricer.hpp"
 #include "ql/MonteCarlo/avgstrikeasianpathpricer.hpp"
 #include "ql/MonteCarlo/basketpathpricer.hpp"
@@ -173,7 +154,8 @@
 #include "ql/MonteCarlo/controlvariatedpathpricer.hpp"
 #include "ql/MonteCarlo/europeanpathpricer.hpp"
 #include "ql/MonteCarlo/everestpathpricer.hpp"
-#include "ql/MonteCarlo/gaussianarraygenerator.hpp"
+#include "ql/MonteCarlo/gaussianmultipathgenerator.hpp"
+#include "ql/MonteCarlo/gaussianpathgenerator.hpp"
 #include "ql/MonteCarlo/gaussianrandomgenerator.hpp"
 #include "ql/MonteCarlo/generalmontecarlo.hpp"
 #include "ql/MonteCarlo/geometricasianpathpricer.hpp"
@@ -184,6 +166,7 @@
 #include "ql/MonteCarlo/lecuyerrandomgenerator.hpp"
 #include "ql/MonteCarlo/mcoptionsample.hpp"
 #include "ql/MonteCarlo/mcpricer.hpp"
+#include "ql/MonteCarlo/montecarlomodel.hpp"
 #include "ql/MonteCarlo/multifactormontecarlooption.hpp"
 #include "ql/MonteCarlo/multifactorpricer.hpp"
 #include "ql/MonteCarlo/multipath.hpp"
@@ -192,11 +175,8 @@
 #include "ql/MonteCarlo/onefactormontecarlooption.hpp"
 #include "ql/MonteCarlo/pagodapathpricer.hpp"
 #include "ql/MonteCarlo/path.hpp"
-#include "ql/MonteCarlo/montecarlomodel.hpp"
 #include "ql/MonteCarlo/pathpricer.hpp"
 #include "ql/MonteCarlo/randomarraygenerator.hpp"
-#include "ql/MonteCarlo/gaussianmultipathgenerator.hpp"
-#include "ql/MonteCarlo/gaussianpathgenerator.hpp"
 #include "ql/MonteCarlo/uniformrandomgenerator.hpp"
 
 #include "ql/Patterns/observable.hpp"
@@ -208,14 +188,13 @@
 #include "ql/Pricers/barrieroption.hpp"
 #include "ql/Pricers/bermudanoption.hpp"
 #include "ql/Pricers/binaryoption.hpp"
-#include "ql/Pricers/europeanoption.hpp"
 #include "ql/Pricers/bsmnumericaloption.hpp"
-#include "ql/Pricers/singleassetoption.hpp"
 #include "ql/Pricers/cliquetoption.hpp"
 #include "ql/Pricers/dividendamericanoption.hpp"
 #include "ql/Pricers/dividendeuropeanoption.hpp"
 #include "ql/Pricers/dividendoption.hpp"
 #include "ql/Pricers/dividendshoutoption.hpp"
+#include "ql/Pricers/europeanoption.hpp"
 #include "ql/Pricers/everestoption.hpp"
 #include "ql/Pricers/finitedifferenceeuropean.hpp"
 #include "ql/Pricers/geometricasianoption.hpp"
@@ -226,6 +205,7 @@
 #include "ql/Pricers/plainbasketoption.hpp"
 #include "ql/Pricers/shoutcondition.hpp"
 #include "ql/Pricers/shoutoption.hpp"
+#include "ql/Pricers/singleassetoption.hpp"
 #include "ql/Pricers/stepconditionoption.hpp"
 
 #include "ql/Solvers1D/bisection.hpp"
@@ -247,6 +227,7 @@
 #include "ql/Utilities/iteratorcategories.hpp"
 #include "ql/Utilities/processingiterator.hpp"
 #include "ql/Utilities/steppingiterator.hpp"
+
 
 /*** shortcuts for the full namespaces ***/
 namespace QL    = QuantLib;

@@ -29,6 +29,10 @@
 
 // $Id$
 // $Log$
+// Revision 1.4  2001/08/22 10:57:10  nando
+// removed useless gaussianarraygenerator.hpp
+// It was a clone of gaussianpathgenerator.hpp
+//
 // Revision 1.3  2001/08/09 14:59:46  sigmud
 // header modification
 //
@@ -61,7 +65,7 @@
 #ifndef quantlib_montecarlo_gaussian_multi_path_generator_h
 #define quantlib_montecarlo_gaussian_multi_path_generator_h
 
-#include "ql/MonteCarlo/gaussianarraygenerator.hpp"
+#include "ql/MonteCarlo/gaussianpathgenerator.hpp"
 #include "ql/MonteCarlo/multipathgenerator.hpp"
 
 namespace QuantLib {
@@ -73,7 +77,7 @@ namespace QuantLib {
             generator. See the corresponding class for documentation.
         */
 
-        typedef MultiPathGenerator<GaussianArrayGenerator>
+        typedef MultiPathGenerator<GaussianPathGenerator>
                                               GaussianMultiPathGenerator;
     }
 }
