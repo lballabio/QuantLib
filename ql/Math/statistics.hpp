@@ -68,10 +68,14 @@ namespace QuantLib {
                 square root of the variance.
             */
             double standardDeviation() const;
-            /*! returns the square root of the downside variance, defined as
+            /*! returns the downside variance, defined as
                 \f[ \frac{N}{N-1} \times \frac{ \sum_{i=1}^{N}
                 \theta \times x_i^{2}}{ \sum_{i=1}^{N} w_i} \f],
                 where \f$ \theta \f$ = 0 if x > 0 and \f$ \theta \f$ =1 if x <0
+            */
+            double downsideVariance() const;
+            /*! returns the downside deviation, defined as the
+                square root of the downside variance.
             */
             double downsideDeviation() const;
             /*! returns the error estimate \f$ \epsilon \f$, defined as the
@@ -182,14 +186,18 @@ namespace QuantLib {
             return QL_SQRT(variance());
         }
 
-        inline double Statistics::downsideDeviation() const {
+        inline double Statistics::downsideVariance() const {
             QL_REQUIRE(sampleWeight_>0.0,
                        "Stat::variance() : sampleWeight_=0, unsufficient");
             QL_REQUIRE(sampleNumber_>1,
                        "Stat::variance() : sample number <=1, unsufficient");
 
-            return QL_SQRT(sampleNumber_/(sampleNumber_-1.0)*
-                           downsideQuadraticSum_ /sampleWeight_);
+            return sampleNumber_/(sampleNumber_-1.0)*
+                downsideQuadraticSum_ /sampleWeight_;
+        }
+
+        inline double Statistics::downsideDeviation() const {
+            return QL_SQRT(downsideVariance());
         }
 
         inline double Statistics::errorEstimate() const {
