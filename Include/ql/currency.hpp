@@ -30,6 +30,9 @@
 
 // $Source$
 // $Log$
+// Revision 1.6  2001/06/04 10:47:47  lballabio
+// Added a truckload of currencies
+//
 // Revision 1.5  2001/05/24 15:38:07  nando
 // smoothing #include xx.hpp and cutting old Log messages
 //
@@ -43,17 +46,38 @@ namespace QuantLib {
 
     //! Known currencies
     enum Currency {
+        AUD,    //!< Australian Dollar
+        BGL,    //!< Bulgarian Lev
+        CAD,    //!< Canadian Dollar
+        CHF,    //!< Swiss Franc
+        CYP,    //!< Cyprus Pound
+        CZK,    //!< Czech Koruna
+        DEM,    //!< German Mark
+        DKK,    //!< Danish Krone
+        EEK,    //!< Estonian Kroon
         EUR,    //!< Euro
         GBP,    //!< British Pound
-        USD,    //!< US Dollar
-        DEM,    //!< German Mark
+        GRD,    //!< Greek Drachma
+        HKD,    //!< Hong Kong Dollar
+        HUF,    //!< Hungarian Forint
+        ISK,    //!< Iceland Krona
         ITL,    //!< Italian Lira
-        CHF,    //!< Swiss Franc
-        AUD,    //!< Australian Dollar
-        CAD,    //!< Canadian Dollar
-        DKK,    //!< Danish Krona
         JPY,    //!< Japanese Yen
-        SEK     //!< Swedish Krona
+        KRW,    //!< South-Korean Won
+        LTL,    //!< Lithuanian Litas
+        LVL,    //!< Latvian Lats
+        MTL,    //!< Maltese Lira
+        NOK,    //!< Norwegian Kroner
+        NZD,    //!< New Zealand Dollar
+        PLZ,    //!< Polish Zloty
+        ROL,    //!< Romanian Leu
+        SEK,    //!< Swedish Krona
+        SGD,    //!< Singapore Dollar
+        SIT,    //!< Slovenian Tolar
+        SKK,    //!< Slovak Koruna
+        TRL,    //!< Turkish Lira
+        USD,    //!< US Dollar
+        ZAR     //!< South African Rand
     };
 
 }

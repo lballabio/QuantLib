@@ -30,6 +30,9 @@
 
 // $Source$
 // $Log$
+// Revision 1.21  2001/06/04 10:47:47  lballabio
+// Added a truckload of currencies
+//
 // Revision 1.20  2001/05/24 15:40:09  nando
 // smoothing #include xx.hpp and cutting old Log messages
 //
@@ -138,7 +141,28 @@ namespace QuantLib {
           case CAD: return "CAD";
           case DKK: return "DKK";
           case JPY: return "JPY";
+          case PLZ: return "PLZ";
           case SEK: return "SEK";
+          case CZK: return "CZK";
+          case EEK: return "EEK";
+          case ISK: return "ISK";
+          case NOK: return "NOK";
+          case SKK: return "SKK";
+          case HKD: return "HKD";
+          case NZD: return "NZD";
+          case SGD: return "SGD";
+          case GRD: return "GRD";
+          case HUF: return "HUF";
+          case LVL: return "LVL";
+          case ROL: return "ROL";
+          case BGL: return "BGL";
+          case CYP: return "CYP";
+          case LTL: return "LTL";
+          case MTL: return "MTL";
+          case TRL: return "TRL";
+          case ZAR: return "ZAR";
+          case SIT: return "SIT";
+          case KRW: return "KRW";
           default:  return "unknown";
         }
     }
