@@ -28,9 +28,9 @@ You can also use the mailing lists <quantlib-users@lists.sourceforge.net> and
 lists are for subscribers only, so please subscribe before posting.
 
 If you are interested in participating in QuantLib development, please
-send mail to Ferdinando Ametrano -- nando AT ametrano DOT net --
-and/or Luigi Ballabio -- luigi DOT ballabio AT gmail DOT com --
-describing your experience and interests.
+send a mail to the QuantLib developers' mailing list -- quantlib-dev
+AT lists DOT sourceforge DOT net -- describing your experience and
+interests.
 
 
 ============= ADDITIONAL INFORMATION =================

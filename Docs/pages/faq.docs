@@ -112,21 +112,20 @@
     I do?
     </strong>
 
-    Contact either project administrators (Nando
-    <nando at users.sourceforge.net> or Luigi
-    <luigi.ballabio at gmail.com>) and describe your experience
-    and interests. Before doing this, please read:
+    Contact the QuantLib group by posting to the developers' mailing
+    list (<quantlib-dev@lists.sourceforge.net>) and describe your
+    experience and interests. Before doing this, please read:
 
     - the generic introduction for new developers
       <http://quantlib.org/newdeveloper.shtml>
     - the project overview <http://quantlib.org/reference/overview.html>,
       with its to-do suggestions
     - the Developer FAQ
-      <http://www.quantlib.org/developerFAQ.shtml>
+      <http://quantlib.org/developerFAQ.shtml>
     - The Programming Style Guidelines
-      <http://www.quantlib.org/style.shtml>
+      <http://quantlib.org/style.shtml>
     - the detailed low-level to-do list
-      <http://www.quantlib.org/reference/todo.html>
+      <http://quantlib.org/reference/todo.html>
 
     Also, you might want to specify an area of the library you are
     particularly interested to, or which would be most useful to you.
