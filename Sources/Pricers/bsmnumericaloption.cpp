@@ -28,6 +28,9 @@
     $Source$
     $Name$
     $Log$
+    Revision 1.32  2001/03/12 13:11:08  marmar
+    Public method getPrices added
+
     Revision 1.31  2001/03/07 17:14:57  marmar
     Grid limits are fine tuned
 
@@ -149,7 +152,7 @@ namespace QuantLib {
             }
             return rho_;
         }
-        
+         
         void BSMNumericalOption::setGridLimits() const {
             // correction for small volatilities
             double volSqrtTime = volatility_*QL_SQRT(residualTime_);

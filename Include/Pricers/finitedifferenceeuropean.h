@@ -26,6 +26,9 @@
 
     $Source$
     $Log$
+    Revision 1.2  2001/03/12 13:10:45  marmar
+    Public method getPrices added
+
     Revision 1.1  2001/03/07 17:16:11  marmar
     Example of european option using finite differences
 
@@ -49,12 +52,19 @@ namespace QuantLib {
                  Time residualTime, double volatility, 
                  int timeSteps = 200, int gridPoints = 800);            
             double value() const;     
+           	Array getPrices() const;
             Handle<BSMOption> clone() const{    
                 return Handle<BSMOption>(new FiniteDifferenceEuropean(*this));
             }
           private:
             int timeSteps_;
+            mutable Array euroPrices_;
         };
+
+        inline Array  FiniteDifferenceEuropean::getPrices() const{
+            value();
+            return euroPrices_;
+        }
         
     }
 

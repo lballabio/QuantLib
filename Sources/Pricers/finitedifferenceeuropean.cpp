@@ -26,6 +26,9 @@
 
     $Source$
     $Log$
+    Revision 1.2  2001/03/12 13:12:00  marmar
+    Public method getPrices added
+
     Revision 1.1  2001/03/07 17:15:44  marmar
     Example of european option using finite differences
 
@@ -40,42 +43,43 @@ namespace QuantLib {
     namespace Pricers {
 
         FiniteDifferenceEuropean::FiniteDifferenceEuropean(
-            Type type, double underlying, double strike, 
-            Rate dividendYield, Rate riskFreeRate, Time residualTime, 
+            Type type, double underlying, double strike,
+            Rate dividendYield, Rate riskFreeRate, Time residualTime,
             double volatility, int timeSteps, int gridPoints)
-            : BSMNumericalOption(type, underlying, strike, dividendYield, 
-                                 riskFreeRate, residualTime, volatility, 
-                                 gridPoints), 
-            timeSteps_(timeSteps) {}
-            
+            : BSMNumericalOption(type, underlying, strike, dividendYield,
+                                 riskFreeRate, residualTime, volatility,
+                                 gridPoints),
+            timeSteps_(timeSteps), euroPrices_(gridPoints_){}
+
+
         double FiniteDifferenceEuropean::value() const {
             if (!hasBeenCalculated_) {
                 setGridLimits();
                 initializeGrid();
-                initializeInitialCondition();                
+                initializeInitialCondition();
                 initializeOperator();
 
-                FiniteDifferences::StandardFiniteDifferenceModel 
+                FiniteDifferences::StandardFiniteDifferenceModel
                                     model(finiteDifferenceOperator_);
 
-                Array euroPrices = initialPrices_;
+                euroPrices_ = initialPrices_;
 
-                model.rollback(euroPrices, residualTime_, 0, timeSteps_);
+                model.rollback(euroPrices_, residualTime_, 0, timeSteps_);
 
-                value_ = valueAtCenter(euroPrices);
-                delta_ = firstDerivativeAtCenter(euroPrices, grid_);
-                gamma_ = secondDerivativeAtCenter(euroPrices, grid_);
+                value_ = valueAtCenter(euroPrices_);
+                delta_ = firstDerivativeAtCenter(euroPrices_, grid_);
+                gamma_ = secondDerivativeAtCenter(euroPrices_, grid_);
 
                 double dt = residualTime_/timeSteps_;
-                model.rollback(euroPrices, 0.0, -dt, 1);
-                double valueMinus = valueAtCenter(euroPrices);
+                model.rollback(euroPrices_, 0.0, -dt, 1);
+                double valueMinus = valueAtCenter(euroPrices_);
                 theta_ = (value_ - valueMinus) / dt;
 
                 hasBeenCalculated_ = true;
             }
             return value_;
         }
-        
+
     }
 
 }
