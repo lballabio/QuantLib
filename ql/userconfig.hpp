@@ -18,10 +18,14 @@
 #ifndef quantlib_config_h
 #define quantlib_config_h
 
-/*************************************************************
+/***************************************************************
    User configuration section:
    modify the following definitions to suit your preferences.
- *************************************************************/
+
+   Do not modify this file if you are using a Linux/Unix system:
+   it will not be read by the compiler. The definitions below 
+   will be provided by running ./configure instead.
+****************************************************************/
 
 /* Define this if the Boost library is available. */
 // #define HAVE_BOOST 1
@@ -40,5 +44,6 @@
 /* Define this if payments occurring today should enter the NPV of an
    instrument. */
 // #define QL_TODAYS_PAYMENTS 1
+
 
 #endif
