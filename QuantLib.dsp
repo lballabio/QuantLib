@@ -899,7 +899,7 @@ SOURCE=.\ql\RandomNumbers\centrallimitgaussianrng.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\ql\RandomNumbers\inversecumulativegaussianrng.hpp
+SOURCE=.\ql\RandomNumbers\inversecumgaussianrng.hpp
 # End Source File
 # Begin Source File
 

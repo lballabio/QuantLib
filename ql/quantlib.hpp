@@ -206,7 +206,7 @@
 
 #include <ql/RandomNumbers/boxmullergaussianrng.hpp>
 #include <ql/RandomNumbers/centrallimitgaussianrng.hpp>
-#include <ql/RandomNumbers/inversecumulativegaussianrng.hpp>
+#include <ql/RandomNumbers/inversecumgaussianrng.hpp>
 #include <ql/RandomNumbers/knuthuniformrng.hpp>
 #include <ql/RandomNumbers/lecuyeruniformrng.hpp>
 #include <ql/RandomNumbers/randomarraygenerator.hpp>

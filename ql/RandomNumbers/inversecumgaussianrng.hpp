@@ -15,11 +15,11 @@
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
-/*! \file inversecumulativegaussianrng.hpp
-    \brief Inverse Cumulative Gaussian random-number generator
+/*! \file inversecumgaussianrng.hpp
+    \brief Inverse cumulative Gaussian random-number generator
 
     \fullpath
-    ql/RandomNumbers/%inversecumulativegaussianrng.hpp
+    ql/RandomNumbers/%inversecumgaussianrng.hpp
 */
 
 // $Id$
@@ -34,10 +34,10 @@ namespace QuantLib {
 
     namespace RandomNumbers {
 
-        //! Inverse Cumulative Gaussian random number generator
+        //! Inverse cumulative Gaussian random number generator
         /*! It uses a uniform deviate in (0, 1) as the source of cumulative
             normal distribution values.
-            Then an Inverse Cumulative Normal Distribution is used as it is
+            Then an inverse cumulative normal distribution is used as it is
             approximately a Gaussian deviate with average 0.0 and standard
             deviation 1.0.
 

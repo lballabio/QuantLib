@@ -7,7 +7,7 @@ includedir = $(prefix)/include/ql/RandomNumbers
 include_HEADERS = \
 	boxmullergaussianrng.hpp \
 	centrallimitgaussianrng.hpp \
-	inversecumulativegaussianrng.hpp \
+	inversecumgaussianrng.hpp \
 	knuthuniformrng.hpp \
 	lecuyeruniformrng.hpp \
 	randomarraygenerator.hpp \
