@@ -11,6 +11,7 @@ Contact ferdinando@ametrano.net if LICENSE.TXT was not distributed with this fil
 #include "qldefines.h"
 #include "bsmoption.h"
 #include "array.h"
+#include "handle.h"
 #include "blackscholesmerton.h"
 
 QL_BEGIN_NAMESPACE(QuantLib)
@@ -22,13 +23,26 @@ class BSMNumericalOption : public BSMOption {
 	BSMNumericalOption(Type type, double underlying, double strike, Rate underlyingGrowthRate, 
 	  Rate riskFreeRate, Time residualTime, double volatility, int gridPoints);
 	// accessors
-	virtual double value() const = 0;
+	double delta() const;
+	double gamma() const;
+	double theta() const;
+	double rho()   const;
+	double vega()  const;
+	void setVolatility(double volatility);
+	void setExerciseRate(Rate newExerciseRate);
+
   protected:
 	// methods
 	double valueAtCenter(const Array& a) const;
+	double firstDerivativeAtCenter(const Array& a, const Array& g) const;
+	double secondDerivativeAtCenter(const Array& a, const Array& g) const;
 	// input data
 	int theGridPoints;
 	// results
+	mutable bool rhoComputed, vegaComputed;
+	mutable double theDelta, theGamma, theTheta;
+	mutable double  theRho, theVega;
+
 	Array theGrid;
 	QL_ADD_NAMESPACE(Operators,BSMOperator) theOperator;
 	mutable Array thePrices;
@@ -41,6 +55,7 @@ class BSMNumericalOption : public BSMOption {
 	// temporaries
 	double sMin, sMax;
 	double theGridLogSpacing;
+	static double dVolMultiplier, dRMultiplier; 
 };
 
 
