@@ -131,6 +131,7 @@ CalendarHandle NewZurich()    { return CalendarHandle(new Zurich); }
             return Handle<Calendar>(new Zurich);
         else
             throw QuantLib::Error("Unknown calendar");
+        QL_DUMMY_RETURN(Handle<Calendar>())
     }
 %}
 

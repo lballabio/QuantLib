@@ -140,6 +140,7 @@ CurrencyHandle NewSEK()        { return CurrencyHandle(new SEK); }
         else if (s == "DKK") return Handle<Currency>(new DKK);
         else if (s == "SEK") return Handle<Currency>(new SEK);
         else                 throw QuantLib::Error("Unknown currency");
+        QL_DUMMY_RETURN(Handle<Currency>())
     }
 %}
 

@@ -124,6 +124,7 @@ DayCounterHandle NewThirty360Italian() {
             return Handle<DayCounter>(new Thirty360Italian);
         else
             throw QuantLib::Error("Unknown currency");
+        QL_DUMMY_RETURN(Handle<DayCounter>())
     }
 %}
 
