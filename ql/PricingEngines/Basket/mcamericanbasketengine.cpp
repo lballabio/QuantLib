@@ -498,8 +498,8 @@ namespace QuantLib {
         std::vector<double> normalizedAssetPrices(numAssets);
 
         // LOOP   
-        int timeLoop;
-        for (timeLoop = timeSteps_-2; timeLoop>=0; timeLoop--) {
+        long timeLoop;
+        for (timeLoop = long(timeSteps_)-2; timeLoop>=0; timeLoop--) {
             timeStep = timeLoop;
 
             // rollback all paths

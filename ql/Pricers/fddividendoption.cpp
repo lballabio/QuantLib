@@ -37,9 +37,9 @@ namespace QuantLib {
 
         QL_REQUIRE(dateNumber_ == dividends.size(),
                    "the number of dividends(" +
-                   IntegerFormatter::toString(dividends.size()) +
+                   IntegerFormatter::toString((unsigned long)(dividends.size())) +
                    ") is different from the number of dates(" +
-                   IntegerFormatter::toString(dateNumber_) +
+                   IntegerFormatter::toString((unsigned long)(dateNumber_)) +
                    ")");
 
         QL_REQUIRE(underlying > addElements(dividends),

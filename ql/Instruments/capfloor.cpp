@@ -110,35 +110,35 @@ namespace QuantLib {
     void CapFloor::arguments::validate() const {
         QL_REQUIRE(endTimes.size() == startTimes.size(),
                    "Invalid pricing arguments: size of startTimes (" +
-                   IntegerFormatter::toString(startTimes.size()) +
+                   IntegerFormatter::toString((unsigned long)(startTimes.size())) +
                    ") different from that of endTimes (" +
-                   IntegerFormatter::toString(endTimes.size()) +
+                   IntegerFormatter::toString((unsigned long)(endTimes.size())) +
                    ")");
         QL_REQUIRE(accrualTimes.size() == startTimes.size(),
                    "Invalid pricing arguments: size of startTimes (" +
-                   IntegerFormatter::toString(startTimes.size()) +
+                   IntegerFormatter::toString((unsigned long)(startTimes.size())) +
                    ") different from that of accrualTimes (" +
-                   IntegerFormatter::toString(accrualTimes.size()) +
+                   IntegerFormatter::toString((unsigned long)(accrualTimes.size())) +
                    ")");
         QL_REQUIRE(type == CapFloor::Floor || 
                    capRates.size() == startTimes.size(),
                    "Invalid pricing arguments: size of startTimes (" +
-                   IntegerFormatter::toString(startTimes.size()) +
+                   IntegerFormatter::toString((unsigned long)(startTimes.size())) +
                    ") different from that of capRates (" +
-                   IntegerFormatter::toString(capRates.size()) +
+                   IntegerFormatter::toString((unsigned long)(capRates.size())) +
                    ")");
         QL_REQUIRE(type == CapFloor::Cap ||
                    floorRates.size() == startTimes.size(),
                    "Invalid pricing arguments: size of startTimes (" +
-                   IntegerFormatter::toString(startTimes.size()) +
+                   IntegerFormatter::toString((unsigned long)(startTimes.size())) +
                    ") different from that of floorRates (" +
-                   IntegerFormatter::toString(floorRates.size()) +
+                   IntegerFormatter::toString((unsigned long)(floorRates.size())) +
                    ")");
         QL_REQUIRE(nominals.size() == startTimes.size(),
                    "Invalid pricing arguments: size of startTimes (" +
-                   IntegerFormatter::toString(startTimes.size()) +
+                   IntegerFormatter::toString((unsigned long)(startTimes.size())) +
                    ") different from that of nominals (" +
-                   IntegerFormatter::toString(nominals.size()) +
+                   IntegerFormatter::toString((unsigned long)(nominals.size())) +
                    ")");
     }
 

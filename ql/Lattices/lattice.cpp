@@ -77,11 +77,10 @@ namespace QuantLib {
 
         if (from > to) {
             Size iFrom = t_.findIndex(from);
-            Size iTo = t_.findIndex(to);
-            unsigned long counter, steps = (unsigned long)(iTo - iFrom);
-            Size i;
-            for (i=iFrom-1, counter=0; counter<steps; counter++, i--) {
-                Array newValues(i);
+            int iTo = t_.findIndex(to);
+
+            for (int i=iFrom-1; i>=iTo; i--) {
+                Array newValues(size(i));
                 stepback(i, asset->values(), newValues);
                 asset->time() = t_[i];
                 asset->values() = newValues;

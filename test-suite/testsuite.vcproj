@@ -103,6 +103,7 @@
 				BrowseInformationFile=".\build\Release/"
 				WarningLevel="3"
 				SuppressStartupBanner="TRUE"
+				Detect64BitPortabilityProblems="TRUE"
 				CompileAs="0"/>
 			<Tool
 				Name="VCCustomBuildTool"/>

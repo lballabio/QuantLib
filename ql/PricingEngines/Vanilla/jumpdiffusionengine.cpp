@@ -156,11 +156,11 @@ namespace QuantLib {
         }
         QL_ENSURE(i<maxIterations_,
             "JumpDiffusionEngine::calculate : "
-            + IntegerFormatter::toString(i) +
+            + IntegerFormatter::toString((unsigned long)(i)) +
             " iterations have been not enough to reach the required "
             + DoubleFormatter::toExponential(relativeAccuracy_) +
             " accuracy. The "
-            + IntegerFormatter::toOrdinal(i) +
+            + IntegerFormatter::toOrdinal((unsigned long)(i)) +
             " addendum was "
             + DoubleFormatter::toExponential(lastContribution) +
             " while the running sum was "

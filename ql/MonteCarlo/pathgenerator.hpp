@@ -99,9 +99,9 @@ namespace QuantLib {
         QL_REQUIRE(dimension_==timeGrid_.size()-1,
                    "PathGenerator::PathGenerator :"
                    "sequence generator dimensionality ("
-                   + IntegerFormatter::toString(dimension_) +
+                   + IntegerFormatter::toString((unsigned long)(dimension_)) +
                    ") != timeSteps ("
-                   + IntegerFormatter::toString(timeGrid_.size()-1) +
+                   + IntegerFormatter::toString((unsigned long)(timeGrid_.size()-1)) +
                    ")");
     }
 

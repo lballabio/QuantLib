@@ -35,7 +35,7 @@ namespace QuantLib {
                 Size numSteps = multiPath.pathSize();
                 QL_REQUIRE(underlying_.size() == numAssets,
                            "PagodaPathPricer: the multi-path must contain "
-                           + IntegerFormatter::toString(underlying_.size()) +
+                           + IntegerFormatter::toString((unsigned long)(underlying_.size())) +
                            " assets");
 
                 Size i,j;

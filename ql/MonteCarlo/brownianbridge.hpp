@@ -232,8 +232,8 @@ namespace QuantLib {
         QL_REQUIRE(dimension_==timeGrid_.size()-1,
                    "BrownianBridge::BrownianBridge : "
                    "GSG/timeGrid dimension mismatch"
-                   "(" + IntegerFormatter::toString(dimension_) +
-                   "/" + IntegerFormatter::toString(timeGrid_.size()-1) +
+                   "(" + IntegerFormatter::toString((unsigned long)(dimension_)) +
+                   "/" + IntegerFormatter::toString((unsigned long)(timeGrid_.size()-1)) +
                    ")");
 
         std::vector<double> variances(dimension_);
@@ -252,8 +252,8 @@ namespace QuantLib {
         QL_REQUIRE(v.size()==dimension_,
                    "BrownianBridge::initialize : "
                    "GSG/variance vector dimension mismatch"
-                   "(" + IntegerFormatter::toString(dimension_) +
-                   "/" + IntegerFormatter::toString(v.size()) +
+                   "(" + IntegerFormatter::toString((unsigned long)(dimension_)) +
+                   "/" + IntegerFormatter::toString((unsigned long)(v.size())) +
                    ")");
 
         std::vector<Size> map(dimension_, 0);

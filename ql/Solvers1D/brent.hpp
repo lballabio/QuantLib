@@ -108,7 +108,7 @@ namespace QuantLib {
             }
             QL_FAIL("Brent::solveImpl: "
                     " maximum number of function evaluations ("
-                    + IntegerFormatter::toString(maxEvaluations_) 
+                    + IntegerFormatter::toString((unsigned long)(maxEvaluations_)) 
                     + ") exceeded");
             QL_DUMMY_RETURN(0.0);
         }

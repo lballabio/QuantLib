@@ -140,7 +140,7 @@ namespace QuantLib {
     {
         QL_REQUIRE(dimensionality<=PPMT_MAX_DIM,
                    "SobolRsg::SobolRsg : dimensionality "
-                   + IntegerFormatter::toString(dimensionality) +
+                   + IntegerFormatter::toString((unsigned long)(dimensionality)) +
                    " exceeds the number of available "
                    "primitive polynomials modulo two (" + 
                    IntegerFormatter::toString(PPMT_MAX_DIM) +")");

@@ -83,11 +83,11 @@ namespace QuantLib {
 
         QL_REQUIRE(generator_.dimension() == numAssets_*(times.size()-1),
                    "(2) MultiPathGenerator's dimension (" +
-                   IntegerFormatter::toString(generator_.dimension()) + 
+                   IntegerFormatter::toString((unsigned long)(generator_.dimension())) + 
                    ") is not equal to (" +
-                   IntegerFormatter::toString(numAssets_) + 
+                   IntegerFormatter::toString((unsigned long)(numAssets_)) + 
                    " * " +
-                   IntegerFormatter::toString(times.size()-1) + 
+                   IntegerFormatter::toString((unsigned long)(times.size()-1)) + 
                    ") the number of assets times the number of time steps");
         QL_REQUIRE(sqrtCorrelation_.columns() == numAssets_,
                    "MultiPathGenerator correlation is not "

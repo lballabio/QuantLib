@@ -49,8 +49,8 @@ namespace QuantLib {
     Disposable<Array> TridiagonalOperator::applyTo(const Array& v) const {
         QL_REQUIRE(v.size()==size(),
                    "TridiagonalOperator::applyTo: vector of the wrong size (" +
-                   IntegerFormatter::toString(v.size()) + "instead of " +
-                   IntegerFormatter::toString(size()) + ")"  );
+                   IntegerFormatter::toString((unsigned long)(v.size())) + "instead of " +
+                   IntegerFormatter::toString((unsigned long)(size())) + ")"  );
         Array result(size());
 
         // matricial product
@@ -109,7 +109,7 @@ namespace QuantLib {
                        "TridiagonalOperator::SOR: tolerance ["
                        + DoubleFormatter::toString(tol) +
                        "] not reached in "
-                       + IntegerFormatter::toString(sorIteration) +
+                       + IntegerFormatter::toString((unsigned long)(sorIteration)) +
                        " iterations. The error still is "
                        + DoubleFormatter::toString(err));
             err=0.0;
