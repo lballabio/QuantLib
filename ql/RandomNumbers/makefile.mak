@@ -15,7 +15,7 @@ BCC_INCLUDE      = $(MAKEDIR)\..\include
 
 # Object files
 OBJS = \
-    PrimitivePolynomialsModuloTwoUpToDegree27.obj$(_D) \
+    primitivepolynomials.obj$(_D) \
     haltonrsg.obj$(_D) \
     knuthuniformrng.obj$(_D) \
     lecuyeruniformrng.obj$(_D) \

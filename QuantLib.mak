@@ -477,6 +477,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\knuthuniformrng.sbr" \
 	"$(INTDIR)\lecuyeruniformrng.sbr" \
 	"$(INTDIR)\mt19937uniformrng.sbr" \
+	"$(INTDIR)\primitivepolynomials.sbr" \
 	"$(INTDIR)\sobolrsg.sbr" \
 	"$(INTDIR)\caphelper.sbr" \
 	"$(INTDIR)\swaptionhelper.sbr" \
@@ -513,8 +514,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\option.sbr" \
 	"$(INTDIR)\scheduler.sbr" \
 	"$(INTDIR)\solver1d.sbr" \
-	"$(INTDIR)\voltermstructure.sbr" \
-	"$(INTDIR)\primitivepolynomials.sbr"
+	"$(INTDIR)\voltermstructure.sbr"
 
 "$(OUTDIR)\QuantLib.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -640,6 +640,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\knuthuniformrng.obj" \
 	"$(INTDIR)\lecuyeruniformrng.obj" \
 	"$(INTDIR)\mt19937uniformrng.obj" \
+	"$(INTDIR)\primitivepolynomials.obj" \
 	"$(INTDIR)\sobolrsg.obj" \
 	"$(INTDIR)\caphelper.obj" \
 	"$(INTDIR)\swaptionhelper.obj" \
@@ -676,8 +677,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\option.obj" \
 	"$(INTDIR)\scheduler.obj" \
 	"$(INTDIR)\solver1d.obj" \
-	"$(INTDIR)\voltermstructure.obj" \
-	"$(INTDIR)\primitivepolynomials.obj"
+	"$(INTDIR)\voltermstructure.obj"
 
 ".\lib\Win32\VisualStudio\QuantLib.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
     $(LIB32) @<<
@@ -1132,6 +1132,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\knuthuniformrng.sbr" \
 	"$(INTDIR)\lecuyeruniformrng.sbr" \
 	"$(INTDIR)\mt19937uniformrng.sbr" \
+	"$(INTDIR)\primitivepolynomials.sbr" \
 	"$(INTDIR)\sobolrsg.sbr" \
 	"$(INTDIR)\caphelper.sbr" \
 	"$(INTDIR)\swaptionhelper.sbr" \
@@ -1168,8 +1169,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\option.sbr" \
 	"$(INTDIR)\scheduler.sbr" \
 	"$(INTDIR)\solver1d.sbr" \
-	"$(INTDIR)\voltermstructure.sbr" \
-	"$(INTDIR)\primitivepolynomials.sbr"
+	"$(INTDIR)\voltermstructure.sbr"
 
 "$(OUTDIR)\QuantLib.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -1295,6 +1295,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\knuthuniformrng.obj" \
 	"$(INTDIR)\lecuyeruniformrng.obj" \
 	"$(INTDIR)\mt19937uniformrng.obj" \
+	"$(INTDIR)\primitivepolynomials.obj" \
 	"$(INTDIR)\sobolrsg.obj" \
 	"$(INTDIR)\caphelper.obj" \
 	"$(INTDIR)\swaptionhelper.obj" \
@@ -1331,8 +1332,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\option.obj" \
 	"$(INTDIR)\scheduler.obj" \
 	"$(INTDIR)\solver1d.obj" \
-	"$(INTDIR)\voltermstructure.obj" \
-	"$(INTDIR)\primitivepolynomials.obj"
+	"$(INTDIR)\voltermstructure.obj"
 
 ".\lib\Win32\VisualStudio\QuantLib_d.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
     $(LIB32) @<<
@@ -1786,6 +1786,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\knuthuniformrng.sbr" \
 	"$(INTDIR)\lecuyeruniformrng.sbr" \
 	"$(INTDIR)\mt19937uniformrng.sbr" \
+	"$(INTDIR)\primitivepolynomials.sbr" \
 	"$(INTDIR)\sobolrsg.sbr" \
 	"$(INTDIR)\caphelper.sbr" \
 	"$(INTDIR)\swaptionhelper.sbr" \
@@ -1822,8 +1823,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\option.sbr" \
 	"$(INTDIR)\scheduler.sbr" \
 	"$(INTDIR)\solver1d.sbr" \
-	"$(INTDIR)\voltermstructure.sbr" \
-	"$(INTDIR)\primitivepolynomials.sbr"
+	"$(INTDIR)\voltermstructure.sbr"
 
 "$(OUTDIR)\QuantLib.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -1949,6 +1949,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\knuthuniformrng.obj" \
 	"$(INTDIR)\lecuyeruniformrng.obj" \
 	"$(INTDIR)\mt19937uniformrng.obj" \
+	"$(INTDIR)\primitivepolynomials.obj" \
 	"$(INTDIR)\sobolrsg.obj" \
 	"$(INTDIR)\caphelper.obj" \
 	"$(INTDIR)\swaptionhelper.obj" \
@@ -1985,8 +1986,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\option.obj" \
 	"$(INTDIR)\scheduler.obj" \
 	"$(INTDIR)\solver1d.obj" \
-	"$(INTDIR)\voltermstructure.obj" \
-	"$(INTDIR)\primitivepolynomials.obj"
+	"$(INTDIR)\voltermstructure.obj"
 
 ".\lib\Win32\VisualStudio\QuantLib.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
     $(LIB32) @<<
@@ -2441,6 +2441,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\knuthuniformrng.sbr" \
 	"$(INTDIR)\lecuyeruniformrng.sbr" \
 	"$(INTDIR)\mt19937uniformrng.sbr" \
+	"$(INTDIR)\primitivepolynomials.sbr" \
 	"$(INTDIR)\sobolrsg.sbr" \
 	"$(INTDIR)\caphelper.sbr" \
 	"$(INTDIR)\swaptionhelper.sbr" \
@@ -2477,8 +2478,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\option.sbr" \
 	"$(INTDIR)\scheduler.sbr" \
 	"$(INTDIR)\solver1d.sbr" \
-	"$(INTDIR)\voltermstructure.sbr" \
-	"$(INTDIR)\primitivepolynomials.sbr"
+	"$(INTDIR)\voltermstructure.sbr"
 
 "$(OUTDIR)\QuantLib.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -2604,6 +2604,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\knuthuniformrng.obj" \
 	"$(INTDIR)\lecuyeruniformrng.obj" \
 	"$(INTDIR)\mt19937uniformrng.obj" \
+	"$(INTDIR)\primitivepolynomials.obj" \
 	"$(INTDIR)\sobolrsg.obj" \
 	"$(INTDIR)\caphelper.obj" \
 	"$(INTDIR)\swaptionhelper.obj" \
@@ -2640,8 +2641,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\option.obj" \
 	"$(INTDIR)\scheduler.obj" \
 	"$(INTDIR)\solver1d.obj" \
-	"$(INTDIR)\voltermstructure.obj" \
-	"$(INTDIR)\primitivepolynomials.obj"
+	"$(INTDIR)\voltermstructure.obj"
 
 ".\lib\Win32\VisualStudio\QuantLib_d.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
     $(LIB32) @<<

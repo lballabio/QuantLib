@@ -767,6 +767,10 @@ SOURCE=.\ql\Math\segmentintegral.hpp
 # End Source File
 # Begin Source File
 
+SOURCE=.\ql\Math\sequencestatistics.hpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\ql\Math\statistics.cpp
 # End Source File
 # Begin Source File
