@@ -24,10 +24,8 @@
 QL_INCLUDE_DIR      = "$(QL_DIR)"
 QL_LIB_DIR          = "$(QL_DIR)\lib"
 
-#Warning W8057 : Parameter 'argc' is never used in function main(int,char * *)
-
 # Options
-CC_OPTS = -vi- -w-8057 -I$(QL_INCLUDE_DIR)
+CC_OPTS = -vi- -I$(QL_INCLUDE_DIR)
 
 !ifdef _DEBUG
 CC_OPTS = $(CC_OPTS) -v -D_DEBUG
