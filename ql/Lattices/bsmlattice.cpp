@@ -45,34 +45,33 @@ namespace QuantLib {
         }
 
 
-        CoxRossRubinstein::CoxRossRubinstein(
-            double volatility, Rate riskFreeRate, double underlying,
-            Time end, Size steps)
-        : BinomialTree(steps + 1), x0_(underlying), sigma_(volatility), 
-          mu_(riskFreeRate - 0.5*sigma_*sigma_), dt_(end/steps) {}
-
-        double CoxRossRubinstein::underlying(Size i, Size index) const {
-            int j = (2*index - i);
-            return x0_*QL_EXP(i*mu_*dt_ + j*sigma_*QL_SQRT(dt_));
-        }
-
-        double CoxRossRubinstein::probability(
-            Size i, Size index, Size branch) const {
-            return 0.5;
-        }
-
-
         JarrowRudd::JarrowRudd(double volatility, Rate riskFreeRate,
-                               double underlying, Time end, Size steps)
+            double underlying, Time end, Size steps)
         : BinomialTree(steps + 1), x0_(underlying), sigma_(volatility), 
           mu_(riskFreeRate - 0.5*sigma_*sigma_), dt_(end/steps) {}
 
         double JarrowRudd::underlying(Size i, Size index) const {
             int j = (2*index - i);
+            return x0_*QL_EXP(i*mu_*dt_ + j*sigma_*QL_SQRT(dt_));
+        }
+
+        double JarrowRudd::probability(
+            Size i, Size index, Size branch) const {
+            return 0.5;
+        }
+
+
+        CoxRossRubinstein::CoxRossRubinstein(double volatility,
+            Rate riskFreeRate, double underlying, Time end, Size steps)
+        : BinomialTree(steps + 1), x0_(underlying), sigma_(volatility), 
+          mu_(riskFreeRate - 0.5*sigma_*sigma_), dt_(end/steps) {}
+
+        double CoxRossRubinstein::underlying(Size i, Size index) const {
+            int j = (2*index - i);
             return x0_*QL_EXP(j*sigma_*QL_SQRT(dt_));
         }
 
-        double JarrowRudd::probability(Size i, Size index, Size branch) const {
+        double CoxRossRubinstein::probability(Size i, Size index, Size branch) const {
             if (branch == 1)
                 return 0.5 + 0.5*(mu_/sigma_)*QL_SQRT(dt_);
             else
