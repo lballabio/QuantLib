@@ -49,8 +49,6 @@ namespace QuantLib {
         double strikeSensitivity() const;
     private:
         double forward_, discount_, variance_;
-        Handle<StrikedTypePayoff> payoff_;
-
         double stdDev_, strike_;
         double D1_, D2_, alpha_, beta_, DalphaDd1_, DbetaDd2_;
         double cum_d2_;
@@ -60,8 +58,7 @@ namespace QuantLib {
 
     inline BlackFormula::BlackFormula(double forward, double discount,
         double variance, const Handle<StrikedTypePayoff>& payoff)
-    : forward_(forward), discount_(discount), variance_(variance),
-      payoff_(payoff) {
+    : forward_(forward), discount_(discount), variance_(variance) {
 
         QL_REQUIRE(forward>0.0,
             "BlackFormula::BlackFormula : "
@@ -87,18 +84,15 @@ namespace QuantLib {
                 cum_d1 = 1.0;
                 cum_d2_= 1.0;
             } else {
-                CumulativeNormalDistribution f;
-                D1_ = (QL_LOG(forward/strike_) +
-                             0.5 * variance) / stdDev_;
+                D1_ = (QL_LOG(forward/strike_) + 0.5*variance) / stdDev_;
                 D2_ = D1_-stdDev_;
+                CumulativeNormalDistribution f;
                 cum_d1 = f(D1_);
                 cum_d2_= f(D2_);
                 n_d1 = f.derivative(D1_);
                 n_d2 = f.derivative(D2_);
             }
         } else {
-            n_d1 = 0.0;
-            n_d2 = 0.0;
             if (forward>strike_) {
                 cum_d1 = 1.0;
                 cum_d2_= 1.0;
@@ -106,6 +100,8 @@ namespace QuantLib {
                 cum_d1 = 0.0;
                 cum_d2_= 0.0;
             }
+            n_d1 = 0.0;
+            n_d2 = 0.0;
         }
 
         X_ = strike_;
@@ -144,10 +140,10 @@ namespace QuantLib {
         // Binary Cash-Or-Nothing payoff?
         Handle<CashOrNothingPayoff> coo;
         #if defined(HAVE_BOOST)
-        coo = boost::dynamic_pointer_cast<CashOrNothingPayoff>(payoff_);
+        coo = boost::dynamic_pointer_cast<CashOrNothingPayoff>(payoff);
         #else
         try {
-            coo = payoff_;
+            coo = payoff;
         } catch (...) {}
         #endif
         if (!IsNull(coo)) {
@@ -178,10 +174,10 @@ namespace QuantLib {
         // Binary Asset-Or-Nothing payoff?
         Handle<AssetOrNothingPayoff> aoo;
         #if defined(HAVE_BOOST)
-        aoo = boost::dynamic_pointer_cast<AssetOrNothingPayoff>(payoff_);
+        aoo = boost::dynamic_pointer_cast<AssetOrNothingPayoff>(payoff);
         #else
         try {
-            aoo = payoff_;
+            aoo = payoff;
         } catch (...) {}
         #endif
         if (!IsNull(aoo)) {
@@ -210,10 +206,10 @@ namespace QuantLib {
         // Binary Gap payoff?
         Handle<GapPayoff> gap;
         #if defined(HAVE_BOOST)
-        gap = boost::dynamic_pointer_cast<GapPayoff>(payoff_);
+        gap = boost::dynamic_pointer_cast<GapPayoff>(payoff);
         #else
         try {
-            gap = payoff_;
+            gap = payoff;
         } catch (...) {}
         #endif
         if (!IsNull(gap)) {
@@ -225,10 +221,10 @@ namespace QuantLib {
         // Binary Super-Share payoff?
         Handle<SuperSharePayoff> ss;
         #if defined(HAVE_BOOST)
-        ss = boost::dynamic_pointer_cast<SuperSharePayoff>(payoff_);
+        ss = boost::dynamic_pointer_cast<SuperSharePayoff>(payoff);
         #else
         try {
-            ss = payoff_;
+            ss = payoff;
         } catch (...) {}
         #endif
         if (!IsNull(ss)) {
@@ -320,19 +316,26 @@ namespace QuantLib {
 
     inline double BlackFormula::theta(double spot, double maturity) const {
 
-        QL_REQUIRE(maturity>=0.0,
-            "BlackFormula::theta : "
-            "negative maturity not allowed");
+        if (maturity>0.0) {
+//            vol = stdDev_ / QL_SQRT(maturity);
+//            rate = -QL_LOG(discount_)/maturity;
+//            dividendRate = -QL_LOG(forward_ / spot * discount_)/maturity;
+//            return rate*value() - (rate-dividendRate)*spot*delta(spot)
+//                - 0.5*vol*vol*spot*spot*gamma(spot);
+            return -( QL_LOG(discount_)            * value()
+                     +QL_LOG(forward_/spot) * spot * delta(spot)
+                     +0.5*variance_ * spot  * spot * gamma(spot))/maturity;
+        } else if (maturity==0.0) {
+            // should be r*value(), where r is the short rate
+            // but the term structure is not available here
+            throw Error("BlackFormula::theta : "
+                "null maturity not handled");
+        } else {
+            throw Error("BlackFormula::theta : "
+                "negative maturity not allowed");
+        }
 
-        double rate = -QL_LOG(discount_)/maturity;
-        double dividendRate = -QL_LOG(forward_ / spot * discount_)/maturity;
 
-        double vol;
-        if (stdDev_>0.0) vol = stdDev_ / QL_SQRT(maturity);
-        else             vol = 0.0;
-
-        return rate*value() - (rate-dividendRate)*spot*delta(spot)
-            - 0.5*vol*vol*spot*spot*gamma(spot);
     }
 
     inline double BlackFormula::thetaPerDay(double spot, double maturity) const {
