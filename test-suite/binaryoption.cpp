@@ -75,19 +75,6 @@ namespace {
             return 1.0e+10;
     }
 
-    std::string typeToString(Option::Type type) {
-        switch (type) {
-          case Option::Call:
-            return "call";
-          case Option::Put:
-            return "put";
-          case Option::Straddle:
-            return "straddle";
-          default:
-            throw Error("unknown option type");
-        }
-    }
-
 }
 
 void BinaryOptionTest::testValues() {
@@ -390,7 +377,8 @@ void BinaryOptionTest::testSelfConsistency() {
                               CPPUNIT_FAIL(
                                   "Option details: \n"
                                   "    type:           " +
-                                  typeToString(type) + "\n"
+                                  OptionTypeFormatter::toString(type)
+                                  + "\n"
                                   "    underlying:     " +
                                   DoubleFormatter::toString(u) + "\n"
                                   "    strike:         " +
@@ -530,7 +518,7 @@ void BinaryOptionTest::testEngineConsistency() {
                       CPPUNIT_FAIL(
                           "Option details: \n"
                           "    type:           " +
-                          typeToString(type) + "\n"
+                          OptionTypeFormatter::toString(type) + "\n"
                           "    underlying:     " +
                           DoubleFormatter::toString(u) + "\n"
                           "    barrier:        " +

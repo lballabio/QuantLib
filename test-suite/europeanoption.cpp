@@ -144,19 +144,6 @@ namespace {
                                  Actual365()));
     }
 
-    std::string typeToString(Option::Type type) {
-        switch (type) {
-          case Option::Call:
-            return "call";
-          case Option::Put:
-            return "put";
-          case Option::Straddle:
-            return "straddle";
-          default:
-            throw Error("unknown option type");
-        }
-    }
-
     std::string engineTypeToString(EngineType type) {
         switch (type) {
           case Analytic:
@@ -310,7 +297,8 @@ void EuropeanOptionTest::testGreeks() {
                                  tol = tolerance[greek];
                           if (relativeError(calcl,expct,u) > tol) {
                               CPPUNIT_FAIL(
-                                  typeToString(types[i]) + " option :\n"
+                                  OptionTypeFormatter::toString(types[i])
+                                  + " option :\n"
                                   "    underlying value: "
                                   + DoubleFormatter::toString(u) + "\n"
                                   "    strike:           "
@@ -397,7 +385,8 @@ void EuropeanOptionTest::testImpliedVol() {
                                                               maxEvaluations);
                       } catch (std::exception& e) {
                           CPPUNIT_FAIL(
-                              typeToString(types[i]) + " option :\n"
+                              OptionTypeFormatter::toString(types[i])
+                              + " option :\n"
                               "    underlying value: "
                               + DoubleFormatter::toString(u) + "\n"
                               "    strike:           "
@@ -418,7 +407,8 @@ void EuropeanOptionTest::testImpliedVol() {
                           double value2 = option->NPV();
                           if (relativeError(value,value2,u) > tolerance) {
                               CPPUNIT_FAIL(
-                                  typeToString(types[i]) + " option :\n"
+                                  OptionTypeFormatter::toString(types[i])
+                                  + " option :\n"
                                   "    underlying value: "
                                   + DoubleFormatter::toString(u) + "\n"
                                   "    strike:           "
@@ -515,7 +505,8 @@ namespace {
                           double value = options[engines[ii]]->NPV();
                           if (relativeError(value,refValue,u) > tolerance) {
                               CPPUNIT_FAIL(
-                                  typeToString(types[i]) + " option :\n"
+                                  OptionTypeFormatter::toString(types[i])
+                                  + " option :\n"
                                   "    underlying value: "
                                   + DoubleFormatter::toString(u) + "\n"
                                   "    strike:           "

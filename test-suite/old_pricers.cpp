@@ -50,19 +50,6 @@ namespace {
             return 1.0e+10;
     }
 
-    std::string typeToString(Option::Type type) {
-        switch (type) {
-          case Option::Call:
-            return "call";
-          case Option::Put:
-            return "put";
-          case Option::Straddle:
-            return "straddle";
-          default:
-            throw Error("unknown option type");
-        }
-    }
-
 }
 
 CppUnit::Test* OldPricerTest::suite() {
@@ -201,7 +188,7 @@ void OldPricerTest::testDividendEuropeanPricer() {
                           CPPUNIT_FAIL(
                               "Option details: \n"
                               "    type:           " +
-                              typeToString(type) + "\n"
+                              OptionTypeFormatter::toString(type) + "\n"
                               "    underlying:     " +
                               DoubleFormatter::toString(u) + "\n"
                               "    strike:         " +
@@ -266,7 +253,7 @@ void OldPricerTest::testFdEuropeanPricer() {
                 CPPUNIT_FAIL(
                     "Option details: \n"
                     "    type:           " +
-                    typeToString(types[j]) + "\n"
+                    OptionTypeFormatter::toString(types[j]) + "\n"
                     "    underlying:     " +
                     DoubleFormatter::toString(under) + "\n"
                     "    strike:         " +
@@ -348,7 +335,8 @@ namespace {
                     CPPUNIT_FAIL(
                         "Option details: \n"
                         "    type:           " +
-                        name + " " + typeToString(type) + "\n"
+                        name + " " + OptionTypeFormatter::toString(type)
+                        + "\n"
                         "    underlying:     " +
                         DoubleFormatter::toString(u) + "\n"
                         "    strike:         " +
