@@ -27,10 +27,45 @@
 #include <ql/PricingEngines/Barrier/mcbarrierengine.hpp>
 #include <ql/TermStructures/flatforward.hpp>
 #include <ql/Volatilities/blackconstantvol.hpp>
-#include <cppunit/TestSuite.h>
-#include <cppunit/TestCaller.h>
 
 using namespace QuantLib;
+using namespace boost::unit_test_framework;
+
+#define REPORT_FAILURE(greekName, barrierType, barrier, rebate, payoff, \
+                       exercise, s, q, r, today, v, expected, calculated, \
+                       error, tolerance) \
+    BOOST_FAIL(barrierTypeToString(barrierType) + " " + \
+               exerciseTypeToString(exercise) + " " \
+               + OptionTypeFormatter::toString(payoff->optionType()) + \
+               " option with " \
+               + payoffTypeToString(payoff) + " payoff:\n" \
+               "    underlying value: " \
+               + DoubleFormatter::toString(s) + "\n" \
+               "    strike:           " \
+               + DoubleFormatter::toString(payoff->strike()) +"\n" \
+               "    barrier:          " \
+               + DoubleFormatter::toString(barrier) +"\n" \
+               "    rebate:           " \
+               + DoubleFormatter::toString(rebate) +"\n" \
+               "    dividend yield:   " \
+               + DoubleFormatter::toString(q) + "\n" \
+               "    risk-free rate:   " \
+               + DoubleFormatter::toString(r) + "\n" \
+               "    reference date:   " \
+               + DateFormatter::toString(today) + "\n" \
+               "    maturity:         " \
+               + DateFormatter::toString(exercise->lastDate()) + "\n" \
+               "    volatility:       " \
+               + DoubleFormatter::toString(v) + "\n\n" \
+               "    expected   " + greekName + ": " \
+               + DoubleFormatter::toString(expected) + "\n" \
+               "    calculated " + greekName + ": " \
+               + DoubleFormatter::toString(calculated) + "\n" \
+               "    error:            " \
+               + DoubleFormatter::toString(error) + "\n" \
+               + (tolerance==Null<double>() ? std::string("") : \
+                  "    tolerance:        " \
+                  + DoubleFormatter::toString(tolerance)));
 
 namespace {
 
@@ -48,61 +83,6 @@ namespace {
         default:
             QL_FAIL("exerciseTypeToString : unknown exercise type");
         }
-    }
-
-    void barrierOptionTestFailed(
-                           std::string greekName,
-                           Barrier::Type barrierType,
-                           double barrier,
-                           double rebate,
-                           const boost::shared_ptr<StrikedTypePayoff>& payoff,
-                           const boost::shared_ptr<Exercise>& exercise,
-                           double s,
-                           double q,
-                           double r,
-                           Date today,
-                           DayCounter dc,
-                           double v,
-                           double expected,
-                           double calculated,
-                           double error,
-                           double tolerance = Null<double>()) {
-
-        Time t = dc.yearFraction(today, exercise->lastDate());
-
-        CPPUNIT_FAIL(barrierTypeToString(barrierType) + " " +
-            exerciseTypeToString(exercise) + " "
-            + OptionTypeFormatter::toString(payoff->optionType()) +
-            " option with "
-            + payoffTypeToString(payoff) + " payoff:\n"
-            "    underlying value: "
-            + DoubleFormatter::toString(s) + "\n"
-            "    strike:           "
-            + DoubleFormatter::toString(payoff->strike()) +"\n"
-            "    barrier:          "
-            + DoubleFormatter::toString(barrier) +"\n"
-            "    rebate:           "
-            + DoubleFormatter::toString(rebate) +"\n"
-            "    dividend yield:   "
-            + DoubleFormatter::toString(q) + "\n"
-            "    risk-free rate:   "
-            + DoubleFormatter::toString(r) + "\n"
-            "    reference date:   "
-            + DateFormatter::toString(today) + "\n"
-            "    maturity:         "
-            + DateFormatter::toString(exercise->lastDate()) + "\n"
-            "    time to expiry:   "
-            + DoubleFormatter::toString(t) + "\n"
-            "    volatility:       "
-            + DoubleFormatter::toString(v) + "\n\n"
-            "    expected   " + greekName + ": "
-            + DoubleFormatter::toString(expected) + "\n"
-            "    calculated " + greekName + ": "
-            + DoubleFormatter::toString(calculated) + "\n"
-            "    error:            "
-            + DoubleFormatter::toString(error) + "\n"
-            + (tolerance==Null<double>() ? std::string("") :
-            "    tolerance:        " + DoubleFormatter::toString(tolerance)));
     }
 
     struct BarrierOptionData {
@@ -132,6 +112,8 @@ namespace {
 }
 
 void BarrierOptionTest::testHaugValues() {
+
+    BOOST_MESSAGE("Testing barrier options against Haug's values...");
 
     NewBarrierOptionData values[] = {
         /* The data below are from
@@ -276,28 +258,18 @@ void BarrierOptionTest::testHaugValues() {
         double expected = values[i].result;
         double error = QL_FABS(calculated-expected);
         if (error>values[i].tol) {
-            barrierOptionTestFailed("value",
-                                    values[i].barrierType,
-                                    values[i].barrier,
-                                    values[i].rebate,
-                                    payoff,
-                                    exercise,
-                                    values[i].s,
-                                    values[i].q,
-                                    values[i].r,
-                                    today,
-                                    dc,
-                                    values[i].v,
-                                    expected,
-                                    calculated,
-                                    error,
-                                    values[i].tol);
+            REPORT_FAILURE("value", values[i].barrierType, values[i].barrier,
+                           values[i].rebate, payoff, exercise, values[i].s,
+                           values[i].q, values[i].r, today, values[i].v,
+                           expected, calculated, error, values[i].tol);
         }
 
     }
 }
 
 void BarrierOptionTest::testBabsiriValues() {
+
+    BOOST_MESSAGE("Testing barrier options against Babsiri's values...");
 
     double maxErrorAllowed = 1.0e-5;
     double maxMCErrorAllowed = 1.0e-1;
@@ -385,7 +357,7 @@ void BarrierOptionTest::testBabsiriValues() {
         double calculated = barrierCallOption.NPV();
         double expected = values[i].callValue;
         if (QL_FABS(calculated-expected) > maxErrorAllowed) {
-            CPPUNIT_FAIL(
+            BOOST_FAIL(
                 "Data at index " + IntegerFormatter::toString(i) + ", "
                 "Barrier call option:\n"
                     "    value:    " +
@@ -397,7 +369,7 @@ void BarrierOptionTest::testBabsiriValues() {
         barrierCallOption.setPricingEngine(mcEngine);
         calculated = barrierCallOption.NPV();
         if (QL_FABS(calculated-expected) > maxMCErrorAllowed) {
-            CPPUNIT_FAIL(
+            BOOST_FAIL(
                 "Data at index " + IntegerFormatter::toString(i) + ", "
                 "Barrier call option MC:\n"
                     "    value:    " +
@@ -410,6 +382,8 @@ void BarrierOptionTest::testBabsiriValues() {
 }
 
 void BarrierOptionTest::testBeagleholeValues() {
+
+    BOOST_MESSAGE("Testing barrier options against Beaglehole's values...");
 
     double maxErrorAllowed = 1.0e-3;
     double maxMCErrorAllowed = 1.5e-1;
@@ -489,7 +463,7 @@ void BarrierOptionTest::testBeagleholeValues() {
         double calculated = barrierCallOption.NPV();
         double expected = values[i].callValue;
         if (QL_FABS(calculated-expected) > maxErrorAllowed) {
-            CPPUNIT_FAIL(
+            BOOST_FAIL(
                 "Data at index " + IntegerFormatter::toString(i) + ", "
                 "Barrier call option:\n"
                     "    value:    " +
@@ -501,7 +475,7 @@ void BarrierOptionTest::testBeagleholeValues() {
         barrierCallOption.setPricingEngine(mcEngine);
         calculated = barrierCallOption.NPV();
         if (QL_FABS(calculated-expected) > maxMCErrorAllowed) {
-            CPPUNIT_FAIL(
+            BOOST_FAIL(
                 "Data at index " + IntegerFormatter::toString(i) + ", "
                 "Barrier call option MC:\n"
                     "    value:    " +
@@ -512,19 +486,12 @@ void BarrierOptionTest::testBeagleholeValues() {
     }
 }
 
-CppUnit::Test* BarrierOptionTest::suite() {
-    CppUnit::TestSuite* tests =
-        new CppUnit::TestSuite("Barrier option tests");
-    tests->addTest(new CppUnit::TestCaller<BarrierOptionTest>
-                   ("Testing barrier options against Haug's values",
-                    &BarrierOptionTest::testHaugValues));
-    tests->addTest(new CppUnit::TestCaller<BarrierOptionTest>
-                   ("Testing barrier options against Babsiri's values",
-                    &BarrierOptionTest::testBabsiriValues));
-    tests->addTest(new CppUnit::TestCaller<BarrierOptionTest>
-                   ("Testing barrier options against Beaglehole's values",
-                   &BarrierOptionTest::testBeagleholeValues));
 
-    return tests;
+test_suite* BarrierOptionTest::suite() {
+    test_suite* suite = BOOST_TEST_SUITE("Barrier option tests");
+    suite->add(BOOST_TEST_CASE(&BarrierOptionTest::testHaugValues));
+    suite->add(BOOST_TEST_CASE(&BarrierOptionTest::testBabsiriValues));
+    suite->add(BOOST_TEST_CASE(&BarrierOptionTest::testBeagleholeValues));
+    return suite;
 }
 

@@ -2,10 +2,6 @@
 %define _aclocaldir %{_datadir}/aclocal
 %define docdir %{_prefix}/doc/QuantLib-%{version}
 
-# Check whether cppunit is install. If it is then
-# build the test-suite package
-%define test %(if rpm -q cppunit cppunit-static cppunit-devel 2>&1 > /dev/null; then echo 1; else echo 0;fi)
-
 Summary: The free/open-source library for quantitative finance.
 Name: QuantLib
 Version: @PACKAGE_VERSION@
@@ -35,19 +31,17 @@ and developers.
 Install QuantLib-devel if you are going to develop programs which will
 use the standard C libraries.
 
-%if %test
 %package test-suite
 Summary: The test-suite to check the setup of quantlib installation.
 Group: Development/Tools
-Requires: QuantLib = %{version}, cppunit >= 1.8.0, cppunit-devel >= 1.8.0, cppunit-static >= 1.8.0
+Requires: QuantLib = %{version}
 
 %description test-suite
 QuantLib is an open source C++ library for financial quantitative analysts 
 and developers. 
 
-The QuantLib-test-suite will validate the compiled code against pre-constructed test
-cases, and helps in validating the library.
-%endif
+The QuantLib-test-suite will validate the compiled code against 
+pre-constructed test cases, and helps in validating the library.
 
 %package docs
 Summary: The documentations for QuantLib.
@@ -67,10 +61,6 @@ You'll want to install this package if you need a reference to QuantLib.
 
 %prep
 %setup -q 
-%if !%test
-rm %{buildroot}%{_prefix}/bin/quantlib-test-suite
-rm %{buildroot}%{_prefix}/man/man1/quantlib-test-suite.1
-%endif 
 
 %build
 CFLAGS="${CFLAGS:-%optflags}" ; export CFLAGS ; \
@@ -85,12 +75,6 @@ make docs-all
 %install
 rm -rf %{buildroot}
 make prefix=%{buildroot}%{_prefix} install
-%if !%test
-rm -f %{buildroot}%{_prefix}/bin/quantlib-test-suite
-rm -f %{buildroot}%{_prefix}/man/man1/quantlib-test-suite.1
-echo "Warning: quantlib-test-suite is not built!"
-echo "Warning: cppunit, cppunit-devel and cppunit-static are needed!"
-%endif 
 # install the documentation
 mkdir -p %{buildroot}%{docdir}
 cp -p Authors.txt LICENSE.TXT ChangeLog.txt Readme.txt %{buildroot}%{docdir} 
@@ -136,12 +120,10 @@ rm -rf %{buildroot}
 %{_bindir}/quantlib-config
 %{_mandir}/man1/quantlib-config.1
 
-%if %test
 %files test-suite
 %defattr(-,root,root)
 %{_mandir}/man1/quantlib-test-suite.1
 %{_bindir}/quantlib-test-suite
-%endif
 
 %files docs
 %defattr(-,root,root)

@@ -11,8 +11,6 @@
 !endif
 
 # Directories
-CPPUNIT_INCLUDE_DIR = "$(CPPUNIT_DIR)\include"
-CPPUNIT_LIB_DIR     = "$(CPPUNIT_DIR)\lib"
 BOOST_INCLUDE_DIR   = "$(BOOST_DIR)"
 QL_INCLUDE_DIR      = "$(QL_DIR)"
 QL_LIB_DIR          = "$(QL_DIR)\lib\Win32\Borland"
@@ -40,7 +38,6 @@ QL_TESTS = \
     interpolations.obj$(_D) \
     jumpdiffusion.obj$(_D) \
     lowdiscrepancysequences.obj$(_D) \
-    marketelements.obj$(_D) \
     matrices.obj$(_D) \
     mersennetwister.obj$(_D) \
     old_pricers.obj$(_D) \
@@ -48,6 +45,7 @@ QL_TESTS = \
     piecewiseflatforward.obj$(_D) \
     qltestlistener.obj$(_D) \
     quantlibtestsuite.obj$(_D) \
+    quotes.obj$(_D) \
     riskstats.obj$(_D) \
     solvers.obj$(_D) \
     stats.obj$(_D) \
@@ -63,7 +61,6 @@ CC        = bcc32
 CC_OPTS = -vi- \
     -I$(BOOST_INCLUDE_DIR) \
     -I$(QL_INCLUDE_DIR) \
-    -I$(CPPUNIT_INCLUDE_DIR) \
     -I$(BCC_INCLUDE)
 !ifdef DEBUG
 CC_OPTS = $(CC_OPTS) -v -DQL_DEBUG
@@ -83,9 +80,9 @@ CC_OPTS = $(CC_OPTS) -DQL_EXTRA_SAFETY_CHECKS
 
 # Primary target:
 test-suite$(_D).exe: $(QL_TESTS)
-    $(CC) $(CC_OPTS) -L$(QL_LIB_DIR) -L$(CPPUNIT_LIB_DIR) -L$(BCC_LIBS) \
+    $(CC) $(CC_OPTS) -L$(QL_LIB_DIR) -L$(BCC_LIBS) \
     -etest-suite$(_D).exe $(QL_TESTS) \
-    QuantLib$(_D).lib cppunit$(_bc5D)_bc5.lib
+    QuantLib$(_D).lib
 
 # Clean up
 clean::

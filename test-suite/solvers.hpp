@@ -18,12 +18,12 @@
 #ifndef quantlib_test_solvers_hpp
 #define quantlib_test_solvers_hpp
 
-#include <cppunit/TestCase.h>
+#include <boost/test/unit_test.hpp>
 
-class Solver1DTest : public CppUnit::TestCase {
+class Solver1DTest {
   public:
-    Solver1DTest() : CppUnit::TestCase("Testing 1-D solvers") {}
-    void runTest();
+    static void testResults();
+    static boost::unit_test_framework::test_suite* suite();
 };
 
 

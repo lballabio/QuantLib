@@ -18,12 +18,12 @@
 #ifndef quantlib_test_dates_hpp
 #define quantlib_test_dates_hpp
 
-#include <cppunit/TestCase.h>
+#include <boost/test/unit_test.hpp>
 
-class DateTest : public CppUnit::TestCase {
+class DateTest {
   public:
-    DateTest() : CppUnit::TestCase("Testing dates") {}
-    void runTest();
+    static void testConsistency();
+    static boost::unit_test_framework::test_suite* suite();
 };
 
 

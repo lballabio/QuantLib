@@ -13,9 +13,7 @@ Linux/Unix/Mac OS X/Cygwin
 Windows
 
     Visual C++ 6.0 projects files and Borland C++ makefiles are supplied 
-    for building the library. You are strongly suggested to also download
-    and build cppUnit (http://cppunit.sourceforge.net) in order to build and
-    run the QuantLib test-suite. 
+    for building the library. 
 
     Before compiling the library, you might want to edit the file
     "ql/userconfig.hpp" and enable additional features by uncommenting

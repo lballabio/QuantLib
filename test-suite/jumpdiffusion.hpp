@@ -18,14 +18,13 @@
 #ifndef quantlib_test_jumpdiffusion_hpp
 #define quantlib_test_jumpdiffusion_hpp
 
-#include <cppunit/TestCase.h>
-#include <cppunit/TestFixture.h>
+#include <boost/test/unit_test.hpp>
 
-class JumpDiffusionTest : public CppUnit::TestFixture {
+class JumpDiffusionTest {
   public:
-    void testMerton76();
-    void testGreeks();
-    static CppUnit::Test* suite();
+    static void testMerton76();
+    static void testGreeks();
+    static boost::unit_test_framework::test_suite* suite();
 };
 
 

@@ -33,38 +33,15 @@
 #include <ql/Pricers/mchimalaya.hpp>
 #include <ql/RandomNumbers/rngtypedefs.hpp>
 #include <ql/MonteCarlo/getcovariance.hpp>
-#include <cppunit/TestSuite.h>
-#include <cppunit/TestCaller.h>
 #include <map>
 
 using namespace QuantLib;
-
-CppUnit::Test* OldPricerTest::suite() {
-    CppUnit::TestSuite* tests =
-        new CppUnit::TestSuite("Old-style pricer tests");
-    tests->addTest(new CppUnit::TestCaller<OldPricerTest>
-                   ("Testing old-style cliquet option pricer",
-                    &OldPricerTest::testCliquetPricer));
-    tests->addTest(new CppUnit::TestCaller<OldPricerTest>
-                   ("Testing old-style European option pricer with dividends",
-                    &OldPricerTest::testDividendEuropeanPricer));
-    tests->addTest(new CppUnit::TestCaller<OldPricerTest>
-                   ("Testing old-style finite-difference European pricer",
-                    &OldPricerTest::testFdEuropeanPricer));
-    tests->addTest(new CppUnit::TestCaller<OldPricerTest>
-                   ("Testing old-style American-type pricers",
-                    &OldPricerTest::testAmericanPricers));
-    tests->addTest(new CppUnit::TestCaller<OldPricerTest>
-                   ("Testing old-style Monte Carlo single-factor pricers",
-                    &OldPricerTest::testMcSingleFactorPricers));
-    tests->addTest(new CppUnit::TestCaller<OldPricerTest>
-                   ("Testing old-style Monte Carlo multi-factor pricers",
-                    &OldPricerTest::testMcMultiFactorPricers));
-    return tests;
-}
-
+using namespace boost::unit_test_framework;
 
 void OldPricerTest::testCliquetPricer() {
+
+    BOOST_MESSAGE("Testing old-style cliquet option pricer...");
+
     double spot = 60.0;
     double moneyness = 1.1;
     std::vector<Spread> divYield(2);
@@ -80,7 +57,7 @@ void OldPricerTest::testCliquetPricer() {
     double calculated = cliquet.value();
     double expected = 4.4064; // Haug, p.37
     if (QL_FABS(calculated-expected) > 1.0e-4)
-        CPPUNIT_FAIL(
+        BOOST_FAIL(
             "calculated value: " +
             DoubleFormatter::toString(calculated) + "\n"
             "expected:         " +
@@ -88,6 +65,9 @@ void OldPricerTest::testCliquetPricer() {
 }
 
 void OldPricerTest::testDividendEuropeanPricer() {
+
+    BOOST_MESSAGE("Testing old-style European option pricer "
+                  "with dividends...");
 
     Size nstp = 150;
 //    Size ngrd = nstp+1;
@@ -172,7 +152,7 @@ void OldPricerTest::testDividendEuropeanPricer() {
                       double calcl = calculated[greek];
                       double tol = tolerance[greek];
                       if (relativeError(expct,calcl,u) > tol)
-                          CPPUNIT_FAIL(
+                          BOOST_FAIL(
                               "Option details: \n"
                               "    type:           " +
                               OptionTypeFormatter::toString(type) + "\n"
@@ -206,6 +186,8 @@ void OldPricerTest::testDividendEuropeanPricer() {
 
 void OldPricerTest::testFdEuropeanPricer() {
 
+    BOOST_MESSAGE("Testing old-style finite-difference European pricer...");
+
     double under = 100.0;
     double strikeMin = 60.0, strikeRange = 100.0;
     Rate rRateMin = 0.0,  rRateRange = 0.18;
@@ -237,7 +219,7 @@ void OldPricerTest::testFdEuropeanPricer() {
                                          qRate, rRate, resTime,
                                          vol, 100, 400).value();
             if (QL_FABS(anValue-numValue) > tolerance)
-                CPPUNIT_FAIL(
+                BOOST_FAIL(
                     "Option details: \n"
                     "    type:           " +
                     OptionTypeFormatter::toString(types[j]) + "\n"
@@ -319,7 +301,7 @@ namespace {
                 double calcl = calculated[greek];
                 double tol = tolerance[greek];
                 if (relativeError(expct,calcl,u) > tol)
-                    CPPUNIT_FAIL(
+                    BOOST_FAIL(
                         "Option details: \n"
                         "    type:           " +
                         name + " " + OptionTypeFormatter::toString(type)
@@ -348,6 +330,8 @@ namespace {
 }
 
 void OldPricerTest::testAmericanPricers() {
+
+    BOOST_MESSAGE("Testing old-style American-type pricers...");
 
     Option::Type types[] = { Option::Call, Option::Put, Option::Straddle };
     double underlyings[] = { 100 };
@@ -409,6 +393,8 @@ namespace {
 
 void OldPricerTest::testMcSingleFactorPricers() {
 
+    BOOST_MESSAGE("Testing old-style Monte Carlo single-factor pricers...");
+
     long seed = 3456789;
 
     // cannot be too low, or one cannot compare numbers when
@@ -432,7 +418,7 @@ void OldPricerTest::testMcSingleFactorPricers() {
     DiscreteGeometricAPO pricer(type,underlying,strike,dividendYield,
                                 riskFreeRate,timeIncrements, volatility);
     if (QL_FABS(pricer.value()-storedValue) > 1.0e-10)
-        CPPUNIT_FAIL(
+        BOOST_FAIL(
             "Batch 1, case 1:\n"
             "    calculated value: "
             + DoubleFormatter::toString(pricer.value(),10) + "\n"
@@ -454,7 +440,7 @@ void OldPricerTest::testMcSingleFactorPricers() {
                            riskFreeRate,residualTime,volatility);
     storedValue =  5.2185855660;
     if (QL_FABS(pricer1.value()-storedValue) > 1.0e-10)
-        CPPUNIT_FAIL(
+        BOOST_FAIL(
             "Batch 2, case 1:\n"
             "    calculated value: "
             + DoubleFormatter::toString(pricer1.value(),10) + "\n"
@@ -464,7 +450,7 @@ void OldPricerTest::testMcSingleFactorPricers() {
                                    riskFreeRate,residualTime,volatility);
     storedValue = 4.6922213122;
     if (QL_FABS(pricer2.value()-storedValue) > 1.0e-10)
-        CPPUNIT_FAIL(
+        BOOST_FAIL(
             "Batch 2, case 2:\n"
             "    calculated value: "
             + DoubleFormatter::toString(pricer2.value(),10) + "\n"
@@ -491,7 +477,7 @@ void OldPricerTest::testMcSingleFactorPricers() {
     DiscreteGeometricAPO pricer3(type,underlying,strike,dividendYield,
                                  riskFreeRate,timeIncrements,volatility);
     if (QL_FABS(pricer3.value()-storedValue) > 1.0e-10)
-        CPPUNIT_FAIL(
+        BOOST_FAIL(
             "Batch 3, case 1:\n"
             "    calculated value: "
             + DoubleFormatter::toString(pricer3.value(),10) + "\n"
@@ -584,7 +570,7 @@ void OldPricerTest::testMcSingleFactorPricers() {
                                        seed);
         double value = pricer.valueWithSamples(fixedSamples);
         if (QL_FABS(value-cases4[k].result) > 2.0e-2)
-            CPPUNIT_FAIL(
+            BOOST_FAIL(
                 "Batch 4, case " + IntegerFormatter::toString(k+1) + ":\n"
                 "    calculated value: "
                 + DoubleFormatter::toString(value,10) + "\n"
@@ -595,7 +581,7 @@ void OldPricerTest::testMcSingleFactorPricers() {
         value = pricer.value(tolerance);
         double accuracy = pricer.errorEstimate()/value;
         if (accuracy > tolerance)
-            CPPUNIT_FAIL(
+            BOOST_FAIL(
                 "Batch 4, case " + IntegerFormatter::toString(k+1) + ":\n"
                 "    reached accuracy: "
                 + DoubleFormatter::toString(accuracy,10) + "\n"
@@ -688,7 +674,7 @@ void OldPricerTest::testMcSingleFactorPricers() {
                                        seed);
         double value = pricer.valueWithSamples(fixedSamples);
         if (QL_FABS(value-cases5[l].result) > 2.0e-2)
-            CPPUNIT_FAIL(
+            BOOST_FAIL(
                 "Batch 5, case " + IntegerFormatter::toString(l+1) + ":\n"
                 "    calculated value: "
                 + DoubleFormatter::toString(value,10) + "\n"
@@ -699,7 +685,7 @@ void OldPricerTest::testMcSingleFactorPricers() {
         value = pricer.value(tolerance);
         double accuracy = pricer.errorEstimate()/value;
         if (accuracy > tolerance)
-            CPPUNIT_FAIL(
+            BOOST_FAIL(
                 "Batch 5, case " + IntegerFormatter::toString(l+1) + ":\n"
                 "    reached accuracy: "
                 + DoubleFormatter::toString(accuracy,10) + "\n"
@@ -722,7 +708,7 @@ namespace {
 
         double value = pricer.valueWithSamples(fixedSamples);
         if (QL_FABS(value-storedValue) > tolerance)
-            CPPUNIT_FAIL(
+            BOOST_FAIL(
                 name + ":\n"
                 "    calculated value: "
                 + DoubleFormatter::toString(value,10) + "\n"
@@ -734,7 +720,7 @@ namespace {
         value = pricer.value(tolerance);
         double accuracy = pricer.errorEstimate()/value;
         if (accuracy > tolerance)
-            CPPUNIT_FAIL(
+            BOOST_FAIL(
                 name + ":\n"
                 "    reached accuracy: "
                 + DoubleFormatter::toString(accuracy,10) + "\n"
@@ -746,6 +732,8 @@ namespace {
 }
 
 void OldPricerTest::testMcMultiFactorPricers() {
+
+    BOOST_MESSAGE("Testing old-style Monte Carlo multi-factor pricers...");
 
     Matrix cor(4,4);
     cor[0][0] = 1.00; cor[0][1] = 0.50; cor[0][2] = 0.30; cor[0][3] = 0.10;
@@ -867,5 +855,17 @@ void OldPricerTest::testMcMultiFactorPricers() {
                    6.0712230330,
                    1.0e-5,
                    "McHimalaya");
+}
+
+
+test_suite* OldPricerTest::suite() {
+    test_suite* suite = BOOST_TEST_SUITE("Old-style pricer tests");
+    suite->add(BOOST_TEST_CASE(&OldPricerTest::testCliquetPricer));
+    suite->add(BOOST_TEST_CASE(&OldPricerTest::testDividendEuropeanPricer));
+    suite->add(BOOST_TEST_CASE(&OldPricerTest::testFdEuropeanPricer));
+    suite->add(BOOST_TEST_CASE(&OldPricerTest::testAmericanPricers));
+    suite->add(BOOST_TEST_CASE(&OldPricerTest::testMcSingleFactorPricers));
+    suite->add(BOOST_TEST_CASE(&OldPricerTest::testMcMultiFactorPricers));
+    return suite;
 }
 

@@ -23,122 +23,85 @@
 #include <ql/PricingEngines/Vanilla/jumpdiffusionengine.hpp>
 #include <ql/TermStructures/flatforward.hpp>
 #include <ql/Volatilities/blackconstantvol.hpp>
-#include <cppunit/TestSuite.h>
-#include <cppunit/TestCaller.h>
 #include <map>
 
 using namespace QuantLib;
+using namespace boost::unit_test_framework;
+
+#define REPORT_FAILURE_1(greekName, payoff, exercise, s, q, r, today, v, \
+                         intensity, meanLogJump, jumpVol, expected, \
+                         calculated, error, tolerance) \
+    BOOST_FAIL(exerciseTypeToString(exercise) + " " \
+               + OptionTypeFormatter::toString(payoff->optionType()) + \
+               " option with " \
+               + payoffTypeToString(payoff) + " payoff:\n" \
+               "    underlying value: " \
+               + DoubleFormatter::toString(s) + "\n" \
+               "    strike:           " \
+               + DoubleFormatter::toString(payoff->strike()) +"\n" \
+               "    dividend yield:   " \
+               + DoubleFormatter::toString(q) + "\n" \
+               "    risk-free rate:   " \
+               + DoubleFormatter::toString(r) + "\n" \
+               "    reference date:   " \
+               + DateFormatter::toString(today) + "\n" \
+               "    maturity:         " \
+               + DateFormatter::toString(exercise->lastDate()) + "\n" \
+               "    volatility:       " \
+               + DoubleFormatter::toString(v) + "\n\n" \
+               "    intensity:        " \
+               + DoubleFormatter::toString(intensity) + "\n" \
+               "    mean log-jump:    " \
+               + DoubleFormatter::toString(meanLogJump) + "\n" \
+               "    jump volatility:  " \
+               + DoubleFormatter::toString(jumpVol) + "\n\n" \
+               "    expected   " + greekName + ": " \
+               + DoubleFormatter::toString(expected) + "\n" \
+               "    calculated " + greekName + ": " \
+               + DoubleFormatter::toString(calculated) + "\n" \
+               "    error:            " \
+               + DoubleFormatter::toString(error) + "\n" \
+               + (tolerance==Null<double>() ? std::string("") : \
+                  "    tolerance:        "  \
+                  + DoubleFormatter::toString(tolerance)));
+
+#define REPORT_FAILURE_2(greekName, payoff, exercise, s, q, r, today, v, \
+                         intensity, gamma, expected, calculated, \
+                         error, tolerance) \
+    BOOST_FAIL(exerciseTypeToString(exercise) + " " \
+               + OptionTypeFormatter::toString(payoff->optionType()) + \
+               " option with " \
+               + payoffTypeToString(payoff) + " payoff:\n" \
+               "    underlying value: " \
+               + DoubleFormatter::toString(s) + "\n" \
+               "    strike:           " \
+               + DoubleFormatter::toString(payoff->strike()) +"\n" \
+               "    dividend yield:   " \
+               + DoubleFormatter::toString(q) + "\n" \
+               "    risk-free rate:   " \
+               + DoubleFormatter::toString(r) + "\n" \
+               "    reference date:   " \
+               + DateFormatter::toString(today) + "\n" \
+               "    maturity:         " \
+               + DateFormatter::toString(exercise->lastDate()) + "\n" \
+               "    volatility:       " \
+               + DoubleFormatter::toString(v) + "\n" \
+               "    intensity:        " \
+               + DoubleFormatter::toString(intensity) + "\n" \
+               "    gamma:            " \
+               + DoubleFormatter::toString(gamma) + "\n\n" \
+               "    expected   " + greekName + ": " \
+               + DoubleFormatter::toString(expected) + "\n" \
+               "    calculated " + greekName + ": " \
+               + DoubleFormatter::toString(calculated) + "\n" \
+               "    error:            " \
+               + DoubleFormatter::toString(error) + "\n" \
+               + (tolerance==Null<double>() ? std::string("") : \
+                  "    tolerance:        " \
+                  + DoubleFormatter::toString(tolerance)));
+
 
 namespace {
-
-    void jumpOptionTestFailed(
-                           std::string greekName,
-                           const boost::shared_ptr<StrikedTypePayoff>& payoff,
-                           const boost::shared_ptr<Exercise>& exercise,
-                           double s,
-                           double q,
-                           double r,
-                           Date today,
-                           DayCounter dc,
-                           double v,
-                           double intensity,
-                           double meanLogJump,
-                           double jumpVol,
-                           double expected,
-                           double calculated,
-                           double error,
-                           double tolerance) {
-
-        Time t = dc.yearFraction(today, exercise->lastDate());
-
-        CPPUNIT_FAIL(exerciseTypeToString(exercise) + " "
-            + OptionTypeFormatter::toString(payoff->optionType()) +
-            " option with "
-            + payoffTypeToString(payoff) + " payoff:\n"
-            "    underlying value: "
-            + DoubleFormatter::toString(s) + "\n"
-            "    strike:           "
-            + DoubleFormatter::toString(payoff->strike()) +"\n"
-            "    dividend yield:   "
-            + DoubleFormatter::toString(q) + "\n"
-            "    risk-free rate:   "
-            + DoubleFormatter::toString(r) + "\n"
-            "    reference date:   "
-            + DateFormatter::toString(today) + "\n"
-            "    maturity:         "
-            + DateFormatter::toString(exercise->lastDate()) + "\n"
-            "    time to expiry:   "
-            + DoubleFormatter::toString(t) + "\n"
-            "    volatility:       "
-            + DoubleFormatter::toString(v) + "\n\n"
-            "    intensity:        "
-            + DoubleFormatter::toString(intensity) + "\n"
-            "    mean log-jump:    "
-            + DoubleFormatter::toString(meanLogJump) + "\n"
-            "    jump volatility:  "
-            + DoubleFormatter::toString(jumpVol) + "\n\n"
-            "    expected   " + greekName + ": "
-            + DoubleFormatter::toString(expected) + "\n"
-            "    calculated " + greekName + ": "
-            + DoubleFormatter::toString(calculated) + "\n"
-            "    error:            "
-            + DoubleFormatter::toString(error) + "\n"
-            + (tolerance==Null<double>() ? std::string("") :
-            "    tolerance:        " + DoubleFormatter::toString(tolerance)));
-    }
-
-    void jump2OptionTestFailed(
-                           std::string greekName,
-                           const boost::shared_ptr<StrikedTypePayoff>& payoff,
-                           const boost::shared_ptr<Exercise>& exercise,
-                           double s,
-                           double q,
-                           double r,
-                           Date today,
-                           DayCounter dc,
-                           double v,
-                           double intensity,
-                           double gamma,
-                           double expected,
-                           double calculated,
-                           double error,
-                           double tolerance) {
-
-        Time t = dc.yearFraction(today, exercise->lastDate());
-
-        CPPUNIT_FAIL(exerciseTypeToString(exercise) + " "
-            + OptionTypeFormatter::toString(payoff->optionType()) +
-            " option with "
-            + payoffTypeToString(payoff) + " payoff:\n"
-            "    underlying value: "
-            + DoubleFormatter::toString(s) + "\n"
-            "    strike:           "
-            + DoubleFormatter::toString(payoff->strike()) +"\n"
-            "    dividend yield:   "
-            + DoubleFormatter::toString(q) + "\n"
-            "    risk-free rate:   "
-            + DoubleFormatter::toString(r) + "\n"
-            "    reference date:   "
-            + DateFormatter::toString(today) + "\n"
-            "    maturity:         "
-            + DateFormatter::toString(exercise->lastDate()) + "\n"
-            "    time to expiry:   "
-            + DoubleFormatter::toString(t) + "\n"
-            "    volatility:       "
-            + DoubleFormatter::toString(v) + "\n"
-            "    intensity:        "
-            + DoubleFormatter::toString(intensity) + "\n"
-            "    gamma:            "
-            + DoubleFormatter::toString(gamma) + "\n\n"
-            "    expected   " + greekName + ": "
-            + DoubleFormatter::toString(expected) + "\n"
-            "    calculated " + greekName + ": "
-            + DoubleFormatter::toString(calculated) + "\n"
-            "    error:            "
-            + DoubleFormatter::toString(error) + "\n"
-            + (tolerance==Null<double>() ? std::string("") :
-            "    tolerance:        " + DoubleFormatter::toString(tolerance)));
-    }
 
     struct HaugMertonData {
         Option::Type type;
@@ -163,14 +126,17 @@ namespace {
 
 void JumpDiffusionTest::testMerton76() {
 
+    BOOST_MESSAGE("Testing Merton 76 jump-diffusion model "
+                  "for European options...");
+
     /* The data below are from 
        "Option pricing formulas", E.G. Haug, McGraw-Hill 1998, pag 9
 
-       Haug use the arbitrary truncation criterium of 11 terms in the sum, which
-       doesn't guarantee convergence up to 1e-2.
-       Using Haug's criterium Haug's values have been correctly reproduced. Anyway the
-       following values have the right 1e-2 accuracy: any value different from Haug has
-       been noted
+       Haug use the arbitrary truncation criterium of 11 terms in the sum, 
+       which doesn't guarantee convergence up to 1e-2.
+       Using Haug's criterium Haug's values have been correctly reproduced. 
+       the following values have the right 1e-2 accuracy: any value different 
+       from Haug has been noted.
     */
     HaugMertonData values[] = {
         //        type, strike,   spot,    q,    r,    t,  vol, int, gamma, value, tol
@@ -389,7 +355,8 @@ void JumpDiffusionTest::testMerton76() {
         double meanJump = 0.0;
         meanLogJump->setValue(QL_LOG(1.0+meanJump)-0.5*jVol*jVol);
 
-        double totalVol = QL_SQRT(values[i].jumpIntensity*jVol*jVol+diffusionVol*diffusionVol);
+        double totalVol = QL_SQRT(values[i].jumpIntensity*jVol*jVol + 
+                                  diffusionVol*diffusionVol);
         double volError = QL_FABS(totalVol-values[i].v);
         QL_REQUIRE(volError<1e-13,
             "" + DoubleFormatter::toString(volError) +
@@ -403,20 +370,19 @@ void JumpDiffusionTest::testMerton76() {
         double calculated = option.NPV();
         double error = QL_FABS(calculated-values[i].result);
         if (error>values[i].tol) {
-            jump2OptionTestFailed("value",
-                                  payoff, exercise,
-                                  values[i].s, values[i].q, values[i].r,
-                                  today, dc,
-                                  values[i].v,
-                                  values[i].jumpIntensity, values[i].gamma,
-                                  values[i].result, calculated,
-                                  error, values[i].tol);
+            REPORT_FAILURE_2("value", payoff, exercise,
+                             values[i].s, values[i].q, values[i].r,
+                             today, values[i].v, values[i].jumpIntensity, 
+                             values[i].gamma, values[i].result, calculated,
+                             error, values[i].tol);
         }
     }
 
 }
 
 void JumpDiffusionTest::testGreeks() {
+
+    BOOST_MESSAGE("Testing jump-diffusion option greeks...");
 
     std::map<std::string,double> calculated, expected, tolerance;
     tolerance["delta"]  = 1.0e-4;
@@ -584,14 +550,11 @@ void JumpDiffusionTest::testGreeks() {
                                      tol   = tolerance [greek];
                               double error = QL_FABS(expct-calcl);
                               if (error>tol) {
-                                  jumpOptionTestFailed(greek, payoff, exercise,
-                                                       u, q, r,
-                                                       today, dc,
-                                                       v,
-                                                       jInt[jj1],
-                                                       mLJ[jj2], jV[jj3],
-                                                       expct, calcl,
-                                                       error, tol);
+                                  REPORT_FAILURE_1(greek, payoff, exercise,
+                                                   u, q, r, today, v,
+                                                   jInt[jj1], mLJ[jj2], 
+                                                   jV[jj3], expct, calcl,
+                                                   error, tol);
                               }
                           }
                       }
@@ -608,18 +571,10 @@ void JumpDiffusionTest::testGreeks() {
     } // type loop
 }
 
-CppUnit::Test* JumpDiffusionTest::suite() {
-    CppUnit::TestSuite* tests =
-        new CppUnit::TestSuite("American option tests");
 
-    tests->addTest(new CppUnit::TestCaller<JumpDiffusionTest>
-        ("Testing Merton 76 jump-diffusion model for European options",
-        &JumpDiffusionTest::testMerton76));
-
-    tests->addTest(new CppUnit::TestCaller<JumpDiffusionTest>
-        ("Testing jump-diffusion option greeks",
-        &JumpDiffusionTest::testGreeks));
-
-    return tests;
+test_suite* JumpDiffusionTest::suite() {
+    test_suite* suite = BOOST_TEST_SUITE("Jump-diffusion tests");
+    suite->add(BOOST_TEST_CASE(&JumpDiffusionTest::testMerton76));
+    suite->add(BOOST_TEST_CASE(&JumpDiffusionTest::testGreeks));
+    return suite;
 }
-

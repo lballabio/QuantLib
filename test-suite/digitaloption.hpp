@@ -19,38 +19,20 @@
 #ifndef quantlib_test_digital_option_hpp
 #define quantlib_test_digital_option_hpp
 
-#include <cppunit/TestCase.h>
-#include <cppunit/TestFixture.h>
+#include <boost/test/unit_test.hpp>
 
-class DigitalOptionTest : public CppUnit::TestFixture {
+class DigitalOptionTest {
   public:
-    // European values
-    void testCashOrNothingEuropeanValues();
-    void testAssetOrNothingEuropeanValues();
-    void testGapEuropeanValues();
-
-    // American at-hit values
-    void testCashAtHitOrNothingAmericanValues();
-    void testAssetAtHitOrNothingAmericanValues();
-
-    // American at-expiry values
-    void testCashAtExpiryOrNothingAmericanValues();
-    void testAssetAtExpiryOrNothingAmericanValues();
-
-    // European greeks
-    // tested in europeanoption.hpp test
-
-    // American at-hit greeks
-    void testCashAtHitOrNothingAmericanGreeks();
-//    void testAssetAtHitOrNothingAmericanGreeks();
-
-
-    // American at-expiry greeks
-//    void testCashAtExpiryOrNothingAmericanGreeks();
-//    void testAssetAtExpiryOrNothingAmericanGreeks();
-
-    void testMCCashAtHit();
-    static CppUnit::Test* suite();
+    static void testCashOrNothingEuropeanValues();
+    static void testAssetOrNothingEuropeanValues();
+    static void testGapEuropeanValues();
+    static void testCashAtHitOrNothingAmericanValues();
+    static void testAssetAtHitOrNothingAmericanValues();
+    static void testCashAtExpiryOrNothingAmericanValues();
+    static void testAssetAtExpiryOrNothingAmericanValues();
+    static void testCashAtHitOrNothingAmericanGreeks();
+    static void testMCCashAtHit();
+    static boost::unit_test_framework::test_suite* suite();
 };
 
 

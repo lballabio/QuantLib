@@ -25,8 +25,11 @@
 #include <ql/dataformatters.hpp>
 
 using namespace QuantLib;
+using namespace boost::unit_test_framework;
 
-void CalendarTest::runTest() {
+void CalendarTest::testJointCalendars() {
+
+    BOOST_MESSAGE("Testing joint calendars...");
 
     Calendar c1 = TARGET(),
              c2 = London(),
@@ -52,47 +55,54 @@ void CalendarTest::runTest() {
              b4 = c4.isBusinessDay(d);
 
         if ((b1 && b2) != c12h.isBusinessDay(d))
-            CPPUNIT_FAIL(
+            BOOST_FAIL(
                 "At date " + DateFormatter::toString(d) + ":\n"
                 "    inconsistency between joint calendar "
                 + c12h.name() + " (joining holidays)\n"
                 "    and its components");
-        
+
         if ((b1 || b2) != c12b.isBusinessDay(d))
-            CPPUNIT_FAIL(
+            BOOST_FAIL(
                 "At date " + DateFormatter::toString(d) + ":\n"
                 "    inconsistency between joint calendar "
                 + c12b.name() + " (joining business days)\n"
                 "    and its components");
 
         if ((b1 && b2 && b3) != c123h.isBusinessDay(d))
-            CPPUNIT_FAIL(
+            BOOST_FAIL(
                 "At date " + DateFormatter::toString(d) + ":\n"
                 "    inconsistency between joint calendar "
                 + c123h.name() + " (joining holidays)\n"
                 "    and its components");
-        
+
         if ((b1 || b2 || b3) != c123b.isBusinessDay(d))
-            CPPUNIT_FAIL(
+            BOOST_FAIL(
                 "At date " + DateFormatter::toString(d) + ":\n"
                 "    inconsistency between joint calendar "
                 + c123b.name() + " (joining business days)\n"
                 "    and its components");
 
         if ((b1 && b2 && b3 && b4) != c1234h.isBusinessDay(d))
-            CPPUNIT_FAIL(
+            BOOST_FAIL(
                 "At date " + DateFormatter::toString(d) + ":\n"
                 "    inconsistency between joint calendar "
                 + c1234h.name() + " (joining holidays)\n"
                 "    and its components");
-        
+
         if ((b1 || b2 || b3 || b4) != c1234b.isBusinessDay(d))
-            CPPUNIT_FAIL(
+            BOOST_FAIL(
                 "At date " + DateFormatter::toString(d) + ":\n"
                 "    inconsistency between joint calendar "
                 + c1234b.name() + " (joining business days)\n"
                 "    and its components");
-        
+
     }
+}
+
+
+test_suite* CalendarTest::suite() {
+    test_suite* suite = BOOST_TEST_SUITE("Calendar tests");
+    suite->add(BOOST_TEST_CASE(&CalendarTest::testJointCalendars));
+    return suite;
 }
 

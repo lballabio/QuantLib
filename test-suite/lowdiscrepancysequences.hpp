@@ -18,23 +18,22 @@
 #ifndef quantlib_test_lowdiscrepancysequences_hpp
 #define quantlib_test_lowdiscrepancysequences_hpp
 
-#include <cppunit/TestCase.h>
-#include <cppunit/TestFixture.h>
+#include <boost/test/unit_test.hpp>
 
-class LDSTest : public CppUnit::TestFixture {
+class LowDiscrepancyTest {
   public:
-    void testPolynomialsModuloTwo();
-    void testSobol();
-    void testHalton();
-    void testTrueRandomNumberDiscrepancy();
-    void testMersenneTwisterDiscrepancy();
-    void testPlainHaltonDiscrepancy();
-    void testRandomStartHaltonDiscrepancy();
-    void testRandomShiftHaltonDiscrepancy();
-    void testRandomStartRandomShiftHaltonDiscrepancy();
-    void testJackelSobolDiscrepancy();
-    void testUnitSobolDiscrepancy();
-    static CppUnit::Test* suite();
+    static void testPolynomialsModuloTwo();
+    static void testSobol();
+    static void testHalton();
+    static void testTrueRandomNumberDiscrepancy();
+    static void testMersenneTwisterDiscrepancy();
+    static void testPlainHaltonDiscrepancy();
+    static void testRandomStartHaltonDiscrepancy();
+    static void testRandomShiftHaltonDiscrepancy();
+    static void testRandomStartRandomShiftHaltonDiscrepancy();
+    static void testJackelSobolDiscrepancy();
+    static void testUnitSobolDiscrepancy();
+    static boost::unit_test_framework::test_suite* suite();
 };
 
 

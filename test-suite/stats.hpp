@@ -18,14 +18,13 @@
 #ifndef quantlib_test_statistics_hpp
 #define quantlib_test_statistics_hpp
 
-#include <cppunit/TestCase.h>
-#include <cppunit/TestFixture.h>
+#include <boost/test/unit_test.hpp>
 
-class StatisticsTest : public CppUnit::TestFixture {
+class StatisticsTest {
   public:
-    void testStatistics();
-    void testSequenceStatistics();
-    static CppUnit::Test* suite();
+    static void testStatistics();
+    static void testSequenceStatistics();
+    static boost::unit_test_framework::test_suite* suite();
 };
 
 

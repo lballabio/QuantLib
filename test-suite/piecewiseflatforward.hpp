@@ -18,15 +18,13 @@
 #ifndef quantlib_test_piecewise_flat_forward_hpp
 #define quantlib_test_piecewise_flat_forward_hpp
 
-#include <cppunit/TestCase.h>
-#include <cppunit/TestFixture.h>
+#include <boost/test/unit_test.hpp>
 
-class PiecewiseFlatForwardTest : public CppUnit::TestFixture {
+class PiecewiseFlatForwardTest {
   public:
-    void setUp();
-    void testConsistency();
-    void testObservability();
-    static CppUnit::Test* suite();
+    static void testConsistency();
+    static void testObservability();
+    static boost::unit_test_framework::test_suite* suite();
 };
 
 

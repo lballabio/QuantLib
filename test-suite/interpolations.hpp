@@ -18,19 +18,18 @@
 #ifndef quantlib_test_interpolations_hpp
 #define quantlib_test_interpolations_hpp
 
-#include <cppunit/TestCase.h>
-#include <cppunit/TestFixture.h>
+#include <boost/test/unit_test.hpp>
 
-class InterpolationTest : public CppUnit::TestFixture {
+class InterpolationTest {
   public:
-    void testSplineOnGenericValues();
-    void testingSimmetricEndConditions();
-    void testingDerivativeEndConditions();
-    void testingNonRestrictiveHymanFilter();
-    void testSplineOnRPN15AValues();
-    void testSplineOnGaussianValues();
-    void testSplineErrorOnGaussianValues();
-    static CppUnit::Test* suite();
+    static void testSplineOnGenericValues();
+    static void testSimmetricEndConditions();
+    static void testDerivativeEndConditions();
+    static void testNonRestrictiveHymanFilter();
+    static void testSplineOnRPN15AValues();
+    static void testSplineOnGaussianValues();
+    static void testSplineErrorOnGaussianValues();
+    static boost::unit_test_framework::test_suite* suite();
 };
 
 

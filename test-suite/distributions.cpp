@@ -20,10 +20,9 @@
 #include "utilities.hpp"
 #include <ql/Math/normaldistribution.hpp>
 #include <ql/Math/bivariatenormaldistribution.hpp>
-#include <cppunit/TestSuite.h>
-#include <cppunit/TestCaller.h>
 
 using namespace QuantLib;
+using namespace boost::unit_test_framework;
 
 namespace {
 
@@ -44,6 +43,8 @@ namespace {
 }
 
 void DistributionTest::testNormal() {
+
+    BOOST_MESSAGE("Testing normal distributions...");
 
     NormalDistribution normal(average,sigma);
     CumulativeNormalDistribution cum(average,sigma);
@@ -72,7 +73,7 @@ void DistributionTest::testNormal() {
     if (e > 1.0e-16) {
         char s[10];
         QL_SPRINTF(s,"%5.2e",e);
-        CPPUNIT_FAIL(
+        BOOST_FAIL(
             "norm of C++ NormalDistribution minus analytic Gaussian: "
             + std::string(s) + "\n"
             "tolerance exceeded");
@@ -87,7 +88,7 @@ void DistributionTest::testNormal() {
     if (e > 1.0e-8) {
         char s[10];
         QL_SPRINTF(s,"%5.2e",e);
-        CPPUNIT_FAIL(
+        BOOST_FAIL(
             "norm of invCum . cum minus identity: "
             + std::string(s) + "\n"
             "tolerance exceeded");
@@ -102,7 +103,7 @@ void DistributionTest::testNormal() {
     if (e > 1.0e-16) {
         char s[10];
         QL_SPRINTF(s,"%5.2e",e);
-        CPPUNIT_FAIL(
+        BOOST_FAIL(
             "norm of C++ Cumulative.derivative minus analytic Gaussian: "
             + std::string(s) + "\n"
             "tolerance exceeded");
@@ -117,7 +118,7 @@ void DistributionTest::testNormal() {
     if (e > 1.0e-16) {
         char s[10];
         QL_SPRINTF(s,"%5.2e",e);
-        CPPUNIT_FAIL(
+        BOOST_FAIL(
             "norm of C++ Normal.derivative minus analytic derivative: "
             + std::string(s) + "\n"
             "tolerance exceeded");
@@ -125,6 +126,8 @@ void DistributionTest::testNormal() {
 }
 
 void DistributionTest::testBivariate() {
+
+    BOOST_MESSAGE("Testing bivariate cumulative normal distribution...");
 
     struct BivariateTestData {
         double a;
@@ -176,7 +179,7 @@ void DistributionTest::testBivariate() {
         double value = bcd(values[i].a, values[i].b);
 
         if (QL_FABS(value-values[i].result)>=1e-6) {
-          CPPUNIT_FAIL("BivariateCumulativeDistribution \n"
+          BOOST_FAIL("BivariateCumulativeDistribution \n"
               "case "
               + IntegerFormatter::toString(i+1) + "\n"
               "    a:   "
@@ -195,14 +198,10 @@ void DistributionTest::testBivariate() {
 }
 
 
-CppUnit::Test* DistributionTest::suite() {
-    CppUnit::TestSuite* tests =
-        new CppUnit::TestSuite("Distributions' tests");
-    tests->addTest(new CppUnit::TestCaller<DistributionTest>
-                   ("Testing normal distributions",
-                    &DistributionTest::testNormal));
-    tests->addTest(new CppUnit::TestCaller<DistributionTest>
-                   ("Testing bivariate cumulative normal distribution",
-                    &DistributionTest::testBivariate));
-    return tests;
+test_suite* DistributionTest::suite() {
+    test_suite* suite = BOOST_TEST_SUITE("Distribution tests");
+    suite->add(BOOST_TEST_CASE(&DistributionTest::testNormal));
+    suite->add(BOOST_TEST_CASE(&DistributionTest::testBivariate));
+    return suite;
 }
+

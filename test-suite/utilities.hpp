@@ -47,33 +47,6 @@ namespace QuantLib {
 
     double relativeError(double x1, double x2, double reference);
 
-    struct VanillaOptionData {
-        Option::Type type;
-        double strike;
-        double s;      // spot
-        double q;      // dividend
-        double r;      // risk-free rate
-        Time t;        // time to maturity
-        double v;      // volatility
-        double result; // expected result
-        double tol;    // tolerance
-    };
-
-    void vanillaOptionTestFailed(
-                           std::string greekName,
-                           const boost::shared_ptr<StrikedTypePayoff>& payoff,
-                           const boost::shared_ptr<Exercise>& exercise,
-                           double s,
-                           double q,
-                           double r,
-                           Date today,
-                           DayCounter dc,
-                           double v,
-                           double expected,
-                           double calculated,
-                           double error,
-                           double tolerance);
-
 }
 
 class Flag : public QuantLib::Observer {

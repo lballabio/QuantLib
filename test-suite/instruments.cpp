@@ -18,12 +18,13 @@
 #include "instruments.hpp"
 #include "utilities.hpp"
 #include <ql/Instruments/stock.hpp>
-#include <cppunit/TestSuite.h>
-#include <cppunit/TestCaller.h>
 
 using namespace QuantLib;
+using namespace boost::unit_test_framework;
 
 void InstrumentTest::testObservable() {
+
+    BOOST_MESSAGE("Testing observability of instruments...");
 
     boost::shared_ptr<SimpleQuote> me1(new SimpleQuote(0.0));
     RelinkableHandle<Quote> h(me1);
@@ -34,29 +35,28 @@ void InstrumentTest::testObservable() {
 
     me1->setValue(3.14);
     if (!f.isUp())
-        CPPUNIT_FAIL("Observer was not notified of instrument change");
+        BOOST_FAIL("Observer was not notified of instrument change");
 
     f.lower();
     boost::shared_ptr<SimpleQuote> me2(new SimpleQuote(0.0));
     h.linkTo(me2);
     if (!f.isUp())
-        CPPUNIT_FAIL("Observer was not notified of instrument change");
+        BOOST_FAIL("Observer was not notified of instrument change");
 
     f.lower();
     s->freeze();
     me2->setValue(2.71);
     if (f.isUp())
-        CPPUNIT_FAIL("Observer was notified of frozen instrument change");
+        BOOST_FAIL("Observer was notified of frozen instrument change");
     s->unfreeze();
     if (!f.isUp())
-        CPPUNIT_FAIL("Observer was not notified of instrument change");
+        BOOST_FAIL("Observer was not notified of instrument change");
 }
 
-CppUnit::Test* InstrumentTest::suite() {
-    CppUnit::TestSuite* tests = new CppUnit::TestSuite("Instrument tests");
-    tests->addTest(new CppUnit::TestCaller<InstrumentTest>
-                   ("Testing observability of instruments",
-                    &InstrumentTest::testObservable));
-    return tests;
+
+test_suite* InstrumentTest::suite() {
+    test_suite* suite = BOOST_TEST_SUITE("Instrument tests");
+    suite->add(BOOST_TEST_CASE(&InstrumentTest::testObservable));
+    return suite;
 }
 

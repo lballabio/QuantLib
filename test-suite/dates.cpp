@@ -20,9 +20,12 @@
 #include <ql/dataformatters.hpp>
 
 using namespace QuantLib;
+using namespace boost::unit_test_framework;
 
-void DateTest::runTest() {
-    
+void DateTest::testConsistency() {
+
+    BOOST_MESSAGE("Testing dates...");
+
     int minDate = Date::minDate().serialNumber()+1,
         maxDate = Date::maxDate().serialNumber();
 
@@ -38,12 +41,12 @@ void DateTest::runTest() {
 
         // check serial number consistency
         if (serial != i)
-            CPPUNIT_FAIL(
+            BOOST_FAIL(
                 "inconsistent serial number:\n"
                 "    original:      " + IntegerFormatter::toString(i) + "\n"
                 "    date:          " + DateFormatter::toString(t) + "\n"
                 "    serial number: " + IntegerFormatter::toString(serial));
-        
+
         int dy = t.dayOfYear(),
             d  = t.dayOfMonth(),
             m  = t.month(),
@@ -54,7 +57,7 @@ void DateTest::runTest() {
         if (!((dy == dyold+1) ||
               (dy == 1 && dyold == 365 && !Date::isLeap(yold)) ||
               (dy == 1 && dyold == 366 && Date::isLeap(yold))))
-            CPPUNIT_FAIL(
+            BOOST_FAIL(
                 "wrong day of year increment: \n"
                 "    date: " + DateFormatter::toString(t) + "\n"
                 "    day of year: " + IntegerFormatter::toString(dy) + "\n"
@@ -64,7 +67,7 @@ void DateTest::runTest() {
         if (!((d == dold+1 && m == mold   && y == yold) ||
               (d == 1      && m == mold+1 && y == yold) ||
               (d == 1      && m == 1      && y == yold+1)))
-            CPPUNIT_FAIL(
+            BOOST_FAIL(
                 "wrong day,month,year increment: \n"
                 "    date: " + DateFormatter::toString(t) + "\n"
                 "    day,month,year: " + IntegerFormatter::toString(d) + ","
@@ -74,17 +77,17 @@ void DateTest::runTest() {
                                        + IntegerFormatter::toString(mold) + ","
                                        + IntegerFormatter::toString(yold));
         dold = d; mold = m; yold = y;
-        
+
         // check month definition
         if (m < 1 || m > 12)
-            CPPUNIT_FAIL(
+            BOOST_FAIL(
                 "invalid month: \n"
                 "    date:  " + DateFormatter::toString(t) + "\n"
                 "    month: " + IntegerFormatter::toString(m));
 
         // check day definition
         if (d < 1)
-            CPPUNIT_FAIL(
+            BOOST_FAIL(
                 "invalid day of month: \n"
                 "    date:  " + DateFormatter::toString(t) + "\n"
                 "    day: " + IntegerFormatter::toString(d));
@@ -101,7 +104,7 @@ void DateTest::runTest() {
               (m == 10 && d <= 31) ||
               (m == 11 && d <= 30) ||
               (m == 12 && d <= 31)))
-            CPPUNIT_FAIL(
+            BOOST_FAIL(
                 "invalid day of month: \n"
                 "    date:  " + DateFormatter::toString(t) + "\n"
                 "    day: " + IntegerFormatter::toString(d));
@@ -109,7 +112,7 @@ void DateTest::runTest() {
         // check weekday definition
         if (!((int(wd) == int(wdold+1)) ||
               (int(wd) == 1 && int(wdold) == 7)))
-            CPPUNIT_FAIL(
+            BOOST_FAIL(
                 "invalid weekday: \n"
                 "    date:  " + DateFormatter::toString(t) + "\n"
                 "    weekday:  " + IntegerFormatter::toString(wd) + "\n"
@@ -121,7 +124,7 @@ void DateTest::runTest() {
         // check serial number consistency
         serial = s.serialNumber();
         if (serial != i)
-            CPPUNIT_FAIL(
+            BOOST_FAIL(
                 "inconsistent serial number:\n"
                 "    date:          " + DateFormatter::toString(t) + "\n"
                 "    serial number: " + IntegerFormatter::toString(i) + "\n"
@@ -129,5 +132,12 @@ void DateTest::runTest() {
                 "    serial number: " + IntegerFormatter::toString(serial));
     }
 
+}
+
+
+test_suite* DateTest::suite() {
+    test_suite* suite = BOOST_TEST_SUITE("Date tests");
+    suite->add(BOOST_TEST_CASE(&DateTest::testConsistency));
+    return suite;
 }
 

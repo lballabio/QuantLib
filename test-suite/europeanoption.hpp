@@ -18,18 +18,17 @@
 #ifndef quantlib_test_european_option_hpp
 #define quantlib_test_european_option_hpp
 
-#include <cppunit/TestCase.h>
-#include <cppunit/TestFixture.h>
+#include <boost/test/unit_test.hpp>
 
-class EuropeanOptionTest : public CppUnit::TestFixture {
+class EuropeanOptionTest {
   public:
-    void testValues();
-    void testGreekValues();
-    void testGreeks();
-    void testImpliedVol();
-    void testBinomialEngines();
-    void testMcEngines();
-    static CppUnit::Test* suite();
+    static void testValues();
+    static void testGreekValues();
+    static void testGreeks();
+    static void testImpliedVol();
+    static void testBinomialEngines();
+    static void testMcEngines();
+    static boost::unit_test_framework::test_suite* suite();
 };
 
 

@@ -4,7 +4,6 @@ The notes below are just hard to read memos to self.
 - Edgeworth expansion
   www.wilmott.com/messageview.cfm?catid=8&threadid=608&FTVAR_MSGDBTABLE=
 - e-mail: zdrezner@fullerton.edu
-- make check as macro (so that cppunit reports the right line)
 - digitaloption testEngineConsistency as in in europeanoption test
 - poisson process
   www.wilmott.com/messageview.cfm?catid=8&threadid=11653

@@ -18,12 +18,12 @@
 #ifndef quantlib_test_mt19937_hpp
 #define quantlib_test_mt19937_hpp
 
-#include <cppunit/TestCase.h>
+#include <boost/test/unit_test.hpp>
 
-class MersenneTwisterTest : public CppUnit::TestCase {
+class MersenneTwisterTest {
   public:
-    MersenneTwisterTest() : CppUnit::TestCase("Testing Mersenne twister") {}
-    void runTest();
+    static void testValues();
+    static boost::unit_test_framework::test_suite* suite();
 };
 
 

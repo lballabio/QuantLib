@@ -18,14 +18,13 @@
 #ifndef quantlib_test_american_option_hpp
 #define quantlib_test_american_option_hpp
 
-#include <cppunit/TestCase.h>
-#include <cppunit/TestFixture.h>
+#include <boost/test/unit_test.hpp>
 
-class AmericanOptionTest : public CppUnit::TestFixture {
+class AmericanOptionTest {
   public:
-    void testBaroneAdesiWhaleyValues();
-    void testBjerksundStenslandValues();
-    static CppUnit::Test* suite();
+    static void testBaroneAdesiWhaleyValues();
+    static void testBjerksundStenslandValues();
+    static boost::unit_test_framework::test_suite* suite();
 };
 
 

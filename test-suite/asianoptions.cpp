@@ -22,11 +22,48 @@
 #include <ql/PricingEngines/Asian/analyticasianengine.hpp>
 #include <ql/TermStructures/flatforward.hpp>
 #include <ql/Volatilities/blackconstantvol.hpp>
-#include <cppunit/TestSuite.h>
-#include <cppunit/TestCaller.h>
 #include <map>
 
 using namespace QuantLib;
+using namespace boost::unit_test_framework;
+
+#define REPORT_FAILURE(greekName, averageType, runningProduct, pastFixings, \
+                       fixingDates, payoff, exercise, s, q, r, today, v, \
+                       expected, calculated, tolerance) \
+    BOOST_FAIL(exerciseTypeToString(exercise) + " " \
+               " asian option with " \
+               + averageTypeToString(averageType) + " and " \
+               + payoffTypeToString(payoff) + " payoff:\n" \
+               "    running product:  " \
+               + DoubleFormatter::toString(runningProduct) + "\n" \
+               "    past fixings:     " \
+               + IntegerFormatter::toString(pastFixings) + "\n" \
+               "    future fixings:   " \
+               + IntegerFormatter::toString(fixingDates.size()) + "\n" \
+               "    underlying value: " \
+               + DoubleFormatter::toString(s) + "\n" \
+               "    strike:           " \
+               + DoubleFormatter::toString(payoff->strike()) +"\n" \
+               "    dividend yield:   " \
+               + DoubleFormatter::toString(q) + "\n" \
+               "    risk-free rate:   " \
+               + DoubleFormatter::toString(r) + "\n" \
+               "    reference date:   " \
+               + DateFormatter::toString(today) + "\n" \
+               "    maturity:         " \
+               + DateFormatter::toString(exercise->lastDate()) + "\n" \
+               "    volatility:       " \
+               + DoubleFormatter::toString(v) + "\n\n" \
+               "    expected   " + greekName + ": " \
+               + DoubleFormatter::toString(expected) + "\n" \
+               "    calculated " + greekName + ": " \
+               + DoubleFormatter::toString(calculated) + "\n" \
+               "    error:            " \
+               + DoubleFormatter::toString(QL_FABS(expected-calculated)) \
+               + "\n" \
+               + (tolerance==Null<double>() ? std::string("") : \
+                  "    tolerance:        " \
+                  + DoubleFormatter::toString(tolerance)));
 
 namespace {
 
@@ -38,62 +75,6 @@ namespace {
             return "Arithmetic Averaging";
         else
             QL_FAIL("unknown averaging");
-    }
-
-    void asianOptionTestFailed(
-                           std::string greekName,
-                           Average::Type averageType,
-                           double runningProduct,
-                           Size pastFixings,
-                           std::vector<Date> fixingDates,
-                           const boost::shared_ptr<StrikedTypePayoff>& payoff,
-                           const boost::shared_ptr<Exercise>& exercise,
-                           double s,
-                           double q,
-                           double r,
-                           Date today,
-                           DayCounter dc,
-                           double v,
-                           double expected,
-                           double calculated,
-                           double tolerance = Null<double>()) {
-
-        Time t = dc.yearFraction(today, exercise->lastDate());
-
-        CPPUNIT_FAIL(exerciseTypeToString(exercise) + " "
-            " asian option with "
-            + averageTypeToString(averageType) + " and "
-            + payoffTypeToString(payoff) + " payoff:\n"
-            "    running product:  "
-            + DoubleFormatter::toString(runningProduct) + "\n"
-            "    past fixings:     "
-            + IntegerFormatter::toString(pastFixings) + "\n"
-            "    future fixings:   "
-            + IntegerFormatter::toString(fixingDates.size()) + "\n"
-            "    underlying value: "
-            + DoubleFormatter::toString(s) + "\n"
-            "    strike:           "
-            + DoubleFormatter::toString(payoff->strike()) +"\n"
-            "    dividend yield:   "
-            + DoubleFormatter::toString(q) + "\n"
-            "    risk-free rate:   "
-            + DoubleFormatter::toString(r) + "\n"
-            "    reference date:   "
-            + DateFormatter::toString(today) + "\n"
-            "    maturity:         "
-            + DateFormatter::toString(exercise->lastDate()) + "\n"
-            "    time to expiry:   "
-            + DoubleFormatter::toString(t) + "\n"
-            "    volatility:       "
-            + DoubleFormatter::toString(v) + "\n\n"
-            "    expected   " + greekName + ": "
-            + DoubleFormatter::toString(expected) + "\n"
-            "    calculated " + greekName + ": "
-            + DoubleFormatter::toString(calculated) + "\n"
-            "    error:            "
-            + DoubleFormatter::toString(QL_FABS(expected-calculated)) + "\n"
-            + (tolerance==Null<double>() ? std::string("") :
-            "    tolerance:        " + DoubleFormatter::toString(tolerance)));
     }
 
     struct AsianOptionData {
@@ -115,6 +96,8 @@ namespace {
 }
 
 void AsianOptionTest::testGeometricDiscreteAverage() {
+
+    BOOST_MESSAGE("Testing discrete-averaging geometric Asian options...");
 
     // data from "Implementing Derivatives Model",
     // Clewlow, Strickland, p.118-123
@@ -175,28 +158,21 @@ void AsianOptionTest::testGeometricDiscreteAverage() {
 
         double calculated = pricer.NPV();
         if (QL_FABS(calculated-values[i].result) > values[i].tol) {
-            asianOptionTestFailed("value",
-                                  values[i].averageType,
-                                  values[i].runningProduct,
-                                  values[i].pastFixings,
-                                  fixingDates,
-                                  payoff, exercise,
-                                  values[i].s, values[i].q, values[i].r,
-                                  today, dc,
-                                  values[i].v,
-                                  values[i].result, calculated,
-                                  values[i].tol);
+            REPORT_FAILURE("value", values[i].averageType,
+                           values[i].runningProduct, values[i].pastFixings,
+                           fixingDates, payoff, exercise,
+                           values[i].s, values[i].q, values[i].r,
+                           today, values[i].v, values[i].result, calculated,
+                           values[i].tol);
         }
     }
 }
 
 
-CppUnit::Test* AsianOptionTest::suite() {
-    CppUnit::TestSuite* tests =
-        new CppUnit::TestSuite("Asian option tests");
-    tests->addTest(new CppUnit::TestCaller<AsianOptionTest>
-                   ("Testing discrete-averaging geometric Asian options",
-                    &AsianOptionTest::testGeometricDiscreteAverage));
-    return tests;
+test_suite* AsianOptionTest::suite() {
+    test_suite* suite = BOOST_TEST_SUITE("Asian option tests");
+    suite->add(
+          BOOST_TEST_CASE(&AsianOptionTest::testGeometricDiscreteAverage));
+    return suite;
 }
 

@@ -21,24 +21,13 @@
 #include <ql/MonteCarlo/getcovariance.hpp>
 #include <ql/Math/pseudosqrt.hpp>
 #include <ql/Math/sequencestatistics.hpp>
-#include <cppunit/TestSuite.h>
-#include <cppunit/TestCaller.h>
 
 using namespace QuantLib;
-
-CppUnit::Test* CovarianceTest::suite() {
-    CppUnit::TestSuite* tests =
-        new CppUnit::TestSuite("Covariance/correlation tests");
-    tests->addTest(new CppUnit::TestCaller<CovarianceTest>
-                   ("Testing correlation-salvaging algorithms",
-                    &CovarianceTest::testSalvagingCorrelation));
-    tests->addTest(new CppUnit::TestCaller<CovarianceTest>
-                   ("Testing covariance calculation",
-                    &CovarianceTest::testCovariance));
-    return tests;
-}
+using namespace boost::unit_test_framework;
 
 void CovarianceTest::testSalvagingCorrelation() {
+
+    BOOST_MESSAGE("Testing correlation-salvaging algorithms...");
 
     double expected, calculated;
 
@@ -64,18 +53,20 @@ void CovarianceTest::testSalvagingCorrelation() {
             expected   = goodCorr[i][j];
             calculated = calcCorr[i][j];
             if (QL_FABS(calculated-expected) > 1.0e-10)
-                CPPUNIT_FAIL("SalvagingCorrelation with spectral alg"
-                             "cor[" + IntegerFormatter::toString(i) + "]"
-                             "[" + IntegerFormatter::toString(j) + "]:\n"
-                             "    calculated: "
-                             + DoubleFormatter::toString(calculated,16) + "\n"
-                             "    expected:   "
-                             + DoubleFormatter::toString(expected,16));
+                BOOST_FAIL("SalvagingCorrelation with spectral alg"
+                           "cor[" + IntegerFormatter::toString(i) + "]"
+                           "[" + IntegerFormatter::toString(j) + "]:\n"
+                           "    calculated: "
+                           + DoubleFormatter::toString(calculated,16) + "\n"
+                           "    expected:   "
+                           + DoubleFormatter::toString(expected,16));
         }
     }
 }
 
 void CovarianceTest::testCovariance() {
+
+    BOOST_MESSAGE("Testing covariance calculation...");
 
     double data00[] = { 3.0,  9.0 };
     double data01[] = { 2.0,  7.0 };
@@ -120,24 +111,24 @@ void CovarianceTest::testCovariance() {
             expected   =  expCor[i][j];
             calculated = calcCor[i][j];
             if (QL_FABS(calculated-expected) > 1.0e-10)
-                CPPUNIT_FAIL("SequenceStatistics "
-                             "cor[" + IntegerFormatter::toString(i) + "]"
-                             "[" + IntegerFormatter::toString(j) + "]:\n"
-                             "    calculated: "
-                             + DoubleFormatter::toString(calculated,16) + "\n"
-                             "    expected:   "
-                             + DoubleFormatter::toString(expected,16));
+                BOOST_FAIL("SequenceStatistics "
+                           "cor[" + IntegerFormatter::toString(i) + "]"
+                           "[" + IntegerFormatter::toString(j) + "]:\n"
+                           "    calculated: "
+                           + DoubleFormatter::toString(calculated,16) + "\n"
+                           "    expected:   "
+                           + DoubleFormatter::toString(expected,16));
 
             expected   =  expCov[i][j];
             calculated = calcCov[i][j];
             if (QL_FABS(calculated-expected) > 1.0e-10)
-                CPPUNIT_FAIL("SequenceStatistics "
-                             "cov[" + IntegerFormatter::toString(i) + "]"
-                             "[" + IntegerFormatter::toString(j) + "]:\n"
-                             "    calculated: "
-                             + DoubleFormatter::toString(calculated,16) + "\n"
-                             "    expected:   "
-                             + DoubleFormatter::toString(expected,16));
+                BOOST_FAIL("SequenceStatistics "
+                           "cov[" + IntegerFormatter::toString(i) + "]"
+                           "[" + IntegerFormatter::toString(j) + "]:\n"
+                           "    calculated: "
+                           + DoubleFormatter::toString(calculated,16) + "\n"
+                           "    expected:   "
+                           + DoubleFormatter::toString(expected,16));
         }
     }
 
@@ -148,15 +139,23 @@ void CovarianceTest::testCovariance() {
             double calculated = calcCov[i][j],
                    expected   = expCov[i][j];
             if (QL_FABS(calculated-expected) > 1.0e-10) {
-                CPPUNIT_FAIL("getCovariance "
-                             "cov[" + IntegerFormatter::toString(i) + "]"
-                             "[" + IntegerFormatter::toString(j) + "]:\n"
-                             "    calculated: "
-                             + DoubleFormatter::toString(calculated,11) + "\n"
-                             "    expected:   "
-                             + DoubleFormatter::toString(expected,11));
+                BOOST_FAIL("getCovariance "
+                           "cov[" + IntegerFormatter::toString(i) + "]"
+                           "[" + IntegerFormatter::toString(j) + "]:\n"
+                           "    calculated: "
+                           + DoubleFormatter::toString(calculated,11) + "\n"
+                           "    expected:   "
+                           + DoubleFormatter::toString(expected,11));
             }
         }
     }
+}
+
+
+test_suite* CovarianceTest::suite() {
+    test_suite* suite = BOOST_TEST_SUITE("Covariance/correlation tests");
+    suite->add(BOOST_TEST_CASE(&CovarianceTest::testSalvagingCorrelation));
+    suite->add(BOOST_TEST_CASE(&CovarianceTest::testCovariance));
+    return suite;
 }
 

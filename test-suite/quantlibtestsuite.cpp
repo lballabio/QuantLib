@@ -1,7 +1,6 @@
 
 /*
- Copyright (C) 2003, 2004 Ferdinando Ametrano
- Copyright (C) 2003 RiskMap srl
+ Copyright (C) 2004 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -16,15 +15,8 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include <cppunit/ui/text/TestRunner.h>
-#include <cppunit/TestResult.h>
-
 #include <ql/qldefines.hpp>
-
-#include <iostream>
-#include <string>
-
-#include "qltestlistener.hpp"
+#include <boost/test/unit_test.hpp>
 
 #include "americanoption.hpp"
 #include "asianoptions.hpp"
@@ -45,65 +37,63 @@
 #include "interpolations.hpp"
 #include "jumpdiffusion.hpp"
 #include "lowdiscrepancysequences.hpp"
-#include "marketelements.hpp"
 #include "matrices.hpp"
 #include "mersennetwister.hpp"
 #include "operators.hpp"
 #include "piecewiseflatforward.hpp"
+#include "quotes.hpp"
 #include "riskstats.hpp"
 #include "solvers.hpp"
 #include "stats.hpp"
 #include "swap.hpp"
 #include "swaption.hpp"
 #include "termstructures.hpp"
+// to be deprecated
 #include "old_pricers.hpp"
 
-int main() {
-    CppUnit::TextUi::TestRunner runner;
-    QLTestListener qlListener;
-    runner.eventManager().addListener(&qlListener);
+using namespace boost::unit_test_framework;
 
-    runner.addTest(AmericanOptionTest::suite());
-    runner.addTest(AsianOptionTest::suite());
-    runner.addTest(BarrierOptionTest::suite());
-    runner.addTest(BasketOptionTest::suite());
-    runner.addTest(new CalendarTest);
-    runner.addTest(CapFloorTest::suite());
-    runner.addTest(CompoundForwardTest::suite());
-    runner.addTest(CovarianceTest::suite());
-    runner.addTest(new DateTest);
-    runner.addTest(DayCounterTest::suite());
-    runner.addTest(DigitalOptionTest::suite());
-    runner.addTest(DistributionTest::suite());
-    runner.addTest(EuropeanOptionTest::suite());
-    runner.addTest(FactorialTest::suite());
-    runner.addTest(InstrumentTest::suite());
-    runner.addTest(IntegralTest::suite());
-    runner.addTest(InterpolationTest::suite());
-    runner.addTest(JumpDiffusionTest::suite());
-    runner.addTest(LDSTest::suite());
-    runner.addTest(MarketElementTest::suite());
-    runner.addTest(MatricesTest::suite());
-    runner.addTest(new MersenneTwisterTest());
-    runner.addTest(new OperatorTest);
-    runner.addTest(PiecewiseFlatForwardTest::suite());
-    runner.addTest(new RiskStatisticsTest);
-    runner.addTest(SimpleSwapTest::suite());
-    runner.addTest(new Solver1DTest);
-    runner.addTest(StatisticsTest::suite());
-    runner.addTest(SwaptionTest::suite());
-    runner.addTest(TermStructureTest::suite());
-
-    // to be deprecated
-    runner.addTest(OldPricerTest::suite());
+test_suite* init_unit_test_suite(int argc, char* argv[]) {
 
     std::string header = "Testing QuantLib " QL_VERSION;
+    std::string rule = std::string(header.length(),'=');
 
-    std::cerr << std::string(header.length(),'=') << std::endl;
-    std::cerr << header << std::endl;
-    std::cerr << std::string(header.length(),'=');
-    std::cerr.flush();
-    bool succeeded = runner.run();
-    return succeeded ? 0 : 1;
+    BOOST_MESSAGE(rule);
+    BOOST_MESSAGE(header);
+    BOOST_MESSAGE(rule);
+    test_suite* test = BOOST_TEST_SUITE("QuantLib test suite");
+    test->add(AmericanOptionTest::suite());
+    test->add(AsianOptionTest::suite());
+    test->add(BarrierOptionTest::suite());
+    test->add(BasketOptionTest::suite());
+    test->add(CalendarTest::suite());
+    test->add(CapFloorTest::suite());
+    test->add(CompoundForwardTest::suite());
+    test->add(CovarianceTest::suite());
+    test->add(DateTest::suite());
+    test->add(DayCounterTest::suite());
+    test->add(DigitalOptionTest::suite());
+    test->add(DistributionTest::suite());
+    test->add(EuropeanOptionTest::suite());
+    test->add(FactorialTest::suite());
+    test->add(InstrumentTest::suite());
+    test->add(IntegralTest::suite());
+    test->add(InterpolationTest::suite());
+    test->add(JumpDiffusionTest::suite());
+    test->add(LowDiscrepancyTest::suite());
+    test->add(MatricesTest::suite());
+    test->add(MersenneTwisterTest::suite());
+    test->add(OperatorTest::suite());
+    test->add(PiecewiseFlatForwardTest::suite());
+    test->add(QuoteTest::suite());
+    test->add(RiskStatisticsTest::suite());
+    test->add(Solver1DTest::suite());
+    test->add(StatisticsTest::suite());
+    test->add(SwapTest::suite());
+    test->add(SwaptionTest::suite());
+    test->add(TermStructureTest::suite());
+    // to be deprecated
+    test->add(OldPricerTest::suite());
+    return test;
 }
 

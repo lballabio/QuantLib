@@ -22,10 +22,9 @@
 #include <ql/Math/kronrodintegral.hpp>
 #include <ql/Math/normaldistribution.hpp>
 #include <ql/Math/functional.hpp>
-#include <cppunit/TestSuite.h>
-#include <cppunit/TestCaller.h>
 
 using namespace QuantLib;
+using namespace boost::unit_test_framework;
 
 namespace {
 
@@ -36,7 +35,7 @@ namespace {
                     const F& f, double xMin, double xMax, double expected) {
         double calculated = I(f,xMin,xMax);
         if (QL_FABS(calculated-expected) > tolerance) {
-            CPPUNIT_FAIL(
+            BOOST_FAIL(
                 "integrating " + tag +
                 "    calculated: " + DoubleFormatter::toString(calculated) +
                 "    expected:   " + DoubleFormatter::toString(expected));
@@ -61,42 +60,38 @@ namespace {
 }
 
 void IntegralTest::testSegment() {
+    BOOST_MESSAGE("Testing segment integration...");
     testSeveral(SegmentIntegral(10000));
 }
 
 void IntegralTest::testTrapezoid() {
+    BOOST_MESSAGE("Testing trapezoid integration...");
     testSeveral(TrapezoidIntegral(tolerance));
 }
 
 void IntegralTest::testMidPointTrapezoid() {
+    BOOST_MESSAGE("Testing mid-point trapezoid integration...");
     testSeveral(TrapezoidIntegral(tolerance,TrapezoidIntegral::MidPoint));
 }
 
 void IntegralTest::testSimpson() {
+    BOOST_MESSAGE("Testing Simpson integration...");
     testSeveral(SimpsonIntegral(tolerance));
 }
 
 void IntegralTest::testKronrod() {
+    BOOST_MESSAGE("Testing Gauss-Kronrod integration...");
     testSeveral(KronrodIntegral(tolerance));
 }
 
-CppUnit::Test* IntegralTest::suite() {
-    CppUnit::TestSuite* tests = new CppUnit::TestSuite("Integration tests");
-    tests->addTest(new CppUnit::TestCaller<IntegralTest>
-                   ("Testing segment integration",
-                    &IntegralTest::testSegment));
-    tests->addTest(new CppUnit::TestCaller<IntegralTest>
-                   ("Testing trapezoid integration",
-                    &IntegralTest::testTrapezoid));
-    tests->addTest(new CppUnit::TestCaller<IntegralTest>
-                   ("Testing mid-point trapezoid integration",
-                    &IntegralTest::testMidPointTrapezoid));
-    tests->addTest(new CppUnit::TestCaller<IntegralTest>
-                   ("Testing Simpson integration",
-                    &IntegralTest::testSimpson));
-    tests->addTest(new CppUnit::TestCaller<IntegralTest>
-                   ("Testing Gauss-Kronrod integration",
-                    &IntegralTest::testKronrod));
-    return tests;
+
+test_suite* IntegralTest::suite() {
+    test_suite* suite = BOOST_TEST_SUITE("Integration tests");
+    suite->add(BOOST_TEST_CASE(&IntegralTest::testSegment));
+    suite->add(BOOST_TEST_CASE(&IntegralTest::testTrapezoid));
+    suite->add(BOOST_TEST_CASE(&IntegralTest::testMidPointTrapezoid));
+    suite->add(BOOST_TEST_CASE(&IntegralTest::testSimpson));
+    suite->add(BOOST_TEST_CASE(&IntegralTest::testKronrod));
+    return suite;
 }
 

@@ -18,12 +18,12 @@
 #ifndef quantlib_test_operators_hpp
 #define quantlib_test_operators_hpp
 
-#include <cppunit/TestCase.h>
+#include <boost/test/unit_test.hpp>
 
-class OperatorTest : public CppUnit::TestCase {
+class OperatorTest {
   public:
-    OperatorTest() : CppUnit::TestCase("Testing differential operators") {}
-    void runTest();
+    static void testConsistency();
+    static boost::unit_test_framework::test_suite* suite();
 };
 
 

@@ -18,15 +18,15 @@
 #ifndef quantlib_test_factorial_hpp
 #define quantlib_test_factorial_hpp
 
-#include <cppunit/TestCase.h>
-#include <cppunit/TestFixture.h>
+#include <boost/test/unit_test.hpp>
 
-class FactorialTest : public CppUnit::TestFixture {
+class FactorialTest {
   public:
-    void testFactorial();
-    void testGammaFunction();
-    void testPoissonDistribution();
-    static CppUnit::Test* suite();
+    static void testFactorial();
+    static void testGammaFunction();
+    static void testPoissonDistribution();
+    static boost::unit_test_framework::test_suite* suite();
 };
+
 
 #endif

@@ -23,13 +23,60 @@
 #include <ql/PricingEngines/Vanilla/bjerksundstenslandengine.hpp>
 #include <ql/TermStructures/flatforward.hpp>
 #include <ql/Volatilities/blackconstantvol.hpp>
-#include <cppunit/TestSuite.h>
-#include <cppunit/TestCaller.h>
 #include <map>
 
 using namespace QuantLib;
+using namespace boost::unit_test_framework;
+
+#define REPORT_FAILURE(greekName, payoff, exercise, s, q, r, today, \
+                       v, expected, calculated, error, tolerance) \
+    BOOST_FAIL(exerciseTypeToString(exercise) + " " \
+               + OptionTypeFormatter::toString(payoff->optionType()) + \
+               " option with " \
+               + payoffTypeToString(payoff) + " payoff:\n" \
+               "    spot value: " \
+               + DoubleFormatter::toString(s) + "\n" \
+               "    strike:           " \
+               + DoubleFormatter::toString(payoff->strike()) +"\n" \
+               "    dividend yield:   " \
+               + DoubleFormatter::toString(q) + "\n" \
+               "    risk-free rate:   " \
+               + DoubleFormatter::toString(r) + "\n" \
+               "    reference date:   " \
+               + DateFormatter::toString(today) + "\n" \
+               "    maturity:         " \
+               + DateFormatter::toString(exercise->lastDate()) + "\n" \
+               "    volatility:       " \
+               + DoubleFormatter::toString(v) + "\n\n" \
+               "    expected   " + greekName + ": " \
+               + DoubleFormatter::toString(expected) + "\n" \
+               "    calculated " + greekName + ": " \
+               + DoubleFormatter::toString(calculated) + "\n" \
+               "    error:            " \
+               + DoubleFormatter::toString(error) + "\n" \
+               "    tolerance:        " \
+               + DoubleFormatter::toString(tolerance));
+
+namespace {
+
+    struct AmericanOptionData {
+        Option::Type type;
+        double strike;
+        double s;      // spot
+        double q;      // dividend
+        double r;      // risk-free rate
+        Time t;        // time to maturity
+        double v;      // volatility
+        double result; // expected result
+        double tol;    // tolerance
+    };
+
+}
 
 void AmericanOptionTest::testBaroneAdesiWhaleyValues() {
+
+    BOOST_MESSAGE("Testing Barone-Adesi and Whaley approximation "
+                  "for American options...");
 
     /* The data below are from
        "Option pricing formulas", E.G. Haug, McGraw-Hill 1998
@@ -40,7 +87,7 @@ void AmericanOptionTest::testBaroneAdesiWhaleyValues() {
        C++ implementation
 
     */
-    VanillaOptionData values[] = {
+    AmericanOptionData values[] = {
         //        type, strike,   spot,    q,    r,    t,  vol,   value, tol
         { Option::Call, 100.00,  90.00, 0.10, 0.10, 0.10, 0.15,  0.0206, 1e-2 },
         { Option::Call, 100.00, 100.00, 0.10, 0.10, 0.10, 0.15,  1.8771, 1e-2 },
@@ -79,8 +126,6 @@ void AmericanOptionTest::testBaroneAdesiWhaleyValues() {
         { Option::Put,  100.00, 100.00, 0.10, 0.10, 0.50, 0.35,  9.5104, 1e-2 },
         { Option::Put,  100.00, 110.00, 0.10, 0.10, 0.50, 0.35,  5.8823, 1e-2 }
     };
-
-
 
     DayCounter dc = Actual360();
     boost::shared_ptr<SimpleQuote> spot(new SimpleQuote(0.0));
@@ -123,9 +168,9 @@ void AmericanOptionTest::testBaroneAdesiWhaleyValues() {
         double calculated = option.NPV();
         double error = QL_FABS(calculated-values[i].result);
         if (error > values[i].tol) {
-            vanillaOptionTestFailed("value", payoff, exercise, values[i].s, values[i].q,
-                values[i].r, today, dc, values[i].v, values[i].result, calculated,
-                error, values[i].tol);
+            REPORT_FAILURE("value", payoff, exercise, values[i].s, values[i].q,
+                           values[i].r, today, values[i].v, values[i].result, 
+                           calculated, error, values[i].tol);
         }
     }
 
@@ -134,7 +179,10 @@ void AmericanOptionTest::testBaroneAdesiWhaleyValues() {
 
 void AmericanOptionTest::testBjerksundStenslandValues() {
 
-    VanillaOptionData values[] = {
+    BOOST_MESSAGE("Testing Bjerksund and Stensland approximation "
+                  "for American options...");
+
+    AmericanOptionData values[] = {
           //      type, strike,   spot,    q,    r,    t,  vol,   value, tol
           // from "Option pricing formulas", Haug, McGraw-Hill 1998, pag 27
         { Option::Call,  40.00,  42.00, 0.08, 0.04, 0.75, 0.35,  5.2704, 1e-4 },
@@ -182,26 +230,21 @@ void AmericanOptionTest::testBjerksundStenslandValues() {
         double calculated = option.NPV();
         double error = QL_FABS(calculated-values[i].result);
         if (error > values[i].tol) {
-            vanillaOptionTestFailed("value", payoff, exercise, values[i].s, values[i].q,
-                values[i].r, today, dc, values[i].v, values[i].result, calculated,
-                error, values[i].tol);
+            REPORT_FAILURE("value", payoff, exercise, values[i].s, values[i].q,
+                           values[i].r, today, values[i].v, values[i].result, 
+                           calculated, error, values[i].tol);
         }
     }
 
 }
 
 
-CppUnit::Test* AmericanOptionTest::suite() {
-    CppUnit::TestSuite* tests =
-        new CppUnit::TestSuite("American option tests");
-
-    tests->addTest(new CppUnit::TestCaller<AmericanOptionTest>
-        ("Testing Bjerksund and Stensland approximation for American options",
-        &AmericanOptionTest::testBjerksundStenslandValues));
-    tests->addTest(new CppUnit::TestCaller<AmericanOptionTest>
-        ("Testing Barone-Adesi and Whaley approximation for American options",
-        &AmericanOptionTest::testBaroneAdesiWhaleyValues));
-
-    return tests;
+test_suite* AmericanOptionTest::suite() {
+    test_suite* suite = BOOST_TEST_SUITE("American option tests");
+    suite->add(
+          BOOST_TEST_CASE(&AmericanOptionTest::testBaroneAdesiWhaleyValues));
+    suite->add(
+          BOOST_TEST_CASE(&AmericanOptionTest::testBjerksundStenslandValues));
+    return suite;
 }
 

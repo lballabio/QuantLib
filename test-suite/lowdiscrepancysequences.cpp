@@ -23,8 +23,6 @@
 #include <ql/RandomNumbers/primitivepolynomials.h>
 #include <ql/Math/sequencestatistics.hpp>
 #include <ql/Math/discrepancystatistics.hpp>
-#include <cppunit/TestSuite.h>
-#include <cppunit/TestCaller.h>
 
 // #define PRINT_ONLY
 #ifdef PRINT_ONLY
@@ -32,51 +30,12 @@
 #endif
 
 using namespace QuantLib;
+using namespace boost::unit_test_framework;
 
-CppUnit::Test* LDSTest::suite() {
-    CppUnit::TestSuite* tests =
-        new CppUnit::TestSuite("Low discrepancy sequences' tests");
+void LowDiscrepancyTest::testPolynomialsModuloTwo() {
 
-    tests->addTest(new CppUnit::TestCaller<LDSTest>
-                   ("Testing Mersenne twister discrepancy",
-                    &LDSTest::testMersenneTwisterDiscrepancy));
-
-    tests->addTest(new CppUnit::TestCaller<LDSTest>
-                   ("Testing Halton sequences",
-                    &LDSTest::testHalton));
-    tests->addTest(new CppUnit::TestCaller<LDSTest>
-                   ("Testing plain Halton discrepancy",
-                    &LDSTest::testPlainHaltonDiscrepancy));
-    tests->addTest(new CppUnit::TestCaller<LDSTest>
-                   ("Testing random-start Halton discrepancy",
-                    &LDSTest::testRandomStartHaltonDiscrepancy));
-    tests->addTest(new CppUnit::TestCaller<LDSTest>
-                   ("Testing random-shift Halton discrepancy",
-                    &LDSTest::testRandomShiftHaltonDiscrepancy));
-    tests->addTest(new CppUnit::TestCaller<LDSTest>
-                   ("Testing random-start, random-shift Halton discrepancy",
-                    &LDSTest::testRandomStartRandomShiftHaltonDiscrepancy));
-
-    tests->addTest(new CppUnit::TestCaller<LDSTest>
-        ("Testing " + IntegerFormatter::toString(PPMT_MAX_DIM) +
-         " primitive polynomials modulo two",
-                    &LDSTest::testPolynomialsModuloTwo));
-    tests->addTest(new CppUnit::TestCaller<LDSTest>
-                   ("Testing Sobol sequences up to dimension " +
-                    IntegerFormatter::toString(PPMT_MAX_DIM),
-                    &LDSTest::testSobol));
-    tests->addTest(new CppUnit::TestCaller<LDSTest>
-                   ("Testing Jäckel-Sobol discrepancy",
-                    &LDSTest::testJackelSobolDiscrepancy));
-    tests->addTest(new CppUnit::TestCaller<LDSTest>
-                   ("Testing unit Sobol discrepancy",
-                    &LDSTest::testUnitSobolDiscrepancy));
-
-    return tests;
-}
-
-
-void LDSTest::testPolynomialsModuloTwo() {
+    BOOST_MESSAGE("Testing " + IntegerFormatter::toString(PPMT_MAX_DIM) +
+                  " primitive polynomials modulo two...");
 
     static const unsigned long jj[] = {
                  1,       1,       2,       2,       6,       6,      18,
@@ -96,10 +55,10 @@ void LDSTest::testPolynomialsModuloTwo() {
         if (polynomial==-1) {
             --n;
             if (j!=jj[i]) {
-                CPPUNIT_FAIL("Only " + IntegerFormatter::toString(j)
-                    + " polynomials in degree "
-                    + IntegerFormatter::toString(i+1) + " instead of "
-                    + IntegerFormatter::toString(jj[i]));
+                BOOST_FAIL("Only " + IntegerFormatter::toString(j)
+                           + " polynomials in degree "
+                           + IntegerFormatter::toString(i+1) + " instead of "
+                           + IntegerFormatter::toString(jj[i]));
             }
         }
         ++j; // Increase index of polynomial in degree i+1
@@ -109,7 +68,10 @@ void LDSTest::testPolynomialsModuloTwo() {
 }
 
 
-void LDSTest::testSobol() {
+void LowDiscrepancyTest::testSobol() {
+
+    BOOST_MESSAGE("Testing Sobol sequences up to dimension " +
+                  IntegerFormatter::toString(PPMT_MAX_DIM) + "...");
 
     Array point;
 
@@ -121,11 +83,11 @@ void LDSTest::testSobol() {
     for (i=0; i<points; i++) {
         point = rsg.nextSequence().value;
         if (point.size()!=dimensionality) {
-            CPPUNIT_FAIL("Sobol sequence generator returns "
-                         " a sequence of wrong dimensionality: " +
-                         IntegerFormatter::toString(point.size())
-                         + " instead of  " +
-                         IntegerFormatter::toString(dimensionality));
+            BOOST_FAIL("Sobol sequence generator returns "
+                       " a sequence of wrong dimensionality: " +
+                       IntegerFormatter::toString(point.size())
+                       + " instead of  " +
+                       IntegerFormatter::toString(dimensionality));
         }
     }
 
@@ -145,13 +107,13 @@ void LDSTest::testSobol() {
         mean = stat.mean();
         for (i=0; i<dimensionality; i++) {
             if (mean[i] != 0.5) {
-                CPPUNIT_FAIL(IntegerFormatter::toOrdinal(i+1) +
-                             " dimension mean (" +
-                             DoubleFormatter::toString(mean[i]) +
-                             ") at the end of the " +
-                             IntegerFormatter::toOrdinal(j+1) +
-                             " cycle in Sobol sequence is not " +
-                             DoubleFormatter::toString(0.5));
+                BOOST_FAIL(IntegerFormatter::toOrdinal(i+1) +
+                           " dimension mean (" +
+                           DoubleFormatter::toString(mean[i]) +
+                           ") at the end of the " +
+                           IntegerFormatter::toOrdinal(j+1) +
+                           " cycle in Sobol sequence is not " +
+                           DoubleFormatter::toString(0.5));
             }
         }
     }
@@ -177,20 +139,22 @@ void LDSTest::testSobol() {
     for (i=0; i<points; i++) {
         point = rsg .nextSequence().value;
         if (point[0]!=vanderCorputSequenceModuloTwo[i]) {
-            CPPUNIT_FAIL(IntegerFormatter::toOrdinal(i+1) +
-                         " draw (" +
-                         DoubleFormatter::toString(point[0]) +
-                         ") in 1-D Sobol sequence is not in the "
-                         "van der Corput sequence modulo two: " +
-                         "it should have been " +
-                         DoubleFormatter::toString(
-                             vanderCorputSequenceModuloTwo[i]));
+            BOOST_FAIL(IntegerFormatter::toOrdinal(i+1) +
+                       " draw (" +
+                       DoubleFormatter::toString(point[0]) +
+                       ") in 1-D Sobol sequence is not in the "
+                       "van der Corput sequence modulo two: " +
+                       "it should have been " +
+                       DoubleFormatter::toString(
+                                           vanderCorputSequenceModuloTwo[i]));
         }
     }
 }
 
 
-void LDSTest::testHalton() {
+void LowDiscrepancyTest::testHalton() {
+
+    BOOST_MESSAGE("Testing Halton sequences...");
 
     Array point;
     // testing "high" dimensionality
@@ -200,11 +164,11 @@ void LDSTest::testHalton() {
     for (i=0; i<points; i++) {
         point = rsg.nextSequence().value;
         if (point.size()!=dimensionality) {
-            CPPUNIT_FAIL("Halton sequence generator returns "
-                         " a sequence of wrong dimensionality: " +
-                         IntegerFormatter::toString(point.size())
-                         + " instead of  " +
-                         IntegerFormatter::toString(dimensionality));
+            BOOST_FAIL("Halton sequence generator returns "
+                       " a sequence of wrong dimensionality: " +
+                       IntegerFormatter::toString(point.size())
+                       + " instead of  " +
+                       IntegerFormatter::toString(dimensionality));
         }
     }
 
@@ -229,14 +193,14 @@ void LDSTest::testHalton() {
     for (i=0; i<points; i++) {
         point = rsg.nextSequence().value;
         if (point[0]!=vanderCorputSequenceModuloTwo[i]) {
-            CPPUNIT_FAIL(IntegerFormatter::toOrdinal(i+1) +
-                         " draw (" +
-                         DoubleFormatter::toString(point[0]) +
-                         ") in 1-D Halton sequence is not in the "
-                         "van der Corput sequence modulo two: " +
-                         "it should have been " +
-                         DoubleFormatter::toString(
-                             vanderCorputSequenceModuloTwo[i]));
+            BOOST_FAIL(IntegerFormatter::toOrdinal(i+1) +
+                       " draw (" +
+                       DoubleFormatter::toString(point[0]) +
+                       ") in 1-D Halton sequence is not in the "
+                       "van der Corput sequence modulo two: " +
+                       "it should have been " +
+                       DoubleFormatter::toString(
+                                           vanderCorputSequenceModuloTwo[i]));
         }
     }
 
@@ -257,26 +221,26 @@ void LDSTest::testHalton() {
     for (i=0; i<points; i++) {
         point = rsg .nextSequence().value;
         if (point[0]!=vanderCorputSequenceModuloTwo[i]) {
-            CPPUNIT_FAIL("First component of " +
-                         IntegerFormatter::toOrdinal(i+1) +
-                         " draw (" +
-                         DoubleFormatter::toString(point[0]) +
-                         ") in 2-D Halton sequence is not in the "
-                         "van der Corput sequence modulo two: " +
-                         "it should have been " +
-                         DoubleFormatter::toString(
-                             vanderCorputSequenceModuloTwo[i]));
+            BOOST_FAIL("First component of " +
+                       IntegerFormatter::toOrdinal(i+1) +
+                       " draw (" +
+                       DoubleFormatter::toString(point[0]) +
+                       ") in 2-D Halton sequence is not in the "
+                       "van der Corput sequence modulo two: " +
+                       "it should have been " +
+                       DoubleFormatter::toString(
+                                           vanderCorputSequenceModuloTwo[i]));
         }
         if (QL_FABS(point[1]-vanderCorputSequenceModuloThree[i])>1.0e-15) {
-            CPPUNIT_FAIL("Second component of " +
-                         IntegerFormatter::toOrdinal(i+1) +
-                         " draw (" +
-                         DoubleFormatter::toString(point[1]) +
-                         ") in 2-D Halton sequence is not in the "
-                         "van der Corput sequence modulo three: "
-                         "it should have been " +
-                         DoubleFormatter::toString(
-                             vanderCorputSequenceModuloThree[i]));
+            BOOST_FAIL("Second component of " +
+                       IntegerFormatter::toOrdinal(i+1) +
+                       " draw (" +
+                       DoubleFormatter::toString(point[1]) +
+                       ") in 2-D Halton sequence is not in the "
+                       "van der Corput sequence modulo three: "
+                       "it should have been " +
+                       DoubleFormatter::toString(
+                                         vanderCorputSequenceModuloThree[i]));
         }
     }
 
@@ -295,12 +259,12 @@ void LDSTest::testHalton() {
         }
         mean = stat.mean();
         if (mean[0] != 0.5) {
-            CPPUNIT_FAIL("First dimension mean (" +
-                         DoubleFormatter::toString(mean[0]) +
-                         ") at the end of the " +
-                         IntegerFormatter::toOrdinal(j+1) +
-                         " cycle in Halton sequence is not " +
-                         DoubleFormatter::toString(0.5));
+            BOOST_FAIL("First dimension mean (" +
+                       DoubleFormatter::toString(mean[0]) +
+                       ") at the end of the " +
+                       IntegerFormatter::toOrdinal(j+1) +
+                       " cycle in Halton sequence is not " +
+                       DoubleFormatter::toString(0.5));
         }
     }
 
@@ -316,12 +280,12 @@ void LDSTest::testHalton() {
         }
         mean = stat.mean();
         if (QL_FABS(mean[1]-0.5)>1e-16) {
-            CPPUNIT_FAIL("Second dimension mean (" +
-                         DoubleFormatter::toString(mean[1]) +
-                         ") at the end of the " +
-                         IntegerFormatter::toOrdinal(j+1) +
-                         " cycle in Halton sequence is not " +
-                         DoubleFormatter::toString(0.5));
+            BOOST_FAIL("Second dimension mean (" +
+                       DoubleFormatter::toString(mean[1]) +
+                       ") at the end of the " +
+                       IntegerFormatter::toOrdinal(j+1) +
+                       " cycle in Halton sequence is not " +
+                       DoubleFormatter::toString(0.5));
         }
     }
 
@@ -582,13 +546,9 @@ namespace {
 
     template <class T>
     void testGeneratorDiscrepancy(const T& generatorFactory,
-                                  const double * const discrepancy[8]
-                                  #ifdef PRINT_ONLY
-                                  ,
+                                  const double * const discrepancy[8],
                                   const std::string& fileName,
-                                  const std::string& arrayName
-                                  #endif
-                                  ) {
+                                  const std::string& arrayName) {
 
         Array point;
         unsigned long dim;
@@ -631,16 +591,16 @@ namespace {
                 outStream << DoubleFormatter::toExponential(discr, 2);
                 #else
                 if (QL_FABS(discr-discrepancy[i][j-jMin]) > tolerance*discr) {
-                    CPPUNIT_FAIL(generatorFactory.name() +
-                                 "discrepancy dimension " +
-                                 IntegerFormatter::toString(
-                                     dimensionality[i]) + " at " +
-                                 IntegerFormatter::toString(points) +
-                                 " samples is " +
-                                 DoubleFormatter::toExponential(discr,2) +
-                                 " instead of "+
-                                 DoubleFormatter::toExponential(
-                                     discrepancy[i][j-jMin], 2));
+                    BOOST_FAIL(generatorFactory.name() +
+                               "discrepancy dimension " +
+                               IntegerFormatter::toString(
+                                                 dimensionality[i]) + " at " +
+                               IntegerFormatter::toString(points) +
+                               " samples is " +
+                               DoubleFormatter::toExponential(discr,2) +
+                               " instead of "+
+                               DoubleFormatter::toExponential(
+                                                  discrepancy[i][j-jMin], 2));
                 }
                 #endif
             }
@@ -656,72 +616,9 @@ namespace {
 }
 
 
-// is this a print-only thing?!?
-void LDSTest::testTrueRandomNumberDiscrepancy() {
+void LowDiscrepancyTest::testMersenneTwisterDiscrepancy() {
 
-    const double * const         discrepancy[8]  = {
-        dim002Discr_True_Random, dim003Discr_True_Random,
-        dim005Discr_True_Random, dim010Discr_True_Random,
-        dim015Discr_True_Random, dim030Discr_True_Random,
-        dim050Discr_True_Random, dim100Discr_True_Random};
-
-    Array point;
-    unsigned long dim;
-    double trueRandomFactor, discr, tolerance=1e-2;
-    Size sampleLoops = Size(QL_MAX(7.0, double(minimumLoops)));
-
-    #ifdef PRINT_ONLY
-    std::ofstream outStream("TrueRandomDiscrepancy.txt");
-    #endif
-    for (int i = 0; i<8; i++) {
-        #ifdef PRINT_ONLY
-        outStream << std::endl;
-        #endif
-
-        dim = dimensionality[i];
-        DiscrepancyStatistics stat(dim);
-
-        trueRandomFactor = (1.0/QL_POW(2.0, int(dim))
-            -1.0/QL_POW(3.0, int(dim)));
-
-        Size j, jMin = 10;
-
-        // true random numbers
-        stat.reset();
-        #ifdef PRINT_ONLY
-        outStream << "static const double dim" << dim
-                  << "Discr_True_Random" << "[] = {" ;
-        #endif
-        for (j=jMin; j<jMin+sampleLoops; j++) {
-            Size points = Size(QL_POW(2.0, int(j)))-1;
-
-            discr = QL_SQRT(trueRandomFactor/points);
-
-            #ifdef PRINT_ONLY
-            if (j!=jMin)
-                outStream << ", ";
-            outStream << DoubleFormatter::toExponential(discr, 2);
-            #else
-            if(QL_FABS(discr-discrepancy[i][j-jMin])>tolerance*discr) {
-                CPPUNIT_FAIL("True random "
-                    "discrepancy dimension " +
-                    IntegerFormatter::toString(dimensionality[i]) + " at " +
-                    IntegerFormatter::toString(points) + " samples is " +
-                    DoubleFormatter::toExponential(discr, 2) + " instead of "+
-                    DoubleFormatter::toExponential(discrepancy[i][j-jMin], 2));
-            }
-            #endif
-        }
-        #ifdef PRINT_ONLY
-        outStream << "};" << std::endl;
-        #endif
-    }
-    #ifdef PRINT_ONLY
-    outStream.close();
-    #endif
-}
-
-void LDSTest::testMersenneTwisterDiscrepancy() {
+    BOOST_MESSAGE("Testing Mersenne twister discrepancy...");
 
     const double * const discrepancy[8] = {
         dim002DiscrMersenneTwis, dim003DiscrMersenneTwis,
@@ -731,16 +628,14 @@ void LDSTest::testMersenneTwisterDiscrepancy() {
     };
 
     testGeneratorDiscrepancy(MersenneFactory(),
-                             discrepancy
-                             #ifdef PRINT_ONLY
-                             ,
+                             discrepancy,
                              "MersenneDiscrepancy.txt",
-                             "DiscrMersenneTwis"
-                             #endif
-                             );
+                             "DiscrMersenneTwis");
 }
 
-void LDSTest::testPlainHaltonDiscrepancy() {
+void LowDiscrepancyTest::testPlainHaltonDiscrepancy() {
+
+    BOOST_MESSAGE("Testing plain Halton discrepancy...");
 
     const double * const discrepancy[8] = {
         dim002DiscrPlain_Halton, dim003DiscrPlain_Halton,
@@ -749,16 +644,14 @@ void LDSTest::testPlainHaltonDiscrepancy() {
         dim050DiscrPlain_Halton, dim100DiscrPlain_Halton};
 
     testGeneratorDiscrepancy(HaltonFactory(false,false),
-                             discrepancy
-                             #ifdef PRINT_ONLY
-                             ,
+                             discrepancy,
                              "PlainHaltonDiscrepancy.txt",
-                             "DiscrPlain_Halton"
-                             #endif
-                             );
+                             "DiscrPlain_Halton");
 }
 
-void LDSTest::testRandomStartHaltonDiscrepancy() {
+void LowDiscrepancyTest::testRandomStartHaltonDiscrepancy() {
+
+    BOOST_MESSAGE("Testing random-start Halton discrepancy...");
 
     const double * const discrepancy[8] = {
         dim002DiscrRStartHalton, dim003DiscrRStartHalton,
@@ -767,16 +660,14 @@ void LDSTest::testRandomStartHaltonDiscrepancy() {
         dim050DiscrRStartHalton, dim100DiscrRStartHalton};
 
     testGeneratorDiscrepancy(HaltonFactory(true,false),
-                             discrepancy
-                             #ifdef PRINT_ONLY
-                             ,
+                             discrepancy,
                              "RandomStartHaltonDiscrepancy.txt",
-                             "DiscrRStartHalton"
-                             #endif
-                             );
+                             "DiscrRStartHalton");
 }
 
-void LDSTest::testRandomShiftHaltonDiscrepancy() {
+void LowDiscrepancyTest::testRandomShiftHaltonDiscrepancy() {
+
+    BOOST_MESSAGE("Testing random-shift Halton discrepancy...");
 
     const double * const discrepancy[8] = {
         dim002DiscrRShiftHalton, dim003DiscrRShiftHalton,
@@ -785,16 +676,14 @@ void LDSTest::testRandomShiftHaltonDiscrepancy() {
         dim050DiscrRShiftHalton, dim100DiscrRShiftHalton};
 
     testGeneratorDiscrepancy(HaltonFactory(false,true),
-                             discrepancy
-                             #ifdef PRINT_ONLY
-                             ,
+                             discrepancy,
                              "RandomShiftHaltonDiscrepancy.txt",
-                             "DiscrRShiftHalton"
-                             #endif
-                             );
+                             "DiscrRShiftHalton");
 }
 
-void LDSTest::testRandomStartRandomShiftHaltonDiscrepancy() {
+void LowDiscrepancyTest::testRandomStartRandomShiftHaltonDiscrepancy() {
+
+    BOOST_MESSAGE("Testing random-start, random-shift Halton discrepancy...");
 
     const double * const discrepancy[8] = {
         dim002DiscrRStRShHalton, dim003DiscrRStRShHalton,
@@ -803,16 +692,14 @@ void LDSTest::testRandomStartRandomShiftHaltonDiscrepancy() {
         dim050DiscrRStRShHalton, dim100DiscrRStRShHalton};
 
     testGeneratorDiscrepancy(HaltonFactory(true,true),
-                             discrepancy
-                             #ifdef PRINT_ONLY
-                             ,
+                             discrepancy,
                              "RandomStartRandomShiftHaltonDiscrepancy.txt",
-                             "DiscrRStRShHalton"
-                             #endif
-                             );
+                             "DiscrRStRShHalton");
 }
 
-void LDSTest::testJackelSobolDiscrepancy() {
+void LowDiscrepancyTest::testJackelSobolDiscrepancy() {
+
+    BOOST_MESSAGE("Testing Jäckel-Sobol discrepancy...");
 
     const double * const discrepancy[8] = {
         dim002DiscrJackel_Sobol, dim003DiscrJackel_Sobol,
@@ -821,16 +708,14 @@ void LDSTest::testJackelSobolDiscrepancy() {
         dim050DiscrJackel_Sobol, dim100DiscrJackel_Sobol};
 
     testGeneratorDiscrepancy(SobolFactory(),
-                             discrepancy
-                             #ifdef PRINT_ONLY
-                             ,
+                             discrepancy,
                              "JackelSobolDiscrepancy.txt",
-                             "DiscrJackel_Sobol"
-                             #endif
-                             );
+                             "DiscrJackel_Sobol");
 }
 
-void LDSTest::testUnitSobolDiscrepancy() {
+void LowDiscrepancyTest::testUnitSobolDiscrepancy() {
+
+    BOOST_MESSAGE("Testing unit Sobol discrepancy...");
 
     const double * const discrepancy[8] = {
         dim002Discr__Unit_Sobol, dim003Discr__Unit_Sobol,
@@ -839,11 +724,29 @@ void LDSTest::testUnitSobolDiscrepancy() {
         dim050Discr__Unit_Sobol, dim100Discr__Unit_Sobol};
 
     testGeneratorDiscrepancy(SobolFactory(true),
-                             discrepancy
-                             #ifdef PRINT_ONLY
-                             ,
+                             discrepancy,
                              "UnitSobolDiscrepancy.txt",
-                             "Discr__Unit_Sobol"
-                             #endif
-                             );
+                             "Discr__Unit_Sobol");
+}
+
+
+test_suite* LowDiscrepancyTest::suite() {
+    test_suite* suite = BOOST_TEST_SUITE("Low-discrepancy sequence tests");
+    suite->add(BOOST_TEST_CASE(
+           &LowDiscrepancyTest::testMersenneTwisterDiscrepancy));
+    suite->add(BOOST_TEST_CASE(&LowDiscrepancyTest::testHalton));
+    suite->add(BOOST_TEST_CASE(
+           &LowDiscrepancyTest::testPlainHaltonDiscrepancy));
+    suite->add(BOOST_TEST_CASE(
+           &LowDiscrepancyTest::testRandomStartHaltonDiscrepancy));
+    suite->add(BOOST_TEST_CASE(
+           &LowDiscrepancyTest::testRandomShiftHaltonDiscrepancy));
+    suite->add(BOOST_TEST_CASE(
+           &LowDiscrepancyTest::testRandomStartRandomShiftHaltonDiscrepancy));
+    suite->add(BOOST_TEST_CASE(&LowDiscrepancyTest::testPolynomialsModuloTwo));
+    suite->add(BOOST_TEST_CASE(&LowDiscrepancyTest::testSobol));
+    suite->add(BOOST_TEST_CASE(
+           &LowDiscrepancyTest::testJackelSobolDiscrepancy));
+    suite->add(BOOST_TEST_CASE(&LowDiscrepancyTest::testUnitSobolDiscrepancy));
+    return suite;
 }

@@ -18,13 +18,12 @@
 #ifndef quantlib_test_instruments_hpp
 #define quantlib_test_instruments_hpp
 
-#include <cppunit/TestCase.h>
-#include <cppunit/TestFixture.h>
+#include <boost/test/unit_test.hpp>
 
-class InstrumentTest : public CppUnit::TestFixture {
+class InstrumentTest {
   public:
-    void testObservable();
-    static CppUnit::Test* suite();
+    static void testObservable();
+    static boost::unit_test_framework::test_suite* suite();
 };
 
 

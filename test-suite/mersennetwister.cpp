@@ -20,8 +20,11 @@
 #include <ql/dataformatters.hpp>
 
 using namespace QuantLib;
+using namespace boost::unit_test_framework;
 
-void MersenneTwisterTest::runTest() {
+void MersenneTwisterTest::testValues() {
+
+    BOOST_MESSAGE("Testing Mersenne twister...");
 
     // the following numbers are provided by MT authors in order
     // to check any actual implementation of MT
@@ -441,20 +444,27 @@ void MersenneTwisterTest::runTest() {
 
     for (i=0; i<1000; i++) {
         if (referenceLongValues[i] != mt19937.nextInt32()) {
-            CPPUNIT_FAIL("Mersenne Twister test failed at index "
-                         + IntegerFormatter::toString(i));
+            BOOST_FAIL("Mersenne Twister test failed at index "
+                       + IntegerFormatter::toString(i));
         }
     }
     for (i=0; i<1000; i++) {
         double e = QL_FABS(referenceValues[i] -
                            mt19937.next().value);
         if (e > 1.0e-8) {
-            CPPUNIT_FAIL("Mersenne Twister test failed at index: "
-                         + IntegerFormatter::toString(i) + "\n"
-                         "error: "
-                         + DoubleFormatter::toExponential(e,2));
+            BOOST_FAIL("Mersenne Twister test failed at index: "
+                       + IntegerFormatter::toString(i) + "\n"
+                       "error: "
+                       + DoubleFormatter::toExponential(e,2));
         }
     }
 
+}
+
+
+test_suite* MersenneTwisterTest::suite() {
+    test_suite* suite = BOOST_TEST_SUITE("Mersenne twister tests");
+    suite->add(BOOST_TEST_CASE(&MersenneTwisterTest::testValues));
+    return suite;
 }
 

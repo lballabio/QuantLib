@@ -26,6 +26,7 @@
 #include <ql/Solvers1D/newtonsafe.hpp>
 
 using namespace QuantLib;
+using namespace boost::unit_test_framework;
 
 namespace {
 
@@ -42,7 +43,7 @@ namespace {
         for (Size i=0; i<LENGTH(accuracy); i++) {
             double root = solver.solve(Foo(),accuracy[i],1.5,0.1);
             if (QL_FABS(root-expected) > accuracy[i]) {
-                CPPUNIT_FAIL(
+                BOOST_FAIL(
                     name + " solver:\n"
                     "    expected:   " 
                     + DoubleFormatter::toString(expected) + "\n"
@@ -53,7 +54,7 @@ namespace {
             }
             root = solver.solve(Foo(),accuracy[i],1.5,0.0,1.0);
             if (QL_FABS(root-expected) > accuracy[i]) {
-                CPPUNIT_FAIL(
+                BOOST_FAIL(
                     name + " solver (bracketed):\n"
                     "    expected:   " 
                     + DoubleFormatter::toString(expected) + "\n"
@@ -64,10 +65,12 @@ namespace {
             }
         }
     }
-                   
+
 }
 
-void Solver1DTest::runTest() {
+void Solver1DTest::testResults() {
+
+    BOOST_MESSAGE("Testing 1-D solvers...");
 
     test(Brent(),"Brent");
     test(Bisection(),"Bisection");
@@ -77,5 +80,12 @@ void Solver1DTest::runTest() {
     test(Newton(),"Newton");
     test(NewtonSafe(),"NewtonSafe");
 
+}
+
+
+test_suite* Solver1DTest::suite() {
+    test_suite* suite = BOOST_TEST_SUITE("1-D solver tests");
+    suite->add(BOOST_TEST_CASE(&Solver1DTest::testResults));
+    return suite;
 }
 

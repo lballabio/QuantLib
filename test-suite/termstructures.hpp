@@ -18,19 +18,17 @@
 #ifndef quantlib_test_term_structures_hpp
 #define quantlib_test_term_structures_hpp
 
-#include <cppunit/TestCase.h>
-#include <cppunit/TestFixture.h>
+#include <boost/test/unit_test.hpp>
 
-class TermStructureTest : public CppUnit::TestFixture {
+class TermStructureTest {
   public:
-    void setUp();
-    void testImplied();
-    void testImpliedObs();
-    void testFSpreaded();
-    void testFSpreadedObs();
-    void testZSpreaded();
-    void testZSpreadedObs();
-    static CppUnit::Test* suite();
+    static void testImplied();
+    static void testImpliedObs();
+    static void testFSpreaded();
+    static void testFSpreadedObs();
+    static void testZSpreaded();
+    static void testZSpreadedObs();
+    static boost::unit_test_framework::test_suite* suite();
 };
 
 

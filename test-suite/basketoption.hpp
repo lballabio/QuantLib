@@ -18,16 +18,15 @@
 #ifndef quantlib_test_basket_option_hpp
 #define quantlib_test_basket_option_hpp
 
-#include <cppunit/TestCase.h>
-#include <cppunit/TestFixture.h>
+#include <boost/test/unit_test.hpp>
 
-class BasketOptionTest : public CppUnit::TestFixture {
-  public:    
-    void testEuroTwoValues();   
-    void testBarraquandThreeValues();   
-    void testTavellaValues();
-    void testOneDAmericanValues();
-    static CppUnit::Test* suite();
+class BasketOptionTest {
+  public:
+    static void testEuroTwoValues();
+    static void testBarraquandThreeValues();
+    static void testTavellaValues();
+    static void testOneDAmericanValues();
+    static boost::unit_test_framework::test_suite* suite();
 };
 
 

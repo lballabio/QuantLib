@@ -18,17 +18,16 @@
 #ifndef quantlib_test_integrals_hpp
 #define quantlib_test_integrals_hpp
 
-#include <cppunit/TestCase.h>
-#include <cppunit/TestFixture.h>
+#include <boost/test/unit_test.hpp>
 
-class IntegralTest : public CppUnit::TestFixture {
+class IntegralTest {
   public:
-    void testSegment();
-    void testTrapezoid();
-    void testMidPointTrapezoid();
-    void testSimpson();
-    void testKronrod();
-    static CppUnit::Test* suite();
+    static void testSegment();
+    static void testTrapezoid();
+    static void testMidPointTrapezoid();
+    static void testSimpson();
+    static void testKronrod();
+    static boost::unit_test_framework::test_suite* suite();
 };
 
 

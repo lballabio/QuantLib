@@ -22,6 +22,7 @@
 #include <ql/FiniteDifferences/dplusdminus.hpp>
 
 using namespace QuantLib;
+using namespace boost::unit_test_framework;
 
 namespace {
 
@@ -29,7 +30,9 @@ namespace {
 
 }
 
-void OperatorTest::runTest() {
+void OperatorTest::testConsistency() {
+
+    BOOST_MESSAGE("Testing differential operators...");
 
     NormalDistribution normal(average,sigma);
     CumulativeNormalDistribution cum(average,sigma);
@@ -61,10 +64,9 @@ void OperatorTest::runTest() {
     if (e > 1.0e-6) {
         char s[10];
         QL_SPRINTF(s,"%5.2e",e);
-        CPPUNIT_FAIL(
-            "norm of 1st derivative of cum minus Gaussian: "
-            + std::string(s) + "\n"
-            "tolerance exceeded");
+        BOOST_FAIL("norm of 1st derivative of cum minus Gaussian: "
+                   + std::string(s) + "\n"
+                   "tolerance exceeded");
     }
 
     // check that the second derivative of cum is normal.derivative
@@ -75,10 +77,16 @@ void OperatorTest::runTest() {
     if (e > 1.0e-4) {
         char s[10];
         QL_SPRINTF(s,"%5.2e",e);
-        CPPUNIT_FAIL(
-            "norm of 2nd derivative of cum minus Gaussian derivative: "
-            + std::string(s) + "\n"
-            "tolerance exceeded");
+        BOOST_FAIL("norm of 2nd derivative of cum minus Gaussian derivative: "
+                   + std::string(s) + "\n"
+                   "tolerance exceeded");
     }
+}
+
+
+test_suite* OperatorTest::suite() {
+    test_suite* suite = BOOST_TEST_SUITE("Operator tests");
+    suite->add(BOOST_TEST_CASE(&OperatorTest::testConsistency));
+    return suite;
 }
 

@@ -23,10 +23,9 @@
 #include <ql/DayCounters/actual365.hpp>
 #include <ql/DayCounters/thirty360.hpp>
 #include <ql/PricingEngines/Swaption/blackswaption.hpp>
-#include <cppunit/TestSuite.h>
-#include <cppunit/TestCaller.h>
 
 using namespace QuantLib;
+using namespace boost::unit_test_framework;
 
 namespace {
 
@@ -77,30 +76,33 @@ namespace {
                   engine));
     }
 
-}
+    void initialize() {
+        today_ = Date::todaysDate();
+        settlementDays_ = 2;
+        fixingDays_ = 2;
+        nominal_ = 100.0;
+        rollingConvention_ = ModifiedFollowing;
+        fixedFrequency_ = 1;
+        floatingFrequency_ = 2;
+        fixedDayCount_ = Thirty360();
+        fixedIsAdjusted_ = false;
+        index_ = boost::shared_ptr<Xibor>(
+                                     new Euribor(12/floatingFrequency_,Months,
+                                                 termStructure_));
+        calendar_ = index_->calendar();
+        settlement_ = calendar_.advance(today_,settlementDays_,Days);
+        termStructure_.linkTo(
+          boost::shared_ptr<TermStructure>(new FlatForward(today_,settlement_,
+                                                           0.05,Actual365())));
+    }
 
-// tests
-
-void SwaptionTest::setUp() {
-    today_ = Date::todaysDate();
-    settlementDays_ = 2;
-    fixingDays_ = 2;
-    nominal_ = 100.0;
-    rollingConvention_ = ModifiedFollowing;
-    fixedFrequency_ = 1;
-    floatingFrequency_ = 2;
-    fixedDayCount_ = Thirty360();
-    fixedIsAdjusted_ = false;
-    index_ = boost::shared_ptr<Xibor>(new Euribor(12/floatingFrequency_,Months,
-                                                  termStructure_));
-    calendar_ = index_->calendar();
-    settlement_ = calendar_.advance(today_,settlementDays_,Days);
-    termStructure_.linkTo(
-        boost::shared_ptr<TermStructure>(new FlatForward(today_,settlement_,
-                                                         0.05,Actual365())));
 }
 
 void SwaptionTest::testStrikeDependency() {
+
+    BOOST_MESSAGE("Testing swaption dependency on strike...");
+
+    initialize();
 
     Rate strikes[] = { 0.03, 0.04, 0.05, 0.06, 0.07 };
 
@@ -128,7 +130,7 @@ void SwaptionTest::testStrikeDependency() {
                                            std::less<double>());
                     if (it != values.end()) {
                         int n = it - values.begin();
-                        CPPUNIT_FAIL(
+                        BOOST_FAIL(
                             "NPV is increasing with the strike "
                             "in a payer swaption: \n"
                             "    exercise date: " +
@@ -150,7 +152,7 @@ void SwaptionTest::testStrikeDependency() {
                                            std::greater<double>());
                     if (it != values.end()) {
                         int n = it - values.begin();
-                        CPPUNIT_FAIL(
+                        BOOST_FAIL(
                             "NPV is decreasing with the strike "
                             "in a receiver swaption: \n"
                             "    exercise date: " +
@@ -173,6 +175,10 @@ void SwaptionTest::testStrikeDependency() {
 }
 
 void SwaptionTest::testSpreadDependency() {
+
+    BOOST_MESSAGE("Testing swaption dependency on spread...");
+
+    initialize();
 
     Spread spreads[] = { -0.002, -0.001, 0.0, 0.001, 0.002 };
 
@@ -200,7 +206,7 @@ void SwaptionTest::testSpreadDependency() {
                                            std::greater<double>());
                     if (it != values.end()) {
                         int n = it - values.begin();
-                        CPPUNIT_FAIL(
+                        BOOST_FAIL(
                             "NPV is decreasing with the spread "
                             "in a payer swaption: \n"
                             "    exercise date: " +
@@ -222,7 +228,7 @@ void SwaptionTest::testSpreadDependency() {
                                            std::less<double>());
                     if (it != values.end()) {
                         int n = it - values.begin();
-                        CPPUNIT_FAIL(
+                        BOOST_FAIL(
                             "NPV is increasing with the spread "
                             "in a receiver swaption: \n"
                             "    exercise date: " +
@@ -245,6 +251,10 @@ void SwaptionTest::testSpreadDependency() {
 }
 
 void SwaptionTest::testSpreadTreatment() {
+
+    BOOST_MESSAGE("Testing swaption treatment of spread...");
+
+    initialize();
 
     Spread spreads[] = { -0.002, -0.001, 0.0, 0.001, 0.002 };
 
@@ -270,7 +280,7 @@ void SwaptionTest::testSpreadTreatment() {
                     boost::shared_ptr<Swaption> swaption2 =
                         makeSwaption(equivalentSwap,exerciseDate,0.20);
                     if (QL_FABS(swaption1->NPV()-swaption2->NPV()) > 1.0e-10)
-                        CPPUNIT_FAIL(
+                        BOOST_FAIL(
                             "wrong spread treatment: \n"
                             "    exercise date: " +
                             DateFormatter::toString(exerciseDate) + "\n"
@@ -293,6 +303,10 @@ void SwaptionTest::testSpreadTreatment() {
 
 void SwaptionTest::testCachedValue() {
 
+    BOOST_MESSAGE("Testing swaption value against cached value...");
+
+    initialize();
+
     today_ = Date(13,March,2002);
     settlement_ = Date(15,March,2002);
     termStructure_.linkTo(
@@ -306,7 +320,7 @@ void SwaptionTest::testCachedValue() {
     double cachedNPV = 3.639365179345;
 
     if (QL_FABS(swaption->NPV()-cachedNPV) > 1.0e-11)
-        CPPUNIT_FAIL(
+        BOOST_FAIL(
             "failed to reproduce cached swaption value:\n"
             "    calculated: " +
             DoubleFormatter::toString(swaption->NPV(),12) + "\n"
@@ -314,20 +328,13 @@ void SwaptionTest::testCachedValue() {
             DoubleFormatter::toString(cachedNPV,12));
 }
 
-CppUnit::Test* SwaptionTest::suite() {
-    CppUnit::TestSuite* tests = new CppUnit::TestSuite("Swaption tests");
-    tests->addTest(new CppUnit::TestCaller<SwaptionTest>
-                   ("Testing swaption dependency on strike",
-                    &SwaptionTest::testStrikeDependency));
-    tests->addTest(new CppUnit::TestCaller<SwaptionTest>
-                   ("Testing swaption dependency on spread",
-                    &SwaptionTest::testSpreadDependency));
-    tests->addTest(new CppUnit::TestCaller<SwaptionTest>
-                   ("Testing swaption treatment of spread",
-                    &SwaptionTest::testSpreadTreatment));
-    tests->addTest(new CppUnit::TestCaller<SwaptionTest>
-                   ("Testing swaption value against cached value",
-                    &SwaptionTest::testCachedValue));
-    return tests;
+
+test_suite* SwaptionTest::suite() {
+    test_suite* suite = BOOST_TEST_SUITE("Swaption tests");
+    suite->add(BOOST_TEST_CASE(&SwaptionTest::testStrikeDependency));
+    suite->add(BOOST_TEST_CASE(&SwaptionTest::testSpreadDependency));
+    suite->add(BOOST_TEST_CASE(&SwaptionTest::testSpreadTreatment));
+    suite->add(BOOST_TEST_CASE(&SwaptionTest::testCachedValue));
+    return suite;
 }
 

@@ -18,18 +18,16 @@
 #ifndef quantlib_test_swap_hpp
 #define quantlib_test_swap_hpp
 
-#include <cppunit/TestCase.h>
-#include <cppunit/TestFixture.h>
+#include <boost/test/unit_test.hpp>
 
-class SimpleSwapTest : public CppUnit::TestFixture {
+class SwapTest {
   public:
-    void setUp();
-    void testFairRate();
-    void testFairSpread();
-    void testRateDependency();
-    void testSpreadDependency();
-    void testCachedValue();
-    static CppUnit::Test* suite();
+    static void testFairRate();
+    static void testFairSpread();
+    static void testRateDependency();
+    static void testSpreadDependency();
+    static void testCachedValue();
+    static boost::unit_test_framework::test_suite* suite();
 };
 
 

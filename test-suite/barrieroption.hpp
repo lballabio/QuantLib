@@ -18,15 +18,14 @@
 #ifndef quantlib_test_barrier_option_hpp
 #define quantlib_test_barrier_option_hpp
 
-#include <cppunit/TestCase.h>
-#include <cppunit/TestFixture.h>
+#include <boost/test/unit_test.hpp>
 
-class BarrierOptionTest : public CppUnit::TestFixture {
+class BarrierOptionTest {
   public:
-    void testHaugValues();   
-    void testBabsiriValues();   
-    void testBeagleholeValues();   
-    static CppUnit::Test* suite();
+    static void testHaugValues();
+    static void testBabsiriValues();
+    static void testBeagleholeValues();
+    static boost::unit_test_framework::test_suite* suite();
 };
 
 

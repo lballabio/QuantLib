@@ -18,13 +18,12 @@
 #ifndef quantlib_test_risk_statistics_hpp
 #define quantlib_test_risk_statistics_hpp
 
-#include <cppunit/TestCase.h>
+#include <boost/test/unit_test.hpp>
 
-class RiskStatisticsTest : public CppUnit::TestCase {
+class RiskStatisticsTest {
   public:
-    RiskStatisticsTest() 
-    : CppUnit::TestCase("Testing risk measures") {}
-    void runTest();
+    static void testResults();
+    static boost::unit_test_framework::test_suite* suite();
 };
 
 

@@ -23,10 +23,9 @@
 #include <ql/TermStructures/flatforward.hpp>
 #include <ql/Indexes/euribor.hpp>
 #include <ql/PricingEngines/CapFloor/blackcapfloor.hpp>
-#include <cppunit/TestSuite.h>
-#include <cppunit/TestCaller.h>
 
 using namespace QuantLib;
+using namespace boost::unit_test_framework;
 
 namespace {
 
@@ -92,26 +91,33 @@ namespace {
         }
     }
 
-}
+    // initialization
 
-
-void CapFloorTest::setUp() {
-    nominals_ = std::vector<double>(1,100.0);
-    frequency_ = 2;
-    index_ = boost::shared_ptr<Xibor>(
+    void initialize() {
+        nominals_ = std::vector<double>(1,100.0);
+        frequency_ = 2;
+        index_ = boost::shared_ptr<Xibor>(
                             new Euribor(12/frequency_,Months,termStructure_));
-    calendar_ = index_->calendar();
-    rollingConvention_ = ModifiedFollowing;
-    today_ = calendar_.roll(Date::todaysDate());
-    settlementDays_ = 2;
-    fixingDays_ = 2;
-    settlement_ = calendar_.advance(today_,settlementDays_,Days);
-    termStructure_.linkTo(
-        boost::shared_ptr<TermStructure>(new FlatForward(today_,settlement_,
-                                                         0.05,Actual360())));
+        calendar_ = index_->calendar();
+        rollingConvention_ = ModifiedFollowing;
+        today_ = calendar_.roll(Date::todaysDate());
+        settlementDays_ = 2;
+        fixingDays_ = 2;
+        settlement_ = calendar_.advance(today_,settlementDays_,Days);
+        termStructure_.linkTo(
+              boost::shared_ptr<TermStructure>(
+                                           new FlatForward(today_,settlement_,
+                                                           0.05,Actual360())));
+    }
+
 }
+
 
 void CapFloorTest::testStrikeDependency() {
+
+    BOOST_MESSAGE("Testing cap/floor dependency on strike...");
+
+    initialize();
 
     int lengths[] = { 1, 2, 3, 5, 7, 10, 15, 20 };
     double vols[] = { 0.01, 0.05, 0.10, 0.15, 0.20 };
@@ -141,7 +147,7 @@ void CapFloorTest::testStrikeDependency() {
                                    std::less<double>());
             if (it != cap_values.end()) {
                 int n = it - cap_values.begin();
-                CPPUNIT_FAIL(
+                BOOST_FAIL(
                     "NPV is increasing with the strike in a cap: \n"
                     "    length: " + 
                     IntegerFormatter::toString(lengths[i]) + " years\n"
@@ -161,7 +167,7 @@ void CapFloorTest::testStrikeDependency() {
                                     std::greater<double>());
             if (it != floor_values.end()) {
                 int n = it - floor_values.begin();
-                CPPUNIT_FAIL(
+                BOOST_FAIL(
                     "NPV is decreasing with the strike in a floor: \n"
                     "    length: " + 
                     IntegerFormatter::toString(lengths[i]) + " years\n"
@@ -181,6 +187,10 @@ void CapFloorTest::testStrikeDependency() {
 }
 
 void CapFloorTest::testConsistency() {
+
+    BOOST_MESSAGE("Testing consistency between cap, floor and collar...");
+
+    initialize();
 
     int lengths[] = { 1, 2, 3, 5, 7, 10, 15, 20 };
     double cap_rates[] = { 0.03, 0.04, 0.05, 0.06, 0.07 };
@@ -207,7 +217,7 @@ void CapFloorTest::testConsistency() {
                             termStructure_,makeEngine(vols[l]));
 
               if (QL_FABS((cap->NPV()-floor->NPV())-collar.NPV()) > 1.0e-10) {
-                  CPPUNIT_FAIL(
+                  BOOST_FAIL(
                     "inconsistency between cap, floor and collar:\n"
                     "    length: " + 
                     IntegerFormatter::toString(lengths[i]) + " years\n"
@@ -231,6 +241,10 @@ void CapFloorTest::testConsistency() {
 }
 
 void CapFloorTest::testParity() {
+
+    BOOST_MESSAGE("Testing put/call parity for cap and floor...");
+
+    initialize();
 
     int lengths[] = { 1, 2, 3, 5, 7, 10, 15, 20 };
     double strikes[] = { 0.03, 0.04, 0.05, 0.06, 0.07 };
@@ -257,7 +271,7 @@ void CapFloorTest::testParity() {
                             frequency_,index_,fixingDays_,0.0,
                             termStructure_);
             if (QL_FABS((cap->NPV()-floor->NPV()) - swap.NPV()) > 1.0e-10) {
-                CPPUNIT_FAIL(
+                BOOST_FAIL(
                     "put/call parity violated:\n"
                     "    length: " + 
                     IntegerFormatter::toString(lengths[i]) + " years\n"
@@ -278,6 +292,11 @@ void CapFloorTest::testParity() {
 }
 
 void CapFloorTest::testImpliedVolatility() {
+
+    BOOST_MESSAGE("Testing implied term volatility for cap and floor...");
+
+    initialize();
+
     Size maxEvaluations = 100;
     double tolerance = 1.0e-6;
 
@@ -319,7 +338,7 @@ void CapFloorTest::testImpliedVolatility() {
                                                             tolerance,
                                                             maxEvaluations);
                         } catch (std::exception& e) {
-                            CPPUNIT_FAIL(
+                            BOOST_FAIL(
                                 typeToString(types[i]) + ":\n"
                                 "    strike:           "
                                 + DoubleFormatter::toString(strikes[j]) +"\n"
@@ -337,7 +356,7 @@ void CapFloorTest::testImpliedVolatility() {
                             capfloor->setPricingEngine(makeEngine(implVol));
                             double value2 = capfloor->NPV();
                             if (QL_FABS(value-value2) > tolerance) {
-                                CPPUNIT_FAIL(
+                                BOOST_FAIL(
                                     typeToString(types[i]) + ":\n"
                                     "    strike:           "
                                     + DoubleFormatter::toString(strikes[j]) 
@@ -366,6 +385,10 @@ void CapFloorTest::testImpliedVolatility() {
 
 void CapFloorTest::testCachedValue() {
 
+    BOOST_MESSAGE("Testing cap/floor value against cached values...");
+
+    initialize();
+
     Date cachedToday(14,March,2002),
          cachedSettlement(18,March,2002);
     termStructure_.linkTo(
@@ -382,7 +405,7 @@ void CapFloorTest::testCachedValue() {
            cachedFloorNPV = 2.701296290808;
 
     if (QL_FABS(cap->NPV()-cachedCapNPV) > 1.0e-11)
-        CPPUNIT_FAIL(
+        BOOST_FAIL(
             "failed to reproduce cached cap value:\n"
             "    calculated: " +
             DoubleFormatter::toString(cap->NPV(),12) + "\n"
@@ -390,31 +413,22 @@ void CapFloorTest::testCachedValue() {
             DoubleFormatter::toString(cachedCapNPV,12));
 
     if (QL_FABS(floor->NPV()-cachedFloorNPV) > 1.0e-11)
-        CPPUNIT_FAIL(
+        BOOST_FAIL(
             "failed to reproduce cached floor value:\n"
             "    calculated: " +
             DoubleFormatter::toString(floor->NPV(),12) + "\n"
             "    expected:   " +
             DoubleFormatter::toString(cachedFloorNPV,12));
 }
-        
-CppUnit::Test* CapFloorTest::suite() {
-    CppUnit::TestSuite* tests = new CppUnit::TestSuite("Cap/floor tests");
-    tests->addTest(new CppUnit::TestCaller<CapFloorTest>
-                   ("Testing cap/floor dependency on strike",
-                    &CapFloorTest::testStrikeDependency));
-    tests->addTest(new CppUnit::TestCaller<CapFloorTest>
-                   ("Testing consistency between cap, floor and collar",
-                    &CapFloorTest::testConsistency));
-    tests->addTest(new CppUnit::TestCaller<CapFloorTest>
-                   ("Testing put/call parity for cap and floor",
-                    &CapFloorTest::testParity));
-    tests->addTest(new CppUnit::TestCaller<CapFloorTest>
-                   ("Testing implied term volatility for cap and floor",
-                    &CapFloorTest::testImpliedVolatility));
-    tests->addTest(new CppUnit::TestCaller<CapFloorTest>
-                   ("Testing cap/floor value against cached values",
-                    &CapFloorTest::testCachedValue));
-    return tests;
+
+
+test_suite* CapFloorTest::suite() {
+    test_suite* suite = BOOST_TEST_SUITE("Cap/floor tests");
+    suite->add(BOOST_TEST_CASE(&CapFloorTest::testStrikeDependency));
+    suite->add(BOOST_TEST_CASE(&CapFloorTest::testConsistency));
+    suite->add(BOOST_TEST_CASE(&CapFloorTest::testParity));
+    suite->add(BOOST_TEST_CASE(&CapFloorTest::testImpliedVolatility));
+    suite->add(BOOST_TEST_CASE(&CapFloorTest::testCachedValue));
+    return suite;
 }
 

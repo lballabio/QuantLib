@@ -19,14 +19,13 @@
 #ifndef quantlib_test_distributions_hpp
 #define quantlib_test_distributions_hpp
 
-#include <cppunit/TestCase.h>
-#include <cppunit/TestFixture.h>
+#include <boost/test/unit_test.hpp>
 
-class DistributionTest : public CppUnit::TestFixture {
+class DistributionTest {
   public:
-    void testNormal();
-    void testBivariate();
-    static CppUnit::Test* suite();
+    static void testNormal();
+    static void testBivariate();
+    static boost::unit_test_framework::test_suite* suite();
 };
 
 

@@ -18,18 +18,16 @@
 #ifndef quantlib_test_cap_floor_hpp
 #define quantlib_test_cap_floor_hpp
 
-#include <cppunit/TestCase.h>
-#include <cppunit/TestFixture.h>
+#include <boost/test/unit_test.hpp>
 
-class CapFloorTest : public CppUnit::TestFixture {
+class CapFloorTest {
   public:
-    void setUp();
-    void testStrikeDependency();
-    void testConsistency();
-    void testParity();
-    void testImpliedVolatility();
-    void testCachedValue();
-    static CppUnit::Test* suite();
+    static void testStrikeDependency();
+    static void testConsistency();
+    static void testParity();
+    static void testImpliedVolatility();
+    static void testCachedValue();
+    static boost::unit_test_framework::test_suite* suite();
 };
 
 

@@ -26,10 +26,90 @@
 #include <ql/PricingEngines/Basket/mcamericanbasketengine.hpp>
 #include <ql/TermStructures/flatforward.hpp>
 #include <ql/Volatilities/blackconstantvol.hpp>
-#include <cppunit/TestSuite.h>
-#include <cppunit/TestCaller.h>
 
 using namespace QuantLib;
+using namespace boost::unit_test_framework;
+
+#define REPORT_FAILURE_2(greekName, basketType, payoff, exercise, \
+                         s1, s2, q1, q2, r, today, v1, v2, rho, \
+                         expected, calculated, error, tolerance) \
+    BOOST_FAIL(exerciseTypeToString(exercise) + " " \
+               + OptionTypeFormatter::toString(payoff->optionType()) + \
+               " option on " \
+               + basketTypeToString(basketType) + \
+               " with " \
+               + payoffTypeToString(payoff) + " payoff:\n" \
+               "1st underlying value: " \
+               + DoubleFormatter::toString(s1) + "\n" \
+               "2nd underlying value: " \
+               + DoubleFormatter::toString(s2) + "\n" \
+               "              strike: " \
+               + DoubleFormatter::toString(payoff->strike()) +"\n" \
+               "  1st dividend yield: " \
+               + DoubleFormatter::toString(q1) + "\n" \
+               "  2nd dividend yield: " \
+               + DoubleFormatter::toString(q2) + "\n" \
+               "      risk-free rate: " \
+               + DoubleFormatter::toString(r) + "\n" \
+               "      reference date: " \
+               + DateFormatter::toString(today) + "\n" \
+               "            maturity: " \
+               + DateFormatter::toString(exercise->lastDate()) + "\n" \
+               "1st asset volatility: " \
+               + DoubleFormatter::toString(v1) + "\n" \
+               "2nd asset volatility: " \
+               + DoubleFormatter::toString(v2) + "\n" \
+               "         correlation: " \
+               + DoubleFormatter::toString(rho) + "\n\n" \
+               "    expected   " + greekName + ": " \
+               + DoubleFormatter::toString(expected) + "\n" \
+               "    calculated " + greekName + ": " \
+               + DoubleFormatter::toString(calculated) + "\n" \
+               "    error:            " \
+               + DoubleFormatter::toString(error) + "\n" \
+               "    tolerance:        " \
+               + DoubleFormatter::toString(tolerance));
+
+#define REPORT_FAILURE_3(greekName, basketType, payoff, exercise, \
+                         s1, s2, s3, r, today, v1, v2, v3, rho, \
+                         expected, calculated, error, tolerance) \
+    BOOST_FAIL(exerciseTypeToString(exercise) + " " \
+               + OptionTypeFormatter::toString(payoff->optionType()) + \
+               " option on " \
+               + basketTypeToString(basketType) + \
+               " with " \
+               + payoffTypeToString(payoff) + " payoff:\n" \
+               "1st underlying value: " \
+               + DoubleFormatter::toString(s1) + "\n" \
+               "2nd underlying value: " \
+               + DoubleFormatter::toString(s2) + "\n" \
+               "3rd underlying value: " \
+               + DoubleFormatter::toString(s3) + "\n" \
+               "              strike: " \
+               + DoubleFormatter::toString(payoff->strike()) +"\n" \
+               "      risk-free rate: " \
+               + DoubleFormatter::toString(r) + "\n" \
+               "      reference date: " \
+               + DateFormatter::toString(today) + "\n" \
+               "            maturity: " \
+               + DateFormatter::toString(exercise->lastDate()) + "\n" \
+               "1st asset volatility: " \
+               + DoubleFormatter::toString(v1) + "\n" \
+               "2nd asset volatility: " \
+               + DoubleFormatter::toString(v2) + "\n" \
+               "3rd asset volatility: " \
+               + DoubleFormatter::toString(v3) + "\n" \
+               "         correlation: " \
+               + DoubleFormatter::toString(rho) + "\n\n" \
+               "    expected   " + greekName + ": " \
+               + DoubleFormatter::toString(expected) + "\n" \
+               "    calculated " + greekName + ": " \
+               + DoubleFormatter::toString(calculated) + "\n" \
+               "    error:            " \
+               + DoubleFormatter::toString(error) + "\n" \
+               "    tolerance:        " \
+               + DoubleFormatter::toString(tolerance));
+
 
 namespace {
 
@@ -45,129 +125,17 @@ namespace {
         QL_FAIL("basketTypeToString : unknown basket option type");
     }
 
-    void basketOptionTestFailed(
-                           std::string greekName,
-                           BasketOption::BasketType basketType,
-                           const boost::shared_ptr<StrikedTypePayoff>& payoff,
-                           const boost::shared_ptr<Exercise>& exercise,
-                           double s1,
-                           double s2,
-                           double q1,
-                           double q2,
-                           double r,
-                           Date today,
-                           DayCounter dc,
-                           double v1,
-                           double v2,
-                           double rho,
-                           double expected,
-                           double calculated,
-                           double error,
-                           double tolerance) {
-
-        Time t = dc.yearFraction(today, exercise->lastDate());
-
-        CPPUNIT_FAIL(exerciseTypeToString(exercise) + " "
-            + OptionTypeFormatter::toString(payoff->optionType()) +
-            " option on "
-            + basketTypeToString(basketType) +
-            " with "
-            + payoffTypeToString(payoff) + " payoff:\n"
-            "1st underlying value: "
-            + DoubleFormatter::toString(s1) + "\n"
-            "2nd underlying value: "
-            + DoubleFormatter::toString(s2) + "\n"
-            "              strike: "
-            + DoubleFormatter::toString(payoff->strike()) +"\n"
-            "  1st dividend yield: "
-            + DoubleFormatter::toString(q1) + "\n"
-            "  2nd dividend yield: "
-            + DoubleFormatter::toString(q2) + "\n"
-            "      risk-free rate: "
-            + DoubleFormatter::toString(r) + "\n"
-            "      reference date: "
-            + DateFormatter::toString(today) + "\n"
-            "            maturity: "
-            + DateFormatter::toString(exercise->lastDate()) + "\n"
-            "      time to expiry: "
-            + DoubleFormatter::toString(t) + "\n"
-            "1st asset volatility: "
-            + DoubleFormatter::toString(v1) + "\n"
-            "2nd asset volatility: "
-            + DoubleFormatter::toString(v2) + "\n"
-            "         correlation: "
-            + DoubleFormatter::toString(rho) + "\n\n"
-            "    expected   " + greekName + ": "
-            + DoubleFormatter::toString(expected) + "\n"
-            "    calculated " + greekName + ": "
-            + DoubleFormatter::toString(calculated) + "\n"
-            "    error:            "
-            + DoubleFormatter::toString(error) + "\n"
-            "    tolerance:        "
-            + DoubleFormatter::toString(tolerance));
-    }
-
-    void basketOptionThreeTestFailed(
-                           std::string greekName,
-                           BasketOption::BasketType basketType,
-                           const boost::shared_ptr<StrikedTypePayoff>& payoff,
-                           const boost::shared_ptr<Exercise>& exercise,
-                           double s1,
-                           double s2,
-                           double s3,
-                           double r,
-                           Date today,
-                           DayCounter dc,
-                           double v1,
-                           double v2,
-                           double v3,
-                           double rho,
-                           double expected,
-                           double calculated,
-                           double error,
-                           double tolerance) {
-
-        Time t = dc.yearFraction(today, exercise->lastDate());
-
-        CPPUNIT_FAIL(exerciseTypeToString(exercise) + " "
-            + OptionTypeFormatter::toString(payoff->optionType()) +
-            " option on "
-            + basketTypeToString(basketType) +
-            " with "
-            + payoffTypeToString(payoff) + " payoff:\n"
-            "1st underlying value: "
-            + DoubleFormatter::toString(s1) + "\n"
-            "2nd underlying value: "
-            + DoubleFormatter::toString(s2) + "\n"
-            "3rd underlying value: "
-            + DoubleFormatter::toString(s3) + "\n"
-            "              strike: "
-            + DoubleFormatter::toString(payoff->strike()) +"\n"
-            "      risk-free rate: "
-            + DoubleFormatter::toString(r) + "\n"
-            "      reference date: "
-            + DateFormatter::toString(today) + "\n"
-            "            maturity: "
-            + DateFormatter::toString(exercise->lastDate()) + "\n"
-            "      time to expiry: "
-            + DoubleFormatter::toString(t) + "\n"
-            "1st asset volatility: "
-            + DoubleFormatter::toString(v1) + "\n"
-            "2nd asset volatility: "
-            + DoubleFormatter::toString(v2) + "\n"
-            "3rd asset volatility: "
-            + DoubleFormatter::toString(v3) + "\n"
-            "         correlation: "
-            + DoubleFormatter::toString(rho) + "\n\n"
-            "    expected   " + greekName + ": "
-            + DoubleFormatter::toString(expected) + "\n"
-            "    calculated " + greekName + ": "
-            + DoubleFormatter::toString(calculated) + "\n"
-            "    error:            "
-            + DoubleFormatter::toString(error) + "\n"
-            "    tolerance:        "
-            + DoubleFormatter::toString(tolerance));
-    }
+    struct BasketOptionOneData {
+        Option::Type type;
+        double strike;
+        double s;      // spot
+        double q;      // dividend
+        double r;      // risk-free rate
+        Time t;        // time to maturity
+        double v;      // volatility
+        double result; // expected result
+        double tol;    // tolerance
+    };
 
     struct BasketOptionTwoData {
         BasketOption::BasketType basketType;
@@ -208,6 +176,8 @@ namespace {
 
 void BasketOptionTest::testEuroTwoValues() {
 
+    BOOST_MESSAGE("Testing two-asset European basket options..");
+
     /*
         Data from:
         Excel spreadsheet www.maths.ox.ac.uk/~firth/computing/excel.shtml
@@ -229,7 +199,7 @@ void BasketOptionTest::testEuroTwoValues() {
         {BasketOption::Min, Option::Call,  100.0, 100.0, 100.0, 0.00, 0.00, 0.05, 1.00, 0.50, 0.10, 0.50,  4.030, 1.0e-3},
 
         {BasketOption::Max, Option::Call,  100.0, 100.0, 100.0, 0.00, 0.00, 0.05, 1.00, 0.30, 0.30, 0.90, 17.565, 1.0e-3},
-        {BasketOption::Max, Option::Call,  100.0, 100.0, 100.0, 0.00, 0.00, 0.05, 1.00, 0.30, 0.30, 0.70, 19.980, 1.0e-3},        
+        {BasketOption::Max, Option::Call,  100.0, 100.0, 100.0, 0.00, 0.00, 0.05, 1.00, 0.30, 0.30, 0.70, 19.980, 1.0e-3},
         {BasketOption::Max, Option::Call,  100.0, 100.0, 100.0, 0.00, 0.00, 0.05, 1.00, 0.30, 0.30, 0.50, 21.619, 1.0e-3},
         {BasketOption::Max, Option::Call,  100.0, 100.0, 100.0, 0.00, 0.00, 0.05, 1.00, 0.30, 0.30, 0.30, 22.932, 1.0e-3},
         {BasketOption::Max, Option::Call,  100.0, 100.0, 100.0, 0.00, 0.00, 0.05, 1.00, 0.30, 0.30, 0.10, 24.049, 1.0e-3},
@@ -345,11 +315,11 @@ void BasketOptionTest::testEuroTwoValues() {
         double expected = values[i].result;
         double error = QL_FABS(calculated-expected);
         if (error > values[i].tol) {
-            basketOptionTestFailed("value",
-                values[i].basketType, payoff, exercise, values[i].s1, values[i].s2,
-                values[i].q1, values[i].q2, values[i].r,
-                today, dc, values[i].v1, values[i].v2, values[i].rho,
-                values[i].result, calculated, error, values[i].tol);
+            REPORT_FAILURE_2("value", values[i].basketType, payoff, exercise, 
+                             values[i].s1, values[i].s2, values[i].q1, 
+                             values[i].q2, values[i].r, today, values[i].v1, 
+                             values[i].v2, values[i].rho, values[i].result, 
+                             calculated, error, values[i].tol);
         }
 
         // mc engine
@@ -357,11 +327,12 @@ void BasketOptionTest::testEuroTwoValues() {
         calculated = basketOption.NPV();
         double relError = relativeError(calculated, expected, values[i].s1);
         if (relError > mcRelativeErrorTolerance ) {
-            basketOptionTestFailed("MC value",
-                values[i].basketType, payoff, exercise, values[i].s1, values[i].s2,
-                values[i].q1, values[i].q2, values[i].r,
-                today, dc, values[i].v1, values[i].v2, values[i].rho,
-                values[i].result, calculated, relError, mcRelativeErrorTolerance);
+            REPORT_FAILURE_2("MC value", values[i].basketType, payoff, 
+                             exercise, values[i].s1, values[i].s2,
+                             values[i].q1, values[i].q2, values[i].r,
+                             today, values[i].v1, values[i].v2, values[i].rho,
+                             values[i].result, calculated, relError, 
+                             mcRelativeErrorTolerance);
         }
 
     }
@@ -369,6 +340,9 @@ void BasketOptionTest::testEuroTwoValues() {
 
 
 void BasketOptionTest::testBarraquandThreeValues() {
+
+    BOOST_MESSAGE("Testing three-asset basket options "
+                  "against Barraquand's values...");
 
     /*
         Data from:
@@ -546,11 +520,12 @@ void BasketOptionTest::testBarraquandThreeValues() {
         double calculated = euroBasketOption.NPV();
         double relError = relativeError(calculated, expected, values[i].s1);
         if (relError > mcRelativeErrorTolerance ) {
-            basketOptionThreeTestFailed("MC Quasi value",
-                values[i].basketType, payoff, exercise, 
-                values[i].s1, values[i].s2, values[i].s3, values[i].r,
-                today, dc, values[i].v1, values[i].v2, values[i].v3, values[i].rho,
-                values[i].euroValue, calculated, relError, mcRelativeErrorTolerance);
+            REPORT_FAILURE_3("MC Quasi value", values[i].basketType, payoff, 
+                             exercise, values[i].s1, values[i].s2, 
+                             values[i].s3, values[i].r, today, values[i].v1, 
+                             values[i].v2, values[i].v3, values[i].rho,
+                             values[i].euroValue, calculated, relError, 
+                             mcRelativeErrorTolerance);
         }
 
         //std::cout<<"\neuro " << calculated;
@@ -562,17 +537,21 @@ void BasketOptionTest::testBarraquandThreeValues() {
         //std::cout<<"\namerican " << calculated << "\n";
         relError = relativeError(calculated, expected, values[i].s1);
         if (relError > mcAmericanRelativeErrorTolerance) {
-            basketOptionThreeTestFailed("MC LSMC Value",
-                values[i].basketType, payoff, exercise, 
-                values[i].s1, values[i].s2, values[i].s3, values[i].r,
-                today, dc, values[i].v1, values[i].v2, values[i].v3, values[i].rho,
-                values[i].amValue, calculated, relError, mcRelativeErrorTolerance);
+            REPORT_FAILURE_3("MC LSMC Value", values[i].basketType, payoff, 
+                             exercise, values[i].s1, values[i].s2, 
+                             values[i].s3, values[i].r, today, values[i].v1, 
+                             values[i].v2, values[i].v3, values[i].rho,
+                             values[i].amValue, calculated, relError, 
+                             mcRelativeErrorTolerance);
         }
 
     }
 }
 
 void BasketOptionTest::testTavellaValues() {
+
+    BOOST_MESSAGE("Testing three-asset American basket options "
+                  "against Tavella's values...");
 
     /*
         Data from:
@@ -675,19 +654,20 @@ void BasketOptionTest::testTavellaValues() {
     double errorEstimate = basketOption.errorEstimate();
     double relError = relativeError(calculated, expected, values[0].s1);
     if (relError > mcRelativeErrorTolerance ) {
-        basketOptionThreeTestFailed("MC LSMC Tavella value",
-            values[0].basketType, payoff, exercise, 
-            values[0].s1, values[0].s2, values[0].s3, values[0].r,
-            today, dc, values[0].v1, values[0].v2, values[0].v3, values[0].rho,
-            values[0].amValue, calculated, errorEstimate, mcRelativeErrorTolerance);
+        REPORT_FAILURE_3("MC LSMC Tavella value", values[0].basketType, 
+                         payoff, exercise, values[0].s1, values[0].s2, 
+                         values[0].s3, values[0].r, today, values[0].v1, 
+                         values[0].v2, values[0].v3, values[0].rho,
+                         values[0].amValue, calculated, errorEstimate, 
+                         mcRelativeErrorTolerance);
     }
 }
 
 void BasketOptionTest::testOneDAmericanValues() {
 
-    /*
-    */
-    VanillaOptionData values[] = {
+    BOOST_MESSAGE("Testing basket American options against 1-D case...");
+
+    BasketOptionOneData values[] = {
         //        type, strike,   spot,    q,    r,    t,  vol,   value, tol
         { Option::Put, 100.00,  80.00,   0.0, 0.06,   0.5, 0.4,  21.6059, 1e-2 },
         { Option::Put, 100.00,  85.00,   0.0, 0.06,   0.5, 0.4,  18.0374, 1e-2 },
@@ -791,32 +771,22 @@ void BasketOptionTest::testOneDAmericanValues() {
         // double error = QL_FABS(calculated-expected);
 
         if (relError > values[i].tol) {
-            std::cout << "TEST FAILED" << "\n MC LSMC value " 
-                << calculated << " not " << values[i].result <<
-                " error " << errorEstimate
-                << std::endl;
+            BOOST_FAIL("expected value: "
+                       + DoubleFormatter::toString(values[i].result) + "\n"
+                       "calculated: "
+                       + DoubleFormatter::toString(calculated));
         }
 
     }
 }
 
-CppUnit::Test* BasketOptionTest::suite() {
-    CppUnit::TestSuite* tests =
-        new CppUnit::TestSuite("Basket option tests");
-    tests->addTest(new CppUnit::TestCaller<BasketOptionTest>
-                   ("Testing two-asset European basket options",
-                    &BasketOptionTest::testEuroTwoValues));
-    tests->addTest(new CppUnit::TestCaller<BasketOptionTest>
-                   ("Testing three-asset basket options "
-                    "against Barraquand's values",
-                    &BasketOptionTest::testBarraquandThreeValues));
-    tests->addTest(new CppUnit::TestCaller<BasketOptionTest>
-                   ("Testing three-asset American basket options "
-                    "against Tavella's values",
-                    &BasketOptionTest::testTavellaValues));
-    tests->addTest(new CppUnit::TestCaller<BasketOptionTest>
-                   ("Testing basket American options against 1-D case",
-                    &BasketOptionTest::testOneDAmericanValues));
-    return tests;
+
+test_suite* BasketOptionTest::suite() {
+    test_suite* suite = BOOST_TEST_SUITE("Basket option tests");
+    suite->add(BOOST_TEST_CASE(&BasketOptionTest::testEuroTwoValues));
+    suite->add(BOOST_TEST_CASE(&BasketOptionTest::testBarraquandThreeValues));
+    suite->add(BOOST_TEST_CASE(&BasketOptionTest::testTavellaValues));
+    suite->add(BOOST_TEST_CASE(&BasketOptionTest::testOneDAmericanValues));
+    return suite;
 }
 

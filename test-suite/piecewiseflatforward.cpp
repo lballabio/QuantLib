@@ -22,10 +22,9 @@
 #include <ql/DayCounters/actual360.hpp>
 #include <ql/DayCounters/thirty360.hpp>
 #include <ql/Indexes/euribor.hpp>
-#include <cppunit/TestSuite.h>
-#include <cppunit/TestCaller.h>
 
 using namespace QuantLib;
+using namespace boost::unit_test_framework;
 
 namespace {
 
@@ -43,7 +42,7 @@ namespace {
         { 6, Months, 4.496 },
         { 9, Months, 4.490 }
     };
-    
+
     Datum swapData[] = {
         {  1, Years, 4.54 },
         {  2, Years, 4.63 },
@@ -61,7 +60,7 @@ namespace {
         { 25, Years, 5.95 },
         { 30, Years, 5.96 }
     };
-    
+
     // test-global variables
 
     Calendar calendar;
@@ -78,65 +77,71 @@ namespace {
     Size deposits, swaps;
     std::vector<boost::shared_ptr<SimpleQuote> > rates;
     boost::shared_ptr<TermStructure> termStructure;
-}
 
-void PiecewiseFlatForwardTest::setUp() {
+    void initialize() {
 
-    // data
-    calendar = TARGET();
-    settlementDays = 2;
-    fixingDays = 2;
-    today = calendar.roll(Date::todaysDate());
-    settlement = calendar.advance(today,settlementDays,Days);
-    depoRollingConvention = ModifiedFollowing;
-    depoDayCounter = Actual360();
-    swapRollingConvention = ModifiedFollowing;
-    fixedLegFrequency = 1;
-    fixedLegIsAdjusted = false;
-    fixedLegDayCounter = Thirty360();
-    floatingLegFrequency = 2;
+        // data
+        calendar = TARGET();
+        settlementDays = 2;
+        fixingDays = 2;
+        today = calendar.roll(Date::todaysDate());
+        settlement = calendar.advance(today,settlementDays,Days);
+        depoRollingConvention = ModifiedFollowing;
+        depoDayCounter = Actual360();
+        swapRollingConvention = ModifiedFollowing;
+        fixedLegFrequency = 1;
+        fixedLegIsAdjusted = false;
+        fixedLegDayCounter = Thirty360();
+        floatingLegFrequency = 2;
 
-    deposits = LENGTH(depositData);
-    swaps = LENGTH(swapData);
+        deposits = LENGTH(depositData);
+        swaps = LENGTH(swapData);
 
-    // market elements
-    rates = std::vector<boost::shared_ptr<SimpleQuote> >(deposits+swaps);
-    Size i;
-    for (i=0; i<deposits; i++) {
-        rates[i] = boost::shared_ptr<SimpleQuote>(
-            new SimpleQuote(depositData[i].rate/100));
+        // market elements
+        rates = std::vector<boost::shared_ptr<SimpleQuote> >(deposits+swaps);
+        Size i;
+        for (i=0; i<deposits; i++) {
+            rates[i] = boost::shared_ptr<SimpleQuote>(
+                                    new SimpleQuote(depositData[i].rate/100));
+        }
+        for (i=0; i<swaps; i++) {
+            rates[i+deposits] = boost::shared_ptr<SimpleQuote>(
+                                       new SimpleQuote(swapData[i].rate/100));
+        }
+
+        // rate helpers
+        std::vector<boost::shared_ptr<RateHelper> > 
+            instruments(deposits+swaps);
+        for (i=0; i<deposits; i++) {
+            RelinkableHandle<Quote> r(rates[i]);
+            instruments[i] = boost::shared_ptr<RateHelper>(
+              new DepositRateHelper(r, depositData[i].n, depositData[i].units,
+                                    settlementDays, calendar,
+                                    depoRollingConvention, depoDayCounter));
+        }
+        for (i=0; i<swaps; i++) {
+            RelinkableHandle<Quote> r(rates[i+deposits]);
+            instruments[i+deposits] = boost::shared_ptr<RateHelper>(
+                new SwapRateHelper(r, swapData[i].n, swapData[i].units,
+                                   settlementDays, calendar,
+                                   swapRollingConvention,
+                                   fixedLegFrequency, fixedLegIsAdjusted,
+                                   fixedLegDayCounter, floatingLegFrequency));
+        }
+
+        // instantiate curve
+        termStructure = boost::shared_ptr<TermStructure>(
+          new PiecewiseFlatForward(today,settlement,instruments,Actual360()));
+
     }
-    for (i=0; i<swaps; i++) {
-        rates[i+deposits] = boost::shared_ptr<SimpleQuote>(
-            new SimpleQuote(swapData[i].rate/100));
-    }
-
-    // rate helpers
-    std::vector<boost::shared_ptr<RateHelper> > instruments(deposits+swaps);
-    for (i=0; i<deposits; i++) {
-        RelinkableHandle<Quote> r(rates[i]);
-        instruments[i] = boost::shared_ptr<RateHelper>(
-            new DepositRateHelper(r, depositData[i].n, depositData[i].units,
-                                  settlementDays, calendar,
-                                  depoRollingConvention, depoDayCounter));
-    }
-    for (i=0; i<swaps; i++) {
-        RelinkableHandle<Quote> r(rates[i+deposits]);
-        instruments[i+deposits] = boost::shared_ptr<RateHelper>(
-            new SwapRateHelper(r, swapData[i].n, swapData[i].units,
-                               settlementDays, calendar,
-                               swapRollingConvention,
-                               fixedLegFrequency, fixedLegIsAdjusted,
-                               fixedLegDayCounter, floatingLegFrequency));
-    }
-
-    // instantiate curve
-    termStructure = boost::shared_ptr<TermStructure>(
-        new PiecewiseFlatForward(today,settlement,instruments,Actual360()));
 
 }
 
 void PiecewiseFlatForwardTest::testConsistency() {
+
+    BOOST_MESSAGE("Testing consistency of piecewise flat forward curve...");
+
+    initialize();
 
     RelinkableHandle<TermStructure> euriborHandle;
     euriborHandle.linkTo(termStructure);
@@ -148,7 +153,7 @@ void PiecewiseFlatForwardTest::testConsistency() {
         double expectedRate  = depositData[i].rate/100,
                estimatedRate = index.fixing(today);
         if (QL_FABS(expectedRate-estimatedRate) > 1.0e-9) {
-            CPPUNIT_FAIL(
+            BOOST_FAIL(
                 IntegerFormatter::toString(depositData[i].n) + " "
                 + (depositData[i].units == Weeks ? std::string("week(s)") :
                                                    std::string("month(s)")) +
@@ -172,7 +177,7 @@ void PiecewiseFlatForwardTest::testConsistency() {
         double expectedRate = swapData[i].rate/100,
                estimatedRate = swap.fairRate();
         if (QL_FABS(expectedRate-estimatedRate) > 1.0e-9) {
-            CPPUNIT_FAIL(
+            BOOST_FAIL(
                 IntegerFormatter::toString(swapData[i].n) + " year(s) swap:\n"
                 "    estimated rate: "
                 + RateFormatter::toString(estimatedRate,8) + "\n"
@@ -184,6 +189,10 @@ void PiecewiseFlatForwardTest::testConsistency() {
 
 void PiecewiseFlatForwardTest::testObservability() {
 
+    BOOST_MESSAGE("Testing observability of piecewise flat forward curve...");
+
+    initialize();
+
     Flag f;
     f.registerWith(termStructure);
 
@@ -191,21 +200,16 @@ void PiecewiseFlatForwardTest::testObservability() {
         f.lower();
         rates[i]->setValue(rates[i]->value()*1.01);
         if (!f.isUp())
-            CPPUNIT_FAIL("Observer was not notified "
-                         "of piecewise flat forward curve change");
+            BOOST_FAIL("Observer was not notified "
+                       "of piecewise flat forward curve change");
     }
 }
 
 
-CppUnit::Test* PiecewiseFlatForwardTest::suite() {
-    CppUnit::TestSuite* tests = 
-        new CppUnit::TestSuite("Piecewise flat forward tests");
-    tests->addTest(new CppUnit::TestCaller<PiecewiseFlatForwardTest>
-                   ("Testing consistency of piecewise flat forward curve",
-                    &PiecewiseFlatForwardTest::testConsistency));
-    tests->addTest(new CppUnit::TestCaller<PiecewiseFlatForwardTest>
-                   ("Testing observability of piecewise flat forward curve",
-                    &PiecewiseFlatForwardTest::testObservability));
-    return tests;
+test_suite* PiecewiseFlatForwardTest::suite() {
+    test_suite* suite = BOOST_TEST_SUITE("Piecewise flat forward tests");
+    suite->add(BOOST_TEST_CASE(&PiecewiseFlatForwardTest::testConsistency));
+    suite->add(BOOST_TEST_CASE(&PiecewiseFlatForwardTest::testObservability));
+    return suite;
 }
 

@@ -26,15 +26,62 @@
 #include <ql/PricingEngines/Vanilla/mcdigitalengine.hpp>
 #include <ql/TermStructures/flatforward.hpp>
 #include <ql/Volatilities/blackconstantvol.hpp>
-#include <cppunit/TestSuite.h>
-#include <cppunit/TestCaller.h>
 #include <map>
 
 using namespace QuantLib;
+using namespace boost::unit_test_framework;
+
+#define REPORT_FAILURE(greekName, payoff, exercise, s, q, r, today, \
+                       v, expected, calculated, error, tolerance) \
+    BOOST_FAIL(exerciseTypeToString(exercise) + " " \
+               + OptionTypeFormatter::toString(payoff->optionType()) + \
+               " option with " \
+               + payoffTypeToString(payoff) + " payoff:\n" \
+               "    spot value: " \
+               + DoubleFormatter::toString(s) + "\n" \
+               "    strike:           " \
+               + DoubleFormatter::toString(payoff->strike()) +"\n" \
+               "    dividend yield:   " \
+               + DoubleFormatter::toString(q) + "\n" \
+               "    risk-free rate:   " \
+               + DoubleFormatter::toString(r) + "\n" \
+               "    reference date:   " \
+               + DateFormatter::toString(today) + "\n" \
+               "    maturity:         " \
+               + DateFormatter::toString(exercise->lastDate()) + "\n" \
+               "    volatility:       " \
+               + DoubleFormatter::toString(v) + "\n\n" \
+               "    expected   " + greekName + ": " \
+               + DoubleFormatter::toString(expected) + "\n" \
+               "    calculated " + greekName + ": " \
+               + DoubleFormatter::toString(calculated) + "\n" \
+               "    error:            " \
+               + DoubleFormatter::toString(error) + "\n" \
+               "    tolerance:        " \
+               + DoubleFormatter::toString(tolerance));
+
+namespace {
+
+    struct DigitalOptionData {
+        Option::Type type;
+        double strike;
+        double s;      // spot
+        double q;      // dividend
+        double r;      // risk-free rate
+        Time t;        // time to maturity
+        double v;      // volatility
+        double result; // expected result
+        double tol;    // tolerance
+    };
+
+}
+
 
 void DigitalOptionTest::testCashOrNothingEuropeanValues() {
 
-    VanillaOptionData values[] = {
+    BOOST_MESSAGE("Testing European cash-or-nothing digital option...");
+
+    DigitalOptionData values[] = {
         // "Option pricing formulas", E.G. Haug, McGraw-Hill 1998 - pag 88
         //        type, strike,  spot,    q,    r,    t,  vol,  value, tol
         { Option::Put,   80.00, 100.0, 0.06, 0.06, 0.75, 0.35, 2.6710, 1e-4 }
@@ -78,17 +125,19 @@ void DigitalOptionTest::testCashOrNothingEuropeanValues() {
         double calculated = opt.NPV();
         double error = QL_FABS(calculated-values[i].result);
         if (error > values[i].tol) {
-            vanillaOptionTestFailed("value", payoff, exercise, values[i].s, values[i].q,
-                values[i].r, today, dc, values[i].v, values[i].result, calculated,
-                error, values[i].tol);
+            REPORT_FAILURE("value", payoff, exercise, values[i].s, values[i].q,
+                           values[i].r, today, values[i].v, values[i].result, 
+                           calculated, error, values[i].tol);
         }
     }
 }
 
 void DigitalOptionTest::testAssetOrNothingEuropeanValues() {
 
+    BOOST_MESSAGE("Testing European asset-or-nothing digital option...");
+
     // "Option pricing formulas", E.G. Haug, McGraw-Hill 1998 - pag 90
-    VanillaOptionData values[] = {
+    DigitalOptionData values[] = {
         //        type, strike, spot,    q,    r,    t,  vol,   value, tol
         { Option::Put,   65.00, 70.0, 0.05, 0.07, 0.50, 0.27, 20.2069, 1e-4 }
     };
@@ -131,17 +180,19 @@ void DigitalOptionTest::testAssetOrNothingEuropeanValues() {
         double calculated = opt.NPV();
         double error = QL_FABS(calculated-values[i].result);
         if (error > values[i].tol) {
-            vanillaOptionTestFailed("value", payoff, exercise, values[i].s, values[i].q,
-                values[i].r, today, dc, values[i].v, values[i].result, calculated,
-                error, values[i].tol);
+            REPORT_FAILURE("value", payoff, exercise, values[i].s, values[i].q,
+                           values[i].r, today, values[i].v, values[i].result, 
+                           calculated, error, values[i].tol);
         }
     }
 }
 
 void DigitalOptionTest::testGapEuropeanValues() {
 
+    BOOST_MESSAGE("Testing European gap digital option...");
+
     // "Option pricing formulas", E.G. Haug, McGraw-Hill 1998 - pag 88
-    VanillaOptionData values[] = {
+    DigitalOptionData values[] = {
         //        type, strike, spot,    q,    r,    t,  vol,   value, tol
         { Option::Call,  50.00, 50.0, 0.00, 0.09, 0.50, 0.20, -0.0053, 1e-4 }
     };
@@ -184,16 +235,19 @@ void DigitalOptionTest::testGapEuropeanValues() {
         double calculated = opt.NPV();
         double error = QL_FABS(calculated-values[i].result);
         if (error > values[i].tol) {
-            vanillaOptionTestFailed("value", payoff, exercise, values[i].s, values[i].q,
-                values[i].r, today, dc, values[i].v, values[i].result, calculated,
-                error, values[i].tol);
+            REPORT_FAILURE("value", payoff, exercise, values[i].s, values[i].q,
+                           values[i].r, today, values[i].v, values[i].result, 
+                           calculated, error, values[i].tol);
         }
     }
 }
 
 void DigitalOptionTest::testCashAtHitOrNothingAmericanValues() {
 
-    VanillaOptionData values[] = {
+    BOOST_MESSAGE("Testing American cash-(at-hit)-or-nothing "
+                  "digital option...");
+
+    DigitalOptionData values[] = {
         //        type, strike,   spot,    q,    r,   t,  vol,   value, tol
         // "Option pricing formulas", E.G. Haug, McGraw-Hill 1998 - pag 95, case 1,2
         { Option::Put,  100.00, 105.00, 0.00, 0.10, 0.5, 0.20,  9.7264, 1e-4 },
@@ -250,16 +304,19 @@ void DigitalOptionTest::testCashAtHitOrNothingAmericanValues() {
         double calculated = opt.NPV();
         double error = QL_FABS(calculated-values[i].result);
         if (error > values[i].tol) {
-            vanillaOptionTestFailed("value", payoff, amExercise, values[i].s, values[i].q,
-                values[i].r, today, dc, values[i].v, values[i].result, calculated,
-                error, values[i].tol);
+            REPORT_FAILURE("value", payoff, amExercise, values[i].s, 
+                           values[i].q, values[i].r, today, values[i].v, 
+                           values[i].result, calculated, error, values[i].tol);
         }
     }
 }
 
 void DigitalOptionTest::testAssetAtHitOrNothingAmericanValues() {
 
-    VanillaOptionData values[] = {
+    BOOST_MESSAGE("Testing American asset-(at-hit)-or-nothing "
+                  "digital option...");
+
+    DigitalOptionData values[] = {
         //        type, strike,   spot,    q,    r,   t,  vol,   value, tol
         // "Option pricing formulas", E.G. Haug, McGraw-Hill 1998 - pag 95, case 3,4
         { Option::Put,  100.00, 105.00, 0.00, 0.10, 0.5, 0.20, 64.8426, 1e-04 }, // Haug value is wrong here, Haug VBA code is right
@@ -314,16 +371,19 @@ void DigitalOptionTest::testAssetAtHitOrNothingAmericanValues() {
         double calculated = opt.NPV();
         double error = QL_FABS(calculated-values[i].result);
         if (error > values[i].tol) {
-            vanillaOptionTestFailed("value", payoff, amExercise, values[i].s, values[i].q,
-                values[i].r, today, dc, values[i].v, values[i].result, calculated,
-                error, values[i].tol);
+            REPORT_FAILURE("value", payoff, amExercise, values[i].s, 
+                           values[i].q, values[i].r, today, values[i].v, 
+                           values[i].result, calculated, error, values[i].tol);
         }
     }
 }
 
 void DigitalOptionTest::testCashAtExpiryOrNothingAmericanValues() {
 
-    VanillaOptionData values[] = {
+    BOOST_MESSAGE("Testing American cash-(at-expiry)-or-nothing "
+                  "digital option...");
+
+    DigitalOptionData values[] = {
         //        type, strike,   spot,    q,    r,   t,  vol,   value, tol
         // "Option pricing formulas", E.G. Haug, McGraw-Hill 1998 - pag 95, case 1,2
         { Option::Put,  100.00, 105.00, 0.00, 0.10, 0.5, 0.20,  9.3604, 1e-4 },
@@ -374,16 +434,19 @@ void DigitalOptionTest::testCashAtExpiryOrNothingAmericanValues() {
         double calculated = opt.NPV();
         double error = QL_FABS(calculated-values[i].result);
         if (error > values[i].tol) {
-            vanillaOptionTestFailed("value", payoff, amExercise, values[i].s, values[i].q,
-                values[i].r, today, dc, values[i].v, values[i].result, calculated,
-                error, values[i].tol);
+            REPORT_FAILURE("value", payoff, amExercise, values[i].s, 
+                           values[i].q, values[i].r, today, values[i].v, 
+                           values[i].result, calculated, error, values[i].tol);
         }
     }
 }
 
 void DigitalOptionTest::testAssetAtExpiryOrNothingAmericanValues() {
 
-    VanillaOptionData values[] = {
+    BOOST_MESSAGE("Testing American asset-(at-expiry)-or-nothing "
+                  "digital option...");
+
+    DigitalOptionData values[] = {
         //        type, strike,   spot,    q,    r,   t,  vol,   value, tol
         // "Option pricing formulas", E.G. Haug, McGraw-Hill 1998 - pag 95, case 3,4
         { Option::Put,  100.00, 105.00, 0.00, 0.10, 0.5, 0.20, 64.8426, 1e-04 },
@@ -440,14 +503,17 @@ void DigitalOptionTest::testAssetAtExpiryOrNothingAmericanValues() {
         double calculated = opt.NPV();
         double error = QL_FABS(calculated-values[i].result);
         if (error > values[i].tol) {
-            vanillaOptionTestFailed("value", payoff, amExercise, values[i].s, values[i].q,
-                values[i].r, today, dc, values[i].v, values[i].result, calculated,
-                error, values[i].tol);
+            REPORT_FAILURE("value", payoff, amExercise, values[i].s, 
+                           values[i].q, values[i].r, today, values[i].v, 
+                           values[i].result, calculated, error, values[i].tol);
         }
     }
 }
 
 void DigitalOptionTest::testCashAtHitOrNothingAmericanGreeks() {
+
+    BOOST_MESSAGE("Testing American cash-(at-hit)-or-nothing "
+                  "digital option greeks...");
 
     std::map<std::string,double> calculated, expected, tolerance;
     tolerance["delta"]  = 5.0e-5;
@@ -605,8 +671,9 @@ void DigitalOptionTest::testCashAtHitOrNothingAmericanGreeks() {
                                  tol   = tolerance [greek];
                           double error = relativeError(expct,calcl,value);
                           if (error > tol) {
-                              vanillaOptionTestFailed(greek, payoff, exercise, u, q, r, today,
-                                  dc, v, expct, calcl, error, tol);
+                              REPORT_FAILURE(greek, payoff, exercise, 
+                                             u, q, r, today, v, 
+                                             expct, calcl, error, tol);
                           }
                       }
                   }
@@ -622,7 +689,10 @@ void DigitalOptionTest::testCashAtHitOrNothingAmericanGreeks() {
 
 void DigitalOptionTest::testMCCashAtHit() {
 
-    VanillaOptionData values[] = {
+    BOOST_MESSAGE("Testing Monte Carlo cash-(at-hit)-or-nothing "
+                  "American engine...");
+
+    DigitalOptionData values[] = {
         //        type, strike,   spot,    q,    r,   t,  vol,   value, tol
         { Option::Put,  100.00, 105.00, 0.20, 0.10, 0.5, 0.20, 12.2715, 5e-3 },
         { Option::Call, 100.00,  95.00, 0.20, 0.10, 0.5, 0.20,  8.9109, 5e-3 }
@@ -703,67 +773,30 @@ void DigitalOptionTest::testMCCashAtHit() {
 */
         double error = relativeError(calculated, values[i].result, values[i].result);
         if (error > 2.0*values[i].tol) {
-            vanillaOptionTestFailed("value",
-                                    payoff, amExercise,
-                                    values[i].s,
-                                    values[i].q,
-                                    values[i].r,
-                                    today, dc,
-                                    values[i].v,
-                                    values[i].result, calculated,
-                                    error, values[i].tol);
+            REPORT_FAILURE("value", payoff, amExercise, values[i].s, 
+                           values[i].q, values[i].r, today, values[i].v,
+                           values[i].result, calculated, error, values[i].tol);
         }
     }
 }
 
 
-CppUnit::Test* DigitalOptionTest::suite() {
-    CppUnit::TestSuite* tests =
-        new CppUnit::TestSuite("Digital option tests");
-
-    // European values
-    tests->addTest(new CppUnit::TestCaller<DigitalOptionTest>
-                   ("Testing European cash-or-nothing digital option",
-                    &DigitalOptionTest::testCashOrNothingEuropeanValues));
-    tests->addTest(new CppUnit::TestCaller<DigitalOptionTest>
-                   ("Testing European asset-or-nothing digital option",
-                    &DigitalOptionTest::testAssetOrNothingEuropeanValues));
-    tests->addTest(new CppUnit::TestCaller<DigitalOptionTest>
-                   ("Testing European gap digital option",
-                    &DigitalOptionTest::testGapEuropeanValues));
-
-    // American at-hit values
-    tests->addTest(new CppUnit::TestCaller<DigitalOptionTest>
-                   ("Testing American cash-(at-hit)-or-nothing digital option",
-                    &DigitalOptionTest::testCashAtHitOrNothingAmericanValues));
-    tests->addTest(new CppUnit::TestCaller<DigitalOptionTest>
-                   ("Testing American asset-(at-hit)-or-nothing digital option",
-                    &DigitalOptionTest::testAssetAtHitOrNothingAmericanValues));
-
-    // American at-expiry values
-    tests->addTest(new CppUnit::TestCaller<DigitalOptionTest>
-                   ("Testing American cash-(at-expiry)-or-nothing digital option",
-                    &DigitalOptionTest::testCashAtExpiryOrNothingAmericanValues));
-    tests->addTest(new CppUnit::TestCaller<DigitalOptionTest>
-                   ("Testing American asset-(at-expiry)-or-nothing digital option",
-                    &DigitalOptionTest::testAssetAtExpiryOrNothingAmericanValues));
-
-    // European greeks
-    // tested in europeanoption.cpp test
-
-    // American at-hit greeks
-//    tests->addTest(new CppUnit::TestCaller<DigitalOptionTest>
-//                   ("Testing American cash-(at-hit)-or-nothing digital option greeks",
-//                    &DigitalOptionTest::testCashAtHitOrNothingAmericanGreeks));
-
-    // American at-expiry greeks
-    // missing for the time being
-
-    // test of the MC engine for American options
-    tests->addTest(new CppUnit::TestCaller<DigitalOptionTest>
-                   ("Testing Monte Carlo cash-(at-hit)-or-nothing American engine",
-                    &DigitalOptionTest::testMCCashAtHit));
-
-    return tests;
+test_suite* DigitalOptionTest::suite() {
+    test_suite* suite = BOOST_TEST_SUITE("Digital option tests");
+    suite->add(BOOST_TEST_CASE(
+               &DigitalOptionTest::testCashOrNothingEuropeanValues));
+    suite->add(BOOST_TEST_CASE(
+               &DigitalOptionTest::testAssetOrNothingEuropeanValues));
+    suite->add(BOOST_TEST_CASE(&DigitalOptionTest::testGapEuropeanValues));
+    suite->add(BOOST_TEST_CASE(
+               &DigitalOptionTest::testCashAtHitOrNothingAmericanValues));
+    suite->add(BOOST_TEST_CASE(
+               &DigitalOptionTest::testAssetAtHitOrNothingAmericanValues));
+    suite->add(BOOST_TEST_CASE(
+               &DigitalOptionTest::testCashAtExpiryOrNothingAmericanValues));
+    suite->add(BOOST_TEST_CASE(
+               &DigitalOptionTest::testAssetAtExpiryOrNothingAmericanValues));
+    suite->add(BOOST_TEST_CASE(&DigitalOptionTest::testMCCashAtHit));
+    return suite;
 }
 

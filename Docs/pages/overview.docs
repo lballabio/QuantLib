@@ -425,10 +425,9 @@
 
 	To do:
     - Add tests for quanto and forward engines.
-    - Add covariance/correlation test for SequenceStatistics
-    - Add single factor calibration and bermudan pricing tests
+    - Add covariance/correlation test for SequenceStatistics.
+    - Add single factor calibration and Bermudan pricing tests.
 	- Increase coverage.
-	- Move from cppUnit to boost unit-test framework.
 
 
 

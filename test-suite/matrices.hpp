@@ -19,16 +19,14 @@
 #ifndef quantlib_test_matrices_hpp
 #define quantlib_test_matrices_hpp
 
-#include <cppunit/TestCase.h>
-#include <cppunit/TestFixture.h>
+#include <boost/test/unit_test.hpp>
 
-class MatricesTest : public CppUnit::TestFixture {
+class MatricesTest {
   public:
-    void setUp();
-    void testEigenvectors();   
-    void testSqrt();
-    void testSVD();
-    static CppUnit::Test* suite();
+    static void testEigenvectors();
+    static void testSqrt();
+    static void testSVD();
+    static boost::unit_test_framework::test_suite* suite();
 };
 
 

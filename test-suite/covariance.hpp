@@ -19,14 +19,14 @@
 #ifndef quantlib_test_covariance_hpp
 #define quantlib_test_covariance_hpp
 
-#include <cppunit/TestCase.h>
-#include <cppunit/TestFixture.h>
+#include <boost/test/unit_test.hpp>
 
-class CovarianceTest : public CppUnit::TestFixture {
+class CovarianceTest {
   public:
-    void testCovariance();
-    void testSalvagingCorrelation();
-    static CppUnit::Test* suite();
+    static void testCovariance();
+    static void testSalvagingCorrelation();
+    static boost::unit_test_framework::test_suite* suite();
 };
+
 
 #endif

@@ -21,10 +21,9 @@
 #include <ql/DayCounters/actual365.hpp>
 #include <ql/Instruments/simpleswap.hpp>
 #include <ql/Indexes/zarlibor.hpp>
-#include <cppunit/TestSuite.h>
-#include <cppunit/TestCaller.h>
 
 using namespace QuantLib;
+using namespace boost::unit_test_framework;
 
 namespace {
 
@@ -71,49 +70,57 @@ namespace {
     std::vector<Rate> rates;
     std::vector<Date> dates;
     boost::shared_ptr<TermStructure> termStructure;
-}
 
-void CompoundForwardTest::setUp() {
 
-    // data
-    calendar = Johannesburg();
-    settlementDays = 0;
-    fixingDays = 0;
-    today = calendar.roll(Date::todaysDate());
-    // just for fun
-    settlement = calendar.advance(today,settlementDays,Days);
-    rollingConvention = ModifiedFollowing;
-    dayCounter = Actual365();
-    frequency = 2;
+    void initialize() {
 
-    deposits = LENGTH(depositData);
-    swaps = LENGTH(swapData);
+        // data
+        calendar = Johannesburg();
+        settlementDays = 0;
+        fixingDays = 0;
+        today = calendar.roll(Date::todaysDate());
+        // just for fun
+        settlement = calendar.advance(today,settlementDays,Days);
+        rollingConvention = ModifiedFollowing;
+        dayCounter = Actual365();
+        frequency = 2;
 
-    // market elements
-    rates = std::vector<Rate>(deposits+swaps);
-    dates = std::vector<Date>(deposits+swaps);
-    Size i;
-    for (i=0; i<deposits; i++) {
-        rates[i] = depositData[i].rate/100;
-	dates[i] = calendar.advance(settlement,
-				    Period(depositData[i].n,
-					   depositData[i].units),
-				    rollingConvention);
+        deposits = LENGTH(depositData);
+        swaps = LENGTH(swapData);
+
+        // market elements
+        rates = std::vector<Rate>(deposits+swaps);
+        dates = std::vector<Date>(deposits+swaps);
+        Size i;
+        for (i=0; i<deposits; i++) {
+            rates[i] = depositData[i].rate/100;
+            dates[i] = calendar.advance(settlement,
+                                        Period(depositData[i].n,
+                                               depositData[i].units),
+                                        rollingConvention);
+        }
+        for (i=0; i<swaps; i++) {
+            rates[i+deposits] = swapData[i].rate/100;
+            dates[i+deposits] = calendar.advance(settlement,
+                                                 Period(swapData[i].n,
+                                                        swapData[i].units),
+                                                 rollingConvention);
+        }
+
+        termStructure = boost::shared_ptr<TermStructure>(
+                             new CompoundForward(today,settlement,dates,rates,
+                                                 calendar,rollingConvention,
+                                                 frequency,dayCounter));
     }
-    for (i=0; i<swaps; i++) {
-        rates[i+deposits] = swapData[i].rate/100;
-	dates[i+deposits] = calendar.advance(settlement,
-					     Period(swapData[i].n,
-						    swapData[i].units),
-					     rollingConvention);
-    }
 
-    termStructure = boost::shared_ptr<TermStructure>(
-	new CompoundForward(today,settlement,dates,rates,
-			    calendar,rollingConvention,frequency,dayCounter));
 }
 
 void CompoundForwardTest::testSuppliedRates() {
+
+    BOOST_MESSAGE("Testing consistency of compound-forward curve "
+                  "with supplied rates...");
+
+    initialize();
 
     RelinkableHandle<TermStructure> liborHandle;
     liborHandle.linkTo(termStructure);
@@ -131,7 +138,7 @@ void CompoundForwardTest::testSuppliedRates() {
         double expectedRate = swapData[i].rate/100,
                estimatedRate = swap.fairRate();
         if (QL_FABS(expectedRate-estimatedRate) > 1.0e-9) {
-            CPPUNIT_FAIL(
+            BOOST_FAIL(
                 IntegerFormatter::toString(swapData[i].n) + " year(s) swap:\n"
                 "    estimated rate: "
                 + RateFormatter::toString(estimatedRate,8) + "\n"
@@ -142,6 +149,11 @@ void CompoundForwardTest::testSuppliedRates() {
 }
 
 void CompoundForwardTest::testConvertedRates() {
+
+    BOOST_MESSAGE("Testing consistency of compound-forward curve "
+                  "with converted rates...");
+
+    initialize();
 
     RelinkableHandle<TermStructure> liborHandle;
     liborHandle.linkTo(termStructure);
@@ -161,7 +173,7 @@ void CompoundForwardTest::testConvertedRates() {
 							     frequency),
                estimatedRate = swap.fairRate();
         if (QL_FABS(expectedRate-estimatedRate) > 1.0e-9) {
-            CPPUNIT_FAIL(
+            BOOST_FAIL(
                 IntegerFormatter::toString(swapData[i].n) + " year(s) swap:\n"
                 "    estimated rate: "
                 + RateFormatter::toString(estimatedRate,8) + "\n"
@@ -171,17 +183,11 @@ void CompoundForwardTest::testConvertedRates() {
     }
 }
 
-CppUnit::Test* CompoundForwardTest::suite() {
-    CppUnit::TestSuite* tests = 
-        new CppUnit::TestSuite("Compound forward tests");
-    tests->addTest(new CppUnit::TestCaller<CompoundForwardTest>
-                   ("Testing consistency of compound-forward curve "
-                    "with supplied rates",
-                    &CompoundForwardTest::testSuppliedRates));
-    tests->addTest(new CppUnit::TestCaller<CompoundForwardTest>
-                   ("Testing consistency of compound-forward curve "
-                    "with converted rates",
-                    &CompoundForwardTest::testConvertedRates));
-    return tests;
+
+test_suite* CompoundForwardTest::suite() {
+    test_suite* suite = BOOST_TEST_SUITE("Compound forward tests");
+    suite->add(BOOST_TEST_CASE(&CompoundForwardTest::testSuppliedRates));
+    suite->add(BOOST_TEST_CASE(&CompoundForwardTest::testConvertedRates));
+    return suite;
 }
 

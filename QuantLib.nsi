@@ -58,7 +58,6 @@ SectionIn 1 2
     File /r "test-suite\*.hpp"
     File /r "test-suite\*.dsp"
     File /r "test-suite\*.vcproj"
-    File /r "test-suite\CPPUNIT-COPYING"
 
     SetOutPath $INSTDIR\Examples
     File /r "Examples\*.cpp"

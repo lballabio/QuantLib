@@ -15,14 +15,13 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#include "marketelements.hpp"
+#include "quotes.hpp"
 #include "utilities.hpp"
 #include <ql/marketelement.hpp>
 #include <ql/dataformatters.hpp>
-#include <cppunit/TestSuite.h>
-#include <cppunit/TestCaller.h>
 
 using namespace QuantLib;
+using namespace boost::unit_test_framework;
 
 namespace {
 
@@ -36,7 +35,9 @@ namespace {
 
 }
 
-void MarketElementTest::testObservable() {
+void QuoteTest::testObservable() {
+
+    BOOST_MESSAGE("Testing observability of quotes...");
 
     boost::shared_ptr<SimpleQuote> me(new SimpleQuote(0.0));
     Flag f;
@@ -44,11 +45,13 @@ void MarketElementTest::testObservable() {
     me->setValue(3.14);
 
     if (!f.isUp())
-        CPPUNIT_FAIL("Observer was not notified of market element change");
+        BOOST_FAIL("Observer was not notified of quote change");
 
 }
 
-void MarketElementTest::testObservableHandle() {
+void QuoteTest::testObservableHandle() {
+
+    BOOST_MESSAGE("Testing observability of quote handles...");
 
     boost::shared_ptr<SimpleQuote> me1(new SimpleQuote(0.0));
     RelinkableHandle<Quote> h(me1);
@@ -57,17 +60,19 @@ void MarketElementTest::testObservableHandle() {
 
     me1->setValue(3.14);
     if (!f.isUp())
-        CPPUNIT_FAIL("Observer was not notified of market element change");
+        BOOST_FAIL("Observer was not notified of quote change");
 
     f.lower();
     boost::shared_ptr<SimpleQuote> me2(new SimpleQuote(0.0));
     h.linkTo(me2);
     if (!f.isUp())
-        CPPUNIT_FAIL("Observer was not notified of market element change");
+        BOOST_FAIL("Observer was not notified of quote change");
 
 }
 
-void MarketElementTest::testDerived() {
+void QuoteTest::testDerived() {
+
+    BOOST_MESSAGE("Testing derived quotes...");
 
     typedef double (*unary_f)(double);
     unary_f funcs[3] = { add10, mul10, sub10 };
@@ -80,15 +85,16 @@ void MarketElementTest::testDerived() {
         double x = derived.value(),
                y = funcs[i](me->value());
         if (QL_FABS(x-y) > 1.0e-10)
-            CPPUNIT_FAIL(
-                "derived market element yields " +
-                DoubleFormatter::toString(x) + "\n"
-                "function result is " +
-                DoubleFormatter::toString(y));
+            BOOST_FAIL("derived quote yields " +
+                       DoubleFormatter::toString(x) + "\n"
+                       "function result is " +
+                       DoubleFormatter::toString(y));
     }
 }
 
-void MarketElementTest::testComposite() {
+void QuoteTest::testComposite() {
+
+    BOOST_MESSAGE("Testing composite quotes...");
 
     typedef double (*binary_f)(double,double);
     binary_f funcs[3] = { add, mul, sub };
@@ -102,28 +108,20 @@ void MarketElementTest::testComposite() {
         double x = composite.value(),
                y = funcs[i](me1->value(),me2->value());
         if (QL_FABS(x-y) > 1.0e-10)
-            CPPUNIT_FAIL(
-                "composite market element yields " +
-                DoubleFormatter::toString(x) + "\n"
-                "function result is " +
-                DoubleFormatter::toString(y));
+            BOOST_FAIL("composite quote yields " +
+                       DoubleFormatter::toString(x) + "\n"
+                       "function result is " +
+                       DoubleFormatter::toString(y));
     }
 }
 
-CppUnit::Test* MarketElementTest::suite() {
-    CppUnit::TestSuite* tests = new CppUnit::TestSuite("Market element tests");
-    tests->addTest(new CppUnit::TestCaller<MarketElementTest>
-                   ("Testing observability of market elements",
-                    &MarketElementTest::testObservable));
-    tests->addTest(new CppUnit::TestCaller<MarketElementTest>
-                   ("Testing observability of market element handles",
-                    &MarketElementTest::testObservableHandle));
-    tests->addTest(new CppUnit::TestCaller<MarketElementTest>
-                   ("Testing derived market elements",
-                    &MarketElementTest::testDerived));
-    tests->addTest(new CppUnit::TestCaller<MarketElementTest>
-                   ("Testing composite market elements",
-                    &MarketElementTest::testComposite));
-    return tests;
+
+test_suite* QuoteTest::suite() {
+    test_suite* suite = BOOST_TEST_SUITE("Quote tests");
+    suite->add(BOOST_TEST_CASE(&QuoteTest::testObservable));
+    suite->add(BOOST_TEST_CASE(&QuoteTest::testObservableHandle));
+    suite->add(BOOST_TEST_CASE(&QuoteTest::testDerived));
+    suite->add(BOOST_TEST_CASE(&QuoteTest::testComposite));
+    return suite;
 }
 

@@ -18,13 +18,12 @@
 #ifndef quantlib_test_calendars_hpp
 #define quantlib_test_calendars_hpp
 
-#include <cppunit/TestCase.h>
+#include <boost/test/unit_test.hpp>
 
-class CalendarTest : public CppUnit::TestCase {
+class CalendarTest {
   public:
-    CalendarTest() 
-    : CppUnit::TestCase("Testing joint calendars") {}
-    void runTest();
+    static void testJointCalendars();
+    static boost::unit_test_framework::test_suite* suite();
 };
 
 

@@ -18,15 +18,13 @@
 #ifndef quantlib_test_compound_forward_hpp
 #define quantlib_test_compound_forward_hpp
 
-#include <cppunit/TestCase.h>
-#include <cppunit/TestFixture.h>
+#include <boost/test/unit_test.hpp>
 
-class CompoundForwardTest : public CppUnit::TestFixture {
+class CompoundForwardTest {
   public:
-    void setUp();
-    void testSuppliedRates();
-    void testConvertedRates();
-    static CppUnit::Test* suite();
+    static void testSuppliedRates();
+    static void testConvertedRates();
+    static boost::unit_test_framework::test_suite* suite();
 };
 
 

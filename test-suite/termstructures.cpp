@@ -24,10 +24,9 @@
 #include <ql/Calendars/target.hpp>
 #include <ql/DayCounters/actual360.hpp>
 #include <ql/DayCounters/thirty360.hpp>
-#include <cppunit/TestSuite.h>
-#include <cppunit/TestCaller.h>
 
 using namespace QuantLib;
+using namespace boost::unit_test_framework;
 
 namespace {
 
@@ -45,52 +44,58 @@ namespace {
         double rate;
     };
 
-}
+    void initialize() {
+        calendar_ = TARGET();
+        settlementDays_ = 2;
+        Date today = calendar_.roll(Date::todaysDate());
+        Date settlement = calendar_.advance(today,settlementDays_,Days);
+        Datum depositData[] = {
+            { 1, Months, 4.581 },
+            { 2, Months, 4.573 },
+            { 3, Months, 4.557 },
+            { 6, Months, 4.496 },
+            { 9, Months, 4.490 }
+        };
+        Datum swapData[] = {
+            {  1, Years, 4.54 },
+            {  5, Years, 4.99 },
+            { 10, Years, 5.47 },
+            { 20, Years, 5.89 },
+            { 30, Years, 5.96 }
+        };
+        Size deposits = LENGTH(depositData),
+            swaps = LENGTH(swapData);
 
-void TermStructureTest::setUp() {
-    calendar_ = TARGET();
-    settlementDays_ = 2;
-    Date today = calendar_.roll(Date::todaysDate());
-    Date settlement = calendar_.advance(today,settlementDays_,Days);
-    Datum depositData[] = {
-        { 1, Months, 4.581 },
-        { 2, Months, 4.573 },
-        { 3, Months, 4.557 },
-        { 6, Months, 4.496 },
-        { 9, Months, 4.490 }
-    };
-    Datum swapData[] = {
-        {  1, Years, 4.54 },
-        {  5, Years, 4.99 },
-        { 10, Years, 5.47 },
-        { 20, Years, 5.89 },
-        { 30, Years, 5.96 }
-    };
-    Size deposits = LENGTH(depositData),
-         swaps = LENGTH(swapData);
+        std::vector<boost::shared_ptr<RateHelper> > 
+            instruments(deposits+swaps);
+        Size i;
+        for (i=0; i<deposits; i++) {
+            instruments[i] = boost::shared_ptr<RateHelper>(
+                 new DepositRateHelper(depositData[i].rate/100,
+                                       depositData[i].n, depositData[i].units,
+                                       settlementDays_, calendar_,
+                                       ModifiedFollowing, Actual360()));
+        }
+        for (i=0; i<swaps; i++) {
+            instruments[i+deposits] = boost::shared_ptr<RateHelper>(
+                          new SwapRateHelper(swapData[i].rate/100,
+                                             swapData[i].n, swapData[i].units,
+                                             settlementDays_, calendar_,
+                                             ModifiedFollowing, 1, false,
+                                             Thirty360(), 2));
+        }
+        termStructure_ = boost::shared_ptr<TermStructure>(
+          new PiecewiseFlatForward(today,settlement,instruments,Actual360()));
+    }
 
-    std::vector<boost::shared_ptr<RateHelper> > instruments(deposits+swaps);
-    Size i;
-    for (i=0; i<deposits; i++) {
-        instruments[i] = boost::shared_ptr<RateHelper>(
-            new DepositRateHelper(depositData[i].rate/100,
-                                  depositData[i].n, depositData[i].units,
-                                  settlementDays_, calendar_,
-                                  ModifiedFollowing, Actual360()));
-    }
-    for (i=0; i<swaps; i++) {
-        instruments[i+deposits] = boost::shared_ptr<RateHelper>(
-            new SwapRateHelper(swapData[i].rate/100,
-                               swapData[i].n, swapData[i].units,
-                               settlementDays_, calendar_,
-                               ModifiedFollowing, 1, false,
-                               Thirty360(), 2));
-    }
-    termStructure_ = boost::shared_ptr<TermStructure>(
-        new PiecewiseFlatForward(today,settlement,instruments,Actual360()));
 }
 
 void TermStructureTest::testImplied() {
+
+    BOOST_MESSAGE("Testing consistency of implied term structure...");
+
+    initialize();
+
     double tolerance = 1.0e-10;
     Date newToday = termStructure_->todaysDate().plusYears(3);
     Date newSettlement = calendar_.advance(newToday,settlementDays_,Days);
@@ -103,7 +108,7 @@ void TermStructureTest::testImplied() {
     double discount = termStructure_->discount(testDate);
     double impliedDiscount = implied->discount(testDate);
     if (QL_FABS(discount - baseDiscount*impliedDiscount) > tolerance)
-        CPPUNIT_FAIL(
+        BOOST_FAIL(
             "unable to reproduce discount from implied curve\n"
             "    calculated: "
             + DoubleFormatter::toString(baseDiscount*impliedDiscount,10) + "\n"
@@ -112,6 +117,11 @@ void TermStructureTest::testImplied() {
 }
 
 void TermStructureTest::testImpliedObs() {
+
+    BOOST_MESSAGE("Testing observability of implied term structure...");
+
+    initialize();
+
     Date newToday = termStructure_->todaysDate().plusYears(3);
     Date newSettlement = calendar_.advance(newToday,settlementDays_,Days);
     RelinkableHandle<TermStructure> h;
@@ -121,10 +131,15 @@ void TermStructureTest::testImpliedObs() {
     flag.registerWith(implied);
     h.linkTo(termStructure_);
     if (!flag.isUp())
-        CPPUNIT_FAIL("Observer was not notified of term structure change");
+        BOOST_FAIL("Observer was not notified of term structure change");
 }
 
 void TermStructureTest::testFSpreaded() {
+
+    BOOST_MESSAGE("Testing consistency of forward-spreaded term structure...");
+
+    initialize();
+
     double tolerance = 1.0e-10;
     boost::shared_ptr<Quote> me(new SimpleQuote(0.01));
     RelinkableHandle<Quote> mh(me);
@@ -135,7 +150,7 @@ void TermStructureTest::testFSpreaded() {
     Rate forward = termStructure_->instantaneousForward(testDate);
     Rate spreadedForward = spreaded->instantaneousForward(testDate);
     if (QL_FABS(forward - (spreadedForward-me->value())) > tolerance)
-        CPPUNIT_FAIL(
+        BOOST_FAIL(
             "unable to reproduce forward from spreaded curve\n"
             "    calculated: "
             + DoubleFormatter::toString(spreadedForward-me->value(),10) + "\n"
@@ -144,6 +159,12 @@ void TermStructureTest::testFSpreaded() {
 }
 
 void TermStructureTest::testFSpreadedObs() {
+
+    BOOST_MESSAGE("Testing observability of forward-spreaded "
+                  "term structure...");
+
+    initialize();
+
     boost::shared_ptr<SimpleQuote> me(new SimpleQuote(0.01));
     RelinkableHandle<Quote> mh(me);
     RelinkableHandle<TermStructure> h;
@@ -153,14 +174,19 @@ void TermStructureTest::testFSpreadedObs() {
     flag.registerWith(spreaded);
     h.linkTo(termStructure_);
     if (!flag.isUp())
-        CPPUNIT_FAIL("Observer was not notified of term structure change");
+        BOOST_FAIL("Observer was not notified of term structure change");
     flag.lower();
     me->setValue(0.005);
     if (!flag.isUp())
-        CPPUNIT_FAIL("Observer was not notified of spread change");
+        BOOST_FAIL("Observer was not notified of spread change");
 }
 
 void TermStructureTest::testZSpreaded() {
+
+    BOOST_MESSAGE("Testing consistency of zero-spreaded term structure...");
+
+    initialize();
+
     double tolerance = 1.0e-10;
     boost::shared_ptr<Quote> me(new SimpleQuote(0.01));
     RelinkableHandle<Quote> mh(me);
@@ -171,7 +197,7 @@ void TermStructureTest::testZSpreaded() {
     Rate zero = termStructure_->zeroYield(testDate);
     Rate spreadedZero = spreaded->zeroYield(testDate);
     if (QL_FABS(zero - (spreadedZero-me->value())) > tolerance)
-        CPPUNIT_FAIL(
+        BOOST_FAIL(
             "unable to reproduce zero yield from spreaded curve\n"
             "    calculated: "
             + DoubleFormatter::toString(spreadedZero-me->value(),10) + "\n"
@@ -180,6 +206,11 @@ void TermStructureTest::testZSpreaded() {
 }
 
 void TermStructureTest::testZSpreadedObs() {
+
+    BOOST_MESSAGE("Testing observability of zero-spreaded term structure...");
+
+    initialize();
+
     boost::shared_ptr<SimpleQuote> me(new SimpleQuote(0.01));
     RelinkableHandle<Quote> mh(me);
     RelinkableHandle<TermStructure> h;
@@ -189,33 +220,22 @@ void TermStructureTest::testZSpreadedObs() {
     flag.registerWith(spreaded);
     h.linkTo(termStructure_);
     if (!flag.isUp())
-        CPPUNIT_FAIL("Observer was not notified of term structure change");
+        BOOST_FAIL("Observer was not notified of term structure change");
     flag.lower();
     me->setValue(0.005);
     if (!flag.isUp())
-        CPPUNIT_FAIL("Observer was not notified of spread change");
+        BOOST_FAIL("Observer was not notified of spread change");
 }
 
-CppUnit::Test* TermStructureTest::suite() {
-    CppUnit::TestSuite* tests = new CppUnit::TestSuite("Term structure tests");
-    tests->addTest(new CppUnit::TestCaller<TermStructureTest>
-                   ("Testing consistency of implied term structure",
-                    &TermStructureTest::testImplied));
-    tests->addTest(new CppUnit::TestCaller<TermStructureTest>
-                   ("Testing observability of implied term structure",
-                    &TermStructureTest::testImpliedObs));
-    tests->addTest(new CppUnit::TestCaller<TermStructureTest>
-                   ("Testing consistency of forward-spreaded term structure",
-                    &TermStructureTest::testFSpreaded));
-    tests->addTest(new CppUnit::TestCaller<TermStructureTest>
-                   ("Testing observability of forward-spreaded term structure",
-                    &TermStructureTest::testFSpreadedObs));
-    tests->addTest(new CppUnit::TestCaller<TermStructureTest>
-                   ("Testing consistency of zero-spreaded term structure",
-                    &TermStructureTest::testZSpreaded));
-    tests->addTest(new CppUnit::TestCaller<TermStructureTest>
-                   ("Testing observability of zero-spreaded term structure",
-                    &TermStructureTest::testZSpreadedObs));
-    return tests;
+
+test_suite* TermStructureTest::suite() {
+    test_suite* suite = BOOST_TEST_SUITE("Term structure tests");
+    suite->add(BOOST_TEST_CASE(&TermStructureTest::testImplied));
+    suite->add(BOOST_TEST_CASE(&TermStructureTest::testImpliedObs));
+    suite->add(BOOST_TEST_CASE(&TermStructureTest::testFSpreaded));
+    suite->add(BOOST_TEST_CASE(&TermStructureTest::testFSpreadedObs));
+    suite->add(BOOST_TEST_CASE(&TermStructureTest::testZSpreaded));
+    suite->add(BOOST_TEST_CASE(&TermStructureTest::testZSpreadedObs));
+    return suite;
 }
 
