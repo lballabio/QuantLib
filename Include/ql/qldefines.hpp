@@ -30,6 +30,9 @@
 
 // $Id$
 // $Log$
+// Revision 1.15  2001/08/30 17:03:08  nando
+// clock substitued by time
+//
 // Revision 1.14  2001/08/09 14:59:45  sigmud
 // header modification
 //
@@ -204,6 +207,9 @@
 */
 /*! \def QL_CLOCK
     \brief clock value
+*/
+/*! \def QL_CLOCK
+    \brief time value
 */
 #if defined HAVE_CTIME
     #include <ctime>

@@ -3,6 +3,9 @@
 
 // $Id$
 // $Log$
+// Revision 1.5  2001/08/30 17:03:08  nando
+// clock substitued by time
+//
 // Revision 1.4  2001/08/30 16:57:46  nando
 // clock substitued by time
 //
@@ -32,7 +35,8 @@
 #define HAVE_LIMITS
 
 #define HAVE_CTIME
-#define QL_CLOCK    std::time
+#define QL_CLOCK    std::clock
+#define QL_TIME     std::time
 
 #define HAVE_CCTYPE
 #define QL_STRLEN   std::strlen

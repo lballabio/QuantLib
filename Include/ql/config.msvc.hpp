@@ -3,6 +3,9 @@
 
 // $Id$
 // $Log$
+// Revision 1.13  2001/08/30 17:03:08  nando
+// clock substitued by time
+//
 // Revision 1.12  2001/08/30 16:51:08  nando
 // clock substitued by time
 //
@@ -49,7 +52,8 @@
 #define HAVE_LIMITS
 
 #define HAVE_CTIME
-#define QL_CLOCK    time
+#define QL_CLOCK    clock
+#define QL_TIME     time
 
 #define HAVE_CCTYPE
 #define QL_STRLEN   strlen

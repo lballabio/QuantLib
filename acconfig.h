@@ -10,6 +10,7 @@
 #undef QL_TOLOWER
 #undef QL_TOUPPER
 #undef QL_CLOCK
+#undef QL_TIME
 #undef QL_MAX
 #undef QL_MIN
 #undef QL_ITERATOR
