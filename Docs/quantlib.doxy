@@ -66,8 +66,6 @@ INPUT                  = ./pages \
                          ../ql
 FILE_PATTERNS          = *.docs \
                          *.hpp \
-                         *.cpp \
-                         *.c \
                          *.h
 RECURSIVE              = YES
 EXCLUDE                = ../ql/config.hpp \
@@ -93,7 +91,6 @@ INLINE_SOURCES         = NO
 STRIP_CODE_COMMENTS    = YES
 REFERENCED_BY_RELATION = NO
 REFERENCES_RELATION    = NO
-VERBATIM_HEADERS       = NO
 #---------------------------------------------------------------------------
 # configuration options related to the alphabetical class index
 #---------------------------------------------------------------------------
