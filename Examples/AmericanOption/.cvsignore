@@ -1,9 +1,5 @@
 Makefile.in
 AmericanOption
-*.tds
 *.plg
-*.exe
 *.dep
-*.obj
-*.obj_d
 build
