@@ -50,6 +50,37 @@ namespace QuantLib {
             mutable ResultsType results_;
         };
 
+        //! Base class for some pricing engine on a particular model
+        /*! Derived engines only need to implement the <tt>calculate()</tt>
+            method
+        */
+        template<class ModelType, class ArgumentsType, class ResultsType>
+        class GenericModelEngine : 
+            public GenericEngine<ArgumentsType, ResultsType>,
+            public Patterns::Observer,
+            public Patterns::Observable {
+          public:
+            GenericModelEngine() {}
+            GenericModelEngine(const Handle<ModelType>& model) 
+            : model_(model) {
+                registerWith(model_);
+            }
+            void validateArguments() const { arguments_.validate(); }
+
+            void setModel(const Handle<ModelType>& model) {
+                unregisterWith(model_);
+                model_ = model;
+                QL_REQUIRE(!model_.isNull(), 
+                           "GenericModelEngine: Not an adequate model given");
+                registerWith(model_);
+                update();
+            }
+            virtual void update() {
+                notifyObservers();
+            }
+          protected:
+            Handle<ModelType> model_;
+        };
 
     }
 
