@@ -24,11 +24,15 @@
 
 /*! \file history.hpp
     \brief history class
+    
     $Id$
 */
 
 // $Source$
 // $Log$
+// Revision 1.4  2001/05/25 08:12:11  lballabio
+// Fixed bug in docs
+//
 // Revision 1.3  2001/05/24 15:38:07  nando
 // smoothing #include xx.hpp and cutting old Log messages
 //
