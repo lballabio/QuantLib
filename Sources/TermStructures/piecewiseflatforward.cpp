@@ -30,6 +30,10 @@
 
 // $Source$
 // $Log$
+// Revision 1.11  2001/06/12 13:43:04  lballabio
+// Today's date is back into term structures
+// Instruments are now constructed with settlement days instead of settlement date
+//
 // Revision 1.10  2001/06/04 08:32:31  lballabio
 // Set extrapolated discount as next guess
 //
@@ -65,11 +69,15 @@ namespace QuantLib {
         const double PiecewiseFlatForward::accuracy_ = 1.0e-12;
 
         PiecewiseFlatForward::PiecewiseFlatForward(Currency currency,
-            const Handle<DayCounter>& dayCounter, const Date& settlementDate,
+            const Handle<DayCounter>& dayCounter, const Date& todaysDate, 
+            const Handle<Calendar>& calendar, int settlementDays,
             const std::vector<Handle<RateHelper> >& instruments)
         : currency_(currency), dayCounter_(dayCounter),
-          settlementDate_(settlementDate) {
+          todaysDate_(todaysDate), calendar_(calendar), 
+          settlementDays_(settlementDays) {
             QL_REQUIRE(instruments.size()>0, "No instrument given");
+            settlementDate_ = calendar_->advance(
+                todaysDate_,settlementDays_,Days);
             // values at settlement date
             discounts_.push_back(1.0);
             nodes_.push_back(settlementDate_);
@@ -79,6 +87,8 @@ namespace QuantLib {
             // sort risk helpers
             std::vector<Handle<RateHelper> > sortedInstruments = instruments;
 			int i;
+            for (i=0; i<sortedInstruments.size(); i++)
+                sortedInstruments[i]->setTermStructure(this);
             std::sort(sortedInstruments.begin(),sortedInstruments.end(),
                 RateHelperSorter());
             // check that there is no instruments with the same maturity
@@ -92,7 +102,6 @@ namespace QuantLib {
             // bootstrapping loop
             for (i=1; i<sortedInstruments.size()+1; i++) {
                 Handle<RateHelper> instrument = sortedInstruments[i-1];
-                instrument->setTermStructure(this);
                 double guess = instrument->discountGuess();
                 if (guess == Null<double>()) {
                     if (i > 1)  // we can extrapolate

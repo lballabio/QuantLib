@@ -30,6 +30,10 @@
 
 // $Source$
 // $Log$
+// Revision 1.13  2001/06/12 13:43:04  lballabio
+// Today's date is back into term structures
+// Instruments are now constructed with settlement days instead of settlement date
+//
 // Revision 1.12  2001/06/05 09:35:14  lballabio
 // Updated docs to use Doxygen 1.2.8
 //
@@ -70,15 +74,12 @@ namespace QuantLib {
 
 
 
-        DepositRateHelper::DepositRateHelper(Rate rate, const Date& settlement,
+        DepositRateHelper::DepositRateHelper(Rate rate, int settlementDays,
             int n, TimeUnit units, const Handle<Calendar>& calendar,
             RollingConvention convention, const Handle<DayCounter>& dayCounter)
-        : rate_(rate), settlement_(settlement), n_(n), units_(units),
+        : rate_(rate), settlementDays_(settlementDays), n_(n), units_(units),
           calendar_(calendar), convention_(convention), 
-          dayCounter_(dayCounter) {
-            maturity_ = calendar_->advance(settlement_,n_,units_,convention_);
-            yearFraction_ = dayCounter_->yearFraction(settlement_,maturity_);
-        }
+          dayCounter_(dayCounter) {}
 
         double DepositRateHelper::rateError() const {
             QL_REQUIRE(termStructure_ != 0, "term structure not set");
@@ -96,7 +97,49 @@ namespace QuantLib {
                    (1.0+rate_*yearFraction_);
         }
 
+        void DepositRateHelper::setTermStructure(TermStructure* t) {
+            RateHelper::setTermStructure(t);
+            QL_REQUIRE(termStructure_ != 0, "null term structure set");
+            settlement_ = calendar_->advance(
+                termStructure_->todaysDate(),settlementDays_,Days);
+            maturity_ = calendar_->advance(settlement_,n_,units_,convention_);
+            yearFraction_ = dayCounter_->yearFraction(settlement_,maturity_);
+        }
+
         Date DepositRateHelper::maturity() const {
+            QL_REQUIRE(termStructure_ != 0, "term structure not set");
+            return maturity_;
+        }
+
+
+
+        FraRateHelper::FraRateHelper(Rate rate, const Date& settlement,
+            int n, TimeUnit units, const Handle<Calendar>& calendar,
+            RollingConvention convention, const Handle<DayCounter>& dayCounter)
+        : rate_(rate), settlement_(settlement), n_(n), units_(units),
+          calendar_(calendar), convention_(convention), 
+          dayCounter_(dayCounter) {
+            maturity_ = calendar_->advance(settlement_,n_,units_,convention_);
+            yearFraction_ = dayCounter_->yearFraction(settlement_,maturity_);
+        }
+
+        double FraRateHelper::rateError() const {
+            QL_REQUIRE(termStructure_ != 0, "term structure not set");
+            Rate impliedRate = (termStructure_->discount(settlement_) / 
+                                termStructure_->discount(maturity_)-1.0) /
+                               yearFraction_;
+            return rate_-impliedRate;
+        }
+
+        double FraRateHelper::discountGuess() const {
+            QL_REQUIRE(termStructure_ != 0, "term structure not set");
+            // extrapolation shouldn't be needed if the input makes sense
+            // but we'll play it safe
+            return termStructure_->discount(settlement_,true) / 
+                   (1.0+rate_*yearFraction_);
+        }
+
+        Date FraRateHelper::maturity() const {
             return maturity_;
         }
 

@@ -30,6 +30,10 @@
 
 // $Source$
 // $Log$
+// Revision 1.9  2001/06/12 13:43:04  lballabio
+// Today's date is back into term structures
+// Instruments are now constructed with settlement days instead of settlement date
+//
 // Revision 1.8  2001/05/29 10:00:07  lballabio
 // Removed check that would fail on null relinkable handle
 //
@@ -44,6 +48,7 @@
 #define quantlib_term_structure_h
 
 #include "ql/date.hpp"
+#include "ql/calendar.hpp"
 #include "ql/rate.hpp"
 #include "ql/spread.hpp"
 #include "ql/discountfactor.hpp"
@@ -82,16 +87,26 @@ namespace QuantLib {
             bool extrapolate = false) const;
         //@}
 
-        //! \name Other inspectors
+        //! \name Dates
         //@{
-        //! returns the currency upon which the term structure is defined
-        virtual Currency currency() const = 0;
-        //! returns the settlement date relative to today's date
+        //! returns today's date
+        virtual Date todaysDate() const = 0;
+        //! returns the number of settlement days
+        virtual int settlementDays() const = 0;
+        //! returns the calendar for settlement calculation
+        virtual Handle<Calendar> calendar() const = 0;
+        //! returns the settlement date
         virtual Date settlementDate() const = 0;
         //! returns the earliest date for which the curve can return rates
         virtual Date minDate() const = 0;
         //! returns the latest date for which the curve can return rates
         virtual Date maxDate() const = 0;
+        //@}
+
+        //! \name Other inspectors
+        //@{
+        //! returns the currency upon which the term structure is defined
+        virtual Currency currency() const = 0;
         //@}
     };
 
@@ -158,8 +173,11 @@ namespace QuantLib {
     class ImpliedTermStructure : public DiscountStructure {
       public:
         ImpliedTermStructure(const RelinkableHandle<TermStructure>&,
-            const Date& settlementDate);
+            const Date& todaysDate);
         Currency currency() const;
+        Date todaysDate() const;
+        int settlementDays() const;
+        Handle<Calendar> calendar() const;
         Date settlementDate() const;
         Date maxDate() const;
         Date minDate() const;
@@ -167,7 +185,7 @@ namespace QuantLib {
         DiscountFactor discount(const Date&, bool extrapolate = false) const;
       private:
         RelinkableHandle<TermStructure> originalCurve_;
-        Date settlementDate_;
+        Date todaysDate_;
     };
 
     //! Term structure with an added spread on the zero yield rate
@@ -179,6 +197,9 @@ namespace QuantLib {
         SpreadedTermStructure(const RelinkableHandle<TermStructure>&, 
             Spread spread);
         Currency currency() const;
+        Date todaysDate() const;
+        int settlementDays() const;
+        Handle<Calendar> calendar() const;
         Date settlementDate() const;
         Date maxDate() const;
         Date minDate() const;
@@ -282,15 +303,28 @@ namespace QuantLib {
     // time-shifted curve
 
     inline ImpliedTermStructure::ImpliedTermStructure(
-        const RelinkableHandle<TermStructure>& h, const Date& settlementDate)
-    : originalCurve_(h), settlementDate_(settlementDate) {}
+        const RelinkableHandle<TermStructure>& h, const Date& todaysDate)
+    : originalCurve_(h), todaysDate_(todaysDate) {}
 
     inline Currency ImpliedTermStructure::currency() const {
         return originalCurve_->currency();
     }
 
+    inline Date ImpliedTermStructure::todaysDate() const {
+        return todaysDate_;
+    }
+
+    inline int ImpliedTermStructure::settlementDays() const {
+        return originalCurve_->settlementDays();
+    }
+
+    inline Handle<Calendar> ImpliedTermStructure::calendar() const {
+        return originalCurve_->calendar();
+    }
+
     inline Date ImpliedTermStructure::settlementDate() const {
-        return settlementDate_;
+        return calendar()->advance(
+            todaysDate_,settlementDays(),Days);
     }
 
     inline Date ImpliedTermStructure::maxDate() const {
@@ -298,7 +332,7 @@ namespace QuantLib {
     }
 
     inline Date ImpliedTermStructure::minDate() const {
-        return settlementDate_;
+        return settlementDate();
     }
 
     inline DiscountFactor ImpliedTermStructure::discount(const Date& d,
@@ -308,7 +342,7 @@ namespace QuantLib {
                since the original curve could change between
                invocations of this method */
             return originalCurve_->discount(d, extrapolate) /
-                originalCurve_->discount(settlementDate_);
+                originalCurve_->discount(settlementDate());
     }
 
 
@@ -320,6 +354,18 @@ namespace QuantLib {
 
     inline Currency SpreadedTermStructure::currency() const {
         return originalCurve_->currency();
+    }
+
+    inline Date SpreadedTermStructure::todaysDate() const {
+        return originalCurve_->todaysDate();
+    }
+
+    inline int SpreadedTermStructure::settlementDays() const {
+        return originalCurve_->settlementDays();
+    }
+
+    inline Handle<Calendar> SpreadedTermStructure::calendar() const {
+        return originalCurve_->calendar();
     }
 
     inline Date SpreadedTermStructure::settlementDate() const {

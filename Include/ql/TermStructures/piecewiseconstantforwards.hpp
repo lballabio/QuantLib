@@ -30,6 +30,10 @@
 
 // $Source$
 // $Log$
+// Revision 1.8  2001/06/12 13:43:04  lballabio
+// Today's date is back into term structures
+// Instruments are now constructed with settlement days instead of settlement date
+//
 // Revision 1.7  2001/05/25 09:29:40  nando
 // smoothing #include xx.hpp and cutting old Log messages
 //
@@ -51,12 +55,15 @@ namespace QuantLib {
           public:
             // constructor
             PiecewiseConstantForwards(Currency currency,
-                                      Handle<DayCounter> dayCounter,
-                                      const Date& settlementDate,
-                                      const std::vector<DepositRate>& deposits);
+                const Handle<DayCounter>& dayCounter, const Date& todaysDate,
+                const Handle<Calendar>& calendar, int settlementDays, 
+                const std::vector<DepositRate>& deposits);
             // inspectors
             Currency currency() const;
             Handle<DayCounter> dayCounter() const;
+            Date todaysDate() const;
+            int settlementDays() const;
+            Handle<Calendar> calendar() const;
             Date settlementDate() const;
             Date maxDate() const;
             Date minDate() const;
@@ -73,6 +80,9 @@ namespace QuantLib {
             // data members
             Currency currency_;
             Handle<DayCounter> dayCounter_;
+            Date todaysDate_;
+            Handle<Calendar> calendar_;
+            int settlementDays_;
             Date settlementDate_;
             int nodesNumber_;
             std::vector<Date> nodes_;
@@ -92,6 +102,18 @@ namespace QuantLib {
 
         inline Handle<DayCounter> PiecewiseConstantForwards::dayCounter() const{
             return dayCounter_;
+        }
+
+        inline Date PiecewiseConstantForwards::todaysDate() const {
+            return todaysDate_;
+        }
+
+        inline Handle<Calendar> PiecewiseConstantForwards::calendar() const {
+            return calendar_;
+        }
+
+        inline int PiecewiseConstantForwards::settlementDays() const {
+            return settlementDays_;
         }
 
         inline Date PiecewiseConstantForwards::settlementDate() const {

@@ -30,6 +30,10 @@
 
 // $Source$
 // $Log$
+// Revision 1.25  2001/06/12 13:43:04  lballabio
+// Today's date is back into term structures
+// Instruments are now constructed with settlement days instead of settlement date
+//
 // Revision 1.24  2001/05/24 15:40:10  nando
 // smoothing #include xx.hpp and cutting old Log messages
 //
@@ -41,13 +45,15 @@ namespace QuantLib {
     namespace TermStructures {
 
         PiecewiseConstantForwards::PiecewiseConstantForwards(
-                                    Currency currency,
-                                    Handle<DayCounter> dayCounter,
-                                    const Date& settlementDate,
-                                    const std::vector<DepositRate>& deposits)
+            Currency currency, const Handle<DayCounter>& dayCounter,
+            const Date& todaysDate, const Handle<Calendar>& calendar, 
+            int settlementDays, const std::vector<DepositRate>& deposits)
         : currency_(currency), dayCounter_(dayCounter),
-          settlementDate_(settlementDate), deposits_(deposits) {
+          todaysDate_(todaysDate), calendar_(calendar), 
+          settlementDays_(settlementDays), deposits_(deposits) {
 
+            settlementDate_ = calendar_->advance(
+                todaysDate_,settlementDays_,Days);
             nodesNumber_ = deposits_.size()+1;
             QL_REQUIRE(deposits_.size()>1, "No deposits given");
             nodes_.resize(nodesNumber_);

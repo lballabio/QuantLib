@@ -25,6 +25,10 @@
 /*! \file riskmeasures.hpp
     $Source$
     $Log$
+    Revision 1.8  2001/06/12 13:43:04  lballabio
+    Today's date is back into term structures
+    Instruments are now constructed with settlement days instead of settlement date
+
     Revision 1.7  2001/06/11 16:45:39  aleppo
     Changed name Front to Side
 
@@ -68,7 +72,7 @@ namespace QuantLib {
         class RiskMeasures {
           public:
             RiskMeasures() {}
-            double potentialUpSide(double percentile,
+            double potentialUpside(double percentile,
                                     double mean,
                                     double std) const ;
             double valueAtRisk(double percentile,
@@ -87,7 +91,7 @@ namespace QuantLib {
 
         // inline definitions
         /*! \pre percentile must be in range 90%-100% */
-        inline double RiskMeasures::potentialUpSide(double percentile,
+        inline double RiskMeasures::potentialUpside(double percentile,
                                                      double mean,
                                                      double std) const {
             QL_REQUIRE(percentile<1.0 && percentile>=0.9,

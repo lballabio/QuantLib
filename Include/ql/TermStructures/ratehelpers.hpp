@@ -30,6 +30,10 @@
 
 // $Source$
 // $Log$
+// Revision 1.11  2001/06/12 13:43:04  lballabio
+// Today's date is back into term structures
+// Instruments are now constructed with settlement days instead of settlement date
+//
 // Revision 1.10  2001/06/08 13:34:46  lballabio
 // Typedef DepositRateHelper to FraRateHelper
 //
@@ -82,10 +86,37 @@ namespace QuantLib {
         };
 
 
-        //! deposit rate
+        //! Deposit rate
+        /*! \warning This class assumes that today's date does not change 
+            between calls of setTermStructure().
+        */
         class DepositRateHelper : public RateHelper {
           public:
-            DepositRateHelper(Rate rate, const Date& settlement,
+            DepositRateHelper(Rate rate, int settlementDays,
+                int n, TimeUnit units, const Handle<Calendar>& calendar,
+                RollingConvention convention, 
+                const Handle<DayCounter>& dayCounter);
+            double rateError() const;
+            double discountGuess() const;
+            void setTermStructure(TermStructure*);
+            Date maturity() const;
+          private:
+            Rate rate_;
+            int settlementDays_;
+            int n_;
+            TimeUnit units_;
+            Handle<Calendar> calendar_;
+            RollingConvention convention_;
+            Handle<DayCounter> dayCounter_;
+            Date settlement_, maturity_;
+            double yearFraction_;
+        };
+
+
+        //! Forward rate agreement
+        class FraRateHelper : public RateHelper {
+          public:
+            FraRateHelper(Rate rate, const Date& settlement,
                 int n, TimeUnit units, const Handle<Calendar>& calendar,
                 RollingConvention convention, 
                 const Handle<DayCounter>& dayCounter);
@@ -104,8 +135,6 @@ namespace QuantLib {
             double yearFraction_;
         };
 
-        //! FRA
-        typedef DepositRateHelper FraRateHelper;
 
         //! swap rate
         class SwapRateHelper : public RateHelper {
