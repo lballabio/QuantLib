@@ -30,6 +30,9 @@
 
 // $Source$
 // $Log$
+// Revision 1.9  2001/08/07 13:54:16  marmar
+// Remarks by Nando
+//
 // Revision 1.8  2001/08/07 11:25:54  sigmud
 // copyright header maintenance
 //
@@ -57,8 +60,13 @@ namespace QuantLib {
     namespace MonteCarlo {
 
         /*! \typedef GaussianRandomGenerator
-            Default choice for the gaussian random number
-            generator. 
+            Box-Muller algorithm is the default choice for the gaussian random number
+            generator.
+            It could have been
+                typedef CLGaussian<UniformRandomGenerator> GaussianRandomGenerator;
+            or even
+                typedef ICGaussian<UniformRandomGenerator> GaussianRandomGenerator;
+            that is, respectively, central-limit or inverse-cumulative algorithms.
         */
         typedef BoxMuller<UniformRandomGenerator> GaussianRandomGenerator;
 
