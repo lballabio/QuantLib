@@ -24,6 +24,9 @@
 
 /* $Source$
    $Log$
+   Revision 1.24  2001/03/20 15:13:59  marmar
+   MultiPeriodOption is a generalization of DividendAmericanOption
+
    Revision 1.23  2001/03/12 12:59:01  marmar
    __str__ now represents the object while __repr__ is unchanged
 
@@ -41,13 +44,15 @@
 %include Vectors.i
 
 %{
+using QuantLib::Pricers::AmericanOption;
+using QuantLib::Pricers::BinaryOption;
 using QuantLib::Pricers::BSMEuropeanOption;
 using QuantLib::Pricers::FiniteDifferenceEuropean;
-using QuantLib::Pricers::AmericanOption;
-using QuantLib::Pricers::ShoutOption;
 using QuantLib::Pricers::DividendAmericanOption;
 using QuantLib::Pricers::DividendEuropeanOption;
-using QuantLib::Pricers::BinaryOption;
+using QuantLib::Pricers::DividendOption;
+using QuantLib::Pricers::DividendShoutOption;
+using QuantLib::Pricers::ShoutOption;
 %}
 
 class BSMEuropeanOption {
@@ -131,11 +136,52 @@ class ShoutOption {
                              int maxEvaluations = 100) const ;
 };
 
+
+class DividendOption{
+  public:
+	DividendOption(OptionType type, double underlying, double strike, 
+	  Rate dividendYield, Rate riskFreeRate, Time residualTime,
+	  double volatility,
+	  const DoubleVector &dividends, 
+	  const DoubleVector &exdivdates,
+	  int timeSteps = 100, int gridPoints = 100);
+	~DividendOption();
+	double value() const;
+	double delta() const;
+	double gamma() const;
+	double theta() const;	
+	double vega() const;
+	double rho() const;
+	double impliedVolatility(double targetValue, double accuracy = 1e-4,
+	  int maxEvaluations = 100) const ;
+};
+
+class DividendShoutOption{
+  public:
+	DividendShoutOption(OptionType type, double underlying, double strike, 
+	  Rate dividendYield, Rate riskFreeRate, Time residualTime,
+	  double volatility, 
+	  const DoubleVector &dividends, 
+	  const DoubleVector &exdivdates,
+	  int timeSteps = 100, int gridPoints = 100);
+	~DividendShoutOption();
+	double value() const;
+	double delta() const;
+	double gamma() const;
+	double theta() const;	
+	double vega() const;
+	double rho() const;
+	double impliedVolatility(double targetValue, double accuracy = 1e-4,
+	  int maxEvaluations = 100) const ;
+};
+
 class DividendAmericanOption {
   public:
 	DividendAmericanOption(OptionType type, double underlying, double strike, 
 	  Rate dividendYield, Rate riskFreeRate, Time residualTime,
-	  double volatility, DoubleVector dividends, DoubleVector exdivdates,
+	  double volatility, 
+	  const DoubleVector &dividends, 
+	  const DoubleVector &exdivdates,
 	  int timeSteps = 100, int gridPoints = 100);
 	~DividendAmericanOption();
 	double value() const;
@@ -152,7 +198,9 @@ class DividendEuropeanOption {
   public:
 	DividendEuropeanOption(OptionType type, double underlying, double strike, 
 	  Rate dividendYield, Rate riskFreeRate, Time residualTime,
-	  double volatility, DoubleVector dividends, DoubleVector exdivdates);
+	  double volatility, 
+	  const DoubleVector &dividends, 
+	  const DoubleVector &exdivdates);
 	~DividendEuropeanOption();
 	double value() const;
 	double delta() const;

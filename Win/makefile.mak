@@ -74,12 +74,15 @@ PRICER_OBJS      = $(OUTPUT_DIR)\bsmoption.obj \
                    $(OUTPUT_DIR)\binaryoption.obj \
                    $(OUTPUT_DIR)\bsmnumericaloption.obj \
                    $(OUTPUT_DIR)\bsmeuropeanoption.obj \
+                   $(OUTPUT_DIR)\dividendoption.obj \ 
+                   $(OUTPUT_DIR)\dividendshoutoption.obj \ 
                    $(OUTPUT_DIR)\dividendamericanoption.obj \
                    $(OUTPUT_DIR)\dividendeuropeanoption.obj \
                    $(OUTPUT_DIR)\everestoption.obj \
                    $(OUTPUT_DIR)\finitedifferenceeuropean.obj\
-                   $(OUTPUT_DIR)\himalaya.obj \
+                   $(OUTPUT_DIR)\himalaya.obj \                   
                    $(OUTPUT_DIR)\mceuropeanpricer.obj \
+                   $(OUTPUT_DIR)\multiperiodoption.obj \
                    $(OUTPUT_DIR)\plainbasketoption.obj \
                    $(OUTPUT_DIR)\stepconditionoption.obj
 
@@ -322,6 +325,10 @@ $(OUTPUT_DIR)\bsmnumericaloption.obj: \
                 $(SOURCES_DIR)\Pricers\bsmnumericaloption.cpp
 $(OUTPUT_DIR)\bsmeuropeanoption.obj:  \
                 $(SOURCES_DIR)\Pricers\bsmeuropeanoption.cpp
+$(OUTPUT_DIR)\dividendoption.obj : \
+                $(SOURCES_DIR)\Pricers\dividendoption.cpp           
+$(OUTPUT_DIR)\dividendshoutoption.obj : \
+                $(SOURCES_DIR)\Pricers\dividendshoutoption.cpp           
 $(OUTPUT_DIR)\dividendamericanoption.obj: \
                 $(SOURCES_DIR)\Pricers\dividendamericanoption.cpp
 $(OUTPUT_DIR)\dividendeuropeanoption.obj: \
@@ -333,7 +340,9 @@ $(OUTPUT_DIR)\finitedifferenceeuropean.obj: \
 $(OUTPUT_DIR)\himalaya.obj: \
                 $(SOURCES_DIR)\Pricers\himalaya.cpp
 $(OUTPUT_DIR)\mceuropeanpricer.obj: \
-                $(SOURCES_DIR)\Pricers\mceuropeanpricer.cpp
+                $(SOURCES_DIR)\Pricers\mceuropeanpricer.cpp                
+$(OUTPUT_DIR)\multiperiodoption.obj: \
+                $(SOURCES_DIR)\Pricers\multiperiodoption.cpp
 $(OUTPUT_DIR)\plainbasketoption.obj: \
                 $(SOURCES_DIR)\Pricers\plainbasketoption.cpp
 $(OUTPUT_DIR)\stepconditionoption.obj: \

@@ -14,12 +14,15 @@ libPricers_la_SOURCES = \
     bsmeuropeanoption.cpp \
     bsmnumericaloption.cpp \
     bsmoption.cpp \
+    dividendoption.cpp \
+    dividendshoutoption.cpp \
     dividendamericanoption.cpp \
     dividendeuropeanoption.cpp \
     everestoption.cpp \
     finitedifferenceeuropean.cpp \
     himalaya.cpp \
     mceuropeanpricer.cpp \
+    multiperiodoption.cpp \
     plainbasketoption.cpp \
     stepconditionoption.cpp 
 

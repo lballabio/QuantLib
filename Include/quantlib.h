@@ -26,6 +26,9 @@
     $Source$
     $Name$
     $Log$
+    Revision 1.29  2001/03/20 15:14:33  marmar
+    MultiPeriodOption is a generalization of DividendAmericanOption
+
     Revision 1.28  2001/03/15 13:49:01  marmar
     getCovariance function added
 
@@ -225,6 +228,8 @@
 #include "bsmoption.h"
 #include "bsmeuropeanoption.h"
 #include "bsmnumericaloption.h"
+#include "dividendoption.h"
+#include "dividendshoutoption.h"
 #include "dividendeuropeanoption.h"
 #include "dividendamericanoption.h"
 #include "everestoption.h"
@@ -232,6 +237,7 @@
 #include "geometricasianoption.h"
 #include "himalaya.h"
 #include "mceuropeanpricer.h"
+#include "multiperiodoption.h"
 #include "options.h"
 #include "plainbasketoption.h"
 #include "shoutcondition.h"
