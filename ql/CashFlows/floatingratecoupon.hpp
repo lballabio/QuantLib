@@ -53,10 +53,14 @@ namespace QuantLib {
             FloatingRateCoupon(double nominal,
                 const RelinkableHandle<TermStructure>& termStructure,
                 const Date& startDate, const Date& endDate,
-                const Date& refPeriodStart = Date(),
-                const Date& refPeriodEnd = Date(),
+                // the parameters below are not needed for a coupon at par 
+                // entirely in the future
+                const Date& refPeriodStart = Date(),    // the day counter 
+                const Date& refPeriodEnd = Date(),      // might need these
                 const Handle<Index>& index = Handle<Index>(),
-                Spread spread = 0.0);
+                Spread spread = 0.0);   // if a spread is added, the above 
+                                        // are also needed for accrual
+                                        // period calculation
             ~FloatingRateCoupon();
             //! \name CashFlow interface
             //@{
