@@ -30,6 +30,11 @@
 
 // $Id$
 // $Log$
+// Revision 1.12  2001/08/21 14:21:22  nando
+// removed default constructors and useless isInitialized_ private member
+//
+// [also enabled MS Visual C++ profiling]
+//
 // Revision 1.11  2001/08/09 14:59:46  sigmud
 // header modification
 //
@@ -64,7 +69,6 @@ namespace QuantLib {
         //! path pricer for geometric Asian options
         class GeometricAsianPathPricer : public EuropeanPathPricer {
           public:
-            GeometricAsianPathPricer() {}
             GeometricAsianPathPricer(Option::Type type, double underlying,
                 double strike, double discount);
             virtual double value(const Path &path) const;

@@ -48,19 +48,15 @@
 
     We examine the range of possibilities, computing the replication error.
 
-    \fullpath Examples/HedgingError/%HedgingError.cpp
+    \fullpath 
+    Examples/HedgingError/%HedgingError.cpp
 */
 
 // $Id$
 
-// disable useless warning
-// 'identifier' : decorated name length exceeded,
-//                name was truncated in debug info
-#pragma warning(disable: 4786)
 
-#include "stdlib.h"
-#include <iostream>
-#include "ql\quantlib.hpp"
+// the only header you need to use QuantLib
+#include "ql/quantlib.hpp"
 
 
 // introducing the players ....
@@ -129,7 +125,7 @@ public:
         std::cout << "        |        | P&L  \t|  P&L    | Derman&Kamal | P&L"
             "      \t| P&L" << std::endl;
 
-        std::cout << "samples | trades | Mean \t| Std Dev | Std Dev      |"
+        std::cout << "samples | trades | Mean \t| Std Dev | Formula      |"
             " skewness \t| kurt." << std::endl;
 
         std::cout << "---------------------------------"
@@ -153,8 +149,6 @@ private:
 class ReplicationPathPricer : public PathPricer
 {
   public:
-    // default constructor
-    ReplicationPathPricer():PathPricer() {}
     // real constructor
     ReplicationPathPricer(Option::Type type,
                           double underlying,
@@ -175,7 +169,6 @@ class ReplicationPathPricer : public PathPricer
         QL_REQUIRE(sigma_ >= 0.0, "ReplicationPathPricer: volatility (sigma)"
             " must be positive or zero");
 
-        isInitialized_ = true;
     }
     // The value() method encapsulates the pricing code
     double value(const Path &path) const;
@@ -220,8 +213,6 @@ int main(int argc, char* argv[])
 */
 double ReplicationPathPricer::value(const Path & path) const
 {
-    QL_REQUIRE(isInitialized_,
-        "ReplicationPathPricer: pricer not initialized");
 
     // path is an instance of QuantLib::MonteCarlo::Path
     // It contains the list of variations.
@@ -249,7 +240,7 @@ double ReplicationPathPricer::value(const Path & path) const
     /************************/
     /*** the initial deal ***/
     /************************/
-    // option at t=0
+    // option fair price (Black-Scholes) at t=0
     EuropeanOption option = EuropeanOption(type_, stock, strike_,
         stockDividendYield, r_, maturity_, sigma_);
     // sell the option, cash in its premium
@@ -272,12 +263,13 @@ double ReplicationPathPricer::value(const Path & path) const
         money_account *= QL_EXP( r_*dt );
 
         // stock growth:
-        // path contains the list of variations
+        // path contains the list of Gaussian variations
         // and path[n] is the n-th variation
         stockLogGrowth += path[step];
         stock = underlying_*QL_EXP(stockLogGrowth);
 
-        // recalculate option value
+        // recalculate option value at the current stock value,
+        // and the current time to maturity
         EuropeanOption option = EuropeanOption(type_, stock, strike_,
             stockDividendYield, r_, maturity_-t, sigma_);
 
@@ -320,7 +312,7 @@ void ReplicationError::compute(int nTimeSteps, int nSamples)
     double tau = maturity_ / nTimeSteps;
 
     /* Black-Scholes framework: the underlying stock price evolves lognormally
-       with a fixed known volatility sigma that stays constant throughout time.
+       with a fixed known volatility that stays constant throughout time.
     */
     // stock variance
     double sigma = sigma_* sqrt(tau);

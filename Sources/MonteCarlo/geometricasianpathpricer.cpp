@@ -30,6 +30,11 @@
 
 // $Id$
 // $Log$
+// Revision 1.18  2001/08/21 14:21:23  nando
+// removed default constructors and useless isInitialized_ private member
+//
+// [also enabled MS Visual C++ profiling]
+//
 // Revision 1.17  2001/08/09 14:59:48  sigmud
 // header modification
 //
@@ -70,16 +75,12 @@ namespace QuantLib {
 
         GeometricAsianPathPricer::GeometricAsianPathPricer(Option::Type type,
             double underlying, double strike, double discount)
-        : EuropeanPathPricer(type, underlying, strike, discount) {
-            isInitialized_=true;
-        }
+        : EuropeanPathPricer(type, underlying, strike, discount) {}
 
         double GeometricAsianPathPricer::value(const Path & path) const {
 
             int n = path.size();
             QL_REQUIRE(n>0,"the path cannot be empty");
-            QL_REQUIRE(isInitialized_,
-                "SinglePathGeometricAsianPricer: pricer not initialized");
 
             double price = underlying_;
             double average = 0.0;

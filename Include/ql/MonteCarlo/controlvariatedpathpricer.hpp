@@ -30,6 +30,11 @@
 
 // $Id$
 // $Log$
+// Revision 1.12  2001/08/21 14:21:22  nando
+// removed default constructors and useless isInitialized_ private member
+//
+// [also enabled MS Visual C++ profiling]
+//
 // Revision 1.11  2001/08/09 14:59:46  sigmud
 // header modification
 //
@@ -69,7 +74,6 @@ namespace QuantLib {
         */
         class ControlVariatedPathPricer: public PathPricer {
           public:
-            ControlVariatedPathPricer() {}
             ControlVariatedPathPricer(Handle<PathPricer> pricer,
                 Handle<PathPricer> controlVariate, double controlVariateValue);
             double value(const Path &path) const;

@@ -1,4 +1,4 @@
-
+quantlib.hpp is enough
 cash flow stream for IRR, duration
 documentation of path (where it is? continously compounded)
 refactoring di MonteCarloModel refactoring

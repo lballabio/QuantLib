@@ -30,6 +30,11 @@
 
 // $Id$
 // $Log$
+// Revision 1.13  2001/08/21 14:21:22  nando
+// removed default constructors and useless isInitialized_ private member
+//
+// [also enabled MS Visual C++ profiling]
+//
 // Revision 1.12  2001/08/09 14:59:46  sigmud
 // header modification
 //
@@ -70,11 +75,8 @@ namespace QuantLib {
         class PathPricer {
           public:
             typedef double ValueType;
-            PathPricer() : isInitialized_(false) {}
             virtual ~PathPricer() {}
             virtual double value(const Path &path) const=0;
-          protected:
-            bool isInitialized_;
         };
 
     }

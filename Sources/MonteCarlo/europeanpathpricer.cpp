@@ -30,6 +30,11 @@
 
 // $Id$
 // $Log$
+// Revision 1.18  2001/08/21 14:21:23  nando
+// removed default constructors and useless isInitialized_ private member
+//
+// [also enabled MS Visual C++ profiling]
+//
 // Revision 1.17  2001/08/09 14:59:48  sigmud
 // header modification
 //
@@ -80,13 +85,10 @@ namespace QuantLib {
                 "SinglePathEuropeanPricer: underlying must be positive");
             QL_REQUIRE(discount_ > 0.0,
                 "SinglePathEuropeanPricer: discount must be positive");
-            isInitialized_ = true;
         }
 
         double EuropeanPathPricer::value(const Path & path) const {
             int n = path.size();
-            QL_REQUIRE(isInitialized_,
-                "SinglePathEuropeanPricer: pricer not initialized");
             QL_REQUIRE(n>0,
                 "SinglePathEuropeanPricer: the path cannot be empty");
 

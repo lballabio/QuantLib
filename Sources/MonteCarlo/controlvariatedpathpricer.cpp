@@ -30,6 +30,11 @@
 
 // $Id$
 // $Log$
+// Revision 1.14  2001/08/21 14:21:23  nando
+// removed default constructors and useless isInitialized_ private member
+//
+// [also enabled MS Visual C++ profiling]
+//
 // Revision 1.13  2001/08/09 14:59:48  sigmud
 // header modification
 //
@@ -60,13 +65,9 @@ namespace QuantLib {
             Handle<PathPricer > controlVariate,
             double controlVariateValue)
         : pricer_(pricer), controlVariate_(controlVariate),
-          controlVariateValue_(controlVariateValue) {
-            isInitialized_=true;
-        }
+          controlVariateValue_(controlVariateValue) {}
 
         double ControlVariatedPathPricer::value(const Path &path) const {
-            QL_REQUIRE(isInitialized_,
-                "SinglePathControlVariatedPricer not initialized");
             return pricer_->value(path) - controlVariate_->value(path) +
                 controlVariateValue_;
         }
