@@ -27,7 +27,6 @@
 #define quantlib_localvolsurface_hpp
 
 #include <ql/voltermstructure.hpp>
-#include <ql/PricingEngines/vanillaengines.hpp>
 
 namespace QuantLib {
 
@@ -39,10 +38,15 @@ namespace QuantLib {
           public:
             // constructor
             LocalVolSurface(
-                const Handle<BlackVolTermStructure>& blackTS,
+                const RelinkableHandle<BlackVolTermStructure>& blackTS,
                 const RelinkableHandle<TermStructure>& riskFreeTS,
                 const RelinkableHandle<TermStructure>& dividendTS,
                 const RelinkableHandle<MarketElement>& underlying);
+            LocalVolSurface(
+                const RelinkableHandle<BlackVolTermStructure>& blackTS,
+                const RelinkableHandle<TermStructure>& riskFreeTS,
+                const RelinkableHandle<TermStructure>& dividendTS,
+                double underlying);
             // inspectors
             Date referenceDate() const {
                 return blackTS_->referenceDate();
@@ -56,69 +60,46 @@ namespace QuantLib {
           protected:
             double localVolImpl(Time, double, bool extrapolate) const;
           private:
-            Handle<BlackVolTermStructure> blackTS_;
+            RelinkableHandle<BlackVolTermStructure> blackTS_;
             RelinkableHandle<TermStructure> riskFreeTS_, dividendTS_;
             RelinkableHandle<MarketElement> underlying_;
-//            PricingEngines::AnalyticalVanillaEngine blackEngine_;
-//            PricingEngines::VanillaOptionArguments * arguments_;
         };
 
 
-        LocalVolSurface::LocalVolSurface(
-            const Handle<BlackVolTermStructure>& blackTS,
+        inline LocalVolSurface::LocalVolSurface(
+            const RelinkableHandle<BlackVolTermStructure>& blackTS,
             const RelinkableHandle<TermStructure>& riskFreeTS,
             const RelinkableHandle<TermStructure>& dividendTS,
             const RelinkableHandle<MarketElement>& underlying)
         : blackTS_(blackTS), riskFreeTS_(riskFreeTS),
           dividendTS_(dividendTS), underlying_(underlying) {
-//                arguments_ =
-//                    dynamic_cast<PricingEngines::VanillaOptionArguments*>(
-//                        blackEngine_.arguments());
-//                arguments_->type       = Option::Call;
-//                arguments_->exercise   = EuropeanExercise(Date());
-//                arguments_->volTS      = blackTS_;
-//                arguments_->dividendTS = dividendTS_;
-//                arguments_->riskFreeTS = riskFreeTS_;
+            registerWith(blackTS_);
+            registerWith(riskFreeTS_);
+            registerWith(dividendTS_);
+            registerWith(underlying_);
         }
 
 
-        void LocalVolSurface::update() {
-            notifyObservers();
+        inline LocalVolSurface::LocalVolSurface(
+            const RelinkableHandle<BlackVolTermStructure>& blackTS,
+            const RelinkableHandle<TermStructure>& riskFreeTS,
+            const RelinkableHandle<TermStructure>& dividendTS,
+            double underlying)
+        : blackTS_(blackTS), riskFreeTS_(riskFreeTS),
+          dividendTS_(dividendTS) {
+            registerWith(blackTS_);
+            registerWith(riskFreeTS_);
+            registerWith(dividendTS_);
+            underlying_.linkTo(
+                Handle<MarketElement>(new SimpleMarketElement(underlying)));
         }
 
-        double LocalVolSurface::localVolImpl(
+        inline void LocalVolSurface::update() {
+          notifyObservers();
+        }
+
+        inline double LocalVolSurface::localVolImpl(
             Time t, double underlyingLevel, bool extrapolate) const {
-
-/*
-            // the following might be changed
-            arguments_->underlying = underlying_->value();
-            // time and strike
-//            arguments_->exercise.date() = t;
-            arguments_->strike = strike;
-
-//            blackEngine_.arguments()->validate();
-            blackEngine_.calculate();
-            const PricingEngines::VanillaOptionResults* results =
-                dynamic_cast<const PricingEngines::VanillaOptionResults*>(
-                    blackEngine_.results());
-
-            double value            = results->value;
-            double theta            = results->theta;
-//            double stikeSensitivity = results->strikeSensitivity;
-            double stikeSensitivity = 0.0;
-            double vega             = results->vega;
-            double r = riskFreeTS_->zeroYield(t);
-            double d = dividendTS_->zeroYield(t);
-            double c1 = theta + vega *
-                blackTS_->timeDerivative(t, strike, extrapolate);
-            double c2 = (r - d) * strike * (stikeSensitivity + vega *
-                blackTS_->strikeDerivative(t,strike,extrapolate));
-            double c3 = d * value;
-//            double c4 = (2nd der with respect to strike) * strike * strike;
-            double c4 = strike * strike;
-            return QL_SQRT(2.0*(c1+c2+c3)/c4);
-
-*/
 
             double forwardValue = underlying_->value() *
                 (dividendTS_->discount(t, extrapolate)/
@@ -149,8 +130,18 @@ namespace QuantLib {
                 "decreasing variance");
             double dwdt = (wpt-wmt)/(2.0*dt);
 
-            return QL_SQRT(dwdt / (1.0 - y/w*dwdy +
-                0.25*(-0.25 - 1.0/w + y*y/w/w)*dwdy*dwdy + 0.5*d2wdy2));
+            double den1 = 1.0 - y/w*dwdy;
+            double den2 = 0.25*(-0.25 - 1.0/w + y*y/w/w)*dwdy*dwdy;
+            double den3 = 0.5*d2wdy2;
+            double den = den1+den2+den3;
+            double result = dwdt / den;
+            QL_REQUIRE(result>=0.0,
+                "LocalVolSurface::localVolImpl : "
+                "negative vol^2, "
+                "the black vol surface is not smooth enough");
+            return QL_SQRT(result);
+//            return QL_SQRT(dwdt / (1.0 - y/w*dwdy +
+//                0.25*(-0.25 - 1.0/w + y*y/w/w)*dwdy*dwdy + 0.5*d2wdy2));
         }
 
     }
