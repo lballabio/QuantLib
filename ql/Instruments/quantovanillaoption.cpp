@@ -38,27 +38,27 @@ namespace QuantLib {
         QuantoVanillaOption::QuantoVanillaOption(Option::Type type,
             const RelinkableHandle<MarketElement>& underlying,
             double strike,
-            const RelinkableHandle<TermStructure>& dividendYield,
-            const RelinkableHandle<TermStructure>& riskFreeRate,
+            const RelinkableHandle<TermStructure>& dividendTS,
+            const RelinkableHandle<TermStructure>& riskFreeTS,
             const Date& exerciseDate,
-            const RelinkableHandle<MarketElement>& volatility,
+            const RelinkableHandle<BlackVolTermStructure>& volTS,
 //            const Handle<PricingEngines::QuantoVanillaEngine>& engine,
             const Handle<PricingEngine>& engine,
-            const RelinkableHandle<TermStructure>& foreignRiskFreeRate,
-            const RelinkableHandle<MarketElement>& exchangeRateVolatility,
+            const RelinkableHandle<TermStructure>& foreignRiskFreeTS,
+            const RelinkableHandle<BlackVolTermStructure>& exchRateVolTS,
             const RelinkableHandle<MarketElement>& correlation,
             const std::string& isinCode,
             const std::string& description)
-        : VanillaOption(type, underlying, strike, dividendYield, riskFreeRate,
-          exerciseDate, volatility, engine, isinCode, description),
-          foreignRiskFreeRate_(foreignRiskFreeRate),
-          exchangeRateVolatility_(exchangeRateVolatility),
+        : VanillaOption(type, underlying, strike, dividendTS, riskFreeTS,
+          exerciseDate, volTS, engine, isinCode, description),
+          foreignRiskFreeTS_(foreignRiskFreeTS),
+          exchRateVolTS_(exchRateVolTS),
           correlation_(correlation) {
             QL_REQUIRE(!engine.isNull(),
                 "QuantoVanillaOption::QuantoVanillaOption : "
                 "null engine or wrong engine type");
-            registerWith(foreignRiskFreeRate_);
-            registerWith(exchangeRateVolatility_);
+            registerWith(foreignRiskFreeTS_);
+            registerWith(exchRateVolTS_);
             registerWith(correlation_);
         }
 
@@ -96,17 +96,9 @@ namespace QuantLib {
                "QuantoVanillaOption::setupEngine() : "
                "pricing engine does not supply needed arguments");
 
-            if (foreignRiskFreeRate_.isNull())
-                arguments->foreignRiskFreeRate = 0.0;
-            else
-                arguments->foreignRiskFreeRate =
-                foreignRiskFreeRate_->zeroYield(exerciseDate_);
+            arguments->foreignRiskFreeTS = foreignRiskFreeTS_;
 
-            QL_REQUIRE(!exchangeRateVolatility_.isNull(),
-                "QuantoVanillaOption::setupEngine() : "
-                "null exchange rate volatility given");
-            arguments->exchangeRateVolatility =
-                exchangeRateVolatility_->value();
+            arguments->exchRateVolTS = exchRateVolTS_;
 
             QL_REQUIRE(!correlation_.isNull(),
                 "QuantoVanillaOption::setupEngine() : "
@@ -117,7 +109,7 @@ namespace QuantLib {
         }
 
         void QuantoVanillaOption::performCalculations() const {
-            if (exerciseDate_ <= riskFreeRate_->referenceDate()) {
+            if (exerciseDate_ <= riskFreeTS_->referenceDate()) {
                 isExpired_ = true;
                 NPV_ = delta_ = gamma_ = theta_ =
                     vega_ = rho_ = dividendRho_ =

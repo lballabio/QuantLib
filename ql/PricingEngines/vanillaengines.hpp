@@ -29,6 +29,8 @@
 #define quantlib_vanilla_engines_h
 
 #include <ql/PricingEngines/genericengine.hpp>
+#include <ql/termstructure.hpp>
+#include <ql/voltermstructure.hpp>
 
 namespace QuantLib {
 
@@ -38,19 +40,15 @@ namespace QuantLib {
         class VanillaOptionArguments : public virtual Arguments {
           public:
             VanillaOptionArguments() : type(Option::Type(-1)),
-                                        underlying(Null<double>()),
-                                        strike(Null<double>()),
-                                        dividendYield(Null<double>()),
-                                        riskFreeRate(Null<double>()),
-                                        residualTime(Null<double>()),
-                                        volatility(Null<double>()) {}
+                                       underlying(Null<double>()),
+                                       strike(Null<double>()),
+                                       exerciseDate(Null<Date>()) {}
             void validate() const;
             Option::Type type;
             double underlying, strike;
-            Spread dividendYield;
-            Rate riskFreeRate;
-            Time residualTime;
-            double volatility;
+            RelinkableHandle<TermStructure> riskFreeTS, dividendTS;
+            RelinkableHandle<BlackVolTermStructure> volTS;
+            Date exerciseDate;
         };
 
         inline void VanillaOptionArguments::validate() const {
@@ -64,18 +62,14 @@ namespace QuantLib {
                        "VanillaOptionArguments::validate() : null strike given");
             QL_REQUIRE(strike >= 0.0,
                        "VanillaOptionArguments::validate() : negative strike given");
-            QL_REQUIRE(dividendYield != Null<double>(),
-                       "VanillaOptionArguments::validate() : null dividend yield given");
-            QL_REQUIRE(riskFreeRate != Null<double>(),
-                       "VanillaOptionArguments::validate() : null risk free rate given");
-            QL_REQUIRE(residualTime != Null<double>(),
-                       "VanillaOptionArguments::validate() : null residual time given");
-            QL_REQUIRE(residualTime >= 0.0,
-                       "VanillaOptionArguments::validate() : negative residual time given");
-            QL_REQUIRE(volatility != Null<double>(),
-                       "VanillaOptionArguments::validate() : null volatility given");
-            QL_REQUIRE(volatility >= 0.0,
-                       "VanillaOptionArguments::validate() : negative volatility given");
+            QL_REQUIRE(!dividendTS.isNull(),
+                       "VanillaOptionArguments::validate() : null dividend term structure");
+            QL_REQUIRE(!riskFreeTS.isNull(),
+                       "VanillaOptionArguments::validate() : null risk free term structure");
+            QL_REQUIRE(exerciseDate != Null<Date>(),
+                       "VanillaOptionArguments::validate() : null exercise date given");
+            QL_REQUIRE(!volTS.isNull(),
+                       "VanillaOptionArguments::validate() : null vol term structure");
         }
 
         //! %results from vanilla option calculation
@@ -131,6 +125,11 @@ namespace QuantLib {
             void calculate() const;
         };
 
+
+        // Pricing engine for American options using binomial trees
+        // etc. etc.
+    
+    
     }
 
 }

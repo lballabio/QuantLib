@@ -36,19 +36,19 @@ namespace QuantLib {
 
         ForwardVanillaOption::ForwardVanillaOption(Option::Type type,
             const RelinkableHandle<MarketElement>& underlying,
-            const RelinkableHandle<TermStructure>& dividendYield,
-            const RelinkableHandle<TermStructure>& riskFreeRate,
+            const RelinkableHandle<TermStructure>& dividendTS,
+            const RelinkableHandle<TermStructure>& riskFreeTS,
             const Date& exerciseDate,
-            const RelinkableHandle<MarketElement>& volatility,
+            const RelinkableHandle<BlackVolTermStructure>& volTS,
 //            const Handle<PricingEngines::ForwardEngine>& engine,
             const Handle<PricingEngine>& engine,
             double moneyness,
-            Time resetTime,
+            Date resetDate,
             const std::string& isinCode,
             const std::string& description)
-        : VanillaOption(type, underlying, 0.0, dividendYield, riskFreeRate,
-          exerciseDate, volatility, engine, isinCode, description),
-          moneyness_(moneyness), resetTime_(resetTime) {}
+        : VanillaOption(type, underlying, 0.0, dividendTS, riskFreeTS,
+          exerciseDate, volTS, engine, isinCode, description),
+          moneyness_(moneyness), resetDate_(resetDate) {}
 
         void ForwardVanillaOption::setupEngine() const {
             VanillaOption::setupEngine();
@@ -60,12 +60,12 @@ namespace QuantLib {
                        "pricing engine does not supply needed arguments");
 
             arguments->moneyness = moneyness_;
-            arguments->resetTime = resetTime_;
+            arguments->resetDate = resetDate_;
 
         }
 
         void ForwardVanillaOption::performCalculations() const {
-            if (exerciseDate_ <= riskFreeRate_->referenceDate()) {
+            if (exerciseDate_ <= riskFreeTS_->referenceDate()) {
                 isExpired_ = true;
                 NPV_ = delta_ = gamma_ =       theta_ =
                         vega_ =   rho_ = dividendRho_ = 0.0;

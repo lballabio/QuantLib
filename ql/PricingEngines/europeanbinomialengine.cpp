@@ -33,20 +33,23 @@ namespace QuantLib {
     namespace PricingEngines {
 
         void EuropeanBinomialEngine::calculate() const {
-            double v = arguments_.volatility;
-            Time t = arguments_.residualTime;
-            Rate r = arguments_.riskFreeRate;
             double s0 = arguments_.underlying;
+            Date referenceDate = arguments_.volTS->referenceDate();
+            double v = arguments_.volTS->blackVol(referenceDate, s0);
+            Rate r = arguments_.riskFreeTS->zeroYield(referenceDate);
+            Rate q = arguments_.dividendTS->zeroYield(referenceDate);
+            Time t = arguments_.volTS->dayCounter().yearFraction(
+                referenceDate, arguments_.exerciseDate);
 
             Handle<Lattices::Tree> tree;
             switch(type_) {
                 case CoxRossRubinstein:
                     tree = Handle<Lattices::Tree>(
-                        new Lattices::CoxRossRubinstein(v, r, s0, t, steps_));
+                        new Lattices::CoxRossRubinstein(v, r, q, s0, t, steps_));
                     break;
                 case JarrowRudd:
                     tree = Handle<Lattices::Tree>(
-                        new Lattices::JarrowRudd(v, r, s0, t, steps_));
+                        new Lattices::JarrowRudd(v, r, q, s0, t, steps_));
                     break;
             }
 

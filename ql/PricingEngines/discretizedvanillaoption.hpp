@@ -37,15 +37,19 @@ namespace QuantLib {
         class DiscretizedVanillaOption : public DiscretizedAsset {
           public:
             DiscretizedVanillaOption(const Handle<NumericalMethod>& method,
-                                     const VanillaOptionArguments& params)
-            : DiscretizedAsset(method), arguments_(params) {}
+                                     const VanillaOptionArguments& arguments)
+            : DiscretizedAsset(method), arguments_(arguments) {}
 
             void reset(Size size);
 
             void adjustValues();
 
             void addTimes(std::list<Time>& times) const {
-                times.push_back(arguments_.residualTime);
+                Date referenceDate = arguments_.volTS->referenceDate();
+                Time residualTime = arguments_.volTS->dayCounter().yearFraction(
+                    referenceDate, arguments_.exerciseDate,
+                    referenceDate, arguments_.exerciseDate);
+                times.push_back(residualTime);
             }
 
           private:

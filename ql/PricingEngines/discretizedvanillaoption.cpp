@@ -34,7 +34,11 @@ namespace QuantLib {
         }
 
         void DiscretizedVanillaOption::adjustValues() {
-            if (isOnTime(arguments_.residualTime)) {
+            Date referenceDate = arguments_.volTS->referenceDate();
+            double residualTime = arguments_.volTS->dayCounter().yearFraction(
+                referenceDate, arguments_.exerciseDate,
+                referenceDate, arguments_.exerciseDate);
+            if (isOnTime(residualTime)) {
                 applySpecificCondition();
             }
         }

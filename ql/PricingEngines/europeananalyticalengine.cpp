@@ -32,39 +32,60 @@ namespace QuantLib {
 
         void EuropeanAnalyticalEngine::calculate() const {
 
+            double variance = arguments_.volTS->blackVariance(
+                arguments_.exerciseDate, arguments_.strike);
+            double stdDev = QL_SQRT(variance);
+            double vol = arguments_.volTS->blackVol(
+                arguments_.exerciseDate, arguments_.strike);
+            Time residualTime = variance/(vol*vol);
+
             DiscountFactor dividendDiscount =
-                QL_EXP(-arguments_.dividendYield*arguments_.residualTime);
+                arguments_.dividendTS->discount(arguments_.exerciseDate);
+            Rate dividendRate = -QL_LOG(dividendDiscount)/residualTime;
+
             DiscountFactor riskFreeDiscount =
-                QL_EXP(-arguments_.riskFreeRate*arguments_.residualTime);
+                arguments_.riskFreeTS->discount(arguments_.exerciseDate);
+            Rate riskFreeRate = -QL_LOG(riskFreeDiscount)/residualTime;
 
-            double stdDev = arguments_.volatility *
-                QL_SQRT(arguments_.residualTime);
+            double forwardPrice = arguments_.underlying *
+                dividendDiscount / riskFreeDiscount;
 
-            static Math::CumulativeNormalDistribution f;
-
-            double D1 = 
-                QL_LOG(arguments_.underlying/arguments_.strike)/stdDev +
-                stdDev/2.0 +
-                (arguments_.riskFreeRate-arguments_.dividendYield) *
-                    arguments_.residualTime/stdDev;
-            double D2 = D1-stdDev;
+            double fD1, fD2, fderD1;
+            if (variance>0.0) {
+                static Math::CumulativeNormalDistribution f;
+                double D1 = (QL_LOG(forwardPrice/arguments_.strike) +
+                    0.5 * variance) / stdDev;
+                double D2 = D1-stdDev;
+                fD1 = f(D1);
+                fD2 = f(D2);
+                fderD1 = f.derivative(D1);
+            } else {
+                fderD1 = 0.0;
+                if (forwardPrice>arguments_.strike) {
+                    fD1 = 1.0;
+                    fD2 = 1.0;
+                } else {
+                    fD1 = 0.0;
+                    fD2 = 0.0;
+                }
+            }
 
             double alpha, beta, NID1;
             switch (arguments_.type) {
               case Option::Call:
-                alpha = f(D1);
-                beta  = f(D2);
-                NID1  = f.derivative(D1);
+                alpha = fD1;
+                beta  = fD2;
+                NID1  = fderD1;
                 break;
               case Option::Put:
-                alpha = f(D1)-1.0;
-                beta  = f(D2)-1.0;
-                NID1  = f.derivative(D1);
+                alpha = fD1-1.0;
+                beta  = fD2-1.0;
+                NID1  = fderD1;
                 break;
               case Option::Straddle:
-                alpha = 2.0*f(D1)-1.0;
-                beta  = 2.0*f(D2)-1.0;
-                NID1  = 2.0*f.derivative(D1);
+                alpha = 2.0*fD1-1.0;
+                beta  = 2.0*fD2-1.0;
+                NID1  = 2.0*fderD1;
                 break;
               default:
                 throw IllegalArgumentError(
@@ -72,25 +93,23 @@ namespace QuantLib {
                     "invalid option type");
             }
 
-            results_.value =
-                arguments_.underlying * dividendDiscount * alpha -
-                    arguments_.strike * riskFreeDiscount * beta;
+
+            results_.value = riskFreeDiscount *
+                (forwardPrice * alpha - arguments_.strike *  beta);
             results_.delta = dividendDiscount * alpha;
+//            results_.deltaForward = riskFreeDiscount * alpha;
             results_.gamma = NID1 * dividendDiscount /
                 (arguments_.underlying * stdDev);
-            results_.theta = - arguments_.underlying * NID1 *
-                arguments_.volatility * dividendDiscount /
-                (2.0 * QL_SQRT(arguments_.residualTime)) +
-                arguments_.dividendYield * arguments_.underlying *
-                alpha * dividendDiscount -
-                arguments_.riskFreeRate * arguments_.strike *
-                riskFreeDiscount * beta;
-            results_.rho = arguments_.residualTime * riskFreeDiscount *
+            results_.theta = riskFreeRate * results_.value
+                -(riskFreeRate - dividendRate) * arguments_.underlying * results_.delta
+                - 0.5 * vol * vol * arguments_.underlying * arguments_.underlying * results_.gamma;
+            results_.rho = residualTime * riskFreeDiscount *
                 arguments_.strike * beta;
-            results_.dividendRho = - arguments_.residualTime *
+            results_.dividendRho = - residualTime *
                 dividendDiscount * arguments_.underlying * alpha;
             results_.vega = arguments_.underlying * NID1 *
-                dividendDiscount * QL_SQRT(arguments_.residualTime);
+                dividendDiscount * residualTime;
+
         }
 
     }

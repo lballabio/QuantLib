@@ -40,14 +40,14 @@ namespace QuantLib {
                 Option::Type type,
                 const RelinkableHandle<MarketElement>& underlying,
                 double strike,
-                const RelinkableHandle<TermStructure>& dividendYield,
-                const RelinkableHandle<TermStructure>& riskFreeRate,
+                const RelinkableHandle<TermStructure>& dividendTS,
+                const RelinkableHandle<TermStructure>& riskFreeTS,
                 const Date& exerciseDate,
-                const RelinkableHandle<MarketElement>& volatility,
+                const RelinkableHandle<BlackVolTermStructure>& volTS,
 //                const Handle<PricingEngines::QuantoVanillaEngine>& engine,
                 const Handle<PricingEngine>& engine,
-                const RelinkableHandle<TermStructure>& foreignRiskFreeRate,
-                const RelinkableHandle<MarketElement>& exchangeRateVolatility,
+                const RelinkableHandle<TermStructure>& foreignRiskFreeTS,
+                const RelinkableHandle<BlackVolTermStructure>& exchRateVolTS,
                 const RelinkableHandle<MarketElement>& correlation,
                 const std::string& isinCode = "",
                 const std::string& description = "");
@@ -62,8 +62,8 @@ namespace QuantLib {
             void performCalculations() const;
           private:
             // arguments
-            RelinkableHandle<TermStructure> foreignRiskFreeRate_;
-            RelinkableHandle<MarketElement> exchangeRateVolatility_;
+            RelinkableHandle<TermStructure> foreignRiskFreeTS_;
+            RelinkableHandle<BlackVolTermStructure> exchRateVolTS_;
             RelinkableHandle<MarketElement> correlation_;
             // results
             mutable double qvega_, qrho_, qlambda_;

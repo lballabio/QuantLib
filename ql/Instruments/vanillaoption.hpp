@@ -42,10 +42,10 @@ namespace QuantLib {
             VanillaOption(Option::Type type,
                           const RelinkableHandle<MarketElement>& underlying,
                           double strike,
-                          const RelinkableHandle<TermStructure>& dividendYield,
-                          const RelinkableHandle<TermStructure>& riskFreeRate,
+                          const RelinkableHandle<TermStructure>& dividendTS,
+                          const RelinkableHandle<TermStructure>& riskFreeTS,
                           const Date& exerciseDate,
-                          const RelinkableHandle<MarketElement>& volatility,
+                          const RelinkableHandle<BlackVolTermStructure>& volTS,
                           const Handle<PricingEngine>& engine,
                           const std::string& isinCode = "",
                           const std::string& description = "");
@@ -74,16 +74,15 @@ namespace QuantLib {
           protected:
             void setupEngine() const;
             void performCalculations() const;
-            Date exerciseDate_;
-            RelinkableHandle<TermStructure> riskFreeRate_;
             // results
             mutable double delta_, gamma_, theta_, vega_, rho_, dividendRho_;
             // arguments
             Option::Type type_;
             RelinkableHandle<MarketElement> underlying_;
             double strike_;
-            RelinkableHandle<TermStructure> dividendYield_;
-            RelinkableHandle<MarketElement> volatility_;
+            Date exerciseDate_;
+            RelinkableHandle<TermStructure> riskFreeTS_, dividendTS_;
+            RelinkableHandle<BlackVolTermStructure> volTS_;
           private:
             // helper class for implied volatility calculation
             class ImpliedVolHelper : public ObjectiveFunction {

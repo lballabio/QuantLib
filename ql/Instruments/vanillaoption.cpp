@@ -16,7 +16,7 @@
 */
 
 /*! \file vanillaoption.cpp
-    \brief Vanilla (no dividends, no barriers) option on a single asset
+    \brief Vanilla (no barriers) option on a single asset
 
     \fullpath
     ql/Instruments/%vanillaoption.cpp
@@ -24,8 +24,12 @@
 
 // $Id$
 
+#include <ql/Volatilities/blackconstantvol.hpp>
 #include <ql/Instruments/vanillaoption.hpp>
 #include <ql/Solvers1D/brent.hpp>
+
+using QuantLib::VolTermStructures::BlackConstantVol;
+
 
 namespace QuantLib {
 
@@ -34,23 +38,23 @@ namespace QuantLib {
         VanillaOption::VanillaOption(Option::Type type,
             const RelinkableHandle<MarketElement>& underlying,
             double strike,
-            const RelinkableHandle<TermStructure>& dividendYield,
-            const RelinkableHandle<TermStructure>& riskFreeRate,
+            const RelinkableHandle<TermStructure>& dividendTS,
+            const RelinkableHandle<TermStructure>& riskFreeTS,
             const Date& exerciseDate,
-            const RelinkableHandle<MarketElement>& volatility,
+            const RelinkableHandle<BlackVolTermStructure>& volTS,
             const Handle<PricingEngine>& engine,
             const std::string& isinCode, const std::string& description)
-        : Option(engine, isinCode, description), exerciseDate_(exerciseDate), 
-          riskFreeRate_(riskFreeRate), type_(type), underlying_(underlying), 
-          strike_(strike), dividendYield_(dividendYield), 
-          volatility_(volatility) {
-//            QL_REQUIRE(!engine.isNull(),
-//                "VanillaOption::VanillaOption : "
-//                "null engine or wrong engine type");
+        : Option(engine, isinCode, description), type_(type),
+          underlying_(underlying),
+          strike_(strike), dividendTS_(dividendTS), riskFreeTS_(riskFreeTS),
+          exerciseDate_(exerciseDate), volTS_(volTS) {
+            QL_REQUIRE(!engine.isNull(),
+                "VanillaOption::VanillaOption : "
+                "null engine or wrong engine type");
             registerWith(underlying_);
-            registerWith(dividendYield_);
-            registerWith(riskFreeRate_);
-            registerWith(volatility_);
+            registerWith(dividendTS_);
+            registerWith(riskFreeTS_);
+            registerWith(volTS_);
         }
 
         double VanillaOption::delta() const {
@@ -104,18 +108,17 @@ namespace QuantLib {
         double VanillaOption::impliedVolatility(double targetValue,
           double accuracy, Size maxEvaluations,
           double minVol, double maxVol) const {
-            double value = NPV(), vol = volatility_->value();
             QL_REQUIRE(!isExpired_,
                 "VanillaOption::impliedVolatility : "
                 "option expired");
-            if (value == targetValue) {
-                return vol;
-            } else {
-                ImpliedVolHelper f(engine_,targetValue);
-                Solvers1D::Brent solver;
-                solver.setMaxEvaluations(maxEvaluations);
-                return solver.solve(f,accuracy,vol,minVol,maxVol);
-            }
+
+            double guess = volTS_->blackVol(exerciseDate_,
+                underlying_->value());
+
+            ImpliedVolHelper f(engine_,targetValue);
+            Solvers1D::Brent solver;
+            solver.setMaxEvaluations(maxEvaluations);
+            return solver.solve(f, accuracy, guess, minVol, maxVol);
         }
 
         void VanillaOption::setupEngine() const {
@@ -135,32 +138,18 @@ namespace QuantLib {
 
             arguments->strike = strike_;
 
-            if (dividendYield_.isNull())
-                arguments->dividendYield = 0.0;
-            else
-                arguments->dividendYield =
-                dividendYield_->zeroYield(exerciseDate_);
+            // should I require !IsNull(TS) ???
+            arguments->dividendTS = dividendTS_;
+            arguments->riskFreeTS = riskFreeTS_;
 
-            if (riskFreeRate_.isNull())
-                arguments->riskFreeRate = 0.0;
-            else
-                arguments->riskFreeRate =
-                riskFreeRate_->zeroYield(exerciseDate_);
+            arguments->exerciseDate = exerciseDate_;
 
-            // here we should probably use the dayCounter of the
-            // volatility term structure
-            arguments->residualTime =
-                riskFreeRate_->dayCounter().yearFraction(
-                    riskFreeRate_->referenceDate(), exerciseDate_);
-
-            QL_REQUIRE(!volatility_.isNull(),
-                "VanillaOption::setupEngine : "
-                "null volatility given");
-            arguments->volatility = volatility_->value();
+            arguments->volTS = volTS_;
         }
 
         void VanillaOption::performCalculations() const {
-            if (exerciseDate_ <= riskFreeRate_->referenceDate()) {
+            // when == it should provide an answer
+            if (exerciseDate_ < riskFreeTS_->referenceDate()) {
                 isExpired_ = true;
                 NPV_ = delta_ = gamma_ = theta_ =
                     vega_ = rho_ = dividendRho_ = 0.0;
@@ -209,7 +198,8 @@ namespace QuantLib {
         }
 
         double VanillaOption::ImpliedVolHelper::operator()(double x) const {
-            arguments_->volatility = x;
+            arguments_->volTS = Handle<BlackVolTermStructure>(new
+                BlackConstantVol(arguments_->volTS->referenceDate(), x));
             engine_->calculate();
             return results_->value-targetValue_;
         }

@@ -24,6 +24,9 @@
 // $Id$
 
 #include <ql/PricingEngines/quantoengines.hpp>
+#include <ql/TermStructures/quantotermstructure.hpp>
+
+using QuantLib::TermStructures::QuantoTermStructure;
 
 namespace QuantLib {
 
@@ -34,16 +37,16 @@ namespace QuantLib {
             originalArguments_->type = arguments_.type;
             originalArguments_->underlying = arguments_.underlying;
             originalArguments_->strike = arguments_.strike;
-            originalArguments_->dividendYield = arguments_.dividendYield
-                + arguments_.riskFreeRate - arguments_.foreignRiskFreeRate
-                + arguments_.correlation *
-                arguments_.volatility * arguments_.exchangeRateVolatility;
-            originalArguments_->riskFreeRate = arguments_.riskFreeRate;
-            originalArguments_->residualTime = arguments_.residualTime;
-            originalArguments_->volatility = arguments_.volatility;
+            originalArguments_->dividendTS = Handle<TermStructure>(new
+                QuantoTermStructure(arguments_.dividendTS,
+                arguments_.riskFreeTS, arguments_.foreignRiskFreeTS,
+                arguments_.volTS, arguments_.exchRateVolTS,
+                arguments_.correlation));
+            originalArguments_->riskFreeTS = arguments_.riskFreeTS;
+            originalArguments_->volTS = arguments_.volTS;
+            originalArguments_->exerciseDate = arguments_.exerciseDate;
 
             originalArguments_->validate();
-
             originalEngine_->calculate();
 
             results_.value = originalResults_->value;
@@ -53,16 +56,22 @@ namespace QuantLib {
             results_.rho = originalResults_->rho +
                 originalResults_->dividendRho;
             results_.dividendRho = originalResults_->dividendRho;
+            // exchangeRtae level needed here!!!!!
+            double exchangeRateFlatVol = arguments_.exchRateVolTS->blackVol(
+                arguments_.exerciseDate, arguments_.underlying);
             results_.vega = originalResults_->vega +
-                arguments_.correlation * arguments_.exchangeRateVolatility *
+                arguments_.correlation * exchangeRateFlatVol *
                 originalResults_->dividendRho;
 
+
+            double volatility = arguments_.volTS->blackVol(
+                arguments_.exerciseDate, arguments_.underlying);
             results_.qvega = + arguments_.correlation
-                * arguments_.volatility *
+                * arguments_.volTS->blackVol(arguments_.exerciseDate, arguments_.underlying) *
                 originalResults_->dividendRho;
             results_.qrho = - originalResults_->dividendRho;
-            results_.qlambda = arguments_.exchangeRateVolatility *
-                arguments_.volatility * originalResults_->dividendRho;
+            results_.qlambda = exchangeRateFlatVol *
+                volatility * originalResults_->dividendRho;
         }
 
     }

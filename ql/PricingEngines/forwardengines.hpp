@@ -37,10 +37,10 @@ namespace QuantLib {
         class ForwardOptionArguments : public ArgumentsType {
           public:
             ForwardOptionArguments() : moneyness(Null<double>()),
-                                        resetTime(Null<double>()) {}
+                                       resetDate(Null<Date>()) {}
             void validate() const;
             double moneyness;
-            Time resetTime;
+            Date resetDate;
         };
 
         template<class ArgumentsType>
@@ -52,15 +52,12 @@ namespace QuantLib {
             QL_REQUIRE(moneyness > 0.0,
                        "ForwardOptionArguments::validate() : "
                        "negative or zero moneyness given");
-            QL_REQUIRE(resetTime != Null<double>(),
+            QL_REQUIRE(resetDate != Null<Date>(),
                        "ForwardOptionArguments::validate() : "
-                       "null reset time given");
-            QL_REQUIRE(resetTime >= 0.0,
+                       "null reset date given");
+            QL_REQUIRE(exerciseDate >= resetDate,
                        "ForwardOptionArguments::validate() : "
-                       "negative reset time given");
-            QL_REQUIRE(residualTime >= resetTime,
-                       "ForwardOptionArguments::validate() : "
-                       "reset time greater than residual time");
+                       "reset date greater than exercise time");
         }
 
         //! Forward engine base class

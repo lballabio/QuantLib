@@ -36,27 +36,20 @@ namespace QuantLib {
         template<class ArgumentsType>
         class QuantoOptionArguments : public ArgumentsType {
           public:
-            QuantoOptionArguments() : foreignRiskFreeRate(Null<double>()),
-                                       exchangeRateVolatility(Null<double>()),
-                                       correlation(Null<double>()) {}
+            QuantoOptionArguments() : correlation(Null<double>()) {}
             void validate() const;
-            Rate foreignRiskFreeRate;
-            double exchangeRateVolatility;
             double correlation;
+            RelinkableHandle<TermStructure> foreignRiskFreeTS;
+            RelinkableHandle<BlackVolTermStructure> exchRateVolTS;
         };
 
         template<class ArgumentsType>
         void QuantoOptionArguments<ArgumentsType>::validate() const {
             ArgumentsType::validate();
-            QL_REQUIRE(foreignRiskFreeRate != Null<double>(),
-                       "QuantoOptionArguments::validate() : "
-                       "null risk free rate given");
-            QL_REQUIRE(exchangeRateVolatility != Null<double>(),
-                       "QuantoOptionArguments::validate() : "
-                       "null exchange rate volatility given");
-            QL_REQUIRE(exchangeRateVolatility >= 0.0,
-                       "QuantoOptionArguments::validate() : "
-                       "negative exchange rate volatility given");
+            QL_REQUIRE(!foreignRiskFreeTS.isNull(),
+                       "QuantoOptionArguments::validate() : null foreign risk free term structure");
+            QL_REQUIRE(!exchRateVolTS.isNull(),
+                       "QuantoOptionArguments::validate() : null exchange rate vol term structure");
             QL_REQUIRE(correlation != Null<double>(),
                        "QuantoOptionArguments::validate() : "
                        "null correlation given");
