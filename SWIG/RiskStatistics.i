@@ -45,7 +45,24 @@
 
 %{
 using QuantLib::RiskStatistics;
+using QuantLib::Math::VarTool;
 %}
+
+
+class VarTool {
+  public:
+    VarTool() {}
+    double valueAtRisk(double percentile,
+                       double mean,
+                       double std) const ;
+    double shortfall(double target,
+                     double mean,
+                     double std) const ;
+    double averageShortfall(double target,
+                            double mean,
+                            double std) const ;
+};
+
 
 class RiskStatistics {
   public:

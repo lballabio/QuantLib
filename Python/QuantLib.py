@@ -1067,6 +1067,24 @@ class GaussianRandomGeneratorPtr(GaussianRandomGenerator):
 GaussianRandomGenerator.next = new.instancemethod(QuantLibc.GaussianRandomGenerator_next, None, GaussianRandomGenerator)
 GaussianRandomGenerator.weight = new.instancemethod(QuantLibc.GaussianRandomGenerator_weight, None, GaussianRandomGenerator)
 
+class VarTool:
+    def __init__(self,*args,**kwargs):
+        self.this = apply(QuantLibc.new_VarTool,args,kwargs)
+        self.thisown = 1
+
+    def __repr__(self):
+        return "<C VarTool instance at %s>" % (self.this,)
+class VarToolPtr(VarTool):
+    def __init__(self,this):
+        self.this = this
+        self.thisown = 0
+        self.__class__ = VarTool
+
+
+VarTool.valueAtRisk = new.instancemethod(QuantLibc.VarTool_valueAtRisk, None, VarTool)
+VarTool.shortfall = new.instancemethod(QuantLibc.VarTool_shortfall, None, VarTool)
+VarTool.averageShortfall = new.instancemethod(QuantLibc.VarTool_averageShortfall, None, VarTool)
+
 class RiskStatistics:
     def __init__(self,*args,**kwargs):
         self.this = apply(QuantLibc.new_RiskStatistics,args,kwargs)
