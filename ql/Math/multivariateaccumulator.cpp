@@ -72,9 +72,15 @@ namespace QuantLib {
                 "MultivariateAccumulator::add : negative weight (" +
                 DoubleFormatter::toString(weight) + ") not allowed");
 
-            sampleNumber_ += 1.0;
+            size_t oldSamples = sampleNumber_;
+            sampleNumber_++;
+            QL_ENSURE(sampleNumber_ > oldSamples,
+                "MultivariateAccumulator::add : "
+      	        "maximum number of samples reached");
+            
             sampleWeight_ += weight;
-            Array weighedValue(weight*value);
+
+            Array weighedValue = weight*value;
 
             sum_ += weighedValue;
             quadraticSum_ += outerProduct(weighedValue, value);
@@ -103,7 +109,6 @@ namespace QuantLib {
                                                                 double wei){
           Array arr(vec.size());
           std::copy(vec.begin(), vec.end(), arr.begin());
-//            for(int i=0; i<vec.size(); i++) arr[i] = vec[i] ;
           add(arr, wei);
         }
 

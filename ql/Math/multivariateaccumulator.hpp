@@ -92,7 +92,7 @@ namespace QuantLib {
             //@}
           private:
             size_t size_;
-            double sampleNumber_;
+            size_t sampleNumber_;
             double sampleWeight_;
             Array sum_;
             Matrix quadraticSum_;
@@ -105,17 +105,17 @@ namespace QuantLib {
         }
 
         inline size_t MultivariateAccumulator::samples() const {
-          return sampleNumber_;
+            return sampleNumber_;
         }
 
         inline double MultivariateAccumulator::weightSum() const {
-          return sampleWeight_;
+            return sampleWeight_;
         }
 
         inline Array MultivariateAccumulator::mean() const {
-          QL_REQUIRE(sampleWeight_ > 0.0,
+            QL_REQUIRE(sampleWeight_ > 0.0,
                 "Stat::mean() : sampleWeight_=0, unsufficient");
-          return sum_/sampleWeight_;
+            return sum_/sampleWeight_;
         }
 
     }
