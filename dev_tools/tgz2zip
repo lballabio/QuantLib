@@ -2,9 +2,12 @@
 #
 # 'tgz2zip Foo' converts Foo.tar.gz into Foo.zip converting Unix end-of-line
 # to DOS in the process.
+#
+# bootstrap, configure, depcomp, elisp-comp, install-sh, and missing
+# shouldn't be converted
 
 tar xfz $1.tar.gz
-find $1 | grep -v '\.\(bmp\)\|\(jpg\)\|\(pdf\)\|\(png\)|\(gif\)$' | xargs todos -o -p
+find $1 | grep -v '\.\(bmp\)\|\(jpg\)\|\(1\)\|\(in\)\|\(sh\)\|\(spec\)\|\(sub\)\|\(m4\)\|\(guess\)\|\(el\)\|\(ac\)\|\(am\)\|\(pdf\)\|\(png\)|\(gif\)$' | xargs todos -o -p
 zip -q -r $1.zip $1
 rm -r $1
 
