@@ -229,7 +229,7 @@ int main(int argc, char* argv[])
         // for plain vanilla european option the number of steps is not significant
         // let's go for the fastest way: just one step
         int nTimeSteps = 1;
-        int nSamples = 90000;
+        int nSamples = 100;
         long seed = 100000*UniformRandomGenerator().next();
 	    double tau = maturity/nTimeSteps;
 	    double sigma = volatility* sqrt(tau);
