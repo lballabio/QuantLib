@@ -53,12 +53,12 @@ namespace QuantLib {
         class MultiFactorPricer {
           public:
             MultiFactorPricer() {}
-            MultiFactorPricer(unsigned int samples,
-                              long seed=0);
             virtual ~MultiFactorPricer(){}
             virtual double value() const;
             virtual double errorEstimate() const;
           protected:
+            MultiFactorPricer(unsigned int samples,
+                              long seed=0);
             long seed_;
             mutable unsigned int samples_;
             mutable Handle<MonteCarlo::MultiFactorMonteCarloOption>

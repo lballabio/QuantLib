@@ -11,9 +11,8 @@ COMPILING
 
 LIBRARY
     move mcpricer under the pricers folder
+    next&weight in a std::pair
     Monte Carlo:
-        asian options: separate observation times and path discretization
-        fix everest path pricer
         remove fraction from PagodaOptionPricer
     Nicolas spline contribution
     Maxim integral

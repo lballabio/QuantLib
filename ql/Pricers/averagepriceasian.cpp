@@ -41,7 +41,7 @@ namespace QuantLib {
 
     namespace Pricers {
 
-        using MonteCarlo::OneFactorMonteCarloControlVariateOption;
+        using MonteCarlo::OneFactorMonteCarloOption;
         using MonteCarlo::PathPricer;
         using MonteCarlo::GaussianPathGenerator;
         using MonteCarlo::AveragePriceAsianPathPricer;
@@ -52,7 +52,7 @@ namespace QuantLib {
             Rate riskFreeRate, const std::vector<Time>& times,
             double volatility, unsigned int samples,
             bool antitheticVariance, long seed)
-        : McControlVariatePricer(samples, seed) {
+        : McPricer(samples, seed) {
             QL_REQUIRE(times.size() >= 2,
                 "AveragePriceAsian: you must have at least 2 time-steps");
             //! Initialize the path generator
@@ -80,10 +80,10 @@ namespace QuantLib {
                 residualTime, volatility).value();
 
             //! Initialize the one-dimensional Monte Carlo
-            montecarloPricer_ = Handle<OneFactorMonteCarloControlVariateOption> (
-                new OneFactorMonteCarloControlVariateOption(
-                pathGenerator, spPricer, controlVariateSpPricer,
-                controlVariatePrice, Math::Statistics()));
+            montecarloPricer_ = Handle<OneFactorMonteCarloOption> (
+                new OneFactorMonteCarloOption(
+                pathGenerator, spPricer, Math::Statistics(),
+                controlVariateSpPricer, controlVariatePrice));
         }
 
     }
