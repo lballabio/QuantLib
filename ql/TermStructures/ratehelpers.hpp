@@ -23,7 +23,7 @@
 */
 
 /*! \file ratehelpers.hpp
-    \brief rate helpers
+    \brief rate helpers base class
 
     \fullpath
     ql/TermStructures/%ratehelpers.hpp

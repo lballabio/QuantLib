@@ -23,7 +23,7 @@
 */
 
 /*! \file thirty360.hpp
-    \brief 30/360 day counter
+    \brief 30/360 day counters
 
     \fullpath
     ql/DayCounters/%thirty360.hpp

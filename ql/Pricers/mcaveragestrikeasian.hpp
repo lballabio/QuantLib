@@ -23,7 +23,7 @@
 */
 
 /*! \file mcaveragestrikeasian.hpp
-    \brief example of Monte Carlo pricer using a control variate
+    \brief Average strike Asian option (control variate Monte Carlo pricing)
 
     \fullpath
     ql/Pricers/%mcaveragestrikeasian.hpp

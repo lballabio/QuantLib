@@ -23,7 +23,7 @@
 */
 
 /*! \file mcpagoda.cpp
-    \brief roofed Asian option
+    \brief Roofed multi asset Asian option
 
     \fullpath
     ql/Pricers/%mcpagoda.cpp

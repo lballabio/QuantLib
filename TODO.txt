@@ -9,6 +9,7 @@ COMPILING
 
 LIBRARY
     *****
+    explicit/implicit instead of BackwardEuler, ForwardEuler
     asian continuous and/or discrete
     check geometric continuous and/or discrete
     introduce compoundpathpricer

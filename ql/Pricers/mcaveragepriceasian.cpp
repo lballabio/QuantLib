@@ -23,7 +23,7 @@
 */
 
 /*! \file mcaveragepriceasian.cpp
-    \brief example of Monte Carlo pricer using a control variate
+    \brief Average price Asian option (control variate Monte Carlo pricing)
 
     \fullpath
     ql/Pricers/%mcaveragepriceasian.cpp

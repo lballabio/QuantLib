@@ -22,7 +22,7 @@
  * available at http://quantlib.org/group.html
 */
 /*! \file mcpagoda.hpp
-    \brief roofed Asian option
+    \brief Roofed multi asset Asian option
 
     \fullpath
     ql/Pricers/%mcpagoda.hpp

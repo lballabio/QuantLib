@@ -23,7 +23,7 @@
 */
 
 /*! \file newtonsafe.cpp
-    \brief safe Newton 1-D solver
+    \brief Safe (braketed) Newton 1-D solver
 
     \fullpath
     ql/Solvers1D/%newtonsafe.cpp

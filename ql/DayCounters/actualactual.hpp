@@ -23,7 +23,7 @@
 */
 
 /*! \file actualactual.hpp
-    \brief act/act day counter
+    \brief act/act day counters
 
     \fullpath
     ql/DayCounters/%actualactual.hpp

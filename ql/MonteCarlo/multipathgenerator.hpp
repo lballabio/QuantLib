@@ -23,7 +23,7 @@
 */
 
 /*! \file multipathgenerator.hpp
-    \brief Generates a multi path from a random-point generator
+    \brief Generates a multi path from a random-array generator
 
     \fullpath
     ql/MonteCarlo/%multipathgenerator.hpp
@@ -43,8 +43,8 @@ namespace QuantLib {
         //! Generates a multipath from a random number generator
         /*! MultiPathGenerator<RAG> is a class that returns a random
             multi path.
-            RAG is a sample generator which returns an array, must have the
-            minimal interface,
+            RAG is a sample generator which returns a random array.
+            It must have the minimal interface:
             \code
             RAG{
                 RAG();
