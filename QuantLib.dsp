@@ -759,6 +759,10 @@ SOURCE=.\ql\Math\chisquaredistribution.hpp
 # End Source File
 # Begin Source File
 
+SOURCE=.\ql\Math\comparison.hpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\ql\Math\cubicspline.hpp
 # End Source File
 # Begin Source File

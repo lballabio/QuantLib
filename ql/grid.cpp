@@ -20,23 +20,25 @@
 */
 
 #include <ql/grid.hpp>
-
-namespace {
-
-    class CloseEnoughTo : public std::unary_function<double,bool> {
-      public:
-        CloseEnoughTo(double target, double tolerance = 1.0e-10)
-        : target_(target), tolerance_(tolerance) {}
-        bool operator()(double x) const {
-            return QL_FABS(x-target_) <= tolerance_;
-        }
-      private:
-        double target_, tolerance_;
-    };
-
-}
+#include <ql/Math/comparison.hpp>
+#include <iostream>
 
 namespace QuantLib {
+
+    namespace {
+
+        class CloseEnoughTo : public std::unary_function<double,bool> {
+          public:
+            CloseEnoughTo(double target) : target_(target) {}
+            bool operator()(double x) const {
+                return close_enough(x,target_);
+            }
+          private:
+            double target_;
+        };
+
+    }
+
 
     Size TimeGrid::findIndex(Time t) const {
         const_iterator result = std::find_if(begin(), end(), 

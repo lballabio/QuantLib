@@ -7,6 +7,7 @@ include_HEADERS = \
 	bicubicsplineinterpolation.hpp \
 	bilinearinterpolation.hpp \
 	chisquaredistribution.hpp \
+	comparison.hpp \
 	cubicspline.hpp \
 	discrepancystatistics.hpp \
 	errorfunction.hpp \

@@ -24,6 +24,7 @@
 
 #include <ql/numericalmethod.hpp>
 #include <ql/exercise.hpp>
+#include <ql/Math/comparison.hpp>
 
 namespace QuantLib {
 
@@ -111,7 +112,7 @@ namespace QuantLib {
     inline bool DiscretizedAsset::isOnTime(Time t) const {
         const TimeGrid& grid = method()->timeGrid();
         Time gridTime = grid[grid.findIndex(t)];
-        return (QL_FABS(gridTime - time()) < QL_EPSILON);
+        return close_enough(gridTime,time());
     }
 
 
