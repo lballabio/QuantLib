@@ -33,12 +33,12 @@ docs-all:
 docs-html:
 	$(MAKE) -C Docs docs-html
 docs-html-online:
-	$(MAKE) -C docs-html-online
+	$(MAKE) -C Docs docs-html-online
 docs-pdf:
-	$(MAKE) -C docs-pdf
+	$(MAKE) -C Docs docs-pdf
 docs-man:
-	$(MAKE) -C docs-man
+	$(MAKE) -C Docs docs-man
 docs-clean:
-	$(MAKE) -C docs-clean
+	$(MAKE) -C Docs docs-clean
 
 
