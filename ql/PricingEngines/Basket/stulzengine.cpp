@@ -135,7 +135,7 @@ namespace QuantLib {
         double variance2 = 
             procs[1]->volTS->blackVariance(exercise->lastDate(), strike);
 
-        double rho = arguments_.correlation;
+        double rho = arguments_.correlation[1][0];
 
         DiscountFactor riskFreeDiscount =
               procs[0]->riskFreeTS->discount(exercise->lastDate());

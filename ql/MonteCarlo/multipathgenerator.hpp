@@ -47,16 +47,16 @@ namespace QuantLib {
       public:
         typedef Sample<MultiPath> sample_type;        
         MultiPathGenerator(const std::vector<Handle<DiffusionProcess> >& diffusionProcs,
-                           const Array& drifts,
-                           const Matrix& covariance,
+                           const Array& drifts,                           
+                           const Matrix& correlation,
                            const TimeGrid& timeGrid,
                            SG generator);
         const sample_type& next() const;
         const sample_type& antithetic() const;
       private:
         std::vector<Handle<DiffusionProcess> > diffusionProcs_;
-        Size numAssets_;
-        Matrix sqrtCovariance_;
+        Size numAssets_;        
+        Matrix sqrtCorrelation_;
         SG generator_;        
         mutable sample_type next_;        
     };
@@ -66,15 +66,15 @@ namespace QuantLib {
     template <class SG>
     inline MultiPathGenerator<SG>::MultiPathGenerator(
                                 const std::vector<Handle<DiffusionProcess> >& diffusionProcs,
-                                const Array& drifts, 
-                                const Matrix& covariance,
+                                const Array& drifts,                         
+                                const Matrix& correlation,
                                 const TimeGrid& times, 
                                 SG generator)
     :   diffusionProcs_(diffusionProcs),
-        numAssets_(covariance.rows()), 
-        sqrtCovariance_(matrixSqrt(covariance)),
+        numAssets_(correlation.rows()),         
+        sqrtCorrelation_(matrixSqrt(correlation)),
         generator_(generator),
-        next_(MultiPath(covariance.rows(), times), 1.0) {
+        next_(MultiPath(correlation.rows(), times), 1.0) {
 
         QL_REQUIRE(generator_.dimension() == numAssets_*(times.size()-1),
                    "(2) MultiPathGenerator's dimension (" +
@@ -86,9 +86,9 @@ namespace QuantLib {
                    ") the number of assets times the number of time steps");
         QL_REQUIRE(drifts.size() == numAssets_,
                    "MultiPathGenerator covariance and average "
-                   "do not have the same size");
-        QL_REQUIRE(sqrtCovariance_.columns() == numAssets_,
-                   "MultiPathGenerator covariance is not "
+                   "do not have the same size");        
+        QL_REQUIRE(sqrtCorrelation_.columns() == numAssets_,
+                   "MultiPathGenerator correlation is not "
                    "a square matrix");
         QL_REQUIRE(times.size() > 1,
                    "MultiPathGenerator: no times given");
@@ -129,17 +129,12 @@ namespace QuantLib {
             std::copy(sequence_.value.begin()+offset,
                       sequence_.value.begin()+offset+numAssets_,
                       temp.begin());
-            // this needs to just be a rotation, as the time 
-            // and covariance are in the diffusion process
-            temp = sqrtCovariance_ * temp;
-            temp[0] = temp[0]/ QL_SQRT(sqrtCovariance_[0][0]*sqrtCovariance_[0][0] + 
-                                    sqrtCovariance_[0][1]*sqrtCovariance_[0][1]);
-            temp[1] = temp[1]/ QL_SQRT(sqrtCovariance_[1][0]*sqrtCovariance_[1][0] + 
-                                    sqrtCovariance_[1][1]*sqrtCovariance_[1][1]);
+            
+            temp = sqrtCorrelation_ * temp;
+
             for (Size j=0; j<numAssets_; j++) {
                 next_.value[j].drift()[i] = dt * diffusionProcs_[j]->drift(t, asset[j]);
-                next_.value[j].diffusion()[i] = - temp[j] * QL_SQRT(diffusionProcs_[j]->variance(t, asset[j], dt));
-                //next_.value[j].diffusion()[i] = - sqrt_dt * temp[j];
+                next_.value[j].diffusion()[i] = - temp[j] * QL_SQRT(diffusionProcs_[j]->variance(t, asset[j], dt));            
                 asset[j] *= QL_EXP(next_.value[j].drift()[i] + next_.value[j].diffusion()[i]);                    
             }
         }
