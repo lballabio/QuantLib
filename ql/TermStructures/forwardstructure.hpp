@@ -70,6 +70,8 @@ namespace QuantLib {
             from the instantaneous forward rate.
         */
         DiscountFactor discountImpl(Time) const;
+        //! instantaneous forward-rate calculation
+        virtual Rate forwardImpl(Time) const = 0;
 #ifndef QL_DISABLE_DEPRECATED
         /*! Returns the forward rate at a specified compound frequency
 	    for the given date calculating it from the zero yield.
@@ -102,6 +104,7 @@ namespace QuantLib {
     inline Rate ForwardRateStructure::zeroYieldImpl(Time t) const {
         if (t == 0.0)
             return forwardImpl(0.0);
+        // implement smarter integration if plan to use the following code
         Rate sum = 0.5*forwardImpl(0.0);
         Size N = 1000;
         Time dt = t/N;

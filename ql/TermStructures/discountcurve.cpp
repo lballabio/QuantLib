@@ -21,7 +21,7 @@
 namespace QuantLib {
 
     #ifndef QL_DISABLE_DEPRECATED
-    DiscountCurve::DiscountCurve(const Date &todaysDate,
+    DiscountCurve::DiscountCurve(const Date& todaysDate,
                                  const std::vector<Date>& dates,
                                  const std::vector<DiscountFactor>& discounts,
                                  const DayCounter& dayCounter)

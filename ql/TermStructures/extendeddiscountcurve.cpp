@@ -124,6 +124,20 @@ namespace QuantLib {
                                             Settings::instance().dayCounter()));
     }
 
+    #ifdef QL_DISABLE_DEPRECATED
+    Rate ExtendedDiscountCurve::zeroYieldImpl(Time t) const {
+        DiscountFactor df;
+        if (t==0.0) {
+            Time dt = 0.001;
+            df = discountImpl(dt);
+            return Rate(-QL_LOG(df)/dt);
+        } else {
+            df = discountImpl(t);
+            return Rate(-QL_LOG(df)/t);
+        }
+    }
+    #endif
+
     Rate ExtendedDiscountCurve::compoundForwardImpl(Time t,
                                                     Integer f) const {
         if (f == 0) {

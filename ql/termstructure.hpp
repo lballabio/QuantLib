@@ -279,6 +279,39 @@ namespace QuantLib {
                                          Frequency freq = Annual,
                                          bool extrapolate = false) const;
         //@}
+        /*! \name par rates
+
+            These methods are either function of dates or times.
+            In the latter case, times are calculated as fraction
+            of year from the reference date.
+        */
+        //@{
+        //! par Rate
+        /*! returns the implied par Rate of a stylised swap starting at the
+            effective date with a given tenor.
+
+            \warning this par Rate is not to be used for evaluation of a real
+                     swap, since it does not take into account all the market
+                     conventions' details.
+        */
+        Rate parRate(Year tenor,
+                     const Date& effectiveDate,
+                     Frequency freq = Annual,
+                     bool extrapolate = false) const;
+
+        //! par Rate
+        /*! returns the implied par Rate of a stylised swap starting at the
+            given time with a given tenor.
+
+            \warning this par Rate is not to be used for evaluation of a real
+                     swap, since it does not take into account all the market
+                     conventions' details.
+        */
+        Rate parRate(Year tenor,
+                     Time t0,
+                     Frequency freq = Annual,
+                     bool extrapolate = false) const;
+        //@}
 
         //! \name Dates
         //@{
@@ -297,13 +330,13 @@ namespace QuantLib {
             assume that extrapolation is required.
         */
         //@{
-        //! zero-yield calculation
-        virtual Rate zeroYieldImpl(Time) const = 0;
         //! discount calculation
         virtual DiscountFactor discountImpl(Time) const = 0;
+        #ifndef QL_DISABLE_DEPRECATED
+        //! zero-yield calculation
+        virtual Rate zeroYieldImpl(Time) const = 0;
         //! instantaneous forward-rate calculation
         virtual Rate forwardImpl(Time) const = 0;
-        #ifndef QL_DISABLE_DEPRECATED
         //! compound forward-rate calculation
         virtual Rate compoundForwardImpl(Time, Integer) const = 0;
         #endif
@@ -483,6 +516,25 @@ namespace QuantLib {
     }
 
 
+    // inline par rate definitions
+
+    inline Rate YieldTermStructure::parRate(Year tenor,
+        const Date& effectiveDate, Frequency freq, bool extrap) const {
+
+        return parRate(tenor, timeFromReference(effectiveDate), freq, extrap);
+    }
+
+    inline Rate YieldTermStructure::parRate(Year tenor, Time t0,
+        Frequency freq, bool extrapolate) const {
+
+        checkRange(t0+tenor, extrapolate);
+        Real sum = 0.0;
+        for (Year i=1; i<=tenor; i++)
+            sum += discountImpl(t0+i);
+        Real result = discountImpl(t0)-discountImpl(t0+tenor);
+        result *=  freq/sum;
+        return result;
+    }
 
     // inline discount definitions
 

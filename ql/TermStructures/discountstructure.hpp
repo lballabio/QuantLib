@@ -26,6 +26,9 @@
 
 namespace QuantLib {
 
+    #ifdef QL_DISABLE_DEPRECATED
+    typedef DiscountStructure YieldTermStructure
+    #else
     //! Discount factor term structure
     /*! This abstract class acts as an adapter to YieldTermStructure
         allowing the programmer to implement only the
@@ -44,12 +47,10 @@ namespace QuantLib {
             constructors.
         */
         //@{
-        #ifndef QL_DISABLE_DEPRECATED
         /*! \deprecated use the constructor without today's date; set the
                         evaluation date through Settings::instance().
         */
         DiscountStructure(const Date& todaysDate, const Date& referenceDate);
-        #endif
         DiscountStructure();
         DiscountStructure(const Date& referenceDate);
         DiscountStructure(Integer settlementDays, const Calendar&);
@@ -66,23 +67,19 @@ namespace QuantLib {
             calculating it from the discount.
         */
         Rate forwardImpl(Time) const;
-        #ifndef QL_DISABLE_DEPRECATED
         /*! Returns the forward rate at a specified compound frequency
 	    for the given date calculating it from the zero yield.
         */
         virtual Rate compoundForwardImpl(Time, Integer) const;
-        #endif
         //@}
     };
 
     // inline definitions
 
 
-    #ifndef QL_DISABLE_DEPRECATED
     inline DiscountStructure::DiscountStructure(const Date& todaysDate,
                                                 const Date& referenceDate)
     : YieldTermStructure(todaysDate,referenceDate) {}
-    #endif
 
     inline DiscountStructure::DiscountStructure() {}
 
@@ -113,7 +110,6 @@ namespace QuantLib {
         return Rate(QL_LOG(df1/df2)/dt);
     }
 
-    #ifndef QL_DISABLE_DEPRECATED
     inline Rate DiscountStructure::compoundForwardImpl(Time t,
                                                        Integer f) const {
         Rate zy = zeroYieldImpl(t);
@@ -123,9 +119,8 @@ namespace QuantLib {
             return (QL_EXP(zy*t)-1.0)/t;
         return (QL_EXP(zy*(1.0/f))-1.0)*f;
     }
+
     #endif
-
 }
-
 
 #endif

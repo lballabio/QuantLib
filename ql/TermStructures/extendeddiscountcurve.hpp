@@ -58,6 +58,12 @@ namespace QuantLib {
 	    for the given date calculating it from the zero yield.
         */
         Rate compoundForwardImpl(Time, Integer) const;
+        #ifdef QL_DISABLE_DEPRECATED
+        /*! Returns the zero yield rate for the given date calculating it
+            from the discount.
+        */
+        Rate zeroYieldImpl(Time) const;
+        #endif
         void calibrateNodes() const;
         boost::shared_ptr<YieldTermStructure> reversebootstrap(Integer) const;
         boost::shared_ptr<YieldTermStructure> forwardCurve(Integer) const;

@@ -40,7 +40,7 @@ namespace QuantLib {
         since the implied term-structure will just be the initial
         term-structure on which the model is based.
     */
-    class AffineTermStructure : public DiscountStructure,
+    class AffineTermStructure : public YieldTermStructure,
                                 public LazyObject {
       public:
         #ifndef QL_DISABLE_DEPRECATED
@@ -102,7 +102,7 @@ namespace QuantLib {
     }
 
     inline void AffineTermStructure::update() {
-        DiscountStructure::update();
+        YieldTermStructure::update();
         LazyObject::update();
     }
 
