@@ -118,8 +118,7 @@ namespace QuantLib {
         if (type == Option::Straddle) {
             results_.rho = - cashPayoff * T * discount;
         } else {
-            double temp = T/volSqrtT;
-            results_.rho = cashPayoff * discount * sign * (temp*NID2-T*beta);
+            results_.rho = cashPayoff * discount * sign * T* (NID2/volSqrtT-beta);
         }
 
         if (type == Option::Straddle) {

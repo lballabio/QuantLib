@@ -25,20 +25,19 @@ namespace QuantLib {
 
     void AnalyticAmericanBinaryBarrierEngine::calculate() const {
 
+        QL_REQUIRE(arguments_.exercise->type() == Exercise::American,
+                   "AnalyticAmericanBinaryBarrierEngine::calculate() : "
+                   "not an American Option");
+
         #if defined(HAVE_BOOST)
-        Handle<AmericanExercise> exercise = 
+        Handle<AmericanExercise> ex = 
             boost::dynamic_pointer_cast<AmericanExercise>(arguments_.exercise);
         QL_REQUIRE(payoff,
                    "AnalyticAmericanBinaryBarrierEngine: wrong exercise given");
         #else
-        Handle<AmericanExercise> exercise = arguments_.exercise;
+        Handle<AmericanExercise> ex = arguments_.exercise;
         #endif
-
-        QL_REQUIRE(exercise->type() == Exercise::American,
-                   "AnalyticAmericanBinaryBarrierEngine::calculate() : "
-                   "not an American Option");
-
-        QL_REQUIRE(!exercise->payoffAtExpiry(),
+        QL_REQUIRE(!ex->payoffAtExpiry(),
                    "AnalyticAmericanBinaryBarrierEngine::calculate() : "
                    "payoff at expiry not handled");
 
@@ -57,13 +56,13 @@ namespace QuantLib {
 
         double strike = payoff->strike();
         double vol = arguments_.volTS->blackVol(
-            arguments_.exercise->lastDate(), strike);
+            ex->lastDate(), strike);
 
         Rate dividendRate =
-            arguments_.dividendTS->zeroYield(arguments_.exercise->lastDate());
+            arguments_.dividendTS->zeroYield(ex->lastDate());
 
         Rate riskFreeRate =
-            arguments_.riskFreeTS->zeroYield(arguments_.exercise->lastDate());
+            arguments_.riskFreeTS->zeroYield(ex->lastDate());
 
         double vol2 = vol*vol;
         double b_temp = riskFreeRate - dividendRate - 0.5*vol2;
@@ -75,7 +74,7 @@ namespace QuantLib {
         double l_minus = mu - lambda;
         Time maturity = arguments_.riskFreeTS->dayCounter().yearFraction(
             arguments_.riskFreeTS->referenceDate(),
-            arguments_.exercise->lastDate());
+            ex->lastDate());
         double root_tau = QL_SQRT (maturity);
         double root_two_pi = M_SQRT2 * M_SQRTPI;
         double log_H_S = QL_LOG (strike/underlying);
