@@ -168,6 +168,45 @@ SOURCE=..\Sources\Pricers\bsmeuropeanoption.cpp
 # ADD CPP /I "..\Sources" /I "..\Sources\Operators" /I "..\Sources\PDE"
 # End Source File
 # End Group
+# Begin Group "Solvers1D"
+
+# PROP Default_Filter ""
+# Begin Source File
+
+SOURCE=..\Sources\Solvers1D\bisection.cpp
+# ADD CPP /I "..\Sources"
+# End Source File
+# Begin Source File
+
+SOURCE=..\Sources\Solvers1D\brent.cpp
+# ADD CPP /I "..\Sources"
+# End Source File
+# Begin Source File
+
+SOURCE=..\Sources\Solvers1D\falseposition.cpp
+# ADD CPP /I "..\Sources"
+# End Source File
+# Begin Source File
+
+SOURCE=..\Sources\Solvers1D\newton.cpp
+# ADD CPP /I "..\Sources"
+# End Source File
+# Begin Source File
+
+SOURCE=..\Sources\Solvers1D\newtonsafe.cpp
+# ADD CPP /I "..\Sources"
+# End Source File
+# Begin Source File
+
+SOURCE=..\Sources\Solvers1D\ridder.cpp
+# ADD CPP /I "..\Sources"
+# End Source File
+# Begin Source File
+
+SOURCE=..\Sources\Solvers1D\secant.cpp
+# ADD CPP /I "..\Sources"
+# End Source File
+# End Group
 # Begin Source File
 
 SOURCE=..\Sources\calendar.cpp
@@ -175,6 +214,10 @@ SOURCE=..\Sources\calendar.cpp
 # Begin Source File
 
 SOURCE=..\Sources\date.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\Sources\solver1d.cpp
 # End Source File
 # End Group
 # Begin Group "Interfaces"
