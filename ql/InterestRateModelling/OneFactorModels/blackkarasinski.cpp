@@ -23,7 +23,6 @@
 // $Id$
 
 #include "ql/InterestRateModelling/OneFactorModels/blackkarasinski.hpp"
-#include "ql/Solvers1D/brent.hpp"
 
 namespace QuantLib {
 

@@ -14,9 +14,7 @@ include_HEADERS = \
     leastsquare.hpp \
     linesearch.hpp \
     optimizer.hpp \
-    powell.hpp \
     simplex.hpp \
-    simulatedannealing.hpp \
     steepestdescent.hpp
 
 EXTRA_DIST=makefile.mak
@@ -24,9 +22,7 @@ EXTRA_DIST=makefile.mak
 libOptimization_la_SOURCES = \
     armijo.cpp \
     conjugategradient.cpp \
-    powell.cpp \
     simplex.cpp \
-    simulatedannealing.cpp \
     steepestdescent.cpp
 
 noinst_LTLIBRARIES = libOptimization.la

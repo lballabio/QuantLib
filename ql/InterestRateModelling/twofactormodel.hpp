@@ -25,6 +25,7 @@
 #ifndef quantlib_interest_rate_modelling_two_factor_model_h
 #define quantlib_interest_rate_modelling_two_factor_model_h
 
+#include <ql/diffusionprocess.hpp>
 #include <ql/InterestRateModelling/model.hpp>
 
 namespace QuantLib {
@@ -43,6 +44,30 @@ namespace QuantLib {
                                               double strike,
                                               Time maturity,
                                               Time bondMaturity) const = 0;
+
+            class ShortRateProcess {
+              public:
+                ShortRateProcess(const Handle<DiffusionProcess>& xProcess,
+                                 const Handle<DiffusionProcess>& yProcess,
+                                 double correlation)
+                : xProcess_(xProcess), yProcess_(yProcess), 
+                  correlation_(correlation) {}
+                virtual ~ShortRateProcess() {}
+
+                virtual Rate shortRate(Time t, double x, double y) const = 0;
+                const Handle<DiffusionProcess>& xProcess() const {
+                    return xProcess_;
+                }
+                const Handle<DiffusionProcess>& yProcess() const {
+                    return yProcess_;
+                }
+                double correlation() const {
+                    return correlation_;
+                }
+              private:
+                Handle<DiffusionProcess> xProcess_, yProcess_;
+                double correlation_;
+            };
 
         };
 

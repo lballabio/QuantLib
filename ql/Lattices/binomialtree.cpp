@@ -27,12 +27,11 @@
 namespace QuantLib {
 
     namespace Lattices {
-
 /*
-        BinomialTree::BinomialTree(const TimeGrid& timeGrid)
+        BinomialTree::BinomialTree(Time end, Size steps)
         : Lattices::Tree(2) {
 
-            t_ = timeGrid;
+            t_ = TimeGrid(end, steps);
 
             //adjust space intervals
             dx_.resize(t_.size());
@@ -65,21 +64,6 @@ namespace QuantLib {
             }
         }
 */
-        void BinomialTree::addLevel() {
-            
-            int i = nodes_.size();
-            nodes_.push_back(std::vector<Node>());
-
-            int j;
-            for (j=-i; j<=i; j+=2) {
-                nodes_[i].push_back(Node(2, j));
-            }
-            for (j=-(i-1); j<=(i-1); j+=2) {
-                node(i-1,j).descendant[0] = j-1;
-                node(i-1,j).descendant[1] = j+1;
-            }
-        }
-
     }
 
 }

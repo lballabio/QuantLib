@@ -53,43 +53,45 @@ namespace QuantLib {
 
         ExtendedCoxIngersollRoss::ExtendedCoxIngersollRoss(
             const RelinkableHandle<TermStructure>& termStructure) 
-        : GeneralCoxIngersollRoss(ConstantParameter(0.1), 
-                                  ConstantParameter(0.1), 
-                                  ConstantParameter(0.1), 
+        : GeneralCoxIngersollRoss(ConstantParameter(0.271373), 
+                                  ConstantParameter(0.394529), 
+                                  ConstantParameter(0.0545128), 
                                   termStructure) {
             constraint_ = Handle<Constraint>(new OwnConstraint());
+            generateParameters();
         }
 
-        double ExtendedCoxIngersollRoss::A(Time t, Time T) const {
+        double ExtendedCoxIngersollRoss::A(Time t) const {
             double sigma2 = sigma()*sigma();
             double h = QL_SQRT(k()*k() + 2.0*sigma2);
-            double numerator = 2.0*h*QL_EXP(0.5*(k()+h)*(T-t));
-            double denominator = 2.0*h + (k()+h)*(QL_EXP((T - t)*h) - 1.0);
+            double numerator = 2.0*h*QL_EXP(0.5*(k()+h)*t);
+            double denominator = 2.0*h + (k()+h)*(QL_EXP(t*h) - 1.0);
             double value = QL_LOG(numerator/denominator)*
                 2.0*k()*theta()/sigma2;
             return QL_EXP(value);
         }
 
-        double ExtendedCoxIngersollRoss::B(Time t, Time T) const {
+        double ExtendedCoxIngersollRoss::B(Time t) const {
             double h = QL_SQRT(k()*k() + 2.0*sigma()*sigma());
-            double numerator = 2.0*(QL_EXP((T-t)*h) - 1.0);
-            double denominator = 2.0*h + (k()+h)*(QL_EXP((T - t)*h) - 1.0);
+            double temp = QL_EXP(t*h) - 1.0;
+            double numerator = 2.0*temp;
+            double denominator = 2.0*h + (k()+h)*temp;
             double value = numerator/denominator;
             return value;
         }
 
-        double ExtendedCoxIngersollRoss::C(Time t, Time T) const {
-            double Pt = termStructure()->discount(t);
-            double PT = termStructure()->discount(T);
-            double value = A(t,T)*QL_EXP(B(t,T)*phi_(t))*
-                (PT*A(0,t)*QL_EXP(-B(0,t)*x0_))/
-                (Pt*A(0,T)*QL_EXP(-B(0,T)*x0_));
+        double ExtendedCoxIngersollRoss::C(Time t, Time s) const {
+            double pt = termStructure()->discount(t);
+            double ps = termStructure()->discount(s);
+            double value = A(s-t)*QL_EXP(B(s-t)*phi_(t))*
+                (ps*A(t)*QL_EXP(-B(t)*x0_))/
+                (pt*A(s)*QL_EXP(-B(s)*x0_));
             return value;
         }
 
         double ExtendedCoxIngersollRoss::discountBond(
-            Time t, Time T, Rate r) const {
-            double value =  C(t,T)*QL_EXP(-B(t,T)*r);
+            Time t, Time s, Rate r) const {
+            double value =  C(t,s)*QL_EXP(-B(s-t)*r);
             return value;
         }
 /*

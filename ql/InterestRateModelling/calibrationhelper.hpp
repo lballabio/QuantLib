@@ -25,7 +25,7 @@
 #ifndef quantlib_interest_rate_modelling_calibration_helper_h
 #define quantlib_interest_rate_modelling_calibration_helper_h
 
-#include <ql/timegrid.hpp>
+#include <ql/grid.hpp>
 #include <ql/InterestRateModelling/onefactormodel.hpp>
 #include <ql/Lattices/tree.hpp>
 
@@ -37,7 +37,6 @@ namespace QuantLib {
 
         class CalibrationHelper 
         : public Patterns::Observer, public Patterns::Observable {
-
           public:
             CalibrationHelper(const RelinkableHandle<MarketElement>& volatility)
             : volatility_(volatility) {

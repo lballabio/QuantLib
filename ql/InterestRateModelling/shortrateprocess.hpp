@@ -36,6 +36,7 @@ namespace QuantLib {
         //describes a process followed by the short rate or a function of it
         class ShortRateProcess : public DiffusionProcess {
           public:
+            ShortRateProcess(double x0 = 0.0) : DiffusionProcess(x0) {}
             virtual ~ShortRateProcess() {};
 
             virtual double variable(Time t, Rate r) const = 0;
@@ -61,9 +62,9 @@ namespace QuantLib {
             Parameter mean_, speed_, volatility_;
         };
 
-        class OrnsteinUhlenbeckProcess : public MeanRevertingProcess {
+        class PseudoOrnsteinUhlenbeckProcess : public MeanRevertingProcess {
           public:
-            OrnsteinUhlenbeckProcess(const Parameter& speed,
+            PseudoOrnsteinUhlenbeckProcess(const Parameter& speed,
                                      const Parameter& volatility)
             : MeanRevertingProcess(NullParameter(), speed, volatility)  {}
 

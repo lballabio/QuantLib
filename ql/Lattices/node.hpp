@@ -27,45 +27,23 @@
 
 #include <ql/termstructure.hpp>
 
-#include <iostream>
-
 namespace QuantLib {
 
     namespace Lattices {
 
         class Node {
           public:
-            Node(Size nDescendants, Size i, int j)
-            : descendants_(nDescendants), probabilities_(nDescendants),
-              i_(i), j_(j), statePrice_(0.0) {}
+            Node(int j)
+            : j_(j), statePrice_(0.0) {}
 
-            Size i() const { return i_; }
             int j() const { return j_; }
 
-            double probability(Size branch) const {
-                return probabilities_[branch];
-            }
-            void setProbability(double prob, Size branch) {
-                probabilities_[branch] = prob;
-            }
-            Node& descendant(Size branch) {
-                return *(descendants_[branch]);
-            }
-            const Node& descendant(Size branch) const {
-                return *(descendants_[branch]);
-            }
-            void setDescendant(Node& node, Size branch) {
-                descendants_[branch] = &node;
-            }
+            virtual double probability(Size branch) const = 0;
 
             double& statePrice() { return statePrice_; }
             const double& statePrice() const { return statePrice_; }
 
           private:
-            std::vector<Node*> descendants_;
-            std::vector<double> probabilities_;
-
-            Size i_;
             int j_;
 
             double statePrice_;

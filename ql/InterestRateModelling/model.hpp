@@ -38,6 +38,7 @@ namespace QuantLib {
 
         class CalibrationSet;
 
+        //! Abstract short-rate model class
         class Model {
           public:
             Model(Size nParameters, 
@@ -105,19 +106,20 @@ namespace QuantLib {
             const RelinkableHandle<TermStructure>& termStructure_;
         };
 
+        //! Term structure implied by a model
         class ModelTermStructure : public DiscountStructure {
           public:
-            ModelTermStructure(const Model& model, Time t0, Rate r0) 
+            ModelTermStructure(const Model* model, Time t0, Rate r0) 
             : model_(model), t0_(t0), r0_(r0) {
-                QL_REQUIRE(model_.hasDiscountBondFormula(),
+                QL_REQUIRE(model_->hasDiscountBondFormula(),
                     "No discount bond formula for this model");
             }
 
             virtual DiscountFactor discountImpl(Time t, bool extrapolate) {
-                return model_.discountBond(t0_, t0_+t, r0_);
+                return model_->discountBond(t0_, t0_+t, r0_);
             }
           private:
-            const Model& model_;
+            const Model* model_;
             Time t0_;
             Rate r0_;
         };

@@ -32,22 +32,56 @@ namespace QuantLib {
 
     namespace Lattices {
 
+        class TrinomialNode : public Node {
+          public:
+            TrinomialNode(int j) : Node(j) {}
+
+            virtual double probability(Size branch) const {
+                switch (branch) {
+                  case 0: return  (1.0 + e2v2_ - e3v_)/6.0;
+                  case 1: return  (2.0 - e2v2_)/3.0;
+                  case 2: return  (1.0 + e2v2_ + e3v_)/6.0;
+                  default: throw Error("Invalid branch number");
+                }
+            }
+            void setValues(double e, double v) {
+                e2v2_ = (e*e)/(v*v);
+                e3v_ = (e*QL_SQRT(3))/v;
+            }
+          private:
+            double e2v2_, e3v_;
+        };
+
         class TrinomialTree : public Tree {
           public:
             TrinomialTree() : Tree(3) {}
 
             TrinomialTree(const Handle<DiffusionProcess>& process,
-                          const TimeGrid& timeGrid);
+                          const TimeGrid& timeGrid,
+                          bool isPositive = false);
           protected:
-            virtual int findCentralNode(Size i, int j, double avg) const;
-
-            void addLevel(const std::vector<int>& k);
-
             virtual Size nodeIndex(Size i, int j) const {
-                return j - nodes_[i][0].j;
+                return j - nodes_[i][0]->j();
+            }
+            virtual Node& descendant(Size i, int j, Size branch) {
+                return node(i+1, k_[i][nodeIndex(i,j)]-1+branch);
+            }
+            virtual const Node& descendant(Size i, int j, Size branch) const {
+                return node(i+1, k_[i][nodeIndex(i,j)]-1+branch);
+            }
+            TrinomialNode* trinode(Size i, int j) {
+                return dynamic_cast<TrinomialNode*>(nodes_[i][nodeIndex(i,j)]);
             }
 
+            //! Returns jMin
+            int jMin(Size i) const { return nodes_[i].front()->j(); }
 
+            //! Returns jMax
+            int jMax(Size i) const { return nodes_[i].back()->j(); }
+
+          private:
+            Handle<DiffusionProcess> process_;
+            std::vector<std::vector<int> > k_;
         };
 
     }

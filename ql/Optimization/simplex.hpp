@@ -20,6 +20,11 @@
     ql/Optimization/%simplex.hpp
 */
 
+/* The implementation of the algorithm was inspired by
+ * "Numerical Recipes in C", 2nd edition, Press, Teukolsky, Vetterling, Flannery
+ * Chapter 10
+ */
+
 #ifndef quantlib_optimization_simplex_h
 #define quantlib_optimization_simplex_h
 
@@ -38,8 +43,8 @@ namespace QuantLib {
             : OptimizationMethod(), lambda_(lambda), tol_(tol) {}
             virtual ~Simplex() {}
 
-            double Simplex::extrapolate(OptimizationProblem& P,
-                                        Size iHighest, double factor);
+            double extrapolate(OptimizationProblem& P, Size iHighest, 
+                               double factor);
 
             //! minimize the optimization problem P
             virtual void minimize(OptimizationProblem& P);

@@ -25,59 +25,54 @@
 #ifndef quantlib_lattices_tree_h
 #define quantlib_lattices_tree_h
 
-#include <ql/asset.hpp>
+#include <ql/numericalmethod.hpp>
 #include <ql/handle.hpp>
-#include <ql/timegrid.hpp>
+#include <ql/grid.hpp>
+#include <ql/Lattices/node.hpp>
 
 namespace QuantLib {
 
     namespace Lattices {
 
-        class Tree {
+        class Tree : public NumericalMethod {
           public:
             Tree() {}
             Tree(Size n)
-            : dx_(0), n_(n) {
+            : dx_(1, 0.0), n_(n) {
                 QL_REQUIRE(n>0, "There is no zeronomial tree!");
-                nodes_.push_back(std::vector<Node>());
-                nodes_[0].push_back(Node(n,0));
-                nodes_[0][0].statePrice = 1.0;
                 statePricesLimit_ = 0;
             }
-            virtual ~Tree() {}
+            virtual ~Tree() {
+                for (Size i=0; i<nodes_.size(); i++) {
+                    for (Size j=0; j<nodes_[i].size(); j++) {
+                        delete nodes_[i][j];
+                    }
+                }
+            }
 
-            double presentValue(const Handle<Asset>& asset);
+            double presentValue(const Handle<NumericalDerivative>& asset);
 
-            void initialize(const Handle<Asset>& asset, Time t) const;
-            void rollback(const Handle<Asset>& asset, Time to) const;
-            void rollback(const std::vector<Handle<Asset> >& assets,
-                          Time to) const;
+            void initialize(
+                const Handle<NumericalDerivative>& asset, Time t) const;
+            void rollback(
+                const Handle<NumericalDerivative>& asset, Time to) const;
 
           protected:
-            struct Node {
-              public:
-                Node(Size nDescendants, int jIndex)
-                : descendant(nDescendants), probability(nDescendants),
-                  j(jIndex), statePrice(0.0) {}
-                
-                std::vector<int> descendant;
-                std::vector<double> probability;
-
-                int j;
-                double statePrice;
-            };
-            typedef std::vector<Node> Column;
+            typedef std::vector<Node*> Column;
             
             const Column& column(Size i) const { return nodes_[i]; }
 
             virtual DiscountFactor discount(Size i, int j) const = 0;
 
+            virtual Node& descendant(Size i, int j, Size branch) = 0;
+            virtual const Node& descendant(Size i, int j, Size branch) const= 0;
+
             Node& node(Size i, int j) {
-                return nodes_[i][nodeIndex(i,j)];
+                return *nodes_[i][nodeIndex(i,j)];
             }
 
             const Node& node(Size i, int j) const {
-                return nodes_[i][nodeIndex(i,j)];
+                return *nodes_[i][nodeIndex(i,j)];
             }
 
             virtual Size nodeIndex(Size i, int j) const = 0;
@@ -92,12 +87,6 @@ namespace QuantLib {
 
             //! Returns \delta x_i
             double dx(Size i) const { return dx_[i]; }
-
-            //! Returns jMin
-            int jMin(Size i) const { return nodes_[i].front().j; }
-
-            //! Returns jMax
-            int jMax(Size i) const { return nodes_[i].back().j; }
 
             void computeStatePrices(Size until);
             TimeGrid t_;

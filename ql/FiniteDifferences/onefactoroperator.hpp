@@ -51,7 +51,7 @@ namespace QuantLib {
               private:
                 double x0_;
                 double dx_;
-                const Handle<InterestRateModelling::ShortRateProcess>& process_;
+                Handle<InterestRateModelling::ShortRateProcess> process_;
             };
         };
 

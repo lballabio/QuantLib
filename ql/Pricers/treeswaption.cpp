@@ -24,7 +24,6 @@
 
 #include "ql/Pricers/treeswaption.hpp"
 #include "ql/InterestRateModelling/onefactormodel.hpp"
-#include "ql/asset.hpp"
 
 namespace QuantLib {
 
@@ -32,104 +31,6 @@ namespace QuantLib {
 
         using namespace InterestRateModelling;
         using namespace Lattices;
-
-        class DiscountBondAsset : public Asset {
-          public:
-            DiscountBondAsset() {}
-            void reset(Size size) {
-                values_ = Array(size, 1.0);
-            }
-        };
-
-        class SwapAsset : public Asset {
-          public:
-            SwapAsset(const Instruments::SwaptionParameters& params,
-                      const Handle<DiscountBondAsset>& bond)
-            : parameters_(params), bond_(bond) {}
-
-            void reset(Size size) {
-                values_ = Array(size, 0.0);
-                applyCondition();
-            }
-
-            virtual void applyCondition() {
-                Size i;
-
-                QL_REQUIRE(time()==bond_->time(),
-                    "Underlying bond has not been rolled back!");
-
-                for (i=0; i<parameters_.fixedPayTimes.size(); i++) {
-                    if (time_ == parameters_.fixedPayTimes[i]) {
-                        if (parameters_.payFixed)
-                            values_ -= parameters_.fixedCoupons[i];
-                        else
-                            values_ += parameters_.fixedCoupons[i];
-                    }
-                }
-
-                for (i=0; i<parameters_.floatingResetTimes.size(); i++) {
-                    if (time_ == parameters_.floatingResetTimes[i]) {
-                        for (Size j=0; j<values_.size(); j++) {
-                            double coupon = parameters_.nominals[i]*
-                                (1.0 - bond_->values()[j]);
-                            if (parameters_.payFixed)
-                                values_[j] += coupon;
-                            else
-                                values_[j] -= coupon;
-                        }
-                    }
-                }
-                for (i=0; i<parameters_.floatingPayTimes.size(); i++) {
-                    if (time_ == parameters_.floatingPayTimes[i]) {
-                        bond_->reset(values_.size());
-                    }
-                }
-            }
-          private:
-            Instruments::SwaptionParameters parameters_;
-            Handle<DiscountBondAsset> bond_;
-        };
-
-        class SwaptionAsset : public Asset {
-          public:
-            SwaptionAsset(
-                const Instruments::SwaptionParameters& params,
-                const Handle<SwapAsset>& swap)
-            : parameters_(params), swap_(swap) {}
-
-            void reset(Size size) {
-                values_ = Array(size, 0.0);
-                applyCondition();
-            }
-
-            virtual void applySpecificCondition() {
-                for (Size i=0; i<values_.size(); i++)
-                    values_[i] = QL_MAX(swap_->values()[i], values_[i]);
-            }
-
-            virtual void applyCondition() {
-                QL_REQUIRE(time()==swap_->time(),
-                    "Underlying swap has not been rolled back!");
-
-                Size i;
-                if (parameters_.exerciseType != Exercise::American) {
-                    for (i=0; i<parameters_.exerciseTimes.size(); i++) {
-                        if (time_ == parameters_.exerciseTimes[i]) {
-                            applySpecificCondition();
-                        }
-                    }
-                } else {
-                    if (
-                      (time_ >= parameters_.exerciseTimes[0]) &&
-                      (time_ <= parameters_.exerciseTimes[1]))
-                        applySpecificCondition();
-                }
-            }
-
-          private:
-            Instruments::SwaptionParameters parameters_;
-            Handle<SwapAsset> swap_;
-        };
 
         void TreeSwaption::calculate() const {
 
@@ -160,31 +61,19 @@ namespace QuantLib {
                 tree = tree_;
             }
 
-            Handle<Asset> bond(new DiscountBondAsset());
-            Handle<Asset> swap(new SwapAsset(parameters_, bond));
-            Handle<Asset> swaption(new SwaptionAsset(parameters_, swap));
+            Handle<NumericalDerivative> swaption(
+                new NumericalSwaption(tree, parameters_));
 
-            std::vector<Handle<Asset> > assets(0);
-            assets.push_back(bond);
-            assets.push_back(swap);
 
-            Time lastFixedPay = parameters_.fixedPayTimes.back();
-            Time lastFloatPay = parameters_.floatingPayTimes.back();
-            Time start = QL_MAX(lastFixedPay, lastFloatPay);
-
-            tree->initialize(bond, start);
-            tree->initialize(swap, start);
-
-            Time stop = parameters_.exerciseTimes.back();
-            tree->rollback(assets, stop);
-
-            assets.push_back(swaption);
-            tree->initialize(swaption, stop);
-
-            stop = parameters_.exerciseTimes[0];
-            tree->rollback(assets, stop);
+            tree->initialize(swaption, parameters_.exerciseTimes.back());
+            tree->rollback(swaption, parameters_.exerciseTimes.front());
 
             results_.value = tree->presentValue(swaption);
+/*
+            if (!model_.isNull())
+                std::cout << "Theoretical value: " << model_->termStructure()->discount(parameters_.floatingPayTimes[0])*100.0 << std::endl;
+            std::cout << "Swap price: " << swap->values()[0] << std::endl;
+*/
         }
 
     }

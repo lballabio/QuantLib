@@ -34,6 +34,7 @@
 
 namespace QuantLib {
 
+    //! Exercise class (American, Bermudan or European)
     class Exercise {
       public:
         enum Type { American, Bermudan, European };

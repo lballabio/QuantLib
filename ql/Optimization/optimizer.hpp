@@ -35,9 +35,7 @@ namespace QuantLib {
 
         class OptimizationMethod;
         class OptimizationProblem;
-        /*!
-          Optimization Method abstract class for unconstrained optimization pb
-        */
+        //! Optimization Method abstract class for unconstrained optimization pb
         class OptimizationMethod {
           public:
             explicit OptimizationMethod()
@@ -98,9 +96,7 @@ namespace QuantLib {
             Array x_, searchDirection_;
         };
 
-        /*!
-          Unconstrained optimization pb
-        */
+        //! Unconstrained optimization pb
         class OptimizationProblem {
           public:
             //! default constructor

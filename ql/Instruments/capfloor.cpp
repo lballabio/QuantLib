@@ -23,11 +23,8 @@
 // $Id$
 
 #include "ql/Instruments/capfloor.hpp"
+#include "ql/dataformatters.hpp"
 #include "ql/CashFlows/floatingratecoupon.hpp"
-#include "ql/Math/normaldistribution.hpp"
-
-#include "ql/InterestRateModelling/onefactormodel.hpp"
-#include "ql/Lattices/tree.hpp"
 
 namespace QuantLib {
 

@@ -35,7 +35,6 @@ EXTRA_DIST= \
 include_HEADERS = \
 	argsandresults.hpp \
 	array.hpp \
-    asset.hpp \
 	calendar.hpp \
 	cashflow.hpp \
 	config.hpp \
@@ -48,12 +47,14 @@ include_HEADERS = \
     exercise.hpp \
 	expressiontemplates.hpp \
 	forwardvolsurface.hpp \
+    grid.hpp \
 	handle.hpp \
 	history.hpp \
 	index.hpp \
 	instrument.hpp \
 	marketelement.hpp \
 	null.hpp \
+    numericalmethod.hpp \
 	option.hpp \
 	qldefines.hpp \
 	quantlib.hpp \
@@ -63,7 +64,6 @@ include_HEADERS = \
 	solver1d.hpp \
 	swaptionvolsurface.hpp \
 	termstructure.hpp \
-    timegrid.hpp \
 	types.hpp
 
 
@@ -79,7 +79,7 @@ libQuantLib_la_LIBADD = \
 	CashFlows/libCashFlows.la \
 	DayCounters/libDayCounters.la \
 	FiniteDifferences/libFiniteDifferences.la \
-	functions/libfunctions.la \
+    functions/libfunctions.la \
 	Indexes/libIndexes.la \
 	Instruments/libInstruments.la \
     InterestRateModelling/libInterestRateModelling.la \

@@ -31,18 +31,32 @@ namespace QuantLib {
 
     namespace InterestRateModelling {
 
+        //! General single-factor extended Cox-Ingersoll-Ross model class.
+        /*! This class implements the extended Cox-Ingersoll-Ross model
+            defined by 
+            \f[ 
+                dr_t = (\theta(t) - \alpha(t)r_t)dt + \sqrt{r_t}\sigma(t)dW_t .
+            \f]
+            It is actually implemented as \f$ r_t = \varphi(t) + y_t^2 \f$
+            where y_t is defined by 
+            \f[
+                dy_t=\left[ 
+                        (\frac{k\theta }{2}+\frac{\sigma ^2}{8})\frac{1}{y_t}-
+                        \frac{k}{2}y_t \right] d_t+ \frac{\sigma }{2}dW_{t}
+            \f]
+        */
         class GeneralCoxIngersollRoss : public OneFactorModel {
           public:
             GeneralCoxIngersollRoss(
-                const Parameter& k,
                 const Parameter& theta,
+                const Parameter& k,
                 const Parameter& sigma,
                 const RelinkableHandle<TermStructure>& termStructure) 
             : OneFactorModel(4, termStructure), 
-              k_(parameters_[0]), theta_(parameters_[1]), 
+              theta_(parameters_[0]), k_(parameters_[1]), 
               sigma_(parameters_[2]), phi_(parameters_[3]) {
-                k_ = k;
                 theta_ = theta;
+                k_ = k;
                 sigma_ = sigma;
                 x0_ = termStructure->forward(0.0);
             }
@@ -52,7 +66,7 @@ namespace QuantLib {
             virtual Handle<Lattices::Tree> tree(const TimeGrid& grid) const {
                 return Handle<Lattices::Tree>(
                     new OwnTrinomialTree(process(),
-                                         phi_.implementation(), grid));
+                                         phi_.implementation(), grid, true));
             }
 
             virtual Handle<ShortRateProcess> process() const {
@@ -65,8 +79,8 @@ namespace QuantLib {
                 phi_ = TermStructureFittingParameter(termStructure());
             }
 
-            Parameter& k_;
             Parameter& theta_;
+            Parameter& k_;
             Parameter& sigma_;
             Parameter& phi_;
             double x0_;
@@ -79,26 +93,24 @@ namespace QuantLib {
                         const Parameter& k,
                         const Parameter& sigma,
                         double x0)
-                : phi_(phi), theta_(theta), k_(k), sigma_(sigma), x0_(x0) {}
+                : ShortRateProcess(QL_SQRT(x0)),
+                  phi_(phi), theta_(theta), k_(k), sigma_(sigma) {}
 
                 virtual double variable(Time t, Rate r) const {
-                    return QL_SQRT(r - phi_(t)) - QL_SQRT(x0_);
+                    return QL_SQRT(r - phi_(t));
                 }
                 virtual double shortRate(Time t, double y) const {
-                    double v = y + QL_SQRT(x0_);
-                    return v*v + phi_(t);
+                    return y*y + phi_(t);
                 }
                 virtual double drift(Time t, double y) const {
-                    double v = y + QL_SQRT(x0_);
-                    return (0.5*theta_(t)*k_(t) - 0.125*sigma_(t)*sigma_(t))/v 
-                        - 0.5*k_(t)*v;
+                    return (0.5*theta_(t)*k_(t) - 0.125*sigma_(t)*sigma_(t))/y 
+                           - 0.5*k_(t)*y;
                 }
                 virtual double diffusion(Time t, double y) const {
                     return 0.5*sigma_(t);
                 }
               private:
                 Parameter phi_, theta_, k_, sigma_;
-                double x0_;
             };
 
         };
@@ -119,6 +131,10 @@ namespace QuantLib {
                                               Time T, 
                                               Time s) const;
 */
+            virtual Handle<Lattices::Tree> tree(const TimeGrid& grid) const {
+                return Handle<Lattices::Tree>(
+                    new OwnTrinomialTree(process(), grid, true));
+            }
 
           protected:
             virtual void generateParameters() {
@@ -156,11 +172,11 @@ namespace QuantLib {
                     const RelinkableHandle<TermStructure>& termStructure,
                     double theta, double k, double sigma, double x0) 
                 : TermStructureFittingParameter(Handle<ParameterImpl>(
-                    new CIRImpl(termStructure, k, theta, sigma, x0))) {}
+                    new CIRImpl(termStructure, theta, k, sigma, x0))) {}
             };
 
-            double A(Time t, Time T) const;
-            double B(Time t, Time T) const;
+            double A(Time t) const;
+            double B(Time t) const;
             double C(Time t, Time T) const;
             double theta() const { return theta_(0.0); }
             double k() const { return k_(0.0); }
@@ -172,7 +188,10 @@ namespace QuantLib {
         class CoxIngersollRoss : public ExtendedCoxIngersollRoss {
           public:
             CoxIngersollRoss(Rate r0) 
-            : 
+            : ExtendedCoxIngersollRoss(RelinkableHandle<TermStructure>(
+                                       new ModelTermStructure(this, 0.0, r0))) {
+                phi_ = NullParameter();
+            }
 
             virtual ~CoxIngersollRoss() {}
 
@@ -182,16 +201,7 @@ namespace QuantLib {
             }
 
           protected:
-            virtual void generateParameters() {
-                phi_ = FittingParameter(termStructure(), theta(), k(), sigma(), 
-                                        x0_);
-            }
-
-          private:
-            double theta() const { return theta_(0.0); }
-            double k() const { return k_(0.0); }
-            double sigma() const { return sigma_(0.0); }
-
+            virtual void generateParameters() {}
         };
 */
     }

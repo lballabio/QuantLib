@@ -49,7 +49,7 @@ namespace QuantLib {
         class OneFactorModel::OwnTrinomialTree::Helper 
             : public ObjectiveFunction {
           public:
-            Helper::Helper(
+            Helper(
                 Time t, Time dt, double dx, 
                 int jMin, int jMax,
                 const std::vector<double>& statePrices,
@@ -65,13 +65,15 @@ namespace QuantLib {
                 theta_->set(t, 0.0);
             }
 
-            double operator()(double x) const {
+            double operator()(double theta) const {
                 double value = discountBondPrice_;
-                theta_->change(x);
+                theta_->change(theta);
                 Size k=0;
-                for (int j=jMin_; j<=jMax_; j++) {
-                    Rate r = process_->shortRate(t_, j*dx_);
-                    value -= statePrices_[k++]*QL_EXP(-r*dt_);
+                double x = process_->x0() + jMin_*dx_;
+                for (int j=jMin_; j<=jMax_; j++, k++) {
+                    Rate r = process_->shortRate(t_, x);
+                    value -= statePrices_[k]*QL_EXP(-r*dt_);
+                    x += dx_;
                 }
                 return value;
             }
@@ -89,15 +91,17 @@ namespace QuantLib {
         OneFactorModel::OwnTrinomialTree::OwnTrinomialTree(
             const Handle<ShortRateProcess>& process,
             const Handle<TermStructureFittingParameter::NumericalImpl>& theta,
-            const TimeGrid& timeGrid)
-        : Lattices::TrinomialTree(process, timeGrid), process_(process) {
+            const TimeGrid& timeGrid,
+            bool isPositive)
+        : Lattices::TrinomialTree(process, timeGrid, isPositive), 
+          process_(process) {
 
             theta->reset();
             for (Size i=0; i<(timeGrid.size() - 1); i++) {
                 double discountBond = theta->termStructure()->discount(t(i+1));
                 std::vector<double> statePrices(0);
                 for (int j=jMin(i); j<=jMax(i); j++)
-                    statePrices.push_back(node(i,j).statePrice);
+                    statePrices.push_back(node(i,j).statePrice());
                 Helper finder(t(i), dt(i), dx(i), jMin(i), jMax(i), 
                               statePrices, discountBond, process_, theta);
                 Solvers1D::Brent s1d = Solvers1D::Brent();

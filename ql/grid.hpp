@@ -13,11 +13,11 @@
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
-/*! \file timegrid.hpp
-    \brief Time grid class with useful constructors
+/*! \file grid.hpp
+    \brief Grid classes with useful constructors for trees and finite diffs
 
     \fullpath
-    ql/%timegrid.hpp
+    ql/%grid.hpp
 */
 
 // $Id$
@@ -36,6 +36,17 @@
 
 namespace QuantLib {
 
+    //! spatial grid class
+    class Grid : public Array {
+      public:
+        Grid(double center, double dx, Size steps)
+        : Array(steps) {
+            for (Size i=0; i<steps; i++)
+                (*this)[i] = center + (i - steps/2.0)*dx;
+        }
+    };
+
+    //! time grid class
     #if defined(QL_PATCH_MICROSOFT_BUGS)
     class TimeGrid : public std::vector<Time> {
       public:
@@ -64,7 +75,7 @@ namespace QuantLib {
                 dtMax = last/steps;
             }
 
-            std::cout << "Building tree: dt set to " << dtMax << std::endl;
+//            std::cout << "Building tree: dt set to " << dtMax << std::endl;
 
             Time begin = 0.0;
             std::list<Time>::const_iterator t;
@@ -86,7 +97,7 @@ namespace QuantLib {
             return result - begin();
         }
 
-        Time dt(Size i) {
+        Time dt(Size i) const {
             return (*this)[i+1]  - (*this)[i];
         }
 

@@ -33,6 +33,7 @@ namespace QuantLib {
 
     namespace InterestRateModelling {
 
+        //! Single-factor short-rate model abstract class
         class OneFactorModel : public Model {
           public:
             OneFactorModel(
@@ -40,8 +41,10 @@ namespace QuantLib {
                 const RelinkableHandle<TermStructure>& termStructure);
             virtual ~OneFactorModel() {}
 
+            //! returns the driving stochastic equation
             virtual Handle<ShortRateProcess> process() const = 0;
 
+            //! Return a recombining tree
             virtual Handle<Lattices::Tree> tree(const TimeGrid& grid) const {
                 return Handle<Lattices::Tree>(
                     new OwnTrinomialTree(process(), grid));
@@ -52,21 +55,21 @@ namespace QuantLib {
             class OwnTrinomialTree : public Lattices::TrinomialTree {
               public:
                 OwnTrinomialTree(const Handle<ShortRateProcess>& process,
-                                 const TimeGrid& timeGrid) 
-                : Lattices::TrinomialTree(process, timeGrid), process_(process) {}
+                                 const TimeGrid& timeGrid,
+                                 bool isPositive = false) 
+                : Lattices::TrinomialTree(process, timeGrid, isPositive), 
+                  process_(process) {}
 
                 OwnTrinomialTree(
                     const Handle<ShortRateProcess>& process,
                     const Handle<TermStructureFittingParameter::NumericalImpl>& 
                           theta,
-                    const TimeGrid& timeGrid);
-
-                int findCentralNode(Size i, int j, double avg) const {
-                    return (int)floor(avg/dx(i+1) + 0.5);
-                }
+                    const TimeGrid& timeGrid,
+                    bool isPositive = false);
 
                 virtual DiscountFactor discount(Size i, int j) const {
-                     Rate r = process_->shortRate(t(i), j*dx(i));
+                     double x = process_->x0() + j*dx(i);
+                     Rate r = process_->shortRate(t(i), x);
                      return QL_EXP(-r*dt(i));
                 }
               protected:

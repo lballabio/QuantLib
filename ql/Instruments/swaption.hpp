@@ -26,6 +26,7 @@
 #define quantlib_instruments_swaption_h
 
 #include <ql/exercise.hpp>
+#include <ql/numericalmethod.hpp>
 #include <ql/Instruments/simpleswap.hpp>
 #include <ql/InterestRateModelling/model.hpp>
 
@@ -81,6 +82,113 @@ namespace QuantLib {
     }
 
     namespace Pricers {
+
+        class NumericalSwap : public NumericalDerivative {
+          public:
+            NumericalSwap(const Handle<NumericalMethod>& method, 
+                          const Instruments::SwaptionParameters& params)
+            : NumericalDerivative(method), parameters_(params) {}
+
+            void reset(Size size) {
+                values_ = Array(size, 0.0);
+                applyCondition();
+            }
+
+            virtual void applyCondition() {
+                Size i;
+
+                for (i=0; i<parameters_.fixedPayTimes.size(); i++) {
+                    if (time_ == parameters_.fixedPayTimes[i]) {
+                        if (parameters_.payFixed)
+                            values_ -= parameters_.fixedCoupons[i];
+                        else
+                            values_ += parameters_.fixedCoupons[i];
+                    }
+                }
+
+                for (i=0; i<parameters_.floatingResetTimes.size(); i++) {
+                    if (time_ == parameters_.floatingResetTimes[i]) {
+                        Handle<NumericalDerivative> bond(new 
+                            NumericalDiscountBond(method()));
+                        method()->initialize(bond, 
+                            parameters_.floatingPayTimes[i]);
+                        method()->rollback(bond,time_);
+
+                        for (Size j=0; j<values_.size(); j++) {
+                            double coupon = parameters_.nominals[i]*
+                                (1.0 - bond->values()[j]);
+                            if (parameters_.payFixed)
+                                values_[j] += coupon;
+                            else
+                                values_[j] -= coupon;
+                        }
+                    }
+                }
+            }
+
+            void addTimes(std::list<Time>& times) const {
+                Size i;
+                for (i=0; i<parameters_.fixedPayTimes.size(); i++)
+                    times.push_back(parameters_.fixedPayTimes[i]);
+                for (i=0; i<parameters_.floatingResetTimes.size(); i++)
+                    times.push_back(parameters_.floatingResetTimes[i]);
+                for (i=0; i<parameters_.floatingPayTimes.size(); i++)
+                    times.push_back(parameters_.floatingPayTimes[i]);
+            }
+
+          private:
+            Instruments::SwaptionParameters parameters_;
+        };
+
+        class NumericalSwaption : public NumericalDerivative {
+          public:
+            NumericalSwaption(
+                const Handle<NumericalMethod>& method,
+                const Instruments::SwaptionParameters& params)
+            : NumericalDerivative(method), parameters_(params), 
+              swap_(new NumericalSwap(method, params)) {
+                Time lastFixedPay = parameters_.fixedPayTimes.back();
+                Time lastFloatPay = parameters_.floatingPayTimes.back();
+                Time start = QL_MAX(lastFixedPay, lastFloatPay);
+                method->initialize(swap_, start);
+            }
+
+            void reset(Size size) {
+                values_ = Array(size, 0.0);
+                applyCondition();
+            }
+
+            virtual void applySpecificCondition() {
+                for (Size i=0; i<values_.size(); i++)
+                    values_[i] = QL_MAX(swap_->values()[i], values_[i]);
+            }
+
+            virtual void applyCondition() {
+                method()->rollback(swap_, time());
+
+                Size i;
+                if (parameters_.exerciseType != Exercise::American) {
+                    for (i=0; i<parameters_.exerciseTimes.size(); i++) {
+                        if (time_ == parameters_.exerciseTimes[i]) {
+                            applySpecificCondition();
+                        }
+                    }
+                } else {
+                    if (
+                      (time_ >= parameters_.exerciseTimes[0]) &&
+                      (time_ <= parameters_.exerciseTimes[1]))
+                        applySpecificCondition();
+                }
+            }
+            void addTimes(std::list<Time>& times) const {
+                swap_->addTimes(times);
+                for (Size i=0; i<parameters_.exerciseTimes.size(); i++)
+                    times.push_back(parameters_.exerciseTimes[i]);
+            }
+          private:
+            Instruments::SwaptionParameters parameters_;
+            Handle<NumericalSwap> swap_;
+        };
 
         //! base class for swaption pricing engines
         /*! Derived engines only need to implement the <tt>calculate()</tt>

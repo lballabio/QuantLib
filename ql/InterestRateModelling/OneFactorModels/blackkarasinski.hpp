@@ -31,6 +31,18 @@ namespace QuantLib {
 
     namespace InterestRateModelling {
 
+        //! General Black-Karasinski model class.
+        /*! This class implements the general Black-Karasinski 
+            model defined by 
+            \f[ 
+                d\ln r_t = (\theta(t) - \alpha(t)\ln r_t)dt + \sigma(t)dW_t .
+            \f]
+            It is actually implemented as \f$ r_t = e^{x_t + \varphi(t)} \f$
+            where \f$ x_t \f$ is defined by 
+            \f[ 
+                dx_t = - \alpha(t)r_tdt + \sigma(t)dW_t .
+            \f]
+        */
         class GeneralBlackKarasinski : public OneFactorModel {
           public:
             GeneralBlackKarasinski(
@@ -41,6 +53,7 @@ namespace QuantLib {
               a_(parameters_[0]), sigma_(parameters_[1]), f_(parameters_[2]) {
                 a_ = a;
                 sigma_ = sigma;
+                generateParameters();
             }
             virtual ~GeneralBlackKarasinski() {}
 
@@ -63,12 +76,12 @@ namespace QuantLib {
             Parameter& sigma_;
             Parameter& f_;
           private:
-            class Process : public OrnsteinUhlenbeckProcess {
+            class Process : public PseudoOrnsteinUhlenbeckProcess {
               public:
                 Process(const Parameter& fitting,
                         const Parameter& speed,
                         const Parameter& volatility)
-                : OrnsteinUhlenbeckProcess(speed, volatility),
+                : PseudoOrnsteinUhlenbeckProcess(speed, volatility),
                   fitting_(fitting) {}
                 virtual double variable(Time t, Rate r) const {
                     return QL_LOG(r) - fitting_(t);
@@ -83,6 +96,11 @@ namespace QuantLib {
 
         };
 
+        //! Standard Black-Karasinski model class.
+        /*! This class implements the standard Black-Karasinski model defined by
+            \f$ d\ln r_t = (\theta(t) - \alpha \ln r_t)dt + \sigma dW_t \f$.
+            where \f$ alpha \f$ and \f$ sigma \f$ are constants.
+        */
         class BlackKarasinski : public GeneralBlackKarasinski {
           public:
             BlackKarasinski(

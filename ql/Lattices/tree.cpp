@@ -32,17 +32,19 @@ namespace QuantLib {
             for (Size i=statePricesLimit_; i<until; i++) {
                 Column::const_iterator c = column(i).begin();
                 for (; c != column(i).end(); c++) {
-                    double discountFactor = discount(i, c->j);
-                    for (Size n=0; n<n_; n++) {
-                        node(i+1,c->descendant[n]).statePrice +=
-                            c->statePrice*c->probability[n]*discountFactor;
+                    const Node& n = *(*c);
+                    int j = n.j();
+                    double discountFactor = discount(i, j);
+                    for (Size l=0; l<n_; l++) {
+                        descendant(i,j,l).statePrice() +=
+                            n.statePrice()*n.probability(l)*discountFactor;
                     }
                 }
             }
             statePricesLimit_ = until;
         }
 
-        double Tree::presentValue(const Handle<Asset>& asset) {
+        double Tree::presentValue(const Handle<NumericalDerivative>& asset) {
             Size i = t_.findIndex(asset->time());
             if (i>statePricesLimit_)
                 computeStatePrices(i);
@@ -50,58 +52,48 @@ namespace QuantLib {
             Size l = 0;
             Column::const_iterator n = column(i).begin();
             for (; n != column(i).end(); n++, l++) {
-                value += asset->values()[l]*n->statePrice;
+                value += asset->values()[l]*(*n)->statePrice();
             }
             return value;
         }
 
-        void Tree::initialize(const Handle<Asset>& asset, Time t) const {
+        void Tree::initialize(const Handle<NumericalDerivative>& asset, 
+                              Time t) const {
+
             Size i = t_.findIndex(t);
             Size width = column(i).size();
             asset->setTime(t);
             asset->reset(width);
         }
 
-        void Tree::rollback(const Handle<Asset>& asset, Time to) const {
-            std::vector<Handle<Asset> > assets(1, asset);
-            rollback(assets, to);
-        }
+        void Tree::rollback(const Handle<NumericalDerivative>& asset, 
+                            Time to) const {
 
-        void Tree::rollback(
-            const std::vector<Handle<Asset> >& assets,
-            Time to) const {
-
-            std::vector<Handle<Asset> >::const_iterator begin = assets.begin();
-            Time from = (*begin)->time();
-            for (++begin; begin != assets.end(); ++begin) {
-                QL_REQUIRE((*begin)->time()==from,
-                    "Assets must be at the same time!");
-            }
+            Time from = asset->time();
 
             QL_REQUIRE(from>=to, "Wrong rollback extremities");
             Size iFrom = t_.findIndex(from);
             Size iTo = t_.findIndex(to);
 
             for (int i=(int)(iFrom-1); i>=(int)iTo; i--) {
-                for (begin = assets.begin(); begin != assets.end(); ++begin) {
-                    Size width = jMax(i) - jMin(i) + 1;
-                    Array newValues(width);
-                    Size l = 0;
-                    Column::const_iterator n = column(i).begin();
-                    for (; n != column(i).end(); n++, l++) {
-                        double value = 0.0;
-                        for (Size k=0; k<n_; k++) {
-                            Size index = nodeIndex(i+1, n->descendant[k]);
-                            value += n->probability[k]
-                                *(*begin)->values()[index];
-                        }
-                        value *= discount(i, n->j);
-                        newValues[l] = value;
+                Size width = column(i).size();
+                Array newValues(width);
+                Size k = 0;
+                Column::const_iterator c = column(i).begin();
+                for (; c != column(i).end(); c++, k++) {
+                    const Node& n = *(*c);
+                    int j = n.j();
+                    double value = 0.0;
+                    Size index = nodeIndex(i+1, descendant(i,j,0).j());
+                    for (Size l=0; l<n_; l++) {
+                        value += n.probability(l)*asset->values()[index+l];
                     }
-                    (*begin)->setTime(t(i));
-                    (*begin)->setValues(newValues);
-                    (*begin)->applyCondition();
+                    value *= discount(i, j);
+                    newValues[k] = value;
                 }
+                asset->setTime(t(i));
+                asset->setValues(newValues);
+                asset->applyCondition();
             }
         }
 

@@ -24,7 +24,6 @@
 
 #include <ql/argsandresults.hpp>
 #include <ql/array.hpp>
-#include <ql/asset.hpp>
 #include <ql/calendar.hpp>
 #include <ql/cashflow.hpp>
 #include <ql/currency.hpp>
@@ -36,12 +35,14 @@
 #include <ql/exercise.hpp>
 #include <ql/expressiontemplates.hpp>
 #include <ql/forwardvolsurface.hpp>
+#include <ql/grid.hpp>
 #include <ql/handle.hpp>
 #include <ql/history.hpp>
 #include <ql/index.hpp>
 #include <ql/instrument.hpp>
 #include <ql/marketelement.hpp>
 #include <ql/null.hpp>
+#include <ql/numericalmethod.hpp>
 #include <ql/option.hpp>
 #include <ql/relinkablehandle.hpp>
 #include <ql/riskstatistics.hpp>
@@ -49,7 +50,6 @@
 #include <ql/solver1d.hpp>
 #include <ql/swaptionvolsurface.hpp>
 #include <ql/termstructure.hpp>
-#include <ql/timegrid.hpp>
 #include <ql/types.hpp>
 
 #include <ql/Calendars/frankfurt.hpp>
@@ -179,9 +179,7 @@
 #include <ql/Optimization/leastsquare.hpp>
 #include <ql/Optimization/linesearch.hpp>
 #include <ql/Optimization/optimizer.hpp>
-#include <ql/Optimization/powell.hpp>
 #include <ql/Optimization/simplex.hpp>
-#include <ql/Optimization/simulatedannealing.hpp>
 #include <ql/Optimization/steepestdescent.hpp>
 
 #include <ql/Patterns/observable.hpp>
@@ -255,9 +253,10 @@ namespace QL    = QuantLib;
 namespace QLCAL = QuantLib::Calendars;
 namespace QLCFL = QuantLib::CashFlows;
 namespace QLDCO = QuantLib::DayCounters;
+namespace QLFDM = QuantLib::FiniteDifferences;
 namespace QLIDX = QuantLib::Indexes;
 namespace QLINS = QuantLib::Instruments;
-namespace QLFDM = QuantLib::FiniteDifferences;
+namespace QLIRM = QuantLib::InterestRateModelling;
 namespace QLMTH = QuantLib::Math;
 namespace QLMNT = QuantLib::MonteCarlo;
 namespace QLPAT = QuantLib::Patterns;

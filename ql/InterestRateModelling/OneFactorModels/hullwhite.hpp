@@ -31,6 +31,18 @@ namespace QuantLib {
 
     namespace InterestRateModelling {
 
+        //! General single-factor Hull-White model class.
+        /*! This class implements the general single-factor Hull-White model
+            defined by 
+            \f[ 
+                dr_t = (\theta(t) - \alpha(t)r_t)dt + \sigma(t)dW_t.
+            \f]
+            It is actually implemented as \f$ r_t = x_t + \varphi(t) \f$
+            where \f$ x_t \f$ is defined by 
+            \f[ 
+                dx_t = - \alpha(t)r_tdt + \sigma(t)dW_t 
+            \f]
+        */
         class GeneralHullWhite : public OneFactorModel {
           public:
             GeneralHullWhite(
@@ -38,7 +50,7 @@ namespace QuantLib {
                 const Parameter& sigma,
                 const RelinkableHandle<TermStructure>& termStructure) 
             : OneFactorModel(3, termStructure), 
-              a_(parameters_[0]), sigma_(parameters_[1]), f_(parameters_[2]) {
+              a_(parameters_[0]), sigma_(parameters_[1]), phi_(parameters_[2]) {
                 a_ = a;
                 sigma_ = sigma;
             }
@@ -46,28 +58,29 @@ namespace QuantLib {
 
             virtual Handle<Lattices::Tree> tree(const TimeGrid& grid) const {
                 return Handle<Lattices::Tree>(
-                    new OwnTrinomialTree(process(), f_.implementation(), grid));
+                    new OwnTrinomialTree(
+                        process(), phi_.implementation(), grid));
             }
 
             virtual Handle<ShortRateProcess> process() const {
                 return Handle<ShortRateProcess>(
-                    new Process(f_, a_, sigma_));
+                    new Process(phi_, a_, sigma_));
             }
           protected:
             virtual void generateParameters() {
-                f_ = TermStructureFittingParameter(termStructure());
+                phi_ = TermStructureFittingParameter(termStructure());
             }
 
             Parameter& a_;
             Parameter& sigma_;
-            Parameter& f_;
+            Parameter& phi_;
           private:
-            class Process : public OrnsteinUhlenbeckProcess {
+            class Process : public PseudoOrnsteinUhlenbeckProcess {
               public:
                 Process(const Parameter& fitting,
                         const Parameter& speed,
                         const Parameter& volatility)
-                : OrnsteinUhlenbeckProcess(speed, volatility),
+                : PseudoOrnsteinUhlenbeckProcess(speed, volatility),
                   fitting_(fitting) {}
                 virtual double variable(Time t, Rate r) const {
                     return r - fitting_(t);
@@ -81,6 +94,25 @@ namespace QuantLib {
             };
 
         };
+
+        //! Analytically tractable single-factor Hull-White model class.
+        /*! This class implements the standard single-factor Hull-White model
+            defined by 
+            \f[ 
+                dr_t = (\theta(t) - \alpha r_t)dt + \sigma dW_t
+            \f]
+            where \f$ \alpha \f$ and \f$ \sigma \f$ are constants. 
+            \f$ \varphi(t) \f$ is analytically defined by
+            \f[
+                \varphi(t) = f(t) + \frac{1}{2}[\frac{\sigma(1-e^{-at})}{a}]^2
+            \f]
+            
+            There is an
+            analytical formula for discount bonds:
+            \f[
+                P(t,T,r_t) = 
+            \f]
+        */
 
         class HullWhite : public GeneralHullWhite {
           public:
@@ -107,7 +139,7 @@ namespace QuantLib {
 
           protected:
             virtual void generateParameters() {
-                f_ = HWFittingParameter(termStructure(), a_(0.0), sigma_(0.0));
+                phi_ = HWFittingParameter(termStructure(), a(), sigma());
             }
 
           private:

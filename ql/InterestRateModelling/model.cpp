@@ -46,7 +46,7 @@ namespace QuantLib {
             }
             virtual ~CalibrationFunction() {}
             
-            virtual double Model::CalibrationFunction::value(
+            virtual double value(
                 const Array& params) {
                 model_->setParams(params);
                 instruments_.update(model_);

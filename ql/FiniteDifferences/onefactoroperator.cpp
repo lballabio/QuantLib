@@ -37,8 +37,8 @@ namespace QuantLib {
                new SpecificTimeSetter(grid[0], grid[1] - grid[0], process));
          }
 
-        OneFactorOperator::SpecificTimeSetter::SpecificTimeSetter(double x0,
-            double dx, const Handle<ShortRateProcess>& process)
+        OneFactorOperator::SpecificTimeSetter::SpecificTimeSetter(
+            double x0, double dx, const Handle<ShortRateProcess>& process)
         : x0_(x0), dx_(dx), process_(process) {}
 
         void OneFactorOperator::SpecificTimeSetter::setTime(Time t,
@@ -47,9 +47,11 @@ namespace QuantLib {
             for (Size i=0; i<length; i++) {
                 double x = x0_ + dx_*i;
 
-                Rate r = process_->shortRate(x, t);
-                double mu = process_->drift(x, t);
-                double sigma = process_->diffusion(x, t);
+                Rate r = process_->shortRate(t, x);
+                double mu = process_->drift(t, x);
+                double sigma = process_->diffusion(t, x);
+//                std::cout << t << " " << x << " -> " << r << " " << mu << " " << sigma << std::endl;
+
 
                 double sigma2 = sigma*sigma;
                 double pdown = (- sigma2/(2.0*dx_*dx_) ) + mu/(2.0*dx_);

@@ -62,7 +62,7 @@ namespace QuantLib {
             //! \name Inspectors
             //@{
             const Handle<Indexes::Xibor>& index() const;
-            int FloatingRateCoupon::fixingDays() const;
+            int fixingDays() const;
             Rate fixing() const;
             Spread spread() const;
             //@}

@@ -25,9 +25,10 @@
 #ifndef quantlib_instruments_capfloor_h
 #define quantlib_instruments_capfloor_h
 
-#include "ql/instrument.hpp"
-#include "ql/CashFlows/cashflowvectors.hpp"
-#include "ql/InterestRateModelling/model.hpp"
+#include <ql/instrument.hpp>
+#include <ql/numericalmethod.hpp>
+#include <ql/CashFlows/cashflowvectors.hpp>
+#include <ql/InterestRateModelling/model.hpp>
 
 namespace QuantLib {
 
@@ -109,6 +110,55 @@ namespace QuantLib {
     }
 
     namespace Pricers {
+
+        class NumericalCapFloor : public NumericalDerivative {
+          public:
+            NumericalCapFloor(const Handle<NumericalMethod>& method,
+                              const Instruments::CapFloorParameters& params)
+            : NumericalDerivative(method), parameters_(params) {}
+
+            void reset(Size size) {
+                values_ = Array(size, 0.0);
+                applyCondition();
+            }
+
+            virtual void applyCondition() {
+                for (Size i=0; i<parameters_.startTimes.size(); i++) {
+                    if (time_ == parameters_.startTimes[i]) {
+                        Time end = parameters_.endTimes[i];
+                        Handle<NumericalDerivative> bond(new 
+                            NumericalDiscountBond(method()));
+                        method()->initialize(bond, end);
+                        method()->rollback(bond,time_);
+                        double accrual = 
+                            1.0 + parameters_.exerciseRates[i]*(end - time_);
+                        double factor = parameters_.nominals[i]*accrual;
+                        double strike = 1.0/accrual;
+                        switch(parameters_.type) {
+                          case Instruments::VanillaCapFloor::Floor:
+                            for (i=0; i<values_.size(); i++)
+                                values_[i] += factor*
+                                    QL_MAX(bond->values()[i] - strike, 0.0);
+                            break;
+                          case Instruments::VanillaCapFloor::Call:
+                            for (i=0; i<values_.size(); i++)
+                                values_[i] += factor*
+                                    QL_MAX(strike - bond->values()[i], 0.0);
+                            break;
+                        }
+                    }
+                }
+            }
+            void addTimes(std::list<Time>& times) const {
+                for (Size i=0; i<parameters_.startTimes.size(); i++) {
+                    times.push_back(parameters_.startTimes[i]);
+                    times.push_back(parameters_.endTimes[i]);
+                }
+            }
+
+          private:
+            Instruments::CapFloorParameters parameters_;
+        };
 
         //! base class for cap/floor pricing engines
         /*! Derived engines only need to implement the <tt>calculate()</tt>

@@ -23,8 +23,6 @@
 // $Id$
 
 #include "ql/Pricers/treecapfloor.hpp"
-
-#include "ql/asset.hpp"
 #include "ql/InterestRateModelling/onefactormodel.hpp"
 
 namespace QuantLib {
@@ -34,43 +32,6 @@ namespace QuantLib {
         using namespace Instruments;
         using namespace InterestRateModelling;
         using namespace Lattices;
-
-        class DiscountBondOptionAsset : public Asset {
-          public:
-            DiscountBondOptionAsset(Option::Type type,
-                                    Time maturity,
-                                    double strike)
-            : type_(type), maturity_(maturity), strike_(strike) {}
-            void reset(Size size) {
-                values_ = Array(size, 1.0);
-            }
-            virtual void applyCondition() {
-                if (time_ == maturity_) {
-                    Size i;
-                    switch(type_) {
-                      case Option::Call:
-                        for (i=0; i<values_.size(); i++)
-                          values_[i] = QL_MAX(values_[i] - strike_, 0.0);
-                        break;
-                      case Option::Put:
-                        for (i=0; i<values_.size(); i++)
-                          values_[i] = QL_MAX(strike_ - values_[i], 0.0);
-                        break;
-                      case Option::Straddle:
-                          throw IllegalArgumentError(
-                              "DiscountBondOptionAsset: straddle not handled");
-                          break;
-                      default:
-                          throw IllegalArgumentError(
-                              "DiscountBondOptionAsset: invalid option type");
-                    }
-                }
-            }
-          private:
-            Option::Type type_;
-            Time maturity_;
-            double strike_;
-        };
 
         void TreeCapFloor::calculate() const {
 
@@ -96,41 +57,13 @@ namespace QuantLib {
                 tree = tree_;
             }
 
-            Option::Type optionType;
-            switch (parameters_.type) {
-              case Instruments::VanillaCapFloor::Cap:
-                optionType = Option::Put;
-                break;
-              case Instruments::VanillaCapFloor::Floor:
-                optionType = Option::Call;
-                break;
-              default:
-                throw Error("Invalid cap/floor type");
-            }
+            Handle<NumericalDerivative> capfloor(
+                new NumericalCapFloor(tree, parameters_));
 
-            double value = 0.0;
+            tree->initialize(capfloor, parameters_.endTimes.back());
+            tree->rollback(capfloor, parameters_.startTimes.front());
 
-            Size nPeriods = parameters_.startTimes.size();
-
-            for (Size i=0; i<nPeriods; i++) {
-                Rate exerciseRate = parameters_.exerciseRates[i];
-                Time maturity = parameters_.startTimes[i];
-                Time bond = parameters_.endTimes[i];
-
-                Time tenor = bond - maturity;
-                double strike = 1.0/(1.0+exerciseRate*tenor);
-
-                Handle<Asset> dbo(
-                    new DiscountBondOptionAsset(optionType, maturity, strike));
-                tree->initialize(dbo, bond);
-                tree->rollback(dbo, maturity);
-                double optionValue = tree->presentValue(dbo);
-                double capletValue = parameters_.nominals[i]*
-                    (1.0+exerciseRate*tenor)*optionValue;
-                value += capletValue;
-            }
-            results_.value = value;
-
+            results_.value = tree->presentValue(capfloor);
         }
 
     }

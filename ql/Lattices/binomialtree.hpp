@@ -37,10 +37,12 @@ namespace QuantLib {
             BinomialTree() : Tree(2) {}
 
           protected:
-            void addLevel();
-
             virtual Size nodeIndex(Size i, int j) const {
                 return (i + j)/2;
+            }
+            virtual Node& descendant(Size i, int j, Size branch) {
+                Node& value = node(i+1, j - 1 + 2*branch);
+                return value;
             }
 
 
