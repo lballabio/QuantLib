@@ -13,11 +13,11 @@
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
-/*! \file voltermstructure.hpp
+/*! \file voltermstructure.cpp
     \brief Volatility term structures
 
     \fullpath
-    ql/%voltermstructure.hpp
+    ql/%voltermstructure.cpp
 */
 
 // $Id$
