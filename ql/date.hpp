@@ -156,7 +156,8 @@ namespace QuantLib {
         static Size monthLength(Month m, bool leapYear);
         static Size monthOffset(Month m, bool leapYear);
         static Size yearOffset(Year y);
-
+        static Size minimumSerialNumber();
+        static Size maximumSerialNumber();
     };
 
     /*! \relates Date
@@ -177,7 +178,7 @@ namespace QuantLib {
     /*! \relates Date */
     bool operator>=(const Date&, const Date&);
     /*! \relates Date */
-    std::ostream& operator<< (std::ostream& stream, const Date& result);
+    std::ostream& operator<< (std::ostream&, const Date&);
 
 
     // inline definitions

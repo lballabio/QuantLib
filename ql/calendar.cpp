@@ -1,5 +1,4 @@
 
-
 /*
  Copyright (C) 2000, 2001, 2002 RiskMap srl
 
@@ -15,6 +14,7 @@
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
+
 /*! \file calendar.cpp
     \brief Abstract calendar class
 
@@ -81,8 +81,8 @@ namespace QuantLib {
 
     // Western calendars
 
-    namespace { // hide implementation into an anonymous namespace
-        const Day EasterMonday[] = {
+    Day Calendar::WesternCalendarImpl::easterMonday(Year y) {
+        static const Day EasterMonday[] = {
             107,  98,  90, 103,  95, 114, 106,  91, 111, 102,   // 1900-1909
              87, 107,  99,  83, 103,  95, 115,  99,  91, 111,   // 1910-1919
              96,  87, 107,  92, 112, 103,  95, 108, 100,  91,   // 1920-1929
@@ -104,9 +104,6 @@ namespace QuantLib {
              99,  90, 110,  95,  87, 106,  91, 111, 103,  94,   // 2080-2089
             107,  99,  91, 103,  95, 115, 107,  91, 111, 103    // 2090-2099
         };
-    }
-
-    Day Calendar::WesternCalendarImpl::easterMonday(Year y) {
         return EasterMonday[y-1900];
     }
 

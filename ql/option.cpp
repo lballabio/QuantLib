@@ -1,5 +1,4 @@
 
-
 /*
  Copyright (C) 2000, 2001, 2002 RiskMap srl
 
@@ -15,6 +14,7 @@
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
+
 /*! \file option.cpp
     \brief Base option class
 
@@ -31,13 +31,15 @@ namespace QuantLib {
     Option::Option(const Handle<OptionPricingEngine>& engine,
         const std::string& isinCode, const std::string& description)
     : Instrument(isinCode, description), engine_(engine) {
-        QL_REQUIRE(!engine_.isNull(), "Option: null pricing engine not allowed");
+        QL_REQUIRE(!engine_.isNull(), 
+                   "Option: null pricing engine not allowed");
     }
 
     Option::~Option() {}
 
     void Option::setPricingEngine(const Handle<OptionPricingEngine>& engine) {
-        QL_REQUIRE(!engine.isNull(), "Option: null pricing engine not allowed");
+        QL_REQUIRE(!engine.isNull(), 
+                   "Option: null pricing engine not allowed");
         engine_ = engine;
         // this will trigger recalculation and notify observers
         update();

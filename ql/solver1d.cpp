@@ -1,5 +1,4 @@
 
-
 /*
  Copyright (C) 2000, 2001, 2002 RiskMap srl
 
@@ -15,6 +14,7 @@
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
+
 /*! \file solver1d.cpp
     \brief Abstract 1-D solver class
 
@@ -28,13 +28,12 @@
 
 namespace QuantLib {
 
-    const double growthFactor = 1.6;
-
     double Solver1D::solve(const ObjectiveFunction& f,
                            double xAccuracy,
                            double guess,
                            double step) const {
 
+        const double growthFactor = 1.6;
         int flipflop = -1;
 
         root_ = guess;

@@ -1,5 +1,4 @@
 
-
 /*
  Copyright (C) 2000, 2001, 2002 RiskMap srl
 
@@ -15,6 +14,7 @@
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
+
 /*! \file dataformatters.cpp
     \brief classes used to format data for output
 
@@ -37,9 +37,10 @@ namespace QuantLib {
         return std::string(s);
     }
 
-    std::string DoubleFormatter::toString(double x, int precision, int digits) {
+    std::string DoubleFormatter::toString(double x, int precision, 
+                                          int digits) {
         if (x == Null<double>())
-        return std::string("null");
+            return std::string("null");
         char s[64];
         QL_SPRINTF(s,"%*.*f",(digits>64?64:digits),
                              (precision>64?64:precision),x);

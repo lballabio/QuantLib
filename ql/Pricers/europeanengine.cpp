@@ -30,12 +30,8 @@ namespace QuantLib {
 
     namespace Pricers {
 
-        namespace {
-            Math::CumulativeNormalDistribution f;
-        }
-
         void EuropeanEngine::calculate() const {
-                        
+            static Math::CumulativeNormalDistribution f;
             double alpha, beta;
             double stdDev = parameters_.volatility *
                 QL_SQRT(parameters_.residualTime);

@@ -135,8 +135,6 @@ namespace QuantLib {
                 return call;
             else
                 return call - discountS + strike*discountT;
-
-            return 0.0;
         }
 
     }
