@@ -450,8 +450,8 @@ LIB32_OBJS= \
 
 !ELSEIF  "$(CFG)" == "QuantLib - Win32 OnTheEdgeDebug"
 
-OUTDIR=.\QuantLib___Win32_OnTheEdgeDebug
-INTDIR=.\QuantLib___Win32_OnTheEdgeDebug
+OUTDIR=.\OnTheEdgeDebug
+INTDIR=.\OnTheEdgeDebug
 
 ALL : ".\lib\Win32\VisualStudio\QuantLib_d.lib"
 
@@ -661,8 +661,8 @@ LIB32_OBJS= \
 
 !ELSEIF  "$(CFG)" == "QuantLib - Win32 OnTheEdgeRelease"
 
-OUTDIR=.\QuantLib___Win32_OnTheEdgeRelease
-INTDIR=.\QuantLib___Win32_OnTheEdgeRelease
+OUTDIR=.\OnTheEdgeRelease
+INTDIR=.\OnTheEdgeRelease
 
 ALL : ".\lib\Win32\VisualStudio\QuantLib.lib"
 
