@@ -36,11 +36,11 @@ docs-html-online:
 	cp images/*.eps latex
 	cp images/*.pdf latex
 docs-ps: tex-files
-	buf_size=100000 pool_size=256000 \
+	buf_size=500000 pool_size=512000 \
 	extra_mem_top=263000 extra_mem_bot=263000 \
 	max_strings=30000 hash_extra=10000 $(MAKE) -C latex ps
 docs-pdf: tex-files
-	buf_size=100000 pool_size=256000 \
+	buf_size=500000 pool_size=512000 \
 	extra_mem_top=263000 extra_mem_bot=263000 \
 	max_strings=30000 hash_extra=10000 $(MAKE) -C latex pdf
 docs-man: docs-html
