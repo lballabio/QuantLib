@@ -63,7 +63,6 @@ namespace QuantLib {
         // Anyone able to identify the following algorithm?
         // It might be Hill and Davis (1973), or
 	    // Odeh and Evans (1974)
-
         const double InvCumulativeNormalDistribution2::p0_ = 2.515517;
         const double InvCumulativeNormalDistribution2::p1_ = 0.802853;
         const double InvCumulativeNormalDistribution2::p2_ = 0.010328;

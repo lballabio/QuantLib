@@ -25,7 +25,6 @@
 // $Id$
 
 #include <ql/Pricers/discretegeometricapo.hpp>
-#include <iostream>
 #include <numeric>
 
 namespace QuantLib {

@@ -25,7 +25,6 @@
 // $Id$
 
 #include <ql/solver1d.hpp>
-#include <functional>
 
 #ifndef quantlib_segment_integral_h
 #define quantlib_segment_integral_h

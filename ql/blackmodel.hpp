@@ -27,10 +27,8 @@
 #ifndef quantlib_black_model_h
 #define quantlib_black_model_h
 
-#include <ql/marketelement.hpp>
 #include <ql/termstructure.hpp>
 #include <ql/Math/normaldistribution.hpp>
-#include <ql/Patterns/observable.hpp>
 
 namespace QuantLib {
 

@@ -26,12 +26,8 @@
 #define quantlib_time_grid_h
 
 #include <ql/array.hpp>
-#include <ql/errors.hpp>
-#include <ql/qldefines.hpp>
-#include <ql/types.hpp>
 
 #include <list>
-#include <numeric>
 #include <vector>
 
 namespace QuantLib {

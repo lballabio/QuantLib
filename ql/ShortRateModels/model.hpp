@@ -26,9 +26,7 @@
 #ifndef quantlib_interest_rate_modelling_model_h
 #define quantlib_interest_rate_modelling_model_h
 
-#include <ql/array.hpp>
 #include <ql/option.hpp>
-#include <ql/termstructure.hpp>
 #include <ql/Lattices/lattice.hpp>
 #include <ql/ShortRateModels/parameter.hpp>
 #include <ql/Optimization/problem.hpp>

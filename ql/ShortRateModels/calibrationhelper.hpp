@@ -29,8 +29,6 @@
 #include <ql/blackmodel.hpp>
 #include <ql/ShortRateModels/model.hpp>
 
-#include <list>
-
 namespace QuantLib {
 
     namespace ShortRateModels {

@@ -25,7 +25,6 @@
 #ifndef quantlib_term_structures_affine_h
 #define quantlib_term_structures_affine_h
 
-#include <ql/termstructure.hpp>
 #include <ql/dataformatters.hpp>
 #include <ql/ShortRateModels/model.hpp>
 #include <ql/Optimization/method.hpp>

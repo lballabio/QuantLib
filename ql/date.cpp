@@ -147,7 +147,7 @@ namespace QuantLib {
 
     Date Date::todaysDate() {
         QL_TIME_T t;
-        
+
         if (QL_TIME(&t) == QL_TIME_T(-1)) // -1 means time() didn't work
             return Date();
         QL_TM *gt = QL_GMTIME(&t);
@@ -155,7 +155,7 @@ namespace QuantLib {
                     Month(gt->tm_mon+1),
                     Year(gt->tm_year+1900));
     }
-    
+
     Date Date::minDate() {
         static const Date minimumDate(minimumSerialNumber());
         return minimumDate;

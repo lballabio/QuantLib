@@ -25,11 +25,8 @@
 #ifndef quantlib_numerical_method_h
 #define quantlib_numerical_method_h
 
-#include <ql/array.hpp>
 #include <ql/grid.hpp>
 #include <ql/handle.hpp>
-
-#include <list>
 
 namespace QuantLib {
 

@@ -17,6 +17,7 @@ OUTPUT_DIR     = ..\lib\Win32\Borland
 # Object files
 CORE_OBJS        = calendar.obj$(_D) \
                    dataformatters.obj$(_D) \
+                   dataparsers.obj$(_D) \
                    date.obj$(_D) \
                    option.obj$(_D) \
                    scheduler.obj$(_D) \

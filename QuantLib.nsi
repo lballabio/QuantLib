@@ -2,9 +2,9 @@
 # to be used with NSIS 1.93 and up
 #
 # usage:
-#       makensis /DLIGHT QuantLib.nsi
+#       makensis-bz2 /DLIGHT QuantLib.nsi
 # OR
-#       makensis QuantLib.nsi
+#       makensis-bz2 QuantLib.nsi
 
 
 # $Id$
@@ -298,6 +298,12 @@ SectionIn 1 2
     File /r "Examples\Swap\*.txt"
     File /r "Examples\Swap\*.mak"
 
+    SetOutPath $INSTDIR\Examples\BermudanSwaption
+    File /r "Examples\BermudanSwaption\*.cpp"
+    File /r "Examples\BermudanSwaption\*.dsp"
+    File /r "Examples\BermudanSwaption\*.txt"
+    File /r "Examples\BermudanSwaption\*.mak"
+
     IfFileExists $SMPROGRAMS\QuantLib 0 NoSourceShortCuts
         CreateShortCut "$SMPROGRAMS\QuantLib\Examples workspace.lnk" \
                        "$INSTDIR\Examples\Examples.dsw"
@@ -312,7 +318,16 @@ SectionDivider
 Section "HTML documentation"
 SectionIn 1 2
   SetOutPath "$INSTDIR\Docs\html"
-  File "Docs\html\*.*"
+  File "Docs\html\*.css"
+  File "Docs\html\*.gif"
+  File "Docs\html\*.hhc"
+  File "Docs\html\*.hhk"
+  File "Docs\html\*.hhp"
+  File "Docs\html\*.html"
+  File "Docs\html\*.jpg"
+  File "Docs\html\*.dot"
+  File "Docs\html\*.png"
+  File "Docs\html\*.repository"
   CreateShortCut "$INSTDIR\Docs\refman.html.lnk" "$INSTDIR\Docs\html\index.html"
   CreateShortCut "$SMPROGRAMS\QuantLib\Documentation (HTML).lnk" \
                  "$INSTDIR\Docs\html\index.html"

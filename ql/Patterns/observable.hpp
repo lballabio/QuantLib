@@ -28,7 +28,6 @@
 
 #include <ql/handle.hpp>
 #include <list>
-#include <algorithm>
 
 namespace QuantLib {
 

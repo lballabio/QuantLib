@@ -26,7 +26,6 @@
 #define quantlib_interest_rate_modelling_parameter_h
 
 #include <ql/qldefines.hpp>
-#include <ql/array.hpp>
 #include <ql/termstructure.hpp>
 #include <ql/Optimization/constraint.hpp>
 

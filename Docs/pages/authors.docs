@@ -206,6 +206,14 @@
     <td><a href=
     "http://sourceforge.net/users/berndwuebben/">berndwuebben</a></td>
     </tr>
+
+    <tr>
+    <td><em>Jon Davidson</em></td>
+    <td> </td>
+    <td> </td>
+    <td>UK bank holidays fix</td>
+    </tr>
+
     </table>
     \endhtmlonly
 
@@ -221,6 +229,7 @@
         \item Peter Schmitteckert (quantlib@schmitteckert.com)
         \item Maxim Sokolov (maxim\_sokolov@rambler.ru): examples
         \item Bernd Johannes Wuebben
+        \item Jon Davidson - UK bank holidays fix
     \end{itemize}
     \endlatexonly
 

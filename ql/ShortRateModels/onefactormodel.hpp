@@ -27,7 +27,6 @@
 
 #include <ql/diffusionprocess.hpp>
 #include <ql/ShortRateModels/model.hpp>
-#include <ql/Lattices/lattice.hpp>
 #include <ql/Lattices/tree.hpp>
 
 namespace QuantLib {

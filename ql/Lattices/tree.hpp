@@ -25,8 +25,6 @@
 #ifndef quantlib_lattices_tree_h
 #define quantlib_lattices_tree_h
 
-#include <ql/handle.hpp>
-#include <ql/grid.hpp>
 #include <ql/numericalmethod.hpp>
 
 namespace QuantLib {

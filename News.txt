@@ -1,5 +1,5 @@
 
-2002-XX-XX Release 0.3.0
+2002-XX-XX Release 0.3.1
 Changes since Release 0.3.0:
 - Library:
     YIELD TERM STRUCTURE
@@ -27,7 +27,6 @@ Changes since Release 0.3.0:
 
 
 2002-05-06 Release 0.3.0
-
 Changes since Release 0.2.1:
 - Library:
     MONTE CARLO FRAMEWORK
@@ -36,25 +35,37 @@ Changes since Release 0.2.1:
 
     FINITE DIFFERENCE FRAMEWORK
     - added mixed (implicit/explicit) scheme, from which Crank-Nicolson,
-      ImplicitEuler and ExplicitEuler are now derived
+      ImplicitEuler, and ExplicitEuler are now derived
     - Finite Difference exercise conditions are now in the FiniteDifferences
       folder/namespace
     - Finite Difference pricers now start with 'Fd' letters
     - BSMNumericalOption became BsmFdOption
 
-    YIELD TERM STRUCTURE AND FIXED INCOME
-    - added single factor short-rate models (Hull-White, Black-Karasinski,
-      Cox-Ingersoll-Ross)
+    LATTICE FRAMEWORK
+    - introduced first version of the framework
+    - CRR and JR binomial trees
+
+    VOLATILITY FRAMEWORK
+    - early works on reorganization of vol structures
+
+	YIELD TERM STRUCTURE
+    - new TermStructure class based on affine model
+    - yield curves can be spreaded in term of zeros
+     (ZeroSpreadedTermStructure) and forwards (ForwardSpreadedTermStructure)
+    - Added dates() and times() to PiecewiseFlatForward
+    - discount factor accuracy in the yield curve bootstrapping is an input
+    - added single factor short-rate models (Hull-White, Black-Karasinski)
     - added two factor short-rate models framework
+    - cap/floor and swaption calibration helpers
+    - added bermudan swaption pricing example (including BK and HW
+      calibrations)
+
+    FIXED INCOME
     - cap/floor and  swaption tree pricer
     - cap/floor analytical pricer
     - vanilla swaption Jamshidian pricer
-    - cap/floor and swaption calibration helpers
-    - discount factor accuracy in the yield curve bootstrapping is an input
-    - yield curves can be spreaded in term of zeros
-     (ZeroSpreadedTermStructure) and forwards (ForwardSpreadedTermStructure)
     - Added	accruedAmount() to coupons
-    - Added dates() and times() to PiecewiseFlatForward
+    - Made cash	flow vector builders into functions
 
     OPTIMIZATION FRAMEWORK
     - added conjugate gradient, simplex
@@ -63,11 +74,16 @@ Changes since Release 0.2.1:
     - implemented QuEP 8 and 10
 
     MISCELLANEA
+    - added allowExtrapolation parameter to interpolaton classes
+    - added 2D bilinear interpolation
+    - better spline interpolation algorithm
+    - Added non-central chi-square distribution function.
+    - Improved Inverse Cumulative Normal Distribution using Moro's algorithm
+    - Introduced class representing stochastic processes
     - added isExpired() to Instrument interface
-    - added functions folder and namespace for QuantLib-Excel and any other
+    - added functions folder and namespace for QuantLibXL and any other
       function-like interface to QuantLib
     - Handle is now castable to an Handle of a compatible type
-    - better spline interpolation algorithm
     - added downsideVariance to the Statistics class
     - kustosis() and skewness() now handles the case of stddev == 0 and/or
       variance == 0
@@ -79,8 +95,12 @@ Changes since Release 0.2.1:
     - Spread as market element
     - new calendars introduced
     - new Xibor Indexes introduced
+    - Added optional day count to libor indexes
     - Shortened file names within 31 char limit to support HFS
 
+- Documentation:
+    - Added a page for lattice methods
+    - Added a page for interest rate models
 
 2001-12-03 Release 0.2.1
 

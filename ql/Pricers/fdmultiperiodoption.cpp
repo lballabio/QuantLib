@@ -64,11 +64,11 @@ namespace QuantLib {
                 if(dates_[0] < residualTime * dateTollerance ){
                     firstDateIsZero_ = true;
                     firstIndex_ = 0;
-                    if(dateNumber_ > 0)
+                    if(dateNumber_ >= 2)
                         firstNonZeroDate_ = dates_[1];
                 }
 
-                if(QL_FABS(dates_[0] - residualTime) < dateTollerance){
+                if(QL_FABS(dates_[lastIndex_] - residualTime) < dateTollerance){
                     lastDateIsResTime_ = true;
                     lastIndex_ =dateNumber_ - 2;
                  }
@@ -79,7 +79,7 @@ namespace QuantLib {
                     ", must be within the residual time of " +
                     DoubleFormatter::toString(residualTime) );
 
-                if (dateNumber_ > 0){
+                if (dateNumber_ >= 2){
                     if (!firstDateIsZero_)
                         firstNonZeroDate_ = dates_[0];
                     for (Size j = 1; j < dateNumber_; j++)

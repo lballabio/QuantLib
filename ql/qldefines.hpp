@@ -347,8 +347,8 @@
     struct.
 */
 /*! \def QL_SPECIALIZE_ITERATOR_TRAITS
-    When using the %QuantLib implementation of iterator_traits or 
-    Visual C++ .Net, this macro might be needed to specialize 
+    When using the %QuantLib implementation of iterator_traits or
+    Visual C++ .Net, this macro might be needed to specialize
     QL_ITERATOR_TRAITS for a pointer to a user-defined type.
 */
 #if !defined(QL_ITERATOR_TRAITS)

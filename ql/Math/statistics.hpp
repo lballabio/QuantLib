@@ -29,7 +29,6 @@
 
 #include <ql/null.hpp>
 #include <ql/dataformatters.hpp>
-#include <iostream>
 
 namespace QuantLib {
 

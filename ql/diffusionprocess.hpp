@@ -25,7 +25,6 @@
 #ifndef quantlib_diffusion_process_h
 #define quantlib_diffusion_process_h
 
-#include <ql/qldefines.hpp>
 #include <ql/types.hpp>
 
 namespace QuantLib {

@@ -27,8 +27,6 @@
 
 #include <ql/dataformatters.hpp>
 
-#include <functional>
-
 namespace QuantLib {
 
     namespace Math {

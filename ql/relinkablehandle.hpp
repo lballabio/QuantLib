@@ -26,7 +26,6 @@
 #ifndef quantlib_relinkable_handle_h
 #define quantlib_relinkable_handle_h
 
-#include <ql/handle.hpp>
 #include <ql/Patterns/observable.hpp>
 
 namespace QuantLib {

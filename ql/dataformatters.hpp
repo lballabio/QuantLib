@@ -30,7 +30,6 @@
 #include <ql/date.hpp>
 #include <ql/currency.hpp>
 #include <ql/array.hpp>
-#include <iostream>
 
 namespace QuantLib {
 

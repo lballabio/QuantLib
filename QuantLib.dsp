@@ -1524,6 +1524,14 @@ SOURCE=.\ql\dataformatters.hpp
 # End Source File
 # Begin Source File
 
+SOURCE=.\ql\dataparsers.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\dataparsers.hpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\ql\date.cpp
 # End Source File
 # Begin Source File

@@ -22,7 +22,6 @@
 #define quantlib_montecarlo_multi_path_h
 
 #include <ql/MonteCarlo/path.hpp>
-#include <vector>
 
 namespace QuantLib {
 

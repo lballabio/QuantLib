@@ -28,7 +28,6 @@
 #define quantlib_instrument_h
 
 #include <ql/Patterns/observable.hpp>
-#include <string>
 
 /*! \namespace QuantLib::Instruments
     \brief Concrete implementations of the Instrument interface

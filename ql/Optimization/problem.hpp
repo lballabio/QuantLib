@@ -23,7 +23,6 @@
 #ifndef quantlib_optimization_problem_h
 #define quantlib_optimization_problem_h
 
-#include <ql/handle.hpp>
 #include <ql/Optimization/method.hpp>
 
 namespace QuantLib {

@@ -28,7 +28,6 @@
 #define quantlib_instruments_capfloor_h
 
 #include <ql/dataformatters.hpp>
-#include <ql/instrument.hpp>
 #include <ql/numericalmethod.hpp>
 #include <ql/option.hpp>
 #include <ql/CashFlows/cashflowvectors.hpp>

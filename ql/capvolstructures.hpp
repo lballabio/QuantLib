@@ -27,7 +27,6 @@
 #ifndef quantlib_cap_volatility_structures_h
 #define quantlib_cap_volatility_structures_h
 
-#include <ql/date.hpp>
 #include <ql/daycounter.hpp>
 #include <ql/Patterns/observable.hpp>
 

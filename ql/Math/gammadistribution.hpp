@@ -25,7 +25,6 @@
 #ifndef quantlib_math_gamma_distribution_h
 #define quantlib_math_gamma_distribution_h
 
-#include <ql/qldefines.hpp>
 #include <ql/errors.hpp>
 #include <ql/types.hpp>
 

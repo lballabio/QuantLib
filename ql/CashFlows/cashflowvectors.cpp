@@ -26,7 +26,6 @@
 
 #include <ql/CashFlows/cashflowvectors.hpp>
 #include <ql/CashFlows/fixedratecoupon.hpp>
-#include <ql/CashFlows/floatingratecoupon.hpp>
 #include <ql/CashFlows/shortfloatingcoupon.hpp>
 #include <ql/scheduler.hpp>
 

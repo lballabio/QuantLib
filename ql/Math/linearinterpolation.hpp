@@ -27,7 +27,6 @@
 #define quantlib_linear_interpolation_h
 
 #include <ql/Math/interpolation.hpp>
-#include <algorithm>
 
 namespace QuantLib {
 

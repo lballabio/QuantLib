@@ -27,7 +27,6 @@
 
 #include <ql/Pricers/capfloorpricer.hpp>
 #include <ql/ShortRateModels/model.hpp>
-#include <ql/Lattices/lattice.hpp>
 
 namespace QuantLib {
 

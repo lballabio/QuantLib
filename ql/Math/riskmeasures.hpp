@@ -29,7 +29,6 @@
 
 #include <ql/null.hpp>
 #include <ql/Math/normaldistribution.hpp>
-#include <iostream>
 #include <vector>
 
 

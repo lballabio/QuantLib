@@ -30,7 +30,6 @@
 #include <ql/history.hpp>
 #include <ql/termstructure.hpp>
 #include <map>
-#include <vector>
 
 namespace QuantLib {
 

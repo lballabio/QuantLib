@@ -27,7 +27,6 @@
 #ifndef quantlib_swaption_volatility_structure_h
 #define quantlib_swaption_volatility_structure_h
 
-#include <ql/date.hpp>
 #include <ql/daycounter.hpp>
 #include <ql/Patterns/observable.hpp>
 
