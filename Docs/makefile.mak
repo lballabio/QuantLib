@@ -59,4 +59,5 @@ ps::
 # Clean up
 clean::
     if exist .\html     rd /s /q .\html
+    if exist .\man      rd /s /q .\man
     if exist .\latex    rd /s /q .\latex
