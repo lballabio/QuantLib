@@ -17,14 +17,19 @@
  * You should have received a copy of the license along with this file;
  * if not, contact ferdinando@ametrano.net
  *
- * QuantLib license is also available at http://quantlib.sourceforge.net/LICENSE.TXT
+ * QuantLib license is also available at 
+ * http://quantlib.sourceforge.net/LICENSE.TXT
 */
+
 /*! \file symmetricschurdecomposition.h
     \brief Gives the eigenvalues and eigenvectors of a real symmetric matrix
 
     $Source$
     $Name$
     $Log$
+    Revision 1.2  2001/01/25 11:57:32  lballabio
+    Included outer product and sqrt into matrix.h
+
     Revision 1.1  2001/01/25 10:21:51  marmar
     JacobiDecomposition renamed SymmetricSchurDecomposition
 

@@ -6,4 +6,6 @@ include_HEADERS = \
 	cubicspline.h \
 	interpolation.h \
 	linearinterpolation.h \
-	lexicographicalview.h
+	lexicographicalview.h \
+	multivariateaccumulator.h \
+	symmetricschurdecomposition.h

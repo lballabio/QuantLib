@@ -25,6 +25,9 @@
     $Source$
     $Name$
     $Log$
+    Revision 1.20  2001/01/25 11:57:32  lballabio
+    Included outer product and sqrt into matrix.h
+
     Revision 1.19  2001/01/25 10:31:22  marmar
     JacobiDecomposition renamed SymmetricSchurDecomposition
 
@@ -156,12 +159,8 @@
 
 #include "array.h"
 #include "matrix.h"
-#include "matrixsqrt.h"
 #include "symmetricschurdecomposition.h"
 #include "multivariateaccumulator.h"
-#include "outerproduct.h"
-
-
 
 // math tools
 #include "normaldistribution.h"

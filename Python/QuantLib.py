@@ -570,6 +570,66 @@ class InterpolationPtr(Interpolation):
 Interpolation.__call__ = new.instancemethod(QuantLibc.Interpolation___call__, None, Interpolation)
 Interpolation.__nonzero__ = new.instancemethod(QuantLibc.Interpolation___nonzero__, None, Interpolation)
 
+class Matrix:
+    def __init__(self,*args,**kwargs):
+        self.this = apply(QuantLibc.new_Matrix,args,kwargs)
+        self.thisown = 1
+
+    def __del__(self,QuantLibc=QuantLibc):
+        if self.thisown == 1 :
+            QuantLibc.delete_Matrix(self)
+    def __getitem__(*args, **kwargs):
+        val = apply(QuantLibc.Matrix___getitem__,args, kwargs)
+        if val: val = MatrixRowPtr(val) ; val.thisown = 1
+        return val
+    def __add__(*args, **kwargs):
+        val = apply(QuantLibc.Matrix___add__,args, kwargs)
+        if val: val = MatrixPtr(val) ; val.thisown = 1
+        return val
+    def __sub__(*args, **kwargs):
+        val = apply(QuantLibc.Matrix___sub__,args, kwargs)
+        if val: val = MatrixPtr(val) ; val.thisown = 1
+        return val
+    def __mul__(*args, **kwargs):
+        val = apply(QuantLibc.Matrix___mul__,args, kwargs)
+        if val: val = MatrixPtr(val) ; val.thisown = 1
+        return val
+    def __div__(*args, **kwargs):
+        val = apply(QuantLibc.Matrix___div__,args, kwargs)
+        if val: val = MatrixPtr(val) ; val.thisown = 1
+        return val
+    def __repr__(self):
+        return "<C Matrix instance at %s>" % (self.this,)
+class MatrixPtr(Matrix):
+    def __init__(self,this):
+        self.this = this
+        self.thisown = 0
+        self.__class__ = Matrix
+
+
+Matrix.rows = new.instancemethod(QuantLibc.Matrix_rows, None, Matrix)
+Matrix.columns = new.instancemethod(QuantLibc.Matrix_columns, None, Matrix)
+Matrix.__str__ = new.instancemethod(QuantLibc.Matrix___str__, None, Matrix)
+
+class MatrixRow:
+    def __init__(self,this):
+        self.this = this
+
+    def __del__(self,QuantLibc=QuantLibc):
+        if self.thisown == 1 :
+            QuantLibc.delete_MatrixRow(self)
+    def __repr__(self):
+        return "<C MatrixRow instance at %s>" % (self.this,)
+class MatrixRowPtr(MatrixRow):
+    def __init__(self,this):
+        self.this = this
+        self.thisown = 0
+        self.__class__ = MatrixRow
+
+
+MatrixRow.__getitem__ = new.instancemethod(QuantLibc.MatrixRow___getitem__, None, MatrixRow)
+MatrixRow.__setitem__ = new.instancemethod(QuantLibc.MatrixRow___setitem__, None, MatrixRow)
+
 class StandardPathGenerator:
     def __init__(self,*args,**kwargs):
         self.this = apply(QuantLibc.new_StandardPathGenerator,args,kwargs)
@@ -1265,6 +1325,26 @@ def LinearInterpolation(*args, **kwargs):
 def CubicSpline(*args, **kwargs):
     val = apply(QuantLibc.CubicSpline,args,kwargs)
     if val: val = InterpolationPtr(val); val.thisown = 1
+    return val
+
+def transpose(*args, **kwargs):
+    val = apply(QuantLibc.transpose,args,kwargs)
+    if val: val = MatrixPtr(val); val.thisown = 1
+    return val
+
+def outerProduct(*args, **kwargs):
+    val = apply(QuantLibc.outerProduct,args,kwargs)
+    if val: val = MatrixPtr(val); val.thisown = 1
+    return val
+
+def matrixProduct(*args, **kwargs):
+    val = apply(QuantLibc.matrixProduct,args,kwargs)
+    if val: val = MatrixPtr(val); val.thisown = 1
+    return val
+
+def matrixSqrt(*args, **kwargs):
+    val = apply(QuantLibc.matrixSqrt,args,kwargs)
+    if val: val = MatrixPtr(val); val.thisown = 1
     return val
 
 Date_isLeap = QuantLibc.Date_isLeap

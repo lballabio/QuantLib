@@ -42,7 +42,7 @@ DAYCOUNT_OBJS    = $(OUTPUT_DIR)\actualactual.obj \
                    $(OUTPUT_DIR)\thirty360.obj \
                    $(OUTPUT_DIR)\thirty360italian.obj
 
-MATH_OBJS        = $(OUTPUT_DIR)\matrixsqrt.obj      \
+MATH_OBJS        = $(OUTPUT_DIR)\matrix.obj      \
                    $(OUTPUT_DIR)\symmetricschurdecomposition.obj    \
                    $(OUTPUT_DIR)\multivariateaccumulator.obj\
                    $(OUTPUT_DIR)\normaldistribution.obj \                   
@@ -183,6 +183,7 @@ $(PYTHON_DIR)\quantlib_wrap.cpp:: \
     $(SWIG_DIR)\Financial.i \
     $(SWIG_DIR)\History.i \
     $(SWIG_DIR)\Instruments.i \
+    $(SWIG_DIR)\Matrix.i \
     $(SWIG_DIR)\MontecarloPricers.i \
     $(SWIG_DIR)\Operators.i \
     $(SWIG_DIR)\Options.i \
@@ -238,11 +239,16 @@ $(OUTPUT_DIR)\bsmoperator.obj: $(SOURCES_DIR)\FiniteDifferences\bsmoperator.cpp
 
 # Math
 Math: $(OUTPUT_DIR) $(MATH_OBJS)
-$(OUTPUT_DIR)\symmetricschurdecomposition.obj: $(SOURCES_DIR)\Math\symmetricschurdecomposition.cpp
-$(OUTPUT_DIR)\matrixsqrt.obj:   $(SOURCES_DIR)\Math\matrixsqrt.cpp
-$(OUTPUT_DIR)\normaldistribution.obj:  $(SOURCES_DIR)\Math\normaldistribution.cpp
-$(OUTPUT_DIR)\statistics.obj:          $(SOURCES_DIR)\Math\statistics.cpp
-$(OUTPUT_DIR)\multivariateaccumulator.obj: $(SOURCES_DIR)\Math\multivariateaccumulator.cpp
+$(OUTPUT_DIR)\symmetricschurdecomposition.obj: \
+    $(SOURCES_DIR)\Math\symmetricschurdecomposition.cpp
+$(OUTPUT_DIR)\matrix.obj: \
+    $(SOURCES_DIR)\Math\matrix.cpp
+$(OUTPUT_DIR)\normaldistribution.obj: \
+    $(SOURCES_DIR)\Math\normaldistribution.cpp
+$(OUTPUT_DIR)\statistics.obj: \
+    $(SOURCES_DIR)\Math\statistics.cpp
+$(OUTPUT_DIR)\multivariateaccumulator.obj: \
+    $(SOURCES_DIR)\Math\multivariateaccumulator.cpp
 
 # Monte Carlo
 MonteCarlo: $(OUTPUT_DIR) $(MONTECARLO_OBJS)

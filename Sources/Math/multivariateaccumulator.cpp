@@ -26,6 +26,9 @@
     $Source$
     $Name$
     $Log$
+    Revision 1.3  2001/01/25 11:57:33  lballabio
+    Included outer product and sqrt into matrix.h
+
     Revision 1.2  2001/01/24 14:56:48  aleppo
     Added iterator combining-iterator
 
@@ -36,7 +39,6 @@
 */
 
 #include "multivariateaccumulator.h"
-#include "outerproduct.h"
 
 namespace QuantLib {
 
