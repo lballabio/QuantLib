@@ -279,6 +279,10 @@ SOURCE=.\ql\CashFlows\cashflowvectors.hpp
 # End Source File
 # Begin Source File
 
+SOURCE=.\ql\CashFlows\coupon.hpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\ql\CashFlows\fixedratecoupon.hpp
 # End Source File
 # Begin Source File
@@ -1813,6 +1817,10 @@ SOURCE=.\ql\termstructure.hpp
 # Begin Source File
 
 SOURCE=.\ql\types.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\voltermstructure.cpp
 # End Source File
 # Begin Source File
 

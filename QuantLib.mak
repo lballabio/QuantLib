@@ -177,6 +177,7 @@ CLEAN :
 	-@erase "$(INTDIR)\vasicek.obj"
 	-@erase "$(INTDIR)\vc60.idb"
 	-@erase "$(INTDIR)\vols.obj"
+	-@erase "$(INTDIR)\voltermstructure.obj"
 	-@erase "$(INTDIR)\warsaw.obj"
 	-@erase "$(INTDIR)\wellington.obj"
 	-@erase "$(INTDIR)\xibor.obj"
@@ -195,16 +196,20 @@ BSC32_SBRS= \
 LIB32=link.exe -lib
 LIB32_FLAGS=/nologo /out:".\lib\Win32\VisualStudio\QuantLib.lib" 
 LIB32_OBJS= \
+	"$(INTDIR)\budapest.obj" \
 	"$(INTDIR)\frankfurt.obj" \
 	"$(INTDIR)\helsinki.obj" \
 	"$(INTDIR)\johannesburg.obj" \
 	"$(INTDIR)\london.obj" \
 	"$(INTDIR)\milan.obj" \
 	"$(INTDIR)\newyork.obj" \
+	"$(INTDIR)\oslo.obj" \
+	"$(INTDIR)\stockholm.obj" \
 	"$(INTDIR)\sydney.obj" \
 	"$(INTDIR)\target.obj" \
 	"$(INTDIR)\tokyo.obj" \
 	"$(INTDIR)\toronto.obj" \
+	"$(INTDIR)\warsaw.obj" \
 	"$(INTDIR)\wellington.obj" \
 	"$(INTDIR)\zurich.obj" \
 	"$(INTDIR)\cashflowvectors.obj" \
@@ -333,10 +338,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\option.obj" \
 	"$(INTDIR)\scheduler.obj" \
 	"$(INTDIR)\solver1d.obj" \
-	"$(INTDIR)\oslo.obj" \
-	"$(INTDIR)\stockholm.obj" \
-	"$(INTDIR)\warsaw.obj" \
-	"$(INTDIR)\budapest.obj"
+	"$(INTDIR)\voltermstructure.obj"
 
 ".\lib\Win32\VisualStudio\QuantLib.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
     $(LIB32) @<<
@@ -489,6 +491,7 @@ CLEAN :
 	-@erase "$(INTDIR)\vanillaoption.obj"
 	-@erase "$(INTDIR)\vasicek.obj"
 	-@erase "$(INTDIR)\vols.obj"
+	-@erase "$(INTDIR)\voltermstructure.obj"
 	-@erase "$(INTDIR)\warsaw.obj"
 	-@erase "$(INTDIR)\wellington.obj"
 	-@erase "$(INTDIR)\xibor.obj"
@@ -509,16 +512,20 @@ BSC32_SBRS= \
 LIB32=link.exe -lib
 LIB32_FLAGS=/nologo /out:"lib\Win32\VisualStudio\QuantLib_d.lib" 
 LIB32_OBJS= \
+	"$(INTDIR)\budapest.obj" \
 	"$(INTDIR)\frankfurt.obj" \
 	"$(INTDIR)\helsinki.obj" \
 	"$(INTDIR)\johannesburg.obj" \
 	"$(INTDIR)\london.obj" \
 	"$(INTDIR)\milan.obj" \
 	"$(INTDIR)\newyork.obj" \
+	"$(INTDIR)\oslo.obj" \
+	"$(INTDIR)\stockholm.obj" \
 	"$(INTDIR)\sydney.obj" \
 	"$(INTDIR)\target.obj" \
 	"$(INTDIR)\tokyo.obj" \
 	"$(INTDIR)\toronto.obj" \
+	"$(INTDIR)\warsaw.obj" \
 	"$(INTDIR)\wellington.obj" \
 	"$(INTDIR)\zurich.obj" \
 	"$(INTDIR)\cashflowvectors.obj" \
@@ -647,10 +654,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\option.obj" \
 	"$(INTDIR)\scheduler.obj" \
 	"$(INTDIR)\solver1d.obj" \
-	"$(INTDIR)\oslo.obj" \
-	"$(INTDIR)\stockholm.obj" \
-	"$(INTDIR)\warsaw.obj" \
-	"$(INTDIR)\budapest.obj"
+	"$(INTDIR)\voltermstructure.obj"
 
 ".\lib\Win32\VisualStudio\QuantLib_d.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
     $(LIB32) @<<
@@ -804,6 +808,7 @@ CLEAN :
 	-@erase "$(INTDIR)\vasicek.obj"
 	-@erase "$(INTDIR)\vc60.idb"
 	-@erase "$(INTDIR)\vols.obj"
+	-@erase "$(INTDIR)\voltermstructure.obj"
 	-@erase "$(INTDIR)\warsaw.obj"
 	-@erase "$(INTDIR)\wellington.obj"
 	-@erase "$(INTDIR)\xibor.obj"
@@ -822,16 +827,20 @@ BSC32_SBRS= \
 LIB32=link.exe -lib
 LIB32_FLAGS=/nologo /out:"lib\Win32\VisualStudio\QuantLib.lib" 
 LIB32_OBJS= \
+	"$(INTDIR)\budapest.obj" \
 	"$(INTDIR)\frankfurt.obj" \
 	"$(INTDIR)\helsinki.obj" \
 	"$(INTDIR)\johannesburg.obj" \
 	"$(INTDIR)\london.obj" \
 	"$(INTDIR)\milan.obj" \
 	"$(INTDIR)\newyork.obj" \
+	"$(INTDIR)\oslo.obj" \
+	"$(INTDIR)\stockholm.obj" \
 	"$(INTDIR)\sydney.obj" \
 	"$(INTDIR)\target.obj" \
 	"$(INTDIR)\tokyo.obj" \
 	"$(INTDIR)\toronto.obj" \
+	"$(INTDIR)\warsaw.obj" \
 	"$(INTDIR)\wellington.obj" \
 	"$(INTDIR)\zurich.obj" \
 	"$(INTDIR)\cashflowvectors.obj" \
@@ -960,10 +969,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\option.obj" \
 	"$(INTDIR)\scheduler.obj" \
 	"$(INTDIR)\solver1d.obj" \
-	"$(INTDIR)\oslo.obj" \
-	"$(INTDIR)\stockholm.obj" \
-	"$(INTDIR)\warsaw.obj" \
-	"$(INTDIR)\budapest.obj"
+	"$(INTDIR)\voltermstructure.obj"
 
 ".\lib\Win32\VisualStudio\QuantLib.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
     $(LIB32) @<<
@@ -1116,6 +1122,7 @@ CLEAN :
 	-@erase "$(INTDIR)\vanillaoption.obj"
 	-@erase "$(INTDIR)\vasicek.obj"
 	-@erase "$(INTDIR)\vols.obj"
+	-@erase "$(INTDIR)\voltermstructure.obj"
 	-@erase "$(INTDIR)\warsaw.obj"
 	-@erase "$(INTDIR)\wellington.obj"
 	-@erase "$(INTDIR)\xibor.obj"
@@ -1136,16 +1143,20 @@ BSC32_SBRS= \
 LIB32=link.exe -lib
 LIB32_FLAGS=/nologo /out:"lib\Win32\VisualStudio\QuantLib_d.lib" 
 LIB32_OBJS= \
+	"$(INTDIR)\budapest.obj" \
 	"$(INTDIR)\frankfurt.obj" \
 	"$(INTDIR)\helsinki.obj" \
 	"$(INTDIR)\johannesburg.obj" \
 	"$(INTDIR)\london.obj" \
 	"$(INTDIR)\milan.obj" \
 	"$(INTDIR)\newyork.obj" \
+	"$(INTDIR)\oslo.obj" \
+	"$(INTDIR)\stockholm.obj" \
 	"$(INTDIR)\sydney.obj" \
 	"$(INTDIR)\target.obj" \
 	"$(INTDIR)\tokyo.obj" \
 	"$(INTDIR)\toronto.obj" \
+	"$(INTDIR)\warsaw.obj" \
 	"$(INTDIR)\wellington.obj" \
 	"$(INTDIR)\zurich.obj" \
 	"$(INTDIR)\cashflowvectors.obj" \
@@ -1274,10 +1285,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\option.obj" \
 	"$(INTDIR)\scheduler.obj" \
 	"$(INTDIR)\solver1d.obj" \
-	"$(INTDIR)\oslo.obj" \
-	"$(INTDIR)\stockholm.obj" \
-	"$(INTDIR)\warsaw.obj" \
-	"$(INTDIR)\budapest.obj"
+	"$(INTDIR)\voltermstructure.obj"
 
 ".\lib\Win32\VisualStudio\QuantLib_d.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
     $(LIB32) @<<
@@ -2176,6 +2184,12 @@ SOURCE=.\ql\scheduler.cpp
 SOURCE=.\ql\solver1d.cpp
 
 "$(INTDIR)\solver1d.obj" : $(SOURCE) "$(INTDIR)"
+	$(CPP) $(CPP_PROJ) $(SOURCE)
+
+
+SOURCE=.\ql\voltermstructure.cpp
+
+"$(INTDIR)\voltermstructure.obj" : $(SOURCE) "$(INTDIR)"
 	$(CPP) $(CPP_PROJ) $(SOURCE)
 
 
