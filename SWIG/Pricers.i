@@ -24,12 +24,21 @@ Contact ferdinando@ametrano.net if LICENSE.TXT was not distributed with this fil
 
 %{
 #include "bsmeuropeanoption.h"
+#include "bsmamericanoption.h"
 QL_USING(QuantLib::Pricers,BSMEuropeanOption)
+QL_USING(QuantLib::Pricers,BSMAmericanOption)
 %}
 
 class BSMEuropeanOption {
   public:
 	BSMEuropeanOption(OptionType type, double underlying, double strike, Yield underlyingGrowthRate, 
+	  Yield riskFreeRate, Time residualTime, double volatility, int timeSteps, int gridPoints);
+	double value() const;
+};
+
+class BSMAmericanOption {
+  public:
+	BSMAmericanOption(OptionType type, double underlying, double strike, Yield underlyingGrowthRate, 
 	  Yield riskFreeRate, Time residualTime, double volatility, int timeSteps, int gridPoints);
 	double value() const;
 };
