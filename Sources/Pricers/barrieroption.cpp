@@ -28,6 +28,9 @@
     $Source$
     $Name$
     $Log$
+    Revision 1.3  2001/03/27 17:19:12  marmar
+    Bug fixed in calculation of rho and vega
+
     Revision 1.2  2001/03/22 16:37:33  marmar
     Barrier option greeks included
 
@@ -49,8 +52,7 @@ namespace QuantLib {
                 double barrier, double rebate)
         : BSMOption(type, underlying, strike, dividendYield,
               riskFreeRate, residualTime, volatility), barrType_(barrType),
-              barrier_(barrier), rebate_(rebate), greeksCalculated_(false),
-              f_(){
+              barrier_(barrier), rebate_(rebate), f_(){
 
             QL_REQUIRE(type != Straddle,
                 "BarrierOption: Straddle is meaningless for barrier options");
@@ -59,17 +61,22 @@ namespace QuantLib {
             QL_REQUIRE(rebate_ >= 0,
                 "BarrierOption: rebate cannot be neagative");
 
+        }
+        
+        void BarrierOption::initialize(){
             sigmaSqrtT_ = volatility_ * QL_SQRT(residualTime_);
 
             mu_ = (riskFreeRate_ - dividendYield_)/
                                 (volatility_ * volatility_) - 0.5;
             muSigma_ = (1 + mu_) * sigmaSqrtT_;
             dividendDiscount_ = QL_EXP(-dividendYield_*residualTime_);
-            riskFreeDiscount_ = QL_EXP(-riskFreeRate_*residualTime_);
+            riskFreeDiscount_ = QL_EXP(-riskFreeRate_*residualTime_);            
+            greeksCalculated_ = false;
         }
 
         double BarrierOption::value() const {
           if(!hasBeenCalculated_) {
+            initialize();
             switch (type_) {
               case Call:
                 switch (barrType_) {

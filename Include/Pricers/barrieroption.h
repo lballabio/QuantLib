@@ -27,6 +27,9 @@
     $Source$
     $Name$
     $Log$
+    Revision 1.4  2001/03/27 17:18:55  marmar
+    Bug fixed in calculation of rho and vega
+
     Revision 1.3  2001/03/22 16:37:48  marmar
     Barrier option greeks included
 
@@ -78,6 +81,7 @@ namespace QuantLib {
             double sigmaSqrtT_, mu_, muSigma_;
             double dividendDiscount_, riskFreeDiscount_;
             Math::CumulativeNormalDistribution f_;
+            void initialize();
             double A(double eta, double phi) const;
             double B(double eta, double phi) const;
             double C(double eta, double phi) const;
