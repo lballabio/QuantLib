@@ -124,12 +124,6 @@ void DistributionTest::testNormal() {
     }
 }
 
-
-
-// This makes it easier to use array literals (alas, no std::vector literals)
-#define LENGTH(a) (sizeof(a)/sizeof(a[0]))
-
-
 void DistributionTest::testBivariate() {
 
     struct BivariateTestData {

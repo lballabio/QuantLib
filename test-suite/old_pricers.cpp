@@ -16,6 +16,7 @@
 */
 
 #include "old_pricers.hpp"
+#include "utilities.hpp"
 #include <ql/Pricers/cliquetoption.hpp>
 #include <ql/Pricers/fddividendeuropeanoption.hpp>
 #include <ql/Pricers/fdeuropean.hpp>
@@ -36,21 +37,7 @@
 #include <cppunit/TestCaller.h>
 #include <map>
 
-// This makes it easier to use array literals (alas, no std::vector literals)
-#define LENGTH(a) (sizeof(a)/sizeof(a[0]))
-
 using namespace QuantLib;
-
-namespace {
-
-    double relError(double x1, double x2, double ref) {
-        if (ref != 0.0)
-            return QL_FABS((x1-x2)/ref);
-        else
-            return 1.0e+10;
-    }
-
-}
 
 CppUnit::Test* OldPricerTest::suite() {
     CppUnit::TestSuite* tests =
@@ -184,7 +171,7 @@ void OldPricerTest::testDividendEuropeanPricer() {
                       double expct = expected[greek];
                       double calcl = calculated[greek];
                       double tol = tolerance[greek];
-                      if (relError(expct,calcl,u) > tol)
+                      if (relativeError(expct,calcl,u) > tol)
                           CPPUNIT_FAIL(
                               "Option details: \n"
                               "    type:           " +
@@ -331,7 +318,7 @@ namespace {
                 double expct = expected[greek];
                 double calcl = calculated[greek];
                 double tol = tolerance[greek];
-                if (relError(expct,calcl,u) > tol)
+                if (relativeError(expct,calcl,u) > tol)
                     CPPUNIT_FAIL(
                         "Option details: \n"
                         "    type:           " +

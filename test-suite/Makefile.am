@@ -33,7 +33,7 @@ QL_TESTS = \
            swap.hpp swap.cpp \
            swaption.hpp swaption.cpp \
            termstructures.hpp termstructures.cpp \
-           utilities.hpp
+           utilities.hpp utilities.cpp
 
 if CPPUNIT_FOUND
 

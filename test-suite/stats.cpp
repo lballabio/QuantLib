@@ -17,6 +17,7 @@
 */
 
 #include "stats.hpp"
+#include "utilities.hpp"
 #include <ql/Math/statistics.hpp>
 #include <ql/Math/incrementalstatistics.hpp>
 #include <ql/Math/gaussianstatistics.hpp>
@@ -25,8 +26,6 @@
 #include <cppunit/TestCaller.h>
 
 using namespace QuantLib;
-
-#define LENGTH(a) (sizeof(a)/sizeof(a[0]))
 
 namespace {
 

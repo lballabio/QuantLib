@@ -18,6 +18,7 @@
 */
 
 #include "basketoption.hpp"
+#include "utilities.hpp"
 #include <ql/DayCounters/actual360.hpp>
 #include <ql/Instruments/basketoption.hpp>
 #include <ql/PricingEngines/Basket/stulzengine.hpp>
@@ -27,141 +28,9 @@
 #include <cppunit/TestSuite.h>
 #include <cppunit/TestCaller.h>
 
-// This makes it easier to use array literals (alas, no std::vector literals)
-#define LENGTH(a) (sizeof(a)/sizeof(a[0]))
-
 using namespace QuantLib;
 
 namespace {
-
-    Handle<TermStructure> makeFlatCurve(const Handle<Quote>& forward,
-                                        DayCounter dc) {
-        Date today = Date::todaysDate();
-        return Handle<TermStructure>(new
-            FlatForward(today, today, RelinkableHandle<Quote>(forward), dc));
-    }
-
-    Handle<BlackVolTermStructure> makeFlatVolatility(const Handle<Quote>& vol,
-                                                     DayCounter dc) {
-        Date today = Date::todaysDate();
-        return Handle<BlackVolTermStructure>(new
-            BlackConstantVol(today, RelinkableHandle<Quote>(vol), dc));
-    }
-
-    double relativeError(double x1, double x2, double reference) {
-        if (reference != 0.0)
-            return QL_FABS(x1-x2)/reference;
-        else
-            return 1.0e+10;
-    }
-
-
-    std::string payoffTypeToString(const Handle<Payoff>& payoff) {
-
-        // PlainVanillaPayoff?
-        Handle<PlainVanillaPayoff> pv;
-        #if defined(HAVE_BOOST)
-        pv = boost::dynamic_pointer_cast<PlainVanillaPayoff>(payoff);
-        #else
-        try {
-            pv = payoff;
-        } catch (...) {}
-        #endif
-        if (!IsNull(pv)) {
-            // ok, the payoff is PlainVanillaPayoff
-            return "PlainVanillaPayoff";
-        }
-
-        // CashOrNothingPayoff?
-        Handle<CashOrNothingPayoff> coo;
-        #if defined(HAVE_BOOST)
-        coo = boost::dynamic_pointer_cast<CashOrNothingPayoff>(payoff);
-        #else
-        try {
-            coo = payoff;
-        } catch (...) {}
-        #endif
-        if (!IsNull(coo)) {
-            // ok, the payoff is CashOrNothingPayoff
-            return "Cash ("
-                + DoubleFormatter::toString(coo->cashPayoff())
-                + ") or Nothing Payoff";
-        }
-
-        // AssetOrNothingPayoff?
-        Handle<AssetOrNothingPayoff> aoo;
-        #if defined(HAVE_BOOST)
-        aoo = boost::dynamic_pointer_cast<AssetOrNothingPayoff>(payoff);
-        #else
-        try {
-            aoo = payoff;
-        } catch (...) {}
-        #endif
-        if (!IsNull(aoo)) {
-            // ok, the payoff is AssetOrNothingPayoff
-            return "AssetOrNothingPayoff";
-        }
-
-        // SuperSharePayoff?
-        Handle<SuperSharePayoff> ss;
-        #if defined(HAVE_BOOST)
-        ss = boost::dynamic_pointer_cast<SuperSharePayoff>(payoff);
-        #else
-        try {
-            ss = payoff;
-        } catch (...) {}
-        #endif
-        if (!IsNull(ss)) {
-            // ok, the payoff is SuperSharePayoff
-            return "SuperSharePayoff";
-        }
-
-        throw Error("payoffTypeToString : unknown payoff type");
-    }
-
-    std::string exerciseTypeToString(const Handle<Exercise>& exercise) {
-
-        // EuropeanExercise?
-        Handle<EuropeanExercise> european;
-        #if defined(HAVE_BOOST)
-        european = boost::dynamic_pointer_cast<EuropeanExercise>(exercise);
-        #else
-        try {
-            european = exercise;
-        } catch (...) {}
-        #endif
-        if (!IsNull(european)) {
-            return "European";
-        }
-
-        // AmericanExercise?
-        Handle<AmericanExercise> american;
-        #if defined(HAVE_BOOST)
-        american = boost::dynamic_pointer_cast<AmericanExercise>(exercise);
-        #else
-        try {
-            american = exercise;
-        } catch (...) {}
-        #endif
-        if (!IsNull(american)) {
-            return "American";
-        }
-
-        // BermudanExercise?
-        Handle<BermudanExercise> bermudan;
-        #if defined(HAVE_BOOST)
-        bermudan = boost::dynamic_pointer_cast<BermudanExercise>(exercise);
-        #else
-        try {
-            bermudan = exercise;
-        } catch (...) {}
-        #endif
-        if (!IsNull(bermudan)) {
-            return "Bermudan";
-        }
-
-        throw Error("exerciseTypeToString : unknown exercise type");
-    }
 
     std::string basketTypeToString(BasketOption::BasketType basketType) {
 
@@ -201,7 +70,7 @@ namespace {
             " option on "
             + basketTypeToString(basketType) +
             " with "
-            + payoffTypeToString(payoff) + ":\n"
+            + payoffTypeToString(payoff) + " payoff:\n"
             "1st underlying value: "
             + DoubleFormatter::toString(s1) + "\n"
             "2nd underlying value: "
@@ -242,7 +111,7 @@ namespace {
                                 const Handle<Exercise>& exercise,
                                 double s1,
                                 double s2,
-                                double s3,                                
+                                double s3,
                                 double r,
                                 Date today,
                                 DayCounter dc,
@@ -262,7 +131,7 @@ namespace {
             " option on "
             + basketTypeToString(basketType) +
             " with "
-            + payoffTypeToString(payoff) + ":\n"
+            + payoffTypeToString(payoff) + " payoff:\n"
             "1st underlying value: "
             + DoubleFormatter::toString(s1) + "\n"
             "2nd underlying value: "
@@ -270,7 +139,7 @@ namespace {
             "3rd underlying value: "
             + DoubleFormatter::toString(s3) + "\n"
             "              strike: "
-            + DoubleFormatter::toString(payoff->strike()) +"\n"            
+            + DoubleFormatter::toString(payoff->strike()) +"\n"
             "      risk-free rate: "
             + DoubleFormatter::toString(r) + "\n"
             "      reference date: "
@@ -320,14 +189,14 @@ namespace {
         double strike;
         double s1;
         double s2;
-        double s3;        
+        double s3;
         double r;
         Time t; // months
         double v1;
         double v2;
         double v3;
         double rho;
-        double result;        
+        double result;
     };
 
 
@@ -369,7 +238,7 @@ void BasketOptionTest::testValues() {
         {BasketOption::Min,  Option::Put,  100.0, 100.0, 100.0, 0.00, 0.00, 0.05, 1.00, 0.30, 0.30, 0.50, 13.890, 1.0e-3},
         {BasketOption::Min,  Option::Put,  100.0, 100.0, 100.0, 0.00, 0.00, 0.05, 1.00, 0.30, 0.30, 0.30, 14.741, 1.0e-3},
         {BasketOption::Min,  Option::Put,  100.0, 100.0, 100.0, 0.00, 0.00, 0.05, 1.00, 0.30, 0.30, 0.10, 15.485, 1.0e-3},
-        
+
         {BasketOption::Min,  Option::Put,  100.0, 100.0, 100.0, 0.00, 0.00, 0.05, 0.50, 0.30, 0.30, 0.10, 11.893, 1.0e-3},
         {BasketOption::Min,  Option::Put,  100.0, 100.0, 100.0, 0.00, 0.00, 0.05, 0.25, 0.30, 0.30, 0.10,  8.881, 1.0e-3},
         {BasketOption::Min,  Option::Put,  100.0, 100.0, 100.0, 0.00, 0.00, 0.05, 2.00, 0.30, 0.30, 0.10, 19.268, 1.0e-3},
@@ -412,7 +281,7 @@ void BasketOptionTest::testValues() {
 
 
     Handle<PricingEngine> engine(new StulzEngine);
-    
+
     double mcRelativeErrorTolerance = 0.01;
     Handle<PricingEngine> mcEngine(new MCBasketEngine<PseudoRandom, Statistics> 
         (1, false, false, Null<int>(), 0.005, Null<int>(), 42));
@@ -457,7 +326,7 @@ void BasketOptionTest::testValues() {
         Matrix correlationMatrix(2,2, values[i].rho);
         for (int j=0; j < 2; j++) {
             correlationMatrix[j][j] = 1.0;
-        }        
+        }
 
         BasketOption basketOption(values[i].basketType, procs, payoff, 
                                   exercise, correlationMatrix, engine);
@@ -476,7 +345,7 @@ void BasketOptionTest::testValues() {
 
         // mc engine
         basketOption.setPricingEngine(mcEngine);
-        calculated = basketOption.NPV();        
+        calculated = basketOption.NPV();
         double relError = relativeError(calculated, expected, values[i].s1);
         if (relError > mcRelativeErrorTolerance ) {
             basketOptionTestFailed("MC value",
@@ -497,7 +366,7 @@ void BasketOptionTest::testBarraquandThreeValues() {
         "Numerical Valuation of High Dimensional American Securities"
         Barraquand, J. and Martineau, D.
         Journal of Financial and Quantitative Analysis 1995 3(30) 383-405        
-    */    
+    */
     BasketOptionBarraquandThreeData  values[] = {
         // time in months is with 30 days to the month..
         // basketType, optionType,       strike,    s1,    s2,   s3,    r,    t,   v1,   v2,  v3,  rho, result,         
@@ -510,8 +379,8 @@ void BasketOptionTest::testBarraquandThreeValues() {
         {BasketOption::Max, Option::Call,  45.0,  40.0,  40.0, 40.0, 0.05, 4.00, 0.20, 0.30, 0.50, 0.0, 4.26},
         {BasketOption::Max, Option::Call,  35.0,  40.0,  40.0, 40.0, 0.05, 7.00, 0.20, 0.30, 0.50, 0.0, 15.29},
         {BasketOption::Max, Option::Call,  40.0,  40.0,  40.0, 40.0, 0.05, 7.00, 0.20, 0.30, 0.50, 0.0, 10.72},
-        {BasketOption::Max, Option::Call,  45.0,  40.0,  40.0, 40.0, 0.05, 7.00, 0.20, 0.30, 0.50, 0.0, 6.96},        
-       
+        {BasketOption::Max, Option::Call,  45.0,  40.0,  40.0, 40.0, 0.05, 7.00, 0.20, 0.30, 0.50, 0.0, 6.96},
+
         {BasketOption::Max, Option::Call,  35.0,  40.0,  40.0, 40.0, 0.05, 1.00, 0.20, 0.30, 0.50, 0.5, 7.78},
         {BasketOption::Max, Option::Call,  40.0,  40.0,  40.0, 40.0, 0.05, 1.00, 0.20, 0.30, 0.50, 0.5, 3.18},
         {BasketOption::Max, Option::Call,  45.0,  40.0,  40.0, 40.0, 0.05, 1.00, 0.20, 0.30, 0.50, 0.5, 0.82},
@@ -520,8 +389,8 @@ void BasketOptionTest::testBarraquandThreeValues() {
         {BasketOption::Max, Option::Call,  45.0,  40.0,  40.0, 40.0, 0.05, 4.00, 0.20, 0.30, 0.50, 0.5, 3.70},
         {BasketOption::Max, Option::Call,  35.0,  40.0,  40.0, 40.0, 0.05, 7.00, 0.20, 0.30, 0.50, 0.5, 13.23},
         {BasketOption::Max, Option::Call,  40.0,  40.0,  40.0, 40.0, 0.05, 7.00, 0.20, 0.30, 0.50, 0.5, 9.11},
-        {BasketOption::Max, Option::Call,  45.0,  40.0,  40.0, 40.0, 0.05, 7.00, 0.20, 0.30, 0.50, 0.5, 5.98},        
-       
+        {BasketOption::Max, Option::Call,  45.0,  40.0,  40.0, 40.0, 0.05, 7.00, 0.20, 0.30, 0.50, 0.5, 5.98},
+
         {BasketOption::Max, Option::Call,  35.0,  40.0,  40.0, 40.0, 0.05, 1.00, 0.20, 0.30, 0.50, 1.0, 6.53},
         {BasketOption::Max, Option::Call,  40.0,  40.0,  40.0, 40.0, 0.05, 1.00, 0.20, 0.30, 0.50, 1.0, 2.38},
         {BasketOption::Max, Option::Call,  45.0,  40.0,  40.0, 40.0, 0.05, 1.00, 0.20, 0.30, 0.50, 1.0, 0.74},
@@ -573,7 +442,7 @@ void BasketOptionTest::testBarraquandThreeValues() {
 
     Handle<SimpleQuote> qRate(new SimpleQuote(0.0));
     Handle<TermStructure> qTS = makeFlatCurve(qRate, dc);
-    
+
     Handle<SimpleQuote> rRate(new SimpleQuote(0.0));
     Handle<TermStructure> rTS = makeFlatCurve(rRate, dc);
 
@@ -583,9 +452,9 @@ void BasketOptionTest::testBarraquandThreeValues() {
     Handle<BlackVolTermStructure> volTS2 = makeFlatVolatility(vol2, dc);
     Handle<SimpleQuote> vol3(new SimpleQuote(0.0));
     Handle<BlackVolTermStructure> volTS3 = makeFlatVolatility(vol3, dc);
-   
+
     double mcRelativeErrorTolerance = 0.01;
-    Handle<PricingEngine> mcEngine(new MCBasketEngine<PseudoRandom, Statistics>         
+    Handle<PricingEngine> mcEngine(new MCBasketEngine<PseudoRandom, Statistics>
         (1, false, false, Null<int>(), 0.005, Null<int>(), 42));
 
     Date today = Date::todaysDate();
@@ -636,7 +505,7 @@ void BasketOptionTest::testBarraquandThreeValues() {
         Matrix correlation(3,3, values[i].rho);
         for (int j=0; j < 3; j++) {
             correlation[j][j] = 1.0;
-        }        
+        }
 
         BasketOption basketOption(values[i].basketType, procs, payoff, 
                                   exercise, correlation, mcEngine);
@@ -651,7 +520,7 @@ void BasketOptionTest::testBarraquandThreeValues() {
                 values[i].s1, values[i].s2, values[i].s3, values[i].r,
                 today, dc, values[i].v1, values[i].v2, values[i].v3, values[i].rho,
                 values[i].result, calculated, relError, mcRelativeErrorTolerance);
-        }        
+        }
 
     }
 }

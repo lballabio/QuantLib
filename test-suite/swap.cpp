@@ -16,6 +16,7 @@
 */
 
 #include "swap.hpp"
+#include "utilities.hpp"
 #include <ql/Instruments/simpleswap.hpp>
 #include <ql/TermStructures/flatforward.hpp>
 #include <ql/DayCounters/thirty360.hpp>
@@ -23,9 +24,6 @@
 #include <ql/Indexes/euribor.hpp>
 #include <cppunit/TestSuite.h>
 #include <cppunit/TestCaller.h>
-
-// This makes it easier to use array literals (alas, no std::vector literals)
-#define LENGTH(a) (sizeof(a)/sizeof(a[0]))
 
 using namespace QuantLib;
 

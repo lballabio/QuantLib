@@ -16,6 +16,7 @@
 */
 
 #include "matrices.hpp"
+#include "utilities.hpp"
 #include <ql/Math/matrix.hpp>
 #include <ql/Math/symmetricschurdecomposition.hpp>
 #include <ql/dataformatters.hpp>
@@ -23,8 +24,6 @@
 #include <cppunit/TestCaller.h>
 
 using namespace QuantLib;
-
-#define LENGTH(a) (sizeof(a)/sizeof(a[0]))
 
 namespace {
 

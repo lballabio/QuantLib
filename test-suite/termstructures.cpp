@@ -29,8 +29,6 @@
 
 using namespace QuantLib;
 
-#define LENGTH(a) (sizeof(a)/sizeof(a[0]))
-
 namespace {
 
     // global data

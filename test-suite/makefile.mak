@@ -53,7 +53,8 @@ QL_TESTS = \
     stats.obj$(_D) \
     swap.obj$(_D) \
     swaption.obj$(_D) \
-    termstructures.obj$(_D)
+    termstructures.obj$(_D) \
+    utilities.obj$(_D)
 
 # Tools to be used
 CC        = bcc32

@@ -17,14 +17,13 @@
 */
 
 #include "riskstats.hpp"
+#include "utilities.hpp"
 #include <ql/Math/riskstatistics.hpp>
 #include <ql/Math/incrementalstatistics.hpp>
 #include <ql/Math/sequencestatistics.hpp>
 #include <ql/RandomNumbers/sobolrsg.hpp>
 
 using namespace QuantLib;
-
-#define LENGTH(a) (sizeof(a)/sizeof(a[0]))
 
 typedef GaussianStatistics<IncrementalStatistics> 
     IncrementalGaussianStatistics;

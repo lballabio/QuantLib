@@ -16,6 +16,7 @@
 */
 
 #include "solvers.hpp"
+#include "utilities.hpp"
 #include <ql/Solvers1D/brent.hpp>
 #include <ql/Solvers1D/bisection.hpp>
 #include <ql/Solvers1D/falseposition.hpp>
@@ -25,8 +26,6 @@
 #include <ql/Solvers1D/newtonsafe.hpp>
 
 using namespace QuantLib;
-
-#define LENGTH(a) (sizeof(a)/sizeof(a[0]))
 
 namespace {
 

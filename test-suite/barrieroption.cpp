@@ -18,6 +18,7 @@
 */
 
 #include "barrieroption.hpp"
+#include "utilities.hpp"
 #include <ql/Calendars/nullcalendar.hpp>
 #include <ql/DayCounters/actual360.hpp>
 #include <ql/DayCounters/simpledaycounter.hpp>
@@ -29,135 +30,9 @@
 #include <cppunit/TestSuite.h>
 #include <cppunit/TestCaller.h>
 
-// This makes it easier to use array literals (alas, no std::vector literals)
-#define LENGTH(a) (sizeof(a)/sizeof(a[0]))
-
 using namespace QuantLib;
 
 namespace {
-
-    Handle<TermStructure> makeFlatCurve(const Handle<Quote>& forward,
-                                        DayCounter dc = SimpleDayCounter()) {
-        Date today = Date::todaysDate();
-        return Handle<TermStructure>(new
-            FlatForward(today, today, RelinkableHandle<Quote>(forward), dc));
-    }
-
-    Handle<BlackVolTermStructure> makeFlatVolatility(const Handle<Quote>& vol,
-                                                     DayCounter dc = SimpleDayCounter()) {
-        Date today = Date::todaysDate();
-        return Handle<BlackVolTermStructure>(new
-            BlackConstantVol(today, RelinkableHandle<Quote>(vol), dc));
-    }
-    
-    
-    std::string payoffTypeToString(const Handle<Payoff>& payoff) {
-
-        // PlainVanillaPayoff?
-        Handle<PlainVanillaPayoff> pv;
-        #if defined(HAVE_BOOST)
-        pv = boost::dynamic_pointer_cast<PlainVanillaPayoff>(payoff);
-        #else
-        try {
-            pv = payoff;
-        } catch (...) {}
-        #endif
-        if (!IsNull(pv)) {
-            // ok, the payoff is PlainVanillaPayoff
-            return "PlainVanillaPayoff";
-        }
-
-        // CashOrNothingPayoff?
-        Handle<CashOrNothingPayoff> coo;
-        #if defined(HAVE_BOOST)
-        coo = boost::dynamic_pointer_cast<CashOrNothingPayoff>(payoff);
-        #else
-        try {
-            coo = payoff;
-        } catch (...) {}
-        #endif
-        if (!IsNull(coo)) {
-            // ok, the payoff is CashOrNothingPayoff
-            return "Cash ("
-                + DoubleFormatter::toString(coo->cashPayoff())
-                + ") or Nothing Payoff";
-        }
-
-        // AssetOrNothingPayoff?
-        Handle<AssetOrNothingPayoff> aoo;
-        #if defined(HAVE_BOOST)
-        aoo = boost::dynamic_pointer_cast<AssetOrNothingPayoff>(payoff);
-        #else
-        try {
-            aoo = payoff;
-        } catch (...) {}
-        #endif
-        if (!IsNull(aoo)) {
-            // ok, the payoff is AssetOrNothingPayoff
-            return "AssetOrNothingPayoff";
-        }
-
-        // SuperSharePayoff?
-        Handle<SuperSharePayoff> ss;
-        #if defined(HAVE_BOOST)
-        ss = boost::dynamic_pointer_cast<SuperSharePayoff>(payoff);
-        #else
-        try {
-            ss = payoff;
-        } catch (...) {}
-        #endif
-        if (!IsNull(ss)) {
-            // ok, the payoff is SuperSharePayoff
-            return "SuperSharePayoff";
-        }
-
-        throw Error("payoffTypeToString : unknown payoff type");
-    }
-
-
-    std::string exerciseTypeToString(const Handle<Exercise>& exercise) {
-
-        // EuropeanExercise?
-        Handle<EuropeanExercise> european;
-        #if defined(HAVE_BOOST)
-        european = boost::dynamic_pointer_cast<EuropeanExercise>(exercise);
-        #else
-        try {
-            european = exercise;
-        } catch (...) {}
-        #endif
-        if (!IsNull(european)) {
-            return "European";
-        }
-
-        // AmericanExercise?
-        Handle<AmericanExercise> american;
-        #if defined(HAVE_BOOST)
-        american = boost::dynamic_pointer_cast<AmericanExercise>(exercise);
-        #else
-        try {
-            american = exercise;
-        } catch (...) {}
-        #endif
-        if (!IsNull(american)) {
-            return "American";
-        }
-
-        // BermudanExercise?
-        Handle<BermudanExercise> bermudan;
-        #if defined(HAVE_BOOST)
-        bermudan = boost::dynamic_pointer_cast<BermudanExercise>(exercise);
-        #else
-        try {
-            bermudan = exercise;
-        } catch (...) {}
-        #endif
-        if (!IsNull(bermudan)) {
-            return "Bermudan";
-        }
-
-        throw Error("exerciseTypeToString : unknown exercise type");
-    }
 
     std::string barrierTypeToString(Barrier::Type type) {
 
@@ -198,7 +73,7 @@ namespace {
             exerciseTypeToString(exercise) + " "
             + OptionTypeFormatter::toString(payoff->optionType()) +
             " option with "
-            + payoffTypeToString(payoff) + ":\n"
+            + payoffTypeToString(payoff) + " payoff:\n"
             "    underlying value: "
             + DoubleFormatter::toString(s) + "\n"
             "    strike:           "

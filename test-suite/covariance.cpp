@@ -17,6 +17,7 @@
 */
 
 #include "covariance.hpp"
+#include "utilities.hpp"
 #include <ql/MonteCarlo/getcovariance.hpp>
 #include <ql/Math/symmetricschurdecomposition.hpp>
 #include <ql/Math/sequencestatistics.hpp>
@@ -24,8 +25,6 @@
 #include <cppunit/TestCaller.h>
 
 using namespace QuantLib;
-
-#define LENGTH(a) (sizeof(a)/sizeof(a[0]))
 
 CppUnit::Test* CovarianceTest::suite() {
     CppUnit::TestSuite* tests =
@@ -85,7 +84,7 @@ void CovarianceTest::testCovariance() {
     double data04[] = { 6.0, 17.0 };
     double* data[5] = { data00, data01, data02, data03, data04 };
     std::vector<double> weights(LENGTH(data), 1.0);
-        
+
     Size i, j, n = LENGTH(data00);
 
     Matrix expCor(n, n);

@@ -1,6 +1,6 @@
 
 /*
- Copyright (C) 2003 RiskMap srl
+ Copyright (C) 2003, 2004 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -18,9 +18,36 @@
 #ifndef quantlib_test_utilities_hpp
 #define quantlib_test_utilities_hpp
 
+#include <ql/payoff.hpp>
+#include <ql/exercise.hpp>
+#include <ql/termstructure.hpp>
+#include <ql/voltermstructure.hpp>
+#include <ql/DayCounters/simpledaycounter.hpp>
 #include <ql/Patterns/observable.hpp>
 #include <vector>
+#include <string>
 #include <numeric>
+
+// This makes it easier to use array literals (alas, no std::vector literals)
+#define LENGTH(a) (sizeof(a)/sizeof(a[0]))
+
+namespace QuantLib {
+
+    std::string payoffTypeToString(const Handle<Payoff>&);
+    std::string exerciseTypeToString(const Handle<Exercise>&);
+
+
+    Handle<TermStructure> 
+    makeFlatCurve(const Handle<Quote>& forward,
+                  DayCounter dc = SimpleDayCounter());
+
+    Handle<BlackVolTermStructure> 
+    makeFlatVolatility(const Handle<Quote>& volatility,
+                       DayCounter dc = SimpleDayCounter());
+
+    double relativeError(double x1, double x2, double reference);
+
+}
 
 class Flag : public QuantLib::Observer {
   private:

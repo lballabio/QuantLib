@@ -17,6 +17,7 @@
 */
 
 #include "binarybarrieroption.hpp"
+#include "utilities.hpp"
 #include <ql/Calendars/nullcalendar.hpp>
 #include <ql/DayCounters/simpledaycounter.hpp>
 #include <ql/Instruments/binarybarrieroption.hpp>
@@ -25,38 +26,13 @@
 #include <ql/PricingEngines/Barrier/mcbinarybarrierengine.hpp>
 #include <ql/TermStructures/flatforward.hpp>
 #include <ql/Volatilities/blackconstantvol.hpp>
-
 #include <cppunit/TestSuite.h>
 #include <cppunit/TestCaller.h>
 #include <map>
 
-// This makes it easier to use array literals (alas, no std::vector literals)
-#define LENGTH(a) (sizeof(a)/sizeof(a[0]))
-
 using namespace QuantLib;
 
 namespace {
-
-    Handle<TermStructure> makeFlatCurve(const Handle<Quote>& forward) {
-        Date today = Date::todaysDate();
-        Calendar calendar = NullCalendar();
-        Date reference = today;
-        return Handle<TermStructure>(
-            new FlatForward(today,reference,
-                            RelinkableHandle<Quote>(forward),
-                            SimpleDayCounter()));
-    }
-
-    Handle<BlackVolTermStructure> makeFlatVolatility(
-                                     const Handle<Quote>& volatility) {
-        Date today = Date::todaysDate();
-        Calendar calendar = NullCalendar();
-        Date reference = today;
-        return Handle<BlackVolTermStructure>(
-            new BlackConstantVol(reference,
-                                 RelinkableHandle<Quote>(volatility),
-                                 SimpleDayCounter()));
-    }
 
     struct BinaryBarrierOptionData {
         Option::Type optionType;
@@ -68,13 +44,6 @@ namespace {
         double rebate;
         double value;
     };
-
-    double relError(double x1, double x2, double ref) {
-        if (ref != 0.0)
-            return QL_FABS((x1-x2)/ref);
-        else
-            return 1.0e+10;
-    }
 
 }
 
@@ -385,7 +354,7 @@ void BinaryBarrierOptionTest::testSelfConsistency() {
                           double expct = expected[greek];
                           double calcl = calculated[greek];
                           double tol = tolerance[greek];
-                          if (relError(expct,calcl,u) > tol)
+                          if (relativeError(expct,calcl,u) > tol)
                               CPPUNIT_FAIL(
                                   "Option details: \n"
                                   "    type:           " +
@@ -520,7 +489,7 @@ void BinaryBarrierOptionTest::testEngineConsistency() {
                   calcMC = opt.NPV();
 
                   // check
-                  if (relError(calcAnalytic,calcMC,u) > tolerance) {
+                  if (relativeError(calcAnalytic,calcMC,u) > tolerance) {
                       CPPUNIT_FAIL(
                           "Option details: \n"
                           "    type:           " +

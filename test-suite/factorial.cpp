@@ -25,8 +25,6 @@
 
 using namespace QuantLib;
 
-#define LENGTH(a) (sizeof(a)/sizeof(a[0]))
-
 CppUnit::Test* FactorialTest::suite() {
     CppUnit::TestSuite* tests =
         new CppUnit::TestSuite("Factorial tests");
