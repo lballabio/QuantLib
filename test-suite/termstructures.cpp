@@ -124,7 +124,7 @@ void TermStructureTest::testReferenceChange() {
 
     for (i=0; i<LENGTH(days); i++) {
         if (!close(expected[i],calculated[i]))
-            BOOST_FAIL("Discount at "
+            BOOST_FAIL("\n  Discount at "
                        + IntegerFormatter::toString(days[i]) + "days:\n"
                        "    before date change: "
                        + DecimalFormatter::toString(expected[i],12) + "\n"
