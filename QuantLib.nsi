@@ -1,5 +1,5 @@
 
-# to be used with NSIS 1.60 and up
+# to be used with NSIS 1.93 and up
 #
 # usage:
 #       makensis /DLIGHT QuantLib.nsi
@@ -34,8 +34,6 @@
 
 SilentInstall normal
 CRCCheck on
-UninstallText "This will uninstall QuantLib. Hit next to continue."
-UninstallExeName "QuantLibUninstall.exe"
 LicenseText "You must agree with the following license before installing:"
 LicenseData License.txt
 DirShow show
@@ -47,6 +45,7 @@ ShowInstDetails hide
 SetDateSave on
 
 # INSTALLATION EXECUTION COMMANDS
+
 
 
 Section "-QuantLib"
@@ -152,29 +151,13 @@ SectionIn 1 2 3
                    "$INSTDIR\LICENSE.txt"
     CreateShortCut "$SMPROGRAMS\QuantLib\What's new.lnk" \
                    "$INSTDIR\News.txt"
+
+    WriteUninstaller "QuantLibUninstall.exe"
 SectionEnd
 
 
 
 !ifndef LIGHT
-
-Function .onInit
-  SetOutPath $TEMP
-  File /oname=spltmp.bmp "Docs\images\QL-largish.bmp"
-  #this doesn't work
-  #ReadRegStr $0 HKLM SOFTWARE\NSIS ""
-  #File /oname=spltmp.exe "$0\splash.exe"
-
-  #the following line depends on NSIS being installed under E:\program files
-  #sorry, but no better solution available yet
-  IfFileExists "E:\Program Files\nsis\splash.exe" 0 NoSplashExecutable
-      File /oname=spltmp.exe "E:\program files\nsis\splash.exe"
-      ExecWait '"$TEMP\spltmp.exe" 4000 $HWNDPARENT $TEMP\spltmp'
-      Delete $TEMP\spltmp.exe
-      Delete $TEMP\spltmp.bmp
-  NoSplashExecutable:
-FunctionEnd
-
 
 #it doesn't work
 #Function .onInstSuccess
@@ -365,6 +348,21 @@ SectionEnd
 !endif
 
 
+Function .onInit
+
+  SetOutPath $TEMP
+  File /oname=spltmp.bmp "Docs\images\QL-largish.bmp"
+  #the following line depends on NSIS being installed under D:\programs
+  #sorry, but no better solution available yet
+  IfFileExists "D:\programs\NSIS\splash.exe" 0 NoSplashExecutable
+      File /oname=spltmp.exe "D:\programs\NSIS\splash.exe"
+      ExecWait '"$TEMP\spltmp.exe" 4000 $HWNDPARENT $TEMP\spltmp'
+      Delete $TEMP\spltmp.exe
+      Delete $TEMP\spltmp.bmp
+  NoSplashExecutable:
+FunctionEnd
+
+UninstallText "This will uninstall QuantLib. Hit next to continue."
 
 
 Section "Uninstall"
