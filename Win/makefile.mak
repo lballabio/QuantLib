@@ -399,6 +399,14 @@ $(INCLUDE_DIR)\deposit.h: $(INCLUDE_DIR)\qldefines.h $(INCLUDE_DIR)\calendar.h $
 $(INCLUDE_DIR)\TermStructures\piecewiseconstantforwards.h: $(INCLUDE_DIR)\qldefines.h $(INCLUDE_DIR)\termstructure.h $(INCLUDE_DIR)\deposit.h
 	@touch $<
 
+# Clean up
+clean::
+	@if exist $(PYTHON_DIR)\QuantLib.py       del $(PYTHON_DIR)\QuantLib.py
+	@if exist $(PYTHON_DIR)\QuantLib.pyc      del $(PYTHON_DIR)\QuantLib.pyc
+	@if exist $(PYTHON_DIR)\QuantLibc.dll     del $(PYTHON_DIR)\QuantLibc.dll
+	@if exist $(PYTHON_DIR)\quantlib_wrap.cpp del $(PYTHON_DIR)\quantlib_wrap.cpp
+	@if exist $(OUTPUT_DIR) rd /s /q $(OUTPUT_DIR)
+
 # Documentation
 Docs::
 	@cd ..\Docs
