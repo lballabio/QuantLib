@@ -1,5 +1,4 @@
 
-#
 # makefile for AmericanOption.cpp under Borland C++
 
 .autodepend

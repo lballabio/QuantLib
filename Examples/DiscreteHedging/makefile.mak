@@ -1,5 +1,4 @@
 
-#
 # makefile for DiscreteHedging.cpp under Borland C++
 
 .autodepend

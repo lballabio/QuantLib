@@ -1,5 +1,4 @@
 
-#
 # makefile for EuropeanOption.cpp under Borland C++
 
 .autodepend

@@ -1,5 +1,4 @@
 
-#
 # makefile for swapvaluation.cpp under Borland C++
 
 .autodepend
