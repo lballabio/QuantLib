@@ -5,7 +5,7 @@
 # $Id$
 
 .autodepend
-#.silent
+.silent
 
 # Options
 !ifdef DEBUG
@@ -15,7 +15,7 @@
 # Primary target:
 # QuantLib Examples
 examples::
-    cd HedgingError
+    cd DiscreteHedging
     $(MAKE)
     cd ..\Parities
     $(MAKE)
@@ -23,7 +23,7 @@ examples::
 
 # Clean up
 clean::
-    cd HedgingError
+    cd DiscreteHedging
     $(MAKE) clean
     cd ..\Parities
     $(MAKE) clean

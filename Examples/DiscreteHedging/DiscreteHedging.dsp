@@ -1,26 +1,26 @@
-# Microsoft Developer Studio Project File - Name="HedgingError" - Package Owner=<4>
+# Microsoft Developer Studio Project File - Name="DiscreteHedging" - Package Owner=<4>
 # Microsoft Developer Studio Generated Build File, Format Version 6.00
 # ** DO NOT EDIT **
 
 # TARGTYPE "Win32 (x86) Console Application" 0x0103
 
-CFG=HedgingError - Win32 OnTheEdgeDebug
+CFG=DiscreteHedging - Win32 OnTheEdgeDebug
 !MESSAGE This is not a valid makefile. To build this project using NMAKE,
 !MESSAGE use the Export Makefile command and run
 !MESSAGE 
-!MESSAGE NMAKE /f "HedgingError.mak".
+!MESSAGE NMAKE /f "DiscreteHedging.mak".
 !MESSAGE 
 !MESSAGE You can specify a configuration when running NMAKE
 !MESSAGE by defining the macro CFG on the command line. For example:
 !MESSAGE 
-!MESSAGE NMAKE /f "HedgingError.mak" CFG="HedgingError - Win32 OnTheEdgeDebug"
+!MESSAGE NMAKE /f "DiscreteHedging.mak" CFG="DiscreteHedging - Win32 OnTheEdgeDebug"
 !MESSAGE 
 !MESSAGE Possible choices for configuration are:
 !MESSAGE 
-!MESSAGE "HedgingError - Win32 Release" (based on "Win32 (x86) Console Application")
-!MESSAGE "HedgingError - Win32 Debug" (based on "Win32 (x86) Console Application")
-!MESSAGE "HedgingError - Win32 OnTheEdgeRelease" (based on "Win32 (x86) Console Application")
-!MESSAGE "HedgingError - Win32 OnTheEdgeDebug" (based on "Win32 (x86) Console Application")
+!MESSAGE "DiscreteHedging - Win32 Release" (based on "Win32 (x86) Console Application")
+!MESSAGE "DiscreteHedging - Win32 Debug" (based on "Win32 (x86) Console Application")
+!MESSAGE "DiscreteHedging - Win32 OnTheEdgeRelease" (based on "Win32 (x86) Console Application")
+!MESSAGE "DiscreteHedging - Win32 OnTheEdgeDebug" (based on "Win32 (x86) Console Application")
 !MESSAGE 
 
 # Begin Project
@@ -30,7 +30,7 @@ CFG=HedgingError - Win32 OnTheEdgeDebug
 CPP=cl.exe
 RSC=rc.exe
 
-!IF  "$(CFG)" == "HedgingError - Win32 Release"
+!IF  "$(CFG)" == "DiscreteHedging - Win32 Release"
 
 # PROP BASE Use_MFC 0
 # PROP BASE Use_Debug_Libraries 0
@@ -55,7 +55,7 @@ LINK32=link.exe
 # ADD LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:console /machine:I386 /libpath:"$(QL_DIR)\lib\Win32\VisualStudio\\"
 # SUBTRACT LINK32 /profile
 
-!ELSEIF  "$(CFG)" == "HedgingError - Win32 Debug"
+!ELSEIF  "$(CFG)" == "DiscreteHedging - Win32 Debug"
 
 # PROP BASE Use_MFC 0
 # PROP BASE Use_Debug_Libraries 1
@@ -80,12 +80,12 @@ LINK32=link.exe
 # ADD LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:console /debug /machine:I386 /libpath:"$(QL_DIR)\lib\Win32\VisualStudio\\"
 # SUBTRACT LINK32 /profile
 
-!ELSEIF  "$(CFG)" == "HedgingError - Win32 OnTheEdgeRelease"
+!ELSEIF  "$(CFG)" == "DiscreteHedging - Win32 OnTheEdgeRelease"
 
 # PROP BASE Use_MFC 0
 # PROP BASE Use_Debug_Libraries 0
-# PROP BASE Output_Dir "HedgingError___Win32_OnTheEdgeRelease"
-# PROP BASE Intermediate_Dir "HedgingError___Win32_OnTheEdgeRelease"
+# PROP BASE Output_Dir "DiscreteHedging___Win32_OnTheEdgeRelease"
+# PROP BASE Intermediate_Dir "DiscreteHedging___Win32_OnTheEdgeRelease"
 # PROP BASE Ignore_Export_Lib 0
 # PROP BASE Target_Dir ""
 # PROP Use_MFC 0
@@ -107,12 +107,12 @@ LINK32=link.exe
 # ADD LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:console /machine:I386 /libpath:"..\..\lib\Win32\VisualStudio\\"
 # SUBTRACT LINK32 /profile
 
-!ELSEIF  "$(CFG)" == "HedgingError - Win32 OnTheEdgeDebug"
+!ELSEIF  "$(CFG)" == "DiscreteHedging - Win32 OnTheEdgeDebug"
 
 # PROP BASE Use_MFC 0
 # PROP BASE Use_Debug_Libraries 1
-# PROP BASE Output_Dir "HedgingError___Win32_OnTheEdgeDebug"
-# PROP BASE Intermediate_Dir "HedgingError___Win32_OnTheEdgeDebug"
+# PROP BASE Output_Dir "DiscreteHedging___Win32_OnTheEdgeDebug"
+# PROP BASE Intermediate_Dir "DiscreteHedging___Win32_OnTheEdgeDebug"
 # PROP BASE Ignore_Export_Lib 0
 # PROP BASE Target_Dir ""
 # PROP Use_MFC 0
@@ -138,16 +138,16 @@ LINK32=link.exe
 
 # Begin Target
 
-# Name "HedgingError - Win32 Release"
-# Name "HedgingError - Win32 Debug"
-# Name "HedgingError - Win32 OnTheEdgeRelease"
-# Name "HedgingError - Win32 OnTheEdgeDebug"
+# Name "DiscreteHedging - Win32 Release"
+# Name "DiscreteHedging - Win32 Debug"
+# Name "DiscreteHedging - Win32 OnTheEdgeRelease"
+# Name "DiscreteHedging - Win32 OnTheEdgeDebug"
 # Begin Group "Source Files"
 
 # PROP Default_Filter "cpp;c;cxx;rc;def;r;odl;idl;hpj;bat"
 # Begin Source File
 
-SOURCE=.\HedgingError.cpp
+SOURCE=.\DiscreteHedging.cpp
 # End Source File
 # End Group
 # Begin Group "Header Files"

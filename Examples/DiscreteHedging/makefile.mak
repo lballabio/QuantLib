@@ -1,11 +1,11 @@
 
 #
-# makefile for HedgingError.cpp under Borland C++
+# makefile for DiscreteHedging.cpp under Borland C++
 #
 # $Id$
 
 .autodepend
-#.silent
+.silent
 
 # Debug version
 !ifdef DEBUG
@@ -29,8 +29,8 @@ CC_OPTS = $(CC_OPTS) -v -DQL_DEBUG
 !endif
 
 # Primary target:
-HedgingError$(_D).exe: HedgingError.cpp
-    bcc32 $(CC_OPTS) -L$(QL_LIB_DIR) -oHedgingError$(_D).obj -eHedgingError$(_D).exe HedgingError.cpp QuantLib$(_D).lib
+DiscreteHedging$(_D).exe: DiscreteHedging.cpp
+    bcc32 $(CC_OPTS) -L$(QL_LIB_DIR) -oDiscreteHedging$(_D).obj -eDiscreteHedging$(_D).exe DiscreteHedging.cpp QuantLib$(_D).lib
 
 # Clean up
 clean::

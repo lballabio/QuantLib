@@ -21,7 +21,7 @@
  * available at http://quantlib.org/group.html
 */
 
-/*! \file HedgingError.cpp
+/*! \file DiscreteHedging.cpp
     \brief Example on using QuantLib Montecarlo framework.
 
     This example computes profit and loss of a discrete interval hedging
@@ -49,7 +49,7 @@
     We examine the range of possibilities, computing the replication error.
 
     \fullpath
-    Examples/HedgingError/%HedgingError.cpp
+    Examples/DiscreteHedging/%DiscreteHedging.cpp
 */
 
 // $Id$

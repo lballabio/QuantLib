@@ -2,6 +2,9 @@
 # $Id$
 # $Source$
 # $Log$
+# Revision 1.10  2001/09/03 14:46:50  nando
+# HedgingError renamed as DiscreteHedging
+#
 # Revision 1.9  2001/08/29 09:17:42  nando
 # updated EXTRA_DIST files
 #
@@ -10,7 +13,7 @@
 #
 
 SUBDIRS =  \
-	HedgingError \
+	DiscreteHedging \
     Parities
 
 EXTRA_DIST = \
