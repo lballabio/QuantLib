@@ -25,6 +25,7 @@
 #include <ql/argsandresults.hpp>
 #include <ql/array.hpp>
 #include <ql/calendar.hpp>
+#include <ql/capvolstructures.hpp>
 #include <ql/cashflow.hpp>
 #include <ql/currency.hpp>
 #include <ql/dataformatters.hpp>
@@ -34,7 +35,6 @@
 #include <ql/errors.hpp>
 #include <ql/exercise.hpp>
 #include <ql/expressiontemplates.hpp>
-#include <ql/forwardvolsurface.hpp>
 #include <ql/grid.hpp>
 #include <ql/handle.hpp>
 #include <ql/history.hpp>
@@ -48,7 +48,7 @@
 #include <ql/riskstatistics.hpp>
 #include <ql/scheduler.hpp>
 #include <ql/solver1d.hpp>
-#include <ql/swaptionvolsurface.hpp>
+#include <ql/swaptionvolstructure.hpp>
 #include <ql/termstructure.hpp>
 #include <ql/types.hpp>
 
@@ -249,6 +249,7 @@
 #include <ql/Utilities/processingiterator.hpp>
 #include <ql/Utilities/steppingiterator.hpp>
 
+#include <ql/Volatilities/capflatvolvector.hpp>
 #include <ql/Volatilities/swaptionvolmatrix.hpp>
 
 
@@ -270,5 +271,6 @@ namespace QLRNG = QuantLib::RandomNumbers;
 namespace QLS1D = QuantLib::Solvers1D;
 namespace QLTST = QuantLib::TermStructures;
 namespace QLUTL = QuantLib::Utilities;
+namespace QLVOL = QuantLib::Volatilities;
 
 #endif

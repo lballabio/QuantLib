@@ -37,6 +37,7 @@ include_HEADERS = \
 	argsandresults.hpp \
 	array.hpp \
 	calendar.hpp \
+	capvolstructures.hpp \
 	cashflow.hpp \
 	config.hpp \
 	currency.hpp \
@@ -47,7 +48,6 @@ include_HEADERS = \
 	errors.hpp \
     exercise.hpp \
 	expressiontemplates.hpp \
-	forwardvolsurface.hpp \
     grid.hpp \
 	handle.hpp \
 	history.hpp \
@@ -63,7 +63,7 @@ include_HEADERS = \
 	riskstatistics.hpp \
 	scheduler.hpp \
 	solver1d.hpp \
-	swaptionvolsurface.hpp \
+	swaptionvolstructure.hpp \
 	termstructure.hpp \
 	types.hpp
 

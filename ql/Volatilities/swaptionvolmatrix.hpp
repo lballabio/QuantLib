@@ -16,7 +16,7 @@
 */
 
 /*! \file swaptionvolmatrix.hpp
-    \brief Swaption volatility matrix
+    \brief Swaption at-the-money volatility matrix
 
     \fullpath
     ql/Volatilities/%swaptionvolmatrix.hpp
@@ -24,10 +24,10 @@
 
 // $Id$
 
-#ifndef quantlib_volatility_matrix_h
-#define quantlib_volatility_matrix_h
+#ifndef quantlib_swaption_volatility_matrix_h
+#define quantlib_swaption_volatility_matrix_h
 
-#include "ql/swaptionvolsurface.hpp"
+#include "ql/swaptionvolstructure.hpp"
 #include "ql/Math/matrix.hpp"
 #include "ql/Math/bilinearinterpolation.hpp"
 #include <vector>
@@ -36,17 +36,18 @@ namespace QuantLib {
 
     namespace Volatilities {
         
-        //! Swaption volatility matrix
-        /*! This class provides the volatility for a given swaption by
-            interpolating a volatility matrix whose elements are the market
-            volatilities of a set of swaption with given exercise and length
+        //! Swaption at-the-money volatility matrix
+        /*! This class provides the at-the-money volatility for a given 
+            swaption by interpolating a volatility matrix whose elements are
+            the market volatilities of a set of swaption with given exercise 
+            date and length.
             
             \todo Either add correct copy behavior or inhibit copy. Right now,
                   a copied instance would end up with its own copy of the
                   exercise date and length vector but an interpolation pointing
                   to the original ones.
         */
-        class SwaptionVolatilityMatrix : public SwaptionVolatilitySurface {
+        class SwaptionVolatilityMatrix : public SwaptionVolatilityStructure {
           public:
             SwaptionVolatilityMatrix(
                 const Date& todaysDate,
@@ -73,7 +74,7 @@ namespace QuantLib {
                 std::vector<Time>::const_iterator,
                 Math::Matrix> VolInterpolation;
             Handle<VolInterpolation> interpolation_;
-            double volatilityImpl(Time start, Time length) const;
+            double volatilityImpl(Time start, Time length, Rate strike) const;
         };
 
 
@@ -126,7 +127,7 @@ namespace QuantLib {
         }
 
         inline double SwaptionVolatilityMatrix::volatilityImpl(
-            Time start, Time length) const {
+            Time start, Time length, Rate) const {
                 return (*interpolation_)(start,length);
         }
         
