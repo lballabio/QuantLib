@@ -5,6 +5,7 @@ fix build dir under cygwin
 config.h is installed?
 make bootstrap work under cygwin
 make Parities to work
+installer splash screen
 
 add examples to documentation
 cash flow stream for IRR, duration

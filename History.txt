@@ -1,46 +1,8 @@
+
+2001-09-xx Release 0.2
+
+2001-07-26 http://quantlib.org announced
+
 2001-05-31 Release 0.1.9
 
-Changes since Release 0.1.1:
-- Library:
-  - Style guidelines introduced (see http://quantlib.org/style.html)
-    and partially enforced
-  - full support for Microsoft Visual Studio
-  - full support for Linux/gcc
-  - momentarily broken support for Metrowerks CodeWarrior
-  - autoconfiscation (with specialized config.*.hpp files for platforms
-    without automake/autoconf support)
-  - Include files moved under Include/ql folder and referenced as
-    "ql/header.hpp"
-  - Implemented expression templates techniques for array algebra optimization
-  - Added custom iterators
-  - Improved term structure
-  - Added Asian, Bermudan, Shout, Cliquet, Himalaya, and Barrier
-    options (all with greeks calculation, control variated where possible)
-  - Added Helsinki and Wellington calendars
-  - Improved Normal distribution related functions: cumulative, inverse
-    cumulative, etc.
-  - Added uniform and Gaussian random number generators
-  - Added Statistics class (mean, variance, skewness, downside variance, etc.)
-  - Added RiskMeasures class: VAR, average shortfall, expected shortfall, etc.
-  - Added RiskStatistics class combining Statistics and RiskMeasures
-  - Added sample accumulator for multivariate analysis
-  - Added Monte Carlo tools
-  - Added matrix-related functions (square root, symmetric Schur decomposition)
-  - Added interpolation framework (linear and cubic spline interpolation
-    implemented).
-
-- Installation facilities:
-  - Added Win32 GUI installer for binaries
-
-- Documentation:
-  - support for Doxygen 1.2.7
-  - Added man documentation
-
-- Python extension:
-  moved into its own cvs module
-
-- Ruby extension:
-  added into its own cvs module (only partially implemented at this time)
-
-
-2000-11-21 Release 0.1.1
+2000-11-21 Release 0.1.1 officially announced
