@@ -49,10 +49,10 @@
     \endcode
     to the mail headers, so that our filters---I mean, WE can take
     immediate care of it.
-    
+
 
     \section contributing Contributing to the project
-    
+
     <strong>
     I'm interested in getting involved with the project. What should
     I do?
@@ -66,5 +66,19 @@
     Asking the administrators to choose a task for you is appreciated,
     but it increases the odds that the chosen task will bore you or
     otherwise discourage you from completing it.
-    
+
+    \section msvc Using Microsoft Visual C++
+
+    <strong>
+    I encounter the following linking error:
+    \code
+    LINK : fatal error LNK1104: cannot open file "QuantLib-vcX-xx-xxx-a_b_c.lib"
+    \endcode
+    </strong>
+
+    The folder including QuantLib-vcX-xx-xxx-a_b_c.lib is not in your link path
+    (see Project Settings | Link | Input in VC6 or Property Pages | Linker |
+    Input in VC7) or you haven't really built QuantLib-vcX-xx-xxx-a_b_c.lib yet.
+    Note that each build configuration produces a different library.
+
 */
