@@ -425,7 +425,7 @@ int main(int argc, char* argv[])
 
 
         // Monte Carlo Method
-        timeSteps = 365;
+        timeSteps = 1;
 
         method = "MC (crude)";
         Size mcSeed = 42;
@@ -455,6 +455,7 @@ int main(int argc, char* argv[])
              << std::endl;
 
         method = "MC (Sobol)";
+        timeSteps = 1;
         Size nSamples = 32768;  // 2^15
 
         #if defined(QL_PATCH_MICROSOFT)
@@ -478,7 +479,6 @@ int main(int argc, char* argv[])
              << DoubleFormatter::toString(discrepancy, 6) << "\t"
              << DoubleFormatter::toString(relativeDiscrepancy, 6)
              << std::endl;
-
 
 
         // quanto and all that
