@@ -66,13 +66,15 @@ namespace QuantLib {
                          const RelinkableHandle<TermStructure>& dividendTS,
                          const RelinkableHandle<TermStructure>& riskFreeTS,
                          const RelinkableHandle<BlackVolTermStructure>& volTS,
-                         double jumpIntensity,
-                         double meanLogJump)
+                         double jumpInt,
+                         double meanLogJ,
+                         double jumpVol)
         : BlackScholesStochasticProcess(stateVariable, dividendTS, riskFreeTS,
-                                        volTS), 
-          jumpIntensity(jumpIntensity), meanLogJump(meanLogJump) {}
+                                        volTS),
+          jumpIntensity(jumpInt), meanLogJump(meanLogJ),
+          jumpVolatility(jumpVol) {}
 
-        double jumpIntensity, meanLogJump;
+        double jumpIntensity, meanLogJump, jumpVolatility;
     };
 
 }
