@@ -19,6 +19,8 @@ examples::
     $(MAKE)
     cd ..\Parities
     $(MAKE)
+    cd ..\Swap
+    $(MAKE)
     cd ..
 
 # Clean up
@@ -26,5 +28,7 @@ clean::
     cd DiscreteHedging
     $(MAKE) clean
     cd ..\Parities
+    $(MAKE) clean
+    cd ..\Swap
     $(MAKE) clean
     cd ..

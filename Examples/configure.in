@@ -65,6 +65,7 @@ dnl Check for QuantLib
 AM_PATH_QUANTLIB(0.2.0, [AC_DEFINE(HAVE_QUANTLIB)])
 
 AC_OUTPUT(Makefile \
+    Swap/Makefile \
     Parities/Makefile \
     DiscreteHedging/Makefile
     )
