@@ -15,6 +15,7 @@ BCC_INCLUDE    = $(MAKEDIR)\..\include
 
 # Object files
 OBJS = \
+    mcamericanbasketengine.obj$(_D) \
     stulzengine.obj$(_D)
 
 

@@ -125,8 +125,8 @@ namespace QuantLib {
                              const std::vector<double>& assetPrices) {
 
             double basketPrice = assetPrices[0];
-            QuantLib::Size numAssets = assetPrices.size();
-            QuantLib::Size j = 0;
+            Size numAssets = assetPrices.size();
+            Size j;
 
             switch (basketType) {
               case QuantLib::BasketOption::Max:
@@ -515,9 +515,7 @@ namespace QuantLib {
         // basis function definitions
         // could use a new set of paths here   
         GeneralStatistics stats;
-        double value = 0.0;
-        double exerciseValue = 0.0;
-        double continueValue = 0.0;
+        double value, exerciseValue, continueValue;
         for (i = 0; i < N; i++) {
             bool exercised = false;
 
