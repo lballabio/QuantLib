@@ -28,6 +28,9 @@
     $Source$
     $Name$
     $Log$
+    Revision 1.2  2001/05/24 11:34:07  nando
+    smoothing #include xx.hpp
+
     Revision 1.1  2001/04/09 14:05:48  nando
     all the *.hpp moved below the Include/ql level
 
@@ -64,7 +67,6 @@
 #ifndef quantlib_cubic_spline_h
 #define quantlib_cubic_spline_h
 
-#include "ql/qldefines.hpp"
 #include "ql/qlerrors.hpp"
 #include "ql/Math/interpolation.hpp"
 #include <vector>

@@ -27,6 +27,9 @@
     $Source$
     $Name$
     $Log$
+    Revision 1.3  2001/05/24 11:34:07  nando
+    smoothing #include xx.hpp
+
     Revision 1.2  2001/05/23 19:30:27  nando
     smoothing #include xx.hpp
 
@@ -40,9 +43,6 @@
     Headers policy part 1:
     Headers should have a .hpp (lowercase) filename extension
     All *.h renamed to *.hpp
-
-    Revision 1.5  2001/01/30 15:48:51  marmar
-    Documentation revised
 
 */
 

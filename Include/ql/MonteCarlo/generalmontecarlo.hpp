@@ -27,6 +27,9 @@
   $Source$
   $Name$
   $Log$
+  Revision 1.2  2001/05/24 11:34:07  nando
+  smoothing #include xx.hpp
+
   Revision 1.1  2001/04/09 14:05:48  nando
   all the *.hpp moved below the Include/ql level
 
@@ -37,17 +40,6 @@
   Headers policy part 1:
   Headers should have a .hpp (lowercase) filename extension
   All *.h renamed to *.hpp
-
-  Revision 1.3  2001/01/30 15:48:25  marmar
-  Template class updated
-
-    Revision 1.2  2001/01/30 09:21:48  marmar
-    Documentation updated
-
-    Revision 1.1  2001/01/30 09:03:38  marmar
-    GeneralMonteCarlo contains the basic ideas of any Monte Carlo
-    simulation: sample from a "sample generator" and accumulate
-    in a "sample accumulator".
 
 */
 

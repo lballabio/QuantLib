@@ -27,6 +27,9 @@
 
     $Source$
     $Log$
+    Revision 1.2  2001/05/24 11:34:07  nando
+    smoothing #include xx.hpp
+
     Revision 1.1  2001/04/09 14:05:48  nando
     all the *.hpp moved below the Include/ql level
 
@@ -40,43 +43,11 @@
     #include directives, as in
     #include <Solvers1d/newton.hpp>
 
-    Revision 1.1  2001/04/04 11:07:22  nando
-    Headers policy part 1:
-    Headers should have a .hpp (lowercase) filename extension
-    All *.h renamed to *.hpp
-
-    Revision 1.7  2001/02/22 14:25:23  lballabio
-    Template methods moved to header file
-
-    Revision 1.6  2001/02/20 13:59:00  nando
-    added class VarTool.
-    RiskStatistics was derived from Statistics:
-    now RiskStatistics includes VarTool and Statistics.
-    VarTool is not based on Statistics, but requires
-    mean and standardDeviation as input.
-
-    Revision 1.5  2001/01/26 11:08:55  marmar
-    Now the covariance() method is consistent with the variance()
-    method of the class Statistics
-
-    Revision 1.4  2001/01/25 15:11:53  lballabio
-    Added helper functions to make iterators
-
-    Revision 1.3  2001/01/25 11:57:32  lballabio
-    Included outer product and sqrt into matrix.h
-
-    Revision 1.2  2001/01/24 14:56:47  aleppo
-    Added iterator combining-iterator
-
-    Revision 1.1  2001/01/24 10:50:50  marmar
-    Sample accumulator for multivariate analisys
-
 */
 
 #ifndef quantlib_math_multivariate_accumulator_h
 #define quantlib_math_multivariate_accumulator_h
 
-#include "ql/qldefines.hpp"
 #include "ql/null.hpp"
 #include "ql/qlerrors.hpp"
 #include "ql/dataformatters.hpp"

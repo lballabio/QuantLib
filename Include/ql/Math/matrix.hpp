@@ -28,6 +28,9 @@
     $Source$
     $Name$
     $Log$
+    Revision 1.2  2001/05/24 11:34:07  nando
+    smoothing #include xx.hpp
+
     Revision 1.1  2001/04/09 14:05:48  nando
     all the *.hpp moved below the Include/ql level
 
@@ -41,37 +44,11 @@
     #include directives, as in
     #include <Solvers1d/newton.hpp>
 
-    Revision 1.1  2001/04/04 11:07:22  nando
-    Headers policy part 1:
-    Headers should have a .hpp (lowercase) filename extension
-    All *.h renamed to *.hpp
-
-    Revision 1.6  2001/02/16 15:13:25  lballabio
-    renamed sqrt to matrixSqrt
-
-    Revision 1.5  2001/02/02 18:06:27  lballabio
-    Cosmetic changes (wrapping and docs)
-
-    Revision 1.4  2001/02/02 10:42:24  marmar
-    Method added:
-       Array diagonal(void) const;
-    to obtain the diagonal of a Matrix as an Array
-
-    Revision 1.3  2001/01/25 11:54:07  lballabio
-    Allocation bug fixed
-
-    Revision 1.2  2001/01/24 09:20:24  marmar
-    Function Matrix transpose(Matrix & m const); added
-
-    Revision 1.1  2001/01/23 18:12:50  lballabio
-    Added matrix.h to Include/Math
-
 */
 
 #ifndef quantlib_matrix_h
 #define quantlib_matrix_h
 
-#include "ql/qldefines.hpp"
 #include "ql/qlerrors.hpp"
 #include "ql/array.hpp"
 #include "ql/Utilities/steppingiterator.hpp"

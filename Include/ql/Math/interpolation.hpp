@@ -28,6 +28,9 @@
     $Source$
     $Name$
     $Log$
+    Revision 1.2  2001/05/24 11:34:07  nando
+    smoothing #include xx.hpp
+
     Revision 1.1  2001/04/09 14:05:48  nando
     all the *.hpp moved below the Include/ql level
 
@@ -42,18 +45,11 @@
     Revision 1.3  2001/02/16 15:32:22  lballabio
     Used QL_ITERATOR_TRAITS macro
 
-    Revision 1.2  2001/01/17 14:37:55  nando
-    tabs removed
-
-    Revision 1.1  2001/01/15 13:36:01  lballabio
-    Added interpolation classes
-
 */
 
 #ifndef quantlib_interpolation_h
 #define quantlib_interpolation_h
 
-#include "ql/qldefines.hpp"
 #include "ql/qlerrors.hpp"
 #include <iterator>
 

@@ -28,6 +28,9 @@
     $Id$
     $Source$
     $Log$
+    Revision 1.2  2001/05/24 11:34:07  nando
+    smoothing #include xx.hpp
+
     Revision 1.1  2001/05/16 09:57:27  lballabio
     Added indexes and piecewise flat forward curve
 
@@ -36,21 +39,20 @@
 #ifndef quantlib_xibor_hpp
 #define quantlib_xibor_hpp
 
-#include "ql/qldefines.hpp"
 #include "ql/index.hpp"
 #include "ql/termstructure.hpp"
 
 namespace QuantLib {
 
     namespace Indexes {
-        
+
         //! purely virtual base class for libor indexes
-        /*! \todo add deposit conventions to Currency class and 
+        /*! \todo add deposit conventions to Currency class and
             implement any other inspector by using currency().
         */
         class Xibor : public Index {
           public:
-            Rate fixing(const Date& fixingDate, 
+            Rate fixing(const Date& fixingDate,
                 int n, TimeUnit unit) const;
           private:
             Handle<TermStructure> termStructure() const;

@@ -27,6 +27,9 @@
     $Source$
     $Name$
     $Log$
+    Revision 1.3  2001/05/24 11:34:07  nando
+    smoothing #include xx.hpp
+
     Revision 1.2  2001/05/23 19:30:27  nando
     smoothing #include xx.hpp
 
@@ -43,19 +46,6 @@
 
     Revision 1.1  2001/02/13 15:05:23  lballabio
     Trimmed a couple of long file names for Mac compatibility
-
-    Revision 1.1  2001/02/05 16:51:10  marmar
-    AverageAsianPathPricer substituted by AveragePriceAsianPathPricer
-    and AverageStrikeAsianPathPricer
-
-    Revision 1.1  2001/01/05 11:52:12  lballabio
-    Renamed SinglePathAveragePriceAsianPricer to AveragePriceAsianPathPricer
-
-    Revision 1.2  2001/01/05 11:42:37  lballabio
-    Renamed SinglePathEuropeanPricer to EuropeanPathPricer
-
-    Revision 1.1  2001/01/04 17:31:22  marmar
-    Alpha version of the Monte Carlo tools.
 
 */
 

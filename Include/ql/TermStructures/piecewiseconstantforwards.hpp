@@ -28,45 +28,20 @@
     $Source$
     $Name$
     $Log$
+    Revision 1.4  2001/05/24 11:34:07  nando
+    smoothing #include xx.hpp
+
     Revision 1.3  2001/05/24 11:15:57  lballabio
     Stripped conventions from Currencies
 
     Revision 1.2  2001/05/14 17:09:47  lballabio
     Went for simplicity and removed Observer-Observable relationships from Instrument
 
-    Revision 1.1  2001/04/09 14:07:00  nando
-    all the *.hpp moved below the Include/ql level
-
-    Revision 1.2  2001/04/06 18:46:20  nando
-    changed Authors, Contributors, Licence and copyright header
-
-    Revision 1.1  2001/04/04 11:07:23  nando
-    Headers policy part 1:
-    Headers should have a .hpp (lowercase) filename extension
-    All *.h renamed to *.hpp
-
-    Revision 1.8  2001/01/18 16:22:18  nando
-    deposit file and class renamed to DepositRate
-
-    Revision 1.7  2001/01/18 14:36:30  nando
-    80 columns enforced
-    private members with trailing underscore
-
-    Revision 1.6  2001/01/18 13:18:50  nando
-    now term structure allows extrapolation
-
-    Revision 1.5  2001/01/17 14:37:56  nando
-    tabs removed
-
-    Revision 1.4  2000/12/14 12:32:31  lballabio
-    Added CVS tags in Doxygen file documentation blocks
-
 */
 
 #ifndef quantlib_piecewise_constant_forward_curve_h
 #define quantlib_piecewise_constant_forward_curve_h
 
-#include "ql/qldefines.hpp"
 #include "ql/termstructure.hpp"
 #include "ql/depositrate.hpp"
 #include <vector>

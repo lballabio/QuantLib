@@ -27,6 +27,9 @@
     $Source$
     $Name$
     $Log$
+    Revision 1.3  2001/05/24 11:34:07  nando
+    smoothing #include xx.hpp
+
     Revision 1.2  2001/05/23 19:30:27  nando
     smoothing #include xx.hpp
 
@@ -41,26 +44,6 @@
     Headers should have a .hpp (lowercase) filename extension
     All *.h renamed to *.hpp
 
-    Revision 1.7  2001/04/02 07:40:07  marmar
-    First date is allowed to be zero
-
-    Revision 1.6  2001/03/28 13:39:47  marmar
-    MultiPathGenerator now has a default for mean
-
-    Revision 1.5  2001/03/28 12:49:07  marmar
-    Dates are now used for input instead of time delays
-
-    Revision 1.4  2001/02/06 17:07:31  marmar
-    New constructor added
-
-    Revision 1.3  2001/02/05 13:52:47  lballabio
-    Makefiles fixed
-
-    Revision 1.2  2001/02/02 10:38:14  marmar
-    Template class for a multi-path generator
-
-    Revision 1.1  2001/01/25 16:11:17  marmar
-    MultiPath, the first step for a multi-dimensional Monte Carlo
 */
 
 #ifndef quantlib_montecarlo_multi_path_generator_h

@@ -27,6 +27,9 @@
 
     $Source$
     $Log$
+    Revision 1.4  2001/05/24 11:34:07  nando
+    smoothing #include xx.hpp
+
     Revision 1.3  2001/05/15 12:39:38  lballabio
     Removed unnecessary constructors
 
@@ -39,17 +42,11 @@
     Revision 1.2  2001/04/06 18:46:20  nando
     changed Authors, Contributors, Licence and copyright header
 
-    Revision 1.1  2001/04/04 11:07:23  nando
-    Headers policy part 1:
-    Headers should have a .hpp (lowercase) filename extension
-    All *.h renamed to *.hpp
-
 */
 
 #ifndef quantlib_solver1d_brent_h
 #define quantlib_solver1d_brent_h
 
-#include "ql/qldefines.hpp"
 #include "ql/solver1d.hpp"
 
 namespace QuantLib {

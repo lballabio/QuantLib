@@ -28,6 +28,9 @@
     $Source$
     $Name$
     $Log$
+    Revision 1.3  2001/05/24 11:34:07  nando
+    smoothing #include xx.hpp
+
     Revision 1.2  2001/05/15 10:32:02  aleppo
     Added Down Side Deviation statistic quantity
 
@@ -42,36 +45,11 @@
     Headers should have a .hpp (lowercase) filename extension
     All *.h renamed to *.hpp
 
-    Revision 1.13  2001/03/22 12:25:31  marmar
-    Chaged method errorEstimate
-
-    Revision 1.12  2001/01/24 09:19:05  marmar
-    Documentation revised
-
-    Revision 1.11  2001/01/15 16:57:07  lballabio
-    Documentation fixed
-
-    Revision 1.10  2001/01/12 17:33:34  nando
-    minor changes (better error messages)
-
-    Revision 1.9  2001/01/09 12:08:42  lballabio
-    Cleaned up style in a few files
-
-    Revision 1.8  2000/12/27 14:05:56  lballabio
-    Turned Require and Ensure functions into QL_REQUIRE and QL_ENSURE macros
-
-    Revision 1.7  2000/12/15 09:17:56  nando
-    removed unnecessary variable token
-
-    Revision 1.6  2000/12/14 12:32:30  lballabio
-    Added CVS tags in Doxygen file documentation blocks
-
 */
 
 #ifndef quantlib_statistic_h
 #define quantlib_statistic_h
 
-#include "ql/qldefines.hpp"
 #include "ql/null.hpp"
 #include "ql/qlerrors.hpp"
 #include "ql/dataformatters.hpp"
@@ -108,9 +86,9 @@ namespace QuantLib {
             */
             double standardDeviation() const;
             /*! returns the square root of the downside variance, defined as
-                \f[ \frac{N}{N-1} \times \frac{ \sum_{i=1}^{N} 
+                \f[ \frac{N}{N-1} \times \frac{ \sum_{i=1}^{N}
                 \theta \times x_i^{2}}{ \sum_{i=1}^{N} w_i} \f],
-                where \f$ \theta \f$ = 0 if x > 0 and \f$ \theta \f$ =1 if x <0 
+                where \f$ \theta \f$ = 0 if x > 0 and \f$ \theta \f$ =1 if x <0
             */
             double downsideDeviation() const;
             /*! returns the error estimate \f$ \epsilon \f$, defined as the
@@ -161,7 +139,7 @@ namespace QuantLib {
             double sampleNumber_;
             double sampleWeight_;
             double sum_, quadraticSum_, downsideQuadraticSum_,
-                   cubicSum_, fourthPowerSum_;           
+                   cubicSum_, fourthPowerSum_;
             double min_, max_;
         };
 
@@ -178,7 +156,7 @@ namespace QuantLib {
           sum_ += temp;
           temp *= value;
           quadraticSum_ += temp;
-          downsideQuadraticSum_ += value < 0.0 ? temp : 0.0; 
+          downsideQuadraticSum_ += value < 0.0 ? temp : 0.0;
           temp *= value;
           cubicSum_ += temp;
           temp *= value;

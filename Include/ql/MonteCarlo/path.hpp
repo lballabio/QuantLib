@@ -27,6 +27,9 @@
     $Source$
     $Name$
     $Log$
+    Revision 1.3  2001/05/24 11:34:07  nando
+    smoothing #include xx.hpp
+
     Revision 1.2  2001/05/23 19:30:27  nando
     smoothing #include xx.hpp
 
@@ -40,24 +43,6 @@
     Headers policy part 1:
     Headers should have a .hpp (lowercase) filename extension
     All *.h renamed to *.hpp
-
-    Revision 1.6  2001/01/17 14:37:56  nando
-    tabs removed
-
-    Revision 1.5  2001/01/17 11:54:02  marmar
-    Some documentation added and 80 columns format enforced.
-
-    Revision 1.4  2001/01/08 11:44:17  lballabio
-    Array back into QuantLib namespace - Math namespace broke expression templates, go figure
-
-    Revision 1.3  2001/01/08 10:28:16  lballabio
-    Moved Array to Math namespace
-
-    Revision 1.2  2001/01/05 15:58:27  lballabio
-    Fixed Doxygen documentation
-
-    Revision 1.1  2001/01/04 17:31:22  marmar
-    Alpha version of the Monte Carlo tools.
 
 */
 

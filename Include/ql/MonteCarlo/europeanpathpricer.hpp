@@ -27,6 +27,9 @@
     $Source$
     $Name$
     $Log$
+    Revision 1.2  2001/05/24 11:34:07  nando
+    smoothing #include xx.hpp
+
     Revision 1.1  2001/04/09 14:05:48  nando
     all the *.hpp moved below the Include/ql level
 
@@ -40,18 +43,6 @@
 
     Revision 1.3  2001/02/02 10:48:10  marmar
     Destructor already implemented in base class
-
-    Revision 1.2  2001/01/17 11:54:02  marmar
-    Some documentation added and 80 columns format enforced.
-
-    Revision 1.1  2001/01/05 11:42:37  lballabio
-    Renamed SinglePathEuropeanPricer to EuropeanPathPricer
-
-    Revision 1.2  2001/01/05 11:02:37  lballabio
-    Renamed SinglePathPricer to PathPricer
-
-    Revision 1.1  2001/01/04 17:31:22  marmar
-    Alpha version of the Monte Carlo tools.
 
 */
 

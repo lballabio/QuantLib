@@ -28,6 +28,9 @@
     $Source$
     $Name$
     $Log$
+    Revision 1.3  2001/05/24 11:34:07  nando
+    smoothing #include xx.hpp
+
     Revision 1.2  2001/05/09 11:06:18  nando
     A few comments modified/removed
 
@@ -53,7 +56,6 @@
 #ifndef quantlib_normal_distribution_h
 #define quantlib_normal_distribution_h
 
-#include "ql/qldefines.hpp"
 #include "ql/dataformatters.hpp"
 #include <functional>
 

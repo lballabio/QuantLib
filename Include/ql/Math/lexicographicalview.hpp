@@ -28,6 +28,9 @@
     $Source$
     $Name$
     $Log$
+    Revision 1.2  2001/05/24 11:34:07  nando
+    smoothing #include xx.hpp
+
     Revision 1.1  2001/04/09 14:05:48  nando
     all the *.hpp moved below the Include/ql level
 
@@ -41,29 +44,11 @@
     #include directives, as in
     #include <Solvers1d/newton.hpp>
 
-    Revision 1.1  2001/04/04 11:07:22  nando
-    Headers policy part 1:
-    Headers should have a .hpp (lowercase) filename extension
-    All *.h renamed to *.hpp
-
-    Revision 1.4  2001/02/16 15:32:22  lballabio
-    Used QL_ITERATOR_TRAITS macro
-
-    Revision 1.3  2001/01/23 11:08:51  lballabio
-    Renamed iterators in Include\Utilities and related files
-
-    Revision 1.2  2001/01/17 14:37:55  nando
-    tabs removed
-
-    Revision 1.1  2001/01/15 13:39:45  lballabio
-    Added 2-D lexicographical view of an array
-
 */
 
 #ifndef quantlib_lexicographical_view_h
 #define quantlib_lexicographical_view_h
 
-#include "ql/qldefines.hpp"
 #include "ql/Utilities/steppingiterator.hpp"
 
 namespace QuantLib {

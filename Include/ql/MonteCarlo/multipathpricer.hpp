@@ -27,6 +27,9 @@
     $Source$
     $Name$
     $Log$
+    Revision 1.3  2001/05/24 11:34:07  nando
+    smoothing #include xx.hpp
+
     Revision 1.2  2001/05/23 19:30:27  nando
     smoothing #include xx.hpp
 
@@ -35,17 +38,6 @@
 
     Revision 1.2  2001/04/06 18:46:20  nando
     changed Authors, Contributors, Licence and copyright header
-
-    Revision 1.1  2001/04/04 11:07:22  nando
-    Headers policy part 1:
-    Headers should have a .hpp (lowercase) filename extension
-    All *.h renamed to *.hpp
-
-    Revision 1.2  2001/02/02 10:50:02  marmar
-    Include-guard redefined
-
-    Revision 1.1  2001/01/25 16:11:17  marmar
-    MultiPath, the first step for a multi-dimensional Monte Carlo
 
 */
 

@@ -28,6 +28,9 @@
     $Id$
     $Source$
     $Log$
+    Revision 1.3  2001/05/24 11:34:07  nando
+    smoothing #include xx.hpp
+
     Revision 1.2  2001/05/24 11:15:57  lballabio
     Stripped conventions from Currencies
 
@@ -39,7 +42,6 @@
 #ifndef quantlib_euribor_hpp
 #define quantlib_euribor_hpp
 
-#include "ql/qldefines.hpp"
 #include "ql/Indexes/xibor.hpp"
 #include "ql/Calendars/target.hpp"
 #include "ql/DayCounters/actual360.hpp"
@@ -47,7 +49,7 @@
 namespace QuantLib {
 
     namespace Indexes {
-        
+
         //! Euribor index
         class Euribor : public Xibor {
           public:
@@ -62,7 +64,7 @@ namespace QuantLib {
             }
             std::string name() const { return "Euribor"; }
         };
-    
+
     }
 
 }
