@@ -155,6 +155,32 @@ namespace QuantLib {
     }
 
 
+    //! Binary Gap payoff
+    class GapPayoff : public StrikedTypePayoff {
+    public:
+        GapPayoff(Option::Type type,
+                  double strike,
+                  double strikePayoff)
+        : StrikedTypePayoff(type, strike), strikePayoff_(strikePayoff) {}
+        double operator()(double price) const;
+        double strikePayoff() const { return strikePayoff_;}
+    private:
+        double strikePayoff_;
+    };
+
+    inline double GapPayoff::operator()(double price) const {
+        switch (type_) {
+          case Option::Call:
+              return (price-strike_ > 0.0 ? price-strikePayoff_ : 0.0);
+          case Option::Put:
+              return (strike_-price > 0.0 ? strikePayoff_-price : 0.0);
+          case Option::Straddle:
+              return 0.0;
+          default:
+              throw Error("Unknown/Illegal option type");
+        }
+    }
+
     //! Binary supershare payoff
     class SuperSharePayoff : public StrikedTypePayoff {
     public:
