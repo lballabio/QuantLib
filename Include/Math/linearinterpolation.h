@@ -28,6 +28,9 @@
     $Source$
     $Name$
     $Log$
+    Revision 1.3  2001/02/16 15:32:22  lballabio
+    Used QL_ITERATOR_TRAITS macro
+
     Revision 1.2  2001/01/17 14:37:55  nando
     tabs removed
 
@@ -56,10 +59,10 @@ namespace QuantLib {
                 them from Interpolation - they shouldn't hurt, though.
             */
             typedef
-              typename std::iterator_traits<RandomAccessIterator1>::value_type
+              typename QL_ITERATOR_TRAITS<RandomAccessIterator1>::value_type
                 argument_type;
             typedef
-              typename std::iterator_traits<RandomAccessIterator2>::value_type
+              typename QL_ITERATOR_TRAITS<RandomAccessIterator2>::value_type
                 result_type;
              LinearInterpolation(const RandomAccessIterator1& xBegin,
                  const RandomAccessIterator1& xEnd,

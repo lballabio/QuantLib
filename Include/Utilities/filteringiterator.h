@@ -28,6 +28,9 @@
     $Source$
     $Name$
     $Log$
+    Revision 1.12  2001/02/16 15:33:03  lballabio
+    Used QL_ITERATOR_TRAITS macro
+
     Revision 1.11  2001/02/14 10:38:28  lballabio
     Found out what 14.6.2.3 of the standard means
 
@@ -72,19 +75,19 @@ namespace QuantLib {
         template <class Iterator, class UnaryPredicate>
         class filtering_iterator : public QL_ITERATOR<
             typename filtering_iterator_tag<
-                typename std::iterator_traits<Iterator>::iterator_category
+                typename QL_ITERATOR_TRAITS<Iterator>::iterator_category
                 >::iterator_category,
-            typename std::iterator_traits<Iterator>::value_type,
-            typename std::iterator_traits<Iterator>::difference_type,
-            typename std::iterator_traits<Iterator>::pointer,
-            typename std::iterator_traits<Iterator>::reference>
+            typename QL_ITERATOR_TRAITS<Iterator>::value_type,
+            typename QL_ITERATOR_TRAITS<Iterator>::difference_type,
+            typename QL_ITERATOR_TRAITS<Iterator>::pointer,
+            typename QL_ITERATOR_TRAITS<Iterator>::reference>
         {
           public:
             /* These typedefs are needed even though inherited from QL_ITERATOR 
                (see 14.6.2.3 of the standard).  */
-            typedef typename std::iterator_traits<Iterator>::pointer 
+            typedef typename QL_ITERATOR_TRAITS<Iterator>::pointer 
                 pointer;
-            typedef typename std::iterator_traits<Iterator>::reference 
+            typedef typename QL_ITERATOR_TRAITS<Iterator>::reference 
                 reference;
             filtering_iterator(const Iterator&, const UnaryPredicate&,
                 const Iterator& beforeBegin, const Iterator& end);

@@ -28,6 +28,9 @@
     $Source$
     $Name$
     $Log$
+    Revision 1.4  2001/02/16 15:32:22  lballabio
+    Used QL_ITERATOR_TRAITS macro
+
     Revision 1.3  2001/01/23 11:08:51  lballabio
     Renamed iterators in Include\Utilities and related files
 
@@ -63,14 +66,14 @@ namespace QuantLib {
             typedef RandomAccessIterator x_iterator;
             //! iterates backwards over \f$ v_{ij} \f$ with \f$ j \f$ fixed.
             typedef QL_REVERSE_ITERATOR(RandomAccessIterator,
-                typename std::iterator_traits<RandomAccessIterator>::value_type)
+                typename QL_ITERATOR_TRAITS<RandomAccessIterator>::value_type)
                     reverse_x_iterator;
             //! iterates over \f$ v_{ij} \f$ with \f$ i \f$ fixed.
             typedef Utilities::stepping_iterator<RandomAccessIterator> 
                 y_iterator;
             //! iterates backwards over \f$ v_{ij} \f$ with \f$ i \f$ fixed.
             typedef QL_REVERSE_ITERATOR(y_iterator,
-                typename std::iterator_traits<RandomAccessIterator>::value_type)
+                typename QL_ITERATOR_TRAITS<RandomAccessIterator>::value_type)
                     reverse_y_iterator;
 
             //! \name Element access

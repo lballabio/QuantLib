@@ -28,6 +28,9 @@
     $Source$
     $Name$
     $Log$
+    Revision 1.3  2001/02/16 15:32:22  lballabio
+    Used QL_ITERATOR_TRAITS macro
+
     Revision 1.2  2001/01/17 14:37:55  nando
     tabs removed
 
@@ -60,10 +63,10 @@ namespace QuantLib {
                 them from unary_function - they shouldn't hurt, though.
             */
             typedef
-              typename std::iterator_traits<RandomAccessIterator1>::value_type
+              typename QL_ITERATOR_TRAITS<RandomAccessIterator1>::value_type
                 argument_type;
             typedef
-              typename std::iterator_traits<RandomAccessIterator2>::value_type
+              typename QL_ITERATOR_TRAITS<RandomAccessIterator2>::value_type
                 result_type;
             Interpolation(const RandomAccessIterator1& xBegin,
                 const RandomAccessIterator1& xEnd,
@@ -93,7 +96,7 @@ namespace QuantLib {
             const RandomAccessIterator& begin,
             const RandomAccessIterator& end,
             const typename
-            std::iterator_traits<RandomAccessIterator>::value_type& x);
+            QL_ITERATOR_TRAITS<RandomAccessIterator>::value_type& x);
 
 
         // inline definitions
@@ -112,7 +115,7 @@ namespace QuantLib {
 
         template <class I>
         I Location(const I& begin, const I& end,
-            const typename std::iterator_traits<I>::value_type& x) {
+            const typename QL_ITERATOR_TRAITS<I>::value_type& x) {
             I i = begin, j = end-1;
                if (x < *i || x > *j)
                 return end;

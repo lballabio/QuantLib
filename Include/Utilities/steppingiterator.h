@@ -28,6 +28,9 @@
     $Source$
     $Name$
     $Log$
+    Revision 1.10  2001/02/16 15:33:03  lballabio
+    Used QL_ITERATOR_TRAITS macro
+
     Revision 1.9  2001/02/14 10:38:28  lballabio
     Found out what 14.6.2.3 of the standard means
 
@@ -62,20 +65,20 @@ namespace QuantLib {
         template <class RandomAccessIterator>
         class stepping_iterator : public QL_ITERATOR<
             std::random_access_iterator_tag,
-            typename std::iterator_traits<RandomAccessIterator>::value_type,
-            typename std::iterator_traits<
+            typename QL_ITERATOR_TRAITS<RandomAccessIterator>::value_type,
+            typename QL_ITERATOR_TRAITS<
                 RandomAccessIterator>::difference_type,
-            typename std::iterator_traits<RandomAccessIterator>::pointer,
-            typename std::iterator_traits<RandomAccessIterator>::reference>
+            typename QL_ITERATOR_TRAITS<RandomAccessIterator>::pointer,
+            typename QL_ITERATOR_TRAITS<RandomAccessIterator>::reference>
         {
           public:
             /* These typedefs are needed even though inherited from QL_ITERATOR 
                (see 14.6.2.3 of the standard).  */
-            typedef typename std::iterator_traits<
+            typedef typename QL_ITERATOR_TRAITS<
                 RandomAccessIterator>::difference_type difference_type;
-            typedef typename std::iterator_traits<
+            typedef typename QL_ITERATOR_TRAITS<
                 RandomAccessIterator>::pointer pointer;
-            typedef typename std::iterator_traits<
+            typedef typename QL_ITERATOR_TRAITS<
                 RandomAccessIterator>::reference reference;
 
             stepping_iterator(const RandomAccessIterator&, 

@@ -28,6 +28,9 @@
     $Source$
     $Name$
     $Log$
+    Revision 1.10  2001/02/16 15:33:03  lballabio
+    Used QL_ITERATOR_TRAITS macro
+
     Revision 1.9  2001/02/14 18:43:07  lballabio
     Added coupling iterators
 
@@ -75,9 +78,9 @@ namespace QuantLib {
         */
         template <class Iterator, class Function>
         class combining_iterator : public QL_ITERATOR<
-            typename std::iterator_traits<Iterator>::iterator_category,
+            typename QL_ITERATOR_TRAITS<Iterator>::iterator_category,
             typename Function::result_type,
-            typename std::iterator_traits<Iterator>::difference_type,
+            typename QL_ITERATOR_TRAITS<Iterator>::difference_type,
             const typename Function::result_type*,
             const typename Function::result_type&>
         {
@@ -85,7 +88,7 @@ namespace QuantLib {
             /* These typedefs are needed even though inherited from QL_ITERATOR 
                (see 14.6.2.3 of the standard).  */
             typedef typename Function::result_type value_type;
-            typedef typename std::iterator_traits<Iterator>::difference_type
+            typedef typename QL_ITERATOR_TRAITS<Iterator>::difference_type
                 difference_type;
             typedef const typename Function::result_type* pointer;
             typedef const typename Function::result_type& reference;
@@ -136,7 +139,7 @@ namespace QuantLib {
         //! helper function to create combining iterators
         /*! \relates combining_iterator */
         template <class It, class Function>
-        combining_iterator<typename std::iterator_traits<It>::value_type, 
+        combining_iterator<typename QL_ITERATOR_TRAITS<It>::value_type, 
             Function>
         make_combining_iterator(It it1, It it2, Function f);
             
@@ -257,9 +260,9 @@ namespace QuantLib {
 
         template <class It, class Function>
         inline combining_iterator<
-            typename std::iterator_traits<It>::value_type, Function>
+            typename QL_ITERATOR_TRAITS<It>::value_type, Function>
         make_combining_iterator(It it1, It it2, Function f) {
-            typedef std::iterator_traits<It>::value_type Iterator;
+            typedef QL_ITERATOR_TRAITS<It>::value_type Iterator;
             return combining_iterator<Iterator,Function>(it1,it2,f);
         }
         

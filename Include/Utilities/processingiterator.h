@@ -28,6 +28,9 @@
     $Source$
     $Name$
     $Log$
+    Revision 1.8  2001/02/16 15:33:03  lballabio
+    Used QL_ITERATOR_TRAITS macro
+
     Revision 1.7  2001/02/14 10:38:28  lballabio
     Found out what 14.6.2.3 of the standard means
 
@@ -69,9 +72,9 @@ namespace QuantLib {
         */
         template <class Iterator, class UnaryFunction>
         class processing_iterator : public QL_ITERATOR<
-            typename std::iterator_traits<Iterator>::iterator_category,
+            typename QL_ITERATOR_TRAITS<Iterator>::iterator_category,
             typename UnaryFunction::result_type,
-            typename std::iterator_traits<Iterator>::difference_type,
+            typename QL_ITERATOR_TRAITS<Iterator>::difference_type,
             const typename UnaryFunction::result_type*,
             const typename UnaryFunction::result_type&>
         {
@@ -79,7 +82,7 @@ namespace QuantLib {
             /* These typedefs are needed even though inherited from QL_ITERATOR 
                (see 14.6.2.3 of the standard).  */
             typedef typename UnaryFunction::result_type value_type;
-            typedef typename std::iterator_traits<Iterator>::difference_type
+            typedef typename QL_ITERATOR_TRAITS<Iterator>::difference_type
                 difference_type;
             typedef const value_type* pointer;
             typedef const value_type& reference;

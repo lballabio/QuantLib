@@ -28,6 +28,9 @@
     $Source$
     $Name$
     $Log$
+    Revision 1.2  2001/02/16 15:33:03  lballabio
+    Used QL_ITERATOR_TRAITS macro
+
     Revision 1.1  2001/02/14 18:43:07  lballabio
     Added coupling iterators
 
@@ -51,11 +54,11 @@ namespace QuantLib {
         template <class Iterator1, class Iterator2, class Function>
         class coupling_iterator : public QL_ITERATOR<
             typename lowest_category_iterator<
-                typename std::iterator_traits<Iterator1>::iterator_category,
-                typename std::iterator_traits<Iterator2>::iterator_category>::
+                typename QL_ITERATOR_TRAITS<Iterator1>::iterator_category,
+                typename QL_ITERATOR_TRAITS<Iterator2>::iterator_category>::
                 iterator_category,
             typename Function::result_type,
-            typename std::iterator_traits<Iterator1>::difference_type,
+            typename QL_ITERATOR_TRAITS<Iterator1>::difference_type,
             const typename Function::result_type*,
             const typename Function::result_type&>
         {
@@ -63,7 +66,7 @@ namespace QuantLib {
             /* These typedefs are needed even though inherited from QL_ITERATOR 
                (see 14.6.2.3 of the standard).  */
             typedef typename Function::result_type value_type;
-            typedef typename std::iterator_traits<Iterator1>::difference_type
+            typedef typename QL_ITERATOR_TRAITS<Iterator1>::difference_type
                 difference_type;
             typedef const typename Function::result_type* pointer;
             typedef const typename Function::result_type& reference;
