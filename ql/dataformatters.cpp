@@ -37,6 +37,17 @@ namespace QuantLib {
         return std::string(s);
     }
 
+    std::string IntegerFormatter::toOrdinal(long l) {
+        std::string suffix;
+        switch (l % 10) {
+          case 1:  suffix = "st";  break;
+          case 2:  suffix = "nd";  break;
+          case 3:  suffix = "rd";  break;
+          default: suffix = "th";
+        }
+        return toString(l)+suffix;
+    }
+
     std::string DoubleFormatter::toString(double x, int precision, 
                                           int digits) {
         if (x == Null<double>())

@@ -37,6 +37,7 @@ namespace QuantLib {
     class IntegerFormatter {
       public:
         static std::string toString(long l, int digits = 0);
+        static std::string toOrdinal(long l);
     };
 
     //! Formats doubles for output
