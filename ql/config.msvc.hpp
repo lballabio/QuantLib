@@ -1,5 +1,6 @@
 
 /*
+ Copyright (C) 2004 Ferdinando Ametrano
  Copyright (C) 2000, 2001, 2002, 2003 RiskMap srl
 
  This file is part of QuantLib, a free-software/open-source library
@@ -19,6 +20,7 @@
 #define quantlib_config_msvc_h
 
 #include <ql/userconfig.hpp>
+#include <boost/config.hpp>
 
 /* For Microsoft Visual C++, uncomment the following lines to unmask
    floating-point exceptions. Warning: unpredictable results can arise...
@@ -40,21 +42,6 @@
 //                name was truncated in debug info
 #pragma warning(disable: 4786)
 #pragma warning(disable: 4503)
-
-#if _MSC_VER == 1200
-// move inside here configs specific to VC++ 6.0
-#define GARBLED_REVERSE_ITERATOR
-#define CHOKES_ON_TYPENAME
-
-
-#elif _MSC_VER == 1300
-// move inside here configs specific to VC++ .Net
-#define QL_ITERATOR         std::iterator
-#define QL_ITERATOR_TRAITS  std::iterator_traits
-#define SPECIALIZE_MS_ITERATOR_TRAITS  // always new ways to surprise us...
-
-
-#endif
 
 
 // STLPort or VC++ implementation?
@@ -147,20 +134,62 @@
 
 #define QL_PATCH_MICROSOFT
 
+//
+// select toolset:
+//
+#if (_MSC_VER < 1200)
+#  error "unsupported Microsoft compiler"
+#elif (_MSC_VER == 1200)
+// move inside here configs specific to VC++ 6.0
+#  define QL_LIB_TOOLSET "vc6"
+#  define GARBLED_REVERSE_ITERATOR
+#  define CHOKES_ON_TYPENAME
+#elif (_MSC_VER == 1300)
+// move inside here configs specific to VC++ .Net
+#  define QL_LIB_TOOLSET "vc7"
+#  define QL_ITERATOR         std::iterator
+#  define QL_ITERATOR_TRAITS  std::iterator_traits
+#  define SPECIALIZE_MS_ITERATOR_TRAITS  // always new ways to surprise us...
+#elif (_MSC_VER = 1310)
+// move inside here configs specific to VC++ .Net 2003
+#  define QL_LIB_TOOLSET "vc71"
+#else
+#  define QL_LIB_TOOLSET "vc" BOOST_STRINGIZE(_MSC_VER)
+#endif
+
+
 /*** libraries to be linked ***/
 
-#ifdef _DLL
-    #ifdef _DEBUG
-        #pragma comment(lib,"QuantLib_MTDLL_d.lib")
-    #else
-        #pragma comment(lib,"QuantLib_MTDLL.lib")
-    #endif
+//
+// select thread opt:
+//
+#ifdef _MT
+#  define QL_LIB_THREAD_OPT "-mt"
 #else
-    #ifdef _DEBUG
-        #pragma comment(lib,"QuantLib_d.lib")
-    #else
-        #pragma comment(lib,"QuantLib.lib")
-    #endif
+#  define QL_LIB_THREAD_OPT
+#endif
+//
+// select linkage opt:
+//
+#ifdef _DLL
+#  if defined(_DEBUG) 
+#    define QL_LIB_RT_OPT "-gd"
+#  else
+#    define QL_LIB_RT_OPT
+#  endif
+#else
+#  if defined(_DEBUG) 
+#    define QL_LIB_RT_OPT "-sgd"
+#  else
+#    define QL_LIB_RT_OPT "-s"
+#  endif
+#endif
+
+#define QL_LIB_NAME "QuantLib-" QL_LIB_TOOLSET QL_LIB_THREAD_OPT QL_LIB_RT_OPT "-" QL_LIB_VERSION ".lib"
+
+#pragma comment(lib, QL_LIB_NAME)
+#ifdef BOOST_LIB_DIAGNOSTIC
+#  pragma message(QL_LIB_NAME)
 #endif
 
 #ifndef _CPPRTTI

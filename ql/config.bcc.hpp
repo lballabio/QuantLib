@@ -79,5 +79,47 @@
 
 #define QL_PATCH_BORLAND
 
+#ifndef QL_DEBUG
+//#  pragma defineonoption QL_DEBUG -v
+#endif
+
+#  define QL_LIB_TOOLSET "bcb"
+//
+// select thread opt:
+//
+#ifdef __MT__
+#  define QL_LIB_THREAD_OPT "-mt"
+#else
+#  define QL_LIB_THREAD_OPT
+#endif
+//
+// select linkage opt:
+//
+#  ifdef _RTLDLL
+#     ifdef _DEBUG
+#         define QL_LIB_RT_OPT "-d"
+#     else
+#         define QL_LIB_RT_OPT
+#     endif
+#  else
+#     ifdef _DEBUG
+#         define QL_LIB_RT_OPT "-sd"
+#     else
+#         define QL_LIB_RT_OPT "-s"
+#     endif
+#  endif
+
+#define QL_LIB_NAME "QuantLib-" QL_LIB_TOOLSET QL_LIB_THREAD_OPT QL_LIB_RT_OPT "-" QL_LIB_VERSION ".lib"
+
+#pragma comment(lib, QL_LIB_NAME)
+#ifdef BOOST_LIB_DIAGNOSTIC
+#  pragma message(QL_LIB_NAME)
+#endif
+
+// should check here for -RT
+//#ifndef _CPPRTTI
+//    #error Check the 'C/C++ | C++ Language | Use RTTI' option
+//#endif
+
 
 #endif
