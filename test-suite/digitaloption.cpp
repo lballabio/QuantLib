@@ -929,7 +929,7 @@ void DigitalOptionTest::testMCCashAtHit() {
 CppUnit::Test* DigitalOptionTest::suite() {
     CppUnit::TestSuite* tests =
         new CppUnit::TestSuite("Digital option tests");
-/*
+
     // European values
     tests->addTest(new CppUnit::TestCaller<DigitalOptionTest>
                    ("Testing European cash-or-nothing digital option",
@@ -956,7 +956,7 @@ CppUnit::Test* DigitalOptionTest::suite() {
     tests->addTest(new CppUnit::TestCaller<DigitalOptionTest>
                    ("Testing American asset-(at-expiry)-or-nothing digital option",
                     &DigitalOptionTest::testAssetAtExpiryOrNothingAmericanValues));
-*/
+
     // European greeks
     // tested in europeanoption.cpp test
 
