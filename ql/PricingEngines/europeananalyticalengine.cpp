@@ -40,7 +40,7 @@ namespace QuantLib {
             Date exerciseDate = arguments_.exercise.date();
 
             double variance = arguments_.volTS->blackVariance(
-                exerciseDate, arguments_.strike);
+                exerciseDate,arguments_.strike);
             double stdDev = QL_SQRT(variance);
             double vol = arguments_.volTS->blackVol(
                 exerciseDate, arguments_.strike);
@@ -61,7 +61,7 @@ namespace QuantLib {
             if (variance>0.0) {
                 static Math::CumulativeNormalDistribution f;
                 double D1 = (QL_LOG(forwardPrice/arguments_.strike) +
-                    0.5 * variance) / stdDev;
+                             0.5 * variance) / stdDev;
                 double D2 = D1-stdDev;
                 fD1 = f(D1);
                 fD2 = f(D2);
@@ -108,14 +108,16 @@ namespace QuantLib {
             results_.gamma = NID1 * dividendDiscount /
                 (arguments_.underlying * stdDev);
             results_.theta = riskFreeRate * results_.value
-                -(riskFreeRate - dividendRate) * arguments_.underlying * results_.delta
-                - 0.5 * vol * vol * arguments_.underlying * arguments_.underlying * results_.gamma;
+                -(riskFreeRate - dividendRate) 
+                * arguments_.underlying * results_.delta
+                - 0.5 * vol * vol * arguments_.underlying 
+                * arguments_.underlying * results_.gamma;
             results_.rho = residualTime * riskFreeDiscount *
                 arguments_.strike * beta;
             results_.dividendRho = - residualTime *
                 dividendDiscount * arguments_.underlying * alpha;
             results_.vega = arguments_.underlying * NID1 *
-                dividendDiscount * residualTime;
+                dividendDiscount * QL_SQRT(residualTime);
 
         }
 
