@@ -50,7 +50,6 @@ EXTRA_DIST=makefile.mak
 libPricers_la_SOURCES = \
     analyticalcapfloor.cpp \
     barrieroption.cpp \
-    binomialvanillaengine.cpp \
     blackcapfloor.cpp \
     blackswaption.cpp \
     capfloorpricer.cpp \
@@ -60,7 +59,6 @@ libPricers_la_SOURCES = \
     discretegeometricapo.cpp \
     discretegeometricaso.cpp \
     fddividendshoutoption.cpp \
-    europeanengine.cpp \
     europeanoption.cpp \
     fdbsmoption.cpp \
     fddividendamericanoption.cpp \
@@ -84,8 +82,7 @@ libPricers_la_SOURCES = \
     singleassetoption.cpp \
     swaptionpricer.cpp \
     treecapfloor.cpp \
-    treeswaption.cpp \
-    vanillaoptionengine.cpp
+    treeswaption.cpp
 
 
 noinst_LTLIBRARIES = libPricers.la

@@ -27,6 +27,11 @@
 
 namespace QuantLib {
 
+    using PricingEngines::VanillaOptionParameters;
+    using PricingEngines::VanillaOptionResults;
+    using PricingEngines::QuantoOptionParameters;
+    using PricingEngines::QuantoOptionResults;
+
     namespace Instruments {
 
         QuantoVanillaOption::QuantoVanillaOption(Option::Type type,
@@ -79,8 +84,9 @@ namespace QuantLib {
 
         void QuantoVanillaOption::setupEngine() const {
             VanillaOption::setupEngine();
-            PricingEngines::QuantoOptionParameters* parameters =
-                dynamic_cast<PricingEngines::QuantoOptionParameters*>(
+            QuantoOptionParameters<VanillaOptionParameters>* parameters =
+                dynamic_cast
+                <QuantoOptionParameters<VanillaOptionParameters>*>(
                     engine_->parameters());
             QL_REQUIRE(parameters != 0,
                        "pricing engine does not supply needed parameters");
@@ -113,9 +119,9 @@ namespace QuantLib {
                 isExpired_ = false;
                 Option::performCalculations();
 
-                const PricingEngines::VanillaOptionResults* vanillaResults =
-                    dynamic_cast<const PricingEngines::VanillaOptionResults*>(
-                    engine_->results());
+                const VanillaOptionResults* vanillaResults =
+                    dynamic_cast<const VanillaOptionResults*>(
+                        engine_->results());
                 QL_ENSURE(vanillaResults != 0,
                           "no vanilla results returned from pricing engine");
                 delta_       = vanillaResults->delta;
@@ -125,9 +131,11 @@ namespace QuantLib {
                 rho_         = vanillaResults->rho;
                 dividendRho_ = vanillaResults->dividendRho;
 
-                const PricingEngines::QuantoOptionResults* quantoResults =
-                    dynamic_cast<const PricingEngines::QuantoOptionResults*>(
-                    engine_->results());
+                const QuantoOptionResults<VanillaOptionResults>* 
+                    quantoResults =
+                    dynamic_cast
+                    <const QuantoOptionResults<VanillaOptionResults>*>(
+                        engine_->results());
                 QL_ENSURE(quantoResults != 0,
                           "no quanto results returned from pricing engine");
                 qrho_        = quantoResults->qrho;

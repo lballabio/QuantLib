@@ -182,6 +182,7 @@ AC_OUTPUT(Makefile \
     ql/Optimization/Makefile \
     ql/Patterns/Makefile \
     ql/Pricers/Makefile \
+    ql/PricingEngines/Makefile \
     ql/RandomNumbers/Makefile \
     ql/ShortRateModels/Makefile \
     ql/ShortRateModels/CalibrationHelpers/Makefile \

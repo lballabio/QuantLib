@@ -36,7 +36,7 @@ EXTRA_DIST= \
 include_HEADERS = \
 	argsandresults.hpp \
 	array.hpp \
-    blackmodel.hpp \
+	blackmodel.hpp \
 	calendar.hpp \
 	capvolstructures.hpp \
 	cashflow.hpp \
@@ -46,18 +46,18 @@ include_HEADERS = \
 	dataparsers.hpp \
 	date.hpp \
 	daycounter.hpp \
-    diffusionprocess.hpp \
+	diffusionprocess.hpp \
 	errors.hpp \
-    exercise.hpp \
+	exercise.hpp \
 	expressiontemplates.hpp \
-    grid.hpp \
+	grid.hpp \
 	handle.hpp \
 	history.hpp \
 	index.hpp \
 	instrument.hpp \
 	marketelement.hpp \
 	null.hpp \
-    numericalmethod.hpp \
+	numericalmethod.hpp \
 	option.hpp \
 	pricingengine.hpp \
 	qldefines.hpp \
@@ -80,25 +80,26 @@ depend:
 
 
 libQuantLib_la_LIBADD = \
-	Calendars/libCalendars.la \
-	CashFlows/libCashFlows.la \
-	DayCounters/libDayCounters.la \
-	FiniteDifferences/libFiniteDifferences.la \
+    Calendars/libCalendars.la \
+    CashFlows/libCashFlows.la \
+    DayCounters/libDayCounters.la \
+    FiniteDifferences/libFiniteDifferences.la \
     functions/libfunctions.la \
-	Indexes/libIndexes.la \
-	Instruments/libInstruments.la \
+    Indexes/libIndexes.la \
+    Instruments/libInstruments.la \
     Lattices/libLattices.la \
-	Math/libMath.la \
-	MonteCarlo/libMonteCarlo.la \
+    Math/libMath.la \
+    MonteCarlo/libMonteCarlo.la \
     Optimization/libOptimization.la \
-	Pricers/libPricers.la \
-	RandomNumbers/libRandomNumbers.la \
+    Pricers/libPricers.la \
+    PricingEngines/libPricingEngines.la \
+    RandomNumbers/libRandomNumbers.la \
     ShortRateModels/libShortRateModels.la \
     ShortRateModels/CalibrationHelpers/libCalibrationHelpers.la \
     ShortRateModels/OneFactorModels/libOneFactorModels.la \
     ShortRateModels/TwoFactorModels/libTwoFactorModels.la \
-	Solvers1D/libSolvers1D.la \
-	TermStructures/libTermStructures.la
+    Solvers1D/libSolvers1D.la \
+    TermStructures/libTermStructures.la
 
 libQuantLib_la_SOURCES = \
     calendar.cpp \

@@ -24,8 +24,13 @@
 // $Id$
 
 #include <ql/Instruments/forwardvanillaoption.hpp>
+#include <ql/PricingEngines/forwardengines.hpp>
 
 namespace QuantLib {
+
+    using PricingEngines::VanillaOptionParameters;
+    using PricingEngines::VanillaOptionResults;
+    using PricingEngines::ForwardOptionParameters;
 
     namespace Instruments {
 
@@ -47,8 +52,9 @@ namespace QuantLib {
 
         void ForwardVanillaOption::setupEngine() const {
             VanillaOption::setupEngine();
-            PricingEngines::ForwardOptionParameters* parameters =
-                dynamic_cast<PricingEngines::ForwardOptionParameters*>(
+            ForwardOptionParameters<VanillaOptionParameters>* parameters =
+                dynamic_cast
+                <ForwardOptionParameters<VanillaOptionParameters> *>(
                     engine_->parameters());
             QL_REQUIRE(parameters != 0,
                        "pricing engine does not supply needed parameters");
@@ -67,8 +73,8 @@ namespace QuantLib {
                 isExpired_ = false;
                 Option::performCalculations();
 
-                const PricingEngines::VanillaOptionResults* vanillaResults =
-                    dynamic_cast<const PricingEngines::VanillaOptionResults*>(
+                const VanillaOptionResults* vanillaResults =
+                    dynamic_cast<const VanillaOptionResults*>(
                     engine_->results());
                 QL_ENSURE(vanillaResults != 0,
                           "no vanilla results returned from pricing engine");

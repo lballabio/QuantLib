@@ -2,21 +2,21 @@
 # $Id$
 
 INCLUDES= -I${top_srcdir} -I${top_builddir}
-includedir = $(prefix)/include/ql/Pricers
+includedir = $(prefix)/include/ql/PricingEngines
 
 include_HEADERS = \
    discretizedvanillaoption.hpp \
    genericengine.hpp \
-   forwardengine.hpp \
-   quantoengine.hpp \
+   forwardengines.hpp \
+   quantoengines.hpp \
    vanillaengines.hpp
 
 EXTRA_DIST=makefile.mak
 
-libPricers_la_SOURCES = \
+libPricingEngines_la_SOURCES = \
     discretizedvanillaoption.cpp \
     europeanbinomialengine.cpp \
     europeananalyticalengine.cpp \
     quantovanillaanalyticengine.cpp
 
-noinst_LTLIBRARIES = libPricers.la
+noinst_LTLIBRARIES = libPricingEngines.la
