@@ -25,6 +25,9 @@
     $Source$
     $Name$
     $Log$
+    Revision 1.2  2001/02/02 10:39:42  marmar
+    The default choice for the multi-path generator
+
     Revision 1.1  2001/01/25 16:11:17  marmar
     MultiPath, the first step for a multi-dimensional Monte Carlo
 
@@ -34,7 +37,7 @@
 #ifndef quantlib_montecarlo_standard_multi_path_generator_h
 #define quantlib_montecarlo_standard_multi_path_generator_h
 
-#include "gaussianrandomgenerator.h"
+#include "gaussianarraygenerator.h"
 #include "multipathgenerator.h"
 
 namespace QuantLib {
@@ -45,7 +48,7 @@ namespace QuantLib {
         The following is the default choice for the multi-path generator. 
         See the corresponding classes for more documentation.
     */
-        typedef MultiPathGenerator<GaussianRandomGenerator > 
+        typedef MultiPathGenerator<GaussianArrayGenerator > 
                                               StandardMultiPathGenerator;
     }
 }
