@@ -27,6 +27,9 @@
 
     $Source$
     $Log$
+    Revision 1.2  2001/04/12 09:07:14  marmar
+    Last and first date are handled more precisely
+
     Revision 1.1  2001/04/09 14:05:49  nando
     all the *.hpp moved below the Include/ql level
 
@@ -86,7 +89,11 @@ namespace QuantLib {
                 const std::vector<Time>& dates,
                 int timeSteps, int gridPoints);
             // Protected attributes
+            bool firstDateIsZero_, lastDateIsResTime_;
             int timeStepPerPeriod_, dateNumber_;
+            int lastIndex_, firstIndex_;
+            double firstNonZeroDate_;
+
             std::vector<Time> dates_;
             mutable Handle<BSMOption> analytic_;
             mutable Array prices_, controlPrices_;
