@@ -66,13 +66,15 @@ namespace QuantLib {
             const Array& diffusion)
         : timeGrid_(timeGrid), drift_(drift), diffusion_(diffusion) {
             if (drift_.size()==0) {
-                drift_ = Array(timeGrid_.size()-1);
+                if (timeGrid_.size() > 0)
+                    drift_ = Array(timeGrid_.size()-1);
             } else {
                 QL_REQUIRE(drift_.size() == timeGrid_.size()-1,
                     "Path: drift and times have different size");
             }
             if (diffusion_.size()==0) {
-                diffusion_ = Array(timeGrid_.size()-1);
+                if (timeGrid_.size() > 0)
+                    diffusion_ = Array(timeGrid_.size()-1);
             } else {
                 QL_REQUIRE(diffusion_.size() == timeGrid_.size()-1,
                     "Path: diffusion and times have different size");
