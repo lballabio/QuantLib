@@ -2,6 +2,9 @@
 # $Id$
 # $Source$
 # $Log$
+# Revision 1.44  2001/08/28 15:22:27  enri
+# *** empty log message ***
+#
 # Revision 1.43  2001/08/28 14:46:01  enri
 # .am files for examples added, minor changes to permit compilation on unixes
 #
@@ -46,17 +49,12 @@ dist-hook:
 	cp $(srcdir)/Docs/images/QL-small-notitle.jpg $(distdir)/Docs/images/
 	cp $(srcdir)/Docs/images/QL-largish.eps $(distdir)/Docs/images/
 	cp $(srcdir)/Docs/images/QL-largish.pdf $(distdir)/Docs/images/
-	mkdir $(distdir)/Examples
 	cp $(srcdir)/Examples/*.dsw $(distdir)/Examples/
 	cp $(srcdir)/Examples/*.mak $(distdir)/Examples/
 	cp $(srcdir)/Examples/*.txt $(distdir)/Examples/
-	mkdir $(distdir)/Examples/HedgingError
-	cp $(srcdir)/Examples/HedgingError/*.cpp $(distdir)/Examples/HedgingError/
 	cp $(srcdir)/Examples/HedgingError/*.dsp $(distdir)/Examples/HedgingError/
 	cp $(srcdir)/Examples/HedgingError/*.mak $(distdir)/Examples/HedgingError/
 	cp $(srcdir)/Examples/HedgingError/*.txt $(distdir)/Examples/HedgingError/
-	mkdir $(distdir)/Examples/Parities
-	cp $(srcdir)/Examples/Parities/*.cpp $(distdir)/Examples/Parities/
 	cp $(srcdir)/Examples/Parities/*.dsp $(distdir)/Examples/Parities/
 	cp $(srcdir)/Examples/Parities/*.mak $(distdir)/Examples/Parities/
 	cp $(srcdir)/Examples/Parities/*.txt $(distdir)/Examples/Parities/
