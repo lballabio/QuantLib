@@ -185,16 +185,22 @@ namespace QuantLib {
             for (j=0; j<bits_; j++)
                 directionIntegers_[0][j] = (1UL<<(bits_-j-1));
 
+            bool unitInitializationUpToDim32 = false;
+            bool unitInitializationFromDim32 = true;
+
             unsigned long maxTabulated = 
                 sizeof(initializers)/sizeof(unsigned long *)+1;
-            // dimensions from 2 to maxTabulated included are initialized
-            // from tabulated coefficients
+            // dimensions from 2 (k=1) to maxTabulated (k=maxTabulated-1)
+            // included are initialized from tabulated coefficients
             for (k=1; k<QL_MIN(dimensionality_, maxTabulated); k++) {
                 j = 0;
                 // 0UL marks the end of the coefficients for a given dimension
                 while (initializers[k-1][j] != 0UL) {
-                    directionIntegers_[k][j] =
-                        (initializers[k-1][j] << (bits_-j-1));
+                    if (unitInitializationUpToDim32)
+                        directionIntegers_[k][j] = 1UL;
+                    else
+                        directionIntegers_[k][j] = initializers[k-1][j];
+                    directionIntegers_[k][j] <<= (bits_-j-1);
                     j++;
                 }
             }
@@ -204,20 +210,25 @@ namespace QuantLib {
                 MersenneTwisterUniformRng uniformRng(seed);
                 for (k=maxTabulated; k<dimensionality_; k++) {
                     for (Size l=1; l<=degree[k]; l++) {
-                        unsigned long n;
-                        do {
-                            // u is in (0,1)
-                            double u = uniformRng.next().value;
-                            // n has at most the rightmost l bits non-zero
-                            n = (unsigned long)(u*(1UL<<l));
-                        } while (n & 1UL); // requiring odd number
-                        // that is we have the rightmost bit set
-
+                        if (unitInitializationFromDim32)
+                            directionIntegers_[k][l-1] = 1UL;
+                        else {
+                            do {
+                                // u is in (0,1)
+                                double u = uniformRng.next().value;
+                                // the direction integer has at most the
+                                // rightmost l bits non-zero
+                                directionIntegers_[k][l-1] =
+                                    (unsigned long)(u*(1UL<<l));
+                            } while (directionIntegers_[k][l-1] & 1UL);
+                            // iterate until the direction integer is odd
+                            // that is it has the rightmost bit set
+                        }
                         // shifting bits_-l bits to the left
                         // we are guaranteed that the l-th leftmost bit
                         // is set, and only the first l leftmost bit
                         // can be non-zero
-                        directionIntegers_[k][l-1] = (n<<(bits_-l));
+                        directionIntegers_[k][l-1] <<= (bits_-l);
                     }
                 }
             }
