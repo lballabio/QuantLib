@@ -1,32 +1,38 @@
 /*
  * Copyright (C) 2001
  * Ferdinando Ametrano, Luigi Ballabio, Adolfo Benin, Marco Marchioro
- * 
+ *
  * This file is part of QuantLib.
  * QuantLib is a C++ open source library for financial quantitative
  * analysts and developers --- http://quantlib.sourceforge.net/
  *
  * QuantLib is free software and you are allowed to use, copy, modify, merge,
- * publish, distribute, and/or sell copies of it under the conditions stated 
+ * publish, distribute, and/or sell copies of it under the conditions stated
  * in the QuantLib License.
  *
- * This program is distributed in the hope that it will be useful, but 
+ * This program is distributed in the hope that it will be useful, but
  * WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
  * or FITNESS FOR A PARTICULAR PURPOSE. See the license for more details.
  *
  * You should have received a copy of the license along with this file;
  * if not, contact ferdinando@ametrano.net
  *
- * QuantLib license is also available at 
+ * QuantLib license is also available at
  * http://quantlib.sourceforge.net/LICENSE.TXT
 */
 
 /*! \file multivariateaccumulator.h
-    \brief A simple accumulator for vector-type samples 
-    
+    \brief A simple accumulator for vector-type samples
+
     $Source$
-    $Name$
     $Log$
+    Revision 1.6  2001/02/20 13:59:00  nando
+    added class VarTool.
+    RiskStatistics was derived from Statistics:
+    now RiskStatistics includes VarTool and Statistics.
+    VarTool is not based on Statistics, but requires
+    mean and standardDeviation as input.
+
     Revision 1.5  2001/01/26 11:08:55  marmar
     Now the covariance() method is consistent with the variance()
     method of the class Statistics
@@ -59,7 +65,7 @@
 namespace QuantLib {
 
     namespace Math {
-      
+
     //! A sample accumulator for multivariate analysis
     /*! MultivariateAccumulator can accumulate vector-type samples and
         return the average vector, both in Array form and std::vector<double>
@@ -79,11 +85,11 @@ namespace QuantLib {
             //! returns the mean as an Array
             Array mean() const;
             //! returns the mean as a std::vector<double>
-            std::vector<double> meanVector() const;            
-            //! returns the covariance Matrix            
+            std::vector<double> meanVector() const;
+            //! returns the covariance Matrix
             Matrix covariance() const;
             //@}
-            
+
             //! \name Modifiers
             //@{
             //! adds an Array to the collection, possibly with a weight
@@ -95,8 +101,8 @@ namespace QuantLib {
             void addSequence(DataIterator begin, DataIterator end);
             //! adds a sequence of data to the collection, each with its weight
             template <class DataIterator, class WeightIterator>
-            void addSequence(DataIterator begin, DataIterator end, 
-                                                WeightIterator wbegin);                    
+            void addSequence(DataIterator begin, DataIterator end,
+                                                WeightIterator wbegin);
             //! resets the data to a null set
             void reset();
             //@}
@@ -107,22 +113,22 @@ namespace QuantLib {
             Array sum_;
             Matrix quadraticSum_;
         };
-        
+
         // inline definitions
         inline int MultivariateAccumulator::size() const {
             return size_;
         }
-        
+
         inline double MultivariateAccumulator::samples() const {
           return sampleNumber_;
         }
-                
+
         inline Array MultivariateAccumulator::mean() const {
-          QL_REQUIRE(sampleWeight_ > 0.0, 
+          QL_REQUIRE(sampleWeight_ > 0.0,
                 "Stat::mean() : sampleWeight_=0, unsufficient");
           return sum_/sampleWeight_;
         }
-        
+
     }
 
 }

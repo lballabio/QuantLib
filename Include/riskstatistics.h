@@ -27,6 +27,13 @@
 
     $Source$
     $Log$
+    Revision 1.2  2001/02/20 13:58:59  nando
+    added class VarTool.
+    RiskStatistics was derived from Statistics:
+    now RiskStatistics includes VarTool and Statistics.
+    VarTool is not based on Statistics, but requires
+    mean and standardDeviation as input.
+
     Revision 1.1  2001/01/19 09:33:57  nando
     RiskTool is now RiskStatistics everywhere
 
@@ -51,62 +58,91 @@
 #include "qlerrors.h"
 #include "dataformatters.h"
 #include "statistics.h"
-#include "normaldistribution.h"
+#include "vartool.h"
 #include <iostream>
 
 namespace QuantLib {
 
-    namespace RiskStatistics {
-        //! Risk analysis tool
-        /*! It can accumulate a set of data and return risk quantities
-            as Value-At-Risk, Shortfall, Average Shortfall, plus statistic
-            quantitities as mean, variance, std. deviation, skewness, kurtosis.
-        */
-        class RiskStatistics : public Math::Statistics {
-          public:
-            RiskStatistics() {}
-            //! \name Inspectors
-            //@{
-            //! returns the Value-At-Risk at a given percentile
-            double valueAtRisk(double percentile) const;
-            //! returns the Shortfall (observations below target)
-            double shortfall(double target) const;
-            //! returns the Average Shortfall (averaged shortfallness)
-            double averageShortfall(double target) const;
-            //@}
-        };
+    //! Risk analysis tool
+    /*! It can accumulate a set of data and return risk quantities
+        as Value-At-Risk, Shortfall, Average Shortfall, plus statistic
+        quantitities as mean, variance, std. deviation, skewness, kurtosis.
+    */
+    class RiskStatistics {
+      public:
+        RiskStatistics() ;
+        //! \name Inspectors
+        //@{
+        // Statistics proxy methods
+        double samples() const {return statistics_.samples(); }
+        double weightSum() const {return statistics_.weightSum(); }
+        double mean() const {return statistics_.mean(); }
+        double variance() const {return statistics_.variance(); }
+        double standardDeviation() const {
+            return statistics_.standardDeviation(); }
+        double errorEstimate() const {
+            return statistics_.errorEstimate(); }
+        double skewness() const {return statistics_.skewness(); }
+        double kurtosis() const {return statistics_.kurtosis(); }
+        double min() const {return statistics_.min(); }
+        double max() const {return statistics_.max(); }
 
-        // inline definitions
-        /*! \pre percentile must be in range 90%-100% */
-        inline double RiskStatistics::valueAtRisk(double percentile) const {
-            QL_REQUIRE(percentile<1.0 && percentile>=0.9,
-                "RiskStatistics::valueAtRisk : percentile (" +
-                DoubleFormatter::toString(percentile) +
-                ") out of range 90%-100%");
-
-            Math::InvCumulativeNormalDistribution dist(mean(),
-                                             standardDeviation());
-            // VAR must be a loss
-            // this means that it has to be MIN(dist(1.0-percentile), 0.0)
-            // VAR must also be a positive quantity, so -MIN(*)
-            return -QL_MIN(dist(1.0-percentile), 0.0);
+        // VarTool proxy methods
+        //! returns the Value-At-Risk at a given percentile
+        double valueAtRisk(double percentile)  {
+            return varTool_.valueAtRisk(percentile,
+                                        statistics_.mean(),
+                                        statistics_.standardDeviation());
         }
-
-        inline double RiskStatistics::shortfall(double target) const {
-            Math::CumulativeNormalDistribution gI(mean(), standardDeviation());
-            return gI(target);
+        //! returns the Shortfall (observations below target)
+        double shortfall( double target ) const {
+            return varTool_.shortfall(target,
+                                      statistics_.mean(),
+                                      statistics_.standardDeviation());
         }
-
-        double RiskStatistics::averageShortfall(double target) const {
-            double m = mean();
-            double s = standardDeviation();
-            Math::CumulativeNormalDistribution gI(m, s);
-            Math::NormalDistribution g(m, s);
-            return ( (target - m) * gI(target) + s * s * g(target) );
+        //! returns the Average Shortfall (averaged shortfallness)
+        double averageShortfall( double target ) const  {
+            return varTool_.averageShortfall(
+                                         target,
+                                         statistics_.mean(),
+                                         statistics_.standardDeviation());
         }
+        void add(double value, double weight = 1.0);
+        template <class DataIterator>
+        void addSequence(DataIterator begin, DataIterator end) {
+          for (;begin!=end;++begin)
+            add(*begin);
+        }
+        //! adds a sequence of data to the set, each with its weight
+        template <class DataIterator, class WeightIterator>
+        void addSequence(DataIterator begin, DataIterator end,
+          WeightIterator wbegin) {
+            for (;begin!=end;++begin,++wbegin)
+                add(*begin, *wbegin);
+        }
+        void reset();
 
+        //@}
+      private:
+        QuantLib::Math::Statistics statistics_;
+        QuantLib::Math::VarTool varTool_;
+    };
 
+    // inline definitions
+    inline RiskStatistics::RiskStatistics() {
+    statistics_  = QuantLib::Math::Statistics();
+    varTool_     = QuantLib::Math::VarTool();
     }
+
+    /*! \pre weights must be positive or null */
+    inline void RiskStatistics::add(double value, double weight) {
+        statistics_.add( value , weight );
+    }
+
+    inline void RiskStatistics::reset() {
+        statistics_.reset();
+    }
+
 }
 
 

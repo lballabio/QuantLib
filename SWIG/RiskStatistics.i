@@ -44,7 +44,7 @@
 %include Vectors.i
 
 %{
-using QuantLib::RiskStatistics::RiskStatistics;
+using QuantLib::RiskStatistics;
 %}
 
 class RiskStatistics {

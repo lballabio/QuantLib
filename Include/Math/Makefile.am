@@ -3,6 +3,7 @@ include_HEADERS = \
     matrix.h \
 	normaldistribution.h \
 	statistics.h \
+	vartool.h \
 	cubicspline.h \
 	interpolation.h \
 	linearinterpolation.h \
