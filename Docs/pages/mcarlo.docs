@@ -41,7 +41,7 @@
     \end{quotation}
     \endlatexonly
 
-    <b>Warning: this section of the documentation is currently outdated.<b>
+    <b>Warning: this section of the documentation is currently outdated.</b>
 
     This framework (corresponding to the QuantLib::MonteCarlo namespace)
     contains basic building blocks for the numerical calculation of
