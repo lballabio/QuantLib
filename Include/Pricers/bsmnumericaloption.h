@@ -27,8 +27,11 @@
     $Source$
     $Name$
     $Log$
+    Revision 1.13  2001/03/01 14:20:51  marmar
+    Private-member syntax changed
+
     Revision 1.12  2001/02/15 15:29:10  marmar
-    dVolMultiplier and dRMultiplier defined
+    dVolMultiplier_ and dRMultiplier_ defined
     constant
 
     Revision 1.11  2001/02/14 10:11:05  marmar
@@ -89,21 +92,21 @@ namespace QuantLib {
             void initializeInitialCondition() const;
             void initializeOperator() const;
             // input data
-            int theGridPoints;
+            int gridPoints_;
             // results
-            mutable bool rhoComputed, vegaComputed;
-            mutable double theDelta, theGamma, theTheta;
-            mutable double  theRho, theVega;
+            mutable bool rhoComputed_, vegaComputed_;
+            mutable double delta_, gamma_, theta_;
+            mutable double  rho_, vega_;
 
-            mutable Array theGrid;
-            mutable FiniteDifferences::BSMOperator theOperator;
-            mutable Array theInitialPrices;
+            mutable Array grid_;
+            mutable FiniteDifferences::BSMOperator finiteDifferenceOperator_;
+            mutable Array initialPrices_;
             // temporaries
-            mutable double sMin, sMax;
+            mutable double sMin_, sMax_;
           private:
             // temporaries
-            mutable double theGridLogSpacing;
-            const static double dVolMultiplier, dRMultiplier;
+            mutable double gridLogSpacing_;
+            const static double dVolMultiplier_, dRMultiplier_;
             int safeGridPoints(int gridPoints, Time residualTime);
         };
 

@@ -27,6 +27,9 @@
     $Source$
     $Name$
     $Log$
+    Revision 1.23  2001/03/01 14:20:36  marmar
+    Private-member syntax changed
+
     Revision 1.22  2001/03/01 13:53:40  marmar
     Standard step condition and finite-difference model introduced
 
@@ -72,7 +75,7 @@ namespace QuantLib {
                 initializeOperator();
                 /* model used for calculation: it could have been
                    BackwardEuler or ForwardEuler instead of CrankNicolson */
-                StandardFiniteDifferenceModel model(theOperator);
+                StandardFiniteDifferenceModel model(finiteDifferenceOperator_);
                 double dt = residualTime_/timeSteps_;
                 // Control-variate variance reduction:
 
@@ -86,7 +89,7 @@ namespace QuantLib {
                 double analyticEuroTheta = analyticEuro.theta();
 
                 // 2) calculate value/greeks of the European option numerically
-                Array theEuroPrices = theInitialPrices;
+                Array theEuroPrices = initialPrices_;
                 // rollback until dt
                 model.rollback(theEuroPrices,residualTime_,dt,timeSteps_-1);
                 double numericEuroValuePlus = valueAtCenter(theEuroPrices);
@@ -94,9 +97,9 @@ namespace QuantLib {
                 model.rollback(theEuroPrices,dt,0.0,1);
                 double numericEuroValue = valueAtCenter(theEuroPrices);
                 double numericEuroDelta = firstDerivativeAtCenter(theEuroPrices,
-                                                                theGrid);
+                                                                grid_);
                 double numericEuroGamma =
-                            secondDerivativeAtCenter(theEuroPrices, theGrid);
+                            secondDerivativeAtCenter(theEuroPrices, grid_);
                 // rollback another step
                 model.rollback(theEuroPrices,0.0,-dt,1);
                 double numericEuroValueMinus = valueAtCenter(theEuroPrices);
@@ -104,9 +107,9 @@ namespace QuantLib {
                       (numericEuroValuePlus - numericEuroValueMinus) / (2.0*dt);
 
                 // 3) greeks of the American option numerically on the same grid
-                Array thePrices = theInitialPrices;
+                Array thePrices = initialPrices_;
                 Handle<StandardStepCondition >
-                  americanCondition(new BSMAmericanCondition(theInitialPrices));
+                  americanCondition(new BSMAmericanCondition(initialPrices_));
                 // rollback until dt
                 model.rollback(thePrices, residualTime_, dt, timeSteps_ -1,
                                                             americanCondition);
@@ -115,9 +118,9 @@ namespace QuantLib {
                 model.rollback(thePrices, dt, 0.0, 1,americanCondition);
                 double numericAmericanValue = valueAtCenter(thePrices);
                 double numericAmericanDelta = firstDerivativeAtCenter(thePrices,
-                                                                       theGrid);
+                                                                       grid_);
                 double numericAmericanGamma =
-                                secondDerivativeAtCenter(thePrices, theGrid);
+                                secondDerivativeAtCenter(thePrices, grid_);
                 // rollback another step
                 model.rollback(thePrices,0.0,-dt,1,americanCondition);
                 double numericAmericanValueMinus = valueAtCenter(thePrices);
@@ -128,11 +131,11 @@ namespace QuantLib {
                 // 4) combine the results
                 value_ = numericAmericanValue - numericEuroValue +
                                                         analyticEuroValue;
-                theDelta = numericAmericanDelta - numericEuroDelta +
+                delta_ = numericAmericanDelta - numericEuroDelta +
                                                         analyticEuroDelta;
-                theGamma = numericAmericanGamma - numericEuroGamma +
+                gamma_ = numericAmericanGamma - numericEuroGamma +
                                                         analyticEuroGamma;
-                theTheta = numericAmericanTheta - numericEuroTheta +
+                theta_ = numericAmericanTheta - numericEuroTheta +
                                                         analyticEuroTheta;
                 hasBeenCalculated_ = true;
             }

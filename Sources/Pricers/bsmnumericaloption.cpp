@@ -28,6 +28,9 @@
     $Source$
     $Name$
     $Log$
+    Revision 1.28  2001/03/01 14:20:36  marmar
+    Private-member syntax changed
+
     Revision 1.27  2001/02/19 12:19:29  marmar
     Added trailing _ to protected and private members
 
@@ -36,7 +39,7 @@
     QL_MAX_VOLATILITY 3.0
 
     Revision 1.25  2001/02/15 15:30:30  marmar
-    dVolMultiplier and dRMultiplier defined
+    dVolMultiplier_ and dRMultiplier_ defined
     constant
 
     Revision 1.24  2001/02/14 10:11:25  marmar
@@ -73,66 +76,66 @@ namespace QuantLib {
         using FiniteDifferences::BoundaryCondition;
         using FiniteDifferences::BSMOperator;
         
-        const double BSMNumericalOption::dVolMultiplier = 0.0001; 
-        const double BSMNumericalOption::dRMultiplier = 0.0001; 
+        const double BSMNumericalOption::dVolMultiplier_ = 0.0001; 
+        const double BSMNumericalOption::dRMultiplier_ = 0.0001; 
         
         BSMNumericalOption::BSMNumericalOption(BSMNumericalOption::Type type,
             double underlying, double strike, Rate dividendYield, 
             Rate riskFreeRate, Time residualTime, double volatility, 
             int gridPoints)
         : BSMOption(type, underlying, strike, dividendYield, riskFreeRate,
-            residualTime, volatility), rhoComputed(false), vegaComputed(false),
-            theGridPoints(safeGridPoints(gridPoints, residualTime)),
-            theGrid(theGridPoints), theInitialPrices(theGridPoints){
+            residualTime, volatility), rhoComputed_(false), vegaComputed_(false),
+            gridPoints_(safeGridPoints(gridPoints, residualTime)),
+            grid_(gridPoints_), initialPrices_(gridPoints_){
                 hasBeenCalculated_ = false;
         }
         
         double BSMNumericalOption::delta() const {
             if (!hasBeenCalculated_)  
                 value();
-            return theDelta;
+            return delta_;
         }
         
         double BSMNumericalOption::gamma() const {
             if(!hasBeenCalculated_) 
                 value();
-            return theGamma;
+            return gamma_;
         }
         
         double BSMNumericalOption::theta() const {
             if(!hasBeenCalculated_) 
                 value();
-            return theTheta;
+            return theta_;
         }
 
         double BSMNumericalOption::vega() const {
         
-            if(!vegaComputed){
+            if(!vegaComputed_){
                 if(!hasBeenCalculated_) 
                     value();
                 Handle<BSMOption> brandNewFD = clone();
-                double volMinus = volatility_ * (1.0 - dVolMultiplier);
+                double volMinus = volatility_ * (1.0 - dVolMultiplier_);
                 brandNewFD -> setVolatility(volMinus);        
-                theVega = (value() - brandNewFD -> value()) / 
-                    (volatility_ * dVolMultiplier);          
-                vegaComputed = true;
+                vega_ = (value() - brandNewFD -> value()) / 
+                    (volatility_ * dVolMultiplier_);          
+                vegaComputed_ = true;
             }
-            return theVega;
+            return vega_;
         }
         
         double BSMNumericalOption::rho() const {
         
-            if(!rhoComputed){
+            if(!rhoComputed_){
                 if(!hasBeenCalculated_) 
                     value();
                 Handle<BSMOption> brandNewFD = clone();
-                Rate rMinus=riskFreeRate_ * (1.0 - dRMultiplier);        
+                Rate rMinus=riskFreeRate_ * (1.0 - dRMultiplier_);        
                 brandNewFD -> setRiskFreeRate(rMinus);
-                theRho=(value() - brandNewFD -> value()) / 
-                    (riskFreeRate_ * dRMultiplier);
-                rhoComputed  = true;
+                rho_=(value() - brandNewFD -> value()) / 
+                    (riskFreeRate_ * dRMultiplier_);
+                rhoComputed_  = true;
             }
-            return theRho;
+            return rho_;
         }
         
         void BSMNumericalOption::setGridLimits() const {
@@ -140,45 +143,45 @@ namespace QuantLib {
             double prefactor = 1.0 + 0.05/volatility_;
             double minMaxFactor = 
                 QL_EXP(4.0*prefactor*volatility_*QL_SQRT(residualTime_));
-            sMin = underlying_/minMaxFactor;  // underlying grid min value
-            sMax = underlying_*minMaxFactor;  // underlying grid max value
+            sMin_ = underlying_/minMaxFactor;  // underlying grid min value
+            sMax_ = underlying_*minMaxFactor;  // underlying grid max value
             // insure strike is included in the grid
             double safetyZoneFactor = 1.1;                    
-            if(sMin > strike_/safetyZoneFactor){
-                sMin = strike_/safetyZoneFactor;
+            if(sMin_ > strike_/safetyZoneFactor){
+                sMin_ = strike_/safetyZoneFactor;
                 // enforce central placement of the underlying
-                sMax = underlying_/(sMin/underlying_);    
+                sMax_ = underlying_/(sMin_/underlying_);    
             }
-            if(sMax < strike_*safetyZoneFactor){
-                sMax = strike_*safetyZoneFactor;
+            if(sMax_ < strike_*safetyZoneFactor){
+                sMax_ = strike_*safetyZoneFactor;
                 // enforce central placement of the underlying
-                sMin = underlying_/(sMax/underlying_);    
+                sMin_ = underlying_/(sMax_/underlying_);    
             }
         }
 
         void BSMNumericalOption::initializeGrid() const {            
-            theGridLogSpacing = (QL_LOG(sMax)-QL_LOG(sMin))/(theGridPoints-1);
-            double edx = QL_EXP(theGridLogSpacing);
-            theGrid[0] = sMin;
+            gridLogSpacing_ = (QL_LOG(sMax_)-QL_LOG(sMin_))/(gridPoints_-1);
+            double edx = QL_EXP(gridLogSpacing_);
+            grid_[0] = sMin_;
             int j;
-            for (j=1; j<theGridPoints; j++)
-                theGrid[j] = theGrid[j-1]*edx;
+            for (j=1; j<gridPoints_; j++)
+                grid_[j] = grid_[j-1]*edx;
         }
         
         void BSMNumericalOption::initializeInitialCondition() const {
             int j;
             switch (type_) {
               case Call:
-                for(j=0; j<theGridPoints; j++)
-                    theInitialPrices[j] = QL_MAX(theGrid[j]-strike_,0.0);
+                for(j=0; j<gridPoints_; j++)
+                    initialPrices_[j] = QL_MAX(grid_[j]-strike_,0.0);
                 break;
               case Put:
-                for(j=0; j<theGridPoints; j++)
-                    theInitialPrices[j] = QL_MAX(strike_-theGrid[j],0.0);
+                for(j=0; j<gridPoints_; j++)
+                    initialPrices_[j] = QL_MAX(strike_-grid_[j],0.0);
                 break;
               case Straddle:
-                for(j=0; j<theGridPoints; j++)
-                    theInitialPrices[j] = QL_FABS(strike_-theGrid[j]);
+                for(j=0; j<gridPoints_; j++)
+                    initialPrices_[j] = QL_FABS(strike_-grid_[j]);
                 break;
               default:
                 throw IllegalArgumentError(
@@ -187,17 +190,17 @@ namespace QuantLib {
         }
         
         void BSMNumericalOption::initializeOperator() const {
-            theOperator = BSMOperator(theGridPoints, theGridLogSpacing, 
+            finiteDifferenceOperator_ = BSMOperator(gridPoints_, gridLogSpacing_, 
                 riskFreeRate_, dividendYield_, volatility_);
                 
-            theOperator.setLowerBC(
+            finiteDifferenceOperator_.setLowerBC(
                 BoundaryCondition(BoundaryCondition::Neumann,
-                    theInitialPrices[1]-theInitialPrices[0]));
+                    initialPrices_[1]-initialPrices_[0]));
                     
-            theOperator.setHigherBC(
+            finiteDifferenceOperator_.setHigherBC(
                 BoundaryCondition(BoundaryCondition::Neumann,
-                    theInitialPrices[theGridPoints-1] - 
-                        theInitialPrices[theGridPoints-2]));
+                    initialPrices_[gridPoints_-1] - 
+                        initialPrices_[gridPoints_-2]));
         }
         
         // Useful functions

@@ -28,6 +28,9 @@
     $Source$
     $Name$
     $Log$
+    Revision 1.19  2001/03/01 14:20:36  marmar
+    Private-member syntax changed
+
     Revision 1.18  2001/03/01 13:53:39  marmar
     Standard step condition and finite-difference model introduced
 
@@ -121,15 +124,15 @@ namespace QuantLib {
                 initializeGrid();
                 initializeInitialCondition();
                 initializeOperator();
-                Array prices = theInitialPrices;
-                Array controlPrices = theInitialPrices;
+                Array prices = initialPrices_;
+                Array controlPrices = initialPrices_;
 
                 Time beginDate = residualTime_;
                 int j=theNumberOfDivs-1;
                 do {
                     Handle<StandardStepCondition> americanCondition(
-                        new BSMAmericanCondition(theInitialPrices));
-                    StandardFiniteDifferenceModel model(theOperator);
+                        new BSMAmericanCondition(initialPrices_));
+                    StandardFiniteDifferenceModel model(finiteDifferenceOperator_);
                     Time endDate;
                     if (j >= 0)
                         endDate = theExDivDates[j];
@@ -147,20 +150,20 @@ namespace QuantLib {
                     beginDate = endDate;
 
                     if (j >= 0) {
-                        Array oldGrid = theGrid;
-                        double centre = valueAtCenter(theGrid);
-                        double mltp = centre/theGrid[0];
+                        Array oldGrid = grid_;
+                        double centre = valueAtCenter(grid_);
+                        double mltp = centre/grid_[0];
                         double newMltp = mltp / (1 + (mltp - 1) * 
                             theDividends[j] / (centre + theDividends[j]));
                         QL_ENSURE(newMltp > 1,"Dividends are to big");
-                        sMin = (centre + theDividends[j])/newMltp;
-                        sMax = (centre + theDividends[j])*newMltp;
+                        sMin_ = (centre + theDividends[j])/newMltp;
+                        sMax_ = (centre + theDividends[j])*newMltp;
                         initializeGrid();
                         initializeInitialCondition();
                         initializeOperator();
-                        movePricesBeforeExDiv(theDividends[j], theGrid, 
+                        movePricesBeforeExDiv(theDividends[j], grid_, 
                             prices, oldGrid);
-                        movePricesBeforeExDiv(theDividends[j], theGrid, 
+                        movePricesBeforeExDiv(theDividends[j], grid_, 
                             controlPrices, oldGrid);
                     } else {
                         //Last iteration: option price and greeks are computed
@@ -179,11 +182,11 @@ namespace QuantLib {
                             theExDivDates);
                         value_ = valueAtCenter(prices) - 
                             valueAtCenter(controlPrices) + analitic.value();
-                        theDelta = firstDerivativeAtCenter(prices,theGrid) - 
-                            firstDerivativeAtCenter(controlPrices,theGrid) + 
+                        delta_ = firstDerivativeAtCenter(prices,grid_) - 
+                            firstDerivativeAtCenter(controlPrices,grid_) + 
                             analitic.delta();
-                        theGamma = secondDerivativeAtCenter(prices,theGrid) - 
-                            secondDerivativeAtCenter(controlPrices,theGrid) + 
+                        gamma_ = secondDerivativeAtCenter(prices,grid_) - 
+                            secondDerivativeAtCenter(controlPrices,grid_) + 
                             analitic.gamma();
     
                         if (optionIsAmerican_)
@@ -194,7 +197,7 @@ namespace QuantLib {
                     
                         double theValueMinus = valueAtCenter(prices) - 
                             valueAtCenter(controlPrices);
-                        theTheta = (theValuePlus - theValueMinus) / 
+                        theta_ = (theValuePlus - theValueMinus) / 
                             (2*dt) + analitic.theta();                                            
                     }
                 } while (--j >= -1);                            
@@ -214,7 +217,7 @@ namespace QuantLib {
             if (optionIsAmerican_) {
                 for (j = 0; j < prices.size(); j++)
                     prices[j] = QL_MAX(priceSpline(newGrid[j]) , 
-                        theInitialPrices[j]);
+                        initialPrices_[j]);
             } else {
                 for (j = 0; j < prices.size(); j++)
                     prices[j] = priceSpline(newGrid[j]);
