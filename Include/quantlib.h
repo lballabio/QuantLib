@@ -25,9 +25,12 @@
 	$Source$
 	$Name$
 	$Log$
+	Revision 1.7  2000/12/15 12:17:58  marmar
+	Adding uniform and gaussian random number generators
+
 	Revision 1.6  2000/12/14 12:57:55  lballabio
 	Removed Doxygen file documentation block
-
+	
 	Revision 1.5  2000/12/14 12:32:29  lballabio
 	Added CVS tags in Doxygen file documentation blocks
 */
@@ -121,6 +124,9 @@
 #include "statistics.h"
 #include "newcubicspline.h"
 #include "location.h"		
+#include "randomgenerator.h"
+#include "boxmullergaussian.h"		
+#include "centrallimitgaussian.h"		
 
 // finite difference methods
 #include "backwardeuler.h"
