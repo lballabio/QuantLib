@@ -39,7 +39,7 @@ namespace QuantLib {
 
         BSMOperator::BSMOperator(unsigned int size, double dx, double r,
             double q, double sigma)
-        : TridiagonalOperator(size) {
+        : ConstantTridiagonalOperator(size) {
             double sigma2 = sigma*sigma;
             double nu = r-q-sigma2/2;
             double pd = -(sigma2/dx-nu)/(2*dx);

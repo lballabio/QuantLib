@@ -41,9 +41,9 @@ namespace QuantLib {
     namespace FiniteDifferences {
 
         //! Black-Scholes-Merton differential operator
-        class BSMOperator : public TridiagonalOperator {
+        class BSMOperator : public ConstantTridiagonalOperator {
           public:
-            BSMOperator() : TridiagonalOperator() {}
+            BSMOperator() : ConstantTridiagonalOperator() {}
             BSMOperator(unsigned int size, 
                         double dx, 
                         double r, 

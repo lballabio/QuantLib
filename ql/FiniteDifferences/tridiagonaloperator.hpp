@@ -45,37 +45,8 @@ namespace QuantLib {
     namespace FiniteDifferences {
 
         //! Base implementation for tridiagonal operator
-        class TridiagonalOperatorCommon {
-          public:
-            // constructors
-            TridiagonalOperatorCommon(unsigned int size = 0);
-            TridiagonalOperatorCommon(const Array& low, const Array& mid,
-                const Array& high);
-            // operator interface
-            Array solveFor(const Array& rhs) const;
-            Array applyTo(const Array& v) const;
-            // inspectors
-            unsigned int size() const { return diagonal_.size(); }
-            // modifiers
-            void setLowerBC(const BoundaryCondition& bc);
-            void setUpperBC(const BoundaryCondition& bc);
-            void setFirstRow(double, double);
-            void setMidRow(unsigned int, double, double, double);
-            void setMidRows(double, double, double);
-            void setLastRow(double, double);
-            void setTime(Time t) {}
-          protected:
-            Array diagonal_, belowDiagonal_, aboveDiagonal_;
-            BoundaryCondition lowerBC_, upperBC_;
-        };
-
-        // derived classes
-
-        // time-constant
-
-        class TridiagonalOperator : public TridiagonalOperatorCommon,
-          public TimeConstantOperator {
-            friend TridiagonalOperator operator+(const TridiagonalOperator&);
+        class TridiagonalOperator {
+           friend TridiagonalOperator operator+(const TridiagonalOperator&);
             friend TridiagonalOperator operator-(const TridiagonalOperator&);
             friend TridiagonalOperator operator*(double,
                 const TridiagonalOperator&);
@@ -97,24 +68,55 @@ namespace QuantLib {
                 const Identity<Array>&);
           public:
             // constructors
-            TridiagonalOperator() : TridiagonalOperatorCommon() {}
-            TridiagonalOperator(unsigned int size) 
-            : TridiagonalOperatorCommon(size) {}
+            TridiagonalOperator(unsigned int size = 0);
             TridiagonalOperator(const Array& low, const Array& mid,
+                const Array& high);
+            virtual ~TridiagonalOperator() {}
+            // operator interface
+            Array solveFor(const Array& rhs) const;
+            Array applyTo(const Array& v) const;
+            // inspectors
+            unsigned int size() const { return diagonal_.size(); }
+            // modifiers
+            void setLowerBC(const BoundaryCondition& bc);
+            void setUpperBC(const BoundaryCondition& bc);
+            void setFirstRow(double, double);
+            void setMidRow(unsigned int, double, double, double);
+            void setMidRows(double, double, double);
+            void setLastRow(double, double);
+            virtual bool isTimeDependent() {return false;}
+            virtual void setTime(Time t) {assert(0);}
+          protected:
+            Array diagonal_, belowDiagonal_, aboveDiagonal_;
+            BoundaryCondition lowerBC_, upperBC_;
+        };
+
+        // derived classes
+
+        // time-constant
+
+        class ConstantTridiagonalOperator : public TridiagonalOperator 
+        {
+          public:
+            // constructors
+            ConstantTridiagonalOperator() : TridiagonalOperator() {}
+            ConstantTridiagonalOperator(unsigned int size) 
+            : TridiagonalOperator(size) {}
+            ConstantTridiagonalOperator(const Array& low, const Array& mid,
                 const Array& high)
-            : TridiagonalOperatorCommon(low,mid,high) {}
+            : TridiagonalOperator(low,mid,high) {}
             #if defined(QL_PATCH_MICROSOFT_BUGS)
             /* This copy constructor and assignment operator are here because
                somehow Visual C++ is not able to generate working ones. They 
                are _not_ to be defined for other compilers which are able to
                generate correct ones.   */
-                TridiagonalOperator(const TridiagonalOperator& op)
-                : TridiagonalOperatorCommon(op.belowDiagonal_, op.diagonal_,
+                ConstantTridiagonalOperator(const ConstantTridiagonalOperator& op)
+                : TridiagonalOperator(op.belowDiagonal_, op.diagonal_,
                     op.aboveDiagonal_) {
                         lowerBC_ = op.lowerBC_;
                         upperBC_ = op.upperBC_;
                 }
-                TridiagonalOperator& operator=(const TridiagonalOperator& op) {
+                ConstantTridiagonalOperator& operator=(const ConstantTridiagonalOperator& op) {
                     belowDiagonal_ = op.belowDiagonal_;
                     diagonal_      = op.diagonal_;
                     aboveDiagonal_ = op.aboveDiagonal_;
@@ -123,31 +125,33 @@ namespace QuantLib {
                     return *this;
                 }
             #endif
+            virtual bool isTimeDependent() { return false;}    
         };
 
         // time-dependent
 
         class TimeDependentTridiagonalOperator :
-          public TridiagonalOperatorCommon, public TimeDependentOperator {
+          public TridiagonalOperator {
           public:
             // constructors
-            TimeDependentTridiagonalOperator(unsigned int size = 0)
-            : TridiagonalOperatorCommon(size) {}
+            TimeDependentTridiagonalOperator(unsigned int size=0)
+            : TridiagonalOperator(size) {}
             TimeDependentTridiagonalOperator(const Array& low, 
                 const Array& mid, const Array& high)
-            : TridiagonalOperatorCommon(low,mid,high) {}
+            : TridiagonalOperator(low,mid,high) {}
+            virtual bool isTimeDependent() { return true;}
         };
 
 
         // inline definitions
 
-        inline void TridiagonalOperatorCommon::setFirstRow(double valB,
+        inline void TridiagonalOperator::setFirstRow(double valB,
           double valC) {
             diagonal_[0]      = valB;
             aboveDiagonal_[0] = valC;
         }
 
-        inline void TridiagonalOperatorCommon::setMidRow(unsigned int i, 
+        inline void TridiagonalOperator::setMidRow(unsigned int i, 
           double valA, double valB, double valC) {
             QL_REQUIRE(i>=1 && i<=size()-2,
                 "out of range in TridiagonalSystem::setMidRow");
@@ -156,7 +160,7 @@ namespace QuantLib {
             aboveDiagonal_[i]   = valC;
         }
 
-        inline void TridiagonalOperatorCommon::setMidRows(double valA,
+        inline void TridiagonalOperator::setMidRows(double valA,
           double valB, double valC){
             for (unsigned int i=1; i<=size()-2; i++) {
                 belowDiagonal_[i-1] = valA;
@@ -165,13 +169,17 @@ namespace QuantLib {
             }
         }
 
-        inline void TridiagonalOperatorCommon::setLastRow(double valA,
+        inline void TridiagonalOperator::setLastRow(double valA,
           double valB) {
             belowDiagonal_[size()-2] = valA;
             diagonal_[size()-1]      = valB;
         }
 
-        // time-constant algebra
+        /*! \relates TridiagonalOperator
+            time-constant algebra
+            \warning to use real time-dependant algebra, you must overload
+            these operators in the inheriting time-dependent class
+        */
 
         inline TridiagonalOperator operator+(const TridiagonalOperator& D) {
             return D;

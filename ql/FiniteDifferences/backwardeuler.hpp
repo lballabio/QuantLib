@@ -76,14 +76,15 @@ namespace QuantLib {
             typedef typename OperatorTraits<Operator>::arrayType arrayType;
             typedef Operator operatorType;
             // constructors
-            BackwardEuler(const operatorType& L) : L(L), dt(0.0) {}
+            BackwardEuler(operatorType& L) : D_(L), dt_(0.0) {}
             void step(arrayType& a, Time t);
             void setStep(Time dt) {
-                this->dt = dt;
-                implicitPart = Identity<arrayType>()+dt*L;
+                dt_ = dt;
+                implicitPart_ = Identity<arrayType>()+dt_*D_;
             }
-            operatorType L, implicitPart;
-            Time dt;
+            operatorType& D_;
+            operatorType implicitPart_;
+            Time dt_;
         };
 
         // inline definitions
@@ -92,9 +93,9 @@ namespace QuantLib {
         inline void BackwardEuler<Operator>::step(arrayType& a, Time t) {
             if (Operator::isTimeDependent) {
                 L.setTime(t);
-                implicitPart = Identity<arrayType>()+dt*L;
+                implicitPart_ = Identity<arrayType>()+dt_*D_;
             }
-            a = implicitPart.solveFor(a);
+            a = implicitPart_.solveFor(a);
         }
 
     }

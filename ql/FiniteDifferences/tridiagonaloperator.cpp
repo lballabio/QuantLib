@@ -26,7 +26,7 @@
     \brief tridiagonal operator
 
     \fullpath
-    FiniteDifferences/%tridiagonaloperator.cpp
+    ql/FiniteDifferences/%tridiagonaloperator.cpp
 */
 
 // $Id$
@@ -39,7 +39,7 @@ namespace QuantLib {
 
     namespace FiniteDifferences {
 
-        TridiagonalOperatorCommon::TridiagonalOperatorCommon(
+        TridiagonalOperator::TridiagonalOperator(
             unsigned int size) {
 
             if (size>=3) {
@@ -55,7 +55,7 @@ namespace QuantLib {
             }
         }
 
-        TridiagonalOperatorCommon::TridiagonalOperatorCommon(
+        TridiagonalOperator::TridiagonalOperator(
             const Array& low, const Array& mid, const Array& high)
         : diagonal_(mid), belowDiagonal_(low), aboveDiagonal_(high) {
             QL_ENSURE(low.size() == mid.size()-1,
@@ -64,7 +64,7 @@ namespace QuantLib {
                 "wrong size for upper diagonal vector");
         }
 
-        void TridiagonalOperatorCommon::setLowerBC(
+        void TridiagonalOperator::setLowerBC(
           const BoundaryCondition& bc) {
             lowerBC_ = bc;
             switch (lowerBC_.type()) {
@@ -80,7 +80,7 @@ namespace QuantLib {
             }
         }
 
-        void TridiagonalOperatorCommon::setUpperBC(
+        void TridiagonalOperator::setUpperBC(
           const BoundaryCondition& bc) {
             upperBC_ = bc;
             switch (upperBC_.type()) {
@@ -98,7 +98,7 @@ namespace QuantLib {
 
 
         Array
-        TridiagonalOperatorCommon::applyTo(const Array& v) const {
+        TridiagonalOperator::applyTo(const Array& v) const {
             QL_REQUIRE(v.size()==size(),
                 "TridiagonalOperator::applyTo: vector of the wrong size (" +
                 IntegerFormatter::toString(v.size()) + "instead of " +
@@ -143,7 +143,7 @@ namespace QuantLib {
         }
 
         Array
-        TridiagonalOperatorCommon::solveFor(const Array& rhs) const {
+        TridiagonalOperator::solveFor(const Array& rhs) const {
             QL_REQUIRE(rhs.size()==size(),
                 "TridiagonalOperator::solveFor: rhs vector has the wrong size");
             Array bcRhs = rhs;

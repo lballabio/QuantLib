@@ -52,7 +52,7 @@ namespace QuantLib {
             typedef typename Evolver::arrayType arrayType;
             typedef typename Evolver::operatorType operatorType;
             // constructor
-            FiniteDifferenceModel(const operatorType& L) : evolver(L) {}
+            FiniteDifferenceModel(operatorType& L) : evolver(L) {}
             // methods
             // arrayType grid() const { return evolver.xGrid(); }
             /*! solves the problem between the given times, possibly 
