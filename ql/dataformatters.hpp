@@ -23,6 +23,7 @@
 #ifndef quantlib_data_formatters_hpp
 #define quantlib_data_formatters_hpp
 
+#include <ql/basicdataformatters.hpp>
 #include <ql/Math/matrix.hpp>
 
 namespace QuantLib {
