@@ -44,7 +44,9 @@ namespace QuantLib {
 
     //! Singular Value Decomposition
     /*! Refer to Golub and Van Loan: Matrix computation,
-        The Johns Hopkins University Press            
+        The Johns Hopkins University Press
+
+        \bug This class was reported to yield wrong results
     */
     class SVD {
       public:
