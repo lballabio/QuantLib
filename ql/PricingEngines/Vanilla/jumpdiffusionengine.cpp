@@ -28,7 +28,7 @@ namespace QuantLib {
         const Handle<VanillaEngine>& baseEngine)
     : baseEngine_(baseEngine) {
         QL_REQUIRE(!IsNull(baseEngine_),
-                   "JumpDiffusionEngine::JumpDiffusionEngine: null base engine");
+                   "JumpDiffusionEngine: null base engine");
     }
 
 
@@ -44,14 +44,14 @@ namespace QuantLib {
         } catch (...) {}
         #endif
         QL_REQUIRE(!IsNull(jdProcess),"not a jump diffusion process");
-           
+
         double jumpSquareVol =
             jdProcess->jumpVolatility*jdProcess->jumpVolatility;
         double muPlusHalfSquareVol = jdProcess->meanLogJump + 0.5*jumpSquareVol;
         // mean jump size
         double k = QL_EXP(muPlusHalfSquareVol) - 1.0;
         double lambda = (k+1.0) * jdProcess->jumpIntensity;
-            
+
         // dummy strike
         double variance = jdProcess->volTS->blackVariance(
             arguments_.exercise->lastDate(), 1.0);
@@ -65,8 +65,6 @@ namespace QuantLib {
 
         PoissonDistribution p(lambda*t);
 
-
-        
         baseEngine_->reset();
 
         VanillaOption::arguments* baseArguments =
@@ -75,21 +73,12 @@ namespace QuantLib {
         // *baseArguments = arguments_;
         baseArguments->payoff   = arguments_.payoff;
         baseArguments->exercise = arguments_.exercise;
-
-
-        // baseArguments->blackScholesProcess = arguments_.blackScholesProcess;
-
-        // these won't be changed
-        baseArguments->blackScholesProcess->dividendTS =
-            jdProcess->dividendTS;
-        baseArguments->blackScholesProcess->stateVariable =
-            jdProcess->stateVariable;
-
-        // these will be changed: assigned here just for validation
-        baseArguments->blackScholesProcess->volTS =
-            jdProcess->volTS;
-        baseArguments->blackScholesProcess->riskFreeTS =
-            jdProcess->riskFreeTS;
+        baseArguments->blackScholesProcess = 
+            Handle<BlackScholesStochasticProcess>(
+                  new BlackScholesStochasticProcess(jdProcess->stateVariable, 
+                                                    jdProcess->dividendTS,
+                                                    jdProcess->riskFreeTS, 
+                                                    jdProcess->volTS));
 
         baseArguments->validate();
 
@@ -127,10 +116,6 @@ namespace QuantLib {
             results_.rho         += weight * baseResults->rho;
             results_.dividendRho += weight * baseResults->dividendRho;
         }
-
-        
-
-    
     }
 
 }
