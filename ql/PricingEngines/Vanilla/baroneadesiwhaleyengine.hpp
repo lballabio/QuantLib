@@ -34,6 +34,12 @@ namespace QuantLib {
     class BaroneAdesiWhaleyApproximationEngine 
         : public VanillaOption::engine {
       public:
+        static Real criticalPrice(
+            const boost::shared_ptr<StrikedTypePayoff>& payoff,
+            DiscountFactor riskFreeDiscount, 
+            DiscountFactor dividendDiscount,
+            Real variance,
+            Real tolerance = 1e-6);
         void calculate() const;
     };
 

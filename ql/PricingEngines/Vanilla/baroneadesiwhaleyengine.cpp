@@ -21,104 +21,102 @@
 
 namespace QuantLib {
 
-    namespace {
+    // critical commodity price
+    Real BaroneAdesiWhaleyApproximationEngine::criticalPrice(
+        const boost::shared_ptr<StrikedTypePayoff>& payoff,
+        DiscountFactor riskFreeDiscount, 
+        DiscountFactor dividendDiscount,
+        Real variance, Real tolerance) {
 
-        // critical commodity price
-        Real Kc(const boost::shared_ptr<StrikedTypePayoff>& payoff,
-                DiscountFactor riskFreeDiscount, 
-                DiscountFactor dividendDiscount,
-                Real variance, Real tolerance = 1e-6) {
+        // Calculation of seed value, Si
+        Real n= 2.0*QL_LOG(dividendDiscount/riskFreeDiscount)/(variance);
+        Real m=-2.0*QL_LOG(riskFreeDiscount)/(variance);
+        Real bT = QL_LOG(dividendDiscount/riskFreeDiscount);
 
-            // Calculation of seed value, Si
-            Real n= 2.0*QL_LOG(dividendDiscount/riskFreeDiscount)/(variance);
-            Real m=-2.0*QL_LOG(riskFreeDiscount)/(variance);
-            Real bT = QL_LOG(dividendDiscount/riskFreeDiscount);
-
-            Real qu, Su, h, Si;
-            switch (payoff->optionType()) {
-              case Option::Call:
-                qu = (-(n-1.0) + QL_SQRT(((n-1.0)*(n-1.0)) + 4.0*m))/2.0;
-                Su = payoff->strike() / (1.0 - 1.0/qu);
-                h = -(bT + 2.0*QL_SQRT(variance)) * payoff->strike() / 
-                    (Su - payoff->strike());
-                Si = payoff->strike() + (Su - payoff->strike()) * 
-                    (1.0 - QL_EXP(h));
-                break;
-              case Option::Put:
-                qu = (-(n-1.0) - QL_SQRT(((n-1.0)*(n-1.0)) + 4.0*m))/2.0;
-                Su = payoff->strike() / (1.0 - 1.0/qu);
-                h = (bT - 2.0*QL_SQRT(variance)) * payoff->strike() / 
-                    (payoff->strike() - Su);
-                Si = Su + (payoff->strike() - Su) * QL_EXP(h);
-                break;
-              default:
-                QL_FAIL("unknown option type");
-            }
+        Real qu, Su, h, Si;
+        switch (payoff->optionType()) {
+            case Option::Call:
+            qu = (-(n-1.0) + QL_SQRT(((n-1.0)*(n-1.0)) + 4.0*m))/2.0;
+            Su = payoff->strike() / (1.0 - 1.0/qu);
+            h = -(bT + 2.0*QL_SQRT(variance)) * payoff->strike() / 
+                (Su - payoff->strike());
+            Si = payoff->strike() + (Su - payoff->strike()) * 
+                (1.0 - QL_EXP(h));
+            break;
+            case Option::Put:
+            qu = (-(n-1.0) - QL_SQRT(((n-1.0)*(n-1.0)) + 4.0*m))/2.0;
+            Su = payoff->strike() / (1.0 - 1.0/qu);
+            h = (bT - 2.0*QL_SQRT(variance)) * payoff->strike() / 
+                (payoff->strike() - Su);
+            Si = Su + (payoff->strike() - Su) * QL_EXP(h);
+            break;
+            default:
+            QL_FAIL("unknown option type");
+        }
 
 
-            // Newton Raphson algorithm for finding critical price Si
-            Real Q, LHS, RHS, bi;
-            Real forwardSi = Si * dividendDiscount / riskFreeDiscount;
-            Real d1 = (QL_LOG(forwardSi/payoff->strike()) + 0.5*variance) /
-                QL_SQRT(variance);
-            CumulativeNormalDistribution cumNormalDist;
-            Real K = -2.0*QL_LOG(riskFreeDiscount)/
-                (variance*(1.0-riskFreeDiscount));
-            switch (payoff->optionType()) {
-                case Option::Call:
-                    Q = (-(n-1.0) + QL_SQRT(((n-1.0)*(n-1.0)) + 4 * K)) / 2;
+        // Newton Raphson algorithm for finding critical price Si
+        Real Q, LHS, RHS, bi;
+        Real forwardSi = Si * dividendDiscount / riskFreeDiscount;
+        Real d1 = (QL_LOG(forwardSi/payoff->strike()) + 0.5*variance) /
+            QL_SQRT(variance);
+        CumulativeNormalDistribution cumNormalDist;
+        Real K = -2.0*QL_LOG(riskFreeDiscount)/
+            (variance*(1.0-riskFreeDiscount));
+        switch (payoff->optionType()) {
+            case Option::Call:
+                Q = (-(n-1.0) + QL_SQRT(((n-1.0)*(n-1.0)) + 4 * K)) / 2;
+                LHS = Si - payoff->strike();
+                RHS = BlackFormula(forwardSi, riskFreeDiscount, variance,
+                    payoff).value() + (1 - dividendDiscount *
+                    cumNormalDist(d1)) * Si / Q;
+                bi =  dividendDiscount * cumNormalDist(d1) * (1 - 1/Q) +
+                    (1 - dividendDiscount *
+                    cumNormalDist(d1) / QL_SQRT(variance)) / Q;
+                while (QL_FABS(LHS - RHS)/payoff->strike() > tolerance) {
+                    Si = (payoff->strike() + RHS - bi * Si) / (1 - bi);
+                    forwardSi = Si * dividendDiscount / riskFreeDiscount;
+                    d1 = (QL_LOG(forwardSi/payoff->strike())+0.5*variance)
+                        /QL_SQRT(variance);
                     LHS = Si - payoff->strike();
-                    RHS = BlackFormula(forwardSi, riskFreeDiscount, variance,
-                        payoff).value() + (1 - dividendDiscount *
-                        cumNormalDist(d1)) * Si / Q;
-                    bi =  dividendDiscount * cumNormalDist(d1) * (1 - 1/Q) +
-                        (1 - dividendDiscount *
-                        cumNormalDist(d1) / QL_SQRT(variance)) / Q;
-                    while (QL_FABS(LHS - RHS)/payoff->strike() > tolerance) {
-                        Si = (payoff->strike() + RHS - bi * Si) / (1 - bi);
-                        forwardSi = Si * dividendDiscount / riskFreeDiscount;
-                        d1 = (QL_LOG(forwardSi/payoff->strike())+0.5*variance)
-                            /QL_SQRT(variance);
-                        LHS = Si - payoff->strike();
-                        RHS = BlackFormula(forwardSi, riskFreeDiscount,
-                            variance, payoff).value() + (1 - dividendDiscount
-                            * cumNormalDist(d1)) * Si / Q;
-                        bi = dividendDiscount * cumNormalDist(d1) * (1 - 1 / Q)
-                            + (1 - dividendDiscount *
-                            cumNormalDist.derivative(d1) / QL_SQRT(variance))
-                            / Q;
-                    }
-                    break;
-                case Option::Put:
-                    Q = (-(n-1.0) - QL_SQRT(((n-1.0)*(n-1.0)) + 4 * K)) / 2;
+                    RHS = BlackFormula(forwardSi, riskFreeDiscount,
+                        variance, payoff).value() + (1 - dividendDiscount
+                        * cumNormalDist(d1)) * Si / Q;
+                    bi = dividendDiscount * cumNormalDist(d1) * (1 - 1 / Q)
+                        + (1 - dividendDiscount *
+                        cumNormalDist.derivative(d1) / QL_SQRT(variance))
+                        / Q;
+                }
+                break;
+            case Option::Put:
+                Q = (-(n-1.0) - QL_SQRT(((n-1.0)*(n-1.0)) + 4 * K)) / 2;
+                LHS = payoff->strike() - Si;
+                RHS = BlackFormula(forwardSi, riskFreeDiscount, variance,
+                    payoff).value() - (1 - dividendDiscount *
+                    cumNormalDist(-d1)) * Si / Q;
+                bi = -dividendDiscount * cumNormalDist(-d1) * (1 - 1/Q)
+                    - (1 + dividendDiscount * cumNormalDist.derivative(-d1)
+                    / QL_SQRT(variance)) / Q;
+                while (QL_FABS(LHS - RHS)/payoff->strike() > tolerance) {
+                    Si = (payoff->strike() - RHS + bi * Si) / (1 + bi);
+                    forwardSi = Si * dividendDiscount / riskFreeDiscount;
+                    d1 = (QL_LOG(forwardSi/payoff->strike())+0.5*variance)
+                        /QL_SQRT(variance);
                     LHS = payoff->strike() - Si;
                     RHS = BlackFormula(forwardSi, riskFreeDiscount, variance,
                         payoff).value() - (1 - dividendDiscount *
                         cumNormalDist(-d1)) * Si / Q;
-                    bi = -dividendDiscount * cumNormalDist(-d1) * (1 - 1/Q)
-                        - (1 + dividendDiscount * cumNormalDist.derivative(-d1)
+                    bi = -dividendDiscount * cumNormalDist(-d1) * 
+                        (1 - 1 / Q)
+                        - (1 + dividendDiscount * cumNormalDist(-d1) 
                         / QL_SQRT(variance)) / Q;
-                    while (QL_FABS(LHS - RHS)/payoff->strike() > tolerance) {
-                        Si = (payoff->strike() - RHS + bi * Si) / (1 + bi);
-                        forwardSi = Si * dividendDiscount / riskFreeDiscount;
-                        d1 = (QL_LOG(forwardSi/payoff->strike())+0.5*variance)
-                            /QL_SQRT(variance);
-                        LHS = payoff->strike() - Si;
-                        RHS = BlackFormula(forwardSi, riskFreeDiscount, variance,
-                            payoff).value() - (1 - dividendDiscount *
-                            cumNormalDist(-d1)) * Si / Q;
-                        bi = -dividendDiscount * cumNormalDist(-d1) * 
-                            (1 - 1 / Q)
-                            - (1 + dividendDiscount * cumNormalDist(-d1) 
-                            / QL_SQRT(variance)) / Q;
-                    }
-                    break;
-                default:
-                    QL_FAIL("unknown option type");
-            }
-
-            return Si;
+                }
+                break;
+            default:
+                QL_FAIL("unknown option type");
         }
+
+        return Si;
     }
 
     void BaroneAdesiWhaleyApproximationEngine::calculate() const {
@@ -184,8 +182,8 @@ namespace QuantLib {
             // early exercise can be optimal 
             CumulativeNormalDistribution cumNormalDist;
             Real tolerance = 1e-6;
-            Real Sk = Kc(payoff, riskFreeDiscount, dividendDiscount,
-                variance, tolerance);
+            Real Sk = criticalPrice(payoff, riskFreeDiscount,
+                dividendDiscount, variance, tolerance);
             Real forwardSk = Sk * dividendDiscount / riskFreeDiscount;
             Real d1 = (QL_LOG(forwardSk/payoff->strike()) + 0.5*variance)
                 /QL_SQRT(variance);
