@@ -74,6 +74,8 @@ int main(int argc, char* argv[])
             exerciseDate);
 
         double volatility = 0.10;
+        std::cout << "option type = "  << OptionTypeFormatter::toString(type)
+                  << std::endl;
         std::cout << "Time to maturity = "        << maturity
                   << std::endl;
         std::cout << "Underlying price = "        << underlying
