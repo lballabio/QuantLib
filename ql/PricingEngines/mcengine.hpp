@@ -39,7 +39,9 @@ namespace QuantLib {
             a Monte Carlo engine.
             See McVanillaEngine as example of one factor engine,
             McBasketEngine as example of multi factor engine.
-        */
+        
+            CLASS - McSimulation
+        */        
 
         template <class MC,
                   class S = Math::Statistics>
@@ -180,6 +182,10 @@ namespace QuantLib {
     
 
         //! Base class for Monte Carlo vanilla option engines
+        /*
+            CLASS - McVanillaEngine
+        */        
+
         template<class RNG = MonteCarlo::PseudoRandom, 
                  class S = Math::Statistics>
         class MCVanillaEngine 
@@ -329,6 +335,9 @@ namespace QuantLib {
 
 
         //! European Vanilla option pricing engine using Monte Carlo simulation
+        /*
+            CLASS - McEuropeanEngine
+        */        
         template <class RNG = MonteCarlo::PseudoRandom, 
                   class S = Math::Statistics>
         class MCEuropeanEngine : public MCVanillaEngine<RNG,S> {
@@ -352,6 +361,9 @@ namespace QuantLib {
         };
 
         // helper class for easier instantiation
+        /*
+            CLASS - MakeMcEuropeanEngine
+        */        
         template <class RNG = MonteCarlo::PseudoRandom, 
                   class S = Math::Statistics>
         class MakeMCEuropeanEngine {
@@ -376,7 +388,9 @@ namespace QuantLib {
 
 
         // inline definitions
-
+        /*
+            Constructor for MCEuropeanEngine
+        */
         template <class RNG, class S>
         inline 
         MCEuropeanEngine<RNG,S>::MCEuropeanEngine(Size maxTimeStepPerYear,
@@ -394,6 +408,11 @@ namespace QuantLib {
                                  maxSamples,
                                  seed) {}
 
+        /*
+            pathPricer() for MCEuropeanEngine
+
+            returns a European Path Pricer, ready for use.
+        */
         template <class RNG, class S>
         inline 
         Handle<QL_TYPENAME MCEuropeanEngine<RNG,S>::path_pricer_type>
@@ -406,6 +425,11 @@ namespace QuantLib {
                                                    arguments_.riskFreeTS));
         }
 
+        /*
+            MCEuropeanEngine::timeGrid() 
+
+            returns a TimeGrid, using the maturity and number of timeSteps.
+        */
         template <class RNG, class S>
         inline TimeGrid MCEuropeanEngine<RNG,S>::timeGrid() const {
             try {
@@ -471,6 +495,9 @@ namespace QuantLib {
             return *this;
         }
 
+        /**
+         * MakeMCEuropeanEngine::withAntitheticVariate()
+         */
         template <class RNG, class S>
         inline MakeMCEuropeanEngine<RNG,S>&
         MakeMCEuropeanEngine<RNG,S>::withAntitheticVariate() {
@@ -478,6 +505,9 @@ namespace QuantLib {
             return *this;
         }
 
+        /**
+         * MakeMCEuropeanEngine::withControlVariate()         
+         */
         template <class RNG, class S>
         inline MakeMCEuropeanEngine<RNG,S>&
         MakeMCEuropeanEngine<RNG,S>::withControlVariate() {
@@ -485,6 +515,11 @@ namespace QuantLib {
             return *this;
         }
 
+        /**
+         * MakeMCEuropeanEngine() 
+         *
+         * Constructs and returns a MCEuropeanEngine
+         */
         template <class RNG, class S>
         inline 
         MakeMCEuropeanEngine<RNG,S>::operator PricingEngine*() const {
