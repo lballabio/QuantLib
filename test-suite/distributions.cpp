@@ -1,5 +1,6 @@
 
 /*
+ Copyright (C) 2003 Ferdinando Ametrano
  Copyright (C) 2003 RiskMap srl
 
  This file is part of QuantLib, a free-software/open-source library
@@ -18,6 +19,9 @@
 #include "distributions.hpp"
 #include "utilities.hpp"
 #include <ql/Math/normaldistribution.hpp>
+#include <ql/Math/bivariatenormaldistribution.hpp>
+#include <cppunit/TestSuite.h>
+#include <cppunit/TestCaller.h>
 
 using namespace QuantLib;
 
@@ -39,7 +43,7 @@ namespace {
 
 }
 
-void DistributionTest::runTest() {
+void DistributionTest::testNormal() {
 
     NormalDistribution normal(average,sigma);
     CumulativeNormalDistribution cum(average,sigma);
@@ -120,3 +124,91 @@ void DistributionTest::runTest() {
     }
 }
 
+
+
+// This makes it easier to use array literals (alas, no std::vector literals)
+#define LENGTH(a) (sizeof(a)/sizeof(a[0]))
+
+
+void DistributionTest::testBivariate() {
+
+    struct BivariateTestData {
+        double a;
+        double b;
+        double rho;
+        double result;
+    };
+
+    /* The data below are from
+       "Option pricing formulas", E.G. Haug, McGraw-Hill 1998
+       pag 193
+    */
+    BivariateTestData values[] = {
+        {  0.0,  0.0,  0.0, 0.250000 },
+        {  0.0,  0.0, -0.5, 0.166667 },
+        {  0.0,  0.0,  0.5, 0.333333 },
+        {  0.0, -0.5,  0.0, 0.154269 },
+        {  0.0, -0.5, -0.5, 0.081660 },
+        {  0.0, -0.5,  0.5, 0.226878 },
+        {  0.0,  0.5,  0.0, 0.345731 },
+        {  0.0,  0.5, -0.5, 0.273122 },
+        {  0.0,  0.5,  0.5, 0.418340 },
+
+        { -0.5,  0.0,  0.0, 0.154269 },
+        { -0.5,  0.0, -0.5, 0.081660 },
+        { -0.5,  0.0,  0.5, 0.226878 },
+        { -0.5, -0.5,  0.0, 0.095195 },
+        { -0.5, -0.5, -0.5, 0.036298 },
+        { -0.5, -0.5,  0.5, 0.163319 },
+        { -0.5,  0.5,  0.0, 0.213342 },
+        { -0.5,  0.5, -0.5, 0.145218 },
+        { -0.5,  0.5,  0.5, 0.272239 },
+
+        {  0.5,  0.0,  0.0, 0.345731 },
+        {  0.5,  0.0, -0.5, 0.273122 },
+        {  0.5,  0.0,  0.5, 0.418340 },
+        {  0.5, -0.5,  0.0, 0.213342 },
+        {  0.5, -0.5, -0.5, 0.145218 },
+        {  0.5, -0.5,  0.5, 0.272239 },
+        {  0.5,  0.5,  0.0, 0.478120 },
+        {  0.5,  0.5, -0.5, 0.419223 },
+        {  0.5,  0.5,  0.5, 0.546244 }
+    };
+
+
+    for (Size i=0; i<LENGTH(values); i++) {
+
+        BivariateCumulativeNormalDistribution bcd(values[i].rho);
+        double value = bcd(values[i].a, values[i].b);
+
+        if (QL_FABS(value-values[i].result)>=1e-6) {
+          CPPUNIT_FAIL("BivariateCumulativeDistribution \n"
+              "case "
+              + IntegerFormatter::toString(i+1) + "\n"
+              "    a:   "
+              + DoubleFormatter::toString(values[i].a) + "\n"
+              "    b:   "
+              + DoubleFormatter::toString(values[i].b) + "\n"
+              "    rho:           "
+              + DoubleFormatter::toString(values[i].rho) +"\n"
+              "    tabulated value:  "
+              + DoubleFormatter::toString(values[i].result) + "\n"
+              "    result:  "
+              + DoubleFormatter::toString(value));
+        }
+    }
+
+}
+
+
+CppUnit::Test* DistributionTest::suite() {
+    CppUnit::TestSuite* tests =
+        new CppUnit::TestSuite("Distributions' tests");
+    tests->addTest(new CppUnit::TestCaller<DistributionTest>
+                   ("Testing normal distribution(s)",
+                    &DistributionTest::testNormal));
+    tests->addTest(new CppUnit::TestCaller<DistributionTest>
+                   ("Testing bivariate cumulative normal distribution",
+                    &DistributionTest::testBivariate));
+    return tests;
+}

@@ -1,5 +1,6 @@
 
 /*
+ Copyright (C) 2003 Ferdinando Ametrano
  Copyright (C) 2003 RiskMap srl
 
  This file is part of QuantLib, a free-software/open-source library
@@ -19,11 +20,13 @@
 #define quantlib_test_distributions_hpp
 
 #include <cppunit/TestCase.h>
+#include <cppunit/TestFixture.h>
 
-class DistributionTest : public CppUnit::TestCase {
+class DistributionTest : public CppUnit::TestFixture {
   public:
-    DistributionTest() : CppUnit::TestCase("Testing distributions") {}
-    void runTest();
+    void testNormal();
+    void testBivariate();
+    static CppUnit::Test* suite();
 };
 
 
