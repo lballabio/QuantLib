@@ -79,7 +79,7 @@ void LowDiscrepancyTest::testSobol() {
     // testing max dimensionality
     Size dimensionality = PPMT_MAX_DIM;
     BigNatural seed = 123456;
-    SobolRsg rsg(dimensionality, seed, SobolRsg::DirectionIntegers::SobolLevitan);
+    SobolRsg rsg(dimensionality, seed, SobolRsg::SobolLevitan);
     Size points = 100, i;
     for (i=0; i<points; i++) {
         point = rsg.nextSequence().value;
@@ -653,13 +653,13 @@ namespace {
         std::string name() const {
             std::string prefix;
             switch (unit_) {
-                case SobolRsg::DirectionIntegers::Unit:
+                case SobolRsg::Unit:
                     prefix = "unit-initialized ";
                     break;
-                case SobolRsg::DirectionIntegers::Jaeckel:
+                case SobolRsg::Jaeckel:
                     prefix = "Jäckel-initialized ";
                     break;
-                case SobolRsg::DirectionIntegers::SobolLevitan:
+                case SobolRsg::SobolLevitan:
                     prefix = "SobolLevitan-initialized ";
                     break;
             }
@@ -858,7 +858,7 @@ void LowDiscrepancyTest::testJackelSobolDiscrepancy() {
         dim015DiscrJackel_Sobol, dim030DiscrJackel_Sobol,
         dim050DiscrJackel_Sobol, dim100DiscrJackel_Sobol};
 
-    testGeneratorDiscrepancy(SobolFactory(SobolRsg::DirectionIntegers::Jaeckel),
+    testGeneratorDiscrepancy(SobolFactory(SobolRsg::Jaeckel),
                              discrepancy,
                              "JackelSobolDiscrepancy.txt",
                              "DiscrJackel_Sobol");
@@ -874,7 +874,7 @@ void LowDiscrepancyTest::testSobolLevitanSobolDiscrepancy() {
         dim015DiscrSobLev_Sobol, dim030DiscrSobLev_Sobol,
         dim050DiscrSobLev_Sobol, dim100DiscrSobLev_Sobol};
 
-    testGeneratorDiscrepancy(SobolFactory(SobolRsg::DirectionIntegers::SobolLevitan),
+    testGeneratorDiscrepancy(SobolFactory(SobolRsg::SobolLevitan),
                              discrepancy,
                              "SobolLevitanSobolDiscrepancy.txt",
                              "DiscrSobLev_Sobol");
@@ -890,7 +890,7 @@ void LowDiscrepancyTest::testUnitSobolDiscrepancy() {
         dim015Discr__Unit_Sobol, dim030Discr__Unit_Sobol,
         dim050Discr__Unit_Sobol, dim100Discr__Unit_Sobol};
 
-        testGeneratorDiscrepancy(SobolFactory(SobolRsg::DirectionIntegers::Unit),
+        testGeneratorDiscrepancy(SobolFactory(SobolRsg::Unit),
                              discrepancy,
                              "UnitSobolDiscrepancy.txt",
                              "Discr__Unit_Sobol");
