@@ -27,8 +27,7 @@ OBJS = \
     "compoundforward.obj$(_mt)$(_D)" \
     "extendeddiscountcurve.obj$(_mt)$(_D)" \
     "piecewiseflatforward.obj$(_mt)$(_D)" \
-    "ratehelpers.obj$(_mt)$(_D)" \
-    "zerocurve.obj$(_mt)$(_D)"
+    "ratehelpers.obj$(_mt)$(_D)"
 
 # Tools to be used
 CC        = bcc32

@@ -1,13 +1,18 @@
 
+(defvar ql-file-variables
+"/* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
+")
+
 (defvar ql-license
 "
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
 
- QuantLib is free software: you can redistribute it and/or modify it under the
- terms of the QuantLib license.  You should have received a copy of the
- license along with this program; if not, please email quantlib-dev@lists.sf.net
- The license is also available online at http://quantlib.org/html/license.html
+ QuantLib is free software: you can redistribute it and/or modify it
+ under the terms of the QuantLib license.  You should have received a
+ copy of the license along with this program; if not, please email
+ <quantlib-dev@lists.sf.net>. The license is also available online at
+ <http://quantlib.org/reference/license.html>.
 
  This program is distributed in the hope that it will be useful, but WITHOUT
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
@@ -17,17 +22,20 @@
 ; skeleton for a new header file---you might want to bind this to some key
 (defun ql-new-header ()
   (interactive)
+  (insert ql-file-variables)
   (ql-add-license)
   (ql-add-file-description)
   (insert "\n")
   (ql-add-include-guard)
+  (ql-add-sample-header)
+  (insert "\n")
   (ql-add-namespace))
 
 ; skeleton for a new source file---you might want to bind this to some key
 (defun ql-new-source ()
   (interactive)
+  (insert ql-file-variables)
   (ql-add-license)
-  (ql-add-file-description)
   (insert "\n")
   (ql-add-sample-header)
   (insert "\n")

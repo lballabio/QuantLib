@@ -1,3 +1,4 @@
+/* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
  Copyright (C) 2005 StatPro Italia srl
@@ -5,10 +6,11 @@
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
 
- QuantLib is free software: you can redistribute it and/or modify it under the
- terms of the QuantLib license.  You should have received a copy of the
- license along with this program; if not, please email quantlib-dev@lists.sf.net
- The license is also available online at http://quantlib.org/html/license.html
+ QuantLib is free software: you can redistribute it and/or modify it
+ under the terms of the QuantLib license.  You should have received a
+ copy of the license along with this program; if not, please email
+ <quantlib-dev@lists.sf.net>. The license is also available online at
+ <http://quantlib.org/reference/license.html>.
 
  This program is distributed in the hope that it will be useful, but WITHOUT
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
@@ -144,6 +146,8 @@ namespace {
 
 namespace {
 
+    #ifndef QL_PATCH_MSVC6
+
     template <class T, class I>
     void testCurveConsistency(const T&, const I& interpolator) {
 
@@ -200,9 +204,13 @@ namespace {
         }
     }
 
+    #endif
 }
 
 void PiecewiseYieldCurveTest::testLogLinearDiscountConsistency() {
+
+    #ifndef QL_PATCH_MSVC6
+
     BOOST_MESSAGE(
         "Testing consistency of piecewise-log-linear discount curve...");
 
@@ -212,9 +220,14 @@ void PiecewiseYieldCurveTest::testLogLinearDiscountConsistency() {
     testCurveConsistency(Discount(), LogLinear());
 
     QL_TEST_TEARDOWN
+
+    #endif
 }
 
 void PiecewiseYieldCurveTest::testLinearDiscountConsistency() {
+
+    #ifndef QL_PATCH_MSVC6
+
     BOOST_MESSAGE(
         "Testing consistency of piecewise-linear discount curve...");
 
@@ -224,9 +237,14 @@ void PiecewiseYieldCurveTest::testLinearDiscountConsistency() {
     testCurveConsistency(Discount(), Linear());
 
     QL_TEST_TEARDOWN
+
+    #endif
 }
 
 void PiecewiseYieldCurveTest::testLogLinearZeroConsistency() {
+
+    #ifndef QL_PATCH_MSVC6
+
     BOOST_MESSAGE(
         "Testing consistency of piecewise-log-linear zero-yield curve...");
 
@@ -236,9 +254,14 @@ void PiecewiseYieldCurveTest::testLogLinearZeroConsistency() {
     testCurveConsistency(ZeroYield(), LogLinear());
 
     QL_TEST_TEARDOWN
+
+    #endif
 }
 
 void PiecewiseYieldCurveTest::testLinearZeroConsistency() {
+
+    #ifndef QL_PATCH_MSVC6
+
     BOOST_MESSAGE(
         "Testing consistency of piecewise-linear zero-yield curve...");
 
@@ -248,9 +271,14 @@ void PiecewiseYieldCurveTest::testLinearZeroConsistency() {
     testCurveConsistency(ZeroYield(), Linear());
 
     QL_TEST_TEARDOWN
+
+    #endif
 }
 
 void PiecewiseYieldCurveTest::testSplineZeroConsistency() {
+
+    #ifndef QL_PATCH_MSVC6
+
     BOOST_MESSAGE(
         "Testing consistency of piecewise-spline zero-yield curve...");
 
@@ -263,9 +291,14 @@ void PiecewiseYieldCurveTest::testSplineZeroConsistency() {
                                true));
 
     QL_TEST_TEARDOWN
+
+    #endif
 }
 
 void PiecewiseYieldCurveTest::testLinearForwardConsistency() {
+
+    #ifndef QL_PATCH_MSVC6
+
     BOOST_MESSAGE(
         "Testing consistency of piecewise-linear forward-rate curve...");
 
@@ -275,9 +308,14 @@ void PiecewiseYieldCurveTest::testLinearForwardConsistency() {
     testCurveConsistency(ForwardRate(), Linear());
 
     QL_TEST_TEARDOWN
+
+    #endif
 }
 
 void PiecewiseYieldCurveTest::testFlatForwardConsistency() {
+
+    #ifndef QL_PATCH_MSVC6
+
     BOOST_MESSAGE(
         "Testing consistency of piecewise-flat forward-rate curve...");
 
@@ -287,9 +325,14 @@ void PiecewiseYieldCurveTest::testFlatForwardConsistency() {
     testCurveConsistency(ForwardRate(), BackwardFlat());
 
     QL_TEST_TEARDOWN
+
+    #endif
 }
 
 void PiecewiseYieldCurveTest::testSplineForwardConsistency() {
+
+    #ifndef QL_PATCH_MSVC6
+
     BOOST_MESSAGE(
         "Testing consistency of piecewise-spline forward-rate curve...");
 
@@ -302,9 +345,13 @@ void PiecewiseYieldCurveTest::testSplineForwardConsistency() {
                                true));
 
     QL_TEST_TEARDOWN
+
+    #endif
 }
 
 void PiecewiseYieldCurveTest::testObservability() {
+
+    #ifndef QL_PATCH_MSVC6
 
     BOOST_MESSAGE("Testing observability of piecewise yield curve...");
 
@@ -331,6 +378,8 @@ void PiecewiseYieldCurveTest::testObservability() {
             BOOST_FAIL("Observer was not notified of date change");
 
     QL_TEST_TEARDOWN
+
+    #endif
 }
 
 

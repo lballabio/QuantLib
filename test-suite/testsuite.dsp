@@ -253,6 +253,10 @@ SOURCE=.\basketoption.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=.\bermudanswaption.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\bonds.cpp
 # End Source File
 # Begin Source File
@@ -293,7 +297,7 @@ SOURCE=.\distributions.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\dividendeuropeanoption.cpp
+SOURCE=.\dividendoption.cpp
 # End Source File
 # Begin Source File
 
@@ -361,6 +365,10 @@ SOURCE=.\piecewiseflatforward.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=.\piecewiseyieldcurve.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\quantlibtestsuite.cpp
 # End Source File
 # Begin Source File
@@ -382,6 +390,10 @@ SOURCE=.\rngtraits.cpp
 # Begin Source File
 
 SOURCE=.\rounding.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\shortratemodels.cpp
 # End Source File
 # Begin Source File
 
@@ -433,6 +445,10 @@ SOURCE=.\basketoption.hpp
 # End Source File
 # Begin Source File
 
+SOURCE=.\bermudanswaption.hpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\bonds.hpp
 # End Source File
 # Begin Source File
@@ -473,7 +489,7 @@ SOURCE=.\distributions.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\dividendeuropeanoption.hpp
+SOURCE=.\dividendoption.hpp
 # End Source File
 # Begin Source File
 
@@ -541,6 +557,10 @@ SOURCE=.\piecewiseflatforward.hpp
 # End Source File
 # Begin Source File
 
+SOURCE=.\piecewiseyieldcurve.hpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\quantooption.hpp
 # End Source File
 # Begin Source File
@@ -558,6 +578,10 @@ SOURCE=.\rngtraits.hpp
 # Begin Source File
 
 SOURCE=.\rounding.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\shortratemodels.hpp
 # End Source File
 # Begin Source File
 

@@ -25,7 +25,8 @@ INCLUDE_DIR    = ..\..
 OBJS = \
     "americanpayoffatexpiry.obj$(_mt)$(_D)" \
     "americanpayoffathit.obj$(_mt)$(_D)" \
-    "blackformula.obj$(_mt)$(_D)"
+    "blackformula.obj$(_mt)$(_D)" \
+    "greeks.obj$(_mt)$(_D)"
 
 # Tools to be used
 CC        = bcc32

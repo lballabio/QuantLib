@@ -1,3 +1,4 @@
+/* -*- mode: c; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 // this file is a slightly edited version of
 // PrimitivePolynomialsModuloTwoUpToDegree27.h

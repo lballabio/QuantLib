@@ -227,6 +227,14 @@ SOURCE=.\ql\Calendars\beijing.hpp
 # End Source File
 # Begin Source File
 
+SOURCE=.\ql\Calendars\bratislava.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\Calendars\bratislava.hpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\ql\Calendars\budapest.cpp
 # End Source File
 # Begin Source File
@@ -300,6 +308,14 @@ SOURCE=.\ql\Calendars\oslo.cpp
 # Begin Source File
 
 SOURCE=.\ql\Calendars\oslo.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\Calendars\prague.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\Calendars\prague.hpp
 # End Source File
 # Begin Source File
 
@@ -579,6 +595,14 @@ SOURCE=.\ql\FiniteDifferences\bsmoperator.hpp
 # End Source File
 # Begin Source File
 
+SOURCE=.\ql\FiniteDifferences\bsmtermoperator.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\FiniteDifferences\bsmtermoperator.hpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\ql\FiniteDifferences\core.hpp
 # End Source File
 # Begin Source File
@@ -628,6 +652,14 @@ SOURCE=.\ql\FiniteDifferences\onefactoroperator.cpp
 # Begin Source File
 
 SOURCE=.\ql\FiniteDifferences\onefactoroperator.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\FiniteDifferences\operatortraits.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\FiniteDifferences\parallelevolver.hpp
 # End Source File
 # Begin Source File
 
@@ -799,6 +831,14 @@ SOURCE=.\ql\Instruments\fixedcouponbond.hpp
 # End Source File
 # Begin Source File
 
+SOURCE=.\ql\Instruments\floatingratebond.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\Instruments\floatingratebond.hpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\ql\Instruments\forwardvanillaoption.cpp
 # End Source File
 # Begin Source File
@@ -889,6 +929,14 @@ SOURCE=.\ql\Instruments\vanillaoption.cpp
 
 SOURCE=.\ql\Instruments\vanillaoption.hpp
 # End Source File
+# Begin Source File
+
+SOURCE=.\ql\Instruments\zerocouponbond.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\Instruments\zerocouponbond.hpp
+# End Source File
 # End Group
 # Begin Group "Lattices"
 
@@ -956,6 +1004,10 @@ SOURCE=.\ql\Math\all.hpp
 # Begin Source File
 
 SOURCE=.\ql\Math\array.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\Math\backwardflatinterpolation.hpp
 # End Source File
 # Begin Source File
 
@@ -1043,6 +1095,10 @@ SOURCE=.\ql\Math\factorial.hpp
 # End Source File
 # Begin Source File
 
+SOURCE=.\ql\Math\forwardflatinterpolation.hpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\ql\Math\functional.hpp
 # End Source File
 # Begin Source File
@@ -1091,10 +1147,6 @@ SOURCE=.\ql\Math\interpolation2D.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\ql\Math\interpolationtraits.hpp
-# End Source File
-# Begin Source File
-
 SOURCE=.\ql\Math\kronrodintegral.hpp
 # End Source File
 # Begin Source File
@@ -1116,10 +1168,6 @@ SOURCE=.\ql\Math\matrix.hpp
 # Begin Source File
 
 SOURCE=.\ql\Math\multicubicspline.hpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\ql\Math\multivariateaccumulator.hpp
 # End Source File
 # Begin Source File
 
@@ -1582,6 +1630,10 @@ SOURCE=.\ql\PricingEngines\Asian\mcdiscreteasianengine.hpp
 # PROP Default_Filter ""
 # Begin Source File
 
+SOURCE=.\ql\PricingEngines\Barrier\all.hpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\ql\PricingEngines\Barrier\analyticbarrierengine.cpp
 # End Source File
 # Begin Source File
@@ -1634,6 +1686,10 @@ SOURCE=.\ql\PricingEngines\Basket\stulzengine.hpp
 # PROP Default_Filter ""
 # Begin Source File
 
+SOURCE=.\ql\PricingEngines\Forward\all.hpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\ql\PricingEngines\Forward\forwardengine.hpp
 # End Source File
 # Begin Source File
@@ -1644,6 +1700,10 @@ SOURCE=.\ql\PricingEngines\Forward\forwardperformanceengine.hpp
 # Begin Group "Quanto"
 
 # PROP Default_Filter ""
+# Begin Source File
+
+SOURCE=.\ql\PricingEngines\Quanto\all.hpp
+# End Source File
 # Begin Source File
 
 SOURCE=.\ql\PricingEngines\Quanto\quantoengine.hpp
@@ -1710,11 +1770,67 @@ SOURCE=.\ql\PricingEngines\Vanilla\discretizedvanillaoption.hpp
 # End Source File
 # Begin Source File
 
+SOURCE=.\ql\PricingEngines\Vanilla\fdamericanengine.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\PricingEngines\Vanilla\fdbermudanengine.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\PricingEngines\Vanilla\fddividendamericanengine.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\PricingEngines\Vanilla\fddividendengine.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\PricingEngines\Vanilla\fddividendengine.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\PricingEngines\Vanilla\fddividendeuropeanengine.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\PricingEngines\Vanilla\fddividendshoutengine.hpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\ql\PricingEngines\Vanilla\fdeuropeanengine.cpp
 # End Source File
 # Begin Source File
 
 SOURCE=.\ql\PricingEngines\Vanilla\fdeuropeanengine.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\PricingEngines\Vanilla\fdmultiperiodengine.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\PricingEngines\Vanilla\fdmultiperiodengine.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\PricingEngines\Vanilla\fdshoutengine.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\PricingEngines\Vanilla\fdstepconditionengine.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\PricingEngines\Vanilla\fdstepconditionengine.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\PricingEngines\Vanilla\fdvanillaengine.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\PricingEngines\Vanilla\fdvanillaengine.hpp
 # End Source File
 # Begin Source File
 
@@ -1904,6 +2020,14 @@ SOURCE=.\ql\PricingEngines\core.hpp
 # Begin Source File
 
 SOURCE=.\ql\PricingEngines\genericmodelengine.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\PricingEngines\greeks.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\PricingEngines\greeks.hpp
 # End Source File
 # Begin Source File
 
@@ -2099,11 +2223,19 @@ SOURCE=.\ql\ShortRateModels\TwoFactorModels\g2.hpp
 # End Group
 # Begin Source File
 
+SOURCE=.\ql\ShortRateModels\all.hpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\ql\ShortRateModels\calibrationhelper.cpp
 # End Source File
 # Begin Source File
 
 SOURCE=.\ql\ShortRateModels\calibrationhelper.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\ShortRateModels\core.hpp
 # End Source File
 # Begin Source File
 
@@ -2179,6 +2311,14 @@ SOURCE=.\ql\TermStructures\affinetermstructure.hpp
 # End Source File
 # Begin Source File
 
+SOURCE=.\ql\TermStructures\all.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\TermStructures\bootstraptraits.hpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\ql\TermStructures\compoundforward.cpp
 # End Source File
 # Begin Source File
@@ -2188,10 +2328,6 @@ SOURCE=.\ql\TermStructures\compoundforward.hpp
 # Begin Source File
 
 SOURCE=.\ql\TermStructures\discountcurve.hpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\ql\TermStructures\discountstructure.hpp
 # End Source File
 # Begin Source File
 
@@ -2208,6 +2344,10 @@ SOURCE=.\ql\TermStructures\extendeddiscountcurve.hpp
 # Begin Source File
 
 SOURCE=.\ql\TermStructures\flatforward.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\TermStructures\forwardcurve.hpp
 # End Source File
 # Begin Source File
 
@@ -2231,6 +2371,10 @@ SOURCE=.\ql\TermStructures\piecewiseflatforward.hpp
 # End Source File
 # Begin Source File
 
+SOURCE=.\ql\TermStructures\piecewiseyieldcurve.hpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\ql\TermStructures\quantotermstructure.hpp
 # End Source File
 # Begin Source File
@@ -2240,10 +2384,6 @@ SOURCE=.\ql\TermStructures\ratehelpers.cpp
 # Begin Source File
 
 SOURCE=.\ql\TermStructures\ratehelpers.hpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\ql\TermStructures\zerocurve.cpp
 # End Source File
 # Begin Source File
 
@@ -2267,14 +2407,6 @@ SOURCE=.\ql\Utilities\all.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\ql\Utilities\combiningiterator.hpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\ql\Utilities\couplingiterator.hpp
-# End Source File
-# Begin Source File
-
 SOURCE=.\ql\Utilities\dataformatters.cpp
 # End Source File
 # Begin Source File
@@ -2283,15 +2415,19 @@ SOURCE=.\ql\Utilities\dataformatters.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\ql\Utilities\filteringiterator.hpp
+SOURCE=.\ql\Utilities\dataparsers.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\ql\Utilities\iteratorcategories.hpp
+SOURCE=.\ql\Utilities\dataparsers.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\ql\Utilities\processingiterator.hpp
+SOURCE=.\ql\Utilities\disposable.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\Utilities\null.hpp
 # End Source File
 # Begin Source File
 
@@ -2313,6 +2449,10 @@ SOURCE=.\ql\Utilities\tracing.hpp
 # Begin Group "Volatilities"
 
 # PROP Default_Filter ""
+# Begin Source File
+
+SOURCE=.\ql\Volatilities\all.hpp
+# End Source File
 # Begin Source File
 
 SOURCE=.\ql\Volatilities\blackconstantvol.hpp
@@ -2402,13 +2542,57 @@ SOURCE=.\ql\Currencies\exchangeratemanager.hpp
 SOURCE=.\ql\Currencies\oceania.hpp
 # End Source File
 # End Group
+# Begin Group "Processes"
+
+# PROP Default_Filter ""
 # Begin Source File
 
-SOURCE=.\ql\argsandresults.hpp
+SOURCE=.\ql\Processes\all.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\ql\basetermstructure.hpp
+SOURCE=.\ql\Processes\blackscholesprocess.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\Processes\blackscholesprocess.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\Processes\geometricbrownianprocess.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\Processes\geometricbrownianprocess.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\Processes\merton76process.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\Processes\merton76process.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\Processes\ornsteinuhlenbeckprocess.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\Processes\ornsteinuhlenbeckprocess.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\Processes\squarerootprocess.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\Processes\squarerootprocess.hpp
+# End Source File
+# End Group
+# Begin Source File
+
+SOURCE=.\ql\argsandresults.hpp
 # End Source File
 # Begin Source File
 
@@ -2468,14 +2652,6 @@ SOURCE=.\ql\currency.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\ql\dataparsers.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\ql\dataparsers.hpp
-# End Source File
-# Begin Source File
-
 SOURCE=.\ql\date.cpp
 # End Source File
 # Begin Source File
@@ -2493,10 +2669,6 @@ SOURCE=.\ql\discretizedasset.cpp
 # Begin Source File
 
 SOURCE=.\ql\discretizedasset.hpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\ql\disposable.hpp
 # End Source File
 # Begin Source File
 
@@ -2532,6 +2704,10 @@ SOURCE=.\ql\grid.hpp
 # End Source File
 # Begin Source File
 
+SOURCE=.\ql\handle.hpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\ql\history.hpp
 # End Source File
 # Begin Source File
@@ -2560,10 +2736,6 @@ SOURCE=.\ql\money.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\ql\null.hpp
-# End Source File
-# Begin Source File
-
 SOURCE=.\ql\numericalmethod.hpp
 # End Source File
 # Begin Source File
@@ -2589,10 +2761,6 @@ SOURCE=.\ql\quantlib.hpp
 # Begin Source File
 
 SOURCE=.\ql\quote.hpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\ql\relinkablehandle.hpp
 # End Source File
 # Begin Source File
 
@@ -2641,6 +2809,10 @@ SOURCE=.\ql\voltermstructure.cpp
 # Begin Source File
 
 SOURCE=.\ql\voltermstructure.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\yieldtermstructure.hpp
 # End Source File
 # End Target
 # End Project

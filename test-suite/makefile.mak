@@ -32,6 +32,7 @@ QL_TESTS = \
     "asianoptions.obj$(_mt)$(_D)" \
     "barrieroption.obj$(_mt)$(_D)" \
     "basketoption.obj$(_mt)$(_D)" \
+    "bermudanswaption.obj$(_mt)$(_D)" \
     "bonds.obj$(_mt)$(_D)" \
     "calendars.obj$(_mt)$(_D)" \
     "capfloor.obj$(_mt)$(_D)" \
@@ -42,7 +43,7 @@ QL_TESTS = \
     "daycounters.obj$(_mt)$(_D)" \
     "digitaloption.obj$(_mt)$(_D)" \
     "distributions.obj$(_mt)$(_D)" \
-    "dividendeuropeanoption.obj$(_mt)$(_D)" \
+    "dividendoption.obj$(_mt)$(_D)" \
     "europeanoption.obj$(_mt)$(_D)" \
     "exchangerate.obj$(_mt)$(_D)" \
     "factorial.obj$(_mt)$(_D)" \
@@ -59,12 +60,14 @@ QL_TESTS = \
     "old_pricers.obj$(_mt)$(_D)" \
     "operators.obj$(_mt)$(_D)" \
     "piecewiseflatforward.obj$(_mt)$(_D)" \
+    "piecewiseyieldcurve.obj$(_mt)$(_D)" \
     "quantlibtestsuite.obj$(_mt)$(_D)" \
     "quantooption.obj$(_mt)$(_D)" \
     "quotes.obj$(_mt)$(_D)" \
     "riskstats.obj$(_mt)$(_D)" \
     "rngtraits.obj$(_mt)$(_D)" \
     "rounding.obj$(_mt)$(_D)" \
+    "shortratemodels.obj$(_mt)$(_D)" \
     "solvers.obj$(_mt)$(_D)" \
     "stats.obj$(_mt)$(_D)" \
     "swap.obj$(_mt)$(_D)" \

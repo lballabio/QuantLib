@@ -1,3 +1,4 @@
+/* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
  Copyright (C) 2005 StatPro Italia srl
@@ -5,10 +6,11 @@
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
 
- QuantLib is free software: you can redistribute it and/or modify it under the
- terms of the QuantLib license.  You should have received a copy of the
- license along with this program; if not, please email quantlib-dev@lists.sf.net
- The license is also available online at http://quantlib.org/html/license.html
+ QuantLib is free software: you can redistribute it and/or modify it
+ under the terms of the QuantLib license.  You should have received a
+ copy of the license along with this program; if not, please email
+ <quantlib-dev@lists.sf.net>. The license is also available online at
+ <http://quantlib.org/reference/license.html>.
 
  This program is distributed in the hope that it will be useful, but WITHOUT
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
@@ -29,6 +31,8 @@
 #include <ql/Solvers1D/brent.hpp>
 
 namespace QuantLib {
+
+    #ifndef QL_PATCH_MSVC6
 
     //! Piecewise yield term structure
     /*! This term structure is bootstrapped on a number of interest
@@ -130,25 +134,25 @@ namespace QuantLib {
     template <class C, class I>
     inline const std::vector<Date>& PiecewiseYieldCurve<C,I>::dates() const {
         calculate();
-        return dates_;
+        return this->dates_;
     }
 
     template <class C, class I>
     inline Date PiecewiseYieldCurve<C,I>::maxDate() const {
         calculate();
-        return dates_.back();
+        return this->dates_.back();
     }
 
     template <class C, class I>
     inline const std::vector<Time>& PiecewiseYieldCurve<C,I>::times() const {
         calculate();
-        return times_;
+        return this->times_;
     }
 
     template <class C, class I>
     inline Time PiecewiseYieldCurve<C,I>::maxTime() const {
         calculate();
-        return times_.back();
+        return this->times_.back();
     }
 
     template <class C, class I>
@@ -208,35 +212,37 @@ namespace QuantLib {
     void PiecewiseYieldCurve<C,I>::performCalculations() const {
         // setup vectors
         Size n = instruments_.size();
-        dates_ = std::vector<Date>(n+1);
-        times_ = std::vector<Time>(n+1);
-        data_ = std::vector<Real>(n+1);
-        dates_[0] = referenceDate();
-        times_[0] = 0.0;
-        data_[0] = C::initialValue();
+        this->dates_ = std::vector<Date>(n+1);
+        this->times_ = std::vector<Time>(n+1);
+        this->data_ = std::vector<Real>(n+1);
+        this->dates_[0] = this->referenceDate();
+        this->times_[0] = 0.0;
+        this->data_[0] = C::initialValue();
         for (Size i=0; i<n; i++) {
-            dates_[i+1] = instruments_[i]->latestDate();
-            times_[i+1] = timeFromReference(dates_[i+1]);
-            data_[i+1] = data_[i];
+            this->dates_[i+1] = instruments_[i]->latestDate();
+            this->times_[i+1] = timeFromReference(this->dates_[i+1]);
+            this->data_[i+1] = this->data_[i];
         }
         Brent solver;
         Size maxIterations = 25;
         // bootstrapping loop
         for (Size iteration = 0; ; iteration++) {
-            std::vector<Real> previousData = data_;
+            std::vector<Real> previousData = this->data_;
             Size i;
             for (i=1; i<n+1; i++) {
                 if (iteration == 0) {
                     // extend interpolation a point at a time
                     if (I::global && i < 2) {
                         // not enough points for splines
-                        interpolation_ = Linear().interpolate(
-                                           times_.begin(), times_.begin()+i+1,
-                                           data_.begin());
+                        this->interpolation_ = Linear().interpolate(
+                                                    this->times_.begin(),
+                                                    this->times_.begin()+i+1,
+                                                    this->data_.begin());
                     } else {
-                        interpolation_ = interpolator_.interpolate(
-                                           times_.begin(), times_.begin()+i+1,
-                                           data_.begin());
+                        this->interpolation_ = this->interpolator_.interpolate(
+                                                    this->times_.begin(),
+                                                    this->times_.begin()+i+1,
+                                                    this->data_.begin());
                     }
                 }
                 boost::shared_ptr<RateHelper> instrument = instruments_[i-1];
@@ -246,20 +252,21 @@ namespace QuantLib {
                 Real guess;
                 if (iteration > 0) {
                     // use perturbed value from previous loop
-                    guess = 0.99*data_[i];
+                    guess = 0.99*this->data_[i];
                 } else if (i > 1) {
                     // extrapolate
-                    guess = C::guess(this,dates_[i]);
+                    guess = C::guess(this,this->dates_[i]);
                 } else {
                     guess = C::initialGuess();
                 }
                 // bracket
-                Real min = C::minValueAfter(i, data_);
-                Real max = C::maxValueAfter(i, data_);
+                Real min = C::minValueAfter(i, this->data_);
+                Real max = C::maxValueAfter(i, this->data_);
                 if (guess <= min || guess >= max)
                     guess = (min+max)/2.0;
-                data_[i] = solver.solve(ObjectiveFunction(this,instrument,i),
-                                        accuracy_,guess,min,max);
+                this->data_[i] =
+                    solver.solve(ObjectiveFunction(this,instrument,i),
+                                                   accuracy_,guess,min,max);
             }
             // check exit conditions
             if (!I::global)
@@ -267,7 +274,7 @@ namespace QuantLib {
 
             Real improvement = 0.0;
             for (i=1; i<n+1; i++)
-                improvement += std::abs(data_[i]-previousData[i]);
+                improvement += std::abs(this->data_[i]-previousData[i]);
             if (improvement <= n*accuracy_)  // convergence reached
                 break;
 
@@ -293,6 +300,8 @@ namespace QuantLib {
         curve_->interpolation_.update();
         return rateHelper_->quoteError();
     }
+
+    #endif
 
     #endif
 

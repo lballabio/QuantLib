@@ -24,6 +24,7 @@ INCLUDE_DIR    = ..\..
 # Object files
 OBJS = \
     "beijing.obj$(_mt)$(_D)" \
+    "bratislava.obj$(_mt)$(_D)" \
     "budapest.obj$(_mt)$(_D)" \
     "copenhagen.obj$(_mt)$(_D)" \
     "germany.obj$(_mt)$(_D)" \
@@ -33,6 +34,7 @@ OBJS = \
     "johannesburg.obj$(_mt)$(_D)" \
     "jointcalendar.obj$(_mt)$(_D)" \
     "oslo.obj$(_mt)$(_D)" \
+    "prague.obj$(_mt)$(_D)" \
     "riyadh.obj$(_mt)$(_D)" \
     "seoul.obj$(_mt)$(_D)" \
     "singapore.obj$(_mt)$(_D)" \

@@ -29,7 +29,6 @@ CORE_OBJS = \
     "basicdataformatters.obj$(_mt)$(_D)" \
     "calendar.obj$(_mt)$(_D)" \
     "currency.obj$(_mt)$(_D)" \
-    "dataparsers.obj$(_mt)$(_D)" \
     "date.obj$(_mt)$(_D)" \
     "discretizedasset.obj$(_mt)$(_D)" \
     "errors.obj$(_mt)$(_D)" \
@@ -39,7 +38,6 @@ CORE_OBJS = \
     "interestrate.obj$(_mt)$(_D)" \
     "money.obj$(_mt)$(_D)" \
     "schedule.obj$(_mt)$(_D)" \
-    "settings.obj$(_mt)$(_D)" \
     "stochasticprocess.obj$(_mt)$(_D)" \
     "voltermstructure.obj$(_mt)$(_D)"
 
@@ -56,6 +54,7 @@ MONTECARLO_LIB       = "MonteCarlo\MonteCarlo$(_mt)$(_D).lib"
 OPTIMIZATION_LIB     = "Optimization\Optimization$(_mt)$(_D).lib"
 PRICER_LIB           = "Pricers\Pricers$(_mt)$(_D).lib"
 PRICING_ENGINES_LIB  = "PricingEngines\PricingEngines$(_mt)$(_D).lib"
+PROCESSES_LIB        = "Processes\Processes$(_mt)$(_D).lib"
 ASIAN_ENGINES_LIB    = "PricingEngines\Asian\AsianEngines$(_mt)$(_D).lib"
 BARRIER_ENGINES_LIB  = "PricingEngines\Barrier\BarrierEngines$(_mt)$(_D).lib"
 BASKET_ENGINES_LIB   = "PricingEngines\Basket\BasketEngines$(_mt)$(_D).lib"
@@ -93,6 +92,7 @@ QUANTLIB_OBJS = \
     $(OPTIMIZATION_LIB) \
     $(PRICER_LIB) \
     $(PRICING_ENGINES_LIB) \
+    $(PROCESSES_LIB) \
     $(ASIAN_ENGINES_LIB) \
     $(BARRIER_ENGINES_LIB) \
     $(BASKET_ENGINES_LIB) \
@@ -211,7 +211,9 @@ SubLibraries:
     $(MAKE)
     cd ..\Vanilla
     $(MAKE)
-    cd ..\..\RandomNumbers
+    cd ..\..\Processes
+    $(MAKE)
+    cd ..\RandomNumbers
     $(MAKE)
     cd ..\Lattices
     $(MAKE)
@@ -271,7 +273,9 @@ clean::
     $(MAKE) clean
     cd ..\Vanilla
     $(MAKE) clean
-    cd ..\..\RandomNumbers
+    cd ..\..\Processes
+    $(MAKE) clean
+    cd ..\RandomNumbers
     $(MAKE) clean
     cd ..\Lattices
     $(MAKE) clean

@@ -1,7 +1,7 @@
 [Project]
 FileName=QuantLib-test-suite.dev
 Name=QuantLib-test-suite
-UnitCount=85
+UnitCount=93
 Type=1
 Ver=1
 ObjFiles=
@@ -23,7 +23,7 @@ HostApplication=
 Folders=
 CommandLine=--log_level=messages --build_info=yes --result_code=no --report_level=short
 UseCustomMakefile=0
-CustomMakefile=
+CustomMakefile=Makefile.win
 IncludeVersionInfo=1
 SupportXPThemes=0
 CompilerSet=0
@@ -188,16 +188,6 @@ OverrideBuildCmd=0
 BuildCmd=
 
 [Unit15]
-FileName=dividendeuropeanoption.cpp
-CompileCpp=1
-Folder=QuantLib-test-suite
-Compile=1
-Link=1
-Priority=1000
-OverrideBuildCmd=0
-BuildCmd=
-
-[Unit16]
 FileName=europeanoption.cpp
 CompileCpp=1
 Folder=QuantLib-test-suite
@@ -207,7 +197,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit17]
+[Unit16]
 FileName=exchangerate.cpp
 CompileCpp=1
 Folder=QuantLib-test-suite
@@ -217,7 +207,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit18]
+[Unit17]
 FileName=factorial.cpp
 CompileCpp=1
 Folder=QuantLib-test-suite
@@ -227,7 +217,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit19]
+[Unit18]
 FileName=forwardoption.cpp
 CompileCpp=1
 Folder=QuantLib-test-suite
@@ -237,7 +227,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit20]
+[Unit19]
 FileName=instruments.cpp
 CompileCpp=1
 Folder=QuantLib-test-suite
@@ -247,7 +237,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit21]
+[Unit20]
 FileName=integrals.cpp
 CompileCpp=1
 Folder=QuantLib-test-suite
@@ -257,7 +247,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit22]
+[Unit21]
 FileName=interestrates.cpp
 CompileCpp=1
 Folder=QuantLib-test-suite
@@ -267,7 +257,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit23]
+[Unit22]
 FileName=interpolations.cpp
 CompileCpp=1
 Folder=QuantLib-test-suite
@@ -277,7 +267,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit24]
+[Unit23]
 FileName=jumpdiffusion.cpp
 CompileCpp=1
 Folder=QuantLib-test-suite
@@ -287,7 +277,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit25]
+[Unit24]
 FileName=lowdiscrepancysequences.cpp
 CompileCpp=1
 Folder=QuantLib-test-suite
@@ -297,7 +287,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit26]
+[Unit25]
 FileName=matrices.cpp
 CompileCpp=1
 Folder=QuantLib-test-suite
@@ -307,7 +297,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit27]
+[Unit26]
 FileName=mersennetwister.cpp
 CompileCpp=1
 Folder=QuantLib-test-suite
@@ -317,7 +307,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit28]
+[Unit27]
 FileName=money.cpp
 CompileCpp=1
 Folder=QuantLib-test-suite
@@ -327,7 +317,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit29]
+[Unit28]
 FileName=old_pricers.cpp
 CompileCpp=1
 Folder=QuantLib-test-suite
@@ -337,7 +327,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit30]
+[Unit29]
 FileName=operators.cpp
 CompileCpp=1
 Folder=QuantLib-test-suite
@@ -347,7 +337,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit31]
+[Unit30]
 FileName=piecewiseflatforward.cpp
 CompileCpp=1
 Folder=QuantLib-test-suite
@@ -357,7 +347,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit32]
+[Unit31]
 FileName=quantlibtestsuite.cpp
 CompileCpp=1
 Folder=QuantLib-test-suite
@@ -367,7 +357,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit33]
+[Unit32]
 FileName=quantooption.cpp
 CompileCpp=1
 Folder=QuantLib-test-suite
@@ -377,7 +367,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit34]
+[Unit33]
 FileName=quotes.cpp
 CompileCpp=1
 Folder=QuantLib-test-suite
@@ -387,7 +377,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit35]
+[Unit34]
 FileName=riskstats.cpp
 CompileCpp=1
 Folder=QuantLib-test-suite
@@ -397,7 +387,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit36]
+[Unit35]
 FileName=rounding.cpp
 CompileCpp=1
 Folder=QuantLib-test-suite
@@ -407,7 +397,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit37]
+[Unit36]
 FileName=solvers.cpp
 CompileCpp=1
 Folder=QuantLib-test-suite
@@ -417,7 +407,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit38]
+[Unit37]
 FileName=stats.cpp
 CompileCpp=1
 Folder=QuantLib-test-suite
@@ -427,7 +417,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit39]
+[Unit38]
 FileName=swap.cpp
 CompileCpp=1
 Folder=QuantLib-test-suite
@@ -437,7 +427,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit40]
+[Unit39]
 FileName=swaption.cpp
 CompileCpp=1
 Folder=QuantLib-test-suite
@@ -447,7 +437,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit41]
+[Unit40]
 FileName=termstructures.cpp
 CompileCpp=1
 Folder=QuantLib-test-suite
@@ -457,7 +447,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit42]
+[Unit41]
 FileName=rngtraits.cpp
 CompileCpp=1
 Folder=QuantLib-test-suite
@@ -467,7 +457,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit43]
+[Unit42]
 FileName=utilities.hpp
 CompileCpp=1
 Folder=QuantLib-test-suite
@@ -477,7 +467,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit44]
+[Unit43]
 FileName=asianoptions.hpp
 CompileCpp=1
 Folder=QuantLib-test-suite
@@ -487,7 +477,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit45]
+[Unit44]
 FileName=barrieroption.hpp
 CompileCpp=1
 Folder=QuantLib-test-suite
@@ -497,7 +487,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit46]
+[Unit45]
 FileName=basketoption.hpp
 CompileCpp=1
 Folder=QuantLib-test-suite
@@ -507,7 +497,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit47]
+[Unit46]
 FileName=calendars.hpp
 CompileCpp=1
 Folder=QuantLib-test-suite
@@ -517,7 +507,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit48]
+[Unit47]
 FileName=capfloor.hpp
 CompileCpp=1
 Folder=QuantLib-test-suite
@@ -527,7 +517,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit49]
+[Unit48]
 FileName=cliquetoption.hpp
 CompileCpp=1
 Folder=QuantLib-test-suite
@@ -537,7 +527,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit50]
+[Unit49]
 FileName=compoundforward.hpp
 CompileCpp=1
 Folder=QuantLib-test-suite
@@ -547,7 +537,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit51]
+[Unit50]
 FileName=covariance.hpp
 CompileCpp=1
 Folder=QuantLib-test-suite
@@ -557,7 +547,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit52]
+[Unit51]
 FileName=dates.hpp
 CompileCpp=1
 Folder=QuantLib-test-suite
@@ -567,7 +557,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit53]
+[Unit52]
 FileName=daycounters.hpp
 CompileCpp=1
 Folder=QuantLib-test-suite
@@ -577,7 +567,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit54]
+[Unit53]
 FileName=digitaloption.hpp
 CompileCpp=1
 Folder=QuantLib-test-suite
@@ -587,7 +577,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit55]
+[Unit54]
 FileName=distributions.hpp
 CompileCpp=1
 Folder=QuantLib-test-suite
@@ -597,17 +587,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit56]
-FileName=dividendeuropeanoption.hpp
-CompileCpp=1
-Folder=QuantLib-test-suite
-Compile=1
-Link=1
-Priority=1000
-OverrideBuildCmd=0
-BuildCmd=
-
-[Unit57]
+[Unit55]
 FileName=europeanoption.hpp
 CompileCpp=1
 Folder=QuantLib-test-suite
@@ -617,7 +597,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit58]
+[Unit56]
 FileName=exchangerate.hpp
 CompileCpp=1
 Folder=QuantLib-test-suite
@@ -627,7 +607,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit59]
+[Unit57]
 FileName=factorial.hpp
 CompileCpp=1
 Folder=QuantLib-test-suite
@@ -637,7 +617,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit60]
+[Unit58]
 FileName=forwardoption.hpp
 CompileCpp=1
 Folder=QuantLib-test-suite
@@ -647,7 +627,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit61]
+[Unit59]
 FileName=instruments.hpp
 CompileCpp=1
 Folder=QuantLib-test-suite
@@ -657,7 +637,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit62]
+[Unit60]
 FileName=integrals.hpp
 CompileCpp=1
 Folder=QuantLib-test-suite
@@ -667,7 +647,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit63]
+[Unit61]
 FileName=interestrates.hpp
 CompileCpp=1
 Folder=QuantLib-test-suite
@@ -677,7 +657,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit64]
+[Unit62]
 FileName=interpolations.hpp
 CompileCpp=1
 Folder=QuantLib-test-suite
@@ -687,7 +667,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit65]
+[Unit63]
 FileName=jumpdiffusion.hpp
 CompileCpp=1
 Folder=QuantLib-test-suite
@@ -697,7 +677,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit66]
+[Unit64]
 FileName=lowdiscrepancysequences.hpp
 CompileCpp=1
 Folder=QuantLib-test-suite
@@ -707,7 +687,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit67]
+[Unit65]
 FileName=matrices.hpp
 CompileCpp=1
 Folder=QuantLib-test-suite
@@ -717,7 +697,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit68]
+[Unit66]
 FileName=mersennetwister.hpp
 CompileCpp=1
 Folder=QuantLib-test-suite
@@ -727,7 +707,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit69]
+[Unit67]
 FileName=money.hpp
 CompileCpp=1
 Folder=QuantLib-test-suite
@@ -737,7 +717,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit70]
+[Unit68]
 FileName=old_pricers.hpp
 CompileCpp=1
 Folder=QuantLib-test-suite
@@ -747,7 +727,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit71]
+[Unit69]
 FileName=operators.hpp
 CompileCpp=1
 Folder=QuantLib-test-suite
@@ -757,7 +737,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit72]
+[Unit70]
 FileName=piecewiseflatforward.hpp
 CompileCpp=1
 Folder=QuantLib-test-suite
@@ -767,7 +747,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit73]
+[Unit71]
 FileName=quantooption.hpp
 CompileCpp=1
 Folder=QuantLib-test-suite
@@ -777,7 +757,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit74]
+[Unit72]
 FileName=quotes.hpp
 CompileCpp=1
 Folder=QuantLib-test-suite
@@ -787,7 +767,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit75]
+[Unit73]
 FileName=riskstats.hpp
 CompileCpp=1
 Folder=QuantLib-test-suite
@@ -797,7 +777,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit76]
+[Unit74]
 FileName=rngtraits.hpp
 CompileCpp=1
 Folder=QuantLib-test-suite
@@ -807,7 +787,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit77]
+[Unit75]
 FileName=rounding.hpp
 CompileCpp=1
 Folder=QuantLib-test-suite
@@ -817,7 +797,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit78]
+[Unit76]
 FileName=solvers.hpp
 CompileCpp=1
 Folder=QuantLib-test-suite
@@ -827,7 +807,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit79]
+[Unit77]
 FileName=stats.hpp
 CompileCpp=1
 Folder=QuantLib-test-suite
@@ -837,7 +817,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit80]
+[Unit78]
 FileName=swap.hpp
 CompileCpp=1
 Folder=QuantLib-test-suite
@@ -847,7 +827,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit81]
+[Unit79]
 FileName=swaption.hpp
 CompileCpp=1
 Folder=QuantLib-test-suite
@@ -857,7 +837,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit82]
+[Unit80]
 FileName=termstructures.hpp
 CompileCpp=1
 Folder=QuantLib-test-suite
@@ -867,7 +847,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit83]
+[Unit81]
 FileName=americanoption.hpp
 CompileCpp=1
 Folder=QuantLib-test-suite
@@ -877,7 +857,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit84]
+[Unit82]
 FileName=bonds.hpp
 CompileCpp=1
 Folder=QuantLib-test-suite
@@ -887,8 +867,108 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit85]
+[Unit83]
 FileName=bonds.cpp
+CompileCpp=1
+Folder=QuantLib-test-suite
+Compile=1
+Link=1
+Priority=1000
+OverrideBuildCmd=0
+BuildCmd=
+
+[Unit84]
+FileName=bermudanswaption.hpp
+CompileCpp=1
+Folder=QuantLib-test-suite
+Compile=1
+Link=1
+Priority=1000
+OverrideBuildCmd=0
+BuildCmd=
+
+[Unit85]
+FileName=bermudanswaption.cpp
+CompileCpp=1
+Folder=QuantLib-test-suite
+Compile=1
+Link=1
+Priority=1000
+OverrideBuildCmd=0
+BuildCmd=
+
+[Unit86]
+FileName=dividendoption.hpp
+CompileCpp=1
+Folder=QuantLib-test-suite
+Compile=1
+Link=1
+Priority=1000
+OverrideBuildCmd=0
+BuildCmd=
+
+[Unit87]
+FileName=dividendoption.cpp
+CompileCpp=1
+Folder=QuantLib-test-suite
+Compile=1
+Link=1
+Priority=1000
+OverrideBuildCmd=0
+BuildCmd=
+
+[Unit88]
+FileName=piecewiseyieldcurve.hpp
+CompileCpp=1
+Folder=QuantLib-test-suite
+Compile=1
+Link=1
+Priority=1000
+OverrideBuildCmd=0
+BuildCmd=
+
+[Unit89]
+FileName=piecewiseyieldcurve.cpp
+CompileCpp=1
+Folder=QuantLib-test-suite
+Compile=1
+Link=1
+Priority=1000
+OverrideBuildCmd=0
+BuildCmd=
+
+[Unit90]
+FileName=shortratemodels.hpp
+CompileCpp=1
+Folder=QuantLib-test-suite
+Compile=1
+Link=1
+Priority=1000
+OverrideBuildCmd=0
+BuildCmd=
+
+[Unit91]
+FileName=shortratemodels.cpp
+CompileCpp=1
+Folder=QuantLib-test-suite
+Compile=1
+Link=1
+Priority=1000
+OverrideBuildCmd=0
+BuildCmd=
+
+[Unit92]
+FileName=tracing.hpp
+CompileCpp=1
+Folder=QuantLib-test-suite
+Compile=1
+Link=1
+Priority=1000
+OverrideBuildCmd=0
+BuildCmd=
+
+[Unit93]
+FileName=tracing.cpp
 CompileCpp=1
 Folder=QuantLib-test-suite
 Compile=1

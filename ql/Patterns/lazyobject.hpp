@@ -1,3 +1,4 @@
+/* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
  Copyright (C) 2003 RiskMap srl
@@ -5,10 +6,11 @@
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
 
- QuantLib is free software: you can redistribute it and/or modify it under the
- terms of the QuantLib license.  You should have received a copy of the
- license along with this program; if not, please email quantlib-dev@lists.sf.net
- The license is also available online at http://quantlib.org/html/license.html
+ QuantLib is free software: you can redistribute it and/or modify it
+ under the terms of the QuantLib license.  You should have received a
+ copy of the license along with this program; if not, please email
+ <quantlib-dev@lists.sf.net>. The license is also available online at
+ <http://quantlib.org/reference/license.html>.
 
  This program is distributed in the hope that it will be useful, but WITHOUT
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
@@ -28,7 +30,7 @@ namespace QuantLib {
 
     //! Framework for calculation on demand and result caching.
     /*! \ingroup patterns */
-    class LazyObject : public virtual Observable, 
+    class LazyObject : public virtual Observable,
                        public virtual Observer {
       public:
         LazyObject();
@@ -37,7 +39,7 @@ namespace QuantLib {
         //@{
         void update();
         //@}
-        /*! \name Calculations 
+        /*! \name Calculations
             These methods do not modify the structure of the object
             and are therefore declared as <tt>const</tt>. Data members
             which will be calculated on demand need to be declared as
@@ -68,7 +70,7 @@ namespace QuantLib {
       protected:
         /*! This method performs all needed calculations by calling
             the <i><b>performCalculations</b></i> method.
-                
+
             \warning Objects cache the results of the previous
                      calculation. Such results will be returned upon
                      later invocations of
@@ -94,7 +96,7 @@ namespace QuantLib {
 
     // inline definitions
 
-    inline LazyObject::LazyObject() 
+    inline LazyObject::LazyObject()
     : calculated_(false), frozen_(false) {}
 
     inline void LazyObject::update() {
@@ -130,7 +132,7 @@ namespace QuantLib {
 
     inline void LazyObject::calculate() const {
         if (!calculated_ && !frozen_) {
-            calculated_ = true;   // prevent infinite recursion in 
+            calculated_ = true;   // prevent infinite recursion in
                                   // case of bootstrapping
             try {
                 performCalculations();

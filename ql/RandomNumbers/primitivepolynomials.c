@@ -1,3 +1,4 @@
+/* -*- mode: c; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 // This file contains 21200 polinomials, that is all primitive polynomials
 // modulo two up to degree 18. Another version does contain

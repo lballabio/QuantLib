@@ -29,7 +29,11 @@ OBJS = \
     "baroneadesiwhaleyengine.obj$(_mt)$(_D)" \
     "bjerksundstenslandengine.obj$(_mt)$(_D)" \
     "discretizedvanillaoption.obj$(_mt)$(_D)" \
+    "fddividendengine.obj$(_mt)$(_D)" \
     "fdeuropeanengine.obj$(_mt)$(_D)" \
+    "fdmultiperiodengine.obj$(_mt)$(_D)" \
+    "fdstepconditionengine.obj$(_mt)$(_D)" \
+    "fdvanillaengine.obj$(_mt)$(_D)" \
     "integralengine.obj$(_mt)$(_D)" \
     "jumpdiffusionengine.obj$(_mt)$(_D)" \
     "juquadraticengine.obj$(_mt)$(_D)" \

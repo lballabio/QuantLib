@@ -1,3 +1,4 @@
+/* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
  Copyright (C) 2000-2003 RiskMap srl
@@ -6,10 +7,11 @@
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
 
- QuantLib is free software: you can redistribute it and/or modify it under the
- terms of the QuantLib license.  You should have received a copy of the
- license along with this program; if not, please email quantlib-dev@lists.sf.net
- The license is also available online at http://quantlib.org/html/license.html
+ QuantLib is free software: you can redistribute it and/or modify it
+ under the terms of the QuantLib license.  You should have received a
+ copy of the license along with this program; if not, please email
+ <quantlib-dev@lists.sf.net>. The license is also available online at
+ <http://quantlib.org/reference/license.html>.
 
  This program is distributed in the hope that it will be useful, but WITHOUT
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
@@ -59,7 +61,7 @@ namespace QuantLib {
                 && y < 2000)
             // National Foundation Day
             || ((d == 11 || (d == 12 && w == Monday)) && m == February)
-            // Vernal Equinox 
+            // Vernal Equinox
             || ((d == ve || (d == ve+1 && w == Monday)) && m == March)
             // Greenery Day
             || ((d == 29 || (d == 30 && w == Monday)) && m == April)
@@ -83,9 +85,9 @@ namespace QuantLib {
                 && y < 2003)
             // If a single day falls between Respect for the Aged Day
             // and the Autumnal Equinox, it is holiday
-            || (w == Tuesday && d+1 == ae && d >= 16 && d <= 22 
+            || (w == Tuesday && d+1 == ae && d >= 16 && d <= 22
                 && m == September && y >= 2003)
-            // Autumnal Equinox 
+            // Autumnal Equinox
             || ((d == ae || (d == ae+1 && w == Monday)) && m == September)
             // Health and Sports Day (2nd Monday in October),
             // was October 10th until 2000

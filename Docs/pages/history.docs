@@ -1,27 +1,82 @@
 
 /*
- Copyright (C) 2000-2004 StatPro Italia srl
+ Copyright (C) 2000-2005 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
 
- QuantLib is free software developed by the QuantLib Group; you can
- redistribute it and/or modify it under the terms of the QuantLib License;
- either version 1.0, or (at your option) any later version.
+ QuantLib is free software: you can redistribute it and/or modify it
+ under the terms of the QuantLib license.  You should have received a
+ copy of the license along with this program; if not, please email
+ <quantlib-dev@lists.sf.net>. The license is also available online at
+ <http://quantlib.org/reference/license.html>.
 
- This program is distributed in the hope that it will be useful,
- but WITHOUT ANY WARRANTY; without even the implied warranty of
- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- QuantLib License for more details.
-
- You should have received a copy of the QuantLib License along with this
- program; if not, please email quantlib-dev@lists.sf.net
-
- The QuantLib License is also available at http://quantlib.org/license.html
- The members of the QuantLib Group are listed in the QuantLib License
+ This program is distributed in the hope that it will be useful, but WITHOUT
+ ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
 /*! \page history Version history
+
+    <strong>Release 0.3.9 - March 2005</strong>
+
+    GLOBAL FEATURES
+    - QL_SQRT, QL_MIN etc. deprecated in favor of std::sqrt,
+      std::min...
+    - Added a tentative tracing facility to ease debugging.
+    - Formatters deprecated in favor of output manipulators. A number
+      of data types can now be sent directly to output streams. 
+    - Stream-based implementation of QL_REQUIRE, QL_TRACE and similar
+      macros. Together with manipulators, this allows one to write
+      simpler error messages, as in:
+      \code
+      QL_FAIL("forward at date " << d << " is " << io::rate(f));
+      \endcode
+
+    INSTRUMENTS
+    - Improved Bond class
+      - yield-related calculation can be performed with either
+        compounded or continuous compounding;
+      - added theoretical price based on discount curve;
+      - fixed-rate coupon bonds can define different rates for each
+        coupon;
+      - added zero-coupon and floating-rate bonds (thanks to StatPro.)
+    - Option instruments now take a generic StochasticProcess;
+      however, most pricing engines still require a
+      BlackScholesProcess. They should be checked to see whether the
+      requirement can be relaxed.  Following this change,
+      Merton76Process no longer inherits from
+      BlackScholesProcess. This avoids erroneous upcasts.
+    - Partial fix for Bermudan swaptions with exercise lag (thanks to
+      Luca Berardi for the report and discussion.)
+
+    CALENDARS
+    - Added Bratislava and Prague calendars.
+
+    FINITE_DIFFERENCES FRAMEWORK
+    - Migrated finite-difference pricers to pricing-engine framework
+      (thanks to Joseph Wang.)
+
+    YIELD TERM STRUCTURES
+    - Added generic piecewise yield term structure. Client code can
+      choose what to interpolate (discounts, zero yields, forwards)
+      and how (linear, log-linear, flat) by instantiating types such
+      as:
+      \code
+      PiecewiseYieldCurve<Discount,LogLinear>
+      PiecewiseYieldCurve<ZeroYield,Linear>
+      PiecewiseYieldCurve<ForwardRate,Linear>
+      \endcode
+    - Interpolated discount, zero-yield and forward-rate curves can
+      now be set any interpolation.
+    - FlatForward can now take rates with compounding other than
+      continuous.
+    - Fix for extrapolation in zero-spreaded and forward-spreaded
+      yield term structure (thanks to Adjriou Belak for the report.)
+
+    MATH
+    - Added backward- and forward-flat interpolations.
+
 
     <strong>Release 0.3.8 - December 2004</strong>
 

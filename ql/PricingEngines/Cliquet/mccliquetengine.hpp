@@ -1,3 +1,4 @@
+/* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 /*
  Copyright (C) 2003, 2004 Ferdinando Ametrano
@@ -5,10 +6,11 @@
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
 
- QuantLib is free software: you can redistribute it and/or modify it under the
- terms of the QuantLib license.  You should have received a copy of the
- license along with this program; if not, please email quantlib-dev@lists.sf.net
- The license is also available online at http://quantlib.org/html/license.html
+ QuantLib is free software: you can redistribute it and/or modify it
+ under the terms of the QuantLib license.  You should have received a
+ copy of the license along with this program; if not, please email
+ <quantlib-dev@lists.sf.net>. The license is also available online at
+ <http://quantlib.org/reference/license.html>.
 
  This program is distributed in the hope that it will be useful, but WITHOUT
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
@@ -39,7 +41,7 @@ namespace QuantLib {
                         Size maxTimeStepPerYear,
                         SG sequenceGenerator)
         : McSimulation<S, PG, PathPricer<Path> >(antitheticVariate,
-                                                 controlVariate), 
+                                                 controlVariate),
           maxTimeStepPerYear_(maxTimeStepPerYear),
           sequenceGenerator_(sequenceGenerator) {}
         void calculate() const;
@@ -84,13 +86,13 @@ namespace QuantLib {
         std::vector<Time> resetTimes;
         Date referenceDate = arguments.riskFreeTS->referenceDate();
         for (Size i = 0; i< arguments.resetDates.size(); i++) {
-            resetTimes[i] = 
+            resetTimes[i] =
                 arguments.riskFreeTS->dayCount().yearFraction(
                                       referenceDate, arguments.resetDates[i]);
         }
 
         try {
-            boost::shared_ptr<BlackConstantVol> constVolTS = 
+            boost::shared_ptr<BlackConstantVol> constVolTS =
                 arguments.blackVolTS.currentLink();
             return TimeGrid(resetTimes.begin(), resetTimes.end());
         } catch (...) {
@@ -104,12 +106,12 @@ namespace QuantLib {
     inline
     boost::shared_ptr<PG> McCliquetEngine<S, SG, PG>::pathGenerator() const {
         boost::shared_ptr<StochasticProcess> bs(
-            new BlackScholesProcess(arguments_.riskFreeTS, 
+            new BlackScholesProcess(arguments_.riskFreeTS,
                                     arguments_.dividendTS,
-                                    arguments_.volTS, 
+                                    arguments_.volTS,
                                     arguments_.underlying));
 
-        return boost::shared_ptr<PG>(new PG(bs, timeGrid(), 
+        return boost::shared_ptr<PG>(new PG(bs, timeGrid(),
                                             sequenceGenerator_));
 
     }
@@ -121,13 +123,13 @@ namespace QuantLib {
         //! Initialize the path pricer
         return boost::shared_ptr<PathPricer<Path> >(
             new CliquetOptionPathPricer(arguments_.type,
-                                        arguments_.underlying, 
+                                        arguments_.underlying,
                                         arguments_.moneyness,
-                                        arguments_.accruedCoupon, 
+                                        arguments_.accruedCoupon,
                                         arguments_.lastFixing,
-                                        arguments_.localCap, 
+                                        arguments_.localCap,
                                         arguments_.localFloor,
-                                        arguments_.globalCap, 
+                                        arguments_.globalCap,
                                         arguments_.globalFloor,
                                         arguments_.riskFreeTS));
     }
@@ -147,7 +149,7 @@ namespace QuantLib {
                        "engine does not provide "
                        "control variation path pricer");
 
-            boost::shared_ptr<PricingEngine> controlPE = 
+            boost::shared_ptr<PricingEngine> controlPE =
                 controlPricingEngine();
 
             QL_REQUIRE(!controlPE.isNull(),
@@ -165,24 +167,24 @@ namespace QuantLib {
                                                         controlPE->results());
             Real controlVariateValue = controlResults->value;
 
-            mcModel_ = 
+            mcModel_ =
                 boost::shared_ptr<MonteCarloModel<S, PG, PathPricer<Path> > >(
                     new MonteCarloModel<S, PG, PathPricer<Path> >(
                         pathGenerator(), pathPricer(), S(), antitheticVariate_,
                         controlPP, controlVariateValue));
 
         } else {
-            mcModel_ = 
+            mcModel_ =
                 boost::shared_ptr<MonteCarloModel<S, PG, PathPricer<Path> > >(
                     new MonteCarloModel<S, PG, PathPricer<Path> >(
-                        pathGenerator(), pathPricer(), S(), 
+                        pathGenerator(), pathPricer(), S(),
                         antitheticVariate_));
         }
 
         value(0.01);
 
         results_.value = mcModel_->sampleAccumulator().mean();
-        results_.errorEstimate = 
+        results_.errorEstimate =
             mcModel_->sampleAccumulator().errorEstimate();
     }
 

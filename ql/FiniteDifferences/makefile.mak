@@ -23,8 +23,9 @@ INCLUDE_DIR    = ..\..
 
 # Object files
 OBJS = \
-    "bsmoperator.obj$(_mt)$(_D)" \
     "boundarycondition.obj$(_mt)$(_D)" \
+    "bsmoperator.obj$(_mt)$(_D)" \
+    "bsmtermoperator.obj$(_mt)$(_D)" \
     "onefactoroperator.obj$(_mt)$(_D)" \
     "tridiagonaloperator.obj$(_mt)$(_D)" \
     "valueatcenter.obj$(_mt)$(_D)"

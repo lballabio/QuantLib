@@ -1,3 +1,4 @@
+/* -*- mode: c++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 
 // NOTE: The following copyright notice
 // applies only to the (modified) code of erff.

@@ -33,6 +33,7 @@ OBJS = \
     "dividendvanillaoption.obj$(_mt)$(_D)" \
     "europeanoption.obj$(_mt)$(_D)" \
     "fixedcouponbond.obj$(_mt)$(_D)" \
+    "floatingratebond.obj$(_mt)$(_D)" \
     "forwardvanillaoption.obj$(_mt)$(_D)" \
     "multiassetoption.obj$(_mt)$(_D)" \
     "oneassetoption.obj$(_mt)$(_D)" \
@@ -43,7 +44,8 @@ OBJS = \
     "stock.obj$(_mt)$(_D)" \
     "swap.obj$(_mt)$(_D)" \
     "swaption.obj$(_mt)$(_D)" \
-    "vanillaoption.obj$(_mt)$(_D)"
+    "vanillaoption.obj$(_mt)$(_D)" \
+    "zerocouponbond.obj$(_mt)$(_D)"
 
 # Tools to be used
 CC        = bcc32
