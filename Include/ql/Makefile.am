@@ -24,6 +24,7 @@ include_HEADERS = \
 	forwardvolsurface.hpp \
 	handle.hpp \
 	history.hpp \
+	index.hpp \
 	instrument.hpp \
 	null.hpp \
 	options.hpp \
