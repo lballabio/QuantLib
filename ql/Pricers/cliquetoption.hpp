@@ -19,10 +19,10 @@
     \brief Cliquet option
 */
 
-#ifndef quantlib_pricers_cliquet_option_h
-#define quantlib_pricers_cliquet_option_h
+#ifndef quantlib_pricers_cliquet_option_hpp
+#define quantlib_pricers_cliquet_option_hpp
 
-#include <ql/Pricers/europeanoption.hpp>
+#include <ql/option.hpp>
 
 namespace QuantLib {
 
@@ -32,7 +32,7 @@ namespace QuantLib {
         strike for each forward start option is set equal to a fixed
         percentage of the spot price at the beginning of each period.
 
-        In the particular case in which only two dates are given the
+        In the particular case in which only two dates are given, the
         cliquet option is the same as a forward-starting option
         starting at the first date and expiring at the second date.
     */
@@ -45,28 +45,23 @@ namespace QuantLib {
                             const std::vector<Rate>& riskFreeRate,
                             const std::vector<Time>& times,
                             const std::vector<double>& volatility);
-        double value() const;
-        double delta() const;
-        double gamma() const;
-        double theta() const;
-        double vega() const;
-        double rho() const;
-        double dividendRho() const;
+        double value() const { return value_; }
+        double delta() const { return delta_; }
+        double gamma() const { return gamma_; }
+        double theta() const { return theta_; }
+        double vega() const { return vega_; }
+        double rho() const { return rho_; }
+        double dividendRho() const { return dividendRho_; }
       private:
-        double moneyness_;
-        std::vector<Time> times_;
-        std::vector<Spread> dividendYield_;
-        Size numOptions_;
-        std::vector<boost::shared_ptr<EuropeanOption> > optionlet_;
-        std::vector<double> weight_;
-        std::vector<DiscountFactor> forwardDiscounts_;
+        double value_;
+        double delta_, gamma_;
+        double theta_;
+        double vega_;
+        double rho_, dividendRho_;
     };
 
 }
 
 
 #endif
-
-
-
 

@@ -34,11 +34,11 @@ namespace QuantLib {
                      const boost::shared_ptr<StrikedTypePayoff>& payoff);
         double value() const;
         double delta(double spot) const;
-        //! Sensitivity in percent to a percent movement in the underlying
+        //! Sensitivity in percent to a percent movement in the underlying.
         double elasticity(double spot) const;
         double gamma(double spot) const;
         double deltaForward() const;
-        //! Sensitivity in percent to a percent movement in the forward price
+        //! Sensitivity in percent to a percent movement in the forward price.
         double elasticityForward() const;
         double gammaForward() const;
         double theta(double spot, double maturity) const;
@@ -55,6 +55,8 @@ namespace QuantLib {
         */
         double itmAssetProbability() const;
         double strikeSensitivity() const;
+        double alpha() const;
+        double beta() const;
       private:
         double forward_, discount_, variance_;
         double stdDev_, strike_;
@@ -77,6 +79,14 @@ namespace QuantLib {
 
     inline double BlackFormula::itmAssetProbability() const {
         return cum_d1_;
+    }
+
+    inline double BlackFormula::alpha() const {
+        return alpha_;
+    }
+
+    inline double BlackFormula::beta() const {
+        return beta_;
     }
 
 }
