@@ -31,7 +31,6 @@ using QuantLib::PricingEngines::EuropeanBinomialEngine;
 using QuantLib::Instruments::VanillaOption;
 using QuantLib::TermStructures::FlatForward;
 using QuantLib::VolTermStructures::BlackConstantVol;
-using QuantLib::DayCounters::Actual360;
 using QuantLib::DayCounters::Actual365;
 using QuantLib::Calendars::TARGET;
 

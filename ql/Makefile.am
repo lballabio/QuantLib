@@ -108,6 +108,7 @@ libQuantLib_la_SOURCES = \
     dataformatters.cpp \
     dataparsers.cpp \
     date.cpp \
+    grid.cpp \
     option.cpp \
     scheduler.cpp \
     solver1d.cpp \

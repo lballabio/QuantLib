@@ -1748,6 +1748,10 @@ SOURCE=.\ql\expressiontemplates.hpp
 # End Source File
 # Begin Source File
 
+SOURCE=.\ql\grid.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\ql\grid.hpp
 # End Source File
 # Begin Source File

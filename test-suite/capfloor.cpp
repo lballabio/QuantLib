@@ -76,6 +76,8 @@ Handle<Instrument> CapFloorTest::makeCapFloor(
                                                    std::vector<Rate>(1,strike),
                                                    termStructure_, 
                                                    makeEngine(volatility)));
+      default:
+        throw Error("unknown cap/floor type");
     }
 }
 

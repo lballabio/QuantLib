@@ -1,3 +1,4 @@
+
 /*
  Copyright (C) 2001, 2002, 2003 Sadruddin Rejeb
 
@@ -13,6 +14,7 @@
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
+
 /*! \file grid.hpp
     \brief Grid classes with useful constructors for trees and finite diffs
 
@@ -26,7 +28,7 @@
 #define quantlib_time_grid_h
 
 #include <ql/array.hpp>
-
+#include <ql/dataformatters.hpp>
 #include <list>
 #include <vector>
 
@@ -65,49 +67,11 @@ namespace QuantLib {
             push_back(dt*i);
     }
 
-    inline TimeGrid::TimeGrid(const std::list<Time>& times, Size steps)
-    : std::vector<Time>(0) {
-        Time last = times.back();
-        Time dtMax;
-        // The resulting timegrid have points at times listed in the input
-        // list. Between these points, there are inner-points which are
-        // regularly spaced.
-        if (steps == 0) {
-            std::vector<Time> diff;
-            std::back_insert_iterator<std::vector<Time> > ii(diff);
-            std::adjacent_difference(times.begin(), times.end(), ii);
-            if (diff.front()==0.0)
-                diff.erase(diff.begin());
-            dtMax = *(std::min_element(diff.begin(), diff.end()));
-        } else {
-            dtMax = last/steps;
-        }
-
-        Time periodBegin = 0.0;
-        std::list<Time>::const_iterator t;
-        for (t = times.begin(); t != times.end(); t++) {
-            Time periodEnd = *t;
-            if (periodBegin >= periodEnd) // Should we use a QL_REQUIRE?
-                continue;
-            Size nSteps = (Size)((periodEnd - periodBegin)/dtMax + 1.0);
-            double dt = (periodEnd - periodBegin)/nSteps;
-            for (Size n=0; n<nSteps; n++)
-                push_back(periodBegin + n*dt);
-            periodBegin = periodEnd;
-        }
-        push_back(periodBegin); // Note periodBegin = periodEnd
-    }
-
-    inline Size TimeGrid::findIndex(Time t) const {
-        const_iterator result = std::find(begin(), end(), t);
-        QL_REQUIRE(result!=end(), "Using inadequate tree");
-        return result - begin();
-    }
-
     inline Time TimeGrid::dt(Size i) const {
         return (*this)[i+1]  - (*this)[i];
     }
 
 }
+
 
 #endif
