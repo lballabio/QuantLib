@@ -186,7 +186,8 @@ namespace QuantLib {
         //! instantaneous forward rate at a given compounding frequency
         /*! \deprecated use forwardRate(const Date& d1, const Date& d1,
                                         const DayCounter& dc,
-                                        SimpleThenCompounded, Frequency f, bool extrapolate)
+                                        SimpleThenCompounded, Frequency f,
+                                        bool extrapolate)
                         instead
         */
         Rate compoundForward(const Date& d1,
@@ -194,7 +195,8 @@ namespace QuantLib {
                              bool extrapolate = false) const;
         //! instantaneous forward rate at a given compounding frequency
         /*! \deprecated use forwardRate(Time t1, Time t1,
-                                        SimpleThenCompounded, Frequency f, bool extrapolate)
+                                        SimpleThenCompounded, Frequency f,
+                                        bool extrapolate)
                         instead
         */
         Rate compoundForward(Time t1,
@@ -203,14 +205,16 @@ namespace QuantLib {
         //! instantaneous forward rate
         /*! \deprecated use forwardRate(const Date& d1, const Date& d1,
                                         const DayCounter& dc,
-                                        Continuous, NoFrequency, bool extrapolate)
+                                        Continuous, NoFrequency,
+                                        bool extrapolate)
                         instead
         */
         Rate instantaneousForward(const Date&,
                                   bool extrapolate = false) const;
         //! instantaneous forward rate
         /*! \deprecated use forwardRate(Time t1, Time t1,
-                                        Continuous, NoFrequency, bool extrapolate)
+                                        Continuous, NoFrequency,
+                                        bool extrapolate)
                         instead
         */
         Rate instantaneousForward(Time,
@@ -218,7 +222,8 @@ namespace QuantLib {
         //! discrete forward rate between two dates
         /*! \deprecated use forwardRate(const Date& d1, const Date& d2,
                                         const DayCounter& dc,
-                                        Continuous, NoFrequency, bool extrapolate)
+                                        Continuous, NoFrequency,
+                                        bool extrapolate)
                         instead
         */
         Rate forward(const Date& d1,
@@ -226,7 +231,8 @@ namespace QuantLib {
                      bool extrapolate = false) const;
         //! discrete forward rate between two times
         /*! \deprecated use forwardRate(Time t1, Time t2,
-                                        Continuous, NoFrequency, bool extrapolate)
+                                        Continuous, NoFrequency,
+                                        bool extrapolate)
                         instead
         */
         Rate forward(Time,
