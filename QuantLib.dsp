@@ -41,7 +41,7 @@ RSC=rc.exe
 # PROP Intermediate_Dir "Release"
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /W3 /GX /O2 /D "WIN32" /D "NDEBUG" /D "_MBCS" /D "_LIB" /YX /FD /c
-# ADD CPP /nologo /MD /W3 /GR /GX /Od /Ob2 /I "..\Include" /I "..\Include\Calendars" /I "..\Include\Currencies" /I "..\Include\DayCounters" /I "..\Include\FiniteDifferences" /I "..\Include\Instruments" /I "..\Include\Math" /I "..\Include\MonteCarlo" /I "..\Include\Patterns" /I "..\Include\Pricers" /I "..\Include\Solvers1D" /I "..\Include\TermStructures" /I "..\Include\Utilities" /D "WIN32" /D "NDEBUG" /D "_MBCS" /D "_LIB" /YX /FD /c
+# ADD CPP /nologo /MD /W3 /GR /GX /Od /Ob2 /I "Include" /I "Include\Calendars" /I "Include\Currencies" /I "Include\DayCounters" /I "Include\FiniteDifferences" /I "Include\Instruments" /I "Include\Math" /I "Include\MonteCarlo" /I "Include\Patterns" /I "Include\Pricers" /I "Include\Solvers1D" /I "Include\TermStructures" /I "Include\Utilities" /D "WIN32" /D "NDEBUG" /D "_MBCS" /D "_LIB" /YX /FD /c
 # ADD BASE RSC /l 0x409 /d "NDEBUG"
 # ADD RSC /l 0x409 /d "NDEBUG"
 BSC32=bscmake.exe
@@ -64,7 +64,7 @@ LIB32=link.exe -lib
 # PROP Intermediate_Dir "Debug"
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /W3 /Gm /GX /ZI /Od /D "WIN32" /D "_DEBUG" /D "_MBCS" /D "_LIB" /YX /FD /GZ /c
-# ADD CPP /nologo /MDd /W3 /GR /GX /ZI /Od /I "..\Include" /I "..\Include\Calendars" /I "..\Include\Currencies" /I "..\Include\DayCounters" /I "..\Include\FiniteDifferences" /I "..\Include\Instruments" /I "..\Include\Math" /I "..\Include\MonteCarlo" /I "..\Include\Patterns" /I "..\Include\Pricers" /I "..\Include\Solvers1D" /I "..\Include\TermStructures" /I "..\Include\Utilities" /D "WIN32" /D "_DEBUG" /D "_MBCS" /D "_LIB" /D "QL_DEBUG" /YX /FD /GZ /c
+# ADD CPP /nologo /MDd /W3 /GR /GX /ZI /Od /I "Include" /I "Include\Calendars" /I "Include\Currencies" /I "Include\DayCounters" /I "Include\FiniteDifferences" /I "Include\Instruments" /I "Include\Math" /I "Include\MonteCarlo" /I "Include\Patterns" /I "Include\Pricers" /I "Include\Solvers1D" /I "Include\TermStructures" /I "Include\Utilities" /D "WIN32" /D "_DEBUG" /D "_MBCS" /D "_LIB" /D "QL_DEBUG" /YX /FD /GZ /c
 # ADD BASE RSC /l 0x409 /d "_DEBUG"
 # ADD RSC /l 0x409 /d "_DEBUG"
 BSC32=bscmake.exe
@@ -85,75 +85,75 @@ LIB32=link.exe -lib
 # PROP Default_Filter ""
 # Begin Source File
 
-SOURCE=..\Sources\Calendars\frankfurt.cpp
+SOURCE=.\Sources\Calendars\frankfurt.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\Include\Calendars\frankfurt.h
+SOURCE=.\Include\Calendars\frankfurt.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\Sources\Calendars\helsinki.cpp
+SOURCE=.\Sources\Calendars\helsinki.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\Include\Calendars\helsinki.h
+SOURCE=.\Include\Calendars\helsinki.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\Sources\Calendars\london.cpp
+SOURCE=.\Sources\Calendars\london.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\Include\Calendars\london.h
+SOURCE=.\Include\Calendars\london.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\Sources\Calendars\milan.cpp
+SOURCE=.\Sources\Calendars\milan.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\Include\Calendars\milan.h
+SOURCE=.\Include\Calendars\milan.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\Sources\Calendars\newyork.cpp
+SOURCE=.\Sources\Calendars\newyork.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\Include\Calendars\newyork.h
+SOURCE=.\Include\Calendars\newyork.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\Sources\Calendars\target.cpp
+SOURCE=.\Sources\Calendars\target.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\Include\Calendars\target.h
+SOURCE=.\Include\Calendars\target.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\Sources\Calendars\wellington.cpp
+SOURCE=.\Sources\Calendars\wellington.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\Include\Calendars\wellington.h
+SOURCE=.\Include\Calendars\wellington.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\Sources\Calendars\westerncalendar.cpp
+SOURCE=.\Sources\Calendars\westerncalendar.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\Include\Calendars\westerncalendar.h
+SOURCE=.\Include\Calendars\westerncalendar.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\Sources\Calendars\zurich.cpp
+SOURCE=.\Sources\Calendars\zurich.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\Include\Calendars\zurich.h
+SOURCE=.\Include\Calendars\zurich.h
 # End Source File
 # End Group
 # Begin Group "Currencies"
@@ -161,47 +161,47 @@ SOURCE=..\Include\Calendars\zurich.h
 # PROP Default_Filter ""
 # Begin Source File
 
-SOURCE=..\Include\Currencies\aud.h
+SOURCE=.\Include\Currencies\aud.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\Include\Currencies\cad.h
+SOURCE=.\Include\Currencies\cad.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\Include\Currencies\chf.h
+SOURCE=.\Include\Currencies\chf.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\Include\Currencies\dem.h
+SOURCE=.\Include\Currencies\dem.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\Include\Currencies\dkk.h
+SOURCE=.\Include\Currencies\dkk.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\Include\Currencies\eur.h
+SOURCE=.\Include\Currencies\eur.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\Include\Currencies\gbp.h
+SOURCE=.\Include\Currencies\gbp.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\Include\Currencies\itl.h
+SOURCE=.\Include\Currencies\itl.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\Include\Currencies\jpy.h
+SOURCE=.\Include\Currencies\jpy.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\Include\Currencies\sek.h
+SOURCE=.\Include\Currencies\sek.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\Include\Currencies\usd.h
+SOURCE=.\Include\Currencies\usd.h
 # End Source File
 # End Group
 # Begin Group "Day Counters"
@@ -209,39 +209,39 @@ SOURCE=..\Include\Currencies\usd.h
 # PROP Default_Filter ""
 # Begin Source File
 
-SOURCE=..\Include\DayCounters\actual360.h
+SOURCE=.\Include\DayCounters\actual360.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\Include\DayCounters\actual365.h
+SOURCE=.\Include\DayCounters\actual365.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\Sources\DayCounters\actualactual.cpp
+SOURCE=.\Sources\DayCounters\actualactual.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\Include\DayCounters\actualactual.h
+SOURCE=.\Include\DayCounters\actualactual.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\Sources\DayCounters\thirty360.cpp
+SOURCE=.\Sources\DayCounters\thirty360.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\Include\DayCounters\thirty360.h
+SOURCE=.\Include\DayCounters\thirty360.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\Include\DayCounters\thirty360european.h
+SOURCE=.\Include\DayCounters\thirty360european.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\Sources\DayCounters\thirty360italian.cpp
+SOURCE=.\Sources\DayCounters\thirty360italian.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\Include\DayCounters\thirty360italian.h
+SOURCE=.\Include\DayCounters\thirty360italian.h
 # End Source File
 # End Group
 # Begin Group "Finite Differences"
@@ -249,71 +249,87 @@ SOURCE=..\Include\DayCounters\thirty360italian.h
 # PROP Default_Filter ""
 # Begin Source File
 
-SOURCE=..\Include\FiniteDifferences\backwardeuler.h
+SOURCE=.\Include\FiniteDifferences\backwardeuler.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\Include\FiniteDifferences\boundarycondition.h
+SOURCE=.\Include\FiniteDifferences\boundarycondition.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\Sources\FiniteDifferences\bsmoperator.cpp
+SOURCE=.\Sources\FiniteDifferences\bsmoperator.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\Include\FiniteDifferences\bsmoperator.h
+SOURCE=.\Include\FiniteDifferences\bsmoperator.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\Include\FiniteDifferences\cranknicolson.h
+SOURCE=.\Include\FiniteDifferences\cranknicolson.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\Include\FiniteDifferences\dminus.h
+SOURCE=.\Include\FiniteDifferences\dminus.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\Include\FiniteDifferences\dplus.h
+SOURCE=.\Include\FiniteDifferences\dplus.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\Include\FiniteDifferences\dplusdminus.h
+SOURCE=.\Include\FiniteDifferences\dplusdminus.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\Include\FiniteDifferences\dzero.h
+SOURCE=.\Include\FiniteDifferences\dzero.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\Include\FiniteDifferences\finitedifferencemodel.h
+SOURCE=.\Include\FiniteDifferences\finitedifferencemodel.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\Include\FiniteDifferences\forwardeuler.h
+SOURCE=.\Include\FiniteDifferences\forwardeuler.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\Include\FiniteDifferences\identity.h
+SOURCE=.\Include\FiniteDifferences\identity.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\Include\FiniteDifferences\operator.h
+SOURCE=.\Include\FiniteDifferences\operator.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\Include\FiniteDifferences\operatortraits.h
+SOURCE=.\Include\FiniteDifferences\operatortraits.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\Include\FiniteDifferences\stepcondition.h
+SOURCE=.\Include\FiniteDifferences\standardfdmodel.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\Sources\FiniteDifferences\tridiagonaloperator.cpp
+SOURCE=.\Include\FiniteDifferences\standardstepcondition.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\Include\FiniteDifferences\tridiagonaloperator.h
+SOURCE=.\Include\FiniteDifferences\stepcondition.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\Sources\FiniteDifferences\tridiagonaloperator.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\Include\FiniteDifferences\tridiagonaloperator.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\Sources\FiniteDifferences\valueatcenter.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\Include\FiniteDifferences\valueatcenter.h
 # End Source File
 # End Group
 # Begin Group "Instruments"
@@ -321,7 +337,7 @@ SOURCE=..\Include\FiniteDifferences\tridiagonaloperator.h
 # PROP Default_Filter ""
 # Begin Source File
 
-SOURCE=..\Include\Instruments\stock.h
+SOURCE=.\Include\Instruments\stock.h
 # End Source File
 # End Group
 # Begin Group "Math"
@@ -329,59 +345,67 @@ SOURCE=..\Include\Instruments\stock.h
 # PROP Default_Filter ""
 # Begin Source File
 
-SOURCE=..\Include\Math\cubicspline.h
+SOURCE=.\Include\Math\cubicspline.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\Include\Math\interpolation.h
+SOURCE=.\Include\Math\interpolation.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\Include\Math\lexicographicalview.h
+SOURCE=.\Include\Math\lexicographicalview.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\Include\Math\linearinterpolation.h
+SOURCE=.\Include\Math\linearinterpolation.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\Sources\Math\matrix.cpp
+SOURCE=.\Sources\Math\matrix.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\Include\Math\matrix.h
+SOURCE=.\Include\Math\matrix.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\Sources\Math\multivariateaccumulator.cpp
+SOURCE=.\Sources\Math\multivariateaccumulator.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\Include\Math\multivariateaccumulator.h
+SOURCE=.\Include\Math\multivariateaccumulator.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\Sources\Math\normaldistribution.cpp
+SOURCE=.\Sources\Math\normaldistribution.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\Include\Math\normaldistribution.h
+SOURCE=.\Include\Math\normaldistribution.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\Sources\Math\statistics.cpp
+SOURCE=.\Sources\Math\statistics.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\Include\Math\statistics.h
+SOURCE=.\Include\Math\statistics.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\Sources\Math\symmetricschurdecomposition.cpp
+SOURCE=.\Include\Math\symmetriceigenvalues.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\Include\Math\symmetricschurdecomposition.h
+SOURCE=.\Sources\Math\symmetricschurdecomposition.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\Include\Math\symmetricschurdecomposition.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\Include\Math\vartool.h
 # End Source File
 # End Group
 # Begin Group "MonteCarlo"
@@ -389,167 +413,175 @@ SOURCE=..\Include\Math\symmetricschurdecomposition.h
 # PROP Default_Filter ""
 # Begin Source File
 
-SOURCE=..\Include\MonteCarlo\antitheticcv.h
+SOURCE=.\Include\MonteCarlo\antitheticcv.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\Sources\MonteCarlo\avgpriceasianpathpricer.cpp
+SOURCE=.\Sources\MonteCarlo\avgpriceasianpathpricer.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\Include\MonteCarlo\avgpriceasianpathpricer.h
+SOURCE=.\Include\MonteCarlo\avgpriceasianpathpricer.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\Sources\MonteCarlo\avgstrikeasianpathpricer.cpp
+SOURCE=.\Sources\MonteCarlo\avgstrikeasianpathpricer.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\Include\MonteCarlo\avgstrikeasianpathpricer.h
+SOURCE=.\Include\MonteCarlo\avgstrikeasianpathpricer.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\Sources\MonteCarlo\basketpathpricer.cpp
+SOURCE=.\Sources\MonteCarlo\basketpathpricer.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\Include\MonteCarlo\basketpathpricer.h
+SOURCE=.\Include\MonteCarlo\basketpathpricer.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\Include\MonteCarlo\boxmuller.h
+SOURCE=.\Include\MonteCarlo\boxmuller.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\Include\MonteCarlo\centrallimitgaussian.h
+SOURCE=.\Include\MonteCarlo\centrallimitgaussian.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\Sources\MonteCarlo\controlvariatedpathpricer.cpp
+SOURCE=.\Sources\MonteCarlo\controlvariatedpathpricer.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\Include\MonteCarlo\controlvariatedpathpricer.h
+SOURCE=.\Include\MonteCarlo\controlvariatedpathpricer.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\Sources\MonteCarlo\europeanpathpricer.cpp
+SOURCE=.\Sources\MonteCarlo\europeanpathpricer.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\Include\MonteCarlo\europeanpathpricer.h
+SOURCE=.\Include\MonteCarlo\europeanpathpricer.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\Sources\MonteCarlo\everestpathpricer.cpp
+SOURCE=.\Sources\MonteCarlo\everestpathpricer.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\Include\MonteCarlo\everestpathpricer.h
+SOURCE=.\Include\MonteCarlo\everestpathpricer.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\Include\MonteCarlo\gaussianarraygenerator.h
+SOURCE=.\Include\MonteCarlo\gaussianarraygenerator.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\Include\MonteCarlo\gaussianrandomgenerator.h
+SOURCE=.\Include\MonteCarlo\gaussianrandomgenerator.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\Include\MonteCarlo\generalmontecarlo.h
+SOURCE=.\Include\MonteCarlo\generalmontecarlo.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\Sources\MonteCarlo\geometricasianpathpricer.cpp
+SOURCE=.\Sources\MonteCarlo\geometricasianpathpricer.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\Include\MonteCarlo\geometricasianpathpricer.h
+SOURCE=.\Include\MonteCarlo\geometricasianpathpricer.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\Sources\MonteCarlo\getcovariance.cpp
+SOURCE=.\Sources\MonteCarlo\getcovariance.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\Include\MonteCarlo\getcovariance.h
+SOURCE=.\Include\MonteCarlo\getcovariance.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\Sources\MonteCarlo\himalayapathpricer.cpp
+SOURCE=.\Sources\MonteCarlo\himalayapathpricer.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\Include\MonteCarlo\himalayapathpricer.h
+SOURCE=.\Include\MonteCarlo\himalayapathpricer.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\Sources\MonteCarlo\lecuyerrandomgenerator.cpp
+SOURCE=.\Sources\MonteCarlo\lecuyerrandomgenerator.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\Include\MonteCarlo\lecuyerrandomgenerator.h
+SOURCE=.\Include\MonteCarlo\lecuyerrandomgenerator.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\Include\MonteCarlo\mcoptionsample.h
+SOURCE=.\Include\MonteCarlo\mcoptionsample.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\Include\MonteCarlo\mcpricer.h
+SOURCE=.\Include\MonteCarlo\mcpricer.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\Include\MonteCarlo\multifactormontecarlooption.h
+SOURCE=.\Include\MonteCarlo\multifactormontecarlooption.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\Include\MonteCarlo\multifactorpricer.h
+SOURCE=.\Include\MonteCarlo\multifactorpricer.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\Include\MonteCarlo\multipath.h
+SOURCE=.\Include\MonteCarlo\multipath.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\Include\MonteCarlo\multipathgenerator.h
+SOURCE=.\Include\MonteCarlo\multipathgenerator.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\Include\MonteCarlo\multipathpricer.h
+SOURCE=.\Include\MonteCarlo\multipathpricer.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\Include\MonteCarlo\onefactormontecarlooption.h
+SOURCE=.\Include\MonteCarlo\onefactormontecarlooption.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\Include\MonteCarlo\path.h
+SOURCE=.\Sources\MonteCarlo\pagodapathpricer.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\Include\MonteCarlo\pathmontecarlo.h
+SOURCE=.\Include\MonteCarlo\pagodapathpricer.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\Include\MonteCarlo\pathpricer.h
+SOURCE=.\Include\MonteCarlo\path.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\Include\MonteCarlo\randomarraygenerator.h
+SOURCE=.\Include\MonteCarlo\pathmontecarlo.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\Include\MonteCarlo\standardmultipathgenerator.h
+SOURCE=.\Include\MonteCarlo\pathpricer.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\Include\MonteCarlo\standardpathgenerator.h
+SOURCE=.\Include\MonteCarlo\randomarraygenerator.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\Include\MonteCarlo\uniformrandomgenerator.h
+SOURCE=.\Include\MonteCarlo\standardmultipathgenerator.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\Include\MonteCarlo\standardpathgenerator.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\Include\MonteCarlo\uniformrandomgenerator.h
 # End Source File
 # End Group
 # Begin Group "Patterns"
@@ -557,7 +589,7 @@ SOURCE=..\Include\MonteCarlo\uniformrandomgenerator.h
 # PROP Default_Filter ""
 # Begin Source File
 
-SOURCE=..\Include\Patterns\observable.h
+SOURCE=.\Include\Patterns\observable.h
 # End Source File
 # End Group
 # Begin Group "Pricers"
@@ -565,147 +597,183 @@ SOURCE=..\Include\Patterns\observable.h
 # PROP Default_Filter ""
 # Begin Source File
 
-SOURCE=..\Include\Pricers\americancondition.h
+SOURCE=.\Include\Pricers\americancondition.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\Include\Pricers\americanoption.h
+SOURCE=.\Include\Pricers\americanoption.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\Sources\Pricers\averagepriceasian.cpp
+SOURCE=.\Sources\Pricers\averagepriceasian.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\Include\Pricers\averagepriceasian.h
+SOURCE=.\Include\Pricers\averagepriceasian.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\Sources\Pricers\averagestrikeasian.cpp
+SOURCE=.\Sources\Pricers\averagestrikeasian.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\Include\Pricers\averagestrikeasian.h
+SOURCE=.\Include\Pricers\averagestrikeasian.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\Sources\Pricers\barrieroption.cpp
+SOURCE=.\Sources\Pricers\barrieroption.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\Include\Pricers\barrieroption.h
+SOURCE=.\Include\Pricers\barrieroption.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\Sources\Pricers\binaryoption.cpp
+SOURCE=.\Sources\Pricers\bermudanoption.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\Include\Pricers\binaryoption.h
+SOURCE=.\Include\Pricers\bermudanoption.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\Include\Pricers\bsmamericanoption.h
+SOURCE=.\Sources\Pricers\binaryoption.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\Sources\Pricers\bsmeuropeanoption.cpp
+SOURCE=.\Include\Pricers\binaryoption.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\Include\Pricers\bsmeuropeanoption.h
+SOURCE=.\Sources\Pricers\bsmeuropeanoption.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\Sources\Pricers\bsmnumericaloption.cpp
+SOURCE=.\Include\Pricers\bsmeuropeanoption.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\Include\Pricers\bsmnumericaloption.h
+SOURCE=.\Sources\Pricers\bsmnumericaloption.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\Sources\Pricers\bsmoption.cpp
+SOURCE=.\Include\Pricers\bsmnumericaloption.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\Include\Pricers\bsmoption.h
+SOURCE=.\Sources\Pricers\bsmoption.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\Sources\Pricers\dividendamericanoption.cpp
+SOURCE=.\Include\Pricers\bsmoption.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\Include\Pricers\dividendamericanoption.h
+SOURCE=.\Sources\Pricers\dividendamericanoption.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\Sources\Pricers\dividendeuropeanoption.cpp
+SOURCE=.\Include\Pricers\dividendamericanoption.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\Include\Pricers\dividendeuropeanoption.h
+SOURCE=.\Sources\Pricers\dividendeuropeanoption.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\Sources\Pricers\everestoption.cpp
+SOURCE=.\Include\Pricers\dividendeuropeanoption.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\Include\Pricers\everestoption.h
+SOURCE=.\Sources\Pricers\dividendoption.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\Sources\Pricers\finitedifferenceeuropean.cpp
+SOURCE=.\Include\Pricers\dividendoption.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\Include\Pricers\finitedifferenceeuropean.h
+SOURCE=.\Sources\Pricers\dividendshoutoption.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\Include\Pricers\geometricasianoption.h
+SOURCE=.\Include\Pricers\dividendshoutoption.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\Sources\Pricers\himalaya.cpp
+SOURCE=.\Sources\Pricers\everestoption.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\Include\Pricers\himalaya.h
+SOURCE=.\Include\Pricers\everestoption.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\Sources\Pricers\mceuropeanpricer.cpp
+SOURCE=.\Sources\Pricers\finitedifferenceeuropean.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\Include\Pricers\mceuropeanpricer.h
+SOURCE=.\Include\Pricers\finitedifferenceeuropean.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\Sources\Pricers\plainbasketoption.cpp
+SOURCE=.\Include\Pricers\geometricasianoption.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\Include\Pricers\plainbasketoption.h
+SOURCE=.\Sources\Pricers\himalaya.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\Include\Pricers\shoutcondition.h
+SOURCE=.\Include\Pricers\himalaya.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\Include\Pricers\shoutoption.h
+SOURCE=.\Sources\Pricers\mceuropeanpricer.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\Sources\Pricers\stepconditionoption.cpp
+SOURCE=.\Include\Pricers\mceuropeanpricer.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\Include\Pricers\stepconditionoption.h
+SOURCE=.\Sources\Pricers\multiperiodoption.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\Include\Pricers\multiperiodoption.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\Sources\Pricers\pagodaoption.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\Include\Pricers\pagodaoption.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\Sources\Pricers\plainbasketoption.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\Include\Pricers\plainbasketoption.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\Include\Pricers\shoutcondition.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\Include\Pricers\shoutoption.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\Sources\Pricers\stepconditionoption.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\Include\Pricers\stepconditionoption.h
 # End Source File
 # End Group
 # Begin Group "Solvers 1D"
@@ -713,59 +781,59 @@ SOURCE=..\Include\Pricers\stepconditionoption.h
 # PROP Default_Filter ""
 # Begin Source File
 
-SOURCE=..\Sources\Solvers1D\bisection.cpp
+SOURCE=.\Sources\Solvers1D\bisection.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\Include\Solvers1D\bisection.h
+SOURCE=.\Include\Solvers1D\bisection.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\Sources\Solvers1D\brent.cpp
+SOURCE=.\Sources\Solvers1D\brent.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\Include\Solvers1D\brent.h
+SOURCE=.\Include\Solvers1D\brent.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\Sources\Solvers1D\falseposition.cpp
+SOURCE=.\Sources\Solvers1D\falseposition.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\Include\Solvers1D\falseposition.h
+SOURCE=.\Include\Solvers1D\falseposition.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\Sources\Solvers1D\newton.cpp
+SOURCE=.\Sources\Solvers1D\newton.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\Include\Solvers1D\newton.h
+SOURCE=.\Include\Solvers1D\newton.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\Sources\Solvers1D\newtonsafe.cpp
+SOURCE=.\Sources\Solvers1D\newtonsafe.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\Include\Solvers1D\newtonsafe.h
+SOURCE=.\Include\Solvers1D\newtonsafe.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\Sources\Solvers1D\ridder.cpp
+SOURCE=.\Sources\Solvers1D\ridder.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\Include\Solvers1D\ridder.h
+SOURCE=.\Include\Solvers1D\ridder.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\Sources\Solvers1D\secant.cpp
+SOURCE=.\Sources\Solvers1D\secant.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\Include\Solvers1D\secant.h
+SOURCE=.\Include\Solvers1D\secant.h
 # End Source File
 # End Group
 # Begin Group "Term Structures"
@@ -773,15 +841,15 @@ SOURCE=..\Include\Solvers1D\secant.h
 # PROP Default_Filter ""
 # Begin Source File
 
-SOURCE=..\Include\TermStructures\flatforward.h
+SOURCE=.\Include\TermStructures\flatforward.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\Sources\TermStructures\piecewiseconstantforwards.cpp
+SOURCE=.\Sources\TermStructures\piecewiseconstantforwards.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\Include\TermStructures\piecewiseconstantforwards.h
+SOURCE=.\Include\TermStructures\piecewiseconstantforwards.h
 # End Source File
 # End Group
 # Begin Group "Utilities"
@@ -793,7 +861,15 @@ SOURCE=..\Include\Utilities\combiningiterator.h
 # End Source File
 # Begin Source File
 
+SOURCE=.\Include\Utilities\combiningiterator.h
+# End Source File
+# Begin Source File
+
 SOURCE=..\Include\Utilities\couplingiterator.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\Include\Utilities\couplingiterator.h
 # End Source File
 # Begin Source File
 
@@ -801,7 +877,15 @@ SOURCE=..\Include\Utilities\filteringiterator.h
 # End Source File
 # Begin Source File
 
+SOURCE=.\Include\Utilities\filteringiterator.h
+# End Source File
+# Begin Source File
+
 SOURCE=..\Include\Utilities\iteratorcategories.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\Include\Utilities\iteratorcategories.h
 # End Source File
 # Begin Source File
 
@@ -809,132 +893,140 @@ SOURCE=..\Include\Utilities\processingiterator.h
 # End Source File
 # Begin Source File
 
+SOURCE=.\Include\Utilities\processingiterator.h
+# End Source File
+# Begin Source File
+
 SOURCE=..\Include\Utilities\steppingiterator.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\Include\Utilities\steppingiterator.h
 # End Source File
 # End Group
 # Begin Source File
 
-SOURCE=..\Include\array.h
+SOURCE=.\Include\array.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\Sources\calendar.cpp
+SOURCE=.\Sources\calendar.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\Include\calendar.h
+SOURCE=.\Include\calendar.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\Include\config.msvc.h
+SOURCE=.\Include\config.msvc.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\Include\currency.h
+SOURCE=.\Include\currency.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\Sources\dataformatters.cpp
+SOURCE=.\Sources\dataformatters.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\Include\dataformatters.h
+SOURCE=.\Include\dataformatters.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\Sources\date.cpp
+SOURCE=.\Sources\date.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\Include\date.h
+SOURCE=.\Include\date.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\Include\daycounter.h
+SOURCE=.\Include\daycounter.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\Include\depositrate.h
+SOURCE=.\Include\depositrate.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\Include\discountfactor.h
+SOURCE=.\Include\discountfactor.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\Include\expressiontemplates.h
+SOURCE=.\Include\expressiontemplates.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\Include\forwardvolsurface.h
+SOURCE=.\Include\forwardvolsurface.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\Include\handle.h
+SOURCE=.\Include\handle.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\Include\history.h
+SOURCE=.\Include\history.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\Include\instrument.h
+SOURCE=.\Include\instrument.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\Include\null.h
+SOURCE=.\Include\null.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\Include\options.h
+SOURCE=.\Include\options.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\Include\qldefines.h
+SOURCE=.\Include\qldefines.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\Include\qlerrors.h
+SOURCE=.\Include\qlerrors.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\Include\quantlib.h
+SOURCE=.\Include\quantlib.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\Include\rate.h
+SOURCE=.\Include\rate.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\Sources\ratehelper.cpp
+SOURCE=.\Sources\ratehelper.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\Include\ratehelper.h
+SOURCE=.\Include\ratehelper.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\Include\riskstatistics.h
+SOURCE=.\Include\riskstatistics.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\Sources\solver1d.cpp
+SOURCE=.\Sources\solver1d.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\Include\solver1d.h
+SOURCE=.\Include\solver1d.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\Include\spread.h
+SOURCE=.\Include\spread.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\Include\swaptionvolsurface.h
+SOURCE=.\Include\swaptionvolsurface.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\Include\termstructure.h
+SOURCE=.\Include\termstructure.h
 # End Source File
 # End Target
 # End Project

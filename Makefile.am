@@ -6,8 +6,8 @@ EXTRA_DIST=News.txt Authors.txt Contributors.txt \
 	History.txt LICENSE.TXT Readme.txt \
 	updateproject.sh makefile.mak
 	Ruby/extconf.rb \
-	Mac/README.txt Mac/QuantLib.prj Mac/QuantLib.prj.exp \
-	Win/README.txt Win/makefile.mak Win/QuantLib.dsw Win/QuantLib.dsp
+	README-win.txt QuantLib.dsp \
+	Mac/README.txt Mac/QuantLib.prj Mac/QuantLib.prj.exp
 
 if PYTHON_FOUND
 if SWIG_FOUND 
@@ -25,7 +25,7 @@ else
 python:
 	echo You need to install python in order to build this module
 python-install:
-        echo You need to install python in order to install this module
+	echo You need to install python in order to install this module
 python-test:
 	echo You need to install python in order to test this module
 endif
