@@ -74,9 +74,10 @@ namespace QuantLib {
         inline MultiPathGenerator<SG>::MultiPathGenerator(
             const Array& drifts, const Math::Matrix& covariance,
             Time length, Size timeSteps, SG generator)
-        : numAssets_(covariance.rows()), sqrtCovariance_(Math::matrixSqrt(covariance)),
+        : numAssets_(covariance.rows()),
+          sqrtCovariance_(Math::matrixSqrt(covariance)),
           generator_(generator),
-          next_(MultiPath(covariance.rows(),TimeGrid(length, timeSteps)),1.0) {
+          next_(MultiPath(covariance.rows(),TimeGrid(length,timeSteps)),1.0) {
 
             QL_REQUIRE(generator_.dimension() == numAssets_*timeSteps,
                        "generator's dimension is not equal to "
