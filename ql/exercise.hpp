@@ -15,7 +15,7 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 /*! \file exercise.hpp
-    \brief Exercise type class (European, Bermudan or American)
+    \brief Option exercise classes and payoff function
 
     \fullpath
     ql/%exercise.hpp
@@ -27,9 +27,13 @@
 #define quantlib_exercise_type_h
 
 #include <ql/calendar.hpp>
+#include <ql/option.hpp>
 #include <vector>
 
 namespace QuantLib {
+
+    //! Exercise payoff function
+    double ExercisePayoff(Option::Type type, double price, double strike);
 
     //! Exercise class (American, Bermudan or European)
     /*! \warning the input dates must be effective (adjusted) exercise dates.
@@ -87,34 +91,6 @@ namespace QuantLib {
 
     inline const std::vector<Date>& Exercise::dates() const {
         return dates_;
-    }
-
-    inline AmericanExercise::AmericanExercise(Date earliest, Date latest)
-    : Exercise() {
-        type_ = American;
-        dates_ = std::vector<Date>(2);
-        dates_[0] = earliest;
-        dates_[1] = latest;
-    }
-
-    inline BermudanExercise::BermudanExercise(const std::vector<Date>& dates)
-    : Exercise() {
-
-        QL_REQUIRE(dates.size()>0,
-            "BermudanExercise::BermudanExercise : "
-            "no dates given");
-        dates_ = dates;
-
-        // if the following approach is not viable
-        // we should require that dates.size()>1 above
-        if (dates.size()==1) type_=European;
-        else type_ = Bermudan;
-    }
-
-    inline EuropeanExercise::EuropeanExercise(Date date)
-    : Exercise() {
-        type_ = European;
-        dates_ = std::vector<Date>(1,date);
     }
 
 }
