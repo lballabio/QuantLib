@@ -43,6 +43,7 @@ namespace QuantLib {
                                    public Patterns::Observer {
           public:
             FloatingRateCoupon(double nominal,
+                const Date& paymentDate,
                 const Handle<Indexes::Xibor>& index,
                 const Date& startDate, const Date& endDate,
                 int fixingDays,
@@ -104,12 +105,14 @@ namespace QuantLib {
         }
 
         inline double FloatingRateCoupon::accruedAmount(const Date& d) const {
-            if (d <= startDate_ || d >= endDate_) {
+            if (d <= accrualStartDate_ || d >= paymentDate_) {
                 return 0.0;
             } else {
                 return nominal()*fixing()*
-                    dayCounter().yearFraction(startDate_,d,
-                        refPeriodStart_,refPeriodEnd_);
+                    dayCounter().yearFraction(accrualStartDate_,
+                                              QL_MIN(d,accrualEndDate_),
+                                              refPeriodStart_,
+                                              refPeriodEnd_);
             }
         }
         

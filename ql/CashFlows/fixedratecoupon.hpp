@@ -35,15 +35,15 @@ namespace QuantLib {
         //! %coupon paying a fixed interest rate
         class FixedRateCoupon : public Coupon {
           public:
-            FixedRateCoupon(double nominal, Rate rate,
-                const Calendar& calendar,
-                RollingConvention rollingConvention,
-                const DayCounter& dayCounter,
-                const Date& startDate, const Date& endDate,
-                const Date& refPeriodStart = Date(),
-                const Date& refPeriodEnd = Date())
-            : Coupon(nominal, calendar, rollingConvention, 
-                     startDate, endDate, refPeriodStart, refPeriodEnd),
+            FixedRateCoupon(double nominal, 
+                            const Date& paymentDate,
+                            Rate rate,
+                            const DayCounter& dayCounter,
+                            const Date& startDate, const Date& endDate,
+                            const Date& refPeriodStart = Date(),
+                            const Date& refPeriodEnd = Date())
+            : Coupon(nominal, paymentDate, startDate, endDate, 
+                     refPeriodStart, refPeriodEnd),
               rate_(rate), dayCounter_(dayCounter) {}
             //! \name CashFlow interface
             //@{
@@ -79,11 +79,14 @@ namespace QuantLib {
         }
 
         inline double FixedRateCoupon::accruedAmount(const Date& d) const {
-            if (d <= startDate_ || d >= endDate_) {
+            if (d <= accrualStartDate_ || d >= paymentDate_) {
                 return 0.0;
             } else {
-                return nominal()*rate_*dayCounter_.yearFraction(startDate_,d,
-                    refPeriodStart_,refPeriodEnd_);
+                return nominal()*rate_*
+                       dayCounter_.yearFraction(accrualStartDate_,
+                                                QL_MIN(d,accrualEndDate_),
+                                                refPeriodStart_,
+                                                refPeriodEnd_);
             }
         }
         

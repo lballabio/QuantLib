@@ -34,11 +34,12 @@ namespace QuantLib {
     namespace CashFlows {
 
         FloatingRateCoupon::FloatingRateCoupon(double nominal,
+          const Date& paymentDate,
           const Handle<Xibor>& index,
           const Date& startDate, const Date& endDate,
           int fixingDays, Spread spread,
           const Date& refPeriodStart, const Date& refPeriodEnd)
-        : Coupon(nominal, index->calendar(),index->rollingConvention(),
+        : Coupon(nominal, paymentDate, 
                  startDate, endDate, refPeriodStart, refPeriodEnd),
           index_(index), fixingDays_(fixingDays), spread_(spread) {
             registerWith(index_);
@@ -50,7 +51,7 @@ namespace QuantLib {
                        "null term structure set to par coupon");
             Date settlementDate = termStructure->settlementDate();
             Date fixingDate = index_->calendar().advance(
-                startDate_, -fixingDays_, Days,
+                accrualStartDate_, -fixingDays_, Days,
                 Preceding);
             Date fixingValueDate = index_->calendar().advance(
                 fixingDate, index_->settlementDays(), Days,
@@ -80,7 +81,7 @@ namespace QuantLib {
             }
             DiscountFactor startDiscount =
                 termStructure->discount(fixingValueDate);
-            Date temp = index_->calendar().advance(endDate_,
+            Date temp = index_->calendar().advance(accrualEndDate_,
                             -fixingDays_, Days, Preceding);
             DiscountFactor endDiscount =
                 termStructure->discount(

@@ -40,6 +40,7 @@ namespace QuantLib {
         class ShortFloatingRateCoupon : public FloatingRateCoupon {
           public:
             ShortFloatingRateCoupon(double nominal,
+                const Date& paymentDate,
                 const Handle<Indexes::Xibor>& index,
                 const Date& startDate, const Date& endDate,
                 int fixingDays,

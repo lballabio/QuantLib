@@ -42,12 +42,15 @@ namespace QuantLib {
         */
         class Coupon : public CashFlow {
           public:
+            /*! \warning the coupon does not roll the payment date
+                         which must already be a business day.
+            */
             Coupon(double nominal,
-                const Calendar& calendar,
-                RollingConvention rollingConvention,
-                const Date& startDate, const Date& endDate,
-                const Date& refPeriodStart = Date(),
-                const Date& refPeriodEnd = Date());
+                   const Date& paymentDate, 
+                   const Date& accrualStartDate, 
+                   const Date& accrualEndDate,
+                   const Date& refPeriodStart = Date(),
+                   const Date& refPeriodEnd = Date());
             //! \name Partial CashFlow interface
             //@{
             Date date() const;
@@ -70,25 +73,23 @@ namespace QuantLib {
             //@}
           protected:
             double nominal_;
-            Date startDate_, endDate_, refPeriodStart_, refPeriodEnd_;
-            Calendar calendar_;
-            RollingConvention rollingConvention_;
+            Date paymentDate_, accrualStartDate_, accrualEndDate_, 
+                 refPeriodStart_, refPeriodEnd_;
         };
 
 
         // inline definitions
 
         inline Coupon::Coupon(double nominal,
-            const Calendar& calendar,
-            RollingConvention rollingConvention,
-            const Date& startDate, const Date& endDate,
+            const Date& paymentDate, 
+            const Date& accrualStartDate, const Date& accrualEndDate,
             const Date& refPeriodStart, const Date& refPeriodEnd)
-        : nominal_(nominal), startDate_(startDate), endDate_(endDate),
-          refPeriodStart_(refPeriodStart), refPeriodEnd_(refPeriodEnd),
-          calendar_(calendar), rollingConvention_(rollingConvention) {}
+        : nominal_(nominal), paymentDate_(paymentDate), 
+          accrualStartDate_(accrualStartDate), accrualEndDate_(accrualEndDate),
+          refPeriodStart_(refPeriodStart), refPeriodEnd_(refPeriodEnd) {}
 
         inline Date Coupon::date() const {
-            return calendar_.roll(endDate_,rollingConvention_);
+            return paymentDate_;
         }
 
         inline double Coupon::nominal() const {
@@ -96,20 +97,23 @@ namespace QuantLib {
         }
 
         inline const Date& Coupon::accrualStartDate() const {
-            return startDate_;
+            return accrualStartDate_;
         }
 
         inline const Date& Coupon::accrualEndDate() const {
-            return endDate_;
+            return accrualEndDate_;
         }
 
         inline Time Coupon::accrualPeriod() const {
-            return dayCounter().yearFraction(startDate_,endDate_,
-                refPeriodStart_,refPeriodEnd_);
+            return dayCounter().yearFraction(accrualStartDate_,
+                                             accrualEndDate_,
+                                             refPeriodStart_,
+                                             refPeriodEnd_);
         }
 
         inline int Coupon::accrualDays() const {
-            return dayCounter().dayCount(startDate_,endDate_);
+            return dayCounter().dayCount(accrualStartDate_,
+                                         accrualEndDate_);
         }
 
     }

@@ -33,11 +33,12 @@ namespace QuantLib {
     namespace CashFlows {
 
         ShortFloatingRateCoupon::ShortFloatingRateCoupon(double nominal,
+          const Date& paymentDate,
           const Handle<Xibor>& index,
           const Date& startDate, const Date& endDate,
           int fixingDays, Spread spread,
           const Date& refPeriodStart, const Date& refPeriodEnd)
-        : FloatingRateCoupon(nominal,index,startDate,endDate,fixingDays,
+        : FloatingRateCoupon(nominal,paymentDate,index,startDate,endDate,fixingDays,
                              spread,refPeriodStart,refPeriodEnd) {}
 
         double ShortFloatingRateCoupon::amount() const {
@@ -45,7 +46,7 @@ namespace QuantLib {
                 "null term structure set to par coupon");
             Date settlementDate = index()->termStructure()->settlementDate();
             Date fixingDate = index()->calendar().advance(
-                startDate_, -fixingDays(), Days,
+                accrualStartDate_, -fixingDays(), Days,
                 Preceding);
             Date fixingValueDate = index()->calendar().advance(
                 fixingDate, index()->settlementDays(), Days,
@@ -54,8 +55,8 @@ namespace QuantLib {
                        // must have been fixed
                        // but we have no way to interpolate the fixing yet
                        "short/long floating coupons not supported yet"
-                       " (start = " + DateFormatter::toString(startDate_) +
-                       ", end = " + DateFormatter::toString(endDate_) + ")");
+                       " (start = " + DateFormatter::toString(accrualStartDate_) +
+                       ", end = " + DateFormatter::toString(accrualEndDate_) + ")");
             return FloatingRateCoupon::amount();
         }
 
