@@ -106,6 +106,7 @@ namespace QuantLib {
         double VanillaOption::impliedVolatility(double targetValue,
           double accuracy, Size maxEvaluations,
           double minVol, double maxVol) const {
+            calculate();
             QL_REQUIRE(!isExpired_,
                        "VanillaOption::impliedVolatility : "
                        "option expired");
