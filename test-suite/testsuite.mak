@@ -54,6 +54,7 @@ CLEAN :"QuantLib - Win32 ReleaseCLEAN"
 CLEAN :
 !ENDIF 
 	-@erase "$(INTDIR)\barrieroption.obj"
+	-@erase "$(INTDIR)\binaryoption.obj"
 	-@erase "$(INTDIR)\calendars.obj"
 	-@erase "$(INTDIR)\capfloor.obj"
 	-@erase "$(INTDIR)\compoundforward.obj"
@@ -93,6 +94,7 @@ BSC32_SBRS= \
 LINK32=link.exe
 LINK32_FLAGS=cppunit.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:console /incremental:no /pdb:"$(OUTDIR)\testsuite.pdb" /machine:I386 /out:"$(OUTDIR)\testsuite.exe" /libpath:"$(QL_DIR)\lib\Win32\VisualStudio\\" 
 LINK32_OBJS= \
+	"$(INTDIR)\barrieroption.obj" \
 	"$(INTDIR)\calendars.obj" \
 	"$(INTDIR)\capfloor.obj" \
 	"$(INTDIR)\compoundforward.obj" \
@@ -118,7 +120,7 @@ LINK32_OBJS= \
 	"$(INTDIR)\swap.obj" \
 	"$(INTDIR)\swaption.obj" \
 	"$(INTDIR)\termstructures.obj" \
-	"$(INTDIR)\barrieroption.obj" \
+	"$(INTDIR)\binaryoption.obj" \
 	"..\lib\Win32\VisualStudio\QuantLib.lib"
 
 "$(OUTDIR)\testsuite.exe" : "$(OUTDIR)" $(DEF_FILE) $(LINK32_OBJS)
@@ -150,6 +152,7 @@ CLEAN :"QuantLib - Win32 DebugCLEAN"
 CLEAN :
 !ENDIF 
 	-@erase "$(INTDIR)\barrieroption.obj"
+	-@erase "$(INTDIR)\binaryoption.obj"
 	-@erase "$(INTDIR)\calendars.obj"
 	-@erase "$(INTDIR)\capfloor.obj"
 	-@erase "$(INTDIR)\compoundforward.obj"
@@ -192,6 +195,7 @@ BSC32_SBRS= \
 LINK32=link.exe
 LINK32_FLAGS=cppunitd.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:console /incremental:yes /pdb:"$(OUTDIR)\testsuite.pdb" /debug /machine:I386 /out:"$(OUTDIR)\testsuite.exe" /pdbtype:sept /libpath:"$(QL_DIR)\lib\Win32\VisualStudio\\" 
 LINK32_OBJS= \
+	"$(INTDIR)\barrieroption.obj" \
 	"$(INTDIR)\calendars.obj" \
 	"$(INTDIR)\capfloor.obj" \
 	"$(INTDIR)\compoundforward.obj" \
@@ -217,7 +221,7 @@ LINK32_OBJS= \
 	"$(INTDIR)\swap.obj" \
 	"$(INTDIR)\swaption.obj" \
 	"$(INTDIR)\termstructures.obj" \
-	"$(INTDIR)\barrieroption.obj" \
+	"$(INTDIR)\binaryoption.obj" \
 	"..\lib\Win32\VisualStudio\QuantLib_d.lib"
 
 "$(OUTDIR)\testsuite.exe" : "$(OUTDIR)" $(DEF_FILE) $(LINK32_OBJS)
@@ -249,6 +253,7 @@ CLEAN :"QuantLib - Win32 OnTheEdgeDebugCLEAN"
 CLEAN :
 !ENDIF 
 	-@erase "$(INTDIR)\barrieroption.obj"
+	-@erase "$(INTDIR)\binaryoption.obj"
 	-@erase "$(INTDIR)\calendars.obj"
 	-@erase "$(INTDIR)\capfloor.obj"
 	-@erase "$(INTDIR)\compoundforward.obj"
@@ -291,6 +296,7 @@ BSC32_SBRS= \
 LINK32=link.exe
 LINK32_FLAGS=cppunitd.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:console /incremental:yes /pdb:"$(OUTDIR)\testsuite.pdb" /debug /machine:I386 /out:"$(OUTDIR)\testsuite.exe" /pdbtype:sept /libpath:"..\lib\Win32\VisualStudio\\" 
 LINK32_OBJS= \
+	"$(INTDIR)\barrieroption.obj" \
 	"$(INTDIR)\calendars.obj" \
 	"$(INTDIR)\capfloor.obj" \
 	"$(INTDIR)\compoundforward.obj" \
@@ -316,7 +322,7 @@ LINK32_OBJS= \
 	"$(INTDIR)\swap.obj" \
 	"$(INTDIR)\swaption.obj" \
 	"$(INTDIR)\termstructures.obj" \
-	"$(INTDIR)\barrieroption.obj" \
+	"$(INTDIR)\binaryoption.obj" \
 	"..\lib\Win32\VisualStudio\QuantLib_d.lib"
 
 "$(OUTDIR)\testsuite.exe" : "$(OUTDIR)" $(DEF_FILE) $(LINK32_OBJS)
@@ -348,6 +354,7 @@ CLEAN :"QuantLib - Win32 OnTheEdgeReleaseCLEAN"
 CLEAN :
 !ENDIF 
 	-@erase "$(INTDIR)\barrieroption.obj"
+	-@erase "$(INTDIR)\binaryoption.obj"
 	-@erase "$(INTDIR)\calendars.obj"
 	-@erase "$(INTDIR)\capfloor.obj"
 	-@erase "$(INTDIR)\compoundforward.obj"
@@ -387,6 +394,7 @@ BSC32_SBRS= \
 LINK32=link.exe
 LINK32_FLAGS=cppunit.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:console /profile /machine:I386 /out:"$(OUTDIR)\testsuite.exe" /libpath:"..\lib\Win32\VisualStudio\\" 
 LINK32_OBJS= \
+	"$(INTDIR)\barrieroption.obj" \
 	"$(INTDIR)\calendars.obj" \
 	"$(INTDIR)\capfloor.obj" \
 	"$(INTDIR)\compoundforward.obj" \
@@ -412,7 +420,7 @@ LINK32_OBJS= \
 	"$(INTDIR)\swap.obj" \
 	"$(INTDIR)\swaption.obj" \
 	"$(INTDIR)\termstructures.obj" \
-	"$(INTDIR)\barrieroption.obj" \
+	"$(INTDIR)\binaryoption.obj" \
 	"..\lib\Win32\VisualStudio\QuantLib.lib"
 
 "$(OUTDIR)\testsuite.exe" : "$(OUTDIR)" $(DEF_FILE) $(LINK32_OBJS)
@@ -466,6 +474,11 @@ LINK32_OBJS= \
 SOURCE=.\barrieroption.cpp
 
 "$(INTDIR)\barrieroption.obj" : $(SOURCE) "$(INTDIR)"
+
+
+SOURCE=.\binaryoption.cpp
+
+"$(INTDIR)\binaryoption.obj" : $(SOURCE) "$(INTDIR)"
 
 
 SOURCE=.\calendars.cpp

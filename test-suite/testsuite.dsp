@@ -144,6 +144,10 @@ SOURCE=.\barrieroption.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=.\binaryoption.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\calendars.cpp
 # End Source File
 # Begin Source File
@@ -249,6 +253,10 @@ SOURCE=.\termstructures.cpp
 # Begin Source File
 
 SOURCE=.\barrieroption.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\binaryoption.hpp
 # End Source File
 # Begin Source File
 

@@ -51,6 +51,8 @@ CLEAN :
 	-@erase "$(INTDIR)\americanmcengines.sbr"
 	-@erase "$(INTDIR)\analyticalcapfloor.obj"
 	-@erase "$(INTDIR)\analyticalcapfloor.sbr"
+	-@erase "$(INTDIR)\analyticamericanbinaryengine.obj"
+	-@erase "$(INTDIR)\analyticamericanbinaryengine.sbr"
 	-@erase "$(INTDIR)\analyticbarrierengine.obj"
 	-@erase "$(INTDIR)\analyticbarrierengine.sbr"
 	-@erase "$(INTDIR)\analyticeuropeanengine.obj"
@@ -73,6 +75,8 @@ CLEAN :
 	-@erase "$(INTDIR)\biasedbarrierpathpricer.sbr"
 	-@erase "$(INTDIR)\binaryoption.obj"
 	-@erase "$(INTDIR)\binaryoption.sbr"
+	-@erase "$(INTDIR)\binarypathpricer.obj"
+	-@erase "$(INTDIR)\binarypathpricer.sbr"
 	-@erase "$(INTDIR)\binomialtree.obj"
 	-@erase "$(INTDIR)\binomialtree.sbr"
 	-@erase "$(INTDIR)\binomialvanillaengine.obj"
@@ -255,6 +259,7 @@ CLEAN :
 	-@erase "$(INTDIR)\newyork.sbr"
 	-@erase "$(INTDIR)\normaldistribution.obj"
 	-@erase "$(INTDIR)\normaldistribution.sbr"
+	-@erase "$(INTDIR)\old\vc60.idb"
 	-@erase "$(INTDIR)\onefactormodel.obj"
 	-@erase "$(INTDIR)\onefactormodel.sbr"
 	-@erase "$(INTDIR)\onefactoroperator.obj"
@@ -357,6 +362,8 @@ CLEAN :
 	-@erase "$(INTDIR)\zurich.obj"
 	-@erase "$(INTDIR)\zurich.sbr"
 	-@erase "$(OUTDIR)\QuantLib.bsc"
+	-@erase ".\build\Release\old\binaryoption.obj"
+	-@erase ".\build\Release\old\binaryoption.sbr"
 	-@erase ".\lib\Win32\VisualStudio\QuantLib.lib"
 
 "$(OUTDIR)" :
@@ -445,6 +452,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\simplex.sbr" \
 	"$(INTDIR)\steepestdescent.sbr" \
 	"$(INTDIR)\analyticalcapfloor.sbr" \
+	"$(INTDIR)\barrieroptionpricer.sbr" \
 	"$(INTDIR)\binaryoption.sbr" \
 	"$(INTDIR)\blackcapfloor.sbr" \
 	"$(INTDIR)\blackswaption.sbr" \
@@ -521,7 +529,9 @@ BSC32_SBRS= \
 	"$(INTDIR)\grid.sbr" \
 	"$(INTDIR)\scheduler.sbr" \
 	"$(INTDIR)\voltermstructure.sbr" \
-	"$(INTDIR)\barrieroptionpricer.sbr"
+	"$(INTDIR)\binarypathpricer.sbr" \
+	"$(INTDIR)\analyticamericanbinaryengine.sbr" \
+	".\build\Release\old\binaryoption.sbr"
 
 "$(OUTDIR)\QuantLib.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -610,6 +620,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\simplex.obj" \
 	"$(INTDIR)\steepestdescent.obj" \
 	"$(INTDIR)\analyticalcapfloor.obj" \
+	"$(INTDIR)\barrieroptionpricer.obj" \
 	"$(INTDIR)\binaryoption.obj" \
 	"$(INTDIR)\blackcapfloor.obj" \
 	"$(INTDIR)\blackswaption.obj" \
@@ -686,7 +697,9 @@ LIB32_OBJS= \
 	"$(INTDIR)\grid.obj" \
 	"$(INTDIR)\scheduler.obj" \
 	"$(INTDIR)\voltermstructure.obj" \
-	"$(INTDIR)\barrieroptionpricer.obj"
+	"$(INTDIR)\binarypathpricer.obj" \
+	"$(INTDIR)\analyticamericanbinaryengine.obj" \
+	".\build\Release\old\binaryoption.obj"
 
 ".\lib\Win32\VisualStudio\QuantLib.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
     $(LIB32) @<<
@@ -713,6 +726,8 @@ CLEAN :
 	-@erase "$(INTDIR)\americanmcengines.sbr"
 	-@erase "$(INTDIR)\analyticalcapfloor.obj"
 	-@erase "$(INTDIR)\analyticalcapfloor.sbr"
+	-@erase "$(INTDIR)\analyticamericanbinaryengine.obj"
+	-@erase "$(INTDIR)\analyticamericanbinaryengine.sbr"
 	-@erase "$(INTDIR)\analyticbarrierengine.obj"
 	-@erase "$(INTDIR)\analyticbarrierengine.sbr"
 	-@erase "$(INTDIR)\analyticeuropeanengine.obj"
@@ -735,6 +750,8 @@ CLEAN :
 	-@erase "$(INTDIR)\biasedbarrierpathpricer.sbr"
 	-@erase "$(INTDIR)\binaryoption.obj"
 	-@erase "$(INTDIR)\binaryoption.sbr"
+	-@erase "$(INTDIR)\binarypathpricer.obj"
+	-@erase "$(INTDIR)\binarypathpricer.sbr"
 	-@erase "$(INTDIR)\binomialtree.obj"
 	-@erase "$(INTDIR)\binomialtree.sbr"
 	-@erase "$(INTDIR)\binomialvanillaengine.obj"
@@ -1108,6 +1125,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\simplex.sbr" \
 	"$(INTDIR)\steepestdescent.sbr" \
 	"$(INTDIR)\analyticalcapfloor.sbr" \
+	"$(INTDIR)\barrieroptionpricer.sbr" \
 	"$(INTDIR)\binaryoption.sbr" \
 	"$(INTDIR)\blackcapfloor.sbr" \
 	"$(INTDIR)\blackswaption.sbr" \
@@ -1184,7 +1202,8 @@ BSC32_SBRS= \
 	"$(INTDIR)\grid.sbr" \
 	"$(INTDIR)\scheduler.sbr" \
 	"$(INTDIR)\voltermstructure.sbr" \
-	"$(INTDIR)\barrieroptionpricer.sbr"
+	"$(INTDIR)\binarypathpricer.sbr" \
+	"$(INTDIR)\analyticamericanbinaryengine.sbr"
 
 "$(OUTDIR)\QuantLib.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -1273,6 +1292,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\simplex.obj" \
 	"$(INTDIR)\steepestdescent.obj" \
 	"$(INTDIR)\analyticalcapfloor.obj" \
+	"$(INTDIR)\barrieroptionpricer.obj" \
 	"$(INTDIR)\binaryoption.obj" \
 	"$(INTDIR)\blackcapfloor.obj" \
 	"$(INTDIR)\blackswaption.obj" \
@@ -1349,7 +1369,8 @@ LIB32_OBJS= \
 	"$(INTDIR)\grid.obj" \
 	"$(INTDIR)\scheduler.obj" \
 	"$(INTDIR)\voltermstructure.obj" \
-	"$(INTDIR)\barrieroptionpricer.obj"
+	"$(INTDIR)\binarypathpricer.obj" \
+	"$(INTDIR)\analyticamericanbinaryengine.obj"
 
 ".\lib\Win32\VisualStudio\QuantLib_d.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
     $(LIB32) @<<
@@ -1376,6 +1397,8 @@ CLEAN :
 	-@erase "$(INTDIR)\americanmcengines.sbr"
 	-@erase "$(INTDIR)\analyticalcapfloor.obj"
 	-@erase "$(INTDIR)\analyticalcapfloor.sbr"
+	-@erase "$(INTDIR)\analyticamericanbinaryengine.obj"
+	-@erase "$(INTDIR)\analyticamericanbinaryengine.sbr"
 	-@erase "$(INTDIR)\analyticbarrierengine.obj"
 	-@erase "$(INTDIR)\analyticbarrierengine.sbr"
 	-@erase "$(INTDIR)\analyticeuropeanengine.obj"
@@ -1398,6 +1421,8 @@ CLEAN :
 	-@erase "$(INTDIR)\biasedbarrierpathpricer.sbr"
 	-@erase "$(INTDIR)\binaryoption.obj"
 	-@erase "$(INTDIR)\binaryoption.sbr"
+	-@erase "$(INTDIR)\binarypathpricer.obj"
+	-@erase "$(INTDIR)\binarypathpricer.sbr"
 	-@erase "$(INTDIR)\binomialtree.obj"
 	-@erase "$(INTDIR)\binomialtree.sbr"
 	-@erase "$(INTDIR)\binomialvanillaengine.obj"
@@ -1770,6 +1795,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\simplex.sbr" \
 	"$(INTDIR)\steepestdescent.sbr" \
 	"$(INTDIR)\analyticalcapfloor.sbr" \
+	"$(INTDIR)\barrieroptionpricer.sbr" \
 	"$(INTDIR)\binaryoption.sbr" \
 	"$(INTDIR)\blackcapfloor.sbr" \
 	"$(INTDIR)\blackswaption.sbr" \
@@ -1846,7 +1872,8 @@ BSC32_SBRS= \
 	"$(INTDIR)\grid.sbr" \
 	"$(INTDIR)\scheduler.sbr" \
 	"$(INTDIR)\voltermstructure.sbr" \
-	"$(INTDIR)\barrieroptionpricer.sbr"
+	"$(INTDIR)\binarypathpricer.sbr" \
+	"$(INTDIR)\analyticamericanbinaryengine.sbr"
 
 "$(OUTDIR)\QuantLib.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -1935,6 +1962,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\simplex.obj" \
 	"$(INTDIR)\steepestdescent.obj" \
 	"$(INTDIR)\analyticalcapfloor.obj" \
+	"$(INTDIR)\barrieroptionpricer.obj" \
 	"$(INTDIR)\binaryoption.obj" \
 	"$(INTDIR)\blackcapfloor.obj" \
 	"$(INTDIR)\blackswaption.obj" \
@@ -2011,7 +2039,8 @@ LIB32_OBJS= \
 	"$(INTDIR)\grid.obj" \
 	"$(INTDIR)\scheduler.obj" \
 	"$(INTDIR)\voltermstructure.obj" \
-	"$(INTDIR)\barrieroptionpricer.obj"
+	"$(INTDIR)\binarypathpricer.obj" \
+	"$(INTDIR)\analyticamericanbinaryengine.obj"
 
 ".\lib\Win32\VisualStudio\QuantLib.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
     $(LIB32) @<<
@@ -2038,6 +2067,8 @@ CLEAN :
 	-@erase "$(INTDIR)\americanmcengines.sbr"
 	-@erase "$(INTDIR)\analyticalcapfloor.obj"
 	-@erase "$(INTDIR)\analyticalcapfloor.sbr"
+	-@erase "$(INTDIR)\analyticamericanbinaryengine.obj"
+	-@erase "$(INTDIR)\analyticamericanbinaryengine.sbr"
 	-@erase "$(INTDIR)\analyticbarrierengine.obj"
 	-@erase "$(INTDIR)\analyticbarrierengine.sbr"
 	-@erase "$(INTDIR)\analyticeuropeanengine.obj"
@@ -2060,6 +2091,8 @@ CLEAN :
 	-@erase "$(INTDIR)\biasedbarrierpathpricer.sbr"
 	-@erase "$(INTDIR)\binaryoption.obj"
 	-@erase "$(INTDIR)\binaryoption.sbr"
+	-@erase "$(INTDIR)\binarypathpricer.obj"
+	-@erase "$(INTDIR)\binarypathpricer.sbr"
 	-@erase "$(INTDIR)\binomialtree.obj"
 	-@erase "$(INTDIR)\binomialtree.sbr"
 	-@erase "$(INTDIR)\binomialvanillaengine.obj"
@@ -2433,6 +2466,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\simplex.sbr" \
 	"$(INTDIR)\steepestdescent.sbr" \
 	"$(INTDIR)\analyticalcapfloor.sbr" \
+	"$(INTDIR)\barrieroptionpricer.sbr" \
 	"$(INTDIR)\binaryoption.sbr" \
 	"$(INTDIR)\blackcapfloor.sbr" \
 	"$(INTDIR)\blackswaption.sbr" \
@@ -2509,7 +2543,8 @@ BSC32_SBRS= \
 	"$(INTDIR)\grid.sbr" \
 	"$(INTDIR)\scheduler.sbr" \
 	"$(INTDIR)\voltermstructure.sbr" \
-	"$(INTDIR)\barrieroptionpricer.sbr"
+	"$(INTDIR)\binarypathpricer.sbr" \
+	"$(INTDIR)\analyticamericanbinaryengine.sbr"
 
 "$(OUTDIR)\QuantLib.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -2598,6 +2633,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\simplex.obj" \
 	"$(INTDIR)\steepestdescent.obj" \
 	"$(INTDIR)\analyticalcapfloor.obj" \
+	"$(INTDIR)\barrieroptionpricer.obj" \
 	"$(INTDIR)\binaryoption.obj" \
 	"$(INTDIR)\blackcapfloor.obj" \
 	"$(INTDIR)\blackswaption.obj" \
@@ -2674,7 +2710,8 @@ LIB32_OBJS= \
 	"$(INTDIR)\grid.obj" \
 	"$(INTDIR)\scheduler.obj" \
 	"$(INTDIR)\voltermstructure.obj" \
-	"$(INTDIR)\barrieroptionpricer.obj"
+	"$(INTDIR)\binarypathpricer.obj" \
+	"$(INTDIR)\analyticamericanbinaryengine.obj"
 
 ".\lib\Win32\VisualStudio\QuantLib_d.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
     $(LIB32) @<<
@@ -2701,6 +2738,8 @@ CLEAN :
 	-@erase "$(INTDIR)\americanmcengines.sbr"
 	-@erase "$(INTDIR)\analyticalcapfloor.obj"
 	-@erase "$(INTDIR)\analyticalcapfloor.sbr"
+	-@erase "$(INTDIR)\analyticamericanbinaryengine.obj"
+	-@erase "$(INTDIR)\analyticamericanbinaryengine.sbr"
 	-@erase "$(INTDIR)\analyticbarrierengine.obj"
 	-@erase "$(INTDIR)\analyticbarrierengine.sbr"
 	-@erase "$(INTDIR)\analyticeuropeanengine.obj"
@@ -2723,6 +2762,8 @@ CLEAN :
 	-@erase "$(INTDIR)\biasedbarrierpathpricer.sbr"
 	-@erase "$(INTDIR)\binaryoption.obj"
 	-@erase "$(INTDIR)\binaryoption.sbr"
+	-@erase "$(INTDIR)\binarypathpricer.obj"
+	-@erase "$(INTDIR)\binarypathpricer.sbr"
 	-@erase "$(INTDIR)\binomialtree.obj"
 	-@erase "$(INTDIR)\binomialtree.sbr"
 	-@erase "$(INTDIR)\binomialvanillaengine.obj"
@@ -3095,6 +3136,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\simplex.sbr" \
 	"$(INTDIR)\steepestdescent.sbr" \
 	"$(INTDIR)\analyticalcapfloor.sbr" \
+	"$(INTDIR)\barrieroptionpricer.sbr" \
 	"$(INTDIR)\binaryoption.sbr" \
 	"$(INTDIR)\blackcapfloor.sbr" \
 	"$(INTDIR)\blackswaption.sbr" \
@@ -3171,7 +3213,8 @@ BSC32_SBRS= \
 	"$(INTDIR)\grid.sbr" \
 	"$(INTDIR)\scheduler.sbr" \
 	"$(INTDIR)\voltermstructure.sbr" \
-	"$(INTDIR)\barrieroptionpricer.sbr"
+	"$(INTDIR)\binarypathpricer.sbr" \
+	"$(INTDIR)\analyticamericanbinaryengine.sbr"
 
 "$(OUTDIR)\QuantLib.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -3260,6 +3303,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\simplex.obj" \
 	"$(INTDIR)\steepestdescent.obj" \
 	"$(INTDIR)\analyticalcapfloor.obj" \
+	"$(INTDIR)\barrieroptionpricer.obj" \
 	"$(INTDIR)\binaryoption.obj" \
 	"$(INTDIR)\blackcapfloor.obj" \
 	"$(INTDIR)\blackswaption.obj" \
@@ -3336,7 +3380,8 @@ LIB32_OBJS= \
 	"$(INTDIR)\grid.obj" \
 	"$(INTDIR)\scheduler.obj" \
 	"$(INTDIR)\voltermstructure.obj" \
-	"$(INTDIR)\barrieroptionpricer.obj"
+	"$(INTDIR)\binarypathpricer.obj" \
+	"$(INTDIR)\analyticamericanbinaryengine.obj"
 
 ".\lib\Win32\VisualStudio\QuantLib.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
     $(LIB32) @<<
@@ -3590,6 +3635,12 @@ SOURCE=.\ql\Instruments\barrieroption.cpp
 	$(CPP) $(CPP_PROJ) $(SOURCE)
 
 
+SOURCE=.\ql\Instruments\binaryoption.cpp
+
+"$(INTDIR)\binaryoption.obj"	"$(INTDIR)\binaryoption.sbr" : $(SOURCE) "$(INTDIR)"
+	$(CPP) $(CPP_PROJ) $(SOURCE)
+
+
 SOURCE=.\ql\Instruments\capfloor.cpp
 
 "$(INTDIR)\capfloor.obj"	"$(INTDIR)\capfloor.sbr" : $(SOURCE) "$(INTDIR)"
@@ -3776,6 +3827,12 @@ SOURCE=.\ql\MonteCarlo\biasedbarrierpathpricer.cpp
 	$(CPP) $(CPP_PROJ) $(SOURCE)
 
 
+SOURCE=.\ql\MonteCarlo\binarypathpricer.cpp
+
+"$(INTDIR)\binarypathpricer.obj"	"$(INTDIR)\binarypathpricer.sbr" : $(SOURCE) "$(INTDIR)"
+	$(CPP) $(CPP_PROJ) $(SOURCE)
+
+
 SOURCE=.\ql\MonteCarlo\cliquetoptionpathpricer.cpp
 
 "$(INTDIR)\cliquetoptionpathpricer.obj"	"$(INTDIR)\cliquetoptionpathpricer.sbr" : $(SOURCE) "$(INTDIR)"
@@ -3868,9 +3925,57 @@ SOURCE=.\ql\Pricers\barrieroptionpricer.cpp
 
 SOURCE=.\ql\Pricers\binaryoption.cpp
 
-"$(INTDIR)\binaryoption.obj"	"$(INTDIR)\binaryoption.sbr" : $(SOURCE) "$(INTDIR)"
-	$(CPP) $(CPP_PROJ) $(SOURCE)
+!IF  "$(CFG)" == "QuantLib - Win32 Release"
 
+CPP_SWITCHES=/nologo /MT /W3 /GR /GX /O2 /Ob2 /I ".\\" /D "NDEBUG" /D "WIN32" /D "_MBCS" /D "_LIB" /D "NOMINMAX" /Fr"build\Release\old/" /Fp"build\Release/QuantLib.pch" /YX /Fo"build\Release\old/" /Fd"build\Release\old/" /FD /Oi- /c 
+
+".\build\Release\old\binaryoption.obj"	".\build\Release\old\binaryoption.sbr" : $(SOURCE)
+	$(CPP) @<<
+  $(CPP_SWITCHES) $(SOURCE)
+<<
+
+
+!ELSEIF  "$(CFG)" == "QuantLib - Win32 Debug"
+
+CPP_SWITCHES=/nologo /MTd /W3 /GR /GX /ZI /Od /I ".\\" /D "_DEBUG" /D "WIN32" /D "_MBCS" /D "_LIB" /D "NOMINMAX" /Fr"$(INTDIR)\\" /Fp"$(INTDIR)\QuantLib.pch" /YX /Fo"$(INTDIR)\\" /Fd"lib\Win32\VisualStudio\QuantLib" /FD /GZ /c 
+
+"$(INTDIR)\binaryoption.obj"	"$(INTDIR)\binaryoption.sbr" : $(SOURCE) "$(INTDIR)"
+	$(CPP) @<<
+  $(CPP_SWITCHES) $(SOURCE)
+<<
+
+
+!ELSEIF  "$(CFG)" == "QuantLib - Win32 OnTheEdgeRelease"
+
+CPP_SWITCHES=/nologo /MT /W3 /GR /GX /O2 /Ob2 /I ".\\" /D "NDEBUG" /D "WIN32" /D "_MBCS" /D "_LIB" /D "NOMINMAX" /Fr"$(INTDIR)\\" /Fp"$(INTDIR)\QuantLib.pch" /YX /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\\" /FD /c 
+
+"$(INTDIR)\binaryoption.obj"	"$(INTDIR)\binaryoption.sbr" : $(SOURCE) "$(INTDIR)"
+	$(CPP) @<<
+  $(CPP_SWITCHES) $(SOURCE)
+<<
+
+
+!ELSEIF  "$(CFG)" == "QuantLib - Win32 OnTheEdgeDebug"
+
+CPP_SWITCHES=/nologo /MTd /W3 /GR /GX /ZI /Od /I ".\\" /D "_DEBUG" /D "WIN32" /D "_MBCS" /D "_LIB" /D "NOMINMAX" /Fr"$(INTDIR)\\" /Fp"$(INTDIR)\QuantLib.pch" /YX /Fo"$(INTDIR)\\" /Fd"lib\Win32\VisualStudio\QuantLib" /FD /GZ /c 
+
+"$(INTDIR)\binaryoption.obj"	"$(INTDIR)\binaryoption.sbr" : $(SOURCE) "$(INTDIR)"
+	$(CPP) @<<
+  $(CPP_SWITCHES) $(SOURCE)
+<<
+
+
+!ELSEIF  "$(CFG)" == "QuantLib - Win32 Intel OnTheEdgeRelease"
+
+CPP_SWITCHES=/nologo /G6 /MT /W3 /GR /GX /O2 /Ob2 /I ".\\" /D "NDEBUG" /D "WIN32" /D "_MBCS" /D "_LIB" /D "NOMINMAX" /Fr"$(INTDIR)\\" /Fp"$(INTDIR)\QuantLib.pch" /YX /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\\" /FD /c 
+
+"$(INTDIR)\binaryoption.obj"	"$(INTDIR)\binaryoption.sbr" : $(SOURCE) "$(INTDIR)"
+	$(CPP) @<<
+  $(CPP_SWITCHES) $(SOURCE)
+<<
+
+
+!ENDIF 
 
 SOURCE=.\ql\Pricers\blackcapfloor.cpp
 
@@ -4115,6 +4220,12 @@ SOURCE=.\ql\Pricers\treeswaption.cpp
 SOURCE=.\ql\PricingEngines\americanmcengines.cpp
 
 "$(INTDIR)\americanmcengines.obj"	"$(INTDIR)\americanmcengines.sbr" : $(SOURCE) "$(INTDIR)"
+	$(CPP) $(CPP_PROJ) $(SOURCE)
+
+
+SOURCE=.\ql\PricingEngines\analyticamericanbinaryengine.cpp
+
+"$(INTDIR)\analyticamericanbinaryengine.obj"	"$(INTDIR)\analyticamericanbinaryengine.sbr" : $(SOURCE) "$(INTDIR)"
 	$(CPP) $(CPP_PROJ) $(SOURCE)
 
 

@@ -592,6 +592,14 @@ SOURCE=.\ql\Instruments\barrieroption.hpp
 # End Source File
 # Begin Source File
 
+SOURCE=.\ql\Instruments\binaryoption.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\Instruments\binaryoption.hpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\ql\Instruments\capfloor.cpp
 # End Source File
 # Begin Source File
@@ -928,6 +936,14 @@ SOURCE=.\ql\MonteCarlo\biasedbarrierpathpricer.hpp
 # End Source File
 # Begin Source File
 
+SOURCE=.\ql\MonteCarlo\binarypathpricer.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\MonteCarlo\binarypathpricer.hpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\ql\MonteCarlo\brownianbridge.hpp
 # End Source File
 # Begin Source File
@@ -1153,6 +1169,21 @@ SOURCE=.\ql\Pricers\barrieroptionpricer.hpp
 # Begin Source File
 
 SOURCE=.\ql\Pricers\binaryoption.cpp
+
+!IF  "$(CFG)" == "QuantLib - Win32 Release"
+
+# PROP Intermediate_Dir "build\Release\old"
+
+!ELSEIF  "$(CFG)" == "QuantLib - Win32 Debug"
+
+!ELSEIF  "$(CFG)" == "QuantLib - Win32 OnTheEdgeRelease"
+
+!ELSEIF  "$(CFG)" == "QuantLib - Win32 OnTheEdgeDebug"
+
+!ELSEIF  "$(CFG)" == "QuantLib - Win32 Intel OnTheEdgeRelease"
+
+!ENDIF 
+
 # End Source File
 # Begin Source File
 
@@ -1459,6 +1490,10 @@ SOURCE=.\ql\PricingEngines\americanmcengines.hpp
 # End Source File
 # Begin Source File
 
+SOURCE=.\ql\PricingEngines\analyticamericanbinaryengine.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\ql\PricingEngines\analyticbarrierengine.cpp
 # End Source File
 # Begin Source File
@@ -1468,6 +1503,10 @@ SOURCE=.\ql\PricingEngines\analyticeuropeanengine.cpp
 # Begin Source File
 
 SOURCE=.\ql\PricingEngines\barrierengines.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\PricingEngines\binaryengines.hpp
 # End Source File
 # Begin Source File
 

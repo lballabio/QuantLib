@@ -28,7 +28,6 @@ namespace QuantLib {
 
     namespace MonteCarlo {
 
-        // constructor
         BinaryPathPricer::BinaryPathPricer(
             Binary::Type binaryType, 
             double barrier, 
@@ -51,9 +50,8 @@ namespace QuantLib {
                 "barrier less/equal zero not allowed");
           }
 
-        // price a path
         double BinaryPathPricer::operator()(const Path& path) const {
-            Size n = path.size();
+            Size i, n = path.size();
             QL_REQUIRE(n>0,
                 "BinaryPathPricer: the path cannot be empty");
 
@@ -69,7 +67,7 @@ namespace QuantLib {
 
             switch (type_) {
               case Option::Call:
-                for (Size i = 0; i < n; i++) {
+                for (i = 0; i < n; i++) {
                     log_drift = path.drift()[i];
                     log_random = path.diffusion()[i];
                     new_asset_price = 
@@ -100,7 +98,7 @@ namespace QuantLib {
                 }
                 break;
               case Option::Put:
-                for (Size i = 0; i < n; i++) {
+                for (i = 0; i < n; i++) {
                     log_drift = path.drift()[i];
                     log_random = path.diffusion()[i];
                     new_asset_price = 
