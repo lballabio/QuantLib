@@ -130,7 +130,7 @@ namespace QuantLib {
                         Array testParams(size);
                         for (Size j=0; j<size; j++, k++)
                             testParams[j] = params[k];
-                        if (!arguments_[i].testParams(params))
+                        if (!arguments_[i].testParams(testParams))
                             return false;
                     }
                     return true;
@@ -147,4 +147,6 @@ namespace QuantLib {
     }
 
 }
+
+
 #endif
