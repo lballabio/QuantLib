@@ -76,6 +76,8 @@ namespace QuantLib {
             Array applyTo(const Array& v) const;
             //! solve linear system for a given right-hand side
             Array solveFor(const Array& rhs) const;
+            //! solve linear system with SOR approach
+            Array SOR(const Array& rhs, double tol) const;
             //! identity instance
             static TridiagonalOperator identity(Size size);
             //@}

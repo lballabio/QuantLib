@@ -1,6 +1,7 @@
 
 
 /*
+ Copyright (C) 2002 Ferdinando Ametrano
  Copyright (C) 2000, 2001, 2002 RiskMap srl
 
  This file is part of QuantLib, a free-software/open-source library
@@ -26,6 +27,7 @@
 
 #include <ql/FiniteDifferences/tridiagonaloperator.hpp>
 #include <ql/dataformatters.hpp>
+#include <iostream>
 
 namespace QuantLib {
 
@@ -180,6 +182,58 @@ namespace QuantLib {
             for (j=size()-2;j>0;j--)
                 result[j] -= tmp[j+1]*result[j+1];
             result[0] -= tmp[1]*result[1];
+
+            return result;
+        }
+
+
+
+        Array TridiagonalOperator::SOR(const Array& rhs, double tol) const {
+            QL_REQUIRE(rhs.size()==size(),
+                "TridiagonalOperator::solveFor: rhs has the wrong size");
+
+            // initial guess
+            Array result = rhs;
+
+            // apply lower boundary condition
+            switch (lowerBC_.type()) {
+              case BoundaryCondition::None:
+                // does nothing
+                break;
+              case BoundaryCondition::Neumann:
+              case BoundaryCondition::Dirichlet:
+                result[0] = lowerBC_.value();
+                break;
+            }
+
+            // apply upper boundary condition
+            switch (upperBC_.type()) {
+              case BoundaryCondition::None:
+                // does nothing
+                break;
+              case BoundaryCondition::Neumann:
+              case BoundaryCondition::Dirichlet:
+                result[size()-1] = upperBC_.value();
+                break;
+            }
+
+            // solve tridiagonal system with SOR technique
+            Size sorIteration, i;
+            double omega = 1.0;
+            double err=2.0*tol;
+            double y, temp;
+            for (sorIteration=0; err>tol ; sorIteration++) {
+                QL_REQUIRE(sorIteration<10000, "too many iterations");
+                err=0.0;
+                for (i=1; i<size()-2 ; i++) {
+                    y = (rhs[i]     +
+                         aboveDiagonal_[i]   * result[i+1]+
+                         belowDiagonal_[i-1] * result[i-1]) / diagonal_[i];
+                    temp = y - result[i];
+                    err += temp * temp;
+                    result[i] += omega * temp;
+                }
+            }
 
             return result;
         }

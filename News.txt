@@ -8,6 +8,8 @@ Changes since Release 0.2.1:
     - McPricer: extended interface, improved convergency algorithm
 
     FINITE DIFFERENCE FRAMEWORK
+    - added mixed (implicit/explicit) scheme, from which Crank-Nicolson,
+      ImplicitEuler and ExplicitEuler are now derived
     - Finite Difference exercise conditions are now in the FiniteDifferences
       folder/namespace
     - Finite Difference pricers now start with 'Fd' letters

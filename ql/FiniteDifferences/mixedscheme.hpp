@@ -1,6 +1,6 @@
 
-
 /*
+ Copyright (C) 2002 Ferdinando Ametrano
  Copyright (C) 2000, 2001, 2002 RiskMap srl
 
  This file is part of QuantLib, a free-software/open-source library
@@ -15,25 +15,26 @@
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
-/*! \file cranknicolson.hpp
-    \brief Crank-Nicolson scheme for finite difference methods
+
+/*! \file mixedscheme.hpp
+    \brief Mixed (explicit/implicit) scheme for finite difference methods
 
     \fullpath
-    ql/FiniteDifferences/%cranknicolson.hpp
+    ql/FiniteDifferences/%mixedscheme.hpp
 */
 
 // $Id$
 
-#ifndef quantlib_crank_nicolson_h
-#define quantlib_crank_nicolson_h
+#ifndef quantlib_mixed_scheme_h
+#define quantlib_mixed_scheme_h
 
-#include <ql/FiniteDifferences/mixedscheme.hpp>
+#include <ql/FiniteDifferences/finitedifferencemodel.hpp>
 
 namespace QuantLib {
 
     namespace FiniteDifferences {
 
-        //! Crank-Nicolson scheme for finite difference methods
+        //! Mixed (explicit/implicit) scheme for finite difference methods
         /*! See sect. \ref findiff for details on the method.
 
             In this implementation, the passed operator must be derived
@@ -49,7 +50,7 @@ namespace QuantLib {
             Operator& operator=(const Operator&);
 
             // inspectors
-            Size size();
+            size_t size();
 
             // modifiers
             void setTime(Time t);
@@ -57,7 +58,7 @@ namespace QuantLib {
             // operator interface
             arrayType applyTo(const arrayType&);
             arrayType solveFor(const arrayType&);
-            static Operator identity(Size size);
+            static Operator identity(size_t size);
 
             // operator algebra
             Operator operator*(double, const Operator&);
@@ -68,19 +69,53 @@ namespace QuantLib {
             \warning The differential operator must be linear for
             this evolver to work.
 
+            \todo add Douglas Scheme
         */
         template <class Operator>
-            class CrankNicolson : public MixedScheme<Operator> {
-            friend class FiniteDifferenceModel<CrankNicolson<Operator> >;
-          private:
+        class MixedScheme  {
+            friend class FiniteDifferenceModel<MixedScheme<Operator> >;
+          protected:
             // typedefs
             typedef typename Operator::arrayType arrayType;
             typedef Operator operatorType;
             // constructors
-            CrankNicolson(const Operator& L)
-            : MixedScheme<Operator>(L, 0.5) {}
+            MixedScheme(const Operator& L, double theta)
+            : L_(L), I_(Operator::identity(L.size())), dt_(0.0), theta_(theta) {}
+            void step(arrayType& a, Time t);
+            void setStep(Time dt) {
+                dt_ = dt;
+                if (theta_!=1.0) // there is an explicit part
+                    explicitPart_ = I_-((1.0-theta_) * dt_)*L_;
+                if (theta_!=0.0) // there is an implicit part
+                    implicitPart_ = I_+(     theta_  * dt_)*L_;
+            }
+            Operator L_;
+            Operator I_;
+            Operator explicitPart_, implicitPart_;
+            Time dt_;
+            double theta_;
         };
 
+        // inline definitions
+
+        template <class Operator>
+        inline void MixedScheme<Operator>::step(arrayType& a, Time t) {
+            if (theta_!=1.0) { // there is an explicit part
+                if (L_.isTimeDependent()) {
+                    L_.setTime(t);
+                    explicitPart_ = I_-((1.0-theta_) * dt_)*L_;
+                }
+                a = explicitPart_.applyTo(a);
+            }
+            if (theta_!=0.0) { // there is an implicit part
+                if (L_.isTimeDependent()) {
+                    L_.setTime(t-dt_);
+                    implicitPart_ = I_+(     theta_  * dt_)*L_;
+                }
+                a = implicitPart_.solveFor(a);
+//                a = implicitPart_.SOR(a, 1e-5);
+            }
+        }
 
     }
 

@@ -27,7 +27,8 @@
 #ifndef quantlib_backward_euler_h
 #define quantlib_backward_euler_h
 
-#include <ql/FiniteDifferences/finitedifferencemodel.hpp>
+//#include <ql/FiniteDifferences/finitedifferencemodel.hpp>
+#include <ql/FiniteDifferences/mixedscheme.hpp>
 
 namespace QuantLib {
 
@@ -64,7 +65,7 @@ namespace QuantLib {
             \endcode
         */
         template <class Operator>
-        class ImplicitEuler {
+            class ImplicitEuler : public MixedScheme<Operator> {
             friend class FiniteDifferenceModel<ImplicitEuler<Operator> >;
           private:
             // typedefs
@@ -72,28 +73,8 @@ namespace QuantLib {
             typedef Operator operatorType;
             // constructors
             ImplicitEuler(const Operator& L)
-            : L_(L), I_(Operator::identity(L.size())), dt_(0.0) {}
-            void step(arrayType& a, Time t);
-            void setStep(Time dt) {
-                dt_ = dt;
-                implicitPart_ = I_+dt_*L_;
-            }
-            Operator L_;
-            Operator I_;
-            Operator implicitPart_;
-            Time dt_;
+            : MixedScheme<Operator>(L, 1.0) {}
         };
-
-        // inline definitions
-
-        template <class Operator>
-        inline void ImplicitEuler<Operator>::step(arrayType& a, Time t) {
-            if (L_.isTimeDependent()) {
-                L_.setTime(t-dt_);
-                implicitPart_ = I_+dt_*L_;
-            }
-            a = implicitPart_.solveFor(a);
-        }
 
     }
 

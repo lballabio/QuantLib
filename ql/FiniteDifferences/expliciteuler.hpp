@@ -27,7 +27,7 @@
 #ifndef quantlib_forward_euler_h
 #define quantlib_forward_euler_h
 
-#include <ql/FiniteDifferences/finitedifferencemodel.hpp>
+#include <ql/FiniteDifferences/mixedscheme.hpp>
 
 namespace QuantLib {
 
@@ -66,7 +66,7 @@ namespace QuantLib {
             \todo add Richardson extrapolation
         */
         template <class Operator>
-        class ExplicitEuler {
+        class ExplicitEuler : public MixedScheme<Operator> {
             friend class FiniteDifferenceModel<ExplicitEuler<Operator> >;
           private:
             // typedefs
@@ -74,28 +74,8 @@ namespace QuantLib {
             typedef Operator operatorType;
             // constructors
             ExplicitEuler(const Operator& L)
-            : L_(L), I_(Operator::identity(L.size())), dt_(0.0) {}
-            void step(arrayType& a, Time t);
-            void setStep(Time dt) {
-                dt_ = dt;
-                explicitPart_ = I_-dt_*L_;
-            }
-            Operator L_;
-            Operator I_;
-            Operator explicitPart_;
-            Time dt_;
+            : MixedScheme<Operator>(L, 0.0) {}
         };
-
-        // inline definitions
-
-        template <class Operator>
-        inline void ExplicitEuler<Operator>::step(arrayType& a, Time t) {
-            if (L_.isTimeDependent()) {
-                L_.setTime(t);
-                explicitPart_ = I_-dt_*L_;
-            }
-            a = explicitPart_.applyTo(a);
-        }
 
     }
 

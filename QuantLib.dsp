@@ -351,6 +351,10 @@ SOURCE=.\ql\FiniteDifferences\impliciteuler.hpp
 # End Source File
 # Begin Source File
 
+SOURCE=.\ql\FiniteDifferences\mixedscheme.hpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\ql\FiniteDifferences\onefactoroperator.cpp
 # End Source File
 # Begin Source File
