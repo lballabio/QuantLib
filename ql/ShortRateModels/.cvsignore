@@ -1,3 +1,4 @@
+Makefile.in
 *.obj
 *.obj_d
 *.lib
