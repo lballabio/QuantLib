@@ -27,6 +27,9 @@
 
     $Source$
     $Log$
+    Revision 1.18  2001/05/03 15:36:34  lballabio
+    Hopefully fixed algorithm
+
     Revision 1.17  2001/04/09 14:13:33  nando
     all the *.hpp moved below the Include/ql level
 
@@ -71,8 +74,7 @@ namespace QuantLib {
     namespace DayCounters {
 
         Time ActualActual::yearFraction(const Date& d1, const Date& d2,
-          const Date& refPeriodStart,
-          const Date& refPeriodEnd) const {
+          const Date& refPeriodStart, const Date& refPeriodEnd) const {
             QL_REQUIRE(refPeriodStart != Date() && refPeriodEnd != Date() &&
                 refPeriodEnd > refPeriodStart && refPeriodEnd > d1,
                 "Invalid reference period");
@@ -82,32 +84,37 @@ namespace QuantLib {
             double temp;
             QL_ENSURE(QL_FABS(QL_MODF(period*12.0, &temp)) <= 1.0e-10,
                 "non-integer number of months");
-            months = (int)temp;
+            months = int(temp+0.1);
 
             if (d2 <= refPeriodEnd) {
                 if (d1 >= refPeriodStart)
-                    return (double)dayCount(d1,d2) /
-                        (double)dayCount(refPeriodStart,refPeriodEnd)*period;
+                    return period*double(dayCount(d1,d2)) / 
+                        dayCount(refPeriodStart,refPeriodEnd);
                 else {
-                    Date previousBDate = refPeriodStart.plusMonths(-months);
-                    double result = (double)(refPeriodStart-d1) /
-                        (double)dayCount(previousBDate,refPeriodStart);
-                    result += (double)(d2-refPeriodStart) /
-                        (double)dayCount(refPeriodStart,refPeriodEnd);
-                    return result*period;
+                    Date previousRef = refPeriodStart.plusMonths(-months);
+                    return yearFraction(
+                                d1,refPeriodStart,previousRef,refPeriodStart) + 
+                           yearFraction(
+                                refPeriodStart,d2,refPeriodStart,refPeriodEnd);
                 }
             } else {
-                double result = (double)dayCount(d1,refPeriodStart) /
-                    (double)dayCount(refPeriodStart,refPeriodEnd)*period;
-                int i = 0;
-                Date tempd;
+                Date nextRef = refPeriodEnd.plusMonths(months);
+                double sum = 
+                    yearFraction(d1,refPeriodEnd,refPeriodStart,refPeriodEnd);
+                int i=0;
+                Date newRefStart, newRefEnd;
                 do {
-                    tempd = refPeriodEnd.plusMonths(months*(i++));
-                } while (tempd <= d2);
-                i--;
-                Date previoustemp = refPeriodEnd.plusMonths(months*i);
-                return result + i*period +
-                    yearFraction(previoustemp,d2,previoustemp,tempd);
+                    newRefStart = refPeriodEnd.plusMonths(months*i);
+                    newRefEnd   = refPeriodEnd.plusMonths(months*(i+1));
+                    if (d2 < newRefEnd) {
+                        break;
+                    } else {
+                        sum += period;
+                        i++;
+                    }
+                } while (true);
+                sum += yearFraction(newRefStart,d2,newRefStart,newRefEnd);
+                return sum;
             }
         }
 
