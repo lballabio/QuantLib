@@ -98,7 +98,7 @@ namespace QuantLib {
                 QL_REQUIRE(variances[j]>=0, "MultiPathGenerator: negative variance");
                 for (size_t i=0; i<timeSteps; i++) {
                     next_.value[j].times()[i] = (i+1)*dt;
-                    next_.value[j].drift()[i]=drifts_[j]*timeDelays_[i];
+                    next_.value[j].drift()[i]=drifts[j]*timeDelays_[i];
                 }
             }
 
