@@ -156,6 +156,7 @@
 #include <ql/Math/matrix.hpp>
 #include <ql/Math/multivariateaccumulator.hpp>
 #include <ql/Math/normaldistribution.hpp>
+#include <ql/Math/primenumbers.hpp>
 #include <ql/Math/riskmeasures.hpp>
 #include <ql/Math/segmentintegral.hpp>
 #include <ql/Math/statistics.hpp>
@@ -249,6 +250,7 @@
 
 #include <ql/RandomNumbers/boxmullergaussianrng.hpp>
 #include <ql/RandomNumbers/centrallimitgaussianrng.hpp>
+#include <ql/RandomNumbers/halton.hpp>
 #include <ql/RandomNumbers/inversecumgaussianrng.hpp>
 #include <ql/RandomNumbers/knuthuniformrng.hpp>
 #include <ql/RandomNumbers/lecuyeruniformrng.hpp>

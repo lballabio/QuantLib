@@ -22,7 +22,7 @@
 using namespace QuantLib;
 using QuantLib::Math::NormalDistribution;
 using QuantLib::Math::CumulativeNormalDistribution;
-using QuantLib::Math::InvCumulativeNormalDistribution;
+using QuantLib::Math::InverseCumulativeNormal;
 
 namespace {
     
@@ -46,11 +46,12 @@ void DistributionTest::runTest() {
 
     NormalDistribution normal(average,sigma);
     CumulativeNormalDistribution cum(average,sigma);
-    InvCumulativeNormalDistribution invCum(average,sigma);
+    InverseCumulativeNormal invCum(average,sigma);
 
-    double xMin = average - 4*sigma,
-           xMax = average + 4*sigma;
-    Size N = 10001;
+    int numberOfStandardDeviation = 4;
+    double xMin = average - numberOfStandardDeviation*sigma,
+           xMax = average + numberOfStandardDeviation*sigma;
+    Size N = 100001;
     double h = (xMax-xMin)/(N-1);
 
     std::vector<double> x(N), y(N), yd(N), temp(N), diff(N);
@@ -82,7 +83,7 @@ void DistributionTest::runTest() {
     std::transform(x.begin(),x.end(),temp.begin(),diff.begin(),
                    std::minus<double>());
     e = norm(diff.begin(),diff.end(),h);
-    if (e > 1.0e-3) {
+    if (e > 1.0e-5) {
         char s[10];
         QL_SPRINTF(s,"%5.2e",e);
         CPPUNIT_FAIL(

@@ -50,7 +50,7 @@ class Payoff : public QL::ObjectiveFunction{
            return QL_EXP(-r_*maturity_)
                *ExercisePayoff(Option::Call, s0_*QL_EXP(x), strike_)
                *QL_EXP(-(x - nuT)*(x -nuT)/(2*sigma_*sigma_*maturity_))
-               /QL_SQRT(2.0*3.141592*sigma_*sigma_*maturity_);
+               /QL_SQRT(2.0*M_PI*sigma_*sigma_*maturity_);
         }
 private:
     Time maturity_;

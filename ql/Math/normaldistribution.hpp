@@ -33,7 +33,7 @@ namespace QuantLib {
 
     namespace Math {
 
-        //! Normal distribution class
+        //! Normal distribution function
         /*! formula here ...
             Given x it returns its probability in a gaussian
             normal distribution.
@@ -48,14 +48,13 @@ namespace QuantLib {
             double operator()(double x) const;
             double derivative(double x) const;
           private:
-            static const double pi_;
             double average_, sigma_, normalizationFactor_, denominator_;
         };
 
         typedef NormalDistribution GaussianDistribution;
 
 
-        //! Cumulative normal distribution class
+        //! Cumulative normal distribution function
         /*! Given x it provides an approximation to the
             integral of the gaussian normal distribution:
             formula here ...
@@ -85,7 +84,67 @@ namespace QuantLib {
         };
 
 
-        //! Inverse cumulative normal distribution class
+        //! Inverse cumulative normal distribution function
+        /*! Given x between zero and one as
+            the integral value of a gaussian normal distribution
+            this class provides the value y such that
+            formula here ...
+
+            It use Acklam's approximation:
+            by Peter J. Acklam, University of Oslo, Statistics Division.
+            URL: http://home.online.no/~pjacklam/notes/invnorm/index.html
+
+            This class can also be used to generate a gaussian normal
+            distribution from a uniform distribution.
+            This is especially useful when a gaussian normal distribution
+            is generated from a low discrepancy uniform distribution:
+            in this case the traditional Box-Muller approach and its
+            variants would not preserve the sequence's low-discrepancy.
+
+        */
+        class InverseCumulativeNormal
+        : public std::unary_function<double,double> {
+          public:
+            InverseCumulativeNormal(double average = 0.0,
+                                    double sigma   = 1.0);
+            // function
+            double operator()(double x) const;
+          private:
+            #if defined(QL_PATCH_SOLARIS)
+            CumulativeNormalDistribution f_;
+            #else
+            static const CumulativeNormalDistribution f_;
+            #endif
+            double average_, sigma_;
+            static const double a1_;
+            static const double a2_;
+            static const double a3_;
+            static const double a4_;
+            static const double a5_;
+            static const double a6_;
+            static const double b1_;
+            static const double b2_;
+            static const double b3_;
+            static const double b4_;
+            static const double b5_;
+            static const double c1_;
+            static const double c2_;
+            static const double c3_;
+            static const double c4_;
+            static const double c5_;
+            static const double c6_;
+            static const double d1_;
+            static const double d2_;
+            static const double d3_;
+            static const double d4_;
+            static const double x_low_;
+            static const double x_high_;
+        };
+
+        // backward compatibility
+//        typedef InverseCumulativeNormal InverseCumulativeNormal;
+
+        //! Moro Inverse cumulative normal distribution class
         /*! Given x between zero and one as
             the integral value of a gaussian normal distribution
             this class provides the value y such that
@@ -101,12 +160,15 @@ namespace QuantLib {
             is generated from a low discrepancy uniform distribution:
             in this case the traditional Box-Muller approach and its
             variants would not preserve the sequence's low-discrepancy.
+
+            Peter J. Acklam's approximation is better and is available
+            as QuantLib::Math::InverseCumulativeNormal
         */
-        class InvCumulativeNormalDistribution
+        class MoroInverseCumulativeNormal
         : public std::unary_function<double,double> {
           public:
-            InvCumulativeNormalDistribution(double average = 0.0,
-                                            double sigma   = 1.0);
+            MoroInverseCumulativeNormal(double average = 0.0,
+                                        double sigma   = 1.0);
             // function
             double operator()(double x) const;
           private:
@@ -131,32 +193,6 @@ namespace QuantLib {
         };
 
 
-        //! Inverse cumulative normal distribution class
-        /*! Given x between zero and one as
-            the integral value of a gaussian normal distribution
-            this class provides the value y such that
-            formula here ...
-
-            Anyone able to identify the algorithm used in this implementation?
-            It might be Hill and Davis (1973), or Odeh and Evans (1974)
-        */
-        class InvCumulativeNormalDistribution2
-        : public std::unary_function<double,double> {
-          public:
-            InvCumulativeNormalDistribution2(double average = 0.0,
-                                             double sigma   = 1.0);
-            // function
-            double operator()(double x) const;
-          private:
-            double average_, sigma_;
-            static const double p0_;
-            static const double p1_;
-            static const double p2_;
-            static const double q1_;
-            static const double q2_;
-            static const double q3_;
-        };
-
         // inline definitions
 
         inline NormalDistribution::NormalDistribution(double average,
@@ -167,7 +203,7 @@ namespace QuantLib {
                 "NormalDistribution: sigma must be greater than 0.0 (" +
                     DoubleFormatter::toString(sigma_) + " not allowed)");
 
-            normalizationFactor_ = 1.0/(sigma_*QL_SQRT(2.0*pi_));
+            normalizationFactor_ = 1.0/(sigma_*QL_SQRT(2.0*M_PI));
             denominator_ = 2.0*sigma_*sigma_;
         }
 
@@ -198,22 +234,22 @@ namespace QuantLib {
             return gaussian_(xn) / sigma_;
         }
 
-        inline InvCumulativeNormalDistribution::InvCumulativeNormalDistribution(
+        inline InverseCumulativeNormal::InverseCumulativeNormal(
             double average, double sigma)
         : average_(average), sigma_(sigma) {
 
             QL_REQUIRE(sigma_>0.0,
-              "InvCumulativeNormalDistribution: "
+              "InverseCumulativeNormal: "
                 "sigma must be greater than 0.0 (" +
                 DoubleFormatter::toString(sigma_) + " not allowed)");
         }
 
-        inline InvCumulativeNormalDistribution2::InvCumulativeNormalDistribution2(
+        inline MoroInverseCumulativeNormal::MoroInverseCumulativeNormal(
             double average, double sigma)
         : average_(average), sigma_(sigma) {
 
             QL_REQUIRE(sigma_>0.0,
-              "InvCumulativeNormalDistribution2: "
+              "InverseCumulativeNormal: "
                 "sigma must be greater than 0.0 (" +
                 DoubleFormatter::toString(sigma_) + " not allowed)");
         }

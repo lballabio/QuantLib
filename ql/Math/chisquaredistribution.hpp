@@ -47,7 +47,6 @@ namespace QuantLib {
             : df_(df), ncp_(ncp) {}
             double operator()(double x) const;
           private:
-            static const double pi_;
             double df_, ncp_;
         };
 

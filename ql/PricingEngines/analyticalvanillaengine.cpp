@@ -30,6 +30,10 @@ namespace QuantLib {
 
     namespace PricingEngines {
 
+        #if !defined(QL_PATCH_SOLARIS)
+        const Math::CumulativeNormalDistribution AnalyticalVanillaEngine::f_;
+        #endif
+
         void AnalyticalVanillaEngine::calculate() const {
 
             QL_REQUIRE(arguments_.exerciseType == Exercise::European,
@@ -56,13 +60,12 @@ namespace QuantLib {
 
             double fD1, fD2, fderD1;
             if (variance>0.0) {
-                static Math::CumulativeNormalDistribution f;
                 double D1 = (QL_LOG(forwardPrice/arguments_.strike) +
                              0.5 * variance) / stdDev;
                 double D2 = D1-stdDev;
-                fD1 = f(D1);
-                fD2 = f(D2);
-                fderD1 = f.derivative(D1);
+                fD1 = f_(D1);
+                fD2 = f_(D2);
+                fderD1 = f_.derivative(D1);
             } else {
                 stdDev = QL_EPSILON;
                 fderD1 = 0.0;

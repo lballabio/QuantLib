@@ -41,7 +41,7 @@ using QuantLib::Math::BilinearInterpolation;
 using QuantLib::Math::BicubicSplineInterpolation;
 using QuantLib::Math::NormalDistribution;
 using QuantLib::Math::CumulativeNormalDistribution;
-using QuantLib::Math::InvCumulativeNormalDistribution;
+using QuantLib::Math::InverseCumulativeNormal;
 using QuantLib::Math::RiskMeasures;
 
 namespace QuantLib {
@@ -134,7 +134,7 @@ namespace QuantLib {
 
 		double normInv(double probability, double mean, double standard_dev) {
 
-            return InvCumulativeNormalDistribution(mean, standard_dev)
+            return InverseCumulativeNormal(mean, standard_dev)
                 (probability);
         }
 

@@ -67,7 +67,7 @@ namespace QuantLib {
                 DoubleFormatter::toString(percentile) +
                 ") out of range 90%-100%");
 
-            Math::InvCumulativeNormalDistribution gInverse(mean, std);
+            Math::InverseCumulativeNormal gInverse(mean, std);
             // PotenzialUpSide must be a gain
             // this means that it has to be MAX(dist(percentile), 0.0)
             return QL_MAX(gInverse(percentile), 0.0);
@@ -82,7 +82,7 @@ namespace QuantLib {
                 DoubleFormatter::toString(percentile) +
                 ") out of range 90%-100%");
 
-            Math::InvCumulativeNormalDistribution gInverse(mean, std);
+            Math::InverseCumulativeNormal gInverse(mean, std);
             // VAR must be a loss
             // this means that it has to be MIN(dist(1.0-percentile), 0.0)
             // VAR must also be a positive quantity, so -MIN(*)
@@ -98,7 +98,7 @@ namespace QuantLib {
                 DoubleFormatter::toString(percentile) +
                 ") out of range 90%-100%");
 
-            Math::InvCumulativeNormalDistribution gInverse(mean, std);
+            Math::InverseCumulativeNormal gInverse(mean, std);
             double var = gInverse(1.0-percentile);
             Math::NormalDistribution g(mean, std);
             double result = mean - std*std*g(var)/(1.0-percentile);

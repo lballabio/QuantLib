@@ -104,7 +104,7 @@
 #define QL_MODF      modf
 #define QL_FLOOR     floor
 // missing
-#define M_PI         3.14159265358979323846
+#define M_PI         3.141592653589793238462643383280
 
 #define HAVE_LIMITS  1
 

@@ -31,8 +31,6 @@ namespace QuantLib {
 
     namespace Math {
 
-        const double NormalDistribution::pi_ = 3.14159265358979323846;
-
         const double CumulativeNormalDistribution::a1_ =  0.319381530;
         const double CumulativeNormalDistribution::a2_ = -0.356563782;
         const double CumulativeNormalDistribution::a3_ =  1.781477937;
@@ -50,10 +48,10 @@ namespace QuantLib {
                 double k = 1.0/(1.0+gamma_*xn);
                 double temp = gaussian_(xn) * k *
                                 (a1_ + k*(a2_ + k*(a3_ + k*(a4_ + k*a5_))));
-                if (temp < precision_) 
+                if (temp < precision_)
                     return 1.0;
                 temp = 1.0 - temp;
-                if (temp < precision_) 
+                if (temp < precision_)
                     return 0.0;
                 return temp;
             } else {
@@ -62,57 +60,110 @@ namespace QuantLib {
         }
 
 
+        #if !defined(QL_PATCH_SOLARIS)
+        const Math::CumulativeNormalDistribution InverseCumulativeNormal::f_;
+        #endif
 
+        // Coefficients for the rational approximation.
+        const double InverseCumulativeNormal::a1_ = -3.969683028665376e+01;
+        const double InverseCumulativeNormal::a2_ =  2.209460984245205e+02;
+        const double InverseCumulativeNormal::a3_ = -2.759285104469687e+02;
+        const double InverseCumulativeNormal::a4_ =  1.383577518672690e+02;
+        const double InverseCumulativeNormal::a5_ = -3.066479806614716e+01;
+        const double InverseCumulativeNormal::a6_ =  2.506628277459239e+00;
 
-        // Anyone able to identify the following algorithm?
-        // It might be Hill and Davis (1973), or
-	    // Odeh and Evans (1974)
-        const double InvCumulativeNormalDistribution2::p0_ = 2.515517;
-        const double InvCumulativeNormalDistribution2::p1_ = 0.802853;
-        const double InvCumulativeNormalDistribution2::p2_ = 0.010328;
-        const double InvCumulativeNormalDistribution2::q1_ = 1.432788;
-        const double InvCumulativeNormalDistribution2::q2_ = 0.189269;
-        const double InvCumulativeNormalDistribution2::q3_ = 0.001308;
+        const double InverseCumulativeNormal::b1_ = -5.447609879822406e+01;
+        const double InverseCumulativeNormal::b2_ =  1.615858368580409e+02;
+        const double InverseCumulativeNormal::b3_ = -1.556989798598866e+02;
+        const double InverseCumulativeNormal::b4_ =  6.680131188771972e+01;
+        const double InverseCumulativeNormal::b5_ = -1.328068155288572e+01;
 
-        double InvCumulativeNormalDistribution2::operator()(double x) const {
-            QL_REQUIRE(x>0.0 && x<1.0, "InvCumulativeNormalDistribution2(" +
+        const double InverseCumulativeNormal::c1_ = -7.784894002430293e-03;
+        const double InverseCumulativeNormal::c2_ = -3.223964580411365e-01;
+        const double InverseCumulativeNormal::c3_ = -2.400758277161838e+00;
+        const double InverseCumulativeNormal::c4_ = -2.549732539343734e+00;
+        const double InverseCumulativeNormal::c5_ =  4.374664141464968e+00;
+        const double InverseCumulativeNormal::c6_ =  2.938163982698783e+00;
+
+        const double InverseCumulativeNormal::d1_ =  7.784695709041462e-03;
+        const double InverseCumulativeNormal::d2_ =  3.224671290700398e-01;
+        const double InverseCumulativeNormal::d3_ =  2.445134137142996e+00;
+        const double InverseCumulativeNormal::d4_ =  3.754408661907416e+00;
+
+        // Limits of the approximation regions
+        const double InverseCumulativeNormal::x_low_ = 0.02425;
+        const double InverseCumulativeNormal::x_high_= 1.0 - x_low_;
+
+        double InverseCumulativeNormal::operator()(double x) const {
+            QL_REQUIRE(x>0.0 && x<1.0, "InverseCumulativeNormal(" +
                 DoubleFormatter::toString(x) + ") undefined: must be 0<x<1");
 
-            if (x <= 0.5) {
-                double kSquare = QL_LOG( 1 / (x*x) ) ;
-                double k = QL_SQRT(kSquare);
-                double rn = ((p0_ + p1_*k + p2_*kSquare) /
-                            (  1  + q1_*k + q2_*kSquare + q3_*kSquare*k) - k );
-                return average_ + rn*sigma_;
+            register double z, r;
+
+            if(x < x_low_){
+            // Rational approximation for the lower region 0<x<u_low
+                z = QL_SQRT(-2.0*QL_LOG(x));
+                z = (((((c1_*z+c2_)*z+c3_)*z+c4_)*z+c5_)*z+c6_) /
+                    ((((d1_*z+d2_)*z+d3_)*z+d4_)*z+1.0);
+            } else if(x <= x_high_) {
+            // Rational approximation for the central region u_low<=x<=u_high
+                z = x - 0.5;
+                r = z*z;
+                z = (((((a1_*r+a2_)*r+a3_)*r+a4_)*r+a5_)*r+a6_)*z /
+                    (((((b1_*r+b2_)*r+b3_)*r+b4_)*r+b5_)*r+1.0);
             } else {
-                return 2.0*average_-(*this)(1.0-x);
+            // Rational approximation for the upper region u_high<x<1
+                z = QL_SQRT(-2.0*QL_LOG(1.0-x));
+                z = -(((((c1_*z+c2_)*z+c3_)*z+c4_)*z+c5_)*z+c6_) /
+                     ((((d1_*z+d2_)*z+d3_)*z+d4_)*z+1.0);
             }
+
+
+// The relative error of the approximation has absolute value less
+// than 1.15e-9.  One iteration of Halley's rational method (third
+// order) gives full machine precision.
+#define REFINE_TO_FULL_MACHINE_PRECISION_USING_HALLEYS_METHOD
+#ifdef  REFINE_TO_FULL_MACHINE_PRECISION_USING_HALLEYS_METHOD
+            //	f(z)/df(z)
+//            r = (f_(z) - x) * SQRT_TWO_PI * exp(0.5 * z*z);
+            r = (f_(z) - x) * QL_SQRT(2.0*M_PI) * exp(0.5 * z*z);
+            //	Halley's method
+            z -= r/(1+0.5*z*r);
+#endif
+
+            return average_ + z*sigma_;
         }
 
+        
+        
+        
+        
+        
+        
+        
+        
+        const double MoroInverseCumulativeNormal::a0_ =  2.50662823884;
+        const double MoroInverseCumulativeNormal::a1_ =-18.61500062529;
+        const double MoroInverseCumulativeNormal::a2_ = 41.39119773534;
+        const double MoroInverseCumulativeNormal::a3_ =-25.44106049637;
 
+        const double MoroInverseCumulativeNormal::b0_ = -8.47351093090;
+        const double MoroInverseCumulativeNormal::b1_ = 23.08336743743;
+        const double MoroInverseCumulativeNormal::b2_ =-21.06224101826;
+        const double MoroInverseCumulativeNormal::b3_ =  3.13082909833;
 
-        const double InvCumulativeNormalDistribution::a0_ =  2.50662823884;
-        const double InvCumulativeNormalDistribution::a1_ =-18.61500062529;
-        const double InvCumulativeNormalDistribution::a2_ = 41.39119773534;
-        const double InvCumulativeNormalDistribution::a3_ =-25.44106049637;
+        const double MoroInverseCumulativeNormal::c0_ = 0.3374754822726147;
+        const double MoroInverseCumulativeNormal::c1_ = 0.9761690190917186;
+        const double MoroInverseCumulativeNormal::c2_ = 0.1607979714918209;
+        const double MoroInverseCumulativeNormal::c3_ = 0.0276438810333863;
+        const double MoroInverseCumulativeNormal::c4_ = 0.0038405729373609;
+        const double MoroInverseCumulativeNormal::c5_ = 0.0003951896511919;
+        const double MoroInverseCumulativeNormal::c6_ = 0.0000321767881768;
+        const double MoroInverseCumulativeNormal::c7_ = 0.0000002888167364;
+        const double MoroInverseCumulativeNormal::c8_ = 0.0000003960315187;
 
-        const double InvCumulativeNormalDistribution::b0_ = -8.47351093090;
-        const double InvCumulativeNormalDistribution::b1_ = 23.08336743743;
-        const double InvCumulativeNormalDistribution::b2_ =-21.06224101826;
-        const double InvCumulativeNormalDistribution::b3_ =  3.13082909833;
-
-        const double InvCumulativeNormalDistribution::c0_ = 0.3374754822726147;
-        const double InvCumulativeNormalDistribution::c1_ = 0.9761690190917186;
-        const double InvCumulativeNormalDistribution::c2_ = 0.1607979714918209;
-        const double InvCumulativeNormalDistribution::c3_ = 0.0276438810333863;
-        const double InvCumulativeNormalDistribution::c4_ = 0.0038405729373609;
-        const double InvCumulativeNormalDistribution::c5_ = 0.0003951896511919;
-        const double InvCumulativeNormalDistribution::c6_ = 0.0000321767881768;
-        const double InvCumulativeNormalDistribution::c7_ = 0.0000002888167364;
-        const double InvCumulativeNormalDistribution::c8_ = 0.0000003960315187;
-
-        double InvCumulativeNormalDistribution::operator()(double x) const {
-            QL_REQUIRE(x>0.0 && x<1.0, "InvCumulativeNormalDistribution(" +
+        double MoroInverseCumulativeNormal::operator()(double x) const {
+            QL_REQUIRE(x>0.0 && x<1.0, "MoroInverseCumulativeNormal(" +
                 DoubleFormatter::toString(x) + ") undefined: must be 0<x<1");
 
             double result;

@@ -10668,7 +10668,7 @@
 	StandardMultiPathGenerator now is GaussianMultiPathGenerator; 3)
 	PathMonteCarlo now is MonteCarloModel; 4) added ICGaussian, a
 	Gaussian distribution that use	 
-	QuantLib::Math::InvCumulativeNormalDistribution to convert uniform 
+	QuantLib::Math::InverseCumulativeNormal to convert uniform 
 	  distribution extractions into gaussian distribution extractions;
 	5) added a few trailing underscore to private members 6) style
 	enforced here and there ....

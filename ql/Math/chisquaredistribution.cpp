@@ -34,9 +34,6 @@ namespace QuantLib {
             return GammaDistribution(0.5*df_)(0.5*x);
         }
 
-        const double NonCentralChiSquareDistribution::pi_ =
-                                    3.141592653589793238462643383280;
-
         double NonCentralChiSquareDistribution::operator()(double x) const {
             if (x <= 0.0)    
                 return 0.0;
@@ -54,7 +51,7 @@ namespace QuantLib {
             double t = 0.0;
             if (f2*QL_EPSILON > 0.125 &&
                 QL_FABS(x2-f2) < QL_SQRT(QL_EPSILON)*f2) {
-                t = QL_EXP((1 - t)*(2 - t/(f2+1)))/QL_SQRT(2.0*pi_*(f2 + 1.0));
+                t = QL_EXP((1 - t)*(2 - t/(f2+1)))/QL_SQRT(2.0*M_PI*(f2 + 1.0));
             }
             else {
                 t = QL_EXP(f2*QL_LOG(x2) - x2 - 

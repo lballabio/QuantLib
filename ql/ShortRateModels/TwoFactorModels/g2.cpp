@@ -167,7 +167,7 @@ namespace QuantLib {
                     value -= lambda[i] *QL_EXP(kappa)*phi(-w_*h2);
                 }
                 return QL_EXP(-0.5*temp*temp*value/
-                              (sigmax_*QL_SQRT(2.0*3.14159265358979323846)));
+                              (sigmax_*QL_SQRT(2.0*M_PI)));
             }
 
 

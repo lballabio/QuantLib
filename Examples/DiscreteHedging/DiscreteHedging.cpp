@@ -355,7 +355,7 @@ void ReplicationError::compute(int nTimeSteps, int nSamples)
     double PLKurt  = MCSimulation.sampleAccumulator().kurtosis();
 
     // Derman and Kamal's formula
-    double theorStD = QL_SQRT(3.1415926535/4/nTimeSteps)*vega_*sigma_;
+    double theorStD = QL_SQRT(M_PI/4/nTimeSteps)*vega_*sigma_;
 
 
     std::cout << nSamples << "\t| "

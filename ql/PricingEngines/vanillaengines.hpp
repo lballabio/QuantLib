@@ -31,10 +31,9 @@
 #include <ql/exercise.hpp>
 #include <ql/termstructure.hpp>
 #include <ql/voltermstructure.hpp>
-//#include <ql/TermStructures/quantotermstructure.hpp>
+#include <ql/Math/normaldistribution.hpp>
 #include <ql/MonteCarlo/mctypedefs.hpp>
 #include <ql/MonteCarlo/europeanpathpricer.hpp>
-#include <ql/TermStructures/drifttermstructure.hpp>
 #include <ql/PricingEngines/genericengine.hpp>
 
 namespace QuantLib {
@@ -107,6 +106,12 @@ namespace QuantLib {
         class AnalyticalVanillaEngine : public VanillaEngine {
           public:
             void calculate() const;
+          private:
+            #if defined(QL_PATCH_SOLARIS)
+            Math::CumulativeNormalDistribution f_;
+            #else
+            static const Math::CumulativeNormalDistribution f_;
+            #endif
         };
 
         //! Pricing engine for Vanilla options using Finite Differences
