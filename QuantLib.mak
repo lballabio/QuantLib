@@ -259,8 +259,6 @@ CLEAN :
 	-@erase "$(INTDIR)\mcbasket.sbr"
 	-@erase "$(INTDIR)\mcbasketengine.obj"
 	-@erase "$(INTDIR)\mcbasketengine.sbr"
-	-@erase "$(INTDIR)\mccliquetengine.obj"
-	-@erase "$(INTDIR)\mccliquetengine.sbr"
 	-@erase "$(INTDIR)\mccliquetoption.obj"
 	-@erase "$(INTDIR)\mccliquetoption.sbr"
 	-@erase "$(INTDIR)\mcdigitalengine.obj"
@@ -494,6 +492,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\normaldistribution.sbr" \
 	"$(INTDIR)\primenumbers.sbr" \
 	"$(INTDIR)\pseudosqrt.sbr" \
+	"$(INTDIR)\rounding.sbr" \
 	"$(INTDIR)\svd.sbr" \
 	"$(INTDIR)\symmetricschurdecomposition.sbr" \
 	"$(INTDIR)\armijo.sbr" \
@@ -549,7 +548,8 @@ BSC32_SBRS= \
 	"$(INTDIR)\treeswaption.sbr" \
 	"$(INTDIR)\analyticcliquetengine.sbr" \
 	"$(INTDIR)\analyticperformanceengine.sbr" \
-	"$(INTDIR)\mccliquetengine.sbr" \
+	"$(INTDIR)\americanpayoffatexpiry.sbr" \
+	"$(INTDIR)\americanpayoffathit.sbr" \
 	"$(INTDIR)\blackformula.sbr" \
 	"$(INTDIR)\haltonrsg.sbr" \
 	"$(INTDIR)\knuthuniformrng.sbr" \
@@ -590,10 +590,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\grid.sbr" \
 	"$(INTDIR)\scheduler.sbr" \
 	"$(INTDIR)\stochasticprocess.sbr" \
-	"$(INTDIR)\voltermstructure.sbr" \
-	"$(INTDIR)\rounding.sbr" \
-	"$(INTDIR)\americanpayoffathit.sbr" \
-	"$(INTDIR)\americanpayoffatexpiry.sbr"
+	"$(INTDIR)\voltermstructure.sbr"
 
 "$(OUTDIR)\QuantLib.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -679,6 +676,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\normaldistribution.obj" \
 	"$(INTDIR)\primenumbers.obj" \
 	"$(INTDIR)\pseudosqrt.obj" \
+	"$(INTDIR)\rounding.obj" \
 	"$(INTDIR)\svd.obj" \
 	"$(INTDIR)\symmetricschurdecomposition.obj" \
 	"$(INTDIR)\armijo.obj" \
@@ -734,7 +732,8 @@ LIB32_OBJS= \
 	"$(INTDIR)\treeswaption.obj" \
 	"$(INTDIR)\analyticcliquetengine.obj" \
 	"$(INTDIR)\analyticperformanceengine.obj" \
-	"$(INTDIR)\mccliquetengine.obj" \
+	"$(INTDIR)\americanpayoffatexpiry.obj" \
+	"$(INTDIR)\americanpayoffathit.obj" \
 	"$(INTDIR)\blackformula.obj" \
 	"$(INTDIR)\haltonrsg.obj" \
 	"$(INTDIR)\knuthuniformrng.obj" \
@@ -776,9 +775,6 @@ LIB32_OBJS= \
 	"$(INTDIR)\scheduler.obj" \
 	"$(INTDIR)\stochasticprocess.obj" \
 	"$(INTDIR)\voltermstructure.obj" \
-	"$(INTDIR)\rounding.obj" \
-	"$(INTDIR)\americanpayoffathit.obj" \
-	"$(INTDIR)\americanpayoffatexpiry.obj" \
 	".\lib\QuantLibFunctions-vc6-mt-s-0_3_7.lib"
 
 ".\lib\QuantLib-vc6-mt-s-0_3_7.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
@@ -1016,8 +1012,6 @@ CLEAN :
 	-@erase "$(INTDIR)\mcbasket.sbr"
 	-@erase "$(INTDIR)\mcbasketengine.obj"
 	-@erase "$(INTDIR)\mcbasketengine.sbr"
-	-@erase "$(INTDIR)\mccliquetengine.obj"
-	-@erase "$(INTDIR)\mccliquetengine.sbr"
 	-@erase "$(INTDIR)\mccliquetoption.obj"
 	-@erase "$(INTDIR)\mccliquetoption.sbr"
 	-@erase "$(INTDIR)\mcdigitalengine.obj"
@@ -1252,6 +1246,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\normaldistribution.sbr" \
 	"$(INTDIR)\primenumbers.sbr" \
 	"$(INTDIR)\pseudosqrt.sbr" \
+	"$(INTDIR)\rounding.sbr" \
 	"$(INTDIR)\svd.sbr" \
 	"$(INTDIR)\symmetricschurdecomposition.sbr" \
 	"$(INTDIR)\armijo.sbr" \
@@ -1307,7 +1302,8 @@ BSC32_SBRS= \
 	"$(INTDIR)\treeswaption.sbr" \
 	"$(INTDIR)\analyticcliquetengine.sbr" \
 	"$(INTDIR)\analyticperformanceengine.sbr" \
-	"$(INTDIR)\mccliquetengine.sbr" \
+	"$(INTDIR)\americanpayoffatexpiry.sbr" \
+	"$(INTDIR)\americanpayoffathit.sbr" \
 	"$(INTDIR)\blackformula.sbr" \
 	"$(INTDIR)\haltonrsg.sbr" \
 	"$(INTDIR)\knuthuniformrng.sbr" \
@@ -1348,10 +1344,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\grid.sbr" \
 	"$(INTDIR)\scheduler.sbr" \
 	"$(INTDIR)\stochasticprocess.sbr" \
-	"$(INTDIR)\voltermstructure.sbr" \
-	"$(INTDIR)\rounding.sbr" \
-	"$(INTDIR)\americanpayoffathit.sbr" \
-	"$(INTDIR)\americanpayoffatexpiry.sbr"
+	"$(INTDIR)\voltermstructure.sbr"
 
 "$(OUTDIR)\QuantLib.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -1437,6 +1430,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\normaldistribution.obj" \
 	"$(INTDIR)\primenumbers.obj" \
 	"$(INTDIR)\pseudosqrt.obj" \
+	"$(INTDIR)\rounding.obj" \
 	"$(INTDIR)\svd.obj" \
 	"$(INTDIR)\symmetricschurdecomposition.obj" \
 	"$(INTDIR)\armijo.obj" \
@@ -1492,7 +1486,8 @@ LIB32_OBJS= \
 	"$(INTDIR)\treeswaption.obj" \
 	"$(INTDIR)\analyticcliquetengine.obj" \
 	"$(INTDIR)\analyticperformanceengine.obj" \
-	"$(INTDIR)\mccliquetengine.obj" \
+	"$(INTDIR)\americanpayoffatexpiry.obj" \
+	"$(INTDIR)\americanpayoffathit.obj" \
 	"$(INTDIR)\blackformula.obj" \
 	"$(INTDIR)\haltonrsg.obj" \
 	"$(INTDIR)\knuthuniformrng.obj" \
@@ -1534,9 +1529,6 @@ LIB32_OBJS= \
 	"$(INTDIR)\scheduler.obj" \
 	"$(INTDIR)\stochasticprocess.obj" \
 	"$(INTDIR)\voltermstructure.obj" \
-	"$(INTDIR)\rounding.obj" \
-	"$(INTDIR)\americanpayoffathit.obj" \
-	"$(INTDIR)\americanpayoffatexpiry.obj" \
 	".\lib\QuantLibFunctions-vc6-mt-sgd-0_3_7.lib"
 
 ".\lib\QuantLib-vc6-mt-sgd-0_3_7.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
@@ -1774,8 +1766,6 @@ CLEAN :
 	-@erase "$(INTDIR)\mcbasket.sbr"
 	-@erase "$(INTDIR)\mcbasketengine.obj"
 	-@erase "$(INTDIR)\mcbasketengine.sbr"
-	-@erase "$(INTDIR)\mccliquetengine.obj"
-	-@erase "$(INTDIR)\mccliquetengine.sbr"
 	-@erase "$(INTDIR)\mccliquetoption.obj"
 	-@erase "$(INTDIR)\mccliquetoption.sbr"
 	-@erase "$(INTDIR)\mcdigitalengine.obj"
@@ -2009,6 +1999,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\normaldistribution.sbr" \
 	"$(INTDIR)\primenumbers.sbr" \
 	"$(INTDIR)\pseudosqrt.sbr" \
+	"$(INTDIR)\rounding.sbr" \
 	"$(INTDIR)\svd.sbr" \
 	"$(INTDIR)\symmetricschurdecomposition.sbr" \
 	"$(INTDIR)\armijo.sbr" \
@@ -2064,7 +2055,8 @@ BSC32_SBRS= \
 	"$(INTDIR)\treeswaption.sbr" \
 	"$(INTDIR)\analyticcliquetengine.sbr" \
 	"$(INTDIR)\analyticperformanceengine.sbr" \
-	"$(INTDIR)\mccliquetengine.sbr" \
+	"$(INTDIR)\americanpayoffatexpiry.sbr" \
+	"$(INTDIR)\americanpayoffathit.sbr" \
 	"$(INTDIR)\blackformula.sbr" \
 	"$(INTDIR)\haltonrsg.sbr" \
 	"$(INTDIR)\knuthuniformrng.sbr" \
@@ -2105,10 +2097,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\grid.sbr" \
 	"$(INTDIR)\scheduler.sbr" \
 	"$(INTDIR)\stochasticprocess.sbr" \
-	"$(INTDIR)\voltermstructure.sbr" \
-	"$(INTDIR)\rounding.sbr" \
-	"$(INTDIR)\americanpayoffathit.sbr" \
-	"$(INTDIR)\americanpayoffatexpiry.sbr"
+	"$(INTDIR)\voltermstructure.sbr"
 
 "$(OUTDIR)\QuantLib.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -2194,6 +2183,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\normaldistribution.obj" \
 	"$(INTDIR)\primenumbers.obj" \
 	"$(INTDIR)\pseudosqrt.obj" \
+	"$(INTDIR)\rounding.obj" \
 	"$(INTDIR)\svd.obj" \
 	"$(INTDIR)\symmetricschurdecomposition.obj" \
 	"$(INTDIR)\armijo.obj" \
@@ -2249,7 +2239,8 @@ LIB32_OBJS= \
 	"$(INTDIR)\treeswaption.obj" \
 	"$(INTDIR)\analyticcliquetengine.obj" \
 	"$(INTDIR)\analyticperformanceengine.obj" \
-	"$(INTDIR)\mccliquetengine.obj" \
+	"$(INTDIR)\americanpayoffatexpiry.obj" \
+	"$(INTDIR)\americanpayoffathit.obj" \
 	"$(INTDIR)\blackformula.obj" \
 	"$(INTDIR)\haltonrsg.obj" \
 	"$(INTDIR)\knuthuniformrng.obj" \
@@ -2291,9 +2282,6 @@ LIB32_OBJS= \
 	"$(INTDIR)\scheduler.obj" \
 	"$(INTDIR)\stochasticprocess.obj" \
 	"$(INTDIR)\voltermstructure.obj" \
-	"$(INTDIR)\rounding.obj" \
-	"$(INTDIR)\americanpayoffathit.obj" \
-	"$(INTDIR)\americanpayoffatexpiry.obj" \
 	".\lib\QuantLibFunctions-vc6-mt-0_3_7.lib"
 
 ".\lib\QuantLib-vc6-mt-0_3_7.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
@@ -2531,8 +2519,6 @@ CLEAN :
 	-@erase "$(INTDIR)\mcbasket.sbr"
 	-@erase "$(INTDIR)\mcbasketengine.obj"
 	-@erase "$(INTDIR)\mcbasketengine.sbr"
-	-@erase "$(INTDIR)\mccliquetengine.obj"
-	-@erase "$(INTDIR)\mccliquetengine.sbr"
 	-@erase "$(INTDIR)\mccliquetoption.obj"
 	-@erase "$(INTDIR)\mccliquetoption.sbr"
 	-@erase "$(INTDIR)\mcdigitalengine.obj"
@@ -2767,6 +2753,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\normaldistribution.sbr" \
 	"$(INTDIR)\primenumbers.sbr" \
 	"$(INTDIR)\pseudosqrt.sbr" \
+	"$(INTDIR)\rounding.sbr" \
 	"$(INTDIR)\svd.sbr" \
 	"$(INTDIR)\symmetricschurdecomposition.sbr" \
 	"$(INTDIR)\armijo.sbr" \
@@ -2822,7 +2809,8 @@ BSC32_SBRS= \
 	"$(INTDIR)\treeswaption.sbr" \
 	"$(INTDIR)\analyticcliquetengine.sbr" \
 	"$(INTDIR)\analyticperformanceengine.sbr" \
-	"$(INTDIR)\mccliquetengine.sbr" \
+	"$(INTDIR)\americanpayoffatexpiry.sbr" \
+	"$(INTDIR)\americanpayoffathit.sbr" \
 	"$(INTDIR)\blackformula.sbr" \
 	"$(INTDIR)\haltonrsg.sbr" \
 	"$(INTDIR)\knuthuniformrng.sbr" \
@@ -2863,10 +2851,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\grid.sbr" \
 	"$(INTDIR)\scheduler.sbr" \
 	"$(INTDIR)\stochasticprocess.sbr" \
-	"$(INTDIR)\voltermstructure.sbr" \
-	"$(INTDIR)\rounding.sbr" \
-	"$(INTDIR)\americanpayoffathit.sbr" \
-	"$(INTDIR)\americanpayoffatexpiry.sbr"
+	"$(INTDIR)\voltermstructure.sbr"
 
 "$(OUTDIR)\QuantLib.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -2952,6 +2937,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\normaldistribution.obj" \
 	"$(INTDIR)\primenumbers.obj" \
 	"$(INTDIR)\pseudosqrt.obj" \
+	"$(INTDIR)\rounding.obj" \
 	"$(INTDIR)\svd.obj" \
 	"$(INTDIR)\symmetricschurdecomposition.obj" \
 	"$(INTDIR)\armijo.obj" \
@@ -3007,7 +2993,8 @@ LIB32_OBJS= \
 	"$(INTDIR)\treeswaption.obj" \
 	"$(INTDIR)\analyticcliquetengine.obj" \
 	"$(INTDIR)\analyticperformanceengine.obj" \
-	"$(INTDIR)\mccliquetengine.obj" \
+	"$(INTDIR)\americanpayoffatexpiry.obj" \
+	"$(INTDIR)\americanpayoffathit.obj" \
 	"$(INTDIR)\blackformula.obj" \
 	"$(INTDIR)\haltonrsg.obj" \
 	"$(INTDIR)\knuthuniformrng.obj" \
@@ -3049,9 +3036,6 @@ LIB32_OBJS= \
 	"$(INTDIR)\scheduler.obj" \
 	"$(INTDIR)\stochasticprocess.obj" \
 	"$(INTDIR)\voltermstructure.obj" \
-	"$(INTDIR)\rounding.obj" \
-	"$(INTDIR)\americanpayoffathit.obj" \
-	"$(INTDIR)\americanpayoffatexpiry.obj" \
 	".\lib\QuantLibFunctions-vc6-mt-gd-0_3_7.lib"
 
 ".\lib\QuantLib-vc6-mt-gd-0_3_7.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
@@ -3289,8 +3273,6 @@ CLEAN :
 	-@erase "$(INTDIR)\mcbasket.sbr"
 	-@erase "$(INTDIR)\mcbasketengine.obj"
 	-@erase "$(INTDIR)\mcbasketengine.sbr"
-	-@erase "$(INTDIR)\mccliquetengine.obj"
-	-@erase "$(INTDIR)\mccliquetengine.sbr"
 	-@erase "$(INTDIR)\mccliquetoption.obj"
 	-@erase "$(INTDIR)\mccliquetoption.sbr"
 	-@erase "$(INTDIR)\mcdigitalengine.obj"
@@ -3524,6 +3506,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\normaldistribution.sbr" \
 	"$(INTDIR)\primenumbers.sbr" \
 	"$(INTDIR)\pseudosqrt.sbr" \
+	"$(INTDIR)\rounding.sbr" \
 	"$(INTDIR)\svd.sbr" \
 	"$(INTDIR)\symmetricschurdecomposition.sbr" \
 	"$(INTDIR)\armijo.sbr" \
@@ -3579,7 +3562,8 @@ BSC32_SBRS= \
 	"$(INTDIR)\treeswaption.sbr" \
 	"$(INTDIR)\analyticcliquetengine.sbr" \
 	"$(INTDIR)\analyticperformanceengine.sbr" \
-	"$(INTDIR)\mccliquetengine.sbr" \
+	"$(INTDIR)\americanpayoffatexpiry.sbr" \
+	"$(INTDIR)\americanpayoffathit.sbr" \
 	"$(INTDIR)\blackformula.sbr" \
 	"$(INTDIR)\haltonrsg.sbr" \
 	"$(INTDIR)\knuthuniformrng.sbr" \
@@ -3620,10 +3604,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\grid.sbr" \
 	"$(INTDIR)\scheduler.sbr" \
 	"$(INTDIR)\stochasticprocess.sbr" \
-	"$(INTDIR)\voltermstructure.sbr" \
-	"$(INTDIR)\rounding.sbr" \
-	"$(INTDIR)\americanpayoffathit.sbr" \
-	"$(INTDIR)\americanpayoffatexpiry.sbr"
+	"$(INTDIR)\voltermstructure.sbr"
 
 "$(OUTDIR)\QuantLib.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -3709,6 +3690,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\normaldistribution.obj" \
 	"$(INTDIR)\primenumbers.obj" \
 	"$(INTDIR)\pseudosqrt.obj" \
+	"$(INTDIR)\rounding.obj" \
 	"$(INTDIR)\svd.obj" \
 	"$(INTDIR)\symmetricschurdecomposition.obj" \
 	"$(INTDIR)\armijo.obj" \
@@ -3764,7 +3746,8 @@ LIB32_OBJS= \
 	"$(INTDIR)\treeswaption.obj" \
 	"$(INTDIR)\analyticcliquetengine.obj" \
 	"$(INTDIR)\analyticperformanceengine.obj" \
-	"$(INTDIR)\mccliquetengine.obj" \
+	"$(INTDIR)\americanpayoffatexpiry.obj" \
+	"$(INTDIR)\americanpayoffathit.obj" \
 	"$(INTDIR)\blackformula.obj" \
 	"$(INTDIR)\haltonrsg.obj" \
 	"$(INTDIR)\knuthuniformrng.obj" \
@@ -3806,9 +3789,6 @@ LIB32_OBJS= \
 	"$(INTDIR)\scheduler.obj" \
 	"$(INTDIR)\stochasticprocess.obj" \
 	"$(INTDIR)\voltermstructure.obj" \
-	"$(INTDIR)\rounding.obj" \
-	"$(INTDIR)\americanpayoffathit.obj" \
-	"$(INTDIR)\americanpayoffatexpiry.obj" \
 	".\lib\QuantLibFunctions-vc6-s-0_3_7.lib"
 
 ".\lib\QuantLib-vc6-s-0_3_7.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
@@ -4046,8 +4026,6 @@ CLEAN :
 	-@erase "$(INTDIR)\mcbasket.sbr"
 	-@erase "$(INTDIR)\mcbasketengine.obj"
 	-@erase "$(INTDIR)\mcbasketengine.sbr"
-	-@erase "$(INTDIR)\mccliquetengine.obj"
-	-@erase "$(INTDIR)\mccliquetengine.sbr"
 	-@erase "$(INTDIR)\mccliquetoption.obj"
 	-@erase "$(INTDIR)\mccliquetoption.sbr"
 	-@erase "$(INTDIR)\mcdigitalengine.obj"
@@ -4282,6 +4260,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\normaldistribution.sbr" \
 	"$(INTDIR)\primenumbers.sbr" \
 	"$(INTDIR)\pseudosqrt.sbr" \
+	"$(INTDIR)\rounding.sbr" \
 	"$(INTDIR)\svd.sbr" \
 	"$(INTDIR)\symmetricschurdecomposition.sbr" \
 	"$(INTDIR)\armijo.sbr" \
@@ -4337,7 +4316,8 @@ BSC32_SBRS= \
 	"$(INTDIR)\treeswaption.sbr" \
 	"$(INTDIR)\analyticcliquetengine.sbr" \
 	"$(INTDIR)\analyticperformanceengine.sbr" \
-	"$(INTDIR)\mccliquetengine.sbr" \
+	"$(INTDIR)\americanpayoffatexpiry.sbr" \
+	"$(INTDIR)\americanpayoffathit.sbr" \
 	"$(INTDIR)\blackformula.sbr" \
 	"$(INTDIR)\haltonrsg.sbr" \
 	"$(INTDIR)\knuthuniformrng.sbr" \
@@ -4378,10 +4358,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\grid.sbr" \
 	"$(INTDIR)\scheduler.sbr" \
 	"$(INTDIR)\stochasticprocess.sbr" \
-	"$(INTDIR)\voltermstructure.sbr" \
-	"$(INTDIR)\rounding.sbr" \
-	"$(INTDIR)\americanpayoffathit.sbr" \
-	"$(INTDIR)\americanpayoffatexpiry.sbr"
+	"$(INTDIR)\voltermstructure.sbr"
 
 "$(OUTDIR)\QuantLib.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -4467,6 +4444,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\normaldistribution.obj" \
 	"$(INTDIR)\primenumbers.obj" \
 	"$(INTDIR)\pseudosqrt.obj" \
+	"$(INTDIR)\rounding.obj" \
 	"$(INTDIR)\svd.obj" \
 	"$(INTDIR)\symmetricschurdecomposition.obj" \
 	"$(INTDIR)\armijo.obj" \
@@ -4522,7 +4500,8 @@ LIB32_OBJS= \
 	"$(INTDIR)\treeswaption.obj" \
 	"$(INTDIR)\analyticcliquetengine.obj" \
 	"$(INTDIR)\analyticperformanceengine.obj" \
-	"$(INTDIR)\mccliquetengine.obj" \
+	"$(INTDIR)\americanpayoffatexpiry.obj" \
+	"$(INTDIR)\americanpayoffathit.obj" \
 	"$(INTDIR)\blackformula.obj" \
 	"$(INTDIR)\haltonrsg.obj" \
 	"$(INTDIR)\knuthuniformrng.obj" \
@@ -4564,9 +4543,6 @@ LIB32_OBJS= \
 	"$(INTDIR)\scheduler.obj" \
 	"$(INTDIR)\stochasticprocess.obj" \
 	"$(INTDIR)\voltermstructure.obj" \
-	"$(INTDIR)\rounding.obj" \
-	"$(INTDIR)\americanpayoffathit.obj" \
-	"$(INTDIR)\americanpayoffatexpiry.obj" \
 	".\lib\QuantLibFunctions-vc6-sgd-0_3_7.lib"
 
 ".\lib\QuantLib-vc6-sgd-0_3_7.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
@@ -5467,12 +5443,6 @@ SOURCE=.\ql\PricingEngines\Cliquet\analyticcliquetengine.cpp
 SOURCE=.\ql\PricingEngines\Cliquet\analyticperformanceengine.cpp
 
 "$(INTDIR)\analyticperformanceengine.obj"	"$(INTDIR)\analyticperformanceengine.sbr" : $(SOURCE) "$(INTDIR)"
-	$(CPP) $(CPP_PROJ) $(SOURCE)
-
-
-SOURCE=.\ql\PricingEngines\Cliquet\mccliquetengine.cpp
-
-"$(INTDIR)\mccliquetengine.obj"	"$(INTDIR)\mccliquetengine.sbr" : $(SOURCE) "$(INTDIR)"
 	$(CPP) $(CPP_PROJ) $(SOURCE)
 
 

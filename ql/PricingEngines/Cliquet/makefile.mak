@@ -24,8 +24,7 @@ INCLUDE_DIR    = ..\..\..
 # Object files
 OBJS = \
     "analyticcliquetengine.obj$(_mt)$(_D)" \
-    "analyticperformanceengine.obj$(_mt)$(_D)" \
-    "mccliquetengine.obj$(_mt)$(_D)"
+    "analyticperformanceengine.obj$(_mt)$(_D)"
 
 
 # Tools to be used

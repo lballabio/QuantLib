@@ -8461,12 +8461,6 @@
 				<File
 					RelativePath=".\ql\PricingEngines\Cliquet\analyticperformanceengine.hpp">
 				</File>
-				<File
-					RelativePath=".\ql\PricingEngines\Cliquet\mccliquetengine.cpp">
-				</File>
-				<File
-					RelativePath=".\ql\PricingEngines\Cliquet\mccliquetengine.hpp">
-				</File>
 			</Filter>
 		</Filter>
 		<Filter

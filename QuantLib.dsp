@@ -1791,14 +1791,6 @@ SOURCE=.\ql\PricingEngines\Cliquet\analyticperformanceengine.cpp
 
 SOURCE=.\ql\PricingEngines\Cliquet\analyticperformanceengine.hpp
 # End Source File
-# Begin Source File
-
-SOURCE=.\ql\PricingEngines\Cliquet\mccliquetengine.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\ql\PricingEngines\Cliquet\mccliquetengine.hpp
-# End Source File
 # End Group
 # Begin Source File
 
