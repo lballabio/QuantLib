@@ -5,8 +5,10 @@ INCLUDES= -I${top_srcdir} -I${top_builddir}
 includedir = $(prefix)/include/ql/Math
 
 include_HEADERS = \
+	bilinearinterpolation.hpp \
 	cubicspline.hpp \
 	interpolation.hpp \
+	interpolation2D.hpp \
 	lexicographicalview.hpp \
 	linearinterpolation.hpp \
 	matrix.hpp \

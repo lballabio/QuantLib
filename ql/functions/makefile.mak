@@ -16,7 +16,8 @@ BCC_LIBS       = $(MAKEDIR)\..\lib
 
 # Object files
 OBJS = \
-    daycounters.obj$(_D)
+    daycounters.obj$(_D) \
+    mathf.obj$(_D)
 
 # Tools to be used
 CC        = bcc32

@@ -96,6 +96,7 @@
 #include <ql/FiniteDifferences/valueatcenter.hpp>
 
 #include <ql/functions/daycounters.hpp>
+#include <ql/functions/mathf.hpp>
 
 #include <ql/Indexes/euribor.hpp>
 #include <ql/Indexes/audlibor.hpp>
@@ -135,8 +136,10 @@
 #include <ql/Lattices/binomialtree.hpp>
 #include <ql/Lattices/trinomialtree.hpp>
 
+#include <ql/Math/bilinearinterpolation.hpp>
 #include <ql/Math/cubicspline.hpp>
 #include <ql/Math/interpolation.hpp>
+#include <ql/Math/interpolation2D.hpp>
 #include <ql/Math/lexicographicalview.hpp>
 #include <ql/Math/linearinterpolation.hpp>
 #include <ql/Math/matrix.hpp>

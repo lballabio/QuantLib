@@ -495,11 +495,19 @@ SOURCE=.\ql\Instruments\swaption.hpp
 # PROP Default_Filter ""
 # Begin Source File
 
+SOURCE=.\ql\Math\bilinearinterpolation.hpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\ql\Math\cubicspline.hpp
 # End Source File
 # Begin Source File
 
 SOURCE=.\ql\Math\interpolation.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\Math\interpolation2D.hpp
 # End Source File
 # Begin Source File
 
@@ -1320,6 +1328,14 @@ SOURCE=.\ql\functions\daycounters.cpp
 # Begin Source File
 
 SOURCE=.\ql\functions\daycounters.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\functions\mathf.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\functions\mathf.hpp
 # End Source File
 # End Group
 # Begin Source File

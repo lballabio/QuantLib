@@ -150,6 +150,8 @@ CLEAN :
 	-@erase "$(INTDIR)\lecuyeruniformrng.sbr"
 	-@erase "$(INTDIR)\london.obj"
 	-@erase "$(INTDIR)\london.sbr"
+	-@erase "$(INTDIR)\mathf.obj"
+	-@erase "$(INTDIR)\mathf.sbr"
 	-@erase "$(INTDIR)\matrix.obj"
 	-@erase "$(INTDIR)\matrix.sbr"
 	-@erase "$(INTDIR)\maxbasketpathpricer.obj"
@@ -376,6 +378,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\simplex.sbr" \
 	"$(INTDIR)\simulatedannealing.sbr" \
 	"$(INTDIR)\steepestdescent.sbr" \
+	"$(INTDIR)\binomialtree.sbr" \
 	"$(INTDIR)\tree.sbr" \
 	"$(INTDIR)\trinomialtree.sbr" \
 	"$(INTDIR)\daycounters.sbr" \
@@ -385,7 +388,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\option.sbr" \
 	"$(INTDIR)\scheduler.sbr" \
 	"$(INTDIR)\solver1d.sbr" \
-	"$(INTDIR)\binomialtree.sbr"
+	"$(INTDIR)\mathf.sbr"
 
 "$(OUTDIR)\QuantLib.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -496,6 +499,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\simplex.obj" \
 	"$(INTDIR)\simulatedannealing.obj" \
 	"$(INTDIR)\steepestdescent.obj" \
+	"$(INTDIR)\binomialtree.obj" \
 	"$(INTDIR)\tree.obj" \
 	"$(INTDIR)\trinomialtree.obj" \
 	"$(INTDIR)\daycounters.obj" \
@@ -505,7 +509,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\option.obj" \
 	"$(INTDIR)\scheduler.obj" \
 	"$(INTDIR)\solver1d.obj" \
-	"$(INTDIR)\binomialtree.obj"
+	"$(INTDIR)\mathf.obj"
 
 ".\lib\Win32\VisualStudio\QuantLib.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
     $(LIB32) @<<
@@ -632,6 +636,8 @@ CLEAN :
 	-@erase "$(INTDIR)\lecuyeruniformrng.sbr"
 	-@erase "$(INTDIR)\london.obj"
 	-@erase "$(INTDIR)\london.sbr"
+	-@erase "$(INTDIR)\mathf.obj"
+	-@erase "$(INTDIR)\mathf.sbr"
 	-@erase "$(INTDIR)\matrix.obj"
 	-@erase "$(INTDIR)\matrix.sbr"
 	-@erase "$(INTDIR)\maxbasketpathpricer.obj"
@@ -859,6 +865,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\simplex.sbr" \
 	"$(INTDIR)\simulatedannealing.sbr" \
 	"$(INTDIR)\steepestdescent.sbr" \
+	"$(INTDIR)\binomialtree.sbr" \
 	"$(INTDIR)\tree.sbr" \
 	"$(INTDIR)\trinomialtree.sbr" \
 	"$(INTDIR)\daycounters.sbr" \
@@ -868,7 +875,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\option.sbr" \
 	"$(INTDIR)\scheduler.sbr" \
 	"$(INTDIR)\solver1d.sbr" \
-	"$(INTDIR)\binomialtree.sbr"
+	"$(INTDIR)\mathf.sbr"
 
 "$(OUTDIR)\QuantLib.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -979,6 +986,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\simplex.obj" \
 	"$(INTDIR)\simulatedannealing.obj" \
 	"$(INTDIR)\steepestdescent.obj" \
+	"$(INTDIR)\binomialtree.obj" \
 	"$(INTDIR)\tree.obj" \
 	"$(INTDIR)\trinomialtree.obj" \
 	"$(INTDIR)\daycounters.obj" \
@@ -988,7 +996,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\option.obj" \
 	"$(INTDIR)\scheduler.obj" \
 	"$(INTDIR)\solver1d.obj" \
-	"$(INTDIR)\binomialtree.obj"
+	"$(INTDIR)\mathf.obj"
 
 ".\lib\Win32\VisualStudio\QuantLib_d.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
     $(LIB32) @<<
@@ -1115,6 +1123,8 @@ CLEAN :
 	-@erase "$(INTDIR)\lecuyeruniformrng.sbr"
 	-@erase "$(INTDIR)\london.obj"
 	-@erase "$(INTDIR)\london.sbr"
+	-@erase "$(INTDIR)\mathf.obj"
+	-@erase "$(INTDIR)\mathf.sbr"
 	-@erase "$(INTDIR)\matrix.obj"
 	-@erase "$(INTDIR)\matrix.sbr"
 	-@erase "$(INTDIR)\maxbasketpathpricer.obj"
@@ -1341,6 +1351,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\simplex.sbr" \
 	"$(INTDIR)\simulatedannealing.sbr" \
 	"$(INTDIR)\steepestdescent.sbr" \
+	"$(INTDIR)\binomialtree.sbr" \
 	"$(INTDIR)\tree.sbr" \
 	"$(INTDIR)\trinomialtree.sbr" \
 	"$(INTDIR)\daycounters.sbr" \
@@ -1350,7 +1361,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\option.sbr" \
 	"$(INTDIR)\scheduler.sbr" \
 	"$(INTDIR)\solver1d.sbr" \
-	"$(INTDIR)\binomialtree.sbr"
+	"$(INTDIR)\mathf.sbr"
 
 "$(OUTDIR)\QuantLib.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -1461,6 +1472,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\simplex.obj" \
 	"$(INTDIR)\simulatedannealing.obj" \
 	"$(INTDIR)\steepestdescent.obj" \
+	"$(INTDIR)\binomialtree.obj" \
 	"$(INTDIR)\tree.obj" \
 	"$(INTDIR)\trinomialtree.obj" \
 	"$(INTDIR)\daycounters.obj" \
@@ -1470,7 +1482,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\option.obj" \
 	"$(INTDIR)\scheduler.obj" \
 	"$(INTDIR)\solver1d.obj" \
-	"$(INTDIR)\binomialtree.obj"
+	"$(INTDIR)\mathf.obj"
 
 ".\lib\Win32\VisualStudio\QuantLib.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
     $(LIB32) @<<
@@ -1597,6 +1609,8 @@ CLEAN :
 	-@erase "$(INTDIR)\lecuyeruniformrng.sbr"
 	-@erase "$(INTDIR)\london.obj"
 	-@erase "$(INTDIR)\london.sbr"
+	-@erase "$(INTDIR)\mathf.obj"
+	-@erase "$(INTDIR)\mathf.sbr"
 	-@erase "$(INTDIR)\matrix.obj"
 	-@erase "$(INTDIR)\matrix.sbr"
 	-@erase "$(INTDIR)\maxbasketpathpricer.obj"
@@ -1824,6 +1838,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\simplex.sbr" \
 	"$(INTDIR)\simulatedannealing.sbr" \
 	"$(INTDIR)\steepestdescent.sbr" \
+	"$(INTDIR)\binomialtree.sbr" \
 	"$(INTDIR)\tree.sbr" \
 	"$(INTDIR)\trinomialtree.sbr" \
 	"$(INTDIR)\daycounters.sbr" \
@@ -1833,7 +1848,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\option.sbr" \
 	"$(INTDIR)\scheduler.sbr" \
 	"$(INTDIR)\solver1d.sbr" \
-	"$(INTDIR)\binomialtree.sbr"
+	"$(INTDIR)\mathf.sbr"
 
 "$(OUTDIR)\QuantLib.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -1944,6 +1959,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\simplex.obj" \
 	"$(INTDIR)\simulatedannealing.obj" \
 	"$(INTDIR)\steepestdescent.obj" \
+	"$(INTDIR)\binomialtree.obj" \
 	"$(INTDIR)\tree.obj" \
 	"$(INTDIR)\trinomialtree.obj" \
 	"$(INTDIR)\daycounters.obj" \
@@ -1953,7 +1969,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\option.obj" \
 	"$(INTDIR)\scheduler.obj" \
 	"$(INTDIR)\solver1d.obj" \
-	"$(INTDIR)\binomialtree.obj"
+	"$(INTDIR)\mathf.obj"
 
 ".\lib\Win32\VisualStudio\QuantLib_d.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
     $(LIB32) @<<
@@ -2630,6 +2646,12 @@ SOURCE=.\ql\Lattices\trinomialtree.cpp
 SOURCE=.\ql\functions\daycounters.cpp
 
 "$(INTDIR)\daycounters.obj"	"$(INTDIR)\daycounters.sbr" : $(SOURCE) "$(INTDIR)"
+	$(CPP) $(CPP_PROJ) $(SOURCE)
+
+
+SOURCE=.\ql\functions\mathf.cpp
+
+"$(INTDIR)\mathf.obj"	"$(INTDIR)\mathf.sbr" : $(SOURCE) "$(INTDIR)"
 	$(CPP) $(CPP_PROJ) $(SOURCE)
 
 
