@@ -78,7 +78,7 @@ namespace QuantLib {
                 new MonteCarloModel<Math::Statistics,
                 GaussianMultiPathGenerator,
                 PathPricer_old<MultiPath> > (pathGenerator,
-                pathPricer, Math::Statistics()));
+                pathPricer, Math::Statistics(), false));
 
         }
 

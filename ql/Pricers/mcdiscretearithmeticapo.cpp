@@ -79,7 +79,7 @@ namespace QuantLib {
                     GaussianPathGenerator_old, PathPricer_old<Path> > > (
                     new MonteCarloModel<Statistics,
                     GaussianPathGenerator_old, PathPricer_old<Path> > (
-                    pathGenerator, spPricer, Statistics(),
+                    pathGenerator, spPricer, Statistics(), false,
                     controlVariateSpPricer, controlVariatePrice));
             } else {
                 //! Initialize the Monte Carlo model
@@ -87,7 +87,7 @@ namespace QuantLib {
                     GaussianPathGenerator_old, PathPricer_old<Path> > > (
                     new MonteCarloModel<Statistics,
                     GaussianPathGenerator_old, PathPricer_old<Path> > (
-                    pathGenerator, spPricer, Statistics()));
+                    pathGenerator, spPricer, Statistics(), false));
             }
 
         }

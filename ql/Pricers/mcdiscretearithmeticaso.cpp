@@ -80,7 +80,7 @@ namespace QuantLib {
                     new MonteCarloModel<Statistics,
                     GaussianPathGenerator_old,
                     PathPricer_old<Path> > (pathGenerator, spPricer,
-                    Statistics(),
+                    Statistics(), false,
                     controlVariateSpPricer, controlVariatePrice));
             } else {
                 //! Initialize the one-dimensional Monte Carlo
@@ -90,7 +90,7 @@ namespace QuantLib {
                     new MonteCarloModel<Statistics,
                     GaussianPathGenerator_old,
                     PathPricer_old<Path> > (pathGenerator, spPricer,
-                    Statistics()));
+                    Statistics(), false));
             }
 
         }
