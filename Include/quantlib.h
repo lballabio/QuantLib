@@ -1,6 +1,6 @@
 
 /*
- * Copyright (C) 2000
+ * Copyright (C) 2000, 2001
  * Ferdinando Ametrano, Luigi Ballabio, Adolfo Benin, Marco Marchioro
  *
  * This file is part of QuantLib.
@@ -26,6 +26,9 @@
     $Source$
     $Name$
     $Log$
+    Revision 1.22  2001/02/20 11:11:37  marmar
+    BarrierOption implements the analytical barrier option
+
     Revision 1.21  2001/02/14 18:43:06  lballabio
     Added coupling iterators
 
@@ -182,6 +185,7 @@
 /*** pricers ***/
 
 #include "options.h"
+#include "barrieroption.h"
 #include "bsmoption.h"
 #include "bsmeuropeanoption.h"
 #include "bsmnumericaloption.h"

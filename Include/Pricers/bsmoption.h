@@ -28,6 +28,9 @@
     $Source$
     $Name$
     $Log$
+    Revision 1.13  2001/02/20 11:11:13  marmar
+    BarrierOption implements the analytical barrier option
+
     Revision 1.12  2001/02/19 15:05:41  lballabio
     Inlined function which was supposed to be
 
@@ -119,22 +122,22 @@ namespace QuantLib {
 
         class BSMOption::BSMFunction : public ObjectiveFunction {
           public:
-            BSMFunction(const Handle<BSMOption>& tempBSM, double price);
+            BSMFunction(const Handle<BSMOption>& tempBSM, double targetPrice);
             double value(double x) const;
           private:
             mutable Handle<BSMOption> bsm;
-            double thePrice;
+            double targetPrice_;
         };
 
         inline BSMOption::BSMFunction::BSMFunction(
-                const Handle<BSMOption>& tempBSM, double price) {
+                const Handle<BSMOption>& tempBSM, double targetPrice) {
             bsm = tempBSM;
-            thePrice = price;
+            targetPrice_ = targetPrice;
         }
         
         inline double BSMOption::BSMFunction::value(double x) const {
             bsm -> setVolatility(x);
-            return (bsm -> value() - thePrice);
+            return (bsm -> value() - targetPrice_);
         }
 
     }

@@ -64,6 +64,7 @@ FDM_OBJS         = $(OUTPUT_DIR)\tridiagonaloperator.obj \
 PRICER_OBJS      = $(OUTPUT_DIR)\bsmoption.obj \
                    $(OUTPUT_DIR)\averagestrikeasian.obj \
                    $(OUTPUT_DIR)\averagepriceasian.obj \ 
+                   $(OUTPUT_DIR)\barrieroption.obj \ 
                    $(OUTPUT_DIR)\bsmnumericaloption.obj \
                    $(OUTPUT_DIR)\bsmeuropeanoption.obj \
                    $(OUTPUT_DIR)\bsmamericanoption.obj \
@@ -188,6 +189,7 @@ $(OUTPUT_DIR)\quantlib_wrap.obj:: $(PYTHON_DIR)\quantlib_wrap.cpp
 
 $(PYTHON_DIR)\quantlib_wrap.cpp:: \
     $(SWIG_DIR)\QuantLib.i \
+    $(SWIG_DIR)\Barrier.i \
     $(SWIG_DIR)\BoundaryConditions.i \
     $(SWIG_DIR)\Calendars.i \
     $(SWIG_DIR)\Currencies.i \
@@ -294,6 +296,8 @@ $(OUTPUT_DIR)\averagepriceasian.obj: \
                 $(SOURCES_DIR)\Pricers\averagepriceasian.cpp
 $(OUTPUT_DIR)\averagestrikeasian.obj: \ 
                 $(SOURCES_DIR)\Pricers\averagestrikeasian.cpp
+$(OUTPUT_DIR)\barrieroption.obj: \ 
+                $(SOURCES_DIR)\Pricers\barrieroption.cpp
 $(OUTPUT_DIR)\bsmnumericaloption.obj: \
                 $(SOURCES_DIR)\Pricers\bsmnumericaloption.cpp
 $(OUTPUT_DIR)\bsmeuropeanoption.obj:  \
@@ -384,6 +388,7 @@ install::
 # Test PyQuantLib
 test::
     cd ..\Python\Tests
+    python barrieroption.py
     python american_option.py
     python date.py
     python distributions.py

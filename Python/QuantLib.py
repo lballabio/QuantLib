@@ -1008,6 +1008,25 @@ DividendEuropeanOption.vega = new.instancemethod(QuantLibc.DividendEuropeanOptio
 DividendEuropeanOption.rho = new.instancemethod(QuantLibc.DividendEuropeanOption_rho, None, DividendEuropeanOption)
 DividendEuropeanOption.impliedVolatility = new.instancemethod(QuantLibc.DividendEuropeanOption_impliedVolatility, None, DividendEuropeanOption)
 
+class BarrierOption:
+    def __init__(self,*args,**kwargs):
+        self.this = apply(QuantLibc.new_BarrierOption,args,kwargs)
+        self.thisown = 1
+
+    def __del__(self,QuantLibc=QuantLibc):
+        if self.thisown == 1 :
+            QuantLibc.delete_BarrierOption(self)
+    def __repr__(self):
+        return "<C BarrierOption instance at %s>" % (self.this,)
+class BarrierOptionPtr(BarrierOption):
+    def __init__(self,this):
+        self.this = this
+        self.thisown = 0
+        self.__class__ = BarrierOption
+
+
+BarrierOption.value = new.instancemethod(QuantLibc.BarrierOption_value, None, BarrierOption)
+
 class UniformRandomGenerator:
     def __init__(self,*args,**kwargs):
         self.this = apply(QuantLibc.new_UniformRandomGenerator,args,kwargs)

@@ -2,7 +2,7 @@ includedir = $(prefix)/include/QuantLib/Pricers
 include_HEADERS = americancondition.h \
     averagepriceasian.h \
     averagestrikeasian.h \
-	bsmamericanoption.h \
+	barrieroption.h \
 	bsmeuropeanoption.h \
 	bsmnumericaloption.h \
 	bsmoption.h \
