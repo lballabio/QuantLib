@@ -228,21 +228,21 @@ namespace QuantLib {
 
         template <class Stat>
         Matrix SequenceStatistics<Stat>::covariance() const {
-            sampleWeight = weightSum();
+            double sampleWeight = weightSum();
             QL_REQUIRE(sampleWeight > 0.0,
                         "SequenceStatistics::covariance() : "
                         "sampleWeight=0, unsufficient");
 
-            sampleNumber = samples();
+            double sampleNumber = samples();
             QL_REQUIRE(sampleNumber > 1,
                         "SequenceStatistics::covariance() : "
                         "sample number <=1, unsufficient");
 
-            std::vector<double> mean = mean();
+            std::vector<double> m = mean();
             double inv = 1.0/sampleWeight;
 
-            Matrix result = outerProduct(mean.begin(), mean.end(),
-                                         mean.begin(), mean.end());
+            Matrix result = outerProduct(m.begin(), m.end(),
+                                         m.begin(), m.end());
             result *= (inv*inv);
             result -= inv*quadraticSum_;
             result *= (sampleNumber/(sampleNumber-1.0));
