@@ -40,17 +40,50 @@ namespace QuantLib {
         using std::cout;
         using std::endl;
 
-        void Tree::rollback(unsigned int from, unsigned int to) {
+        double Tree::presentValue(const Handle<Asset>& asset) const {
+            unsigned int i = t_.findIndex(asset->time());
+            double value = 0.0;
+            size_t l = 0;
+            for (int j=jMin(i); j<=jMax(i); j++, l++) {
+                value += asset->values()[l]*node(i,j).statePrice();
+            }
+            return value;
+        }
+        
+        void Tree::rollback(
+            const std::vector<Handle<Asset> >& assets, 
+            Time from, Time to) const {
+
             QL_REQUIRE(from>=to, "Wrong rollback extremities");
 
-            for (int i=(int)(from-1); i>=(int)to; i--) {
-                for (int j=jMin(i); j<=jMax(i); j++) {
-                    double value = 0.0;
-                    for (unsigned k=0; k<n_; k++) {
-                        value += node(i,j).probability(k)
-                            *node(i,j).descendant(k).value();
+            unsigned int iFrom = t_.findIndex(from);
+            unsigned int iTo = t_.findIndex(to);
+            
+            size_t width = jMax(iFrom) - jMin(iFrom) + 1;
+            std::vector<Handle<Asset> >::const_iterator begin;
+            for (begin = assets.begin(); begin != assets.end(); ++begin) {
+                (*begin)->setTime(t(iFrom));
+                (*begin)->reset(width);
+            }
+
+            for (int i=(int)(iFrom-1); i>=(int)iTo; i--) {
+                for (begin = assets.begin(); begin != assets.end(); ++begin) {
+                    width = jMax(i) - jMin(i) + 1;
+                    (*begin)->newValues() = Array(width);
+                    size_t l = 0;
+                    for (int j=jMin(i); j<=jMax(i); j++, l++) {
+                        double value = 0.0;
+                        for (unsigned k=0; k<n_; k++) {
+                            size_t index = node(i,j).descendant(k).j() - 
+                                jMin(i+1);
+                            value += node(i,j).probability(k)
+                                *(*begin)->values()[index];
+                        }
+                        value *= node(i,j).discount();
+                        (*begin)->newValues()[l] = value;
                     }
-                    node(i,j).setValue(value*node(i,j).discount());
+                    (*begin)->setTime(t(i));
+                    (*begin)->applyCondition();
                 }
             }
         }

@@ -95,16 +95,6 @@ namespace QuantLib {
             bool payFixedRate() const {
                 return payFixedRate_;
             }
-            double nominal() const { 
-                Handle<CashFlows::FixedRateCoupon> coupon = fixedLeg()[0];
-                QL_ENSURE(!coupon.isNull(), "not a fixed-rate coupon");
-                return coupon->nominal(); 
-            }
-            Rate fixedRate() const { 
-                Handle<CashFlows::FixedRateCoupon> coupon = fixedLeg()[0];
-                QL_ENSURE(!coupon.isNull(), "not a fixed-rate coupon");
-                return coupon->rate(); 
-            }
           private:
             bool payFixedRate_;
             Date maturity_;

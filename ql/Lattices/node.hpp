@@ -48,15 +48,8 @@ namespace QuantLib {
         class Node {
           public:
             Node(unsigned int nDescendants, unsigned int i, int j) 
-            : nDescendants_(nDescendants), descendants_(nDescendants), 
-              ascendants_(0), ascendantBranches_(0), 
-              probabilities_(nDescendants), i_(i), j_(j), 
-              discount_(0.0), statePrice_(0.0), value_(0.0) {}
-
-            double value() const { return value_; }
-            void setValue(double value) { 
-                value_ = value; 
-            }
+            : descendants_(nDescendants), probabilities_(nDescendants), 
+              i_(i), j_(j), discount_(0.0), statePrice_(0.0) {}
 
             unsigned int i() const { return i_; }
             int j() const { return j_; }
@@ -67,39 +60,24 @@ namespace QuantLib {
             void setProbability(double prob, unsigned int branch) {
                 probabilities_[branch] = prob;
             }
-            Node& ascendant(unsigned int index) {
-                return *(ascendants_[index]);
-            }
             Node& descendant(unsigned int branch) { 
                 return *(descendants_[branch]);
             }
-            unsigned int ascendantBranch(unsigned int index) const {
-                return ascendantBranches_[index];
-            }
-            unsigned int nAscendants() const {
-                return ascendants_.size();
+            const Node& descendant(unsigned int branch) const {
+                return *(descendants_[branch]);
             }
             void setDescendant(Node& node, unsigned int branch) {
                 descendants_[branch] = &node; 
-                node.addAscendant(this, branch);
             }
 
             double discount() const { return discount_; }
             void setDiscount(double discount) { discount_ = discount; }
  
-            void setStatePrice(double price) { statePrice_ = price; }
-            double statePrice() const { return statePrice_; }
+            double& statePrice() { return statePrice_; }
+            const double& statePrice() const { return statePrice_; }
 
           private:
-            void addAscendant(Node* node, unsigned int branch) {
-                ascendants_.push_back(node);
-                ascendantBranches_.push_back(branch);
-            }
-
-            unsigned int nDescendants_;
             std::vector<Node*> descendants_;
-            std::vector<Node*> ascendants_;
-            std::vector<unsigned int> ascendantBranches_;
             std::vector<double> probabilities_;
 
             unsigned int i_;
@@ -107,8 +85,6 @@ namespace QuantLib {
 
             double discount_;
             double statePrice_;
-            double value_;
-
         };
 
     }

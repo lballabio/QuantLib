@@ -35,6 +35,7 @@
 #define quantlib_lattices_tree_h
 
 #include <ql/qldefines.hpp>
+#include <ql/asset.hpp>
 #include <ql/termstructure.hpp>
 #include <ql/Lattices/node.hpp>
 #include <ql/Lattices/timegrid.hpp>
@@ -54,14 +55,20 @@ namespace QuantLib {
             : n_(n), dx_(0) {
                 nodes_.push_back(std::vector<Handle<Node> >());
                 nodes_[0].push_back(Handle<Node>(new Node(n,0,0)));
+                nodes_[0][0]->statePrice() = 1.0;
             }
             virtual ~Tree() {}
 
+            virtual const Node& node(unsigned int i, int j) const = 0;
+
             virtual Node& node(unsigned int i, int j) = 0;
 
-            const TimeGrid& timeGrid() { return t_; }
+            const TimeGrid& timeGrid() const { return t_; }
 
-            void rollback(unsigned int from, unsigned int to);
+            double presentValue(const Handle<Asset>& asset) const;
+
+            void rollback(const std::vector<Handle<Asset> >& assets,
+                          Time from, Time to) const;
 
             //! Returns t_i
             Time t(unsigned int i) const { return t_[i]; }

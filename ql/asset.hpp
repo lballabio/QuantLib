@@ -22,36 +22,46 @@
  * available at http://quantlib.org/group.html
 */
 
-/*! \file option.cpp
-    \brief Base option class
+/*! \file asset.hpp
+    \brief Asset slice class
 
     \fullpath
-    ql/%option.cpp
+    ql/%asset.hpp
 */
 
 // $Id$
 
-#include <ql/option.hpp>
+#ifndef quantlib_asset_h
+#define quantlib_asset_h
+
+#include <ql/qldefines.hpp>
+#include <ql/array.hpp>
+#include <ql/types.hpp>
 
 namespace QuantLib {
 
-    Option::Option(const Handle<OptionPricingEngine>& engine,
-        const std::string& isinCode, const std::string& description)
-    : Instrument(isinCode, description), engine_(engine) {
-        QL_REQUIRE(!engine_.isNull(), "null pricing engine");
-    }
+    class Asset {
+      public:
+        virtual ~Asset() {}
 
-    Option::~Option() {}
+        Time time() const { return time_; }
+        void setTime(Time t) { time_ = t; }
 
-    void Option::performCalculations() const {
-        setupEngine();
-        engine_->validateParameters();
-        engine_->calculate();
-        const OptionValue* results =
-            dynamic_cast<const OptionValue*>(engine_->results());
-        QL_ENSURE(results != 0, "no results returned from option pricer");
-        NPV_ = results->value;
-    }
+        virtual void reset(size_t size) = 0;
+
+        const Array& values() { return values_; }
+        Array& newValues() { return newValues_; }
+
+        virtual void applyCondition() {
+            values_ = newValues_;
+        }
+
+      protected:
+        Array newValues_;
+        Array values_;
+        Time time_;
+    };
 
 }
 
+#endif

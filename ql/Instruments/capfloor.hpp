@@ -23,7 +23,7 @@
 */
 
 /*! \file capfloor.hpp
-    \brief  Cap and Floor class
+    \brief Cap and Floor class
 
     \fullpath
     ql/Instruments/%capfloor.hpp
@@ -45,50 +45,86 @@ namespace QuantLib {
 
     namespace Instruments {
 
-        class EuropeanCapFloor : public Instrument {
+        class VanillaCapFloor : public Option {
           public:
             enum Type { Cap, Floor };
-            EuropeanCapFloor(Type type,
-                const Handle<SimpleSwap>& swap,
-                std::vector<Rate> exerciseRates,
-                RelinkableHandle<TermStructure> termStructure);
-            virtual ~EuropeanCapFloor() {}
-            void useModel(const Handle<InterestRateModelling::Model>& model) {
-                model_ = model;
-            }
+            VanillaCapFloor(Type type,
+                const SimpleSwap& swap,
+                const std::vector<Rate>& exerciseRates,
+                const RelinkableHandle<TermStructure>& termStructure,
+                const Handle<OptionPricingEngine>& engine)
+            : Option(engine), type_(type), swap_(swap), 
+              exerciseRates_(exerciseRates), termStructure_(termStructure) {}
+            virtual ~VanillaCapFloor() {}
+          protected:
+            void setupEngine() const;
           private:
-            virtual void performCalculations() const;
             Type type_;
-            const Handle<SimpleSwap>& swap_;
+            const SimpleSwap& swap_;
             std::vector<Rate> exerciseRates_;
             RelinkableHandle<TermStructure> termStructure_;
-            Handle<InterestRateModelling::Model> model_;
-            Size nPeriods_;
-            std::vector<Time> startTimes_;
-            std::vector<Time> endTimes_;
-            std::vector<Time> tenors_;
-            std::vector<Time> nominals_;
-            std::list<Time> times_;
         };
 
-        class EuropeanCap : public EuropeanCapFloor {
+        class VanillaCap : public VanillaCapFloor {
           public:
-            EuropeanCap(const Handle<SimpleSwap>& swap,
-                std::vector<Rate> exerciseRates,
-                RelinkableHandle<TermStructure> termStructure)
-            : EuropeanCapFloor( Cap, swap, exerciseRates, termStructure) {}
+            VanillaCap(const SimpleSwap& swap,
+                const std::vector<Rate>& exerciseRates,
+                const RelinkableHandle<TermStructure>& termStructure,
+                const Handle<OptionPricingEngine>& engine)
+            : VanillaCapFloor(Cap, swap, exerciseRates, termStructure, engine) {}
         };
 
-        class EuropeanFloor : public EuropeanCapFloor {
+        class VanillaFloor : public VanillaCapFloor {
           public:
-            EuropeanFloor(const Handle<SimpleSwap>& swap,
-                std::vector<Rate> exerciseRates,
-                RelinkableHandle<TermStructure> termStructure)
-            : EuropeanCapFloor( Floor, swap, exerciseRates, termStructure) {}
+            VanillaFloor(const SimpleSwap& swap,
+                  const std::vector<Rate>& exerciseRates,
+                  const RelinkableHandle<TermStructure>& termStructure,  
+                  const Handle<OptionPricingEngine>& engine)
+            : VanillaCapFloor(Floor, swap, exerciseRates, termStructure, engine) 
+            {}
         };
 
+        //! parameters for cap/floor calculation
+        class CapFloorParameters : public virtual Arguments {
+          public:
+            CapFloorParameters() : startTimes(0),
+                                   endTimes(0),
+                                   exerciseRates(0),
+                                   nominals(0) {}
+            VanillaCapFloor::Type type;
+            std::vector<Time> startTimes;
+            std::vector<Time> endTimes;
+            std::vector<Rate> exerciseRates;
+            std::vector<double> nominals;
+        };
+
+        //! %results from cap/floor calculation
+        class CapFloorResults : public OptionValue {};
 
     }
+
+    namespace Pricers {
+
+        //! base class for cap/floor pricing engines
+        /*! Derived engines only need to implement the <tt>calculate()</tt>
+            method
+        */
+        class CapFloorPricingEngine : public OptionPricingEngine {
+          public:
+            Arguments* parameters();
+            void validateParameters() const;
+            const Results* results() const;
+            void setModel(const Handle<InterestRateModelling::Model>& model) {
+                model_ = model;
+            }
+          protected:
+            Instruments::CapFloorParameters parameters_;
+            mutable Instruments::CapFloorResults results_;
+            Handle<InterestRateModelling::Model> model_;
+        };
+
+    }
+
 }
 
 #endif

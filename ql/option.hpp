@@ -51,6 +51,10 @@ namespace QuantLib {
                const std::string& isinCode = "",
                const std::string& description = "");
         virtual ~Option();
+        void setPricingEngine(const Handle<OptionPricingEngine>& engine) {
+            engine_ = engine;
+            setupEngine();
+        }
       protected:
         virtual void setupEngine() const = 0;
         virtual void performCalculations() const;

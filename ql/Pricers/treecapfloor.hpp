@@ -22,36 +22,36 @@
  * available at http://quantlib.org/group.html
 */
 
-/*! \file option.cpp
-    \brief Base option class
+/*! \file treecapfloor.hpp
+    \brief Cap/Floor calculated using a tree
 
     \fullpath
-    ql/%option.cpp
+    ql/Pricers/%treecapfloor.hpp
 */
 
 // $Id$
 
-#include <ql/option.hpp>
+#ifndef quantlib_pricers_tree_cap_floor_h
+#define quantlib_pricers_tree_cap_floor_h
+
+#include <ql/Instruments/capfloor.hpp>
 
 namespace QuantLib {
 
-    Option::Option(const Handle<OptionPricingEngine>& engine,
-        const std::string& isinCode, const std::string& description)
-    : Instrument(isinCode, description), engine_(engine) {
-        QL_REQUIRE(!engine_.isNull(), "null pricing engine");
-    }
+    namespace Pricers {
 
-    Option::~Option() {}
+        //! Cap/Floor priced in a tree
+        class TreeCapFloor : public CapFloorPricingEngine {
+          public:
+            TreeCapFloor() {}
+            TreeCapFloor(size_t timeSteps) : timeSteps_(timeSteps) {}
+            void calculate() const;
+          private:
+            size_t timeSteps_;
+        };
 
-    void Option::performCalculations() const {
-        setupEngine();
-        engine_->validateParameters();
-        engine_->calculate();
-        const OptionValue* results =
-            dynamic_cast<const OptionValue*>(engine_->results());
-        QL_ENSURE(results != 0, "no results returned from option pricer");
-        NPV_ = results->value;
     }
 
 }
 
+#endif

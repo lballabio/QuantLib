@@ -1,3 +1,4 @@
+
 /*
  * Copyright (C) 2000-2001 QuantLib Group
  *
@@ -21,62 +22,71 @@
  * available at http://quantlib.org/group.html
 */
 
-/*! \file capfloor.cpp
-    \brief European cap and floor class
+/*! \file swaption.cpp
+    \brief Swaption
 
     \fullpath
-    ql/Instruments/%capfloor.cpp
+    ql/Instruments/%swaption.cpp
 */
 
 // $Id$
 
-#include "ql/Instruments/capfloor.hpp"
-#include "ql/CashFlows/floatingratecoupon.hpp"
-#include "ql/Math/normaldistribution.hpp"
-
-#include "ql/InterestRateModelling/onefactormodel.hpp"
-#include "ql/Lattices/tree.hpp"
-
-#include <iostream>
-using std::cout;
-using std::endl;
+#include <ql/Instruments/swaption.hpp>
+#include <ql/CashFlows/floatingratecoupon.hpp>
+#include <ql/Solvers1D/brent.hpp>
 
 namespace QuantLib {
 
     namespace Instruments {
 
         using CashFlows::FloatingRateCoupon;
-        using InterestRateModelling::OneFactorModel;
 
-        void VanillaCapFloor::setupEngine() const {
-            CapFloorParameters* parameters =
-                dynamic_cast<CapFloorParameters*>(
+        Swaption::Swaption(
+            const SimpleSwap& swap, const Exercise& exercise,
+            const RelinkableHandle<TermStructure>& termStructure,
+            const Handle<OptionPricingEngine>& engine)
+        : Option(engine), swap_(swap), exercise_(exercise),
+          termStructure_(termStructure) {}
+
+        Swaption::~Swaption() {}
+
+        void Swaption::setupEngine() const {
+            SwaptionParameters* parameters =
+                dynamic_cast<SwaptionParameters*>(
                     engine_->parameters());
             QL_REQUIRE(parameters != 0,
                        "pricing engine does not supply needed parameters");
 
-            parameters->type = type_;
-            parameters->exerciseRates = exerciseRates_;
+            Date today = termStructure_->settlementDate();
+            DayCounter counter = termStructure_->dayCounter();
+            const std::vector<Handle<CashFlow> >& fixedLeg = swap_.fixedLeg();
 
-            parameters->startTimes.clear();
-            parameters->endTimes.clear();
-            parameters->nominals.clear();
- 
+            parameters->payFixed = swap_.payFixedRate();
+            for (size_t i=0; i<fixedLeg.size(); i++) {
+                Time time = counter.yearFraction(today, fixedLeg[i]->date());
+                parameters->fixedPayTimes.push_back(time);
+                parameters->fixedCoupons.push_back(fixedLeg[i]->amount());
+            }
+
             std::vector<Handle<CashFlow> > floatingLeg = swap_.floatingLeg();
             std::vector<Handle<CashFlow> >::const_iterator begin, end;
             begin = floatingLeg.begin();
             end   = floatingLeg.end();
-            Date today = termStructure_->settlementDate();
-            DayCounter counter = termStructure_->dayCounter();
             for (; begin != end; ++begin) {
                 Handle<FloatingRateCoupon> coupon = *begin;
                 QL_ENSURE(!coupon.isNull(), "not a floating rate coupon");
                 Date beginDate = coupon->accrualStartDate();
                 Time time = counter.yearFraction(today, beginDate);
-                parameters->startTimes.push_back(time);
+                parameters->floatingResetTimes.push_back(time);
                 time = counter.yearFraction(today, coupon->date());
-                parameters->endTimes.push_back(time);
+                parameters->floatingPayTimes.push_back(time);
                 parameters->nominals.push_back(coupon->nominal());
+            }
+
+            parameters->exerciseType = exercise_.type();
+            for (size_t i=0; i<exercise_.dates().size(); i++) {
+                Time time = counter.yearFraction(today, exercise_.dates()[i]);
+                parameters->exerciseTimes.push_back(time);
             }
         }
 
@@ -84,20 +94,21 @@ namespace QuantLib {
 
     namespace Pricers {
 
-        Arguments* CapFloorPricingEngine::parameters() {
+        Arguments* SwaptionPricingEngine::parameters() {
             return &parameters_;
         }
 
-        void CapFloorPricingEngine::validateParameters() const {
+        void SwaptionPricingEngine::validateParameters() const {
             QL_REQUIRE(
-                parameters_.endTimes.size() == parameters_.startTimes.size(), 
-                "Invalid pricing parameters");
+                parameters_.fixedPayTimes.size() == 
+                parameters_.fixedCoupons.size(), "Invalid pricing parameters");
         }
 
-        const Results* CapFloorPricingEngine::results() const {
+        const Results* SwaptionPricingEngine::results() const {
             return &results_;
         }
 
     }
 
 }
+

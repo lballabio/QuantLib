@@ -22,36 +22,37 @@
  * available at http://quantlib.org/group.html
 */
 
-/*! \file option.cpp
-    \brief Base option class
+/*! \file jamshidianswaption.hpp
+    \brief Swaption pricer using Jamshidian's decomposition 
 
     \fullpath
-    ql/%option.cpp
+    ql/Pricers/%jamshidianswaption.hpp
 */
 
 // $Id$
 
-#include <ql/option.hpp>
+#ifndef quantlib_pricers_jamshidian_swaption_h
+#define quantlib_pricers_jamshidian_swaption_h
+
+#include "ql/Instruments/swaption.hpp"
+#include "ql/InterestRateModelling/onefactormodel.hpp"
 
 namespace QuantLib {
 
-    Option::Option(const Handle<OptionPricingEngine>& engine,
-        const std::string& isinCode, const std::string& description)
-    : Instrument(isinCode, description), engine_(engine) {
-        QL_REQUIRE(!engine_.isNull(), "null pricing engine");
+    namespace Pricers {
+
+        //! Jamshidian swaption pricer
+        //! \todo it doesn't work
+        class JamshidianSwaption : public SwaptionPricingEngine {
+          public:
+            JamshidianSwaption() {} 
+            void calculate() const;
+          private:
+            class rStarFinder;
+            friend class rStarFinder;
+        };
+
     }
-
-    Option::~Option() {}
-
-    void Option::performCalculations() const {
-        setupEngine();
-        engine_->validateParameters();
-        engine_->calculate();
-        const OptionValue* results =
-            dynamic_cast<const OptionValue*>(engine_->results());
-        QL_ENSURE(results != 0, "no results returned from option pricer");
-        NPV_ = results->value;
-    }
-
 }
 
+#endif

@@ -22,36 +22,34 @@
  * available at http://quantlib.org/group.html
 */
 
-/*! \file option.cpp
-    \brief Base option class
+/*! \file analyticalcapfloor.hpp
+    \brief Analytical pricer for caps/floors
 
     \fullpath
-    ql/%option.cpp
+    ql/Pricers/%analyticalcapfloor.hpp
 */
 
 // $Id$
 
-#include <ql/option.hpp>
+#ifndef quantlib_pricers_analytical_cap_floor_h
+#define quantlib_pricers_analytical_cap_floor_h
+
+#include <ql/Instruments/capfloor.hpp>
 
 namespace QuantLib {
 
-    Option::Option(const Handle<OptionPricingEngine>& engine,
-        const std::string& isinCode, const std::string& description)
-    : Instrument(isinCode, description), engine_(engine) {
-        QL_REQUIRE(!engine_.isNull(), "null pricing engine");
-    }
+    namespace Pricers {
 
-    Option::~Option() {}
+        //! Analytical pricer for cap/floor
+        class AnalyticalCapFloor : public CapFloorPricingEngine {
+          public:
+            AnalyticalCapFloor() {}
+            void calculate() const;
 
-    void Option::performCalculations() const {
-        setupEngine();
-        engine_->validateParameters();
-        engine_->calculate();
-        const OptionValue* results =
-            dynamic_cast<const OptionValue*>(engine_->results());
-        QL_ENSURE(results != 0, "no results returned from option pricer");
-        NPV_ = results->value;
+        };
+
     }
 
 }
 
+#endif

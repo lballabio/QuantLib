@@ -109,17 +109,20 @@
 #include <ql/Instruments/stock.hpp>
 #include <ql/Instruments/swap.hpp>
 
+#include <ql/InterestRateModelling/calibrationhelper.hpp>
 #include <ql/InterestRateModelling/grid.hpp>
 #include <ql/InterestRateModelling/model.hpp>
 #include <ql/InterestRateModelling/onefactormodel.hpp>
 #include <ql/InterestRateModelling/shortrateprocess.hpp>
 #include <ql/InterestRateModelling/timefunction.hpp>
 #include <ql/InterestRateModelling/trinomialtree.hpp>
+#include <ql/InterestRateModelling/twofactormodel.hpp>
 
 #include <ql/InterestRateModelling/CalibrationHelpers/caphelper.hpp>
 #include <ql/InterestRateModelling/CalibrationHelpers/swaptionhelper.hpp>
 
 #include <ql/InterestRateModelling/OneFactorModels/blackkarasinski.hpp>
+#include <ql/InterestRateModelling/OneFactorModels/coxingersollrossplus.hpp>
 #include <ql/InterestRateModelling/OneFactorModels/hullwhite.hpp>
 
 #include <ql/Lattices/node.hpp>
@@ -200,6 +203,8 @@
 #include <ql/Pricers/mcpagoda.hpp>
 #include <ql/Pricers/mcpricer.hpp>
 #include <ql/Pricers/singleassetoption.hpp>
+#include <ql/Pricers/treecapfloor.hpp>
+#include <ql/Pricers/treeswaption.hpp>
 
 #include <ql/RandomNumbers/boxmullergaussianrng.hpp>
 #include <ql/RandomNumbers/centrallimitgaussianrng.hpp>

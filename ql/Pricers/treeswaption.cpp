@@ -32,7 +32,8 @@
 // $Id$
 
 #include "ql/Pricers/treeswaption.hpp"
-#include "ql/Lattices/tree.hpp"
+#include "ql/InterestRateModelling/onefactormodel.hpp"
+#include "ql/asset.hpp"
 
 namespace QuantLib {
 
@@ -41,69 +42,140 @@ namespace QuantLib {
         using namespace InterestRateModelling;
         using namespace Lattices;
 
-        TreeSwaption::TreeSwaption(
-            bool payFixed,
-            Exercise::Type exerciseType,
-            const std::vector<Time>& maturities,
-            Time start,
-            const std::vector<Time>& payTimes,
-            const std::vector<double>& coupons,
-            double nominal,
-            Size timeSteps)
-        : payFixed_(payFixed), exerciseType_(exerciseType), 
-          maturities_(maturities), start_(start), payTimes_(payTimes), 
-          coupons_(coupons), nominal_(nominal) {
-            
+        class DiscountBondAsset : public Asset {
+          public:
+            DiscountBondAsset() {}
+            void reset(Size size) {
+                values_ = Array(size, 1.0);
+            }
+        };
+
+        class SwapAsset : public Asset {
+          public:
+            SwapAsset(const Instruments::SwaptionParameters& params,
+                      const Handle<Asset>& bond)
+            : parameters_(params), bond_(bond) {}
+
+            void reset(Size size) {
+                newValues_ = Array(size, 0.0);
+                applyCondition();
+            }
+
+            virtual void applyCondition() {
+                Size i;
+                for (i=0; i<parameters_.fixedPayTimes.size(); i++) {
+                    if (time_ == parameters_.fixedPayTimes[i]) {
+                        if (parameters_.payFixed)
+                            newValues_ -= parameters_.fixedCoupons[i];
+                        else
+                            newValues_ += parameters_.fixedCoupons[i];
+                    }
+                }
+                for (i=0; i<parameters_.floatingResetTimes.size(); i++) {
+                    if (time_ == parameters_.floatingResetTimes[i]) {
+                        for (Size j=0; j<newValues_.size(); j++) {
+                            double coupon = parameters_.nominals[i]*
+                                (1.0 - bond_->values()[j]);
+                            if (parameters_.payFixed)
+                                newValues_[j] += coupon;
+                            else
+                                newValues_[j] -= coupon;
+                        }
+                    }
+                }
+                for (i=0; i<parameters_.floatingPayTimes.size(); i++) {
+                    if (time_ == parameters_.floatingPayTimes[i]) {
+                        bond_->reset(newValues_.size());
+                    }
+                }
+                values_ = newValues_;
+            }
+          private:
+            const Instruments::SwaptionParameters& parameters_;
+            const Handle<DiscountBondAsset>& bond_;
+        };
+
+        class SwaptionAsset : public Asset {
+          public:
+            SwaptionAsset(
+                const Instruments::SwaptionParameters& params,
+                const Handle<Asset>& swap)
+            : parameters_(params), swap_(swap) {}
+
+            void reset(Size size) {
+                newValues_ = Array(size, 0.0);
+                applyCondition();
+            }
+
+            virtual void applySpecificCondition() {
+                for (Size i=0; i<newValues_.size(); i++)
+                    newValues_[i] = QL_MAX(swap_->values()[i], newValues_[i]);
+            }
+
+            virtual void applyCondition() {
+                Size i;
+                if (parameters_.exerciseType != Exercise::American) {
+                    for (i=0; i<parameters_.exerciseTimes.size(); i++) {
+                        if (time_ == parameters_.exerciseTimes[i]) {
+                            applySpecificCondition();
+                        }
+                    }
+                } else {
+                    applySpecificCondition();
+                }
+                values_ = newValues_;
+            }
+
+          private:
+            const Instruments::SwaptionParameters& parameters_;
+            const Handle<SwapAsset>& swap_;
+        };
+
+        TreeSwaption::TreeSwaption(Size timeSteps) : timeSteps_(timeSteps) {}
+
+        void TreeSwaption::calculate() const {
+            QL_REQUIRE(!model_.isNull(), "You must first define a model");
+
             std::list<Time> times(0);
             Size i;
-            for (i=0; i<maturities.size(); i++)
-                times.push_back(maturities[i]);
-            for (i=0; i<payTimes.size(); i++)
-                times.push_back(payTimes[i]);
+            for (i=0; i<parameters_.exerciseTimes.size(); i++)
+                times.push_back(parameters_.exerciseTimes[i]);
+            for (i=0; i<parameters_.fixedPayTimes.size(); i++)
+                times.push_back(parameters_.fixedPayTimes[i]);
+            for (i=0; i<parameters_.floatingResetTimes.size(); i++)
+                times.push_back(parameters_.floatingResetTimes[i]);
+            for (i=0; i<parameters_.floatingPayTimes.size(); i++)
+                times.push_back(parameters_.floatingPayTimes[i]);
             times.unique();
             times.sort();
 
-            timeGrid_ = TimeGrid(times, timeSteps);
-        }
+            QL_REQUIRE(model_->type()==Model::OneFactor,
+                "Only 1-d trees are supported at the moment");
+            Handle<OneFactorModel> model(model_);
 
-        void TreeSwaption::calculate() {
-            QL_REQUIRE(!model_.isNull(), "You must first define a model");
-            Handle<Tree> tree(model_->tree(timeGrid_));
+            TimeGrid timeGrid(times, timeSteps_);
+            Handle<Tree> tree(model->tree(timeGrid));
 
-            unsigned int iEnd = timeGrid_.findIndex(payTimes_.back());
-            int j, i;
-            for (j=tree->jMin(iEnd); j<=tree->jMax(iEnd); j++)
-                tree->node(iEnd, j).setValue(nominal_);
+            Handle<Asset> bond(new DiscountBondAsset());
+            Handle<Asset> swap(new SwapAsset(parameters_, bond));
+            Handle<Asset> swaption(new SwaptionAsset(parameters_, swap));
 
-            for (i=(payTimes_.size() - 1); i>=0; i--) {
-                unsigned int iStart = timeGrid_.findIndex(payTimes_[i]);
-                tree->rollback(iEnd,iStart);
-                for (int j=tree->jMin(iEnd); j<=tree->jMax(iEnd); j++) {
-                    double value = tree->node(iEnd, j).value();
-                    tree->node(iEnd, j).setValue(value + coupons_[i]);
-                }
-                iEnd = iStart;
-            }
-            unsigned int iStart = timeGrid_.findIndex(start_);
-            tree->rollback(iEnd, iStart);
-            iEnd = iStart;
-            for (j=tree->jMin(iEnd); j<=tree->jMax(iEnd); j++) {
-                double value = tree->node(iEnd, j).value() - nominal_;
-                if (payFixed_)
-                    value = -value;
-                tree->node(iEnd, j).setValue(value);
-            }
-            iStart = timeGrid_.findIndex(maturities_.back());
-            tree->rollback(iEnd, iStart);
-            iEnd = iStart;
-            value_ = 0.0;
-            QL_REQUIRE(exerciseType_==Exercise::European,
-                "Exercise type not supported");
-            for (j=tree->jMin(iEnd); j<=tree->jMax(iEnd); j++) {
-                double value = QL_MAX(tree->node(iEnd, j).value(), 0.0);
-                value_ += value*tree->node(iEnd, j).statePrice();
-            }
+            std::vector<Handle<Asset> > assets(0);
+            assets.push_back(bond);
+            assets.push_back(swap);
+            assets.push_back(swaption);
 
+            //FIXME: optimize for european and bermudan
+            // do not rollback until 0 but until the first exercise date
+            // sum with state prices...
+            
+            tree->rollback(assets, times.back(), 0.0);
+            results_.value = swaption->values()[0];
+
+            std::cout << "Discount bond price: " << bond->values()[0]*100.0 << std::endl;
+            std::cout << "Theoretical value: " << model->termStructure()->discount(parameters_.floatingPayTimes[0])*100.0 << std::endl;
+            std::cout << "Swap price: " << swap->values()[0] << std::endl;
+            std::cout << "Swaption price: " << swaption->values()[0] << std::endl;
         }
 
     }

@@ -9,7 +9,8 @@ include_HEADERS = \
 	plainoption.hpp \
 	simpleswap.hpp \
 	stock.hpp \
-	swap.hpp
+	swap.hpp \
+    swaption.hpp
 
 EXTRA_DIST=makefile.mak
 
@@ -18,6 +19,7 @@ libInstruments_la_SOURCES = \
     simpleswap.cpp \
     stock.cpp \
 	plainoption.cpp \
-	swap.cpp
+	swap.cpp \
+    swaption.cpp
 
 noinst_LTLIBRARIES = libInstruments.la

@@ -21,7 +21,8 @@ OBJS = capfloor.obj$(_D) \
        plainoption.obj$(_D) \
        simpleswap.obj$(_D) \
        stock.obj$(_D) \
-       swap.obj$(_D)
+       swap.obj$(_D) \
+       swaption.obj$(_D)
 
 # Tools to be used
 CC        = bcc32

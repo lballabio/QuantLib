@@ -31,50 +31,22 @@
 
 // $Id$
 
-#ifndef quantlib_pricers_european_swaption_h
-#define quantlib_pricers_european_swaption_h
+#ifndef quantlib_pricers_tree_swaption_h
+#define quantlib_pricers_tree_swaption_h
 
-#include "ql/exercise.hpp"
-#include "ql/option.hpp"
-#include "ql/InterestRateModelling/onefactormodel.hpp"
-
-#include <vector>
+#include <ql/Instruments/swaption.hpp>
 
 namespace QuantLib {
 
     namespace Pricers {
 
         //! Swaption priced in a tree
-        class TreeSwaption {
+        class TreeSwaption : public SwaptionPricingEngine {
           public:
-            TreeSwaption() {}
-            TreeSwaption(
-                bool payFixed,
-                Exercise::Type exerciseType,
-                const std::vector<Time>& maturities,
-                Time start,
-                const std::vector<Time>& payTimes,
-                const std::vector<double>& coupons,
-                double nominal,
-                Size timeSteps);
-            void useModel(
-                const Handle<InterestRateModelling::OneFactorModel>& model) {
-                model_ = model;
-            }
-            void calculate();
-            double value() const { return value_; }
-
+            TreeSwaption(Size timeSteps);
+            void calculate() const;
           private:
-            bool payFixed_;
-            Exercise::Type exerciseType_;
-            std::vector<Time> maturities_;
-            Time start_;
-            std::vector<Time> payTimes_;
-            std::vector<double> coupons_;
-            double nominal_;
-            double value_;
-            Lattices::TimeGrid timeGrid_;
-            Handle<InterestRateModelling::OneFactorModel> model_;
+            Size timeSteps_;
         };
 
     }

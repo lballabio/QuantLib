@@ -34,6 +34,7 @@ EXTRA_DIST= \
 include_HEADERS = \
 	argsandresults.hpp \
 	array.hpp \
+    asset.hpp \
 	calendar.hpp \
 	cashflow.hpp \
 	config.hpp \
@@ -83,6 +84,7 @@ libQuantLib_la_LIBADD = \
     InterestRateModelling/libInterestRateModelling.la \
     InterestRateModelling/CalibrationHelpers/libCalibrationHelpers.la \
     InterestRateModelling/OneFactorModels/libOneFactorModels.la \
+    InterestRateModelling/TwoFactorModels/libTwoFactorModels.la \
     Lattices/libLattices.la \
 	Math/libMath.la \
 	MonteCarlo/libMonteCarlo.la \

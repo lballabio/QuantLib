@@ -49,56 +49,56 @@ namespace QuantLib {
 
         Type type() const { return type_; }
 
-        virtual Date exerciseDate(unsigned index = 0) const = 0;
-        virtual std::vector<Date> exerciseDates() const = 0;
+        virtual Date date(unsigned index = 0) const = 0;
+        virtual std::vector<Date> dates() const = 0;
       private:
         Type type_;
     };
 
     class AmericanExercise : public Exercise {
       public:
-        AmericanExercise( Date exerciseDate) 
-        : Exercise(American), exerciseDate_(exerciseDate) {}
+        AmericanExercise( Date date) 
+        : Exercise(American), date_(date) {}
 
-        virtual Date exerciseDate(unsigned index = 0) const { 
-            return exerciseDate_;
+        virtual Date date(unsigned index = 0) const { 
+            return date_;
         }
-        virtual std::vector<Date> exerciseDates() const { 
-            return std::vector<Date>(1, exerciseDate_);
+        virtual std::vector<Date> dates() const { 
+            return std::vector<Date>(1, date_);
         }
       private:
-        Date exerciseDate_;
+        Date date_;
     };
 
     class BermudanExercise : public Exercise {
       public:
-        BermudanExercise(const std::vector<Date>& exerciseDates) 
-        : Exercise(Bermudan), exerciseDates_(exerciseDates) {}
+        BermudanExercise(const std::vector<Date>& dates) 
+        : Exercise(Bermudan), dates_(dates) {}
         virtual ~BermudanExercise() {}
 
-        virtual Date exerciseDate(unsigned index = 0) const { 
-            return exerciseDates_[index];
+        virtual Date date(unsigned index = 0) const { 
+            return dates_[index];
         }
-        virtual std::vector<Date> exerciseDates() const { 
-            return exerciseDates_;
+        virtual std::vector<Date> dates() const { 
+            return dates_;
         }
       private:
-        std::vector<Date> exerciseDates_;
+        std::vector<Date> dates_;
     };
 
     class EuropeanExercise : public Exercise {
       public:
-        EuropeanExercise( Date exerciseDate) 
-        : Exercise(European), exerciseDate_(exerciseDate) {}
+        EuropeanExercise( Date date) 
+        : Exercise(European), date_(date) {}
 
-        virtual Date exerciseDate(unsigned index = 0) const { 
-            return exerciseDate_;
+        virtual Date date(unsigned index = 0) const { 
+            return date_;
         }
-        virtual std::vector<Date> exerciseDates() const { 
-            return std::vector<Date>(1, exerciseDate_);
+        virtual std::vector<Date> dates() const { 
+            return std::vector<Date>(1, date_);
         }
       private:
-        Date exerciseDate_;
+        Date date_;
     };
 
 }

@@ -5,6 +5,7 @@ INCLUDES= -I${top_srcdir} -I${top_builddir}
 includedir = $(prefix)/include/ql/Pricers
 
 include_HEADERS = \
+    analyticalcapfloor.hpp \
     barrieroption.hpp \
     binaryoption.hpp \
     cliquetoption.hpp \
@@ -24,6 +25,7 @@ include_HEADERS = \
     fdmultiperiodoption.hpp \
     fdshoutoption.hpp \
     fdstepconditionoption.hpp \
+    jamshidianswaption.hpp \
     mcbasket.hpp \
     mcdiscretearithmeticapo.hpp \
     mcdiscretearithmeticaso.hpp \
@@ -34,11 +36,13 @@ include_HEADERS = \
     mcpagoda.hpp \
     mcpricer.hpp \
     singleassetoption.hpp \
+    treecapfloor.hpp \
     treeswaption.hpp
 
 EXTRA_DIST=makefile.mak
 
 libPricers_la_SOURCES = \
+    analyticalcapfloor.cpp \
     barrieroption.cpp \
     fdbermudanoption.cpp \
     binaryoption.cpp \
@@ -55,6 +59,7 @@ libPricers_la_SOURCES = \
     fdeuropean.cpp \
     fdmultiperiodoption.cpp \
     fdstepconditionoption.cpp \
+    jamshidianswaption.cpp \
     mcbasket.cpp \
     mcdiscretearithmeticapo.cpp \
     mcdiscretearithmeticaso.cpp \
@@ -64,6 +69,7 @@ libPricers_la_SOURCES = \
     mcmaxbasket.cpp \
     mcpagoda.cpp \
     singleassetoption.cpp \
+    treecapfloor.cpp \
     treeswaption.cpp
 
 noinst_LTLIBRARIES = libPricers.la
