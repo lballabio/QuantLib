@@ -29,6 +29,7 @@
 namespace QuantLib {
 
     //! Abstract base-class for two-factor models
+    /*! \ingroup shortrate */
     class TwoFactorModel : public ShortRateModel {
       public:
         TwoFactorModel(Size nParams);

@@ -41,6 +41,8 @@ namespace QuantLib {
         pricer.  In case of control variate technique the user should
         provide the additional control option, namely the option path
         pricer and the option value.
+
+        \ingroup mcarlo
     */
     template <class mc_traits,
               class stats_traits = Statistics>

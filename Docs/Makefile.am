@@ -9,7 +9,6 @@ EXTRA_DIST = \
              quantlibfooteronline.html \
              quantlibheader.html \
              quantlibheader.tex \
-             userman.tex \
              README.txt
 
 TEX_PARAMETERS = buf_size=500000 pool_size=768000 extra_mem_top=512000 extra_mem_bot=512000 max_strings=45000 hash_extra=10000 save_size=8000
@@ -53,25 +52,19 @@ docs-clean:
 	rm -Rf latex
 
 tex-files: docs-html
-	cp userman.tex latex/userman.tex
+	cp qlintro.tex latex/
 	mv latex/refman.tex .refman.tex
 	$(SED) -e "/Page Index/d" \
            -e "/input{pages}/d" \
            -e "/Page Documentation/d" \
            -e "/input{group}/d" \
-           -e "/include{fixedincome}/d" \
            -e "/include{history}/d" \
            -e "/include{index}/d" \
            -e "/include{install}/d" \
            -e "/include{license}/d" \
-           -e "/include{math}/d" \
-           -e "/include{mcarlo}/d" \
            -e "/include{overview}/d" \
-           -e "/include{platforms}/d" \
            -e "/include{resources}/d" \
-           -e "/include{termstructures}/d" \
            -e "/include{usage}/d" \
-           -e "/include{utilities}/d" \
            -e "/include{where}/d" \
            -e "s/ple Documentation}/ple Documentation}\\\\label{exchap}/" \
 	       .refman.tex > latex/refman.tex

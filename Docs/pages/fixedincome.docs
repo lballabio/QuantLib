@@ -20,7 +20,8 @@
  The members of the QuantLib Group are listed in the QuantLib License
 */
 
-/*! \page fixedincome The short-rate modelling framework
+/*! \defgroup shortrate Short-rate modelling framework
+
     This framework (corresponding to the ql/ShortRateModels directory)
     implements some single-factor and two-factor short rate models. The models 
     implemented in this library are widely used by practitionners. For the 

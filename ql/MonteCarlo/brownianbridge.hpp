@@ -41,6 +41,8 @@ namespace QuantLib {
     //! Builds Wiener process paths using Gaussian variates
     /*! For more details: "Monte Carlo Methods in Finance" by P. Jäckel,
         section 10.8.3
+
+        \ingroup mcarlo
     */
     template <class GSG> // Gaussian Sequence Generator
     class BrownianBridge {

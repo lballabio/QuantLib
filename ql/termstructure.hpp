@@ -35,13 +35,15 @@ namespace QuantLib {
     /*! This abstract class defines the interface of concrete
         rate structures which will be derived from this one.
 
-        Rates are assumed to be annual continuos compounding.
+        Rates are assumed to be annual continuous compounding.
 
         \todo add derived class ParSwapTermStructure similar to
               ZeroYieldTermStructure, DiscountStructure, ForwardRateStructure
 
         \todo allow for different compounding rules and compounding
               frequencies
+
+        \ingroup termstructures
     */
     class TermStructure : public virtual Observable,
                           public Extrapolator {
@@ -124,6 +126,8 @@ namespace QuantLib {
         <tt>zeroYieldImpl(Time, bool)</tt> method in derived classes.
 
         Rates are assumed to be annual continuous compounding.
+
+        \ingroup termstructures
     */
     class ZeroYieldStructure : public TermStructure {
       public:
@@ -148,7 +152,9 @@ namespace QuantLib {
         programmer to implement only the
         <tt>discountImpl(const Date&, bool)</tt> method in derived classes.
 
-        Rates are assumed to be annual continuos compounding.
+        Rates are assumed to be annual continuous compounding.
+
+        \ingroup termstructures
     */
     class DiscountStructure : public TermStructure {
       public:
@@ -173,7 +179,9 @@ namespace QuantLib {
         programmer to implement only the
         <tt>forwardImpl(const Date&, bool)</tt> method in derived classes.
 
-        Rates are assumed to be annual continuos compounding.
+        Rates are assumed to be annual continuous compounding.
+
+        \ingroup termstructures
     */
     class ForwardRateStructure : public TermStructure {
       public:

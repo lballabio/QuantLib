@@ -27,6 +27,7 @@
 namespace QuantLib {
 
     //! weighted sample
+    /*! \ingroup mcarlo */
     template <class T>
     struct Sample {
       public:

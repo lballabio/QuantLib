@@ -31,6 +31,8 @@ namespace QuantLib {
     //! Generates random paths using a sequence generator
     /*! Generates random paths with drift(S,t) and variance(S,t)
         using a gaussian sequence generator
+
+        \ingroup mcarlo
     */
     template <class GSG>
     class PathGenerator {

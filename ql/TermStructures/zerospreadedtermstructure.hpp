@@ -30,6 +30,8 @@ namespace QuantLib {
     /*! \note This term structure will remain linked to the original
               structure, i.e., any changes in the latter will be
               reflected in this structure as well.
+
+        \ingroup termstructures
     */
     class ZeroSpreadedTermStructure : public ZeroYieldStructure,
                                       public Observer {

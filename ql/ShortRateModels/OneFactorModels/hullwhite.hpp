@@ -33,6 +33,8 @@ namespace QuantLib {
             dr_t = (\theta(t) - \alpha r_t)dt + \sigma dW_t
         \f]
         where \f$ \alpha \f$ and \f$ \sigma \f$ are constants. 
+
+        \ingroup shortrate
     */
     class HullWhite : public Vasicek, public TermStructureConsistentModel {
       public:

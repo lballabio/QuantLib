@@ -39,9 +39,8 @@ namespace QuantLib {
         \todo a) make it time-aware
               b) rename it as MultiAssetPath
 
+        \ingroup mcarlo
     */
-
-    //! multiple random walk
     class MultiPath {
       public:
         MultiPath(Size nAsset,

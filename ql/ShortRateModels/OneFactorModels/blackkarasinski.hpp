@@ -32,6 +32,8 @@ namespace QuantLib {
             d\ln r_t = (\theta(t) - \alpha \ln r_t)dt + \sigma dW_t,
         \f]
         where \f$ alpha \f$ and \f$ sigma \f$ are constants.
+
+        \ingroup shortrate
     */
     class BlackKarasinski : public OneFactorModel,
                             public TermStructureConsistentModel {

@@ -43,10 +43,9 @@ namespace QuantLib {
 
         \warning The bootstrapping algorithm will raise an exception if
         any two instruments have the same maturity date.
+
+        \ingroup termstructures
     */
-    /* This class is derived directly from term structure since we are
-       rewriting all of forward, discount and zeroYield to take advantage
-       of its own internal structure. */
     class PiecewiseFlatForward : public TermStructure,
                                  public LazyObject {
       public:
@@ -79,6 +78,9 @@ namespace QuantLib {
         Time maxTime() const;
         //@}
       protected:
+        /* We implement all calculation methods in order to take advantage
+           of its own internal structure. This is also the reason why we
+           derive directly from TermStructure. */
         Rate zeroYieldImpl(Time) const;
         DiscountFactor discountImpl(Time) const;
         Rate forwardImpl(Time) const;

@@ -21,7 +21,8 @@
  The members of the QuantLib Group are listed in the QuantLib License
 */
 
-/*! \page math Math tools
+/*! \defgroup math Math tools
+
     Math facilities of the library include:
     
     \section randomnumbers Pseudo-random number and low-discrepancy sequence generators

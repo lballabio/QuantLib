@@ -32,6 +32,8 @@ namespace QuantLib {
             dr_t = a(b - r_t)dt + \sigma dW_t ,
         \f]
         where \f$ a \f$, \f$ b \f$ and \f$ \sigma \f$ are constants. 
+
+        \ingroup shortrate
     */
     class Vasicek : public OneFactorAffineModel {
       public:

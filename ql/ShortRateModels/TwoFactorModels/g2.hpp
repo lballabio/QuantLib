@@ -44,6 +44,8 @@ namespace QuantLib {
 
         \bug This class was not tested enough to guarantee
              its functionality.
+
+        \ingroup shortrate
     */
     class G2 : public TwoFactorModel, public AffineModel,
                public TermStructureConsistentModel {

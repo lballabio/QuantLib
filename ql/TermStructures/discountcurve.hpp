@@ -31,7 +31,9 @@ namespace QuantLib {
     //! Term structure based on loglinear interpolation of discount factors
     /*! Loglinear interpolation guarantees piecewise constant forward rates.
 
-        Rates are assumed to be annual continuos compounding.
+        Rates are assumed to be annual continuous compounding.
+
+        \ingroup termstructures
     */
     class DiscountCurve : public DiscountStructure {
       public:

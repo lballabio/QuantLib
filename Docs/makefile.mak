@@ -76,28 +76,14 @@ tex-files:: html
            -e "/input{pages}/d" \
            -e "/Page Documentation/d" \
            -e "/input{group}/d" \
-           -e "/include{coreclasses}/d" \
-           -e "/include{currencies}/d" \
-           -e "/include{datetime}/d" \
-           -e "/include{findiff}/d" \
-           -e "/include{fixedincome}/d" \
            -e "/include{history}/d" \
            -e "/include{index}/d" \
            -e "/include{install}/d" \
-           -e "/include{instruments}/d" \
-           -e "/include{lattices}/d" \
            -e "/include{license}/d" \
-           -e "/include{math}/d" \
-           -e "/include{mcarlo}/d" \
            -e "/include{overview}/d" \
-           -e "/include{patterns}/d" \
-           -e "/include{platforms}/d" \
            -e "/include{resources}/d" \
-           -e "/include{termstructures}/d" \
            -e "/include{usage}/d" \
-           -e "/include{utilities}/d" \
            -e "/include{where}/d" \
-           -e "/include{todo}/d" \
            -e "s/ple Documentation}/ple Documentation}\\\\label{exchap}/" \
            oldrefman.tex > refman.tex
     del oldrefman.tex

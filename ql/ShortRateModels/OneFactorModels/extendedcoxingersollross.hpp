@@ -35,6 +35,8 @@ namespace QuantLib {
 
         \bug This class was not tested enough to guarantee
              its functionality.
+
+        \ingroup shortrate
     */
     class ExtendedCoxIngersollRoss : public CoxIngersollRoss,
                                      public TermStructureConsistentModel {

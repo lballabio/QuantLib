@@ -31,7 +31,10 @@
 namespace QuantLib {
 
     //! Affine model class
-    /*! This is the base class for analytically tractable models */
+    /*! Base class for analytically tractable models. 
+
+        \ingroup shortrate
+    */
     class AffineModel : public virtual Observable {
       public:
         //! Implied discount curve
@@ -46,6 +49,8 @@ namespace QuantLib {
     //! Term-structure consistent model class
     /*! This is a base class for models that can reprice exactly
         any discount bond.
+
+        \ingroup shortrate
     */
     class TermStructureConsistentModel : public virtual Observable {
       public:
@@ -60,6 +65,7 @@ namespace QuantLib {
     };
 
     //! Abstract short-rate model class
+    /*! \ingroup shortrate */
     class ShortRateModel : public Observer, public virtual Observable {
       public:
         ShortRateModel(Size nArguments);

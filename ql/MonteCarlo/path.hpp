@@ -32,6 +32,8 @@ namespace QuantLib {
 
         \todo should Path include the t=0.0 point?
               Alternatively all path pricers must be revisited.
+
+        \ingroup mcarlo
     */
     class Path {
       public:

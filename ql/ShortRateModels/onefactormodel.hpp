@@ -29,6 +29,7 @@
 namespace QuantLib {
 
     //! Single-factor short-rate model abstract class
+    /*! \ingroup shortrate */
     class OneFactorModel : public ShortRateModel {
       public:
         OneFactorModel(Size nArguments);
@@ -110,6 +111,8 @@ namespace QuantLib {
         \f[
             P(t, T, r_t) = A(t,T)e^{ -B(t,T) r_t}.
         \f]
+
+        \ingroup shortrate
     */
     class OneFactorAffineModel : public OneFactorModel,
                                  public AffineModel {

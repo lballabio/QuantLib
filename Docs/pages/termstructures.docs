@@ -21,7 +21,7 @@
  The members of the QuantLib Group are listed in the QuantLib License
 */
 
-/*! \page termstructures Term structures
+/*! \defgroup termstructures Term structures
 
     The abstract class QuantLib::TermStructure provides the common
     interface to concrete term structure models. Among others, methods

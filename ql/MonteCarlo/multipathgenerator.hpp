@@ -40,6 +40,8 @@ namespace QuantLib {
         \endcode
 
         \todo why store correlation matrix rather than covariance?
+
+        \ingroup mcarlo
     */
     template <class GSG>
     class MultiPathGenerator {

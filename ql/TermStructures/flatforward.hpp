@@ -27,6 +27,8 @@
 
 namespace QuantLib {
 
+    //! Flat interest-rate curve
+    /*! \ingroup termstructures */
     class FlatForward : public TermStructure, public Observer {
       public:
         // constructors

@@ -34,6 +34,8 @@ namespace QuantLib {
 
         \bug This class was not tested enough to guarantee
              its functionality.
+
+        \ingroup shortrate
     */
     class CoxIngersollRoss : public OneFactorAffineModel {
       public:

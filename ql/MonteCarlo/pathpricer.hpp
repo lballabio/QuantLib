@@ -31,7 +31,10 @@
 namespace QuantLib {
 
     //! base class for path pricers
-    /*! Given a path the value of an option is returned on that path. */
+    /*! Returns the value of an option on a given path.
+
+        \ingroup mcarlo
+    */
     template<class PathType, class ValueType=double>
     class PathPricer : public std::unary_function<PathType, ValueType> {
       public:
