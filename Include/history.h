@@ -28,6 +28,9 @@
     $Source$
     $Name$
     $Log$
+    Revision 1.7  2001/01/10 11:21:00  lballabio
+    Added Examples folder
+
     Revision 1.6  2001/01/09 17:58:38  enri
     added explicit typedefs to const_iterator
 
@@ -246,7 +249,18 @@ namespace QuantLib {
         typedef Utilities::FilteringIterator<const_data_iterator,DataValidator> 
             const_valid_data_iterator;
 
-        //! \name Iterator access
+        /*! \name Iterator access
+            Four different types of iterators are provided, namely, 
+            const_iterator, const_valid_iterator, const_data_iterator, and 
+            const_valid_data_iterator.
+            
+            const_iterator and const_valid_iterator point to an Entry structure, 
+            the difference being that the latter only iterates over valid 
+            entries - i.e., entries whose data are not null.
+            The same difference exists between const_data_iterator and 
+            const_valid_data_iterator which point directly to historical values 
+            without reference to the date they are associated to.
+        */
         //@{
         // entry iterators
         const_iterator begin() const { 
@@ -299,6 +313,12 @@ namespace QuantLib {
             bool operator()(const Entry& e) { return !IsNull(e.value()); }
         };
     };
+
+
+    /*! \example history_iterators.cpp
+        This code exemplifies how to use History iterators to perform statistic 
+        analyses on historical data.
+    */
 
 
     // inline definitions

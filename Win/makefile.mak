@@ -7,22 +7,22 @@
 
 # Directories
 !ifdef DEBUG
-    OUTPUT_DIR    = .\Debug
+    OUTPUT_DIR = .\Debug
 !else
-    OUTPUT_DIR    = .\Release
+    OUTPUT_DIR = .\Release
 !endif
-PYTHON_DIR        = ..\Python
-SWIG_DIR        = ..\Swig
-SOURCES_DIR        = ..\Sources
-INCLUDE_DIR        = ..\Include
-BCC_INCLUDE        = $(MAKEDIR)\..\include
-BCC_LIBS        = $(MAKEDIR)\..\lib
+PYTHON_DIR     = ..\Python
+SWIG_DIR       = ..\Swig
+SOURCES_DIR    = ..\Sources
+INCLUDE_DIR    = ..\Include
+BCC_INCLUDE    = $(MAKEDIR)\..\include
+BCC_LIBS       = $(MAKEDIR)\..\lib
 !if "$(PYTHON_HOME)" == ""
 !message Please set the PYTHON_HOME environment variable to the absolute path of your Python installation (or any string if you don't plan to use Python).
 !error terminated
 !endif
-PYTHON_INCLUDE    = "$(PYTHON_HOME)"\include
-PYTHON_LIBS        = "$(PYTHON_HOME)"\libs
+PYTHON_INCLUDE = "$(PYTHON_HOME)"\include
+PYTHON_LIBS    = "$(PYTHON_HOME)"\libs
 
 # Object files
 CORE_OBJS        = $(OUTPUT_DIR)\calendar.obj \
