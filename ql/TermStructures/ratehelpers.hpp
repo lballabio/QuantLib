@@ -49,7 +49,7 @@ namespace QuantLib {
           public:
             RateHelper(const RelinkableHandle<MarketElement>& quote);
             RateHelper(double quote);
-            virtual ~RateHelper();
+            virtual ~RateHelper() {}
             //! \name RateHelper interface
             //@{
             double quoteError() const;

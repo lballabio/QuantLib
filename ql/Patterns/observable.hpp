@@ -1,5 +1,4 @@
 
-
 /*
  Copyright (C) 2000, 2001, 2002 RiskMap srl
 
@@ -27,8 +26,9 @@
 #ifndef quantlib_observable_h
 #define quantlib_observable_h
 
-#include <ql/qldefines.hpp>
-#include <set>
+#include <ql/handle.hpp>
+#include <list>
+#include <algorithm>
 
 namespace QuantLib {
 
@@ -36,83 +36,105 @@ namespace QuantLib {
     /*! See sect. \ref patterns */
     namespace Patterns {
 
+        //! Object that notifies its changes to a set of observables
+        class Observable {
+            friend class Observer;
+          public:
+            virtual ~Observable() {}
+            /*! This method should be called at the end of non-const methods 
+                or when the programmer desires to notify any changes.
+            */
+            void notifyObservers();
+          private:
+            void registerObserver(Observer*);
+            void unregisterObserver(Observer*);
+            std::list<Observer*> observers_;
+            typedef std::list<Observer*>::iterator iterator;
+        };
+
+
         //! Object that gets notified when a given observable changes
-        /*! These classes are a simplified version of the ones implemented in
-            Bruce Eckel, Thinking in C++ (http://www.bruceeckel.com) which in
-            turn mirror the Java Observer and Observable interfaces.
-        */
         class Observer {
           public:
-            virtual ~Observer() {}
+            // constructors, assignment, destructor
+            Observer() {}
+            Observer(const Observer&);
+            Observer& operator=(const Observer&);
+            virtual ~Observer();
+            // observer interface
+            void registerWith(const Handle<Observable>&);
+            void unregisterWith(const Handle<Observable>&);
             /*! This method must be implemented in derived classes. An
                 instance of %Observer does not call this method directly:
                 instead, it will be called by the observables the instance
                 registered with when they need to notify any changes.
             */
             virtual void update() = 0;
-        };
-
-        //! Object that notifies its changes to a set of observables
-        class Observable {
-          public:
-            virtual ~Observable() {}
-            /*! \name Observer management
-                \warning It is responsibility of the programmer to make sure
-                that the registered observers unregister themselves before
-                going out of scope.
-            */
-            //@{
-            virtual void registerObserver(Observer*);
-            void registerObservers(std::set<Observer*>&);
-            virtual void unregisterObserver(Observer*);
-            void unregisterObservers(std::set<Observer*>&);
-            virtual void unregisterAll();
-            std::set<Observer*> observers() const;
-            /*! In derived classes, this method should be called at the end
-                of non-const methods or when the programmer desires to notify
-                any changes.
-            */
-            virtual void notifyObservers();
-            //@}
           private:
-            std::set<Observer*> theObservers;
+            std::list<Handle<Observable> > observables_;
+            typedef std::list<Handle<Observable> >::iterator iterator;
         };
 
 
         // inline definitions
 
         inline void Observable::registerObserver(Observer* o) {
-            theObservers.insert(o);
-        }
-
-        inline void Observable::registerObservers(std::set<Observer*>& o) {
-            for (std::set<Observer*>::iterator i = o.begin(); i != o.end(); ++i)
-                registerObserver(*i);
+            observers_.push_front(o);
         }
 
         inline void Observable::unregisterObserver(Observer* o) {
-            theObservers.erase(o);
-        }
-
-        inline void Observable::unregisterObservers(std::set<Observer*>& o) {
-            for (std::set<Observer*>::iterator i = o.begin(); i != o.end(); ++i)
-                unregisterObserver(*i);
-        }
-
-        inline void Observable::unregisterAll() {
-            theObservers.clear();
-        }
-
-        inline std::set<Observer*> Observable::observers() const {
-            return theObservers;
+            iterator i = std::find(observers_.begin(),observers_.end(),o);
+            if (i != observers_.end())
+                observers_.erase(i);
         }
 
         inline void Observable::notifyObservers() {
-            for (std::set<Observer*>::iterator i = theObservers.begin();
-                i != theObservers.end(); ++i)
-                    (*i)->update();
+            for (iterator i=observers_.begin(); i!=observers_.end(); ++i)
+                (*i)->update();
         }
 
+
+        inline Observer::Observer(const Observer& o)
+        : observables_(o.observables_) {
+            for (iterator i=observables_.begin(); i!=observables_.end(); ++i)
+                (*i)->registerObserver(this);
+        }
+        
+        inline Observer& Observer::operator=(const Observer& o) {
+            for (iterator i=observables_.begin(); i!=observables_.end(); ++i)
+                (*i)->unregisterObserver(this);
+            observables_ = o.observables_;
+            for (iterator i=observables_.begin(); i!=observables_.end(); ++i)
+                (*i)->registerObserver(this);
+            return *this;
+        }
+
+        inline Observer::~Observer() {
+            for (iterator i=observables_.begin(); i!=observables_.end(); ++i)
+                (*i)->unregisterObserver(this);
+        }
+
+        inline void Observer::registerWith(const Handle<Observable>& h) {
+            if (!h.isNull()) {
+                observables_.push_front(h);
+                h->registerObserver(this);
+            }
+        }
+
+        inline void Observer::unregisterWith(const Handle<Observable>& h) {
+            if (!h.isNull()) {
+                for (iterator i=observables_.begin(); 
+                              i!=observables_.end(); 
+                              ++i) {
+                    if (h.shareSameObject(*i)) {
+                        (*i)->unregisterObserver(this);
+                        observables_.erase(i);
+                        return;
+                    }
+                }
+            }
+        }
+            
     }
 
 }

@@ -29,6 +29,7 @@
 
 #include <ql/option.hpp>
 #include <ql/types.hpp>
+#include <functional>
 
 namespace QuantLib {
 

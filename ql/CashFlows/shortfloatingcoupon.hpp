@@ -49,7 +49,6 @@ namespace QuantLib {
                 Spread spread = 0.0,
                 const Date& refPeriodStart = Date(),
                 const Date& refPeriodEnd = Date());
-            ~ShortFloatingRateCoupon();
             //! \name CashFlow interface
             //@{
             double amount() const;
@@ -77,10 +76,6 @@ namespace QuantLib {
 
 
         // inline definitions
-
-        inline ShortFloatingRateCoupon::~ShortFloatingRateCoupon() {
-            termStructure_.unregisterObserver(this);
-        }
 
         inline const Handle<Indexes::Xibor>&
         ShortFloatingRateCoupon::index() const {

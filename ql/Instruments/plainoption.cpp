@@ -44,17 +44,10 @@ namespace QuantLib {
           underlying_(underlying), strike_(strike),
           dividendYield_(dividendYield), riskFreeRate_(riskFreeRate),
           exerciseDate_(exerciseDate), volatility_(volatility) {
-            underlying_.registerObserver(this);
-            dividendYield_.registerObserver(this);
-            riskFreeRate_.registerObserver(this);
-            volatility_.registerObserver(this);
-        }
-
-        PlainOption::~PlainOption() {
-            underlying_.unregisterObserver(this);
-            dividendYield_.unregisterObserver(this);
-            riskFreeRate_.unregisterObserver(this);
-            volatility_.unregisterObserver(this);
+            registerWith(underlying_);
+            registerWith(dividendYield_);
+            registerWith(riskFreeRate_);
+            registerWith(volatility_);
         }
 
         double PlainOption::delta() const {

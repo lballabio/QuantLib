@@ -50,7 +50,6 @@ namespace QuantLib {
                         const Handle<OptionPricingEngine>& engine,
                         const std::string& isinCode = "",
                         const std::string& description = "");
-            ~PlainOption();
             //! \name greeks
             //@{
             double delta() const;

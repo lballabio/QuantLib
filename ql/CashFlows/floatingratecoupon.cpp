@@ -44,7 +44,7 @@ namespace QuantLib {
               refPeriodStart, refPeriodEnd),
           termStructure_(termStructure), index_(index),
           fixingDays_(fixingDays), spread_(spread) {
-            termStructure_.registerObserver(this);
+            registerWith(termStructure_);
         }
 
         double FloatingRateCoupon::amount() const {

@@ -62,7 +62,6 @@ namespace QuantLib {
       public:
         DerivedMarketElement(const RelinkableHandle<MarketElement>& element,
                              const UnaryFunction& f);
-        ~DerivedMarketElement();
         //! \name Market element interface
         //@{
         double value() const;
@@ -85,7 +84,6 @@ namespace QuantLib {
             const RelinkableHandle<MarketElement>& element1,
             const RelinkableHandle<MarketElement>& element2,
             const BinaryFunction& f);
-        ~CompositeMarketElement();
         //! \name Market element interface
         //@{
         double value() const;
@@ -124,12 +122,7 @@ namespace QuantLib {
         const RelinkableHandle<MarketElement>& element,
         const UnaryFunction& f)
     : element_(element), f_(f) {
-        element_.registerObserver(this);
-    }
-
-    template <class UnaryFunction>
-    inline DerivedMarketElement<UnaryFunction>::~DerivedMarketElement() {
-        element_.unregisterObserver(this);
+        registerWith(element_);
     }
 
     template <class UnaryFunction>
@@ -152,14 +145,8 @@ namespace QuantLib {
         const RelinkableHandle<MarketElement>& element2,
         const BinaryFunction& f)
     : element1_(element1), element2_(element2), f_(f) {
-        element1_.registerObserver(this);
-        element2_.registerObserver(this);
-    }
-
-    template <class BinaryFunction>
-    inline CompositeMarketElement<BinaryFunction>::~CompositeMarketElement() {
-        element1_.unregisterObserver(this);
-        element2_.unregisterObserver(this);
+        registerWith(element1_);
+        registerWith(element2_);
     }
 
     template <class BinaryFunction>

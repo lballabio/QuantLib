@@ -150,6 +150,8 @@ namespace QuantLib {
         //@{
         //! Checks if the contained pointer is actually allocated
         bool isNull() const;
+        //! Checks if the two handles point to the same object
+        bool shareSameObject(const Handle<T>&) const;
         //@}
       private:
         mutable T* ptr_;
@@ -200,6 +202,11 @@ namespace QuantLib {
     template <class T>
     inline bool Handle<T>::isNull() const {
         return (ptr_ == 0);
+    }
+
+    template <class T>
+    inline bool Handle<T>::shareSameObject(const Handle<T>& h) const {
+        return (ptr_ == h.ptr_);
     }
 
 }

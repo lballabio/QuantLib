@@ -37,18 +37,14 @@ namespace QuantLib {
 
         RateHelper::RateHelper(const RelinkableHandle<MarketElement>& quote)
         : quote_(quote), termStructure_(0) {
-            quote_.registerObserver(this);
+            registerWith(quote_);
         }
 
         RateHelper::RateHelper(double quote)
         : quote_(RelinkableHandle<MarketElement>(
             Handle<MarketElement>(new SimpleMarketElement(quote)))),
         termStructure_(0) {
-            quote_.registerObserver(this);
-        }
-
-        RateHelper::~RateHelper() {
-            quote_.unregisterObserver(this);
+            registerWith(quote_);
         }
 
         void RateHelper::setTermStructure(TermStructure* t) {

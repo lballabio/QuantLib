@@ -60,12 +60,7 @@ namespace QuantLib {
                     DateFormatter::toString(m1) + ")");
             }
             for (i=0; i<instruments_.size(); i++)
-                instruments_[i]->registerObserver(this);
-        }
-
-        PiecewiseFlatForward::~PiecewiseFlatForward() {
-            for (Size i=0; i<instruments_.size(); i++)
-                instruments_[i]->unregisterObserver(this);
+                registerWith(instruments_[i]);
         }
 
         void PiecewiseFlatForward::bootstrap() const {

@@ -39,7 +39,6 @@ namespace QuantLib {
           public:
             Stock(const RelinkableHandle<MarketElement>& quote,
                 const std::string& isinCode, const std::string& description);
-            ~Stock();
           protected:
             void performCalculations() const;
           private:

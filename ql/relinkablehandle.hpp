@@ -1,5 +1,4 @@
 
-
 /*
  Copyright (C) 2000, 2001, 2002 RiskMap srl
 
@@ -32,29 +31,17 @@
 
 namespace QuantLib {
 
-    //! Globally accessible relinkable pointer
-    /*! This class acts as a proxy to a pointer referenced through a
-        pointer to pointer to Handle. An instance can be relinked to another
-        Handle: such change will be propagated to all the copies of the
-        instance.
-        \pre Class "Type" must inherit from Observable
-    */
+    //! Relinkable access to a Handle
+    /*! \pre Class "Type" must inherit from Observable */
     template <class Type>
-    class RelinkableHandle {
+    class Link : public Patterns::Observable,
+                 public Patterns::Observer {
       public:
-        //! Constructor returning a handle, possibly already linked.
         /*! \warning see the documentation of the <tt>linkTo</tt> method
                 for issues relatives to <tt>registerAsObserver</tt>.
         */
-        RelinkableHandle(const Handle<Type>& h = Handle<Type>(),
-            bool registerAsObserver = true);
-        //! Copy constructor
-        RelinkableHandle(const RelinkableHandle&);
-        RelinkableHandle& operator=(const RelinkableHandle&);
-        ~RelinkableHandle();
-
-        //! \name Linking
-        //@{
+        Link(const Handle<Type>& h = Handle<Type>(),
+             bool registerAsObserver = true);
         /*! \warning <i><b>registerAsObserver</b></i> is left as a backdoor
                 in case the programmer cannot guarantee that the object
                 pointed to will remain alive for the whole lifetime of the
@@ -69,163 +56,85 @@ namespace QuantLib {
                 pointed object does.
         */
         void linkTo(const Handle<Type>& h, bool registerAsObserver = true);
-        //@}
-        
-        //! \name Locking
-        //@{
-        /*! Locking a relinkable handle inhibits reassignment, i.e., the
-            locked instance cannot be used on the left hand side of an 
-            assignment. It does not (and does not intend to) prevent 
-            relinking.
+        //! Checks if the contained handle points to anything
+        bool isNull() const { return h_.isNull(); }
+        //! Returns the contained handle
+        const Handle<Type>& currentLink() const { return h_; }
+        //! Observer interface
+        void update() { notifyObservers(); }
+      private:
+        Handle<Type> h_;
+        bool isObserver_;
+    };
+
+
+    //! Globally accessible relinkable pointer
+    /*! An instance of this class can be relinked to another Handle: such 
+        change will be propagated to all the copies of the instance.
+        \pre Class "Type" must inherit from Observable
+    */
+    template <class Type>
+    class RelinkableHandle : public Handle<Link<Type> > {
+      public:
+        /*! \warning see the documentation of <tt>Link</tt> for issues 
+                     relatives to <tt>registerAsObserver</tt>.
         */
-        void lock();
-        //@}
-
-        //! \name Dereferencing
-        //@{
-        Type& operator*() const;
-        Type* operator->() const;
-        //@}
-
-        //! \name Inspectors
-        //@{
+        RelinkableHandle(const Handle<Type>& h = Handle<Type>(),
+            bool registerAsObserver = true);
+        /*! \warning see the documentation of <tt>Link</tt> for issues 
+                     relatives to <tt>registerAsObserver</tt>.
+        */
+        void linkTo(const Handle<Type>& h, bool registerAsObserver = true);
+        //! dereferencing
+        const Handle<Type>& operator->() const;
         //! Checks if the contained handle points to anything
         bool isNull() const;
-        //! Returns a copy of the contained handle
-        Handle<Type> linkedHandle() const;
-        //@}
-
-        /*! \name Observable interface
-            Although this class does not directly inherit from Observable,
-            it contains an inner class which does. This methods act as
-            proxies for the corresponding methods of the data member.
-        */
-        //@{
-        void registerObserver(Patterns::Observer*);
-        void unregisterObserver(Patterns::Observer*);
-        //@}
-      private:
-        Handle<Type>** ptr_;
-        int* n_;
-        class InnerObserver : public Patterns::Observable,
-                              public Patterns::Observer {
-          public:
-            // Observer interface
-            void update() { notifyObservers(); }
-        };
-        InnerObserver* observer_;
-        bool *registeredAsObserver_;
-        bool locked_;
     };
 
 
     // inline definitions
 
     template <class Type>
-    inline RelinkableHandle<Type>::RelinkableHandle(const Handle<Type>& h,
-        bool registerAsObserver)
-    : ptr_(new Handle<Type>*(new Handle<Type>)), n_(new int(1)),
-      observer_(new InnerObserver), registeredAsObserver_(new bool(false)),
-      locked_(false) {
+    inline Link<Type>::Link(const Handle<Type>& h, bool registerAsObserver) 
+    : isObserver_(false) {
         linkTo(h,registerAsObserver);
     }
 
     template <class Type>
-    inline RelinkableHandle<Type>::RelinkableHandle(
-        const RelinkableHandle<Type>& from)
-    : ptr_(from.ptr_), n_(from.n_), observer_(from.observer_),
-      registeredAsObserver_(from.registeredAsObserver_), locked_(false) {
-        (*n_)++;
+    inline void Link<Type>::linkTo(const Handle<Type>& h,
+                                   bool registerAsObserver) {
+        if (!h_.isNull() && isObserver_) {
+            unregisterWith(h_);
+        }
+        h_ = h;
+        isObserver_ = registerAsObserver;
+        if (!h_.isNull() && isObserver_) {
+            registerWith(h_);
+        }
+        notifyObservers();
     }
 
+
+
     template <class Type>
-    inline RelinkableHandle<Type>& 
-    RelinkableHandle<Type>::operator=(const RelinkableHandle<Type>& from) {
-        QL_REQUIRE(!locked_,
-            "trying to reassign to a locked relinkable handle");
-        if (this != &from) {
-            // decrease count and delete if last
-            if (--(*n_) == 0) {
-                if (!isNull() && *registeredAsObserver_)
-                    (**ptr_)->unregisterObserver(observer_);
-                delete *ptr_;
-                delete ptr_;
-                delete n_;
-                delete observer_;
-            }
-            // assign
-            ptr_ = from.ptr_;
-            n_ = from.n_;
-            observer_ = from.observer_;
-            registeredAsObserver_ = from.registeredAsObserver_;
-            // locked_ is already false and remains so
-            (*n_)++;
-        }
-        return *this;
-    }
-    
-    template <class Type>
-    inline RelinkableHandle<Type>::~RelinkableHandle() {
-        if (--(*n_) == 0) {
-            if (!isNull() && *registeredAsObserver_)
-                (**ptr_)->unregisterObserver(observer_);
-            delete *ptr_;
-            delete ptr_;
-            delete n_;
-            delete observer_;
-        }
-    }
+    inline RelinkableHandle<Type>::RelinkableHandle(const Handle<Type>& h, 
+                                                    bool registerAsObserver) 
+    : Handle<Link<Type> >(new Link<Type>(h,registerAsObserver)) {}
 
     template <class Type>
     inline void RelinkableHandle<Type>::linkTo(const Handle<Type>& h,
                                                bool registerAsObserver) {
-        if (!isNull() && *registeredAsObserver_)
-            (**ptr_)->unregisterObserver(observer_);
-        delete *ptr_;
-        *ptr_  = new Handle<Type>(h);
-        *registeredAsObserver_ = registerAsObserver;
-        if (!isNull() && registerAsObserver)
-            (**ptr_)->registerObserver(observer_);
-        observer_->notifyObservers();
+        (**this).linkTo(h,registerAsObserver);
     }
 
     template <class Type>
-    inline void RelinkableHandle<Type>::lock() {
-        locked_ = true;
-    }
-
-    template <class Type>
-    inline Type& RelinkableHandle<Type>::operator*() const {
-        QL_REQUIRE(!isNull(), "tried to dereference null handle");
-        return (*ptr_)->operator*();
-    }
-
-    template <class Type>
-    inline Type* RelinkableHandle<Type>::operator->() const {
-        QL_REQUIRE(!isNull(), "tried to dereference null handle");
-        return (*ptr_)->operator->();
+    inline const Handle<Type>& RelinkableHandle<Type>::operator->() const {
+        return (**this).currentLink();
     }
 
     template <class Type>
     inline bool RelinkableHandle<Type>::isNull() const {
-        return (*ptr_)->isNull();
-    }
-
-    template <class Type>
-    inline Handle<Type> RelinkableHandle<Type>::linkedHandle() const {
-        return **ptr_;
-    }
-
-    template <class Type>
-    inline void
-    RelinkableHandle<Type>::registerObserver(Patterns::Observer* o) {
-        observer_->registerObserver(o);
-    }
-
-    template <class Type>
-    inline void
-    RelinkableHandle<Type>::unregisterObserver(Patterns::Observer* o) {
-        observer_->unregisterObserver(o);
+        return (**this).isNull();
     }
 
 }

@@ -1,5 +1,4 @@
 
-
 /*
  Copyright (C) 2000, 2001, 2002 RiskMap srl
 
@@ -39,21 +38,12 @@ namespace QuantLib {
             const std::string& isinCode, const std::string& description)
         : Instrument(isinCode,description), firstLeg_(firstLeg),
           secondLeg_(secondLeg), termStructure_(termStructure) {
-            termStructure_.registerObserver(this);
+            registerWith(termStructure_);
             std::vector<Handle<CashFlow> >::iterator i;
             for (i = firstLeg_.begin(); i!= firstLeg_.end(); ++i)
-                (*i)->registerObserver(this);
+                registerWith(*i);
             for (i = secondLeg_.begin(); i!= secondLeg_.end(); ++i)
-                (*i)->registerObserver(this);
-        }
-
-        Swap::~Swap() {
-            termStructure_.unregisterObserver(this);
-            std::vector<Handle<CashFlow> >::iterator i;
-            for (i = firstLeg_.begin(); i!= firstLeg_.end(); ++i)
-                (*i)->unregisterObserver(this);
-            for (i = secondLeg_.begin(); i!= secondLeg_.end(); ++i)
-                (*i)->unregisterObserver(this);
+                registerWith(*i);
         }
 
         void Swap::performCalculations() const {

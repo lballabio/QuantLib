@@ -45,7 +45,6 @@ namespace QuantLib {
                  const RelinkableHandle<TermStructure>& termStructure,
                  const std::string& isinCode = "",
                  const std::string& description = "");
-            ~Swap();
             // added interface
             double firstLegBPS() const;
             double secondLegBPS() const;

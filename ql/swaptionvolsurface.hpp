@@ -54,11 +54,10 @@ namespace QuantLib {
         SpreadedSwaptionVolatilitySurface(
             const RelinkableHandle<SwaptionVolatilitySurface>&, 
             const RelinkableHandle<MarketElement>& spread);
-        ~SpreadedSwaptionVolatilitySurface();
         //! volatility of the original surface plus the given spread
         Rate volatility(const Date& start, Time length) const;
         //! Observer interface
-        void update();
+        void update() { notifyObservers(); }
       private:
         RelinkableHandle<SwaptionVolatilitySurface> originalSurface_;
         RelinkableHandle<MarketElement> spread_;
@@ -72,24 +71,14 @@ namespace QuantLib {
         const RelinkableHandle<SwaptionVolatilitySurface>& h, 
         const RelinkableHandle<MarketElement>& spread)
     : originalSurface_(h), spread_(spread) {
-        originalSurface_.registerObserver(this);
-        spread_.registerObserver(this);
+        registerWith(originalSurface_);
+        registerWith(spread_);
     }
 
-    inline
-    SpreadedSwaptionVolatilitySurface::~SpreadedSwaptionVolatilitySurface() {
-        originalSurface_.unregisterObserver(this);
-        spread_.unregisterObserver(this);
-    }
-    
     inline Rate SpreadedSwaptionVolatilitySurface::volatility(
         const Date& start, Time length) const {
             return originalSurface_->volatility(start,length) + 
                    spread_->value();
-    }
-
-    inline void SpreadedSwaptionVolatilitySurface::update() {
-        notifyObservers();
     }
 
 }

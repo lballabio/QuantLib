@@ -65,7 +65,6 @@ namespace QuantLib {
                 int settlementDays,
                 const std::vector<Handle<RateHelper> >& instruments,
                 double accuracy=1.0e-12);
-            ~PiecewiseFlatForward();
             //! \name TermStructure interface
             //@{
             Currency currency() const;

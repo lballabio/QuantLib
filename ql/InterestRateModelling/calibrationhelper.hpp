@@ -35,15 +35,13 @@ namespace QuantLib {
 
     namespace InterestRateModelling {
 
-        class CalibrationHelper 
-        : public Patterns::Observer, public Patterns::Observable {
+        class CalibrationHelper : public Patterns::Observer, 
+                                  public Patterns::Observable {
           public:
-            CalibrationHelper(const RelinkableHandle<MarketElement>& volatility)
+            CalibrationHelper(
+                const RelinkableHandle<MarketElement>& volatility)
             : volatility_(volatility) {
-                volatility_.registerObserver(this);
-            }
-            virtual ~CalibrationHelper() {
-                volatility_.unregisterObserver(this);
+                registerWith(volatility_);
             }
             void update() { 
                 marketValue_ = blackPrice(volatility_->value());

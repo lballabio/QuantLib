@@ -175,7 +175,6 @@ namespace QuantLib {
       public:
         ImpliedTermStructure(const RelinkableHandle<TermStructure>&,
             const Date& todaysDate);
-        ~ImpliedTermStructure();
         //! \name TermStructure interface
         //@{
         Currency currency() const;
@@ -207,11 +206,10 @@ namespace QuantLib {
             this structure as well.
     */
     class ZeroSpreadedTermStructure : public ZeroYieldStructure,
-                                  public Patterns::Observer {
+                                      public Patterns::Observer {
       public:
         ZeroSpreadedTermStructure(const RelinkableHandle<TermStructure>&,
             const RelinkableHandle<MarketElement>& spread);
-        ~ZeroSpreadedTermStructure();
         //! \name TermStructure interface
         //@{
         Currency currency() const;
@@ -252,7 +250,6 @@ namespace QuantLib {
       public:
         ForwardSpreadedTermStructure(const RelinkableHandle<TermStructure>&,
             const RelinkableHandle<MarketElement>& spread);
-        ~ForwardSpreadedTermStructure();
         //! \name TermStructure interface
         //@{
         Currency currency() const;
@@ -380,11 +377,7 @@ namespace QuantLib {
     inline ImpliedTermStructure::ImpliedTermStructure(
         const RelinkableHandle<TermStructure>& h, const Date& todaysDate)
     : originalCurve_(h), todaysDate_(todaysDate) {
-        originalCurve_.registerObserver(this);
-    }
-
-    inline ImpliedTermStructure::~ImpliedTermStructure() {
-        originalCurve_.unregisterObserver(this);
+        registerWith(originalCurve_);
     }
 
     inline Currency ImpliedTermStructure::currency() const {
@@ -454,13 +447,8 @@ namespace QuantLib {
         const RelinkableHandle<TermStructure>& h, 
         const RelinkableHandle<MarketElement>& spread)
     : originalCurve_(h), spread_(spread) {
-        originalCurve_.registerObserver(this);
-        spread_.registerObserver(this);
-    }
-
-    inline ZeroSpreadedTermStructure::~ZeroSpreadedTermStructure() {
-        originalCurve_.unregisterObserver(this);
-        spread_.unregisterObserver(this);
+        registerWith(originalCurve_);
+        registerWith(spread_);
     }
 
     inline Currency ZeroSpreadedTermStructure::currency() const {
@@ -523,13 +511,8 @@ namespace QuantLib {
         const RelinkableHandle<TermStructure>& h, 
         const RelinkableHandle<MarketElement>& spread)
     : originalCurve_(h), spread_(spread) {
-        originalCurve_.registerObserver(this);
-        spread_.registerObserver(this);
-    }
-
-    inline ForwardSpreadedTermStructure::~ForwardSpreadedTermStructure() {
-        originalCurve_.unregisterObserver(this);
-        spread_.unregisterObserver(this);
+        registerWith(originalCurve_);
+        registerWith(spread_);
     }
 
     inline Currency ForwardSpreadedTermStructure::currency() const {
