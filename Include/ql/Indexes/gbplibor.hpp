@@ -4,7 +4,7 @@
  *
  * This file is part of QuantLib.
  * QuantLib is a C++ open source library for financial quantitative
- * analysts and developers --- http://quantlib.sourceforge.net/
+ * analysts and developers --- http://quantlib.org/
  *
  * QuantLib is free software and you are allowed to use, copy, modify, merge,
  * publish, distribute, and/or sell copies of it under the conditions stated
@@ -16,10 +16,10 @@
  *
  * You should have received a copy of the license along with this file;
  * if not, contact ferdinando@ametrano.net
- * The license is also available at http://quantlib.sourceforge.net/LICENSE.TXT
+ * The license is also available at http://quantlib.org/LICENSE.TXT
  *
  * The members of the QuantLib Group are listed in the Authors.txt file, also
- * available at http://quantlib.sourceforge.net/Authors.txt
+ * available at http://quantlib.org/Authors.txt
 */
 
 /*! \file gbplibor.hpp
@@ -30,6 +30,9 @@
 
 // $Source$
 // $Log$
+// Revision 1.3  2001/07/25 15:47:27  sigmud
+// Change from quantlib.sourceforge.net to quantlib.org
+//
 // Revision 1.2  2001/06/15 13:52:07  lballabio
 // Reworked indexes
 //
