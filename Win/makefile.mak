@@ -65,6 +65,7 @@ PRICER_OBJS      = $(OUTPUT_DIR)\bsmoption.obj \
                    $(OUTPUT_DIR)\averagestrikeasian.obj \
                    $(OUTPUT_DIR)\averagepriceasian.obj \ 
                    $(OUTPUT_DIR)\barrieroption.obj \ 
+                   $(OUTPUT_DIR)\binaryoption.obj \ 
                    $(OUTPUT_DIR)\bsmnumericaloption.obj \
                    $(OUTPUT_DIR)\bsmeuropeanoption.obj \
                    $(OUTPUT_DIR)\bsmamericanoption.obj \
@@ -299,6 +300,8 @@ $(OUTPUT_DIR)\averagestrikeasian.obj: \
                 $(SOURCES_DIR)\Pricers\averagestrikeasian.cpp
 $(OUTPUT_DIR)\barrieroption.obj: \ 
                 $(SOURCES_DIR)\Pricers\barrieroption.cpp
+$(OUTPUT_DIR)\binaryoption.obj: \ 
+                $(SOURCES_DIR)\Pricers\binaryoption.cpp
 $(OUTPUT_DIR)\bsmnumericaloption.obj: \
                 $(SOURCES_DIR)\Pricers\bsmnumericaloption.cpp
 $(OUTPUT_DIR)\bsmeuropeanoption.obj:  \
