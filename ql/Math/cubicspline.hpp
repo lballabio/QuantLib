@@ -46,7 +46,11 @@ namespace QuantLib {
                 const RandomAccessIterator1& xEnd,
                 const RandomAccessIterator2& yBegin);
             result_type operator()(const argument_type& x,
-                bool allowExtrapolation = false) const;
+                                   bool allowExtrapolation = false) const;
+            result_type derivative(const argument_type& x,
+                                   bool allowExtrapolation = false) const;
+            result_type secondDerivative(const argument_type& x,
+                                        bool allowExtrapolation = false) const;
 	    virtual ~CubicSpline() {}
           private:
             // P[i](x) = y[i] +
@@ -152,8 +156,10 @@ namespace QuantLib {
 
                 if (isNRapproach_) {
                     I2 j = yBegin_+(position_-xBegin_);
+                    
                     std::vector<double>::const_iterator k =
                         d2y_.begin()+(position_-xBegin_);
+                        
                     double h = double(*(position_+1)-*position_);
                     double a = double(*(position_+1)-x)/h;
                     double b = 1.0-a;
@@ -163,6 +169,65 @@ namespace QuantLib {
                     Size j = position_-xBegin_;
                     argument_type dx = x-xBegin_[j];
                     return yBegin_[j] + dx*(a_[j] + dx*(b_[j] + dx*c_[j]));
+                }
+        }
+        
+        template <class I1, class I2>
+        typename CubicSpline<I1,I2>::result_type
+        CubicSpline<I1,I2>::derivative(
+            const CubicSpline<I1,I2>::argument_type& x,
+            bool allowExtrapolation) const {
+                locate(x);
+                if (isOutOfRange_) {
+                    QL_REQUIRE(allowExtrapolation,
+                        "CubicSpline::derivative() : "
+                        "extrapolation not allowed");
+                }
+
+                if (isNRapproach_) {
+                    I2 j = yBegin_+(position_-xBegin_);
+                    
+                    std::vector<double>::const_iterator k =
+                        d2y_.begin()+(position_-xBegin_);
+                        
+                    double h = double(*(position_+1)-*position_);
+                    double a = double(*(position_+1)-x)/h;
+                    double b = 1.0-a;
+                    return (-*j +*(j+1))/h +
+                        (-(3*a*a-1)*(*k)+(3*b*b-1)*(*(k+1)))*h/6.0;
+                } else {
+                    Size j = position_-xBegin_;
+                    argument_type dx = x-xBegin_[j];
+                    return a_[j] + 2.0*dx*(b_[j] + 1.5*dx*c_[j]);
+                }
+        }
+
+        template <class I1, class I2>
+        typename CubicSpline<I1,I2>::result_type
+        CubicSpline<I1,I2>::secondDerivative(
+            const CubicSpline<I1,I2>::argument_type& x,
+            bool allowExtrapolation) const {
+                locate(x);
+                if (isOutOfRange_) {
+                    QL_REQUIRE(allowExtrapolation,
+                        "CubicSpline::secondDerivative() : "
+                        "extrapolation not allowed");
+                }
+
+                if (isNRapproach_) {
+                    I2 j = yBegin_+(position_-xBegin_);
+                    
+                    std::vector<double>::const_iterator k =
+                        d2y_.begin()+(position_-xBegin_);
+                        
+                    double h = double(*(position_+1)-*position_);
+                    double a = double(*(position_+1)-x)/h;
+                    double b = 1.0-a;
+                    return a*(*k)+b*(*(k+1));
+                } else {
+                    Size j = position_-xBegin_;
+                    argument_type dx = x-xBegin_[j];
+                    return 2.0*b_[j] + 6.0*dx*c_[j];
                 }
         }
 
