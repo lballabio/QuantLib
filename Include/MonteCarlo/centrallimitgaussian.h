@@ -26,9 +26,12 @@
 	$Source$
 	$Name$
 	$Log$
+	Revision 1.3  2000/12/27 18:12:35  lballabio
+	gaussWeight_ is now mutable
+
 	Revision 1.2  2000/12/27 17:56:16  lballabio
 	Cleaned up the documentation for use with Doxygen
-
+	
 	Revision 1.1  2000/12/27 15:23:39  marmar
 	Random number generators has been updated and documented.
 	Now the Sample Generator idea is fully implemented
@@ -70,7 +73,7 @@ namespace QuantLib {
 	        double weight() const;
 		  private:		
 			U basicGenerator;		
-			double gaussWeight_;
+			mutable double gaussWeight_;
 		};
 
 		template <class U>
