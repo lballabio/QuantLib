@@ -68,7 +68,9 @@ namespace QuantLib {
          QL_REQUIRE(t >= 0.0,
                     "DiscountCurve: invalid negative time (" +
                     DoubleFormatter::toString(t) +
-                    ")");
+                    ") outside curve definition [" +
+                    DoubleFormatter::toString(0.0) + ", " +
+                    DoubleFormatter::toString(times_.back()) + "]");
          return (*interpolation_) (t, extrapolate);
       }
 
