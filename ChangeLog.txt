@@ -1,3 +1,1856 @@
+2002-12-16 09:45  Luigi Ballabio <luigi.ballabio@riskmap.net>
+
+	* Makefile.am (1.73): [no log message]
+
+2002-12-13 17:08  Luigi Ballabio <luigi.ballabio@riskmap.net>
+
+	* Makefile.am (1.72), configure.ac (1.4), Docs/Makefile.am (1.50),
+	Docs/quantlib.doxy (1.55), Docs/quantlibheader.html (1.15),
+	Docs/pages/Makefile.am (1.7), Docs/pages/examples.docs (1.4),
+	Docs/pages/groups.docs (1.4), ql/Instruments/swap.cpp (1.13): [no
+	log message]
+
+2002-12-11 13:26  Luigi Ballabio <luigi.ballabio@riskmap.net>
+
+	* Examples/BermudanSwaption/BermudanSwaption.cpp (1.25),
+	Examples/Swap/swapvaluation.cpp (1.33), ql/termstructure.hpp
+	(1.27), ql/CashFlows/floatingratecoupon.cpp (1.14),
+	ql/CashFlows/shortfloatingcoupon.cpp (1.6), ql/Indexes/xibor.cpp
+	(1.10), ql/Instruments/capfloor.cpp (1.27),
+	ql/Instruments/forwardvanillaoption.cpp (1.4),
+	ql/Instruments/quantovanillaoption.cpp (1.6),
+	ql/Instruments/swap.cpp (1.12), ql/Instruments/swaption.cpp (1.23),
+	ql/Instruments/vanillaoption.cpp (1.7),
+	ql/ShortRateModels/CalibrationHelpers/caphelper.cpp (1.7),
+	ql/ShortRateModels/CalibrationHelpers/swaptionhelper.cpp (1.7),
+	ql/TermStructures/affinetermstructure.cpp (1.8),
+	ql/TermStructures/affinetermstructure.hpp (1.10),
+	ql/TermStructures/compoundforward.cpp (1.18),
+	ql/TermStructures/compoundforward.hpp (1.12),
+	ql/TermStructures/discountcurve.cpp (1.15),
+	ql/TermStructures/discountcurve.hpp (1.12),
+	ql/TermStructures/flatforward.hpp (1.18),
+	ql/TermStructures/forwardspreadedtermstructure.hpp (1.9),
+	ql/TermStructures/impliedtermstructure.hpp (1.9),
+	ql/TermStructures/piecewiseflatforward.cpp (1.25),
+	ql/TermStructures/piecewiseflatforward.hpp (1.23),
+	ql/TermStructures/ratehelpers.cpp (1.28),
+	ql/TermStructures/ratehelpers.hpp (1.24),
+	ql/TermStructures/zerospreadedtermstructure.hpp (1.10): Term
+	structure and index fixing cleanup
+
+2002-12-11 08:49  Ferdinando Ametrano <ferdinando@ametrano.net>
+
+	* Examples/: BermudanSwaption/Makefile.am (1.5),
+	DiscreteHedging/Makefile.am (1.12), EuropeanOption/Makefile.am
+	(1.6), Swap/Makefile.am (1.7): this way it works under cygwin\nhope
+	it doens't break other platforms\nfeedback welcome
+
+2002-12-10 10:25  Ferdinando Ametrano <ferdinando@ametrano.net>
+
+	* QuantLib.nsi (1.75), TODO.txt (1.91): no message
+
+2002-12-09 16:51  Ferdinando Ametrano <ferdinando@ametrano.net>
+
+	* ql/voltermstructure.cpp (1.4): typo fixed (how was this compiling
+	before?)
+
+2002-12-09 13:28  Luigi Ballabio <luigi.ballabio@riskmap.net>
+
+	* QuantLib.dsp (1.112), ql/quantlib.hpp (1.71),
+	ql/voltermstructure.cpp (1.3), ql/voltermstructure.hpp (1.9),
+	ql/Volatilities/Makefile.am (1.8),
+	ql/Volatilities/localconstantvol.hpp (1.3),
+	ql/Volatilities/localvariancecurve.hpp (1.3),
+	ql/Volatilities/localvolcurve.hpp (1.1), ql/functions/vols.cpp
+	(1.12): Fixed local volatility interface
+
+2002-12-06 09:46  Luigi Ballabio <luigi.ballabio@riskmap.net>
+
+	* config/: Makefile.am (1.3), readme.txt (1.2): [no log message]
+
+2002-12-05 11:08  Luigi Ballabio <luigi.ballabio@riskmap.net>
+
+	* ql/: Makefile.am (1.28), makefile.mak (1.20): [no log message]
+
+2002-12-05 09:23  Marco Marchioro <marco.marchioro@riskmap.net>
+
+	* ql/voltermstructure.cpp (1.2): no message
+
+2002-12-05 09:23  Marco Marchioro <marco.marchioro@riskmap.net>
+
+	* QuantLib.dsp (1.111), QuantLib.mak (1.102): added file
+	voltermstructure.cpp
+
+2002-12-05 09:22  Marco Marchioro <marco.marchioro@riskmap.net>
+
+	* ql/: voltermstructure.cpp (1.1), voltermstructure.hpp (1.8):
+	added methods timeDerivative, strikeDerivative, and
+	strikeSecondDerivative to BlackVolTermStructure
+
+2002-12-03 14:24  Luigi Ballabio <luigi.ballabio@riskmap.net>
+
+	* quantlib.m4 (1.3): [no log message]
+
+2002-12-03 13:28  Luigi Ballabio <luigi.ballabio@riskmap.net>
+
+	* Makefile.am (1.71), configure.ac (1.3), quantlib.m4 (1.2): [no
+	log message]
+
+2002-12-03 10:31  Luigi Ballabio <luigi.ballabio@riskmap.net>
+
+	* ql/Calendars/: target.cpp (1.10), target.hpp (1.11): Minor fixes
+	to TARGET holidays
+
+2002-12-02 14:25  Luigi Ballabio <luigi.ballabio@riskmap.net>
+
+	* ql/: config.ansi.hpp (1.11), config.bcc.hpp (1.10),
+	config.msvc.hpp (1.21), config.mwcw.hpp (1.10),
+	ShortRateModels/model.hpp (1.11): Oops
+
+2002-11-29 10:21  Marco Marchioro <marco.marchioro@riskmap.net>
+
+	* ql/: currency.hpp (1.6), dataformatters.cpp (1.12): added new
+	currencies
+
+2002-11-29 08:18  Luigi Ballabio <luigi.ballabio@riskmap.net>
+
+	* ql/Makefile.am (1.27): Oops
+
+2002-11-28 17:39  Luigi Ballabio <luigi.ballabio@riskmap.net>
+
+	* MACOSX.README (1.2), Makefile.am (1.70), darwin.setup (1.6),
+	solaris.setup (1.3): [no log message]
+
+2002-11-28 17:24  Luigi Ballabio <luigi.ballabio@riskmap.net>
+
+	* .cvsignore (1.4), Makefile.am (1.69), acconfig.h (1.9),
+	acinclude.m4 (1.5), bootstrap (1.5), configure.ac (1.2),
+	configure.in (1.88), darwin.setup (1.5), quantlib-config.in (1.4),
+	Examples/Makefile.am (1.16),
+	Examples/BermudanSwaption/BermudanSwaption.cpp (1.24),
+	Examples/BermudanSwaption/Makefile.am (1.4),
+	Examples/DiscreteHedging/Makefile.am (1.11),
+	Examples/EuropeanOption/Makefile.am (1.5),
+	Examples/Swap/Makefile.am (1.6), config/.cvsignore (1.2),
+	ql/.cvsignore (1.5), ql/Makefile.am (1.26), ql/history.hpp (1.11),
+	ql/qldefines.hpp (1.45), ql/Calendars/Makefile.am (1.12),
+	ql/CashFlows/Makefile.am (1.7), ql/DayCounters/Makefile.am (1.6),
+	ql/FiniteDifferences/Makefile.am (1.14), ql/Indexes/Makefile.am
+	(1.7), ql/Indexes/xibormanager.cpp (1.9),
+	ql/Indexes/xibormanager.hpp (1.9), ql/Instruments/Makefile.am
+	(1.12), ql/Lattices/Makefile.am (1.8),
+	ql/Lattices/trinomialtree.cpp (1.13), ql/Math/Makefile.am (1.9),
+	ql/MonteCarlo/Makefile.am (1.18), ql/Optimization/Makefile.am
+	(1.6), ql/Patterns/Makefile.am (1.8), ql/Pricers/Makefile.am
+	(1.30), ql/Pricers/continuousgeometricapo.hpp (1.6),
+	ql/Pricers/europeanoption.cpp (1.10), ql/Pricers/europeanoption.hpp
+	(1.11), ql/PricingEngines/Makefile.am (1.7),
+	ql/RandomNumbers/Makefile.am (1.5), ql/ShortRateModels/Makefile.am
+	(1.2), ql/ShortRateModels/CalibrationHelpers/Makefile.am (1.2),
+	ql/ShortRateModels/OneFactorModels/Makefile.am (1.2),
+	ql/ShortRateModels/TwoFactorModels/Makefile.am (1.2),
+	ql/Solvers1D/Makefile.am (1.5), ql/TermStructures/Makefile.am
+	(1.10), ql/Utilities/Makefile.am (1.5), ql/Volatilities/Makefile.am
+	(1.7), ql/functions/Makefile.am (1.9): Switched to more recent
+	autotools
+
+2002-11-28 16:42  Luigi Ballabio <luigi.ballabio@riskmap.net>
+
+	* Makefile.am (1.68.2.2), configure.ac (1.1.2.2),
+	Examples/BermudanSwaption/BermudanSwaption.cpp (1.23.2.1),
+	ql/history.hpp (1.10.6.1), ql/Indexes/xibormanager.cpp (1.8.2.1),
+	ql/Indexes/xibormanager.hpp (1.8.2.1),
+	ql/Pricers/continuousgeometricapo.hpp (1.4.20.1),
+	ql/Pricers/europeanoption.cpp (1.9.2.1),
+	ql/Pricers/europeanoption.hpp (1.10.2.1): Integrated Darwin and
+	Solaris patches into code
+
+2002-11-28 10:22  Luigi Ballabio <luigi.ballabio@riskmap.net>
+
+	* darwin.setup (1.4.2.1): Patch made unnecessary by recent autoconf
+
+2002-11-27 17:01  Luigi Ballabio <luigi.ballabio@riskmap.net>
+
+	* config/.cvsignore (1.1): file .cvsignore was initially added on
+	branch autoconf-2-50.
+
+2002-11-27 17:01  Luigi Ballabio <luigi.ballabio@riskmap.net>
+
+	* configure.ac (1.1): file configure.ac was initially added on
+	branch autoconf-2-50.
+
+2002-11-27 17:01  Luigi Ballabio <luigi.ballabio@riskmap.net>
+
+	* .cvsignore (1.3.2.1), Makefile.am (1.68.2.1), acconfig.h
+	(1.8.2.1), acinclude.m4 (1.4.4.1), bootstrap (1.4.34.1),
+	configure.ac (1.1.2.1), configure.in (1.87.2.1), quantlib-config.in
+	(1.3.22.1), Examples/Makefile.am (1.15.8.1),
+	Examples/BermudanSwaption/Makefile.am (1.3.2.1),
+	Examples/DiscreteHedging/Makefile.am (1.10.2.1),
+	Examples/EuropeanOption/Makefile.am (1.4.2.1),
+	Examples/Swap/Makefile.am (1.5.2.1), config/.cvsignore (1.1.2.1),
+	ql/.cvsignore (1.4.2.1), ql/Makefile.am (1.25.2.1),
+	ql/qldefines.hpp (1.44.2.1), ql/Calendars/Makefile.am (1.10.16.1),
+	ql/CashFlows/Makefile.am (1.6.18.1), ql/DayCounters/Makefile.am
+	(1.5.42.1), ql/FiniteDifferences/Makefile.am (1.13.2.1),
+	ql/Indexes/Makefile.am (1.6.16.1), ql/Instruments/Makefile.am
+	(1.11.2.1), ql/Lattices/Makefile.am (1.7.6.1),
+	ql/Lattices/trinomialtree.cpp (1.11.6.1), ql/Math/Makefile.am
+	(1.8.2.1), ql/MonteCarlo/Makefile.am (1.17.2.1),
+	ql/Optimization/Makefile.am (1.5.8.1), ql/Patterns/Makefile.am
+	(1.7.2.1), ql/Pricers/Makefile.am (1.29.2.1),
+	ql/PricingEngines/Makefile.am (1.6.2.1),
+	ql/RandomNumbers/Makefile.am (1.4.18.1),
+	ql/ShortRateModels/Makefile.am (1.1.8.1),
+	ql/ShortRateModels/CalibrationHelpers/Makefile.am (1.1.8.1),
+	ql/ShortRateModels/OneFactorModels/Makefile.am (1.1.8.1),
+	ql/ShortRateModels/TwoFactorModels/Makefile.am (1.1.8.1),
+	ql/Solvers1D/Makefile.am (1.4.44.1), ql/TermStructures/Makefile.am
+	(1.9.4.1), ql/Utilities/Makefile.am (1.4.44.1),
+	ql/Volatilities/Makefile.am (1.6.2.1), ql/functions/Makefile.am
+	(1.8.2.1): Updated autoconfiscation
+
+2002-11-27 14:17  Luigi Ballabio <luigi.ballabio@riskmap.net>
+
+	* ql/: Lattices/trinomialtree.cpp (1.12),
+	Pricers/continuousgeometricapo.hpp (1.5): [no log message]
+
+2002-11-27 12:31  Marco Marchioro <marco.marchioro@riskmap.net>
+
+	* ql/Calendars/Makefile.am (1.11), ql/Calendars/budapest.cpp (1.1),
+	ql/Calendars/budapest.hpp (1.1), ql/Calendars/makefile.mak (1.10),
+	ql/Calendars/oslo.cpp (1.1), ql/Calendars/oslo.hpp (1.1),
+	ql/Calendars/stockholm.cpp (1.1), ql/Calendars/stockholm.hpp (1.1),
+	ql/Calendars/warsaw.cpp (1.1), ql/Calendars/warsaw.hpp (1.1),
+	ql/quantlib.hpp (1.70), QuantLib.dsp (1.110), QuantLib.mak (1.101):
+	Added calendars for Budapest, Oslo, Stockholm, and Warsaw
+
+2002-11-23 22:09  Sadruddin Rejeb <sad.rejeb@riskmap.it>
+
+	* ql/ShortRateModels/CalibrationHelpers/swaptionhelper.cpp (1.6):
+	Bermudan Swaption problem fixed (part 2)
+
+2002-11-22 14:24  Marco Marchioro <marco.marchioro@riskmap.net>
+
+	* ql/: dataformatters.cpp (1.11), dataformatters.hpp (1.9):
+	Introduced Format { Long, Short, ISO };
+
+2002-11-21 15:00  Marco Marchioro <marco.marchioro@riskmap.net>
+
+	* ql/scheduler.cpp (1.9): Removed QL_REQUIRE for "..  holiday and
+	end of month .."
+
+2002-11-21 12:53  Sadruddin Rejeb <sad.rejeb@riskmap.it>
+
+	* ql/: Instruments/swaption.cpp (1.22), Instruments/swaption.hpp
+	(1.21), Pricers/swaptionpricer.cpp (1.4),
+	Pricers/swaptionpricer.hpp (1.6), Pricers/treeswaption.cpp (1.23):
+	Fixed bermudan Swaption problem. (must now state limitations in
+	doc)
+
+2002-11-20 13:57  Luigi Ballabio <luigi.ballabio@riskmap.net>
+
+	* ql/TermStructures/discountcurve.hpp (1.11): Added default day
+	counter
+
+2002-11-12 11:11  Luigi Ballabio <luigi.ballabio@riskmap.net>
+
+	* ql/ShortRateModels/: OneFactorModels/extendedcoxingersollross.hpp
+	(1.9), OneFactorModels/hullwhite.hpp (1.9), TwoFactorModels/g2.hpp
+	(1.7): VC++ again
+
+2002-11-12 10:51  Luigi Ballabio <luigi.ballabio@riskmap.net>
+
+	* ql/: Optimization/constraint.hpp (1.7), ShortRateModels/model.hpp
+	(1.10), ShortRateModels/parameter.hpp (1.5),
+	ShortRateModels/OneFactorModels/coxingersollross.cpp (1.10),
+	ShortRateModels/OneFactorModels/extendedcoxingersollross.hpp (1.8),
+	ShortRateModels/OneFactorModels/hullwhite.hpp (1.8),
+	ShortRateModels/TwoFactorModels/g2.hpp (1.6): Explicited Bridge
+	pattern
+
+2002-11-12 09:33  Luigi Ballabio <luigi.ballabio@riskmap.net>
+
+	* ql/calendar.hpp (1.18), ql/daycounter.hpp (1.16), QuantLib.dsp
+	(1.109), QuantLib.mak (1.100): VC++ again
+
+2002-11-12 08:36  Luigi Ballabio <luigi.ballabio@riskmap.net>
+
+	* ql/: calendar.hpp (1.17), daycounter.hpp (1.15),
+	DayCounters/actual360.hpp (1.10), DayCounters/actual365.hpp (1.10),
+	DayCounters/actualactual.cpp (1.16), DayCounters/actualactual.hpp
+	(1.14), DayCounters/thirty360.cpp (1.9), DayCounters/thirty360.hpp
+	(1.13), TermStructures/ratehelpers.hpp (1.23): Explicited Bridge
+	pattern
+
+2002-11-11 15:57  Luigi Ballabio <luigi.ballabio@riskmap.net>
+
+	* ql/: calendar.cpp (1.10), calendar.hpp (1.16),
+	Calendars/frankfurt.cpp (1.10), Calendars/frankfurt.hpp (1.10),
+	Calendars/helsinki.cpp (1.9), Calendars/helsinki.hpp (1.10),
+	Calendars/johannesburg.cpp (1.3), Calendars/johannesburg.hpp (1.2),
+	Calendars/london.cpp (1.10), Calendars/london.hpp (1.10),
+	Calendars/milan.cpp (1.9), Calendars/milan.hpp (1.10),
+	Calendars/newyork.cpp (1.9), Calendars/newyork.hpp (1.11),
+	Calendars/sydney.cpp (1.2), Calendars/sydney.hpp (1.2),
+	Calendars/target.cpp (1.9), Calendars/target.hpp (1.10),
+	Calendars/tokyo.cpp (1.3), Calendars/tokyo.hpp (1.2),
+	Calendars/toronto.cpp (1.2), Calendars/toronto.hpp (1.2),
+	Calendars/wellington.cpp (1.10), Calendars/wellington.hpp (1.10),
+	Calendars/zurich.cpp (1.9), Calendars/zurich.hpp (1.10),
+	Patterns/Makefile.am (1.7), Patterns/bridge.hpp (1.1): Explicited
+	Bridge pattern
+
+2002-11-11 13:12  Marco Marchioro <marco.marchioro@riskmap.net>
+
+	* ql/Math/normaldistribution.cpp (1.13): Some compilers may not
+	know how to print an INF
+
+2002-11-08 09:38  Marco Marchioro <marco.marchioro@riskmap.net>
+
+	* ql/Math/normaldistribution.cpp (1.12): bug fixed, condition
+	should not be satisfied!
+
+2002-11-07 13:34  Marco Marchioro <marco.marchioro@riskmap.net>
+
+	* ql/TermStructures/discountcurve.cpp (1.14): relaxed requirement
+	on decreasing discounts
+
+2002-11-07 13:30  Marco Marchioro <marco.marchioro@riskmap.net>
+
+	* ql/Math/normaldistribution.cpp (1.11): Added check on null input
+
+2002-11-05 15:19  Luigi Ballabio <luigi.ballabio@riskmap.net>
+
+	* ql/functions/Makefile.am (1.8): [no log message]
+
+2002-10-29 14:14  Marco Marchioro <marco.marchioro@riskmap.net>
+
+	* ql/TermStructures/discountcurve.cpp (1.13): error messages
+	improved
+
+2002-10-29 14:13  Marco Marchioro <marco.marchioro@riskmap.net>
+
+	* ql/FiniteDifferences/finitedifferencemodel.hpp (1.13): added
+	stoppingTimes
+
+2002-10-28 10:02  Luigi Ballabio <luigi.ballabio@riskmap.net>
+
+	* Examples/: acinclude.m4 (1.2), configure.in (1.4): Spring
+	cleaning
+
+2002-10-27 12:55  Luigi Ballabio <luigi.ballabio@riskmap.net>
+
+	* Examples/EuropeanOption/EuropeanOption.old (1.2): no message
+
+2002-10-25 14:58  Luigi Ballabio <luigi.ballabio@riskmap.net>
+
+	* ql/FiniteDifferences/: boundarycondition.cpp (1.1), Makefile.am
+	(1.13): Implemented QuEP 2
+
+2002-10-25 14:30  Luigi Ballabio <luigi.ballabio@riskmap.net>
+
+	* QuantLib.dsp (1.108), QuantLib.mak (1.99),
+	ql/FiniteDifferences/boundarycondition.hpp (1.6),
+	ql/FiniteDifferences/cranknicolson.hpp (1.13),
+	ql/FiniteDifferences/expliciteuler.hpp (1.9),
+	ql/FiniteDifferences/finitedifferencemodel.hpp (1.12),
+	ql/FiniteDifferences/impliciteuler.hpp (1.8),
+	ql/FiniteDifferences/makefile.mak (1.8),
+	ql/FiniteDifferences/mixedscheme.hpp (1.4),
+	ql/FiniteDifferences/tridiagonaloperator.cpp (1.15),
+	ql/FiniteDifferences/tridiagonaloperator.hpp (1.17),
+	ql/Pricers/fdbsmoption.cpp (1.6), ql/Pricers/fdbsmoption.hpp (1.7),
+	ql/Pricers/fdeuropean.cpp (1.8), ql/Pricers/fdeuropean.hpp (1.7),
+	ql/Pricers/fdmultiperiodoption.cpp (1.9),
+	ql/Pricers/fdstepconditionoption.cpp (1.6): Implemented QuEP 2
+
+2002-10-24 15:46  Enrico Sirola <enrico.sirola@riskmap.net>
+
+	* ql/Instruments/vanillaoption.hpp (1.6): riskFreeRate_,
+	underlying_, strike_, dividendYield_, volatility_ moved to
+	protected section
+
+2002-10-23 10:47  Luigi Ballabio <luigi.ballabio@riskmap.net>
+
+	* solaris.setup (1.2): Solaris patches redux
+
+2002-10-22 12:13  Luigi Ballabio <luigi.ballabio@riskmap.net>
+
+	* Makefile.am (1.68), solaris.setup (1.1): Patches for Solaris/gcc
+
+2002-10-22 11:52  Luigi Ballabio <luigi.ballabio@riskmap.net>
+
+	* ql/: qldefines.hpp (1.44), Indexes/xibormanager.cpp (1.8),
+	Pricers/europeanoption.cpp (1.9): Patches for Solaris/gcc
+
+2002-10-17 12:40  Luigi Ballabio <luigi.ballabio@riskmap.net>
+
+	* Makefile.am (1.67), configure.in (1.87), darwin.setup (1.4),
+	config/Makefile.am (1.2): [no log message]
+
+2002-10-16 17:00  Luigi Ballabio <luigi.ballabio@riskmap.net>
+
+	* ql/Pricers/makefile.mak (1.24): [no log message]
+
+2002-10-11 11:20  Luigi Ballabio <luigi.ballabio@riskmap.net>
+
+	* darwin.setup (1.3),
+	Examples/BermudanSwaption/BermudanSwaption.cpp (1.23),
+	Examples/DiscreteHedging/DiscreteHedging.cpp (1.12),
+	Examples/EuropeanOption/EuropeanOption.cpp (1.27),
+	Examples/Swap/swapvaluation.cpp (1.32), ql/array.hpp (1.11),
+	ql/qldefines.hpp (1.43), ql/Indexes/xibormanager.cpp (1.7),
+	ql/Indexes/xibormanager.hpp (1.8), ql/Pricers/europeanoption.cpp
+	(1.8): Misc. fixes for Solaris and Darwin
+
+2002-10-10 13:35  Luigi Ballabio <luigi.ballabio@riskmap.net>
+
+	* ql/Instruments/simpleswap.cpp (1.19): [no log message]
+
+2002-10-09 11:40  Marco Marchioro <marco.marchioro@riskmap.net>
+
+	* ql/grid.hpp (1.6): code massaged
+
+2002-10-08 09:35  Luigi Ballabio <luigi.ballabio@riskmap.net>
+
+	* ql/DayCounters/actualactual.cpp (1.15): More tolerant
+
+2002-10-07 12:28  Marco Marchioro <marco.marchioro@riskmap.net>
+
+	* ql/config.msvc.hpp (1.20): Defined CHOKES_ON_TYPENAME
+
+2002-10-07 12:25  Marco Marchioro <marco.marchioro@riskmap.net>
+
+	* ql/qldefines.hpp (1.42): Defined CHOKES_ON_TYPENAME
+
+2002-10-04 09:44  Luigi Ballabio <luigi.ballabio@riskmap.net>
+
+	* ql/functions/vols.cpp (1.11): [no log message]
+
+2002-10-03 16:39  Luigi Ballabio <luigi.ballabio@riskmap.net>
+
+	* ql/Volatilities/blackvariancesurface.hpp (1.7): Added (in an
+	hackish way for the time being) the possibility of flat
+	extrapolation
+
+2002-10-01 15:24  Marco Marchioro <marco.marchioro@riskmap.net>
+
+	* ql/: Lattices/lattice.cpp (1.2), CashFlows/cashflowvectors.cpp
+	(1.16), Instruments/swaption.cpp (1.21): better error message
+
+2002-09-27 14:53  Luigi Ballabio <luigi.ballabio@riskmap.net>
+
+	* ql/Optimization/costfunction.hpp (1.14): Virtual destructor added
+
+2002-09-27 14:53  Luigi Ballabio <luigi.ballabio@riskmap.net>
+
+	* ql/Optimization/constraint.hpp (1.6): Cosmetic changes
+
+2002-09-26 19:45  Sadruddin Rejeb <sad.rejeb@riskmap.it>
+
+	* ql/PricingEngines/Makefile.am (1.6): Added missing file
+
+2002-09-26 17:09  Luigi Ballabio <luigi.ballabio@riskmap.net>
+
+	* ql/ShortRateModels/CalibrationHelpers/swaptionhelper.cpp (1.5):
+	Adjusted start date
+
+2002-09-26 15:26  Ferdinando Ametrano <ferdinando@ametrano.net>
+
+	* ql/TermStructures/: forwardspreadedtermstructure.hpp (1.8),
+	impliedtermstructure.hpp (1.8), zerospreadedtermstructure.hpp
+	(1.9): fixed documentation links
+
+2002-09-26 14:52  Luigi Ballabio <luigi.ballabio@riskmap.net>
+
+	* ql/Volatilities/localconstantvol.hpp (1.2): No conceptual need to
+	pass through a Black vol
+
+2002-09-25 09:25  Marco Marchioro <marco.marchioro@riskmap.net>
+
+	* QuantLib.dsp (1.107), QuantLib.mak (1.98),
+	ql/Pricers/treecapfloor.cpp (1.18), ql/Pricers/treecapfloor.hpp
+	(1.13), ql/Pricers/treeswaption.cpp (1.22),
+	ql/Pricers/treeswaption.hpp (1.16),
+	ql/PricingEngines/latticeshortratemodelengine.hpp (1.1): Introduced
+	LatticeShortRateModelEngine. TreeSwaption and TreeCapFloor now are
+	derived from it.
+
+2002-09-25 07:07  Marco Marchioro <marco.marchioro@riskmap.net>
+
+	* ql/Pricers/: analyticalcapfloor.hpp (1.9), blackcapfloor.hpp
+	(1.5), blackswaption.hpp (1.3), capfloorpricer.hpp (1.5),
+	jamshidianswaption.hpp (1.9), swaptionpricer.hpp (1.5),
+	treecapfloor.cpp (1.17), treecapfloor.hpp (1.12), treeswaption.cpp
+	(1.21), treeswaption.hpp (1.15): generalized SwaptionPricer and
+	CapFloorPricer to GenericModelEngine
+
+2002-09-25 07:02  Marco Marchioro <marco.marchioro@riskmap.net>
+
+	* ql/Math/loglinearinterpolation.hpp (1.11): Now complies also on
+	VC++
+
+2002-09-24 15:27  Marco Marchioro <marco.marchioro@riskmap.net>
+
+	* ql/PricingEngines/genericengine.hpp (1.4): generalized
+	SwaptionPricer and CapFloorPricer to GenericModelEngine
+
+2002-09-24 15:26  Marco Marchioro <marco.marchioro@riskmap.net>
+
+	* ql/quantlib.hpp (1.69): namespace QLPRE =
+	QuantLib::PricingEngines
+
+2002-09-24 15:25  Marco Marchioro <marco.marchioro@riskmap.net>
+
+	* ql/Instruments/swaption.cpp (1.20): remarks changed
+
+2002-09-24 14:24  Luigi Ballabio <luigi.ballabio@riskmap.net>
+
+	* ql/: Optimization/armijo.cpp (1.12), Optimization/armijo.hpp
+	(1.13), Optimization/conjugategradient.cpp (1.13),
+	Optimization/conjugategradient.hpp (1.11),
+	Optimization/costfunction.hpp (1.13), Optimization/criteria.hpp
+	(1.10), Optimization/leastsquare.hpp (1.18),
+	Optimization/linesearch.hpp (1.12), Optimization/method.hpp (1.3),
+	Optimization/problem.hpp (1.4), Optimization/simplex.cpp (1.6),
+	Optimization/simplex.hpp (1.8), Optimization/steepestdescent.cpp
+	(1.11), Optimization/steepestdescent.hpp (1.13),
+	ShortRateModels/model.cpp (1.8),
+	TermStructures/affinetermstructure.cpp (1.7): A look at the
+	optimizers (nothing major)
+
+2002-09-16 15:18  Luigi Ballabio <luigi.ballabio@riskmap.net>
+
+	* Makefile.am (1.66), configure.in (1.86), darwin.setup (1.2),
+	Docs/Makefile.am (1.49), Docs/README.txt (1.19), Docs/bootstrap
+	(1.3), Docs/configure.in (1.14), Docs/Examples/Makefile.am (1.3),
+	Docs/images/Makefile.am (1.1), Docs/pages/Makefile.am (1.6),
+	config/Makefile.am (1.1), lib/Makefile.am (1.1),
+	lib/Mac/Makefile.am (1.1), lib/Mac/CodeWarrior/Makefile.am (1.1),
+	lib/Win32/Makefile.am (1.1), lib/Win32/Borland/Makefile.am (1.1),
+	lib/Win32/VisualStudio/Makefile.am (1.1): Cleaned up
+	autoconfiscation
+
+2002-09-16 14:31  Luigi Ballabio <luigi.ballabio@riskmap.net>
+
+	* ql/Math/loglinearinterpolation.hpp (1.10): removed gcc3.1
+	warnings (maybe)
+
+2002-09-13 22:41  Sadruddin Rejeb <sad.rejeb@riskmap.it>
+
+	* ql/ShortRateModels/OneFactorModels/hullwhite.cpp (1.7): Yes, it
+	should.
+
+2002-09-13 16:55  Luigi Ballabio <luigi.ballabio@riskmap.net>
+
+	* MACOSX.README (1.1), darwin.setup (1.1): Patches for compiling
+	under Mac OS X
+
+2002-09-13 10:19  Marco Marchioro <marco.marchioro@riskmap.net>
+
+	* ql/ShortRateModels/OneFactorModels/hullwhite.cpp (1.6): added
+	smart remark
+
+2002-09-13 10:17  Marco Marchioro <marco.marchioro@riskmap.net>
+
+	* ql/: numericalmethod.hpp (1.5), Pricers/treeswaption.cpp (1.20),
+	Pricers/treeswaption.hpp (1.14): looks better this way
+
+2002-09-11 15:38  Luigi Ballabio <luigi.ballabio@riskmap.net>
+
+	* Examples/BermudanSwaption/BermudanSwaption.cpp (1.22),
+	Examples/EuropeanOption/EuropeanOption.cpp (1.26),
+	Examples/Swap/swapvaluation.cpp (1.31), ql/termstructure.hpp
+	(1.26), ql/TermStructures/affinetermstructure.cpp (1.6),
+	ql/TermStructures/affinetermstructure.hpp (1.9),
+	ql/TermStructures/compoundforward.cpp (1.17),
+	ql/TermStructures/compoundforward.hpp (1.11),
+	ql/TermStructures/discountcurve.cpp (1.12),
+	ql/TermStructures/discountcurve.hpp (1.10),
+	ql/TermStructures/flatforward.hpp (1.17),
+	ql/TermStructures/forwardspreadedtermstructure.hpp (1.7),
+	ql/TermStructures/impliedtermstructure.hpp (1.7),
+	ql/TermStructures/piecewiseflatforward.cpp (1.24),
+	ql/TermStructures/piecewiseflatforward.hpp (1.22),
+	ql/TermStructures/ratehelpers.cpp (1.27),
+	ql/TermStructures/zerospreadedtermstructure.hpp (1.8):
+	TermStructure::todaysDate() is back.  The reason will become clear
+	as soon as you try to price a bond.
+
+2002-08-06 16:28  Luigi Ballabio <luigi.ballabio@riskmap.net>
+
+	* Docs/.cvsignore (1.2): [no log message]
+
+2002-08-06 15:24  Luigi Ballabio <luigi.ballabio@riskmap.net>
+
+	* Docs/pages/authors.docs (1.15): Updated address
+
+2002-08-06 15:10  Ferdinando Ametrano <ferdinando@ametrano.net>
+
+	* Examples/BermudanSwaption/BermudanSwaption.cpp (1.21),
+	Examples/Swap/swapvaluation.cpp (1.30),
+	ql/TermStructures/ratehelpers.cpp (1.26),
+	ql/TermStructures/ratehelpers.hpp (1.22): settlementDays removed
+	from rate helpers.  In SwapRateHelpers is hard-coded that the
+	fixingDays=2
+
+2002-07-26 17:07  Luigi Ballabio <luigi.ballabio@riskmap.net>
+
+	* Examples/BermudanSwaption/.cvsignore (1.4),
+	Examples/BermudanSwaption/BermudanSwaption.cpp (1.20),
+	Examples/DiscreteHedging/.cvsignore (1.4),
+	Examples/EuropeanOption/.cvsignore (1.4), Examples/Swap/.cvsignore
+	(1.4), Examples/Swap/swapvaluation.cpp (1.29),
+	ql/Volatilities/Makefile.am (1.6): [no log message]
+
+2002-07-26 16:00  Ferdinando Ametrano <ferdinando@ametrano.net>
+
+	* Examples/EuropeanOption/EuropeanOption.cpp (1.25),
+	Examples/Swap/swapvaluation.cpp (1.28), ql/termstructure.hpp
+	(1.25), ql/TermStructures/affinetermstructure.cpp (1.5),
+	ql/TermStructures/affinetermstructure.hpp (1.8),
+	ql/TermStructures/compoundforward.cpp (1.16),
+	ql/TermStructures/compoundforward.hpp (1.10),
+	ql/TermStructures/discountcurve.cpp (1.11),
+	ql/TermStructures/discountcurve.hpp (1.9),
+	ql/TermStructures/flatforward.hpp (1.16),
+	ql/TermStructures/forwardspreadedtermstructure.hpp (1.6),
+	ql/TermStructures/impliedtermstructure.hpp (1.6),
+	ql/TermStructures/piecewiseflatforward.cpp (1.23),
+	ql/TermStructures/piecewiseflatforward.hpp (1.21),
+	ql/TermStructures/ratehelpers.cpp (1.25),
+	ql/TermStructures/ratehelpers.hpp (1.21),
+	ql/TermStructures/zerospreadedtermstructure.hpp (1.7): removed
+	todaysDate() almost everywhere.  To be removed in rate helpers
+
+2002-07-25 11:34  Luigi Ballabio <luigi.ballabio@riskmap.net>
+
+	* ql/Pricers/: singleassetoption.cpp (1.16), singleassetoption.hpp
+	(1.16): Added contributed impliedDividendYield
+
+2002-07-25 10:29  Luigi Ballabio <luigi.ballabio@riskmap.net>
+
+	* QuantLib.mak (1.97): [no log message]
+
+2002-07-25 09:11  Luigi Ballabio <luigi.ballabio@riskmap.net>
+
+	* ql/Lattices/bsmlattice.cpp (1.3): removed warnings
+
+2002-07-25 09:10  Luigi Ballabio <luigi.ballabio@riskmap.net>
+
+	* ql/Indexes/xibor.hpp (1.13): [no log message]
+
+2002-07-24 10:33  Ferdinando Ametrano <ferdinando@ametrano.net>
+
+	* ql/: makefile.mak (1.19), Calendars/makefile.mak (1.9),
+	CashFlows/makefile.mak (1.7), DayCounters/makefile.mak (1.7),
+	FiniteDifferences/makefile.mak (1.7), Indexes/makefile.mak (1.6),
+	Instruments/makefile.mak (1.13), Lattices/makefile.mak (1.14),
+	Math/makefile.mak (1.8), MonteCarlo/makefile.mak (1.12),
+	Optimization/makefile.mak (1.6), Pricers/makefile.mak (1.23),
+	PricingEngines/makefile.mak (1.4), RandomNumbers/makefile.mak
+	(1.6), ShortRateModels/makefile.mak (1.3),
+	ShortRateModels/CalibrationHelpers/makefile.mak (1.2),
+	ShortRateModels/OneFactorModels/makefile.mak (1.2),
+	ShortRateModels/TwoFactorModels/makefile.mak (1.2),
+	Solvers1D/makefile.mak (1.6), TermStructures/makefile.mak (1.9),
+	functions/makefile.mak (1.6): 'make clean' now removes debug files
+	too
+
+2002-07-24 09:57  Ferdinando Ametrano <ferdinando@ametrano.net>
+
+	* Examples/BermudanSwaption/.cvsignore (1.3),
+	Examples/DiscreteHedging/.cvsignore (1.3),
+	Examples/EuropeanOption/.cvsignore (1.3), Examples/Swap/.cvsignore
+	(1.3), lib/Win32/Borland/.cvsignore (1.2), ql/.cvsignore (1.4),
+	ql/Calendars/.cvsignore (1.2), ql/CashFlows/.cvsignore (1.2),
+	ql/DayCounters/.cvsignore (1.2), ql/FiniteDifferences/.cvsignore
+	(1.2), ql/Indexes/.cvsignore (1.2), ql/Instruments/.cvsignore
+	(1.2), ql/Lattices/.cvsignore (1.2), ql/Math/.cvsignore (1.2),
+	ql/MonteCarlo/.cvsignore (1.2), ql/Optimization/.cvsignore (1.2),
+	ql/Pricers/.cvsignore (1.2), ql/PricingEngines/.cvsignore (1.2),
+	ql/RandomNumbers/.cvsignore (1.2), ql/ShortRateModels/.cvsignore
+	(1.2), ql/ShortRateModels/CalibrationHelpers/.cvsignore (1.2),
+	ql/ShortRateModels/OneFactorModels/.cvsignore (1.2),
+	ql/ShortRateModels/TwoFactorModels/.cvsignore (1.2),
+	ql/Solvers1D/.cvsignore (1.2), ql/TermStructures/.cvsignore (1.2),
+	ql/functions/.cvsignore (1.2): improved .cvsignore
+
+2002-07-24 09:44  Ferdinando Ametrano <ferdinando@ametrano.net>
+
+	* .cvsignore (1.3), Examples/BermudanSwaption/.cvsignore (1.2),
+	Examples/DiscreteHedging/.cvsignore (1.2),
+	Examples/EuropeanOption/.cvsignore (1.2), Examples/Swap/.cvsignore
+	(1.2), lib/Win32/Borland/.cvsignore (1.1),
+	lib/Win32/VisualStudio/.cvsignore (1.1), ql/.cvsignore (1.3),
+	ql/Calendars/.cvsignore (1.1), ql/CashFlows/.cvsignore (1.1),
+	ql/DayCounters/.cvsignore (1.1), ql/FiniteDifferences/.cvsignore
+	(1.1), ql/Indexes/.cvsignore (1.1), ql/Instruments/.cvsignore
+	(1.1), ql/Lattices/.cvsignore (1.1), ql/Math/.cvsignore (1.1),
+	ql/MonteCarlo/.cvsignore (1.1), ql/Optimization/.cvsignore (1.1),
+	ql/Pricers/.cvsignore (1.1), ql/PricingEngines/.cvsignore (1.1),
+	ql/RandomNumbers/.cvsignore (1.1), ql/ShortRateModels/.cvsignore
+	(1.1), ql/ShortRateModels/CalibrationHelpers/.cvsignore (1.1),
+	ql/ShortRateModels/OneFactorModels/.cvsignore (1.1),
+	ql/ShortRateModels/TwoFactorModels/.cvsignore (1.1),
+	ql/Solvers1D/.cvsignore (1.1), ql/TermStructures/.cvsignore (1.1),
+	ql/Volatilities/localvariancecurve.hpp (1.2),
+	ql/functions/.cvsignore (1.1): typo fixed in local vol file
+	.cvsignore added/expanded
+
+2002-07-23 15:32  Ferdinando Ametrano <ferdinando@ametrano.net>
+
+	* QuantLib.dsp (1.106), ql/quantlib.hpp (1.68),
+	ql/Volatilities/blackconstantvol.hpp (1.3),
+	ql/Volatilities/localconstantvol.hpp (1.1),
+	ql/Volatilities/localvariancecurve.hpp (1.1), ql/functions/vols.cpp
+	(1.10): implementation of Local vol term structures: constant and
+	time dependent
+
+2002-07-23 10:39  Ferdinando Ametrano <ferdinando@ametrano.net>
+
+	* QuantLib.dsp (1.105), QuantLib.mak (1.96),
+	Examples/BermudanSwaption/BermudanSwaption.mak (1.10),
+	Examples/DiscreteHedging/DiscreteHedging.mak (1.30),
+	Examples/EuropeanOption/EuropeanOption.mak (1.25),
+	Examples/Swap/Swap.mak (1.26), ql/Volatilities/blackconstantvol.hpp
+	(1.2), ql/Volatilities/blackvariancecurve.hpp (1.7): existing vol
+	term structures renamed as Black vol term structures.  Local vol
+	term structures introduced
+
+2002-07-23 10:20  Ferdinando Ametrano <ferdinando@ametrano.net>
+
+	* ql/: quantlib.hpp (1.67), voltermstructure.hpp (1.7),
+	Volatilities/Makefile.am (1.5), Volatilities/blackconstantvol.hpp
+	(1.1), Volatilities/blackvariancecurve.hpp (1.6),
+	Volatilities/blackvariancesurface.hpp (1.6),
+	Volatilities/constantvol.hpp (1.5), functions/vols.cpp (1.9):
+	existing vol term structures renamed as Black vol term structures. 
+	Local vol term structures introduced
+
+2002-07-23 09:07  Ferdinando Ametrano <ferdinando@ametrano.net>
+
+	* ChangeLog.txt (1.26), ql/instrument.hpp (1.11), ql/option.cpp
+	(1.15), ql/pricingengine.hpp (1.3), ql/Instruments/capfloor.cpp
+	(1.26), ql/Instruments/capfloor.hpp (1.29),
+	ql/Instruments/forwardvanillaoption.cpp (1.3),
+	ql/Instruments/forwardvanillaoption.hpp (1.2),
+	ql/Instruments/quantovanillaoption.cpp (1.5),
+	ql/Instruments/quantovanillaoption.hpp (1.2),
+	ql/Instruments/swaption.cpp (1.19), ql/Instruments/swaption.hpp
+	(1.20), ql/Instruments/vanillaoption.cpp (1.6),
+	ql/Instruments/vanillaoption.hpp (1.5),
+	ql/Optimization/constraint.hpp (1.5),
+	ql/Pricers/analyticalcapfloor.cpp (1.14),
+	ql/Pricers/blackcapfloor.cpp (1.8), ql/Pricers/blackswaption.cpp
+	(1.6), ql/Pricers/capfloorpricer.cpp (1.4),
+	ql/Pricers/capfloorpricer.hpp (1.4),
+	ql/Pricers/jamshidianswaption.cpp (1.12),
+	ql/Pricers/swaptionpricer.cpp (1.3), ql/Pricers/swaptionpricer.hpp
+	(1.4), ql/Pricers/treecapfloor.cpp (1.16),
+	ql/Pricers/treeswaption.cpp (1.19),
+	ql/PricingEngines/discretizedvanillaoption.cpp (1.3),
+	ql/PricingEngines/discretizedvanillaoption.hpp (1.3),
+	ql/PricingEngines/europeananalyticalengine.cpp (1.4),
+	ql/PricingEngines/europeanbinomialengine.cpp (1.2),
+	ql/PricingEngines/forwardengines.hpp (1.4),
+	ql/PricingEngines/forwardperformancevanillaanalyticengine.cpp
+	(1.2), ql/PricingEngines/forwardvanillaanalyticengine.cpp (1.2),
+	ql/PricingEngines/genericengine.hpp (1.3),
+	ql/PricingEngines/quantoengines.hpp (1.5),
+	ql/PricingEngines/quantovanillaanalyticengine.cpp (1.5),
+	ql/PricingEngines/vanillaengines.hpp (1.4),
+	ql/ShortRateModels/model.cpp (1.7), ql/ShortRateModels/model.hpp
+	(1.9), ql/ShortRateModels/onefactormodel.cpp (1.6),
+	ql/ShortRateModels/onefactormodel.hpp (1.7),
+	ql/ShortRateModels/parameter.hpp (1.4),
+	ql/ShortRateModels/twofactormodel.cpp (1.3),
+	ql/ShortRateModels/CalibrationHelpers/caphelper.cpp (1.6),
+	ql/ShortRateModels/CalibrationHelpers/swaptionhelper.cpp (1.4),
+	ql/ShortRateModels/OneFactorModels/blackkarasinski.cpp (1.5),
+	ql/ShortRateModels/OneFactorModels/coxingersollross.cpp (1.9),
+	ql/ShortRateModels/OneFactorModels/extendedcoxingersollross.cpp
+	(1.6),
+	ql/ShortRateModels/OneFactorModels/extendedcoxingersollross.hpp
+	(1.7), ql/ShortRateModels/OneFactorModels/hullwhite.cpp (1.5),
+	ql/ShortRateModels/OneFactorModels/hullwhite.hpp (1.7),
+	ql/ShortRateModels/OneFactorModels/vasicek.cpp (1.4),
+	ql/ShortRateModels/TwoFactorModels/g2.cpp (1.4),
+	ql/ShortRateModels/TwoFactorModels/g2.hpp (1.5),
+	ql/TermStructures/affinetermstructure.hpp (1.7),
+	ql/TermStructures/ratehelpers.cpp (1.24): parameters renamed
+	arguments (hey, the base class is Arguments, isn't it?)
+
+2002-07-16 16:11  Luigi Ballabio <luigi.ballabio@riskmap.net>
+
+	* ql/: index.hpp (1.9), Indexes/xibor.hpp (1.12): Fixed xibor
+	observability
+
+2002-07-12 21:36  stochastix
+
+	* ql/TermStructures/zerospreadedtermstructure.hpp (1.6): a call to
+	forward(t,bool) was left from Nando's renaming 2002/06/24
+
+2002-07-12 11:55  stochastix
+
+	* ql/TermStructures/zerospreadedtermstructure.hpp (1.5): removed
+	the disappeared calendar() getter
+
+2002-07-11 15:21  Luigi Ballabio <luigi.ballabio@riskmap.net>
+
+	* Docs/.cvsignore (1.1): Some more .cvsignore
+
+2002-07-11 14:52  Luigi Ballabio <luigi.ballabio@riskmap.net>
+
+	* Examples/BermudanSwaption/.cvsignore (1.1),
+	Examples/DiscreteHedging/.cvsignore (1.1),
+	Examples/EuropeanOption/.cvsignore (1.1), Examples/Swap/.cvsignore
+	(1.1), ql/.cvsignore (1.2): Some more cvs ignoring
+
+2002-07-11 14:48  Luigi Ballabio <luigi.ballabio@riskmap.net>
+
+	* .cvsignore (1.2): Ignoring build directory
+
+2002-07-11 14:46  Luigi Ballabio <luigi.ballabio@riskmap.net>
+
+	* .cvsignore (1.1), ql/.cvsignore (1.1), ql/dataformatters.cpp
+	(1.10), ql/dataformatters.hpp (1.8),
+	ql/Instruments/vanillaoption.cpp (1.5),
+	ql/Pricers/cliquetoption.cpp (1.11),
+	ql/TermStructures/affinetermstructure.cpp (1.4),
+	ql/TermStructures/compoundforward.cpp (1.15),
+	ql/TermStructures/piecewiseflatforward.cpp (1.22): Removed warnings
+
+2002-07-10 12:42  Enrico Sirola <enrico.sirola@riskmap.net>
+
+	* ql/TermStructures/affinetermstructure.hpp (1.6):
+	AffineTermstructure:	     * Time maxTime() removed
+
+2002-07-08 07:51  andrelouw
+
+	* ql/Math/: interpolation.hpp (1.12), loglinearinterpolation.hpp
+	(1.9): Compile warnings fixed.
+
+2002-07-02 15:52  Luigi Ballabio <luigi.ballabio@riskmap.net>
+
+	* ql/RandomNumbers/randomarraygenerator.hpp (1.10): Fixed
+	never-instantiated bug
+
+2002-06-28 12:22  Luigi Ballabio <luigi.ballabio@riskmap.net>
+
+	* ql/Math/loglinearinterpolation.hpp (1.8): Removed warning
+
+2002-06-27 17:06  Luigi Ballabio <luigi.ballabio@riskmap.net>
+
+	* ql/TermStructures/forwardspreadedtermstructure.hpp (1.5): bug fix
+
+2002-06-26 08:00  Luigi Ballabio <luigi.ballabio@riskmap.net>
+
+	* ql/Math/statistics.hpp (1.13): Statistics more tolerant
+
+2002-06-25 16:45  Ferdinando Ametrano <ferdinando@ametrano.net>
+
+	* ql/Math/loglinearinterpolation.hpp (1.7): re-written in term of
+	underlying linear interpolation Includes a safety check that
+	y(x)>0.0, in order to perform LOG(y(x))
+
+2002-06-25 16:35  Ferdinando Ametrano <ferdinando@ametrano.net>
+
+	* ql/termstructure.hpp (1.24): division by zero bug fixed
+
+2002-06-24 16:16  Ferdinando Ametrano <ferdinando@ametrano.net>
+
+	* Examples/BermudanSwaption/BermudanSwaption.cpp (1.19),
+	Examples/EuropeanOption/EuropeanOption.cpp (1.24),
+	Examples/Swap/swapvaluation.cpp (1.27),
+	ql/TermStructures/flatforward.hpp (1.15): 1) currency_ data member
+	and currency() method removed 2) minTime() and minDate() removed,
+	assuming that the minimum time is    always t=0.0 at the
+	settlementDate, where discount = 1.0 3) daycounter moved to the
+	last position in the constructors' parameters list,    so to allow
+	for a default value 4) forward(const Date&, bool) and forward(Time,
+	bool) renamed	 instantaneousForward to avoid confusion with
+	forward(Time, Time, bool)    and forward (Date, Date, bool) 5)
+	added default implementation of maxTime() in base class
+
+2002-06-24 15:48  Ferdinando Ametrano <ferdinando@ametrano.net>
+
+	* QuantLib.dsp (1.104), QuantLib.mak (1.95),
+	Examples/BermudanSwaption/BermudanSwaption.cpp (1.18),
+	Examples/BermudanSwaption/BermudanSwaption.mak (1.9),
+	Examples/DiscreteHedging/DiscreteHedging.mak (1.29),
+	Examples/EuropeanOption/EuropeanOption.cpp (1.23),
+	Examples/EuropeanOption/EuropeanOption.mak (1.24),
+	Examples/Swap/Swap.mak (1.25), ql/termstructure.hpp (1.23),
+	ql/ShortRateModels/OneFactorModels/extendedcoxingersollross.cpp
+	(1.5),
+	ql/ShortRateModels/OneFactorModels/extendedcoxingersollross.hpp
+	(1.6), ql/ShortRateModels/OneFactorModels/hullwhite.cpp (1.4),
+	ql/ShortRateModels/OneFactorModels/hullwhite.hpp (1.6),
+	ql/ShortRateModels/TwoFactorModels/g2.cpp (1.3),
+	ql/ShortRateModels/TwoFactorModels/g2.hpp (1.4),
+	ql/TermStructures/affinetermstructure.cpp (1.3),
+	ql/TermStructures/affinetermstructure.hpp (1.5),
+	ql/TermStructures/compoundforward.cpp (1.14),
+	ql/TermStructures/compoundforward.hpp (1.9),
+	ql/TermStructures/discountcurve.cpp (1.10),
+	ql/TermStructures/discountcurve.hpp (1.8),
+	ql/TermStructures/flatforward.hpp (1.14),
+	ql/TermStructures/forwardspreadedtermstructure.hpp (1.4),
+	ql/TermStructures/impliedtermstructure.hpp (1.5),
+	ql/TermStructures/piecewiseflatforward.cpp (1.21),
+	ql/TermStructures/piecewiseflatforward.hpp (1.20),
+	ql/TermStructures/ratehelpers.cpp (1.23),
+	ql/TermStructures/zerospreadedtermstructure.hpp (1.4),
+	ql/Volatilities/blackvariancecurve.hpp (1.5): 1) currency_ data
+	member and currency() method removed 2) minTime() and minDate()
+	removed, assuming that the minimum time is    always t=0.0 at the
+	settlementDate, where discount = 1.0 3) daycounter moved to the
+	last position in the constructors' parameters list,    so to allow
+	for a default value 4) forward(const Date&, bool) and forward(Time,
+	bool) renamed	 instantaneousForward to avoid confusion with
+	forward(Time, Time, bool)    and forward (Date, Date, bool) 5)
+	added default implementation of maxTime() in base class
+
+2002-06-24 12:01  Luigi Ballabio <luigi.ballabio@riskmap.net>
+
+	* ql/config.msvc.hpp (1.19): Added check for STLPort
+
+2002-06-24 09:59  Luigi Ballabio <luigi.ballabio@riskmap.net>
+
+	* ql/Volatilities/constantvol.hpp (1.4): Removed warning
+
+2002-06-24 09:58  Luigi Ballabio <luigi.ballabio@riskmap.net>
+
+	* ql/PricingEngines/Makefile.am (1.5): fixed file list
+
+2002-06-24 09:57  Luigi Ballabio <luigi.ballabio@riskmap.net>
+
+	* Examples/: BermudanSwaption/Makefile.am (1.3),
+	DiscreteHedging/Makefile.am (1.10), EuropeanOption/Makefile.am
+	(1.4), Swap/Makefile.am (1.5): Take gcc flags from environment
+
+2002-06-23 14:52  Ferdinando Ametrano <ferdinando@ametrano.net>
+
+	* ql/: Volatilities/blackvariancecurve.hpp (1.4),
+	Volatilities/blackvariancesurface.hpp (1.5),
+	Volatilities/constantvol.hpp (1.3), voltermstructure.hpp (1.6):
+	minDate() removed
+
+2002-06-22 17:55  Ferdinando Ametrano <ferdinando@ametrano.net>
+
+	* ql/voltermstructure.hpp (1.5): minTime() removed.  Hey, minTime
+	is t==0 !!!
+
+2002-06-22 17:52  Ferdinando Ametrano <ferdinando@ametrano.net>
+
+	* ql/TermStructures/: discountcurve.cpp (1.9), discountcurve.hpp
+	(1.7): bugs fixed: 1) as soon as discounts went out of scope the
+	interpolation object was left with a dangling pointer.	Fixed using
+	discounts_ 2) as soon as dates went out of scope dates_ became a
+	dangling pointer.  Fixed copying dates into dates_
+
+2002-06-22 17:40  Ferdinando Ametrano <ferdinando@ametrano.net>
+
+	* ql/functions/vols.cpp (1.8): dayCounter is now the last parameter
+	(with a default value)
+
+2002-06-22 17:31  Ferdinando Ametrano <ferdinando@ametrano.net>
+
+	* ql/Volatilities/: blackvariancecurve.hpp (1.3),
+	blackvariancesurface.hpp (1.4), constantvol.hpp (1.2): dayCounter
+	is now the last parameter (with a default value)
+
+2002-06-18 17:52  Ferdinando Ametrano <ferdinando@ametrano.net>
+
+	* ql/PricingEngines/Makefile.am (1.4),
+	ql/PricingEngines/forwardengines.hpp (1.3),
+	ql/PricingEngines/forwardperformancevanillaanalyticengine.cpp
+	(1.1), ql/PricingEngines/forwardvanillaanalyticengine.cpp (1.1),
+	ql/PricingEngines/makefile.mak (1.3),
+	ql/PricingEngines/quantoengines.hpp (1.4),
+	ql/PricingEngines/quantovanillaanalyticengine.cpp (1.4),
+	QuantLib.dsp (1.103), QuantLib.mak (1.94): added forward e
+	(forward) performance engines
+
+2002-06-17 09:30  Ferdinando Ametrano <ferdinando@ametrano.net>
+
+	* ql/quantlib.hpp (1.66): added missing file
+
+2002-06-17 09:27  Ferdinando Ametrano <ferdinando@ametrano.net>
+
+	* ql/Volatilities/Makefile.am (1.4),
+	ql/Volatilities/constantvol.hpp (1.1), ql/functions/vols.cpp (1.7),
+	QuantLib.dsp (1.102), QuantLib.mak (1.93): added missing file
+
+2002-06-17 09:23  Marco Marchioro <marco.marchioro@riskmap.net>
+
+	* ql/: quantlib.hpp (1.65), Volatilities/blackvariancesurface.hpp
+	(1.3), functions/vols.cpp (1.6): Little fixes in order to compile
+
+2002-06-16 09:32  Ferdinando Ametrano <ferdinando@ametrano.net>
+
+	* ql/Volatilities/: blackvariancecurve.hpp (1.2),
+	blackvariancesurface.hpp (1.2): minTime and maxTime are implemented
+	in the base class underlying data member removed
+
+2002-06-16 09:31  Ferdinando Ametrano <ferdinando@ametrano.net>
+
+	* ql/voltermstructure.hpp (1.4): minTime and maxTime are
+	implemented in the base class
+
+2002-06-16 09:29  Ferdinando Ametrano <ferdinando@ametrano.net>
+
+	* ql/PricingEngines/quantovanillaanalyticengine.cpp (1.3): it does
+	work!
+
+2002-06-15 01:30  Ferdinando Ametrano <ferdinando@ametrano.net>
+
+	* QuantLib.dsp (1.101), QuantLib.mak (1.92), ql/quantlib.hpp
+	(1.64), ql/voltermstructure.hpp (1.3), ql/Volatilities/Makefile.am
+	(1.3), ql/Volatilities/blackvariancecurve.hpp (1.1),
+	ql/Volatilities/blackvariancesurface.hpp (1.1),
+	ql/Volatilities/interpolatedblackvol.hpp (1.6),
+	ql/functions/vols.cpp (1.5), ql/functions/vols.hpp (1.2),
+	ql/functions/Makefile.am (1.7): vol term structure is working
+
+2002-06-12 12:24  Luigi Ballabio <luigi.ballabio@riskmap.net>
+
+	* ql/Indexes/: xibor.cpp (1.9), xibor.hpp (1.11): added frequency()
+	method
+
+2002-06-11 23:19  Sadruddin Rejeb <sad.rejeb@riskmap.it>
+
+	* ql/: Indexes/audlibor.hpp (1.5), Math/lexicographicalview.hpp
+	(1.6), MonteCarlo/multipathgenerator.hpp (1.27),
+	MonteCarlo/pathgenerator.hpp (1.21),
+	RandomNumbers/boxmullergaussianrng.hpp (1.6),
+	RandomNumbers/centrallimitgaussianrng.hpp (1.6),
+	RandomNumbers/inversecumgaussianrng.hpp (1.3),
+	RandomNumbers/randomarraygenerator.hpp (1.9),
+	Utilities/combiningiterator.hpp (1.6),
+	Utilities/processingiterator.hpp (1.5): fixed g++ 3.1 warnings
+	(implicit typename), SIBOR fix
+
+2002-06-11 14:54  Ferdinando Ametrano <ferdinando@ametrano.net>
+
+	* ql/: Volatilities/interpolatedblackvol.hpp (1.5),
+	functions/vols.cpp (1.4): 1) pushing further the engine framework.
+	It doesn't work yet 2) introducing Black vol surface. It doesn't
+	work yet
+	
+	but at least it compiles .. and 1) even run !-)
+
+2002-06-11 13:32  Ferdinando Ametrano <ferdinando@ametrano.net>
+
+	* Examples/makefile.mak (1.11), ql/option.cpp (1.14),
+	ql/voltermstructure.hpp (1.2),
+	ql/Instruments/quantovanillaoption.cpp (1.4),
+	ql/Instruments/vanillaoption.cpp (1.4),
+	ql/Instruments/vanillaoption.hpp (1.4),
+	ql/PricingEngines/europeananalyticalengine.cpp (1.3),
+	ql/Volatilities/interpolatedblackvol.hpp (1.4),
+	ql/functions/vols.cpp (1.3): 1) pushing further the engine
+	framework. It doesn't work yet 2) introducing Black vol surface. It
+	doesn't work yet
+
+2002-06-11 09:43  Luigi Ballabio <luigi.ballabio@riskmap.net>
+
+	* configure.in (1.85), ql/Makefile.am (1.25),
+	ql/Instruments/forwardvanillaoption.cpp (1.2),
+	ql/Instruments/quantovanillaoption.cpp (1.3),
+	ql/Pricers/Makefile.am (1.29), ql/PricingEngines/Makefile.am (1.3),
+	ql/functions/Makefile.am (1.6): How on earth could Borland compile
+	_that_?
+
+2002-06-11 08:18  andrelouw
+
+	* ql/Instruments/swap.hpp (1.10): Removed convenience to link to
+	termStructure
+
+2002-06-11 08:14  Ferdinando Ametrano <ferdinando@ametrano.net>
+
+	* ql/: Volatilities/interpolatedblackvol.hpp (1.3),
+	functions/vols.cpp (1.2): 1) pushing further the engine framework.
+	It doesn't work yet 2) introducing Black vol surface. It doesn't
+	work yet
+
+2002-06-10 20:59  Sadruddin Rejeb <sad.rejeb@riskmap.it>
+
+	* ql/: calendar.hpp (1.15), dataparsers.cpp (1.3), dataparsers.hpp
+	(1.3), Instruments/swap.hpp (1.9), Math/cubicspline.hpp (1.15),
+	Math/linearinterpolation.hpp (1.10),
+	Math/loglinearinterpolation.hpp (1.6),
+	PricingEngines/discretizedvanillaoption.cpp (1.2),
+	TermStructures/compoundforward.cpp (1.13),
+	TermStructures/compoundforward.hpp (1.8),
+	Utilities/filteringiterator.hpp (1.5),
+	Utilities/steppingiterator.hpp (1.5): gcc 3.1 compilation warnings,
+	indentation fixes.
+
+2002-06-10 17:34  Ferdinando Ametrano <ferdinando@ametrano.net>
+
+	* QuantLib.dsp (1.100), QuantLib.mak (1.91),
+	Examples/EuropeanOption/EuropeanOption.cpp (1.22),
+	ql/functions/Makefile.am (1.5), ql/functions/makefile.mak (1.5),
+	ql/functions/vols.cpp (1.1), ql/functions/vols.hpp (1.1): 1)
+	pushing further the engine framework. It doesn't work yet 2)
+	introducing Black vol surface. It doesn't work yet
+
+2002-06-10 17:28  Ferdinando Ametrano <ferdinando@ametrano.net>
+
+	* ql/: PricingEngines/europeananalyticalengine.cpp (1.2),
+	PricingEngines/forwardengines.hpp (1.2),
+	PricingEngines/quantoengines.hpp (1.3),
+	PricingEngines/quantovanillaanalyticengine.cpp (1.2),
+	PricingEngines/vanillaengines.hpp (1.3),
+	Volatilities/interpolatedblackvol.hpp (1.2),
+	Instruments/quantovanillaoption.cpp (1.2),
+	Instruments/vanillaoption.cpp (1.3), option.cpp (1.13): 1) pushing
+	further the engine framework. It doesn't work yet 2) introducing
+	Black vol surface. It doesn't work yet
+
+2002-06-10 17:26  Ferdinando Ametrano <ferdinando@ametrano.net>
+
+	* ql/functions/Makefile.am (1.4): removed reference to non-existant
+	files
+
+2002-06-09 20:25  Ferdinando Ametrano <ferdinando@ametrano.net>
+
+	* QuantLib.dsp (1.99), QuantLib.mak (1.90),
+	Examples/EuropeanOption/EuropeanOption.cpp (1.21), ql/Makefile.am
+	(1.24), ql/quantlib.hpp (1.63), ql/voltermstructure.hpp (1.1),
+	ql/Instruments/Makefile.am (1.11),
+	ql/Instruments/forwardvanillaoption.cpp (1.1),
+	ql/Instruments/forwardvanillaoption.hpp (1.1),
+	ql/Instruments/makefile.mak (1.12), ql/Instruments/quantooption.cpp
+	(1.2), ql/Instruments/quantooption.hpp (1.2),
+	ql/Instruments/quantovanillaoption.cpp (1.1),
+	ql/Instruments/quantovanillaoption.hpp (1.1),
+	ql/Instruments/vanillaoption.hpp (1.3),
+	ql/PricingEngines/Makefile.am (1.2),
+	ql/PricingEngines/discretizedvanillaoption.hpp (1.2),
+	ql/PricingEngines/forwardengines.hpp (1.1),
+	ql/PricingEngines/genericengine.hpp (1.2),
+	ql/PricingEngines/makefile.mak (1.2),
+	ql/PricingEngines/quantoengines.hpp (1.2),
+	ql/PricingEngines/quantoeuropeananalyticalengine.cpp (1.2),
+	ql/PricingEngines/quantovanillaanalyticengine.cpp (1.1),
+	ql/PricingEngines/vanillaengines.hpp (1.2),
+	ql/Volatilities/interpolatedblackvol.hpp (1.1),
+	ql/functions/Makefile.am (1.3): 1) pushing further the engine
+	framework. It doesn't work yet 2) introducing Black vol surface. It
+	doesn't work yet
+
+2002-06-07 17:26  Ferdinando Ametrano <ferdinando@ametrano.net>
+
+	* QuantLib.dsp (1.98), QuantLib.mak (1.89), QuantLib.nsi (1.74),
+	Examples/BermudanSwaption/BermudanSwaption.mak (1.8),
+	Examples/DiscreteHedging/DiscreteHedging.mak (1.28),
+	Examples/EuropeanOption/EuropeanOption.cpp (1.20),
+	Examples/EuropeanOption/EuropeanOption.mak (1.23),
+	Examples/Swap/Swap.mak (1.24), ql/Makefile.am (1.23),
+	ql/argsandresults.hpp (1.7), ql/makefile.mak (1.18), ql/option.cpp
+	(1.12), ql/pricingengine.hpp (1.2), ql/quantlib.hpp (1.62),
+	ql/Instruments/Makefile.am (1.10), ql/Instruments/makefile.mak
+	(1.11), ql/Instruments/quantooption.cpp (1.1),
+	ql/Instruments/quantooption.hpp (1.1),
+	ql/Instruments/vanillaoption.cpp (1.2),
+	ql/Instruments/vanillaoption.hpp (1.2), ql/Pricers/Makefile.am
+	(1.28), ql/Pricers/binomialvanillaengine.cpp (1.2),
+	ql/Pricers/binomialvanillaengine.hpp (1.2),
+	ql/Pricers/europeanengine.cpp (1.7), ql/Pricers/europeanengine.hpp
+	(1.7), ql/Pricers/makefile.mak (1.22),
+	ql/Pricers/vanillaoptionengine.cpp (1.2),
+	ql/Pricers/vanillaoptionengine.hpp (1.2),
+	ql/PricingEngines/Makefile.am (1.1),
+	ql/PricingEngines/discretizedvanillaoption.cpp (1.1),
+	ql/PricingEngines/discretizedvanillaoption.hpp (1.1),
+	ql/PricingEngines/europeananalyticalengine.cpp (1.1),
+	ql/PricingEngines/europeanbinomialengine.cpp (1.1),
+	ql/PricingEngines/genericengine.hpp (1.1),
+	ql/PricingEngines/makefile.mak (1.1),
+	ql/PricingEngines/quantoengines.hpp (1.1),
+	ql/PricingEngines/quantoeuropeananalyticalengine.cpp (1.1),
+	ql/PricingEngines/vanillaengines.hpp (1.1):
+	Princing_Engine_framework refactoring in progress ....
+
+2002-06-02 13:46  Ferdinando Ametrano <ferdinando@ametrano.net>
+
+	* ql/: Instruments/plainoption.cpp (1.13),
+	Instruments/plainoption.hpp (1.15), Instruments/vanillaoption.cpp
+	(1.1), Instruments/vanillaoption.hpp (1.1),
+	Pricers/binomialplainoption.cpp (1.4),
+	Pricers/binomialplainoption.hpp (1.3): 1) OptionPricingEngine
+	renamed PricingEngine: it will be used not only for	options 2)
+	PlainOption renamed VanillaOption 3)
+	Instruments::PlainOptionParameters renamed    
+	Pricers::VanillaOptionParameters and
+	Instruments::PlainOptionResults     renamed
+	Pricers::VanillaOptionResults: I see them connected to the    
+	engine more than to the instrument 4) BinomialVanillaOption renamed
+	BinomialVanillaEngine: it's an engine, not     an instrument 5) new
+	files for PricingEngine, VanillaOptionEngine, and    
+	BinomialVanillaEngine
+
+2002-06-01 23:32  Ferdinando Ametrano <ferdinando@ametrano.net>
+
+	* QuantLib.dsp (1.97), QuantLib.mak (1.88): updated
+
+2002-06-01 23:27  Ferdinando Ametrano <ferdinando@ametrano.net>
+
+	* Examples/EuropeanOption/EuropeanOption.cpp (1.19): added analytic
+	pricing engine
+
+2002-06-01 23:06  Ferdinando Ametrano <ferdinando@ametrano.net>
+
+	* QuantLib.dsp (1.96), QuantLib.mak (1.87), TODO.txt (1.90),
+	Examples/BermudanSwaption/BermudanSwaption.cpp (1.17),
+	Examples/EuropeanOption/EuropeanOption.cpp (1.18), ql/Makefile.am
+	(1.22), ql/argsandresults.hpp (1.6), ql/option.cpp (1.11),
+	ql/option.hpp (1.11), ql/pricingengine.hpp (1.1), ql/quantlib.hpp
+	(1.61), ql/Instruments/Makefile.am (1.9),
+	ql/Instruments/capfloor.hpp (1.28), ql/Instruments/makefile.mak
+	(1.10), ql/Instruments/plainoption.cpp (1.12),
+	ql/Instruments/plainoption.hpp (1.14), ql/Instruments/swaption.cpp
+	(1.18), ql/Instruments/swaption.hpp (1.19), ql/Pricers/Makefile.am
+	(1.27), ql/Pricers/binomialplainoption.cpp (1.3),
+	ql/Pricers/binomialplainoption.hpp (1.2),
+	ql/Pricers/binomialvanillaengine.cpp (1.1),
+	ql/Pricers/binomialvanillaengine.hpp (1.1),
+	ql/Pricers/capfloorpricer.hpp (1.3), ql/Pricers/europeanengine.hpp
+	(1.6), ql/Pricers/makefile.mak (1.21),
+	ql/Pricers/swaptionpricer.hpp (1.3),
+	ql/Pricers/vanillaoptionengine.cpp (1.1),
+	ql/Pricers/vanillaoptionengine.hpp (1.1),
+	ql/ShortRateModels/calibrationhelper.hpp (1.5),
+	ql/ShortRateModels/CalibrationHelpers/caphelper.cpp (1.5),
+	ql/ShortRateModels/CalibrationHelpers/swaptionhelper.cpp (1.3): 1)
+	OptionPricingEngine renamed PricingEngine: it will be used not only
+	for	options 2) PlainOption renamed VanillaOption 3)
+	Instruments::PlainOptionParameters renamed    
+	Pricers::VanillaOptionParameters and
+	Instruments::PlainOptionResults     renamed
+	Pricers::VanillaOptionResults: I see them connected to the    
+	engine more than to the instrument 4) BinomialVanillaOption renamed
+	BinomialVanillaEngine: it's an engine, not     an instrument 5) new
+	files for PricingEngine, VanillaOptionEngine, and    
+	BinomialVanillaEngine
+
+2002-06-01 21:44  Ferdinando Ametrano <ferdinando@ametrano.net>
+
+	* ql/Pricers/fdbsmoption.hpp (1.6): unnecessary strong constraints
+	relaxed
+
+2002-06-01 14:10  Ferdinando Ametrano <ferdinando@ametrano.net>
+
+	* ql/: MonteCarlo/performanceoptionpathpricer.cpp (1.2),
+	Pricers/performanceoption.cpp (1.2): bug fixed (missing moneyness
+	factor)
+
+2002-05-31 10:44  Luigi Ballabio <luigi.ballabio@riskmap.net>
+
+	* Makefile.am (1.65): Added 'tags' target to Makefile
+
+2002-05-31 10:44  Luigi Ballabio <luigi.ballabio@riskmap.net>
+
+	* ql/: handle.hpp (1.10), relinkablehandle.hpp (1.10),
+	Patterns/observable.hpp (1.11): Added Handle::operator==
+
+2002-05-31 10:43  Luigi Ballabio <luigi.ballabio@riskmap.net>
+
+	* ql/TermStructures/impliedtermstructure.hpp (1.4): Removed
+	requirements from constructor
+
+2002-05-24 08:57  andrelouw
+
+	* ql/TermStructures/piecewiseflatforward.cpp (1.20): Bug: During
+	discount guessing, if the first instruments given are FRA's,
+	without any prior Deposits supplied, there is no referenceNode yet
+	(referenceNode() returns 0).  Result: This results in a
+	out-of-range exception on discounts_[n-1] ->n being 0! Fix: Return
+	1.0 as discount.
+
+2002-05-24 08:49  andrelouw
+
+	* ql/Instruments/swap.hpp (1.8): Added convenience method to link
+	termStructure.
+
+2002-05-24 08:12  Luigi Ballabio <luigi.ballabio@riskmap.net>
+
+	* ql/TermStructures/flatforward.hpp (1.13): FlatForward optionally
+	takes a MarketElement
+
+2002-05-19 20:15  Ferdinando Ametrano <ferdinando@ametrano.net>
+
+	* ql/: MonteCarlo/Makefile.am (1.17), MonteCarlo/makefile.mak
+	(1.11), Pricers/Makefile.am (1.26), Pricers/makefile.mak (1.20):
+	added performance option (analytical and Monte Carlo) Added cliquet
+	with Monte Carlo.  The last time I use the old option framework, I
+	swore ;-)
+
+2002-05-19 15:00  Ferdinando Ametrano <ferdinando@ametrano.net>
+
+	* ql/Pricers/: cliquetoption.cpp (1.10), cliquetoption.hpp (1.9):
+	extended to time dependant parameters
+
+2002-05-19 14:19  Ferdinando Ametrano <ferdinando@ametrano.net>
+
+	* QuantLib.dsp (1.95), QuantLib.mak (1.86),
+	Examples/BermudanSwaption/BermudanSwaption.mak (1.7),
+	Examples/DiscreteHedging/DiscreteHedging.mak (1.27),
+	Examples/EuropeanOption/EuropeanOption.mak (1.22),
+	Examples/Swap/Swap.mak (1.23), ql/quantlib.hpp (1.60),
+	ql/MonteCarlo/cliquetoptionpathpricer.cpp (1.1),
+	ql/MonteCarlo/cliquetoptionpathpricer.hpp (1.1),
+	ql/MonteCarlo/performanceoptionpathpricer.cpp (1.1),
+	ql/MonteCarlo/performanceoptionpathpricer.hpp (1.1),
+	ql/Pricers/mccliquetoption.cpp (1.1),
+	ql/Pricers/mccliquetoption.hpp (1.1),
+	ql/Pricers/mcperformanceoption.cpp (1.1),
+	ql/Pricers/mcperformanceoption.hpp (1.1),
+	ql/Pricers/performanceoption.cpp (1.1),
+	ql/Pricers/performanceoption.hpp (1.1): added performance option
+	(analytical and Monte Carlo) Added cliquet with Monte Carlo.  The
+	last time I use the old option framework, I swore ;-)
+
+2002-05-19 14:03  Ferdinando Ametrano <ferdinando@ametrano.net>
+
+	* ql/Pricers/: cliquetoption.cpp (1.9), cliquetoption.hpp (1.8):
+	fixed humongous bugs in value and greeks Added dividendRho and
+	moneyness
+
+2002-05-19 13:24  Ferdinando Ametrano <ferdinando@ametrano.net>
+
+	* ql/Pricers/europeanoption.hpp (1.10): beta method goes public
+
+2002-05-19 13:21  Ferdinando Ametrano <ferdinando@ametrano.net>
+
+	* ql/Instruments/plainoption.hpp (1.13): more detailed comment
+
+2002-05-16 14:41  Ferdinando Ametrano <ferdinando@ametrano.net>
+
+	* ql/MonteCarlo/pathgenerator.hpp (1.20): added quick and dirty
+	constructor for deterministic non-constant parameters
+
+2002-05-16 14:15  Luigi Ballabio <luigi.ballabio@riskmap.net>
+
+	* acconfig.h (1.8), configure.in (1.84), ql/config.ansi.hpp (1.10),
+	ql/config.bcc.hpp (1.9), ql/config.msvc.hpp (1.18),
+	ql/config.mwcw.hpp (1.9), ql/dataparsers.cpp (1.2),
+	ql/dataparsers.hpp (1.2), ql/FiniteDifferences/mixedscheme.hpp
+	(1.3), ql/Math/loglinearinterpolation.hpp (1.5),
+	ql/Math/multivariateaccumulator.cpp (1.13),
+	ql/ShortRateModels/OneFactorModels/blackkarasinski.hpp (1.4): Added
+	some macros
+
+2002-05-13 16:39  Ferdinando Ametrano <ferdinando@ametrano.net>
+
+	* Docs/pages/mcarlo.docs (1.9), ql/riskstatistics.hpp (1.9),
+	ql/RandomNumbers/rngtypedefs.hpp (1.10): style enforced
+
+2002-05-13 12:35  Luigi Ballabio <luigi.ballabio@riskmap.net>
+
+	* configure.in (1.83): Allow passing CXXFLAGS
+
+2002-05-13 08:50  Luigi Ballabio <luigi.ballabio@riskmap.net>
+
+	* Docs/pages/findiff.docs (1.5): [no log message]
+
+2002-05-12 18:59  Ferdinando Ametrano <ferdinando@ametrano.net>
+
+	* TODO.txt (1.89), ql/Pricers/fdamericanoption.hpp (1.5),
+	ql/Pricers/fdbsmoption.cpp (1.5), ql/Pricers/fdbsmoption.hpp (1.5),
+	ql/Pricers/fdeuropean.cpp (1.7), ql/Pricers/fdmultiperiodoption.cpp
+	(1.8), ql/Pricers/fdstepconditionoption.cpp (1.5),
+	ql/Pricers/singleassetoption.cpp (1.15),
+	ql/Pricers/singleassetoption.hpp (1.15): fixed bug in greek
+	re-calculation.  Theta is now provided by SingleAssetOption
+
+2002-05-12 01:27  Ferdinando Ametrano <ferdinando@ametrano.net>
+
+	* TODO.txt (1.88), Examples/BermudanSwaption/BermudanSwaption.mak
+	(1.6), Examples/DiscreteHedging/DiscreteHedging.mak (1.26),
+	Examples/EuropeanOption/EuropeanOption.mak (1.21),
+	Examples/Swap/Swap.mak (1.22): updated
+
+2002-05-12 01:11  Ferdinando Ametrano <ferdinando@ametrano.net>
+
+	* ql/Pricers/: fdeuropean.cpp (1.6), fdmultiperiodoption.cpp (1.7),
+	fdstepconditionoption.cpp (1.4): fixed bug in theta calculation. 
+	Theta is now computed using Black-Scholes equation.  Still to do:
+	clean up FdMultiPeriodOption
+
+2002-05-12 00:41  Ferdinando Ametrano <ferdinando@ametrano.net>
+
+	* ql/Pricers/fdeuropean.hpp (1.6): style enforced
+
+2002-05-12 00:39  Ferdinando Ametrano <ferdinando@ametrano.net>
+
+	* ql/Pricers/singleassetoption.cpp (1.14): fixed bug in rho and
+	dividendRho when the rate=0.0
+
+2002-05-12 00:37  Ferdinando Ametrano <ferdinando@ametrano.net>
+
+	* QuantLib.dsp (1.94), QuantLib.mak (1.85): Visual C++ catching up
+
+2002-05-12 00:36  Ferdinando Ametrano <ferdinando@ametrano.net>
+
+	* ql/Math/segmentintegral.hpp (1.13): Visul C++ fix
+
+2002-05-12 00:35  Ferdinando Ametrano <ferdinando@ametrano.net>
+
+	* Docs/pages/mcarlo.docs (1.8): typo fixed
+
+2002-05-10 13:13  Luigi Ballabio <luigi.ballabio@riskmap.net>
+
+	* TODO.txt (1.87), ql/Math/Makefile.am (1.8), ql/Math/makefile.mak
+	(1.7), ql/Math/segmentintegral.cpp (1.9),
+	ql/Math/segmentintegral.hpp (1.12): Fixed SegmentIntegral
+
+2002-05-09 09:34  Marco Marchioro <marco.marchioro@riskmap.net>
+
+	* ql/MonteCarlo/himalayapathpricer.hpp (1.11): typo
+
+2002-05-06 12:28  Luigi Ballabio <luigi.ballabio@riskmap.net>
+
+	* ql/Makefile.am (1.21): Removed obsolete file from dist list
+
+2002-05-06 10:17  Luigi Ballabio <luigi.ballabio@riskmap.net>
+
+	* ql/TermStructures/discountcurve.cpp (1.8): Removed gcc warning
+
+2002-05-06 08:26  andrelouw
+
+	* ql/TermStructures/compoundforward.cpp (1.12): Changed vector.at()
+	to use operator[] instead.
+
+2002-05-05 00:11  Ferdinando Ametrano <ferdinando@ametrano.net>
+
+	* Contributors.txt (1.18), History.txt (1.16), News.txt (1.24),
+	QuantLib.dsp (1.93), QuantLib.mak (1.84), QuantLib.nsi (1.73),
+	configure.in (1.82), Docs/configure.in (1.13), Docs/quantlib.doxy
+	(1.54), Docs/pages/authors.docs (1.14), Docs/pages/history.docs
+	(1.6), Docs/pages/resources.docs (1.4),
+	dev_tools/releaseprocess.txt (1.12), ql/blackmodel.hpp (1.6),
+	ql/capvolstructures.hpp (1.3), ql/dataformatters.hpp (1.7),
+	ql/date.cpp (1.20), ql/diffusionprocess.hpp (1.14), ql/grid.hpp
+	(1.5), ql/instrument.hpp (1.10), ql/makefile.mak (1.17),
+	ql/numericalmethod.hpp (1.4), ql/option.hpp (1.10),
+	ql/qldefines.hpp (1.41), ql/quantlib.hpp (1.59),
+	ql/relinkablehandle.hpp (1.9), ql/swaptionvolstructure.hpp (1.3),
+	ql/termstructure.hpp (1.22), ql/CashFlows/cashflowvectors.cpp
+	(1.15), ql/FiniteDifferences/tridiagonaloperator.cpp (1.14),
+	ql/Indexes/xibormanager.hpp (1.7), ql/Instruments/capfloor.hpp
+	(1.27), ql/Lattices/lattice.hpp (1.2), ql/Lattices/tree.hpp (1.15),
+	ql/Math/bilinearinterpolation.hpp (1.9),
+	ql/Math/chisquaredistribution.hpp (1.2),
+	ql/Math/gammadistribution.hpp (1.2),
+	ql/Math/linearinterpolation.hpp (1.9),
+	ql/Math/normaldistribution.cpp (1.10), ql/Math/riskmeasures.hpp
+	(1.7), ql/Math/segmentintegral.hpp (1.11), ql/Math/statistics.hpp
+	(1.12), ql/MonteCarlo/multipath.hpp (1.11),
+	ql/Optimization/costfunction.hpp (1.12),
+	ql/Optimization/problem.hpp (1.3), ql/Patterns/observable.hpp
+	(1.10), ql/Pricers/discretegeometricapo.cpp (1.7),
+	ql/Pricers/discretegeometricaso.cpp (1.7),
+	ql/Pricers/fdmultiperiodoption.cpp (1.6),
+	ql/Pricers/treecapfloor.hpp (1.11), ql/Pricers/treeswaption.hpp
+	(1.13), ql/ShortRateModels/calibrationhelper.hpp (1.4),
+	ql/ShortRateModels/model.hpp (1.8),
+	ql/ShortRateModels/onefactormodel.hpp (1.6),
+	ql/ShortRateModels/parameter.hpp (1.3),
+	ql/TermStructures/affinetermstructure.hpp (1.4):
+	R000300f0-branch-merge1 merged into trunk
+
+2002-05-04 22:55  Ferdinando Ametrano <ferdinando@ametrano.net>
+
+	* News.txt (1.23), Readme.txt (1.17), dev_tools/releaseprocess.txt
+	(1.11): updated
+
+2002-05-04 22:47  Ferdinando Ametrano <ferdinando@ametrano.net>
+
+	* QuantLib.nsi (1.71.2.3), dev_tools/releaseprocess.txt (1.9.18.4):
+	added missing BermudanSwaption example fixed distributed
+	documentation
+
+2002-05-03 09:07  andrelouw
+
+	* Examples/BermudanSwaption/BermudanSwaption.cpp (1.16),
+	Examples/Swap/swapvaluation.cpp (1.26),
+	ql/TermStructures/ratehelpers.cpp (1.22),
+	ql/TermStructures/ratehelpers.hpp (1.20): Modified SwapRateHelper
+	to accept TimeUnit when constructing. Modified existing examples to
+	use new constructors.
+
+2002-05-03 08:59  andrelouw
+
+	* ql/: Makefile.am (1.20), dataparsers.cpp (1.1), dataparsers.hpp
+	(1.1), date.cpp (1.19): Added preliminary parsing of input data. 
+	Handles basic English parsing of Period-strings.  Still needs to
+	incorporate locale dependant parsing.
+
+2002-05-02 08:57  Ferdinando Ametrano <ferdinando@ametrano.net>
+
+	* dev_tools/releaseprocess.txt (1.9.18.3): updated
+
+2002-05-02 08:50  Ferdinando Ametrano <ferdinando@ametrano.net>
+
+	* QuantLib.mak (1.80.2.1), Docs/pages/mcarlo.docs (1.5.18.3),
+	Examples/BermudanSwaption/BermudanSwaption.mak (1.4.2.1),
+	Examples/DiscreteHedging/DiscreteHedging.mak (1.24.2.1),
+	Examples/EuropeanOption/EuropeanOption.mak (1.19.2.1),
+	Examples/Swap/Swap.mak (1.20.4.1), dev_tools/releaseprocess.txt
+	(1.9.18.2): updated
+
+2002-05-02 08:29  Ferdinando Ametrano <ferdinando@ametrano.net>
+
+	* Docs/pages/mcarlo.docs (1.7): typo fixed
+
+2002-05-02 08:25  Ferdinando Ametrano <ferdinando@ametrano.net>
+
+	* Docs/pages/mcarlo.docs (1.5.18.2): typo fixed
+
+2002-05-02 08:21  Ferdinando Ametrano <ferdinando@ametrano.net>
+
+	* ql/: blackmodel.hpp (1.5.4.1), capvolstructures.hpp (1.2.4.1),
+	dataformatters.hpp (1.6.4.1), date.cpp (1.16.4.1),
+	diffusionprocess.hpp (1.13.2.1), grid.hpp (1.4.4.1), instrument.hpp
+	(1.9.14.1), numericalmethod.hpp (1.3.2.1), option.hpp (1.9.14.1),
+	relinkablehandle.hpp (1.8.6.1), swaptionvolstructure.hpp (1.2.4.1),
+	CashFlows/cashflowvectors.cpp (1.13.4.1),
+	FiniteDifferences/tridiagonaloperator.cpp (1.13.12.1),
+	Indexes/xibormanager.hpp (1.6.12.1), Instruments/capfloor.hpp
+	(1.26.4.1), Lattices/lattice.hpp (1.1.2.1), Lattices/tree.hpp
+	(1.14.2.1), Math/bilinearinterpolation.hpp (1.7.4.1),
+	Math/chisquaredistribution.hpp (1.1.4.1),
+	Math/gammadistribution.hpp (1.1.4.1), Math/linearinterpolation.hpp
+	(1.7.4.1), Math/riskmeasures.hpp (1.5.16.1),
+	Math/segmentintegral.hpp (1.10.16.1), Math/statistics.hpp
+	(1.11.16.1), MonteCarlo/multipath.hpp (1.10.16.1),
+	Optimization/costfunction.hpp (1.11.4.1), Optimization/problem.hpp
+	(1.2.4.1), Patterns/observable.hpp (1.9.4.1),
+	Pricers/discretegeometricapo.cpp (1.6.16.1),
+	Pricers/discretegeometricaso.cpp (1.6.16.1),
+	Pricers/treecapfloor.hpp (1.10.2.1), Pricers/treeswaption.hpp
+	(1.12.2.1), ShortRateModels/calibrationhelper.hpp (1.3.4.1),
+	ShortRateModels/model.hpp (1.7.2.1),
+	ShortRateModels/onefactormodel.hpp (1.5.2.1),
+	ShortRateModels/parameter.hpp (1.2.4.1),
+	TermStructures/affinetermstructure.hpp (1.2.2.1): pruned redundant
+	inclusions
+
+2002-05-02 07:48  Ferdinando Ametrano <ferdinando@ametrano.net>
+
+	* Docs/pages/history.docs (1.5.16.2): updated
+
+2002-05-02 07:44  Ferdinando Ametrano <ferdinando@ametrano.net>
+
+	* News.txt (1.22.4.1): updated
+
+2002-05-01 22:04  Ferdinando Ametrano <ferdinando@ametrano.net>
+
+	* Docs/pages/mcarlo.docs (1.5.18.1), ql/Math/normaldistribution.cpp
+	(1.8.2.1), ql/Math/normaldistribution.hpp (1.9.2.1),
+	ql/MonteCarlo/arithmeticasopathpricer.hpp (1.4.16.1),
+	ql/MonteCarlo/geometricasopathpricer.hpp (1.4.16.1),
+	Docs/pages/mcarlo.docs (1.6), ql/Math/normaldistribution.cpp (1.9),
+	ql/Math/normaldistribution.hpp (1.10),
+	ql/MonteCarlo/arithmeticasopathpricer.hpp (1.5),
+	ql/MonteCarlo/geometricasopathpricer.hpp (1.5): typos fixed
+
+2002-05-01 21:58  Ferdinando Ametrano <ferdinando@ametrano.net>
+
+	* TODO.txt (1.86): updated
+
+2002-04-30 17:27  Ferdinando Ametrano <ferdinando@ametrano.net>
+
+	* Docs/pages/history.docs (1.5.16.1), dev_tools/releaseprocess.txt
+	(1.9.18.1): history updated
+
+2002-04-30 17:23  Ferdinando Ametrano <ferdinando@ametrano.net>
+
+	* History.txt (1.15.22.1): release date added
+
+2002-04-30 17:20  Ferdinando Ametrano <ferdinando@ametrano.net>
+
+	* ChangeLog.txt (1.25.2.1): updated
+
+2002-04-30 11:48  andrelouw
+
+	* ql/TermStructures/: compoundforward.cpp (1.11),
+	compoundforward.hpp (1.7): Some -pedantic/good practice refactoring
+
+2002-04-30 08:36  Luigi Ballabio <luigi.ballabio@riskmap.net>
+
+	* ql/TermStructures/compoundforward.cpp (1.10): Quick fix to
+	compile under VC++
+
+2002-04-30 07:34  Ferdinando Ametrano <ferdinando@ametrano.net>
+
+	* Contributors.txt (1.17.4.1), Docs/pages/authors.docs (1.13.4.1),
+	ql/Calendars/london.cpp (1.8.16.1), ql/Calendars/london.cpp (1.9):
+	UK bank holidays fix.  Thanks to Jon Davidson
+
+2002-04-30 06:39  andrelouw
+
+	* ql/TermStructures/: compoundforward.cpp (1.9),
+	compoundforward.hpp (1.6): Changed to inherit fm DiscountStructure
+	- use top level zeroYieldImpl and forwardImpl.	Fix potential
+	problem with improperly initialized iterators.
+
+2002-04-30 06:34  andrelouw
+
+	* ql/date.hpp (1.17): Period(std::string&) changed to explicit.
+
+2002-04-29 15:27  Mario Aleppo <mario.aleppo@riskmap.net>
+
+	* ql/CashFlows/cashflowvectors.cpp (1.14): The payment date could
+	be after the end of the accrual period
+
+2002-04-29 15:23  andrelouw
+
+	* ql/TermStructures/discountcurve.cpp (1.7): Additional error
+	specification.
+
+2002-04-29 15:16  Mario Aleppo <mario.aleppo@riskmap.net>
+
+	* ql/CashFlows/: shortfloatingcoupon.hpp (1.5), coupon.hpp (1.10),
+	fixedratecoupon.hpp (1.12), floatingratecoupon.cpp (1.13),
+	floatingratecoupon.hpp (1.20), shortfloatingcoupon.cpp (1.5): The
+	payment date could be after the end of the accrual period
+
+2002-04-26 15:23  Ferdinando Ametrano <ferdinando@ametrano.net>
+
+	* ql/: Math/riskmeasures.hpp (1.6), functions/mathf.cpp (1.9),
+	functions/mathf.hpp (1.6): formatting
+
+2002-04-26 14:45  Ferdinando Ametrano <ferdinando@ametrano.net>
+
+	* ql/Math/interpolation.hpp (1.11): warning avoided
+
+2002-04-26 14:40  Ferdinando Ametrano <ferdinando@ametrano.net>
+
+	* ql/Math/interpolation.hpp (1.10): warning avoided
+
+2002-04-26 14:03  Ferdinando Ametrano <ferdinando@ametrano.net>
+
+	* ql/: Math/bilinearinterpolation.hpp (1.8), Math/cubicspline.hpp
+	(1.14), Math/interpolation.hpp (1.9), Math/interpolation2D.hpp
+	(1.8), Math/linearinterpolation.hpp (1.8),
+	Math/loglinearinterpolation.hpp (1.4), Pricers/fddividendoption.cpp
+	(1.5), TermStructures/compoundforward.cpp (1.8),
+	TermStructures/discountcurve.cpp (1.6),
+	Volatilities/capflatvolvector.hpp (1.2),
+	Volatilities/swaptionvolmatrix.hpp (1.6), functions/mathf.cpp
+	(1.8): moved allowExtrapolation from constructors to () operators
+
+2002-04-25 18:28  Ferdinando Ametrano <ferdinando@ametrano.net>
+
+	* ql/termstructure.hpp (1.19.6.1): bug fixed
+
+2002-04-25 18:22  Ferdinando Ametrano <ferdinando@ametrano.net>
+
+	* QuantLib.mak (1.83), TODO.txt (1.85),
+	Examples/BermudanSwaption/BermudanSwaption.cpp (1.15),
+	Examples/EuropeanOption/EuropeanOption.cpp (1.17),
+	Examples/Swap/swapvaluation.cpp (1.25), ql/termstructure.hpp
+	(1.21), ql/TermStructures/affinetermstructure.cpp (1.2),
+	ql/TermStructures/affinetermstructure.hpp (1.3),
+	ql/TermStructures/discountcurve.cpp (1.5),
+	ql/TermStructures/discountcurve.hpp (1.6),
+	ql/TermStructures/flatforward.hpp (1.12),
+	ql/TermStructures/forwardspreadedtermstructure.hpp (1.3),
+	ql/TermStructures/impliedtermstructure.hpp (1.3),
+	ql/TermStructures/piecewiseflatforward.cpp (1.19),
+	ql/TermStructures/piecewiseflatforward.hpp (1.19),
+	ql/TermStructures/zerospreadedtermstructure.hpp (1.3): {calendar,
+	settlementDays} replaced by settlementDate refactoring of
+	DiscountCurve constructor
+
+2002-04-24 18:03  Ferdinando Ametrano <ferdinando@ametrano.net>
+
+	* ql/TermStructures/: forwardspreadedtermstructure.hpp (1.2),
+	impliedtermstructure.hpp (1.2), zerospreadedtermstructure.hpp
+	(1.2): ImpliedTermStructure, ZeroSpreadedTermStructure,
+	ForwardSpreadedTermStructure moved under QuantLib::TermStructures
+	namespace
+
+2002-04-24 16:02  Ferdinando Ametrano <ferdinando@ametrano.net>
+
+	* ql/TermStructures/: discountcurve.cpp (1.4), discountcurve.hpp
+	(1.5), piecewiseflatforward.hpp (1.18): - added 2 new methodsto
+	DiscountCurve:		  const std::vector<Date>& dates() const;  
+		 const std::vector<Time>& times() const; - required sorted
+	dates and decreasing discount factors in the constructor of  
+	DiscountCurve - added documentation
+
+2002-04-24 15:13  Ferdinando Ametrano <ferdinando@ametrano.net>
+
+	* QuantLib.dsp (1.92), TODO.txt (1.84),
+	Examples/BermudanSwaption/BermudanSwaption.mak (1.5),
+	Examples/DiscreteHedging/DiscreteHedging.mak (1.25),
+	Examples/EuropeanOption/EuropeanOption.mak (1.20),
+	Examples/Swap/Swap.mak (1.21), ql/quantlib.hpp (1.58),
+	ql/termstructure.hpp (1.20), ql/TermStructures/Makefile.am (1.9),
+	ql/TermStructures/discountcurve.cpp (1.3),
+	ql/TermStructures/discountcurve.hpp (1.4),
+	ql/TermStructures/forwardspreadedtermstructure.hpp (1.1),
+	ql/TermStructures/impliedtermstructure.hpp (1.1),
+	ql/TermStructures/zerospreadedtermstructure.hpp (1.1): - moved
+	ImpliedTermStructure, ZeroSpreadedTermStructure,  
+	ForwardSpreadedTermStructure out of termstructure.hpp into their
+	own files.  - added discrete time forward methods to TermStructure:
+	  //! discrete forward rate between two dates	Rate forward(const
+	Date&, const Date&, bool extrapolate = false) const;   //! discrete
+	forward rate between two times	 Rate forward(Time, Time, bool
+	extrapolate = false) const; - removed forwardImpl and zeroYieldImpl
+	from DiscountCurve.    Now DiscountCurve uses these methods as
+	inherited by DiscountStructure	- improved documentation
+
+2002-04-23 16:06  Ferdinando Ametrano <ferdinando@ametrano.net>
+
+	* QuantLib.mak (1.82), QuantLib.dsp (1.91): config.decc.hpp removed
+
+2002-04-23 10:09  Luigi Ballabio <luigi.ballabio@riskmap.net>
+
+	* ql/TermStructures/: compoundforward.cpp (1.7),
+	compoundforward.hpp (1.5): Removed a few unnecessary consts and
+	forward variable declarations
+
+2002-04-23 09:42  Luigi Ballabio <luigi.ballabio@riskmap.net>
+
+	* ql/Math/loglinearinterpolation.hpp (1.3): Assigned copyright to
+	Andre
+
+2002-04-23 05:18  andrelouw
+
+	* ql/TermStructures/compoundforward.cpp (1.6): Fixed up some logic
+	to check that bootstrapping from at least compounding.
+
+2002-04-22 17:04  Luigi Ballabio <luigi.ballabio@riskmap.net>
+
+	* ql/: config.ansi.hpp (1.9), config.bcc.hpp (1.8), config.decc.hpp
+	(1.8), config.msvc.hpp (1.17), config.mwcw.hpp (1.8): More
+	autoconfiscated time functions and types
+
+2002-04-22 16:56  Luigi Ballabio <luigi.ballabio@riskmap.net>
+
+	* acconfig.h (1.7), acinclude.m4 (1.4), configure.in (1.81),
+	ql/date.cpp (1.18), ql/date.hpp (1.16): More autoconfiscated time
+	functions and types
+
+2002-04-22 16:29  andrelouw
+
+	* ql/TermStructures/compoundforward.cpp (1.5): Changed if (Size a
+	>= 0) to (currCnt == 0) to satisfy Borland.
+
+2002-04-22 14:31  Luigi Ballabio <luigi.ballabio@riskmap.net>
+
+	* ql/: solver1d.cpp (1.8), solver1d.hpp (1.8),
+	Pricers/jamshidianswaption.cpp (1.11),
+	Pricers/singleassetoption.cpp (1.13), Solvers1D/bisection.cpp
+	(1.6), Solvers1D/bisection.hpp (1.6), Solvers1D/brent.cpp (1.7),
+	Solvers1D/brent.hpp (1.6), Solvers1D/falseposition.cpp (1.6),
+	Solvers1D/falseposition.hpp (1.6), Solvers1D/newton.cpp (1.6),
+	Solvers1D/newton.hpp (1.6), Solvers1D/newtonsafe.cpp (1.7),
+	Solvers1D/newtonsafe.hpp (1.7), Solvers1D/ridder.cpp (1.6),
+	Solvers1D/ridder.hpp (1.6), Solvers1D/secant.cpp (1.6),
+	Solvers1D/secant.hpp (1.6): Renamed Solver1D::lowBound and hiBound
+
+2002-04-22 13:46  andrelouw
+
+	* ql/TermStructures/: compoundforward.cpp (1.4),
+	compoundforward.hpp (1.4), discountcurve.cpp (1.2),
+	discountcurve.hpp (1.3): Mod to licensing comment (copyright).
+
+2002-04-22 12:38  Ferdinando Ametrano <ferdinando@ametrano.net>
+
+	* ql/: Math/loglinearinterpolation.hpp (1.2),
+	TermStructures/compoundforward.hpp (1.3),
+	TermStructures/discountcurve.hpp (1.2): catching up with Andre's
+	commit
+
+2002-04-22 12:27  Ferdinando Ametrano <ferdinando@ametrano.net>
+
+	* QuantLib.mak (1.81), ql/TermStructures/Makefile.am (1.8),
+	ql/TermStructures/compoundforward.cpp (1.3),
+	ql/TermStructures/makefile.mak (1.8), ql/Math/Makefile.am (1.7):
+	catching up with Andre's commit
+
+2002-04-22 12:25  Ferdinando Ametrano <ferdinando@ametrano.net>
+
+	* dev_tools/releaseprocess.txt (1.10): added gotcha
+
+2002-04-22 11:10  andrelouw
+
+	* ql/TermStructures/: compoundforward.cpp (1.2),
+	compoundforward.hpp (1.2): Added standard QuantLib licensing
+	comment.
+
+2002-04-22 10:53  Marco Marchioro <marco.marchioro@riskmap.net>
+
+	* ql/Pricers/fdmultiperiodoption.cpp (1.5.16.1): bug fixed
+
+2002-04-22 10:30  andrelouw
+
+	* QuantLib.dsp (1.90): Added LogLinearInterpolation, DiscountCurve
+	TermStructure and CompoundForward TermStructure
+
+2002-04-22 10:23  andrelouw
+
+	* ql/: quantlib.hpp (1.57), Math/loglinearinterpolation.hpp (1.1),
+	TermStructures/Makefile.am (1.7),
+	TermStructures/compoundforward.cpp (1.1),
+	TermStructures/compoundforward.hpp (1.1),
+	TermStructures/discountcurve.cpp (1.1),
+	TermStructures/discountcurve.hpp (1.1): Add DiscountCurve
+	TermStructure, CompoundForward TermStructure, LogLinear
+	interpolation.
+
+2002-04-22 10:20  andrelouw
+
+	* ql/: calendar.cpp (1.9), calendar.hpp (1.14): Advance calendar
+	using a Period instance.
+
+2002-04-22 10:18  andrelouw
+
+	* ql/: date.cpp (1.17), date.hpp (1.15): Added populating Period
+	from std::string.  String built up from 2 parts, number and
+	identifier. Identifier being one of 'D' for Days,'W' for Weeks,'M'
+	for Months,'Y' for Years. Number being the amount of the units. E.g
+	"1D" being 1 Days, "6M" being 6 Months etc...
+
+2002-04-22 07:39  Ferdinando Ametrano <ferdinando@ametrano.net>
+
+	* Docs/pages/resources.docs (1.3.18.1): typo fixed
+
+2002-04-21 21:20  Ferdinando Ametrano <ferdinando@ametrano.net>
+
+	* QuantLib.nsi (1.71.2.2), configure.in (1.79.2.2),
+	Docs/configure.in (1.11.2.2), Docs/quantlib.doxy (1.52.2.2),
+	dev_tools/version_number.txt (1.25.2.2), ql/qldefines.hpp
+	(1.39.2.2): version number up
+
+2002-04-21 20:36  Ferdinando Ametrano <ferdinando@ametrano.net>
+
+	* QuantLib.nsi (1.71.2.1), configure.in (1.79.2.1),
+	Docs/configure.in (1.11.2.1), Docs/quantlib.doxy (1.52.2.1),
+	dev_tools/version_number.txt (1.25.2.1), ql/qldefines.hpp
+	(1.39.2.1): version number up
+
+2002-04-21 20:26  Ferdinando Ametrano <ferdinando@ametrano.net>
+
+	* QuantLib.nsi (1.72), configure.in (1.80), Docs/configure.in
+	(1.12), Docs/quantlib.doxy (1.53), dev_tools/version_number.txt
+	(1.26), ql/qldefines.hpp (1.40): version number up
+
+2002-04-21 19:35  Ferdinando Ametrano <ferdinando@ametrano.net>
+
+	* ChangeLog.txt (1.25): updated
+
 2002-04-19 01:35  Sadruddin Rejeb <sad.rejeb@riskmap.it>
 
 	* Docs/: Makefile.am (1.48), makefile.mak (1.31),
@@ -291,7 +2144,7 @@
 	* Examples/BermudanSwaption/BermudanSwaption.cpp (1.11),
 	ql/ShortRateModels/OneFactorModels/extendedcoxingersollross.hpp
 	(1.3): commented out methods without implementation 1)
-	ShortRateModels::ExtendedCoxIngersollRoss::generateArguments() 2)
+	ShortRateModels::ExtendedCoxIngersollRoss::generateParameters() 2)
 	ShortRateModels::ExtendedCoxIngersollRoss::dynamics()
 
 2002-03-27 23:35  Sadruddin Rejeb <sad.rejeb@riskmap.it>
@@ -530,36 +2383,6 @@
 	FiniteDifferences/onefactoroperator.hpp (1.11),
 	Instruments/capfloor.cpp (1.25), Instruments/capfloor.hpp (1.25),
 	Instruments/swaption.cpp (1.15), Instruments/swaption.hpp (1.16),
-	InterestRateModelling/Makefile.am (1.7),
-	InterestRateModelling/blackmodel.hpp (1.4),
-	InterestRateModelling/calibrationhelper.cpp (1.8),
-	InterestRateModelling/calibrationhelper.hpp (1.11),
-	InterestRateModelling/makefile.mak (1.9),
-	InterestRateModelling/model.cpp (1.19),
-	InterestRateModelling/model.hpp (1.22),
-	InterestRateModelling/onefactormodel.cpp (1.14),
-	InterestRateModelling/onefactormodel.hpp (1.16),
-	InterestRateModelling/parameter.hpp (1.4),
-	InterestRateModelling/shortrateprocess.hpp (1.10),
-	InterestRateModelling/twofactormodel.hpp (1.10),
-	InterestRateModelling/CalibrationHelpers/Makefile.am (1.3),
-	InterestRateModelling/CalibrationHelpers/caphelper.cpp (1.10),
-	InterestRateModelling/CalibrationHelpers/caphelper.hpp (1.9),
-	InterestRateModelling/CalibrationHelpers/makefile.mak (1.4),
-	InterestRateModelling/CalibrationHelpers/swaptionhelper.cpp (1.13),
-	InterestRateModelling/CalibrationHelpers/swaptionhelper.hpp (1.10),
-	InterestRateModelling/OneFactorModels/Makefile.am (1.5),
-	InterestRateModelling/OneFactorModels/blackkarasinski.cpp (1.20),
-	InterestRateModelling/OneFactorModels/blackkarasinski.hpp (1.17),
-	InterestRateModelling/OneFactorModels/coxingersollross.cpp (1.5),
-	InterestRateModelling/OneFactorModels/coxingersollross.hpp (1.6),
-	InterestRateModelling/OneFactorModels/hullwhite.cpp (1.8),
-	InterestRateModelling/OneFactorModels/hullwhite.hpp (1.12),
-	InterestRateModelling/OneFactorModels/makefile.mak (1.7),
-	InterestRateModelling/TwoFactorModels/Makefile.am (1.2),
-	InterestRateModelling/TwoFactorModels/g2.cpp (1.9),
-	InterestRateModelling/TwoFactorModels/g2.hpp (1.10),
-	InterestRateModelling/TwoFactorModels/makefile.mak (1.3),
 	Lattices/Makefile.am (1.5), Lattices/binomialtree.cpp (1.3),
 	Lattices/binomialtree.hpp (1.3), Lattices/column.hpp (1.1),
 	Lattices/makefile.mak (1.10), Lattices/node.hpp (1.11),
@@ -637,16 +2460,13 @@
 	* ql/: makefile.mak (1.12), Calendars/makefile.mak (1.8),
 	CashFlows/makefile.mak (1.6), DayCounters/makefile.mak (1.6),
 	FiniteDifferences/makefile.mak (1.6), Indexes/makefile.mak (1.5),
-	Instruments/makefile.mak (1.9), InterestRateModelling/makefile.mak
-	(1.8), InterestRateModelling/CalibrationHelpers/makefile.mak (1.3),
-	InterestRateModelling/OneFactorModels/makefile.mak (1.6),
-	InterestRateModelling/TwoFactorModels/makefile.mak (1.2),
-	Lattices/makefile.mak (1.9), Math/makefile.mak (1.5),
-	MonteCarlo/makefile.mak (1.10), Optimization/makefile.mak (1.5),
-	Pricers/makefile.mak (1.16), RandomNumbers/makefile.mak (1.5),
-	Solvers1D/makefile.mak (1.5), TermStructures/makefile.mak (1.6),
-	functions/makefile.mak (1.4): improved parametrization of debug
-	trailing identifier in Borland makefiles
+	Instruments/makefile.mak (1.9), Lattices/makefile.mak (1.9),
+	Math/makefile.mak (1.5), MonteCarlo/makefile.mak (1.10),
+	Optimization/makefile.mak (1.5), Pricers/makefile.mak (1.16),
+	RandomNumbers/makefile.mak (1.5), Solvers1D/makefile.mak (1.5),
+	TermStructures/makefile.mak (1.6), functions/makefile.mak (1.4):
+	improved parametrization of debug trailing identifier in Borland
+	makefiles
 
 2002-03-21 15:35  Ferdinando Ametrano <ferdinando@ametrano.net>
 
@@ -668,13 +2488,12 @@
 	* ql/: makefile.mak (1.11), Calendars/makefile.mak (1.7),
 	CashFlows/makefile.mak (1.5), DayCounters/makefile.mak (1.5),
 	FiniteDifferences/makefile.mak (1.5), Indexes/makefile.mak (1.4),
-	Instruments/makefile.mak (1.8), InterestRateModelling/makefile.mak
-	(1.7), Lattices/makefile.mak (1.8), Math/makefile.mak (1.4),
-	MonteCarlo/makefile.mak (1.9), Optimization/makefile.mak (1.4),
-	Pricers/makefile.mak (1.15), RandomNumbers/makefile.mak (1.4),
-	Solvers1D/makefile.mak (1.4), TermStructures/makefile.mak (1.5),
-	functions/makefile.mak (1.3): removed useless BCC_LIBS from Borland
-	makefile(s)
+	Instruments/makefile.mak (1.8), Lattices/makefile.mak (1.8),
+	Math/makefile.mak (1.4), MonteCarlo/makefile.mak (1.9),
+	Optimization/makefile.mak (1.4), Pricers/makefile.mak (1.15),
+	RandomNumbers/makefile.mak (1.4), Solvers1D/makefile.mak (1.4),
+	TermStructures/makefile.mak (1.5), functions/makefile.mak (1.3):
+	removed useless BCC_LIBS from Borland makefile(s)
 
 2002-03-20 09:23  Ferdinando Ametrano <ferdinando@ametrano.net>
 
@@ -688,8 +2507,7 @@
 
 2002-03-19 17:10  Luigi Ballabio <luigi.ballabio@riskmap.net>
 
-	* ql/: InterestRateModelling/blackmodel.hpp (1.3),
-	Pricers/blackcapfloor.cpp (1.5), Pricers/blackcapfloor.hpp (1.3):
+	* ql/Pricers/: blackcapfloor.cpp (1.5), blackcapfloor.hpp (1.3):
 	Factored out a bit of code
 
 2002-03-19 15:31  Ferdinando Ametrano <ferdinando@ametrano.net>
@@ -760,10 +2578,8 @@
 
 	* ql/: Instruments/simpleswap.cpp (1.17),
 	Instruments/simpleswap.hpp (1.21), Instruments/swaption.cpp (1.14),
-	Instruments/swaption.hpp (1.15),
-	InterestRateModelling/blackmodel.hpp (1.2),
-	Pricers/blackswaption.cpp (1.3), Pricers/europeanengine.cpp (1.5):
-	Fine tuning of Black swaption
+	Instruments/swaption.hpp (1.15), Pricers/blackswaption.cpp (1.3),
+	Pricers/europeanengine.cpp (1.5): Fine tuning of Black swaption
 
 2002-03-12 10:55  Ferdinando Ametrano <ferdinando@ametrano.net>
 
@@ -824,9 +2640,8 @@
 	* Examples/Swap/swapvaluation.cpp (1.20),
 	ql/Instruments/simpleswap.cpp (1.15), ql/Instruments/simpleswap.hpp
 	(1.19), ql/Instruments/swaption.cpp (1.12),
-	ql/InterestRateModelling/CalibrationHelpers/swaptionhelper.cpp
-	(1.12), ql/TermStructures/ratehelpers.cpp (1.18): SimpleSwap made a
-	bit simpler
+	ql/TermStructures/ratehelpers.cpp (1.18): SimpleSwap made a bit
+	simpler
 
 2002-03-06 17:58  Ferdinando Ametrano <ferdinando@ametrano.net>
 
@@ -883,30 +2698,16 @@
 
 2002-03-06 07:33  Sadruddin Rejeb <sad.rejeb@riskmap.it>
 
-	* ql/: InterestRateModelling/Makefile.am (1.6),
-	Pricers/makefile.mak (1.14): Added missing files to makefiles
+	* ql/Pricers/makefile.mak (1.14): Added missing files to makefiles
 
 2002-03-06 07:16  Sadruddin Rejeb <sad.rejeb@riskmap.it>
 
 	* ql/: diffusionprocess.hpp (1.9), handle.hpp (1.9),
 	Instruments/capfloor.cpp (1.20), Instruments/capfloor.hpp (1.19),
 	Instruments/simpleswap.hpp (1.18), Instruments/swaption.cpp (1.11),
-	Instruments/swaption.hpp (1.12),
-	InterestRateModelling/blackmodel.hpp (1.1),
-	InterestRateModelling/calibrationhelper.hpp (1.10),
-	InterestRateModelling/model.cpp (1.18),
-	InterestRateModelling/model.hpp (1.21),
-	InterestRateModelling/onefactormodel.hpp (1.15),
-	InterestRateModelling/CalibrationHelpers/caphelper.cpp (1.9),
-	InterestRateModelling/CalibrationHelpers/caphelper.hpp (1.8),
-	InterestRateModelling/CalibrationHelpers/swaptionhelper.cpp (1.11),
-	InterestRateModelling/CalibrationHelpers/swaptionhelper.hpp (1.9),
-	InterestRateModelling/OneFactorModels/coxingersollross.cpp (1.4),
-	InterestRateModelling/OneFactorModels/coxingersollross.hpp (1.5),
-	InterestRateModelling/OneFactorModels/hullwhite.hpp (1.11),
-	InterestRateModelling/TwoFactorModels/g2.hpp (1.9),
-	Optimization/simplex.cpp (1.4), Optimization/simplex.hpp (1.5),
-	Pricers/Makefile.am (1.23), Pricers/analyticalcapfloor.cpp (1.11),
+	Instruments/swaption.hpp (1.12), Optimization/simplex.cpp (1.4),
+	Optimization/simplex.hpp (1.5), Pricers/Makefile.am (1.23),
+	Pricers/analyticalcapfloor.cpp (1.11),
 	Pricers/analyticalcapfloor.hpp (1.7), Pricers/blackcapfloor.cpp
 	(1.1), Pricers/blackcapfloor.hpp (1.1), Pricers/blackswaption.cpp
 	(1.1), Pricers/blackswaption.hpp (1.1),
@@ -944,7 +2745,6 @@
 	Instruments/plainoption.cpp (1.11), Instruments/plainoption.hpp
 	(1.12), Instruments/stock.cpp (1.6), Instruments/stock.hpp (1.6),
 	Instruments/swap.cpp (1.11), Instruments/swap.hpp (1.7),
-	InterestRateModelling/calibrationhelper.hpp (1.9),
 	MonteCarlo/pathpricer.hpp (1.11), Patterns/observable.hpp (1.8),
 	TermStructures/piecewiseflatforward.cpp (1.18),
 	TermStructures/piecewiseflatforward.hpp (1.17),
@@ -1036,32 +2836,17 @@
 	FiniteDifferences/onefactoroperator.cpp (1.10),
 	FiniteDifferences/onefactoroperator.hpp (1.10),
 	Instruments/capfloor.cpp (1.19), Instruments/capfloor.hpp (1.18),
-	Instruments/swaption.hpp (1.11),
-	InterestRateModelling/calibrationhelper.hpp (1.8),
-	InterestRateModelling/model.cpp (1.17),
-	InterestRateModelling/model.hpp (1.20),
-	InterestRateModelling/onefactormodel.cpp (1.13),
-	InterestRateModelling/onefactormodel.hpp (1.14),
-	InterestRateModelling/shortrateprocess.hpp (1.9),
-	InterestRateModelling/twofactormodel.hpp (1.9),
-	InterestRateModelling/OneFactorModels/blackkarasinski.cpp (1.19),
-	InterestRateModelling/OneFactorModels/blackkarasinski.hpp (1.16),
-	InterestRateModelling/OneFactorModels/coxingersollross.cpp (1.3),
-	InterestRateModelling/OneFactorModels/coxingersollross.hpp (1.4),
-	InterestRateModelling/OneFactorModels/hullwhite.hpp (1.10),
-	InterestRateModelling/TwoFactorModels/g2.cpp (1.8),
-	InterestRateModelling/TwoFactorModels/g2.hpp (1.8),
-	Lattices/binomialtree.cpp (1.2), Lattices/binomialtree.hpp (1.2),
-	Lattices/node.hpp (1.10), Lattices/tree.cpp (1.12),
-	Lattices/tree.hpp (1.10), Lattices/trinomialtree.cpp (1.4),
-	Lattices/trinomialtree.hpp (1.3), Optimization/Makefile.am (1.4),
-	Optimization/optimizer.hpp (1.11), Optimization/powell.cpp (1.5),
-	Optimization/powell.hpp (1.3), Optimization/simplex.hpp (1.4),
-	Optimization/simulatedannealing.cpp (1.4),
-	Optimization/simulatedannealing.hpp (1.2), Pricers/treecapfloor.cpp
-	(1.12), Pricers/treeswaption.cpp (1.15): Clean-ups, added some
-	inline docs (but not enough yet), removed broken optimization
-	methods.
+	Instruments/swaption.hpp (1.11), Lattices/binomialtree.cpp (1.2),
+	Lattices/binomialtree.hpp (1.2), Lattices/node.hpp (1.10),
+	Lattices/tree.cpp (1.12), Lattices/tree.hpp (1.10),
+	Lattices/trinomialtree.cpp (1.4), Lattices/trinomialtree.hpp (1.3),
+	Optimization/Makefile.am (1.4), Optimization/optimizer.hpp (1.11),
+	Optimization/powell.cpp (1.5), Optimization/powell.hpp (1.3),
+	Optimization/simplex.hpp (1.4), Optimization/simulatedannealing.cpp
+	(1.4), Optimization/simulatedannealing.hpp (1.2),
+	Pricers/treecapfloor.cpp (1.12), Pricers/treeswaption.cpp (1.15):
+	Clean-ups, added some inline docs (but not enough yet), removed
+	broken optimization methods.
 
 2002-03-04 17:24  Luigi Ballabio <luigi.ballabio@riskmap.net>
 
@@ -1176,47 +2961,20 @@
 	ImplicitEuler and ExplicitEuler are now derived Now if only I could
 	make SOR to work!
 
-2002-02-22 16:11  Ferdinando Ametrano <ferdinando@ametrano.net>
-
-	* ql/InterestRateModelling/OneFactorModels/: coxingersollross.hpp
-	(1.3), hullwhite.hpp (1.9): it compiles with VC++
-
 2002-02-22 15:21  Sadruddin Rejeb <sad.rejeb@riskmap.it>
 
 	* ql/Pricers/: analyticalcapfloor.cpp (1.9), treecapfloor.cpp
 	(1.11): Fixed typo
 
-2002-02-22 12:55  Sadruddin Rejeb <sad.rejeb@riskmap.it>
-
-	* ql/InterestRateModelling/: parameter.hpp (1.3),
-	shortrateprocess.hpp (1.8), OneFactorModels/blackkarasinski.hpp
-	(1.15), OneFactorModels/hullwhite.hpp (1.8): Fixed tremendously
-	stupid bug in PiecewiseConstantParameterImpl...  thanks Luigi!
-
-2002-02-22 11:50  Luigi Ballabio <luigi.ballabio@riskmap.net>
-
-	* ql/InterestRateModelling/: onefactormodel.cpp (1.12),
-	onefactormodel.hpp (1.13): Compiles with bcc
-
-2002-02-22 07:49  Ferdinando Ametrano <ferdinando@ametrano.net>
-
-	* ql/InterestRateModelling/model.hpp (1.19): VC++ warning avoided
-
-2002-02-21 17:38  Sadruddin Rejeb <sad.rejeb@riskmap.it>
-
-	* ql/InterestRateModelling/parameter.hpp (1.2): fix for VC++?
-
 2002-02-21 17:27  Ferdinando Ametrano <ferdinando@ametrano.net>
 
 	* QuantLib.dsp (1.79), QuantLib.mak (1.69), ql/quantlib.hpp (1.48),
-	ql/InterestRateModelling/makefile.mak (1.6),
 	ql/Lattices/makefile.mak (1.7): catching up with Sad commit, but it
 	doesn't work with VC++ yet.  Where is ParameterImplementation ?
 
 2002-02-21 17:02  Sadruddin Rejeb <sad.rejeb@riskmap.it>
 
-	* ql/: asset.hpp (1.10), InterestRateModelling/onefactormodel.cpp
-	(1.11): Small fix.
+	* ql/asset.hpp (1.10): Small fix.
 
 2002-02-21 16:22  Sadruddin Rejeb <sad.rejeb@riskmap.it>
 
@@ -1232,31 +2990,7 @@
 	Instruments/capfloor.cpp (1.17), Instruments/capfloor.hpp (1.17),
 	Instruments/simpleswap.cpp (1.14), Instruments/simpleswap.hpp
 	(1.17), Instruments/swaption.cpp (1.10), Instruments/swaption.hpp
-	(1.10), InterestRateModelling/Makefile.am (1.5),
-	InterestRateModelling/calibrationhelper.cpp (1.7),
-	InterestRateModelling/calibrationhelper.hpp (1.7),
-	InterestRateModelling/model.cpp (1.16),
-	InterestRateModelling/model.hpp (1.18),
-	InterestRateModelling/onefactormodel.cpp (1.10),
-	InterestRateModelling/onefactormodel.hpp (1.12),
-	InterestRateModelling/parameter.hpp (1.1),
-	InterestRateModelling/shortrateprocess.hpp (1.7),
-	InterestRateModelling/timefunction.cpp (1.8),
-	InterestRateModelling/timefunction.hpp (1.8),
-	InterestRateModelling/twofactormodel.hpp (1.8),
-	InterestRateModelling/CalibrationHelpers/caphelper.cpp (1.8),
-	InterestRateModelling/CalibrationHelpers/caphelper.hpp (1.7),
-	InterestRateModelling/CalibrationHelpers/swaptionhelper.cpp (1.10),
-	InterestRateModelling/CalibrationHelpers/swaptionhelper.hpp (1.8),
-	InterestRateModelling/OneFactorModels/blackkarasinski.cpp (1.18),
-	InterestRateModelling/OneFactorModels/blackkarasinski.hpp (1.14),
-	InterestRateModelling/OneFactorModels/coxingersollross.cpp (1.2),
-	InterestRateModelling/OneFactorModels/coxingersollross.hpp (1.2),
-	InterestRateModelling/OneFactorModels/hullwhite.cpp (1.7),
-	InterestRateModelling/OneFactorModels/hullwhite.hpp (1.7),
-	InterestRateModelling/TwoFactorModels/g2.cpp (1.7),
-	InterestRateModelling/TwoFactorModels/g2.hpp (1.7),
-	Lattices/Makefile.am (1.3), Lattices/timegrid.hpp (1.12),
+	(1.10), Lattices/Makefile.am (1.3), Lattices/timegrid.hpp (1.12),
 	Lattices/tree.cpp (1.11), Lattices/tree.hpp (1.9),
 	Lattices/trinomialtree.cpp (1.3), Lattices/trinomialtree.hpp (1.2),
 	Optimization/costfunction.hpp (1.10), Optimization/leastsquare.hpp
@@ -1278,7 +3012,7 @@
 2002-02-21 09:56  Ferdinando Ametrano <ferdinando@ametrano.net>
 
 	* ql/functions/: daycounters.cpp (1.2), daycounters.hpp (1.2):
-	style changed so that function:= method(class, arguments)
+	style changed so that function:= method(class, parameters)
 
 2002-02-20 13:54  Ferdinando Ametrano <ferdinando@ametrano.net>
 
@@ -1403,10 +3137,7 @@
 
 2002-02-11 09:22  Luigi Ballabio <luigi.ballabio@riskmap.net>
 
-	* ql/: InterestRateModelling/twofactormodel.hpp (1.7),
-	InterestRateModelling/TwoFactorModels/g2.cpp (1.6),
-	InterestRateModelling/TwoFactorModels/g2.hpp (1.6),
-	Lattices/timegrid.hpp (1.9), Lattices/trinomialtree.cpp (1.2): [no
+	* ql/Lattices/: timegrid.hpp (1.9), trinomialtree.cpp (1.2): [no
 	log message]
 
 2002-02-08 19:33  Ferdinando Ametrano <ferdinando@ametrano.net>
@@ -1422,9 +3153,7 @@
 
 2002-02-08 19:14  Ferdinando Ametrano <ferdinando@ametrano.net>
 
-	* ql/: InterestRateModelling/makefile.mak (1.5),
-	InterestRateModelling/OneFactorModels/makefile.mak (1.5),
-	Optimization/makefile.mak (1.2): Borland command line compiler
+	* ql/Optimization/makefile.mak (1.2): Borland command line compiler
 	catching up with Sad's commit
 
 2002-02-08 19:10  Ferdinando Ametrano <ferdinando@ametrano.net>
@@ -1442,11 +3171,6 @@
 
 	* ql/Optimization/: powell.cpp (1.2), simplex.hpp (1.2): #include
 	<vector> added
-
-2002-02-08 14:52  Sadruddin Rejeb <sad.rejeb@riskmap.it>
-
-	* ql/InterestRateModelling/onefactormodel.cpp (1.9): added missing
-	file
 
 2002-02-08 14:48  Sadruddin Rejeb <sad.rejeb@riskmap.it>
 
@@ -1476,28 +3200,6 @@
 	* ql/Lattices/: Makefile.am (1.2), node.hpp (1.9), timegrid.hpp
 	(1.8), tree.cpp (1.9), tree.hpp (1.8), trinomialtree.cpp (1.1),
 	trinomialtree.hpp (1.1): Added TrinomialTree class
-
-2002-02-08 14:40  Sadruddin Rejeb <sad.rejeb@riskmap.it>
-
-	* ql/InterestRateModelling/: Makefile.am (1.4),
-	calibrationhelper.cpp (1.6), calibrationhelper.hpp (1.6), grid.cpp
-	(1.8), grid.hpp (1.13), model.cpp (1.15), model.hpp (1.17),
-	onefactormodel.hpp (1.11), timefunction.cpp (1.7), timefunction.hpp
-	(1.7), trinomialtree.cpp (1.11), trinomialtree.hpp (1.9),
-	twofactormodel.hpp (1.6), CalibrationHelpers/caphelper.cpp (1.7),
-	CalibrationHelpers/caphelper.hpp (1.6),
-	CalibrationHelpers/swaptionhelper.cpp (1.9),
-	CalibrationHelpers/swaptionhelper.hpp (1.7),
-	OneFactorModels/Makefile.am (1.4),
-	OneFactorModels/blackkarasinski.cpp (1.17),
-	OneFactorModels/blackkarasinski.hpp (1.13),
-	OneFactorModels/coxingersollross.cpp (1.1),
-	OneFactorModels/coxingersollross.hpp (1.1),
-	OneFactorModels/coxingersollrossplus.cpp (1.6),
-	OneFactorModels/coxingersollrossplus.hpp (1.5),
-	OneFactorModels/hullwhite.cpp (1.6), OneFactorModels/hullwhite.hpp
-	(1.6), TwoFactorModels/g2.cpp (1.5), TwoFactorModels/g2.hpp (1.5):
-	Interest rate modelling refactoring
 
 2002-02-08 14:37  Sadruddin Rejeb <sad.rejeb@riskmap.it>
 
@@ -1641,40 +3343,10 @@
 	ql/FiniteDifferences/onefactoroperator.hpp (1.8),
 	ql/Instruments/capfloor.cpp (1.14), ql/Instruments/capfloor.hpp
 	(1.14), ql/Instruments/swaption.cpp (1.7),
-	ql/Instruments/swaption.hpp (1.7),
-	ql/InterestRateModelling/calibrationhelper.cpp (1.5),
-	ql/InterestRateModelling/calibrationhelper.hpp (1.5),
-	ql/InterestRateModelling/grid.cpp (1.7),
-	ql/InterestRateModelling/grid.hpp (1.12),
-	ql/InterestRateModelling/model.cpp (1.14),
-	ql/InterestRateModelling/model.hpp (1.16),
-	ql/InterestRateModelling/onefactormodel.hpp (1.10),
-	ql/InterestRateModelling/shortrateprocess.hpp (1.6),
-	ql/InterestRateModelling/timefunction.cpp (1.6),
-	ql/InterestRateModelling/timefunction.hpp (1.6),
-	ql/InterestRateModelling/trinomialtree.cpp (1.10),
-	ql/InterestRateModelling/trinomialtree.hpp (1.8),
-	ql/InterestRateModelling/twofactormodel.hpp (1.5),
-	ql/InterestRateModelling/CalibrationHelpers/caphelper.cpp (1.6),
-	ql/InterestRateModelling/CalibrationHelpers/caphelper.hpp (1.5),
-	ql/InterestRateModelling/CalibrationHelpers/swaptionhelper.cpp
-	(1.8),
-	ql/InterestRateModelling/CalibrationHelpers/swaptionhelper.hpp
-	(1.6), ql/InterestRateModelling/OneFactorModels/blackkarasinski.cpp
-	(1.16),
-	ql/InterestRateModelling/OneFactorModels/blackkarasinski.hpp
-	(1.12),
-	ql/InterestRateModelling/OneFactorModels/coxingersollrossplus.cpp
-	(1.5),
-	ql/InterestRateModelling/OneFactorModels/coxingersollrossplus.hpp
-	(1.4), ql/InterestRateModelling/OneFactorModels/hullwhite.cpp
-	(1.5), ql/InterestRateModelling/OneFactorModels/hullwhite.hpp
-	(1.5), ql/InterestRateModelling/TwoFactorModels/g2.cpp (1.4),
-	ql/InterestRateModelling/TwoFactorModels/g2.hpp (1.4),
-	ql/Lattices/node.hpp (1.8), ql/Lattices/timegrid.hpp (1.7),
-	ql/Lattices/tree.cpp (1.8), ql/Lattices/tree.hpp (1.7),
-	ql/Pricers/analyticalcapfloor.cpp (1.6),
-	ql/Pricers/analyticalcapfloor.hpp (1.5),
+	ql/Instruments/swaption.hpp (1.7), ql/Lattices/node.hpp (1.8),
+	ql/Lattices/timegrid.hpp (1.7), ql/Lattices/tree.cpp (1.8),
+	ql/Lattices/tree.hpp (1.7), ql/Pricers/analyticalcapfloor.cpp
+	(1.6), ql/Pricers/analyticalcapfloor.hpp (1.5),
 	ql/Pricers/jamshidianswaption.cpp (1.6),
 	ql/Pricers/jamshidianswaption.hpp (1.5),
 	ql/Pricers/treecapfloor.cpp (1.8), ql/Pricers/treecapfloor.hpp
@@ -1855,48 +3527,18 @@
 	(1.5), ql/Math/symmetricschurdecomposition.cpp (1.6),
 	ql/Math/symmetricschurdecomposition.hpp (1.5), ql/Lattices/node.hpp
 	(1.7), ql/Lattices/timegrid.hpp (1.6), ql/Lattices/tree.cpp (1.7),
-	ql/Lattices/tree.hpp (1.6),
-	ql/InterestRateModelling/calibrationhelper.cpp (1.4),
-	ql/InterestRateModelling/calibrationhelper.hpp (1.4),
-	ql/InterestRateModelling/grid.cpp (1.6),
-	ql/InterestRateModelling/grid.hpp (1.11),
-	ql/InterestRateModelling/model.cpp (1.13),
-	ql/InterestRateModelling/model.hpp (1.15),
-	ql/InterestRateModelling/onefactormodel.hpp (1.9),
-	ql/InterestRateModelling/shortrateprocess.hpp (1.5),
-	ql/InterestRateModelling/timefunction.cpp (1.5),
-	ql/InterestRateModelling/timefunction.hpp (1.5),
-	ql/InterestRateModelling/trinomialtree.cpp (1.9),
-	ql/InterestRateModelling/trinomialtree.hpp (1.7),
-	ql/InterestRateModelling/twofactormodel.hpp (1.4),
-	ql/InterestRateModelling/CalibrationHelpers/caphelper.cpp (1.5),
-	ql/InterestRateModelling/CalibrationHelpers/caphelper.hpp (1.4),
-	ql/InterestRateModelling/CalibrationHelpers/swaptionhelper.cpp
-	(1.7),
-	ql/InterestRateModelling/CalibrationHelpers/swaptionhelper.hpp
-	(1.5), ql/InterestRateModelling/OneFactorModels/blackkarasinski.cpp
-	(1.15),
-	ql/InterestRateModelling/OneFactorModels/blackkarasinski.hpp
-	(1.11),
-	ql/InterestRateModelling/OneFactorModels/coxingersollrossplus.cpp
-	(1.4),
-	ql/InterestRateModelling/OneFactorModels/coxingersollrossplus.hpp
-	(1.3), ql/InterestRateModelling/OneFactorModels/hullwhite.cpp
-	(1.4), ql/InterestRateModelling/OneFactorModels/hullwhite.hpp
-	(1.4), ql/InterestRateModelling/TwoFactorModels/g2.cpp (1.3),
-	ql/InterestRateModelling/TwoFactorModels/g2.hpp (1.3),
-	ql/Instruments/capfloor.cpp (1.13), ql/Instruments/capfloor.hpp
-	(1.13), ql/Instruments/plainoption.cpp (1.8),
-	ql/Instruments/plainoption.hpp (1.9), ql/Instruments/simpleswap.cpp
-	(1.13), ql/Instruments/simpleswap.hpp (1.15),
-	ql/Instruments/stock.cpp (1.5), ql/Instruments/stock.hpp (1.5),
-	ql/Instruments/swap.cpp (1.10), ql/Instruments/swap.hpp (1.6),
-	ql/Instruments/swaption.cpp (1.6), ql/Instruments/swaption.hpp
-	(1.6), ql/Indexes/euribor.hpp (1.7), ql/Indexes/gbplibor.hpp (1.7),
-	ql/Indexes/usdlibor.hpp (1.7), ql/Indexes/xibor.cpp (1.6),
-	ql/Indexes/xibor.hpp (1.7), ql/Indexes/xibormanager.cpp (1.5),
-	ql/Indexes/xibormanager.hpp (1.5),
-	ql/FiniteDifferences/americancondition.hpp (1.4),
+	ql/Lattices/tree.hpp (1.6), ql/Instruments/capfloor.cpp (1.13),
+	ql/Instruments/capfloor.hpp (1.13), ql/Instruments/plainoption.cpp
+	(1.8), ql/Instruments/plainoption.hpp (1.9),
+	ql/Instruments/simpleswap.cpp (1.13), ql/Instruments/simpleswap.hpp
+	(1.15), ql/Instruments/stock.cpp (1.5), ql/Instruments/stock.hpp
+	(1.5), ql/Instruments/swap.cpp (1.10), ql/Instruments/swap.hpp
+	(1.6), ql/Instruments/swaption.cpp (1.6),
+	ql/Instruments/swaption.hpp (1.6), ql/Indexes/euribor.hpp (1.7),
+	ql/Indexes/gbplibor.hpp (1.7), ql/Indexes/usdlibor.hpp (1.7),
+	ql/Indexes/xibor.cpp (1.6), ql/Indexes/xibor.hpp (1.7),
+	ql/Indexes/xibormanager.cpp (1.5), ql/Indexes/xibormanager.hpp
+	(1.5), ql/FiniteDifferences/americancondition.hpp (1.4),
 	ql/FiniteDifferences/boundarycondition.hpp (1.5),
 	ql/FiniteDifferences/bsmoperator.cpp (1.9),
 	ql/FiniteDifferences/bsmoperator.hpp (1.9),
@@ -1933,10 +3575,6 @@
 	pages/math.docs (1.4), pages/pricers.docs (1.5),
 	pages/randomnumbers.docs (1.4), pages/solvers1d.docs (1.4):
 	Rearranged documentation - feedback is welcome
-
-2002-01-16 13:23  Sadruddin Rejeb <sad.rejeb@riskmap.it>
-
-	* ql/InterestRateModelling/grid.cpp (1.5): Avoid warning
 
 2002-01-16 12:26  Sadruddin Rejeb <sad.rejeb@riskmap.it>
 
@@ -2037,18 +3675,8 @@
 	* ql/: asset.hpp (1.5), termstructure.hpp (1.17),
 	Instruments/capfloor.cpp (1.12), Instruments/capfloor.hpp (1.12),
 	Instruments/plainoption.hpp (1.8), Instruments/simpleswap.cpp
-	(1.12), Instruments/swaption.hpp (1.5),
-	InterestRateModelling/model.cpp (1.12),
-	InterestRateModelling/model.hpp (1.14),
-	InterestRateModelling/onefactormodel.hpp (1.8),
-	InterestRateModelling/shortrateprocess.hpp (1.4),
-	InterestRateModelling/trinomialtree.hpp (1.6),
-	InterestRateModelling/CalibrationHelpers/swaptionhelper.hpp (1.4),
-	InterestRateModelling/OneFactorModels/blackkarasinski.cpp (1.14),
-	InterestRateModelling/OneFactorModels/blackkarasinski.hpp (1.10),
-	InterestRateModelling/OneFactorModels/coxingersollrossplus.cpp
-	(1.3), Lattices/node.hpp (1.6), Lattices/tree.hpp (1.5),
-	MonteCarlo/basketpathpricer.cpp (1.15),
+	(1.12), Instruments/swaption.hpp (1.5), Lattices/node.hpp (1.6),
+	Lattices/tree.hpp (1.5), MonteCarlo/basketpathpricer.cpp (1.15),
 	Pricers/mcdiscretearithmeticaso.hpp (1.5), Pricers/mceuropean.hpp
 	(1.7), Pricers/mcpagoda.cpp (1.7), TermStructures/ratehelpers.hpp
 	(1.17): pruned redundant header inclusions (again)
@@ -2118,9 +3746,6 @@
 	(1.6), FiniteDifferences/onefactoroperator.hpp (1.6),
 	Instruments/capfloor.cpp (1.11), Instruments/capfloor.hpp (1.11),
 	Instruments/swaption.cpp (1.5), Instruments/swaption.hpp (1.4),
-	InterestRateModelling/model.cpp (1.11),
-	InterestRateModelling/trinomialtree.cpp (1.8),
-	InterestRateModelling/CalibrationHelpers/swaptionhelper.cpp (1.6),
 	Lattices/node.hpp (1.5), Lattices/timegrid.hpp (1.5),
 	Optimization/armijo.cpp (1.6), Optimization/armijo.hpp (1.7),
 	Optimization/conjugategradient.cpp (1.6),
@@ -2191,32 +3816,14 @@
 
 2002-01-09 08:05  Luigi Ballabio <luigi.ballabio@riskmap.net>
 
-	* ql/: asset.hpp (1.4), InterestRateModelling/calibrationhelper.cpp
-	(1.3), InterestRateModelling/calibrationhelper.hpp (1.3),
-	InterestRateModelling/grid.cpp (1.4),
-	InterestRateModelling/model.cpp (1.10),
-	InterestRateModelling/timefunction.cpp (1.4),
-	InterestRateModelling/timefunction.hpp (1.4),
-	InterestRateModelling/trinomialtree.cpp (1.7),
-	InterestRateModelling/CalibrationHelpers/caphelper.cpp (1.4),
-	InterestRateModelling/CalibrationHelpers/swaptionhelper.cpp (1.5),
-	Lattices/tree.cpp (1.6), Pricers/analyticalcapfloor.cpp (1.3),
-	Pricers/treecapfloor.cpp (1.4), Pricers/treecapfloor.hpp (1.3):
-	More size_t removed
+	* ql/: asset.hpp (1.4), Lattices/tree.cpp (1.6),
+	Pricers/analyticalcapfloor.cpp (1.3), Pricers/treecapfloor.cpp
+	(1.4), Pricers/treecapfloor.hpp (1.3): More size_t removed
 
 2002-01-08 18:34  Adolfo Benin <adolfo.benin@riskmap.net>
 
 	* ql/: constraint.hpp (1.10), exercise.hpp (1.6), minimizer.hpp
 	(1.10), FiniteDifferences/onefactoroperator.cpp (1.5),
-	InterestRateModelling/grid.cpp (1.3),
-	InterestRateModelling/model.cpp (1.9),
-	InterestRateModelling/model.hpp (1.13),
-	InterestRateModelling/onefactormodel.hpp (1.7),
-	InterestRateModelling/timefunction.cpp (1.3),
-	InterestRateModelling/trinomialtree.cpp (1.6),
-	InterestRateModelling/trinomialtree.hpp (1.5),
-	InterestRateModelling/twofactormodel.hpp (1.3),
-	InterestRateModelling/OneFactorModels/blackkarasinski.cpp (1.13),
 	Lattices/node.hpp (1.4), Lattices/timegrid.hpp (1.4),
 	Lattices/tree.cpp (1.5), Lattices/tree.hpp (1.4),
 	Pricers/jamshidianswaption.cpp (1.3): unsigned int replaced by Size
@@ -2233,33 +3840,7 @@
 	relinkablehandle.hpp (1.6), riskstatistics.hpp (1.6), scheduler.cpp
 	(1.7), scheduler.hpp (1.7), solver1d.cpp (1.5), solver1d.hpp (1.6),
 	swaptionvolsurface.hpp (1.4), termstructure.hpp (1.16), types.hpp
-	(1.5), InterestRateModelling/calibrationhelper.cpp (1.2),
-	InterestRateModelling/calibrationhelper.hpp (1.2),
-	InterestRateModelling/grid.cpp (1.2),
-	InterestRateModelling/grid.hpp (1.10),
-	InterestRateModelling/model.cpp (1.8),
-	InterestRateModelling/model.hpp (1.12),
-	InterestRateModelling/onefactormodel.hpp (1.6),
-	InterestRateModelling/shortrateprocess.hpp (1.3),
-	InterestRateModelling/timefunction.cpp (1.2),
-	InterestRateModelling/timefunction.hpp (1.3),
-	InterestRateModelling/trinomialtree.cpp (1.5),
-	InterestRateModelling/trinomialtree.hpp (1.4),
-	InterestRateModelling/twofactormodel.hpp (1.2),
-	InterestRateModelling/CalibrationHelpers/caphelper.cpp (1.3),
-	InterestRateModelling/CalibrationHelpers/caphelper.hpp (1.3),
-	InterestRateModelling/CalibrationHelpers/swaptionhelper.cpp (1.4),
-	InterestRateModelling/CalibrationHelpers/swaptionhelper.hpp (1.3),
-	InterestRateModelling/OneFactorModels/blackkarasinski.cpp (1.12),
-	InterestRateModelling/OneFactorModels/blackkarasinski.hpp (1.9),
-	InterestRateModelling/OneFactorModels/coxingersollrossplus.cpp
-	(1.2),
-	InterestRateModelling/OneFactorModels/coxingersollrossplus.hpp
-	(1.2), InterestRateModelling/OneFactorModels/hullwhite.cpp (1.3),
-	InterestRateModelling/OneFactorModels/hullwhite.hpp (1.3),
-	InterestRateModelling/TwoFactorModels/g2.cpp (1.2),
-	InterestRateModelling/TwoFactorModels/g2.hpp (1.2),
-	Lattices/node.hpp (1.3), Lattices/timegrid.hpp (1.3),
+	(1.5), Lattices/node.hpp (1.3), Lattices/timegrid.hpp (1.3),
 	Lattices/tree.cpp (1.4), Lattices/tree.hpp (1.3),
 	Optimization/armijo.cpp (1.5), Optimization/armijo.hpp (1.6),
 	Optimization/conjugategradient.cpp (1.5),
@@ -2477,9 +4058,8 @@
 2002-01-08 16:38  Sadruddin Rejeb <sad.rejeb@riskmap.it>
 
 	* ql/: exercise.hpp (1.4), Instruments/swaption.cpp (1.3),
-	Instruments/swaption.hpp (1.2),
-	InterestRateModelling/CalibrationHelpers/swaptionhelper.cpp (1.3),
-	Pricers/treeswaption.cpp (1.8): Refactoring of the Exercise class
+	Instruments/swaption.hpp (1.2), Pricers/treeswaption.cpp (1.8):
+	Refactoring of the Exercise class
 
 2002-01-08 16:04  Ferdinando Ametrano <ferdinando@ametrano.net>
 
@@ -2514,17 +4094,6 @@
 
 	* ql/quantlib.hpp (1.35): Added missing file
 
-2002-01-08 13:12  Sadruddin Rejeb <sad.rejeb@riskmap.it>
-
-	* ql/InterestRateModelling/: makefile.mak (1.4),
-	OneFactorModels/makefile.mak (1.4), TwoFactorModels/makefile.mak
-	(1.1): Updated borland makefiles
-
-2002-01-08 13:09  Sadruddin Rejeb <sad.rejeb@riskmap.it>
-
-	* ql/InterestRateModelling/timefunction.cpp (1.1): Added missing
-	file
-
 2002-01-08 12:59  Sadruddin Rejeb <sad.rejeb@riskmap.it>
 
 	* configure.in (1.64), quantlib-config.in (1.3): Small fixes
@@ -2545,37 +4114,6 @@
 	(1.1), Pricers/treecapfloor.hpp (1.1), Pricers/treeswaption.cpp
 	(1.4), Pricers/treeswaption.hpp (1.4): Made interest-rate pricing
 	framework compliant to new convention (QuEP n5)
-
-2002-01-08 12:54  Sadruddin Rejeb <sad.rejeb@riskmap.it>
-
-	* ql/InterestRateModelling/: calibrationhelper.cpp (1.1),
-	calibrationhelper.hpp (1.1),
-	OneFactorModels/coxingersollrossplus.cpp (1.1),
-	OneFactorModels/coxingersollrossplus.hpp (1.1): Refactoring
-	interest-rate modelling framework
-
-2002-01-08 12:53  Sadruddin Rejeb <sad.rejeb@riskmap.it>
-
-	* ql/InterestRateModelling/: Makefile.am (1.3), grid.cpp (1.1),
-	grid.hpp (1.9), model.cpp (1.7), model.hpp (1.11),
-	onefactormodel.cpp (1.8), onefactormodel.hpp (1.5),
-	shortrateprocess.hpp (1.2), timefunction.hpp (1.2),
-	trinomialtree.cpp (1.4), trinomialtree.hpp (1.3),
-	twofactormodel.hpp (1.1), CalibrationHelpers/caphelper.cpp (1.2),
-	CalibrationHelpers/caphelper.hpp (1.2),
-	CalibrationHelpers/swaptionhelper.cpp (1.2),
-	CalibrationHelpers/swaptionhelper.hpp (1.2),
-	OneFactorModels/Makefile.am (1.3),
-	OneFactorModels/blackkarasinski.cpp (1.11),
-	OneFactorModels/blackkarasinski.hpp (1.8),
-	OneFactorModels/hullwhite.cpp (1.2), OneFactorModels/hullwhite.hpp
-	(1.2): Refactoring of interest rate modelling framework
-
-2002-01-08 12:50  Sadruddin Rejeb <sad.rejeb@riskmap.it>
-
-	* ql/InterestRateModelling/TwoFactorModels/: Makefile.am (1.1),
-	g2.cpp (1.1), g2.hpp (1.1): Added preliminary support for two
-	factor models
 
 2002-01-08 12:49  Sadruddin Rejeb <sad.rejeb@riskmap.it>
 
@@ -2677,11 +4215,7 @@
 	ql/Instruments/capfloor.cpp (1.8), ql/Instruments/capfloor.hpp
 	(1.8), ql/Instruments/plainoption.cpp (1.6),
 	ql/Instruments/plainoption.hpp (1.6), ql/Instruments/swap.cpp
-	(1.8), ql/InterestRateModelling/grid.hpp (1.8),
-	ql/InterestRateModelling/onefactormodel.cpp (1.7),
-	ql/InterestRateModelling/trinomialtree.cpp (1.3),
-	ql/InterestRateModelling/OneFactorModels/blackkarasinski.cpp
-	(1.10), ql/Lattices/timegrid.hpp (1.2), ql/Lattices/tree.cpp (1.2),
+	(1.8), ql/Lattices/timegrid.hpp (1.2), ql/Lattices/tree.cpp (1.2),
 	ql/Math/cubicspline.hpp (1.7), ql/Math/matrix.cpp (1.6),
 	ql/Math/matrix.hpp (1.6), ql/Math/multivariateaccumulator.cpp
 	(1.8), ql/Math/multivariateaccumulator.hpp (1.8),
@@ -2759,10 +4293,6 @@
 
 	* ql/Instruments/swap.cpp (1.7): improved error message
 
-2001-12-19 14:20  Sadruddin Rejeb <sad.rejeb@riskmap.it>
-
-	* ql/InterestRateModelling/model.hpp (1.10): removed useless method
-
 2001-12-19 14:10  Ferdinando Ametrano <ferdinando@ametrano.net>
 
 	* QuantLib.dsp (1.68), QuantLib.mak (1.55): MS VC++ and Borland
@@ -2771,13 +4301,8 @@
 2001-12-19 13:35  Ferdinando Ametrano <ferdinando@ametrano.net>
 
 	* QuantLib.nsi (1.56), ql/constraint.hpp (1.5), ql/exercise.hpp
-	(1.2), ql/quantlib.hpp (1.33),
-	ql/InterestRateModelling/makefile.mak (1.3),
-	ql/InterestRateModelling/trinomialtree.cpp (1.2),
-	ql/InterestRateModelling/trinomialtree.hpp (1.2),
-	ql/InterestRateModelling/OneFactorModels/blackkarasinski.cpp (1.9),
-	ql/InterestRateModelling/OneFactorModels/makefile.mak (1.3),
-	ql/Lattices/makefile.mak (1.4), ql/Optimization/armijo.cpp (1.3),
+	(1.2), ql/quantlib.hpp (1.33), ql/Lattices/makefile.mak (1.4),
+	ql/Optimization/armijo.cpp (1.3),
 	ql/Optimization/conjugategradient.cpp (1.3),
 	ql/Pricers/treeswaption.cpp (1.2), ql/Pricers/treeswaption.hpp
 	(1.2), ql/Lattices/makefile.mak (1.5): MS VC++ and Borland catching
@@ -2786,17 +4311,8 @@
 2001-12-19 12:32  Ferdinando Ametrano <ferdinando@ametrano.net>
 
 	* ql/: makefile.mak (1.7), Instruments/makefile.mak (1.6),
-	InterestRateModelling/makefile.mak (1.2),
-	InterestRateModelling/CalibrationHelpers/makefile.mak (1.2),
-	InterestRateModelling/OneFactorModels/blackkarasinski.cpp (1.8),
-	InterestRateModelling/OneFactorModels/makefile.mak (1.2),
 	Lattices/makefile.mak (1.3), Pricers/makefile.mak (1.13): MS VC++
 	and Borland catching up with Sad's commit
-
-2001-12-19 12:22  Sadruddin Rejeb <sad.rejeb@riskmap.it>
-
-	* ql/InterestRateModelling/OneFactorModels/: node.hpp (1.4),
-	tree.cpp (1.3), tree.hpp (1.3): remove useless files
 
 2001-12-19 12:19  Sadruddin Rejeb <sad.rejeb@riskmap.it>
 
@@ -2821,13 +4337,6 @@
 	* ql/FiniteDifferences/: Makefile.am (1.11), onefactoroperator.cpp
 	(1.3), onefactoroperator.hpp (1.4): Interest rate modelling
 	refactoring
-
-2001-12-19 11:55  Sadruddin Rejeb <sad.rejeb@riskmap.it>
-
-	* ql/InterestRateModelling/CalibrationHelpers/: cap.cpp (1.7),
-	cap.hpp (1.6), caphelper.cpp (1.1), caphelper.hpp (1.1),
-	swaption.cpp (1.8), swaption.hpp (1.5), swaptionhelper.cpp (1.1),
-	swaptionhelper.hpp (1.1): renamed classes to more explicit names
 
 2001-12-19 11:53  Sadruddin Rejeb <sad.rejeb@riskmap.it>
 
@@ -2859,29 +4368,6 @@
 	(1.31), stochasticprocess.hpp (1.3): Added Exercise class and
 	DiffusionProcess class
 
-2001-12-19 11:42  Sadruddin Rejeb <sad.rejeb@riskmap.it>
-
-	* ql/InterestRateModelling/: shortrateprocess.hpp (1.1),
-	timefunction.hpp (1.1), trinomialtree.cpp (1.1), trinomialtree.hpp
-	(1.1): Added a few files, mainly those concerning trinomial trees
-
-2001-12-19 11:38  Sadruddin Rejeb <sad.rejeb@riskmap.it>
-
-	* ql/InterestRateModelling/: Makefile.am (1.2), grid.hpp (1.7),
-	model.cpp (1.6), model.hpp (1.9), onefactormodel.cpp (1.6),
-	onefactormodel.hpp (1.4), swapfuturevalue.cpp (1.6),
-	swapfuturevalue.hpp (1.3), CalibrationHelpers/Makefile.am (1.2):
-	Removed swapfuturevalue
-
-2001-12-19 11:35  Sadruddin Rejeb <sad.rejeb@riskmap.it>
-
-	* ql/InterestRateModelling/OneFactorModels/: Makefile.am (1.2),
-	blackdermanandtoy.cpp (1.9), blackdermanandtoy.hpp (1.5),
-	blackkarasinski.cpp (1.7), blackkarasinski.hpp (1.7), hoandlee.cpp
-	(1.5), hoandlee.hpp (1.4), hullandwhite.cpp (1.5), hullandwhite.hpp
-	(1.6), hullwhite.cpp (1.1), hullwhite.hpp (1.1): renaming files
-	(removing stupid And in NameAndName)
-
 2001-12-19 11:34  Ferdinando Ametrano <ferdinando@ametrano.net>
 
 	* News.txt (1.18): typo fixed
@@ -2910,22 +4396,10 @@
 2001-12-18 11:58  Ferdinando Ametrano <ferdinando@ametrano.net>
 
 	* ql/: constraint.hpp (1.3), Instruments/capfloor.cpp (1.6),
-	Instruments/capfloor.hpp (1.6), InterestRateModelling/grid.hpp
-	(1.6), InterestRateModelling/model.hpp (1.8),
-	InterestRateModelling/onefactormodel.cpp (1.5),
-	InterestRateModelling/swapfuturevalue.cpp (1.5),
-	InterestRateModelling/CalibrationHelpers/cap.cpp (1.6),
-	InterestRateModelling/CalibrationHelpers/cap.hpp (1.5),
-	InterestRateModelling/CalibrationHelpers/swaption.cpp (1.7),
-	InterestRateModelling/CalibrationHelpers/swaption.hpp (1.4),
-	InterestRateModelling/OneFactorModels/blackdermanandtoy.cpp (1.8),
-	InterestRateModelling/OneFactorModels/blackdermanandtoy.hpp (1.4),
-	InterestRateModelling/OneFactorModels/blackkarasinski.cpp (1.6),
-	InterestRateModelling/OneFactorModels/blackkarasinski.hpp (1.6),
-	InterestRateModelling/OneFactorModels/node.hpp (1.3),
-	Optimization/leastsquare.hpp (1.7), Pricers/fdeuropeanswaption.cpp
-	(1.5), Pricers/fdeuropeanswaption.hpp (1.5): 'unsigned int'
-	replaced by size_t
+	Instruments/capfloor.hpp (1.6), Optimization/leastsquare.hpp (1.7),
+	Pricers/fdeuropeanswaption.cpp (1.5),
+	Pricers/fdeuropeanswaption.hpp (1.5): 'unsigned int' replaced by
+	size_t
 
 2001-12-18 11:48  Ferdinando Ametrano <ferdinando@ametrano.net>
 
@@ -3161,7 +4635,7 @@
 
 	* dev_tools/version_number.txt (1.8), ql/config.msvc.hpp (1.4),
 	ql/qldefines.hpp (1.23): version number fixed enforced MS VC
-	compilation arguments
+	compilation parameters
 
 2001-12-06 15:13  Ferdinando Ametrano <ferdinando@ametrano.net>
 
@@ -3196,23 +4670,8 @@
 2001-12-05 14:45  Ferdinando Ametrano <ferdinando@ametrano.net>
 
 	* Authors.txt (1.7), Contributors.txt (1.14),
-	Docs/pages/authors.docs (1.3), ql/InterestRateModelling/model.hpp
-	(1.7), ql/InterestRateModelling/onefactormodel.hpp (1.3),
-	ql/InterestRateModelling/OneFactorModels/blackkarasinski.hpp (1.5),
-	ql/InterestRateModelling/OneFactorModels/hullandwhite.hpp (1.5),
-	ql/Pricers/couponbondoption.hpp (1.5): style and overdue fixes
-
-2001-12-05 12:24  Sadruddin Rejeb <sad.rejeb@riskmap.it>
-
-	* ql/InterestRateModelling/OneFactorModels/: blackdermanandtoy.cpp
-	(1.7), blackdermanandtoy.hpp (1.3), blackkarasinski.cpp (1.5),
-	blackkarasinski.hpp (1.4), hoandlee.cpp (1.4), hoandlee.hpp (1.3),
-	hullandwhite.cpp (1.4), hullandwhite.hpp (1.4): update
-
-2001-12-05 12:19  Sadruddin Rejeb <sad.rejeb@riskmap.it>
-
-	* ql/InterestRateModelling/: onefactormodel.cpp (1.4), model.hpp
-	(1.6): small fix
+	Docs/pages/authors.docs (1.3), ql/Pricers/couponbondoption.hpp
+	(1.5): style and overdue fixes
 
 2001-12-05 09:54  Ferdinando Ametrano <ferdinando@ametrano.net>
 
@@ -3229,18 +4688,8 @@
 
 	* ql/: minimizer.hpp (1.7), FiniteDifferences/onefactoroperator.hpp
 	(1.3), Instruments/capfloor.hpp (1.5),
-	Instruments/europeanswaption.hpp (1.5),
-	InterestRateModelling/grid.hpp (1.5),
-	InterestRateModelling/model.cpp (1.5),
-	InterestRateModelling/model.hpp (1.5),
-	InterestRateModelling/onefactormodel.cpp (1.3),
-	InterestRateModelling/CalibrationHelpers/cap.hpp (1.4),
-	InterestRateModelling/CalibrationHelpers/swaption.cpp (1.6),
-	InterestRateModelling/CalibrationHelpers/swaption.hpp (1.3),
-	InterestRateModelling/OneFactorModels/blackdermanandtoy.cpp (1.6),
-	InterestRateModelling/OneFactorModels/blackkarasinski.cpp (1.4),
-	InterestRateModelling/OneFactorModels/hullandwhite.hpp (1.3),
-	MonteCarlo/mctypedefs.hpp (1.7), Optimization/armijo.hpp (1.4),
+	Instruments/europeanswaption.hpp (1.5), MonteCarlo/mctypedefs.hpp
+	(1.7), Optimization/armijo.hpp (1.4),
 	Optimization/conjugategradient.hpp (1.3),
 	Optimization/leastsquare.hpp (1.6), Optimization/linesearch.hpp
 	(1.3), Optimization/optimizer.hpp (1.3),
@@ -3287,10 +4736,6 @@
 	Examples/Swap/swapvaluation.cpp (1.16), ql/handle.hpp (1.5),
 	ql/Instruments/capfloor.cpp (1.5), ql/Instruments/simpleswap.hpp
 	(1.12), ql/Instruments/swap.cpp (1.6),
-	ql/InterestRateModelling/grid.hpp (1.4),
-	ql/InterestRateModelling/swapfuturevalue.cpp (1.4),
-	ql/InterestRateModelling/CalibrationHelpers/cap.cpp (1.5),
-	ql/InterestRateModelling/CalibrationHelpers/swaption.cpp (1.5),
 	ql/Pricers/fdeuropeanswaption.cpp (1.3), ql/Pricers/makefile.mak
 	(1.10): Handle can be assigned to Handles to compatible types
 
@@ -3319,11 +4764,6 @@
 
 	* ql/Optimization/leastsquare.hpp (1.4): Fixed typo
 
-2001-12-03 11:11  Sadruddin Rejeb <sad.rejeb@riskmap.it>
-
-	* ql/InterestRateModelling/OneFactorModels/blackdermanandtoy.cpp
-	(1.5): Fixed typo
-
 2001-12-03 10:51  Sadruddin Rejeb <sad.rejeb@riskmap.it>
 
 	* ql/Pricers/: fdeuropeanswaption.cpp (1.2), fdeuropeanswaption.hpp
@@ -3346,26 +4786,9 @@
 	* ql/: minimizer.hpp (1.6), Instruments/capfloor.cpp (1.4),
 	Instruments/capfloor.hpp (1.4), Instruments/europeanswaption.cpp
 	(1.4), Instruments/europeanswaption.hpp (1.4),
-	Instruments/simpleswap.hpp (1.11), InterestRateModelling/grid.hpp
-	(1.3), InterestRateModelling/model.cpp (1.4),
-	InterestRateModelling/model.hpp (1.4),
-	InterestRateModelling/onefactormodel.cpp (1.2),
-	InterestRateModelling/onefactormodel.hpp (1.2),
-	InterestRateModelling/swapfuturevalue.cpp (1.3),
-	InterestRateModelling/swapfuturevalue.hpp (1.2),
-	InterestRateModelling/CalibrationHelpers/cap.cpp (1.4),
-	InterestRateModelling/CalibrationHelpers/cap.hpp (1.3),
-	InterestRateModelling/CalibrationHelpers/swaption.cpp (1.4),
-	InterestRateModelling/CalibrationHelpers/swaption.hpp (1.2),
-	InterestRateModelling/OneFactorModels/blackdermanandtoy.cpp (1.4),
-	InterestRateModelling/OneFactorModels/blackkarasinski.hpp (1.3),
-	InterestRateModelling/OneFactorModels/hoandlee.cpp (1.3),
-	InterestRateModelling/OneFactorModels/hoandlee.hpp (1.2),
-	InterestRateModelling/OneFactorModels/hullandwhite.cpp (1.3),
-	InterestRateModelling/OneFactorModels/hullandwhite.hpp (1.2),
-	Optimization/armijo.cpp (1.2), Optimization/armijo.hpp (1.2),
-	Optimization/conjugategradient.cpp (1.2),
-	Optimization/conjugategradient.hpp (1.2),
+	Instruments/simpleswap.hpp (1.11), Optimization/armijo.cpp (1.2),
+	Optimization/armijo.hpp (1.2), Optimization/conjugategradient.cpp
+	(1.2), Optimization/conjugategradient.hpp (1.2),
 	Optimization/costfunction.hpp (1.2), Optimization/criteria.hpp
 	(1.2), Optimization/leastsquare.hpp (1.3),
 	Optimization/linesearch.hpp (1.2), Optimization/optimizer.hpp
@@ -3381,10 +4804,7 @@
 
 2001-12-03 09:04  Luigi Ballabio <luigi.ballabio@riskmap.net>
 
-	* ql/: InterestRateModelling/makefile.mak (1.1),
-	InterestRateModelling/CalibrationHelpers/makefile.mak (1.1),
-	InterestRateModelling/OneFactorModels/makefile.mak (1.1),
-	Optimization/makefile.mak (1.1): [no log message]
+	* ql/Optimization/makefile.mak (1.1): [no log message]
 
 2001-12-01 20:42  Ferdinando Ametrano <ferdinando@ametrano.net>
 
@@ -3402,18 +4822,7 @@
 	* QuantLib.dsp (1.63), QuantLib.mak (1.49),
 	ql/stochasticprocess.hpp (1.2), ql/Instruments/capfloor.cpp (1.3),
 	ql/Instruments/capfloor.hpp (1.3), ql/Instruments/simpleswap.hpp
-	(1.10), ql/InterestRateModelling/model.cpp (1.3),
-	ql/InterestRateModelling/model.hpp (1.3),
-	ql/InterestRateModelling/swapfuturevalue.cpp (1.2),
-	ql/InterestRateModelling/CalibrationHelpers/cap.cpp (1.3),
-	ql/InterestRateModelling/CalibrationHelpers/cap.hpp (1.2),
-	ql/InterestRateModelling/CalibrationHelpers/swaption.cpp (1.3),
-	ql/InterestRateModelling/OneFactorModels/blackdermanandtoy.cpp
-	(1.3), ql/InterestRateModelling/OneFactorModels/blackkarasinski.cpp
-	(1.3), ql/InterestRateModelling/OneFactorModels/node.hpp (1.2),
-	ql/InterestRateModelling/OneFactorModels/tree.cpp (1.2),
-	ql/InterestRateModelling/OneFactorModels/tree.hpp (1.2),
-	ql/Optimization/leastsquare.hpp (1.2),
+	(1.10), ql/Optimization/leastsquare.hpp (1.2),
 	ql/Pricers/couponbondoption.hpp (1.3): Compiles under VC++
 
 2001-11-30 15:08  Luigi Ballabio <luigi.ballabio@riskmap.net>
@@ -3422,17 +4831,7 @@
 	CashFlows/makefile.mak (1.3), DayCounters/makefile.mak (1.4),
 	FiniteDifferences/makefile.mak (1.4), Indexes/makefile.mak (1.3),
 	Instruments/europeanswaption.hpp (1.3), Instruments/makefile.mak
-	(1.5), InterestRateModelling/grid.hpp (1.2),
-	InterestRateModelling/model.cpp (1.2),
-	InterestRateModelling/CalibrationHelpers/cap.cpp (1.2),
-	InterestRateModelling/CalibrationHelpers/swaption.cpp (1.2),
-	InterestRateModelling/OneFactorModels/blackdermanandtoy.cpp (1.2),
-	InterestRateModelling/OneFactorModels/blackdermanandtoy.hpp (1.2),
-	InterestRateModelling/OneFactorModels/blackkarasinski.cpp (1.2),
-	InterestRateModelling/OneFactorModels/blackkarasinski.hpp (1.2),
-	InterestRateModelling/OneFactorModels/hoandlee.cpp (1.2),
-	InterestRateModelling/OneFactorModels/hullandwhite.cpp (1.2),
-	Math/makefile.mak (1.3), MonteCarlo/makefile.mak (1.8),
+	(1.5), Math/makefile.mak (1.3), MonteCarlo/makefile.mak (1.8),
 	Pricers/makefile.mak (1.9), RandomNumbers/makefile.mak (1.3),
 	Solvers1D/makefile.mak (1.3), TermStructures/makefile.mak (1.4):
 	Compiles under Borland C++
@@ -3449,10 +4848,6 @@
 	Examples/Swap/Swap.mak (1.6), ql/FiniteDifferences/makefile.mak
 	(1.3), ql/Instruments/makefile.mak (1.4): first attempt to include
 	Sad's stuff in VC++ and Borland
-
-2001-11-30 12:02  Sadruddin Rejeb <sad.rejeb@riskmap.it>
-
-	* ql/InterestRateModelling/model.hpp (1.2): small temp fix
 
 2001-11-30 11:59  Sadruddin Rejeb <sad.rejeb@riskmap.it>
 
@@ -3499,25 +4894,6 @@
 
 	* ql/: Instruments/Makefile.am (1.6), FiniteDifferences/Makefile.am
 	(1.9): Adding interest rate modelling framework
-
-2001-11-30 10:30  Sadruddin Rejeb <sad.rejeb@riskmap.it>
-
-	* ql/InterestRateModelling/: Makefile.am (1.1), grid.hpp (1.1),
-	model.cpp (1.1), model.hpp (1.1), onefactormodel.cpp (1.1),
-	onefactormodel.hpp (1.1), swapfuturevalue.cpp (1.1),
-	swapfuturevalue.hpp (1.1), CalibrationHelpers/Makefile.am (1.1),
-	CalibrationHelpers/cap.cpp (1.1), CalibrationHelpers/cap.hpp (1.1),
-	CalibrationHelpers/swaption.cpp (1.1),
-	CalibrationHelpers/swaption.hpp (1.1), OneFactorModels/Makefile.am
-	(1.1), OneFactorModels/blackdermanandtoy.cpp (1.1),
-	OneFactorModels/blackdermanandtoy.hpp (1.1),
-	OneFactorModels/blackkarasinski.cpp (1.1),
-	OneFactorModels/blackkarasinski.hpp (1.1),
-	OneFactorModels/hoandlee.cpp (1.1), OneFactorModels/hoandlee.hpp
-	(1.1), OneFactorModels/hullandwhite.cpp (1.1),
-	OneFactorModels/hullandwhite.hpp (1.1), OneFactorModels/node.hpp
-	(1.1), OneFactorModels/tree.cpp (1.1), OneFactorModels/tree.hpp
-	(1.1): Adding interest rate modelling framework
 
 2001-11-30 10:25  Sadruddin Rejeb <sad.rejeb@riskmap.it>
 
@@ -6585,11 +7961,6 @@
 
 	* configure.in (1.35), Examples/acinclude.m4 (1.1),
 	Examples/configure.in (1.1): Enable examples to build autonomously
-
-2001-09-07 08:48  Sadruddin Rejeb <sad.rejeb@riskmap.it>
-
-	* Examples/config/readme.txt (1.1): Dummy file ensuring that
-	config/ is checked out
 
 2001-09-07 08:45  Sadruddin Rejeb <sad.rejeb@riskmap.it>
 
