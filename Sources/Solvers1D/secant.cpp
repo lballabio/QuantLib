@@ -12,7 +12,7 @@ QL_USING(QuantLib, IntegerFormat)
 
 QL_BEGIN_NAMESPACE(QuantLib)
 
-QL_BEGIN_NAMESPACE(Solver1D)
+QL_BEGIN_NAMESPACE(Solvers1D)
 
 double Secant::_solve(const Function& f, double xAccuracy) const {
 	double fl,froot,dx,xl;
@@ -43,6 +43,6 @@ double Secant::_solve(const Function& f, double xAccuracy) const {
 	return 0.0;
 }
 
-QL_END_NAMESPACE(Solver1D)
+QL_END_NAMESPACE(Solvers1D)
 
 QL_END_NAMESPACE(QuantLib)

@@ -6,7 +6,6 @@ Contact ferdinando@ametrano.net if LICENSE.TXT was not distributed with this fil
 */
 
 #include "ridder.h"
-//#include "sign.h"
 #include <limits>
 
 QL_USING(QuantLib, Error)
@@ -14,7 +13,7 @@ QL_USING(QuantLib, IntegerFormat)
 
 QL_BEGIN_NAMESPACE(QuantLib)
 
-QL_BEGIN_NAMESPACE(Solver1D)
+QL_BEGIN_NAMESPACE(Solvers1D)
 
 #define SIGN(a,b) ((b) >= 0.0 ? QL_FABS(a) : -QL_FABS(a))
 
@@ -61,6 +60,6 @@ double Ridder::_solve(const Function& f, double xAcc) const {
 	return 0.0;
 }
 
-QL_END_NAMESPACE(Solver1D)
+QL_END_NAMESPACE(Solvers1D)
 
 QL_END_NAMESPACE(QuantLib)

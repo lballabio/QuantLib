@@ -15,7 +15,7 @@ QL_USING(QuantLib,IsNull)
 
 QL_BEGIN_NAMESPACE(QuantLib)
 
-QL_BEGIN_NAMESPACE(Solver1D)
+QL_BEGIN_NAMESPACE(Solvers1D)
 
 double Newton::_solve(const Function& f, double xAccuracy) const {
 	double froot, dfroot, dx;
@@ -45,6 +45,6 @@ double Newton::_solve(const Function& f, double xAccuracy) const {
 	return 0.0;
 }
 
-QL_END_NAMESPACE(Solver1D)
+QL_END_NAMESPACE(Solvers1D)
 
 QL_END_NAMESPACE(QuantLib)
