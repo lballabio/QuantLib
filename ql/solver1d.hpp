@@ -105,7 +105,7 @@ namespace QuantLib {
                     if (fxMax_ == 0.0)    return xMax_;
                     root_ = (xMax_+xMin_)/2.0;
                     // check whether we really want to pass epsilon
-                    return CuriouslyRecurringTemplate<Impl>::impl().solveImpl(
+                    return this->impl().solveImpl(
                         f, QL_MAX(QL_FABS(accuracy), QL_EPSILON));
                 }
                 if (QL_FABS(fxMin_) < QL_FABS(fxMax_)) {
@@ -197,7 +197,7 @@ namespace QuantLib {
 
             root_ = guess;
 
-            return CuriouslyRecurringTemplate<Impl>::impl().solveImpl(
+            return this->impl().solveImpl(
                 f, QL_MAX(QL_FABS(accuracy), QL_EPSILON));
         }
 

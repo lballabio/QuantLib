@@ -48,7 +48,7 @@ namespace QuantLib {
             update();
         }
         virtual void update() {
-            notifyObservers();
+            this->notifyObservers();
         }
       protected:
         boost::shared_ptr<ModelType> model_;

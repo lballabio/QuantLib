@@ -120,8 +120,8 @@ namespace QuantLib {
     template<class Stat>
     inline
     Real GaussianStatistics<Stat>::gaussianRegret(Real target) const {
-        Real m = mean();
-        Real std = standardDeviation();
+        Real m = this->mean();
+        Real std = this->standardDeviation();
         Real variance = std*std;
         CumulativeNormalDistribution gIntegral(m, std);
         NormalDistribution g(m, std);
@@ -197,8 +197,8 @@ namespace QuantLib {
                    DecimalFormatter::toString(percentile) +
                    ") out of range [0.9, 1.0)");
 
-        Real m = mean();
-        Real std = standardDeviation();
+        Real m = this->mean();
+        Real std = this->standardDeviation();
         InverseCumulativeNormal gInverse(m, std);
         Real var = gInverse(1.0-percentile);
         NormalDistribution g(m, std);
@@ -213,8 +213,8 @@ namespace QuantLib {
     template<class Stat>
     inline Real GaussianStatistics<Stat>::gaussianShortfall(
                                                         Real target) const {
-        CumulativeNormalDistribution gIntegral(mean(),
-                                               standardDeviation());
+        CumulativeNormalDistribution gIntegral(this->mean(),
+                                               this->standardDeviation());
         return gIntegral(target);
     }
 
@@ -222,8 +222,8 @@ namespace QuantLib {
     template<class Stat>
     inline Real GaussianStatistics<Stat>::gaussianAverageShortfall(
                                                         Real target) const {
-        Real m = mean();
-        Real std = standardDeviation();
+        Real m = this->mean();
+        Real std = this->standardDeviation();
         CumulativeNormalDistribution gIntegral(m, std);
         NormalDistribution g(m, std);
         return ( (target-m) + std*std*g(target)/gIntegral(target) );

@@ -62,15 +62,15 @@ namespace QuantLib {
             const TimeGrid& timeGrid) 
     : GenericModelEngine<ShortRateModel, Arguments, Results>(model), 
       timeGrid_(timeGrid), timeSteps_(0) {
-        lattice_ = model_->tree(timeGrid);
+        lattice_ = this->model_->tree(timeGrid);
     }
 
     template <class Arguments, class Results>
     void LatticeShortRateModelEngine<Arguments, Results>::update() 
     {
         if (timeGrid_.size() > 0)
-            lattice_ = model_->tree(timeGrid_);
-        notifyObservers();
+            lattice_ = this->model_->tree(timeGrid_);
+        this->notifyObservers();
     }
 
 }

@@ -154,11 +154,13 @@ namespace QuantLib {
     MCDigitalEngine<RNG,S>::pathPricer() const {
 
         boost::shared_ptr<CashOrNothingPayoff> payoff =
-            boost::dynamic_pointer_cast<CashOrNothingPayoff>(arguments_.payoff);
+            boost::dynamic_pointer_cast<CashOrNothingPayoff>(
+                this->arguments_.payoff);
         QL_REQUIRE(payoff, "wrong payoff given");
 
         boost::shared_ptr<AmericanExercise> exercise =
-            boost::dynamic_pointer_cast<AmericanExercise>(arguments_.exercise);
+            boost::dynamic_pointer_cast<AmericanExercise>(
+                this->arguments_.exercise);
         QL_REQUIRE(exercise, "wrong exercise given");
 
         TimeGrid grid = timeGrid();
@@ -169,10 +171,10 @@ namespace QuantLib {
           DigitalPathPricer(
             payoff,
             exercise,
-            arguments_.blackScholesProcess->stateVariable()->value(),
+            this->arguments_.blackScholesProcess->stateVariable()->value(),
             Handle<TermStructure>(
-                              arguments_.blackScholesProcess->riskFreeRate()),
-            arguments_.blackScholesProcess,
+                this->arguments_.blackScholesProcess->riskFreeRate()),
+            this->arguments_.blackScholesProcess,
             sequenceGen));
     }
 
@@ -180,55 +182,56 @@ namespace QuantLib {
     template <class RNG, class S>
     inline
     TimeGrid MCDigitalEngine<RNG,S>::timeGrid() const {
-        Time t = arguments_.blackScholesProcess->riskFreeRate()
+        Time t = this->arguments_.blackScholesProcess->riskFreeRate()
             ->dayCounter().yearFraction(
-            arguments_.blackScholesProcess->riskFreeRate()->referenceDate(),
-            arguments_.exercise->lastDate());
-        return TimeGrid(t, Size(QL_MAX<Real>(t * maxTimeStepsPerYear_, 1.0)));
+            this->arguments_.blackScholesProcess->riskFreeRate()->referenceDate(),
+            this->arguments_.exercise->lastDate());
+        return TimeGrid(t, Size(QL_MAX<Real>(
+            t * this->maxTimeStepsPerYear_, 1.0)));
     }
 
     template<class RNG, class S>
     void MCDigitalEngine<RNG,S>::calculate() const {
 
-        QL_REQUIRE(requiredTolerance_ != Null<Real>() ||
-                   requiredSamples_ != Null<Size>(),
+        QL_REQUIRE(this->requiredTolerance_ != Null<Real>() ||
+                   this->requiredSamples_ != Null<Size>(),
                    "neither tolerance nor number of samples set");
 
         //! Initialize the one-factor Monte Carlo
-        if (controlVariate_) {
+        if (this->controlVariate_) {
 
             boost::shared_ptr<path_pricer_type> controlPP =
-                controlPathPricer();
+                this->controlPathPricer();
             QL_REQUIRE(controlPP,
                        "engine does not provide "
                        "control variation path pricer");
 
             boost::shared_ptr<PricingEngine> controlPE =
-                controlPricingEngine();
+                this->controlPricingEngine();
             QL_REQUIRE(controlPE,
                        "engine does not provide "
                        "control variation pricing engine");
         } else {
-            mcModel_ =
+            this->mcModel_ =
                 boost::shared_ptr<MonteCarloModel<SingleAsset<RNG>, S> >(
                     new MonteCarloModel<SingleAsset<RNG>, S>(
-                        pathGenerator(), pathPricer(), S(),
-                        antitheticVariate_));
+                        this->pathGenerator(), pathPricer(), S(),
+                        this->antitheticVariate_));
         }
 
-        if (requiredTolerance_ != Null<Real>()) {
-            if (maxSamples_ != Null<Size>())
-                value(requiredTolerance_, maxSamples_);
+        if (this->requiredTolerance_ != Null<Real>()) {
+            if (this->maxSamples_ != Null<Size>())
+                this->value(this->requiredTolerance_, this->maxSamples_);
             else
-                value(requiredTolerance_);
+                this->value(this->requiredTolerance_);
         } else {
-            valueWithSamples(requiredSamples_);
+            this->valueWithSamples(this->requiredSamples_);
         }
 
-        results_.value = mcModel_->sampleAccumulator().mean();
+        this->results_.value = this->mcModel_->sampleAccumulator().mean();
         if (RNG::allowsErrorEstimate)
-            results_.errorEstimate =
-                mcModel_->sampleAccumulator().errorEstimate();
+            this->results_.errorEstimate =
+                this->mcModel_->sampleAccumulator().errorEstimate();
     }
 
 }

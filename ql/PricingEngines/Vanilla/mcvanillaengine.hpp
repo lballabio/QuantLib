@@ -82,7 +82,7 @@ namespace QuantLib {
     boost::shared_ptr<QL_TYPENAME MCVanillaEngine<RNG,S>::path_generator_type>
     MCVanillaEngine<RNG,S>::pathGenerator() const {
 
-        TimeGrid grid = timeGrid();
+        TimeGrid grid = this->timeGrid();
         typename RNG::rsg_type gen =
             RNG::make_sequence_generator(grid.size()-1,seed_);
         // BB here
@@ -103,16 +103,16 @@ namespace QuantLib {
                    "not an European Option");
 
         //! Initialize the one-factor Monte Carlo
-        if (controlVariate_) {
+        if (this->controlVariate_) {
 
             boost::shared_ptr<path_pricer_type> controlPP = 
-                controlPathPricer();
+                this->controlPathPricer();
             QL_REQUIRE(controlPP,
                        "engine does not provide "
                        "control variation path pricer");
 
             boost::shared_ptr<PricingEngine> controlPE = 
-                controlPricingEngine();
+                this->controlPricingEngine();
             QL_REQUIRE(controlPE,
                        "engine does not provide "
                        "control variation pricing engine");
@@ -128,34 +128,34 @@ namespace QuantLib {
                     controlPE->results());
             Real controlVariateValue = controlResults->value;
 
-            mcModel_ =
+            this->mcModel_ =
                 boost::shared_ptr<MonteCarloModel<SingleAsset<RNG>, S> >(
                     new MonteCarloModel<SingleAsset<RNG>, S>(
-                           pathGenerator(), pathPricer(), stats_type(),
-                           antitheticVariate_, controlPP,
+                           pathGenerator(), this->pathPricer(), stats_type(),
+                           this->antitheticVariate_, controlPP,
                            controlVariateValue));
 
         } else {
-            mcModel_ =
+            this->mcModel_ =
                 boost::shared_ptr<MonteCarloModel<SingleAsset<RNG>, S> >(
                     new MonteCarloModel<SingleAsset<RNG>, S>(
-                           pathGenerator(), pathPricer(), S(),
-                           antitheticVariate_));
+                           pathGenerator(), this->pathPricer(), S(),
+                           this->antitheticVariate_));
         }
 
         if (requiredTolerance_ != Null<Real>()) {
             if (maxSamples_ != Null<Size>())
-                value(requiredTolerance_, maxSamples_);
+                this->value(requiredTolerance_, maxSamples_);
             else
-                value(requiredTolerance_);
+                this->value(requiredTolerance_);
         } else {
-            valueWithSamples(requiredSamples_);
+            this->valueWithSamples(requiredSamples_);
         }
 
-        results_.value = mcModel_->sampleAccumulator().mean();
+        results_.value = this->mcModel_->sampleAccumulator().mean();
         if (RNG::allowsErrorEstimate)
             results_.errorEstimate =
-                mcModel_->sampleAccumulator().errorEstimate();
+                this->mcModel_->sampleAccumulator().errorEstimate();
     }
 
 }

@@ -34,12 +34,12 @@ namespace {
     #define BEGIN(x) (x+0)
     #define END(x) (x+LENGTH(x))
 
-    std::vector<Real> xRange(Real start, Real end, Size points) {
+    std::vector<Real> xRange(Real start, Real finish, Size points) {
         std::vector<Real> x(points);
-        Real dx = (end-start)/(points-1);
+        Real dx = (finish-start)/(points-1);
         for (Size i=0; i<points-1; i++)
             x[i] = start+i*dx;
-        x[points-1] = end;
+        x[points-1] = finish;
         return x;
     }
 

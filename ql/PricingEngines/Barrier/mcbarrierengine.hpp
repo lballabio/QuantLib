@@ -228,16 +228,16 @@ namespace QuantLib {
                    "not an European Option");
 
         //! Initialize the one-factor Monte Carlo
-        if (controlVariate_) {
+        if (this->controlVariate_) {
 
             boost::shared_ptr<path_pricer_type> controlPP =
-                controlPathPricer();
+                this->controlPathPricer();
             QL_REQUIRE(controlPP,
                        "engine does not provide "
                        "control variation path pricer");
 
             boost::shared_ptr<PricingEngine> controlPE =
-                controlPricingEngine();
+                this->controlPricingEngine();
 
             QL_REQUIRE(controlPE,
                        "engine does not provide "
@@ -262,26 +262,26 @@ namespace QuantLib {
                         controlVariateValue));
             */
         } else {
-            mcModel_ =
+            this->mcModel_ =
                 boost::shared_ptr<MonteCarloModel<SingleAsset<RNG>, S> >(
                     new MonteCarloModel<SingleAsset<RNG>, S>(
                         pathGenerator(), pathPricer(), S(),
-                        antitheticVariate_));
+                        this->antitheticVariate_));
         }
 
         if (requiredTolerance_ != Null<Real>()) {
             if (maxSamples_ != Null<Size>())
-                value(requiredTolerance_, maxSamples_);
+                this->value(requiredTolerance_, maxSamples_);
             else
-                value(requiredTolerance_);
+                this->value(requiredTolerance_);
         } else {
-            valueWithSamples(requiredSamples_);
+            this->valueWithSamples(requiredSamples_);
         }
 
-        results_.value = mcModel_->sampleAccumulator().mean();
+        results_.value = this->mcModel_->sampleAccumulator().mean();
         if (RNG::allowsErrorEstimate)
             results_.errorEstimate =
-                mcModel_->sampleAccumulator().errorEstimate();
+                this->mcModel_->sampleAccumulator().errorEstimate();
     }
 
 }

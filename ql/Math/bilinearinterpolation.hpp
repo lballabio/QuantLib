@@ -40,15 +40,17 @@ namespace QuantLib {
                                                      yBegin,yEnd,
                                                      zData) {}
             Real value(Real x, Real y) const {
-                Size i = locateX(x), j = locateY(y);
+                Size i = this->locateX(x), j = this->locateY(y);
 
-                Real z1=zData_[j][i];
-                Real z2=zData_[j][i+1];
-                Real z3=zData_[j+1][i];
-                Real z4=zData_[j+1][i+1];
+                Real z1=this->zData_[j][i];
+                Real z2=this->zData_[j][i+1];
+                Real z3=this->zData_[j+1][i];
+                Real z4=this->zData_[j+1][i+1];
 
-                Real t=(x-xBegin_[i])/(xBegin_[i+1]-xBegin_[i]);
-                Real u=(y-yBegin_[j])/(yBegin_[j+1]-yBegin_[j]);
+                Real t=(x-this->xBegin_[i])/
+                    (this->xBegin_[i+1]-this->xBegin_[i]);
+                Real u=(y-this->yBegin_[j])/
+                    (this->yBegin_[j+1]-this->yBegin_[j]);
 
                 return (1.0-t)*(1.0-u)*z1 + t*(1.0-u)*z2 
                      + (1.0-t)*u*z3 + t*u*z4;

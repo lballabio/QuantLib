@@ -114,15 +114,16 @@ namespace QuantLib {
     MCEuropeanEngine<RNG,S>::pathPricer() const {
 
         boost::shared_ptr<PlainVanillaPayoff> payoff =
-            boost::dynamic_pointer_cast<PlainVanillaPayoff>(arguments_.payoff);
+            boost::dynamic_pointer_cast<PlainVanillaPayoff>(
+                this->arguments_.payoff);
         QL_REQUIRE(payoff, "non-plain payoff given");
 
         return boost::shared_ptr<MCEuropeanEngine<RNG,S>::path_pricer_type>(
-            new EuropeanPathPricer(
-                payoff->optionType(),
-                arguments_.blackScholesProcess->stateVariable()->value(),
-                payoff->strike(),
-                arguments_.blackScholesProcess->riskFreeRate()
+          new EuropeanPathPricer(
+              payoff->optionType(),
+              this->arguments_.blackScholesProcess->stateVariable()->value(),
+              payoff->strike(),
+              this->arguments_.blackScholesProcess->riskFreeRate()
                                               ->discount(timeGrid().back())));
     }
 
@@ -160,13 +161,15 @@ namespace QuantLib {
     template <class RNG, class S>
     inline TimeGrid MCEuropeanEngine<RNG,S>::timeGrid() const {
 
-        Time t = arguments_.blackScholesProcess->riskFreeRate()
-            ->dayCounter().yearFraction(
-              arguments_.blackScholesProcess->riskFreeRate()->referenceDate(),
-              arguments_.exercise->lastDate());
+        Date refDate = this->arguments_.blackScholesProcess->
+            riskFreeRate()->referenceDate();
 
-        TimeGridCalculator calc(t, maxTimeStepsPerYear_);
-        arguments_.blackScholesProcess->blackVolatility()->accept(calc);
+        Time t = this->arguments_.blackScholesProcess->riskFreeRate()
+            ->dayCounter().yearFraction(
+              refDate, this->arguments_.exercise->lastDate());
+
+        TimeGridCalculator calc(t, this->maxTimeStepsPerYear_);
+        this->arguments_.blackScholesProcess->blackVolatility()->accept(calc);
         return TimeGrid(t, calc.size());
     }
 

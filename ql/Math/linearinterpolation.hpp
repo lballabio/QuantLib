@@ -38,24 +38,24 @@ namespace QuantLib {
               primitiveConst_(xEnd-xBegin), s_(xEnd-xBegin) {
                 primitiveConst_[0] = 0.0;
                 for (Size i=1; i<Size(xEnd-xBegin); i++) {
-                    Real dx = xBegin_[i]-xBegin_[i-1];
-                    s_[i-1] = (yBegin_[i]-yBegin_[i-1])/dx;
+                    Real dx = this->xBegin_[i]-this->xBegin_[i-1];
+                    s_[i-1] = (this->yBegin_[i]-this->yBegin_[i-1])/dx;
                     primitiveConst_[i] = primitiveConst_[i-1]
-                        + dx*(yBegin_[i-1] +0.5*dx*s_[i-1]);
+                        + dx*(this->yBegin_[i-1] +0.5*dx*s_[i-1]);
                 }
             }
             Real value(Real x) const {
-                Size i = locate(x);
-                return yBegin_[i] + (x-xBegin_[i])*s_[i];
+                Size i = this->locate(x);
+                return this->yBegin_[i] + (x-this->xBegin_[i])*s_[i];
             }
             Real primitive(Real x) const {
-                Size i = locate(x);
-                Real dx = x-xBegin_[i];
+                Size i = this->locate(x);
+                Real dx = x-this->xBegin_[i];
                 return primitiveConst_[i] +
-                    dx*(yBegin_[i] + 0.5*dx*s_[i]);
+                    dx*(this->yBegin_[i] + 0.5*dx*s_[i]);
             }
             Real derivative(Real x) const {
-                Size i = locate(x);
+                Size i = this->locate(x);
                 return s_[i];
             }
             Real secondDerivative(Real) const {

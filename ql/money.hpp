@@ -23,6 +23,12 @@
 #ifndef quantlib_money_hpp
 #define quantlib_money_hpp
 
+#include <assert.h>
+// without the above include VC7 (Language Extensions disabled) raises
+// the following error:
+// boost-1_31\boost\format\feed_args.hpp(219) : error C3861: 'assert':
+//                 identifier not found, even with argument-dependent lookup
+
 #include <ql/currency.hpp>
 
 namespace QuantLib {

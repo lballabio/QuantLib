@@ -96,11 +96,11 @@ namespace QuantLib {
                 std::vector<Real> dx(n_-1), S(n_-1);
 
                 Size i=0;
-                dx[i]= xBegin_[i+1] - xBegin_[i];
-                S[i] =(yBegin_[i+1] - yBegin_[i])/dx[i];
+                dx[i]= this->xBegin_[i+1] - this->xBegin_[i];
+                S[i] =(this->yBegin_[i+1] - this->yBegin_[i])/dx[i];
                 for (i=1; i<n_-1; i++) {
-                    dx[i]= xBegin_[i+1] - xBegin_[i];
-                    S[i] =(yBegin_[i+1] - yBegin_[i])/dx[i];
+                    dx[i]= this->xBegin_[i+1] - this->xBegin_[i];
+                    S[i] =(this->yBegin_[i+1] - this->yBegin_[i])/dx[i];
 
                     L.setMidRow(i, dx[i], 2.0*(dx[i]+dx[i-1]), dx[i-1]);
                     tmp[i] = 3.0*(dx[i]*S[i-1] + dx[i-1]*S[i]);
@@ -234,30 +234,31 @@ namespace QuantLib {
                 for (i=1; i<n_-1; i++) {
                     primitiveConst_[i] = primitiveConst_[i-1]
                         + dx[i-1] * 
-                        (yBegin_[i-1] + dx[i-1] *
+                        (this->yBegin_[i-1] + dx[i-1] *
                          (a_[i-1]/2.0 + dx[i-1] *
                           (b_[i-1]/3.0 + dx[i-1] * c_[i-1]/4.0)));
                 }
             }
             Real value(Real x) const {
-                Size j = locate(x);
-                Real dx = x-xBegin_[j];
-                return yBegin_[j] + dx*(a_[j] + dx*(b_[j] + dx*c_[j]));
+                Size j = this->locate(x);
+                Real dx = x-this->xBegin_[j];
+                return this->yBegin_[j] + dx*(a_[j] + dx*(b_[j] + dx*c_[j]));
             }
             Real primitive(Real x) const {
-                Size j = locate(x);
-                Real dx = x-xBegin_[j];
-                return primitiveConst_[j] + dx*(yBegin_[j] + dx*(a_[j]/2.0 
-                                          + dx*(b_[j]/3.0 + dx*c_[j]/4.0)));
+                Size j = this->locate(x);
+                Real dx = x-this->xBegin_[j];
+                return primitiveConst_[j]
+                    + dx*(this->yBegin_[j] + dx*(a_[j]/2.0
+                    + dx*(b_[j]/3.0 + dx*c_[j]/4.0)));
             }
             Real derivative(Real x) const {
-                Size j = locate(x);
-                Real dx = x-xBegin_[j];
+                Size j = this->locate(x);
+                Real dx = x-this->xBegin_[j];
                 return a_[j] + (2.0*b_[j] + 3.0*c_[j]*dx)*dx;
             }
             Real secondDerivative(Real x) const {
-                Size j = locate(x);
-                Real dx = x-xBegin_[j];
+                Size j = this->locate(x);
+                Real dx = x-this->xBegin_[j];
                 return 2.0*b_[j] + 6.0*c_[j]*dx;
             }
           private:
