@@ -61,6 +61,8 @@
     To do:
     - Differentiate calendars depending on country or exchange, instead of
       city.
+    - enable business day calculation in addition to calendar days calculation
+      in DayCounter::daycount(). See DayTypeEnum in FpML.
 
 
 
@@ -240,8 +242,8 @@
 
     <strong>Pricing engines</strong>
     - Analytic Black formula (plus greeks) for different payoffs.
-    - Analytic formula for American options with payoff at expiry.
-    - Analytic formula for American options with payoff at hit.
+    - Analytic formula for American-style digital options with payoff at expiry.
+    - Analytic formula for American-style digital options with payoff at hit.
     - Monte Carlo simulation base engine.
     - Lattice short rate model base engine.
     - Engines for options described by "vanilla" set of parameters: analytic
@@ -269,6 +271,8 @@
       (Jamshidian), tree based engine.
 
     To do:
+    - Add the trigger level Touch/NoTouch specification for American-style
+      digitals.
     - More vanilla engines: Roll-Geske-Whaley American Call, Geske-Johnson
       American Put, finite differences, Edgeworth expansion binomial tree,
       etc.
