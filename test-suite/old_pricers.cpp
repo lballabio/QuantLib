@@ -20,6 +20,7 @@
 #include <ql/Pricers/fdeuropean.hpp>
 #include <ql/Pricers/fdamericanoption.hpp>
 #include <ql/Pricers/fdshoutoption.hpp>
+#include <ql/Pricers/fddividendamericanoption.hpp>
 #include <ql/Pricers/mcdiscretearithmeticaso.hpp>
 #include <ql/Pricers/mceverest.hpp>
 #include <ql/Pricers/mcmaxbasket.hpp>
@@ -186,9 +187,10 @@ namespace {
 
 }
 
-void OldPricerTest::testAmericanPricers() {
+void OldPricerTest::testFdAmericanPricers() {
 
-    BOOST_MESSAGE("Testing old-style American-type pricers...");
+    BOOST_MESSAGE(
+              "Testing old-style finite-difference American-type pricers...");
 
     QL_TEST_START_TIMING
 
@@ -229,6 +231,54 @@ void OldPricerTest::testAmericanPricers() {
       }
     }
 }
+
+void OldPricerTest::testFdAmericanDividendPricers() {
+    BOOST_MESSAGE(
+               "Testing finite-difference American pricer with dividends...");
+
+    QL_TEST_START_TIMING
+
+    std::vector<Rate> dividendA, blankA;
+    std::vector<Time> dividendTimeA, blankTimeA;
+
+    Real under = 54.625;
+    Real strike = 55;
+    Rate dividendYield = 0.0;
+    Rate interestRate = 0.052706;
+    Time expirationTime = 0.126027;
+    Volatility sigma = 0.282922;
+    Size timeSteps = 40;
+    Size assetSteps = 300;
+    Real tolerance = 1.0e-6;
+
+    FdDividendAmericanOption opt1(Option::Call, under, strike,
+                                  dividendYield, interestRate,
+                                  expirationTime, sigma,
+                                  blankA, blankTimeA,
+                                  timeSteps, assetSteps);
+    Real refValue = opt1.value();
+
+    for (Size i=0; i <= 6; i++) {
+        FdDividendAmericanOption opt(Option::Call, under, strike,
+                                     dividendYield, interestRate,
+                                     expirationTime, sigma,
+                                     dividendA, dividendTimeA,
+                                     timeSteps, assetSteps);
+
+        Real value = opt.value();
+
+        if (std::fabs(refValue-value) > tolerance)
+            BOOST_FAIL("DividendAmericanOption :\n"
+                       "    calculated value: "
+                       + DecimalFormatter::toString(value,6) + "\n"
+                       "    expected:         "
+                       + DecimalFormatter::toString(refValue,6));
+
+        dividendA.push_back(0.0);
+        dividendTimeA.push_back(1.0e-3 * i);
+    }
+}
+
 
 namespace {
 
@@ -521,7 +571,8 @@ void OldPricerTest::testMcMultiFactorPricers() {
 test_suite* OldPricerTest::suite() {
     test_suite* suite = BOOST_TEST_SUITE("Old-style pricer tests");
     suite->add(BOOST_TEST_CASE(&OldPricerTest::testFdEuropeanPricer));
-    suite->add(BOOST_TEST_CASE(&OldPricerTest::testAmericanPricers));
+    suite->add(BOOST_TEST_CASE(&OldPricerTest::testFdAmericanPricers));
+    suite->add(BOOST_TEST_CASE(&OldPricerTest::testFdAmericanDividendPricers));
     suite->add(BOOST_TEST_CASE(&OldPricerTest::testMcSingleFactorPricers));
     suite->add(BOOST_TEST_CASE(&OldPricerTest::testMcMultiFactorPricers));
     return suite;

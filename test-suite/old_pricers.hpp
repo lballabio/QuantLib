@@ -23,7 +23,8 @@
 class OldPricerTest {
   public:
     static void testFdEuropeanPricer();
-    static void testAmericanPricers();
+    static void testFdAmericanPricers();
+    static void testFdAmericanDividendPricers();
     static void testMcSingleFactorPricers();
     static void testMcMultiFactorPricers();
     static boost::unit_test_framework::test_suite* suite();
