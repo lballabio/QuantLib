@@ -25,9 +25,8 @@ namespace QuantLib {
 
     DiscreteAveragingAsianOption::DiscreteAveragingAsianOption(
                          Average::Type averageType,
-                         Option::Type type,
+                         Handle<StrikedTypePayoff> payoff,
                          const RelinkableHandle<Quote>& underlying,
-                         double strike,
                          double runningProduct,
                          Size pastFixings,
                          std::vector<Date> fixingDates,
@@ -38,7 +37,7 @@ namespace QuantLib {
                          const Handle<PricingEngine>& engine,
                          const std::string& isinCode,
                          const std::string& description)
-    : OneAssetStrikedOption(type, underlying, strike, dividendTS, riskFreeTS,
+    : OneAssetStrikedOption(payoff, underlying, dividendTS, riskFreeTS,
       exercise, volTS, engine, isinCode, description),
       averageType_(averageType), 
       runningProduct_(runningProduct), pastFixings_(pastFixings),

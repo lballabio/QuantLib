@@ -31,9 +31,8 @@ namespace QuantLib {
                          Barrier::Type barrierType,
                          double barrier,
                          double rebate,
-                         Option::Type type,
+                         Handle<StrikedTypePayoff> payoff,
                          const RelinkableHandle<Quote>& underlying,
-                         double strike,
                          const RelinkableHandle<TermStructure>& dividendTS,
                          const RelinkableHandle<TermStructure>& riskFreeTS,
                          const Exercise& exercise,
@@ -41,7 +40,7 @@ namespace QuantLib {
                          const Handle<PricingEngine>& engine,
                          const std::string& isinCode, 
                          const std::string& description)
-    : OneAssetStrikedOption(type, underlying, strike, dividendTS, riskFreeTS,
+    : OneAssetStrikedOption(payoff, underlying, dividendTS, riskFreeTS,
       exercise, volTS, engine, isinCode, description),
       barrierType_(barrierType), barrier_(barrier), rebate_(rebate) {
 

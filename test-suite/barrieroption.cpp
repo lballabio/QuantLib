@@ -142,13 +142,15 @@ void BarrierOptionTest::testHaugValues() {
     for (Size i=0; i<LENGTH(values); i++) {
         volatility->setValue(values[i].volatility);
 
+        Handle<StrikedTypePayoff> callPayoff(new
+            PlainVanillaPayoff(Option::Call, values[i].strike));
+
         BarrierOption barrierCallOption(
                 values[i].type, 
                 values[i].barrier, 
                 rebate, 
-                Option::Call, 
+                callPayoff, 
                 RelinkableHandle<Quote>(underlying), 
-                values[i].strike, 
                 RelinkableHandle<TermStructure>(qTS), 
                 RelinkableHandle<TermStructure>(rTS),
                 exercise, 
@@ -165,13 +167,15 @@ void BarrierOptionTest::testHaugValues() {
                     DoubleFormatter::toString(expected));
         }
 
+        Handle<StrikedTypePayoff> putPayoff(new
+            PlainVanillaPayoff(Option::Put, values[i].strike));
+
         BarrierOption barrierPutOption(
                 values[i].type, 
                 values[i].barrier, 
                 rebate, 
-                Option::Put, 
+                putPayoff, 
                 RelinkableHandle<Quote>(underlying), 
-                values[i].strike, 
                 RelinkableHandle<TermStructure>(qTS), 
                 RelinkableHandle<TermStructure>(rTS),
                 exercise, 
@@ -188,13 +192,15 @@ void BarrierOptionTest::testHaugValues() {
                     DoubleFormatter::toString(expected));
         }
 
+        Handle<StrikedTypePayoff> straddlePayoff(new
+            PlainVanillaPayoff(Option::Straddle, values[i].strike));
+
         BarrierOption barrierStraddleOption(
                 values[i].type, 
                 values[i].barrier, 
                 rebate, 
-                Option::Straddle, 
+                straddlePayoff, 
                 RelinkableHandle<Quote>(underlying), 
-                values[i].strike, 
                 RelinkableHandle<TermStructure>(qTS), 
                 RelinkableHandle<TermStructure>(rTS),
                 exercise, 
@@ -276,14 +282,16 @@ void BarrierOptionTest::testBabsiriValues() {
     for (Size i=0; i<LENGTH(values); i++) {
         volatility->setValue(values[i].volatility);
 
+        Handle<StrikedTypePayoff> callPayoff(new
+            PlainVanillaPayoff(Option::Call, values[i].strike));
+
         // analytic
         BarrierOption barrierCallOption(
                 values[i].type, 
                 values[i].barrier, 
                 rebate, 
-                Option::Call, 
+                callPayoff, 
                 RelinkableHandle<Quote>(underlying), 
-                values[i].strike, 
                 RelinkableHandle<TermStructure>(qTS), 
                 RelinkableHandle<TermStructure>(rTS),
                 exercise, 
@@ -371,14 +379,16 @@ void BarrierOptionTest::testBeagleholeValues() {
     for (Size i=0; i<LENGTH(values); i++) {
         volatility->setValue(values[i].volatility);
 
+        Handle<StrikedTypePayoff> callPayoff(new
+            PlainVanillaPayoff(Option::Call, values[i].strike));
+
         // analytic
         BarrierOption barrierCallOption(
                 values[i].type, 
                 values[i].barrier, 
                 rebate, 
-                Option::Call, 
+                callPayoff, 
                 RelinkableHandle<Quote>(underlying), 
-                values[i].strike, 
                 RelinkableHandle<TermStructure>(qTS), 
                 RelinkableHandle<TermStructure>(rTS),
                 exercise, 

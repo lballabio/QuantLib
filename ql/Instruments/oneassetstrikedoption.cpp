@@ -26,9 +26,8 @@
 namespace QuantLib {
 
     OneAssetStrikedOption::OneAssetStrikedOption(
-                         Option::Type type,
+                         Handle<StrikedTypePayoff> payoff,
                          const RelinkableHandle<Quote>& underlying,
-                         double strike,
                          const RelinkableHandle<TermStructure>& dividendTS,
                          const RelinkableHandle<TermStructure>& riskFreeTS,
                          const Exercise& exercise,
@@ -37,8 +36,7 @@ namespace QuantLib {
                          const std::string& isinCode,
                          const std::string& description)
     : OneAssetOption(underlying, dividendTS, riskFreeTS, exercise, volTS,
-      engine, isinCode, description),
-      payoff_(new PlainVanillaPayoff(type,strike)) {}
+      engine, isinCode, description), payoff_(payoff) {}
 
 
     double OneAssetStrikedOption::strikeSensitivity() const {

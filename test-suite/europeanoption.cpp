@@ -110,8 +110,12 @@ namespace {
             throw Error("Unknown engine type");
         }
 
+
+        Handle<StrikedTypePayoff> payoff(new
+            PlainVanillaPayoff(type, k));
+
         return Handle<VanillaOption>(
-            new VanillaOption(type, RelinkableHandle<Quote>(u), k,
+            new VanillaOption(payoff, RelinkableHandle<Quote>(u),
                               RelinkableHandle<TermStructure>(q),
                               RelinkableHandle<TermStructure>(r),
                               EuropeanExercise(exDate),

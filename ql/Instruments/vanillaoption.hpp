@@ -29,9 +29,8 @@ namespace QuantLib {
     //! Vanilla option (no discrete dividends, no barriers) on a single asset
     class VanillaOption : public OneAssetStrikedOption {
       public:
-        VanillaOption(Option::Type type,
+        VanillaOption(Handle<StrikedTypePayoff> payoff,
                       const RelinkableHandle<Quote>& underlying,
-                      double strike,
                       const RelinkableHandle<TermStructure>& dividendTS,
                       const RelinkableHandle<TermStructure>& riskFreeTS,
                       const Exercise& exercise,

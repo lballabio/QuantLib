@@ -24,15 +24,15 @@
 #define quantlib_oneassetstriked_option_h
 
 #include <ql/Instruments/oneassetoption.hpp>
+#include <ql/Instruments/payoffs.hpp>
 
 namespace QuantLib {
 
     //! Base class for options on a single asset with striked payoff
     class OneAssetStrikedOption : public OneAssetOption {
       public:
-        OneAssetStrikedOption(Option::Type type,
+        OneAssetStrikedOption(Handle<StrikedTypePayoff> payoff,
                               const RelinkableHandle<Quote>& underlying,
-                              double strike,
                               const RelinkableHandle<TermStructure>& dividendTS,
                               const RelinkableHandle<TermStructure>& riskFreeTS,
                               const Exercise& exercise,
@@ -55,7 +55,7 @@ namespace QuantLib {
         // results
         mutable double strikeSensitivity_;
         // arguments
-        Handle<Payoff> payoff_;
+        Handle<StrikedTypePayoff> payoff_;
     };
 
 

@@ -73,8 +73,11 @@ void AsianOptionTest::testGeometricDiscreteAverage() {
     Handle<BlackVolTermStructure> volCurve(new BlackConstantVol(reference,
         RelinkableHandle<Quote>(volatility), dc));
 
-    DiscreteAveragingAsianOption pricer(averageType, type,
-        RelinkableHandle<Quote>(underlying), strike,
+    Handle<StrikedTypePayoff> payoff(new
+        PlainVanillaPayoff(type, strike));
+
+    DiscreteAveragingAsianOption pricer(averageType, payoff,
+        RelinkableHandle<Quote>(underlying),
         runningProduct, pastFixings, fixingDates,
         RelinkableHandle<TermStructure>(divCurve),
         RelinkableHandle<TermStructure>(rfCurve),

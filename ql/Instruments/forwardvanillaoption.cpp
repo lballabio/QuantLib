@@ -24,7 +24,7 @@
 namespace QuantLib {
 
     ForwardVanillaOption::ForwardVanillaOption(
-                         Option::Type type,
+                         Handle<StrikedTypePayoff> payoff,
                          const RelinkableHandle<Quote>& underlying,
                          const RelinkableHandle<TermStructure>& dividendTS,
                          const RelinkableHandle<TermStructure>& riskFreeTS,
@@ -35,7 +35,7 @@ namespace QuantLib {
                          Date resetDate,
                          const std::string& isinCode,
                          const std::string& description)
-    : VanillaOption(type, underlying, 0.0, dividendTS, riskFreeTS,
+    : VanillaOption(payoff, underlying, dividendTS, riskFreeTS,
                     exercise, volTS, engine, isinCode, description),
       moneyness_(moneyness), resetDate_(resetDate) {}
 
