@@ -26,8 +26,10 @@
     \brief common code for numerical option evaluation
 
     $Source$
-    $Name$
     $Log$
+    Revision 1.43  2001/05/24 13:57:52  nando
+    smoothing #include xx.hpp and cutting old Log messages
+
     Revision 1.42  2001/05/24 12:52:02  nando
     smoothing #include xx.hpp
 

@@ -27,54 +27,8 @@
 
     $Source$
     $Log$
-    Revision 1.11  2001/05/22 13:24:01  marmar
-    setGridLimits interface changed
-
-    Revision 1.10  2001/04/26 16:05:42  marmar
-    underlying_ not mutable anymore, setGridLimits accepts the value for center
-
-    Revision 1.9  2001/04/09 14:13:34  nando
-    all the *.hpp moved below the Include/ql level
-
-    Revision 1.8  2001/04/06 18:46:22  nando
-    changed Authors, Contributors, Licence and copyright header
-
-    Revision 1.7  2001/04/05 13:06:55  marmar
-    Code simplified
-
-    Revision 1.6  2001/04/04 12:13:24  nando
-    Headers policy part 2:
-    The Include directory is added to the compiler's include search path.
-    Then both your code and user code specifies the sub-directory in
-    #include directives, as in
-    #include <Solvers1d/newton.hpp>
-
-    Revision 1.5  2001/04/04 11:07:24  nando
-    Headers policy part 1:
-    Headers should have a .hpp (lowercase) filename extension
-    All *.h renamed to *.hpp
-
-    Revision 1.4  2001/03/21 11:31:55  marmar
-    Main loop tranfered from method value to method calculate.
-    Methods vega and rho belong now to class BSMOption
-
-    Revision 1.3  2001/03/21 10:48:08  marmar
-    valueAtCenter, firstDerivativeAtCenter, secondDerivativeAtCenter,
-    are no longer methods of BSMNumericalOption but separate
-    functions
-
-    Revision 1.2  2001/03/02 13:50:01  marmar
-    Purely virtual method initializeStepCondition()
-    introduced in the design of StepConditionOption
-
-    Revision 1.1  2001/03/02 08:36:45  enri
-    Shout options added:
-    	* BSMAmericanOption is now AmericanOption, same interface
-    	* ShoutOption added
-    	* both ShoutOption and AmericanOption inherit from
-    	  StepConditionOption
-    offline.doxy.linux added.
-
+    Revision 1.12  2001/05/24 13:57:52  nando
+    smoothing #include xx.hpp and cutting old Log messages
 
 */
 

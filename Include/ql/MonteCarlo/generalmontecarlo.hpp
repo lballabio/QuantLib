@@ -25,8 +25,10 @@
     \brief A class useful in many different Monte-Carlo-type simulations
 
   $Source$
-  $Name$
   $Log$
+  Revision 1.4  2001/05/24 13:57:51  nando
+  smoothing #include xx.hpp and cutting old Log messages
+
   Revision 1.3  2001/05/24 12:52:02  nando
   smoothing #include xx.hpp
 

@@ -27,48 +27,8 @@
 
     $Source$
     $Log$
-    Revision 1.4  2001/05/23 19:30:27  nando
-    smoothing #include xx.hpp
-
-    Revision 1.3  2001/05/22 13:22:33  marmar
-    Method controlVariateCorrection added
-
-    Revision 1.2  2001/04/12 09:07:14  marmar
-    Last and first date are handled more precisely
-
-    Revision 1.1  2001/04/09 14:05:49  nando
-    all the *.hpp moved below the Include/ql level
-
-    Revision 1.5  2001/04/06 18:46:20  nando
-    changed Authors, Contributors, Licence and copyright header
-
-    Revision 1.4  2001/04/06 16:11:54  marmar
-    Bug fixed in multi-period option
-
-    Revision 1.3  2001/04/06 07:35:43  marmar
-    Code simplified and cleand
-
-    Revision 1.2  2001/04/04 12:13:23  nando
-    Headers policy part 2:
-    The Include directory is added to the compiler's include search path.
-    Then both your code and user code specifies the sub-directory in
-    #include directives, as in
-    #include <Solvers1d/newton.hpp>
-
-    Revision 1.1  2001/04/04 11:07:23  nando
-    Headers policy part 1:
-    Headers should have a .hpp (lowercase) filename extension
-    All *.h renamed to *.hpp
-
-    Revision 1.3  2001/03/21 11:33:02  marmar
-    Main loop transfered from method value to method calculate.
-    Methods vega and rho moved from BSMNumericalOption to BSMOption
-
-    Revision 1.2  2001/03/21 09:56:47  marmar
-    virtual method added
-
-    Revision 1.1  2001/03/20 15:13:09  marmar
-    MultiPeriodOption is a generalization of DividendAmericanOption
+    Revision 1.5  2001/05/24 13:57:51  nando
+    smoothing #include xx.hpp and cutting old Log messages
 
 */
 

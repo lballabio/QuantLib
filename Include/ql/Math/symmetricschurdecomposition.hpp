@@ -26,8 +26,10 @@
     \brief Gives the eigenvalues and eigenvectors of a real symmetric matrix
 
     $Source$
-    $Name$
     $Log$
+    Revision 1.3  2001/05/24 13:57:51  nando
+    smoothing #include xx.hpp and cutting old Log messages
+
     Revision 1.2  2001/05/24 11:34:07  nando
     smoothing #include xx.hpp
 

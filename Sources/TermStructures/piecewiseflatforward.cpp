@@ -27,11 +27,8 @@
 
     $Source$
     $Log$
-    Revision 1.2  2001/05/24 11:15:57  lballabio
-    Stripped conventions from Currencies
-
-    Revision 1.1  2001/05/16 09:57:27  lballabio
-    Added indexes and piecewise flat forward curve
+    Revision 1.3  2001/05/24 13:57:52  nando
+    smoothing #include xx.hpp and cutting old Log messages
 
 */
 
@@ -46,11 +43,11 @@ namespace QuantLib {
     namespace TermStructures {
 
         const double PiecewiseFlatForward::accuracy_ = 1.0e-12;
-        
-        PiecewiseFlatForward::PiecewiseFlatForward(Currency currency, 
+
+        PiecewiseFlatForward::PiecewiseFlatForward(Currency currency,
             const Handle<DayCounter>& dayCounter, const Date& settlementDate,
             const std::vector<Handle<RateHelper> >& instruments)
-        : currency_(currency), dayCounter_(dayCounter), 
+        : currency_(currency), dayCounter_(dayCounter),
           settlementDate_(settlementDate) {
             QL_REQUIRE(instruments.size()>0, "No instrument given");
             // values at settlement date
@@ -106,7 +103,7 @@ namespace QuantLib {
                         return discounts_[n];
                     } else {
                         Time t = dayCounter_->yearFraction(settlementDate_,d);
-                        return discounts_[n-1] * 
+                        return discounts_[n-1] *
                             QL_EXP(-forwards_[n] * (t-times_[n-1]));
                     }
                 }
@@ -163,13 +160,13 @@ namespace QuantLib {
         double PiecewiseFlatForward::FFObjFunction::operator()(
             double discountGuess) const {
                 curve_->discounts_[segment_] = discountGuess;
-                curve_->zeroYields_[segment_] = 
+                curve_->zeroYields_[segment_] =
                     -QL_LOG(discountGuess) / curve_->times_[segment_];
-                curve_->forwards_[segment_] = 
+                curve_->forwards_[segment_] =
                     QL_LOG(curve_->discounts_[segment_-1]/discountGuess) /
                     (curve_->times_[segment_]-curve_->times_[segment_-1]);
                 if (segment_ == 1) {
-                    curve_->forwards_[0] = curve_->zeroYields_[0] = 
+                    curve_->forwards_[0] = curve_->zeroYields_[0] =
                         curve_->forwards_[1];
                 }
                 return rateHelper_->rateError();

@@ -26,8 +26,10 @@
     \brief piecewise constant forward rate term structure
 
     $Source$
-    $Name$
     $Log$
+    Revision 1.5  2001/05/24 13:57:51  nando
+    smoothing #include xx.hpp and cutting old Log messages
+
     Revision 1.4  2001/05/24 11:34:07  nando
     smoothing #include xx.hpp
 

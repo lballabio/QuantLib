@@ -26,8 +26,10 @@
     \brief Iterator advancing in constant steps
 
     $Source$
-    $Name$
     $Log$
+    Revision 1.2  2001/05/24 13:57:51  nando
+    smoothing #include xx.hpp and cutting old Log messages
+
     Revision 1.1  2001/04/09 14:07:00  nando
     all the *.hpp moved below the Include/ql level
 

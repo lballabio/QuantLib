@@ -25,46 +25,9 @@
 /*! \file multivariateaccumulator.cpp
 
     $Source$
-    $Name$
     $Log$
-    Revision 1.10  2001/04/09 14:13:33  nando
-    all the *.hpp moved below the Include/ql level
-
-    Revision 1.9  2001/04/06 18:46:21  nando
-    changed Authors, Contributors, Licence and copyright header
-
-    Revision 1.8  2001/04/04 12:13:23  nando
-    Headers policy part 2:
-    The Include directory is added to the compiler's include search path.
-    Then both your code and user code specifies the sub-directory in
-    #include directives, as in
-    #include <Solvers1d/newton.hpp>
-
-    Revision 1.7  2001/04/04 11:07:24  nando
-    Headers policy part 1:
-    Headers should have a .hpp (lowercase) filename extension
-    All *.h renamed to *.hpp
-
-    Revision 1.6  2001/02/22 14:25:41  lballabio
-    Template methods moved to header file
-
-    Revision 1.5  2001/02/02 10:44:22  marmar
-    MultivariateAccumulator does NOT have to be
-    initialized with the size of data
-
-    Revision 1.4  2001/01/26 11:09:28  marmar
-    Now the covariance() method is consistent with the variance()
-    method of the class Statistics
-
-    Revision 1.3  2001/01/25 11:57:33  lballabio
-    Included outer product and sqrt into matrix.h
-
-    Revision 1.2  2001/01/24 14:56:48  aleppo
-    Added iterator combining-iterator
-
-    Revision 1.1  2001/01/24 10:51:16  marmar
-    Sample accumulator for multivariate analisys
-
+    Revision 1.11  2001/05/24 13:57:52  nando
+    smoothing #include xx.hpp and cutting old Log messages
 
 */
 

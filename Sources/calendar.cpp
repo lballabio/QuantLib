@@ -26,8 +26,10 @@
     \brief Abstract calendar class
 
     $Source$
-    $Name$
     $Log$
+    Revision 1.20  2001/05/24 13:57:51  nando
+    smoothing #include xx.hpp and cutting old Log messages
+
     Revision 1.19  2001/05/08 17:23:47  lballabio
     removed unnecessary if branch (although more convoluted, it had the same effect of the else branch
 

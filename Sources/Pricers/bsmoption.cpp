@@ -27,38 +27,8 @@
 
     $Source$
     $Log$
-    Revision 1.33  2001/05/22 13:19:57  marmar
-    Implied volatility changed
-
-    Revision 1.32  2001/05/09 11:06:19  nando
-    A few comments modified/removed
-
-    Revision 1.31  2001/04/09 14:13:34  nando
-    all the *.hpp moved below the Include/ql level
-
-    Revision 1.30  2001/04/06 18:46:22  nando
-    changed Authors, Contributors, Licence and copyright header
-
-    Revision 1.29  2001/04/06 16:12:18  marmar
-    Bug fixed in multi-period option
-
-    Revision 1.28  2001/04/05 07:57:46  marmar
-    One bug fixed in bermudan option, theta, rho, and vega  still not working
-
-    Revision 1.27  2001/04/04 13:32:54  enri
-    tons of typos fixed
-
-    Revision 1.26  2001/04/04 12:13:24  nando
-    Headers policy part 2:
-    The Include directory is added to the compiler's include search path.
-    Then both your code and user code specifies the sub-directory in
-    #include directives, as in
-    #include <Solvers1d/newton.hpp>
-
-    Revision 1.25  2001/04/04 11:07:24  nando
-    Headers policy part 1:
-    Headers should have a .hpp (lowercase) filename extension
-    All *.h renamed to *.hpp
+    Revision 1.34  2001/05/24 13:57:52  nando
+    smoothing #include xx.hpp and cutting old Log messages
 
 */
 

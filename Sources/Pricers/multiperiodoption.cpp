@@ -27,59 +27,8 @@
 
     $Source$
     $Log$
-    Revision 1.15  2001/05/22 13:28:40  marmar
-    setGridLimits interface changed and other changes
-
-    Revision 1.14  2001/04/26 16:05:42  marmar
-    underlying_ not mutable anymore, setGridLimits accepts the value for center
-
-    Revision 1.13  2001/04/23 14:21:16  marmar
-    Cosmetic changes
-
-    Revision 1.12  2001/04/12 09:06:59  marmar
-    Last and first date are handled more precisely
-
-    Revision 1.11  2001/04/09 14:13:34  nando
-    all the *.hpp moved below the Include/ql level
-
-    Revision 1.10  2001/04/06 18:46:22  nando
-    changed Authors, Contributors, Licence and copyright header
-
-    Revision 1.9  2001/04/06 16:12:18  marmar
-    Bug fixed in multi-period option
-
-    Revision 1.8  2001/04/06 07:36:04  marmar
-    Code simplified and cleand
-
-    Revision 1.7  2001/04/05 07:57:46  marmar
-    One bug fixed in bermudan option, theta, rho, and vega  still not working
-
-    Revision 1.6  2001/04/04 12:13:24  nando
-    Headers policy part 2:
-    The Include directory is added to the compiler's include search path.
-    Then both your code and user code specifies the sub-directory in
-    #include directives, as in
-    #include <Solvers1d/newton.hpp>
-
-    Revision 1.5  2001/04/04 11:07:24  nando
-    Headers policy part 1:
-    Headers should have a .hpp (lowercase) filename extension
-    All *.h renamed to *.hpp
-
-    Revision 1.4  2001/04/03 17:05:33  marmar
-    Error messages are now more clear
-
-    Revision 1.3  2001/03/21 11:31:55  marmar
-    Main loop tranfered from method value to method calculate.
-    Methods vega and rho belong now to class BSMOption
-
-    Revision 1.2  2001/03/21 10:48:08  marmar
-    valueAtCenter, firstDerivativeAtCenter, secondDerivativeAtCenter,
-    are no longer methods of BSMNumericalOption but separate
-    functions
-
-    Revision 1.1  2001/03/20 15:13:43  marmar
-    MultiPeriodOption is a generalization of DividendAmericanOption
+    Revision 1.16  2001/05/24 13:57:52  nando
+    smoothing #include xx.hpp and cutting old Log messages
 
 */
 
@@ -194,12 +143,12 @@ namespace QuantLib {
 
                 if (j >= 0)
                     executeIntermediateStep(j);
-                
+
             } while (--j >= firstIndex_);
 
             double pricePlus = + valueAtCenter(prices_)
                                - valueAtCenter(controlPrices_)
-                               + analytic_ -> theta() * dt; // + analytic_ -> value() 
+                               + analytic_ -> theta() * dt; // + analytic_ -> value()
 
             model_ -> rollback(prices_,        dt, 0, 1, stepCondition_);
             model_ -> rollback(controlPrices_, dt, 0, 1);
@@ -229,7 +178,7 @@ namespace QuantLib {
 
             double priceMinus = + valueAtCenter(prices_)
                                 - valueAtCenter(controlPrices_)
-                                - analytic_ -> theta() * dt; // + analytic_ -> value() 
+                                - analytic_ -> theta() * dt; // + analytic_ -> value()
 
             theta_= (pricePlus - priceMinus)/(2.0*dt);
 

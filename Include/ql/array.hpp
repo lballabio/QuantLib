@@ -28,17 +28,11 @@
     $Id$
     $Source$
     $Log$
+    Revision 1.3  2001/05/24 13:57:50  nando
+    smoothing #include xx.hpp and cutting old Log messages
+
     Revision 1.2  2001/05/23 19:30:27  nando
     smoothing #include xx.hpp
-
-    Revision 1.1  2001/04/09 14:03:54  nando
-    all the *.hpp moved below the Include/ql level
-
-    Revision 1.3  2001/04/09 11:28:16  nando
-    updated copyright notice header and improved CVS tags
-
-    Revision 1.2  2001/04/06 18:46:19  nando
-    changed Authors, Contributors, Licence and copyright header
 
 */
 
