@@ -9,7 +9,7 @@ SetCompressor lzma
 Name "QuantLib"
 Caption "QuantLib - Setup"
 #do not change the name below
-OutFile "..\QuantLib-${VER_NUMBER}-full-inst.exe"
+OutFile "..\QuantLib-${VER_NUMBER}-installer.exe"
 
 InstType "Full (w/ Source Code)"
 InstType Typical
