@@ -543,6 +543,7 @@ void EuropeanOptionTest::testBinomialEngines() {
 }
 
 void EuropeanOptionTest::testMcEngines() {
+    // PseudoMonteCarlo only fails with Borland
     EngineType engines[] = { PseudoMonteCarlo, QuasiMonteCarlo };
     testEngines(engines,LENGTH(engines));
 }

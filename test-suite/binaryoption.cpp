@@ -511,6 +511,7 @@ void BinaryOptionTest::testEngineConsistency() {
     Handle<PricingEngine> amEngine = Handle<PricingEngine>(
         new PricingEngines::AnalyticAmericanBinaryEngine());
 
+    // this engine fails with Borland
     Handle<PricingEngine> mcEngine = Handle<PricingEngine>(
         new PricingEngines::MCBinaryEngine
             <MonteCarlo::PseudoRandom, Math::Statistics>
@@ -615,7 +616,6 @@ CppUnit::Test* BinaryOptionTest::suite() {
     tests->addTest(new CppUnit::TestCaller<BinaryOptionTest>
                    ("Testing Monte Carlo pricing engine for binary options",
                     &BinaryOptionTest::testEngineConsistency));
-
     return tests;
 }
 

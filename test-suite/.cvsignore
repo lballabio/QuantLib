@@ -3,5 +3,6 @@
 testsuite.dep
 testsuite.plg
 test-suite.tds
+test-suite.exe
 quantlib-test-suite
 build
