@@ -25,7 +25,6 @@
 
 class CapFloorTest : public CppUnit::TestFixture {
   public:
-    CapFloorTest();
     void setUp();
     void testStrikeDependency();
     void testConsistency();

@@ -43,7 +43,7 @@ namespace {
 }
 
 SwaptionTest::SwaptionTest() 
-: calendar_(TARGET()), fixedDayCount_(Thirty360()) {}
+: fixedDayCount_(Thirty360()) {}
 
 void SwaptionTest::setUp() {
     today_ = Date::todaysDate();

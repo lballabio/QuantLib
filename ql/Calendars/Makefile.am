@@ -8,7 +8,8 @@ include_HEADERS = \
 	budapest.hpp \
 	frankfurt.hpp \
 	helsinki.hpp \
-	johannesburg.hpp\
+	johannesburg.hpp \
+	jointcalendar.hpp \
 	london.hpp \
 	milan.hpp \
 	newyork.hpp \
@@ -28,7 +29,8 @@ libCalendars_la_SOURCES = \
 	budapest.cpp \
 	frankfurt.cpp \
 	helsinki.cpp \
-	johannesburg.cpp\
+	johannesburg.cpp \
+	jointcalendar.cpp \
 	london.cpp \
 	milan.cpp \
 	newyork.cpp \

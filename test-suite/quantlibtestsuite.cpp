@@ -21,6 +21,7 @@
 #include <iostream>
 #include <string>
 #include "qltestlistener.hpp"
+#include "calendars.hpp"
 #include "capfloor.hpp"
 #include "covariance.hpp"
 #include "dates.hpp"
@@ -45,6 +46,7 @@ int main() {
     QLTestListener qlListener;
     runner.eventManager().addListener(&qlListener);
 
+    runner.addTest(new CalendarTest);
     runner.addTest(CapFloorTest::suite());
     runner.addTest(new CovarianceTest);
     runner.addTest(new DateTest);

@@ -1,5 +1,4 @@
 
-
 /*
  Copyright (C) 2000, 2001, 2002 RiskMap srl
 
@@ -107,20 +106,30 @@ namespace QuantLib {
             returns the result.
             \note The input date is not modified.
         */
-       Date advance(const Date& date, const Period& period, 
-                    RollingConvention convention) const;
+        Date advance(const Date& date, const Period& period, 
+                     RollingConvention convention) const;
 
+        /*! "null" implementation to be used by the default constructor */
+        class NullImpl : public CalendarImpl {
+          public:
+            std::string name() const { return "null calendar"; }
+            bool isBusinessDay(const Date&) const { return true; }
+        };
         /*! partial implementation providing the means of
             determining the Easter Monday for a given year. */
-       class WesternImpl : public CalendarImpl {
+        class WesternImpl : public CalendarImpl {
           protected:
             //! expressed relative to first day of year
             static Day easterMonday(Year y);
         };
+        // default constructor
+        Calendar()
+        : Patterns::Bridge<Calendar,CalendarImpl>(
+              Handle<CalendarImpl>(new Calendar::NullImpl)) {}
       protected:
         /*! this protected constructor will only be invoked by derived
             classes which define a given Calendar implementation */
-          Calendar(const Handle<CalendarImpl>& impl) 
+        Calendar(const Handle<CalendarImpl>& impl) 
         : Patterns::Bridge<Calendar,CalendarImpl>(impl) {}
     };
 

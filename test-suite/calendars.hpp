@@ -16,27 +16,17 @@
 */
 // $Id$
 
-#ifndef quantlib_test_term_structures_hpp
-#define quantlib_test_term_structures_hpp
+#ifndef quantlib_test_calendars_hpp
+#define quantlib_test_calendars_hpp
 
 #include <ql/quantlib.hpp>
 #include <cppunit/TestCase.h>
-#include <cppunit/TestFixture.h>
 
-class TermStructureTest : public CppUnit::TestFixture {
+class CalendarTest : public CppUnit::TestCase {
   public:
-    void setUp();
-    void testImplied();
-    void testImpliedObs();
-    void testFSpreaded();
-    void testFSpreadedObs();
-    void testZSpreaded();
-    void testZSpreadedObs();
-    static CppUnit::Test* suite();
-  private:
-    QL::Calendar calendar_;
-    int settlementDays_;
-    QL::Handle<QL::TermStructure> termStructure_;
+    CalendarTest() 
+        : CppUnit::TestCase("Testing joint calendars") {}
+    void runTest();
 };
 
 

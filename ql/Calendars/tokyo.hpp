@@ -48,19 +48,18 @@ namespace QuantLib {
             <li>Constitution Memorial Day, May 3rd</li>
             <li>Holiday for a Nation, May 4th</li>
             <li>Children's Day, May 5th</li>
-            <li>Marine Day, July 20th</li>
-            <li>Respect for the Aged Day, September 15th</li>
+            <li>Marine Day, 3rd Monday in July</li>
+            <li>Respect for the Aged Day, 3rd Monday in September</li>
             <li>Autumnal Equinox</li>
             <li>Health and Sports Day, 2nd Monday in October</li>
             <li>National Culture Day, November 3rd</li>
             <li>Labor Thanksgiving Day, November 23rd</li>
             <li>Emperor's Birthday, December 23rd</li>
             <li>Bank Holiday, December 31st</li>
+            <li>a few one-shot holidays</li>
             </ul>
             Holidays falling on a Sunday are observed on the Monday following 
             except for the Bank Holidays associated with the New Year
-            
-            \todo insert actual rules for Equinoxes
         */
         class Tokyo : public Calendar {
           private:

@@ -60,6 +60,7 @@
 #include <ql/Calendars/frankfurt.hpp>
 #include <ql/Calendars/helsinki.hpp>
 #include <ql/Calendars/johannesburg.hpp>
+#include <ql/Calendars/jointcalendar.hpp>
 #include <ql/Calendars/london.hpp>
 #include <ql/Calendars/milan.hpp>
 #include <ql/Calendars/newyork.hpp>

@@ -37,9 +37,6 @@ using QuantLib::Instruments::VanillaCollar;
 using QuantLib::Instruments::SimpleSwap;
 using QuantLib::Pricers::BlackCapFloor;
 
-// no default calendar constructor, alas
-CapFloorTest::CapFloorTest() : calendar_(TARGET()) {}
-
 void CapFloorTest::setUp() {
     today_ = Date::todaysDate();
     nominals_ = std::vector<double>(1,100.0);

@@ -1,6 +1,7 @@
 
 QL_TESTS = quantlibtestsuite.cpp \
            qltestlistener.hpp qltestlistener.cpp \
+           calendars.hpp calendars.cpp \
            capfloor.hpp capfloor.cpp \
            covariance.hpp covariance.cpp \
            dates.hpp dates.cpp \

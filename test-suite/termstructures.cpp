@@ -45,8 +45,6 @@ namespace {
 
 }
 
-TermStructureTest::TermStructureTest() : calendar_(TARGET()) {}
-
 void TermStructureTest::setUp() {
     Date today = Date::todaysDate();
     calendar_ = TARGET();

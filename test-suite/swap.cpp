@@ -33,7 +33,7 @@ using QuantLib::DayCounters::Thirty360;
 using QuantLib::Instruments::SimpleSwap;
 
 SimpleSwapTest::SimpleSwapTest() 
-: calendar_(TARGET()), fixedDayCount_(Thirty360()) {}
+: fixedDayCount_(Thirty360()) {}
 
 void SimpleSwapTest::setUp() {
     payFixed_ = true;

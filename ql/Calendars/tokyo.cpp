@@ -56,8 +56,12 @@ namespace QuantLib {
                 || (d == 2  && m == January)
                 // Bank Holiday
                 || (d == 3  && m == January)
-                // Coming of Age Day (2nd Monday in January)
-                || (w == Monday && (d >= 8 && d <= 14) && m == January)
+                // Coming of Age Day (2nd Monday in January),
+                // was January 15th until 2000
+                || (w == Monday && (d >= 8 && d <= 14) && m == January
+                    && y >= 2000)
+                || ((d == 15 || (d == 16 && w == Monday)) && m == January
+                    && y < 2000)
                 // National Foundation Day
                 || ((d == 11 || (d == 12 && w == Monday)) && m == February)
                 // Vernal Equinox 
@@ -70,22 +74,47 @@ namespace QuantLib {
                 || (d == 4  && m == May)
                 // Children's Day
                 || ((d == 5  || (d == 6 && w == Monday)) && m == May)
-                // Marine Day
-                || ((d == 20 || (d == 21 && w == Monday)) && m == July)
-                // Respect for the Aged Day
-                || ((d == 15 || (d == 16 && w == Monday)) && m == September)
+                // Marine Day (3rd Monday in July),
+                // was July 20th until 2003, not a holiday before 1996
+                || (w == Monday && (d >= 15 && d <= 21) && m == July
+                    && y >= 2003)
+                || ((d == 20 || (d == 21 && w == Monday)) && m == July
+                    && y >= 1996 && y < 2003)
+                // Respect for the Aged Day (3rd Monday in September),
+                // was September 15th until 2003
+                || (w == Monday && (d >= 15 && d <= 21) && m == September
+                    && y >= 2003)
+                || ((d == 15 || (d == 16 && w == Monday)) && m == September
+                    && y < 2003)
+                // If a single day falls between Respect for the Aged Day
+                // and the Autumnal Equinox, it is holiday
+                || (w == Tuesday && d+1 == ae && m == September && y >= 2003)
                 // Autumnal Equinox 
                 || ((d == ae || (d == ae+1 && w == Monday)) && m == September)
-                // Health and Sports Day (2nd Monday in October)
-                || (w == Monday && (d >= 8 && d <= 14) && m == October)
+                // Health and Sports Day (2nd Monday in October),
+                // was October 10th until 2000
+                || (w == Monday && (d >= 8 && d <= 14) && m == October
+                    && y >= 2000)
+                || ((d == 10 || (d == 11 && w == Monday)) && m == October
+                    && y < 2000)
                 // National Culture Day
                 || ((d == 3  || (d == 4 && w == Monday)) && m == November)
                 // Labor Thanksgiving Day
                 || ((d == 23 || (d == 24 && w == Monday)) && m == November)
                 // Emperor's Birthday
-                || ((d == 23 || (d == 24 && w == Monday)) && m == December)
+                || ((d == 23 || (d == 24 && w == Monday)) && m == December
+                    && y >= 1989)
                 // Bank Holiday
-                || (d == 31 && m == December))
+                || (d == 31 && m == December)
+                // one-shot holidays
+                // Marriage of Prince Akihito
+                || (d == 10 && m == April && y == 1959)
+                // Rites of Imperial Funeral
+                || (d == 24 && m == February && y == 1989)
+                // Enthronement Ceremony
+                || (d == 12 && m == November && y == 1990)
+                // Marriage of Prince Naruhito
+                || (d == 9 && m == June && y == 1993))
                     return false;
             return true;
         }
