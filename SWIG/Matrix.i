@@ -46,7 +46,8 @@
 using QuantLib::Math::Matrix;
 typedef QuantLib::Math::Matrix::row_iterator MatrixRow;
 using QuantLib::Math::outerProduct;
-using QuantLib::Math::sqrt;
+using QuantLib::Math::transpose;
+using QuantLib::Math::matrixSqrt;
 %}
 
 class Matrix {
@@ -110,10 +111,8 @@ Matrix outerProduct(const Array& v1, const Array& v2);
     Matrix matrixProduct(const Matrix& m1, const Matrix& m2) {
         return m1*m2;
     }
-    Matrix matrixSqrt(const Matrix& m) {
-        return sqrt(m);
-    }
 %}
+Matrix matrixSqrt(const Matrix& m);
 
 
 

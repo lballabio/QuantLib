@@ -27,6 +27,9 @@
     $Source$
     $Name$
     $Log$
+    Revision 1.2  2001/02/16 15:14:07  lballabio
+    renamed sqrt to matrixSqrt
+
     Revision 1.1  2001/01/25 11:55:12  lballabio
     *** empty log message ***
 
@@ -40,7 +43,7 @@ namespace QuantLib {
   
   namespace Math {
     
-      Matrix sqrt(const Matrix &realSymmMatrix) {
+      Matrix matrixSqrt(const Matrix &realSymmMatrix) {
         
           //! eigenvalues smaller than tolerance are considered zero
           const double tolerance = 1e-15;
@@ -56,12 +59,13 @@ namespace QuantLib {
           Array evalues(jd.eigenvalues());
           
           double maxEv=0;
-          for(int i = 0; i < size;i++)
+		  int i;
+          for(i = 0; i < size;i++)
               if(evalues[i] >= maxEv) 
                   maxEv = evalues[i];                
           
           Matrix diagonal(size,size,0);
-          for(int i = 0; i < size;i++){
+          for(i = 0; i < size;i++){
               if(QL_FABS(evalues[i]) <= tolerance*maxEv) 
                   evalues[i] = 0;
               QL_REQUIRE(evalues[i] >=0, 

@@ -27,6 +27,9 @@
     $Source$
     $Name$
     $Log$
+    Revision 1.6  2001/02/16 15:13:25  lballabio
+    renamed sqrt to matrixSqrt
+
     Revision 1.5  2001/02/02 18:06:27  lballabio
     Cosmetic changes (wrapping and docs)
 
@@ -189,7 +192,7 @@ namespace QuantLib {
         Matrix outerProduct(const Array &v1, const Array &v2);
         //! returns the square root of a real symmetric matrix
         /*! \relates Matrix */
-        Matrix sqrt(const Matrix &realSymmetricMatrix);
+        Matrix matrixSqrt(const Matrix &realSymmetricMatrix);
 
 
         // inline definitions

@@ -27,6 +27,9 @@
     $Source$
     $Name$
     $Log$
+    Revision 1.3  2001/02/16 15:14:07  lballabio
+    renamed sqrt to matrixSqrt
+
     Revision 1.2  2001/01/25 11:57:33  lballabio
     Included outer product and sqrt into matrix.h
 
@@ -93,8 +96,9 @@ namespace QuantLib {
             threshold = 0.2*sum/(size_*size_);
           else
             threshold = 0;
-  
-          for (int j = 0; j < size_-1; j++) {
+
+		  int j;
+          for (j = 0; j < size_-1; j++) {
             for (int k = j+1; k < size_; k++) {
                 
               double sine,rho,cosin,heig,tang,beta;
@@ -121,22 +125,23 @@ namespace QuantLib {
                 diagonal_[j] -= heig;
                 diagonal_[k] += heig;
                 s[j][k] = 0;
-                for (int l = 0; l <= j-1; l++) {
+				int l;
+                for (l = 0; l <= j-1; l++) {
     	            jacobiRotate(s,rho,sine,l,j,l,k);
                 }
-                for (int l = j+1; l <= k-1; l++) {
+                for (l = j+1; l <= k-1; l++) {
     	            jacobiRotate(s,rho,sine,j,l,l,k);
                 }
-                for (int l = k+1; l < size_; l++) {
+                for (l = k+1; l < size_; l++) {
     	            jacobiRotate(s,rho,sine,j,l,k,l);
                 }
-                for (int l = 0; l < size_; l++) {
+                for (l = 0; l < size_; l++) {
     	            jacobiRotate(eigenVectors_,rho,sine,l,j,l,k);
                 }
               }
             }
           }
-          for (int j = 0; j < size_; j++) {
+          for (j = 0; j < size_; j++) {
             tmpDiag[j] += tmpAccumulate[j];
             diagonal_[j] = tmpDiag[j];
             tmpAccumulate[j] = 0;
