@@ -87,10 +87,19 @@ namespace QuantLib {
             Handle<BlackVolTermStructure>(
                 new BlackConstantVol(referenceDate, v, dc)));
 
+        #if defined(HAVE_BOOST)
+        Handle<PlainVanillaPayoff> payoff =
+            boost::dynamic_pointer_cast<PlainVanillaPayoff>(arguments_.payoff);
+        QL_REQUIRE(payoff,
+                   "AnalyticEuropeanEngine: non-plain payoff given");
+        #else
+        Handle<PlainVanillaPayoff> payoff = arguments_.payoff;
+        #endif
+
         Handle<DiffusionProcess> bs(
             new BlackScholesProcess(flatRiskFree, flatDividends, flatVol,s0));
         Handle<Tree> tree(new T(bs, arguments_.maturity, timeSteps_,
-                                                arguments_.payoff->strike()));
+                                payoff->strike()));
 
         Handle<Lattice> lattice(
             new BlackScholesLattice(tree, r, arguments_.maturity, timeSteps_));

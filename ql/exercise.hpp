@@ -23,32 +23,27 @@
 #ifndef quantlib_exercise_type_h
 #define quantlib_exercise_type_h
 
-#include <ql/calendar.hpp>
-#include <ql/option.hpp>
+#include <ql/date.hpp>
 #include <vector>
 
 namespace QuantLib {
 
-    //! Exercise class (American, Bermudan or European)
-    /*! \warning the input dates must be effective (adjusted) exercise dates.
-    */
+    //! Base exercise class
     class Exercise {
       public:
         enum Type { American, Bermudan, European };
-
-        Exercise() {type_ = Type(-1); }
-        bool isNull() const {return type_==Type(-1); }
+        Exercise();
+        bool isNull() const;
         Type type() const;
         Date date(Size index) const;
         const std::vector<Date>& dates() const;
-        Date lastDate() const {return dates_[dates_.size()-1];};
-
+        Date lastDate() const;
       protected:
         std::vector<Date> dates_;
         Type type_;
     };
 
-    //! American exercise class
+    //! American exercise
     /*! An American option can be exercised at any time between two predefined
         dates
     */
@@ -57,7 +52,7 @@ namespace QuantLib {
         AmericanExercise(Date earliestDate, Date latestDate);
     };
 
-    //! Bermudan exercise class
+    //! Bermudan exercise
     /*! A Bermudan option can only be exercised at a set of fixed dates.
     */
     class BermudanExercise : public Exercise {
@@ -65,7 +60,7 @@ namespace QuantLib {
         BermudanExercise(const std::vector<Date>& dates);
     };
 
-    //! European exercise class
+    //! European exercise
     /*! A European option can only be exercised at one date.
     */
     class EuropeanExercise : public Exercise {
@@ -73,7 +68,16 @@ namespace QuantLib {
         EuropeanExercise(Date date);
     };
 
+
     // inline definitions
+
+    inline Exercise::Exercise() { 
+        type_ = Type(-1); 
+    }
+
+    inline bool Exercise::isNull() const { 
+        return type_==Type(-1); 
+    }
 
     inline Exercise::Type Exercise::type() const {
         return type_;
@@ -87,6 +91,11 @@ namespace QuantLib {
         return dates_;
     }
 
+    inline Date Exercise::lastDate() const { 
+        return dates_.back(); 
+    }
+
 }
+
 
 #endif

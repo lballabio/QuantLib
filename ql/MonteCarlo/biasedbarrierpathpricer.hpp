@@ -29,7 +29,7 @@
 #include <ql/MonteCarlo/path.hpp>
 #include <ql/RandomNumbers/rngtypedefs.hpp>
 #include <ql/diffusionprocess.hpp>
-#include <ql/payoff.hpp>
+#include <ql/Instruments/payoffs.hpp>
 
 namespace QuantLib {
 

@@ -22,7 +22,7 @@
 #ifndef quantlib_payoff_h
 #define quantlib_payoff_h
 
-#include <ql/option.hpp>
+#include <ql/qldefines.hpp>
 #include <functional>
 
 namespace QuantLib {
@@ -33,127 +33,6 @@ namespace QuantLib {
         virtual ~Payoff() {}
         virtual double operator()(double price) const = 0;
     };
-
-    /*! We need an intermediate class for all those payoff that have
-        both a strike and a type but are not necessarily plain-vanilla
-    */
-
-    class StrikedTypePayoff : public Payoff {
-      public:
-        StrikedTypePayoff(Option::Type type,
-                          double strike)
-        : type_(type), strike_(strike) {
-            QL_REQUIRE(strike >= 0.0,
-                       "StrikedTypePayoff: negative strike given");
-        }
-        Option::Type optionType() const { return type_; };
-        double strike() const { return strike_; };
-      protected:
-        Option::Type type_;
-        double strike_;
-    };
-
-    /*! The former PlainPayoff has been renamed PlainVanillaPayoff
-        to stress that fact that now nobody elses derives from it */
-    class PlainVanillaPayoff : public StrikedTypePayoff {
-      public:
-        PlainVanillaPayoff(Option::Type type,
-                          double strike)
-        : StrikedTypePayoff(type, strike) {}
-        double operator()(double price) const;
-    };
-
-    inline double PlainVanillaPayoff::operator()(double price) const {
-        switch (type_) {
-          case Option::Call:
-            return QL_MAX(price-strike_,0.0);
-          case Option::Put:
-            return QL_MAX(strike_-price,0.0);
-          case Option::Straddle:
-            return QL_FABS(strike_-price);
-          default:
-            throw Error("Unknown/Illegal option type");
-        }
-    }
-
-
-    //! Binary Cash-Or-Nothing option payoff
-    class CashOrNothingPayoff : public StrikedTypePayoff {
-      public:
-        CashOrNothingPayoff(Option::Type type,
-                            double strike,
-                            double cashPayoff)
-        : StrikedTypePayoff(type, strike), cashPayoff_(cashPayoff) {}
-        double operator()(double price) const;
-      private:
-        double cashPayoff_;
-    };
-
-    inline double CashOrNothingPayoff::operator()(double price) const {
-        switch (type_) {
-          case Option::Call:
-              return (price-strike_ > 0.0 ? cashPayoff_ : 0.0);
-          case Option::Put:
-              return (strike_-price > 0.0 ? cashPayoff_ : 0.0);
-          case Option::Straddle:
-              return cashPayoff_;
-          default:
-            throw Error("Unknown/Illegal option type");
-        }
-    }
-
-
-    //! Binary Asset-Or-Nothing option payoff
-    class AssetOrNothingPayoff : public StrikedTypePayoff {
-    public:
-        AssetOrNothingPayoff(Option::Type type,
-                             double strike)
-        : StrikedTypePayoff(type, strike) {}
-        double operator()(double price) const;
-    };
-
-    inline double AssetOrNothingPayoff::operator()(double price) const {
-        switch (type_) {
-          case Option::Call:
-              return (price-strike_ > 0.0 ? price : 0.0);
-          case Option::Put:
-              return (strike_-price > 0.0 ? price : 0.0);
-          case Option::Straddle:
-              return price;
-          default:
-              throw Error("Unknown/Illegal option type");
-        }
-    }
-
-
-    //! Binary supershare option payoff
-    class SupersharePayoff : public StrikedTypePayoff {
-    public:
-        SupersharePayoff(Option::Type type,
-                         double strike,
-                         double strikeIncrement)
-        : StrikedTypePayoff(type, strike), strikeIncrement_(strikeIncrement) {}
-        double operator()(double price) const;
-    private:
-        double strikeIncrement_;
-    };
-
-    inline double SupersharePayoff::operator()(double price) const {
-        switch (type_) {
-          case Option::Call:
-              return ((price-strike_                  > 0.0 ? 1.0 : 0.0)
-                     -(price-strike_-strikeIncrement_ > 0.0 ? 1.0 : 0.0))
-                                                        / strikeIncrement_;
-          case Option::Put:
-              return ((strike_                 -price > 0.0 ? 1.0 : 0.0)
-                     -(strike_+strikeIncrement_-price > 0.0 ? 1.0 : 0.0))
-                                                        / strikeIncrement_;
-          case Option::Straddle:
-              return -1.0;
-          default:
-            throw Error("Unknown/Illegal option type");
-        }
-    }
 
 }
 

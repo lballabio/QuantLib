@@ -133,6 +133,7 @@
 #include <ql/Instruments/binaryoption.hpp>
 #include <ql/Instruments/capfloor.hpp>
 #include <ql/Instruments/forwardvanillaoption.hpp>
+#include <ql/Instruments/payoffs.hpp>
 #include <ql/Instruments/quantoforwardvanillaoption.hpp>
 #include <ql/Instruments/quantovanillaoption.hpp>
 #include <ql/Instruments/simpleswap.hpp>

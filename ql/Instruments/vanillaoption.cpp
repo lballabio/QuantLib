@@ -22,6 +22,7 @@
 
 #include <ql/Volatilities/blackconstantvol.hpp>
 #include <ql/Instruments/vanillaoption.hpp>
+#include <ql/Instruments/payoffs.hpp>
 #include <ql/Solvers1D/brent.hpp>
 
 namespace QuantLib {
@@ -132,7 +133,7 @@ namespace QuantLib {
                    "VanillaOption::setupArguments : "
                    "wrong argument type");
 
-        arguments->payoff = Handle<PlainVanillaPayoff>(
+        arguments->payoff = Handle<Payoff>(
                                        new PlainVanillaPayoff(type_,strike_));
 
         QL_REQUIRE(!IsNull(underlying_),
@@ -188,9 +189,12 @@ namespace QuantLib {
 
 
     void VanillaOption::arguments::validate() const {
-        QL_REQUIRE(!IsNull(payoff),
-                   "VanillaOption::arguments::validate() : "
-                   "null payoff given");
+        #if defined(QL_PATCH_MICROSOFT)
+        Option::arguments copy = *this;
+        copy.validate();
+        #else
+        Option::arguments::validate();
+        #endif
         QL_REQUIRE(underlying != Null<double>(),
                    "VanillaOption::arguments::validate() : "
                    "no underlying given");
@@ -203,12 +207,6 @@ namespace QuantLib {
         QL_REQUIRE(!IsNull(riskFreeTS),
                    "VanillaOption::arguments::validate() : "
                    "no risk free term structure given");
-        QL_REQUIRE(maturity != Null<double>(),
-                   "VanillaOption::arguments::validate() : "
-                   "no maturity given");
-        QL_REQUIRE(maturity>=0.0,
-                   "VanillaOption::arguments::validate() : "
-                   "negative maturity");
         QL_REQUIRE(!IsNull(volTS),
                    "VanillaOption::arguments::validate() : "
                    "no vol term structure given");

@@ -24,7 +24,7 @@
 
 #include <ql/MonteCarlo/pathpricer.hpp>
 #include <ql/MonteCarlo/multipath.hpp>
-#include <ql/payoff.hpp>
+#include <ql/Instruments/payoffs.hpp>
 
 namespace QuantLib {
 
