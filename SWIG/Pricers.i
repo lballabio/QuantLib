@@ -58,13 +58,13 @@ class BSMEuropeanOption {
 	double theta() const;
 	double vega() const;
 	double rho() const;
-	double impliedVolatility(double targetValue, double accuracy, int maxEvaluations) const ;
+	double impliedVolatility(double targetValue, double accuracy = 1e-4, int maxEvaluations = 100) const ;
 };
 
 class BSMAmericanOption {
   public:
 	BSMAmericanOption(OptionType type, double underlying, double strike, Rate underlyingGrowthRate, 
-	  Rate riskFreeRate, Time residualTime, double volatility, int timeSteps, int gridPoints);
+	  Rate riskFreeRate, Time residualTime, double volatility, int timeSteps = 100, int gridPoints = 100);
 	void setVolatility(double newVolatility) ;
 	void setRiskFreeRate(Rate newRate) ;
 	double value() const;
@@ -73,20 +73,20 @@ class BSMAmericanOption {
 	double theta() const;
 	double vega() const;
 	double rho() const;
-	double impliedVolatility(double targetValue, double accuracy, int maxEvaluations) const ;
+	double impliedVolatility(double targetValue, double accuracy = 1e-4, int maxEvaluations = 100) const ;
 };
 
 class DividendAmericanOption{
   public:
 	DividendAmericanOption(OptionType type, double underlying, double strike, 
 	  Rate underlyingGrowthRate, Rate riskFreeRate, Time residualTime, double volatility,
-	  DoubleVector dividends, DoubleVector exdivdates);
+	  DoubleVector dividends, DoubleVector exdivdates, int timeSteps = 100, int gridPoints = 100);
 	double value() const;
 	double delta() const;
 	double gamma() const;
 	double vega() const;
 	double rho() const;
-	double impliedVolatility(double targetValue, double accuracy, int maxEvaluations) const ;
+	double impliedVolatility(double targetValue, double accuracy = 1e-4, int maxEvaluations = 100) const ;
 };
 
 class DividendEuropeanOption{
@@ -98,7 +98,7 @@ class DividendEuropeanOption{
 	double delta() const;
 	double gamma() const;
 	double vega() const;
-	double impliedVolatility(double targetValue, double accuracy, int maxEvaluations) const ;
+	double impliedVolatility(double targetValue, double accuracy = 1e-4, int maxEvaluations = 100) const ;
 };
 
 #endif
