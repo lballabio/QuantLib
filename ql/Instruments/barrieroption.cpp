@@ -43,8 +43,8 @@ namespace QuantLib {
                          const std::string& description)
     : Option(engine, isinCode, description),
       barrierType_(barrierType), barrier_(barrier), rebate_(rebate),
-      type_(type), underlying_(underlying),
-      strike_(strike), exercise_(exercise), 
+      payoff_(new PlainVanillaPayoff(type,strike)), underlying_(underlying),
+      exercise_(exercise), 
       riskFreeTS_(riskFreeTS), dividendTS_(dividendTS),
       volTS_(volTS) {
 
@@ -122,8 +122,7 @@ namespace QuantLib {
                    "BarrierOption::setupArguments : "
                    "wrong argument type");
 
-        arguments->payoff = Handle<PlainVanillaPayoff>(
-                                       new PlainVanillaPayoff(type_,strike_));
+        arguments->payoff = payoff_;
 
         arguments->barrierType = barrierType_;
         arguments->barrier = barrier_;

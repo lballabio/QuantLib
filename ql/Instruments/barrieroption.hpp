@@ -75,9 +75,8 @@ namespace QuantLib {
         Barrier::Type barrierType_;
         double barrier_;
         double rebate_;
-        Option::Type type_;
+        Handle<Payoff> payoff_;
         RelinkableHandle<Quote> underlying_;
-        double strike_;
         Exercise exercise_;
         RelinkableHandle<TermStructure> riskFreeTS_, dividendTS_;
         RelinkableHandle<BlackVolTermStructure> volTS_;
