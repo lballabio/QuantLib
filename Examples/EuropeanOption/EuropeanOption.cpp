@@ -52,7 +52,7 @@ private:
 };
 
 
-int main(int argc, char* argv[])
+int main(int, char* [])
 {
     try {
         QL_IO_INIT

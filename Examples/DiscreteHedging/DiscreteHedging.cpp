@@ -137,7 +137,7 @@ class ReplicationPathPricer : public PathPricer<Path>
 
 
 // Compute Replication Error as in the Derman and Kamal's research note
-int main(int argc, char* argv[])
+int main(int, char* [])
 {
     try {
         QL_IO_INIT

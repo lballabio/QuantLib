@@ -70,7 +70,7 @@ void calibrateModel(const boost::shared_ptr<ShortRateModel>& model,
     }
 }
 
-int main(int argc, char* argv[])
+int main(int, char* [])
 {
     try {
         QL_IO_INIT
