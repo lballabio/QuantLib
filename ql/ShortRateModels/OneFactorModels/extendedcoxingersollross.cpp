@@ -84,14 +84,9 @@ namespace QuantLib {
             Math::NonCentralChiSquareDistribution chis(df, ncps);
             Math::NonCentralChiSquareDistribution chit(df, ncpt);
 
-            double k = strike*
-                (discountT*CoxIngersollRoss::A(0.0,s)*QL_EXP(-B(0.0,s)*x0()))/
-                (discountS*CoxIngersollRoss::A(0.0,t)*QL_EXP(-B(0.0,t)*x0()));
-
-            double r = QL_LOG(CoxIngersollRoss::A(t,s)/k)/b; 
-            std::cout << r << std::endl;
-            double call = discountS*chis(2.0*r*(rho+psi+b)) -
-                k*discountT*chit(2.0*r*(rho+psi));
+            double z = QL_LOG(CoxIngersollRoss::A(t,s)/strike)/b; 
+            double call = discountS*chis(2.0*z*(rho+psi+b)) -
+                   strike*discountT*chit(2.0*z*(rho+psi));
             if (type == Option::Call)
                 return call;
             else

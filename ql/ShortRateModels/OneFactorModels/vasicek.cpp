@@ -33,7 +33,7 @@ namespace QuantLib {
         using Optimization::PositiveConstraint;
 
         Vasicek::Vasicek(Rate r0, double a, double b, double sigma)
-        : OneFactorModel(3), r0_(r0),
+        : OneFactorAffineModel(3), r0_(r0),
           a_(parameters_[0]), b_(parameters_[1]), sigma_(parameters_[2]) {
             a_ = ConstantParameter(a, PositiveConstraint());
             b_ = ConstantParameter(b, NoConstraint());

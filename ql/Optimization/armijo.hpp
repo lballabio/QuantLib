@@ -55,8 +55,8 @@ namespace QuantLib {
 
             //! Perform line search
             virtual double operator() (
-                Problem &P,// Optimization problem
-                double t_ini);     // initial value of line-search step
+                Problem &P,     // Optimization problem
+                double t_ini);  // initial value of line-search step
           private:
             //! Armijo paramters
             double alpha_, beta_;

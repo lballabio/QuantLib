@@ -83,6 +83,8 @@ namespace QuantLib {
 
             parameters->floatingResetTimes.clear();
             parameters->floatingPayTimes.clear();
+            parameters->floatingAccrualTimes.clear();
+
             const std::vector<Handle<CashFlow> >& floatingLeg = 
                 swap_->floatingLeg();
             std::vector<Handle<CashFlow> >::const_iterator begin, end;
@@ -112,6 +114,8 @@ namespace QuantLib {
 */
                 time = counter.yearFraction(settlement, coupon->date());
                 parameters->floatingPayTimes.push_back(time);
+                parameters->floatingAccrualTimes.push_back(coupon->accrualPeriod());
+
             }
             parameters->exerciseType = exercise_.type();
             parameters->exerciseTimes.clear();

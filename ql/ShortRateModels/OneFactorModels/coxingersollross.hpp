@@ -34,14 +34,15 @@ namespace QuantLib {
         //! Cox-Ingersoll-Ross model class.
         /*! This class implements the Cox-Ingersoll-Ross model defined by 
             \f[ 
-                dr_t = (\theta - \alpha r_t)dt + \sqrt{r_t}\sigma dW_t .
+                dr_t = k(\theta - r_t)dt + \sqrt{r_t}\sigma dW_t .
             \f]
         */
-        class CoxIngersollRoss : public OneFactorModel, 
-                                 public OneFactorAffineModel {
+        class CoxIngersollRoss : public OneFactorAffineModel {
           public:
-            CoxIngersollRoss(double theta = 0.1, double k = 0.1, 
-                             double sigma = 0.1, double r0 = 0.05);
+            CoxIngersollRoss(Rate r0 = 0.05,
+                             double theta = 0.1, 
+                             double k = 0.1, 
+                             double sigma = 0.1);
 
             virtual double discountBondOption(Option::Type type,
                                               double strike,
@@ -67,6 +68,7 @@ namespace QuantLib {
             
           private:
             class VolatilityConstraint;
+            class HelperProcess;
 
             Parameter& theta_;
             Parameter& k_;
@@ -74,9 +76,9 @@ namespace QuantLib {
             Parameter& r0_;
         };
 
-        class SquareRootProcess : public DiffusionProcess {
+        class CoxIngersollRoss::HelperProcess : public DiffusionProcess {
           public:
-            SquareRootProcess(double theta, double k, double sigma, double y0) 
+            HelperProcess(double theta, double k, double sigma, double y0) 
             : DiffusionProcess(y0), theta_(theta), k_(k), sigma_(sigma) {}
 
             double drift(Time t, double y) const {
@@ -107,7 +109,7 @@ namespace QuantLib {
                      double sigma,
                      double x0)
             : ShortRateDynamics(Handle<DiffusionProcess>(
-                  new SquareRootProcess(theta, k, sigma, QL_SQRT(x0)))) {}
+                  new HelperProcess(theta, k, sigma, QL_SQRT(x0)))) {}
 
             virtual double variable(Time t, Rate r) const {
                 return QL_SQRT(r);

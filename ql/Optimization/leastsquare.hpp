@@ -38,24 +38,23 @@ namespace QuantLib {
             //! compute the target vector and the values of the fonction to fit
             virtual void targetAndValue(const Array& x, Array& target,
                                         Array& fct2fit) = 0;
-            //! compute the target vector, the values of the fonction to fit and the matrix of derivatives
+            //! compute the target vector, the values of the fonction to fit 
+            //! and the matrix of derivatives
             virtual void targetValueAndGradient (const Array& x,
                 Math::Matrix& grad_fct2fit, Array& target, Array& fct2fit) = 0;
         };
 
         /*!
-           Design a least square function as a cost function using
-           the interface provided by LeastSquareProblem class.
-           Array vector class requires function DotProduct() that computes dot product
-           and - operator
+           Design a least square function as a cost function using the interface
+           provided by LeastSquareProblem class.
+           Array vector class requires function DotProduct() that computes 
+           dot product and - operator.
            M matrix class requires function transpose() that computes transpose
-           and * operator with vector class
+           and * operator with vector class.
          */
         class LeastSquareFunction : public CostFunction {
           public:
             //! Default constructor
-
-
             LeastSquareFunction (LeastSquareProblem& lsp) : lsp_(lsp) {}
             //! Destructor
             virtual ~LeastSquareFunction () {}
@@ -64,7 +63,7 @@ namespace QuantLib {
             virtual double value (const Array& x);
             //! compute vector of derivatives of the least square function
             virtual void gradient (Array& grad_f, const Array& x);
-            //! compute value and vector of derivatives of the least square function
+            //! compute value and gradient of the least square function
             virtual double valueAndGradient (Array& grad_f,
                                 const Array& x);
           protected:
@@ -72,6 +71,79 @@ namespace QuantLib {
               LeastSquareProblem &lsp_;
         };
 
+        /*!
+           Default least square method using a given
+           optimization algorithm (default is conjugate gradient).
+
+           min { r(x) : x in R^n }
+
+           where r(x) = ||f(x)||^2 the euclidian norm of f(x)
+           for some vector-valued function f from R^n to R^m
+           f = (f1, ..., fm) with fi(x) = bi - phi(x,ti)
+           where bi is the vector of target data and phi
+           is a scalar function.
+
+           Assuming the differentiability of f, the gradient of r
+           is define by
+           grad r(x) = f'(x)^t.f(x)
+
+           Array vector class has the requirement of the previous class
+           Handle class is need to manage pointer to optimization method
+         */
+        class NonLinearLeastSquare {
+          public:
+            //! Default constructor
+            inline NonLinearLeastSquare(Constraint& c,
+                                        double accuracy = 1e-4,
+                                        int maxiter = 100);
+            //! Default constructor
+            inline NonLinearLeastSquare(Constraint& c,
+                                        double accuracy,
+                                        int maxiter,
+                                        Handle<Method> om);
+            //! Destructor
+            inline ~NonLinearLeastSquare () {}
+
+            //! Solve least square problem using numerix solver
+            inline Array& perform(LeastSquareProblem& lsProblem);
+
+            inline void setInitialValue(const Array& initialValue) {
+                initialValue_ = initialValue;
+            }
+
+            //! return the results
+            inline Array& results () { return results_; }
+
+            //! return the least square residual norm
+            inline double residualNorm() { return resnorm_; }
+
+            //! return last function value
+            inline double lastValue() { return bestAccuracy_; }
+
+            //! return exit flag
+            inline int exitFlag() { return exitFlag_; }
+
+            //! return the performed number of iterations
+            inline int iterationsNumber() { return nbIterations_; }
+          private:
+            //! solution vector
+            Array results_, initialValue_;
+            //! least square residual norm
+            double resnorm_;
+            //! Exit flag of the optimization process
+            int exitFlag_;
+            //! required accuracy of the solver
+            double accuracy_, bestAccuracy_;
+            //! maximum and real number of iterations
+            Size maxIterations_, nbIterations_;
+            //! Optimization method
+            Handle<Method> om_;
+            //constraint
+            Constraint& c_;
+
+        };
+
+        // inline definitions
 
         inline double LeastSquareFunction::value (const Array & x) {
             // size of target and function to fit vectors
@@ -114,122 +186,47 @@ namespace QuantLib {
             return DotProduct(diff, diff);
         }
 
-        /*!
-           Default least square method using a given
-           optimization algorithm (default is conjugate gradient).
-
-           min { r(x) : x in R^n }
-
-           where r(x) = ||f(x)||^2 the euclidian norm of f(x)
-           for some vector-valued function f from R^n to R^m
-           f = (f1, ..., fm) with fi(x) = bi - phi(x,ti)
-           where bi is the vector of target data and phi
-           is a scalar function.
-
-           Assuming the differentiability of f, the gradient of r
-           is define by
-           grad r(x) = f'(x)^t.f(x)
-
-           Array vector class has the requirement of the previous class
-           Handle class is need to manage pointer to optimization method
-         */
-        class NonLinearLeastSquare {
-          public:
-            //! Default constructor
-            inline NonLinearLeastSquare(Constraint& c,
-                                        double accuracy = 1e-4,
-                                        int maxiter = 100);
-            //! Default constructor
-            inline NonLinearLeastSquare(Constraint& c,
-                                        double accuracy,
-                                        int maxiter,
-                                        Handle<Method> om);
-            //! Destructor
-            inline ~NonLinearLeastSquare () {}
-
-            //! Solve least square problem using numerix solver
-            inline Array& perform(LeastSquareProblem& lsProblem) {
-                double eps = accuracy_;
-
-                // set initial value of the optimization method
-                om_->setInitialValue (initialValue_);
-                // set end criteria with a given maximum number of iteration
-                // and a given error eps
-                om_->setEndCriteria(EndCriteria(maxIterations_, eps));
-                om_->endCriteria().setPositiveOptimization();
-
-                // wrap the least square problem in an optimization function
-                LeastSquareFunction lsf(lsProblem);
-
-                // define optimization problem
-                Problem P(lsf, c_, *om_);
-
-                // minimize
-                P.minimize();
-
-                // summarize results of minimization
-                exitFlag_ = om_->endCriteria ().criteria();
-                nbIterations_ = om_->iterationNumber();
-
-                results_ = om_->x();
-                resnorm_ = om_->functionValue();
-                bestAccuracy_ = om_->functionValue();
-
-                return results_;
-            }
-
-            inline void setInitialValue(const Array& initialValue) {
-                initialValue_ = initialValue;
-            }
-
-            //! return the results
-            inline Array& results () { return results_; }
-
-            //! return the least square residual norm
-            inline double residualNorm() { return resnorm_; }
-
-            //! return last function value
-            inline double lastValue() { return bestAccuracy_; }
-
-            //! return exit flag
-            inline int exitFlag() { return exitFlag_; }
-
-            //! return the performed number of iterations
-            inline int iterationsNumber() { return nbIterations_; }
-
-          private:
-            //! solution vector
-            Array results_, initialValue_;
-            //! least square residual norm
-            double resnorm_;
-            //! Exit flag of the optimization process
-            int exitFlag_;
-            //! required accuracy of the solver
-            double accuracy_, bestAccuracy_;
-            //! maximum and real number of iterations
-            Size maxIterations_, nbIterations_;
-            //! Optimization method
-            Handle<Method> om_;
-            //constraint
-            Constraint& c_;
-
-        };
-
-
         inline NonLinearLeastSquare::NonLinearLeastSquare (
-          Constraint& c,
-          double accuracy,
-          int maxiter):
-        exitFlag_(-1), accuracy_ (accuracy), maxIterations_ (maxiter),
-            om_ (Handle<Method>(new ConjugateGradient())), c_(c)
+            Constraint& c, double accuracy, int maxiter)
+        : exitFlag_(-1), accuracy_ (accuracy), maxIterations_ (maxiter),
+          om_ (Handle<Method>(new ConjugateGradient())), c_(c)
         {}
 
         inline NonLinearLeastSquare::NonLinearLeastSquare (
-            Constraint& c,
-            double accuracy,
-            int maxiter, Handle<Method> om)
+            Constraint& c, double accuracy, int maxiter, Handle<Method> om)
         : exitFlag_(-1), accuracy_ (accuracy), maxIterations_ (maxiter),
           om_ (om), c_(c) {}
+
+        inline 
+        Array& NonLinearLeastSquare::perform(LeastSquareProblem& lsProblem) {
+            double eps = accuracy_;
+
+            // set initial value of the optimization method
+            om_->setInitialValue (initialValue_);
+            // set end criteria with a given maximum number of iteration
+            // and a given error eps
+            om_->setEndCriteria(EndCriteria(maxIterations_, eps));
+            om_->endCriteria().setPositiveOptimization();
+
+            // wrap the least square problem in an optimization function
+            LeastSquareFunction lsf(lsProblem);
+
+            // define optimization problem
+            Problem P(lsf, c_, *om_);
+
+            // minimize
+            P.minimize();
+
+            // summarize results of minimization
+            exitFlag_ = om_->endCriteria ().criteria();
+            nbIterations_ = om_->iterationNumber();
+
+            results_ = om_->x();
+            resnorm_ = om_->functionValue();
+            bestAccuracy_ = om_->functionValue();
+
+            return results_;
+        }
 
     }
 

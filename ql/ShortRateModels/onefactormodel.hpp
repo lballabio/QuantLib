@@ -111,10 +111,19 @@ namespace QuantLib {
                 P(t, T, r_t) = A(t,T)e^{ -B(t,T) r_t}.
             \f]
         */
-        class OneFactorAffineModel : public AffineModel {
+        class OneFactorAffineModel : public OneFactorModel,
+                                     public AffineModel {
           public:
+            OneFactorAffineModel(Size nParameters) 
+            : OneFactorModel(nParameters) {}
+
             double discountBond(Time now, Time maturity, Rate rate) const {
                 return A(now, maturity)*QL_EXP(-B(now, maturity)*rate);
+            }
+            DiscountFactor discount(Time t) const {
+                double x0 = dynamics()->process()->x0();
+                Rate r0 = dynamics()->shortRate(0.0, x0);
+                return discountBond(0.0, t, r0);
             }
           protected:
             virtual double A(Time t, Time T) const = 0;

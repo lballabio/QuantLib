@@ -91,7 +91,6 @@ namespace QuantLib {
         */
         class CalibrationSet : public std::vector<Handle<CalibrationHelper> > {
           public:
-
             void setPricingEngine(const Handle<OptionPricingEngine>& engine) {
                 for (Size i=0; i<size(); i++)
                     (*this)[i]->setPricingEngine(engine);

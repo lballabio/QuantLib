@@ -5,6 +5,7 @@ INCLUDES= -I${top_srcdir} -I${top_builddir}
 includedir = $(prefix)/include/ql/TermStructures
 
 include_HEADERS = \
+    affinetermstructure.hpp \
 	piecewiseflatforward.hpp \
 	ratehelpers.hpp \
     flatforward.hpp
@@ -12,6 +13,7 @@ include_HEADERS = \
 EXTRA_DIST=makefile.mak
 
 libTermStructures_la_SOURCES = \
+    affinetermstructure.cpp \
     piecewiseflatforward.cpp \
     ratehelpers.cpp
 

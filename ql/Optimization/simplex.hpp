@@ -39,18 +39,17 @@ namespace QuantLib {
         //! Multi-dimensionnal Simplex class
         class Simplex : public Method {
           public:
-            /*! Constructor taking as input \f$ \lambda \f$ as the
+            /*! Constructor taking as input lambda as the
                 characteristic length and tol as the precision
             */
             Simplex(double lambda, double tol) 
             : Method(), lambda_(lambda), tol_(tol) {}
             virtual ~Simplex() {}
 
-            double extrapolate(Problem& P, Size iHighest, 
-                               double& factor);
-
             virtual void minimize(Problem& P);
           private:
+            double extrapolate(Problem& P, Size iHighest, 
+                               double& factor);
             double lambda_;
             double tol_;
             std::vector<Array> vertices_;

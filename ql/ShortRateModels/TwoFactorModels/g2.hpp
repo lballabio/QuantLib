@@ -66,6 +66,10 @@ namespace QuantLib {
             double swaption(
                 const Instruments::SwaptionParameters& parameters) const;
 
+            DiscountFactor discount(Time t) const {
+                return termStructure()->discount(t);
+            }
+
           protected:
             void generateParameters();
 

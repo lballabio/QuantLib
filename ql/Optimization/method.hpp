@@ -46,28 +46,29 @@ namespace QuantLib {
             void setInitialValue(const Array& initialValue);
 
             //! Set optimization end criteria
-            inline void setEndCriteria(const EndCriteria& endCriteria) {
-                endCriteria_ = endCriteria;
-            }
+            void setEndCriteria(const EndCriteria& endCriteria);
 
             //! current iteration number
-            inline int& iterationNumber() {
-                return iterationNumber_;
-            }
+            inline int& iterationNumber() { return iterationNumber_; }
 
             //! optimization end criteria
             inline EndCriteria& endCriteria() { return endCriteria_; }
 
             //! number of evaluation of cost function
             inline int& functionEvaluation() { return functionEvaluation_; }
+
             //! number of evaluation of cost function gradient
             inline int& gradientEvaluation() { return gradientEvaluation_; }
+
             //! value of cost function
             inline double& functionValue() { return functionValue_; }
+
             //! value of cost function gradient norm
             inline double& gradientNormValue() { return squaredNorm_; }
+
             //! current value of the local minimum
             Array& x() { return x_; }
+
             //! current value of the search direction
             Array& searchDirection() { return searchDirection_; }
 
@@ -88,7 +89,11 @@ namespace QuantLib {
             Array x_, searchDirection_;
         };
 
-        // Inline methods
+        // inline definitions
+
+        inline void Method::setEndCriteria(const EndCriteria& endCriteria) {
+            endCriteria_ = endCriteria;
+        }
 
         inline void Method::setInitialValue(const Array& initialValue) {
             iterationNumber_ = 0;

@@ -61,8 +61,7 @@ namespace QuantLib {
                     GammaFunction().logValue(f2 + 1));
             }
 
-            double term = v * t;
-            double ans = term;
+            double ans = v*t;
 
             bool flag = false;
             int n = 1;
@@ -79,8 +78,7 @@ namespace QuantLib {
                     u *= lam / n;
                     v += u;
                     t *= x / f_2n;
-                    term = v * t;
-                    ans += term;
+                    ans += v*t;
                     n++; 
                     f_2n += 2.0;
                     f_x_2n += 2.0;

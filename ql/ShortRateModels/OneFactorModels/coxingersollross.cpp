@@ -57,8 +57,8 @@ namespace QuantLib {
         };
 
         CoxIngersollRoss::CoxIngersollRoss(
-            double theta, double k, double sigma, double r0) 
-        : OneFactorModel(4), 
+            Rate r0, double theta, double k, double sigma) 
+        : OneFactorAffineModel(4), 
           theta_(parameters_[0]), k_(parameters_[1]), 
           sigma_(parameters_[2]), r0_(parameters_[3]) {
             theta_ = ConstantParameter(theta, PositiveConstraint());
@@ -112,20 +112,29 @@ namespace QuantLib {
 
             double rho = 2.0*h/(sigma2*(QL_EXP(h*t) - 1.0));
             double psi = (k() + h)/sigma2;
- 
+
+            std::cout << "exp: " << (QL_EXP(h*t) - 1.0) << std::endl;
+            std::cout << "rho: " << rho << std::endl;
+            std::cout << "psi: " << psi << std::endl;
+
             double df = 4.0*k()*theta()/sigma2;
             double ncps = 2.0*rho*rho*x0()*QL_EXP(h*t)/(rho+psi+b);
             double ncpt = 2.0*rho*rho*x0()*QL_EXP(h*t)/(rho+psi);
 
+            std::cout << "df: " << df << std::endl;
+            std::cout << "ncps: " << ncps << std::endl;
+            std::cout << "ncpt: " << ncpt << std::endl;
+
             Math::NonCentralChiSquareDistribution chis(df, ncps);
             Math::NonCentralChiSquareDistribution chit(df, ncpt);
 
-            double k = strike*(discountT*A(0.0,s)*QL_EXP(-B(0.0,s)*x0()))/
-                              (discountS*A(0.0,t)*QL_EXP(-B(0.0,t)*x0()));
+            double z = QL_LOG(A(t,s)/strike)/b; 
+            double call = discountS*chis(2.0*z*(rho+psi+b)) -
+                   strike*discountT*chit(2.0*z*(rho+psi));
 
-            double r = QL_LOG(A(t,s)/k)/b; 
-            double call = discountS*chis(2.0*r*(rho+psi+b)) -
-                        k*discountT*chit(2.0*r*(rho+psi));
+            std::cout << "chis: " << chis(2.0*z*(rho+psi+b)) << std::endl;
+            std::cout << "chit: " << chit(2.0*z*(rho+psi)) << std::endl;
+
             if (type == Option::Call)
                 return call;
             else

@@ -45,25 +45,7 @@ namespace QuantLib {
 
             Constraint(const Handle<ConstraintImpl>& impl) : impl_(impl) {}
             bool test(const Array& params) const { return impl_->test(params); }
-            double update(Array& params, const Array& direction, double beta) {
-
-                double diff=beta;
-                Array newParams = params + diff*direction;
-                bool valid = test(newParams);
-                int icount = 0;
-                while (!valid) {
-                    if (icount > 200)
-                        throw Error("Can't update parameter vector");
-                    diff *= 0.5;
-                    icount ++;
-            
-                    newParams = params + diff*direction;
-                    valid = test(newParams);
-                }
-
-                params += diff*direction;
-                return diff;
-            }
+            double update(Array& params, const Array& direction, double beta);
 
           private:
             Handle<ConstraintImpl> impl_;
@@ -120,6 +102,29 @@ namespace QuantLib {
             : Constraint(Handle<ConstraintImpl>(
                 new BoundaryConstraintImpl(low, high))) {}
         };
+
+        // inline definitions
+
+        inline double Constraint::update(
+            Array& params, const Array& direction, double beta) {
+
+            double diff=beta;
+            Array newParams = params + diff*direction;
+            bool valid = test(newParams);
+            int icount = 0;
+            while (!valid) {
+                if (icount > 200)
+                    throw Error("Can't update parameter vector");
+                diff *= 0.5;
+                icount ++;
+        
+                newParams = params + diff*direction;
+                valid = test(newParams);
+            }
+
+            params += diff*direction;
+            return diff;
+        }
 
     }
 }

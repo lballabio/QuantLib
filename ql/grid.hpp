@@ -48,7 +48,7 @@ namespace QuantLib {
         TimeGrid() {}
         //! Regularly spaced time-grid
         TimeGrid(Time end, Size steps);
-        //! Time grid with mandatory fixed points
+        //! Time grid with mandatory time-points (regularly spaced between them)
         TimeGrid(const std::list<Time>& times, Size steps);
 
         Size findIndex(Time t) const;
@@ -73,9 +73,9 @@ namespace QuantLib {
     : std::vector<Time>(0) {
         Time last = times.back();
         Time dtMax;
-        // what's happening here?
-        // is the resulting TimeGrid regularly spaced?
-        // please add a comment
+        // The resulting timegrid have points at times listed in the input
+        // list. Between these points, there are inner-points which are
+        // regularly spaced.
         if (steps == 0) {
             std::vector<Time> diff;
             std::back_insert_iterator<std::vector<Time> > ii(diff);

@@ -38,7 +38,7 @@ namespace QuantLib {
             \f]
             where \f$ a \f$, \f$ b \f$ and \f$ \sigma \f$ are constants. 
         */
-        class Vasicek : public OneFactorModel, public OneFactorAffineModel {
+        class Vasicek : public OneFactorAffineModel {
           public:
             Vasicek(Rate r0 = 0.05, 
                     double a = 0.1, double b = 0.05, double sigma = 0.01);

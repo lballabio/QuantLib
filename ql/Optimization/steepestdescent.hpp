@@ -39,8 +39,8 @@ namespace QuantLib {
           public:
             //! default default constructor (msvc bug)
             SteepestDescent()
-            : Method(),
-              lineSearch_(Handle<LineSearch>(new ArmijoLineSearch ())) {}
+            : Method(), 
+              lineSearch_(Handle<LineSearch>(new ArmijoLineSearch())) {}
 
             //! default constructor
             SteepestDescent(const Handle<LineSearch>& lineSearch)

@@ -1,4 +1,3 @@
-
 /*
  Copyright (C) 2001, 2002 Sadruddin Rejeb
 
@@ -48,6 +47,9 @@ namespace QuantLib {
         /*! This is the base class for analytically tractable models */
         class AffineModel {
           public:
+            //! Implied discount curve
+            virtual DiscountFactor discount(Time t) const = 0;
+
             virtual double discountBondOption(Option::Type type,
                                               double strike,
                                               Time maturity,
@@ -90,6 +92,8 @@ namespace QuantLib {
                 CalibrationSet& instruments,
                 const Handle<Optimization::Method>& method);
 
+            const Handle<Optimization::Constraint>& constraint() const;
+
             //! Returns array of parameters on which calibration is done
             Array params();
             void setParams(const Array& params);
@@ -106,6 +110,13 @@ namespace QuantLib {
             class CalibrationFunction;
             friend class CalibrationFunction;
         };
+
+        // inline definitions
+
+        inline 
+        const Handle<Optimization::Constraint>& Model::constraint() const {
+            return constraint_;
+        }
 
         class Model::PrivateConstraint : public Optimization::Constraint {
           public:

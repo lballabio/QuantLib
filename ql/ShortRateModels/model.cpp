@@ -37,11 +37,7 @@ namespace QuantLib {
             CalibrationFunction( 
               Model* model,
               CalibrationSet& instruments) 
-            : model_(model, false),
-              instruments_(instruments), prices_(instruments.size()) {
-                for (Size i=0; i<prices_.size(); i++)
-                    prices_[i] = instruments_[i]->marketValue();
-            }
+            : model_(model, false), instruments_(instruments) {}
             virtual ~CalibrationFunction() {}
             
             virtual double value(
@@ -49,7 +45,7 @@ namespace QuantLib {
                 model_->setParams(params);
 
                 double value = 0.0;
-                for (Size i=0; i<prices_.size(); i++) {
+                for (Size i=0; i<instruments_.size(); i++) {
                     double diff = instruments_[i]->calibrationError();
                     value += diff*diff;
                 }
@@ -60,7 +56,6 @@ namespace QuantLib {
           private:
             Handle<Model> model_;
             CalibrationSet& instruments_;
-            Array prices_;
         };
 
         void Model::calibrate(

@@ -50,33 +50,12 @@ namespace QuantLib {
             bool succeed() { return succeed_; }
 
             //! Perform line search
-            virtual double operator() (
-                Problem &P,
-                double t_ini) = 0;
+            virtual double operator()(Problem &P, double t_ini) = 0;
 
             double update(Array& params, 
                           const Array& direction,
                           double beta,
-                          const Constraint& constraint) {
-
-                double diff=beta;
-
-                Array newParams = params + diff*direction;
-                bool valid = constraint.test(newParams);
-                int icount = 0;
-                while (!valid) {
-                    if (icount > 200)
-                        throw Error("Can't update linesearch");
-                    diff *= 0.5;
-                    icount ++;
-            
-                    newParams = params + diff*direction;
-                    valid = constraint.test(newParams);
-                }
-
-                params += diff*direction;
-                return diff;
-            }
+                          const Constraint& constraint);
 
           protected:
             //! new x and its gradient
@@ -87,6 +66,30 @@ namespace QuantLib {
             bool succeed_;
 
         };
+
+
+        inline double LineSearch::update(
+            Array& params, const Array& direction, double beta,
+            const Constraint& constraint) {
+
+            double diff=beta;
+
+            Array newParams = params + diff*direction;
+            bool valid = constraint.test(newParams);
+            int icount = 0;
+            while (!valid) {
+                if (icount > 200)
+                    throw Error("Can't update linesearch");
+                diff *= 0.5;
+                icount ++;
+        
+                newParams = params + diff*direction;
+                valid = constraint.test(newParams);
+            }
+
+            params += diff*direction;
+            return diff;
+        }
 
     }
 

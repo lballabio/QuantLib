@@ -28,29 +28,32 @@ namespace QuantLib {
 
     namespace Pricers {
 
+        using Instruments::VanillaCapFloor;
+
         void AnalyticalCapFloor::calculate() const {
             QL_REQUIRE(!model_.isNull(), 
                        "AnalyticalCapFloor: cannot price without model!");
 
             double value = 0.0;
-            Instruments::VanillaCapFloor::Type type = parameters_.type;
+            VanillaCapFloor::Type type = parameters_.type;
             Size nPeriods = parameters_.endTimes.size();
             for (Size i=0; i<nPeriods; i++) {
                 Time maturity = parameters_.startTimes[i];
                 Time bond = parameters_.endTimes[i];
-                Time tenor = bond - maturity;
+                Time tenor = parameters_.accrualTimes[i];
 
-                if ((type == Instruments::VanillaCapFloor::Cap) ||
-                    (type == Instruments::VanillaCapFloor::Collar)) {
+                if ((type == VanillaCapFloor::Cap) ||
+                    (type == VanillaCapFloor::Collar)) {
                     double temp = 1.0+parameters_.capRates[i]*tenor;
                     value += parameters_.nominals[i]*temp*
                         model_->discountBondOption(Option::Put, 1.0/temp, 
                                                    maturity, bond);
                 }
-                if ((type == Instruments::VanillaCapFloor::Floor) ||
-                    (type == Instruments::VanillaCapFloor::Collar)) {
+                if ((type == VanillaCapFloor::Floor) ||
+                    (type == VanillaCapFloor::Collar)) {
                     double temp = 1.0+parameters_.floorRates[i]*tenor;
-                    value += parameters_.nominals[i]*temp*
+                    double mult = (type == VanillaCapFloor::Floor) ? 1.0 : -1.0;
+                    value += parameters_.nominals[i]*temp*mult*
                         model_->discountBondOption(Option::Call, 1.0/temp, 
                                                    maturity, bond);
                 }

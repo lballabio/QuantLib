@@ -42,38 +42,23 @@ namespace QuantLib {
             ~Problem() {}
 
             //! call cost function computation and increment evaluation counter
-            double value(const Array& x) {
-                method_.functionEvaluation()++;
-                return costFunction_.value(x);
-            }
+            double value(const Array& x);
 
             //! call cost function gradient computation and increment
             //  evaluation counter
-            void gradient(Array& grad_f, const Array& x) {
-                method_.gradientEvaluation()++;
-                costFunction_.gradient(grad_f, x);
-            }
+            void gradient(Array& grad_f, const Array& x);
 
             //! call cost function computation and it gradient
-            double valueAndGradient (Array& grad_f, const Array& x) {
-                method_.functionEvaluation()++;
-                method_.gradientEvaluation()++;
-                return costFunction_.valueAndGradient(grad_f, x);
-            }
+            double valueAndGradient(Array& grad_f, const Array& x);
 
             //! Constrained optimization method
-            Method& method () {
-                return method_;
-            }
+            Method& method() { return method_; }
 
             //! Constraint
-            Constraint& constraint() {
-                return constraint_;
-            }
+            Constraint& constraint() { return constraint_; }
 
-            CostFunction& costFunction() {
-                return costFunction_;
-            }
+            //! Cost function
+            CostFunction& costFunction() { return costFunction_; }
 
             //! Minimization
             void minimize() { method_.minimize(*this); }
@@ -88,6 +73,24 @@ namespace QuantLib {
             //! constrained optimization method
             Method& method_;
         };
+
+        // inline definitions
+
+        inline double Problem::value(const Array& x) {
+            method_.functionEvaluation()++;
+            return costFunction_.value(x);
+        }
+
+        inline void Problem::gradient(Array& grad_f, const Array& x) {
+            method_.gradientEvaluation()++;
+            costFunction_.gradient(grad_f, x);
+        }
+
+        inline double Problem::valueAndGradient(Array& grad_f, const Array& x) {
+            method_.functionEvaluation()++;
+            method_.gradientEvaluation()++;
+            return costFunction_.valueAndGradient(grad_f, x);
+        }
 
     }
 
