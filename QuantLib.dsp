@@ -885,14 +885,6 @@ SOURCE=.\Include\ql\Indexes\libor.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\Sources\Indexes\libormanager.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\Include\ql\Indexes\libormanager.hpp
-# End Source File
-# Begin Source File
-
 SOURCE=.\Include\ql\Indexes\usdlibor.hpp
 # End Source File
 # Begin Source File
@@ -902,6 +894,14 @@ SOURCE=.\Sources\Indexes\xibor.cpp
 # Begin Source File
 
 SOURCE=.\Include\ql\Indexes\xibor.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\Sources\Indexes\xibormanager.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\Include\ql\Indexes\xibormanager.hpp
 # End Source File
 # End Group
 # Begin Group "CashFlows"

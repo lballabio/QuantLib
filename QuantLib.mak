@@ -74,7 +74,6 @@ CLEAN :
 	-@erase "$(INTDIR)\himalaya.obj"
 	-@erase "$(INTDIR)\himalayapathpricer.obj"
 	-@erase "$(INTDIR)\lecuyerrandomgenerator.obj"
-	-@erase "$(INTDIR)\libormanager.obj"
 	-@erase "$(INTDIR)\london.obj"
 	-@erase "$(INTDIR)\matrix.obj"
 	-@erase "$(INTDIR)\mceuropeanpricer.obj"
@@ -110,6 +109,7 @@ CLEAN :
 	-@erase "$(INTDIR)\wellington.obj"
 	-@erase "$(INTDIR)\westerncalendar.obj"
 	-@erase "$(INTDIR)\xibor.obj"
+	-@erase "$(INTDIR)\xibormanager.obj"
 	-@erase "$(INTDIR)\zurich.obj"
 	-@erase ".\lib\Win32\VisualStudio\QuantLib.lib"
 
@@ -188,7 +188,6 @@ LIB32_OBJS= \
 	"$(INTDIR)\piecewiseconstantforwards.obj" \
 	"$(INTDIR)\piecewiseflatforward.obj" \
 	"$(INTDIR)\ratehelpers.obj" \
-	"$(INTDIR)\libormanager.obj" \
 	"$(INTDIR)\xibor.obj" \
 	"$(INTDIR)\cashflowvectors.obj" \
 	"$(INTDIR)\parcoupon.obj" \
@@ -196,7 +195,8 @@ LIB32_OBJS= \
 	"$(INTDIR)\dataformatters.obj" \
 	"$(INTDIR)\date.obj" \
 	"$(INTDIR)\scheduler.obj" \
-	"$(INTDIR)\solver1d.obj"
+	"$(INTDIR)\solver1d.obj" \
+	"$(INTDIR)\xibormanager.obj"
 
 ".\lib\Win32\VisualStudio\QuantLib.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
     $(LIB32) @<<
@@ -249,7 +249,6 @@ CLEAN :
 	-@erase "$(INTDIR)\himalaya.obj"
 	-@erase "$(INTDIR)\himalayapathpricer.obj"
 	-@erase "$(INTDIR)\lecuyerrandomgenerator.obj"
-	-@erase "$(INTDIR)\libormanager.obj"
 	-@erase "$(INTDIR)\london.obj"
 	-@erase "$(INTDIR)\matrix.obj"
 	-@erase "$(INTDIR)\mceuropeanpricer.obj"
@@ -286,6 +285,7 @@ CLEAN :
 	-@erase "$(INTDIR)\wellington.obj"
 	-@erase "$(INTDIR)\westerncalendar.obj"
 	-@erase "$(INTDIR)\xibor.obj"
+	-@erase "$(INTDIR)\xibormanager.obj"
 	-@erase "$(INTDIR)\zurich.obj"
 	-@erase ".\lib\Win32\VisualStudio\QuantLib_d.lib"
 
@@ -364,7 +364,6 @@ LIB32_OBJS= \
 	"$(INTDIR)\piecewiseconstantforwards.obj" \
 	"$(INTDIR)\piecewiseflatforward.obj" \
 	"$(INTDIR)\ratehelpers.obj" \
-	"$(INTDIR)\libormanager.obj" \
 	"$(INTDIR)\xibor.obj" \
 	"$(INTDIR)\cashflowvectors.obj" \
 	"$(INTDIR)\parcoupon.obj" \
@@ -372,7 +371,8 @@ LIB32_OBJS= \
 	"$(INTDIR)\dataformatters.obj" \
 	"$(INTDIR)\date.obj" \
 	"$(INTDIR)\scheduler.obj" \
-	"$(INTDIR)\solver1d.obj"
+	"$(INTDIR)\solver1d.obj" \
+	"$(INTDIR)\xibormanager.obj"
 
 ".\lib\Win32\VisualStudio\QuantLib_d.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
     $(LIB32) @<<
@@ -806,15 +806,15 @@ SOURCE=.\Sources\TermStructures\ratehelpers.cpp
 	$(CPP) $(CPP_PROJ) $(SOURCE)
 
 
-SOURCE=.\Sources\Indexes\libormanager.cpp
-
-"$(INTDIR)\libormanager.obj" : $(SOURCE) "$(INTDIR)"
-	$(CPP) $(CPP_PROJ) $(SOURCE)
-
-
 SOURCE=.\Sources\Indexes\xibor.cpp
 
 "$(INTDIR)\xibor.obj" : $(SOURCE) "$(INTDIR)"
+	$(CPP) $(CPP_PROJ) $(SOURCE)
+
+
+SOURCE=.\Sources\Indexes\xibormanager.cpp
+
+"$(INTDIR)\xibormanager.obj" : $(SOURCE) "$(INTDIR)"
 	$(CPP) $(CPP_PROJ) $(SOURCE)
 
 
