@@ -1057,47 +1057,6 @@
 				</FileConfiguration>
 			</File>
 			<File
-				RelativePath="marketelements.cpp">
-				<FileConfiguration
-					Name="Debug|Win32">
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="0"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-						BasicRuntimeChecks="3"
-						BrowseInformation="1"/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release|Win32">
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="2"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-						BrowseInformation="1"/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug MTDLL|Win32">
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="0"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-						BasicRuntimeChecks="3"
-						BrowseInformation="1"/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release MTDLL|Win32">
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="2"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-						BrowseInformation="1"/>
-				</FileConfiguration>
-			</File>
-			<File
 				RelativePath="matrices.cpp">
 				<FileConfiguration
 					Name="Debug|Win32">
@@ -1303,7 +1262,7 @@
 				</FileConfiguration>
 			</File>
 			<File
-				RelativePath="qltestlistener.cpp">
+				RelativePath="quantlibtestsuite.cpp">
 				<FileConfiguration
 					Name="Debug|Win32">
 					<Tool
@@ -1344,45 +1303,7 @@
 				</FileConfiguration>
 			</File>
 			<File
-				RelativePath="quantlibtestsuite.cpp">
-				<FileConfiguration
-					Name="Debug|Win32">
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="0"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-						BasicRuntimeChecks="3"
-						BrowseInformation="1"/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release|Win32">
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="2"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-						BrowseInformation="1"/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug MTDLL|Win32">
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="0"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-						BasicRuntimeChecks="3"
-						BrowseInformation="1"/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release MTDLL|Win32">
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="2"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-						BrowseInformation="1"/>
-				</FileConfiguration>
+				RelativePath=".\quotes.cpp">
 			</File>
 			<File
 				RelativePath="riskstats.cpp">
@@ -1733,9 +1654,6 @@
 				RelativePath="lowdiscrepancysequences.hpp">
 			</File>
 			<File
-				RelativePath="marketelements.hpp">
-			</File>
-			<File
 				RelativePath="matrices.hpp">
 			</File>
 			<File
@@ -1751,7 +1669,7 @@
 				RelativePath="piecewiseflatforward.hpp">
 			</File>
 			<File
-				RelativePath="qltestlistener.hpp">
+				RelativePath=".\quotes.hpp">
 			</File>
 			<File
 				RelativePath="riskstats.hpp">
