@@ -30,6 +30,7 @@
 #include <ql/PricingEngines/blackformula.hpp>
 #include <ql/RandomNumbers/rngtraits.hpp>
 #include <ql/MonteCarlo/getcovariance.hpp>
+#include <ql/DayCounters/actual360.hpp>
 #include <boost/progress.hpp>
 #include <map>
 
@@ -256,7 +257,7 @@ void OldPricerTest::testMcSingleFactorPricers() {
 
     QL_TEST_START_TIMING
 
-    DayCounter dc = Settings::instance().dayCounter();
+    DayCounter dc = Actual360();
 
     BigNatural seed = 3456789;
 
@@ -399,11 +400,11 @@ void OldPricerTest::testMcSingleFactorPricers() {
 
         Date today = Date::todaysDate();
         Handle<YieldTermStructure> riskFreeRate(
-                                    flatRate(today, cases4[k].riskFreeRate, dc));
+                                flatRate(today, cases4[k].riskFreeRate, dc));
         Handle<YieldTermStructure> dividendYield(
-                                    flatRate(today, cases4[k].dividendYield, dc));
+                                flatRate(today, cases4[k].dividendYield, dc));
         Handle<BlackVolTermStructure> volatility(
-                                    flatVol(today, cases4[k].volatility));
+                                flatVol(today, cases4[k].volatility, dc));
 
         McDiscreteArithmeticAPO pricer(cases4[k].type,
                                        cases4[k].underlying,
@@ -513,11 +514,11 @@ void OldPricerTest::testMcSingleFactorPricers() {
 
         Date today = Date::todaysDate();
         Handle<YieldTermStructure> riskFreeRate(
-                                    flatRate(today, cases5[l].riskFreeRate, dc));
+                                flatRate(today, cases5[l].riskFreeRate, dc));
         Handle<YieldTermStructure> dividendYield(
-                                    flatRate(today, cases5[l].dividendYield, dc));
+                                flatRate(today, cases5[l].dividendYield, dc));
         Handle<BlackVolTermStructure> volatility(
-                                    flatVol(today, cases5[l].volatility));
+                                flatVol(today, cases5[l].volatility, dc));
 
         McDiscreteArithmeticASO pricer(cases5[l].type,
                                        cases5[l].underlying,
@@ -591,8 +592,8 @@ void OldPricerTest::testMcMultiFactorPricers() {
     BOOST_MESSAGE("Testing old-style Monte Carlo multi-factor pricers...");
 
     QL_TEST_START_TIMING;
-    
-    DayCounter dc = Settings::instance().dayCounter();
+
+    DayCounter dc = Actual360();
     Matrix correlation(4,4);
     correlation[0][0] = 1.00;
                     correlation[0][1] = 0.50;
@@ -613,10 +614,10 @@ void OldPricerTest::testMcMultiFactorPricers() {
 
     Date today = Date::todaysDate();
     std::vector<Handle<BlackVolTermStructure> > volatilities(4);
-    volatilities[0] = Handle<BlackVolTermStructure>(flatVol(today, 0.30));
-    volatilities[1] = Handle<BlackVolTermStructure>(flatVol(today, 0.35));
-    volatilities[2] = Handle<BlackVolTermStructure>(flatVol(today, 0.25));
-    volatilities[3] = Handle<BlackVolTermStructure>(flatVol(today, 0.20));
+    volatilities[0] = Handle<BlackVolTermStructure>(flatVol(today, 0.30, dc));
+    volatilities[1] = Handle<BlackVolTermStructure>(flatVol(today, 0.35, dc));
+    volatilities[2] = Handle<BlackVolTermStructure>(flatVol(today, 0.25, dc));
+    volatilities[3] = Handle<BlackVolTermStructure>(flatVol(today, 0.20, dc));
 
     std::vector<Handle<YieldTermStructure> > dividendYields(4);
     dividendYields[0] = Handle<YieldTermStructure>(flatRate(today, 0.01, dc));
@@ -629,7 +630,7 @@ void OldPricerTest::testMcMultiFactorPricers() {
 
     // degenerate portfolio
     Matrix perfectCorrelation(4,4,1.0);
-    Handle<BlackVolTermStructure> sameVol(flatVol(today, 0.30));
+    Handle<BlackVolTermStructure> sameVol(flatVol(today, 0.30, dc));
     Handle<YieldTermStructure> sameDividend(flatRate(today, 0.03, dc));
 
     std::vector<Handle<BlackVolTermStructure> > sameAssetVols(4, sameVol);

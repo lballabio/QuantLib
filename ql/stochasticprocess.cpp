@@ -163,7 +163,8 @@ namespace QuantLib {
                 localVolatility_.linkTo(
                     boost::shared_ptr<LocalVolTermStructure>(new
                         LocalConstantVol(constVol->referenceDate(),
-                                         constVol->blackVol(0.0, x0_->value()))));
+                                         constVol->blackVol(0.0, x0_->value()),
+                                         constVol->dayCounter())));
                 updated_ = true;
                 return localVolatility_.currentLink();
             }

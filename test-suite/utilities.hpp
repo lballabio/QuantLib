@@ -77,17 +77,21 @@ namespace QuantLib {
 
     boost::shared_ptr<BlackVolTermStructure>
     flatVol(const Date& today,
-            const boost::shared_ptr<Quote>& volatility);
+            const boost::shared_ptr<Quote>& volatility,
+            const DayCounter& dc);
 
     boost::shared_ptr<BlackVolTermStructure>
     flatVol(const Date& today,
-            Volatility volatility);
+            Volatility volatility,
+            const DayCounter& dc);
 
     boost::shared_ptr<BlackVolTermStructure>
-    flatVol(const boost::shared_ptr<Quote>& volatility);
+    flatVol(const boost::shared_ptr<Quote>& volatility,
+            const DayCounter& dc);
 
     boost::shared_ptr<BlackVolTermStructure>
-    flatVol(Volatility volatility);
+    flatVol(Volatility volatility,
+            const DayCounter& dc);
 
 
     Real relativeError(Real x1, Real x2, Real reference);

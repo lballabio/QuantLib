@@ -32,7 +32,7 @@ namespace QuantLib {
         const boost::shared_ptr<BlackScholesProcess>& process =
             arguments_.blackScholesProcess;
 
-        Real variance = 
+        Real variance =
             process->blackVolatility()->blackVariance(
                                               arguments_.exercise->lastDate(),
                                               payoff->strike());
@@ -53,15 +53,9 @@ namespace QuantLib {
         results_.elasticity = black.elasticity(spot);
         results_.gamma = black.gamma(spot);
 
-        #ifndef QL_DISABLE_DEPRECATED
         DayCounter rfdc  = process->riskFreeRate()->dayCounter();
         DayCounter divdc = process->dividendYield()->dayCounter();
         DayCounter voldc = process->blackVolatility()->dayCounter();
-        #else
-        DayCounter rfdc  = Settings::instance().dayCounter();
-        DayCounter divdc = Settings::instance().dayCounter();
-        DayCounter voldc = Settings::instance().dayCounter();
-        #endif
         Time t = rfdc.yearFraction(process->riskFreeRate()->referenceDate(),
                                    arguments_.exercise->lastDate());
         results_.rho = black.rho(t);
@@ -75,7 +69,7 @@ namespace QuantLib {
         results_.vega = black.vega(t);
         try {
             results_.theta = black.theta(spot, t);
-            results_.thetaPerDay = 
+            results_.thetaPerDay =
                 black.thetaPerDay(spot, t);
         } catch (Error&) {
             results_.theta = Null<Real>();

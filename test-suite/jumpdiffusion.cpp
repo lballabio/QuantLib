@@ -300,7 +300,7 @@ void JumpDiffusionTest::testMerton76() {
 
 
 
-    DayCounter dc = Settings::instance().dayCounter();
+    DayCounter dc = Actual360();
     Date today = Date::todaysDate();
 
     boost::shared_ptr<SimpleQuote> spot(new SimpleQuote(0.0));
@@ -309,7 +309,7 @@ void JumpDiffusionTest::testMerton76() {
     boost::shared_ptr<SimpleQuote> rRate(new SimpleQuote(0.0));
     boost::shared_ptr<YieldTermStructure> rTS = flatRate(today, rRate, dc);
     boost::shared_ptr<SimpleQuote> vol(new SimpleQuote(0.0));
-    boost::shared_ptr<BlackVolTermStructure> volTS = flatVol(today, vol);
+    boost::shared_ptr<BlackVolTermStructure> volTS = flatVol(today, vol, dc);
 
     boost::shared_ptr<SimpleQuote> jumpIntensity(new SimpleQuote(0.0));
     boost::shared_ptr<SimpleQuote> meanLogJump(new SimpleQuote(0.0));
@@ -334,7 +334,7 @@ void JumpDiffusionTest::testMerton76() {
         boost::shared_ptr<StrikedTypePayoff> payoff(new
             PlainVanillaPayoff(values[i].type, values[i].strike));
 
-        Date exDate = today + Integer(values[i].t*Settings::instance().dayCounterBase()+0.5);
+        Date exDate = today + Integer(values[i].t*360+0.5);
         boost::shared_ptr<Exercise> exercise(new EuropeanExercise(exDate));
 
         spot ->setValue(values[i].s);
@@ -404,7 +404,7 @@ void JumpDiffusionTest::testGreeks() {
     Real mLJ[] = { -0.20, 0.0, 0.20 };
     Volatility jV[] = { 0.01, 0.25 };
 
-    DayCounter dc = Settings::instance().dayCounter();
+    DayCounter dc = Actual360();
     Date today = Date::todaysDate();
     Settings::instance().setEvaluationDate(today);
 
@@ -414,7 +414,7 @@ void JumpDiffusionTest::testGreeks() {
     boost::shared_ptr<SimpleQuote> rRate(new SimpleQuote(0.0));
     Handle<YieldTermStructure> rTS(flatRate(rRate, dc));
     boost::shared_ptr<SimpleQuote> vol(new SimpleQuote(0.0));
-    Handle<BlackVolTermStructure> volTS(flatVol(vol));
+    Handle<BlackVolTermStructure> volTS(flatVol(vol, dc));
 
     boost::shared_ptr<SimpleQuote> jumpIntensity(new SimpleQuote(0.0));
     boost::shared_ptr<SimpleQuote> meanLogJump(new SimpleQuote(0.0));
@@ -442,7 +442,7 @@ void JumpDiffusionTest::testGreeks() {
       for (Size jj3=0; jj3<LENGTH(jV); jj3++) {
         jumpVol->setValue(jV[jj3]);
         for (Size k=0; k<LENGTH(residualTimes); k++) {
-          Date exDate = today + Integer(residualTimes[k]*Settings::instance().dayCounterBase()+0.5);
+          Date exDate = today + Integer(residualTimes[k]*360+0.5);
           boost::shared_ptr<Exercise> exercise(new EuropeanExercise(exDate));
           for (Size kk=0; kk<1; kk++) {
               // option to check

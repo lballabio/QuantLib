@@ -100,12 +100,7 @@ namespace QuantLib {
     }
 
     Rate ParCoupon::indexFixing() const {
-        /// ??? ///
-        #ifndef QL_DISABLE_DEPRECATED
         DayCounter dayCount = index_->termStructure()->dayCounter();
-        #else
-        DayCounter dayCount = Settings::instance().dayCounter();
-        #endif
         Date begin = index_->calendar().advance(
                                 fixingDate(), index_->settlementDays(), Days);
         Date temp = index_->calendar().advance(accrualEndDate_,

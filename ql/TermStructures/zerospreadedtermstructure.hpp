@@ -45,9 +45,7 @@ namespace QuantLib {
                                   const Handle<Quote>& spread);
         //! \name YieldTermStructure interface
         //@{
-        #ifndef QL_DISABLE_DEPRECATED
         DayCounter dayCounter() const { return originalCurve_->dayCounter(); }
-        #endif
         Calendar calendar() const;
         const Date& referenceDate() const;
         #ifndef QL_DISABLE_DEPRECATED

@@ -238,7 +238,7 @@ void BasketOptionTest::testEuroTwoValues() {
         {BasketOption::Max,  Option::Put,   98.0, 100.0, 105.0, 0.06, 0.09, 0.05, 0.50, 0.11, 0.16, 0.63,  1.2181, 1.0e-4}
     };
 
-    DayCounter dc = Settings::instance().dayCounter();
+    DayCounter dc = Actual360();
     Date today = Date::todaysDate();
 
     boost::shared_ptr<SimpleQuote> spot1(new SimpleQuote(0.0));
@@ -253,9 +253,9 @@ void BasketOptionTest::testEuroTwoValues() {
     boost::shared_ptr<YieldTermStructure> rTS = flatRate(today, rRate, dc);
 
     boost::shared_ptr<SimpleQuote> vol1(new SimpleQuote(0.0));
-    boost::shared_ptr<BlackVolTermStructure> volTS1 = flatVol(today, vol1);
+    boost::shared_ptr<BlackVolTermStructure> volTS1 = flatVol(today, vol1, dc);
     boost::shared_ptr<SimpleQuote> vol2(new SimpleQuote(0.0));
-    boost::shared_ptr<BlackVolTermStructure> volTS2 = flatVol(today, vol2);
+    boost::shared_ptr<BlackVolTermStructure> volTS2 = flatVol(today, vol2, dc);
 
     boost::shared_ptr<PricingEngine> engine(new StulzEngine);
 
@@ -272,7 +272,7 @@ void BasketOptionTest::testEuroTwoValues() {
         boost::shared_ptr<PlainVanillaPayoff> payoff(new
             PlainVanillaPayoff(values[i].type, values[i].strike));
 
-        Date exDate = today + Integer(values[i].t*Settings::instance().dayCounterBase()+0.5);
+        Date exDate = today + Integer(values[i].t*360+0.5);
         boost::shared_ptr<Exercise> exercise(new EuropeanExercise(exDate));
 
         spot1 ->setValue(values[i].s1);
@@ -423,7 +423,7 @@ void BasketOptionTest::testBarraquandThreeValues() {
 */
     };
 
-    DayCounter dc = Settings::instance().dayCounter();
+    DayCounter dc = Actual360();
     Date today = Date::todaysDate();
 
     boost::shared_ptr<SimpleQuote> spot1(new SimpleQuote(0.0));
@@ -437,11 +437,11 @@ void BasketOptionTest::testBarraquandThreeValues() {
     boost::shared_ptr<YieldTermStructure> rTS = flatRate(today, rRate, dc);
 
     boost::shared_ptr<SimpleQuote> vol1(new SimpleQuote(0.0));
-    boost::shared_ptr<BlackVolTermStructure> volTS1 = flatVol(today, vol1);
+    boost::shared_ptr<BlackVolTermStructure> volTS1 = flatVol(today, vol1, dc);
     boost::shared_ptr<SimpleQuote> vol2(new SimpleQuote(0.0));
-    boost::shared_ptr<BlackVolTermStructure> volTS2 = flatVol(today, vol2);
+    boost::shared_ptr<BlackVolTermStructure> volTS2 = flatVol(today, vol2, dc);
     boost::shared_ptr<SimpleQuote> vol3(new SimpleQuote(0.0));
-    boost::shared_ptr<BlackVolTermStructure> volTS3 = flatVol(today, vol3);
+    boost::shared_ptr<BlackVolTermStructure> volTS3 = flatVol(today, vol3, dc);
 
     for (Size i=0; i<LENGTH(values); i++) {
 
@@ -564,7 +564,7 @@ void BasketOptionTest::testTavellaValues() {
         {BasketOption::Max, Option::Call,  100,    100,   100, 100,  0.05, 3.00, 0.20, 0.20, 0.20, 0.0, -999, 18.082}
     };
 
-    DayCounter dc = Settings::instance().dayCounter();
+    DayCounter dc = Actual360();
     Date today = Date::todaysDate();
 
     boost::shared_ptr<SimpleQuote> spot1(new SimpleQuote(0.0));
@@ -578,11 +578,11 @@ void BasketOptionTest::testTavellaValues() {
     boost::shared_ptr<YieldTermStructure> rTS = flatRate(today, rRate, dc);
 
     boost::shared_ptr<SimpleQuote> vol1(new SimpleQuote(0.0));
-    boost::shared_ptr<BlackVolTermStructure> volTS1 = flatVol(today, vol1);
+    boost::shared_ptr<BlackVolTermStructure> volTS1 = flatVol(today, vol1, dc);
     boost::shared_ptr<SimpleQuote> vol2(new SimpleQuote(0.0));
-    boost::shared_ptr<BlackVolTermStructure> volTS2 = flatVol(today, vol2);
+    boost::shared_ptr<BlackVolTermStructure> volTS2 = flatVol(today, vol2, dc);
     boost::shared_ptr<SimpleQuote> vol3(new SimpleQuote(0.0));
-    boost::shared_ptr<BlackVolTermStructure> volTS3 = flatVol(today, vol3);
+    boost::shared_ptr<BlackVolTermStructure> volTS3 = flatVol(today, vol3, dc);
 
     Real mcRelativeErrorTolerance = 0.01;
     Size requiredSamples = 10000;
@@ -595,7 +595,7 @@ void BasketOptionTest::testTavellaValues() {
     boost::shared_ptr<PlainVanillaPayoff> payoff(new
         PlainVanillaPayoff(values[0].type, values[0].strike));
 
-    Date exDate = today + Integer(values[0].t*Settings::instance().dayCounterBase()+0.5);
+    Date exDate = today + Integer(values[0].t*360+0.5);
     boost::shared_ptr<Exercise> exercise(new AmericanExercise(today, exDate));
 
     spot1 ->setValue(values[0].s1);
@@ -704,7 +704,7 @@ void BasketOptionTest::testOneDAmericanValues() {
     };
 
 
-    DayCounter dc = Settings::instance().dayCounter();
+    DayCounter dc = Actual360();
     Date today = Date::todaysDate();
 
     boost::shared_ptr<SimpleQuote> spot1(new SimpleQuote(0.0));
@@ -716,7 +716,7 @@ void BasketOptionTest::testOneDAmericanValues() {
     boost::shared_ptr<YieldTermStructure> rTS = flatRate(today, rRate, dc);
 
     boost::shared_ptr<SimpleQuote> vol1(new SimpleQuote(0.0));
-    boost::shared_ptr<BlackVolTermStructure> volTS1 = flatVol(today, vol1);
+    boost::shared_ptr<BlackVolTermStructure> volTS1 = flatVol(today, vol1, dc);
 
     Size requiredSamples = 10000;
     Size timeSteps = 52;
@@ -740,7 +740,7 @@ void BasketOptionTest::testOneDAmericanValues() {
         boost::shared_ptr<PlainVanillaPayoff> payoff(new
             PlainVanillaPayoff(values[i].type, values[i].strike));
 
-        Date exDate = today + Integer(values[i].t*Settings::instance().dayCounterBase()+0.5);
+        Date exDate = today + Integer(values[i].t*360+0.5);
         boost::shared_ptr<Exercise> exercise(new AmericanExercise(today,
                                                                   exDate));
 

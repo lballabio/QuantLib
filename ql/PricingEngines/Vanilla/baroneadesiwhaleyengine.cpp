@@ -24,7 +24,7 @@ namespace QuantLib {
     // critical commodity price
     Real BaroneAdesiWhaleyApproximationEngine::criticalPrice(
         const boost::shared_ptr<StrikedTypePayoff>& payoff,
-        DiscountFactor riskFreeDiscount, 
+        DiscountFactor riskFreeDiscount,
         DiscountFactor dividendDiscount,
         Real variance, Real tolerance) {
 
@@ -38,15 +38,15 @@ namespace QuantLib {
             case Option::Call:
             qu = (-(n-1.0) + QL_SQRT(((n-1.0)*(n-1.0)) + 4.0*m))/2.0;
             Su = payoff->strike() / (1.0 - 1.0/qu);
-            h = -(bT + 2.0*QL_SQRT(variance)) * payoff->strike() / 
+            h = -(bT + 2.0*QL_SQRT(variance)) * payoff->strike() /
                 (Su - payoff->strike());
-            Si = payoff->strike() + (Su - payoff->strike()) * 
+            Si = payoff->strike() + (Su - payoff->strike()) *
                 (1.0 - QL_EXP(h));
             break;
             case Option::Put:
             qu = (-(n-1.0) - QL_SQRT(((n-1.0)*(n-1.0)) + 4.0*m))/2.0;
             Su = payoff->strike() / (1.0 - 1.0/qu);
-            h = (bT - 2.0*QL_SQRT(variance)) * payoff->strike() / 
+            h = (bT - 2.0*QL_SQRT(variance)) * payoff->strike() /
                 (payoff->strike() - Su);
             Si = Su + (payoff->strike() - Su) * QL_EXP(h);
             break;
@@ -106,9 +106,9 @@ namespace QuantLib {
                     RHS = BlackFormula(forwardSi, riskFreeDiscount, variance,
                         payoff).value() - (1 - dividendDiscount *
                         cumNormalDist(-d1)) * Si / Q;
-                    bi = -dividendDiscount * cumNormalDist(-d1) * 
+                    bi = -dividendDiscount * cumNormalDist(-d1) *
                         (1 - 1 / Q)
-                        - (1 + dividendDiscount * cumNormalDist(-d1) 
+                        - (1 + dividendDiscount * cumNormalDist(-d1)
                         / QL_SQRT(variance)) / Q;
                 }
                 break;
@@ -124,7 +124,7 @@ namespace QuantLib {
         QL_REQUIRE(arguments_.exercise->type() == Exercise::American,
                    "not an American Option");
 
-        boost::shared_ptr<AmericanExercise> ex = 
+        boost::shared_ptr<AmericanExercise> ex =
             boost::dynamic_pointer_cast<AmericanExercise>(arguments_.exercise);
         QL_REQUIRE(ex, "non-American exercise given");
         QL_REQUIRE(!ex->payoffAtExpiry(),
@@ -155,17 +155,12 @@ namespace QuantLib {
             results_.elasticity   = black.elasticity(spot);
             results_.gamma        = black.gamma(spot);
 
-            #ifndef QL_DISABLE_DEPRECATED
             DayCounter rfdc  = process->riskFreeRate()->dayCounter();
             DayCounter divdc = process->dividendYield()->dayCounter();
             DayCounter voldc = process->blackVolatility()->dayCounter();
-            #else
-            DayCounter rfdc  = Settings::instance().dayCounter();
-            DayCounter divdc = Settings::instance().dayCounter();
-            DayCounter voldc = Settings::instance().dayCounter();
-            #endif
-            Time t = rfdc.yearFraction(process->riskFreeRate()->referenceDate(),
-                                       arguments_.exercise->lastDate());
+            Time t = rfdc.yearFraction(
+                                     process->riskFreeRate()->referenceDate(),
+                                     arguments_.exercise->lastDate());
             results_.rho = black.rho(t);
 
             t = divdc.yearFraction(process->dividendYield()->referenceDate(),
@@ -182,7 +177,7 @@ namespace QuantLib {
             results_.strikeSensitivity  = black.strikeSensitivity();
             results_.itmCashProbability = black.itmCashProbability();
         } else {
-            // early exercise can be optimal 
+            // early exercise can be optimal
             CumulativeNormalDistribution cumNormalDist;
             Real tolerance = 1e-6;
             Real Sk = criticalPrice(payoff, riskFreeDiscount,
@@ -199,7 +194,7 @@ namespace QuantLib {
                     Q = (-(n-1.0) + QL_SQRT(((n-1.0)*(n-1.0))+4.0*K))/2.0;
                     a =  (Sk/Q) * (1.0 - dividendDiscount * cumNormalDist(d1));
                     if (spot<Sk) {
-                        results_.value = black.value() + 
+                        results_.value = black.value() +
                             a * QL_POW((spot/Sk), Q);
                     } else {
                         results_.value = spot - payoff->strike();

@@ -53,15 +53,9 @@ namespace QuantLib {
         const boost::shared_ptr<BlackScholesProcess>& process =
             arguments_.blackScholesProcess;
         Date referenceDate = process->riskFreeRate()->referenceDate();
-        #ifndef QL_DISABLE_DEPRECATED
         DayCounter rfdc  = process->riskFreeRate()->dayCounter();
         DayCounter divdc = process->dividendYield()->dayCounter();
         DayCounter voldc = process->blackVolatility()->dayCounter();
-        #else
-        DayCounter rfdc  = Settings::instance().dayCounter();
-        DayCounter divdc = Settings::instance().dayCounter();
-        DayCounter voldc = Settings::instance().dayCounter();
-        #endif
         std::vector<Time> fixingTimes;
         Size i;
         for (i=0; i<arguments_.fixingDates.size(); i++) {

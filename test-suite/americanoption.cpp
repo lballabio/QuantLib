@@ -129,14 +129,14 @@ void AmericanOptionTest::testBaroneAdesiWhaleyValues() {
     };
 
     Date today = Date::todaysDate();
-    DayCounter dc = Settings::instance().dayCounter();
+    DayCounter dc = Actual360();
     boost::shared_ptr<SimpleQuote> spot(new SimpleQuote(0.0));
     boost::shared_ptr<SimpleQuote> qRate(new SimpleQuote(0.0));
     boost::shared_ptr<YieldTermStructure> qTS = flatRate(today, qRate, dc);
     boost::shared_ptr<SimpleQuote> rRate(new SimpleQuote(0.0));
     boost::shared_ptr<YieldTermStructure> rTS = flatRate(today, rRate, dc);
     boost::shared_ptr<SimpleQuote> vol(new SimpleQuote(0.0));
-    boost::shared_ptr<BlackVolTermStructure> volTS = flatVol(today, vol);
+    boost::shared_ptr<BlackVolTermStructure> volTS = flatVol(today, vol, dc);
     boost::shared_ptr<PricingEngine> engine(
                                     new BaroneAdesiWhaleyApproximationEngine);
 
@@ -145,7 +145,7 @@ void AmericanOptionTest::testBaroneAdesiWhaleyValues() {
         boost::shared_ptr<StrikedTypePayoff> payoff(new
             PlainVanillaPayoff(values[i].type, values[i].strike));
 
-        Date exDate = today + Integer(values[i].t*Settings::instance().dayCounterBase()+0.5);
+        Date exDate = today + Integer(values[i].t*360+0.5);
         boost::shared_ptr<Exercise> exercise(
                                          new AmericanExercise(today, exDate));
 
@@ -189,14 +189,14 @@ void AmericanOptionTest::testBjerksundStenslandValues() {
     };
 
     Date today = Date::todaysDate();
-    DayCounter dc = Settings::instance().dayCounter();
+    DayCounter dc = Actual360();
     boost::shared_ptr<SimpleQuote> spot(new SimpleQuote(0.0));
     boost::shared_ptr<SimpleQuote> qRate(new SimpleQuote(0.0));
     boost::shared_ptr<YieldTermStructure> qTS = flatRate(today, qRate, dc);
     boost::shared_ptr<SimpleQuote> rRate(new SimpleQuote(0.0));
     boost::shared_ptr<YieldTermStructure> rTS = flatRate(today, rRate, dc);
     boost::shared_ptr<SimpleQuote> vol(new SimpleQuote(0.0));
-    boost::shared_ptr<BlackVolTermStructure> volTS = flatVol(today, vol);
+    boost::shared_ptr<BlackVolTermStructure> volTS = flatVol(today, vol, dc);
     boost::shared_ptr<PricingEngine> engine(
                                    new BjerksundStenslandApproximationEngine);
 
@@ -205,7 +205,7 @@ void AmericanOptionTest::testBjerksundStenslandValues() {
         boost::shared_ptr<StrikedTypePayoff> payoff(new
             PlainVanillaPayoff(values[i].type, values[i].strike));
 
-        Date exDate = today + Integer(values[i].t*Settings::instance().dayCounterBase()+0.5);
+        Date exDate = today + Integer(values[i].t*360+0.5);
         boost::shared_ptr<Exercise> exercise(
                                          new AmericanExercise(today, exDate));
 
@@ -312,14 +312,14 @@ void AmericanOptionTest::testJuValues() {
     };
 
     Date today = Date::todaysDate();
-    DayCounter dc = Settings::instance().dayCounter();
+    DayCounter dc = Actual360();
     boost::shared_ptr<SimpleQuote> spot(new SimpleQuote(0.0));
     boost::shared_ptr<SimpleQuote> qRate(new SimpleQuote(0.0));
     boost::shared_ptr<YieldTermStructure> qTS = flatRate(today, qRate, dc);
     boost::shared_ptr<SimpleQuote> rRate(new SimpleQuote(0.0));
     boost::shared_ptr<YieldTermStructure> rTS = flatRate(today, rRate, dc);
     boost::shared_ptr<SimpleQuote> vol(new SimpleQuote(0.0));
-    boost::shared_ptr<BlackVolTermStructure> volTS = flatVol(today, vol);
+    boost::shared_ptr<BlackVolTermStructure> volTS = flatVol(today, vol, dc);
     boost::shared_ptr<PricingEngine> engine(
                                     new JuQuadraticApproximationEngine);
 
@@ -328,7 +328,7 @@ void AmericanOptionTest::testJuValues() {
         boost::shared_ptr<StrikedTypePayoff> payoff(new
             PlainVanillaPayoff(values[i].type, values[i].strike));
 
-        Date exDate = today + Integer(values[i].t*Settings::instance().dayCounterBase()+0.5);
+        Date exDate = today + Integer(values[i].t*360+0.5);
         boost::shared_ptr<Exercise> exercise(
                                          new AmericanExercise(today, exDate));
 

@@ -25,8 +25,6 @@
 #include <ql/date.hpp>
 #include <ql/Patterns/singleton.hpp>
 #include <ql/Patterns/observable.hpp>
-#include <ql/DayCounters/actual365fixed.hpp>
-#include <ql/DayCounters/actual360.hpp>
 
 namespace QuantLib {
 
@@ -66,14 +64,6 @@ namespace QuantLib {
 
                      The test-suite can be succesfully run only with Actual360.
         */
-        DayCounter dayCounter() const {
-//            return Actual365Fixed();
-            return Actual360();
-        }
-        Integer dayCounterBase() const {
-//            return 365;
-            return 360;
-        }
       private:
         Date evaluationDate_;
         boost::shared_ptr<Observable> evaluationDateGuard_;

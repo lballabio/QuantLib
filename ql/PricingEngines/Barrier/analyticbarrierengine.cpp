@@ -24,7 +24,7 @@ namespace QuantLib {
 
     void AnalyticBarrierEngine::calculate() const {
 
-        boost::shared_ptr<PlainVanillaPayoff> payoff = 
+        boost::shared_ptr<PlainVanillaPayoff> payoff =
             boost::dynamic_pointer_cast<PlainVanillaPayoff>(arguments_.payoff);
         QL_REQUIRE(payoff, "non-plain payoff given");
         QL_REQUIRE(payoff->strike()>0.0,
@@ -100,29 +100,25 @@ namespace QuantLib {
     }
 
     Real AnalyticBarrierEngine::strike() const {
-        boost::shared_ptr<PlainVanillaPayoff> payoff = 
+        boost::shared_ptr<PlainVanillaPayoff> payoff =
             boost::dynamic_pointer_cast<PlainVanillaPayoff>(arguments_.payoff);
         QL_REQUIRE(payoff, "non-plain payoff given");
         return payoff->strike();
     }
 
     Time AnalyticBarrierEngine::residualTime() const {
-        const boost::shared_ptr<BlackScholesProcess>& process = 
+        const boost::shared_ptr<BlackScholesProcess>& process =
             this->arguments_.blackScholesProcess;
 
         Date refDate = process->riskFreeRate()->referenceDate();
         Date lastExerciseDate = this->arguments_.exercise->lastDate();
 
-        #ifndef QL_DISABLE_DEPRECATED
         DayCounter rfdc = process->riskFreeRate()->dayCounter();
-        #else
-        DayCounter rfdc = Settings::instance().dayCounter();
-        #endif
         return rfdc.yearFraction(refDate, lastExerciseDate);
     }
 
     Volatility AnalyticBarrierEngine::volatility() const {
-        const boost::shared_ptr<BlackScholesProcess>& process = 
+        const boost::shared_ptr<BlackScholesProcess>& process =
             arguments_.blackScholesProcess;
         return process->blackVolatility()->blackVol(residualTime(), strike());
     }
@@ -169,7 +165,7 @@ namespace QuantLib {
     }
 
     Real AnalyticBarrierEngine::A(Real phi) const {
-        Real x1 = 
+        Real x1 =
             QL_LOG(underlying()/strike())/stdDeviation() + muSigma();
         Real N1 = f_(phi*x1);
         Real N2 = f_(phi*(x1-stdDeviation()));
@@ -178,7 +174,7 @@ namespace QuantLib {
     }
 
     Real AnalyticBarrierEngine::B(Real phi) const {
-        Real x2 = 
+        Real x2 =
             QL_LOG(underlying()/barrier())/stdDeviation() + muSigma();
         Real N1 = f_(phi*x2);
         Real N2 = f_(phi*(x2-stdDeviation()));
@@ -190,7 +186,7 @@ namespace QuantLib {
         Real HS = barrier()/underlying();
         Real powHS0 = QL_POW(HS, 2 * mu());
         Real powHS1 = powHS0 * HS * HS;
-        Real y1 = 
+        Real y1 =
             QL_LOG(barrier()*HS/strike())/stdDeviation() + muSigma();
         Real N1 = f_(eta*y1);
         Real N2 = f_(eta*(y1-stdDeviation()));
@@ -202,7 +198,7 @@ namespace QuantLib {
         Real HS = barrier()/underlying();
         Real powHS0 = QL_POW(HS, 2 * mu());
         Real powHS1 = powHS0 * HS * HS;
-        Real y2 = 
+        Real y2 =
             QL_LOG(barrier()/underlying())/stdDeviation() + muSigma();
         Real N1 = f_(eta*y2);
         Real N2 = f_(eta*(y2-stdDeviation()));
@@ -213,9 +209,9 @@ namespace QuantLib {
     Real AnalyticBarrierEngine::E(Real eta) const {
         if (rebate() > 0) {
             Real powHS0 = QL_POW(barrier()/underlying(), 2 * mu());
-            Real x2 = 
+            Real x2 =
                 QL_LOG(underlying()/barrier())/stdDeviation() + muSigma();
-            Real y2 = 
+            Real y2 =
                 QL_LOG(barrier()/underlying())/stdDeviation() + muSigma();
             Real N1 = f_(eta*(x2 - stdDeviation()));
             Real N2 = f_(eta*(y2 - stdDeviation()));

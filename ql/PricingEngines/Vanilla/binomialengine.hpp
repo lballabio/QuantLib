@@ -56,13 +56,9 @@ namespace QuantLib {
         const boost::shared_ptr<BlackScholesProcess>& process =
             this->arguments_.blackScholesProcess;
 
-        #ifndef QL_DISABLE_DEPRECATED
         DayCounter rfdc  = process->riskFreeRate()->dayCounter();
         DayCounter divdc = process->dividendYield()->dayCounter();
-        #else
-        DayCounter rfdc  = Settings::instance().dayCounter();
-        DayCounter divdc = Settings::instance().dayCounter();
-        #endif
+        DayCounter voldc = process->blackVolatility()->dayCounter();
 
         Real s0 = process->stateVariable()->value();
         Volatility v = process->blackVolatility()->blackVol(
@@ -83,7 +79,7 @@ namespace QuantLib {
                 new FlatForward(referenceDate, q, divdc)));
         Handle<BlackVolTermStructure> flatVol(
             boost::shared_ptr<BlackVolTermStructure>(
-                new BlackConstantVol(referenceDate, v)));
+                new BlackConstantVol(referenceDate, v, voldc)));
 
         boost::shared_ptr<PlainVanillaPayoff> payoff =
             boost::dynamic_pointer_cast<PlainVanillaPayoff>(arguments_.payoff);

@@ -42,9 +42,7 @@ namespace QuantLib {
                            const Handle<BlackVolTermStructure>& blackVolTS);
         //! \name YieldTermStructure interface
         //@{
-        #ifndef QL_DISABLE_DEPRECATED
         DayCounter dayCounter() const { return riskFreeTS_->dayCounter(); }
-        #endif
         Calendar calendar() const;
         #ifndef QL_DISABLE_DEPRECATED
         const Date& todaysDate() const;

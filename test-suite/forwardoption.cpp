@@ -101,7 +101,7 @@ void ForwardOptionTest::testValues() {
         {  Option::Put, 1.1, 60.0, 0.04, 0.08, 0.25, 1.0, 0.30, 8.2971, 1.0e-4 }
     };
 
-    DayCounter dc = Settings::instance().dayCounter();
+    DayCounter dc = Actual360();
     Date today = Date::todaysDate();
 
     boost::shared_ptr<SimpleQuote> spot(new SimpleQuote(0.0));
@@ -110,7 +110,7 @@ void ForwardOptionTest::testValues() {
     boost::shared_ptr<SimpleQuote> rRate(new SimpleQuote(0.0));
     Handle<YieldTermStructure> rTS(flatRate(today, rRate, dc));
     boost::shared_ptr<SimpleQuote> vol(new SimpleQuote(0.0));
-    Handle<BlackVolTermStructure> volTS(flatVol(today, vol));
+    Handle<BlackVolTermStructure> volTS(flatVol(today, vol, dc));
 
     boost::shared_ptr<VanillaOption::engine> underlyingEngine(
                                                   new AnalyticEuropeanEngine);
@@ -128,9 +128,9 @@ void ForwardOptionTest::testValues() {
 
         boost::shared_ptr<StrikedTypePayoff> payoff(
                                  new PlainVanillaPayoff(values[i].type, 0.0));
-        Date exDate = today + Integer(values[i].t*Settings::instance().dayCounterBase()+0.5);
+        Date exDate = today + Integer(values[i].t*360+0.5);
         boost::shared_ptr<Exercise> exercise(new EuropeanExercise(exDate));
-        Date reset = today + Integer(values[i].start*Settings::instance().dayCounterBase()+0.5);
+        Date reset = today + Integer(values[i].start*360+0.5);
 
         spot ->setValue(values[i].s);
         qRate->setValue(values[i].q);
@@ -169,7 +169,7 @@ void ForwardOptionTest::testPerformanceValues() {
         {  Option::Put, 1.1, 60.0, 0.04, 0.08, 0.25,      1.0, 0.30, 8.2971/60*QL_EXP(-0.04*0.25), 1.0e-4 }
     };
 
-    DayCounter dc = Settings::instance().dayCounter();
+    DayCounter dc = Actual360();
     Date today = Date::todaysDate();
 
     boost::shared_ptr<SimpleQuote> spot(new SimpleQuote(0.0));
@@ -178,7 +178,7 @@ void ForwardOptionTest::testPerformanceValues() {
     boost::shared_ptr<SimpleQuote> rRate(new SimpleQuote(0.0));
     Handle<YieldTermStructure> rTS(flatRate(today, rRate, dc));
     boost::shared_ptr<SimpleQuote> vol(new SimpleQuote(0.0));
-    Handle<BlackVolTermStructure> volTS(flatVol(today, vol));
+    Handle<BlackVolTermStructure> volTS(flatVol(today, vol, dc));
 
     boost::shared_ptr<VanillaOption::engine> underlyingEngine(
                                                   new AnalyticEuropeanEngine);
@@ -196,9 +196,9 @@ void ForwardOptionTest::testPerformanceValues() {
 
         boost::shared_ptr<StrikedTypePayoff> payoff(
                                  new PlainVanillaPayoff(values[i].type, 0.0));
-        Date exDate = today + Integer(values[i].t*Settings::instance().dayCounterBase()+0.5);
+        Date exDate = today + Integer(values[i].t*360+0.5);
         boost::shared_ptr<Exercise> exercise(new EuropeanExercise(exDate));
-        Date reset = today + Integer(values[i].start*Settings::instance().dayCounterBase()+0.5);
+        Date reset = today + Integer(values[i].start*360+0.5);
 
         spot ->setValue(values[i].s);
         qRate->setValue(values[i].q);
@@ -245,7 +245,7 @@ namespace {
     Integer startMonths[] = { 6, 9 };
     Volatility vols[] = { 0.11, 0.50, 1.20 };
 
-    DayCounter dc = Settings::instance().dayCounter();
+    DayCounter dc = Actual360();
     Date today = Date::todaysDate();
     Settings::instance().setEvaluationDate(today);
 
@@ -255,7 +255,7 @@ namespace {
     boost::shared_ptr<SimpleQuote> rRate(new SimpleQuote(0.0));
     Handle<YieldTermStructure> rTS(flatRate(rRate, dc));
     boost::shared_ptr<SimpleQuote> vol(new SimpleQuote(0.0));
-    Handle<BlackVolTermStructure> volTS(flatVol(vol));
+    Handle<BlackVolTermStructure> volTS(flatVol(vol, dc));
 
     boost::shared_ptr<BlackScholesProcess> stochProcess(
                new BlackScholesProcess(Handle<Quote>(spot), qTS, rTS, volTS));

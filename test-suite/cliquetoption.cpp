@@ -71,7 +71,7 @@ void CliquetOptionTest::testValues() {
     BOOST_MESSAGE("Testing Cliquet option values...");
 
     Date today = Date::todaysDate();
-    DayCounter dc = Settings::instance().dayCounter();
+    DayCounter dc = Actual360();
 
     boost::shared_ptr<SimpleQuote> spot(new SimpleQuote(60.0));
     boost::shared_ptr<SimpleQuote> qRate(new SimpleQuote(0.04));
@@ -79,7 +79,7 @@ void CliquetOptionTest::testValues() {
     boost::shared_ptr<SimpleQuote> rRate(new SimpleQuote(0.08));
     boost::shared_ptr<YieldTermStructure> rTS = flatRate(today, rRate, dc);
     boost::shared_ptr<SimpleQuote> vol(new SimpleQuote(0.30));
-    boost::shared_ptr<BlackVolTermStructure> volTS = flatVol(today, vol);
+    boost::shared_ptr<BlackVolTermStructure> volTS = flatVol(today, vol, dc);
     boost::shared_ptr<PricingEngine> engine(new AnalyticCliquetEngine);
 
     boost::shared_ptr<BlackScholesProcess> process(
@@ -90,7 +90,7 @@ void CliquetOptionTest::testValues() {
 
     std::vector<Date> reset;
     reset.push_back(today + 90);
-    Date maturity = today + Settings::instance().dayCounterBase();
+    Date maturity = today + 360;
     Option::Type type = Option::Call;
     Real moneyness = 1.1;
 
@@ -136,7 +136,7 @@ namespace {
     Integer frequencies[] = { 2, 4 };
     Volatility vols[] = { 0.11, 0.50, 1.20 };
 
-    DayCounter dc = Settings::instance().dayCounter();
+    DayCounter dc = Actual360();
     Date today = Date::todaysDate();
     Settings::instance().setEvaluationDate(today);
 
@@ -146,7 +146,7 @@ namespace {
     boost::shared_ptr<SimpleQuote> rRate(new SimpleQuote(0.0));
     Handle<YieldTermStructure> rTS(flatRate(rRate, dc));
     boost::shared_ptr<SimpleQuote> vol(new SimpleQuote(0.0));
-    Handle<BlackVolTermStructure> volTS(flatVol(vol));
+    Handle<BlackVolTermStructure> volTS(flatVol(vol, dc));
 
     boost::shared_ptr<BlackScholesProcess> process(
                new BlackScholesProcess(Handle<Quote>(spot), qTS, rTS, volTS));

@@ -58,38 +58,32 @@ namespace QuantLib {
 
         for (Size i = 1; i < resetDates.size(); i++) {
 
-            Real weight = 
+            Real weight =
                 process->dividendYield()->discount(resetDates[i-1]);
-            DiscountFactor discount = 
+            DiscountFactor discount =
                 process->riskFreeRate()->discount(resetDates[i]) /
                 process->riskFreeRate()->discount(resetDates[i-1]);
-            DiscountFactor qDiscount = 
+            DiscountFactor qDiscount =
                 process->dividendYield()->discount(resetDates[i]) /
                 process->dividendYield()->discount(resetDates[i-1]);
             Real forward = underlying*qDiscount/discount;
-            Real variance = 
+            Real variance =
                 process->blackVolatility()->blackForwardVariance(
                                         resetDates[i-1],resetDates[i],strike);
 
             BlackFormula black(forward, discount, variance, payoff);
 
-            #ifndef QL_DISABLE_DEPRECATED
             DayCounter rfdc  = process->riskFreeRate()->dayCounter();
             DayCounter divdc = process->dividendYield()->dayCounter();
             DayCounter voldc = process->blackVolatility()->dayCounter();
-            #else
-            DayCounter rfdc  = Settings::instance().dayCounter();
-            DayCounter divdc = Settings::instance().dayCounter();
-            DayCounter voldc = Settings::instance().dayCounter();
-            #endif
 
             results_.value += weight * black.value();
             results_.delta += weight * (black.delta(underlying) +
-                                        moneyness->strike() * discount * 
+                                        moneyness->strike() * discount *
                                         black.beta());
             results_.gamma += 0.0;
             results_.theta += process->dividendYield()->forwardRate(
-                resetDates[i-1], resetDates[i], rfdc, Continuous, NoFrequency) * 
+                resetDates[i-1], resetDates[i], rfdc, Continuous, NoFrequency) *
                 weight * black.value();
 
             Time dt = rfdc.yearFraction(resetDates[i-1],resetDates[i]);

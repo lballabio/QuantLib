@@ -88,8 +88,8 @@ namespace {
                                              Annual, Unadjusted, Thirty360(),
                                              Semiannual, ModifiedFollowing));
         }
-        termStructure_ = boost::shared_ptr<YieldTermStructure>(new
-            PiecewiseFlatForward(settlement, instruments));
+        termStructure_ = boost::shared_ptr<YieldTermStructure>(
+              new PiecewiseFlatForward(settlement, instruments, Actual360()));
     }
 
     void teardown() {
@@ -201,17 +201,12 @@ void TermStructureTest::testFSpreaded() {
         new ForwardSpreadedTermStructure(
             Handle<YieldTermStructure>(termStructure_),mh));
     Date testDate = termStructure_->referenceDate() + 5*Years;
-    #ifndef QL_DISABLE_DEPRECATED
     DayCounter tsdc  = termStructure_->dayCounter();
     DayCounter sprdc = spreaded->dayCounter();
-    #else
-    DayCounter tsdc  = Settings::instance().dayCounter();
-    DayCounter sprdc = Settings::instance().dayCounter();
-    #endif
     Rate forward = termStructure_->forwardRate(testDate, testDate, tsdc,
-        Continuous, NoFrequency);
+                                               Continuous, NoFrequency);
     Rate spreadedForward = spreaded->forwardRate(testDate, testDate, sprdc,
-        Continuous, NoFrequency);
+                                                 Continuous, NoFrequency);
     if (QL_FABS(forward - (spreadedForward-me->value())) > tolerance)
         BOOST_FAIL(
             "unable to reproduce forward from spreaded curve\n"
@@ -263,13 +258,11 @@ void TermStructureTest::testZSpreaded() {
         new ZeroSpreadedTermStructure(
             Handle<YieldTermStructure>(termStructure_),mh));
     Date testDate = termStructure_->referenceDate() + 5*Years;
-    #ifndef QL_DISABLE_DEPRECATED
     DayCounter rfdc  = termStructure_->dayCounter();
-    #else
-    DayCounter rfdc  = Settings::instance().dayCounter();
-    #endif
-    Rate zero = termStructure_->zeroRate(testDate, rfdc, Continuous, NoFrequency);
-    Rate spreadedZero = spreaded->zeroRate(testDate, rfdc, Continuous, NoFrequency);
+    Rate zero = termStructure_->zeroRate(testDate, rfdc,
+                                         Continuous, NoFrequency);
+    Rate spreadedZero = spreaded->zeroRate(testDate, rfdc,
+                                           Continuous, NoFrequency);
     if (QL_FABS(zero - (spreadedZero-me->value())) > tolerance)
         BOOST_FAIL(
             "unable to reproduce zero yield from spreaded curve\n"

@@ -61,9 +61,7 @@ namespace QuantLib {
                     const DayCounter& dayCounter);
 
         // inspectors
-        #ifndef QL_DISABLE_DEPRECATED
         DayCounter dayCounter() const { return dayCounter_; }
-        #endif
         Date maxDate() const;
       protected:
         Rate zeroYieldImpl(Time) const;

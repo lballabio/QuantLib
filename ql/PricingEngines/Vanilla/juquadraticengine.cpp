@@ -24,7 +24,7 @@ namespace QuantLib {
 
     /*  An Approximate Formula for Pricing American Options
         Journal of Derivatives Winter 1999
-        Ju, N.      
+        Ju, N.
     */
 
     void JuQuadraticApproximationEngine::calculate() const {
@@ -32,7 +32,7 @@ namespace QuantLib {
         QL_REQUIRE(arguments_.exercise->type() == Exercise::American,
                    "not an American Option");
 
-        boost::shared_ptr<AmericanExercise> ex = 
+        boost::shared_ptr<AmericanExercise> ex =
             boost::dynamic_pointer_cast<AmericanExercise>(arguments_.exercise);
         QL_REQUIRE(ex, "non-American exercise given");
         QL_REQUIRE(!ex->payoffAtExpiry(),
@@ -63,17 +63,12 @@ namespace QuantLib {
             results_.elasticity   = black.elasticity(spot);
             results_.gamma        = black.gamma(spot);
 
-            #ifndef QL_DISABLE_DEPRECATED
             DayCounter rfdc  = process->riskFreeRate()->dayCounter();
             DayCounter divdc = process->dividendYield()->dayCounter();
             DayCounter voldc = process->blackVolatility()->dayCounter();
-            #else
-            DayCounter rfdc = Settings::instance().dayCounter();
-            DayCounter divdc = Settings::instance().dayCounter();
-            DayCounter voldc = Settings::instance().dayCounter();
-            #endif
-            Time t = rfdc.yearFraction(process->riskFreeRate()->referenceDate(),
-                                       arguments_.exercise->lastDate());
+            Time t = rfdc.yearFraction(
+                                     process->riskFreeRate()->referenceDate(),
+                                     arguments_.exercise->lastDate());
             results_.rho = black.rho(t);
 
             t = divdc.yearFraction(process->dividendYield()->referenceDate(),
@@ -89,7 +84,7 @@ namespace QuantLib {
             results_.strikeSensitivity  = black.strikeSensitivity();
             results_.itmCashProbability = black.itmCashProbability();
         } else {
-            // early exercise can be optimal 
+            // early exercise can be optimal
             CumulativeNormalDistribution cumNormalDist;
             NormalDistribution normalDist;
 
@@ -106,7 +101,7 @@ namespace QuantLib {
                 /QL_SQRT(variance);
             Real n = 2.0*QL_LOG(dividendDiscount/riskFreeDiscount)/variance;
             Real K = -2.0*QL_LOG(riskFreeDiscount)/
-                (variance*(1.0-riskFreeDiscount));            
+                (variance*(1.0-riskFreeDiscount));
 
             */
 
@@ -129,28 +124,28 @@ namespace QuantLib {
             Real lambda = (-(beta-1) + phi * temp_root) / 2;
             Real lambda_prime = - phi * alpha / (h*h * temp_root);
 
-            BlackFormula 
+            BlackFormula
                     black_Sk(forwardSk, riskFreeDiscount, variance, payoff);
             Real hA = phi * (Sk - payoff->strike()) - black_Sk.value();
 
             Real d1_Sk = (QL_LOG(forwardSk/payoff->strike()) + 0.5*variance)
-                /QL_SQRT(variance);            
+                /QL_SQRT(variance);
             Real d2_Sk = d1_Sk - QL_SQRT(variance);
-            Real part1 = forwardSk * normalDist(d1_Sk) / 
+            Real part1 = forwardSk * normalDist(d1_Sk) /
                                         (alpha * QL_SQRT(variance));
-            Real part2 = - phi * forwardSk * cumNormalDist(phi * d1_Sk) * 
+            Real part2 = - phi * forwardSk * cumNormalDist(phi * d1_Sk) *
                         QL_LOG (dividendDiscount) / QL_LOG(riskFreeDiscount);
             Real part3 = + phi * payoff->strike() * cumNormalDist(phi * d2_Sk);
-            Real V_E_h = part1 + part2 + part3;                                
+            Real V_E_h = part1 + part2 + part3;
 
             Real b = (1-h) * alpha * lambda_prime / (2*(2*lambda + beta - 1));
-            Real c = - ((1 - h) * alpha / (2 * lambda + beta - 1)) * 
+            Real c = - ((1 - h) * alpha / (2 * lambda + beta - 1)) *
                 (V_E_h / (hA) + 1 / h + lambda_prime / (2*lambda + beta - 1));
             Real temp_spot_ratio = QL_LOG(spot / Sk);
-            Real chi = temp_spot_ratio * (b * temp_spot_ratio + c);            
+            Real chi = temp_spot_ratio * (b * temp_spot_ratio + c);
 
             if (phi*(Sk-spot) > 0) {
-                results_.value = black.value() + 
+                results_.value = black.value() +
                     hA * QL_POW((spot/Sk), lambda) / (1 - chi);
             } else {
                 results_.value = phi * (spot - payoff->strike());
@@ -158,11 +153,11 @@ namespace QuantLib {
 
             Real temp_chi_prime = (2 * b / spot) * QL_LOG (spot/Sk);
             Real chi_prime = temp_chi_prime + c / spot;
-            Real chi_double_prime = 2*b/(spot*spot) 
-                                    - temp_chi_prime / spot 
+            Real chi_double_prime = 2*b/(spot*spot)
+                                    - temp_chi_prime / spot
                                     - c / (spot*spot);
             results_.delta = phi * dividendDiscount * cumNormalDist (phi * d1_Sk)
-                + (lambda / (spot * (1 - chi)) + chi_prime / ((1 - chi)*(1 - chi))) * 
+                + (lambda / (spot * (1 - chi)) + chi_prime / ((1 - chi)*(1 - chi))) *
                 (phi * (Sk - payoff->strike()) - black_Sk.value()) * QL_POW((spot/Sk), lambda);
 
             results_.gamma = phi * dividendDiscount * normalDist (phi*d1_Sk) /
@@ -171,8 +166,8 @@ namespace QuantLib {
                               + 2 * chi_prime * chi_prime / ((1 - chi) * (1 - chi) * (1 - chi))
                               + chi_double_prime / ((1 - chi) * (1 - chi))
                               + lambda * (1 - lambda) / (spot * spot * (1 - chi)))
-                            * (phi * (Sk - payoff->strike()) - black_Sk.value()) 
-                                 * QL_POW((spot/Sk), lambda);   
+                            * (phi * (Sk - payoff->strike()) - black_Sk.value())
+                                 * QL_POW((spot/Sk), lambda);
 
         } // end of "early exercise can be optimal"
     }

@@ -1,6 +1,6 @@
 
 /*
- Copyright (C) 2004 Neil Firth 
+ Copyright (C) 2004 Neil Firth
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -48,7 +48,7 @@ namespace QuantLib {
             Real coeff_;
           public:
             Linear(Size index) : index_(index), coeff_(1.0) {}
-            Linear(Size index, Real coeff) : index_(index), coeff_(coeff) {} 
+            Linear(Size index, Real coeff) : index_(index), coeff_(coeff) {}
             Real calculate(const std::vector<Real>& x) const {
                 return coeff_*x[index_];
             }
@@ -60,7 +60,7 @@ namespace QuantLib {
             Real coeff_;
           public:
             Square(Size index) : index_(index), coeff_(1.0) {}
-            Square(Size index, Real coeff) : index_(index), coeff_(coeff) {} 
+            Square(Size index, Real coeff) : index_(index), coeff_(coeff) {}
             Real calculate(const std::vector<Real>& x) const {
                 return coeff_*x[index_]*x[index_];
             }
@@ -84,9 +84,9 @@ namespace QuantLib {
             Real power_;
             Real coeff_;
           public:
-            BasisPower(Size index, Real power) : 
+            BasisPower(Size index, Real power) :
                         index_(index), power_(power), coeff_(1.0) {}
-            BasisPower(Size index, Real power, Real coeff) : 
+            BasisPower(Size index, Real power, Real coeff) :
                         index_(index), power_(power), coeff_(coeff) {}
             Real calculate(const std::vector<Real>& x) const {
                 return coeff_*QL_POW(x[index_], power_);
@@ -97,7 +97,7 @@ namespace QuantLib {
           private:
             Size index1_, index2_;
           public:
-            LinearCombination(Size index1, Size index2) 
+            LinearCombination(Size index1, Size index2)
             : index1_(index1), index2_(index2) {}
             Real calculate(const std::vector<Real>& x) const {
                 return x[index1_]*x[index2_];
@@ -108,8 +108,8 @@ namespace QuantLib {
           private:
             boost::shared_ptr<BasisFunction> bf1_, bf2_;
           public:
-            LinearCombo(const boost::shared_ptr<BasisFunction>& bf1, 
-                        const boost::shared_ptr<BasisFunction>& bf2) 
+            LinearCombo(const boost::shared_ptr<BasisFunction>& bf1,
+                        const boost::shared_ptr<BasisFunction>& bf2)
             : bf1_(bf1), bf2_(bf2) {}
             Real calculate(const std::vector<Real>& x) const {
                 return bf1_->calculate(x)*bf2_->calculate(x);
@@ -121,9 +121,9 @@ namespace QuantLib {
             Real factor_;
             boost::shared_ptr<BasisFunction> bf1_, bf2_;
           public:
-            Polynomial(Real factor, 
-                       const boost::shared_ptr<BasisFunction>& bf1, 
-                       const boost::shared_ptr<BasisFunction>& bf2) 
+            Polynomial(Real factor,
+                       const boost::shared_ptr<BasisFunction>& bf1,
+                       const boost::shared_ptr<BasisFunction>& bf2)
             : factor_(factor), bf1_(bf1), bf2_(bf2) {}
             Real calculate(const std::vector<Real>& x) const {
                 return factor_*(bf1_->calculate(x) + bf2_->calculate(x));
@@ -135,8 +135,8 @@ namespace QuantLib {
             Real factor_;
             std::vector<boost::shared_ptr<BasisFunction> > basisFunctions_;
           public:
-            MyPolynomial(Real factor, 
-                         const std::vector<boost::shared_ptr<BasisFunction> >& 
+            MyPolynomial(Real factor,
+                         const std::vector<boost::shared_ptr<BasisFunction> >&
                                                            basisFunctions)
             : factor_(factor), basisFunctions_(basisFunctions) {}
             Real calculate(const std::vector<Real>& x) const;
@@ -150,7 +150,7 @@ namespace QuantLib {
             return factor_*result;
         }
 
-        Real basketPayoff(BasketOption::BasketType basketType, 
+        Real basketPayoff(BasketOption::BasketType basketType,
                           const std::vector<Real>& assetPrices) {
 
             Real basketPrice = assetPrices[0];
@@ -195,13 +195,10 @@ namespace QuantLib {
 
         const boost::shared_ptr<BlackScholesProcess>& process =
             arguments_.blackScholesProcesses[0];
-        #ifndef QL_DISABLE_DEPRECATED
         DayCounter rfdc  = process->riskFreeRate()->dayCounter();
-        #else
-        DayCounter rfdc  = Settings::instance().dayCounter();
-        #endif
         Rate r = process->riskFreeRate()->
-            zeroRate(arguments_.exercise->lastDate(), rfdc, Continuous, NoFrequency);
+            zeroRate(arguments_.exercise->lastDate(), rfdc,
+                     Continuous, NoFrequency);
 
         // counters
         Size i; // for paths
@@ -212,7 +209,7 @@ namespace QuantLib {
         // Number of paths
         Size N = requiredSamples_;
 
-        // set up the basis functions        
+        // set up the basis functions
         std::vector<boost::shared_ptr<BasisFunction> > basisFunctions;
 
         bool monomial = true;
@@ -222,42 +219,42 @@ namespace QuantLib {
         if (numAssets == 1) {
             if (monomial) {
                 // monomials
-                basisFunctions.push_back(boost::shared_ptr<BasisFunction> 
+                basisFunctions.push_back(boost::shared_ptr<BasisFunction>
                     (new Constant(1)));
 
-                basisFunctions.push_back(boost::shared_ptr<BasisFunction> 
+                basisFunctions.push_back(boost::shared_ptr<BasisFunction>
                     (new Linear(0)));
 
-                basisFunctions.push_back(boost::shared_ptr<BasisFunction> 
+                basisFunctions.push_back(boost::shared_ptr<BasisFunction>
                     (new Square(0)));
 /*
-                basisFunctions.push_back(boost::shared_ptr<BasisFunction> 
+                basisFunctions.push_back(boost::shared_ptr<BasisFunction>
                     (new Cube(0)));
 
-                basisFunctions.push_back(boost::shared_ptr<BasisFunction> 
+                basisFunctions.push_back(boost::shared_ptr<BasisFunction>
                     (new BasisPower(0, 4)));
 
-                basisFunctions.push_back(boost::shared_ptr<BasisFunction> 
+                basisFunctions.push_back(boost::shared_ptr<BasisFunction>
                     (new BasisPower(0, 5)));
  */
             } else if (legendre) {
                 // legendre polynomials
                 boost::shared_ptr<BasisFunction> legendre_0(new Constant(1));
                 boost::shared_ptr<BasisFunction> legendre_1(new Linear(0));
-                boost::shared_ptr<BasisFunction> legendre_2(new Polynomial 
-                    (0.5, 
+                boost::shared_ptr<BasisFunction> legendre_2(new Polynomial
+                    (0.5,
                      boost::shared_ptr<BasisFunction>(new Constant(-1)),
                      boost::shared_ptr<BasisFunction>(new Square(0, 3))));
-                boost::shared_ptr<BasisFunction> legendre_3(new Polynomial 
-                    (0.5, 
-                     boost::shared_ptr<BasisFunction>(new Linear(0, -3)), 
+                boost::shared_ptr<BasisFunction> legendre_3(new Polynomial
+                    (0.5,
+                     boost::shared_ptr<BasisFunction>(new Linear(0, -3)),
                      boost::shared_ptr<BasisFunction>(new Cube(0, 5))));
 
                 std::vector<boost::shared_ptr<BasisFunction> > basis4(3);
                 basis4[0] = boost::shared_ptr<BasisFunction>(new Constant(3));
-                basis4[1] = 
+                basis4[1] =
                     boost::shared_ptr<BasisFunction>(new Square(0, -30));
-                basis4[2] = 
+                basis4[2] =
                     boost::shared_ptr<BasisFunction>(new BasisPower(0, 4, 35));
                 boost::shared_ptr<BasisFunction> legendre_4(
                         new MyPolynomial(0.125, basis4));
@@ -265,12 +262,12 @@ namespace QuantLib {
                 std::vector<boost::shared_ptr<BasisFunction> > basis5(3);
                 basis5[0] = boost::shared_ptr<BasisFunction>(new Linear(0,15));
                 basis5[1] = boost::shared_ptr<BasisFunction>(new Cube(0, -70));
-                basis5[2] = 
+                basis5[2] =
                     boost::shared_ptr<BasisFunction>(new BasisPower(0, 5, 63));
                 boost::shared_ptr<BasisFunction> legendre_5(
                         new MyPolynomial(0.125, basis5));
 
-                basisFunctions.push_back(legendre_0); 
+                basisFunctions.push_back(legendre_0);
                 basisFunctions.push_back(legendre_1);
                 basisFunctions.push_back(legendre_2);
                 basisFunctions.push_back(legendre_3);
@@ -280,119 +277,119 @@ namespace QuantLib {
             } else if (laguerre) {
                 // laguerre polynomials
                 boost::shared_ptr<BasisFunction> laguerre_0(new Constant(1));
-                boost::shared_ptr<BasisFunction> laguerre_1(new Polynomial 
-                    (1, 
-                     boost::shared_ptr<BasisFunction> (new Constant(1)), 
+                boost::shared_ptr<BasisFunction> laguerre_1(new Polynomial
+                    (1,
+                     boost::shared_ptr<BasisFunction> (new Constant(1)),
                      boost::shared_ptr<BasisFunction> (new Linear(0, -1))));
 
                 std::vector<boost::shared_ptr<BasisFunction> > basis2(3);
                 basis2[0] = boost::shared_ptr<BasisFunction>(new Constant(2));
-                basis2[1] = 
+                basis2[1] =
                     boost::shared_ptr<BasisFunction>(new Linear(0, -4));
-                basis2[2] = 
+                basis2[2] =
                     boost::shared_ptr<BasisFunction>(new Square(0, 1));
                 boost::shared_ptr<BasisFunction> laguerre_2(
                     new MyPolynomial(0.5, basis2));
 
                 std::vector<boost::shared_ptr<BasisFunction> > basis3(4);
                 basis3[0] = boost::shared_ptr<BasisFunction>(new Constant(6));
-                basis3[1] = 
+                basis3[1] =
                     boost::shared_ptr<BasisFunction>(new Linear(0, -18));
                 basis3[2] = boost::shared_ptr<BasisFunction>(new Square(0, 9));
                 basis3[3] = boost::shared_ptr<BasisFunction>(new Cube(0, -1));
                 boost::shared_ptr<BasisFunction> laguerre_3(
                     new MyPolynomial(1.0/6.0, basis3));
 
-                basisFunctions.push_back(laguerre_0); 
-                basisFunctions.push_back(laguerre_1); 
-                basisFunctions.push_back(laguerre_2); 
-                basisFunctions.push_back(laguerre_3); 
+                basisFunctions.push_back(laguerre_0);
+                basisFunctions.push_back(laguerre_1);
+                basisFunctions.push_back(laguerre_2);
+                basisFunctions.push_back(laguerre_3);
             }
 
         } else if (numAssets == 3) {
 
-            basisFunctions.push_back(boost::shared_ptr<BasisFunction> 
+            basisFunctions.push_back(boost::shared_ptr<BasisFunction>
                 (new Constant(1)));
 
-            basisFunctions.push_back(boost::shared_ptr<BasisFunction> 
+            basisFunctions.push_back(boost::shared_ptr<BasisFunction>
                 (new Linear(1)));
-            basisFunctions.push_back(boost::shared_ptr<BasisFunction> 
+            basisFunctions.push_back(boost::shared_ptr<BasisFunction>
                 (new Linear(2)));
 
-            basisFunctions.push_back(boost::shared_ptr<BasisFunction> 
+            basisFunctions.push_back(boost::shared_ptr<BasisFunction>
                 (new Square(1)));
-            basisFunctions.push_back(boost::shared_ptr<BasisFunction> 
+            basisFunctions.push_back(boost::shared_ptr<BasisFunction>
                 (new Square(2)));
 
-            basisFunctions.push_back(boost::shared_ptr<BasisFunction> 
+            basisFunctions.push_back(boost::shared_ptr<BasisFunction>
                 (new Cube(1)));
-            basisFunctions.push_back(boost::shared_ptr<BasisFunction> 
+            basisFunctions.push_back(boost::shared_ptr<BasisFunction>
                 (new Cube(2)));
 
-            basisFunctions.push_back(boost::shared_ptr<BasisFunction> 
+            basisFunctions.push_back(boost::shared_ptr<BasisFunction>
                 (new LinearCombo(
-                           boost::shared_ptr<BasisFunction>(new Square(1)), 
+                           boost::shared_ptr<BasisFunction>(new Square(1)),
                            boost::shared_ptr<BasisFunction>(new Square(1)))));
-            basisFunctions.push_back(boost::shared_ptr<BasisFunction> 
+            basisFunctions.push_back(boost::shared_ptr<BasisFunction>
                 (new LinearCombo(
-                           boost::shared_ptr<BasisFunction>(new Square(2)), 
+                           boost::shared_ptr<BasisFunction>(new Square(2)),
                            boost::shared_ptr<BasisFunction>(new Square(2)))));
 
-            basisFunctions.push_back(boost::shared_ptr<BasisFunction> 
+            basisFunctions.push_back(boost::shared_ptr<BasisFunction>
                 (new LinearCombo(
-                             boost::shared_ptr<BasisFunction>(new Square(1)), 
+                             boost::shared_ptr<BasisFunction>(new Square(1)),
                              boost::shared_ptr<BasisFunction>(new Cube(1)))));
-            basisFunctions.push_back(boost::shared_ptr<BasisFunction> 
+            basisFunctions.push_back(boost::shared_ptr<BasisFunction>
                 (new LinearCombo(
-                             boost::shared_ptr<BasisFunction>(new Square(2)), 
+                             boost::shared_ptr<BasisFunction>(new Square(2)),
                              boost::shared_ptr<BasisFunction>(new Cube(2)))));
 
-            basisFunctions.push_back(boost::shared_ptr<BasisFunction> 
+            basisFunctions.push_back(boost::shared_ptr<BasisFunction>
                 (new LinearCombination(1,2)));
 
-            basisFunctions.push_back(boost::shared_ptr<BasisFunction> 
+            basisFunctions.push_back(boost::shared_ptr<BasisFunction>
                 (new LinearCombo(
-                           boost::shared_ptr<BasisFunction>(new Linear(1)), 
+                           boost::shared_ptr<BasisFunction>(new Linear(1)),
                            boost::shared_ptr<BasisFunction>(new Square(2)))));
-            basisFunctions.push_back(boost::shared_ptr<BasisFunction> 
+            basisFunctions.push_back(boost::shared_ptr<BasisFunction>
                 (new LinearCombo(
-                           boost::shared_ptr<BasisFunction>(new Linear(2)), 
+                           boost::shared_ptr<BasisFunction>(new Linear(2)),
                            boost::shared_ptr<BasisFunction>(new Square(1)))));
 
-            basisFunctions.push_back(boost::shared_ptr<BasisFunction> 
+            basisFunctions.push_back(boost::shared_ptr<BasisFunction>
                 (new LinearCombo(
-                           boost::shared_ptr<BasisFunction>(new Square(1)), 
+                           boost::shared_ptr<BasisFunction>(new Square(1)),
                            boost::shared_ptr<BasisFunction>(new Square(2)))));
 
-            basisFunctions.push_back(boost::shared_ptr<BasisFunction> 
+            basisFunctions.push_back(boost::shared_ptr<BasisFunction>
                 (new LinearCombo(
-                             boost::shared_ptr<BasisFunction>(new Linear(1)), 
+                             boost::shared_ptr<BasisFunction>(new Linear(1)),
                              boost::shared_ptr<BasisFunction>(new Cube(2)))));
-            basisFunctions.push_back(boost::shared_ptr<BasisFunction> 
+            basisFunctions.push_back(boost::shared_ptr<BasisFunction>
                 (new LinearCombo(
-                             boost::shared_ptr<BasisFunction>(new Linear(2)), 
+                             boost::shared_ptr<BasisFunction>(new Linear(2)),
                              boost::shared_ptr<BasisFunction>(new Cube(1)))));
 
-            basisFunctions.push_back(boost::shared_ptr<BasisFunction> 
+            basisFunctions.push_back(boost::shared_ptr<BasisFunction>
                 (new LinearCombo(
-                             boost::shared_ptr<BasisFunction>(new Square(1)), 
+                             boost::shared_ptr<BasisFunction>(new Square(1)),
                              boost::shared_ptr<BasisFunction>(new Cube(2)))));
-            basisFunctions.push_back(boost::shared_ptr<BasisFunction> 
+            basisFunctions.push_back(boost::shared_ptr<BasisFunction>
                 (new LinearCombo(
-                             boost::shared_ptr<BasisFunction>(new Square(2)), 
+                             boost::shared_ptr<BasisFunction>(new Square(2)),
                              boost::shared_ptr<BasisFunction>(new Cube(1)))));
 
-            basisFunctions.push_back(boost::shared_ptr<BasisFunction> 
+            basisFunctions.push_back(boost::shared_ptr<BasisFunction>
                 (new LinearCombo(
-                        boost::shared_ptr<BasisFunction>(new Linear(1)), 
+                        boost::shared_ptr<BasisFunction>(new Linear(1)),
                         boost::shared_ptr<BasisFunction>
                             (new LinearCombo(boost::shared_ptr<BasisFunction>(
                                                             new Cube(2)),
                                              boost::shared_ptr<BasisFunction>(
                                                             new Cube(2)))))));
-            basisFunctions.push_back(boost::shared_ptr<BasisFunction> 
+            basisFunctions.push_back(boost::shared_ptr<BasisFunction>
                 (new LinearCombo(
-                        boost::shared_ptr<BasisFunction>(new Linear(2)), 
+                        boost::shared_ptr<BasisFunction>(new Linear(2)),
                         boost::shared_ptr<BasisFunction>
                             (new LinearCombo(boost::shared_ptr<BasisFunction>(
                                                             new Cube(2)),
@@ -408,11 +405,11 @@ namespace QuantLib {
         TimeGrid grid(T, timeSteps_);
 
         // create a Gaussian Random Sequence Generator
-        PseudoRandom::rsg_type gen = 
+        PseudoRandom::rsg_type gen =
             PseudoRandom::make_sequence_generator(
                                 numAssets*(grid.size()-1),seed_);
 
-        LowDiscrepancy::rsg_type quasiGen = 
+        LowDiscrepancy::rsg_type quasiGen =
             LowDiscrepancy::make_sequence_generator(
                 numAssets*(grid.size()-1),seed_);
 
@@ -426,24 +423,24 @@ namespace QuantLib {
         }
 
         // create the MultiPathGenerator
-        boost::shared_ptr<MultiPathGenerator<PseudoRandom::rsg_type> > 
+        boost::shared_ptr<MultiPathGenerator<PseudoRandom::rsg_type> >
             multipathGenerator(
                 new MultiPathGenerator<PseudoRandom::rsg_type> (
-                                            procs, 
-                                            arguments_.correlation, grid, 
+                                            procs,
+                                            arguments_.correlation, grid,
                                             gen, brownianBridge));
 
         boost::shared_ptr<MultiPathGenerator<LowDiscrepancy::rsg_type> >
             quasiMultipathGenerator(
             new MultiPathGenerator<LowDiscrepancy::rsg_type> (
-                                            procs, 
-                                            arguments_.correlation, grid, 
+                                            procs,
+                                            arguments_.correlation, grid,
                                             quasiGen, brownianBridge));
 
         MultiPathGenerator<LowDiscrepancy::rsg_type>
-            ::sample_type quasiMultipathHolder = multipathGenerator->next(); 
+            ::sample_type quasiMultipathHolder = multipathGenerator->next();
 
-        MultiPathGenerator<PseudoRandom::rsg_type>::sample_type 
+        MultiPathGenerator<PseudoRandom::rsg_type>::sample_type
             multipathHolder = multipathGenerator->next();
 
         bool isQuasi = false;
@@ -461,22 +458,22 @@ namespace QuantLib {
 
         // get the asset values into an easy container
         std::vector<Real> assetPath = getAssetSequence(
-                        initialPrices[0], (multipaths[0])[0]); 
+                        initialPrices[0], (multipaths[0])[0]);
         std::vector< std::vector<Real> >  temp_asset(numAssets, assetPath);
 
-        std::vector<std::vector<std::vector<Real> > > 
+        std::vector<std::vector<std::vector<Real> > >
                 multiAssetPaths(N, temp_asset);
         for (i=0; i<N/2; i++) {
             multipath = multipaths[i];
             for (j = 0; j < numAssets; j++) {
-                multiAssetPaths[i][j] = 
+                multiAssetPaths[i][j] =
                     getAssetSequence(initialPrices[j], multipath[j]);
-                multiAssetPaths[N/2 + i][j] = 
+                multiAssetPaths[N/2 + i][j] =
                     getAntiAssetSequence(initialPrices[j], multipath[j]);
             }
         }
 
-        // initialise rollback vector with payoff        
+        // initialise rollback vector with payoff
         std::vector<Real> normalizedContinuationValue(N);
         for (i=0; i<N; i++) {
             std::vector<Real> finalPrices(numAssets);
@@ -484,7 +481,7 @@ namespace QuantLib {
                 finalPrices[j] = multiAssetPaths[i][j][timeSteps_-1];
             }
             normalizedContinuationValue[i] = payoff(basketPayoff(
-                        arguments_.basketType, finalPrices))/strike; 
+                        arguments_.basketType, finalPrices))/strike;
         }
 
         Array temp_coeffs(numBasisFunctions,1.0);
@@ -493,7 +490,7 @@ namespace QuantLib {
         std::vector<Real> assetPrices(numAssets);
         std::vector<Real> normalizedAssetPrices(numAssets);
 
-        // LOOP   
+        // LOOP
         BigInteger timeLoop;
         for (timeLoop = BigInteger(timeSteps_)-2; timeLoop>=0; timeLoop--) {
             timeStep = timeLoop;
@@ -502,24 +499,24 @@ namespace QuantLib {
             // use rollback vector
             for (i=0; i<N; i++) {
                 if (normalizedContinuationValue[i] > 0.0) {
-                    // discount 
+                    // discount
                     // +1 because the grid includes the start time
                     Time from = grid[timeStep+1];
                     Time to = grid[timeStep+2];
 
-                    normalizedContinuationValue[i] = 
+                    normalizedContinuationValue[i] =
                         normalizedContinuationValue[i]*QL_EXP(-r * (to-from));
                 }
             }
 
-            // select in the money paths            
+            // select in the money paths
             std::vector<Size> itmPaths;
             std::vector<Real> y(N);
             for (i=0; i<N; i++) {
                 for (j=0; j<numAssets; j++) {
                     assetPrices[j] = multiAssetPaths[i][j][timeStep];
                 }
-                y[i] = payoff(basketPayoff(arguments_.basketType, 
+                y[i] = payoff(basketPayoff(arguments_.basketType,
                                            assetPrices));
 
                 if (y[i] > 0) {
@@ -531,38 +528,38 @@ namespace QuantLib {
             Size num_itmPaths = itmPaths.size();
             if (num_itmPaths > 0) {
 
-                // for itm paths   
+                // for itm paths
                 std::vector<Real> y_exercise(num_itmPaths);
                 Array y_temp(num_itmPaths);
                 for (i=0; i<num_itmPaths; i++) {
-                    // get the immediate exercise value                
-                    // normalized..                    
+                    // get the immediate exercise value
+                    // normalized..
                     y_exercise[i] = y[itmPaths[i]] / strike;
 
-                    // get discounted continuation value         
-                    y_temp[i] = normalizedContinuationValue[itmPaths[i]]; 
+                    // get discounted continuation value
+                    y_temp[i] = normalizedContinuationValue[itmPaths[i]];
                 }
 
-                // calculate the basis functions and 
-                // create the design matrix A                                
+                // calculate the basis functions and
+                // create the design matrix A
                 Matrix A(num_itmPaths,numBasisFunctions);
                 for (i=0; i<num_itmPaths; i++) {
 
                     for (j=0; j<numAssets; j++) {
-                        normalizedAssetPrices[j] = 
+                        normalizedAssetPrices[j] =
                             multiAssetPaths[itmPaths[i]][j][timeStep]/strike;
                     }
                     // sort - ascending order
-                    std::sort(normalizedAssetPrices.begin(), 
+                    std::sort(normalizedAssetPrices.begin(),
                                 normalizedAssetPrices.end());
 
                     for (k=0; k<numBasisFunctions; k++) {
-                        A[i][k] = 
+                        A[i][k] =
                           basisFunctions[k]->calculate(normalizedAssetPrices);
                     }
                 }
 
-                // do least squares regression                
+                // do least squares regression
                 SVD svd(A);
                 Matrix U = svd.U();
                 Array s = svd.singularValues();
@@ -594,10 +591,10 @@ namespace QuantLib {
                 // calculate continuation value
                 Array y_continue = A*b;
 
-                // modify stopping rule                
+                // modify stopping rule
                 for (i=0; i<num_itmPaths; i++) {
                     if (y_exercise[i] > y_continue[i]) {
-                        normalizedContinuationValue[itmPaths[i]] = 
+                        normalizedContinuationValue[itmPaths[i]] =
                                 y_exercise[i];
                     }
                 }
@@ -615,7 +612,7 @@ namespace QuantLib {
         std::cout << std::endl;
         std::cout << " ==== Basis Coeffs ===  " << std::endl;
         for (timeStep = 0; timeStep < basisCoeffs.size(); timeStep++) {
-            Array b = basisCoeffs[timeStep]; 
+            Array b = basisCoeffs[timeStep];
             std::cout << " [";
             for (k = 0; k < numBasisFunctions; k++) {
                 std::cout << " " << b[k];

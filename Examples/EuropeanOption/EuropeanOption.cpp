@@ -71,9 +71,9 @@ int main(int, char* [])
         Settings::instance().setEvaluationDate(todaysDate);
 
         Date exerciseDate(17, May, 1999);
-        DayCounter rateDayCounter = Actual365Fixed();
-        Time maturity = rateDayCounter.yearFraction(settlementDate,
-                                                    exerciseDate);
+        DayCounter dayCounter = Actual365Fixed();
+        Time maturity = dayCounter.yearFraction(settlementDate,
+                                                exerciseDate);
 
         Volatility volatility = 0.10;
         std::cout << "option type = "  << OptionTypeFormatter::toString(type)
@@ -111,15 +111,13 @@ int main(int, char* [])
         // bootstrap the yield/dividend/vol curves
         Handle<YieldTermStructure> flatTermStructure(
             boost::shared_ptr<YieldTermStructure>(
-                new FlatForward(settlementDate,
-                                riskFreeRate, rateDayCounter)));
+                new FlatForward(settlementDate, riskFreeRate, dayCounter)));
         Handle<YieldTermStructure> flatDividendTS(
             boost::shared_ptr<YieldTermStructure>(
-                new FlatForward(settlementDate,
-                                dividendYield, rateDayCounter)));
+                new FlatForward(settlementDate, dividendYield, dayCounter)));
         Handle<BlackVolTermStructure> flatVolTS(
             boost::shared_ptr<BlackVolTermStructure>(
-                new BlackConstantVol(settlementDate, volatility)));
+                new BlackConstantVol(settlementDate, volatility, dayCounter)));
 
         std::vector<Date> dates(4);
         dates[0] = settlementDate + 1*Months;
@@ -153,7 +151,7 @@ int main(int, char* [])
         Handle<BlackVolTermStructure> blackSurface(
             boost::shared_ptr<BlackVolTermStructure>(
                 new BlackVarianceSurface(settlementDate, dates,
-                                         strikes, vols)));
+                                         strikes, vols, dayCounter)));
 
 
         boost::shared_ptr<StrikedTypePayoff> payoff(new

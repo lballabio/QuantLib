@@ -296,9 +296,8 @@ void SwapTest::testInArrears() {
     Volatility capletVolatility = 0.22;
     Handle<CapletVolatilityStructure> vol(
         boost::shared_ptr<CapletVolatilityStructure>(
-            new CapletConstantVolatility(today_,capletVolatility
-            //,dayCounter
-            )));
+                         new CapletConstantVolatility(today_,capletVolatility,
+                                                      dayCounter)));
     for (Size i=0; i<floatingLeg.size(); i++) {
         boost::dynamic_pointer_cast<InArrearIndexedCoupon>(floatingLeg[i])
             ->setCapletVolatility(vol);

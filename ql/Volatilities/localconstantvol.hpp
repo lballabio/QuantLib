@@ -50,18 +50,20 @@ namespace QuantLib {
                          const DayCounter& dayCounter);
         #endif
         LocalConstantVol(const Date& referenceDate,
-                         Volatility volatility);
+                         Volatility volatility,
+                         const DayCounter& dayCounter);
         LocalConstantVol(const Date& referenceDate,
-                         const Handle<Quote>& volatility);
+                         const Handle<Quote>& volatility,
+                         const DayCounter& dayCounter);
         LocalConstantVol(Integer settlementDays, const Calendar&,
-                         Volatility volatility);
+                         Volatility volatility,
+                         const DayCounter& dayCounter);
         LocalConstantVol(Integer settlementDays, const Calendar&,
-                         const Handle<Quote>& volatility);
+                         const Handle<Quote>& volatility,
+                         const DayCounter& dayCounter);
         //! \name LocalVolTermStructure interface
         //@{
-        #ifndef QL_DISABLE_DEPRECATED
         DayCounter dayCounter() const { return dayCounter_; }
-        #endif
         Date maxDate() const { return Date::maxDate(); }
         Real minStrike() const { return QL_MIN_REAL; }
         Real maxStrike() const { return QL_MAX_REAL; }
@@ -73,9 +75,7 @@ namespace QuantLib {
       private:
         Volatility localVolImpl(Time, Real) const;
         Handle<Quote> volatility_;
-        #ifndef QL_DISABLE_DEPRECATED
         DayCounter dayCounter_;
-        #endif
     };
 
     // inline definitions
@@ -117,46 +117,36 @@ namespace QuantLib {
     #endif
 
     inline LocalConstantVol::LocalConstantVol(const Date& referenceDate,
-                                              Volatility volatility)
-    : LocalVolTermStructure(referenceDate)
-      #ifndef QL_DISABLE_DEPRECATED
-      , dayCounter_(Settings::instance().dayCounter())
-      #endif
-    {
+                                              Volatility volatility,
+                                              const DayCounter& dayCounter)
+    : LocalVolTermStructure(referenceDate), dayCounter_(dayCounter) {
         volatility_.linkTo(
                        boost::shared_ptr<Quote>(new SimpleQuote(volatility)));
     }
 
     inline LocalConstantVol::LocalConstantVol(const Date& referenceDate,
-                                              const Handle<Quote>& volatility)
-    : LocalVolTermStructure(referenceDate), volatility_(volatility)
-      #ifndef QL_DISABLE_DEPRECATED
-      , dayCounter_(Settings::instance().dayCounter())
-      #endif
-    {
+                                              const Handle<Quote>& volatility,
+                                              const DayCounter& dayCounter)
+    : LocalVolTermStructure(referenceDate), volatility_(volatility),
+      dayCounter_(dayCounter) {
         registerWith(volatility_);
     }
 
     inline LocalConstantVol::LocalConstantVol(Integer settlementDays,
                                               const Calendar& calendar,
-                                              Volatility volatility)
-    : LocalVolTermStructure(settlementDays,calendar)
-      #ifndef QL_DISABLE_DEPRECATED
-      , dayCounter_(Settings::instance().dayCounter())
-      #endif
-    {
+                                              Volatility volatility,
+                                              const DayCounter& dayCounter)
+    : LocalVolTermStructure(settlementDays,calendar), dayCounter_(dayCounter) {
         volatility_.linkTo(
                        boost::shared_ptr<Quote>(new SimpleQuote(volatility)));
     }
 
     inline LocalConstantVol::LocalConstantVol(Integer settlementDays,
                                               const Calendar& calendar,
-                                              const Handle<Quote>& volatility)
-    : LocalVolTermStructure(settlementDays,calendar), volatility_(volatility)
-      #ifndef QL_DISABLE_DEPRECATED
-      , dayCounter_(Settings::instance().dayCounter())
-      #endif
-    {
+                                              const Handle<Quote>& volatility,
+                                              const DayCounter& dayCounter)
+    : LocalVolTermStructure(settlementDays,calendar), volatility_(volatility),
+      dayCounter_(dayCounter) {
         registerWith(volatility_);
     }
 

@@ -39,7 +39,7 @@ namespace QuantLib {
         // what to do about term structures of differnet length?
         // we could take the max, or min
         // we could enfore the reference date to be the same for each process??
-        return exercise_->lastDate() < 
+        return exercise_->lastDate() <
             blackScholesProcesses_[0]->riskFreeRate()->referenceDate();
         //return true;
     }
@@ -103,11 +103,7 @@ namespace QuantLib {
         const boost::shared_ptr<BlackScholesProcess>& process =
             blackScholesProcesses_[0];
         arguments->stoppingTimes.clear();
-        #ifndef QL_DISABLE_DEPRECATED
         DayCounter dc = process->riskFreeRate()->dayCounter();
-        #else
-        DayCounter dc = Settings::instance().dayCounter();
-        #endif
         for (Size i=0; i<exercise_->dates().size(); i++) {
             Time time = dc.yearFraction(
                 process->riskFreeRate()->referenceDate(), exercise_->date(i));
@@ -156,7 +152,7 @@ namespace QuantLib {
         for (Size i=0; i<blackScholesProcesses.size(); i++) {
             QL_REQUIRE(blackScholesProcesses[i]->stateVariable(),
                        "no underlying given");
-            QL_REQUIRE(blackScholesProcesses[i]->stateVariable()->value() 
+            QL_REQUIRE(blackScholesProcesses[i]->stateVariable()->value()
                        > 0.0,
                        "negative or zero underlying given");
             QL_REQUIRE(blackScholesProcesses[i]->dividendYield(),

@@ -44,9 +44,7 @@ namespace QuantLib {
                   const std::vector<Rate>& yields,
                   const DayCounter& dayCounter);
         // inspectors
-        #ifndef QL_DISABLE_DEPRECATED
         DayCounter dayCounter() const { return dayCounter_; }
-        #endif
         Calendar calendar() const;
         const std::vector<Date>& dates() const;
         Date maxDate() const;
@@ -61,6 +59,7 @@ namespace QuantLib {
         std::vector<Time> times_;
         Interpolation interpolation_;
     };
+
 
     // inline definitions
 

@@ -66,12 +66,10 @@ namespace QuantLib {
     BlackVarianceCurve::BlackVarianceCurve(
                                  const Date& referenceDate,
                                  const std::vector<Date>& dates,
-                                 const std::vector<Volatility>& blackVolCurve)
+                                 const std::vector<Volatility>& blackVolCurve,
+                                 const DayCounter& dayCounter)
     : BlackVarianceTermStructure(referenceDate),
-      #ifndef QL_DISABLE_DEPRECATED
-      dayCounter_(Settings::instance().dayCounter()),
-      #endif
-      maxDate_(dates.back()) {
+      dayCounter_(dayCounter), maxDate_(dates.back()) {
 
         QL_REQUIRE(dates.size()==blackVolCurve.size(),
                    "mismatch between date vector and black vol vector");

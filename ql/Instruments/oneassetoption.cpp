@@ -135,11 +135,7 @@ namespace QuantLib {
         // shouldn't be here
         // it should be moved elsewhere
         arguments->stoppingTimes.clear();
-        #ifndef QL_DISABLE_DEPRECATED
         DayCounter dc = blackScholesProcess_->riskFreeRate()->dayCounter();
-        #else
-        DayCounter dc = Settings::instance().dayCounter();
-        #endif
         for (Size i=0; i<exercise_->dates().size(); i++) {
             Time time = dc.yearFraction(
                        blackScholesProcess_->riskFreeRate()->referenceDate(),
@@ -235,12 +231,13 @@ namespace QuantLib {
                new BlackScholesProcess(stateVariable, dividendYield,
                                        riskFreeRate, volatility));
 
-
+        const boost::shared_ptr<BlackVolTermStructure>& blackVol =
+            arguments_->blackScholesProcess->blackVolatility();
         vol_ = boost::shared_ptr<SimpleQuote>(new SimpleQuote(0.0));
         volatility.linkTo(boost::shared_ptr<BlackVolTermStructure>(
-                    new BlackConstantVol(arguments_->blackScholesProcess
-                                         ->blackVolatility()->referenceDate(),
-                                         Handle<Quote>(vol_))));
+                    new BlackConstantVol(blackVol->referenceDate(),
+                                         Handle<Quote>(vol_),
+                                         blackVol->dayCounter())));
         arguments_->blackScholesProcess = process;
         results_ = dynamic_cast<const Value*>(engine_->results());
         QL_REQUIRE(results_ != 0,

@@ -44,9 +44,7 @@ namespace QuantLib {
                               const Date& referenceDate);
         //! \name BlackVolTermStructure interface
         //@{
-        #ifndef QL_DISABLE_DEPRECATED
         DayCounter dayCounter() const { return originalTS_->dayCounter(); }
-        #endif
         Date maxDate() const;
         Real minStrike() const;
         Real maxStrike() const;
@@ -92,18 +90,14 @@ namespace QuantLib {
             BlackVarianceTermStructure::accept(v);
     }
 
-    inline Real ImpliedVolTermStructure::blackVarianceImpl(
-                                                Time t, Real strike) const {
+    inline Real ImpliedVolTermStructure::blackVarianceImpl(Time t,
+                                                           Real strike) const {
         /* timeShift (and/or variance) variance at evaluation date
            cannot be cached since the original curve could change
            between invocations of this method */
-        #ifndef QL_DISABLE_DEPRECATED
-        DayCounter voldc = dayCounter();
-        #else
-        DayCounter voldc = Settings::instance().dayCounter();
-        #endif
-        Time timeShift = voldc.yearFraction(originalTS_->referenceDate(),
-                                            referenceDate());
+        Time timeShift =
+            dayCounter().yearFraction(originalTS_->referenceDate(),
+                                      referenceDate());
         /* t is relative to the current reference date
            and needs to be converted to the time relative
            to the reference date of the original curve */

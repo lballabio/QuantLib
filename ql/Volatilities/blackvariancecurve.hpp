@@ -53,12 +53,11 @@ namespace QuantLib {
         #endif
         BlackVarianceCurve(const Date& referenceDate,
                            const std::vector<Date>& dates,
-                           const std::vector<Volatility>& blackVolCurve);
+                           const std::vector<Volatility>& blackVolCurve,
+                           const DayCounter& dayCounter);
         //! \name BlackVolTermStructure interface
         //@{
-        #ifndef QL_DISABLE_DEPRECATED
         DayCounter dayCounter() const { return dayCounter_; }
-        #endif
         Date maxDate() const;
         Real minStrike() const;
         Real maxStrike() const;
@@ -84,9 +83,7 @@ namespace QuantLib {
       protected:
         virtual Real blackVarianceImpl(Time t, Real) const;
       private:
-        #ifndef QL_DISABLE_DEPRECATED
         DayCounter dayCounter_;
-        #endif
         Date maxDate_;
         std::vector<Time> times_;
         std::vector<Real> variances_;

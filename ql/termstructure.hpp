@@ -118,7 +118,7 @@ namespace QuantLib {
                         bool extrapolate = false) const;
         #endif
 
-        //! zero-yield Rate
+        //! zero-yield rate
         /*! returns the implied zero-yield Rate for a given date.
             The resulting Rate has the required daycounting rule.
         */
@@ -128,7 +128,7 @@ namespace QuantLib {
                       Frequency freq = Annual,
                       bool extrapolate = false) const;
 
-        //! zero-yield Rate
+        //! zero-yield rate
         /*! returns the implied zero-yield Rate for a given time.
             The resulting Rate is calculated implicitly assuming
             the same daycounting rule used for the time t measure.
@@ -138,7 +138,7 @@ namespace QuantLib {
                       Frequency freq = Annual,
                       bool extrapolate = false) const;
 
-        //! zero-yield InterestRate
+        //! zero-yield interest rate
         /*! returns the implied zero-yield InterestRate for a given date.
             The resulting InterestRate has the required daycounting rule.
         */
@@ -148,11 +148,11 @@ namespace QuantLib {
                                       Frequency freq = Annual,
                                       bool extrapolate = false) const;
 
-        //! zero-yield InterestRate
-        /*! returns the implied zero-yield InterestRate for a given time.
-            The resulting InterestRate has the same daycounting rule that
-            should have been used for the time measure:
-            Settings::instance().dayCounter()
+        //! zero-yield interest rate
+        /*! returns the implied zero-yield InterestRate for a given
+            time.  The resulting InterestRate has the same
+            day-counting rule used by the term structure. The same
+            rule should be used for the calculating the time t.
         */
         InterestRate zeroInterestRate(Time t,
                                       Compounding comp,
@@ -240,9 +240,9 @@ namespace QuantLib {
                      bool extrapolate = false) const;
 
         #endif
-        //! forward Rate
-        /*! returns the implied forward Rate between two dates
-            The resulting Rate has the required daycounting rule.
+        //! forward rate
+        /*! returns the implied forward rate between two dates
+            The resulting rate has the required day-counting rule.
         */
         Rate forwardRate(const Date& d1,
                          const Date& d2,
@@ -251,10 +251,10 @@ namespace QuantLib {
                          Frequency freq = Annual,
                          bool extrapolate = false) const;
 
-        //! forward Rate
-        /*! returns the implied forward Rate between two times
-            The resulting Rate is calculated implicitly assuming
-            the same daycounting rule used for the time measures.
+        //! forward rate
+        /*! returns the implied forward rate between two times
+            The resulting rate is calculated implicitly assuming
+            the same day-counting rule used for the time measures.
         */
         Rate forwardRate(Time t1,
                          Time t2,
@@ -262,9 +262,10 @@ namespace QuantLib {
                          Frequency freq = Annual,
                          bool extrapolate = false) const;
 
-        //! forward InterestRate
-        /*! returns the implied forward InterestRate between two dates
-            The resulting InterestRate has the required daycounting rule.
+        //! forward interest rate
+        /*! returns the implied forward interest rate between two
+            dates The resulting interest rate has the required
+            day-counting rule.
         */
         InterestRate forwardInterestRate(const Date& d1,
                                          const Date& d2,
@@ -273,13 +274,13 @@ namespace QuantLib {
                                          Frequency freq = Annual,
                                          bool extrapolate = false) const;
 
-        //! forward InterestRate
-        /*! returns the implied forward InterestRate between two times
-            The resulting InterestRate has the same daycounting rule that
-            should have been used for the time measure:
-            Settings::instance().dayCounter()
+        //! forward interest rate
+        /*! returns the implied forward interest rate between two
+            times The resulting interest rate has the same
+            day-counting rule used by the term structure. The same
+            rule should be used for the calculating the time t.
         */
-        InterestRate forwardInterestRate(Time t,
+        InterestRate forwardInterestRate(Time t1,
                                          Time t2,
                                          Compounding comp,
                                          Frequency freq = Annual,
@@ -292,11 +293,11 @@ namespace QuantLib {
             of year from the reference date.
         */
         //@{
-        //! par Rate
-        /*! returns the implied par Rate of a stylised swap starting at the
+        //! par rate
+        /*! returns the implied par rate of a stylised swap starting at the
             effective date with a given tenor.
 
-            \warning this par Rate is not to be used for evaluation of a real
+            \warning this par rate is not to be used for evaluation of a real
                      swap, since it does not take into account all the market
                      conventions' details.
         */
@@ -305,11 +306,11 @@ namespace QuantLib {
                      Frequency freq = Annual,
                      bool extrapolate = false) const;
 
-        //! par Rate
-        /*! returns the implied par Rate of a stylised swap starting at the
+        //! par rate
+        /*! returns the implied par rate of a stylised swap starting at the
             given time with a given tenor.
 
-            \warning this par Rate is not to be used for evaluation of a real
+            \warning this par rate is not to be used for evaluation of a real
                      swap, since it does not take into account all the market
                      conventions' details.
         */
@@ -441,7 +442,7 @@ namespace QuantLib {
                                                      bool extrapolate) const {
 
         Real r = zeroRate(t, comp, freq, extrapolate);
-        return InterestRate(r, Settings::instance().dayCounter(), comp, freq);
+        return InterestRate(r, dayCounter(), comp, freq);
     }
 
 
@@ -518,7 +519,7 @@ namespace QuantLib {
                           ")<t1(" + DecimalFormatter::toString(t2) +
                           ")");
         Real r = forwardRate(t1, t2, comp, freq, extrapolate);
-        return InterestRate(r, Settings::instance().dayCounter(), comp, freq);
+        return InterestRate(r, dayCounter(), comp, freq);
     }
 
 

@@ -71,17 +71,15 @@ namespace QuantLib {
 
 
     BlackVarianceSurface::BlackVarianceSurface(
-        const Date& referenceDate,
-        const std::vector<Date>& dates,
-        const std::vector<Real>& strikes,
-        const Matrix& blackVolMatrix,
-        BlackVarianceSurface::Extrapolation lowerEx,
-        BlackVarianceSurface::Extrapolation upperEx)
+                                  const Date& referenceDate,
+                                  const std::vector<Date>& dates,
+                                  const std::vector<Real>& strikes,
+                                  const Matrix& blackVolMatrix,
+                                  const DayCounter& dayCounter,
+                                  BlackVarianceSurface::Extrapolation lowerEx,
+                                  BlackVarianceSurface::Extrapolation upperEx)
     : BlackVarianceTermStructure(referenceDate),
-      #ifndef QL_DISABLE_DEPRECATED
-      dayCounter_(Settings::instance().dayCounter()), 
-      #endif
-      maxDate_(dates.back()), strikes_(strikes),
+      dayCounter_(dayCounter), maxDate_(dates.back()), strikes_(strikes),
       lowerExtrapolation_(lowerEx), upperExtrapolation_(upperEx) {
 
         QL_REQUIRE(dates.size()==blackVolMatrix.columns(),

@@ -35,12 +35,7 @@ namespace QuantLib {
         Date startDate = termStructure->referenceDate() + indexTenor;
         Date maturity = termStructure->referenceDate() + length;
 
-        /// ??? ///
-        #ifndef QL_DISABLE_DEPRECATED
         DayCounter rfdc = termStructure->dayCounter();
-        #else
-        DayCounter rfdc = Settings::instance().dayCounter();
-        #endif
         boost::shared_ptr<Xibor> dummyIndex(
                                      new Xibor("dummy",
                                                indexTenor.length(),

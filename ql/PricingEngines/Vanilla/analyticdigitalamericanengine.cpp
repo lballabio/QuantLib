@@ -27,7 +27,7 @@ namespace QuantLib {
         QL_REQUIRE(arguments_.exercise->type() == Exercise::American,
                    "not an American Option");
 
-        boost::shared_ptr<AmericanExercise> ex = 
+        boost::shared_ptr<AmericanExercise> ex =
             boost::dynamic_pointer_cast<AmericanExercise>(arguments_.exercise);
         QL_REQUIRE(ex, "non-American exercise given");
         QL_REQUIRE(ex->dates()[0]<=
@@ -39,16 +39,16 @@ namespace QuantLib {
             boost::dynamic_pointer_cast<StrikedTypePayoff>(arguments_.payoff);
         QL_REQUIRE(payoff, "non-striked payoff given");
 
-        const boost::shared_ptr<BlackScholesProcess>& process = 
+        const boost::shared_ptr<BlackScholesProcess>& process =
             arguments_.blackScholesProcess;
 
         Real spot = process->stateVariable()->value();
-        Real variance = 
-            process->blackVolatility()->blackVariance(ex->lastDate(), 
+        Real variance =
+            process->blackVolatility()->blackVariance(ex->lastDate(),
                                                  payoff->strike());
-        Rate dividendDiscount = 
+        Rate dividendDiscount =
             process->dividendYield()->discount(ex->lastDate());
-        Rate riskFreeDiscount = 
+        Rate riskFreeDiscount =
             process->riskFreeRate()->discount(ex->lastDate());
 
         if(ex->payoffAtExpiry()) {
@@ -62,13 +62,10 @@ namespace QuantLib {
             results_.delta = pricer.delta();
             results_.gamma = pricer.gamma();
 
-            #ifndef QL_DISABLE_DEPRECATED
             DayCounter rfdc = process->riskFreeRate()->dayCounter();
-            #else
-            DayCounter rfdc = Settings::instance().dayCounter();
-            #endif
-            Time t = rfdc.yearFraction(process->riskFreeRate()->referenceDate(),
-                                       arguments_.exercise->lastDate());
+            Time t = rfdc.yearFraction(
+                                     process->riskFreeRate()->referenceDate(),
+                                     arguments_.exercise->lastDate());
             results_.rho = pricer.rho(t);
         }
     }

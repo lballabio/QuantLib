@@ -40,12 +40,7 @@ namespace QuantLib {
                 return 0.0;
             } else {
                 Volatility sigma = capletVolatility_->volatility(d1,f0);
-                /// ??? ///
-                #ifndef QL_DISABLE_DEPRECATED
                 DayCounter dayCount = capletVolatility_->dayCounter();
-                #else
-                DayCounter dayCount = Settings::instance().dayCounter();
-                #endif
                 Date d2 = xibor_->calendar().advance(
                                              d1, xibor_->tenor(),
                                              xibor_->businessDayConvention());

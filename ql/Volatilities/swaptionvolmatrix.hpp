@@ -52,17 +52,14 @@ namespace QuantLib {
         SwaptionVolatilityMatrix(const Date& referenceDate,
                                  const std::vector<Date>& exerciseDates,
                                  const std::vector<Period>& lengths,
-                                 const Matrix& volatilities);
+                                 const Matrix& volatilities,
+                                 const DayCounter& dayCounter);
         // inspectors
-        #ifndef QL_DISABLE_DEPRECATED
         DayCounter dayCounter() const { return dayCounter_; }
-        #endif
         const std::vector<Date>& exerciseDates() const;
         const std::vector<Period>& lengths() const;
       private:
-        #ifndef QL_DISABLE_DEPRECATED
         DayCounter dayCounter_;
-        #endif
         std::vector<Date> exerciseDates_;
         std::vector<Time> exerciseTimes_;
         std::vector<Period> lengths_;
@@ -107,12 +104,10 @@ namespace QuantLib {
 
     inline SwaptionVolatilityMatrix::SwaptionVolatilityMatrix(
                        const Date& today, const std::vector<Date>& dates,
-                       const std::vector<Period>& lengths, const Matrix& vols)
+                       const std::vector<Period>& lengths, const Matrix& vols,
+                       const DayCounter& dayCounter)
     : SwaptionVolatilityStructure(today),
-      #ifndef QL_DISABLE_DEPRECATED
-      dayCounter_(Settings::instance().dayCounter()),
-      #endif
-      exerciseDates_(dates),
+      dayCounter_(dayCounter), exerciseDates_(dates),
       lengths_(lengths), volatilities_(vols) {
         exerciseTimes_.resize(exerciseDates_.size());
         timeLengths_.resize(lengths_.size());
@@ -123,12 +118,7 @@ namespace QuantLib {
         for (i=0; i<lengths_.size(); i++) {
             Date startDate = exerciseDates_[0]; // as good as any
             Date endDate = startDate + lengths_[i];
-            #ifndef QL_DISABLE_DEPRECATED
             timeLengths_[i] = dayCounter_.yearFraction(startDate,endDate);
-            #else
-            timeLengths_[i] = Settings::instance().dayCounter().yearFraction(
-                startDate,endDate);
-            #endif
         }
         interpolation_ =
             Linear::make_interpolation(exerciseTimes_.begin(),
@@ -158,12 +148,7 @@ namespace QuantLib {
         Time exerciseTime = timeFromReference(start);
         Date startDate = exerciseDates_[0]; // for consistency
         Date endDate = startDate + length;
-        #ifndef QL_DISABLE_DEPRECATED
         Time timeLength = dayCounter_.yearFraction(startDate,endDate);
-        #else
-        Time timeLength = Settings::instance().dayCounter().yearFraction(
-            startDate,endDate);
-        #endif
         return std::make_pair(exerciseTime,timeLength);
     }
 

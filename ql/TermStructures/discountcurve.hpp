@@ -51,11 +51,9 @@ namespace QuantLib {
                       const DayCounter& dayCounter);
         #endif
         DiscountCurve(const std::vector<Date>& dates,
-                      const std::vector<DiscountFactor>& dfs);
-        #ifndef QL_DISABLE_DEPRECATED
+                      const std::vector<DiscountFactor>& dfs,
+                      const DayCounter& dayCounter);
         DayCounter dayCounter() const { return dayCounter_; }
-        #endif
-        Calendar calendar() const { return Calendar(); }
         Date maxDate() const;
         Time maxTime() const;
         const std::vector<Time>& times() const;
@@ -64,9 +62,7 @@ namespace QuantLib {
       protected:
         DiscountFactor discountImpl(Time) const;
         Size referenceNode(Time) const;
-        #ifndef QL_DISABLE_DEPRECATED
         DayCounter dayCounter_;
-        #endif
         mutable std::vector<Date> dates_;
         mutable std::vector<DiscountFactor> discounts_;
         mutable std::vector<Time> times_;

@@ -37,7 +37,7 @@ namespace QuantLib {
         Size i;
         for (i=0; i<arguments_.dividends.size(); i++)
             if (arguments_.dividendDates[i] >= settlementDate)
-                riskless += arguments_.dividends[i] * 
+                riskless += arguments_.dividends[i] *
                     process->riskFreeRate()
                     ->discount(arguments_.dividendDates[i]);
         Real spot = process->stateVariable()->value() - riskless;
@@ -50,7 +50,7 @@ namespace QuantLib {
                                             arguments_.exercise->lastDate());
         Real forwardPrice = spot * dividendDiscount / riskFreeDiscount;
 
-        Real variance = 
+        Real variance =
             process->blackVolatility()->blackVariance(
                                               arguments_.exercise->lastDate(),
                                               payoff->strike());
@@ -61,28 +61,23 @@ namespace QuantLib {
         results_.delta = black.delta(spot);
         results_.gamma = black.gamma(spot);
 
-        #ifndef QL_DISABLE_DEPRECATED
         DayCounter rfdc  = process->riskFreeRate()->dayCounter();
         DayCounter voldc = process->blackVolatility()->dayCounter();
-        #else
-        DayCounter rfdc  = Settings::instance().dayCounter();
-        DayCounter voldc = Settings::instance().dayCounter();
-        #endif
         Time t = voldc.yearFraction(
-            process->blackVolatility()->referenceDate(),
-            arguments_.exercise->lastDate());
+                                  process->blackVolatility()->referenceDate(),
+                                  arguments_.exercise->lastDate());
         results_.vega = black.vega(t);
 
         Real delta_theta = 0.0, delta_rho = 0.0;
         for (i = 0; i < arguments_.dividends.size(); i++) {
             Date d = arguments_.dividendDates[i];
             if (d >= settlementDate) {
-                delta_theta -= arguments_.dividends[i] * 
+                delta_theta -= arguments_.dividends[i] *
                   process->riskFreeRate()->zeroRate(d,rfdc,Continuous,Annual)*
                   process->riskFreeRate()->discount(d);
                 Time t = rfdc.yearFraction(
                     process->riskFreeRate()->referenceDate(), d);
-                delta_rho += arguments_.dividends[i] * t * 
+                delta_rho += arguments_.dividends[i] * t *
                              process->riskFreeRate()->discount(t);
             }
         }

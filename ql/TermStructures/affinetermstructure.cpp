@@ -69,22 +69,18 @@ namespace QuantLib {
 
     AffineTermStructure::AffineTermStructure(
                                   const Date& referenceDate,
-                                  const boost::shared_ptr<AffineModel>& model)
-    : YieldTermStructure(referenceDate),
-      #ifndef QL_DISABLE_DEPRECATED
-      dayCounter_(Settings::instance().dayCounter()),
-      #endif
+                                  const boost::shared_ptr<AffineModel>& model,
+                                  const DayCounter& dayCounter)
+    : YieldTermStructure(referenceDate), dayCounter_(dayCounter),
       model_(model) {}
 
     AffineTermStructure::AffineTermStructure(
                const Date& referenceDate,
                const boost::shared_ptr<AffineModel>& model,
                const std::vector<boost::shared_ptr<RateHelper> >& instruments,
-               const boost::shared_ptr<OptimizationMethod>& method)
-    : YieldTermStructure(referenceDate),
-      #ifndef QL_DISABLE_DEPRECATED
-      dayCounter_(Settings::instance().dayCounter()),
-      #endif
+               const boost::shared_ptr<OptimizationMethod>& method,
+               const DayCounter& dayCounter)
+    : YieldTermStructure(referenceDate), dayCounter_(dayCounter),
       model_(model), instruments_(instruments), method_(method) {
         for (Size i=0; i<instruments_.size(); i++)
             registerWith(instruments_[i]);
@@ -93,11 +89,9 @@ namespace QuantLib {
     AffineTermStructure::AffineTermStructure(
                                   Integer settlementDays,
                                   const Calendar& calendar,
-                                  const boost::shared_ptr<AffineModel>& model)
-    : YieldTermStructure(settlementDays,calendar),
-      #ifndef QL_DISABLE_DEPRECATED
-      dayCounter_(Settings::instance().dayCounter()),
-      #endif
+                                  const boost::shared_ptr<AffineModel>& model,
+                                  const DayCounter& dayCounter)
+    : YieldTermStructure(settlementDays,calendar), dayCounter_(dayCounter),
       model_(model) {}
 
     AffineTermStructure::AffineTermStructure(
@@ -105,11 +99,9 @@ namespace QuantLib {
                const Calendar& calendar,
                const boost::shared_ptr<AffineModel>& model,
                const std::vector<boost::shared_ptr<RateHelper> >& instruments,
-               const boost::shared_ptr<OptimizationMethod>& method)
-    : YieldTermStructure(settlementDays,calendar),
-      #ifndef QL_DISABLE_DEPRECATED
-      dayCounter_(Settings::instance().dayCounter()),
-      #endif
+               const boost::shared_ptr<OptimizationMethod>& method,
+               const DayCounter& dayCounter)
+    : YieldTermStructure(settlementDays,calendar), dayCounter_(dayCounter),
       model_(model), instruments_(instruments), method_(method) {
         for (Size i=0; i<instruments_.size(); i++)
             registerWith(instruments_[i]);

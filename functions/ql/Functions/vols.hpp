@@ -30,6 +30,7 @@
 namespace QuantLib {
 
     Volatility blackVol(const Date& refDate,
+                        const DayCounter& dayCounter,
                         const std::vector<Date>& dates,
                         const std::vector<Real>& strikes,
                         const Matrix& blackVolSurface,

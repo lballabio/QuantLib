@@ -165,13 +165,8 @@ namespace QuantLib {
         const boost::shared_ptr<BlackScholesProcess>& process =
             this->arguments_.blackScholesProcess;
 
-        #ifndef QL_DISABLE_DEPRECATED
         DayCounter rfdc = process->riskFreeRate()->dayCounter();
         DayCounter divdc = process->dividendYield()->dayCounter();
-        #else
-        DayCounter rfdc = Settings::instance().dayCounter();
-        DayCounter divdc = Settings::instance().dayCounter();
-        #endif
         Time resetTime = rfdc.yearFraction(
             process->riskFreeRate()->referenceDate(),
             this->arguments_.resetDate);

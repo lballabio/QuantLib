@@ -59,15 +59,14 @@ namespace QuantLib {
                              const std::vector<Date>& dates,
                              const std::vector<Real>& strikes,
                              const Matrix& blackVolMatrix,
+                             const DayCounter& dayCounter,
                              Extrapolation lowerExtrapolation =
                                 InterpolatorDefaultExtrapolation,
                              Extrapolation upperExtrapolation =
                                 InterpolatorDefaultExtrapolation);
         //! \name BlackVolTermStructure interface
         //@{
-        #ifndef QL_DISABLE_DEPRECATED
         DayCounter dayCounter() const { return dayCounter_; }
-        #endif
         Date maxDate() const {
             return maxDate_;
         }
@@ -100,9 +99,7 @@ namespace QuantLib {
       protected:
         virtual Real blackVarianceImpl(Time t, Real strike) const;
       private:
-        #ifndef QL_DISABLE_DEPRECATED
         DayCounter dayCounter_;
-        #endif
         Date maxDate_;
         std::vector<Real> strikes_;
         std::vector<Time> times_;

@@ -84,10 +84,8 @@ namespace QuantLib {
         virtual const Date& referenceDate() const;
         //! the calendar used for reference date calculation
         virtual Calendar calendar() const;
-        #ifndef QL_DISABLE_DEPRECATED
         //! the day counter used for date/time conversion
         virtual DayCounter dayCounter() const = 0;
-        #endif
         //@}
 
         //! \name Observer interface
@@ -158,11 +156,7 @@ namespace QuantLib {
     }
 
     inline Time BaseTermStructure::timeFromReference(const Date& d) const {
-        #ifndef QL_DISABLE_DEPRECATED
         return dayCounter().yearFraction(referenceDate(),d);
-        #else
-        return Settings::instance().dayCounter().yearFraction(referenceDate(), d);
-        #endif
     }
 
 }

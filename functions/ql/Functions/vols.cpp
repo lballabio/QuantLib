@@ -21,9 +21,11 @@
 #include <ql/Volatilities/localvolcurve.hpp>
 #include <ql/Volatilities/blackvariancesurface.hpp>
 
+
 namespace QuantLib {
 
     Volatility blackVol(const Date& refDate,
+                        const DayCounter& dayCounter,
                         const std::vector<Date>& dates,
                         const std::vector<Real>& strikes,
                         const Matrix& blackVolSurface,
@@ -40,7 +42,7 @@ namespace QuantLib {
         switch (interpolation2DType) {
           case 1:
             result = surface_t(
-                refDate, dates, strikes, blackVolSurface,
+                refDate, dates, strikes, blackVolSurface, dayCounter,
                 surface_t::InterpolatorDefaultExtrapolation,
                 surface_t::InterpolatorDefaultExtrapolation).blackForwardVol(
                     date1, date2, strike, allowExtrapolation);

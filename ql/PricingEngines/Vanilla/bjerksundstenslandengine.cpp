@@ -46,7 +46,7 @@ namespace QuantLib {
             Real rT = QL_LOG(1.0/rfD);
 
             Real Beta = (0.5 - bT/variance) +
-                QL_SQRT(QL_POW((bT/variance - 0.5), Real(2.0)) 
+                QL_SQRT(QL_POW((bT/variance - 0.5), Real(2.0))
                         + 2.0 * rT/variance);
             Real BInfinity = Beta / (Beta - 1.0) * X;
             // Real B0 = QL_MAX(X, QL_LOG(rfD) / QL_LOG(dD) * X);
@@ -75,7 +75,7 @@ namespace QuantLib {
         QL_REQUIRE(arguments_.exercise->type() == Exercise::American,
                    "not an American Option");
 
-        boost::shared_ptr<AmericanExercise> ex = 
+        boost::shared_ptr<AmericanExercise> ex =
             boost::dynamic_pointer_cast<AmericanExercise>(arguments_.exercise);
         QL_REQUIRE(ex, "non-American exercise given");
         QL_REQUIRE(!ex->payoffAtExpiry(),
@@ -106,17 +106,12 @@ namespace QuantLib {
             results_.elasticity   = black.elasticity(spot);
             results_.gamma        = black.gamma(spot);
 
-            #ifndef QL_DISABLE_DEPRECATED
             DayCounter rfdc  = process->riskFreeRate()->dayCounter();
             DayCounter divdc = process->dividendYield()->dayCounter();
             DayCounter voldc = process->blackVolatility()->dayCounter();
-            #else
-            DayCounter rfdc = Settings::instance().dayCounter();
-            DayCounter divdc = Settings::instance().dayCounter();
-            DayCounter voldc = Settings::instance().dayCounter();
-            #endif
-            Time t = rfdc.yearFraction(process->riskFreeRate()->referenceDate(),
-                                       arguments_.exercise->lastDate());
+            Time t = rfdc.yearFraction(
+                                     process->riskFreeRate()->referenceDate(),
+                                     arguments_.exercise->lastDate());
             results_.rho = black.rho(t);
 
             t = divdc.yearFraction(process->dividendYield()->referenceDate(),
@@ -133,7 +128,7 @@ namespace QuantLib {
             results_.strikeSensitivity  = black.strikeSensitivity();
             results_.itmCashProbability = black.itmCashProbability();
         } else {
-            // early exercise can be optimal 
+            // early exercise can be optimal
             switch (payoff->optionType()) {
                 case Option::Call:
                     results_.value = americanCallApproximation(

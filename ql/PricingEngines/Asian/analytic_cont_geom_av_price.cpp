@@ -38,29 +38,25 @@ namespace QuantLib {
             arguments_.blackScholesProcess;
 
 
-        Volatility volatility = 
+        Volatility volatility =
             process->blackVolatility()->blackVol(exercise, payoff->strike());
-        Real variance = 
+        Real variance =
             process->blackVolatility()->blackVariance(exercise,
                                                       payoff->strike());
         DiscountFactor riskFreeDiscount =
             process->riskFreeRate()->discount(exercise);
 
-        #ifndef QL_DISABLE_DEPRECATED
         DayCounter rfdc  = process->riskFreeRate()->dayCounter();
         DayCounter divdc = process->dividendYield()->dayCounter();
         DayCounter voldc = process->blackVolatility()->dayCounter();
-        #else
-        DayCounter rfdc = Settings::instance().dayCounter();
-        DayCounter divdc = Settings::instance().dayCounter();
-        DayCounter voldc = Settings::instance().dayCounter();
-        #endif
 
         Spread dividendYield = 0.5 * (
             // process->riskFreeRate()->zeroYield(exercise) +
-            process->riskFreeRate()->zeroRate(exercise, rfdc, Continuous, NoFrequency) +
+            process->riskFreeRate()->zeroRate(exercise, rfdc,
+                                              Continuous, NoFrequency) +
             // process->dividendYield()->zeroYield(exercise) +
-            process->dividendYield()->zeroRate(exercise, divdc, Continuous, NoFrequency) +
+            process->dividendYield()->zeroRate(exercise, divdc,
+                                               Continuous, NoFrequency) +
             volatility*volatility/6.0);
 
         Time t_q = divdc.yearFraction(

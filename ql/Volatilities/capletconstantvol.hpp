@@ -45,18 +45,20 @@ namespace QuantLib {
                                  const DayCounter& dayCounter);
         #endif
         CapletConstantVolatility(const Date& referenceDate,
-                                 Volatility volatility);
+                                 Volatility volatility,
+                                 const DayCounter& dayCounter);
         CapletConstantVolatility(const Date& referenceDate,
-                                 const Handle<Quote>& volatility);
+                                 const Handle<Quote>& volatility,
+                                 const DayCounter& dayCounter);
         CapletConstantVolatility(Integer settlementDays, const Calendar&,
-                                 Volatility volatility);
+                                 Volatility volatility,
+                                 const DayCounter& dayCounter);
         CapletConstantVolatility(Integer settlementDays, const Calendar&,
-                                 const Handle<Quote>& volatility);
+                                 const Handle<Quote>& volatility,
+                                 const DayCounter& dayCounter);
         //! \name BaseTermStructure interface
         //@{
-        #ifndef QL_DISABLE_DEPRECATED
         DayCounter dayCounter() const { return dayCounter_; }
-        #endif
         //@}
       protected:
         //! \name CapletVolatilityStructure interface
@@ -65,9 +67,7 @@ namespace QuantLib {
         //@}
       private:
         Handle<Quote> volatility_;
-        #ifndef QL_DISABLE_DEPRECATED
         DayCounter dayCounter_;
-        #endif
     };
 
 
@@ -118,12 +118,9 @@ namespace QuantLib {
 
     inline CapletConstantVolatility::CapletConstantVolatility(
                                               const Date& referenceDate,
-                                              Volatility volatility)
-    : CapletVolatilityStructure(referenceDate)
-      #ifndef QL_DISABLE_DEPRECATED
-      , dayCounter_(Settings::instance().dayCounter())
-      #endif
-    {
+                                              Volatility volatility,
+                                              const DayCounter& dayCounter)
+    : CapletVolatilityStructure(referenceDate), dayCounter_(dayCounter) {
         volatility_.linkTo(
                        boost::shared_ptr<Quote>(new SimpleQuote(volatility)));
         registerWith(volatility_);
@@ -131,24 +128,20 @@ namespace QuantLib {
 
     inline CapletConstantVolatility::CapletConstantVolatility(
                                               const Date& referenceDate,
-                                              const Handle<Quote>& volatility)
-    : CapletVolatilityStructure(referenceDate), volatility_(volatility)
-      #ifndef QL_DISABLE_DEPRECATED
-      , dayCounter_(Settings::instance().dayCounter())
-      #endif
-    {
+                                              const Handle<Quote>& volatility,
+                                              const DayCounter& dayCounter)
+    : CapletVolatilityStructure(referenceDate), volatility_(volatility),
+      dayCounter_(dayCounter) {
         registerWith(volatility_);
     }
 
     inline CapletConstantVolatility::CapletConstantVolatility(
                                               Integer settlementDays,
                                               const Calendar& calendar,
-                                              Volatility volatility)
-    : CapletVolatilityStructure(settlementDays,calendar)
-      #ifndef QL_DISABLE_DEPRECATED
-      , dayCounter_(Settings::instance().dayCounter())
-      #endif
-    {
+                                              Volatility volatility,
+                                              const DayCounter& dayCounter)
+    : CapletVolatilityStructure(settlementDays,calendar),
+      dayCounter_(dayCounter) {
         volatility_.linkTo(
                        boost::shared_ptr<Quote>(new SimpleQuote(volatility)));
         registerWith(volatility_);
@@ -157,13 +150,10 @@ namespace QuantLib {
     inline CapletConstantVolatility::CapletConstantVolatility(
                                               Integer settlementDays,
                                               const Calendar& calendar,
-                                              const Handle<Quote>& volatility)
+                                              const Handle<Quote>& volatility,
+                                              const DayCounter& dayCounter)
     : CapletVolatilityStructure(settlementDays,calendar),
-      volatility_(volatility)
-      #ifndef QL_DISABLE_DEPRECATED
-      , dayCounter_(Settings::instance().dayCounter())
-      #endif
-    {
+      volatility_(volatility), dayCounter_(dayCounter) {
         registerWith(volatility_);
     }
 

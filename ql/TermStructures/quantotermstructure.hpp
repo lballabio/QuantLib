@@ -48,11 +48,9 @@ namespace QuantLib {
                     Real underlyingExchRateCorrelation);
         //! \name YieldTermStructure interface
         //@{
-        #ifndef QL_DISABLE_DEPRECATED
         DayCounter dayCounter() const {
             return underlyingDividendTS_->dayCounter();
         }
-        #endif
         Calendar calendar() const;
         #ifndef QL_DISABLE_DEPRECATED
         const Date& todaysDate() const;

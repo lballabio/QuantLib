@@ -85,24 +85,20 @@ namespace QuantLib {
     PiecewiseFlatForward::PiecewiseFlatForward(
                const Date& referenceDate,
                const std::vector<boost::shared_ptr<RateHelper> >& instruments,
+               const DayCounter& dayCounter,
                Real accuracy)
     : YieldTermStructure(referenceDate),
-      #ifndef QL_DISABLE_DEPRECATED
-      dayCounter_(Settings::instance().dayCounter()),
-      #endif
-      instruments_(instruments), accuracy_(accuracy) {
+      dayCounter_(dayCounter), instruments_(instruments), accuracy_(accuracy) {
         checkInstruments();
     }
 
     PiecewiseFlatForward::PiecewiseFlatForward(
                Integer settlementDays, const Calendar& calendar,
                const std::vector<boost::shared_ptr<RateHelper> >& instruments,
+               const DayCounter& dayCounter,
                Real accuracy)
     : YieldTermStructure(settlementDays, calendar),
-      #ifndef QL_DISABLE_DEPRECATED
-      dayCounter_(Settings::instance().dayCounter()),
-      #endif
-      instruments_(instruments), accuracy_(accuracy) {
+      dayCounter_(dayCounter), instruments_(instruments), accuracy_(accuracy) {
         checkInstruments();
     }
 
@@ -111,11 +107,9 @@ namespace QuantLib {
                                            const std::vector<Rate>& forwards,
                                            const DayCounter& dayCounter)
     : YieldTermStructure(dates[0]),
-      #ifndef QL_DISABLE_DEPRECATED
-      dayCounter_(Settings::instance().dayCounter()),
-      #endif
-      times_(dates.size()), dates_(dates), discounts_(dates.size()),
-      forwards_(forwards), zeroYields_(dates.size()) {
+      dayCounter_(dayCounter), times_(dates.size()), dates_(dates),
+      discounts_(dates.size()), forwards_(forwards),
+      zeroYields_(dates.size()) {
 
         QL_REQUIRE(dates_.size()>0,
                    "no dates given");

@@ -172,7 +172,7 @@ namespace {
     }
 
     Integer timeToDays(Time t) {
-        return Integer(t*Settings::instance().dayCounterBase()+0.5);
+        return Integer(t*360+0.5);
     }
 
     void teardown() {
@@ -240,7 +240,7 @@ void EuropeanOptionTest::testValues() {
       { Option::Call,  40.00,  42.00, 0.08, 0.04, 0.75, 0.35,  5.0975}
     };
 
-    DayCounter dc = Settings::instance().dayCounter();
+    DayCounter dc = Actual360();
     Date today = Date::todaysDate();
 
     boost::shared_ptr<SimpleQuote> spot(new SimpleQuote(0.0));
@@ -249,7 +249,7 @@ void EuropeanOptionTest::testValues() {
     boost::shared_ptr<SimpleQuote> rRate(new SimpleQuote(0.0));
     boost::shared_ptr<YieldTermStructure> rTS = flatRate(today, rRate, dc);
     boost::shared_ptr<SimpleQuote> vol(new SimpleQuote(0.0));
-    boost::shared_ptr<BlackVolTermStructure> volTS = flatVol(today, vol);
+    boost::shared_ptr<BlackVolTermStructure> volTS = flatVol(today, vol, dc);
     boost::shared_ptr<PricingEngine> engine(new AnalyticEuropeanEngine);
 
     for (Size i=0; i<LENGTH(values); i++) {
@@ -318,7 +318,7 @@ void EuropeanOptionTest::testGreekValues() {
         { Option::Put,  490.00, 500.00, 0.05, 0.08, 0.250000, 0.15, 42.2254 }
     };
 
-    DayCounter dc = Settings::instance().dayCounter();
+    DayCounter dc = Actual360();
     Date today = Date::todaysDate();
 
     boost::shared_ptr<SimpleQuote> spot(new SimpleQuote(0.0));
@@ -327,7 +327,7 @@ void EuropeanOptionTest::testGreekValues() {
     boost::shared_ptr<SimpleQuote> rRate(new SimpleQuote(0.0));
     boost::shared_ptr<YieldTermStructure> rTS = flatRate(today, rRate, dc);
     boost::shared_ptr<SimpleQuote> vol(new SimpleQuote(0.0));
-    boost::shared_ptr<BlackVolTermStructure> volTS = flatVol(today, vol);
+    boost::shared_ptr<BlackVolTermStructure> volTS = flatVol(today, vol, dc);
     boost::shared_ptr<PricingEngine> engine(new AnalyticEuropeanEngine);
     boost::shared_ptr<BlackScholesProcess> stochProcess(new
         BlackScholesProcess(Handle<Quote>(spot),
@@ -584,7 +584,7 @@ void EuropeanOptionTest::testGreeks() {
     Time residualTimes[] = { 1.0, 2.0 };
     Volatility vols[] = { 0.11, 0.50, 1.20 };
 
-    DayCounter dc = Settings::instance().dayCounter();
+    DayCounter dc = Actual360();
     Date today = Date::todaysDate();
     Settings::instance().setEvaluationDate(today);
 
@@ -594,7 +594,7 @@ void EuropeanOptionTest::testGreeks() {
     boost::shared_ptr<SimpleQuote> rRate(new SimpleQuote(0.0));
     Handle<YieldTermStructure> rTS(flatRate(rRate, dc));
     boost::shared_ptr<SimpleQuote> vol(new SimpleQuote(0.0));
-    Handle<BlackVolTermStructure> volTS(flatVol(vol));
+    Handle<BlackVolTermStructure> volTS(flatVol(vol, dc));
 
     boost::shared_ptr<StrikedTypePayoff> payoff;
 
@@ -741,12 +741,12 @@ void EuropeanOptionTest::testImpliedVol() {
     Rate rRates[] = { 0.01, 0.05, 0.10 };
     Volatility vols[] = { 0.01, 0.20, 0.30, 0.70, 0.90 };
 
-    DayCounter dc = Settings::instance().dayCounter();
+    DayCounter dc = Actual360();
     Date today = Date::todaysDate();
 
     boost::shared_ptr<SimpleQuote> spot(new SimpleQuote(0.0));
     boost::shared_ptr<SimpleQuote> vol(new SimpleQuote(0.0));
-    boost::shared_ptr<BlackVolTermStructure> volTS = flatVol(today, vol);
+    boost::shared_ptr<BlackVolTermStructure> volTS = flatVol(today, vol, dc);
     boost::shared_ptr<SimpleQuote> qRate(new SimpleQuote(0.0));
     boost::shared_ptr<YieldTermStructure> qTS = flatRate(today, qRate, dc);
     boost::shared_ptr<SimpleQuote> rRate(new SimpleQuote(0.0));
@@ -856,7 +856,7 @@ void EuropeanOptionTest::testImpliedVolContainment() {
 
     // test options
 
-    DayCounter dc = Settings::instance().dayCounter();
+    DayCounter dc = Actual360();
     Date today = Date::todaysDate();
 
     boost::shared_ptr<SimpleQuote> spot(new SimpleQuote(100.0));
@@ -866,7 +866,7 @@ void EuropeanOptionTest::testImpliedVolContainment() {
     boost::shared_ptr<SimpleQuote> rRate(new SimpleQuote(0.03));
     Handle<YieldTermStructure> rTS(flatRate(today, rRate, dc));
     boost::shared_ptr<SimpleQuote> vol(new SimpleQuote(0.20));
-    Handle<BlackVolTermStructure> volTS(flatVol(today, vol));
+    Handle<BlackVolTermStructure> volTS(flatVol(today, vol, dc));
 
     Date exerciseDate = today + 1*Years;
     boost::shared_ptr<Exercise> exercise(new EuropeanExercise(exerciseDate));
@@ -940,12 +940,12 @@ namespace {
         Rate rRates[] = { 0.01, 0.05, 0.15 };
         Volatility vols[] = { 0.11, 0.50, 1.20 };
 
-        DayCounter dc = Settings::instance().dayCounter();
+        DayCounter dc = Actual360();
         Date today = Date::todaysDate();
 
         boost::shared_ptr<SimpleQuote> spot(new SimpleQuote(0.0));
         boost::shared_ptr<SimpleQuote> vol(new SimpleQuote(0.0));
-        boost::shared_ptr<BlackVolTermStructure> volTS = flatVol(today,vol);
+        boost::shared_ptr<BlackVolTermStructure> volTS = flatVol(today,vol,dc);
         boost::shared_ptr<SimpleQuote> qRate(new SimpleQuote(0.0));
         boost::shared_ptr<YieldTermStructure> qTS = flatRate(today,qRate,dc);
         boost::shared_ptr<SimpleQuote> rRate(new SimpleQuote(0.0));
@@ -954,8 +954,7 @@ namespace {
         for (Size i=0; i<LENGTH(types); i++) {
           for (Size j=0; j<LENGTH(strikes); j++) {
             for (Size k=0; k<LENGTH(lengths); k++) {
-              Date exDate = today +
-                  lengths[k]*Settings::instance().dayCounterBase();
+              Date exDate = today + lengths[k]*360;
               boost::shared_ptr<Exercise> exercise(
                                                 new EuropeanExercise(exDate));
               boost::shared_ptr<StrikedTypePayoff> payoff(new

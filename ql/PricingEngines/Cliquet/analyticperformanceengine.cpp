@@ -58,31 +58,25 @@ namespace QuantLib {
 
         for (Size i = 1; i < resetDates.size(); i++) {
 
-            DiscountFactor discount = 
+            DiscountFactor discount =
                 process->riskFreeRate()->discount(resetDates[i-1]);
-            DiscountFactor rDiscount = 
+            DiscountFactor rDiscount =
                 process->riskFreeRate()->discount(resetDates[i]) /
                 process->riskFreeRate()->discount(resetDates[i-1]);
-            DiscountFactor qDiscount = 
+            DiscountFactor qDiscount =
                 process->dividendYield()->discount(resetDates[i]) /
                 process->dividendYield()->discount(resetDates[i-1]);
             Real forward = (1.0/moneyness->strike())*qDiscount/rDiscount;
-            Real variance = 
+            Real variance =
                 process->blackVolatility()->blackForwardVariance(
                                         resetDates[i-1],resetDates[i],
                                         underlying * moneyness->strike());
 
             BlackFormula black(forward, rDiscount, variance, payoff);
 
-            #ifndef QL_DISABLE_DEPRECATED
             DayCounter rfdc  = process->riskFreeRate()->dayCounter();
             DayCounter divdc = process->dividendYield()->dayCounter();
             DayCounter voldc = process->blackVolatility()->dayCounter();
-            #else
-            DayCounter rfdc  = Settings::instance().dayCounter();
-            DayCounter divdc = Settings::instance().dayCounter();
-            DayCounter voldc = Settings::instance().dayCounter();
-            #endif
 
             results_.value += discount * moneyness->strike() * black.value();
             results_.delta += 0.0;
@@ -94,7 +88,7 @@ namespace QuantLib {
             Time dt = rfdc.yearFraction(resetDates[i-1],resetDates[i]);
             Time t = rfdc.yearFraction(process->riskFreeRate()->referenceDate(),
                                       resetDates[i-1]);
-            results_.rho += discount * moneyness->strike() * 
+            results_.rho += discount * moneyness->strike() *
                 (black.rho(dt) - t * black.value());
 
             dt = divdc.yearFraction(resetDates[i-1],resetDates[i]);

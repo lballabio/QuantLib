@@ -53,16 +53,14 @@ namespace QuantLib {
     #endif
 
     DiscountCurve::DiscountCurve(const std::vector<Date>& dates,
-                                 const std::vector<DiscountFactor>& discounts)
+                                 const std::vector<DiscountFactor>& discounts,
+                                 const DayCounter& dayCounter)
     #ifdef QL_DISABLE_DEPRECATED
     : YieldTermStructure(dates[0]),
     #else
     : DiscountStructure(dates[0]),
     #endif
-    #ifndef QL_DISABLE_DEPRECATED
-      dayCounter_(Settings::instance().dayCounter()),
-    #endif
-      dates_(dates), discounts_(discounts) {
+      dayCounter_(dayCounter), dates_(dates), discounts_(discounts) {
         QL_REQUIRE(dates_.size() > 0,
                    "no input Dates given");
         QL_REQUIRE(discounts_.size() > 0,
@@ -81,8 +79,7 @@ namespace QuantLib {
                        DateFormatter::toString(dates_[i])+", vs "+
                        DateFormatter::toString(dates_[i-1])+")");
             QL_REQUIRE(discounts_[i] > 0.0, "negative discount");
-            times_[i] = Settings::instance().dayCounter().yearFraction(
-                dates_[0], dates_[i]);
+            times_[i] = dayCounter.yearFraction(dates_[0], dates_[i]);
         }
         interpolation_ = LogLinearInterpolation(times_.begin(), times_.end(),
                                                 discounts_.begin());

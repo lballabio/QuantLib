@@ -164,7 +164,7 @@ void QuantoOptionTest::testValues() {
         {  Option::Put, 105.0, 100.0, 0.04, 0.08, 0.5, 0.2,              0.05,          0.10,         0.3,     8.1636, 1.0e-4 }
     };
 
-    DayCounter dc = Settings::instance().dayCounter();
+    DayCounter dc = Actual360();
     Date today = Date::todaysDate();
 
     boost::shared_ptr<SimpleQuote> spot(new SimpleQuote(0.0));
@@ -173,12 +173,12 @@ void QuantoOptionTest::testValues() {
     boost::shared_ptr<SimpleQuote> rRate(new SimpleQuote(0.0));
     Handle<YieldTermStructure> rTS(flatRate(today, rRate, dc));
     boost::shared_ptr<SimpleQuote> vol(new SimpleQuote(0.0));
-    Handle<BlackVolTermStructure> volTS(flatVol(today, vol));
+    Handle<BlackVolTermStructure> volTS(flatVol(today, vol, dc));
 
     boost::shared_ptr<SimpleQuote> fxRate(new SimpleQuote(0.0));
     Handle<YieldTermStructure> fxrTS(flatRate(today, fxRate, dc));
     boost::shared_ptr<SimpleQuote> fxVol(new SimpleQuote(0.0));
-    Handle<BlackVolTermStructure> fxVolTS(flatVol(today, fxVol));
+    Handle<BlackVolTermStructure> fxVolTS(flatVol(today, fxVol, dc));
     boost::shared_ptr<SimpleQuote> correlation(new SimpleQuote(0.0));
 
     boost::shared_ptr<VanillaOption::engine> underlyingEngine(
@@ -197,7 +197,7 @@ void QuantoOptionTest::testValues() {
 
         boost::shared_ptr<StrikedTypePayoff> payoff(
                     new PlainVanillaPayoff(values[i].type, values[i].strike));
-        Date exDate = today + Integer(values[i].t*Settings::instance().dayCounterBase()+0.5);
+        Date exDate = today + Integer(values[i].t*360+0.5);
         boost::shared_ptr<Exercise> exercise(new EuropeanExercise(exDate));
 
         spot ->setValue(values[i].s);
@@ -254,7 +254,7 @@ void QuantoOptionTest::testGreeks() {
     Volatility vols[] = { 0.11, 1.20 };
     Real correlations[] = { 0.10, 0.90 };
 
-    DayCounter dc = Settings::instance().dayCounter();
+    DayCounter dc = Actual360();
     Date today = Date::todaysDate();
     Settings::instance().setEvaluationDate(today);
 
@@ -264,11 +264,11 @@ void QuantoOptionTest::testGreeks() {
     boost::shared_ptr<SimpleQuote> rRate(new SimpleQuote(0.0));
     Handle<YieldTermStructure> rTS(flatRate(rRate, dc));
     boost::shared_ptr<SimpleQuote> vol(new SimpleQuote(0.0));
-    Handle<BlackVolTermStructure> volTS(flatVol(vol));
+    Handle<BlackVolTermStructure> volTS(flatVol(vol, dc));
     boost::shared_ptr<SimpleQuote> fxRate(new SimpleQuote(0.0));
     Handle<YieldTermStructure> fxrTS(flatRate(fxRate, dc));
     boost::shared_ptr<SimpleQuote> fxVol(new SimpleQuote(0.0));
-    Handle<BlackVolTermStructure> fxVolTS(flatVol(fxVol));
+    Handle<BlackVolTermStructure> fxVolTS(flatVol(fxVol, dc));
     boost::shared_ptr<SimpleQuote> correlation(new SimpleQuote(0.0));
 
     boost::shared_ptr<BlackScholesProcess> stochProcess(
@@ -450,7 +450,7 @@ void QuantoOptionTest::testForwardValues() {
         {  Option::Put, 1.05, 100.0, 0.04,           0.08,  0.25,      0.5, 0.20,              0.05,   0.10,  0.3,     6.7296, 1.0e-4 }
     };
 
-    DayCounter dc = Settings::instance().dayCounter();
+    DayCounter dc = Actual360();
     Date today = Date::todaysDate();
 
     boost::shared_ptr<SimpleQuote> spot(new SimpleQuote(0.0));
@@ -459,12 +459,12 @@ void QuantoOptionTest::testForwardValues() {
     boost::shared_ptr<SimpleQuote> rRate(new SimpleQuote(0.0));
     Handle<YieldTermStructure> rTS(flatRate(today, rRate, dc));
     boost::shared_ptr<SimpleQuote> vol(new SimpleQuote(0.0));
-    Handle<BlackVolTermStructure> volTS(flatVol(today, vol));
+    Handle<BlackVolTermStructure> volTS(flatVol(today, vol, dc));
 
     boost::shared_ptr<SimpleQuote> fxRate(new SimpleQuote(0.0));
     Handle<YieldTermStructure> fxrTS(flatRate(today, fxRate, dc));
     boost::shared_ptr<SimpleQuote> fxVol(new SimpleQuote(0.0));
-    Handle<BlackVolTermStructure> fxVolTS(flatVol(today, fxVol));
+    Handle<BlackVolTermStructure> fxVolTS(flatVol(today, fxVol, dc));
     boost::shared_ptr<SimpleQuote> correlation(new SimpleQuote(0.0));
 
     boost::shared_ptr<VanillaOption::engine> underlyingEngine(
@@ -487,9 +487,9 @@ void QuantoOptionTest::testForwardValues() {
         boost::shared_ptr<StrikedTypePayoff> payoff(
 //                               new PercentageStrikePayoff(values[i].type, values[i].moneyness));
                                  new PlainVanillaPayoff(values[i].type, 0.0));
-        Date exDate = today + Integer(values[i].t*Settings::instance().dayCounterBase()+0.5);
+        Date exDate = today + Integer(values[i].t*360+0.5);
         boost::shared_ptr<Exercise> exercise(new EuropeanExercise(exDate));
-        Date reset = today + Integer(values[i].start*Settings::instance().dayCounterBase()+0.5);
+        Date reset = today + Integer(values[i].start*360+0.5);
 
         spot ->setValue(values[i].s);
         qRate->setValue(values[i].q);
@@ -549,7 +549,7 @@ void QuantoOptionTest::testForwardGreeks() {
     Volatility vols[] = { 0.11, 1.20 };
     Real correlations[] = { 0.10, 0.90 };
 
-    DayCounter dc = Settings::instance().dayCounter();
+    DayCounter dc = Actual360();
     Date today = Date::todaysDate();
     Settings::instance().setEvaluationDate(today);
 
@@ -559,11 +559,11 @@ void QuantoOptionTest::testForwardGreeks() {
     boost::shared_ptr<SimpleQuote> rRate(new SimpleQuote(0.0));
     Handle<YieldTermStructure> rTS(flatRate(rRate, dc));
     boost::shared_ptr<SimpleQuote> vol(new SimpleQuote(0.0));
-    Handle<BlackVolTermStructure> volTS(flatVol(vol));
+    Handle<BlackVolTermStructure> volTS(flatVol(vol, dc));
     boost::shared_ptr<SimpleQuote> fxRate(new SimpleQuote(0.0));
     Handle<YieldTermStructure> fxrTS(flatRate(fxRate, dc));
     boost::shared_ptr<SimpleQuote> fxVol(new SimpleQuote(0.0));
-    Handle<BlackVolTermStructure> fxVolTS(flatVol(fxVol));
+    Handle<BlackVolTermStructure> fxVolTS(flatVol(fxVol, dc));
     boost::shared_ptr<SimpleQuote> correlation(new SimpleQuote(0.0));
 
     boost::shared_ptr<BlackScholesProcess> stochProcess(
@@ -755,7 +755,7 @@ void QuantoOptionTest::testForwardPerformanceValues() {
         {  Option::Put, 1.05, 100.0, 0.04,           0.08,  0.25,      0.5, 0.20,              0.05,   0.10,  0.3,     0.0672, 1.0e-4 }
     };
 
-    DayCounter dc = Settings::instance().dayCounter();
+    DayCounter dc = Actual360();
     Date today = Date::todaysDate();
 
     boost::shared_ptr<SimpleQuote> spot(new SimpleQuote(0.0));
@@ -764,12 +764,12 @@ void QuantoOptionTest::testForwardPerformanceValues() {
     boost::shared_ptr<SimpleQuote> rRate(new SimpleQuote(0.0));
     Handle<YieldTermStructure> rTS(flatRate(today, rRate, dc));
     boost::shared_ptr<SimpleQuote> vol(new SimpleQuote(0.0));
-    Handle<BlackVolTermStructure> volTS(flatVol(today, vol));
+    Handle<BlackVolTermStructure> volTS(flatVol(today, vol, dc));
 
     boost::shared_ptr<SimpleQuote> fxRate(new SimpleQuote(0.0));
     Handle<YieldTermStructure> fxrTS(flatRate(today, fxRate, dc));
     boost::shared_ptr<SimpleQuote> fxVol(new SimpleQuote(0.0));
-    Handle<BlackVolTermStructure> fxVolTS(flatVol(today, fxVol));
+    Handle<BlackVolTermStructure> fxVolTS(flatVol(today, fxVol, dc));
     boost::shared_ptr<SimpleQuote> correlation(new SimpleQuote(0.0));
 
     boost::shared_ptr<VanillaOption::engine> underlyingEngine(
@@ -792,9 +792,9 @@ void QuantoOptionTest::testForwardPerformanceValues() {
         boost::shared_ptr<StrikedTypePayoff> payoff(
 //                               new PercentageStrikePayoff(values[i].type, values[i].moneyness));
                                  new PlainVanillaPayoff(values[i].type, 0.0));
-        Date exDate = today + Integer(values[i].t*Settings::instance().dayCounterBase()+0.5);
+        Date exDate = today + Integer(values[i].t*360+0.5);
         boost::shared_ptr<Exercise> exercise(new EuropeanExercise(exDate));
-        Date reset = today + Integer(values[i].start*Settings::instance().dayCounterBase()+0.5);
+        Date reset = today + Integer(values[i].start*360+0.5);
 
         spot ->setValue(values[i].s);
         qRate->setValue(values[i].q);

@@ -73,10 +73,12 @@ namespace QuantLib {
         PiecewiseFlatForward(
                const Date& referenceDate,
                const std::vector<boost::shared_ptr<RateHelper> >& instruments,
+               const DayCounter& dayCounter,
                Real accuracy = 1.0e-12);
         PiecewiseFlatForward(
                Integer settlementDays, const Calendar& calendar,
                const std::vector<boost::shared_ptr<RateHelper> >& instruments,
+               const DayCounter& dayCounter,
                Real accuracy = 1.0e-12);
         /*! In this constructor, the first date must be the reference
           date of the curve, the other dates are the nodes of the
@@ -91,9 +93,7 @@ namespace QuantLib {
         //@}
         //! \name YieldTermStructure interface
         //@{
-        #ifndef QL_DISABLE_DEPRECATED
         DayCounter dayCounter() const { return dayCounter_; }
-        #endif
         const std::vector<Date>& dates() const;
         Date maxDate() const;
         const std::vector<Time>& times() const;
@@ -122,9 +122,7 @@ namespace QuantLib {
         void checkInstruments();
         void performCalculations() const;
         // data members
-        #ifndef QL_DISABLE_DEPRECATED
         DayCounter dayCounter_;
-        #endif
         std::vector<boost::shared_ptr<RateHelper> > instruments_;
         mutable std::vector<Time> times_;
         mutable std::vector<Date> dates_;

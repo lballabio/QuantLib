@@ -160,11 +160,7 @@ namespace QuantLib {
         Date refDate = process->riskFreeRate()->referenceDate();
         Date lastExerciseDate = this->arguments_.exercise->lastDate();
 
-        #ifndef QL_DISABLE_DEPRECATED
         DayCounter rfdc = process->riskFreeRate()->dayCounter();
-        #else
-        DayCounter rfdc = Settings::instance().dayCounter();
-        #endif
         Time t = rfdc.yearFraction(refDate, lastExerciseDate);
         return TimeGrid(t, Size(QL_MAX<Real>(
             t * this->maxTimeStepsPerYear_, 1.0)));

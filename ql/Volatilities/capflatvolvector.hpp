@@ -53,21 +53,19 @@ namespace QuantLib {
         #endif
         CapVolatilityVector(const Date& settlementDate,
                             const std::vector<Period>& lengths,
-                            const std::vector<Volatility>& volatilities);
+                            const std::vector<Volatility>& volatilities,
+                            const DayCounter& dayCounter);
         CapVolatilityVector(Integer settlementDays,
                             const Calendar& calendar,
                             const std::vector<Period>& lengths,
-                            const std::vector<Volatility>& volatilities);
+                            const std::vector<Volatility>& volatilities,
+                            const DayCounter& dayCounter);
         // inspectors
-        #ifndef QL_DISABLE_DEPRECATED
         DayCounter dayCounter() const { return dayCounter_; }
-        #endif
         // observability
         void update();
       private:
-        #ifndef QL_DISABLE_DEPRECATED
         DayCounter dayCounter_;
-        #endif
         std::vector<Period> lengths_;
         std::vector<Time> timeLengths_;
         std::vector<Volatility> volatilities_;
@@ -107,12 +105,10 @@ namespace QuantLib {
     inline CapVolatilityVector::CapVolatilityVector(
                                           const Date& settlementDate,
                                           const std::vector<Period>& lengths,
-                                          const std::vector<Volatility>& vols)
+                                          const std::vector<Volatility>& vols,
+                                          const DayCounter& dayCounter)
     : CapVolatilityStructure(settlementDate),
-      #ifndef QL_DISABLE_DEPRECATED
-      dayCounter_(Settings::instance().dayCounter()),
-      #endif
-      lengths_(lengths),
+      dayCounter_(dayCounter), lengths_(lengths),
       timeLengths_(lengths.size()+1), volatilities_(vols.size()+1) {
         QL_REQUIRE(lengths.size() == vols.size(),
                    "mismatch between number of cap lengths "
@@ -126,12 +122,10 @@ namespace QuantLib {
                                           Integer settlementDays,
                                           const Calendar& calendar,
                                           const std::vector<Period>& lengths,
-                                          const std::vector<Volatility>& vols)
+                                          const std::vector<Volatility>& vols,
+                                          const DayCounter& dayCounter)
     : CapVolatilityStructure(settlementDays,calendar),
-      #ifndef QL_DISABLE_DEPRECATED
-      dayCounter_(Settings::instance().dayCounter()),
-      #endif
-      lengths_(lengths),
+      dayCounter_(dayCounter), lengths_(lengths),
       timeLengths_(lengths.size()+1), volatilities_(vols.size()+1) {
         QL_REQUIRE(lengths.size() == vols.size(),
                    "mismatch between number of cap lengths "
