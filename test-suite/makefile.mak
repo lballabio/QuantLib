@@ -29,6 +29,7 @@ QL_TESTS = \
     europeanoption.obj$(_D) \
     instruments.obj$(_D) \
     integrals.obj$(_D) \
+    lowdiscrepancysequences.obj$(_D) \
     marketelements.obj$(_D) \
     matrices.obj$(_D) \
     mersennetwister.obj$(_D) \

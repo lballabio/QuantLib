@@ -1,6 +1,5 @@
 
-QL_TESTS = quantlibtestsuite.cpp \
-           qltestlistener.hpp qltestlistener.cpp \
+QL_TESTS =
            calendars.hpp calendars.cpp \
            capfloor.hpp capfloor.cpp \
            covariance.hpp covariance.cpp \
@@ -10,20 +9,21 @@ QL_TESTS = quantlibtestsuite.cpp \
            europeanoption.hpp europeanoption.cpp \
            instruments.hpp instruments.cpp \
            integrals.hpp integrals.cpp \
-           lowdiscrepancysequences.hpp \
-           lowdiscrepancysequences.cpp \
+           lowdiscrepancysequences.hpp lowdiscrepancysequences.cpp \
            marketelements.hpp marketelements.cpp \
            matrices.hpp matrices.cpp \
            mersennetwister.hpp mersennetwister.cpp \
+           old_pricers.hpp old_pricers.cpp \
            operators.hpp operators.cpp \
            piecewiseflatforward.hpp piecewiseflatforward.cpp \
+           qltestlistener.hpp qltestlistener.cpp \
+           quantlibtestsuite.cpp \
            riskstats.hpp riskstats.cpp \
            solvers.hpp solvers.cpp \
            stats.hpp stats.cpp \
            swap.hpp swap.cpp \
            swaption.hpp swaption.cpp \
            termstructures.hpp termstructures.cpp \
-           old_pricers.hpp old_pricers.cpp \
            utilities.hpp
 
 if CPPUNIT_FOUND

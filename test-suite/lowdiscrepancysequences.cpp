@@ -168,7 +168,6 @@ void LDSTest::testHalton() {
     Array point;
     // testing "high" dimensionality
     Size dimensionality = PPMT_MAX_DIM;
-    unsigned long seed = 123456;
     HaltonRsg rsg(dimensionality);
     Size points = 100, i, k;
     for (i=0; i<points; i++) {
@@ -261,7 +260,6 @@ void LDSTest::testHalton() {
 
     // testing homogeneity properties
     dimensionality = 33;
-    seed = 123456;
     rsg = HaltonRsg(dimensionality);
     SequenceStatistics<> stat(dimensionality);
     std::vector<double> mean, stdev, variance, skewness, kurtosis;
@@ -379,10 +377,13 @@ void LDSTest::testDiscrepancy() {
     unsigned long dim;
     unsigned long seed = 123456;
     double trueRandomFactor, discr, tolerance=1e-4;
+    bool printOnly = false;
 
     std::ofstream outStream("discrepancy.txt");
     for (int i = 0; i<8; i++) {
-        outStream << std::endl;
+        if (printOnly)
+            outStream << std::endl;
+
         dim = dimensionality[i];
         DiscrepancyStatistics stat(dim);
 
@@ -393,39 +394,46 @@ void LDSTest::testDiscrepancy() {
         SobolRsg                  sob(dim, seed);
         SobolRsg                  unS(dim, seed, true);
 
-        Size j, k, sampleLoops = 7, jMin = 10;
+        Size j, k, jMin = 10;
         // 7 loops would take too long for usual/frequent test running
-        sampleLoops = 1;
+        // Size sampleLoops = 7,
+        Size sampleLoops = 1;
 
         // true random numbers
-        k = 0;
         stat.reset();
-        outStream << "discrRandDim" << dim << "[] = { " ;
+        if (printOnly)
+            outStream << "const double discrRandDim" << dim << "[] = { " ;
         for (j=jMin; j<jMin+sampleLoops; j++) {
             Size points = Size(QL_POW(2.0, j))-1;
 
             discr = QL_SQRT(trueRandomFactor/points);
 
-            if (j!=jMin) outStream << ", ";
-            outStream << discr;
-
-            if (QL_FABS(discr-discrRand[i][j-jMin])>tolerance*discr) {
-                CPPUNIT_FAIL("True random discrepancy dimension " +
-                             IntegerFormatter::toString(dimensionality[i]) +
-                             " at " +
-                             IntegerFormatter::toString(points) +
-                             " samples is " +
-                             DoubleFormatter::toString(discr, 16) +
-                             " instead of " +
-                             DoubleFormatter::toString(discrRand[i][j-jMin], 16));
+            if (printOnly) {
+                if (j!=jMin)
+                    outStream << ", ";
+                else
+                    outStream << discr;
+            } else {
+                if(QL_FABS(discr-discrRand[i][j-jMin])>tolerance*discr) {
+                  CPPUNIT_FAIL("True random discrepancy dimension " +
+                    IntegerFormatter::toString(dimensionality[i]) +
+                    " at " +
+                    IntegerFormatter::toString(points) +
+                    " samples is " +
+                    DoubleFormatter::toString(discr, 16) +
+                    " instead of " +
+                    DoubleFormatter::toString(discrRand[i][j-jMin], 16));
+                }
             }
         }
-        outStream << "};" << std::endl;
+        if (printOnly)
+            outStream << "};" << std::endl;
 
         // Mersenne sequences
         k = 0;
         stat.reset();
-        outStream << "discrMersDim" << dim << "[] = { " ;
+        if (printOnly)
+            outStream << "const double discrMersDim" << dim << "[] = { " ;
         for (j=jMin; j<jMin+sampleLoops; j++) {
             Size points = Size(QL_POW(2.0, j))-1;
             for (; k<points; k++) {
@@ -435,26 +443,32 @@ void LDSTest::testDiscrepancy() {
 
             discr = stat.discrepancy();
 
-            if (j!=jMin) outStream << ", ";
-            outStream << discr;
-
-            if (QL_FABS(discr-discrMers[i][j-jMin])>tolerance*discr) {
-                CPPUNIT_FAIL("Mersenne discrepancy dimension " +
-                             IntegerFormatter::toString(dimensionality[i]) +
-                             " at " +
-                             IntegerFormatter::toString(points) +
-                             " samples is " +
-                             DoubleFormatter::toString(discr, 16) +
-                             " instead of " +
-                             DoubleFormatter::toString(discrMers[i][j-jMin], 16));
+            if (printOnly) {
+                if (j!=jMin)
+                    outStream << ", ";
+                else
+                    outStream << discr;
+            } else {
+                if (QL_FABS(discr-discrMers[i][j-jMin])>tolerance*discr) {
+                      CPPUNIT_FAIL("Mersenne discrepancy dimension " +
+                         IntegerFormatter::toString(dimensionality[i]) +
+                         " at " +
+                         IntegerFormatter::toString(points) +
+                         " samples is " +
+                         DoubleFormatter::toString(discr, 16) +
+                         " instead of " +
+                         DoubleFormatter::toString(discrMers[i][j-jMin], 16));
+                }
             }
         }
-        outStream << "};" << std::endl;
+        if (printOnly)
+            outStream << "};" << std::endl;
 
         // Halton sequences
         k = 0;
         stat.reset();
-        outStream << "discrHaltDim" << dim << "[] = { " ;
+        if (printOnly)
+            outStream << "const double discrHaltDim" << dim << "[] = { " ;
         for (j=jMin; j<jMin+sampleLoops; j++) {
             Size points = Size(QL_POW(2.0, j))-1;
             for (; k<points; k++) {
@@ -464,26 +478,32 @@ void LDSTest::testDiscrepancy() {
 
             discr = stat.discrepancy();
 
-            if (j!=jMin) outStream << ", ";
-            outStream << discr;
-
-            if (QL_FABS(discr-discrHalt[i][j-jMin])>tolerance*discr) {
-                CPPUNIT_FAIL("Halton discrepancy dimension " +
-                             IntegerFormatter::toString(dimensionality[i]) +
-                             " at " +
-                             IntegerFormatter::toString(points) +
-                             " samples is " +
-                             DoubleFormatter::toString(discr, 16) +
-                             " instead of " +
-                             DoubleFormatter::toString(discrHalt[i][j-jMin], 16));
+            if (printOnly) {
+                if (j!=jMin)
+                    outStream << ", ";
+                else
+                    outStream << discr;
+            } else {
+                if (QL_FABS(discr-discrHalt[i][j-jMin])>tolerance*discr) {
+                  CPPUNIT_FAIL("Halton discrepancy dimension " +
+                    IntegerFormatter::toString(dimensionality[i]) +
+                    " at " +
+                    IntegerFormatter::toString(points) +
+                    " samples is " +
+                    DoubleFormatter::toString(discr, 16) +
+                    " instead of " +
+                    DoubleFormatter::toString(discrHalt[i][j-jMin], 16));
+                }
             }
         }
-        outStream << "};" << std::endl;
+        if (printOnly)
+            outStream << "};" << std::endl;
 
         // Sobol sequences
         k = 0;
         stat.reset();
-        outStream << "discrSoboDim" << dim << "[] = { " ;
+        if (printOnly)
+            outStream << "const double discrSoboDim" << dim << "[] = { " ;
         for (j=jMin; j<jMin+sampleLoops; j++) {
             Size points = Size(QL_POW(2.0, j))-1;
             for (; k<points; k++) {
@@ -493,27 +513,32 @@ void LDSTest::testDiscrepancy() {
 
             discr = stat.discrepancy();
 
-            if (j!=jMin) outStream << ", ";
-            outStream << discr;
-
-            if (QL_FABS(discr-discrSobo[i][j-jMin])>tolerance*discr) {
-                CPPUNIT_FAIL("Sobol discrepancy dimension " +
-                             IntegerFormatter::toString(dimensionality[i]) +
-                             " at " +
-                             IntegerFormatter::toString(points) +
-                             " samples is " +
-                             DoubleFormatter::toString(discr, 16) +
-                             " instead of " +
-                             DoubleFormatter::toString(discrSobo[i][j-jMin], 16));
+            if (printOnly) {
+                if (j!=jMin)
+                    outStream << ", ";
+                else
+                    outStream << discr;
+            } else {
+                if (QL_FABS(discr-discrSobo[i][j-jMin])>tolerance*discr) {
+                  CPPUNIT_FAIL("Sobol discrepancy dimension " +
+                    IntegerFormatter::toString(dimensionality[i]) +
+                    " at " +
+                    IntegerFormatter::toString(points) +
+                    " samples is " +
+                    DoubleFormatter::toString(discr, 16) +
+                    " instead of " +
+                    DoubleFormatter::toString(discrSobo[i][j-jMin], 16));
+                }
             }
-
         }
-        outStream << "};" << std::endl;
+        if (printOnly)
+            outStream << "};" << std::endl;
 
         // Unit Sobol sequences
         k = 0;
         stat.reset();
-        outStream << "discrUnSoDim" << dim << "[] = { " ;
+        if (printOnly)
+            outStream << "const double discrUnSoDim" << dim << "[] = { " ;
         for (j=jMin; j<jMin+sampleLoops; j++) {
             Size points = Size(QL_POW(2.0, j))-1;
             for (; k<points; k++) {
@@ -523,22 +548,26 @@ void LDSTest::testDiscrepancy() {
 
             discr = stat.discrepancy();
 
-            if (j!=jMin) outStream << ", ";
-            outStream << discr;
-
-            if (QL_FABS(discr-discrUnSo[i][j-jMin])>tolerance*discr) {
-                CPPUNIT_FAIL("Unit Sobol discrepancy dimension " +
-                             IntegerFormatter::toString(dimensionality[i]) +
-                             " at " +
-                             IntegerFormatter::toString(points) +
-                             " samples is " +
-                             DoubleFormatter::toString(discr, 16) +
-                             " instead of " +
-                             DoubleFormatter::toString(discrUnSo[i][j-jMin], 16));
+            if (printOnly) {
+                if (j!=jMin)
+                    outStream << ", ";
+                else
+                    outStream << discr;
+            } else {
+                if (QL_FABS(discr-discrUnSo[i][j-jMin])>tolerance*discr) {
+                  CPPUNIT_FAIL("Unit Sobol discrepancy dimension " +
+                    IntegerFormatter::toString(dimensionality[i]) +
+                    " at " +
+                    IntegerFormatter::toString(points) +
+                    " samples is " +
+                    DoubleFormatter::toString(discr, 16) +
+                    " instead of " +
+                    DoubleFormatter::toString(discrUnSo[i][j-jMin], 16));
+                }
             }
-
         }
-        outStream << "};" << std::endl;
+        if (printOnly)
+            outStream << "};" << std::endl;
 
     }
     outStream.close();
