@@ -27,7 +27,7 @@ namespace QuantLib {
     namespace Optimization {
 
         void SteepestDescent::minimize(OptimizationProblem& P) {
-            bool EndCriteria = false;
+            bool EndCriteria;
 
             // function and squared norm of gradient values;
             double normdiff;
