@@ -30,11 +30,11 @@ quantlib::
 
 # QuantLib library
 install::
-    rmdir /S /Q "$(QL_DIR)\Include\ql"
+    if exist "$(QL_DIR)\Include\ql" rmdir /S /Q "$(QL_DIR)\Include\ql"
     xcopy Include\ql\*.hpp "$(QL_DIR)\Include\ql" /S /I
-    rmdir /S /Q "$(QL_DIR)\lib\Win32\VisualStudio"
+    if exist "$(QL_DIR)\lib\Win32\VisualStudio" rmdir /S /Q "$(QL_DIR)\lib\Win32\VisualStudio"
     xcopy lib\Win32\VisualStudio\*.lib "$(QL_DIR)\lib\Win32\VisualStudio" /S /I
-    rmdir /S /Q "$(QL_DIR)\lib\Win32\Borland"
+    if exist "$(QL_DIR)\lib\Win32\Borland" rmdir /S /Q "$(QL_DIR)\lib\Win32\Borland"
     xcopy lib\Win32\Borland\*.lib "$(QL_DIR)\lib\Win32\Borland" /S /I
 
 # Python module
