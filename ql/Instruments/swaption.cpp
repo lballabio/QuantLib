@@ -93,6 +93,18 @@ namespace QuantLib {
 
         }
 
+        void Swaption::performCalculations() const {
+            if (swap_.maturity() <= termStructure_->settlementDate()) {
+                isExpired_ = true;
+                NPV_ = 0.0;
+            } else {
+                isExpired_ = false;
+                Option::performCalculations();
+            }
+            QL_ENSURE(isExpired_ || NPV_ != Null<double>(),
+                      "null value returned from cap/floor pricer");
+        }
+    
     }
 
     namespace Pricers {

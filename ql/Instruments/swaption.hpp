@@ -46,6 +46,7 @@ namespace QuantLib {
                      const Handle<OptionPricingEngine>& engine);
             ~Swaption();
           protected:
+            void performCalculations() const;
             void setupEngine() const;
           private:
             // parameters

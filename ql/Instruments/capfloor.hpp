@@ -1,5 +1,4 @@
 
-
 /*
  Copyright (C) 2001, 2002 Sadruddin Rejeb
 
@@ -49,6 +48,7 @@ namespace QuantLib {
               exerciseRates_(exerciseRates), termStructure_(termStructure) {}
             virtual ~VanillaCapFloor() {}
           protected:
+            void performCalculations() const;
             void setupEngine() const;
           private:
             Type type_;

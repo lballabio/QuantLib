@@ -47,11 +47,21 @@ namespace QuantLib {
         void setPricingEngine(const Handle<OptionPricingEngine>&);
       protected:
         virtual void setupEngine() const = 0;
+        /*! \warning this method simply launches the engine and copies the 
+                returned value into NPV_. It does <b>not</b> set isExpired_. 
+                This should be taken care of by redefining this method in
+                derived classes and calling this implementation after 
+                checking for validity and only if the check succeeded.
+        */
         virtual void performCalculations() const;
         Handle<OptionPricingEngine> engine_;
     };
 
     //! %option pricing results
+    /*! It must be noted that there's no result data specifying
+        whether the option is expired. The expiry condition should be 
+        checked before calling the engine.
+    */
     class OptionValue : public virtual Results {
       public:
         OptionValue() : value(Null<double>()) {}

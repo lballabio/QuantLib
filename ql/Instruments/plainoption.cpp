@@ -158,10 +158,10 @@ namespace QuantLib {
                     dynamic_cast<const OptionGreeks*>(engine_->results());
                 QL_ENSURE(results != 0,
                           "no greeks returned from option pricer");
-                /* no check on     null values - just copy.
+                /* no check on null values - just copy.
                    this allows:
-                   a) to decide in derived options what to do when null results
-                      are returned (throw? numerical calculation?)
+                   a) to decide in derived options what to do when null 
+                      results are returned (throw? numerical calculation?)
                    b) to implement slim engines which only calculate the
                       value---of course care must be taken not to call
                       the greeks methods when using these.

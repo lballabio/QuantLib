@@ -57,6 +57,8 @@ namespace QuantLib {
         std::string description() const;
         //! returns the net present value of the instrument.
         double NPV() const;
+        //! returns whether the instrument is still tradable.
+        bool isExpired() const;
         //@}
 
         //! \name Observer interface
@@ -137,6 +139,11 @@ namespace QuantLib {
     inline double Instrument::NPV() const {
         calculate();
         return (isExpired_ ? 0.0 : NPV_);
+    }
+
+    inline bool Instrument::isExpired() const {
+        calculate();
+        return isExpired_;
     }
 
     inline void Instrument::update() {
