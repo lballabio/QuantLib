@@ -28,6 +28,9 @@
     $Source$
     $Name$
     $Log$
+    Revision 1.39  2001/04/23 14:20:34  marmar
+    Cosmetic changes
+
     Revision 1.38  2001/04/09 14:13:34  nando
     all the *.hpp moved below the Include/ql level
 
@@ -160,7 +163,6 @@ namespace QuantLib {
             return theta_;
         }
 
-
         void BSMNumericalOption::setGridLimits() const {
             // correction for small volatilities
             double volSqrtTime = volatility_*QL_SQRT(residualTime_);
@@ -197,20 +199,20 @@ namespace QuantLib {
             int j;
             switch (type_) {
               case Call:
-                for(j=0; j<gridPoints_; j++)
+                for(j = 0; j < gridPoints_; j++)
                     initialPrices_[j] = QL_MAX(grid_[j]-strike_,0.0);
                 break;
               case Put:
-                for(j=0; j<gridPoints_; j++)
+                for(j = 0; j < gridPoints_; j++)
                     initialPrices_[j] = QL_MAX(strike_-grid_[j],0.0);
                 break;
               case Straddle:
-                for(j=0; j<gridPoints_; j++)
+                for(j = 0; j < gridPoints_; j++)
                     initialPrices_[j] = QL_FABS(strike_-grid_[j]);
                 break;
               default:
-                throw IllegalArgumentError(
-                    "BSMNumericalOption: invalid option type");
+                QL_REQUIRE(1 == 0,
+                           "BSMNumericalOption: invalid option type");
             }
         }
 

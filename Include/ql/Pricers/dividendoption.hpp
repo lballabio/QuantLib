@@ -27,6 +27,9 @@
 
     $Source$
     $Log$
+    Revision 1.2  2001/04/23 14:17:58  marmar
+    Cosmetic changes
+
     Revision 1.1  2001/04/09 14:05:49  nando
     all the *.hpp moved below the Include/ql level
 
@@ -76,8 +79,9 @@ namespace QuantLib {
 
             void executeIntermediateStep(int step) const;
 
-            void movePricesBeforeExDiv(double Div, const Array& newGrid,
-                Array& prices, const Array& oldGrid) const;
+            void movePricesBeforeExDiv(Array& prices, 
+                                       const Array& newGrid,
+                                       const Array& oldGrid) const;
             double addElements(const std::vector<double>& A) const{
                 return std::accumulate(A.begin(), A.end(), 0.0);
             }

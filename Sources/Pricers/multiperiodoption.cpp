@@ -27,6 +27,9 @@
 
     $Source$
     $Log$
+    Revision 1.13  2001/04/23 14:21:16  marmar
+    Cosmetic changes
+
     Revision 1.12  2001/04/12 09:06:59  marmar
     Last and first date are handled more precisely
 
@@ -151,6 +154,8 @@ namespace QuantLib {
             initializeGrid();
             initializeInitialCondition();
             initializeOperator();
+            initializeModel();
+            initializeStepCondition();
             prices_ = initialPrices_;
             controlPrices_ = initialPrices_;
 
@@ -169,9 +174,6 @@ namespace QuantLib {
 
             int j = lastIndex_;
             do{
-                initializeStepCondition();
-                initializeModel();
-
                 if (j == dateNumber_ - 1)
                     beginDate = residualTime_;
                 else
@@ -243,7 +245,7 @@ namespace QuantLib {
         void MultiPeriodOption::initializeModel() const{
             model_ = Handle<StandardFiniteDifferenceModel> (
                      new StandardFiniteDifferenceModel
-                     (finiteDifferenceOperator_));
+                            (finiteDifferenceOperator_));
         }
 
     }
