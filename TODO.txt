@@ -1,4 +1,5 @@
 
+remove defines in MS VC project settings
 solve copyright issues for external packages (COOOL, GAlib, etc.)
 Gnumeric
 ISDA/FpML
