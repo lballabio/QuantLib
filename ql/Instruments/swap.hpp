@@ -46,6 +46,8 @@ namespace QuantLib {
             //@}
             //! \name Additional interface
             //@{
+            Date startDate() const;
+            Date maturity() const;
             double firstLegBPS() const;
             double secondLegBPS() const;
             const Handle<CashFlows::TimeBasket>& sensitivity() const;
@@ -72,12 +74,12 @@ namespace QuantLib {
             calculate();
             return secondLegBPS_;
         }
-					    
+
         inline const Handle<CashFlows::TimeBasket>& Swap::sensitivity() const {
             calculate();
             return sensitivity_;
         }
-       
+
     }
 
 }

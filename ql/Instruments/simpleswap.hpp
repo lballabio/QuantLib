@@ -57,15 +57,15 @@ namespace QuantLib {
                        const std::string& isinCode = "",
                        const std::string& description = "");
             SimpleSwap(bool payFixedRate,
-                       const Date& maturity,
                        double nominal,
+                       const Schedule& fixedSchedule,
                        Rate fixedRate,
                        const DayCounter& fixedDayCount,
+                       const Schedule& floatSchedule,
                        const Handle<Indexes::Xibor>& index,
                        int indexFixingDays,
                        Spread spread,
                        const RelinkableHandle<TermStructure>& termStructure,
-                       Schedule& fixedSchedule, Schedule& floatSchedule,
                        const std::string& isinCode = "",
                        const std::string& description = "");
             /*! \deprecated use the constructor taking two Schedules */
@@ -103,7 +103,6 @@ namespace QuantLib {
             Rate fixedRate() const;
             Spread spread() const;
             double nominal() const;
-            const Date& maturity() const;
             bool payFixedRate() const;
             const std::vector<Handle<CashFlow> >& fixedLeg() const;
             const std::vector<Handle<CashFlow> >& floatingLeg() const;
@@ -114,7 +113,6 @@ namespace QuantLib {
             Rate fixedRate_;
             Spread spread_;
             double nominal_;
-            Date maturity_;
         };
 
         //! arguments for simple swap calculation
@@ -166,10 +164,6 @@ namespace QuantLib {
 
         inline double SimpleSwap::nominal() const {
             return nominal_;
-        }
-
-        inline const Date& SimpleSwap::maturity() const {
-            return maturity_;
         }
 
         inline bool SimpleSwap::payFixedRate() const {

@@ -51,19 +51,19 @@ namespace QuantLib {
                termStructure, isinCode, description),
           payFixedRate_(payFixedRate), fixedRate_(fixedRate), spread_(spread), 
           nominal_(nominal) {
-                        
-            maturity_ = calendar.roll(startDate.plus(n,units),
-                                      rollingConvention);
+
+            Date maturity = calendar.roll(startDate.plus(n,units),
+                                          rollingConvention);
 
             Schedule fixedSchedule = 
-                MakeSchedule(calendar,startDate,maturity_,
+                MakeSchedule(calendar,startDate,maturity,
                              fixedFrequency,rollingConvention,
                              fixedIsAdjusted);
             Schedule floatSchedule =
-                MakeSchedule(calendar,startDate,maturity_,
+                MakeSchedule(calendar,startDate,maturity,
                              floatingFrequency,rollingConvention,
                              true);
-            
+
             std::vector<Handle<CashFlow> > fixedLeg =
                 FixedRateCouponVector(fixedSchedule, 
                                       std::vector<double>(1,nominal), 
@@ -89,21 +89,21 @@ namespace QuantLib {
 
         SimpleSwap::SimpleSwap(
                 bool payFixedRate,
-                const Date& maturity,
                 double nominal,
+                const Schedule& fixedSchedule,
                 Rate fixedRate,
                 const DayCounter& fixedDayCount,
+                const Schedule& floatSchedule,
                 const Handle<Xibor>& index,
                 int indexFixingDays,
                 Spread spread,
                 const RelinkableHandle<TermStructure>& termStructure,
-                Schedule& fixedSchedule, Schedule& floatSchedule,
                 const std::string& isinCode, const std::string& description)
         : Swap(std::vector<Handle<CashFlow> >(),
                std::vector<Handle<CashFlow> >(),
                termStructure, isinCode, description),
           payFixedRate_(payFixedRate), fixedRate_(fixedRate), spread_(spread), 
-          nominal_(nominal), maturity_(maturity) {
+          nominal_(nominal) {
 
             std::vector<Handle<CashFlow> > fixedLeg =
                 FixedRateCouponVector(fixedSchedule,
@@ -118,7 +118,6 @@ namespace QuantLib {
             std::vector<Handle<CashFlow> >::const_iterator i;
             for (i = floatingLeg.begin(); i < floatingLeg.end(); ++i)
                 registerWith(*i);
-            maturity_ = floatingLeg.back()->date();
 
             if (payFixedRate_) {
                 firstLeg_ = fixedLeg;
@@ -128,7 +127,7 @@ namespace QuantLib {
                 secondLeg_ = fixedLeg;
             }
         }
-       
+
         SimpleSwap::SimpleSwap(
                 bool payFixedRate,
                 const Date& startDate, const Date& maturity,
@@ -153,7 +152,7 @@ namespace QuantLib {
                std::vector<Handle<CashFlow> >(),
                termStructure, isinCode, description),
           payFixedRate_(payFixedRate), fixedRate_(fixedRate), spread_(spread), 
-          nominal_(nominal), maturity_(maturity) {
+          nominal_(nominal) {
 
             Schedule fixedSchedule = 
                 MakeSchedule(calendar,startDate,maturity,
@@ -197,7 +196,7 @@ namespace QuantLib {
         void SimpleSwap::setupArguments(Arguments* args) const {
             SimpleSwap::arguments* arguments =
                 dynamic_cast<SimpleSwap::arguments*>(args);
-                
+
             QL_REQUIRE(arguments != 0, 
                        "SimpleSwap::setupArguments : "
                        "wrong argument type");
@@ -246,7 +245,7 @@ namespace QuantLib {
                 arguments->floatingSpreads[i] = coupon->spread();
             }
         }
-            
+
 
         void SimpleSwap::arguments::validate() const {
             QL_REQUIRE(nominal != Null<double>(),
@@ -273,7 +272,7 @@ namespace QuantLib {
                        "number of floating spreads different from "
                        "number of floating payment times");
         }
-       
+
     }
 
 }

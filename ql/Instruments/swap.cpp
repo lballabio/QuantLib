@@ -20,6 +20,7 @@
 */
 
 #include <ql/Instruments/swap.hpp>
+#include <ql/CashFlows/coupon.hpp>
 
 /* The following checks whether the user wants coupon payments with
    date corresponding to the evaluation date to be included in the NPV.
@@ -122,6 +123,42 @@ namespace QuantLib {
             NPV_ = firstLegNPV_ + secondLegNPV_;
             secondLegBPS_ = bps2.result();
             sensitivity_ = basketbps.result();
+        }
+
+        Date Swap::startDate() const {
+            Date d = Date::maxDate();
+            Size i;
+            for (i=0; i<firstLeg_.size(); i++) {
+                try {
+                    Handle<Coupon> c = firstLeg_[i];
+                    d = QL_MIN(d, c->accrualStartDate());
+                } catch (...) {
+                    continue;
+                }
+            }
+            for (i=0; i<secondLeg_.size(); i++) {
+                try {
+                    Handle<Coupon> c = secondLeg_[i];
+                    d = QL_MIN(d, c->accrualStartDate());
+                } catch (...) {
+                    continue;
+                }
+            }
+            QL_REQUIRE(d != Date::maxDate(),
+                       "Swap::startDate : not enough information available");
+            return d;
+        }
+
+        Date Swap::maturity() const {
+            Date d = Date::minDate();
+            Size i;
+            for (i=0; i<firstLeg_.size(); i++)
+                d = QL_MAX(d, firstLeg_[i]->date());
+            for (i=0; i<secondLeg_.size(); i++)
+                d = QL_MAX(d, secondLeg_[i]->date());
+            QL_REQUIRE(d != Date::minDate(),
+                       "Swap::maturity : empty swap");
+            return d;
         }
 
     }
