@@ -14,6 +14,7 @@
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
+
 /*! \file shortindexedcoupon.hpp
     \brief Short (or long) indexed coupon
 
@@ -47,21 +48,18 @@ namespace QuantLib {
                  const Date& refPeriodStart = Date(),
                  const Date& refPeriodEnd = Date())
  			: IndexedCouponType(nominal, paymentDate, index, startDate,
- 			  endDate, fixingDays, spread, refPeriodStart, refPeriodEnd) {
-				Handle<TermStructure> termStructure =
-				    IndexedCouponType::index()->termStructure();
-				QL_REQUIRE(!termStructure.isNull(),
-                       "null term structure set to Short coupon");
-				Date today = termStructure->todaysDate();
-				Date fixing_date = IndexedCouponType::fixingDate();
-				QL_REQUIRE(fixing_date >= today,
-						   // must have been fixed
-						   // but we have no way to interpolate the fixing yet
-						   "short/long index coupons not supported yet"
-						   " (start = " +
-						   DateFormatter::toString(accrualStartDate_) +
-						   ", end = " +
-						   DateFormatter::toString(accrualEndDate_) + ")");
+                                endDate, fixingDays, spread, 
+                                refPeriodStart, refPeriodEnd) {}
+            //! inhibit calculation
+            /*! Unlike ParCoupon, this coupon can't calculate 
+                its fixing for future dates, either.
+            */
+            double amount() const {
+                throw Error("short/long indexed coupons not supported yet"
+                            " (start = " +
+                            DateFormatter::toString(accrualStartDate_) +
+                            ", end = " +
+                            DateFormatter::toString(accrualEndDate_) + ")");
 			}
         };
 
