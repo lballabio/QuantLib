@@ -59,8 +59,7 @@ namespace QuantLib {
                 const RandomAccessIteratorX& xEnd,
                 const RandomAccessIteratorY& yBegin,
                 const RandomAccessIteratorY& yEnd,
-                const MatricialData& data,
-                bool allowExtrapolation);
+                const MatricialData& data);
             virtual ~Interpolation2D() {}
             /*! This operator must be overridden to provide an implementation
                 of the actual interpolation.
@@ -68,16 +67,20 @@ namespace QuantLib {
                 \pre The sequence of values for x must have been sorted for
                 the result to make sense.
             */
-            virtual double operator()(
-                const first_argument_type& x,
-                const second_argument_type& y) const = 0;
+            virtual double operator()(const first_argument_type& x,
+                const second_argument_type& y,
+                bool allowExtrapolation = false) const = 0;
           protected:
+            void locate(const first_argument_type& x,
+                        const second_argument_type& y) const;
+            mutable bool isOutOfRange_;
+            mutable RandomAccessIteratorX xPos_;
+            mutable RandomAccessIteratorY yPos_;
             RandomAccessIteratorX xBegin_, xEnd_;
             RandomAccessIteratorY yBegin_, yEnd_;
             // the iterators above already introduce lifetime issues.
             // There would be no added advantage in copying the data.
             const MatricialData& data_;
-            bool allowExtrapolation_;
         };
 
 
@@ -86,10 +89,9 @@ namespace QuantLib {
         template <class I1, class I2, class M>
         inline Interpolation2D<I1,I2,M>::Interpolation2D(
             const I1& xBegin, const I1& xEnd, 
-            const I2& yBegin, const I2& yEnd, const M& data,
-            bool allowExtrapolation)
-        : xBegin_(xBegin), xEnd_(xEnd), yBegin_(yBegin), yEnd_(yEnd), 
-          data_(data), allowExtrapolation_(allowExtrapolation) {
+            const I2& yBegin, const I2& yEnd, const M& data)
+        : isOutOfRange_(false), xPos_(xBegin), yPos_(yBegin), xBegin_(xBegin),
+          xEnd_(xEnd), yBegin_(yBegin), yEnd_(yEnd), data_(data) {
             #ifdef QL_DEBUG
                 QL_REQUIRE(xEnd_-xBegin_ >= 2,
                     "not enough columns to interpolate");
@@ -98,6 +100,36 @@ namespace QuantLib {
             #endif
         }
 
+        template <class I1, class I2, class M>
+        inline void Interpolation2D<I1,I2,M>::locate(const first_argument_type& x,
+            const second_argument_type& y) const {
+
+                // column
+                if (x < *xBegin_) {
+                    isOutOfRange_ = true;
+                    xPos_ = xBegin_;
+                } else if (x > *(xEnd_-1)) {
+                    isOutOfRange_ = true;
+                    xPos_ = xEnd_-2;
+                } else {
+                    isOutOfRange_ = false;
+                    xPos_ = std::upper_bound(xBegin_,xEnd_-1,x)-1;
+                }
+
+                // row
+                if (y < *yBegin_) {
+                    isOutOfRange_ = true;
+                    yPos_ = yBegin_;
+                } else if (y > *(yEnd_-1)) {
+                    isOutOfRange_ = true;
+                    yPos_ = yEnd_-2;
+                } else {
+                    isOutOfRange_ = false;
+                    yPos_ = std::upper_bound(yBegin_,yEnd_-1,y)-1;
+                }
+
+
+        }
 
 
     }

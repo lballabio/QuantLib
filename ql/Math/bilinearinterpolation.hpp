@@ -54,15 +54,15 @@ namespace QuantLib {
                 const RandomAccessIteratorX& xEnd,
                 const RandomAccessIteratorY& yBegin,
                 const RandomAccessIteratorY& yEnd,
-                const MatricialData& data,
-                bool allowExtrapolation)
+                const MatricialData& data)
              : Interpolation2D<RandomAccessIteratorX,
                                RandomAccessIteratorY,
                                MatricialData>(
-                 xBegin,xEnd,yBegin,yEnd,data,allowExtrapolation) {}
+                 xBegin,xEnd,yBegin,yEnd,data) {}
             double operator()(
                 const first_argument_type& x,
-                const second_argument_type& y) const;
+                const second_argument_type& y,
+                bool allowExtrapolation = false) const;
         };
 
 
@@ -71,47 +71,23 @@ namespace QuantLib {
         template <class I1, class I2, class M>
         double BilinearInterpolation<I1,I2,M>::operator()(
             const BilinearInterpolation<I1,I2,M>::first_argument_type& x,
-            const BilinearInterpolation<I1,I2,M>::second_argument_type& y) 
-            const {
-                I1 i; // column
-                if (x < *xBegin_) {
-                    QL_REQUIRE(allowExtrapolation_,
-                        "BilinearInterpolation::operator() : "
-                        "extrapolation not allowed "
-                        "[x<xMin]");
-                    i = xBegin_;
-                } else if (x > *(xEnd_-1)) {
-                    QL_REQUIRE(allowExtrapolation_,
-                        "BilinearInterpolation::operator() : "
-                        "extrapolation not allowed "
-                        "[x>xMax]");
-                    i = xEnd_-2;
-                } else
-                    i = std::upper_bound(xBegin_,xEnd_-1,x)-1;
+            const BilinearInterpolation<I1,I2,M>::second_argument_type& y,
+            bool allowExtrapolation) const {
 
-                I2 j; // row
-                if (y < *yBegin_) {
-                    QL_REQUIRE(allowExtrapolation_,
+                locate(x, y);
+                if (isOutOfRange_) {
+                    QL_REQUIRE(allowExtrapolation,
                         "BilinearInterpolation::operator() : "
-                        "extrapolation not allowed "
-                        "[y<yMin]");
-                    j = yBegin_;
-                } else if (y > *(yEnd_-1)) {
-                    QL_REQUIRE(allowExtrapolation_,
-                        "BilinearInterpolation::operator() : "
-                        "extrapolation not allowed "
-                        "[y>yMax]");
-                    j = yEnd_-2;
-                } else
-                    j = std::upper_bound(yBegin_,yEnd_-1,y)-1;
+                        "extrapolation not allowed");
+                }
 
-                double z1=data_[j-yBegin_]   [i-xBegin_];
-                double z2=data_[j-yBegin_]   [i-xBegin_+1];
-                double z3=data_[j-yBegin_+1] [i-xBegin_];
-                double z4=data_[j-yBegin_+1] [i-xBegin_+1];
+                double z1=data_[yPos_-yBegin_]   [xPos_-xBegin_];
+                double z2=data_[yPos_-yBegin_]   [xPos_-xBegin_+1];
+                double z3=data_[yPos_-yBegin_+1] [xPos_-xBegin_];
+                double z4=data_[yPos_-yBegin_+1] [xPos_-xBegin_+1];
 
-                double t=(x-*i)/(*(i+1)-*i);
-                double u=(y-*j)/(*(j+1)-*j);
+                double t=(x-*xPos_)/(*(xPos_+1)-*xPos_);
+                double u=(y-*yPos_)/(*(yPos_+1)-*yPos_);
 
                 return (1.0-t) * (1.0-u) * z1+
                           t    * (1.0-u) * z2+

@@ -47,11 +47,11 @@ namespace QuantLib {
                 result_type;
              LogLinearInterpolation(const RandomAccessIterator1& xBegin,
                                     const RandomAccessIterator1& xEnd,
-                                    const RandomAccessIterator2& yBegin,
-                                    bool allowExtrapolation)
+                                    const RandomAccessIterator2& yBegin)
              : Interpolation<RandomAccessIterator1,RandomAccessIterator2>(
-                 xBegin,xEnd,yBegin, allowExtrapolation) {}
-            result_type operator()(const argument_type& x) const;
+                 xBegin,xEnd,yBegin) {}
+            result_type operator()(const argument_type& x,
+                bool allowExtrapolation = false) const;
         };
 
 
@@ -60,26 +60,17 @@ namespace QuantLib {
         template <class I1, class I2>
         inline LogLinearInterpolation<I1,I2>::result_type
         LogLinearInterpolation<I1,I2>::operator()(
-            const LogLinearInterpolation<I1,I2>::argument_type& x) const {
-                I1 i;
-                if (x < *xBegin_) {
-                    QL_REQUIRE(allowExtrapolation_,
+            const LogLinearInterpolation<I1,I2>::argument_type& x,
+            bool allowExtrapolation) const {
+                locate(x);
+                if (isOutOfRange_) {
+                    QL_REQUIRE(allowExtrapolation,
                         "LogLinearInterpolation::operator() : "
-                        "extrapolation not allowed "
-                        "[x<xMin]");
-                    i = xBegin_;
-                } else if (x > *(xEnd_-1)) {
-                    QL_REQUIRE(allowExtrapolation_,
-                        "LogLinearInterpolation::operator() : "
-                        "extrapolation not allowed "
-                        "[x>xMax]");
-                    i = xEnd_-2;
-                } else {
-                    i = std::upper_bound(xBegin_,xEnd_-1,x)-1;
+                        "extrapolation not allowed");
                 }
-                I2 j = yBegin_+(i-xBegin_);
-                return (pow(*j,(x/(*i)*((*(i+1))-x)/((*(i+1))-(*i))))) * 
-                    (pow(*(j+1),(x/(*(i+1))*(x-(*i))/((*(i+1))-(*i)))));
+                I2 j = yBegin_+(position_-xBegin_);
+                return (pow(*j,(x/(*position_)*((*(position_+1))-x)/((*(position_+1))-(*position_))))) * 
+                    (pow(*(j+1),(x/(*(position_+1))*(x-(*position_))/((*(position_+1))-(*position_)))));
         }
 
     }

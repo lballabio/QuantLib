@@ -105,7 +105,7 @@ namespace QuantLib {
                                      exerciseTimes_.end(),
                                      timeLengths_.begin(),
                                      timeLengths_.end(),
-                                     volatilities_, false));
+                                     volatilities_));
         }
 
         inline Date SwaptionVolatilityMatrix::todaysDate() const {
@@ -128,7 +128,7 @@ namespace QuantLib {
 
         inline double SwaptionVolatilityMatrix::volatilityImpl(
             Time start, Time length, Rate) const {
-                return (*interpolation_)(start,length);
+                return (*interpolation_)(start,length,false);
         }
         
     }

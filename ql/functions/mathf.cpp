@@ -26,6 +26,7 @@
 #include <ql/functions/mathf.hpp>
 #include <ql/Math/linearinterpolation.hpp>
 #include <ql/Math/cubicspline.hpp>
+#include <ql/Math/loglinearinterpolation.hpp>
 #include <ql/Math/bilinearinterpolation.hpp>
 #include <ql/Math/normaldistribution.hpp>
 
@@ -33,6 +34,7 @@ using QuantLib::Array;
 using QuantLib::Math::Matrix;
 using QuantLib::Math::Interpolation;
 using QuantLib::Math::LinearInterpolation;
+using QuantLib::Math::LogLinearInterpolation;
 using QuantLib::Math::CubicSpline;
 using QuantLib::Math::Interpolation2D;
 using QuantLib::Math::BilinearInterpolation;
@@ -59,14 +61,21 @@ namespace QuantLib {
                         std::vector<double>::const_iterator,
 			            std::vector<double>::const_iterator>(
                         x_values.begin(), x_values.end(),
-                        y_values.begin(), allowExtrapolation)(x);
+                        y_values.begin())(x, allowExtrapolation);
                     break;
                 case 2:
                     result = CubicSpline<
                         std::vector<double>::const_iterator,
 			            std::vector<double>::const_iterator>(
                         x_values.begin(), x_values.end(),
-                        y_values.begin(), allowExtrapolation)(x);
+                        y_values.begin())(x, allowExtrapolation);
+                    break;
+                case 3:
+                    result = LogLinearInterpolation<
+                        std::vector<double>::const_iterator,
+			            std::vector<double>::const_iterator>(
+                        x_values.begin(), x_values.end(),
+                        y_values.begin())(x, allowExtrapolation);
                     break;
                 default:
                     throw IllegalArgumentError(
@@ -89,8 +98,8 @@ namespace QuantLib {
                         std::vector<double>::const_iterator,
 			            std::vector<double>::const_iterator,
                         Matrix>(x_values.begin(), x_values.end(),
-                        y_values.begin(), y_values.end(), dataMatrix,
-                        allowExtrapolation)(x,y);
+                        y_values.begin(), y_values.end(), dataMatrix)(x,y,
+                        allowExtrapolation);
                     break;
                 default:
                     throw IllegalArgumentError(

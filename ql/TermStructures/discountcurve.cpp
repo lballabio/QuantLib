@@ -59,19 +59,17 @@ namespace QuantLib {
 
             interpolation_ = Handle < DfInterpolation >
                 (new DfInterpolation(times_.begin(), times_.end(),
-                discounts.begin(), true));
+                discounts.begin()));
       }
 
       DiscountFactor DiscountCurve::discountImpl(Time t,
         bool extrapolate) const
       {
-         QL_REQUIRE(t >= 0.0 && (t <= times_.back() || extrapolate),
-                    "DiscountCurve: time (" +
+         QL_REQUIRE(t >= 0.0,
+                    "DiscountCurve: invalid negative time (" +
                     DoubleFormatter::toString(t) +
-                    ") outside curve definition [" +
-                    DoubleFormatter::toString(0.0) + ", " +
-                    DoubleFormatter::toString(times_.back()) + "]");
-         return (*interpolation_) (t);
+                    ")");
+         return (*interpolation_) (t, extrapolate);
       }
 
    }

@@ -63,11 +63,11 @@ namespace QuantLib {
 	 
             fwdinterp_ = Handle<FwdInterpolation>
                 (new FwdInterpolation(times_.begin(), times_.end(),
-                                      forwards_.begin(), true));
+                                      forwards_.begin()));
 
             dfinterp_ = Handle<DfInterpolation>
                 (new DfInterpolation(times_.begin(), times_.end(),
-                                     discounts_.begin(), true));
+                                     discounts_.begin()));
 	 
             validateInputs();
         }
@@ -109,11 +109,11 @@ namespace QuantLib {
             
             fwdinterp_ = Handle<FwdInterpolation>
                 (new FwdInterpolation(times_.begin(), times_.end(),
-                                      forwards_.begin(), true));
+                                      forwards_.begin()));
             
             dfinterp_ = Handle<DfInterpolation>
                 (new DfInterpolation(times_.begin(), times_.end(),
-                                     discounts_.begin(), true));
+                                     discounts_.begin()));
             
             validateInputs();
         }
@@ -193,7 +193,7 @@ namespace QuantLib {
                     while (tmpDate < rateDate) {
                         Time t = dayCounter_.yearFraction(settlementDate_, 
                                                           tmpDate);
-                        Rate r = (*fwdinterp_)(t);
+                        Rate r = (*fwdinterp_)(t, true);
 
                         dates_.insert(dates_.begin()+i,tmpDate);
                         forwards_.insert(forwards_.begin()+i,r);
@@ -234,7 +234,7 @@ namespace QuantLib {
                 if (t == times_[n])
                     return discounts_[n];
                 else
-                    return (*dfinterp_)(t);
+                    return (*dfinterp_)(t, true);
             }
             QL_DUMMY_RETURN(DiscountFactor());
         }
@@ -249,7 +249,7 @@ namespace QuantLib {
                 if (t == times_[n])
                     return forwards_[n];
                 else
-                    return (*fwdinterp_)(t);
+                    return (*fwdinterp_)(t, true);
             }
             QL_DUMMY_RETURN(Rate());
         }

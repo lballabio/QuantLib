@@ -96,7 +96,7 @@ namespace QuantLib {
             interpolation_ = Handle<VolInterpolation>(
                 new VolInterpolation(timeLengths_.begin(),
                                      timeLengths_.end(),
-                                     volatilities_.begin(), false));
+                                     volatilities_.begin()));
         }
 
         inline Date CapFlatVolatilityVector::todaysDate() const {
@@ -113,7 +113,7 @@ namespace QuantLib {
 
         inline double CapFlatVolatilityVector::volatilityImpl(
             Time length, Rate) const {
-                return (*interpolation_)(length);
+                return (*interpolation_)(length, false);
         }
         
     }

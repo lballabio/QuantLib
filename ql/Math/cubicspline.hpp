@@ -49,9 +49,9 @@ namespace QuantLib {
                 result_type;
             CubicSpline(const RandomAccessIterator1& xBegin,
                 const RandomAccessIterator1& xEnd,
-                const RandomAccessIterator2& yBegin,
-                bool allowExtrapolation);
-            result_type operator()(const argument_type& x) const;
+                const RandomAccessIterator2& yBegin);
+            result_type operator()(const argument_type& x,
+                bool allowExtrapolation = false) const;
 	    virtual ~CubicSpline() {}
           private:
             // P[i](x) = y[i] +
@@ -66,8 +66,8 @@ namespace QuantLib {
 
         template <class I1, class I2>
         CubicSpline<I1,I2>::CubicSpline(const I1& xBegin, const I1& xEnd,
-            const I2& yBegin, bool allowExtrapolation)
-        : Interpolation<I1,I2>(xBegin,xEnd,yBegin,allowExtrapolation), a_(xEnd-xBegin-1),
+            const I2& yBegin)
+        : Interpolation<I1,I2>(xBegin,xEnd,yBegin), a_(xEnd-xBegin-1),
           b_(xEnd-xBegin-1), c_(xEnd-xBegin-1) {
             Size n = xEnd_-xBegin_;
             #ifdef QL_DEBUG
@@ -122,24 +122,15 @@ namespace QuantLib {
         template <class I1, class I2>
         CubicSpline<I1,I2>::result_type
         CubicSpline<I1,I2>::operator()(
-            const CubicSpline<I1,I2>::argument_type& x) const {
-                I1 i;
-                if (x < *xBegin_) {
-                    QL_REQUIRE(allowExtrapolation_,
+            const CubicSpline<I1,I2>::argument_type& x,
+            bool allowExtrapolation) const {
+                locate(x);
+                if (isOutOfRange_) {
+                    QL_REQUIRE(allowExtrapolation,
                         "CubicSpline::operator() : "
-                        "extrapolation not allowed "
-                        "[x<xMin]");
-                    i = xBegin_;
-                } else if (x > *(xEnd_-1)) {
-                    QL_REQUIRE(allowExtrapolation_,
-                        "CubicSpline::operator() : "
-                        "extrapolation not allowed "
-                        "[x>xMax]");
-                    i = xEnd_-2;
-                } else
-                    i = std::upper_bound(xBegin_,xEnd_-1,x)-1;
-
-                Size j = i-xBegin_;
+                        "extrapolation not allowed");
+                }
+                Size j = position_-xBegin_;
                 argument_type dx = x-xBegin_[j];
                 return yBegin_[j] + dx*(a_[j] + dx*(b_[j] + dx*c_[j]));
         }
