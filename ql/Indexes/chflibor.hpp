@@ -25,6 +25,7 @@ FOR A PARTICULAR PURPOSE.  See the license for more details.
 #include <ql/Indexes/xibor.hpp>
 #include <ql/Calendars/zurich.hpp>
 #include <ql/DayCounters/actual360.hpp>
+#include <ql/Currencies/chfcurrency.hpp>
 
 namespace QuantLib {
 
@@ -35,7 +36,7 @@ namespace QuantLib {
         CHFLibor(Integer n, TimeUnit units,
                  const RelinkableHandle<TermStructure>& h,
                  const DayCounter& dc = Actual360())
-        : Xibor("CHFLibor", n, units, 2, CHF,
+	    : Xibor("CHFLibor", n, units, 2, CHFCurrency(),
                 Zurich(), true, ModifiedFollowing, dc, h) {}
     };
 

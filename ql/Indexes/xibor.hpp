@@ -32,7 +32,7 @@ namespace QuantLib {
       public:
         Xibor(const std::string& familyName,
               Integer n, TimeUnit units, Integer settlementDays,
-              Currency currency,
+              const Currency& currency,
               const Calendar& calendar, bool isAdjusted,
               RollingConvention rollingConvention,
               const DayCounter& dayCounter, 
