@@ -22,10 +22,27 @@
 */
 
 /*! \mainpage
-	\section disclaimer Disclaimer
+
+    \section copyright Copyright
+    Copyright (C) 2000 --- The QuantLib Group
+
+    \section introduction Introduction
+    %QuantLib is a C++ open source library for financial quantitative
+    analysts and developers --- http://quantlib.sourceforge.net/
+
+    %QuantLib is free software and you are allowed to use, copy, modify, merge,
+    publish, distribute, and/or sell copies of it under the conditions stated 
+    in the QuantLib License available at http://quantlib.sourceforge.net/LICENSE.TXT
+
+    %QuantLib and its documentation are distributed in the hope that they will be useful, but 
+    WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
+    or FITNESS FOR A PARTICULAR PURPOSE. See the license for more details.
+    
+    \section disclaimer Disclaimer
 	At this time, this documentation is widely incomplete and must be regarded as a work
-	in progress. Eventually, all QuantLib classes will be documented. However, no
+	in progress. Eventually, all %QuantLib classes will be documented. However, no
 	date is currently set for this goal.
+    Join the mailing lists (http://sourceforge.net/mail/?group_id=12740) for the latest updates.
 */
 
 /*! \file qldefines.h
