@@ -40,7 +40,6 @@ void StatisticsTest::runTest() {
     s.addSequence(data,data+LENGTH(data),weights.begin());
 
     unsigned long dimension = 5;
-    std::vector<std::vector<double > > sequenceData(LENGTH(data));
     SequenceStatistics<IncrementalGaussianStatistics> sigs(dimension);
     SequenceStatistics<Statistics> ss(dimension);
 
@@ -56,9 +55,6 @@ void StatisticsTest::runTest() {
     std::vector<double> calculatedSequence;
 
 
-    
-    
-    
     if (igs.samples() != LENGTH(data))
         CPPUNIT_FAIL(
             "IncrementalGaussianStatistics: "
@@ -91,10 +87,6 @@ void StatisticsTest::runTest() {
             + IntegerFormatter::toString(igs.samples()) + "\n"
             "    expected:   "
             + IntegerFormatter::toString(LENGTH(data)));
-
-
-
-
 
 
     expected = std::accumulate(weights.begin(),weights.end(),0.0);
@@ -134,8 +126,6 @@ void StatisticsTest::runTest() {
             + DoubleFormatter::toString(calculatedSequence[i]) + "\n"
             "    expected:   "
             + DoubleFormatter::toString(expected));
-
-
 
 
     expected = *std::min_element(data,data+LENGTH(data));
@@ -183,8 +173,6 @@ void StatisticsTest::runTest() {
     }
 
 
-
-
     expected = *std::max_element(data,data+LENGTH(data));
     calculated = igs.max();
     if (calculated != expected)
@@ -228,8 +216,6 @@ void StatisticsTest::runTest() {
                 "    expected:   "
                 + DoubleFormatter::toString(expected));
     }
-
-
 
 
     expected = 4.3;
@@ -278,7 +264,6 @@ void StatisticsTest::runTest() {
     }
 
 
-    
     expected = 2.23333333333;
     calculated = igs.variance();
     if (QL_FABS(calculated-expected) > tolerance)
@@ -322,7 +307,6 @@ void StatisticsTest::runTest() {
                 "    expected:   "
                 + DoubleFormatter::toString(expected));
     }
-            
 
     
     expected = 1.4944341181;
@@ -368,8 +352,6 @@ void StatisticsTest::runTest() {
                 "    expected:   "
                 + DoubleFormatter::toString(expected));
     }
-
-
     
     
     expected = 0.359543071407;
@@ -417,7 +399,6 @@ void StatisticsTest::runTest() {
     }
 
 
-
     expected = -0.151799637209;
     calculated = igs.kurtosis();
     if (QL_FABS(calculated-expected) > tolerance)
@@ -460,29 +441,6 @@ void StatisticsTest::runTest() {
                 + DoubleFormatter::toString(calculatedSequence[i]) + "\n"
                 "    expected:   "
                 + DoubleFormatter::toString(expected));
-    }
-
-
-    
-
-    
-    igs.reset();
-    s.reset();
-    sigs.reset();
-    ss.reset();
-
-
-    
-    std::vector<double> data2(LENGTH(data));
-    std::transform(data,data+LENGTH(data),data2.begin(),
-                   std::bind2nd(std::minus<double>(),3.0));
-    igs.addSequence(data2.begin(),data2.end(),weights.begin());
-    s.addSequence(data2.begin(),data2.end(),weights.begin());
-
-    for (i = 0; i<LENGTH(data); i++) {
-        std::vector<double> temp(dimension, data2[i]);
-        sigs.add(temp, weights[i]);
-        ss.add(temp, weights[i]);
     }
 
 }
