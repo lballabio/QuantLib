@@ -32,6 +32,7 @@
 
 #elif _MSC_VER == 1300
 // move inside here configs specific to VC++ .Net
+#define QL_ITERATOR         std::iterator
 #define QL_ITERATOR_TRAITS  std::iterator_traits
 
 
