@@ -133,6 +133,7 @@ AC_OUTPUT(Makefile \
     ql/MonteCarlo/Makefile \
     ql/Patterns/Makefile \
     ql/Pricers/Makefile \
+    ql/RandomNumbers/Makefile \
     ql/Solvers1D/Makefile \
     ql/TermStructures/Makefile \
     ql/Utilities/Makefile \
