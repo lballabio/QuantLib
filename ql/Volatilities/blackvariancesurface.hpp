@@ -28,6 +28,7 @@
 
 #include <ql/Math/matrix.hpp>
 #include <ql/voltermstructure.hpp>
+#include <ql/dataformatters.hpp>
 
 namespace QuantLib {
 
