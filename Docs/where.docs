@@ -1,23 +1,18 @@
 
 /*! \page where Where to get QuantLib
 
-    \subsection resources Resources
-    The main %QuantLib resources are the %QuantLib home page at
-    http://quantlib.org and the %QuantLib mailing lists at
-    http://sourceforge.net/mail/?group_id=12740.
-
-    \subsection download Download
+    \subsection download QuantLib releases
     Source code, documentation, modules, etc. of current and previous 
-    %QuantLib releases are downloadable from
-    http://sourceforge.net/project/showfiles.php?group_id=12740
+    %QuantLib releases can be downloaded from
+    http://quantlib.org/download.html
 
-    %QuantLib Debian packages are available from:
-
-    http://ftp.us.debian.org/debian/pool/main/q/quantlib
-    http://ftp.us.debian.org/debian/pool/main/q/quantlib-refman
-    http://ftp.us.debian.org/debian/pool/main/q/quantlib-python
-
-    and the .us can be replaced by .jp, .uk, .de, .it, ....
+    \subsection cvs Current CVS snapshot
+    Instructions for anonymous CVS access are available at
+    http://quantlib.org/cvs.html
+    
+    Access to the CVS repository is intended mainly for developers and 
+    is not recommended to end users which should download the 
+    latest stable release instead.
 
 */
 

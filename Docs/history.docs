@@ -1,0 +1,75 @@
+
+/*! \page history Version history
+
+    <strong>Release 0.2.0 - September 18th, 2001</strong>
+
+    - Library:
+        - source code moved under ql, better GNU standards
+        - gcc build dir can now be separated from source tree
+        - gcc 3.0.1 port
+        - clean compilation (no warnings)
+        - bootstrap script on cygwin
+        - Fixed automatic choice of seed for random number generators
+        - Actual/actual classes
+        - extended platform support (see table in documentation)
+        - antithetic variance-reduction technique made possible in Monte 
+          Carlo
+        - added dividend-Rho greek
+        - First implementation of segment integral (to be redesigned)
+        - Knuth random generator
+        - Cash flows, scheduler, and swap (both generic and simple) added
+        - added ICGaussian random generator
+        - generic bug fixes
+    - Installation facilities:
+        - improved and smoother Win32 binary installer
+        - better distribution
+        - debian packages available
+    - Documentation:
+        - general re-hauling
+        - added examples of using %QuantLib and of projects based on QL
+
+    <strong>Release 0.1.9 - May 31st, 2001</strong>
+
+    - Library:
+      - Style guidelines introduced (see http://quantlib.org/style.html)
+        and partially enforced
+      - full support for Microsoft Visual Studio
+      - full support for Linux/gcc
+      - momentarily broken support for Metrowerks CodeWarrior
+      - autoconfiscation (with specialized config.*.hpp files for platforms
+        without automake/autoconf support)
+      - Include files moved under Include/ql folder and referenced as
+        "ql/header.hpp"
+      - Implemented expression templates techniques for array algebra 
+        optimization
+      - Added custom iterators
+      - Improved term structure
+      - Added Asian, Bermudan, Shout, Cliquet, Himalaya, and Barrier
+        options (all with greeks calculation, control variated where 
+        possible)
+      - Added Helsinki and Wellington calendars
+      - Improved Normal distribution related functions: cumulative, inverse
+        cumulative, etc.
+      - Added uniform and Gaussian random number generators
+      - Added Statistics class (mean, variance, skewness, downside variance, 
+        etc.)
+      - Added RiskMeasures class: VAR, average shortfall, expected shortfall, 
+        etc.
+      - Added RiskStatistics class combining Statistics and RiskMeasures
+      - Added sample accumulator for multivariate analysis
+      - Added Monte Carlo tools
+      - Added matrix-related functions (square root, symmetric Schur 
+        decomposition)
+      - Added interpolation framework (linear and cubic spline interpolation
+        implemented).
+    - Installation facilities:
+      - Added Win32 GUI installer for binaries
+    - Documentation:
+      - support for Doxygen 1.2.7
+      - Added man documentation
+
+    <strong>Release 0.1.1 - November 21st, 2000</strong>
+
+    Initial release.
+
+*/

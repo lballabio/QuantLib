@@ -1,0 +1,53 @@
+
+/*! \page overview Project overview
+
+    The %QuantLib project is at this time in <em>beta</em> status.
+    
+    The following list is an overview of the goals set for release 1.0.
+    It is open for suggestions, corrections, and additions which can be
+    submitted through the 
+    <a href="http://lists.sourceforge.net/lists/listinfo/quantlib-users">
+    QuantLib-users</a> mailing list. 
+    Also, this list is currently biased towards fixed-income derivatives.
+    Feel free to suggest additional FX and equity targets.
+    Every proposal will be seriously considered. 
+
+    \subsection goals Project goals
+    
+    <strong>Interfaces</strong>
+    
+    - yield term structure---done;
+    - financial instrument---done;
+    - deal---to do;
+    - folder/portfolio/book levels of deal aggregation (strict
+      vertical inclusion)---to do;
+    - trade-group deal aggregation (horizontal cross section)---to do;
+    - volatility term structure for cap/floor and swaption---to do;
+
+    <strong>Generic Tools</strong>
+    
+    - date/time module---done;
+    - one-dimensional solver---done;
+    - one-dimensional optimizer---to do;
+    - multi-dimensional solver---to do;
+    - multi-dimensional optimizer---to do;
+    - linear algebra module---in progress;
+    - statistical module---in progress;
+    - PDE framework---in progress;
+    - Monte Carlo framework---in progress;
+
+    <strong>Financial Tools</strong>
+
+    - Black-Scholes analytic implementation---done;
+    - Black-Scholes PDE implementation (for American and exotic
+      options)---done;
+    - Deposits, FRA, futures, swaps---partly done;
+    - Deposit/FRA/futures/swap yield term structure---partly done;
+    - Swaptions---to do;
+    - Caps/floors---to do;
+    - Bonds (IRR/duration)---to do;
+    - Treasury yield term structure (Nelson-Siegel/Vasichek-Fong)---to do;
+    - Short-rate models (BDT, BK, HW, etc.)---to do.
+
+*/
+

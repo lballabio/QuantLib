@@ -1,0 +1,19 @@
+
+/*! \page resources Additional resources
+
+    The main %QuantLib resource is the %QuantLib site (http://quantlib.org).
+    
+    Additional resources available from the above site include:
+    
+    - current news;
+    - the %QuantLib mailing lists (http://quantlib.org/mailinglists.html);
+    - the %QuantLib FAQ (http://quantlib.org/FAQ.html);
+    - the %QuantLib programming style guidelines 
+      (http://quantlib.org/style.html);
+    - a link to the %QuantLib project page on Sourceforge;
+    - links to pages for bug reports, patch submissions and feature requests;
+    - a page (http://quantlib.org/extensions.html) about how to use %QuantLib 
+      in other languages/platforms;
+    - as well as links to additional quantitative finance resources.
+*/
+

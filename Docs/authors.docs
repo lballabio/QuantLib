@@ -1,0 +1,189 @@
+
+/*! \page group The QuantLib group
+
+    \subsection authors Authors
+
+    The %QuantLib Group holds the copyright of all the %QuantLib
+    source code. Its current members are:
+    
+    \htmlonly
+    <table>
+    <tr>
+    <td><strong>name</strong></td>
+    <td><strong>email</strong></td>
+    <td><strong>role</strong></td>
+    <td><strong>SourceForge user name</strong></td>
+    </tr>
+
+    <tr>
+    <td><em>Mario Aleppo</em></td>
+    <td>mario.aleppo@riskmap.net</td>
+    <td> </td>
+    <td><a href="http://sourceforge.net/users/aleppo/">aleppo</a></td>
+    </tr>
+
+    <tr>
+    <td><em><a href="http://www.ametrano.net/">Ferdinando
+    Ametrano</a></em></td>
+    <td>ferdinando@ametrano.net</td>
+    <td>project manager</td>
+    <td><a href="http://sourceforge.net/users/nando/">nando</a></td>
+    </tr>
+
+    <tr>
+    <td><em><a href="http://homepage.mac.com/ballabio/">Luigi
+    Ballabio</a></em></td>
+    <td>luigi.ballabio@riskmap.net</td>
+    <td>library designer</td>
+    <td><a href=
+    "http://sourceforge.net/users/lballabio/">lballabio</a></td>
+    </tr>
+
+    <tr>
+    <td><em>Adolfo Benin</em></td>
+    <td>adolfo.benin@riskmap.net</td>
+    <td> </td>
+    <td><a href="http://sourceforge.net/users/benin/">benin</a></td>
+    </tr>
+
+    <tr>
+    <td><em>Marco Marchioro</em></td>
+    <td>marco.marchioro@riskmap.net</td>
+    <td> </td>
+    <td><a href="http://sourceforge.net/users/marmar/">marmar</a></td>
+    </tr>
+
+    <tr>
+    <td><em>Enrico Sirola</em></td>
+    <td>enrico.sirola@riskmap.net</td>
+    <td> </td>
+    <td><a href="http://sourceforge.net/users/enri/">enri</a></td>
+    </tr>
+
+    <tr>
+    <td><em>Maxim Sokolov</em></td>
+    <td>maxim_sokolov@rambler.ru</td>
+    <td>examples</td>
+    <td><a href="http://sourceforge.net/users/dzuki/">dzuki</a></td>
+    </tr>
+
+    <tr>
+    <td><em><a href="http://www.riskmap.net/">RiskMap</a></em></td>
+    <td>info@riskmap.net</td>
+    <td>main sponsor</td>
+    <td> </td>
+    </tr>
+    </table>
+    \endhtmlonly
+
+    \latexonly
+    \begin{itemize}
+        \item Mario Aleppo (mario.aleppo@riskmap.net)
+        \item Ferdinando Ametrano (ferdinando@ametrano.net), 
+              project manager
+        \item Luigi Ballabio (luigi.ballabio@riskmap.net), library designer
+        \item Adolfo Benin (adolfo.benin@riskmap.net)
+        \item Marco Marchioro (marco.marchioro@riskmap.net)
+        \item Enrico Sirola (enrico.sirola@riskmap.net)
+        \item Maxim Sokolov (maxim\_sokolov@rambler.ru), examples
+        \item RiskMap (info@riskmap.net), main sponsor
+    \end{itemize}
+    \endlatexonly
+    
+
+    \subsection contributors Contributors
+
+    \htmlonly
+    <table>
+    <tr>
+    <td><strong>name</strong></td>
+    <td><strong>email</strong></td>
+    <td><strong>contribution</strong></td>
+    <td><strong>SourceForge user name</strong></td>
+    </tr>
+
+    <tr>
+    <td><em>Christopher Baus</em></td>
+    <td> </td>
+    <td>inspiration for custom iterators</td>
+    <td> </td>
+    </tr>
+
+    <tr>
+    <td><em>Thomas Becker</em></td>
+    <td> </td>
+    <td>inspiration for custom iterators</td>
+    <td> </td>
+    </tr>
+
+    <tr>
+    <td><em>David Binderman</em></td>
+    <td> </td>
+    <td> </td>
+    <td> </td>
+    </tr>
+
+    <tr>
+    <td><em>Dirk Eddelbuettel</em></td>
+    <td> </td>
+    <td>Debian packager</td>
+    <td><a href=
+    "http://sourceforge.net/users/eddelbuettel/">eddelbuettel</a></td>
+    </tr>
+
+    <tr>
+    <td><em>Matteo Gallivanoni</em></td>
+    <td>matteo.gallivanoni@riskmap.net</td>
+    <td> </td>
+    <td><a href="http://sourceforge.net/users/sigmud/">sigmud</a></td>
+    </tr>
+
+    <tr>
+    <td><em>Gilbert Peffer</em></td>
+    <td> </td>
+    <td> </td>
+    <td><a href=
+    "http://sourceforge.net/users/gilbert_peffer/">gilbert_peffer</a></td>
+    </tr>
+
+    <tr>
+    <td><em>Sadruddin Rejeb</em></td>
+    <td>sad.rejeb@riskmap.it</td>
+    <td>gcc 3.0.1 port</td>
+    <td><a href=
+    "http://sourceforge.net/users/sadrejeb/">sadrejeb</a></td>
+    </tr>
+
+    <tr>
+    <td><em>Peter Schmitteckert</em></td>
+    <td>quantlib@schmitteckert.com</td>
+    <td> </td>
+    <td> </td>
+    </tr>
+
+    <tr>
+    <td><em>Bernd Johannes Wuebben</em></td>
+    <td> </td>
+    <td> </td>
+    <td><a href=
+    "http://sourceforge.net/users/berndwuebben/">berndwuebben</a></td>
+    </tr>
+    </table>
+    \endhtmlonly
+
+    \latexonly
+    \begin{itemize}
+        \item Christopher Baus, inspiration for custom iterators
+        \item Thomas Becker, inspiration for custom iterators
+        \item David Binderman
+        \item Dirk Eddelbuettel, Debian packager
+        \item Matteo Gallivanoni (matteo.gallivanoni@riskmap.net)
+        \item Gilbert Peffer
+        \item Sadruddin Rejeb (sad.rejeb@riskmap.it), gcc 3.0.1 port
+        \item Peter Schmitteckert (quantlib@schmitteckert.com)
+        \item Bernd Johannes Wuebben
+    \end{itemize}
+    \endlatexonly
+
+*/
+

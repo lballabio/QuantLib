@@ -6,6 +6,7 @@ config.h is installed?
 installer splash screen
 MonteCarloModel refactoring (remove old classes)
 
+review QuantLib.org
 
 DISTRIBUTING
     RPM package
@@ -51,11 +52,3 @@ DOCUMENTATION ***
     add/update DoxyGen TODO with CVS TODO.txt file
     insert QuantLib-site\tobeincludedindoxygen.txt into DoxyGen documentation
 
-    add status.html content into DoxyGen documentation
-    add QuantLib Team and contributors to DoxyGen
-    add mailing list, bug tracker, etc. reference to DoxyGen
-    add NEWS.txt content
-    add CVS reference to DoxyGen
-    add reference to FAQ to DoxyGen
-    add Coding standards reference to DoxyGen
-    add History
