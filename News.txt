@@ -41,3 +41,6 @@ Changes since release 0.3.7:
   been calculated as optimal values based on the "resolution" criterion. The
   values has been provided by Christiane Lemieux, private communication,
   September 2004.
+
+- Average Price Asian pricers have been deprecated. New equivalent pricing
+  engines added.

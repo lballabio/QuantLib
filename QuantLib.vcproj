@@ -6606,16 +6606,31 @@
 					RelativePath=".\ql\PricingEngines\Asian\all.hpp">
 				</File>
 				<File
-					RelativePath=".\ql\PricingEngines\Asian\analyticcontinuousasianengine.cpp">
+					RelativePath=".\ql\PricingEngines\Asian\analytic_cont_geom_av_price.cpp">
 				</File>
 				<File
-					RelativePath=".\ql\PricingEngines\Asian\analyticcontinuousasianengine.hpp">
+					RelativePath=".\ql\PricingEngines\Asian\analytic_cont_geom_av_price.hpp">
 				</File>
 				<File
-					RelativePath=".\ql\PricingEngines\Asian\analyticdiscreteasianengine.cpp">
+					RelativePath=".\ql\PricingEngines\Asian\analytic_discr_geom_av_price.cpp">
 				</File>
 				<File
-					RelativePath=".\ql\PricingEngines\Asian\analyticdiscreteasianengine.hpp">
+					RelativePath=".\ql\PricingEngines\Asian\analytic_discr_geom_av_price.hpp">
+				</File>
+				<File
+					RelativePath=".\ql\PricingEngines\Asian\mc_discr_arith_av_price.cpp">
+				</File>
+				<File
+					RelativePath=".\ql\PricingEngines\Asian\mc_discr_arith_av_price.hpp">
+				</File>
+				<File
+					RelativePath=".\ql\PricingEngines\Asian\mc_discr_geom_av_price.cpp">
+				</File>
+				<File
+					RelativePath=".\ql\PricingEngines\Asian\mc_discr_geom_av_price.hpp">
+				</File>
+				<File
+					RelativePath=".\ql\PricingEngines\Asian\mcdiscreteasianengine.hpp">
 				</File>
 			</Filter>
 			<Filter
@@ -10221,6 +10236,9 @@
 		</File>
 		<File
 			RelativePath=".\ql\schedule.hpp">
+		</File>
+		<File
+			RelativePath=".\ql\settings.hpp">
 		</File>
 		<File
 			RelativePath="ql\solver1d.hpp">
