@@ -44,7 +44,7 @@ namespace QuantLib {
         //! base class for rate helpers
         /*! This class provides an abstraction for the instruments used to
             bootstrap a term structure.
-            It is advised that a rate helper for an instrument contain an
+            It is advised that a rate helper for an instrument contains an
             instance of the actual instrument class to ensure consistancy
             between the algorithms used during bootstrapping and later
             instrument pricing. This is not yet fully enforced in the

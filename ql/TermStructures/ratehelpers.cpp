@@ -59,7 +59,7 @@ namespace QuantLib {
         }
 
         void RateHelper::setTermStructure(TermStructure* t) {
-            QL_REQUIRE(t != 0, "null term structure given");
+            QL_REQUIRE(t != 0, "RateHelper: null term structure given");
             termStructure_ = t;
         }
 
