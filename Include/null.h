@@ -27,16 +27,18 @@
 	$Source$
 	$Name$
 	$Log$
+	Revision 1.6  2000/12/20 15:27:48  lballabio
+	Using new defines for helping Linux port
+
 	Revision 1.5  2000/12/14 12:32:29  lballabio
 	Added CVS tags in Doxygen file documentation blocks
-
+	
 */
 
 #ifndef quantlib_null_h
 #define quantlib_null_h
 
 #include "qldefines.h"
-#include <limits>
 
 namespace QuantLib {
 
@@ -52,14 +54,14 @@ namespace QuantLib {
 	class Null<int> {
 	  public:
 		Null() {}
-		operator int() const { return std::numeric_limits<int>::max(); }
+		operator int() const { return QL_MAX_INT; }
 	};
 	
 	template <>
 	class Null<double> {
 	  public:
 		Null() {}
-		operator double() const { return std::numeric_limits<double>::max(); }
+		operator double() const { return QL_MAX_DOUBLE; }
 	};
 	
 	

@@ -27,19 +27,22 @@
 	$Source$
 	$Name$
 	$Log$
+	Revision 1.7  2000/12/20 15:29:47  lballabio
+	Using new defines for helping Linux port
+
 	Revision 1.6  2000/12/14 12:32:31  lballabio
 	Added CVS tags in Doxygen file documentation blocks
-
+	
 */
 
 #include "dataformatters.h"
-#include <cctype>
+
 #include <sstream>
 
 namespace QuantLib {
 	
 	std::string IntegerFormatter::toString(int i, int digits) {
-		std::ostringstream out;
+		QL_OSSTREAM out;
 		if (!IsNull(digits)) {
 			out.width(digits);
 			out.fill('0');
@@ -49,9 +52,9 @@ namespace QuantLib {
 	}
 
 	std::string DoubleFormatter::toString(double x, int precision, int digits) {
-		std::ostringstream out;
+		QL_OSSTREAM out;
 		if (!IsNull(precision)) {
-			out.setf(std::ios_base::fixed);
+			out.setf(std::ios::fixed);
 			out.precision(precision);
 		}
 		if (!IsNull(digits)) {
