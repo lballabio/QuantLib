@@ -53,4 +53,32 @@ namespace QuantLib {
         }
     }
 
+    void DiscretizedCapFloor::postAdjustValuesImpl() {
+        for (Size i=0; i<arguments_.endTimes.size(); i++) {
+            if (isOnTime(arguments_.endTimes[i])) {
+                if (arguments_.startTimes[i] < 0.0) {
+                    Real nominal = arguments_.nominals[i];
+                    Time accrual = arguments_.accrualTimes[i];
+                    Rate fixing = arguments_.forwards[i];
+                    CapFloor::Type type = arguments_.type;
+
+                    if (type == CapFloor::Cap || type == CapFloor::Collar) {
+                        Rate cap = arguments_.capRates[i];
+                        Rate capletRate = QL_MAX(fixing-cap, 0.0);
+                        values_ += capletRate*accrual*nominal;
+                    }
+
+                    if (type == CapFloor::Floor || type == CapFloor::Collar) {
+                        Rate floor = arguments_.floorRates[i];
+                        Rate floorletRate = QL_MAX(floor-fixing, 0.0);
+                        if (type == CapFloor::Floor)
+                            values_ += floorletRate*accrual*nominal;
+                        else
+                            values_ -= floorletRate*accrual*nominal;
+                    }
+                }
+            }
+        }
+    }
+
 }

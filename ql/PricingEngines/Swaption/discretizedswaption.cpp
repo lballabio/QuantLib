@@ -51,6 +51,20 @@ namespace QuantLib {
                     values_ += fixedCoupon;
             }
         }
+        if (arguments_.currentFloatingCoupon != Null<Real>()) {
+            for (Size i=0; i<arguments_.floatingPayTimes.size(); i++) {
+                Time t = arguments_.floatingPayTimes[i];
+                if (t >= 0.0 && isOnTime(t)) {
+                    if (arguments_.floatingResetTimes[i] < 0.0) {
+                        if (arguments_.payFixed)
+                            values_ += arguments_.currentFloatingCoupon;
+                        else
+                            values_ -= arguments_.currentFloatingCoupon;
+                        break;
+                    }
+                }
+            }
+        }
     }
 
 

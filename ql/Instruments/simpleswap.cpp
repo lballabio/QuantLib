@@ -1,6 +1,6 @@
 
 /*
- Copyright (C) 2000, 2001, 2002, 2003 RiskMap srl
+ Copyright (C) 2000-2004 StatPro Italia srl
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -75,6 +75,8 @@ namespace QuantLib {
 
         arguments->payFixed = payFixedRate_;
         arguments->nominal = nominal_;
+        // reset in case it's not set later
+        arguments->currentFloatingCoupon = Null<Real>();
 
         Date settlement = termStructure_->referenceDate();
         DayCounter counter = termStructure_->dayCounter();
@@ -114,12 +116,15 @@ namespace QuantLib {
                                                           floatingCoupons[i]);
 
             Date resetDate = coupon->accrualStartDate(); // already adjusted
-            Time time = counter.yearFraction(settlement, resetDate);
-            arguments->floatingResetTimes[i] = time;
-            time = counter.yearFraction(settlement, coupon->date());
-            arguments->floatingPayTimes[i] = time;
+            Time resetTime = counter.yearFraction(settlement, resetDate);
+            arguments->floatingResetTimes[i] = resetTime;
+            Time paymentTime = 
+                counter.yearFraction(settlement, coupon->date());
+            arguments->floatingPayTimes[i] = paymentTime;
             arguments->floatingAccrualTimes[i] = coupon->accrualPeriod();
             arguments->floatingSpreads[i] = coupon->spread();
+            if (resetTime < 0.0 && paymentTime >= 0.0)
+                arguments->currentFloatingCoupon = coupon->amount();
         }
     }
 
@@ -142,6 +147,10 @@ namespace QuantLib {
         QL_REQUIRE(floatingSpreads.size() == floatingPayTimes.size(), 
                    "number of floating spreads different from "
                    "number of floating payment times");
+        QL_REQUIRE(currentFloatingCoupon != Null<Real>() || // unless...
+                   floatingResetTimes.empty() ||
+                   floatingResetTimes[0] > 0.0,
+                   "current floating coupon null or not set");
     }
 
 }

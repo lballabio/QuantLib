@@ -45,8 +45,6 @@ namespace QuantLib {
             adjustValues();
         }
 
-        void preAdjustValues();
-
         std::vector<Time> mandatoryTimes() const {
             std::vector<Time> times = arguments_.startTimes;
             std::copy(arguments_.endTimes.begin(), arguments_.endTimes.end(),
@@ -55,6 +53,7 @@ namespace QuantLib {
         }
       protected:
         void preAdjustValuesImpl();
+        void postAdjustValuesImpl();
       private:
         CapFloor::arguments arguments_;
     };
