@@ -13,8 +13,8 @@ SOURCES_DIR		= ..\Sources
 INCLUDE_DIR		= ..\Include
 BCC_INCLUDE		= $(MAKEDIR)\..\include
 BCC_LIBS		= $(MAKEDIR)\..\lib
-PYTHON_INCLUDE	= "C:\Program Files\Python\include"
-PYTHON_LIBS		= "C:\Program Files\Python\libs"
+PYTHON_INCLUDE	= "C:\Python20\include"
+PYTHON_LIBS		= "C:\Python20\libs"
 
 # Object files
 CORE_OBJS		= $(OUTPUT_DIR)\calendar.obj $(OUTPUT_DIR)\date.obj $(OUTPUT_DIR)\solver1d.obj $(OUTPUT_DIR)\dataformatters.obj
@@ -30,7 +30,7 @@ WIN_OBJS		= c0d32.obj
 
 # Libraries
 WIN_LIBS 		= import32.lib cw32mt.lib
-PYTHON_LIB		= $(PYTHON_LIBS)\python15.lib
+PYTHON_LIB		= $(PYTHON_LIBS)\python20.lib
 PYTHON_BCC_LIB	= bccpython.lib
 
 # Tools to be used
@@ -218,3 +218,11 @@ alldocs::
 	$(LATEX) refman
 	$(DVIPS) refman
 	cd ..\..\Win
+
+# Test
+test::
+	cd ..\Python\Tests
+	python statistics_test.py
+	python greeks_in_european.py
+	python greeks_in_american.py
+	python impliedVol.py
