@@ -1,4 +1,4 @@
-CXXFLAGS = -g -O2 -Wall @QUANTLIB_CXXFLAGS@
+CXXFLAGS = -g -O3 -pedantic -Wall @QUANTLIB_CXXFLAGS@
 INCLUDES = -I${top_srcdir} -I${top_builddir}
 
 bin_PROGRAMS = DiscreteHedging
