@@ -127,8 +127,7 @@ namespace QuantLib {
                 const RelinkableHandle<TermStructure>& termStructure,
                 double a, double sigma)
             : TermStructureFittingParameter(Handle<Parameter::Impl>(
-                new HullWhite::FittingParameter::Impl(
-                    termStructure, a, sigma))) {}
+                new FittingParameter::Impl(termStructure, a, sigma))) {}
         };
 
         // inline definitions

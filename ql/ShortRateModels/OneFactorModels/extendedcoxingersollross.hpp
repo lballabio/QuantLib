@@ -139,7 +139,7 @@ namespace QuantLib {
                 const RelinkableHandle<TermStructure>& termStructure,
                 double theta, double k, double sigma, double x0) 
             : TermStructureFittingParameter(Handle<Parameter::Impl>(
-                new ExtendedCoxIngersollRoss::FittingParameter::Impl(
+                new FittingParameter::Impl(
                     termStructure, theta, k, sigma, x0))) {}
         };
 

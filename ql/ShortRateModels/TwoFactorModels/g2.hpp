@@ -159,8 +159,8 @@ namespace QuantLib {
                 const RelinkableHandle<TermStructure>& termStructure,
                 double a, double sigma, double b, double eta, double rho)
             : TermStructureFittingParameter(Handle<Parameter::Impl>(
-                new G2::FittingParameter::Impl(termStructure, a, sigma, 
-                                               b, eta, rho))) {}
+                new FittingParameter::Impl(termStructure, a, sigma, 
+                                           b, eta, rho))) {}
         };
 
     }
