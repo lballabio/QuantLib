@@ -31,7 +31,7 @@ namespace QuantLib {
 
     //! Randomized (random shift) low-discrepancy sequence
     /*! Random-shifts a uniform low-discrepancy sequence of dimension
-        \f$ N \f$ by adding (modulo 1 component-wise) a pseudo-random
+        \f$ N \f$ by adding (modulo 1 for each coordinate) a pseudo-random
         uniform deviate in \f$ (0, 1)^N. \f$
         It is used for implementing Randomized Quasi Monte Carlo.
 
