@@ -11,6 +11,7 @@ EXTRA_DIST=Authors.txt \
 	QuantLib.dsp \
 	QuantLib.dsw \
 	QuantLib.mak \
+	QuantLib.nsi \
 	QuantLib.prj \
 	QuantLib.prj.exp \
 	Readme.txt \

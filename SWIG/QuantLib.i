@@ -26,6 +26,9 @@
     $Id$
     $Source$
     $Log$
+    Revision 1.42  2001/04/18 13:38:53  nando
+    QuantLib.nsi was missing from distribution
+
     Revision 1.41  2001/04/12 15:52:33  lballabio
     Rubified interpolation (and reworked it in Python too)
 
@@ -53,9 +56,6 @@
 
 %{
 #include "ql/quantlib.hpp"
-%}
-
-%{
 using QuantLib::Error;
 using QuantLib::IndexError;
 %}
