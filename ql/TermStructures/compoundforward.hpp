@@ -39,8 +39,7 @@ namespace QuantLib {
         class CompoundForward : public DiscountStructure {
           public:
           // constructor
-            CompoundForward(const Date& todaysDate,
-                            const Date& settlementDate,
+            CompoundForward(const Date& settlementDate,
                             const Calendar& calendar,
                             const std::vector<Date>& inpDates,
                             const std::vector<Rate>& inpFwdRates,
@@ -48,8 +47,7 @@ namespace QuantLib {
                             const int compoundFrequency,
                             const DayCounter& dayCounter);
 
-            CompoundForward(const Date& todaysDate,
-                            const Date& settlementDate,
+            CompoundForward(const Date& settlementDate,
                             const Calendar& calendar,
                             const std::vector<std::string>& inpPeriods,
                             const std::vector<Rate>& inpFwdRates,
@@ -57,8 +55,7 @@ namespace QuantLib {
                             const int compoundFrequency,
                             const DayCounter& dayCounter);
 
-            CompoundForward(const Date& todaysDate,
-                            const Date& settlementDate,
+            CompoundForward(const Date& settlementDate,
                             const Calendar& calendar,
                             const std::vector<Period>& inpPeriods,
                             const std::vector<Rate>& inpFwdRates,
@@ -68,7 +65,6 @@ namespace QuantLib {
 
             DayCounter dayCounter() const;
             Calendar calendar() const;
-            Date todaysDate() const {return todaysDate_; }
             Date settlementDate() const;
             RollingConvention roll() const;
             int compoundFrequency() const;
@@ -85,7 +81,7 @@ namespace QuantLib {
             int referenceNode(Time t, bool extrapolate) const;
             void bootstrap() const;
             // data members
-            Date todaysDate_, settlementDate_;
+            Date settlementDate_;
             Calendar calendar_;
             int settlementDays_;
             RollingConvention roll_;

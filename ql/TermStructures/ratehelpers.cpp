@@ -90,7 +90,7 @@ namespace QuantLib {
         void DepositRateHelper::setTermStructure(TermStructure* t) {
             RateHelper::setTermStructure(t);
             settlement_ = calendar_.advance(
-                termStructure_->todaysDate(),settlementDays_,Days);
+                termStructure_->settlementDate(),settlementDays_,Days);
             maturity_ = calendar_.advance(
                 settlement_,n_,units_,convention_);
             yearFraction_ = dayCounter_.yearFraction(settlement_,maturity_);
@@ -140,7 +140,7 @@ namespace QuantLib {
         void FraRateHelper::setTermStructure(TermStructure* t) {
             RateHelper::setTermStructure(t);
             settlement_ = calendar_.advance(
-                termStructure_->todaysDate(),settlementDays_,Days);
+                termStructure_->settlementDate(),settlementDays_,Days);
             start_ = calendar_.advance(
                 settlement_,monthsToStart_,Months,convention_);
             maturity_ = calendar_.advance(
@@ -265,7 +265,7 @@ namespace QuantLib {
                 Handle<TermStructure>(t,false),false);
             RateHelper::setTermStructure(t);
             settlement_ = calendar_.advance(
-                termStructure_->todaysDate(),settlementDays_,Days);
+                termStructure_->settlementDate(),settlementDays_,Days);
             // dummy Libor index with curve/swap arguments
             Handle<Xibor> dummyIndex(new Xibor("dummy",
                 12/floatingFrequency_,Months,settlementDays_,

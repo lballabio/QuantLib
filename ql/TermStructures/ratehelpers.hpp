@@ -81,8 +81,8 @@ namespace QuantLib {
 
 
         //! Deposit rate
-        /*! \warning This class assumes that today's date does not change
-            between calls of setTermStructure().
+        /*! \warning This class assumes that the settlement date
+                     does not change between calls of setTermStructure().
         */
         class DepositRateHelper : public RateHelper {
           public:
@@ -115,8 +115,8 @@ namespace QuantLib {
 
 
         //! Forward rate agreement
-        /*! \warning This class assumes that today's date does not change
-            between calls of setTermStructure().
+        /*! \warning This class assumes that the settlement date
+                     does not change between calls of setTermStructure().
 
             \todo convexity adjustment should be implemented.
         */
@@ -151,8 +151,8 @@ namespace QuantLib {
 
 
         //! Interest Rate Futures
-        /*! \warning This class assumes that today's date does not change
-            between calls of setTermStructure().
+        /*! \warning This class assumes that the settlement date
+                     does not change between calls of setTermStructure().
         */
         class FuturesRateHelper : public RateHelper {
           public:
@@ -186,9 +186,8 @@ namespace QuantLib {
 
 
         //! swap rate
-        /*! \warning This class assumes that today's date does not change
-            between calls of setTermStructure().
-
+        /*! \warning This class assumes that the settlement date
+                     does not change between calls of setTermStructure().
         */
         class SwapRateHelper : public RateHelper {
           public:

@@ -45,7 +45,6 @@ namespace QuantLib {
             //! \name TermStructure interface
             //@{
             DayCounter dayCounter() const;
-            Date todaysDate() const;
             Date settlementDate() const;
             Date maxDate() const;
             Time maxTime() const;
@@ -77,10 +76,6 @@ namespace QuantLib {
 
         inline DayCounter ForwardSpreadedTermStructure::dayCounter() const {
             return originalCurve_->dayCounter();
-        }
-
-        inline Date ForwardSpreadedTermStructure::todaysDate() const {
-            return originalCurve_->todaysDate();
         }
 
         inline Date ForwardSpreadedTermStructure::settlementDate() const {

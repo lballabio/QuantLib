@@ -41,12 +41,10 @@ namespace QuantLib {
                                      public Patterns::Observer {
           public:
             ImpliedTermStructure(const RelinkableHandle<TermStructure>&,
-                                 const Date& newTodaysDate,
                                  const Date& newSettlementDate);
             //! \name TermStructure interface
             //@{
             DayCounter dayCounter() const;
-            Date todaysDate() const;
             Date settlementDate() const;
             Date maxDate() const;
             Time maxTime() const;
@@ -60,25 +58,20 @@ namespace QuantLib {
             DiscountFactor discountImpl(Time, bool extrapolate = false) const;
           private:
             RelinkableHandle<TermStructure> originalCurve_;
-            Date newTodaysDate_, newSettlementDate_;
+            Date newSettlementDate_;
         };
 
 
 
         inline ImpliedTermStructure::ImpliedTermStructure(
             const RelinkableHandle<TermStructure>& h,
-            const Date& newTodaysDate, const Date& newSettlementDate)
-        : originalCurve_(h), newTodaysDate_(newTodaysDate),
-          newSettlementDate_(newSettlementDate) {
+            const Date& newSettlementDate)
+        : originalCurve_(h), newSettlementDate_(newSettlementDate) {
             registerWith(originalCurve_);
         }
 
         inline DayCounter ImpliedTermStructure::dayCounter() const {
             return originalCurve_->dayCounter();
-        }
-
-        inline Date ImpliedTermStructure::todaysDate() const {
-            return newTodaysDate_;
         }
 
         inline Date ImpliedTermStructure::settlementDate() const {

@@ -33,15 +33,14 @@ namespace QuantLib {
 
     namespace TermStructures {
 
-        CompoundForward::CompoundForward(const Date  & todaysDate,
-                                         const Date  & settlementDate,
+        CompoundForward::CompoundForward(const Date  & settlementDate,
                                          const Calendar& calendar,
                                          const std::vector < Date > &dates,
                                          const std::vector < Rate > &forwards,
                                          const RollingConvention roll,
                                          const int compoundFrequency,
                                          const DayCounter & dayCounter)
-        : todaysDate_(todaysDate), settlementDate_(settlementDate),
+        : settlementDate_(settlementDate),
           calendar_(calendar), roll_(roll), 
           compoundFrequency_(compoundFrequency), dayCounter_(dayCounter),
           needsBootstrap_(true), inputDates_(dates),
@@ -57,7 +56,6 @@ namespace QuantLib {
         }
 
         CompoundForward::CompoundForward(
-                                 const Date  & todaysDate,
                                  const Date  & settlementDate,
                                  const Calendar& calendar,
                                  const std::vector<std::string>& identifiers,
@@ -65,7 +63,7 @@ namespace QuantLib {
                                  const RollingConvention roll,
                                  const int compoundFrequency,
                                  const DayCounter& dayCounter)
-        : todaysDate_(todaysDate), settlementDate_(settlementDate),
+        : settlementDate_(settlementDate),
           calendar_(calendar), roll_(roll), 
           compoundFrequency_(compoundFrequency), dayCounter_(dayCounter),
           needsBootstrap_(true), forwards_(forwards) {
@@ -86,7 +84,6 @@ namespace QuantLib {
         }
 
         CompoundForward::CompoundForward(
-                                      const Date  & todaysDate,
                                       const Date  & settlementDate,
                                       const Calendar& calendar,
                                       const std::vector<Period>& inpPeriods,
@@ -94,7 +91,7 @@ namespace QuantLib {
                                       const RollingConvention roll,
                                       const int compoundFrequency,
                                       const DayCounter& dayCounter)
-        : todaysDate_(todaysDate), settlementDate_(settlementDate),
+        : settlementDate_(settlementDate),
           calendar_(calendar), roll_(roll), 
           compoundFrequency_(compoundFrequency), dayCounter_(dayCounter),
           needsBootstrap_(true), forwards_(forwards)  {

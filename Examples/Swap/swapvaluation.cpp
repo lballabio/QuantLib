@@ -46,16 +46,14 @@ int main(int argc, char* argv[])
 {
     try {
         Calendar calendar = TARGET();
-        int settlementDays = 2;
-        int fixingDays = 2;
+        int settlementDays2 = 0;
+        int fixingDays2 = 2;
 
         /*********************
          ***  MARKET DATA  ***
          *********************/
 
-        Date todaysDate(6, November, 2001);
-        Date settlementDate = calendar.advance(todaysDate,fixingDays, Days,
-            Following);
+        Date settlementDate(8, November, 2001);
 
         // deposits
         double d1wQuote=0.0382;
@@ -98,22 +96,22 @@ int main(int argc, char* argv[])
         DayCounter depositDayCounter = Actual360();
 
         Handle<RateHelper> d1w(new DepositRateHelper(
-            d1wQuote, settlementDays,
+            d1wQuote, settlementDays2,
             1, Weeks, calendar, ModifiedFollowing, depositDayCounter));
         Handle<RateHelper> d1m(new DepositRateHelper(
-            d1mQuote, settlementDays,
+            d1mQuote, settlementDays2,
             1, Months, calendar, ModifiedFollowing, depositDayCounter));
         Handle<RateHelper> d3m(new DepositRateHelper(
-            d3mQuote, settlementDays,
+            d3mQuote, settlementDays2,
             3, Months, calendar, ModifiedFollowing, depositDayCounter));
         Handle<RateHelper> d6m(new DepositRateHelper(
-            d6mQuote, settlementDays,
+            d6mQuote, settlementDays2,
             6, Months, calendar, ModifiedFollowing, depositDayCounter));
         Handle<RateHelper> d9m(new DepositRateHelper(
-            d9mQuote, settlementDays,
+            d9mQuote, settlementDays2,
             9, Months, calendar, ModifiedFollowing, depositDayCounter));
         Handle<RateHelper> d1y(new DepositRateHelper(
-            d1yQuote, settlementDays,
+            d1yQuote, settlementDays2,
             1, Years, calendar, ModifiedFollowing, depositDayCounter));
 
         // setup swaps
@@ -123,27 +121,27 @@ int main(int argc, char* argv[])
         int swFloatingLegFrequency = 2;
 
         Handle<RateHelper> s2y(new SwapRateHelper(
-            s2yQuote, settlementDays,
+            s2yQuote, settlementDays2,
             2, Years, calendar, ModifiedFollowing, swFixedLegFrequency,
             swFixedLegIsAdjusted, swFixedLegDayCounter,
             swFloatingLegFrequency));
         Handle<RateHelper> s3y(new SwapRateHelper(
-            s3yQuote, settlementDays,
+            s3yQuote, settlementDays2,
             3, Years, calendar, ModifiedFollowing, swFixedLegFrequency,
             swFixedLegIsAdjusted, swFixedLegDayCounter,
             swFloatingLegFrequency));
         Handle<RateHelper> s5y(new SwapRateHelper(
-            s5yQuote, settlementDays,
+            s5yQuote, settlementDays2,
             5, Years, calendar, ModifiedFollowing, swFixedLegFrequency,
             swFixedLegIsAdjusted, swFixedLegDayCounter,
             swFloatingLegFrequency));
         Handle<RateHelper> s10y(new SwapRateHelper(
-            s10yQuote, settlementDays,
+            s10yQuote, settlementDays2,
             10, Years, calendar, ModifiedFollowing, swFixedLegFrequency,
             swFixedLegIsAdjusted, swFixedLegDayCounter,
             swFloatingLegFrequency));
         Handle<RateHelper> s15y(new SwapRateHelper(
-            s15yQuote, settlementDays,
+            s15yQuote, settlementDays2,
             15, Years, calendar, ModifiedFollowing, swFixedLegFrequency,
             swFixedLegIsAdjusted, swFixedLegDayCounter,
             swFloatingLegFrequency));
@@ -172,7 +170,7 @@ int main(int argc, char* argv[])
         depoSwapInstruments.push_back(s10y);
         depoSwapInstruments.push_back(s15y);
         Handle<TermStructure> depoSwapTermStructure(new
-            PiecewiseFlatForward(todaysDate, settlementDate,
+            PiecewiseFlatForward(settlementDate,
             depoSwapInstruments, termStructureDayCounter));
 
 
@@ -188,7 +186,7 @@ int main(int argc, char* argv[])
 
 
         // spot start
-        Date spotDate = calendar.advance(todaysDate, settlementDays, Days,
+        Date spotDate = calendar.advance(settlementDate, settlementDays2, Days,
             Following);
         // constant nominal 1,000,000 Euro
         double nominal = 1000000.0;
@@ -210,14 +208,14 @@ int main(int argc, char* argv[])
         SimpleSwap spot5YearSwap(payFixedRate, spotDate, lenghtInYears,
             Years, calendar, roll, nominal, fixedLegFrequency, fixedRate,
             fixedLegIsAdjusted, fixedLegDayCounter, floatingLegFrequency,
-            euriborIndex, fixingDays, spread,
+            euriborIndex, fixingDays2, spread,
             discountingTermStructure); // using the discounting curve
         SimpleSwap oneYearForward5YearSwap(payFixedRate,
             calendar.advance(spotDate, 1, Years, ModifiedFollowing),
             lenghtInYears, Years,
             calendar, roll, nominal, fixedLegFrequency, fixedRate,
             fixedLegIsAdjusted, fixedLegDayCounter, floatingLegFrequency,
-            euriborIndex, fixingDays, spread,
+            euriborIndex, fixingDays2, spread,
             discountingTermStructure); // using the discounting curve
 
 
@@ -336,47 +334,47 @@ int main(int argc, char* argv[])
 
         // setup deposits
         d1w =Handle<RateHelper>(new DepositRateHelper(
-            RelinkableHandle<MarketElement>(d1wRate), settlementDays,
+            RelinkableHandle<MarketElement>(d1wRate), settlementDays2,
             1, Weeks, calendar, ModifiedFollowing, depositDayCounter));
         d1m=Handle<RateHelper>(new DepositRateHelper(
-            RelinkableHandle<MarketElement>(d1mRate), settlementDays,
+            RelinkableHandle<MarketElement>(d1mRate), settlementDays2,
             1, Months, calendar, ModifiedFollowing, depositDayCounter));
         d3m=Handle<RateHelper>(new DepositRateHelper(
-            RelinkableHandle<MarketElement>(d3mRate), settlementDays,
+            RelinkableHandle<MarketElement>(d3mRate), settlementDays2,
             3, Months, calendar, ModifiedFollowing, depositDayCounter));
         d6m=Handle<RateHelper>(new DepositRateHelper(
-            RelinkableHandle<MarketElement>(d6mRate), settlementDays,
+            RelinkableHandle<MarketElement>(d6mRate), settlementDays2,
             6, Months, calendar, ModifiedFollowing, depositDayCounter));
         d9m=Handle<RateHelper>(new DepositRateHelper(
-            RelinkableHandle<MarketElement>(d9mRate), settlementDays,
+            RelinkableHandle<MarketElement>(d9mRate), settlementDays2,
             9, Months, calendar, ModifiedFollowing, depositDayCounter));
         d1y=Handle<RateHelper>(new DepositRateHelper(
-            RelinkableHandle<MarketElement>(d1yRate), settlementDays,
+            RelinkableHandle<MarketElement>(d1yRate), settlementDays2,
             1, Years, calendar, ModifiedFollowing, depositDayCounter));
 
         // setup swaps
         s2y=Handle<RateHelper>(new SwapRateHelper(
-            RelinkableHandle<MarketElement>(s2yRate), settlementDays,
+            RelinkableHandle<MarketElement>(s2yRate), settlementDays2,
             2, Years, calendar, ModifiedFollowing, swFixedLegFrequency,
             swFixedLegIsAdjusted, swFixedLegDayCounter,
             swFloatingLegFrequency));
         s3y=Handle<RateHelper>(new SwapRateHelper(
-            RelinkableHandle<MarketElement>(s3yRate), settlementDays,
+            RelinkableHandle<MarketElement>(s3yRate), settlementDays2,
             3, Years, calendar, ModifiedFollowing, swFixedLegFrequency,
             swFixedLegIsAdjusted, swFixedLegDayCounter,
             swFloatingLegFrequency));
         s5y=Handle<RateHelper>(new SwapRateHelper(
-            RelinkableHandle<MarketElement>(s5yRate), settlementDays,
+            RelinkableHandle<MarketElement>(s5yRate), settlementDays2,
             5, Years, calendar, ModifiedFollowing, swFixedLegFrequency,
             swFixedLegIsAdjusted, swFixedLegDayCounter,
             swFloatingLegFrequency));
         s10y=Handle<RateHelper>(new SwapRateHelper(
-            RelinkableHandle<MarketElement>(s10yRate), settlementDays,
+            RelinkableHandle<MarketElement>(s10yRate), settlementDays2,
             10, Years, calendar, ModifiedFollowing, swFixedLegFrequency,
             swFixedLegIsAdjusted, swFixedLegDayCounter,
             swFloatingLegFrequency));
         s15y=Handle<RateHelper>(new SwapRateHelper(
-            RelinkableHandle<MarketElement>(s15yRate), settlementDays,
+            RelinkableHandle<MarketElement>(s15yRate), settlementDays2,
             15, Years, calendar, ModifiedFollowing, swFixedLegFrequency,
             swFixedLegIsAdjusted, swFixedLegDayCounter,
             swFloatingLegFrequency));
@@ -387,15 +385,15 @@ int main(int argc, char* argv[])
         // setup FRAs
         Handle<RateHelper> fra3x6(new FraRateHelper(
             RelinkableHandle<MarketElement>(fra3x6Rate),
-            settlementDays, 3, 6, calendar, ModifiedFollowing,
+            settlementDays2, 3, 6, calendar, ModifiedFollowing,
             depositDayCounter));
         Handle<RateHelper> fra6x9(new FraRateHelper(
             RelinkableHandle<MarketElement>(fra6x9Rate),
-            settlementDays, 6, 9, calendar, ModifiedFollowing,
+            settlementDays2, 6, 9, calendar, ModifiedFollowing,
             depositDayCounter));
         Handle<RateHelper> fra6x12(new FraRateHelper(
             RelinkableHandle<MarketElement>(fra6x12Rate),
-            settlementDays, 6, 12, calendar, ModifiedFollowing,
+            settlementDays2, 6, 12, calendar, ModifiedFollowing,
             depositDayCounter));
 
         // setup futures
@@ -403,42 +401,42 @@ int main(int argc, char* argv[])
         Handle<RateHelper> fut1(new FuturesRateHelper(
             RelinkableHandle<MarketElement>(fut1Price),
             Date(19, December, 2001),
-            settlementDays, futMonths, calendar, ModifiedFollowing,
+            settlementDays2, futMonths, calendar, ModifiedFollowing,
             depositDayCounter));
         Handle<RateHelper> fut2(new FuturesRateHelper(
             RelinkableHandle<MarketElement>(fut1Price),
             Date(20, March, 2002),
-            settlementDays, futMonths, calendar, ModifiedFollowing,
+            settlementDays2, futMonths, calendar, ModifiedFollowing,
             depositDayCounter));
         Handle<RateHelper> fut3(new FuturesRateHelper(
             RelinkableHandle<MarketElement>(fut1Price),
             Date(19, June, 2002),
-            settlementDays, futMonths, calendar, ModifiedFollowing,
+            settlementDays2, futMonths, calendar, ModifiedFollowing,
             depositDayCounter));
         Handle<RateHelper> fut4(new FuturesRateHelper(
             RelinkableHandle<MarketElement>(fut1Price),
             Date(18, September, 2002),
-            settlementDays, futMonths, calendar, ModifiedFollowing,
+            settlementDays2, futMonths, calendar, ModifiedFollowing,
             depositDayCounter));
         Handle<RateHelper> fut5(new FuturesRateHelper(
             RelinkableHandle<MarketElement>(fut1Price),
             Date(18, December, 2002),
-            settlementDays, futMonths, calendar, ModifiedFollowing,
+            settlementDays2, futMonths, calendar, ModifiedFollowing,
             depositDayCounter));
         Handle<RateHelper> fut6(new FuturesRateHelper(
             RelinkableHandle<MarketElement>(fut1Price),
             Date(19, March, 2003),
-            settlementDays, futMonths, calendar, ModifiedFollowing,
+            settlementDays2, futMonths, calendar, ModifiedFollowing,
             depositDayCounter));
         Handle<RateHelper> fut7(new FuturesRateHelper(
             RelinkableHandle<MarketElement>(fut1Price),
             Date(18, June, 2003),
-            settlementDays, futMonths, calendar, ModifiedFollowing,
+            settlementDays2, futMonths, calendar, ModifiedFollowing,
             depositDayCounter));
         Handle<RateHelper> fut8(new FuturesRateHelper(
             RelinkableHandle<MarketElement>(fut1Price),
             Date(17, September, 2003),
-            settlementDays, futMonths, calendar, ModifiedFollowing,
+            settlementDays2, futMonths, calendar, ModifiedFollowing,
             depositDayCounter));
 
 
@@ -467,7 +465,7 @@ int main(int argc, char* argv[])
         depoFutSwapInstruments.push_back(s10y);
         depoFutSwapInstruments.push_back(s15y);
         Handle<TermStructure> depoFutSwapTermStructure(new
-            PiecewiseFlatForward(todaysDate, settlementDate,
+            PiecewiseFlatForward(settlementDate,
             depoFutSwapInstruments, termStructureDayCounter));
 
 
@@ -486,7 +484,7 @@ int main(int argc, char* argv[])
         depoFRASwapInstruments.push_back(s10y);
         depoFRASwapInstruments.push_back(s15y);
         Handle<TermStructure> depoFRASwapTermStructure(new
-            PiecewiseFlatForward(todaysDate, settlementDate,
+            PiecewiseFlatForward(settlementDate,
             depoFRASwapInstruments, termStructureDayCounter));
 
 
