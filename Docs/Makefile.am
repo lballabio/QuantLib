@@ -60,6 +60,8 @@ tex-files: docs-html
 	$(SED) -e "/Page Index/d" \
 	       -e "/input{pages}/d" \
 	       -e "/Page Documentation/d" \
+	       -e "/input{hierarchy}/d" \
+	       -e "/Hierarchical Index/d" \
 	       -e "64,$$ s/input{index}/ /" \
 	       -e "64,$$ s/include{index}/ /" \
 	       -e "64,$$ s/input{overview}/ /" \

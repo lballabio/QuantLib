@@ -69,9 +69,17 @@ namespace QuantLib {
         template <class Iterator>
         History(const Date& firstDate, const Date& lastDate,
             Iterator begin, Iterator end)
-        : firstDate_(firstDate), lastDate_(lastDate), values_(begin,end) {
-            QL_REQUIRE(lastDate >= firstDate, "invalid date range for history");
-            QL_ENSURE(values_.size() == static_cast <unsigned int>(lastDate-firstDate+1),
+        : firstDate_(firstDate), lastDate_(lastDate)
+        #if defined(QL_FULL_ITERATOR_SUPPORT)
+        , values_(begin,end) {
+        #else
+        {
+            while (begin != end)
+                values_.push_back(*(begin++));
+        #endif
+            QL_REQUIRE(lastDate >= firstDate, 
+                "invalid date range for history");
+            QL_ENSURE(values_.size() == (unsigned int)(lastDate-firstDate+1),
                 "history size incompatible with date range");
         }
         History(const Date& firstDate, const std::vector<double>& values) 
