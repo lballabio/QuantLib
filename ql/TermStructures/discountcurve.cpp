@@ -33,8 +33,8 @@ namespace QuantLib {
             const DayCounter & dayCounter, Currency currency,
             const std::vector < Date > &dates,
             const std::vector < DiscountFactor > &discounts)
-        : todaysDate_(todaysDate), dayCounter_(dayCounter),
-          currency_(currency), dates_(dates), discounts_(discounts) {
+        : currency_(currency), dayCounter_(dayCounter),
+          todaysDate_(todaysDate), dates_(dates), discounts_(discounts) {
             
             QL_REQUIRE(dates_.size()>1, "DiscountCurve::DiscountCurve : "
                 "too few dates");
