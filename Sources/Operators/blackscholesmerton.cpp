@@ -16,8 +16,8 @@ BSMOperator::BSMOperator(int size, double dx, double r, double q, double sigma)
 	double sigma2 = sigma*sigma;
 	double nu = r-q-sigma2/2;
 	double pd = -(sigma2/dx-nu)/(2*dx);
-	double pm = sigma2/(dx*dx)-r;
 	double pu = -(sigma2/dx+nu)/(2*dx);
+	double pm = sigma2/(dx*dx)+r;
 	setMidRows(pd,pm,pu);
 }
 
