@@ -1,4 +1,13 @@
-add Edgeworth expansion
+- why use correlation Matrix rather than covariance?
+- revise bicubicspline interpolation
+- revise finite difference with dividend (interpolation)
+- improve spline with minimal d2 discontinuity and convexity preserving algo
+- should Path include t=0.0 point? As alternative revise all path dependant
+  path pricer
+- report errors to Haug:
+    - case 3, 4 of binary barriers
+    - jump diffusion values (termination criterium)
+- add Edgeworth expansion
 american at-expiry greeks
 american at-hit greeks to be completed
 review MC engine for american options
