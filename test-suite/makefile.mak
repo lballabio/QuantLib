@@ -31,6 +31,7 @@ QL_TESTS = \
     daycounters.obj$(_D) \
     distributions.obj$(_D) \
     europeanoption.obj$(_D) \
+    factorial.obj$(_D) \
     instruments.obj$(_D) \
     integrals.obj$(_D) \
     lowdiscrepancysequences.obj$(_D) \

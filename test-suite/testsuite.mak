@@ -73,6 +73,8 @@ CLEAN :
 	-@erase "$(INTDIR)\distributions.sbr"
 	-@erase "$(INTDIR)\europeanoption.obj"
 	-@erase "$(INTDIR)\europeanoption.sbr"
+	-@erase "$(INTDIR)\factorial.obj"
+	-@erase "$(INTDIR)\factorial.sbr"
 	-@erase "$(INTDIR)\instruments.obj"
 	-@erase "$(INTDIR)\instruments.sbr"
 	-@erase "$(INTDIR)\integrals.obj"
@@ -128,6 +130,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\daycounters.sbr" \
 	"$(INTDIR)\distributions.sbr" \
 	"$(INTDIR)\europeanoption.sbr" \
+	"$(INTDIR)\factorial.sbr" \
 	"$(INTDIR)\instruments.sbr" \
 	"$(INTDIR)\integrals.sbr" \
 	"$(INTDIR)\lowdiscrepancysequences.sbr" \
@@ -164,6 +167,7 @@ LINK32_OBJS= \
 	"$(INTDIR)\daycounters.obj" \
 	"$(INTDIR)\distributions.obj" \
 	"$(INTDIR)\europeanoption.obj" \
+	"$(INTDIR)\factorial.obj" \
 	"$(INTDIR)\instruments.obj" \
 	"$(INTDIR)\integrals.obj" \
 	"$(INTDIR)\lowdiscrepancysequences.obj" \
@@ -231,6 +235,8 @@ CLEAN :
 	-@erase "$(INTDIR)\distributions.sbr"
 	-@erase "$(INTDIR)\europeanoption.obj"
 	-@erase "$(INTDIR)\europeanoption.sbr"
+	-@erase "$(INTDIR)\factorial.obj"
+	-@erase "$(INTDIR)\factorial.sbr"
 	-@erase "$(INTDIR)\instruments.obj"
 	-@erase "$(INTDIR)\instruments.sbr"
 	-@erase "$(INTDIR)\integrals.obj"
@@ -289,6 +295,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\daycounters.sbr" \
 	"$(INTDIR)\distributions.sbr" \
 	"$(INTDIR)\europeanoption.sbr" \
+	"$(INTDIR)\factorial.sbr" \
 	"$(INTDIR)\instruments.sbr" \
 	"$(INTDIR)\integrals.sbr" \
 	"$(INTDIR)\lowdiscrepancysequences.sbr" \
@@ -325,6 +332,7 @@ LINK32_OBJS= \
 	"$(INTDIR)\daycounters.obj" \
 	"$(INTDIR)\distributions.obj" \
 	"$(INTDIR)\europeanoption.obj" \
+	"$(INTDIR)\factorial.obj" \
 	"$(INTDIR)\instruments.obj" \
 	"$(INTDIR)\integrals.obj" \
 	"$(INTDIR)\lowdiscrepancysequences.obj" \
@@ -392,6 +400,8 @@ CLEAN :
 	-@erase "$(INTDIR)\distributions.sbr"
 	-@erase "$(INTDIR)\europeanoption.obj"
 	-@erase "$(INTDIR)\europeanoption.sbr"
+	-@erase "$(INTDIR)\factorial.obj"
+	-@erase "$(INTDIR)\factorial.sbr"
 	-@erase "$(INTDIR)\instruments.obj"
 	-@erase "$(INTDIR)\instruments.sbr"
 	-@erase "$(INTDIR)\integrals.obj"
@@ -447,6 +457,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\daycounters.sbr" \
 	"$(INTDIR)\distributions.sbr" \
 	"$(INTDIR)\europeanoption.sbr" \
+	"$(INTDIR)\factorial.sbr" \
 	"$(INTDIR)\instruments.sbr" \
 	"$(INTDIR)\integrals.sbr" \
 	"$(INTDIR)\lowdiscrepancysequences.sbr" \
@@ -483,6 +494,7 @@ LINK32_OBJS= \
 	"$(INTDIR)\daycounters.obj" \
 	"$(INTDIR)\distributions.obj" \
 	"$(INTDIR)\europeanoption.obj" \
+	"$(INTDIR)\factorial.obj" \
 	"$(INTDIR)\instruments.obj" \
 	"$(INTDIR)\integrals.obj" \
 	"$(INTDIR)\lowdiscrepancysequences.obj" \
@@ -550,6 +562,8 @@ CLEAN :
 	-@erase "$(INTDIR)\distributions.sbr"
 	-@erase "$(INTDIR)\europeanoption.obj"
 	-@erase "$(INTDIR)\europeanoption.sbr"
+	-@erase "$(INTDIR)\factorial.obj"
+	-@erase "$(INTDIR)\factorial.sbr"
 	-@erase "$(INTDIR)\instruments.obj"
 	-@erase "$(INTDIR)\instruments.sbr"
 	-@erase "$(INTDIR)\integrals.obj"
@@ -608,6 +622,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\daycounters.sbr" \
 	"$(INTDIR)\distributions.sbr" \
 	"$(INTDIR)\europeanoption.sbr" \
+	"$(INTDIR)\factorial.sbr" \
 	"$(INTDIR)\instruments.sbr" \
 	"$(INTDIR)\integrals.sbr" \
 	"$(INTDIR)\lowdiscrepancysequences.sbr" \
@@ -644,6 +659,7 @@ LINK32_OBJS= \
 	"$(INTDIR)\daycounters.obj" \
 	"$(INTDIR)\distributions.obj" \
 	"$(INTDIR)\europeanoption.obj" \
+	"$(INTDIR)\factorial.obj" \
 	"$(INTDIR)\instruments.obj" \
 	"$(INTDIR)\integrals.obj" \
 	"$(INTDIR)\lowdiscrepancysequences.obj" \
@@ -759,6 +775,11 @@ SOURCE=.\distributions.cpp
 SOURCE=.\europeanoption.cpp
 
 "$(INTDIR)\europeanoption.obj"	"$(INTDIR)\europeanoption.sbr" : $(SOURCE) "$(INTDIR)"
+
+
+SOURCE=.\factorial.cpp
+
+"$(INTDIR)\factorial.obj"	"$(INTDIR)\factorial.sbr" : $(SOURCE) "$(INTDIR)"
 
 
 SOURCE=.\instruments.cpp

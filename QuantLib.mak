@@ -160,6 +160,8 @@ CLEAN :
 	-@erase "$(INTDIR)\extendedcoxingersollross.sbr"
 	-@erase "$(INTDIR)\extendeddiscountcurve.obj"
 	-@erase "$(INTDIR)\extendeddiscountcurve.sbr"
+	-@erase "$(INTDIR)\factorial.obj"
+	-@erase "$(INTDIR)\factorial.sbr"
 	-@erase "$(INTDIR)\fdbermudanoption.obj"
 	-@erase "$(INTDIR)\fdbermudanoption.sbr"
 	-@erase "$(INTDIR)\fdbsmoption.obj"
@@ -426,6 +428,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\chisquaredistribution.sbr" \
 	"$(INTDIR)\discrepancystatistics.sbr" \
 	"$(INTDIR)\errorfunction.sbr" \
+	"$(INTDIR)\factorial.sbr" \
 	"$(INTDIR)\gammadistribution.sbr" \
 	"$(INTDIR)\generalstatistics.sbr" \
 	"$(INTDIR)\incrementalstatistics.sbr" \
@@ -594,6 +597,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\chisquaredistribution.obj" \
 	"$(INTDIR)\discrepancystatistics.obj" \
 	"$(INTDIR)\errorfunction.obj" \
+	"$(INTDIR)\factorial.obj" \
 	"$(INTDIR)\gammadistribution.obj" \
 	"$(INTDIR)\generalstatistics.obj" \
 	"$(INTDIR)\incrementalstatistics.obj" \
@@ -837,6 +841,8 @@ CLEAN :
 	-@erase "$(INTDIR)\extendedcoxingersollross.sbr"
 	-@erase "$(INTDIR)\extendeddiscountcurve.obj"
 	-@erase "$(INTDIR)\extendeddiscountcurve.sbr"
+	-@erase "$(INTDIR)\factorial.obj"
+	-@erase "$(INTDIR)\factorial.sbr"
 	-@erase "$(INTDIR)\fdbermudanoption.obj"
 	-@erase "$(INTDIR)\fdbermudanoption.sbr"
 	-@erase "$(INTDIR)\fdbsmoption.obj"
@@ -1104,6 +1110,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\chisquaredistribution.sbr" \
 	"$(INTDIR)\discrepancystatistics.sbr" \
 	"$(INTDIR)\errorfunction.sbr" \
+	"$(INTDIR)\factorial.sbr" \
 	"$(INTDIR)\gammadistribution.sbr" \
 	"$(INTDIR)\generalstatistics.sbr" \
 	"$(INTDIR)\incrementalstatistics.sbr" \
@@ -1272,6 +1279,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\chisquaredistribution.obj" \
 	"$(INTDIR)\discrepancystatistics.obj" \
 	"$(INTDIR)\errorfunction.obj" \
+	"$(INTDIR)\factorial.obj" \
 	"$(INTDIR)\gammadistribution.obj" \
 	"$(INTDIR)\generalstatistics.obj" \
 	"$(INTDIR)\incrementalstatistics.obj" \
@@ -1515,6 +1523,8 @@ CLEAN :
 	-@erase "$(INTDIR)\extendedcoxingersollross.sbr"
 	-@erase "$(INTDIR)\extendeddiscountcurve.obj"
 	-@erase "$(INTDIR)\extendeddiscountcurve.sbr"
+	-@erase "$(INTDIR)\factorial.obj"
+	-@erase "$(INTDIR)\factorial.sbr"
 	-@erase "$(INTDIR)\fdbermudanoption.obj"
 	-@erase "$(INTDIR)\fdbermudanoption.sbr"
 	-@erase "$(INTDIR)\fdbsmoption.obj"
@@ -1781,6 +1791,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\chisquaredistribution.sbr" \
 	"$(INTDIR)\discrepancystatistics.sbr" \
 	"$(INTDIR)\errorfunction.sbr" \
+	"$(INTDIR)\factorial.sbr" \
 	"$(INTDIR)\gammadistribution.sbr" \
 	"$(INTDIR)\generalstatistics.sbr" \
 	"$(INTDIR)\incrementalstatistics.sbr" \
@@ -1949,6 +1960,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\chisquaredistribution.obj" \
 	"$(INTDIR)\discrepancystatistics.obj" \
 	"$(INTDIR)\errorfunction.obj" \
+	"$(INTDIR)\factorial.obj" \
 	"$(INTDIR)\gammadistribution.obj" \
 	"$(INTDIR)\generalstatistics.obj" \
 	"$(INTDIR)\incrementalstatistics.obj" \
@@ -2192,6 +2204,8 @@ CLEAN :
 	-@erase "$(INTDIR)\extendedcoxingersollross.sbr"
 	-@erase "$(INTDIR)\extendeddiscountcurve.obj"
 	-@erase "$(INTDIR)\extendeddiscountcurve.sbr"
+	-@erase "$(INTDIR)\factorial.obj"
+	-@erase "$(INTDIR)\factorial.sbr"
 	-@erase "$(INTDIR)\fdbermudanoption.obj"
 	-@erase "$(INTDIR)\fdbermudanoption.sbr"
 	-@erase "$(INTDIR)\fdbsmoption.obj"
@@ -2459,6 +2473,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\chisquaredistribution.sbr" \
 	"$(INTDIR)\discrepancystatistics.sbr" \
 	"$(INTDIR)\errorfunction.sbr" \
+	"$(INTDIR)\factorial.sbr" \
 	"$(INTDIR)\gammadistribution.sbr" \
 	"$(INTDIR)\generalstatistics.sbr" \
 	"$(INTDIR)\incrementalstatistics.sbr" \
@@ -2627,6 +2642,7 @@ LIB32_OBJS= \
 	"$(INTDIR)\chisquaredistribution.obj" \
 	"$(INTDIR)\discrepancystatistics.obj" \
 	"$(INTDIR)\errorfunction.obj" \
+	"$(INTDIR)\factorial.obj" \
 	"$(INTDIR)\gammadistribution.obj" \
 	"$(INTDIR)\generalstatistics.obj" \
 	"$(INTDIR)\incrementalstatistics.obj" \
@@ -3110,6 +3126,12 @@ SOURCE=.\ql\Math\discrepancystatistics.cpp
 SOURCE=.\ql\Math\errorfunction.cpp
 
 "$(INTDIR)\errorfunction.obj"	"$(INTDIR)\errorfunction.sbr" : $(SOURCE) "$(INTDIR)"
+	$(CPP) $(CPP_PROJ) $(SOURCE)
+
+
+SOURCE=.\ql\Math\factorial.cpp
+
+"$(INTDIR)\factorial.obj"	"$(INTDIR)\factorial.sbr" : $(SOURCE) "$(INTDIR)"
 	$(CPP) $(CPP_PROJ) $(SOURCE)
 
 

@@ -17,6 +17,7 @@ OBJS = \
     chisquaredistribution.obj$(_D) \
     discrepancystatistics.obj$(_D) \
     errorfunction.obj$(_D) \
+	factorial.obj$(_D) \
     gammadistribution.obj$(_D) \
     generalstatistics.obj$(_D) \
     incrementalstatistics.obj$(_D) \

@@ -9,6 +9,7 @@ QL_TESTS = barrieroption.hpp barrieroption.cpp \
            daycounters.hpp daycounters.cpp \
            distributions.hpp distributions.cpp \
            europeanoption.hpp europeanoption.cpp \
+           factorial.hpp factorial.cpp \
            instruments.hpp instruments.cpp \
            integrals.hpp integrals.cpp \
            lowdiscrepancysequences.hpp lowdiscrepancysequences.cpp \

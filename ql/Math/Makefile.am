@@ -13,6 +13,7 @@ include_HEADERS = \
 	interpolation.hpp \
 	interpolation2D.hpp \
 	interpolationtraits.hpp \
+	factorial.hpp \
 	gammadistribution.hpp \
 	gaussianstatistics.hpp \
 	generalstatistics.hpp \
@@ -40,6 +41,7 @@ libMath_la_SOURCES = \
 	chisquaredistribution.cpp \
 	discrepancystatistics.cpp \
 	errorfunction.cpp \
+	factorial.cpp \
 	gammadistribution.cpp \
 	generalstatistics.cpp \
 	incrementalstatistics.cpp \

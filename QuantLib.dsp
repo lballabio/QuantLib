@@ -779,6 +779,14 @@ SOURCE=.\ql\Math\errorfunction.hpp
 # End Source File
 # Begin Source File
 
+SOURCE=.\ql\Math\factorial.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\Math\factorial.hpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\ql\Math\functional.hpp
 # End Source File
 # Begin Source File

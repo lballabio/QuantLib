@@ -31,6 +31,7 @@
 #include "daycounters.hpp"
 #include "distributions.hpp"
 #include "europeanoption.hpp"
+#include "factorial.hpp"
 #include "instruments.hpp"
 #include "integrals.hpp"
 #include "lowdiscrepancysequences.hpp"
@@ -62,6 +63,7 @@ int main() {
     runner.addTest(DayCounterTest::suite());
     runner.addTest(new DistributionTest);
     runner.addTest(EuropeanOptionTest::suite());
+    runner.addTest(FactorialTest::suite());
     runner.addTest(InstrumentTest::suite());
     runner.addTest(IntegralTest::suite());
     runner.addTest(LDSTest::suite());
