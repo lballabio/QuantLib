@@ -25,6 +25,9 @@
 """ 
     $Source$
     $Log$
+    Revision 1.5  2001/03/02 09:02:48  marmar
+    AmericanOption replaced BSMAmericanOption
+
     Revision 1.4  2001/02/22 14:27:26  lballabio
     Implemented new test framework
 
@@ -40,7 +43,7 @@
 # Make sure that Python path contains the directory of QuantLib
 # and that of this file
 
-from QuantLib import BSMAmericanOption
+from QuantLib import AmericanOption
 from TestUnit import TestUnit
 
 def relErr(x1,x2,reference):
@@ -51,7 +54,7 @@ def relErr(x1,x2,reference):
 
 class AmericanOptionTest(TestUnit):
     def doTest(self):
-        pricer = BSMAmericanOption
+        pricer = AmericanOption
         nstp = 150
         ngrd = nstp+1
         # ranges
