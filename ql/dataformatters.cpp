@@ -97,21 +97,19 @@ namespace QuantLib {
         return DoubleFormatter::toString(rate*100,precision)+"%";
     }
 
-    std::string DateFormatter::toString(const Date& d, bool shortFormat) {
+    std::string DateFormatter::toString(const Date& d, 
+                                        DateFormatter::Format f) {
         static const std::string monthName[] = {
             "January", "February", "March", "April", "May", "June",
-            "July", "August", "September", "October", "November", "December" };
+            "July", "August", "September", "October", "November", "December" 
+        };
         std::string output;
         if (d == Date()) {
             output = "Null date";
         } else {
             int dd = d.dayOfMonth(), mm = int(d.month()), yyyy = d.year();
-            if (shortFormat) {
-                output = (mm < 10 ? "0" : "") + IntegerFormatter::toString(mm);
-                output += (dd < 10 ? "/0" : "/") +
-                    IntegerFormatter::toString(dd);
-                output += "/" + IntegerFormatter::toString(yyyy);
-            } else {
+            switch (f) {
+              case Long:
                 output = monthName[mm-1] + " ";
                 output += IntegerFormatter::toString(dd);
                 switch (dd) {
@@ -132,13 +130,30 @@ namespace QuantLib {
                     output += "th, ";
                 }
                 output += IntegerFormatter::toString(yyyy);
+                break;
+              case Short:
+                output = (mm < 10 ? "0" : "") + 
+                         IntegerFormatter::toString(mm);
+                output += (dd < 10 ? "/0" : "/") +
+                         IntegerFormatter::toString(dd);
+                output += "/" + IntegerFormatter::toString(yyyy);
+                break;
+              case ISO:
+                output = IntegerFormatter::toString(yyyy);
+                output += (mm < 10 ? "-0" : "-") + 
+                         IntegerFormatter::toString(mm);
+                output += (dd < 10 ? "-0" : "-") +
+                         IntegerFormatter::toString(dd);
+                break;
+              default:
+                throw Error("unknown date format");
             }
         }
         return output;
     }
 
     std::ostream& operator<< (std::ostream& stream, const Date& date) {
-        return stream << DateFormatter::toString(date, true);
+        return stream << DateFormatter::toString(date, DateFormatter::Short);
     }
 
     std::string CurrencyFormatter::toString(Currency c) {

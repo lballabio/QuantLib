@@ -70,13 +70,15 @@ namespace QuantLib {
         static std::string toString(double rate, int precision = 5);
     };
 
+
     //! Formats dates for output
     /*! Formatting can be in short (mm/dd/yyyy)
         or long (Month ddth, yyyy) form.
     */
     class DateFormatter {
       public:
-        static std::string toString(const Date& d, bool shortFormat = false);
+        enum Format { Long, Short, ISO };
+        static std::string toString(const Date& d, Format f = Long);
     };
 
     /*! \relates Date */
