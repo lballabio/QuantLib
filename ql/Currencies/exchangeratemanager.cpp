@@ -49,12 +49,18 @@ namespace QuantLib {
             return directLookup(source,target,date);
         } else if (source.triangulationCurrency().isValid()) {
             const Currency& link = source.triangulationCurrency();
-            return ExchangeRate::chain(directLookup(source, link, date),
-                                       lookup(link,target,date));
+            if (link == target)
+                return directLookup(source,link,date);
+            else
+                return ExchangeRate::chain(directLookup(source,link,date),
+                                           lookup(link,target,date));
         } else if (target.triangulationCurrency().isValid()) {
             const Currency& link = target.triangulationCurrency();
-            return ExchangeRate::chain(lookup(source,link,date),
-                                       directLookup(link,target,date));
+            if (source == link)
+                return directLookup(link,target,date);
+            else
+                return ExchangeRate::chain(lookup(source,link,date),
+                                           directLookup(link,target,date));
         } else {
             return smartLookup(source,target,date);
         }
