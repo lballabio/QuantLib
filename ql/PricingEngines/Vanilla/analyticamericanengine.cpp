@@ -22,12 +22,14 @@
 #include <ql/PricingEngines/Vanilla/vanillaengines.hpp>
 
 namespace QuantLib {
-/*
+
     void AnalyticAmericanEngine::calculate() const {
 
         QL_REQUIRE(arguments_.exercise->type() == Exercise::American,
                    "AnalyticAmericanEngine::calculate() : "
                    "not an American Option");
+
+/* it doesn't compile :(
 
         #if defined(HAVE_BOOST)
         Handle<AmericanExercise> ex = 
@@ -40,26 +42,26 @@ namespace QuantLib {
         QL_REQUIRE(!ex->payoffAtExpiry(),
                    "AnalyticAmericanEngine::calculate() : "
                    "payoff at expiry not handled yet");
+*/
 
         #if defined(HAVE_BOOST)
-        Handle<PlainVanillaPayoff> payoff = 
-            boost::dynamic_pointer_cast<PlainVanillaPayoff>(arguments_.payoff);
+        Handle<CashOrNothingPayoff> payoff = 
+            boost::dynamic_pointer_cast<CashOrNothingPayoff>(arguments_.payoff);
         QL_REQUIRE(payoff,
-                   "AnalyticAmericanEngine: non-plain payoff given");
+                   "AnalyticAmericanEngine: the payoff given is not Cash-Or-Nothing");
         #else
-        Handle<PlainVanillaPayoff> payoff = arguments_.payoff;
+        Handle<CashOrNothingPayoff> payoff = arguments_.payoff;
         #endif
 
-        // ::Type Type = arguments_.Type;
-        double barrier = arguments_.barrier;
-        double cashPayoff = arguments_.cashPayoff;
+        double cashPayoff = payoff->cashPayoff();
 
         double underlying = arguments_.underlying;
-//        Time maturity = arguments_.maturity;
 
         double strike = payoff->strike();
-        double vol = arguments_.volTS->blackVol(arguments_.exercise->lastDate(),
-            strike);
+        double variance = arguments_.volTS->blackVariance(
+            arguments_.exercise->lastDate(), strike);
+        double vol = arguments_.volTS->blackVol(
+            arguments_.exercise->lastDate(), strike);
 
         Rate dividendRate = arguments_.dividendTS->zeroYield(
             arguments_.exercise->lastDate());
@@ -68,6 +70,7 @@ namespace QuantLib {
             arguments_.exercise->lastDate());
 
         double vol2 = vol*vol;
+        Time maturity = QL_SQRT(variance/vol2);
         double b_temp = riskFreeRate - dividendRate - 0.5*vol2;
         double mu = b_temp/vol2;
         // numerically is this the best way to calculate the square root.
@@ -77,18 +80,18 @@ namespace QuantLib {
         double l_minus = mu - lambda;
         double root_tau = QL_SQRT (maturity);
         double root_two_pi = M_SQRT2 * M_SQRTPI;
-        double log_H_S = QL_LOG (barrier/underlying);
+        double log_H_S = QL_LOG (payoff->strike()/underlying);
         double z_temp = lambda*vol*root_tau;
         double z = (log_H_S/(vol*root_tau)) + z_temp;
         double zbar = z - 2*z_temp; 
 
-        double pow_plus = QL_POW (barrier/underlying, l_plus);
-        double pow_minus = QL_POW (barrier/underlying, l_minus);
+        double pow_plus = QL_POW (payoff->strike()/underlying, l_plus);
+        double pow_minus = QL_POW (payoff->strike()/underlying, l_minus);
 
         CumulativeNormalDistribution f;
 
         // up option, or call
-        if (arguments_.underlying < arguments_.barrier) {
+        if (arguments_.underlying < payoff->strike()) {
             double f_minus_z = f(-z);
             double f_minus_zbar = f(-zbar);
             double mod_exp_z2 = QL_EXP(-z*z/2);
@@ -140,6 +143,6 @@ namespace QuantLib {
                                            * f_zbar / vol2))); 
         }
     }
-*/
+
 }
 

@@ -13,6 +13,7 @@ EXTRA_DIST=makefile.mak
 
 libVanillaEngines_la_SOURCES = \
     americanmcengines.cpp \
+    analyticamericanengine.cpp \
     analyticeuropeanengine.cpp \
     discretizedvanillaoption.cpp \
     integralengines.cpp
