@@ -36,6 +36,9 @@ namespace QuantLib {
 
         \pre The correlation matrix must be symmetric with the diagonal
              members equal to one.
+
+        \test tested on know values and cross checked with
+              CovarianceDecomposition
     */
     template<class DataIterator>
     Disposable<Matrix> getCovariance(DataIterator volBegin,
@@ -85,6 +88,8 @@ namespace QuantLib {
         used.
 
         \pre The covariance matrix must be symmetric.
+
+        \test cross checked with getCovariance
     */
     class CovarianceDecomposition {
       public:
