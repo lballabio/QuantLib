@@ -1,6 +1,6 @@
 
 /*
- Copyright (C) 2000, 2001, 2002 RiskMap srl
+ Copyright (C) 2000, 2001, 2002 Nicolas Di Cesare
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -57,9 +57,9 @@ namespace QuantLib {
             result_type operator()(const argument_type& x) const;
 	    virtual ~CubicSpline() {}
           private:
-            // P[i](x) = y[i] + 
-            //           a[i]*(x-x[i]) + 
-            //           b[i]*(x-x[i])^2 + 
+            // P[i](x) = y[i] +
+            //           a[i]*(x-x[i]) +
+            //           b[i]*(x-x[i])^2 +
             //           c[i]*(x-x[i])^3
             std::vector<result_type> a_, b_, c_;
         };
@@ -85,11 +85,11 @@ namespace QuantLib {
                           dx02  = xBegin_[2] - xBegin_[0];
             result_type   dy01  = yBegin_[1] - yBegin_[0],
                           dy12  = yBegin_[2] - yBegin_[1];
-                          
+
             L.setFirstRow(dx01,dx02);
-            tmp[0] = ((dx01+2.0*dx02)*dx12*dy01/dx01 + 
+            tmp[0] = ((dx01+2.0*dx02)*dx12*dy01/dx01 +
                        dx01*dx01*dy12/dx12)/dx02;
-            
+
             Size i;
             for (i=1; i<n-1; i++) {
                 argument_type dxp = xBegin_[i+1] - xBegin_[i],
@@ -99,19 +99,19 @@ namespace QuantLib {
                 L.setMidRow(i, dxp, 2.0*(dxp+dxm), dxm);
                 tmp[i] = 3.0*(dxp*dym/dxm + dxm*dyp/dxp);
             }
-            
+
             argument_type dxN32 = xBegin_[n-2] - xBegin_[n-3],
                           dxN21 = xBegin_[n-1] - xBegin_[n-2],
                           dxN31 = xBegin_[n-1] - xBegin_[n-3];
             result_type   dyN32 = yBegin_[n-2] - yBegin_[n-3],
                           dyN21 = yBegin_[n-1] - yBegin_[n-2];
-            
+
             L.setLastRow(dxN31,dxN21);
-            tmp[n-1] = ((dxN21+2.0*dxN31)*dxN32*dyN21/dxN21 + 
+            tmp[n-1] = ((dxN21+2.0*dxN31)*dxN32*dyN21/dxN21 +
                          dxN21*dxN21*dyN32/dxN32)/dxN31;
-            
+
             tmp = L.solveFor(tmp);
-            
+
             for (i=0; i<n-1; i++) {
                 argument_type dx  = xBegin_[i+1]-xBegin_[i];
                 result_type   dy  = yBegin_[i+1]-yBegin_[i];
