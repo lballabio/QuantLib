@@ -30,7 +30,7 @@ namespace QuantLib {
 
         //! arguments for forward (strike-resetting) option calculation
         template <class ArgumentsType> 
-        class ForwardOptionArguments {
+        class ForwardOptionArguments : public ArgumentsType {
           public:
             ForwardOptionArguments() : moneyness(Null<double>()),
                                        resetDate(Null<Date>()) {}
