@@ -64,6 +64,7 @@ namespace QuantLib {
             //@{
             std::string name() const;
             Period tenor() const;
+            int frequency() const;
             int settlementDays() const;
             Currency currency() const;
             Calendar calendar() const;

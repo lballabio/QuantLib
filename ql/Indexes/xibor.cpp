@@ -52,6 +52,20 @@ namespace QuantLib {
             return familyName_+tenor+" "+dayCounter_.name();
         }
 
+        int Xibor::frequency() const {
+            switch (units_) {
+              case Months:
+                QL_REQUIRE(12%n_ == 0, "undefined frequency");
+                return 12/n_;
+              case Years:
+                QL_REQUIRE(n_ == 1, "undefined frequency");
+                return n_;
+              default:
+                throw Error("undefined frequency");
+            }
+            QL_DUMMY_RETURN(0)
+        }
+
         Rate Xibor::fixing(const Date& fixingDate) const {
             QL_REQUIRE(!termStructure_.isNull(),
                 "null term structure set");
