@@ -25,60 +25,12 @@
 // $Id$
 
 #include <ql/PricingEngines/quantoengines.hpp>
-#include <ql/TermStructures/quantotermstructure.hpp>
 
 using QuantLib::TermStructures::QuantoTermStructure;
 
 namespace QuantLib {
 
     namespace PricingEngines {
-
-        void QuantoVanillaAnalyticEngine::calculate() const {
-
-            originalArguments_->type = arguments_.type;
-            originalArguments_->underlying = arguments_.underlying;
-            originalArguments_->strike = arguments_.strike;
-            originalArguments_->dividendTS = 
-                RelinkableHandle<TermStructure>(
-                    Handle<TermStructure>(
-                        new QuantoTermStructure(arguments_.dividendTS,
-                                                arguments_.riskFreeTS, 
-                                                arguments_.foreignRiskFreeTS,
-                                                arguments_.volTS, 
-                                                arguments_.exchRateVolTS,
-                                                arguments_.correlation)));
-            originalArguments_->riskFreeTS = arguments_.riskFreeTS;
-            originalArguments_->volTS = arguments_.volTS;
-            originalArguments_->exercise = arguments_.exercise;
-
-            originalArguments_->validate();
-            originalEngine_->calculate();
-
-            results_.value = originalResults_->value;
-            results_.delta = originalResults_->delta;
-            results_.gamma = originalResults_->gamma;
-            results_.theta = originalResults_->theta;
-            results_.rho = originalResults_->rho +
-                originalResults_->dividendRho;
-            results_.dividendRho = originalResults_->dividendRho;
-            // exchangeRate level needed here!!!!!
-            double exchangeRateFlatVol = arguments_.exchRateVolTS->blackVol(
-                arguments_.exercise.date(), arguments_.underlying);
-            results_.vega = originalResults_->vega +
-                arguments_.correlation * exchangeRateFlatVol *
-                originalResults_->dividendRho;
-
-
-            double volatility = arguments_.volTS->blackVol(
-                arguments_.exercise.date(), arguments_.underlying);
-            results_.qvega = + arguments_.correlation
-                * arguments_.volTS->blackVol(arguments_.exercise.date(),
-                arguments_.underlying) *
-                originalResults_->dividendRho;
-            results_.qrho = - originalResults_->dividendRho;
-            results_.qlambda = exchangeRateFlatVol *
-                volatility * originalResults_->dividendRho;
-        }
 
     }
 

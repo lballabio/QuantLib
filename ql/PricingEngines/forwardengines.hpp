@@ -14,6 +14,7 @@
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
+
 /*! \file forwardengines.hpp
     \brief Forward (strike-resetting) option engines
 
@@ -27,6 +28,8 @@
 #define quantlib_forward_engines_h
 
 #include <ql/PricingEngines/vanillaengines.hpp>
+#include <ql/Volatilities/blackconstantvol.hpp>
+#include <ql/TermStructures/impliedtermstructure.hpp>
 
 namespace QuantLib {
 
@@ -68,6 +71,9 @@ namespace QuantLib {
         public:
             ForwardEngine(const Handle<GenericEngine<ArgumentsType,
                 ResultsType> >&);
+            void setOriginalArguments() const;
+            void calculate() const;
+            void getOriginalResults() const;
         protected:
             Handle<GenericEngine<ArgumentsType, ResultsType> > originalEngine_;
             ArgumentsType* originalArguments_;
@@ -88,55 +94,134 @@ namespace QuantLib {
                 originalEngine_->arguments());
         }
 
-        //! Forward vanilla engine base class
-        class ForwardVanillaEngine : public ForwardEngine<
-            VanillaOptionArguments, VanillaOptionResults> {
-        public:
-            ForwardVanillaEngine(const Handle<VanillaEngine>& vanillaEngine);
-        };
 
-        inline ForwardVanillaEngine::ForwardVanillaEngine(const
-            Handle<VanillaEngine>& vanillaEngine)
-        : ForwardEngine<VanillaOptionArguments,
-                        VanillaOptionResults    >(vanillaEngine) {
-            QL_REQUIRE(!vanillaEngine.isNull(),
-                "ForwardVanillaEngine::ForwardVanillaEngine : "
-                "null engine or wrong engine type");
+
+
+        template<class ArgumentsType, class ResultsType>
+        void ForwardEngine<ArgumentsType, ResultsType>::setOriginalArguments() const {
+
+            originalArguments_->type = arguments_.type;
+            originalArguments_->underlying = 1.0;
+            originalArguments_->strike = arguments_.moneyness;
+            originalArguments_->dividendTS = RelinkableHandle<TermStructure>(
+                Handle<TermStructure>(
+                new TermStructures::ImpliedTermStructure(
+                        arguments_.dividendTS,
+                        arguments_.resetDate, 
+                        arguments_.resetDate)));
+            originalArguments_->riskFreeTS = RelinkableHandle<TermStructure>(
+                Handle<TermStructure>(
+                new TermStructures::ImpliedTermStructure(
+                    arguments_.riskFreeTS,
+                    arguments_.resetDate, 
+                    arguments_.resetDate)));
+
+            // The following approach is plain wrong.
+            // The right solution would be stochastic volatility or
+            // at least local volatility
+            // As a bare minimum one could extract from the Black vol surface
+            // the implied vol at moneyness% of the forward value,
+            // istead of the moneyness% of the spot value
+            originalArguments_->volTS = 
+                RelinkableHandle<BlackVolTermStructure>(
+                    Handle<BlackVolTermStructure>(
+                    new VolTermStructures::BlackConstantVol(
+                            arguments_.resetDate,
+                            arguments_.volTS->blackForwardVol(
+                                arguments_.resetDate,
+                                arguments_.exercise.date(),
+                                arguments_.moneyness*arguments_.underlying),
+                            arguments_.volTS->dayCounter())));
+
+            originalArguments_->exercise = arguments_.exercise;
+
+
+            originalArguments_->validate();
         }
 
-        //! Forward vanilla engine class using analytic formulas
-        class ForwardVanillaAnalyticEngine : public ForwardVanillaEngine {
-        public:
-            ForwardVanillaAnalyticEngine(const Handle<VanillaEngine>&
-                vanillaEngine);
-            void calculate() const;
-        };
 
-        inline ForwardVanillaAnalyticEngine::ForwardVanillaAnalyticEngine(const
-            Handle<VanillaEngine>& vanillaEngine)
-        : ForwardVanillaEngine(vanillaEngine) {
-            QL_REQUIRE(!vanillaEngine.isNull(),
-                "ForwardVanillaAnalyticEngine::ForwardVanillaAnalyticEngine : "
-                "null engine or wrong engine type");
+
+        template<class ArgumentsType, class ResultsType>
+        void ForwardEngine<ArgumentsType, ResultsType>::calculate() const {
+
+            setOriginalArguments();
+            originalEngine_->calculate();
+            getOriginalResults();
         }
 
-        //! Forward Performance vanilla engine class using analytic formulas
-        class ForwardPerformanceVanillaAnalyticEngine : public
-            ForwardVanillaEngine {
+        template<class ArgumentsType, class ResultsType>
+        void ForwardEngine<ArgumentsType, ResultsType>::getOriginalResults() const {
+
+            Time resetTime = arguments_.riskFreeTS->dayCounter().yearFraction(
+                arguments_.riskFreeTS->referenceDate(), arguments_.resetDate);
+            double discQ = arguments_.dividendTS->discount(
+                arguments_.resetDate);
+
+            results_.value = discQ * arguments_.underlying *
+                originalResults_->value;
+            results_.delta = discQ * originalResults_->value;
+            results_.gamma = 0.0;
+            results_.theta = arguments_.dividendTS->zeroYield(
+                arguments_.resetDate) 
+                * results_.value;
+            results_.vega = discQ * arguments_.underlying *
+                originalResults_->vega;
+            results_.rho = discQ * arguments_.underlying *
+                originalResults_->rho;
+            results_.dividendRho = - resetTime * results_.value
+                + discQ * originalResults_->dividendRho;
+
+        }
+
+
+
+        
+        
+        
+        
+        
+        
+        
+        //! Forward Performance engine base class
+        template<class ArgumentsType, class ResultsType>
+        class ForwardPerformanceEngine : public ForwardEngine<ArgumentsType, ResultsType> {
         public:
-            ForwardPerformanceVanillaAnalyticEngine(const
-                Handle<VanillaEngine>& vanillaEngine);
-            void calculate() const;
+            ForwardPerformanceEngine(const Handle<GenericEngine<ArgumentsType,
+                ResultsType> >&);
+            void getOriginalResults() const;
         };
 
-       inline ForwardPerformanceVanillaAnalyticEngine::
-           ForwardPerformanceVanillaAnalyticEngine(const Handle<VanillaEngine>&
-           vanillaEngine)
-        : ForwardVanillaEngine(vanillaEngine) {
-            QL_REQUIRE(!vanillaEngine.isNull(),
-                "ForwardPerformanceVanillaAnalyticEngine::"
-                "ForwardPerformanceVanillaAnalyticEngine : "
+        template<class ArgumentsType, class ResultsType>
+        ForwardPerformanceEngine<ArgumentsType, ResultsType>::ForwardPerformanceEngine(
+            const Handle<GenericEngine<ArgumentsType, ResultsType> >&
+            originalEngine)
+        : originalEngine_(originalEngine) {
+            QL_REQUIRE(!originalEngine_.isNull(),
+                "ForwardPerformanceEngine::ForwardPerformanceEngine : "
                 "null engine or wrong engine type");
+            originalResults_ = dynamic_cast<const ResultsType*>(
+                originalEngine_->results());
+            originalArguments_ = dynamic_cast<ArgumentsType*>(
+                originalEngine_->arguments());
+        }
+
+        template<class ArgumentsType, class ResultsType>
+        void ForwardPerformanceEngine<ArgumentsType, ResultsType>::getOriginalResults() const {
+
+            Time resetTime = arguments_.riskFreeTS->dayCounter().yearFraction(
+                arguments_.riskFreeTS->referenceDate(), arguments_.resetDate);
+            double discR = arguments_.riskFreeTS->discount(arguments_.resetDate);
+
+            results_.value = discR * originalResults_->value;
+            results_.delta = 0.0;
+            results_.gamma = 0.0;
+            results_.theta = arguments_.riskFreeTS->zeroYield(
+                arguments_.resetDate) * results_.value;
+            results_.vega = discR * originalResults_->vega;
+            results_.rho = - resetTime * results_.value +
+                discR * originalResults_->rho;
+            results_.dividendRho = discR * originalResults_->dividendRho;
+
         }
 
     }

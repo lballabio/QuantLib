@@ -297,8 +297,14 @@ int main(int argc, char* argv[])
 
         Handle<PricingEngines::EuropeanAnalyticalEngine> baseEngine(new
             PricingEngines::EuropeanAnalyticalEngine);
-        Handle<PricingEngines::QuantoVanillaAnalyticEngine> quantoEngine(new
-            PricingEngines::QuantoVanillaAnalyticEngine(baseEngine));
+        Handle<PricingEngines::QuantoEngine<PricingEngines::VanillaOptionArguments,
+                                            PricingEngines::VanillaOptionResults> >
+                                            quantoEngine(new
+                                            PricingEngines::QuantoEngine<
+                                            PricingEngines::VanillaOptionArguments,
+                                            PricingEngines::VanillaOptionResults>
+                                            (baseEngine)
+                                            );
 
         double correlation = 0.0;
         Instruments::QuantoVanillaOption quantoOption(
@@ -357,8 +363,14 @@ int main(int argc, char* argv[])
              << std::endl;
 
 
-        Handle<PricingEngines::ForwardVanillaAnalyticEngine> forwardEngine(new
-            PricingEngines::ForwardVanillaAnalyticEngine(baseEngine));
+        Handle<PricingEngines::ForwardEngine<PricingEngines::VanillaOptionArguments,
+                                             PricingEngines::VanillaOptionResults> >
+                                             forwardEngine(new
+                                             PricingEngines::ForwardEngine<
+                                             PricingEngines::VanillaOptionArguments,
+                                             PricingEngines::VanillaOptionResults>
+                                             (baseEngine)
+                                             );
 
         Instruments::ForwardVanillaOption forwardOption(
             Option::Call,
@@ -402,9 +414,15 @@ int main(int argc, char* argv[])
              << std::endl;
 
 
-        Handle<PricingEngines::ForwardPerformanceVanillaAnalyticEngine>
-            forwardPerformanceEngine(new
-            PricingEngines::ForwardPerformanceVanillaAnalyticEngine(baseEngine));
+/*        
+        Handle<PricingEngines::ForwardPerformanceEngine<PricingEngines::VanillaOptionArguments,
+                                             PricingEngines::VanillaOptionResults> >
+                                             forwardPerformanceEngine(new
+                                             PricingEngines::ForwardPerformanceEngine<
+                                             PricingEngines::VanillaOptionArguments,
+                                             PricingEngines::VanillaOptionResults>
+                                             (baseEngine)
+                                             );
 
         forwardOption.setPricingEngine(forwardPerformanceEngine);
 
@@ -439,12 +457,19 @@ int main(int argc, char* argv[])
 
 
 
+
 ///////////////////////////////////
 
 
-        Handle<PricingEngines::QuantoVanillaAnalyticEngine>
-            quantoForwardEngine(new
-            PricingEngines::QuantoVanillaAnalyticEngine(forwardEngine));
+
+        Handle<PricingEngines::QuantoEngine<PricingEngines::ForwardOptionArguments,
+                                            PricingEngines::VanillaOptionResults> >
+                                            quantoForwardEngine(new
+                                            PricingEngines::QuantoEngine<
+                                            PricingEngines::ForwardOptionArguments,
+                                            PricingEngines::VanillaOptionResults>
+                                            (forwardEngine)
+                                            );
         quantoOption.setPricingEngine(quantoForwardEngine);
 
         value   = quantoOption.NPV();
@@ -487,7 +512,6 @@ int main(int argc, char* argv[])
         std::cout << "quanto forward qlambda: "
              << DoubleFormatter::toString(qlambda, 4)
              << std::endl;
-
 
 
         
@@ -538,7 +562,7 @@ int main(int argc, char* argv[])
              << DoubleFormatter::toString(qlambda, 4)
              << std::endl;
 
-
+*/
 
 
 

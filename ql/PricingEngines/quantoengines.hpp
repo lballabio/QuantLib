@@ -27,6 +27,7 @@
 #define quantlib_quanto_engines_h
 
 #include <ql/PricingEngines/vanillaengines.hpp>
+#include <ql/TermStructures/quantotermstructure.hpp>
 
 namespace QuantLib {
 
@@ -77,6 +78,7 @@ namespace QuantLib {
         public:
             QuantoEngine(const Handle<GenericEngine<ArgumentsType,
                 ResultsType> >&);
+            void calculate() const;
         protected:
             Handle<GenericEngine<ArgumentsType, ResultsType> > originalEngine_;
             ArgumentsType* originalArguments_;
@@ -97,38 +99,53 @@ namespace QuantLib {
                 originalEngine_->arguments());
         }
 
+        template<class ArgumentsType, class ResultsType>
+        void QuantoEngine<ArgumentsType, ResultsType>::calculate() const {
 
-        //! Quanto vanilla engine base class
-        class QuantoVanillaEngine : public QuantoEngine<
-            VanillaOptionArguments, VanillaOptionResults> {
-        public:
-            QuantoVanillaEngine(const Handle<VanillaEngine>& vanillaEngine);
-        };
+            originalArguments_->type = arguments_.type;
+            originalArguments_->underlying = arguments_.underlying;
+            originalArguments_->strike = arguments_.strike;
+            originalArguments_->dividendTS = 
+                RelinkableHandle<TermStructure>(
+                    Handle<TermStructure>(
+                    new TermStructures::QuantoTermStructure(
+                        arguments_.dividendTS,
+                        arguments_.riskFreeTS, 
+                        arguments_.foreignRiskFreeTS,
+                        arguments_.volTS, 
+                        arguments_.exchRateVolTS,
+                        arguments_.correlation)));
+            originalArguments_->riskFreeTS = arguments_.riskFreeTS;
+            originalArguments_->volTS = arguments_.volTS;
+            originalArguments_->exercise = arguments_.exercise;
 
-        inline QuantoVanillaEngine::QuantoVanillaEngine(const
-            Handle<VanillaEngine>& vanillaEngine)
-        : QuantoEngine<VanillaOptionArguments,
-                       VanillaOptionResults    >(vanillaEngine) {
-            QL_REQUIRE(!vanillaEngine.isNull(),
-                "QuantoVanillaEngine::QuantoVanillaEngine : "
-                "null engine or wrong engine type");
-        }
+            originalArguments_->validate();
+            originalEngine_->calculate();
+
+            results_.value = originalResults_->value;
+            results_.delta = originalResults_->delta;
+            results_.gamma = originalResults_->gamma;
+            results_.theta = originalResults_->theta;
+            results_.rho = originalResults_->rho +
+                originalResults_->dividendRho;
+            results_.dividendRho = originalResults_->dividendRho;
+            // exchangeRate level needed here!!!!!
+            double exchangeRateFlatVol = arguments_.exchRateVolTS->blackVol(
+                arguments_.exercise.date(), arguments_.underlying);
+            results_.vega = originalResults_->vega +
+                arguments_.correlation * exchangeRateFlatVol *
+                originalResults_->dividendRho;
 
 
-        //! Quanto vanilla engine class
-        class QuantoVanillaAnalyticEngine : public QuantoVanillaEngine {
-        public:
-            QuantoVanillaAnalyticEngine(const Handle<VanillaEngine>&
-                vanillaEngine);
-            void calculate() const;
-        };
-
-        inline QuantoVanillaAnalyticEngine::QuantoVanillaAnalyticEngine(const
-            Handle<VanillaEngine>& vanillaEngine)
-        : QuantoVanillaEngine(vanillaEngine) {
-            QL_REQUIRE(!vanillaEngine.isNull(),
-                "QuantoVanillaAnalyticEngine::QuantoVanillaAnalyticEngine : "
-                "null engine or wrong engine type");
+            double volatility = arguments_.volTS->blackVol(
+                arguments_.exercise.date(), arguments_.underlying);
+            results_.qvega = + arguments_.correlation
+                * arguments_.volTS->blackVol(arguments_.exercise.date(),
+                arguments_.underlying) *
+                originalResults_->dividendRho;
+            results_.qrho = - originalResults_->dividendRho;
+            results_.qlambda = exchangeRateFlatVol *
+                volatility * originalResults_->dividendRho;
         }
 
     }
