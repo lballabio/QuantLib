@@ -50,7 +50,7 @@ namespace QuantLib {
             volatility_.registerObserver(this);
         }
 
-    PlainOption::~PlainOption() {
+        PlainOption::~PlainOption() {
             underlying_.unregisterObserver(this);
             dividendYield_.unregisterObserver(this);
             riskFreeRate_.unregisterObserver(this);
@@ -62,59 +62,59 @@ namespace QuantLib {
             QL_REQUIRE(delta_ != Null<double>(),
                        "delta calculation failed");
             return delta_;
-    }
+        }
 
-    double PlainOption::gamma() const {
+        double PlainOption::gamma() const {
             calculate();
             QL_REQUIRE(gamma_ != Null<double>(),
                        "gamma calculation failed");
             return gamma_;
-    }
+        }
 
-    double PlainOption::theta() const {
+        double PlainOption::theta() const {
             calculate();
             QL_REQUIRE(theta_ != Null<double>(),
                        "theta calculation failed");
             return theta_;
-    }
+        }
 
-    double PlainOption::vega() const {
+        double PlainOption::vega() const {
             calculate();
             QL_REQUIRE(vega_ != Null<double>(),
                        "vega calculation failed");
             return vega_;
-    }
+        }
 
         double PlainOption::rho() const {
             calculate();
             QL_REQUIRE(rho_ != Null<double>(),
                        "rho calculation failed");
             return rho_;
-    }
+        }
 
         double PlainOption::dividendRho() const {
             calculate();
             QL_REQUIRE(dividendRho_ != Null<double>(),
                        "dividend rho calculation failed");
             return dividendRho_;
-    }
+        }
 
         double PlainOption::impliedVolatility(double targetValue,
           double accuracy, Size maxEvaluations,
           double minVol, double maxVol) const {
-        double value = NPV(), vol = volatility_->value();
-        QL_REQUIRE(!isExpired_, "option expired");
-        if (value == targetValue) {
-        return vol;
-        } else {
-        ImpliedVolHelper f(engine_,targetValue);
-        Solvers1D::Brent solver;
-        solver.setMaxEvaluations(maxEvaluations);
-        return solver.solve(f,accuracy,vol,minVol,maxVol);
+            double value = NPV(), vol = volatility_->value();
+            QL_REQUIRE(!isExpired_, "option expired");
+            if (value == targetValue) {
+                return vol;
+            } else {
+                ImpliedVolHelper f(engine_,targetValue);
+                Solvers1D::Brent solver;
+                solver.setMaxEvaluations(maxEvaluations);
+                return solver.solve(f,accuracy,vol,minVol,maxVol);
+            }
         }
-    }
 
-    void PlainOption::setupEngine() const {
+        void PlainOption::setupEngine() const {
             PlainOptionParameters* parameters =
                 dynamic_cast<PlainOptionParameters*>(
                     engine_->parameters());
@@ -146,7 +146,7 @@ namespace QuantLib {
             parameters->volatility = volatility_->value();
         }
 
-    void PlainOption::performCalculations() const {
+        void PlainOption::performCalculations() const {
             if (exerciseDate_ <= riskFreeRate_->settlementDate()) {
                 isExpired_ = true;
                 NPV_ = delta_ = gamma_ = theta_ =
@@ -205,26 +205,34 @@ namespace QuantLib {
             return &parameters_;
         }
 
-    void PlainOptionEngine::validateParameters() const {
+        void PlainOptionEngine::validateParameters() const {
             QL_REQUIRE(parameters_.type != Option::Type(-1),
                        "no option type given");
             QL_REQUIRE(parameters_.underlying != Null<double>(),
                        "null underlying given");
+            QL_REQUIRE(parameters_.underlying > 0.0,
+                       "negative or zero underlying given");
             QL_REQUIRE(parameters_.strike != Null<double>(),
                        "null strike given");
+            QL_REQUIRE(parameters_.strike > 0.0,
+                       "negative or zero strike given");
             QL_REQUIRE(parameters_.dividendYield != Null<double>(),
                        "null dividend yield given");
             QL_REQUIRE(parameters_.riskFreeRate != Null<double>(),
                        "null risk free rate given");
             QL_REQUIRE(parameters_.residualTime != Null<double>(),
                        "null residual time given");
+            QL_REQUIRE(parameters_.residualTime > 0.0,
+                       "negative or zero residual time given");
             QL_REQUIRE(parameters_.volatility != Null<double>(),
                        "null volatility given");
+            QL_REQUIRE(parameters_.volatility > 0.0,
+                       "negative or zero volatility given");
         }
 
-    const Results* PlainOptionEngine::results() const {
-        return &results_;
-    }
+        const Results* PlainOptionEngine::results() const {
+            return &results_;
+        }
 
     }
 
