@@ -18,6 +18,7 @@
 
 #include <ql/qldefines.hpp>
 #include <boost/test/unit_test.hpp>
+#include <boost/progress.hpp>
 
 /* auto_link was not available in Boost version 1.30.x.  Therefore, we
    require Boost 1.31 under Visual C++ and Borland (for the test
@@ -82,6 +83,7 @@
 
 using namespace boost::unit_test_framework;
 
+static boost::progress_timer t;  // start timing
 
 test_suite* init_unit_test_suite(int, char* []) {
 
