@@ -48,15 +48,18 @@ namespace QuantLib {
         class RandomSequenceGenerator {
           public:
             typedef MonteCarlo::Sample<Array> sample_type;
-//            typedef RNG::sample_type rng_sample_type;
             RandomSequenceGenerator(Size dimensionality,
                                     const RNG& rng)
             : dimensionality_(dimensionality), rng_(rng),
               sequence_(Array(dimensionality), 1.0) {}
 
+            RandomSequenceGenerator(Size dimensionality,
+                                    long seed = 0)
+            : dimensionality_(dimensionality), rng_(seed),
+              sequence_(Array(dimensionality), 1.0) {}
+
             const sample_type& nextSequence() const {
                 sequence_.weight = 1.0;
-//                typename rng_sample_type x();
                 for (Size i=0; i<dimensionality_; ++i) {
                     typename RNG::sample_type x(rng_.next());
                     sequence_.value[i] = x.value;
