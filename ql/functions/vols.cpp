@@ -61,8 +61,9 @@ namespace QuantLib {
             switch (interpolation2DType) {
                 case 1:
                     result = surface_t(refDate, dates, strikes,
-                        blackVolSurface, surface_t::DefaultExtrapolation,
-                        surface_t::DefaultExtrapolation,
+                        blackVolSurface,
+                        surface_t::InterpolatorDefaultExtrapolation,
+                        surface_t::InterpolatorDefaultExtrapolation,
                         dc).blackForwardVol(date1, date2,
                         strike, allowExtrapolation);
                     break;
