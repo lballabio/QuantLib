@@ -1,7 +1,12 @@
 
-		QuantLib --- the open source library for quantitative finance
-		-------------------------------------------------------------
+		QuantLib --- the free/open-source library for quantitative finance
+		------------------------------------------------------------------
 		                <http://quantlib.org>
+
+QuantLib is Non-Copylefted Free Software released under the modified BSD
+License.
+
+QuantLib is OSI Certified Open Source Software. OSI Certified is a certification mark of the Open Source Initiative.
 
 Documentation for the QuantLib library is both online and downloadable in a
 number of formats from <http://quantlib.org>.
