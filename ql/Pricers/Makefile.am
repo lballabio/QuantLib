@@ -48,20 +48,20 @@ EXTRA_DIST=makefile.mak
 libPricers_la_SOURCES = \
     analyticalcapfloor.cpp \
     barrieroption.cpp \
+    binaryoption.cpp \
     blackcapfloor.cpp \
     blackswaption.cpp \
     capfloorpricer.cpp \
-    fdbermudanoption.cpp \
-    binaryoption.cpp \
     cliquetoption.cpp \
     discretegeometricapo.cpp \
     discretegeometricaso.cpp \
-    fddividendshoutoption.cpp \
     europeanoption.cpp \
+    fdbermudanoption.cpp \
     fdbsmoption.cpp \
     fddividendamericanoption.cpp \
     fddividendeuropeanoption.cpp \
     fddividendoption.cpp \
+    fddividendshoutoption.cpp \
     fdeuropean.cpp \
     fdmultiperiodoption.cpp \
     fdstepconditionoption.cpp \
