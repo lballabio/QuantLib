@@ -1,6 +1,6 @@
 
 /*
- Copyright (C) 2002, 2003 Ferdinando Ametrano
+ Copyright (C) 2002, 2003, 2004 Ferdinando Ametrano
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -23,6 +23,7 @@
 #define quantlib_functions_math_h
 
 #include <ql/Math/matrix.hpp>
+#include <ql/Math/cubicspline.hpp>
 #include <vector>
 
 namespace QuantLib {
@@ -32,10 +33,14 @@ namespace QuantLib {
                        double x,
                        int interpolationType,
                        bool allowExtrapolation,
-                       double y1a,
-                       double y2a,
-                       double y1b,
-                       double y2b,
+                       CubicSplineInterpolation<std::vector<double>::const_iterator,
+                                                std::vector<double>::const_iterator>::BoundaryCondition
+                                                               leftCondition,
+                       double leftConditionValue,
+                       CubicSplineInterpolation<std::vector<double>::const_iterator,
+                                                std::vector<double>::const_iterator>::BoundaryCondition
+                                                              rightCondition,
+                       double rightConditionValue,
                        bool monotonicityConstraint,
                        int derivativeOrder);
 

@@ -1,6 +1,6 @@
 
 /*
- Copyright (C) 2002, 2003 Ferdinando Ametrano
+ Copyright (C) 2002, 2003, 2004 Ferdinando Ametrano
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -34,10 +34,14 @@ namespace QuantLib {
                        double x,
                        int interpolationType,
                        bool allowExtrapolation,
-                       double y1a,
-                       double y2a,
-                       double y1b,
-                       double y2b,
+                       CubicSplineInterpolation<std::vector<double>::const_iterator,
+                                                std::vector<double>::const_iterator>::BoundaryCondition
+                                                               leftCondition,
+                       double leftConditionValue,
+                       CubicSplineInterpolation<std::vector<double>::const_iterator,
+                                                std::vector<double>::const_iterator>::BoundaryCondition
+                                                              rightCondition,
+                       double rightConditionValue,
                        bool monotonicityConstraint,
                        int derivativeOrder) {
 
@@ -58,7 +62,9 @@ namespace QuantLib {
                             std::vector<double>::const_iterator,
 			                std::vector<double>::const_iterator>(
                         x_values.begin(), x_values.end(),
-                        y_values.begin(), y1a, y2a, y1b, y2b,
+                        y_values.begin(),
+                        leftCondition, leftConditionValue,
+                        rightCondition, rightConditionValue,
                         monotonicityConstraint).primitive(x, allowExtrapolation);
                 break;
               case 0:
@@ -66,7 +72,9 @@ namespace QuantLib {
                             std::vector<double>::const_iterator,
 			                std::vector<double>::const_iterator>(
                         x_values.begin(), x_values.end(),
-                        y_values.begin(), y1a, y2a, y1b, y2b,
+                        y_values.begin(),
+                        leftCondition, leftConditionValue,
+                        rightCondition, rightConditionValue,
                         monotonicityConstraint)(x, allowExtrapolation);
                 break;
               case 1:
@@ -74,7 +82,9 @@ namespace QuantLib {
                             std::vector<double>::const_iterator,
 			                std::vector<double>::const_iterator>(
                         x_values.begin(), x_values.end(),
-                        y_values.begin(), y1a, y2a, y1b, y2b,
+                        y_values.begin(),
+                        leftCondition, leftConditionValue,
+                        rightCondition, rightConditionValue,
                         monotonicityConstraint).derivative(x, allowExtrapolation);
                 break;
               case 2:
@@ -82,7 +92,9 @@ namespace QuantLib {
                             std::vector<double>::const_iterator,
 			                std::vector<double>::const_iterator>(
                         x_values.begin(), x_values.end(),
-                        y_values.begin(), y1a, y2a, y1b, y2b,
+                        y_values.begin(),
+                        leftCondition, leftConditionValue,
+                        rightCondition, rightConditionValue,
                         monotonicityConstraint).secondDerivative(x, allowExtrapolation);
                 break;
               default:

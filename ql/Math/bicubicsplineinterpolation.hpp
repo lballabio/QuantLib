@@ -72,8 +72,10 @@ namespace QuantLib {
         for (Size i = 0; i< rows_; i++)
             splines_.push_back(CubicSplineInterpolation<I1, row_iterator>(
            xBegin, xEnd, data_.row_begin(i),
-           Null<double>(), 0.0, // something better needed here
-           Null<double>(), 0.0, // something better needed here
+           // something better needed here
+           CubicSplineInterpolation<I1, row_iterator>::BoundaryCondition::SecondDerivative, 0.0,
+           // something better needed here
+           CubicSplineInterpolation<I1, row_iterator>::BoundaryCondition::SecondDerivative, 0.0, 
            false));
     }
 
@@ -92,9 +94,11 @@ namespace QuantLib {
 
         CubicSplineInterpolation<I2,std::vector<result_type>::const_iterator>
             columnSpline(yBegin_, yEnd_, newColumn.begin(),
-                Null<double>(), 0.0, // something better needed here
-                Null<double>(), 0.0, // something better needed here
-                false);
+            // something better needed here
+            CubicSplineInterpolation<I2,std::vector<result_type>::const_iterator>::BoundaryCondition::SecondDerivative, 0.0,
+            // something better needed here
+            CubicSplineInterpolation<I2,std::vector<result_type>::const_iterator>::BoundaryCondition::SecondDerivative, 0.0, 
+            false);
 
         return columnSpline(y, allowExtrapolation);
     }

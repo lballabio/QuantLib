@@ -68,9 +68,13 @@ namespace QuantLib {
         static Handle<Interpolation<I1,I2> >
         make_interpolation(const I1& xBegin, const I1& xEnd,
                            const I2& yBegin) {
-            return Handle<Interpolation<I1,I2> >(
-                     new CubicSplineInterpolation<I1,I2>(xBegin,xEnd,yBegin,
-                     Null<double>(), 0.0, Null<double>(), 0.0, false));
+            return Handle<Interpolation<I1,I2> >(new
+                CubicSplineInterpolation<I1,I2>(xBegin,xEnd,yBegin,
+                    CubicSplineInterpolation<I1,I2>::BoundaryCondition::SecondDerivative,
+                    0.0,
+                    CubicSplineInterpolation<I1,I2>::BoundaryCondition::SecondDerivative,
+                    0.0,
+                    false));
         }
         template <class I1, class I2, class M>
         static Handle<Interpolation2D<I1,I2,M> >

@@ -225,8 +225,14 @@ void InterpolationTest::testSplineErrorOnGaussianValues() {
             std::vector<double>::const_iterator> f(
                 x.begin(), x.end(),
                 y.begin(),
-                Null<double>(), Null<double>(),
-                Null<double>(), Null<double>(),
+                CubicSplineInterpolation<
+                    std::vector<double>::const_iterator,
+                    std::vector<double>::const_iterator>::BoundaryCondition::Not_a_knot,
+                Null<double>(),
+                CubicSplineInterpolation<
+                    std::vector<double>::const_iterator,
+                    std::vector<double>::const_iterator>::BoundaryCondition::Not_a_knot,
+                Null<double>(),
                 false);
         double result = QL_SQRT(integral(make_error_function(f), -1.7, 1.9));
         result /= scaleFactor;
@@ -245,8 +251,14 @@ void InterpolationTest::testSplineErrorOnGaussianValues() {
             std::vector<double>::const_iterator>(
                 x.begin(), x.end(),
                 y.begin(),
-                Null<double>(), Null<double>(),
-                Null<double>(), Null<double>(),
+                CubicSplineInterpolation<
+                    std::vector<double>::const_iterator,
+                    std::vector<double>::const_iterator>::BoundaryCondition::Not_a_knot,
+                Null<double>(),
+                CubicSplineInterpolation<
+                    std::vector<double>::const_iterator,
+                    std::vector<double>::const_iterator>::BoundaryCondition::Not_a_knot,
+                Null<double>(),
                 true);
         result = QL_SQRT(integral(make_error_function(f), -1.7, 1.9));
         result /= scaleFactor;
@@ -279,8 +291,14 @@ void InterpolationTest::testSplineOnGaussianValues() {
             std::vector<double>::const_iterator> interp(
                 x.begin(), x.end(),
                 y.begin(),
-                Null<double>(), Null<double>(),
-                Null<double>(), Null<double>(),
+                CubicSplineInterpolation<
+                    std::vector<double>::const_iterator,
+                    std::vector<double>::const_iterator>::BoundaryCondition::Not_a_knot,
+                Null<double>(),
+                CubicSplineInterpolation<
+                    std::vector<double>::const_iterator,
+                    std::vector<double>::const_iterator>::BoundaryCondition::Not_a_knot,
+                Null<double>(),
                 false);
         checkValues("Not-a-knot spline", interp,
                     x.begin(), x.end(), y.begin());
@@ -309,8 +327,14 @@ void InterpolationTest::testSplineOnGaussianValues() {
             std::vector<double>::const_iterator>(
                 x.begin(), x.end(),
                 y.begin(),
-                Null<double>(), Null<double>(),
-                Null<double>(), Null<double>(),
+                CubicSplineInterpolation<
+                    std::vector<double>::const_iterator,
+                    std::vector<double>::const_iterator>::BoundaryCondition::Not_a_knot,
+                Null<double>(),
+                CubicSplineInterpolation<
+                    std::vector<double>::const_iterator,
+                    std::vector<double>::const_iterator>::BoundaryCondition::Not_a_knot,
+                Null<double>(),
                 true);
         checkValues("MC not-a-knot spline", interp,
                     x.begin(), x.end(), y.begin());
@@ -357,8 +381,14 @@ void InterpolationTest::testSplineOnRPN15AValues() {
     CubicSplineInterpolation<const double*, const double*> interp(
             RPN15A_x, RPN15A_x+n,
             RPN15A_y,
-            Null<double>(), 0.0,
-            Null<double>(), 0.0,
+            CubicSplineInterpolation<
+                    std::vector<double>::const_iterator,
+                    std::vector<double>::const_iterator>::BoundaryCondition::SecondDerivative,
+            0.0,
+            CubicSplineInterpolation<
+                    std::vector<double>::const_iterator,
+                    std::vector<double>::const_iterator>::BoundaryCondition::SecondDerivative,
+            0.0,
             false);
     checkValues("Natural spline", interp,
                 RPN15A_x, RPN15A_x+n, RPN15A_y);
@@ -382,8 +412,14 @@ void InterpolationTest::testSplineOnRPN15AValues() {
     interp = CubicSplineInterpolation<const double*, const double*>(
             RPN15A_x, RPN15A_x+n,
             RPN15A_y,
-            0.0, Null<double>(),
-            0.0, Null<double>(),
+            CubicSplineInterpolation<
+                    std::vector<double>::const_iterator,
+                    std::vector<double>::const_iterator>::BoundaryCondition::FirstDerivative,
+            0.0,
+            CubicSplineInterpolation<
+                    std::vector<double>::const_iterator,
+                    std::vector<double>::const_iterator>::BoundaryCondition::FirstDerivative,
+            0.0,
             false);
     checkValues("Clamped spline", interp,
                 RPN15A_x, RPN15A_x+n, RPN15A_y);
@@ -406,8 +442,14 @@ void InterpolationTest::testSplineOnRPN15AValues() {
     interp = CubicSplineInterpolation<const double*, const double*>(
             RPN15A_x, RPN15A_x+n,
             RPN15A_y,
-            Null<double>(), Null<double>(),
-            Null<double>(), Null<double>(),
+            CubicSplineInterpolation<
+                    std::vector<double>::const_iterator,
+                    std::vector<double>::const_iterator>::BoundaryCondition::Not_a_knot,
+            Null<double>(),
+            CubicSplineInterpolation<
+                    std::vector<double>::const_iterator,
+                    std::vector<double>::const_iterator>::BoundaryCondition::Not_a_knot,
+            Null<double>(),
             false);
     checkValues("Not-a-knot spline", interp,
                 RPN15A_x, RPN15A_x+n, RPN15A_y);
@@ -429,8 +471,14 @@ void InterpolationTest::testSplineOnRPN15AValues() {
     interp = CubicSplineInterpolation<const double*, const double*>(
             RPN15A_x, RPN15A_x+n,
             RPN15A_y,
-            Null<double>(), 0.0,
-            Null<double>(), 0.0,
+            CubicSplineInterpolation<
+                    std::vector<double>::const_iterator,
+                    std::vector<double>::const_iterator>::BoundaryCondition::SecondDerivative,
+            0.0,
+            CubicSplineInterpolation<
+                    std::vector<double>::const_iterator,
+                    std::vector<double>::const_iterator>::BoundaryCondition::SecondDerivative,
+            0.0,
             true);
     checkValues("MC natural spline", interp,
                 RPN15A_x, RPN15A_x+n, RPN15A_y);
@@ -451,8 +499,14 @@ void InterpolationTest::testSplineOnRPN15AValues() {
     interp = CubicSplineInterpolation<const double*, const double*>(
             RPN15A_x, RPN15A_x+n,
             RPN15A_y,
-            0.0, Null<double>(),
-            0.0, Null<double>(),
+            CubicSplineInterpolation<
+                    std::vector<double>::const_iterator,
+                    std::vector<double>::const_iterator>::BoundaryCondition::FirstDerivative,
+            0.0,
+            CubicSplineInterpolation<
+                    std::vector<double>::const_iterator,
+                    std::vector<double>::const_iterator>::BoundaryCondition::FirstDerivative,
+            0.0,
             true);
     checkValues("MC clamped spline", interp,
                 RPN15A_x, RPN15A_x+n, RPN15A_y);
@@ -475,8 +529,14 @@ void InterpolationTest::testSplineOnRPN15AValues() {
     interp = CubicSplineInterpolation<const double*, const double*>(
             RPN15A_x, RPN15A_x+n,
             RPN15A_y,
-            Null<double>(), Null<double>(),
-            Null<double>(), Null<double>(),
+            CubicSplineInterpolation<
+                    std::vector<double>::const_iterator,
+                    std::vector<double>::const_iterator>::BoundaryCondition::Not_a_knot,
+            Null<double>(),
+            CubicSplineInterpolation<
+                    std::vector<double>::const_iterator,
+                    std::vector<double>::const_iterator>::BoundaryCondition::Not_a_knot,
+            Null<double>(),
             true);
     checkValues("MC not-a-knot spline", interp,
                 RPN15A_x, RPN15A_x+n, RPN15A_y);
@@ -510,8 +570,14 @@ void InterpolationTest::testSplineOnGenericValues() {
     CubicSplineInterpolation<const double*, const double*> interp(
             generic_x, generic_x+n,
             generic_y,
-            Null<double>(), generic_natural_y2[0],
-            Null<double>(), generic_natural_y2[n-1],
+            CubicSplineInterpolation<
+                    std::vector<double>::const_iterator,
+                    std::vector<double>::const_iterator>::BoundaryCondition::SecondDerivative,
+            generic_natural_y2[0],
+            CubicSplineInterpolation<
+                    std::vector<double>::const_iterator,
+                    std::vector<double>::const_iterator>::BoundaryCondition::SecondDerivative,
+            generic_natural_y2[n-1],
             false);
     checkValues("Natural spline", interp,
                 generic_x, generic_x+n, generic_y);
@@ -576,8 +642,14 @@ void InterpolationTest::testSplineOnGenericValues() {
     interp = CubicSplineInterpolation<const double*, const double*>(
             generic_x, generic_x+n,
             generic_y,
-            y1a, Null<double>(),
-            y1b, Null<double>(),
+            CubicSplineInterpolation<
+                    std::vector<double>::const_iterator,
+                    std::vector<double>::const_iterator>::BoundaryCondition::FirstDerivative,
+            y1a,
+            CubicSplineInterpolation<
+                    std::vector<double>::const_iterator,
+                    std::vector<double>::const_iterator>::BoundaryCondition::FirstDerivative,
+            y1b,
             false);
     checkValues("Clamped spline", interp,
                 generic_x, generic_x+n, generic_y);
@@ -590,8 +662,14 @@ void InterpolationTest::testSplineOnGenericValues() {
     interp = CubicSplineInterpolation<const double*, const double*>(
             generic_x, generic_x+n,
             generic_y,
-            Null<double>(), Null<double>(),
-            Null<double>(), Null<double>(),
+            CubicSplineInterpolation<
+                    std::vector<double>::const_iterator,
+                    std::vector<double>::const_iterator>::BoundaryCondition::Not_a_knot,
+            Null<double>(),
+            CubicSplineInterpolation<
+                    std::vector<double>::const_iterator,
+                    std::vector<double>::const_iterator>::BoundaryCondition::Not_a_knot,
+            Null<double>(),
             false);
     checkValues("Not-a-knot spline", interp,
                 generic_x, generic_x+n, generic_y);
@@ -624,8 +702,14 @@ void InterpolationTest::testingSimmetricEndConditions() {
         std::vector<double>::const_iterator> interp(
             x.begin(), x.end(),
             y.begin(),
-            Null<double>(), Null<double>(),
-            Null<double>(), Null<double>(),
+            CubicSplineInterpolation<
+                    std::vector<double>::const_iterator,
+                    std::vector<double>::const_iterator>::BoundaryCondition::Not_a_knot,
+            Null<double>(),
+            CubicSplineInterpolation<
+                    std::vector<double>::const_iterator,
+                    std::vector<double>::const_iterator>::BoundaryCondition::Not_a_knot,
+            Null<double>(),
             false);
     checkValues("Not-a-knot spline", interp,
                 x.begin(), x.end(), y.begin());
@@ -639,8 +723,14 @@ void InterpolationTest::testingSimmetricEndConditions() {
         std::vector<double>::const_iterator>(
             x.begin(), x.end(),
             y.begin(),
-            Null<double>(), Null<double>(),
-            Null<double>(), Null<double>(),
+            CubicSplineInterpolation<
+                    std::vector<double>::const_iterator,
+                    std::vector<double>::const_iterator>::BoundaryCondition::Not_a_knot,
+            Null<double>(),
+            CubicSplineInterpolation<
+                    std::vector<double>::const_iterator,
+                    std::vector<double>::const_iterator>::BoundaryCondition::Not_a_knot,
+            Null<double>(),
             true);
     checkValues("MC not-a-knot spline", interp,
                 x.begin(), x.end(), y.begin());

@@ -110,8 +110,14 @@ namespace QuantLib {
         CubicSplineInterpolation<std::vector<double>::iterator,
             std::vector<double>::iterator> priceSpline(
                 logOldGrid.begin(), logOldGrid.end(), tmpPrices.begin(),
-                Null<double>(), 0.0, // something better needed here
-                Null<double>(), 0.0, // something better needed here
+                // something better needed here
+                CubicSplineInterpolation<
+                    std::vector<double>::iterator,
+                    std::vector<double>::iterator>::BoundaryCondition::SecondDerivative, 0.0,
+                // something better needed here
+                CubicSplineInterpolation<
+                    std::vector<double>::iterator,
+                    std::vector<double>::iterator>::BoundaryCondition::SecondDerivative, 0.0, 
                 false);
 
         for (j = 0; j < gridSize; j++)
