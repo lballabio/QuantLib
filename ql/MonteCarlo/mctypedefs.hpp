@@ -25,6 +25,7 @@
 
 #include <ql/RandomNumbers/rngtypedefs.hpp>
 #include <ql/MonteCarlo/montecarlomodel.hpp>
+#include <ql/MonteCarlo/brownianbridge.hpp>
 
 namespace QuantLib {
 
@@ -33,6 +34,7 @@ namespace QuantLib {
                                                    GaussianPathGenerator_old;
 
     typedef PathGenerator<GaussianRandomSequenceGenerator>
+//    typedef BrownianBridge<GaussianRandomSequenceGenerator>
                                                    GaussianPathGenerator;
 
     //! default choice for Gaussian multi-path generator.
