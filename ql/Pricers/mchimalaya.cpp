@@ -46,7 +46,7 @@ namespace QuantLib {
                 QL_REQUIRE(underlying_.size() == numAssets,
                            "HimalayaPathPricer: "
                            "the multi-path must contain "
-                           + IntegerFormatter::toString((unsigned long)(underlying_.size())) + 
+                           + SizeFormatter::toString(underlying_.size()) + 
                            " assets");
                 QL_REQUIRE(numAssets>0,
                            "HimalayaPathPricer: no asset given");

@@ -41,7 +41,7 @@ namespace QuantLib {
                 QL_REQUIRE(underlying_.size() == numAssets,
                            "MaxBasketPathPricer: "
                            "the multi-path must contain "
-                           + IntegerFormatter::toString((unsigned long)(underlying_.size())) + 
+                           + SizeFormatter::toString(underlying_.size()) + 
                            " assets");
 
                 double log_variation;

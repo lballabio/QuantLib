@@ -36,16 +36,13 @@ namespace QuantLib {
 
     std::string IntegerFormatter::toPowerOfTwo(long l, int digits) {
         if (l < 0L)
-            return "-" +
-                SizeFormatter::toPowerOfTwo((unsigned long)(-l),digits);
+            return "-" + SizeFormatter::toPowerOfTwo(Size(-l),digits);
         else
-            return SizeFormatter::toPowerOfTwo((unsigned long)(l),digits);
+            return SizeFormatter::toPowerOfTwo(Size(l),digits);
     }
 
-
-    std::string SizeFormatter::toString(Size ll, int digits) {
-        static unsigned long null = (unsigned long) Null<int>();
-        unsigned long l = (unsigned long)(ll);
+    std::string SizeFormatter::toString(Size l, int digits) {
+        static Size null = Size(Null<int>());
         if (l == null)
             return std::string("null");
         char s[64];
@@ -66,12 +63,11 @@ namespace QuantLib {
               default: suffix = "th";
             }
         }
-        return toString(l)+suffix;
+        return toString(ll)+suffix;
     }
 
-    std::string SizeFormatter::toPowerOfTwo(Size ll, int digits) {
-        static unsigned long null = (unsigned long) Null<int>();
-        unsigned long l = (unsigned long)(ll);
+    std::string SizeFormatter::toPowerOfTwo(Size l, int digits) {
+        static Size null = Size(Null<int>());
         if (l == null)
             return std::string("null");
         int power = 0;

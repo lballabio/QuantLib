@@ -165,9 +165,6 @@ namespace QuantLib {
             + DoubleFormatter::toExponential(lastContribution) +
             " while the running sum was "
             + DoubleFormatter::toExponential(results_.value));
-
-
-//        std::cout << std::endl << DoubleFormatter::toString(lastContribution * results_.value,6) << ", i=" << i;
     }
 
 }

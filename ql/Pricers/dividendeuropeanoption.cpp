@@ -32,12 +32,12 @@ namespace QuantLib {
 
         for (Size j = 0; j < dividends.size(); j++) {
             QL_REQUIRE(exdivdates[j] >= 0, "The "+
-                       SizeFormatter::toOrdinal((unsigned long)(j)) +
+                       SizeFormatter::toOrdinal(j) +
                        " dividend time is negative"    + "(" +
                        DoubleFormatter::toString(exdivdates[j]) + ")");
 
             QL_REQUIRE(exdivdates[j] <= residualTime,"The " +
-                       SizeFormatter::toOrdinal((unsigned long)(j)) +
+                       SizeFormatter::toOrdinal(j) +
                        " dividend time is greater than residual time" + "(" +
                        DoubleFormatter::toString(exdivdates[j]) + ">" +
                        DoubleFormatter::toString(residualTime)    + ")");

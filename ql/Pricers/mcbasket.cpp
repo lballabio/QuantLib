@@ -47,7 +47,7 @@ namespace QuantLib {
                 Size numAssets = multiPath.assetNumber();
                 QL_REQUIRE(underlying_.size() == numAssets,
                            "BasketPathPricer: the multi-path must contain "
-                           + IntegerFormatter::toString((unsigned long)(underlying_.size())) 
+                           + SizeFormatter::toString(underlying_.size()) 
                            + " assets");
 
                 QL_REQUIRE(numSteps>0,
