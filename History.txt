@@ -15,7 +15,7 @@ Changes since Release 0.1.1:
   - Implemented expression templates techniques for array algebra optimization
   - Added custom iterators
   - Improved term structure
-  - Added Asian, multiperiod, Bermudan, shout, cliquet, Himalaya, and barrier
+  - Added Asian, Bermudan, Shout, Cliquet, Himalaya, and Barrier
     options (all with greeks calculation, control variated where possible)
   - Added Helsinki and Wellington calendars
   - Improved Normal distribution related functions: cumulative, inverse
