@@ -25,6 +25,9 @@
 // $Id$
 
 #include <ql/diffusionprocess.hpp>
+#include <ql/Volatilities/blackconstantvol.hpp>
+#include <ql/Volatilities/localvolsurface.hpp>
+#include <ql/Volatilities/localconstantvol.hpp>
 
 namespace QuantLib {
 
@@ -35,10 +38,21 @@ namespace QuantLib {
         double s0)
     : DiffusionProcess(s0), riskFreeTS_(riskFreeTS),
       dividendTS_(dividendTS) {
-        localVolTS_ = RelinkableHandle<LocalVolTermStructure>(
-            Handle<LocalVolTermStructure>(new
-                VolTermStructures::LocalVolSurface(blackVolTS, riskFreeTS,
-                    dividendTS, s0)));
+        try {
+            Handle<VolTermStructures::BlackConstantVol> constVolTS = blackVolTS;
+            localVolTS_ = RelinkableHandle<LocalVolTermStructure>(
+                Handle<LocalVolTermStructure>(new
+                    VolTermStructures::LocalConstantVol(
+                        constVolTS->referenceDate(),
+                        constVolTS->blackVol(0.0, s0),
+                        constVolTS->dayCounter())));
+        } catch (...) {}
+        if (localVolTS_.isNull()) {
+            localVolTS_ = RelinkableHandle<LocalVolTermStructure>(
+                Handle<LocalVolTermStructure>(new
+                    VolTermStructures::LocalVolSurface(blackVolTS, riskFreeTS,
+                        dividendTS, s0)));
+        }
     }
 
     double BlackScholesProcess::drift(Time t, double x) const {

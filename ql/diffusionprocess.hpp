@@ -28,7 +28,7 @@
 
 #include <ql/types.hpp>
 #include <ql/termstructure.hpp>
-#include <ql/Volatilities/localvolsurface.hpp>
+#include <ql/voltermstructure.hpp>
 
 namespace QuantLib {
 
