@@ -1,6 +1,8 @@
 
-// This file contains 21200 polinomials. Another version does contain
-// 8129334 polinomials. Both are slightly edited versions of
+// This file contains 21200 polinomials, that is all primitive polynomials
+// modulo two up to degree 17. Another version does contain
+// 8129334 polinomials, that is all primitive polynomials
+// modulo two up to degree 27. Both are slightly edited versions of
 // PrimitivePolynomialsModuloTwoUpToDegree27.c
 //
 // © 2002 "Monte Carlo Methods in Finance"
@@ -13,7 +15,7 @@
 // granted, provided that this notice is preserved.
 // =========================================================================
 
-#include "primitivepolynomials.h"
+#include <ql/RandomNumbers/primitivepolynomials.h>
 
 static const long PrimitivePolynomialDegree01[]={
 0, // x+1 (1)(1)
