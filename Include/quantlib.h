@@ -26,6 +26,9 @@
     $Source$
     $Name$
     $Log$
+    Revision 1.32  2001/03/22 12:24:27  marmar
+    Introducing pagoda options
+
     Revision 1.31  2001/03/21 10:49:58  marmar
     valueAtCenter, firstDerivativeAtCenter, secondDerivativeAtCenter,
     are no longer methods of BSMNumericalOption but separate
@@ -187,9 +190,10 @@
 #include "gaussianrandomgenerator.h"
 #include "getcovariance.h"
 #include "lecuyerrandomgenerator.h"
-#include "uniformrandomgenerator.h"
+#include "pagodapathpricer.h"
 #include "standardmultipathgenerator.h"
 #include "standardpathgenerator.h"
+#include "uniformrandomgenerator.h"
 
 // finite difference tools
 #include "backwardeuler.h"
@@ -250,6 +254,7 @@
 #include "multiperiodoption.h"
 #include "options.h"
 #include "plainbasketoption.h"
+#include "pagodaoption.h"
 #include "shoutcondition.h"
 #include "stepconditionoption.h"
 #include "shoutoption.h"
