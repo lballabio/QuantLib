@@ -27,6 +27,9 @@
 
 // $Source$
 // $Log$
+// Revision 1.4  2001/07/16 21:57:11  dzuki
+// Added option surplus integral test
+//
 // Revision 1.3  2001/07/16 16:12:02  nando
 // style and typo fixed
 //
@@ -37,9 +40,9 @@
 // Added "Parities" example
 //
 
+#include "ql\quantlib.hpp"
 #include <iostream>
 #include "stdlib.h"
-#include "ql\quantlib.hpp"
 
 using namespace QuantLib;
 using namespace QuantLib::Pricers;
@@ -76,9 +79,11 @@ public:
 		    s0_ - strike_*QL_EXP(- r_*maturity_));
 		printResult("Monte-Carlo method", europeanCallMC());
 		printResult("FiniteDifference method", europeanCallFD());
+
+		testOptionSurplusIntegral();
 	}
 
-	void printResult(std::string method,  double v)
+	void printResult(string method,  double v)
 	{
 		double err = QL_FABS(standardValue_ - v);
 		cout<<"\n"<< method <<"\n";
@@ -111,10 +116,10 @@ protected:
     // MonteCarlo
 	double europeanCallMC(int nTimeSteps = 100, int nSamples = 100000)
 	{
-			double tau = maturity_ / nTimeSteps;
-			double sigma = sigma_* sqrt(tau);
-			double mean = r_ * tau - 0.5*sigma*sigma;
-			Math::Statistics samples;
+		double tau = maturity_ / nTimeSteps;
+		double sigma = sigma_* sqrt(tau);
+		double mean = r_ * tau - 0.5*sigma*sigma;
+		Math::Statistics samples;
 
 		return OneFactorMonteCarloOption(
 					Handle<StandardPathGenerator>(
@@ -129,12 +134,61 @@ protected:
 
 
 	}
-	double europeanCallFD(int gridPoints = 100)  // Finite differences
+
+    double europeanCallFD(int gridPoints = 100)  // Finite differences
 	{
 		return FiniteDifferenceEuropean(Option::Call, s0_, strike_, 0.0,
 			r_, maturity_, sigma_, 100).value();
 	}
 
+	//  Option calculus analogy to energy conservation in heat diffusion equation
+    //
+    //  Function computes   
+    //          Integral[ OptionValue[Log[underlyingPrice]] - 
+    //                  - Max[underlyingPrice - Exp[- r*T] * strike, 0],
+    //                  d(Log[underlyingPrice]), - inf, +inf]
+    //
+    //  should be equal for Eropean Call to
+    //      1/2*sigma^2*T*Exp[-r*T]*strike
+    //
+
+    double optionSurplusIntegral(double t)
+	{
+		const int NY = 500;
+		const double y0 = QL_LOG(s0_/2000);
+		const double y1 = QL_LOG(s0_*40);
+		const double dy = (y1-y0)/(NY-1);
+
+		int i = 0;
+		double sum = 0.0;
+       
+		double discount = QL_EXP(-r_*t);
+		for(double y = y0; y <= y1; y += dy, ++i) {
+			double s0 = QL_EXP(y);
+			double ds = (BSMEuropeanOption(Option::Call, s0, strike_, 0.0,
+										r_, t, sigma_).value()
+					 - QL_MAX(s0 - discount*strike_,0.0)
+				   )*dy;
+			sum += ds;
+		}
+        return sum;
+	}
+    
+    void testOptionSurplusIntegral()
+    {
+        double theory = 1./2. * sigma_*sigma_ * strike_ * maturity_ * QL_EXP(- r_*maturity_);
+        double integral = optionSurplusIntegral(maturity_);
+        cout<<"\nOption surplus integral: \n";
+        cout<<"Integral value: "<<integral<<"\t Theoretical value: "<<theory;
+        double err = QL_FABS(integral - theory);
+        cout<<"\t Error: "<<err;
+        cout<<"\t Relative error: ";
+        if(QL_FABS(theory)>1e-16) 
+            cout<<err/theory;
+        else
+            cout<<"not computed";
+        cout<<"\n";
+    }
 private:
 	double standardValue_;
 
