@@ -76,7 +76,7 @@ tex-files: docs-html
 	       -e "60,$$ s/include{findiff}/ /" \
 	       -e "60,$$ s/input{mcarlo}/ /" \
 	       -e "60,$$ s/include{mcarlo}/ /" \
-	       -e "s/ple Documentation}/ple Documentation}\\label{exchap}/" \
+	       -e "s/ple Documentation}/ple Documentation}\\\\label{exchap}/" \
 	       oldrefman.tex > latex/refman.tex
 	rm -f oldrefman.tex
 

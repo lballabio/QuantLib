@@ -63,7 +63,7 @@
     \subsection pathgen Path generation
     In progress.
 
-    \subsection pathprc Pricing on a path
+    \subsection pathprc Pricing an instrument on a path
     In progress.
 
     \subsection pathavg Accumulating and averaging samples
