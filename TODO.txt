@@ -1,4 +1,5 @@
 
+update freshmeat description
 get in touch with Gnumeric team
 
 revise interpolation allowExtrapolation
