@@ -134,8 +134,11 @@ namespace QuantLib {
         }
         std::sort(temp.begin(), temp.end(),
             std::greater<std::pair<double, std::vector<double> > >());
+        double maxEv = temp[0].first;
         for (col=0; col<size; col++) {
-            diagonal_[col] = temp[col].first;
+            // check for round-off errors
+            diagonal_[col] = 
+                (QL_FABS(temp[col].first/maxEv)<1e-16 ? 0.0 : temp[col].first);
             double sign = 1.0;
             if (temp[col].second[0]<0.0)
                 sign = -1.0;
