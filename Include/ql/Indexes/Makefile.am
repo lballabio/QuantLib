@@ -2,6 +2,9 @@
 # $Id$
 # $Source$
 # $Log$
+# Revision 1.5  2001/05/30 14:40:11  lballabio
+# Added missing file in distribution
+#
 # Revision 1.4  2001/05/29 09:24:06  lballabio
 # Using relinkable handle to term structure
 #
@@ -12,7 +15,8 @@
 includedir = $(prefix)/include/ql/Indexes
 include_HEADERS = \
     euribor.hpp \
-	libor.hpp \
-	usdlibor.hpp \
-	xibor.hpp
+    libor.hpp \
+    libormanager.hpp \
+    usdlibor.hpp \
+    xibor.hpp
 
