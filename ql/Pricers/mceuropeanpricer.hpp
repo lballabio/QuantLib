@@ -48,7 +48,7 @@ namespace QuantLib {
             McEuropeanPricer(Option::Type type, double underlying,
             double strike, Rate dividendYield, Rate riskFreeRate,
             double residualTime, double volatility, int timesteps,
-            long samples, long seed=0);
+            long samples, bool antitheticVariance = false, long seed=0);
         };
 
     }

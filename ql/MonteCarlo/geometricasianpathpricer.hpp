@@ -41,11 +41,12 @@ namespace QuantLib {
 
     namespace MonteCarlo {
 
-        //! %path pricer for geometric Asian options
+        //! %path pricer for geometric Asian options (useful for control variate)
         class GeometricAsianPathPricer : public EuropeanPathPricer {
           public:
             GeometricAsianPathPricer(Option::Type type, double underlying,
-                double strike, double discount);
+                double strike, double discount,
+                bool antitheticVariance);
             virtual double operator()(const Path &path) const;
         };
 

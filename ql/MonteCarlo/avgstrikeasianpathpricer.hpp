@@ -45,7 +45,8 @@ namespace QuantLib {
         : public EuropeanPathPricer {
           public:
             AverageStrikeAsianPathPricer(Option::Type type,
-                double underlying, double strike, double discount);
+                double underlying, double strike, double discount,
+                bool antitheticVariance);
             virtual double operator()(const Path &path) const;
         };
 

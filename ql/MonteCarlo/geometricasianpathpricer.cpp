@@ -44,24 +44,31 @@ namespace QuantLib {
     namespace MonteCarlo {
 
         GeometricAsianPathPricer::GeometricAsianPathPricer(Option::Type type,
-            double underlying, double strike, double discount)
-        : EuropeanPathPricer(type, underlying, strike, discount) {}
+            double underlying, double strike, double discount,
+            bool antitheticVariance)
+        : EuropeanPathPricer(type, underlying, strike, discount,
+          antitheticVariance) {}
 
         double GeometricAsianPathPricer::operator()(const Path & path) const {
 
             int n = path.size();
             QL_REQUIRE(n>0,"the path cannot be empty");
 
-            double price = underlying_;
-            double average = 0.0;
+            int i;
+            double growth1 = 0.0;
+            for (i=0; i<n; i++)
+                growth1 += (n-i)*(path.drift()[i]+path.randomComponent()[i]);
+            double average1 = underlying_*QL_EXP(growth1/n);
 
-            for (int i=0; i<n; i++) {
-                price *= QL_EXP(path[i]);
-                average += QL_LOG(price);
-            }
-            average = QL_EXP(average/n);
-
-            return discount_*ExercisePayoff(type_, average, strike_);
+            if (antitheticVariance_) {
+                double growth2 = 0.0;
+                for (i=0; i<n; i++)
+                    growth2 += (n-i)*(path.drift()[i]-path.randomComponent()[i]);
+                double average2 = underlying_*QL_EXP(growth2/n);
+                return discount_/2.0*(ExercisePayoff(type_, average1, strike_)
+                    +ExercisePayoff(type_, average2, strike_));
+            } else
+                return discount_*ExercisePayoff(type_, average1, strike_);
         }
 
     }

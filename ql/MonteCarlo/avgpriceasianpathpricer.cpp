@@ -44,24 +44,38 @@ namespace QuantLib {
     namespace MonteCarlo {
 
         AveragePriceAsianPathPricer::AveragePriceAsianPathPricer(
-          Option::Type type, double underlying, double strike, double discount)
-        : EuropeanPathPricer(type, underlying, strike, discount) {}
+          Option::Type type, double underlying, double strike, double discount,
+          bool antitheticVariance)
+        : EuropeanPathPricer(type, underlying, strike, discount, antitheticVariance) {}
 
         double AveragePriceAsianPathPricer::operator()(const Path & path) const {
 
             int n = path.size();
-            QL_REQUIRE(n>0,"the path cannot be empty");
+            QL_REQUIRE(n>0,
+                "AveragePriceAsianPathPricer: the path cannot be empty");
 
-            double price = underlying_;
-            double averagePrice = 0.0;
-
-            for (int i=0; i<n; i++) {
-                price *= QL_EXP(path[i]);
-                averagePrice += price;
+            double price1 = underlying_;
+            double averagePrice1 = 0.0;
+            int i;
+            for (i=0; i<n; i++) {
+                price1 *= QL_EXP(path.drift()[i]+path.randomComponent()[i]);
+                averagePrice1 += price1;
             }
-            averagePrice = averagePrice/n;
+            averagePrice1 = averagePrice1/n;
 
-            return discount_*ExercisePayoff(type_, averagePrice, strike_);
+            if (antitheticVariance_) {
+                double price2 = underlying_;
+                double averagePrice2 = 0.0;
+
+                for (i=0; i<n; i++) {
+                    price2 *= QL_EXP(path.drift()[i]-path.randomComponent()[i]);
+                    averagePrice2 += price2;
+                }
+                averagePrice2 = averagePrice2/n;
+                return discount_/2.0*(ExercisePayoff(type_, averagePrice1, strike_)
+                    +ExercisePayoff(type_, averagePrice2, strike_));
+            } else
+                return discount_*ExercisePayoff(type_, averagePrice1, strike_);
         }
 
     }

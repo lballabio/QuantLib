@@ -44,24 +44,37 @@ namespace QuantLib {
     namespace MonteCarlo {
 
         AverageStrikeAsianPathPricer::AverageStrikeAsianPathPricer(
-          Option::Type type, double underlying, double strike, double discount)
-        : EuropeanPathPricer(type, underlying, strike, discount) {}
+          Option::Type type, double underlying, double strike, double discount,
+          bool antitheticVariance) : EuropeanPathPricer(type, underlying,
+          strike, discount, antitheticVariance) {}
 
         double AverageStrikeAsianPathPricer::operator()(const Path & path) const {
 
             int n = path.size();
             QL_REQUIRE(n>0,"the path cannot be empty");
 
-            double price = underlying_;
-            double averageStrike = 0.0;
-
-            for (int i=0; i<n; i++) {
-                price *= QL_EXP(path[i]);
-                averageStrike += price;
+            double price1 = underlying_;
+            double averageStrike1 = 0.0;
+            int i;
+            for (i=0; i<n; i++) {
+                price1 *= QL_EXP(path.drift()[i]+path.randomComponent()[i]);
+                averageStrike1 += price1;
             }
-            averageStrike = averageStrike/n;
+            averageStrike1 = averageStrike1/n;
 
-            return discount_*ExercisePayoff(type_, price, averageStrike);
+            if (antitheticVariance_) {
+                double price2 = underlying_;
+                double averageStrike2 = 0.0;
+
+                for (i=0; i<n; i++) {
+                    price2 *= QL_EXP(path.drift()[i]-path.randomComponent()[i]);
+                    averageStrike2 += price2;
+                }
+                averageStrike2 = averageStrike2/n;
+                return discount_/2.0*(ExercisePayoff(type_, price1, averageStrike1)
+                    +ExercisePayoff(type_, price2, averageStrike2));
+            } else
+                return discount_*ExercisePayoff(type_, price1, averageStrike1);
         }
 
     }

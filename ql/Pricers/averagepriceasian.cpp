@@ -50,15 +50,10 @@ namespace QuantLib {
         using MonteCarlo::GeometricAsianPathPricer;
 
         AveragePriceAsian::AveragePriceAsian(Option::Type type,
-                                             double       underlying,
-                                             double       strike,
-                                             Rate         dividendYield,
-                                             Rate         riskFreeRate,
-                                             double       residualTime,
-                                             double       volatility,
-                                             int          timesteps,
-                                             long         samples,
-                                             long         seed)
+            double underlying, double strike, Rate dividendYield,
+            Rate riskFreeRate, double residualTime, double volatility,
+            int timesteps, long samples,
+            bool antitheticVariance, long seed)
         : McPricer(samples, seed) {
             //! Initialize the path generator
             double mu = riskFreeRate - dividendYield
@@ -71,11 +66,11 @@ namespace QuantLib {
             //! Initialize the pricer on the single Path
             Handle<PathPricer> spPricer(
                 new AveragePriceAsianPathPricer(type, underlying, strike,
-                    QL_EXP(-riskFreeRate*residualTime)));
+                    QL_EXP(-riskFreeRate*residualTime), antitheticVariance));
 
             Handle<PathPricer> controlVariateSpPricer(
                 new GeometricAsianPathPricer(type, underlying, strike,
-                    QL_EXP(-riskFreeRate*residualTime)));
+                    QL_EXP(-riskFreeRate*residualTime), antitheticVariance));
 
             double controlVariatePrice = GeometricAsianOption(type, 
                 underlying, strike, dividendYield, riskFreeRate, 
