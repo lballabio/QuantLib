@@ -104,7 +104,7 @@ namespace QuantLib {
 
         template <class Operator>
         inline void MixedScheme<Operator>::step(arrayType& a, Time t) {
-            int i;
+            Size i;
             for (i=0; i<bcs_.size(); i++)
                 bcs_[i]->setTime(t);
             if (theta_!=1.0) { // there is an explicit part

@@ -36,8 +36,8 @@ namespace QuantLib {
     Date::Date(int serialNumber)
     : serialNumber_(serialNumber) {
         #ifdef QL_DEBUG
-            QL_REQUIRE(serialNumber >= minimumSerialNumber() &&
-                       serialNumber <= maximumSerialNumber(),
+            QL_REQUIRE(serialNumber >= int(minimumSerialNumber()) &&
+                       serialNumber <= int(maximumSerialNumber()),
                 "Date " + IntegerFormatter::toString(serialNumber) +
                 "outside allowed range [" +
                 DateFormatter::toString(minDate()) + "-" +
