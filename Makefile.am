@@ -12,6 +12,7 @@ dist_m4data_DATA = quantlib.m4
 
 EXTRA_DIST = \
 	Authors.txt \
+	BUGS.txt \
 	ChangeLog.txt \
 	Contributors.txt \
 	History.txt \
