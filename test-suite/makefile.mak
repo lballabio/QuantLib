@@ -57,6 +57,7 @@ QL_TESTS = \
     "quantooption.obj$(_mt)$(_D)" \
     "quotes.obj$(_mt)$(_D)" \
     "riskstats.obj$(_mt)$(_D)" \
+    "rounding.obj$(_mt)$(_D)" \
     "solvers.obj$(_mt)$(_D)" \
     "stats.obj$(_mt)$(_D)" \
     "swap.obj$(_mt)$(_D)" \

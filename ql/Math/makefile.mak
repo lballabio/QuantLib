@@ -37,6 +37,7 @@ OBJS = \
     "normaldistribution.obj$(_mt)$(_D)" \
     "primenumbers.obj$(_mt)$(_D)" \
     "pseudosqrt.obj$(_mt)$(_D)" \
+    "rounding.obj$(_mt)$(_D)" \
     "svd.obj$(_mt)$(_D)" \
     "symmetricschurdecomposition.obj$(_mt)$(_D)"
 

@@ -23,6 +23,8 @@ INCLUDE_DIR    = ..\..
 
 # Object files
 OBJS = \
+    "americanpayoffatexpiry.obj$(_mt)$(_D)" \
+    "americanpayoffathit.obj$(_mt)$(_D)" \
     "blackformula.obj$(_mt)$(_D)"
 
 # Tools to be used

@@ -4993,6 +4993,9 @@
 				RelativePath="ql\Math\riskstatistics.hpp">
 			</File>
 			<File
+				RelativePath=".\ql\Math\rounding.cpp">
+			</File>
+			<File
 				RelativePath=".\ql\Math\rounding.hpp">
 			</File>
 			<File
@@ -6891,7 +6894,16 @@
 			Name="PricingEngines"
 			Filter="">
 			<File
+				RelativePath=".\ql\PricingEngines\all.hpp">
+			</File>
+			<File
+				RelativePath=".\ql\PricingEngines\americanpayoffatexpiry.cpp">
+			</File>
+			<File
 				RelativePath="ql\PricingEngines\americanpayoffatexpiry.hpp">
+			</File>
+			<File
+				RelativePath=".\ql\PricingEngines\americanpayoffathit.cpp">
 			</File>
 			<File
 				RelativePath="ql\PricingEngines\americanpayoffathit.hpp">
@@ -6961,6 +6973,9 @@
 			</File>
 			<File
 				RelativePath="ql\PricingEngines\blackmodel.hpp">
+			</File>
+			<File
+				RelativePath=".\ql\PricingEngines\core.hpp">
 			</File>
 			<File
 				RelativePath="ql\PricingEngines\genericmodelengine.hpp">

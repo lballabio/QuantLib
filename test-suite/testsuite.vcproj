@@ -2104,6 +2104,9 @@
 				</FileConfiguration>
 			</File>
 			<File
+				RelativePath=".\rounding.cpp">
+			</File>
+			<File
 				RelativePath="solvers.cpp">
 				<FileConfiguration
 					Name="Debug|Win32">
@@ -2556,6 +2559,9 @@
 			</File>
 			<File
 				RelativePath="riskstats.hpp">
+			</File>
+			<File
+				RelativePath=".\rounding.hpp">
 			</File>
 			<File
 				RelativePath="solvers.hpp">
