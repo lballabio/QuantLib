@@ -18,12 +18,15 @@ LIBRARY
     MONTE CARLO FRAMEWORK
         add example of Martingale control variate
         add examples of Montecarlo internal and Montecarlo convergence
+        have random generator as input
+        have statistics class as input
 
     FINITE DIFFERENCE FRAMEWORK
         boundary conditions as in Wilmott
         Douglas scheme (QuEP)
         Richardson extrapolation (QuEP)
         SOR for free boundary condition
+        have time scheme as input
 
     ASIAN:
         continuous geometric APO backward starting instead of forward starting
