@@ -27,6 +27,9 @@
     
     $Source$
     $Log$
+    Revision 1.4  2001/03/14 13:36:20  marmar
+    Changed to accomodate some bad behaviour of VB
+
     Revision 1.3  2001/03/12 13:09:22  marmar
     instances of Array and Matrix can be easily accessed by COM
 
@@ -75,7 +78,10 @@ from win32com.server.policy import DynamicPolicy
 from pythoncom import *
 
 PyIDispatchType = TypeIIDs[IID_IDispatch]
-useDebug = 0 # Set to 1 to use "Python Trace Collector" to debug
+# Set useDebug  = 0 to avoid debugging of COM,
+#                   note that any print statement will raise an exception
+# Set useDebug  = 1 to use "Python Trace Collector" to debug
+useDebug = 0 
 
 def FixArguments(args):
     """Unicode objects are converted to strings, PyIDispatch objects and
@@ -103,10 +109,12 @@ def FixVisualBasicName(name):
     to type from VB.  E.g. if you type 'value' it will be converted into
     'Value', 'next' into 'Next' and so on.  This function tries to fix 
     this behaviour.
+    Also, if 'Count' is encountered it is transformed into '__len__'
     """
-    firstLetter = string.lower(name[0])
-    lastPartOfName = name[1:]
-    return firstLetter + lastPartOfName
+    if name == 'Count' :
+        return '__len__'
+    else:
+        return string.lower(name[0]) + name[1:]
 
 def PrepareForReturn(object):
    
@@ -147,36 +155,40 @@ class QuitePermissivePolicy(DynamicPolicy):
         except KeyError:
           raise COMException(scode = winerror.DISP_E_MEMBERNOTFOUND,
                              desc="Member not found")
-         
+                 
         args = FixArguments(args)
-         
-        if  not hasattr(self._obj_, name):
-            # Transform the 'count' of COM objects in 'len' of python 
-            if (wFlags & (DISPATCH_PROPERTYGET | DISPATCH_METHOD)) and name == 'Count' :
-                return PrepareForReturn(len(self._obj_))
-            # VB sometimes screws up names of methods
+        if not hasattr(self._obj_, name):
             name = FixVisualBasicName(name)
-            
          
         if wFlags & DISPATCH_METHOD:
             if name == '_value_':
-                # Object has been called without methods try self._obj_(args)
+                # VB calls to COM of the type "PyCOM_object(args)" are mapped
+                # into calls to the method "_value_".
+               
+                # When 'self._obj_' has the attribute '__call__' then it
+                #is returned 'self._obj_(args)'
                 if hasattr(self._obj_, '__call__'):
                     return PrepareForReturn(apply(self._obj_,args))                  
-                # otherwise assume is an array or a dictionary
+                # otherwise assume array call of the type
+                # A(i), if there is only one argument
                 elif len(args) == 1: 
-                    return PrepareForReturn(self._obj_[args[0]])
+                    return PrepareForReturn(self._obj_[int(args[0])])
+                # A(i,j), if there are two arguments
                 elif len(args) == 2:
-                    return PrepareForReturn(self._obj_[args[0]][args[1]])
+                    return PrepareForReturn( 
+                               self._obj_[int(args[0])][int(args[1])])
+                # A(i,j,k), if there are three arguments
                 elif len(args) == 3:
-                    return PrepareForReturn(self._obj_[args[0]][args[1]][args[2]])
-                elif len(args) == 4:
-                    return PrepareForReturn(self._obj_[args[0]][args[1]][args[2]][args[3]])
+                    return PrepareForReturn(
+                          self._obj_[int(args[0])][int(args[1])][int(args[2])])
+                # Sometimes VB gives i, j, k as double so it is necessary to
+                # convert them into integers using int()
                 else:
                     raise COMException(
                     "Cannot compute '%s %s'" % (repr(self._obj_), args),
                     winerror.ERROR_INVALID_ACCESS)
                
+            #Next we evaluate calls of the type "PyCOM_object.name(args)"
             try:
                 qlMethod = getattr(self._obj_, name)
             except AttributeError:
@@ -187,25 +199,36 @@ class QuitePermissivePolicy(DynamicPolicy):
             return PrepareForReturn(initializedObject)
          
         if wFlags & DISPATCH_PROPERTYGET:
+            # Here we handle the calls of the type "VB_value = PyCOM_object"
+            # in the rare case in which VB uses DISPATCH_PROPERTYGET
+            # sometimes these are dispatched as DISPATCH_METHOD in which
+            # case an error message will be raised
             initializedObject = self._obj_.__dict__[name]
             return PrepareForReturn(initializedObject)
             
         if wFlags & (DISPATCH_PROPERTYPUT | DISPATCH_PROPERTYPUTREF):
+            # Calls of the type "PyCOM_object = VB_value" are 
             if len(args) == 1:
                 setattr(self._obj_, name, args)
+            # If there is more than one arguments one of the following
+            # can be assumed to be "A(i) = VB_value", if there are two arguments
             elif len(args) == 2:
-                self._obj_[args[0]] = args[1]
+                self._obj_[int(args[0])] = args[1]
+            # or  "A(i,j) = VB_value", if there are three arguments
             elif len(args) == 3:
-                self._obj_[args[0]][args[1]] = args[2]
+                self._obj_[int(args[0])][int(args[1])] = args[2]
+            # or even "A(i,j,k) = VB_value", if there are four arguments
             elif len(args) == 4:
-                self._obj_[args[0]][args[1]][args[2]] = args[3]
-            elif len(args) == 5:
-                self._obj_[args[0]][args[1]][args[2]][args[3]] = args[4]
+                self._obj_[int(args[0])][int(args[1])][int(args[2])] = args[3]
+            # Again, sometimes VB gives i, j, k as double so it is necessary to
+            # convert them into integers using int()
             else:
                 raise COMException(
-                   "DISPATCH_PROPERTYPUT called with too many arguments",
-                   winerror.E_INVALIDARG)
-        return
+                    "DISPATCH_PROPERTYPUT called with too many arguments",
+                    winerror.E_INVALIDARG)
+            # When calls of the type specified above are made the index "i", is
+            # changed to be the return value of the function. Therefore we need:
+            return int(args[0])
             
         raise COMException(scode=winerror.E_INVALIDARG, desc="invalid wFlags")
 
