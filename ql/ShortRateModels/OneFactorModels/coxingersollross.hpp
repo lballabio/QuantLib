@@ -36,13 +36,6 @@ namespace QuantLib {
             \f[ 
                 dr_t = (\theta - \alpha r_t)dt + \sqrt{r_t}\sigma dW_t .
             \f]
-            It is actually implemented as \f$ r_t = y_t^2 \f$
-            where y_t is defined by 
-            \f[
-                dy_t=\left[ 
-                        (\frac{k\theta }{2}+\frac{\sigma ^2}{8})\frac{1}{y_t}-
-                        \frac{k}{2}y_t \right] d_t+ \frac{\sigma }{2}dW_{t}
-            \f]
         */
         class CoxIngersollRoss : public OneFactorModel, 
                                  public OneFactorAffineModel {
@@ -99,6 +92,15 @@ namespace QuantLib {
             double theta_, k_, sigma_;
         };
 
+        //! Dynamics of the short-rate under the Cox-Ingersoll-Ross model
+        /*! The state variable \f$ y_t \f$ will here be the square-root of the 
+            short-rate. It satisfies the following stochastic equation
+            \f[
+                dy_t=\left[ 
+                        (\frac{k\theta }{2}+\frac{\sigma ^2}{8})\frac{1}{y_t}-
+                        \frac{k}{2}y_t \right] d_t+ \frac{\sigma }{2}dW_{t}
+            \f].
+        */
         class CoxIngersollRoss::Dynamics : public ShortRateDynamics {
           public:
             Dynamics(double theta,

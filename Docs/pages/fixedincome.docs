@@ -20,7 +20,7 @@
  The members of the QuantLib Group are listed in the QuantLib License
 */
 
-/*! \page fixedincome The interest rate modelling framework
+/*! \page fixedincome The yield-curve modelling framework
     This framework (corresponding to the ShortRateModels namespace)
     implements some single-factor and two-factor short rate models. The models 
     implemented in this library are widely used by practitionners. For the 
@@ -30,7 +30,7 @@
         dx_i = \mu(t,x_i) dt + \sigma(t,x_i) dW_t 
     \f]
     where \f$ r = f(t,x) \f$. If the model is affine (i.e. derived from the
-    QuantLib::InterestRateModelling::AffineModel class), analytical formulas 
+    QuantLib::ShortRateModels::AffineModel class), analytical formulas 
     for discount bonds and discount bond options are given (useful for 
     calibration). 
 
@@ -42,7 +42,7 @@
     \f]
     When \f$ \alpha \f$ and \f$ \sigma \f$ are constants, this model
     has analytical formulas for 
-    \link QuantLib::InterestRateModelling::HullWhite::discountBond discount bonds \endlink 
+    \link QuantLib::ShortRateModels::HullWhite::discountBond discount bonds \endlink 
     and discount bond options.
 
     \par The Black-Karasinski model
@@ -67,8 +67,8 @@
     a model
 
     Derived classed are
-    QuantLib::InterestRateModelling::CalibrationHelpers::CapHelper and
-    QuantLib::InterestRateModelling::CalibrationHelpers::SwaptionHelper. 
+    QuantLib::ShortRateModels::CalibrationHelpers::CapHelper and
+    QuantLib::ShortRateModels::CalibrationHelpers::SwaptionHelper. 
 
     For the calibration itself, you must choose an optimization method that
     will find constant parameters such that the value:

@@ -33,6 +33,7 @@ namespace QuantLib {
 
     namespace ShortRateModels {
 
+        //! Abstract base-class for two-factor models
         class TwoFactorModel : public Model {
           public:
             TwoFactorModel(Size nParams);
@@ -42,11 +43,35 @@ namespace QuantLib {
             //! Returns the short-rate dynamics
             virtual Handle<ShortRateDynamics> dynamics() const = 0;
 
+            //! Returns a two-dimensional trinomial tree
             virtual Handle<Lattices::Tree> tree(const TimeGrid& grid) const;
+
           protected:
             class ShortRateDiscounting;
         };
 
+        //! Class describing the dynamics of the two state variables
+        /*! We assume here that the short-rate is a function of two state
+            variables x and y.
+            \f[
+                r_t = f(t, x_t, y_t)
+            \f]
+            of two state variables \f$ x_t \f$ and \f$ y_t \f$. These stochastic
+            processes satisfy
+            \f[
+                x_t = \mu_x(t, x_t)dt + \sigma_x(t, x_t) dW_t^x
+            \f]
+            and
+            \f[
+                y_t = \mu_y(t,y_t)dt + \sigma_y(t, y_t) dW_t^y
+            \f]
+            where \f$ W^x \f$ and \f$ W^y \f$ are two brownian motions 
+            satisfying
+            \f[
+                dW^x_t dW^y_t = \rho dt
+            \f].
+        */
+                
         class TwoFactorModel::ShortRateDynamics {
           public:
             ShortRateDynamics(const Handle<DiffusionProcess>& xProcess,
@@ -57,12 +82,18 @@ namespace QuantLib {
             virtual ~ShortRateDynamics() {}
 
             virtual Rate shortRate(Time t, double x, double y) const = 0;
+
+            //! Risk-neutral dynamics of the first state variable x
             const Handle<DiffusionProcess>& xProcess() const {
                 return xProcess_;
             }
+
+            //! Risk-neutral dynamics of the second state variable y
             const Handle<DiffusionProcess>& yProcess() const {
                 return yProcess_;
             }
+
+            //! Correlation \f$ \rho \f$ between the two brownian motions.
             double correlation() const {
                 return correlation_;
             }

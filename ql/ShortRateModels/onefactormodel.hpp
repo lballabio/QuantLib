@@ -58,21 +58,27 @@ namespace QuantLib {
             : process_(process) {}
             virtual ~ShortRateDynamics() {};
 
+            //! Compute state variable from short rate
             virtual double variable(Time t, Rate r) const = 0;
+
+            //! Compute short rate from state variable
             virtual Rate shortRate(Time t, double variable) const = 0;
 
-            //! Returns the risk-neutral dynamics of the underlying process
+            //! Returns the risk-neutral dynamics of the state variable
             const Handle<DiffusionProcess>& process() { return process_; }
           private:
             Handle<DiffusionProcess> process_;
         };
 
+        //! Recombining trinomial tree discretizing the state variable
         class OneFactorModel::ShortRateTree : public Lattices::TrinomialTree {
           public:
+            //! Plain tree build-up from short-rate dynamics
             ShortRateTree(
                 const Handle<ShortRateDynamics>& dynamics,
                 const TimeGrid& timeGrid,
                 bool isPositive = false);
+            //! Tree build-up + numerical fitting to term-structure
             ShortRateTree(
                 const Handle<ShortRateDynamics>& dynamics,
                 const Handle<TermStructureFittingParameter::NumericalImpl>& phi,
@@ -97,6 +103,11 @@ namespace QuantLib {
             Handle<ShortRateDynamics> dynamics_;
         };
 
+        //! Single-factor affine base class
+        /*! Single-factor models with an analytical formula for discount bonds
+            should inherit from this class. They must then implement 
+            \f$ P(t, T, r_t) \f$.
+        */
         class OneFactorAffineModel : public AffineModel {
           public:
             virtual double discountBond(Time now, 

@@ -37,10 +37,7 @@ namespace QuantLib {
             \f[ 
                 dr_t = (\theta(t) - \alpha r_t)dt + \sqrt{r_t}\sigma dW_t .
             \f]
-            It is actually implemented as \f$ r_t = \varphi(t) + x_t \f$
-            where x_t follows a standard Cox-Ingersoll-Ross process.
         */
-
         class ExtendedCoxIngersollRoss : public CoxIngersollRoss,
                                          public TermStructureConsistentModel {
           public:
@@ -65,14 +62,53 @@ namespace QuantLib {
             void generateParameters();
 
           private:
-            class FittingParameter;
             class Dynamics;
+            class FittingParameter;
 
             double C(Time t, Time T) const;
 
             Parameter phi_;
         };
 
+        //! Short-rate dynamics in the extended Cox-Ingersoll-Ross model
+        /*! The short-rate is here
+            \f[
+                r_t = \varphi(t) + y_t^2
+             \f]
+            where \f$ \varphi(t) \f$ is the deterministic time-dependent 
+            parameter used for term-structure fitting and \f$ y_t \f$ is the 
+            state variable, the square-root of a standard CIR process.
+        */
+        class ExtendedCoxIngersollRoss::Dynamics
+        : public CoxIngersollRoss::Dynamics {
+          public:
+            Dynamics(const Parameter& phi,
+                     double theta,
+                     double k,
+                     double sigma,
+                     double x0)
+            : CoxIngersollRoss::Dynamics(theta, k, sigma, x0), phi_(phi) {}
+
+            virtual double variable(Time t, Rate r) const {
+                return QL_SQRT(r - phi_(t));
+            }
+            virtual double shortRate(Time t, double y) const {
+                return y*y + phi_(t);
+            }
+          private:
+            Parameter phi_;
+        };
+
+        //! Analytical term-structure fitting parameter \f$ \varphi(t) \f$.
+        /*! \f$ \varphi(t) \f$ is analytically defined by
+            \f[
+                \varphi(t) = f(t) - 
+                             \frac{2k\theta(e^{th}-1)}{2h+(k+h)(e^{th}-1)} -
+                             \frac{4 x_0 h^2 e^{th}}{(2h+(k+h)(e^{th}-1))^1},
+            \f]
+            where \f$ f(t) \f$ is the instantaneous forward rate at \f$ t \f$ 
+            and \f$ h = \sqrt{k^2 + 2\sigma^2} \f$.
+        */
         class ExtendedCoxIngersollRoss::FittingParameter 
         : public TermStructureFittingParameter {
           public:
@@ -105,37 +141,6 @@ namespace QuantLib {
             : TermStructureFittingParameter(Handle<ParameterImpl>(
                 new CIRImpl(termStructure, theta, k, sigma, x0))) {}
         };
-
-        class ExtendedCoxIngersollRoss::Dynamics
-        : public CoxIngersollRoss::Dynamics {
-          public:
-            Dynamics(const Parameter& phi,
-                     double theta,
-                     double k,
-                     double sigma,
-                     double x0)
-            : CoxIngersollRoss::Dynamics(theta, k, sigma, x0), phi_(phi) {}
-
-            virtual double variable(Time t, Rate r) const {
-                return QL_SQRT(r - phi_(t));
-            }
-            virtual double shortRate(Time t, double y) const {
-                return y*y + phi_(t);
-            }
-          private:
-            Parameter phi_;
-        };
-
-        inline Handle<OneFactorModel::ShortRateDynamics> 
-        ExtendedCoxIngersollRoss::dynamics() const {
-            return Handle<ShortRateDynamics>(
-                new Dynamics(phi_, theta(), k() , sigma(), x0()));
-        }
-
-        inline void ExtendedCoxIngersollRoss::generateParameters() {
-            phi_ = FittingParameter(termStructure(), theta(), k(), sigma(), 
-                                    x0());
-        }
 
     }
 

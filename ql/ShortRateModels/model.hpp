@@ -36,6 +36,12 @@
 
 namespace QuantLib {
 
+    /*! \namespace QuantLib::ShortRateModels
+        \brief Implementations of short-rate models
+
+        See sect. \ref fixedincome
+    */
+
     namespace ShortRateModels {
 
         //! Affine model class
@@ -79,10 +85,12 @@ namespace QuantLib {
 
             virtual Handle<Lattices::Tree> tree(const TimeGrid& grid) const = 0;
 
+            //! Calibrate to a set of market instruments (caps/swaptions)
             void calibrate(
                 CalibrationSet& instruments,
                 const Handle<Optimization::Method>& method);
 
+            //! Returns array of parameters on which calibration is done
             Array params();
             void setParams(const Array& params);
           protected:
@@ -92,7 +100,9 @@ namespace QuantLib {
             Handle<Optimization::Constraint> constraint_;
 
           private:
+            //! Constraint imposed on parameters
             class PrivateConstraint;
+            //! Calibration cost function class
             class CalibrationFunction;
             friend class CalibrationFunction;
         };

@@ -51,7 +51,6 @@ namespace QuantLib {
             Handle<SimpleSwap> swap_;
             Exercise exercise_;
             const RelinkableHandle<TermStructure>& termStructure_;
-            // helper class for implied volatility calculation
         };
 
         //! parameters for swaption calculation

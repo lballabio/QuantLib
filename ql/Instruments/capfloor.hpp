@@ -37,6 +37,7 @@ namespace QuantLib {
 
     namespace Instruments {
 
+        //! Base class for cap-like instruments
         class VanillaCapFloor : public Option {
           public:
             enum Type { Cap, Floor, Collar };
@@ -66,6 +67,7 @@ namespace QuantLib {
             RelinkableHandle<TermStructure> termStructure_;
         };
 
+        //! Concrete cap class
         class VanillaCap : public VanillaCapFloor {
           public:
             VanillaCap(
@@ -79,6 +81,7 @@ namespace QuantLib {
             {}
         };
 
+        //! Concrete floor class
         class VanillaFloor : public VanillaCapFloor {
           public:
             VanillaFloor(
@@ -92,6 +95,7 @@ namespace QuantLib {
             {}
         };
 
+        //! Concrete cap class
         class VanillaCollar : public VanillaCapFloor {
           public:
             VanillaCollar(

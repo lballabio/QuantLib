@@ -89,8 +89,8 @@ namespace QuantLib {
                 s1d.setMaxEvaluations(1000);
                 value = s1d.solve(finder, 1e-7, value, vMin, vMax);
                 std::cout << value << std::endl;
-                vMin = value - 1.0;
-                vMax = value + 1.0;
+//                vMin = value - 1.0;
+//                vMax = value + 1.0;
                 theta->change(value);
             }
         }

@@ -55,7 +55,8 @@ namespace QuantLib {
         RelinkableHandle<TermStructure> termStructure_;
     };
 
-    //! Inline methods
+    // inline definitions
+    
     inline BlackModel::BlackModel(
         const RelinkableHandle<MarketElement>& volatility,
         const RelinkableHandle<TermStructure>& termStructure)

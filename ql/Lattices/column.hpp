@@ -73,6 +73,7 @@ namespace QuantLib {
                 discounting_ = discounting;
             }
 
+            //! returns the Arrow-Debrew price of the jth node
             double statePrice(Size j) const { return statePrices_[j];}
 
             void addToStatePrice(Size j, double dx) const { 
@@ -80,6 +81,7 @@ namespace QuantLib {
                 statePrice += dx;
             }
 
+            //! returns Arrow-Debrew prices
             const std::vector<double>& statePrices() const { 
                 return statePrices_;
             }

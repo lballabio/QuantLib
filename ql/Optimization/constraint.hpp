@@ -31,11 +31,15 @@ namespace QuantLib {
 
     namespace Optimization {
 
+
+        //! Abstract constraint class
         class Constraint {
           public:
 
+            //! Actual implementation class
             class ConstraintImpl {
               public:
+                //! Tests if params satisfy the constraint
                 virtual bool test(const Array& params) const = 0;
             };
 
@@ -65,6 +69,7 @@ namespace QuantLib {
             Handle<ConstraintImpl> impl_;
         };
 
+        //! No constraint 
         class NoConstraint : public Constraint {
           public:
             class NoConstraintImpl : public Constraint::ConstraintImpl {
@@ -77,6 +82,7 @@ namespace QuantLib {
             : Constraint(Handle<ConstraintImpl>(new NoConstraintImpl)) {}
         };
 
+        //! Constraint imposing positivity to all parameters
         class PositiveConstraint : public Constraint {
           public:
             class PositiveConstraintImpl : public Constraint::ConstraintImpl {
@@ -93,6 +99,7 @@ namespace QuantLib {
             : Constraint(Handle<ConstraintImpl>(new PositiveConstraintImpl)) {}
         };
 
+        //! Constraint imposing all parameters to be in [low,high]
         class BoundaryConstraint : public Constraint {
           public:
             class BoundaryConstraintImpl : public Constraint::ConstraintImpl {

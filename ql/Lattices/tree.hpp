@@ -42,6 +42,7 @@ namespace QuantLib {
                 statePricesLimit_ = 0;
             }
 
+            //! Computes the present value of an asset using Arrow-Debrew prices
             double presentValue(const Handle<DiscretizedAsset>& asset);
 
             void initialize(

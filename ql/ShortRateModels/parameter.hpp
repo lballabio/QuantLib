@@ -34,6 +34,7 @@ namespace QuantLib {
 
     namespace ShortRateModels {
 
+        //! Base class for model parameters
         class Parameter {
           public:
             class ParameterImpl {
@@ -65,6 +66,7 @@ namespace QuantLib {
             Optimization::Constraint constraint_;
         };
 
+        //! Standard constant parameter \f$ a(t) = a \f$
         class ConstantParameter : public Parameter {
           public:
             class ConstantParameterImpl : public Parameter::ParameterImpl {
@@ -94,6 +96,7 @@ namespace QuantLib {
 
         };
 
+        //! Parameter which is always zero \f$ a(t) = 0 \f$
         class NullParameter : public Parameter {
           public:
             class NullParameterImpl : public Parameter::ParameterImpl {
@@ -110,6 +113,11 @@ namespace QuantLib {
             {}
         };
 
+        //! Piecewise constant parameter 
+        /*! \f$ a(t) = a_i if t_{i-1} \geq t < t_i \f$.
+            This kind of parameter is usually used to enhance the fitting of a 
+            model
+        */
         class PiecewiseConstantParameter : public Parameter {
           public:
             class PiecewiseConstantParameterImpl : public Parameter::ParameterImpl {
@@ -138,6 +146,7 @@ namespace QuantLib {
             {}
         };
 
+        //! Deterministic time-dependent parameter used for yield-curve fitting
         class TermStructureFittingParameter : public Parameter {
           public:
             class NumericalImpl : public Parameter::ParameterImpl {

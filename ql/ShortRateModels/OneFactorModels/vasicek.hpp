@@ -34,11 +34,10 @@ namespace QuantLib {
         //! Vasicek model class
         /*! This class implements the Vasicek model defined by 
             \f[ 
-                dr_t = a(b - r_t)dt + \sigma dW_t
+                dr_t = a(b - r_t)dt + \sigma dW_t ,
             \f]
             where \f$ a \f$, \f$ b \f$ and \f$ \sigma \f$ are constants. 
         */
-
         class Vasicek : public OneFactorModel, public OneFactorAffineModel {
           public:
             Vasicek(Rate r0 = 0.05, 
@@ -69,6 +68,10 @@ namespace QuantLib {
             Parameter& sigma_;
         };
 
+        //! Short-rate dynamics in the Vasicek model
+        /*! The short-rate follows an Ornstein-Uhlenbeck process with mean
+            \f$ b \f$.
+        */
         class Vasicek::Dynamics : public ShortRateDynamics {
           public:
             Dynamics(double a,
@@ -76,18 +79,20 @@ namespace QuantLib {
                      double sigma,
                      double r0)
             : ShortRateDynamics(Handle<DiffusionProcess>(
-                  new OrnsteinUhlenbeckProcess(a, sigma))),
+                  new OrnsteinUhlenbeckProcess(a, sigma, r0 - b))),
               a_(a), b_(b), r0_(r0) {}
 
             virtual double variable(Time t, Rate r) const {
-                return r - r0_ -  a_*b_*t;
+                return r - b_;
             }
             virtual double shortRate(Time t, double x) const {
-                return x + r0_ + a_*b_*t;
+                return x + b_;
             }
           private:
             double a_, b_, r0_;
         };
+
+        // inline definitions
 
         inline Handle<OneFactorModel::ShortRateDynamics> 
         Vasicek::dynamics() const {

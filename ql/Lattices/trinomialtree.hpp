@@ -32,6 +32,7 @@ namespace QuantLib {
 
     namespace Lattices {
 
+        //! Recombining trinomial tree class
         class TrinomialTree : public Tree {
           public:
             TrinomialTree(const Handle<DiffusionProcess>& process,
@@ -42,6 +43,10 @@ namespace QuantLib {
             std::vector<double> dx_;
         };
 
+        //! Branching scheme for a trinomial node
+        /*! Each node has three descendants, with the middle branch linked
+            to the node which is closest to the expectation of the variable.
+        */
         class TrinomialBranching : public Branching {
           public:
             TrinomialBranching() : probs_(3) {}

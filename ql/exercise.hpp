@@ -61,24 +61,31 @@ namespace QuantLib {
     };
 
     //! American exercise class
+    /*! An American option can be exercised at any time between two predefined
+        dates
+    */
     class AmericanExercise : public Exercise {
       public:
         AmericanExercise(Date earliestDate, Date latestDate);
     };
 
     //! Bermudan exercise class
+    /*! A Bermudan option can only be exercised at a set of fixed dates.
+    */
     class BermudanExercise : public Exercise {
       public:
         BermudanExercise(const std::vector<Date>& dates);
     };
 
     //! European exercise class
+    /*! A European option can only be exercised at one date.
+    */
     class EuropeanExercise : public Exercise {
       public:
         EuropeanExercise(Date date);
     };
 
-    //inline definitions
+    // inline definitions
 
     inline Exercise::Exercise(Type type, const std::vector<Date>& dates)
     : dates_(dates), type_(type), calendar_(Calendars::TARGET()), 

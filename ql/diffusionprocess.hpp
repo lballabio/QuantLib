@@ -33,7 +33,7 @@ namespace QuantLib {
     //! Diffusion process class
     /*! This class describes a stochastic process goverved by 
         \f[
-            dx = \mu(t, x)dt + \sigma(t, x)dW_t.
+            dx_t = \mu(t, x_t)dt + \sigma(t, x_t)dW_t.
         \f]
     */
     class DiffusionProcess {
@@ -43,13 +43,26 @@ namespace QuantLib {
 
         double x0() const { return x0_; }
 
+        //! returns the drift part of the equation, i.e. \f$ \mu(t, x_t) \f$
         virtual double drift(Time t, double x) const = 0;
+
+        //! returns the diffusion part of the equation, i.e. \f$\sigma(t,x_t)\f$
         virtual double diffusion(Time t, double x) const = 0;
-        //! By default, returns the Euler approximation of the expectation
+
+        //! returns the expectation of the process after a time interval
+        /*! returns \f$ E(x_{t_0 + \Delta t} | x_{t_0} = x_0) \f$. 
+            By default, it returns the Euler approximation defined by 
+            \f$ x_0 + \mu(t_0, x_0) \Delta t \f$.
+        */
         virtual double expectation(Time t0, double x0, Time dt) const {
             return x0 + drift(t0, x0)*dt;
         }
-        //! By default, returns the Euler approximation of the variance
+
+        //! returns the variance of the process after a time interval
+        /*! returns \f$ Var(x_{t_0 + \Delta t} | x_{t_0} = x_0) \f$. 
+            By default, it returns the Euler approximation defined by 
+            \f$ \sigma(t_0, x_0)^2 \Delta t \f$.
+        */
         virtual double variance(Time t0, double x0, Time dt) const {
             double sigma = diffusion(t0, x0);
             return sigma*sigma*dt;

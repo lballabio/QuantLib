@@ -35,6 +35,7 @@ namespace QuantLib {
 
     namespace ShortRateModels {
 
+        //! Class representing liquid market instruments used during calibration
         class CalibrationHelper : public Patterns::Observer, 
                                   public Patterns::Observable {
           public:
@@ -47,22 +48,27 @@ namespace QuantLib {
                 notifyObservers(); 
             }
 
+            //! returns the actual price of the instrument (from volatility)
             double marketValue() { return marketValue_; }
 
-            virtual void addTimes(std::list<Time>& times) const = 0;
-
+            //! returns the price of the instrument according to the model
             virtual double modelValue() = 0;
 
+            //! returns the error resulting from the model valuation
             virtual double calibrationError() {
                 return QL_FABS(marketValue() - modelValue())/marketValue();
             }
 
+            virtual void addTimes(std::list<Time>& times) const = 0;
+
+            //! Black volatility implied by the model
             double impliedVolatility(double targetValue,
                                      double accuracy,
                                      Size maxEvaluations,
                                      double minVol,
                                      double maxVol) const;
 
+            //! Black price given a volatility
             virtual double blackPrice(double volatility) const = 0;
 
             void setPricingEngine(const Handle<OptionPricingEngine>& engine) {
@@ -79,6 +85,10 @@ namespace QuantLib {
             class ImpliedVolatilityHelper;
         };
 
+        //! Set of calibration instruments
+        /*! For the moment, this is just here to facilitate the assignment of a
+            pricing engine to a set of calibration helpers
+        */
         class CalibrationSet : public std::vector<Handle<CalibrationHelper> > {
           public:
 

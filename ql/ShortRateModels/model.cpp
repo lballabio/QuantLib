@@ -47,7 +47,6 @@ namespace QuantLib {
             virtual double value(
                 const Array& params) {
                 model_->setParams(params);
-//                std::cout << "parameters set to " << params << std::endl;
 
                 double value = 0.0;
                 for (Size i=0; i<prices_.size(); i++) {
@@ -55,7 +54,6 @@ namespace QuantLib {
                     value += diff*diff;
                 }
 
-//                std::cout << "Cost function: " << QL_SQRT(value) << std::endl;
                 return QL_SQRT(value);
             }
             virtual double finiteDifferenceEpsilon() { return 1e-6; }
@@ -78,9 +76,6 @@ namespace QuantLib {
 
             Array result(prob.minimumValue());
             setParams(result);
-
-//            std::cout << "Cost function: " << f.value(result) << std::endl;
-//            std::cout << "Model calibrated to:" << result << std::endl;
         }
 
         Array Model::params() {
