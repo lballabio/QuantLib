@@ -30,6 +30,9 @@
 
 // $Source$
 // $Log$
+// Revision 1.11  2001/06/04 09:31:39  lballabio
+// Using extrapolation in guesses
+//
 // Revision 1.10  2001/06/01 16:50:17  lballabio
 // Term structure on deposits and swaps
 //
@@ -85,7 +88,9 @@ namespace QuantLib {
 
         double DepositRateHelper::discountGuess() const {
             QL_REQUIRE(termStructure_ != 0, "term structure not set");
-            return termStructure_->discount(settlement_) / 
+            // extrapolation shouldn't be needed if the input makes sense
+            // but we'll play it safe
+            return termStructure_->discount(settlement_,true) / 
                    (1.0+rate_*yearFraction_);
         }
 
