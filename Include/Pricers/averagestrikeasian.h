@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2000, 2001
+ * Copyright (C) 2001
  * Ferdinando Ametrano, Luigi Ballabio, Adolfo Benin, Marco Marchioro
  * 
  * This file is part of QuantLib.
@@ -17,34 +17,22 @@
  * You should have received a copy of the license along with this file;
  * if not, contact ferdinando@ametrano.net
  *
- * QuantLib license is also available at http://quantlib.sourceforge.net/LICENSE.TXT
+ * QuantLib license is also available at
+ * http://quantlib.sourceforge.net/LICENSE.TXT
 */
 
-/*! \file mcasianpricer.h
+/*! \file averagestrikeasian.h
     
     $Source$
     $Name$
     $Log$
-    Revision 1.5  2001/01/29 15:02:13  marmar
-    Modified to accomodate code-sharing with
-    multi-dimensional Monte Carlo
+    Revision 1.1  2001/02/05 16:53:38  marmar
+    McAsianPricer replaced by AveragePriceAsian and AverageStrikeAsian
 
-    Revision 1.4  2001/01/17 11:54:18  marmar
-    Some documentation added and 80 columns format enforced.
-
-    Revision 1.3  2001/01/05 11:42:38  lballabio
-    Renamed SinglePathEuropeanPricer to EuropeanPathPricer
-
-    Revision 1.2  2001/01/05 11:02:38  lballabio
-    Renamed SinglePathPricer to PathPricer
-
-    Revision 1.1  2001/01/04 17:31:23  marmar
-    Alpha version of the Monte Carlo tools.
-    
 */
 
-#ifndef quantlib_montecarlo_asian_pricer_h
-#define quantlib_montecarlo_asian_pricer_h
+#ifndef quantlib_pricers_average_strike_asian_pricer_h
+#define quantlib_pricers_average_strike_asian_pricer_h
 
 #include "qldefines.h"
 #include "options.h"
@@ -58,12 +46,12 @@ namespace QuantLib {
             uses a control variate.
         */
 
-        class McAsianPricer: public McPricer {
-          public:
-            McAsianPricer(Option::Type type, double underlying, double strike, 
-               Rate underlyingGrowthRate,   Rate riskFreeRate, 
+        class AverageStrikeAsian: public McPricer {
+        public:
+            AverageStrikeAsian(Option::Type type, double underlying, 
+               double strike, Rate underlyingGrowthRate, Rate riskFreeRate, 
                double residualTime, double volatility, int timesteps, 
-               long samples, long seed=0);
+               long samples, long seed = 0);
         };
 
     }

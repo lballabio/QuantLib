@@ -25,6 +25,9 @@
 """ 
     $Source$
     $Log$
+    Revision 1.4  2001/02/05 16:57:14  marmar
+    McAsianPricer replaced by AveragePriceAsian and AverageStrikeAsian
+
     Revision 1.3  2001/01/08 16:19:29  nando
     more homogeneous format
 
@@ -33,32 +36,36 @@
 
 """
 
+import QuantLib
 
-from QuantLib import McEuropeanPricer
-from QuantLib import McAsianPricer
-import time
-startTime = time.time()
+def main():
+   import time
+   startTime = time.time()
 
-print "Testing Monte Carlo pricers"
+   print "Testing Monte Carlo pricers"
 
-type = "Call"
-underlying = 100
-strike = 100
-underlyingGrowthRate = 0.0
-riskFreeRate = 0.05
-residualTime = 1.0
-volatility = 0.3
-timesteps = 100
-numIte = 10000
-seed = 6919789
+   type = "Call"
+   underlying = 100
+   strike = 100
+   underlyingGrowthRate = 0.0
+   riskFreeRate = 0.05
+   residualTime = 1.0
+   volatility = 0.3
+   timesteps = 100
+   numIte = 10000
+   seed = 3456789
 
-print "Pricer                          iterations   Value     Error Estimate "
-for pricer in [McEuropeanPricer, McAsianPricer]:
-  p = pricer(type, underlying, strike, underlyingGrowthRate, riskFreeRate,
-             residualTime, volatility, timesteps, numIte, seed=seed)
-  print "%30s: %7i %12.6f %12.6f" %(pricer, numIte, p.value(), p.errorEstimate())
+   print "Pricer                          iterations   Value     Error Estimate "
+   for pricer in [QuantLib.McEuropeanPricer,
+                  QuantLib.AverageStrikeAsian,
+                  QuantLib.AveragePriceAsian]:
+     p = pricer(type, underlying, strike, underlyingGrowthRate, riskFreeRate,
+                residualTime, volatility, timesteps, numIte, seed=seed)
+     print "%30s: %7i %12.6f %12.6f" %(pricer, numIte, p.value(), p.errorEstimate())
 
-print
-print 'Test passed (elapsed time', time.time() - startTime, ')'
+   print
+   print 'Test passed (elapsed time', time.time() - startTime, ')'
+
+main()
 print 'Press return to end this test'
 raw_input()

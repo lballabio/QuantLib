@@ -25,9 +25,12 @@
 	$Source$
 	$Name$
 	$Log$
+	Revision 1.4  2001/02/05 16:55:12  marmar
+	McAsianPricer replaced by AveragePriceAsian and AverageStrikeAsian
+
 	Revision 1.3  2001/02/02 10:58:39  marmar
 	MonteCarloTools.i added
-
+	
 	Revision 1.2  2001/01/15 13:43:20  lballabio
 	Using PyArray typemap
 	
@@ -89,18 +92,32 @@ class GeometricAsianOption {
 };
 
 %{
-#include "mcasianpricer.h"
-using QuantLib::Pricers::McAsianPricer;
+#include "averagepriceasian.h"
+using QuantLib::Pricers::AveragePriceAsian;
 %}
 
-class McAsianPricer{
+class AveragePriceAsian{
     public:
-	McAsianPricer(OptionType type, double underlying, double strike, 
+	AveragePriceAsian(OptionType type, double underlying, double strike, 
 		 Rate underlyingGrowthRate,   Rate riskFreeRate, double residualTime, 
 		 double volatility,	int timesteps, int confnumber, long seed);
 	double value() const;
 	double errorEstimate() const;
 };
+%{
+#include "averagestrikeasian.h"
+using QuantLib::Pricers::AverageStrikeAsian;
+%}
+
+class AverageStrikeAsian{
+    public:
+	AverageStrikeAsian(OptionType type, double underlying, double strike, 
+		 Rate underlyingGrowthRate,   Rate riskFreeRate, double residualTime, 
+		 double volatility,	int timesteps, int confnumber, long seed);
+	double value() const;
+	double errorEstimate() const;
+};
+
 
 %{
 #include "plainbasketoption.h"

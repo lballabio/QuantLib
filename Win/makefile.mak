@@ -48,7 +48,8 @@ MATH_OBJS        = $(OUTPUT_DIR)\matrix.obj      \
                    $(OUTPUT_DIR)\normaldistribution.obj \
                    $(OUTPUT_DIR)\statistics.obj
 
-MONTECARLO_OBJS  = $(OUTPUT_DIR)\averageasianpathpricer.obj \ 
+MONTECARLO_OBJS  = $(OUTPUT_DIR)\averagepriceasianpathpricer.obj \ 
+                   $(OUTPUT_DIR)\averagestrikeasianpathpricer.obj \
                    $(OUTPUT_DIR)\basketpathpricer.obj       \
                    $(OUTPUT_DIR)\controlvariatedpathpricer.obj \
                    $(OUTPUT_DIR)\europeanpathpricer.obj        \
@@ -59,11 +60,12 @@ FDM_OBJS         = $(OUTPUT_DIR)\tridiagonaloperator.obj \
                    $(OUTPUT_DIR)\bsmoperator.obj
 
 PRICER_OBJS      = $(OUTPUT_DIR)\bsmoption.obj \
+                   $(OUTPUT_DIR)\averagestrikeasian.obj \
+                   $(OUTPUT_DIR)\averagepriceasian.obj \ 
                    $(OUTPUT_DIR)\bsmnumericaloption.obj \
                    $(OUTPUT_DIR)\bsmeuropeanoption.obj \
                    $(OUTPUT_DIR)\bsmamericanoption.obj \
                    $(OUTPUT_DIR)\dividendamericanoption.obj \
-                   $(OUTPUT_DIR)\mcasianpricer.obj \
                    $(OUTPUT_DIR)\mceuropeanpricer.obj \
                    $(OUTPUT_DIR)\plainbasketoption.obj 
 
@@ -263,8 +265,10 @@ $(OUTPUT_DIR)\multivariateaccumulator.obj: \
 
 # Monte Carlo
 MonteCarlo: $(OUTPUT_DIR) $(MONTECARLO_OBJS)
-$(OUTPUT_DIR)\averageasianpathpricer.obj: \
-    $(SOURCES_DIR)\MonteCarlo\averageasianpathpricer.cpp
+$(OUTPUT_DIR)\averagepriceasianpathpricer.obj: \
+    $(SOURCES_DIR)\MonteCarlo\averagepriceasianpathpricer.cpp
+$(OUTPUT_DIR)\averagestrikeasianpathpricer.obj: \
+    $(SOURCES_DIR)\MonteCarlo\averagestrikeasianpathpricer.cpp
 $(OUTPUT_DIR)\basketpathpricer.obj: \
     $(SOURCES_DIR)\MonteCarlo\basketpathpricer.cpp    
 $(OUTPUT_DIR)\controlvariatedpathpricer.obj: \
@@ -279,6 +283,10 @@ $(OUTPUT_DIR)\geometricasianpathpricer.obj: \
 # Pricers
 Pricers: $(OUTPUT_DIR) $(PRICER_OBJS)
 $(OUTPUT_DIR)\bsmoption.obj: $(SOURCES_DIR)\Pricers\bsmoption.cpp
+$(OUTPUT_DIR)\averagepriceasian.obj: \
+                $(SOURCES_DIR)\Pricers\averagepriceasian.cpp
+$(OUTPUT_DIR)\averagestrikeasian.obj: \ 
+                $(SOURCES_DIR)\Pricers\averagestrikeasian.cpp
 $(OUTPUT_DIR)\bsmnumericaloption.obj: \
                 $(SOURCES_DIR)\Pricers\bsmnumericaloption.cpp
 $(OUTPUT_DIR)\bsmeuropeanoption.obj:  \
@@ -287,8 +295,6 @@ $(OUTPUT_DIR)\bsmamericanoption.obj: \
                 $(SOURCES_DIR)\Pricers\bsmamericanoption.cpp
 $(OUTPUT_DIR)\dividendamericanoption.obj: \
                 $(SOURCES_DIR)\Pricers\dividendamericanoption.cpp
-$(OUTPUT_DIR)\mcasianpricer.obj: \
-                $(SOURCES_DIR)\Pricers\mcasianpricer.cpp
 $(OUTPUT_DIR)\mceuropeanpricer.obj: \
                 $(SOURCES_DIR)\Pricers\mceuropeanpricer.cpp
 $(OUTPUT_DIR)\plainbasketoption.obj: \

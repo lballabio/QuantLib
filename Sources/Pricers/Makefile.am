@@ -11,7 +11,8 @@ libPricers_la_SOURCES = bsmamericanoption.cpp \
     bsmnumericaloption.cpp \
     bsmoption.cpp \
     dividendamericanoption.cpp \
-    mcasianpricer.cpp \
+    averagepriceasian.cpp \
+    averagestrikeasian.cpp \
     mceuropeanpricer.cpp \
     plainbasketoption.cpp
 
