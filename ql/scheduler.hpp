@@ -44,7 +44,7 @@ namespace QuantLib {
         //@{
         Size size() const { return dates_.size(); }
         const Date& operator[](Size i) const;
-        const Date& date(int i) const;
+        const Date& date(Size i) const;
         bool isRegular(Size i) const;
         //@}
         //! \name Other inspectors
@@ -147,8 +147,8 @@ namespace QuantLib {
       dates_(dates) {}
         
 
-    inline const Date& Schedule::date(int i) const {
-        QL_REQUIRE(i >= 0 && i <= int(dates_.size()),
+    inline const Date& Schedule::date(Size i) const {
+        QL_REQUIRE(i <= dates_.size(),
                    "date index out of bounds");
         return dates_[i];
     }
