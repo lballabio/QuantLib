@@ -553,6 +553,14 @@ SOURCE=..\Include\Pricers\averagestrikeasian.h
 # End Source File
 # Begin Source File
 
+SOURCE=..\Sources\Pricers\barrieroption.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\Include\Pricers\barrieroption.h
+# End Source File
+# Begin Source File
+
 SOURCE=..\Sources\Pricers\bsmamericanoption.cpp
 # End Source File
 # Begin Source File
