@@ -28,7 +28,8 @@ namespace QuantLib {
 
     std::string IntegerFormatter::toString(long l, int digits) {
         if (l == long(Null<int>()))
-        return std::string("null");
+            return std::string("null");
+
         char s[64];
         QL_SPRINTF(s,"%*ld",(digits>64?64:digits),l);
         return std::string(s);
@@ -43,6 +44,19 @@ namespace QuantLib {
           default: suffix = "th";
         }
         return toString(l)+suffix;
+    }
+
+    std::string IntegerFormatter::toPowerOfTwo(unsigned long l, int digits) {
+        if (l == unsigned long(Null<int>()))
+            return std::string("null");
+
+        int power = 0;
+        while (!(l & 1UL)) {
+            power++;
+            l >>= 1;
+        }
+        std::string powerOfTwo("*2^");
+        return toString(l, digits) + powerOfTwo + toString(power, 2);
     }
 
     std::string DoubleFormatter::toString(double x, int precision, 

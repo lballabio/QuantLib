@@ -35,6 +35,7 @@ namespace QuantLib {
       public:
         static std::string toString(long l, int digits = 0);
         static std::string toOrdinal(long l);
+        static std::string toPowerOfTwo(unsigned long l, int digits = 0);
     };
 
     //! Formats doubles for output
