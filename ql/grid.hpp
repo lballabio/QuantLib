@@ -30,11 +30,8 @@
 
 namespace QuantLib {
 
-    //! spatial grid class
-    class Grid : public Array {
-      public:
-        Grid(double center, double dx, Size steps);
-    };
+    Disposable<Array> CenteredGrid(double center, double dx, Size steps);
+    Disposable<Array> BoundedGrid(double xMin, double xMax, Size steps);
 
     //! time grid class
     class TimeGrid : public std::vector<Time> {
@@ -138,10 +135,23 @@ namespace QuantLib {
 
     // inline definitions
 
-    inline Grid::Grid(double center, double dx, Size steps) : Array(steps) {
-        for (Size i=0; i<steps; i++)
-            (*this)[i] = center + (i - steps/2.0)*dx;
+    inline Disposable<Array> CenteredGrid(double center, double dx, 
+                                          Size steps) {
+        Array result(steps+1);
+        for (Size i=0; i<steps+1; i++)
+            result[i] = center + (i - steps/2.0)*dx;
+        return result;
     }
+    
+    inline Disposable<Array> BoundedGrid(double xMin, double xMax, 
+                                         Size steps) {
+        Array result(steps+1);
+        double x=xMin, dx=(xMax-xMin)/double(steps);
+        for (Size i=0; i<steps+1; i++, x+=dx)
+            result[i] = x;
+        return result;
+    }
+
 
     inline TimeGrid::TimeGrid(Time end, Size steps) {
         Time dt = end/steps;
