@@ -1952,19 +1952,7 @@ SOURCE=.\ql\cashflow.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\ql\config.ansi.hpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\ql\config.bcc.hpp
-# End Source File
-# Begin Source File
-
 SOURCE=.\ql\config.msvc.hpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\ql\config.mwcw.hpp
 # End Source File
 # Begin Source File
 
