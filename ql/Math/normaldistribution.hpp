@@ -216,7 +216,7 @@ namespace QuantLib {
         }
 
         inline double NormalDistribution::derivative(double x) const {
-            return (*this)(x) * (average_ - x) / sigma_;
+            return (*this)(x) * (average_ - x) / (sigma_*sigma_);
         }
 
         inline CumulativeNormalDistribution::CumulativeNormalDistribution(

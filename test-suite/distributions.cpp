@@ -26,7 +26,7 @@ using QuantLib::Math::InverseCumulativeNormal;
 
 namespace {
     
-    double average = 0.0, sigma = 1.0;
+    double average = 1.0, sigma = 2.0;
     
     double gaussian(double x) {
         double normFact = sigma*QL_SQRT(2*M_PI);
