@@ -27,6 +27,9 @@
 
     $Source$
     $Log$
+    Revision 1.3  2001/05/15 12:39:38  lballabio
+    Removed unnecessary constructors
+
     Revision 1.2  2001/05/09 11:06:18  nando
     A few comments modified/removed
 
@@ -54,8 +57,6 @@ namespace QuantLib {
     namespace Solvers1D {
 
         class Ridder : public Solver1D {
-          public:
-            Ridder() : Solver1D() {}
           private:
             double solve_(const ObjectiveFunction& f, double xAccuracy) const;
         };
