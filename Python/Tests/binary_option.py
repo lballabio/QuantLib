@@ -25,6 +25,9 @@
 """ 
     $Source$
     $Log$
+    Revision 1.3  2001/03/02 10:19:50  marmar
+    One failure is enough to halt the test
+
     Revision 1.2  2001/03/02 08:27:25  lballabio
     Fixed initial message
 
@@ -227,7 +230,7 @@ class BinaryOptionTest(TestUnit):
           "Final maximum global error on numerical derivatives = %g" % 
           max(maxNumDerErrorList)
         )
-        if total_number_of_error > 1:
+        if total_number_of_error >= 1:
             self.printDetails(
                 "total number of failures: %d" %
                 total_number_of_error

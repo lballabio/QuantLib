@@ -25,6 +25,9 @@
 """ 
     $Source$
     $Log$
+    Revision 1.6  2001/03/02 10:19:50  marmar
+    One failure is enough to halt the test
+
     Revision 1.5  2001/03/02 09:02:48  marmar
     AmericanOption replaced BSMAmericanOption
 
@@ -179,7 +182,7 @@ class AmericanOptionTest(TestUnit):
             max(maxNumDerErrorList)
         )
 
-        if total_number_of_error > 1:
+        if total_number_of_error >= 1:
             self.printDetails("total number of failures: %d" % 
                 total_number_of_error)
             return 1
