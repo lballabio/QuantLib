@@ -16,7 +16,6 @@ EXTRA_DIST = \
 	History.txt \
 	INSTALL.txt \
 	LICENSE.TXT \
-	MACOSX.README \
 	News.txt \
 	QuantLib.dsp \
 	QuantLib.dsw \
@@ -25,10 +24,8 @@ EXTRA_DIST = \
 	Readme.txt \
 	TODO.txt \
 	bootstrap \
-	darwin.setup \
 	makefile.mak \
-	quantlib.m4 \
-	solaris.setup
+	quantlib.m4
 
 
 docs-all:
