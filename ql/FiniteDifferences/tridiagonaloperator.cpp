@@ -25,124 +25,117 @@
 
 namespace QuantLib {
 
-    namespace FiniteDifferences {
+    TridiagonalOperator::TridiagonalOperator(Size size) {
+        if (size>=3) {
+            diagonal_      = Array(size);
+            lowerDiagonal_ = Array(size-1);
+            upperDiagonal_ = Array(size-1);
+        } else if (size==0) {
+            diagonal_      = Array(0);
+            lowerDiagonal_ = Array(0);
+            upperDiagonal_ = Array(0);
+        } else {
+            throw Error("invalid size for tridiagonal operator "
+                        "(must be null or >= 3)");
+        }
+    }
 
-        TridiagonalOperator::TridiagonalOperator(
-            Size size) {
+    TridiagonalOperator::TridiagonalOperator(const Array& low, 
+                                             const Array& mid, 
+                                             const Array& high)
+    : diagonal_(mid), lowerDiagonal_(low), upperDiagonal_(high) {
+        QL_REQUIRE(low.size() == mid.size()-1,
+                   "wrong size for lower diagonal vector");
+        QL_REQUIRE(high.size() == mid.size()-1,
+                   "wrong size for upper diagonal vector");
+    }
 
-            if (size>=3) {
-                diagonal_      = Array(size);
-                lowerDiagonal_ = Array(size-1);
-                upperDiagonal_ = Array(size-1);
-            } else if (size==0) {
-                diagonal_      = Array(0);
-                lowerDiagonal_ = Array(0);
-                upperDiagonal_ = Array(0);
-            } else {
-                throw Error("invalid size for tridiagonal operator "
-                            "(must be null or >= 3)");
+    Disposable<Array> TridiagonalOperator::applyTo(const Array& v) const {
+        QL_REQUIRE(v.size()==size(),
+                   "TridiagonalOperator::applyTo: vector of the wrong size (" +
+                   IntegerFormatter::toString(v.size()) + "instead of " +
+                   IntegerFormatter::toString(size()) + ")"  );
+        Array result(size());
+
+        // matricial product
+        result[0] = diagonal_[0]*v[0] + upperDiagonal_[0]*v[1];
+        for (Size j=1;j<=size()-2;j++)
+            result[j] = lowerDiagonal_[j-1]*v[j-1]+ diagonal_[j]*v[j] +
+                upperDiagonal_[j]*v[j+1];
+        result[size()-1] = lowerDiagonal_[size()-2]*v[size()-2] +
+            diagonal_[size()-1]*v[size()-1];
+
+        return result;
+    }
+
+    Disposable<Array> 
+    TridiagonalOperator::solveFor(const Array& rhs) const {
+        QL_REQUIRE(rhs.size()==size(),
+                   "TridiagonalOperator::solveFor: rhs has the wrong size");
+
+        Array result(size()), tmp(size());
+
+        double bet=diagonal_[0];
+        QL_REQUIRE(bet != 0.0,
+                   "TridiagonalOperator::solveFor: division by zero");
+        result[0] = rhs[0]/bet;
+        Size j;
+        for (j=1;j<=size()-1;j++){
+            tmp[j]=upperDiagonal_[j-1]/bet;
+            bet=diagonal_[j]-lowerDiagonal_[j-1]*tmp[j];
+            QL_ENSURE(bet != 0.0,
+                      "TridiagonalOperator::solveFor: division by zero");
+            result[j] = (rhs[j]-lowerDiagonal_[j-1]*result[j-1])/bet;
+        }
+        // cannot be j>=0 with Size j
+        for (j=size()-2;j>0;j--)
+            result[j] -= tmp[j+1]*result[j+1];
+        result[0] -= tmp[1]*result[1];
+
+        return result;
+    }
+
+    Disposable<Array> 
+    TridiagonalOperator::SOR(const Array& rhs, double tol) const {
+        QL_REQUIRE(rhs.size()==size(),
+                   "TridiagonalOperator::solveFor: rhs has the wrong size");
+
+        // initial guess
+        Array result = rhs;
+
+        // solve tridiagonal system with SOR technique
+        Size sorIteration, i;
+        double omega = 1.5;
+        double err=2.0*tol;
+        double temp;
+        for (sorIteration=0; err>tol ; sorIteration++) {
+            QL_REQUIRE(sorIteration<100000,
+                       "TridiagonalOperator::SOR: tolerance ["
+                       + DoubleFormatter::toString(tol) +
+                       "] not reached in "
+                       + IntegerFormatter::toString(sorIteration) +
+                       " iterations. The error still is "
+                       + DoubleFormatter::toString(err));
+            err=0.0;
+            for (i=1; i<size()-2 ; i++) {
+                temp = omega * (rhs[i]     -
+                                upperDiagonal_[i]   * result[i+1]-
+                                diagonal_[i]        * result[i] -
+                                lowerDiagonal_[i-1] * result[i-1]) / 
+                    diagonal_[i];
+                err += temp * temp;
+                result[i] += temp;
             }
         }
+        return result;
+    }
 
-        TridiagonalOperator::TridiagonalOperator(
-            const Array& low, const Array& mid, const Array& high)
-        : diagonal_(mid), lowerDiagonal_(low), upperDiagonal_(high) {
-            QL_ENSURE(low.size() == mid.size()-1,
-                "wrong size for lower diagonal vector");
-            QL_ENSURE(high.size() == mid.size()-1,
-                "wrong size for upper diagonal vector");
-        }
-
-        Disposable<Array> TridiagonalOperator::applyTo(const Array& v) const {
-            QL_REQUIRE(v.size()==size(),
-                "TridiagonalOperator::applyTo: vector of the wrong size (" +
-                IntegerFormatter::toString(v.size()) + "instead of " +
-                IntegerFormatter::toString(size()) + ")"  );
-            Array result(size());
-
-            // matricial product
-            result[0] = diagonal_[0]*v[0] + upperDiagonal_[0]*v[1];
-            for (Size j=1;j<=size()-2;j++)
-                result[j] = lowerDiagonal_[j-1]*v[j-1]+ diagonal_[j]*v[j] +
-                    upperDiagonal_[j]*v[j+1];
-            result[size()-1] = lowerDiagonal_[size()-2]*v[size()-2] +
-                diagonal_[size()-1]*v[size()-1];
-
-            return result;
-        }
-
-        Disposable<Array> 
-        TridiagonalOperator::solveFor(const Array& rhs) const {
-            QL_REQUIRE(rhs.size()==size(),
-                "TridiagonalOperator::solveFor: rhs has the wrong size");
-
-            Array result(size()), tmp(size());
-
-            double bet=diagonal_[0];
-            QL_REQUIRE(bet != 0.0,
-                "TridiagonalOperator::solveFor: division by zero");
-            result[0] = rhs[0]/bet;
-            Size j;
-            for (j=1;j<=size()-1;j++){
-                tmp[j]=upperDiagonal_[j-1]/bet;
-                bet=diagonal_[j]-lowerDiagonal_[j-1]*tmp[j];
-                QL_ENSURE(bet != 0.0,
-                    "TridiagonalOperator::solveFor: division by zero");
-                result[j] = (rhs[j]-lowerDiagonal_[j-1]*result[j-1])/bet;
-            }
-            // cannot be j>=0 with Size j
-            for (j=size()-2;j>0;j--)
-                result[j] -= tmp[j+1]*result[j+1];
-            result[0] -= tmp[1]*result[1];
-
-            return result;
-        }
-
-
-
-        Disposable<Array> 
-        TridiagonalOperator::SOR(const Array& rhs, double tol) const {
-            QL_REQUIRE(rhs.size()==size(),
-                "TridiagonalOperator::solveFor: rhs has the wrong size");
-
-            // initial guess
-            Array result = rhs;
-
-            // solve tridiagonal system with SOR technique
-            Size sorIteration, i;
-            double omega = 1.5;
-            double err=2.0*tol;
-            double temp;
-            for (sorIteration=0; err>tol ; sorIteration++) {
-                QL_REQUIRE(sorIteration<100000,
-                    "TridiagonalOperator::SOR: tolerance ["
-                    + DoubleFormatter::toString(tol) +
-                    "] not reached in "
-                    + IntegerFormatter::toString(sorIteration) +
-                    " iterations. The error still is "
-                    + DoubleFormatter::toString(err));
-                err=0.0;
-                for (i=1; i<size()-2 ; i++) {
-                    temp = omega * (rhs[i]     -
-                         upperDiagonal_[i]   * result[i+1]-
-                         diagonal_[i]        * result[i] -
-                         lowerDiagonal_[i-1] * result[i-1]) / diagonal_[i];
-                    err += temp * temp;
-                    result[i] += temp;
-                }
-            }
-
-            return result;
-        }
-
-        Disposable<TridiagonalOperator>
-        TridiagonalOperator::identity(Size size) {
-            TridiagonalOperator I(Array(size-1, 0.0),     // lower diagonal
-                                  Array(size,   1.0),     // diagonal
-                                  Array(size-1, 0.0));    // upper diagonal
-            return I;
-        }
-
+    Disposable<TridiagonalOperator>
+    TridiagonalOperator::identity(Size size) {
+        TridiagonalOperator I(Array(size-1, 0.0),     // lower diagonal
+                              Array(size,   1.0),     // diagonal
+                              Array(size-1, 0.0));    // upper diagonal
+        return I;
     }
 
 }

@@ -22,58 +22,53 @@
 #ifndef quantlib_backward_euler_h
 #define quantlib_backward_euler_h
 
-//#include <ql/FiniteDifferences/finitedifferencemodel.hpp>
 #include <ql/FiniteDifferences/mixedscheme.hpp>
 
 namespace QuantLib {
 
-    namespace FiniteDifferences {
+    //! Backward Euler scheme for finite difference methods
+    /*! See sect. \ref findiff for details on the method.
 
-        //! Backward Euler scheme for finite difference methods
-        /*! See sect. \ref findiff for details on the method.
+        In this implementation, the passed operator must be derived
+        from either TimeConstantOperator or TimeDependentOperator.
+        Also, it must implement at least the following interface:
 
-            In this implementation, the passed operator must be derived
-            from either TimeConstantOperator or TimeDependentOperator.
-            Also, it must implement at least the following interface:
+        \code
+        typedef ... arrayType;
 
-            \code
-            typedef ... arrayType;
+        // copy constructor/assignment
+        // (these will be provided by the compiler if none is defined)
+        Operator(const Operator&);
+        Operator& operator=(const Operator&);
 
-            // copy constructor/assignment
-            // (these will be provided by the compiler if none is defined)
-            Operator(const Operator&);
-            Operator& operator=(const Operator&);
+        // inspectors
+        Size size();
 
-            // inspectors
-            Size size();
+        // modifiers
+        void setTime(Time t);
 
-            // modifiers
-            void setTime(Time t);
+        // operator interface
+        arrayType solveFor(const arrayType&);
+        static Operator identity(Size size);
 
-            // operator interface
-            arrayType solveFor(const arrayType&);
-            static Operator identity(Size size);
-
-            // operator algebra
-            Operator operator*(double, const Operator&);
-            Operator operator+(const Operator&, const Operator&);
-            \endcode
-        */
-        template <class Operator>
-            class ImplicitEuler : public MixedScheme<Operator> {
-            friend class FiniteDifferenceModel<ImplicitEuler<Operator> >;
-          private:
-            // typedefs
-            typedef typename Operator::arrayType arrayType;
-            typedef Operator operatorType;
-            typedef BoundaryCondition<Operator> bcType;
-            // constructors
-            ImplicitEuler(const Operator& L,
-                          const std::vector<Handle<bcType> >& bcs)
-            : MixedScheme<Operator>(L, 1.0, bcs) {}
-        };
-
-    }
+        // operator algebra
+        Operator operator*(double, const Operator&);
+        Operator operator+(const Operator&, const Operator&);
+        \endcode
+    */
+    template <class Operator>
+    class ImplicitEuler : public MixedScheme<Operator> {
+        friend class FiniteDifferenceModel<ImplicitEuler<Operator> >;
+      private:
+        // typedefs
+        typedef typename Operator::arrayType arrayType;
+        typedef Operator operatorType;
+        typedef BoundaryCondition<Operator> bcType;
+        // constructors
+        ImplicitEuler(const Operator& L,
+                      const std::vector<Handle<bcType> >& bcs)
+        : MixedScheme<Operator>(L, 1.0, bcs) {}
+    };
 
 }
 

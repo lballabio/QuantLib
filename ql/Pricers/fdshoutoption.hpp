@@ -47,7 +47,8 @@ namespace QuantLib {
 
         // inline definitions
 
-        inline FdShoutOption::FdShoutOption(Option::Type type, double underlying,
+        inline FdShoutOption::FdShoutOption(
+            Option::Type type, double underlying,
             double strike, Spread dividendYield, Rate riskFreeRate,
             Time residualTime, double volatility, int timeSteps,
             int gridPoints)
@@ -56,9 +57,9 @@ namespace QuantLib {
                              timeSteps, gridPoints){}
 
         inline void FdShoutOption::initializeStepCondition() const {
-            stepCondition_ = Handle<FiniteDifferences::StandardStepCondition>(
-                new FiniteDifferences::ShoutCondition(intrinsicValues_,
-                residualTime_, riskFreeRate_));
+            stepCondition_ = Handle<StandardStepCondition>(
+                new ShoutCondition(intrinsicValues_, residualTime_, 
+                                   riskFreeRate_));
         }
 
     }

@@ -35,8 +35,6 @@ namespace QuantLib {
           riskFreeRate, residualTime, volatility, gridPoints, dates,
           timeSteps) {}
 
-        using FiniteDifferences::StandardStepCondition;
-
         void FdBermudanOption::initializeStepCondition() const{
             stepCondition_ = Handle<StandardStepCondition> ();
         }

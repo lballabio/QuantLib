@@ -56,11 +56,9 @@ namespace QuantLib {
             mutable double value_, delta_, gamma_;
 
             mutable Array grid_;
-            mutable FiniteDifferences::BSMOperator finiteDifferenceOperator_;
+            mutable BSMOperator finiteDifferenceOperator_;
             mutable Array intrinsicValues_;
-            typedef FiniteDifferences::BoundaryCondition<
-                        FiniteDifferences::TridiagonalOperator>
-                            BoundaryCondition;
+            typedef BoundaryCondition<TridiagonalOperator> BoundaryCondition;
             mutable std::vector<Handle<BoundaryCondition> > BCs_;
             // temporaries
             mutable double sMin_, center_, sMax_;

@@ -23,107 +23,100 @@
 
 namespace QuantLib {
 
-    namespace FiniteDifferences {
+    NeumannBC::NeumannBC(double value, NeumannBC::Side side)
+    : value_(value), side_(side) {}
 
-        // Neumann conditions
-        
-        NeumannBC::NeumannBC(double value, NeumannBC::Side side)
-        : value_(value), side_(side) {}
-
-        void NeumannBC::applyBeforeApplying(TridiagonalOperator& L) const {
-            switch (side_) {
-              case Lower:
-                L.setFirstRow(-1.0,1.0);
-                break;
-              case Upper:
-                L.setLastRow(-1.0,1.0);
-                break;
-              default:
-                throw Error("Unknown side for Neumann boundary condition");
-            }
+    void NeumannBC::applyBeforeApplying(TridiagonalOperator& L) const {
+        switch (side_) {
+          case Lower:
+            L.setFirstRow(-1.0,1.0);
+            break;
+          case Upper:
+            L.setLastRow(-1.0,1.0);
+            break;
+          default:
+            throw Error("Unknown side for Neumann boundary condition");
         }
-
-        void NeumannBC::applyAfterApplying(Array& u) const {
-            switch (side_) {
-              case Lower:
-                u[0] = u[1] - value_;
-                break;
-              case Upper:
-                u[u.size()-1] = u[u.size()-2] + value_;
-                break;
-              default:
-                throw Error("Unknown side for Neumann boundary condition");
-            }
-        }
-        
-        void NeumannBC::applyBeforeSolving(TridiagonalOperator& L,
-                                           Array& rhs) const {
-            switch (side_) {
-              case Lower:
-                L.setFirstRow(-1.0,1.0);
-                rhs[0] = value_;
-                break;
-              case Upper:
-                L.setLastRow(-1.0,1.0);
-                rhs[rhs.size()-1] = value_;
-                break;
-              default:
-                throw Error("Unknown side for Neumann boundary condition");
-            }
-        }
-
-        void NeumannBC::applyAfterSolving(Array&) const {}
-
-
-        // Dirichlet conditions
-
-        DirichletBC::DirichletBC(double value, DirichletBC::Side side)
-        : value_(value), side_(side) {}
-        
-        void DirichletBC::applyBeforeApplying(TridiagonalOperator& L) const {
-            switch (side_) {
-              case Lower:
-                L.setFirstRow(1.0,0.0);
-                break;
-              case Upper:
-                L.setLastRow(0.0,1.0);
-                break;
-              default:
-                throw Error("Unknown side for Neumann boundary condition");
-            }
-        }
-
-        void DirichletBC::applyAfterApplying(Array& u) const {
-            switch (side_) {
-              case Lower:
-                u[0] = value_;
-                break;
-              case Upper:
-                u[u.size()-1] = value_;
-                break;
-              default:
-                throw Error("Unknown side for Neumann boundary condition");
-            }
-        }
-        
-        void DirichletBC::applyBeforeSolving(TridiagonalOperator& L,
-                                             Array& rhs) const {
-            switch (side_) {
-              case Lower:
-                L.setFirstRow(1.0,0.0);
-                rhs[0] = value_;
-                break;
-              case Upper:
-                L.setLastRow(0.0,1.0);
-                rhs[rhs.size()-1] = value_;
-                break;
-              default:
-                throw Error("Unknown side for Neumann boundary condition");
-            }
-        }
-
-        void DirichletBC::applyAfterSolving(Array&) const {}
-
     }
+
+    void NeumannBC::applyAfterApplying(Array& u) const {
+        switch (side_) {
+          case Lower:
+            u[0] = u[1] - value_;
+            break;
+          case Upper:
+            u[u.size()-1] = u[u.size()-2] + value_;
+            break;
+          default:
+            throw Error("Unknown side for Neumann boundary condition");
+        }
+    }
+
+    void NeumannBC::applyBeforeSolving(TridiagonalOperator& L,
+                                       Array& rhs) const {
+        switch (side_) {
+          case Lower:
+            L.setFirstRow(-1.0,1.0);
+            rhs[0] = value_;
+            break;
+          case Upper:
+            L.setLastRow(-1.0,1.0);
+            rhs[rhs.size()-1] = value_;
+            break;
+          default:
+            throw Error("Unknown side for Neumann boundary condition");
+        }
+    }
+
+    void NeumannBC::applyAfterSolving(Array&) const {}
+
+
+
+    DirichletBC::DirichletBC(double value, DirichletBC::Side side)
+    : value_(value), side_(side) {}
+
+    void DirichletBC::applyBeforeApplying(TridiagonalOperator& L) const {
+        switch (side_) {
+          case Lower:
+            L.setFirstRow(1.0,0.0);
+            break;
+          case Upper:
+            L.setLastRow(0.0,1.0);
+            break;
+          default:
+            throw Error("Unknown side for Neumann boundary condition");
+        }
+    }
+
+    void DirichletBC::applyAfterApplying(Array& u) const {
+        switch (side_) {
+          case Lower:
+            u[0] = value_;
+            break;
+          case Upper:
+            u[u.size()-1] = value_;
+            break;
+          default:
+            throw Error("Unknown side for Neumann boundary condition");
+        }
+    }
+
+    void DirichletBC::applyBeforeSolving(TridiagonalOperator& L,
+                                         Array& rhs) const {
+        switch (side_) {
+          case Lower:
+            L.setFirstRow(1.0,0.0);
+            rhs[0] = value_;
+            break;
+          case Upper:
+            L.setLastRow(0.0,1.0);
+            rhs[rhs.size()-1] = value_;
+            break;
+          default:
+            throw Error("Unknown side for Neumann boundary condition");
+        }
+    }
+
+    void DirichletBC::applyAfterSolving(Array&) const {}
 
 }

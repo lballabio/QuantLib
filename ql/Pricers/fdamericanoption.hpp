@@ -63,8 +63,8 @@ namespace QuantLib {
             gridPoints) {}
 
         inline void FdAmericanOption::initializeStepCondition() const {
-            stepCondition_ = Handle<FiniteDifferences::StandardStepCondition>(
-                new FiniteDifferences::AmericanCondition(intrinsicValues_));
+            stepCondition_ = Handle<StandardStepCondition>(
+                new AmericanCondition(intrinsicValues_));
         }
 
     }

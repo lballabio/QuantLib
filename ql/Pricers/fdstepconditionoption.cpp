@@ -27,12 +27,6 @@ namespace QuantLib {
 
     namespace Pricers {
 
-        using FiniteDifferences::StandardStepCondition;
-        using FiniteDifferences::StandardFiniteDifferenceModel;
-        using FiniteDifferences::valueAtCenter;
-        using FiniteDifferences::firstDerivativeAtCenter;
-        using FiniteDifferences::secondDerivativeAtCenter;
-
         FdStepConditionOption::FdStepConditionOption(Option::Type type,
             double underlying, double strike, Spread dividendYield,
             Rate riskFreeRate, Time residualTime, double volatility,

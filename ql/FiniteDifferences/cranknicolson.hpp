@@ -26,60 +26,54 @@
 
 namespace QuantLib {
 
-    namespace FiniteDifferences {
+    //! Crank-Nicolson scheme for finite difference methods
+    /*! See sect. \ref findiff for details on the method.
 
-        //! Crank-Nicolson scheme for finite difference methods
-        /*! See sect. \ref findiff for details on the method.
+        In this implementation, the passed operator must be derived
+        from either TimeConstantOperator or TimeDependentOperator.
+        Also, it must implement at least the following interface:
 
-            In this implementation, the passed operator must be derived
-            from either TimeConstantOperator or TimeDependentOperator.
-            Also, it must implement at least the following interface:
+        \code
+        typedef ... arrayType;
 
-            \code
-            typedef ... arrayType;
+        // copy constructor/assignment
+        // (these will be provided by the compiler if none is defined)
+        Operator(const Operator&);
+        Operator& operator=(const Operator&);
 
-            // copy constructor/assignment
-            // (these will be provided by the compiler if none is defined)
-            Operator(const Operator&);
-            Operator& operator=(const Operator&);
+        // inspectors
+        Size size();
 
-            // inspectors
-            Size size();
+        // modifiers
+        void setTime(Time t);
 
-            // modifiers
-            void setTime(Time t);
+        // operator interface
+        arrayType applyTo(const arrayType&);
+        arrayType solveFor(const arrayType&);
+        static Operator identity(Size size);
 
-            // operator interface
-            arrayType applyTo(const arrayType&);
-            arrayType solveFor(const arrayType&);
-            static Operator identity(Size size);
+        // operator algebra
+        Operator operator*(double, const Operator&);
+        Operator operator+(const Operator&, const Operator&);
+        Operator operator+(const Operator&, const Operator&);
+        \endcode
 
-            // operator algebra
-            Operator operator*(double, const Operator&);
-            Operator operator+(const Operator&, const Operator&);
-            Operator operator+(const Operator&, const Operator&);
-            \endcode
-
-            \warning The differential operator must be linear for
-            this evolver to work.
-
-        */
-        template <class Operator>
-            class CrankNicolson : public MixedScheme<Operator> {
-            friend class FiniteDifferenceModel<CrankNicolson<Operator> >;
-          private:
-            // typedefs
-            typedef typename Operator::arrayType arrayType;
-            typedef Operator operatorType;
-            typedef BoundaryCondition<Operator> bcType;
-            // constructors
-            CrankNicolson(const Operator& L,
-                          const std::vector<Handle<bcType> >& bcs)
-            : MixedScheme<Operator>(L, 0.5, bcs) {}
-        };
-
-
-    }
+        \warning The differential operator must be linear for
+                 this evolver to work.
+    */
+    template <class Operator>
+    class CrankNicolson : public MixedScheme<Operator> {
+        friend class FiniteDifferenceModel<CrankNicolson<Operator> >;
+      private:
+        // typedefs
+        typedef typename Operator::arrayType arrayType;
+        typedef Operator operatorType;
+        typedef BoundaryCondition<Operator> bcType;
+        // constructors
+        CrankNicolson(const Operator& L,
+                      const std::vector<Handle<bcType> >& bcs)
+        : MixedScheme<Operator>(L, 0.5, bcs) {}
+    };
 
 }
 

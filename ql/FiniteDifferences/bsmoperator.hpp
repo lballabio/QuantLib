@@ -26,20 +26,12 @@
 
 namespace QuantLib {
 
-    namespace FiniteDifferences {
-
-        //! Black-Scholes-Merton differential operator
-        class BSMOperator : public TridiagonalOperator {
-          public:
-            BSMOperator() {}
-            BSMOperator(Size size,
-                        double dx,
-                        double r,
-                        double q,
-                        double sigma);
-        };
-
-    }
+    //! Black-Scholes-Merton differential operator
+    class BSMOperator : public TridiagonalOperator {
+      public:
+        BSMOperator() {}
+        BSMOperator(Size size, double dx, double r, double q, double sigma);
+    };
 
 }
 

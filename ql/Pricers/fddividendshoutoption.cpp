@@ -36,9 +36,9 @@ namespace QuantLib {
                         dividends, exdivdates, timeSteps, gridPoints){}
 
         void FdDividendShoutOption::initializeStepCondition() const {
-            stepCondition_ = Handle<FiniteDifferences::StandardStepCondition>(
-                new FiniteDifferences::ShoutCondition(intrinsicValues_,
-                residualTime_, riskFreeRate_));
+            stepCondition_ = Handle<StandardStepCondition>(
+                new ShoutCondition(intrinsicValues_, residualTime_, 
+                                   riskFreeRate_));
         }
 
         Handle<SingleAssetOption> FdDividendShoutOption::clone() const {

@@ -27,9 +27,6 @@
 namespace QuantLib {
 
     namespace Pricers {
-        using FiniteDifferences::valueAtCenter;
-        using FiniteDifferences::firstDerivativeAtCenter;
-        using FiniteDifferences::secondDerivativeAtCenter;
 
         FdMultiPeriodOption::FdMultiPeriodOption(Option::Type type,
             double underlying, double strike, Spread dividendYield,
@@ -164,14 +161,10 @@ namespace QuantLib {
                             riskFreeRate_, residualTime_, volatility_));
         }
 
-        using FiniteDifferences::StandardStepCondition;
-
         void FdMultiPeriodOption::initializeStepCondition() const{
             stepCondition_ = Handle<StandardStepCondition> (
-                new FiniteDifferences::AmericanCondition(intrinsicValues_));
+                new AmericanCondition(intrinsicValues_));
         }
-
-        using FiniteDifferences::StandardFiniteDifferenceModel;
 
         void FdMultiPeriodOption::initializeModel() const{
             model_ = Handle<StandardFiniteDifferenceModel> (

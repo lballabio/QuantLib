@@ -26,12 +26,6 @@ namespace QuantLib {
 
     namespace Pricers {
 
-        using FiniteDifferences::NeumannBC;
-        using FiniteDifferences::BSMOperator;
-        using FiniteDifferences::valueAtCenter;
-        using FiniteDifferences::firstDerivativeAtCenter;
-        using FiniteDifferences::secondDerivativeAtCenter;
-
         FdBsmOption::FdBsmOption(Option::Type type,
             double underlying, double strike, Spread dividendYield,
             Rate riskFreeRate, Time residualTime, double volatility,

@@ -30,9 +30,9 @@ namespace QuantLib {
     namespace Pricers {
 
         using Math::CubicSplineInterpolation;
-        using FiniteDifferences::valueAtCenter;
 
-        FdDividendOption::FdDividendOption(Option::Type type, double underlying,
+        FdDividendOption::FdDividendOption(
+            Option::Type type, double underlying,
             double strike, Spread dividendYield, Rate riskFreeRate,
             Time residualTime, double volatility,
             const std::vector<double>& dividends,

@@ -23,19 +23,15 @@
 
 namespace QuantLib {
 
-    namespace FiniteDifferences {
-
-        BSMOperator::BSMOperator(Size size, double dx, double r,
-            double q, double sigma)
-        : TridiagonalOperator(size) {
-            double sigma2 = sigma*sigma;
-            double nu = r-q-sigma2/2;
-            double pd = -(sigma2/dx-nu)/(2*dx);
-            double pu = -(sigma2/dx+nu)/(2*dx);
-            double pm = sigma2/(dx*dx)+r;
-            setMidRows(pd,pm,pu);
-        }
-
+    BSMOperator::BSMOperator(Size size, double dx, double r,
+                             double q, double sigma)
+    : TridiagonalOperator(size) {
+        double sigma2 = sigma*sigma;
+        double nu = r-q-sigma2/2;
+        double pd = -(sigma2/dx-nu)/(2*dx);
+        double pu = -(sigma2/dx+nu)/(2*dx);
+        double pm = sigma2/(dx*dx)+r;
+        setMidRows(pd,pm,pu);
     }
 
 }

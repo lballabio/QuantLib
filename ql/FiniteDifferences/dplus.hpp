@@ -26,29 +26,26 @@
 
 namespace QuantLib {
 
-    namespace FiniteDifferences {
+    //! \f$ D_{+} \f$ matricial representation
+    /*! The differential operator \f$ D_{+} \f$ discretizes the
+        first derivative with the first-order formula
+        \f[ \frac{\partial u_{i}}{\partial x} \approx
+            \frac{u_{i+1}-u_{i}}{h} = D_{+} u_{i}
+        \f]
+    */
+    class DPlus : public TridiagonalOperator {
+      public:
+        DPlus(Size gridPoints, double h);
+    };
 
-        //! \f$ D_{+} \f$ matricial representation
-        /*! The differential operator \f$ D_{+} \f$ discretizes the
-            first derivative with the first-order formula
-            \f[ \frac{\partial u_{i}}{\partial x} \approx
-                \frac{u_{i+1}-u_{i}}{h} = D_{+} u_{i}
-            \f]
-        */
-        class DPlus : public TridiagonalOperator {
-          public:
-            DPlus(Size gridPoints, double h);
-        };
 
-        // inline definitions
+    // inline definitions
 
-        inline DPlus::DPlus(Size gridPoints, double h)
-        : TridiagonalOperator(gridPoints) {
-            setFirstRow(-1/h,1/h);
-            setMidRows(0.0,-1/h,1/h);
-            setLastRow(-1/h,1/h);                   // linear extrapolation
-        }
-
+    inline DPlus::DPlus(Size gridPoints, double h)
+    : TridiagonalOperator(gridPoints) {
+        setFirstRow(-1/h,1/h);
+        setMidRows(0.0,-1/h,1/h);
+        setLastRow(-1/h,1/h);                   // linear extrapolation
     }
 
 }

@@ -27,105 +27,102 @@
 
 namespace QuantLib {
 
-    namespace FiniteDifferences {
+    //! Mixed (explicit/implicit) scheme for finite difference methods
+    /*! See sect. \ref findiff for details on the method.
 
-        //! Mixed (explicit/implicit) scheme for finite difference methods
-        /*! See sect. \ref findiff for details on the method.
+        In this implementation, the passed operator must be derived
+        from either TimeConstantOperator or TimeDependentOperator.
+        Also, it must implement at least the following interface:
 
-            In this implementation, the passed operator must be derived
-            from either TimeConstantOperator or TimeDependentOperator.
-            Also, it must implement at least the following interface:
+        \code
+        typedef ... arrayType;
 
-            \code
-            typedef ... arrayType;
+        // copy constructor/assignment
+        // (these will be provided by the compiler if none is defined)
+        Operator(const Operator&);
+        Operator& operator=(const Operator&);
 
-            // copy constructor/assignment
-            // (these will be provided by the compiler if none is defined)
-            Operator(const Operator&);
-            Operator& operator=(const Operator&);
+        // inspectors
+        Size size();
 
-            // inspectors
-            Size size();
+        // modifiers
+        void setTime(Time t);
 
-            // modifiers
-            void setTime(Time t);
+        // operator interface
+        arrayType applyTo(const arrayType&);
+        arrayType solveFor(const arrayType&);
+        static Operator identity(Size size);
 
-            // operator interface
-            arrayType applyTo(const arrayType&);
-            arrayType solveFor(const arrayType&);
-            static Operator identity(Size size);
+        // operator algebra
+        Operator operator*(double, const Operator&);
+        Operator operator+(const Operator&, const Operator&);
+        Operator operator+(const Operator&, const Operator&);
+        \endcode
 
-            // operator algebra
-            Operator operator*(double, const Operator&);
-            Operator operator+(const Operator&, const Operator&);
-            Operator operator+(const Operator&, const Operator&);
-            \endcode
+        \warning The differential operator must be linear for
+                 this evolver to work.
 
-            \warning The differential operator must be linear for
-            this evolver to work.
-
-            \todo add Douglas Scheme
-        */
-        template <class Operator>
-        class MixedScheme  {
-            friend class FiniteDifferenceModel<MixedScheme<Operator> >;
-          protected:
-            // typedefs
-            typedef typename Operator::arrayType arrayType;
-            typedef Operator operatorType;
-            typedef BoundaryCondition<Operator> bcType;
-            // constructors
-            MixedScheme(const Operator& L, double theta,
-                        const std::vector<Handle<bcType> >& bcs)
-            : L_(L), I_(Operator::identity(L.size())), 
-              dt_(0.0), theta_(theta) , bcs_(bcs) {}
-            void step(arrayType& a, Time t);
-            void setStep(Time dt) {
-                dt_ = dt;
-                if (theta_!=1.0) // there is an explicit part
-                    explicitPart_ = I_-((1.0-theta_) * dt_)*L_;
-                if (theta_!=0.0) // there is an implicit part
-                    implicitPart_ = I_+(theta_ * dt_)*L_;
-            }
-            Operator L_;
-            Operator I_;
-            Operator explicitPart_, implicitPart_;
-            Time dt_;
-            double theta_;
-            std::vector<Handle<bcType> > bcs_;
-        };
-
-        // inline definitions
-
-        template <class Operator>
-        inline void MixedScheme<Operator>::step(arrayType& a, Time t) {
-            Size i;
-            for (i=0; i<bcs_.size(); i++)
-                bcs_[i]->setTime(t);
-            if (theta_!=1.0) { // there is an explicit part
-                if (L_.isTimeDependent()) {
-                    L_.setTime(t);
-                    explicitPart_ = I_-((1.0-theta_) * dt_)*L_;
-                }
-                for (i=0; i<bcs_.size(); i++)
-                    bcs_[i]->applyBeforeApplying(explicitPart_);
-                a = explicitPart_.applyTo(a);
-                for (i=0; i<bcs_.size(); i++)
-                    bcs_[i]->applyAfterApplying(a);
-            }
-            if (theta_!=0.0) { // there is an implicit part
-                if (L_.isTimeDependent()) {
-                    L_.setTime(t-dt_);
-                    implicitPart_ = I_+(theta_ * dt_)*L_;
-                }
-                for (i=0; i<bcs_.size(); i++)
-                    bcs_[i]->applyBeforeSolving(implicitPart_,a);
-                a = implicitPart_.solveFor(a);
-                for (i=0; i<bcs_.size(); i++)
-                    bcs_[i]->applyAfterSolving(a);
-            }
+        \todo add Douglas Scheme
+    */
+    template <class Operator>
+    class MixedScheme  {
+        friend class FiniteDifferenceModel<MixedScheme<Operator> >;
+      protected:
+        // typedefs
+        typedef typename Operator::arrayType arrayType;
+        typedef Operator operatorType;
+        typedef BoundaryCondition<Operator> bcType;
+        // constructors
+        MixedScheme(const Operator& L, double theta,
+                    const std::vector<Handle<bcType> >& bcs)
+        : L_(L), I_(Operator::identity(L.size())), 
+          dt_(0.0), theta_(theta) , bcs_(bcs) {}
+        void step(arrayType& a, Time t);
+        void setStep(Time dt) {
+            dt_ = dt;
+            if (theta_!=1.0) // there is an explicit part
+                explicitPart_ = I_-((1.0-theta_) * dt_)*L_;
+            if (theta_!=0.0) // there is an implicit part
+                implicitPart_ = I_+(theta_ * dt_)*L_;
         }
+        Operator L_;
+        Operator I_;
+        Operator explicitPart_, implicitPart_;
+        Time dt_;
+        double theta_;
+        std::vector<Handle<bcType> > bcs_;
+    };
 
+
+    // inline definitions
+
+    template <class Operator>
+    inline void MixedScheme<Operator>::step(arrayType& a, Time t) {
+        Size i;
+        for (i=0; i<bcs_.size(); i++)
+            bcs_[i]->setTime(t);
+        if (theta_!=1.0) { // there is an explicit part
+            if (L_.isTimeDependent()) {
+                L_.setTime(t);
+                explicitPart_ = I_-((1.0-theta_) * dt_)*L_;
+            }
+            for (i=0; i<bcs_.size(); i++)
+                bcs_[i]->applyBeforeApplying(explicitPart_);
+            a = explicitPart_.applyTo(a);
+            for (i=0; i<bcs_.size(); i++)
+                bcs_[i]->applyAfterApplying(a);
+        }
+        if (theta_!=0.0) { // there is an implicit part
+            if (L_.isTimeDependent()) {
+                L_.setTime(t-dt_);
+                implicitPart_ = I_+(theta_ * dt_)*L_;
+            }
+            for (i=0; i<bcs_.size(); i++)
+                bcs_[i]->applyBeforeSolving(implicitPart_,a);
+            a = implicitPart_.solveFor(a);
+            for (i=0; i<bcs_.size(); i++)
+                bcs_[i]->applyAfterSolving(a);
+        }
     }
 
 }

@@ -26,19 +26,15 @@
 
 namespace QuantLib {
 
-    namespace FiniteDifferences {
-
-        //! condition to be applied at every time step
-        template <class arrayType>
-        class StepCondition {
-          public:
-            virtual ~StepCondition() {}
-            virtual void applyTo(arrayType& a,
-                                 Time t) const = 0;
-            virtual void applyTo(Handle<DiscretizedAsset> asset) const = 0;
-        };
-
-    }
+    //! condition to be applied at every time step
+    template <class arrayType>
+    class StepCondition {
+      public:
+        virtual ~StepCondition() {}
+        virtual void applyTo(arrayType& a,
+                             Time t) const = 0;
+        virtual void applyTo(Handle<DiscretizedAsset> asset) const = 0;
+    };
 
 }
 

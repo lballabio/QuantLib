@@ -345,6 +345,7 @@ namespace QLCAL = QuantLib::Calendars;
 namespace QLCFL = QuantLib::CashFlows;
 //! \deprecated inner namespace aliases will be removed in next release
 namespace QLDCO = QuantLib::DayCounters;
+//! \deprecated inner namespace aliases will be removed in next release
 namespace QLFDM = QuantLib::FiniteDifferences;
 namespace QLIDX = QuantLib::Indexes;
 namespace QLINS = QuantLib::Instruments;

@@ -50,10 +50,8 @@ namespace QuantLib {
             int firstIndex_;
             mutable Handle<SingleAssetOption> analytic_;
             mutable Array prices_, controlPrices_;
-            mutable Handle<FiniteDifferences::StandardStepCondition>
-                                                            stepCondition_;
-            mutable Handle<FiniteDifferences::StandardFiniteDifferenceModel>
-                                                            model_;
+            mutable Handle<StandardStepCondition> stepCondition_;
+            mutable Handle<StandardFiniteDifferenceModel> model_;
             // Methods
             void calculate() const;
             virtual void initializeControlVariate() const;

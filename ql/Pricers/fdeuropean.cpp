@@ -26,10 +26,6 @@ namespace QuantLib {
 
     namespace Pricers {
 
-        using FiniteDifferences::valueAtCenter;
-        using FiniteDifferences::firstDerivativeAtCenter;
-        using FiniteDifferences::secondDerivativeAtCenter;
-
         FdEuropean::FdEuropean(Option::Type type,
             double underlying, double strike, Spread dividendYield,
             Rate riskFreeRate, Time residualTime, double volatility,
@@ -46,8 +42,8 @@ namespace QuantLib {
             initializeInitialCondition();
             initializeOperator();
 
-            FiniteDifferences::StandardFiniteDifferenceModel
-                                model(finiteDifferenceOperator_,BCs_);
+            StandardFiniteDifferenceModel model(finiteDifferenceOperator_,
+                                                BCs_);
 
             euroPrices_ = intrinsicValues_;
 

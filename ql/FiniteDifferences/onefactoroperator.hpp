@@ -27,38 +27,31 @@
 
 namespace QuantLib {
 
-    namespace FiniteDifferences {
+    //! Interest-rate single factor model differential operator
+    class OneFactorOperator : public TridiagonalOperator {
+      public:
+        OneFactorOperator() {}
+        OneFactorOperator(
+            const Array& grid,
+            const Handle<ShortRateModels::OneFactorModel::ShortRateDynamics>&);
+        virtual ~OneFactorOperator() {}
 
-        //! Interest-rate single factor model differential operator
-        class OneFactorOperator : public TridiagonalOperator {
-          public:
-            OneFactorOperator() {}
-            OneFactorOperator(
-                const Array& grid,
-                const Handle<ShortRateModels::OneFactorModel::ShortRateDynamics>&
-                      process);
-            virtual ~OneFactorOperator() {}
+        class SpecificTimeSetter;
+    };
 
-            class SpecificTimeSetter;
-        };
-
-        class OneFactorOperator::SpecificTimeSetter 
+    class OneFactorOperator::SpecificTimeSetter 
         : public TridiagonalOperator::TimeSetter{
-          public:
-            SpecificTimeSetter(
-                double x0, double dx,
-                const Handle<ShortRateModels::OneFactorModel::ShortRateDynamics>&
-                      process);
-            virtual ~SpecificTimeSetter() {}
-            virtual void setTime(Time t, TridiagonalOperator& L) const;
-          private:
-            double x0_;
-            double dx_;
-            Handle<ShortRateModels::OneFactorModel::ShortRateDynamics> dynamics_;
-        };
-
-
-    }
+      public:
+        SpecificTimeSetter(
+            double x0, double dx,
+            const Handle<ShortRateModels::OneFactorModel::ShortRateDynamics>&);
+        virtual ~SpecificTimeSetter() {}
+        virtual void setTime(Time t, TridiagonalOperator& L) const;
+      private:
+        double x0_;
+        double dx_;
+        Handle<ShortRateModels::OneFactorModel::ShortRateDynamics> dynamics_;
+    };
 
 }
 

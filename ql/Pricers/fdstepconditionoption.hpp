@@ -44,8 +44,7 @@ namespace QuantLib {
                                   int gridPoints);
             void calculate() const;
             virtual void initializeStepCondition() const = 0;
-            mutable Handle<FiniteDifferences::StandardStepCondition >
-                                                            stepCondition_;
+            mutable Handle<StandardStepCondition > stepCondition_;
             int timeSteps_;
         };
 

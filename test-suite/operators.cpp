@@ -23,7 +23,6 @@
 
 using namespace QuantLib;
 using namespace QuantLib::Math;
-using namespace QuantLib::FiniteDifferences;
 
 namespace {
 

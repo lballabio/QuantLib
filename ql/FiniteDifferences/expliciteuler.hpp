@@ -26,55 +26,51 @@
 
 namespace QuantLib {
 
-    namespace FiniteDifferences {
+    //! Forward Euler scheme for finite difference methods
+    /*! See sect. \ref findiff for details on the method.
 
-        //! Forward Euler scheme for finite difference methods
-        /*! See sect. \ref findiff for details on the method.
+        In this implementation, the passed operator must be derived
+        from either TimeConstantOperator or TimeDependentOperator.
+        Also, it must implement at least the following interface:
 
-            In this implementation, the passed operator must be derived
-            from either TimeConstantOperator or TimeDependentOperator.
-            Also, it must implement at least the following interface:
+        \code
+        typedef ... arrayType;
 
-            \code
-            typedef ... arrayType;
+        // copy constructor/assignment
+        // (these will be provided by the compiler if none is defined)
+        Operator(const Operator&);
+        Operator& operator=(const Operator&);
 
-            // copy constructor/assignment
-            // (these will be provided by the compiler if none is defined)
-            Operator(const Operator&);
-            Operator& operator=(const Operator&);
+        // inspectors
+        Size size();
 
-            // inspectors
-            Size size();
+        // modifiers
+        void setTime(Time t);
 
-            // modifiers
-            void setTime(Time t);
+        // operator interface
+        arrayType applyTo(const arrayType&);
+        static Operator identity(Size size);
 
-            // operator interface
-            arrayType applyTo(const arrayType&);
-            static Operator identity(Size size);
+        // operator algebra
+        Operator operator*(double, const Operator&);
+        Operator operator-(const Operator&, const Operator&);
+        \endcode
 
-            // operator algebra
-            Operator operator*(double, const Operator&);
-            Operator operator-(const Operator&, const Operator&);
-            \endcode
-
-            \todo add Richardson extrapolation
-        */
-        template <class Operator>
-        class ExplicitEuler : public MixedScheme<Operator> {
-            friend class FiniteDifferenceModel<ExplicitEuler<Operator> >;
-          private:
-            // typedefs
-            typedef typename Operator::arrayType arrayType;
-            typedef Operator operatorType;
-            typedef BoundaryCondition<Operator> bcType;
-            // constructors
-            ExplicitEuler(const Operator& L,
-                          const std::vector<Handle<bcType> >& bcs)
-            : MixedScheme<Operator>(L, 0.0, bcs) {}
-        };
-
-    }
+        \todo add Richardson extrapolation
+    */
+    template <class Operator>
+    class ExplicitEuler : public MixedScheme<Operator> {
+        friend class FiniteDifferenceModel<ExplicitEuler<Operator> >;
+      private:
+        // typedefs
+        typedef typename Operator::arrayType arrayType;
+        typedef Operator operatorType;
+        typedef BoundaryCondition<Operator> bcType;
+        // constructors
+        ExplicitEuler(const Operator& L,
+                      const std::vector<Handle<bcType> >& bcs)
+        : MixedScheme<Operator>(L, 0.0, bcs) {}
+    };
 
 }
 

@@ -28,65 +28,59 @@
 
 namespace QuantLib {
 
-    namespace FiniteDifferences {
-
-        /*! \todo Unify the intrinsicValues/Payoff thing */
-        class AmericanCondition
-        : public FiniteDifferences::StandardStepCondition {
-          public:
-            AmericanCondition(Option::Type type,
-                              double strike);
-            AmericanCondition(const Array& intrinsicValues);
-            void applyTo(Array& a,
-                         Time t) const;
-            void applyTo(Handle<DiscretizedAsset> asset) const;
-          private:
-            Array intrinsicValues_;
-            // it would be easy to generalize to more exotic payoffs
-            Handle<Payoff> payoff_;
-        };
+    /*! \todo Unify the intrinsicValues/Payoff thing */
+    class AmericanCondition : public StandardStepCondition {
+      public:
+        AmericanCondition(Option::Type type,
+                          double strike);
+        AmericanCondition(const Array& intrinsicValues);
+        void applyTo(Array& a,
+                     Time t) const;
+        void applyTo(Handle<DiscretizedAsset> asset) const;
+      private:
+        Array intrinsicValues_;
+        // it would be easy to generalize to more exotic payoffs
+        Handle<Payoff> payoff_;
+    };
 
 
-        // inline definitions
+    // inline definitions
 
-        inline AmericanCondition::AmericanCondition(Option::Type type,
-            double strike)
-        : payoff_(new PlainVanillaPayoff(type, strike)) {}
+    inline AmericanCondition::AmericanCondition(Option::Type type,
+                                                double strike)
+    : payoff_(new PlainVanillaPayoff(type, strike)) {}
 
-        inline AmericanCondition::AmericanCondition(
-            const Array& intrinsicValues)
-        : intrinsicValues_(intrinsicValues) {}
+    inline AmericanCondition::AmericanCondition(const Array& intrinsicValues)
+    : intrinsicValues_(intrinsicValues) {}
 
-        inline void AmericanCondition::applyTo(Array& a, Time t) const {
+    inline void AmericanCondition::applyTo(Array& a, Time t) const {
 
-            if (intrinsicValues_.size()!=0) {
-                QL_REQUIRE(intrinsicValues_.size() == a.size(),
-                    "AmericanCondition::applyTo : "
-                    " size mismatch");
-                for (Size i = 0; i < a.size(); i++)
-                    a[i] = QL_MAX(a[i], intrinsicValues_[i]);
-            } else {
-                for (Size i = 0; i < a.size(); i++)
-                    a[i] = QL_MAX(a[i], (*payoff_)(a[i]));
-            }
-       
+        if (intrinsicValues_.size()!=0) {
+            QL_REQUIRE(intrinsicValues_.size() == a.size(),
+                       "AmericanCondition::applyTo : "
+                       " size mismatch");
+            for (Size i = 0; i < a.size(); i++)
+                a[i] = QL_MAX(a[i], intrinsicValues_[i]);
+        } else {
+            for (Size i = 0; i < a.size(); i++)
+                a[i] = QL_MAX(a[i], (*payoff_)(a[i]));
         }
 
-        inline void AmericanCondition::applyTo(
-            Handle<DiscretizedAsset> asset) const {
+    }
 
-            if (intrinsicValues_.size()!=0) {
-                QL_REQUIRE(intrinsicValues_.size() == asset->values().size(),
-                    "AmericanCondition::applyTo : "
-                    " size mismatch");
-                for (Size i = 0; i < asset->values().size(); i++)
-                    asset->values()[i] = QL_MAX(asset->values()[i],
-                        intrinsicValues_[i]);
-            } else {
-                for (Size i = 0; i < asset->values().size(); i++)
-                    asset->values()[i] = QL_MAX(asset->values()[i],
-                        (*payoff_)(asset->values()[i]));
-            }
+    inline void AmericanCondition::applyTo(Handle<DiscretizedAsset> asset) 
+                                                                      const {
+        if (intrinsicValues_.size()!=0) {
+            QL_REQUIRE(intrinsicValues_.size() == asset->values().size(),
+                       "AmericanCondition::applyTo : "
+                       " size mismatch");
+            for (Size i = 0; i < asset->values().size(); i++)
+                asset->values()[i] = QL_MAX(asset->values()[i],
+                                            intrinsicValues_[i]);
+        } else {
+            for (Size i = 0; i < asset->values().size(); i++)
+                asset->values()[i] = QL_MAX(asset->values()[i],
+                                            (*payoff_)(asset->values()[i]));
         }
     }
 

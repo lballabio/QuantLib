@@ -95,7 +95,7 @@ namespace QuantLib {
                 QL_REQUIRE(n_ >= 4,
                     "CubicSplineInterpolation : "
                     "not enough points for cubic spline interpolation");
-                FiniteDifferences::TridiagonalOperator L(n_);
+                TridiagonalOperator L(n_);
                 Array tmp(n_);
 
                 argument_type dx01  = xBegin_[1] - xBegin_[0],

@@ -26,20 +26,14 @@
 
 namespace QuantLib {
 
-    namespace FiniteDifferences {
+    //! mid-point value
+    double valueAtCenter(const Array& a);
 
-        //! mid-point value
-        double valueAtCenter(const Array& a);
+    //! mid-point first derivative
+    double firstDerivativeAtCenter(const Array& a, const Array& grid);
 
-        //! mid-point first derivative
-        double firstDerivativeAtCenter(const Array& a,
-            const Array& g);
-
-        //! mid-point second derivative
-        double secondDerivativeAtCenter(const Array& a,
-            const Array& g);
-
-    }
+    //! mid-point second derivative
+    double secondDerivativeAtCenter(const Array& a, const Array& grid);
 
 }
 

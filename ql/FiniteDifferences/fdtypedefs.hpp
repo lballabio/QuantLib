@@ -26,17 +26,13 @@
 
 namespace QuantLib {
 
-    namespace FiniteDifferences {
-
-        //! default choice for finite-difference model
-        typedef FiniteDifferenceModel<
+    //! default choice for finite-difference model
+    typedef FiniteDifferenceModel<
                     CrankNicolson<TridiagonalOperator>  >
-                        StandardFiniteDifferenceModel;
+                                  StandardFiniteDifferenceModel;
 
-        //! default choice for step condition
-        typedef StepCondition<Array> StandardStepCondition;
-
-    }
+    //! default choice for step condition
+    typedef StepCondition<Array> StandardStepCondition;
 
 }
 
