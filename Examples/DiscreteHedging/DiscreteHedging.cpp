@@ -19,7 +19,7 @@
     strategy and compares with the results of Derman & Kamal's (Goldman Sachs
     Equity Derivatives Research) Research Note: "When You Cannot Hedge
     Continuously: The Corrections to Black-Scholes"
-    (http://www.gs.com/qs/doc/when_you_cannot_hedge.pdf)
+    http://www.ederman.com/emanuelderman/GSQSpapers/when_you_cannot_hedge.pdf
 
     Suppose an option hedger sells an European option and receives the
     Black-Scholes value as the options premium.
@@ -305,7 +305,7 @@ void ReplicationError::compute(Size nTimeSteps, Size nSamples)
     // Black Scholes equation rules the path generator:
     // at each step the log of the stock
     // will have drift and sigma^2 variance
-    PseudoRandom::rsg_type rsg = 
+    PseudoRandom::rsg_type rsg =
         PseudoRandom::make_sequence_generator(nTimeSteps, 0);
 
     typedef SingleAsset<PseudoRandom>::path_generator_type generator_type;
@@ -327,8 +327,8 @@ void ReplicationError::compute(Size nTimeSteps, Size nSamples)
     // each path is priced using myPathPricer
     // prices will be accumulated into statisticsAccumulator
     OneFactorMonteCarloOption MCSimulation(myPathGenerator,
-                                           myPathPricer, 
-                                           statisticsAccumulator, 
+                                           myPathPricer,
+                                           statisticsAccumulator,
                                            false);
 
     // the model simulates nSamples paths
