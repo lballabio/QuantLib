@@ -45,6 +45,7 @@ namespace QuantLib{
 			}
 			return (i-begin);
 		}
+		QL_DUMMY_RETURN(0)
 	}
 
 	template <class Iterator, class Type>
@@ -64,6 +65,7 @@ namespace QuantLib{
 		} else {
 			return location(begin, end, x);
 		}
+		QL_DUMMY_RETURN(0)
 	}
 
 }
