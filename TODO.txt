@@ -61,7 +61,6 @@ http://www.wilmott.com/messageview.cfm?catid=4&threadid=11661
 
 upgrade to doxygen
 upgrade to cppunit
-upgrate to NSIS
 
 upgrade to libXLL
 
