@@ -48,11 +48,12 @@ MATH_OBJS        = $(OUTPUT_DIR)\matrix.obj      \
                    $(OUTPUT_DIR)\normaldistribution.obj \
                    $(OUTPUT_DIR)\statistics.obj
 
-MONTECARLO_OBJS  = $(OUTPUT_DIR)\lecuyerrandomgenerator.obj \
-                   $(OUTPUT_DIR)\averageasianpathpricer.obj \
-                   $(OUTPUT_DIR)\geometricasianpathpricer.obj \
-                   $(OUTPUT_DIR)\europeanpathpricer.obj \
-                   $(OUTPUT_DIR)\controlvariatedpathpricer.obj
+MONTECARLO_OBJS  = $(OUTPUT_DIR)\averageasianpathpricer.obj \ 
+                   $(OUTPUT_DIR)\basketpathpricer.obj       \
+                   $(OUTPUT_DIR)\controlvariatedpathpricer.obj \
+                   $(OUTPUT_DIR)\europeanpathpricer.obj        \
+                   $(OUTPUT_DIR)\geometricasianpathpricer.obj  \
+                   $(OUTPUT_DIR)\lecuyerrandomgenerator.obj                    
 
 FDM_OBJS         = $(OUTPUT_DIR)\tridiagonaloperator.obj \
                    $(OUTPUT_DIR)\bsmoperator.obj
@@ -63,7 +64,8 @@ PRICER_OBJS      = $(OUTPUT_DIR)\bsmoption.obj \
                    $(OUTPUT_DIR)\bsmamericanoption.obj \
                    $(OUTPUT_DIR)\dividendamericanoption.obj \
                    $(OUTPUT_DIR)\mcasianpricer.obj \
-                   $(OUTPUT_DIR)\mceuropeanpricer.obj
+                   $(OUTPUT_DIR)\mceuropeanpricer.obj \
+                   $(OUTPUT_DIR)\plainbasketoption.obj 
 
 SOLVER1D_OBJS    = $(OUTPUT_DIR)\bisection.obj \
                    $(OUTPUT_DIR)\brent.obj \
@@ -193,6 +195,7 @@ $(PYTHON_DIR)\quantlib_wrap.cpp:: \
     $(SWIG_DIR)\Interpolation.i \
     $(SWIG_DIR)\Matrix.i \
     $(SWIG_DIR)\MontecarloPricers.i \
+    $(SWIG_DIR)\MontecarloTools.i \
     $(SWIG_DIR)\Operators.i \
     $(SWIG_DIR)\Options.i \
     $(SWIG_DIR)\Pricers.i \
@@ -261,28 +264,36 @@ $(OUTPUT_DIR)\multivariateaccumulator.obj: \
 
 # Monte Carlo
 MonteCarlo: $(OUTPUT_DIR) $(MONTECARLO_OBJS)
+$(OUTPUT_DIR)\averageasianpathpricer.obj: \
+    $(SOURCES_DIR)\MonteCarlo\averageasianpathpricer.cpp
+$(OUTPUT_DIR)\basketpathpricer.obj: \
+    $(SOURCES_DIR)\MonteCarlo\basketpathpricer.cpp    
+$(OUTPUT_DIR)\controlvariatedpathpricer.obj: \
+    $(SOURCES_DIR)\MonteCarlo\controlvariatedpathpricer.cpp
 $(OUTPUT_DIR)\lecuyerrandomgenerator.obj: \
     $(SOURCES_DIR)\MonteCarlo\lecuyerrandomgenerator.cpp
 $(OUTPUT_DIR)\europeanpathpricer.obj: \
     $(SOURCES_DIR)\MonteCarlo\europeanpathpricer.cpp
 $(OUTPUT_DIR)\geometricasianpathpricer.obj: \
     $(SOURCES_DIR)\MonteCarlo\geometricasianpathpricer.cpp
-$(OUTPUT_DIR)\averageasianpathpricer.obj: \
-    $(SOURCES_DIR)\MonteCarlo\averageasianpathpricer.cpp
-$(OUTPUT_DIR)\controlvariatedpathpricer.obj: \
-    $(SOURCES_DIR)\MonteCarlo\controlvariatedpathpricer.cpp
-
 
 # Pricers
 Pricers: $(OUTPUT_DIR) $(PRICER_OBJS)
 $(OUTPUT_DIR)\bsmoption.obj: $(SOURCES_DIR)\Pricers\bsmoption.cpp
-$(OUTPUT_DIR)\bsmnumericaloption.obj: $(SOURCES_DIR)\Pricers\bsmnumericaloption.cpp
-$(OUTPUT_DIR)\bsmeuropeanoption.obj: $(SOURCES_DIR)\Pricers\bsmeuropeanoption.cpp
-$(OUTPUT_DIR)\bsmamericanoption.obj: $(SOURCES_DIR)\Pricers\bsmamericanoption.cpp
-$(OUTPUT_DIR)\dividendamericanoption.obj: $(SOURCES_DIR)\Pricers\dividendamericanoption.cpp
-$(OUTPUT_DIR)\mcasianpricer.obj: $(SOURCES_DIR)\Pricers\mcasianpricer.cpp
-$(OUTPUT_DIR)\mceuropeanpricer.obj: $(SOURCES_DIR)\Pricers\mceuropeanpricer.cpp
-
+$(OUTPUT_DIR)\bsmnumericaloption.obj: \
+                $(SOURCES_DIR)\Pricers\bsmnumericaloption.cpp
+$(OUTPUT_DIR)\bsmeuropeanoption.obj:  \
+                $(SOURCES_DIR)\Pricers\bsmeuropeanoption.cpp
+$(OUTPUT_DIR)\bsmamericanoption.obj: \
+                $(SOURCES_DIR)\Pricers\bsmamericanoption.cpp
+$(OUTPUT_DIR)\dividendamericanoption.obj: \
+                $(SOURCES_DIR)\Pricers\dividendamericanoption.cpp
+$(OUTPUT_DIR)\mcasianpricer.obj: \
+                $(SOURCES_DIR)\Pricers\mcasianpricer.cpp
+$(OUTPUT_DIR)\mceuropeanpricer.obj: \
+                $(SOURCES_DIR)\Pricers\mceuropeanpricer.cpp
+$(OUTPUT_DIR)\plainbasketoption.obj: \
+                $(SOURCES_DIR)\Pricers\plainbasketoption.cpp
 
 # 1D solvers
 Solvers1D: $(OUTPUT_DIR) $(SOLVER1D_OBJS)
