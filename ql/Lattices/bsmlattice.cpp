@@ -30,7 +30,8 @@ namespace QuantLib {
     namespace Lattices {
 
         BlackScholesLattice::BlackScholesLattice(
-            const Handle<Tree>& tree, Rate riskFreeRate, Time end, Size steps)
+            const Handle<Tree>& tree, Rate riskFreeRate,
+            Time end, Size steps)
         : Lattice(TimeGrid(end, steps), 2), 
           tree_(tree), discount_(QL_EXP(-riskFreeRate*(end/steps))) {
             pd_ = tree->probability(0,0,0);
@@ -47,9 +48,10 @@ namespace QuantLib {
 
 
         JarrowRudd::JarrowRudd(double volatility, Rate riskFreeRate,
+            Rate dividendYield, 
             double underlying, Time end, Size steps)
         : BinomialTree(steps + 1), x0_(underlying), sigma_(volatility), 
-          mu_(riskFreeRate - 0.5*sigma_*sigma_), dt_(end/steps) {}
+          mu_(riskFreeRate - dividendYield - 0.5*sigma_*sigma_), dt_(end/steps) {}
 
         double JarrowRudd::underlying(Size i, Size index) const {
             int j = (2*index - i);
@@ -62,9 +64,10 @@ namespace QuantLib {
 
 
         CoxRossRubinstein::CoxRossRubinstein(double volatility,
-            Rate riskFreeRate, double underlying, Time end, Size steps)
+            Rate riskFreeRate, Rate dividendYield, double underlying,
+            Time end, Size steps)
         : BinomialTree(steps + 1), x0_(underlying), sigma_(volatility), 
-          mu_(riskFreeRate - 0.5*sigma_*sigma_), dt_(end/steps) {}
+          mu_(riskFreeRate - dividendYield - 0.5*sigma_*sigma_), dt_(end/steps) {}
 
         double CoxRossRubinstein::underlying(Size i, Size index) const {
             int j = (2*index - i);

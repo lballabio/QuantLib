@@ -64,6 +64,7 @@ namespace QuantLib {
           public:
             CoxRossRubinstein(double volatility,
                               Rate riskFreeRate,
+                              Rate dividendYield, 
                               double underlying,
                               Time end, 
                               Size steps);
@@ -81,6 +82,7 @@ namespace QuantLib {
           public:
             JarrowRudd(double volatility,
                        Rate riskFreeRate,
+                       Rate dividendYield, 
                        double underlying,
                        Time end, 
                        Size steps);
