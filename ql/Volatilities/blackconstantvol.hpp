@@ -35,22 +35,6 @@ namespace QuantLib {
     */
     class BlackConstantVol : public BlackVolatilityTermStructure {
       public:
-        #ifndef QL_DISABLE_DEPRECATED
-        BlackConstantVol(const Date& referenceDate,
-                         Volatility volatility,
-                         const DayCounter& dayCounter);
-        BlackConstantVol(const Date& referenceDate,
-                         const Handle<Quote>& volatility,
-                         const DayCounter& dayCounter);
-        BlackConstantVol(Integer settlementDays,
-                         const Calendar&,
-                         Volatility volatility,
-                         const DayCounter& dayCounter);
-        BlackConstantVol(Integer settlementDays,
-                         const Calendar&,
-                         const Handle<Quote>& volatility,
-                         const DayCounter& dayCounter);
-        #endif
         BlackConstantVol(const Date& referenceDate,
                          Volatility volatility,
                          const DayCounter& dayCounter);
@@ -85,45 +69,6 @@ namespace QuantLib {
 
 
     // inline definitions
-
-    #ifndef QL_DISABLE_DEPRECATED
-    inline BlackConstantVol::BlackConstantVol(const Date& referenceDate,
-                                              Volatility volatility,
-                                              const DayCounter& dayCounter)
-    : BlackVolatilityTermStructure(referenceDate), dayCounter_(dayCounter) {
-        volatility_.linkTo(boost::shared_ptr<Quote>(new
-            SimpleQuote(volatility)));
-        registerWith(volatility_);
-    }
-
-    inline BlackConstantVol::BlackConstantVol(const Date& referenceDate,
-                                              const Handle<Quote>& volatility,
-                                              const DayCounter& dayCounter)
-    : BlackVolatilityTermStructure(referenceDate), volatility_(volatility),
-      dayCounter_(dayCounter) {
-        registerWith(volatility_);
-    }
-
-    inline BlackConstantVol::BlackConstantVol(Integer settlementDays,
-                                              const Calendar& calendar,
-                                              Volatility volatility,
-                                              const DayCounter& dayCounter)
-    : BlackVolatilityTermStructure(settlementDays,calendar),
-      dayCounter_(dayCounter) {
-        volatility_.linkTo(
-                       boost::shared_ptr<Quote>(new SimpleQuote(volatility)));
-        registerWith(volatility_);
-    }
-
-    inline BlackConstantVol::BlackConstantVol(Integer settlementDays,
-                                              const Calendar& calendar,
-                                              const Handle<Quote>& volatility,
-                                              const DayCounter& dayCounter)
-    : BlackVolatilityTermStructure(settlementDays,calendar),
-      volatility_(volatility), dayCounter_(dayCounter) {
-        registerWith(volatility_);
-    }
-    #endif
 
     inline BlackConstantVol::BlackConstantVol(const Date& referenceDate,
                                               Volatility volatility,

@@ -42,13 +42,6 @@ namespace QuantLib {
     */
     class SwaptionVolatilityMatrix : public SwaptionVolatilityStructure {
       public:
-        #ifndef QL_DISABLE_DEPRECATED
-        SwaptionVolatilityMatrix(const Date& referenceDate,
-                                 const std::vector<Date>& exerciseDates,
-                                 const std::vector<Period>& lengths,
-                                 const Matrix& volatilities,
-                                 const DayCounter& dayCounter);
-        #endif
         SwaptionVolatilityMatrix(const Date& referenceDate,
                                  const std::vector<Date>& exerciseDates,
                                  const std::vector<Period>& lengths,
@@ -73,34 +66,6 @@ namespace QuantLib {
 
 
     // inline definitions
-
-    #ifndef QL_DISABLE_DEPRECATED
-    inline SwaptionVolatilityMatrix::SwaptionVolatilityMatrix(
-                       const Date& today, const std::vector<Date>& dates,
-                       const std::vector<Period>& lengths, const Matrix& vols,
-                       const DayCounter& dayCounter)
-    : SwaptionVolatilityStructure(today,today),
-      dayCounter_(dayCounter), exerciseDates_(dates),
-      lengths_(lengths), volatilities_(vols) {
-        exerciseTimes_.resize(exerciseDates_.size());
-        timeLengths_.resize(lengths_.size());
-        Size i;
-        for (i=0; i<exerciseDates_.size(); i++) {
-            exerciseTimes_[i] = timeFromReference(exerciseDates_[i]);
-        }
-        for (i=0; i<lengths_.size(); i++) {
-            Date startDate = exerciseDates_[0]; // as good as any
-            Date endDate = startDate + lengths_[i];
-            timeLengths_[i] = dayCounter.yearFraction(startDate,endDate);
-        }
-        interpolation_ =
-            Linear::make_interpolation(exerciseTimes_.begin(),
-                                       exerciseTimes_.end(),
-                                       timeLengths_.begin(),
-                                       timeLengths_.end(),
-                                       volatilities_);
-    }
-    #endif
 
     inline SwaptionVolatilityMatrix::SwaptionVolatilityMatrix(
                        const Date& today, const std::vector<Date>& dates,

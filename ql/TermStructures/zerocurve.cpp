@@ -50,11 +50,8 @@ namespace QuantLib {
     ZeroCurve::ZeroCurve(const std::vector<Date>& dates,
                          const std::vector<Rate>& yields,
                          const DayCounter& dayCounter)
-    : ZeroYieldStructure(dates[0]), dates_(dates), yields_(yields)
-      #ifndef QL_DISABLE_DEPRECATED
-      , dayCounter_(Settings::instance().dayCounter())
-      #endif
-    {
+    : ZeroYieldStructure(dates[0]), dates_(dates), yields_(yields),
+      dayCounter_(dayCounter) {
 
         QL_REQUIRE(dates_.size()>1, "too few dates");
         QL_REQUIRE(yields_.size()==dates_.size(),

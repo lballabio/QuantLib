@@ -45,12 +45,6 @@ namespace QuantLib {
     */
     class BlackVarianceCurve : public BlackVarianceTermStructure {
       public:
-        #ifndef QL_DISABLE_DEPRECATED
-        BlackVarianceCurve(const Date& referenceDate,
-                           const std::vector<Date>& dates,
-                           const std::vector<Volatility>& blackVolCurve,
-                           const DayCounter& dayCounter);
-        #endif
         BlackVarianceCurve(const Date& referenceDate,
                            const std::vector<Date>& dates,
                            const std::vector<Volatility>& blackVolCurve,
