@@ -15,9 +15,6 @@ include_HEADERS = \
 	fdtypedefs.hpp \
 	finitedifferencemodel.hpp \
 	forwardeuler.hpp \
-	identity.hpp \
-	operator.hpp \
-	operatortraits.hpp \
 	stepcondition.hpp \
 	tridiagonaloperator.hpp \
 	valueatcenter.hpp

@@ -34,9 +34,7 @@
 #ifndef quantlib_crank_nicolson_h
 #define quantlib_crank_nicolson_h
 
-#include "ql/date.hpp"
-#include "ql/FiniteDifferences/identity.hpp"
-#include "ql/FiniteDifferences/operatortraits.hpp"
+#include "ql/FiniteDifferences/finitedifferencemodel.hpp"
 
 namespace QuantLib {
 
@@ -57,15 +55,21 @@ namespace QuantLib {
             Operator(const Operator&);
             Operator& operator=(const Operator&);
 
+            // inspectors
+            unsigned int size(); 
+
+            // modifiers
             void setTime(Time t);
 
             // operator interface
             arrayType applyTo(const arrayType&);
             arrayType solveFor(const arrayType&);
+            static Operator identity(unsigned int size);
 
             // operator algebra
-            Operator operator*(double,const Operator&);
-            Operator operator+(const Identity<arrayType>&,const Operator&);
+            Operator operator*(double, const Operator&);
+            Operator operator+(const Operator&, const Operator&);
+            Operator operator+(const Operator&, const Operator&);
             \endcode
             
             \warning The differential operator must be linear for
@@ -76,18 +80,20 @@ namespace QuantLib {
             friend class FiniteDifferenceModel<CrankNicolson<Operator> >;
           private:
             // typedefs
-            typedef typename OperatorTraits<Operator>::arrayType arrayType;
+            typedef typename Operator::arrayType arrayType;
             typedef Operator operatorType;
             // constructors
-            CrankNicolson(operatorType& D) : D_(D), dt_(0.0) {}
+            CrankNicolson(Operator& L) 
+            : D_(L), I_(Operator::identity(L.size())), dt_(0.0) {}
             void step(arrayType& a, Time t);
             void setStep(Time dt) {
                 dt_ = dt;
-                explicitPart_ = Identity<arrayType>()-(dt_/2)*D_;
-                implicitPart_ = Identity<arrayType>()+(dt_/2)*D_;
+                explicitPart_ = I_-(dt_/2)*D_;
+                implicitPart_ = I_+(dt_/2)*D_;
             }
-            operatorType& D_;
-            operatorType explicitPart_, implicitPart_;
+            Operator& D_;
+            Operator I_;
+            Operator explicitPart_, implicitPart_;
             Time dt_;
         };
 
@@ -97,8 +103,8 @@ namespace QuantLib {
         inline void CrankNicolson<Operator>::step(arrayType& a, Time t) {
             if (D_.isTimeDependent()) {
                 D_.setTime(t);
-                explicitPart_ = Identity<arrayType>()-(dt_/2)*D_;
-                implicitPart_ = Identity<arrayType>()+(dt_/2)*D_;
+                explicitPart_ = I_-(dt_/2)*D_;
+                implicitPart_ = I_+(dt_/2)*D_;
             }
             a = implicitPart_.solveFor(explicitPart_.applyTo(a));
         }

@@ -51,7 +51,8 @@ namespace QuantLib {
                 belowDiagonal_ = Array(0);
                 aboveDiagonal_ = Array(0);
             } else {
-                throw Error("invalid size for tridiagonal operator (must be >= 3)");
+                throw Error("invalid size for tridiagonal operator "
+                            "(must be null or >= 3)");
             }
         }
 
@@ -97,8 +98,7 @@ namespace QuantLib {
         }
 
 
-        Array
-        TridiagonalOperator::applyTo(const Array& v) const {
+        Array TridiagonalOperator::applyTo(const Array& v) const {
             QL_REQUIRE(v.size()==size(),
                 "TridiagonalOperator::applyTo: vector of the wrong size (" +
                 IntegerFormatter::toString(v.size()) + "instead of " +
@@ -142,10 +142,9 @@ namespace QuantLib {
             return result;
         }
 
-        Array
-        TridiagonalOperator::solveFor(const Array& rhs) const {
+        Array TridiagonalOperator::solveFor(const Array& rhs) const {
             QL_REQUIRE(rhs.size()==size(),
-                "TridiagonalOperator::solveFor: rhs vector has the wrong size");
+                "TridiagonalOperator::solveFor: rhs has the wrong size");
             Array bcRhs = rhs;
 
             // apply lower boundary condition
@@ -185,12 +184,19 @@ namespace QuantLib {
                     "TridiagonalOperator::solveFor: division by zero");
                 result[j] = (bcRhs[j]-belowDiagonal_[j-1]*result[j-1])/bet;
             }
-// cannot be j>=0 with unsigned int j
+            // cannot be j>=0 with unsigned int j
             for (j=size()-2;j>0;j--)
                 result[j] -= tmp[j+1]*result[j+1];
             result[0] -= tmp[1]*result[1];
 
             return result;
+        }
+
+        TridiagonalOperator TridiagonalOperator::identity(unsigned int size){
+            return TridiagonalOperator(
+                Array(size-1, 0.0),     // lower diagonal
+                Array(size,   1.0),     // diagonal
+                Array(size-1, 0.0));    // upper diagonal
         }
 
     }

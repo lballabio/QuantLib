@@ -34,9 +34,7 @@
 #ifndef quantlib_backward_euler_h
 #define quantlib_backward_euler_h
 
-#include "ql/FiniteDifferences/operatortraits.hpp"
 #include "ql/FiniteDifferences/finitedifferencemodel.hpp"
-#include "ql/FiniteDifferences/identity.hpp"
 
 namespace QuantLib {
 
@@ -57,15 +55,19 @@ namespace QuantLib {
             Operator(const Operator&);
             Operator& operator=(const Operator&);
 
+            // inspectors
+            unsigned int size(); 
+
             // modifiers
             void setTime(Time t);
 
             // operator interface
             arrayType solveFor(const arrayType&);
-
+            static Operator identity(unsigned int size);
+            
             // operator algebra
-            Operator operator*(double,const Operator&);
-            Operator operator+(const Identity<arrayType>&,const Operator&);
+            Operator operator*(double, const Operator&);
+            Operator operator+(const Operator&, const Operator&);
             \endcode
         */
         template <class Operator>
@@ -73,17 +75,19 @@ namespace QuantLib {
             friend class FiniteDifferenceModel<BackwardEuler<Operator> >;
           private:
             // typedefs
-            typedef typename OperatorTraits<Operator>::arrayType arrayType;
+            typedef typename Operator::arrayType arrayType;
             typedef Operator operatorType;
             // constructors
-            BackwardEuler(operatorType& L) : D_(L), dt_(0.0) {}
+            BackwardEuler(Operator& L)
+            : D_(L), I_(L.identity(L.size())), dt_(0.0) {}
             void step(arrayType& a, Time t);
             void setStep(Time dt) {
                 dt_ = dt;
-                implicitPart_ = Identity<arrayType>()+dt_*D_;
+                implicitPart_ = I_+dt_*D_;
             }
-            operatorType& D_;
-            operatorType implicitPart_;
+            Operator& D_;
+            Operator I_;
+            Operator implicitPart_;
             Time dt_;
         };
 
@@ -91,9 +95,9 @@ namespace QuantLib {
 
         template <class Operator>
         inline void BackwardEuler<Operator>::step(arrayType& a, Time t) {
-            if (Operator::isTimeDependent) {
-                L.setTime(t);
-                implicitPart_ = Identity<arrayType>()+dt_*D_;
+            if (D_.isTimeDependent()) {
+                D_.setTime(t);
+                implicitPart_ = I_+dt_*D_;
             }
             a = implicitPart_.solveFor(a);
         }

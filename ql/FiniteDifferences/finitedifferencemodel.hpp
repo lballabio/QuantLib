@@ -72,9 +72,7 @@ namespace QuantLib {
         template<class Evolver>
         void FiniteDifferenceModel<Evolver>::rollback(
             FiniteDifferenceModel::arrayType& a,
-            Time from,
-            Time to,
-            unsigned int steps,
+            Time from, Time to, unsigned int steps,
             Handle<StepCondition<arrayType> > condition) {
                 Time dt = (from-to)/steps, t = from;
                 evolver.setStep(dt);

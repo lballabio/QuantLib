@@ -34,9 +34,7 @@
 #ifndef quantlib_forward_euler_h
 #define quantlib_forward_euler_h
 
-#include "ql/date.hpp"
-#include "ql/FiniteDifferences/identity.hpp"
-#include "ql/FiniteDifferences/operatortraits.hpp"
+#include "ql/FiniteDifferences/finitedifferencemodel.hpp"
 
 namespace QuantLib {
 
@@ -57,11 +55,19 @@ namespace QuantLib {
             Operator(const Operator&);
             Operator& operator=(const Operator&);
 
+            // inspectors
+            unsigned int size(); 
+
             // modifiers
             void setTime(Time t); 
 
             // operator interface
             arrayType applyTo(const arrayType&);
+            static Operator identity(unsigned int size);
+
+            // operator algebra
+            Operator operator*(double, const Operator&);
+            Operator operator-(const Operator&, const Operator&);
             \endcode
         */
         template <class Operator>
@@ -69,27 +75,29 @@ namespace QuantLib {
             friend class FiniteDifferenceModel<ForwardEuler<Operator> >;
           private:
             // typedefs
-            typedef typename OperatorTraits<Operator>::arrayType arrayType;
+            typedef typename Operator::arrayType arrayType;
             typedef Operator operatorType;
             // constructors
-            ForwardEuler(operatorType& E) : D_(E), dt_(0.0) {}
+            ForwardEuler(Operator& L) 
+            : D_(L), I_(L.identity(L.size())), dt_(0.0) {}
             void step(arrayType& a, Time t);
             void setStep(Time dt) {
                 dt_ = dt;
-                explicitPart_ = Identity<arrayType>()-dt_*D_;
+                explicitPart_ = I_-dt_*D_;
             }
             Operator& D_;
+            Operator I_;
             Operator explicitPart_;
             Time dt_;
         };
 
         // inline definitions
 
-        template<class Operator>
+        template <class Operator>
         inline void ForwardEuler<Operator>::step(arrayType& a, Time t) {
             if (D_.isTimeDependent()) {
                 D_.setTime(t);
-                explicitPart_ = Identity<arrayType>()-dt_*D_;
+                explicitPart_ = I_-dt_*D_;
             }
             a = explicitPart_.applyTo(a);
         }

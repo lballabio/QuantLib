@@ -34,8 +34,6 @@
 #ifndef quantlib_tridiagonal_operator_h
 #define quantlib_tridiagonal_operator_h
 
-#include "ql/FiniteDifferences/operator.hpp"
-#include "ql/FiniteDifferences/identity.hpp"
 #include "ql/FiniteDifferences/boundarycondition.hpp"
 #include "ql/array.hpp"
 #include "ql/date.hpp"
@@ -46,41 +44,67 @@ namespace QuantLib {
 
         //! Base implementation for tridiagonal operator
         /*! \warning to use real time-dependant algebra, you must overload
-            the corresponding operators in the inheriting time-dependent class
+            the corresponding operators in the inheriting time-dependent 
+            class
         */
         class TridiagonalOperator {
-           friend TridiagonalOperator operator+(const TridiagonalOperator&);
+            // unary operators
+            friend TridiagonalOperator operator+(const TridiagonalOperator&);
             friend TridiagonalOperator operator-(const TridiagonalOperator&);
+            // binary operators
+            friend TridiagonalOperator operator+(const TridiagonalOperator&,
+                const TridiagonalOperator&);
+            friend TridiagonalOperator operator-(const TridiagonalOperator&,
+                const TridiagonalOperator&);
             friend TridiagonalOperator operator*(double,
                 const TridiagonalOperator&);
             friend TridiagonalOperator operator*(const TridiagonalOperator&,
                 double);
             friend TridiagonalOperator operator/(const TridiagonalOperator&,
                 double);
-            friend TridiagonalOperator operator+(const TridiagonalOperator&,
-                const TridiagonalOperator&);
-            friend TridiagonalOperator operator-(const TridiagonalOperator&,
-                const TridiagonalOperator&);
-            friend TridiagonalOperator operator+(const Identity<Array>&,
-                const TridiagonalOperator&);
-            friend TridiagonalOperator operator+(const TridiagonalOperator&,
-                const Identity<Array>&);
-            friend TridiagonalOperator operator-(const Identity<Array>&,
-                const TridiagonalOperator&);
-            friend TridiagonalOperator operator-(const TridiagonalOperator&,
-                const Identity<Array>&);
           public:
+            typedef Array arrayType;
             // constructors
             TridiagonalOperator(unsigned int size = 0);
             TridiagonalOperator(const Array& low, const Array& mid,
                 const Array& high);
+            #if defined(QL_PATCH_MICROSOFT_BUGS)
+                /* This copy constructor and assignment operator are here 
+                   because somehow Visual C++ is not able to generate working 
+                   ones. They are _not_ to be defined for other compilers 
+                   which are able to generate correct ones.   */
+                TridiagonalOperator(const TridiagonalOperator& L) {
+                    belowDiagonal_ = L.belowDiagonal_;
+                    diagonal_      = L.diagonal_;
+                    aboveDiagonal_ = L.aboveDiagonal_;
+                    lowerBC_       = L.lowerBC_;
+                    upperBC_       = L.upperBC_;
+                }
+                TridiagonalOperator& operator=(const TridiagonalOperator& L){
+                    belowDiagonal_ = L.belowDiagonal_;
+                    diagonal_      = L.diagonal_;
+                    aboveDiagonal_ = L.aboveDiagonal_;
+                    lowerBC_       = L.lowerBC_;
+                    upperBC_       = L.upperBC_;
+                    return *this;
+                }
+            #endif
             virtual ~TridiagonalOperator() {}
-            // operator interface
-            Array solveFor(const Array& rhs) const;
+            //! \name Operator interface
+            //@{
+            //! apply operator to a given array
             Array applyTo(const Array& v) const;
-            // inspectors
+            //! solve linear system for a given right-hand side
+            Array solveFor(const Array& rhs) const;
+            //! identity instance
+            static TridiagonalOperator identity(unsigned int size);
+            //@}
+            //! \name Inspectors
+            //@{
             unsigned int size() const { return diagonal_.size(); }
-            // modifiers
+            //@}
+            //! \name Modifiers
+            //@{
             void setLowerBC(const BoundaryCondition& bc);
             void setUpperBC(const BoundaryCondition& bc);
             void setFirstRow(double, double);
@@ -89,60 +113,10 @@ namespace QuantLib {
             void setLastRow(double, double);
             virtual bool isTimeDependent() {return false;}
             virtual void setTime(Time t) {}
+            //@}
           protected:
             Array diagonal_, belowDiagonal_, aboveDiagonal_;
             BoundaryCondition lowerBC_, upperBC_;
-        };
-
-        // derived classes
-
-        // time-constant
-
-        class ConstantTridiagonalOperator : public TridiagonalOperator 
-        {
-          public:
-            // constructors
-            ConstantTridiagonalOperator() : TridiagonalOperator() {}
-            ConstantTridiagonalOperator(unsigned int size) 
-            : TridiagonalOperator(size) {}
-            ConstantTridiagonalOperator(const Array& low, const Array& mid,
-                const Array& high)
-            : TridiagonalOperator(low,mid,high) {}
-            #if defined(QL_PATCH_MICROSOFT_BUGS)
-            /* This copy constructor and assignment operator are here because
-               somehow Visual C++ is not able to generate working ones. They 
-               are _not_ to be defined for other compilers which are able to
-               generate correct ones.   */
-                ConstantTridiagonalOperator(const ConstantTridiagonalOperator& op)
-                : TridiagonalOperator(op.belowDiagonal_, op.diagonal_,
-                    op.aboveDiagonal_) {
-                        lowerBC_ = op.lowerBC_;
-                        upperBC_ = op.upperBC_;
-                }
-                ConstantTridiagonalOperator& operator=(const ConstantTridiagonalOperator& op) {
-                    belowDiagonal_ = op.belowDiagonal_;
-                    diagonal_      = op.diagonal_;
-                    aboveDiagonal_ = op.aboveDiagonal_;
-                    lowerBC_       = op.lowerBC_;
-                    upperBC_       = op.upperBC_;
-                    return *this;
-                }
-            #endif
-            virtual bool isTimeDependent() { return false;}    
-        };
-
-        // time-dependent
-
-        class TimeDependentTridiagonalOperator :
-          public TridiagonalOperator {
-          public:
-            // constructors
-            TimeDependentTridiagonalOperator(unsigned int size=0)
-            : TridiagonalOperator(size) {}
-            TimeDependentTridiagonalOperator(const Array& low, 
-                const Array& mid, const Array& high)
-            : TridiagonalOperator(low,mid,high) {}
-            virtual bool isTimeDependent() { return true;}
         };
 
 
@@ -193,6 +167,52 @@ namespace QuantLib {
             return result;
         }
 
+        inline TridiagonalOperator operator+(const TridiagonalOperator& D1,
+          const TridiagonalOperator& D2) {
+            QL_REQUIRE(D1.lowerBC_.type() == BoundaryCondition::None ||
+                       D2.lowerBC_.type() == BoundaryCondition::None,
+                "Adding operators with colliding boundary conditions");
+            QL_REQUIRE(D1.upperBC_.type() == BoundaryCondition::None ||
+                       D2.upperBC_.type() == BoundaryCondition::None,
+                "Adding operators with colliding boundary conditions");
+            Array low = D1.belowDiagonal_+D2.belowDiagonal_,
+                mid = D1.diagonal_+D2.diagonal_,
+                high = D1.aboveDiagonal_+D2.aboveDiagonal_;
+            TridiagonalOperator result(low,mid,high);
+            if (D1.lowerBC_.type() == BoundaryCondition::None)
+                result.setLowerBC(D2.lowerBC_);
+            else
+                result.setLowerBC(D1.lowerBC_);
+            if (D1.upperBC_.type() == BoundaryCondition::None)
+                result.setUpperBC(D2.upperBC_);
+            else
+                result.setUpperBC(D1.upperBC_);
+            return result;
+        }
+
+        inline TridiagonalOperator operator-(const TridiagonalOperator& D1,
+          const TridiagonalOperator& D2) {
+            QL_REQUIRE(D1.lowerBC_.type() == BoundaryCondition::None ||
+                       D2.lowerBC_.type() == BoundaryCondition::None,
+                "Subtracting operators with colliding boundary conditions");
+            QL_REQUIRE(D1.upperBC_.type() == BoundaryCondition::None ||
+                       D2.upperBC_.type() == BoundaryCondition::None,
+                "Subtracting operators with colliding boundary conditions");
+            Array low = D1.belowDiagonal_-D2.belowDiagonal_,
+                mid = D1.diagonal_-D2.diagonal_,
+                high = D1.aboveDiagonal_-D2.aboveDiagonal_;
+            TridiagonalOperator result(low,mid,high);
+            if (D1.lowerBC_.type() == BoundaryCondition::None)
+                result.setLowerBC(D2.lowerBC_);
+            else
+                result.setLowerBC(D1.lowerBC_);
+            if (D1.upperBC_.type() == BoundaryCondition::None)
+                result.setUpperBC(D2.upperBC_);
+            else
+                result.setUpperBC(D1.upperBC_);
+            return result;
+        }
+
         inline TridiagonalOperator operator*(double a,
           const TridiagonalOperator& D) {
             Array low = D.belowDiagonal_*a, mid = D.diagonal_*a,
@@ -217,64 +237,6 @@ namespace QuantLib {
           double a) {
             Array low = D.belowDiagonal_/a, mid = D.diagonal_/a,
                 high = D.aboveDiagonal_/a;
-            TridiagonalOperator result(low,mid,high);
-            result.setLowerBC(D.lowerBC_);
-            result.setUpperBC(D.upperBC_);
-            return result;
-        }
-
-        inline TridiagonalOperator operator+(const TridiagonalOperator& D1,
-          const TridiagonalOperator& D2) {
-            // to do: check boundary conditions
-            Array low = D1.belowDiagonal_+D2.belowDiagonal_,
-                mid = D1.diagonal_+D2.diagonal_,
-                high = D1.aboveDiagonal_+D2.aboveDiagonal_;
-            return TridiagonalOperator(low,mid,high);
-        }
-
-        inline TridiagonalOperator operator-(const TridiagonalOperator& D1,
-          const TridiagonalOperator& D2) {
-            // to do: check boundary conditions
-            Array low = D1.belowDiagonal_-D2.belowDiagonal_,
-                mid = D1.diagonal_-D2.diagonal_,
-                high = D1.aboveDiagonal_-D2.aboveDiagonal_;
-            return TridiagonalOperator(low,mid,high);
-        }
-
-        inline TridiagonalOperator operator+(const TridiagonalOperator& D,
-          const Identity<Array>& I) {
-            Array mid = D.diagonal_+1.0;
-            TridiagonalOperator result(D.belowDiagonal_, mid, 
-                D.aboveDiagonal_);
-            result.setLowerBC(D.lowerBC_);
-            result.setUpperBC(D.upperBC_);
-            return result;
-        }
-
-        inline TridiagonalOperator operator+(const Identity<Array>& I,
-          const TridiagonalOperator& D) {
-            Array mid = D.diagonal_+1.0;
-            TridiagonalOperator result(D.belowDiagonal_, mid, 
-                D.aboveDiagonal_);
-            result.setLowerBC(D.lowerBC_);
-            result.setUpperBC(D.upperBC_);
-            return result;
-        }
-
-        inline TridiagonalOperator operator-(const TridiagonalOperator& D,
-          const Identity<Array>& I) {
-            Array mid = D.diagonal_-1.0;
-            TridiagonalOperator result(D.belowDiagonal_, mid, 
-                D.aboveDiagonal_);
-            result.setLowerBC(D.lowerBC_);
-            result.setUpperBC(D.upperBC_);
-            return result;
-        }
-
-        inline TridiagonalOperator operator-(const Identity<Array>& I,
-          const TridiagonalOperator& D) {
-            Array low = -D.belowDiagonal_, mid = 1.0-D.diagonal_,
-                high = -D.aboveDiagonal_;
             TridiagonalOperator result(low,mid,high);
             result.setLowerBC(D.lowerBC_);
             result.setUpperBC(D.upperBC_);
