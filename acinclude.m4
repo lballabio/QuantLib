@@ -1,43 +1,11 @@
 AC_DEFUN([mytoupper],[translit([$1],[abcdefghijklmnopqrstuvwxyz.],[ABCDEFGHIJKLMNOPQRSTUVWXYZ_])])
 
-dnl QL_USING_STD_NAME(foo) tests the C++ for the presence of foo in
-dnl   namespace std.
+dnl QL_CHECK_FUNCTION(foo,bar,arg) tests for the
+dnl   presence of foo in namespace std or in the global 
+dnl   namespace.
 dnl
-dnl   If foo is in namespace std, QL_USING_STD_FOO is #defined to
-dnl      using std::foo .
-dnl
-dnl   The line `#define QL_USING_STD_FOO ' (with trailing space )
-dnl      must appear in acconfig.h
-dnl 
-dnl   This macro assumes foo is in standard header <foo> .
-
-AC_DEFUN(
-  [QL_USING_STD_NAME],
-  [
-    AC_MSG_CHECKING(if C++ environment has $1 in std.)
-    AC_TRY_LINK(
-    [
-    #include <$1>
-
-    using std::$1;
-
-    ],[
-      ;
-    ],[
-      ql_$1_in_std=yes
-      AC_DEFINE(mytoupper(QL_USING_STD_$1),[using std::$1;])
-    ],[
-      ql_$1_in_std=no
-      AC_DEFINE(mytoupper(QL_USING_STD_$1),)
-    ])
-    AC_MSG_RESULT([$ql_$1_in_std])
-  ])
-
-dnl QL_FUN_IN_STD_HEADER(foo,bar,arg) tests the C++ for the
-dnl   presence of foo in namespace std.
-dnl
-dnl   If foo is in namespace std, QL_FOO is #defined to
-dnl      std::foo .
+dnl   QL_FOO is #defined as foo with full namespace 
+dnl     specification if foo is found.
 dnl   arg is a valid argument for foo.
 dnl
 dnl   The line `#undef QL_FOO'
@@ -46,39 +14,112 @@ dnl
 dnl   This macro assumes foo is in standard header <bar> .
 
 AC_DEFUN(
-  [QL_FUN_IN_STD_HEADER],
+  [QL_CHECK_FUNCTION],
   [
-    AC_MSG_CHECKING(if C++ environment has $1 in std)
+    AC_MSG_CHECKING(if C++ environment has $1)
     AC_TRY_COMPILE(
     [#include<$2>],
     [
-    double dv;
+    double x;
     std::$1($3);
     ],[
-      ql_$1_in_std=yes
+      result="found in std"
       AC_DEFINE(mytoupper(QL_$1),[std::$1])
     ],[
-      ql_$1_in_std=no
-      AC_DEFINE(mytoupper(QL_$1),[$1])
+      AC_TRY_COMPILE(
+      [#include<$2>],
+      [
+      double x;
+      $1($3);
+      ],[
+        result=found
+        AC_DEFINE(mytoupper(QL_$1),[$1])
+      ],[
+        result="not found"
+      ])
     ])
-    AC_MSG_RESULT([$ql_$1_in_std])
+    AC_MSG_RESULT([$result])
   ])
 
+
+dnl QL_CHECK_CLASS(foo,bar,arg) tests for the
+dnl   presence of foo in namespace std or in the global
+dnl   namespace.
+dnl
+dnl   QL_FOO is #defined as foo with full namespace
+dnl     specification if foo is found.
+dnl   arg is a valid argument for a foo constructor.
+dnl
+dnl   The line `#undef QL_FOO'
+dnl      must appear in acconfig.h
+dnl
+dnl   This macro assumes foo is in standard header <bar> .
+
 AC_DEFUN(
-	[QL_TMPL_IN_STD_HEADER],
-	[
-		AC_MSG_CHECKING(if C++ environment has $1 in std)
-		AC_TRY_COMPILE(
-			[#include <$3>],
-			[
-				std::$1<$2>($4);
-			],[
-				ql_$1_in_std=yes
-				AC_DEFINE(mytoupper(QL_$1),[std::$1])
-			],[
-				ql_$1_in_std=no
-				AC_DEFINE(mytoupper(QL_$1),[$1])
-			])
-		AC_MSG_RESULT([$ql_$1_in_std])
-	])
+  [QL_CHECK_CLASS],
+  [
+    AC_MSG_CHECKING(if C++ environment has $1)
+    AC_TRY_COMPILE(
+    [#include<$2>],
+    [
+    std::$1 x = std::$1($3);
+    ],[
+      result="found in std"
+      AC_DEFINE(mytoupper(QL_$1),[std::$1])
+    ],[
+      AC_TRY_COMPILE(
+      [#include<$2>],
+      [
+      $1 x = $1($3);
+      ],[
+        result=found
+        AC_DEFINE(mytoupper(QL_$1),[$1])
+      ],[
+        result="not found"
+      ])
+    ])
+    AC_MSG_RESULT([$result])
+  ])
+
+
+dnl QL_CHECK_TEMPLATE_CLASS(foo,types,bar,arg) tests for the
+dnl   presence of foo<types> in namespace std or in the global
+dnl   namespace.
+dnl
+dnl   QL_FOO is #defined as foo with full namespace
+dnl     specification if foo is found.
+dnl   arg is a valid argument for a foo constructor.
+dnl
+dnl   The line `#undef QL_FOO'
+dnl      must appear in acconfig.h
+dnl
+dnl   This macro assumes foo is in standard header <bar> .
+
+AC_DEFUN(
+  [QL_CHECK_TEMPLATE_CLASS],
+  [
+    AC_MSG_CHECKING(if C++ environment has $1)
+    AC_TRY_COMPILE(
+    [#include<$3>],
+    [
+    std::$1<$2> x = std::$1<$2>($4);
+    ],[
+      result="found in std"
+      AC_DEFINE(mytoupper(QL_$1),[std::$1])
+    ],[
+      AC_TRY_COMPILE(
+      [#include<$3>],
+      [
+      $1<$2> x = $1<$2>($4);
+      ],[
+        result=found
+        AC_DEFINE(mytoupper(QL_$1),[$1])
+      ],[
+        result="not found"
+      ])
+    ])
+    AC_MSG_RESULT([$result])
+  ])
+
+
 

@@ -12,6 +12,9 @@
 #undef QL_CLOCK
 #undef QL_MAX
 #undef QL_MIN
+#undef QL_ITERATOR
+#undef QL_ITERATOR_TRAITS
+
 #undef PACKAGE
 
 #undef VERSION

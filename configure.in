@@ -73,7 +73,7 @@ using namespace std;
 ],[
   ql_string_ok=no
   config_error=yes 
-  AC_WARN(C++ compilers string support does not work)
+  AC_ERROR(C++ compilers string support does not work)
 ])
 AC_MSG_RESULT([$ql_string_ok])
 
@@ -81,42 +81,49 @@ AC_CHECK_HEADERS(math.h cmath ctype.h cctype ctime time.h)
 AC_CHECK_HEADERS(limits climits limits.h float.h)
 
 if test $ac_cv_header_cmath = yes ; then
-	QL_FUN_IN_STD_HEADER([sqrt],[cmath],[2])
-	QL_FUN_IN_STD_HEADER([fabs],[cmath],[2])
-	QL_FUN_IN_STD_HEADER([exp],[cmath],[2])
-	QL_FUN_IN_STD_HEADER([log],[cmath],[2])
-	QL_FUN_IN_STD_HEADER([sin],[cmath],[2])
-	QL_FUN_IN_STD_HEADER([cos],[cmath],[2])
-	QL_FUN_IN_STD_HEADER([pow],[cmath],[2,2])
-	QL_FUN_IN_STD_HEADER([modf],[cmath],[2,&dv])
+  ql_math=cmath
 elif test $ac_cv_header_math_h = yes ; then
-	QL_FUN_IN_STD_HEADER([sqrt],[math.h],[2])
-	QL_FUN_IN_STD_HEADER([fabs],[math.h],[2])
-	QL_FUN_IN_STD_HEADER([exp],[math.h],[2])
-	QL_FUN_IN_STD_HEADER([log],[math.h],[2])
-	QL_FUN_IN_STD_HEADER([sin],[math.h],[2])
-	QL_FUN_IN_STD_HEADER([cos],[math.h],[2])
-	QL_FUN_IN_STD_HEADER([pow],[math.h],[2,2])
-	QL_FUN_IN_STD_HEADER([modf],[math.h],[2,&dv])
+  ql_math=math.h
+else
+  AC_ERROR(Could not find cmath nor math.h)
 fi
+QL_CHECK_FUNCTION([sqrt],[$ql_math],[2])
+QL_CHECK_FUNCTION([fabs],[$ql_math],[2])
+QL_CHECK_FUNCTION([exp],[$ql_math],[2])
+QL_CHECK_FUNCTION([log],[$ql_math],[2])
+QL_CHECK_FUNCTION([sin],[$ql_math],[2])
+QL_CHECK_FUNCTION([cos],[$ql_math],[2])
+QL_CHECK_FUNCTION([pow],[$ql_math],[2,2])
+QL_CHECK_FUNCTION([modf],[$ql_math],[2,&x])
 
 if test $ac_cv_header_cctype = yes ; then
-	QL_FUN_IN_STD_HEADER([toupper],[cctype],['c'])
-	QL_FUN_IN_STD_HEADER([strlen],[cctype],["foo"])
-	QL_FUN_IN_STD_HEADER([tolower],[cctype],['c'])
+  ql_ctype=cctype
 elif test $ac_cv_header_ctype_h = yes ; then
-	QL_FUN_IN_STD_HEADER([toupper],[ctype.h],['c'])
-	QL_FUN_IN_STD_HEADER([strlen],[ctype.h],["foo"])
-	QL_FUN_IN_STD_HEADER([tolower],[ctype.h],['c'])
+  ql_ctype=ctype.h
+else
+  AC_ERROR(Could not find cctype nor ctype.h)
 fi
-if test $ac_cv_header_ctime = yes ; then
-	QL_FUN_IN_STD_HEADER([clock],[ctime],[])
-elif test $ac_cv_header_time_h = yes ; then
-	QL_FUN_IN_STD_HEADER([clock],[time.h],[])
-fi
+QL_CHECK_FUNCTION([toupper],[$ql_ctype],['c'])
+QL_CHECK_FUNCTION([strlen],[$ql_ctype],["foo"])
+QL_CHECK_FUNCTION([tolower],[$ql_ctype],['c'])
 
-QL_FUN_IN_STD_HEADER([max],[algorithm],[1,2])
-QL_FUN_IN_STD_HEADER([min],[algorithm],[1,2])
+if test $ac_cv_header_ctime = yes ; then
+  ql_time=ctime
+elif test $ac_cv_header_time_h = yes ; then
+  ql_time=time.h
+else
+  AC_ERROR(Could not find ctime nor time.h)
+fi
+QL_CHECK_FUNCTION([clock],[$ql_time],[])
+
+QL_CHECK_FUNCTION([max],[algorithm],[1,2])
+QL_CHECK_FUNCTION([min],[algorithm],[1,2])
+
+
+QL_CHECK_TEMPLATE_CLASS([iterator],[std::input_iterator_tag,double],\
+    [iterator],[])
+QL_CHECK_TEMPLATE_CLASS([iterator_traits],[int*],[iterator],[])
+
 
 AC_OUTPUT(Makefile Sources/Makefile Sources/FiniteDifferences/Makefile \
 	Sources/Calendars/Makefile \

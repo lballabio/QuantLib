@@ -32,6 +32,9 @@
     $Source$
     $Name$
     $Log$
+    Revision 1.31  2001/02/15 17:36:13  lballabio
+    Added checks for iterator and iterator_traits
+
     Revision 1.30  2001/02/13 09:58:23  lballabio
     Some more work on iterators
 
@@ -349,11 +352,7 @@
     \note custom iterators should be derived from this struct
 */
 #include <iterator>
-#if   defined(HAVE_STD_ITERATOR)
-    #define QL_ITERATOR     std::iterator
-#elif defined(HAVE_ITERATOR)
-    #define QL_ITERATOR     iterator
-#else
+#if !defined(QL_ITERATOR)
     template <class Category, class T, class Distance = ptrdiff_t,
               class Pointer = T*, class Reference = T&>
     struct __quantlib_iterator {
