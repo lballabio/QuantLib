@@ -116,6 +116,9 @@ Package=<4>
     Begin Project Dependency
     Project_Dep_Name QuantLib
     End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name QuantLibFunctions
+    End Project Dependency
 }}}
 
 ###############################################################################

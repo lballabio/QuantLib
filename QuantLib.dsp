@@ -243,11 +243,15 @@ SOURCE=.\ql\Calendars\copenhagen.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\ql\Calendars\frankfurt.cpp
+SOURCE=.\ql\Calendars\frankfurt.hpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\ql\Calendars\frankfurt.hpp
+SOURCE=.\ql\Calendars\germany.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\Calendars\germany.hpp
 # End Source File
 # Begin Source File
 
@@ -416,14 +420,6 @@ SOURCE=.\ql\Calendars\wellington.cpp
 # Begin Source File
 
 SOURCE=.\ql\Calendars\wellington.hpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\ql\Calendars\xetra.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\ql\Calendars\xetra.hpp
 # End Source File
 # Begin Source File
 

@@ -41,6 +41,7 @@ ALL : "..\..\..\lib\QuantLibFunctions-vc6-mt-s-0_3_7.lib"
 
 
 CLEAN :
+	-@erase "$(INTDIR)\calendars.obj"
 	-@erase "$(INTDIR)\daycounters.obj"
 	-@erase "$(INTDIR)\mathf.obj"
 	-@erase "$(INTDIR)\vc60.idb"
@@ -60,7 +61,8 @@ LIB32_FLAGS=/nologo /out:"..\..\..\lib\QuantLibFunctions-vc6-mt-s-0_3_7.lib"
 LIB32_OBJS= \
 	"$(INTDIR)\daycounters.obj" \
 	"$(INTDIR)\mathf.obj" \
-	"$(INTDIR)\vols.obj"
+	"$(INTDIR)\vols.obj" \
+	"$(INTDIR)\calendars.obj"
 
 "..\..\..\lib\QuantLibFunctions-vc6-mt-s-0_3_7.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
     $(LIB32) @<<
@@ -76,6 +78,7 @@ ALL : "..\..\..\lib\QuantLibFunctions-vc6-mt-sgd-0_3_7.lib"
 
 
 CLEAN :
+	-@erase "$(INTDIR)\calendars.obj"
 	-@erase "$(INTDIR)\daycounters.obj"
 	-@erase "$(INTDIR)\mathf.obj"
 	-@erase "$(INTDIR)\vc60.idb"
@@ -96,7 +99,8 @@ LIB32_FLAGS=/nologo /out:"..\..\..\lib\QuantLibFunctions-vc6-mt-sgd-0_3_7.lib"
 LIB32_OBJS= \
 	"$(INTDIR)\daycounters.obj" \
 	"$(INTDIR)\mathf.obj" \
-	"$(INTDIR)\vols.obj"
+	"$(INTDIR)\vols.obj" \
+	"$(INTDIR)\calendars.obj"
 
 "..\..\..\lib\QuantLibFunctions-vc6-mt-sgd-0_3_7.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
     $(LIB32) @<<
@@ -112,6 +116,7 @@ ALL : "..\..\..\lib\QuantLibFunctions-vc6-mt-0_3_7.lib"
 
 
 CLEAN :
+	-@erase "$(INTDIR)\calendars.obj"
 	-@erase "$(INTDIR)\daycounters.obj"
 	-@erase "$(INTDIR)\mathf.obj"
 	-@erase "$(INTDIR)\vc60.idb"
@@ -131,7 +136,8 @@ LIB32_FLAGS=/nologo /out:"..\..\..\lib\QuantLibFunctions-vc6-mt-0_3_7.lib"
 LIB32_OBJS= \
 	"$(INTDIR)\daycounters.obj" \
 	"$(INTDIR)\mathf.obj" \
-	"$(INTDIR)\vols.obj"
+	"$(INTDIR)\vols.obj" \
+	"$(INTDIR)\calendars.obj"
 
 "..\..\..\lib\QuantLibFunctions-vc6-mt-0_3_7.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
     $(LIB32) @<<
@@ -147,6 +153,7 @@ ALL : "..\..\..\lib\QuantLibFunctions-vc6-mt-gd-0_3_7.lib"
 
 
 CLEAN :
+	-@erase "$(INTDIR)\calendars.obj"
 	-@erase "$(INTDIR)\daycounters.obj"
 	-@erase "$(INTDIR)\mathf.obj"
 	-@erase "$(INTDIR)\vc60.idb"
@@ -167,7 +174,8 @@ LIB32_FLAGS=/nologo /out:"..\..\..\lib\QuantLibFunctions-vc6-mt-gd-0_3_7.lib"
 LIB32_OBJS= \
 	"$(INTDIR)\daycounters.obj" \
 	"$(INTDIR)\mathf.obj" \
-	"$(INTDIR)\vols.obj"
+	"$(INTDIR)\vols.obj" \
+	"$(INTDIR)\calendars.obj"
 
 "..\..\..\lib\QuantLibFunctions-vc6-mt-gd-0_3_7.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
     $(LIB32) @<<
@@ -183,6 +191,7 @@ ALL : "..\..\..\lib\QuantLibFunctions-vc6-s-0_3_7.lib"
 
 
 CLEAN :
+	-@erase "$(INTDIR)\calendars.obj"
 	-@erase "$(INTDIR)\daycounters.obj"
 	-@erase "$(INTDIR)\mathf.obj"
 	-@erase "$(INTDIR)\vc60.idb"
@@ -202,7 +211,8 @@ LIB32_FLAGS=/nologo /out:"..\..\..\lib\QuantLibFunctions-vc6-s-0_3_7.lib"
 LIB32_OBJS= \
 	"$(INTDIR)\daycounters.obj" \
 	"$(INTDIR)\mathf.obj" \
-	"$(INTDIR)\vols.obj"
+	"$(INTDIR)\vols.obj" \
+	"$(INTDIR)\calendars.obj"
 
 "..\..\..\lib\QuantLibFunctions-vc6-s-0_3_7.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
     $(LIB32) @<<
@@ -218,6 +228,7 @@ ALL : "..\..\..\lib\QuantLibFunctions-vc6-sgd-0_3_7.lib"
 
 
 CLEAN :
+	-@erase "$(INTDIR)\calendars.obj"
 	-@erase "$(INTDIR)\daycounters.obj"
 	-@erase "$(INTDIR)\mathf.obj"
 	-@erase "$(INTDIR)\vc60.idb"
@@ -238,7 +249,8 @@ LIB32_FLAGS=/nologo /out:"..\..\..\lib\QuantLibFunctions-vc6-sgd-0_3_7.lib"
 LIB32_OBJS= \
 	"$(INTDIR)\daycounters.obj" \
 	"$(INTDIR)\mathf.obj" \
-	"$(INTDIR)\vols.obj"
+	"$(INTDIR)\vols.obj" \
+	"$(INTDIR)\calendars.obj"
 
 "..\..\..\lib\QuantLibFunctions-vc6-sgd-0_3_7.lib" : "$(OUTDIR)" $(DEF_FILE) $(LIB32_OBJS)
     $(LIB32) @<<
@@ -288,6 +300,11 @@ LIB32_OBJS= \
 
 
 !IF "$(CFG)" == "QuantLibFunctions - Win32 Release" || "$(CFG)" == "QuantLibFunctions - Win32 Debug" || "$(CFG)" == "QuantLibFunctions - Win32 Release MTDLL" || "$(CFG)" == "QuantLibFunctions - Win32 Debug MTDLL" || "$(CFG)" == "QuantLibFunctions - Win32 Release SingleThread" || "$(CFG)" == "QuantLibFunctions - Win32 Debug SingleThread"
+SOURCE=.\calendars.cpp
+
+"$(INTDIR)\calendars.obj" : $(SOURCE) "$(INTDIR)"
+
+
 SOURCE=.\daycounters.cpp
 
 "$(INTDIR)\daycounters.obj" : $(SOURCE) "$(INTDIR)"
