@@ -151,8 +151,7 @@ int main(int argc, char* argv[])
             amExercise,
             flatVolTS);
 
-        Size timeSteps = 512001;
-#ifdef AMETRANO
+        Size timeSteps = 801;
         // Binomial Method (JR)
         method = "Binomial (JR)";
         option.setPricingEngine(Handle<PricingEngine>(
@@ -209,7 +208,6 @@ int main(int argc, char* argv[])
              << DoubleFormatter::toString(discrepancy, 6) << "\t"
              << DoubleFormatter::toString(relativeDiscrepancy, 6)
              << std::endl;
-#endif
         // Tian Binomial Tree (third moment matching)
         method = "Binomial Tian";
         option.setPricingEngine(Handle<PricingEngine>(
