@@ -49,4 +49,21 @@
     defition: for some algorithms it is the x-accuracy, for others it is
     f(x)-accuracy.
 
+    \subsection optimizers Optimizers
+    The optimization framework (corresponding to the Optimization namespace) 
+    implements some multi-dimensional minimizing methods. The function to be 
+    minimized is to be derived from the QuantLib::Optimization::CostFunction 
+    base class (if the gradient is not analytically implemented, it will be 
+    computed numerically).
+    
+    \par The simplex method
+
+    see QuantLib::Optimization::Simplex .
+
+    \par The conjugate gradient method
+
+    see QuantLib::Optimization::ConjugateGradient .
+ 
+*/
+
 */

@@ -17,7 +17,6 @@ EXTRA_DIST = \
              license.docs \
              math.docs \
              mcarlo.docs \
-             optimization.docs \
              overview.docs \
              patterns.docs \
              platforms.docs \
