@@ -33,7 +33,7 @@ void CalendarTest::testModifiedCalendars() {
     BOOST_MESSAGE("Testing calendar modification...");
 
     Calendar c1 = TARGET();
-    Calendar c2 = NewYork();
+    Calendar c2 = USExchange();
     Date d1(1,May,2004);      // holiday for both calendars
     Date d2(26,April,2004);   // business day
 
@@ -130,8 +130,8 @@ void CalendarTest::testJointCalendars() {
     BOOST_MESSAGE("Testing joint calendars...");
 
     Calendar c1 = TARGET(),
-             c2 = London(),
-             c3 = NewYork(),
+             c2 = GreatBritain(),
+             c3 = USExchange(),
              c4 = Tokyo();
 
     Calendar c12h = JointCalendar(c1,c2,JoinHolidays),
