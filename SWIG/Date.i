@@ -26,6 +26,10 @@
 
 %module Date
 
+%{
+#include "quantlib.h"
+%}
+
 #if !defined(SWIGPYTHON)
 #if !defined(PYTHON_WARNING_ISSUED)
 #define PYTHON_WARNING_ISSUED
@@ -37,7 +41,6 @@
 %{
 #include <cstdlib>
 #include <string>
-#include "date.h"
 using QuantLib::Date;
 
 using QuantLib::Day;
@@ -61,7 +64,6 @@ using QuantLib::Thursday;
 using QuantLib::Friday;
 using QuantLib::Saturday;
 
-#include "dataformatters.h"
 using QuantLib::StringFormatter;
 using QuantLib::DateFormatter;
 %}

@@ -23,6 +23,10 @@
 
 %module QuantLib
 
+%{
+#include "quantlib.h"
+%}
+
 #if !defined(SWIGPYTHON)
 #if !defined(PYTHON_WARNING_ISSUED)
 #define PYTHON_WARNING_ISSUED
@@ -30,10 +34,6 @@
 %echo "Exporting it to any other language is not advised as it could lead to unpredicted results."
 #endif
 #endif
-
-%{
-#include "qldefines.h"
-%}
 
 %except(python) {
 	try {

@@ -26,6 +26,10 @@
 
 %module Operators
 
+%{
+#include "quantlib.h"
+%}
+
 #if !defined(SWIGPYTHON)
 #if !defined(PYTHON_WARNING_ISSUED)
 #define PYTHON_WARNING_ISSUED
@@ -38,7 +42,6 @@
 %include BoundaryConditions.i
 
 %{
-#include "finitedifferences.h"
 using QuantLib::FiniteDifferences::TridiagonalOperator;
 %}
 

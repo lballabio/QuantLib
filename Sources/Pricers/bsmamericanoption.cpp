@@ -21,8 +21,10 @@
  * QuantLib license is also available at http://quantlib.sourceforge.net/LICENSE.TXT
 */
 
-#include "pricers.h"
-#include "finitedifferences.h"
+#include "bsmamericanoption.h"
+#include "bsmeuropeanoption.h"
+#include "finitedifferencemodel.h"
+#include "cranknicolson.h"
 
 namespace QuantLib {
 

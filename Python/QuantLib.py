@@ -592,6 +592,11 @@ def Milan(*args, **kwargs):
     if val: val = CalendarPtr(val); val.thisown = 1
     return val
 
+def Zurich(*args, **kwargs):
+    val = apply(QuantLibc.Zurich,args,kwargs)
+    if val: val = CalendarPtr(val); val.thisown = 1
+    return val
+
 def Actual360(*args, **kwargs):
     val = apply(QuantLibc.Actual360,args,kwargs)
     if val: val = DayCounterPtr(val); val.thisown = 1
@@ -639,6 +644,36 @@ def DEM(*args, **kwargs):
 
 def ITL(*args, **kwargs):
     val = apply(QuantLibc.ITL,args,kwargs)
+    if val: val = CurrencyPtr(val); val.thisown = 1
+    return val
+
+def AUD(*args, **kwargs):
+    val = apply(QuantLibc.AUD,args,kwargs)
+    if val: val = CurrencyPtr(val); val.thisown = 1
+    return val
+
+def CAD(*args, **kwargs):
+    val = apply(QuantLibc.CAD,args,kwargs)
+    if val: val = CurrencyPtr(val); val.thisown = 1
+    return val
+
+def CHF(*args, **kwargs):
+    val = apply(QuantLibc.CHF,args,kwargs)
+    if val: val = CurrencyPtr(val); val.thisown = 1
+    return val
+
+def DKK(*args, **kwargs):
+    val = apply(QuantLibc.DKK,args,kwargs)
+    if val: val = CurrencyPtr(val); val.thisown = 1
+    return val
+
+def JPY(*args, **kwargs):
+    val = apply(QuantLibc.JPY,args,kwargs)
+    if val: val = CurrencyPtr(val); val.thisown = 1
+    return val
+
+def SEK(*args, **kwargs):
+    val = apply(QuantLibc.SEK,args,kwargs)
     if val: val = CurrencyPtr(val); val.thisown = 1
     return val
 

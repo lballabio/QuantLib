@@ -17,7 +17,7 @@ PYTHON_LIBS		= "C:\Program Files\Python\libs"
 
 # Object files
 CORE_OBJS		= $(OUTPUT_DIR)\calendar.obj $(OUTPUT_DIR)\date.obj $(OUTPUT_DIR)\solver1d.obj $(OUTPUT_DIR)\dataformatters.obj
-CALENDAR_OBJS	= $(OUTPUT_DIR)\westerncalendar.obj $(OUTPUT_DIR)\frankfurt.obj $(OUTPUT_DIR)\london.obj $(OUTPUT_DIR)\milan.obj $(OUTPUT_DIR)\newyork.obj $(OUTPUT_DIR)\target.obj 
+CALENDAR_OBJS	= $(OUTPUT_DIR)\westerncalendar.obj $(OUTPUT_DIR)\frankfurt.obj $(OUTPUT_DIR)\london.obj $(OUTPUT_DIR)\milan.obj $(OUTPUT_DIR)\newyork.obj $(OUTPUT_DIR)\target.obj $(OUTPUT_DIR)\zurich.obj 
 DAYCOUNT_OBJS	= $(OUTPUT_DIR)\actualactual.obj $(OUTPUT_DIR)\thirty360.obj $(OUTPUT_DIR)\thirty360italian.obj
 MATH_OBJS		= $(OUTPUT_DIR)\normaldistribution.obj $(OUTPUT_DIR)\statistics.obj  $(OUTPUT_DIR)\newcubicspline.obj
 FDM_OBJS		= $(OUTPUT_DIR)\tridiagonaloperator.obj $(OUTPUT_DIR)\bsmoperator.obj
@@ -42,7 +42,20 @@ LATEX		= pdflatex
 MAKEINDEX	= makeindex
 
 # Options
-CC_OPTS		= -q -c -tWM -n$(OUTPUT_DIR) -I"..\Include" -I$(PYTHON_INCLUDE) -I$(BCC_INCLUDE) -w-8027
+CC_OPTS		= -q -c -tWM -n$(OUTPUT_DIR) -w-8027 \
+	-I$(INCLUDE_DIR) \
+	-I$(INCLUDE_DIR)\Calendars \
+	-I$(INCLUDE_DIR)\Currencies \
+	-I$(INCLUDE_DIR)\DayCounters \
+	-I$(INCLUDE_DIR)\FiniteDifferences \
+	-I$(INCLUDE_DIR)\Instruments \
+	-I$(INCLUDE_DIR)\Math \
+	-I$(INCLUDE_DIR)\Patterns \
+	-I$(INCLUDE_DIR)\Pricers \
+	-I$(INCLUDE_DIR)\Solvers1D \
+	-I$(INCLUDE_DIR)\TermStructures \
+	-I$(PYTHON_INCLUDE) \
+	-I$(BCC_INCLUDE) 
 LINK_OPTS	= -q -x -L$(BCC_LIBS)
 
 # Generic rules
@@ -106,6 +119,7 @@ $(OUTPUT_DIR)\london.obj: $(SOURCES_DIR)\Calendars\london.cpp
 $(OUTPUT_DIR)\milan.obj: $(SOURCES_DIR)\Calendars\milan.cpp
 $(OUTPUT_DIR)\newyork.obj: $(SOURCES_DIR)\Calendars\newyork.cpp
 $(OUTPUT_DIR)\target.obj: $(SOURCES_DIR)\Calendars\target.cpp
+$(OUTPUT_DIR)\zurich.obj: $(SOURCES_DIR)\Calendars\zurich.cpp
 
 
 # Day counters

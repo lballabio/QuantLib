@@ -26,6 +26,10 @@
 
 %module Options
 
+%{
+#include "quantlib.h"
+%}
+
 #if !defined(SWIGPYTHON)
 #if !defined(PYTHON_WARNING_ISSUED)
 #define PYTHON_WARNING_ISSUED
@@ -35,11 +39,8 @@
 #endif
 
 %{
-#include "options.h"
 using QuantLib::Option;
 typedef Option::Type OptionType;
-
-#include "dataformatters.h"
 using QuantLib::StringFormatter;
 %}
 

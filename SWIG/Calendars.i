@@ -26,6 +26,10 @@
 
 %module Calendar
 
+%{
+#include "quantlib.h"
+%}
+
 #if !defined(SWIGPYTHON)
 #if !defined(PYTHON_WARNING_ISSUED)
 #define PYTHON_WARNING_ISSUED
@@ -37,8 +41,6 @@
 %include Date.i
 
 %{
-#include "calendar.h"
-
 using QuantLib::Handle;
 using QuantLib::Calendar;
 typedef Handle<Calendar> CalendarHandle;
@@ -92,19 +94,19 @@ using QuantLib::IsNull;
 // actual calendars
 
 %{
-#include "calendars.h"
-
 using QuantLib::Calendars::TARGET;
 using QuantLib::Calendars::NewYork;
 using QuantLib::Calendars::London;
 using QuantLib::Calendars::Milan;
 using QuantLib::Calendars::Frankfurt;
+using QuantLib::Calendars::Zurich;
 
 CalendarHandle NewTARGET()    { return CalendarHandle(new TARGET); }
 CalendarHandle NewNewYork()   { return CalendarHandle(new NewYork); }
 CalendarHandle NewLondon()    { return CalendarHandle(new London); }
 CalendarHandle NewFrankfurt() { return CalendarHandle(new Frankfurt); }
 CalendarHandle NewMilan()     { return CalendarHandle(new Milan); }
+CalendarHandle NewZurich()    { return CalendarHandle(new Zurich); }
 %}
 
 %name(TARGET)    CalendarHandle NewTARGET();
@@ -112,6 +114,7 @@ CalendarHandle NewMilan()     { return CalendarHandle(new Milan); }
 %name(London)    CalendarHandle NewLondon();
 %name(Frankfurt) CalendarHandle NewFrankfurt();
 %name(Milan)     CalendarHandle NewMilan();
+%name(Zurich)    CalendarHandle NewZurich();
 
 
 #endif

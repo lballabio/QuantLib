@@ -21,8 +21,8 @@
  * QuantLib license is also available at http://quantlib.sourceforge.net/LICENSE.TXT
 */
 
-#include "pricers.h"
-#include "mathtools.h"
+#include "bsmeuropeanoption.h"
+#include "normaldistribution.h"
 
 namespace QuantLib {
 

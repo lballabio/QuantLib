@@ -26,6 +26,10 @@
 
 %module Vectors
 
+%{
+#include "quantlib.h"
+%}
+
 #if !defined(SWIGPYTHON)
 #if !defined(PYTHON_WARNING_ISSUED)
 #define PYTHON_WARNING_ISSUED
@@ -39,9 +43,7 @@
 #include <vector>
 typedef std::vector<int> IntVector;
 typedef std::vector<double> DoubleVector;
-
 // array
-#include "array.h"
 using QuantLib::Array;
 %}
 

@@ -26,6 +26,10 @@
 
 %module Currencies
 
+%{
+#include "quantlib.h"
+%}
+
 #if !defined(SWIGPYTHON)
 #if !defined(PYTHON_WARNING_ISSUED)
 #define PYTHON_WARNING_ISSUED
@@ -38,8 +42,6 @@
 %include Calendars.i
 
 %{
-#include "currency.h"
-
 using QuantLib::Currency;
 using QuantLib::Handle;
 typedef Handle<Currency> CurrencyHandle;
@@ -86,19 +88,29 @@ typedef Handle<Currency> CurrencyHandle;
 // actual currencies
 
 %{
-#include "currencies.h"
-
 using QuantLib::Currencies::EUR;
 using QuantLib::Currencies::USD;
 using QuantLib::Currencies::GBP;
 using QuantLib::Currencies::DEM;
 using QuantLib::Currencies::ITL;
+using QuantLib::Currencies::AUD;
+using QuantLib::Currencies::CAD;
+using QuantLib::Currencies::CHF;
+using QuantLib::Currencies::DKK;
+using QuantLib::Currencies::JPY;
+using QuantLib::Currencies::SEK;
 
 CurrencyHandle NewEUR()		{ return CurrencyHandle(new EUR); }
 CurrencyHandle NewUSD()		{ return CurrencyHandle(new USD); }
 CurrencyHandle NewGBP()		{ return CurrencyHandle(new GBP); }
 CurrencyHandle NewDEM()		{ return CurrencyHandle(new DEM); }
 CurrencyHandle NewITL()		{ return CurrencyHandle(new ITL); }
+CurrencyHandle NewAUD()		{ return CurrencyHandle(new AUD); }
+CurrencyHandle NewCAD()		{ return CurrencyHandle(new CAD); }
+CurrencyHandle NewCHF()		{ return CurrencyHandle(new CHF); }
+CurrencyHandle NewDKK()		{ return CurrencyHandle(new DKK); }
+CurrencyHandle NewJPY()		{ return CurrencyHandle(new JPY); }
+CurrencyHandle NewSEK()		{ return CurrencyHandle(new SEK); }
 %}
 
 %name(EUR)	CurrencyHandle NewEUR();
@@ -106,6 +118,12 @@ CurrencyHandle NewITL()		{ return CurrencyHandle(new ITL); }
 %name(GBP)	CurrencyHandle NewGBP();
 %name(DEM)	CurrencyHandle NewDEM();
 %name(ITL)	CurrencyHandle NewITL();
+%name(AUD)	CurrencyHandle NewAUD();
+%name(CAD)	CurrencyHandle NewCAD();
+%name(CHF)	CurrencyHandle NewCHF();
+%name(DKK)	CurrencyHandle NewDKK();
+%name(JPY)	CurrencyHandle NewJPY();
+%name(SEK)	CurrencyHandle NewSEK();
 
 
 #endif

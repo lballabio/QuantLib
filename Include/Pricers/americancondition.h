@@ -26,7 +26,7 @@
 
 #include "qldefines.h"
 #include "bsmnumericaloption.h"
-#include "finitedifferences.h"
+#include "stepcondition.h"
 #include <algorithm>
 #include <functional>
 

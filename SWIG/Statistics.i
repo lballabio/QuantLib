@@ -26,6 +26,10 @@
 
 %module Statistics
 
+%{
+#include "quantlib.h"
+%}
+
 #if !defined(SWIGPYTHON)
 #if !defined(PYTHON_WARNING_ISSUED)
 #define PYTHON_WARNING_ISSUED
@@ -37,7 +41,6 @@
 %include Vectors.i
 
 %{
-#include "mathtools.h"
 using QuantLib::Math::Statistics;
 %}
 

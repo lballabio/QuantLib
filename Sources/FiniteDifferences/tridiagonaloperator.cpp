@@ -21,8 +21,9 @@
  * QuantLib license is also available at http://quantlib.sourceforge.net/LICENSE.TXT
 */
 
-#include "finitedifferences.h"
+#include "tridiagonaloperator.h"
 #include "dataformatters.h"
+#include "qlerrors.h"
 
 namespace QuantLib {
 
@@ -60,8 +61,8 @@ namespace QuantLib {
 		
 		
 		Array TridiagonalOperatorCommon::applyTo(const Array& v) const {
-			Require(v.size()==theSize, "TridiagonalOperator::applyTo: vector of the wrong size (" +
-        IntegerFormatter::toString(v.size()) + "instead of "+ IntegerFormatter::toString(theSize) + ")"  );
+			QuantLib::Require(v.size()==theSize, "TridiagonalOperator::applyTo: vector of the wrong size (" +
+	        	IntegerFormatter::toString(v.size()) + "instead of "+ IntegerFormatter::toString(theSize) + ")"  );
 			Array result(theSize);
 		
 			// matricial product

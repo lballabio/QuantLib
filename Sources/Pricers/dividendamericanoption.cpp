@@ -21,7 +21,11 @@
  * QuantLib license is also available at http://quantlib.sourceforge.net/LICENSE.TXT
 */
 
-#include "pricers.h"
+#include "dividendamericanoption.h"
+#include "dividendeuropeanoption.h"
+#include "finitedifferencemodel.h"
+#include "cranknicolson.h"
+#include "newcubicspline.h"
 
 namespace QuantLib {
 	namespace Pricers {

@@ -26,6 +26,10 @@
 
 %module Pricers
 
+%{
+#include "quantlib.h"
+%}
+
 #if !defined(SWIGPYTHON)
 #if !defined(PYTHON_WARNING_ISSUED)
 #define PYTHON_WARNING_ISSUED
@@ -39,7 +43,6 @@
 %include Financial.i
 
 %{
-#include "pricers.h"
 using QuantLib::Pricers::BSMEuropeanOption;
 using QuantLib::Pricers::BSMAmericanOption;
 using QuantLib::Pricers::DividendAmericanOption;

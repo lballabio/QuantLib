@@ -26,9 +26,7 @@
 
 #include "qldefines.h"
 #include "bsmnumericaloption.h"
-#include "finitedifferences.h"
 #include "americancondition.h"
-#include "mathtools.h"
 #include <vector>
 
 /*

@@ -26,6 +26,10 @@
 
 %module Financial
 
+%{
+#include "quantlib.h"
+%}
+
 #if !defined(SWIGPYTHON)
 #if !defined(PYTHON_WARNING_ISSUED)
 #define PYTHON_WARNING_ISSUED
@@ -35,10 +39,6 @@
 #endif
 
 %{
-#include "rate.h"
-#include "spread.h"
-#include "discountfactor.h"
-
 using QuantLib::Rate;
 using QuantLib::Spread;
 using QuantLib::DiscountFactor;

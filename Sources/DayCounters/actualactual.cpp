@@ -21,7 +21,8 @@
  * QuantLib license is also available at http://quantlib.sourceforge.net/LICENSE.TXT
 */
 
-#include "daycounters.h"
+#include "actualactual.h"
+#include "thirty360european.h"
 #include "null.h"
 #include <cmath>
 

@@ -24,19 +24,19 @@
 #ifndef BSM_numerical_option_pricer_h
 #define BSM_numerical_option_pricer_h
 
-
 #include "qldefines.h"
 #include "bsmoption.h"
+#include "bsmoperator.h"
 #include "array.h"
 #include "handle.h"
-#include "finitedifferences.h"
 
 namespace QuantLib {
 
 	namespace Pricers {
-//! The following is a safety check to be sure we have enough grid points.
 
-		#define QL_NUM_OPT_MIN_GRID_POINTS				100
+		//! This is a safety check to be sure we have enough grid points.
+		#define QL_NUM_OPT_MIN_GRID_POINTS			100
+		//! This is a safety check to be sure we have enough grid points.
 		#define QL_NUM_OPT_GRID_POINTS_PER_YEAR		50
 		
 		class BSMNumericalOption : public BSMOption {

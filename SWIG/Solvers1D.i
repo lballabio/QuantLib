@@ -26,6 +26,10 @@
 
 %module Solvers1D
 
+%{
+#include "quantlib.h"
+%}
+
 #if !defined(SWIGPYTHON)
 #if !defined(PYTHON_WARNING_ISSUED)
 #define PYTHON_WARNING_ISSUED
@@ -33,10 +37,6 @@
 %echo "Exporting it to any other language is not advised as it could lead to unpredicted results."
 #endif
 #endif
-
-%{
-#include "solvers1d.h"
-%}
 
 // Function to find root of
 

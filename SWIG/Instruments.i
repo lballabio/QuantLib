@@ -26,6 +26,10 @@
 
 %module Instruments
 
+%{
+#include "quantlib.h"
+%}
+
 #if !defined(SWIGPYTHON)
 #if !defined(PYTHON_WARNING_ISSUED)
 #define PYTHON_WARNING_ISSUED
@@ -39,7 +43,6 @@
 
 %{
 #include <cstdlib>
-#include "instrument.h"
 using QuantLib::Instrument;
 using QuantLib::Handle;
 typedef Handle<Instrument> InstrumentHandle;
@@ -114,7 +117,6 @@ std::string Representation(const Handle<Instrument>& i) {
 // actual instruments
 
 %{
-#include "instruments.h"
 using QuantLib::Instruments::Stock;
 
 InstrumentHandle NewStock(char* isinCode, char* description) {

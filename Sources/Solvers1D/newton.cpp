@@ -25,7 +25,8 @@
 // "Numerical Recipes in C", 2nd edition, Press, Teukolsky, Vetterling, Flannery
 // Chapter 9
 
-#include "solvers1d.h"
+#include "newton.h"
+#include "newtonsafe.h"
 
 namespace QuantLib {
 

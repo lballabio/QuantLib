@@ -21,8 +21,7 @@
  * QuantLib license is also available at http://quantlib.sourceforge.net/LICENSE.TXT
 */
 
-#include "pricers.h"
-#include "qlerrors.h"
+#include "bsmnumericaloption.h"
 
 namespace QuantLib {
 
@@ -39,13 +38,13 @@ namespace QuantLib {
 		: BSMOption(type,underlying,strike,underlyingGrowthRate,riskFreeRate,residualTime,volatility), 
 		  theGridPoints(gridPoints),rhoComputed(false), vegaComputed(false),
 		  theInitialPrices(theGridPoints){
-//! The following is a safety check to be sure we have enough grid points.
-#if defined(QL_NUM_OPT_MIN_GRID_POINTS) && defined(QL_NUM_OPT_GRID_POINTS_PER_YEAR)
+			//! The following is a safety check to be sure we have enough grid points.
+			#if defined(QL_NUM_OPT_MIN_GRID_POINTS) && defined(QL_NUM_OPT_GRID_POINTS_PER_YEAR)
 				theGridPoints = QL_MAX(theGridPoints,	residualTime>1.0 ? (int)(QL_NUM_OPT_MIN_GRID_POINTS+
 					(residualTime-1.0)*QL_NUM_OPT_GRID_POINTS_PER_YEAR) : QL_NUM_OPT_MIN_GRID_POINTS);
-#endif
-				theGrid = Array(theGridPoints);
-				hasBeenCalculated = false;
+			#endif
+			theGrid = Array(theGridPoints);
+			hasBeenCalculated = false;
 		}
 		
 		double BSMNumericalOption::delta() const {

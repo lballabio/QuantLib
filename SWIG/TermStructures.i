@@ -26,6 +26,10 @@
 
 %module TermStructures
 
+%{
+#include "quantlib.h"
+%}
+
 #if !defined(SWIGPYTHON)
 #if !defined(PYTHON_WARNING_ISSUED)
 #define PYTHON_WARNING_ISSUED
@@ -41,9 +45,6 @@
 %include Currencies.i
 
 %{
-#include "termstructure.h"
-#include "handle.h"
-
 using QuantLib::TermStructure;
 using QuantLib::Handle;
 typedef Handle<TermStructure> TermStructureHandle;
@@ -134,7 +135,6 @@ TermStructureHandle NewSpreadedTermStructure(TermStructureHandle curve, Spread s
 // piecewise constant forward curve on deposits
 
 %{
-#include "termstructures.h"
 using QuantLib::TermStructures::PiecewiseConstantForwards;
 using QuantLib::Deposit;
 %}

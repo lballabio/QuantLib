@@ -26,6 +26,10 @@
 
 %module BoundaryConditions
 
+%{
+#include "quantlib.h"
+%}
+
 #if !defined(SWIGPYTHON)
 #if !defined(PYTHON_WARNING_ISSUED)
 #define PYTHON_WARNING_ISSUED
@@ -35,11 +39,8 @@
 #endif
 
 %{
-#include "finitedifferences.h"
 using QuantLib::FiniteDifferences::BoundaryCondition;
 typedef BoundaryCondition::Type BoundaryConditionType;
-
-#include "dataformatters.h"
 using QuantLib::StringFormatter;
 %}
 

@@ -21,7 +21,7 @@
  * QuantLib license is also available at http://quantlib.sourceforge.net/LICENSE.TXT
 */
 
-#include "calendars.h"
+#include "target.h"
 
 namespace QuantLib {
 

@@ -26,6 +26,10 @@
 
 %module DayCounters
 
+%{
+#include "quantlib.h"
+%}
+
 #if !defined(SWIGPYTHON)
 #if !defined(PYTHON_WARNING_ISSUED)
 #define PYTHON_WARNING_ISSUED
@@ -37,8 +41,6 @@
 %include Date.i
 
 %{
-#include "daycounter.h"
-
 using QuantLib::DayCounter;
 using QuantLib::Handle;
 typedef Handle<DayCounter> DayCounterHandle;
@@ -82,8 +84,6 @@ typedef Handle<DayCounter> DayCounterHandle;
 // actual day counters
 
 %{
-#include "daycounters.h"
-
 using QuantLib::DayCounters::Actual360;
 using QuantLib::DayCounters::Actual365;
 using QuantLib::DayCounters::Thirty360;

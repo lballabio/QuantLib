@@ -21,6 +21,13 @@
  * QuantLib license is also available at http://quantlib.sourceforge.net/LICENSE.TXT
 */
 
+/*! \mainpage
+	\section disclaimer Disclaimer
+	At this time, this documentation is widely incomplete and must be regarded as a work
+	in progress. Eventually, all QuantLib classes will be documented. However, no
+	date is currently set for this goal.
+*/
+
 /*! \file qldefines.h
 	\brief Global definitions and compiler switches.
 	
