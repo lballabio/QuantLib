@@ -34,7 +34,8 @@
 #if !defined(PYTHON_WARNING_ISSUED)
 #define PYTHON_WARNING_ISSUED
 %echo "Warning: this is a Python module!!"
-%echo "Exporting it to any other language is not advised as it could lead to unpredicted results."
+%echo "Exporting it to any other language is not advised"
+%echo "as it could lead to unpredicted results."
 #endif
 #endif
 
@@ -51,8 +52,10 @@ using QuantLib::Pricers::DividendEuropeanOption;
 
 class BSMEuropeanOption {
   public:
-	BSMEuropeanOption(OptionType type, double underlying, double strike, Rate underlyingGrowthRate, 
-	  Rate riskFreeRate, Time residualTime, double volatility);
+	BSMEuropeanOption(OptionType type, double underlying, double strike, 
+	  Rate underlyingGrowthRate, Rate riskFreeRate, Time residualTime, 
+	  double volatility);
+	~BSMEuropeanOption();
 	void setVolatility(double newVolatility) ;
 	void setRiskFreeRate(Rate newRate) ;
 	double value() const;
@@ -61,13 +64,16 @@ class BSMEuropeanOption {
 	double theta() const;
 	double vega() const;
 	double rho() const;
-	double impliedVolatility(double targetValue, double accuracy = 1e-4, int maxEvaluations = 100) const ;
+	double impliedVolatility(double targetValue, double accuracy = 1e-4, 
+	  int maxEvaluations = 100) const ;
 };
 
 class BSMAmericanOption {
   public:
-	BSMAmericanOption(OptionType type, double underlying, double strike, Rate underlyingGrowthRate, 
-	  Rate riskFreeRate, Time residualTime, double volatility, int timeSteps = 100, int gridPoints = 100);
+	BSMAmericanOption(OptionType type, double underlying, double strike, 
+	  Rate underlyingGrowthRate, Rate riskFreeRate, Time residualTime,
+	  double volatility, int timeSteps = 100, int gridPoints = 100);
+    ~BSMAmericanOption();
 	void setVolatility(double newVolatility) ;
 	void setRiskFreeRate(Rate newRate) ;
 	double value() const;
@@ -76,36 +82,42 @@ class BSMAmericanOption {
 	double theta() const;
 	double vega() const;
 	double rho() const;
-	double impliedVolatility(double targetValue, double accuracy = 1e-4, int maxEvaluations = 100) const ;
+	double impliedVolatility(double targetValue, double accuracy = 1e-4,
+	  int maxEvaluations = 100) const ;
 };
 
 class DividendAmericanOption{
   public:
 	DividendAmericanOption(OptionType type, double underlying, double strike, 
-	  Rate underlyingGrowthRate, Rate riskFreeRate, Time residualTime, double volatility,
-	  DoubleVector dividends, DoubleVector exdivdates, int timeSteps = 100, int gridPoints = 100);
+	  Rate underlyingGrowthRate, Rate riskFreeRate, Time residualTime,
+	  double volatility, DoubleVector dividends, DoubleVector exdivdates,
+	  int timeSteps = 100, int gridPoints = 100);
+	~DividendAmericanOption();
 	double value() const;
 	double delta() const;
 	double gamma() const;
 	double theta() const;	
 	double vega() const;
 	double rho() const;
-	double impliedVolatility(double targetValue, double accuracy = 1e-4, int maxEvaluations = 100) const ;
+	double impliedVolatility(double targetValue, double accuracy = 1e-4,
+	  int maxEvaluations = 100) const ;
 };
 
 class DividendEuropeanOption{
   public:
 	DividendEuropeanOption(OptionType type, double underlying, double strike, 
-	  Rate underlyingGrowthRate, Rate riskFreeRate, Time residualTime, double volatility,
-	  DoubleVector dividends, DoubleVector exdivdates);
+	  Rate underlyingGrowthRate, Rate riskFreeRate, Time residualTime,
+	  double volatility, DoubleVector dividends, DoubleVector exdivdates);
+	~DividendEuropeanOption();
 	double value() const;
 	double delta() const;
 	double gamma() const;
 	double theta() const;
 	double vega() const;
 	double rho() const;
-	double impliedVolatility(double targetValue, double accuracy = 1e-4, int maxEvaluations = 100) const ;
+	double impliedVolatility(double targetValue, double accuracy = 1e-4,
+	  int maxEvaluations = 100) const ;
 };
 
-#endif
 
+#endif

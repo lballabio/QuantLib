@@ -27,9 +27,12 @@
 	$Source$
 	$Name$
 	$Log$
+	Revision 1.5  2001/01/04 11:59:29  lballabio
+	Line wraps fixed when stumbling upon them
+
 	Revision 1.4  2000/12/27 17:18:35  lballabio
 	Changes for compiling under Linux and Alpha Linux
-
+	
 	Revision 1.3  2000/12/14 12:32:30  lballabio
 	Added CVS tags in Doxygen file documentation blocks
 	
@@ -57,7 +60,8 @@ namespace QuantLib {
 		
 		typedef NormalDistribution GaussianDistribution;
 		
-		class CumulativeNormalDistribution : public std::unary_function<double,double> {
+		class CumulativeNormalDistribution : 
+		  public std::unary_function<double,double> {
 		  public:
 			CumulativeNormalDistribution();
 			// function
@@ -70,7 +74,8 @@ namespace QuantLib {
 		
 		// inline definitions
 		
-		inline NormalDistribution::NormalDistribution(double average, double sigma)
+		inline NormalDistribution::NormalDistribution(double average, 
+		  double sigma)
 		: average(average), sigma(sigma) {
 			normalizationFactor = 1.0/(sigma*QL_SQRT(2.0*pi));
 			denominator = 2.0*sigma*sigma;

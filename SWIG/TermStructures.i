@@ -34,7 +34,8 @@
 #if !defined(PYTHON_WARNING_ISSUED)
 #define PYTHON_WARNING_ISSUED
 %echo "Warning: this is a Python module!!"
-%echo "Exporting it to any other language is not advised as it could lead to unpredicted results."
+%echo "Exporting it to any other language is not advised"
+%echo "as it could lead to unpredicted results."
 #endif
 #endif
 
@@ -101,12 +102,15 @@ typedef Handle<TermStructure> TermStructureHandle;
 %{
 using QuantLib::ImpliedTermStructure;
 
-TermStructureHandle NewImpliedTermStructure(TermStructureHandle curve, Date evaluationDate) {
-	return Handle<TermStructure>(new ImpliedTermStructure(curve,evaluationDate));
+TermStructureHandle NewImpliedTermStructure(TermStructureHandle curve, 
+  Date evaluationDate) {
+	return Handle<TermStructure>(
+	  new ImpliedTermStructure(curve,evaluationDate));
 }
 %}
 
-%name(ImpliedTermStructure) TermStructureHandle NewImpliedTermStructure(TermStructureHandle curve, Date evaluationDate);
+%name(ImpliedTermStructure) TermStructureHandle 
+NewImpliedTermStructure(TermStructureHandle curve, Date evaluationDate);
 
 
 // spreaded term structure
@@ -114,7 +118,8 @@ TermStructureHandle NewImpliedTermStructure(TermStructureHandle curve, Date eval
 %{
 using QuantLib::SpreadedTermStructure;
 
-TermStructureHandle NewSpreadedTermStructure(TermStructureHandle curve, Spread spread) {
+TermStructureHandle NewSpreadedTermStructure(TermStructureHandle curve, 
+  Spread spread) {
 	return Handle<TermStructure>(new SpreadedTermStructure(curve,spread));
 }
 %}
@@ -126,12 +131,14 @@ TermStructureHandle NewSpreadedTermStructure(TermStructureHandle curve, Spread s
 %{
 using QuantLib::TermStructures::FlatForward;
 
-TermStructureHandle NewFlatForward(CurrencyHandle currency, DayCounterHandle dayCounter, Date today, Rate forward) {
-	return Handle<TermStructure>(new FlatForward(currency,dayCounter,today,forward));
+TermStructureHandle NewFlatForward(CurrencyHandle currency, 
+  DayCounterHandle dayCounter, Date today, Rate forward) {
+	return Handle<TermStructure>(
+	  new FlatForward(currency,dayCounter,today,forward));
 }
 %}
 
-%name(FlatForward) TermStructureHandle NewFlatForward(CurrencyHandle currency, 
+%name(FlatForward) TermStructureHandle NewFlatForward(CurrencyHandle currency,
   DayCounterHandle dayCounter, Date today, Rate forward);
 
 
@@ -160,14 +167,15 @@ class Deposit {
 typedef std::vector<Deposit> DepositList;
 %}
 
-%typemap(python,in) DepositList, DepositList * {
+%typemap(python,in) DepositList, const DepositList & {
 	if (PyTuple_Check($source)) {
 		int size = PyTuple_Size($source);
 		$target = new std::vector<Deposit>(size);
 		for (int i=0; i<size; i++) {
 			Deposit* d;
 			PyObject* o = PyTuple_GetItem($source,i);
-			if ((SWIG_ConvertPtr(o,(void **) &d,(swig_type_info *)SWIG_TypeQuery("Deposit *"),1)) != -1) {
+			if ((SWIG_ConvertPtr(o,(void **) &d,
+			  (swig_type_info *)SWIG_TypeQuery("Deposit *"),1)) != -1) {
 				(*$target)[i] = *d;
 			} else {
 				PyErr_SetString(PyExc_TypeError,"tuple must contain deposits");
@@ -181,7 +189,8 @@ typedef std::vector<Deposit> DepositList;
 		for (int i=0; i<size; i++) {
 			Deposit* d;
 			PyObject* o = PyList_GetItem($source,i);
-			if ((SWIG_ConvertPtr(o,(void **) &d,(swig_type_info *)SWIG_TypeQuery("Deposit *"),1)) != -1) {
+			if ((SWIG_ConvertPtr(o,(void **) &d,
+			  (swig_type_info *)SWIG_TypeQuery("Deposit *"),1)) != -1) {
 				(*$target)[i] = *d;
 			} else {
 				PyErr_SetString(PyExc_TypeError,"list must contain deposits");
@@ -195,16 +204,17 @@ typedef std::vector<Deposit> DepositList;
 	}
 };
 
-%typemap(python,freearg) DepositList, DepositList * {
+%typemap(python,freearg) DepositList, const DepositList & {
 	delete $source;
 };
 
 // piecewise constant forward generation
 
 %{
-TermStructureHandle NewPiecewiseConstantForwards(CurrencyHandle currency, DayCounterHandle dayCounter, 
-  Date today, DepositList deposits) {
-	return Handle<TermStructure>(new PiecewiseConstantForwards(currency,dayCounter,today,deposits));
+TermStructureHandle NewPiecewiseConstantForwards(CurrencyHandle currency, 
+  DayCounterHandle dayCounter, Date today, DepositList deposits) {
+	return Handle<TermStructure>(
+	  new PiecewiseConstantForwards(currency,dayCounter,today,deposits));
 }
 %}
 

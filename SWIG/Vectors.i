@@ -34,7 +34,8 @@
 #if !defined(PYTHON_WARNING_ISSUED)
 #define PYTHON_WARNING_ISSUED
 %echo "Warning: this is a Python module!!"
-%echo "Exporting it to any other language is not advised as it could lead to unpredicted results."
+%echo "Exporting it to any other language is not advised"
+%echo "as it could lead to unpredicted results."
 #endif
 #endif
 
@@ -47,7 +48,7 @@ typedef std::vector<double> DoubleVector;
 using QuantLib::Array;
 %}
 
-%typemap(python,in) IntVector, IntVector *, const IntVector & {
+%typemap(python,in) IntVector, const IntVector & {
 	if (PyTuple_Check($source)) {
 		int size = PyTuple_Size($source);
 		$target = new IntVector(size);
@@ -80,11 +81,11 @@ using QuantLib::Array;
 	}
 };
 
-%typemap(python,freearg) IntVector, IntVector *, const IntVector & {
+%typemap(python,freearg) IntVector, const IntVector & {
 	delete $source;
 };
 
-%typemap(python,out) IntVector, IntVector *, const IntVector & {
+%typemap(python,out) IntVector, const IntVector & {
 	$target = PyTuple_New($source->size());
 	for (int i=0; i<$source->size(); i++)
 		PyTuple_SetItem($target,i,PyInt_FromLong((*$source)[i]));
@@ -95,7 +96,7 @@ using QuantLib::Array;
 }
 
 
-%typemap(python,in) DoubleVector, DoubleVector *, const DoubleVector &, Array, Array *, const Array & {
+%typemap(python,in) DoubleVector, const DoubleVector &, Array, const Array & {
 	if (PyTuple_Check($source)) {
 		int size = PyTuple_Size($source);
 		$target = new $basetype(size);
@@ -132,11 +133,11 @@ using QuantLib::Array;
 	}
 };
 
-%typemap(python,freearg) DoubleVector, DoubleVector *, const DoubleVector &, Array, Array *, const Array & {
+%typemap(python,freearg) DoubleVector, const DoubleVector &, Array, const Array & {
 	delete $source;
 };
 
-%typemap(python,out) DoubleVector, DoubleVector *, const DoubleVector &, Array, Array *, const Array & {
+%typemap(python,out) DoubleVector, const DoubleVector &, Array, const Array & {
 	$target = PyTuple_New($source->size());
 	for (int i=0; i<$source->size(); i++)
 		PyTuple_SetItem($target,i,PyFloat_FromDouble((*$source)[i]));

@@ -34,7 +34,8 @@
 #if !defined(PYTHON_WARNING_ISSUED)
 #define PYTHON_WARNING_ISSUED
 %echo "Warning: this is a Python module!!"
-%echo "Exporting it to any other language is not advised as it could lead to unpredicted results."
+%echo "Exporting it to any other language is not advised"
+%echo "as it could lead to unpredicted results."
 #endif
 #endif
 
@@ -128,17 +129,19 @@ CurrencyHandle NewSEK()		{ return CurrencyHandle(new SEK); }
 typedef std::vector<Handle<Currency> > CurrencyHandleVector;
 %}
 
-%typemap(python,in) CurrencyHandleVector, CurrencyHandleVector *, const CurrencyHandleVector & {
+%typemap(python,in) CurrencyHandleVector, const CurrencyHandleVector & {
 	if (PyTuple_Check($source)) {
 		int size = PyTuple_Size($source);
 		$target = new std::vector<CurrencyHandle>(size);
 		for (int i=0; i<size; i++) {
 			CurrencyHandle* d;
 			PyObject* o = PyTuple_GetItem($source,i);
-			if ((SWIG_ConvertPtr(o,(void **) &d,(swig_type_info *)SWIG_TypeQuery("CurrencyHandle *"),1)) != -1) {
+			if ((SWIG_ConvertPtr(o,(void **) &d,
+			  (swig_type_info *)SWIG_TypeQuery("CurrencyHandle *"),1)) != -1) {
 				(*$target)[i] = *d;
 			} else {
-				PyErr_SetString(PyExc_TypeError,"tuple must contain currencies");
+				PyErr_SetString(PyExc_TypeError,
+				  "tuple must contain currencies");
 				delete $target;
 				return NULL;
 			}
@@ -149,7 +152,8 @@ typedef std::vector<Handle<Currency> > CurrencyHandleVector;
 		for (int i=0; i<size; i++) {
 			CurrencyHandle* d;
 			PyObject* o = PyList_GetItem($source,i);
-			if ((SWIG_ConvertPtr(o,(void **) &d,(swig_type_info *)SWIG_TypeQuery("CurrencyHandle *"),1)) != -1) {
+			if ((SWIG_ConvertPtr(o,(void **) &d,
+			  (swig_type_info *)SWIG_TypeQuery("CurrencyHandle *"),1)) != -1) {
 				(*$target)[i] = *d;
 			} else {
 				PyErr_SetString(PyExc_TypeError,"list must contain currencies");
@@ -163,7 +167,7 @@ typedef std::vector<Handle<Currency> > CurrencyHandleVector;
 	}
 };
 
-%typemap(python,freearg) CurrencyHandleVector, CurrencyHandleVector *, const CurrencyHandleVector & {
+%typemap(python,freearg) CurrencyHandleVector, const CurrencyHandleVector & {
 	delete $source;
 };
 

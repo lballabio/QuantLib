@@ -167,6 +167,8 @@ class TermStructure:
         val = apply(QuantLibc.TermStructure_minDate,args, kwargs)
         if val: val = DatePtr(val) ; val.thisown = 1
         return val
+    def __repr__(self):
+        return "<C TermStructure instance at %s>" % (self.this,)
 class TermStructurePtr(TermStructure):
     def __init__(self,this):
         self.this = this
@@ -177,8 +179,6 @@ class TermStructurePtr(TermStructure):
 TermStructure.zeroYield = new.instancemethod(QuantLibc.TermStructure_zeroYield, None, TermStructure)
 TermStructure.discount = new.instancemethod(QuantLibc.TermStructure_discount, None, TermStructure)
 TermStructure.forward = new.instancemethod(QuantLibc.TermStructure_forward, None, TermStructure)
-TermStructure.__str__ = new.instancemethod(QuantLibc.TermStructure___str__, None, TermStructure)
-TermStructure.__repr__ = new.instancemethod(QuantLibc.TermStructure___repr__, None, TermStructure)
 TermStructure.__nonzero__ = new.instancemethod(QuantLibc.TermStructure___nonzero__, None, TermStructure)
 
 class Deposit:
@@ -242,6 +242,9 @@ class BoundaryCondition:
         self.this = apply(QuantLibc.new_BoundaryCondition,args,kwargs)
         self.thisown = 1
 
+    def __del__(self,QuantLibc=QuantLibc):
+        if self.thisown == 1 :
+            QuantLibc.delete_BoundaryCondition(self)
     def __repr__(self):
         return "<C BoundaryCondition instance at %s>" % (self.this,)
 class BoundaryConditionPtr(BoundaryCondition):
@@ -259,6 +262,9 @@ class TridiagonalOperator:
         self.this = apply(QuantLibc.new_TridiagonalOperator,args,kwargs)
         self.thisown = 1
 
+    def __del__(self,QuantLibc=QuantLibc):
+        if self.thisown == 1 :
+            QuantLibc.delete_TridiagonalOperator(self)
     def __repr__(self):
         return "<C TridiagonalOperator instance at %s>" % (self.this,)
 class TridiagonalOperatorPtr(TridiagonalOperator):
@@ -278,11 +284,86 @@ TridiagonalOperator.setMidRow = new.instancemethod(QuantLibc.TridiagonalOperator
 TridiagonalOperator.setMidRows = new.instancemethod(QuantLibc.TridiagonalOperator_setMidRows, None, TridiagonalOperator)
 TridiagonalOperator.setLastRow = new.instancemethod(QuantLibc.TridiagonalOperator_setLastRow, None, TridiagonalOperator)
 
+class DPlus(TridiagonalOperator):
+    def __init__(self,*args,**kwargs):
+        self.this = apply(QuantLibc.new_DPlus,args,kwargs)
+        self.thisown = 1
+
+    def __del__(self,QuantLibc=QuantLibc):
+        if self.thisown == 1 :
+            QuantLibc.delete_DPlus(self)
+    def __repr__(self):
+        return "<C DPlus instance at %s>" % (self.this,)
+class DPlusPtr(DPlus):
+    def __init__(self,this):
+        self.this = this
+        self.thisown = 0
+        self.__class__ = DPlus
+
+
+
+class DMinus(TridiagonalOperator):
+    def __init__(self,*args,**kwargs):
+        self.this = apply(QuantLibc.new_DMinus,args,kwargs)
+        self.thisown = 1
+
+    def __del__(self,QuantLibc=QuantLibc):
+        if self.thisown == 1 :
+            QuantLibc.delete_DMinus(self)
+    def __repr__(self):
+        return "<C DMinus instance at %s>" % (self.this,)
+class DMinusPtr(DMinus):
+    def __init__(self,this):
+        self.this = this
+        self.thisown = 0
+        self.__class__ = DMinus
+
+
+
+class DZero(TridiagonalOperator):
+    def __init__(self,*args,**kwargs):
+        self.this = apply(QuantLibc.new_DZero,args,kwargs)
+        self.thisown = 1
+
+    def __del__(self,QuantLibc=QuantLibc):
+        if self.thisown == 1 :
+            QuantLibc.delete_DZero(self)
+    def __repr__(self):
+        return "<C DZero instance at %s>" % (self.this,)
+class DZeroPtr(DZero):
+    def __init__(self,this):
+        self.this = this
+        self.thisown = 0
+        self.__class__ = DZero
+
+
+
+class DPlusDMinus(TridiagonalOperator):
+    def __init__(self,*args,**kwargs):
+        self.this = apply(QuantLibc.new_DPlusDMinus,args,kwargs)
+        self.thisown = 1
+
+    def __del__(self,QuantLibc=QuantLibc):
+        if self.thisown == 1 :
+            QuantLibc.delete_DPlusDMinus(self)
+    def __repr__(self):
+        return "<C DPlusDMinus instance at %s>" % (self.this,)
+class DPlusDMinusPtr(DPlusDMinus):
+    def __init__(self,this):
+        self.this = this
+        self.thisown = 0
+        self.__class__ = DPlusDMinus
+
+
+
 class BSMEuropeanOption:
     def __init__(self,*args,**kwargs):
         self.this = apply(QuantLibc.new_BSMEuropeanOption,args,kwargs)
         self.thisown = 1
 
+    def __del__(self,QuantLibc=QuantLibc):
+        if self.thisown == 1 :
+            QuantLibc.delete_BSMEuropeanOption(self)
     def __repr__(self):
         return "<C BSMEuropeanOption instance at %s>" % (self.this,)
 class BSMEuropeanOptionPtr(BSMEuropeanOption):
@@ -307,6 +388,9 @@ class BSMAmericanOption:
         self.this = apply(QuantLibc.new_BSMAmericanOption,args,kwargs)
         self.thisown = 1
 
+    def __del__(self,QuantLibc=QuantLibc):
+        if self.thisown == 1 :
+            QuantLibc.delete_BSMAmericanOption(self)
     def __repr__(self):
         return "<C BSMAmericanOption instance at %s>" % (self.this,)
 class BSMAmericanOptionPtr(BSMAmericanOption):
@@ -331,6 +415,9 @@ class DividendAmericanOption:
         self.this = apply(QuantLibc.new_DividendAmericanOption,args,kwargs)
         self.thisown = 1
 
+    def __del__(self,QuantLibc=QuantLibc):
+        if self.thisown == 1 :
+            QuantLibc.delete_DividendAmericanOption(self)
     def __repr__(self):
         return "<C DividendAmericanOption instance at %s>" % (self.this,)
 class DividendAmericanOptionPtr(DividendAmericanOption):
@@ -353,6 +440,9 @@ class DividendEuropeanOption:
         self.this = apply(QuantLibc.new_DividendEuropeanOption,args,kwargs)
         self.thisown = 1
 
+    def __del__(self,QuantLibc=QuantLibc):
+        if self.thisown == 1 :
+            QuantLibc.delete_DividendEuropeanOption(self)
     def __repr__(self):
         return "<C DividendEuropeanOption instance at %s>" % (self.this,)
 class DividendEuropeanOptionPtr(DividendEuropeanOption):
@@ -568,6 +658,9 @@ class UniformRandomGenerator:
         self.this = apply(QuantLibc.new_UniformRandomGenerator,args,kwargs)
         self.thisown = 1
 
+    def __del__(self,QuantLibc=QuantLibc):
+        if self.thisown == 1 :
+            QuantLibc.delete_UniformRandomGenerator(self)
     def __repr__(self):
         return "<C UniformRandomGenerator instance at %s>" % (self.this,)
 class UniformRandomGeneratorPtr(UniformRandomGenerator):
@@ -585,6 +678,9 @@ class GaussianRandomGenerator:
         self.this = apply(QuantLibc.new_GaussianRandomGenerator,args,kwargs)
         self.thisown = 1
 
+    def __del__(self,QuantLibc=QuantLibc):
+        if self.thisown == 1 :
+            QuantLibc.delete_GaussianRandomGenerator(self)
     def __repr__(self):
         return "<C GaussianRandomGenerator instance at %s>" % (self.this,)
 class GaussianRandomGeneratorPtr(GaussianRandomGenerator):
@@ -596,23 +692,6 @@ class GaussianRandomGeneratorPtr(GaussianRandomGenerator):
 
 GaussianRandomGenerator.next = new.instancemethod(QuantLibc.GaussianRandomGenerator_next, None, GaussianRandomGenerator)
 GaussianRandomGenerator.weight = new.instancemethod(QuantLibc.GaussianRandomGenerator_weight, None, GaussianRandomGenerator)
-
-class BM:
-    def __init__(self,*args,**kwargs):
-        self.this = apply(QuantLibc.new_BM,args,kwargs)
-        self.thisown = 1
-
-    def __repr__(self):
-        return "<C BM instance at %s>" % (self.this,)
-class BMPtr(BM):
-    def __init__(self,this):
-        self.this = this
-        self.thisown = 0
-        self.__class__ = BM
-
-
-BM.next = new.instancemethod(QuantLibc.BM_next, None, BM)
-BM.weight = new.instancemethod(QuantLibc.BM_weight, None, BM)
 
 class History:
     def __init__(self,*args,**kwargs):
@@ -641,6 +720,45 @@ History.size = new.instancemethod(QuantLibc.History_size, None, History)
 History.__str__ = new.instancemethod(QuantLibc.History___str__, None, History)
 History.__repr__ = new.instancemethod(QuantLibc.History___repr__, None, History)
 History.__getitem__ = new.instancemethod(QuantLibc.History___getitem__, None, History)
+
+class NormalDistribution:
+    def __init__(self,*args,**kwargs):
+        self.this = apply(QuantLibc.new_NormalDistribution,args,kwargs)
+        self.thisown = 1
+
+    def __del__(self,QuantLibc=QuantLibc):
+        if self.thisown == 1 :
+            QuantLibc.delete_NormalDistribution(self)
+    def __repr__(self):
+        return "<C NormalDistribution instance at %s>" % (self.this,)
+class NormalDistributionPtr(NormalDistribution):
+    def __init__(self,this):
+        self.this = this
+        self.thisown = 0
+        self.__class__ = NormalDistribution
+
+
+NormalDistribution.__call__ = new.instancemethod(QuantLibc.NormalDistribution___call__, None, NormalDistribution)
+
+class CumulativeNormalDistribution:
+    def __init__(self,*args,**kwargs):
+        self.this = apply(QuantLibc.new_CumulativeNormalDistribution,args,kwargs)
+        self.thisown = 1
+
+    def __del__(self,QuantLibc=QuantLibc):
+        if self.thisown == 1 :
+            QuantLibc.delete_CumulativeNormalDistribution(self)
+    def __repr__(self):
+        return "<C CumulativeNormalDistribution instance at %s>" % (self.this,)
+class CumulativeNormalDistributionPtr(CumulativeNormalDistribution):
+    def __init__(self,this):
+        self.this = this
+        self.thisown = 0
+        self.__class__ = CumulativeNormalDistribution
+
+
+CumulativeNormalDistribution.derivative = new.instancemethod(QuantLibc.CumulativeNormalDistribution_derivative, None, CumulativeNormalDistribution)
+CumulativeNormalDistribution.__call__ = new.instancemethod(QuantLibc.CumulativeNormalDistribution___call__, None, CumulativeNormalDistribution)
 
 
 

@@ -34,7 +34,8 @@
 #if !defined(PYTHON_WARNING_ISSUED)
 #define PYTHON_WARNING_ISSUED
 %echo "Warning: this is a Python module!!"
-%echo "Exporting it to any other language is not advised as it could lead to unpredicted results."
+%echo "Exporting it to any other language is not advised"
+%echo "as it could lead to unpredicted results."
 #endif
 #endif
 
@@ -70,17 +71,24 @@ using QuantLib::StringFormatter;
 using QuantLib::DateFormatter;
 %}
 
-%typemap(python,in) Weekday, Weekday * {
+%typemap(python,in) Weekday, const Weekday & {
 	if (PyString_Check($source)) {
 		std::string s(PyString_AsString($source));
 		s = StringFormatter::toLowercase(s);
-		if (s == "sun" || s == "sunday")			$target = new Weekday(Sunday);
-		else if (s == "mon" || s == "monday")		$target = new Weekday(Monday);
-		else if (s == "tue" || s == "tuesday")		$target = new Weekday(Tuesday);
-		else if (s == "wed" || s == "wednesday")	$target = new Weekday(Wednesday);
-		else if (s == "thu" || s == "thursday")		$target = new Weekday(Thursday);
-		else if (s == "fri" || s == "friday")		$target = new Weekday(Friday);
-		else if (s == "sat" || s == "saturday")		$target = new Weekday(Saturday);
+		if (s == "sun" || s == "sunday")
+		    $target = new Weekday(Sunday);
+		else if (s == "mon" || s == "monday")
+		    $target = new Weekday(Monday);
+		else if (s == "tue" || s == "tuesday")
+		    $target = new Weekday(Tuesday);
+		else if (s == "wed" || s == "wednesday")
+		    $target = new Weekday(Wednesday);
+		else if (s == "thu" || s == "thursday")
+		    $target = new Weekday(Thursday);
+		else if (s == "fri" || s == "friday")
+		    $target = new Weekday(Friday);
+		else if (s == "sat" || s == "saturday")
+		    $target = new Weekday(Saturday);
 		else {
 			PyErr_SetString(PyExc_TypeError,"not a weekday");
 			return NULL;
@@ -91,11 +99,11 @@ using QuantLib::DateFormatter;
 	}
 };
 
-%typemap(python,freearg) Weekday, Weekday * {
+%typemap(python,freearg) Weekday, const Weekday & {
 	delete $source;
 };
 
-%typemap(python,out) Weekday, Weekday * {
+%typemap(python,out) Weekday, const Weekday & {
 	switch (*$source) {
 	  case Sunday:		$target = PyString_FromString("Sunday");	break;
 	  case Monday:		$target = PyString_FromString("Monday");	break;
@@ -130,22 +138,34 @@ using QuantLib::November;
 using QuantLib::December;
 %}
 
-%typemap(python,in) Month, Month * {
+%typemap(python,in) Month, const Month & {
 	if (PyString_Check($source)) {
 		std::string s(PyString_AsString($source));
 		s = StringFormatter::toLowercase(s);
-		if (s == "jan" || s == "january")			$target = new Month(January);
-		else if (s == "feb" || s == "february")		$target = new Month(February);
-		else if (s == "mar" || s == "march")		$target = new Month(March);
-		else if (s == "apr" || s == "april")		$target = new Month(April);
-		else if (s == "may")						$target = new Month(May);
-		else if (s == "jun" || s == "june")			$target = new Month(June);
-		else if (s == "jul" || s == "july")			$target = new Month(July);
-		else if (s == "aug" || s == "august")		$target = new Month(August);
-		else if (s == "sep" || s == "september")	$target = new Month(September);
-		else if (s == "oct" || s == "october")		$target = new Month(October);
-		else if (s == "nov" || s == "november")		$target = new Month(November);
-		else if (s == "dec" || s == "december")		$target = new Month(December);
+		if (s == "jan" || s == "january")
+		    $target = new Month(January);
+		else if (s == "feb" || s == "february")
+		    $target = new Month(February);
+		else if (s == "mar" || s == "march")
+		    $target = new Month(March);
+		else if (s == "apr" || s == "april")
+		    $target = new Month(April);
+		else if (s == "may")
+		    $target = new Month(May);
+		else if (s == "jun" || s == "june")
+		    $target = new Month(June);
+		else if (s == "jul" || s == "july")
+		    $target = new Month(July);
+		else if (s == "aug" || s == "august")
+		    $target = new Month(August);
+		else if (s == "sep" || s == "september")
+		    $target = new Month(September);
+		else if (s == "oct" || s == "october")
+		    $target = new Month(October);
+		else if (s == "nov" || s == "november")
+		    $target = new Month(November);
+		else if (s == "dec" || s == "december")
+		    $target = new Month(December);
 		else {
 			PyErr_SetString(PyExc_TypeError,"not a month");
 			return NULL;
@@ -164,11 +184,11 @@ using QuantLib::December;
 	}
 };
 
-%typemap(python,freearg) Month, Month * {
+%typemap(python,freearg) Month, const Month & {
 	delete $source;
 };
 
-%typemap(python,out) Month, Month * {
+%typemap(python,out) Month, const Month & {
 	switch (*$source) {
 	  case January:		$target = PyString_FromString("January");	break;
 	  case February:	$target = PyString_FromString("February");	break;
@@ -200,14 +220,18 @@ using QuantLib::Months;
 using QuantLib::Years;
 %}
 
-%typemap(python,in) TimeUnit, TimeUnit * {
+%typemap(python,in) TimeUnit, const TimeUnit & {
 	if (PyString_Check($source)) {
 		std::string s(PyString_AsString($source));
 		s = StringFormatter::toLowercase(s);
-		if (s == "d" || s == "day" || s == "days")			$target = new TimeUnit(Days);
-		else if (s == "w" || s == "week" || s == "weeks")	$target = new TimeUnit(Weeks);
-		else if (s == "m" || s == "month" || s == "months")	$target = new TimeUnit(Months);
-		else if (s == "y" || s == "year" || s == "years")	$target = new TimeUnit(Years);
+		if (s == "d" || s == "day" || s == "days")
+		    $target = new TimeUnit(Days);
+		else if (s == "w" || s == "week" || s == "weeks")
+		    $target = new TimeUnit(Weeks);
+		else if (s == "m" || s == "month" || s == "months")
+		    $target = new TimeUnit(Months);
+		else if (s == "y" || s == "year" || s == "years")
+		    $target = new TimeUnit(Years);
 		else {
 			PyErr_SetString(PyExc_TypeError,"unknown time unit");
 			return NULL;
@@ -218,11 +242,11 @@ using QuantLib::Years;
 	}
 };
 
-%typemap(python,freearg) TimeUnit, TimeUnit * {
+%typemap(python,freearg) TimeUnit, const TimeUnit & {
 	delete $source;
 };
 
-%typemap(python,out) TimeUnit, TimeUnit * {
+%typemap(python,out) TimeUnit, const TimeUnit & {
 	switch (*$source) {
 	  case Days:
 		$target = PyString_FromString("days"); break;
@@ -296,14 +320,15 @@ class Date {
 typedef std::vector<Date> DateVector;
 %}
 
-%typemap(python,in) DateVector, DateVector *, const DateVector & {
+%typemap(python,in) DateVector, const DateVector & {
 	if (PyTuple_Check($source)) {
 		int size = PyTuple_Size($source);
 		$target = new std::vector<Date>(size);
 		for (int i=0; i<size; i++) {
 			Date* d;
 			PyObject* o = PyTuple_GetItem($source,i);
-			if ((SWIG_ConvertPtr(o,(void **) &d,(swig_type_info *)SWIG_TypeQuery("Date *"),1)) != -1) {
+			if ((SWIG_ConvertPtr(o,(void **) &d,
+			  (swig_type_info *)SWIG_TypeQuery("Date *"),1)) != -1) {
 				(*$target)[i] = *d;
 			} else {
 				PyErr_SetString(PyExc_TypeError,"tuple must contain dates");
@@ -317,7 +342,8 @@ typedef std::vector<Date> DateVector;
 		for (int i=0; i<size; i++) {
 			Date* d;
 			PyObject* o = PyList_GetItem($source,i);
-			if ((SWIG_ConvertPtr(o,(void **) &d,(swig_type_info *)SWIG_TypeQuery("Date *"),1)) != -1) {
+			if ((SWIG_ConvertPtr(o,(void **) &d,
+			  (swig_type_info *)SWIG_TypeQuery("Date *"),1)) != -1) {
 				(*$target)[i] = *d;
 			} else {
 				PyErr_SetString(PyExc_TypeError,"list must contain dates");
@@ -331,7 +357,7 @@ typedef std::vector<Date> DateVector;
 	}
 };
 
-%typemap(python,freearg) DateVector, DateVector *, const DateVector & {
+%typemap(python,freearg) DateVector, const DateVector & {
 	delete $source;
 };
 

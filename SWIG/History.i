@@ -34,7 +34,8 @@
 #if !defined(PYTHON_WARNING_ISSUED)
 #define PYTHON_WARNING_ISSUED
 %echo "Warning: this is a Python module!!"
-%echo "Exporting it to any other language is not advised as it could lead to unpredicted results."
+%echo "Exporting it to any other language is not advised"
+%echo "as it could lead to unpredicted results."
 #endif
 #endif
 
@@ -65,11 +66,13 @@ class History {
 
 %addmethods History {
 	String __str__() {
-		return "Historical data from " + DateFormatter::toString(self->firstDate()) +
+		return "Historical data from " + 
+		    DateFormatter::toString(self->firstDate()) +
 			" to " + DateFormatter::toString(self->lastDate());
 	}
 	String __repr__() {
-		return "<History: historical data from " + DateFormatter::toString(self->firstDate()) + 
+		return "<History: historical data from " + 
+		    DateFormatter::toString(self->firstDate()) + 
 			" to " + DateFormatter::toString(self->lastDate())+">";
 	}
 	double __getitem__(Date d) {

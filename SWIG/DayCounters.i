@@ -34,7 +34,8 @@
 #if !defined(PYTHON_WARNING_ISSUED)
 #define PYTHON_WARNING_ISSUED
 %echo "Warning: this is a Python module!!"
-%echo "Exporting it to any other language is not advised as it could lead to unpredicted results."
+%echo "Exporting it to any other language is not advised"
+%echo "as it could lead to unpredicted results."
 #endif
 #endif
 
@@ -87,11 +88,16 @@ using QuantLib::DayCounters::Thirty360;
 using QuantLib::DayCounters::Thirty360European;
 using QuantLib::DayCounters::Thirty360Italian;
 
-DayCounterHandle NewActual360()			{ return DayCounterHandle(new Actual360); }
-DayCounterHandle NewActual365()			{ return DayCounterHandle(new Actual365); }
-DayCounterHandle NewThirty360()			{ return DayCounterHandle(new Thirty360); }
-DayCounterHandle NewThirty360European()	{ return DayCounterHandle(new Thirty360European); }
-DayCounterHandle NewThirty360Italian()	{ return DayCounterHandle(new Thirty360Italian); }
+DayCounterHandle NewActual360() {
+    return DayCounterHandle(new Actual360); }
+DayCounterHandle NewActual365() { 
+    return DayCounterHandle(new Actual365); }
+DayCounterHandle NewThirty360() {
+    return DayCounterHandle(new Thirty360); }
+DayCounterHandle NewThirty360European() {
+    return DayCounterHandle(new Thirty360European); }
+DayCounterHandle NewThirty360Italian() {
+    return DayCounterHandle(new Thirty360Italian); }
 %}
 
 %name(Actual360)			DayCounterHandle NewActual360();

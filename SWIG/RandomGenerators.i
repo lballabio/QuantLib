@@ -34,7 +34,8 @@
 #if !defined(PYTHON_WARNING_ISSUED)
 #define PYTHON_WARNING_ISSUED
 %echo "Warning: this is a Python module!!"
-%echo "Exporting it to any other language is not advised as it could lead to unpredicted results."
+%echo "Exporting it to any other language is not advised"
+%echo "as it could lead to unpredicted results."
 #endif
 #endif
 
@@ -46,6 +47,7 @@ using QuantLib::MonteCarlo::GaussianRandomGenerator;
 class UniformRandomGenerator {
   public:
     UniformRandomGenerator(long seed=0);
+    ~UniformRandomGenerator();
     double next() const;
     double weight() const;
 };
@@ -53,21 +55,10 @@ class UniformRandomGenerator {
 class GaussianRandomGenerator {
   public:
     GaussianRandomGenerator(long seed=0);
+    ~GaussianRandomGenerator();
     double next() const;
     double weight() const;
 };
 
-%{
-using QuantLib::MonteCarlo::UniformRandomGenerator;
-using QuantLib::MonteCarlo::BoxMuller;
-typedef BoxMuller<UniformRandomGenerator> BM;
-%}
-
-class BM {
-  public:
-    BM(long seed=0);
-    double next() const;
-    double weight() const;
-};
 
 #endif

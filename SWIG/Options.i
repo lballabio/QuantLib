@@ -34,7 +34,8 @@
 #if !defined(PYTHON_WARNING_ISSUED)
 #define PYTHON_WARNING_ISSUED
 %echo "Warning: this is a Python module!!"
-%echo "Exporting it to any other language is not advised as it could lead to unpredicted results."
+%echo "Exporting it to any other language is not advised"
+%echo "as it could lead to unpredicted results."
 #endif
 #endif
 
@@ -44,7 +45,7 @@ typedef Option::Type OptionType;
 using QuantLib::StringFormatter;
 %}
 
-%typemap(python,in) OptionType, OptionType * {
+%typemap(python,in) OptionType, const OptionType & {
 	if (PyString_Check($source)) {
 		$target = new OptionType;
 		std::string s(PyString_AsString($source));
@@ -63,11 +64,11 @@ using QuantLib::StringFormatter;
 	}
 };
 
-%typemap(python,freearg) OptionType, OptionType * {
+%typemap(python,freearg) OptionType, const OptionType & {
 	delete $source;
 };
 
-%typemap(python,out) OptionType, OptionType * {
+%typemap(python,out) OptionType, const OptionType & {
 	std::string s;
 	if (*$source == Option::Call)			s = "call";
 	else if (*$source == Option::Put)		s = "put";

@@ -34,7 +34,8 @@
 #if !defined(PYTHON_WARNING_ISSUED)
 #define PYTHON_WARNING_ISSUED
 %echo "Warning: this is a Python module!!"
-%echo "Exporting it to any other language is not advised as it could lead to unpredicted results."
+%echo "Exporting it to any other language is not advised"
+%echo "as it could lead to unpredicted results."
 #endif
 #endif
 
@@ -70,8 +71,10 @@ class PyObjectiveFunction : public ObjectiveFunction {
 		return result;
 	}
 	double derivative(double x) const {
-		PyObject* pyResult = PyObject_CallMethod(thePyFunction,"derivative","d",x);
-		QL_ENSURE(pyResult != NULL, "failed to call derivative() on Python object");
+		PyObject* pyResult = 
+		  PyObject_CallMethod(thePyFunction,"derivative","d",x);
+		QL_ENSURE(pyResult != NULL,
+		  "failed to call derivative() on Python object");
 		double result = PyFloat_AsDouble(pyResult);
 		Py_XDECREF(pyResult);
 		return result;
@@ -90,18 +93,22 @@ using QuantLib::Solver1D;
 
 class Solver1D {
   public:
-	virtual double solve(const ObjectiveFunction& f, double xAccuracy, double guess, double step) const;
-	%name(bracketedSolve) virtual double solve(const ObjectiveFunction& f, double xAccuracy, double guess, double xMin, double xMax) const;
+	virtual double solve(const ObjectiveFunction& f, double xAccuracy, 
+	  double guess, double step) const;
+	%name(bracketedSolve) virtual double solve(const ObjectiveFunction& f,
+	  double xAccuracy, double guess, double xMin, double xMax) const;
 	void setMaxEvaluations(int evaluations);
 };
 
 #if defined(SWIGPYTHON)
 %addmethods Solver1D {
-	double pySolve(PyObject *pyFunction, double xAccuracy, double guess, double step) {
+	double pySolve(PyObject *pyFunction, double xAccuracy, double guess, 
+	  double step) {
 		PyObjectiveFunction f(pyFunction);
 		return self->solve(f, xAccuracy, guess, step);
 	}
-	double pyBracketedSolve(PyObject *pyFunction, double xAccuracy, double guess, double xMin, double xMax) {
+	double pyBracketedSolve(PyObject *pyFunction, double xAccuracy, 
+	  double guess, double xMin, double xMax) {
 		PyObjectiveFunction f(pyFunction);
 		return self->solve(f, xAccuracy, guess, xMin, xMax);
 	}
