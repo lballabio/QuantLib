@@ -23,6 +23,7 @@
 
 #include <ql/PricingEngines/Asian/all.hpp>
 #include <ql/PricingEngines/Barrier/all.hpp>
+#include <ql/PricingEngines/Basket/all.hpp>
 #include <ql/PricingEngines/Cliquet/all.hpp>
 #include <ql/PricingEngines/Forward/all.hpp>
 #include <ql/PricingEngines/Quanto/all.hpp>
