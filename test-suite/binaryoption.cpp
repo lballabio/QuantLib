@@ -443,10 +443,10 @@ void BinaryOptionTest::testEngineConsistency() {
     bool antitheticVariate = false;
     bool controlVariate = false;
     Size requiredSamples = 1023;
-    double requiredTolerance = 5.0e-2;
-    Size maxSamples = Null<int>();
+    double requiredTolerance = 0.05;
+    Size maxSamples = 1000000;
     bool isBiased = false;
-    long seed = 0;
+    long seed = 1;
 
     double cashPayoff = 100.0;
     //Binary::Type binaryTypes[] = { Binary::CashAtExpiry, Binary::CashAtHit};
