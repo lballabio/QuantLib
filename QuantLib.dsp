@@ -7,21 +7,21 @@
 CFG=QuantLib - Win32 Debug MTDLL
 !MESSAGE This is not a valid makefile. To build this project using NMAKE,
 !MESSAGE use the Export Makefile command and run
-!MESSAGE 
+!MESSAGE
 !MESSAGE NMAKE /f "QuantLib.mak".
-!MESSAGE 
+!MESSAGE
 !MESSAGE You can specify a configuration when running NMAKE
 !MESSAGE by defining the macro CFG on the command line. For example:
-!MESSAGE 
+!MESSAGE
 !MESSAGE NMAKE /f "QuantLib.mak" CFG="QuantLib - Win32 Debug MTDLL"
-!MESSAGE 
+!MESSAGE
 !MESSAGE Possible choices for configuration are:
-!MESSAGE 
+!MESSAGE
 !MESSAGE "QuantLib - Win32 Release" (based on "Win32 (x86) Static Library")
 !MESSAGE "QuantLib - Win32 Debug" (based on "Win32 (x86) Static Library")
 !MESSAGE "QuantLib - Win32 Release MTDLL" (based on "Win32 (x86) Static Library")
 !MESSAGE "QuantLib - Win32 Debug MTDLL" (based on "Win32 (x86) Static Library")
-!MESSAGE 
+!MESSAGE
 
 # Begin Project
 # PROP AllowPerConfigDependencies 0
@@ -142,7 +142,7 @@ PreLink_Desc=Make build directory
 PreLink_Cmds=if not exist lib\Win32\VisualStudio mkdir lib\Win32\VisualStudio
 # End Special Build Tool
 
-!ENDIF 
+!ENDIF
 
 # Begin Target
 
@@ -599,6 +599,10 @@ SOURCE=.\ql\Indexes\zarlibor.hpp
 # PROP Default_Filter ""
 # Begin Source File
 
+SOURCE=.\ql\Instruments\all.hpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\ql\Instruments\asianoption.cpp
 # End Source File
 # Begin Source File
@@ -635,6 +639,10 @@ SOURCE=.\ql\Instruments\cliquetoption.hpp
 # End Source File
 # Begin Source File
 
+SOURCE=.\ql\Instruments\core.hpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\ql\Instruments\forwardvanillaoption.cpp
 # End Source File
 # Begin Source File
@@ -656,6 +664,10 @@ SOURCE=.\ql\Instruments\oneassetstrikedoption.cpp
 # Begin Source File
 
 SOURCE=.\ql\Instruments\oneassetstrikedoption.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\Instruments\payoffs.hpp
 # End Source File
 # Begin Source File
 
@@ -1410,7 +1422,7 @@ SOURCE=.\ql\Pricers\mcbasket.cpp
 
 !ELSEIF  "$(CFG)" == "QuantLib - Win32 Debug MTDLL"
 
-!ENDIF 
+!ENDIF
 
 # End Source File
 # Begin Source File
@@ -1631,7 +1643,15 @@ SOURCE=.\ql\PricingEngines\Vanilla\vanillaengines.hpp
 # End Group
 # Begin Source File
 
+SOURCE=.\ql\PricingEngines\all.hpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\ql\PricingEngines\blackformula.hpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ql\PricingEngines\core.hpp
 # End Source File
 # Begin Source File
 
