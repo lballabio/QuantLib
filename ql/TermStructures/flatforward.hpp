@@ -54,7 +54,6 @@ namespace QuantLib {
             Date todaysDate() const;
             int settlementDays() const;
             Handle<Calendar> calendar() const;
-            Handle<DayCounter> dayCounter() const;
             Date settlementDate() const;
             Date maxDate() const;
             Date minDate() const;
@@ -111,10 +110,6 @@ namespace QuantLib {
 
         inline Handle<Calendar> FlatForward::calendar() const {
             return calendar_;
-        }
-
-        inline Handle<DayCounter> FlatForward::dayCounter() const {
-            return dayCounter_;
         }
 
         inline int FlatForward::settlementDays() const {

@@ -76,7 +76,6 @@ namespace QuantLib {
             Date todaysDate() const;
             int settlementDays() const;
             Handle<Calendar> calendar() const;
-            Handle<DayCounter> dayCounter() const;
             Date settlementDate() const;
             Date maxDate() const;
             Date minDate() const;
@@ -149,10 +148,6 @@ namespace QuantLib {
 
         inline Handle<Calendar> PiecewiseFlatForward::calendar() const {
             return calendar_;
-        }
-
-        inline Handle<DayCounter> PiecewiseFlatForward::dayCounter() const {
-            return dayCounter_;
         }
 
         inline int PiecewiseFlatForward::settlementDays() const {
