@@ -61,7 +61,7 @@ void InterpolationTest::testSplineErrorOnGaussianValues() {
 //    SimpsonIntegral integral(1e-7);
     std::vector<double> x, y;
 
-//    std::cout << std::endl;
+    std::cout << std::endl;
 
     n = 5;
     x = std::vector<double>(n);
@@ -85,7 +85,7 @@ void InterpolationTest::testSplineErrorOnGaussianValues() {
         std::vector<double>::const_iterator,
         std::vector<double>::const_iterator> > myErrorFunction(interpolant); 
     double result = QL_SQRT(integral(myErrorFunction, -1.7, 1.9));
-//    std::cout << n << "    complete " << DoubleFormatter::toExponential(result, 1) << std::endl;
+    std::cout << n << "    complete " << DoubleFormatter::toExponential(result, 1) << std::endl;
 
     // MC not-a-knot spline interpolation
     interpolant = CubicSplineInterpolation<
@@ -100,7 +100,7 @@ void InterpolationTest::testSplineErrorOnGaussianValues() {
         std::vector<double>::const_iterator,
         std::vector<double>::const_iterator> >(interpolant); 
     result = QL_SQRT(integral(myErrorFunction, -1.7, 1.9));
-//    std::cout << n << " MC complete " << DoubleFormatter::toExponential(result, 1) << std::endl;
+    std::cout << n << " MC complete " << DoubleFormatter::toExponential(result, 1) << std::endl;
 
 
     n = 9;
@@ -125,7 +125,7 @@ void InterpolationTest::testSplineErrorOnGaussianValues() {
         std::vector<double>::const_iterator,
         std::vector<double>::const_iterator> >(interpolant); 
     result = QL_SQRT(integral(myErrorFunction, -1.7, 1.9));
-//    std::cout << n << "    complete " << DoubleFormatter::toExponential(result, 1) << std::endl;
+    std::cout << n << "    complete " << DoubleFormatter::toExponential(result, 1) << std::endl;
 
     // MC not-a-knot spline interpolation
     interpolant = CubicSplineInterpolation<
@@ -140,7 +140,7 @@ void InterpolationTest::testSplineErrorOnGaussianValues() {
         std::vector<double>::const_iterator,
         std::vector<double>::const_iterator> >(interpolant); 
     result = QL_SQRT(integral(myErrorFunction, -1.7, 1.9));
-//    std::cout << n << " MC complete " << DoubleFormatter::toExponential(result, 1) << std::endl;
+    std::cout << n << " MC complete " << DoubleFormatter::toExponential(result, 1) << std::endl;
 
 
     n = 17;
@@ -165,7 +165,7 @@ void InterpolationTest::testSplineErrorOnGaussianValues() {
         std::vector<double>::const_iterator,
         std::vector<double>::const_iterator> >(interpolant); 
     result = QL_SQRT(integral(myErrorFunction, -1.7, 1.9));
-//    std::cout << n << "    complete " << DoubleFormatter::toExponential(result, 1) << std::endl;
+    std::cout << n << "    complete " << DoubleFormatter::toExponential(result, 1) << std::endl;
 
     // MC not-a-knot spline interpolation
     interpolant = CubicSplineInterpolation<
@@ -180,7 +180,7 @@ void InterpolationTest::testSplineErrorOnGaussianValues() {
         std::vector<double>::const_iterator,
         std::vector<double>::const_iterator> >(interpolant); 
     result = QL_SQRT(integral(myErrorFunction, -1.7, 1.9));
-//    std::cout << n << " MC complete " << DoubleFormatter::toExponential(result, 1) << std::endl;
+    std::cout << n << " MC complete " << DoubleFormatter::toExponential(result, 1) << std::endl;
 
     n = 33;
     x = std::vector<double>(n);
@@ -204,7 +204,7 @@ void InterpolationTest::testSplineErrorOnGaussianValues() {
         std::vector<double>::const_iterator,
         std::vector<double>::const_iterator> >(interpolant); 
     result = QL_SQRT(integral(myErrorFunction, -1.7, 1.9));
-//    std::cout << n << "    complete " << DoubleFormatter::toExponential(result, 1) << std::endl;
+    std::cout << n << "    complete " << DoubleFormatter::toExponential(result, 1) << std::endl;
 
     // MC not-a-knot spline interpolation
     interpolant = CubicSplineInterpolation<
@@ -219,7 +219,7 @@ void InterpolationTest::testSplineErrorOnGaussianValues() {
         std::vector<double>::const_iterator,
         std::vector<double>::const_iterator> >(interpolant); 
     result = QL_SQRT(integral(myErrorFunction, -1.7, 1.9));
-//    std::cout << n << " MC complete " << DoubleFormatter::toExponential(result, 1) << std::endl;
+    std::cout << n << " MC complete " << DoubleFormatter::toExponential(result, 1) << std::endl;
 
 
 }
@@ -480,7 +480,7 @@ void InterpolationTest::testSplineOnRPN15AValues() {
             monotonicityConstraint);
     for (i=0; i<n; i++) {
         interpolated = interp(RPN15A_x[i], allowExtrapolation);
-        if (interpolated!=RPN15A_y[i]) {
+        if (QL_FABS(interpolated-RPN15A_y[i])>1e-15) {
             CPPUNIT_FAIL("Not-a-knot spline interpolation failed at x="
                 + DoubleFormatter::toString(RPN15A_x[i]) +
                 "\ninterpolated value:  "

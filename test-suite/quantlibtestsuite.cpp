@@ -81,7 +81,7 @@ int main() {
     runner.addTest(FactorialTest::suite());
     runner.addTest(InstrumentTest::suite());
     runner.addTest(IntegralTest::suite());
-//    runner.addTest(InterpolationTest::suite());
+    runner.addTest(InterpolationTest::suite());
     runner.addTest(LDSTest::suite());
     runner.addTest(MarketElementTest::suite());
     runner.addTest(MatricesTest::suite());

@@ -1,5 +1,6 @@
 
 /*
+ Copyright (C) 2004 Ferdinando Ametrano
  Copyright (C) 2001, 2002, 2003 Nicolas Di Césaré
  Copyright (C) 2000, 2001, 2002, 2003 RiskMap srl
 
@@ -144,12 +145,10 @@ namespace QuantLib {
                 tmp[n_-1] = 3.0*S[n_-2] - y2b*dx[n_-2]/2.0;
             } else {
                 // not-a-knot
-                L.setLastRow(
-                    dx[n_-2]*dx[n_-2]-dx[n_-3]*dx[n_-3]
-                        - 2.0*dx[n_-2]-2.0*dx[n_-3],
-                    -dx[n_-3]*dx[n_-3]-dx[n_-3]);
-                tmp[n_-1] = S[n_-3]*dx[n_-2]*(2.0*dx[n_-2]-3.0) -
-                    S[n_-2]*dx[n_-3]*(3.0+2.0*dx[n_-3]);
+                L.setLastRow(-(dx[n_-2]+dx[n_-3])*(dx[n_-2]+dx[n_-3]),
+                             -dx[n_-3]*(dx[n_-3]+dx[n_-2]));
+                tmp[n_-1] = -S[n_-3]*dx[n_-2]*dx[n_-2] -
+                    S[n_-2]*dx[n_-3]*(3.0*dx[n_-2]+2.0*dx[n_-3]);
             }
 
 
