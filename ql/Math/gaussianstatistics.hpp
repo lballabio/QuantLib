@@ -35,6 +35,8 @@ namespace QuantLib {
     template<class Stat>
     class GaussianStatistics : public Stat {
       public:
+        GaussianStatistics() : Stat() {}
+        GaussianStatistics(const Stat& s) : Stat(s) {}
         //! \name Gaussian risk measures
         //@{
         /*! returns the downside variance, defined as
@@ -219,7 +221,7 @@ namespace QuantLib {
         StatsHolder(double mean,
                     double standardDeviation)
                     : mean_(mean), standardDeviation_(standardDeviation) {}
-        ~StatsHolder();
+        ~StatsHolder() {}
         double mean() const { return mean_; }
         double standardDeviation() const { return standardDeviation_; }
     private:

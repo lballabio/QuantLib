@@ -432,6 +432,18 @@ void RiskStatisticsTest::runTest() {
                     + DoubleFormatter::toString(tolerance,16));
 
 
+            // just to check that GaussianStatistics<StatsHolder> does work
+            StatsHolder h(s.mean(), s.standardDeviation());
+            GaussianStatistics<StatsHolder> test(h);
+            expected = s.gaussianPotentialUpside(twoSigma);
+            calculated = test.gaussianPotentialUpside(twoSigma);
+            if (QL_FABS(calculated-expected) > tolerance)
+                CPPUNIT_FAIL("GaussianStatistics<StatsHolder> fails");
+
+
+
+
+
             // value-at-risk
             expected = -QL_MIN(lower_tail,0.0);
             tolerance = (expected == 0.0 ? 1.0e-3 : QL_FABS(expected*1.0e-3));
@@ -784,6 +796,7 @@ void RiskStatisticsTest::runTest() {
 
             igs.reset();
             s.reset();
+
         }
     }
 }
