@@ -28,6 +28,7 @@
 #define quantlib_normal_distribution_h
 
 #include <ql/dataformatters.hpp>
+#include <ql/Math/errorfunction.hpp>
 
 namespace QuantLib {
 
@@ -48,7 +49,7 @@ namespace QuantLib {
             double operator()(double x) const;
             double derivative(double x) const;
           private:
-            double average_, sigma_, normalizationFactor_, denominator_;
+            double average_, sigma_, normalizationFactor_, denominator_, derNormalizationFactor_;
         };
 
         typedef NormalDistribution GaussianDistribution;
@@ -73,14 +74,8 @@ namespace QuantLib {
             double derivative(double x) const;
           private:
             double average_, sigma_;
-            static const double a1_;
-            static const double a2_;
-            static const double a3_;
-            static const double a4_;
-            static const double a5_;
-            static const double gamma_;
-            static const double precision_;
             NormalDistribution gaussian_;
+            ErrorFunction errorFunction_;
         };
 
 
@@ -203,8 +198,9 @@ namespace QuantLib {
                 "NormalDistribution: sigma must be greater than 0.0 (" +
                     DoubleFormatter::toString(sigma_) + " not allowed)");
 
-            normalizationFactor_ = 1.0/(sigma_*QL_SQRT(2.0*M_PI));
-            denominator_ = 2.0*sigma_*sigma_;
+            normalizationFactor_ = M_SQRT_2*M_1_SQRTPI/sigma_;
+            derNormalizationFactor_ = sigma_*sigma_;
+            denominator_ = 2.0*derNormalizationFactor_;
         }
 
         inline double NormalDistribution::operator()(double x) const {
@@ -216,7 +212,7 @@ namespace QuantLib {
         }
 
         inline double NormalDistribution::derivative(double x) const {
-            return (*this)(x) * (average_ - x) / (sigma_*sigma_);
+            return (*this)(x) * (average_ - x) / derNormalizationFactor_;
         }
 
         inline CumulativeNormalDistribution::CumulativeNormalDistribution(

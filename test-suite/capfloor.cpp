@@ -268,8 +268,8 @@ void CapFloorTest::testCachedValue() {
                                           0.07,0.20);
     Handle<Instrument> floor = makeCapFloor(VanillaCapFloor::Floor,leg,
                                             0.03,0.20);
-    double cachedCapNPV   = 6.958278080775,
-           cachedFloorNPV = 2.700476857631;
+    double cachedCapNPV   = 6.958275537948,
+           cachedFloorNPV = 2.700478483500;
     
     if (QL_FABS(cap->NPV()-cachedCapNPV) > 1.0e-11)
         CPPUNIT_FAIL(

@@ -48,7 +48,7 @@ void DistributionTest::runTest() {
     CumulativeNormalDistribution cum(average,sigma);
     InverseCumulativeNormal invCum(average,sigma);
 
-    int numberOfStandardDeviation = 4;
+    int numberOfStandardDeviation = 6;
     double xMin = average - numberOfStandardDeviation*sigma,
            xMax = average + numberOfStandardDeviation*sigma;
     Size N = 100001;
@@ -83,7 +83,7 @@ void DistributionTest::runTest() {
     std::transform(x.begin(),x.end(),temp.begin(),diff.begin(),
                    std::minus<double>());
     e = norm(diff.begin(),diff.end(),h);
-    if (e > 1.0e-5) {
+    if (e > 1.0e-8) {
         char s[10];
         QL_SPRINTF(s,"%5.2e",e);
         CPPUNIT_FAIL(

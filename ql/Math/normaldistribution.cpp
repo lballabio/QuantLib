@@ -31,32 +31,32 @@ namespace QuantLib {
 
     namespace Math {
 
-        const double CumulativeNormalDistribution::a1_ =  0.319381530;
-        const double CumulativeNormalDistribution::a2_ = -0.356563782;
-        const double CumulativeNormalDistribution::a3_ =  1.781477937;
-        const double CumulativeNormalDistribution::a4_ = -1.821255978;
-        const double CumulativeNormalDistribution::a5_ =  1.330274429;
 
-        const double CumulativeNormalDistribution::gamma_     = 0.2316419;
-        const double CumulativeNormalDistribution::precision_ = 1e-6;
+        double CumulativeNormalDistribution::operator()(double z) const {
+             /// ???
+             QL_REQUIRE(!(z >= average_ && 2.0*average_-z > average_),
+                 "CumulativeNormalDistribution: not a real number. ");
+             z = (z - average_) / sigma_;
 
-        double CumulativeNormalDistribution::operator()(double x) const {
-            QL_REQUIRE(!(x >= average_ && 2.0*average_-x > average_),
-                "CumulativeNormalDistribution: not a real number. ");
-            if (x >= average_) {
-                double xn = (x - average_) / sigma_;
-                double k = 1.0/(1.0+gamma_*xn);
-                double temp = gaussian_(xn) * k *
-                                (a1_ + k*(a2_ + k*(a3_ + k*(a4_ + k*a5_))));
-                if (temp < precision_)
-                    return 1.0;
-                temp = 1.0 - temp;
-                if (temp < precision_)
-                    return 0.0;
-                return temp;
-            } else {
-                return 1.0-(*this)(2.0*average_-x);
-            }
+             double result = 0.5 * ( 1 + errorFunction_( z*M_SQRT_2 ) );
+             if (result<=QL_EPSILON) {
+             // Asymptotic expansion for very negative z following (26.2.12)
+             // on page 408 in M. Abramowitz and A. Stegun,
+             // Pocketbook of Mathematical Functions, ISBN 3-87144818-4.
+                 double sum=1, zsqr=z*z, i=1, g=1, x, y, a=QL_MAX_DOUBLE, lasta;
+                 do {
+                   lasta=a;
+                   x = (4*i-3)/zsqr;
+                   y = x*((4*i-1)/zsqr);
+                   a = g*(x-y);
+                   sum -= a;
+                   g *= y;
+                   ++i;
+                   a = fabs(a);
+                 } while (lasta>a && a>=fabs(sum*DBL_EPSILON));
+                 result = -gaussian_(z)/z*sum;
+             }
+             return result;
         }
 
 
@@ -124,9 +124,8 @@ namespace QuantLib {
 // order) gives full machine precision.
 #define REFINE_TO_FULL_MACHINE_PRECISION_USING_HALLEYS_METHOD
 #ifdef  REFINE_TO_FULL_MACHINE_PRECISION_USING_HALLEYS_METHOD
-            //	f(z)/df(z)
-//            r = (f_(z) - x) * SQRT_TWO_PI * exp(0.5 * z*z);
-            r = (f_(z) - x) * QL_SQRT(2.0*M_PI) * exp(0.5 * z*z);
+            // error (f_(z) - x) divided by the cumulative's derivative
+            r = (f_(z) - x) * M_SQRT2 * M_SQRTPI * exp(0.5 * z*z);
             //	Halley's method
             z -= r/(1+0.5*z*r);
 #endif

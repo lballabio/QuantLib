@@ -46,12 +46,15 @@ int main() {
     QLTestListener qlListener;
     runner.eventManager().addListener(&qlListener);
 
-    runner.addTest(new CalendarTest);
+    runner.addTest(OldPricerTest::suite());
     runner.addTest(CapFloorTest::suite());
+    runner.addTest(new DistributionTest);
+    runner.addTest(SwaptionTest::suite());
+
+    runner.addTest(new CalendarTest);
     runner.addTest(new CovarianceTest);
     runner.addTest(new DateTest);
     runner.addTest(new DayCounterTest);
-    runner.addTest(new DistributionTest);
     runner.addTest(EuropeanOptionTest::suite());
     runner.addTest(InstrumentTest::suite());
     runner.addTest(new IntegralTest);
@@ -62,9 +65,7 @@ int main() {
     runner.addTest(new Solver1DTest);
     runner.addTest(new StatisticsTest);
     runner.addTest(SimpleSwapTest::suite());
-    runner.addTest(SwaptionTest::suite());
     runner.addTest(TermStructureTest::suite());
-    runner.addTest(OldPricerTest::suite());
 
     std::string header = "Testing QuantLib " QL_VERSION ;
     std::cerr << std::string(header.length(),'=') << std::endl;

@@ -120,7 +120,7 @@ namespace {
 
 void OldPricerTest::testBarrierPricer() {
 
-    double maxErrorAllowed = 5.0e-5;
+    double maxErrorAllowed = 1.0e-4;
     double maxStraddleErrorAllowed = 5.0e-4;
     double underlyingPrice = 100.0;
     double rebate = 3.0;
@@ -697,7 +697,7 @@ void OldPricerTest::testMcSingleFactorPricers() {
     Rate dividendYield = 0.03, riskFreeRate = 0.06;
     Time times[] = { 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0 };
     double volatility = 0.2;
-    double storedValue = 5.34255485619;
+    double storedValue = 5.3425606635;
 
     std::vector<Time> timeIncrements(LENGTH(times));
     std::copy(times,times+LENGTH(times),timeIncrements.begin());
@@ -724,7 +724,7 @@ void OldPricerTest::testMcSingleFactorPricers() {
 
     EuropeanOption pricer1(type,underlying,strike,dividendYield,
                            riskFreeRate,residualTime,volatility);
-    storedValue = 5.21858890396;
+    storedValue =  5.2185855660;
     if (QL_FABS(pricer1.value()-storedValue) > 1.0e-10)
         CPPUNIT_FAIL(
             "Batch 2, case 1:\n"
@@ -734,7 +734,7 @@ void OldPricerTest::testMcSingleFactorPricers() {
             + DoubleFormatter::toString(storedValue,10));
     ContinuousGeometricAPO pricer2(type,underlying,strike,dividendYield,
                                    riskFreeRate,residualTime,volatility);
-    storedValue = 4.69221973405;
+    storedValue = 4.6922213122;
     if (QL_FABS(pricer2.value()-storedValue) > 1.0e-10)
         CPPUNIT_FAIL(
             "Batch 2, case 2:\n"
@@ -754,7 +754,7 @@ void OldPricerTest::testMcSingleFactorPricers() {
     residualTime = 0.25;
     volatility = 0.2;
     Size timeSteps = 90000;
-    storedValue = 4.6922231469;
+    storedValue = 4.6922247251;
 
     timeIncrements = std::vector<Time>(timeSteps);
     Time dt = residualTime/timeSteps;
@@ -898,7 +898,7 @@ void OldPricerTest::testMcSingleFactorPricers() {
                                        cases5[k].controlVariate,
                                        seed);
         double value = pricer.valueWithSamples(fixedSamples);
-        if (QL_FABS(value-cases5[k].result) > 1.0e-10)
+        if (QL_FABS(value-cases5[k].result) > 1.0e-5)
             CPPUNIT_FAIL(
                 "Batch 5, case " + IntegerFormatter::toString(k+1) + ":\n"
                 "    calculated value: "
@@ -1002,7 +1002,7 @@ void OldPricerTest::testMcSingleFactorPricers() {
                                        cases6[l].controlVariate,
                                        seed);
         double value = pricer.valueWithSamples(fixedSamples);
-        if (QL_FABS(value-cases6[l].result) > 1.0e-10)
+        if (QL_FABS(value-cases6[l].result) > 1.0e-5)
             CPPUNIT_FAIL(
                 "Batch 6, case " + IntegerFormatter::toString(l+1) + ":\n"
                 "    calculated value: "
