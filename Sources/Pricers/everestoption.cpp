@@ -25,6 +25,9 @@
     
     $Source$
     $Log$
+    Revision 1.2  2001/03/07 09:32:54  marmar
+    Spot prices not necessary for evaluation of everest option
+
     Revision 1.1  2001/03/06 17:02:04  marmar
     First, simplified version, of everest option introduced
 
@@ -43,32 +46,34 @@ namespace QuantLib {
         using MonteCarlo::EverestPathPricer;
         using MonteCarlo::MultiFactorMonteCarloOption;
 
-        EverestOption::EverestOption(const Array &underlying, 
-                const Array &dividendYield, 
-                const Math::Matrix &covariance, 
-                Rate riskFreeRate, Time residualTime,
-                long samples, long seed)
+        EverestOption::EverestOption(const Array &dividendYield, 
+                                     const Math::Matrix &covariance, 
+                                     Rate riskFreeRate, 
+                                     Time residualTime,
+                                     long samples, long seed)
         : MultiFactorPricer(samples, seed){
             int  n = covariance.rows(); 
             QL_REQUIRE(covariance.columns() == n,
                 "EverestOption: covariance matrix not square");
-            QL_REQUIRE(underlying.size() == n,
-                "EverestOption: underlying size does not match that of"
-                " covariance matrix");
             QL_REQUIRE(dividendYield.size() == n,
                 "EverestOption: dividendYield size does not match"
                 " that of covariance matrix");
+            QL_REQUIRE(residualTime > 0,
+                "EverestOption: residualTime must be positive");
                 
             //! Initialize the path generator
             Array mu(riskFreeRate - dividendYield
                                     - 0.5 * covariance.diagonal());
 
+            std::vector<Time> timeDisp(1);
+            timeDisp[0] = residualTime;
             Handle<StandardMultiPathGenerator> pathGenerator(
-                new StandardMultiPathGenerator(1, mu, covariance, seed));
+                    new StandardMultiPathGenerator(timeDisp, mu, 
+                                                   covariance, seed));
             
             //! Initialize the pricer on the path pricer
-            Handle<MultiPathPricer> pathPricer(new EverestPathPricer(
-                underlying, QL_EXP(-riskFreeRate*residualTime)));
+            Handle<MultiPathPricer> pathPricer(
+                new EverestPathPricer(QL_EXP(-riskFreeRate*residualTime)));
  
              //! Initialize the multi-factor Monte Carlo
             montecarloPricer_ = MultiFactorMonteCarloOption(

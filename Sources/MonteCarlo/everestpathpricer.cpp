@@ -25,6 +25,9 @@
 
     $Sourc$
     $Log$
+    Revision 1.2  2001/03/07 09:33:08  marmar
+    Spot prices not necessary for evaluation of everest option
+
     Revision 1.1  2001/03/06 16:59:31  marmar
     First, simplified version, of everest option
 
@@ -38,8 +41,8 @@ namespace QuantLib {
 
     namespace MonteCarlo {
 
-        EverestPathPricer::EverestPathPricer(const Array &underlying,
-            double discount): underlying_(underlying), discount_(discount) {
+        EverestPathPricer::EverestPathPricer(double discount): 
+            discount_(discount) {
             QL_REQUIRE(discount_ > 0.0,
                 "EverestPathPricer: discount must be positive");
             isInitialized_ = true;
@@ -49,9 +52,6 @@ namespace QuantLib {
             int numAssets = path.rows();
             QL_REQUIRE(isInitialized_,
                 "EverestPathPricer: pricer not initialized");
-            QL_REQUIRE(underlying_.size() == numAssets,
-                "EverestPathPricer: the multi-path must contain "
-                + IntegerFormatter::toString(underlying_.size()) +" assets");
             
             double minPrice = QL_MAX_DOUBLE;
             for(int i = 0; i < numAssets; i++)

@@ -24,6 +24,9 @@
     
     $Source$
     $Log$
+    Revision 1.2  2001/03/07 09:32:34  marmar
+    Spot prices not necessary for evaluation of everest option
+
     Revision 1.1  2001/03/06 16:59:07  marmar
     First, simplified version, of everest option
 
@@ -48,8 +51,7 @@ namespace QuantLib {
         */
         class EverestOption: public MultiFactorPricer {
         public:
-            EverestOption(const Array &underlying, 
-                const Array &dividendYield, 
+            EverestOption(const Array &dividendYield, 
                 const Math::Matrix &covariance, 
                 Rate riskFreeRate, Time residualTime,
                 long samples, long seed = 0);             

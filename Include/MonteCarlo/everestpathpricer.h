@@ -24,6 +24,9 @@
 /*! \file everestpathpricer.h    
     $Source$
     $Log$
+    Revision 1.2  2001/03/07 09:31:01  marmar
+    Spot prices not necessary for evaluation of everest option
+
     Revision 1.1  2001/03/06 16:58:41  marmar
     First, simplified version, of everest option
 
@@ -50,12 +53,10 @@ namespace QuantLib {
         class EverestPathPricer : public MultiPathPricer {
         public:
             EverestPathPricer():MultiPathPricer(){}
-            EverestPathPricer(const Array &underlying, 
-                double discount);
+            EverestPathPricer(double discount);
             double value(const MultiPath &path) const;
         protected:
             double discount_;
-            Array underlying_;
         };
 
     }
